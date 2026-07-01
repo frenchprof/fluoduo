@@ -1,0 +1,224 @@
+{
+  "id": "languages",
+  "title": "Quelles langues parlez-vous ?",
+  "subtitle": "Name the languages you speak",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 1,
+  "lessonNo": 10,
+  "lessonSlug": "languages",
+  "tags": [],
+  "seq": 110,
+  "items": [
+    {
+      "id": "languages-01-anglais",
+      "fr": "anglais",
+      "en": "English",
+      "emoji": "🇬🇧",
+      "tags": [],
+      "lang": {
+        "greeting": "Hello",
+        "autonym": "English"
+      }
+    },
+    {
+      "id": "languages-02-chinois",
+      "fr": "chinois",
+      "en": "Mandarin / Chinese",
+      "emoji": "🇨🇳",
+      "tags": [],
+      "lang": {
+        "greeting": "你好",
+        "autonym": "中文"
+      }
+    },
+    {
+      "id": "languages-03-hindi",
+      "fr": "hindi",
+      "en": "Hindi / Urdu",
+      "emoji": "🇮🇳",
+      "tags": [],
+      "lang": {
+        "greeting": "नमस्ते",
+        "autonym": "हिन्दी"
+      }
+    },
+    {
+      "id": "languages-04-espagnol",
+      "fr": "espagnol",
+      "en": "Spanish",
+      "emoji": "🇪🇸",
+      "tags": [],
+      "lang": {
+        "greeting": "Hola",
+        "autonym": "Español"
+      }
+    },
+    {
+      "id": "languages-05-arabe",
+      "fr": "arabe",
+      "en": "Arabic",
+      "emoji": "🇸🇦",
+      "tags": [],
+      "lang": {
+        "greeting": "مرحبا",
+        "autonym": "العربية"
+      }
+    },
+    {
+      "id": "languages-06-francais",
+      "fr": "français",
+      "en": "French",
+      "emoji": "🇫🇷",
+      "tags": [],
+      "lang": {
+        "greeting": "Bonjour",
+        "autonym": "Français"
+      }
+    },
+    {
+      "id": "languages-07-portugais",
+      "fr": "portugais",
+      "en": "Portuguese",
+      "emoji": "🇵🇹",
+      "tags": [],
+      "lang": {
+        "greeting": "Olá",
+        "autonym": "Português"
+      }
+    },
+    {
+      "id": "languages-08-russe",
+      "fr": "russe",
+      "en": "Russian",
+      "emoji": "🇷🇺",
+      "tags": [],
+      "lang": {
+        "greeting": "Привет",
+        "autonym": "Русский"
+      }
+    },
+    {
+      "id": "languages-09-indonesien",
+      "fr": "indonésien",
+      "en": "Indonesian",
+      "emoji": "🇮🇩",
+      "tags": [],
+      "lang": {
+        "greeting": "Halo",
+        "autonym": "Bahasa Indonesia"
+      }
+    },
+    {
+      "id": "languages-10-allemand",
+      "fr": "allemand",
+      "en": "German",
+      "emoji": "🇩🇪",
+      "tags": [],
+      "lang": {
+        "greeting": "Hallo",
+        "autonym": "Deutsch"
+      }
+    },
+    {
+      "id": "languages-11-japonais",
+      "fr": "japonais",
+      "en": "Japanese",
+      "emoji": "🇯🇵",
+      "tags": [],
+      "lang": {
+        "greeting": "こんにちは",
+        "autonym": "日本語"
+      }
+    },
+    {
+      "id": "languages-12-turc",
+      "fr": "turc",
+      "en": "Turkish",
+      "emoji": "🇹🇷",
+      "tags": [],
+      "lang": {
+        "greeting": "Merhaba",
+        "autonym": "Türkçe"
+      }
+    },
+    {
+      "id": "languages-13-tamoul",
+      "fr": "tamoul",
+      "en": "Tamil",
+      "emoji": "🇱🇰",
+      "tags": [],
+      "lang": {
+        "greeting": "வணக்கம்",
+        "autonym": "தமிழ்"
+      }
+    },
+    {
+      "id": "languages-14-cantonais",
+      "fr": "cantonais",
+      "en": "Cantonese",
+      "emoji": "🇭🇰",
+      "tags": [],
+      "lang": {
+        "greeting": "你好",
+        "autonym": "廣東話"
+      }
+    },
+    {
+      "id": "languages-15-vietnamien",
+      "fr": "vietnamien",
+      "en": "Vietnamese",
+      "emoji": "🇻🇳",
+      "tags": [],
+      "lang": {
+        "greeting": "Xin chào",
+        "autonym": "Tiếng Việt"
+      }
+    },
+    {
+      "id": "languages-16-filipino",
+      "fr": "filipino",
+      "en": "Filipino",
+      "emoji": "🇵🇭",
+      "tags": [],
+      "lang": {
+        "greeting": "Kumusta",
+        "autonym": "Filipino"
+      }
+    },
+    {
+      "id": "languages-17-coreen",
+      "fr": "coréen",
+      "en": "Korean",
+      "emoji": "🇰🇷",
+      "tags": [],
+      "lang": {
+        "greeting": "안녕하세요",
+        "autonym": "한국어"
+      }
+    },
+    {
+      "id": "languages-18-thai",
+      "fr": "thaï",
+      "en": "Thai",
+      "emoji": "🇹🇭",
+      "tags": [],
+      "lang": {
+        "greeting": "สวัสดี",
+        "autonym": "ภาษาไทย"
+      }
+    },
+    {
+      "id": "languages-19-malais",
+      "fr": "malais",
+      "en": "Malay",
+      "emoji": "🇲🇾",
+      "tags": [],
+      "lang": {
+        "greeting": "Apa khabar",
+        "autonym": "Bahasa Melayu"
+      }
+    }
+  ]
+}

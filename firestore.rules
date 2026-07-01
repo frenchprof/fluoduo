@@ -1,0 +1,37 @@
+rules_version = '2';
+// FLUOLINGO Firestore security rules.
+// Deploy via: Firebase Console → Firestore Database → Rules → paste → Publish
+// (or `firebase deploy --only firestore:rules` if you use the CLI).
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
+
+    // ── User-created collections ───────────────────────────────
+    // Readable if public/unlisted, or by the owner.
+    // Writable only by the owner, and the owner field can't be spoofed or reassigned.
+    match /collections/{collectionId} {
+      allow read: if resource.data.visibility in ['public', 'unlisted']
+                  || isOwner(resource.data.owner);
+      allow create: if signedIn() && request.resource.data.owner == request.auth.uid;
+      allow update: if isOwner(resource.data.owner)
+                    && request.resource.data.owner == resource.data.owner;
+      allow delete: if isOwner(resource.data.owner);
+    }
+
+    // ── Per-user private data (SRS progress, profile, gamification) ─
+    match /users/{uid}/{document=**} {
+      allow read, write: if isOwner(uid);
+    }
+
+    // ── Usage events (telemetry) ───────────────────────────────
+    // Create-only for the signed-in user on their own uid. No client read/edit/delete.
+    // Cross-user analytics happen admin-side (console / BigQuery export).
+    match /events/{eventId} {
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow read, update, delete: if false;
+    }
+  }
+}

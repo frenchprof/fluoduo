@@ -1,0 +1,294 @@
+{
+  "id": "lieux-letris",
+  "title": "Quel est votre lieu préféré dans la ville ?",
+  "subtitle": "Sort each place into its correct article column",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 3,
+  "lessonNo": 7,
+  "lessonSlug": "attractions",
+  "tags": [],
+  "seq": 307,
+  "items": [
+    {
+      "id": "lieux-letris-01-cafe",
+      "fr": "café",
+      "en": "the café",
+      "emoji": "☕",
+      "tags": [
+        "col:le"
+      ]
+    },
+    {
+      "id": "lieux-letris-02-restaurant",
+      "fr": "restaurant",
+      "en": "the restaurant",
+      "emoji": "🍽️",
+      "tags": [
+        "col:le"
+      ]
+    },
+    {
+      "id": "lieux-letris-03-cinema",
+      "fr": "cinéma",
+      "en": "the cinema",
+      "emoji": "🎬",
+      "tags": [
+        "col:le"
+      ]
+    },
+    {
+      "id": "lieux-letris-04-musee",
+      "fr": "musée",
+      "en": "the museum",
+      "emoji": "🏛️",
+      "tags": [
+        "col:le"
+      ]
+    },
+    {
+      "id": "lieux-letris-05-parc",
+      "fr": "parc",
+      "en": "the park",
+      "emoji": "🌳",
+      "tags": [
+        "col:le"
+      ]
+    },
+    {
+      "id": "lieux-letris-06-marche",
+      "fr": "marché",
+      "en": "the market",
+      "emoji": "🛒",
+      "tags": [
+        "col:le"
+      ]
+    },
+    {
+      "id": "lieux-letris-07-supermarche",
+      "fr": "supermarché",
+      "en": "the supermarket",
+      "emoji": "🛍️",
+      "tags": [
+        "col:le"
+      ]
+    },
+    {
+      "id": "lieux-letris-08-stade",
+      "fr": "stade",
+      "en": "the stadium",
+      "emoji": "🏟️",
+      "tags": [
+        "col:le"
+      ]
+    },
+    {
+      "id": "lieux-letris-09-banque",
+      "fr": "banque",
+      "en": "the bank",
+      "emoji": "🏦",
+      "tags": [
+        "col:la"
+      ]
+    },
+    {
+      "id": "lieux-letris-10-pharmacie",
+      "fr": "pharmacie",
+      "en": "the pharmacy",
+      "emoji": "💊",
+      "tags": [
+        "col:la"
+      ]
+    },
+    {
+      "id": "lieux-letris-11-bibliotheque",
+      "fr": "bibliothèque",
+      "en": "the library",
+      "emoji": "📚",
+      "tags": [
+        "col:la"
+      ]
+    },
+    {
+      "id": "lieux-letris-12-boulangerie",
+      "fr": "boulangerie",
+      "en": "the bakery",
+      "emoji": "🥖",
+      "tags": [
+        "col:la"
+      ]
+    },
+    {
+      "id": "lieux-letris-13-gare",
+      "fr": "gare",
+      "en": "the train station",
+      "emoji": "🚉",
+      "tags": [
+        "col:la"
+      ]
+    },
+    {
+      "id": "lieux-letris-14-poste",
+      "fr": "poste",
+      "en": "the post office",
+      "emoji": "📮",
+      "tags": [
+        "col:la"
+      ]
+    },
+    {
+      "id": "lieux-letris-15-piscine",
+      "fr": "piscine",
+      "en": "the pool",
+      "emoji": "🏊",
+      "tags": [
+        "col:la"
+      ]
+    },
+    {
+      "id": "lieux-letris-16-mairie",
+      "fr": "mairie",
+      "en": "the town hall",
+      "emoji": "🏛️",
+      "tags": [
+        "col:la"
+      ]
+    },
+    {
+      "id": "lieux-letris-17-hopital",
+      "fr": "hôpital",
+      "en": "the hospital",
+      "emoji": "🏥",
+      "tags": [
+        "col:l_apos"
+      ]
+    },
+    {
+      "id": "lieux-letris-18-eglise",
+      "fr": "église",
+      "en": "the church",
+      "emoji": "⛪",
+      "tags": [
+        "col:l_apos"
+      ]
+    },
+    {
+      "id": "lieux-letris-19-ecole",
+      "fr": "école",
+      "en": "the school",
+      "emoji": "🏫",
+      "tags": [
+        "col:l_apos"
+      ]
+    },
+    {
+      "id": "lieux-letris-20-universite",
+      "fr": "université",
+      "en": "the university",
+      "emoji": "🎓",
+      "tags": [
+        "col:l_apos"
+      ]
+    },
+    {
+      "id": "lieux-letris-21-aeroport",
+      "fr": "aéroport",
+      "en": "the airport",
+      "emoji": "✈️",
+      "tags": [
+        "col:l_apos"
+      ]
+    },
+    {
+      "id": "lieux-letris-22-hotel",
+      "fr": "hôtel",
+      "en": "the hotel",
+      "emoji": "🏨",
+      "tags": [
+        "col:l_apos"
+      ]
+    },
+    {
+      "id": "lieux-letris-23-arret-de-bus",
+      "fr": "arrêt de bus",
+      "en": "the bus stop",
+      "emoji": "🚏",
+      "tags": [
+        "col:l_apos"
+      ]
+    },
+    {
+      "id": "lieux-letris-24-magasins",
+      "fr": "magasins",
+      "en": "the shops",
+      "emoji": "🛍️",
+      "tags": [
+        "col:les"
+      ]
+    },
+    {
+      "id": "lieux-letris-25-commerces",
+      "fr": "commerces",
+      "en": "the businesses",
+      "emoji": "🏪",
+      "tags": [
+        "col:les"
+      ]
+    },
+    {
+      "id": "lieux-letris-26-toilettes-publiques",
+      "fr": "toilettes publiques",
+      "en": "the public toilets",
+      "emoji": "🚻",
+      "tags": [
+        "col:les"
+      ]
+    },
+    {
+      "id": "lieux-letris-27-feux-de-circulation",
+      "fr": "feux de circulation",
+      "en": "the traffic lights",
+      "emoji": "🚦",
+      "tags": [
+        "col:les"
+      ]
+    },
+    {
+      "id": "lieux-letris-28-jardins-publics",
+      "fr": "jardins publics",
+      "en": "the public gardens",
+      "emoji": "🌳",
+      "tags": [
+        "col:les"
+      ]
+    }
+  ],
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        {
+          "key": "le",
+          "label": "LE",
+          "prefix": "Le "
+        },
+        {
+          "key": "la",
+          "label": "LA",
+          "prefix": "La "
+        },
+        {
+          "key": "l_apos",
+          "label": "L'",
+          "prefix": "L'"
+        },
+        {
+          "key": "les",
+          "label": "LES",
+          "prefix": "Les "
+        }
+      ]
+    }
+  },
+  "source": "lieux-letris.json"
+}

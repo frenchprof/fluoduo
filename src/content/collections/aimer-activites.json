@@ -1,0 +1,75 @@
+{
+  "id": "aimer-activites",
+  "title": "J'aime...",
+  "subtitle": "Things and activities I like",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 2,
+  "lessonNo": 23,
+  "lessonSlug": "aimer-activites",
+  "tags": [],
+  "seq": 223,
+  "items": [
+    {
+      "id": "aimer-activites-01",
+      "fr": "le sport",
+      "en": "sports",
+      "tags": []
+    },
+    {
+      "id": "aimer-activites-02",
+      "fr": "la musique",
+      "en": "music",
+      "tags": []
+    },
+    {
+      "id": "aimer-activites-03",
+      "fr": "le cinéma",
+      "en": "cinema",
+      "tags": []
+    },
+    {
+      "id": "aimer-activites-04",
+      "fr": "la lecture",
+      "en": "reading",
+      "tags": []
+    },
+    {
+      "id": "aimer-activites-05",
+      "fr": "les jeux vidéo",
+      "en": "video games",
+      "tags": []
+    },
+    {
+      "id": "aimer-activites-06",
+      "fr": "la danse",
+      "en": "dance",
+      "tags": []
+    },
+    {
+      "id": "aimer-activites-07",
+      "fr": "voyager",
+      "en": "to travel",
+      "tags": []
+    },
+    {
+      "id": "aimer-activites-08",
+      "fr": "cuisiner",
+      "en": "to cook",
+      "tags": []
+    },
+    {
+      "id": "aimer-activites-09",
+      "fr": "dessiner",
+      "en": "to draw",
+      "tags": []
+    },
+    {
+      "id": "aimer-activites-10",
+      "fr": "chanter",
+      "en": "to sing",
+      "tags": []
+    }
+  ]
+}

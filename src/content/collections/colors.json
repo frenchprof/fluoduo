@@ -1,0 +1,87 @@
+{
+  "id": "colors",
+  "title": "De quelle couleur ?",
+  "subtitle": "Colours",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 0,
+  "lessonNo": 5,
+  "lessonSlug": "colors",
+  "tags": [],
+  "seq": 5,
+  "items": [
+    {
+      "id": "colors-01",
+      "fr": "rouge",
+      "en": "red",
+      "tags": []
+    },
+    {
+      "id": "colors-02",
+      "fr": "orange",
+      "en": "orange",
+      "tags": []
+    },
+    {
+      "id": "colors-03",
+      "fr": "jaune",
+      "en": "yellow",
+      "tags": []
+    },
+    {
+      "id": "colors-04",
+      "fr": "vert",
+      "en": "green",
+      "tags": []
+    },
+    {
+      "id": "colors-05",
+      "fr": "bleu",
+      "en": "blue",
+      "tags": []
+    },
+    {
+      "id": "colors-06",
+      "fr": "violet",
+      "en": "purple",
+      "tags": []
+    },
+    {
+      "id": "colors-07",
+      "fr": "marron",
+      "en": "brown",
+      "tags": []
+    },
+    {
+      "id": "colors-08",
+      "fr": "blanc",
+      "en": "white",
+      "tags": []
+    },
+    {
+      "id": "colors-09",
+      "fr": "noir",
+      "en": "black",
+      "tags": []
+    },
+    {
+      "id": "colors-10",
+      "fr": "gris",
+      "en": "grey",
+      "tags": []
+    },
+    {
+      "id": "colors-11",
+      "fr": "rose",
+      "en": "pink",
+      "tags": []
+    },
+    {
+      "id": "colors-12",
+      "fr": "beige",
+      "en": "beige",
+      "tags": []
+    }
+  ]
+}

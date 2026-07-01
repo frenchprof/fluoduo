@@ -1,0 +1,105 @@
+{
+  "id": "aller-destinations",
+  "title": "Aller au, à la, à l' ou aux ?",
+  "subtitle": "Sort each destination by its contraction",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 2,
+  "lessonNo": 26,
+  "lessonSlug": "aller-destinations",
+  "tags": [],
+  "seq": 226,
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        {
+          "key": "au",
+          "label": "AU",
+          "prefix": "au "
+        },
+        {
+          "key": "a_la",
+          "label": "À LA",
+          "prefix": "à la "
+        },
+        {
+          "key": "a_l",
+          "label": "À L'",
+          "prefix": "à l'"
+        },
+        {
+          "key": "aux",
+          "label": "AUX",
+          "prefix": "aux "
+        }
+      ]
+    }
+  },
+  "items": [
+    {
+      "id": "aller-destinations-01",
+      "fr": "cinéma",
+      "en": "cinema",
+      "tags": [
+        "col:au"
+      ]
+    },
+    {
+      "id": "aller-destinations-02",
+      "fr": "marché",
+      "en": "market",
+      "tags": [
+        "col:au"
+      ]
+    },
+    {
+      "id": "aller-destinations-03",
+      "fr": "piscine",
+      "en": "swimming pool",
+      "tags": [
+        "col:a_la"
+      ]
+    },
+    {
+      "id": "aller-destinations-04",
+      "fr": "plage",
+      "en": "beach",
+      "tags": [
+        "col:a_la"
+      ]
+    },
+    {
+      "id": "aller-destinations-05",
+      "fr": "école",
+      "en": "school",
+      "tags": [
+        "col:a_l"
+      ]
+    },
+    {
+      "id": "aller-destinations-06",
+      "fr": "hôpital",
+      "en": "hospital",
+      "tags": [
+        "col:a_l"
+      ]
+    },
+    {
+      "id": "aller-destinations-07",
+      "fr": "toilettes",
+      "en": "toilets",
+      "tags": [
+        "col:aux"
+      ]
+    },
+    {
+      "id": "aller-destinations-08",
+      "fr": "magasins",
+      "en": "shops",
+      "tags": [
+        "col:aux"
+      ]
+    }
+  ]
+}

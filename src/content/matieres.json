@@ -1,0 +1,89 @@
+{
+  "id": "matieres",
+  "title": "Quelle matière ?",
+  "subtitle": "Academic subjects, sorted by article",
+  "categories": [
+    {
+      "key": "le",
+      "label": "LE",
+      "prefix": "le "
+    },
+    {
+      "key": "la",
+      "label": "LA",
+      "prefix": "la "
+    },
+    {
+      "key": "l_apos",
+      "label": "L'",
+      "prefix": "l'"
+    },
+    {
+      "key": "les",
+      "label": "LES",
+      "prefix": "les "
+    }
+  ],
+  "tiles": [
+    {
+      "text": "FRANÇAIS",
+      "displayName": "français",
+      "category": "le",
+      "meaning": "French"
+    },
+    {
+      "text": "DESSIN",
+      "displayName": "dessin",
+      "category": "le",
+      "meaning": "art"
+    },
+    {
+      "text": "GÉOGRAPHIE",
+      "displayName": "géographie",
+      "category": "la",
+      "meaning": "geography"
+    },
+    {
+      "text": "BIOLOGIE",
+      "displayName": "biologie",
+      "category": "la",
+      "meaning": "biology"
+    },
+    {
+      "text": "ANGLAIS",
+      "displayName": "anglais",
+      "category": "l_apos",
+      "meaning": "English"
+    },
+    {
+      "text": "HISTOIRE",
+      "displayName": "histoire",
+      "category": "l_apos",
+      "meaning": "history"
+    },
+    {
+      "text": "INFORMATIQUE",
+      "displayName": "informatique",
+      "category": "l_apos",
+      "meaning": "computer science"
+    },
+    {
+      "text": "MATHÉMATIQUES",
+      "displayName": "mathématiques",
+      "category": "les",
+      "meaning": "maths"
+    },
+    {
+      "text": "SCIENCES",
+      "displayName": "sciences",
+      "category": "les",
+      "meaning": "science"
+    },
+    {
+      "text": "LANGUES",
+      "displayName": "langues",
+      "category": "les",
+      "meaning": "languages"
+    }
+  ]
+}

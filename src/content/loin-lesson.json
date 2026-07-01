@@ -1,0 +1,104 @@
+{
+  "id": "loin-lesson",
+  "title": "C'est loin ?",
+  "subtitle": "Learn the 12 prepositions of location",
+  "language": "fr",
+  "categories": [
+    {
+      "key": "group1",
+      "label": "WITHOUT de",
+      "prefix": ""
+    },
+    {
+      "key": "group2",
+      "label": "WITH de",
+      "prefix": ""
+    }
+  ],
+  "tiles": [
+    {
+      "text": "SUR",
+      "displayName": "sur",
+      "category": "group1",
+      "meaning": "on / on top of",
+      "emoji": "⬆️"
+    },
+    {
+      "text": "SOUS",
+      "displayName": "sous",
+      "category": "group1",
+      "meaning": "under",
+      "emoji": "⬇️"
+    },
+    {
+      "text": "DEVANT",
+      "displayName": "devant",
+      "category": "group1",
+      "meaning": "in front of",
+      "emoji": "⏪"
+    },
+    {
+      "text": "DERRIÈRE",
+      "displayName": "derrière",
+      "category": "group1",
+      "meaning": "behind",
+      "emoji": "⏩"
+    },
+    {
+      "text": "DANS",
+      "displayName": "dans",
+      "category": "group1",
+      "meaning": "in / inside",
+      "emoji": "📦"
+    },
+    {
+      "text": "ENTRE",
+      "displayName": "entre",
+      "category": "group1",
+      "meaning": "between",
+      "emoji": "↔️"
+    },
+    {
+      "text": "À CÔTÉ",
+      "displayName": "à côté de",
+      "category": "group2",
+      "meaning": "next to / beside",
+      "emoji": "🤝"
+    },
+    {
+      "text": "À GAUCHE",
+      "displayName": "à gauche de",
+      "category": "group2",
+      "meaning": "to the left of",
+      "emoji": "⬅️"
+    },
+    {
+      "text": "À DROITE",
+      "displayName": "à droite de",
+      "category": "group2",
+      "meaning": "to the right of",
+      "emoji": "➡️"
+    },
+    {
+      "text": "PRÈS",
+      "displayName": "près de",
+      "category": "group2",
+      "meaning": "near",
+      "emoji": "📏"
+    },
+    {
+      "text": "LOIN",
+      "displayName": "loin de",
+      "category": "group2",
+      "meaning": "far from",
+      "emoji": "🛣️"
+    },
+    {
+      "text": "EN FACE",
+      "displayName": "en face de",
+      "category": "group2",
+      "meaning": "opposite / facing",
+      "emoji": "🪞"
+    }
+  ]
+}

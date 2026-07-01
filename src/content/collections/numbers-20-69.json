@@ -1,0 +1,105 @@
+{
+  "id": "numbers-20-69",
+  "title": "20 à 69",
+  "subtitle": "Numbers 20-69",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 1,
+  "lessonNo": 18,
+  "lessonSlug": "numbers-20-69",
+  "tags": [],
+  "seq": 118,
+  "items": [
+    {
+      "id": "numbers-20-69-01",
+      "fr": "vingt",
+      "en": "20",
+      "tags": []
+    },
+    {
+      "id": "numbers-20-69-02",
+      "fr": "vingt et un",
+      "en": "21",
+      "tags": []
+    },
+    {
+      "id": "numbers-20-69-03",
+      "fr": "vingt-deux",
+      "en": "22",
+      "tags": []
+    },
+    {
+      "id": "numbers-20-69-04",
+      "fr": "trente",
+      "en": "30",
+      "tags": []
+    },
+    {
+      "id": "numbers-20-69-05",
+      "fr": "trente et un",
+      "en": "31",
+      "tags": []
+    },
+    {
+      "id": "numbers-20-69-06",
+      "fr": "trente-cinq",
+      "en": "35",
+      "tags": []
+    },
+    {
+      "id": "numbers-20-69-07",
+      "fr": "quarante",
+      "en": "40",
+      "tags": []
+    },
+    {
+      "id": "numbers-20-69-08",
+      "fr": "quarante et un",
+      "en": "41",
+      "tags": []
+    },
+    {
+      "id": "numbers-20-69-09",
+      "fr": "quarante-sept",
+      "en": "47",
+      "tags": []
+    },
+    {
+      "id": "numbers-20-69-10",
+      "fr": "cinquante",
+      "en": "50",
+      "tags": []
+    },
+    {
+      "id": "numbers-20-69-11",
+      "fr": "cinquante et un",
+      "en": "51",
+      "tags": []
+    },
+    {
+      "id": "numbers-20-69-12",
+      "fr": "cinquante-huit",
+      "en": "58",
+      "tags": []
+    },
+    {
+      "id": "numbers-20-69-13",
+      "fr": "soixante",
+      "en": "60",
+      "tags": []
+    },
+    {
+      "id": "numbers-20-69-14",
+      "fr": "soixante et un",
+      "en": "61",
+      "tags": []
+    },
+    {
+      "id": "numbers-20-69-15",
+      "fr": "soixante-neuf",
+      "en": "69",
+      "tags": []
+    }
+  ]
+}

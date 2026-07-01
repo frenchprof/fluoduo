@@ -1,0 +1,88 @@
+import weather from "@/content/weather-letris.json";
+import countries from "@/content/countries-letris.json";
+import countriesExpert from "@/content/countries-expert-letris.json";
+import lieux from "@/content/lieux-letris.json";
+import loinLesson from "@/content/loin-lesson.json";
+import days from "@/content/days.json";
+import coreNouns from "@/content/core-nouns.json";
+import stressPronouns from "@/content/stress-pronouns.json";
+import professions from "@/content/professions.json";
+import matieres from "@/content/matieres.json";
+import avoirEtats from "@/content/avoir-etats.json";
+import objetsArticles from "@/content/objets-articles.json";
+import possessives from "@/content/possessives.json";
+import faireActivites from "@/content/faire-activites.json";
+import allerDestinations from "@/content/aller-destinations.json";
+import quandTime from "@/content/quand-time.json";
+import enAuAuxA from "@/content/en-au-aux-a.json";
+import type { LetrisSet } from "./LetrisGame";
+
+export type LetrisSetMeta = {
+  slug: string;
+  title: string;
+  subtitle?: string;
+  tileCount: number;
+  categoryCount: number;
+  emoji: string;
+};
+
+const REGISTRY: Record<string, LetrisSet> = {
+  days: days as LetrisSet,
+  weather: weather as LetrisSet,
+  countries: countries as LetrisSet,
+  "countries-expert": countriesExpert as LetrisSet,
+  lieux: lieux as LetrisSet,
+  "loin-lesson": loinLesson as LetrisSet,
+  "core-nouns": coreNouns as LetrisSet,
+  "stress-pronouns": stressPronouns as LetrisSet,
+  professions: professions as LetrisSet,
+  matieres: matieres as LetrisSet,
+  "avoir-etats": avoirEtats as LetrisSet,
+  "objets-articles": objetsArticles as LetrisSet,
+  possessives: possessives as LetrisSet,
+  "faire-activites": faireActivites as LetrisSet,
+  "aller-destinations": allerDestinations as LetrisSet,
+  "quand-time": quandTime as LetrisSet,
+  "en-au-aux-a": enAuAuxA as LetrisSet,
+};
+
+const META: Record<string, { emoji: string }> = {
+  days: { emoji: "📅" },
+  weather: { emoji: "🌦️" },
+  countries: { emoji: "🌍" },
+  "countries-expert": { emoji: "🌐" },
+  lieux: { emoji: "🏙️" },
+  "loin-lesson": { emoji: "📍" },
+  "core-nouns": { emoji: "🏫" },
+  "stress-pronouns": { emoji: "🙋" },
+  professions: { emoji: "💼" },
+  matieres: { emoji: "📚" },
+  "avoir-etats": { emoji: "🥱" },
+  "objets-articles": { emoji: "🎒" },
+  possessives: { emoji: "🔑" },
+  "faire-activites": { emoji: "🏃" },
+  "aller-destinations": { emoji: "🚏" },
+  "quand-time": { emoji: "⏰" },
+  "en-au-aux-a": { emoji: "🗺️" },
+};
+
+// Out-of-syllabus pools — reachable by slug, but hidden from the default lesson
+// list; surfaced only once an Expert-mode toggle is wired up.
+const EXPERT_ONLY = new Set<string>(["countries-expert"]);
+
+export function getLetrisSet(slug: string): LetrisSet | null {
+  return REGISTRY[slug] ?? null;
+}
+
+export function listLetrisSets({ includeExpert = false } = {}): LetrisSetMeta[] {
+  return Object.entries(REGISTRY)
+    .filter(([slug]) => includeExpert || !EXPERT_ONLY.has(slug))
+    .map(([slug, set]) => ({
+    slug,
+    title: set.title,
+    subtitle: set.subtitle,
+    tileCount: set.tiles.length,
+    categoryCount: set.categories.length,
+    emoji: META[slug]?.emoji ?? "🎯",
+  }));
+}

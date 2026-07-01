@@ -1,0 +1,141 @@
+{
+  "id": "numbers-0-20",
+  "title": "0 à 20",
+  "subtitle": "Numbers 0-20",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 0,
+  "lessonNo": 7,
+  "lessonSlug": "numbers-0-20",
+  "tags": [],
+  "seq": 7,
+  "items": [
+    {
+      "id": "numbers-0-20-01",
+      "fr": "zéro",
+      "en": "0",
+      "tags": []
+    },
+    {
+      "id": "numbers-0-20-02",
+      "fr": "un",
+      "en": "1",
+      "tags": []
+    },
+    {
+      "id": "numbers-0-20-03",
+      "fr": "deux",
+      "en": "2",
+      "tags": []
+    },
+    {
+      "id": "numbers-0-20-04",
+      "fr": "trois",
+      "en": "3",
+      "tags": []
+    },
+    {
+      "id": "numbers-0-20-05",
+      "fr": "quatre",
+      "en": "4",
+      "tags": []
+    },
+    {
+      "id": "numbers-0-20-06",
+      "fr": "cinq",
+      "en": "5",
+      "tags": []
+    },
+    {
+      "id": "numbers-0-20-07",
+      "fr": "six",
+      "en": "6",
+      "tags": []
+    },
+    {
+      "id": "numbers-0-20-08",
+      "fr": "sept",
+      "en": "7",
+      "tags": []
+    },
+    {
+      "id": "numbers-0-20-09",
+      "fr": "huit",
+      "en": "8",
+      "tags": []
+    },
+    {
+      "id": "numbers-0-20-10",
+      "fr": "neuf",
+      "en": "9",
+      "tags": []
+    },
+    {
+      "id": "numbers-0-20-11",
+      "fr": "dix",
+      "en": "10",
+      "tags": []
+    },
+    {
+      "id": "numbers-0-20-12",
+      "fr": "onze",
+      "en": "11",
+      "tags": []
+    },
+    {
+      "id": "numbers-0-20-13",
+      "fr": "douze",
+      "en": "12",
+      "tags": []
+    },
+    {
+      "id": "numbers-0-20-14",
+      "fr": "treize",
+      "en": "13",
+      "tags": []
+    },
+    {
+      "id": "numbers-0-20-15",
+      "fr": "quatorze",
+      "en": "14",
+      "tags": []
+    },
+    {
+      "id": "numbers-0-20-16",
+      "fr": "quinze",
+      "en": "15",
+      "tags": []
+    },
+    {
+      "id": "numbers-0-20-17",
+      "fr": "seize",
+      "en": "16",
+      "tags": []
+    },
+    {
+      "id": "numbers-0-20-18",
+      "fr": "dix-sept",
+      "en": "17",
+      "tags": []
+    },
+    {
+      "id": "numbers-0-20-19",
+      "fr": "dix-huit",
+      "en": "18",
+      "tags": []
+    },
+    {
+      "id": "numbers-0-20-20",
+      "fr": "dix-neuf",
+      "en": "19",
+      "tags": []
+    },
+    {
+      "id": "numbers-0-20-21",
+      "fr": "vingt",
+      "en": "20",
+      "tags": []
+    }
+  ]
+}

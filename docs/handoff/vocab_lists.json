@@ -1,0 +1,737 @@
+{
+  "_meta": {
+    "course": "LAF1201 Atelier A1",
+    "purpose": "Locked vocabulary item lists for flashcard decks. Feed these into the existing half-built Fluolingo HTML rather than rebuilding from scratch.",
+    "status_key": {
+      "LOCKED": "confirmed by Dan, ready to build cards",
+      "OPEN": "needs Dan's decision before finalising"
+    },
+    "grammar_constraints": [
+      "Units 0-4 use ONLY present tense + futur proche (aller/pouvoir/devoir/falloir + infinitif).",
+      "NO imperative anywhere EXCEPT SIO-008 (classroom instructions).",
+      "NO passe compose, NO imparfait, NO conditionnel-as-conjugation.",
+      "Lexicalised politeness 'je voudrais / j'aimerais' are allowed as fixed A1 expressions."
+    ]
+  },
+  "simple_nouns_SIO007": {
+    "status": "LOCKED",
+    "deck": "0.07",
+    "baskets": [
+      "un",
+      "une",
+      "des"
+    ],
+    "items": [
+      {
+        "fr": "un prénom",
+        "en": "a first name",
+        "art": "un"
+      },
+      {
+        "fr": "un nom",
+        "en": "a surname",
+        "art": "un"
+      },
+      {
+        "fr": "une classe",
+        "en": "a class",
+        "art": "une"
+      },
+      {
+        "fr": "un tableau",
+        "en": "a board",
+        "art": "un"
+      },
+      {
+        "fr": "un livre",
+        "en": "a book",
+        "art": "un"
+      },
+      {
+        "fr": "un crayon",
+        "en": "a pencil",
+        "art": "un"
+      },
+      {
+        "fr": "un cahier",
+        "en": "an exercise book",
+        "art": "un"
+      },
+      {
+        "fr": "des écouteurs",
+        "en": "earphones",
+        "art": "des"
+      },
+      {
+        "fr": "un casque",
+        "en": "a headset",
+        "art": "un"
+      },
+      {
+        "fr": "un micro",
+        "en": "a microphone",
+        "art": "un"
+      },
+      {
+        "fr": "une femme",
+        "en": "a woman",
+        "art": "une"
+      },
+      {
+        "fr": "une fille",
+        "en": "a girl",
+        "art": "une"
+      },
+      {
+        "fr": "une dame",
+        "en": "a lady",
+        "art": "une"
+      },
+      {
+        "fr": "un homme",
+        "en": "a man",
+        "art": "un"
+      },
+      {
+        "fr": "un garçon",
+        "en": "a boy",
+        "art": "un"
+      }
+    ],
+    "note": "Forms of address M. / Mme taught alongside."
+  },
+  "everyday_objects_SIO021": {
+    "status": "LOCKED (from laf1201_4A.pptx slide)",
+    "deck": "2.01",
+    "baskets": [
+      "un",
+      "une",
+      "des"
+    ],
+    "items": [
+      {
+        "fr": "un sac",
+        "en": "a bag",
+        "art": "un"
+      },
+      {
+        "fr": "un livre",
+        "en": "a book",
+        "art": "un"
+      },
+      {
+        "fr": "un cahier",
+        "en": "an exercise book",
+        "art": "un"
+      },
+      {
+        "fr": "un téléphone",
+        "en": "a phone",
+        "art": "un"
+      },
+      {
+        "fr": "un stylo",
+        "en": "a pen",
+        "art": "un"
+      },
+      {
+        "fr": "un crayon",
+        "en": "a pencil",
+        "art": "un"
+      },
+      {
+        "fr": "un passeport",
+        "en": "a passport",
+        "art": "un"
+      },
+      {
+        "fr": "une carte d'identité",
+        "en": "an ID card",
+        "art": "une"
+      },
+      {
+        "fr": "une trousse",
+        "en": "a pencil case",
+        "art": "une"
+      },
+      {
+        "fr": "des ciseaux",
+        "en": "scissors",
+        "art": "des"
+      },
+      {
+        "fr": "une gomme",
+        "en": "an eraser",
+        "art": "une"
+      },
+      {
+        "fr": "un portefeuille",
+        "en": "a wallet",
+        "art": "un"
+      },
+      {
+        "fr": "des lunettes",
+        "en": "glasses",
+        "art": "des"
+      },
+      {
+        "fr": "une clé",
+        "en": "a key",
+        "art": "une"
+      }
+    ],
+    "note": "Grammar context on the slide: Qu'est-ce que c'est? / C'est... / Ce sont... ; ne... plus (Le/La/L'... n'est plus sur la table. / Les... ne sont plus sur la table.)"
+  },
+  "food_SIO041_043": {
+    "status": "LOCKED list (from IMG_3614/3615 flashcard sheets) — OPEN whether ALL or subset",
+    "deck": "4.01 / 4.03",
+    "baskets_partitive": [
+      "du",
+      "de la",
+      "de l'",
+      "des"
+    ],
+    "proteins": [
+      "le jambon",
+      "le poisson",
+      "le poulet",
+      "les sushis",
+      "la viande",
+      "le saucisson",
+      "les œufs"
+    ],
+    "dairy": [
+      "le beurre",
+      "le fromage",
+      "le lait",
+      "le yaourt"
+    ],
+    "bread_grains": [
+      "la baguette",
+      "les crêpes",
+      "le croissant",
+      "le pain",
+      "les pâtes",
+      "le riz"
+    ],
+    "condiments_sweets": [
+      "le poivre",
+      "le sel",
+      "l'huile d'olive",
+      "le vinaigre",
+      "le miel",
+      "la confiture",
+      "le chocolat",
+      "le sucre",
+      "la vanille"
+    ],
+    "drinks": [
+      "l'eau",
+      "le café"
+    ],
+    "fruits": [
+      "l'abricot",
+      "l'ananas",
+      "la banane",
+      "le citron",
+      "la fraise",
+      "le kiwi",
+      "l'orange",
+      "le pamplemousse",
+      "la pastèque",
+      "la pêche",
+      "la poire",
+      "la pomme"
+    ],
+    "vegetables": [
+      "la tomate",
+      "l'ail",
+      "l'avocat",
+      "le brocoli",
+      "la carotte",
+      "le champignon",
+      "le chou-fleur",
+      "le concombre",
+      "les haricots verts",
+      "les petits pois",
+      "le poivron",
+      "les pommes de terre",
+      "la salade"
+    ],
+    "dishes": [
+      "le gâteau au chocolat",
+      "les macarons",
+      "la pizza"
+    ],
+    "note": "~55 items total. Dan to confirm: use the full set, or a core subset?"
+  },
+  "transport_SIO038": {
+    "status": "LOCKED",
+    "deck": "3.08",
+    "letris_baskets": [
+      "en",
+      "à"
+    ],
+    "en": [
+      "en bus",
+      "en métro",
+      "en train",
+      "en tram",
+      "en taxi",
+      "en voiture",
+      "en avion",
+      "en bateau"
+    ],
+    "a": [
+      "à pied",
+      "à vélo",
+      "à moto"
+    ],
+    "note": "Letris sorts mode-of-transport phrases into the en vs à basket. Use with pronoun y (J'y vais en bus.)"
+  },
+  "commerces_SIO047": {
+    "status": "OPEN — needs Dan to confirm the 'chez le marchand' pairing pattern",
+    "deck": "4.07",
+    "baskets": [
+      "un",
+      "une"
+    ],
+    "proposed_pairs": [
+      {
+        "shop": "une boulangerie",
+        "chez": "chez le boulanger",
+        "sells": "du pain, des croissants"
+      },
+      {
+        "shop": "une pâtisserie",
+        "chez": "chez le pâtissier",
+        "sells": "des gâteaux, des macarons"
+      },
+      {
+        "shop": "une boucherie",
+        "chez": "chez le boucher",
+        "sells": "de la viande"
+      },
+      {
+        "shop": "une poissonnerie",
+        "chez": "chez le poissonnier",
+        "sells": "du poisson"
+      },
+      {
+        "shop": "une épicerie",
+        "chez": "chez l'épicier",
+        "sells": "des produits divers"
+      },
+      {
+        "shop": "une fromagerie",
+        "chez": "chez le fromager",
+        "sells": "du fromage"
+      },
+      {
+        "shop": "un marché",
+        "chez": "chez le marchand",
+        "sells": "des fruits, des légumes"
+      },
+      {
+        "shop": "un supermarché",
+        "chez": "—",
+        "sells": "tout"
+      }
+    ],
+    "note": "Dan asked for a 'chez le marchand' variant. Confirm each shop's two forms (the shop name + the chez + tradesperson form)."
+  },
+  "countries_nationalities_languages_SIO015_016_017": {
+    "status": "LOCKED",
+    "decks": [
+      "1.05 countries (SIO-015)",
+      "1.06 nationalities (SIO-016)",
+      "1.07 languages (SIO-017)"
+    ],
+    "count": 25,
+    "game_format": "Matching (not Letris) for all three decks",
+    "article_counts": {
+      "∅": 2,
+      "le": 4,
+      "la": 12,
+      "l'": 5,
+      "les": 2
+    },
+    "items": [
+      {
+        "n": 1,
+        "flag": "🇫🇷",
+        "country_fr": "France",
+        "country_en": "France",
+        "article": "la",
+        "country_with_article": "la France",
+        "nationality": {
+          "m_sg": "français",
+          "f_sg": "française",
+          "m_pl": "français",
+          "f_pl": "françaises"
+        },
+        "language": "le français"
+      },
+      {
+        "n": 2,
+        "flag": "🇵🇹",
+        "country_fr": "Portugal",
+        "country_en": "Portugal",
+        "article": "le",
+        "country_with_article": "le Portugal",
+        "nationality": {
+          "m_sg": "portugais",
+          "f_sg": "portugaise",
+          "m_pl": "portugais",
+          "f_pl": "portugaises"
+        },
+        "language": "le portugais"
+      },
+      {
+        "n": 3,
+        "flag": "🇨🇳",
+        "country_fr": "Chine",
+        "country_en": "China",
+        "article": "la",
+        "country_with_article": "la Chine",
+        "nationality": {
+          "m_sg": "chinois",
+          "f_sg": "chinoise",
+          "m_pl": "chinois",
+          "f_pl": "chinoises"
+        },
+        "language": "le chinois"
+      },
+      {
+        "n": 4,
+        "flag": "🇮🇩",
+        "country_fr": "Indonésie",
+        "country_en": "Indonesia",
+        "article": "l'",
+        "country_with_article": "l'Indonésie",
+        "nationality": {
+          "m_sg": "indonésien",
+          "f_sg": "indonésienne",
+          "m_pl": "indonésiens",
+          "f_pl": "indonésiennes"
+        },
+        "language": "l'indonésien"
+      },
+      {
+        "n": 5,
+        "flag": "🇰🇷",
+        "country_fr": "Corée",
+        "country_en": "Korea",
+        "article": "la",
+        "country_with_article": "la Corée",
+        "nationality": {
+          "m_sg": "coréen",
+          "f_sg": "coréenne",
+          "m_pl": "coréens",
+          "f_pl": "coréennes"
+        },
+        "language": "le coréen"
+      },
+      {
+        "n": 6,
+        "flag": "🇺🇸",
+        "country_fr": "États-Unis",
+        "country_en": "United States",
+        "article": "les",
+        "country_with_article": "les États-Unis",
+        "nationality": {
+          "m_sg": "américain",
+          "f_sg": "américaine",
+          "m_pl": "américains",
+          "f_pl": "américaines"
+        },
+        "language": "l'anglais"
+      },
+      {
+        "n": 7,
+        "flag": "🇲🇽",
+        "country_fr": "Mexique",
+        "country_en": "Mexico",
+        "article": "le",
+        "country_with_article": "le Mexique",
+        "nationality": {
+          "m_sg": "mexicain",
+          "f_sg": "mexicaine",
+          "m_pl": "mexicains",
+          "f_pl": "mexicaines"
+        },
+        "language": "l'espagnol"
+      },
+      {
+        "n": 8,
+        "flag": "🇨🇺",
+        "country_fr": "Cuba",
+        "country_en": "Cuba",
+        "article": "∅",
+        "country_with_article": "Cuba",
+        "nationality": {
+          "m_sg": "cubain",
+          "f_sg": "cubaine",
+          "m_pl": "cubains",
+          "f_pl": "cubaines"
+        },
+        "language": "l'espagnol"
+      },
+      {
+        "n": 9,
+        "flag": "🇵🇭",
+        "country_fr": "Philippines",
+        "country_en": "Philippines",
+        "article": "les",
+        "country_with_article": "les Philippines",
+        "nationality": {
+          "m_sg": "philippin",
+          "f_sg": "philippine",
+          "m_pl": "philippins",
+          "f_pl": "philippines"
+        },
+        "language": "le filipino et l'anglais"
+      },
+      {
+        "n": 10,
+        "flag": "🇦🇷",
+        "country_fr": "Argentine",
+        "country_en": "Argentina",
+        "article": "l'",
+        "country_with_article": "l'Argentine",
+        "nationality": {
+          "m_sg": "argentin",
+          "f_sg": "argentine",
+          "m_pl": "argentins",
+          "f_pl": "argentines"
+        },
+        "language": "l'espagnol"
+      },
+      {
+        "n": 11,
+        "flag": "🇷🇺",
+        "country_fr": "Russie",
+        "country_en": "Russia",
+        "article": "la",
+        "country_with_article": "la Russie",
+        "nationality": {
+          "m_sg": "russe",
+          "f_sg": "russe",
+          "m_pl": "russes",
+          "f_pl": "russes"
+        },
+        "language": "le russe"
+      },
+      {
+        "n": 12,
+        "flag": "🇨🇭",
+        "country_fr": "Suisse",
+        "country_en": "Switzerland",
+        "article": "la",
+        "country_with_article": "la Suisse",
+        "nationality": {
+          "m_sg": "suisse",
+          "f_sg": "suisse",
+          "m_pl": "suisses",
+          "f_pl": "suisses"
+        },
+        "language": "le français, l'allemand et l'italien"
+      },
+      {
+        "n": 13,
+        "flag": "🇧🇪",
+        "country_fr": "Belgique",
+        "country_en": "Belgium",
+        "article": "la",
+        "country_with_article": "la Belgique",
+        "nationality": {
+          "m_sg": "belge",
+          "f_sg": "belge",
+          "m_pl": "belges",
+          "f_pl": "belges"
+        },
+        "language": "le français et le néerlandais"
+      },
+      {
+        "n": 14,
+        "flag": "🇬🇷",
+        "country_fr": "Grèce",
+        "country_en": "Greece",
+        "article": "la",
+        "country_with_article": "la Grèce",
+        "nationality": {
+          "m_sg": "grec",
+          "f_sg": "grecque",
+          "m_pl": "grecs",
+          "f_pl": "grecques"
+        },
+        "language": "le grec"
+      },
+      {
+        "n": 15,
+        "flag": "🇹🇷",
+        "country_fr": "Turquie",
+        "country_en": "Turkey",
+        "article": "la",
+        "country_with_article": "la Turquie",
+        "nationality": {
+          "m_sg": "turc",
+          "f_sg": "turque",
+          "m_pl": "turcs",
+          "f_pl": "turques"
+        },
+        "language": "le turc"
+      },
+      {
+        "n": 16,
+        "flag": "🇩🇪",
+        "country_fr": "Allemagne",
+        "country_en": "Germany",
+        "article": "l'",
+        "country_with_article": "l'Allemagne",
+        "nationality": {
+          "m_sg": "allemand",
+          "f_sg": "allemande",
+          "m_pl": "allemands",
+          "f_pl": "allemandes"
+        },
+        "language": "l'allemand"
+      },
+      {
+        "n": 17,
+        "flag": "🇰🇭",
+        "country_fr": "Cambodge",
+        "country_en": "Cambodia",
+        "article": "le",
+        "country_with_article": "le Cambodge",
+        "nationality": {
+          "m_sg": "cambodgien",
+          "f_sg": "cambodgienne",
+          "m_pl": "cambodgiens",
+          "f_pl": "cambodgiennes"
+        },
+        "language": "le khmer"
+      },
+      {
+        "n": 18,
+        "flag": "🇸🇬",
+        "country_fr": "Singapour",
+        "country_en": "Singapore",
+        "article": "∅",
+        "country_with_article": "Singapour",
+        "nationality": {
+          "m_sg": "singapourien",
+          "f_sg": "singapourienne",
+          "m_pl": "singapouriens",
+          "f_pl": "singapouriennes"
+        },
+        "language": "l'anglais, le malais et le mandarin"
+      },
+      {
+        "n": 19,
+        "flag": "🇲🇾",
+        "country_fr": "Malaisie",
+        "country_en": "Malaysia",
+        "article": "la",
+        "country_with_article": "la Malaisie",
+        "nationality": {
+          "m_sg": "malaisien",
+          "f_sg": "malaisienne",
+          "m_pl": "malaisiens",
+          "f_pl": "malaisiennes"
+        },
+        "language": "le malais"
+      },
+      {
+        "n": 20,
+        "flag": "🇹🇭",
+        "country_fr": "Thaïlande",
+        "country_en": "Thailand",
+        "article": "la",
+        "country_with_article": "la Thaïlande",
+        "nationality": {
+          "m_sg": "thaïlandais",
+          "f_sg": "thaïlandaise",
+          "m_pl": "thaïlandais",
+          "f_pl": "thaïlandaises"
+        },
+        "language": "le thaï"
+      },
+      {
+        "n": 21,
+        "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+        "country_fr": "Angleterre",
+        "country_en": "England",
+        "article": "l'",
+        "country_with_article": "l'Angleterre",
+        "nationality": {
+          "m_sg": "anglais",
+          "f_sg": "anglaise",
+          "m_pl": "anglais",
+          "f_pl": "anglaises"
+        },
+        "language": "l'anglais"
+      },
+      {
+        "n": 22,
+        "flag": "🇬🇧",
+        "country_fr": "Grande-Bretagne",
+        "country_en": "Great Britain",
+        "article": "la",
+        "country_with_article": "la Grande-Bretagne",
+        "nationality": {
+          "m_sg": "britannique",
+          "f_sg": "britannique",
+          "m_pl": "britanniques",
+          "f_pl": "britanniques"
+        },
+        "language": "l'anglais"
+      },
+      {
+        "n": 23,
+        "flag": "🇹🇳",
+        "country_fr": "Tunisie",
+        "country_en": "Tunisia",
+        "article": "la",
+        "country_with_article": "la Tunisie",
+        "nationality": {
+          "m_sg": "tunisien",
+          "f_sg": "tunisienne",
+          "m_pl": "tunisiens",
+          "f_pl": "tunisiennes"
+        },
+        "language": "l'arabe et le français"
+      },
+      {
+        "n": 24,
+        "flag": "🇲🇦",
+        "country_fr": "Maroc",
+        "country_en": "Morocco",
+        "article": "le",
+        "country_with_article": "le Maroc",
+        "nationality": {
+          "m_sg": "marocain",
+          "f_sg": "marocaine",
+          "m_pl": "marocains",
+          "f_pl": "marocaines"
+        },
+        "language": "l'arabe et le français"
+      },
+      {
+        "n": 25,
+        "flag": "🇩🇿",
+        "country_fr": "Algérie",
+        "country_en": "Algeria",
+        "article": "l'",
+        "country_with_article": "l'Algérie",
+        "nationality": {
+          "m_sg": "algérien",
+          "f_sg": "algérienne",
+          "m_pl": "algériens",
+          "f_pl": "algériennes"
+        },
+        "language": "l'arabe et le français"
+      }
+    ]
+  }
+}

@@ -1,0 +1,2503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Lang Games — French practice portal</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root {
+    --neo-bg: #1e293b;
+    --neo-bg-hi: #334155;
+    --neo-shadow-dark: rgba(0, 0, 0, 0.55);
+    --neo-shadow-light: rgba(148, 163, 184, 0.10);
+    --neo-accent: #fbbf24;
+  }
+  body { background: #020617; color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  kbd { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+  /* ---- Neumorphic button (raised) ---- */
+  .neo-btn {
+    background: var(--neo-bg);
+    color: #e2e8f0;
+    border: none;
+    border-radius: 14px;
+    padding: 0.55rem 1rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    cursor: pointer;
+    transition: box-shadow 0.18s, transform 0.05s, background 0.18s, color 0.18s;
+    box-shadow:
+      -5px -5px 10px var(--neo-shadow-light),
+      5px 5px 10px var(--neo-shadow-dark);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    user-select: none;
+  }
+  .neo-btn:hover { background: var(--neo-bg-hi); }
+  .neo-btn:active, .neo-btn[data-pressed="true"] {
+    box-shadow:
+      inset -3px -3px 8px var(--neo-shadow-light),
+      inset 3px 3px 8px var(--neo-shadow-dark);
+    transform: translateY(1px);
+  }
+  .neo-btn:disabled {
+    opacity: 0.4; cursor: not-allowed;
+    box-shadow:
+      inset -2px -2px 5px var(--neo-shadow-light),
+      inset 2px 2px 5px var(--neo-shadow-dark);
+  }
+  .neo-btn-primary {
+    background: linear-gradient(145deg, #fcd34d, #d97706);
+    color: #1e293b;
+    box-shadow:
+      -5px -5px 10px var(--neo-shadow-light),
+      5px 5px 10px var(--neo-shadow-dark);
+  }
+  .neo-btn-primary:hover { background: linear-gradient(145deg, #fde68a, #f59e0b); }
+  .neo-btn-success {
+    background: linear-gradient(145deg, #34d399, #047857);
+    color: #ecfdf5;
+  }
+  .neo-btn-success:hover { background: linear-gradient(145deg, #6ee7b7, #059669); }
+  .neo-btn-warn {
+    background: linear-gradient(145deg, #fcd34d, #b45309);
+    color: #1e293b;
+  }
+  .neo-btn-warn:hover { background: linear-gradient(145deg, #fde68a, #d97706); }
+  .neo-btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; border-radius: 10px; }
+  .neo-btn-lg { padding: 0.85rem 1.5rem; font-size: 1rem; border-radius: 18px; }
+
+  /* ---- Neumorphic ON/OFF switch ---- */
+  .neo-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+    background: var(--neo-bg);
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow:
+      inset 3px 3px 6px var(--neo-shadow-dark),
+      inset -3px -3px 6px var(--neo-shadow-light);
+    transition: background 0.2s;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+  .neo-switch-thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--neo-bg);
+    box-shadow:
+      -2px -2px 4px var(--neo-shadow-light),
+      2px 2px 4px var(--neo-shadow-dark);
+    transition: left 0.25s, background 0.2s, box-shadow 0.2s;
+    display: flex; align-items: center; justify-content: center;
+    color: #94a3b8; font-size: 0.55rem; font-weight: 700;
+  }
+  .neo-switch[data-on="true"] .neo-switch-thumb {
+    left: 27px;
+    background: var(--neo-accent);
+    color: #1e293b;
+    box-shadow:
+      -1px -1px 3px rgba(255,255,255,0.12),
+      2px 2px 5px rgba(0,0,0,0.65);
+  }
+  .neo-switch[data-on="true"] .neo-switch-thumb::after { content: "ON"; }
+  .neo-switch[data-on="false"] .neo-switch-thumb::after { content: "OFF"; }
+
+  /* ---- Neumorphic panel ---- */
+  .neo-panel {
+    background: var(--neo-bg);
+    border-radius: 18px;
+    box-shadow:
+      -8px -8px 18px var(--neo-shadow-light),
+      8px 8px 18px var(--neo-shadow-dark);
+  }
+  .neo-inset {
+    background: var(--neo-bg);
+    border-radius: 14px;
+    box-shadow:
+      inset 3px 3px 8px var(--neo-shadow-dark),
+      inset -3px -3px 8px var(--neo-shadow-light);
+  }
+
+  /* ---- Map markers ---- */
+  .pm-marker {
+    text-align: center;
+    width: 80px;
+    transform: translateX(-30px);
+  }
+  .pm-marker .pm-pin {
+    font-size: 1.6rem;
+    line-height: 1;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5));
+  }
+  .pm-marker .pm-label {
+    display: inline-block;
+    margin-top: 2px;
+    padding: 1px 6px;
+    background: rgba(15, 23, 42, 0.92);
+    color: #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    white-space: nowrap;
+    border: 1px solid rgba(148,163,184,0.25);
+  }
+  .pm-marker.pm-a .pm-pin::after { content: "🟢"; margin-left: 2px; font-size: 0.8rem; }
+  .pm-marker.pm-b .pm-pin::after { content: "🔴"; margin-left: 2px; font-size: 0.8rem; }
+  .pm-marker.pm-a .pm-label {
+    background: #047857;
+    color: white;
+    border-color: #34d399;
+    box-shadow: 0 0 0 2px #34d39950;
+  }
+  .pm-marker.pm-b .pm-label {
+    background: #be123c;
+    color: white;
+    border-color: #fb7185;
+    box-shadow: 0 0 0 2px #fb718550;
+  }
+  .leaflet-container {
+    border-radius: 12px;
+    background: #0f172a;
+  }
+</style>
+</head>
+<body class="min-h-screen">
+<div id="root"></div>
+
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
+
+<script type="text/babel" data-presets="env,react">
+"use strict";
+const { useState, useEffect, useMemo, useRef, useCallback } = React;
+
+/* =========================================================================
+ *  DATASETS — inlined verbatim from src/content/*.json
+ * ========================================================================= */
+const WEATHER_SET = {
+  id: "weather-letris",
+  title: "Quel temps fait-il ?",
+  subtitle: "Sort each weather expression into its starter clause",
+  language: "fr",
+  categories: [
+    { key: "il_fait", label: "IL FAIT", prefix: "Il fait " },
+    { key: "il_y_a",  label: "IL Y A",  prefix: "Il y a " },
+    { key: "il",      label: "IL",      prefix: "Il " }
+  ],
+  tiles: [
+    { text: "BEAU", category: "il_fait", meaning: "The weather is nice.", emoji: "🌤️" },
+    { text: "MAUVAIS", category: "il_fait", meaning: "The weather is bad.", emoji: "☁️" },
+    { text: "CHAUD", category: "il_fait", meaning: "The weather is hot.", emoji: "🥵" },
+    { text: "FROID", category: "il_fait", meaning: "The weather is cold.", emoji: "🥶" },
+    { text: "FRAIS", category: "il_fait", meaning: "The weather is cool / chilly.", emoji: "🍃" },
+    { text: "DOUX", category: "il_fait", meaning: "The weather is mild.", emoji: "🌸" },
+    { text: "X DEGRÉS", category: "il_fait", meaning: "The weather is X degrees.", emoji: "🌡️" },
+    { text: "ENTRE X ET Y DEGRÉS", category: "il_fait", meaning: "The weather is between X and Y degrees.", emoji: "🌡️" },
+    { text: "DU SOLEIL", category: "il_y_a", meaning: "There is sunshine.", emoji: "☀️" },
+    { text: "DU VENT", category: "il_y_a", meaning: "There is wind.", emoji: "💨" },
+    { text: "DE LA PLUIE", category: "il_y_a", meaning: "There is rain.", emoji: "🌧️" },
+    { text: "DES ORAGES", category: "il_y_a", meaning: "There are storms.", emoji: "⛈️" },
+    { text: "DE LA NEIGE", category: "il_y_a", meaning: "There is snow.", emoji: "❄️" },
+    { text: "DES ÉCLAIRS", category: "il_y_a", meaning: "There is lightning.", emoji: "⚡" },
+    { text: "DU TONNERRE", category: "il_y_a", meaning: "There is thunder.", emoji: "🌩️" },
+    { text: "UNE TEMPÊTE", category: "il_y_a", meaning: "There is a storm.", emoji: "🌪️" },
+    { text: "PLEUT", category: "il", meaning: "It is raining.", emoji: "🌧️" },
+    { text: "NEIGE", category: "il", meaning: "It is snowing.", emoji: "❄️" },
+    { text: "GÈLE", category: "il", meaning: "It is freezing.", emoji: "🧊" },
+    { text: "GRÊLE", category: "il", meaning: "It is hailing.", emoji: "🌨️" },
+    { text: "VENTE", category: "il", meaning: "The wind is blowing.", emoji: "💨" },
+    { text: "TONNE", category: "il", meaning: "It is thundering.", emoji: "🌩️" },
+    { text: "BRUINE", category: "il", meaning: "It is drizzling.", emoji: "🌦️" }
+  ]
+};
+
+const COUNTRIES_SET = {
+  id: "countries-letris",
+  title: "C'est quel pays ?",
+  subtitle: "Sort each country into its correct article column",
+  language: "fr",
+  categories: [
+    { key: "no_article", label: "—",   prefix: "" },
+    { key: "le",         label: "LE",  prefix: "Le " },
+    { key: "la",         label: "LA",  prefix: "La " },
+    { key: "l_apos",     label: "L'",  prefix: "L'" },
+    { key: "les",        label: "LES", prefix: "Les " }
+  ],
+  tiles: [
+    { text: "CUBA", displayName: "Cuba", category: "no_article", meaning: "Cuba", emoji: "🇨🇺" },
+    { text: "MADAGASCAR", displayName: "Madagascar", category: "no_article", meaning: "Madagascar", emoji: "🇲🇬" },
+    { text: "SINGAPOUR", displayName: "Singapour", category: "no_article", meaning: "Singapore", emoji: "🇸🇬" },
+    { text: "ISRAËL", displayName: "Israël", category: "no_article", meaning: "Israel", emoji: "🇮🇱" },
+    { text: "HAÏTI", displayName: "Haïti", category: "no_article", meaning: "Haiti", emoji: "🇭🇹" },
+    { text: "MONACO", displayName: "Monaco", category: "no_article", meaning: "Monaco", emoji: "🇲🇨" },
+    { text: "JAPON", displayName: "Japon", category: "le", meaning: "Japan", emoji: "🇯🇵" },
+    { text: "CANADA", displayName: "Canada", category: "le", meaning: "Canada", emoji: "🇨🇦" },
+    { text: "BRÉSIL", displayName: "Brésil", category: "le", meaning: "Brazil", emoji: "🇧🇷" },
+    { text: "MEXIQUE", displayName: "Mexique", category: "le", meaning: "Mexico", emoji: "🇲🇽" },
+    { text: "PORTUGAL", displayName: "Portugal", category: "le", meaning: "Portugal", emoji: "🇵🇹" },
+    { text: "VIETNAM", displayName: "Vietnam", category: "le", meaning: "Vietnam", emoji: "🇻🇳" },
+    { text: "MAROC", displayName: "Maroc", category: "le", meaning: "Morocco", emoji: "🇲🇦" },
+    { text: "SÉNÉGAL", displayName: "Sénégal", category: "le", meaning: "Senegal", emoji: "🇸🇳" },
+    { text: "FRANCE", displayName: "France", category: "la", meaning: "France", emoji: "🇫🇷" },
+    { text: "CHINE", displayName: "Chine", category: "la", meaning: "China", emoji: "🇨🇳" },
+    { text: "SUISSE", displayName: "Suisse", category: "la", meaning: "Switzerland", emoji: "🇨🇭" },
+    { text: "BELGIQUE", displayName: "Belgique", category: "la", meaning: "Belgium", emoji: "🇧🇪" },
+    { text: "RUSSIE", displayName: "Russie", category: "la", meaning: "Russia", emoji: "🇷🇺" },
+    { text: "THAÏLANDE", displayName: "Thaïlande", category: "la", meaning: "Thailand", emoji: "🇹🇭" },
+    { text: "CORÉE", displayName: "Corée", category: "la", meaning: "Korea", emoji: "🇰🇷" },
+    { text: "TURQUIE", displayName: "Turquie", category: "la", meaning: "Turkey", emoji: "🇹🇷" },
+    { text: "ALLEMAGNE", displayName: "Allemagne", category: "l_apos", meaning: "Germany", emoji: "🇩🇪" },
+    { text: "ITALIE", displayName: "Italie", category: "l_apos", meaning: "Italy", emoji: "🇮🇹" },
+    { text: "ESPAGNE", displayName: "Espagne", category: "l_apos", meaning: "Spain", emoji: "🇪🇸" },
+    { text: "ANGLETERRE", displayName: "Angleterre", category: "l_apos", meaning: "England", emoji: "🏴" },
+    { text: "AUSTRALIE", displayName: "Australie", category: "l_apos", meaning: "Australia", emoji: "🇦🇺" },
+    { text: "INDE", displayName: "Inde", category: "l_apos", meaning: "India", emoji: "🇮🇳" },
+    { text: "ARGENTINE", displayName: "Argentine", category: "l_apos", meaning: "Argentina", emoji: "🇦🇷" },
+    { text: "ÉTATS-UNIS", displayName: "États-Unis", category: "les", meaning: "United States", emoji: "🇺🇸" },
+    { text: "PAYS-BAS", displayName: "Pays-Bas", category: "les", meaning: "Netherlands", emoji: "🇳🇱" },
+    { text: "PHILIPPINES", displayName: "Philippines", category: "les", meaning: "Philippines", emoji: "🇵🇭" },
+    { text: "ÉMIRATS ARABES UNIS", displayName: "Émirats arabes unis", category: "les", meaning: "United Arab Emirates", emoji: "🇦🇪" },
+    { text: "SEYCHELLES", displayName: "Seychelles", category: "les", meaning: "Seychelles", emoji: "🇸🇨" }
+  ]
+};
+
+const LIEUX_SET = {
+  id: "lieux-letris",
+  title: "Quel est votre lieu préféré dans la ville ?",
+  subtitle: "Sort each place into its correct article column",
+  language: "fr",
+  categories: [
+    { key: "le",     label: "LE",  prefix: "Le " },
+    { key: "la",     label: "LA",  prefix: "La " },
+    { key: "l_apos", label: "L'",  prefix: "L'" },
+    { key: "les",    label: "LES", prefix: "Les " }
+  ],
+  tiles: [
+    { text: "CAFÉ", displayName: "café", category: "le", meaning: "the café", emoji: "☕" },
+    { text: "RESTAURANT", displayName: "restaurant", category: "le", meaning: "the restaurant", emoji: "🍽️" },
+    { text: "CINÉMA", displayName: "cinéma", category: "le", meaning: "the cinema", emoji: "🎬" },
+    { text: "MUSÉE", displayName: "musée", category: "le", meaning: "the museum", emoji: "🏛️" },
+    { text: "PARC", displayName: "parc", category: "le", meaning: "the park", emoji: "🌳" },
+    { text: "MARCHÉ", displayName: "marché", category: "le", meaning: "the market", emoji: "🛒" },
+    { text: "SUPERMARCHÉ", displayName: "supermarché", category: "le", meaning: "the supermarket", emoji: "🛍️" },
+    { text: "STADE", displayName: "stade", category: "le", meaning: "the stadium", emoji: "🏟️" },
+    { text: "BANQUE", displayName: "banque", category: "la", meaning: "the bank", emoji: "🏦" },
+    { text: "PHARMACIE", displayName: "pharmacie", category: "la", meaning: "the pharmacy", emoji: "💊" },
+    { text: "BIBLIOTHÈQUE", displayName: "bibliothèque", category: "la", meaning: "the library", emoji: "📚" },
+    { text: "BOULANGERIE", displayName: "boulangerie", category: "la", meaning: "the bakery", emoji: "🥖" },
+    { text: "GARE", displayName: "gare", category: "la", meaning: "the train station", emoji: "🚉" },
+    { text: "POSTE", displayName: "poste", category: "la", meaning: "the post office", emoji: "📮" },
+    { text: "PISCINE", displayName: "piscine", category: "la", meaning: "the pool", emoji: "🏊" },
+    { text: "MAIRIE", displayName: "mairie", category: "la", meaning: "the town hall", emoji: "🏛️" },
+    { text: "HÔPITAL", displayName: "hôpital", category: "l_apos", meaning: "the hospital", emoji: "🏥" },
+    { text: "ÉGLISE", displayName: "église", category: "l_apos", meaning: "the church", emoji: "⛪" },
+    { text: "ÉCOLE", displayName: "école", category: "l_apos", meaning: "the school", emoji: "🏫" },
+    { text: "UNIVERSITÉ", displayName: "université", category: "l_apos", meaning: "the university", emoji: "🎓" },
+    { text: "AÉROPORT", displayName: "aéroport", category: "l_apos", meaning: "the airport", emoji: "✈️" },
+    { text: "HÔTEL", displayName: "hôtel", category: "l_apos", meaning: "the hotel", emoji: "🏨" },
+    { text: "ARRÊT DE BUS", displayName: "arrêt de bus", category: "l_apos", meaning: "the bus stop", emoji: "🚏" },
+    { text: "MAGASINS", displayName: "magasins", category: "les", meaning: "the shops", emoji: "🛍️" },
+    { text: "COMMERCES", displayName: "commerces", category: "les", meaning: "the businesses", emoji: "🏪" },
+    { text: "TOILETTES PUBLIQUES", displayName: "toilettes publiques", category: "les", meaning: "the public toilets", emoji: "🚻" },
+    { text: "FEUX DE CIRCULATION", displayName: "feux de circulation", category: "les", meaning: "the traffic lights", emoji: "🚦" },
+    { text: "JARDINS PUBLICS", displayName: "jardins publics", category: "les", meaning: "the public gardens", emoji: "🌳" }
+  ]
+};
+
+const DIRECTIONS_SET = {
+  id: "directions-matching",
+  title: "Quel est le chemin pour … ?",
+  subtitle: "Match each verb phrase with a valid completion",
+  language: "fr",
+  lefts: [
+    { id: "sortez", text: "Vous sortez", meaning: "You exit / leave", emoji: "🚪" },
+    { id: "allez", text: "Vous allez", meaning: "You go", emoji: "🚶" },
+    { id: "continuez", text: "Vous continuez", meaning: "You continue", emoji: "➡️" },
+    { id: "au_bout", text: "Au bout de", meaning: "At the end of", emoji: "🏁" },
+    { id: "tournez", text: "Vous tournez", meaning: "You turn", emoji: "↪️" },
+    { id: "prenez", text: "Vous prenez", meaning: "You take", emoji: "👉" },
+    { id: "traversez", text: "Vous traversez", meaning: "You cross", emoji: "🚸" },
+    { id: "etes", text: "Vous êtes", meaning: "You are", emoji: "📍" }
+  ],
+  rights: [
+    { id: "du_parc", text: "du parc", meaning: "from the park", emoji: "🌳", validLefts: ["sortez"] },
+    { id: "de_la_station", text: "de la station de métro", meaning: "from the metro station", emoji: "🚇", validLefts: ["sortez"] },
+    { id: "tout_droit", text: "tout droit", meaning: "straight ahead", emoji: "⬆️", validLefts: ["allez", "continuez"] },
+    { id: "jusqu_carre", text: "jusqu'au carrefour", meaning: "as far as the intersection", emoji: "🚦", validLefts: ["allez", "continuez"] },
+    { id: "la_rue", text: "la rue", meaning: "the street", emoji: "🛣️", validLefts: ["au_bout"] },
+    { id: "a_gauche", text: "à gauche", meaning: "to the left", emoji: "⬅️", validLefts: ["tournez"] },
+    { id: "a_droite", text: "à droite", meaning: "to the right", emoji: "➡️", validLefts: ["tournez"] },
+    { id: "xeme_gauche", text: "la Xᵉ rue à gauche", meaning: "the Xth street on the left", emoji: "🔢", validLefts: ["prenez"] },
+    { id: "xeme_droite", text: "la Xᵉ rue à droite", meaning: "the Xth street on the right", emoji: "🔢", validLefts: ["prenez"] },
+    { id: "passage", text: "le passage piéton", meaning: "the crosswalk", emoji: "🚶", validLefts: ["traversez"] },
+    { id: "pont", text: "le pont", meaning: "the bridge", emoji: "🌉", validLefts: ["traversez"] },
+    { id: "place", text: "la place", meaning: "the square / plaza", emoji: "🏛️", validLefts: ["traversez"] },
+    { id: "arrive", text: "arrivé(e)", meaning: "arrived", emoji: "🎯", validLefts: ["etes"] }
+  ]
+};
+
+/* Convert directions matching set into a flashcard-shaped lesson set */
+function directionsToLessonSet(s) {
+  return {
+    id: s.id + "-lesson",
+    title: s.title,
+    subtitle: s.subtitle,
+    language: s.language,
+    categories: [
+      { key: "left",  label: "Verb phrase", prefix: "" },
+      { key: "right", label: "Completion", prefix: "" }
+    ],
+    tiles: [
+      ...s.lefts.map(l => ({ text: l.text, displayName: l.text.toLowerCase(), category: "left",  meaning: l.meaning, emoji: l.emoji })),
+      ...s.rights.map(r => ({ text: r.text, displayName: r.text.toLowerCase(), category: "right", meaning: r.meaning, emoji: r.emoji }))
+    ]
+  };
+}
+
+const DIRECTIONS_LESSON_SET = directionsToLessonSet(DIRECTIONS_SET);
+
+const LOIN_LESSON_SET = {
+  id: "loin-lesson",
+  title: "C'est loin ?",
+  subtitle: "Learn the 12 prepositions of location",
+  language: "fr",
+  categories: [
+    { key: "group1", label: "GROUP 1", prefix: "" },
+    { key: "group2", label: "GROUP 2", prefix: "" }
+  ],
+  tiles: [
+    { text: "SUR", displayName: "sur", category: "group1", meaning: "on / on top of", emoji: "⬆️" },
+    { text: "SOUS", displayName: "sous", category: "group1", meaning: "under", emoji: "⬇️" },
+    { text: "DEVANT", displayName: "devant", category: "group1", meaning: "in front of", emoji: "⏪" },
+    { text: "DERRIÈRE", displayName: "derrière", category: "group1", meaning: "behind", emoji: "⏩" },
+    { text: "DANS", displayName: "dans", category: "group1", meaning: "in / inside", emoji: "📦" },
+    { text: "ENTRE", displayName: "entre", category: "group1", meaning: "between", emoji: "↔️" },
+    { text: "À CÔTÉ DE", displayName: "à côté de", category: "group2", meaning: "next to / beside", emoji: "🤝" },
+    { text: "À GAUCHE DE", displayName: "à gauche de", category: "group2", meaning: "to the left of", emoji: "⬅️" },
+    { text: "À DROITE DE", displayName: "à droite de", category: "group2", meaning: "to the right of", emoji: "➡️" },
+    { text: "PRÈS DE", displayName: "près de", category: "group2", meaning: "near", emoji: "📏" },
+    { text: "LOIN DE", displayName: "loin de", category: "group2", meaning: "far from", emoji: "🛣️" },
+    { text: "EN FACE DE", displayName: "en face de", category: "group2", meaning: "opposite / facing", emoji: "🪞" }
+  ]
+};
+
+/* Where are you from? — Je viens DE / DU / D' / DES … */
+const VENIR_SET = {
+  id: "venir-letris",
+  title: "Vous venez de quel pays ?",
+  subtitle: "Sort each country by the form of « de » it takes",
+  language: "fr",
+  categories: [
+    { key: "de",  label: "DE",  prefix: "Je viens de " },
+    { key: "du",  label: "DU",  prefix: "Je viens du " },
+    { key: "d_",  label: "D'",  prefix: "Je viens d'" },
+    { key: "des", label: "DES", prefix: "Je viens des " }
+  ],
+  tiles: [
+    { text: "FRANCE",    displayName: "France",    category: "de",  meaning: "from France",     emoji: "🇫🇷" },
+    { text: "CHINE",     displayName: "Chine",     category: "de",  meaning: "from China",      emoji: "🇨🇳" },
+    { text: "SUISSE",    displayName: "Suisse",    category: "de",  meaning: "from Switzerland",emoji: "🇨🇭" },
+    { text: "BELGIQUE",  displayName: "Belgique",  category: "de",  meaning: "from Belgium",    emoji: "🇧🇪" },
+    { text: "RUSSIE",    displayName: "Russie",    category: "de",  meaning: "from Russia",     emoji: "🇷🇺" },
+    { text: "CORÉE",     displayName: "Corée",     category: "de",  meaning: "from Korea",      emoji: "🇰🇷" },
+    { text: "CUBA",      displayName: "Cuba",      category: "de",  meaning: "from Cuba",       emoji: "🇨🇺" },
+    { text: "SINGAPOUR", displayName: "Singapour", category: "de",  meaning: "from Singapore",  emoji: "🇸🇬" },
+    { text: "MADAGASCAR",displayName: "Madagascar",category: "de",  meaning: "from Madagascar", emoji: "🇲🇬" },
+
+    { text: "JAPON",   displayName: "Japon",   category: "du",  meaning: "from Japan",    emoji: "🇯🇵" },
+    { text: "CANADA",  displayName: "Canada",  category: "du",  meaning: "from Canada",   emoji: "🇨🇦" },
+    { text: "BRÉSIL",  displayName: "Brésil",  category: "du",  meaning: "from Brazil",   emoji: "🇧🇷" },
+    { text: "MEXIQUE", displayName: "Mexique", category: "du",  meaning: "from Mexico",   emoji: "🇲🇽" },
+    { text: "PORTUGAL",displayName: "Portugal",category: "du",  meaning: "from Portugal", emoji: "🇵🇹" },
+    { text: "VIETNAM", displayName: "Vietnam", category: "du",  meaning: "from Vietnam",  emoji: "🇻🇳" },
+    { text: "MAROC",   displayName: "Maroc",   category: "du",  meaning: "from Morocco",  emoji: "🇲🇦" },
+
+    { text: "ALLEMAGNE", displayName: "Allemagne", category: "d_",  meaning: "from Germany",   emoji: "🇩🇪" },
+    { text: "ITALIE",    displayName: "Italie",    category: "d_",  meaning: "from Italy",     emoji: "🇮🇹" },
+    { text: "ESPAGNE",   displayName: "Espagne",   category: "d_",  meaning: "from Spain",     emoji: "🇪🇸" },
+    { text: "AUSTRALIE", displayName: "Australie", category: "d_",  meaning: "from Australia", emoji: "🇦🇺" },
+    { text: "INDE",      displayName: "Inde",      category: "d_",  meaning: "from India",     emoji: "🇮🇳" },
+    { text: "ARGENTINE", displayName: "Argentine", category: "d_",  meaning: "from Argentina", emoji: "🇦🇷" },
+    { text: "ISRAËL",    displayName: "Israël",    category: "d_",  meaning: "from Israel",    emoji: "🇮🇱" },
+
+    { text: "ÉTATS-UNIS",   displayName: "États-Unis",   category: "des", meaning: "from the United States",     emoji: "🇺🇸" },
+    { text: "PAYS-BAS",     displayName: "Pays-Bas",     category: "des", meaning: "from the Netherlands",       emoji: "🇳🇱" },
+    { text: "PHILIPPINES",  displayName: "Philippines",  category: "des", meaning: "from the Philippines",       emoji: "🇵🇭" },
+    { text: "SEYCHELLES",   displayName: "Seychelles",   category: "des", meaning: "from the Seychelles",        emoji: "🇸🇨" }
+  ]
+};
+
+/* Where are you going? (country) — Je vais EN / AU / AUX / À … */
+const ALLER_PAYS_SET = {
+  id: "aller-pays-letris",
+  title: "Vous allez dans quel pays ?",
+  subtitle: "Sort each country by the form of preposition it takes",
+  language: "fr",
+  categories: [
+    { key: "en",  label: "EN",  prefix: "Je vais en " },
+    { key: "au",  label: "AU",  prefix: "Je vais au " },
+    { key: "aux", label: "AUX", prefix: "Je vais aux " },
+    { key: "a",   label: "À",   prefix: "Je vais à " }
+  ],
+  tiles: [
+    { text: "FRANCE",   displayName: "France",   category: "en",  meaning: "to France",      emoji: "🇫🇷" },
+    { text: "CHINE",    displayName: "Chine",    category: "en",  meaning: "to China",       emoji: "🇨🇳" },
+    { text: "SUISSE",   displayName: "Suisse",   category: "en",  meaning: "to Switzerland", emoji: "🇨🇭" },
+    { text: "BELGIQUE", displayName: "Belgique", category: "en",  meaning: "to Belgium",     emoji: "🇧🇪" },
+    { text: "RUSSIE",   displayName: "Russie",   category: "en",  meaning: "to Russia",      emoji: "🇷🇺" },
+    { text: "ALLEMAGNE",displayName: "Allemagne",category: "en",  meaning: "to Germany",     emoji: "🇩🇪" },
+    { text: "ITALIE",   displayName: "Italie",   category: "en",  meaning: "to Italy",       emoji: "🇮🇹" },
+    { text: "ESPAGNE",  displayName: "Espagne",  category: "en",  meaning: "to Spain",       emoji: "🇪🇸" },
+    { text: "AUSTRALIE",displayName: "Australie",category: "en",  meaning: "to Australia",   emoji: "🇦🇺" },
+    { text: "INDE",     displayName: "Inde",     category: "en",  meaning: "to India",       emoji: "🇮🇳" },
+    { text: "ISRAËL",   displayName: "Israël",   category: "en",  meaning: "to Israel",      emoji: "🇮🇱" },
+
+    { text: "JAPON",   displayName: "Japon",   category: "au", meaning: "to Japan",    emoji: "🇯🇵" },
+    { text: "CANADA",  displayName: "Canada",  category: "au", meaning: "to Canada",   emoji: "🇨🇦" },
+    { text: "BRÉSIL",  displayName: "Brésil",  category: "au", meaning: "to Brazil",   emoji: "🇧🇷" },
+    { text: "MEXIQUE", displayName: "Mexique", category: "au", meaning: "to Mexico",   emoji: "🇲🇽" },
+    { text: "PORTUGAL",displayName: "Portugal",category: "au", meaning: "to Portugal", emoji: "🇵🇹" },
+    { text: "VIETNAM", displayName: "Vietnam", category: "au", meaning: "to Vietnam",  emoji: "🇻🇳" },
+    { text: "MAROC",   displayName: "Maroc",   category: "au", meaning: "to Morocco",  emoji: "🇲🇦" },
+
+    { text: "ÉTATS-UNIS",  displayName: "États-Unis",  category: "aux", meaning: "to the United States",   emoji: "🇺🇸" },
+    { text: "PAYS-BAS",    displayName: "Pays-Bas",    category: "aux", meaning: "to the Netherlands",     emoji: "🇳🇱" },
+    { text: "PHILIPPINES", displayName: "Philippines", category: "aux", meaning: "to the Philippines",     emoji: "🇵🇭" },
+    { text: "SEYCHELLES",  displayName: "Seychelles",  category: "aux", meaning: "to the Seychelles",      emoji: "🇸🇨" },
+
+    { text: "CUBA",      displayName: "Cuba",      category: "a", meaning: "to Cuba",       emoji: "🇨🇺" },
+    { text: "SINGAPOUR", displayName: "Singapour", category: "a", meaning: "to Singapore",  emoji: "🇸🇬" },
+    { text: "MADAGASCAR",displayName: "Madagascar",category: "a", meaning: "to Madagascar", emoji: "🇲🇬" },
+    { text: "MONACO",    displayName: "Monaco",    category: "a", meaning: "to Monaco",     emoji: "🇲🇨" }
+  ]
+};
+
+/* Where shall we go? (place) — On va AU / À LA / À L' / AUX … */
+const ALLER_LIEU_SET = {
+  id: "aller-lieu-letris",
+  title: "Où est-ce qu'on va ?",
+  subtitle: "Sort each place by the contracted form of « à »",
+  language: "fr",
+  categories: [
+    { key: "au",     label: "AU",    prefix: "On va au " },
+    { key: "a_la",   label: "À LA",  prefix: "On va à la " },
+    { key: "a_l",    label: "À L'",  prefix: "On va à l'" },
+    { key: "aux",    label: "AUX",   prefix: "On va aux " }
+  ],
+  tiles: [
+    { text: "CAFÉ",       displayName: "café",       category: "au", meaning: "to the café",       emoji: "☕" },
+    { text: "RESTAURANT", displayName: "restaurant", category: "au", meaning: "to the restaurant", emoji: "🍽️" },
+    { text: "CINÉMA",     displayName: "cinéma",     category: "au", meaning: "to the cinema",     emoji: "🎬" },
+    { text: "MUSÉE",      displayName: "musée",      category: "au", meaning: "to the museum",     emoji: "🏛️" },
+    { text: "PARC",       displayName: "parc",       category: "au", meaning: "to the park",       emoji: "🌳" },
+    { text: "MARCHÉ",     displayName: "marché",     category: "au", meaning: "to the market",     emoji: "🛒" },
+    { text: "STADE",      displayName: "stade",      category: "au", meaning: "to the stadium",    emoji: "🏟️" },
+
+    { text: "BANQUE",       displayName: "banque",       category: "a_la", meaning: "to the bank",          emoji: "🏦" },
+    { text: "PHARMACIE",    displayName: "pharmacie",    category: "a_la", meaning: "to the pharmacy",      emoji: "💊" },
+    { text: "BIBLIOTHÈQUE", displayName: "bibliothèque", category: "a_la", meaning: "to the library",       emoji: "📚" },
+    { text: "BOULANGERIE",  displayName: "boulangerie",  category: "a_la", meaning: "to the bakery",        emoji: "🥖" },
+    { text: "GARE",         displayName: "gare",         category: "a_la", meaning: "to the train station", emoji: "🚉" },
+    { text: "POSTE",        displayName: "poste",        category: "a_la", meaning: "to the post office",   emoji: "📮" },
+    { text: "PISCINE",      displayName: "piscine",      category: "a_la", meaning: "to the pool",          emoji: "🏊" },
+    { text: "MAIRIE",       displayName: "mairie",       category: "a_la", meaning: "to the town hall",     emoji: "🏛️" },
+
+    { text: "HÔPITAL",    displayName: "hôpital",    category: "a_l", meaning: "to the hospital",   emoji: "🏥" },
+    { text: "ÉGLISE",     displayName: "église",     category: "a_l", meaning: "to the church",     emoji: "⛪" },
+    { text: "ÉCOLE",      displayName: "école",      category: "a_l", meaning: "to the school",     emoji: "🏫" },
+    { text: "UNIVERSITÉ", displayName: "université", category: "a_l", meaning: "to the university", emoji: "🎓" },
+    { text: "AÉROPORT",   displayName: "aéroport",   category: "a_l", meaning: "to the airport",    emoji: "✈️" },
+    { text: "HÔTEL",      displayName: "hôtel",      category: "a_l", meaning: "to the hotel",      emoji: "🏨" },
+
+    { text: "MAGASINS",          displayName: "magasins",          category: "aux", meaning: "to the shops",          emoji: "🛍️" },
+    { text: "COMMERCES",         displayName: "commerces",         category: "aux", meaning: "to the businesses",     emoji: "🏪" },
+    { text: "JARDINS PUBLICS",   displayName: "jardins publics",   category: "aux", meaning: "to the public gardens", emoji: "🌳" },
+    { text: "TOILETTES PUBLIQUES", displayName: "toilettes publiques", category: "aux", meaning: "to the public toilets", emoji: "🚻" }
+  ]
+};
+
+/* How do you get there? — J'y vais EN / À … */
+const TRANSPORT_SET = {
+  id: "transport-letris",
+  title: "Vous y allez comment ?",
+  subtitle: "Sort each mode of transport by EN or À",
+  language: "fr",
+  categories: [
+    { key: "en", label: "EN",  prefix: "J'y vais en " },
+    { key: "a",  label: "À",   prefix: "J'y vais à " }
+  ],
+  tiles: [
+    { text: "VOITURE",   displayName: "voiture",   category: "en", meaning: "by car",        emoji: "🚗" },
+    { text: "BUS",       displayName: "bus",       category: "en", meaning: "by bus",        emoji: "🚌" },
+    { text: "TRAIN",     displayName: "train",     category: "en", meaning: "by train",      emoji: "🚆" },
+    { text: "AVION",     displayName: "avion",     category: "en", meaning: "by plane",      emoji: "✈️" },
+    { text: "BATEAU",    displayName: "bateau",    category: "en", meaning: "by boat",       emoji: "🚢" },
+    { text: "MÉTRO",     displayName: "métro",     category: "en", meaning: "by metro",      emoji: "🚇" },
+    { text: "TRAMWAY",   displayName: "tramway",   category: "en", meaning: "by tram",       emoji: "🚊" },
+    { text: "TAXI",      displayName: "taxi",      category: "en", meaning: "by taxi",       emoji: "🚕" },
+
+    { text: "PIED",        displayName: "pied",        category: "a", meaning: "on foot",        emoji: "🚶" },
+    { text: "VÉLO",        displayName: "vélo",        category: "a", meaning: "by bike",        emoji: "🚲" },
+    { text: "CHEVAL",      displayName: "cheval",      category: "a", meaning: "on horseback",   emoji: "🐴" },
+    { text: "MOTO",        displayName: "moto",        category: "a", meaning: "by motorcycle",  emoji: "🏍️" },
+    { text: "TROTTINETTE", displayName: "trottinette", category: "a", meaning: "by scooter",     emoji: "🛴" }
+  ]
+};
+
+const LOIN_LETRIS_SET = {
+  id: "loin-letris",
+  title: "C'est loin ?",
+  subtitle: "Sort each phrase under the preposition group it belongs to",
+  language: "fr",
+  categories: [
+    { key: "group1", label: "DEVANT / SUR / DANS…", prefix: "Devant " },
+    { key: "group2", label: "À CÔTÉ / PRÈS / EN FACE…", prefix: "À côté " }
+  ],
+  tiles: [
+    { text: "LE CAFÉ", displayName: "le café", category: "group1", meaning: "the café", emoji: "☕" },
+    { text: "DU CAFÉ", displayName: "du café", category: "group2", meaning: "of the café", emoji: "☕" },
+    { text: "LE PARC", displayName: "le parc", category: "group1", meaning: "the park", emoji: "🌳" },
+    { text: "DU PARC", displayName: "du parc", category: "group2", meaning: "of the park", emoji: "🌳" },
+    { text: "LA BANQUE", displayName: "la banque", category: "group1", meaning: "the bank", emoji: "🏦" },
+    { text: "DE LA BANQUE", displayName: "de la banque", category: "group2", meaning: "of the bank", emoji: "🏦" },
+    { text: "LA PHARMACIE", displayName: "la pharmacie", category: "group1", meaning: "the pharmacy", emoji: "💊" },
+    { text: "DE LA PHARMACIE", displayName: "de la pharmacie", category: "group2", meaning: "of the pharmacy", emoji: "💊" },
+    { text: "L'HÔPITAL", displayName: "l'hôpital", category: "group1", meaning: "the hospital", emoji: "🏥" },
+    { text: "DE L'HÔPITAL", displayName: "de l'hôpital", category: "group2", meaning: "of the hospital", emoji: "🏥" },
+    { text: "L'ÉCOLE", displayName: "l'école", category: "group1", meaning: "the school", emoji: "🏫" },
+    { text: "DE L'ÉCOLE", displayName: "de l'école", category: "group2", meaning: "of the school", emoji: "🏫" },
+    { text: "LES MAGASINS", displayName: "les magasins", category: "group1", meaning: "the shops", emoji: "🛍️" },
+    { text: "DES MAGASINS", displayName: "des magasins", category: "group2", meaning: "of the shops", emoji: "🛍️" },
+    { text: "LES JARDINS PUBLICS", displayName: "les jardins publics", category: "group1", meaning: "the public gardens", emoji: "🌳" },
+    { text: "DES JARDINS PUBLICS", displayName: "des jardins publics", category: "group2", meaning: "of the public gardens", emoji: "🌳" }
+  ]
+};
+
+/* =========================================================================
+ *  HELPERS
+ * ========================================================================= */
+function shuffle(arr) {
+  const out = arr.slice();
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+function buildSentence(category, tile) {
+  const displayName = tile.displayName != null ? tile.displayName : tile.text.toLowerCase();
+  if (category.prefix !== undefined) {
+    return (category.prefix + displayName).replace(/\s+/g, " ").trim();
+  }
+  return (category.label + " " + displayName).trim();
+}
+
+function speak(text, lang) {
+  if (typeof window === "undefined" || !window.speechSynthesis) return;
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = lang || "fr-FR";
+  const voices = window.speechSynthesis.getVoices();
+  const v = voices.find(x => x.lang === u.lang) || voices.find(x => x.lang.startsWith((u.lang.split("-")[0])));
+  if (v) u.voice = v;
+  u.rate = 0.95;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
+}
+
+function normalise(s) {
+  return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9 ]/g, "").replace(/\s+/g, " ").trim();
+}
+
+function cardsFor(set) {
+  return set.tiles.map((t, i) => {
+    const cat = set.categories.find(c => c.key === t.category);
+    return {
+      id: set.id + "-" + i,
+      tile: t,
+      categoryLabel: cat ? cat.label : "",
+      sentence: cat ? buildSentence(cat, t) : t.text,
+      meaning: t.meaning || "",
+      emoji: t.emoji || ""
+    };
+  });
+}
+
+/* =========================================================================
+ *  HASH ROUTER
+ * ========================================================================= */
+function useHashRoute() {
+  const [path, setPath] = useState(() => {
+    if (typeof window === "undefined") return "/";
+    return window.location.hash.replace(/^#/, "") || "/";
+  });
+  useEffect(() => {
+    const on = () => setPath(window.location.hash.replace(/^#/, "") || "/");
+    window.addEventListener("hashchange", on);
+    return () => window.removeEventListener("hashchange", on);
+  }, []);
+  return path;
+}
+
+function navigate(to) {
+  window.location.hash = to;
+}
+
+function Link({ to, className, children, ...rest }) {
+  return <a href={"#" + to} className={className} {...rest}>{children}</a>;
+}
+
+/* =========================================================================
+ *  FLASHCARD LESSON  (front: French sentence + audio; back: emoji + meaning;
+ *  Got it / Review loop)
+ * ========================================================================= */
+const CATEGORY_BG = {
+  0: "from-blue-700 to-blue-900",
+  1: "from-teal-600 to-teal-900",
+  2: "from-orange-700 to-orange-900",
+  3: "from-purple-700 to-purple-900",
+  4: "from-rose-700 to-rose-900"
+};
+
+/* =========================================================================
+ *  DIRECTIONS PRACTICE MAP
+ *    - Random origin → destination
+ *    - Click phrases from the bank to assemble a free-form dialogue
+ *    - Speak the assembled dialogue with TTS
+ * ========================================================================= */
+/* Real Paris landmarks — lat/lng coordinates used by Leaflet. */
+const MAP_PLACES = [
+  { id: "parc",   name: "le parc",       emoji: "🌳", lat: 48.8462, lng: 2.3372 }, // Jardin du Luxembourg
+  { id: "cafe",   name: "le café",       emoji: "☕", lat: 48.8542, lng: 2.3329 }, // Saint-Germain area
+  { id: "hotel",  name: "l'hôtel",       emoji: "🏨", lat: 48.8662, lng: 2.3211 }, // near Concorde
+  { id: "banque", name: "la banque",     emoji: "🏦", lat: 48.8638, lng: 2.3408 }, // 1er arr.
+  { id: "musee",  name: "le musée",      emoji: "🏛️", lat: 48.8606, lng: 2.3376 }, // Louvre
+  { id: "pharma", name: "la pharmacie",  emoji: "💊", lat: 48.8722, lng: 2.3327 }, // near Opéra
+  { id: "gare",   name: "la gare",       emoji: "🚉", lat: 48.8809, lng: 2.3553 }, // Gare du Nord
+  { id: "ecole",  name: "l'école",       emoji: "🏫", lat: 48.8489, lng: 2.3429 }, // Latin Quarter
+  { id: "cinema", name: "le cinéma",     emoji: "🎬", lat: 48.8704, lng: 2.3489 }  // Boulevard Poissonnière
+];
+
+/* Curated walking routes between landmarks in central Paris.
+   Each route has both a forward and reverse label so the student can
+   practise the same path in either direction. */
+const TRAJETS = [
+  { id: 1, fromId: "parc",   toId: "cafe",   forwardLabel: "du parc au café",            reverseLabel: "du café au parc" },
+  { id: 2, fromId: "gare",   toId: "musee",  forwardLabel: "de la gare au musée",        reverseLabel: "du musée à la gare" },
+  { id: 3, fromId: "hotel",  toId: "ecole",  forwardLabel: "de l'hôtel à l'école",       reverseLabel: "de l'école à l'hôtel" },
+  { id: 4, fromId: "cafe",   toId: "cinema", forwardLabel: "du café au cinéma",          reverseLabel: "du cinéma au café" },
+  { id: 5, fromId: "banque", toId: "pharma", forwardLabel: "de la banque à la pharmacie",reverseLabel: "de la pharmacie à la banque" },
+  { id: 6, fromId: "musee",  toId: "gare",   forwardLabel: "du musée à la gare",         reverseLabel: "de la gare au musée" },
+  { id: 7, fromId: "ecole",  toId: "parc",   forwardLabel: "de l'école au parc",         reverseLabel: "du parc à l'école" },
+  { id: 8, fromId: "pharma", toId: "musee",  forwardLabel: "de la pharmacie au musée",   reverseLabel: "du musée à la pharmacie" }
+];
+
+function findPlace(id) { return MAP_PLACES.find(p => p.id === id); }
+
+/* Latin Quarter walking routes (Paris 5ᵉ) — used by /paris-trajets to render
+   two square map cut-outs that students can screenshot for teaching. */
+const LATIN_QUARTER_TRAJETS = [
+  {
+    title: "Trajet 1 — la Sorbonne → le marché Monge",
+    distance: "~750 m",
+    turns: 2,
+    from: { name: "la Sorbonne", emoji: "🎓", lat: 48.84817, lng: 2.34294 },
+    to:   { name: "le marché Monge", emoji: "🛒", lat: 48.84279, lng: 2.35221 },
+    directions: "Vous sortez de la place de la Sorbonne et vous allez tout droit sur la rue de la Sorbonne. Vous tournez à gauche sur la rue des Écoles, puis vous tournez à droite sur la rue Monge. Vous continuez tout droit jusqu'au marché Monge."
+  },
+  {
+    title: "Trajet 2 — le Jardin des Plantes → le cinéma Le Champo",
+    distance: "~900 m",
+    turns: 3,
+    from: { name: "le Jardin des Plantes", emoji: "🌳", lat: 48.84473, lng: 2.35702 },
+    to:   { name: "le cinéma Le Champo", emoji: "🎬", lat: 48.85016, lng: 2.34579 },
+    directions: "Vous sortez du Jardin des Plantes par la rue Cuvier et vous allez tout droit vers l'ouest. Vous tournez à droite sur la rue Linné, puis à gauche sur la rue des Écoles. Vous continuez tout droit — le cinéma Le Champo est sur votre gauche, au numéro 51."
+  }
+];
+
+function SquareTrajet({ trajet, index }) {
+  const containerRef = useRef(null);
+  const mapRef = useRef(null);
+  const polyRef = useRef(null);
+  const [routeVisible, setRouteVisible] = useState(true);
+
+  useEffect(() => {
+    if (polyRef.current) polyRef.current.setStyle({ opacity: routeVisible ? 0.92 : 0 });
+  }, [routeVisible]);
+
+  useEffect(() => {
+    if (!containerRef.current || !window.L || mapRef.current) return;
+    const map = window.L.map(containerRef.current, {
+      center: [(trajet.from.lat + trajet.to.lat) / 2, (trajet.from.lng + trajet.to.lng) / 2],
+      zoom: 16,
+      scrollWheelZoom: false,
+      zoomControl: false,
+      attributionControl: true
+    });
+    window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap · OSRM'
+    }).addTo(map);
+
+    const makeIcon = (place, side) => window.L.divIcon({
+      className: "",
+      html: '<div class="pm-marker pm-' + side + '"><div class="pm-pin">' + place.emoji + '</div><div class="pm-label">' + (side === "a" ? "A · " : "B · ") + place.name + '</div></div>',
+      iconSize: [120, 60],
+      iconAnchor: [16, 60]
+    });
+    window.L.marker([trajet.from.lat, trajet.from.lng], { icon: makeIcon(trajet.from, "a") }).addTo(map);
+    window.L.marker([trajet.to.lat, trajet.to.lng], { icon: makeIcon(trajet.to, "b") }).addTo(map);
+
+    // Initial fit on the two points (in case routing fails)
+    map.fitBounds(window.L.latLngBounds([
+      [trajet.from.lat, trajet.from.lng],
+      [trajet.to.lat,   trajet.to.lng]
+    ]), { padding: [40, 40], maxZoom: 17 });
+
+    const url = "https://router.project-osrm.org/route/v1/foot/" +
+      trajet.from.lng + "," + trajet.from.lat + ";" +
+      trajet.to.lng + "," + trajet.to.lat +
+      "?overview=full&geometries=geojson";
+    fetch(url)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (!data || !data.routes || !data.routes[0]) return;
+        const coords = data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+        const poly = window.L.polyline(coords, {
+          color: "#ef4444", weight: 6, opacity: 0.92,
+          lineCap: "round", lineJoin: "round"
+        }).addTo(map);
+        polyRef.current = poly;
+        map.fitBounds(poly.getBounds(), { padding: [40, 40], maxZoom: 17 });
+      })
+      .catch(() => {});
+
+    mapRef.current = map;
+    const inv = () => map.invalidateSize();
+    const t1 = window.setTimeout(inv, 150);
+    const t2 = window.setTimeout(inv, 600);
+    window.addEventListener("resize", inv);
+    return () => {
+      window.clearTimeout(t1); window.clearTimeout(t2);
+      window.removeEventListener("resize", inv);
+      map.remove(); mapRef.current = null;
+    };
+  }, []);
+
+  return (
+    <div className="neo-panel overflow-hidden">
+      <div className="flex items-center justify-between gap-2 bg-slate-800 px-4 py-2">
+        <div className="text-xs font-bold uppercase tracking-widest text-amber-300">
+          {trajet.title}
+          <span className="ml-2 text-[10px] font-normal text-slate-400">
+            {trajet.distance} · {trajet.turns} turns
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={() => setRouteVisible(v => !v)}
+          className={"neo-btn neo-btn-sm shrink-0 " + (routeVisible ? "" : "neo-btn-primary")}
+          data-pressed={!routeVisible}
+          title={routeVisible ? "Hide the red route to read street names" : "Show the red route"}
+        >
+          {routeVisible ? "🙈 Hide" : "👁️ Show"}
+        </button>
+      </div>
+      <div
+        ref={containerRef}
+        style={{ width: "400px", height: "400px", maxWidth: "100%" }}
+        aria-label={"Map cut-out " + index}
+      />
+      <div className="bg-slate-900 p-3 text-xs leading-relaxed text-slate-200">
+        <div className="mb-1 text-[10px] font-bold uppercase tracking-widest text-amber-300">
+          Directions
+        </div>
+        {trajet.directions}
+      </div>
+    </div>
+  );
+}
+
+const PHRASE_BANK = [
+  {
+    label: "Verbs",
+    color: "from-blue-700 to-blue-900",
+    chip: "bg-blue-500/30 text-blue-100",
+    phrases: [
+      "Vous sortez", "Vous allez", "Vous continuez",
+      "Vous tournez", "Vous prenez", "Vous traversez", "Vous êtes"
+    ]
+  },
+  {
+    label: "Completions",
+    color: "from-emerald-700 to-emerald-900",
+    chip: "bg-emerald-500/30 text-emerald-100",
+    phrases: [
+      "du parc", "de la station de métro",
+      "tout droit", "jusqu'au carrefour", "au bout de la rue",
+      "à gauche", "à droite",
+      "la première rue à gauche", "la deuxième rue à droite",
+      "le passage piéton", "le pont", "la place",
+      "arrivé(e)"
+    ]
+  },
+  {
+    label: "Connectors",
+    color: "from-purple-700 to-purple-900",
+    chip: "bg-purple-500/30 text-purple-100",
+    phrases: ["puis", "ensuite", ", et", "d'abord", "enfin", ", "]
+  }
+];
+
+function pickRandomPair(arr) {
+  const a = arr[Math.floor(Math.random() * arr.length)];
+  let b = a;
+  while (b === a) b = arr[Math.floor(Math.random() * arr.length)];
+  return [a, b];
+}
+
+/* Real Paris map using Leaflet + OpenStreetMap tiles + OSRM routing.
+   Only Point A and Point B markers are drawn; the recommended walking
+   route between them is fetched from OSRM and drawn as a red polyline.
+   All other landmarks are hidden so the student focuses on this trajet. */
+function CityMap({ origin, destination }) {
+  const containerRef = useRef(null);
+  const mapRef = useRef(null);
+  const markersRef = useRef([]);
+  const routeRef = useRef(null);
+  const [routeStatus, setRouteStatus] = useState("idle"); // idle | loading | ok | error
+  const [routeVisible, setRouteVisible] = useState(true);
+
+  // Reflect the toggle on the polyline whenever it changes.
+  useEffect(() => {
+    if (!routeRef.current) return;
+    routeRef.current.setStyle({ opacity: routeVisible ? 0.92 : 0 });
+  }, [routeVisible, routeStatus]);
+
+  // Re-fit the map to the current route, or to A↔B if the route isn't ready yet.
+  const recenter = () => {
+    const map = mapRef.current;
+    if (!map) return;
+    map.invalidateSize();
+    if (routeRef.current) {
+      map.fitBounds(routeRef.current.getBounds(), { padding: [60, 60], maxZoom: 17 });
+    } else if (origin && destination) {
+      const bounds = window.L.latLngBounds([
+        [origin.lat, origin.lng],
+        [destination.lat, destination.lng]
+      ]);
+      map.fitBounds(bounds, { padding: [80, 80], maxZoom: 17 });
+    }
+  };
+
+  // Initialise the Leaflet map once.
+  useEffect(() => {
+    if (!containerRef.current || !window.L || mapRef.current) return;
+    const map = window.L.map(containerRef.current, {
+      center: [48.860, 2.342],
+      zoom: 15,
+      scrollWheelZoom: true,
+      attributionControl: true
+    });
+    window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · routing &copy; <a href="https://project-osrm.org">OSRM</a>'
+    }).addTo(map);
+    mapRef.current = map;
+
+    // Force Leaflet to re-measure its container once the layout has settled.
+    const invalidate = () => map.invalidateSize();
+    const t1 = window.setTimeout(invalidate, 100);
+    const t2 = window.setTimeout(invalidate, 500);
+    window.addEventListener("resize", invalidate);
+
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.removeEventListener("resize", invalidate);
+      map.remove();
+      mapRef.current = null;
+      markersRef.current = [];
+      routeRef.current = null;
+    };
+  }, []);
+
+  // Rebuild markers + route whenever A or B change.
+  useEffect(() => {
+    if (!mapRef.current || !origin || !destination) return;
+    const map = mapRef.current;
+    const L = window.L;
+
+    // Clear previous markers and route
+    markersRef.current.forEach(m => m.remove());
+    markersRef.current = [];
+    if (routeRef.current) { routeRef.current.remove(); routeRef.current = null; }
+
+    const makeIcon = (place, side) => L.divIcon({
+      className: "",
+      html:
+        '<div class="pm-marker pm-' + side + '">' +
+          '<div class="pm-pin">' + place.emoji + '</div>' +
+          '<div class="pm-label">' + (side === "a" ? "A · " : "B · ") + place.name + '</div>' +
+        '</div>',
+      iconSize: [110, 60],
+      iconAnchor: [16, 60]
+    });
+
+    const aMarker = L.marker([origin.lat, origin.lng], { icon: makeIcon(origin, "a") }).addTo(map);
+    const bMarker = L.marker([destination.lat, destination.lng], { icon: makeIcon(destination, "b") }).addTo(map);
+    markersRef.current = [aMarker, bMarker];
+
+    // First fit to the two points; route fit happens once the polyline arrives.
+    map.invalidateSize();
+    const bounds = L.latLngBounds([[origin.lat, origin.lng], [destination.lat, destination.lng]]);
+    map.fitBounds(bounds, { padding: [80, 80], maxZoom: 17 });
+
+    // Ask OSRM for the actual walking route along Paris streets.
+    setRouteStatus("loading");
+    const url =
+      "https://router.project-osrm.org/route/v1/foot/" +
+      origin.lng + "," + origin.lat + ";" +
+      destination.lng + "," + destination.lat +
+      "?overview=full&geometries=geojson";
+
+    let cancelled = false;
+    fetch(url)
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(data => {
+        if (cancelled) return;
+        const route = data && data.routes && data.routes[0];
+        if (!route) { setRouteStatus("error"); return; }
+        const latlngs = route.geometry.coordinates.map(c => [c[1], c[0]]);
+        const poly = L.polyline(latlngs, {
+          color: "#ef4444",
+          weight: 6,
+          opacity: 0.9,
+          lineCap: "round",
+          lineJoin: "round"
+        }).addTo(map);
+        routeRef.current = poly;
+        map.fitBounds(poly.getBounds(), { padding: [60, 60], maxZoom: 17 });
+        setRouteStatus("ok");
+      })
+      .catch(() => { if (!cancelled) setRouteStatus("error"); });
+
+    return () => { cancelled = true; };
+  }, [origin, destination]);
+
+  return (
+    <div className="neo-inset p-3 sm:p-4">
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+        <div className="text-xs font-bold uppercase tracking-widest text-amber-300">
+          Paris · route map
+        </div>
+        <div className="flex flex-wrap items-center gap-3 text-xs text-slate-300">
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block h-3 w-3 rounded-full bg-emerald-400 ring-2 ring-emerald-300" />
+            A · {origin.name}
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block h-3 w-3 rounded-full bg-rose-400 ring-2 ring-rose-300" />
+            B · {destination.name}
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block h-1 w-6 rounded bg-red-500" />
+            Route
+            {routeStatus === "loading" && <span className="ml-1 italic text-slate-400">(loading…)</span>}
+            {routeStatus === "error" && <span className="ml-1 italic text-rose-400">(unavailable)</span>}
+          </span>
+          <button
+            type="button"
+            onClick={() => setRouteVisible(v => !v)}
+            className={"neo-btn neo-btn-sm " + (routeVisible ? "" : "neo-btn-primary")}
+            data-pressed={!routeVisible}
+            title={routeVisible ? "Hide the red route to read street names" : "Show the red route"}
+          >
+            {routeVisible ? "🙈 Hide route" : "👁️ Show route"}
+          </button>
+          <button
+            type="button"
+            onClick={recenter}
+            className="neo-btn neo-btn-sm"
+            title="Re-centre the map on the route"
+          >
+            🎯 Centre on route
+          </button>
+        </div>
+      </div>
+      <div
+        ref={containerRef}
+        className="h-[420px] sm:h-[520px]"
+        style={{ width: "100%" }}
+        aria-label="Paris map showing only the route from Point A to Point B in red"
+      />
+    </div>
+  );
+}
+
+function DirectionsMapGame() {
+  const lang = "fr-FR";
+  const [trajetId, setTrajetId] = useState(1);
+  const [reversed, setReversed] = useState(false);
+  const [dialogue, setDialogue] = useState([]);
+
+  const trajet = TRAJETS.find(t => t.id === trajetId) || TRAJETS[0];
+  const origin = findPlace(reversed ? trajet.toId : trajet.fromId);
+  const destination = findPlace(reversed ? trajet.fromId : trajet.toId);
+  const trajetLabel = reversed ? trajet.reverseLabel : trajet.forwardLabel;
+  const dialogueText = dialogue.join(" ").replace(/\s+,/g, ",").replace(/\s+/g, " ").trim();
+
+  function addPhrase(p) { setDialogue(d => [...d, p]); }
+  function undo() { setDialogue(d => d.slice(0, -1)); }
+  function pickTrajet(id) {
+    setTrajetId(id);
+    setReversed(false);
+    setDialogue([]);
+    window.speechSynthesis && window.speechSynthesis.cancel();
+  }
+  function toggleReverse() {
+    setReversed(r => !r);
+    setDialogue([]);
+    window.speechSynthesis && window.speechSynthesis.cancel();
+  }
+  function clearOnly() { setDialogue([]); window.speechSynthesis && window.speechSynthesis.cancel(); }
+  function speakDialogue() { if (dialogueText) speak(dialogueText, lang); }
+
+  return (
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 py-6 text-white">
+      <header className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold">Quel est le chemin pour … ?</h1>
+          <p className="text-sm text-slate-300">Practice map — assemble the route from <b>A</b> to <b>B</b>.</p>
+        </div>
+        <div className="flex items-center gap-2 text-sm">
+          <button type="button" onClick={undo} disabled={dialogue.length === 0} className="neo-btn neo-btn-sm">↶ Undo</button>
+          <button type="button" onClick={clearOnly} disabled={dialogue.length === 0} className="neo-btn neo-btn-sm">🧹 Clear</button>
+        </div>
+      </header>
+
+      {/* Trajet picker — 8 routes × 2 directions */}
+      <div className="neo-panel p-2">
+        <div className="mb-1 flex items-center justify-between gap-2 px-2">
+          <div className="text-xs font-bold uppercase tracking-widest text-amber-300">
+            Pick a route — currently: <span className="text-white">{trajetLabel}</span>
+          </div>
+          <button
+            type="button"
+            onClick={toggleReverse}
+            className={"neo-btn neo-btn-sm " + (reversed ? "neo-btn-primary" : "")}
+            data-pressed={reversed}
+            title="Reverse direction"
+          >
+            ↔ Reverse
+          </button>
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {TRAJETS.map(t => {
+            const isActive = t.id === trajetId;
+            const display = isActive && reversed ? t.reverseLabel : t.forwardLabel;
+            return (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => pickTrajet(t.id)}
+                className={"neo-btn neo-btn-sm " + (isActive ? "neo-btn-primary" : "")}
+                data-pressed={isActive}
+                title={display}
+              >
+                <span className="font-mono opacity-70">{t.id}.</span>
+                <span>{display}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Visual city map with Point A and Point B highlighted */}
+      <CityMap origin={origin} destination={destination} />
+
+      {/* Salient instruction */}
+      <div className="neo-panel mx-auto flex max-w-3xl items-center justify-center gap-3 px-4 py-3 text-sm font-semibold">
+        <span className="text-2xl" aria-hidden>👇</span>
+        <span>Click a phrase below to add it to your route. Press 🔊 to hear it.</span>
+      </div>
+
+      {/* Dialogue output */}
+      <div className="neo-inset min-h-[100px] p-5">
+        <div className="text-xs uppercase tracking-widest text-amber-300 mb-2">Your route</div>
+        {dialogue.length === 0 ? (
+          <p className="italic text-slate-500">Start by tapping a verb phrase below…</p>
+        ) : (
+          <p className="text-xl leading-relaxed">
+            {dialogue
+              .map(p => (p === ", " ? "," : p))
+              .join(" ")
+              .replace(/\s+,/g, ",")
+              .replace(/\s+/g, " ")}
+          </p>
+        )}
+        <div className="mt-3 flex justify-end">
+          <button type="button" onClick={speakDialogue} disabled={dialogue.length === 0} className="neo-btn neo-btn-primary">
+            🔊 Speak the route
+          </button>
+        </div>
+      </div>
+
+      {/* Phrase bank with tabs */}
+      <PhraseBank addPhrase={addPhrase} />
+    </div>
+  );
+}
+
+function PhraseBank({ addPhrase }) {
+  // All three categories are rendered together so the student can mix
+  // verbs + completions + connectors freely while building a dialogue.
+  return (
+    <div className="flex flex-col gap-3">
+      {PHRASE_BANK.map(cat => (
+        <section key={cat.label} className="neo-panel overflow-hidden">
+          <header className={"bg-gradient-to-br px-4 py-2 text-xs font-bold uppercase tracking-widest " + cat.color}>
+            {cat.label}
+            <span className="ml-2 text-[10px] font-normal opacity-70">{cat.phrases.length}</span>
+          </header>
+          <div className="flex flex-wrap gap-2 p-3">
+            {cat.phrases.map(p => (
+              <button
+                key={p}
+                type="button"
+                onClick={() => addPhrase(p)}
+                className={"neo-btn neo-btn-sm " + cat.chip}
+                title={"Add " + p}
+              >
+                {p === ", " ? ",  (comma)" : p}
+              </button>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  );
+}
+
+/* List view — reference list of every card, grouped by category */
+function ListView({ cards, categories, lang }) {
+  const byKey = useMemo(() => {
+    const m = new Map();
+    categories.forEach(c => m.set(c.key, []));
+    cards.forEach(c => {
+      if (!m.has(c.categoryKey)) m.set(c.categoryKey, []);
+      m.get(c.categoryKey).push(c);
+    });
+    return m;
+  }, [cards, categories]);
+
+  const nonEmpty = categories.filter(c => (byKey.get(c.key) || []).length > 0);
+  const [activeKey, setActiveKey] = useState(nonEmpty[0]?.key);
+  useEffect(() => { if (!activeKey && nonEmpty[0]) setActiveKey(nonEmpty[0].key); }, [nonEmpty, activeKey]);
+  const activeCat = nonEmpty.find(c => c.key === activeKey) || nonEmpty[0];
+  const activeIdx = categories.findIndex(c => c.key === (activeCat && activeCat.key));
+  const activeItems = (activeCat && byKey.get(activeCat.key)) || [];
+  const bg = CATEGORY_BG[activeIdx] || "from-slate-700 to-slate-900";
+
+  return (
+    <div className="flex flex-col gap-3">
+      {/* Tabs */}
+      <div className="neo-panel flex flex-wrap items-center gap-1 p-1">
+        {nonEmpty.map((cat, i) => {
+          const items = byKey.get(cat.key) || [];
+          const isActive = activeCat && cat.key === activeCat.key;
+          const tabBg = CATEGORY_BG[categories.indexOf(cat)] || "from-slate-700 to-slate-900";
+          return (
+            <button
+              key={cat.key}
+              type="button"
+              onClick={() => setActiveKey(cat.key)}
+              className={"neo-btn neo-btn-sm flex-1 min-w-fit justify-center " + (isActive ? "neo-btn-primary" : "")}
+              data-pressed={isActive}
+            >
+              <span>{cat.label}</span>
+              <span className="ml-1 text-xs opacity-70">({items.length})</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Active section */}
+      {activeCat && (
+        <section className="neo-panel overflow-hidden">
+          <header className={"px-4 py-3 text-sm font-bold uppercase tracking-widest bg-gradient-to-br " + bg}>
+            {activeCat.label} <span className="ml-2 text-xs font-normal opacity-70">{activeItems.length} items</span>
+          </header>
+          <ul className="divide-y divide-slate-700/50">
+            {activeItems.map((it, j) => (
+              <li key={activeCat.key + "-" + j} className="flex items-center gap-3 px-3 py-3 hover:bg-slate-800/40 sm:px-4">
+                <span className="text-2xl shrink-0" aria-hidden>{it.emoji}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-bold tracking-wide truncate sm:text-base">{it.sentence}</div>
+                  {it.meaning && <div className="text-xs italic text-slate-400 truncate">{it.meaning}</div>}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => speak(it.sentence, lang)}
+                  aria-label={"Play " + it.sentence}
+                  className="neo-btn neo-btn-sm shrink-0"
+                >
+                  🔊
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </div>
+  );
+}
+
+function FlashcardLesson({ set, onStartGame, startGameLabel = "Start the game" }) {
+  const cards = useMemo(() => {
+    const order = new Map();
+    set.categories.forEach((c, i) => order.set(c.key, i));
+    const sorted = set.tiles.slice().sort((a, b) =>
+      (order.get(a.category) ?? 99) - (order.get(b.category) ?? 99)
+    );
+    return sorted.map(t => {
+      const cat = set.categories.find(c => c.key === t.category);
+      return {
+        sentence: cat ? buildSentence(cat, t) : t.text,
+        tile: t.text,
+        meaning: t.meaning,
+        emoji: t.emoji,
+        categoryKey: cat ? cat.key : "",
+        categoryLabel: cat ? cat.label : ""
+      };
+    });
+  }, [set]);
+
+  const [pass, setPass] = useState(1);
+  const [queue, setQueue] = useState(() => cards.map((_, i) => i));
+  const [pos, setPos] = useState(0);
+  const [ratings, setRatings] = useState({});
+  const [flipped, setFlipped] = useState(false);
+  const [autoSpeak, setAutoSpeak] = useState(true);
+  const [shuffleOn, setShuffleOn] = useState(false);
+  const [view, setView] = useState("cards"); // "cards" | "list"
+  const [stage, setStage] = useState("lesson");
+  const lang = set.language ? set.language + "-FR" : "fr-FR";
+  const cardIndex = queue[pos];
+  const card = cards[cardIndex];
+  const categoryIdx = set.categories.findIndex(c => c.key === (card && card.categoryKey));
+  const ratedInPass = queue.filter(idx => ratings[idx] !== undefined).length;
+  const reviewedInPass = queue.filter(idx => ratings[idx] === "review").length;
+  const gotInPass = queue.filter(idx => ratings[idx] === "got").length;
+  const lastSpokenRef = useRef(null);
+
+  useEffect(() => {
+    if (stage !== "lesson" || !card) return;
+    if (lastSpokenRef.current === cardIndex) return;
+    lastSpokenRef.current = cardIndex;
+    setFlipped(false);
+    if (autoSpeak) speak(card.sentence, lang);
+  }, [cardIndex, stage]); // eslint-disable-line
+
+  // Shuffle toggle: reorder queue and jump to first unrated card.
+  useEffect(() => {
+    setQueue(q => {
+      if (q.length === 0) return q;
+      const nq = shuffleOn ? shuffle(q) : q.slice().sort((a, b) => a - b);
+      const firstUnrated = nq.findIndex(idx => ratings[idx] === undefined);
+      setPos(firstUnrated === -1 ? 0 : firstUnrated);
+      lastSpokenRef.current = null;
+      return nq;
+    });
+  }, [shuffleOn]); // eslint-disable-line
+
+  function findNextUnrated(fromPos, q, r) {
+    for (let p = fromPos; p < q.length; p++) if (r[q[p]] === undefined) return p;
+    for (let p = 0; p < fromPos; p++) if (r[q[p]] === undefined) return p;
+    return -1;
+  }
+  function rateAndAdvance(value) {
+    if (!card) return;
+    const nr = { ...ratings, [cardIndex]: value };
+    setRatings(nr);
+    const next = findNextUnrated(pos + 1, queue, nr);
+    if (next === -1) {
+      setStage("pass-complete");
+      lastSpokenRef.current = null;
+      window.speechSynthesis && window.speechSynthesis.cancel();
+    } else setPos(next);
+  }
+  function startNextPass() {
+    const review = queue.filter(idx => ratings[idx] === "review");
+    if (review.length === 0) { setStage("done"); return; }
+    const cleared = { ...ratings };
+    review.forEach(idx => delete cleared[idx]);
+    setRatings(cleared); setQueue(review); setPos(0); setPass(p => p + 1); setStage("lesson");
+    lastSpokenRef.current = null;
+  }
+  function toggleFlip() { setFlipped(f => !f); }
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (stage === "pass-complete") {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); startNextPass(); }
+        return;
+      }
+      if (stage === "done") {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onStartGame && onStartGame(); }
+        return;
+      }
+      // Keyboard shortcuts only apply in cards view (list view is read-only)
+      if (view !== "cards") return;
+      if (e.key === "ArrowRight") { e.preventDefault(); const n = findNextUnrated(pos + 1, queue, ratings); if (n !== -1) setPos(n); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); setPos(p => Math.max(0, p - 1)); }
+      else if (e.key === " " || e.key === "Enter") { e.preventDefault(); toggleFlip(); }
+      else if (e.key === "r" || e.key === "R") { if (card) speak(card.sentence, lang); }
+      else if (flipped && (e.key === "1" || e.key === "g" || e.key === "G")) { e.preventDefault(); rateAndAdvance("got"); }
+      else if (flipped && (e.key === "2" || e.key === "n" || e.key === "N")) { e.preventDefault(); rateAndAdvance("review"); }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }); // eslint-disable-line
+
+  const bg = CATEGORY_BG[categoryIdx] || "from-slate-700 to-slate-900";
+  const progress = queue.length === 0 ? 100 : (ratedInPass / queue.length) * 100;
+  const passLabel = pass === 1 ? "Pass 1" : "Review pass " + pass;
+
+  return (
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-6 text-white">
+      <header className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold">{set.title}</h1>
+          <p className="text-sm text-slate-300">
+            {passLabel} · {queue.length} card{queue.length === 1 ? "" : "s"} · {" "}
+            <span className="text-emerald-400">{gotInPass} ✓</span> {" "}
+            <span className="text-amber-300">{reviewedInPass} ⟳</span>
+          </p>
+        </div>
+        <div className="flex items-center gap-3 text-sm">
+          <label className="flex items-center gap-2 text-slate-300 cursor-pointer">
+            <span className="neo-switch" data-on={autoSpeak} role="switch" aria-checked={autoSpeak} onClick={() => setAutoSpeak(s => !s)}>
+              <span className="neo-switch-thumb" />
+            </span>
+            Auto-play audio
+          </label>
+          <label className="flex items-center gap-2 text-slate-300 cursor-pointer">
+            <span className="neo-switch" data-on={shuffleOn} role="switch" aria-checked={shuffleOn} onClick={() => setShuffleOn(s => !s)}>
+              <span className="neo-switch-thumb" />
+            </span>
+            Shuffle
+          </label>
+          <button type="button" onClick={() => setView(v => v === "cards" ? "list" : "cards")} className="neo-btn neo-btn-sm" title="Toggle view">
+            {view === "cards" ? "📋 List" : "🃏 Cards"}
+          </button>
+          <button type="button" onClick={() => onStartGame && onStartGame()} className="neo-btn neo-btn-sm">Skip to game →</button>
+        </div>
+      </header>
+
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+        <div className="h-full bg-amber-400 transition-all duration-200" style={{ width: progress + "%" }} />
+      </div>
+      <div className="-mt-4 text-right text-xs text-slate-400">{ratedInPass} / {queue.length}</div>
+
+      {stage === "lesson" && view === "list" && (
+        <ListView cards={cards} categories={set.categories} lang={lang} />
+      )}
+
+      {stage === "lesson" && view === "cards" && card && (
+        <>
+          <div className="relative mx-auto h-[340px] w-full max-w-2xl cursor-pointer select-none" style={{ perspective: "1200px" }} onClick={() => setFlipped(f => !f)} role="button">
+            <div className="relative h-full w-full transition-transform duration-500" style={{ transformStyle: "preserve-3d", transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}>
+              <div className={"absolute inset-0 flex flex-col items-center justify-center gap-5 rounded-2xl bg-gradient-to-br " + bg + " p-10 shadow-xl"} style={{ backfaceVisibility: "hidden" }}>
+                <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-widest">{card.categoryLabel}</span>
+                <div className="text-center">
+                  <div className="text-3xl font-bold tracking-wide sm:text-5xl">{card.sentence}</div>
+                </div>
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 animate-pulse">
+                  <span className="neo-btn neo-btn-primary neo-btn-sm" style={{ pointerEvents: "none" }}>
+                    👆 Tap the card to see the meaning
+                  </span>
+                </div>
+                <button type="button" onClick={e => { e.stopPropagation(); speak(card.sentence, lang); }} aria-label="Replay audio" className="neo-btn neo-btn-sm absolute right-4 top-4">🔊 Replay</button>
+              </div>
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 rounded-2xl bg-slate-100 p-8 text-slate-900 shadow-xl ring-1 ring-slate-300" style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}>
+                {card.emoji && <div aria-hidden className="text-6xl leading-none drop-shadow-sm sm:text-7xl">{card.emoji}</div>}
+                <div className="px-4 text-center">
+                  {card.meaning && <div className="text-2xl font-semibold leading-snug sm:text-3xl">{card.meaning}</div>}
+                </div>
+                <div className="mt-2 flex w-full max-w-md gap-3" onClick={e => e.stopPropagation()}>
+                  <button type="button" onClick={() => rateAndAdvance("review")} className="neo-btn neo-btn-warn flex-1 justify-center" title="Review again (key: 2)" style={{ flexDirection: "column", gap: 0 }}>
+                    <span>⟳ Review</span>
+                    <span className="text-[10px] font-normal opacity-70">key 2</span>
+                  </button>
+                  <button type="button" onClick={() => rateAndAdvance("got")} className="neo-btn neo-btn-success flex-1 justify-center" title="Got it (key: 1)" style={{ flexDirection: "column", gap: 0 }}>
+                    <span>✓ Got it</span>
+                    <span className="text-[10px] font-normal opacity-80">key 1</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between gap-3">
+            <button type="button" disabled={pos === 0} onClick={() => setPos(p => Math.max(0, p - 1))} className="neo-btn neo-btn-sm">← Previous</button>
+            <div className="text-center text-xs text-slate-400">
+              <kbd className="rounded bg-slate-800 px-1.5 py-0.5">Space</kbd> flip · <kbd className="rounded bg-slate-800 px-1.5 py-0.5">1</kbd> got · <kbd className="rounded bg-slate-800 px-1.5 py-0.5">2</kbd> review · <kbd className="rounded bg-slate-800 px-1.5 py-0.5">R</kbd> replay
+            </div>
+            <button type="button" onClick={() => { const n = findNextUnrated(pos + 1, queue, ratings); if (n !== -1) setPos(n); }} className="neo-btn neo-btn-sm">Skip →</button>
+          </div>
+        </>
+      )}
+
+      {stage === "pass-complete" && (
+        <div className="neo-panel p-8 text-center">
+          <h2 className="text-2xl font-bold">Pass {pass} complete</h2>
+          <p className="mt-2 text-slate-300">You got <span className="font-bold text-emerald-400">{gotInPass}</span> and marked <span className="font-bold text-amber-300">{reviewedInPass}</span> for review.</p>
+          <div className="mt-6 flex justify-center">
+            {reviewedInPass === 0 ? (
+              <button type="button" onClick={() => setStage("done")} className="neo-btn neo-btn-primary neo-btn-lg">All learned — continue →</button>
+            ) : (
+              <button type="button" onClick={startNextPass} className="neo-btn neo-btn-primary neo-btn-lg">Review the {reviewedInPass} card{reviewedInPass === 1 ? "" : "s"} →</button>
+            )}
+          </div>
+          <div className="mt-3 text-xs text-slate-500">(Space / Enter to continue)</div>
+        </div>
+      )}
+
+      {stage === "done" && (
+        <div className="neo-panel p-10 text-center" style={{ background: "linear-gradient(145deg, #047857, #065f46)" }}>
+          <div className="text-6xl">🎉</div>
+          <h2 className="mt-2 text-3xl font-bold">All learned!</h2>
+          <p className="mt-2 text-emerald-100">Time to test it in the game.</p>
+          <div className="mt-6 flex justify-center">
+            <button type="button" onClick={() => onStartGame && onStartGame()} className="neo-btn neo-btn-primary neo-btn-lg">{startGameLabel} →</button>
+          </div>
+          <div className="mt-3 text-xs text-emerald-200/80">(Space / Enter to continue)</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* =========================================================================
+ *  LETRIS GAME (sorting tetris)
+ * ========================================================================= */
+const LETRIS_COL_BG = [
+  "linear-gradient(0deg, #1e3a8a, #1e293b)",
+  "linear-gradient(0deg, #0f766e, #1e293b)",
+  "linear-gradient(0deg, #7c2d12, #1e293b)",
+  "linear-gradient(0deg, #6b21a8, #1e293b)",
+  "linear-gradient(0deg, #92400e, #1e293b)"
+];
+
+function LetrisGame({ set }) {
+  const cols = set.categories.length;
+  const ROWS = 10;
+  const INITIAL_TICK_MS = 750;
+  const MIN_TICK_MS = 220;
+  const INITIAL_LIVES = 3;
+
+  const catIndex = useMemo(() => { const m = new Map(); set.categories.forEach((c, i) => m.set(c.key, i)); return m; }, [set.categories]);
+  const emptyBoard = () => Array.from({ length: ROWS }, () => new Array(cols).fill(null));
+
+  const [board, setBoard] = useState(emptyBoard);
+  const [active, setActive] = useState(null);
+  const [queue, setQueue] = useState(set.tiles);
+  const [score, setScore] = useState(0);
+  const [lives, setLives] = useState(INITIAL_LIVES);
+  const [combo, setCombo] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
+  const [flash, setFlash] = useState(null);
+  const tickRef = useRef(INITIAL_TICK_MS);
+  const lastDropRef = useRef(0);
+  const softDropRef = useRef(false);
+  const SOFT_DROP_MS = 50; // tick interval while ↓ is held
+  const rafRef = useRef(null);
+  const stateRef = useRef({ board, active, queue, paused, gameOver });
+  stateRef.current = { board, active, queue, paused, gameOver };
+
+  useEffect(() => { setQueue(shuffle(set.tiles)); }, [set.tiles]);
+
+  // active.col is a float in [0, cols-1] with 0.5 granularity (two key
+  // presses to cross one column). The "effective column" used for collision
+  // and landing is Math.round(active.col).
+  const centerCol = (cols - 1) / 2;
+
+  const spawnTile = useCallback(() => {
+    setQueue(q => {
+      let next = q.length === 0 ? shuffle(set.tiles) : q;
+      const tile = next[0];
+      setActive({ tile, row: 0, col: centerCol });
+      return next.slice(1);
+    });
+  }, [set.tiles, centerCol]);
+
+  const restart = useCallback(() => {
+    setBoard(emptyBoard()); setActive(null); setQueue(shuffle(set.tiles));
+    setScore(0); setLives(INITIAL_LIVES); setCombo(0); setPaused(false); setGameOver(false); setFlash(null);
+    tickRef.current = INITIAL_TICK_MS;
+  }, [set.tiles]); // eslint-disable-line
+
+  const landTile = useCallback(a => {
+    const landedCol = Math.round(a.col);
+    // A drop only counts as correct if the tile is exactly on an integer
+    // column AND that column matches the tile's category. Tiles dropped
+    // between two columns are always rejected.
+    const onExactColumn = Number.isInteger(a.col);
+    const correctCol = catIndex.get(a.tile.category);
+    const ok = onExactColumn && correctCol === landedCol;
+    setFlash({ col: landedCol, kind: ok ? "ok" : "bad" });
+    window.setTimeout(() => setFlash(null), 220);
+    if (ok) {
+      const cat = set.categories[landedCol];
+      const sentence = buildSentence(cat, a.tile);
+      speak(sentence, set.language ? set.language + "-FR" : "fr-FR");
+      setScore(s => { const nc = combo + 1; setCombo(nc); return s + 10 + Math.max(0, nc - 1) * 2; });
+      tickRef.current = Math.max(MIN_TICK_MS, tickRef.current - 6);
+      setActive(null);
+    } else {
+      setCombo(0);
+      setLives(l => l - 1);
+      setBoard(b => {
+        const nb = b.map(r => r.slice()); let landRow = -1;
+        for (let r = ROWS - 1; r >= 0; r--) if (nb[r][landedCol] === null) { landRow = r; break; }
+        if (landRow < 0) return nb;
+        nb[landRow][landedCol] = a.tile;
+        if (landRow === 0) setGameOver(true);
+        return nb;
+      });
+      setActive(null);
+    }
+  }, [catIndex, combo, set.categories, set.language]);
+
+  useEffect(() => { if (lives <= 0 && !gameOver) setGameOver(true); }, [lives, gameOver]);
+  useEffect(() => {
+    if (!active && !gameOver && !paused) { const t = window.setTimeout(spawnTile, 250); return () => window.clearTimeout(t); }
+  }, [active, gameOver, paused, spawnTile]);
+
+  useEffect(() => {
+    const step = ts => {
+      const s = stateRef.current;
+      if (s.paused || s.gameOver) { rafRef.current = requestAnimationFrame(step); return; }
+      if (!s.active) { rafRef.current = requestAnimationFrame(step); return; }
+      const effectiveTick = softDropRef.current ? SOFT_DROP_MS : tickRef.current;
+      if (ts - lastDropRef.current >= effectiveTick) {
+        lastDropRef.current = ts;
+        const a = s.active; const nr = a.row + 1;
+        const checkCol = Math.round(a.col);
+        const blocked = nr >= ROWS || (s.board[nr] && s.board[nr][checkCol] !== null);
+        if (blocked) {
+          if (a.row === 0 && s.board[0][checkCol] !== null) setGameOver(true);
+          else landTile({ ...a, row: Math.max(0, nr - 1) });
+        } else setActive({ ...a, row: nr });
+      }
+      rafRef.current = requestAnimationFrame(step);
+    };
+    rafRef.current = requestAnimationFrame(step);
+    return () => rafRef.current !== null && cancelAnimationFrame(rafRef.current);
+  }, [landTile]);
+
+  useEffect(() => {
+    const onKey = e => {
+      if (gameOver) { if (e.key === "Enter" || e.key === " ") restart(); return; }
+      if (e.key === "p" || e.key === "P") { setPaused(p => !p); return; }
+      if (paused || !active) return;
+      if (e.key === "ArrowLeft") {
+        const nc = Math.max(0, active.col - 0.5);
+        // allow sliding even past a stacked column — collision is checked at gravity step
+        if (board[active.row][Math.round(nc)] === null) setActive({ ...active, col: nc });
+      }
+      else if (e.key === "ArrowRight") {
+        const nc = Math.min(cols - 1, active.col + 0.5);
+        if (board[active.row][Math.round(nc)] === null) setActive({ ...active, col: nc });
+      }
+      else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        // Flag accelerated-drop mode so the gravity loop ticks much faster
+        // while the key is held. The keyup handler clears it.
+        softDropRef.current = true;
+      }
+      else if (e.key === " ") {
+        e.preventDefault();
+        let r = active.row;
+        const cc = Math.round(active.col);
+        while (r + 1 < ROWS && board[r + 1][cc] === null) r++;
+        setActive(null);
+        landTile({ ...active, row: r });
+      }
+    };
+    const onKeyUp = (e) => {
+      if (e.key === "ArrowDown") softDropRef.current = false;
+    };
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("keyup", onKeyUp);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("keyup", onKeyUp);
+    };
+  }, [active, board, cols, gameOver, landTile, paused, restart]);
+
+  const moveTo = c => { if (!active || paused || gameOver) return; if (board[active.row][c] === null) setActive({ ...active, col: c }); };
+
+  return (
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 px-4 py-6 text-white">
+      <header className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold">{set.title}</h1>
+          {set.subtitle && <p className="text-sm text-slate-300">{set.subtitle}</p>}
+        </div>
+        <div className="flex flex-wrap items-center gap-3 font-mono text-sm">
+          <span>Score <b className="text-emerald-400">{score}</b></span>
+          <span>Combo <b className="text-amber-300">×{combo}</b></span>
+          <span>Lives <b className="text-rose-400">{"♥".repeat(Math.max(0, lives))}</b></span>
+          {queue[0] && (
+            <div className="flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800 px-2 py-1">
+              <span className="text-[10px] uppercase tracking-widest text-slate-400">Next</span>
+              <span className="rounded bg-slate-700 px-2 py-0.5 text-[11px] font-semibold text-amber-200">{queue[0].text}</span>
+            </div>
+          )}
+          <button type="button" onClick={() => setPaused(p => !p)} className="neo-btn neo-btn-sm">{paused ? "Resume" : "Pause"}</button>
+          <button type="button" onClick={restart} className="neo-btn neo-btn-sm">Restart</button>
+        </div>
+      </header>
+
+      <div className="relative overflow-hidden rounded-lg border border-slate-700 bg-slate-900">
+        <div className="relative grid bg-slate-950" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`, gridTemplateRows: `repeat(${ROWS}, 48px)` }}>
+          {Array.from({ length: ROWS }).map((_, r) =>
+            Array.from({ length: cols }).map((_, c) => {
+              const stacked = board[r][c];
+              const isFlashCol = flash && flash.col === c && r === ROWS - 1;
+              return (
+                <div key={r + "-" + c} className={"relative flex items-center justify-center border-b border-slate-800 px-1 text-center " + (c < cols - 1 ? "border-r border-slate-800 " : "") + (isFlashCol ? (flash.kind === "ok" ? "bg-emerald-500/30 " : "bg-rose-500/30 ") : "")} onClick={() => moveTo(c)}>
+                  {stacked && (
+                    <div className="flex h-[44px] w-[96%] items-center justify-center rounded-md px-1 text-[11px] font-semibold leading-tight shadow-md sm:text-xs bg-slate-700 text-slate-100">{stacked.text}</div>
+                  )}
+                </div>
+              );
+            })
+          )}
+          {/* Active tile rendered as absolute overlay so col can be fractional */}
+          {active && (
+            <div
+              className="pointer-events-none absolute flex items-center justify-center px-1 transition-[top,left] duration-100"
+              style={{
+                top: (active.row * 48) + "px",
+                left: "calc(" + active.col + " * (100% / " + cols + "))",
+                width: "calc(100% / " + cols + ")",
+                height: "48px"
+              }}
+            >
+              <div className="flex h-[44px] w-[96%] items-center justify-center rounded-md px-1 text-[11px] font-semibold leading-tight shadow-md sm:text-xs bg-amber-300 text-slate-900 ring-2 ring-amber-200">
+                {active.tile.text}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="grid border-t-2 border-amber-400/60" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
+          {set.categories.map((c, i) => (
+            <div key={c.key} className={"px-2 py-3 text-center text-sm font-bold tracking-wider sm:text-base " + (i < cols - 1 ? "border-r border-slate-700" : "")} style={{ background: LETRIS_COL_BG[i % LETRIS_COL_BG.length] }}>{c.label}</div>
+          ))}
+        </div>
+
+        {(paused || gameOver) && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-slate-950/85 backdrop-blur-sm">
+            <h2 className="text-3xl font-bold">{gameOver ? "Game Over" : "Paused"}</h2>
+            {gameOver && <p className="text-lg">Final score: <b className="text-emerald-400">{score}</b></p>}
+            <button type="button" onClick={gameOver ? restart : () => setPaused(false)} className="rounded-md bg-amber-400 px-4 py-2 font-semibold text-slate-900 hover:bg-amber-300">{gameOver ? "Play again" : "Resume"}</button>
+          </div>
+        )}
+      </div>
+
+      <footer className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
+        <div>
+          <kbd className="rounded bg-slate-800 px-1.5 py-0.5">←</kbd> <kbd className="rounded bg-slate-800 px-1.5 py-0.5">→</kbd> move ·
+          <kbd className="rounded bg-slate-800 px-1.5 py-0.5">↓</kbd> soft drop ·
+          <kbd className="rounded bg-slate-800 px-1.5 py-0.5">Space</kbd> hard drop ·
+          <kbd className="rounded bg-slate-800 px-1.5 py-0.5">P</kbd> pause
+        </div>
+        <div>Tap a column to move the active tile.</div>
+      </footer>
+    </div>
+  );
+}
+
+/* =========================================================================
+ *  MATCHING (multi-valid, used for directions)
+ * ========================================================================= */
+function MatchingGame({ set }) {
+  const [lefts, setLefts] = useState(set.lefts);
+  const [rights, setRights] = useState(set.rights);
+  const [solvedRightIds, setSolvedRightIds] = useState(new Set());
+  const [selectedLeft, setSelectedLeft] = useState(null);
+  const [flash, setFlash] = useState(null);
+  const [showMeaning, setShowMeaning] = useState(true);
+  const [audioOn, setAudioOn] = useState(true);
+  const [attempts, setAttempts] = useState(0);
+  const [correct, setCorrect] = useState(0);
+  const lang = set.language ? set.language + "-FR" : "fr-FR";
+  const total = set.rights.length;
+  const done = solvedRightIds.size >= total;
+  const leftById = useMemo(() => new Map(set.lefts.map(l => [l.id, l])), [set.lefts]);
+
+  useEffect(() => { setLefts(shuffle(set.lefts)); setRights(shuffle(set.rights)); }, [set.lefts, set.rights]);
+
+  function tryPair(leftId, rightId) {
+    const right = set.rights.find(r => r.id === rightId);
+    if (!right) return;
+    const ok = right.validLefts.includes(leftId);
+    setAttempts(a => a + 1);
+    setFlash({ leftId, rightId, kind: ok ? "ok" : "bad" });
+    window.setTimeout(() => setFlash(null), 400);
+    if (ok) {
+      const left = leftById.get(leftId);
+      if (left && audioOn) speak((left.text + " " + right.text).toLowerCase().replace(/\bx\b/g, "").replace(/xᵉ/gi, ""), lang);
+      setCorrect(c => c + 1);
+      setSolvedRightIds(s => { const n = new Set(s); n.add(rightId); return n; });
+    }
+    setSelectedLeft(null);
+  }
+  function restart() {
+    setSolvedRightIds(new Set()); setSelectedLeft(null); setFlash(null); setAttempts(0); setCorrect(0);
+    setLefts(shuffle(set.lefts)); setRights(shuffle(set.rights));
+  }
+  function onLeft(id) { if (done) return; setSelectedLeft(c => c === id ? null : id); }
+  function onRight(id) {
+    if (done) return; if (solvedRightIds.has(id)) return;
+    if (!selectedLeft) { setFlash({ leftId: "", rightId: id, kind: "bad" }); setTimeout(() => setFlash(null), 250); return; }
+    tryPair(selectedLeft, id);
+  }
+  const accuracy = attempts === 0 ? 0 : Math.round(correct / attempts * 100);
+
+  return (
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 py-6 text-white">
+      <header className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold">{set.title}</h1>
+          {set.subtitle && <p className="text-sm text-slate-300">{set.subtitle}</p>}
+        </div>
+        <div className="flex items-center gap-3 text-sm font-mono">
+          <span>Pairs <b className="text-emerald-400">{solvedRightIds.size}</b>/{total}</span>
+          <span>Accuracy <b className="text-amber-300">{accuracy}%</b></span>
+          <label className="flex items-center gap-2 text-slate-300"><input type="checkbox" checked={showMeaning} onChange={e => setShowMeaning(e.target.checked)} className="h-4 w-4 accent-amber-400" /> Show English</label>
+          <label className="flex items-center gap-2 text-slate-300"><input type="checkbox" checked={audioOn} onChange={e => setAudioOn(e.target.checked)} className="h-4 w-4 accent-amber-400" /> Audio</label>
+          <button type="button" onClick={restart} className="rounded border border-slate-500 px-2 py-1 hover:bg-slate-700">Restart</button>
+        </div>
+      </header>
+
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800"><div className="h-full bg-amber-400 transition-all duration-200" style={{ width: solvedRightIds.size / total * 100 + "%" }} /></div>
+      {!done && (
+        <div className="neo-panel mx-auto flex max-w-2xl items-center justify-center gap-3 px-4 py-3 text-sm font-semibold">
+          <span className="text-2xl" aria-hidden>👇</span>
+          <span>
+            Tap a <span className="rounded bg-blue-500/30 px-2 py-0.5 text-blue-200">verb phrase</span> on the left, then a <span className="rounded bg-emerald-500/30 px-2 py-0.5 text-emerald-200">completion</span> on the right.
+          </span>
+        </div>
+      )}
+
+      {done ? (
+        <div className="rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-900 p-10 text-center shadow-xl">
+          <div className="text-6xl">🎉</div>
+          <h2 className="mt-2 text-3xl font-bold">All matched!</h2>
+          <p className="mt-2 text-emerald-100">{correct} correct out of {attempts} attempts ({accuracy}%).</p>
+          <button type="button" onClick={restart} className="mt-6 rounded-md bg-white px-6 py-3 font-bold text-emerald-800 hover:bg-emerald-50">Play again</button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-3">
+            <h3 className="mb-2 px-2 text-xs font-bold uppercase tracking-widest text-blue-300">Verb phrase</h3>
+            <ul className="flex flex-col gap-2">
+              {lefts.map(l => {
+                const sel = selectedLeft === l.id;
+                const fl = flash && flash.leftId === l.id;
+                return (
+                  <li key={l.id}>
+                    <button type="button" onClick={() => onLeft(l.id)} className={"flex w-full items-center gap-3 rounded-lg border px-3 py-3 text-left transition " +
+                      (sel ? "border-amber-300 bg-amber-300/20 ring-2 ring-amber-300" : "border-slate-700 bg-slate-800 hover:border-slate-500 hover:bg-slate-700") +
+                      (fl && flash.kind === "ok" ? " border-emerald-300 bg-emerald-300/20" : "") +
+                      (fl && flash.kind === "bad" ? " border-rose-400 bg-rose-400/20" : "")
+                    }>
+                      {l.emoji && <span className="text-2xl">{l.emoji}</span>}
+                      <span className="flex-1">
+                        <span className="block text-base font-bold sm:text-lg">{l.text}</span>
+                        {showMeaning && l.meaning && <span className="block text-xs italic text-slate-400">{l.meaning}</span>}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+          <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-3">
+            <h3 className="mb-2 px-2 text-xs font-bold uppercase tracking-widest text-emerald-300">Completion</h3>
+            <ul className="flex flex-col gap-2">
+              {rights.map(r => {
+                const solved = solvedRightIds.has(r.id);
+                const fl = flash && flash.rightId === r.id;
+                return (
+                  <li key={r.id}>
+                    <button type="button" onClick={() => onRight(r.id)} disabled={solved} className={"flex w-full items-center gap-3 rounded-lg border px-3 py-3 text-left transition " +
+                      (solved ? "border-emerald-700 bg-emerald-900/30 text-emerald-200 opacity-60" : "border-slate-700 bg-slate-800 hover:border-slate-500 hover:bg-slate-700") +
+                      (!solved && fl && flash.kind === "ok" ? " border-emerald-300 bg-emerald-300/20" : "") +
+                      (!solved && fl && flash.kind === "bad" ? " border-rose-400 bg-rose-400/20" : "")
+                    }>
+                      {r.emoji && <span className="text-2xl">{r.emoji}</span>}
+                      <span className="flex-1">
+                        <span className="block text-base font-bold sm:text-lg">{r.text}</span>
+                        {showMeaning && r.meaning && <span className="block text-xs italic text-slate-400">{r.meaning}</span>}
+                      </span>
+                      {solved && <span className="text-lg text-emerald-300">✓</span>}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* =========================================================================
+ *  WEATHER MATCHING (1:1 batched)
+ * ========================================================================= */
+function WeatherMatchingGame({ set }) {
+  const allCards = useMemo(() => cardsFor(set), [set]);
+  const lang = set.language ? set.language + "-FR" : "fr-FR";
+  const BATCH = 6;
+  const makeBatches = (cards) => { const out = []; for (let i = 0; i < cards.length; i += BATCH) out.push(cards.slice(i, i + BATCH)); return out; };
+  const [batches, setBatches] = useState(() => makeBatches(allCards));
+  const [batchIdx, setBatchIdx] = useState(0);
+  const [rightOrder, setRightOrder] = useState(batches[0] || []);
+  const [matched, setMatched] = useState(new Set());
+  const [selectedLeft, setSelectedLeft] = useState(null);
+  const [flash, setFlash] = useState(null);
+  const [attempts, setAttempts] = useState(0);
+  const [correct, setCorrect] = useState(0);
+  const [audioOn, setAudioOn] = useState(true);
+  useEffect(() => { const sb = makeBatches(shuffle(allCards)); setBatches(sb); setRightOrder(shuffle(sb[0] || [])); }, []); // eslint-disable-line
+
+  const current = batches[batchIdx] || [];
+  const batchDone = current.length > 0 && current.every(c => matched.has(c.id));
+  const overall = batchIdx >= batches.length - 1 && batchDone;
+
+  function goNext() {
+    if (batchIdx >= batches.length - 1) return;
+    const i = batchIdx + 1;
+    setBatchIdx(i); setRightOrder(shuffle(batches[i])); setMatched(new Set()); setSelectedLeft(null); setFlash(null);
+  }
+  function tryMatch(l, r) {
+    setAttempts(a => a + 1);
+    const ok = l === r;
+    setFlash({ id: r, kind: ok ? "ok" : "bad" });
+    window.setTimeout(() => setFlash(null), 300);
+    if (ok) {
+      const card = current.find(c => c.id === l);
+      if (card && audioOn) speak(card.sentence, lang);
+      setCorrect(c => c + 1);
+      setMatched(s => { const n = new Set(s); n.add(l); return n; });
+    }
+    setSelectedLeft(null);
+  }
+  function restart() {
+    const sb = makeBatches(shuffle(allCards));
+    setBatches(sb); setBatchIdx(0); setRightOrder(shuffle(sb[0] || []));
+    setMatched(new Set()); setSelectedLeft(null); setFlash(null); setAttempts(0); setCorrect(0);
+  }
+  const acc = attempts === 0 ? 0 : Math.round(correct / attempts * 100);
+  const matchedTotal = batchIdx * BATCH + current.filter(c => matched.has(c.id)).length;
+
+  return (
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 py-6 text-white">
+      <header className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold">{set.title}</h1>
+          <p className="text-sm text-slate-300">Matching · batch {batchIdx + 1} of {batches.length}</p>
+        </div>
+        <div className="flex items-center gap-3 text-sm font-mono">
+          <span>Matched <b className="text-emerald-400">{matchedTotal}</b>/{allCards.length}</span>
+          <span>Accuracy <b className="text-amber-300">{acc}%</b></span>
+          <label className="flex items-center gap-2 text-slate-300"><input type="checkbox" checked={audioOn} onChange={e => setAudioOn(e.target.checked)} className="h-4 w-4 accent-amber-400" /> Audio</label>
+          <button type="button" onClick={restart} className="rounded border border-slate-500 px-2 py-1 hover:bg-slate-700">Restart</button>
+        </div>
+      </header>
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800"><div className="h-full bg-amber-400 transition-all duration-200" style={{ width: matchedTotal / allCards.length * 100 + "%" }} /></div>
+
+      {overall ? (
+        <div className="rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-900 p-10 text-center shadow-xl">
+          <div className="text-6xl">🎉</div>
+          <h2 className="mt-2 text-3xl font-bold">All matched!</h2>
+          <p className="mt-2 text-emerald-100">{correct} correct out of {attempts} attempts ({acc}%).</p>
+          <button type="button" onClick={restart} className="mt-6 rounded-md bg-white px-6 py-3 font-bold text-emerald-800 hover:bg-emerald-50">Play again</button>
+        </div>
+      ) : batchDone ? (
+        <div className="rounded-2xl bg-slate-800 p-8 text-center shadow-xl">
+          <h2 className="text-2xl font-bold">Batch {batchIdx + 1} complete</h2>
+          <button type="button" onClick={goNext} className="mt-6 rounded-md bg-amber-400 px-6 py-3 font-bold text-slate-900 hover:bg-amber-300">Next batch →</button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-3">
+            <h3 className="mb-2 px-2 text-xs font-bold uppercase tracking-widest text-blue-300">French sentence</h3>
+            <ul className="flex flex-col gap-2">
+              {current.map(c => {
+                const sel = selectedLeft === c.id; const solved = matched.has(c.id);
+                return (
+                  <li key={c.id}>
+                    <button type="button" onClick={() => !solved && setSelectedLeft(x => x === c.id ? null : c.id)} disabled={solved} className={"flex w-full items-center gap-2 rounded-lg border px-3 py-3 text-left transition " +
+                      (solved ? "border-emerald-700 bg-emerald-900/30 text-emerald-200 opacity-60" : sel ? "border-amber-300 bg-amber-300/20 ring-2 ring-amber-300" : "border-slate-700 bg-slate-800 hover:border-slate-500 hover:bg-slate-700")}>
+                      <span className="text-sm font-bold sm:text-base">{c.sentence}</span>
+                      {solved && <span className="ml-auto text-emerald-300">✓</span>}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+          <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-3">
+            <h3 className="mb-2 px-2 text-xs font-bold uppercase tracking-widest text-emerald-300">Meaning</h3>
+            <ul className="flex flex-col gap-2">
+              {rightOrder.map(c => {
+                const solved = matched.has(c.id); const fl = flash && flash.id === c.id;
+                return (
+                  <li key={c.id}>
+                    <button type="button" onClick={() => {
+                      if (solved) return;
+                      if (!selectedLeft) { setFlash({ id: c.id, kind: "bad" }); setTimeout(() => setFlash(null), 250); return; }
+                      tryMatch(selectedLeft, c.id);
+                    }} disabled={solved} className={"flex w-full items-center gap-3 rounded-lg border px-3 py-3 text-left transition " +
+                      (solved ? "border-emerald-700 bg-emerald-900/30 text-emerald-200 opacity-60" : "border-slate-700 bg-slate-800 hover:border-slate-500 hover:bg-slate-700") +
+                      (!solved && fl && flash.kind === "ok" ? " border-emerald-300 bg-emerald-300/20" : "") +
+                      (!solved && fl && flash.kind === "bad" ? " border-rose-400 bg-rose-400/20" : "")
+                    }>
+                      <span className="text-3xl">{c.emoji}</span>
+                      <span className="flex-1 text-sm sm:text-base">{c.meaning}</span>
+                      {solved && <span className="text-lg text-emerald-300">✓</span>}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* =========================================================================
+ *  WEATHER MCQ
+ * ========================================================================= */
+function WeatherMCQGame({ set }) {
+  const allCards = useMemo(() => cardsFor(set), [set]);
+  const lang = set.language ? set.language + "-FR" : "fr-FR";
+  const [order, setOrder] = useState(allCards);
+  const [mounted, setMounted] = useState(false);
+  const [idx, setIdx] = useState(0);
+  const [picked, setPicked] = useState(null);
+  const [cc, setCC] = useState(0);
+  const [att, setAtt] = useState(0);
+  const [audioOn, setAudioOn] = useState(true);
+  useEffect(() => { setOrder(shuffle(allCards)); setMounted(true); }, []); // eslint-disable-line
+
+  const current = order[idx];
+  const done = idx >= order.length;
+  const options = useMemo(() => {
+    if (!current || !mounted) return [];
+    const distractors = shuffle(allCards.filter(c => c.id !== current.id)).slice(0, 3);
+    return shuffle([current, ...distractors]);
+  }, [current, allCards, mounted]);
+
+  function pick(id) {
+    if (picked) return;
+    setPicked(id); setAtt(a => a + 1);
+    if (id === current.id) { setCC(c => c + 1); if (audioOn) speak(current.sentence, lang); }
+  }
+  function next() { setPicked(null); setIdx(i => i + 1); }
+  function restart() { setOrder(shuffle(allCards)); setIdx(0); setPicked(null); setCC(0); setAtt(0); }
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (done) { if (e.key === "Enter" || e.key === " ") restart(); return; }
+      if (!picked) { const n = parseInt(e.key, 10); if (n >= 1 && n <= options.length) pick(options[n - 1].id); }
+      else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); next(); }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }); // eslint-disable-line
+
+  const acc = att === 0 ? 0 : Math.round(cc / att * 100);
+
+  return (
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-4 py-6 text-white">
+      <header className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold">{set.title}</h1>
+          <p className="text-sm text-slate-300">MCQ · question {Math.min(idx + 1, order.length)} of {order.length}</p>
+        </div>
+        <div className="flex items-center gap-3 text-sm font-mono">
+          <span>Score <b className="text-emerald-400">{cc}</b>/{att}</span>
+          <span>Accuracy <b className="text-amber-300">{acc}%</b></span>
+          <label className="flex items-center gap-2 text-slate-300"><input type="checkbox" checked={audioOn} onChange={e => setAudioOn(e.target.checked)} className="h-4 w-4 accent-amber-400" /> Audio</label>
+          <button type="button" onClick={restart} className="rounded border border-slate-500 px-2 py-1 hover:bg-slate-700">Restart</button>
+        </div>
+      </header>
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800"><div className="h-full bg-amber-400 transition-all duration-200" style={{ width: idx / order.length * 100 + "%" }} /></div>
+
+      {done ? (
+        <div className="rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-900 p-10 text-center shadow-xl">
+          <div className="text-6xl">🎉</div>
+          <h2 className="mt-2 text-3xl font-bold">Quiz complete!</h2>
+          <p className="mt-2 text-emerald-100">{cc} correct out of {order.length} ({acc}%).</p>
+          <button type="button" onClick={restart} className="mt-6 rounded-md bg-white px-6 py-3 font-bold text-emerald-800 hover:bg-emerald-50">Play again</button>
+        </div>
+      ) : (
+        <>
+          <div className="rounded-2xl bg-slate-800 p-8 text-center shadow-xl">
+            <div className="text-7xl">{current.emoji}</div>
+            <div className="mt-3 text-xl italic text-slate-200 sm:text-2xl">{current.meaning}</div>
+            <div className="mt-1 text-xs uppercase tracking-widest text-slate-500">Pick the correct French sentence</div>
+          </div>
+          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {options.map((o, i) => {
+              const isC = o.id === current.id; const isP = picked === o.id;
+              let color = "border-slate-700 bg-slate-800 hover:border-slate-500 hover:bg-slate-700";
+              if (picked) {
+                if (isC) color = "border-emerald-400 bg-emerald-900/40";
+                else if (isP) color = "border-rose-400 bg-rose-900/40";
+                else color = "border-slate-800 bg-slate-900/50 opacity-60";
+              }
+              return (
+                <li key={o.id}>
+                  <button type="button" disabled={!!picked} onClick={() => pick(o.id)} className={"flex w-full items-center gap-3 rounded-lg border px-4 py-4 text-left transition " + color}>
+                    <span className="font-mono text-sm text-slate-400">{i + 1}</span>
+                    <span className="text-sm font-bold sm:text-base">{o.sentence}</span>
+                    {picked && isC && <span className="ml-auto text-emerald-300">✓</span>}
+                    {picked && isP && !isC && <span className="ml-auto text-rose-300">✗</span>}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+          {picked && (
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-slate-400">{picked === current.id ? "Nice." : "Correct answer above."}</p>
+              <button type="button" onClick={next} className="rounded-md bg-amber-400 px-5 py-2 font-bold text-slate-900 hover:bg-amber-300">Next →</button>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+/* =========================================================================
+ *  WEATHER GAPFILL
+ * ========================================================================= */
+function WeatherGapfillGame({ set }) {
+  const allCards = useMemo(() => cardsFor(set), [set]);
+  const lang = set.language ? set.language + "-FR" : "fr-FR";
+  const [order, setOrder] = useState(allCards);
+  const [idx, setIdx] = useState(0);
+  const [input, setInput] = useState("");
+  const [verdict, setVerdict] = useState(null);
+  const [revealed, setRevealed] = useState(false);
+  const [cc, setCC] = useState(0);
+  const [att, setAtt] = useState(0);
+  const [audioOn, setAudioOn] = useState(true);
+  const inputRef = useRef(null);
+  useEffect(() => { setOrder(shuffle(allCards)); }, []); // eslint-disable-line
+
+  const current = order[idx];
+  const done = idx >= order.length;
+  const answer = current ? (current.tile.displayName != null ? current.tile.displayName : current.tile.text.toLowerCase()) : "";
+  const prefix = useMemo(() => {
+    if (!current) return "";
+    const cat = set.categories.find(c => c.key === current.tile.category);
+    return cat && cat.prefix !== undefined ? cat.prefix : (current.categoryLabel + " ");
+  }, [current, set.categories]);
+
+  useEffect(() => { setInput(""); setVerdict(null); setRevealed(false); inputRef.current && inputRef.current.focus(); }, [idx]);
+
+  function submit() {
+    if (!current || verdict === "ok") return;
+    const ok = normalise(input) === normalise(answer);
+    setAtt(a => a + 1);
+    if (ok) { setVerdict("ok"); setCC(c => c + 1); if (audioOn) speak(current.sentence, lang); }
+    else setVerdict("bad");
+  }
+  function reveal() { setRevealed(true); setVerdict("bad"); if (audioOn && current) speak(current.sentence, lang); }
+  function next() { setIdx(i => i + 1); }
+  function restart() { setOrder(shuffle(allCards)); setIdx(0); setInput(""); setVerdict(null); setRevealed(false); setCC(0); setAtt(0); }
+
+  const acc = att === 0 ? 0 : Math.round(cc / att * 100);
+
+  return (
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-5 px-4 py-6 text-white">
+      <header className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold">{set.title}</h1>
+          <p className="text-sm text-slate-300">Gapfill · question {Math.min(idx + 1, order.length)} of {order.length}</p>
+        </div>
+        <div className="flex items-center gap-3 text-sm font-mono">
+          <span>Score <b className="text-emerald-400">{cc}</b>/{att}</span>
+          <span>Accuracy <b className="text-amber-300">{acc}%</b></span>
+          <label className="flex items-center gap-2 text-slate-300"><input type="checkbox" checked={audioOn} onChange={e => setAudioOn(e.target.checked)} className="h-4 w-4 accent-amber-400" /> Audio</label>
+          <button type="button" onClick={restart} className="rounded border border-slate-500 px-2 py-1 hover:bg-slate-700">Restart</button>
+        </div>
+      </header>
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800"><div className="h-full bg-amber-400 transition-all duration-200" style={{ width: idx / order.length * 100 + "%" }} /></div>
+
+      {done ? (
+        <div className="rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-900 p-10 text-center shadow-xl">
+          <div className="text-6xl">🎉</div>
+          <h2 className="mt-2 text-3xl font-bold">All done!</h2>
+          <p className="mt-2 text-emerald-100">{cc} correct out of {order.length} ({acc}%).</p>
+          <button type="button" onClick={restart} className="mt-6 rounded-md bg-white px-6 py-3 font-bold text-emerald-800 hover:bg-emerald-50">Play again</button>
+        </div>
+      ) : (
+        <>
+          <div className="rounded-2xl bg-slate-800 p-8 text-center shadow-xl">
+            <div className="text-7xl">{current.emoji}</div>
+            <div className="mt-2 text-sm italic text-slate-300">{current.meaning}</div>
+            <div className="mt-5 text-3xl font-bold sm:text-4xl">
+              <span>{prefix.trim()}</span> <span className="rounded bg-slate-700 px-3 py-1">{(verdict === "ok" || revealed) ? answer : "___"}</span>
+            </div>
+          </div>
+          <form onSubmit={e => { e.preventDefault(); if (verdict === "ok" || revealed) next(); else submit(); }} className="flex flex-col gap-3">
+            <input ref={inputRef} type="text" value={input} autoFocus autoComplete="off" spellCheck={false} onChange={e => { setInput(e.target.value); if (verdict === "bad" && !revealed) setVerdict(null); }} disabled={verdict === "ok" || revealed} placeholder="Fill in the missing word(s)" className={"w-full rounded-lg border bg-slate-900 px-4 py-3 text-lg outline-none transition " +
+              (verdict === "ok" ? "border-emerald-400" : verdict === "bad" ? "border-rose-400" : "border-slate-700 focus:border-amber-300")
+            } />
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="text-xs text-slate-500">Accents and capitalisation don't matter.</div>
+              <div className="flex gap-2">
+                {verdict !== "ok" && !revealed && <button type="button" onClick={reveal} className="rounded border border-slate-600 px-3 py-2 text-sm hover:bg-slate-800">Show answer</button>}
+                {(verdict === "ok" || revealed) ? (
+                  <button type="submit" className="rounded-md bg-amber-400 px-5 py-2 font-bold text-slate-900 hover:bg-amber-300">Next →</button>
+                ) : (
+                  <button type="submit" className="rounded-md bg-emerald-500 px-5 py-2 font-bold text-white hover:bg-emerald-400">Check</button>
+                )}
+              </div>
+            </div>
+          </form>
+        </>
+      )}
+    </div>
+  );
+}
+
+/* =========================================================================
+ *  WRAPPER (lesson → game flow for Letris sets)
+ * ========================================================================= */
+function LetrisFlow({ set }) {
+  const [stage, setStage] = useState("lesson");
+  return stage === "lesson"
+    ? <FlashcardLesson set={set} onStartGame={() => setStage("game")} startGameLabel="Start Letris" />
+    : <LetrisGame set={set} />;
+}
+
+/* =========================================================================
+ *  PAGES
+ * ========================================================================= */
+function NavBar({ left, title }) {
+  return (
+    <div className="border-b border-slate-800 bg-slate-900/60">
+      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 text-sm">
+        <Link to={left.to} className="text-slate-400 hover:text-white">← {left.label}</Link>
+        <span className="text-slate-500">{title}</span>
+      </div>
+    </div>
+  );
+}
+
+function HomePage() {
+  const units = [
+    { slug: "#/weather", name: "Quel temps fait-il ?", emoji: "🌦️", desc: "Weather expressions — 5-game unit: lesson → match → MCQ → gapfill → Letris.", tags: ["lesson", "matching", "mcq", "gapfill", "letris"] },
+    { slug: "#/directions", name: "Quel est le chemin pour … ?", emoji: "🗺️", desc: "Learn then match verb phrases used when giving directions.", tags: ["lesson", "matching"] },
+    { slug: "#/countries", name: "C'est quel pays ?", emoji: "🌍", desc: "Sort countries into the correct article column (—, LE, LA, L', LES).", tags: ["lesson", "letris"] },
+    { slug: "#/lieux", name: "Quel est votre lieu préféré dans la ville ?", emoji: "🏙️", desc: "Sort places-around-town by article (LE, LA, L', LES).", tags: ["lesson", "letris"] },
+    { slug: "#/loin", name: "C'est loin ?", emoji: "📍", desc: "Prepositions of location — sort place phrases by which preposition group they take.", tags: ["lesson", "letris"] },
+    { slug: "#/venir", name: "Vous venez de quel pays ?", emoji: "🛬", desc: "Pick DE / DU / D' / DES for each country (Je viens du Japon, de France…).", tags: ["lesson", "letris"] },
+    { slug: "#/aller-pays", name: "Vous allez dans quel pays ?", emoji: "🛫", desc: "Pick EN / AU / AUX / À for travel destinations (Je vais en France, au Japon…).", tags: ["lesson", "letris"] },
+    { slug: "#/aller-lieu", name: "Où est-ce qu'on va ?", emoji: "🚦", desc: "Contractions of à + article: au, à la, à l', aux (On va au café, à la banque…).", tags: ["lesson", "letris"] },
+    { slug: "#/transport", name: "Vous y allez comment ?", emoji: "🚗", desc: "EN for enclosed vehicles, À for personal modes (J'y vais en bus, à vélo…).", tags: ["lesson", "letris"] }
+  ];
+  return (
+    <main className="min-h-screen">
+      <div className="mx-auto max-w-6xl px-4 py-10">
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold">Lang Games</h1>
+          <p className="mt-1 text-slate-300">Practice French through small games. Pick a unit below.</p>
+        </header>
+        <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-amber-300">Available units</h2>
+        <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {units.map(u => (
+            <a key={u.slug} href={u.slug} className="group flex h-full flex-col rounded-lg border border-amber-400/40 bg-slate-900 p-5 transition hover:border-amber-300 hover:bg-slate-800">
+              <div className="flex items-center gap-3">
+                <span className="text-3xl">{u.emoji}</span>
+                <h3 className="text-lg font-semibold">{u.name}</h3>
+              </div>
+              <p className="mt-2 text-sm text-slate-400">{u.desc}</p>
+              <div className="mt-auto flex flex-wrap gap-1 pt-3">
+                {u.tags.map(t => <span key={t} className="rounded bg-slate-800 px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-slate-400">{t}</span>)}
+              </div>
+            </a>
+          ))}
+        </section>
+      </div>
+    </main>
+  );
+}
+
+function UnitHub({ title, intro, steps, navTitle }) {
+  return (
+    <main className="min-h-screen text-white">
+      <NavBar left={{ to: "/", label: "Apps & Games" }} title={navTitle} />
+      <div className="mx-auto max-w-5xl px-4 py-10">
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold">{title}</h1>
+          <p className="mt-1 text-slate-300">{intro}</p>
+        </header>
+        <ol className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {steps.map(s => (
+            <li key={s.name}>
+              <a href={"#" + s.to} className="group flex h-full flex-col rounded-lg border border-amber-400/40 bg-slate-900 p-5 transition hover:border-amber-300 hover:bg-slate-800">
+                <div className="flex items-center gap-3"><span className="text-3xl">{s.emoji}</span><h2 className="text-lg font-semibold">{s.name}</h2></div>
+                <p className="mt-2 text-sm text-slate-400">{s.desc}</p>
+                <span className="mt-auto pt-3 text-xs font-semibold uppercase tracking-widest text-amber-300">{s.label} →</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </main>
+  );
+}
+
+/* =========================================================================
+ *  ROUTER
+ * ========================================================================= */
+function App() {
+  const path = useHashRoute();
+
+  // /
+  if (path === "/" || path === "") return <HomePage />;
+
+  // /weather (unit hub)
+  if (path === "/weather") {
+    return <UnitHub
+      navTitle="Quel temps fait-il ?"
+      title="Quel temps fait-il ?"
+      intro="5-step weather unit — learn, then match, recognise, produce, and race."
+      steps={[
+        { to: "/weather/lesson", name: "1. Lesson", emoji: "📚", desc: "Learn the 32 expressions.", label: "Start" },
+        { to: "/weather/match", name: "2. Matching", emoji: "🔗", desc: "Match French sentences with their meaning.", label: "Match" },
+        { to: "/weather/mcq", name: "3. MCQ", emoji: "✅", desc: "Pick the correct French sentence from 4.", label: "Quiz" },
+        { to: "/weather/gap", name: "4. Gapfill", emoji: "✏️", desc: "Fill in the missing word(s).", label: "Fill" },
+        { to: "/weather/letris", name: "5. Letris", emoji: "🌦️", desc: "Race the falling tiles.", label: "Play" }
+      ]}
+    />;
+  }
+  if (path === "/weather/lesson") return <Frame title="Lesson" back="/weather"><FlashcardLesson set={WEATHER_SET} onStartGame={() => navigate("/weather/match")} startGameLabel="Continue to matching" /></Frame>;
+  if (path === "/weather/match")  return <Frame title="Matching" back="/weather"><WeatherMatchingGame set={WEATHER_SET} /></Frame>;
+  if (path === "/weather/mcq")    return <Frame title="MCQ" back="/weather"><WeatherMCQGame set={WEATHER_SET} /></Frame>;
+  if (path === "/weather/gap")    return <Frame title="Gapfill" back="/weather"><WeatherGapfillGame set={WEATHER_SET} /></Frame>;
+  if (path === "/weather/letris") return <Frame title="Letris" back="/weather"><LetrisGame set={WEATHER_SET} /></Frame>;
+
+  // /directions
+  if (path === "/directions") {
+    return <UnitHub
+      navTitle="Quel est le chemin … ?"
+      title="Quel est le chemin pour … ?"
+      intro="Learn then match the verb phrases used when giving directions."
+      steps={[
+        { to: "/directions/lesson", name: "1. Lesson", emoji: "📚", desc: "Learn the verb phrases and completions.", label: "Start" },
+        { to: "/directions/match",  name: "2. Matching", emoji: "🔗", desc: "Match each verb phrase with a valid completion.", label: "Match" },
+        { to: "/directions/map",    name: "3. Practice map", emoji: "🗺️", desc: "Assemble the route from A to B by clicking phrases.", label: "Open the map" }
+      ]}
+    />;
+  }
+  if (path === "/directions/lesson") return <Frame title="Lesson" back="/directions"><FlashcardLesson set={DIRECTIONS_LESSON_SET} onStartGame={() => navigate("/directions/match")} startGameLabel="Continue to matching" /></Frame>;
+  if (path === "/directions/match")  return <Frame title="Matching" back="/directions"><MatchingGame set={DIRECTIONS_SET} /></Frame>;
+  if (path === "/directions/map")    return <Frame title="Practice map" back="/directions"><DirectionsMapGame /></Frame>;
+
+  // /countries
+  if (path === "/countries") {
+    return <UnitHub
+      navTitle="C'est quel pays ?"
+      title="C'est quel pays ?"
+      intro="Learn then sort each country into its article column."
+      steps={[
+        { to: "/countries/lesson", name: "1. Lesson", emoji: "📚", desc: "Learn the 34 countries and their articles.", label: "Start" },
+        { to: "/countries/letris", name: "2. Letris", emoji: "🌍", desc: "Sort falling countries into —, LE, LA, L', LES.", label: "Play" }
+      ]}
+    />;
+  }
+  if (path === "/countries/lesson") return <Frame title="Lesson" back="/countries"><FlashcardLesson set={COUNTRIES_SET} onStartGame={() => navigate("/countries/letris")} startGameLabel="Start Letris" /></Frame>;
+  if (path === "/countries/letris") return <Frame title="Letris" back="/countries"><LetrisGame set={COUNTRIES_SET} /></Frame>;
+
+  // /lieux
+  if (path === "/lieux") {
+    return <UnitHub
+      navTitle="Quel est votre lieu préféré … ?"
+      title="Quel est votre lieu préféré dans la ville ?"
+      intro="Learn then sort each place into its article column."
+      steps={[
+        { to: "/lieux/lesson", name: "1. Lesson", emoji: "📚", desc: "Learn 28 places around town.", label: "Start" },
+        { to: "/lieux/letris", name: "2. Letris", emoji: "🏙️", desc: "Sort falling places into LE, LA, L', LES.", label: "Play" }
+      ]}
+    />;
+  }
+  if (path === "/lieux/lesson") return <Frame title="Lesson" back="/lieux"><FlashcardLesson set={LIEUX_SET} onStartGame={() => navigate("/lieux/letris")} startGameLabel="Start Letris" /></Frame>;
+  if (path === "/lieux/letris") return <Frame title="Letris" back="/lieux"><LetrisGame set={LIEUX_SET} /></Frame>;
+
+  // /loin
+  if (path === "/loin") {
+    return <UnitHub
+      navTitle="C'est loin ?"
+      title="C'est loin ?"
+      intro="Prepositions of location — Group 1 (sur, sous, devant…) takes LE/LA/L'/LES. Group 2 (à côté de, près de…) takes DU/DE LA/DE L'/DES."
+      steps={[
+        { to: "/loin/lesson", name: "1. Lesson", emoji: "📚", desc: "Learn the 12 prepositions of location.", label: "Start" },
+        { to: "/loin/letris", name: "2. Letris", emoji: "📍", desc: "Sort place phrases under the right preposition group.", label: "Play" }
+      ]}
+    />;
+  }
+  if (path === "/loin/lesson") return <Frame title="Lesson" back="/loin"><FlashcardLesson set={LOIN_LESSON_SET} onStartGame={() => navigate("/loin/letris")} startGameLabel="Start Letris" /></Frame>;
+  if (path === "/loin/letris") return <Frame title="Letris" back="/loin"><LetrisGame set={LOIN_LETRIS_SET} /></Frame>;
+
+  // /venir
+  if (path === "/venir") {
+    return <UnitHub
+      navTitle="Vous venez de quel pays ?"
+      title="Vous venez de quel pays ?"
+      intro="Pick the right form of « de » for each country. Feminine → de · masculine → du · vowel-starting → d' · plural → des."
+      steps={[
+        { to: "/venir/lesson", name: "1. Lesson", emoji: "📚", desc: "Learn the four forms with flashcards.", label: "Start" },
+        { to: "/venir/letris", name: "2. Letris", emoji: "🛬", desc: "Sort falling countries into DE / DU / D' / DES.", label: "Play" }
+      ]}
+    />;
+  }
+  if (path === "/venir/lesson") return <Frame title="Lesson" back="/venir"><FlashcardLesson set={VENIR_SET} onStartGame={() => navigate("/venir/letris")} startGameLabel="Start Letris" /></Frame>;
+  if (path === "/venir/letris") return <Frame title="Letris" back="/venir"><LetrisGame set={VENIR_SET} /></Frame>;
+
+  // /aller-pays
+  if (path === "/aller-pays") {
+    return <UnitHub
+      navTitle="Vous allez dans quel pays ?"
+      title="Vous allez dans quel pays ?"
+      intro="Pick the right preposition for going to each country. Feminine / vowel-starting → en · masculine → au · plural → aux · no article → à."
+      steps={[
+        { to: "/aller-pays/lesson", name: "1. Lesson", emoji: "📚", desc: "Learn the four prepositions with flashcards.", label: "Start" },
+        { to: "/aller-pays/letris", name: "2. Letris", emoji: "🛫", desc: "Sort falling countries into EN / AU / AUX / À.", label: "Play" }
+      ]}
+    />;
+  }
+  if (path === "/aller-pays/lesson") return <Frame title="Lesson" back="/aller-pays"><FlashcardLesson set={ALLER_PAYS_SET} onStartGame={() => navigate("/aller-pays/letris")} startGameLabel="Start Letris" /></Frame>;
+  if (path === "/aller-pays/letris") return <Frame title="Letris" back="/aller-pays"><LetrisGame set={ALLER_PAYS_SET} /></Frame>;
+
+  // /aller-lieu
+  if (path === "/aller-lieu") {
+    return <UnitHub
+      navTitle="Où est-ce qu'on va ?"
+      title="Où est-ce qu'on va ?"
+      intro="Pick the right contraction of « à » + article: à + le = au, à + la stays, à + l' stays, à + les = aux."
+      steps={[
+        { to: "/aller-lieu/lesson", name: "1. Lesson", emoji: "📚", desc: "Learn the four contractions with flashcards.", label: "Start" },
+        { to: "/aller-lieu/letris", name: "2. Letris", emoji: "🏙️", desc: "Sort falling places into AU / À LA / À L' / AUX.", label: "Play" }
+      ]}
+    />;
+  }
+  if (path === "/aller-lieu/lesson") return <Frame title="Lesson" back="/aller-lieu"><FlashcardLesson set={ALLER_LIEU_SET} onStartGame={() => navigate("/aller-lieu/letris")} startGameLabel="Start Letris" /></Frame>;
+  if (path === "/aller-lieu/letris") return <Frame title="Letris" back="/aller-lieu"><LetrisGame set={ALLER_LIEU_SET} /></Frame>;
+
+  // /transport
+  if (path === "/transport") {
+    return <UnitHub
+      navTitle="Vous y allez comment ?"
+      title="Vous y allez comment ?"
+      intro="Enclosed vehicles → en. Open / personal modes → à."
+      steps={[
+        { to: "/transport/lesson", name: "1. Lesson", emoji: "📚", desc: "Learn EN and À with flashcards.", label: "Start" },
+        { to: "/transport/letris", name: "2. Letris", emoji: "🚗", desc: "Sort modes of transport into EN or À.", label: "Play" }
+      ]}
+    />;
+  }
+  if (path === "/transport/lesson") return <Frame title="Lesson" back="/transport"><FlashcardLesson set={TRANSPORT_SET} onStartGame={() => navigate("/transport/letris")} startGameLabel="Start Letris" /></Frame>;
+  if (path === "/transport/letris") return <Frame title="Letris" back="/transport"><LetrisGame set={TRANSPORT_SET} /></Frame>;
+
+  // /paris-trajets — two square map cut-outs for teaching material
+  if (path === "/paris-trajets") {
+    return (
+      <main className="min-h-screen text-white">
+        <NavBar left={{ to: "/", label: "Apps & Games" }} title="Paris · Latin Quarter trajets" />
+        <div className="mx-auto max-w-5xl px-4 py-6">
+          <header className="mb-6">
+            <h1 className="text-2xl font-bold">Two square trajets — Quartier Latin</h1>
+            <p className="mt-1 text-sm text-slate-300">
+              Each map shows a logical walking route under 1.5 km with at least two turns.
+              Screenshot the squares for slides, or use the OpenStreetMap export link below each map to download a PNG.
+            </p>
+          </header>
+          <div className="flex flex-wrap justify-center gap-6">
+            {LATIN_QUARTER_TRAJETS.map((t, i) => (
+              <div key={i} className="flex flex-col gap-2">
+                <SquareTrajet trajet={t} index={i + 1} />
+                <a
+                  href={
+                    "https://www.openstreetmap.org/?mlat=" + t.from.lat + "&mlon=" + t.from.lng +
+                    "#map=16/" + ((t.from.lat + t.to.lat) / 2).toFixed(5) +
+                    "/" + ((t.from.lng + t.to.lng) / 2).toFixed(5)
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-center text-xs text-amber-300 hover:underline"
+                >
+                  Open on OpenStreetMap.org (for PNG export) ↗
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // 404
+  return (
+    <main className="min-h-screen p-10 text-center text-white">
+      <h1 className="text-3xl font-bold">Page not found</h1>
+      <p className="mt-2 text-slate-400">Hash: <code>{path}</code></p>
+      <Link to="/" className="mt-4 inline-block rounded-md bg-amber-400 px-4 py-2 font-bold text-slate-900">← Home</Link>
+    </main>
+  );
+}
+
+function Frame({ title, back, children }) {
+  return (
+    <main className="min-h-screen">
+      <NavBar left={{ to: back, label: "Back" }} title={title} />
+      {children}
+    </main>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>

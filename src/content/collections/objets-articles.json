@@ -1,0 +1,148 @@
+{
+  "id": "objets-articles",
+  "title": "Un, une ou des ?",
+  "subtitle": "Everyday objects, sorted by article",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 2,
+  "lessonNo": 21,
+  "lessonSlug": "objets-articles",
+  "tags": [],
+  "seq": 221,
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        {
+          "key": "un",
+          "label": "UN",
+          "prefix": "un "
+        },
+        {
+          "key": "une",
+          "label": "UNE",
+          "prefix": "une "
+        },
+        {
+          "key": "des",
+          "label": "DES",
+          "prefix": "des "
+        }
+      ]
+    }
+  },
+  "items": [
+    {
+      "id": "objets-articles-01",
+      "fr": "sac",
+      "en": "bag",
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "objets-articles-02",
+      "fr": "livre",
+      "en": "book",
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "objets-articles-03",
+      "fr": "cahier",
+      "en": "exercise book",
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "objets-articles-04",
+      "fr": "téléphone",
+      "en": "phone",
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "objets-articles-05",
+      "fr": "stylo",
+      "en": "pen",
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "objets-articles-06",
+      "fr": "crayon",
+      "en": "pencil",
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "objets-articles-07",
+      "fr": "passeport",
+      "en": "passport",
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "objets-articles-08",
+      "fr": "carte d'identité",
+      "en": "ID card",
+      "tags": [
+        "col:une"
+      ]
+    },
+    {
+      "id": "objets-articles-09",
+      "fr": "trousse",
+      "en": "pencil case",
+      "tags": [
+        "col:une"
+      ]
+    },
+    {
+      "id": "objets-articles-10",
+      "fr": "ciseaux",
+      "en": "scissors",
+      "tags": [
+        "col:des"
+      ]
+    },
+    {
+      "id": "objets-articles-11",
+      "fr": "gomme",
+      "en": "eraser",
+      "tags": [
+        "col:une"
+      ]
+    },
+    {
+      "id": "objets-articles-12",
+      "fr": "portefeuille",
+      "en": "wallet",
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "objets-articles-13",
+      "fr": "lunettes",
+      "en": "glasses",
+      "tags": [
+        "col:des"
+      ]
+    },
+    {
+      "id": "objets-articles-14",
+      "fr": "clé",
+      "en": "key",
+      "tags": [
+        "col:une"
+      ]
+    }
+  ]
+}

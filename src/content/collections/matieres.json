@@ -1,0 +1,121 @@
+{
+  "id": "matieres",
+  "title": "Quelle matière ?",
+  "subtitle": "Academic subjects, sorted by article",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 1,
+  "lessonNo": 13,
+  "lessonSlug": "matieres",
+  "tags": [],
+  "seq": 113,
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        {
+          "key": "le",
+          "label": "LE",
+          "prefix": "le "
+        },
+        {
+          "key": "la",
+          "label": "LA",
+          "prefix": "la "
+        },
+        {
+          "key": "l_apos",
+          "label": "L'",
+          "prefix": "l'"
+        },
+        {
+          "key": "les",
+          "label": "LES",
+          "prefix": "les "
+        }
+      ]
+    }
+  },
+  "items": [
+    {
+      "id": "matieres-01",
+      "fr": "français",
+      "en": "French",
+      "tags": [
+        "col:le"
+      ]
+    },
+    {
+      "id": "matieres-02",
+      "fr": "dessin",
+      "en": "art",
+      "tags": [
+        "col:le"
+      ]
+    },
+    {
+      "id": "matieres-03",
+      "fr": "géographie",
+      "en": "geography",
+      "tags": [
+        "col:la"
+      ]
+    },
+    {
+      "id": "matieres-04",
+      "fr": "biologie",
+      "en": "biology",
+      "tags": [
+        "col:la"
+      ]
+    },
+    {
+      "id": "matieres-05",
+      "fr": "anglais",
+      "en": "English",
+      "tags": [
+        "col:l_apos"
+      ]
+    },
+    {
+      "id": "matieres-06",
+      "fr": "histoire",
+      "en": "history",
+      "tags": [
+        "col:l_apos"
+      ]
+    },
+    {
+      "id": "matieres-07",
+      "fr": "informatique",
+      "en": "computer science",
+      "tags": [
+        "col:l_apos"
+      ]
+    },
+    {
+      "id": "matieres-08",
+      "fr": "mathématiques",
+      "en": "maths",
+      "tags": [
+        "col:les"
+      ]
+    },
+    {
+      "id": "matieres-09",
+      "fr": "sciences",
+      "en": "science",
+      "tags": [
+        "col:les"
+      ]
+    },
+    {
+      "id": "matieres-10",
+      "fr": "langues",
+      "en": "languages",
+      "tags": [
+        "col:les"
+      ]
+    }
+  ]
+}

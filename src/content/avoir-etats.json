@@ -1,0 +1,55 @@
+{
+  "id": "avoir-etats",
+  "title": "Avoir ou être ?",
+  "subtitle": "Sort each state by its verb",
+  "categories": [
+    {
+      "key": "avoir",
+      "label": "J'AI",
+      "prefix": "j'ai "
+    },
+    {
+      "key": "etre",
+      "label": "JE SUIS",
+      "prefix": "je suis "
+    }
+  ],
+  "tiles": [
+    {
+      "text": "FAIM",
+      "displayName": "faim",
+      "category": "avoir",
+      "meaning": "hungry"
+    },
+    {
+      "text": "SOIF",
+      "displayName": "soif",
+      "category": "avoir",
+      "meaning": "thirsty"
+    },
+    {
+      "text": "FROID",
+      "displayName": "froid",
+      "category": "avoir",
+      "meaning": "cold"
+    },
+    {
+      "text": "CHAUD",
+      "displayName": "chaud",
+      "category": "avoir",
+      "meaning": "hot"
+    },
+    {
+      "text": "FATIGUÉ(E)",
+      "displayName": "fatigué(e)",
+      "category": "etre",
+      "meaning": "tired"
+    },
+    {
+      "text": "CONTENT(E)",
+      "displayName": "content(e)",
+      "category": "etre",
+      "meaning": "happy"
+    }
+  ]
+}

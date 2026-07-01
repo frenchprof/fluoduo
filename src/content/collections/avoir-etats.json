@@ -1,0 +1,79 @@
+{
+  "id": "avoir-etats",
+  "title": "Avoir ou être ?",
+  "subtitle": "Sort each state by its verb",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 1,
+  "lessonNo": 19,
+  "lessonSlug": "avoir-etats",
+  "tags": [],
+  "seq": 119,
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        {
+          "key": "avoir",
+          "label": "J'AI",
+          "prefix": "j'ai "
+        },
+        {
+          "key": "etre",
+          "label": "JE SUIS",
+          "prefix": "je suis "
+        }
+      ]
+    }
+  },
+  "items": [
+    {
+      "id": "avoir-etats-01",
+      "fr": "faim",
+      "en": "hungry",
+      "tags": [
+        "col:avoir"
+      ]
+    },
+    {
+      "id": "avoir-etats-02",
+      "fr": "soif",
+      "en": "thirsty",
+      "tags": [
+        "col:avoir"
+      ]
+    },
+    {
+      "id": "avoir-etats-03",
+      "fr": "froid",
+      "en": "cold",
+      "tags": [
+        "col:avoir"
+      ]
+    },
+    {
+      "id": "avoir-etats-04",
+      "fr": "chaud",
+      "en": "hot",
+      "tags": [
+        "col:avoir"
+      ]
+    },
+    {
+      "id": "avoir-etats-05",
+      "fr": "fatigué(e)",
+      "en": "tired",
+      "tags": [
+        "col:etre"
+      ]
+    },
+    {
+      "id": "avoir-etats-06",
+      "fr": "content(e)",
+      "en": "happy",
+      "tags": [
+        "col:etre"
+      ]
+    }
+  ]
+}

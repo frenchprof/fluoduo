@@ -1,0 +1,34 @@
+{
+  "id": "days",
+  "title": "Quel jour on est ?",
+  "subtitle": "Days + moments du jour",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 0,
+  "lessonNo": 4,
+  "lessonSlug": "days",
+  "tags": [],
+  "seq": 4,
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        { "key": "semaine", "label": "SEMAINE", "prefix": "" },
+        { "key": "weekend", "label": "WEEK-END", "prefix": "" },
+        { "key": "moment", "label": "MOMENT", "prefix": "" }
+      ]
+    }
+  },
+  "items": [
+    { "id": "days-01", "fr": "lundi", "en": "Monday", "tags": ["col:semaine"] },
+    { "id": "days-02", "fr": "mardi", "en": "Tuesday", "tags": ["col:semaine"] },
+    { "id": "days-03", "fr": "mercredi", "en": "Wednesday", "tags": ["col:semaine"] },
+    { "id": "days-04", "fr": "jeudi", "en": "Thursday", "tags": ["col:semaine"] },
+    { "id": "days-05", "fr": "vendredi", "en": "Friday", "tags": ["col:semaine"] },
+    { "id": "days-06", "fr": "samedi", "en": "Saturday", "tags": ["col:weekend"] },
+    { "id": "days-07", "fr": "dimanche", "en": "Sunday", "tags": ["col:weekend"] },
+    { "id": "days-08", "fr": "le matin", "en": "in the morning", "tags": ["col:moment"] },
+    { "id": "days-09", "fr": "l'après-midi", "en": "in the afternoon", "tags": ["col:moment"] },
+    { "id": "days-10", "fr": "le soir", "en": "in the evening", "tags": ["col:moment"] }
+  ]
+}

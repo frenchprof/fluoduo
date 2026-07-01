@@ -1,0 +1,43 @@
+{
+  "id": "professions",
+  "title": "Quelle profession ?",
+  "subtitle": "Il est / elle est …",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 1,
+  "lessonNo": 12,
+  "lessonSlug": "professions",
+  "tags": [],
+  "seq": 112,
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        { "key": "m", "label": "IL EST", "prefix": "il est " },
+        { "key": "f", "label": "ELLE EST", "prefix": "elle est " }
+      ]
+    }
+  },
+  "items": [
+    { "id": "professions-01", "fr": "journaliste", "en": "journalist (m)", "tags": ["col:m"] },
+    { "id": "professions-02", "fr": "journaliste", "en": "journalist (f)", "tags": ["col:f"] },
+    { "id": "professions-03", "fr": "styliste", "en": "fashion designer (m)", "tags": ["col:m"] },
+    { "id": "professions-04", "fr": "styliste", "en": "fashion designer (f)", "tags": ["col:f"] },
+    { "id": "professions-05", "fr": "artiste", "en": "artist (m)", "tags": ["col:m"] },
+    { "id": "professions-06", "fr": "artiste", "en": "artist (f)", "tags": ["col:f"] },
+    { "id": "professions-07", "fr": "architecte", "en": "architect (m)", "tags": ["col:m"] },
+    { "id": "professions-08", "fr": "architecte", "en": "architect (f)", "tags": ["col:f"] },
+    { "id": "professions-09", "fr": "chef", "en": "chef (m)", "tags": ["col:m"] },
+    { "id": "professions-10", "fr": "cheffe", "en": "chef (f)", "tags": ["col:f"] },
+    { "id": "professions-11", "fr": "acteur", "en": "actor", "tags": ["col:m"] },
+    { "id": "professions-12", "fr": "actrice", "en": "actress", "tags": ["col:f"] },
+    { "id": "professions-13", "fr": "joueur de tennis", "en": "tennis player (m)", "tags": ["col:m"] },
+    { "id": "professions-14", "fr": "joueuse de tennis", "en": "tennis player (f)", "tags": ["col:f"] },
+    { "id": "professions-15", "fr": "nageur", "en": "swimmer (m)", "tags": ["col:m"] },
+    { "id": "professions-16", "fr": "nageuse", "en": "swimmer (f)", "tags": ["col:f"] },
+    { "id": "professions-17", "fr": "chanteur", "en": "singer (m)", "tags": ["col:m"] },
+    { "id": "professions-18", "fr": "chanteuse", "en": "singer (f)", "tags": ["col:f"] },
+    { "id": "professions-19", "fr": "étudiant", "en": "student (m)", "tags": ["col:m"] },
+    { "id": "professions-20", "fr": "étudiante", "en": "student (f)", "tags": ["col:f"] }
+  ]
+}

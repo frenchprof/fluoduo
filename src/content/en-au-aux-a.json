@@ -1,0 +1,77 @@
+{
+  "id": "en-au-aux-a",
+  "title": "En, au, aux ou à ?",
+  "subtitle": "Sort each place by its preposition",
+  "categories": [
+    {
+      "key": "en",
+      "label": "EN",
+      "prefix": "en "
+    },
+    {
+      "key": "au",
+      "label": "AU",
+      "prefix": "au "
+    },
+    {
+      "key": "aux",
+      "label": "AUX",
+      "prefix": "aux "
+    },
+    {
+      "key": "a",
+      "label": "À",
+      "prefix": "à "
+    }
+  ],
+  "tiles": [
+    {
+      "text": "FRANCE",
+      "displayName": "France",
+      "category": "en",
+      "meaning": "France (f. country)"
+    },
+    {
+      "text": "ITALIE",
+      "displayName": "Italie",
+      "category": "en",
+      "meaning": "Italy (f. country)"
+    },
+    {
+      "text": "JAPON",
+      "displayName": "Japon",
+      "category": "au",
+      "meaning": "Japan (m. country)"
+    },
+    {
+      "text": "CANADA",
+      "displayName": "Canada",
+      "category": "au",
+      "meaning": "Canada (m. country)"
+    },
+    {
+      "text": "ÉTATS-UNIS",
+      "displayName": "États-Unis",
+      "category": "aux",
+      "meaning": "United States (pl. country)"
+    },
+    {
+      "text": "PAYS-BAS",
+      "displayName": "Pays-Bas",
+      "category": "aux",
+      "meaning": "Netherlands (pl. country)"
+    },
+    {
+      "text": "PARIS",
+      "displayName": "Paris",
+      "category": "a",
+      "meaning": "Paris (city)"
+    },
+    {
+      "text": "TOKYO",
+      "displayName": "Tokyo",
+      "category": "a",
+      "meaning": "Tokyo (city)"
+    }
+  ]
+}

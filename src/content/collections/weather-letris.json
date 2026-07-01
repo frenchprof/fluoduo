@@ -1,0 +1,244 @@
+{
+  "id": "weather-letris",
+  "title": "Quel temps fait-il ?",
+  "subtitle": "Sort each weather expression into its starter clause",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 3,
+  "lessonNo": 1,
+  "lessonSlug": "weather",
+  "tags": [],
+  "seq": 301,
+  "items": [
+    {
+      "id": "weather-letris-01-beau",
+      "fr": "beau",
+      "en": "The weather is nice.",
+      "emoji": "🌤️",
+      "tags": [
+        "col:il_fait"
+      ]
+    },
+    {
+      "id": "weather-letris-02-mauvais",
+      "fr": "mauvais",
+      "en": "The weather is bad.",
+      "emoji": "☁️",
+      "tags": [
+        "col:il_fait"
+      ]
+    },
+    {
+      "id": "weather-letris-03-chaud",
+      "fr": "chaud",
+      "en": "The weather is hot.",
+      "emoji": "🥵",
+      "tags": [
+        "col:il_fait"
+      ]
+    },
+    {
+      "id": "weather-letris-04-froid",
+      "fr": "froid",
+      "en": "The weather is cold.",
+      "emoji": "🥶",
+      "tags": [
+        "col:il_fait"
+      ]
+    },
+    {
+      "id": "weather-letris-05-frais",
+      "fr": "frais",
+      "en": "The weather is cool / chilly.",
+      "emoji": "🍃",
+      "tags": [
+        "col:il_fait"
+      ]
+    },
+    {
+      "id": "weather-letris-06-doux",
+      "fr": "doux",
+      "en": "The weather is mild.",
+      "emoji": "🌸",
+      "tags": [
+        "col:il_fait"
+      ]
+    },
+    {
+      "id": "weather-letris-07-x-degres",
+      "fr": "x degrés",
+      "en": "The weather is X degrees.",
+      "emoji": "🌡️",
+      "tags": [
+        "col:il_fait"
+      ]
+    },
+    {
+      "id": "weather-letris-08-entre-x-et-y-degres",
+      "fr": "entre x et y degrés",
+      "en": "The weather is between X and Y degrees.",
+      "emoji": "🌡️",
+      "tags": [
+        "col:il_fait"
+      ]
+    },
+    {
+      "id": "weather-letris-09-du-soleil",
+      "fr": "du soleil",
+      "en": "There is sunshine.",
+      "emoji": "☀️",
+      "tags": [
+        "col:il_y_a"
+      ]
+    },
+    {
+      "id": "weather-letris-10-du-vent",
+      "fr": "du vent",
+      "en": "There is wind.",
+      "emoji": "💨",
+      "tags": [
+        "col:il_y_a"
+      ]
+    },
+    {
+      "id": "weather-letris-11-de-la-pluie",
+      "fr": "de la pluie",
+      "en": "There is rain.",
+      "emoji": "🌧️",
+      "tags": [
+        "col:il_y_a"
+      ]
+    },
+    {
+      "id": "weather-letris-12-des-orages",
+      "fr": "des orages",
+      "en": "There are storms.",
+      "emoji": "⛈️",
+      "tags": [
+        "col:il_y_a"
+      ]
+    },
+    {
+      "id": "weather-letris-13-de-la-neige",
+      "fr": "de la neige",
+      "en": "There is snow.",
+      "emoji": "❄️",
+      "tags": [
+        "col:il_y_a"
+      ]
+    },
+    {
+      "id": "weather-letris-14-des-eclairs",
+      "fr": "des éclairs",
+      "en": "There is lightning.",
+      "emoji": "⚡",
+      "tags": [
+        "col:il_y_a"
+      ]
+    },
+    {
+      "id": "weather-letris-15-du-tonnerre",
+      "fr": "du tonnerre",
+      "en": "There is thunder.",
+      "emoji": "🌩️",
+      "tags": [
+        "col:il_y_a"
+      ]
+    },
+    {
+      "id": "weather-letris-16-une-tempete",
+      "fr": "une tempête",
+      "en": "There is a storm.",
+      "emoji": "🌪️",
+      "tags": [
+        "col:il_y_a"
+      ]
+    },
+    {
+      "id": "weather-letris-17-pleut",
+      "fr": "pleut",
+      "en": "It is raining.",
+      "emoji": "🌧️",
+      "tags": [
+        "col:il"
+      ]
+    },
+    {
+      "id": "weather-letris-18-neige",
+      "fr": "neige",
+      "en": "It is snowing.",
+      "emoji": "❄️",
+      "tags": [
+        "col:il"
+      ]
+    },
+    {
+      "id": "weather-letris-19-gele",
+      "fr": "gèle",
+      "en": "It is freezing.",
+      "emoji": "🧊",
+      "tags": [
+        "col:il"
+      ]
+    },
+    {
+      "id": "weather-letris-20-grele",
+      "fr": "grêle",
+      "en": "It is hailing.",
+      "emoji": "🌨️",
+      "tags": [
+        "col:il"
+      ]
+    },
+    {
+      "id": "weather-letris-21-vente",
+      "fr": "vente",
+      "en": "The wind is blowing.",
+      "emoji": "💨",
+      "tags": [
+        "col:il"
+      ]
+    },
+    {
+      "id": "weather-letris-22-tonne",
+      "fr": "tonne",
+      "en": "It is thundering.",
+      "emoji": "🌩️",
+      "tags": [
+        "col:il"
+      ]
+    },
+    {
+      "id": "weather-letris-23-bruine",
+      "fr": "bruine",
+      "en": "It is drizzling.",
+      "emoji": "🌦️",
+      "tags": [
+        "col:il"
+      ]
+    }
+  ],
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        {
+          "key": "il_fait",
+          "label": "IL FAIT",
+          "prefix": "Il fait "
+        },
+        {
+          "key": "il_y_a",
+          "label": "IL Y A",
+          "prefix": "Il y a "
+        },
+        {
+          "key": "il",
+          "label": "IL",
+          "prefix": "Il "
+        }
+      ]
+    }
+  },
+  "source": "weather-letris.json"
+}

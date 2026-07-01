@@ -1,0 +1,121 @@
+{
+  "id": "core-nouns",
+  "title": "Un ou une ?",
+  "subtitle": "People, identity & classroom objects",
+  "categories": [
+    {
+      "key": "un",
+      "label": "UN",
+      "prefix": "un "
+    },
+    {
+      "key": "une",
+      "label": "une ",
+      "prefix": "une "
+    }
+  ],
+  "tiles": [
+    {
+      "text": "PRÉNOM",
+      "displayName": "prénom",
+      "category": "un",
+      "meaning": "first name"
+    },
+    {
+      "text": "NOM",
+      "displayName": "nom",
+      "category": "un",
+      "meaning": "surname"
+    },
+    {
+      "text": "FEMME",
+      "displayName": "femme",
+      "category": "une",
+      "meaning": "woman"
+    },
+    {
+      "text": "FILLE",
+      "displayName": "fille",
+      "category": "une",
+      "meaning": "girl"
+    },
+    {
+      "text": "DAME",
+      "displayName": "dame",
+      "category": "une",
+      "meaning": "lady"
+    },
+    {
+      "text": "HOMME",
+      "displayName": "homme",
+      "category": "un",
+      "meaning": "man"
+    },
+    {
+      "text": "ÉTUDIANT",
+      "displayName": "étudiant",
+      "category": "un",
+      "meaning": "student (m)"
+    },
+    {
+      "text": "ÉTUDIANTE",
+      "displayName": "étudiante",
+      "category": "une",
+      "meaning": "student (f)"
+    },
+    {
+      "text": "PROFESSEUR",
+      "displayName": "professeur",
+      "category": "un",
+      "meaning": "teacher (m)"
+    },
+    {
+      "text": "PROFESSEURE",
+      "displayName": "professeure",
+      "category": "une",
+      "meaning": "teacher (f)"
+    },
+    {
+      "text": "SALLE DE CLASSE",
+      "displayName": "salle de classe",
+      "category": "une",
+      "meaning": "classroom"
+    },
+    {
+      "text": "TABLEAU",
+      "displayName": "tableau",
+      "category": "un",
+      "meaning": "board"
+    },
+    {
+      "text": "LIVRE",
+      "displayName": "livre",
+      "category": "un",
+      "meaning": "book"
+    },
+    {
+      "text": "CRAYON",
+      "displayName": "crayon",
+      "category": "un",
+      "meaning": "pencil"
+    },
+    {
+      "text": "CAHIER",
+      "displayName": "cahier",
+      "category": "un",
+      "meaning": "exercise book"
+    },
+    {
+      "text": "CASQUE",
+      "displayName": "casque",
+      "category": "un",
+      "meaning": "headphones"
+    },
+    {
+      "text": "MICRO",
+      "displayName": "micro",
+      "category": "un",
+      "meaning": "microphone"
+    }
+  ]
+}

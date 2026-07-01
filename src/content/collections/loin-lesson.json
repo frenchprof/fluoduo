@@ -1,0 +1,140 @@
+{
+  "id": "loin-lesson",
+  "title": "C'est loin ?",
+  "subtitle": "Learn the 12 prepositions of location",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 3,
+  "lessonNo": 9,
+  "lessonSlug": "place-preps",
+  "tags": [],
+  "seq": 309,
+  "items": [
+    {
+      "id": "loin-lesson-01-sur",
+      "fr": "sur",
+      "en": "on / on top of",
+      "emoji": "⬆️",
+      "tags": [
+        "col:group1"
+      ]
+    },
+    {
+      "id": "loin-lesson-02-sous",
+      "fr": "sous",
+      "en": "under",
+      "emoji": "⬇️",
+      "tags": [
+        "col:group1"
+      ]
+    },
+    {
+      "id": "loin-lesson-03-devant",
+      "fr": "devant",
+      "en": "in front of",
+      "emoji": "⏪",
+      "tags": [
+        "col:group1"
+      ]
+    },
+    {
+      "id": "loin-lesson-04-derriere",
+      "fr": "derrière",
+      "en": "behind",
+      "emoji": "⏩",
+      "tags": [
+        "col:group1"
+      ]
+    },
+    {
+      "id": "loin-lesson-05-dans",
+      "fr": "dans",
+      "en": "in / inside",
+      "emoji": "📦",
+      "tags": [
+        "col:group1"
+      ]
+    },
+    {
+      "id": "loin-lesson-06-entre",
+      "fr": "entre",
+      "en": "between",
+      "emoji": "↔️",
+      "tags": [
+        "col:group1"
+      ]
+    },
+    {
+      "id": "loin-lesson-07-a-cote-de",
+      "fr": "à côté",
+      "en": "next to / beside",
+      "emoji": "🤝",
+      "tags": [
+        "col:group2"
+      ]
+    },
+    {
+      "id": "loin-lesson-08-a-gauche-de",
+      "fr": "à gauche",
+      "en": "to the left of",
+      "emoji": "⬅️",
+      "tags": [
+        "col:group2"
+      ]
+    },
+    {
+      "id": "loin-lesson-09-a-droite-de",
+      "fr": "à droite",
+      "en": "to the right of",
+      "emoji": "➡️",
+      "tags": [
+        "col:group2"
+      ]
+    },
+    {
+      "id": "loin-lesson-10-pres-de",
+      "fr": "près",
+      "en": "near",
+      "emoji": "📏",
+      "tags": [
+        "col:group2"
+      ]
+    },
+    {
+      "id": "loin-lesson-11-loin-de",
+      "fr": "loin",
+      "en": "far from",
+      "emoji": "🛣️",
+      "tags": [
+        "col:group2"
+      ]
+    },
+    {
+      "id": "loin-lesson-12-en-face-de",
+      "fr": "en face",
+      "en": "opposite / facing",
+      "emoji": "🪞",
+      "tags": [
+        "col:group2"
+      ]
+    }
+  ],
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        {
+          "key": "group1",
+          "label": "WITHOUT de",
+          "prefix": ""
+        },
+        {
+          "key": "group2",
+          "label": "WITH de",
+          "prefix": ""
+        }
+      ]
+    }
+  },
+  "source": "loin-lesson.json"
+}

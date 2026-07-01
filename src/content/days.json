@@ -1,0 +1,22 @@
+{
+  "id": "days",
+  "title": "Quel jour on est ?",
+  "subtitle": "Days + moments du jour",
+  "categories": [
+    { "key": "semaine", "label": "SEMAINE", "prefix": "" },
+    { "key": "weekend", "label": "WEEK-END", "prefix": "" },
+    { "key": "moment", "label": "MOMENT", "prefix": "" }
+  ],
+  "tiles": [
+    { "text": "LUNDI", "displayName": "lundi", "category": "semaine", "meaning": "Monday" },
+    { "text": "MARDI", "displayName": "mardi", "category": "semaine", "meaning": "Tuesday" },
+    { "text": "MERCREDI", "displayName": "mercredi", "category": "semaine", "meaning": "Wednesday" },
+    { "text": "JEUDI", "displayName": "jeudi", "category": "semaine", "meaning": "Thursday" },
+    { "text": "VENDREDI", "displayName": "vendredi", "category": "semaine", "meaning": "Friday" },
+    { "text": "SAMEDI", "displayName": "samedi", "category": "weekend", "meaning": "Saturday" },
+    { "text": "DIMANCHE", "displayName": "dimanche", "category": "weekend", "meaning": "Sunday" },
+    { "text": "LE MATIN", "displayName": "le matin", "category": "moment", "meaning": "in the morning" },
+    { "text": "L'APRÈS-MIDI", "displayName": "l'après-midi", "category": "moment", "meaning": "in the afternoon" },
+    { "text": "LE SOIR", "displayName": "le soir", "category": "moment", "meaning": "in the evening" }
+  ]
+}

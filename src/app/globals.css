@@ -24,3 +24,657 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ===========================================================================
+ *  Neumorphic component primitives
+ * =========================================================================== */
+:root {
+  --neo-bg: #1e293b;
+  --neo-bg-hi: #334155;
+  --neo-shadow-dark: rgba(0, 0, 0, 0.55);
+  --neo-shadow-light: rgba(148, 163, 184, 0.10);
+  --neo-accent: #fbbf24;
+}
+
+.neo-btn {
+  background: var(--neo-bg);
+  color: #e2e8f0;
+  border: none;
+  border-radius: 14px;
+  padding: 0.55rem 1rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  cursor: pointer;
+  transition: box-shadow 0.18s, transform 0.05s, background 0.18s, color 0.18s;
+  box-shadow:
+    -5px -5px 10px var(--neo-shadow-light),
+    5px 5px 10px var(--neo-shadow-dark);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  user-select: none;
+}
+.neo-btn:hover { background: var(--neo-bg-hi); }
+.neo-btn:active,
+.neo-btn[data-pressed="true"] {
+  box-shadow:
+    inset -3px -3px 8px var(--neo-shadow-light),
+    inset 3px 3px 8px var(--neo-shadow-dark);
+  transform: translateY(1px);
+}
+.neo-btn:disabled {
+  opacity: 0.4; cursor: not-allowed;
+  box-shadow:
+    inset -2px -2px 5px var(--neo-shadow-light),
+    inset 2px 2px 5px var(--neo-shadow-dark);
+}
+.neo-btn-primary {
+  background: linear-gradient(145deg, #fcd34d, #d97706);
+  color: #1e293b;
+}
+.neo-btn-primary:hover { background: linear-gradient(145deg, #fde68a, #f59e0b); }
+.neo-btn-success {
+  background: linear-gradient(145deg, #34d399, #047857);
+  color: #ecfdf5;
+}
+.neo-btn-success:hover { background: linear-gradient(145deg, #6ee7b7, #059669); }
+.neo-btn-warn {
+  background: linear-gradient(145deg, #fcd34d, #b45309);
+  color: #1e293b;
+}
+.neo-btn-warn:hover { background: linear-gradient(145deg, #fde68a, #d97706); }
+.neo-btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; border-radius: 10px; }
+.neo-btn-lg { padding: 0.85rem 1.5rem; font-size: 1rem; border-radius: 18px; }
+
+.neo-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+  background: var(--neo-bg);
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow:
+    inset 3px 3px 6px var(--neo-shadow-dark),
+    inset -3px -3px 6px var(--neo-shadow-light);
+  transition: background 0.2s;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+.neo-switch-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--neo-bg);
+  box-shadow:
+    -2px -2px 4px var(--neo-shadow-light),
+    2px 2px 4px var(--neo-shadow-dark);
+  transition: left 0.25s, background 0.2s, box-shadow 0.2s;
+  display: flex; align-items: center; justify-content: center;
+  color: #94a3b8; font-size: 0.55rem; font-weight: 700;
+}
+.neo-switch[data-on="true"] .neo-switch-thumb {
+  left: 27px;
+  background: var(--neo-accent);
+  color: #1e293b;
+  box-shadow:
+    -1px -1px 3px rgba(255,255,255,0.12),
+    2px 2px 5px rgba(0,0,0,0.65);
+}
+.neo-switch[data-on="true"] .neo-switch-thumb::after { content: "ON"; }
+.neo-switch[data-on="false"] .neo-switch-thumb::after { content: "OFF"; }
+
+.neo-panel {
+  background: var(--neo-bg);
+  border-radius: 18px;
+  box-shadow:
+    -8px -8px 18px var(--neo-shadow-light),
+    8px 8px 18px var(--neo-shadow-dark);
+}
+.neo-inset {
+  background: var(--neo-bg);
+  border-radius: 14px;
+  box-shadow:
+    inset 3px 3px 8px var(--neo-shadow-dark),
+    inset -3px -3px 8px var(--neo-shadow-light);
+}
+
+/* ===========================================================================
+ *  FLUOLINGO SKIN — foolscap ruled paper + highlighter
+ *  Reference: the deployed Fluolingo Reviser (built from screenshot tokens;
+ *  swap in the Reviser's exact CSS if/when the source is obtained).
+ * =========================================================================== */
+:root {
+  --fluo-bg:        #fce8d4;   /* peach foolscap paper */
+  --fluo-rule:      #f1cba0;   /* faint ruled line */
+  --fluo-margin:    #e08b80;   /* red margin rule */
+  --fluo-hole:      #aab0bb;   /* three-hole-punch grey */
+  --fluo-ink:       #22305a;   /* deep navy ink */
+  --fluo-ink-soft:  #5d6488;
+  --fluo-line:      #e2caa2;   /* tan borders */
+  --fluo-card:      #fffaf0;   /* paper card */
+  --fluo-hl:        #d4f24c;   /* chartreuse highlighter / Start */
+  --fluo-primary:   #cfe84b;
+  --fluo-primary-shadow: #a6c130;
+  --fluo-primary-ink:    #22305a;   /* navy text on chartreuse */
+  --fluo-primary-soft:   #eef7c0;
+  --fluo-secondary: #2bb6c2;        /* teal */
+  --fluo-secondary-shadow: #1d8b96;
+  --fluo-danger:    #ff5667;
+  --fluo-danger-shadow: #d83a4a;
+  --fluo-warn:      #f5b301;
+  --fluo-warn-shadow: #cf9600;
+  --fluo-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+  --fluo-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, "Courier New", monospace;
+}
+
+/* Typography helpers — serif headings, typewriter labels (the Reviser look). */
+.fluo-serif { font-family: var(--fluo-serif); }
+.fluo-mono  { font-family: var(--fluo-mono); }
+.fluo-label {
+  font-family: var(--fluo-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-weight: 700;
+  font-size: 0.72rem;
+  color: var(--fluo-ink-soft);
+}
+
+/* Much-more-readable sans, for anywhere legibility matters more than the
+ * typewriter-label look — path node captions, grid tile labels (Dan, 2026-07-01:
+ * the mono label font was "much much" too hard to read there). */
+.fluo-readable {
+  font-family: var(--font-readable), Roboto, "Helvetica Neue", Arial, sans-serif;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+/* Highlighter marker — chartreuse swash BEHIND dark ink (never as text). */
+.fluo-hl {
+  background-color: var(--fluo-hl);
+  mix-blend-mode: multiply;
+  padding: 0 0.18em;
+  margin: 0 -0.03em;
+  border-radius: 3px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* Six rotating accent hues for item cards (paper-tinted). */
+.fluo-h-0 { --fluo-card-accent: #e0567f; --fluo-card-tint: #fbe3ec; }
+.fluo-h-1 { --fluo-card-accent: #2bb6c2; --fluo-card-tint: #def3f5; }
+.fluo-h-2 { --fluo-card-accent: #e3a700; --fluo-card-tint: #fbeec4; }
+.fluo-h-3 { --fluo-card-accent: #8a5fd4; --fluo-card-tint: #ece2fa; }
+.fluo-h-4 { --fluo-card-accent: #e8852e; --fluo-card-tint: #fbe6cf; }
+.fluo-h-5 { --fluo-card-accent: #7bbf2e; --fluo-card-tint: #ecf7cf; }
+
+/* Chunky 3D-press button — marker fill, serif label, navy ink on light hues. */
+.fluo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--fluo-serif);
+  font-weight: 700;
+  font-size: 1rem;
+  border: 2px solid rgba(34, 48, 90, 0.18);
+  border-radius: 14px;
+  padding: 0.8rem 1.4rem;
+  cursor: pointer;
+  user-select: none;
+  background: var(--fluo-primary);
+  color: var(--fluo-primary-ink);
+  box-shadow: 0 4px 0 0 var(--fluo-primary-shadow);
+  transition: transform 0.06s, box-shadow 0.06s, filter 0.15s;
+}
+.fluo-btn:hover { filter: brightness(1.04); }
+.fluo-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 0 var(--fluo-primary-shadow);
+}
+.fluo-btn:disabled {
+  background: #d8c7a8;
+  color: #9a8e76;
+  box-shadow: 0 4px 0 0 #b6a98a;
+  cursor: not-allowed;
+  filter: none;
+}
+.fluo-btn-secondary { background: var(--fluo-secondary); color: #fff; box-shadow: 0 4px 0 0 var(--fluo-secondary-shadow); }
+.fluo-btn-secondary:active { box-shadow: 0 2px 0 0 var(--fluo-secondary-shadow); }
+.fluo-btn-danger { background: var(--fluo-danger); color: #fff; box-shadow: 0 4px 0 0 var(--fluo-danger-shadow); }
+.fluo-btn-danger:active { box-shadow: 0 2px 0 0 var(--fluo-danger-shadow); }
+/* Outline / paper button (Leaderboard, View & print). */
+.fluo-btn-ghost {
+  background: var(--fluo-card);
+  color: var(--fluo-ink);
+  border-color: var(--fluo-ink);
+  box-shadow: 0 4px 0 0 rgba(34, 48, 90, 0.25);
+}
+.fluo-btn-ghost:hover { filter: brightness(0.99); }
+.fluo-btn-ghost:active { transform: translateY(2px); box-shadow: 0 2px 0 0 rgba(34, 48, 90, 0.25); }
+.fluo-btn-sm { padding: 0.5rem 0.9rem; font-size: 0.85rem; border-radius: 10px; }
+.fluo-btn-lg { padding: 1.05rem 1.8rem; font-size: 1.1rem; border-radius: 18px; }
+
+/* Activity marker colours (for the practice picker). */
+.fluo-btn-flip     { background: #2bb6c2; color: #06303a; box-shadow: 0 4px 0 0 #1d8b96; }
+.fluo-btn-complete { background: #46c95f; color: #093d18; box-shadow: 0 4px 0 0 #2f9a43; }
+.fluo-btn-type     { background: #f4d935; color: #4a3a05; box-shadow: 0 4px 0 0 #cdb318; }
+.fluo-btn-say      { background: #f39a2e; color: #4a2c05; box-shadow: 0 4px 0 0 #cc7d18; }
+.fluo-btn-arrange  { background: #f25ca2; color: #4a0c2c; box-shadow: 0 4px 0 0 #cc3d80; }
+.fluo-btn-correct  { background: #a06ce4; color: #2a0c4a; box-shadow: 0 4px 0 0 #7d49c0; }
+
+/* Foolscap paper surface — ruled lines + red margin + punch holes. */
+.fluo-surface {
+  background-color: var(--fluo-bg);
+  background-image:
+    radial-gradient(circle at center, var(--fluo-hole) 0 5px, transparent 6px),
+    linear-gradient(var(--fluo-margin), var(--fluo-margin)),
+    repeating-linear-gradient(to bottom, transparent 0 33px, var(--fluo-rule) 33px 34px);
+  background-size: 44px 150px, 2px 100%, 100% 34px;
+  background-position: 22px 70px, 70px 0, 0 6px;
+  background-repeat: repeat-y, no-repeat, repeat;
+  color: var(--fluo-ink);
+}
+.fluo-surface input,
+.fluo-surface select,
+.fluo-surface textarea {
+  background: var(--fluo-card);
+  border: 2px solid var(--fluo-line);
+  border-radius: 12px;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.95rem;
+  color: var(--fluo-ink);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+}
+.fluo-surface input:focus,
+.fluo-surface select:focus,
+.fluo-surface textarea:focus {
+  outline: none;
+  border-color: var(--fluo-secondary);
+  box-shadow: 0 0 0 4px rgba(43, 182, 194, 0.20);
+}
+.fluo-surface input::placeholder,
+.fluo-surface textarea::placeholder { color: #b08e63; }
+
+/* Paper sheet card. */
+.fluo-card {
+  background: var(--fluo-card);
+  border: 2px solid var(--fluo-line);
+  border-bottom-width: 4px;
+  border-radius: 16px;
+  padding: 1.1rem 1.2rem;
+  box-shadow: 0 8px 18px rgba(34, 48, 90, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.fluo-card[data-hue] {
+  border-color: var(--fluo-card-accent);
+  background: linear-gradient(180deg, var(--fluo-card-tint) 0%, var(--fluo-card) 75%);
+}
+.fluo-card[data-state="bad"]  { border-color: var(--fluo-danger); background: #fdecee; }
+.fluo-card[data-state="warn"] { border-color: var(--fluo-warn);   background: #fbeec4; }
+
+/* Pill chips. */
+.fluo-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: rgba(34, 48, 90, 0.08);
+  color: var(--fluo-ink-soft);
+}
+.fluo-chip-elig { background: var(--fluo-primary-soft); color: #4a5a12; }
+.fluo-chip-accent {
+  background: color-mix(in srgb, var(--fluo-card-accent) 18%, white);
+  color: color-mix(in srgb, var(--fluo-card-accent) 80%, black);
+}
+
+/* ===========================================================================
+ *  "LE CAHIER" — French spiral-bound exercise book (the redesign identity)
+ *  Spiral ring binding (left) + pastel index tabs (right) on fine ruled paper.
+ *  Chartreuse highlighter kept as the single bright accent.
+ * =========================================================================== */
+:root {
+  --cahier-desk:       #c4c7cf;   /* grey desk the page rests on */
+  --cahier-paper:      #fbfbf6;   /* near-white warm paper */
+  --cahier-paper-2:    #f2f2ec;   /* faint shaded paper */
+  --cahier-edge:       #e7e7e0;
+  --cahier-rule:       #cdcdc6;   /* fine grey ruling */
+  --cahier-ink:        #2a2e6e;   /* blue-violet pen ink */
+  --cahier-ink-soft:   #6a6e96;
+  --cahier-le:         #2d5bff;   /* masculine (le) */
+  --cahier-la:         #d11149;   /* feminine (la) + red margin */
+  --cahier-hl:         var(--fluo-hl);   /* chartreuse marker */
+  --cahier-hl-edge:    #a6c130;
+  --cahier-gold:       #c8a24b;
+  --cahier-spiral-hi:  #e2e4e8;
+  --cahier-spiral:     #b9bcc4;
+  --cahier-spiral-lo:  #82868f;
+  /* six index-tab pastels (match Dan's reference image) */
+  --cahier-t0: #cbb7e6;  --cahier-t1: #8fd3cd;  --cahier-t2: #f3cba0;
+  --cahier-t3: #f0d24e;  --cahier-t4: #b6d77f;  --cahier-t5: #e290b6;
+  --font-display-stack: var(--font-display), "Iowan Old Style", Palatino, Georgia, serif;
+  --font-body-stack:    var(--font-body), system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.cahier-display { font-family: var(--font-display-stack); font-weight: 600; letter-spacing: -0.01em; }
+.cahier-body    { font-family: var(--font-body-stack); }
+.cahier-hl {
+  background-color: var(--cahier-hl);
+  mix-blend-mode: multiply;
+  padding: 0 0.18em;
+  border-radius: 3px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* Ruled-paper substrate. */
+.cahier-sheet {
+  background-color: var(--cahier-paper);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 31px,
+    var(--cahier-rule) 31px 32px
+  );
+  background-position: 0 12px;
+  color: var(--cahier-ink);
+  font-family: var(--font-body-stack);
+}
+.cahier-sheet input:not([type="checkbox"]):not([type="radio"]),
+.cahier-sheet select,
+.cahier-sheet textarea {
+  background: #fff;
+  border: 1.5px solid var(--cahier-rule);
+  border-radius: 9px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.95rem;
+  color: var(--cahier-ink);
+  font-family: var(--font-body-stack);
+  width: 100%;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.cahier-sheet input:focus,
+.cahier-sheet select:focus,
+.cahier-sheet textarea:focus {
+  outline: none;
+  border-color: var(--cahier-le);
+  box-shadow: 0 0 0 3px rgba(45, 91, 255, 0.16);
+}
+.cahier-sheet input::placeholder,
+.cahier-sheet textarea::placeholder { color: #9b9bb0; }
+
+/* The learner's typed answer — plain legible body font, compact so table rows
+ * keep a consistent height. */
+.cahier-answer {
+  font-family: var(--font-body-stack) !important;
+  font-size: 0.92rem !important;
+  line-height: 1.2 !important;
+  padding: 0.3rem 0.5rem !important;
+  height: 30px !important;
+  color: var(--cahier-ink) !important;
+}
+
+/* Study ⇄ Test-yourself sliding switch (emoji in the knob). */
+.cahier-modeswitch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 60px;
+  height: 30px;
+  flex-shrink: 0;
+  padding: 0;
+  border: 2px solid var(--cahier-ink);
+  border-radius: 999px;
+  background: #d8d4c6;            /* study = calm paper-grey */
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.cahier-modeswitch[data-on="true"] { background: var(--cahier-hl); }  /* test = chartreuse */
+.cahier-modeswitch-knob {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: left 0.2s;
+}
+.cahier-modeswitch[data-on="true"] .cahier-modeswitch-knob { left: 33px; }
+
+/* Spiral ring binding — metallic coils down the left gutter (responsive). */
+.cahier-binding {
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: 38px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 7px,
+    var(--cahier-spiral-lo) 7px 8px,
+    var(--cahier-spiral) 8px 15px,
+    var(--cahier-spiral-hi) 15px 18px,
+    var(--cahier-spiral) 18px 25px,
+    var(--cahier-spiral-lo) 25px 26px,
+    transparent 26px 33px
+  );
+  -webkit-mask-image: radial-gradient(circle at right, #000 60%, transparent 61%);
+  mask-image: none;
+  pointer-events: none;
+}
+.cahier-binding::after {
+  /* punch-hole shadow where the page meets the coils */
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0; right: 0;
+  width: 8px;
+  background: linear-gradient(to right, rgba(42, 46, 110, 0.10), transparent);
+}
+
+/* Index tab — pastel, juts out from the right edge. */
+.cahier-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 0.85rem;
+  border: 1.5px solid rgba(42, 46, 110, 0.35);
+  border-left: 6px solid var(--tab-hue, var(--cahier-hl));
+  border-radius: 0 12px 12px 0;
+  background: #fff;
+  color: var(--cahier-ink-soft);
+  font-family: var(--font-body-stack);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 rgba(42, 46, 110, 0.10);
+  transition: transform 0.14s, background 0.14s, color 0.14s, box-shadow 0.14s;
+  white-space: nowrap;
+}
+.cahier-tab:hover { transform: translateX(-3px); }
+.cahier-tab[data-active="true"] {
+  background: var(--tab-hue, var(--cahier-hl));
+  color: var(--cahier-ink);
+  transform: translateX(-6px);
+  box-shadow: 3px 3px 0 rgba(42, 46, 110, 0.18);
+}
+
+/* Desk → page → side tab-rail layout. The notebook page rests on a grey desk;
+ * the index tabs poke off the page's right edge into the reserved grey space. */
+.cahier-desk {
+  min-height: 100vh;
+  background: var(--cahier-desk);
+  padding: 18px 0 64px;
+}
+.cahier-deskrow {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: nowrap;            /* never let the tab rail drop below the page */
+  padding-left: clamp(8px, 3vw, 44px);
+}
+.cahier-page {
+  position: relative;
+  flex: 0 1 980px;
+  min-width: 0;
+  background-color: var(--cahier-paper);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 31px,
+    var(--cahier-rule) 31px 32px
+  );
+  background-position: 0 64px;
+  border-radius: 4px 16px 16px 4px;
+  box-shadow: 0 12px 34px rgba(34, 40, 80, 0.20);
+  color: var(--cahier-ink);
+  overflow: hidden;
+}
+.cahier-tabs {
+  position: sticky;
+  top: 18px;
+  display: none;            /* hidden below 1100px — a ☰ menu is used instead */
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 70px;        /* clears the page's top bar */
+  flex-shrink: 0;
+  z-index: 1;
+}
+.cahier-menu { display: block; }   /* the ☰ wrapper — shown below 1100px */
+@media (min-width: 1100px) {
+  .cahier-tabs { display: flex; }
+  .cahier-menu { display: none; }
+}
+/* form fields inside the page */
+.cahier-page input:not([type="checkbox"]):not([type="radio"]),
+.cahier-page select,
+.cahier-page textarea {
+  background: #fff;
+  border: 1.5px solid var(--cahier-rule);
+  border-radius: 9px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.95rem;
+  color: var(--cahier-ink);
+  font-family: var(--font-body-stack);
+  width: 100%;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.cahier-page input:focus, .cahier-page select:focus, .cahier-page textarea:focus {
+  outline: none;
+  border-color: var(--cahier-le);
+  box-shadow: 0 0 0 3px rgba(45, 91, 255, 0.16);
+}
+.cahier-page input::placeholder, .cahier-page textarea::placeholder { color: #9b9bb0; }
+
+/* Refined press button (calmer than .fluo-btn). */
+.cahier-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  font-family: var(--font-body-stack);
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: 1.5px solid var(--cahier-ink);
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  user-select: none;
+  background: var(--cahier-paper);
+  color: var(--cahier-ink);
+  transition: background 0.14s, color 0.14s, transform 0.05s;
+}
+.cahier-btn:hover { background: #f1f1ea; }
+.cahier-btn:active { transform: translateY(1px); }
+.cahier-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.cahier-btn-primary { background: var(--cahier-ink); color: #fff; border-color: var(--cahier-ink); }
+.cahier-btn-primary:hover { background: #383d86; }
+.cahier-btn-accent { background: var(--cahier-hl); border-color: var(--cahier-hl-edge); color: var(--cahier-ink); }
+.cahier-btn-accent:hover { filter: brightness(1.03); }
+.cahier-btn-sm { padding: 0.3rem 0.65rem; font-size: 0.78rem; border-radius: 8px; }
+
+/* Reviewed / To-Review — a single sliding switch (green ✓ = reviewed,
+ * red ↺ = to review). Exactly one state, always. */
+.cahier-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 54px;
+  height: 28px;
+  flex-shrink: 0;
+  padding: 0;
+  border: 2px solid rgba(0, 0, 0, 0.16);
+  border-radius: 999px;
+  background: var(--cahier-la);          /* red = to review */
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.cahier-switch[data-on="true"] { background: #3fbf5b; }  /* green = reviewed */
+.cahier-switch-knob {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--cahier-la);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: left 0.2s, color 0.2s;
+}
+.cahier-switch[data-on="true"] .cahier-switch-knob {
+  left: 29px;
+  color: #2f9a43;
+}
+
+/* Two-state Reviewed / To-Review toggle — exactly one half lit. */
+.cahier-toggle {
+  display: inline-flex;
+  border: 1.5px solid var(--cahier-ink);
+  border-radius: 999px;
+  overflow: hidden;
+  font-family: var(--font-body-stack);
+  font-weight: 700;
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
+  background: #fff;
+  user-select: none;
+}
+.cahier-toggle button {
+  padding: 0.2rem 0.55rem;
+  border: none;
+  background: transparent;
+  color: var(--cahier-ink-soft);
+  cursor: pointer;
+  transition: background 0.14s, color 0.14s;
+}
+.cahier-toggle button[data-on="true"] { color: var(--cahier-ink); }
+.cahier-toggle button.tg-rev[data-on="true"]  { background: #46c95f; color: #093d18; }
+.cahier-toggle button.tg-todo[data-on="true"] { background: var(--cahier-gold); color: #3a2b04; }
+
+/* Section divider row (Overview grouping). */
+.cahier-section {
+  font-family: var(--font-display-stack);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--cahier-ink);
+  background: var(--cahier-paper-2);
+  border-top: 1.5px solid var(--cahier-ink);
+  letter-spacing: 0.01em;
+}

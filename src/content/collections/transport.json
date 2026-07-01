@@ -1,0 +1,63 @@
+{
+  "id": "transport",
+  "title": "Comment tu y vas ?",
+  "subtitle": "Modes of transport",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 3,
+  "lessonNo": 38,
+  "lessonSlug": "transport",
+  "tags": [],
+  "seq": 338,
+  "items": [
+    {
+      "id": "transport-01",
+      "fr": "le train",
+      "en": "train",
+      "tags": []
+    },
+    {
+      "id": "transport-02",
+      "fr": "le bus",
+      "en": "bus",
+      "tags": []
+    },
+    {
+      "id": "transport-03",
+      "fr": "le métro",
+      "en": "metro",
+      "tags": []
+    },
+    {
+      "id": "transport-04",
+      "fr": "la voiture",
+      "en": "car",
+      "tags": []
+    },
+    {
+      "id": "transport-05",
+      "fr": "le vélo",
+      "en": "bike",
+      "tags": []
+    },
+    {
+      "id": "transport-06",
+      "fr": "l'avion",
+      "en": "plane",
+      "tags": []
+    },
+    {
+      "id": "transport-07",
+      "fr": "le bateau",
+      "en": "boat",
+      "tags": []
+    },
+    {
+      "id": "transport-08",
+      "fr": "à pied",
+      "en": "on foot",
+      "tags": []
+    }
+  ]
+}

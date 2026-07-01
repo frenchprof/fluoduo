@@ -1,0 +1,167 @@
+{
+  "id": "core-nouns",
+  "title": "Un ou une ?",
+  "subtitle": "People, identity & classroom objects",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 0,
+  "lessonNo": 6,
+  "lessonSlug": "core-nouns",
+  "tags": [],
+  "seq": 6,
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        {
+          "key": "un",
+          "label": "UN",
+          "prefix": "un "
+        },
+        {
+          "key": "une",
+          "label": "une ",
+          "prefix": "une "
+        }
+      ]
+    }
+  },
+  "items": [
+    {
+      "id": "core-nouns-01",
+      "fr": "prénom",
+      "en": "first name",
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "core-nouns-02",
+      "fr": "nom",
+      "en": "surname",
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "core-nouns-03",
+      "fr": "femme",
+      "en": "woman",
+      "tags": [
+        "col:une"
+      ]
+    },
+    {
+      "id": "core-nouns-04",
+      "fr": "fille",
+      "en": "girl",
+      "tags": [
+        "col:une"
+      ]
+    },
+    {
+      "id": "core-nouns-05",
+      "fr": "dame",
+      "en": "lady",
+      "tags": [
+        "col:une"
+      ]
+    },
+    {
+      "id": "core-nouns-06",
+      "fr": "homme",
+      "en": "man",
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "core-nouns-07",
+      "fr": "étudiant",
+      "en": "student (m)",
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "core-nouns-08",
+      "fr": "étudiante",
+      "en": "student (f)",
+      "tags": [
+        "col:une"
+      ]
+    },
+    {
+      "id": "core-nouns-09",
+      "fr": "professeur",
+      "en": "teacher (m)",
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "core-nouns-10",
+      "fr": "professeure",
+      "en": "teacher (f)",
+      "tags": [
+        "col:une"
+      ]
+    },
+    {
+      "id": "core-nouns-11",
+      "fr": "salle de classe",
+      "en": "classroom",
+      "tags": [
+        "col:une"
+      ]
+    },
+    {
+      "id": "core-nouns-12",
+      "fr": "tableau",
+      "en": "board",
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "core-nouns-13",
+      "fr": "livre",
+      "en": "book",
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "core-nouns-14",
+      "fr": "crayon",
+      "en": "pencil",
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "core-nouns-15",
+      "fr": "cahier",
+      "en": "exercise book",
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "core-nouns-16",
+      "fr": "casque",
+      "en": "headphones",
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "core-nouns-17",
+      "fr": "micro",
+      "en": "microphone",
+      "tags": [
+        "col:un"
+      ]
+    }
+  ]
+}

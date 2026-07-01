@@ -1,0 +1,305 @@
+{
+  "id": "countries-letris",
+  "title": "C'est quel pays ?",
+  "subtitle": "Sort each country into its correct article column",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 1,
+  "lessonNo": 6,
+  "lessonSlug": "countries",
+  "crossRefs": [
+    {
+      "unit": 3,
+      "lessonNo": 2,
+      "lessonSlug": "city-preps",
+      "note": "Prépositions devant villes/pays."
+    }
+  ],
+  "tags": [],
+  "seq": 106,
+  "items": [
+    {
+      "id": "countries-letris-01-france",
+      "fr": "France",
+      "en": "France",
+      "emoji": "🇫🇷",
+      "tags": [
+        "col:la",
+        "region:europe"
+      ]
+    },
+    {
+      "id": "countries-letris-02-portugal",
+      "fr": "Portugal",
+      "en": "Portugal",
+      "emoji": "🇵🇹",
+      "tags": [
+        "col:le",
+        "region:europe"
+      ]
+    },
+    {
+      "id": "countries-letris-03-chine",
+      "fr": "Chine",
+      "en": "China",
+      "emoji": "🇨🇳",
+      "tags": [
+        "col:la",
+        "region:asia"
+      ]
+    },
+    {
+      "id": "countries-letris-04-indonesie",
+      "fr": "Indonésie",
+      "en": "Indonesia",
+      "emoji": "🇮🇩",
+      "tags": [
+        "col:l_apos",
+        "region:asia"
+      ]
+    },
+    {
+      "id": "countries-letris-05-coree",
+      "fr": "Corée",
+      "en": "Korea",
+      "emoji": "🇰🇷",
+      "tags": [
+        "col:la",
+        "region:asia"
+      ]
+    },
+    {
+      "id": "countries-letris-06-etats-unis",
+      "fr": "États-Unis",
+      "en": "United States",
+      "emoji": "🇺🇸",
+      "tags": [
+        "col:les",
+        "region:americas"
+      ]
+    },
+    {
+      "id": "countries-letris-07-mexique",
+      "fr": "Mexique",
+      "en": "Mexico",
+      "emoji": "🇲🇽",
+      "tags": [
+        "col:le",
+        "region:americas"
+      ]
+    },
+    {
+      "id": "countries-letris-08-cuba",
+      "fr": "Cuba",
+      "en": "Cuba",
+      "emoji": "🇨🇺",
+      "tags": [
+        "col:no_article",
+        "region:americas"
+      ]
+    },
+    {
+      "id": "countries-letris-09-philippines",
+      "fr": "Philippines",
+      "en": "Philippines",
+      "emoji": "🇵🇭",
+      "tags": [
+        "col:les",
+        "region:asia"
+      ]
+    },
+    {
+      "id": "countries-letris-10-argentine",
+      "fr": "Argentine",
+      "en": "Argentina",
+      "emoji": "🇦🇷",
+      "tags": [
+        "col:l_apos",
+        "region:americas"
+      ]
+    },
+    {
+      "id": "countries-letris-11-russie",
+      "fr": "Russie",
+      "en": "Russia",
+      "emoji": "🇷🇺",
+      "tags": [
+        "col:la",
+        "region:europe"
+      ]
+    },
+    {
+      "id": "countries-letris-12-suisse",
+      "fr": "Suisse",
+      "en": "Switzerland",
+      "emoji": "🇨🇭",
+      "tags": [
+        "col:la",
+        "region:europe"
+      ]
+    },
+    {
+      "id": "countries-letris-13-belgique",
+      "fr": "Belgique",
+      "en": "Belgium",
+      "emoji": "🇧🇪",
+      "tags": [
+        "col:la",
+        "region:europe"
+      ]
+    },
+    {
+      "id": "countries-letris-14-grece",
+      "fr": "Grèce",
+      "en": "Greece",
+      "emoji": "🇬🇷",
+      "tags": [
+        "col:la",
+        "region:europe"
+      ]
+    },
+    {
+      "id": "countries-letris-15-turquie",
+      "fr": "Turquie",
+      "en": "Turkey",
+      "emoji": "🇹🇷",
+      "tags": [
+        "col:la",
+        "region:asia"
+      ]
+    },
+    {
+      "id": "countries-letris-16-allemagne",
+      "fr": "Allemagne",
+      "en": "Germany",
+      "emoji": "🇩🇪",
+      "tags": [
+        "col:l_apos",
+        "region:europe"
+      ]
+    },
+    {
+      "id": "countries-letris-17-cambodge",
+      "fr": "Cambodge",
+      "en": "Cambodia",
+      "emoji": "🇰🇭",
+      "tags": [
+        "col:le",
+        "region:asia"
+      ]
+    },
+    {
+      "id": "countries-letris-18-singapour",
+      "fr": "Singapour",
+      "en": "Singapore",
+      "emoji": "🇸🇬",
+      "tags": [
+        "col:no_article",
+        "region:asia"
+      ]
+    },
+    {
+      "id": "countries-letris-19-malaisie",
+      "fr": "Malaisie",
+      "en": "Malaysia",
+      "emoji": "🇲🇾",
+      "tags": [
+        "col:la",
+        "region:asia"
+      ]
+    },
+    {
+      "id": "countries-letris-20-thailande",
+      "fr": "Thaïlande",
+      "en": "Thailand",
+      "emoji": "🇹🇭",
+      "tags": [
+        "col:la",
+        "region:asia"
+      ]
+    },
+    {
+      "id": "countries-letris-21-angleterre",
+      "fr": "Angleterre",
+      "en": "England",
+      "emoji": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+      "tags": [
+        "col:l_apos",
+        "region:europe"
+      ]
+    },
+    {
+      "id": "countries-letris-22-grande-bretagne",
+      "fr": "Grande-Bretagne",
+      "en": "Great Britain",
+      "emoji": "🇬🇧",
+      "tags": [
+        "col:la",
+        "region:europe"
+      ]
+    },
+    {
+      "id": "countries-letris-23-tunisie",
+      "fr": "Tunisie",
+      "en": "Tunisia",
+      "emoji": "🇹🇳",
+      "tags": [
+        "col:la",
+        "region:africa"
+      ]
+    },
+    {
+      "id": "countries-letris-24-maroc",
+      "fr": "Maroc",
+      "en": "Morocco",
+      "emoji": "🇲🇦",
+      "tags": [
+        "col:le",
+        "region:africa"
+      ]
+    },
+    {
+      "id": "countries-letris-25-algerie",
+      "fr": "Algérie",
+      "en": "Algeria",
+      "emoji": "🇩🇿",
+      "tags": [
+        "col:l_apos",
+        "region:africa"
+      ]
+    }
+  ],
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        {
+          "key": "no_article",
+          "label": "—",
+          "prefix": ""
+        },
+        {
+          "key": "le",
+          "label": "LE",
+          "prefix": "Le "
+        },
+        {
+          "key": "la",
+          "label": "LA",
+          "prefix": "La "
+        },
+        {
+          "key": "l_apos",
+          "label": "L'",
+          "prefix": "L'"
+        },
+        {
+          "key": "les",
+          "label": "LES",
+          "prefix": "Les "
+        }
+      ]
+    }
+  },
+  "source": "countries-letris.json"
+}

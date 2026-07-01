@@ -1,0 +1,96 @@
+{
+  "id": "stress-pronouns",
+  "title": "Moi, toi, lui...",
+  "subtitle": "Subject-only, stress-only, or either",
+  "categories": [
+    {
+      "key": "subject",
+      "label": "SUJET SEULEMENT",
+      "prefix": ""
+    },
+    {
+      "key": "stress",
+      "label": "TONIQUE SEULEMENT",
+      "prefix": ""
+    },
+    {
+      "key": "either",
+      "label": "LES DEUX",
+      "prefix": ""
+    }
+  ],
+  "tiles": [
+    {
+      "text": "JE",
+      "displayName": "je",
+      "category": "subject",
+      "meaning": "I (subject only)"
+    },
+    {
+      "text": "MOI",
+      "displayName": "moi",
+      "category": "stress",
+      "meaning": "me (stress only)"
+    },
+    {
+      "text": "TU",
+      "displayName": "tu",
+      "category": "subject",
+      "meaning": "you sg. (subject only)"
+    },
+    {
+      "text": "TOI",
+      "displayName": "toi",
+      "category": "stress",
+      "meaning": "you sg. (stress only)"
+    },
+    {
+      "text": "IL",
+      "displayName": "il",
+      "category": "subject",
+      "meaning": "he (subject only)"
+    },
+    {
+      "text": "LUI",
+      "displayName": "lui",
+      "category": "stress",
+      "meaning": "him (stress only)"
+    },
+    {
+      "text": "ELLE",
+      "displayName": "elle",
+      "category": "either",
+      "meaning": "she / her (either)"
+    },
+    {
+      "text": "NOUS",
+      "displayName": "nous",
+      "category": "either",
+      "meaning": "we / us (either)"
+    },
+    {
+      "text": "VOUS",
+      "displayName": "vous",
+      "category": "either",
+      "meaning": "you pl. (either)"
+    },
+    {
+      "text": "ILS",
+      "displayName": "ils",
+      "category": "subject",
+      "meaning": "they m. (subject only)"
+    },
+    {
+      "text": "EUX",
+      "displayName": "eux",
+      "category": "stress",
+      "meaning": "them m. (stress only)"
+    },
+    {
+      "text": "ELLES",
+      "displayName": "elles",
+      "category": "either",
+      "meaning": "they / them f. (either)"
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "id": "objets-articles",
+  "title": "Un, une ou des ?",
+  "subtitle": "Everyday objects, sorted by article",
+  "categories": [
+    {
+      "key": "un",
+      "label": "UN",
+      "prefix": "un "
+    },
+    {
+      "key": "une",
+      "label": "UNE",
+      "prefix": "une "
+    },
+    {
+      "key": "des",
+      "label": "DES",
+      "prefix": "des "
+    }
+  ],
+  "tiles": [
+    {
+      "text": "SAC",
+      "displayName": "sac",
+      "category": "un",
+      "meaning": "bag"
+    },
+    {
+      "text": "LIVRE",
+      "displayName": "livre",
+      "category": "un",
+      "meaning": "book"
+    },
+    {
+      "text": "CAHIER",
+      "displayName": "cahier",
+      "category": "un",
+      "meaning": "exercise book"
+    },
+    {
+      "text": "TÉLÉPHONE",
+      "displayName": "téléphone",
+      "category": "un",
+      "meaning": "phone"
+    },
+    {
+      "text": "STYLO",
+      "displayName": "stylo",
+      "category": "un",
+      "meaning": "pen"
+    },
+    {
+      "text": "CRAYON",
+      "displayName": "crayon",
+      "category": "un",
+      "meaning": "pencil"
+    },
+    {
+      "text": "PASSEPORT",
+      "displayName": "passeport",
+      "category": "un",
+      "meaning": "passport"
+    },
+    {
+      "text": "CARTE D'IDENTITÉ",
+      "displayName": "carte d'identité",
+      "category": "une",
+      "meaning": "ID card"
+    },
+    {
+      "text": "TROUSSE",
+      "displayName": "trousse",
+      "category": "une",
+      "meaning": "pencil case"
+    },
+    {
+      "text": "CISEAUX",
+      "displayName": "ciseaux",
+      "category": "des",
+      "meaning": "scissors"
+    },
+    {
+      "text": "GOMME",
+      "displayName": "gomme",
+      "category": "une",
+      "meaning": "eraser"
+    },
+    {
+      "text": "PORTEFEUILLE",
+      "displayName": "portefeuille",
+      "category": "un",
+      "meaning": "wallet"
+    },
+    {
+      "text": "LUNETTES",
+      "displayName": "lunettes",
+      "category": "des",
+      "meaning": "glasses"
+    },
+    {
+      "text": "CLÉ",
+      "displayName": "clé",
+      "category": "une",
+      "meaning": "key"
+    }
+  ]
+}

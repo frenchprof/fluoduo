@@ -1,0 +1,78 @@
+{
+  "id": "possessives",
+  "title": "Mon, ma ou mes ?",
+  "subtitle": "Sort each noun by the matching possessive",
+  "categories": [
+    {
+      "key": "mon",
+      "label": "MON",
+      "prefix": "mon "
+    },
+    {
+      "key": "ma",
+      "label": "MA",
+      "prefix": "ma "
+    },
+    {
+      "key": "mes",
+      "label": "MES",
+      "prefix": "mes "
+    }
+  ],
+  "tiles": [
+    {
+      "text": "LIVRE",
+      "displayName": "livre",
+      "category": "mon",
+      "meaning": "book (m)"
+    },
+    {
+      "text": "STYLO",
+      "displayName": "stylo",
+      "category": "mon",
+      "meaning": "pen (m)"
+    },
+    {
+      "text": "TÉLÉPHONE",
+      "displayName": "téléphone",
+      "category": "mon",
+      "meaning": "phone (m)"
+    },
+    {
+      "text": "POMME",
+      "displayName": "pomme",
+      "category": "ma",
+      "meaning": "apple (f)"
+    },
+    {
+      "text": "SŒUR",
+      "displayName": "sœur",
+      "category": "ma",
+      "meaning": "sister (f)"
+    },
+    {
+      "text": "MAISON",
+      "displayName": "maison",
+      "category": "ma",
+      "meaning": "house (f)"
+    },
+    {
+      "text": "AMIS",
+      "displayName": "amis",
+      "category": "mes",
+      "meaning": "friends (pl)"
+    },
+    {
+      "text": "PARENTS",
+      "displayName": "parents",
+      "category": "mes",
+      "meaning": "parents (pl)"
+    },
+    {
+      "text": "CLÉS",
+      "displayName": "clés",
+      "category": "mes",
+      "meaning": "keys (pl)"
+    }
+  ]
+}

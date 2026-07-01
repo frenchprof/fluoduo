@@ -1,0 +1,271 @@
+{
+  "id": "directions-matching",
+  "title": "Quel est le chemin pour … ?",
+  "subtitle": "Match each verb phrase with a valid completion",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 3,
+  "lessonNo": 8,
+  "lessonSlug": "directions",
+  "tags": [],
+  "seq": 308,
+  "items": [
+    {
+      "id": "directions-matching-L-sortez",
+      "fr": "Vous sortez",
+      "en": "You exit / leave",
+      "emoji": "🚪",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "directions-matching-L-allez",
+      "fr": "Vous allez",
+      "en": "You go",
+      "emoji": "🚶",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "directions-matching-L-continuez",
+      "fr": "Vous continuez",
+      "en": "You continue",
+      "emoji": "➡️",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "directions-matching-L-au_bout",
+      "fr": "Au bout de",
+      "en": "At the end of",
+      "emoji": "🏁",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "directions-matching-L-tournez",
+      "fr": "Vous tournez",
+      "en": "You turn",
+      "emoji": "↪️",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "directions-matching-L-prenez",
+      "fr": "Vous prenez",
+      "en": "You take",
+      "emoji": "👉",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "directions-matching-L-traversez",
+      "fr": "Vous traversez",
+      "en": "You cross",
+      "emoji": "🚸",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "directions-matching-L-etes",
+      "fr": "Vous êtes",
+      "en": "You are",
+      "emoji": "📍",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "directions-matching-R-du_parc",
+      "fr": "du parc",
+      "en": "from the park",
+      "emoji": "🌳",
+      "tags": [
+        "role:right"
+      ]
+    },
+    {
+      "id": "directions-matching-R-de_la_station",
+      "fr": "de la station de métro",
+      "en": "from the metro station",
+      "emoji": "🚇",
+      "tags": [
+        "role:right"
+      ]
+    },
+    {
+      "id": "directions-matching-R-tout_droit",
+      "fr": "tout droit",
+      "en": "straight ahead",
+      "emoji": "⬆️",
+      "tags": [
+        "role:right"
+      ]
+    },
+    {
+      "id": "directions-matching-R-jusqu_carre",
+      "fr": "jusqu'au carrefour",
+      "en": "as far as the intersection",
+      "emoji": "🚦",
+      "tags": [
+        "role:right"
+      ]
+    },
+    {
+      "id": "directions-matching-R-la_rue",
+      "fr": "la rue",
+      "en": "the street",
+      "emoji": "🛣️",
+      "tags": [
+        "role:right"
+      ]
+    },
+    {
+      "id": "directions-matching-R-a_gauche",
+      "fr": "à gauche",
+      "en": "to the left",
+      "emoji": "⬅️",
+      "tags": [
+        "role:right"
+      ]
+    },
+    {
+      "id": "directions-matching-R-a_droite",
+      "fr": "à droite",
+      "en": "to the right",
+      "emoji": "➡️",
+      "tags": [
+        "role:right"
+      ]
+    },
+    {
+      "id": "directions-matching-R-xeme_gauche",
+      "fr": "la Xᵉ rue à gauche",
+      "en": "the Xth street on the left",
+      "emoji": "🔢",
+      "tags": [
+        "role:right"
+      ]
+    },
+    {
+      "id": "directions-matching-R-xeme_droite",
+      "fr": "la Xᵉ rue à droite",
+      "en": "the Xth street on the right",
+      "emoji": "🔢",
+      "tags": [
+        "role:right"
+      ]
+    },
+    {
+      "id": "directions-matching-R-passage",
+      "fr": "le passage piéton",
+      "en": "the crosswalk",
+      "emoji": "🚶",
+      "tags": [
+        "role:right"
+      ]
+    },
+    {
+      "id": "directions-matching-R-pont",
+      "fr": "le pont",
+      "en": "the bridge",
+      "emoji": "🌉",
+      "tags": [
+        "role:right"
+      ]
+    },
+    {
+      "id": "directions-matching-R-place",
+      "fr": "la place",
+      "en": "the square / plaza",
+      "emoji": "🏛️",
+      "tags": [
+        "role:right"
+      ]
+    },
+    {
+      "id": "directions-matching-R-arrive",
+      "fr": "arrivé(e)",
+      "en": "arrived",
+      "emoji": "🎯",
+      "tags": [
+        "role:right"
+      ]
+    }
+  ],
+  "gameConfig": {
+    "matching": {
+      "pairs": [
+        {
+          "leftId": "directions-matching-L-sortez",
+          "rightId": "directions-matching-R-du_parc"
+        },
+        {
+          "leftId": "directions-matching-L-sortez",
+          "rightId": "directions-matching-R-de_la_station"
+        },
+        {
+          "leftId": "directions-matching-L-allez",
+          "rightId": "directions-matching-R-tout_droit"
+        },
+        {
+          "leftId": "directions-matching-L-continuez",
+          "rightId": "directions-matching-R-tout_droit"
+        },
+        {
+          "leftId": "directions-matching-L-allez",
+          "rightId": "directions-matching-R-jusqu_carre"
+        },
+        {
+          "leftId": "directions-matching-L-continuez",
+          "rightId": "directions-matching-R-jusqu_carre"
+        },
+        {
+          "leftId": "directions-matching-L-au_bout",
+          "rightId": "directions-matching-R-la_rue"
+        },
+        {
+          "leftId": "directions-matching-L-tournez",
+          "rightId": "directions-matching-R-a_gauche"
+        },
+        {
+          "leftId": "directions-matching-L-tournez",
+          "rightId": "directions-matching-R-a_droite"
+        },
+        {
+          "leftId": "directions-matching-L-prenez",
+          "rightId": "directions-matching-R-xeme_gauche"
+        },
+        {
+          "leftId": "directions-matching-L-prenez",
+          "rightId": "directions-matching-R-xeme_droite"
+        },
+        {
+          "leftId": "directions-matching-L-traversez",
+          "rightId": "directions-matching-R-passage"
+        },
+        {
+          "leftId": "directions-matching-L-traversez",
+          "rightId": "directions-matching-R-pont"
+        },
+        {
+          "leftId": "directions-matching-L-traversez",
+          "rightId": "directions-matching-R-place"
+        },
+        {
+          "leftId": "directions-matching-L-etes",
+          "rightId": "directions-matching-R-arrive"
+        }
+      ]
+    }
+  },
+  "source": "directions-matching.json"
+}

@@ -1,0 +1,421 @@
+{
+  "id": "nationalities",
+  "title": "C'est quel adjectif ?",
+  "subtitle": "Country → il est / elle est / ils sont / elles sont …",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 1,
+  "lessonNo": 7,
+  "lessonSlug": "nationalities",
+  "tags": [],
+  "seq": 107,
+  "items": [
+    {
+      "id": "nat-01-france",
+      "fr": "France",
+      "en": "France",
+      "emoji": "🇫🇷",
+      "tags": [
+        "col:la"
+      ],
+      "nat": {
+        "ms": "français",
+        "fs": "française",
+        "mp": "français",
+        "fp": "françaises"
+      }
+    },
+    {
+      "id": "nat-02-portugal",
+      "fr": "Portugal",
+      "en": "Portugal",
+      "emoji": "🇵🇹",
+      "tags": [
+        "col:le"
+      ],
+      "nat": {
+        "ms": "portugais",
+        "fs": "portugaise",
+        "mp": "portugais",
+        "fp": "portugaises"
+      }
+    },
+    {
+      "id": "nat-03-chine",
+      "fr": "Chine",
+      "en": "China",
+      "emoji": "🇨🇳",
+      "tags": [
+        "col:la"
+      ],
+      "nat": {
+        "ms": "chinois",
+        "fs": "chinoise",
+        "mp": "chinois",
+        "fp": "chinoises"
+      }
+    },
+    {
+      "id": "nat-04-indonesie",
+      "fr": "Indonésie",
+      "en": "Indonesia",
+      "emoji": "🇮🇩",
+      "tags": [
+        "col:l_apos"
+      ],
+      "nat": {
+        "ms": "indonésien",
+        "fs": "indonésienne",
+        "mp": "indonésiens",
+        "fp": "indonésiennes"
+      }
+    },
+    {
+      "id": "nat-05-coree",
+      "fr": "Corée",
+      "en": "Korea",
+      "emoji": "🇰🇷",
+      "tags": [
+        "col:la"
+      ],
+      "nat": {
+        "ms": "coréen",
+        "fs": "coréenne",
+        "mp": "coréens",
+        "fp": "coréennes"
+      }
+    },
+    {
+      "id": "nat-06-etats-unis",
+      "fr": "États-Unis",
+      "en": "United States",
+      "emoji": "🇺🇸",
+      "tags": [
+        "col:les"
+      ],
+      "nat": {
+        "ms": "américain",
+        "fs": "américaine",
+        "mp": "américains",
+        "fp": "américaines"
+      }
+    },
+    {
+      "id": "nat-07-mexique",
+      "fr": "Mexique",
+      "en": "Mexico",
+      "emoji": "🇲🇽",
+      "tags": [
+        "col:le"
+      ],
+      "nat": {
+        "ms": "mexicain",
+        "fs": "mexicaine",
+        "mp": "mexicains",
+        "fp": "mexicaines"
+      }
+    },
+    {
+      "id": "nat-08-cuba",
+      "fr": "Cuba",
+      "en": "Cuba",
+      "emoji": "🇨🇺",
+      "tags": [
+        "col:no_article"
+      ],
+      "nat": {
+        "ms": "cubain",
+        "fs": "cubaine",
+        "mp": "cubains",
+        "fp": "cubaines"
+      }
+    },
+    {
+      "id": "nat-09-philippines",
+      "fr": "Philippines",
+      "en": "Philippines",
+      "emoji": "🇵🇭",
+      "tags": [
+        "col:les"
+      ],
+      "nat": {
+        "ms": "philippin",
+        "fs": "philippine",
+        "mp": "philippins",
+        "fp": "philippines"
+      }
+    },
+    {
+      "id": "nat-10-argentine",
+      "fr": "Argentine",
+      "en": "Argentina",
+      "emoji": "🇦🇷",
+      "tags": [
+        "col:l_apos"
+      ],
+      "nat": {
+        "ms": "argentin",
+        "fs": "argentine",
+        "mp": "argentins",
+        "fp": "argentines"
+      }
+    },
+    {
+      "id": "nat-11-russie",
+      "fr": "Russie",
+      "en": "Russia",
+      "emoji": "🇷🇺",
+      "tags": [
+        "col:la"
+      ],
+      "nat": {
+        "ms": "russe",
+        "fs": "russe",
+        "mp": "russes",
+        "fp": "russes"
+      }
+    },
+    {
+      "id": "nat-12-suisse",
+      "fr": "Suisse",
+      "en": "Switzerland",
+      "emoji": "🇨🇭",
+      "tags": [
+        "col:la"
+      ],
+      "nat": {
+        "ms": "suisse",
+        "fs": "suisse",
+        "mp": "suisses",
+        "fp": "suisses"
+      }
+    },
+    {
+      "id": "nat-13-belgique",
+      "fr": "Belgique",
+      "en": "Belgium",
+      "emoji": "🇧🇪",
+      "tags": [
+        "col:la"
+      ],
+      "nat": {
+        "ms": "belge",
+        "fs": "belge",
+        "mp": "belges",
+        "fp": "belges"
+      }
+    },
+    {
+      "id": "nat-14-grece",
+      "fr": "Grèce",
+      "en": "Greece",
+      "emoji": "🇬🇷",
+      "tags": [
+        "col:la"
+      ],
+      "nat": {
+        "ms": "grec",
+        "fs": "grecque",
+        "mp": "grecs",
+        "fp": "grecques"
+      }
+    },
+    {
+      "id": "nat-15-turquie",
+      "fr": "Turquie",
+      "en": "Turkey",
+      "emoji": "🇹🇷",
+      "tags": [
+        "col:la"
+      ],
+      "nat": {
+        "ms": "turc",
+        "fs": "turque",
+        "mp": "turcs",
+        "fp": "turques"
+      }
+    },
+    {
+      "id": "nat-16-allemagne",
+      "fr": "Allemagne",
+      "en": "Germany",
+      "emoji": "🇩🇪",
+      "tags": [
+        "col:l_apos"
+      ],
+      "nat": {
+        "ms": "allemand",
+        "fs": "allemande",
+        "mp": "allemands",
+        "fp": "allemandes"
+      }
+    },
+    {
+      "id": "nat-17-cambodge",
+      "fr": "Cambodge",
+      "en": "Cambodia",
+      "emoji": "🇰🇭",
+      "tags": [
+        "col:le"
+      ],
+      "nat": {
+        "ms": "cambodgien",
+        "fs": "cambodgienne",
+        "mp": "cambodgiens",
+        "fp": "cambodgiennes"
+      }
+    },
+    {
+      "id": "nat-18-singapour",
+      "fr": "Singapour",
+      "en": "Singapore",
+      "emoji": "🇸🇬",
+      "tags": [
+        "col:no_article"
+      ],
+      "nat": {
+        "ms": "singapourien",
+        "fs": "singapourienne",
+        "mp": "singapouriens",
+        "fp": "singapouriennes"
+      }
+    },
+    {
+      "id": "nat-19-malaisie",
+      "fr": "Malaisie",
+      "en": "Malaysia",
+      "emoji": "🇲🇾",
+      "tags": [
+        "col:la"
+      ],
+      "nat": {
+        "ms": "malaisien",
+        "fs": "malaisienne",
+        "mp": "malaisiens",
+        "fp": "malaisiennes"
+      }
+    },
+    {
+      "id": "nat-20-thailande",
+      "fr": "Thaïlande",
+      "en": "Thailand",
+      "emoji": "🇹🇭",
+      "tags": [
+        "col:la"
+      ],
+      "nat": {
+        "ms": "thaïlandais",
+        "fs": "thaïlandaise",
+        "mp": "thaïlandais",
+        "fp": "thaïlandaises"
+      }
+    },
+    {
+      "id": "nat-21-angleterre",
+      "fr": "Angleterre",
+      "en": "England",
+      "emoji": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+      "tags": [
+        "col:l_apos"
+      ],
+      "nat": {
+        "ms": "anglais",
+        "fs": "anglaise",
+        "mp": "anglais",
+        "fp": "anglaises"
+      }
+    },
+    {
+      "id": "nat-22-grande-bretagne",
+      "fr": "Grande-Bretagne",
+      "en": "Great Britain",
+      "emoji": "🇬🇧",
+      "tags": [
+        "col:la"
+      ],
+      "nat": {
+        "ms": "britannique",
+        "fs": "britannique",
+        "mp": "britanniques",
+        "fp": "britanniques"
+      }
+    },
+    {
+      "id": "nat-23-tunisie",
+      "fr": "Tunisie",
+      "en": "Tunisia",
+      "emoji": "🇹🇳",
+      "tags": [
+        "col:la"
+      ],
+      "nat": {
+        "ms": "tunisien",
+        "fs": "tunisienne",
+        "mp": "tunisiens",
+        "fp": "tunisiennes"
+      }
+    },
+    {
+      "id": "nat-24-maroc",
+      "fr": "Maroc",
+      "en": "Morocco",
+      "emoji": "🇲🇦",
+      "tags": [
+        "col:le"
+      ],
+      "nat": {
+        "ms": "marocain",
+        "fs": "marocaine",
+        "mp": "marocains",
+        "fp": "marocaines"
+      }
+    },
+    {
+      "id": "nat-25-algerie",
+      "fr": "Algérie",
+      "en": "Algeria",
+      "emoji": "🇩🇿",
+      "tags": [
+        "col:l_apos"
+      ],
+      "nat": {
+        "ms": "algérien",
+        "fs": "algérienne",
+        "mp": "algériens",
+        "fp": "algériennes"
+      }
+    }
+  ],
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        {
+          "key": "no_article",
+          "label": "—",
+          "prefix": ""
+        },
+        {
+          "key": "le",
+          "label": "LE",
+          "prefix": "Le "
+        },
+        {
+          "key": "la",
+          "label": "LA",
+          "prefix": "La "
+        },
+        {
+          "key": "l_apos",
+          "label": "L'",
+          "prefix": "L'"
+        },
+        {
+          "key": "les",
+          "label": "LES",
+          "prefix": "Les "
+        }
+      ]
+    }
+  }
+}

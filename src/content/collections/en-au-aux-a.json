@@ -1,0 +1,105 @@
+{
+  "id": "en-au-aux-a",
+  "title": "En, au, aux ou à ?",
+  "subtitle": "Sort each place by its preposition",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 3,
+  "lessonNo": 32,
+  "lessonSlug": "en-au-aux-a",
+  "tags": [],
+  "seq": 332,
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        {
+          "key": "en",
+          "label": "EN",
+          "prefix": "en "
+        },
+        {
+          "key": "au",
+          "label": "AU",
+          "prefix": "au "
+        },
+        {
+          "key": "aux",
+          "label": "AUX",
+          "prefix": "aux "
+        },
+        {
+          "key": "a",
+          "label": "À",
+          "prefix": "à "
+        }
+      ]
+    }
+  },
+  "items": [
+    {
+      "id": "en-au-aux-a-01",
+      "fr": "France",
+      "en": "France (f. country)",
+      "tags": [
+        "col:en"
+      ]
+    },
+    {
+      "id": "en-au-aux-a-02",
+      "fr": "Italie",
+      "en": "Italy (f. country)",
+      "tags": [
+        "col:en"
+      ]
+    },
+    {
+      "id": "en-au-aux-a-03",
+      "fr": "Japon",
+      "en": "Japan (m. country)",
+      "tags": [
+        "col:au"
+      ]
+    },
+    {
+      "id": "en-au-aux-a-04",
+      "fr": "Canada",
+      "en": "Canada (m. country)",
+      "tags": [
+        "col:au"
+      ]
+    },
+    {
+      "id": "en-au-aux-a-05",
+      "fr": "États-Unis",
+      "en": "United States (pl. country)",
+      "tags": [
+        "col:aux"
+      ]
+    },
+    {
+      "id": "en-au-aux-a-06",
+      "fr": "Pays-Bas",
+      "en": "Netherlands (pl. country)",
+      "tags": [
+        "col:aux"
+      ]
+    },
+    {
+      "id": "en-au-aux-a-07",
+      "fr": "Paris",
+      "en": "Paris (city)",
+      "tags": [
+        "col:a"
+      ]
+    },
+    {
+      "id": "en-au-aux-a-08",
+      "fr": "Tokyo",
+      "en": "Tokyo (city)",
+      "tags": [
+        "col:a"
+      ]
+    }
+  ]
+}

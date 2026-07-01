@@ -1,0 +1,77 @@
+{
+  "id": "faire-activites",
+  "title": "Faire du, de la, de l' ou des ?",
+  "subtitle": "Sort each activity by its contraction",
+  "categories": [
+    {
+      "key": "du",
+      "label": "DU",
+      "prefix": "du "
+    },
+    {
+      "key": "de_la",
+      "label": "DE LA",
+      "prefix": "de la "
+    },
+    {
+      "key": "de_l",
+      "label": "DE L'",
+      "prefix": "de l'"
+    },
+    {
+      "key": "des",
+      "label": "DES",
+      "prefix": "des "
+    }
+  ],
+  "tiles": [
+    {
+      "text": "SPORT",
+      "displayName": "sport",
+      "category": "du",
+      "meaning": "sport"
+    },
+    {
+      "text": "VÉLO",
+      "displayName": "vélo",
+      "category": "du",
+      "meaning": "cycling"
+    },
+    {
+      "text": "NATATION",
+      "displayName": "natation",
+      "category": "de_la",
+      "meaning": "swimming"
+    },
+    {
+      "text": "PHOTOGRAPHIE",
+      "displayName": "photographie",
+      "category": "de_la",
+      "meaning": "photography"
+    },
+    {
+      "text": "ÉQUITATION",
+      "displayName": "équitation",
+      "category": "de_l",
+      "meaning": "horse riding"
+    },
+    {
+      "text": "ATHLÉTISME",
+      "displayName": "athlétisme",
+      "category": "de_l",
+      "meaning": "athletics"
+    },
+    {
+      "text": "COURSES",
+      "displayName": "courses",
+      "category": "des",
+      "meaning": "errands"
+    },
+    {
+      "text": "RANDONNÉES",
+      "displayName": "randonnées",
+      "category": "des",
+      "meaning": "hikes"
+    }
+  ]
+}

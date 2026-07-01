@@ -1,0 +1,57 @@
+{
+  "id": "question-words",
+  "title": "Quel mot interrogatif ?",
+  "subtitle": "The 7 core question words",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 3,
+  "lessonNo": 35,
+  "lessonSlug": "question-words",
+  "tags": [],
+  "seq": 335,
+  "items": [
+    {
+      "id": "question-words-01",
+      "fr": "où",
+      "en": "where",
+      "tags": []
+    },
+    {
+      "id": "question-words-02",
+      "fr": "quand",
+      "en": "when",
+      "tags": []
+    },
+    {
+      "id": "question-words-03",
+      "fr": "combien",
+      "en": "how much / many",
+      "tags": []
+    },
+    {
+      "id": "question-words-04",
+      "fr": "comment",
+      "en": "how",
+      "tags": []
+    },
+    {
+      "id": "question-words-05",
+      "fr": "quoi",
+      "en": "what",
+      "tags": []
+    },
+    {
+      "id": "question-words-06",
+      "fr": "qui",
+      "en": "who",
+      "tags": []
+    },
+    {
+      "id": "question-words-07",
+      "fr": "pourquoi",
+      "en": "why",
+      "tags": []
+    }
+  ]
+}

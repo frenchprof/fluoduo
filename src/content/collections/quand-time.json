@@ -1,0 +1,84 @@
+{
+  "id": "quand-time",
+  "title": "Jour, fréquence ou heure ?",
+  "subtitle": "Sort each time expression",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 2,
+  "lessonNo": 27,
+  "lessonSlug": "quand-time",
+  "tags": [],
+  "seq": 227,
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        {
+          "key": "jour",
+          "label": "JOUR",
+          "prefix": ""
+        },
+        {
+          "key": "frequence",
+          "label": "FRÉQUENCE",
+          "prefix": ""
+        },
+        {
+          "key": "heure",
+          "label": "HEURE",
+          "prefix": ""
+        }
+      ]
+    }
+  },
+  "items": [
+    {
+      "id": "quand-time-01",
+      "fr": "le lundi",
+      "en": "on Mondays",
+      "tags": [
+        "col:jour"
+      ]
+    },
+    {
+      "id": "quand-time-02",
+      "fr": "le week-end",
+      "en": "on weekends",
+      "tags": [
+        "col:jour"
+      ]
+    },
+    {
+      "id": "quand-time-03",
+      "fr": "tous les jours",
+      "en": "every day",
+      "tags": [
+        "col:frequence"
+      ]
+    },
+    {
+      "id": "quand-time-04",
+      "fr": "tous les matins",
+      "en": "every morning",
+      "tags": [
+        "col:frequence"
+      ]
+    },
+    {
+      "id": "quand-time-05",
+      "fr": "à 8 heures",
+      "en": "at 8 o'clock",
+      "tags": [
+        "col:heure"
+      ]
+    },
+    {
+      "id": "quand-time-06",
+      "fr": "à midi",
+      "en": "at noon",
+      "tags": [
+        "col:heure"
+      ]
+    }
+  ]
+}

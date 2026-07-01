@@ -1,0 +1,77 @@
+{
+  "id": "aller-destinations",
+  "title": "Aller au, à la, à l' ou aux ?",
+  "subtitle": "Sort each destination by its contraction",
+  "categories": [
+    {
+      "key": "au",
+      "label": "AU",
+      "prefix": "au "
+    },
+    {
+      "key": "a_la",
+      "label": "À LA",
+      "prefix": "à la "
+    },
+    {
+      "key": "a_l",
+      "label": "À L'",
+      "prefix": "à l'"
+    },
+    {
+      "key": "aux",
+      "label": "AUX",
+      "prefix": "aux "
+    }
+  ],
+  "tiles": [
+    {
+      "text": "CINÉMA",
+      "displayName": "cinéma",
+      "category": "au",
+      "meaning": "cinema"
+    },
+    {
+      "text": "MARCHÉ",
+      "displayName": "marché",
+      "category": "au",
+      "meaning": "market"
+    },
+    {
+      "text": "PISCINE",
+      "displayName": "piscine",
+      "category": "a_la",
+      "meaning": "swimming pool"
+    },
+    {
+      "text": "PLAGE",
+      "displayName": "plage",
+      "category": "a_la",
+      "meaning": "beach"
+    },
+    {
+      "text": "ÉCOLE",
+      "displayName": "école",
+      "category": "a_l",
+      "meaning": "school"
+    },
+    {
+      "text": "HÔPITAL",
+      "displayName": "hôpital",
+      "category": "a_l",
+      "meaning": "hospital"
+    },
+    {
+      "text": "TOILETTES",
+      "displayName": "toilettes",
+      "category": "aux",
+      "meaning": "toilets"
+    },
+    {
+      "text": "MAGASINS",
+      "displayName": "magasins",
+      "category": "aux",
+      "meaning": "shops"
+    }
+  ]
+}

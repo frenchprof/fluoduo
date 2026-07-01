@@ -1,0 +1,105 @@
+{
+  "id": "faire-activites",
+  "title": "Faire du, de la, de l' ou des ?",
+  "subtitle": "Sort each activity by its contraction",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 2,
+  "lessonNo": 24,
+  "lessonSlug": "faire-activites",
+  "tags": [],
+  "seq": 224,
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        {
+          "key": "du",
+          "label": "DU",
+          "prefix": "du "
+        },
+        {
+          "key": "de_la",
+          "label": "DE LA",
+          "prefix": "de la "
+        },
+        {
+          "key": "de_l",
+          "label": "DE L'",
+          "prefix": "de l'"
+        },
+        {
+          "key": "des",
+          "label": "DES",
+          "prefix": "des "
+        }
+      ]
+    }
+  },
+  "items": [
+    {
+      "id": "faire-activites-01",
+      "fr": "sport",
+      "en": "sport",
+      "tags": [
+        "col:du"
+      ]
+    },
+    {
+      "id": "faire-activites-02",
+      "fr": "vélo",
+      "en": "cycling",
+      "tags": [
+        "col:du"
+      ]
+    },
+    {
+      "id": "faire-activites-03",
+      "fr": "natation",
+      "en": "swimming",
+      "tags": [
+        "col:de_la"
+      ]
+    },
+    {
+      "id": "faire-activites-04",
+      "fr": "photographie",
+      "en": "photography",
+      "tags": [
+        "col:de_la"
+      ]
+    },
+    {
+      "id": "faire-activites-05",
+      "fr": "équitation",
+      "en": "horse riding",
+      "tags": [
+        "col:de_l"
+      ]
+    },
+    {
+      "id": "faire-activites-06",
+      "fr": "athlétisme",
+      "en": "athletics",
+      "tags": [
+        "col:de_l"
+      ]
+    },
+    {
+      "id": "faire-activites-07",
+      "fr": "courses",
+      "en": "errands",
+      "tags": [
+        "col:des"
+      ]
+    },
+    {
+      "id": "faire-activites-08",
+      "fr": "randonnées",
+      "en": "hikes",
+      "tags": [
+        "col:des"
+      ]
+    }
+  ]
+}
