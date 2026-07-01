@@ -81,6 +81,8 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
   const [score, setScore] = useState(0);
   const [paused, setPaused] = useState(false);
   const [music, setMusic] = useState(false);
+  const musicAutoRef = useRef(false);
+  const [showHelp, setShowHelp] = useState(false);
   useEffect(() => () => chiptune.stop(), []); // stop the loop on unmount
   const [gameOver, setGameOver] = useState(false);
   const [flash, setFlash] = useState<{ col: number; kind: "ok" | "bad" } | null>(null);
@@ -211,6 +213,11 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
         return;
       }
       if (paused || !active) return;
+      if (!musicAutoRef.current) {
+        musicAutoRef.current = true;
+        chiptune.play("letris");
+        setMusic(true);
+      }
       if (e.key === "ArrowLeft") {
         const nc = Math.max(0, active.col - 1);
         if (board[active.row][nc] === null) setActive({ ...active, col: nc });
@@ -250,6 +257,8 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
         </div>
         <div className="flex items-center gap-4 font-mono text-sm">
           <span>Score <b className="text-emerald-400">{score}</b></span>
+          <button type="button" onClick={() => setShowHelp(true)}
+            title="How to play" className="rounded border border-slate-500 px-2 py-1 hover:bg-slate-700">?</button>
           <button type="button" onClick={() => { chiptune.toggle("letris"); setMusic(chiptune.playing() === "letris"); }}
             title="Music" className="rounded border border-slate-500 px-2 py-1 hover:bg-slate-700">{music ? "🔊" : "🎵"}</button>
           <button type="button" onClick={() => setPaused((p) => !p)} className="rounded border border-slate-500 px-2 py-1 hover:bg-slate-700">
@@ -261,10 +270,26 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
         </div>
       </header>
 
-      <p className="text-center text-xs text-slate-400">
-        Match the word to its column. Colours show on landing — line up <b>3 of a colour</b>
-        {" "}in a column (the base counts) <b>or a row</b> to clear. Stuck on a wrong drop? Repeat the same mistake ×3 to dissolve it.
-      </p>
+      {showHelp && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={() => setShowHelp(false)}>
+          <div className="max-w-sm rounded-2xl bg-slate-800 p-6 text-white shadow-2xl ring-1 ring-white/10" onClick={(e) => e.stopPropagation()}>
+            <h2 className="mb-3 text-xl font-bold">How to play Letris</h2>
+            <ol className="space-y-2 text-sm text-slate-200 list-decimal list-inside">
+              <li>A word falls from the top — read it.</li>
+              <li>Use <b>← →</b> or tap a column to steer it into the right basket.</li>
+              <li>Press <b>↓</b> to nudge it down, or <b>Space</b> to drop it instantly.</li>
+              <li>Line up <b>3 tiles of the same colour</b> in a column or row to clear them.</li>
+            </ol>
+            <p className="mt-3 text-xs text-slate-400">
+              The goal is to sort, not just drop — every correct placement reinforces the grammar rule.
+            </p>
+            <button type="button" onClick={() => setShowHelp(false)}
+              className="mt-4 w-full rounded-lg bg-emerald-600 py-2 text-sm font-bold hover:bg-emerald-500">
+              Got it — play!
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="relative overflow-hidden rounded-lg border border-slate-700 bg-slate-900">
         <div

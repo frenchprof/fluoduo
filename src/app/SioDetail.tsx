@@ -62,7 +62,7 @@ export function PracticeChips({ deck }: { deck: Collection }) {
   const hasLetris = !!deck.gameConfig?.letris;
   const chips = [
     { key: "flip", label: "🃏 Flip It", href: `/practice/flip-it/${deck.id}` },
-    { key: "say", label: "🔊 Say It", href: undefined },
+    { key: "say", label: "🎤 Say It", href: `/practice/say-it/${deck.id}` },
     { key: "complete", label: "✏️ Complete It", href: undefined },
     { key: "match", label: "🎢 Match It", href: `/games/conveyor/${deck.id}` },
     ...(hasLetris

@@ -255,6 +255,7 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
   const tapCard = useCallback((uid: number) => {
     const s = g.current;
     if (s.over || s.paused || s.levelDone) return;
+    if (!musicRef.current) { musicRef.current = true; chiptune.play("conveyor"); setMusic(true); }
     const card = s.cards.find((c) => c.uid === uid);
     if (!card) return;
     if (s.sel?.side === "dock") commit(s, card, s.sel.back);
@@ -265,6 +266,7 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
   const tapDock = useCallback((back: string) => {
     const s = g.current;
     if (s.over || s.paused || s.levelDone) return;
+    if (!musicRef.current) { musicRef.current = true; chiptune.play("conveyor"); setMusic(true); }
     if (s.sel?.side === "belt") {
       const card = s.cards.find((c) => c.uid === (s.sel as { uid: number }).uid);
       if (card) commit(s, card, back); else { s.sel = null; render(); }

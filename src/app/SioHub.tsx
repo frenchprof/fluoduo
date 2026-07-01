@@ -99,7 +99,9 @@ export default function SioHub() {
         </span>
       </div>
 
-      <Unit0Panel />
+      <div id="unit-0">
+        <Unit0Panel />
+      </div>
 
       {unitNumbers()
         .filter((unit) => unit > 0)
@@ -114,7 +116,7 @@ export default function SioHub() {
           const doneCount = sios.filter((s) => isSioDone(s.id, progress)).length;
 
           return (
-            <section key={unit} className={`fluo-h-${hue} mb-8`}>
+            <section key={unit} id={`unit-${unit}`} className={`fluo-h-${hue} mb-8`}>
               <button
                 type="button"
                 onClick={() => !locked && toggle(unitKey)}

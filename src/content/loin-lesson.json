@@ -6,12 +6,12 @@
   "categories": [
     {
       "key": "group1",
-      "label": "WITHOUT de",
+      "label": "SANS de",
       "prefix": ""
     },
     {
       "key": "group2",
-      "label": "WITH de",
+      "label": "AVEC de",
       "prefix": ""
     }
   ],

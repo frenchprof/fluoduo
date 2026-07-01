@@ -5,12 +5,12 @@
   "categories": [
     {
       "key": "subject",
-      "label": "SUJET SEULEMENT",
+      "label": "SUJET",
       "prefix": ""
     },
     {
       "key": "stress",
-      "label": "TONIQUE SEULEMENT",
+      "label": "TONIQUE",
       "prefix": ""
     },
     {

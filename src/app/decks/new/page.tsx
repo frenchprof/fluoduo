@@ -150,17 +150,17 @@ export default function NewDeckPage() {
           <Link href="/" className="fluo-serif rounded-full bg-[var(--fluo-card)] px-3 py-1.5 text-sm font-bold text-[color:var(--fluo-ink)] hover:brightness-95">
             ← Home
           </Link>
-          <span className="fluo-label">📚 New deck</span>
+          <span className="fluo-label">📚 Your Custom Deck</span>
         </div>
       </div>
 
       <div className="mx-auto max-w-5xl px-4 py-8">
         <h1 className="fluo-serif text-3xl font-black text-[color:var(--fluo-ink)]">
-          Build a deck — <span className="fluo-hl">both sides</span>
+          Your <span className="fluo-hl">Custom Deck</span>
         </h1>
         <p className="mt-1 text-sm text-[color:var(--fluo-ink-soft)]">
-          Each card has a front (English + image) and a flip side (French + article).
-          Tab moves through the four front lines, then crosses to the flip side.
+          Build your own flip cards. Each card has an English front and a French flip side.
+          Press Tab to move between fields.
         </p>
 
         {!user && <SignInGate resolving={user === undefined} onSignIn={() => signInWithGoogle().catch(() => {})} />}
@@ -183,8 +183,8 @@ export default function NewDeckPage() {
           <Field label="Lesson no.">
             <input type="number" min={1} value={draft.lessonNo} onChange={(e) => setDraft({ ...draft, lessonNo: e.target.value })} />
           </Field>
-          <Field label="Lesson slug">
-            <input value={draft.lessonSlug} onChange={(e) => setDraft({ ...draft, lessonSlug: e.target.value })} placeholder="countries" />
+          <Field label="Topic tag">
+            <input value={draft.lessonSlug} onChange={(e) => setDraft({ ...draft, lessonSlug: e.target.value })} placeholder="e.g. colours, transport" />
           </Field>
           <Field label="Visibility">
             <select value={draft.visibility} onChange={(e) => setDraft({ ...draft, visibility: e.target.value as Draft["visibility"] })}>
@@ -246,9 +246,9 @@ function CardEditor({
         <div className="rounded-xl border border-[color:var(--fluo-line)] bg-[#fff8ee] p-2">
           <div className="fluo-label mb-1.5">front · english + image</div>
           <div className="space-y-1.5">
-            <input value={card.emoji} onChange={(e) => onChange({ emoji: e.target.value })} placeholder="🖼️ image / flag emoji" />
+            <input value={card.emoji} onChange={(e) => onChange({ emoji: e.target.value })} placeholder="🖼️ image emoji (optional)" />
             <input value={card.en} onChange={(e) => onChange({ en: e.target.value })} placeholder="English *" />
-            <input value={card.note} onChange={(e) => onChange({ note: e.target.value })} placeholder="note (e.g. (continent))" />
+            <input value={card.note} onChange={(e) => onChange({ note: e.target.value })} placeholder="note (optional)" />
             <input value={card.hint} onChange={(e) => onChange({ hint: e.target.value })} placeholder="hint (optional)" />
           </div>
         </div>
