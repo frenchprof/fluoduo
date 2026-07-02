@@ -35,7 +35,7 @@
 import { useEffect, useState } from "react";
 import { SIOS, UNIT_META, unitNumbers, groupSiosForUnit, type Sio } from "@/content/sios";
 import { CURATED } from "@/content/collections";
-import { getPretestForLesson } from "@/content/pretests";
+import { getPretestForSio } from "@/content/pretests";
 import { defaultProgress, loadProgress, isSioDone, MAX_HEARTS, type Progress } from "@/lib/progress";
 import Unit0Panel from "./Unit0Panel";
 import SioModal from "./SioModal";
@@ -47,8 +47,7 @@ const LOCKED_UNITS = new Set([4]); // Unité 3 unlocked 2026-07-01; Unité 4 sti
 
 function deckAndPretestFor(sio: Sio) {
   const deck = sio.collectionId ? CURATED.find((c) => c.id === sio.collectionId) : undefined;
-  const pretest =
-    deck && deck.unit != null && deck.lessonNo != null ? getPretestForLesson(deck.unit, deck.lessonNo) : undefined;
+  const pretest = getPretestForSio(sio.id);
   const pretestHref = pretest ? `/pretests/${pretest.id}` : deck ? `/games/practice/${deck.id}` : null;
   return { deck, pretestHref, pretestId: pretest?.id ?? null };
 }

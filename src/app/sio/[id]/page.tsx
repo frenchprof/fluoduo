@@ -17,7 +17,7 @@ export function generateStaticParams() {
   return SIOS.map((s) => ({ id: s.id }));
 }
 import { CURATED } from "@/content/collections";
-import { getPretestForLesson } from "@/content/pretests";
+import { getPretestForSio } from "@/content/pretests";
 import type { Collection } from "@/lib/collections/schema";
 import MarkDoneButton from "./MarkDoneButton";
 import SioDetail from "../../SioDetail";
@@ -35,10 +35,7 @@ export default async function SioPage({ params }: { params: Promise<{ id: string
 
   const { prev, next } = siblingSios(sio.id);
   const deck = collectionById(sio.collectionId);
-  const pretest =
-    deck && deck.unit != null && deck.lessonNo != null
-      ? getPretestForLesson(deck.unit, deck.lessonNo)
-      : undefined;
+  const pretest = getPretestForSio(sio.id);
   const pretestHref = pretest
     ? `/pretests/${pretest.id}`
     : deck

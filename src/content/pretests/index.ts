@@ -18,3 +18,19 @@ export function getPretestForLesson(
 ): Pretest | undefined {
   return PRETESTS.find((p) => p.unit === unit && p.lessonNo === lessonNo);
 }
+
+/**
+ * Explicit SIO → pretest attachment. The unit/lesson join above is fragile —
+ * deck lessonNo values carry legacy numbering (e.g. en-au-aux-a has
+ * lessonNo 32), which silently orphaned the city-preps pretest. Keep this map
+ * as the source of truth; add a line here whenever a new pretest is authored.
+ */
+const PRETEST_BY_SIO: Record<string, string> = {
+  "SIO-031": "u3-l1-weather",
+  "SIO-032": "u3-l2-city-preps",
+};
+
+export function getPretestForSio(sioId: string): Pretest | undefined {
+  const id = PRETEST_BY_SIO[sioId];
+  return id ? getPretest(id) : undefined;
+}
