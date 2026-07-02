@@ -19,7 +19,9 @@ import { speak } from "@/games/letris/speech";
 import { SIOS, sioStatement } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import { UNIT0_QUESTIONS, type Unit0Question } from "@/content/sios/unit0-questions";
+import { getAtelier } from "@/content/ateliers";
 import SioModal, { popupActivityTabs } from "./SioModal";
+import DialoguePlayer from "./DialoguePlayer";
 
 const UNIT0_SIOS = SIOS.filter((s) => s.unit === 0);
 
@@ -81,7 +83,7 @@ export default function Unit0Panel() {
           </p>
 
           {openSio.id === "SIO-010" ? (
-            <Unit0Dialogue />
+            <DialoguePlayer lines={getAtelier(openSio.id) ?? []} />
           ) : openSio.isProduction ? (
             <div className="rounded-xl border-2 border-dashed p-3" style={{ borderColor: "var(--fluo-card-accent)" }}>
               <p className="text-sm text-[color:var(--fluo-ink-soft)]">
@@ -93,55 +95,6 @@ export default function Unit0Panel() {
           )}
         </SioModal>
       )}
-    </div>
-  );
-}
-
-/**
- * SIO-010 opens to a mini first-meeting dialogue built from ONLY what SIO-001
- * to 010 have covered (greetings, s'appeler, spelling aloud, enchanté). Each
- * line is playable; the English shows muted under it. Not a test — a model to
- * read and hear, then perform in class.
- */
-const DIALOGUE: { who: "A" | "B"; fr: string; en: string; say?: string }[] = [
-  { who: "A", fr: "Bonjour !", en: "Hello!" },
-  { who: "B", fr: "Bonjour !", en: "Hello!" },
-  { who: "A", fr: "Comment tu t'appelles ?", en: "What's your name?" },
-  { who: "B", fr: "Je m'appelle Marc. Et toi ?", en: "My name is Marc. And you?" },
-  { who: "A", fr: "Moi, je m'appelle Léa.", en: "Me, my name is Léa." },
-  { who: "B", fr: "Comment ça s'écrit ?", en: "How do you spell it?" },
-  // Spelling always uses "Ça s'écrit …" (Dan, 2026-07-02).
-  { who: "A", fr: "Ça s'écrit L – É – A.", en: "It's spelled L – E – A.", say: "Ça s'écrit, L, É, A" },
-  { who: "B", fr: "Enchanté !", en: "Nice to meet you!" },
-  { who: "A", fr: "Enchantée ! Au revoir !", en: "Nice to meet you! Goodbye!" },
-  { who: "B", fr: "Au revoir, à demain !", en: "Goodbye, see you tomorrow!" },
-];
-
-function Unit0Dialogue() {
-  return (
-    <div className="space-y-2">
-      {DIALOGUE.map((line, i) => {
-        const mine = line.who === "A";
-        return (
-          <div key={i} className={`flex ${mine ? "justify-start" : "justify-end"}`}>
-            <button
-              type="button"
-              onClick={() => speak(line.say ?? line.fr, "fr-FR", { gender: mine ? "f" : "m" })}
-              title="Play"
-              className="max-w-[85%] rounded-2xl border-2 px-3 py-2 text-left transition hover:brightness-95"
-              style={{
-                borderColor: "var(--fluo-card-accent)",
-                background: mine ? "var(--fluo-card-tint)" : "var(--fluo-card)",
-              }}
-            >
-              <span lang="fr" className="fluo-serif text-base font-bold text-[color:var(--fluo-ink)]">
-                🔊 {line.fr}
-              </span>
-              <span className="mt-0.5 block text-xs text-[color:var(--fluo-ink-soft)]">{line.en}</span>
-            </button>
-          </div>
-        );
-      })}
     </div>
   );
 }
