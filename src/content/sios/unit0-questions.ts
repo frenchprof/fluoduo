@@ -281,17 +281,17 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
   ],
   "SIO-008": [
     // Classroom instructions — emoji + (English) prompt, pick the French
-    // imperative (the one SIO where imperatives are allowed). Corrected
-    // 2026-07-02 (was mistakenly greetings content).
-    instructionQ("👂", "Écoutez !", "Listen", [["Écrivez !", "Write"], ["Lisez !", "Read"], ["Regardez !", "Look"]]),
-    instructionQ("✏️", "Écrivez !", "Write", [["Écoutez !", "Listen"], ["Lisez !", "Read"], ["Ouvrez le livre !", "Open the book"]]),
-    instructionQ("📖", "Lisez !", "Read", [["Écrivez !", "Write"], ["Écoutez !", "Listen"], ["Regardez !", "Look"]]),
-    instructionQ("🔁", "Répétez !", "Repeat", [["Lisez !", "Read"], ["Écoutez !", "Listen"], ["Regardez !", "Look"]]),
-    instructionQ("👀", "Regardez !", "Look", [["Écoutez !", "Listen"], ["Lisez !", "Read"], ["Levez la main !", "Raise your hand"]]),
-    instructionQ("✋", "Levez la main !", "Raise your hand", [["Ouvrez le livre !", "Open the book"], ["Regardez !", "Look"], ["Silence, s'il vous plaît !", "Quiet, please"]]),
-    instructionQ("📗", "Ouvrez le livre !", "Open the book", [["Fermez le livre !", "Close the book"], ["Lisez !", "Read"], ["Écrivez !", "Write"]]),
-    instructionQ("📕", "Fermez le livre !", "Close the book", [["Ouvrez le livre !", "Open the book"], ["Écoutez !", "Listen"], ["Regardez !", "Look"]]),
-    instructionQ("🤫", "Silence, s'il vous plaît !", "Quiet, please", [["Levez la main !", "Raise your hand"], ["Écoutez !", "Listen"], ["Répétez !", "Repeat"]]),
+    // imperative (the one SIO where imperatives are allowed). Dan's set,
+    // 2026-07-02.
+    instructionQ("👂", "Écoutez !", "Listen", [["Regardez !", "Look"], ["Répétez !", "Repeat"], ["Parlez !", "Speak"]]),
+    instructionQ("👀", "Regardez !", "Look", [["Écoutez !", "Listen"], ["Lisez !", "Read"], ["Notez !", "Note down"]]),
+    instructionQ("🔁", "Répétez !", "Repeat", [["Écoutez !", "Listen"], ["Parlez !", "Speak"], ["Notez !", "Note down"]]),
+    instructionQ("📖", "Lisez !", "Read", [["Écrivez !", "Write"], ["Regardez !", "Look"], ["Notez !", "Note down"]]),
+    instructionQ("✍️", "Écrivez !", "Write", [["Lisez !", "Read"], ["Notez !", "Note down"], ["Parlez !", "Speak"]]),
+    instructionQ("🗣️", "Parlez !", "Speak", [["Écoutez !", "Listen"], ["Répétez !", "Repeat"], ["Lisez !", "Read"]]),
+    instructionQ("📝", "Notez !", "Note down", [["Écrivez !", "Write"], ["Lisez !", "Read"], ["Comptez !", "Count"]]),
+    instructionQ("🔢", "Comptez !", "Count", [["Notez !", "Note down"], ["Associez !", "Match"], ["Écrivez !", "Write"]]),
+    instructionQ("🔗", "Associez !", "Match", [["Comptez !", "Count"], ["Notez !", "Note down"], ["Regardez !", "Look"]]),
   ],
   "SIO-009": [
     { title: "It's your first day of class. The professor asks you to introduce yourself.", options: [
