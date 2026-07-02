@@ -1,0 +1,87 @@
+{
+  "id": "u3-sio034",
+  "unit": 3,
+  "lessonNo": 4,
+  "lessonSlug": "locating-places",
+  "title": "Locating places",
+  "items": [
+    {
+      "id": "u3-sio034-01",
+      "sentenceBefore": "Mon passeport est ",
+      "sentenceAfter": " le sac.",
+      "answer": "dans",
+      "distractors": [
+        "sur",
+        "en",
+        "à"
+      ],
+      "fullSentence": "Mon passeport est dans le sac.",
+      "sentenceTrans": "My passport is in the bag."
+    },
+    {
+      "id": "u3-sio034-02",
+      "sentenceBefore": "Les assiettes sont ",
+      "sentenceAfter": " la table.",
+      "answer": "sur",
+      "distractors": [
+        "dans",
+        "à",
+        "sous"
+      ],
+      "fullSentence": "Les assiettes sont sur la table.",
+      "sentenceTrans": "The plates are on the table."
+    },
+    {
+      "id": "u3-sio034-03",
+      "sentenceBefore": "On se retrouve ",
+      "sentenceAfter": " le cinéma à 19h.",
+      "answer": "devant",
+      "distractors": [
+        "derrière",
+        "avant",
+        "face à"
+      ],
+      "fullSentence": "On se retrouve devant le cinéma à 19h.",
+      "sentenceTrans": "We're meeting in front of the cinema at 7pm."
+    },
+    {
+      "id": "u3-sio034-04",
+      "sentenceBefore": "La pharmacie est ",
+      "sentenceAfter": " la boulangerie.",
+      "answer": "à côté de",
+      "distractors": [
+        "à côté du",
+        "au côté de",
+        "à côté"
+      ],
+      "fullSentence": "La pharmacie est à côté de la boulangerie.",
+      "sentenceTrans": "The pharmacy is next to the bakery."
+    },
+    {
+      "id": "u3-sio034-05",
+      "sentenceBefore": "L'hôtel est ",
+      "sentenceAfter": " parc.",
+      "answer": "en face du",
+      "distractors": [
+        "en face de",
+        "en face de la",
+        "face au"
+      ],
+      "fullSentence": "L'hôtel est en face du parc.",
+      "sentenceTrans": "The hotel is opposite the park."
+    },
+    {
+      "id": "u3-sio034-06",
+      "sentenceBefore": "L'aéroport est assez ",
+      "sentenceAfter": " centre-ville.",
+      "answer": "loin du",
+      "distractors": [
+        "loin de",
+        "loin de le",
+        "loin des"
+      ],
+      "fullSentence": "L'aéroport est assez loin du centre-ville.",
+      "sentenceTrans": "The airport is quite far from the city centre."
+    }
+  ]
+}

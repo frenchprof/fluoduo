@@ -1,0 +1,87 @@
+{
+  "id": "u4-sio043",
+  "unit": 4,
+  "lessonNo": 3,
+  "lessonSlug": "partitive-negative",
+  "title": "Partitive → negative",
+  "items": [
+    {
+      "id": "u4-sio043-01",
+      "sentenceBefore": "Elle ne mange pas ",
+      "sentenceAfter": " viande.",
+      "answer": "de",
+      "distractors": [
+        "de la",
+        "du",
+        "pas de la"
+      ],
+      "fullSentence": "Elle ne mange pas de viande.",
+      "sentenceTrans": "She doesn't eat meat."
+    },
+    {
+      "id": "u4-sio043-02",
+      "sentenceBefore": "Il ne boit pas ",
+      "sentenceAfter": " eau — seulement du jus.",
+      "answer": "d'",
+      "distractors": [
+        "de",
+        "de l'",
+        "pas d'"
+      ],
+      "fullSentence": "Il ne boit pas d' eau — seulement du jus.",
+      "sentenceTrans": "He doesn't drink water — only juice."
+    },
+    {
+      "id": "u4-sio043-03",
+      "sentenceBefore": "Elle mange ",
+      "sentenceAfter": " légumes chaque jour.",
+      "answer": "beaucoup de",
+      "distractors": [
+        "beaucoup des",
+        "beaucoup du",
+        "beaucoup de les"
+      ],
+      "fullSentence": "Elle mange beaucoup de légumes chaque jour.",
+      "sentenceTrans": "She eats a lot of vegetables every day."
+    },
+    {
+      "id": "u4-sio043-04",
+      "sentenceBefore": "Tu veux ",
+      "sentenceAfter": " lait dans ton café ?",
+      "answer": "un peu de",
+      "distractors": [
+        "un peu du",
+        "un peu de la",
+        "peu de"
+      ],
+      "fullSentence": "Tu veux un peu de lait dans ton café ?",
+      "sentenceTrans": "Do you want a little milk in your coffee?"
+    },
+    {
+      "id": "u4-sio043-05",
+      "sentenceBefore": "— C'est du café ? — Non, ",
+      "sentenceAfter": " café — c'est du thé.",
+      "answer": "ce n'est pas du",
+      "distractors": [
+        "ce n'est pas de",
+        "il n'y a pas de",
+        "ce n'est pas de la"
+      ],
+      "fullSentence": "— C'est du café ? — Non, ce n'est pas du café — c'est du thé.",
+      "sentenceTrans": "— Is it coffee? — No, it's not coffee — it's tea."
+    },
+    {
+      "id": "u4-sio043-06",
+      "sentenceBefore": "Il n'y a pas ",
+      "sentenceAfter": " sel dans cette soupe.",
+      "answer": "assez de",
+      "distractors": [
+        "assez du",
+        "assez de le",
+        "beaucoup de"
+      ],
+      "fullSentence": "Il n'y a pas assez de sel dans cette soupe.",
+      "sentenceTrans": "There isn't enough salt in this soup."
+    }
+  ]
+}

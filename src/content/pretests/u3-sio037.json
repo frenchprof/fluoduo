@@ -1,0 +1,61 @@
+{
+  "id": "u3-sio037",
+  "unit": 3,
+  "lessonNo": 7,
+  "lessonSlug": "pouvoir",
+  "title": "pouvoir",
+  "items": [
+    {
+      "id": "u3-sio037-01",
+      "sentenceBefore": "Je ",
+      "sentenceAfter": " manger ici ?",
+      "answer": "peux",
+      "distractors": [
+        "peut",
+        "pouvez",
+        "pouvoir"
+      ],
+      "fullSentence": "Je peux manger ici ?",
+      "sentenceTrans": "Can I eat here?"
+    },
+    {
+      "id": "u3-sio037-02",
+      "sentenceBefore": "On ",
+      "sentenceAfter": " visiter le musée.",
+      "answer": "peut",
+      "distractors": [
+        "peux",
+        "peuvent",
+        "pouvons"
+      ],
+      "fullSentence": "On peut visiter le musée.",
+      "sentenceTrans": "We can visit the museum."
+    },
+    {
+      "id": "u3-sio037-03",
+      "sentenceBefore": "Vous ",
+      "sentenceAfter": " acheter les billets ici.",
+      "answer": "pouvez",
+      "distractors": [
+        "pouvons",
+        "peuvent",
+        "peux"
+      ],
+      "fullSentence": "Vous pouvez acheter les billets ici.",
+      "sentenceTrans": "You can buy the tickets here."
+    },
+    {
+      "id": "u3-sio037-04",
+      "sentenceBefore": "Ils ne ",
+      "sentenceAfter": " pas fumer ici.",
+      "answer": "peuvent",
+      "distractors": [
+        "peut",
+        "pouvez",
+        "peux"
+      ],
+      "fullSentence": "Ils ne peuvent pas fumer ici.",
+      "sentenceTrans": "They can't smoke here."
+    }
+  ]
+}

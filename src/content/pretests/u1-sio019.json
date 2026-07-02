@@ -1,0 +1,113 @@
+{
+  "id": "u1-sio019",
+  "unit": 1,
+  "lessonNo": 9,
+  "lessonSlug": "avoir-age-states",
+  "title": "Avoir — age & states",
+  "items": [
+    {
+      "id": "u1-sio019-01",
+      "sentenceBefore": "Il est midi. Vous avez ",
+      "sentenceAfter": " ?",
+      "answer": "faim",
+      "distractors": [
+        "soif",
+        "froid",
+        "sommeil"
+      ],
+      "fullSentence": "Il est midi. Vous avez faim ?",
+      "sentenceTrans": "It's noon. Are you hungry?"
+    },
+    {
+      "id": "u1-sio019-02",
+      "sentenceBefore": "J'ai ",
+      "sentenceAfter": " ! Ferme la fenêtre, s'il te plaît.",
+      "answer": "froid",
+      "distractors": [
+        "chaud",
+        "peur",
+        "raison"
+      ],
+      "fullSentence": "J'ai froid ! Ferme la fenêtre, s'il te plaît.",
+      "sentenceTrans": "I'm cold! Close the window, please."
+    },
+    {
+      "id": "u1-sio019-03",
+      "sentenceBefore": "Je ",
+      "sentenceAfter": " sommeil. Je rentre.",
+      "answer": "ai",
+      "distractors": [
+        "suis",
+        "a",
+        "est"
+      ],
+      "fullSentence": "Je ai sommeil. Je rentre.",
+      "sentenceTrans": "I'm sleepy. I'm going home."
+    },
+    {
+      "id": "u1-sio019-04",
+      "sentenceBefore": "— Quel âge as-tu ? — J'",
+      "sentenceAfter": " 21 ans.",
+      "answer": "ai",
+      "distractors": [
+        "suis",
+        "a",
+        "ont"
+      ],
+      "fullSentence": "— Quel âge as-tu ? — J'ai 21 ans.",
+      "sentenceTrans": "— How old are you? — I'm 21."
+    },
+    {
+      "id": "u1-sio019-05",
+      "sentenceBefore": "Anna et Mika ",
+      "sentenceAfter": " très froid.",
+      "answer": "ont",
+      "distractors": [
+        "a",
+        "as",
+        "avez"
+      ],
+      "fullSentence": "Anna et Mika ont très froid.",
+      "sentenceTrans": "Anna and Mika are very cold."
+    },
+    {
+      "id": "u1-sio019-06",
+      "sentenceBefore": "Tu ",
+      "sentenceAfter": " fatigué !",
+      "answer": "es",
+      "distractors": [
+        "as",
+        "a",
+        "avez"
+      ],
+      "fullSentence": "Tu es fatigué !",
+      "sentenceTrans": "You're tired!"
+    },
+    {
+      "id": "u1-sio019-07",
+      "sentenceBefore": "Je ",
+      "sentenceAfter": " malade. Je rentre.",
+      "answer": "suis",
+      "distractors": [
+        "ai",
+        "es",
+        "est"
+      ],
+      "fullSentence": "Je suis malade. Je rentre.",
+      "sentenceTrans": "I'm ill. I'm going home."
+    },
+    {
+      "id": "u1-sio019-08",
+      "sentenceBefore": "Marc et moi, nous ",
+      "sentenceAfter": " froid.",
+      "answer": "avons",
+      "distractors": [
+        "sommes",
+        "avez",
+        "êtes"
+      ],
+      "fullSentence": "Marc et moi, nous avons froid.",
+      "sentenceTrans": "Marc and I, we're cold."
+    }
+  ]
+}

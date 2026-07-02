@@ -1,0 +1,100 @@
+{
+  "id": "u4-sio046",
+  "unit": 4,
+  "lessonNo": 6,
+  "lessonSlug": "demonstratives",
+  "title": "Demonstratives",
+  "items": [
+    {
+      "id": "u4-sio046-01",
+      "sentenceBefore": "Je voudrais ",
+      "sentenceAfter": " plat, s'il vous plaît.",
+      "answer": "ce",
+      "distractors": [
+        "cet",
+        "cette",
+        "ces"
+      ],
+      "fullSentence": "Je voudrais ce plat, s'il vous plaît.",
+      "sentenceTrans": "I'd like this dish, please."
+    },
+    {
+      "id": "u4-sio046-02",
+      "sentenceBefore": "On fait les courses ",
+      "sentenceAfter": " après-midi.",
+      "answer": "cet",
+      "distractors": [
+        "ce",
+        "cette",
+        "ces"
+      ],
+      "fullSentence": "On fait les courses cet après-midi.",
+      "sentenceTrans": "We're doing the shopping this afternoon."
+    },
+    {
+      "id": "u4-sio046-03",
+      "sentenceBefore": "Qu'est-ce qu'on mange ",
+      "sentenceAfter": " semaine ?",
+      "answer": "cette",
+      "distractors": [
+        "ce",
+        "cet",
+        "ces"
+      ],
+      "fullSentence": "Qu'est-ce qu'on mange cette semaine ?",
+      "sentenceTrans": "What are we eating this week?"
+    },
+    {
+      "id": "u4-sio046-04",
+      "sentenceBefore": "",
+      "sentenceAfter": " légumes ont l'air très frais.",
+      "answer": "Ces",
+      "distractors": [
+        "Ce",
+        "Cet",
+        "Cette"
+      ],
+      "fullSentence": "Ces légumes ont l'air très frais.",
+      "sentenceTrans": "These vegetables look very fresh."
+    },
+    {
+      "id": "u4-sio046-05",
+      "sentenceBefore": "Tu connais ",
+      "sentenceAfter": " endroit ?",
+      "answer": "cet",
+      "distractors": [
+        "ce",
+        "cette",
+        "ces"
+      ],
+      "fullSentence": "Tu connais cet endroit ?",
+      "sentenceTrans": "Do you know this place?"
+    },
+    {
+      "id": "u4-sio046-06",
+      "sentenceBefore": "",
+      "sentenceAfter": " fromage sent très fort !",
+      "answer": "Ce",
+      "distractors": [
+        "Cet",
+        "Cette",
+        "Ces"
+      ],
+      "fullSentence": "Ce fromage sent très fort !",
+      "sentenceTrans": "This cheese smells very strong!"
+    },
+    {
+      "id": "u4-sio046-07",
+      "sentenceBefore": "On mange beaucoup d'abricots ",
+      "sentenceAfter": " été.",
+      "answer": "cet",
+      "distractors": [
+        "ce",
+        "cette",
+        "ces"
+      ],
+      "fullSentence": "On mange beaucoup d'abricots cet été.",
+      "sentenceTrans": "We eat a lot of apricots this summer."
+    }
+  ]
+}

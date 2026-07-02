@@ -1,0 +1,107 @@
+{
+  "id": "u4-sio048",
+  "unit": 4,
+  "lessonNo": 8,
+  "lessonSlug": "aller-pouvoir-devoir-fal",
+  "title": "aller / pouvoir / devoir / falloir + infinitif",
+  "items": [
+    {
+      "id": "u4-sio048-01",
+      "sentenceBefore": "Je ",
+      "sentenceAfter": " manger de la pizza ce soir.",
+      "answer": "vais",
+      "distractors": [
+        "vas",
+        "va",
+        "allons"
+      ],
+      "fullSentence": "Je vais manger de la pizza ce soir.",
+      "sentenceTrans": "I'm going to eat pizza this evening.",
+      "transFirst": true
+    },
+    {
+      "id": "u4-sio048-02",
+      "sentenceBefore": "Nous ",
+      "sentenceAfter": " cuisiner ensemble cette semaine.",
+      "answer": "allons",
+      "distractors": [
+        "va",
+        "vont",
+        "allez"
+      ],
+      "fullSentence": "Nous allons cuisiner ensemble cette semaine.",
+      "sentenceTrans": "We're going to cook together this week.",
+      "transFirst": true
+    },
+    {
+      "id": "u4-sio048-03",
+      "sentenceBefore": "Qu'est-ce que vous ",
+      "sentenceAfter": " commander ?",
+      "answer": "allez",
+      "distractors": [
+        "allons",
+        "vont",
+        "va"
+      ],
+      "fullSentence": "Qu'est-ce que vous allez commander ?",
+      "sentenceTrans": "What are you going to order?",
+      "transFirst": true
+    },
+    {
+      "id": "u4-sio048-04",
+      "sentenceBefore": "Je ne vais pas ",
+      "sentenceAfter": " de viande ce soir.",
+      "answer": "manger",
+      "distractors": [
+        "mange",
+        "manges",
+        "mangé"
+      ],
+      "fullSentence": "Je ne vais pas manger de viande ce soir.",
+      "sentenceTrans": "I'm not going to eat meat this evening.",
+      "transFirst": true
+    },
+    {
+      "id": "u4-sio048-05",
+      "sentenceBefore": "Tu ",
+      "sentenceAfter": " manger des légumes.",
+      "answer": "dois",
+      "distractors": [
+        "vas",
+        "peux",
+        "veux"
+      ],
+      "fullSentence": "Tu dois manger des légumes.",
+      "sentenceTrans": "You must eat vegetables.",
+      "transFirst": true
+    },
+    {
+      "id": "u4-sio048-06",
+      "sentenceBefore": "Il ",
+      "sentenceAfter": " boire de l'eau.",
+      "answer": "faut",
+      "distractors": [
+        "doit",
+        "va",
+        "peut"
+      ],
+      "fullSentence": "Il faut boire de l'eau.",
+      "sentenceTrans": "One must drink water.",
+      "transFirst": true
+    },
+    {
+      "id": "u4-sio048-07",
+      "sentenceBefore": "Elle ",
+      "sentenceAfter": " cuisiner.",
+      "answer": "peut",
+      "distractors": [
+        "va",
+        "doit",
+        "faut"
+      ],
+      "fullSentence": "Elle peut cuisiner.",
+      "sentenceTrans": "She can cook.",
+      "transFirst": true
+    }
+  ]
+}

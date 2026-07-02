@@ -1,0 +1,74 @@
+{
+  "id": "u1-sio013",
+  "unit": 1,
+  "lessonNo": 3,
+  "lessonSlug": "mati-res",
+  "title": "Matières",
+  "items": [
+    {
+      "id": "u1-sio013-01",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " français.",
+      "answer": "le",
+      "distractors": [
+        "la",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "J'étudie le français.",
+      "sentenceTrans": "I study French."
+    },
+    {
+      "id": "u1-sio013-02",
+      "sentenceBefore": "Elle étudie ",
+      "sentenceAfter": " économie.",
+      "answer": "l'",
+      "distractors": [
+        "le",
+        "la",
+        "les"
+      ],
+      "fullSentence": "Elle étudie l' économie.",
+      "sentenceTrans": "She studies economics."
+    },
+    {
+      "id": "u1-sio013-03",
+      "sentenceBefore": "Nous étudions ",
+      "sentenceAfter": " mathématiques.",
+      "answer": "les",
+      "distractors": [
+        "le",
+        "la",
+        "l'"
+      ],
+      "fullSentence": "Nous étudions les mathématiques.",
+      "sentenceTrans": "We study mathematics."
+    },
+    {
+      "id": "u1-sio013-04",
+      "sentenceBefore": "Tu étudies ",
+      "sentenceAfter": " chimie ?",
+      "answer": "la",
+      "distractors": [
+        "le",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "Tu étudies la chimie ?",
+      "sentenceTrans": "Do you study chemistry?"
+    },
+    {
+      "id": "u1-sio013-05",
+      "sentenceBefore": "Je suis étudiant ",
+      "sentenceAfter": " droit.",
+      "answer": "en",
+      "distractors": [
+        "au",
+        "de",
+        "à"
+      ],
+      "fullSentence": "Je suis étudiant en droit.",
+      "sentenceTrans": "I'm a law student."
+    }
+  ]
+}

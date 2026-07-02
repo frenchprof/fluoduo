@@ -1,0 +1,113 @@
+{
+  "id": "u1-sio016",
+  "unit": 1,
+  "lessonNo": 6,
+  "lessonSlug": "nationalities",
+  "title": "Nationalities",
+  "items": [
+    {
+      "id": "u1-sio016-01",
+      "sentenceBefore": "Marie est ",
+      "sentenceAfter": ".",
+      "answer": "française",
+      "distractors": [
+        "français",
+        "françaises",
+        "francaise"
+      ],
+      "fullSentence": "Marie est française.",
+      "sentenceTrans": "Marie is French."
+    },
+    {
+      "id": "u1-sio016-02",
+      "sentenceBefore": "Pierre et Marie sont ",
+      "sentenceAfter": ".",
+      "answer": "français",
+      "distractors": [
+        "françaises",
+        "française",
+        "francs"
+      ],
+      "fullSentence": "Pierre et Marie sont français.",
+      "sentenceTrans": "Pierre and Marie are French."
+    },
+    {
+      "id": "u1-sio016-03",
+      "sentenceBefore": "Marie et Léa sont ",
+      "sentenceAfter": ".",
+      "answer": "françaises",
+      "distractors": [
+        "français",
+        "française",
+        "françaisses"
+      ],
+      "fullSentence": "Marie et Léa sont françaises.",
+      "sentenceTrans": "Marie and Léa are French."
+    },
+    {
+      "id": "u1-sio016-04",
+      "sentenceBefore": "Emma est ",
+      "sentenceAfter": ".",
+      "answer": "anglaise",
+      "distractors": [
+        "anglais",
+        "anglaises",
+        "angleterre"
+      ],
+      "fullSentence": "Emma est anglaise.",
+      "sentenceTrans": "Emma is English."
+    },
+    {
+      "id": "u1-sio016-05",
+      "sentenceBefore": "Léa est ",
+      "sentenceAfter": ".",
+      "answer": "singapourienne",
+      "distractors": [
+        "singapourien",
+        "singapouriens",
+        "singapourienne­s"
+      ],
+      "fullSentence": "Léa est singapourienne.",
+      "sentenceTrans": "Léa is Singaporean."
+    },
+    {
+      "id": "u1-sio016-06",
+      "sentenceBefore": "Jun est ",
+      "sentenceAfter": ".",
+      "answer": "singapourien",
+      "distractors": [
+        "singapourienne",
+        "singapouriens",
+        "singapourain"
+      ],
+      "fullSentence": "Jun est singapourien.",
+      "sentenceTrans": "Jun is Singaporean."
+    },
+    {
+      "id": "u1-sio016-07",
+      "sentenceBefore": "Anna, Lukas et Felix sont ",
+      "sentenceAfter": ".",
+      "answer": "allemands",
+      "distractors": [
+        "allemande",
+        "allemandes",
+        "allemand"
+      ],
+      "fullSentence": "Anna, Lukas et Felix sont allemands.",
+      "sentenceTrans": "Anna, Lukas and Felix are German."
+    },
+    {
+      "id": "u1-sio016-08",
+      "sentenceBefore": "Sofia est ",
+      "sentenceAfter": ".",
+      "answer": "grecque",
+      "distractors": [
+        "grec",
+        "grecques",
+        "grecs"
+      ],
+      "fullSentence": "Sofia est grecque.",
+      "sentenceTrans": "Sofia is Greek."
+    }
+  ]
+}

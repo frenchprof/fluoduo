@@ -1,0 +1,100 @@
+{
+  "id": "u4-sio041",
+  "unit": 4,
+  "lessonNo": 1,
+  "lessonSlug": "food-meals",
+  "title": "Food + meals",
+  "items": [
+    {
+      "id": "u4-sio041-01",
+      "sentenceBefore": "Je prends ",
+      "sentenceAfter": " à sept heures.",
+      "answer": "le petit-déjeuner",
+      "distractors": [
+        "le déjeuner",
+        "la matinée",
+        "le repas du matin"
+      ],
+      "fullSentence": "Je prends le petit-déjeuner à sept heures.",
+      "sentenceTrans": "I have breakfast at seven o'clock."
+    },
+    {
+      "id": "u4-sio041-02",
+      "sentenceBefore": "Pour le goûter, elle mange ",
+      "sentenceAfter": ".",
+      "answer": "une pomme",
+      "distractors": [
+        "un pomme",
+        "la pomme",
+        "de la pomme"
+      ],
+      "fullSentence": "Pour le goûter, elle mange une pomme.",
+      "sentenceTrans": "For her snack, she eats an apple."
+    },
+    {
+      "id": "u4-sio041-03",
+      "sentenceBefore": "Il mange ",
+      "sentenceAfter": " et des tomates.",
+      "answer": "de la salade",
+      "distractors": [
+        "du salade",
+        "la salade",
+        "une salade"
+      ],
+      "fullSentence": "Il mange de la salade et des tomates.",
+      "sentenceTrans": "He eats (some) salad and tomatoes."
+    },
+    {
+      "id": "u4-sio041-04",
+      "sentenceBefore": "Je bois ",
+      "sentenceAfter": " minérale.",
+      "answer": "de l'eau",
+      "distractors": [
+        "l'eau",
+        "du eau",
+        "de l'eaux"
+      ],
+      "fullSentence": "Je bois de l'eau minérale.",
+      "sentenceTrans": "I drink (some) mineral water."
+    },
+    {
+      "id": "u4-sio041-05",
+      "sentenceBefore": "En France, on mange ",
+      "sentenceAfter": " après le plat principal.",
+      "answer": "du fromage",
+      "distractors": [
+        "le fromage",
+        "de la fromage",
+        "des fromages"
+      ],
+      "fullSentence": "En France, on mange du fromage après le plat principal.",
+      "sentenceTrans": "In France, people eat cheese after the main course."
+    },
+    {
+      "id": "u4-sio041-06",
+      "sentenceBefore": "Les Français mangent beaucoup de ",
+      "sentenceAfter": ".",
+      "answer": "pain",
+      "distractors": [
+        "du pain",
+        "le pain",
+        "pains"
+      ],
+      "fullSentence": "Les Français mangent beaucoup de pain.",
+      "sentenceTrans": "The French eat a lot of bread."
+    },
+    {
+      "id": "u4-sio041-07",
+      "sentenceBefore": "On va manger ",
+      "sentenceAfter": " ce soir.",
+      "answer": "des pâtes",
+      "distractors": [
+        "de la pâte",
+        "les pâtes",
+        "du pâtes"
+      ],
+      "fullSentence": "On va manger des pâtes ce soir.",
+      "sentenceTrans": "We're going to eat pasta tonight."
+    }
+  ]
+}

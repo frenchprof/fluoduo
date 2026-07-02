@@ -1,0 +1,100 @@
+{
+  "id": "u4-sio042",
+  "unit": 4,
+  "lessonNo": 2,
+  "lessonSlug": "definite-vs-partitive",
+  "title": "Definite vs partitive",
+  "items": [
+    {
+      "id": "u4-sio042-01",
+      "sentenceBefore": "Chaque matin, je bois ",
+      "sentenceAfter": " café.",
+      "answer": "du",
+      "distractors": [
+        "le",
+        "un",
+        "de la"
+      ],
+      "fullSentence": "Chaque matin, je bois du café.",
+      "sentenceTrans": "Every morning, I drink (some) coffee."
+    },
+    {
+      "id": "u4-sio042-02",
+      "sentenceBefore": "Elle mange ",
+      "sentenceAfter": " salade tous les midis.",
+      "answer": "de la",
+      "distractors": [
+        "la",
+        "une",
+        "du"
+      ],
+      "fullSentence": "Elle mange de la salade tous les midis.",
+      "sentenceTrans": "She eats (some) salad every lunchtime."
+    },
+    {
+      "id": "u4-sio042-03",
+      "sentenceBefore": "Tu veux ",
+      "sentenceAfter": " eau ?",
+      "answer": "de l'",
+      "distractors": [
+        "l'",
+        "du",
+        "de la"
+      ],
+      "fullSentence": "Tu veux de l' eau ?",
+      "sentenceTrans": "Do you want some water?"
+    },
+    {
+      "id": "u4-sio042-04",
+      "sentenceBefore": "Il y a ",
+      "sentenceAfter": " oranges sur la table.",
+      "answer": "des",
+      "distractors": [
+        "les",
+        "de les",
+        "de"
+      ],
+      "fullSentence": "Il y a des oranges sur la table.",
+      "sentenceTrans": "There are some oranges on the table."
+    },
+    {
+      "id": "u4-sio042-05",
+      "sentenceBefore": "J'adore ",
+      "sentenceAfter": " pizza.",
+      "answer": "la",
+      "distractors": [
+        "de la",
+        "du",
+        "une"
+      ],
+      "fullSentence": "J'adore la pizza.",
+      "sentenceTrans": "I love pizza (in general)."
+    },
+    {
+      "id": "u4-sio042-06",
+      "sentenceBefore": "On ajoute ",
+      "sentenceAfter": " huile d'olive.",
+      "answer": "de l'",
+      "distractors": [
+        "de la",
+        "du",
+        "une"
+      ],
+      "fullSentence": "On ajoute de l' huile d'olive.",
+      "sentenceTrans": "You add some olive oil."
+    },
+    {
+      "id": "u4-sio042-07",
+      "sentenceBefore": "J'aime la bière, mais ce soir je bois ",
+      "sentenceAfter": " vin.",
+      "answer": "du",
+      "distractors": [
+        "le",
+        "de la",
+        "un"
+      ],
+      "fullSentence": "J'aime la bière, mais ce soir je bois du vin.",
+      "sentenceTrans": "I like beer, but tonight I'm drinking (some) wine."
+    }
+  ]
+}

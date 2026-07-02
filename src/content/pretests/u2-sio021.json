@@ -1,0 +1,100 @@
+{
+  "id": "u2-sio021",
+  "unit": 2,
+  "lessonNo": 1,
+  "lessonSlug": "c-est-ce-sont-un-une-des",
+  "title": "c'est / ce sont + un/une/des",
+  "items": [
+    {
+      "id": "u2-sio021-01",
+      "sentenceBefore": "Dans mon sac, il y a ",
+      "sentenceAfter": " livre.",
+      "answer": "un",
+      "distractors": [
+        "une",
+        "des",
+        "le"
+      ],
+      "fullSentence": "Dans mon sac, il y a un livre.",
+      "sentenceTrans": "In my bag, there's a book."
+    },
+    {
+      "id": "u2-sio021-02",
+      "sentenceBefore": "Dans mon sac, il y a ",
+      "sentenceAfter": " trousse.",
+      "answer": "une",
+      "distractors": [
+        "un",
+        "des",
+        "la"
+      ],
+      "fullSentence": "Dans mon sac, il y a une trousse.",
+      "sentenceTrans": "In my bag, there's a pencil case."
+    },
+    {
+      "id": "u2-sio021-03",
+      "sentenceBefore": "Dans mon sac, il y a ",
+      "sentenceAfter": " stylos.",
+      "answer": "des",
+      "distractors": [
+        "un",
+        "une",
+        "les"
+      ],
+      "fullSentence": "Dans mon sac, il y a des stylos.",
+      "sentenceTrans": "In my bag, there are pens."
+    },
+    {
+      "id": "u2-sio021-04",
+      "sentenceBefore": "Sur la table, ",
+      "sentenceAfter": " une pomme.",
+      "answer": "il y a",
+      "distractors": [
+        "elle est",
+        "c'est",
+        "il a"
+      ],
+      "fullSentence": "Sur la table, il y a une pomme.",
+      "sentenceTrans": "On the table, there is an apple."
+    },
+    {
+      "id": "u2-sio021-05",
+      "sentenceBefore": "",
+      "sentenceAfter": " des livres.",
+      "answer": "Ce sont",
+      "distractors": [
+        "C'est",
+        "Il est",
+        "Elle est"
+      ],
+      "fullSentence": "Ce sont des livres.",
+      "sentenceTrans": "They are books."
+    },
+    {
+      "id": "u2-sio021-06",
+      "sentenceBefore": "Dans mon sac, il n'y a pas ",
+      "sentenceAfter": " livre.",
+      "answer": "de",
+      "distractors": [
+        "des",
+        "un",
+        "le"
+      ],
+      "fullSentence": "Dans mon sac, il n'y a pas de livre.",
+      "sentenceTrans": "In my bag, there's no book."
+    },
+    {
+      "id": "u2-sio021-07",
+      "sentenceBefore": "Non, ce n'est pas ",
+      "sentenceAfter": " livre, c'est un cahier.",
+      "answer": "un",
+      "distractors": [
+        "de",
+        "d'",
+        "le"
+      ],
+      "fullSentence": "Non, ce n'est pas un livre, c'est un cahier.",
+      "sentenceTrans": "No, it's not a book, it's a notebook."
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "id": "u2-sio029",
+  "unit": 2,
+  "lessonNo": 9,
+  "lessonSlug": "vouloir-inviting",
+  "title": "vouloir — inviting",
+  "items": [
+    {
+      "id": "u2-sio029-01",
+      "sentenceBefore": "Je ",
+      "sentenceAfter": " sortir ce soir.",
+      "answer": "veux",
+      "distractors": [
+        "veut",
+        "voulez",
+        "voulons"
+      ],
+      "fullSentence": "Je veux sortir ce soir.",
+      "sentenceTrans": "I want to go out tonight."
+    },
+    {
+      "id": "u2-sio029-02",
+      "sentenceBefore": "Tu ",
+      "sentenceAfter": " venir avec nous au cinéma ?",
+      "answer": "veux",
+      "distractors": [
+        "veut",
+        "voulez",
+        "aimes"
+      ],
+      "fullSentence": "Tu veux venir avec nous au cinéma ?",
+      "sentenceTrans": "Do you want to come to the cinema with us?"
+    },
+    {
+      "id": "u2-sio029-03",
+      "sentenceBefore": "Pierre ",
+      "sentenceAfter": " un café.",
+      "answer": "veut",
+      "distractors": [
+        "veux",
+        "voulons",
+        "veulent"
+      ],
+      "fullSentence": "Pierre veut un café.",
+      "sentenceTrans": "Pierre wants a coffee."
+    },
+    {
+      "id": "u2-sio029-04",
+      "sentenceBefore": "Vous ",
+      "sentenceAfter": " un thé ou un café ?",
+      "answer": "voulez",
+      "distractors": [
+        "voulons",
+        "veulent",
+        "veulez"
+      ],
+      "fullSentence": "Vous voulez un thé ou un café ?",
+      "sentenceTrans": "Would you like tea or coffee?"
+    },
+    {
+      "id": "u2-sio029-05",
+      "sentenceBefore": "Je ",
+      "sentenceAfter": " un sac, s'il vous plaît.",
+      "answer": "voudrais",
+      "distractors": [
+        "veux",
+        "voudrai",
+        "voulez"
+      ],
+      "fullSentence": "Je voudrais un sac, s'il vous plaît.",
+      "sentenceTrans": "I'd like a bag, please (polite)."
+    },
+    {
+      "id": "u2-sio029-06",
+      "sentenceBefore": "Non, je ",
+      "sentenceAfter": " pas sortir ce soir.",
+      "answer": "ne veux",
+      "distractors": [
+        "veux ne",
+        "n'veux",
+        "ne veut"
+      ],
+      "fullSentence": "Non, je ne veux pas sortir ce soir.",
+      "sentenceTrans": "No, I don't want to go out tonight."
+    }
+  ]
+}

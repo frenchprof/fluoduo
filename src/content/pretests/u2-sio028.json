@@ -1,0 +1,61 @@
+{
+  "id": "u2-sio028",
+  "unit": 2,
+  "lessonNo": 8,
+  "lessonSlug": "avec-with-whom",
+  "title": "avec — with whom",
+  "items": [
+    {
+      "id": "u2-sio028-01",
+      "sentenceBefore": "Je vais au cinéma avec ",
+      "sentenceAfter": ".",
+      "answer": "eux",
+      "distractors": [
+        "ils",
+        "les",
+        "leur"
+      ],
+      "fullSentence": "Je vais au cinéma avec eux.",
+      "sentenceTrans": "I go to the cinema with them (m)."
+    },
+    {
+      "id": "u2-sio028-02",
+      "sentenceBefore": "Tu viens avec ",
+      "sentenceAfter": " ?",
+      "answer": "moi",
+      "distractors": [
+        "je",
+        "me",
+        "mon"
+      ],
+      "fullSentence": "Tu viens avec moi ?",
+      "sentenceTrans": "Are you coming with me?"
+    },
+    {
+      "id": "u2-sio028-03",
+      "sentenceBefore": "Elle étudie ",
+      "sentenceAfter": ".",
+      "answer": "seule",
+      "distractors": [
+        "seul",
+        "seules",
+        "la seule"
+      ],
+      "fullSentence": "Elle étudie seule.",
+      "sentenceTrans": "She studies alone."
+    },
+    {
+      "id": "u2-sio028-04",
+      "sentenceBefore": "Nous mangeons avec ",
+      "sentenceAfter": " amis.",
+      "answer": "nos",
+      "distractors": [
+        "notre",
+        "les",
+        "nous"
+      ],
+      "fullSentence": "Nous mangeons avec nos amis.",
+      "sentenceTrans": "We eat with our friends."
+    }
+  ]
+}

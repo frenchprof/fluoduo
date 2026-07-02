@@ -1,0 +1,74 @@
+{
+  "id": "u1-sio018",
+  "unit": 1,
+  "lessonNo": 8,
+  "lessonSlug": "numbers-20-69",
+  "title": "Numbers 20–69",
+  "items": [
+    {
+      "id": "u1-sio018-01",
+      "sentenceBefore": "31 : trente ",
+      "sentenceAfter": " un",
+      "answer": "et",
+      "distractors": [
+        "-",
+        "plus",
+        "de"
+      ],
+      "fullSentence": "31 : trente et un",
+      "sentenceTrans": "thirty-one"
+    },
+    {
+      "id": "u1-sio018-02",
+      "sentenceBefore": "44 : ",
+      "sentenceAfter": "",
+      "answer": "quarante-quatre",
+      "distractors": [
+        "quatre-quarante",
+        "quatorze-quatre",
+        "quarante-quatorze"
+      ],
+      "fullSentence": "44 : quarante-quatre",
+      "sentenceTrans": "forty-four"
+    },
+    {
+      "id": "u1-sio018-03",
+      "sentenceBefore": "61 : soixante ",
+      "sentenceAfter": " un",
+      "answer": "et",
+      "distractors": [
+        "-",
+        "plus",
+        "dix"
+      ],
+      "fullSentence": "61 : soixante et un",
+      "sentenceTrans": "sixty-one"
+    },
+    {
+      "id": "u1-sio018-04",
+      "sentenceBefore": "55 : ",
+      "sentenceAfter": "-cinq",
+      "answer": "cinquante",
+      "distractors": [
+        "quinze",
+        "cinq",
+        "soixante"
+      ],
+      "fullSentence": "55 : cinquante-cinq",
+      "sentenceTrans": "fifty-five"
+    },
+    {
+      "id": "u1-sio018-05",
+      "sentenceBefore": "22 : vingt-",
+      "sentenceAfter": "",
+      "answer": "deux",
+      "distractors": [
+        "et deux",
+        "douze",
+        "deuxième"
+      ],
+      "fullSentence": "22 : vingt-deux",
+      "sentenceTrans": "twenty-two"
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "id": "u2-sio023",
+  "unit": 2,
+  "lessonNo": 3,
+  "lessonSlug": "aimer",
+  "title": "aimer",
+  "items": [
+    {
+      "id": "u2-sio023-01",
+      "sentenceBefore": "J'aime ",
+      "sentenceAfter": " café.",
+      "answer": "le",
+      "distractors": [
+        "du",
+        "de",
+        "un"
+      ],
+      "fullSentence": "J'aime le café.",
+      "sentenceTrans": "I like coffee."
+    },
+    {
+      "id": "u2-sio023-02",
+      "sentenceBefore": "J'adore ",
+      "sentenceAfter": " musique classique.",
+      "answer": "la",
+      "distractors": [
+        "de la",
+        "une",
+        "le"
+      ],
+      "fullSentence": "J'adore la musique classique.",
+      "sentenceTrans": "I love classical music."
+    },
+    {
+      "id": "u2-sio023-03",
+      "sentenceBefore": "J'aime ",
+      "sentenceAfter": " chats.",
+      "answer": "les",
+      "distractors": [
+        "des",
+        "de",
+        "le"
+      ],
+      "fullSentence": "J'aime les chats.",
+      "sentenceTrans": "I like cats."
+    },
+    {
+      "id": "u2-sio023-04",
+      "sentenceBefore": "J'aime ",
+      "sentenceAfter": " avec mes amis.",
+      "answer": "danser",
+      "distractors": [
+        "danse",
+        "à danser",
+        "que je danse"
+      ],
+      "fullSentence": "J'aime danser avec mes amis.",
+      "sentenceTrans": "I like dancing with my friends."
+    },
+    {
+      "id": "u2-sio023-05",
+      "sentenceBefore": "Je n'aime pas ",
+      "sentenceAfter": " café.",
+      "answer": "le",
+      "distractors": [
+        "de",
+        "du",
+        "d'"
+      ],
+      "fullSentence": "Je n'aime pas le café.",
+      "sentenceTrans": "I don't like coffee."
+    },
+    {
+      "id": "u2-sio023-06",
+      "sentenceBefore": "Je préfère le cinéma ",
+      "sentenceAfter": " théâtre.",
+      "answer": "au",
+      "distractors": [
+        "à le",
+        "à la",
+        "que le"
+      ],
+      "fullSentence": "Je préfère le cinéma au théâtre.",
+      "sentenceTrans": "I prefer cinema to theatre."
+    }
+  ]
+}

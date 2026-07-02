@@ -1,0 +1,74 @@
+{
+  "id": "u3-sio033",
+  "unit": 3,
+  "lessonNo": 3,
+  "lessonSlug": "places-in-town",
+  "title": "Places in town",
+  "items": [
+    {
+      "id": "u3-sio033-01",
+      "sentenceBefore": "Je vais ",
+      "sentenceAfter": " pharmacie.",
+      "answer": "à la",
+      "distractors": [
+        "au",
+        "à l'",
+        "aux"
+      ],
+      "fullSentence": "Je vais à la pharmacie.",
+      "sentenceTrans": "I'm going to the pharmacy."
+    },
+    {
+      "id": "u3-sio033-02",
+      "sentenceBefore": "Il est ",
+      "sentenceAfter": " marché.",
+      "answer": "au",
+      "distractors": [
+        "à la",
+        "à l'",
+        "aux"
+      ],
+      "fullSentence": "Il est au marché.",
+      "sentenceTrans": "He's at the market."
+    },
+    {
+      "id": "u3-sio033-03",
+      "sentenceBefore": "Elle vient ",
+      "sentenceAfter": " hôpital.",
+      "answer": "de l'",
+      "distractors": [
+        "du",
+        "de la",
+        "des"
+      ],
+      "fullSentence": "Elle vient de l' hôpital.",
+      "sentenceTrans": "She's coming from the hospital."
+    },
+    {
+      "id": "u3-sio033-04",
+      "sentenceBefore": "Nous allons ",
+      "sentenceAfter": " hôtel.",
+      "answer": "à l'",
+      "distractors": [
+        "au",
+        "à la",
+        "aux"
+      ],
+      "fullSentence": "Nous allons à l' hôtel.",
+      "sentenceTrans": "We're going to the hotel."
+    },
+    {
+      "id": "u3-sio033-05",
+      "sentenceBefore": "Ils viennent ",
+      "sentenceAfter": " restaurant.",
+      "answer": "du",
+      "distractors": [
+        "de la",
+        "de l'",
+        "de"
+      ],
+      "fullSentence": "Ils viennent du restaurant.",
+      "sentenceTrans": "They're coming from the restaurant."
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "id": "u4-sio047",
+  "unit": 4,
+  "lessonNo": 7,
+  "lessonSlug": "commerces",
+  "title": "Commerces",
+  "items": [
+    {
+      "id": "u4-sio047-01",
+      "sentenceBefore": "Pour acheter une baguette, on va à la ",
+      "sentenceAfter": ".",
+      "answer": "boulangerie",
+      "distractors": [
+        "boucherie",
+        "épicerie",
+        "fromagerie"
+      ],
+      "fullSentence": "Pour acheter une baguette, on va à la boulangerie.",
+      "sentenceTrans": "To buy a baguette, you go to the bakery."
+    },
+    {
+      "id": "u4-sio047-02",
+      "sentenceBefore": "Pour acheter du poulet, on va à la ",
+      "sentenceAfter": ".",
+      "answer": "boucherie",
+      "distractors": [
+        "boulangerie",
+        "poissonnerie",
+        "charcuterie"
+      ],
+      "fullSentence": "Pour acheter du poulet, on va à la boucherie.",
+      "sentenceTrans": "To buy chicken, you go to the butcher's."
+    },
+    {
+      "id": "u4-sio047-03",
+      "sentenceBefore": "Je cherche du camembert. Je vais à la ",
+      "sentenceAfter": ".",
+      "answer": "fromagerie",
+      "distractors": [
+        "boulangerie",
+        "épicerie",
+        "boucherie"
+      ],
+      "fullSentence": "Je cherche du camembert. Je vais à la fromagerie.",
+      "sentenceTrans": "I'm looking for camembert. I'm going to the cheese shop."
+    },
+    {
+      "id": "u4-sio047-04",
+      "sentenceBefore": "Bonjour, ",
+      "sentenceAfter": " deux croissants, s'il vous plaît.",
+      "answer": "je voudrais",
+      "distractors": [
+        "je veux",
+        "donnez-moi",
+        "je voulais"
+      ],
+      "fullSentence": "Bonjour, je voudrais deux croissants, s'il vous plaît.",
+      "sentenceTrans": "Hello, I'd like two croissants, please."
+    },
+    {
+      "id": "u4-sio047-05",
+      "sentenceBefore": "Le client demande : « ",
+      "sentenceAfter": " ? »",
+      "answer": "Ça fait combien",
+      "distractors": [
+        "Combien de",
+        "Quel est le prix",
+        "C'est cher non"
+      ],
+      "fullSentence": "Le client demande : « Ça fait combien ? »",
+      "sentenceTrans": "The customer asks: \"How much is it?\""
+    },
+    {
+      "id": "u4-sio047-06",
+      "sentenceBefore": "— Et avec ceci ? — « ",
+      "sentenceAfter": ", merci. »",
+      "answer": "C'est tout",
+      "distractors": [
+        "Ça fait combien",
+        "Je voudrais encore",
+        "En espèces"
+      ],
+      "fullSentence": "— Et avec ceci ? — « C'est tout, merci. »",
+      "sentenceTrans": "— Anything else? — \"That's all, thank you.\""
+    },
+    {
+      "id": "u4-sio047-07",
+      "sentenceBefore": "Je voudrais ",
+      "sentenceAfter": " tomates, s'il vous plaît.",
+      "answer": "un kilo de",
+      "distractors": [
+        "une tranche de",
+        "un verre de",
+        "une bouteille de"
+      ],
+      "fullSentence": "Je voudrais un kilo de tomates, s'il vous plaît.",
+      "sentenceTrans": "I'd like a kilo of tomatoes, please."
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "id": "u4-sio044",
+  "unit": 4,
+  "lessonNo": 4,
+  "lessonSlug": "manger-boire",
+  "title": "manger / boire",
+  "items": [
+    {
+      "id": "u4-sio044-01",
+      "sentenceBefore": "Le matin, je ",
+      "sentenceAfter": " des œufs.",
+      "answer": "mange",
+      "distractors": [
+        "manges",
+        "mangez",
+        "mangeons"
+      ],
+      "fullSentence": "Le matin, je mange des œufs.",
+      "sentenceTrans": "In the morning, I eat eggs."
+    },
+    {
+      "id": "u4-sio044-02",
+      "sentenceBefore": "Nous ",
+      "sentenceAfter": " toujours ensemble le soir.",
+      "answer": "mangeons",
+      "distractors": [
+        "mangons",
+        "mangent",
+        "mangez"
+      ],
+      "fullSentence": "Nous mangeons toujours ensemble le soir.",
+      "sentenceTrans": "We always eat together in the evening."
+    },
+    {
+      "id": "u4-sio044-03",
+      "sentenceBefore": "Les enfants ",
+      "sentenceAfter": " des pâtes ce soir.",
+      "answer": "mangent",
+      "distractors": [
+        "mangeont",
+        "mange",
+        "mangeons"
+      ],
+      "fullSentence": "Les enfants mangent des pâtes ce soir.",
+      "sentenceTrans": "The children are eating pasta tonight."
+    },
+    {
+      "id": "u4-sio044-04",
+      "sentenceBefore": "Je ",
+      "sentenceAfter": " de l'eau toute la journée.",
+      "answer": "bois",
+      "distractors": [
+        "boit",
+        "boire",
+        "buvons"
+      ],
+      "fullSentence": "Je bois de l'eau toute la journée.",
+      "sentenceTrans": "I drink water all day long."
+    },
+    {
+      "id": "u4-sio044-05",
+      "sentenceBefore": "Nous ",
+      "sentenceAfter": " beaucoup d'eau pendant l'entraînement.",
+      "answer": "buvons",
+      "distractors": [
+        "boivons",
+        "buvez",
+        "buvont"
+      ],
+      "fullSentence": "Nous buvons beaucoup d'eau pendant l'entraînement.",
+      "sentenceTrans": "We drink a lot of water during training."
+    },
+    {
+      "id": "u4-sio044-06",
+      "sentenceBefore": "Les invités ",
+      "sentenceAfter": " du champagne.",
+      "answer": "boivent",
+      "distractors": [
+        "buvent",
+        "boive",
+        "buvons"
+      ],
+      "fullSentence": "Les invités boivent du champagne.",
+      "sentenceTrans": "The guests are drinking champagne."
+    },
+    {
+      "id": "u4-sio044-07",
+      "sentenceBefore": "Est-ce que vous ",
+      "sentenceAfter": " des légumes tous les jours ?",
+      "answer": "mangez",
+      "distractors": [
+        "mangeons",
+        "mange",
+        "mangerez"
+      ],
+      "fullSentence": "Est-ce que vous mangez des légumes tous les jours ?",
+      "sentenceTrans": "Do you eat vegetables every day?"
+    }
+  ]
+}

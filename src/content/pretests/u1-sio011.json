@@ -1,0 +1,107 @@
+{
+  "id": "u1-sio011",
+  "unit": 1,
+  "lessonNo": 1,
+  "lessonSlug": "stress-pronouns",
+  "title": "Stress pronouns",
+  "items": [
+    {
+      "id": "u1-sio011-01",
+      "sentenceBefore": "— Qui est là ? — C'est ",
+      "sentenceAfter": " !",
+      "answer": "moi",
+      "distractors": [
+        "vous",
+        "elles",
+        "nous"
+      ],
+      "fullSentence": "— Qui est là ? — C'est moi !",
+      "sentenceTrans": "— Who's there? — It's me!"
+    },
+    {
+      "id": "u1-sio011-02",
+      "sentenceBefore": "Moi, c'est Léa. Et ",
+      "sentenceAfter": " ?",
+      "answer": "toi",
+      "distractors": [
+        "tu",
+        "nous",
+        "elle"
+      ],
+      "fullSentence": "Moi, c'est Léa. Et toi ?",
+      "sentenceTrans": "Me, I'm Léa. And you?"
+    },
+    {
+      "id": "u1-sio011-03",
+      "sentenceBefore": "C'est Marc. Je suis avec ",
+      "sentenceAfter": " en classe.",
+      "answer": "lui",
+      "distractors": [
+        "nous",
+        "eux",
+        "vous"
+      ],
+      "fullSentence": "C'est Marc. Je suis avec lui en classe.",
+      "sentenceTrans": "That's Marc. I'm with him in class."
+    },
+    {
+      "id": "u1-sio011-04",
+      "sentenceBefore": "Mika est japonaise. Je parle avec ",
+      "sentenceAfter": " en français.",
+      "answer": "elle",
+      "distractors": [
+        "moi",
+        "lui",
+        "eux"
+      ],
+      "fullSentence": "Mika est japonaise. Je parle avec elle en français.",
+      "sentenceTrans": "Mika is Japanese. I speak French with her."
+    },
+    {
+      "id": "u1-sio011-05",
+      "sentenceBefore": "Marc et Anna sont dans mon groupe. J'étudie avec ",
+      "sentenceAfter": ".",
+      "answer": "eux",
+      "distractors": [
+        "vous",
+        "toi",
+        "elles"
+      ],
+      "fullSentence": "Marc et Anna sont dans mon groupe. J'étudie avec eux.",
+      "sentenceTrans": "Marc and Anna are in my group. I study with them."
+    },
+    {
+      "id": "u1-sio011-06",
+      "sentenceBefore": "",
+      "sentenceAfter": " suis étudiant.",
+      "answer": "Je",
+      "distractors": [
+        "Moi"
+      ],
+      "fullSentence": "Je suis étudiant.",
+      "sentenceTrans": "I am a student."
+    },
+    {
+      "id": "u1-sio011-07",
+      "sentenceBefore": "",
+      "sentenceAfter": ", je suis français.",
+      "answer": "Moi",
+      "distractors": [
+        "Je"
+      ],
+      "fullSentence": "Moi, je suis français.",
+      "sentenceTrans": "Me, I'm French."
+    },
+    {
+      "id": "u1-sio011-08",
+      "sentenceBefore": "",
+      "sentenceAfter": ", il est mexicain.",
+      "answer": "Lui",
+      "distractors": [
+        "Il"
+      ],
+      "fullSentence": "Lui, il est mexicain.",
+      "sentenceTrans": "Him, he's Mexican."
+    }
+  ]
+}

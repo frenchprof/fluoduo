@@ -1,0 +1,87 @@
+{
+  "id": "u4-sio045",
+  "unit": 4,
+  "lessonNo": 5,
+  "lessonSlug": "frequency-adverbs",
+  "title": "Frequency adverbs",
+  "items": [
+    {
+      "id": "u4-sio045-01",
+      "sentenceBefore": "Je mange ",
+      "sentenceAfter": " du riz le soir.",
+      "answer": "toujours",
+      "distractors": [
+        "parfois",
+        "jamais",
+        "souvent"
+      ],
+      "fullSentence": "Je mange toujours du riz le soir.",
+      "sentenceTrans": "I always eat rice in the evening."
+    },
+    {
+      "id": "u4-sio045-02",
+      "sentenceBefore": "Nous mangeons ",
+      "sentenceAfter": " du gâteau le week-end.",
+      "answer": "parfois",
+      "distractors": [
+        "quelque-fois",
+        "parfois de",
+        "quelque fois"
+      ],
+      "fullSentence": "Nous mangeons parfois du gâteau le week-end.",
+      "sentenceTrans": "We sometimes eat cake at the weekend."
+    },
+    {
+      "id": "u4-sio045-03",
+      "sentenceBefore": "Je mange ",
+      "sentenceAfter": " de la restauration rapide.",
+      "answer": "rarement",
+      "distractors": [
+        "peu souvent",
+        "très rare",
+        "rare"
+      ],
+      "fullSentence": "Je mange rarement de la restauration rapide.",
+      "sentenceTrans": "I rarely eat fast food."
+    },
+    {
+      "id": "u4-sio045-04",
+      "sentenceBefore": "Elle ne mange ",
+      "sentenceAfter": " de sucre.",
+      "answer": "jamais",
+      "distractors": [
+        "pas",
+        "pas jamais",
+        "toujours pas"
+      ],
+      "fullSentence": "Elle ne mange jamais de sucre.",
+      "sentenceTrans": "She never eats sugar."
+    },
+    {
+      "id": "u4-sio045-05",
+      "sentenceBefore": "Je bois du café ",
+      "sentenceAfter": ".",
+      "answer": "tous les jours",
+      "distractors": [
+        "tout les jours",
+        "toutes les jours",
+        "chaque les jours"
+      ],
+      "fullSentence": "Je bois du café tous les jours.",
+      "sentenceTrans": "I drink coffee every day."
+    },
+    {
+      "id": "u4-sio045-06",
+      "sentenceBefore": "On mange au restaurant ",
+      "sentenceAfter": ".",
+      "answer": "de temps en temps",
+      "distractors": [
+        "des temps en temps",
+        "de temps à temps",
+        "du temps en temps"
+      ],
+      "fullSentence": "On mange au restaurant de temps en temps.",
+      "sentenceTrans": "We eat out from time to time."
+    }
+  ]
+}

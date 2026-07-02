@@ -1,0 +1,61 @@
+{
+  "id": "u3-sio039",
+  "unit": 3,
+  "lessonNo": 9,
+  "lessonSlug": "wants-and-needs",
+  "title": "Wants and needs",
+  "items": [
+    {
+      "id": "u3-sio039-01",
+      "sentenceBefore": "Je ",
+      "sentenceAfter": " un café, s'il vous plaît.",
+      "answer": "voudrais",
+      "distractors": [
+        "voudrez",
+        "voulez",
+        "veut"
+      ],
+      "fullSentence": "Je voudrais un café, s'il vous plaît.",
+      "sentenceTrans": "I would like a coffee, please."
+    },
+    {
+      "id": "u3-sio039-02",
+      "sentenceBefore": "J'ai ",
+      "sentenceAfter": " d'un hôtel.",
+      "answer": "besoin",
+      "distractors": [
+        "envie",
+        "faim",
+        "soif"
+      ],
+      "fullSentence": "J'ai besoin d'un hôtel.",
+      "sentenceTrans": "I need a hotel."
+    },
+    {
+      "id": "u3-sio039-03",
+      "sentenceBefore": "J'",
+      "sentenceAfter": " visiter Paris.",
+      "answer": "aimerais",
+      "distractors": [
+        "aimerait",
+        "aimeriez",
+        "aimes"
+      ],
+      "fullSentence": "J'aimerais visiter Paris.",
+      "sentenceTrans": "I'd like to visit Paris."
+    },
+    {
+      "id": "u3-sio039-04",
+      "sentenceBefore": "Je veux ",
+      "sentenceAfter": " en vacances.",
+      "answer": "partir",
+      "distractors": [
+        "pars",
+        "part",
+        "parti"
+      ],
+      "fullSentence": "Je veux partir en vacances.",
+      "sentenceTrans": "I want to go on holiday."
+    }
+  ]
+}

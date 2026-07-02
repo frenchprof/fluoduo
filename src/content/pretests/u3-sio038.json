@@ -1,0 +1,100 @@
+{
+  "id": "u3-sio038",
+  "unit": 3,
+  "lessonNo": 8,
+  "lessonSlug": "transport-prendre-y",
+  "title": "Transport + prendre + y",
+  "items": [
+    {
+      "id": "u3-sio038-01",
+      "sentenceBefore": "Je ",
+      "sentenceAfter": " la ligne 4 jusqu'à Montparnasse.",
+      "answer": "prends",
+      "distractors": [
+        "prend",
+        "prenons",
+        "pris"
+      ],
+      "fullSentence": "Je prends la ligne 4 jusqu'à Montparnasse.",
+      "sentenceTrans": "I take line 4 to Montparnasse."
+    },
+    {
+      "id": "u3-sio038-02",
+      "sentenceBefore": "Pour aller à l'Opéra, vous ",
+      "sentenceAfter": " la ligne 3.",
+      "answer": "prenez",
+      "distractors": [
+        "prenons",
+        "prennent",
+        "prendez"
+      ],
+      "fullSentence": "Pour aller à l'Opéra, vous prenez la ligne 3.",
+      "sentenceTrans": "To get to the Opéra, you take line 3."
+    },
+    {
+      "id": "u3-sio038-03",
+      "sentenceBefore": "Nous ",
+      "sentenceAfter": " le métro tous les jours.",
+      "answer": "prenons",
+      "distractors": [
+        "prends",
+        "prennent",
+        "prenez"
+      ],
+      "fullSentence": "Nous prenons le métro tous les jours.",
+      "sentenceTrans": "We take the metro every day."
+    },
+    {
+      "id": "u3-sio038-04",
+      "sentenceBefore": "Je vais à l'université ",
+      "sentenceAfter": " bus.",
+      "answer": "en",
+      "distractors": [
+        "à",
+        "au",
+        "avec"
+      ],
+      "fullSentence": "Je vais à l'université en bus.",
+      "sentenceTrans": "I go to university by bus."
+    },
+    {
+      "id": "u3-sio038-05",
+      "sentenceBefore": "Elle va au marché ",
+      "sentenceAfter": " pied.",
+      "answer": "à",
+      "distractors": [
+        "en",
+        "au",
+        "par"
+      ],
+      "fullSentence": "Elle va au marché à pied.",
+      "sentenceTrans": "She goes to the market on foot."
+    },
+    {
+      "id": "u3-sio038-06",
+      "sentenceBefore": "— On va à la plage ? — Oui, on ",
+      "sentenceAfter": " va demain.",
+      "answer": "y",
+      "distractors": [
+        "là",
+        "le",
+        "en"
+      ],
+      "fullSentence": "— On va à la plage ? — Oui, on y va demain.",
+      "sentenceTrans": "— Are we going to the beach? — Yes, we're going there tomorrow."
+    },
+    {
+      "id": "u3-sio038-07",
+      "sentenceBefore": "Ce café ? J'",
+      "sentenceAfter": " vais souvent le matin.",
+      "answer": "y",
+      "distractors": [
+        "en",
+        "le",
+        "me"
+      ],
+      "fullSentence": "Ce café ? J'y vais souvent le matin.",
+      "sentenceTrans": "This café? I often go there in the morning."
+    }
+  ]
+}

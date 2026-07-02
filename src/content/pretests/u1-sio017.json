@@ -1,0 +1,100 @@
+{
+  "id": "u1-sio017",
+  "unit": 1,
+  "lessonNo": 7,
+  "lessonSlug": "languages",
+  "title": "Languages",
+  "items": [
+    {
+      "id": "u1-sio017-01",
+      "sentenceBefore": "« ",
+      "sentenceAfter": " langue tu veux apprendre ? »",
+      "answer": "Quelle",
+      "distractors": [
+        "Quel",
+        "Quels",
+        "Quelles"
+      ],
+      "fullSentence": "« Quelle langue tu veux apprendre ? »",
+      "sentenceTrans": "Which language do you want to learn?"
+    },
+    {
+      "id": "u1-sio017-02",
+      "sentenceBefore": "« ",
+      "sentenceAfter": " langues vous parlez ? »",
+      "answer": "Quelles",
+      "distractors": [
+        "Quelle",
+        "Quels",
+        "Quel"
+      ],
+      "fullSentence": "« Quelles langues vous parlez ? »",
+      "sentenceTrans": "Which languages do you speak?"
+    },
+    {
+      "id": "u1-sio017-03",
+      "sentenceBefore": "Mes parents ",
+      "sentenceAfter": " chinois et anglais.",
+      "answer": "parlent",
+      "distractors": [
+        "parle",
+        "parles",
+        "parler"
+      ],
+      "fullSentence": "Mes parents parlent chinois et anglais.",
+      "sentenceTrans": "My parents speak Chinese and English."
+    },
+    {
+      "id": "u1-sio017-04",
+      "sentenceBefore": "À la maison, nous ",
+      "sentenceAfter": " français.",
+      "answer": "parlons",
+      "distractors": [
+        "parlent",
+        "parle",
+        "parlez"
+      ],
+      "fullSentence": "À la maison, nous parlons français.",
+      "sentenceTrans": "At home, we speak French."
+    },
+    {
+      "id": "u1-sio017-05",
+      "sentenceBefore": "En France, on parle ",
+      "sentenceAfter": " français.",
+      "answer": "le",
+      "distractors": [
+        "l'",
+        "la",
+        "en"
+      ],
+      "fullSentence": "En France, on parle le français.",
+      "sentenceTrans": "In France, people speak French."
+    },
+    {
+      "id": "u1-sio017-06",
+      "sentenceBefore": "À Singapour, on parle l'anglais ",
+      "sentenceAfter": " le chinois.",
+      "answer": "et",
+      "distractors": [
+        "avec",
+        "mais",
+        "ou"
+      ],
+      "fullSentence": "À Singapour, on parle l'anglais et le chinois.",
+      "sentenceTrans": "In Singapore, people speak English and Chinese."
+    },
+    {
+      "id": "u1-sio017-07",
+      "sentenceBefore": "Non, je ",
+      "sentenceAfter": " allemand.",
+      "answer": "ne parle pas",
+      "distractors": [
+        "parle ne pas",
+        "ne parler pas",
+        "n'parle pas"
+      ],
+      "fullSentence": "Non, je ne parle pas allemand.",
+      "sentenceTrans": "No, I don't speak German."
+    }
+  ]
+}

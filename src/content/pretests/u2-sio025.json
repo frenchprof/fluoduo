@@ -1,0 +1,61 @@
+{
+  "id": "u2-sio025",
+  "unit": 2,
+  "lessonNo": 5,
+  "lessonSlug": "pourquoi-parce-que",
+  "title": "pourquoi ? parce que",
+  "items": [
+    {
+      "id": "u2-sio025-01",
+      "sentenceBefore": "",
+      "sentenceAfter": " tu aimes le français ?",
+      "answer": "Pourquoi",
+      "distractors": [
+        "Parce que",
+        "Quand",
+        "Comment"
+      ],
+      "fullSentence": "Pourquoi tu aimes le français ?",
+      "sentenceTrans": "Why do you like French?"
+    },
+    {
+      "id": "u2-sio025-02",
+      "sentenceBefore": "— Pourquoi tu vas au cinéma ? — ",
+      "sentenceAfter": " j'aime les films.",
+      "answer": "Parce que",
+      "distractors": [
+        "Pourquoi",
+        "Quand",
+        "Où"
+      ],
+      "fullSentence": "— Pourquoi tu vas au cinéma ? — Parce que j'aime les films.",
+      "sentenceTrans": "— Why do you go to the cinema? — Because I like films."
+    },
+    {
+      "id": "u2-sio025-03",
+      "sentenceBefore": "Parce que c'est ",
+      "sentenceAfter": ".",
+      "answer": "amusant",
+      "distractors": [
+        "amusante",
+        "amusants",
+        "amuser"
+      ],
+      "fullSentence": "Parce que c'est amusant.",
+      "sentenceTrans": "Because it's fun."
+    },
+    {
+      "id": "u2-sio025-04",
+      "sentenceBefore": "Parce que c'est ",
+      "sentenceAfter": ".",
+      "answer": "calme",
+      "distractors": [
+        "calmes",
+        "le calme",
+        "calmer"
+      ],
+      "fullSentence": "Parce que c'est calme.",
+      "sentenceTrans": "Because it's quiet."
+    }
+  ]
+}

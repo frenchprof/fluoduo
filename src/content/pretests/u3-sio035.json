@@ -1,0 +1,87 @@
+{
+  "id": "u3-sio035",
+  "unit": 3,
+  "lessonNo": 5,
+  "lessonSlug": "questions",
+  "title": "Questions",
+  "items": [
+    {
+      "id": "u3-sio035-01",
+      "sentenceBefore": "",
+      "sentenceAfter": " (spoken, casual)",
+      "answer": "Tu vas où ?",
+      "distractors": [
+        "Où allez-vous ?",
+        "Où est-ce tu vas ?",
+        "Où tu vas-tu ?"
+      ],
+      "fullSentence": "Tu vas où ? (spoken, casual)",
+      "sentenceTrans": "Where are you going?"
+    },
+    {
+      "id": "u3-sio035-02",
+      "sentenceBefore": "",
+      "sentenceAfter": " (neutral, est-ce que)",
+      "answer": "Où est-ce que tu vas ?",
+      "distractors": [
+        "Est-ce que où tu vas ?",
+        "Où est-ce tu vas ?",
+        "Où tu est-ce que vas ?"
+      ],
+      "fullSentence": "Où est-ce que tu vas ? (neutral, est-ce que)",
+      "sentenceTrans": "Where are you going?"
+    },
+    {
+      "id": "u3-sio035-03",
+      "sentenceBefore": "",
+      "sentenceAfter": " ce musée ouvre ?",
+      "answer": "Quand est-ce que",
+      "distractors": [
+        "Quand que",
+        "Est-ce que quand",
+        "Quand est-ce"
+      ],
+      "fullSentence": "Quand est-ce que ce musée ouvre ?",
+      "sentenceTrans": "When does this museum open?"
+    },
+    {
+      "id": "u3-sio035-04",
+      "sentenceBefore": "",
+      "sentenceAfter": " est le nom de ce musée ?",
+      "answer": "Quel",
+      "distractors": [
+        "Quelle",
+        "Quels",
+        "Quelles"
+      ],
+      "fullSentence": "Quel est le nom de ce musée ?",
+      "sentenceTrans": "What is the name of this museum?"
+    },
+    {
+      "id": "u3-sio035-05",
+      "sentenceBefore": "",
+      "sentenceAfter": " ? — Dix euros.",
+      "answer": "C'est combien",
+      "distractors": [
+        "Combien c'est-il",
+        "Combien coûte-il",
+        "C'est comment"
+      ],
+      "fullSentence": "C'est combien ? — Dix euros.",
+      "sentenceTrans": "How much is it? — Ten euros."
+    },
+    {
+      "id": "u3-sio035-06",
+      "sentenceBefore": "",
+      "sentenceAfter": " est-ce que tu viens ? — En bus.",
+      "answer": "Comment",
+      "distractors": [
+        "Combien",
+        "Quand",
+        "Pourquoi"
+      ],
+      "fullSentence": "Comment est-ce que tu viens ? — En bus.",
+      "sentenceTrans": "How are you coming? — By bus."
+    }
+  ]
+}

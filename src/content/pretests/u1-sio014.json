@@ -1,0 +1,113 @@
+{
+  "id": "u1-sio014",
+  "unit": 1,
+  "lessonNo": 4,
+  "lessonSlug": "subject-pronouns-tre",
+  "title": "Subject pronouns + ÊTRE",
+  "items": [
+    {
+      "id": "u1-sio014-01",
+      "sentenceBefore": "Je ",
+      "sentenceAfter": " singapourien.",
+      "answer": "suis",
+      "distractors": [
+        "sont",
+        "êtes",
+        "sommes"
+      ],
+      "fullSentence": "Je suis singapourien.",
+      "sentenceTrans": "I am Singaporean."
+    },
+    {
+      "id": "u1-sio014-02",
+      "sentenceBefore": "Tu ",
+      "sentenceAfter": " français ?",
+      "answer": "es",
+      "distractors": [
+        "est",
+        "sommes",
+        "sont"
+      ],
+      "fullSentence": "Tu es français ?",
+      "sentenceTrans": "Are you French?"
+    },
+    {
+      "id": "u1-sio014-03",
+      "sentenceBefore": "Il ",
+      "sentenceAfter": " professeur.",
+      "answer": "est",
+      "distractors": [
+        "sommes",
+        "êtes",
+        "suis"
+      ],
+      "fullSentence": "Il est professeur.",
+      "sentenceTrans": "He is a professor."
+    },
+    {
+      "id": "u1-sio014-04",
+      "sentenceBefore": "On ",
+      "sentenceAfter": " étudiants à NUS.",
+      "answer": "est",
+      "distractors": [
+        "êtes",
+        "es",
+        "sommes"
+      ],
+      "fullSentence": "On est étudiants à NUS.",
+      "sentenceTrans": "We're students at NUS (casual \"on\")."
+    },
+    {
+      "id": "u1-sio014-05",
+      "sentenceBefore": "Nous ",
+      "sentenceAfter": " dans la même classe.",
+      "answer": "sommes",
+      "distractors": [
+        "sont",
+        "êtes",
+        "suis"
+      ],
+      "fullSentence": "Nous sommes dans la même classe.",
+      "sentenceTrans": "We are in the same class."
+    },
+    {
+      "id": "u1-sio014-06",
+      "sentenceBefore": "Vous ",
+      "sentenceAfter": " le professeur de français ?",
+      "answer": "êtes",
+      "distractors": [
+        "sont",
+        "sommes",
+        "est"
+      ],
+      "fullSentence": "Vous êtes le professeur de français ?",
+      "sentenceTrans": "Are you the French professor?"
+    },
+    {
+      "id": "u1-sio014-07",
+      "sentenceBefore": "Marie et Léa ",
+      "sentenceAfter": " étudiantes.",
+      "answer": "sont",
+      "distractors": [
+        "êtes",
+        "es",
+        "est"
+      ],
+      "fullSentence": "Marie et Léa sont étudiantes.",
+      "sentenceTrans": "Marie and Léa are students."
+    },
+    {
+      "id": "u1-sio014-08",
+      "sentenceBefore": "Je ",
+      "sentenceAfter": " en retard, pardon !",
+      "answer": "suis",
+      "distractors": [
+        "es",
+        "est",
+        "sommes"
+      ],
+      "fullSentence": "Je suis en retard, pardon !",
+      "sentenceTrans": "I'm late, sorry!"
+    }
+  ]
+}

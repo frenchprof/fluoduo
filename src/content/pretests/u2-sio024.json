@@ -1,0 +1,100 @@
+{
+  "id": "u2-sio024",
+  "unit": 2,
+  "lessonNo": 4,
+  "lessonSlug": "faire-du-de-la-de-l-des",
+  "title": "faire + du/de la/de l'/des",
+  "items": [
+    {
+      "id": "u2-sio024-01",
+      "sentenceBefore": "Le week-end, je ",
+      "sentenceAfter": " du sport.",
+      "answer": "fais",
+      "distractors": [
+        "fait",
+        "faire",
+        "fais le"
+      ],
+      "fullSentence": "Le week-end, je fais du sport.",
+      "sentenceTrans": "At the weekend, I do sport."
+    },
+    {
+      "id": "u2-sio024-02",
+      "sentenceBefore": "Pierre ",
+      "sentenceAfter": " de la natation.",
+      "answer": "fait",
+      "distractors": [
+        "fais",
+        "font",
+        "faits"
+      ],
+      "fullSentence": "Pierre fait de la natation.",
+      "sentenceTrans": "Pierre swims."
+    },
+    {
+      "id": "u2-sio024-03",
+      "sentenceBefore": "Nous ",
+      "sentenceAfter": " des promenades le dimanche.",
+      "answer": "faisons",
+      "distractors": [
+        "faisez",
+        "faits",
+        "sommes"
+      ],
+      "fullSentence": "Nous faisons des promenades le dimanche.",
+      "sentenceTrans": "We go for walks on Sundays."
+    },
+    {
+      "id": "u2-sio024-04",
+      "sentenceBefore": "Vous ",
+      "sentenceAfter": " de la musique ?",
+      "answer": "faites",
+      "distractors": [
+        "faisez",
+        "faisons",
+        "fais"
+      ],
+      "fullSentence": "Vous faites de la musique ?",
+      "sentenceTrans": "Do you play music?"
+    },
+    {
+      "id": "u2-sio024-05",
+      "sentenceBefore": "Mes amis ",
+      "sentenceAfter": " du foot le samedi.",
+      "answer": "font",
+      "distractors": [
+        "fait",
+        "faits",
+        "sont"
+      ],
+      "fullSentence": "Mes amis font du foot le samedi.",
+      "sentenceTrans": "My friends play football on Saturdays."
+    },
+    {
+      "id": "u2-sio024-06",
+      "sentenceBefore": "Avec mes amis, je fais ",
+      "sentenceAfter": " vélo.",
+      "answer": "du",
+      "distractors": [
+        "de la",
+        "de l'",
+        "des"
+      ],
+      "fullSentence": "Avec mes amis, je fais du vélo.",
+      "sentenceTrans": "With my friends, I go cycling."
+    },
+    {
+      "id": "u2-sio024-07",
+      "sentenceBefore": "Non, je ",
+      "sentenceAfter": " pas de sport.",
+      "answer": "ne fais",
+      "distractors": [
+        "fais pas",
+        "n'fais",
+        "fais ne"
+      ],
+      "fullSentence": "Non, je ne fais pas de sport.",
+      "sentenceTrans": "No, I don't do any sport."
+    }
+  ]
+}

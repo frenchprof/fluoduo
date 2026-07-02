@@ -1,0 +1,100 @@
+{
+  "id": "u2-sio026",
+  "unit": 2,
+  "lessonNo": 6,
+  "lessonSlug": "aller-au-la-l-aux",
+  "title": "aller + au/à la/à l'/aux",
+  "items": [
+    {
+      "id": "u2-sio026-01",
+      "sentenceBefore": "Je ",
+      "sentenceAfter": " au cinéma ce soir.",
+      "answer": "vais",
+      "distractors": [
+        "vas",
+        "va",
+        "allons"
+      ],
+      "fullSentence": "Je vais au cinéma ce soir.",
+      "sentenceTrans": "I'm going to the cinema tonight."
+    },
+    {
+      "id": "u2-sio026-02",
+      "sentenceBefore": "Nous ",
+      "sentenceAfter": " au restaurant samedi.",
+      "answer": "allons",
+      "distractors": [
+        "vont",
+        "allez",
+        "va"
+      ],
+      "fullSentence": "Nous allons au restaurant samedi.",
+      "sentenceTrans": "We're going to the restaurant on Saturday."
+    },
+    {
+      "id": "u2-sio026-03",
+      "sentenceBefore": "Je vais ",
+      "sentenceAfter": " cinéma.",
+      "answer": "au",
+      "distractors": [
+        "à le",
+        "à la",
+        "à"
+      ],
+      "fullSentence": "Je vais au cinéma.",
+      "sentenceTrans": "I'm going to the cinema."
+    },
+    {
+      "id": "u2-sio026-04",
+      "sentenceBefore": "Léa va ",
+      "sentenceAfter": " piscine le mardi.",
+      "answer": "à la",
+      "distractors": [
+        "au",
+        "à le",
+        "à"
+      ],
+      "fullSentence": "Léa va à la piscine le mardi.",
+      "sentenceTrans": "Léa goes to the pool on Tuesdays."
+    },
+    {
+      "id": "u2-sio026-05",
+      "sentenceBefore": "Le patient va ",
+      "sentenceAfter": " hôpital.",
+      "answer": "à l'",
+      "distractors": [
+        "au",
+        "à la",
+        "à le"
+      ],
+      "fullSentence": "Le patient va à l' hôpital.",
+      "sentenceTrans": "The patient is going to the hospital."
+    },
+    {
+      "id": "u2-sio026-06",
+      "sentenceBefore": "Je vais ",
+      "sentenceAfter": " toilettes, je reviens.",
+      "answer": "aux",
+      "distractors": [
+        "au",
+        "à les",
+        "à la"
+      ],
+      "fullSentence": "Je vais aux toilettes, je reviens.",
+      "sentenceTrans": "I'm going to the toilet, I'll be back."
+    },
+    {
+      "id": "u2-sio026-07",
+      "sentenceBefore": "L'année prochaine, je vais ",
+      "sentenceAfter": " Paris.",
+      "answer": "à",
+      "distractors": [
+        "au",
+        "à la",
+        "en"
+      ],
+      "fullSentence": "L'année prochaine, je vais à Paris.",
+      "sentenceTrans": "Next year, I'm going to Paris."
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "id": "u2-sio027",
+  "unit": 2,
+  "lessonNo": 7,
+  "lessonSlug": "time-when-i-do-it",
+  "title": "Time — when I do it",
+  "items": [
+    {
+      "id": "u2-sio027-01",
+      "sentenceBefore": "",
+      "sentenceAfter": " lundi, j'ai français.",
+      "answer": "Le",
+      "distractors": [
+        "Au",
+        "En",
+        "À"
+      ],
+      "fullSentence": "Le lundi, j'ai français.",
+      "sentenceTrans": "On Mondays, I have French."
+    },
+    {
+      "id": "u2-sio027-02",
+      "sentenceBefore": "Je fais du sport ",
+      "sentenceAfter": " les soirs.",
+      "answer": "tous",
+      "distractors": [
+        "tout",
+        "toute",
+        "toutes"
+      ],
+      "fullSentence": "Je fais du sport tous les soirs.",
+      "sentenceTrans": "I do sport every evening."
+    },
+    {
+      "id": "u2-sio027-03",
+      "sentenceBefore": "Le cours est ",
+      "sentenceAfter": " 8 heures.",
+      "answer": "à",
+      "distractors": [
+        "au",
+        "en",
+        "le"
+      ],
+      "fullSentence": "Le cours est à 8 heures.",
+      "sentenceTrans": "The class is at 8 o'clock."
+    },
+    {
+      "id": "u2-sio027-04",
+      "sentenceBefore": "« ",
+      "sentenceAfter": " tu commences le travail ? »",
+      "answer": "À quelle heure",
+      "distractors": [
+        "Quelle heure",
+        "C'est quand",
+        "Combien d'heures"
+      ],
+      "fullSentence": "« À quelle heure tu commences le travail ? »",
+      "sentenceTrans": "What time do you start work?"
+    },
+    {
+      "id": "u2-sio027-05",
+      "sentenceBefore": "Le film, ",
+      "sentenceAfter": " quelle heure ?",
+      "answer": "c'est à",
+      "distractors": [
+        "il est",
+        "il est à",
+        "c'est"
+      ],
+      "fullSentence": "Le film, c'est à quelle heure ?",
+      "sentenceTrans": "The film — (at) what time is it on?"
+    },
+    {
+      "id": "u2-sio027-06",
+      "sentenceBefore": "Elle étudie ",
+      "sentenceAfter": " matin.",
+      "answer": "le",
+      "distractors": [
+        "au",
+        "à",
+        "en"
+      ],
+      "fullSentence": "Elle étudie le matin.",
+      "sentenceTrans": "She studies in the morning."
+    }
+  ]
+}

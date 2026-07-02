@@ -1,0 +1,113 @@
+{
+  "id": "u1-sio012",
+  "unit": 1,
+  "lessonNo": 2,
+  "lessonSlug": "professions",
+  "title": "Professions",
+  "items": [
+    {
+      "id": "u1-sio012-01",
+      "sentenceBefore": "Elle est ",
+      "sentenceAfter": ".",
+      "answer": "journaliste",
+      "distractors": [
+        "journalistes",
+        "journalist",
+        "journalière"
+      ],
+      "fullSentence": "Elle est journaliste.",
+      "sentenceTrans": "She is a journalist."
+    },
+    {
+      "id": "u1-sio012-02",
+      "sentenceBefore": "Elle est ",
+      "sentenceAfter": ".",
+      "answer": "étudiante",
+      "distractors": [
+        "étudiant",
+        "étudie",
+        "étudiantes"
+      ],
+      "fullSentence": "Elle est étudiante.",
+      "sentenceTrans": "She is a student."
+    },
+    {
+      "id": "u1-sio012-03",
+      "sentenceBefore": "Elle est ",
+      "sentenceAfter": ".",
+      "answer": "actrice",
+      "distractors": [
+        "acteur",
+        "actrise",
+        "acteuse"
+      ],
+      "fullSentence": "Elle est actrice.",
+      "sentenceTrans": "She is an actress."
+    },
+    {
+      "id": "u1-sio012-04",
+      "sentenceBefore": "Il est ",
+      "sentenceAfter": ".",
+      "answer": "acteur",
+      "distractors": [
+        "actrice",
+        "acteurs",
+        "actor"
+      ],
+      "fullSentence": "Il est acteur.",
+      "sentenceTrans": "He is an actor."
+    },
+    {
+      "id": "u1-sio012-05",
+      "sentenceBefore": "Elle est ",
+      "sentenceAfter": ".",
+      "answer": "cheffe",
+      "distractors": [
+        "chef",
+        "chefe",
+        "cheffes"
+      ],
+      "fullSentence": "Elle est cheffe.",
+      "sentenceTrans": "She is a chef."
+    },
+    {
+      "id": "u1-sio012-06",
+      "sentenceBefore": "Il est ",
+      "sentenceAfter": ".",
+      "answer": "styliste",
+      "distractors": [
+        "stylistes",
+        "stylist",
+        "stylisteur"
+      ],
+      "fullSentence": "Il est styliste.",
+      "sentenceTrans": "He is a fashion designer."
+    },
+    {
+      "id": "u1-sio012-07",
+      "sentenceBefore": "Elle est ",
+      "sentenceAfter": ".",
+      "answer": "chanteuse",
+      "distractors": [
+        "chanteur",
+        "chanteure",
+        "chanteuses"
+      ],
+      "fullSentence": "Elle est chanteuse.",
+      "sentenceTrans": "She is a singer."
+    },
+    {
+      "id": "u1-sio012-08",
+      "sentenceBefore": "Il est ",
+      "sentenceAfter": " de tennis.",
+      "answer": "joueur",
+      "distractors": [
+        "joueuse",
+        "jouer",
+        "jeu"
+      ],
+      "fullSentence": "Il est joueur de tennis.",
+      "sentenceTrans": "He is a tennis player."
+    }
+  ]
+}

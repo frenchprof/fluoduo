@@ -1,0 +1,113 @@
+{
+  "id": "u3-sio036",
+  "unit": 3,
+  "lessonNo": 6,
+  "lessonSlug": "directions-ordinals",
+  "title": "Directions + ordinals",
+  "items": [
+    {
+      "id": "u3-sio036-01",
+      "sentenceBefore": "C'est ",
+      "sentenceAfter": " droit.",
+      "answer": "tout",
+      "distractors": [
+        "tous",
+        "très",
+        "toute"
+      ],
+      "fullSentence": "C'est tout droit.",
+      "sentenceTrans": "It's straight ahead."
+    },
+    {
+      "id": "u3-sio036-02",
+      "sentenceBefore": "Au feu rouge, il faut ",
+      "sentenceAfter": " à gauche.",
+      "answer": "tourner",
+      "distractors": [
+        "tournez",
+        "tourne",
+        "tourné"
+      ],
+      "fullSentence": "Au feu rouge, il faut tourner à gauche.",
+      "sentenceTrans": "At the red light, you have to turn left."
+    },
+    {
+      "id": "u3-sio036-03",
+      "sentenceBefore": "On prend la ",
+      "sentenceAfter": " rue à droite après le café.",
+      "answer": "première",
+      "distractors": [
+        "premier",
+        "premières",
+        "premièrement"
+      ],
+      "fullSentence": "On prend la première rue à droite après le café.",
+      "sentenceTrans": "You take the first street on the right after the café."
+    },
+    {
+      "id": "u3-sio036-04",
+      "sentenceBefore": "Votre chambre est au ",
+      "sentenceAfter": " étage.",
+      "answer": "premier",
+      "distractors": [
+        "première",
+        "premièrement",
+        "un"
+      ],
+      "fullSentence": "Votre chambre est au premier étage.",
+      "sentenceTrans": "Your room is on the first floor."
+    },
+    {
+      "id": "u3-sio036-05",
+      "sentenceBefore": "Le Marais est dans le ",
+      "sentenceAfter": " arrondissement.",
+      "answer": "troisième",
+      "distractors": [
+        "trois",
+        "troième",
+        "seconde"
+      ],
+      "fullSentence": "Le Marais est dans le troisième arrondissement.",
+      "sentenceTrans": "Le Marais is in the third arrondissement."
+    },
+    {
+      "id": "u3-sio036-06",
+      "sentenceBefore": "Il faut ",
+      "sentenceAfter": " à Châtelet.",
+      "answer": "descendre",
+      "distractors": [
+        "descendez",
+        "descend",
+        "descendu"
+      ],
+      "fullSentence": "Il faut descendre à Châtelet.",
+      "sentenceTrans": "You have to get off at Châtelet."
+    },
+    {
+      "id": "u3-sio036-07",
+      "sentenceBefore": "La mairie se trouve ",
+      "sentenceAfter": " la gare.",
+      "answer": "en face de",
+      "distractors": [
+        "en face du",
+        "devant de",
+        "face à"
+      ],
+      "fullSentence": "La mairie se trouve en face de la gare.",
+      "sentenceTrans": "The town hall is opposite the station."
+    },
+    {
+      "id": "u3-sio036-08",
+      "sentenceBefore": "Vous n'êtes pas ",
+      "sentenceAfter": " du tout !",
+      "answer": "loin",
+      "distractors": [
+        "loins",
+        "proche",
+        "lointain"
+      ],
+      "fullSentence": "Vous n'êtes pas loin du tout !",
+      "sentenceTrans": "You're not far at all!"
+    }
+  ]
+}

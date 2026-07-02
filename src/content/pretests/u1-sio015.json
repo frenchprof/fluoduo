@@ -1,0 +1,113 @@
+{
+  "id": "u1-sio015",
+  "unit": 1,
+  "lessonNo": 5,
+  "lessonSlug": "countries",
+  "title": "Countries",
+  "items": [
+    {
+      "id": "u1-sio015-01",
+      "sentenceBefore": "Le pays, c'est ",
+      "sentenceAfter": " France.",
+      "answer": "la",
+      "distractors": [
+        "le",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "Le pays, c'est la France.",
+      "sentenceTrans": "The country is France."
+    },
+    {
+      "id": "u1-sio015-02",
+      "sentenceBefore": "Le pays, c'est ",
+      "sentenceAfter": " Portugal.",
+      "answer": "le",
+      "distractors": [
+        "la",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "Le pays, c'est le Portugal.",
+      "sentenceTrans": "The country is Portugal."
+    },
+    {
+      "id": "u1-sio015-03",
+      "sentenceBefore": "Le pays, c'est ",
+      "sentenceAfter": " Allemagne.",
+      "answer": "l'",
+      "distractors": [
+        "la",
+        "le",
+        "les"
+      ],
+      "fullSentence": "Le pays, c'est l' Allemagne.",
+      "sentenceTrans": "The country is Germany."
+    },
+    {
+      "id": "u1-sio015-04",
+      "sentenceBefore": "Le pays, c'est ",
+      "sentenceAfter": " États-Unis.",
+      "answer": "les",
+      "distractors": [
+        "le",
+        "la",
+        "l'"
+      ],
+      "fullSentence": "Le pays, c'est les États-Unis.",
+      "sentenceTrans": "The country is the United States."
+    },
+    {
+      "id": "u1-sio015-05",
+      "sentenceBefore": "Le pays, c'est ",
+      "sentenceAfter": " Mexique.",
+      "answer": "le",
+      "distractors": [
+        "la",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "Le pays, c'est le Mexique.",
+      "sentenceTrans": "The country is Mexico."
+    },
+    {
+      "id": "u1-sio015-06",
+      "sentenceBefore": "Le pays, c'est ",
+      "sentenceAfter": " Philippines.",
+      "answer": "les",
+      "distractors": [
+        "la",
+        "le",
+        "l'"
+      ],
+      "fullSentence": "Le pays, c'est les Philippines.",
+      "sentenceTrans": "The country is the Philippines."
+    },
+    {
+      "id": "u1-sio015-07",
+      "sentenceBefore": "Le pays, c'est ",
+      "sentenceAfter": " Singapour.",
+      "answer": "∅ (no article)",
+      "distractors": [
+        "le",
+        "la",
+        "les"
+      ],
+      "fullSentence": "Le pays, c'est ∅ Singapour.",
+      "sentenceTrans": "The country is Singapore."
+    },
+    {
+      "id": "u1-sio015-08",
+      "sentenceBefore": "Le pays, c'est ",
+      "sentenceAfter": " Algérie.",
+      "answer": "l'",
+      "distractors": [
+        "la",
+        "le",
+        "les"
+      ],
+      "fullSentence": "Le pays, c'est l' Algérie.",
+      "sentenceTrans": "The country is Algeria."
+    }
+  ]
+}
