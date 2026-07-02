@@ -38,19 +38,30 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
     { stem: "[Vous,] Vous ___ comment ?", en: "What is your name? (formal/plural)", options: [{ v: "vous appelez", ok: true }, { v: "s'appelle", ok: false }, { v: "t'appelles", ok: false }, { v: "m'appelle", ok: false }], explain: "Vous takes vous appelez — no apostrophe, single L, just like nous." },
   ],
   "SIO-002": [
-    { title: "You meet your French professor for the first time.", options: [{ v: "tu", ok: false }, { v: "vous", ok: true }], explain: "Teachers — always vous, especially first meeting. Wait for the invitation before switching to tu." },
-    { title: "You meet a classmate your age in LAF1201.", options: [{ v: "vous", ok: false }, { v: "tu", ok: true }], explain: "Peers and classmates of similar age switch to tu almost immediately. Vous here would feel cold." },
+    // All 12 situations represented, per Dan (2026-07-02).
+    { title: "With a much younger person", options: [{ v: "tu", ok: true }, { v: "vous", ok: false }], explain: "Tu is usual with children and many teenagers in informal contexts." },
+    { title: "With a peer or a friend", options: [{ v: "tu", ok: true }, { v: "vous", ok: false }], explain: "Peers and friends — tu signals closeness and equality." },
+    { title: "With a family member", options: [{ v: "tu", ok: true }, { v: "vous", ok: false }], explain: "Family — tu signals closeness." },
+    { title: "With a partner", options: [{ v: "tu", ok: true }, { v: "vous", ok: false }], explain: "Partners — tu: intimacy and equality." },
+    { title: "With a close colleague", options: [{ v: "tu", ok: true }, { v: "vous", ok: false }], explain: "Close colleagues — tu once closeness is established." },
+    { title: "With a not-so-close colleague", options: [{ v: "tu", ok: false }, { v: "vous", ok: true }], explain: "Vous marks professional distance until you're invited to switch." },
+    { title: "With one's teacher", options: [{ v: "tu", ok: false }, { v: "vous", ok: true }], explain: "Teachers — always vous, especially at first. Wait for the invitation before switching to tu." },
+    { title: "With one's boss", options: [{ v: "tu", ok: false }, { v: "vous", ok: true }], explain: "Hierarchy — vous marks respect and professional distance." },
+    { title: "With a client", options: [{ v: "tu", ok: false }, { v: "vous", ok: true }], explain: "Clients — vous: professional respect." },
+    { title: "With a stranger", options: [{ v: "tu", ok: false }, { v: "vous", ok: true }], explain: "Vous is the default polite choice with unknown adults." },
+    { title: "With an elderly person", options: [{ v: "tu", ok: false }, { v: "vous", ok: true }], explain: "Respect for age — vous." },
+    { title: "With a group", options: [{ v: "tu", ok: false }, { v: "vous", ok: true }], explain: "Vous is used for addressing more than one person, regardless of closeness." },
   ],
   "SIO-003": [
-    // Not the easy A-B-C-D-E-F set (too obvious a giveaway, per Dan) — these
-    // are the 6 letters whose French names trip up English speakers because
-    // they don't match the English letter name they resemble.
-    { title: "Which letter is pronounced “jay”?", options: [{ v: "G", ok: true }, { v: "J", ok: false }, { v: "K", ok: false }], explain: "G is said “jay” in French — the opposite of English, where “jay” is J." },
-    { title: "Which letter is pronounced “jee”?", options: [{ v: "J", ok: true }, { v: "G", ok: false }, { v: "K", ok: false }], explain: "J is said “jee” (“ji”) in French — swapped from English, where G sounds like this." },
-    { title: "Which letter is pronounced “say”?", options: [{ v: "C", ok: true }, { v: "S", ok: false }, { v: "K", ok: false }], explain: "C is said “say” (“cé”) in French, not “see” like in English." },
-    { title: "Which letter is pronounced “arsh”?", options: [{ v: "H", ok: true }, { v: "A", ok: false }, { v: "R", ok: false }], explain: "H is said “arsh” (“hache”) in French — nothing like its English name." },
-    { title: "Which letter is pronounced “air”?", options: [{ v: "R", ok: true }, { v: "L", ok: false }, { v: "F", ok: false }], explain: "R is said “air” (“erre”) in French, with the guttural French R." },
-    { title: "Which letter is pronounced “i grec”?", options: [{ v: "Y", ok: true }, { v: "I", ok: false }, { v: "U", ok: false }], explain: "Y is called “i grec” (“Greek i”) in French, to distinguish it from I (“i latin”)." },
+    // Dan's exact 7-question set (2026-07-02) — the letters whose French
+    // names trip up English speakers, 4 options each.
+    { title: "Which letter is pronounced \u201carsh\u201d?", options: [{ v: "R", ok: false }, { v: "H", ok: true }, { v: "A", ok: false }, { v: "Z", ok: false }], explain: "H is said \u201carsh\u201d (\u201chache\u201d) in French \u2014 nothing like its English name." },
+    { title: "Which letter is pronounced \u201cair\u201d?", options: [{ v: "U", ok: false }, { v: "F", ok: false }, { v: "R", ok: true }, { v: "L", ok: false }], explain: "R is said \u201cair\u201d (\u201cerre\u201d), with the guttural French R. F is \u201ceff\u201d, L is \u201cell\u201d, U is \u201c\u00fc\u201d." },
+    { title: "Which letter is pronounced \u201cjay\u201d?", options: [{ v: "G", ok: true }, { v: "K", ok: false }, { v: "J", ok: false }, { v: "V", ok: false }], explain: "G is said \u201cjay\u201d (\u201cg\u00e9\u201d) in French \u2014 the opposite of English, where \u201cjay\u201d is J." },
+    { title: "Which letter is pronounced \u201csay\u201d?", options: [{ v: "S", ok: false }, { v: "T", ok: false }, { v: "C", ok: true }, { v: "X", ok: false }], explain: "C is said \u201csay\u201d (\u201cc\u00e9\u201d) in French, not \u201csee\u201d. S is \u201cess\u201d, X is \u201ceeks\u201d." },
+    { title: "Which letter is pronounced \u201ci grec\u201d?", options: [{ v: "E", ok: false }, { v: "I", ok: false }, { v: "Y", ok: true }, { v: "U", ok: false }], explain: "Y is called \u201ci grec\u201d (\u201cGreek i\u201d), to distinguish it from I (\u201ci latin\u201d)." },
+    { title: "Which letter is pronounced \u201cjee\u201d?", options: [{ v: "B", ok: false }, { v: "G", ok: false }, { v: "J", ok: true }, { v: "W", ok: false }], explain: "J is said \u201cjee\u201d (\u201cji\u201d) in French \u2014 swapped from English, where G sounds like this." },
+    { title: "Which letter is pronounced \u201ck\u00fc\u201d?", options: [{ v: "K", ok: false }, { v: "Q", ok: true }, { v: "P", ok: false }, { v: "M", ok: false }], explain: "Q is said \u201ck\u00fc\u201d in French \u2014 K is \u201ckah\u201d." },
   ],
   "SIO-004": [
     { title: "Which French word means Monday?", options: [{ v: "vendredi", ok: false }, { v: "dimanche", ok: false }, { v: "lundi", ok: true }, { v: "mercredi", ok: false }] },

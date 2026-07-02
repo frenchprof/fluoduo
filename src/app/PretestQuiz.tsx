@@ -136,7 +136,7 @@ function QuestionCard({
           🔊
         </button>
       </p>
-      {item.sentenceTrans && (
+      {item.sentenceTrans && (item.transFirst || showResult) && (
         <p className="mb-1 text-xs italic text-[color:var(--fluo-ink-soft)]">{item.sentenceTrans}</p>
       )}
 

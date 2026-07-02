@@ -31,6 +31,14 @@ export type PretestItem = {
   fullSentence?: string;
   /** English translation of the full sentence. */
   sentenceTrans?: string;
+  /**
+   * Show the translation BEFORE the attempt. Only for questions where several
+   * options are grammatical and the English meaning is what disambiguates
+   * (e.g. modals: vais/dois/peux all fit — "I'm going to…" decides). Default
+   * (absent/false): the translation appears only after the question has been
+   * attempted — per Dan, showing it first leaks single-answer questions.
+   */
+  transFirst?: boolean;
   /** HTML explanation shown after the learner submits. Inline <strong>/<em> allowed. */
   why?: string;
 };

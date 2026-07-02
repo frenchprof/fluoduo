@@ -245,7 +245,7 @@ function ItemCard({
         </span>
         <span lang="fr">{item.sentenceAfter}</span>
       </p>
-      {item.sentenceTrans && (
+      {item.sentenceTrans && (item.transFirst || submitted) && (
         <p className="text-center text-sm italic text-slate-500">
           {item.sentenceTrans}
         </p>

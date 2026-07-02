@@ -15,6 +15,7 @@
  * handoff doc, not silently dropped.
  */
 import { useEffect, useState } from "react";
+import { speak } from "@/games/letris/speech";
 import { SIOS, sioStatement } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import { UNIT0_QUESTIONS, type Unit0Question } from "@/content/sios/unit0-questions";
@@ -120,16 +121,44 @@ function Unit0Questions({ sio }: { sio: (typeof UNIT0_SIOS)[number] }) {
   );
 }
 
+/** The French to SPEAK on a correct pick: the completed stem (bracketed
+ *  framing stripped), or the bare option (letters say their French names). */
+function ttsFor(q: Unit0Question, v: string): string {
+  if (q.stem) return q.stem.replace(/\[[^\]]*\]\s*/g, "").replace("___", v);
+  return v;
+}
+
 function QuizQuestion({ q }: { q: Unit0Question }) {
   const [picked, setPicked] = useState<string | null>(null);
+  const [showWhy, setShowWhy] = useState(false);
+
+  function pick(o: { v: string; ok: boolean }) {
+    setPicked(o.v);
+    if (o.ok) speak(ttsFor(q, o.v), "fr-FR");
+  }
 
   return (
-    <div className="rounded-xl border-2 bg-[var(--fluo-card)] p-3" style={{ borderColor: "var(--fluo-line)" }}>
-      {q.title && <p className="mb-2 text-sm font-bold text-[color:var(--fluo-ink)]">{q.title}</p>}
+    <div className="relative rounded-xl border-2 bg-[var(--fluo-card)] p-3" style={{ borderColor: "var(--fluo-line)" }}>
+      {picked && q.explain && (
+        <button
+          type="button"
+          onClick={() => setShowWhy((v) => !v)}
+          className={`absolute right-2 top-2 rounded-full border-2 px-2 py-0.5 text-[0.6rem] font-black tracking-wider transition ${
+            showWhy
+              ? "border-[color:var(--fluo-ink)] bg-[color:var(--fluo-ink)] text-white"
+              : "border-[color:var(--fluo-ink)] bg-white text-[color:var(--fluo-ink)] hover:bg-[var(--fluo-card-tint)]"
+          }`}
+        >
+          WHY
+        </button>
+      )}
+      {q.title && <p className="mb-2 pr-12 text-sm font-bold text-[color:var(--fluo-ink)]">{q.title}</p>}
       {q.stem && (
-        <p className="fluo-serif mb-1 text-base font-bold text-[color:var(--fluo-ink)]">
+        <p className="fluo-serif mb-1 pr-12 text-base font-bold text-[color:var(--fluo-ink)]">
           {q.stem}
-          {q.en && <span className="ml-2 text-xs font-normal text-[color:var(--fluo-ink-soft)]">({q.en})</span>}
+          {/* the English appears only once attempted — shown first it leaks
+              single-answer questions (Dan, 2026-07-02) */}
+          {q.en && picked && <span className="ml-2 text-xs font-normal text-[color:var(--fluo-ink-soft)]">({q.en})</span>}
         </p>
       )}
       <div className="mt-2 flex flex-wrap gap-2">
@@ -151,7 +180,7 @@ function QuizQuestion({ q }: { q: Unit0Question }) {
               key={o.v}
               type="button"
               disabled={showResult}
-              onClick={() => setPicked(o.v)}
+              onClick={() => pick(o)}
               className={`rounded-full border-2 px-3 py-1.5 text-sm font-bold transition ${cls}`}
             >
               {o.v}
@@ -159,8 +188,8 @@ function QuizQuestion({ q }: { q: Unit0Question }) {
           );
         })}
       </div>
-      {picked && q.explain && (
-        <p className="mt-2 text-xs text-[color:var(--fluo-ink-soft)]">{q.explain}</p>
+      {picked && showWhy && q.explain && (
+        <p className="mt-2 rounded-lg bg-white/70 p-2.5 text-xs text-[color:var(--fluo-ink)]">{q.explain}</p>
       )}
     </div>
   );
