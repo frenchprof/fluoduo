@@ -92,6 +92,35 @@ function splitWord(w: string): [string, string] {
   return [ch.slice(0, point).join(""), ch.slice(point).join("")];
 }
 
+/**
+ * Text that shrinks (uniform scale) to fit its card. Belt/dock cards are
+ * fixed-width with overflow-hidden — without this, a long word like
+ * "nageuse" clips at both ends ("ageus") on narrow screens.
+ */
+function FitText({ text, lang }: { text: string; lang?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    const parent = el?.parentElement;
+    if (!el || !parent) return;
+    const fit = () => {
+      el.style.transform = "none";
+      const avail = parent.clientWidth - 8; // padding allowance
+      const w = el.scrollWidth;
+      if (w > avail && avail > 0) el.style.transform = `scale(${Math.max(0.45, avail / w)})`;
+    };
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(parent);
+    return () => ro.disconnect();
+  }, [text]);
+  return (
+    <span ref={ref} lang={lang} className="inline-block whitespace-nowrap" style={{ transformOrigin: "center" }}>
+      {text}
+    </span>
+  );
+}
+
 type Card = { uid: number; pairId: string; word: string; front: string; back: string; speak: string; greet?: string; pos: number };
 type Sel = { side: "belt"; uid: number } | { side: "dock"; back: string } | null;
 type Done = { key: number; word: string; hue: string; greet?: string };
@@ -402,7 +431,7 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
                 ${picked ? "ring-2 ring-amber-300" : ""}`}
               style={{ top: r * LANE_H + (LANE_H - CARD_H) / 2, left: `calc(${(c / COLS) * 100}% + 4px)`, width: `calc(${100 / COLS}% - 8px)`, height: CARD_H,
                 transition: `left ${glideMs}ms linear, top ${glideMs}ms linear`, ...(flash ? null : picked && baguette ? selCrust : upperHalf) }}>
-              <span lang="fr">{hy(card.front, true)}</span>
+              <FitText lang="fr" text={hy(card.front, true)} />
             </button>
           );
         })}
@@ -422,7 +451,7 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
               ref={(el) => { if (el) tileRefs.current.set(p.id, el); else tileRefs.current.delete(p.id); }}
               className={`absolute flex items-center justify-center overflow-hidden whitespace-nowrap rounded-lg border-2 px-1 text-lg font-bold text-white shadow ${backCls} hover:brightness-110 ${picked ? "ring-2 ring-amber-300" : ""}`}
               style={{ top: (DOCK_H - CARD_H) / 2, left: 0, width: 88, height: CARD_H, willChange: "transform", ...(picked && baguette ? selCrust : lowerHalf ?? {}) }}>
-              <span lang="fr">{hy(p.match, false)}</span>
+              <FitText lang="fr" text={hy(p.match, false)} />
             </button>
           );
         })}
