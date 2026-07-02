@@ -7,43 +7,43 @@
   "items": [
     {
       "id": "u1-sio016-01",
-      "sentenceBefore": "Marie est ",
+      "sentenceBefore": "Marie vient de France. Elle est ",
       "sentenceAfter": ".",
       "answer": "française",
       "distractors": [
         "français",
         "françaises",
-        "France"
+        "anglaise"
       ],
-      "fullSentence": "Marie est française.",
-      "sentenceTrans": "Marie is French.",
+      "fullSentence": "Marie vient de France. Elle est française.",
+      "sentenceTrans": "Marie is from France. She is French.",
       "whyWrong": {
-        "français": "That's the masculine form; Marie is a woman — française.",
-        "françaises": "That's the feminine plural; Marie is one person — française.",
-        "France": "France is the country; the nationality is française."
+        "français": "masculine — Marie is one woman → française.",
+        "françaises": "plural — Marie is one person → française.",
+        "anglaise": "that's 'English' — Marie is from France."
       }
     },
     {
       "id": "u1-sio016-02",
-      "sentenceBefore": "Pierre et Marie sont ",
+      "sentenceBefore": "Pierre et Marie viennent de France. Ils sont ",
       "sentenceAfter": ".",
       "answer": "français",
       "distractors": [
-        "françaises",
         "française",
-        "francs"
+        "françaises",
+        "anglais"
       ],
-      "fullSentence": "Pierre et Marie sont français.",
-      "sentenceTrans": "Pierre and Marie are French.",
+      "fullSentence": "Pierre et Marie viennent de France. Ils sont français.",
+      "sentenceTrans": "Pierre and Marie are from France. They are French.",
       "whyWrong": {
-        "françaises": "That's the feminine plural; a mixed group (Pierre et Marie) takes masculine français.",
-        "française": "That's the feminine singular; two people need the plural français.",
-        "francs": "francs is the old currency / means 'frank', not the nationality français."
+        "française": "more than one person → plural français.",
+        "françaises": "the group includes a man (Pierre) → masculine plural français.",
+        "anglais": "that's 'English' — they're from France."
       }
     },
     {
       "id": "u1-sio016-03",
-      "sentenceBefore": "Marie et Léa sont ",
+      "sentenceBefore": "Marie et Léa viennent de France. Elles sont ",
       "sentenceAfter": ".",
       "answer": "françaises",
       "distractors": [
@@ -51,53 +51,53 @@
         "française",
         "anglaises"
       ],
-      "fullSentence": "Marie et Léa sont françaises.",
-      "sentenceTrans": "Marie and Léa are French.",
+      "fullSentence": "Marie et Léa viennent de France. Elles sont françaises.",
+      "sentenceTrans": "Marie and Léa are from France. They are French.",
       "whyWrong": {
-        "français": "That's the masculine form; two women take the feminine plural françaises.",
-        "française": "That's the singular; two people need the plural françaises.",
-        "anglaises": "anglaises means 'English'; they're French — françaises."
+        "français": "all women → feminine françaises.",
+        "française": "two people → plural françaises.",
+        "anglaises": "that's 'English' — they're from France."
       }
     },
     {
       "id": "u1-sio016-04",
-      "sentenceBefore": "Emma est ",
+      "sentenceBefore": "Emma vient d'Angleterre. Elle est ",
       "sentenceAfter": ".",
       "answer": "anglaise",
       "distractors": [
         "anglais",
         "anglaises",
-        "angleterre"
+        "française"
       ],
-      "fullSentence": "Emma est anglaise.",
-      "sentenceTrans": "Emma is English.",
+      "fullSentence": "Emma vient d'Angleterre. Elle est anglaise.",
+      "sentenceTrans": "Emma is from England. She is English.",
       "whyWrong": {
-        "anglais": "That's the masculine form; Emma is a woman — anglaise.",
-        "anglaises": "That's the plural; Emma is one person — anglaise.",
-        "angleterre": "Angleterre is the country 'England'; the nationality is anglaise."
+        "anglais": "masculine — Emma is one woman → anglaise.",
+        "anglaises": "plural — Emma is one person → anglaise.",
+        "française": "that's 'French' — Emma is from England."
       }
     },
     {
       "id": "u1-sio016-05",
-      "sentenceBefore": "Léa est ",
+      "sentenceBefore": "Léa vient de Singapour. Elle est ",
       "sentenceAfter": ".",
       "answer": "singapourienne",
       "distractors": [
         "singapourien",
-        "singapouriens",
-        "singapouriennes"
+        "singapouriennes",
+        "malaisienne"
       ],
-      "fullSentence": "Léa est singapourienne.",
-      "sentenceTrans": "Léa is Singaporean.",
+      "fullSentence": "Léa vient de Singapour. Elle est singapourienne.",
+      "sentenceTrans": "Léa is from Singapore. She is Singaporean.",
       "whyWrong": {
-        "singapourien": "That's the masculine form; Léa is a woman — singapourienne.",
-        "singapouriens": "That's the masculine plural; Léa is one person — singapourienne.",
-        "singapouriennes": "That's the feminine plural; Léa is one person — singapourienne."
+        "singapourien": "masculine — Léa is one woman → singapourienne.",
+        "singapouriennes": "plural — Léa is one person → singapourienne.",
+        "malaisienne": "that's 'Malaysian' — Léa is from Singapore."
       }
     },
     {
       "id": "u1-sio016-06",
-      "sentenceBefore": "Jun est ",
+      "sentenceBefore": "Jun vient de Singapour. Il est ",
       "sentenceAfter": ".",
       "answer": "singapourien",
       "distractors": [
@@ -105,48 +105,48 @@
         "singapouriens",
         "malaisien"
       ],
-      "fullSentence": "Jun est singapourien.",
-      "sentenceTrans": "Jun is Singaporean.",
+      "fullSentence": "Jun vient de Singapour. Il est singapourien.",
+      "sentenceTrans": "Jun is from Singapore. He is Singaporean.",
       "whyWrong": {
-        "singapourienne": "That's the feminine form; Jun is a man — singapourien.",
-        "singapouriens": "That's the plural; Jun is one person — singapourien.",
-        "malaisien": "malaisien means 'Malaysian', a different nationality."
+        "singapourienne": "feminine — Jun is a man (il) → singapourien.",
+        "singapouriens": "plural — Jun is one person → singapourien.",
+        "malaisien": "that's 'Malaysian' — Jun is from Singapore."
       }
     },
     {
       "id": "u1-sio016-07",
-      "sentenceBefore": "Anna, Lukas et Felix sont ",
+      "sentenceBefore": "Anna, Lukas et Felix viennent d'Allemagne. Ils sont ",
       "sentenceAfter": ".",
       "answer": "allemands",
       "distractors": [
+        "allemand",
         "allemande",
-        "allemandes",
-        "allemand"
+        "allemandes"
       ],
-      "fullSentence": "Anna, Lukas et Felix sont allemands.",
-      "sentenceTrans": "Anna, Lukas and Felix are German.",
+      "fullSentence": "Anna, Lukas et Felix viennent d'Allemagne. Ils sont allemands.",
+      "sentenceTrans": "Anna, Lukas and Felix are from Germany. They are German.",
       "whyWrong": {
-        "allemande": "That's the feminine singular; the group is plural — allemands.",
-        "allemandes": "That's the feminine plural; a mixed group takes masculine allemands.",
-        "allemand": "That's the singular; three people need the plural allemands."
+        "allemand": "three people → plural allemands.",
+        "allemande": "feminine singular — the group is plural and mixed → allemands.",
+        "allemandes": "the group includes men → masculine plural allemands."
       }
     },
     {
       "id": "u1-sio016-08",
-      "sentenceBefore": "Sofia est ",
+      "sentenceBefore": "Sofia vient de Grèce. Elle est ",
       "sentenceAfter": ".",
       "answer": "grecque",
       "distractors": [
         "grec",
-        "grecques",
-        "grecs"
+        "grecs",
+        "grecques"
       ],
-      "fullSentence": "Sofia est grecque.",
-      "sentenceTrans": "Sofia is Greek.",
+      "fullSentence": "Sofia vient de Grèce. Elle est grecque.",
+      "sentenceTrans": "Sofia is from Greece. She is Greek.",
       "whyWrong": {
-        "grec": "That's the masculine form; Sofia is a woman — grecque.",
-        "grecques": "That's the feminine plural; Sofia is one person — grecque.",
-        "grecs": "That's the masculine plural; one woman is grecque."
+        "grec": "masculine — Sofia is one woman → grecque.",
+        "grecs": "masculine plural — Sofia is one woman → grecque.",
+        "grecques": "plural — Sofia is one person → grecque."
       }
     }
   ]
