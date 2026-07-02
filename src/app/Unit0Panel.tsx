@@ -63,7 +63,7 @@ export default function Unit0Panel() {
             >
               {String(s.num).padStart(2, "0")}
             </span>
-            {s.isProduction && (
+            {s.isProduction && s.id !== "SIO-010" && (
               <span className="fluo-label text-[9px]" style={{ color: "var(--fluo-card-accent)" }}>
                 atelier
               </span>
@@ -87,7 +87,9 @@ export default function Unit0Panel() {
             <span className="fluo-hl">{sioStatement(openSio)}</span>
           </p>
 
-          {openSio.isProduction ? (
+          {openSio.id === "SIO-010" ? (
+            <Unit0Dialogue />
+          ) : openSio.isProduction ? (
             <div className="rounded-xl border-2 border-dashed p-3" style={{ borderColor: "var(--fluo-card-accent)" }}>
               <p className="text-sm text-[color:var(--fluo-ink-soft)]">
                 🗣️ A mini-oral simulation done in class with your instructor — no online questions here.
@@ -99,6 +101,54 @@ export default function Unit0Panel() {
         </SioModal>
       )}
     </section>
+  );
+}
+
+/**
+ * SIO-010 opens to a mini first-meeting dialogue built from ONLY what SIO-001
+ * to 010 have covered (greetings, s'appeler, spelling aloud, enchanté). Each
+ * line is playable; the English shows muted under it. Not a test — a model to
+ * read and hear, then perform in class.
+ */
+const DIALOGUE: { who: "A" | "B"; fr: string; en: string; say?: string }[] = [
+  { who: "A", fr: "Bonjour !", en: "Hello!" },
+  { who: "B", fr: "Bonjour !", en: "Hello!" },
+  { who: "A", fr: "Comment tu t'appelles ?", en: "What's your name?" },
+  { who: "B", fr: "Je m'appelle Marc. Et toi ?", en: "My name is Marc. And you?" },
+  { who: "A", fr: "Moi, je m'appelle Léa.", en: "Me, my name is Léa." },
+  { who: "B", fr: "Comment ça s'écrit ?", en: "How do you spell it?" },
+  { who: "A", fr: "L – É – A.", en: "L – E – A.", say: "L, É, A" },
+  { who: "B", fr: "Enchanté !", en: "Nice to meet you!" },
+  { who: "A", fr: "Enchantée ! Au revoir !", en: "Nice to meet you! Goodbye!" },
+  { who: "B", fr: "Au revoir, à demain !", en: "Goodbye, see you tomorrow!" },
+];
+
+function Unit0Dialogue() {
+  return (
+    <div className="space-y-2">
+      {DIALOGUE.map((line, i) => {
+        const mine = line.who === "A";
+        return (
+          <div key={i} className={`flex ${mine ? "justify-start" : "justify-end"}`}>
+            <button
+              type="button"
+              onClick={() => speak(line.say ?? line.fr, "fr-FR")}
+              title="Play"
+              className="max-w-[85%] rounded-2xl border-2 px-3 py-2 text-left transition hover:brightness-95"
+              style={{
+                borderColor: "var(--fluo-card-accent)",
+                background: mine ? "var(--fluo-card-tint)" : "var(--fluo-card)",
+              }}
+            >
+              <span lang="fr" className="fluo-serif text-base font-bold text-[color:var(--fluo-ink)]">
+                🔊 {line.fr}
+              </span>
+              <span className="mt-0.5 block text-xs text-[color:var(--fluo-ink-soft)]">{line.en}</span>
+            </button>
+          </div>
+        );
+      })}
+    </div>
   );
 }
 
@@ -119,6 +169,11 @@ function Unit0Questions({ sio }: { sio: (typeof UNIT0_SIOS)[number] }) {
       ))}
     </div>
   );
+}
+
+/** An emoji-only prompt (no ASCII letters) renders large, as a picture cue. */
+function isEmojiOnly(s?: string): boolean {
+  return !!s && !/[a-zA-Z]/.test(s);
 }
 
 /** The French to SPEAK on a correct pick: the question's own tts (colour
@@ -172,7 +227,7 @@ function QuizQuestion({ q }: { q: Unit0Question }) {
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 pr-9">
         {(q.stem || q.title) && (
           <span
-            className={`${q.stem ? "fluo-serif text-base" : "text-sm"} font-bold text-[color:var(--fluo-ink)]`}
+            className={`${q.stem ? "fluo-serif text-base" : isEmojiOnly(q.title) ? "text-3xl" : "text-sm"} font-bold text-[color:var(--fluo-ink)]`}
             style={q.hue ? { color: q.hue, textShadow: "0 0 2px rgba(0,0,0,.45)" } : undefined}
           >
             {q.stem ?? q.title}

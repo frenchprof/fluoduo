@@ -244,7 +244,7 @@ function SioNode({
       >
         {done ? "✓" : String(sio.num).padStart(2, "0")}
       </span>
-      {sio.isProduction && (
+      {sio.isProduction && sio.id !== "SIO-010" && (
         <span className="fluo-label text-[9px]" style={{ color: "var(--fluo-card-accent)" }}>
           atelier
         </span>

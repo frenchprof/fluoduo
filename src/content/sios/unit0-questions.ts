@@ -117,11 +117,31 @@ const tuVous = (situation: string, correct: "tu" | "vous", whyWrong: string): Un
   ],
 });
 
-const unUne = (noun: string, correct: "un" | "une", en: string): Unit0Question => ({
-  title: noun,
+/**
+ * SIO-006 core-noun article question. Prompt is an emoji when one reads
+ * clearly, else the English word; options are un / une; the full article +
+ * noun is revealed (after attempt) and spoken on a correct pick (Dan,
+ * 2026-07-02). Gendered person-emojis resolve the un professeur / une
+ * professeure ambiguity by fixing the referent's sex.
+ */
+const nounQ = (prompt: string, fr: string, g: "un" | "une", en: string): Unit0Question => ({
+  title: prompt,
+  en: `${g} ${fr} — ${en}`,
+  tts: `${g} ${fr}`,
   options: [
-    { v: "un", ok: correct === "un", ...(correct === "une" ? { why: `${noun} (${en}) is feminine — une ${noun}.` } : {}) },
-    { v: "une", ok: correct === "une", ...(correct === "un" ? { why: `${noun} (${en}) is masculine — un ${noun}.` } : {}) },
+    { v: "un", ok: g === "un", ...(g === "une" ? { why: `${fr} is feminine — une ${fr}.` } : {}) },
+    { v: "une", ok: g === "une", ...(g === "un" ? { why: `${fr} is masculine — un ${fr}.` } : {}) },
+  ],
+});
+
+/** M. / Mme forms of address (part of SIO-006 per Dan). */
+const addressQ = (prompt: string, correct: "Monsieur" | "Madame", en: string): Unit0Question => ({
+  title: prompt,
+  en,
+  tts: correct,
+  options: [
+    { v: "Monsieur", ok: correct === "Monsieur", ...(correct === "Madame" ? { why: "Monsieur (M.) is for a man." } : {}) },
+    { v: "Madame", ok: correct === "Madame", ...(correct === "Monsieur" ? { why: "Madame (Mme) is for a woman." } : {}) },
   ],
 });
 
@@ -186,12 +206,27 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
     colorQ("beige", "beige", "#d9c39a", "le sable beige", "beige sand", ["marron", "blanc", "jaune"]),
   ],
   "SIO-006": [
-    unUne("prénom", "un", "first name"),
-    unUne("femme", "une", "woman"),
-    unUne("homme", "un", "man"),
-    unUne("salle de classe", "une", "classroom"),
-    unUne("tableau", "un", "board"),
-    unUne("étudiante", "une", "female student"),
+    // Identity / people
+    nounQ("first name", "prénom", "un", "first name"),
+    nounQ("surname", "nom", "un", "surname"),
+    nounQ("👨", "homme", "un", "man"),
+    nounQ("👩", "femme", "une", "woman"),
+    nounQ("👦", "garçon", "un", "boy"),
+    nounQ("👧", "fille", "une", "girl"),
+    nounQ("lady", "dame", "une", "lady"),
+    nounQ("👨‍🏫", "professeur", "un", "teacher (m)"),
+    nounQ("👨‍🎓", "étudiant", "un", "student (m)"),
+    // Classroom objects
+    nounQ("🏫", "salle de classe", "une", "classroom"),
+    nounQ("board", "tableau", "un", "board"),
+    nounQ("📖", "livre", "un", "book"),
+    nounQ("✏️", "crayon", "un", "pencil"),
+    nounQ("📓", "cahier", "un", "exercise book"),
+    nounQ("🎧", "casque", "un", "headset"),
+    nounQ("🎤", "micro", "un", "microphone"),
+    // Forms of address
+    addressQ("Addressing a man", "Monsieur", "Monsieur (M.) — how to address a man."),
+    addressQ("Addressing a woman", "Madame", "Madame (Mme) — how to address a woman."),
   ],
   "SIO-007": [
     glossQ("0", "zéro", ["quatorze", "huit", "seize"], NUMBER),
