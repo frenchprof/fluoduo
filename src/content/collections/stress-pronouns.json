@@ -1,7 +1,7 @@
 {
   "id": "stress-pronouns",
   "title": "Moi, toi, lui...",
-  "subtitle": "Subject-only, stress-only, or either",
+  "subtitle": "Subject-only, stressed-only, or either",
   "langPair": "fr-en",
   "owner": "curated",
   "visibility": "public",
@@ -50,7 +50,7 @@
     {
       "id": "stress-pronouns-02",
       "fr": "moi",
-      "en": "me (stress only)",
+      "en": "me (stressed only)",
       "tags": [
         "col:stress"
       ],
@@ -74,7 +74,7 @@
     {
       "id": "stress-pronouns-04",
       "fr": "toi",
-      "en": "you sg. (stress only)",
+      "en": "you sg. (stressed only)",
       "tags": [
         "col:stress"
       ],
@@ -98,7 +98,7 @@
     {
       "id": "stress-pronouns-06",
       "fr": "lui",
-      "en": "him (stress only)",
+      "en": "him (stressed only)",
       "tags": [
         "col:stress"
       ],
@@ -158,7 +158,7 @@
     {
       "id": "stress-pronouns-11",
       "fr": "eux",
-      "en": "them m. (stress only)",
+      "en": "them m. (stressed only)",
       "tags": [
         "col:stress"
       ],
