@@ -423,7 +423,7 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
 
       <p className="mb-2 text-center text-xs font-semibold text-[#4a3413]/60">
         {instruction ?? "Match a French card to its meaning."} Tap either half first. Clear the whole wave to finish the level.
-        {hard && <b className="text-rose-600"> Hard: faster belts, more decoys, no colour cue.</b>}
+        {hard && <b className="text-rose-600"> Hard: faster belts, more decoys.</b>}
       </p>
 
       {/* belt: 4 conveyor lines; front (upper) halves glide. The moving stripes
