@@ -36,18 +36,11 @@ export default function Unit0Panel() {
   const [openId, setOpenId] = useState<string | null>(null);
   const openSio = openId ? UNIT0_SIOS.find((s) => s.id === openId) : undefined;
 
+  // The pink "Unité 0" header + done-counter is rendered by SioHub's collapse
+  // header (same as Units 1–4); this panel is just the tile grid — no second
+  // header of its own.
   return (
-    <section className="fluo-h-0 mb-8">
-      <div className="mb-5 rounded-2xl px-4 py-3" style={{ background: "var(--fluo-card-accent)" }}>
-        <span className="text-2xl" aria-hidden>👋</span>{" "}
-        <span className="fluo-serif text-lg font-black text-white">Unité 0</span>{" "}
-        <span lang="fr" className="text-sm text-white/85">Bonjour, bienvenue, enchanté !</span>
-      </div>
-
-      <p className="mb-4 text-sm text-[color:var(--fluo-ink-soft)]">
-        The 10 foundational objectives of French 1. Tap one to see it and try its questions.
-      </p>
-
+    <div className="fluo-h-0">
       <div className="grid grid-cols-5 gap-3">
         {UNIT0_SIOS.map((s) => (
           <button
@@ -100,7 +93,7 @@ export default function Unit0Panel() {
           )}
         </SioModal>
       )}
-    </section>
+    </div>
   );
 }
 
