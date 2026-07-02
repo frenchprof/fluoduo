@@ -37,6 +37,8 @@ import { SIOS, UNIT_META, unitNumbers, groupSiosForUnit, type Sio } from "@/cont
 import { CURATED } from "@/content/collections";
 import { getPretestForSio } from "@/content/pretests";
 import { defaultProgress, loadProgress, isSioDone, MAX_HEARTS, type Progress } from "@/lib/progress";
+import { dueForReview } from "@/lib/reviser";
+import Link from "next/link";
 import Unit0Panel from "./Unit0Panel";
 import SioModal, { popupActivityTabs } from "./SioModal";
 import SioDetail from "./SioDetail";
@@ -55,6 +57,7 @@ function deckAndPretestFor(sio: Sio) {
 export default function SioHub() {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [progress, setProgress] = useState<Progress>(defaultProgress());
+  const [dueCount, setDueCount] = useState(0);
   const [openId, setOpenId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -64,7 +67,9 @@ export default function SioHub() {
     } catch {
       // ignore — falls back to fully expanded
     }
-    setProgress(loadProgress());
+    const p = loadProgress();
+    setProgress(p);
+    setDueCount(dueForReview(p, Date.now()).length);
   }, []);
 
   function toggle(key: string) {
@@ -86,6 +91,16 @@ export default function SioHub() {
   return (
     <>
       <div className="mb-6 flex items-center justify-end gap-4 px-1">
+        <Link
+          href="/reviser"
+          className="fluo-mono mr-auto flex items-center gap-1 rounded-full border-2 px-3 py-1 text-sm font-bold text-[color:var(--fluo-ink)] transition hover:bg-[var(--fluo-card-tint)]"
+          style={{ borderColor: "var(--fluo-card-accent)" }}
+        >
+          🔁 Réviser
+          {dueCount > 0 && (
+            <span className="rounded-full bg-[var(--fluo-danger)] px-1.5 text-xs text-white">{dueCount}</span>
+          )}
+        </Link>
         <span className="fluo-mono flex items-center gap-1 text-sm font-bold text-[color:var(--fluo-ink)]">
           🔥 {progress.streak}
         </span>
