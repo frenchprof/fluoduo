@@ -16,35 +16,74 @@
       "fr": "toujours",
       "en": "always",
       "example": "Je mange toujours du riz le soir.",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "tou",
+        "jours"
+      ]
     },
     {
       "id": "frequence-02",
       "fr": "souvent",
       "en": "often",
       "example": "Je bois souvent du café le matin.",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "sou",
+        "vent"
+      ]
     },
     {
       "id": "frequence-03",
       "fr": "parfois",
       "en": "sometimes",
       "example": "Je mange parfois des sushis.",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "par",
+        "fois"
+      ]
     },
     {
       "id": "frequence-04",
       "fr": "rarement",
       "en": "rarely",
       "example": "Je mange rarement de la viande.",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "ra",
+        "re",
+        "ment"
+      ]
     },
     {
       "id": "frequence-05",
       "fr": "jamais",
       "en": "never",
       "example": "Je ne bois jamais de café le soir.",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "ja",
+        "mais"
+      ]
     }
-  ]
+  ],
+  "gameConfig": {
+    "lexicalator": {
+      "decoys": [
+        "tour",
+        "jour",
+        "son",
+        "van",
+        "far",
+        "foi",
+        "reu",
+        "mon",
+        "jou",
+        "mes",
+        "lon",
+        "vin"
+      ]
+    }
+  }
 }

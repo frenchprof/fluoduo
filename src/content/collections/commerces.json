@@ -24,6 +24,22 @@
           "prefix": "une "
         }
       ]
+    },
+    "lexicalator": {
+      "decoys": [
+        "pou",
+        "lin",
+        "gi",
+        "ria",
+        "pa",
+        "tas",
+        "cho",
+        "sou",
+        "na",
+        "po",
+        "fru",
+        "mor"
+      ]
     }
   },
   "items": [
@@ -34,6 +50,12 @@
       "emoji": "🥖",
       "tags": [
         "col:une"
+      ],
+      "syllables": [
+        "bou",
+        "lan",
+        "ge",
+        "rie"
       ]
     },
     {
@@ -43,6 +65,12 @@
       "emoji": "🍰",
       "tags": [
         "col:une"
+      ],
+      "syllables": [
+        "pâ",
+        "tis",
+        "se",
+        "rie"
       ]
     },
     {
@@ -52,6 +80,11 @@
       "emoji": "🥩",
       "tags": [
         "col:une"
+      ],
+      "syllables": [
+        "bou",
+        "che",
+        "rie"
       ]
     },
     {
@@ -61,6 +94,12 @@
       "emoji": "🐟",
       "tags": [
         "col:une"
+      ],
+      "syllables": [
+        "pois",
+        "son",
+        "ne",
+        "rie"
       ]
     },
     {
@@ -70,6 +109,12 @@
       "emoji": "🛒",
       "tags": [
         "col:une"
+      ],
+      "syllables": [
+        "é",
+        "pi",
+        "ce",
+        "rie"
       ]
     },
     {
@@ -79,6 +124,12 @@
       "emoji": "🧀",
       "tags": [
         "col:une"
+      ],
+      "syllables": [
+        "fro",
+        "ma",
+        "ge",
+        "rie"
       ]
     },
     {
@@ -88,6 +139,10 @@
       "emoji": "🍅",
       "tags": [
         "col:un"
+      ],
+      "syllables": [
+        "mar",
+        "ché"
       ]
     },
     {
@@ -97,6 +152,12 @@
       "emoji": "🏬",
       "tags": [
         "col:un"
+      ],
+      "syllables": [
+        "su",
+        "per",
+        "mar",
+        "ché"
       ]
     }
   ]

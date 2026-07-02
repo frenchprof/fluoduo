@@ -34,6 +34,22 @@
           "prefix": "ces "
         }
       ]
+    },
+    "lexicalator": {
+      "decoys": [
+        "pin",
+        "teu",
+        "gau",
+        "no",
+        "ka",
+        "gomme",
+        "frai",
+        "lu",
+        "van",
+        "po",
+        "tor",
+        "bo"
+      ]
     }
   },
   "items": [
@@ -44,6 +60,9 @@
       "emoji": "🍞",
       "tags": [
         "col:ce"
+      ],
+      "syllables": [
+        "pain"
       ]
     },
     {
@@ -53,6 +72,10 @@
       "emoji": "🍰",
       "tags": [
         "col:ce"
+      ],
+      "syllables": [
+        "gâ",
+        "teau"
       ]
     },
     {
@@ -62,6 +85,11 @@
       "emoji": "🍍",
       "tags": [
         "col:cet"
+      ],
+      "syllables": [
+        "a",
+        "na",
+        "nas"
       ]
     },
     {
@@ -71,6 +99,11 @@
       "emoji": "🥑",
       "tags": [
         "col:cet"
+      ],
+      "syllables": [
+        "a",
+        "vo",
+        "cat"
       ]
     },
     {
@@ -80,6 +113,9 @@
       "emoji": "🥧",
       "tags": [
         "col:cette"
+      ],
+      "syllables": [
+        "tarte"
       ]
     },
     {
@@ -89,6 +125,9 @@
       "emoji": "🍎",
       "tags": [
         "col:cette"
+      ],
+      "syllables": [
+        "pomme"
       ]
     },
     {
@@ -98,6 +137,10 @@
       "emoji": "🥕",
       "tags": [
         "col:ces"
+      ],
+      "syllables": [
+        "lé",
+        "gumes"
       ]
     },
     {
@@ -107,6 +150,9 @@
       "emoji": "🍓",
       "tags": [
         "col:ces"
+      ],
+      "syllables": [
+        "fraises"
       ]
     }
   ]
