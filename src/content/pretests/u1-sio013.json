@@ -16,7 +16,12 @@
         "les"
       ],
       "fullSentence": "J'étudie le français.",
-      "sentenceTrans": "I study French."
+      "sentenceTrans": "I study French.",
+      "whyWrong": {
+        "la": "français is masculine — le français.",
+        "l'": "l' is only before a vowel; français starts with a consonant.",
+        "les": "les is plural — one subject takes le."
+      }
     },
     {
       "id": "u1-sio013-02",
@@ -29,7 +34,12 @@
         "les"
       ],
       "fullSentence": "Elle étudie l' économie.",
-      "sentenceTrans": "She studies economics."
+      "sentenceTrans": "She studies economics.",
+      "whyWrong": {
+        "le": "économie starts with a vowel — le elides to l'.",
+        "la": "économie starts with a vowel — la elides to l'.",
+        "les": "les is plural — this is one subject."
+      }
     },
     {
       "id": "u1-sio013-03",
@@ -42,7 +52,12 @@
         "l'"
       ],
       "fullSentence": "Nous étudions les mathématiques.",
-      "sentenceTrans": "We study mathematics."
+      "sentenceTrans": "We study mathematics.",
+      "whyWrong": {
+        "le": "mathématiques is plural — les.",
+        "la": "mathématiques is plural — les.",
+        "l'": "l' is singular before a vowel — this noun is plural."
+      }
     },
     {
       "id": "u1-sio013-04",
@@ -55,7 +70,12 @@
         "les"
       ],
       "fullSentence": "Tu étudies la chimie ?",
-      "sentenceTrans": "Do you study chemistry?"
+      "sentenceTrans": "Do you study chemistry?",
+      "whyWrong": {
+        "le": "chimie is feminine — la chimie.",
+        "l'": "l' is only before a vowel; chimie starts with a consonant.",
+        "les": "les is plural — this is one subject."
+      }
     },
     {
       "id": "u1-sio013-05",
@@ -68,7 +88,12 @@
         "à"
       ],
       "fullSentence": "Je suis étudiant en droit.",
-      "sentenceTrans": "I'm a law student."
+      "sentenceTrans": "I'm a law student.",
+      "whyWrong": {
+        "au": "être étudiant takes en + subject — en droit.",
+        "de": "de doesn't fit here — the frame is étudiant en + subject.",
+        "à": "à doesn't fit — say étudiant en droit."
+      }
     }
   ]
 }

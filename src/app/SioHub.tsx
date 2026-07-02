@@ -98,9 +98,31 @@ export default function SioHub() {
         </span>
       </div>
 
-      <div id="unit-0">
-        <Unit0Panel />
-      </div>
+      {(() => {
+        const meta = UNIT_META[0];
+        const u0 = SIOS.filter((s) => s.unit === 0);
+        const done0 = u0.filter((s) => isSioDone(s.id, progress)).length;
+        const collapsed0 = !!collapsed["unit-0"];
+        return (
+          <section id="unit-0" className="fluo-h-0 mb-8">
+            <button
+              type="button"
+              onClick={() => toggle("unit-0")}
+              aria-expanded={!collapsed0}
+              className="mb-5 flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left"
+              style={{ background: "var(--fluo-card-accent)" }}
+            >
+              <span className="text-2xl" aria-hidden>{meta.emoji}</span>
+              <span className="fluo-serif text-lg font-black text-white">{meta.label}</span>
+              <span lang="fr" className="hidden text-sm text-white/85 sm:inline">{meta.subtitle}</span>
+              <span className="fluo-label ml-auto rounded-full bg-white/25 px-3 py-1 text-white">
+                {done0}/{u0.length} {collapsed0 ? "▸" : "▾"}
+              </span>
+            </button>
+            {!collapsed0 && <Unit0Panel />}
+          </section>
+        );
+      })()}
 
       {unitNumbers()
         .filter((unit) => unit > 0)

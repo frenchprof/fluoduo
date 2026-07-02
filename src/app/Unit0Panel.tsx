@@ -287,7 +287,7 @@ function QuizQuestion({ q }: { q: Unit0Question }) {
       </div>
       {showExample && q.example && (
         <p className="mt-2 rounded-lg bg-white/70 p-2.5 text-xs text-[color:var(--fluo-ink)]">
-          <span lang="fr" className="font-bold">🔊 {q.example.fr}</span>
+          <span lang="fr" className="font-bold">{q.example.fr}</span>
           <span className="ml-1.5 text-[color:var(--fluo-ink-soft)]">— {q.example.en}</span>
         </p>
       )}
