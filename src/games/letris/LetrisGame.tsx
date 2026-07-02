@@ -37,15 +37,17 @@ const MIN_TICK_MS = 260;
 const SPEEDUP_EVERY = 6;
 
 /* One colour per category (the base + every tile that belongs to it). Revealed
- * only when a tile lands — while falling, a tile shows its word, not its colour. */
+ * only when a tile lands — while falling, a tile is a neutral RAINDROP (the
+ * Vocabularain story: words rain from the sky, you steer each drop into the
+ * right puddle). Duolingo-bright hues, all legible under white text. */
 const PALETTE = [
-  "#e2567f", // pink
-  "#2bb6c2", // teal
-  "#e8a300", // amber
-  "#8a5fd4", // purple
-  "#46b04a", // green
-  "#e8852e", // orange
-  "#4f86e0", // blue
+  "#ff4b4b", // red
+  "#1cb0f6", // sky blue
+  "#58cc02", // green
+  "#ce82ff", // purple
+  "#ff9600", // orange
+  "#2ec4b6", // teal
+  "#e0567f", // pink
 ];
 
 function shuffle<T>(arr: T[]): T[] {
@@ -248,57 +250,82 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
     setActive({ ...active, col });
   };
 
+  const pillCls =
+    "rounded-xl border-2 border-b-4 border-sky-200 bg-white px-2.5 py-1 font-bold text-sky-800 shadow-sm transition hover:bg-sky-50 active:translate-y-[2px] active:border-b-2";
+
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 px-4 py-6 text-white">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 px-4 py-6 text-sky-950">
+      <style>{`@keyframes vrain{0%{transform:translateY(-24px);opacity:0}12%{opacity:.7}100%{transform:translateY(520px);opacity:0}}`}</style>
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">{set.title}</h1>
-          {set.subtitle && <p className="text-sm text-slate-300">{set.subtitle}</p>}
+          <h1 className="text-3xl font-black tracking-tight text-sky-700" style={{ textShadow: "0 2px 0 #fff" }}>
+            🌧️ Vocabula<span className="text-sky-400">rain</span>
+          </h1>
+          <p className="text-sm font-bold text-sky-900/80">
+            {set.title}
+            {set.subtitle ? <span className="font-medium text-sky-900/60"> — {set.subtitle}</span> : null}
+          </p>
         </div>
-        <div className="flex items-center gap-4 font-mono text-sm">
-          <span>Score <b className="text-emerald-400">{score}</b></span>
-          <button type="button" onClick={() => setShowHelp(true)}
-            title="How to play" className="rounded border border-slate-500 px-2 py-1 hover:bg-slate-700">?</button>
+        <div className="flex items-center gap-2 font-mono text-sm">
+          <span className="rounded-xl border-2 border-sky-200 bg-white px-2.5 py-1 font-bold shadow-sm">
+            Score <b className="text-[#58cc02]">{score}</b>
+          </span>
+          <button type="button" onClick={() => setShowHelp(true)} title="How to play" className={pillCls}>?</button>
           <button type="button" onClick={() => { chiptune.toggle("letris"); setMusic(chiptune.playing() === "letris"); }}
-            title="Music" className="rounded border border-slate-500 px-2 py-1 hover:bg-slate-700">{music ? "🔊" : "🎵"}</button>
-          <button type="button" onClick={() => setPaused((p) => !p)} className="rounded border border-slate-500 px-2 py-1 hover:bg-slate-700">
+            title="Music" className={pillCls}>{music ? "🔊" : "🎵"}</button>
+          <button type="button" onClick={() => setPaused((p) => !p)} className={pillCls}>
             {paused ? "Resume" : "Pause"}
           </button>
-          <button type="button" onClick={restart} className="rounded border border-slate-500 px-2 py-1 hover:bg-slate-700">
+          <button type="button" onClick={restart} className={pillCls}>
             Restart
           </button>
         </div>
       </header>
 
       {showHelp && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={() => setShowHelp(false)}>
-          <div className="max-w-sm rounded-2xl bg-slate-800 p-6 text-white shadow-2xl ring-1 ring-white/10" onClick={(e) => e.stopPropagation()}>
-            <h2 className="mb-3 text-xl font-bold">How to play Letris</h2>
-            <ol className="space-y-2 text-sm text-slate-200 list-decimal list-inside">
-              <li>A word falls from the top — read it.</li>
-              <li>Use <b>← →</b> or tap a column to steer it into the right basket.</li>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-sky-950/50 p-4" onClick={() => setShowHelp(false)}>
+          <div className="max-w-sm rounded-3xl border-4 border-sky-200 bg-white p-6 text-sky-950 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <h2 className="mb-3 text-xl font-black text-sky-700">How to play Vocabularain 🌧️</h2>
+            <ol className="space-y-2 text-sm list-decimal list-inside">
+              <li>A word <b>rains down</b> as a drop — read it.</li>
+              <li>Use <b>← →</b> or tap a column to steer it into the right puddle.</li>
               <li>Press <b>↓</b> to nudge it down, or <b>Space</b> to drop it instantly.</li>
               <li>Line up <b>3 tiles of the same colour</b> in a column or row to clear them.</li>
             </ol>
-            <p className="mt-3 text-xs text-slate-400">
+            <p className="mt-3 text-xs text-sky-900/60">
               The goal is to sort, not just drop — every correct placement reinforces the grammar rule.
             </p>
             <button type="button" onClick={() => setShowHelp(false)}
-              className="mt-4 w-full rounded-lg bg-emerald-600 py-2 text-sm font-bold hover:bg-emerald-500">
+              className="mt-4 w-full rounded-2xl border-b-4 border-[#46a302] bg-[#58cc02] py-2 text-sm font-black text-white transition hover:brightness-105 active:translate-y-[2px] active:border-b-0">
               Got it — play!
             </button>
           </div>
         </div>
       )}
 
-      <div className="relative overflow-hidden rounded-lg border border-slate-700 bg-slate-900">
+      <div className="relative overflow-hidden rounded-3xl border-4 border-white shadow-xl">
         <div
-          className="relative grid bg-slate-950"
+          className="relative grid"
           style={{
             gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
             gridTemplateRows: `repeat(${ROWS}, 48px)`,
+            background: "linear-gradient(180deg, #59b8f2 0%, #8fd0f8 55%, #c8e9fc 100%)",
           }}
         >
+          {/* ambient rain — deterministic positions/timings (no Math.random in render) */}
+          {Array.from({ length: 12 }).map((_, i) => (
+            <span
+              key={`drop-${i}`}
+              className="pointer-events-none absolute w-[3px] rounded-full"
+              style={{
+                left: `${(i * 89 + 7) % 100}%`,
+                top: 0,
+                height: 16,
+                background: "rgba(255,255,255,.55)",
+                animation: `vrain ${2.2 + (i % 5) * 0.5}s linear ${(i * 0.63) % 3}s infinite`,
+              }}
+            />
+          ))}
           {Array.from({ length: ROWS }).map((_, r) =>
             Array.from({ length: cols }).map((_, c) => {
               const stacked = board[r][c];
@@ -308,18 +335,24 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
               return (
                 <div
                   key={`${r}-${c}`}
-                  className={`relative flex items-center justify-center border-b border-slate-800 px-1 text-center ${
-                    c < cols - 1 ? "border-r border-slate-800" : ""
-                  } ${isFlashCol ? (flash!.kind === "ok" ? "bg-emerald-500/30" : "bg-rose-500/30") : ""}`}
+                  className={`relative flex items-center justify-center border-b border-white/20 px-1 text-center ${
+                    c < cols - 1 ? "border-r border-white/20" : ""
+                  } ${isFlashCol ? (flash!.kind === "ok" ? "bg-lime-300/40" : "bg-rose-400/40") : ""}`}
                   onClick={() => moveTo(c)}
                 >
                   {tile && (
                     <div
-                      className="flex h-[44px] w-[96%] items-center justify-center rounded-md px-1 text-[11px] font-bold leading-tight shadow-md sm:text-xs"
+                      className="flex h-[44px] w-[96%] items-center justify-center px-1 text-[11px] font-bold leading-tight shadow-md sm:text-xs"
                       style={
                         isActive
-                          ? { background: "#fde68a", color: "#1e293b" } // falling: colour hidden
-                          : { background: colorOf(tile), color: "#fff" } // landed: colour revealed
+                          ? {
+                              // falling = a neutral raindrop: colour hidden until it lands
+                              background: "linear-gradient(180deg, #ffffff 0%, #cdeeff 100%)",
+                              color: "#075985",
+                              border: "2px solid #9fdcff",
+                              borderRadius: "14px 14px 20px 20px",
+                            }
+                          : { background: colorOf(tile), color: "#fff", borderRadius: 10, boxShadow: "inset 0 -3px 0 rgba(0,0,0,.2)" }
                       }
                     >
                       {tile.text}
@@ -331,15 +364,15 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
           )}
         </div>
 
-        {/* coloured bases */}
-        <div className="grid border-t-2 border-amber-400/60" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
+        {/* coloured puddles — the category bases the drops sort into */}
+        <div className="grid border-t-4 border-white" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
           {set.categories.map((c, i) => (
             <div
               key={c.key}
-              className={`px-2 py-3 text-center text-sm font-bold tracking-wider text-white sm:text-base ${
-                i < cols - 1 ? "border-r border-slate-900/40" : ""
+              className={`px-2 py-3 text-center text-sm font-black tracking-wider text-white sm:text-base ${
+                i < cols - 1 ? "border-r-2 border-white/50" : ""
               }`}
-              style={{ background: catColor(i) }}
+              style={{ background: catColor(i), boxShadow: "inset 0 -5px 0 rgba(0,0,0,.18), inset 0 4px 6px rgba(255,255,255,.25)" }}
             >
               {c.label}
             </div>
@@ -347,13 +380,13 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
         </div>
 
         {(paused || gameOver) && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-slate-950/85 backdrop-blur-sm">
-            <h2 className="text-3xl font-bold">{gameOver ? "Game Over" : "Paused"}</h2>
-            {gameOver && <p className="text-lg">Final score: <b className="text-emerald-400">{score}</b></p>}
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-white/80 backdrop-blur-sm">
+            <h2 className="text-3xl font-black text-sky-800">{gameOver ? "Game Over" : "Paused"}</h2>
+            {gameOver && <p className="text-lg font-bold text-sky-900">Final score: <b className="text-[#58cc02]">{score}</b></p>}
             <button
               type="button"
               onClick={gameOver ? restart : () => setPaused(false)}
-              className="rounded-md bg-amber-400 px-4 py-2 font-semibold text-slate-900 hover:bg-amber-300"
+              className="rounded-2xl border-b-4 border-[#e08600] bg-[#ffc800] px-5 py-2 font-black text-sky-950 transition hover:brightness-105 active:translate-y-[2px] active:border-b-0"
             >
               {gameOver ? "Play again" : "Resume"}
             </button>
@@ -361,18 +394,18 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
         )}
       </div>
 
-      <footer className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
+      <footer className="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-sky-900/70">
         <div>
-          <kbd className="rounded bg-slate-800 px-1.5 py-0.5">←</kbd>{" "}
-          <kbd className="rounded bg-slate-800 px-1.5 py-0.5">→</kbd> move
+          <kbd className="rounded border border-sky-200 bg-white px-1.5 py-0.5">←</kbd>{" "}
+          <kbd className="rounded border border-sky-200 bg-white px-1.5 py-0.5">→</kbd> move
           {"  · "}
-          <kbd className="rounded bg-slate-800 px-1.5 py-0.5">↓</kbd> soft drop
+          <kbd className="rounded border border-sky-200 bg-white px-1.5 py-0.5">↓</kbd> soft drop
           {"  · "}
-          <kbd className="rounded bg-slate-800 px-1.5 py-0.5">Space</kbd> hard drop
+          <kbd className="rounded border border-sky-200 bg-white px-1.5 py-0.5">Space</kbd> hard drop
           {"  · "}
-          <kbd className="rounded bg-slate-800 px-1.5 py-0.5">P</kbd> pause
+          <kbd className="rounded border border-sky-200 bg-white px-1.5 py-0.5">P</kbd> pause
         </div>
-        <div>Tap a column to move the active tile.</div>
+        <div>Tap a column to move the falling drop.</div>
       </footer>
     </div>
   );

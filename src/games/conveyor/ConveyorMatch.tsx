@@ -52,9 +52,11 @@ const CARD_H = 46;
 const DOCK_H = 60;
 const START_LIVES = 3;
 const SWEEP_AT = 4;
-const FRONT_CLS = "bg-indigo-600 border-indigo-300";
-const BACK_CLS = "bg-teal-600 border-teal-300";
-const HARD_CLS = "bg-slate-600 border-slate-300";
+// Duolingo-bright card colours: fronts ride the belt in green, backs wait in
+// the dock in blue (the Lexicalator story: a cheerful word-assembly machine).
+const FRONT_CLS = "bg-[#58cc02] border-[#46a302]";
+const BACK_CLS = "bg-[#1cb0f6] border-[#1899d6]";
+const HARD_CLS = "bg-[#9aa2ad] border-[#7d848e]";
 const CRUST = "linear-gradient(180deg,#cf9645 0%,#eabf76 45%,#f6e4ba 100%)"; // crust(top) → crumb(bottom)
 const CRUMB = "linear-gradient(180deg,#f6e4ba 0%,#eabf76 55%,#cf9645 100%)"; // crumb(top) → crust(bottom)
 const DONE_HUES = ["#d4f24c", "#7dd3fc", "#fca5a5", "#fcd34d", "#a7f3d0", "#c4b5fd", "#f9a8d4", "#fdba74"];
@@ -341,7 +343,7 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
   const selCrust = { background: "linear-gradient(180deg,#7a4a1c,#542f12)", borderColor: "#37200d", color: "#fbe7c4" };
 
   return (
-    <div className="relative mx-auto max-w-3xl px-4 py-4 text-slate-100">
+    <div className="relative mx-auto max-w-3xl px-4 py-4 text-[#4a3413]">
       <style>{`
         @keyframes mDrift{0%{transform:translate(-50%,8px);opacity:0}7%{transform:translate(-50%,0);opacity:1}74%{transform:translate(-50%,0) scale(1);opacity:1}100%{transform:translate(-50%,255px) scale(.15);opacity:0}}
         @keyframes slideL{0%{transform:translateX(-70px) rotate(-3deg);opacity:0}18%{opacity:1}44%{transform:translateX(0) rotate(0)}58%{opacity:1}66%{opacity:0}100%{opacity:0}}
@@ -349,36 +351,46 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
         @keyframes joinWhole{0%,56%{transform:scale(.86);opacity:0}64%{opacity:1}72%{transform:scale(1.1)}84%{transform:scale(1)}100%{transform:scale(1);opacity:1}}
         @keyframes seamFlash{0%,52%{opacity:0;transform:translateX(-50%) scaleY(.4)}62%{opacity:.95;transform:translateX(-50%) scaleY(1.3)}80%,100%{opacity:0;transform:translateX(-50%) scaleY(1)}}
         @keyframes bPop{0%{transform:scale(0);opacity:0}50%{transform:scale(1.25)}70%{transform:scale(.95)}100%{transform:scale(1);opacity:1}}
+        @keyframes beltMove{to{background-position:52px 0}}
       `}</style>
-      <header className="mb-3 flex items-baseline justify-between gap-3">
+      <header className="mb-3 flex flex-wrap items-baseline justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold">{title}</h1>
-          {subtitle && <p className="text-xs text-slate-400">{subtitle}</p>}
+          <h1 className="text-2xl font-black tracking-tight text-[#e8852e]" style={{ textShadow: "0 2px 0 #fff" }}>
+            ⚙️ Lexical<span className="text-[#1cb0f6]">ator</span>
+          </h1>
+          <p className="text-xs font-bold text-[#4a3413]/70">
+            {title}
+            {subtitle ? <span className="font-medium"> — {subtitle}</span> : null}
+          </p>
         </div>
-        <div className="flex items-center gap-3 text-sm">
-          <span>Score <b className="tabular-nums">{s.score}</b></span>
-          <span>Lvl <b className="tabular-nums">{s.level}</b></span>
-          <span className="text-slate-300">cleared <b className="tabular-nums">{s.cleared}/{quota}</b></span>
-          <span className="text-rose-400">{"♥".repeat(Math.max(0, s.lives))}<span className="text-slate-700">{"♥".repeat(Math.max(0, START_LIVES - s.lives))}</span></span>
-          {s.combo >= 2 && <span className="text-amber-300">×{s.combo}🔥</span>}
+        <div className="flex items-center gap-2 text-sm font-bold">
+          <span className="rounded-xl border-2 border-amber-200 bg-white px-2 py-0.5 shadow-sm">Score <b className="tabular-nums text-[#58cc02]">{s.score}</b></span>
+          <span className="rounded-xl border-2 border-amber-200 bg-white px-2 py-0.5 shadow-sm">Lvl <b className="tabular-nums text-[#1cb0f6]">{s.level}</b></span>
+          <span className="rounded-xl border-2 border-amber-200 bg-white px-2 py-0.5 shadow-sm">cleared <b className="tabular-nums">{s.cleared}/{quota}</b></span>
+          <span className="text-rose-500">{"♥".repeat(Math.max(0, s.lives))}<span className="text-[#4a3413]/20">{"♥".repeat(Math.max(0, START_LIVES - s.lives))}</span></span>
+          {s.combo >= 2 && <span className="text-[#ff9600]">×{s.combo}🔥</span>}
           <button type="button" onClick={() => { chiptune.toggle("conveyor"); const on = chiptune.playing() === "conveyor"; musicRef.current = on; setMusic(on); }}
-            title="Music" className="rounded px-2 py-0.5 text-xs bg-slate-700 hover:bg-slate-600">{music ? "🔊" : "🎵"}</button>
+            title="Music" className="rounded-xl border-2 border-amber-200 bg-white px-2 py-0.5 text-xs shadow-sm hover:bg-amber-50">{music ? "🔊" : "🎵"}</button>
           <button type="button" onClick={() => { setHard((h) => !h); g.current = makeGame(pairs, true); render(); }}
-            className={`rounded px-2 py-0.5 text-xs ${hard ? "bg-rose-700" : "bg-slate-700 hover:bg-slate-600"}`}>{hard ? "Hard ✓" : "Hard mode"}</button>
+            className={`rounded-xl border-2 px-2 py-0.5 text-xs shadow-sm ${hard ? "border-rose-400 bg-rose-500 text-white" : "border-amber-200 bg-white hover:bg-amber-50"}`}>{hard ? "Hard ✓" : "Hard mode"}</button>
         </div>
       </header>
 
-      <p className="mb-2 text-center text-xs text-slate-400">
+      <p className="mb-2 text-center text-xs font-semibold text-[#4a3413]/60">
         {instruction ?? "Match a French card to its meaning."} Tap either half first. Clear the whole wave to finish the level.
-        {hard && <b className="text-rose-300"> Hard: no front/back cue — you decide.</b>}
+        {hard && <b className="text-rose-600"> Hard: no front/back cue — you decide.</b>}
       </p>
 
-      {/* belt: 4 conveyor lines; front (upper) halves glide */}
-      <div className={`relative overflow-hidden rounded-lg bg-slate-900 transition ${s.sweeping ? "ring-2 ring-emerald-400" : ""}`} style={{ height: LANES * LANE_H }}>
+      {/* belt: 4 conveyor lines; front (upper) halves glide. The moving stripes
+          are the machine's running track — the Lexicalator visibly "conveys". */}
+      <div className={`relative overflow-hidden rounded-2xl border-4 border-white shadow-lg transition ${s.sweeping ? "ring-4 ring-[#58cc02]" : ""}`}
+        style={{ height: LANES * LANE_H, background: "linear-gradient(180deg,#ffd97a,#ffcf5c)" }}>
+        <div className="pointer-events-none absolute inset-0"
+          style={{ background: "repeating-linear-gradient(90deg, rgba(0,0,0,.07) 0 26px, transparent 26px 52px)", animation: "beltMove 1.1s linear infinite" }} />
         {Array.from({ length: LANES }).map((_, r) => (
-          <div key={r} className="absolute left-0 right-0 h-px bg-slate-600/60" style={{ top: r * LANE_H + LANE_H / 2 }} />
+          <div key={r} className="absolute left-0 right-0 h-[2px] bg-white/70" style={{ top: r * LANE_H + LANE_H / 2 }} />
         ))}
-        <div className="absolute h-px w-6 bg-rose-600/80" style={{ top: (LANES - 1) * LANE_H + LANE_H / 2, left: 0 }} />
+        <div className="absolute h-[3px] w-6 rounded bg-rose-500" style={{ top: (LANES - 1) * LANE_H + LANE_H / 2, left: 0 }} />
         {s.cards.map((card) => {
           const { r, c } = rc(card.pos);
           const flash = s.flash?.uid === card.uid ? s.flash.kind : null;
@@ -398,9 +410,11 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
 
       {/* dock: lower halves, spaced across the width and scrolling, wrapping individually.
           Scroll freezes while the pointer is over it so taps land on the tile you aimed at. */}
-      <div ref={dockRef} className="relative mt-2 overflow-hidden rounded-lg bg-slate-900" style={{ height: DOCK_H }}
+      <div ref={dockRef} className="relative mt-2 overflow-hidden rounded-2xl border-4 border-white shadow-lg" style={{ height: DOCK_H, background: "linear-gradient(180deg,#e6dcff,#d8c9ff)" }}
         onPointerEnter={() => { dockHover.current = true; }} onPointerLeave={() => { dockHover.current = false; }}>
-        <div className="absolute left-0 right-0 h-px bg-slate-600/60" style={{ top: DOCK_H / 2 }} />
+        <div className="pointer-events-none absolute inset-0"
+          style={{ background: "repeating-linear-gradient(90deg, rgba(0,0,0,.05) 0 26px, transparent 26px 52px)", animation: "beltMove 1.4s linear infinite" }} />
+        <div className="absolute left-0 right-0 h-[2px] bg-white/70" style={{ top: DOCK_H / 2 }} />
         {dockTiles.map((p) => {
           const picked = s.sel?.side === "dock" && s.sel.back === p.match;
           return (
@@ -414,9 +428,9 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
         })}
       </div>
 
-      {/* completed words — stay on screen, each in its own colour to help the spelling stick */}
+      {/* completed words — the machine's output tray; each word keeps its colour to help the spelling stick */}
       <div className="mt-3 min-h-[2rem]">
-        <span className="mr-2 text-[0.7rem] uppercase tracking-wider text-slate-500">assembled</span>
+        <span className="mr-2 text-[0.7rem] font-black uppercase tracking-wider text-[#e8852e]">🏭 assembled</span>
         <span className="inline-flex flex-wrap gap-1.5 align-middle">
           {s.done.map((d) => (
             <span key={d.key} lang="fr" className="rounded-md border px-2 py-0.5 text-sm font-bold"
@@ -459,22 +473,22 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
       </div>
 
       {(s.over || s.paused || s.levelDone) && (
-        <div className="mt-4 rounded-lg border border-slate-700 bg-slate-900 p-4 text-center">
+        <div className="mt-4 rounded-3xl border-4 border-amber-200 bg-white p-4 text-center shadow-lg">
           {s.levelDone ? (
             <>
-              <p className="text-2xl font-black text-amber-300" style={{ textShadow: "0 0 14px rgba(255,210,74,.5)" }}>{s.level % 2 === 0 ? "BRAVO !" : "BIEN JOUÉ !"}</p>
-              <p className="text-sm text-slate-200">{s.level % 2 === 0 ? `On continue au niveau ${s.level + 1} ?` : `Vous pouvez passer au niveau ${s.level + 1} !`}</p>
-              <p className="mt-1 text-xs text-slate-500">Score {s.score} · combo ×{s.bestCombo} · +1 ♥ · niveau {s.level + 1} : {poolSizeFor(s.level + 1, deck)} mots{poolSizeFor(s.level + 1, deck) > poolSizeFor(s.level, deck) ? " (dont des nouveaux)" : ""}.</p>
-              <button type="button" onClick={nextLevel} className="mt-3 rounded-md bg-amber-400 px-4 py-2 font-bold text-slate-900 hover:brightness-110">Niveau {s.level + 1} →</button>
+              <p className="text-2xl font-black text-[#ff9600]" style={{ textShadow: "0 0 14px rgba(255,180,74,.4)" }}>{s.level % 2 === 0 ? "BRAVO !" : "BIEN JOUÉ !"}</p>
+              <p className="text-sm font-semibold">{s.level % 2 === 0 ? `On continue au niveau ${s.level + 1} ?` : `Vous pouvez passer au niveau ${s.level + 1} !`}</p>
+              <p className="mt-1 text-xs text-[#4a3413]/60">Score {s.score} · combo ×{s.bestCombo} · +1 ♥ · niveau {s.level + 1} : {poolSizeFor(s.level + 1, deck)} mots{poolSizeFor(s.level + 1, deck) > poolSizeFor(s.level, deck) ? " (dont des nouveaux)" : ""}.</p>
+              <button type="button" onClick={nextLevel} className="mt-3 rounded-2xl border-b-4 border-[#e08600] bg-[#ffc800] px-4 py-2 font-black text-[#4a3413] transition hover:brightness-105 active:translate-y-[2px] active:border-b-0">Niveau {s.level + 1} →</button>
             </>
           ) : s.over ? (
             <>
-              <p className="text-lg font-bold">{s.lives <= 0 ? "Out of lives" : "Belt jammed!"}</p>
-              <p className="text-sm text-slate-400">Reached level {s.level} · score {s.score} · best combo ×{s.bestCombo}</p>
-              <button type="button" onClick={reset} className="mt-3 rounded-md bg-sky-600 px-4 py-2 font-semibold hover:bg-sky-500">Play again</button>
+              <p className="text-lg font-black">{s.lives <= 0 ? "Out of lives" : "Belt jammed!"}</p>
+              <p className="text-sm text-[#4a3413]/60">Reached level {s.level} · score {s.score} · best combo ×{s.bestCombo}</p>
+              <button type="button" onClick={reset} className="mt-3 rounded-2xl border-b-4 border-[#1899d6] bg-[#1cb0f6] px-4 py-2 font-black text-white transition hover:brightness-105 active:translate-y-[2px] active:border-b-0">Play again</button>
             </>
           ) : (
-            <p className="text-sm text-slate-300">Paused — press <b>space</b> to resume.</p>
+            <p className="text-sm font-semibold">Paused — press <b>space</b> to resume.</p>
           )}
         </div>
       )}

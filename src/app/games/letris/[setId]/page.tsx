@@ -17,13 +17,16 @@ export default async function LetrisSetPage({
   if (!set) notFound();
 
   return (
-    <main className="min-h-screen bg-slate-950">
-      <div className="border-b border-slate-800 bg-slate-900/60">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3 text-sm">
-          <Link href="/games/letris" className="text-slate-400 hover:text-white">
-            ← Letris sets
+    <main
+      className="min-h-screen"
+      style={{ background: "linear-gradient(180deg, #b5e0fb 0%, #e2f4ff 45%, #f4fbff 100%)" }}
+    >
+      <div className="border-b-2 border-white/70 bg-white/60 backdrop-blur">
+        <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3 text-sm font-bold">
+          <Link href="/games/letris" className="text-sky-700 hover:text-sky-900">
+            ← Vocabularain sets
           </Link>
-          <span className="text-slate-500">{set.title}</span>
+          <span className="text-sky-900/60">☁️ {set.title}</span>
         </div>
       </div>
       <LetrisGame set={set} />

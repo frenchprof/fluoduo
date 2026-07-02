@@ -64,9 +64,9 @@ export function PracticeChips({ deck }: { deck: Collection }) {
     { key: "flip", label: "🃏 Flip It", href: `/practice/flip-it/${deck.id}` },
     { key: "say", label: "🎤 Say It", href: `/practice/say-it/${deck.id}` },
     { key: "complete", label: "✏️ Complete It", href: undefined },
-    { key: "match", label: "🎢 Match It", href: `/games/conveyor/${deck.id}` },
+    { key: "match", label: "⚙️ Lexicalator", href: `/games/conveyor/${deck.id}` },
     ...(hasLetris
-      ? [{ key: "classify", label: "🗂️ Classify It", href: `/games/letris/${deck.id.replace("-letris", "")}` }]
+      ? [{ key: "classify", label: "🌧️ Vocabularain", href: `/games/letris/${deck.id.replace("-letris", "")}` }]
       : []),
   ];
   return (

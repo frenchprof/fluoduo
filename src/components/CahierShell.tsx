@@ -142,13 +142,13 @@ export default function CahierShell({
   );
 }
 
-/** Tab set for a deck's activity pages — Flip It / Say It / dice Practice / Match It. */
+/** Tab set for a deck's activity pages — Flip It / Say It / dice Practice / Lexicalator. */
 export function deckActivityTabs(collectionId: string): ShellTab[] {
   return [
     { key: "flip", label: "Flip It", emoji: "🃏", href: `/practice/flip-it/${collectionId}` },
     { key: "say", label: "Say It", emoji: "🎤", href: `/practice/say-it/${collectionId}` },
     { key: "dice", label: "Practice", emoji: "🎲", href: `/games/practice/${collectionId}` },
-    { key: "match", label: "Match It", emoji: "🎢", href: `/games/conveyor/${collectionId}` },
+    { key: "match", label: "Lexicalator", emoji: "⚙️", href: `/games/conveyor/${collectionId}` },
   ];
 }
 

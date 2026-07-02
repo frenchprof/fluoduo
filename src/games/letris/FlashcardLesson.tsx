@@ -554,7 +554,7 @@ export default function FlashcardLesson({
               onClick={onStartGame}
               className="neo-btn neo-btn-primary neo-btn-lg"
             >
-              Start Letris →
+              Start Vocabularain →
             </button>
           </div>
           <div className="mt-3 text-xs text-emerald-200/80">

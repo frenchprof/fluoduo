@@ -4,21 +4,26 @@ import { listLetrisSets } from "@/games/letris/sets";
 export default function LetrisIndexPage() {
   const sets = listLetrisSets();
   return (
-    <main className="min-h-screen bg-slate-950 text-white">
-      <div className="border-b border-slate-800 bg-slate-900/60">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 text-sm">
-          <Link href="/" className="text-slate-400 hover:text-white">
-            ← Apps &amp; Games
+    <main
+      className="min-h-screen text-sky-950"
+      style={{ background: "linear-gradient(180deg, #b5e0fb 0%, #e2f4ff 45%, #f4fbff 100%)" }}
+    >
+      <div className="border-b-2 border-white/70 bg-white/60 backdrop-blur">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 text-sm font-bold">
+          <Link href="/" className="text-sky-700 hover:text-sky-900">
+            ← FluoLingo
           </Link>
-          <span className="text-slate-500">Letris</span>
+          <span className="text-sky-900/60">🌧️ Vocabularain</span>
         </div>
       </div>
 
       <div className="mx-auto max-w-5xl px-4 py-10">
         <header className="mb-8">
-          <h1 className="text-3xl font-bold">Letris — pick a set</h1>
-          <p className="mt-1 text-slate-300">
-            Sort falling tiles into the correct grammar column.
+          <h1 className="text-4xl font-black tracking-tight text-sky-700" style={{ textShadow: "0 2px 0 #fff" }}>
+            🌧️ Vocabula<span className="text-sky-400">rain</span>
+          </h1>
+          <p className="mt-1 font-semibold text-sky-900/70">
+            Words rain from the sky — steer each drop into the right puddle.
           </p>
         </header>
 
@@ -27,21 +32,21 @@ export default function LetrisIndexPage() {
             <Link
               key={s.slug}
               href={`/games/letris/${s.slug}`}
-              className="group flex h-full flex-col rounded-lg border border-amber-400/40 bg-slate-900 p-5 transition hover:border-amber-300 hover:bg-slate-800"
+              className="group flex h-full flex-col rounded-3xl border-4 border-white bg-white/85 p-5 shadow-md transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-lg"
             >
               <div className="flex items-center gap-3">
                 <span className="text-3xl" aria-hidden>
                   {s.emoji}
                 </span>
                 <div>
-                  <h2 className="text-lg font-semibold">{s.title}</h2>
+                  <h2 className="text-lg font-black text-sky-900">{s.title}</h2>
                   {s.subtitle && (
-                    <p className="text-xs text-slate-400">{s.subtitle}</p>
+                    <p className="text-xs font-semibold text-sky-900/60">{s.subtitle}</p>
                   )}
                 </div>
               </div>
-              <div className="mt-4 text-xs text-slate-400">
-                {s.tileCount} tiles · {s.categoryCount} columns
+              <div className="mt-4 text-xs font-bold text-sky-700">
+                💧 {s.tileCount} drops · {s.categoryCount} puddles
               </div>
             </Link>
           ))}
