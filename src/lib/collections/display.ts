@@ -27,3 +27,13 @@ export function displayEn(item: { en: string; note?: string }): string {
   return item.note ? `${item.en} ${item.note}` : item.en;
 }
 
+/**
+ * Strip disambiguation annotations — "(m)", "(f. country)", "(pl)" … — for GAME
+ * surfaces. Tiles/cards in a sorting or matching game must show only the bare
+ * word: an annotated gloss like "chef (m)" hands the learner the answer.
+ * Flashcard views keep the annotations (there they teach rather than leak).
+ */
+export function bareWord(s: string): string {
+  return s.replace(/\s*\([^)]*\)/g, "").replace(/\s+/g, " ").trim();
+}
+

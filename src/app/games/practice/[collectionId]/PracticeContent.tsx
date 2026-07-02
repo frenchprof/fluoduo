@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { CURATED } from "@/content/collections";
 import { toPracticeSet } from "@/lib/practice/engine";
+import { bareWord } from "@/lib/collections/display";
 import { speak } from "@/games/letris/speech";
 import { recordItemResult } from "@/lib/progress";
 import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
@@ -273,7 +274,8 @@ function ItemCard({
       <p className="text-center text-3xl font-black text-slate-900" lang="fr">
         {item.fr}
       </p>
-      <p className="mt-1 text-center text-base text-slate-500">{item.en}</p>
+      {/* bareWord: "chef (m)" would hand the learner the sorting answer */}
+      <p className="mt-1 text-center text-base text-slate-500">{bareWord(item.en)}</p>
 
       <div className="mt-3 flex justify-center">
         <button

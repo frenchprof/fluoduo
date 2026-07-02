@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ConveyorMatch, { type ConveyorPair } from "@/games/conveyor/ConveyorMatch";
 import { CURATED } from "@/content/collections";
+import { bareWord } from "@/lib/collections/display";
 
 export function generateStaticParams() {
   return CURATED.map((c) => ({ deckId: c.id }));
@@ -31,11 +32,13 @@ export default async function ConveyorPage({
   const SPLIT_DECKS = new Set(["languages"]);
   const split = SPLIT_DECKS.has(collection.id);
 
+  // bareWord: dock glosses must not leak answers ("chef (m)" → "chef"); the
+  // dock de-dupes identical texts, so stripped twins share one dock tile.
   const pairs: ConveyorPair[] = collection.items
     .filter((it) => (split ? it.fr.length >= 4 : !!it.en))
     .map((it) => (split
       ? { id: it.id, card: it.fr, match: it.fr, speak: it.fr, greet: it.lang?.greeting } // card = full word; game splits it
-      : { id: it.id, card: it.fr, match: it.en, speak: it.fr }));
+      : { id: it.id, card: it.fr, match: bareWord(it.en), speak: it.fr }));
 
   const instruction = split
     ? "Tap a word's half on the belt, then its other half in the dock to rebuild it."
