@@ -92,24 +92,12 @@ function QuestionCard({
   const showResult = picked !== undefined;
   const correct = picked === item.answer;
 
+  // Minimalist per Dan: each question shows ONLY the gapped French sentence,
+  // the TTS speaker, the English meaning, and the choices. No context labels,
+  // grammar badges, icons, or explanation boxes.
   return (
     <div className="rounded-xl border-2 bg-[var(--fluo-card)] p-3" style={{ borderColor: "var(--fluo-line)" }}>
-      {(item.contextLabel || item.meta) && (
-        <div className="mb-1 flex flex-wrap items-center gap-2">
-          {item.contextLabel && (
-            <span className="text-[0.6rem] font-extrabold uppercase tracking-wider text-[color:var(--fluo-ink-soft)]">
-              {item.contextLabel}
-            </span>
-          )}
-          {item.meta && (
-            <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[0.6rem] font-bold uppercase tracking-wider text-amber-700">
-              {item.meta}
-            </span>
-          )}
-        </div>
-      )}
       <p className="fluo-serif mb-1 text-base font-bold leading-snug text-[color:var(--fluo-ink)]">
-        {item.icon && <span className="mr-1" aria-hidden>{item.icon}</span>}
         <span lang="fr">{item.sentenceBefore}</span>
         <span
           className={`mx-1 inline-block min-w-[56px] rounded-md border-b-2 border-dashed px-1.5 text-center align-baseline ${
@@ -163,11 +151,6 @@ function QuestionCard({
         })}
       </div>
 
-      {showResult && item.why && (
-        <div className="mt-2 rounded-lg bg-white/70 p-2.5 text-xs text-[color:var(--fluo-ink)]">
-          <span dangerouslySetInnerHTML={{ __html: item.why }} />
-        </div>
-      )}
     </div>
   );
 }

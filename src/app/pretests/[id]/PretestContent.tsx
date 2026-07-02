@@ -216,23 +216,9 @@ function ItemCard({
   onSpeak: () => void;
   isLast: boolean;
 }) {
+  // Minimalist per Dan: gapped sentence, TTS, English meaning, choices — only.
   return (
     <article className="fluo-card fluo-h-1" data-hue={1}>
-      {item.contextLabel && (
-        <div className="text-xs font-extrabold uppercase tracking-wider text-slate-500">
-          {item.contextLabel}
-        </div>
-      )}
-      {item.icon && (
-        <div className="my-2 text-center text-5xl" aria-hidden>
-          {item.icon}
-        </div>
-      )}
-      {item.meta && (
-        <div className="mx-auto mb-2 inline-flex self-center rounded-full bg-amber-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-amber-700">
-          {item.meta}
-        </div>
-      )}
       <p className="my-3 text-center text-2xl font-bold leading-snug text-slate-900">
         <span lang="fr">{item.sentenceBefore}</span>
         <span
@@ -302,12 +288,6 @@ function ItemCard({
           );
         })}
       </div>
-
-      {submitted && item.why && (
-        <div className="mt-5 rounded-xl border-2 border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
-          <span dangerouslySetInnerHTML={{ __html: item.why }} />
-        </div>
-      )}
 
       {submitted && (
         <div className="mt-5 flex justify-end">
