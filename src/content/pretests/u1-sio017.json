@@ -16,7 +16,12 @@
         "Quelles"
       ],
       "fullSentence": "« Quelle langue tu veux apprendre ? »",
-      "sentenceTrans": "Which language do you want to learn?"
+      "sentenceTrans": "Which language do you want to learn?",
+      "whyWrong": {
+        "Quel": "Quel is masculine; langue is feminine — Quelle.",
+        "Quels": "Quels is masculine plural; langue is feminine singular — Quelle.",
+        "Quelles": "Quelles is plural; langue is singular — Quelle."
+      }
     },
     {
       "id": "u1-sio017-02",
@@ -29,7 +34,12 @@
         "Quel"
       ],
       "fullSentence": "« Quelles langues vous parlez ? »",
-      "sentenceTrans": "Which languages do you speak?"
+      "sentenceTrans": "Which languages do you speak?",
+      "whyWrong": {
+        "Quelle": "Quelle is singular; langues is plural — Quelles.",
+        "Quels": "Quels is masculine; langues is feminine — Quelles.",
+        "Quel": "Quel is masculine singular; langues is feminine plural — Quelles."
+      }
     },
     {
       "id": "u1-sio017-03",
@@ -42,7 +52,12 @@
         "parler"
       ],
       "fullSentence": "Mes parents parlent chinois et anglais.",
-      "sentenceTrans": "My parents speak Chinese and English."
+      "sentenceTrans": "My parents speak Chinese and English.",
+      "whyWrong": {
+        "parle": "parle goes with je/il/elle; parents (ils) takes parlent.",
+        "parles": "parles goes with tu; parents (ils) takes parlent.",
+        "parler": "parler is the infinitive; the conjugated ils form is parlent."
+      }
     },
     {
       "id": "u1-sio017-04",
@@ -55,7 +70,12 @@
         "parlez"
       ],
       "fullSentence": "À la maison, nous parlons français.",
-      "sentenceTrans": "At home, we speak French."
+      "sentenceTrans": "At home, we speak French.",
+      "whyWrong": {
+        "parlent": "parlent goes with ils/elles, not nous — parlons.",
+        "parle": "parle goes with je/il/elle, not nous — parlons.",
+        "parlez": "parlez goes with vous, not nous — parlons."
+      }
     },
     {
       "id": "u1-sio017-05",
@@ -68,7 +88,12 @@
         "en"
       ],
       "fullSentence": "En France, on parle le français.",
-      "sentenceTrans": "In France, people speak French."
+      "sentenceTrans": "In France, people speak French.",
+      "whyWrong": {
+        "l'": "français starts with a consonant, so no elision — le français.",
+        "la": "français (the language) is masculine — le français.",
+        "en": "en isn't used here; the language takes the article le."
+      }
     },
     {
       "id": "u1-sio017-06",
@@ -81,7 +106,12 @@
         "ou"
       ],
       "fullSentence": "À Singapour, on parle l'anglais et le chinois.",
-      "sentenceTrans": "In Singapore, people speak English and Chinese."
+      "sentenceTrans": "In Singapore, people speak English and Chinese.",
+      "whyWrong": {
+        "avec": "avec means 'with'; listing two languages needs 'et' (and).",
+        "mais": "mais means 'but'; the two languages are simply added with 'et'.",
+        "ou": "ou means 'or'; both are spoken, so 'et' (and)."
+      }
     },
     {
       "id": "u1-sio017-07",
@@ -94,7 +124,12 @@
         "n'parle pas"
       ],
       "fullSentence": "Non, je ne parle pas allemand.",
-      "sentenceTrans": "No, I don't speak German."
+      "sentenceTrans": "No, I don't speak German.",
+      "whyWrong": {
+        "parle ne pas": "The negation is misplaced — ne goes before the verb: ne parle pas.",
+        "ne parler pas": "parler is the infinitive; with 'je' you conjugate: ne parle pas.",
+        "n'parle pas": "ne only elides to n' before a vowel; before 'parle' it stays ne parle pas."
+      }
     }
   ]
 }

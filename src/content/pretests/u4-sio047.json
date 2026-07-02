@@ -16,7 +16,12 @@
         "fromagerie"
       ],
       "fullSentence": "Pour acheter une baguette, on va à la boulangerie.",
-      "sentenceTrans": "To buy a baguette, you go to the bakery."
+      "sentenceTrans": "To buy a baguette, you go to the bakery.",
+      "whyWrong": {
+        "boucherie": "That's the butcher's, for meat, not bread.",
+        "épicerie": "That's the grocery store, not where you buy fresh baguettes.",
+        "fromagerie": "That's the cheese shop, not the bakery."
+      }
     },
     {
       "id": "u4-sio047-02",
@@ -29,7 +34,12 @@
         "charcuterie"
       ],
       "fullSentence": "Pour acheter du poulet, on va à la boucherie.",
-      "sentenceTrans": "To buy chicken, you go to the butcher's."
+      "sentenceTrans": "To buy chicken, you go to the butcher's.",
+      "whyWrong": {
+        "boulangerie": "That's the bakery, for bread, not meat.",
+        "poissonnerie": "That's the fishmonger's, for fish, not chicken.",
+        "charcuterie": "That sells cold cuts and deli pork, not fresh chicken."
+      }
     },
     {
       "id": "u4-sio047-03",
@@ -42,7 +52,12 @@
         "boucherie"
       ],
       "fullSentence": "Je cherche du camembert. Je vais à la fromagerie.",
-      "sentenceTrans": "I'm looking for camembert. I'm going to the cheese shop."
+      "sentenceTrans": "I'm looking for camembert. I'm going to the cheese shop.",
+      "whyWrong": {
+        "boulangerie": "That's the bakery, not where you buy cheese.",
+        "épicerie": "That's the grocery store, not the specialist cheese shop.",
+        "boucherie": "That's the butcher's, for meat, not cheese."
+      }
     },
     {
       "id": "u4-sio047-04",
@@ -55,7 +70,12 @@
         "je voulais"
       ],
       "fullSentence": "Bonjour, je voudrais deux croissants, s'il vous plaît.",
-      "sentenceTrans": "Hello, I'd like two croissants, please."
+      "sentenceTrans": "Hello, I'd like two croissants, please.",
+      "whyWrong": {
+        "je veux": "'I want' is too blunt when ordering — use je voudrais.",
+        "donnez-moi": "'Give me' is too direct and impolite for a shop request.",
+        "je voulais": "That's the past 'I wanted'; the polite request is je voudrais."
+      }
     },
     {
       "id": "u4-sio047-05",
@@ -68,7 +88,12 @@
         "C'est cher non"
       ],
       "fullSentence": "Le client demande : « Ça fait combien ? »",
-      "sentenceTrans": "The customer asks: \"How much is it?\""
+      "sentenceTrans": "The customer asks: \"How much is it?\"",
+      "whyWrong": {
+        "Combien de": "That means 'how many/much of' and needs a noun after it.",
+        "Quel est le prix": "Understandable but stiff; the everyday counter phrase is Ça fait combien ?.",
+        "C'est cher non": "That means 'it's expensive, isn't it?', not a request for the price."
+      }
     },
     {
       "id": "u4-sio047-06",
@@ -81,7 +106,12 @@
         "En espèces"
       ],
       "fullSentence": "— Et avec ceci ? — « C'est tout, merci. »",
-      "sentenceTrans": "— Anything else? — \"That's all, thank you.\""
+      "sentenceTrans": "— Anything else? — \"That's all, thank you.\"",
+      "whyWrong": {
+        "Ça fait combien": "That asks 'how much is it?', not a reply meaning 'that's all'.",
+        "Je voudrais encore": "That means 'I'd like more', the opposite of finishing.",
+        "En espèces": "That means 'in cash', a payment method, not 'that's all'."
+      }
     },
     {
       "id": "u4-sio047-07",
@@ -94,7 +124,12 @@
         "une bouteille de"
       ],
       "fullSentence": "Je voudrais un kilo de tomates, s'il vous plaît.",
-      "sentenceTrans": "I'd like a kilo of tomatoes, please."
+      "sentenceTrans": "I'd like a kilo of tomatoes, please.",
+      "whyWrong": {
+        "une tranche de": "That's 'a slice of', used for bread or ham, not tomatoes by weight.",
+        "un verre de": "That's 'a glass of', for drinks, not tomatoes.",
+        "une bouteille de": "That's 'a bottle of', for liquids, not tomatoes."
+      }
     }
   ]
 }
