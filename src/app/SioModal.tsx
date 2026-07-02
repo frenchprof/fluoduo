@@ -13,9 +13,12 @@
  * navigation, not body content (Dan: minimalist body).
  */
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import type { Sio } from "@/content/sios";
 import type { Collection } from "@/lib/collections/schema";
+
+const SIZE_KEY = "fluolingo:popupSize";
 
 export type PopupTab = { key: string; label: string; emoji: string; href?: string; active?: boolean };
 
@@ -96,6 +99,32 @@ export default function SioModal({
   children: ReactNode;
 }) {
   const hueOf = (i: number) => TAB_HUES[i % TAB_HUES.length];
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  // The panel is user-resizable (drag the bottom-right corner). Widening it
+  // lets a question's four options stay on one line; they only wrap when the
+  // panel is too narrow (Dan, 2026-07-02). The chosen size persists across
+  // popups. Restore/clamp happens post-mount, so SSR stays deterministic.
+  useEffect(() => {
+    const el = panelRef.current;
+    if (!el) return;
+    try {
+      const raw = localStorage.getItem(SIZE_KEY);
+      if (raw) {
+        const { w, h } = JSON.parse(raw);
+        if (w) el.style.width = `${Math.min(w, window.innerWidth * 0.9)}px`;
+        if (h) el.style.height = `${Math.min(h, window.innerHeight * 0.88)}px`;
+      }
+    } catch {}
+    const ro = new ResizeObserver(() => {
+      try {
+        localStorage.setItem(SIZE_KEY, JSON.stringify({ w: el.offsetWidth, h: el.offsetHeight }));
+      } catch {}
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
@@ -105,8 +134,16 @@ export default function SioModal({
     >
       <div className="flex max-w-full items-start" onClick={(e) => e.stopPropagation()}>
         <div
-          className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-2xl border-2 bg-[var(--fluo-card)] p-5"
-          style={{ borderColor: "var(--fluo-card-accent)" }}
+          ref={panelRef}
+          className="resize overflow-auto rounded-2xl border-2 bg-[var(--fluo-card)] p-5"
+          style={{
+            borderColor: "var(--fluo-card-accent)",
+            width: "32rem",
+            minWidth: "16rem",
+            maxWidth: "90vw",
+            minHeight: "10rem",
+            maxHeight: "88vh",
+          }}
         >
           <div className="mb-3 flex items-start justify-between gap-3">
             <div>
