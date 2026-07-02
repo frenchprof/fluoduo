@@ -3,29 +3,26 @@
   "title": "Quelle profession ?",
   "subtitle": "Il est / elle est …",
   "categories": [
-    { "key": "m", "label": "IL EST", "prefix": "il est " },
-    { "key": "f", "label": "ELLE EST", "prefix": "elle est " }
+    { "key": "il", "label": "IL EST", "prefix": "il est " },
+    { "key": "elle", "label": "ELLE EST", "prefix": "elle est " },
+    { "key": "both", "label": "BOTH OK", "prefix": "il est " }
   ],
   "tiles": [
-    { "text": "JOURNALISTE", "displayName": "journaliste", "category": "m", "meaning": "journalist (m)" },
-    { "text": "JOURNALISTE", "displayName": "journaliste", "category": "f", "meaning": "journalist (f)" },
-    { "text": "STYLISTE", "displayName": "styliste", "category": "m", "meaning": "fashion designer (m)" },
-    { "text": "STYLISTE", "displayName": "styliste", "category": "f", "meaning": "fashion designer (f)" },
-    { "text": "ARTISTE", "displayName": "artiste", "category": "m", "meaning": "artist (m)" },
-    { "text": "ARTISTE", "displayName": "artiste", "category": "f", "meaning": "artist (f)" },
-    { "text": "ARCHITECTE", "displayName": "architecte", "category": "m", "meaning": "architect (m)" },
-    { "text": "ARCHITECTE", "displayName": "architecte", "category": "f", "meaning": "architect (f)" },
-    { "text": "CHEF", "displayName": "chef", "category": "m", "meaning": "chef (m)" },
-    { "text": "CHEFFE", "displayName": "cheffe", "category": "f", "meaning": "chef (f)" },
-    { "text": "ACTEUR", "displayName": "acteur", "category": "m", "meaning": "actor" },
-    { "text": "ACTRICE", "displayName": "actrice", "category": "f", "meaning": "actress" },
-    { "text": "JOUEUR DE TENNIS", "displayName": "joueur de tennis", "category": "m", "meaning": "tennis player (m)" },
-    { "text": "JOUEUSE DE TENNIS", "displayName": "joueuse de tennis", "category": "f", "meaning": "tennis player (f)" },
-    { "text": "NAGEUR", "displayName": "nageur", "category": "m", "meaning": "swimmer (m)" },
-    { "text": "NAGEUSE", "displayName": "nageuse", "category": "f", "meaning": "swimmer (f)" },
-    { "text": "CHANTEUR", "displayName": "chanteur", "category": "m", "meaning": "singer (m)" },
-    { "text": "CHANTEUSE", "displayName": "chanteuse", "category": "f", "meaning": "singer (f)" },
-    { "text": "ÉTUDIANT", "displayName": "étudiant", "category": "m", "meaning": "student (m)" },
-    { "text": "ÉTUDIANTE", "displayName": "étudiante", "category": "f", "meaning": "student (f)" }
+    { "text": "CHEF", "displayName": "chef", "category": "il", "meaning": "chef (m)" },
+    { "text": "CHEFFE", "displayName": "cheffe", "category": "elle", "meaning": "chef (f)" },
+    { "text": "ACTEUR", "displayName": "acteur", "category": "il", "meaning": "actor" },
+    { "text": "ACTRICE", "displayName": "actrice", "category": "elle", "meaning": "actress" },
+    { "text": "JOUEUR DE TENNIS", "displayName": "joueur de tennis", "category": "il", "meaning": "tennis player (m)" },
+    { "text": "JOUEUSE DE TENNIS", "displayName": "joueuse de tennis", "category": "elle", "meaning": "tennis player (f)" },
+    { "text": "NAGEUR", "displayName": "nageur", "category": "il", "meaning": "swimmer (m)" },
+    { "text": "NAGEUSE", "displayName": "nageuse", "category": "elle", "meaning": "swimmer (f)" },
+    { "text": "CHANTEUR", "displayName": "chanteur", "category": "il", "meaning": "singer (m)" },
+    { "text": "CHANTEUSE", "displayName": "chanteuse", "category": "elle", "meaning": "singer (f)" },
+    { "text": "ÉTUDIANT", "displayName": "étudiant", "category": "il", "meaning": "student (m)" },
+    { "text": "ÉTUDIANTE", "displayName": "étudiante", "category": "elle", "meaning": "student (f)" },
+    { "text": "JOURNALISTE", "displayName": "journaliste", "category": "both", "meaning": "journalist" },
+    { "text": "STYLISTE", "displayName": "styliste", "category": "both", "meaning": "fashion designer" },
+    { "text": "ARTISTE", "displayName": "artiste", "category": "both", "meaning": "artist" },
+    { "text": "ARCHITECTE", "displayName": "architecte", "category": "both", "meaning": "architect" }
   ]
 }
