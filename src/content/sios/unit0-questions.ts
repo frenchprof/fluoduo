@@ -24,14 +24,23 @@ export type Unit0Option = {
 export type Unit0Question = {
   /** Prompt — kept to the bare minimum (Dan: just one word, e.g. "Tuesday"). */
   title?: string;
+  /** Optional picture cue shown large before the title (SIO-006 nouns). */
+  emoji?: string;
   /** Fill-in-the-blank frame, e.g. "[Moi,] Je ___ Dan." */
   stem?: string;
   /** Gloss/reveal — shown only after the question is attempted. */
   en?: string;
   /** Colour for the title text (the colours quiz shows "red" in red). */
   hue?: string;
-  /** Spoken on a correct pick instead of the default (e.g. "le feu rouge"). */
+  /** Spoken on a correct pick instead of the default (colours: "le rouge"). */
   tts?: string;
+  /**
+   * A worked example revealed on demand via an "exemple" button after the
+   * question is attempted (colours: "le feu rouge — red traffic light"); its
+   * French is spoken when revealed. Hidden before the attempt (it contains
+   * the answer).
+   */
+  example?: { fr: string; en: string };
   options: Unit0Option[];
 };
 
@@ -84,8 +93,10 @@ const colorQ = (
 ): Unit0Question => ({
   title: en,
   hue,
-  tts: mnemonicFr,
-  en: `${mnemonicFr} — ${mnemonicEn}`,
+  // Speak the colour itself on a correct pick — "le rouge" / "l'orange".
+  tts: `${/^[aeiou]/i.test(fr) ? "l'" : "le "}${fr}`,
+  // The mnemonic sits behind the "exemple" button (revealed + spoken there).
+  example: { fr: mnemonicFr, en: mnemonicEn },
   options: [
     { v: fr, ok: true },
     ...wrongs.map((v) => ({ v, ok: false, why: `${v} is ${COLOR[v]}.` })),
@@ -93,8 +104,9 @@ const colorQ = (
 });
 const NUMBER: Record<string, string> = {
   "zéro": "0", un: "1", deux: "2", trois: "3", quatre: "4", cinq: "5",
-  sept: "7", huit: "8", dix: "10", onze: "11", douze: "12", treize: "13",
-  quatorze: "14", quinze: "15", seize: "16",
+  six: "6", sept: "7", huit: "8", neuf: "9", dix: "10", onze: "11",
+  douze: "12", treize: "13", quatorze: "14", quinze: "15", seize: "16",
+  vingt: "20",
 };
 const glossQ = (
   title: string,
@@ -124,9 +136,10 @@ const tuVous = (situation: string, correct: "tu" | "vous", whyWrong: string): Un
  * 2026-07-02). Gendered person-emojis resolve the un professeur / une
  * professeure ambiguity by fixing the referent's sex.
  */
-const nounQ = (prompt: string, fr: string, g: "un" | "une", en: string): Unit0Question => ({
-  title: prompt,
-  en: `${g} ${fr} — ${en}`,
+const nounQ = (emoji: string, fr: string, g: "un" | "une", en: string): Unit0Question => ({
+  emoji: emoji || undefined,
+  title: en, // the English word shows WITH the emoji (Dan, 2026-07-02)
+  en: `${g} ${fr}`, // the French form is revealed after the attempt
   tts: `${g} ${fr}`,
   options: [
     { v: "un", ok: g === "un", ...(g === "une" ? { why: `${fr} is feminine — une ${fr}.` } : {}) },
@@ -206,19 +219,19 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
     colorQ("beige", "beige", "#d9c39a", "le sable beige", "beige sand", ["marron", "blanc", "jaune"]),
   ],
   "SIO-006": [
-    // Identity / people
-    nounQ("first name", "prénom", "un", "first name"),
-    nounQ("surname", "nom", "un", "surname"),
+    // Identity / people — emoji + English word together
+    nounQ("", "prénom", "un", "first name"),
+    nounQ("", "nom", "un", "surname"),
     nounQ("👨", "homme", "un", "man"),
     nounQ("👩", "femme", "une", "woman"),
     nounQ("👦", "garçon", "un", "boy"),
     nounQ("👧", "fille", "une", "girl"),
-    nounQ("lady", "dame", "une", "lady"),
+    nounQ("", "dame", "une", "lady"),
     nounQ("👨‍🏫", "professeur", "un", "teacher (m)"),
     nounQ("👨‍🎓", "étudiant", "un", "student (m)"),
     // Classroom objects
     nounQ("🏫", "salle de classe", "une", "classroom"),
-    nounQ("board", "tableau", "un", "board"),
+    nounQ("", "tableau", "un", "board"),
     nounQ("📖", "livre", "un", "book"),
     nounQ("✏️", "crayon", "un", "pencil"),
     nounQ("📓", "cahier", "un", "exercise book"),
@@ -229,12 +242,26 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
     addressQ("Addressing a woman", "Madame", "Madame (Mme) — how to address a woman."),
   ],
   "SIO-007": [
+    // 0–16 + 20 (17–19 excluded, per Dan 2026-07-02). Distractors are the
+    // easily-confused numbers (six/seize, deux/douze, trois/treize…).
     glossQ("0", "zéro", ["quatorze", "huit", "seize"], NUMBER),
     glossQ("1", "un", ["treize", "trois", "onze"], NUMBER),
     glossQ("2", "deux", ["douze", "quatorze", "quatre"], NUMBER),
     glossQ("3", "trois", ["treize", "dix", "huit"], NUMBER),
     glossQ("4", "quatre", ["quatorze", "cinq", "sept"], NUMBER),
     glossQ("5", "cinq", ["quinze", "un", "onze"], NUMBER),
+    glossQ("6", "six", ["seize", "sept", "deux"], NUMBER),
+    glossQ("7", "sept", ["six", "cinq", "seize"], NUMBER),
+    glossQ("8", "huit", ["dix", "deux", "six"], NUMBER),
+    glossQ("9", "neuf", ["dix", "quatre", "deux"], NUMBER),
+    glossQ("10", "dix", ["deux", "six", "seize"], NUMBER),
+    glossQ("11", "onze", ["un", "douze", "treize"], NUMBER),
+    glossQ("12", "douze", ["deux", "treize", "onze"], NUMBER),
+    glossQ("13", "treize", ["trois", "douze", "quatorze"], NUMBER),
+    glossQ("14", "quatorze", ["quatre", "quinze", "treize"], NUMBER),
+    glossQ("15", "quinze", ["cinq", "quatorze", "seize"], NUMBER),
+    glossQ("16", "seize", ["six", "quinze", "dix"], NUMBER),
+    glossQ("20", "vingt", ["deux", "dix", "quatre"], NUMBER),
   ],
   "SIO-008": [
     { title: "It's 9am. You meet your French professor in the hallway for the first time.", options: [

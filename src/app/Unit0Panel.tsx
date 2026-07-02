@@ -171,11 +171,6 @@ function Unit0Questions({ sio }: { sio: (typeof UNIT0_SIOS)[number] }) {
   );
 }
 
-/** An emoji-only prompt (no ASCII letters) renders large, as a picture cue. */
-function isEmojiOnly(s?: string): boolean {
-  return !!s && !/[a-zA-Z]/.test(s);
-}
-
 /** The French to SPEAK on a correct pick: the question's own tts (colour
  *  mnemonics like "le feu rouge"), else the completed stem (bracketed framing
  *  stripped), else the bare option (letters say their French names). */
@@ -188,6 +183,7 @@ function ttsFor(q: Unit0Question, v: string): string {
 function QuizQuestion({ q }: { q: Unit0Question }) {
   const [picked, setPicked] = useState<string | null>(null);
   const [showWhy, setShowWhy] = useState(false);
+  const [showExample, setShowExample] = useState(false);
   // WHY appears only on a WRONG pick, and explains only why THAT choice is
   // wrong (Dan, 2026-07-02) — the why lives on the wrong option itself.
   const pickedOpt = picked !== null ? q.options.find((o) => o.v === picked) : undefined;
@@ -206,36 +202,57 @@ function QuizQuestion({ q }: { q: Unit0Question }) {
     }
   }
 
+  // The "exemple" button appears once attempted (the mnemonic contains the
+  // answer). Clicking reveals "le feu rouge — red traffic light" and speaks
+  // the French phrase.
+  const showExampleBtn = picked !== null && !!q.example;
+  const pillCls = (on: boolean) =>
+    `rounded-full border-2 px-2 py-0.5 text-[0.6rem] font-black tracking-wider transition ${
+      on
+        ? "border-[color:var(--fluo-ink)] bg-[color:var(--fluo-ink)] text-white"
+        : "border-[color:var(--fluo-ink)] bg-white text-[color:var(--fluo-ink)] hover:bg-[var(--fluo-card-tint)]"
+    }`;
+
   return (
     <div className="relative rounded-xl border-2 bg-[var(--fluo-card)] p-3" style={{ borderColor: "var(--fluo-line)" }}>
-      {whyText && (
-        <button
-          type="button"
-          onClick={() => setShowWhy((v) => !v)}
-          className={`absolute right-2 top-2 rounded-full border-2 px-2 py-0.5 text-[0.6rem] font-black tracking-wider transition ${
-            showWhy
-              ? "border-[color:var(--fluo-ink)] bg-[color:var(--fluo-ink)] text-white"
-              : "border-[color:var(--fluo-ink)] bg-white text-[color:var(--fluo-ink)] hover:bg-[var(--fluo-card-tint)]"
-          }`}
-        >
-          WHY
-        </button>
+      {(whyText || showExampleBtn) && (
+        <div className="absolute right-2 top-2 flex gap-1.5">
+          {showExampleBtn && (
+            <button
+              type="button"
+              onClick={() => { setShowExample((v) => !v); speak(q.example!.fr, "fr-FR"); }}
+              className={pillCls(showExample)}
+            >
+              EXEMPLE
+            </button>
+          )}
+          {whyText && (
+            <button type="button" onClick={() => setShowWhy((v) => !v)} className={pillCls(showWhy)}>
+              WHY
+            </button>
+          )}
+        </div>
       )}
       {/* Question and options share one row where they fit (Dan, 2026-07-02);
           the options travel as ONE group, so they wrap below the question as
           a unit instead of splitting across lines. */}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 pr-9">
-        {(q.stem || q.title) && (
-          <span
-            className={`${q.stem ? "fluo-serif text-base" : isEmojiOnly(q.title) ? "text-3xl" : "text-sm"} font-bold text-[color:var(--fluo-ink)]`}
-            style={q.hue ? { color: q.hue, textShadow: "0 0 2px rgba(0,0,0,.45)" } : undefined}
-          >
-            {q.stem ?? q.title}
-            {/* the gloss/mnemonic appears only once attempted — shown first it
-                leaks single-answer questions (Dan, 2026-07-02) */}
-            {q.en && picked && (
-              <span className="ml-2 text-xs font-normal text-[color:var(--fluo-ink-soft)]" style={q.hue ? { textShadow: "none" } : undefined}>
-                ({q.en})
+        {(q.stem || q.title || q.emoji) && (
+          <span className="inline-flex items-center gap-1.5">
+            {q.emoji && <span className="text-3xl leading-none" aria-hidden>{q.emoji}</span>}
+            {(q.stem || q.title) && (
+              <span
+                className={`${q.stem ? "fluo-serif text-base" : "text-sm"} font-bold text-[color:var(--fluo-ink)]`}
+                style={q.hue ? { color: q.hue, textShadow: "0 0 2px rgba(0,0,0,.45)" } : undefined}
+              >
+                {q.stem ?? q.title}
+                {/* the reveal appears only once attempted — shown first it
+                    leaks single-answer questions (Dan, 2026-07-02) */}
+                {q.en && picked && (
+                  <span className="ml-2 text-xs font-normal text-[color:var(--fluo-ink-soft)]" style={q.hue ? { textShadow: "none" } : undefined}>
+                    ({q.en})
+                  </span>
+                )}
               </span>
             )}
           </span>
@@ -267,6 +284,12 @@ function QuizQuestion({ q }: { q: Unit0Question }) {
           })}
         </span>
       </div>
+      {showExample && q.example && (
+        <p className="mt-2 rounded-lg bg-white/70 p-2.5 text-xs text-[color:var(--fluo-ink)]">
+          <span lang="fr" className="font-bold">🔊 {q.example.fr}</span>
+          <span className="ml-1.5 text-[color:var(--fluo-ink-soft)]">— {q.example.en}</span>
+        </p>
+      )}
       {showWhy && whyText && (
         <p className="mt-2 rounded-lg bg-white/70 p-2.5 text-xs text-[color:var(--fluo-ink)]">{whyText}</p>
       )}
