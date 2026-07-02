@@ -65,11 +65,19 @@ export default function PretestPage({ id }: { id: string }) {
 /* ──────────────────────────────────────────────────────────── */
 
 function PretestRunner({ pretest }: { pretest: Pretest }) {
-  const total = pretest.items.length;
+  // Question order AND option order re-randomise on every activation (mount
+  // and Restart) — never a fixed or per-item-seeded sequence. Shuffling lives
+  // in mount/reset paths, not render, so SSR hydration stays deterministic.
+  const [items, setItems] = useState<PretestItem[]>([]);
   const [step, setStep] = useState(0); // 0..total-1 = item; total = recap
   const [verdicts, setVerdicts] = useState<Verdict[]>([]);
   const [submitted, setSubmitted] = useState<Verdict | null>(null);
   const [ttsOn, setTtsOn] = useState(true);
+
+  useEffect(() => {
+    setItems(shuffle(pretest.items));
+  }, [pretest]);
+  const total = items.length;
 
   useEffect(() => {
     try {
@@ -83,9 +91,9 @@ function PretestRunner({ pretest }: { pretest: Pretest }) {
     } catch {}
   }, [ttsOn]);
 
-  const item = pretest.items[step];
+  const item = items[step];
   const choices = useMemo(
-    () => (item ? stableShuffle([item.answer, ...item.distractors], item.id) : []),
+    () => (item ? shuffle([item.answer, ...item.distractors]) : []),
     [item],
   );
 
@@ -98,7 +106,7 @@ function PretestRunner({ pretest }: { pretest: Pretest }) {
   }, [submitted, ttsOn, item]);
 
   const score = verdicts.filter((v) => v.correct).length;
-  const done = step >= total;
+  const done = total > 0 && step >= total;
 
   function pick(choice: string) {
     if (submitted || !item) return;
@@ -111,6 +119,7 @@ function PretestRunner({ pretest }: { pretest: Pretest }) {
     setStep(step + 1);
   }
   function restart() {
+    setItems(shuffle(pretest.items));
     setStep(0);
     setVerdicts([]);
     setSubmitted(null);
@@ -380,14 +389,10 @@ function Recap({
 
 /* ──────────────────────────────────────────────────────────── */
 
-/** Deterministic shuffle so choices don't reorder on re-render. */
-function stableShuffle<T>(arr: T[], seed: string): T[] {
+function shuffle<T>(arr: T[]): T[] {
   const out = [...arr];
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) | 0;
   for (let i = out.length - 1; i > 0; i--) {
-    h = (h * 1103515245 + 12345) & 0x7fffffff;
-    const j = h % (i + 1);
+    const j = Math.floor(Math.random() * (i + 1));
     [out[i], out[j]] = [out[j], out[i]];
   }
   return out;

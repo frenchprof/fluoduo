@@ -48,7 +48,7 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
     { title: "Which letter is pronounced “jay”?", options: [{ v: "G", ok: true }, { v: "J", ok: false }, { v: "K", ok: false }], explain: "G is said “jay” in French — the opposite of English, where “jay” is J." },
     { title: "Which letter is pronounced “jee”?", options: [{ v: "J", ok: true }, { v: "G", ok: false }, { v: "K", ok: false }], explain: "J is said “jee” (“ji”) in French — swapped from English, where G sounds like this." },
     { title: "Which letter is pronounced “say”?", options: [{ v: "C", ok: true }, { v: "S", ok: false }, { v: "K", ok: false }], explain: "C is said “say” (“cé”) in French, not “see” like in English." },
-    { title: "Which letter is pronounced “ash”?", options: [{ v: "H", ok: true }, { v: "A", ok: false }, { v: "R", ok: false }], explain: "H is said “ash” (“hache”) in French — nothing like its English name." },
+    { title: "Which letter is pronounced “arsh”?", options: [{ v: "H", ok: true }, { v: "A", ok: false }, { v: "R", ok: false }], explain: "H is said “arsh” (“hache”) in French — nothing like its English name." },
     { title: "Which letter is pronounced “air”?", options: [{ v: "R", ok: true }, { v: "L", ok: false }, { v: "F", ok: false }], explain: "R is said “air” (“erre”) in French, with the guttural French R." },
     { title: "Which letter is pronounced “i grec”?", options: [{ v: "Y", ok: true }, { v: "I", ok: false }, { v: "U", ok: false }], explain: "Y is called “i grec” (“Greek i”) in French, to distinguish it from I (“i latin”)." },
   ],

@@ -62,6 +62,11 @@ function Runner({ collection }: { collection: Collection }) {
   const [dir, setDir] = useState<Dir>("fr-en");
   const [ttsOn, setTtsOn] = useState(true);
   const [seed, setSeed] = useState(1);
+  // Seed starts fixed (SSR-safe), then randomises on mount so every activation
+  // gets a fresh question round + option order; Restart re-rolls it again.
+  useEffect(() => {
+    setSeed(1 + Math.floor(Math.random() * 1_000_000));
+  }, []);
   const [step, setStep] = useState(0);
   const [picked, setPicked] = useState<string | null>(null);
   const [score, setScore] = useState(0);

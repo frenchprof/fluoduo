@@ -381,6 +381,7 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
         @keyframes seamFlash{0%,52%{opacity:0;transform:translateX(-50%) scaleY(.4)}62%{opacity:.95;transform:translateX(-50%) scaleY(1.3)}80%,100%{opacity:0;transform:translateX(-50%) scaleY(1)}}
         @keyframes bPop{0%{transform:scale(0);opacity:0}50%{transform:scale(1.25)}70%{transform:scale(.95)}100%{transform:scale(1);opacity:1}}
         @keyframes beltMove{to{background-position:52px 0}}
+        @keyframes eqPop{0%,42%{transform:translate(-50%,-50%) scale(0);opacity:0}52%{transform:translate(-50%,-50%) scale(1.25);opacity:1}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
       `}</style>
       <header className="mb-3 flex flex-wrap items-baseline justify-between gap-3">
         <div>
@@ -492,9 +493,16 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
                 <span lang="fr" className={`${halfBase} justify-start border-l-0 pr-5`} style={{ ...brown, height: HH, paddingLeft: 1, borderRadius: "0 22px 22px 0", animation: `slideR ${MS}ms ease-out forwards` }}>{m.back}</span>
                 {/* flash at the seam where they meet */}
                 <span className="absolute left-1/2 top-0 rounded-full" style={{ width: 8, height: HH, background: "#fff", filter: "blur(3px)", animation: `seamFlash ${MS}ms ease-out forwards` }} />
-                {/* the whole word — same footprint as the abutted halves — recolours to the chip's hue */}
-                <span lang="fr" className="absolute inset-0 flex items-center justify-center whitespace-nowrap rounded-2xl border-4 text-3xl font-black shadow-2xl"
-                  style={{ background: m.hue, borderColor: "rgba(0,0,0,.4)", color: "#1a1a14", animation: `joinWhole ${MS}ms ease-out forwards` }}>{m.word}</span>
+                {/* meaning mode joins two LANGUAGES (fr half + en half) — an "=" pops
+                    at the seam as they meet, and the joined pill reads "fr = en".
+                    Split mode joins two halves of ONE word, so no equals there. */}
+                {!splitMode && (
+                  <span className="absolute left-1/2 top-1/2 flex h-9 w-9 items-center justify-center rounded-full border-2 border-white bg-[#ffc800] text-xl font-black text-[#4a3413] shadow-lg"
+                    style={{ animation: `eqPop ${MS}ms ease-out forwards` }}>=</span>
+                )}
+                {/* the joined whole — covers the abutted halves — recolours to the chip's hue */}
+                <span lang="fr" className={`absolute flex items-center justify-center whitespace-nowrap rounded-2xl border-4 text-3xl font-black shadow-2xl ${splitMode ? "inset-0" : "left-1/2 top-0 h-full -translate-x-1/2 px-5"}`}
+                  style={{ background: m.hue, borderColor: "rgba(0,0,0,.4)", color: "#1a1a14", animation: `joinWhole ${MS}ms ease-out forwards` }}>{splitMode ? m.word : `${m.front} = ${m.back}`}</span>
               </div>
             </div>
           );

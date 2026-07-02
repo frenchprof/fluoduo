@@ -14,7 +14,7 @@
  * new content to author, not a quick fix) — DEFERRED, flagged in the
  * handoff doc, not silently dropped.
  */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SIOS, sioStatement } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import { UNIT0_QUESTIONS, type Unit0Question } from "@/content/sios/unit0-questions";
@@ -22,6 +22,15 @@ import { PracticeChips } from "./SioDetail";
 import SioModal from "./SioModal";
 
 const UNIT0_SIOS = SIOS.filter((s) => s.unit === 0);
+
+function shuffle<T>(arr: T[]): T[] {
+  const out = [...arr];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
 
 export default function Unit0Panel() {
   const [openId, setOpenId] = useState<string | null>(null);
@@ -86,7 +95,13 @@ export default function Unit0Panel() {
 }
 
 function Unit0Questions({ sio }: { sio: (typeof UNIT0_SIOS)[number] }) {
-  const questions: Unit0Question[] = UNIT0_QUESTIONS[sio.id] ?? [];
+  // Fresh random question AND option order on every popup open (this
+  // component mounts per open) — never the authored order.
+  const [questions, setQuestions] = useState<Unit0Question[]>([]);
+  useEffect(() => {
+    const base = UNIT0_QUESTIONS[sio.id] ?? [];
+    setQuestions(shuffle(base).map((q) => ({ ...q, options: shuffle(q.options) })));
+  }, [sio.id]);
   const deck = sio.collectionId ? CURATED.find((c) => c.id === sio.collectionId) : undefined;
 
   return (

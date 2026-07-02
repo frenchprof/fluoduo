@@ -62,18 +62,6 @@ function shuffle<T>(arr: T[]): T[] {
   return out;
 }
 
-function stableShuffle<T>(arr: T[], seed: string): T[] {
-  const out = [...arr];
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) | 0;
-  for (let i = out.length - 1; i > 0; i--) {
-    h = (h * 1103515245 + 12345) & 0x7fffffff;
-    const j = h % (i + 1);
-    [out[i], out[j]] = [out[j], out[i]];
-  }
-  return out;
-}
-
 function PracticeRunner({ set }: { set: PracticeSet }) {
   const [queue, setQueue] = useState<PracticeItem[]>([]);
   const [step, setStep] = useState(0);
@@ -105,8 +93,10 @@ function PracticeRunner({ set }: { set: PracticeSet }) {
   const done = step >= queue.length && queue.length > 0;
   const uniqueTotal = set.items.length;
 
+  // Random order every time an item is shown — the queue only ever has an
+  // item post-mount, so Math.random here can't cause a hydration mismatch.
   const choices = useMemo(
-    () => (item ? stableShuffle(item.choices, item.id) : []),
+    () => (item ? shuffle(item.choices) : []),
     [item],
   );
 
