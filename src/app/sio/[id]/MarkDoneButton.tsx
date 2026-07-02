@@ -44,7 +44,7 @@ export default function MarkDoneButton({ sioId }: { sioId: string }) {
     <div className="mt-3 flex items-center gap-3">
       <button
         type="button"
-        onClick={() => setProgress(done ? unmarkSioDone(sioId) : complete())}
+        onClick={() => (done ? setProgress(unmarkSioDone(sioId)) : complete())}
         className={`fluo-btn fluo-btn-sm ${done ? "fluo-btn-correct" : ""}`}
       >
         {done ? "✓ Done" : "Mark as done"}
