@@ -70,15 +70,20 @@ function rc(i: number): { r: number; c: number } {
   const within = i % COLS;
   return { r: lane, c: lane % 2 === 0 ? within : COLS - 1 - within };
 }
-const tickMsFor = (lvl: number) => Math.max(240, 1500 - (lvl - 1) * 150);
-const spawnEvery = (lvl: number) => Math.max(2, 6 - Math.floor(lvl / 2));
-const dockDurFor = (lvl: number) => Math.max(8, 40 - (lvl - 1) * 4);
+// Hard mode makes the game genuinely harder (not just cosmetically): faster
+// belt + dock, more lanes feeding at once, and (split decks) more decoys —
+// see HARD_DECOYS in computeDock. The old "hard" only greyed the tiles, which
+// changed nothing about the actual matching.
+const tickMsFor = (lvl: number, hard = false) => Math.max(hard ? 160 : 240, (hard ? 1150 : 1500) - (lvl - 1) * 150);
+const spawnEvery = (lvl: number, hard = false) => Math.max(1, (hard ? 4 : 6) - Math.floor(lvl / 2));
+const dockDurFor = (lvl: number, hard = false) => Math.max(hard ? 5 : 8, (hard ? 26 : 40) - (lvl - 1) * 4);
 const poolSizeFor = (lvl: number, deck: number) => Math.min(deck, 6 + (lvl - 1) * 3);
 const quotaFor = (lvl: number, deck: number) => poolSizeFor(lvl, deck); // each word once per level
-function entriesFor(lvl: number): number[] {
+const HARD_DECOYS = 5; // dock distractors in hard mode (vs 2 normally)
+function entriesFor(lvl: number, hard = false): number[] {
   const e = [0];
-  if (lvl >= 3) e.push(2 * COLS);
-  if (lvl >= 5) e.push(1 * COLS);
+  if (hard || lvl >= 3) e.push(2 * COLS);
+  if (hard || lvl >= 5) e.push(1 * COLS);
   if (lvl >= 7) e.push(3 * COLS);
   return e;
 }
@@ -136,6 +141,7 @@ type G = {
   combo: number; bestCombo: number;
   tickCtr: number; paused: boolean; over: boolean; levelDone: boolean;
   flash: { uid: number; kind: "ok" | "bad" } | null;
+  hard: boolean; // genuine difficulty (speed + decoys + crowding), not just greyed tiles
   sweeping: boolean; uidSeq: number;
   merges: { key: number; word: string; hue: string; greet?: string; front: string; back: string }[];
   done: Done[]; // cumulative across the WHOLE game — distinct languages identified so far
@@ -157,14 +163,14 @@ function buildDecoys(pairs: ConveyorPair[]): string[] {
   return shuffle([...set]);
 }
 
-function makeGame(pairs: ConveyorPair[], randomize: boolean): G {
+function makeGame(pairs: ConveyorPair[], randomize: boolean, hard = false): G {
   return {
     cards: [], pairs: randomize ? shuffle(pairs) : pairs.slice(),
     decoys: randomize ? buildDecoys(pairs) : [],
     sel: null, score: 0, lives: START_LIVES,
     level: 1, cleared: 0, releasedIds: new Set(), combo: 0, bestCombo: 0,
     tickCtr: 0, paused: false, over: false, levelDone: false,
-    flash: null, sweeping: false, uidSeq: 1, merges: [], done: [],
+    flash: null, hard, sweeping: false, uidSeq: 1, merges: [], done: [],
   };
 }
 
@@ -172,7 +178,6 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
   { title: string; subtitle?: string; pairs: ConveyorPair[]; lang?: string; instruction?: string; splitMode?: boolean }) {
   const g = useRef<G>(makeGame(pairs, false));
   const [, render] = useReducer((x: number) => x + 1, 0);
-  const [hard, setHard] = useState(false);
   const [music, setMusic] = useState(false);
   const musicRef = useRef(false); // whether the player has music enabled (survives level pauses)
   const timer = useRef<number | null>(null);
@@ -183,7 +188,7 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
   const dockHover = useRef(false); // freeze the dock scroll while the pointer is over it → reliable taps
   const lastCommitRef = useRef(0); // debounce: no two matches can resolve within 220ms (blocks stray double-commits)
 
-  const reset = useCallback(() => { g.current = makeGame(pairs, true); render(); }, [pairs]);
+  const reset = useCallback(() => { g.current = makeGame(pairs, true, g.current.hard); render(); }, [pairs]);
   useEffect(() => { g.current = makeGame(pairs, true); render(); }, [pairs]);
 
   const deck = pairs.length;
@@ -199,14 +204,14 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
     }
     const seen = new Set<string>(); const out: { id: string; match: string }[] = [];
     for (const c of s.cards) if (c.back && !seen.has(c.back)) { seen.add(c.back); out.push({ id: "c:" + c.back, match: c.back }); }
-    const want = 2; let added = 0; // never more than 2 distractors on the dock at once
+    const want = s.hard ? HARD_DECOYS : 2; let added = 0; // more distractors in hard mode
     for (const d of s.decoys) { if (added >= want) break; if (seen.has(d)) continue; seen.add(d); out.push({ id: "d:" + d, match: d }); added++; }
     return out;
   }, [splitMode, deck]);
 
   function spawn(s: G) {
     if (s.cards.some((c) => c.pos === 0)) { s.over = true; chiptune.gameOver(); return; }
-    const entries = entriesFor(s.level).filter((e) => !s.cards.some((c) => c.pos === e));
+    const entries = entriesFor(s.level, s.hard).filter((e) => !s.cards.some((c) => c.pos === e));
     if (entries.length === 0) return;
     // each language appears at most ONCE per level → only words not yet released this level
     const from = pool(s).filter((p) => !s.releasedIds.has(p.id));
@@ -281,7 +286,7 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
       if (card.pos < N - 1 && !occupied.has(card.pos + 1)) { occupied.delete(card.pos); card.pos += 1; occupied.add(card.pos); }
     }
     s.tickCtr += 1;
-    if (s.cards.length === 0 || s.tickCtr % spawnEvery(s.level) === 0) spawn(s);
+    if (s.cards.length === 0 || s.tickCtr % spawnEvery(s.level, s.hard) === 0) spawn(s);
     render();
   }, []);
 
@@ -312,9 +317,9 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
     const loop = () => {
       if (!alive) return;
       tick();
-      timer.current = window.setTimeout(loop, tickMsFor(g.current.level));
+      timer.current = window.setTimeout(loop, tickMsFor(g.current.level, g.current.hard));
     };
-    timer.current = window.setTimeout(loop, tickMsFor(g.current.level));
+    timer.current = window.setTimeout(loop, tickMsFor(g.current.level, g.current.hard));
     return () => { alive = false; if (timer.current) window.clearTimeout(timer.current); };
   }, [tick]);
 
@@ -338,15 +343,19 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
         const spacing = LOOP / nCols;
         const tileW = Math.max(84, Math.min(132, spacing - 12));
         const ROW_H = DOCK_H / 2;
-        const speed = TRACK / dockDurFor(s.level);
+        const speed = TRACK / dockDurFor(s.level, s.hard);
         // freeze the belt-scroll while the pointer is over the dock so taps land where aimed
         const off = dockHover.current ? offsetRef.current : (offsetRef.current + speed * dt) % LOOP;
         offsetRef.current = off;
+        const wrap = (v: number) => ((v % LOOP) + LOOP) % LOOP;
         tiles.forEach((p, i) => {
           const el = tileRefs.current.get(p.id);
           const col = Math.floor(i / 2);
           const row = i % 2;
-          if (el) { el.style.transform = `translate(${(col * spacing + off) % LOOP}px, ${row * ROW_H}px)`; el.style.width = `${tileW}px`; }
+          // The two dock rows run in OPPOSITE directions (top row →, bottom row ←)
+          // so the lower halves sweep past each other like counter-running belts.
+          const x = row === 0 ? wrap(col * spacing + off) : wrap(col * spacing - off);
+          if (el) { el.style.transform = `translate(${x}px, ${row * ROW_H}px)`; el.style.width = `${tileW}px`; }
         });
       } else { last = null; }
       raf = requestAnimationFrame(step);
@@ -362,7 +371,8 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
   }, []);
 
   const s = g.current;
-  const glideMs = tickMsFor(s.level);
+  const hard = s.hard;
+  const glideMs = tickMsFor(s.level, s.hard);
   const quota = quotaFor(s.level, deck);
   const dockTiles = computeDock(s);
   const showHyphen = splitMode && !hard;
@@ -406,14 +416,14 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
           {s.combo >= 2 && <span className="text-[#ff9600]">×{s.combo}🔥</span>}
           <button type="button" onClick={() => { chiptune.toggle("conveyor"); const on = chiptune.playing() === "conveyor"; musicRef.current = on; setMusic(on); }}
             title="Music" className="rounded-xl border-2 border-amber-200 bg-white px-2 py-0.5 text-xs shadow-sm hover:bg-amber-50">{music ? "🔊" : "🎵"}</button>
-          <button type="button" onClick={() => { setHard((h) => !h); g.current = makeGame(pairs, true); render(); }}
+          <button type="button" onClick={() => { g.current = makeGame(pairs, true, !g.current.hard); render(); }}
             className={`rounded-xl border-2 px-2 py-0.5 text-xs shadow-sm ${hard ? "border-rose-400 bg-rose-500 text-white" : "border-amber-200 bg-white hover:bg-amber-50"}`}>{hard ? "Hard ✓" : "Hard mode"}</button>
         </div>
       </header>
 
       <p className="mb-2 text-center text-xs font-semibold text-[#4a3413]/60">
         {instruction ?? "Match a French card to its meaning."} Tap either half first. Clear the whole wave to finish the level.
-        {hard && <b className="text-rose-600"> Hard: no front/back cue — you decide.</b>}
+        {hard && <b className="text-rose-600"> Hard: faster belts, more decoys, no colour cue.</b>}
       </p>
 
       {/* belt: 4 conveyor lines; front (upper) halves glide. The moving stripes

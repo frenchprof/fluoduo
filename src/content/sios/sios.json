@@ -154,14 +154,14 @@
     "num": 11,
     "unit": 1,
     "unitLabel": "Unité 1",
-    "topic": "Stress pronouns",
-    "description": "Match subject pronoun → stress pronoun (moi, toi, lui, elle, nous, vous, eux, elles); use ___, je… frame; sort into subject-only / stress-only / either",
+    "topic": "Stressed pronouns",
+    "description": "Match subject pronoun → stressed pronoun (moi, toi, lui, elle, nous, vous, eux, elles); use ___, je… frame; sort into subject-only / stressed-only / either",
     "setId": "1.01",
     "cefrMode": "Spoken Production",
     "skill": "production",
     "isProduction": false,
     "canDo": "I can highlight who I am talking about using the right pronoun in simple sentences.",
-    "competence": "Match each of the 8 subject pronouns to its stress pronoun (moi, toi, lui, elle, nous, vous, eux, elles); sort stress pronouns into subject-only / stress-only / either (≥7/8).",
+    "competence": "Match each of the 8 subject pronouns to its stressed pronoun (moi, toi, lui, elle, nous, vous, eux, elles); sort stressed pronouns into subject-only / stressed-only / either (≥7/8).",
     "collectionId": "stress-pronouns"
   },
   {
@@ -410,13 +410,13 @@
     "unit": 2,
     "unitLabel": "Unité 2",
     "topic": "avec — with whom",
-    "description": "Say with whom one does something: avec + stress pronoun or noun (avec moi, avec mon ami, avec ma famille, seul(e))",
+    "description": "Say with whom one does something: avec + stressed pronoun or noun (avec moi, avec mon ami, avec ma famille, seul(e))",
     "setId": "2.08",
     "cefrMode": "Spoken Production",
     "skill": "production",
     "isProduction": false,
     "canDo": "I can say who I do things with, or that I do them alone.",
-    "competence": "Use avec + stress pronoun/noun and seul(e) for ≥5 prompts.",
+    "competence": "Use avec + stressed pronoun/noun and seul(e) for ≥5 prompts.",
     "collectionId": "avec-qui"
   },
   {

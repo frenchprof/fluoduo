@@ -8,33 +8,123 @@
     {
       "id": "u1-sio013-01",
       "sentenceBefore": "J'étudie ",
-      "sentenceAfter": " français.",
-      "answer": "le",
-      "distractors": [
-        "la",
-        "l'",
-        "les"
-      ],
-      "fullSentence": "J'étudie le français.",
-      "sentenceTrans": "I study French.",
-      "whyWrong": {
-        "la": "français is masculine — le français.",
-        "l'": "l' is only before a vowel; français starts with a consonant.",
-        "les": "les is plural — one subject takes le."
-      }
-    },
-    {
-      "id": "u1-sio013-02",
-      "sentenceBefore": "Elle étudie ",
-      "sentenceAfter": " économie.",
+      "sentenceAfter": "architecture.",
       "answer": "l'",
       "distractors": [
         "le",
         "la",
         "les"
       ],
-      "fullSentence": "Elle étudie l' économie.",
-      "sentenceTrans": "She studies economics.",
+      "fullSentence": "J'étudie l'architecture.",
+      "sentenceTrans": "I study architecture.",
+      "whyWrong": {
+        "le": "architecture starts with a vowel — le elides to l'.",
+        "la": "architecture starts with a vowel — la elides to l'.",
+        "les": "les is plural — this is one subject."
+      }
+    },
+    {
+      "id": "u1-sio013-02",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " chimie.",
+      "answer": "la",
+      "distractors": [
+        "le",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "J'étudie la chimie.",
+      "sentenceTrans": "I study chemistry.",
+      "whyWrong": {
+        "le": "chimie is feminine — la chimie.",
+        "l'": "l' is only before a vowel; chimie starts with a consonant.",
+        "les": "les is plural — one subject takes la."
+      }
+    },
+    {
+      "id": "u1-sio013-03",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " communication.",
+      "answer": "la",
+      "distractors": [
+        "le",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "J'étudie la communication.",
+      "sentenceTrans": "I study communication.",
+      "whyWrong": {
+        "le": "communication is feminine — la communication.",
+        "l'": "l' is only before a vowel; communication starts with a consonant.",
+        "les": "les is plural — one subject takes la."
+      }
+    },
+    {
+      "id": "u1-sio013-04",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " comptabilité.",
+      "answer": "la",
+      "distractors": [
+        "le",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "J'étudie la comptabilité.",
+      "sentenceTrans": "I study accounting.",
+      "whyWrong": {
+        "le": "comptabilité is feminine — la comptabilité.",
+        "l'": "l' is only before a vowel; comptabilité starts with a consonant.",
+        "les": "les is plural — one subject takes la."
+      }
+    },
+    {
+      "id": "u1-sio013-05",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " commerce.",
+      "answer": "le",
+      "distractors": [
+        "la",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "J'étudie le commerce.",
+      "sentenceTrans": "I study business.",
+      "whyWrong": {
+        "la": "commerce is masculine — le commerce.",
+        "l'": "l' is only before a vowel; commerce starts with a consonant.",
+        "les": "les is plural — one subject takes le."
+      }
+    },
+    {
+      "id": "u1-sio013-06",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " droit.",
+      "answer": "le",
+      "distractors": [
+        "la",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "J'étudie le droit.",
+      "sentenceTrans": "I study law.",
+      "whyWrong": {
+        "la": "droit is masculine — le droit.",
+        "l'": "l' is only before a vowel; droit starts with a consonant.",
+        "les": "les is plural — one subject takes le."
+      }
+    },
+    {
+      "id": "u1-sio013-07",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": "économie.",
+      "answer": "l'",
+      "distractors": [
+        "le",
+        "la",
+        "les"
+      ],
+      "fullSentence": "J'étudie l'économie.",
+      "sentenceTrans": "I study economics.",
       "whyWrong": {
         "le": "économie starts with a vowel — le elides to l'.",
         "la": "économie starts with a vowel — la elides to l'.",
@@ -42,8 +132,152 @@
       }
     },
     {
-      "id": "u1-sio013-03",
-      "sentenceBefore": "Nous étudions ",
+      "id": "u1-sio013-08",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " finance.",
+      "answer": "la",
+      "distractors": [
+        "le",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "J'étudie la finance.",
+      "sentenceTrans": "I study finance.",
+      "whyWrong": {
+        "le": "finance is feminine — la finance.",
+        "l'": "l' is only before a vowel; finance starts with a consonant.",
+        "les": "les is plural — one subject takes la."
+      }
+    },
+    {
+      "id": "u1-sio013-09",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " géographie.",
+      "answer": "la",
+      "distractors": [
+        "le",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "J'étudie la géographie.",
+      "sentenceTrans": "I study geography.",
+      "whyWrong": {
+        "le": "géographie is feminine — la géographie.",
+        "l'": "l' is only before a vowel; géographie starts with a consonant.",
+        "les": "les is plural — one subject takes la."
+      }
+    },
+    {
+      "id": "u1-sio013-10",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": "histoire.",
+      "answer": "l'",
+      "distractors": [
+        "le",
+        "la",
+        "les"
+      ],
+      "fullSentence": "J'étudie l'histoire.",
+      "sentenceTrans": "I study history.",
+      "whyWrong": {
+        "le": "h is mute in histoire — le elides to l'.",
+        "la": "h is mute in histoire — la elides to l'.",
+        "les": "les is plural — this is one subject."
+      }
+    },
+    {
+      "id": "u1-sio013-11",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": "informatique.",
+      "answer": "l'",
+      "distractors": [
+        "le",
+        "la",
+        "les"
+      ],
+      "fullSentence": "J'étudie l'informatique.",
+      "sentenceTrans": "I study computing.",
+      "whyWrong": {
+        "le": "informatique starts with a vowel — le elides to l'.",
+        "la": "informatique starts with a vowel — la elides to l'.",
+        "les": "les is plural — this is one subject."
+      }
+    },
+    {
+      "id": "u1-sio013-12",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " génie.",
+      "answer": "le",
+      "distractors": [
+        "la",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "J'étudie le génie.",
+      "sentenceTrans": "I study engineering. (le génie, m.)",
+      "whyWrong": {
+        "la": "génie is masculine — le génie.",
+        "l'": "l' is only before a vowel; génie starts with a consonant.",
+        "les": "les is plural — one subject takes le."
+      }
+    },
+    {
+      "id": "u1-sio013-13",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": "ingénierie.",
+      "answer": "l'",
+      "distractors": [
+        "le",
+        "la",
+        "les"
+      ],
+      "fullSentence": "J'étudie l'ingénierie.",
+      "sentenceTrans": "I study engineering. (l'ingénierie, f.)",
+      "whyWrong": {
+        "le": "ingénierie starts with a vowel — le elides to l'.",
+        "la": "ingénierie starts with a vowel — la elides to l'.",
+        "les": "les is plural — this is one subject."
+      }
+    },
+    {
+      "id": "u1-sio013-14",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " linguistique.",
+      "answer": "la",
+      "distractors": [
+        "le",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "J'étudie la linguistique.",
+      "sentenceTrans": "I study linguistics.",
+      "whyWrong": {
+        "le": "linguistique is feminine — la linguistique.",
+        "l'": "l' is only before a vowel; linguistique starts with a consonant.",
+        "les": "les is plural — one subject takes la."
+      }
+    },
+    {
+      "id": "u1-sio013-15",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " littérature.",
+      "answer": "la",
+      "distractors": [
+        "le",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "J'étudie la littérature.",
+      "sentenceTrans": "I study literature.",
+      "whyWrong": {
+        "le": "littérature is feminine — la littérature.",
+        "l'": "l' is only before a vowel; littérature starts with a consonant.",
+        "les": "les is plural — one subject takes la."
+      }
+    },
+    {
+      "id": "u1-sio013-16",
+      "sentenceBefore": "J'étudie ",
       "sentenceAfter": " mathématiques.",
       "answer": "les",
       "distractors": [
@@ -51,8 +285,8 @@
         "la",
         "l'"
       ],
-      "fullSentence": "Nous étudions les mathématiques.",
-      "sentenceTrans": "We study mathematics.",
+      "fullSentence": "J'étudie les mathématiques.",
+      "sentenceTrans": "I study mathematics.",
       "whyWrong": {
         "le": "mathématiques is plural — les.",
         "la": "mathématiques is plural — les.",
@@ -60,25 +294,259 @@
       }
     },
     {
-      "id": "u1-sio013-04",
-      "sentenceBefore": "Tu étudies ",
-      "sentenceAfter": " chimie ?",
+      "id": "u1-sio013-17",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " médecine.",
       "answer": "la",
       "distractors": [
         "le",
         "l'",
         "les"
       ],
-      "fullSentence": "Tu étudies la chimie ?",
-      "sentenceTrans": "Do you study chemistry?",
+      "fullSentence": "J'étudie la médecine.",
+      "sentenceTrans": "I study medicine.",
       "whyWrong": {
-        "le": "chimie is feminine — la chimie.",
-        "l'": "l' is only before a vowel; chimie starts with a consonant.",
-        "les": "les is plural — this is one subject."
+        "le": "médecine is feminine — la médecine.",
+        "l'": "l' is only before a vowel; médecine starts with a consonant.",
+        "les": "les is plural — one subject takes la."
       }
     },
     {
-      "id": "u1-sio013-05",
+      "id": "u1-sio013-18",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " musique.",
+      "answer": "la",
+      "distractors": [
+        "le",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "J'étudie la musique.",
+      "sentenceTrans": "I study music.",
+      "whyWrong": {
+        "le": "musique is feminine — la musique.",
+        "l'": "l' is only before a vowel; musique starts with a consonant.",
+        "les": "les is plural — one subject takes la."
+      }
+    },
+    {
+      "id": "u1-sio013-19",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " pharmacie.",
+      "answer": "la",
+      "distractors": [
+        "le",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "J'étudie la pharmacie.",
+      "sentenceTrans": "I study pharmacy.",
+      "whyWrong": {
+        "le": "pharmacie is feminine — la pharmacie.",
+        "l'": "l' is only before a vowel; pharmacie starts with a consonant.",
+        "les": "les is plural — one subject takes la."
+      }
+    },
+    {
+      "id": "u1-sio013-20",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " philosophie.",
+      "answer": "la",
+      "distractors": [
+        "le",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "J'étudie la philosophie.",
+      "sentenceTrans": "I study philosophy.",
+      "whyWrong": {
+        "le": "philosophie is feminine — la philosophie.",
+        "l'": "l' is only before a vowel; philosophie starts with a consonant.",
+        "les": "les is plural — one subject takes la."
+      }
+    },
+    {
+      "id": "u1-sio013-21",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " physique.",
+      "answer": "la",
+      "distractors": [
+        "le",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "J'étudie la physique.",
+      "sentenceTrans": "I study physics.",
+      "whyWrong": {
+        "le": "physique is feminine — la physique.",
+        "l'": "l' is only before a vowel; physique starts with a consonant.",
+        "les": "les is plural — one subject takes la."
+      }
+    },
+    {
+      "id": "u1-sio013-22",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " psychologie.",
+      "answer": "la",
+      "distractors": [
+        "le",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "J'étudie la psychologie.",
+      "sentenceTrans": "I study psychology.",
+      "whyWrong": {
+        "le": "psychologie is feminine — la psychologie.",
+        "l'": "l' is only before a vowel; psychologie starts with a consonant.",
+        "les": "les is plural — one subject takes la."
+      }
+    },
+    {
+      "id": "u1-sio013-23",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " sciences des données.",
+      "answer": "les",
+      "distractors": [
+        "le",
+        "la",
+        "l'"
+      ],
+      "fullSentence": "J'étudie les sciences des données.",
+      "sentenceTrans": "I study data science.",
+      "whyWrong": {
+        "le": "sciences des données is plural — les.",
+        "la": "sciences des données is plural — les.",
+        "l'": "l' is singular before a vowel — this noun is plural."
+      }
+    },
+    {
+      "id": "u1-sio013-24",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " science politique.",
+      "answer": "la",
+      "distractors": [
+        "le",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "J'étudie la science politique.",
+      "sentenceTrans": "I study political science.",
+      "whyWrong": {
+        "le": "science politique is feminine — la science politique.",
+        "l'": "l' is only before a vowel; science politique starts with a consonant.",
+        "les": "les is plural — one subject takes la."
+      }
+    },
+    {
+      "id": "u1-sio013-25",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " sciences de la vie.",
+      "answer": "les",
+      "distractors": [
+        "le",
+        "la",
+        "l'"
+      ],
+      "fullSentence": "J'étudie les sciences de la vie.",
+      "sentenceTrans": "I study life sciences.",
+      "whyWrong": {
+        "le": "sciences de la vie is plural — les.",
+        "la": "sciences de la vie is plural — les.",
+        "l'": "l' is singular before a vowel — this noun is plural."
+      }
+    },
+    {
+      "id": "u1-sio013-26",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " sciences infirmières.",
+      "answer": "les",
+      "distractors": [
+        "le",
+        "la",
+        "l'"
+      ],
+      "fullSentence": "J'étudie les sciences infirmières.",
+      "sentenceTrans": "I study nursing.",
+      "whyWrong": {
+        "le": "sciences infirmières is plural — les.",
+        "la": "sciences infirmières is plural — les.",
+        "l'": "l' is singular before a vowel — this noun is plural."
+      }
+    },
+    {
+      "id": "u1-sio013-27",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " sociologie.",
+      "answer": "la",
+      "distractors": [
+        "le",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "J'étudie la sociologie.",
+      "sentenceTrans": "I study sociology.",
+      "whyWrong": {
+        "le": "sociologie is feminine — la sociologie.",
+        "l'": "l' is only before a vowel; sociologie starts with a consonant.",
+        "les": "les is plural — one subject takes la."
+      }
+    },
+    {
+      "id": "u1-sio013-28",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " systèmes d'information.",
+      "answer": "les",
+      "distractors": [
+        "le",
+        "la",
+        "l'"
+      ],
+      "fullSentence": "J'étudie les systèmes d'information.",
+      "sentenceTrans": "I study information systems.",
+      "whyWrong": {
+        "le": "systèmes d'information is plural — les.",
+        "la": "systèmes d'information is plural — les.",
+        "l'": "l' is singular before a vowel — this noun is plural."
+      }
+    },
+    {
+      "id": "u1-sio013-29",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " sport.",
+      "answer": "le",
+      "distractors": [
+        "la",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "J'étudie le sport.",
+      "sentenceTrans": "I study sport.",
+      "whyWrong": {
+        "la": "sport is masculine — le sport.",
+        "l'": "l' is only before a vowel; sport starts with a consonant.",
+        "les": "les is plural — one subject takes le."
+      }
+    },
+    {
+      "id": "u1-sio013-30",
+      "sentenceBefore": "J'étudie ",
+      "sentenceAfter": " théâtre.",
+      "answer": "le",
+      "distractors": [
+        "la",
+        "l'",
+        "les"
+      ],
+      "fullSentence": "J'étudie le théâtre.",
+      "sentenceTrans": "I study theatre.",
+      "whyWrong": {
+        "la": "théâtre is masculine — le théâtre.",
+        "l'": "l' is only before a vowel; théâtre starts with a consonant.",
+        "les": "les is plural — one subject takes le."
+      }
+    },
+    {
+      "id": "u1-sio013-31",
       "sentenceBefore": "Je suis étudiant ",
       "sentenceAfter": " droit.",
       "answer": "en",
@@ -90,9 +558,9 @@
       "fullSentence": "Je suis étudiant en droit.",
       "sentenceTrans": "I'm a law student.",
       "whyWrong": {
-        "au": "être étudiant takes en + subject — en droit.",
-        "de": "de doesn't fit here — the frame is étudiant en + subject.",
-        "à": "à doesn't fit — say étudiant en droit."
+        "au": "Say en droit — the frame is être étudiant en + subject (vs j'étudie le droit).",
+        "de": "Say en droit — the frame is être étudiant en + subject (vs j'étudie le droit).",
+        "à": "Say en droit — the frame is être étudiant en + subject (vs j'étudie le droit)."
       }
     }
   ]

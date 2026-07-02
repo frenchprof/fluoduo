@@ -1,21 +1,21 @@
 {
   "id": "stress-pronouns",
   "title": "Moi, toi, lui...",
-  "subtitle": "Subject-only, stress-only, or either",
+  "subtitle": "Subject-only, stressed-only, or either",
   "categories": [
     {
-      "key": "subject",
-      "label": "SUJET",
-      "prefix": ""
+      "key": "stress",
+      "label": "C'est ___",
+      "prefix": "C'est "
     },
     {
-      "key": "stress",
-      "label": "TONIQUE",
+      "key": "subject",
+      "label": "___ (verb)",
       "prefix": ""
     },
     {
       "key": "either",
-      "label": "LES DEUX",
+      "label": "Both OK",
       "prefix": ""
     }
   ],
@@ -30,7 +30,7 @@
       "text": "MOI",
       "displayName": "moi",
       "category": "stress",
-      "meaning": "me (stress only)"
+      "meaning": "me (stressed only)"
     },
     {
       "text": "TU",
@@ -42,7 +42,7 @@
       "text": "TOI",
       "displayName": "toi",
       "category": "stress",
-      "meaning": "you sg. (stress only)"
+      "meaning": "you sg. (stressed only)"
     },
     {
       "text": "IL",
@@ -54,7 +54,7 @@
       "text": "LUI",
       "displayName": "lui",
       "category": "stress",
-      "meaning": "him (stress only)"
+      "meaning": "him (stressed only)"
     },
     {
       "text": "ELLE",
@@ -84,7 +84,7 @@
       "text": "EUX",
       "displayName": "eux",
       "category": "stress",
-      "meaning": "them m. (stress only)"
+      "meaning": "them m. (stressed only)"
     },
     {
       "text": "ELLES",
