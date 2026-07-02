@@ -34,6 +34,24 @@
           "prefix": "les "
         }
       ]
+    },
+    "lexicalator": {
+      "decoys": [
+        "çait",
+        "sain",
+        "jo",
+        "graf",
+        "lo",
+        "gie",
+        "toir",
+        "matic",
+        "glai",
+        "thème",
+        "phy",
+        "sique",
+        "din",
+        "fran"
+      ]
     }
   },
   "items": [
@@ -43,6 +61,10 @@
       "en": "French",
       "tags": [
         "col:le"
+      ],
+      "syllables": [
+        "fran",
+        "çais"
       ]
     },
     {
@@ -51,6 +73,10 @@
       "en": "art",
       "tags": [
         "col:le"
+      ],
+      "syllables": [
+        "des",
+        "sin"
       ]
     },
     {
@@ -59,6 +85,12 @@
       "en": "geography",
       "tags": [
         "col:la"
+      ],
+      "syllables": [
+        "gé",
+        "o",
+        "gra",
+        "phie"
       ]
     },
     {
@@ -67,6 +99,11 @@
       "en": "biology",
       "tags": [
         "col:la"
+      ],
+      "syllables": [
+        "bio",
+        "lo",
+        "gie"
       ]
     },
     {
@@ -75,6 +112,10 @@
       "en": "English",
       "tags": [
         "col:l_apos"
+      ],
+      "syllables": [
+        "an",
+        "glais"
       ]
     },
     {
@@ -83,6 +124,10 @@
       "en": "history",
       "tags": [
         "col:l_apos"
+      ],
+      "syllables": [
+        "his",
+        "toire"
       ]
     },
     {
@@ -91,6 +136,12 @@
       "en": "computer science",
       "tags": [
         "col:l_apos"
+      ],
+      "syllables": [
+        "in",
+        "for",
+        "ma",
+        "tique"
       ]
     },
     {
@@ -99,6 +150,12 @@
       "en": "maths",
       "tags": [
         "col:les"
+      ],
+      "syllables": [
+        "ma",
+        "thé",
+        "ma",
+        "tiques"
       ]
     },
     {
@@ -107,6 +164,9 @@
       "en": "science",
       "tags": [
         "col:les"
+      ],
+      "syllables": [
+        "sciences"
       ]
     },
     {
@@ -115,6 +175,9 @@
       "en": "languages",
       "tags": [
         "col:les"
+      ],
+      "syllables": [
+        "langues"
       ]
     }
   ]
