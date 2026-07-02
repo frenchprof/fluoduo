@@ -21,6 +21,51 @@ type SpeakOpts = {
 const FEMALE_VOICE = /amelie|audrey|aurélie|aurelie|marie|julie|hortense|virginie|chantal|léa|lea|female|femme|woman/i;
 const MALE_VOICE = /thomas|nicolas|paul|claude|henri|mathieu|male|homme|man/i;
 
+/** Pick a language- and gender-appropriate voice + pitch for an utterance. */
+function applyVoiceAndPitch(u: SpeechSynthesisUtterance, lang: string, gender?: "f" | "m") {
+  const voices = window.speechSynthesis.getVoices();
+  const inLang = voices.filter(
+    (x) => x.lang === lang || x.lang.startsWith(lang.split("-")[0]),
+  );
+  const rx = gender === "f" ? FEMALE_VOICE : gender === "m" ? MALE_VOICE : null;
+  const v = (rx && inLang.find((x) => rx.test(x.name))) || inLang[0];
+  if (v) u.voice = v;
+  u.rate = 0.95;
+  // Pitch is the reliable gender cue when a named voice isn't available.
+  u.pitch = gender === "f" ? 1.35 : gender === "m" ? 0.75 : 1;
+}
+
+/**
+ * Play a list of lines back-to-back, each with its own gender voice — for the
+ * atelier dialogues' "play all" control. Returns a stop() that cancels the run.
+ */
+export function speakSequence(
+  parts: { text: string; gender?: "f" | "m" }[],
+  lang = "fr-FR",
+): () => void {
+  if (typeof window === "undefined" || !window.speechSynthesis) return () => {};
+  const synth = window.speechSynthesis;
+  synth.cancel();
+  let cancelled = false;
+  let i = 0;
+  const next = () => {
+    if (cancelled || i >= parts.length) return;
+    const p = parts[i++];
+    const u = new SpeechSynthesisUtterance(p.text);
+    u.lang = lang;
+    applyVoiceAndPitch(u, lang, p.gender);
+    u.onend = next;
+    u.onerror = next;
+    if (synth.paused) synth.resume();
+    synth.speak(u);
+  };
+  next();
+  return () => {
+    cancelled = true;
+    synth.cancel();
+  };
+}
+
 export function speak(text: string, lang = "fr-FR", opts: SpeakOpts = {}) {
   if (typeof window === "undefined" || !window.speechSynthesis) return;
   const synth = window.speechSynthesis;
@@ -32,16 +77,7 @@ export function speak(text: string, lang = "fr-FR", opts: SpeakOpts = {}) {
 
   const u = new SpeechSynthesisUtterance(text);
   u.lang = lang;
-  const voices = synth.getVoices();
-  const inLang = voices.filter(
-    (x) => x.lang === lang || x.lang.startsWith(lang.split("-")[0]),
-  );
-  const rx = opts.gender === "f" ? FEMALE_VOICE : opts.gender === "m" ? MALE_VOICE : null;
-  const v = (rx && inLang.find((x) => rx.test(x.name))) || inLang[0];
-  if (v) u.voice = v;
-  u.rate = 0.95;
-  // Pitch is the reliable gender cue when a named voice isn't available.
-  u.pitch = opts.gender === "f" ? 1.35 : opts.gender === "m" ? 0.75 : 1;
+  applyVoiceAndPitch(u, lang, opts.gender);
 
   if (interrupt) {
     synth.cancel();
