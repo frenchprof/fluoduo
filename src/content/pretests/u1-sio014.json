@@ -16,7 +16,12 @@
         "sommes"
       ],
       "fullSentence": "Je suis singapourien.",
-      "sentenceTrans": "I am Singaporean."
+      "sentenceTrans": "I am Singaporean.",
+      "whyWrong": {
+        "sont": "sont goes with ils/elles, not je — je suis.",
+        "êtes": "êtes goes with vous, not je — je suis.",
+        "sommes": "sommes goes with nous, not je — je suis."
+      }
     },
     {
       "id": "u1-sio014-02",
@@ -29,7 +34,12 @@
         "sont"
       ],
       "fullSentence": "Tu es français ?",
-      "sentenceTrans": "Are you French?"
+      "sentenceTrans": "Are you French?",
+      "whyWrong": {
+        "est": "est goes with il/elle/on, not tu — tu es.",
+        "sommes": "sommes goes with nous, not tu — tu es.",
+        "sont": "sont goes with ils/elles, not tu — tu es."
+      }
     },
     {
       "id": "u1-sio014-03",
@@ -42,7 +52,12 @@
         "suis"
       ],
       "fullSentence": "Il est professeur.",
-      "sentenceTrans": "He is a professor."
+      "sentenceTrans": "He is a professor.",
+      "whyWrong": {
+        "sommes": "sommes goes with nous, not il — il est.",
+        "êtes": "êtes goes with vous, not il — il est.",
+        "suis": "suis goes with je, not il — il est."
+      }
     },
     {
       "id": "u1-sio014-04",
@@ -55,7 +70,12 @@
         "sommes"
       ],
       "fullSentence": "On est étudiants à NUS.",
-      "sentenceTrans": "We're students at NUS (casual \"on\")."
+      "sentenceTrans": "We're students at NUS (casual \"on\").",
+      "whyWrong": {
+        "êtes": "êtes goes with vous; on takes the il/elle form — on est.",
+        "es": "es goes with tu; on takes est.",
+        "sommes": "sommes goes with nous; even meaning 'we', on takes est."
+      }
     },
     {
       "id": "u1-sio014-05",
@@ -68,7 +88,12 @@
         "suis"
       ],
       "fullSentence": "Nous sommes dans la même classe.",
-      "sentenceTrans": "We are in the same class."
+      "sentenceTrans": "We are in the same class.",
+      "whyWrong": {
+        "sont": "sont goes with ils/elles, not nous — nous sommes.",
+        "êtes": "êtes goes with vous, not nous — nous sommes.",
+        "suis": "suis goes with je, not nous — nous sommes."
+      }
     },
     {
       "id": "u1-sio014-06",
@@ -81,7 +106,12 @@
         "est"
       ],
       "fullSentence": "Vous êtes le professeur de français ?",
-      "sentenceTrans": "Are you the French professor?"
+      "sentenceTrans": "Are you the French professor?",
+      "whyWrong": {
+        "sont": "sont goes with ils/elles, not vous — vous êtes.",
+        "sommes": "sommes goes with nous, not vous — vous êtes.",
+        "est": "est goes with il/elle, not vous — vous êtes."
+      }
     },
     {
       "id": "u1-sio014-07",
@@ -94,7 +124,12 @@
         "est"
       ],
       "fullSentence": "Marie et Léa sont étudiantes.",
-      "sentenceTrans": "Marie and Léa are students."
+      "sentenceTrans": "Marie and Léa are students.",
+      "whyWrong": {
+        "êtes": "êtes goes with vous; two people (ils/elles) take sont.",
+        "es": "es goes with tu; two people take sont.",
+        "est": "est is singular; two people take sont."
+      }
     },
     {
       "id": "u1-sio014-08",
@@ -107,7 +142,12 @@
         "sommes"
       ],
       "fullSentence": "Je suis en retard, pardon !",
-      "sentenceTrans": "I'm late, sorry!"
+      "sentenceTrans": "I'm late, sorry!",
+      "whyWrong": {
+        "es": "es goes with tu, not je — je suis.",
+        "est": "est goes with il/elle, not je — je suis.",
+        "sommes": "sommes goes with nous, not je — je suis."
+      }
     }
   ]
 }

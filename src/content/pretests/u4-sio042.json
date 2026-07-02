@@ -16,7 +16,12 @@
         "de la"
       ],
       "fullSentence": "Chaque matin, je bois du café.",
-      "sentenceTrans": "Every morning, I drink (some) coffee."
+      "sentenceTrans": "Every morning, I drink (some) coffee.",
+      "whyWrong": {
+        "le": "le café means coffee in general; drinking 'some' takes du.",
+        "un": "un café means 'a coffee' (a cup); for an amount use du.",
+        "de la": "café is masculine — du, not de la."
+      }
     },
     {
       "id": "u4-sio042-02",
@@ -29,7 +34,12 @@
         "du"
       ],
       "fullSentence": "Elle mange de la salade tous les midis.",
-      "sentenceTrans": "She eats (some) salad every lunchtime."
+      "sentenceTrans": "She eats (some) salad every lunchtime.",
+      "whyWrong": {
+        "la": "la salade means salad in general; eating 'some' takes de la.",
+        "une": "une salade means a whole salad; for an amount use de la.",
+        "du": "salade is feminine — de la, not du."
+      }
     },
     {
       "id": "u4-sio042-03",
@@ -42,7 +52,12 @@
         "de la"
       ],
       "fullSentence": "Tu veux de l' eau ?",
-      "sentenceTrans": "Do you want some water?"
+      "sentenceTrans": "Do you want some water?",
+      "whyWrong": {
+        "l'": "l'eau means 'the water'; asking for 'some' takes de l'.",
+        "du": "eau is feminine and starts with a vowel — de l', not du.",
+        "de la": "Before a vowel, de la elides to de l'."
+      }
     },
     {
       "id": "u4-sio042-04",
@@ -55,7 +70,12 @@
         "de"
       ],
       "fullSentence": "Il y a des oranges sur la table.",
-      "sentenceTrans": "There are some oranges on the table."
+      "sentenceTrans": "There are some oranges on the table.",
+      "whyWrong": {
+        "les": "les oranges means the specific oranges; 'some' is des.",
+        "de les": "de + les always contracts to des.",
+        "de": "In this affirmative sentence a plural count noun takes des, not bare de."
+      }
     },
     {
       "id": "u4-sio042-05",
@@ -68,7 +88,12 @@
         "une"
       ],
       "fullSentence": "J'adore la pizza.",
-      "sentenceTrans": "I love pizza (in general)."
+      "sentenceTrans": "I love pizza (in general).",
+      "whyWrong": {
+        "de la": "After adorer you use the definite article — la pizza, not the partitive.",
+        "du": "pizza is feminine, and after adorer you need la.",
+        "une": "adorer takes the general 'la pizza', not 'a pizza'."
+      }
     },
     {
       "id": "u4-sio042-06",
@@ -81,7 +106,12 @@
         "une"
       ],
       "fullSentence": "On ajoute de l' huile d'olive.",
-      "sentenceTrans": "You add some olive oil."
+      "sentenceTrans": "You add some olive oil.",
+      "whyWrong": {
+        "de la": "huile starts with a vowel — de la elides to de l'.",
+        "du": "huile is feminine — de l', not du.",
+        "une": "Here you add 'some' oil, an amount, so de l'."
+      }
     },
     {
       "id": "u4-sio042-07",
@@ -94,7 +124,12 @@
         "un"
       ],
       "fullSentence": "J'aime la bière, mais ce soir je bois du vin.",
-      "sentenceTrans": "I like beer, but tonight I'm drinking (some) wine."
+      "sentenceTrans": "I like beer, but tonight I'm drinking (some) wine.",
+      "whyWrong": {
+        "le": "le vin means wine in general; drinking 'some' takes du.",
+        "de la": "vin is masculine — du, not de la.",
+        "un": "un vin means 'a wine' (a glass or type); for an amount use du."
+      }
     }
   ]
 }

@@ -16,7 +16,12 @@
         "toute"
       ],
       "fullSentence": "C'est tout droit.",
-      "sentenceTrans": "It's straight ahead."
+      "sentenceTrans": "It's straight ahead.",
+      "whyWrong": {
+        "tous": "tous is the plural 'all' — in tout droit, tout is an invariable adverb.",
+        "très": "très means 'very' — 'straight ahead' is tout droit.",
+        "toute": "toute is feminine — here tout is an invariable adverb, not an adjective."
+      }
     },
     {
       "id": "u3-sio036-02",
@@ -29,7 +34,12 @@
         "tourné"
       ],
       "fullSentence": "Au feu rouge, il faut tourner à gauche.",
-      "sentenceTrans": "At the red light, you have to turn left."
+      "sentenceTrans": "At the red light, you have to turn left.",
+      "whyWrong": {
+        "tournez": "tournez is the vous imperative — after il faut you need the infinitive: tourner.",
+        "tourne": "tourne is a present-tense form — after il faut use the infinitive: tourner.",
+        "tourné": "tourné is the past participle — after il faut use the infinitive: tourner."
+      }
     },
     {
       "id": "u3-sio036-03",
@@ -42,7 +52,12 @@
         "premièrement"
       ],
       "fullSentence": "On prend la première rue à droite après le café.",
-      "sentenceTrans": "You take the first street on the right after the café."
+      "sentenceTrans": "You take the first street on the right after the café.",
+      "whyWrong": {
+        "premier": "premier is masculine — rue is feminine: première.",
+        "premières": "premières is feminine plural — one rue is singular: première.",
+        "premièrement": "premièrement means 'firstly' (adverb) — you need the ordinal adjective: première."
+      }
     },
     {
       "id": "u3-sio036-04",
@@ -55,7 +70,12 @@
         "un"
       ],
       "fullSentence": "Votre chambre est au premier étage.",
-      "sentenceTrans": "Your room is on the first floor."
+      "sentenceTrans": "Your room is on the first floor.",
+      "whyWrong": {
+        "première": "première is feminine — étage is masculine: premier.",
+        "premièrement": "premièrement means 'firstly' (adverb) — you need the ordinal adjective: premier.",
+        "un": "un is the cardinal 'one' — 'first floor' needs the ordinal premier."
+      }
     },
     {
       "id": "u3-sio036-05",
@@ -64,11 +84,16 @@
       "answer": "troisième",
       "distractors": [
         "trois",
-        "troième",
+        "troisièmes",
         "seconde"
       ],
       "fullSentence": "Le Marais est dans le troisième arrondissement.",
-      "sentenceTrans": "Le Marais is in the third arrondissement."
+      "sentenceTrans": "Le Marais is in the third arrondissement.",
+      "whyWrong": {
+        "trois": "trois is the cardinal 'three' — you need the ordinal: troisième.",
+        "troisièmes": "troisièmes is plural — arrondissement is singular: troisième.",
+        "seconde": "seconde means 'second' — Le Marais is in the third: troisième."
+      }
     },
     {
       "id": "u3-sio036-06",
@@ -81,7 +106,12 @@
         "descendu"
       ],
       "fullSentence": "Il faut descendre à Châtelet.",
-      "sentenceTrans": "You have to get off at Châtelet."
+      "sentenceTrans": "You have to get off at Châtelet.",
+      "whyWrong": {
+        "descendez": "descendez is the vous imperative — after il faut use the infinitive: descendre.",
+        "descend": "descend is a present-tense form (il descend) — after il faut use the infinitive: descendre.",
+        "descendu": "descendu is the past participle — after il faut use the infinitive: descendre."
+      }
     },
     {
       "id": "u3-sio036-07",
@@ -94,7 +124,12 @@
         "face à"
       ],
       "fullSentence": "La mairie se trouve en face de la gare.",
-      "sentenceTrans": "The town hall is opposite the station."
+      "sentenceTrans": "The town hall is opposite the station.",
+      "whyWrong": {
+        "en face du": "du already contains le — before la gare it's en face de.",
+        "devant de": "devant takes no de — it's devant la gare or en face de la gare.",
+        "face à": "face à la gare is possible, but the expression practised here is en face de."
+      }
     },
     {
       "id": "u3-sio036-08",
@@ -102,12 +137,17 @@
       "sentenceAfter": " du tout !",
       "answer": "loin",
       "distractors": [
-        "loins",
+        "long",
         "proche",
         "lointain"
       ],
       "fullSentence": "Vous n'êtes pas loin du tout !",
-      "sentenceTrans": "You're not far at all!"
+      "sentenceTrans": "You're not far at all!",
+      "whyWrong": {
+        "long": "long means 'long' in size — 'far' in distance is loin.",
+        "proche": "proche means 'near/close' — the opposite of what's meant: loin.",
+        "lointain": "lointain means 'distant/faraway' as an adjective — the set phrase is pas loin du tout."
+      }
     }
   ]
 }

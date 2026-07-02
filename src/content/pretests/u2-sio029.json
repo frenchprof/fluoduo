@@ -16,7 +16,12 @@
         "voulons"
       ],
       "fullSentence": "Je veux sortir ce soir.",
-      "sentenceTrans": "I want to go out tonight."
+      "sentenceTrans": "I want to go out tonight.",
+      "whyWrong": {
+        "veut": "veut is the il/elle form — with je it's veux.",
+        "voulez": "voulez is the vous form — with je it's veux.",
+        "voulons": "voulons is the nous form — with je it's veux."
+      }
     },
     {
       "id": "u2-sio029-02",
@@ -29,7 +34,12 @@
         "aimes"
       ],
       "fullSentence": "Tu veux venir avec nous au cinéma ?",
-      "sentenceTrans": "Do you want to come to the cinema with us?"
+      "sentenceTrans": "Do you want to come to the cinema with us?",
+      "whyWrong": {
+        "veut": "veut is the il/elle form — with tu it's veux.",
+        "voulez": "voulez is the vous form — with tu it's veux.",
+        "aimes": "aimes is from aimer (to like), not vouloir."
+      }
     },
     {
       "id": "u2-sio029-03",
@@ -42,7 +52,12 @@
         "veulent"
       ],
       "fullSentence": "Pierre veut un café.",
-      "sentenceTrans": "Pierre wants a coffee."
+      "sentenceTrans": "Pierre wants a coffee.",
+      "whyWrong": {
+        "veux": "veux is the je/tu form — with Pierre (il) it's veut.",
+        "voulons": "voulons is the nous form — one person takes veut.",
+        "veulent": "veulent is the ils/elles form — one person (Pierre) takes veut."
+      }
     },
     {
       "id": "u2-sio029-04",
@@ -52,10 +67,15 @@
       "distractors": [
         "voulons",
         "veulent",
-        "veulez"
+        "veux"
       ],
       "fullSentence": "Vous voulez un thé ou un café ?",
-      "sentenceTrans": "Would you like tea or coffee?"
+      "sentenceTrans": "Would you like tea or coffee?",
+      "whyWrong": {
+        "voulons": "voulons is the nous form — with vous it's voulez.",
+        "veulent": "veulent is the ils/elles form — with vous it's voulez.",
+        "veux": "veux is the je/tu form — with vous it's voulez."
+      }
     },
     {
       "id": "u2-sio029-05",
@@ -68,7 +88,12 @@
         "voulez"
       ],
       "fullSentence": "Je voudrais un sac, s'il vous plaît.",
-      "sentenceTrans": "I'd like a bag, please (polite)."
+      "sentenceTrans": "I'd like a bag, please (polite).",
+      "whyWrong": {
+        "veux": "veux ('I want') is blunt — the polite request is voudrais.",
+        "voudrai": "voudrai is future ('I will want') — the polite form is voudrais with -s.",
+        "voulez": "voulez is the vous form — with je it's voudrais."
+      }
     },
     {
       "id": "u2-sio029-06",
@@ -81,7 +106,12 @@
         "ne veut"
       ],
       "fullSentence": "Non, je ne veux pas sortir ce soir.",
-      "sentenceTrans": "No, I don't want to go out tonight."
+      "sentenceTrans": "No, I don't want to go out tonight.",
+      "whyWrong": {
+        "veux ne": "ne goes before the verb — ne veux, not veux ne.",
+        "n'veux": "ne doesn't elide before a consonant — say ne veux, not n'veux.",
+        "ne veut": "veut is the il form — with je it's ne veux."
+      }
     }
   ]
 }

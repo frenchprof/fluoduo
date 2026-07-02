@@ -16,7 +16,12 @@
         "les"
       ],
       "fullSentence": "Le pays, c'est la France.",
-      "sentenceTrans": "The country is France."
+      "sentenceTrans": "The country is France.",
+      "whyWrong": {
+        "le": "France is feminine — la France.",
+        "l'": "l' is only before a vowel; France starts with a consonant.",
+        "les": "les is plural; France is one country — la."
+      }
     },
     {
       "id": "u1-sio015-02",
@@ -29,7 +34,12 @@
         "les"
       ],
       "fullSentence": "Le pays, c'est le Portugal.",
-      "sentenceTrans": "The country is Portugal."
+      "sentenceTrans": "The country is Portugal.",
+      "whyWrong": {
+        "la": "Portugal is masculine — le Portugal.",
+        "l'": "l' is only before a vowel; Portugal starts with a consonant.",
+        "les": "les is plural; Portugal is one country — le."
+      }
     },
     {
       "id": "u1-sio015-03",
@@ -42,7 +52,12 @@
         "les"
       ],
       "fullSentence": "Le pays, c'est l' Allemagne.",
-      "sentenceTrans": "The country is Germany."
+      "sentenceTrans": "The country is Germany.",
+      "whyWrong": {
+        "la": "Allemagne starts with a vowel — la elides to l'.",
+        "le": "Allemagne starts with a vowel — le elides to l'.",
+        "les": "les is plural; Allemagne is one country — l'."
+      }
     },
     {
       "id": "u1-sio015-04",
@@ -55,7 +70,12 @@
         "l'"
       ],
       "fullSentence": "Le pays, c'est les États-Unis.",
-      "sentenceTrans": "The country is the United States."
+      "sentenceTrans": "The country is the United States.",
+      "whyWrong": {
+        "le": "États-Unis is plural — les.",
+        "la": "États-Unis is plural — les.",
+        "l'": "l' is singular before a vowel; États-Unis is plural — les."
+      }
     },
     {
       "id": "u1-sio015-05",
@@ -68,7 +88,12 @@
         "les"
       ],
       "fullSentence": "Le pays, c'est le Mexique.",
-      "sentenceTrans": "The country is Mexico."
+      "sentenceTrans": "The country is Mexico.",
+      "whyWrong": {
+        "la": "Mexique is masculine — le Mexique.",
+        "l'": "l' is only before a vowel; Mexique starts with a consonant.",
+        "les": "les is plural; Mexique is one country — le."
+      }
     },
     {
       "id": "u1-sio015-06",
@@ -81,7 +106,12 @@
         "l'"
       ],
       "fullSentence": "Le pays, c'est les Philippines.",
-      "sentenceTrans": "The country is the Philippines."
+      "sentenceTrans": "The country is the Philippines.",
+      "whyWrong": {
+        "la": "Philippines is plural — les.",
+        "le": "Philippines is plural — les.",
+        "l'": "l' is singular before a vowel; Philippines is plural — les."
+      }
     },
     {
       "id": "u1-sio015-07",
@@ -94,7 +124,12 @@
         "les"
       ],
       "fullSentence": "Le pays, c'est ∅ Singapour.",
-      "sentenceTrans": "The country is Singapore."
+      "sentenceTrans": "The country is Singapore.",
+      "whyWrong": {
+        "le": "Singapour takes no article — say c'est Singapour.",
+        "la": "Singapour takes no article — say c'est Singapour.",
+        "les": "Singapour takes no article — say c'est Singapour."
+      }
     },
     {
       "id": "u1-sio015-08",
@@ -107,7 +142,12 @@
         "les"
       ],
       "fullSentence": "Le pays, c'est l' Algérie.",
-      "sentenceTrans": "The country is Algeria."
+      "sentenceTrans": "The country is Algeria.",
+      "whyWrong": {
+        "la": "Algérie starts with a vowel — la elides to l'.",
+        "le": "Algérie starts with a vowel — le elides to l'.",
+        "les": "les is plural; Algérie is one country — l'."
+      }
     }
   ]
 }

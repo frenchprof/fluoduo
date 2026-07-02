@@ -16,7 +16,12 @@
         "nous"
       ],
       "fullSentence": "— Qui est là ? — C'est moi !",
-      "sentenceTrans": "— Who's there? — It's me!"
+      "sentenceTrans": "— Who's there? — It's me!",
+      "whyWrong": {
+        "vous": "vous means 'you', not 'me'.",
+        "elles": "elles means 'they' (feminine), not 'me'.",
+        "nous": "nous means 'us / we', not just 'me'."
+      }
     },
     {
       "id": "u1-sio011-02",
@@ -29,7 +34,12 @@
         "elle"
       ],
       "fullSentence": "Moi, c'est Léa. Et toi ?",
-      "sentenceTrans": "Me, I'm Léa. And you?"
+      "sentenceTrans": "Me, I'm Léa. And you?",
+      "whyWrong": {
+        "tu": "tu is a subject pronoun; after 'et' you need the stressed form toi.",
+        "nous": "nous means 'us', not 'you'.",
+        "elle": "elle means 'her / she', not 'you'."
+      }
     },
     {
       "id": "u1-sio011-03",
@@ -42,7 +52,12 @@
         "vous"
       ],
       "fullSentence": "C'est Marc. Je suis avec lui en classe.",
-      "sentenceTrans": "That's Marc. I'm with him in class."
+      "sentenceTrans": "That's Marc. I'm with him in class.",
+      "whyWrong": {
+        "nous": "nous means 'us'; Marc is one other person — avec lui.",
+        "eux": "eux is 'them' (masculine plural); Marc is one man — lui.",
+        "vous": "vous means 'you', not 'him'."
+      }
     },
     {
       "id": "u1-sio011-04",
@@ -55,7 +70,12 @@
         "eux"
       ],
       "fullSentence": "Mika est japonaise. Je parle avec elle en français.",
-      "sentenceTrans": "Mika is Japanese. I speak French with her."
+      "sentenceTrans": "Mika is Japanese. I speak French with her.",
+      "whyWrong": {
+        "moi": "moi means 'me', but the sentence is about Mika — elle.",
+        "lui": "lui is 'him'; Mika is a woman — elle.",
+        "eux": "eux is 'them'; Mika is one person — elle."
+      }
     },
     {
       "id": "u1-sio011-05",
@@ -68,7 +88,12 @@
         "elles"
       ],
       "fullSentence": "Marc et Anna sont dans mon groupe. J'étudie avec eux.",
-      "sentenceTrans": "Marc and Anna are in my group. I study with them."
+      "sentenceTrans": "Marc and Anna are in my group. I study with them.",
+      "whyWrong": {
+        "vous": "vous means 'you', not 'them'.",
+        "toi": "toi is 'you' (singular); this refers to two people — eux.",
+        "elles": "elles is feminine 'them'; a mixed group (Marc et Anna) takes eux."
+      }
     },
     {
       "id": "u1-sio011-06",
@@ -79,7 +104,10 @@
         "Moi"
       ],
       "fullSentence": "Je suis étudiant.",
-      "sentenceTrans": "I am a student."
+      "sentenceTrans": "I am a student.",
+      "whyWrong": {
+        "Moi": "Moi is a stressed pronoun and can't be the subject of 'suis' — use Je."
+      }
     },
     {
       "id": "u1-sio011-07",
@@ -90,7 +118,10 @@
         "Je"
       ],
       "fullSentence": "Moi, je suis français.",
-      "sentenceTrans": "Me, I'm French."
+      "sentenceTrans": "Me, I'm French.",
+      "whyWrong": {
+        "Je": "Je can't stand alone before the comma — the stressed form here is Moi."
+      }
     },
     {
       "id": "u1-sio011-08",
@@ -101,7 +132,10 @@
         "Il"
       ],
       "fullSentence": "Lui, il est mexicain.",
-      "sentenceTrans": "Him, he's Mexican."
+      "sentenceTrans": "Him, he's Mexican.",
+      "whyWrong": {
+        "Il": "Il is the subject pronoun; the standalone emphatic form here is Lui."
+      }
     }
   ]
 }

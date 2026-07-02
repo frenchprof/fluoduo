@@ -16,7 +16,12 @@
         "allons"
       ],
       "fullSentence": "Je vais au cinéma ce soir.",
-      "sentenceTrans": "I'm going to the cinema tonight."
+      "sentenceTrans": "I'm going to the cinema tonight.",
+      "whyWrong": {
+        "vas": "vas is the tu form — with je it's vais.",
+        "va": "va is the il/elle form — with je it's vais.",
+        "allons": "allons is the nous form — with je it's vais."
+      }
     },
     {
       "id": "u2-sio026-02",
@@ -29,7 +34,12 @@
         "va"
       ],
       "fullSentence": "Nous allons au restaurant samedi.",
-      "sentenceTrans": "We're going to the restaurant on Saturday."
+      "sentenceTrans": "We're going to the restaurant on Saturday.",
+      "whyWrong": {
+        "vont": "vont is the ils/elles form — with nous it's allons.",
+        "allez": "allez is the vous form — with nous it's allons.",
+        "va": "va is singular — nous takes allons."
+      }
     },
     {
       "id": "u2-sio026-03",
@@ -42,7 +52,12 @@
         "à"
       ],
       "fullSentence": "Je vais au cinéma.",
-      "sentenceTrans": "I'm going to the cinema."
+      "sentenceTrans": "I'm going to the cinema.",
+      "whyWrong": {
+        "à le": "à + le contracts to au — au cinéma, never 'à le'.",
+        "à la": "cinéma is masculine — à + le = au, not à la.",
+        "à": "à alone isn't enough with cinéma — you need the article: au."
+      }
     },
     {
       "id": "u2-sio026-04",
@@ -55,7 +70,12 @@
         "à"
       ],
       "fullSentence": "Léa va à la piscine le mardi.",
-      "sentenceTrans": "Léa goes to the pool on Tuesdays."
+      "sentenceTrans": "Léa goes to the pool on Tuesdays.",
+      "whyWrong": {
+        "au": "piscine is feminine — à la piscine, not au.",
+        "à le": "'à le' isn't valid, and piscine is feminine anyway — à la.",
+        "à": "à alone isn't enough — feminine piscine takes à la."
+      }
     },
     {
       "id": "u2-sio026-05",
@@ -68,7 +88,12 @@
         "à le"
       ],
       "fullSentence": "Le patient va à l' hôpital.",
-      "sentenceTrans": "The patient is going to the hospital."
+      "sentenceTrans": "The patient is going to the hospital.",
+      "whyWrong": {
+        "au": "hôpital starts with a vowel sound — à l', not au.",
+        "à la": "hôpital starts with a vowel sound — à l', not à la.",
+        "à le": "'à le' isn't valid, and before a vowel it becomes à l'."
+      }
     },
     {
       "id": "u2-sio026-06",
@@ -81,7 +106,12 @@
         "à la"
       ],
       "fullSentence": "Je vais aux toilettes, je reviens.",
-      "sentenceTrans": "I'm going to the toilet, I'll be back."
+      "sentenceTrans": "I'm going to the toilet, I'll be back.",
+      "whyWrong": {
+        "au": "toilettes is plural — à + les = aux, not au.",
+        "à les": "à + les contracts to aux — never 'à les'.",
+        "à la": "toilettes is plural — use aux, not à la."
+      }
     },
     {
       "id": "u2-sio026-07",
@@ -94,7 +124,12 @@
         "en"
       ],
       "fullSentence": "L'année prochaine, je vais à Paris.",
-      "sentenceTrans": "Next year, I'm going to Paris."
+      "sentenceTrans": "Next year, I'm going to Paris.",
+      "whyWrong": {
+        "au": "Cities take plain à — à Paris, not au.",
+        "à la": "Cities take plain à — à Paris, not à la.",
+        "en": "en is for feminine countries — cities take à: à Paris."
+      }
     }
   ]
 }

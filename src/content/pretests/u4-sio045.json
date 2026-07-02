@@ -16,7 +16,12 @@
         "souvent"
       ],
       "fullSentence": "Je mange toujours du riz le soir.",
-      "sentenceTrans": "I always eat rice in the evening."
+      "sentenceTrans": "I always eat rice in the evening.",
+      "whyWrong": {
+        "parfois": "That means 'sometimes', but the sentence says 'always'.",
+        "jamais": "That means 'never' and needs 'ne'; the meaning here is 'always'.",
+        "souvent": "That means 'often', but the sentence says 'always'."
+      }
     },
     {
       "id": "u4-sio045-02",
@@ -24,12 +29,17 @@
       "sentenceAfter": " du gâteau le week-end.",
       "answer": "parfois",
       "distractors": [
-        "quelque-fois",
+        "souvent",
         "parfois de",
         "quelque fois"
       ],
       "fullSentence": "Nous mangeons parfois du gâteau le week-end.",
-      "sentenceTrans": "We sometimes eat cake at the weekend."
+      "sentenceTrans": "We sometimes eat cake at the weekend.",
+      "whyWrong": {
+        "souvent": "That means 'often', but the sentence says 'sometimes'.",
+        "parfois de": "parfois is a complete adverb — no 'de' follows it here.",
+        "quelque fois": "The adverb is one word, quelquefois (or parfois) — not 'quelque fois'."
+      }
     },
     {
       "id": "u4-sio045-03",
@@ -42,7 +52,12 @@
         "rare"
       ],
       "fullSentence": "Je mange rarement de la restauration rapide.",
-      "sentenceTrans": "I rarely eat fast food."
+      "sentenceTrans": "I rarely eat fast food.",
+      "whyWrong": {
+        "peu souvent": "French says rarement, not 'peu souvent'.",
+        "très rare": "rare is an adjective ('rare'); the adverb is rarement.",
+        "rare": "That's the adjective; you need the adverb rarement to modify the verb."
+      }
     },
     {
       "id": "u4-sio045-04",
@@ -55,7 +70,12 @@
         "toujours pas"
       ],
       "fullSentence": "Elle ne mange jamais de sucre.",
-      "sentenceTrans": "She never eats sugar."
+      "sentenceTrans": "She never eats sugar.",
+      "whyWrong": {
+        "pas": "ne...pas means 'not'; for 'never' use ne...jamais.",
+        "pas jamais": "Use only one negative word — ne...jamais.",
+        "toujours pas": "That means 'still not', not 'never'."
+      }
     },
     {
       "id": "u4-sio045-05",
@@ -68,7 +88,12 @@
         "chaque les jours"
       ],
       "fullSentence": "Je bois du café tous les jours.",
-      "sentenceTrans": "I drink coffee every day."
+      "sentenceTrans": "I drink coffee every day.",
+      "whyWrong": {
+        "tout les jours": "tout must agree — the masculine plural is tous.",
+        "toutes les jours": "jour is masculine — tous, not toutes.",
+        "chaque les jours": "chaque is singular and takes no article — say chaque jour or tous les jours."
+      }
     },
     {
       "id": "u4-sio045-06",
@@ -81,7 +106,12 @@
         "du temps en temps"
       ],
       "fullSentence": "On mange au restaurant de temps en temps.",
-      "sentenceTrans": "We eat out from time to time."
+      "sentenceTrans": "We eat out from time to time.",
+      "whyWrong": {
+        "des temps en temps": "The fixed phrase uses de, not des.",
+        "de temps à temps": "The set expression is 'de temps en temps' (or de temps à autre).",
+        "du temps en temps": "The fixed phrase starts with de, not du."
+      }
     }
   ]
 }
