@@ -1,0 +1,57 @@
+{
+  "id": "parce-que",
+  "title": "Pourquoi ? Parce que…",
+  "subtitle": "giving reasons",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 2,
+  "lessonNo": 5,
+  "lessonSlug": "parce-que",
+  "tags": [],
+  "seq": 205,
+  "items": [
+    {
+      "id": "parce-que-01",
+      "fr": "Parce que c'est amusant.",
+      "en": "Because it's fun.",
+      "example": "Pourquoi tu aimes le sport ?",
+      "tags": []
+    },
+    {
+      "id": "parce-que-02",
+      "fr": "Parce que c'est intéressant.",
+      "en": "Because it's interesting.",
+      "example": "Pourquoi tu aimes le français ?",
+      "tags": []
+    },
+    {
+      "id": "parce-que-03",
+      "fr": "Parce que j'aime dormir.",
+      "en": "Because I like sleeping.",
+      "example": "Pourquoi tu aimes le week-end ?",
+      "tags": []
+    },
+    {
+      "id": "parce-que-04",
+      "fr": "Parce que j'aime beaucoup les films.",
+      "en": "Because I really like films.",
+      "example": "Pourquoi tu vas au cinéma ?",
+      "tags": []
+    },
+    {
+      "id": "parce-que-05",
+      "fr": "Parce que c'est calme.",
+      "en": "Because it's quiet.",
+      "example": "Pourquoi tu étudies à la bibliothèque ?",
+      "tags": []
+    },
+    {
+      "id": "parce-que-06",
+      "fr": "Parce que je fais du sport avec mes amis.",
+      "en": "Because I do sport with my friends.",
+      "example": "Pourquoi tu aimes le samedi ?",
+      "tags": []
+    }
+  ]
+}

@@ -12,7 +12,16 @@
  * Practice-side action only.
  */
 import { useEffect, useState } from "react";
-import { isSioDone, loadProgress, markSioDone, unmarkSioDone, type Progress } from "@/lib/progress";
+import { isSioDone, itemsMastery, loadProgress, markSioDone, unmarkSioDone, GEMS_MASTERY_BONUS, type Progress } from "@/lib/progress";
+import { SIOS } from "@/content/sios";
+import { CURATED } from "@/content/collections";
+
+/** The practice-item ids for a SIO's deck (empty if it has none). */
+function deckItemIds(sioId: string): string[] {
+  const collectionId = SIOS.find((s) => s.id === sioId)?.collectionId;
+  if (!collectionId) return [];
+  return CURATED.find((c) => c.id === collectionId)?.items.map((it) => it.id) ?? [];
+}
 
 export default function MarkDoneButton({ sioId }: { sioId: string }) {
   const [progress, setProgress] = useState<Progress | null>(null);
@@ -25,17 +34,25 @@ export default function MarkDoneButton({ sioId }: { sioId: string }) {
 
   const done = isSioDone(sioId, progress);
 
+  // Weight the XP by demonstrated mastery of the SIO's practice items.
+  function complete() {
+    const p = loadProgress();
+    setProgress(markSioDone(sioId, itemsMastery(deckItemIds(sioId), p)));
+  }
+
   return (
     <div className="mt-3 flex items-center gap-3">
       <button
         type="button"
-        onClick={() => setProgress(done ? unmarkSioDone(sioId) : markSioDone(sioId))}
+        onClick={() => (done ? setProgress(unmarkSioDone(sioId)) : complete())}
         className={`fluo-btn fluo-btn-sm ${done ? "fluo-btn-correct" : ""}`}
       >
         {done ? "✓ Done" : "Mark as done"}
       </button>
       <span className="text-xs text-[color:var(--fluo-ink-soft)]">
-        {done ? "Unlocked the next objective · +10 💎 earned" : "Unlocks the next objective on the path and earns 💎"}
+        {done
+          ? "Unlocked the next objective · 💎 earned"
+          : `Unlocks the next objective · earns 💎 (up to +${GEMS_MASTERY_BONUS} more for mastered practice)`}
       </span>
     </div>
   );

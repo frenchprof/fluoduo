@@ -47,7 +47,13 @@ export type ItemSrs = {
 };
 
 export const MAX_HEARTS = 5;
-const GEMS_PER_DONE = 10;
+// Correctness-weighted XP: completing a SIO always earns the base; on top of
+// that a mastery bonus scales with how many of the SIO's practice items the
+// learner has actually gotten right (their itemSrs state). Someone who drilled
+// the deck to mastery earns up to GEMS_BASE + GEMS_MASTERY_BONUS; a bare
+// self-mark with no practice still earns the base.
+const GEMS_BASE = 10;
+export const GEMS_MASTERY_BONUS = 10;
 const STORAGE_KEY = "fluolingo:progress";
 
 function todayStr(): string {
@@ -90,10 +96,29 @@ export function isSioDone(id: string, p: Progress): boolean {
   return p.doneSios.includes(id);
 }
 
-export function markSioDone(id: string): Progress {
+/**
+ * Fraction (0..1) of the given items the learner has gotten right — an item
+ * counts as "known" when its SRS ladder has advanced past 0 (a miss resets it
+ * to 0). Returns 0 for an empty list. This is the correctness signal that
+ * weights XP and the Reviser's due bias.
+ */
+export function itemsMastery(itemIds: string[], p: Progress): number {
+  if (itemIds.length === 0) return 0;
+  const known = itemIds.filter((id) => (p.itemSrs[id]?.intervalDays ?? 0) > 0).length;
+  return known / itemIds.length;
+}
+
+/**
+ * Mark a SIO done. `accuracy` (0..1) is the learner's demonstrated mastery of
+ * its practice items — pass it to earn the mastery bonus on top of the base.
+ * Omit it (or pass a deckless SIO's 0) and only the base is awarded.
+ */
+export function markSioDone(id: string, accuracy?: number): Progress {
   let p = loadProgress();
   if (!p.doneSios.includes(id)) {
-    p = { ...p, doneSios: [...p.doneSios, id], gems: p.gems + GEMS_PER_DONE };
+    const acc = accuracy == null ? 0 : Math.max(0, Math.min(1, accuracy));
+    const gain = GEMS_BASE + Math.round(GEMS_MASTERY_BONUS * acc);
+    p = { ...p, doneSios: [...p.doneSios, id], gems: p.gems + gain };
   }
   return saveProgress(bumpStreakToday(p));
 }

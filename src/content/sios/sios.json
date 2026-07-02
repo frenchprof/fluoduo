@@ -207,7 +207,7 @@
     "isProduction": false,
     "canDo": "I can say who someone is and give basic information about people, making the form agree for gender and number.",
     "competence": "Conjugate être in all 8 persons (≥7/8); apply m/f and sg/pl agreement to étudiant(e)(s).",
-    "collectionId": null
+    "collectionId": "etre-etudiant"
   },
   {
     "id": "SIO-015",
@@ -372,7 +372,7 @@
     "isProduction": false,
     "canDo": "I can ask why and give a simple reason for a preference.",
     "competence": "Answer Pourquoi ? with parce que c'est + adjective or parce que j'aime + N for ≥3 prompts.",
-    "collectionId": null
+    "collectionId": "parce-que"
   },
   {
     "id": "SIO-026",
@@ -432,7 +432,7 @@
     "isProduction": false,
     "canDo": "I can invite someone and accept, refuse, or suggest another time, using set phrases.",
     "competence": "Use vouloir/pouvoir to perform all 4 functions (inviter/accepter/refuser/reporter) in a short dialogue.",
-    "collectionId": null
+    "collectionId": "vouloir-inviter"
   },
   {
     "id": "SIO-030",
@@ -552,7 +552,7 @@
     "isProduction": false,
     "canDo": "I can say what is possible or allowed in a place and ask for permission.",
     "competence": "Conjugate pouvoir (key persons); produce ≥3 on peut / je peux / vous pouvez + infinitive statements.",
-    "collectionId": null
+    "collectionId": "pouvoir"
   },
   {
     "id": "SIO-038",
@@ -582,7 +582,7 @@
     "isProduction": false,
     "canDo": "I can express what I want and need politely.",
     "competence": "Use je voudrais / j'aimerais / j'ai besoin de / je veux + noun or infinitive (all 4).",
-    "collectionId": null
+    "collectionId": "envies-besoins"
   },
   {
     "id": "SIO-040",

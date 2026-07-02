@@ -1,0 +1,63 @@
+{
+  "id": "envies-besoins",
+  "title": "Envies et besoins",
+  "subtitle": "voudrais · aimerais · besoin de · veux",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 3,
+  "lessonNo": 9,
+  "lessonSlug": "wants-needs",
+  "tags": [],
+  "seq": 309,
+  "items": [
+    {
+      "id": "envies-besoins-01",
+      "fr": "Je voudrais un café.",
+      "en": "I would like a coffee.",
+      "tags": []
+    },
+    {
+      "id": "envies-besoins-02",
+      "fr": "Je voudrais visiter le Louvre.",
+      "en": "I would like to visit the Louvre.",
+      "tags": []
+    },
+    {
+      "id": "envies-besoins-03",
+      "fr": "J'aimerais voyager.",
+      "en": "I'd like to travel.",
+      "tags": []
+    },
+    {
+      "id": "envies-besoins-04",
+      "fr": "J'aimerais une chambre pour deux personnes.",
+      "en": "I'd like a room for two.",
+      "tags": []
+    },
+    {
+      "id": "envies-besoins-05",
+      "fr": "J'ai besoin d'un hôtel.",
+      "en": "I need a hotel.",
+      "tags": []
+    },
+    {
+      "id": "envies-besoins-06",
+      "fr": "J'ai besoin d'un plan.",
+      "en": "I need a map.",
+      "tags": []
+    },
+    {
+      "id": "envies-besoins-07",
+      "fr": "Je veux visiter Paris.",
+      "en": "I want to visit Paris.",
+      "tags": []
+    },
+    {
+      "id": "envies-besoins-08",
+      "fr": "Je veux partir en vacances.",
+      "en": "I want to go on holiday.",
+      "tags": []
+    }
+  ]
+}

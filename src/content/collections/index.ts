@@ -45,6 +45,12 @@ import demonstratifs from "./demonstratifs.json";
 import commerces from "./commerces.json";
 import modaux from "./modaux.json";
 
+import etreEtudiant from "./etre-etudiant.json";
+import parceQue from "./parce-que.json";
+import vouloirInviter from "./vouloir-inviter.json";
+import pouvoir from "./pouvoir.json";
+import enviesBesoins from "./envies-besoins.json";
+
 export const CURATED: Collection[] = [
   weather as Collection,
   countries as Collection,
@@ -80,4 +86,9 @@ export const CURATED: Collection[] = [
   demonstratifs as Collection,
   commerces as Collection,
   modaux as Collection,
+  etreEtudiant as Collection,
+  parceQue as Collection,
+  vouloirInviter as Collection,
+  pouvoir as Collection,
+  enviesBesoins as Collection,
 ].sort((a, b) => (a.seq ?? 999) - (b.seq ?? 999));
