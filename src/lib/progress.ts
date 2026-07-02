@@ -23,6 +23,13 @@
  *     no refill mechanic yet (deliberately deferred — a refill/spend design
  *     needs its own decision, don't invent one here). Hearts must never be
  *     spent by the Pretest — see the pretesting-effect rule in the handoff doc.
+ *   - itemSrs: per-item spacing state written by Practice-side surfaces with a
+ *     binary correctness check (dice Practice, Match It, Flip It's Test
+ *     Yourself). Fixed ladder, NOT SM-2 (src/lib/firebase/srs.ts stays the
+ *     future synced upgrade path, unwired by design — it needs auth). Read by
+ *     the Reviser (when built) to bias its mixed set toward due items. The
+ *     Pretest and Say It never write here: the Pretest is a cold diagnostic,
+ *     and Say It's STT grader is a placeholder, not a trustworthy signal yet.
  */
 
 export type Progress = {
@@ -31,6 +38,12 @@ export type Progress = {
   gems: number;
   streak: number;
   lastActiveDay: string | null; // "YYYY-MM-DD"
+  itemSrs: Record<string, ItemSrs>;
+};
+
+export type ItemSrs = {
+  due: number; // epoch ms when the item should resurface
+  intervalDays: number;
 };
 
 export const MAX_HEARTS = 5;
@@ -42,7 +55,7 @@ function todayStr(): string {
 }
 
 export function defaultProgress(): Progress {
-  return { doneSios: [], hearts: MAX_HEARTS, gems: 0, streak: 0, lastActiveDay: null };
+  return { doneSios: [], hearts: MAX_HEARTS, gems: 0, streak: 0, lastActiveDay: null, itemSrs: {} };
 }
 
 export function loadProgress(): Progress {
@@ -94,4 +107,37 @@ export function unmarkSioDone(id: string): Progress {
 export function spendHeart(): Progress {
   const p = loadProgress();
   return saveProgress({ ...p, hearts: Math.max(0, p.hearts - 1) });
+}
+
+// ladder: correct → 1d → 3d → 7d → 14d (cap); miss resets to 0 (due now)
+const SRS_LADDER_DAYS = [1, 3, 7, 14];
+const DAY_MS = 86_400_000;
+
+/** Pure ladder step — exported so the Reviser (and tests) can reason about it. */
+export function stepItemSrs(prev: ItemSrs | undefined, correct: boolean, now: number): ItemSrs {
+  if (!correct) return { due: now, intervalDays: 0 };
+  // Early review (item not due yet) doesn't climb the ladder — otherwise
+  // re-matching a word across Match It levels would rush 1d → 14d in one sitting.
+  if (prev && now < prev.due) return prev;
+  const current = prev?.intervalDays ?? 0;
+  const next = SRS_LADDER_DAYS.find((d) => d > current) ?? SRS_LADDER_DAYS[SRS_LADDER_DAYS.length - 1];
+  return { due: now + next * DAY_MS, intervalDays: next };
+}
+
+/**
+ * Record a binary practice result for one item. Call from event handlers only
+ * (never during render — Date.now()). Every attempt writes: a miss resets the
+ * ladder, so correct-after-retry lands back at the 1-day rung — that IS the
+ * intended "repaired but fragile" signal, don't gate this to first attempts.
+ */
+export function recordItemResult(itemId: string, correct: boolean): Progress {
+  const p = loadProgress();
+  const itemSrs = { ...p.itemSrs, [itemId]: stepItemSrs(p.itemSrs[itemId], correct, Date.now()) };
+  return saveProgress({ ...p, itemSrs });
+}
+
+/** True if the item was never practiced or its interval has elapsed — the Reviser's bias signal. */
+export function isItemDue(itemId: string, p: Progress, now: number): boolean {
+  const s = p.itemSrs[itemId];
+  return !s || s.due <= now;
 }

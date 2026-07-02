@@ -19,7 +19,7 @@
 import { useEffect, useReducer, useRef, useState, useCallback } from "react";
 import { speak } from "@/games/letris/speech";
 import { chiptune } from "@/games/audio/chiptune";
-import { spendHeart } from "@/lib/progress";
+import { recordItemResult, spendHeart } from "@/lib/progress";
 
 export type ConveyorPair = { id: string; card: string; match: string; speak?: string; greet?: string };
 
@@ -199,6 +199,7 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
     if (t - lastCommitRef.current < 220) { s.sel = null; render(); return; } // ignore a stray rapid second commit
     lastCommitRef.current = t;
     if (card.back === back) {
+      recordItemResult(card.pairId, true); // spacing ladder (see progress.ts)
       s.cards = s.cards.filter((c) => c.uid !== card.uid);
       s.combo += 1; s.bestCombo = Math.max(s.bestCombo, s.combo);
       s.score += 10 + Math.min(s.combo - 1, 5) * 2;
@@ -221,6 +222,7 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
       }
     } else {
       s.lives -= 1; s.combo = 0; s.flash = { uid: card.uid, kind: "bad" };
+      recordItemResult(card.pairId, false); // miss → spacing ladder resets to due-now
       spendHeart(); // decrements the shared cross-game hearts pool (Practice-side only)
       if (s.lives <= 0) { s.over = true; chiptune.gameOver(); } // stops loop + sad descent
       else chiptune.lostLife();                                 // duck loop + "uh-oh" sting

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CURATED } from "@/content/collections";
 import { toPracticeSet } from "@/lib/practice/engine";
 import { speak } from "@/games/letris/speech";
+import { recordItemResult } from "@/lib/progress";
 import type { PracticeItem, PracticeSet } from "@/lib/practice/engine";
 
 const TTS_KEY = "fluolingo.practiceTts.v1";
@@ -91,15 +92,18 @@ function stableShuffle<T>(arr: T[], seed: string): T[] {
 }
 
 function PracticeRunner({ set }: { set: PracticeSet }) {
-  const [shuffledItems, setShuffledItems] = useState<PracticeItem[]>([]);
+  const [queue, setQueue] = useState<PracticeItem[]>([]);
   const [step, setStep] = useState(0);
-  const [verdicts, setVerdicts] = useState<Verdict[]>([]);
+  // First-attempt verdict per item id — drives the score AND which items get
+  // the end-of-run review round (misses re-queued once, session-local only).
+  const [firstResults, setFirstResults] = useState<Record<string, boolean>>({});
+  const [reviewRound, setReviewRound] = useState(false);
   const [submitted, setSubmitted] = useState<Verdict | null>(null);
   const [ttsOn, setTtsOn] = useState(true);
 
   // Shuffle on mount (client-side only — avoids SSR hydration mismatch).
   useEffect(() => {
-    setShuffledItems(shuffle(set.items));
+    setQueue(shuffle(set.items));
   }, [set]);
 
   useEffect(() => {
@@ -114,9 +118,9 @@ function PracticeRunner({ set }: { set: PracticeSet }) {
     } catch {}
   }, [ttsOn]);
 
-  const total = shuffledItems.length;
-  const item = shuffledItems[step];
-  const done = step >= total && total > 0;
+  const item = queue[step];
+  const done = step >= queue.length && queue.length > 0;
+  const uniqueTotal = set.items.length;
 
   const choices = useMemo(
     () => (item ? stableShuffle(set.allLabels, item.id) : []),
@@ -129,28 +133,46 @@ function PracticeRunner({ set }: { set: PracticeSet }) {
     }
   }, [submitted, ttsOn, item]);
 
-  const score = verdicts.filter((v) => v.correct).length;
+  const score = set.items.filter((it) => firstResults[it.id]).length;
+  // Misses recorded so far in the main pass — these become the review round.
+  const missedSoFar = reviewRound
+    ? []
+    : queue.filter((it) => firstResults[it.id] === false);
+  const willReview = missedSoFar.length > 0;
+  const isLast = step === queue.length - 1 && !willReview;
+  const inReview = reviewRound && step >= uniqueTotal;
 
   function pick(choice: string) {
     if (submitted || !item) return;
-    setSubmitted({ picked: choice, correct: choice === item.correctLabel });
+    const correct = choice === item.correctLabel;
+    setSubmitted({ picked: choice, correct });
+    if (!(item.id in firstResults)) {
+      setFirstResults({ ...firstResults, [item.id]: correct });
+    }
+    // Every attempt writes spacing state: a first-try miss resets the ladder,
+    // a correct review-round repair steps back to the 1-day rung.
+    recordItemResult(item.id, correct);
   }
 
   function next() {
     if (!submitted || !item) return;
-    setVerdicts([...verdicts, submitted]);
     setSubmitted(null);
+    if (step === queue.length - 1 && willReview) {
+      setQueue([...queue, ...shuffle(missedSoFar)]);
+      setReviewRound(true);
+    }
     setStep(step + 1);
   }
 
   function restart() {
-    setShuffledItems(shuffle(set.items));
+    setQueue(shuffle(set.items));
     setStep(0);
-    setVerdicts([]);
+    setFirstResults({});
+    setReviewRound(false);
     setSubmitted(null);
   }
 
-  if (total === 0) {
+  if (queue.length === 0) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-10 text-center text-slate-500">
         Loading…
@@ -181,7 +203,13 @@ function PracticeRunner({ set }: { set: PracticeSet }) {
         </button>
       </header>
 
-      <ProgressBar current={Math.min(step, total)} total={total} score={score} />
+      <ProgressBar
+        current={Math.min(step, queue.length)}
+        total={queue.length}
+        score={score}
+        scoreTotal={uniqueTotal}
+        inReview={inReview}
+      />
 
       {!done && item && (
         <ItemCard
@@ -191,12 +219,12 @@ function PracticeRunner({ set }: { set: PracticeSet }) {
           onPick={pick}
           onNext={next}
           onSpeak={() => ttsOn && item && speak(item.ttsText, "fr-FR")}
-          isLast={step === total - 1}
+          isLast={isLast}
         />
       )}
 
       {done && (
-        <Recap score={score} total={total} onRestart={restart} />
+        <Recap score={score} total={uniqueTotal} onRestart={restart} />
       )}
     </div>
   );
@@ -206,10 +234,14 @@ function ProgressBar({
   current,
   total,
   score,
+  scoreTotal,
+  inReview,
 }: {
   current: number;
   total: number;
   score: number;
+  scoreTotal: number;
+  inReview: boolean;
 }) {
   const pct = total > 0 ? Math.round((current / total) * 100) : 0;
   return (
@@ -217,8 +249,9 @@ function ProgressBar({
       <div className="mb-1.5 flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-500">
         <span>
           {Math.min(current + (current < total ? 1 : 0), total)} / {total}
+          {inReview && <span className="ml-2 text-rose-500">· review round</span>}
         </span>
-        <span>Score {score}/{total}</span>
+        <span>Score {score}/{scoreTotal}</span>
       </div>
       <div className="h-3 overflow-hidden rounded-full bg-slate-200">
         <div

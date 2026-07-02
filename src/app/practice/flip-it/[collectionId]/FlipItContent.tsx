@@ -28,6 +28,7 @@ import {
   type DeckNotes,
 } from "@/lib/notes/store";
 import { loadBuckets, setBucket, type Bucket } from "@/lib/practice/buckets";
+import { recordItemResult } from "@/lib/progress";
 import { CahierFrame, TAB_HUES, type CahierTab } from "../CahierFrame";
 
 /* ─────────────────────────── model ─────────────────────────── */
@@ -660,7 +661,7 @@ function Cards({
             <span className="text-6xl" aria-hidden>{row.item.emoji}</span>
             <span className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">{row.item.en}</span>
             <AnswerField key={row.item.id} parts={partsFor(row, isNat, articleOptions.some((a) => a !== ""))} articleOptions={articleOptions} autoFocus
-              onResult={(ok) => { if (ok) onBucket(row.item.id, "reviewed"); }} />
+              onResult={(ok) => { recordItemResult(row.item.id, ok); if (ok) onBucket(row.item.id, "reviewed"); }} />
           </div>
         ) : (
           <div className="cursor-pointer select-none" style={{ perspective: "1200px" }}
@@ -732,7 +733,7 @@ function AllCards({
               {test ? (
                 <div className="flex flex-1 items-center px-1">
                   <AnswerField key={row.item.id} parts={partsFor(row, isNat, articleOptions.some((a) => a !== ""))} articleOptions={articleOptions}
-                    onResult={(ok) => { if (ok) onBucket(row.item.id, "reviewed"); }} />
+                    onResult={(ok) => { recordItemResult(row.item.id, ok); if (ok) onBucket(row.item.id, "reviewed"); }} />
                 </div>
               ) : (
                 <button type="button" onClick={() => flipOne(row.item.id)} className="flex flex-1 flex-col items-center justify-center p-1 text-center transition hover:brightness-95">
