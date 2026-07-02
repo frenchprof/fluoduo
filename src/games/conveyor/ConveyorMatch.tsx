@@ -342,11 +342,15 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
         // freeze the belt-scroll while the pointer is over the dock so taps land where aimed
         const off = dockHover.current ? offsetRef.current : (offsetRef.current + speed * dt) % LOOP;
         offsetRef.current = off;
+        const wrap = (v: number) => ((v % LOOP) + LOOP) % LOOP;
         tiles.forEach((p, i) => {
           const el = tileRefs.current.get(p.id);
           const col = Math.floor(i / 2);
           const row = i % 2;
-          if (el) { el.style.transform = `translate(${(col * spacing + off) % LOOP}px, ${row * ROW_H}px)`; el.style.width = `${tileW}px`; }
+          // The two dock rows run in OPPOSITE directions (top row →, bottom row ←)
+          // so the lower halves sweep past each other like counter-running belts.
+          const x = row === 0 ? wrap(col * spacing + off) : wrap(col * spacing - off);
+          if (el) { el.style.transform = `translate(${x}px, ${row * ROW_H}px)`; el.style.width = `${tileW}px`; }
         });
       } else { last = null; }
       raf = requestAnimationFrame(step);
