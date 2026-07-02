@@ -231,7 +231,7 @@ function SioNode({
     <button type="button" onClick={onOpen} className="group flex w-20 flex-col items-center gap-1 text-center">
       {active && (
         <span className="fluo-mono mb-0.5 rounded-full bg-[var(--fluo-danger)] px-2 py-0.5 text-[10px] font-bold text-white">
-          Commencer
+          Continuer
         </span>
       )}
       <span
