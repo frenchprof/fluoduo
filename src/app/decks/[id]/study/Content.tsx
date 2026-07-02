@@ -7,6 +7,8 @@ import { getCollection } from "@/lib/firebase/collections";
 import { displayEn, displayFr } from "@/lib/collections/display";
 import { logEvent } from "@/lib/firebase/usage";
 import type { Collection } from "@/lib/collections/schema";
+import CahierShell, { withActive } from "@/components/CahierShell";
+import { deckTabs } from "../DeckContent";
 
 type Dir = "fr-en" | "en-fr";
 const DIR_KEY = "fluolingo.studyDir.v1";
@@ -35,20 +37,8 @@ export default function StudyPage({ id }: { id: string }) {
   }, [id]);
 
   return (
-    <main className="fluo-surface min-h-screen">
-      <div className="border-b-2 border-slate-200 bg-white/70 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-          <Link
-            href={`/decks/${id}`}
-            className="rounded-full bg-slate-100 px-3 py-1.5 text-sm font-bold text-slate-700 transition hover:bg-slate-200"
-          >
-            ← Back to deck
-          </Link>
-          <span className="text-sm font-bold text-slate-500">🎴 Flashcards</span>
-        </div>
-      </div>
-
-      <div className="mx-auto max-w-3xl px-4 py-8">
+    <CahierShell tabs={withActive(deckTabs(id), "study")} active="study" crumb="🎴 Flashcards">
+      <div className="mx-auto max-w-3xl px-4 py-4">
         {collection === undefined && (
           <p className="rounded-2xl border-2 border-dashed border-slate-300 bg-white p-10 text-center text-base text-slate-500">
             Loading…
@@ -64,7 +54,7 @@ export default function StudyPage({ id }: { id: string }) {
           <Runner collection={collection} />
         )}
       </div>
-    </main>
+    </CahierShell>
   );
 }
 

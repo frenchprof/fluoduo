@@ -6,6 +6,7 @@ import { CURATED } from "@/content/collections";
 import { toPracticeSet } from "@/lib/practice/engine";
 import { speak } from "@/games/letris/speech";
 import { recordItemResult } from "@/lib/progress";
+import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
 import type { PracticeItem, PracticeSet } from "@/lib/practice/engine";
 
 const TTS_KEY = "fluolingo.practiceTts.v1";
@@ -15,11 +16,11 @@ type Verdict = { picked: string; correct: boolean };
 export default function PracticePage({ collectionId }: { collectionId: string }) {
   const collection = CURATED.find((c) => c.id === collectionId);
   const practiceSet = collection ? toPracticeSet(collection) : null;
+  const tabs = withActive(deckActivityTabs(collectionId), "dice");
 
   if (!practiceSet) {
     return (
-      <main className="fluo-surface min-h-screen">
-        <TopBar />
+      <CahierShell tabs={tabs} active="dice" crumb="🎲 Practice">
         <div className="mx-auto max-w-3xl px-4 py-10">
           <div className="rounded-2xl border-2 border-slate-200 bg-white p-10 text-center">
             <div className="text-6xl" aria-hidden>🎲</div>
@@ -40,33 +41,14 @@ export default function PracticePage({ collectionId }: { collectionId: string })
             </div>
           </div>
         </div>
-      </main>
+      </CahierShell>
     );
   }
 
   return (
-    <main className="fluo-surface min-h-screen">
-      <TopBar crumb={practiceSet.title} />
+    <CahierShell tabs={tabs} active="dice" crumb={`🎲 Practice · ${practiceSet.title}`}>
       <PracticeRunner set={practiceSet} />
-    </main>
-  );
-}
-
-function TopBar({ crumb }: { crumb?: string }) {
-  return (
-    <div className="border-b-2 border-slate-200 bg-white/70 backdrop-blur">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <Link
-          href="/"
-          className="rounded-full bg-slate-100 px-3 py-1.5 text-sm font-bold text-slate-700 transition hover:bg-slate-200"
-        >
-          ← Apps &amp; Games
-        </Link>
-        <span className="text-sm font-bold text-slate-500">
-          🎲 Practice{crumb ? ` · ${crumb}` : ""}
-        </span>
-      </div>
-    </div>
+    </CahierShell>
   );
 }
 

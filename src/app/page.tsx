@@ -8,9 +8,10 @@ export default function Home() {
     <div className="cahier-desk">
       <div className="cahier-deskrow relative">
         <main className="cahier-page min-h-screen">
+          <div className="cahier-binding" aria-hidden />
           {/* Orange header bar — sits atop the ruled paper */}
           <div className="border-b-2 border-[color:var(--fluo-line)] bg-[#fce8d4]/90 backdrop-blur sticky top-0 z-10">
-            <div className="relative flex items-center justify-between px-4 py-3">
+            <div className="relative flex items-center justify-between py-3 pl-12 pr-4 sm:pl-14">
               <h1 className="fluo-serif text-lg font-black text-[color:var(--fluo-ink)]">
                 <span className="fluo-hl">FluoLingo</span> <span aria-hidden>✨</span>
               </h1>
@@ -23,7 +24,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="px-6 py-8">
+          <div className="py-8 pl-12 pr-6 sm:pl-16">
             <header className="mb-8">
               <h2 className="fluo-serif text-3xl font-black text-[color:var(--fluo-ink)]">
                 French 1 — <span className="fluo-hl">50 Can-Do objectives</span>

@@ -18,6 +18,16 @@ import {
   gapfillItems,
 } from "@/lib/collections/loadCollections";
 import type { Collection, Item } from "@/lib/collections/schema";
+import CahierShell, { type ShellTab } from "@/components/CahierShell";
+
+export function deckTabs(id: string): ShellTab[] {
+  return [
+    { key: "home", label: "Accueil", emoji: "🏠", href: "/" },
+    { key: "deck", label: "Deck", emoji: "📖", href: `/decks/${id}` },
+    { key: "study", label: "Study", emoji: "🃏", href: `/decks/${id}/study` },
+    { key: "mcq", label: "MCQ", emoji: "❓", href: `/decks/${id}/mcq` },
+  ];
+}
 
 type ViewMode = "cards" | "list";
 const VIEW_KEY = "fluolingo.deckView.v2";
@@ -79,20 +89,12 @@ export default function DeckPage({ id }: { id: string }) {
   }
 
   return (
-    <main className="fluo-surface min-h-screen">
-      <div className="border-b-2 border-slate-200 bg-white/70 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-          <Link
-            href="/"
-            className="rounded-full bg-slate-100 px-3 py-1.5 text-sm font-bold text-slate-700 transition hover:bg-slate-200"
-          >
-            ← Apps &amp; Games
-          </Link>
-          <span className="text-sm font-bold text-slate-500">📖 Deck</span>
-        </div>
-      </div>
-
-      <div className="mx-auto max-w-5xl px-4 py-8">
+    <CahierShell
+      tabs={deckTabs(id).map((t) => (t.key === "deck" ? { ...t, href: undefined } : t))}
+      active="deck"
+      crumb="📖 Deck"
+    >
+      <div className="mx-auto max-w-5xl px-4 py-4">
         {state.kind === "loading" && (
           <p className="rounded-2xl border-2 border-dashed border-slate-300 bg-white p-10 text-center text-base text-slate-500">
             Loading deck…
@@ -118,7 +120,7 @@ export default function DeckPage({ id }: { id: string }) {
           />
         )}
       </div>
-    </main>
+    </CahierShell>
   );
 }
 

@@ -4,7 +4,15 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { getPretest } from "@/content/pretests";
 import { speak } from "@/games/letris/speech";
+import CahierShell, { type ShellTab } from "@/components/CahierShell";
 import type { Pretest, PretestItem } from "@/lib/pretests/schema";
+
+// The Pretest is a cold pre-lesson diagnostic — its tab rail deliberately does
+// NOT link to Practice activities (pre/post boundary, see PRETEST_BLUEPRINT.md).
+const PRETEST_TABS: ShellTab[] = [
+  { key: "home", label: "Accueil", emoji: "🏠", href: "/" },
+  { key: "pretest", label: "Pretest", emoji: "🧪" },
+];
 
 type Verdict = { picked: string; correct: boolean };
 
@@ -24,8 +32,7 @@ export default function PretestPage({ id }: { id: string }) {
 
   if (!pretest) {
     return (
-      <main className="fluo-surface min-h-screen">
-        <TopBar />
+      <CahierShell tabs={PRETEST_TABS} active="pretest" crumb="🧪 Pretest">
         <div className="mx-auto max-w-3xl px-4 py-10">
           <div className="rounded-2xl border-2 border-slate-200 bg-white p-10 text-center">
             <div className="text-6xl" aria-hidden>🤷</div>
@@ -40,39 +47,22 @@ export default function PretestPage({ id }: { id: string }) {
             </div>
           </div>
         </div>
-      </main>
+      </CahierShell>
     );
   }
 
   return (
-    <main className="fluo-surface min-h-screen">
-      <TopBar
-        crumb={`Unit ${pretest.unit} · Lesson ${pretest.lessonNo} · ${pretest.lessonSlug}`}
-      />
+    <CahierShell
+      tabs={PRETEST_TABS}
+      active="pretest"
+      crumb={`🧪 Unit ${pretest.unit} · Lesson ${pretest.lessonNo} · ${pretest.lessonSlug}`}
+    >
       <PretestRunner pretest={pretest} />
-    </main>
+    </CahierShell>
   );
 }
 
 /* ──────────────────────────────────────────────────────────── */
-
-function TopBar({ crumb }: { crumb?: string }) {
-  return (
-    <div className="border-b-2 border-slate-200 bg-white/70 backdrop-blur">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <Link
-          href="/"
-          className="rounded-full bg-slate-100 px-3 py-1.5 text-sm font-bold text-slate-700 transition hover:bg-slate-200"
-        >
-          ← Apps &amp; Games
-        </Link>
-        <span className="text-sm font-bold text-slate-500">
-          🧪 Pretest{crumb ? ` · ${crumb}` : ""}
-        </span>
-      </div>
-    </div>
-  );
-}
 
 function PretestRunner({ pretest }: { pretest: Pretest }) {
   const total = pretest.items.length;

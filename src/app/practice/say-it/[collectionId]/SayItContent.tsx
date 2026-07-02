@@ -2,9 +2,11 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { CURATED } from "@/content/collections";
+import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
+import type { Item } from "@/lib/collections/schema";
 
 type Phase = "idle" | "listening" | "result";
 type Grade = "perfect" | "good" | "close" | "miss";
@@ -50,10 +52,12 @@ const GRADE_UI: Record<Grade, { icon: string; label: string; cls: string }> = {
 export default function SayItContent({ collectionId }: { collectionId: string }) {
   const deck = CURATED.find((c) => c.id === collectionId);
 
-  const cards = useMemo(
-    () => (deck ? shuffle(deck.items.filter((i) => i.fr)) : []),
-    [deck]
-  );
+  // Shuffle on mount only — shuffling during render breaks SSR hydration
+  // (the AGENTS/handoff "no Math.random() during render" rule).
+  const [cards, setCards] = useState<Item[]>([]);
+  useEffect(() => {
+    setCards(deck ? shuffle(deck.items.filter((i) => i.fr)) : []);
+  }, [deck]);
 
   const [index, setIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>("idle");
@@ -150,18 +154,20 @@ export default function SayItContent({ collectionId }: { collectionId: string })
     return () => window.removeEventListener("keydown", onKey);
   }, [startListening, stopRec, next]);
 
+  const tabs = withActive(deckActivityTabs(collectionId), "say");
+
   if (!deck) {
     return (
-      <main className="fluo-surface min-h-screen flex items-center justify-center">
-        <p className="text-[color:var(--fluo-ink-soft)]">Deck not found.</p>
-      </main>
+      <CahierShell tabs={tabs} active="say" crumb="🎤 Say It">
+        <p className="py-16 text-center text-[color:var(--cahier-ink-soft)]">Deck not found.</p>
+      </CahierShell>
     );
   }
 
   if (supported === false) {
     return (
-      <main className="fluo-surface min-h-screen flex items-center justify-center p-8">
-        <div className="max-w-md text-center">
+      <CahierShell tabs={tabs} active="say" crumb="🎤 Say It">
+        <div className="mx-auto max-w-md py-16 text-center">
           <p className="text-3xl mb-3">🎤</p>
           <h1 className="fluo-serif text-xl font-black text-[color:var(--fluo-ink)] mb-2">
             Speech recognition not available
@@ -173,7 +179,7 @@ export default function SayItContent({ collectionId }: { collectionId: string })
             Use Flip It instead
           </Link>
         </div>
-      </main>
+      </CahierShell>
     );
   }
 
@@ -181,20 +187,18 @@ export default function SayItContent({ collectionId }: { collectionId: string })
   const isCorrect = result?.grade === "perfect" || result?.grade === "good";
 
   return (
-    <main className="fluo-surface min-h-screen">
-      {/* Header */}
-      <div className="border-b-2 border-[color:var(--fluo-line)] bg-[#fce8d4]/80 backdrop-blur sticky top-0 z-10">
-        <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
-          <Link href="/" className="fluo-btn fluo-btn-sm fluo-btn-ghost">← Home</Link>
-          <span className="fluo-label">🎤 Say It</span>
-          <span className="fluo-mono text-sm font-bold text-[color:var(--fluo-ink)]">
-            {score.ok}/{score.total}
-            {score.total > 0 && ` (${Math.round((score.ok / score.total) * 100)}%)`}
-          </span>
-        </div>
-      </div>
-
-      <div className="mx-auto max-w-2xl px-4 py-8">
+    <CahierShell
+      tabs={tabs}
+      active="say"
+      crumb="🎤 Say It"
+      topRight={
+        <span className="fluo-mono text-sm font-bold text-[color:var(--cahier-ink)]">
+          {score.ok}/{score.total}
+          {score.total > 0 && ` (${Math.round((score.ok / score.total) * 100)}%)`}
+        </span>
+      }
+    >
+      <div className="mx-auto max-w-2xl px-4 py-4">
         <div className="mb-4 text-center">
           <p className="fluo-label">{deck.title}</p>
           <p className="text-xs text-[color:var(--fluo-ink-soft)]">{index + 1} / {cards.length}</p>
@@ -285,6 +289,6 @@ export default function SayItContent({ collectionId }: { collectionId: string })
           Space = speak / stop · Enter = next card
         </p>
       </div>
-    </main>
+    </CahierShell>
   );
 }

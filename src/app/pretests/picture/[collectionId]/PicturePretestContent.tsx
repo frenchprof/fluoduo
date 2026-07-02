@@ -15,7 +15,15 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { CURATED } from "@/content/collections";
 import { speak } from "@/games/letris/speech";
+import CahierShell, { type ShellTab } from "@/components/CahierShell";
 import type { Collection, Item } from "@/lib/collections/schema";
+
+// Cold pre-lesson diagnostic — no Practice-activity links on the rail
+// (pre/post boundary, same rule as /pretests/[id]).
+const PRETEST_TABS: ShellTab[] = [
+  { key: "home", label: "Accueil", emoji: "🏠", href: "/" },
+  { key: "pretest", label: "Pretest", emoji: "🧪" },
+];
 
 type Direction = "fr2pic" | "pic2fr";
 type Question = { item: Item; direction: Direction; choices: Item[] };
@@ -31,8 +39,7 @@ export default function PicturePretestPage({ collectionId }: { collectionId: str
 
   if (!collection || pictureItems.length < N_CHOICES) {
     return (
-      <main className="fluo-surface min-h-screen">
-        <TopBar />
+      <CahierShell tabs={PRETEST_TABS} active="pretest" crumb="🧪 Pretest">
         <div className="mx-auto max-w-3xl px-4 py-10">
           <div className="rounded-2xl border-2 border-slate-200 bg-white p-10 text-center">
             <div className="text-6xl" aria-hidden>🖼️</div>
@@ -51,33 +58,14 @@ export default function PicturePretestPage({ collectionId }: { collectionId: str
             </div>
           </div>
         </div>
-      </main>
+      </CahierShell>
     );
   }
 
   return (
-    <main className="fluo-surface min-h-screen">
-      <TopBar crumb={collection.title} />
+    <CahierShell tabs={PRETEST_TABS} active="pretest" crumb={`🧪 Pretest · ${collection.title}`}>
       <PretestRunner collection={collection} pictureItems={pictureItems} />
-    </main>
-  );
-}
-
-function TopBar({ crumb }: { crumb?: string }) {
-  return (
-    <div className="border-b-2 border-slate-200 bg-white/70 backdrop-blur">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <Link
-          href="/"
-          className="rounded-full bg-slate-100 px-3 py-1.5 text-sm font-bold text-slate-700 transition hover:bg-slate-200"
-        >
-          ← Apps &amp; Games
-        </Link>
-        <span className="text-sm font-bold text-slate-500">
-          🧪 Pretest{crumb ? ` · ${crumb}` : ""}
-        </span>
-      </div>
-    </div>
+    </CahierShell>
   );
 }
 

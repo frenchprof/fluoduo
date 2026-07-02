@@ -10,7 +10,6 @@
  * columns are used, a letris gameConfig so Classify It works too.
  */
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { signInWithGoogle, useAuthUser } from "@/lib/firebase/auth";
@@ -18,6 +17,7 @@ import { createCollection } from "@/lib/firebase/collections";
 import { logEvent } from "@/lib/firebase/usage";
 import { slugify } from "@/lib/importer/parse";
 import type { Collection, Item } from "@/lib/collections/schema";
+import CahierShell from "@/components/CahierShell";
 
 type Card = {
   emoji: string;
@@ -144,17 +144,15 @@ export default function NewDeckPage() {
   }
 
   return (
-    <main className="fluo-surface min-h-screen">
-      <div className="border-b-2 border-[color:var(--fluo-line)] bg-[#fce8d4]/80 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-          <Link href="/" className="fluo-serif rounded-full bg-[var(--fluo-card)] px-3 py-1.5 text-sm font-bold text-[color:var(--fluo-ink)] hover:brightness-95">
-            ← Home
-          </Link>
-          <span className="fluo-label">📚 Your Custom Deck</span>
-        </div>
-      </div>
-
-      <div className="mx-auto max-w-5xl px-4 py-8">
+    <CahierShell
+      tabs={[
+        { key: "home", label: "Accueil", emoji: "🏠", href: "/" },
+        { key: "new", label: "New Deck", emoji: "📚" },
+      ]}
+      active="new"
+      crumb="📚 Your Custom Deck"
+    >
+      <div className="mx-auto max-w-5xl px-4 py-4">
         <h1 className="fluo-serif text-3xl font-black text-[color:var(--fluo-ink)]">
           Your <span className="fluo-hl">Custom Deck</span>
         </h1>
@@ -217,7 +215,7 @@ export default function NewDeckPage() {
           {saveError && <span className="text-sm font-bold text-rose-600">{saveError}</span>}
         </section>
       </div>
-    </main>
+    </CahierShell>
   );
 }
 

@@ -21,6 +21,7 @@ import { getPretestForLesson } from "@/content/pretests";
 import type { Collection } from "@/lib/collections/schema";
 import MarkDoneButton from "./MarkDoneButton";
 import SioDetail from "../../SioDetail";
+import CahierShell from "@/components/CahierShell";
 
 function collectionById(id: string | null): Collection | undefined {
   if (!id) return undefined;
@@ -46,17 +47,16 @@ export default async function SioPage({ params }: { params: Promise<{ id: string
   const chain = chainFor(sio.id);
 
   return (
-    <main className="fluo-surface min-h-screen">
-      <div className="border-b-2 border-[color:var(--fluo-line)] bg-[#fce8d4]/80 backdrop-blur">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
-          <Link href="/" className="fluo-serif text-lg font-black text-[color:var(--fluo-ink)]">
-            ← <span className="fluo-hl">FluoLingo</span>
-          </Link>
-          <span className="fluo-label">{sio.unitLabel}</span>
-        </div>
-      </div>
-
-      <div className="mx-auto max-w-3xl px-4 py-8">
+    <CahierShell
+      tabs={[
+        { key: "home", label: "Accueil", emoji: "🏠", href: "/" },
+        { key: "unit", label: sio.unitLabel, emoji: "📖", href: `/#unit-${sio.unit}` },
+        { key: "sio", label: sio.id },
+      ]}
+      active="sio"
+      crumb={sio.unitLabel}
+    >
+      <div className="mx-auto max-w-3xl px-4 py-4">
         <header className="mb-6">
           <div className="mb-2 flex flex-wrap items-center gap-2">
             <span className="fluo-mono rounded-md bg-[var(--fluo-card-tint)] px-2 py-0.5 text-sm font-bold text-[color:var(--fluo-ink)]">
@@ -112,6 +112,6 @@ export default async function SioPage({ params }: { params: Promise<{ id: string
           )}
         </nav>
       </div>
-    </main>
+    </CahierShell>
   );
 }
