@@ -15,10 +15,19 @@
       "sentenceBefore": "J'habite",
       "sentenceAfter": " Paris.",
       "answer": "à",
-      "distractors": ["en", "au", "dans"],
+      "distractors": [
+        "en",
+        "au",
+        "dans"
+      ],
       "fullSentence": "J'habite à Paris.",
       "sentenceTrans": "I live in Paris.",
-      "why": "<strong>à Paris</strong> — cities always take <em>à</em>, regardless of gender. <em>en</em> is for countries and regions; <em>au</em> is for masculine countries; <em>dans</em> is used with <em>dans le centre de Paris</em> (inside a part of), not for the city name itself."
+      "why": "<strong>à Paris</strong> — cities always take <em>à</em>, regardless of gender. <em>en</em> is for countries and regions; <em>au</em> is for masculine countries; <em>dans</em> is used with <em>dans le centre de Paris</em> (inside a part of), not for the city name itself.",
+      "whyWrong": {
+        "en": "en is for countries and regions — Paris is a city: à.",
+        "au": "au is for masculine countries (au Japon) — cities take à.",
+        "dans": "dans works for parts of a city (dans le centre de Paris), not the city name."
+      }
     },
     {
       "id": "02-en-france",
@@ -28,10 +37,19 @@
       "sentenceBefore": "Elle étudie",
       "sentenceAfter": " France cette année.",
       "answer": "en",
-      "distractors": ["à", "au", "dans la"],
+      "distractors": [
+        "à",
+        "au",
+        "dans la"
+      ],
       "fullSentence": "Elle étudie en France cette année.",
       "sentenceTrans": "She is studying in France this year.",
-      "why": "<strong>en France</strong> — <em>France</em> is feminine (ends in <em>-e</em>), so the location preposition is <em>en</em>. The same applies to <em>en Espagne, en Italie, en Chine, en Allemagne</em> — all feminine because they end in <em>-e</em>. <em>à</em> is for cities, not countries; <em>dans la France</em> exists but means a very specific subregion."
+      "why": "<strong>en France</strong> — <em>France</em> is feminine (ends in <em>-e</em>), so the location preposition is <em>en</em>. The same applies to <em>en Espagne, en Italie, en Chine, en Allemagne</em> — all feminine because they end in <em>-e</em>. <em>à</em> is for cities, not countries; <em>dans la France</em> exists but means a very specific subregion.",
+      "whyWrong": {
+        "à": "à is for cities — France is a feminine country: en.",
+        "au": "au is for masculine countries — France is feminine: en.",
+        "dans la": "dans la France would mean a specific subregion — the rule is en France."
+      }
     },
     {
       "id": "03-au-japon",
@@ -41,10 +59,19 @@
       "sentenceBefore": "Il est en voyage",
       "sentenceAfter": " Japon.",
       "answer": "au",
-      "distractors": ["en", "à", "dans le"],
+      "distractors": [
+        "en",
+        "à",
+        "dans le"
+      ],
       "fullSentence": "Il est en voyage au Japon.",
       "sentenceTrans": "He is on a business trip in Japan.",
-      "why": "<strong>au Japon</strong> — <em>Japon</em> is masculine (does not end in <em>-e</em>), so use <em>au</em> (= <em>à + le</em>). Other masculine countries: <em>le Canada → au Canada</em>, <em>le Maroc → au Maroc</em>, <em>le Portugal → au Portugal</em>. <em>en</em> would only be correct for feminine countries."
+      "why": "<strong>au Japon</strong> — <em>Japon</em> is masculine (does not end in <em>-e</em>), so use <em>au</em> (= <em>à + le</em>). Other masculine countries: <em>le Canada → au Canada</em>, <em>le Maroc → au Maroc</em>, <em>le Portugal → au Portugal</em>. <em>en</em> would only be correct for feminine countries.",
+      "whyWrong": {
+        "en": "en is for feminine countries — Japon is masculine: au.",
+        "à": "à is for cities — Japon is a country.",
+        "dans le": "dans le Japon isn't used for being in a country — au Japon."
+      }
     },
     {
       "id": "04-aux-etats-unis",
@@ -54,10 +81,19 @@
       "sentenceBefore": "On va",
       "sentenceAfter": " États-Unis cet été.",
       "answer": "aux",
-      "distractors": ["au", "en", "à les"],
+      "distractors": [
+        "au",
+        "en",
+        "à les"
+      ],
       "fullSentence": "On va aux États-Unis cet été.",
       "sentenceTrans": "We're going to the United States this summer.",
-      "why": "<strong>aux États-Unis</strong> — plural country names take <em>aux</em> (= <em>à + les</em>). <em>les Pays-Bas → aux Pays-Bas</em>; <em>les Philippines → aux Philippines</em>. <em>à les</em> does not exist in French — it always contracts to <em>aux</em>. <em>au</em> is singular masculine only."
+      "why": "<strong>aux États-Unis</strong> — plural country names take <em>aux</em> (= <em>à + les</em>). <em>les Pays-Bas → aux Pays-Bas</em>; <em>les Philippines → aux Philippines</em>. <em>à les</em> does not exist in French — it always contracts to <em>aux</em>. <em>au</em> is singular masculine only.",
+      "whyWrong": {
+        "au": "au is singular masculine — États-Unis is plural: aux.",
+        "en": "en is for feminine countries — les États-Unis is plural: aux.",
+        "à les": "à les doesn't exist — it always contracts to aux."
+      }
     },
     {
       "id": "05-de-singapour",
@@ -67,10 +103,19 @@
       "sentenceBefore": "Je viens",
       "sentenceAfter": " Singapour.",
       "answer": "de",
-      "distractors": ["d'", "du", "depuis"],
+      "distractors": [
+        "d'",
+        "du",
+        "depuis"
+      ],
       "fullSentence": "Je viens de Singapour.",
       "sentenceTrans": "I come from Singapore.",
-      "why": "<strong>de Singapour</strong> — for origin from a city, use <em>de</em> (or <em>d'</em> before a vowel). <em>d'</em> would be used before a vowel: <em>je viens d'Oslo, d'Amsterdam</em>. <em>du</em> is for masculine countries (<em>je viens du Japon</em>). <em>depuis</em> means 'since' (time) or 'from' (direction of movement), not origin."
+      "why": "<strong>de Singapour</strong> — for origin from a city, use <em>de</em> (or <em>d'</em> before a vowel). <em>d'</em> would be used before a vowel: <em>je viens d'Oslo, d'Amsterdam</em>. <em>du</em> is for masculine countries (<em>je viens du Japon</em>). <em>depuis</em> means 'since' (time) or 'from' (direction of movement), not origin.",
+      "whyWrong": {
+        "d'": "d' is only before a vowel — Singapour starts with S.",
+        "du": "du is for masculine countries (du Japon) — cities take plain de.",
+        "depuis": "depuis means 'since' (time) — origin is de."
+      }
     },
     {
       "id": "06-d-oslo",
@@ -80,10 +125,19 @@
       "sentenceBefore": "Tu viens",
       "sentenceAfter": " Oslo ?",
       "answer": "d'",
-      "distractors": ["de", "du", "des"],
+      "distractors": [
+        "de",
+        "du",
+        "des"
+      ],
       "fullSentence": "Tu viens d'Oslo ?",
       "sentenceTrans": "You're from Oslo?",
-      "why": "<strong>d'Oslo</strong> — <em>de</em> elides to <em>d'</em> before a vowel or silent h. City names starting with a vowel: <em>d'Amsterdam, d'Athènes, d'Oslo, d'Istanbul, d'Édimbourg</em>. This is mandatory elision — <em>de Oslo</em> is not acceptable. The rule applies to any place name, not just cities."
+      "why": "<strong>d'Oslo</strong> — <em>de</em> elides to <em>d'</em> before a vowel or silent h. City names starting with a vowel: <em>d'Amsterdam, d'Athènes, d'Oslo, d'Istanbul, d'Édimbourg</em>. This is mandatory elision — <em>de Oslo</em> is not acceptable. The rule applies to any place name, not just cities.",
+      "whyWrong": {
+        "de": "Oslo starts with a vowel — de elides to d'.",
+        "du": "du is for masculine countries — cities take de/d'.",
+        "des": "des is for plural names (des États-Unis)."
+      }
     },
     {
       "id": "07-de-france",
@@ -93,10 +147,19 @@
       "sentenceBefore": "Ce vin vient",
       "sentenceAfter": " France.",
       "answer": "de",
-      "distractors": ["de la", "du", "d'en"],
+      "distractors": [
+        "de la",
+        "du",
+        "d'en"
+      ],
       "fullSentence": "Ce vin vient de France.",
       "sentenceTrans": "This wine comes from France.",
-      "why": "<strong>de France</strong> — for feminine countries as origin, use <em>de</em> alone (no article). NOT <em>de la France</em>. This is a fixed rule: <em>je viens de France, d'Espagne, de Chine, d'Italie</em>. The article disappears entirely with country names in origin constructions."
+      "why": "<strong>de France</strong> — for feminine countries as origin, use <em>de</em> alone (no article). NOT <em>de la France</em>. This is a fixed rule: <em>je viens de France, d'Espagne, de Chine, d'Italie</em>. The article disappears entirely with country names in origin constructions.",
+      "whyWrong": {
+        "de la": "for origin the article drops with feminine countries: de France, not de la France.",
+        "du": "du is for masculine countries (du Japon) — France is feminine: de.",
+        "d'en": "d'en isn't a French combination here."
+      }
     },
     {
       "id": "08-du-japon",
@@ -106,10 +169,19 @@
       "sentenceBefore": "Ce saké vient",
       "sentenceAfter": " Japon.",
       "answer": "du",
-      "distractors": ["de", "d'", "au"],
+      "distractors": [
+        "de",
+        "d'",
+        "au"
+      ],
       "fullSentence": "Ce saké vient du Japon.",
       "sentenceTrans": "This sake comes from Japan.",
-      "why": "<strong>du Japon</strong> — masculine countries keep their article in origin constructions: <em>du</em> (= <em>de + le</em>). Contrast with feminine countries: <em>de France</em> (no article). Masculine: <em>je viens du Canada, du Maroc, du Portugal, du Mexique</em>. The article only disappears with feminine country names."
+      "why": "<strong>du Japon</strong> — masculine countries keep their article in origin constructions: <em>du</em> (= <em>de + le</em>). Contrast with feminine countries: <em>de France</em> (no article). Masculine: <em>je viens du Canada, du Maroc, du Portugal, du Mexique</em>. The article only disappears with feminine country names.",
+      "whyWrong": {
+        "de": "masculine countries keep their article for origin: du Japon, not de Japon.",
+        "d'": "Japon starts with a consonant, and masculine countries need du anyway.",
+        "au": "au means 'to/in' — coming from is du."
+      }
     },
     {
       "id": "09-en-afrique",
@@ -119,10 +191,19 @@
       "sentenceBefore": "Il fait son stage",
       "sentenceAfter": " Afrique.",
       "answer": "en",
-      "distractors": ["au", "à l'", "dans l'"],
+      "distractors": [
+        "au",
+        "à l'",
+        "dans l'"
+      ],
       "fullSentence": "Il fait son stage en Afrique.",
       "sentenceTrans": "He is doing his internship in Africa.",
-      "why": "<strong>en Afrique</strong> — continents follow the same rule as feminine countries: <em>en</em> (Europe, Asie, Afrique, Amérique du Sud are all feminine). <em>en Europe, en Asie, en Afrique, en Amérique</em>. <em>à l'</em> is used for the article form of names (<em>à l'est de</em>), not for the continent name itself. <em>au</em> is masculine singular only."
+      "why": "<strong>en Afrique</strong> — continents follow the same rule as feminine countries: <em>en</em> (Europe, Asie, Afrique, Amérique du Sud are all feminine). <em>en Europe, en Asie, en Afrique, en Amérique</em>. <em>à l'</em> is used for the article form of names (<em>à l'est de</em>), not for the continent name itself. <em>au</em> is masculine singular only.",
+      "whyWrong": {
+        "au": "au is masculine singular — continents are feminine: en.",
+        "à l'": "à l' isn't used with continent names — en Afrique.",
+        "dans l'": "dans l' isn't the continent rule — en Afrique."
+      }
     },
     {
       "id": "10-au-mexique",
@@ -132,10 +213,19 @@
       "sentenceBefore": "On réserve un hôtel",
       "sentenceAfter": " Mexique.",
       "answer": "au",
-      "distractors": ["en", "à", "dans le"],
+      "distractors": [
+        "en",
+        "à",
+        "dans le"
+      ],
       "fullSentence": "On réserve un hôtel au Mexique.",
       "sentenceTrans": "We're booking a hotel in Mexico.",
-      "why": "<strong>au Mexique</strong> — <em>le Mexique</em> ends in <em>-e</em> but is masculine (an exception to the '-e = feminine' rule). So it takes <em>au</em>, not <em>en</em>. Other notable masculine -<em>e</em> countries: <em>le Mozambique (au Mozambique), le Cambodge (au Cambodge), le Zimbabwe (au Zimbabwe)</em>. When in doubt, look up the article; the rule is a strong tendency, not a law."
+      "why": "<strong>au Mexique</strong> — <em>le Mexique</em> ends in <em>-e</em> but is masculine (an exception to the '-e = feminine' rule). So it takes <em>au</em>, not <em>en</em>. Other notable masculine -<em>e</em> countries: <em>le Mozambique (au Mozambique), le Cambodge (au Cambodge), le Zimbabwe (au Zimbabwe)</em>. When in doubt, look up the article; the rule is a strong tendency, not a law.",
+      "whyWrong": {
+        "en": "Mexique ends in -e but is masculine (an exception) — au Mexique.",
+        "à": "à is for cities — Mexique is a country.",
+        "dans le": "dans le Mexique isn't used — au Mexique."
+      }
     },
     {
       "id": "11-a-14h",
@@ -145,10 +235,19 @@
       "sentenceBefore": "Le vol pour Londres part",
       "sentenceAfter": " 14h.",
       "answer": "à",
-      "distractors": ["en", "au", "de"],
+      "distractors": [
+        "en",
+        "au",
+        "de"
+      ],
       "fullSentence": "Le vol pour Londres part à 14h.",
       "sentenceTrans": "The flight to London departs at 2 pm.",
-      "why": "<strong>à 14h</strong> — here <em>à</em> is used for time ('at'), not location. This is the same preposition, demonstrating a second use. Compare: <em>je vais à Paris</em> (location) vs <em>je pars à 14h</em> (time). Both use <em>à</em>. This item tests recognition of <em>à</em> in a different context to avoid over-fitting the city rule."
+      "why": "<strong>à 14h</strong> — here <em>à</em> is used for time ('at'), not location. This is the same preposition, demonstrating a second use. Compare: <em>je vais à Paris</em> (location) vs <em>je pars à 14h</em> (time). Both use <em>à</em>. This item tests recognition of <em>à</em> in a different context to avoid over-fitting the city rule.",
+      "whyWrong": {
+        "en": "en isn't used for clock times — 'at 2pm' is à 14h.",
+        "au": "au is à + le — no article before a clock time: à 14h.",
+        "de": "de means 'from/of' — a departure time takes à."
+      }
     },
     {
       "id": "12-des-etats-unis",
@@ -158,24 +257,81 @@
       "sentenceBefore": "Elle vient",
       "sentenceAfter": " États-Unis.",
       "answer": "des",
-      "distractors": ["aux", "de les", "de"],
+      "distractors": [
+        "aux",
+        "de les",
+        "de"
+      ],
       "fullSentence": "Elle vient des États-Unis.",
       "sentenceTrans": "She comes from the United States.",
-      "why": "<strong>des États-Unis</strong> — plural country names use <em>des</em> (= <em>de + les</em>) for origin. <em>de les</em> does not exist — it always contracts to <em>des</em>. <em>aux</em> is for location ('going to'/'in'), not origin. Compare: <em>elle va aux États-Unis</em> (going there) vs <em>elle vient des États-Unis</em> (coming from there)."
+      "why": "<strong>des États-Unis</strong> — plural country names use <em>des</em> (= <em>de + les</em>) for origin. <em>de les</em> does not exist — it always contracts to <em>des</em>. <em>aux</em> is for location ('going to'/'in'), not origin. Compare: <em>elle va aux États-Unis</em> (going there) vs <em>elle vient des États-Unis</em> (coming from there).",
+      "whyWrong": {
+        "aux": "aux is 'to/in' (elle va aux États-Unis) — coming from is des.",
+        "de les": "de les doesn't exist — it contracts to des.",
+        "de": "plural country names keep the article: des États-Unis."
+      }
     }
   ],
   "recap": [
-    { "form": "à + city", "example": "à Paris, à Tokyo, à Londres", "note": "all cities regardless of gender" },
-    { "form": "en + feminine country", "example": "en France, en Espagne, en Chine", "note": "countries ending in -e (most)" },
-    { "form": "en + continent", "example": "en Europe, en Asie, en Afrique", "note": "all continents (all feminine)" },
-    { "form": "au + masculine country", "example": "au Japon, au Canada, au Maroc", "note": "does not end in -e (most)" },
-    { "form": "aux + plural country", "example": "aux États-Unis, aux Pays-Bas", "note": "à + les → aux" },
-    { "form": "de / d' + city (origin)", "example": "de Paris, d'Oslo, d'Amsterdam", "note": "d' before vowel" },
-    { "form": "de + feminine country (origin)", "example": "de France, d'Espagne, de Chine", "note": "no article — de alone" },
-    { "form": "du + masculine country (origin)", "example": "du Japon, du Canada, du Maroc", "note": "de + le → du" },
-    { "form": "des + plural country (origin)", "example": "des États-Unis, des Pays-Bas", "note": "de + les → des" },
-    { "form": "Exception: au Mexique", "example": "Je vais au Mexique.", "note": "ends in -e but masculine" },
-    { "form": "Exception: en Israël", "example": "Il habite en Israël.", "note": "masculine but treated with en" },
-    { "form": "à for time", "example": "Le train part à 9h.", "note": "à = at (time) — same preposition, different use" }
+    {
+      "form": "à + city",
+      "example": "à Paris, à Tokyo, à Londres",
+      "note": "all cities regardless of gender"
+    },
+    {
+      "form": "en + feminine country",
+      "example": "en France, en Espagne, en Chine",
+      "note": "countries ending in -e (most)"
+    },
+    {
+      "form": "en + continent",
+      "example": "en Europe, en Asie, en Afrique",
+      "note": "all continents (all feminine)"
+    },
+    {
+      "form": "au + masculine country",
+      "example": "au Japon, au Canada, au Maroc",
+      "note": "does not end in -e (most)"
+    },
+    {
+      "form": "aux + plural country",
+      "example": "aux États-Unis, aux Pays-Bas",
+      "note": "à + les → aux"
+    },
+    {
+      "form": "de / d' + city (origin)",
+      "example": "de Paris, d'Oslo, d'Amsterdam",
+      "note": "d' before vowel"
+    },
+    {
+      "form": "de + feminine country (origin)",
+      "example": "de France, d'Espagne, de Chine",
+      "note": "no article — de alone"
+    },
+    {
+      "form": "du + masculine country (origin)",
+      "example": "du Japon, du Canada, du Maroc",
+      "note": "de + le → du"
+    },
+    {
+      "form": "des + plural country (origin)",
+      "example": "des États-Unis, des Pays-Bas",
+      "note": "de + les → des"
+    },
+    {
+      "form": "Exception: au Mexique",
+      "example": "Je vais au Mexique.",
+      "note": "ends in -e but masculine"
+    },
+    {
+      "form": "Exception: en Israël",
+      "example": "Il habite en Israël.",
+      "note": "masculine but treated with en"
+    },
+    {
+      "form": "à for time",
+      "example": "Le train part à 9h.",
+      "note": "à = at (time) — same preposition, different use"
+    }
   ]
 }

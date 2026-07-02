@@ -93,14 +93,13 @@ function QuestionCard({
   const showResult = picked !== undefined;
   const correct = picked === item.answer;
   const [showWhy, setShowWhy] = useState(false);
+  // WHY appears only on a WRONG answer, and explains only why THAT choice is
+  // wrong (Dan, 2026-07-02). Correct answers get TTS + green — no explanation.
+  const whyText = !correct && picked !== undefined ? item.whyWrong?.[picked] : undefined;
 
-  // Minimalist per Dan: each question shows ONLY the gapped French sentence,
-  // the TTS speaker, the English meaning, and the choices. Once answered, a
-  // WHY button (top right) reveals the explanation on demand — never inline
-  // by default.
   return (
     <div className="relative rounded-xl border-2 bg-[var(--fluo-card)] p-3" style={{ borderColor: "var(--fluo-line)" }}>
-      {showResult && item.why && (
+      {whyText && (
         <button
           type="button"
           onClick={() => setShowWhy((v) => !v)}
@@ -113,64 +112,65 @@ function QuestionCard({
           WHY
         </button>
       )}
-      <p className="fluo-serif mb-1 text-base font-bold leading-snug text-[color:var(--fluo-ink)]">
-        <span lang="fr">{item.sentenceBefore}</span>
-        <span
-          className={`mx-1 inline-block min-w-[56px] rounded-md border-b-2 border-dashed px-1.5 text-center align-baseline ${
-            !showResult
-              ? "border-sky-400 bg-sky-50 text-sky-600"
-              : correct
-                ? "border-[#178a4d] bg-emerald-50 text-[#178a4d]"
-                : "border-[#c0392b] bg-rose-50 text-[#c0392b] line-through"
-          }`}
-        >
-          {showResult ? picked : "?"}
+      {/* Sentence and options share one row where they fit (Dan, 2026-07-02);
+          the options travel as ONE group so they never split across lines. */}
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 pr-9">
+        <span className="fluo-serif text-base font-bold leading-snug text-[color:var(--fluo-ink)]">
+          <span lang="fr">{item.sentenceBefore}</span>
+          <span
+            className={`mx-1 inline-block min-w-[56px] rounded-md border-b-2 border-dashed px-1.5 text-center align-baseline ${
+              !showResult
+                ? "border-sky-400 bg-sky-50 text-sky-600"
+                : correct
+                  ? "border-[#178a4d] bg-emerald-50 text-[#178a4d]"
+                  : "border-[#c0392b] bg-rose-50 text-[#c0392b] line-through"
+            }`}
+          >
+            {showResult ? picked : "?"}
+          </span>
+          <span lang="fr">{item.sentenceAfter}</span>
+          <button
+            type="button"
+            onClick={() => speak(ttsTextForItem(item), "fr-FR")}
+            title="Hear the full sentence"
+            className="ml-1.5 align-middle text-sm opacity-60 transition hover:opacity-100"
+          >
+            🔊
+          </button>
         </span>
-        <span lang="fr">{item.sentenceAfter}</span>
-        <button
-          type="button"
-          onClick={() => speak(ttsTextForItem(item), "fr-FR")}
-          title="Hear the full sentence"
-          className="ml-1.5 align-middle text-sm opacity-60 transition hover:opacity-100"
-        >
-          🔊
-        </button>
-      </p>
+        <span className="flex flex-wrap items-center gap-2">
+          {choices.map((c) => {
+            const isPicked = picked === c;
+            const isAnswer = c === item.answer;
+            // Same strong solid-fill contrast as the Unit-0 quiz.
+            const cls = !showResult
+              ? "border-[color:var(--fluo-ink)] bg-[var(--fluo-card)] text-[color:var(--fluo-ink)] hover:bg-[var(--fluo-card-tint)]"
+              : isAnswer
+                ? "border-[#178a4d] bg-[#178a4d] text-white"
+                : isPicked
+                  ? "border-[#c0392b] bg-[#c0392b] text-white"
+                  : "border-[color:var(--fluo-line)] bg-transparent text-[color:var(--fluo-ink-soft)] opacity-40";
+            return (
+              <button
+                key={c}
+                type="button"
+                disabled={showResult}
+                onClick={() => onPick(c)}
+                lang="fr"
+                className={`rounded-full border-2 px-3 py-1.5 text-sm font-bold transition ${cls}`}
+              >
+                {c}
+              </button>
+            );
+          })}
+        </span>
+      </div>
       {item.sentenceTrans && (item.transFirst || showResult) && (
-        <p className="mb-1 text-xs italic text-[color:var(--fluo-ink-soft)]">{item.sentenceTrans}</p>
+        <p className="mt-1 text-xs italic text-[color:var(--fluo-ink-soft)]">{item.sentenceTrans}</p>
       )}
 
-      <div className="mt-2 flex flex-wrap gap-2">
-        {choices.map((c) => {
-          const isPicked = picked === c;
-          const isAnswer = c === item.answer;
-          // Same strong solid-fill contrast as the Unit-0 quiz.
-          const cls = !showResult
-            ? "border-[color:var(--fluo-ink)] bg-[var(--fluo-card)] text-[color:var(--fluo-ink)] hover:bg-[var(--fluo-card-tint)]"
-            : isAnswer
-              ? "border-[#178a4d] bg-[#178a4d] text-white"
-              : isPicked
-                ? "border-[#c0392b] bg-[#c0392b] text-white"
-                : "border-[color:var(--fluo-line)] bg-transparent text-[color:var(--fluo-ink-soft)] opacity-40";
-          return (
-            <button
-              key={c}
-              type="button"
-              disabled={showResult}
-              onClick={() => onPick(c)}
-              lang="fr"
-              className={`rounded-full border-2 px-3 py-1.5 text-sm font-bold transition ${cls}`}
-            >
-              {c}
-            </button>
-          );
-        })}
-      </div>
-
-      {showResult && showWhy && item.why && (
-        <div className="mt-2 rounded-lg bg-white/70 p-2.5 text-xs text-[color:var(--fluo-ink)]">
-          <span dangerouslySetInnerHTML={{ __html: item.why }} />
-        </div>
+      {showWhy && whyText && (
+        <div className="mt-2 rounded-lg bg-white/70 p-2.5 text-xs text-[color:var(--fluo-ink)]">{whyText}</div>
       )}
     </div>
   );

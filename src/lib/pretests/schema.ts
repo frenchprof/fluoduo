@@ -39,8 +39,15 @@ export type PretestItem = {
    * attempted — per Dan, showing it first leaks single-answer questions.
    */
   transFirst?: boolean;
-  /** HTML explanation shown after the learner submits. Inline <strong>/<em> allowed. */
+  /** DEPRECATED general explanation blob — kept for reference, no longer displayed. */
   why?: string;
+  /**
+   * Why each WRONG choice is wrong, keyed by the distractor text. The WHY
+   * button appears only when the learner picked a wrong option that has an
+   * entry here, and shows only that entry (Dan, 2026-07-02: the Why must
+   * only explain why the chosen answer is wrong).
+   */
+  whyWrong?: Record<string, string>;
 };
 
 export type RecapRow = {

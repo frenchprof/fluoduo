@@ -121,9 +121,11 @@ function Unit0Questions({ sio }: { sio: (typeof UNIT0_SIOS)[number] }) {
   );
 }
 
-/** The French to SPEAK on a correct pick: the completed stem (bracketed
- *  framing stripped), or the bare option (letters say their French names). */
+/** The French to SPEAK on a correct pick: the question's own tts (colour
+ *  mnemonics like "le feu rouge"), else the completed stem (bracketed framing
+ *  stripped), else the bare option (letters say their French names). */
 function ttsFor(q: Unit0Question, v: string): string {
+  if (q.tts) return q.tts;
   if (q.stem) return q.stem.replace(/\[[^\]]*\]\s*/g, "").replace("___", v);
   return v;
 }
@@ -131,6 +133,10 @@ function ttsFor(q: Unit0Question, v: string): string {
 function QuizQuestion({ q }: { q: Unit0Question }) {
   const [picked, setPicked] = useState<string | null>(null);
   const [showWhy, setShowWhy] = useState(false);
+  // WHY appears only on a WRONG pick, and explains only why THAT choice is
+  // wrong (Dan, 2026-07-02) — the why lives on the wrong option itself.
+  const pickedOpt = picked !== null ? q.options.find((o) => o.v === picked) : undefined;
+  const whyText = pickedOpt && !pickedOpt.ok ? pickedOpt.why : undefined;
 
   // First click = the answer (speaks the completed form when correct). Once
   // answered, every option stays playable: clicking any of them — including
@@ -147,7 +153,7 @@ function QuizQuestion({ q }: { q: Unit0Question }) {
 
   return (
     <div className="relative rounded-xl border-2 bg-[var(--fluo-card)] p-3" style={{ borderColor: "var(--fluo-line)" }}>
-      {picked && q.explain && (
+      {whyText && (
         <button
           type="button"
           onClick={() => setShowWhy((v) => !v)}
@@ -160,43 +166,54 @@ function QuizQuestion({ q }: { q: Unit0Question }) {
           WHY
         </button>
       )}
-      {q.title && <p className="mb-2 pr-12 text-sm font-bold text-[color:var(--fluo-ink)]">{q.title}</p>}
-      {q.stem && (
-        <p className="fluo-serif mb-1 pr-12 text-base font-bold text-[color:var(--fluo-ink)]">
-          {q.stem}
-          {/* the English appears only once attempted — shown first it leaks
-              single-answer questions (Dan, 2026-07-02) */}
-          {q.en && picked && <span className="ml-2 text-xs font-normal text-[color:var(--fluo-ink-soft)]">({q.en})</span>}
-        </p>
-      )}
-      <div className="mt-2 flex flex-wrap gap-2">
-        {q.options.map((o) => {
-          const isPicked = picked === o.v;
-          const showResult = picked !== null;
-          // Strong, solid-fill contrast (Dan: "i cannot tell what is what if
-          // everything is of the same color") — correct/wrong get a bold
-          // fill + white text, not a pale tint on a similar border.
-          const cls = !showResult
-            ? "border-[color:var(--fluo-ink)] bg-[var(--fluo-card)] text-[color:var(--fluo-ink)] hover:bg-[var(--fluo-card-tint)]"
-            : o.ok
-              ? "border-[#178a4d] bg-[#178a4d] text-white"
-              : isPicked
-                ? "border-[#c0392b] bg-[#c0392b] text-white"
-                : "border-[color:var(--fluo-line)] bg-transparent text-[color:var(--fluo-ink-soft)] opacity-40";
-          return (
-            <button
-              key={o.v}
-              type="button"
-              onClick={() => tap(o, showResult)}
-              className={`rounded-full border-2 px-3 py-1.5 text-sm font-bold transition ${cls}`}
-            >
-              {o.v}
-            </button>
-          );
-        })}
+      {/* Question and options share one row where they fit (Dan, 2026-07-02);
+          the options travel as ONE group, so they wrap below the question as
+          a unit instead of splitting across lines. */}
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 pr-9">
+        {(q.stem || q.title) && (
+          <span
+            className={`${q.stem ? "fluo-serif text-base" : "text-sm"} font-bold text-[color:var(--fluo-ink)]`}
+            style={q.hue ? { color: q.hue, textShadow: "0 0 2px rgba(0,0,0,.45)" } : undefined}
+          >
+            {q.stem ?? q.title}
+            {/* the gloss/mnemonic appears only once attempted — shown first it
+                leaks single-answer questions (Dan, 2026-07-02) */}
+            {q.en && picked && (
+              <span className="ml-2 text-xs font-normal text-[color:var(--fluo-ink-soft)]" style={q.hue ? { textShadow: "none" } : undefined}>
+                ({q.en})
+              </span>
+            )}
+          </span>
+        )}
+        <span className="flex flex-wrap items-center gap-2">
+          {q.options.map((o) => {
+            const isPicked = picked === o.v;
+            const showResult = picked !== null;
+            // Strong, solid-fill contrast (Dan: "i cannot tell what is what if
+            // everything is of the same color") — correct/wrong get a bold
+            // fill + white text, not a pale tint on a similar border.
+            const cls = !showResult
+              ? "border-[color:var(--fluo-ink)] bg-[var(--fluo-card)] text-[color:var(--fluo-ink)] hover:bg-[var(--fluo-card-tint)]"
+              : o.ok
+                ? "border-[#178a4d] bg-[#178a4d] text-white"
+                : isPicked
+                  ? "border-[#c0392b] bg-[#c0392b] text-white"
+                  : "border-[color:var(--fluo-line)] bg-transparent text-[color:var(--fluo-ink-soft)] opacity-40";
+            return (
+              <button
+                key={o.v}
+                type="button"
+                onClick={() => tap(o, showResult)}
+                className={`rounded-full border-2 px-3 py-1.5 text-sm font-bold transition ${cls}`}
+              >
+                {o.v}
+              </button>
+            );
+          })}
+        </span>
       </div>
-      {picked && showWhy && q.explain && (
-        <p className="mt-2 rounded-lg bg-white/70 p-2.5 text-xs text-[color:var(--fluo-ink)]">{q.explain}</p>
+      {showWhy && whyText && (
+        <p className="mt-2 rounded-lg bg-white/70 p-2.5 text-xs text-[color:var(--fluo-ink)]">{whyText}</p>
       )}
     </div>
   );

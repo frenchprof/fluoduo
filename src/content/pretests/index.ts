@@ -6,7 +6,7 @@ import type { Pretest } from "@/lib/pretests/schema";
 import weather from "./u3-l1-weather.json";
 import cityPreps from "./u3-l2-city-preps.json";
 
-export const PRETESTS: Pretest[] = [weather as Pretest, cityPreps as Pretest];
+export const PRETESTS: Pretest[] = [weather as unknown as Pretest, cityPreps as unknown as Pretest];
 
 export function getPretest(id: string): Pretest | undefined {
   return PRETESTS.find((p) => p.id === id);
