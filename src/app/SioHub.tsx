@@ -50,7 +50,7 @@ function deckAndPretestFor(sio: Sio) {
   const pretest =
     deck && deck.unit != null && deck.lessonNo != null ? getPretestForLesson(deck.unit, deck.lessonNo) : undefined;
   const pretestHref = pretest ? `/pretests/${pretest.id}` : deck ? `/games/practice/${deck.id}` : null;
-  return { deck, pretestHref };
+  return { deck, pretestHref, pretestId: pretest?.id ?? null };
 }
 
 export default function SioHub() {
@@ -195,10 +195,10 @@ export default function SioHub() {
       {openSio && (
         <SioModal sio={openSio} onClose={() => setOpenId(null)}>
           {(() => {
-            const { deck, pretestHref } = deckAndPretestFor(openSio);
+            const { deck, pretestHref, pretestId } = deckAndPretestFor(openSio);
             return (
               <>
-                <SioDetail sio={openSio} deck={deck} pretestHref={pretestHref} />
+                <SioDetail sio={openSio} deck={deck} pretestHref={pretestHref} pretestId={pretestId} />
                 <MarkDoneButton sioId={openSio.id} />
               </>
             );

@@ -17,43 +17,62 @@
 import Link from "next/link";
 import { sioStatement, type Sio } from "@/content/sios";
 import type { Collection } from "@/lib/collections/schema";
+import PretestQuiz from "./PretestQuiz";
 
 export default function SioDetail({
   sio,
   deck,
   pretestHref,
+  pretestId,
 }: {
   sio: Sio;
   deck?: Collection;
   pretestHref: string | null;
+  /** Authored pretest id — when set, its questions render RIGHT HERE, Unit-0
+   *  style (all visible at a glance, immediate per-question autocorrection),
+   *  instead of a link out to the pretest page. */
+  pretestId?: string | null;
 }) {
+  const practiceTile = (
+    <div className="rounded-xl border-2 p-3" style={{ borderColor: "#3a9b5c" }}>
+      <p className="fluo-label mb-2" style={{ color: "#3a9b5c" }}>Post-Class Practice</p>
+      {sio.isProduction ? (
+        <span className="text-xs text-[color:var(--fluo-ink-soft)]">🗣️ In-class task</span>
+      ) : deck ? (
+        <PracticeChips deck={deck} />
+      ) : (
+        <span className="text-xs text-[color:var(--fluo-ink-soft)]">Planned</span>
+      )}
+    </div>
+  );
+
   return (
     <div>
       <p className="fluo-serif mb-4 text-base font-bold leading-snug text-[color:var(--fluo-ink)]">
         <span className="fluo-hl">{sioStatement(sio)}</span>
       </p>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-xl border-2 p-3" style={{ borderColor: "#7c6cff" }}>
-          <p className="fluo-label mb-2" style={{ color: "#7c6cff" }}>Pre-Test Prep</p>
-          {pretestHref ? (
-            <Link href={pretestHref} className="fluo-btn fluo-btn-sm">🧪 Start</Link>
-          ) : (
-            <span className="text-xs text-[color:var(--fluo-ink-soft)]">Planned</span>
-          )}
+      {pretestId ? (
+        <div className="space-y-3">
+          <div className="rounded-xl border-2 p-3" style={{ borderColor: "#7c6cff" }}>
+            <p className="fluo-label mb-2" style={{ color: "#7c6cff" }}>Pre-Test Prep — try each one cold</p>
+            <PretestQuiz pretestId={pretestId} />
+          </div>
+          {practiceTile}
         </div>
-
-        <div className="rounded-xl border-2 p-3" style={{ borderColor: "#3a9b5c" }}>
-          <p className="fluo-label mb-2" style={{ color: "#3a9b5c" }}>Post-Class Practice</p>
-          {sio.isProduction ? (
-            <span className="text-xs text-[color:var(--fluo-ink-soft)]">🗣️ In-class task</span>
-          ) : deck ? (
-            <PracticeChips deck={deck} />
-          ) : (
-            <span className="text-xs text-[color:var(--fluo-ink-soft)]">Planned</span>
-          )}
+      ) : (
+        <div className="grid grid-cols-2 gap-3">
+          <div className="rounded-xl border-2 p-3" style={{ borderColor: "#7c6cff" }}>
+            <p className="fluo-label mb-2" style={{ color: "#7c6cff" }}>Pre-Test Prep</p>
+            {pretestHref ? (
+              <Link href={pretestHref} className="fluo-btn fluo-btn-sm">🧪 Start</Link>
+            ) : (
+              <span className="text-xs text-[color:var(--fluo-ink-soft)]">Planned</span>
+            )}
+          </div>
+          {practiceTile}
         </div>
-      </div>
+      )}
     </div>
   );
 }

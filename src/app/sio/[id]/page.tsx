@@ -90,7 +90,7 @@ export default async function SioPage({ params }: { params: Promise<{ id: string
           </p>
         )}
 
-        <SioDetail sio={sio} deck={deck} pretestHref={pretestHref} />
+        <SioDetail sio={sio} deck={deck} pretestHref={pretestHref} pretestId={pretest?.id ?? null} />
         <MarkDoneButton sioId={sio.id} />
 
         <nav className="mt-10 flex items-stretch justify-between gap-3">
