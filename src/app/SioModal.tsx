@@ -17,7 +17,7 @@ import type { CSSProperties, ReactNode } from "react";
 import type { Sio } from "@/content/sios";
 import type { Collection } from "@/lib/collections/schema";
 
-export type PopupTab = { key: string; label: string; emoji: string; href?: string };
+export type PopupTab = { key: string; label: string; emoji: string; href?: string; active?: boolean };
 
 const TAB_HUES = [
   "var(--cahier-t0)",
@@ -28,11 +28,23 @@ const TAB_HUES = [
   "var(--cahier-t5)",
 ] as const;
 
-/** The five activity modes for a deck — no-deck SIOs get no flaps. */
-export function popupActivityTabs(deck?: Collection): PopupTab[] | undefined {
-  if (!deck) return undefined;
+/**
+ * Pre-Test on top, then the five activity modes. The Pre-Test flap is the
+ * ACTIVE (current-view) flap when the pretest questions render inline in the
+ * popup body; otherwise it links out to the pretest surface.
+ */
+export function popupActivityTabs(
+  deck?: Collection,
+  pretest?: { inline: boolean; href: string | null },
+): PopupTab[] | undefined {
+  const pretestTab: PopupTab[] =
+    pretest && (pretest.inline || pretest.href)
+      ? [{ key: "pretest", label: "Pre-Test", emoji: "🧪", href: pretest.inline ? undefined : pretest.href ?? undefined, active: pretest.inline }]
+      : [];
+  if (!deck) return pretestTab.length ? pretestTab : undefined;
   const hasLetris = !!deck.gameConfig?.letris;
   return [
+    ...pretestTab,
     { key: "flip", label: "Flip It", emoji: "🃏", href: `/practice/flip-it/${deck.id}` },
     { key: "say", label: "Say It", emoji: "🎤", href: `/practice/say-it/${deck.id}` },
     { key: "complete", label: "Complete It", emoji: "✏️" }, // not built yet
@@ -52,8 +64,15 @@ function Flap({ tab, hue, className }: { tab: PopupTab; hue: string; className?:
     </>
   );
   if (!tab.href) {
+    // Active = the current view (e.g. Pre-Test while its questions show in the
+    // body); inactive+no-href = not built yet.
     return (
-      <span className={`cahier-tab cursor-default opacity-50 ${className ?? ""}`} style={style} title="Coming soon">
+      <span
+        data-active={tab.active || undefined}
+        className={`cahier-tab cursor-default ${tab.active ? "" : "opacity-50"} ${className ?? ""}`}
+        style={style}
+        title={tab.active ? undefined : "Coming soon"}
+      >
         {body}
       </span>
     );

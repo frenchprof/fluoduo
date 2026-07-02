@@ -197,7 +197,11 @@ export default function SioHub() {
           <SioModal
             sio={openSio}
             onClose={() => setOpenId(null)}
-            tabs={openSio.isProduction ? undefined : popupActivityTabs(deck)}
+            tabs={
+              openSio.isProduction
+                ? undefined
+                : popupActivityTabs(deck, { inline: !!pretestId, href: pretestHref })
+            }
           >
             <SioDetail sio={openSio} deck={deck} pretestHref={pretestHref} pretestId={pretestId} showPractice={openSio.isProduction} />
             <MarkDoneButton sioId={openSio.id} />

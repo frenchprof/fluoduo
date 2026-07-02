@@ -55,16 +55,24 @@ export default function PretestQuiz({ pretestId }: { pretestId: string }) {
 
   if (!pretest) return null;
 
+  const total = qs.length;
+  const answered = Object.keys(picked).length;
+  const score = qs.filter((q) => picked[q.item.id] === q.item.answer).length;
+
   function pick(q: Q, choice: string) {
     if (picked[q.item.id] !== undefined) return;
     setPicked({ ...picked, [q.item.id]: choice });
     if (choice === q.item.answer) speak(ttsTextForItem(q.item), "fr-FR");
   }
 
-  // Dan's litmus test (see AGENTS.md): no labels, no score line — just the
-  // questions.
+  // Per Dan: the counter stays (learners track progress with it); no labels.
   return (
     <div className="space-y-3">
+      {answered > 0 && (
+        <p className="text-[0.65rem] font-bold uppercase tracking-wider text-[color:var(--fluo-ink-soft)]">
+          {answered}/{total} · ✓ {score}
+        </p>
+      )}
       {qs.map((q) => (
         <QuestionCard key={q.item.id} q={q} picked={picked[q.item.id]} onPick={(c) => pick(q, c)} />
       ))}
@@ -84,12 +92,27 @@ function QuestionCard({
   const { item, choices } = q;
   const showResult = picked !== undefined;
   const correct = picked === item.answer;
+  const [showWhy, setShowWhy] = useState(false);
 
   // Minimalist per Dan: each question shows ONLY the gapped French sentence,
-  // the TTS speaker, the English meaning, and the choices. No context labels,
-  // grammar badges, icons, or explanation boxes.
+  // the TTS speaker, the English meaning, and the choices. Once answered, a
+  // WHY button (top right) reveals the explanation on demand — never inline
+  // by default.
   return (
-    <div className="rounded-xl border-2 bg-[var(--fluo-card)] p-3" style={{ borderColor: "var(--fluo-line)" }}>
+    <div className="relative rounded-xl border-2 bg-[var(--fluo-card)] p-3" style={{ borderColor: "var(--fluo-line)" }}>
+      {showResult && item.why && (
+        <button
+          type="button"
+          onClick={() => setShowWhy((v) => !v)}
+          className={`absolute right-2 top-2 rounded-full border-2 px-2 py-0.5 text-[0.6rem] font-black tracking-wider transition ${
+            showWhy
+              ? "border-[color:var(--fluo-ink)] bg-[color:var(--fluo-ink)] text-white"
+              : "border-[color:var(--fluo-ink)] bg-white text-[color:var(--fluo-ink)] hover:bg-[var(--fluo-card-tint)]"
+          }`}
+        >
+          WHY
+        </button>
+      )}
       <p className="fluo-serif mb-1 text-base font-bold leading-snug text-[color:var(--fluo-ink)]">
         <span lang="fr">{item.sentenceBefore}</span>
         <span
@@ -144,6 +167,11 @@ function QuestionCard({
         })}
       </div>
 
+      {showResult && showWhy && item.why && (
+        <div className="mt-2 rounded-lg bg-white/70 p-2.5 text-xs text-[color:var(--fluo-ink)]">
+          <span dangerouslySetInnerHTML={{ __html: item.why }} />
+        </div>
+      )}
     </div>
   );
 }

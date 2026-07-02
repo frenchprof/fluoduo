@@ -49,9 +49,8 @@ export default function SioDetail({
     </div>
   );
 
-  // Dan's litmus test (see AGENTS.md): anything whose removal doesn't prevent
-  // the learner from finding the correct answer is redundant. So the quiz
-  // renders bare — no section label, no tile chrome around it.
+  // Dan's litmus test (see AGENTS.md) applies to TEXT only: the tile border
+  // stays (decorative, serves the visual), the label text does not.
   return (
     <div>
       <p className="fluo-serif mb-4 text-base font-bold leading-snug text-[color:var(--fluo-ink)]">
@@ -60,7 +59,9 @@ export default function SioDetail({
 
       {pretestId ? (
         <div className="space-y-3">
-          <PretestQuiz pretestId={pretestId} />
+          <div className="rounded-xl border-2 p-3" style={{ borderColor: "#7c6cff" }}>
+            <PretestQuiz pretestId={pretestId} />
+          </div>
           {practiceTile}
         </div>
       ) : showPractice ? (
@@ -75,9 +76,7 @@ export default function SioDetail({
           </div>
           {practiceTile}
         </div>
-      ) : pretestHref ? (
-        <Link href={pretestHref} className="fluo-btn fluo-btn-sm">🧪 Pretest</Link>
-      ) : null}
+      ) : null /* popups: the Pre-Test flap on the popup edge carries the link */}
     </div>
   );
 }
