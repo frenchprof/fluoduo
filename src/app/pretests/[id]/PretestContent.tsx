@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { getPretest } from "@/content/pretests";
 import { speak } from "@/games/letris/speech";
@@ -13,8 +13,6 @@ const PRETEST_TABS: ShellTab[] = [
   { key: "home", label: "Accueil", emoji: "🏠", href: "/" },
   { key: "pretest", label: "Pretest", emoji: "🧪" },
 ];
-
-type Verdict = { picked: string; correct: boolean };
 
 const TTS_KEY = "fluolingo.pretestTts.v1";
 
@@ -64,20 +62,30 @@ export default function PretestPage({ id }: { id: string }) {
 
 /* ──────────────────────────────────────────────────────────── */
 
+type Q = { item: PretestItem; choices: string[] };
+
 function PretestRunner({ pretest }: { pretest: Pretest }) {
-  // Question order AND option order re-randomise on every activation (mount
-  // and Restart) — never a fixed or per-item-seeded sequence. Shuffling lives
-  // in mount/reset paths, not render, so SSR hydration stays deterministic.
-  const [items, setItems] = useState<PretestItem[]>([]);
-  const [step, setStep] = useState(0); // 0..total-1 = item; total = recap
-  const [verdicts, setVerdicts] = useState<Verdict[]>([]);
-  const [submitted, setSubmitted] = useState<Verdict | null>(null);
+  // All questions shown at once, Unit-0 style (per Dan: "pretty neat and
+  // doesn't require too much space") — compact cards, pill options, instant
+  // per-question feedback. Question order AND option order re-randomise on
+  // every activation (mount and Retry); shuffling lives in mount/reset paths,
+  // not render, so SSR hydration stays deterministic.
+  const [qs, setQs] = useState<Q[]>([]);
+  const [picked, setPicked] = useState<Record<string, string>>({});
   const [ttsOn, setTtsOn] = useState(true);
 
-  useEffect(() => {
-    setItems(shuffle(pretest.items));
+  const deal = useCallback(() => {
+    setQs(
+      shuffle(pretest.items).map((item) => ({
+        item,
+        choices: shuffle([item.answer, ...item.distractors]),
+      })),
+    );
+    setPicked({});
   }, [pretest]);
-  const total = items.length;
+  useEffect(() => {
+    deal();
+  }, [deal]);
 
   useEffect(() => {
     try {
@@ -91,43 +99,21 @@ function PretestRunner({ pretest }: { pretest: Pretest }) {
     } catch {}
   }, [ttsOn]);
 
-  const item = items[step];
-  const choices = useMemo(
-    () => (item ? shuffle([item.answer, ...item.distractors]) : []),
-    [item],
-  );
+  const total = qs.length;
+  const answered = Object.keys(picked).length;
+  const score = qs.filter((q) => picked[q.item.id] === q.item.answer).length;
+  const done = total > 0 && answered === total;
 
-  // Auto-speak full sentence the moment the learner submits, so they hear the
-  // CORRECT sentence (not the lonely answer word) as feedback arrives.
-  useEffect(() => {
-    if (submitted && submitted.correct && ttsOn && item) {
-      speak(ttsTextForItem(item), "fr-FR");
-    }
-  }, [submitted, ttsOn, item]);
-
-  const score = verdicts.filter((v) => v.correct).length;
-  const done = total > 0 && step >= total;
-
-  function pick(choice: string) {
-    if (submitted || !item) return;
-    setSubmitted({ picked: choice, correct: choice === item.answer });
-  }
-  function next() {
-    if (!submitted || !item) return;
-    setVerdicts([...verdicts, submitted]);
-    setSubmitted(null);
-    setStep(step + 1);
-  }
-  function restart() {
-    setItems(shuffle(pretest.items));
-    setStep(0);
-    setVerdicts([]);
-    setSubmitted(null);
+  function pick(q: Q, choice: string) {
+    if (picked[q.item.id] !== undefined) return;
+    setPicked({ ...picked, [q.item.id]: choice });
+    // Speak the CORRECT full sentence as feedback arrives (never the lonely word).
+    if (ttsOn && choice === q.item.answer) speak(ttsTextForItem(q.item), "fr-FR");
   }
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
-      <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
+      <header className="mb-4 flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-3xl font-black text-slate-900">{pretest.title}</h1>
           {pretest.subtitle && (
@@ -148,175 +134,123 @@ function PretestRunner({ pretest }: { pretest: Pretest }) {
         </button>
       </header>
 
-      <ProgressBar current={Math.min(step, total)} total={total} score={score} />
+      <p className="mb-4 text-xs font-bold uppercase tracking-wider text-slate-500">
+        Answered {answered}/{total} · Score {score}/{total}
+      </p>
 
-      {!done && item && (
-        <ItemCard
-          item={item}
-          choices={choices}
-          submitted={submitted}
-          onPick={pick}
-          onNext={next}
-          onSpeak={() => ttsOn && speak(ttsTextForItem(item), "fr-FR")}
-          isLast={step === total - 1}
-        />
-      )}
+      <div className="space-y-3">
+        {qs.map((q) => (
+          <QuestionCard
+            key={q.item.id}
+            q={q}
+            picked={picked[q.item.id]}
+            onPick={(c) => pick(q, c)}
+            onSpeak={() => ttsOn && speak(ttsTextForItem(q.item), "fr-FR")}
+          />
+        ))}
+      </div>
 
       {done && (
-        <Recap pretest={pretest} score={score} total={total} onRestart={restart} />
+        <div className="mt-6">
+          <Recap pretest={pretest} score={score} total={total} onRestart={deal} />
+        </div>
       )}
     </div>
   );
 }
 
-function ProgressBar({
-  current,
-  total,
-  score,
-}: {
-  current: number;
-  total: number;
-  score: number;
-}) {
-  const pct = Math.round((current / total) * 100);
-  return (
-    <div className="mb-6">
-      <div className="mb-1.5 flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-500">
-        <span>
-          {Math.min(current + (current < total ? 1 : 0), total)} / {total}
-        </span>
-        <span>
-          Score {score}/{total}
-        </span>
-      </div>
-      <div className="h-3 overflow-hidden rounded-full bg-slate-200">
-        <div
-          className="h-full rounded-full transition-all"
-          style={{ width: `${pct}%`, background: "var(--fluo-primary)" }}
-        />
-      </div>
-    </div>
-  );
-}
-
-function ItemCard({
-  item,
-  choices,
-  submitted,
+/** One compact question card — the Unit-0 popup quiz look (solid green/red pills). */
+function QuestionCard({
+  q,
+  picked,
   onPick,
-  onNext,
   onSpeak,
-  isLast,
 }: {
-  item: PretestItem;
-  choices: string[];
-  submitted: Verdict | null;
+  q: Q;
+  picked?: string;
   onPick: (c: string) => void;
-  onNext: () => void;
   onSpeak: () => void;
-  isLast: boolean;
 }) {
+  const { item, choices } = q;
+  const showResult = picked !== undefined;
+  const correct = picked === item.answer;
+
   return (
-    <article className="fluo-card fluo-h-1" data-hue={1}>
-      {item.contextLabel && (
-        <div className="text-xs font-extrabold uppercase tracking-wider text-slate-500">
-          {item.contextLabel}
-        </div>
-      )}
-      {item.icon && (
-        <div className="my-2 text-center text-5xl" aria-hidden>
-          {item.icon}
-        </div>
-      )}
-      {item.meta && (
-        <div className="mx-auto mb-2 inline-flex self-center rounded-full bg-amber-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-amber-700">
-          {item.meta}
-        </div>
-      )}
-      <p className="my-3 text-center text-2xl font-bold leading-snug text-slate-900">
+    <div className="rounded-xl border-2 border-slate-200 bg-white p-3">
+      <div className="flex flex-wrap items-center gap-2">
+        {item.contextLabel && (
+          <span className="text-[0.65rem] font-extrabold uppercase tracking-wider text-slate-500">
+            {item.contextLabel}
+          </span>
+        )}
+        {item.meta && (
+          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider text-amber-700">
+            {item.meta}
+          </span>
+        )}
+      </div>
+      <p className="my-2 text-lg font-bold leading-snug text-slate-900">
+        {item.icon && <span className="mr-1.5" aria-hidden>{item.icon}</span>}
         <span lang="fr">{item.sentenceBefore}</span>
         <span
-          className="mx-1.5 inline-block min-w-[110px] rounded-md border-b-2 border-dashed px-3 py-0.5 align-baseline"
-          style={{
-            borderColor: submitted
-              ? submitted.correct
-                ? "var(--fluo-primary)"
-                : "var(--fluo-danger)"
-              : "var(--fluo-secondary)",
-            background: submitted
-              ? submitted.correct
-                ? "var(--fluo-primary-soft)"
-                : "#ffe1e1"
-              : "#eaf6ff",
-            color: submitted
-              ? submitted.correct
-                ? "#2f6c00"
-                : "#7a1010"
-              : "var(--fluo-secondary)",
-          }}
+          className={`mx-1 inline-block min-w-[64px] rounded-md border-b-2 border-dashed px-2 text-center align-baseline ${
+            !showResult
+              ? "border-sky-400 bg-sky-50 text-sky-600"
+              : correct
+                ? "border-[#178a4d] bg-emerald-50 text-[#178a4d]"
+                : "border-[#c0392b] bg-rose-50 text-[#c0392b] line-through"
+          }`}
         >
-          {submitted ? submitted.picked : "?"}
+          {showResult ? picked : "?"}
         </span>
         <span lang="fr">{item.sentenceAfter}</span>
-      </p>
-      {item.sentenceTrans && (
-        <p className="text-center text-sm italic text-slate-500">
-          {item.sentenceTrans}
-        </p>
-      )}
-
-      <div className="mt-3 flex justify-center">
         <button
           type="button"
           onClick={onSpeak}
-          title="Hear the FULL sentence read aloud"
-          className="rounded-full border-2 border-slate-200 bg-white px-4 py-1.5 text-sm font-bold text-slate-700 transition hover:border-emerald-400 hover:text-emerald-700"
+          title="Hear the full sentence"
+          className="ml-2 align-middle text-base opacity-60 transition hover:opacity-100"
         >
-          🔊 Hear the full sentence
+          🔊
         </button>
-      </div>
+      </p>
+      {item.sentenceTrans && (
+        <p className="mb-1 text-xs italic text-slate-500">{item.sentenceTrans}</p>
+      )}
 
-      <div className="mt-5 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+      <div className="mt-2 flex flex-wrap gap-2">
         {choices.map((c) => {
-          const isPicked = submitted?.picked === c;
+          const isPicked = picked === c;
           const isAnswer = c === item.answer;
-          let cls = "border-slate-200 bg-white text-slate-900 hover:border-slate-400";
-          if (submitted) {
-            if (isAnswer) cls = "border-emerald-500 bg-emerald-50 text-emerald-900";
-            else if (isPicked) cls = "border-rose-500 bg-rose-50 text-rose-900";
-            else cls = "border-slate-200 bg-white text-slate-400";
-          }
+          // Same strong solid-fill contrast as the Unit-0 quiz (Dan: "i cannot
+          // tell what is what if everything is of the same color").
+          const cls = !showResult
+            ? "border-slate-700 bg-white text-slate-900 hover:bg-slate-50"
+            : isAnswer
+              ? "border-[#178a4d] bg-[#178a4d] text-white"
+              : isPicked
+                ? "border-[#c0392b] bg-[#c0392b] text-white"
+                : "border-slate-200 bg-transparent text-slate-400 opacity-50";
           return (
             <button
               key={c}
               type="button"
+              disabled={showResult}
               onClick={() => onPick(c)}
-              disabled={!!submitted}
               lang="fr"
-              className={`rounded-xl border-2 px-4 py-3 text-left text-base font-bold transition ${cls}`}
+              className={`rounded-full border-2 px-3 py-1.5 text-sm font-bold transition ${cls}`}
             >
               {c}
-              {submitted && isAnswer && <span className="ml-2" aria-hidden>✓</span>}
-              {submitted && isPicked && !isAnswer && <span className="ml-2" aria-hidden>✗</span>}
             </button>
           );
         })}
       </div>
 
-      {submitted && item.why && (
-        <div className="mt-5 rounded-xl border-2 border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+      {showResult && item.why && (
+        <div className="mt-2 rounded-lg bg-slate-50 p-2.5 text-xs text-slate-700">
           <span dangerouslySetInnerHTML={{ __html: item.why }} />
         </div>
       )}
-
-      {submitted && (
-        <div className="mt-5 flex justify-end">
-          <button type="button" onClick={onNext} className="fluo-btn fluo-btn-lg">
-            {isLast ? "🏁 See recap" : "Next →"}
-          </button>
-        </div>
-      )}
-    </article>
+    </div>
   );
 }
 

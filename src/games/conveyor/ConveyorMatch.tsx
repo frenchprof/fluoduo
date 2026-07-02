@@ -49,7 +49,7 @@ const COLS = 6;
 const N = LANES * COLS;
 const LANE_H = 58;
 const CARD_H = 46;
-const DOCK_H = 60;
+const DOCK_H = 108; // two rows of dock tiles — twice as many visible at once
 const START_LIVES = 3;
 const SWEEP_AT = 4;
 // Duolingo-bright card colours: fronts ride the belt in green, backs wait in
@@ -328,20 +328,25 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
         const dt = Math.min(0.05, (t - last) / 1000); last = t;
         const tiles = computeDock(s);
         const TRACK = cont.clientWidth || 1;
-        const n = Math.max(1, tiles.length);
-        // tiles keep a comfortably readable width; the strip is as long as it needs to be
-        // (longer than the viewport when crowded) and scrolls through, wrapping individually.
+        // TWO rows: tile i sits in row i%2, column ⌊i/2⌋ — twice as many visible.
+        // Each column keeps a comfortably readable width; the strip is as long as
+        // it needs to be (longer than the viewport when crowded) and scrolls
+        // through, wrapping individually.
+        const nCols = Math.max(1, Math.ceil(tiles.length / 2));
         const SLOT = 120;
-        const LOOP = Math.max(TRACK, n * SLOT);
-        const spacing = LOOP / n;
+        const LOOP = Math.max(TRACK, nCols * SLOT);
+        const spacing = LOOP / nCols;
         const tileW = Math.max(84, Math.min(132, spacing - 12));
+        const ROW_H = DOCK_H / 2;
         const speed = TRACK / dockDurFor(s.level);
         // freeze the belt-scroll while the pointer is over the dock so taps land where aimed
         const off = dockHover.current ? offsetRef.current : (offsetRef.current + speed * dt) % LOOP;
         offsetRef.current = off;
         tiles.forEach((p, i) => {
           const el = tileRefs.current.get(p.id);
-          if (el) { el.style.transform = `translateX(${(i * spacing + off) % LOOP}px)`; el.style.width = `${tileW}px`; }
+          const col = Math.floor(i / 2);
+          const row = i % 2;
+          if (el) { el.style.transform = `translate(${(col * spacing + off) % LOOP}px, ${row * ROW_H}px)`; el.style.width = `${tileW}px`; }
         });
       } else { last = null; }
       raf = requestAnimationFrame(step);
@@ -451,7 +456,7 @@ export default function ConveyorMatch({ title, subtitle, pairs, lang = "fr-FR", 
             <button key={p.id} type="button" onClick={() => tapDock(p.match)}
               ref={(el) => { if (el) tileRefs.current.set(p.id, el); else tileRefs.current.delete(p.id); }}
               className={`absolute flex items-center justify-center overflow-hidden whitespace-nowrap rounded-lg border-2 px-1 text-lg font-bold text-white shadow ${backCls} hover:brightness-110 ${picked ? "ring-2 ring-amber-300" : ""}`}
-              style={{ top: (DOCK_H - CARD_H) / 2, left: 0, width: 88, height: CARD_H, willChange: "transform", ...(picked && baguette ? selCrust : lowerHalf ?? {}) }}>
+              style={{ top: (DOCK_H / 2 - CARD_H) / 2, left: 0, width: 88, height: CARD_H, willChange: "transform", ...(picked && baguette ? selCrust : lowerHalf ?? {}) }}>
               <FitText lang="fr" text={hy(p.match, false)} />
             </button>
           );
