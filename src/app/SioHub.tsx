@@ -38,7 +38,7 @@ import { CURATED } from "@/content/collections";
 import { getPretestForSio } from "@/content/pretests";
 import { defaultProgress, loadProgress, isSioDone, MAX_HEARTS, type Progress } from "@/lib/progress";
 import Unit0Panel from "./Unit0Panel";
-import SioModal from "./SioModal";
+import SioModal, { popupActivityTabs } from "./SioModal";
 import SioDetail from "./SioDetail";
 import MarkDoneButton from "./sio/[id]/MarkDoneButton";
 
@@ -191,19 +191,19 @@ export default function SioHub() {
           );
         })}
 
-      {openSio && (
-        <SioModal sio={openSio} onClose={() => setOpenId(null)}>
-          {(() => {
-            const { deck, pretestHref, pretestId } = deckAndPretestFor(openSio);
-            return (
-              <>
-                <SioDetail sio={openSio} deck={deck} pretestHref={pretestHref} pretestId={pretestId} />
-                <MarkDoneButton sioId={openSio.id} />
-              </>
-            );
-          })()}
-        </SioModal>
-      )}
+      {openSio && (() => {
+        const { deck, pretestHref, pretestId } = deckAndPretestFor(openSio);
+        return (
+          <SioModal
+            sio={openSio}
+            onClose={() => setOpenId(null)}
+            tabs={openSio.isProduction ? undefined : popupActivityTabs(deck)}
+          >
+            <SioDetail sio={openSio} deck={deck} pretestHref={pretestHref} pretestId={pretestId} showPractice={openSio.isProduction} />
+            <MarkDoneButton sioId={openSio.id} />
+          </SioModal>
+        );
+      })()}
     </>
   );
 }

@@ -1,24 +1,82 @@
 "use client";
 
 /**
- * The shared popup chrome for a SIO — used by every unit now (Dan, 2026-07-01:
- * "We should adopt what we did for Unit 0 for the Units 1 to 4 too"). Just a
- * header (id + topic + close) and a body slot; callers decide what goes in
- * the body (MCQs for Unit 0, Pre-Test Prep / Post-Class Practice buttons for
- * Units 1-4).
+ * The shared popup chrome for a SIO — used by every unit (Dan, 2026-07-01:
+ * "We should adopt what we did for Unit 0 for the Units 1 to 4 too"). Header
+ * (id + topic + close) + a body slot; callers decide what goes in the body
+ * (pretest questions, statement, MarkDone…).
+ *
+ * Activity modes (Flip It / Say It / Complete It / Lexicalator /
+ * Vocabularain) ride on FLAP TABS — the same pastel index-tab look as the
+ * home page's Unité flaps — poking off the popup's right edge on wide
+ * screens, or as a flap row under the header on narrow ones. They are
+ * navigation, not body content (Dan: minimalist body).
  */
-import type { ReactNode } from "react";
+import Link from "next/link";
+import type { CSSProperties, ReactNode } from "react";
 import type { Sio } from "@/content/sios";
+import type { Collection } from "@/lib/collections/schema";
+
+export type PopupTab = { key: string; label: string; emoji: string; href?: string };
+
+const TAB_HUES = [
+  "var(--cahier-t0)",
+  "var(--cahier-t1)",
+  "var(--cahier-t2)",
+  "var(--cahier-t3)",
+  "var(--cahier-t4)",
+  "var(--cahier-t5)",
+] as const;
+
+/** The five activity modes for a deck — no-deck SIOs get no flaps. */
+export function popupActivityTabs(deck?: Collection): PopupTab[] | undefined {
+  if (!deck) return undefined;
+  const hasLetris = !!deck.gameConfig?.letris;
+  return [
+    { key: "flip", label: "Flip It", emoji: "🃏", href: `/practice/flip-it/${deck.id}` },
+    { key: "say", label: "Say It", emoji: "🎤", href: `/practice/say-it/${deck.id}` },
+    { key: "complete", label: "Complete It", emoji: "✏️" }, // not built yet
+    { key: "match", label: "Lexicalator", emoji: "⚙️", href: `/games/conveyor/${deck.id}` },
+    ...(hasLetris
+      ? [{ key: "rain", label: "Vocabularain", emoji: "🌧️", href: `/games/letris/${deck.id.replace("-letris", "")}` }]
+      : []),
+  ];
+}
+
+function Flap({ tab, hue, className }: { tab: PopupTab; hue: string; className?: string }) {
+  const style = { "--tab-hue": hue } as CSSProperties;
+  const body = (
+    <>
+      <span aria-hidden>{tab.emoji}</span>
+      <span>{tab.label}</span>
+    </>
+  );
+  if (!tab.href) {
+    return (
+      <span className={`cahier-tab cursor-default opacity-50 ${className ?? ""}`} style={style} title="Coming soon">
+        {body}
+      </span>
+    );
+  }
+  return (
+    <Link href={tab.href} className={`cahier-tab ${className ?? ""}`} style={style}>
+      {body}
+    </Link>
+  );
+}
 
 export default function SioModal({
   sio,
   onClose,
+  tabs,
   children,
 }: {
   sio: Sio;
   onClose: () => void;
+  tabs?: PopupTab[];
   children: ReactNode;
 }) {
+  const hueOf = (i: number) => TAB_HUES[i % TAB_HUES.length];
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
@@ -26,23 +84,40 @@ export default function SioModal({
       role="dialog"
       aria-modal="true"
     >
-      <div
-        className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-2xl border-2 bg-[var(--fluo-card)] p-5"
-        style={{ borderColor: "var(--fluo-card-accent)" }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="mb-3 flex items-start justify-between gap-3">
-          <div>
-            <span className="fluo-mono rounded-md bg-[var(--fluo-card-tint)] px-2 py-0.5 text-xs font-bold text-[color:var(--fluo-ink)]">
-              {sio.id}
-            </span>
-            <h2 className="fluo-readable mt-1 text-xl font-bold text-[color:var(--fluo-ink)]">{sio.topic}</h2>
+      <div className="flex max-w-full items-start" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-2xl border-2 bg-[var(--fluo-card)] p-5"
+          style={{ borderColor: "var(--fluo-card-accent)" }}
+        >
+          <div className="mb-3 flex items-start justify-between gap-3">
+            <div>
+              <span className="fluo-mono rounded-md bg-[var(--fluo-card-tint)] px-2 py-0.5 text-xs font-bold text-[color:var(--fluo-ink)]">
+                {sio.id}
+              </span>
+              <h2 className="fluo-readable mt-1 text-xl font-bold text-[color:var(--fluo-ink)]">{sio.topic}</h2>
+            </div>
+            <button type="button" onClick={onClose} className="fluo-btn fluo-btn-sm" aria-label="Close">
+              ✕
+            </button>
           </div>
-          <button type="button" onClick={onClose} className="fluo-btn fluo-btn-sm" aria-label="Close">
-            ✕
-          </button>
+          {/* narrow screens: the flaps as a row under the header */}
+          {tabs && tabs.length > 0 && (
+            <div className="mb-3 flex flex-wrap gap-1.5 sm:hidden">
+              {tabs.map((t, i) => (
+                <Flap key={t.key} tab={t} hue={hueOf(i)} className="!rounded-md !px-2 !py-1 text-xs" />
+              ))}
+            </div>
+          )}
+          {children}
         </div>
-        {children}
+        {/* wide screens: flaps poke off the popup's right edge, home-page style */}
+        {tabs && tabs.length > 0 && (
+          <nav className="mt-14 hidden shrink-0 flex-col gap-2 sm:flex" aria-label="Practice activities">
+            {tabs.map((t, i) => (
+              <Flap key={t.key} tab={t} hue={hueOf(i)} />
+            ))}
+          </nav>
+        )}
       </div>
     </div>
   );

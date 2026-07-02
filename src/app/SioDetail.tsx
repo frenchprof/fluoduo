@@ -24,6 +24,7 @@ export default function SioDetail({
   deck,
   pretestHref,
   pretestId,
+  showPractice = true,
 }: {
   sio: Sio;
   deck?: Collection;
@@ -32,8 +33,10 @@ export default function SioDetail({
    *  style (all visible at a glance, immediate per-question autocorrection),
    *  instead of a link out to the pretest page. */
   pretestId?: string | null;
+  /** Popups pass false — activities live on the popup's flap tabs instead. */
+  showPractice?: boolean;
 }) {
-  const practiceTile = (
+  const practiceTile = !showPractice ? null : (
     <div className="rounded-xl border-2 p-3" style={{ borderColor: "#3a9b5c" }}>
       <p className="fluo-label mb-2" style={{ color: "#3a9b5c" }}>Post-Class Practice</p>
       {sio.isProduction ? (
@@ -61,7 +64,7 @@ export default function SioDetail({
           {practiceTile}
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3">
+        <div className={showPractice ? "grid grid-cols-2 gap-3" : ""}>
           <div className="rounded-xl border-2 p-3" style={{ borderColor: "#7c6cff" }}>
             <p className="fluo-label mb-2" style={{ color: "#7c6cff" }}>Pre-Test Prep</p>
             {pretestHref ? (

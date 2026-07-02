@@ -18,8 +18,7 @@ import { useEffect, useState } from "react";
 import { SIOS, sioStatement } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import { UNIT0_QUESTIONS, type Unit0Question } from "@/content/sios/unit0-questions";
-import { PracticeChips } from "./SioDetail";
-import SioModal from "./SioModal";
+import SioModal, { popupActivityTabs } from "./SioModal";
 
 const UNIT0_SIOS = SIOS.filter((s) => s.unit === 0);
 
@@ -74,7 +73,15 @@ export default function Unit0Panel() {
       </div>
 
       {openSio && (
-        <SioModal sio={openSio} onClose={() => setOpenId(null)}>
+        <SioModal
+          sio={openSio}
+          onClose={() => setOpenId(null)}
+          tabs={
+            openSio.isProduction
+              ? undefined
+              : popupActivityTabs(openSio.collectionId ? CURATED.find((c) => c.id === openSio.collectionId) : undefined)
+          }
+        >
           <p className="fluo-serif mb-4 text-base font-bold leading-snug text-[color:var(--fluo-ink)]">
             <span className="fluo-hl">{sioStatement(openSio)}</span>
           </p>
@@ -96,25 +103,19 @@ export default function Unit0Panel() {
 
 function Unit0Questions({ sio }: { sio: (typeof UNIT0_SIOS)[number] }) {
   // Fresh random question AND option order on every popup open (this
-  // component mounts per open) — never the authored order.
+  // component mounts per open) — never the authored order. Activity modes
+  // live on the popup's flap tabs, not in the body.
   const [questions, setQuestions] = useState<Unit0Question[]>([]);
   useEffect(() => {
     const base = UNIT0_QUESTIONS[sio.id] ?? [];
     setQuestions(shuffle(base).map((q) => ({ ...q, options: shuffle(q.options) })));
   }, [sio.id]);
-  const deck = sio.collectionId ? CURATED.find((c) => c.id === sio.collectionId) : undefined;
 
   return (
     <div className="space-y-3">
       {questions.map((q, i) => (
         <QuizQuestion key={i} q={q} />
       ))}
-      {deck && (
-        <div className="pt-1">
-          <p className="fluo-label mb-2">Also try</p>
-          <PracticeChips deck={deck} />
-        </div>
-      )}
     </div>
   );
 }
