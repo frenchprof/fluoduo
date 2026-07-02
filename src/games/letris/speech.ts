@@ -10,7 +10,16 @@ type SpeakOpts = {
    * other off; a small cap drops excess so speech can't drift far behind play.
    */
   interrupt?: boolean;
+  /**
+   * Voice gender hint for two-speaker dialogues. Cross-browser voice-gender
+   * data is unreliable, so this prefers a matching named voice when present
+   * and always sets pitch (the one dependable differentiator).
+   */
+  gender?: "f" | "m";
 };
+
+const FEMALE_VOICE = /amelie|audrey|aurélie|aurelie|marie|julie|hortense|virginie|chantal|léa|lea|female|femme|woman/i;
+const MALE_VOICE = /thomas|nicolas|paul|claude|henri|mathieu|male|homme|man/i;
 
 export function speak(text: string, lang = "fr-FR", opts: SpeakOpts = {}) {
   if (typeof window === "undefined" || !window.speechSynthesis) return;
@@ -24,12 +33,15 @@ export function speak(text: string, lang = "fr-FR", opts: SpeakOpts = {}) {
   const u = new SpeechSynthesisUtterance(text);
   u.lang = lang;
   const voices = synth.getVoices();
-  const v =
-    voices.find((x) => x.lang === lang) ||
-    voices.find((x) => x.lang.startsWith(lang.split("-")[0]));
+  const inLang = voices.filter(
+    (x) => x.lang === lang || x.lang.startsWith(lang.split("-")[0]),
+  );
+  const rx = opts.gender === "f" ? FEMALE_VOICE : opts.gender === "m" ? MALE_VOICE : null;
+  const v = (rx && inLang.find((x) => rx.test(x.name))) || inLang[0];
   if (v) u.voice = v;
   u.rate = 0.95;
-  u.pitch = 1;
+  // Pitch is the reliable gender cue when a named voice isn't available.
+  u.pitch = opts.gender === "f" ? 1.35 : opts.gender === "m" ? 0.75 : 1;
 
   if (interrupt) {
     synth.cancel();

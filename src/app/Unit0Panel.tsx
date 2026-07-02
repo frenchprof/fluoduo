@@ -117,7 +117,8 @@ const DIALOGUE: { who: "A" | "B"; fr: string; en: string; say?: string }[] = [
   { who: "B", fr: "Je m'appelle Marc. Et toi ?", en: "My name is Marc. And you?" },
   { who: "A", fr: "Moi, je m'appelle Léa.", en: "Me, my name is Léa." },
   { who: "B", fr: "Comment ça s'écrit ?", en: "How do you spell it?" },
-  { who: "A", fr: "L – É – A.", en: "L – E – A.", say: "L, É, A" },
+  // Spelling always uses "Ça s'écrit …" (Dan, 2026-07-02).
+  { who: "A", fr: "Ça s'écrit L – É – A.", en: "It's spelled L – E – A.", say: "Ça s'écrit, L, É, A" },
   { who: "B", fr: "Enchanté !", en: "Nice to meet you!" },
   { who: "A", fr: "Enchantée ! Au revoir !", en: "Nice to meet you! Goodbye!" },
   { who: "B", fr: "Au revoir, à demain !", en: "Goodbye, see you tomorrow!" },
@@ -132,7 +133,7 @@ function Unit0Dialogue() {
           <div key={i} className={`flex ${mine ? "justify-start" : "justify-end"}`}>
             <button
               type="button"
-              onClick={() => speak(line.say ?? line.fr, "fr-FR")}
+              onClick={() => speak(line.say ?? line.fr, "fr-FR", { gender: mine ? "f" : "m" })}
               title="Play"
               className="max-w-[85%] rounded-2xl border-2 px-3 py-2 text-left transition hover:brightness-95"
               style={{

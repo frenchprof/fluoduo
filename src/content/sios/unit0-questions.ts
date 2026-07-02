@@ -158,6 +158,22 @@ const addressQ = (prompt: string, correct: "Monsieur" | "Madame", en: string): U
   ],
 });
 
+/** SIO-008 classroom instructions: emoji + (English) prompt -> French imperative. */
+const instructionQ = (
+  emoji: string,
+  fr: string,
+  en: string,
+  wrongs: [string, string][],
+): Unit0Question => ({
+  emoji,
+  title: `(${en})`,
+  tts: fr,
+  options: [
+    { v: fr, ok: true },
+    ...wrongs.map(([wf, we]) => ({ v: wf, ok: false, why: `That is \u201c${we}\u201d.` })),
+  ],
+});
+
 export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
   "SIO-001": [
     { stem: "[Moi,] Je ___ Dan.", en: "My name is Dan.", options: appelerOpts("m'appelle", ["s'appellent", "vous appelez", "nous appelons"]) },
@@ -264,42 +280,18 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
     glossQ("20", "vingt", ["deux", "dix", "quatre"], NUMBER),
   ],
   "SIO-008": [
-    { title: "It's 9am. You meet your French professor in the hallway for the first time.", options: [
-      { v: "Bonjour, monsieur.", ok: true },
-      { v: "Enchanté.", ok: false, why: "Enchanté responds to an introduction — no one has been introduced." },
-      { v: "Je m'appelle Dan.", ok: false, why: "That's an introduction, not a greeting." },
-      { v: "Vous vous appelez comment ?", ok: false, why: "That asks his name instead of greeting him." },
-    ] },
-    { title: "You see your classmate just before class starts.", options: [
-      { v: "Salut !", ok: true },
-      { v: "Au revoir.", ok: false, why: "Au revoir is a goodbye, not a hello." },
-      { v: "Merci.", ok: false, why: "Merci means 'thank you'." },
-      { v: "Bonsoir.", ok: false, why: "Bonsoir is for the evening — class is starting in the daytime." },
-    ] },
-    { title: "It's 8pm. You greet a stranger you're seated next to at a dinner.", options: [
-      { v: "Bonsoir.", ok: true },
-      { v: "Bonne nuit", ok: false, why: "Bonne nuit is only for bedtime." },
-      { v: "Tu t'appelles comment ?", ok: false, why: "That's a question — and tu with a stranger is wrong anyway." },
-      { v: "Enchanté.", ok: false, why: "Enchanté responds to an introduction — no one has been introduced." },
-    ] },
-    { title: "You greet your closest friend as you arrive at a casual gathering.", options: [
-      { v: "Coucou !", ok: true },
-      { v: "Bonjour, monsieur.", ok: false, why: "Far too formal for your closest friend." },
-      { v: "Désolé.", ok: false, why: "Désolé means 'sorry'." },
-      { v: "Enchanté.", ok: false, why: "Enchanté is for first meetings — this is your closest friend." },
-    ] },
-    { title: "At a professional event, you turn to the man beside you and ask him his name.", options: [
-      { v: "Vous vous appelez comment ?", ok: true },
-      { v: "Je m'appelle Dan.", ok: false, why: "That gives YOUR name instead of asking his." },
-      { v: "Tu t'appelles comment ?", ok: false, why: "Tu with someone you don't know — use the vous form." },
-      { v: "Merci.", ok: false, why: "Merci means 'thank you'." },
-    ] },
-    { title: "You're chatting with a fellow student your age whose name you don't know.", options: [
-      { v: "Tu t'appelles comment ?", ok: true },
-      { v: "Je m'appelle Dan.", ok: false, why: "That gives your name instead of asking theirs." },
-      { v: "Bonsoir.", ok: false, why: "Bonsoir is a greeting, not a question." },
-      { v: "Enchanté.", ok: false, why: "Enchanté responds to an introduction." },
-    ] },
+    // Classroom instructions — emoji + (English) prompt, pick the French
+    // imperative (the one SIO where imperatives are allowed). Corrected
+    // 2026-07-02 (was mistakenly greetings content).
+    instructionQ("👂", "Écoutez !", "Listen", [["Écrivez !", "Write"], ["Lisez !", "Read"], ["Regardez !", "Look"]]),
+    instructionQ("✏️", "Écrivez !", "Write", [["Écoutez !", "Listen"], ["Lisez !", "Read"], ["Ouvrez le livre !", "Open the book"]]),
+    instructionQ("📖", "Lisez !", "Read", [["Écrivez !", "Write"], ["Écoutez !", "Listen"], ["Regardez !", "Look"]]),
+    instructionQ("🔁", "Répétez !", "Repeat", [["Lisez !", "Read"], ["Écoutez !", "Listen"], ["Regardez !", "Look"]]),
+    instructionQ("👀", "Regardez !", "Look", [["Écoutez !", "Listen"], ["Lisez !", "Read"], ["Levez la main !", "Raise your hand"]]),
+    instructionQ("✋", "Levez la main !", "Raise your hand", [["Ouvrez le livre !", "Open the book"], ["Regardez !", "Look"], ["Silence, s'il vous plaît !", "Quiet, please"]]),
+    instructionQ("📗", "Ouvrez le livre !", "Open the book", [["Fermez le livre !", "Close the book"], ["Lisez !", "Read"], ["Écrivez !", "Write"]]),
+    instructionQ("📕", "Fermez le livre !", "Close the book", [["Ouvrez le livre !", "Open the book"], ["Écoutez !", "Listen"], ["Regardez !", "Look"]]),
+    instructionQ("🤫", "Silence, s'il vous plaît !", "Quiet, please", [["Levez la main !", "Raise your hand"], ["Écoutez !", "Listen"], ["Répétez !", "Repeat"]]),
   ],
   "SIO-009": [
     { title: "It's your first day of class. The professor asks you to introduce yourself.", options: [
