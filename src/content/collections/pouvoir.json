@@ -1,0 +1,63 @@
+{
+  "id": "pouvoir",
+  "title": "Pouvoir + infinitif",
+  "subtitle": "what one can do",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 3,
+  "lessonNo": 7,
+  "lessonSlug": "pouvoir",
+  "tags": [],
+  "seq": 307,
+  "items": [
+    {
+      "id": "pouvoir-01",
+      "fr": "Je peux manger ici ?",
+      "en": "Can I eat here?",
+      "tags": []
+    },
+    {
+      "id": "pouvoir-02",
+      "fr": "On peut visiter le musée.",
+      "en": "We can visit the museum.",
+      "tags": []
+    },
+    {
+      "id": "pouvoir-03",
+      "fr": "Tu peux te garer là.",
+      "en": "You can park there.",
+      "tags": []
+    },
+    {
+      "id": "pouvoir-04",
+      "fr": "Vous pouvez acheter les billets ici.",
+      "en": "You (formal) can buy tickets here.",
+      "tags": []
+    },
+    {
+      "id": "pouvoir-05",
+      "fr": "On peut se promener.",
+      "en": "We can walk around.",
+      "tags": []
+    },
+    {
+      "id": "pouvoir-06",
+      "fr": "Elle peut venir avec nous.",
+      "en": "She can come with us.",
+      "tags": []
+    },
+    {
+      "id": "pouvoir-07",
+      "fr": "Ils peuvent attendre ici.",
+      "en": "They can wait here.",
+      "tags": []
+    },
+    {
+      "id": "pouvoir-08",
+      "fr": "On ne peut pas fumer ici.",
+      "en": "You can't smoke here.",
+      "tags": []
+    }
+  ]
+}
