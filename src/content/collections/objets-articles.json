@@ -29,6 +29,22 @@
           "prefix": "des "
         }
       ]
+    },
+    "lexicalator": {
+      "decoys": [
+        "sacs",
+        "livres",
+        "phane",
+        "yion",
+        "porte",
+        "seau",
+        "nette",
+        "cier",
+        "gome",
+        "feuil",
+        "denne",
+        "tisse"
+      ]
     }
   },
   "items": [
@@ -36,6 +52,9 @@
       "id": "objets-articles-01",
       "fr": "sac",
       "en": "bag",
+      "syllables": [
+        "sac"
+      ],
       "tags": [
         "col:un"
       ]
@@ -44,6 +63,9 @@
       "id": "objets-articles-02",
       "fr": "livre",
       "en": "book",
+      "syllables": [
+        "livre"
+      ],
       "tags": [
         "col:un"
       ]
@@ -52,6 +74,10 @@
       "id": "objets-articles-03",
       "fr": "cahier",
       "en": "exercise book",
+      "syllables": [
+        "ca",
+        "hier"
+      ],
       "tags": [
         "col:un"
       ]
@@ -60,6 +86,11 @@
       "id": "objets-articles-04",
       "fr": "téléphone",
       "en": "phone",
+      "syllables": [
+        "té",
+        "lé",
+        "phone"
+      ],
       "tags": [
         "col:un"
       ]
@@ -68,6 +99,10 @@
       "id": "objets-articles-05",
       "fr": "stylo",
       "en": "pen",
+      "syllables": [
+        "sty",
+        "lo"
+      ],
       "tags": [
         "col:un"
       ]
@@ -76,6 +111,10 @@
       "id": "objets-articles-06",
       "fr": "crayon",
       "en": "pencil",
+      "syllables": [
+        "cra",
+        "yon"
+      ],
       "tags": [
         "col:un"
       ]
@@ -84,6 +123,10 @@
       "id": "objets-articles-07",
       "fr": "passeport",
       "en": "passport",
+      "syllables": [
+        "passe",
+        "port"
+      ],
       "tags": [
         "col:un"
       ]
@@ -92,6 +135,13 @@
       "id": "objets-articles-08",
       "fr": "carte d'identité",
       "en": "ID card",
+      "syllables": [
+        "carte",
+        " d'i",
+        "den",
+        "ti",
+        "té"
+      ],
       "tags": [
         "col:une"
       ]
@@ -100,6 +150,9 @@
       "id": "objets-articles-09",
       "fr": "trousse",
       "en": "pencil case",
+      "syllables": [
+        "trousse"
+      ],
       "tags": [
         "col:une"
       ]
@@ -108,6 +161,10 @@
       "id": "objets-articles-10",
       "fr": "ciseaux",
       "en": "scissors",
+      "syllables": [
+        "ci",
+        "seaux"
+      ],
       "tags": [
         "col:des"
       ]
@@ -116,6 +173,9 @@
       "id": "objets-articles-11",
       "fr": "gomme",
       "en": "eraser",
+      "syllables": [
+        "gomme"
+      ],
       "tags": [
         "col:une"
       ]
@@ -124,6 +184,11 @@
       "id": "objets-articles-12",
       "fr": "portefeuille",
       "en": "wallet",
+      "syllables": [
+        "por",
+        "te",
+        "feuille"
+      ],
       "tags": [
         "col:un"
       ]
@@ -132,6 +197,10 @@
       "id": "objets-articles-13",
       "fr": "lunettes",
       "en": "glasses",
+      "syllables": [
+        "lu",
+        "nettes"
+      ],
       "tags": [
         "col:des"
       ]
@@ -140,6 +209,9 @@
       "id": "objets-articles-14",
       "fr": "clé",
       "en": "key",
+      "syllables": [
+        "clé"
+      ],
       "tags": [
         "col:une"
       ]

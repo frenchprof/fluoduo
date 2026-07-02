@@ -29,6 +29,22 @@
           "prefix": "il est "
         }
       ]
+    },
+    "lexicalator": {
+      "decoys": [
+        "teure",
+        "trisse",
+        "geusse",
+        "cheur",
+        "seur",
+        "tresse",
+        "dian",
+        "tude",
+        "nisse",
+        "feur",
+        "voir",
+        "chon"
+      ]
     }
   },
   "items": [
@@ -36,6 +52,9 @@
       "id": "professions-01",
       "fr": "chef",
       "en": "chef (m)",
+      "syllables": [
+        "chef"
+      ],
       "tags": [
         "col:il"
       ]
@@ -44,6 +63,9 @@
       "id": "professions-02",
       "fr": "cheffe",
       "en": "chef (f)",
+      "syllables": [
+        "cheffe"
+      ],
       "tags": [
         "col:elle"
       ]
@@ -52,6 +74,10 @@
       "id": "professions-03",
       "fr": "acteur",
       "en": "actor",
+      "syllables": [
+        "ac",
+        "teur"
+      ],
       "tags": [
         "col:il"
       ]
@@ -60,6 +86,10 @@
       "id": "professions-04",
       "fr": "actrice",
       "en": "actress",
+      "syllables": [
+        "ac",
+        "trice"
+      ],
       "tags": [
         "col:elle"
       ]
@@ -68,6 +98,13 @@
       "id": "professions-05",
       "fr": "joueur de tennis",
       "en": "tennis player (m)",
+      "syllables": [
+        "jou",
+        "eur",
+        " de",
+        " ten",
+        "nis"
+      ],
       "tags": [
         "col:il"
       ]
@@ -76,6 +113,13 @@
       "id": "professions-06",
       "fr": "joueuse de tennis",
       "en": "tennis player (f)",
+      "syllables": [
+        "jou",
+        "euse",
+        " de",
+        " ten",
+        "nis"
+      ],
       "tags": [
         "col:elle"
       ]
@@ -84,6 +128,10 @@
       "id": "professions-07",
       "fr": "nageur",
       "en": "swimmer (m)",
+      "syllables": [
+        "na",
+        "geur"
+      ],
       "tags": [
         "col:il"
       ]
@@ -92,6 +140,10 @@
       "id": "professions-08",
       "fr": "nageuse",
       "en": "swimmer (f)",
+      "syllables": [
+        "na",
+        "geuse"
+      ],
       "tags": [
         "col:elle"
       ]
@@ -100,6 +152,10 @@
       "id": "professions-09",
       "fr": "chanteur",
       "en": "singer (m)",
+      "syllables": [
+        "chan",
+        "teur"
+      ],
       "tags": [
         "col:il"
       ]
@@ -108,6 +164,10 @@
       "id": "professions-10",
       "fr": "chanteuse",
       "en": "singer (f)",
+      "syllables": [
+        "chan",
+        "teuse"
+      ],
       "tags": [
         "col:elle"
       ]
@@ -116,6 +176,11 @@
       "id": "professions-11",
       "fr": "étudiant",
       "en": "student (m)",
+      "syllables": [
+        "é",
+        "tu",
+        "diant"
+      ],
       "tags": [
         "col:il"
       ]
@@ -124,6 +189,11 @@
       "id": "professions-12",
       "fr": "étudiante",
       "en": "student (f)",
+      "syllables": [
+        "é",
+        "tu",
+        "diante"
+      ],
       "tags": [
         "col:elle"
       ]
@@ -132,6 +202,11 @@
       "id": "professions-13",
       "fr": "journaliste",
       "en": "journalist",
+      "syllables": [
+        "jour",
+        "na",
+        "liste"
+      ],
       "tags": [
         "col:both"
       ]
@@ -140,6 +215,10 @@
       "id": "professions-14",
       "fr": "styliste",
       "en": "fashion designer",
+      "syllables": [
+        "sty",
+        "liste"
+      ],
       "tags": [
         "col:both"
       ]
@@ -148,6 +227,10 @@
       "id": "professions-15",
       "fr": "artiste",
       "en": "artist",
+      "syllables": [
+        "ar",
+        "tiste"
+      ],
       "tags": [
         "col:both"
       ]
@@ -156,6 +239,11 @@
       "id": "professions-16",
       "fr": "architecte",
       "en": "architect",
+      "syllables": [
+        "ar",
+        "chi",
+        "tecte"
+      ],
       "tags": [
         "col:both"
       ]
