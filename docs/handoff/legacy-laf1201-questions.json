@@ -1,0 +1,8026 @@
+{
+ "0-01-tu-vous-quiz": [
+  {
+   "q": "1. You meet your French professor for the first time. Which pronoun do you use — tu or vous?",
+   "options": [
+    "tu",
+    "vous"
+   ],
+   "correct": "vous"
+  },
+  {
+   "q": "2. You meet a classmate your age in LAF1201. Which pronoun do you use — tu or vous?",
+   "options": [
+    "vous",
+    "tu"
+   ],
+   "correct": "tu"
+  },
+  {
+   "q": "3. An elderly woman you don't know asks you for directions. Which pronoun do you use — tu or vous?",
+   "options": [
+    "tu",
+    "vous"
+   ],
+   "correct": "vous"
+  },
+  {
+   "q": "4. You're talking to your own grandfather at a family meal. Which pronoun do you use — tu or vous?",
+   "options": [
+    "vous",
+    "tu"
+   ],
+   "correct": "tu"
+  },
+  {
+   "q": "5. You speak to a 7-year-old child at a family dinner. Which pronoun do you use — tu or vous?",
+   "options": [
+    "vous",
+    "tu"
+   ],
+   "correct": "tu"
+  },
+  {
+   "q": "6. You're at your friend's home for dinner. You have never met their dad before — he opens the door. Which pronoun do you use — tu or vous?",
+   "options": [
+    "vous",
+    "tu"
+   ],
+   "correct": "vous"
+  },
+  {
+   "q": "7. You're texting two close friends together in a group chat — you address them both at once. Which pronoun do you use — tu or vous?",
+   "options": [
+    "vous",
+    "tu"
+   ],
+   "correct": "vous"
+  },
+  {
+   "q": "8. You order a coffee from a barista you don't know. Which pronoun do you use — tu or vous?",
+   "options": [
+    "tu",
+    "vous"
+   ],
+   "correct": "vous"
+  },
+  {
+   "q": "9. You're playing fetch with your friend's dog. Which pronoun do you use — tu or vous?",
+   "options": [
+    "vous",
+    "tu"
+   ],
+   "correct": "tu"
+  },
+  {
+   "q": "10. A 10-year-old child speaks to a 70-year-old man they don't know. Which pronoun do you use — tu or vous?",
+   "options": [
+    "vous",
+    "tu"
+   ],
+   "correct": "vous"
+  },
+  {
+   "q": "11. The older man addresses the child. Which pronoun do you use — tu or vous?",
+   "options": [
+    "vous",
+    "tu"
+   ],
+   "correct": "tu"
+  }
+ ],
+ "0-02-subject-pronouns-quiz": [
+  {
+   "q": "1. Talking about yourself.",
+   "options": [
+    "je",
+    "elles",
+    "il",
+    "vous"
+   ],
+   "correct": "je"
+  },
+  {
+   "q": "2. Talking to one friend, classmate, or family member.",
+   "options": [
+    "il",
+    "vous",
+    "nous",
+    "tu"
+   ],
+   "correct": "tu"
+  },
+  {
+   "q": "3. Talking about one person (or thing of the masculine gender).",
+   "options": [
+    "il",
+    "nous",
+    "vous",
+    "on"
+   ],
+   "correct": "il"
+  },
+  {
+   "q": "4. Talking about one person (or thing of the feminine gender).",
+   "options": [
+    "elle",
+    "il",
+    "je",
+    "ils"
+   ],
+   "correct": "elle"
+  },
+  {
+   "q": "5. Talking about people in general (e.g. saying one is/does something), or casually saying \"we\".",
+   "options": [
+    "tu",
+    "nous",
+    "je",
+    "on"
+   ],
+   "correct": "on"
+  },
+  {
+   "q": "6. Talking about yourself and at least one other person.",
+   "options": [
+    "nous",
+    "ils",
+    "elles",
+    "je"
+   ],
+   "correct": "nous"
+  },
+  {
+   "q": "7. Talking to one person with a respectful (non-intimate) distance — a teacher, stranger, elder.",
+   "options": [
+    "elles",
+    "il",
+    "elle",
+    "vous"
+   ],
+   "correct": "vous"
+  },
+  {
+   "q": "8. Talking to two or more people — same word, plural meaning.",
+   "options": [
+    "tu",
+    "je",
+    "vous",
+    "nous"
+   ],
+   "correct": "vous"
+  },
+  {
+   "q": "9. Talking about a group of men, OR a mixed group.",
+   "options": [
+    "nous",
+    "ils",
+    "elle",
+    "il"
+   ],
+   "correct": "ils"
+  },
+  {
+   "q": "10. Talking about a group of women only.",
+   "options": [
+    "nous",
+    "elles",
+    "tu",
+    "vous"
+   ],
+   "correct": "elles"
+  },
+  {
+   "q": "11. ___ est colombien. He is Colombian. (talking about Mateo)",
+   "options": [
+    "il",
+    "elle",
+    "ils",
+    "on"
+   ],
+   "correct": "il"
+  },
+  {
+   "q": "12. ___ sont dans la classe. They are in class. (Wei and Yuki)",
+   "options": [
+    "ils",
+    "elles",
+    "nous",
+    "elle"
+   ],
+   "correct": "elles"
+  },
+  {
+   "q": "13. ___ êtes boulangère, madame ? Are you a baker, ma'am? (formal)",
+   "options": [
+    "tu",
+    "vous",
+    "elle",
+    "nous"
+   ],
+   "correct": "vous"
+  },
+  {
+   "q": "14. ___ mange ensemble ce soir ? Shall we eat together tonight? (casual)",
+   "options": [
+    "nous",
+    "on",
+    "ils",
+    "je"
+   ],
+   "correct": "on"
+  },
+  {
+   "q": "15. ___ parles français ? Do you speak French? (to a classmate)",
+   "options": [
+    "vous",
+    "tu",
+    "il",
+    "on"
+   ],
+   "correct": "tu"
+  },
+  {
+   "q": "16. ___ sommes étudiants à Paris. We are students in Paris.",
+   "options": [
+    "on",
+    "nous",
+    "vous",
+    "ils"
+   ],
+   "correct": "nous"
+  },
+  {
+   "q": "17. ___ est japonaise. She is Japanese. (talking about Yuki)",
+   "options": [
+    "il",
+    "elle",
+    "elles",
+    "on"
+   ],
+   "correct": "elle"
+  },
+  {
+   "q": "18. ___ habitent dans le même quartier. They live in the same neighbourhood. (Mateo and Wei)",
+   "options": [
+    "elles",
+    "ils",
+    "nous",
+    "on"
+   ],
+   "correct": "ils"
+  },
+  {
+   "q": "19. ___ m'appelle Amara. My name is Amara. (I call myself Amara)",
+   "options": [
+    "je",
+    "tu",
+    "elle",
+    "on"
+   ],
+   "correct": "je"
+  },
+  {
+   "q": "20. ___ comprenez la question ? Do you understand the question? (teacher to class)",
+   "options": [
+    "tu",
+    "nous",
+    "vous",
+    "on"
+   ],
+   "correct": "vous"
+  },
+  {
+   "q": "21. Le café ? ___ est fermé aujourd'hui. The café? It's closed today.",
+   "options": [
+    "elle",
+    "il",
+    "on",
+    "ils"
+   ],
+   "correct": "il"
+  },
+  {
+   "q": "22. La boulangerie ? ___ ouvre à sept heures. The bakery? It opens at seven.",
+   "options": [
+    "il",
+    "elle",
+    "on",
+    "elles"
+   ],
+   "correct": "elle"
+  },
+  {
+   "q": "23. En France, ___ mange du pain tous les jours. In France, people eat bread every day.",
+   "options": [
+    "ils",
+    "nous",
+    "on",
+    "je"
+   ],
+   "correct": "on"
+  },
+  {
+   "q": "24. ___ habites à Paris aussi ? Do you live in Paris too? (Wei to Mateo)",
+   "options": [
+    "tu",
+    "vous",
+    "il",
+    "on"
+   ],
+   "correct": "tu"
+  },
+  {
+   "q": "25. Les étudiants ? ___ arrivent à neuf heures. The students? They arrive at nine.",
+   "options": [
+    "elles",
+    "ils",
+    "nous",
+    "on"
+   ],
+   "correct": "ils"
+  },
+  {
+   "q": "26. ___ viens du Sénégal. I come from Senegal.",
+   "options": [
+    "elle",
+    "je",
+    "tu",
+    "on"
+   ],
+   "correct": "je"
+  },
+  {
+   "q": "27. ___ étudions le français ensemble. We study French together.",
+   "options": [
+    "on",
+    "vous",
+    "nous",
+    "ils"
+   ],
+   "correct": "nous"
+  },
+  {
+   "q": "28. Madame Sow ? ___ est professeure. Madame Sow? She is a teacher.",
+   "options": [
+    "il",
+    "elle",
+    "vous",
+    "elles"
+   ],
+   "correct": "elle"
+  },
+  {
+   "q": "29. ___ aime le chocolat chaud. He likes hot chocolate. (talking about Mateo)",
+   "options": [
+    "je",
+    "il",
+    "elle",
+    "on"
+   ],
+   "correct": "il"
+  },
+  {
+   "q": "30. ___ parlent ensemble après le cours. They talk together after class. (Amara and Yuki)",
+   "options": [
+    "ils",
+    "elles",
+    "nous",
+    "vous"
+   ],
+   "correct": "elles"
+  }
+ ],
+ "0-03-stress-pronouns-quiz": [
+  {
+   "q": "1. Mateo : Qui est là ? Wei : C'est ___ ! Mateo: Who's there? Wei: It's ___ !",
+   "options": [
+    "vous",
+    "moi",
+    "elles",
+    "nous"
+   ],
+   "correct": "moi"
+  },
+  {
+   "q": "2. Wei : Moi, c'est Wei. Et ___ ? Wei: Me, I'm Wei. And ___ ?",
+   "options": [
+    "moi",
+    "nous",
+    "toi",
+    "elle"
+   ],
+   "correct": "toi"
+  },
+  {
+   "q": "3. Amara : C'est Mateo. Je suis avec ___ en classe. Amara: That's Mateo. I'm with ___ in class.",
+   "options": [
+    "lui",
+    "nous",
+    "eux",
+    "vous"
+   ],
+   "correct": "lui"
+  },
+  {
+   "q": "4. Wei : Yuki est japonaise. Je parle avec ___ en français. Wei: Yuki is Japanese. I speak with ___ in French.",
+   "options": [
+    "moi",
+    "lui",
+    "elle",
+    "eux"
+   ],
+   "correct": "elle"
+  },
+  {
+   "q": "5. Wei et Mateo entrent. Benali : Ces croissants sont pour ___ ? Wei and Mateo walk in. Benali: These croissants are for ___ (us)?",
+   "options": [
+    "nous",
+    "elles",
+    "lui",
+    "moi"
+   ],
+   "correct": "nous"
+  },
+  {
+   "q": "6. Benali [aux quatre étudiants] : Ces croissants sont pour ___ ! Benali [to the four students]: These croissants are for ___ (you)!",
+   "options": [
+    "eux",
+    "lui",
+    "toi",
+    "vous"
+   ],
+   "correct": "vous"
+  },
+  {
+   "q": "7. Yuki : Wei et Mateo sont sympas. J'étudie avec ___. Yuki: Wei and Mateo are nice. I study with ___.",
+   "options": [
+    "vous",
+    "toi",
+    "elle",
+    "eux"
+   ],
+   "correct": "eux"
+  },
+  {
+   "q": "8. Mateo : Amara et Yuki sont dans mon groupe. J'étudie avec ___. Mateo: Amara and Yuki are in my group. I study with ___.",
+   "options": [
+    "vous",
+    "eux",
+    "toi",
+    "elles"
+   ],
+   "correct": "elles"
+  }
+ ],
+ "0-03b-stress-vs-subject-quiz": [
+  {
+   "q": "1. ___ suis étudiant. I am a student.",
+   "options": [
+    "moi",
+    "je"
+   ],
+   "correct": "je"
+  },
+  {
+   "q": "2. ___, je suis français. Me, I’m French. (emphasis)",
+   "options": [
+    "Je",
+    "Moi"
+   ],
+   "correct": "Moi"
+  },
+  {
+   "q": "3. ___ es d’où ? Where are you from?",
+   "options": [
+    "toi",
+    "tu"
+   ],
+   "correct": "tu"
+  },
+  {
+   "q": "4. Et ___, tu es d’où ? And you, where are you from?",
+   "options": [
+    "Tu",
+    "Toi"
+   ],
+   "correct": "Toi"
+  },
+  {
+   "q": "5. ___ parle français. He speaks French.",
+   "options": [
+    "lui",
+    "il"
+   ],
+   "correct": "il"
+  },
+  {
+   "q": "6. ___, il est mexicain. Him, he’s Mexican. (emphasis)",
+   "options": [
+    "Il",
+    "Lui"
+   ],
+   "correct": "Lui"
+  },
+  {
+   "q": "7. ___ sont sympas. They are nice.",
+   "options": [
+    "eux",
+    "ils"
+   ],
+   "correct": "ils"
+  },
+  {
+   "q": "8. ___, ils sont dans mon groupe. Them, they’re in my group. (emphasis)",
+   "options": [
+    "Ils",
+    "Eux"
+   ],
+   "correct": "Eux"
+  }
+ ],
+ "0-04-alphabet-quiz": [
+  {
+   "q": "1. Listen Which letter do you hear?",
+   "options": [
+    "H",
+    "A",
+    "E",
+    "J"
+   ],
+   "correct": "A"
+  },
+  {
+   "q": "2. Listen Which letter do you hear?",
+   "options": [
+    "P",
+    "D",
+    "B",
+    "V"
+   ],
+   "correct": "B"
+  },
+  {
+   "q": "3. Listen Which letter do you hear?",
+   "options": [
+    "C",
+    "S",
+    "D",
+    "O"
+   ],
+   "correct": "C"
+  },
+  {
+   "q": "4. Listen Which letter do you hear?",
+   "options": [
+    "T",
+    "B",
+    "D"
+   ],
+   "correct": "D"
+  },
+  {
+   "q": "5. Listen Which letter do you hear?",
+   "options": [
+    "A",
+    "I",
+    "U",
+    "E"
+   ],
+   "correct": "E"
+  },
+  {
+   "q": "6. Listen Which letter do you hear?",
+   "options": [
+    "S",
+    "F",
+    "V"
+   ],
+   "correct": "F"
+  },
+  {
+   "q": "7. Listen Which letter do you hear?",
+   "options": [
+    "J",
+    "D",
+    "G",
+    "B"
+   ],
+   "correct": "G"
+  },
+  {
+   "q": "8. Listen Which letter do you hear?",
+   "options": [
+    "A",
+    "F",
+    "N",
+    "H"
+   ],
+   "correct": "H"
+  },
+  {
+   "q": "9. Listen Which letter do you hear?",
+   "options": [
+    "Y",
+    "E",
+    "J",
+    "I"
+   ],
+   "correct": "I"
+  },
+  {
+   "q": "10. Listen Which letter do you hear?",
+   "options": [
+    "I",
+    "Z",
+    "J",
+    "G"
+   ],
+   "correct": "J"
+  },
+  {
+   "q": "11. Listen Which letter do you hear?",
+   "options": [
+    "O",
+    "C",
+    "Q",
+    "K"
+   ],
+   "correct": "K"
+  },
+  {
+   "q": "12. Listen Which letter do you hear?",
+   "options": [
+    "L",
+    "W",
+    "M",
+    "N"
+   ],
+   "correct": "L"
+  },
+  {
+   "q": "13. Listen Which letter do you hear?",
+   "options": [
+    "L",
+    "N",
+    "M"
+   ],
+   "correct": "M"
+  },
+  {
+   "q": "14. Listen Which letter do you hear?",
+   "options": [
+    "L",
+    "R",
+    "N",
+    "M"
+   ],
+   "correct": "N"
+  },
+  {
+   "q": "15. Listen Which letter do you hear?",
+   "options": [
+    "E",
+    "I",
+    "O",
+    "U"
+   ],
+   "correct": "O"
+  },
+  {
+   "q": "16. Listen Which letter do you hear?",
+   "options": [
+    "P",
+    "B",
+    "T",
+    "D"
+   ],
+   "correct": "P"
+  },
+  {
+   "q": "17. Listen Which letter do you hear?",
+   "options": [
+    "K",
+    "U",
+    "Q",
+    "P"
+   ],
+   "correct": "Q"
+  },
+  {
+   "q": "18. Listen Which letter do you hear?",
+   "options": [
+    "L",
+    "N",
+    "F",
+    "R"
+   ],
+   "correct": "R"
+  },
+  {
+   "q": "19. Listen Which letter do you hear?",
+   "options": [
+    "C",
+    "U",
+    "F",
+    "S"
+   ],
+   "correct": "S"
+  },
+  {
+   "q": "20. Listen Which letter do you hear?",
+   "options": [
+    "B",
+    "P",
+    "T",
+    "D"
+   ],
+   "correct": "T"
+  },
+  {
+   "q": "21. Listen Which letter do you hear?",
+   "options": [
+    "O",
+    "U",
+    "Q",
+    "E"
+   ],
+   "correct": "U"
+  },
+  {
+   "q": "22. Listen Which letter do you hear?",
+   "options": [
+    "F",
+    "S",
+    "V",
+    "B"
+   ],
+   "correct": "V"
+  },
+  {
+   "q": "23. Listen Which letter do you hear?",
+   "options": [
+    "W",
+    "X",
+    "V",
+    "Y"
+   ],
+   "correct": "W"
+  },
+  {
+   "q": "24. Listen Which letter do you hear?",
+   "options": [
+    "S",
+    "K",
+    "I",
+    "X"
+   ],
+   "correct": "X"
+  },
+  {
+   "q": "25. Listen Which letter do you hear?",
+   "options": [
+    "J",
+    "Y",
+    "I"
+   ],
+   "correct": "Y"
+  },
+  {
+   "q": "26. Listen Which letter do you hear?",
+   "options": [
+    "Z",
+    "X",
+    "F",
+    "S"
+   ],
+   "correct": "Z"
+  }
+ ],
+ "0-05-qwords-quiz": [
+  {
+   "q": "1. C'est ___ ? — À Paris. Where is it? — In Paris.",
+   "options": [
+    "quand",
+    "où",
+    "comment",
+    "quoi"
+   ],
+   "correct": "où"
+  },
+  {
+   "q": "2. ___ tu t'appelles ? — Je m'appelle Wei. What's your name? — My name is Wei.",
+   "options": [
+    "qui",
+    "quand",
+    "comment",
+    "où"
+   ],
+   "correct": "comment"
+  },
+  {
+   "q": "3. ___ commence le cours ? — À neuf heures. When does class start? — At nine o'clock.",
+   "options": [
+    "quand",
+    "où",
+    "combien",
+    "qui"
+   ],
+   "correct": "quand"
+  },
+  {
+   "q": "4. ___ est ce monsieur ? — C'est Mateo. Who is this man? — It's Mateo.",
+   "options": [
+    "comment",
+    "quoi",
+    "qui",
+    "quand"
+   ],
+   "correct": "qui"
+  },
+  {
+   "q": "5. Ça coûte ___ ? — Deux euros. How much does it cost? — Two euros.",
+   "options": [
+    "où",
+    "quoi",
+    "comment",
+    "combien"
+   ],
+   "correct": "combien"
+  },
+  {
+   "q": "6. Tu fais ___ ? — J'étudie le français. What are you doing? — I'm studying French.",
+   "options": [
+    "qui",
+    "quoi",
+    "combien",
+    "où"
+   ],
+   "correct": "quoi"
+  },
+  {
+   "q": "7. ___ ça va ? — Ça va bien, merci. How are you? — I'm fine, thanks.",
+   "options": [
+    "quand",
+    "comment",
+    "combien",
+    "qui"
+   ],
+   "correct": "comment"
+  },
+  {
+   "q": "8. ___ est la boulangerie ? — En face du métro. Where is the bakery? — Opposite the metro.",
+   "options": [
+    "quoi",
+    "comment",
+    "où",
+    "quand"
+   ],
+   "correct": "où"
+  },
+  {
+   "q": "9. On part ___ ? — Demain matin. When do we leave? — Tomorrow morning.",
+   "options": [
+    "comment",
+    "qui",
+    "quand",
+    "combien"
+   ],
+   "correct": "quand"
+  },
+  {
+   "q": "10. ___ parle ? — C'est Amara. Who's speaking? — It's Amara.",
+   "options": [
+    "qui",
+    "combien",
+    "quoi",
+    "comment"
+   ],
+   "correct": "qui"
+  },
+  {
+   "q": "11. Tu as ___ de frères ? — Trois. How many brothers do you have? — Three.",
+   "options": [
+    "combien",
+    "comment",
+    "où",
+    "quand"
+   ],
+   "correct": "combien"
+  },
+  {
+   "q": "12. C'est ___ ? — C'est un croissant. What is it? — It's a croissant.",
+   "options": [
+    "où",
+    "combien",
+    "quoi",
+    "qui"
+   ],
+   "correct": "quoi"
+  }
+ ],
+ "0-07-days-quiz": [
+  {
+   "q": "1. Which French word means Monday?",
+   "options": [
+    "vendredi",
+    "dimanche",
+    "lundi",
+    "mercredi"
+   ],
+   "correct": "lundi"
+  },
+  {
+   "q": "2. Which French word means Tuesday?",
+   "options": [
+    "jeudi",
+    "vendredi",
+    "mercredi",
+    "mardi"
+   ],
+   "correct": "mardi"
+  },
+  {
+   "q": "3. Which French word means Wednesday?",
+   "options": [
+    "mercredi",
+    "dimanche",
+    "samedi",
+    "lundi"
+   ],
+   "correct": "mercredi"
+  },
+  {
+   "q": "4. Which French word means Thursday?",
+   "options": [
+    "vendredi",
+    "jeudi",
+    "mercredi",
+    "samedi"
+   ],
+   "correct": "jeudi"
+  },
+  {
+   "q": "5. Which French word means Friday?",
+   "options": [
+    "vendredi",
+    "jeudi",
+    "mardi",
+    "mercredi"
+   ],
+   "correct": "vendredi"
+  },
+  {
+   "q": "6. Which French word means Saturday?",
+   "options": [
+    "lundi",
+    "dimanche",
+    "samedi",
+    "mardi"
+   ],
+   "correct": "samedi"
+  },
+  {
+   "q": "7. Which French word means Sunday?",
+   "options": [
+    "mardi",
+    "lundi",
+    "jeudi",
+    "dimanche"
+   ],
+   "correct": "dimanche"
+  },
+  {
+   "q": "8. Which French word covers every hour before noon — including 1 AM, 3 AM, and 11 AM?",
+   "options": [
+    "matin",
+    "soir",
+    "nuit",
+    "après-midi"
+   ],
+   "correct": "matin"
+  },
+  {
+   "q": "9. Which French word means afternoon (noon to ~6pm)?",
+   "options": [
+    "matin",
+    "nuit",
+    "après-midi",
+    "soir"
+   ],
+   "correct": "après-midi"
+  },
+  {
+   "q": "10. Which French word means evening / tonight (~6pm onwards — includes late evening)?",
+   "options": [
+    "après-midi",
+    "soir",
+    "matin",
+    "nuit"
+   ],
+   "correct": "soir"
+  },
+  {
+   "q": "11. Which French word means the night (as a period) (the sleeping hours / late-night hours)?",
+   "options": [
+    "nuit",
+    "matin",
+    "après-midi",
+    "soir"
+   ],
+   "correct": "nuit"
+  }
+ ],
+ "0-08-colors-quiz": [
+  {
+   "q": "1. Which French word means red? une voiture rouge",
+   "options": [
+    "blanc",
+    "jaune",
+    "rose",
+    "rouge"
+   ],
+   "correct": "rouge"
+  },
+  {
+   "q": "2. Which French word means blue? le ciel bleu",
+   "options": [
+    "gris",
+    "bleu",
+    "marron",
+    "rose"
+   ],
+   "correct": "bleu"
+  },
+  {
+   "q": "3. Which French word means green? un thé vert",
+   "options": [
+    "noir",
+    "violet",
+    "vert",
+    "orange"
+   ],
+   "correct": "vert"
+  },
+  {
+   "q": "4. Which French word means yellow? le soleil jaune",
+   "options": [
+    "jaune",
+    "noir",
+    "gris",
+    "orange"
+   ],
+   "correct": "jaune"
+  },
+  {
+   "q": "5. Which French word means black? un café noir",
+   "options": [
+    "rose",
+    "rouge",
+    "violet",
+    "noir"
+   ],
+   "correct": "noir"
+  },
+  {
+   "q": "6. Which French word means white? du vin blanc",
+   "options": [
+    "orange",
+    "vert",
+    "rose",
+    "blanc"
+   ],
+   "correct": "blanc"
+  },
+  {
+   "q": "7. Which French word means orange? un fruit orange",
+   "options": [
+    "noir",
+    "blanc",
+    "orange",
+    "jaune"
+   ],
+   "correct": "orange"
+  },
+  {
+   "q": "8. Which French word means pink? une fleur rose",
+   "options": [
+    "violet",
+    "rose",
+    "vert",
+    "orange"
+   ],
+   "correct": "rose"
+  },
+  {
+   "q": "9. Which French word means brown? un sac marron",
+   "options": [
+    "rose",
+    "gris",
+    "marron",
+    "jaune"
+   ],
+   "correct": "marron"
+  },
+  {
+   "q": "10. Which French word means purple? un raisin violet",
+   "options": [
+    "rouge",
+    "noir",
+    "violet",
+    "gris"
+   ],
+   "correct": "violet"
+  },
+  {
+   "q": "11. Which French word means grey? un nuage gris",
+   "options": [
+    "noir",
+    "blanc",
+    "jaune",
+    "gris"
+   ],
+   "correct": "gris"
+  },
+  {
+   "q": "12. Which French word means beige? un mur beige",
+   "options": [
+    "marron",
+    "beige",
+    "vert",
+    "jaune"
+   ],
+   "correct": "beige"
+  }
+ ],
+ "0-09-sappeler-quiz": [
+  {
+   "q": "1. [Moi,] Je ___ Dan. My name is Dan. (literally: I call myself Dan.)",
+   "options": [
+    "s'appellent",
+    "m'appelle",
+    "vous appelez",
+    "nous appelons"
+   ],
+   "correct": "m'appelle"
+  },
+  {
+   "q": "2. [Toi,] Tu ___ Marie ? Is your name Marie? (literally: Do you call yourself Marie?)",
+   "options": [
+    "nous appelons",
+    "s'appellent",
+    "t'appelles",
+    "m'appelle"
+   ],
+   "correct": "t'appelles"
+  },
+  {
+   "q": "3. [Lui,] Il ___ Pierre. His name is Pierre. (literally: He calls himself Pierre.)",
+   "options": [
+    "s'appelle",
+    "vous appelez",
+    "m'appelle",
+    "nous appelons"
+   ],
+   "correct": "s'appelle"
+  },
+  {
+   "q": "4. [Elle,] Elle ___ Juliette. Her name is Juliette.",
+   "options": [
+    "nous appelons",
+    "s'appelle",
+    "t'appelles",
+    "m'appelle"
+   ],
+   "correct": "s'appelle"
+  },
+  {
+   "q": "5. [Nous,] Nous ___ Marc et Léa. Our names are Marc and Léa. (literally: We call ourselves Marc and Léa.)",
+   "options": [
+    "s'appellent",
+    "nous appelons",
+    "s'appelle",
+    "m'appelle"
+   ],
+   "correct": "nous appelons"
+  },
+  {
+   "q": "6. [Vous,] Vous ___ comment ? What is your name? (formal/plural)",
+   "options": [
+    "vous appelez",
+    "s'appelle",
+    "t'appelles",
+    "m'appelle"
+   ],
+   "correct": "vous appelez"
+  },
+  {
+   "q": "7. [Eux,] Ils ___ Pierre et Marc. Their names are Pierre and Marc.",
+   "options": [
+    "s'appellent",
+    "vous appelez",
+    "nous appelons",
+    "m'appelle"
+   ],
+   "correct": "s'appellent"
+  },
+  {
+   "q": "8. [Elles,] Elles ___ Marie et Léa. Their names are Marie and Léa. (all female)",
+   "options": [
+    "s'appellent",
+    "m'appelle",
+    "vous appelez",
+    "t'appelles"
+   ],
+   "correct": "s'appellent"
+  },
+  {
+   "q": "9. [Moi,] Bonjour, je ___ Claude. Hello, my name is Claude.",
+   "options": [
+    "s'appelle",
+    "s'appellent",
+    "m'appelle",
+    "t'appelles"
+   ],
+   "correct": "m'appelle"
+  },
+  {
+   "q": "10. [Toi,] Comment tu ___ ? What's your name? (informal)",
+   "options": [
+    "vous appelez",
+    "t'appelles",
+    "s'appelle",
+    "m'appelle"
+   ],
+   "correct": "t'appelles"
+  }
+ ],
+ "0-10-greetings-quiz": [
+  {
+   "q": "1. It's 9am. You meet your female French professor in the hallway for the first time.",
+   "options": [
+    "Enchanté.",
+    "Je m'appelle Dan.",
+    "Vous vous appelez comment ?",
+    "Bonjour, madame."
+   ],
+   "correct": "Bonjour, madame."
+  },
+  {
+   "q": "2. You see your classmate just before class starts.",
+   "options": [
+    "Au revoir.",
+    "Merci.",
+    "Bonsoir.",
+    "Salut !"
+   ],
+   "correct": "Salut !"
+  },
+  {
+   "q": "3. It's 8pm. You greet a stranger you're seated next to at a dinner.",
+   "options": [
+    "Bonsoir.",
+    "Bonjour, madame.",
+    "Tu t'appelles comment ?",
+    "Enchanté."
+   ],
+   "correct": "Bonsoir."
+  },
+  {
+   "q": "4. You greet your closest friend as you arrive at a casual gathering.",
+   "options": [
+    "Bonjour, monsieur.",
+    "Coucou !",
+    "Désolé.",
+    "Enchanté."
+   ],
+   "correct": "Coucou !"
+  },
+  {
+   "q": "5. At a professional event, you turn to the man beside you and ask him his name. What do you say?",
+   "options": [
+    "Je m'appelle Dan.",
+    "Vous vous appelez comment ?",
+    "Tu t'appelles comment ?",
+    "Merci."
+   ],
+   "correct": "Vous vous appelez comment ?"
+  },
+  {
+   "q": "6. You're chatting with a fellow student your age and want to know the name of this student.",
+   "options": [
+    "Je m'appelle Dan.",
+    "Tu t'appelles comment ?",
+    "Bonsoir.",
+    "Enchanté."
+   ],
+   "correct": "Tu t'appelles comment ?"
+  },
+  {
+   "q": "7. Someone at a dinner party says « Je m'appelle Sophie. » My name is Sophie. What do you reply?",
+   "options": [
+    "Bonjour, madame.",
+    "Enchanté.",
+    "Bonne nuit.",
+    "Pardon."
+   ],
+   "correct": "Enchanté."
+  },
+  {
+   "q": "8. It's your first day of class. The professor asks you to introduce yourself. What do you say?",
+   "options": [
+    "Enchanté.",
+    "Bonjour, madame.",
+    "Merci.",
+    "Je m'appelle Dan."
+   ],
+   "correct": "Je m'appelle Dan."
+  },
+  {
+   "q": "9. Class is over. You say goodbye specifically to your professor as you leave.",
+   "options": [
+    "Bonjour, madame.",
+    "Au revoir.",
+    "À bientôt !",
+    "Coucou !"
+   ],
+   "correct": "Au revoir."
+  },
+  {
+   "q": "10. You're leaving a friend's place after a short visit. Which phrase is NOT appropriate here?",
+   "options": [
+    "Adieu.",
+    "Salut !",
+    "À bientôt !",
+    "Au revoir."
+   ],
+   "correct": "Adieu."
+  },
+  {
+   "q": "11. Class ends on Tuesday. You'll see your classmate again tomorrow. What do you say as you leave?",
+   "options": [
+    "Bonne nuit.",
+    "À demain !",
+    "Enchanté.",
+    "Pardon."
+   ],
+   "correct": "À demain !"
+  },
+  {
+   "q": "12. You wave goodbye to a shopkeeper as you leave the store, around 7pm.",
+   "options": [
+    "Bonne journée !",
+    "Bonsoir.",
+    "Bonne soirée !",
+    "Bonne nuit."
+   ],
+   "correct": "Bonne soirée !"
+  },
+  {
+   "q": "13. Class ends in the early afternoon. You leave the classroom and want to wish the professor a good rest of the day.",
+   "options": [
+    "Bonne soirée !",
+    "Bonne journée !",
+    "Coucou !",
+    "Merci."
+   ],
+   "correct": "Bonne journée !"
+  },
+  {
+   "q": "14. You're heading to bed and say this to family before sleeping.",
+   "options": [
+    "Bonne journée !",
+    "Bonjour, madame.",
+    "Bonsoir.",
+    "Bonne nuit."
+   ],
+   "correct": "Bonne nuit."
+  }
+ ],
+ "0-11-capstone-quiz": [
+  {
+   "q": "1. You hear the name spelled aloud: Listen. Which name is it?",
+   "options": [
+    "LEO",
+    "LIO",
+    "OLE",
+    "LEA"
+   ],
+   "correct": "LEO"
+  },
+  {
+   "q": "2. You hear the name spelled aloud: Listen. Which name is it?",
+   "options": [
+    "MARTE",
+    "MARC",
+    "MARIE",
+    "MAREO"
+   ],
+   "correct": "MARIE"
+  },
+  {
+   "q": "3. You meet your French professor for the first time at the start of class.",
+   "options": [
+    "Coucou ! Je m'appelle Wei.",
+    "Au revoir madame !",
+    "Bonne nuit, je m'appelle Wei.",
+    "Bonjour, je m'appelle Wei. Et vous ?"
+   ],
+   "correct": "Bonjour, je m'appelle Wei. Et vous ?"
+  },
+  {
+   "q": "5. You hear the name spelled aloud: Listen. Which name is it?",
+   "options": [
+    "DAN",
+    "DOM",
+    "DEN",
+    "DON"
+   ],
+   "correct": "DAN"
+  },
+  {
+   "q": "6. You're at a friend's birthday party. A stranger your age introduces themselves to your friend (the birthday boy), then turns to you. What do you say back?",
+   "options": [
+    "Bonjour madame, je m'appelle Wei.",
+    "Au revoir, je m'appelle Wei.",
+    "Comment allez-vous ? Je m'appelle Wei.",
+    "Salut, je m'appelle Wei. Et toi ?"
+   ],
+   "correct": "Salut, je m'appelle Wei. Et toi ?"
+  },
+  {
+   "q": "8. You hear the name spelled aloud: Listen. Which name is it?",
+   "options": [
+    "PEIRRE",
+    "PIRRE",
+    "PEARRA",
+    "PIERRE"
+   ],
+   "correct": "PIERRE"
+  },
+  {
+   "q": "9. You're chatting with a fellow student in your class. You want to know the name of this student.",
+   "options": [
+    "Comment ça va ?",
+    "Je m'appelle comment ?",
+    "Vous vous appelez comment ?",
+    "Tu t'appelles comment ?"
+   ],
+   "correct": "Tu t'appelles comment ?"
+  },
+  {
+   "q": "10. You want to ask your female French professor what her name is.",
+   "options": [
+    "Comment allez-vous ?",
+    "Vous êtes qui ?",
+    "Tu t'appelles comment ?",
+    "Vous vous appelez comment ?"
+   ],
+   "correct": "Vous vous appelez comment ?"
+  },
+  {
+   "q": "11. ___ vous appelez comment ? What is your name? (formal)",
+   "options": [
+    "Vous",
+    "Tu",
+    "Comment",
+    "Qui"
+   ],
+   "correct": "Vous"
+  }
+ ],
+ "1-01-introductions-quiz": [
+  {
+   "q": "1. You meet a fellow LAF1201 student in the corridor before class.",
+   "options": [
+    "Elle s'appelle Wei.",
+    "Vous vous appelez Wei ?",
+    "Salut, je m'appelle Wei.",
+    "Bonjour madame, je m'appelle Wei."
+   ],
+   "correct": "Salut, je m'appelle Wei."
+  },
+  {
+   "q": "2. You meet your French professor for the first time at the start of class.",
+   "options": [
+    "Tu t'appelles Wei.",
+    "Bonjour madame, je m'appelle Wei.",
+    "Salut, moi c'est Wei !",
+    "Coucou, c'est Wei."
+   ],
+   "correct": "Bonjour madame, je m'appelle Wei."
+  },
+  {
+   "q": "3. At a campus social event. Someone has just introduced themselves to you.",
+   "options": [
+    "Elle s'appelle Wei.",
+    "Moi, c'est Wei. Et toi ?",
+    "Je vous présente Wei.",
+    "Vous vous appelez Wei."
+   ],
+   "correct": "Moi, c'est Wei. Et toi ?"
+  },
+  {
+   "q": "4. You're at a Tuesday-night French conversation meet-up. Someone sits next to you.",
+   "options": [
+    "Comment il s'appelle ?",
+    "Salut ! Comment tu t'appelles ?",
+    "Bonjour, vous vous appelez comment ?",
+    "Je m'appelle comment ?"
+   ],
+   "correct": "Salut ! Comment tu t'appelles ?"
+  },
+  {
+   "q": "5. You're registering for a CLS formal workshop. The receptionist needs your name.",
+   "options": [
+    "Je m'appelle comment ?",
+    "Comment elle s'appelle ?",
+    "Salut, comment tu t'appelles ?",
+    "Bonjour, vous vous appelez comment ?"
+   ],
+   "correct": "Bonjour, vous vous appelez comment ?"
+  },
+  {
+   "q": "6. You're introducing your friend Marc to your professor.",
+   "options": [
+    "Madame, je te présente Marc.",
+    "Madame, je vous présente Marc. Il s'appelle Marc Tan.",
+    "Madame, je m'appelle Marc.",
+    "Madame, vous vous appelez Marc."
+   ],
+   "correct": "Madame, je vous présente Marc. Il s'appelle Marc Tan."
+  },
+  {
+   "q": "7. At a café, you're introducing your friend Léa to another friend, Jules.",
+   "options": [
+    "Jules, je te présente Léa. Elle s'appelle Léa.",
+    "Jules, tu t'appelles Léa.",
+    "Jules, je m'appelle Léa.",
+    "Jules, je vous présente Léa."
+   ],
+   "correct": "Jules, je te présente Léa. Elle s'appelle Léa."
+  },
+  {
+   "q": "8. A friend asks who that woman in the photo is.",
+   "options": [
+    "Vous vous appelez Marie.",
+    "Tu t'appelles Marie.",
+    "Elle s'appelle Marie.",
+    "Je m'appelle Marie."
+   ],
+   "correct": "Elle s'appelle Marie."
+  },
+  {
+   "q": "9. You point out a famous Senegalese actor in a film poster.",
+   "options": [
+    "Je m'appelle Omar Sy.",
+    "Ils s'appellent Omar Sy.",
+    "Elle s'appelle Omar Sy.",
+    "Il s'appelle Omar Sy."
+   ],
+   "correct": "Il s'appelle Omar Sy."
+  },
+  {
+   "q": "10. A photo of two French chefs you admire — Anne-Sophie Pic and Hélène Darroze.",
+   "options": [
+    "Elles s'appellent Anne-Sophie Pic et Hélène Darroze.",
+    "Nous nous appelons Anne-Sophie Pic et Hélène Darroze.",
+    "Ils s'appellent Anne-Sophie Pic et Hélène Darroze.",
+    "Elle s'appelle Anne-Sophie Pic et Hélène Darroze."
+   ],
+   "correct": "Elles s'appellent Anne-Sophie Pic et Hélène Darroze."
+  },
+  {
+   "q": "11. A photo of two French actors — Omar Sy and Marion Cotillard.",
+   "options": [
+    "Ils s'appellent Omar Sy et Marion Cotillard.",
+    "Elles s'appellent Omar Sy et Marion Cotillard.",
+    "Vous vous appelez Omar Sy et Marion Cotillard.",
+    "Il s'appelle Omar Sy et Marion Cotillard."
+   ],
+   "correct": "Ils s'appellent Omar Sy et Marion Cotillard."
+  },
+  {
+   "q": "12. You've just told a new acquaintance your name. You want to keep the conversation going.",
+   "options": [
+    "Et vous ?",
+    "Et moi ?",
+    "Et toi ?",
+    "Et lui ?"
+   ],
+   "correct": "Et toi ?"
+  }
+ ],
+ "1-03-subject-pronouns-frames-quiz": [
+  {
+   "q": "1. You are introducing yourself to a new classmate. ___ m'appelle Wei. My name is Wei.",
+   "options": [
+    "Elle",
+    "Il",
+    "Tu",
+    "Je"
+   ],
+   "correct": "Je"
+  },
+  {
+   "q": "2. You are asking your classmate Marie what her name is. Comment ___ t'appelles ? What's your name? (informal)",
+   "options": [
+    "vous",
+    "tu",
+    "elle",
+    "il"
+   ],
+   "correct": "tu"
+  },
+  {
+   "q": "3. You are asking your French professor what their name is on day one. Madame, ___ vous appelez comment ? Madame, what's your name?",
+   "options": [
+    "vous",
+    "il",
+    "tu",
+    "elle"
+   ],
+   "correct": "vous"
+  },
+  {
+   "q": "4. You are pointing to your friend Marc in a photo. ___ s'appelle Marc. His name is Marc.",
+   "options": [
+    "Il",
+    "Elle",
+    "Ils",
+    "Je"
+   ],
+   "correct": "Il"
+  },
+  {
+   "q": "5. You are introducing your sister Léa to a friend. ___ s'appelle Léa. Her name is Léa.",
+   "options": [
+    "Elle",
+    "Tu",
+    "Il",
+    "Elles"
+   ],
+   "correct": "Elle"
+  },
+  {
+   "q": "6. You and your roommate are introducing yourselves to a landlord. ___ sommes étudiants. We are students.",
+   "options": [
+    "Nous",
+    "Ils",
+    "Vous",
+    "On"
+   ],
+   "correct": "Nous"
+  },
+  {
+   "q": "7. You and your friends, hanging out casually. Talking about going to a café together. ___ va au café. We're going to the café. (casual)",
+   "options": [
+    "On",
+    "Il",
+    "Nous",
+    "Ils"
+   ],
+   "correct": "On"
+  },
+  {
+   "q": "8. You are addressing two friends together — they're both your peers. ___ êtes étudiants ? Are you students?",
+   "options": [
+    "Ils",
+    "Vous",
+    "Tu",
+    "Nous"
+   ],
+   "correct": "Vous"
+  },
+  {
+   "q": "9. You are describing two friends — one male (Pierre) and one female (Léa). ___ sont étudiants. They are students.",
+   "options": [
+    "Elles",
+    "On",
+    "Il",
+    "Ils"
+   ],
+   "correct": "Ils"
+  },
+  {
+   "q": "10. You are describing two friends — Marie and Léa, both female. ___ sont étudiantes. They are students. (all female)",
+   "options": [
+    "Elle",
+    "Elles",
+    "Ils",
+    "Nous"
+   ],
+   "correct": "Elles"
+  },
+  {
+   "q": "11. A French teacher addressing one university student during office hours. Bonjour, ___ êtes Wei Tan ? Hello, are you Wei Tan?",
+   "options": [
+    "tu",
+    "nous",
+    "il",
+    "vous"
+   ],
+   "correct": "vous"
+  },
+  {
+   "q": "12. A waiter speaking to a group of friends sitting at a café table. Bonjour, ___ désirez quoi ? Hello, what would you like?",
+   "options": [
+    "on",
+    "tu",
+    "nous",
+    "vous"
+   ],
+   "correct": "vous"
+  }
+ ],
+ "1-04-etre-identity-quiz": [
+  {
+   "q": "1. Saying your nationality Je ___ singapourien. I am Singaporean (male).",
+   "options": [
+    "sont",
+    "êtes",
+    "sommes",
+    "suis"
+   ],
+   "correct": "suis"
+  },
+  {
+   "q": "2. Asking a peer their nationality Tu ___ français ? Are you French? (informal)",
+   "options": [
+    "est",
+    "sommes",
+    "es",
+    "sont"
+   ],
+   "correct": "es"
+  },
+  {
+   "q": "3. Stating someone's profession Il ___ professeur. He is a professor.",
+   "options": [
+    "sommes",
+    "êtes",
+    "est",
+    "suis"
+   ],
+   "correct": "est"
+  },
+  {
+   "q": "4. Stating nationality (feminine) Elle ___ française. She is French.",
+   "options": [
+    "sont",
+    "est",
+    "êtes",
+    "es"
+   ],
+   "correct": "est"
+  },
+  {
+   "q": "5. Casual \"we\" with friends On ___ étudiants à NUS. We are students at NUS. (casual)",
+   "options": [
+    "êtes",
+    "est",
+    "es",
+    "sommes"
+   ],
+   "correct": "est"
+  },
+  {
+   "q": "6. Stating \"we\" formally — multiple Singaporeans Nous ___ singapouriens. We are Singaporean.",
+   "options": [
+    "sont",
+    "êtes",
+    "sommes",
+    "est"
+   ],
+   "correct": "sommes"
+  },
+  {
+   "q": "7. Asking formally Vous ___ le professeur de français ? Are you the French professor?",
+   "options": [
+    "sont",
+    "sommes",
+    "êtes",
+    "est"
+   ],
+   "correct": "êtes"
+  },
+  {
+   "q": "8. Plural identity (mixed group OR all male) Ils ___ journalistes. They are journalists.",
+   "options": [
+    "es",
+    "est",
+    "suis",
+    "sont"
+   ],
+   "correct": "sont"
+  },
+  {
+   "q": "9. All-female plural Marie et Léa ___ étudiantes en littérature. Marie and Léa are literature students.",
+   "options": [
+    "êtes",
+    "es",
+    "est",
+    "sont"
+   ],
+   "correct": "sont"
+  },
+  {
+   "q": "10. Self-introduction in a professional context Bonjour, je ___ le nouveau prof. Hello, I'm the new professor.",
+   "options": [
+    "sommes",
+    "sont",
+    "suis",
+    "êtes"
+   ],
+   "correct": "suis"
+  },
+  {
+   "q": "11. Asking origin (peer) Tu ___ de Singapour ? Are you from Singapore? (informal)",
+   "options": [
+    "suis",
+    "êtes",
+    "sont",
+    "es"
+   ],
+   "correct": "es"
+  },
+  {
+   "q": "12. Asking formally about nationality Madame, vous ___ française ou belge ? Madame, are you French or Belgian?",
+   "options": [
+    "sont",
+    "êtes",
+    "suis",
+    "est"
+   ],
+   "correct": "êtes"
+  },
+  {
+   "q": "13. Wei ___ singapourienne. Wei is Singaporean (female).",
+   "options": [
+    "est",
+    "es",
+    "suis",
+    "sont"
+   ],
+   "correct": "est"
+  },
+  {
+   "q": "14. Nous ___ dans la même classe. We are in the same class.",
+   "options": [
+    "sont",
+    "sommes",
+    "êtes",
+    "suis"
+   ],
+   "correct": "sommes"
+  },
+  {
+   "q": "15. Tu ___ colombien, Mateo ? Are you Colombian, Mateo?",
+   "options": [
+    "est",
+    "es",
+    "êtes",
+    "suis"
+   ],
+   "correct": "es"
+  },
+  {
+   "q": "16. Amara et Mateo ___ étudiants. Amara and Mateo are students.",
+   "options": [
+    "sommes",
+    "sont",
+    "est",
+    "êtes"
+   ],
+   "correct": "sont"
+  },
+  {
+   "q": "17. Vous ___ professeure, madame ? Are you a teacher, ma'am?",
+   "options": [
+    "es",
+    "êtes",
+    "est",
+    "sommes"
+   ],
+   "correct": "êtes"
+  },
+  {
+   "q": "18. Je ___ sénégalaise. I am Senegalese (female). — Amara speaking",
+   "options": [
+    "suis",
+    "es",
+    "est",
+    "sont"
+   ],
+   "correct": "suis"
+  },
+  {
+   "q": "19. Mateo ___ content aujourd'hui. Mateo is happy today.",
+   "options": [
+    "es",
+    "est",
+    "suis",
+    "sont"
+   ],
+   "correct": "est"
+  },
+  {
+   "q": "20. Wei et Yuki ___ japonaise et singapourienne. Wei and Yuki are Japanese and Singaporean.",
+   "options": [
+    "sommes",
+    "sont",
+    "est",
+    "êtes"
+   ],
+   "correct": "sont"
+  },
+  {
+   "q": "21. Tu ___ fatiguée, Amara ? Are you tired, Amara?",
+   "options": [
+    "es",
+    "est",
+    "êtes",
+    "suis"
+   ],
+   "correct": "es"
+  },
+  {
+   "q": "22. Madame Benali ___ algérienne. Madame Benali is Algerian.",
+   "options": [
+    "sont",
+    "est",
+    "êtes",
+    "es"
+   ],
+   "correct": "est"
+  },
+  {
+   "q": "23. Je ___ en retard, pardon ! I am late, sorry!",
+   "options": [
+    "es",
+    "suis",
+    "est",
+    "sommes"
+   ],
+   "correct": "suis"
+  },
+  {
+   "q": "24. Vous ___ prêts pour l'examen ? Are you ready for the exam? (teacher to class)",
+   "options": [
+    "sommes",
+    "êtes",
+    "sont",
+    "es"
+   ],
+   "correct": "êtes"
+  },
+  {
+   "q": "25. Mateo ___ musicien. Mateo is a musician.",
+   "options": [
+    "est",
+    "es",
+    "suis",
+    "sont"
+   ],
+   "correct": "est"
+  },
+  {
+   "q": "26. Nous ___ contents d'être à Paris. We are happy to be in Paris.",
+   "options": [
+    "sont",
+    "sommes",
+    "êtes",
+    "suis"
+   ],
+   "correct": "sommes"
+  },
+  {
+   "q": "27. Yuki ___ timide mais gentille. Yuki is shy but kind.",
+   "options": [
+    "sont",
+    "es",
+    "est",
+    "suis"
+   ],
+   "correct": "est"
+  },
+  {
+   "q": "28. Tu ___ d'accord, Amara ? Do you agree, Amara?",
+   "options": [
+    "êtes",
+    "es",
+    "est",
+    "suis"
+   ],
+   "correct": "es"
+  },
+  {
+   "q": "29. Les quatre amis ___ internationaux. The four friends are international.",
+   "options": [
+    "sommes",
+    "sont",
+    "êtes",
+    "est"
+   ],
+   "correct": "sont"
+  },
+  {
+   "q": "30. Madame Sow ___ patiente avec les étudiants. Madame Sow is patient with the students.",
+   "options": [
+    "est",
+    "sont",
+    "êtes",
+    "suis"
+   ],
+   "correct": "est"
+  },
+  {
+   "q": "31. Je ___ informaticienne. I am a computer scientist (female). — Wei speaking",
+   "options": [
+    "suis",
+    "est",
+    "es",
+    "sommes"
+   ],
+   "correct": "suis"
+  },
+  {
+   "q": "32. Vous ___ d'Algérie, Madame Benali ? Are you from Algeria, Madame Benali?",
+   "options": [
+    "es",
+    "êtes",
+    "est",
+    "sont"
+   ],
+   "correct": "êtes"
+  }
+ ],
+ "1-05-professions-quiz": [
+  {
+   "q": "1. Elle est ___ . She is a journalist.",
+   "options": [
+    "journalistes",
+    "journaliste",
+    "journalist",
+    "journalists"
+   ],
+   "correct": "journaliste"
+  },
+  {
+   "q": "2. Elle est ___ . She is a student.",
+   "options": [
+    "étudiante",
+    "étudiant",
+    "étudie",
+    "étudiantes"
+   ],
+   "correct": "étudiante"
+  },
+  {
+   "q": "3. Il est ___ . He is a student.",
+   "options": [
+    "étudier",
+    "étudiante",
+    "étudiant",
+    "étudiants"
+   ],
+   "correct": "étudiant"
+  },
+  {
+   "q": "4. Elle est ___ . She is an actress.",
+   "options": [
+    "actresse",
+    "acteur",
+    "actrice",
+    "acteuse"
+   ],
+   "correct": "actrice"
+  },
+  {
+   "q": "5. Il est ___ . He is an actor.",
+   "options": [
+    "acteur",
+    "acteurs",
+    "actor",
+    "actrice"
+   ],
+   "correct": "acteur"
+  },
+  {
+   "q": "6. Elle est ___ . She is a baker.",
+   "options": [
+    "boulanger",
+    "boulangerie",
+    "boulangère",
+    "boulangeuse"
+   ],
+   "correct": "boulangère"
+  },
+  {
+   "q": "7. Elle est ___ . She is a musician.",
+   "options": [
+    "musicieuse",
+    "musicienne",
+    "musique",
+    "musicien"
+   ],
+   "correct": "musicienne"
+  },
+  {
+   "q": "8. Il est ___ . He is a photographer.",
+   "options": [
+    "photographeur",
+    "photographie",
+    "photographer",
+    "photographe"
+   ],
+   "correct": "photographe"
+  },
+  {
+   "q": "9. Elle est ___ . She is a chef.",
+   "options": [
+    "cheffe",
+    "chefs",
+    "chefe",
+    "chève"
+   ],
+   "correct": "cheffe"
+  },
+  {
+   "q": "10. Il est ___ . He is a fashion designer.",
+   "options": [
+    "stylisteur",
+    "stylist",
+    "styliste",
+    "style"
+   ],
+   "correct": "styliste"
+  },
+  {
+   "q": "11. Elle est ___ . She is a lawyer.",
+   "options": [
+    "avocatte",
+    "avocat",
+    "avocato",
+    "avocate"
+   ],
+   "correct": "avocate"
+  },
+  {
+   "q": "12. Elle est ___ . She is a cook.",
+   "options": [
+    "cuisinier",
+    "cuisineuse",
+    "cuisine",
+    "cuisinière"
+   ],
+   "correct": "cuisinière"
+  }
+ ],
+ "1-06-countries-quiz": [
+  {
+   "q": "1. Which article goes before Japon? (masculine, consonant start)",
+   "options": [
+    "la",
+    "le",
+    "l'",
+    "les"
+   ],
+   "correct": "le"
+  },
+  {
+   "q": "2. Which article goes before France? (feminine, ends in -e)",
+   "options": [
+    "le",
+    "l'",
+    "la",
+    "les"
+   ],
+   "correct": "la"
+  },
+  {
+   "q": "3. Which article goes before Italie? (vowel-starting feminine)",
+   "options": [
+    "le",
+    "la",
+    "les",
+    "l'"
+   ],
+   "correct": "l'"
+  },
+  {
+   "q": "4. Which article goes before États-Unis? (plural country name)",
+   "options": [
+    "les",
+    "le",
+    "la",
+    "l'"
+   ],
+   "correct": "les"
+  },
+  {
+   "q": "5. Which article goes before Chine? (feminine, ends in -e)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "la"
+  },
+  {
+   "q": "6. Which article goes before Mexique? (masculine despite -e ending)",
+   "options": [
+    "la",
+    "l'",
+    "le",
+    "les"
+   ],
+   "correct": "le"
+  },
+  {
+   "q": "7. Which article goes before Allemagne? (vowel-starting feminine)",
+   "options": [
+    "le",
+    "la",
+    "les",
+    "l'"
+   ],
+   "correct": "l'"
+  },
+  {
+   "q": "8. Which article goes before Canada? (masculine, ends in -a)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "le"
+  },
+  {
+   "q": "9. Which article goes before Pays-Bas? (plural country name)",
+   "options": [
+    "le",
+    "les",
+    "la",
+    "l'"
+   ],
+   "correct": "les"
+  },
+  {
+   "q": "10. Which article goes before Corée du Sud? (feminine, ends in -e)",
+   "options": [
+    "le",
+    "l'",
+    "la",
+    "les"
+   ],
+   "correct": "la"
+  },
+  {
+   "q": "11. Which article goes before Iran? (vowel-starting masculine)",
+   "options": [
+    "le",
+    "la",
+    "les",
+    "l'"
+   ],
+   "correct": "l'"
+  },
+  {
+   "q": "12. Which article goes before Brésil? (masculine, consonant start)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "le"
+  },
+  {
+   "q": "13. Which article goes before Argentine? (feminine, vowel start)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "l'"
+  },
+  {
+   "q": "14. Which article goes before Espagne? (feminine, vowel start)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "l'"
+  },
+  {
+   "q": "15. Which article goes before Angleterre? (feminine, vowel start)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "l'"
+  },
+  {
+   "q": "16. Which article goes before Russie? (feminine, consonant start)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "la"
+  },
+  {
+   "q": "17. Which article goes before Colombie? (feminine, consonant start)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "la"
+  },
+  {
+   "q": "18. Which article goes before Tunisie? (feminine, consonant start)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "la"
+  },
+  {
+   "q": "19. Which article goes before Sénégal? (masculine, consonant start)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "le"
+  },
+  {
+   "q": "20. Which article goes before Maroc? (masculine, consonant start)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "le"
+  },
+  {
+   "q": "21. Which article goes before Portugal? (masculine, consonant start)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "le"
+  },
+  {
+   "q": "22. Which article goes before Inde? (feminine, vowel start)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "l'"
+  },
+  {
+   "q": "23. Which article goes before Australie? (feminine, vowel start)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "l'"
+  },
+  {
+   "q": "24. Which article goes before Égypte? (feminine, vowel start)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "l'"
+  },
+  {
+   "q": "25. Which article goes before Suisse? (feminine, consonant start)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "la"
+  },
+  {
+   "q": "26. Which article goes before Belgique? (feminine, consonant start)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "la"
+  },
+  {
+   "q": "27. Which article goes before Turquie? (feminine, consonant start)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "la"
+  },
+  {
+   "q": "28. Which article goes before Indonésie? (feminine, vowel start)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "l'"
+  },
+  {
+   "q": "29. Which article goes before Israël? (masculine, vowel start)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "l'"
+  },
+  {
+   "q": "30. Which article goes before Irak? (masculine, vowel start)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "l'"
+  },
+  {
+   "q": "31. Which article goes before Philippines? (plural)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "les"
+  },
+  {
+   "q": "32. Which article goes before Émirats arabes unis? (plural)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "les"
+  },
+  {
+   "q": "33. Which article goes before Cuba? (masculine island)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "le"
+  },
+  {
+   "q": "34. Which article goes before Thaïlande? (feminine, consonant start)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "la"
+  },
+  {
+   "q": "35. Which article goes before Madagascar? (feminine island)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "la"
+  },
+  {
+   "q": "36. Which article goes before Haïti? (masculine, silent H = vowel)",
+   "options": [
+    "le",
+    "la",
+    "l'",
+    "les"
+   ],
+   "correct": "l'"
+  }
+ ],
+ "1-07-nationalities-quiz": [
+  {
+   "q": "1. Ce sont des ___ . They are French people.",
+   "options": [
+    "française",
+    "françaises",
+    "français",
+    "Français"
+   ],
+   "correct": "Français"
+  },
+  {
+   "q": "2. Marie est ___ . Marie is French.",
+   "options": [
+    "français",
+    "françaisee",
+    "françaises",
+    "française"
+   ],
+   "correct": "française"
+  },
+  {
+   "q": "3. Pierre et Marie sont ___ . Pierre and Marie are French.",
+   "options": [
+    "françaises",
+    "française",
+    "français",
+    "Français"
+   ],
+   "correct": "français"
+  },
+  {
+   "q": "4. Marie et Léa sont ___ . Marie and Léa are French.",
+   "options": [
+    "français",
+    "Françaises",
+    "françaises",
+    "française"
+   ],
+   "correct": "françaises"
+  },
+  {
+   "q": "5. Emma est ___ . Emma is English.",
+   "options": [
+    "anglaise",
+    "anglais",
+    "anglaisee",
+    "anglaises"
+   ],
+   "correct": "anglaise"
+  },
+  {
+   "q": "6. Sofia est ___ . Sofia is Italian.",
+   "options": [
+    "italienne",
+    "italien",
+    "italiennne",
+    "italienn"
+   ],
+   "correct": "italienne"
+  },
+  {
+   "q": "7. Sophie est ___ . Sophie is Belgian.",
+   "options": [
+    "belgee",
+    "belgique",
+    "belges",
+    "belge"
+   ],
+   "correct": "belge"
+  },
+  {
+   "q": "8. Wei est ___ . Wei is Singaporean.",
+   "options": [
+    "singapourian",
+    "singapouriens",
+    "singapourien",
+    "singapourienne"
+   ],
+   "correct": "singapourienne"
+  },
+  {
+   "q": "9. Jun est ___ . Jun is Singaporean.",
+   "options": [
+    "singapourien",
+    "singapourienne",
+    "singapouriens",
+    "singapourianne"
+   ],
+   "correct": "singapourien"
+  },
+  {
+   "q": "10. Sur le formulaire, dans le champ « nationalité » : ___ . On the form, under the field \"nationality\": ___.",
+   "options": [
+    "thaï",
+    "thaïlandas",
+    "hindi",
+    "iranienne"
+   ],
+   "correct": "iranienne"
+  },
+  {
+   "q": "11. Diego est ___ . Diego is Spanish.",
+   "options": [
+    "espagnols",
+    "espagnol",
+    "espagnoll",
+    "espagnole"
+   ],
+   "correct": "espagnol"
+  },
+  {
+   "q": "12. Anna, Lukas et Felix sont ___ . Anna, Lukas, and Felix are German.",
+   "options": [
+    "allemands",
+    "allemande",
+    "allemandes",
+    "allemand"
+   ],
+   "correct": "allemands"
+  }
+ ],
+ "1-08-negation-quiz": [
+  {
+   "q": "1. Correcting an assumption Non, je ___ français. Je suis singapourien. No, I'm not French. I'm Singaporean.",
+   "options": [
+    "ne suis",
+    "pas suis ne",
+    "ne suis pas",
+    "n'suis pas"
+   ],
+   "correct": "ne suis pas"
+  },
+  {
+   "q": "2. Correcting a guess Non, elle ___ anglaise. Elle est française. No, she isn't English. She's French.",
+   "options": [
+    "n'est",
+    "n'est pas",
+    "ne est pas",
+    "pas est ne"
+   ],
+   "correct": "n'est pas"
+  },
+  {
+   "q": "3. A friend is wrong about your major Non, tu ___ étudiant en physique. Je suis étudiant en français. No, you're not a physics student. I'm a French student.",
+   "options": [
+    "ne es pas",
+    "pas n'es",
+    "n'est pas",
+    "n'es pas"
+   ],
+   "correct": "n'es pas"
+  },
+  {
+   "q": "4. Pointing out a misidentification Non, il ___ Pierre. Il est Marc. No, he's not Pierre. He's Marc.",
+   "options": [
+    "n'sont pas",
+    "n'est pas",
+    "n'es pas",
+    "ne est pas"
+   ],
+   "correct": "n'est pas"
+  },
+  {
+   "q": "5. Group identity correction Non, nous ___ français. Nous sommes belges. No, we're not French. We're Belgian.",
+   "options": [
+    "ne sommes pas",
+    "pas sommes",
+    "ne sommes",
+    "n'sommes pas"
+   ],
+   "correct": "ne sommes pas"
+  },
+  {
+   "q": "6. Polite correction Non, je ___ Madame Tan. Je suis Madame Lim. No, I'm not Mrs Tan. I'm Mrs Lim.",
+   "options": [
+    "n'es pas",
+    "ne suis",
+    "ne suis pas",
+    "n'êtes pas"
+   ],
+   "correct": "ne suis pas"
+  },
+  {
+   "q": "7. Correcting your profession Non, je ___ professeur. Je suis étudiant. No, I'm not a teacher. I'm a student.",
+   "options": [
+    "pas suis",
+    "ne suis pas",
+    "n'est pas",
+    "ne suis pas un"
+   ],
+   "correct": "ne suis pas"
+  },
+  {
+   "q": "8. Language clarification Non, je ___ allemand. Je parle anglais et français. No, I don't speak German. I speak English and French.",
+   "options": [
+    "ne parle pas",
+    "ne parler pas",
+    "n'parle pas",
+    "ne parle"
+   ],
+   "correct": "ne parle pas"
+  },
+  {
+   "q": "9. Where you live Non, je ___ à Paris. J'habite à Singapour. No, I don't live in Paris. I live in Singapore.",
+   "options": [
+    "n'habites pas",
+    "ne habite pas",
+    "ne pas habite",
+    "n'habite pas"
+   ],
+   "correct": "n'habite pas"
+  },
+  {
+   "q": "10. Correcting your age Non, je ___ 20 ans. J'ai 22 ans. No, I'm not 20. I'm 22.",
+   "options": [
+    "n'a pas",
+    "n'ai pas",
+    "ne ai pas",
+    "n'as pas"
+   ],
+   "correct": "n'ai pas"
+  },
+  {
+   "q": "11. Misidentified group Non, ils ___ étudiants. Ils sont touristes. No, they're not students. They're tourists.",
+   "options": [
+    "ne pas sont",
+    "ne sont pas",
+    "n'sont pas",
+    "n'est pas"
+   ],
+   "correct": "ne sont pas"
+  },
+  {
+   "q": "12. Casual conversation (informal register) Non, je ___ fatigué. Nah, I'm not tired. (casual)",
+   "options": [
+    "suis pas",
+    "pas suis",
+    "n'suis pas",
+    "ne suis pas"
+   ],
+   "correct": "ne suis pas"
+  },
+  {
+   "q": "13. Wei ___ française. Wei is not French.",
+   "options": [
+    "ne est pas",
+    "n'est pas",
+    "ne pas est",
+    "n'pas est"
+   ],
+   "correct": "n'est pas"
+  },
+  {
+   "q": "14. Nous ___ en retard. We are not late.",
+   "options": [
+    "ne sommes pas",
+    "n'sommes pas",
+    "ne pas sommes",
+    "sommes ne pas"
+   ],
+   "correct": "ne sommes pas"
+  },
+  {
+   "q": "15. Yuki ___ le café. Yuki does not like coffee.",
+   "options": [
+    "ne aime pas",
+    "n'aime pas",
+    "ne pas aime",
+    "n'pas aime"
+   ],
+   "correct": "n'aime pas"
+  },
+  {
+   "q": "16. Mateo ___ japonais. Mateo does not speak Japanese.",
+   "options": [
+    "ne parle pas",
+    "n'parle pas",
+    "ne pas parle",
+    "parle ne pas"
+   ],
+   "correct": "ne parle pas"
+  },
+  {
+   "q": "17. Vous ___ américaine, Madame Sow ? You are not American, Madame Sow?",
+   "options": [
+    "ne êtes pas",
+    "n'êtes pas",
+    "ne pas êtes",
+    "n'pas êtes"
+   ],
+   "correct": "n'êtes pas"
+  },
+  {
+   "q": "18. Amara ___ le samedi. Amara does not work on Saturdays.",
+   "options": [
+    "ne travaille pas",
+    "n'travaille pas",
+    "ne pas travaille",
+    "travaille pas ne"
+   ],
+   "correct": "ne travaille pas"
+  },
+  {
+   "q": "19. Je ___ à Marseille. I do not live in Marseille.",
+   "options": [
+    "ne habite pas",
+    "n'habite pas",
+    "ne pas habite",
+    "habite n'pas"
+   ],
+   "correct": "n'habite pas"
+  },
+  {
+   "q": "20. Les croissants ___ gratuits. The croissants are not free.",
+   "options": [
+    "ne sont pas",
+    "n'sont pas",
+    "ne pas sont",
+    "sont pas ne"
+   ],
+   "correct": "ne sont pas"
+  },
+  {
+   "q": "21. Je ___ de stylo. I don't have a pen.",
+   "options": [
+    "ne ai pas",
+    "n'ai pas",
+    "ne pas ai",
+    "n'a pas"
+   ],
+   "correct": "n'ai pas"
+  },
+  {
+   "q": "22. Tu ___ à la cantine ? You don't eat at the cafeteria?",
+   "options": [
+    "ne mange pas",
+    "n'mange pas",
+    "mange ne pas",
+    "ne pas mange"
+   ],
+   "correct": "ne mange pas"
+  },
+  {
+   "q": "23. Ce ___ un problème. It is not a problem.",
+   "options": [
+    "ne est pas",
+    "n'est pas",
+    "ne pas est",
+    "est ne pas"
+   ],
+   "correct": "n'est pas"
+  },
+  {
+   "q": "24. Je ___ la question. I don't understand the question.",
+   "options": [
+    "ne comprends pas",
+    "n'comprends pas",
+    "ne pas comprends",
+    "comprends ne pas"
+   ],
+   "correct": "ne comprends pas"
+  },
+  {
+   "q": "25. Les étudiants ___ de livres. The students don't have books.",
+   "options": [
+    "ne ont pas",
+    "n'ont pas",
+    "ne pas ont",
+    "ont ne pas"
+   ],
+   "correct": "n'ont pas"
+  },
+  {
+   "q": "26. Je ___ partir maintenant. I don't want to leave now.",
+   "options": [
+    "ne veux pas",
+    "n'veux pas",
+    "ne pas veux",
+    "veux ne pas"
+   ],
+   "correct": "ne veux pas"
+  },
+  {
+   "q": "27. Mateo ___ le soir. Mateo does not study in the evening.",
+   "options": [
+    "ne étudie pas",
+    "n'étudie pas",
+    "ne pas étudie",
+    "étudie n'pas"
+   ],
+   "correct": "n'étudie pas"
+  },
+  {
+   "q": "28. Vous ___ la réponse ? You don't know the answer? (teacher to class)",
+   "options": [
+    "ne savez pas",
+    "n'savez pas",
+    "ne pas savez",
+    "savez ne pas"
+   ],
+   "correct": "ne savez pas"
+  },
+  {
+   "q": "29. Tu ___ le froid, Wei ? You don't like the cold, Wei?",
+   "options": [
+    "ne aimes pas",
+    "n'aimes pas",
+    "ne pas aimes",
+    "aimes ne pas"
+   ],
+   "correct": "n'aimes pas"
+  },
+  {
+   "q": "30. La boulangerie ___ le dimanche. The bakery does not close on Sundays.",
+   "options": [
+    "ne ferme pas",
+    "n'ferme pas",
+    "ne pas ferme",
+    "ferme ne pas"
+   ],
+   "correct": "ne ferme pas"
+  },
+  {
+   "q": "31. Les étudiants ___ en classe. The students are not listening in class.",
+   "options": [
+    "ne écoutent pas",
+    "n'écoutent pas",
+    "ne pas écoutent",
+    "écoutent n'pas"
+   ],
+   "correct": "n'écoutent pas"
+  },
+  {
+   "q": "32. Je ___ d'accord avec toi. I don't agree with you.",
+   "options": [
+    "ne suis pas",
+    "n'suis pas",
+    "ne pas suis",
+    "suis pas ne"
+   ],
+   "correct": "ne suis pas"
+  }
+ ],
+ "1-09-avoir-numbers-quiz": [
+  {
+   "q": "1. Stating your own age J' ___ 20 ans. I'm 20 years old.",
+   "options": [
+    "ai",
+    "suis",
+    "est",
+    "es"
+   ],
+   "correct": "ai"
+  },
+  {
+   "q": "2. Reporting someone else's age Pierre ___ 25 ans. Pierre is 25.",
+   "options": [
+    "a",
+    "est",
+    "as",
+    "ai"
+   ],
+   "correct": "a"
+  },
+  {
+   "q": "3. Asking a peer their age Tu ___ quel âge ? How old are you?",
+   "options": [
+    "as",
+    "es",
+    "ai",
+    "a"
+   ],
+   "correct": "as"
+  },
+  {
+   "q": "4. Stating an age Marie a ___ ans. Marie is 21.",
+   "options": [
+    "vingt-et-un",
+    "vingt-un",
+    "vingt et un",
+    "vingt-une"
+   ],
+   "correct": "vingt et un"
+  },
+  {
+   "q": "5. Stating an age Léa a ___ ans. Léa is 17.",
+   "options": [
+    "dix sept",
+    "dix-sept",
+    "dix-septe",
+    "dixsept"
+   ],
+   "correct": "dix-sept"
+  },
+  {
+   "q": "6. Stating an age Tom a ___ ans. Tom is 14.",
+   "options": [
+    "quatorzee",
+    "quatre-dix",
+    "quatorze",
+    "dix-quatre"
+   ],
+   "correct": "quatorze"
+  },
+  {
+   "q": "7. Group age statement Mes amis ___ 22 ans. My friends are 22.",
+   "options": [
+    "avons",
+    "sont",
+    "a",
+    "ont"
+   ],
+   "correct": "ont"
+  },
+  {
+   "q": "8. Stating an age Marc a ___ ans. Marc is 35.",
+   "options": [
+    "trente et cinq",
+    "trente cinq",
+    "trente-cinq",
+    "trentecinq"
+   ],
+   "correct": "trente-cinq"
+  },
+  {
+   "q": "9. Stating \"we\" age Nous ___ 19 ans. We are 19.",
+   "options": [
+    "ont",
+    "avoir",
+    "avons",
+    "sommes"
+   ],
+   "correct": "avons"
+  },
+  {
+   "q": "10. Specifying a baby's age Le bébé a un ___ . The baby is one year old.",
+   "options": [
+    "an",
+    "années",
+    "ans",
+    "année"
+   ],
+   "correct": "an"
+  },
+  {
+   "q": "11. Asking grandparent's age Ma grand-mère a ___ ans. My grandmother is 41.",
+   "options": [
+    "quarante-un",
+    "quarante-et-un",
+    "quarante-une",
+    "quarante et un"
+   ],
+   "correct": "quarante et un"
+  },
+  {
+   "q": "12. Stating an age Mon père a ___ ans. My father is 60.",
+   "options": [
+    "soixante-zéro",
+    "soixante",
+    "six-dix",
+    "soixant"
+   ],
+   "correct": "soixante"
+  }
+ ],
+ "1-09b-avoir-states-quiz": [
+  {
+   "q": "1. Madame Benali demande à Wei : « Vous avez ___ ? » (It's noon, lunchtime.)",
+   "options": [
+    "faim",
+    "soif",
+    "froid",
+    "sommeil"
+   ],
+   "correct": "faim"
+  },
+  {
+   "q": "2. Yuki en classe en hiver à Paris : « J'ai ___ ! Ferme la fenêtre, s'il te plaît. »",
+   "options": [
+    "chaud",
+    "froid",
+    "peur",
+    "raison"
+   ],
+   "correct": "froid"
+  },
+  {
+   "q": "3. Mateo après une longue journée : « Je ___ sommeil. Je rentre. »",
+   "options": [
+    "suis",
+    "ai",
+    "a",
+    "est"
+   ],
+   "correct": "ai"
+  },
+  {
+   "q": "4. Amara devant un grand chien : « J'ai ___ du chien. »",
+   "options": [
+    "froid",
+    "chaud",
+    "peur",
+    "mal"
+   ],
+   "correct": "peur"
+  },
+  {
+   "q": "5. Wei boit beaucoup d'eau : « J'ai ___ aujourd'hui. »",
+   "options": [
+    "faim",
+    "soif",
+    "sommeil",
+    "mal"
+   ],
+   "correct": "soif"
+  },
+  {
+   "q": "6. Mateo en été à Paris : « Il fait 32°C. J'ai ___ ! »",
+   "options": [
+    "chaud",
+    "froid",
+    "faim",
+    "sommeil"
+   ],
+   "correct": "chaud"
+  },
+  {
+   "q": "7. Quel âge as-tu, Yuki ? — « J'___ 21 ans. »",
+   "options": [
+    "suis",
+    "ai",
+    "a",
+    "ont"
+   ],
+   "correct": "ai"
+  },
+  {
+   "q": "8. La prof dit à Mateo : « Tu ___ raison ! Bravo. »",
+   "options": [
+    "es",
+    "as",
+    "a",
+    "avez"
+   ],
+   "correct": "as"
+  },
+  {
+   "q": "9. Madame Benali à 7h du matin : « Vous avez ___ ? Asseyez-vous, je fais un café. »",
+   "options": [
+    "sommeil",
+    "soif",
+    "peur",
+    "froid"
+   ],
+   "correct": "sommeil"
+  },
+  {
+   "q": "10. Wei en hiver à La Fougère : « Amara et Yuki ___ très froid. » (Two people = plural subject.)",
+   "options": [
+    "a",
+    "as",
+    "ont",
+    "avez"
+   ],
+   "correct": "ont"
+  }
+ ],
+ "1-09c-avoir-vs-etre-quiz": [
+  {
+   "q": "1. Madame Benali à 7h du matin : « Wei, tu ___ fatigué ! Assieds-toi. »",
+   "options": [
+    "es",
+    "as",
+    "a",
+    "avez"
+   ],
+   "correct": "es"
+  },
+  {
+   "q": "2. Mateo n'a rien mangé depuis ce matin : « J'___ très faim ! »",
+   "options": [
+    "suis",
+    "ai",
+    "a",
+    "est"
+   ],
+   "correct": "ai"
+  },
+  {
+   "q": "3. Yuki a de la fièvre : « Je ___ malade. Je rentre. »",
+   "options": [
+    "suis",
+    "ai",
+    "es",
+    "est"
+   ],
+   "correct": "suis"
+  },
+  {
+   "q": "4. Amara devant un examen : « J'___ peur de rater ! »",
+   "options": [
+    "suis",
+    "ai",
+    "es",
+    "est"
+   ],
+   "correct": "ai"
+  },
+  {
+   "q": "5. Wei à la fin de la journée : « Je ___ content de mon travail. »",
+   "options": [
+    "suis",
+    "ai",
+    "es",
+    "a"
+   ],
+   "correct": "suis"
+  },
+  {
+   "q": "6. Mateo au gymnase après le sport : « J'___ très chaud ! »",
+   "options": [
+    "ai",
+    "suis",
+    "as",
+    "est"
+   ],
+   "correct": "ai"
+  },
+  {
+   "q": "7. À l'enterrement : « Madame Benali ___ triste aujourd'hui. »",
+   "options": [
+    "a",
+    "est",
+    "as",
+    "ai"
+   ],
+   "correct": "est"
+  },
+  {
+   "q": "8. Wei en hiver : « Mateo et moi, nous ___ froid. »",
+   "options": [
+    "avons",
+    "sommes",
+    "avez",
+    "êtes"
+   ],
+   "correct": "avons"
+  },
+  {
+   "q": "9. Yuki au déjeuner : « Je ___ 19 ans. »",
+   "options": [
+    "ai",
+    "suis",
+    "as",
+    "es"
+   ],
+   "correct": "ai"
+  },
+  {
+   "q": "10. Amara appelle son médecin : « Bonjour, je ___ malade. J'___ mal à la tête. » Pick the pair.",
+   "options": [
+    "suis ; ai",
+    "ai ; suis",
+    "suis ; suis",
+    "ai ; ai"
+   ],
+   "correct": "suis ; ai"
+  }
+ ],
+ "1-10-languages-questions-quiz": [
+  {
+   "q": "1. Asking about a language preference « ___ langue tu veux apprendre ? » Which language do you want to learn?",
+   "options": [
+    "Quels",
+    "Quelle",
+    "Quel",
+    "Quelles"
+   ],
+   "correct": "Quelle"
+  },
+  {
+   "q": "2. Asking about multiple languages « ___ langues vous parlez ? » Which languages do you speak?",
+   "options": [
+    "Quelle",
+    "Quelles",
+    "Quels",
+    "Quel"
+   ],
+   "correct": "Quelles"
+  },
+  {
+   "q": "3. Asking about origin « Tu viens de ___ pays ? » Which country are you from?",
+   "options": [
+    "quelle",
+    "quels",
+    "quelles",
+    "quel"
+   ],
+   "correct": "quel"
+  },
+  {
+   "q": "4. Asking about multiple destinations « ___ pays tu visites ? » Which countries are you visiting?",
+   "options": [
+    "Quelles",
+    "Quels",
+    "Quel",
+    "Quelle"
+   ],
+   "correct": "Quels"
+  },
+  {
+   "q": "5. Stating your own languages Je ___ français et anglais. I speak French and English.",
+   "options": [
+    "parle",
+    "parles",
+    "parlent",
+    "parler"
+   ],
+   "correct": "parle"
+  },
+  {
+   "q": "6. Reporting what others speak Mes parents ___ chinois et anglais. My parents speak Chinese and English.",
+   "options": [
+    "parle",
+    "parler",
+    "parles",
+    "parlent"
+   ],
+   "correct": "parlent"
+  },
+  {
+   "q": "7. Talking about your family À la maison, nous ___ français. At home, we speak French.",
+   "options": [
+    "parlent",
+    "parlons",
+    "parle",
+    "parlez"
+   ],
+   "correct": "parlons"
+  },
+  {
+   "q": "8. Avoiding the English-influenced article Je parle ___ . I speak French.",
+   "options": [
+    "français",
+    "le français",
+    "l'français",
+    "la français"
+   ],
+   "correct": "français"
+  },
+  {
+   "q": "9. Filling out a form: language listed as adjective Marie parle ___ . Marie speaks French.",
+   "options": [
+    "le français",
+    "française",
+    "francais",
+    "français"
+   ],
+   "correct": "français"
+  },
+  {
+   "q": "10. Listing two languages À Singapour, on parle anglais ___ chinois. In Singapore, people speak English and Chinese.",
+   "options": [
+    "et",
+    "avec",
+    "mais",
+    "ou"
+   ],
+   "correct": "et"
+  },
+  {
+   "q": "11. Correcting an assumption Non, je ___ allemand. No, I don't speak German.",
+   "options": [
+    "parle ne pas",
+    "ne parler pas",
+    "n'parle pas",
+    "ne parle pas"
+   ],
+   "correct": "ne parle pas"
+  },
+  {
+   "q": "12. Forming a complete question ___ Marc parle-t-il ? (il en parle plusieurs) What languages does Marc speak? (he speaks several)",
+   "options": [
+    "Quel langues",
+    "Quelle langue",
+    "Quels langues",
+    "Quelles langues"
+   ],
+   "correct": "Quelles langues"
+  }
+ ],
+ "1-11-capstone-quiz": [
+  {
+   "q": "1. First day of class — meeting your French professor You say: ___ Hello madame, I am Wei.",
+   "options": [
+    "Bonjour madame, je suis Wei.",
+    "Salut ! Moi c'est Wei.",
+    "Coucou madame, c'est Wei !",
+    "Bonjour madame, moi c'est Wei."
+   ],
+   "correct": "Bonjour madame, je suis Wei."
+  },
+  {
+   "q": "2. At the campus café — peers your age You say: ___ Hi! I'm Wei.",
+   "options": [
+    "Bonjour madame, je m'appelle Wei.",
+    "Salut ! Moi, c'est Wei.",
+    "Bonjour, vous vous appelez comment ?",
+    "Bonsoir, je suis professeur Wei."
+   ],
+   "correct": "Salut ! Moi, c'est Wei."
+  },
+  {
+   "q": "3. Leaving the professor's office after a meeting You say: ___ Goodbye madame, thank you very much.",
+   "options": [
+    "Ciao madame, à bientôt !",
+    "Salut ! À plus !",
+    "Au revoir madame, merci beaucoup.",
+    "Bonjour madame, merci."
+   ],
+   "correct": "Au revoir madame, merci beaucoup."
+  },
+  {
+   "q": "4. Asking the receptionist for a form You ask: ___ Hello madame, may I have the form, please?",
+   "options": [
+    "Le formulaire, s'il te plaît !",
+    "Bonjour madame, je peux avoir le formulaire, s'il vous plaît ?",
+    "Donne-moi le formulaire.",
+    "Bonjour, j'ai le formulaire ?"
+   ],
+   "correct": "Bonjour madame, je peux avoir le formulaire, s'il vous plaît ?"
+  },
+  {
+   "q": "5. Meeting your professor's 10-year-old daughter at a faculty event You ask the child: ___ Hi Léa! How old are you?",
+   "options": [
+    "Bonjour mademoiselle, vous avez quel âge ?",
+    "Salut Léa ! Tu as quel âge ?",
+    "Bonjour Léa, tu avez quel âge ?",
+    "Salut ! Vous avez quel âge ?"
+   ],
+   "correct": "Salut Léa ! Tu as quel âge ?"
+  },
+  {
+   "q": "6. Form-filling: stating your nationality (Amara is writing) You write: ___ I am Singaporean.",
+   "options": [
+    "Je suis singapourienne.",
+    "Je suis Singapore.",
+    "Je suis singapouriennes.",
+    "Je suis singapourien."
+   ],
+   "correct": "Je suis singapourienne."
+  },
+  {
+   "q": "7. Asked your age in a casual meet-up You answer: ___ I'm 21.",
+   "options": [
+    "Je suis vingt et un ans.",
+    "J'ai vingt-un ans.",
+    "J'ai vingt et un ans.",
+    "J'ai vingt et une ans."
+   ],
+   "correct": "J'ai vingt et un ans."
+  },
+  {
+   "q": "8. Correcting a wrong assumption about you You reply: ___ No, I'm not Chinese. I'm Singaporean.",
+   "options": [
+    "Non, je ne suis pas chinois. Je suis singapourien.",
+    "Non, je suis pas chinoise. Je suis Singapourienne.",
+    "Non, je n'es pas chinoise. Je suis singapourienne.",
+    "Non, je ne suis pas chinoise. Je suis singapourienne."
+   ],
+   "correct": "Non, je ne suis pas chinoise. Je suis singapourienne."
+  },
+  {
+   "q": "9. Asking new friends what they speak You ask: ___ What languages do you speak?",
+   "options": [
+    "Quels langues tu parlent ?",
+    "Quelles langues vous parler ?",
+    "Quelle langues vous parlez ?",
+    "Quelles langues vous parlez ?"
+   ],
+   "correct": "Quelles langues vous parlez ?"
+  },
+  {
+   "q": "10. Spotting where French liaison happens In which phrase does liaison happen? ___ You are French.",
+   "options": [
+    "Vous êtes français.",
+    "Pierre va à Paris.",
+    "Et il est français.",
+    "Marc et Anne arrivent."
+   ],
+   "correct": "Vous êtes français."
+  },
+  {
+   "q": "11. The orthographic-phonological gap Which sentence is correctly written? ___ My friends speak French.",
+   "options": [
+    "Mes amis parle français.",
+    "Mes amis parlent français.",
+    "Mes ami parlent français.",
+    "Mes amis parler français."
+   ],
+   "correct": "Mes amis parlent français."
+  },
+  {
+   "q": "12. A full third-person introduction You say: ___ Madame, this is Lina. She's Singaporean, 22 years old, and a student.",
+   "options": [
+    "Madame, je vous présente Lina. Il est singapourienne, et il a 22 ans. Il est étudiante.",
+    "Madame, je vous présente Lina. Elle est singapourienne, et elle a 22 ans. Elle est étudiante.",
+    "Madame, je vous présente Lina. Elle est singapourien, et elle a 22 ans. Elle est étudiant.",
+    "Madame, je te présente Lina. Elle est Singapourienne, et elle est 22 ans. Elle est une étudiante."
+   ],
+   "correct": "Madame, je vous présente Lina. Elle est singapourienne, et elle a 22 ans. Elle est étudiante."
+  }
+ ],
+ "2-01-faire-quiz": [
+  {
+   "q": "1. Stating your own activity Le weekend, je ___ du sport. On weekends, I work out.",
+   "options": [
+    "fais",
+    "fait",
+    "faire",
+    "fais le"
+   ],
+   "correct": "fais"
+  },
+  {
+   "q": "2. Asking a friend Tu ___ quoi ce soir ? What are you doing tonight?",
+   "options": [
+    "fait",
+    "es",
+    "fais-tu",
+    "fais"
+   ],
+   "correct": "fais"
+  },
+  {
+   "q": "3. Reporting what someone else does Pierre ___ de la natation. Pierre swims.",
+   "options": [
+    "faits",
+    "font",
+    "fais",
+    "fait"
+   ],
+   "correct": "fait"
+  },
+  {
+   "q": "4. Group activity (we) Nous ___ des promenades le dimanche. We go for walks on Sundays.",
+   "options": [
+    "sommes",
+    "faisez",
+    "faits",
+    "faisons"
+   ],
+   "correct": "faisons"
+  },
+  {
+   "q": "5. Asking a group politely Vous ___ de la musique ? Do you play music?",
+   "options": [
+    "faites",
+    "faisez",
+    "faisons",
+    "fais"
+   ],
+   "correct": "faites"
+  },
+  {
+   "q": "6. Group activity (they) Mes amis ___ du foot le samedi. My friends play football on Saturdays.",
+   "options": [
+    "sont",
+    "fait",
+    "faits",
+    "font"
+   ],
+   "correct": "font"
+  },
+  {
+   "q": "7. Faire vs jouer (sport) Le mardi soir, je ___ du sport au gymnase. On Tuesday evenings, I work out at the gym.",
+   "options": [
+    "pratique",
+    "aime",
+    "fais",
+    "joue"
+   ],
+   "correct": "fais"
+  },
+  {
+   "q": "8. Faire + activity (cycling) Avec mes amis, je ___ du vélo. With my friends, I go cycling.",
+   "options": [
+    "joue",
+    "fais",
+    "vais",
+    "sors"
+   ],
+   "correct": "fais"
+  },
+  {
+   "q": "9. Faire + cultural activity Léa ___ de la musique. Léa does music / plays music.",
+   "options": [
+    "parle",
+    "a",
+    "aime",
+    "fait"
+   ],
+   "correct": "fait"
+  },
+  {
+   "q": "10. Asking what someone does for a living/hobby Qu'est-ce que vous ___ comme sport ? What sport do you do?",
+   "options": [
+    "faisez",
+    "fait",
+    "faites",
+    "faisons"
+   ],
+   "correct": "faites"
+  },
+  {
+   "q": "11. Negative form of faire Non, je ___ pas de sport. No, I don't do any sport.",
+   "options": [
+    "ne fais",
+    "fais pas",
+    "n'fais",
+    "fais ne"
+   ],
+   "correct": "ne fais"
+  },
+  {
+   "q": "12. Idiomatic faire (weather) Aujourd'hui, il ___ beau. It's nice weather today.",
+   "options": [
+    "va",
+    "fait",
+    "est",
+    "a"
+   ],
+   "correct": "fait"
+  }
+ ],
+ "2-02-aller-quiz": [
+  {
+   "q": "1. Stating where you're going Je ___ au cinéma ce soir. I'm going to the cinema tonight.",
+   "options": [
+    "vais",
+    "vas",
+    "va",
+    "allons"
+   ],
+   "correct": "vais"
+  },
+  {
+   "q": "2. Asking a friend Tu ___ où ? Where are you going?",
+   "options": [
+    "vas",
+    "vais",
+    "va",
+    "allez"
+   ],
+   "correct": "vas"
+  },
+  {
+   "q": "3. Reporting a friend's plan Marc ___ à la piscine. Marc is going to the pool.",
+   "options": [
+    "va",
+    "vais",
+    "vont",
+    "vas"
+   ],
+   "correct": "va"
+  },
+  {
+   "q": "4. Group plan Nous ___ au restaurant samedi. We're going to the restaurant on Saturday.",
+   "options": [
+    "vont",
+    "allez",
+    "vons",
+    "allons"
+   ],
+   "correct": "allons"
+  },
+  {
+   "q": "5. Asking a group Vous ___ à Paris cet été ? Are you going to Paris this summer?",
+   "options": [
+    "vais",
+    "allons",
+    "allez",
+    "vez"
+   ],
+   "correct": "allez"
+  },
+  {
+   "q": "6. Group destination (they) Mes amis ___ au concert ce soir. My friends are going to the concert tonight.",
+   "options": [
+    "vont",
+    "va",
+    "allons",
+    "allez"
+   ],
+   "correct": "vont"
+  },
+  {
+   "q": "7. Contraction: à + le Je vais ___ cinéma. I'm going to the cinema.",
+   "options": [
+    "à la",
+    "à le",
+    "à",
+    "au"
+   ],
+   "correct": "au"
+  },
+  {
+   "q": "8. Contraction: à + la (no contraction) Léa va ___ piscine le mardi. Léa goes to the pool on Tuesdays.",
+   "options": [
+    "à le",
+    "à la",
+    "au",
+    "à"
+   ],
+   "correct": "à la"
+  },
+  {
+   "q": "9. Contraction: à + les Je vais ___ toilettes, je reviens. I'm going to the toilet, I'll be back.",
+   "options": [
+    "au",
+    "à les",
+    "à la",
+    "aux"
+   ],
+   "correct": "aux"
+  },
+  {
+   "q": "10. Contraction: à + l' (vowel) Le patient va ___ hôpital. The patient is going to the hospital.",
+   "options": [
+    "au",
+    "à l'",
+    "à la",
+    "à le"
+   ],
+   "correct": "à l'"
+  },
+  {
+   "q": "11. Cities take bare à L'année prochaine, je vais ___ Paris. Next year, I'm going to Paris.",
+   "options": [
+    "au",
+    "à",
+    "à la",
+    "en"
+   ],
+   "correct": "à"
+  },
+  {
+   "q": "12. Negation with aller Non, je ___ au gymnase aujourd'hui. No, I'm not going to the gym today.",
+   "options": [
+    "pas vais",
+    "ne vais pas",
+    "n'vais pas",
+    "ne va pas"
+   ],
+   "correct": "ne vais pas"
+  }
+ ],
+ "2-03-vouloir-quiz": [
+  {
+   "q": "1. Stating an intention Je ___ sortir ce soir. I want to go out tonight.",
+   "options": [
+    "veux",
+    "voulez",
+    "voulons",
+    "veut"
+   ],
+   "correct": "veux"
+  },
+  {
+   "q": "2. Inviting a peer Tu ___ venir avec nous au cinéma ? Do you want to come to the cinema with us?",
+   "options": [
+    "aimes",
+    "voulez",
+    "veut",
+    "veux"
+   ],
+   "correct": "veux"
+  },
+  {
+   "q": "3. Reporting what someone wants Pierre ___ un café. Pierre wants a coffee.",
+   "options": [
+    "veux",
+    "voulons",
+    "veut",
+    "veulent"
+   ],
+   "correct": "veut"
+  },
+  {
+   "q": "4. Group plan Nous ___ aller à la plage. We want to go to the beach.",
+   "options": [
+    "voulons",
+    "veulent",
+    "veulons",
+    "voulez"
+   ],
+   "correct": "voulons"
+  },
+  {
+   "q": "5. Asking a group politely Vous ___ un thé ou un café ? Would you like tea or coffee?",
+   "options": [
+    "voulons",
+    "voulez",
+    "veulent",
+    "veulez"
+   ],
+   "correct": "voulez"
+  },
+  {
+   "q": "6. Group desire (third person plural) Mes amis ___ partir tôt. My friends want to leave early.",
+   "options": [
+    "voulent",
+    "voulons",
+    "veulent",
+    "veut"
+   ],
+   "correct": "veulent"
+  },
+  {
+   "q": "7. Vouloir + noun (request at café) Je veux ___ croissant, s'il vous plaît. I'd like a croissant, please.",
+   "options": [
+    "un",
+    "de",
+    "à",
+    "le"
+   ],
+   "correct": "un"
+  },
+  {
+   "q": "8. Vouloir + infinitive (intention) Je veux ___ à 22h. I want to leave at 10pm.",
+   "options": [
+    "que je pars",
+    "à partir",
+    "partir",
+    "parts"
+   ],
+   "correct": "partir"
+  },
+  {
+   "q": "9. Casual invitation: \"do you want…\" « ___ aller au cinéma ce soir ? » Do you want to go to the cinema tonight?",
+   "options": [
+    "Tu peut",
+    "Tu vas",
+    "Tu veux que",
+    "Tu veux"
+   ],
+   "correct": "Tu veux"
+  },
+  {
+   "q": "10. Polite request — softer than \"je veux\" Je ___ un sac, s'il vous plaît. I'd like a bag, please.",
+   "options": [
+    "voudrais",
+    "veux",
+    "voudrai",
+    "voulez"
+   ],
+   "correct": "voudrais"
+  },
+  {
+   "q": "11. Negation with vouloir Non, je ___ pas sortir ce soir. No, I don't want to go out tonight.",
+   "options": [
+    "veux ne",
+    "n'veux",
+    "ne veut",
+    "ne veux"
+   ],
+   "correct": "ne veux"
+  },
+  {
+   "q": "12. Question with veux Qu'est-ce que tu ___ faire ? What do you want to do?",
+   "options": [
+    "veux",
+    "fais",
+    "voulons",
+    "veut"
+   ],
+   "correct": "veux"
+  }
+ ],
+ "2-04-cest-negation-quiz": [
+  {
+   "q": "1. Identifying one thing « ___ un livre. » It's a book.",
+   "options": [
+    "Ce sont",
+    "Il est",
+    "C'est",
+    "Cest"
+   ],
+   "correct": "C'est"
+  },
+  {
+   "q": "2. Identifying multiple things « ___ des livres. » They are books.",
+   "options": [
+    "C'est",
+    "Ce sont",
+    "Ils sont",
+    "Ce est"
+   ],
+   "correct": "Ce sont"
+  },
+  {
+   "q": "3. Denying singular identification Non, ___ un stylo, c'est un crayon. No, it's not a pen, it's a pencil.",
+   "options": [
+    "ce n'est",
+    "c'est pas",
+    "ce n'est pas",
+    "ce ne sont pas"
+   ],
+   "correct": "ce n'est pas"
+  },
+  {
+   "q": "4. Denying plural identification Non, ___ des stylos, ce sont des crayons. No, they're not pens, they're pencils.",
+   "options": [
+    "ce ne sont pas",
+    "ce n'est pas",
+    "ce n'sont pas",
+    "ce sont pas"
+   ],
+   "correct": "ce ne sont pas"
+  },
+  {
+   "q": "5. Cessation: \"not anymore\" Avant, je faisais du sport, mais maintenant je ___ de sport. I used to do sport, but now I don't do sport anymore.",
+   "options": [
+    "ne fais plus",
+    "fais ne plus",
+    "ne fais pas",
+    "fais plus pas"
+   ],
+   "correct": "ne fais plus"
+  },
+  {
+   "q": "6. Cessation in different verb Avant, j'étais étudiant, mais maintenant je ___ étudiant. I used to be a student, but now I'm not a student anymore.",
+   "options": [
+    "suis plus pas",
+    "ne suis pas",
+    "ne suis plus",
+    "n'suis plus"
+   ],
+   "correct": "ne suis plus"
+  },
+  {
+   "q": "8. Asking what something is « ___ ? — C'est mon sac. » What is it? — It's my bag.",
+   "options": [
+    "Qu'est-ce que c'est",
+    "Quoi c'est",
+    "Que c'est",
+    "Ce que c'est"
+   ],
+   "correct": "Qu'est-ce que c'est"
+  },
+  {
+   "q": "9. Possessive identification « ___ livre, pas le tien. » It's MY book, not yours.",
+   "options": [
+    "C'est mon",
+    "Il est mon",
+    "C'est ma",
+    "Ce sont mes"
+   ],
+   "correct": "C'est mon"
+  },
+  {
+   "q": "10. Correcting ownership « ___ mon sac, c'est le sac de Marc. » It's not my bag, it's Marc's bag.",
+   "options": [
+    "C'est pas",
+    "Ce ne pas",
+    "Ce ne sont pas",
+    "Ce n'est pas"
+   ],
+   "correct": "Ce n'est pas"
+  },
+  {
+   "q": "11. C'est + masculine noun starting with vowel « Regarde ! ___ éléphant ! » Look! It's an elephant!",
+   "options": [
+    "c'est une",
+    "c'est l'",
+    "ce sont des",
+    "c'est un"
+   ],
+   "correct": "c'est un"
+  },
+  {
+   "q": "12. How do you say not anymore Je n'aime ___ le café maintenant — j'ai changé. I don't like coffee anymore — I've changed.",
+   "options": [
+    "jamais",
+    "plus",
+    "pas",
+    "rien"
+   ],
+   "correct": "plus"
+  }
+ ],
+ "2-05-articles-objects-quiz": [
+  {
+   "q": "1. Identifying a masculine object Dans mon sac, il y a ___ livre. In my bag, there's a book.",
+   "options": [
+    "des",
+    "une",
+    "le",
+    "un"
+   ],
+   "correct": "un"
+  },
+  {
+   "q": "2. Identifying a feminine object Dans mon sac, il y a ___ trousse. In my bag, there's a pencil case.",
+   "options": [
+    "la",
+    "un",
+    "des",
+    "une"
+   ],
+   "correct": "une"
+  },
+  {
+   "q": "3. Multiple objects Dans mon sac, il y a ___ stylos. In my bag, there are pens.",
+   "options": [
+    "un",
+    "une",
+    "les",
+    "des"
+   ],
+   "correct": "des"
+  },
+  {
+   "q": "4. Vowel-starting masculine noun J'ai ___ agenda dans mon sac. I have a planner in my bag.",
+   "options": [
+    "l'",
+    "une",
+    "un",
+    "un'"
+   ],
+   "correct": "un"
+  },
+  {
+   "q": "5. Existence: il y a (singular) Sur la table, ___ une pomme. On the table, there is an apple.",
+   "options": [
+    "elle est",
+    "c'est",
+    "il y a",
+    "il a"
+   ],
+   "correct": "il y a"
+  },
+  {
+   "q": "6. Existence: il y a (plural) Sur la table, ___ trois pommes. On the table, there are three apples.",
+   "options": [
+    "ce sont",
+    "ils sont",
+    "ils y a",
+    "il y a"
+   ],
+   "correct": "il y a"
+  },
+  {
+   "q": "7. Indefinite article + number J'ai ___ feuilles. I have two sheets.",
+   "options": [
+    "deux",
+    "des deux",
+    "une deux",
+    "les deux"
+   ],
+   "correct": "deux"
+  },
+  {
+   "q": "8. Negation collapses indefinite to de Dans mon sac, il n'y a pas ___ livre. In my bag, there's no book.",
+   "options": [
+    "des",
+    "un",
+    "de",
+    "le"
+   ],
+   "correct": "de"
+  },
+  {
+   "q": "9. Vowel-starting noun under negation: d' Il n'y a pas ___ parapluie ici. There's no umbrella here.",
+   "options": [
+    "le",
+    "d'",
+    "de",
+    "un"
+   ],
+   "correct": "d'"
+  },
+  {
+   "q": "10. Exception: c'est keeps un/une Non, ce n'est pas ___ livre, c'est un cahier. No, it's not a book, it's a notebook.",
+   "options": [
+    "un",
+    "de",
+    "d'",
+    "le"
+   ],
+   "correct": "un"
+  },
+  {
+   "q": "11. How do you say \"Is there a computer in your room\" « ___ un ordinateur dans ta chambre ? » Is there a computer in your room?",
+   "options": [
+    "Est-ce qu'il y a",
+    "C'est",
+    "Y a-t-il",
+    "Il y a"
+   ],
+   "correct": "Est-ce qu'il y a"
+  },
+  {
+   "q": "12. Plural agreement issue: \"books, pens, and a notebook\" Dans mon sac, il y a ___ livres, des stylos et une trousse. In my bag, there are books, pens, and a pencil case.",
+   "options": [
+    "de",
+    "les",
+    "le",
+    "des"
+   ],
+   "correct": "des"
+  },
+  {
+   "q": "13. Definite article + day (habitual) ___ lundi, j'ai cours de français. On Mondays, I have French class.",
+   "options": [
+    "un",
+    "le",
+    "au",
+    "du"
+   ],
+   "correct": "le"
+  },
+  {
+   "q": "14. Definite article + feminine noun On va à ___ boulangerie de Madame Benali. We're going to Madame Benali's bakery.",
+   "options": [
+    "une",
+    "la",
+    "le",
+    "les"
+   ],
+   "correct": "la"
+  },
+  {
+   "q": "15. Definite article + plural noun ___ étudiants sont en classe. The students are in class.",
+   "options": [
+    "des",
+    "les",
+    "un",
+    "nos"
+   ],
+   "correct": "les"
+  },
+  {
+   "q": "16. Definite article before vowel Nous habitons dans ___ appartement au-dessus. We live in the apartment above.",
+   "options": [
+    "le",
+    "l'",
+    "un",
+    "la"
+   ],
+   "correct": "l'"
+  }
+ ],
+ "2-06-partitive-quiz": [
+  {
+   "q": "1. Partitive: masculine consonant Je mange ___ pain. I eat (some) bread.",
+   "options": [
+    "de la",
+    "du",
+    "le",
+    "de l'"
+   ],
+   "correct": "du"
+  },
+  {
+   "q": "2. Partitive: feminine consonant Tu manges ___ salade ? Are you eating (some) salad?",
+   "options": [
+    "de l'",
+    "de la",
+    "du",
+    "la"
+   ],
+   "correct": "de la"
+  },
+  {
+   "q": "3. Partitive: vowel-starting Je bois ___ eau. I drink (some) water.",
+   "options": [
+    "de l'",
+    "du",
+    "de la",
+    "des"
+   ],
+   "correct": "de l'"
+  },
+  {
+   "q": "4. Partitive: plural Je commande ___ frites. I'm ordering (some) fries.",
+   "options": [
+    "de la",
+    "du",
+    "les",
+    "des"
+   ],
+   "correct": "des"
+  },
+  {
+   "q": "5. Partitive in negation: collapse to de Je ne mange pas ___ pain. I don't eat bread.",
+   "options": [
+    "du",
+    "d'",
+    "pas du",
+    "de"
+   ],
+   "correct": "de"
+  },
+  {
+   "q": "6. Partitive in negation: vowel-start Je ne bois pas ___ eau. I don't drink water.",
+   "options": [
+    "pas d'",
+    "de l'",
+    "de",
+    "d'"
+   ],
+   "correct": "d'"
+  },
+  {
+   "q": "7. Partitive in negation: plural Je ne mange pas ___ frites. I don't eat fries.",
+   "options": [
+    "les",
+    "d'",
+    "de",
+    "des"
+   ],
+   "correct": "de"
+  },
+  {
+   "q": "8. Activity: faire + partitive Je fais ___ natation deux fois par semaine. I swim twice a week.",
+   "options": [
+    "de la",
+    "de l'",
+    "la",
+    "du"
+   ],
+   "correct": "de la"
+  },
+  {
+   "q": "9. Negation of sport activity Je ne fais pas ___ natation. I don't swim.",
+   "options": [
+    "d'",
+    "de",
+    "de la",
+    "du"
+   ],
+   "correct": "de"
+  },
+  {
+   "q": "10. Partitive vs. à-contraction (lookalikes) Je vais ___ cinéma ce soir. I'm going to the cinema tonight.",
+   "options": [
+    "de",
+    "au",
+    "à la",
+    "du"
+   ],
+   "correct": "au"
+  },
+  {
+   "q": "11. Partitive with abstract noun Tu as ___ temps demain ? Do you have (some) time tomorrow?",
+   "options": [
+    "du",
+    "le",
+    "de la",
+    "des"
+   ],
+   "correct": "du"
+  },
+  {
+   "q": "12. Partitive vs. definite — the aimer trap J'aime ___ café. I like coffee.",
+   "options": [
+    "un",
+    "du",
+    "le",
+    "de"
+   ],
+   "correct": "le"
+  }
+ ],
+ "2-07-preferences-quiz": [
+  {
+   "q": "1. Liking + noun (definite article) J'aime ___ café. I like coffee.",
+   "options": [
+    "de",
+    "du",
+    "le",
+    "un"
+   ],
+   "correct": "le"
+  },
+  {
+   "q": "2. Liking with feminine noun J'adore ___ musique classique. I love classical music.",
+   "options": [
+    "de la",
+    "une",
+    "la",
+    "le"
+   ],
+   "correct": "la"
+  },
+  {
+   "q": "3. Liking with plural J'aime ___ chats. I like cats.",
+   "options": [
+    "de",
+    "le",
+    "les",
+    "des"
+   ],
+   "correct": "les"
+  },
+  {
+   "q": "4. Detesting Je déteste ___ brocoli. I hate broccoli.",
+   "options": [
+    "le",
+    "du",
+    "pas de",
+    "n'aime pas"
+   ],
+   "correct": "le"
+  },
+  {
+   "q": "5. Preference + infinitive (verb) J'aime ___ avec mes amis. I like dancing with my friends.",
+   "options": [
+    "à danser",
+    "que je danse",
+    "danser",
+    "danse"
+   ],
+   "correct": "danser"
+  },
+  {
+   "q": "6. Detesting an activity Je déteste ___ le soir. I hate cooking in the evening.",
+   "options": [
+    "cuisine",
+    "cuisiner",
+    "la cuisine",
+    "à cuisiner"
+   ],
+   "correct": "cuisiner"
+  },
+  {
+   "q": "7. Negation: pas de DOESN'T apply Je n'aime pas ___ café. I don't like coffee.",
+   "options": [
+    "le",
+    "d'",
+    "du",
+    "de"
+   ],
+   "correct": "le"
+  },
+  {
+   "q": "8. Contrast with \"mais\" J'aime le thé, ___ je n'aime pas le café. I like tea, but I don't like coffee.",
+   "options": [
+    "mais",
+    "ou",
+    "et",
+    "parce que"
+   ],
+   "correct": "mais"
+  },
+  {
+   "q": "9. Préférer + comparison Je préfère le cinéma ___ théâtre. I prefer cinema to theatre.",
+   "options": [
+    "à la",
+    "au",
+    "à le",
+    "que le"
+   ],
+   "correct": "au"
+  },
+  {
+   "q": "10. Asking about preferences « ___ aimes le café ? » Do you like coffee?",
+   "options": [
+    "Tu es",
+    "Tu",
+    "Es-tu",
+    "Qu'est-ce que tu"
+   ],
+   "correct": "Tu"
+  },
+  {
+   "q": "11. Multiple likes joined by et J'aime le sport ___ la musique. I like sport and music.",
+   "options": [
+    "et",
+    "avec",
+    "ou",
+    "mais"
+   ],
+   "correct": "et"
+  },
+  {
+   "q": "12. Strength comparison J' ___ la musique — c'est ma passion ! I love music — it's my passion!",
+   "options": [
+    "aime pas",
+    "aime",
+    "adore",
+    "déteste"
+   ],
+   "correct": "adore"
+  }
+ ],
+ "2-08-time-quiz": [
+  {
+   "q": "1. Stating current time « Quelle heure est-il ? — ___ dix heures. » What time is it? — It's ten o'clock.",
+   "options": [
+    "C'est à",
+    "Il est",
+    "C'est",
+    "Il y a"
+   ],
+   "correct": "Il est"
+  },
+  {
+   "q": "2. Asking about a scheduled event « Le film, ___ quelle heure ? » The film, what time is it (scheduled)?",
+   "options": [
+    "il est",
+    "à",
+    "il est à",
+    "c'est à"
+   ],
+   "correct": "c'est à"
+  },
+  {
+   "q": "3. Half past Il est deux heures ___ . It's half past two.",
+   "options": [
+    "et trente",
+    "et demie",
+    "demie",
+    "et demi"
+   ],
+   "correct": "et demie"
+  },
+  {
+   "q": "4. Quarter past Il est quatre heures ___ . It's a quarter past four.",
+   "options": [
+    "quart",
+    "et quart",
+    "et quinze",
+    "moins le quart"
+   ],
+   "correct": "et quart"
+  },
+  {
+   "q": "5. Quarter to Il est neuf heures ___ . It's a quarter to nine.",
+   "options": [
+    "et trois quarts",
+    "et quart",
+    "moins quart",
+    "moins le quart"
+   ],
+   "correct": "moins le quart"
+  },
+  {
+   "q": "6. Minutes past Il est dix heures ___ . It's twenty past ten.",
+   "options": [
+    "plus vingt",
+    "vingt minutes",
+    "vingt",
+    "et vingt"
+   ],
+   "correct": "vingt"
+  },
+  {
+   "q": "7. Minutes before Il est huit heures ___ . It's ten to eight.",
+   "options": [
+    "moins dix minutes",
+    "et cinquante",
+    "moins dix",
+    "cinquante"
+   ],
+   "correct": "moins dix"
+  },
+  {
+   "q": "8. Noon and midnight Il est ___ , on mange ! It's noon, let's eat!",
+   "options": [
+    "minuit",
+    "douze heures",
+    "midi",
+    "midi heures"
+   ],
+   "correct": "midi"
+  },
+  {
+   "q": "9. Time of day specifier Il est huit heures ___ . It's 8 in the evening.",
+   "options": [
+    "PM",
+    "du soir",
+    "de soir",
+    "au soir"
+   ],
+   "correct": "du soir"
+  },
+  {
+   "q": "10. When does class start? (event scheduling) Le cours, ___ neuf heures du matin. Class is at 9 in the morning.",
+   "options": [
+    "c'est à",
+    "il est",
+    "il est à",
+    "c'est"
+   ],
+   "correct": "c'est à"
+  },
+  {
+   "q": "11. Asking when something starts « ___ tu commences le travail ? » What time do you start work?",
+   "options": [
+    "Combien d'heures",
+    "C'est quand",
+    "Quelle heure",
+    "À quelle heure"
+   ],
+   "correct": "À quelle heure"
+  },
+  {
+   "q": "12. Schedule with mais and time Le film c'est à 20h, mais le concert, ___ 21h30. The film is at 8pm, but the concert is at 9:30pm.",
+   "options": [
+    "à",
+    "c'est à",
+    "il est à",
+    "c'est"
+   ],
+   "correct": "c'est à"
+  }
+ ],
+ "2-09-objects-description-quiz": [
+  {
+   "q": "1. Identifying a masculine object « Qu'est-ce que c'est ? — ___ sac. » What is it? — It's a bag.",
+   "options": [
+    "Ce sont des",
+    "C'est un",
+    "Il est un",
+    "C'est une"
+   ],
+   "correct": "C'est un"
+  },
+  {
+   "q": "2. Feminine object « C'est ___ trousse. » It's a pencil case.",
+   "options": [
+    "la",
+    "une",
+    "des",
+    "un"
+   ],
+   "correct": "une"
+  },
+  {
+   "q": "3. Adjective agreement (m. → f.) C'est un sac ___ . It's a red bag.",
+   "options": [
+    "rouger",
+    "rouges",
+    "la rouge",
+    "rouge"
+   ],
+   "correct": "rouge"
+  },
+  {
+   "q": "4. Adjective agreement (f. with -e added) C'est une trousse ___ . It's a green pencil case.",
+   "options": [
+    "vert",
+    "vertes",
+    "verts",
+    "verte"
+   ],
+   "correct": "verte"
+  },
+  {
+   "q": "5. Position: petit before, rouge after C'est un ___ sac. It's a small bag.",
+   "options": [
+    "petit",
+    "petite",
+    "petits",
+    "sac petit"
+   ],
+   "correct": "petit"
+  },
+  {
+   "q": "6. Two adjectives: BANGS before + colour after C'est un ___ livre rouge. It's a small red book.",
+   "options": [
+    "petit",
+    "rouges",
+    "rouge",
+    "petite"
+   ],
+   "correct": "petit"
+  },
+  {
+   "q": "7. Possessive: mon (m.) C'est ___ sac. It's my bag.",
+   "options": [
+    "mes",
+    "mon",
+    "ma",
+    "le mien"
+   ],
+   "correct": "mon"
+  },
+  {
+   "q": "8. Possessive: ma (f.) C'est ___ trousse. It's my pencil case.",
+   "options": [
+    "mon",
+    "ma",
+    "mienne",
+    "mes"
+   ],
+   "correct": "ma"
+  },
+  {
+   "q": "9. Possessive: mes (plural) Ce sont ___ stylos. They are my pens.",
+   "options": [
+    "ma",
+    "mes",
+    "mon",
+    "des mes"
+   ],
+   "correct": "mes"
+  },
+  {
+   "q": "10. Ownership with \"de\" C'est ___ Marc. It's Marc's pen.",
+   "options": [
+    "le stylo de",
+    "stylo de",
+    "le stylo à",
+    "le stylo du"
+   ],
+   "correct": "le stylo de"
+  },
+  {
+   "q": "11. Confirming ownership question « C'est ___ sac ? » Is this your bag?",
+   "options": [
+    "ta",
+    "votre",
+    "ton",
+    "tes"
+   ],
+   "correct": "ton"
+  },
+  {
+   "q": "12. Correcting ownership Non, ce n'est pas mon sac, ___ Marc. No, it's not my bag, it's Marc's bag.",
+   "options": [
+    "il est le sac de",
+    "c'est le sac à",
+    "c'est le sac du",
+    "c'est le sac de"
+   ],
+   "correct": "c'est le sac de"
+  }
+ ],
+ "2-10-places-activities-quiz": [
+  {
+   "q": "1. Going to the cinema Ce soir, je vais ___ voir un film. Tonight, I'm going to the cinema to see a film.",
+   "options": [
+    "au cinéma",
+    "à cinéma",
+    "à la cinéma",
+    "le cinéma"
+   ],
+   "correct": "au cinéma"
+  },
+  {
+   "q": "2. At the swimming pool Le mardi, je nage ___ . On Tuesdays, I swim at the pool.",
+   "options": [
+    "à la piscine",
+    "la piscine",
+    "à l'piscine",
+    "au piscine"
+   ],
+   "correct": "à la piscine"
+  },
+  {
+   "q": "3. At the beach L'été, je vais ___ . In summer, I go to the beach.",
+   "options": [
+    "à la plage",
+    "à plage",
+    "au plage",
+    "à la mer"
+   ],
+   "correct": "à la plage"
+  },
+  {
+   "q": "4. At the library Pour étudier, je vais ___ . To study, I go to the library.",
+   "options": [
+    "au bibliothèque",
+    "à la libraire",
+    "à la bibliothèque",
+    "à l'bibliothèque"
+   ],
+   "correct": "à la bibliothèque"
+  },
+  {
+   "q": "5. At the restaurant Samedi soir, je mange ___ avec mes amis. Saturday evening, I'm eating at the restaurant with my friends.",
+   "options": [
+    "au restaurant",
+    "à la restaurant",
+    "à le restaurant",
+    "au resto"
+   ],
+   "correct": "au restaurant"
+  },
+  {
+   "q": "6. At the café On prend un verre ___ ? Shall we have a drink at the café?",
+   "options": [
+    "à la café",
+    "le café",
+    "au café",
+    "à café"
+   ],
+   "correct": "au café"
+  },
+  {
+   "q": "7. At the hospital (vowel start) Mon ami est ___ . My friend is at the hospital.",
+   "options": [
+    "à l'hôpital",
+    "à le hôpital",
+    "au hôpital",
+    "à hôpital"
+   ],
+   "correct": "à l'hôpital"
+  },
+  {
+   "q": "8. Activity matching: theatre Pour voir une pièce, on va ___ . To see a play, we go to the theatre.",
+   "options": [
+    "au théâtre",
+    "au cinéma",
+    "au musée",
+    "à la pièce"
+   ],
+   "correct": "au théâtre"
+  },
+  {
+   "q": "9. Activity matching: museum Au musée, je ___ une exposition. At the museum, I see an exhibition.",
+   "options": [
+    "fais",
+    "vois",
+    "lis",
+    "mange"
+   ],
+   "correct": "vois"
+  },
+  {
+   "q": "10. Activity matching: train station Pour aller à Lyon, je vais ___ prendre le train. To go to Lyon, I'm going to the station to take the train.",
+   "options": [
+    "à la gare",
+    "au train",
+    "à l'aéroport",
+    "à le gare"
+   ],
+   "correct": "à la gare"
+  },
+  {
+   "q": "11. School / university Du lundi au vendredi, je vais ___ . Monday to Friday, I go to university.",
+   "options": [
+    "au université",
+    "à la université",
+    "à l'université de Marc",
+    "à l'université"
+   ],
+   "correct": "à l'université"
+  },
+  {
+   "q": "12. Multi-activity at home Je reste ___ ce weekend. I'm staying home this weekend.",
+   "options": [
+    "à la maison",
+    "au maison",
+    "à maison",
+    "la maison"
+   ],
+   "correct": "à la maison"
+  }
+ ],
+ "2-11-functional-writing-quiz": [
+  {
+   "q": "1. Greeting a shop owner in the morning Vous entrez dans une boulangerie le matin. Vous dites : You enter a bakery in the morning. You say:",
+   "options": [
+    "Salut",
+    "Bonjour, Madame",
+    "Bonsoir",
+    "Au revoir"
+   ],
+   "correct": "Bonjour, Madame"
+  },
+  {
+   "q": "2. Asking politely for bread at a bakery Vous voulez acheter du pain. Vous dites : You want to buy bread. You say:",
+   "options": [
+    "Je veux une baguette",
+    "Je voudrais une baguette, s'il vous plaît",
+    "Donne-moi une baguette",
+    "J'ai une baguette"
+   ],
+   "correct": "Je voudrais une baguette, s'il vous plaît"
+  },
+  {
+   "q": "3. Saying goodbye to friends informally Vous quittez vos amis après les cours. Vous dites : You leave your friends after class. You say:",
+   "options": [
+    "Au revoir Monsieur",
+    "Salut, à demain !",
+    "Bonsoir",
+    "Bonjour"
+   ],
+   "correct": "Salut, à demain !"
+  },
+  {
+   "q": "4. Asking someone to repeat what they said Vous n'avez pas compris. Vous dites : You didn't understand. You say:",
+   "options": [
+    "Quoi ?",
+    "Pardon, vous pouvez répéter ?",
+    "Encore !",
+    "Répète"
+   ],
+   "correct": "Pardon, vous pouvez répéter ?"
+  },
+  {
+   "q": "5. Accepting an invitation Un ami vous invite à dîner. Vous acceptez : A friend invites you to dinner. You accept:",
+   "options": [
+    "Pas du tout",
+    "Avec plaisir !",
+    "Je refuse",
+    "C'est dommage"
+   ],
+   "correct": "Avec plaisir !"
+  },
+  {
+   "q": "6. Declining politely On vous propose une sortie mais vous êtes occupé. Vous dites : Someone suggests an outing but you're busy. You say:",
+   "options": [
+    "Non",
+    "Désolé, je ne peux pas",
+    "Jamais",
+    "Je refuse"
+   ],
+   "correct": "Désolé, je ne peux pas"
+  },
+  {
+   "q": "7. Asking for the price Vous voulez savoir le prix d'un article. Vous demandez : You want to know the price of an item. You ask:",
+   "options": [
+    "Combien tu as ?",
+    "C'est combien ?",
+    "Quel prix ?",
+    "C'est cher ?"
+   ],
+   "correct": "C'est combien ?"
+  },
+  {
+   "q": "8. Thanking someone for help Quelqu'un vous aide avec vos sacs. Vous dites : Someone helps you with your bags. You say:",
+   "options": [
+    "De rien",
+    "Merci beaucoup !",
+    "S'il vous plaît",
+    "Pardon"
+   ],
+   "correct": "Merci beaucoup !"
+  },
+  {
+   "q": "9. Apologising for being late Vous arrivez en retard à un rendez-vous. Vous dites : You arrive late to a meeting. You say:",
+   "options": [
+    "Bonjour",
+    "Excusez-moi du retard",
+    "Tant pis",
+    "Je suis là"
+   ],
+   "correct": "Excusez-moi du retard"
+  },
+  {
+   "q": "10. Offering help Vous voyez quelqu'un perdu dans la rue. Vous proposez : You see someone lost in the street. You offer:",
+   "options": [
+    "Aidez-moi",
+    "Je peux vous aider ?",
+    "Tu veux quoi ?",
+    "C'est à vous"
+   ],
+   "correct": "Je peux vous aider ?"
+  },
+  {
+   "q": "11. Asking where something is Vous cherchez la gare. Vous demandez à un passant : You're looking for the train station. You ask a passerby:",
+   "options": [
+    "La gare est belle",
+    "Où se trouve la gare ?",
+    "Quelle gare ?",
+    "J'aime la gare"
+   ],
+   "correct": "Où se trouve la gare ?"
+  },
+  {
+   "q": "12. Ordering at a restaurant Le serveur arrive. Vous commandez : The waiter arrives. You order:",
+   "options": [
+    "Je mange ici",
+    "Je vais prendre le menu du jour",
+    "Le menu est bon",
+    "Donnez-moi vite"
+   ],
+   "correct": "Je vais prendre le menu du jour"
+  }
+ ],
+ "2-12-capstone-quiz": [
+  {
+   "q": "1. Drawing on Skill 03 (vouloir) « ___ venir au cinéma ce soir ? » Do you want to come to the cinema tonight?",
+   "options": [
+    "Tu veux",
+    "Tu peut",
+    "Tu vas",
+    "Tu veux que"
+   ],
+   "correct": "Tu veux"
+  },
+  {
+   "q": "2. Drawing on Skills 02 + 10 On va ___ ce soir. We're going to the cinema tonight.",
+   "options": [
+    "cinéma",
+    "à le cinéma",
+    "au cinéma",
+    "à la cinéma"
+   ],
+   "correct": "au cinéma"
+  },
+  {
+   "q": "3. Drawing on Skill 08 (time) Le film, ___ 20h. The film is at 8pm.",
+   "options": [
+    "c'est à",
+    "c'est",
+    "il est à",
+    "il est"
+   ],
+   "correct": "c'est à"
+  },
+  {
+   "q": "4. Drawing on Skill 04 (negation) Désolé, je ___ libre ce soir. Sorry, I'm not free anymore tonight.",
+   "options": [
+    "ne suis plus",
+    "ne suis pas",
+    "ne pas suis",
+    "n'suis plus"
+   ],
+   "correct": "ne suis plus"
+  },
+  {
+   "q": "5. Drawing on Skills 05 + 06 (articles) Je n'ai pas ___ temps demain. I don't have time tomorrow.",
+   "options": [
+    "du",
+    "d'",
+    "de",
+    "le"
+   ],
+   "correct": "de"
+  },
+  {
+   "q": "6. Drawing on Skill 07 (preferences) Je n'aime pas ___ films d'horreur. I don't like horror films.",
+   "options": [
+    "de",
+    "le",
+    "les",
+    "des"
+   ],
+   "correct": "les"
+  },
+  {
+   "q": "7. Drawing on Skill 03 (vouloir + politeness) « Bonjour, je ___ une pizza, s'il vous plaît. » Hello, I'd like a pizza, please.",
+   "options": [
+    "voulez",
+    "veux",
+    "voudrais",
+    "voulons"
+   ],
+   "correct": "voudrais"
+  },
+  {
+   "q": "8. Drawing on Skill 11 (functional writing) « ___ demain à 19h, à+ ! » Meet up tomorrow at 7pm, see you later!",
+   "options": [
+    "Cher ami",
+    "Bonjour Monsieur",
+    "Cordialement",
+    "RDV"
+   ],
+   "correct": "RDV"
+  },
+  {
+   "q": "9. Drawing on Skills 01 + 06 Je ___ sport ces jours-ci. I'm not doing any sport these days.",
+   "options": [
+    "ne fais pas du",
+    "ne fais pas de",
+    "fais pas de",
+    "ne fais plus le"
+   ],
+   "correct": "ne fais pas de"
+  },
+  {
+   "q": "10. Drawing on Skills 02 + 03 + 10 « Tu ___ à la piscine samedi ? » Do you want to go to the pool Saturday?",
+   "options": [
+    "vas vouloir",
+    "veux aller",
+    "veux à la",
+    "veux à aller"
+   ],
+   "correct": "veux aller"
+  },
+  {
+   "q": "11. Drawing on Skills 04 + 08 + 11 Désolé, ___ à 20h. Vers 21h ? Sorry, 8pm doesn't work for me. How about 9pm?",
+   "options": [
+    "c'est pas possible",
+    "ce ne sont pas possible",
+    "il n'est pas possible",
+    "ce n'est pas possible pour moi"
+   ],
+   "correct": "ce n'est pas possible pour moi"
+  },
+  {
+   "q": "12. Full integration: making the plan « Samedi soir, ___ au cinéma à 20h. » Saturday evening, we are going to the cinema at 8pm.",
+   "options": [
+    "on vont",
+    "nous allons",
+    "nous allez",
+    "on allons"
+   ],
+   "correct": "nous allons"
+  }
+ ],
+ "2-13-possessives-quiz": [
+  {
+   "q": "1. My + masculine singular noun J'ai oublié ___ livre chez moi. I left my book at home.",
+   "options": [
+    "mon",
+    "mes",
+    "ton",
+    "ma"
+   ],
+   "correct": "mon"
+  },
+  {
+   "q": "2. My + feminine singular noun Je voudrais vous présenter ___ famille. I'd like to introduce my family.",
+   "options": [
+    "mon",
+    "sa",
+    "mes",
+    "ma"
+   ],
+   "correct": "ma"
+  },
+  {
+   "q": "4. Your (informal) + feminine noun Comment va ___ copine ? How is your girlfriend/friend?",
+   "options": [
+    "sa",
+    "ton",
+    "ta",
+    "ma"
+   ],
+   "correct": "ta"
+  },
+  {
+   "q": "5. His/her + masculine noun Pierre a posé ___ sac sur la chaise. Pierre put his bag on the chair.",
+   "options": [
+    "mon",
+    "sa",
+    "son",
+    "ses"
+   ],
+   "correct": "son"
+  },
+  {
+   "q": "6. His/her + feminine noun Marie adore ___ ville natale. Marie loves her hometown.",
+   "options": [
+    "ta",
+    "son",
+    "sa",
+    "ma"
+   ],
+   "correct": "sa"
+  },
+  {
+   "q": "7. My + plural noun J'ai perdu ___ clés ! I've lost my keys!",
+   "options": [
+    "mon",
+    "mes",
+    "ma",
+    "tes"
+   ],
+   "correct": "mes"
+  },
+  {
+   "q": "8. Your (informal) + plural noun Tu as pris ___ affaires ? Did you take your things?",
+   "options": [
+    "mes",
+    "les",
+    "ses",
+    "tes"
+   ],
+   "correct": "tes"
+  },
+  {
+   "q": "9. His/her + plural noun Luc prend ___ affaires et part. Luc takes his things and leaves.",
+   "options": [
+    "ses",
+    "tes",
+    "son",
+    "sa"
+   ],
+   "correct": "ses"
+  },
+  {
+   "q": "10. Before a vowel: feminine noun Je te présente ___ amie Camille. Let me introduce my friend Camille.",
+   "options": [
+    "ton",
+    "mon",
+    "une",
+    "ma"
+   ],
+   "correct": "mon"
+  },
+  {
+   "q": "11. Before a vowel: his/her feminine noun Il cherche ___ ancienne école. He's looking for his old school.",
+   "options": [
+    "ta",
+    "son",
+    "tes",
+    "sa"
+   ],
+   "correct": "son"
+  },
+  {
+   "q": "12. Son/sa/ses — ambiguous owner Je n'ai pas ___ adresse email. I don't have his/her email address.",
+   "options": [
+    "son",
+    "sa",
+    "ta",
+    "ma"
+   ],
+   "correct": "son"
+  },
+  {
+   "q": "12. Our + singular noun Bienvenue dans ___ appartement ! Welcome to our apartment!",
+   "options": [
+    "nos",
+    "notre",
+    "votre",
+    "son"
+   ],
+   "correct": "notre"
+  },
+  {
+   "q": "13. Our + plural noun On adore ___ voisins ! We love our neighbours!",
+   "options": [
+    "nos",
+    "notre",
+    "leurs",
+    "vos"
+   ],
+   "correct": "nos"
+  },
+  {
+   "q": "14. Your (formal/plural) + singular noun Madame, montrez ___ passeport, s'il vous plaît. Madam, show your passport, please.",
+   "options": [
+    "ton",
+    "votre",
+    "vos",
+    "notre"
+   ],
+   "correct": "votre"
+  },
+  {
+   "q": "15. Your (formal/plural) + plural noun Vous avez ___ billets pour le concert ? Do you have your tickets for the concert?",
+   "options": [
+    "votre",
+    "vos",
+    "nos",
+    "leurs"
+   ],
+   "correct": "vos"
+  },
+  {
+   "q": "16. Their + singular noun Les étudiants écoutent ___ professeur. The students listen to their teacher.",
+   "options": [
+    "son",
+    "leurs",
+    "leur",
+    "notre"
+   ],
+   "correct": "leur"
+  },
+  {
+   "q": "17. Their + plural noun Ils rangent ___ livres dans le sac. They put their books in the bag.",
+   "options": [
+    "leur",
+    "leurs",
+    "ses",
+    "nos"
+   ],
+   "correct": "leurs"
+  },
+  {
+   "q": "18. Ownership: est à + stressed pronoun Ce stylo, c'est ___ ! This pen, it's mine!",
+   "options": [
+    "à moi",
+    "le mien",
+    "de moi",
+    "pour moi"
+   ],
+   "correct": "à moi"
+  },
+  {
+   "q": "19. Ownership: est à + her Cette écharpe, c'est ___ . This scarf, it's hers.",
+   "options": [
+    "à lui",
+    "à elle",
+    "à eux",
+    "sa"
+   ],
+   "correct": "à elle"
+  },
+  {
+   "q": "20. Ownership: sont à + them (masc.) Ces vélos, ils sont ___ . These bikes, they're theirs.",
+   "options": [
+    "à nous",
+    "à elles",
+    "à eux",
+    "à lui"
+   ],
+   "correct": "à eux"
+  },
+  {
+   "q": "22. Ownership: est à + you (informal) Ce sac sous la chaise, c'est ___ ? This bag under the chair, is it yours?",
+   "options": [
+    "à moi",
+    "à toi",
+    "à lui",
+    "à nous"
+   ],
+   "correct": "à toi"
+  },
+  {
+   "q": "23. Ownership: est à + him Ce manteau, c'est ___ . This coat, it's his.",
+   "options": [
+    "à elle",
+    "à lui",
+    "à eux",
+    "à toi"
+   ],
+   "correct": "à lui"
+  },
+  {
+   "q": "24. Ownership: sont à + them (fem.) Ces places, elles sont ___ . These seats, they're theirs. [fem.]",
+   "options": [
+    "à eux",
+    "à elles",
+    "à nous",
+    "à lui"
+   ],
+   "correct": "à elles"
+  },
+  {
+   "q": "25. Ownership: est à + us Cet appartement, il est ___ . This apartment, it's ours.",
+   "options": [
+    "à vous",
+    "à eux",
+    "à nous",
+    "à moi"
+   ],
+   "correct": "à nous"
+  },
+  {
+   "q": "26. Ownership: est à + you (formal) Ces documents, ils sont ___ , Monsieur ? These documents, are they yours, Sir?",
+   "options": [
+    "à nous",
+    "à toi",
+    "à vous",
+    "à eux"
+   ],
+   "correct": "à vous"
+  }
+ ],
+ "3-01-weather-quiz": [
+  {
+   "q": "1. A sunny morning in Paris Il ___ beau aujourd'hui. The weather is nice today.",
+   "options": [
+    "a",
+    "y a",
+    "fait",
+    "est"
+   ],
+   "correct": "fait"
+  },
+  {
+   "q": "2. Checking the forecast before packing En juillet à Paris, il fait très ___ . In July in Paris, it is very hot.",
+   "options": [
+    "chaud",
+    "beau",
+    "froid",
+    "mauvais"
+   ],
+   "correct": "chaud"
+  },
+  {
+   "q": "3. Winter morning Il fait ___ ce matin — mets un manteau ! It's cold this morning — put on a coat!",
+   "options": [
+    "doux",
+    "frais",
+    "chaud",
+    "froid"
+   ],
+   "correct": "froid"
+  },
+  {
+   "q": "4. Looking out the window — it's grim Il fait ___ — je reste à la maison. The weather is bad — I'm staying home.",
+   "options": [
+    "mauvaise",
+    "mal",
+    "pas beau",
+    "mauvais"
+   ],
+   "correct": "mauvais"
+  },
+  {
+   "q": "5. Autumn afternoon — pleasantly cool Il fait ___ mais c'est agréable. It's cool but pleasant.",
+   "options": [
+    "froide",
+    "frais et froid",
+    "frais",
+    "froid"
+   ],
+   "correct": "frais"
+  },
+  {
+   "q": "6. Deciding whether to bring an umbrella Il y a ___ vent dehors. It's windy outside.",
+   "options": [
+    "de la",
+    "de l'",
+    "du",
+    "le"
+   ],
+   "correct": "du"
+  },
+  {
+   "q": "7. A perfect summer day Il y a ___ et il fait chaud. It's sunny and hot.",
+   "options": [
+    "le soleil",
+    "de la soleil",
+    "un soleil",
+    "du soleil"
+   ],
+   "correct": "du soleil"
+  },
+  {
+   "q": "8. Thunderstorm warning Il y a ___ orage prévu ce soir. There's a storm forecast tonight.",
+   "options": [
+    "de l'",
+    "de la",
+    "des",
+    "du"
+   ],
+   "correct": "de l'"
+  },
+  {
+   "q": "9. Overcast sky Il y a beaucoup ___ nuages aujourd'hui. There are a lot of clouds today.",
+   "options": [
+    "des",
+    "de la",
+    "de",
+    "du"
+   ],
+   "correct": "de"
+  },
+  {
+   "q": "10. Caught without an umbrella Il ___ depuis ce matin. It has been raining since this morning.",
+   "options": [
+    "fait pleuvoir",
+    "pluie",
+    "y a de la pluie",
+    "pleut"
+   ],
+   "correct": "pleut"
+  },
+  {
+   "q": "11. Looking out the window in January Il ___ beaucoup cette semaine. It's snowing a lot this week.",
+   "options": [
+    "y a de la neige",
+    "neigeait",
+    "fait de la neige",
+    "neige"
+   ],
+   "correct": "neige"
+  },
+  {
+   "q": "12. Asking about the weather — ___ à Lyon en ce moment ? What's the weather like in Lyon right now?",
+   "options": [
+    "Comment il fait",
+    "Quel temps fait-il",
+    "Il fait quel temps",
+    "Qu'est-ce que le temps"
+   ],
+   "correct": "Quel temps fait-il"
+  }
+ ],
+ "3-02-city-preps-quiz": [
+  {
+   "q": "1. Telling someone where you live J'habite ___ Paris. I live in Paris.",
+   "options": [
+    "à",
+    "dans",
+    "en",
+    "au"
+   ],
+   "correct": "à"
+  },
+  {
+   "q": "2. A student studying abroad Elle étudie ___ France cette année. She is studying in France this year.",
+   "options": [
+    "au",
+    "en",
+    "à",
+    "dans la"
+   ],
+   "correct": "en"
+  },
+  {
+   "q": "3. A colleague on a business trip Il est en voyage ___ Japon. He is on a business trip in Japan.",
+   "options": [
+    "au",
+    "en",
+    "à",
+    "dans le"
+   ],
+   "correct": "au"
+  },
+  {
+   "q": "4. Planning a road trip On va ___ États-Unis cet été. We're going to the United States this summer.",
+   "options": [
+    "au",
+    "à les",
+    "aux",
+    "en"
+   ],
+   "correct": "aux"
+  },
+  {
+   "q": "5. Telling where you are from Je viens ___ Singapour. I come from Singapore.",
+   "options": [
+    "de",
+    "depuis",
+    "d'",
+    "du"
+   ],
+   "correct": "de"
+  },
+  {
+   "q": "6. Meeting someone at a conference Tu viens ___ Oslo ? You're from Oslo?",
+   "options": [
+    "d'",
+    "des",
+    "du",
+    "de"
+   ],
+   "correct": "d'"
+  },
+  {
+   "q": "7. Describing an imported product Ce vin vient ___ France. This wine comes from France.",
+   "options": [
+    "du",
+    "d'en",
+    "de la",
+    "de"
+   ],
+   "correct": "de"
+  },
+  {
+   "q": "8. A product label Ce saké vient ___ Japon. This sake comes from Japan.",
+   "options": [
+    "d'",
+    "du",
+    "au",
+    "de"
+   ],
+   "correct": "du"
+  },
+  {
+   "q": "9. A student's exchange program Il fait son stage ___ Afrique. He is doing his internship in Africa.",
+   "options": [
+    "au",
+    "en",
+    "dans l'",
+    "à l'"
+   ],
+   "correct": "en"
+  },
+  {
+   "q": "10. Booking a hotel On a réservé un hôtel ___ Mexique. We booked a hotel in Mexico.",
+   "options": [
+    "en",
+    "au",
+    "dans le",
+    "à"
+   ],
+   "correct": "au"
+  },
+  {
+   "q": "11. The flight destination board Le vol pour Londres part ___ 14h. The flight to London departs at 2 pm.",
+   "options": [
+    "au",
+    "à",
+    "en",
+    "de"
+   ],
+   "correct": "à"
+  },
+  {
+   "q": "12. Asking where someone is from Elle vient ___ États-Unis. She comes from the United States.",
+   "options": [
+    "de les",
+    "aux",
+    "de",
+    "des"
+   ],
+   "correct": "des"
+  }
+ ],
+ "3-03-ordinals-quiz": [
+  {
+   "q": "1. Hotel check-in Votre chambre est au ___ étage. Your room is on the first floor.",
+   "options": [
+    "première",
+    "premièrement",
+    "premier",
+    "un"
+   ],
+   "correct": "premier"
+  },
+  {
+   "q": "2. Asking for directions inside a building C'est la ___ porte à droite. It's the first door on the right.",
+   "options": [
+    "premier",
+    "premier·e",
+    "première",
+    "une"
+   ],
+   "correct": "première"
+  },
+  {
+   "q": "3. Paris arrondissement Le Marais est dans le ___ arrondissement. Le Marais is in the third arrondissement.",
+   "options": [
+    "trois",
+    "deuxième",
+    "troisième",
+    "seconde"
+   ],
+   "correct": "troisième"
+  },
+  {
+   "q": "4. Giving turn-by-turn directions Prenez la ___ rue à gauche. Take the third street on the left.",
+   "options": [
+    "troisième",
+    "troisièmes",
+    "troième",
+    "trois"
+   ],
+   "correct": "troisième"
+  },
+  {
+   "q": "5. Naming a floor Le bureau est au ___ étage. The office is on the fourth floor.",
+   "options": [
+    "quatre",
+    "quatrième",
+    "quatrièmes",
+    "quartième"
+   ],
+   "correct": "quatrième"
+  },
+  {
+   "q": "6. Ranking a competition result Elle est arrivée ___ au marathon. She finished fifth in the marathon.",
+   "options": [
+    "cinqième",
+    "cinqème",
+    "cinquième",
+    "cinquime"
+   ],
+   "correct": "cinquième"
+  },
+  {
+   "q": "7. School grade / year Mon fils est en ___ (Year 7 equivalent). My son is in Year 7 (sixth grade).",
+   "options": [
+    "sixième",
+    "sixtième",
+    "six",
+    "sixime"
+   ],
+   "correct": "sixième"
+  },
+  {
+   "q": "8. A centenary celebration C'est le ___ anniversaire de la Tour Eiffel. It's the hundredth anniversary of the Eiffel Tower.",
+   "options": [
+    "centièmes",
+    "centéme",
+    "cent",
+    "centième"
+   ],
+   "correct": "centième"
+  },
+  {
+   "q": "9. Ordering a round of drinks C'est notre ___ soirée ensemble cette année. It's our ninth evening together this year.",
+   "options": [
+    "neuvième",
+    "neuvièmes",
+    "neufième",
+    "neuf"
+   ],
+   "correct": "neuvième"
+  },
+  {
+   "q": "10. A race commentary Il passe en ___ position après le premier virage. He moves into tenth position after the first bend.",
+   "options": [
+    "dixième",
+    "disième",
+    "dixième ou neuvième",
+    "dix"
+   ],
+   "correct": "dixième"
+  },
+  {
+   "q": "11. A book chapter Nous sommes au ___ chapitre. We are at the twentieth chapter.",
+   "options": [
+    "vingième",
+    "vingtième",
+    "vingt",
+    "vingtièmes"
+   ],
+   "correct": "vingtième"
+  },
+  {
+   "q": "12. The Eiffel Tower's floor Le restaurant se trouve au ___ étage de la Tour Eiffel. The restaurant is on the second floor of the Eiffel Tower.",
+   "options": [
+    "deuxième",
+    "deux",
+    "première",
+    "deuxièmes"
+   ],
+   "correct": "deuxième"
+  }
+ ],
+ "3-04-venir-prendre-quiz": [
+  {
+   "q": "1. Asking where someone is from Je ___ de Singapour. I come from Singapore.",
+   "options": [
+    "vient",
+    "viens",
+    "venons",
+    "vient de"
+   ],
+   "correct": "viens"
+  },
+  {
+   "q": "2. Confirming a friend's arrival Marie ___ nous rejoindre ce soir. Marie is coming to join us tonight.",
+   "options": [
+    "viens",
+    "venue",
+    "viennent",
+    "vient"
+   ],
+   "correct": "vient"
+  },
+  {
+   "q": "3. Planning a group outing Nous ___ en métro. We're coming by metro.",
+   "options": [
+    "venons",
+    "venez",
+    "viennent",
+    "viens"
+   ],
+   "correct": "venons"
+  },
+  {
+   "q": "4. The whole group is on its way Mes parents ___ nous rendre visite demain. My parents are coming to visit us tomorrow.",
+   "options": [
+    "vient",
+    "venons",
+    "vienent",
+    "viennent"
+   ],
+   "correct": "viennent"
+  },
+  {
+   "q": "5. Just finished lunch On ___ manger. We just ate.",
+   "options": [
+    "venons de",
+    "vient de",
+    "vient",
+    "viens de"
+   ],
+   "correct": "vient de"
+  },
+  {
+   "q": "6. Taking the metro Je ___ la ligne 4 jusqu'à Montparnasse. I take line 4 to Montparnasse.",
+   "options": [
+    "prends",
+    "prenons",
+    "prend",
+    "pris"
+   ],
+   "correct": "prends"
+  },
+  {
+   "q": "7. Asking a friend how they travel Tu ___ le bus ou le vélo ? Do you take the bus or the bike?",
+   "options": [
+    "prends",
+    "prend",
+    "prends-tu",
+    "prendre"
+   ],
+   "correct": "prends"
+  },
+  {
+   "q": "8. Ordering at a café — conjugate prendre (present) Moi, je ___ un café et un croissant. I'm having a coffee and a croissant.",
+   "options": [
+    "prendrai",
+    "prends",
+    "prenons",
+    "prend"
+   ],
+   "correct": "prends"
+  },
+  {
+   "q": "9. Giving travel advice Pour aller à l'Opéra, vous ___ la ligne 3. To get to the Opéra, you take line 3.",
+   "options": [
+    "prennent",
+    "prenons",
+    "prenez",
+    "prendez"
+   ],
+   "correct": "prenez"
+  },
+  {
+   "q": "10. Watching the tourists Les touristes ___ beaucoup de photos. The tourists take a lot of photos.",
+   "options": [
+    "prend",
+    "prennent",
+    "prenons",
+    "prenent"
+   ],
+   "correct": "prennent"
+  },
+  {
+   "q": "11. Deciding which route to take On ___ le RER B pour aller à l'aéroport. We take the RER B to get to the airport.",
+   "options": [
+    "prend",
+    "va",
+    "prends",
+    "allons"
+   ],
+   "correct": "prend"
+  },
+  {
+   "q": "12. Phoning ahead to say you're on the way Vous ___ quand exactement ? When exactly are you coming?",
+   "options": [
+    "venez",
+    "viendrez",
+    "venons",
+    "viennent"
+   ],
+   "correct": "venez"
+  },
+  {
+   "q": "13. Prendre — nous Nous ___ le métro tous les jours. We take the metro every day.",
+   "options": [
+    "prends",
+    "prenons",
+    "prennent",
+    "prenez"
+   ],
+   "correct": "prenons"
+  }
+ ],
+ "3-05-questions-quiz": [
+  {
+   "q": "1. Asking a friend's destination — casual spoken Complete the casual question: ___ Where are you going?",
+   "options": [
+    "Où allez-vous ?",
+    "Où est-ce tu vas ?",
+    "Où tu vas-tu ?",
+    "Tu vas où ?"
+   ],
+   "correct": "Tu vas où ?"
+  },
+  {
+   "q": "2. The same question — neutral written style Complete the est-ce que question: ___ Where are you going?",
+   "options": [
+    "Est-ce que où tu vas ?",
+    "Où est-ce que tu vas ?",
+    "Où est-ce tu vas ?",
+    "Où tu est-ce que vas ?"
+   ],
+   "correct": "Où est-ce que tu vas ?"
+  },
+  {
+   "q": "3. Same question — formal / written register Complete the formal question: ___ Where are you going?",
+   "options": [
+    "Où est-ce que vas-tu ?",
+    "Où tu-vas ?",
+    "Où vas-tu ?",
+    "Où tu vas ?"
+   ],
+   "correct": "Où vas-tu ?"
+  },
+  {
+   "q": "4. Asking about the name of a place Complete the question: ___ What is the name of this museum?",
+   "options": [
+    "Quels est le nom de ce musée ?",
+    "Quelle est le nom de ce musée ?",
+    "Quel sont le nom de ce musée ?",
+    "Quel est le nom de ce musée ?"
+   ],
+   "correct": "Quel est le nom de ce musée ?"
+  },
+  {
+   "q": "5. Asking about opening hours Complete the question: ___ What is the opening time?",
+   "options": [
+    "Quel est l'heure d'ouverture ?",
+    "Quelle est l'heure d'ouverture ?",
+    "Quelle sont les heures d'ouverture ?",
+    "Quelles est l'heure d'ouverture ?"
+   ],
+   "correct": "Quelle est l'heure d'ouverture ?"
+  },
+  {
+   "q": "6. Asking how someone travels Complete the question: ___ How are you coming?",
+   "options": [
+    "Comment que vous venez ?",
+    "Vous venez comment est-ce que ?",
+    "Comment vous venez-vous ?",
+    "Comment est-ce que vous venez ?"
+   ],
+   "correct": "Comment est-ce que vous venez ?"
+  },
+  {
+   "q": "7. Asking the price Complete the question: ___ How much is it?",
+   "options": [
+    "Combien c'est-il ?",
+    "Combien ça coûte-t-il ?",
+    "Combien coûte-il ?",
+    "C'est combien ?"
+   ],
+   "correct": "C'est combien ?"
+  },
+  {
+   "q": "8. Asking why someone is late Complete the question: ___ Why are you late?",
+   "options": [
+    "Pourquoi tu es en retard est-ce que ?",
+    "Pourquoi es-tu en retard est-ce que ?",
+    "Parce que tu es en retard ?",
+    "Pourquoi est-ce que tu es en retard ?"
+   ],
+   "correct": "Pourquoi est-ce que tu es en retard ?"
+  },
+  {
+   "q": "9. Asking when the train leaves Complete the formal question: ___ When does the train leave?",
+   "options": [
+    "Quand part le train ?",
+    "Quand le train part ?",
+    "Quand part-le train ?",
+    "Quand est-ce que part le train ?"
+   ],
+   "correct": "Quand part le train ?"
+  },
+  {
+   "q": "10. Asking who is speaking Complete the question: ___ Who is it?",
+   "options": [
+    "Qui est ?",
+    "Qui est-ce ?",
+    "Qui est-ce que c'est ?",
+    "Qui c'est ?"
+   ],
+   "correct": "Qui est-ce ?"
+  },
+  {
+   "q": "11. Asking where the Louvre is Complete the question: ___ Where is the Louvre?",
+   "options": [
+    "Où est-ce le Louvre se trouve ?",
+    "Où se trouve le Louvre ?",
+    "Le Louvre est où se trouve ?",
+    "Où le Louvre se trouve-t-il ?"
+   ],
+   "correct": "Où se trouve le Louvre ?"
+  },
+  {
+   "q": "12. Verb-vowel clash — the euphonic -t- Complete the formal question: ___ Is he arriving tonight?",
+   "options": [
+    "Il arrive-t ce soir ?",
+    "Arrive-il ce soir ?",
+    "Arrive-il-t ce soir ?",
+    "Arrive-t-il ce soir ?"
+   ],
+   "correct": "Arrive-t-il ce soir ?"
+  }
+ ],
+ "3-06-adj-agree-quiz": [
+  {
+   "q": "1. Describing a museum C'est un musée ___ . It's an interesting museum.",
+   "options": [
+    "intéressant",
+    "intéressante",
+    "intéressantes",
+    "intéressants"
+   ],
+   "correct": "intéressant"
+  },
+  {
+   "q": "2. Describing a cathedral C'est une cathédrale ___ . It's an old cathedral.",
+   "options": [
+    "anciens",
+    "ancienne",
+    "anciennes",
+    "ancien"
+   ],
+   "correct": "ancienne"
+  },
+  {
+   "q": "3. Describing the avenues Les avenues haussmanniennes sont très ___ . The Haussmann-era avenues are very wide.",
+   "options": [
+    "largement",
+    "largs",
+    "larges",
+    "large"
+   ],
+   "correct": "larges"
+  },
+  {
+   "q": "4. Praising the food La baguette est vraiment ___ . The baguette is really good.",
+   "options": [
+    "bonnes",
+    "bonne",
+    "bons",
+    "bon"
+   ],
+   "correct": "bonne"
+  },
+  {
+   "q": "5. Admiring a façade C'est une ___ façade. It's a beautiful façade.",
+   "options": [
+    "beaux",
+    "belle",
+    "bel",
+    "beau"
+   ],
+   "correct": "belle"
+  },
+  {
+   "q": "6. Describing a new neighbourhood C'est une ___ ligne de métro. It's a new metro line.",
+   "options": [
+    "nouveau",
+    "nouvel",
+    "nouvelle",
+    "nouvelles"
+   ],
+   "correct": "nouvelle"
+  },
+  {
+   "q": "7. Describing the old quarter Ils habitent dans une ___ maison. They live in an old house.",
+   "options": [
+    "vieil",
+    "vieille",
+    "vieux",
+    "vieilles"
+   ],
+   "correct": "vieille"
+  },
+  {
+   "q": "8. Describing jacket colours Elle porte une veste ___ . She's wearing a brown jacket.",
+   "options": [
+    "marronne",
+    "marrons",
+    "marron",
+    "marrone"
+   ],
+   "correct": "marron"
+  },
+  {
+   "q": "9. Recommending a restaurant C'est un ___ restaurant. It's a good restaurant.",
+   "options": [
+    "bon",
+    "bon restaurant français",
+    "restaurant bon",
+    "bonne"
+   ],
+   "correct": "bon"
+  },
+  {
+   "q": "10. A building description C'est une ___ avenue. It's a wide avenue.",
+   "options": [
+    "grands",
+    "grandes",
+    "grand",
+    "grande"
+   ],
+   "correct": "grande"
+  },
+  {
+   "q": "11. Describing nationality (position after noun) C'est une ville ___ . It's a French city.",
+   "options": [
+    "français",
+    "françaises",
+    "française",
+    "francaise"
+   ],
+   "correct": "française"
+  },
+  {
+   "q": "12. Two things worth seeing Le Louvre et Orsay sont deux musées ___ . The Louvre and Orsay are two famous museums.",
+   "options": [
+    "célèbres",
+    "célébrés",
+    "célèbre",
+    "celebres"
+   ],
+   "correct": "célèbres"
+  },
+  {
+   "q": "13. Irregular masc. plural: beau Paris a de ___ jardins. Paris has beautiful gardens.",
+   "options": [
+    "belles",
+    "beaux",
+    "bels",
+    "belle"
+   ],
+   "correct": "beaux"
+  },
+  {
+   "q": "14. Irregular masc. plural: nouveau Il y a des ___ restaurants dans le quartier. There are new restaurants in the neighbourhood.",
+   "options": [
+    "nouveaux",
+    "nouvelles",
+    "nouvels",
+    "nouveau"
+   ],
+   "correct": "nouveaux"
+  },
+  {
+   "q": "15. Irregular masc. plural: vieux Le quartier a de ___ bâtiments. The neighbourhood has old buildings.",
+   "options": [
+    "vieilles",
+    "viels",
+    "vieux",
+    "vieille"
+   ],
+   "correct": "vieux"
+  }
+ ],
+ "3-07-attractions-quiz": [
+  {
+   "q": "1. Planning a first day in Paris On va voir ___ ce soir. We're going to see the Eiffel Tower tonight.",
+   "options": [
+    "le Tour Eiffel",
+    "une Tour Eiffel",
+    "la Tour Eiffel",
+    "l'Tour Eiffel"
+   ],
+   "correct": "la Tour Eiffel"
+  },
+  {
+   "q": "2. Suggesting a museum visit Tu veux ___ le Louvre demain ? Do you want to visit the Louvre tomorrow?",
+   "options": [
+    "aller visiter à",
+    "visiter à",
+    "visiter",
+    "voir à"
+   ],
+   "correct": "visiter"
+  },
+  {
+   "q": "3. Asking how to get there Comment est-ce qu'on va ___ ? How do we get to the Louvre?",
+   "options": [
+    "le Louvre",
+    "au Louvre",
+    "au Louvre musée",
+    "à le Louvre"
+   ],
+   "correct": "au Louvre"
+  },
+  {
+   "q": "4. Talking about a famous artwork Les impressionnistes sont exposés au ___ . The Impressionists are exhibited at the musée Orsay.",
+   "options": [
+    "musée d'Orsay",
+    "musée du Orsay",
+    "musée de Orsay",
+    "musée Orsay"
+   ],
+   "correct": "musée d'Orsay"
+  },
+  {
+   "q": "5. Describing a cathedral on the Île de la Cité On peut voir ___ depuis le Pont Neuf. You can see Notre-Dame from the Pont Neuf.",
+   "options": [
+    "Notre-Dame",
+    "le Notre-Dame",
+    "Notre Dame",
+    "la Notre-Dame"
+   ],
+   "correct": "Notre-Dame"
+  },
+  {
+   "q": "6. Taking the metro to Montmartre Le Sacré-Cœur se trouve ___ . The Sacré-Cœur is in Montmartre.",
+   "options": [
+    "dans Montmartre",
+    "en Montmartre",
+    "au Montmartre",
+    "à Montmartre"
+   ],
+   "correct": "à Montmartre"
+  },
+  {
+   "q": "7. Walking down the famous avenue Nous nous promenons sur ___ . We're strolling along the Champs-Élysées.",
+   "options": [
+    "les Champs-Élysée",
+    "les Champs Elysées",
+    "les Champs-Élysées",
+    "le Champ-Élysées"
+   ],
+   "correct": "les Champs-Élysées"
+  },
+  {
+   "q": "8. Spotting the landmark from afar On voit ___ au bout des Champs-Élysées. You can see the Arc de Triomphe at the end of the Champs-Élysées.",
+   "options": [
+    "le Arc de Triomphe",
+    "l'Arc du Triomphe",
+    "l'Arc de Triomphe",
+    "Arc de Triomphe"
+   ],
+   "correct": "l'Arc de Triomphe"
+  },
+  {
+   "q": "9. Finding contemporary art L'art moderne est exposé au ___ . Modern art is exhibited at the Centre Pompidou.",
+   "options": [
+    "centre de Pompidou",
+    "Centre Pompidou",
+    "Pompidou",
+    "Pompidou Centre"
+   ],
+   "correct": "Centre Pompidou"
+  },
+  {
+   "q": "10. Visiting the medieval chapel Les vitraux de ___ sont magnifiques. The stained-glass windows of the Sainte-Chapelle are magnificent.",
+   "options": [
+    "la Sainte Chapelle",
+    "la Saint-Chapelle",
+    "la Sainte-Chapelle",
+    "le Sainte-Chapelle"
+   ],
+   "correct": "la Sainte-Chapelle"
+  },
+  {
+   "q": "11. A view from the Seine Le musée d'Orsay ___ sur la rive gauche. The Musée d'Orsay is located on the left bank.",
+   "options": [
+    "trouve",
+    "se trouve",
+    "est trouvé",
+    "se trouvent"
+   ],
+   "correct": "se trouve"
+  },
+  {
+   "q": "12. A resident giving advice Je vais ___ ma famille ce week-end. I'm going to visit my family this weekend.",
+   "options": [
+    "voir à",
+    "visiter à",
+    "visiter",
+    "rendre visite à"
+   ],
+   "correct": "rendre visite à"
+  }
+ ],
+ "3-08-directions-quiz": [
+  {
+   "q": "1. Asking a stranger for help ___ , pour aller à la gare, s'il vous plaît ? Excuse me, how do I get to the station, please?",
+   "options": [
+    "Excusez-vous",
+    "Permettez-moi",
+    "Pardonnez-toi",
+    "Excusez-moi"
+   ],
+   "correct": "Excusez-moi"
+  },
+  {
+   "q": "2. Directing someone at a junction Au feu rouge, ___ . At the red light, turn left.",
+   "options": [
+    "virez à gauche",
+    "tournez gauche",
+    "tournez à droite",
+    "tournez à gauche"
+   ],
+   "correct": "tournez à gauche"
+  },
+  {
+   "q": "3. Keeping straight at the roundabout Au rond-point, ___ jusqu'à la pharmacie. At the roundabout, continue straight on until the pharmacy.",
+   "options": [
+    "continuez droitement",
+    "continuez direct",
+    "allez droit",
+    "continuez tout droit"
+   ],
+   "correct": "continuez tout droit"
+  },
+  {
+   "q": "4. Getting across to the other side ___ et vous verrez la cathédrale à gauche. Cross the bridge and you'll see the cathedral on your left.",
+   "options": [
+    "Traversez le pont",
+    "Croisez le pont",
+    "Passez sur le pont",
+    "Allez à travers le pont"
+   ],
+   "correct": "Traversez le pont"
+  },
+  {
+   "q": "5. Specifying which street to take ___ Victor Hugo jusqu'au bout. Take rue Victor Hugo all the way to the end.",
+   "options": [
+    "Suivez rue",
+    "Prenez la rue",
+    "Allez la rue",
+    "Prenez dans la rue"
+   ],
+   "correct": "Prenez la rue"
+  },
+  {
+   "q": "6. Counting turns from the corner Prenez ___ après le café. Take the first street on the right after the café.",
+   "options": [
+    "la premième rue à droite",
+    "la première rue à droite",
+    "la première à droite rue",
+    "le premier rue à droite"
+   ],
+   "correct": "la première rue à droite"
+  },
+  {
+   "q": "7. How far is the hotel? L'hôtel est ___ d'ici. The hotel is ten minutes on foot from here.",
+   "options": [
+    "à dix minutes à pied",
+    "dix minutes à pied",
+    "à dix minutes de pied",
+    "en dix minutes à pied"
+   ],
+   "correct": "à dix minutes à pied"
+  },
+  {
+   "q": "8. Encouraging a lost tourist Ne vous inquiétez pas — ___ du tout ! Don't worry — you're not far at all!",
+   "options": [
+    "vous êtes pas proche",
+    "vous n'êtes pas loin",
+    "vous n'êtes pas près",
+    "vous n'êtes loin pas"
+   ],
+   "correct": "vous n'êtes pas loin"
+  },
+  {
+   "q": "9. Finding the exact spot La boulangerie est ___ la rue de Rivoli et de la rue du Louvre. The bakery is at the corner of rue de Rivoli and rue du Louvre.",
+   "options": [
+    "à l'angle du",
+    "au coin de",
+    "au coin du",
+    "dans le coin de"
+   ],
+   "correct": "au coin de"
+  },
+  {
+   "q": "10. Walking to a landmark ___ la place de la République, puis tournez à gauche. Go as far as Place de la République, then turn left.",
+   "options": [
+    "Allez jusque",
+    "Allez jusqu'au",
+    "Marchez jusqu'à",
+    "Allez jusqu'à"
+   ],
+   "correct": "Allez jusqu'à"
+  },
+  {
+   "q": "11. Describing a landmark's position La mairie se trouve ___ la gare. The town hall is opposite the station.",
+   "options": [
+    "en face du",
+    "en face de",
+    "devant de",
+    "face à"
+   ],
+   "correct": "en face de"
+  },
+  {
+   "q": "12. Telling someone they've arrived Continuez encore un peu et ___ ! Keep going a little further and you're there!",
+   "options": [
+    "vous y êtes",
+    "vous êtes arrivé",
+    "vous êtes là",
+    "c'est là-bas"
+   ],
+   "correct": "vous y êtes"
+  }
+ ],
+ "3-09-place-preps-quiz": [
+  {
+   "q": "1. Looking for something misplaced Mon passeport est ___ le sac. My passport is in the bag.",
+   "options": [
+    "dans",
+    "sur",
+    "en",
+    "à"
+   ],
+   "correct": "dans"
+  },
+  {
+   "q": "2. Setting the table Les assiettes sont ___ la table. The plates are on the table.",
+   "options": [
+    "dans",
+    "au-dessus de",
+    "à",
+    "sur"
+   ],
+   "correct": "sur"
+  },
+  {
+   "q": "3. A cat's favourite hiding spot Le chat dort ___ le lit. The cat is sleeping under the bed.",
+   "options": [
+    "sous",
+    "dans",
+    "en dessous",
+    "au-dessous de"
+   ],
+   "correct": "sous"
+  },
+  {
+   "q": "4. Seating arrangement at a restaurant Marie est assise ___ Paul et Lucie. Marie is sitting between Paul and Lucie.",
+   "options": [
+    "au milieu de",
+    "entre",
+    "parmi",
+    "avec"
+   ],
+   "correct": "entre"
+  },
+  {
+   "q": "5. Waiting outside the cinema On se retrouve ___ le cinéma à 19h. We're meeting in front of the cinema at 7 pm.",
+   "options": [
+    "en avant de",
+    "avant",
+    "face à",
+    "devant"
+   ],
+   "correct": "devant"
+  },
+  {
+   "q": "6. Describing the garden layout Il y a un jardin ___ la maison. There is a garden behind the house.",
+   "options": [
+    "derrière",
+    "après",
+    "au dos de",
+    "en arrière de"
+   ],
+   "correct": "derrière"
+  },
+  {
+   "q": "7. Finding the pharmacy La pharmacie est ___ la boulangerie. The pharmacy is next to the bakery.",
+   "options": [
+    "à côté du",
+    "à côté de",
+    "à côté de la",
+    "au côté de la"
+   ],
+   "correct": "à côté de la"
+  },
+  {
+   "q": "8. Locating the hotel across the square L'hôtel est ___ parc. The hotel is opposite the park.",
+   "options": [
+    "en face de le",
+    "en face de la",
+    "en face du",
+    "en face de"
+   ],
+   "correct": "en face du"
+  },
+  {
+   "q": "9. Choosing a café with a view Je préfère un café ___ la Tour Eiffel. I prefer a café near the Eiffel Tower.",
+   "options": [
+    "près du",
+    "autour de",
+    "près de",
+    "proche de"
+   ],
+   "correct": "près de"
+  },
+  {
+   "q": "10. The airport is not in the city centre L'aéroport est assez ___ centre-ville. The airport is quite far from the city centre.",
+   "options": [
+    "loin du",
+    "loin de",
+    "loin de le",
+    "loin des"
+   ],
+   "correct": "loin du"
+  },
+  {
+   "q": "11. The flat is on an upper floor L'appartement est ___ le restaurant. The flat is above the restaurant.",
+   "options": [
+    "sur",
+    "au-dessus du",
+    "en haut de",
+    "au-dessus de"
+   ],
+   "correct": "au-dessus du"
+  },
+  {
+   "q": "12. The temperature drops below freezing La température est tombée ___ zéro. The temperature dropped below zero.",
+   "options": [
+    "au-dessous du",
+    "en dessous",
+    "au-dessous de",
+    "sous"
+   ],
+   "correct": "au-dessous de"
+  }
+ ],
+ "3-10-pronoun-y-quiz": [
+  {
+   "q": "1. Already been to that museum — Tu vas au Louvre ? — Non, ___ suis déjà allé. — Are you going to the Louvre? — No, I've already been there.",
+   "options": [
+    "j'y",
+    "j'en",
+    "j'là",
+    "je y"
+   ],
+   "correct": "j'y"
+  },
+  {
+   "q": "2. Planning the weekend On va à la plage ? — Oui, on ___ va demain. Are we going to the beach? — Yes, we're going there tomorrow.",
+   "options": [
+    "là",
+    "le y",
+    "y là",
+    "y"
+   ],
+   "correct": "y"
+  },
+  {
+   "q": "3. Hesitating about Paris Je ___ vais pas encore cette année. I'm not going there yet this year.",
+   "options": [
+    "y ne",
+    "n'y",
+    "ne y",
+    "pas y"
+   ],
+   "correct": "n'y"
+  },
+  {
+   "q": "4. Asking if someone knows the place Tu vas souvent à ce restaurant ? Tu ___ vas parfois ? Have you already been there, to that restaurant?",
+   "options": [
+    "lui",
+    "là-bas",
+    "le",
+    "y"
+   ],
+   "correct": "y"
+  },
+  {
+   "q": "5. Modal verb + infinitive On va ___ aller la semaine prochaine. We are going to go there next week.",
+   "options": [
+    "y",
+    "là",
+    "le",
+    "y le"
+   ],
+   "correct": "y"
+  },
+  {
+   "q": "6. Urging someone to go Tu hésites encore ? ___ ! Still hesitating? Go on / Go there!",
+   "options": [
+    "Alles-y",
+    "Vas-y",
+    "Va-y",
+    "Y va"
+   ],
+   "correct": "Vas-y"
+  },
+  {
+   "q": "7. Telling someone not to go C'est dangereux — ___ ! It's dangerous — don't go there!",
+   "options": [
+    "n'y va pas",
+    "n'y pas va",
+    "ne vas-y pas",
+    "vas-y pas"
+   ],
+   "correct": "n'y va pas"
+  },
+  {
+   "q": "8. Confirming the meeting point On approche — on ___ arrive ! We've arrived — we're there!",
+   "options": [
+    "y a",
+    "là est",
+    "y est",
+    "est y"
+   ],
+   "correct": "y est"
+  },
+  {
+   "q": "9. Talking about a neighbourhood Tu connais le Marais ? — Oui, ___ habite. Do you know the Marais? — Yes, I live there.",
+   "options": [
+    "j'y",
+    "je y",
+    "je le",
+    "il y"
+   ],
+   "correct": "j'y"
+  },
+  {
+   "q": "10. A favourite café Ce café ? J' ___ vais souvent le matin. This café? I often go there in the morning.",
+   "options": [
+    "y",
+    "là",
+    "lui",
+    "le"
+   ],
+   "correct": "y"
+  },
+  {
+   "q": "11. Things to do at the market Au marché, ___ beaucoup de légumes frais. At the market, there are lots of fresh vegetables.",
+   "options": [
+    "il y est",
+    "il y a",
+    "il a",
+    "c'est"
+   ],
+   "correct": "il y a"
+  },
+  {
+   "q": "12. Asking about things at the hotel ___ une piscine dans cet hôtel ? Is there a swimming pool in this hotel?",
+   "options": [
+    "Il y a-t-il",
+    "Est-ce qu'il y a",
+    "Y a-t-il",
+    "Est-ce qu'il y est"
+   ],
+   "correct": "Est-ce qu'il y a"
+  }
+ ],
+ "3-11-capstone-quiz": [
+  {
+   "q": "1. Morning in Paris — checking the weather Regarde par la fenêtre — ___ aujourd'hui ! Look out the window — the weather is nice today!",
+   "options": [
+    "c'est beau temps",
+    "il fait beau",
+    "il fait le beau",
+    "le temps est beau"
+   ],
+   "correct": "il fait beau"
+  },
+  {
+   "q": "2. Planning the trip from home Nous allons ___ Paris pour le week-end. We're going to Paris for the weekend.",
+   "options": [
+    "à",
+    "en",
+    "dans",
+    "au"
+   ],
+   "correct": "à"
+  },
+  {
+   "q": "3. Finding the hotel room Notre chambre est au ___ étage. Our room is on the fifth floor.",
+   "options": [
+    "cinquième",
+    "cinquième-ième",
+    "cinqième",
+    "cinqème"
+   ],
+   "correct": "cinquième"
+  },
+  {
+   "q": "4. Just arrived at the Eiffel Tower On ___ arriver à la Tour Eiffel. We've just arrived at the Eiffel Tower.",
+   "options": [
+    "vient à",
+    "vient de",
+    "est venu de",
+    "viens de"
+   ],
+   "correct": "vient de"
+  },
+  {
+   "q": "5. Asking a local for information ___ est-ce que le musée ouvre ? What time does the museum open?",
+   "options": [
+    "Quelle heure",
+    "À quelle heure",
+    "Comment heure",
+    "À quel heure"
+   ],
+   "correct": "À quelle heure"
+  },
+  {
+   "q": "6. Describing a Haussmann building C'est un ___ bâtiment haussmannien. It's a beautiful Haussmann building.",
+   "options": [
+    "beau",
+    "bel",
+    "beaux",
+    "belle"
+   ],
+   "correct": "beau"
+  },
+  {
+   "q": "7. Getting the metro to the museum Pour aller au Louvre, on ___ le métro ligne 1. To get to the Louvre, you take Metro line 1.",
+   "options": [
+    "prends",
+    "prennent",
+    "prendre",
+    "prend"
+   ],
+   "correct": "prend"
+  },
+  {
+   "q": "8. Inside the Louvre — locating a painting La Joconde ___ dans la salle des États. The Mona Lisa is located in the Salle des États.",
+   "options": [
+    "est trouvée",
+    "se trouvent",
+    "se trouve",
+    "trouve"
+   ],
+   "correct": "se trouve"
+  },
+  {
+   "q": "9. Leaving the Louvre — asking for the exit Pour sortir, continuez ___ jusqu'à la pyramide. To exit, continue straight ahead to the pyramid.",
+   "options": [
+    "en avant",
+    "directement",
+    "tout droit",
+    "droit"
+   ],
+   "correct": "tout droit"
+  },
+  {
+   "q": "10. Finding the café for lunch Le café est ___ la librairie et la boulangerie. The café is between the bookshop and the bakery.",
+   "options": [
+    "au milieu",
+    "entre",
+    "dans",
+    "parmi"
+   ],
+   "correct": "entre"
+  },
+  {
+   "q": "11. Recommending the café to a friend Tu connais ce café ? Tu vas ___ aller — c'est excellent ! Do you know this café? You are going to go there — it's excellent!",
+   "options": [
+    "là",
+    "lui",
+    "le",
+    "y"
+   ],
+   "correct": "y"
+  },
+  {
+   "q": "12. End of the day — looking back On ___ est souvent aujourd'hui ! We are there a lot today!",
+   "options": [
+    "lui",
+    "y",
+    "le",
+    "là"
+   ],
+   "correct": "y"
+  }
+ ],
+ "4-01-food-vocab-quiz": [
+  {
+   "q": "1. Morning routine Je prends ___ à sept heures. I have breakfast at seven o'clock.",
+   "options": [
+    "le déjeuner",
+    "le petit-déjeuner",
+    "la matinée",
+    "le repas du matin"
+   ],
+   "correct": "le petit-déjeuner"
+  },
+  {
+   "q": "2. Ordering at a restaurant Je prends ___ rôti avec des légumes. I'll have the roast chicken with vegetables.",
+   "options": [
+    "la poulet",
+    "un poulet rôti",
+    "le poule",
+    "le poulet"
+   ],
+   "correct": "le poulet"
+  },
+  {
+   "q": "3. Describing a balanced plate Il mange ___ et des tomates. He eats salad and tomatoes.",
+   "options": [
+    "du salade",
+    "la salade",
+    "de la salade",
+    "une salade"
+   ],
+   "correct": "de la salade"
+  },
+  {
+   "q": "4. Talking about a staple food Les Français mangent beaucoup de ___ . The French eat a lot of bread.",
+   "options": [
+    "du pain",
+    "pane",
+    "le pain",
+    "pain"
+   ],
+   "correct": "pain"
+  },
+  {
+   "q": "5. A healthy snack Pour le goûter, elle mange ___ . For her afternoon snack, she eats an apple.",
+   "options": [
+    "la pomme",
+    "de la pomme",
+    "une pomme",
+    "un pomme"
+   ],
+   "correct": "une pomme"
+  },
+  {
+   "q": "6. Staying hydrated Je bois ___ minérale. I drink mineral water.",
+   "options": [
+    "l'eau",
+    "de l'eau",
+    "de l'eaux",
+    "du eau"
+   ],
+   "correct": "de l'eau"
+  },
+  {
+   "q": "7. Sunday lunch conversation On mange ___ bœuf bourguignon le dimanche. We eat beef bourguignon on Sundays.",
+   "options": [
+    "le bœuf",
+    "de la bœuf",
+    "un bœuf",
+    "du bœuf"
+   ],
+   "correct": "du bœuf"
+  },
+  {
+   "q": "8. Vegetarian choice Elle préfère manger ___ plutôt que de la viande. She prefers to eat vegetables rather than meat.",
+   "options": [
+    "de légumes",
+    "des légumes",
+    "les légumes",
+    "du légume"
+   ],
+   "correct": "des légumes"
+  },
+  {
+   "q": "9. Breakfast eggs Je mange deux ___ le matin. I eat two eggs in the morning.",
+   "options": [
+    "oeufs",
+    "œufs",
+    "oufs",
+    "les œufs"
+   ],
+   "correct": "œufs"
+  },
+  {
+   "q": "10. Cheese course En France, on mange ___ après le plat principal. In France, people eat cheese after the main course.",
+   "options": [
+    "le fromage",
+    "du fromage",
+    "de la fromage",
+    "des fromages"
+   ],
+   "correct": "du fromage"
+  },
+  {
+   "q": "11. Dinner drink Elle boit ___ rouge au dîner. She drinks red wine at dinner.",
+   "options": [
+    "de le vin",
+    "le vin",
+    "de la vin",
+    "du vin"
+   ],
+   "correct": "du vin"
+  },
+  {
+   "q": "12. Pasta night On va manger ___ ce soir. We're going to eat pasta tonight.",
+   "options": [
+    "des pâtes",
+    "de la pâte",
+    "les pâtes",
+    "du pâtes"
+   ],
+   "correct": "des pâtes"
+  }
+ ],
+ "4-02-partitives-quiz": [
+  {
+   "q": "1. Morning coffee Chaque matin, je bois ___ café avant de partir. Every morning, I drink coffee before leaving.",
+   "options": [
+    "du",
+    "le",
+    "un",
+    "de la"
+   ],
+   "correct": "du"
+  },
+  {
+   "q": "2. Cooking dinner On prépare ___ poulet avec des herbes. We're preparing some chicken with herbs.",
+   "options": [
+    "de la",
+    "le",
+    "du",
+    "un"
+   ],
+   "correct": "du"
+  },
+  {
+   "q": "3. Lunch salad Elle mange ___ salade tous les midis. She eats salad every lunchtime.",
+   "options": [
+    "la",
+    "une",
+    "du",
+    "de la"
+   ],
+   "correct": "de la"
+  },
+  {
+   "q": "4. Drinking water Tu veux ___ eau ? Do you want some water?",
+   "options": [
+    "de l'",
+    "l'",
+    "du",
+    "de la"
+   ],
+   "correct": "de l'"
+  },
+  {
+   "q": "5. Fruit bowl Il y a ___ oranges sur la table. There are some oranges on the table.",
+   "options": [
+    "de les",
+    "des",
+    "de",
+    "les"
+   ],
+   "correct": "des"
+  },
+  {
+   "q": "6. General food preference J'adore ___ pizza. I love pizza.",
+   "options": [
+    "la",
+    "du",
+    "de la",
+    "une"
+   ],
+   "correct": "la"
+  },
+  {
+   "q": "7. Sports habit Le samedi, il fait ___ sport. On Saturdays, he does sport.",
+   "options": [
+    "un",
+    "le",
+    "du",
+    "de la"
+   ],
+   "correct": "du"
+  },
+  {
+   "q": "8. Buying cheese at the market Je voudrais ___ fromage, s'il vous plaît. I'd like some cheese, please.",
+   "options": [
+    "de la",
+    "du",
+    "le",
+    "un"
+   ],
+   "correct": "du"
+  },
+  {
+   "q": "9. Recipe instruction Ajoutez ___ huile d'olive. Add some olive oil.",
+   "options": [
+    "de la",
+    "une",
+    "de l'",
+    "du"
+   ],
+   "correct": "de l'"
+  },
+  {
+   "q": "10. Baking a cake La recette demande ___ sucre et de la farine. The recipe calls for sugar and flour.",
+   "options": [
+    "du",
+    "de la",
+    "des",
+    "de l'"
+   ],
+   "correct": "du"
+  },
+  {
+   "q": "11. Vegetable soup Dans la soupe, il y a ___ carottes et du céleri. In the soup there are some carrots and some celery.",
+   "options": [
+    "les",
+    "de les",
+    "des",
+    "de"
+   ],
+   "correct": "des"
+  },
+  {
+   "q": "12. Habitual preference vs current action J'aime la bière, mais ce soir je bois ___ vin. I like beer, but tonight I'm drinking some wine.",
+   "options": [
+    "de la",
+    "le",
+    "du",
+    "un"
+   ],
+   "correct": "du"
+  }
+ ],
+ "4-03-partitive-neg-quiz": [
+  {
+   "q": "1. Vegetarian diet Elle ne mange pas ___ viande. She doesn't eat meat.",
+   "options": [
+    "du",
+    "de",
+    "pas de la",
+    "de la"
+   ],
+   "correct": "de"
+  },
+  {
+   "q": "2. No more bread Je ne mange plus ___ pain — je fais un régime. I no longer eat bread — I'm on a diet.",
+   "options": [
+    "pas",
+    "de le",
+    "de",
+    "du"
+   ],
+   "correct": "de"
+  },
+  {
+   "q": "3. Can't stand water Il ne boit pas ___ eau — seulement du jus. He doesn't drink water — only juice.",
+   "options": [
+    "de l'",
+    "de",
+    "d'",
+    "pas d'"
+   ],
+   "correct": "d'"
+  },
+  {
+   "q": "4. Generous portion Elle mange ___ légumes chaque jour. She eats a lot of vegetables every day.",
+   "options": [
+    "beaucoup de les",
+    "beaucoup des",
+    "beaucoup du",
+    "beaucoup de"
+   ],
+   "correct": "beaucoup de"
+  },
+  {
+   "q": "5. Too much sugar Ce gâteau contient ___ sucre. This cake contains too much sugar.",
+   "options": [
+    "trop de",
+    "trop du",
+    "trop de la",
+    "beaucoup de"
+   ],
+   "correct": "trop de"
+  },
+  {
+   "q": "6. Not enough salt Il n'y a pas ___ sel dans cette soupe. There isn't enough salt in this soup.",
+   "options": [
+    "assez de le",
+    "beaucoup de",
+    "assez du",
+    "assez de"
+   ],
+   "correct": "assez de"
+  },
+  {
+   "q": "7. Buying olive oil Je prends ___ huile d'olive. I'll take a bottle of olive oil.",
+   "options": [
+    "un bouteille de",
+    "une bouteille de",
+    "une bouteille d'",
+    "une bouteille du"
+   ],
+   "correct": "une bouteille de"
+  },
+  {
+   "q": "8. Recipe: pasta dough La recette demande ___ farine. The recipe calls for 200 g of flour.",
+   "options": [
+    "200 g de",
+    "200 g du",
+    "200 g des",
+    "200 g de la"
+   ],
+   "correct": "200 g de"
+  },
+  {
+   "q": "9. Exception: c'est + partitive — C'est du café ? — Non, ___ café — c'est du thé. — Is it coffee? — No, it's not coffee — it's tea.",
+   "options": [
+    "ce n'est pas de la",
+    "ce n'est pas du",
+    "il n'y a pas de",
+    "ce n'est pas de"
+   ],
+   "correct": "ce n'est pas du"
+  },
+  {
+   "q": "10. Small amount of milk Tu veux ___ lait dans ton café ? Do you want a little milk in your coffee?",
+   "options": [
+    "un peu de la",
+    "un peu de",
+    "un peu du",
+    "peu de"
+   ],
+   "correct": "un peu de"
+  },
+  {
+   "q": "11. No vegetables left Il n'y a plus ___ légumes au marché. There are no more vegetables at the market.",
+   "options": [
+    "des",
+    "pas de",
+    "de les",
+    "de"
+   ],
+   "correct": "de"
+  },
+  {
+   "q": "12. Lots of fruit Il mange ___ abricots en été. He eats a lot of apricots in summer.",
+   "options": [
+    "beaucoup de",
+    "beaucoup d'les",
+    "beaucoup des",
+    "beaucoup d'"
+   ],
+   "correct": "beaucoup d'"
+  }
+ ],
+ "4-04-manger-boire-quiz": [
+  {
+   "q": "1. Your daily habit Le matin, je ___ des œufs. In the morning I eat eggs.",
+   "options": [
+    "manges",
+    "mangez",
+    "mangeons",
+    "mange"
+   ],
+   "correct": "mange"
+  },
+  {
+   "q": "2. What does she eat? Elle ___ de la salade au déjeuner. She eats salad at lunch.",
+   "options": [
+    "manges",
+    "mangent",
+    "manger",
+    "mange"
+   ],
+   "correct": "mange"
+  },
+  {
+   "q": "3. Cooking together Nous ___ toujours ensemble le soir. We always eat together in the evening.",
+   "options": [
+    "mangent",
+    "mangez",
+    "mangons",
+    "mangeons"
+   ],
+   "correct": "mangeons"
+  },
+  {
+   "q": "4. The children's dinner Les enfants ___ des pâtes ce soir. The children are eating pasta tonight.",
+   "options": [
+    "mangeont",
+    "mangent",
+    "mange",
+    "mangeons"
+   ],
+   "correct": "mangent"
+  },
+  {
+   "q": "5. Your drink preference Je ___ de l'eau toute la journée. I drink water all day long.",
+   "options": [
+    "boire",
+    "buvons",
+    "bois",
+    "boit"
+   ],
+   "correct": "bois"
+  },
+  {
+   "q": "6. Evening drink Il ___ du vin rouge avec le dîner. He drinks red wine with dinner.",
+   "options": [
+    "buvez",
+    "bois",
+    "boivent",
+    "boit"
+   ],
+   "correct": "boit"
+  },
+  {
+   "q": "7. Hydrating as a group Nous ___ beaucoup d'eau pendant l'entraînement. We drink a lot of water during training.",
+   "options": [
+    "boivons",
+    "buvons",
+    "buvez",
+    "buvont"
+   ],
+   "correct": "buvons"
+  },
+  {
+   "q": "8. The guests' choice Les invités ___ du champagne. The guests are drinking champagne.",
+   "options": [
+    "boive",
+    "buvent",
+    "boivent",
+    "buvons"
+   ],
+   "correct": "boivent"
+  },
+  {
+   "q": "9. Lunch ordering Je ___ une omelette et je bois du café. I'm eating an omelette and I'm drinking coffee.",
+   "options": [
+    "manges",
+    "mangeons",
+    "mange",
+    "mangent"
+   ],
+   "correct": "mange"
+  },
+  {
+   "q": "10. Diet habit Est-ce que vous ___ des légumes tous les jours ? Do you eat vegetables every day?",
+   "options": [
+    "mangeons",
+    "mange",
+    "mangez",
+    "mangerez"
+   ],
+   "correct": "mangez"
+  },
+  {
+   "q": "11. She doesn't drink coffee Elle ne ___ pas de café. She doesn't drink coffee.",
+   "options": [
+    "bois",
+    "boire",
+    "boit",
+    "boivent"
+   ],
+   "correct": "boit"
+  },
+  {
+   "q": "12. Recipe: eat immediately On ___ ce plat chaud, tout de suite. You eat this dish hot, straight away.",
+   "options": [
+    "mangez",
+    "manges",
+    "mangeons",
+    "mange"
+   ],
+   "correct": "mange"
+  }
+ ],
+ "4-05-frequency-quiz": [
+  {
+   "q": "1. Describing a perfect habit Je mange ___ du petit-déjeuner avant de partir. I always eat breakfast before leaving.",
+   "options": [
+    "toujours",
+    "parfois",
+    "jamais",
+    "souvent"
+   ],
+   "correct": "toujours"
+  },
+  {
+   "q": "2. Regular lunch habit Elle mange ___ de la salade au déjeuner. She often eats salad at lunch.",
+   "options": [
+    "très souvent de",
+    "de souvent",
+    "souvent de",
+    "souvent"
+   ],
+   "correct": "souvent"
+  },
+  {
+   "q": "3. Occasional treat Nous mangeons ___ du gâteau le week-end. We sometimes eat cake at the weekend.",
+   "options": [
+    "quelque-fois",
+    "parfois",
+    "parfois de",
+    "quelque fois"
+   ],
+   "correct": "parfois"
+  },
+  {
+   "q": "4. A rare indulgence Je mange ___ de la restauration rapide. I rarely eat fast food.",
+   "options": [
+    "peu souvent",
+    "très rare",
+    "rare",
+    "rarement"
+   ],
+   "correct": "rarement"
+  },
+  {
+   "q": "5. A strict diet Elle ne mange ___ de sucre. She never eats sugar.",
+   "options": [
+    "pas",
+    "jamais",
+    "pas jamais",
+    "toujours pas"
+   ],
+   "correct": "jamais"
+  },
+  {
+   "q": "6. Never drinks alcohol Il ne boit ___ d'alcool — pas une seule goutte en 20 ans. He never drinks alcohol — not a single drop in 20 years.",
+   "options": [
+    "jamais",
+    "plus",
+    "pas",
+    "rarement"
+   ],
+   "correct": "jamais"
+  },
+  {
+   "q": "7. Adverb position check Tu manges ___ de la viande ? Do you often eat meat?",
+   "options": [
+    "Tu souvent",
+    "souvents",
+    "souvent",
+    "Souvent tu"
+   ],
+   "correct": "souvent"
+  },
+  {
+   "q": "8. Every single day Je bois du café ___ . I drink coffee every day.",
+   "options": [
+    "tout les jours",
+    "chaque les jours",
+    "toutes les jours",
+    "tous les jours"
+   ],
+   "correct": "tous les jours"
+  },
+  {
+   "q": "9. From time to time On mange au restaurant ___ . We eat at the restaurant from time to time.",
+   "options": [
+    "des temps en temps",
+    "de temps à temps",
+    "du temps en temps",
+    "de temps en temps"
+   ],
+   "correct": "de temps en temps"
+  },
+  {
+   "q": "10. Adverb placement Je mange ___ dehors la semaine. I often eat out during the week.",
+   "options": [
+    "souvent",
+    "mangé souvent",
+    "dehors souvent",
+    "souvent mangé dehors cette"
+   ],
+   "correct": "souvent"
+  },
+  {
+   "q": "11. Survey response Je mange ___ du poisson — c'est mon plat préféré ! I often eat fish — it is my favourite dish!",
+   "options": [
+    "parfois de",
+    "quelque fois",
+    "souvent",
+    "régulièrement"
+   ],
+   "correct": "souvent"
+  },
+  {
+   "q": "12. Evaluating a habit Je ne mange ___ de légumes — c'est mauvais pour la santé. I never eat vegetables — it's bad for your health.",
+   "options": [
+    "souvent",
+    "jamais",
+    "rarement",
+    "pas toujours"
+   ],
+   "correct": "jamais"
+  }
+ ],
+ "4-06-demonstratives-quiz": [
+  {
+   "q": "1. Pointing to a dish Je voudrais ___ plat, s'il vous plaît. I'd like this dish, please.",
+   "options": [
+    "cette",
+    "cet",
+    "ces",
+    "ce"
+   ],
+   "correct": "ce"
+  },
+  {
+   "q": "2. Planning the afternoon On fait les courses ___ après-midi. We're doing the shopping this afternoon.",
+   "options": [
+    "cet",
+    "ces",
+    "ce",
+    "cette"
+   ],
+   "correct": "cet"
+  },
+  {
+   "q": "3. Discussing this week's menu Qu'est-ce qu'on mange ___ semaine ? What are we eating this week?",
+   "options": [
+    "ce",
+    "cette",
+    "cet",
+    "ces"
+   ],
+   "correct": "cette"
+  },
+  {
+   "q": "4. These vegetables look fresh ___ légumes ont l'air très frais. These vegetables look very fresh.",
+   "options": [
+    "Cet",
+    "Cette",
+    "Ces",
+    "Ce"
+   ],
+   "correct": "Ces"
+  },
+  {
+   "q": "5. This evening's plan On va au restaurant ___ soir. We're going to the restaurant this evening.",
+   "options": [
+    "ces",
+    "cet",
+    "cette",
+    "ce"
+   ],
+   "correct": "ce"
+  },
+  {
+   "q": "6. Recommending a restaurant Tu connais ___ endroit ? Do you know this place?",
+   "options": [
+    "ces",
+    "cet",
+    "cette",
+    "ce"
+   ],
+   "correct": "cet"
+  },
+  {
+   "q": "7. Commenting on a recipe J'adore ___ recette. I love this recipe.",
+   "options": [
+    "ces",
+    "ce",
+    "cet",
+    "cette"
+   ],
+   "correct": "cette"
+  },
+  {
+   "q": "8. These prices are high ___ prix sont trop élevés. These prices are too high.",
+   "options": [
+    "Cet",
+    "Ce",
+    "Cette",
+    "Ces"
+   ],
+   "correct": "Ces"
+  },
+  {
+   "q": "9. This morning's breakfast Je mange des crêpes ___ matin. I eat crêpes this morning.",
+   "options": [
+    "ce",
+    "cet",
+    "ces",
+    "cette"
+   ],
+   "correct": "ce"
+  },
+  {
+   "q": "10. This cheese smells strong ___ fromage sent très fort ! This cheese smells very strong!",
+   "options": [
+    "Ce",
+    "Cette",
+    "Cet",
+    "Ces"
+   ],
+   "correct": "Ce"
+  },
+  {
+   "q": "11. Choosing a summer fruit On mange beaucoup d'abricots ___ été. We eat a lot of apricots this summer.",
+   "options": [
+    "ce",
+    "cette",
+    "cet",
+    "ces"
+   ],
+   "correct": "cet"
+  },
+  {
+   "q": "12. This-vs-that distinction Je préfère ce gâteau ___ à ce gâteau-là. I prefer this cake (here) to that cake (there).",
+   "options": [
+    "-ce",
+    "-ici",
+    "-ci",
+    "-là"
+   ],
+   "correct": "-ci"
+  }
+ ],
+ "4-07-futur-proche-quiz": [
+  {
+   "q": "1. Tonight's dinner plan Je ___ manger de la pizza ce soir. I'm going to eat pizza this evening.",
+   "options": [
+    "vas",
+    "vont",
+    "vais",
+    "allons"
+   ],
+   "correct": "vais"
+  },
+  {
+   "q": "2. Offering a drink Tu ___ boire du café ? Are you going to drink some coffee?",
+   "options": [
+    "va",
+    "allez",
+    "vas",
+    "vais"
+   ],
+   "correct": "vas"
+  },
+  {
+   "q": "3. She's cooking tonight Elle ___ préparer le dîner ce soir. She's going to prepare dinner this evening.",
+   "options": [
+    "allons",
+    "vas",
+    "vais",
+    "va"
+   ],
+   "correct": "va"
+  },
+  {
+   "q": "4. We have plans this week Nous ___ cuisiner ensemble cette semaine. We're going to cook together this week.",
+   "options": [
+    "va",
+    "allons",
+    "vont",
+    "allez"
+   ],
+   "correct": "allons"
+  },
+  {
+   "q": "5. Taking your order Qu'est-ce que vous ___ commander ? What are you going to order?",
+   "options": [
+    "allez",
+    "allons",
+    "vont",
+    "va"
+   ],
+   "correct": "allez"
+  },
+  {
+   "q": "6. Weekend market trip Ils ___ faire les courses demain. They're going to do the shopping tomorrow.",
+   "options": [
+    "vont",
+    "allez",
+    "va",
+    "allons"
+   ],
+   "correct": "vont"
+  },
+  {
+   "q": "7. Skipping meat tonight Je ne vais pas ___ de viande ce soir. I'm not going to eat meat this evening.",
+   "options": [
+    "manges",
+    "manger",
+    "mangé",
+    "mange"
+   ],
+   "correct": "manger"
+  },
+  {
+   "q": "8. No coffee at night (formal written context) Je [message écrit à ma famille d'accueil] ___ boire de café le soir. I'm not going to drink coffee in the evening.",
+   "options": [
+    "ne vais pas",
+    "pas vais",
+    "ne vais",
+    "vais pas"
+   ],
+   "correct": "ne vais pas"
+  },
+  {
+   "q": "9. Dinner plans this evening On va manger au restaurant ___ . We're going to eat at the restaurant this evening.",
+   "options": [
+    "souvent",
+    "hier soir",
+    "la semaine dernière",
+    "ce soir"
+   ],
+   "correct": "ce soir"
+  },
+  {
+   "q": "10. Baking a birthday cake Vous allez ___ un gâteau pour l'anniversaire ? Are you going to prepare a cake for the birthday?",
+   "options": [
+    "préparer",
+    "préparé",
+    "préparons",
+    "préparez"
+   ],
+   "correct": "préparer"
+  },
+  {
+   "q": "11. Trying a new restaurant On ___ essayer ce nouveau restaurant. We're going to try this new restaurant.",
+   "options": [
+    "va",
+    "vais",
+    "vont",
+    "allons"
+   ],
+   "correct": "va"
+  },
+  {
+   "q": "12. He's never eating sushi Il ne va ___ manger de sushi. He's never going to eat sushi.",
+   "options": [
+    "plus",
+    "rien",
+    "jamais",
+    "pas"
+   ],
+   "correct": "jamais"
+  }
+ ],
+ "4-08-shopping-quiz": [
+  {
+   "q": "1. Where to buy bread Pour acheter une baguette, on va à la ___ . To buy a baguette, you go to the bakery.",
+   "options": [
+    "boucherie",
+    "boulangerie",
+    "épicerie",
+    "fromagerie"
+   ],
+   "correct": "boulangerie"
+  },
+  {
+   "q": "2. Where to buy meat Pour acheter du poulet, on va à la ___ . To buy chicken, you go to the butcher's.",
+   "options": [
+    "boulangerie",
+    "poissonnerie",
+    "charcuterie",
+    "boucherie"
+   ],
+   "correct": "boucherie"
+  },
+  {
+   "q": "3. Where to buy staples Pour acheter du riz et des pâtes, on va à l' ___ . To buy rice and pasta, you go to the grocery store.",
+   "options": [
+    "boulangerie",
+    "poissonnerie",
+    "fromagerie",
+    "épicerie"
+   ],
+   "correct": "épicerie"
+  },
+  {
+   "q": "4. Finding camembert Je cherche du camembert. Je vais à la ___ . I'm looking for camembert. I'm going to the cheese shop.",
+   "options": [
+    "boulangerie",
+    "épicerie",
+    "fromagerie",
+    "boucherie"
+   ],
+   "correct": "fromagerie"
+  },
+  {
+   "q": "5. Buying fresh salmon Pour acheter du saumon frais, on va à la ___ . To buy fresh salmon, you go to the fish shop.",
+   "options": [
+    "fromagerie",
+    "poissonnerie",
+    "boucherie",
+    "boulangerie"
+   ],
+   "correct": "poissonnerie"
+  },
+  {
+   "q": "6. At the bakery counter — polite request Bonjour, [au comptoir de la boulangerie] ___ deux croissants, s'il vous plaît. Hello, I'd like two croissants, please.",
+   "options": [
+    "je voudrais",
+    "je veux",
+    "donnez-moi",
+    "je voulais"
+   ],
+   "correct": "je voudrais"
+  },
+  {
+   "q": "7. Asking the total Le client demande : « ___ ? » How much is it?",
+   "options": [
+    "Combien de",
+    "Ça fait combien",
+    "Quel est le prix",
+    "C'est cher non"
+   ],
+   "correct": "Ça fait combien"
+  },
+  {
+   "q": "8. Shopkeeper asks if you need more Vendeur : « ___ ? » And with this? / Anything else?",
+   "options": [
+    "Je voudrais",
+    "C'est tout",
+    "Et avec ceci",
+    "Ça fait combien"
+   ],
+   "correct": "Et avec ceci"
+  },
+  {
+   "q": "9. Closing the purchase Vendeur : « Et avec ceci ? » — Client : « ___ , merci. » That's all, thank you.",
+   "options": [
+    "Ça fait combien",
+    "En espèces",
+    "Je voudrais encore",
+    "C'est tout"
+   ],
+   "correct": "C'est tout"
+  },
+  {
+   "q": "10. Paying at the market Je peux payer ___ ? Can I pay by card?",
+   "options": [
+    "en espèces",
+    "par liquide",
+    "par carte",
+    "par chèque"
+   ],
+   "correct": "par carte"
+  },
+  {
+   "q": "11. Ordering at the deli Il me faut ___ jambon, s'il vous plaît. I need a slice of ham, please.",
+   "options": [
+    "une tranche de",
+    "un kilo de",
+    "un morceau de",
+    "une bouteille de"
+   ],
+   "correct": "une tranche de"
+  },
+  {
+   "q": "12. At the vegetable stall Je voudrais ___ tomates, s'il vous plaît. I'd like a kilo of tomatoes, please.",
+   "options": [
+    "un verre de",
+    "une tranche de",
+    "un kilo de",
+    "une bouteille de"
+   ],
+   "correct": "un kilo de"
+  }
+ ],
+ "4-09-advice-quiz": [
+  {
+   "q": "1. Recipe instruction Pour faire une bonne omelette, ___ casser trois œufs. To make a good omelette, you need to break three eggs.",
+   "options": [
+    "on devrait",
+    "il faut",
+    "tu dois",
+    "il y a"
+   ],
+   "correct": "il faut"
+  },
+  {
+   "q": "2. Booking in advance ___ réserver une table à l'avance dans ce restaurant. You need to book a table in advance at this restaurant.",
+   "options": [
+    "Tu devrais",
+    "On peut",
+    "Il faut",
+    "Tu dois"
+   ],
+   "correct": "Il faut"
+  },
+  {
+   "q": "3. What not to do in the kitchen Il ne ___ pas trop saler la soupe. You must not add too much salt to the soup.",
+   "options": [
+    "peut",
+    "faut",
+    "devrait",
+    "dois"
+   ],
+   "correct": "faut"
+  },
+  {
+   "q": "4. General health advice Pour rester en bonne santé, ___ manger équilibré. To stay healthy, you need to eat a balanced diet.",
+   "options": [
+    "tu devrais",
+    "il faut",
+    "tu peux",
+    "il devrait"
+   ],
+   "correct": "il faut"
+  },
+  {
+   "q": "5. Card payment is available Si tu veux payer par carte, ___ utiliser la machine là-bas. If you want to pay by card, you can use the machine over there.",
+   "options": [
+    "tu peux",
+    "tu devrais",
+    "tu dois",
+    "il faut"
+   ],
+   "correct": "tu peux"
+  },
+  {
+   "q": "6. The full menu is available ___ commander n'importe quel plat du menu — c'est inclus. You can order any dish on the menu — it's included.",
+   "options": [
+    "Tu peux",
+    "Tu dois",
+    "Tu devrais",
+    "Il faut"
+   ],
+   "correct": "Tu peux"
+  },
+  {
+   "q": "7. Sharing is possible Tu n'as pas très faim ? ___ partager le plat avec moi. You're not very hungry? You can share the dish with me.",
+   "options": [
+    "Tu peux",
+    "Il faut",
+    "Tu dois",
+    "Tu devrais"
+   ],
+   "correct": "Tu peux"
+  },
+  {
+   "q": "8. Vegetarian option available Si tu es végétarien, ___ choisir la quiche aux légumes. If you're vegetarian, you can choose the vegetable quiche.",
+   "options": [
+    "tu devrais",
+    "il faut",
+    "tu dois",
+    "tu peux"
+   ],
+   "correct": "tu peux"
+  },
+  {
+   "q": "9. Eating habits need improving Tu manges trop de fast food. ___ cuisiner plus souvent. You eat too much fast food. You should cook more often.",
+   "options": [
+    "Tu devrais",
+    "Tu dois",
+    "Il faut",
+    "Tu peux"
+   ],
+   "correct": "Tu devrais"
+  },
+  {
+   "q": "10. Restaurant recommendation ___ essayer le nouveau restaurant près du marché — il est excellent. You should try the new restaurant near the market — it's excellent.",
+   "options": [
+    "Tu peux",
+    "Il faut",
+    "Tu dois",
+    "Tu devrais"
+   ],
+   "correct": "Tu devrais"
+  },
+  {
+   "q": "11. Cheese tip — use the conditional Si tu aimes le fromage, ___ aller à la fromagerie rue Mouffetard. If you like cheese, you should go to the cheese shop on rue Mouffetard.",
+   "options": [
+    "tu peux",
+    "il faut",
+    "tu dois",
+    "tu devrais"
+   ],
+   "correct": "tu devrais"
+  },
+  {
+   "q": "12. Tasting a new dish — use the conditional ___ goûter ce fromage — il est vraiment délicieux. You should taste this cheese — it's really delicious.",
+   "options": [
+    "Il faut",
+    "Tu devrais",
+    "Tu dois",
+    "Tu peux"
+   ],
+   "correct": "Tu devrais"
+  }
+ ],
+ "4-10-restaurant-quiz": [
+  {
+   "q": "1. la carte vs le menu Excusez-moi, je peux voir ___ , s'il vous plaît ? Excuse me, may I see the menu, please?",
+   "options": [
+    "la commande",
+    "l'addition",
+    "la carte",
+    "le menu"
+   ],
+   "correct": "la carte"
+  },
+  {
+   "q": "2. Making a reservation Je voudrais ___ une table pour deux personnes ce soir. I'd like to book a table for two people this evening.",
+   "options": [
+    "choisir",
+    "prendre",
+    "commander",
+    "réserver"
+   ],
+   "correct": "réserver"
+  },
+  {
+   "q": "3. Waiter approaches the table Le serveur demande : « Vous désirez ___ ? » What would you like to have?",
+   "options": [
+    "avoir",
+    "manger",
+    "choisir",
+    "prendre"
+   ],
+   "correct": "prendre"
+  },
+  {
+   "q": "4. Ordering the main course Et ___ plat principal, je vais prendre le bœuf bourguignon. And for the main course, I'll have the beef bourguignon.",
+   "options": [
+    "en",
+    "avec",
+    "comme",
+    "pour"
+   ],
+   "correct": "comme"
+  },
+  {
+   "q": "5. Course before the main La ___ vient avant le plat principal. The starter comes before the main course.",
+   "options": [
+    "carte",
+    "addition",
+    "entrée",
+    "dessert"
+   ],
+   "correct": "entrée"
+  },
+  {
+   "q": "6. The food is wonderful Ce bœuf bourguignon est vraiment ___ ! This beef bourguignon is really delicious!",
+   "options": [
+    "agréable",
+    "délicieux",
+    "cher",
+    "frais"
+   ],
+   "correct": "délicieux"
+  },
+  {
+   "q": "7. The bill is high Ce restaurant est bon, mais un peu ___ . This restaurant is good, but a little expensive.",
+   "options": [
+    "cher",
+    "délicieux",
+    "rapide",
+    "agréable"
+   ],
+   "correct": "cher"
+  },
+  {
+   "q": "8. A pleasant atmosphere L'ambiance ici est vraiment très ___ . The atmosphere here is really very pleasant.",
+   "options": [
+    "délicieuse",
+    "fraîche",
+    "agréable",
+    "chère"
+   ],
+   "correct": "agréable"
+  },
+  {
+   "q": "9. Asking for the bill [Fin du repas, vous appelez le serveur] ___ , s'il vous plaît. The bill, please.",
+   "options": [
+    "La carte",
+    "L'addition",
+    "La commande",
+    "Le menu"
+   ],
+   "correct": "L'addition"
+  },
+  {
+   "q": "10. Paying by card Est-ce que vous acceptez le paiement ___ ? Do you accept payment by card?",
+   "options": [
+    "par carte",
+    "par chèque",
+    "au comptant",
+    "en espèces"
+   ],
+   "correct": "par carte"
+  },
+  {
+   "q": "11. No card available — cash only Je n'ai pas ma carte bancaire — je vais payer ___ . I don't have my bank card — I'm going to pay in cash.",
+   "options": [
+    "par chèque",
+    "par carte",
+    "en ligne",
+    "en espèces"
+   ],
+   "correct": "en espèces"
+  },
+  {
+   "q": "12. Wrong order delivered Excusez-moi, ce n'est pas ___ que je veux. Excuse me, this is not what I want.",
+   "options": [
+    "ce",
+    "ça",
+    "quoi",
+    "celui"
+   ],
+   "correct": "ce"
+  }
+ ],
+ "4-11-capstone-quiz": [
+  {
+   "q": "1. Skill 01 · Food vocabulary Le repas du soir s'appelle ___ . The evening meal is called dinner.",
+   "options": [
+    "le goûter",
+    "le dîner",
+    "le petit-déjeuner",
+    "le déjeuner"
+   ],
+   "correct": "le dîner"
+  },
+  {
+   "q": "2. Skill 02 · Partitive articles Je voudrais ___ fromage, s'il vous plaît. I'd like some cheese, please.",
+   "options": [
+    "de la",
+    "de l'",
+    "du",
+    "des"
+   ],
+   "correct": "du"
+  },
+  {
+   "q": "3. Skill 03 · Partitive in negation Elle est végétarienne — elle ne mange pas ___ viande. She's vegetarian — she doesn't eat meat.",
+   "options": [
+    "de la",
+    "de",
+    "des",
+    "du"
+   ],
+   "correct": "de"
+  },
+  {
+   "q": "4. Skill 04 · Manger &amp; boire Le week-end, nous ___ souvent du café le matin. At the weekend, we often drink coffee in the morning.",
+   "options": [
+    "buvez",
+    "boivent",
+    "boivons",
+    "buvons"
+   ],
+   "correct": "buvons"
+  },
+  {
+   "q": "5. Skill 05 · Frequency adverbs Je mange ___ des légumes — au moins une fois par jour. I always eat vegetables — at least once a day.",
+   "options": [
+    "rarement",
+    "ne jamais",
+    "jamais",
+    "toujours"
+   ],
+   "correct": "toujours"
+  },
+  {
+   "q": "6. Skill 06 · Demonstrative adjectives ___ semaine, on va essayer une nouvelle recette. This week, we're going to try a new recipe.",
+   "options": [
+    "Cet",
+    "Ces",
+    "Ce",
+    "Cette"
+   ],
+   "correct": "Cette"
+  },
+  {
+   "q": "7. Skill 07 · Futur proche Vendredi soir, on va ___ au restaurant. Friday evening, we're going to have dinner at the restaurant.",
+   "options": [
+    "dînerons",
+    "dîner",
+    "dîné",
+    "dînons"
+   ],
+   "correct": "dîner"
+  },
+  {
+   "q": "8. Skill 08 · Shopping Pour acheter des croissants, on va à la ___ . To buy croissants, you go to the bakery.",
+   "options": [
+    "poissonnerie",
+    "fromagerie",
+    "boulangerie",
+    "boucherie"
+   ],
+   "correct": "boulangerie"
+  },
+  {
+   "q": "9. Skill 09 · Giving advice Pour faire cette recette, ___ préchauffer le four. To make this recipe, you need to preheat the oven.",
+   "options": [
+    "il faut",
+    "on devrait",
+    "tu devrais",
+    "tu peux"
+   ],
+   "correct": "il faut"
+  },
+  {
+   "q": "10. Skill 10 · Au restaurant À la fin du repas, on demande : « ___ , s'il vous plaît. » The bill, please.",
+   "options": [
+    "La commande",
+    "Le menu",
+    "L'addition",
+    "La carte"
+   ],
+   "correct": "L'addition"
+  },
+  {
+   "q": "11. Skills 02 &amp; 04 · Integrated Qu'est-ce que tu bois ? — Je bois ___ eau minérale. I drink mineral water.",
+   "options": [
+    "de la",
+    "des",
+    "de l'",
+    "du"
+   ],
+   "correct": "de l'"
+  },
+  {
+   "q": "12. Skills 06 &amp; 07 · Integrated Tu connais ___ nouveau restaurant dans le quartier ? On va y aller ! Do you know this new restaurant in the neighbourhood? We're going to go!",
+   "options": [
+    "cet",
+    "ce",
+    "ces",
+    "cette"
+   ],
+   "correct": "ce"
+  }
+ ]
+}
