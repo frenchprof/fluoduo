@@ -1,0 +1,103 @@
+{
+  "id": "commerces",
+  "title": "Les commerces",
+  "subtitle": "un ou une ?",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 4,
+  "lessonNo": 7,
+  "lessonSlug": "commerces",
+  "tags": [],
+  "seq": 407,
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        {
+          "key": "un",
+          "label": "Un ___",
+          "prefix": "un "
+        },
+        {
+          "key": "une",
+          "label": "Une ___",
+          "prefix": "une "
+        }
+      ]
+    }
+  },
+  "items": [
+    {
+      "id": "commerces-01",
+      "fr": "boulangerie",
+      "en": "bakery",
+      "emoji": "🥖",
+      "tags": [
+        "col:une"
+      ]
+    },
+    {
+      "id": "commerces-02",
+      "fr": "pâtisserie",
+      "en": "pastry shop",
+      "emoji": "🍰",
+      "tags": [
+        "col:une"
+      ]
+    },
+    {
+      "id": "commerces-03",
+      "fr": "boucherie",
+      "en": "butcher",
+      "emoji": "🥩",
+      "tags": [
+        "col:une"
+      ]
+    },
+    {
+      "id": "commerces-04",
+      "fr": "poissonnerie",
+      "en": "fishmonger",
+      "emoji": "🐟",
+      "tags": [
+        "col:une"
+      ]
+    },
+    {
+      "id": "commerces-05",
+      "fr": "épicerie",
+      "en": "grocery",
+      "emoji": "🛒",
+      "tags": [
+        "col:une"
+      ]
+    },
+    {
+      "id": "commerces-06",
+      "fr": "fromagerie",
+      "en": "cheese shop",
+      "emoji": "🧀",
+      "tags": [
+        "col:une"
+      ]
+    },
+    {
+      "id": "commerces-07",
+      "fr": "marché",
+      "en": "market",
+      "emoji": "🍅",
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "commerces-08",
+      "fr": "supermarché",
+      "en": "supermarket",
+      "emoji": "🏬",
+      "tags": [
+        "col:un"
+      ]
+    }
+  ]
+}

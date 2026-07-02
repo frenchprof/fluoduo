@@ -16,7 +16,12 @@
         "pouvoir"
       ],
       "fullSentence": "Je peux manger ici ?",
-      "sentenceTrans": "Can I eat here?"
+      "sentenceTrans": "Can I eat here?",
+      "whyWrong": {
+        "peut": "peut is the il/elle form — with je it's peux.",
+        "pouvez": "pouvez is the vous form — with je it's peux.",
+        "pouvoir": "pouvoir is the infinitive — a conjugated form is needed: peux."
+      }
     },
     {
       "id": "u3-sio037-02",
@@ -29,7 +34,12 @@
         "pouvons"
       ],
       "fullSentence": "On peut visiter le musée.",
-      "sentenceTrans": "We can visit the museum."
+      "sentenceTrans": "We can visit the museum.",
+      "whyWrong": {
+        "peux": "peux is the je/tu form — on takes peut.",
+        "peuvent": "peuvent is the ils/elles form — on takes the singular peut.",
+        "pouvons": "pouvons is the nous form — with on use peut."
+      }
     },
     {
       "id": "u3-sio037-03",
@@ -42,7 +52,12 @@
         "peux"
       ],
       "fullSentence": "Vous pouvez acheter les billets ici.",
-      "sentenceTrans": "You can buy the tickets here."
+      "sentenceTrans": "You can buy the tickets here.",
+      "whyWrong": {
+        "pouvons": "pouvons is the nous form — with vous it's pouvez.",
+        "peuvent": "peuvent is the ils/elles form — with vous it's pouvez.",
+        "peux": "peux is the je/tu form — with vous it's pouvez."
+      }
     },
     {
       "id": "u3-sio037-04",
@@ -55,7 +70,12 @@
         "peux"
       ],
       "fullSentence": "Ils ne peuvent pas fumer ici.",
-      "sentenceTrans": "They can't smoke here."
+      "sentenceTrans": "They can't smoke here.",
+      "whyWrong": {
+        "peut": "peut is singular (il/elle) — ils takes peuvent.",
+        "pouvez": "pouvez is the vous form — with ils it's peuvent.",
+        "peux": "peux is the je/tu form — with ils it's peuvent."
+      }
     }
   ]
 }

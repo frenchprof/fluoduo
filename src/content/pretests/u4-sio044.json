@@ -16,7 +16,12 @@
         "mangeons"
       ],
       "fullSentence": "Le matin, je mange des œufs.",
-      "sentenceTrans": "In the morning, I eat eggs."
+      "sentenceTrans": "In the morning, I eat eggs.",
+      "whyWrong": {
+        "manges": "That's the tu form — je mange.",
+        "mangez": "That's the vous form — je mange.",
+        "mangeons": "That's the nous form — je mange."
+      }
     },
     {
       "id": "u4-sio044-02",
@@ -24,12 +29,17 @@
       "sentenceAfter": " toujours ensemble le soir.",
       "answer": "mangeons",
       "distractors": [
-        "mangons",
+        "mange",
         "mangent",
         "mangez"
       ],
       "fullSentence": "Nous mangeons toujours ensemble le soir.",
-      "sentenceTrans": "We always eat together in the evening."
+      "sentenceTrans": "We always eat together in the evening.",
+      "whyWrong": {
+        "mange": "That's the je/il form — nous mangeons.",
+        "mangent": "That's the ils form — nous mangeons.",
+        "mangez": "That's the vous form — nous mangeons."
+      }
     },
     {
       "id": "u4-sio044-03",
@@ -37,12 +47,17 @@
       "sentenceAfter": " des pâtes ce soir.",
       "answer": "mangent",
       "distractors": [
-        "mangeont",
+        "manges",
         "mange",
         "mangeons"
       ],
       "fullSentence": "Les enfants mangent des pâtes ce soir.",
-      "sentenceTrans": "The children are eating pasta tonight."
+      "sentenceTrans": "The children are eating pasta tonight.",
+      "whyWrong": {
+        "manges": "That's the tu form — for ils use mangent.",
+        "mange": "That's the singular il form — for plural ils use mangent.",
+        "mangeons": "That's the nous form — for ils use mangent."
+      }
     },
     {
       "id": "u4-sio044-04",
@@ -55,7 +70,12 @@
         "buvons"
       ],
       "fullSentence": "Je bois de l'eau toute la journée.",
-      "sentenceTrans": "I drink water all day long."
+      "sentenceTrans": "I drink water all day long.",
+      "whyWrong": {
+        "boit": "That's the il form — je bois.",
+        "boire": "That's the infinitive — the conjugated je form is bois.",
+        "buvons": "That's the nous form — je bois."
+      }
     },
     {
       "id": "u4-sio044-05",
@@ -63,12 +83,17 @@
       "sentenceAfter": " beaucoup d'eau pendant l'entraînement.",
       "answer": "buvons",
       "distractors": [
-        "boivons",
+        "boivent",
         "buvez",
-        "buvont"
+        "boit"
       ],
       "fullSentence": "Nous buvons beaucoup d'eau pendant l'entraînement.",
-      "sentenceTrans": "We drink a lot of water during training."
+      "sentenceTrans": "We drink a lot of water during training.",
+      "whyWrong": {
+        "boivent": "That's the ils form — nous buvons.",
+        "buvez": "That's the vous form — nous buvons.",
+        "boit": "That's the il form — nous buvons."
+      }
     },
     {
       "id": "u4-sio044-06",
@@ -76,12 +101,17 @@
       "sentenceAfter": " du champagne.",
       "answer": "boivent",
       "distractors": [
-        "buvent",
+        "boit",
         "boive",
         "buvons"
       ],
       "fullSentence": "Les invités boivent du champagne.",
-      "sentenceTrans": "The guests are drinking champagne."
+      "sentenceTrans": "The guests are drinking champagne.",
+      "whyWrong": {
+        "boit": "That's the singular il form — for plural ils use boivent.",
+        "boive": "That's a subjunctive form; the present ils form is boivent.",
+        "buvons": "That's the nous form — for ils use boivent."
+      }
     },
     {
       "id": "u4-sio044-07",
@@ -94,7 +124,12 @@
         "mangerez"
       ],
       "fullSentence": "Est-ce que vous mangez des légumes tous les jours ?",
-      "sentenceTrans": "Do you eat vegetables every day?"
+      "sentenceTrans": "Do you eat vegetables every day?",
+      "whyWrong": {
+        "mangeons": "That's the nous form — vous mangez.",
+        "mange": "That's the je/il form — vous mangez.",
+        "mangerez": "That's the future tense — for the present use mangez."
+      }
     }
   ]
 }

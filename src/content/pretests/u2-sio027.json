@@ -16,7 +16,12 @@
         "À"
       ],
       "fullSentence": "Le lundi, j'ai français.",
-      "sentenceTrans": "On Mondays, I have French."
+      "sentenceTrans": "On Mondays, I have French.",
+      "whyWrong": {
+        "Au": "For a repeated day, French uses le — le lundi, not au.",
+        "En": "en isn't used with days of the week — say le lundi.",
+        "À": "à isn't used with days of the week — le lundi."
+      }
     },
     {
       "id": "u2-sio027-02",
@@ -29,7 +34,12 @@
         "toutes"
       ],
       "fullSentence": "Je fais du sport tous les soirs.",
-      "sentenceTrans": "I do sport every evening."
+      "sentenceTrans": "I do sport every evening.",
+      "whyWrong": {
+        "tout": "tout is singular — soirs is plural, so tous.",
+        "toute": "toute is feminine singular — soirs is masculine plural, tous.",
+        "toutes": "toutes is feminine plural — soirs is masculine, so tous."
+      }
     },
     {
       "id": "u2-sio027-03",
@@ -42,7 +52,12 @@
         "le"
       ],
       "fullSentence": "Le cours est à 8 heures.",
-      "sentenceTrans": "The class is at 8 o'clock."
+      "sentenceTrans": "The class is at 8 o'clock.",
+      "whyWrong": {
+        "au": "Clock times take à — à 8 heures, not au.",
+        "en": "en is for months/years, not clock time — à 8 heures.",
+        "le": "le doesn't mark clock time — use à 8 heures."
+      }
     },
     {
       "id": "u2-sio027-04",
@@ -55,7 +70,12 @@
         "Combien d'heures"
       ],
       "fullSentence": "« À quelle heure tu commences le travail ? »",
-      "sentenceTrans": "What time do you start work?"
+      "sentenceTrans": "What time do you start work?",
+      "whyWrong": {
+        "Quelle heure": "To ask at what time, you need the à — À quelle heure.",
+        "C'est quand": "C'est quand asks 'when', but the frame here wants À quelle heure.",
+        "Combien d'heures": "Combien d'heures asks 'how many hours', not 'at what time'."
+      }
     },
     {
       "id": "u2-sio027-05",
@@ -68,7 +88,12 @@
         "c'est"
       ],
       "fullSentence": "Le film, c'est à quelle heure ?",
-      "sentenceTrans": "The film — (at) what time is it on?"
+      "sentenceTrans": "The film — (at) what time is it on?",
+      "whyWrong": {
+        "il est": "For an event's time, French uses c'est — and you need à: c'est à.",
+        "il est à": "The film as a topic takes c'est, not il est — c'est à quelle heure.",
+        "c'est": "You still need à before quelle heure — c'est à quelle heure."
+      }
     },
     {
       "id": "u2-sio027-06",
@@ -81,7 +106,12 @@
         "en"
       ],
       "fullSentence": "Elle étudie le matin.",
-      "sentenceTrans": "She studies in the morning."
+      "sentenceTrans": "She studies in the morning.",
+      "whyWrong": {
+        "au": "'in the morning' as a habit is le matin, not au.",
+        "à": "à doesn't fit here — the habitual is le matin.",
+        "en": "'en matin' isn't used — say le matin."
+      }
     }
   ]
 }

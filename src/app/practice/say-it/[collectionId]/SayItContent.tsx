@@ -21,19 +21,32 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 function normalize(s: string) {
-  return s.toLowerCase().trim().replace(/[.,!?;:'"«»()\-]/g, "").replace(/\s+/g, " ");
+  return s
+    .toLowerCase()
+    .trim()
+    // hyphens → space so "dix-sept" matches a spoken "dix sept"
+    .replace(/[-–—]/g, " ")
+    .replace(/[.,!?;:'"«»()]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function deaccent(s: string) {
   return s.normalize("NFD").replace(/[̀-ͯ]/g, "");
 }
 
-function gradeAnswer(recognized: string, expected: string): Grade {
+function gradeAnswer(recognized: string, expected: string, expectedAlt?: string): Grade {
   const nr = normalize(recognized);
   const ne = normalize(expected);
   if (!nr) return "miss";
   if (nr === ne) return "perfect";
   if (deaccent(nr) === deaccent(ne)) return "good";
+  // Number decks: speech engines transcribe "dix-sept" as the numeral "17".
+  // Accept the digit form (item.en when it is purely numeric) as correct.
+  if (expectedAlt) {
+    const na = normalize(expectedAlt);
+    if (na && nr === na) return "perfect";
+  }
   const words = ne.split(" ").filter((w) => w.length > 1);
   if (!words.length) return "miss";
   const hits = words.filter((w) =>
@@ -119,7 +132,7 @@ export default function SayItContent({ collectionId }: { collectionId: string })
       recRef.current = null;
       setPhase("result");
       setTranscript((t) => {
-        const g = gradeAnswer(t, c.fr);
+        const g = gradeAnswer(t, c.fr, /^\d+$/.test((c.en ?? "").trim()) ? c.en : undefined);
         setResult({ grade: g, recognized: t });
         setScore((s) => ({ ok: s.ok + (g === "perfect" || g === "good" ? 1 : 0), total: s.total + 1 }));
         return t;

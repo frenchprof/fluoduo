@@ -16,7 +16,12 @@
         "pas de la"
       ],
       "fullSentence": "Elle ne mange pas de viande.",
-      "sentenceTrans": "She doesn't eat meat."
+      "sentenceTrans": "She doesn't eat meat.",
+      "whyWrong": {
+        "de la": "After a negative, the partitive de la becomes plain de.",
+        "du": "After a negative, du becomes de.",
+        "pas de la": "The 'pas' is already in the sentence; the blank is just de."
+      }
     },
     {
       "id": "u4-sio043-02",
@@ -29,7 +34,12 @@
         "pas d'"
       ],
       "fullSentence": "Il ne boit pas d' eau — seulement du jus.",
-      "sentenceTrans": "He doesn't drink water — only juice."
+      "sentenceTrans": "He doesn't drink water — only juice.",
+      "whyWrong": {
+        "de": "Before a vowel, de elides to d'.",
+        "de l'": "After a negative the partitive drops to d', not de l'.",
+        "pas d'": "The 'pas' is already there; the blank is just d'."
+      }
     },
     {
       "id": "u4-sio043-03",
@@ -42,7 +52,12 @@
         "beaucoup de les"
       ],
       "fullSentence": "Elle mange beaucoup de légumes chaque jour.",
-      "sentenceTrans": "She eats a lot of vegetables every day."
+      "sentenceTrans": "She eats a lot of vegetables every day.",
+      "whyWrong": {
+        "beaucoup des": "After beaucoup you use plain de, not des.",
+        "beaucoup du": "After beaucoup you use de, never du.",
+        "beaucoup de les": "After a quantity word you just use de — no article."
+      }
     },
     {
       "id": "u4-sio043-04",
@@ -55,7 +70,12 @@
         "peu de"
       ],
       "fullSentence": "Tu veux un peu de lait dans ton café ?",
-      "sentenceTrans": "Do you want a little milk in your coffee?"
+      "sentenceTrans": "Do you want a little milk in your coffee?",
+      "whyWrong": {
+        "un peu du": "After un peu you use plain de, not du.",
+        "un peu de la": "After un peu you use de, not de la.",
+        "peu de": "peu de lait means 'little milk' (not much); to offer 'a little', say un peu de."
+      }
     },
     {
       "id": "u4-sio043-05",
@@ -68,7 +88,12 @@
         "ce n'est pas de la"
       ],
       "fullSentence": "— C'est du café ? — Non, ce n'est pas du café — c'est du thé.",
-      "sentenceTrans": "— Is it coffee? — No, it's not coffee — it's tea."
+      "sentenceTrans": "— Is it coffee? — No, it's not coffee — it's tea.",
+      "whyWrong": {
+        "ce n'est pas de": "With 'ce n'est pas' identifying a thing, the article stays — du café.",
+        "il n'y a pas de": "That means 'there isn't any'; here we're saying 'it isn't coffee'.",
+        "ce n'est pas de la": "café is masculine — du, not de la."
+      }
     },
     {
       "id": "u4-sio043-06",
@@ -81,7 +106,12 @@
         "beaucoup de"
       ],
       "fullSentence": "Il n'y a pas assez de sel dans cette soupe.",
-      "sentenceTrans": "There isn't enough salt in this soup."
+      "sentenceTrans": "There isn't enough salt in this soup.",
+      "whyWrong": {
+        "assez du": "After assez you use plain de, not du.",
+        "assez de le": "After a quantity word you just use de — no article.",
+        "beaucoup de": "That means 'a lot of'; the sentence needs 'enough' (assez de)."
+      }
     }
   ]
 }

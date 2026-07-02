@@ -45,6 +45,16 @@ export type Item = {
   ipa?: string;
   /** Example sentence containing the target — blankable for gapfill. */
   example?: string;
+  /**
+   * Spoken-syllable segmentation of `fr`, used by Lexicalator (the syllable
+   * key/keyhole game). Concatenated, it MUST equal `fr` exactly (spaces and
+   * all). Hand-authored — French syllabification + the silent-tail rule is an
+   * ear rule a splitter gets wrong (see docs). House rule: break only at true
+   * consonants (single → onset of next; C+r/l kept whole); glides bind; a
+   * vowel–vowel hiatus splits; silent endings (-e, -ent, mute finals) glue to
+   * the previous syllable. Omit for words not used in Lexicalator.
+   */
+  syllables?: string[];
   pos?: string;
   gender?: Gender;
   /**
@@ -92,6 +102,13 @@ export type MatchingPair = { leftId: string; rightId: string };
 export type GameConfig = {
   letris?: { columns: LetrisColumn[] };
   matching?: { pairs: MatchingPair[] };
+  /**
+   * Lexicalator: the pool of near-miss decoy syllables mixed onto the key belt
+   * (wrong endings/vowels that only a knower rejects, e.g. "teur" against
+   * "teuse"). Hand-authored per deck so decoys stay plausible for THIS
+   * vocabulary. The real syllables come from each item's `syllables`.
+   */
+  lexicalator?: { decoys: string[] };
   /** Dice-practice presentation overrides (read by lib/practice/engine.ts). */
   practice?: {
     /** Custom question line, e.g. "In which sentence would this pronoun fit best?" */

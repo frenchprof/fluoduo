@@ -16,7 +16,12 @@
         "le"
       ],
       "fullSentence": "Dans mon sac, il y a un livre.",
-      "sentenceTrans": "In my bag, there's a book."
+      "sentenceTrans": "In my bag, there's a book.",
+      "whyWrong": {
+        "une": "livre is masculine — un livre, not une.",
+        "des": "des is plural — here it's just one book.",
+        "le": "le is 'the' (definite) — introducing one book uses un."
+      }
     },
     {
       "id": "u2-sio021-02",
@@ -29,7 +34,12 @@
         "la"
       ],
       "fullSentence": "Dans mon sac, il y a une trousse.",
-      "sentenceTrans": "In my bag, there's a pencil case."
+      "sentenceTrans": "In my bag, there's a pencil case.",
+      "whyWrong": {
+        "un": "trousse is feminine — une trousse, not un.",
+        "des": "des is plural — here it's just one pencil case.",
+        "la": "la is 'the' (definite) — introducing one uses une."
+      }
     },
     {
       "id": "u2-sio021-03",
@@ -42,7 +52,12 @@
         "les"
       ],
       "fullSentence": "Dans mon sac, il y a des stylos.",
-      "sentenceTrans": "In my bag, there are pens."
+      "sentenceTrans": "In my bag, there are pens.",
+      "whyWrong": {
+        "un": "un is singular masculine — stylos is plural.",
+        "une": "une is singular feminine — stylos is plural.",
+        "les": "les is 'the' (definite) — introducing some pens uses des."
+      }
     },
     {
       "id": "u2-sio021-04",
@@ -55,7 +70,12 @@
         "il a"
       ],
       "fullSentence": "Sur la table, il y a une pomme.",
-      "sentenceTrans": "On the table, there is an apple."
+      "sentenceTrans": "On the table, there is an apple.",
+      "whyWrong": {
+        "elle est": "elle est means 'she/it is', not 'there is'.",
+        "c'est": "c'est means 'it is / this is', not 'there is'.",
+        "il a": "il a means 'he has' — 'there is' is il y a (with y)."
+      }
     },
     {
       "id": "u2-sio021-05",
@@ -68,7 +88,12 @@
         "Elle est"
       ],
       "fullSentence": "Ce sont des livres.",
-      "sentenceTrans": "They are books."
+      "sentenceTrans": "They are books.",
+      "whyWrong": {
+        "C'est": "C'est is singular — for plural (des livres) use Ce sont.",
+        "Il est": "Il est means 'he/it is', not 'they are'.",
+        "Elle est": "Elle est means 'she/it is', not 'they are'."
+      }
     },
     {
       "id": "u2-sio021-06",
@@ -81,7 +106,12 @@
         "le"
       ],
       "fullSentence": "Dans mon sac, il n'y a pas de livre.",
-      "sentenceTrans": "In my bag, there's no book."
+      "sentenceTrans": "In my bag, there's no book.",
+      "whyWrong": {
+        "des": "After a negative, des becomes de — pas de livre.",
+        "un": "After a negative, un becomes de — pas de livre.",
+        "le": "le is definite 'the' — the negative of il y a un takes de."
+      }
     },
     {
       "id": "u2-sio021-07",
@@ -94,7 +124,12 @@
         "le"
       ],
       "fullSentence": "Non, ce n'est pas un livre, c'est un cahier.",
-      "sentenceTrans": "No, it's not a book, it's a notebook."
+      "sentenceTrans": "No, it's not a book, it's a notebook.",
+      "whyWrong": {
+        "de": "With ce n'est pas identifying a thing, un stays — de is only after il n'y a pas.",
+        "d'": "d' is de before a vowel, and un is kept here anyway (identity after ce n'est pas).",
+        "le": "le is 'the' — you're identifying it as a book, so un."
+      }
     }
   ]
 }

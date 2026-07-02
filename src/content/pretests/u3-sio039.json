@@ -16,7 +16,12 @@
         "veut"
       ],
       "fullSentence": "Je voudrais un café, s'il vous plaît.",
-      "sentenceTrans": "I would like a coffee, please."
+      "sentenceTrans": "I would like a coffee, please.",
+      "whyWrong": {
+        "voudrez": "voudrez is the future vous form — the polite request with je is voudrais.",
+        "voulez": "voulez is the present vous form — a polite 'I would like' is je voudrais.",
+        "veut": "veut is the il/elle form — with je, politely, it's voudrais."
+      }
     },
     {
       "id": "u3-sio039-02",
@@ -29,7 +34,12 @@
         "soif"
       ],
       "fullSentence": "J'ai besoin d'un hôtel.",
-      "sentenceTrans": "I need a hotel."
+      "sentenceTrans": "I need a hotel.",
+      "whyWrong": {
+        "envie": "avoir envie de means 'to feel like/want' — 'need' is avoir besoin.",
+        "faim": "faim means 'hunger' — 'need a hotel' is avoir besoin.",
+        "soif": "soif means 'thirst' — 'need' is avoir besoin."
+      }
     },
     {
       "id": "u3-sio039-03",
@@ -42,7 +52,12 @@
         "aimes"
       ],
       "fullSentence": "J'aimerais visiter Paris.",
-      "sentenceTrans": "I'd like to visit Paris."
+      "sentenceTrans": "I'd like to visit Paris.",
+      "whyWrong": {
+        "aimerait": "aimerait is the il/elle conditional — with je it's aimerais.",
+        "aimeriez": "aimeriez is the vous conditional — with je it's aimerais.",
+        "aimes": "aimes is the tu present — a polite 'I'd like' with je is aimerais."
+      }
     },
     {
       "id": "u3-sio039-04",
@@ -55,7 +70,12 @@
         "parti"
       ],
       "fullSentence": "Je veux partir en vacances.",
-      "sentenceTrans": "I want to go on holiday."
+      "sentenceTrans": "I want to go on holiday.",
+      "whyWrong": {
+        "pars": "pars is a present-tense form (je/tu) — after veux use the infinitive: partir.",
+        "part": "part is the il/elle present — after veux use the infinitive: partir.",
+        "parti": "parti is the past participle — after veux use the infinitive: partir."
+      }
     }
   ]
 }

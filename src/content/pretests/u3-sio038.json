@@ -16,7 +16,12 @@
         "pris"
       ],
       "fullSentence": "Je prends la ligne 4 jusqu'à Montparnasse.",
-      "sentenceTrans": "I take line 4 to Montparnasse."
+      "sentenceTrans": "I take line 4 to Montparnasse.",
+      "whyWrong": {
+        "prend": "prend is the il/elle form — with je it's prends.",
+        "prenons": "prenons is the nous form — with je it's prends.",
+        "pris": "pris is the past participle — the present with je is prends."
+      }
     },
     {
       "id": "u3-sio038-02",
@@ -26,10 +31,15 @@
       "distractors": [
         "prenons",
         "prennent",
-        "prendez"
+        "prend"
       ],
       "fullSentence": "Pour aller à l'Opéra, vous prenez la ligne 3.",
-      "sentenceTrans": "To get to the Opéra, you take line 3."
+      "sentenceTrans": "To get to the Opéra, you take line 3.",
+      "whyWrong": {
+        "prenons": "prenons is the nous form — with vous it's prenez.",
+        "prennent": "prennent is the ils/elles form — with vous it's prenez.",
+        "prend": "prend is the il/elle form — with vous it's prenez."
+      }
     },
     {
       "id": "u3-sio038-03",
@@ -42,7 +52,12 @@
         "prenez"
       ],
       "fullSentence": "Nous prenons le métro tous les jours.",
-      "sentenceTrans": "We take the metro every day."
+      "sentenceTrans": "We take the metro every day.",
+      "whyWrong": {
+        "prends": "prends is the je/tu form — with nous it's prenons.",
+        "prennent": "prennent is the ils/elles form — with nous it's prenons.",
+        "prenez": "prenez is the vous form — with nous it's prenons."
+      }
     },
     {
       "id": "u3-sio038-04",
@@ -55,7 +70,12 @@
         "avec"
       ],
       "fullSentence": "Je vais à l'université en bus.",
-      "sentenceTrans": "I go to university by bus."
+      "sentenceTrans": "I go to university by bus.",
+      "whyWrong": {
+        "à": "à is only used for à pied / à vélo — enclosed transport takes en: en bus.",
+        "au": "au (à + le) adds an article that isn't used here — it's en bus.",
+        "avec": "avec means 'with' — 'by bus' is en bus."
+      }
     },
     {
       "id": "u3-sio038-05",
@@ -68,7 +88,12 @@
         "par"
       ],
       "fullSentence": "Elle va au marché à pied.",
-      "sentenceTrans": "She goes to the market on foot."
+      "sentenceTrans": "She goes to the market on foot.",
+      "whyWrong": {
+        "en": "en is for vehicles you get inside — 'on foot' is the fixed à pied.",
+        "au": "au (à + le) adds an article — the fixed phrase is à pied.",
+        "par": "par means 'by/through' — 'on foot' is à pied."
+      }
     },
     {
       "id": "u3-sio038-06",
@@ -81,7 +106,12 @@
         "en"
       ],
       "fullSentence": "— On va à la plage ? — Oui, on y va demain.",
-      "sentenceTrans": "— Are we going to the beach? — Yes, we're going there tomorrow."
+      "sentenceTrans": "— Are we going to the beach? — Yes, we're going there tomorrow.",
+      "whyWrong": {
+        "là": "là is an adverb 'there' — it can't sit before the verb here; the pronoun is y.",
+        "le": "le is a direct-object pronoun — à la plage is replaced by y.",
+        "en": "en replaces de + noun — à la plage (à + place) is replaced by y."
+      }
     },
     {
       "id": "u3-sio038-07",
@@ -94,7 +124,12 @@
         "me"
       ],
       "fullSentence": "Ce café ? J'y vais souvent le matin.",
-      "sentenceTrans": "This café? I often go there in the morning."
+      "sentenceTrans": "This café? I often go there in the morning.",
+      "whyWrong": {
+        "en": "en replaces de + noun — à ce café (à + place) is replaced by y.",
+        "le": "le is a direct-object pronoun — a place introduced by à is replaced by y.",
+        "me": "me means 'me/to me' — the place pronoun is y."
+      }
     }
   ]
 }

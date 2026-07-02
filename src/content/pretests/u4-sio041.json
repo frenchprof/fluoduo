@@ -16,7 +16,12 @@
         "le repas du matin"
       ],
       "fullSentence": "Je prends le petit-déjeuner à sept heures.",
-      "sentenceTrans": "I have breakfast at seven o'clock."
+      "sentenceTrans": "I have breakfast at seven o'clock.",
+      "whyWrong": {
+        "le déjeuner": "That means 'lunch', not breakfast.",
+        "la matinée": "That means 'the morning' (the time), not the meal.",
+        "le repas du matin": "Literally 'the morning meal', but the set word for breakfast is le petit-déjeuner."
+      }
     },
     {
       "id": "u4-sio041-02",
@@ -29,7 +34,12 @@
         "de la pomme"
       ],
       "fullSentence": "Pour le goûter, elle mange une pomme.",
-      "sentenceTrans": "For her snack, she eats an apple."
+      "sentenceTrans": "For her snack, she eats an apple.",
+      "whyWrong": {
+        "un pomme": "pomme is feminine — une pomme, not un.",
+        "la pomme": "la means 'the' specific apple; to eat one apple you need une.",
+        "de la pomme": "That's partitive 'some apple'; a whole apple is counted with une."
+      }
     },
     {
       "id": "u4-sio041-03",
@@ -42,7 +52,12 @@
         "une salade"
       ],
       "fullSentence": "Il mange de la salade et des tomates.",
-      "sentenceTrans": "He eats (some) salad and tomatoes."
+      "sentenceTrans": "He eats (some) salad and tomatoes.",
+      "whyWrong": {
+        "du salade": "salade is feminine — de la, not du.",
+        "la salade": "la means salad in general; here he eats 'some', so de la.",
+        "une salade": "une is 'a whole salad'; for an amount use de la."
+      }
     },
     {
       "id": "u4-sio041-04",
@@ -55,7 +70,12 @@
         "de l'eaux"
       ],
       "fullSentence": "Je bois de l'eau minérale.",
-      "sentenceTrans": "I drink (some) mineral water."
+      "sentenceTrans": "I drink (some) mineral water.",
+      "whyWrong": {
+        "l'eau": "That's 'the water'; to drink some, use de l'.",
+        "du eau": "eau is feminine and starts with a vowel — it takes de l', not du.",
+        "de l'eaux": "eau is singular here — eaux is the plural."
+      }
     },
     {
       "id": "u4-sio041-05",
@@ -68,7 +88,12 @@
         "des fromages"
       ],
       "fullSentence": "En France, on mange du fromage après le plat principal.",
-      "sentenceTrans": "In France, people eat cheese after the main course."
+      "sentenceTrans": "In France, people eat cheese after the main course.",
+      "whyWrong": {
+        "le fromage": "le means cheese in general; here they eat 'some', so du.",
+        "de la fromage": "fromage is masculine — du, not de la.",
+        "des fromages": "des is plural 'cheeses'; the uncountable amount is du fromage."
+      }
     },
     {
       "id": "u4-sio041-06",
@@ -81,7 +106,12 @@
         "pains"
       ],
       "fullSentence": "Les Français mangent beaucoup de pain.",
-      "sentenceTrans": "The French eat a lot of bread."
+      "sentenceTrans": "The French eat a lot of bread.",
+      "whyWrong": {
+        "du pain": "After beaucoup you use plain de, so no du here.",
+        "le pain": "After beaucoup de you drop the article — beaucoup de pain.",
+        "pains": "pain is uncountable here — no plural after beaucoup de."
+      }
     },
     {
       "id": "u4-sio041-07",
@@ -94,7 +124,12 @@
         "du pâtes"
       ],
       "fullSentence": "On va manger des pâtes ce soir.",
-      "sentenceTrans": "We're going to eat pasta tonight."
+      "sentenceTrans": "We're going to eat pasta tonight.",
+      "whyWrong": {
+        "de la pâte": "la pâte (singular) means 'dough'; pasta is always plural, des pâtes.",
+        "les pâtes": "les means the pasta in general; to eat 'some', use des.",
+        "du pâtes": "du is masculine singular; pâtes is feminine plural — des pâtes."
+      }
     }
   ]
 }

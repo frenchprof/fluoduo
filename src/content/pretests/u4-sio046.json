@@ -16,7 +16,12 @@
         "ces"
       ],
       "fullSentence": "Je voudrais ce plat, s'il vous plaît.",
-      "sentenceTrans": "I'd like this dish, please."
+      "sentenceTrans": "I'd like this dish, please.",
+      "whyWrong": {
+        "cet": "cet is for masculine nouns starting with a vowel; plat starts with a consonant.",
+        "cette": "cette is feminine; plat is masculine.",
+        "ces": "ces is plural; plat is singular."
+      }
     },
     {
       "id": "u4-sio046-02",
@@ -29,7 +34,12 @@
         "ces"
       ],
       "fullSentence": "On fait les courses cet après-midi.",
-      "sentenceTrans": "We're doing the shopping this afternoon."
+      "sentenceTrans": "We're doing the shopping this afternoon.",
+      "whyWrong": {
+        "ce": "Before a vowel sound, ce becomes cet — après-midi starts with a vowel.",
+        "cette": "cette is feminine; après-midi is masculine.",
+        "ces": "ces is plural; après-midi is singular here."
+      }
     },
     {
       "id": "u4-sio046-03",
@@ -42,7 +52,12 @@
         "ces"
       ],
       "fullSentence": "Qu'est-ce qu'on mange cette semaine ?",
-      "sentenceTrans": "What are we eating this week?"
+      "sentenceTrans": "What are we eating this week?",
+      "whyWrong": {
+        "ce": "ce is masculine; semaine is feminine.",
+        "cet": "cet is for masculine vowel-initial nouns; semaine is feminine.",
+        "ces": "ces is plural; semaine is singular."
+      }
     },
     {
       "id": "u4-sio046-04",
@@ -55,7 +70,12 @@
         "Cette"
       ],
       "fullSentence": "Ces légumes ont l'air très frais.",
-      "sentenceTrans": "These vegetables look very fresh."
+      "sentenceTrans": "These vegetables look very fresh.",
+      "whyWrong": {
+        "Ce": "ce is masculine singular; légumes is plural.",
+        "Cet": "cet is masculine singular; légumes is plural.",
+        "Cette": "cette is feminine singular; légumes is plural."
+      }
     },
     {
       "id": "u4-sio046-05",
@@ -68,7 +88,12 @@
         "ces"
       ],
       "fullSentence": "Tu connais cet endroit ?",
-      "sentenceTrans": "Do you know this place?"
+      "sentenceTrans": "Do you know this place?",
+      "whyWrong": {
+        "ce": "Before a vowel sound ce becomes cet — endroit starts with a vowel.",
+        "cette": "cette is feminine; endroit is masculine.",
+        "ces": "ces is plural; endroit is singular."
+      }
     },
     {
       "id": "u4-sio046-06",
@@ -81,7 +106,12 @@
         "Ces"
       ],
       "fullSentence": "Ce fromage sent très fort !",
-      "sentenceTrans": "This cheese smells very strong!"
+      "sentenceTrans": "This cheese smells very strong!",
+      "whyWrong": {
+        "Cet": "cet is for masculine vowel-initial nouns; fromage starts with a consonant.",
+        "Cette": "cette is feminine; fromage is masculine.",
+        "Ces": "ces is plural; fromage is singular."
+      }
     },
     {
       "id": "u4-sio046-07",
@@ -94,7 +124,12 @@
         "ces"
       ],
       "fullSentence": "On mange beaucoup d'abricots cet été.",
-      "sentenceTrans": "We eat a lot of apricots this summer."
+      "sentenceTrans": "We eat a lot of apricots this summer.",
+      "whyWrong": {
+        "ce": "Before a vowel sound ce becomes cet — été starts with a vowel.",
+        "cette": "cette is feminine; été is masculine.",
+        "ces": "ces is plural; été is singular."
+      }
     }
   ]
 }

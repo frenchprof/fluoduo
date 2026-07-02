@@ -17,7 +17,12 @@
       ],
       "fullSentence": "Je vais manger de la pizza ce soir.",
       "sentenceTrans": "I'm going to eat pizza this evening.",
-      "transFirst": true
+      "transFirst": true,
+      "whyWrong": {
+        "vas": "That's the tu form — je vais.",
+        "va": "That's the il/elle form — je vais.",
+        "allons": "That's the nous form — je vais."
+      }
     },
     {
       "id": "u4-sio048-02",
@@ -31,7 +36,12 @@
       ],
       "fullSentence": "Nous allons cuisiner ensemble cette semaine.",
       "sentenceTrans": "We're going to cook together this week.",
-      "transFirst": true
+      "transFirst": true,
+      "whyWrong": {
+        "va": "That's the singular il form — nous allons.",
+        "vont": "That's the ils form — nous allons.",
+        "allez": "That's the vous form — nous allons."
+      }
     },
     {
       "id": "u4-sio048-03",
@@ -45,7 +55,12 @@
       ],
       "fullSentence": "Qu'est-ce que vous allez commander ?",
       "sentenceTrans": "What are you going to order?",
-      "transFirst": true
+      "transFirst": true,
+      "whyWrong": {
+        "allons": "That's the nous form — vous allez.",
+        "vont": "That's the ils form — vous allez.",
+        "va": "That's the il form — vous allez."
+      }
     },
     {
       "id": "u4-sio048-04",
@@ -59,7 +74,12 @@
       ],
       "fullSentence": "Je ne vais pas manger de viande ce soir.",
       "sentenceTrans": "I'm not going to eat meat this evening.",
-      "transFirst": true
+      "transFirst": true,
+      "whyWrong": {
+        "mange": "After 'vais' you use the infinitive manger, not the conjugated form.",
+        "manges": "That's a conjugated tu form; after aller you need the infinitive manger.",
+        "mangé": "That's the past participle; the near future takes the infinitive manger."
+      }
     },
     {
       "id": "u4-sio048-05",
@@ -73,7 +93,12 @@
       ],
       "fullSentence": "Tu dois manger des légumes.",
       "sentenceTrans": "You must eat vegetables.",
-      "transFirst": true
+      "transFirst": true,
+      "whyWrong": {
+        "vas": "'tu vas manger' means 'you're going to eat', not 'you must'.",
+        "peux": "'tu peux' means 'you can', not 'you must'.",
+        "veux": "'tu veux' means 'you want', not 'you must'."
+      }
     },
     {
       "id": "u4-sio048-06",
@@ -87,7 +112,12 @@
       ],
       "fullSentence": "Il faut boire de l'eau.",
       "sentenceTrans": "One must drink water.",
-      "transFirst": true
+      "transFirst": true,
+      "whyWrong": {
+        "doit": "'il doit' means 'he must' (a specific person), not the impersonal 'one must'.",
+        "va": "'il va boire' means 'he's going to drink', not 'one must'.",
+        "peut": "'il peut' means 'he can', not 'one must'."
+      }
     },
     {
       "id": "u4-sio048-07",
@@ -101,7 +131,12 @@
       ],
       "fullSentence": "Elle peut cuisiner.",
       "sentenceTrans": "She can cook.",
-      "transFirst": true
+      "transFirst": true,
+      "whyWrong": {
+        "va": "'elle va cuisiner' means 'she's going to cook', not 'she can'.",
+        "doit": "'elle doit' means 'she must', not 'she can'.",
+        "faut": "faut is impersonal ('il faut'); it can't take 'elle' as its subject."
+      }
     }
   ]
 }

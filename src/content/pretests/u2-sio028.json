@@ -16,7 +16,12 @@
         "leur"
       ],
       "fullSentence": "Je vais au cinéma avec eux.",
-      "sentenceTrans": "I go to the cinema with them (m)."
+      "sentenceTrans": "I go to the cinema with them (m).",
+      "whyWrong": {
+        "ils": "ils is a subject pronoun — after avec use the stressed eux.",
+        "les": "les is an object pronoun — after avec use eux.",
+        "leur": "leur is 'to them' / 'their' — after avec use eux."
+      }
     },
     {
       "id": "u2-sio028-02",
@@ -29,7 +34,12 @@
         "mon"
       ],
       "fullSentence": "Tu viens avec moi ?",
-      "sentenceTrans": "Are you coming with me?"
+      "sentenceTrans": "Are you coming with me?",
+      "whyWrong": {
+        "je": "je is a subject pronoun — after avec use the stressed moi.",
+        "me": "me is an object pronoun — after avec use moi.",
+        "mon": "mon means 'my' — after avec you need the pronoun moi."
+      }
     },
     {
       "id": "u2-sio028-03",
@@ -42,7 +52,12 @@
         "la seule"
       ],
       "fullSentence": "Elle étudie seule.",
-      "sentenceTrans": "She studies alone."
+      "sentenceTrans": "She studies alone.",
+      "whyWrong": {
+        "seul": "seul is masculine — for elle it's seule.",
+        "seules": "seules is plural — one person (elle) takes seule.",
+        "la seule": "la seule means 'the only one' — 'alone' here is just seule."
+      }
     },
     {
       "id": "u2-sio028-04",
@@ -55,7 +70,12 @@
         "nous"
       ],
       "fullSentence": "Nous mangeons avec nos amis.",
-      "sentenceTrans": "We eat with our friends."
+      "sentenceTrans": "We eat with our friends.",
+      "whyWrong": {
+        "notre": "notre is singular — amis is plural, so nos.",
+        "les": "les is 'the' — 'our friends' needs the possessive nos.",
+        "nous": "nous means 'we/us' — 'our' is nos."
+      }
     }
   ]
 }

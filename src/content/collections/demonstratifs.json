@@ -1,0 +1,113 @@
+{
+  "id": "demonstratifs",
+  "title": "Ce, cet, cette, ces",
+  "subtitle": "this / these",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 4,
+  "lessonNo": 6,
+  "lessonSlug": "demonstratives",
+  "tags": [],
+  "seq": 406,
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        {
+          "key": "ce",
+          "label": "Ce ___",
+          "prefix": "ce "
+        },
+        {
+          "key": "cet",
+          "label": "Cet ___",
+          "prefix": "cet "
+        },
+        {
+          "key": "cette",
+          "label": "Cette ___",
+          "prefix": "cette "
+        },
+        {
+          "key": "ces",
+          "label": "Ces ___",
+          "prefix": "ces "
+        }
+      ]
+    }
+  },
+  "items": [
+    {
+      "id": "demonstratifs-01",
+      "fr": "pain",
+      "en": "bread",
+      "emoji": "🍞",
+      "tags": [
+        "col:ce"
+      ]
+    },
+    {
+      "id": "demonstratifs-02",
+      "fr": "gâteau",
+      "en": "cake",
+      "emoji": "🍰",
+      "tags": [
+        "col:ce"
+      ]
+    },
+    {
+      "id": "demonstratifs-03",
+      "fr": "ananas",
+      "en": "pineapple",
+      "emoji": "🍍",
+      "tags": [
+        "col:cet"
+      ]
+    },
+    {
+      "id": "demonstratifs-04",
+      "fr": "avocat",
+      "en": "avocado",
+      "emoji": "🥑",
+      "tags": [
+        "col:cet"
+      ]
+    },
+    {
+      "id": "demonstratifs-05",
+      "fr": "tarte",
+      "en": "tart",
+      "emoji": "🥧",
+      "tags": [
+        "col:cette"
+      ]
+    },
+    {
+      "id": "demonstratifs-06",
+      "fr": "pomme",
+      "en": "apple",
+      "emoji": "🍎",
+      "tags": [
+        "col:cette"
+      ]
+    },
+    {
+      "id": "demonstratifs-07",
+      "fr": "légumes",
+      "en": "vegetables",
+      "emoji": "🥕",
+      "tags": [
+        "col:ces"
+      ]
+    },
+    {
+      "id": "demonstratifs-08",
+      "fr": "fraises",
+      "en": "strawberries",
+      "emoji": "🍓",
+      "tags": [
+        "col:ces"
+      ]
+    }
+  ]
+}

@@ -16,7 +16,12 @@
         "ma"
       ],
       "fullSentence": "J'ai oublié mon livre chez moi.",
-      "sentenceTrans": "I left my book at home."
+      "sentenceTrans": "I left my book at home.",
+      "whyWrong": {
+        "mes": "mes is plural — one book takes mon.",
+        "ton": "ton means 'your', not 'my'.",
+        "ma": "livre is masculine — mon livre, not ma."
+      }
     },
     {
       "id": "u2-sio022-02",
@@ -29,7 +34,12 @@
         "mes"
       ],
       "fullSentence": "Je voudrais vous présenter ma famille.",
-      "sentenceTrans": "I'd like to introduce my family."
+      "sentenceTrans": "I'd like to introduce my family.",
+      "whyWrong": {
+        "mon": "famille is feminine and starts with a consonant — ma famille.",
+        "sa": "sa means 'his/her', not 'my'.",
+        "mes": "mes is plural — one family takes ma."
+      }
     },
     {
       "id": "u2-sio022-03",
@@ -42,7 +52,12 @@
         "ses"
       ],
       "fullSentence": "Pierre a posé son sac sur la chaise.",
-      "sentenceTrans": "Pierre put his bag on the chair."
+      "sentenceTrans": "Pierre put his bag on the chair.",
+      "whyWrong": {
+        "sa": "sac is masculine — son sac, not sa.",
+        "mon": "mon means 'my' — it's Pierre's bag, so son.",
+        "ses": "ses is plural — one bag takes son."
+      }
     },
     {
       "id": "u2-sio022-04",
@@ -55,7 +70,12 @@
         "tes"
       ],
       "fullSentence": "J'ai perdu mes clés !",
-      "sentenceTrans": "I've lost my keys!"
+      "sentenceTrans": "I've lost my keys!",
+      "whyWrong": {
+        "mon": "mon is singular — clés is plural, so mes.",
+        "ma": "ma is singular — clés is plural, so mes.",
+        "tes": "tes means 'your', not 'my'."
+      }
     },
     {
       "id": "u2-sio022-05",
@@ -68,7 +88,12 @@
         "une"
       ],
       "fullSentence": "Je te présente mon amie Camille.",
-      "sentenceTrans": "Let me introduce my friend Camille."
+      "sentenceTrans": "Let me introduce my friend Camille.",
+      "whyWrong": {
+        "ma": "amie starts with a vowel — ma becomes mon before it.",
+        "ton": "ton means 'your', not 'my'.",
+        "une": "une is 'a', not a possessive — you need 'my'."
+      }
     },
     {
       "id": "u2-sio022-06",
@@ -81,7 +106,12 @@
         "son"
       ],
       "fullSentence": "Bienvenue dans notre appartement !",
-      "sentenceTrans": "Welcome to our apartment!"
+      "sentenceTrans": "Welcome to our apartment!",
+      "whyWrong": {
+        "nos": "nos is plural — one apartment takes notre.",
+        "votre": "votre means 'your', not 'our'.",
+        "son": "son means 'his/her', not 'our'."
+      }
     },
     {
       "id": "u2-sio022-07",
@@ -94,7 +124,12 @@
         "notre"
       ],
       "fullSentence": "Madame, montrez votre passeport, s'il vous plaît.",
-      "sentenceTrans": "Madam, your passport, please."
+      "sentenceTrans": "Madam, your passport, please.",
+      "whyWrong": {
+        "vos": "vos is plural — one passport takes votre.",
+        "ton": "ton is informal 'your' — with vous, use votre.",
+        "notre": "notre means 'our', not 'your'."
+      }
     },
     {
       "id": "u2-sio022-08",
@@ -107,7 +142,12 @@
         "notre"
       ],
       "fullSentence": "Les étudiants écoutent leur professeur.",
-      "sentenceTrans": "The students listen to their teacher."
+      "sentenceTrans": "The students listen to their teacher.",
+      "whyWrong": {
+        "leurs": "leurs is plural — one teacher takes leur.",
+        "son": "son is 'his/her' (one owner) — the students share, so leur.",
+        "notre": "notre means 'our', not 'their'."
+      }
     }
   ]
 }

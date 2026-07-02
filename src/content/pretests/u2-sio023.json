@@ -16,7 +16,12 @@
         "un"
       ],
       "fullSentence": "J'aime le café.",
-      "sentenceTrans": "I like coffee."
+      "sentenceTrans": "I like coffee.",
+      "whyWrong": {
+        "du": "After aimer, liking something in general takes the definite le — j'aime le café.",
+        "de": "de alone doesn't fit — general likes take le café.",
+        "un": "un café is 'a coffee' (one cup) — liking coffee in general is le café."
+      }
     },
     {
       "id": "u2-sio023-02",
@@ -29,7 +34,12 @@
         "le"
       ],
       "fullSentence": "J'adore la musique classique.",
-      "sentenceTrans": "I love classical music."
+      "sentenceTrans": "I love classical music.",
+      "whyWrong": {
+        "de la": "After adorer, general likes take the definite la, not partitive de la.",
+        "une": "une is 'a' — loving music in general uses la musique.",
+        "le": "musique is feminine — la musique, not le."
+      }
     },
     {
       "id": "u2-sio023-03",
@@ -42,7 +52,12 @@
         "le"
       ],
       "fullSentence": "J'aime les chats.",
-      "sentenceTrans": "I like cats."
+      "sentenceTrans": "I like cats.",
+      "whyWrong": {
+        "des": "Liking cats in general takes the definite les, not des.",
+        "de": "de doesn't fit — general likes take les chats.",
+        "le": "chats is plural — les chats, not le."
+      }
     },
     {
       "id": "u2-sio023-04",
@@ -55,7 +70,12 @@
         "que je danse"
       ],
       "fullSentence": "J'aime danser avec mes amis.",
-      "sentenceTrans": "I like dancing with my friends."
+      "sentenceTrans": "I like dancing with my friends.",
+      "whyWrong": {
+        "danse": "After aimer you need the infinitive danser, not danse.",
+        "à danser": "aimer takes the infinitive directly — no à: j'aime danser.",
+        "que je danse": "aimer + infinitive here — not a 'que' clause."
+      }
     },
     {
       "id": "u2-sio023-05",
@@ -68,7 +88,12 @@
         "d'"
       ],
       "fullSentence": "Je n'aime pas le café.",
-      "sentenceTrans": "I don't like coffee."
+      "sentenceTrans": "I don't like coffee.",
+      "whyWrong": {
+        "de": "aimer keeps the definite le even in the negative — pas le café.",
+        "du": "Liking/disliking in general takes le, not partitive du.",
+        "d'": "d' is de before a vowel, and aimer keeps le anyway."
+      }
     },
     {
       "id": "u2-sio023-06",
@@ -81,7 +106,12 @@
         "que le"
       ],
       "fullSentence": "Je préfère le cinéma au théâtre.",
-      "sentenceTrans": "I prefer cinema to theatre."
+      "sentenceTrans": "I prefer cinema to theatre.",
+      "whyWrong": {
+        "à le": "à + le contracts to au — au théâtre, never 'à le'.",
+        "à la": "théâtre is masculine — à + le = au, not à la.",
+        "que le": "préférer X à Y uses à for 'to', not que."
+      }
     }
   ]
 }

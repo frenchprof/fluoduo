@@ -16,7 +16,12 @@
         "sommeil"
       ],
       "fullSentence": "Il est midi. Vous avez faim ?",
-      "sentenceTrans": "It's noon. Are you hungry?"
+      "sentenceTrans": "It's noon. Are you hungry?",
+      "whyWrong": {
+        "soif": "soif means 'thirsty'; the noon cue is hunger — avoir faim.",
+        "froid": "froid means 'cold', not hungry — avoir faim.",
+        "sommeil": "sommeil means 'sleepy', not hungry — avoir faim."
+      }
     },
     {
       "id": "u1-sio019-02",
@@ -29,7 +34,12 @@
         "raison"
       ],
       "fullSentence": "J'ai froid ! Ferme la fenêtre, s'il te plaît.",
-      "sentenceTrans": "I'm cold! Close the window, please."
+      "sentenceTrans": "I'm cold! Close the window, please.",
+      "whyWrong": {
+        "chaud": "chaud means 'hot' — you'd open the window, not close it; here it's froid.",
+        "peur": "peur means 'afraid', not cold — avoir froid.",
+        "raison": "raison means 'right / correct', not cold — avoir froid."
+      }
     },
     {
       "id": "u1-sio019-03",
@@ -42,7 +52,12 @@
         "est"
       ],
       "fullSentence": "Je ai sommeil. Je rentre.",
-      "sentenceTrans": "I'm sleepy. I'm going home."
+      "sentenceTrans": "I'm sleepy. I'm going home.",
+      "whyWrong": {
+        "suis": "'sleepy' uses avoir, not être — j'ai sommeil, not je suis.",
+        "a": "a goes with il/elle, not je — je + ai.",
+        "est": "est is être for il/elle; sommeil uses avoir — j'ai."
+      }
     },
     {
       "id": "u1-sio019-04",
@@ -55,7 +70,12 @@
         "ont"
       ],
       "fullSentence": "— Quel âge as-tu ? — J'ai 21 ans.",
-      "sentenceTrans": "— How old are you? — I'm 21."
+      "sentenceTrans": "— How old are you? — I'm 21.",
+      "whyWrong": {
+        "suis": "age uses avoir, not être — j'ai 21 ans, not je suis.",
+        "a": "a goes with il/elle, not je — j'ai.",
+        "ont": "ont goes with ils/elles, not je — j'ai."
+      }
     },
     {
       "id": "u1-sio019-05",
@@ -68,7 +88,12 @@
         "avez"
       ],
       "fullSentence": "Anna et Mika ont très froid.",
-      "sentenceTrans": "Anna and Mika are very cold."
+      "sentenceTrans": "Anna and Mika are very cold.",
+      "whyWrong": {
+        "a": "a is singular (il/elle); two people take ont.",
+        "as": "as goes with tu; Anna et Mika (ils/elles) takes ont.",
+        "avez": "avez goes with vous; they (ils/elles) take ont."
+      }
     },
     {
       "id": "u1-sio019-06",
@@ -81,7 +106,12 @@
         "avez"
       ],
       "fullSentence": "Tu es fatigué !",
-      "sentenceTrans": "You're tired!"
+      "sentenceTrans": "You're tired!",
+      "whyWrong": {
+        "as": "'tired' uses être — tu es fatigué, not tu as.",
+        "a": "a goes with il/elle, and 'tired' uses être — tu es.",
+        "avez": "avez goes with vous, not tu — tu es."
+      }
     },
     {
       "id": "u1-sio019-07",
@@ -94,7 +124,12 @@
         "est"
       ],
       "fullSentence": "Je suis malade. Je rentre.",
-      "sentenceTrans": "I'm ill. I'm going home."
+      "sentenceTrans": "I'm ill. I'm going home.",
+      "whyWrong": {
+        "ai": "'ill' uses être — je suis malade, not j'ai.",
+        "es": "es goes with tu, not je — je suis.",
+        "est": "est goes with il/elle, not je — je suis."
+      }
     },
     {
       "id": "u1-sio019-08",
@@ -107,7 +142,12 @@
         "êtes"
       ],
       "fullSentence": "Marc et moi, nous avons froid.",
-      "sentenceTrans": "Marc and I, we're cold."
+      "sentenceTrans": "Marc and I, we're cold.",
+      "whyWrong": {
+        "sommes": "'cold' uses avoir — nous avons froid, not nous sommes.",
+        "avez": "avez goes with vous; 'Marc et moi' = nous takes avons.",
+        "êtes": "êtes is être for vous; cold uses avoir — nous avons."
+      }
     }
   ]
 }

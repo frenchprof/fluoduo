@@ -16,7 +16,12 @@
         "fais le"
       ],
       "fullSentence": "Le week-end, je fais du sport.",
-      "sentenceTrans": "At the weekend, I do sport."
+      "sentenceTrans": "At the weekend, I do sport.",
+      "whyWrong": {
+        "fait": "fait is the il/elle form — with je it's fais.",
+        "faire": "faire is the infinitive — with je use the conjugated fais.",
+        "fais le": "the sentence already has du sport — no extra le is needed."
+      }
     },
     {
       "id": "u2-sio024-02",
@@ -29,7 +34,12 @@
         "faits"
       ],
       "fullSentence": "Pierre fait de la natation.",
-      "sentenceTrans": "Pierre swims."
+      "sentenceTrans": "Pierre swims.",
+      "whyWrong": {
+        "fais": "fais is the je/tu form — with Pierre (il) it's fait.",
+        "font": "font is the ils/elles form — one person takes fait.",
+        "faits": "faits is a past participle/plural, not the il present of faire."
+      }
     },
     {
       "id": "u2-sio024-03",
@@ -37,12 +47,17 @@
       "sentenceAfter": " des promenades le dimanche.",
       "answer": "faisons",
       "distractors": [
-        "faisez",
+        "faites",
         "faits",
         "sommes"
       ],
       "fullSentence": "Nous faisons des promenades le dimanche.",
-      "sentenceTrans": "We go for walks on Sundays."
+      "sentenceTrans": "We go for walks on Sundays.",
+      "whyWrong": {
+        "faites": "faites is the vous form — with nous it's faisons.",
+        "faits": "faits is a past participle/plural, not the nous verb form.",
+        "sommes": "sommes is from être (we are), not faire."
+      }
     },
     {
       "id": "u2-sio024-04",
@@ -50,12 +65,17 @@
       "sentenceAfter": " de la musique ?",
       "answer": "faites",
       "distractors": [
-        "faisez",
+        "fait",
         "faisons",
         "fais"
       ],
       "fullSentence": "Vous faites de la musique ?",
-      "sentenceTrans": "Do you play music?"
+      "sentenceTrans": "Do you play music?",
+      "whyWrong": {
+        "fait": "fait is the il/elle form — with vous it's faites.",
+        "faisons": "faisons is the nous form — with vous it's faites.",
+        "fais": "fais is the je/tu form — with vous it's faites."
+      }
     },
     {
       "id": "u2-sio024-05",
@@ -68,7 +88,12 @@
         "sont"
       ],
       "fullSentence": "Mes amis font du foot le samedi.",
-      "sentenceTrans": "My friends play football on Saturdays."
+      "sentenceTrans": "My friends play football on Saturdays.",
+      "whyWrong": {
+        "fait": "fait is singular — 'mes amis' is plural, so font.",
+        "faits": "faits is a past participle/plural noun, not the ils present of faire.",
+        "sont": "sont is from être (they are), not faire."
+      }
     },
     {
       "id": "u2-sio024-06",
@@ -81,7 +106,12 @@
         "des"
       ],
       "fullSentence": "Avec mes amis, je fais du vélo.",
-      "sentenceTrans": "With my friends, I go cycling."
+      "sentenceTrans": "With my friends, I go cycling.",
+      "whyWrong": {
+        "de la": "vélo is masculine — de + le = du, not de la.",
+        "de l'": "de l' is used before a vowel — vélo starts with a consonant, so du.",
+        "des": "des is plural — vélo here is singular, du vélo."
+      }
     },
     {
       "id": "u2-sio024-07",
@@ -94,7 +124,12 @@
         "fais ne"
       ],
       "fullSentence": "Non, je ne fais pas de sport.",
-      "sentenceTrans": "No, I don't do any sport."
+      "sentenceTrans": "No, I don't do any sport.",
+      "whyWrong": {
+        "fais pas": "The negative needs both parts — ne fais pas, not just fais pas.",
+        "n'fais": "ne doesn't elide before a consonant — say ne fais, not n'fais.",
+        "fais ne": "ne goes before the verb — ne fais, not fais ne."
+      }
     }
   ]
 }
