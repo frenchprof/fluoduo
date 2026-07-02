@@ -34,6 +34,22 @@
           "prefix": "à "
         }
       ]
+    },
+    "lexicalator": {
+      "decoys": [
+        "Fran",
+        "ce",
+        "tas",
+        "li",
+        "pom",
+        "Co",
+        "no",
+        "tan",
+        "nit",
+        "Bar",
+        "kyu",
+        "ras"
+      ]
     }
   },
   "items": [
@@ -41,6 +57,9 @@
       "id": "en-au-aux-a-01",
       "fr": "France",
       "en": "France (f. country)",
+      "syllables": [
+        "France"
+      ],
       "tags": [
         "col:en"
       ]
@@ -49,6 +68,11 @@
       "id": "en-au-aux-a-02",
       "fr": "Italie",
       "en": "Italy (f. country)",
+      "syllables": [
+        "I",
+        "ta",
+        "lie"
+      ],
       "tags": [
         "col:en"
       ]
@@ -57,6 +81,10 @@
       "id": "en-au-aux-a-03",
       "fr": "Japon",
       "en": "Japan (m. country)",
+      "syllables": [
+        "Ja",
+        "pon"
+      ],
       "tags": [
         "col:au"
       ]
@@ -65,6 +93,11 @@
       "id": "en-au-aux-a-04",
       "fr": "Canada",
       "en": "Canada (m. country)",
+      "syllables": [
+        "Ca",
+        "na",
+        "da"
+      ],
       "tags": [
         "col:au"
       ]
@@ -73,6 +106,12 @@
       "id": "en-au-aux-a-05",
       "fr": "États-Unis",
       "en": "United States (pl. country)",
+      "syllables": [
+        "É",
+        "tats-",
+        "U",
+        "nis"
+      ],
       "tags": [
         "col:aux"
       ]
@@ -81,6 +120,11 @@
       "id": "en-au-aux-a-06",
       "fr": "Pays-Bas",
       "en": "Netherlands (pl. country)",
+      "syllables": [
+        "Pa",
+        "ys-",
+        "Bas"
+      ],
       "tags": [
         "col:aux"
       ]
@@ -89,6 +133,10 @@
       "id": "en-au-aux-a-07",
       "fr": "Paris",
       "en": "Paris (city)",
+      "syllables": [
+        "Pa",
+        "ris"
+      ],
       "tags": [
         "col:a"
       ]
@@ -97,6 +145,10 @@
       "id": "en-au-aux-a-08",
       "fr": "Tokyo",
       "en": "Tokyo (city)",
+      "syllables": [
+        "To",
+        "kyo"
+      ],
       "tags": [
         "col:a"
       ]

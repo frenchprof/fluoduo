@@ -34,6 +34,22 @@
           "prefix": "aux "
         }
       ]
+    },
+    "lexicalator": {
+      "decoys": [
+        "cin",
+        "nè",
+        "mou",
+        "chè",
+        "sine",
+        "col",
+        "pin",
+        "tale",
+        "gas",
+        "sim",
+        "toit",
+        "plache"
+      ]
     }
   },
   "items": [
@@ -41,6 +57,11 @@
       "id": "aller-destinations-01",
       "fr": "cinéma",
       "en": "cinema",
+      "syllables": [
+        "ci",
+        "né",
+        "ma"
+      ],
       "tags": [
         "col:au"
       ]
@@ -49,6 +70,10 @@
       "id": "aller-destinations-02",
       "fr": "marché",
       "en": "market",
+      "syllables": [
+        "mar",
+        "ché"
+      ],
       "tags": [
         "col:au"
       ]
@@ -57,6 +82,10 @@
       "id": "aller-destinations-03",
       "fr": "piscine",
       "en": "swimming pool",
+      "syllables": [
+        "pis",
+        "cine"
+      ],
       "tags": [
         "col:a_la"
       ]
@@ -65,6 +94,9 @@
       "id": "aller-destinations-04",
       "fr": "plage",
       "en": "beach",
+      "syllables": [
+        "plage"
+      ],
       "tags": [
         "col:a_la"
       ]
@@ -73,6 +105,10 @@
       "id": "aller-destinations-05",
       "fr": "école",
       "en": "school",
+      "syllables": [
+        "é",
+        "cole"
+      ],
       "tags": [
         "col:a_l"
       ]
@@ -81,6 +117,11 @@
       "id": "aller-destinations-06",
       "fr": "hôpital",
       "en": "hospital",
+      "syllables": [
+        "hô",
+        "pi",
+        "tal"
+      ],
       "tags": [
         "col:a_l"
       ]
@@ -89,6 +130,10 @@
       "id": "aller-destinations-07",
       "fr": "toilettes",
       "en": "toilets",
+      "syllables": [
+        "toi",
+        "lettes"
+      ],
       "tags": [
         "col:aux"
       ]
@@ -97,6 +142,11 @@
       "id": "aller-destinations-08",
       "fr": "magasins",
       "en": "shops",
+      "syllables": [
+        "ma",
+        "ga",
+        "sins"
+      ],
       "tags": [
         "col:aux"
       ]

@@ -34,6 +34,23 @@
           "prefix": "des "
         }
       ]
+    },
+    "lexicalator": {
+      "decoys": [
+        "spor",
+        "vè",
+        "la",
+        "tan",
+        "sion",
+        "pha",
+        "gla",
+        "phi",
+        "qua",
+        "let",
+        "cour",
+        "ron",
+        "dan"
+      ]
     }
   },
   "items": [
@@ -41,6 +58,9 @@
       "id": "faire-activites-01",
       "fr": "sport",
       "en": "sport",
+      "syllables": [
+        "sport"
+      ],
       "tags": [
         "col:du"
       ]
@@ -49,6 +69,10 @@
       "id": "faire-activites-02",
       "fr": "vélo",
       "en": "cycling",
+      "syllables": [
+        "vé",
+        "lo"
+      ],
       "tags": [
         "col:du"
       ]
@@ -57,6 +81,11 @@
       "id": "faire-activites-03",
       "fr": "natation",
       "en": "swimming",
+      "syllables": [
+        "na",
+        "ta",
+        "tion"
+      ],
       "tags": [
         "col:de_la"
       ]
@@ -65,6 +94,12 @@
       "id": "faire-activites-04",
       "fr": "photographie",
       "en": "photography",
+      "syllables": [
+        "pho",
+        "to",
+        "gra",
+        "phie"
+      ],
       "tags": [
         "col:de_la"
       ]
@@ -73,6 +108,12 @@
       "id": "faire-activites-05",
       "fr": "équitation",
       "en": "horse riding",
+      "syllables": [
+        "é",
+        "qui",
+        "ta",
+        "tion"
+      ],
       "tags": [
         "col:de_l"
       ]
@@ -81,6 +122,11 @@
       "id": "faire-activites-06",
       "fr": "athlétisme",
       "en": "athletics",
+      "syllables": [
+        "ath",
+        "lé",
+        "tisme"
+      ],
       "tags": [
         "col:de_l"
       ]
@@ -89,6 +135,9 @@
       "id": "faire-activites-07",
       "fr": "courses",
       "en": "errands",
+      "syllables": [
+        "courses"
+      ],
       "tags": [
         "col:des"
       ]
@@ -97,6 +146,11 @@
       "id": "faire-activites-08",
       "fr": "randonnées",
       "en": "hikes",
+      "syllables": [
+        "ran",
+        "don",
+        "nées"
+      ],
       "tags": [
         "col:des"
       ]
