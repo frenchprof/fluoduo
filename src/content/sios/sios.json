@@ -612,7 +612,7 @@
     "isProduction": false,
     "canDo": "I can say what I eat and drink at each meal.",
     "competence": "Name the 4 meals and ≥2 foods/drinks each; say what I eat/drink (≥80%).",
-    "collectionId": null
+    "collectionId": "aliments"
   },
   {
     "id": "SIO-042",
@@ -627,7 +627,7 @@
     "isProduction": false,
     "canDo": "I can talk about food both in general and in the quantities I eat.",
     "competence": "Choose definite vs partitive correctly (J'aime le… vs Je mange du…) in ≥8 prompts (≥80%).",
-    "collectionId": null
+    "collectionId": "partitifs"
   },
   {
     "id": "SIO-043",
@@ -642,7 +642,7 @@
     "isProduction": false,
     "canDo": "I can say what I do not eat or drink.",
     "competence": "Rewrite ≥5 affirmative food sentences into the negative with de/d' (≥80%).",
-    "collectionId": null
+    "collectionId": "partitif-negatif"
   },
   {
     "id": "SIO-044",
@@ -657,7 +657,7 @@
     "isProduction": false,
     "canDo": "I can say what people eat and drink.",
     "competence": "Conjugate manger and boire in all persons (≥7/8 each); use with foods/drinks.",
-    "collectionId": null
+    "collectionId": "manger-boire"
   },
   {
     "id": "SIO-045",
@@ -672,7 +672,7 @@
     "isProduction": false,
     "canDo": "I can say how often I do everyday things.",
     "competence": "Place the 5 frequency adverbs correctly relative to the verb in ≥5 sentences; order them on a frequency scale.",
-    "collectionId": null
+    "collectionId": "frequence"
   },
   {
     "id": "SIO-046",
@@ -687,7 +687,7 @@
     "isProduction": false,
     "canDo": "I can point out specific items (this/these) when shopping or ordering.",
     "competence": "Select ce/cet/cette/ces correctly by gender/number for ≥8 nouns (≥80%).",
-    "collectionId": null
+    "collectionId": "demonstratifs"
   },
   {
     "id": "SIO-047",
@@ -702,7 +702,7 @@
     "isProduction": false,
     "canDo": "I can shop for food, ask the price, and ask for what I want politely.",
     "competence": "Match ≥5 shops to what they sell; say where I shop; ask Combien ça coûte ? / Je voudrais ___, s'il vous plaît.",
-    "collectionId": null
+    "collectionId": "commerces"
   },
   {
     "id": "SIO-048",
@@ -717,7 +717,7 @@
     "isProduction": false,
     "canDo": "I can talk about plans, ability, obligation, and necessity in simple sentences.",
     "competence": "Use aller/pouvoir/devoir/falloir + infinitive with the correct meaning (one each).",
-    "collectionId": null
+    "collectionId": "modaux"
   },
   {
     "id": "SIO-049",

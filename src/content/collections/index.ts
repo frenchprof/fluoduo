@@ -36,6 +36,15 @@ import enAuAuxA from "./en-au-aux-a.json";
 import questionWords from "./question-words.json";
 import transport from "./transport.json";
 
+import aliments from "./aliments.json";
+import partitifs from "./partitifs.json";
+import partitifNegatif from "./partitif-negatif.json";
+import mangerBoire from "./manger-boire.json";
+import frequence from "./frequence.json";
+import demonstratifs from "./demonstratifs.json";
+import commerces from "./commerces.json";
+import modaux from "./modaux.json";
+
 export const CURATED: Collection[] = [
   weather as Collection,
   countries as Collection,
@@ -63,4 +72,12 @@ export const CURATED: Collection[] = [
   enAuAuxA as Collection,
   questionWords as Collection,
   transport as Collection,
+  aliments as Collection,
+  partitifs as Collection,
+  partitifNegatif as Collection,
+  mangerBoire as Collection,
+  frequence as Collection,
+  demonstratifs as Collection,
+  commerces as Collection,
+  modaux as Collection,
 ].sort((a, b) => (a.seq ?? 999) - (b.seq ?? 999));

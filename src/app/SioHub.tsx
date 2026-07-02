@@ -43,7 +43,7 @@ import SioDetail from "./SioDetail";
 import MarkDoneButton from "./sio/[id]/MarkDoneButton";
 
 const STORAGE_KEY = "fluolingo:hubCollapse";
-const LOCKED_UNITS = new Set([4]); // Unité 3 unlocked 2026-07-01; Unité 4 still pending confirmation
+const LOCKED_UNITS = new Set<number>(); // all units unlocked (Unité 4 decks added 2026-07-02)
 
 function deckAndPretestFor(sio: Sio) {
   const deck = sio.collectionId ? CURATED.find((c) => c.id === sio.collectionId) : undefined;

@@ -1,0 +1,127 @@
+{
+  "id": "aliments",
+  "title": "Les repas et les aliments",
+  "subtitle": "What I eat & drink at each meal",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 4,
+  "lessonNo": 1,
+  "lessonSlug": "aliments-meals",
+  "tags": [],
+  "seq": 401,
+  "items": [
+    {
+      "id": "aliments-01",
+      "fr": "le petit-déjeuner",
+      "en": "breakfast",
+      "emoji": "🌅",
+      "tags": []
+    },
+    {
+      "id": "aliments-02",
+      "fr": "le déjeuner",
+      "en": "lunch",
+      "emoji": "🕛",
+      "tags": []
+    },
+    {
+      "id": "aliments-03",
+      "fr": "le goûter",
+      "en": "afternoon snack",
+      "emoji": "🍪",
+      "tags": []
+    },
+    {
+      "id": "aliments-04",
+      "fr": "le dîner",
+      "en": "dinner",
+      "emoji": "🌙",
+      "tags": []
+    },
+    {
+      "id": "aliments-05",
+      "fr": "un croissant",
+      "en": "a croissant",
+      "emoji": "🥐",
+      "tags": []
+    },
+    {
+      "id": "aliments-06",
+      "fr": "du café",
+      "en": "coffee",
+      "emoji": "☕",
+      "tags": []
+    },
+    {
+      "id": "aliments-07",
+      "fr": "du lait",
+      "en": "milk",
+      "emoji": "🥛",
+      "tags": []
+    },
+    {
+      "id": "aliments-08",
+      "fr": "du pain",
+      "en": "bread",
+      "emoji": "🥖",
+      "tags": []
+    },
+    {
+      "id": "aliments-09",
+      "fr": "du fromage",
+      "en": "cheese",
+      "emoji": "🧀",
+      "tags": []
+    },
+    {
+      "id": "aliments-10",
+      "fr": "de la viande",
+      "en": "meat",
+      "emoji": "🥩",
+      "tags": []
+    },
+    {
+      "id": "aliments-11",
+      "fr": "du poisson",
+      "en": "fish",
+      "emoji": "🐟",
+      "tags": []
+    },
+    {
+      "id": "aliments-12",
+      "fr": "du riz",
+      "en": "rice",
+      "emoji": "🍚",
+      "tags": []
+    },
+    {
+      "id": "aliments-13",
+      "fr": "des pâtes",
+      "en": "pasta",
+      "emoji": "🍝",
+      "tags": []
+    },
+    {
+      "id": "aliments-14",
+      "fr": "une pomme",
+      "en": "an apple",
+      "emoji": "🍎",
+      "tags": []
+    },
+    {
+      "id": "aliments-15",
+      "fr": "de la salade",
+      "en": "salad",
+      "emoji": "🥗",
+      "tags": []
+    },
+    {
+      "id": "aliments-16",
+      "fr": "de l'eau",
+      "en": "water",
+      "emoji": "💧",
+      "tags": []
+    }
+  ]
+}
