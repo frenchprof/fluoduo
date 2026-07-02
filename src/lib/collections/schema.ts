@@ -67,6 +67,14 @@ export type Item = {
    * e.g. { greeting: "你好", autonym: "中文" }.
    */
   lang?: { greeting: string; autonym: string };
+  /**
+   * Per-column choice text for dice Practice, keyed by Letris column key.
+   * Lets a choice show a syntactic frame conjugated for THIS item
+   * ("___ m'appelle" for je, "___ t'appelles" for tu) instead of the static
+   * column label. "___" marks the slot; TTS fills it with `fr` on a correct
+   * answer. Columns without an entry fall back to their label.
+   */
+  frames?: Record<string, string>;
 };
 
 /** Letris sort-column. Items carry `col:<key>`; this maps key -> label + TTS prefix. */
@@ -84,6 +92,11 @@ export type MatchingPair = { leftId: string; rightId: string };
 export type GameConfig = {
   letris?: { columns: LetrisColumn[] };
   matching?: { pairs: MatchingPair[] };
+  /** Dice-practice presentation overrides (read by lib/practice/engine.ts). */
+  practice?: {
+    /** Custom question line, e.g. "In which sentence would this pronoun fit best?" */
+    prompt?: string;
+  };
 };
 
 export type Owner = "curated" | string; // "curated" or a Firebase uid

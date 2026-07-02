@@ -8,7 +8,7 @@ import { bareWord } from "@/lib/collections/display";
 import { speak } from "@/games/letris/speech";
 import { recordItemResult } from "@/lib/progress";
 import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
-import type { PracticeItem, PracticeSet } from "@/lib/practice/engine";
+import type { PracticeChoice, PracticeItem, PracticeSet } from "@/lib/practice/engine";
 
 const TTS_KEY = "fluolingo.practiceTts.v1";
 
@@ -106,8 +106,8 @@ function PracticeRunner({ set }: { set: PracticeSet }) {
   const uniqueTotal = set.items.length;
 
   const choices = useMemo(
-    () => (item ? stableShuffle(set.allLabels, item.id) : []),
-    [item, set.allLabels],
+    () => (item ? stableShuffle(item.choices, item.id) : []),
+    [item],
   );
 
   useEffect(() => {
@@ -125,10 +125,10 @@ function PracticeRunner({ set }: { set: PracticeSet }) {
   const isLast = step === queue.length - 1 && !willReview;
   const inReview = reviewRound && step >= uniqueTotal;
 
-  function pick(choice: string) {
+  function pick(choice: PracticeChoice) {
     if (submitted || !item) return;
-    const correct = choice === item.correctLabel;
-    setSubmitted({ picked: choice, correct });
+    const correct = choice.key === item.correctColKey;
+    setSubmitted({ picked: choice.key, correct });
     if (!(item.id in firstResults)) {
       setFirstResults({ ...firstResults, [item.id]: correct });
     }
@@ -169,7 +169,7 @@ function PracticeRunner({ set }: { set: PracticeSet }) {
         <div>
           <h1 className="text-3xl font-black text-slate-900">{set.title}</h1>
           <p className="mt-1 text-base text-slate-600">
-            Dice practice — sort each item into its correct group.
+            {set.prompt ?? "Dice practice — sort each item into its correct group."}
           </p>
         </div>
         <button
@@ -256,9 +256,9 @@ function ItemCard({
   isLast,
 }: {
   item: PracticeItem;
-  choices: string[];
+  choices: PracticeChoice[];
   submitted: Verdict | null;
-  onPick: (c: string) => void;
+  onPick: (c: PracticeChoice) => void;
   onNext: () => void;
   onSpeak: () => void;
   isLast: boolean;
@@ -290,8 +290,8 @@ function ItemCard({
 
       <div className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
         {choices.map((c) => {
-          const isPicked = submitted?.picked === c;
-          const isAnswer = c === item.correctLabel;
+          const isPicked = submitted?.picked === c.key;
+          const isAnswer = c.key === item.correctColKey;
           let cls =
             "border-slate-200 bg-white text-slate-900 hover:border-slate-400";
           if (submitted) {
@@ -303,14 +303,14 @@ function ItemCard({
           }
           return (
             <button
-              key={c}
+              key={c.key}
               type="button"
               onClick={() => onPick(c)}
               disabled={!!submitted}
               lang="fr"
               className={`rounded-xl border-2 px-4 py-3 text-center text-lg font-extrabold transition ${cls}`}
             >
-              {c}
+              {c.label}
               {submitted && isAnswer && (
                 <span className="ml-2" aria-hidden>
                   ✓
