@@ -4,18 +4,18 @@
   "subtitle": "Subject-only, stress-only, or either",
   "categories": [
     {
-      "key": "subject",
-      "label": "SUJET",
-      "prefix": ""
+      "key": "stress",
+      "label": "C'est ___",
+      "prefix": "C'est "
     },
     {
-      "key": "stress",
-      "label": "TONIQUE",
+      "key": "subject",
+      "label": "___ (verb)",
       "prefix": ""
     },
     {
       "key": "either",
-      "label": "LES DEUX",
+      "label": "Both OK",
       "prefix": ""
     }
   ],

@@ -14,13 +14,13 @@
     "letris": {
       "columns": [
         {
-          "key": "subject",
-          "label": "SUJET",
-          "prefix": ""
+          "key": "stress",
+          "label": "C'est ___",
+          "prefix": "C'est "
         },
         {
-          "key": "stress",
-          "label": "TONIQUE",
+          "key": "subject",
+          "label": "___ (verb)",
           "prefix": ""
         },
         {
@@ -39,85 +39,145 @@
       "id": "stress-pronouns-01",
       "fr": "je",
       "en": "I (subject only)",
-      "tags": ["col:subject"],
-      "frames": { "subject": "___ m'appelle …", "stress": "C'est ___" }
+      "tags": [
+        "col:subject"
+      ],
+      "frames": {
+        "subject": "___ m'appelle …",
+        "stress": "C'est ___"
+      }
     },
     {
       "id": "stress-pronouns-02",
       "fr": "moi",
       "en": "me (stress only)",
-      "tags": ["col:stress"],
-      "frames": { "subject": "___ m'appelle …", "stress": "C'est ___" }
+      "tags": [
+        "col:stress"
+      ],
+      "frames": {
+        "subject": "___ m'appelle …",
+        "stress": "C'est ___"
+      }
     },
     {
       "id": "stress-pronouns-03",
       "fr": "tu",
       "en": "you sg. (subject only)",
-      "tags": ["col:subject"],
-      "frames": { "subject": "___ t'appelles …", "stress": "C'est ___" }
+      "tags": [
+        "col:subject"
+      ],
+      "frames": {
+        "subject": "___ t'appelles …",
+        "stress": "C'est ___"
+      }
     },
     {
       "id": "stress-pronouns-04",
       "fr": "toi",
       "en": "you sg. (stress only)",
-      "tags": ["col:stress"],
-      "frames": { "subject": "___ t'appelles …", "stress": "C'est ___" }
+      "tags": [
+        "col:stress"
+      ],
+      "frames": {
+        "subject": "___ t'appelles …",
+        "stress": "C'est ___"
+      }
     },
     {
       "id": "stress-pronouns-05",
       "fr": "il",
       "en": "he (subject only)",
-      "tags": ["col:subject"],
-      "frames": { "subject": "___ s'appelle …", "stress": "C'est ___" }
+      "tags": [
+        "col:subject"
+      ],
+      "frames": {
+        "subject": "___ s'appelle …",
+        "stress": "C'est ___"
+      }
     },
     {
       "id": "stress-pronouns-06",
       "fr": "lui",
       "en": "him (stress only)",
-      "tags": ["col:stress"],
-      "frames": { "subject": "___ s'appelle …", "stress": "C'est ___" }
+      "tags": [
+        "col:stress"
+      ],
+      "frames": {
+        "subject": "___ s'appelle …",
+        "stress": "C'est ___"
+      }
     },
     {
       "id": "stress-pronouns-07",
       "fr": "elle",
       "en": "she / her (either)",
-      "tags": ["col:either"],
-      "frames": { "subject": "___ s'appelle …", "stress": "C'est ___" }
+      "tags": [
+        "col:either"
+      ],
+      "frames": {
+        "subject": "___ s'appelle …",
+        "stress": "C'est ___"
+      }
     },
     {
       "id": "stress-pronouns-08",
       "fr": "nous",
       "en": "we / us (either)",
-      "tags": ["col:either"],
-      "frames": { "subject": "___ nous appelons …", "stress": "C'est ___" }
+      "tags": [
+        "col:either"
+      ],
+      "frames": {
+        "subject": "___ nous appelons …",
+        "stress": "C'est ___"
+      }
     },
     {
       "id": "stress-pronouns-09",
       "fr": "vous",
       "en": "you pl. (either)",
-      "tags": ["col:either"],
-      "frames": { "subject": "___ vous appelez …", "stress": "C'est ___" }
+      "tags": [
+        "col:either"
+      ],
+      "frames": {
+        "subject": "___ vous appelez …",
+        "stress": "C'est ___"
+      }
     },
     {
       "id": "stress-pronouns-10",
       "fr": "ils",
       "en": "they m. (subject only)",
-      "tags": ["col:subject"],
-      "frames": { "subject": "___ s'appellent …", "stress": "C'est ___" }
+      "tags": [
+        "col:subject"
+      ],
+      "frames": {
+        "subject": "___ s'appellent …",
+        "stress": "C'est ___"
+      }
     },
     {
       "id": "stress-pronouns-11",
       "fr": "eux",
       "en": "them m. (stress only)",
-      "tags": ["col:stress"],
-      "frames": { "subject": "___ s'appellent …", "stress": "C'est ___" }
+      "tags": [
+        "col:stress"
+      ],
+      "frames": {
+        "subject": "___ s'appellent …",
+        "stress": "C'est ___"
+      }
     },
     {
       "id": "stress-pronouns-12",
       "fr": "elles",
       "en": "they / them f. (either)",
-      "tags": ["col:either"],
-      "frames": { "subject": "___ s'appellent …", "stress": "C'est ___" }
+      "tags": [
+        "col:either"
+      ],
+      "frames": {
+        "subject": "___ s'appellent …",
+        "stress": "C'est ___"
+      }
     }
   ]
 }

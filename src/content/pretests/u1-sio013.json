@@ -90,9 +90,9 @@
       "fullSentence": "Je suis étudiant en droit.",
       "sentenceTrans": "I'm a law student.",
       "whyWrong": {
-        "au": "être étudiant takes en + subject — en droit.",
-        "de": "de doesn't fit here — the frame is étudiant en + subject.",
-        "à": "à doesn't fit — say étudiant en droit."
+        "au": "Say en droit — the frame is être étudiant en + subject (vs j'étudie le droit).",
+        "de": "Say en droit — the frame is être étudiant en + subject (vs j'étudie le droit).",
+        "à": "Say en droit — the frame is être étudiant en + subject (vs j'étudie le droit)."
       }
     }
   ]
