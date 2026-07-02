@@ -132,9 +132,17 @@ function QuizQuestion({ q }: { q: Unit0Question }) {
   const [picked, setPicked] = useState<string | null>(null);
   const [showWhy, setShowWhy] = useState(false);
 
-  function pick(o: { v: string; ok: boolean }) {
-    setPicked(o.v);
-    if (o.ok) speak(ttsFor(q, o.v), "fr-FR");
+  // First click = the answer (speaks the completed form when correct). Once
+  // answered, every option stays playable: clicking any of them — including
+  // the one already picked — speaks it (Dan, 2026-07-02: all letters
+  // playable; a click reveals that letter's name).
+  function tap(o: { v: string; ok: boolean }, answered: boolean) {
+    if (!answered) {
+      setPicked(o.v);
+      if (o.ok) speak(ttsFor(q, o.v), "fr-FR");
+    } else {
+      speak(o.v, "fr-FR");
+    }
   }
 
   return (
@@ -179,8 +187,7 @@ function QuizQuestion({ q }: { q: Unit0Question }) {
             <button
               key={o.v}
               type="button"
-              disabled={showResult}
-              onClick={() => pick(o)}
+              onClick={() => tap(o, showResult)}
               className={`rounded-full border-2 px-3 py-1.5 text-sm font-bold transition ${cls}`}
             >
               {o.v}
