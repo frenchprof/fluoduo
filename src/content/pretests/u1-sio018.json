@@ -16,7 +16,12 @@
         "de"
       ],
       "fullSentence": "31 : trente et un",
-      "sentenceTrans": "thirty-one"
+      "sentenceTrans": "thirty-one",
+      "whyWrong": {
+        "-": "31 uses 'et', not a hyphen — trente et un (the hyphen is for numbers like trente-deux).",
+        "plus": "plus means 'plus / more'; 31 is trente et un, not 'trente plus un'.",
+        "de": "de means 'of'; it isn't used to build numbers — trente et un."
+      }
     },
     {
       "id": "u1-sio018-02",
@@ -29,7 +34,12 @@
         "quarante-quatorze"
       ],
       "fullSentence": "44 : quarante-quatre",
-      "sentenceTrans": "forty-four"
+      "sentenceTrans": "forty-four",
+      "whyWrong": {
+        "quatre-quarante": "That reverses the parts — 44 is quarante (40) then quatre (4): quarante-quatre.",
+        "quatorze-quatre": "quatorze is 14, not 40 — the tens part is quarante: quarante-quatre.",
+        "quarante-quatorze": "quatorze is 14, not 4 — the units part is quatre: quarante-quatre."
+      }
     },
     {
       "id": "u1-sio018-03",
@@ -42,7 +52,12 @@
         "dix"
       ],
       "fullSentence": "61 : soixante et un",
-      "sentenceTrans": "sixty-one"
+      "sentenceTrans": "sixty-one",
+      "whyWrong": {
+        "-": "61 uses 'et' — soixante et un; the hyphen is for numbers like soixante-deux.",
+        "plus": "plus means 'plus / more'; 61 is soixante et un, not 'soixante plus un'.",
+        "dix": "dix is 10 — that would make soixante-dix (70), not 61."
+      }
     },
     {
       "id": "u1-sio018-04",
@@ -55,7 +70,12 @@
         "soixante"
       ],
       "fullSentence": "55 : cinquante-cinq",
-      "sentenceTrans": "fifty-five"
+      "sentenceTrans": "fifty-five",
+      "whyWrong": {
+        "quinze": "quinze is 15, not 50 — 55 is cinquante-cinq.",
+        "cinq": "cinq is 5, not 50 — the tens part is cinquante.",
+        "soixante": "soixante is 60, not 50 — 55 is cinquante-cinq."
+      }
     },
     {
       "id": "u1-sio018-05",
@@ -68,7 +88,12 @@
         "deuxième"
       ],
       "fullSentence": "22 : vingt-deux",
-      "sentenceTrans": "twenty-two"
+      "sentenceTrans": "twenty-two",
+      "whyWrong": {
+        "et deux": "22 doesn't use 'et' — only 21/31/41… do; 22 is vingt-deux.",
+        "douze": "douze is 12, not 2 — 22 is vingt-deux.",
+        "deuxième": "deuxième means 'second' (ordinal); the number 2 is deux."
+      }
     }
   ]
 }
