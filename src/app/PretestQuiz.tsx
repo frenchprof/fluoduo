@@ -55,23 +55,16 @@ export default function PretestQuiz({ pretestId }: { pretestId: string }) {
 
   if (!pretest) return null;
 
-  const total = qs.length;
-  const answered = Object.keys(picked).length;
-  const score = qs.filter((q) => picked[q.item.id] === q.item.answer).length;
-
   function pick(q: Q, choice: string) {
     if (picked[q.item.id] !== undefined) return;
     setPicked({ ...picked, [q.item.id]: choice });
     if (choice === q.item.answer) speak(ttsTextForItem(q.item), "fr-FR");
   }
 
+  // Dan's litmus test (see AGENTS.md): no labels, no score line — just the
+  // questions.
   return (
     <div className="space-y-3">
-      {answered > 0 && (
-        <p className="text-[0.65rem] font-bold uppercase tracking-wider text-[color:var(--fluo-ink-soft)]">
-          Answered {answered}/{total} · Score {score}/{total}
-        </p>
-      )}
       {qs.map((q) => (
         <QuestionCard key={q.item.id} q={q} picked={picked[q.item.id]} onPick={(c) => pick(q, c)} />
       ))}
