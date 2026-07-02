@@ -16,7 +16,12 @@
         "à"
       ],
       "fullSentence": "Mon passeport est dans le sac.",
-      "sentenceTrans": "My passport is in the bag."
+      "sentenceTrans": "My passport is in the bag.",
+      "whyWrong": {
+        "sur": "sur means 'on top of' — inside the bag is dans.",
+        "en": "en doesn't take a definite article like le sac — 'in the bag' is dans le sac.",
+        "à": "à means 'at/to', not 'inside' — for inside use dans."
+      }
     },
     {
       "id": "u3-sio034-02",
@@ -29,7 +34,12 @@
         "sous"
       ],
       "fullSentence": "Les assiettes sont sur la table.",
-      "sentenceTrans": "The plates are on the table."
+      "sentenceTrans": "The plates are on the table.",
+      "whyWrong": {
+        "dans": "dans means 'inside' — on top of the table is sur.",
+        "à": "à means 'at/to', not 'on top of' — that's sur.",
+        "sous": "sous means 'under' — on top is sur."
+      }
     },
     {
       "id": "u3-sio034-03",
@@ -42,7 +52,12 @@
         "face à"
       ],
       "fullSentence": "On se retrouve devant le cinéma à 19h.",
-      "sentenceTrans": "We're meeting in front of the cinema at 7pm."
+      "sentenceTrans": "We're meeting in front of the cinema at 7pm.",
+      "whyWrong": {
+        "derrière": "derrière means 'behind' — in front of is devant.",
+        "avant": "avant is 'before' in time, not a position in space: devant.",
+        "face à": "face à must contract with le to au (face au cinéma) — face à le is not valid."
+      }
     },
     {
       "id": "u3-sio034-04",
@@ -55,7 +70,12 @@
         "à côté"
       ],
       "fullSentence": "La pharmacie est à côté de la boulangerie.",
-      "sentenceTrans": "The pharmacy is next to the bakery."
+      "sentenceTrans": "The pharmacy is next to the bakery.",
+      "whyWrong": {
+        "à côté du": "du (de + le) already includes the article — before la boulangerie use à côté de.",
+        "au côté de": "au côté de means 'at someone's side' figuratively — location is à côté de.",
+        "à côté": "à côté alone means 'next door/nearby' — to say next to something you need à côté de."
+      }
     },
     {
       "id": "u3-sio034-05",
@@ -68,7 +88,12 @@
         "face au"
       ],
       "fullSentence": "L'hôtel est en face du parc.",
-      "sentenceTrans": "The hotel is opposite the park."
+      "sentenceTrans": "The hotel is opposite the park.",
+      "whyWrong": {
+        "en face de": "before the masculine parc, de + le contracts: en face du.",
+        "en face de la": "de la is feminine — parc is masculine: en face du.",
+        "face au": "face au drops the en — the fixed expression is en face de/du."
+      }
     },
     {
       "id": "u3-sio034-06",
@@ -81,7 +106,12 @@
         "loin des"
       ],
       "fullSentence": "L'aéroport est assez loin du centre-ville.",
-      "sentenceTrans": "The airport is quite far from the city centre."
+      "sentenceTrans": "The airport is quite far from the city centre.",
+      "whyWrong": {
+        "loin de": "before the masculine centre-ville, de + le contracts: loin du.",
+        "loin de le": "de le never exists — it always contracts to du: loin du.",
+        "loin des": "des (de + les) is plural — centre-ville is singular: loin du."
+      }
     }
   ]
 }

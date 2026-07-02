@@ -16,7 +16,12 @@
         "Où tu vas-tu ?"
       ],
       "fullSentence": "Tu vas où ? (spoken, casual)",
-      "sentenceTrans": "Where are you going?"
+      "sentenceTrans": "Where are you going?",
+      "whyWrong": {
+        "Où allez-vous ?": "Correct French, but formal (vous + inversion) — the casual form is Tu vas où ?",
+        "Où est-ce tu vas ?": "Missing que — it should be Où est-ce que tu vas ?",
+        "Où tu vas-tu ?": "The subject tu is doubled — drop one: Tu vas où ?"
+      }
     },
     {
       "id": "u3-sio035-02",
@@ -29,7 +34,12 @@
         "Où tu est-ce que vas ?"
       ],
       "fullSentence": "Où est-ce que tu vas ? (neutral, est-ce que)",
-      "sentenceTrans": "Where are you going?"
+      "sentenceTrans": "Where are you going?",
+      "whyWrong": {
+        "Est-ce que où tu vas ?": "Wrong order — the question word où comes first: Où est-ce que tu vas ?",
+        "Où est-ce tu vas ?": "Missing que — it's Où est-ce que tu vas ?",
+        "Où tu est-ce que vas ?": "est-ce que is broken up — keep it together: Où est-ce que tu vas ?"
+      }
     },
     {
       "id": "u3-sio035-03",
@@ -42,7 +52,12 @@
         "Quand est-ce"
       ],
       "fullSentence": "Quand est-ce que ce musée ouvre ?",
-      "sentenceTrans": "When does this museum open?"
+      "sentenceTrans": "When does this museum open?",
+      "whyWrong": {
+        "Quand que": "Missing est-ce — the form is Quand est-ce que.",
+        "Est-ce que quand": "Wrong order — quand comes first: Quand est-ce que.",
+        "Quand est-ce": "Missing que — it's Quand est-ce que."
+      }
     },
     {
       "id": "u3-sio035-04",
@@ -55,7 +70,12 @@
         "Quelles"
       ],
       "fullSentence": "Quel est le nom de ce musée ?",
-      "sentenceTrans": "What is the name of this museum?"
+      "sentenceTrans": "What is the name of this museum?",
+      "whyWrong": {
+        "Quelle": "Quelle is feminine — nom is masculine: Quel.",
+        "Quels": "Quels is masculine plural — nom is singular: Quel.",
+        "Quelles": "Quelles is feminine plural — nom is masculine singular: Quel."
+      }
     },
     {
       "id": "u3-sio035-05",
@@ -68,7 +88,12 @@
         "C'est comment"
       ],
       "fullSentence": "C'est combien ? — Dix euros.",
-      "sentenceTrans": "How much is it? — Ten euros."
+      "sentenceTrans": "How much is it? — Ten euros.",
+      "whyWrong": {
+        "Combien c'est-il": "c'est doesn't invert like this — the natural question is C'est combien.",
+        "Combien coûte-il": "Inversion needs a euphonic -t- (coûte-t-il) — and here it's simply C'est combien.",
+        "C'est comment": "C'est comment ? asks 'what's it like?', not the price: C'est combien."
+      }
     },
     {
       "id": "u3-sio035-06",
@@ -81,7 +106,12 @@
         "Pourquoi"
       ],
       "fullSentence": "Comment est-ce que tu viens ? — En bus.",
-      "sentenceTrans": "How are you coming? — By bus."
+      "sentenceTrans": "How are you coming? — By bus.",
+      "whyWrong": {
+        "Combien": "Combien asks 'how much/many' — 'by bus' answers manner: Comment.",
+        "Quand": "Quand asks 'when' — 'by bus' answers how: Comment.",
+        "Pourquoi": "Pourquoi asks 'why' — 'by bus' answers how: Comment."
+      }
     }
   ]
 }

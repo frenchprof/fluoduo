@@ -16,7 +16,12 @@
         "aux"
       ],
       "fullSentence": "Je vais à la pharmacie.",
-      "sentenceTrans": "I'm going to the pharmacy."
+      "sentenceTrans": "I'm going to the pharmacy.",
+      "whyWrong": {
+        "au": "au (à + le) is masculine — pharmacie is feminine: à la.",
+        "à l'": "à l' is used before a vowel or silent h — pharmacie starts with a consonant.",
+        "aux": "aux (à + les) is plural — pharmacie is singular: à la."
+      }
     },
     {
       "id": "u3-sio033-02",
@@ -29,7 +34,12 @@
         "aux"
       ],
       "fullSentence": "Il est au marché.",
-      "sentenceTrans": "He's at the market."
+      "sentenceTrans": "He's at the market.",
+      "whyWrong": {
+        "à la": "à la is feminine — marché is masculine: au.",
+        "à l'": "à l' is used before a vowel or silent h — marché starts with a consonant.",
+        "aux": "aux (à + les) is plural — marché is singular: au."
+      }
     },
     {
       "id": "u3-sio033-03",
@@ -42,7 +52,12 @@
         "des"
       ],
       "fullSentence": "Elle vient de l' hôpital.",
-      "sentenceTrans": "She's coming from the hospital."
+      "sentenceTrans": "She's coming from the hospital.",
+      "whyWrong": {
+        "du": "du (de + le) is for masculine nouns after a consonant — hôpital has a silent h, so de l'.",
+        "de la": "de la is feminine before a consonant — hôpital takes de l' before its vowel sound.",
+        "des": "des (de + les) is plural — hôpital is singular: de l'."
+      }
     },
     {
       "id": "u3-sio033-04",
@@ -55,7 +70,12 @@
         "aux"
       ],
       "fullSentence": "Nous allons à l' hôtel.",
-      "sentenceTrans": "We're going to the hotel."
+      "sentenceTrans": "We're going to the hotel.",
+      "whyWrong": {
+        "au": "au is masculine before a consonant — hôtel has a silent h, so à l'.",
+        "à la": "à la is feminine before a consonant — hôtel takes à l' before its vowel sound.",
+        "aux": "aux (à + les) is plural — hôtel is singular: à l'."
+      }
     },
     {
       "id": "u3-sio033-05",
@@ -68,7 +88,12 @@
         "de"
       ],
       "fullSentence": "Ils viennent du restaurant.",
-      "sentenceTrans": "They're coming from the restaurant."
+      "sentenceTrans": "They're coming from the restaurant.",
+      "whyWrong": {
+        "de la": "de la is feminine — restaurant is masculine: du.",
+        "de l'": "de l' is used before a vowel or silent h — restaurant starts with a consonant.",
+        "de": "plain de leaves out the article — a masculine noun needs du (de + le)."
+      }
     }
   ]
 }

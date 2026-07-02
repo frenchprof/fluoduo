@@ -16,7 +16,12 @@
         "Comment"
       ],
       "fullSentence": "Pourquoi tu aimes le français ?",
-      "sentenceTrans": "Why do you like French?"
+      "sentenceTrans": "Why do you like French?",
+      "whyWrong": {
+        "Parce que": "Parce que means 'because' (the answer) — the question word is Pourquoi.",
+        "Quand": "Quand means 'when', not 'why'.",
+        "Comment": "Comment means 'how', not 'why'."
+      }
     },
     {
       "id": "u2-sio025-02",
@@ -29,7 +34,12 @@
         "Où"
       ],
       "fullSentence": "— Pourquoi tu vas au cinéma ? — Parce que j'aime les films.",
-      "sentenceTrans": "— Why do you go to the cinema? — Because I like films."
+      "sentenceTrans": "— Why do you go to the cinema? — Because I like films.",
+      "whyWrong": {
+        "Pourquoi": "Pourquoi asks 'why' — the answer starts with Parce que.",
+        "Quand": "Quand means 'when', not 'because'.",
+        "Où": "Où means 'where', not 'because'."
+      }
     },
     {
       "id": "u2-sio025-03",
@@ -42,7 +52,12 @@
         "amuser"
       ],
       "fullSentence": "Parce que c'est amusant.",
-      "sentenceTrans": "Because it's fun."
+      "sentenceTrans": "Because it's fun.",
+      "whyWrong": {
+        "amusante": "amusante is feminine — with c'est use the masculine amusant.",
+        "amusants": "amusants is plural — c'est takes the singular amusant.",
+        "amuser": "amuser is the verb 'to amuse' — you need the adjective amusant."
+      }
     },
     {
       "id": "u2-sio025-04",
@@ -55,7 +70,12 @@
         "calmer"
       ],
       "fullSentence": "Parce que c'est calme.",
-      "sentenceTrans": "Because it's quiet."
+      "sentenceTrans": "Because it's quiet.",
+      "whyWrong": {
+        "calmes": "calmes is plural — c'est takes the singular calme.",
+        "le calme": "le calme is the noun 'calm' — you need the adjective calme.",
+        "calmer": "calmer is the verb 'to calm' — you need the adjective calme."
+      }
     }
   ]
 }
