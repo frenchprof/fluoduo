@@ -41,6 +41,24 @@ export type Sio = {
 export const SIOS: Sio[] = (raw as Sio[]).slice().sort((a, b) => a.num - b.num);
 
 /**
+ * Learner-facing competence targets only the FULL goal — Dan, 2026-07-02:
+ * "instead of 10/12, just say 12." Assessment thresholds (≥x/y, percentages)
+ * stay in the CSV/sios.json for grading but never display.
+ */
+function targetHigherLimit(text: string): string {
+  return text
+    // parenthetical thresholds: (≥5/6), (≥80%), (≥90% letters correct), (≥2 each)
+    .replace(/\s*\(≥[^)]*\)/g, "")
+    // inline fractions target the total: "≥10/12 situations" → "12 situations"
+    .replace(/≥\s*\d+\s*\/\s*(\d+)/g, "$1")
+    // any remaining "≥N" targets N itself
+    .replace(/≥\s*/g, "")
+    .replace(/\s{2,}/g, " ")
+    .replace(/\s+([;,.])/g, "$1")
+    .trim();
+}
+
+/**
  * One flowing sentence merging Can-Do + competence, no section labels — Dan,
  * 2026-07-01: "we don't need the words 'Statement of SIO', 'Measurable
  * Language Competency'... STICK TO THE ESSENTIALS." Mechanical, not hand-
@@ -48,8 +66,8 @@ export const SIOS: Sio[] = (raw as Sio[]).slice().sort((a, b) => a.num - b.num);
  */
 export function sioStatement(sio: Sio): string {
   const canDo = sio.canDo.replace(/\.\s*$/, "");
-  const competence = sio.competence.charAt(0).toLowerCase() + sio.competence.slice(1);
-  return `${canDo}, and I know how to ${competence}`;
+  const competence = targetHigherLimit(sio.competence);
+  return `${canDo}, and I know how to ${competence.charAt(0).toLowerCase()}${competence.slice(1)}`;
 }
 
 export const UNIT_META: Record<number, { label: string; subtitle: string; emoji: string }> = {
