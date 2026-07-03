@@ -66,7 +66,6 @@ export default function Lexicalator({
   const [selected, setSelected] = useState<string | null>(null);
   const [queue, setQueue] = useState<LexEntry[]>([]);
   const [done, setDone] = useState<LexEntry[]>([]);
-  const [descend, setDescend] = useState<LexEntry | null>(null);
   const [firstDone, setFirstDone] = useState(false);
   const [rattle, setRattle] = useState<string | null>(null);
   const [music, setMusic] = useState(false);
@@ -176,13 +175,10 @@ export default function Lexicalator({
         setScore((s) => s + 10 + Math.min(combo, 5) * 2);
         setCombo((c) => c + 1);
         setFirstDone(true);
-        // descend animation → land in trésor
-        const finished = active.entry;
-        setDescend(finished);
-        window.setTimeout(() => {
-          setDone((d) => [...d, finished]);
-          setDescend(null);
-        }, 900);
+        // The whole chest descends straight into VOTRE TRÉSOR: add it now and
+        // let the trésor tile drop in from the play area (lxland) and land in
+        // place — the freed word no longer overshoots past the keyhole.
+        setDone((d) => [...d, active.entry]);
         // Remove the cleared chest and pull a replacement from the queue.
         // Computed purely from the current lane/queue (not nested state
         // updaters mutating a captured array — that double-ran under Strict
@@ -242,7 +238,7 @@ export default function Lexicalator({
       <style>{`
         @keyframes lxscroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
         @keyframes lxrattle{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px) rotate(-4deg)}75%{transform:translateX(4px) rotate(4deg)}}
-        @keyframes lxdescend{0%{transform:translate(-50%,0) scale(1);opacity:0}12%{opacity:1}70%{opacity:1;transform:translate(-50%,240px) scale(1)}100%{opacity:0;transform:translate(-50%,270px) scale(.5)}}
+        @keyframes lxland{0%{transform:translateY(-170px) scale(1.06);opacity:0}14%{opacity:1}80%{transform:translateY(7px) scale(1)}100%{transform:translateY(0) scale(1)}}
         @keyframes lxaim{0%,100%{box-shadow:0 0 0 0 rgba(224,134,0,0)}50%{box-shadow:0 0 0 6px rgba(224,134,0,.45)}}
         @keyframes lxblink{0%,100%{opacity:1}50%{opacity:.15}}
         @keyframes lxdrop{0%{transform:translateY(-6px);opacity:.35}50%{transform:translateY(7px);opacity:1}100%{transform:translateY(-6px);opacity:.35}}
@@ -304,7 +300,7 @@ export default function Lexicalator({
 
       {/* Assembly bay — the active chest with syllable-sized keyholes */}
       <div className="relative flex min-h-[7rem] items-center justify-center py-5">
-        {!active && !descend && (
+        {!active && (
           <div className="flex flex-col items-center gap-2">
             {/* animated down-arrows — the "drag it down here" movement */}
             <div className="flex gap-3" aria-hidden>
@@ -353,12 +349,6 @@ export default function Lexicalator({
             )}
           </div>
         )}
-        {descend && (
-          <div className="pointer-events-none absolute left-1/2 top-2 z-10 rounded-2xl border-4 bg-white px-4 py-2 text-xl font-black"
-            style={{ borderColor: "#ffc800", color: "#e08600", animation: "lxdescend 900ms ease-in forwards" }}>
-            {descend.fr}
-          </div>
-        )}
       </div>
 
       {/* Key belt — a static, fully-visible set until a chest is picked (so the
@@ -389,14 +379,29 @@ export default function Lexicalator({
         )}
       </div>
 
-      {/* Trésor */}
-      <div className="mt-3 min-h-[2rem]">
-        <span className="mr-2 text-[0.7rem] font-black uppercase tracking-wider" style={{ color: "#e08600" }}>🧰 trésor</span>
-        <span className="inline-flex flex-wrap gap-1.5 align-middle">
-          {done.map((d, i) => (
-            <span key={i} lang="fr" className="rounded-md border-2 border-b-4 bg-white px-2 py-0.5 text-sm font-black" style={{ borderColor: "#ffc800", color: "#e08600" }}>{d.fr}</span>
-          ))}
-        </span>
+      {/* Votre trésor — each freed word lands here as a little treasure chest */}
+      <div className="mt-3 flex min-h-[3rem] flex-wrap items-end gap-2">
+        <span className="mr-1 text-[0.7rem] font-black uppercase tracking-wider" style={{ color: "#e08600" }}>🧰 Votre trésor :</span>
+        {done.map((d, i) => (
+          <span
+            key={i}
+            lang="fr"
+            className="relative inline-flex flex-col items-center overflow-hidden rounded-md border-2 border-b-4"
+            style={{
+              borderColor: "#8a5a0f",
+              background: "linear-gradient(180deg,#ffe08a 0%,#f0b429 100%)",
+              color: "#5a3a08",
+              boxShadow: "inset 0 -2px 0 rgba(0,0,0,.12)",
+              animation: "lxland 520ms cubic-bezier(.2,.7,.3,1.25) both",
+            }}
+          >
+            {/* the chest lid — a darker gold band with a clasp */}
+            <span className="flex w-full items-center justify-center" style={{ height: 7, background: "linear-gradient(180deg,#c8860f,#a8700f)" }}>
+              <span style={{ width: 6, height: 3, borderRadius: 1, background: "#ffe9a8" }} />
+            </span>
+            <span className="px-2 py-0.5 text-sm font-black">{d.fr}</span>
+          </span>
+        ))}
       </div>
 
       {(over || levelDone) && (
