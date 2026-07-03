@@ -35,19 +35,29 @@ const ROWS = 10;
 const INITIAL_TICK_MS = 800;
 const MIN_TICK_MS = 260;
 const SPEEDUP_EVERY = 6;
-/* Night falls after this many landed drops (Dan, 2026-07-03): the sky darkens
- * and some letters on each falling word become unclear, so the learner has to
- * recall the word from knowledge rather than read it. */
-const NIGHT_AFTER = 10;
+/* Nightfall (Dan, 2026-07-03): the sky darkens and a FEW letters on each
+ * falling word go unclear, so the learner recalls the word from knowledge
+ * rather than reading it. It only falls once every word has been correctly
+ * categorised MORE than twice, and then the rain + music slow dramatically. */
+const NIGHT_CORRECT_EACH = 2; // each word must be sorted correctly > this many times
+const NIGHT_RAIN_SLOW = 3.2; // tiles fall this many× slower in the dark
+const NIGHT_MUSIC_SLOW = 2.2; // music tempo scale in the dark
 
 /** Which letter positions the dark hides — deterministic per word (the same
- *  word is always unclear in the same places), never the first letter. */
+ *  word is always unclear in the same places), never the first letter. At most
+ *  20% of the word's letters are obscured (Dan: ≥80% must stay legible — 1 in 5
+ *  at most), so a 5-letter word loses one, a 4-letter word none. */
 function nightMask(text: string): Set<number> {
   let h = 0;
   for (let i = 0; i < text.length; i++) h = (h * 31 + text.charCodeAt(i)) >>> 0;
   const letters: number[] = [];
-  for (let i = 1; i < text.length; i++) if (/\p{L}/u.test(text[i])) letters.push(i);
-  const want = Math.min(letters.length, 1 + Math.floor(text.length / 5));
+  let totalLetters = 0;
+  for (let i = 0; i < text.length; i++) {
+    if (!/\p{L}/u.test(text[i])) continue;
+    totalLetters++;
+    if (i > 0) letters.push(i); // never the first letter
+  }
+  const want = Math.min(letters.length, Math.floor(totalLetters * 0.2));
   const out = new Set<number>();
   for (let k = 0; out.size < want && k < letters.length * 3; k++) {
     out.add(letters[(h + k * 7) % letters.length]);
@@ -122,7 +132,14 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
   const [score, setScore] = useState(0);
   const [paused, setPaused] = useState(false);
   const [music, setMusic] = useState(false);
-  const [drops, setDrops] = useState(0); // tiles landed — night falls after a few
+  const [night, setNight] = useState(false);
+  const [showNightMsg, setShowNightMsg] = useState(false);
+  const nightRef = useRef(false);
+  nightRef.current = night;
+  // How many times each distinct word has been sorted correctly — night falls
+  // only once every word is above NIGHT_CORRECT_EACH.
+  const correctRef = useRef<Map<string, number>>(new Map());
+  const wordTexts = useMemo(() => [...new Set(set.tiles.map((t) => t.text))], [set.tiles]);
   const musicAutoRef = useRef(false);
   // First interaction — key OR tap — starts the tune (both are user gestures,
   // so the AudioContext may be created). Keydown-only left tap players silent
@@ -163,14 +180,17 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
     setPaused(false);
     setGameOver(false);
     setFlash(null);
-    setDrops(0); // dawn breaks again
+    // dawn breaks again
+    setNight(false);
+    setShowNightMsg(false);
+    correctRef.current.clear();
+    chiptune.setTempoScale(1);
     tickRef.current = INITIAL_TICK_MS;
   }, [cols, set.tiles]);
 
   const landTile = useCallback(
     (a: Active) => {
       const correct = catIndex.get(a.tile.category) === a.col;
-      setDrops((d) => d + 1);
       setFlash({ col: a.col, kind: correct ? "ok" : "bad" });
       window.setTimeout(() => setFlash(null), 220);
       if (correct) {
@@ -179,6 +199,15 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
           set.language ? `${set.language}-FR` : "fr-FR",
           { interrupt: false },
         );
+        // Tally the correct sort; night falls once EVERY word is above the bar.
+        const m = correctRef.current;
+        m.set(a.tile.text, (m.get(a.tile.text) ?? 0) + 1);
+        if (!nightRef.current && wordTexts.every((w) => (m.get(w) ?? 0) > NIGHT_CORRECT_EACH)) {
+          setNight(true);
+          setShowNightMsg(true);
+          setPaused(true); // hold the fall while the learner reads the warning
+          chiptune.setTempoScale(NIGHT_MUSIC_SLOW);
+        }
       }
 
       setBoard((b) => {
@@ -217,7 +246,7 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
       });
       setActive(null);
     },
-    [catIndex, catColor, colorOf, set.categories, set.language],
+    [catIndex, catColor, colorOf, set.categories, set.language, wordTexts],
   );
 
   useEffect(() => {
@@ -234,7 +263,8 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
         rafRef.current = requestAnimationFrame(step);
         return;
       }
-      if (ts - lastDropRef.current >= tickRef.current) {
+      const effTick = tickRef.current * (nightRef.current ? NIGHT_RAIN_SLOW : 1);
+      if (ts - lastDropRef.current >= effTick) {
         lastDropRef.current = ts;
         const a = s.active;
         const nextRow = a.row + 1;
@@ -301,7 +331,10 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
   const pillCls =
     "rounded-xl border-2 border-b-4 border-sky-200 bg-white px-2.5 py-1 font-bold text-sky-800 shadow-sm transition hover:bg-sky-50 active:translate-y-[2px] active:border-b-2";
 
-  const night = drops >= NIGHT_AFTER;
+  const dismissNight = () => {
+    setShowNightMsg(false);
+    setPaused(false); // resume the fall in the dark
+  };
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 px-4 py-6 text-sky-950">
@@ -321,7 +354,7 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
             Score <b className="text-[#58cc02]">{score}</b>
           </span>
           <button type="button" onClick={() => setShowHelp(true)} title="How to play" className={pillCls}>?</button>
-          <button type="button" onClick={() => { chiptune.toggle("letris"); setMusic(chiptune.playing() === "letris"); }}
+          <button type="button" onClick={() => { chiptune.toggle("letris"); setMusic(chiptune.playing() === "letris"); if (chiptune.playing() === "letris" && night) chiptune.setTempoScale(NIGHT_MUSIC_SLOW); }}
             title="Music" className={pillCls}>{music ? "🔊" : "🎵"}</button>
           <button type="button" onClick={() => setPaused((p) => !p)} className={pillCls}>
             {paused ? "Resume" : "Pause"}
@@ -331,6 +364,28 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
           </button>
         </div>
       </header>
+
+      {showNightMsg && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/80 p-4">
+          <div className="max-w-sm rounded-3xl border-4 border-indigo-400/60 bg-slate-900 p-6 text-center text-indigo-50 shadow-2xl">
+            <div className="text-5xl" aria-hidden>🌙</div>
+            <h2 className="mt-2 text-xl font-black text-indigo-100">La nuit tombe…</h2>
+            <p className="mt-2 text-sm leading-relaxed text-indigo-100/85">
+              You&rsquo;ve mastered every word — so night falls. In the dark a
+              letter or two on each drop is <b>too faint to read</b>. Trust your
+              memory of the word to steer it into the right puddle. The rain and
+              the music <b>slow right down</b> to help you think.
+            </p>
+            <button
+              type="button"
+              onClick={dismissNight}
+              className="mt-4 w-full rounded-2xl border-b-4 border-indigo-700 bg-indigo-500 py-2 text-sm font-black text-white transition hover:brightness-110 active:translate-y-[2px] active:border-b-0"
+            >
+              Continuer dans le noir 🌙
+            </button>
+          </div>
+        </div>
+      )}
 
       {showHelp && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-sky-950/50 p-4" onClick={() => setShowHelp(false)}>
@@ -372,7 +427,7 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
                 top: 0,
                 height: 16,
                 background: "rgba(255,255,255,.55)",
-                animation: `vrain ${2.2 + (i % 5) * 0.5}s linear ${(i * 0.63) % 3}s infinite`,
+                animation: `vrain ${(2.2 + (i % 5) * 0.5) * (night ? 3 : 1)}s linear ${(i * 0.63) % 3}s infinite`,
               }}
             />
           ))}
