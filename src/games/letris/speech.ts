@@ -20,6 +20,16 @@ type SpeakOpts = {
   rate?: number;
 };
 
+// Spoken French names of the alphabet, written the way fr-FR TTS reads them
+// correctly (e.g. "elle" for L, "double vé" for W). Used so a bare letter in
+// the alphabet pretest is voiced as its name, never "X majuscule".
+const FR_LETTER_NAME: Record<string, string> = {
+  a: "a", b: "bé", c: "cé", d: "dé", e: "e", f: "effe", g: "gé", h: "ache",
+  i: "i", j: "ji", k: "ka", l: "elle", m: "emme", n: "enne", o: "o", p: "pé",
+  q: "ku", r: "erre", s: "esse", t: "té", u: "u", v: "vé", w: "double vé",
+  x: "ixe", y: "i grec", z: "zède",
+};
+
 const FEMALE_VOICE = /amelie|audrey|aurélie|aurelie|marie|julie|hortense|virginie|chantal|léa|lea|female|femme|woman/i;
 const MALE_VOICE = /thomas|nicolas|paul|claude|henri|mathieu|male|homme|man/i;
 
@@ -78,9 +88,12 @@ export function speak(text: string, lang = "fr-FR", opts: SpeakOpts = {}) {
   // the speech would lag noticeably behind the falling tiles.
   if (!interrupt && pending >= 2) return;
 
-  // A lone capital letter is read by French TTS as "H majuscule" (H capital);
-  // the alphabet pretest wants just the letter's name, so speak it lowercase.
-  const spoken = /^[A-Za-z]$/.test(text) ? text.toLowerCase() : text;
+  // A lone letter read by French TTS is unreliable — an uppercase one becomes
+  // "H majuscule" (H capital), and some voices still announce case even in
+  // lowercase. The alphabet pretest wants the letter's NAME, so map a single
+  // A–Z to its spoken French name ("H" → "ache"), which no voice can suffix
+  // with "majuscule". Falls through untouched for everything else.
+  const spoken = /^[A-Za-z]$/.test(text) ? (FR_LETTER_NAME[text.toLowerCase()] ?? text.toLowerCase()) : text;
 
   const u = new SpeechSynthesisUtterance(spoken);
   u.lang = lang;
