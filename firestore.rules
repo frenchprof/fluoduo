@@ -5,10 +5,11 @@ rules_version = '2';
 // Deploy: Firebase console → Firestore → Rules, or `firebase deploy --only firestore:rules`.
 //
 //   users/{uid}                      profile + reviser XP/progress  (owner write, signed-in read)
-//   users/{uid}/{sub=**}             pretest state/skills/runs/attempts + reviser sessions
+//   users/{uid}/attempts/{id}        APPEND-ONLY audit log           (owner create, never edited)
+//   users/{uid}/{sub=**}             pretest state/skills/runs + reviser sessions
 //   leaderboard/{uid}                unified combined-total board    (owner write, signed-in read)
 //   events / authEvents              telemetry                        (signed-in create)
-//   feedback                         bug reports                      (ANONYMOUS create, admin read)
+//   feedback                         bug reports                      (ANONYMOUS create, shape-checked, admin read)
 service cloud.firestore {
   match /databases/{database}/documents {
     function isSignedIn() { return request.auth != null; }
@@ -32,9 +33,19 @@ service cloud.firestore {
     match /users/{uid} {
       allow read:  if isSignedIn();
       allow write: if isOwner(uid);
+      // Append-only audit log: attempt records can be created and read, never
+      // edited or deleted — a trustworthy history even against the owner.
+      match /attempts/{attemptId} {
+        allow read:   if isOwner(uid) || isAdmin();
+        allow create: if isOwner(uid);
+        allow update, delete: if false;
+      }
+      // Everything else under the user doc (pretest state/skills/runs, reviser
+      // sessions). The sub[0] guard keeps this wildcard from re-granting the
+      // update/delete the attempts match above just denied (rules are OR-ed).
       match /{sub=**} {
         allow read:  if isOwner(uid) || isAdmin();
-        allow write: if isOwner(uid);
+        allow write: if isOwner(uid) && sub[0] != 'attempts';
       }
     }
     match /leaderboard/{uid} {
@@ -44,9 +55,29 @@ service cloud.firestore {
     match /events/{id}     { allow create: if isSignedIn(); allow read: if isAdmin(); }
     match /authEvents/{id} { allow create: if isSignedIn(); allow read: if isAdmin(); }
     // Bug reports: anyone may submit (signed in or not); only admins read/triage.
+    // Anonymous create is shape-checked so the open write can't be used to park
+    // arbitrary documents (spam/abuse): exactly the fields FeedbackButton sends,
+    // with size caps matching what the client itself enforces.
     match /feedback/{id} {
-      allow create: if true;
+      allow create: if request.resource.data.keys().hasOnly(
+          ['categories', 'details', 'url', 'userAgent', 'uid', 'createdAt'])
+        && request.resource.data.categories is list
+        && request.resource.data.categories.size() <= 10
+        && request.resource.data.details is string
+        && request.resource.data.details.size() <= 2000
+        && request.resource.data.url is string
+        && request.resource.data.url.size() <= 500
+        && request.resource.data.userAgent is string
+        && request.resource.data.userAgent.size() <= 400
+        && (request.resource.data.uid == null
+            || (isSignedIn() && request.resource.data.uid == request.auth.uid))
+        && request.resource.data.createdAt == request.time;
       allow read, update: if isAdmin();
+    }
+    // Explicit default-deny for anything unmatched (self-documenting; Firestore
+    // already denies unmatched paths).
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
