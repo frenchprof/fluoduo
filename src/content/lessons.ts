@@ -31,6 +31,8 @@ export const LESSONS: Record<string, Lesson> = {
   "prepositions":      { slug: "prepositions",      file: "17-prepositions.html",      title: "Prépositions : de & à",        unit: 3 },
   "revision-u3u4":     { slug: "revision-u3u4",     file: "18-revision-u3u4.html",     title: "Révision — Unités 3 & 4",      unit: 3 },
   "partitifs":         { slug: "partitifs",         file: "19-partitifs.html",         title: "Les articles partitifs",       unit: 4 },
+  "manger-boire":      { slug: "manger-boire",      file: "20-manger-boire.html",      title: "Manger & boire",               unit: 4 },
+  "futur-proche":      { slug: "futur-proche",      file: "21-futur-proche.html",      title: "Le futur proche",              unit: 4 },
 };
 
 /**
@@ -50,10 +52,11 @@ export const LESSONS_BY_SIO: Record<string, string[]> = {
   "SIO-027": ["quand"],
   "SIO-029": ["rendezvous"],
   "SIO-037": ["modaux"],
-  "SIO-048": ["modaux"],
+  "SIO-048": ["modaux", "futur-proche"],
   "SIO-032": ["prepositions"],
   "SIO-042": ["partitifs"],
   "SIO-043": ["partitifs"],
+  "SIO-044": ["manger-boire"],
 };
 
 export const ALL_LESSONS: Lesson[] = Object.values(LESSONS);
