@@ -50,7 +50,7 @@ export function popupActivityTabs(
     ...pretestTab,
     { key: "flip", label: "Flip It", emoji: "🃏", href: `/practice/flip-it/${deck.id}` },
     { key: "say", label: "Say It", emoji: "🎤", href: `/practice/say-it/${deck.id}` },
-    { key: "complete", label: "Complete It", emoji: "✏️" }, // not built yet
+    { key: "complete", label: "Complete It", emoji: "✏️", href: `/practice/complete-it/${deck.id}` },
     { key: "match", label: "Lexicalator", emoji: "⚙️", href: `/games/conveyor/${deck.id}` },
     ...(hasLetris
       ? [{ key: "rain", label: "Vocabularain", emoji: "🌧️", href: `/games/letris/${deck.id.replace("-letris", "")}` }]

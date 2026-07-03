@@ -147,6 +147,7 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
   return [
     { key: "flip", label: "Flip It", emoji: "🃏", href: `/practice/flip-it/${collectionId}` },
     { key: "say", label: "Say It", emoji: "🎤", href: `/practice/say-it/${collectionId}` },
+    { key: "complete", label: "Complete It", emoji: "✏️", href: `/practice/complete-it/${collectionId}` },
     { key: "dice", label: "Practice", emoji: "🎲", href: `/games/practice/${collectionId}` },
     { key: "match", label: "Lexicalator", emoji: "⚙️", href: `/games/conveyor/${collectionId}` },
   ];
