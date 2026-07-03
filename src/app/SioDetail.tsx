@@ -19,6 +19,7 @@ import { sioStatement, type Sio } from "@/content/sios";
 import type { Collection } from "@/lib/collections/schema";
 import { getAtelier } from "@/content/ateliers";
 import { lessonsForSio } from "@/content/lessons";
+import { isLexReady } from "@/lib/collections/lexReady";
 import AuthGate from "@/components/AuthGate";
 import PretestQuiz from "./PretestQuiz";
 import DialoguePlayer from "./DialoguePlayer";
@@ -112,7 +113,10 @@ export function PracticeChips({ deck }: { deck: Collection }) {
     { key: "flip", label: "🃏 Flip It", href: `/practice/flip-it/${deck.id}` },
     { key: "say", label: "🎤 Say It", href: `/practice/say-it/${deck.id}` },
     { key: "complete", label: "✏️ Complete It", href: `/practice/complete-it/${deck.id}` },
-    { key: "match", label: "⚙️ Lexicalator", href: `/games/conveyor/${deck.id}` },
+    // Lexicalator only where the deck is hand-syllabified (no old-game fallback).
+    ...(isLexReady(deck)
+      ? [{ key: "match", label: "🧰 Lexicalator", href: `/games/conveyor/${deck.id}` }]
+      : []),
     ...(hasLetris
       ? [{ key: "classify", label: "🌧️ Vocabularain", href: `/games/letris/${deck.id.replace("-letris", "")}` }]
       : []),
