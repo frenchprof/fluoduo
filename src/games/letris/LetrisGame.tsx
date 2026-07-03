@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { buildSentence, speak } from "./speech";
 import { resolveBoard } from "./resolve";
 import { chiptune } from "@/games/audio/chiptune";
+import CreditsSplash from "@/games/CreditsSplash";
 
 export type LetrisCategory = {
   key: string;
@@ -154,6 +155,7 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
   useEffect(() => () => chiptune.stop(), []); // stop the loop on unmount
   const [gameOver, setGameOver] = useState(false);
   const [flash, setFlash] = useState<{ col: number; kind: "ok" | "bad" } | null>(null);
+  const [creditsDone, setCreditsDone] = useState(false); // hold tiles until the credits splash clears
 
   const tickRef = useRef(INITIAL_TICK_MS);
   const lastDropRef = useRef(0);
@@ -250,11 +252,11 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
   );
 
   useEffect(() => {
-    if (!active && !gameOver && !paused) {
+    if (creditsDone && !active && !gameOver && !paused) {
       const t = window.setTimeout(spawnTile, 250);
       return () => window.clearTimeout(t);
     }
-  }, [active, gameOver, paused, spawnTile]);
+  }, [creditsDone, active, gameOver, paused, spawnTile]);
 
   useEffect(() => {
     const step = (ts: number) => {
@@ -338,6 +340,7 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 px-4 py-6 text-sky-950">
+      <CreditsSplash game="Vocabularain" emoji="🌧️" onDone={() => setCreditsDone(true)} />
       <style>{`@keyframes vrain{0%{transform:translateY(-24px);opacity:0}12%{opacity:.7}100%{transform:translateY(520px);opacity:0}}`}</style>
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>

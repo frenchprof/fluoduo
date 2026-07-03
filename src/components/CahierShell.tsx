@@ -14,6 +14,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
+import { isLexReadyId } from "@/lib/collections/lexReady";
 
 const TAB_HUES = [
   "var(--cahier-t0)",
@@ -142,14 +143,18 @@ export default function CahierShell({
   );
 }
 
-/** Tab set for a deck's activity pages — Flip It / Say It / dice Practice / Lexicalator. */
+/** Tab set for a deck's activity pages — Flip It / Say It / dice Practice / Lexicalator.
+ *  The Lexicalator tab appears only where the deck is hand-syllabified (no old-game
+ *  fallback anymore). */
 export function deckActivityTabs(collectionId: string): ShellTab[] {
   return [
     { key: "flip", label: "Flip It", emoji: "🃏", href: `/practice/flip-it/${collectionId}` },
     { key: "say", label: "Say It", emoji: "🎤", href: `/practice/say-it/${collectionId}` },
     { key: "complete", label: "Complete It", emoji: "✏️", href: `/practice/complete-it/${collectionId}` },
     { key: "dice", label: "Practice", emoji: "🎲", href: `/games/practice/${collectionId}` },
-    { key: "match", label: "Lexicalator", emoji: "⚙️", href: `/games/conveyor/${collectionId}` },
+    ...(isLexReadyId(collectionId)
+      ? [{ key: "match", label: "Lexicalator", emoji: "🧰", href: `/games/conveyor/${collectionId}` } as ShellTab]
+      : []),
   ];
 }
 
