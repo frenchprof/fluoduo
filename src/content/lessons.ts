@@ -35,6 +35,7 @@ export const LESSONS: Record<string, Lesson> = {
   "futur-proche":      { slug: "futur-proche",      file: "21-futur-proche.html",      title: "Le futur proche",              unit: 4 },
   "frequence":         { slug: "frequence",         file: "22-frequence.html",         title: "Les adverbes de fréquence",    unit: 4 },
   "demonstratifs":     { slug: "demonstratifs",     file: "23-demonstratifs.html",     title: "Les adjectifs démonstratifs",  unit: 4 },
+  "revision-u4":       { slug: "revision-u4",       file: "24-revision-u4.html",       title: "Révision — Unité 4",           unit: 4 },
 };
 
 /**
