@@ -18,9 +18,9 @@
       "fullSentence": "Elle est journaliste.",
       "sentenceTrans": "She is a journalist.",
       "whyWrong": {
-        "journalist": "That's the English spelling — in French it's journaliste.",
-        "journalistes": "That's the plural — one person is journaliste.",
-        "journal": "That means 'newspaper', not the person."
+        "journalist": "“Journalist” is the English spelling — in French it's journaliste.",
+        "journalistes": "journalistes means “journalists” (plural) — one person is journaliste.",
+        "journal": "journal means “newspaper”, not the person."
       }
     },
     {
@@ -36,9 +36,9 @@
       "fullSentence": "Elle est étudiante.",
       "sentenceTrans": "She is a student.",
       "whyWrong": {
-        "étudiant": "That's the masculine form — for a woman, étudiante.",
-        "étudiants": "That's the masculine plural — one woman is étudiante.",
-        "étudie": "That's the verb 'studies', not the person."
+        "étudiant": "étudiant means “student”, but the masculine form — for a woman it's étudiante.",
+        "étudiants": "étudiants means “students” (masculine plural) — one woman is étudiante.",
+        "étudie": "étudie is the verb “(she) studies”, not the person."
       }
     },
     {
@@ -54,9 +54,9 @@
       "fullSentence": "Elle est actrice.",
       "sentenceTrans": "She is an actress.",
       "whyWrong": {
-        "acteur": "That's the masculine 'actor' — the feminine is actrice.",
-        "acteurs": "That's the masculine plural 'actors'.",
-        "chanteuse": "That means 'singer', not 'actress'."
+        "acteur": "acteur means “actor” (masculine) — the feminine is actrice.",
+        "acteurs": "acteurs means “actors” (masculine plural).",
+        "chanteuse": "chanteuse means “singer”, not “actress”."
       }
     },
     {
@@ -72,9 +72,9 @@
       "fullSentence": "Il est acteur.",
       "sentenceTrans": "He is an actor.",
       "whyWrong": {
-        "actrice": "That's the feminine 'actress' — for a man, acteur.",
-        "acteurs": "That's the plural 'actors' — one man is acteur.",
-        "chanteur": "That means 'singer', not 'actor'."
+        "actrice": "actrice means “actress” (feminine) — for a man it's acteur.",
+        "acteurs": "acteurs means “actors” (plural) — one man is acteur.",
+        "chanteur": "chanteur means “singer”, not “actor”."
       }
     },
     {
@@ -90,9 +90,9 @@
       "fullSentence": "Elle est cheffe.",
       "sentenceTrans": "She is a chef.",
       "whyWrong": {
-        "chef": "That's the masculine form — the feminine is cheffe.",
-        "chefs": "That's the plural 'chefs'.",
-        "cuisine": "That means 'kitchen / cooking', not the person."
+        "chef": "chef means “chef” (masculine) — the feminine is cheffe.",
+        "chefs": "chefs means “chefs” (plural).",
+        "cuisine": "cuisine means “kitchen / cooking”, not the person."
       }
     },
     {
@@ -108,9 +108,9 @@
       "fullSentence": "Il est styliste.",
       "sentenceTrans": "He is a fashion designer.",
       "whyWrong": {
-        "stylist": "That's the English spelling — in French it's styliste.",
-        "stylistes": "That's the plural — one person is styliste.",
-        "style": "That means 'style', not the person."
+        "stylist": "“Stylist” is the English spelling — in French it's styliste.",
+        "stylistes": "stylistes means “fashion designers” (plural) — one person is styliste.",
+        "style": "style means “style”, not the person."
       }
     },
     {
@@ -126,9 +126,9 @@
       "fullSentence": "Elle est chanteuse.",
       "sentenceTrans": "She is a singer.",
       "whyWrong": {
-        "chanteur": "That's the masculine 'male singer' — the feminine is chanteuse.",
-        "chanteuses": "That's the plural 'singers'.",
-        "chanson": "That means 'song', not the person."
+        "chanteur": "chanteur means “singer” (masculine) — the feminine is chanteuse.",
+        "chanteuses": "chanteuses means “singers” (plural).",
+        "chanson": "chanson means “song”, not the person."
       }
     },
     {
@@ -144,9 +144,9 @@
       "fullSentence": "Il est joueur de tennis.",
       "sentenceTrans": "He is a tennis player.",
       "whyWrong": {
-        "joueuse": "That's the feminine 'female player' — for a man, joueur.",
-        "joueurs": "That's the plural 'players'.",
-        "jeu": "That means 'game', not the player."
+        "joueuse": "joueuse means “player” (feminine) — for a man it's joueur.",
+        "joueurs": "joueurs means “players” (plural).",
+        "jeu": "jeu means “game”, not the player."
       }
     }
   ]
