@@ -10,77 +10,94 @@
   "lessonSlug": "colors",
   "tags": [],
   "seq": 5,
+  "gameConfig": {
+    "lexicalator": {
+      "decoys": ["rou", "ran", "jaun", "vé", "blin", "noire", "gri", "ros", "bei", "vlo", "lette", "mor"]
+    }
+  },
   "items": [
     {
       "id": "colors-01",
       "fr": "rouge",
       "en": "red",
+      "syllables": ["rouge"],
       "tags": []
     },
     {
       "id": "colors-02",
       "fr": "orange",
       "en": "orange",
+      "syllables": ["o", "range"],
       "tags": []
     },
     {
       "id": "colors-03",
       "fr": "jaune",
       "en": "yellow",
+      "syllables": ["jaune"],
       "tags": []
     },
     {
       "id": "colors-04",
       "fr": "vert",
       "en": "green",
+      "syllables": ["vert"],
       "tags": []
     },
     {
       "id": "colors-05",
       "fr": "bleu",
       "en": "blue",
+      "syllables": ["bleu"],
       "tags": []
     },
     {
       "id": "colors-06",
       "fr": "violet",
       "en": "purple",
+      "syllables": ["vio", "let"],
       "tags": []
     },
     {
       "id": "colors-07",
       "fr": "marron",
       "en": "brown",
+      "syllables": ["mar", "ron"],
       "tags": []
     },
     {
       "id": "colors-08",
       "fr": "blanc",
       "en": "white",
+      "syllables": ["blanc"],
       "tags": []
     },
     {
       "id": "colors-09",
       "fr": "noir",
       "en": "black",
+      "syllables": ["noir"],
       "tags": []
     },
     {
       "id": "colors-10",
       "fr": "gris",
       "en": "grey",
+      "syllables": ["gris"],
       "tags": []
     },
     {
       "id": "colors-11",
       "fr": "rose",
       "en": "pink",
+      "syllables": ["rose"],
       "tags": []
     },
     {
       "id": "colors-12",
       "fr": "beige",
       "en": "beige",
+      "syllables": ["beige"],
       "tags": []
     }
   ]

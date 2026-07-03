@@ -13,22 +13,167 @@
   "gameConfig": {
     "letris": {
       "columns": [
-        { "key": "semaine", "label": "SEMAINE", "prefix": "" },
-        { "key": "weekend", "label": "WEEK-END", "prefix": "" },
-        { "key": "moment", "label": "MOMENT", "prefix": "" }
+        {
+          "key": "semaine",
+          "label": "SEMAINE",
+          "prefix": ""
+        },
+        {
+          "key": "weekend",
+          "label": "WEEK-END",
+          "prefix": ""
+        },
+        {
+          "key": "moment",
+          "label": "MOMENT",
+          "prefix": ""
+        }
+      ]
+    },
+    "lexicalator": {
+      "decoys": [
+        "du",
+        "din",
+        "mor",
+        "van",
+        "dro",
+        "cham",
+        "min",
+        "tain",
+        "soi",
+        "mé",
+        "lin",
+        "dor"
       ]
     }
   },
   "items": [
-    { "id": "days-01", "fr": "lundi", "en": "Monday", "tags": ["col:semaine"] },
-    { "id": "days-02", "fr": "mardi", "en": "Tuesday", "tags": ["col:semaine"] },
-    { "id": "days-03", "fr": "mercredi", "en": "Wednesday", "tags": ["col:semaine"] },
-    { "id": "days-04", "fr": "jeudi", "en": "Thursday", "tags": ["col:semaine"] },
-    { "id": "days-05", "fr": "vendredi", "en": "Friday", "tags": ["col:semaine"] },
-    { "id": "days-06", "fr": "samedi", "en": "Saturday", "tags": ["col:weekend"] },
-    { "id": "days-07", "fr": "dimanche", "en": "Sunday", "tags": ["col:weekend"] },
-    { "id": "days-08", "fr": "le matin", "en": "in the morning", "tags": ["col:moment"] },
-    { "id": "days-09", "fr": "l'après-midi", "en": "in the afternoon", "tags": ["col:moment"] },
-    { "id": "days-10", "fr": "le soir", "en": "in the evening", "tags": ["col:moment"] }
+    {
+      "id": "days-01",
+      "fr": "lundi",
+      "en": "Monday",
+      "syllables": [
+        "lun",
+        "di"
+      ],
+      "tags": [
+        "col:semaine"
+      ]
+    },
+    {
+      "id": "days-02",
+      "fr": "mardi",
+      "en": "Tuesday",
+      "syllables": [
+        "mar",
+        "di"
+      ],
+      "tags": [
+        "col:semaine"
+      ]
+    },
+    {
+      "id": "days-03",
+      "fr": "mercredi",
+      "en": "Wednesday",
+      "syllables": [
+        "mer",
+        "cre",
+        "di"
+      ],
+      "tags": [
+        "col:semaine"
+      ]
+    },
+    {
+      "id": "days-04",
+      "fr": "jeudi",
+      "en": "Thursday",
+      "syllables": [
+        "jeu",
+        "di"
+      ],
+      "tags": [
+        "col:semaine"
+      ]
+    },
+    {
+      "id": "days-05",
+      "fr": "vendredi",
+      "en": "Friday",
+      "syllables": [
+        "ven",
+        "dre",
+        "di"
+      ],
+      "tags": [
+        "col:semaine"
+      ]
+    },
+    {
+      "id": "days-06",
+      "fr": "samedi",
+      "en": "Saturday",
+      "syllables": [
+        "sa",
+        "me",
+        "di"
+      ],
+      "tags": [
+        "col:weekend"
+      ]
+    },
+    {
+      "id": "days-07",
+      "fr": "dimanche",
+      "en": "Sunday",
+      "syllables": [
+        "di",
+        "man",
+        "che"
+      ],
+      "tags": [
+        "col:weekend"
+      ]
+    },
+    {
+      "id": "days-08",
+      "fr": "le matin",
+      "en": "in the morning",
+      "syllables": [
+        "le",
+        "ma",
+        "tin"
+      ],
+      "tags": [
+        "col:moment"
+      ]
+    },
+    {
+      "id": "days-09",
+      "fr": "l'après-midi",
+      "en": "in the afternoon",
+      "syllables": [
+        "l'a",
+        "près",
+        "-mi",
+        "di"
+      ],
+      "tags": [
+        "col:moment"
+      ]
+    },
+    {
+      "id": "days-10",
+      "fr": "le soir",
+      "en": "in the evening",
+      "syllables": [
+        "le",
+        "soir"
+      ],
+      "tags": [
+        "col:moment"
+      ]
+    }
   ]
 }

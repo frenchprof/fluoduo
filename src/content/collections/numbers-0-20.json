@@ -10,131 +10,157 @@
   "lessonSlug": "numbers-0-20",
   "tags": [],
   "seq": 7,
+  "gameConfig": {
+    "lexicalator": {
+      "decoys": ["ze", "rô", "deu", "troi", "quat", "set", "uit", "neu", "dis", "onz", "tor", "vin"]
+    }
+  },
   "items": [
     {
       "id": "numbers-0-20-01",
       "fr": "zéro",
       "en": "0",
+      "syllables": ["zé", "ro"],
       "tags": []
     },
     {
       "id": "numbers-0-20-02",
       "fr": "un",
       "en": "1",
+      "syllables": ["un"],
       "tags": []
     },
     {
       "id": "numbers-0-20-03",
       "fr": "deux",
       "en": "2",
+      "syllables": ["deux"],
       "tags": []
     },
     {
       "id": "numbers-0-20-04",
       "fr": "trois",
       "en": "3",
+      "syllables": ["trois"],
       "tags": []
     },
     {
       "id": "numbers-0-20-05",
       "fr": "quatre",
       "en": "4",
+      "syllables": ["quatre"],
       "tags": []
     },
     {
       "id": "numbers-0-20-06",
       "fr": "cinq",
       "en": "5",
+      "syllables": ["cinq"],
       "tags": []
     },
     {
       "id": "numbers-0-20-07",
       "fr": "six",
       "en": "6",
+      "syllables": ["six"],
       "tags": []
     },
     {
       "id": "numbers-0-20-08",
       "fr": "sept",
       "en": "7",
+      "syllables": ["sept"],
       "tags": []
     },
     {
       "id": "numbers-0-20-09",
       "fr": "huit",
       "en": "8",
+      "syllables": ["huit"],
       "tags": []
     },
     {
       "id": "numbers-0-20-10",
       "fr": "neuf",
       "en": "9",
+      "syllables": ["neuf"],
       "tags": []
     },
     {
       "id": "numbers-0-20-11",
       "fr": "dix",
       "en": "10",
+      "syllables": ["dix"],
       "tags": []
     },
     {
       "id": "numbers-0-20-12",
       "fr": "onze",
       "en": "11",
+      "syllables": ["onze"],
       "tags": []
     },
     {
       "id": "numbers-0-20-13",
       "fr": "douze",
       "en": "12",
+      "syllables": ["douze"],
       "tags": []
     },
     {
       "id": "numbers-0-20-14",
       "fr": "treize",
       "en": "13",
+      "syllables": ["treize"],
       "tags": []
     },
     {
       "id": "numbers-0-20-15",
       "fr": "quatorze",
       "en": "14",
+      "syllables": ["qua", "torze"],
       "tags": []
     },
     {
       "id": "numbers-0-20-16",
       "fr": "quinze",
       "en": "15",
+      "syllables": ["quinze"],
       "tags": []
     },
     {
       "id": "numbers-0-20-17",
       "fr": "seize",
       "en": "16",
+      "syllables": ["seize"],
       "tags": []
     },
     {
       "id": "numbers-0-20-18",
       "fr": "dix-sept",
       "en": "17",
+      "syllables": ["dix", "-sept"],
       "tags": []
     },
     {
       "id": "numbers-0-20-19",
       "fr": "dix-huit",
       "en": "18",
+      "syllables": ["dix", "-huit"],
       "tags": []
     },
     {
       "id": "numbers-0-20-20",
       "fr": "dix-neuf",
       "en": "19",
+      "syllables": ["dix", "-neuf"],
       "tags": []
     },
     {
       "id": "numbers-0-20-21",
       "fr": "vingt",
       "en": "20",
+      "syllables": ["vingt"],
       "tags": []
     }
   ]

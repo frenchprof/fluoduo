@@ -30,12 +30,17 @@ export default async function ConveyorPage({
   // The NEW Lexicalator (syllable key/keyhole game) takes over for any deck whose
   // words are fully hand-syllabified + signed off (item.syllables). Decks not yet
   // segmented keep the old Conveyor game, so nothing regresses mid-rollout.
+  // The tile word drops a trailing "(e)" parenthetical (fatigué(e) → fatigué);
+  // matching ignores internal spaces (multi-word tiles carry no space of their
+  // own). So the segmentation is validated against this normalised key.
+  const lexBase = (fr: string) => fr.replace(/\s*\([^)]*\)\s*$/, "").trim();
+  const lexKey = (fr: string) => lexBase(fr).replace(/\s+/g, "");
   const lexReady = collection.items.length > 0 && collection.items.every(
-    (it) => it.syllables && it.syllables.length > 0 && it.syllables.join("") === it.fr,
+    (it) => it.syllables && it.syllables.length > 0 && it.syllables.join("") === lexKey(it.fr),
   );
   if (lexReady) {
     const entries: LexEntry[] = collection.items.map((it) => ({
-      id: it.id, fr: it.fr, en: bareWord(it.en), syllables: it.syllables!,
+      id: it.id, fr: lexBase(it.fr), en: bareWord(it.en), syllables: it.syllables!,
     }));
     const decoys = collection.gameConfig?.lexicalator?.decoys ?? [];
     return (

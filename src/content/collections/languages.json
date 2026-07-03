@@ -20,7 +20,11 @@
       "lang": {
         "greeting": "Hello",
         "autonym": "English"
-      }
+      },
+      "syllables": [
+        "an",
+        "glais"
+      ]
     },
     {
       "id": "languages-02-chinois",
@@ -31,7 +35,11 @@
       "lang": {
         "greeting": "你好",
         "autonym": "中文"
-      }
+      },
+      "syllables": [
+        "chi",
+        "nois"
+      ]
     },
     {
       "id": "languages-03-hindi",
@@ -42,7 +50,11 @@
       "lang": {
         "greeting": "नमस्ते",
         "autonym": "हिन्दी"
-      }
+      },
+      "syllables": [
+        "hin",
+        "di"
+      ]
     },
     {
       "id": "languages-04-espagnol",
@@ -53,7 +65,12 @@
       "lang": {
         "greeting": "Hola",
         "autonym": "Español"
-      }
+      },
+      "syllables": [
+        "es",
+        "pa",
+        "gnol"
+      ]
     },
     {
       "id": "languages-05-arabe",
@@ -64,7 +81,11 @@
       "lang": {
         "greeting": "مرحبا",
         "autonym": "العربية"
-      }
+      },
+      "syllables": [
+        "a",
+        "rabe"
+      ]
     },
     {
       "id": "languages-06-francais",
@@ -75,7 +96,11 @@
       "lang": {
         "greeting": "Bonjour",
         "autonym": "Français"
-      }
+      },
+      "syllables": [
+        "fran",
+        "çais"
+      ]
     },
     {
       "id": "languages-07-portugais",
@@ -86,7 +111,12 @@
       "lang": {
         "greeting": "Olá",
         "autonym": "Português"
-      }
+      },
+      "syllables": [
+        "por",
+        "tu",
+        "gais"
+      ]
     },
     {
       "id": "languages-08-russe",
@@ -97,7 +127,10 @@
       "lang": {
         "greeting": "Привет",
         "autonym": "Русский"
-      }
+      },
+      "syllables": [
+        "russe"
+      ]
     },
     {
       "id": "languages-09-indonesien",
@@ -108,7 +141,13 @@
       "lang": {
         "greeting": "Halo",
         "autonym": "Bahasa Indonesia"
-      }
+      },
+      "syllables": [
+        "in",
+        "do",
+        "né",
+        "sien"
+      ]
     },
     {
       "id": "languages-10-allemand",
@@ -119,7 +158,12 @@
       "lang": {
         "greeting": "Hallo",
         "autonym": "Deutsch"
-      }
+      },
+      "syllables": [
+        "al",
+        "le",
+        "mand"
+      ]
     },
     {
       "id": "languages-11-japonais",
@@ -130,7 +174,12 @@
       "lang": {
         "greeting": "こんにちは",
         "autonym": "日本語"
-      }
+      },
+      "syllables": [
+        "ja",
+        "po",
+        "nais"
+      ]
     },
     {
       "id": "languages-12-turc",
@@ -141,7 +190,10 @@
       "lang": {
         "greeting": "Merhaba",
         "autonym": "Türkçe"
-      }
+      },
+      "syllables": [
+        "turc"
+      ]
     },
     {
       "id": "languages-13-tamoul",
@@ -152,7 +204,11 @@
       "lang": {
         "greeting": "வணக்கம்",
         "autonym": "தமிழ்"
-      }
+      },
+      "syllables": [
+        "ta",
+        "moul"
+      ]
     },
     {
       "id": "languages-14-cantonais",
@@ -163,7 +219,12 @@
       "lang": {
         "greeting": "你好",
         "autonym": "廣東話"
-      }
+      },
+      "syllables": [
+        "can",
+        "to",
+        "nais"
+      ]
     },
     {
       "id": "languages-15-vietnamien",
@@ -174,7 +235,12 @@
       "lang": {
         "greeting": "Xin chào",
         "autonym": "Tiếng Việt"
-      }
+      },
+      "syllables": [
+        "viet",
+        "na",
+        "mien"
+      ]
     },
     {
       "id": "languages-16-filipino",
@@ -185,7 +251,13 @@
       "lang": {
         "greeting": "Kumusta",
         "autonym": "Filipino"
-      }
+      },
+      "syllables": [
+        "fi",
+        "li",
+        "pi",
+        "no"
+      ]
     },
     {
       "id": "languages-17-coreen",
@@ -196,7 +268,12 @@
       "lang": {
         "greeting": "안녕하세요",
         "autonym": "한국어"
-      }
+      },
+      "syllables": [
+        "co",
+        "ré",
+        "en"
+      ]
     },
     {
       "id": "languages-18-thai",
@@ -207,7 +284,11 @@
       "lang": {
         "greeting": "สวัสดี",
         "autonym": "ภาษาไทย"
-      }
+      },
+      "syllables": [
+        "tha",
+        "ï"
+      ]
     },
     {
       "id": "languages-19-malais",
@@ -218,7 +299,29 @@
       "lang": {
         "greeting": "Apa khabar",
         "autonym": "Bahasa Melayu"
-      }
+      },
+      "syllables": [
+        "ma",
+        "lais"
+      ]
     }
-  ]
+  ],
+  "gameConfig": {
+    "lexicalator": {
+      "decoys": [
+        "gnole",
+        "naise",
+        "rabo",
+        "gnon",
+        "min",
+        "doul",
+        "pin",
+        "san",
+        "vieux",
+        "tou",
+        "gué",
+        "nol"
+      ]
+    }
+  }
 }

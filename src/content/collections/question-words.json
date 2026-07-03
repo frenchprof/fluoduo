@@ -10,47 +10,89 @@
   "lessonSlug": "question-words",
   "tags": [],
   "seq": 335,
+  "gameConfig": {
+    "lexicalator": {
+      "decoys": [
+        "quant",
+        "bein",
+        "mant",
+        "koi",
+        "ki",
+        "poure",
+        "quon",
+        "cou",
+        "bianc",
+        "mont",
+        "qua",
+        "pur"
+      ]
+    }
+  },
   "items": [
     {
       "id": "question-words-01",
       "fr": "où",
       "en": "where",
+      "syllables": [
+        "où"
+      ],
       "tags": []
     },
     {
       "id": "question-words-02",
       "fr": "quand",
       "en": "when",
+      "syllables": [
+        "quand"
+      ],
       "tags": []
     },
     {
       "id": "question-words-03",
       "fr": "combien",
       "en": "how much / many",
+      "syllables": [
+        "com",
+        "bien"
+      ],
       "tags": []
     },
     {
       "id": "question-words-04",
       "fr": "comment",
       "en": "how",
+      "syllables": [
+        "com",
+        "ment"
+      ],
       "tags": []
     },
     {
       "id": "question-words-05",
       "fr": "quoi",
       "en": "what",
+      "syllables": [
+        "quoi"
+      ],
       "tags": []
     },
     {
       "id": "question-words-06",
       "fr": "qui",
       "en": "who",
+      "syllables": [
+        "qui"
+      ],
       "tags": []
     },
     {
       "id": "question-words-07",
       "fr": "pourquoi",
       "en": "why",
+      "syllables": [
+        "pour",
+        "quoi"
+      ],
       "tags": []
     }
   ]

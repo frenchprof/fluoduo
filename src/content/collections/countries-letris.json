@@ -27,6 +27,9 @@
       "tags": [
         "col:la",
         "region:europe"
+      ],
+      "syllables": [
+        "France"
       ]
     },
     {
@@ -37,6 +40,11 @@
       "tags": [
         "col:le",
         "region:europe"
+      ],
+      "syllables": [
+        "Por",
+        "tu",
+        "gal"
       ]
     },
     {
@@ -47,6 +55,9 @@
       "tags": [
         "col:la",
         "region:asia"
+      ],
+      "syllables": [
+        "Chine"
       ]
     },
     {
@@ -57,6 +68,12 @@
       "tags": [
         "col:l_apos",
         "region:asia"
+      ],
+      "syllables": [
+        "In",
+        "do",
+        "né",
+        "sie"
       ]
     },
     {
@@ -67,6 +84,10 @@
       "tags": [
         "col:la",
         "region:asia"
+      ],
+      "syllables": [
+        "Co",
+        "rée"
       ]
     },
     {
@@ -77,6 +98,12 @@
       "tags": [
         "col:les",
         "region:americas"
+      ],
+      "syllables": [
+        "É",
+        "tats",
+        "-U",
+        "nis"
       ]
     },
     {
@@ -87,6 +114,10 @@
       "tags": [
         "col:le",
         "region:americas"
+      ],
+      "syllables": [
+        "Me",
+        "xique"
       ]
     },
     {
@@ -97,6 +128,10 @@
       "tags": [
         "col:no_article",
         "region:americas"
+      ],
+      "syllables": [
+        "Cu",
+        "ba"
       ]
     },
     {
@@ -107,6 +142,11 @@
       "tags": [
         "col:les",
         "region:asia"
+      ],
+      "syllables": [
+        "Phi",
+        "lip",
+        "pines"
       ]
     },
     {
@@ -117,6 +157,11 @@
       "tags": [
         "col:l_apos",
         "region:americas"
+      ],
+      "syllables": [
+        "Ar",
+        "gen",
+        "tine"
       ]
     },
     {
@@ -127,6 +172,10 @@
       "tags": [
         "col:la",
         "region:europe"
+      ],
+      "syllables": [
+        "Rus",
+        "sie"
       ]
     },
     {
@@ -137,6 +186,9 @@
       "tags": [
         "col:la",
         "region:europe"
+      ],
+      "syllables": [
+        "Suisse"
       ]
     },
     {
@@ -147,6 +199,10 @@
       "tags": [
         "col:la",
         "region:europe"
+      ],
+      "syllables": [
+        "Bel",
+        "gique"
       ]
     },
     {
@@ -157,6 +213,9 @@
       "tags": [
         "col:la",
         "region:europe"
+      ],
+      "syllables": [
+        "Grèce"
       ]
     },
     {
@@ -167,6 +226,10 @@
       "tags": [
         "col:la",
         "region:asia"
+      ],
+      "syllables": [
+        "Tur",
+        "quie"
       ]
     },
     {
@@ -177,6 +240,12 @@
       "tags": [
         "col:l_apos",
         "region:europe"
+      ],
+      "syllables": [
+        "Al",
+        "le",
+        "ma",
+        "gne"
       ]
     },
     {
@@ -187,6 +256,10 @@
       "tags": [
         "col:le",
         "region:asia"
+      ],
+      "syllables": [
+        "Cam",
+        "bodge"
       ]
     },
     {
@@ -197,6 +270,11 @@
       "tags": [
         "col:no_article",
         "region:asia"
+      ],
+      "syllables": [
+        "Sin",
+        "ga",
+        "pour"
       ]
     },
     {
@@ -207,6 +285,11 @@
       "tags": [
         "col:la",
         "region:asia"
+      ],
+      "syllables": [
+        "Ma",
+        "lai",
+        "sie"
       ]
     },
     {
@@ -217,6 +300,11 @@
       "tags": [
         "col:la",
         "region:asia"
+      ],
+      "syllables": [
+        "Tha",
+        "ï",
+        "lande"
       ]
     },
     {
@@ -227,6 +315,11 @@
       "tags": [
         "col:l_apos",
         "region:europe"
+      ],
+      "syllables": [
+        "An",
+        "gle",
+        "terre"
       ]
     },
     {
@@ -237,6 +330,11 @@
       "tags": [
         "col:la",
         "region:europe"
+      ],
+      "syllables": [
+        "Grande",
+        "-Bre",
+        "tagne"
       ]
     },
     {
@@ -247,6 +345,11 @@
       "tags": [
         "col:la",
         "region:africa"
+      ],
+      "syllables": [
+        "Tu",
+        "ni",
+        "sie"
       ]
     },
     {
@@ -257,6 +360,10 @@
       "tags": [
         "col:le",
         "region:africa"
+      ],
+      "syllables": [
+        "Ma",
+        "roc"
       ]
     },
     {
@@ -267,6 +374,11 @@
       "tags": [
         "col:l_apos",
         "region:africa"
+      ],
+      "syllables": [
+        "Al",
+        "gé",
+        "rie"
       ]
     }
   ],
@@ -298,6 +410,22 @@
           "label": "LES",
           "prefix": "Les "
         }
+      ]
+    },
+    "lexicalator": {
+      "decoys": [
+        "gue",
+        "stan",
+        "zil",
+        "nie",
+        "bré",
+        "lon",
+        "vie",
+        "cie",
+        "gan",
+        "der",
+        "ric",
+        "pou"
       ]
     }
   },

@@ -24,6 +24,22 @@
           "prefix": "je suis "
         }
       ]
+    },
+    "lexicalator": {
+      "decoys": [
+        "fain",
+        "soi",
+        "froit",
+        "chau",
+        "fon",
+        "tu",
+        "gé",
+        "com",
+        "temps",
+        "fin",
+        "soir",
+        "cha"
+      ]
     }
   },
   "items": [
@@ -31,6 +47,9 @@
       "id": "avoir-etats-01",
       "fr": "faim",
       "en": "hungry",
+      "syllables": [
+        "faim"
+      ],
       "tags": [
         "col:avoir"
       ]
@@ -39,6 +58,9 @@
       "id": "avoir-etats-02",
       "fr": "soif",
       "en": "thirsty",
+      "syllables": [
+        "soif"
+      ],
       "tags": [
         "col:avoir"
       ]
@@ -47,6 +69,9 @@
       "id": "avoir-etats-03",
       "fr": "froid",
       "en": "cold",
+      "syllables": [
+        "froid"
+      ],
       "tags": [
         "col:avoir"
       ]
@@ -55,6 +80,9 @@
       "id": "avoir-etats-04",
       "fr": "chaud",
       "en": "hot",
+      "syllables": [
+        "chaud"
+      ],
       "tags": [
         "col:avoir"
       ]
@@ -63,6 +91,11 @@
       "id": "avoir-etats-05",
       "fr": "fatigué(e)",
       "en": "tired",
+      "syllables": [
+        "fa",
+        "ti",
+        "gué"
+      ],
       "tags": [
         "col:etre"
       ]
@@ -71,6 +104,10 @@
       "id": "avoir-etats-06",
       "fr": "content(e)",
       "en": "happy",
+      "syllables": [
+        "con",
+        "tent"
+      ],
       "tags": [
         "col:etre"
       ]
