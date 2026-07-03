@@ -138,8 +138,12 @@ const tuVous = (situation: string, correct: "tu" | "vous", whyWrong: string): Un
  */
 const nounQ = (emoji: string, fr: string, g: "un" | "une", en: string): Unit0Question => ({
   emoji: emoji || undefined,
-  title: en, // the English word shows WITH the emoji (Dan, 2026-07-02)
-  en: `${g} ${fr}`, // the French form is revealed after the attempt
+  // The FRENCH word is the prompt — you can only judge un/une from it (Dan,
+  // 2026-07-03: "it only makes sense to ask un or une if the French word is
+  // given first"). The article is withheld (it's the answer); the English
+  // meaning is revealed after the attempt.
+  title: fr,
+  en,
   tts: `${g} ${fr}`,
   options: [
     { v: "un", ok: g === "un", ...(g === "une" ? { why: `${fr} is feminine — une ${fr}.` } : {}) },
@@ -235,10 +239,11 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
     colorQ("beige", "beige", "#d9c39a", "le sable beige", "beige sand", ["marron", "blanc", "jaune"]),
   ],
   "SIO-006": [
-    // Identity / people — emoji + English word together
+    // Identity / people — the French word is the prompt; the learner picks un/une
     nounQ("", "prénom", "un", "first name"),
     nounQ("", "nom", "un", "surname"),
     nounQ("👨", "homme", "un", "man"),
+    nounQ("🎩", "monsieur", "un", "gentleman / sir"),
     nounQ("👩", "femme", "une", "woman"),
     nounQ("👦", "garçon", "un", "boy"),
     nounQ("👧", "fille", "une", "girl"),
@@ -250,7 +255,8 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
     nounQ("🏫", "salle de classe", "une", "classroom"),
     nounQ("🚪", "salle", "une", "room"),
     nounQ("👩‍🏫", "classe", "une", "class"),
-    nounQ("🪑", "table", "une", "table"),
+    nounQ("", "table", "une", "table"),
+    nounQ("🪑", "chaise", "une", "chair"),
     nounQ("", "tableau", "un", "board"),
     nounQ("📖", "livre", "un", "book"),
     nounQ("✏️", "crayon", "un", "pencil"),

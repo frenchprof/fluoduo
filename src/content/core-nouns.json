@@ -3,20 +3,20 @@
   "title": "Qui ou quoi ?",
   "subtitle": "Person or thing · masculine or feminine",
   "categories": [
-    { "key": "qui-m", "label": "Qui ♂", "prefix": "un " },
-    { "key": "qui-f", "label": "Qui ♀", "prefix": "une " },
-    { "key": "quoi-m", "label": "Quoi 🚹", "prefix": "un " },
-    { "key": "quoi-f", "label": "Quoi 🚺", "prefix": "une " }
+    { "key": "qui-m", "label": "Qui 🚹", "prefix": "un " },
+    { "key": "qui-f", "label": "Qui 🚺", "prefix": "une " },
+    { "key": "quoi-m", "label": "Quoi ♂", "prefix": "un " },
+    { "key": "quoi-f", "label": "Quoi ♀", "prefix": "une " }
   ],
   "tiles": [
     { "text": "HOMME", "displayName": "homme", "category": "qui-m", "meaning": "man" },
+    { "text": "MONSIEUR", "displayName": "monsieur", "category": "qui-m", "meaning": "gentleman / sir" },
     { "text": "GARÇON", "displayName": "garçon", "category": "qui-m", "meaning": "boy" },
-    { "text": "AMI", "displayName": "ami", "category": "qui-m", "meaning": "friend (m)" },
     { "text": "ÉTUDIANT", "displayName": "étudiant", "category": "qui-m", "meaning": "student (m)" },
     { "text": "PROFESSEUR", "displayName": "professeur", "category": "qui-m", "meaning": "teacher (m)" },
     { "text": "FEMME", "displayName": "femme", "category": "qui-f", "meaning": "woman" },
     { "text": "FILLE", "displayName": "fille", "category": "qui-f", "meaning": "girl" },
-    { "text": "DAME", "displayName": "dame", "category": "qui-f", "meaning": "lady" },
+    { "text": "[MA]DAME", "displayName": "dame", "category": "qui-f", "meaning": "lady / madam" },
     { "text": "ÉTUDIANTE", "displayName": "étudiante", "category": "qui-f", "meaning": "student (f)" },
     { "text": "PROFESSEURE", "displayName": "professeure", "category": "qui-f", "meaning": "teacher (f)" },
     { "text": "TABLEAU", "displayName": "tableau", "category": "quoi-m", "meaning": "board" },
@@ -26,6 +26,7 @@
     { "text": "CASQUE", "displayName": "casque", "category": "quoi-m", "meaning": "headphones" },
     { "text": "MICRO", "displayName": "micro", "category": "quoi-m", "meaning": "microphone" },
     { "text": "TABLE", "displayName": "table", "category": "quoi-f", "meaning": "table" },
+    { "text": "CHAISE", "displayName": "chaise", "category": "quoi-f", "meaning": "chair" },
     { "text": "SALLE", "displayName": "salle", "category": "quoi-f", "meaning": "room" },
     { "text": "CLASSE", "displayName": "classe", "category": "quoi-f", "meaning": "class" },
     { "text": "SALLE DE CLASSE", "displayName": "salle de classe", "category": "quoi-f", "meaning": "classroom" }

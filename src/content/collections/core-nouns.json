@@ -303,6 +303,29 @@
       "tags": [
         "col:une"
       ]
+    },
+    {
+      "id": "core-nouns-23",
+      "fr": "monsieur",
+      "en": "gentleman / sir",
+      "syllables": [
+        "mon",
+        "sieur"
+      ],
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "core-nouns-24",
+      "fr": "chaise",
+      "en": "chair",
+      "syllables": [
+        "chaise"
+      ],
+      "tags": [
+        "col:une"
+      ]
     }
   ]
 }
