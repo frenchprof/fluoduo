@@ -206,6 +206,10 @@ export default function Lexicalator({
         @keyframes lxrattle{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px) rotate(-4deg)}75%{transform:translateX(4px) rotate(4deg)}}
         @keyframes lxdescend{0%{transform:translate(-50%,0) scale(1);opacity:0}12%{opacity:1}70%{opacity:1;transform:translate(-50%,240px) scale(1)}100%{opacity:0;transform:translate(-50%,270px) scale(.5)}}
         @keyframes lxaim{0%,100%{box-shadow:0 0 0 0 rgba(224,134,0,0)}50%{box-shadow:0 0 0 6px rgba(224,134,0,.45)}}
+        @keyframes lxblink{0%,100%{opacity:1}50%{opacity:.15}}
+        @keyframes lxdrop{0%{transform:translateY(-6px);opacity:.35}50%{transform:translateY(7px);opacity:1}100%{transform:translateY(-6px);opacity:.35}}
+        @keyframes lxpointR{0%,100%{transform:translateX(-4px)}50%{transform:translateX(4px)}}
+        @keyframes lxpointL{0%,100%{transform:translateX(4px)}50%{transform:translateX(-4px)}}
       `}</style>
 
       {/* HUD */}
@@ -231,7 +235,7 @@ export default function Lexicalator({
       </header>
 
       <p className="mb-2 text-center text-xs font-semibold" style={{ color: "#075985" }}>
-        Pick a chest, then tap its syllables — in any order — to unlock the French word.
+        Drag a chest down, then tap its syllables — in any order — to unlock the French word.
         {hard && <b style={{ color: "#c0392b" }}> Hard: the syllable count is hidden.</b>}
       </p>
 
@@ -262,9 +266,22 @@ export default function Lexicalator({
       {/* Assembly bay — the active chest with syllable-sized keyholes */}
       <div className="relative flex min-h-[7rem] items-center justify-center py-5">
         {!active && !descend && (
-          <p className="animate-pulse text-center text-sm font-black" style={{ color: "#e08600" }}>
-            👆 Pick a chest to begin
-          </p>
+          <div className="flex flex-col items-center gap-2">
+            {/* animated down-arrows — the "drag it down here" movement */}
+            <div className="flex gap-3" aria-hidden>
+              {[0, 1, 2].map((i) => (
+                <span key={i} className="text-2xl leading-none" style={{ color: "#ff2222", animation: `lxdrop 1s ease-in-out ${i * 0.15}s infinite` }}>⬇</span>
+              ))}
+            </div>
+            {/* big red blinking call-to-action, arrows pointing in from each side */}
+            <div className="flex items-center gap-2" style={{ animation: "lxblink 1.1s ease-in-out infinite" }}>
+              <span className="text-3xl leading-none" style={{ color: "#ff2222", animation: "lxpointR .7s ease-in-out infinite" }} aria-hidden>👉</span>
+              <span className="text-2xl font-black tracking-tight" style={{ color: "#ff2222", textShadow: "0 1px 0 #fff" }}>
+                Drag down a chest to begin
+              </span>
+              <span className="text-3xl leading-none" style={{ color: "#ff2222", animation: "lxpointL .7s ease-in-out infinite" }} aria-hidden>👈</span>
+            </div>
+          </div>
         )}
         {active && (
           <div className="rounded-2xl border-4 bg-white px-4 py-3 text-center" style={{ borderColor: "#e08600", boxShadow: "0 10px 24px -16px rgba(12,74,110,.5)" }}>
