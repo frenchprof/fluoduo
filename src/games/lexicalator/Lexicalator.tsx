@@ -76,7 +76,9 @@ export default function Lexicalator({
     const shuffled = shuffle(pool);
     setChests(shuffled.slice(0, LANE).map((entry) => ({ entry, filled: 0 })));
     setQueue(shuffled.slice(LANE));
-    setSelected(shuffled[0]?.id ?? null);
+    // No chest sits in the central bay at first — the learner is nudged to
+    // pick one to begin (Dan, 2026-07-03).
+    setSelected(null);
     setCleared(0);
     setLevelDone(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -156,12 +158,15 @@ export default function Lexicalator({
     const shuffled = shuffle(entries.filter((e) => e.syllables.length >= min));
     setChests(shuffled.slice(0, LANE).map((entry) => ({ entry, filled: 0 })));
     setQueue(shuffled.slice(LANE));
-    setSelected(shuffled[0]?.id ?? null);
+    setSelected(null);
     setCleared(0); setLevelDone(false);
   }
 
-  const beltFrozen = !firstDone;
-  const beltSecs = beltSecsFor(level);
+  // The belt is dead-still until a chest is picked; once one is selected it
+  // begins an almost-imperceptible crawl (Dan, 2026-07-03), then — after the
+  // first word is forged — eases into real time-pressure as levels rise.
+  const beltFrozen = !selected;
+  const beltSecs = firstDone ? beltSecsFor(level) : 140;
 
   // Client-only game: the belt shuffles with Math.random, so don't SSR it.
   if (!mounted) return null;
@@ -221,6 +226,11 @@ export default function Lexicalator({
 
       {/* Assembly bay — the active chest with syllable-sized keyholes */}
       <div className="relative flex min-h-[7rem] items-center justify-center py-5">
+        {!active && !descend && (
+          <p className="animate-pulse text-center text-sm font-black" style={{ color: "#e08600" }}>
+            👆 Pick a chest to begin
+          </p>
+        )}
         {active && (
           <div className="rounded-2xl border-4 bg-white px-4 py-3 text-center" style={{ borderColor: "#ffc800", boxShadow: "0 10px 24px -16px rgba(12,74,110,.5)" }}>
             <div className="mb-3 text-lg font-black" style={{ color: "#1cb0f6" }}>{active.entry.en}</div>
@@ -260,9 +270,10 @@ export default function Lexicalator({
         )}
       </div>
 
-      {/* Key belt — a static, fully-visible set until the first word is done
-          (so the first word's syllables are always reachable), then a scrolling
-          belt that eases from a crawl to real time-pressure as levels rise. */}
+      {/* Key belt — a static, fully-visible set until a chest is picked (so the
+          first word's syllables are always reachable), then a scrolling belt
+          that starts imperceptibly slow and eases into real time-pressure as
+          levels rise. */}
       <div className="relative overflow-hidden rounded-2xl border-4 border-white py-3" style={{ background: "linear-gradient(180deg,#bfe6ff,#9fd8fb)" }}>
         {beltFrozen ? (
           <div className="flex flex-wrap justify-center gap-3 px-4">
