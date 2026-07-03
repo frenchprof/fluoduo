@@ -32,24 +32,30 @@ export const LESSONS: Record<string, Lesson> = {
   "revision-u3u4":     { slug: "revision-u3u4",     file: "18-revision-u3u4.html",     title: "Révision — Unités 3 & 4",      unit: 3 },
 };
 
-/** SIO id → lesson slug (best-guess; adjust freely). One lesson per SIO. */
-export const LESSON_BY_SIO: Record<string, string> = {
-  "SIO-014": "se-presenter",
-  "SIO-015": "articles-pays",
-  "SIO-022": "possessifs",
-  "SIO-023": "aimer",
-  "SIO-024": "faire",
-  "SIO-026": "aller",
-  "SIO-027": "quand",
-  "SIO-029": "rendezvous",
-  "SIO-032": "prepositions",
-  "SIO-035": "mots-interrogatifs",
-  "SIO-048": "modaux",
+/**
+ * SIO id → the lesson(s) that teach its grammar (best-guess; adjust freely).
+ * A SIO can have several lessons, and a lesson can sit under several SIOs.
+ * Lessons are reached from their SIO's popup; the two cross-unit revisions
+ * (revision-u1, revision-u3u4) have no single SIO home and live in the gallery.
+ */
+export const LESSONS_BY_SIO: Record<string, string[]> = {
+  "SIO-014": ["se-presenter", "negation", "conjugaison-u1"],
+  "SIO-015": ["articles-pays"],
+  "SIO-035": ["questions-oui-non", "mots-interrogatifs"],
+  "SIO-022": ["possessifs"],
+  "SIO-023": ["aimer", "aimer-infinitif", "conjugaison-er"],
+  "SIO-024": ["faire"],
+  "SIO-026": ["aller"],
+  "SIO-027": ["quand"],
+  "SIO-029": ["rendezvous"],
+  "SIO-037": ["modaux"],
+  "SIO-048": ["modaux"],
+  "SIO-032": ["prepositions"],
 };
 
 export const ALL_LESSONS: Lesson[] = Object.values(LESSONS);
 
-export function lessonForSio(sioId: string): Lesson | undefined {
-  const slug = LESSON_BY_SIO[sioId];
-  return slug ? LESSONS[slug] : undefined;
+/** All lessons attached to a SIO (empty if none). */
+export function lessonsForSio(sioId: string): Lesson[] {
+  return (LESSONS_BY_SIO[sioId] ?? []).map((slug) => LESSONS[slug]).filter(Boolean);
 }
