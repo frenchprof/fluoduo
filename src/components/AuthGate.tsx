@@ -14,6 +14,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuthUser, signInWithGoogle } from "@/lib/firebase/auth";
+import { REQUIRE_SIGN_IN } from "@/lib/authConfig";
 
 export default function AuthGate({
   children,
@@ -36,7 +37,8 @@ export default function AuthGate({
     return () => window.clearTimeout(t);
   }, []);
 
-  if (user) return <>{children}</>;
+  // Wall suspended (dev) or already signed in → pass straight through.
+  if (!REQUIRE_SIGN_IN || user) return <>{children}</>;
   if (user === undefined && !timedOut) {
     return (
       <div className={`flex ${compact ? "py-6" : "min-h-[40vh]"} items-center justify-center text-sm text-[color:var(--fluo-ink-soft)]`}>

@@ -45,6 +45,9 @@ import SioDetail from "./SioDetail";
 import MarkDoneButton from "./sio/[id]/MarkDoneButton";
 
 const STORAGE_KEY = "fluolingo:hubCollapse";
+// Per-tab flag: set once you've landed this session, so returning from an
+// activity doesn't re-collapse the units you opened.
+const SESSION_KEY = "fluolingo:hubSeen";
 const LOCKED_UNITS = new Set<number>(); // all units unlocked (Unité 4 decks added 2026-07-02)
 
 function deckAndPretestFor(sio: Sio) {
@@ -61,12 +64,24 @@ export default function SioHub() {
   const [openId, setOpenId] = useState<string | null>(null);
 
   useEffect(() => {
+    let saved: Record<string, boolean> = {};
     try {
-      const saved = window.localStorage.getItem(STORAGE_KEY);
-      if (saved) setCollapsed(JSON.parse(saved));
+      saved = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "{}");
     } catch {
       // ignore — falls back to fully expanded
     }
+    // Fresh landing (new session) → start every unit COLLAPSED. Returning from
+    // an activity within the same session keeps whatever state you left it in.
+    try {
+      if (!window.sessionStorage.getItem(SESSION_KEY)) {
+        for (let u = 0; u <= 4; u++) saved[`unit-${u}`] = true;
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+        window.sessionStorage.setItem(SESSION_KEY, "1");
+      }
+    } catch {
+      // storage unavailable — fall back to whatever `saved` held
+    }
+    setCollapsed(saved);
     const p = loadProgress();
     setProgress(p);
     setDueCount(dueForReview(p, Date.now()).length);
