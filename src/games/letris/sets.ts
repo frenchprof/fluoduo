@@ -3,7 +3,6 @@ import countries from "@/content/countries-letris.json";
 import countriesExpert from "@/content/countries-expert-letris.json";
 import lieux from "@/content/lieux-letris.json";
 import loinLesson from "@/content/loin-lesson.json";
-import days from "@/content/days.json";
 import coreNouns from "@/content/core-nouns.json";
 import stressPronouns from "@/content/stress-pronouns.json";
 import professions from "@/content/professions.json";
@@ -27,7 +26,6 @@ export type LetrisSetMeta = {
 };
 
 const REGISTRY: Record<string, LetrisSet> = {
-  days: days as LetrisSet,
   weather: weather as LetrisSet,
   countries: countries as LetrisSet,
   "countries-expert": countriesExpert as LetrisSet,
@@ -47,7 +45,6 @@ const REGISTRY: Record<string, LetrisSet> = {
 };
 
 const META: Record<string, { emoji: string }> = {
-  days: { emoji: "📅" },
   weather: { emoji: "🌦️" },
   countries: { emoji: "🌍" },
   "countries-expert": { emoji: "🌐" },

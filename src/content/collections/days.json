@@ -11,25 +11,6 @@
   "tags": [],
   "seq": 4,
   "gameConfig": {
-    "letris": {
-      "columns": [
-        {
-          "key": "semaine",
-          "label": "SEMAINE",
-          "prefix": ""
-        },
-        {
-          "key": "weekend",
-          "label": "WEEK-END",
-          "prefix": ""
-        },
-        {
-          "key": "moment",
-          "label": "MOMENT",
-          "prefix": ""
-        }
-      ]
-    },
     "lexicalator": {
       "decoys": [
         "du",
@@ -57,7 +38,7 @@
         "di"
       ],
       "tags": [
-        "col:semaine"
+        "col:jour"
       ]
     },
     {
@@ -69,7 +50,7 @@
         "di"
       ],
       "tags": [
-        "col:semaine"
+        "col:jour"
       ]
     },
     {
@@ -82,7 +63,7 @@
         "di"
       ],
       "tags": [
-        "col:semaine"
+        "col:jour"
       ]
     },
     {
@@ -94,7 +75,7 @@
         "di"
       ],
       "tags": [
-        "col:semaine"
+        "col:jour"
       ]
     },
     {
@@ -107,7 +88,7 @@
         "di"
       ],
       "tags": [
-        "col:semaine"
+        "col:jour"
       ]
     },
     {
@@ -120,7 +101,7 @@
         "di"
       ],
       "tags": [
-        "col:weekend"
+        "col:jour"
       ]
     },
     {
@@ -133,7 +114,7 @@
         "che"
       ],
       "tags": [
-        "col:weekend"
+        "col:jour"
       ]
     },
     {
