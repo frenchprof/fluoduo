@@ -13,6 +13,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import CahierShell from "@/components/CahierShell";
+import AuthGate from "@/components/AuthGate";
 import { speak } from "@/games/letris/speech";
 import { loadProgress, recordItemResult } from "@/lib/progress";
 import { dueForReview, gapsByDeck, allReviewItems, type ReviewItem, type Gap } from "@/lib/reviser";
@@ -80,6 +81,7 @@ export default function ReviserPage() {
   }
 
   return (
+    <AuthGate what="review">
     <CahierShell
       tabs={TABS}
       active="reviser"
@@ -153,6 +155,7 @@ export default function ReviserPage() {
         )}
       </div>
     </CahierShell>
+    </AuthGate>
   );
 }
 

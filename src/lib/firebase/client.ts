@@ -10,13 +10,13 @@ import { getAuth, type Auth } from "firebase/auth";
 import { getFirestore, type Firestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDtjiN51ce-r3Zng_gZEA5H1KRsT1UOQKA",
-  authDomain: "frenchfluolingo.firebaseapp.com",
-  projectId: "frenchfluolingo",
-  storageBucket: "frenchfluolingo.firebasestorage.app",
-  messagingSenderId: "461900593173",
-  appId: "1:461900593173:web:7b08297355efe076a1761c",
-  measurementId: "G-8TSHGN0WLC",
+  apiKey: "AIzaSyDEEhlkmXTcZ69etUNk2KJWngyp7meeP5M",
+  authDomain: "laf1201.firebaseapp.com",
+  projectId: "laf1201",
+  storageBucket: "laf1201.firebasestorage.app",
+  messagingSenderId: "84075254825",
+  appId: "1:84075254825:web:5fe21c20a467fab977b838",
+  measurementId: "G-DHK50S348X",
 };
 
 // Reuse the app across hot-reloads / re-imports.

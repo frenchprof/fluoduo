@@ -1,5 +1,6 @@
 import { CURATED } from "@/content/collections";
 import FlipItContent from "./FlipItContent";
+import AuthGate from "@/components/AuthGate";
 
 export function generateStaticParams() {
   return CURATED.map((c) => ({ collectionId: c.id }));
@@ -7,5 +8,5 @@ export function generateStaticParams() {
 
 export default async function Page({ params }: { params: Promise<{ collectionId: string }> }) {
   const { collectionId } = await params;
-  return <FlipItContent collectionId={collectionId} />;
+  return <AuthGate what="practise"><FlipItContent collectionId={collectionId} /></AuthGate>;
 }

@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { isSioDone, itemsMastery, loadProgress, markSioDone, unmarkSioDone, GEMS_MASTERY_BONUS, type Progress } from "@/lib/progress";
 import { SIOS } from "@/content/sios";
 import { CURATED } from "@/content/collections";
+import AuthGate from "@/components/AuthGate";
 
 /** The practice-item ids for a SIO's deck (empty if it has none). */
 function deckItemIds(sioId: string): string[] {
@@ -41,19 +42,23 @@ export default function MarkDoneButton({ sioId }: { sioId: string }) {
   }
 
   return (
-    <div className="mt-3 flex items-center gap-3">
-      <button
-        type="button"
-        onClick={() => (done ? setProgress(unmarkSioDone(sioId)) : complete())}
-        className={`fluo-btn fluo-btn-sm ${done ? "fluo-btn-correct" : ""}`}
-      >
-        {done ? "✓ Done" : "Mark as done"}
-      </button>
-      <span className="text-xs text-[color:var(--fluo-ink-soft)]">
-        {done
-          ? "Unlocked the next objective · 💎 earned"
-          : `Unlocks the next objective · earns 💎 (up to +${GEMS_MASTERY_BONUS} more for mastered practice)`}
-      </span>
+    <div className="mt-3">
+      <AuthGate what="save your progress" compact>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => (done ? setProgress(unmarkSioDone(sioId)) : complete())}
+            className={`fluo-btn fluo-btn-sm ${done ? "fluo-btn-correct" : ""}`}
+          >
+            {done ? "✓ Done" : "Mark as done"}
+          </button>
+          <span className="text-xs text-[color:var(--fluo-ink-soft)]">
+            {done
+              ? "Unlocked the next objective · 💎 earned"
+              : `Unlocks the next objective · earns 💎 (up to +${GEMS_MASTERY_BONUS} more for mastered practice)`}
+          </span>
+        </div>
+      </AuthGate>
     </div>
   );
 }

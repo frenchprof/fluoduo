@@ -1,0 +1,2579 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Révision Unités 3 & 4 | French.WithDrChan</title>
+<style>
+:root{--primary:#003366;--bg1:#F4F6F9;--bg2:#E9EDF5;--text:#111;--card:#fff;--line:#d0d7e2;--success:#1e7a1e;--error:#a30000;--gold:#c8963e;}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--text);background:linear-gradient(180deg,var(--bg1),var(--bg2));transition:background 0.4s,color 0.4s;}
+body.dark{--primary:#4da3ff;--bg1:#2a2d32;--bg2:#23262b;--text:#e9eef5;--card:#32363c;--line:#4a5060;--success:#74ff74;--error:#ff7a7a;}
+.app{min-height:100vh;display:flex;flex-direction:column;}
+header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:14px 18px 16px;background:linear-gradient(135deg,#002244 0%,#003366 40%,#004488 100%);color:#fff;box-shadow:0 4px 18px rgba(0,0,0,.35);}
+header h1{margin:0;font-size:20px;font-weight:900;background:linear-gradient(180deg,#fff 0%,#c0d4e8 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.header-title{grid-column:1;}.header-center{grid-column:2;display:flex;gap:8px;align-items:center;}.header-right{grid-column:3;display:flex;justify-content:flex-end;gap:6px;}
+.byline{margin:3px 0 0;font-size:10px;opacity:.75;font-style:italic;}
+.tab-nav{display:flex;background:linear-gradient(180deg,#e8ecf2,#d8dde6);padding:10px 14px 8px;overflow-x:auto;gap:6px;box-shadow:inset 0 2px 6px rgba(0,0,0,.1);}
+body.dark .tab-nav{background:linear-gradient(180deg,#2e3136,#262a2f);}
+.tab-btn{padding:10px 18px;font-size:13px;font-weight:800;border:none;cursor:pointer;color:#555;transition:all 0.25s;border-radius:12px;white-space:nowrap;background:linear-gradient(145deg,#f0f2f6,#d8dce4);box-shadow:5px 5px 12px rgba(0,0,0,.12),-4px -4px 10px rgba(255,255,255,.7);}
+.tab-num{display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;border-radius:50%;font-size:11px;font-weight:900;margin-right:5px;background:rgba(0,0,0,.1);}
+.tab-btn.active .tab-num{background:rgba(255,255,255,.28);color:#fff;}
+body.dark .tab-btn{background:linear-gradient(145deg,#3a3e45,#2e3238);color:#9aa5b4;}
+.tab-btn:hover{transform:translateY(-1px);}
+.tab-btn[data-color="red"]{border-top:3px solid #dc2626;border-left:3px solid #b91c1c;}
+.tab-btn[data-color="orange"]{border-top:3px solid #ea580c;border-left:3px solid #c2410c;}
+.tab-btn[data-color="yellow"]{border-top:3px solid #ca8a04;border-left:3px solid #a16207;}
+.tab-btn[data-color="green"]{border-top:3px solid #16a34a;border-left:3px solid #15803d;}
+.tab-btn[data-color="blue"]{border-top:3px solid #2563eb;border-left:3px solid #1d4ed8;}
+.tab-btn[data-color="violet"]{border-top:3px solid #7c3aed;border-left:3px solid #6d28d9;}
+.tab-btn[data-color="teal"]{border-top:3px solid #0d9488;border-left:3px solid #0f766e;}
+.tab-btn[data-color="pink"]{border-top:3px solid #db2777;border-left:3px solid #be185d;}
+.tab-btn[data-color="indigo"]{border-top:3px solid #4f46e5;border-left:3px solid #4338ca;}
+.tab-btn[data-color="lime"]{border-top:3px solid #65a30d;border-left:3px solid #4d7c0f;}
+.tab-btn[data-color="amber"]{border-top:3px solid #d97706;border-left:3px solid #b45309;}
+.tab-btn[data-color="red"].active{background:#dc2626!important;color:#fff!important;box-shadow:inset 3px 3px 7px rgba(0,0,0,.25)!important;transform:translateY(1px)!important;}
+.tab-btn[data-color="orange"].active{background:#ea580c!important;color:#fff!important;box-shadow:inset 3px 3px 7px rgba(0,0,0,.25)!important;transform:translateY(1px)!important;}
+.tab-btn[data-color="yellow"].active{background:#ca8a04!important;color:#fff!important;box-shadow:inset 3px 3px 7px rgba(0,0,0,.25)!important;transform:translateY(1px)!important;}
+.tab-btn[data-color="green"].active{background:#16a34a!important;color:#fff!important;box-shadow:inset 3px 3px 7px rgba(0,0,0,.25)!important;transform:translateY(1px)!important;}
+.tab-btn[data-color="blue"].active{background:#2563eb!important;color:#fff!important;box-shadow:inset 3px 3px 7px rgba(0,0,0,.25)!important;transform:translateY(1px)!important;}
+.tab-btn[data-color="violet"].active{background:#7c3aed!important;color:#fff!important;box-shadow:inset 3px 3px 7px rgba(0,0,0,.25)!important;transform:translateY(1px)!important;}
+.tab-btn[data-color="teal"].active{background:#0d9488!important;color:#fff!important;box-shadow:inset 3px 3px 7px rgba(0,0,0,.25)!important;transform:translateY(1px)!important;}
+.tab-btn[data-color="pink"].active{background:#db2777!important;color:#fff!important;box-shadow:inset 3px 3px 7px rgba(0,0,0,.25)!important;transform:translateY(1px)!important;}
+.tab-btn[data-color="indigo"].active{background:#4f46e5!important;color:#fff!important;box-shadow:inset 3px 3px 7px rgba(0,0,0,.25)!important;transform:translateY(1px)!important;}
+.tab-btn[data-color="lime"].active{background:#65a30d!important;color:#fff!important;box-shadow:inset 3px 3px 7px rgba(0,0,0,.25)!important;transform:translateY(1px)!important;}
+.tab-btn[data-color="amber"].active{background:#d97706!important;color:#fff!important;box-shadow:inset 3px 3px 7px rgba(0,0,0,.25)!important;transform:translateY(1px)!important;}
+.tab-panel{display:none;flex:1;flex-direction:column;overflow-y:auto;}
+.tab-panel.active{display:flex;}
+.page{max-width:860px;margin:0 auto;padding:24px 20px 60px;}
+.guide-header{background:linear-gradient(135deg,#002244,#003366);color:#fff;border-radius:14px;padding:28px 32px 24px;margin-bottom:32px;position:relative;overflow:hidden;}
+.guide-header::after{content:"✏️";position:absolute;right:24px;top:50%;transform:translateY(-50%);font-size:64px;opacity:.18;}
+.guide-header .tag{display:inline-block;background:rgba(255,255,255,.18);border-radius:20px;font-size:12px;font-weight:700;letter-spacing:.06em;padding:3px 12px;margin-bottom:10px;text-transform:uppercase;}
+.guide-header h1{font-size:26px;font-weight:800;margin-bottom:6px;}
+.guide-header p{font-size:14px;opacity:.8;margin:0;}
+h2{font-size:18px;font-weight:800;color:var(--primary);margin:32px 0 12px;display:flex;align-items:center;gap:8px;}
+h2::after{content:"";flex:1;height:2px;background:var(--line);border-radius:2px;}
+body.dark h2{color:#4da3ff;}body.dark h2::after{background:#505866;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:12px;}
+.card p,.card li{font-size:14px;color:#374151;margin-bottom:4px;}
+body.dark .card p,body.dark .card li{color:#c5d0de;}
+.diff-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px;}
+.diff-table th{background:var(--primary);color:#fff;padding:8px 12px;text-align:left;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;}
+.diff-table td{padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top;}
+.diff-table tr:last-child td{border-bottom:none;}
+.diff-table tr:nth-child(even) td{background:var(--bg1);}
+body.dark .diff-table th{background:#2e4a7a;}body.dark .diff-table td{border-bottom-color:#505866;}body.dark .diff-table tr:nth-child(even) td{background:#31353b;}
+.gram-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;}
+.gram-table th{background:var(--primary);color:#fff;padding:7px 10px;text-align:center;font-size:11px;}
+.gram-table th:first-child{text-align:left;}
+.gram-table td{padding:6px 10px;border-bottom:1px solid var(--line);text-align:center;font-weight:700;color:var(--primary);}
+.gram-table td:first-child{text-align:left;font-weight:400;color:var(--text);}
+.gram-table tr:last-child td{border-bottom:none;}
+.gram-table tr:nth-child(even) td{background:var(--bg1);}
+body.dark .gram-table th{background:#2e4a7a;}body.dark .gram-table td{color:#7dc4ff;border-bottom-color:#505866;}body.dark .gram-table td:first-child{color:#c5d0de;}body.dark .gram-table tr:nth-child(even) td{background:#31353b;}
+.tip{background:#e8f0fb;border-left:4px solid var(--primary);border-radius:0 8px 8px 0;padding:12px 16px;font-size:13.5px;margin-top:12px;}
+.tip strong{color:var(--primary);}
+body.dark .tip{background:#1a2a3e;border-left-color:#4da3ff;}body.dark .tip strong{color:#4da3ff;}
+.guide-footer{margin-top:40px;padding-top:18px;border-top:2px solid var(--line);font-size:12px;color:#9ca3af;text-align:center;}
+.guide-footer strong{color:var(--primary);}
+body.dark .guide-footer{border-top-color:#505866;color:#6b7a8d;}body.dark .guide-footer strong{color:#4da3ff;}
+.tab-instruction-card{display:flex;align-items:flex-start;gap:14px;border-top:4px solid var(--tab-color,var(--primary));border-left:4px solid var(--tab-color,var(--primary));border-radius:12px;padding:16px 20px;margin-bottom:20px;box-shadow:4px 4px 12px rgba(0,0,0,.09);}
+.tab-instruction-card .tic-icon{font-size:26px;line-height:1;flex-shrink:0;margin-top:2px;}
+.tab-instruction-card .tic-body{flex:1;}
+.tab-instruction-card .tic-title{font-weight:800;font-size:15px;color:var(--tab-color,var(--primary));margin-bottom:6px;}
+.tab-instruction-card .tic-text{font-size:14px;color:#374151;line-height:1.7;margin:0;}
+body.dark .tab-instruction-card .tic-text{color:#c5d0de;}
+
+/* EXERCISE STYLES */
+.ex-block{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-bottom:20px;}
+.ex-title{font-size:16px;font-weight:800;color:var(--primary);margin:0 0 4px;}
+body.dark .ex-title{color:#4da3ff;}
+.ex-subtitle{font-size:12px;color:#6b7280;margin:0 0 16px;}
+body.dark .ex-subtitle{color:#9aa5b4;}
+.ex-instruction{font-size:13.5px;color:#374151;margin-bottom:14px;line-height:1.6;}
+body.dark .ex-instruction{color:#c5d0de;}
+
+/* FILL-IN-THE-BLANK */
+.fill-row{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px;margin-bottom:10px;font-size:14px;line-height:2;}
+.fill-row .en{font-size:12px;color:#6b7280;font-style:italic;margin-right:6px;min-width:60px;}
+body.dark .fill-row .en{color:#9aa5b4;}
+.fill-inp{border:none;border-bottom:2px solid var(--primary);background:transparent;color:var(--text);font-size:14px;font-family:inherit;padding:2px 4px;min-width:80px;outline:none;transition:border-color 0.2s;}
+.fill-inp:focus{border-bottom-color:#ea580c;}
+.fill-inp.correct{border-bottom-color:var(--success);color:var(--success);}
+.fill-inp.wrong{border-bottom-color:var(--error);color:var(--error);}
+.fill-inp.revealed{border-bottom-color:#7c3aed;color:#7c3aed;font-style:italic;}
+
+/* DIALOGUE */
+.dialogue{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
+.bubble{max-width:85%;padding:10px 14px;border-radius:14px;font-size:14px;line-height:1.6;position:relative;}
+.bubble-a{background:#dbeafe;align-self:flex-start;border-bottom-left-radius:4px;}
+.bubble-b{background:#dcfce7;align-self:flex-end;border-bottom-right-radius:4px;}
+body.dark .bubble-a{background:#1e3a5f;}body.dark .bubble-b{background:#14532d;}
+.bubble-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;opacity:.6;margin-bottom:4px;}
+.bubble-en{font-size:11px;font-style:italic;color:#6b7280;margin-top:4px;}
+body.dark .bubble-en{color:#9aa5b4;}
+
+/* BUTTONS */
+.check-btn{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;margin-top:10px;}
+.check-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.reveal-btn{background:#7c3aed;color:#fff;border:none;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;margin-top:10px;margin-left:8px;}
+.reveal-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.reset-btn{background:#6b7280;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;margin-top:10px;margin-left:8px;}
+.reset-btn:hover{filter:brightness(1.1);}
+.score-badge{display:inline-block;background:var(--primary);color:#fff;border-radius:20px;padding:4px 14px;font-size:13px;font-weight:800;margin-top:10px;}
+
+/* MATCH EXERCISE */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+@media(max-width:560px){.match-grid{grid-template-columns:1fr;}}
+.match-item{background:var(--bg1);border:2px solid var(--line);border-radius:10px;padding:10px 14px;font-size:13px;cursor:pointer;transition:all 0.2s;user-select:none;}
+.match-item:hover{border-color:var(--primary);}
+.match-item.selected{border-color:#ea580c;background:#fff7ed;}
+.match-item.matched-ok{border-color:var(--success);background:#f0fdf4;cursor:default;}
+.match-item.matched-err{border-color:var(--error);background:#fef2f2;cursor:default;}
+body.dark .match-item{background:#31353b;border-color:#505866;}
+body.dark .match-item.selected{background:#3a2a1a;border-color:#ea580c;}
+body.dark .match-item.matched-ok{background:#14532d;border-color:#74ff74;}
+body.dark .match-item.matched-err{background:#450a0a;border-color:#ff7a7a;}
+
+/* RADIO / SELECT EXERCISE */
+.q-row{display:flex;align-items:baseline;gap:8px;margin-bottom:10px;font-size:14px;flex-wrap:wrap;}
+.q-row select{padding:4px 8px;border-radius:6px;border:1.5px solid var(--line);background:var(--card);color:var(--text);font-size:14px;font-family:inherit;}
+body.dark .q-row select{background:#3a3e45;border-color:#606878;color:#e9eef5;}
+.q-row select.correct{border-color:var(--success);color:var(--success);}
+.q-row select.wrong{border-color:var(--error);color:var(--error);}
+
+/* TWO-COLUMN REFERENCE */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;}
+@media(max-width:560px){.two-col{grid-template-columns:1fr;}}
+.ref-box{background:var(--bg1);border:1px solid var(--line);border-radius:10px;padding:14px 16px;}
+.ref-box h4{margin:0 0 10px;font-size:13px;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:.05em;}
+body.dark .ref-box h4{color:#4da3ff;}
+.ref-box p,.ref-box li{font-size:13px;color:#374151;margin-bottom:4px;}
+body.dark .ref-box p,body.dark .ref-box li{color:#c5d0de;}
+
+/* CONJ TABLE */
+.conj-wrap{overflow-x:auto;margin-bottom:12px;}
+.conj-table{border-collapse:collapse;font-size:13px;min-width:600px;}
+.conj-table th{background:var(--primary);color:#fff;padding:7px 12px;text-align:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;}
+.conj-table th:first-child{text-align:left;min-width:140px;}
+.conj-table td{padding:6px 12px;border-bottom:1px solid var(--line);text-align:center;}
+.conj-table td:first-child{text-align:left;font-weight:600;color:var(--text);}
+.conj-table tr:nth-child(even) td{background:var(--bg1);}
+.conj-table tr:last-child td{border-bottom:none;}
+.conj-inp{border:none;border-bottom:1.5px solid var(--primary);background:transparent;color:var(--text);font-size:13px;font-family:inherit;padding:1px 4px;width:90px;outline:none;text-align:center;}
+.conj-inp.correct{border-bottom-color:var(--success);color:var(--success);}
+.conj-inp.wrong{border-bottom-color:var(--error);color:var(--error);}
+.conj-inp.revealed{border-bottom-color:#7c3aed;color:#7c3aed;font-style:italic;}
+body.dark .conj-table th{background:#2e4a7a;}body.dark .conj-table td{border-bottom-color:#505866;}body.dark .conj-table tr:nth-child(even) td{background:#31353b;}
+
+/* LESSON NAV */
+
+/* FEEDBACK */
+.feedback-fab{position:fixed;bottom:18px;left:18px;z-index:9000;display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:50px;background:linear-gradient(135deg,#4338ca,#6d28d9);color:#fff;font-size:12px;font-weight:700;text-decoration:none;box-shadow:0 4px 14px rgba(67,56,202,.45);transition:all 0.2s;border:none;cursor:pointer;white-space:nowrap;}
+.feedback-fab:hover{transform:translateY(-2px);}
+
+/* VOCAB COLUMN TOGGLE BUTTONS */
+.vocab-col-btn{border:1.5px solid var(--line);background:var(--card);color:#6b7280;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;}
+.vocab-col-btn.active{background:#7c3aed;color:#fff;border-color:#7c3aed;}
+body.dark .vocab-col-btn{background:#2a2d35;color:#9aa5b4;}
+body.dark .vocab-col-btn.active{background:#7c3aed;color:#fff;border-color:#7c3aed;}
+
+/* PILL BADGE */
+.pill{display:inline-block;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;margin:2px;}
+.pill-blue{background:#dbeafe;color:#1d4ed8;}
+.pill-green{background:#dcfce7;color:#15803d;}
+.pill-orange{background:#ffedd5;color:#c2410c;}
+.pill-violet{background:#ede9fe;color:#6d28d9;}
+.pill-red{background:#fee2e2;color:#b91c1c;}
+body.dark .pill-blue{background:#1e3a5f;color:#93c5fd;}
+body.dark .pill-green{background:#14532d;color:#86efac;}
+body.dark .pill-orange{background:#431407;color:#fdba74;}
+body.dark .pill-violet{background:#2e1065;color:#c4b5fd;}
+body.dark .pill-red{background:#450a0a;color:#fca5a5;}
+
+/* WEATHER GRID */
+.weather-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:14px;}
+.weather-card{background:var(--bg1);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:13px;}
+.weather-card .wc-icon{font-size:28px;margin-bottom:6px;}
+.weather-card .wc-fr{font-weight:700;color:var(--primary);}
+body.dark .weather-card .wc-fr{color:#7dc4ff;}
+.weather-card .wc-en{font-size:11px;color:#6b7280;font-style:italic;}
+body.dark .weather-card .wc-en{color:#9aa5b4;}
+
+/* TAB ICON */
+.tab-icon{display:none;font-size:16px;line-height:1;}
+@media(max-width:480px){.tab-icon{display:inline;}.tab-label{display:none;}}
+
+/* ── DRILL SECTION ── */
+.drill-section{margin-top:32px;border-top:3px solid var(--primary);padding-top:24px;}
+.drill-controls{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin:14px 0 18px;}
+.drill-controls select{font-size:17px;padding:8px 12px;border-radius:10px;border:2px solid var(--line);background:var(--card);color:var(--text);font-weight:700;min-width:180px;}
+body.dark .drill-controls select{border-color:#505866;}
+.drill-random-btn{background:#5c3518;color:#ffe000;font-size:15px;padding:10px 18px;border:none;border-radius:10px;font-weight:900;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.3);transition:transform .15s;}
+.drill-random-btn:hover{transform:scale(1.05);}
+.drill-prompt-box{text-align:center;margin:16px auto;max-width:600px;border:3px solid var(--primary);border-radius:14px;padding:20px 28px;background:var(--card);box-shadow:0 4px 18px rgba(0,0,0,.1);min-height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;}
+.drill-prompt-box .dp-prep{font-size:22px;font-weight:800;color:var(--primary);}
+.drill-prompt-box .dp-noun{font-size:20px;color:var(--text);}
+.drill-prompt-box .dp-en{font-size:13px;color:#6b7280;font-style:italic;}
+body.dark .drill-prompt-box .dp-en{color:#9aa5b4;}
+.drill-answer-row{display:flex;align-items:center;justify-content:center;gap:10px;margin:16px 0;flex-wrap:wrap;}
+.drill-answer-row input{font-size:18px;padding:10px 14px;border-radius:10px;border:2px solid var(--line);background:var(--card);color:var(--text);font-weight:700;min-width:260px;text-align:center;}
+body.dark .drill-answer-row input{border-color:#505866;}
+.drill-answer-row input.correct{border-color:var(--success);background:#f0fdf4;}
+.drill-answer-row input.wrong{border-color:var(--error);background:#fef2f2;}
+body.dark .drill-answer-row input.correct{background:#1a2e1a;}
+body.dark .drill-answer-row input.wrong{background:#2e1a1a;}
+.drill-feedback{text-align:center;min-height:28px;font-size:15px;font-weight:700;margin:6px 0;}
+.drill-feedback.fb-correct{color:var(--success);}
+.drill-feedback.fb-wrong{color:var(--error);}
+.drill-btn-row{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0;}
+.drill-score-bar{display:flex;align-items:center;justify-content:center;gap:18px;margin:16px 0;padding:12px 18px;background:var(--bg1);border-radius:12px;font-size:14px;font-weight:700;}
+body.dark .drill-score-bar{background:#2e3238;}
+.drill-score-bar .ds-correct{color:var(--success);}
+.drill-score-bar .ds-total{color:var(--primary);}
+.drill-score-bar .ds-streak{color:var(--gold);}
+</style>
+
+</head>
+<body>
+<div class="app">
+
+
+<header>
+  <div class="header-title">
+    <h1>L18 — Révision Unités 3 &amp; 4</h1>
+    <p class="byline"><a href="index.html" style="color:rgba(255,255,255,0.7);text-decoration:none;">← French.WithDrChan.com</a> &nbsp;·&nbsp; Unités 3 &amp; 4 &nbsp;·&nbsp; 2026</p>
+  </div>
+  <div class="header-center"></div>
+  <div class="header-right">
+    <button class="secondary" onclick="toggleDark()" style="background:#4338ca;color:#fff;">🌙</button>
+  </div>
+</header>
+
+<!-- TAB NAV — 11 tabs: overview + 10 exercises -->
+<nav class="tab-nav" role="tablist">
+  <button class="tab-btn active" data-color="red"    onclick="switchTab('t0')" id="btn_t0"><span class="tab-icon">🗺</span><span class="tab-num">0</span><span class="tab-label">Vue d'ensemble</span></button>
+  <button class="tab-btn" data-color="orange"  onclick="switchTab('t1')" id="btn_t1"><span class="tab-icon">✈️</span><span class="tab-num">1</span><span class="tab-label">Prépositions</span></button>
+  <button class="tab-btn" data-color="yellow"  onclick="switchTab('t2')" id="btn_t2"><span class="tab-icon">❓</span><span class="tab-num">2</span><span class="tab-label">Questions</span></button>
+  <button class="tab-btn" data-color="green"   onclick="switchTab('t3')" id="btn_t3"><span class="tab-icon">🌤</span><span class="tab-num">3</span><span class="tab-label">Météo</span></button>
+  <button class="tab-btn" data-color="blue"    onclick="switchTab('t4')" id="btn_t4"><span class="tab-icon">💬</span><span class="tab-num">4</span><span class="tab-label">Conseils</span></button>
+  <button class="tab-btn" data-color="violet"  onclick="switchTab('t5')" id="btn_t5"><span class="tab-icon">🍽</span><span class="tab-num">5</span><span class="tab-label">Alimentation</span></button>
+  <button class="tab-btn" data-color="teal"    onclick="switchTab('t6')" id="btn_t6"><span class="tab-icon">🏪</span><span class="tab-num">6</span><span class="tab-label">Lieux</span></button>
+  <button class="tab-btn" data-color="pink"    onclick="switchTab('t7')" id="btn_t7"><span class="tab-icon">🔮</span><span class="tab-num">7</span><span class="tab-label">Futur proche</span></button>
+  <button class="tab-btn" data-color="indigo"  onclick="switchTab('t8')" id="btn_t8"><span class="tab-icon">👆</span><span class="tab-num">8</span><span class="tab-label">Démonstratifs</span></button>
+  <button class="tab-btn" data-color="lime"    onclick="switchTab('t9')" id="btn_t9"><span class="tab-icon">🔄</span><span class="tab-num">9</span><span class="tab-label">Pronom Y</span></button>
+  <button class="tab-btn" data-color="amber"   onclick="switchTab('t10')" id="btn_t10"><span class="tab-icon">⚙️</span><span class="tab-num">10</span><span class="tab-label">Conjugaison</span></button>
+  <button class="tab-btn" data-color="violet"  onclick="switchTab('tLex')" id="btn_tLex"><span class="tab-icon">📚</span><span class="tab-num">📚</span><span class="tab-label">Le lexique</span></button>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TAB 0 — VUE D'ENSEMBLE -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="t0" class="tab-panel active">
+<div class="page">
+  <div class="guide-header">
+    <div class="tag">Unités 3 &amp; 4 · Révision</div>
+    <h1>L18 — Révision Unités 3 &amp; 4</h1>
+    <p>Ten targeted drills covering every key topic from Units 3 and 4.</p>
+  </div>
+  <div class="tab-instruction-card" style="--tab-color:#dc2626;">
+    <div class="tic-icon">🎯</div>
+    <div class="tic-body">
+      <div class="tic-title">By the end of this module, you will be able to:</div>
+      <p class="tic-text">Use prepositions of place · Form questions with <em>est-ce que</em>, <em>que/quoi</em>, and question words · Talk about the weather · Give advice with modal expressions · Discuss food, meals, and frequency · Describe activities and places with <em>aller à</em> and <em>chez</em> · Use the futur proche · Apply demonstrative adjectives · Replace a place with the pronoun <em>y</em> · Conjugate 12 key verbs across all pronouns.</p>
+    </div>
+  </div>
+  <h2>🗺 Your pathway</h2>
+  <div style="display:grid;grid-template-columns:auto 1fr auto;gap:10px 16px;align-items:center;font-size:14px;max-width:640px;">
+    <span style="font-weight:800;color:#ea580c;">Ex. 1</span><span>✈️ Prépositions de lieu — airport dialogue</span><button onclick="switchTab('t1')" style="background:#ea580c;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;">Go →</button>
+    <span style="font-weight:800;color:#ca8a04;">Ex. 2</span><span>❓ Forming questions — est-ce que, que, quoi</span><button onclick="switchTab('t2')" style="background:#ca8a04;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;">Go →</button>
+    <span style="font-weight:800;color:#16a34a;">Ex. 3</span><span>🌤 Météo — weather expressions</span><button onclick="switchTab('t3')" style="background:#16a34a;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;">Go →</button>
+    <span style="font-weight:800;color:#2563eb;">Ex. 4</span><span>💬 Conseils — il faut, tu dois, vous pouvez…</span><button onclick="switchTab('t4')" style="background:#2563eb;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;">Go →</button>
+    <span style="font-weight:800;color:#7c3aed;">Ex. 5</span><span>🍽 Alimentation — verbs, food, frequency</span><button onclick="switchTab('t5')" style="background:#7c3aed;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;">Go →</button>
+    <span style="font-weight:800;color:#0d9488;">Ex. 6</span><span>🏪 Lieux — activities, places, chez</span><button onclick="switchTab('t6')" style="background:#0d9488;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;">Go →</button>
+    <span style="font-weight:800;color:#db2777;">Ex. 7</span><span>🔮 Futur proche — aller + infinitif</span><button onclick="switchTab('t7')" style="background:#db2777;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;">Go →</button>
+    <span style="font-weight:800;color:#4f46e5;">Ex. 8</span><span>👆 Adjectifs démonstratifs — ce, cet, cette, ces</span><button onclick="switchTab('t8')" style="background:#4f46e5;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;">Go →</button>
+    <span style="font-weight:800;color:#65a30d;">Ex. 9</span><span>🔄 Pronom Y — replacing a place</span><button onclick="switchTab('t9')" style="background:#65a30d;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;">Go →</button>
+    <span style="font-weight:800;color:#d97706;">Ex. 10</span><span>⚙️ Conjugaison — 12 verbs × 13 pronouns</span><button onclick="switchTab('t10')" style="background:#d97706;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;">Go →</button>
+  </div>
+  <div class="guide-footer"><strong>French.WithDrChan</strong> — Révision Unités 3 &amp; 4</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TAB 1 — PRÉPOSITIONS DE LIEU (airport dialogue) -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="t1" class="tab-panel">
+<div class="page">
+  <div class="tab-instruction-card" style="--tab-color:#ea580c;">
+    <div class="tic-icon">✈️</div>
+    <div class="tic-body">
+      <div class="tic-title">Exercice 1 — Prépositions de lieu</div>
+      <p class="tic-text">Read the airport dialogue. The English translation is shown in italics. Fill in each blank with the correct preposition of place. Check your answers when finished.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <p style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:12px;">Prépositions à connaître :</p>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+      <span class="pill pill-blue">devant</span><span class="pill pill-blue">derrière</span><span class="pill pill-blue">sur</span><span class="pill pill-blue">sous</span><span class="pill pill-blue">dans</span><span class="pill pill-blue">à côté de</span><span class="pill pill-blue">à gauche de</span><span class="pill pill-blue">à droite de</span><span class="pill pill-blue">loin de</span><span class="pill pill-blue">près de</span><span class="pill pill-blue">en face de</span><span class="pill pill-blue">entre</span>
+    </div>
+  </div>
+
+  <!-- CONTRACTION REFERENCE -->
+  <div class="two-col">
+    <div class="ref-box">
+      <h4>⚠️ Prépositions avec <em>de</em> — contractions obligatoires</h4>
+      <p style="font-size:13px;margin-bottom:8px;">Six prépositions se terminent par <strong>de</strong> : <em>à côté de, à gauche de, à droite de, loin de, près de, en face de</em>. Quand elles sont suivies d'un article, <strong>de</strong> se contracte :</p>
+      <table class="gram-table" style="margin-top:6px;font-size:13px;">
+        <thead><tr><th>Combinaison</th><th>Résultat</th><th>Exemple</th></tr></thead>
+        <tbody>
+          <tr><td>de + <strong>le</strong></td><td><strong>du</strong></td><td>à côté <strong>du</strong> couloir</td></tr>
+          <tr><td>de + <strong>les</strong></td><td><strong>des</strong></td><td>près <strong>des</strong> magasins</td></tr>
+          <tr><td>de + <strong>la</strong></td><td><strong>de la</strong> <em>(pas de contraction)</em></td><td>à gauche <strong>de la</strong> gare</td></tr>
+          <tr><td>de + <strong>l'</strong></td><td><strong>de l'</strong> <em>(pas de contraction)</em></td><td>loin <strong>de l'</strong>école · près <strong>de l'</strong>ascenseur</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="ref-box">
+      <h4>✅ Prépositions sans <em>de</em> — pas de contraction</h4>
+      <p style="font-size:13px;margin-bottom:8px;">Ces prépositions n'ont pas de <em>de</em> : elles se combinent directement avec le nom. Pas de contraction nécessaire.</p>
+      <table class="gram-table" style="margin-top:6px;font-size:13px;">
+        <thead><tr><th>Préposition</th><th>Exemple</th></tr></thead>
+        <tbody>
+          <tr><td>devant</td><td>devant <strong>le</strong> cinéma</td></tr>
+          <tr><td>derrière</td><td>derrière <strong>la</strong> maison</td></tr>
+          <tr><td>sur</td><td>sur <strong>le</strong> comptoir</td></tr>
+          <tr><td>sous</td><td>sous <strong>les</strong> vêtements</td></tr>
+          <tr><td>dans</td><td>dans <strong>le</strong> sac</td></tr>
+          <tr><td>entre</td><td>entre <strong>les</strong> comptoirs A et B</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:12px;color:#6b7280;margin-top:8px;">Astuce : si la préposition ne finit pas par <em>de</em>, il suffit d'ajouter l'article directement.</p>
+    </div>
+  </div>
+
+  <h2>✈️ À l'aéroport</h2>
+  <div class="ex-block">
+    <p class="ex-instruction">Complétez le dialogue avec la bonne préposition de lieu.</p>
+    <div class="dialogue" id="airportDialogue">
+
+      <div class="bubble bubble-a">
+        <div class="bubble-label">Agent</div>
+        Bonjour ! Votre passeport est <input class="fill-inp" id="p1" data-ans="dans" size="6"> votre sac ?
+        <div class="bubble-en"><em>Is your passport inside your bag?</em></div>
+      </div>
+
+      <div class="bubble bubble-b">
+        <div class="bubble-label">Voyageur</div>
+        Oui, il est <input class="fill-inp" id="p2" data-ans="dans" size="6"> mon sac à dos, <input class="fill-inp" id="p3" data-ans="sous" size="6"> mes vêtements.
+        <div class="bubble-en"><em>Yes, it is inside my backpack, under my clothes.</em></div>
+      </div>
+
+      <div class="bubble bubble-a">
+        <div class="bubble-label">Agent</div>
+        D'accord. L'enregistrement est <input class="fill-inp" id="p4" data-ans="en face de" size="10"> vous, <input class="fill-inp" id="p5" data-ans="entre" size="6"> les comptoirs A et B.
+        <div class="bubble-en"><em>All right. Check-in is opposite you, between counters A and B.</em></div>
+      </div>
+
+      <div class="bubble bubble-b">
+        <div class="bubble-label">Voyageur</div>
+        Et les toilettes, s'il vous plaît ?
+        <div class="bubble-en"><em>And where are the toilets, please?</em></div>
+      </div>
+
+      <div class="bubble bubble-a">
+        <div class="bubble-label">Agent</div>
+        Elles sont <input class="fill-inp" id="p6" data-ans="derrière" size="8"> vous, <input class="fill-inp" id="p7" data-ans="à gauche du" size="11"> restaurant.
+        <div class="bubble-en"><em>They are behind you, to the left of the restaurant.</em></div>
+      </div>
+
+      <div class="bubble bubble-b">
+        <div class="bubble-label">Voyageur</div>
+        Merci. Et la salle d'embarquement B12, c'est <input class="fill-inp" id="p8" data-ans="loin d'" size="7">ici ?
+        <div class="bubble-en"><em>Thank you. And is gate B12 far from here?</em></div>
+      </div>
+
+      <div class="bubble bubble-a">
+        <div class="bubble-label">Agent</div>
+        Non, elle est <input class="fill-inp" id="p9" data-ans="près de" size="7"> l'ascenseur, <input class="fill-inp" id="p10" data-ans="à droite de" size="11"> la boutique hors-taxe.
+        <div class="bubble-en"><em>No, it is close to the lift, to the right of the duty-free shop.</em></div>
+      </div>
+
+      <div class="bubble bubble-b">
+        <div class="bubble-label">Voyageur</div>
+        Je vois la boutique. Mon siège est <input class="fill-inp" id="p11" data-ans="devant" size="7"> la fenêtre ou <input class="fill-inp" id="p12" data-ans="à côté du" size="10"> couloir ?
+        <div class="bubble-en"><em>I can see the shop. Is my seat in front of the window or next to the aisle?</em></div>
+      </div>
+
+      <div class="bubble bubble-a">
+        <div class="bubble-label">Agent</div>
+        Votre siège 14A est <input class="fill-inp" id="p13" data-ans="à côté de" size="10"> la fenêtre. Votre valise va <input class="fill-inp" id="p14" data-ans="dans" size="4"> le compartiment ou <input class="fill-inp" id="p15" data-ans="sous" size="5"> votre siège.
+        <div class="bubble-en"><em>Your seat 14A is next to the window. Your suitcase goes in the overhead compartment or under your seat.</em></div>
+      </div>
+
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+      <button class="check-btn" onclick="checkFill('airportDialogue','scoreP1')">Vérifier ✓</button>
+      <button class="reveal-btn" onclick="revealFill('airportDialogue')">Révéler</button>
+      <button class="reset-btn" onclick="resetFill('airportDialogue','scoreP1')">Recommencer</button>
+    </div>
+    <div id="scoreP1" style="margin-top:10px;font-weight:700;font-size:14px;"></div>
+  </div>
+
+  <!-- ── PREPOSITION DRILL ── -->
+  <div class="drill-section">
+    <h2>🎲 Drill — Prépositions + contractions</h2>
+    <div class="card">
+      <p style="font-size:13px;color:#374151;">Choose a preposition (or click 🎲🎲 to randomise), then write the complete phrase with the correct contraction.</p>
+    </div>
+    <div class="drill-controls">
+      <select id="drillPrepSel" style="min-width:200px;" onchange="if(this.value)drillPrepGenerate(this.value,null)">
+        <option value="">[Préposition ?]</option>
+        <optgroup label="Prépositions avec de (contractions)">
+          <option value="à côté de">à côté de</option>
+          <option value="à gauche de">à gauche de</option>
+          <option value="à droite de">à droite de</option>
+          <option value="loin de">loin de</option>
+          <option value="près de">près de</option>
+          <option value="en face de">en face de</option>
+        </optgroup>
+      </select>
+      <button class="drill-random-btn" onclick="drillPrepRandom()">🎲🎲 Générer</button>
+    </div>
+    <div id="drillPrepPrompt" class="drill-prompt-box" style="opacity:0;">
+      <div class="dp-starter" id="dpStarterText" style="font-size:14px;font-weight:700;color:#4338ca;margin-bottom:4px;"></div>
+      <div class="dp-prep" id="dpPrepText"></div>
+      <div class="dp-noun" id="dpNounText"></div>
+      <div class="dp-en" id="dpEnText"></div>
+    </div>
+    <div class="drill-answer-row">
+      <input type="text" id="drillPrepInput" placeholder="Écrivez la phrase complète…" size="32" onkeydown="if(event.key==='Enter')drillPrepCheck()">
+    </div>
+    <div id="drillPrepFB" class="drill-feedback"></div>
+    <div class="drill-btn-row">
+      <button class="check-btn" onclick="drillPrepCheck()">Vérifier ✓</button>
+      <button class="reveal-btn" onclick="drillPrepReveal()">Révéler</button>
+      <button class="reset-btn" onclick="drillPrepNext()">Suivant →</button>
+    </div>
+    <div class="drill-score-bar" id="drillPrepScoreBar">
+      <span>Score : <span class="ds-correct" id="drillPrepCorrect">0</span> / <span class="ds-total" id="drillPrepTotal">0</span></span>
+      <span class="ds-streak">Streak : <span id="drillPrepStreak">0</span></span>
+    </div>
+  </div>
+
+  <div class="guide-footer"><strong>French.WithDrChan</strong> — Révision Unités 3 &amp; 4</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TAB 2 — QUESTIONS -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="t2" class="tab-panel">
+<div class="page">
+  <div class="tab-instruction-card" style="--tab-color:#ca8a04;">
+    <div class="tic-icon">❓</div>
+    <div class="tic-body">
+      <div class="tic-title">Exercice 2 — Poser des questions</div>
+      <p class="tic-text">Two parts: (A) choose the correct question word or phrase for each answer; (B) practise the special case of <em>que / quoi</em>.</p>
+    </div>
+  </div>
+
+  <!-- REFERENCE -->
+  <div class="two-col">
+    <div class="ref-box">
+      <h4>Règle générale</h4>
+      <p>Réponse <strong>oui / non</strong> → <em>Est-ce que…?</em></p>
+      <p>Réponse = moment → <em>Quand est-ce que…?</em></p>
+      <p>Réponse = heure → <em>À quelle heure est-ce que…?</em></p>
+      <p>Réponse = lieu → <em>Où est-ce que…?</em></p>
+      <p>Réponse = personne → <em>Qui est-ce que…?</em></p>
+      <p>Réponse = raison → <em>Pourquoi est-ce que…?</em></p>
+    </div>
+    <div class="ref-box">
+      <h4>Que / Quoi (objet grammatical)</h4>
+      <p>Français = SVO : <em>Sujet + Verbe + Objet</em></p>
+      <p>Avec <em>est-ce que</em> → <strong>Qu'est-ce que</strong> au début :</p>
+      <p>→ <em>Qu'est-ce que tu manges ?</em></p>
+      <p>Sans <em>est-ce que</em> → <strong>quoi</strong> à la fin :</p>
+      <p>→ <em>Tu manges quoi ?</em></p>
+    </div>
+  </div>
+
+  <h2>❓ Partie A — Choisissez le bon mot interrogatif</h2>
+  <div class="ex-block">
+    <p class="ex-instruction">Lisez la réponse. Choisissez la bonne question dans le menu déroulant.</p>
+    <div id="qPartA">
+
+      <div class="q-row">
+        <strong>1.</strong>
+        <select id="qa1" data-ans="Est-ce que">
+          <option value="">— choisissez —</option>
+          <option>Est-ce que</option><option>Quand est-ce que</option><option>À quelle heure est-ce que</option><option>Où est-ce que</option>
+        </select>
+        tu aimes le café ? — <em>Oui, j'adore le café.</em>
+      </div>
+
+      <div class="q-row">
+        <strong>2.</strong>
+        <select id="qa2" data-ans="Quand est-ce que">
+          <option value="">— choisissez —</option>
+          <option>Est-ce que</option><option>Quand est-ce que</option><option>À quelle heure est-ce que</option><option>Où est-ce que</option>
+        </select>
+        vous partez en vacances ? — <em>Nous partons en juillet.</em>
+      </div>
+
+      <div class="q-row">
+        <strong>3.</strong>
+        <select id="qa3" data-ans="À quelle heure est-ce que">
+          <option value="">— choisissez —</option>
+          <option>Est-ce que</option><option>Quand est-ce que</option><option>À quelle heure est-ce que</option><option>Où est-ce que</option>
+        </select>
+        le train arrive ? — <em>Il arrive à 14h30.</em>
+      </div>
+
+      <div class="q-row">
+        <strong>4.</strong>
+        <select id="qa4" data-ans="Où est-ce que">
+          <option value="">— choisissez —</option>
+          <option>Est-ce que</option><option>Quand est-ce que</option><option>Où est-ce que</option><option>Pourquoi est-ce que</option>
+        </select>
+        tu habites ? — <em>J'habite à Singapour.</em>
+      </div>
+
+      <div class="q-row">
+        <strong>5.</strong>
+        <select id="qa5" data-ans="Est-ce que">
+          <option value="">— choisissez —</option>
+          <option>Est-ce que</option><option>Qui est-ce que</option><option>Pourquoi est-ce que</option><option>Quand est-ce que</option>
+        </select>
+        il y a une piscine ici ? — <em>Non, il n'y a pas de piscine.</em>
+      </div>
+
+      <div class="q-row">
+        <strong>6.</strong>
+        <select id="qa6" data-ans="Pourquoi est-ce que">
+          <option value="">— choisissez —</option>
+          <option>Est-ce que</option><option>Quand est-ce que</option><option>Pourquoi est-ce que</option><option>Où est-ce que</option>
+        </select>
+        elle pleure ? — <em>Elle pleure parce qu'elle est fatiguée.</em>
+      </div>
+
+      <div class="q-row">
+        <strong>7.</strong>
+        <select id="qa7" data-ans="Qu'est-ce que">
+          <option value="">— choisissez —</option>
+          <option>Est-ce que</option><option>Qu'est-ce que</option><option>Quand est-ce que</option><option>Où est-ce que</option>
+        </select>
+        je fais pour réserver ? — <em>Il faut téléphoner à l'hôtel.</em>
+      </div>
+
+      <div class="q-row">
+        <strong>8.</strong>
+        <select id="qa8" data-ans="Combien d'étudiants est-ce qu'">
+          <option value="">— choisissez —</option>
+          <option>Est-ce que</option><option>Combien d'étudiants est-ce qu'</option><option>Où est-ce que</option><option>Quand est-ce que</option>
+        </select>
+        il y a dans la classe ? — <em>Il y a vingt-cinq étudiants.</em>
+      </div>
+
+      <div class="q-row">
+        <strong>9.</strong>
+        <select id="qa9" data-ans="Comment est-ce que">
+          <option value="">— choisissez —</option>
+          <option>Est-ce que</option><option>Comment est-ce que</option><option>Où est-ce que</option><option>Pourquoi est-ce que</option>
+        </select>
+        tu t'appelles ? — <em>Je m'appelle Sarah.</em>
+      </div>
+
+      <div class="q-row">
+        <strong>10.</strong>
+        <select id="qa10" data-ans="Avec qui est-ce que">
+          <option value="">— choisissez —</option>
+          <option>Est-ce que</option><option>Avec qui est-ce que</option><option>Où est-ce que</option><option>Quand est-ce que</option>
+        </select>
+        tu habites ? — <em>J'habite avec mes parents.</em>
+      </div>
+
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+      <button class="check-btn" onclick="checkSelects('qPartA','scoreQA')">Vérifier ✓</button>
+      <button class="reset-btn" onclick="resetSelects('qPartA','scoreQA')">Recommencer</button>
+    </div>
+    <div id="scoreQA" style="margin-top:10px;font-weight:700;font-size:14px;"></div>
+  </div>
+
+  <h2>❓ Partie B — Que ou Quoi ?</h2>
+  <div class="ex-block">
+    <p class="ex-instruction">Complétez avec <em>Qu'est-ce que</em> ou <em>quoi</em> selon la structure de la phrase.</p>
+    <div id="qPartB">
+
+      <div class="fill-row"><span>1.</span> <input class="fill-inp" id="qb1" data-ans="Qu'est-ce que" size="14"> tu regardes ? <em style="font-size:12px;color:#6b7280;">(est-ce que structure)</em></div>
+      <div class="fill-row"><span>2.</span> Tu regardes <input class="fill-inp" id="qb2" data-ans="quoi" size="6"> ? <em style="font-size:12px;color:#6b7280;">(informal, no est-ce que)</em></div>
+      <div class="fill-row"><span>3.</span> <input class="fill-inp" id="qb3" data-ans="Qu'est-ce que" size="14"> vous voulez manger ce soir ?</div>
+      <div class="fill-row"><span>4.</span> Il fait <input class="fill-inp" id="qb4" data-ans="quoi" size="6"> le week-end ?</div>
+      <div class="fill-row"><span>5.</span> <input class="fill-inp" id="qb5" data-ans="Qu'est-ce que" size="14"> c'est ?</div>
+      <div class="fill-row"><span>6.</span> Vous cherchez <input class="fill-inp" id="qb6" data-ans="quoi" size="6"> dans ce sac ?</div>
+      <div class="fill-row"><span>7.</span> <input class="fill-inp" id="qb7" data-ans="Qu'est-ce que" size="14"> je fais pour réserver ? <em style="font-size:12px;color:#6b7280;">(est-ce que structure)</em></div>
+      <div class="fill-row"><span>8.</span> Tu fais <input class="fill-inp" id="qb8" data-ans="quoi" size="6"> pour le dîner ? <em style="font-size:12px;color:#6b7280;">(informal, no est-ce que)</em></div>
+      <div class="fill-row"><span>9.</span> <input class="fill-inp" id="qb9" data-ans="Qu'est-ce que" size="14"> tu veux boire ?</div>
+      <div class="fill-row"><span>10.</span> Elle prépare <input class="fill-inp" id="qb10" data-ans="quoi" size="6"> ce soir ?</div>
+
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+      <button class="check-btn" onclick="checkFill('qPartB','scoreQB')">Vérifier ✓</button>
+      <button class="reveal-btn" onclick="revealFill('qPartB')">Révéler</button>
+      <button class="reset-btn" onclick="resetFill('qPartB','scoreQB')">Recommencer</button>
+    </div>
+    <div id="scoreQB" style="margin-top:10px;font-weight:700;font-size:14px;"></div>
+  </div>
+  <div class="guide-footer"><strong>French.WithDrChan</strong> — Révision Unités 3 &amp; 4</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TAB 3 — MÉTÉO -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="t3" class="tab-panel">
+<div class="page">
+  <div class="tab-instruction-card" style="--tab-color:#16a34a;">
+    <div class="tic-icon">🌤</div>
+    <div class="tic-body">
+      <div class="tic-title">Exercice 3 — La météo</div>
+      <p class="tic-text">Study the weather expressions, then complete the four city descriptions.</p>
+    </div>
+  </div>
+
+  <!-- REFERENCE GRID -->
+  <h2>🌤 Les expressions météo</h2>
+  <div class="weather-grid">
+    <div class="weather-card"><div class="wc-icon">☀️</div><div class="wc-fr" style="cursor:pointer;" onclick="speakFr(this.textContent.replace('🔊','').trim())">Il fait beau.</div><div class="wc-en">The weather is nice.</div></div>
+    <div class="weather-card"><div class="wc-icon">⛈️</div><div class="wc-fr" style="cursor:pointer;" onclick="speakFr(this.textContent.replace('🔊','').trim())">Il fait mauvais.</div><div class="wc-en">The weather is bad.</div></div>
+    <div class="weather-card"><div class="wc-icon">🌬️</div><div class="wc-fr" style="cursor:pointer;" onclick="speakFr(this.textContent.replace('🔊','').trim())">Il fait frais.</div><div class="wc-en">It is cool.</div></div>
+    <div class="weather-card"><div class="wc-icon">🔥</div><div class="wc-fr" style="cursor:pointer;" onclick="speakFr(this.textContent.replace('🔊','').trim())">Il fait chaud.</div><div class="wc-en">It is hot.</div></div>
+    <div class="weather-card"><div class="wc-icon">🥶</div><div class="wc-fr" style="cursor:pointer;" onclick="speakFr(this.textContent.replace('🔊','').trim())">Il fait froid.</div><div class="wc-en">It is cold.</div></div>
+    <div class="weather-card"><div class="wc-icon">💨</div><div class="wc-fr" style="cursor:pointer;" onclick="speakFr(this.textContent.replace('🔊','').trim())">Il fait du vent.</div><div class="wc-en">It is windy.</div></div>
+    <div class="weather-card"><div class="wc-icon">☁️</div><div class="wc-fr" style="cursor:pointer;" onclick="speakFr(this.textContent.replace('🔊','').trim())">Il y a des nuages.</div><div class="wc-en">There are clouds.</div></div>
+    <div class="weather-card"><div class="wc-icon">🌧️</div><div class="wc-fr" style="cursor:pointer;" onclick="speakFr(this.textContent.replace('🔊','').trim())">Il y a de la pluie.</div><div class="wc-en">There is rain.</div></div>
+    <div class="weather-card"><div class="wc-icon">🌩️</div><div class="wc-fr" style="cursor:pointer;" onclick="speakFr(this.textContent.replace('🔊','').trim())">Il y a des orages.</div><div class="wc-en">There are storms.</div></div>
+    <div class="weather-card"><div class="wc-icon">🌞</div><div class="wc-fr" style="cursor:pointer;" onclick="speakFr(this.textContent.replace('🔊','').trim())">Il y a du soleil.</div><div class="wc-en">There is sunshine.</div></div>
+    <div class="weather-card"><div class="wc-icon">🌫️</div><div class="wc-fr" style="cursor:pointer;" onclick="speakFr(this.textContent.replace('🔊','').trim())">Il y a du brouillard.</div><div class="wc-en">There is fog.</div></div>
+    <div class="weather-card"><div class="wc-icon">🌨️</div><div class="wc-fr" style="cursor:pointer;" onclick="speakFr(this.textContent.replace('🔊','').trim())">Il neige.</div><div class="wc-en">It is snowing.</div></div>
+    <div class="weather-card"><div class="wc-icon">🌧️</div><div class="wc-fr" style="cursor:pointer;" onclick="speakFr(this.textContent.replace('🔊','').trim())">Il pleut.</div><div class="wc-en">It is raining.</div></div>
+    <div class="weather-card"><div class="wc-icon">🌤️</div><div class="wc-fr" style="cursor:pointer;" onclick="speakFr(this.textContent.replace('🔊','').trim())">C'est ensoleillé.</div><div class="wc-en">It is sunny.</div></div>
+    <div class="weather-card"><div class="wc-icon">🌦️</div><div class="wc-fr" style="cursor:pointer;" onclick="speakFr(this.textContent.replace('🔊','').trim())">C'est pluvieux.</div><div class="wc-en">It is rainy.</div></div>
+    <div class="weather-card"><div class="wc-icon">🌁</div><div class="wc-fr" style="cursor:pointer;" onclick="speakFr(this.textContent.replace('🔊','').trim())">C'est nuageux.</div><div class="wc-en">It is cloudy.</div></div>
+    <div class="weather-card"><div class="wc-icon">🌪️</div><div class="wc-fr" style="cursor:pointer;" onclick="speakFr(this.textContent.replace('🔊','').trim())">C'est venteux.</div><div class="wc-en">It is windy.</div></div>
+    <div class="weather-card"><div class="wc-icon">❄️</div><div class="wc-fr" style="cursor:pointer;" onclick="speakFr(this.textContent.replace('🔊','').trim())">C'est neigeux.</div><div class="wc-en">It is snowy.</div></div>
+  </div>
+
+  <h2>🌍 Quel temps fait-il ? — Complétez les phrases</h2>
+  <div class="ex-block">
+    <p class="ex-instruction">Complétez chaque description avec la bonne expression météo. Plusieurs réponses peuvent être correctes — la correction accepte les variantes indiquées.</p>
+    <div id="meteoFill">
+
+      <div style="margin-bottom:18px;padding:14px;background:var(--bg1);border-radius:10px;border:1px solid var(--line);">
+        <p style="font-weight:700;margin:0 0 8px;">🇸🇬 <input class="fill-inp" id="m0a" data-ans="À" size="3"> Singapour en janvier :</p>
+        <div class="fill-row">Il <input class="fill-inp" id="m1" data-ans="fait chaud|fait très chaud" size="10"> et <input class="fill-inp" id="m2" data-ans="il pleut beaucoup" size="14">. <em style="font-size:12px;color:#6b7280;">It is hot and it rains a lot.</em></div>
+        <div class="fill-row">C'est <input class="fill-inp" id="m3" data-ans="ensoleillé|pluvieux" size="10"> mais <input class="fill-inp" id="m4" data-ans="il y a des orages|il y a de la pluie|il pleut" size="18">. <em style="font-size:12px;color:#6b7280;">It is sunny but there are storms.</em></div>
+      </div>
+
+      <div style="margin-bottom:18px;padding:14px;background:var(--bg1);border-radius:10px;border:1px solid var(--line);">
+        <p style="font-weight:700;margin:0 0 8px;">🇨🇱 <input class="fill-inp" id="m0b" data-ans="Au" size="3"> Chili en juillet (hiver) :</p>
+        <div class="fill-row">Il <input class="fill-inp" id="m5" data-ans="fait mauvais" size="10"> et <input class="fill-inp" id="m6" data-ans="il neige|il y a de la neige" size="14">. <em style="font-size:12px;color:#6b7280;">The weather is bad and it snows.</em></div>
+        <div class="fill-row">C'est <input class="fill-inp" id="m7" data-ans="neigeux|nuageux" size="10"> et il y a <input class="fill-inp" id="m8" data-ans="du vent|des nuages" size="10">. <em style="font-size:12px;color:#6b7280;">It is snowy and there is wind.</em></div>
+      </div>
+
+      <div style="margin-bottom:18px;padding:14px;background:var(--bg1);border-radius:10px;border:1px solid var(--line);">
+        <p style="font-weight:700;margin:0 0 8px;">🇲🇾 <input class="fill-inp" id="m0c" data-ans="En" size="3"> Malaisie en mars :</p>
+        <div class="fill-row">Il <input class="fill-inp" id="m9" data-ans="fait beau" size="10"> et il y a <input class="fill-inp" id="m10" data-ans="du soleil|de la pluie" size="10">. <em style="font-size:12px;color:#6b7280;">The weather is nice and there is sunshine.</em></div>
+        <div class="fill-row">Parfois il <input class="fill-inp" id="m11" data-ans="pleut|y a de la pluie" size="10"> et c'est <input class="fill-inp" id="m12" data-ans="pluvieux|nuageux" size="10">. <em style="font-size:12px;color:#6b7280;">Sometimes it rains and it is cloudy.</em></div>
+      </div>
+
+      <div style="padding:14px;background:var(--bg1);border-radius:10px;border:1px solid var(--line);">
+        <p style="font-weight:700;margin:0 0 8px;">🇵🇭 <input class="fill-inp" id="m0d" data-ans="Aux" size="4"> Philippines en décembre :</p>
+        <div class="fill-row">Il <input class="fill-inp" id="m13" data-ans="fait frais|fait beau" size="10"> et il y a <input class="fill-inp" id="m14" data-ans="du soleil|du vent" size="10">. <em style="font-size:12px;color:#6b7280;">It is cool and there is sunshine.</em></div>
+        <div class="fill-row">C'est <input class="fill-inp" id="m15" data-ans="l'été" size="8"> mais parfois il fait <input class="fill-inp" id="m16" data-ans="un peu froid" size="14">. <em style="font-size:12px;color:#6b7280;">It is summer but sometimes it is a bit cold.</em></div>
+      </div>
+
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+      <button class="check-btn" onclick="checkFillMulti('meteoFill','scoreM')">Vérifier ✓</button>
+      <button class="reveal-btn" onclick="revealFillMulti('meteoFill')">Révéler</button>
+      <button class="reset-btn" onclick="resetFill('meteoFill','scoreM')">Recommencer</button>
+    </div>
+    <div id="scoreM" style="margin-top:10px;font-weight:700;font-size:14px;"></div>
+  </div>
+  <div class="guide-footer"><strong>French.WithDrChan</strong> — Révision Unités 3 &amp; 4</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TAB 4 — CONSEILS (il faut, tu dois, vous pouvez…) -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="t4" class="tab-panel">
+<div class="page">
+  <div class="tab-instruction-card" style="--tab-color:#2563eb;">
+    <div class="tic-icon">💬</div>
+    <div class="tic-body">
+      <div class="tic-title">Exercice 4 — Donner des conseils</div>
+      <p class="tic-text">Study the modal expressions, then complete the translation and negation drills.</p>
+    </div>
+  </div>
+
+  <!-- REFERENCE TABLE -->
+  <div class="card">
+    <table class="diff-table">
+      <thead><tr><th>Expression</th><th>Sens</th><th>Exemple affirmatif</th><th>Exemple négatif</th></tr></thead>
+      <tbody>
+        <tr><td><em>il faut + inf.</em></td><td>one must / you need to</td><td><em>Il faut étudier.</em></td><td><em>Il ne faut pas fumer.</em></td></tr>
+        <tr><td><em>tu peux + inf.</em></td><td>you can (informal)</td><td><em>Tu peux partir.</em></td><td><em>Tu ne peux pas entrer.</em></td></tr>
+        <tr><td><em>vous pouvez + inf.</em></td><td>you can (formal/plural)</td><td><em>Vous pouvez choisir.</em></td><td><em>Vous ne pouvez pas stationner.</em></td></tr>
+        <tr><td><em>tu dois + inf.</em></td><td>you must (informal)</td><td><em>Tu dois arriver à l'heure.</em></td><td><em>Tu ne dois pas crier.</em></td></tr>
+        <tr><td><em>vous devez + inf.</em></td><td>you must (formal/plural)</td><td><em>Vous devez montrer votre billet.</em></td><td><em>Vous ne devez pas courir.</em></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>💬 Partie A — Traduction (anglais → français)</h2>
+  <div class="card" style="border-left:3px solid #2563eb;margin-bottom:16px;">
+    <p style="font-size:13px;font-weight:700;color:#2563eb;margin:0 0 8px;">📝 Vocabulaire utile</p>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+      <span class="pill pill-blue">montrer — to show</span>
+      <span class="pill pill-blue">votre — your (formal)</span>
+      <span class="pill pill-blue">passeport — passport</span>
+      <span class="pill pill-blue">prendre — to take</span>
+      <span class="pill pill-blue">le métro — the metro</span>
+      <span class="pill pill-blue">réserver — to reserve</span>
+      <span class="pill pill-blue">à l'avance — in advance</span>
+      <span class="pill pill-blue">fumer — to smoke</span>
+      <span class="pill pill-blue">ici — here</span>
+      <span class="pill pill-blue">stationner — to park</span>
+    </div>
+  </div>
+  <div class="ex-block">
+    <p class="ex-instruction">Traduisez en français en utilisant l'expression modale indiquée entre parenthèses.</p>
+    <div id="conseilsA">
+      <div class="fill-row"><span>1.</span> You must show your passport. <em>(vous devez)</em><br><input class="fill-inp" id="ca1" data-ans="Vous devez montrer votre passeport" size="36">.</div>
+      <div class="fill-row"><span>2.</span> You can take the metro. <em>(tu peux)</em><br><input class="fill-inp" id="ca2" data-ans="Tu peux prendre le métro" size="28">.</div>
+      <div class="fill-row"><span>3.</span> You need to reserve in advance. <em>(il faut)</em><br><input class="fill-inp" id="ca3" data-ans="Il faut réserver à l'avance" size="30">.</div>
+      <div class="fill-row"><span>4.</span> You must not smoke here. <em>(tu ne dois pas)</em><br><input class="fill-inp" id="ca4" data-ans="Tu ne dois pas fumer ici" size="28">.</div>
+      <div class="fill-row"><span>5.</span> You cannot park here. <em>(vous ne pouvez pas)</em><br><input class="fill-inp" id="ca5" data-ans="Vous ne pouvez pas stationner ici" size="34">.</div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+      <button class="check-btn" onclick="checkFill('conseilsA','scoreCA')">Vérifier ✓</button>
+      <button class="reveal-btn" onclick="revealFill('conseilsA')">Révéler</button>
+      <button class="reset-btn" onclick="resetFill('conseilsA','scoreCA')">Recommencer</button>
+    </div>
+    <div id="scoreCA" style="margin-top:10px;font-weight:700;font-size:14px;"></div>
+  </div>
+
+  <h2>💬 Partie B — Forme négative</h2>
+  <div class="card" style="border-left:3px solid #2563eb;margin-bottom:16px;">
+    <p style="font-size:13px;font-weight:700;color:#2563eb;margin:0 0 8px;">📝 Rappel — Négation avec les modaux</p>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+      <span class="pill pill-blue">ne + modal + pas + infinitif</span>
+      <span class="pill pill-blue">du → de</span>
+      <span class="pill pill-blue">de la → de</span>
+      <span class="pill pill-blue">des → de</span>
+    </div>
+    <p style="font-size:12px;color:#6b7280;margin:8px 0 0;">Articles partitifs (<em>du, de la, des</em>) deviennent <strong>de</strong> après la négation. Les articles définis (<em>le, la, les</em>) ne changent pas.</p>
+  </div>
+  <div class="ex-block">
+    <p class="ex-instruction">Mettez les phrases à la forme négative. Attention aux articles partitifs !</p>
+    <div id="conseilsB">
+      <div class="fill-row"><span>1.</span> Il faut manger du sucre. →<br><input class="fill-inp" id="cb1" data-ans="Il ne faut pas manger de sucre" size="34">.</div>
+      <div class="fill-row"><span>2.</span> Tu dois courir dans les couloirs. →<br><input class="fill-inp" id="cb2" data-ans="Tu ne dois pas courir dans les couloirs" size="40">.</div>
+      <div class="fill-row"><span>3.</span> Vous pouvez utiliser votre téléphone. →<br><input class="fill-inp" id="cb3" data-ans="Vous ne pouvez pas utiliser votre téléphone" size="44">.</div>
+      <div class="fill-row"><span>4.</span> Tu peux entrer sans billet. →<br><input class="fill-inp" id="cb4" data-ans="Tu ne peux pas entrer sans billet" size="34">.</div>
+      <div class="fill-row"><span>5.</span> Il faut boire de l'alcool. →<br><input class="fill-inp" id="cb5" data-ans="Il ne faut pas boire d'alcool" size="34">.</div>
+      <div class="fill-row"><span>6.</span> Vous devez prendre des photos ici. →<br><input class="fill-inp" id="cb6" data-ans="Vous ne devez pas prendre de photos ici" size="42">.</div>
+      <div class="fill-row"><span>7.</span> Tu peux faire du bruit après 22h. →<br><input class="fill-inp" id="cb7" data-ans="Tu ne peux pas faire de bruit après 22h" size="42">.</div>
+      <div class="fill-row"><span>8.</span> Il faut toucher les œuvres d'art. →<br><input class="fill-inp" id="cb8" data-ans="Il ne faut pas toucher les œuvres d'art" size="42">.</div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+      <button class="check-btn" onclick="checkFill('conseilsB','scoreCB')">Vérifier ✓</button>
+      <button class="reveal-btn" onclick="revealFill('conseilsB')">Révéler</button>
+      <button class="reset-btn" onclick="resetFill('conseilsB','scoreCB')">Recommencer</button>
+    </div>
+    <div id="scoreCB" style="margin-top:10px;font-weight:700;font-size:14px;"></div>
+  </div>
+  <div class="guide-footer"><strong>French.WithDrChan</strong> — Révision Unités 3 &amp; 4</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TAB 5 — ALIMENTATION -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="t5" class="tab-panel">
+<div class="page">
+  <div class="tab-instruction-card" style="--tab-color:#7c3aed;">
+    <div class="tic-icon">🍽</div>
+    <div class="tic-body">
+      <div class="tic-title">Exercice 5 — L'alimentation</div>
+      <p class="tic-text">Three parts: (A) meal verbs — déjeuner, dîner, manger, prendre; (B) categorise foods; (C) frequency expressions.</p>
+    </div>
+  </div>
+
+  <!-- REFERENCE -->
+  <div class="two-col">
+    <div class="ref-box">
+      <h4>Verbes des repas</h4>
+      <p><em>déjeuner</em> — to have lunch</p>
+      <p><em>dîner</em> — to have dinner</p>
+      <p><em>manger</em> — to eat (general)</p>
+      <p><em>prendre</em> — to have (a meal)</p>
+      <p style="margin-top:8px;font-size:12px;color:#6b7280;">On dit : <em>prendre le petit déjeuner / le déjeuner / le dîner</em> (not manger le déjeuner)</p>
+    </div>
+    <div class="ref-box">
+      <h4>La fréquence</h4>
+      <p><em>toujours</em> — always</p>
+      <p><em>souvent</em> — often</p>
+      <p><em>parfois / quelquefois</em> — sometimes</p>
+      <p><em>rarement</em> — rarely</p>
+      <p><em>ne … jamais</em> — never</p>
+    </div>
+  </div>
+
+  <!-- ── INLINE VOCABULARY TABLE ── -->
+  <h2>📚 Vocabulaire — Les aliments</h2>
+  <div class="card" style="border-top:3px solid #7c3aed;margin-bottom:16px;">
+    <div style="font-weight:700;color:#7c3aed;margin-bottom:10px;">Filter &amp; Study Mode</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+      <button class="filter-tab active" onclick="foodFilter('all',this)">Tout</button>
+      <button class="filter-tab" onclick="foodFilter('fruit',this)">🍎 Fruits</button>
+      <button class="filter-tab" onclick="foodFilter('legume',this)">🥦 Légumes</button>
+      <button class="filter-tab" onclick="foodFilter('viande',this)">🍗 Viande</button>
+      <button class="filter-tab" onclick="foodFilter('laitier',this)">🧀 Laitiers</button>
+      <button class="filter-tab" onclick="foodFilter('cereale',this)">🌾 Pain &amp; Céréales</button>
+      <button class="filter-tab" onclick="foodFilter('boisson',this)">☕ Boissons</button>
+      <button class="filter-tab" onclick="foodFilter('autre',this)">🍬 Autres</button>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="vocab-col-btn active" id="foodColDef" onclick="foodToggleCol('def')">📖 Art. défini</button>
+      <button class="vocab-col-btn active" id="foodColArt" onclick="foodToggleCol('art')">🔤 Art. partitif</button>
+      <button class="vocab-col-btn active" id="foodColFr" onclick="foodToggleCol('fr')">🇫🇷 Nom</button>
+      <button class="vocab-col-btn active" id="foodColEn" onclick="foodToggleCol('en')">🇬🇧 English</button>
+      <span style="width:1px;height:28px;background:var(--line);margin:0 4px;display:inline-block;"></span>
+      <button class="reset-btn" onclick="foodRevealAll()">Reveal all</button>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:20px;">
+    <table class="diff-table" style="font-size:13px;" id="foodTable">
+      <thead>
+        <tr>
+          <th style="width:8%;text-align:center;min-width:50px;"></th>
+          <th class="food-col-def" style="width:10%;">Art. défini</th>
+          <th class="food-col-art" style="width:14%;">Art. partitif</th>
+          <th class="food-col-fr" style="width:28%;">Nom</th>
+          <th class="food-col-en" style="width:28%;">English</th>
+        </tr>
+      </thead>
+      <tbody id="foodBody"></tbody>
+    </table>
+    <p id="foodCount" style="font-size:11px;color:#9ca3af;margin-top:6px;text-align:right;"></p>
+  </div>
+
+  <h2>🍽 Partie A — Verbes des repas</h2>
+  <div class="ex-block">
+    <p class="ex-instruction">Choisissez le bon verbe dans le menu déroulant.</p>
+    <div id="aliA">
+      <div class="q-row"><strong>1.</strong> Le matin, je <select id="aa1" data-ans="prends"><option value="">—</option><option>mange</option><option>prends</option><option>déjeune</option><option>dîne</option></select> le petit déjeuner à 7h.</div>
+      <div class="q-row"><strong>2.</strong> À midi, nous <select id="aa2" data-ans="déjeunons|mangeons|prenons"><option value="">—</option><option>mangeons</option><option>déjeunons</option><option>prenons</option><option>dînons</option></select> à la cantine.</div>
+      <div class="q-row"><strong>3.</strong> Le soir, ma famille <select id="aa3" data-ans="dîne|mange"><option value="">—</option><option>mange</option><option>déjeune</option><option>dîne</option><option>prend</option></select> ensemble à 19h.</div>
+      <div class="q-row"><strong>4.</strong> Tu <select id="aa4" data-ans="prends"><option value="">—</option><option>manges</option><option>déjeuner</option><option>prends</option><option>dînes</option></select> le déjeuner au restaurant aujourd'hui ?</div>
+      <div class="q-row"><strong>5.</strong> Ils <select id="aa5" data-ans="mangent|prennent"><option value="">—</option><option>mangent</option><option>déjeunent</option><option>prennent</option><option>dînent</option></select> des sushis tous les vendredis.</div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+      <button class="check-btn" onclick="checkSelects('aliA','scoreAA')">Vérifier ✓</button>
+      <button class="reset-btn" onclick="resetSelects('aliA','scoreAA')">Recommencer</button>
+    </div>
+    <div id="scoreAA" style="margin-top:10px;font-weight:700;font-size:14px;"></div>
+  </div>
+
+  <h2>🥦 Partie B — Catégorisation des aliments</h2>
+  <div class="ex-block">
+    <p class="ex-instruction">Classez chaque aliment dans la bonne catégorie en choisissant dans le menu.</p>
+    <div id="aliB">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div class="q-row"><em>une pomme</em> → <select id="ab1" data-ans="un fruit"><option value="">—</option><option>un légume</option><option>un fruit</option><option>une viande</option><option>un produit laitier</option><option>une céréale</option></select></div>
+        <div class="q-row"><em>du poulet</em> → <select id="ab2" data-ans="une viande"><option value="">—</option><option>un légume</option><option>un fruit</option><option>une viande</option><option>un produit laitier</option><option>une céréale</option></select></div>
+        <div class="q-row"><em>une carotte</em> → <select id="ab3" data-ans="un légume"><option value="">—</option><option>un légume</option><option>un fruit</option><option>une viande</option><option>un produit laitier</option><option>une céréale</option></select></div>
+        <div class="q-row"><em>du fromage</em> → <select id="ab4" data-ans="un produit laitier"><option value="">—</option><option>un légume</option><option>un fruit</option><option>une viande</option><option>un produit laitier</option><option>une céréale</option></select></div>
+        <div class="q-row"><em>du riz</em> → <select id="ab5" data-ans="une céréale"><option value="">—</option><option>un légume</option><option>un fruit</option><option>une viande</option><option>un produit laitier</option><option>une céréale</option></select></div>
+        <div class="q-row"><em>une fraise</em> → <select id="ab6" data-ans="un fruit"><option value="">—</option><option>un légume</option><option>un fruit</option><option>une viande</option><option>un produit laitier</option><option>une céréale</option></select></div>
+        <div class="q-row"><em>du bœuf</em> → <select id="ab7" data-ans="une viande"><option value="">—</option><option>un légume</option><option>un fruit</option><option>une viande</option><option>un produit laitier</option><option>une céréale</option></select></div>
+        <div class="q-row"><em>du lait</em> → <select id="ab8" data-ans="un produit laitier"><option value="">—</option><option>un légume</option><option>un fruit</option><option>une viande</option><option>un produit laitier</option><option>une céréale</option></select></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+      <button class="check-btn" onclick="checkSelects('aliB','scoreAB')">Vérifier ✓</button>
+      <button class="reset-btn" onclick="resetSelects('aliB','scoreAB')">Recommencer</button>
+    </div>
+    <div id="scoreAB" style="margin-top:10px;font-weight:700;font-size:14px;"></div>
+  </div>
+
+  <h2>📅 Partie C — La fréquence</h2>
+  <div class="card" style="border-left:3px solid #7c3aed;margin-bottom:16px;">
+    <p style="font-size:13px;font-weight:700;color:#7c3aed;margin:0 0 8px;">📝 Rappel — Conjugaison + Fréquence</p>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+      <span class="pill pill-blue">prendre → je prends</span>
+      <span class="pill pill-blue">manger → elle mange</span>
+      <span class="pill pill-blue">déjeuner → nous déjeunons</span>
+      <span class="pill pill-blue">dîner → tu dînes</span>
+      <span class="pill pill-blue">manger → ils mangent</span>
+    </div>
+    <p style="font-size:12px;color:#6b7280;margin:8px 0 0;">Position de l'adverbe : sujet + <strong>verbe conjugué + adverbe</strong> + complément. Négatif : ne … <strong>jamais</strong>.</p>
+  </div>
+  <div class="ex-block">
+    <p class="ex-instruction">Complétez avec l'adverbe de fréquence correct et mettez à la forme négative si indiqué.</p>
+    <div id="aliC">
+      <div class="fill-row"><span>1.</span> Je <input class="fill-inp" id="ac1" data-ans="prends toujours" size="16"> le petit déjeuner. <em style="font-size:12px;color:#6b7280;">(always — prendre)</em></div>
+      <div class="fill-row"><span>2.</span> Elle <input class="fill-inp" id="ac2" data-ans="ne mange jamais" size="18"> de viande. <em style="font-size:12px;color:#6b7280;">(never — manger)</em></div>
+      <div class="fill-row"><span>3.</span> Nous <input class="fill-inp" id="ac3" data-ans="déjeunons souvent" size="18"> au restaurant. <em style="font-size:12px;color:#6b7280;">(often — déjeuner)</em></div>
+      <div class="fill-row"><span>4.</span> Tu <input class="fill-inp" id="ac4" data-ans="dînes rarement" size="15"> avant 20h. <em style="font-size:12px;color:#6b7280;">(rarely — dîner)</em></div>
+      <div class="fill-row"><span>5.</span> Ils <input class="fill-inp" id="ac5" data-ans="mangent parfois" size="15"> des pâtes le soir. <em style="font-size:12px;color:#6b7280;">(sometimes — manger)</em></div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+      <button class="check-btn" onclick="checkFill('aliC','scoreAC')">Vérifier ✓</button>
+      <button class="reveal-btn" onclick="revealFill('aliC')">Révéler</button>
+      <button class="reset-btn" onclick="resetFill('aliC','scoreAC')">Recommencer</button>
+    </div>
+    <div id="scoreAC" style="margin-top:10px;font-weight:700;font-size:14px;"></div>
+  </div>
+
+  <!-- ── ALIMENTATION DRILL ── -->
+  <div class="drill-section">
+    <h2>🎲 Drill — Articles partitifs + négation</h2>
+    <div class="card">
+      <p style="font-size:13px;color:#374151;">Choose a subject, verb, and form (or click 🎲🎲), then write the full sentence with the correct partitive article. In the negative, <strong>du / de la / de l' / des → de / d'</strong>.</p>
+    </div>
+    <div class="drill-controls">
+      <select id="drillAliSubj" onchange="drillAliFromDropdowns()">
+        <option value="">[Qui ?]</option>
+        <option value="je">je</option><option value="tu">tu</option>
+        <option value="il">il</option><option value="elle">elle</option>
+        <option value="nous">nous</option><option value="vous">vous</option>
+        <option value="ils">ils</option><option value="elles">elles</option>
+      </select>
+      <select id="drillAliVerb" onchange="drillAliFromDropdowns()">
+        <option value="">[Verbe ?]</option>
+        <option value="manger">manger</option>
+        <option value="boire">boire</option>
+        <option value="prendre">prendre</option>
+      </select>
+      <select id="drillAliForm" onchange="drillAliFromDropdowns()">
+        <option value="affirm">affirmatif</option>
+        <option value="neg">négatif</option>
+      </select>
+      <button class="drill-random-btn" onclick="drillAliRandom()">🎲🎲 Générer</button>
+    </div>
+    <div id="drillAliPrompt" class="drill-prompt-box" style="opacity:0;">
+      <div class="dp-prep" id="daSubjVerbText"></div>
+      <div class="dp-noun" id="daFoodText"></div>
+      <div class="dp-en" id="daEnText"></div>
+    </div>
+    <div class="drill-answer-row">
+      <input type="text" id="drillAliInput" placeholder="Écrivez la phrase complète…" size="36" onkeydown="if(event.key==='Enter')drillAliCheck()">
+    </div>
+    <div id="drillAliFB" class="drill-feedback"></div>
+    <div class="drill-btn-row">
+      <button class="check-btn" onclick="drillAliCheck()">Vérifier ✓</button>
+      <button class="reveal-btn" onclick="drillAliReveal()">Révéler</button>
+      <button class="reset-btn" onclick="drillAliNext()">Suivant →</button>
+    </div>
+    <div class="drill-score-bar">
+      <span>Score : <span class="ds-correct" id="drillAliCorrect">0</span> / <span class="ds-total" id="drillAliTotal">0</span></span>
+      <span class="ds-streak">Streak : <span id="drillAliStreak">0</span></span>
+    </div>
+  </div>
+
+  <div class="guide-footer"><strong>French.WithDrChan</strong> — Révision Unités 3 &amp; 4</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TAB 6 — LIEUX -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="t6" class="tab-panel">
+<div class="page">
+  <div class="tab-instruction-card" style="--tab-color:#0d9488;">
+    <div class="tic-icon">🏪</div>
+    <div class="tic-body">
+      <div class="tic-title">Exercice 6 — Activités et lieux</div>
+      <p class="tic-text">Two parts: (A) match activities to places; (B) add frequency and write the negative form.</p>
+    </div>
+  </div>
+
+  <!-- REFERENCE -->
+  <div class="card">
+    <table class="diff-table">
+      <thead><tr><th>Structure</th><th>Exemple</th></tr></thead>
+      <tbody>
+        <tr><td><em>aller au / à la / à l' / aux + lieu</em></td><td><em>Je vais au cinéma. / Elle va à la piscine.</em></td></tr>
+        <tr><td><em>chez + personne</em></td><td><em>J'achète du pain chez le boulanger.</em></td></tr>
+        <tr><td><em>faire une promenade dans le jardin</em></td><td><em>Nous faisons une promenade dans le parc.</em></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>🏪 Partie A — Associez l'activité au lieu</h2>
+  <div class="ex-block">
+    <p class="ex-instruction">Choisissez le lieu correct pour chaque activité.</p>
+    <div id="lieuxA">
+      <div class="q-row"><strong>1.</strong> Je fais de la natation <select id="la1" data-ans="à la piscine"><option value="">—</option><option>au stade</option><option>à la piscine</option><option>au cinéma</option><option>à la bibliothèque</option></select>.</div>
+      <div class="q-row"><strong>2.</strong> Nous regardons un film <select id="la2" data-ans="au cinéma"><option value="">—</option><option>au théâtre</option><option>au cinéma</option><option>au supermarché</option><option>à la piscine</option></select>.</div>
+      <div class="q-row"><strong>3.</strong> Tu lis des livres <select id="la3" data-ans="à la bibliothèque"><option value="">—</option><option>à la boulangerie</option><option>au stade</option><option>à la bibliothèque</option><option>au marché</option></select>.</div>
+      <div class="q-row"><strong>4.</strong> Ils font du sport <select id="la4" data-ans="au stade"><option value="">—</option><option>au cinéma</option><option>au stade</option><option>à la piscine</option><option>à la bibliothèque</option></select>.</div>
+      <div class="q-row"><strong>5.</strong> J'achète du pain <select id="la5" data-ans="à la boulangerie"><option value="">—</option><option>à la charcuterie</option><option>à la boulangerie</option><option>à la poissonnerie</option><option>au marché</option></select>.</div>
+      <div class="q-row"><strong>6.</strong> Elle achète du saumon <select id="la6" data-ans="à la poissonnerie"><option value="">—</option><option>à la boulangerie</option><option>à la charcuterie</option><option>à la poissonnerie</option><option>au supermarché</option></select>.</div>
+      <div class="q-row"><strong>7.</strong> Nous voyons une pièce de théâtre <select id="la7" data-ans="au théâtre"><option value="">—</option><option>au cinéma</option><option>au théâtre</option><option>au stade</option><option>à l'opéra</option></select>.</div>
+      <div class="q-row"><strong>8.</strong> Tu achètes des pommes <select id="la8" data-ans="chez le marchand de fruits et légumes"><option value="">—</option><option>chez le boucher</option><option>chez le marchand de fruits et légumes</option><option>chez le poissonnier</option><option>à la charcuterie</option></select>.</div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+      <button class="check-btn" onclick="checkSelects('lieuxA','scoreLA')">Vérifier ✓</button>
+      <button class="reset-btn" onclick="resetSelects('lieuxA','scoreLA')">Recommencer</button>
+    </div>
+    <div id="scoreLA" style="margin-top:10px;font-weight:700;font-size:14px;"></div>
+  </div>
+
+  <h2>📅 Partie B — Fréquence + forme négative</h2>
+  <div class="card" style="border-left:3px solid #0d9488;margin-bottom:16px;">
+    <p style="font-size:13px;font-weight:700;color:#0d9488;margin:0 0 8px;">📝 Vocabulaire utile</p>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+      <span class="pill pill-blue">rarement — rarely</span>
+      <span class="pill pill-blue">souvent — often</span>
+      <span class="pill pill-blue">toujours — always</span>
+      <span class="pill pill-blue">ne … jamais — never</span>
+      <span class="pill pill-blue">au supermarché — at the supermarket</span>
+      <span class="pill pill-blue">des légumes — vegetables</span>
+      <span class="pill pill-blue">au marché — at the market</span>
+      <span class="pill pill-blue">à la piscine — at the pool</span>
+      <span class="pill pill-blue">le mercredi — on Wednesdays</span>
+    </div>
+    <p style="font-size:12px;color:#6b7280;margin:8px 0 0;">Positive → zero frequency : <em>rarement / souvent / toujours</em> → <em>ne … jamais</em>. Article <em>des</em> → <em>de</em> after <em>jamais</em>.</p>
+  </div>
+  <div class="ex-block">
+    <p class="ex-instruction">Complétez avec la fréquence indiquée, puis transformez en fréquence zéro avec <em>ne … jamais</em>.</p>
+    <div id="lieuxB">
+      <div style="margin-bottom:14px;">
+        <div class="fill-row"><span>1.</span> Je vais <input class="fill-inp" id="lb1" data-ans="rarement au supermarché" size="24">. <em style="font-size:12px;color:#6b7280;">(rarement — supermarché)</em></div>
+        <div class="fill-row">→ Je <input class="fill-inp" id="lb1n" data-ans="ne vais jamais au supermarché" size="30">. <em style="font-size:12px;color:#6b7280;">(fréquence zéro)</em></div>
+      </div>
+      <div style="margin-bottom:14px;">
+        <div class="fill-row"><span>2.</span> Elle achète <input class="fill-inp" id="lb2" data-ans="souvent des légumes au marché" size="32">. <em style="font-size:12px;color:#6b7280;">(souvent — légumes — marché)</em></div>
+        <div class="fill-row">→ Elle <input class="fill-inp" id="lb2n" data-ans="n'achète jamais de légumes au marché" size="38">. <em style="font-size:12px;color:#6b7280;">(fréquence zéro)</em></div>
+      </div>
+      <div>
+        <div class="fill-row"><span>3.</span> Nous allons <input class="fill-inp" id="lb3" data-ans="toujours à la piscine le mercredi" size="34">. <em style="font-size:12px;color:#6b7280;">(toujours — piscine — mercredi)</em></div>
+        <div class="fill-row">→ Nous <input class="fill-inp" id="lb3n" data-ans="n'allons jamais à la piscine le mercredi" size="40">. <em style="font-size:12px;color:#6b7280;">(fréquence zéro)</em></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+      <button class="check-btn" onclick="checkFill('lieuxB','scoreLB')">Vérifier ✓</button>
+      <button class="reveal-btn" onclick="revealFill('lieuxB')">Révéler</button>
+      <button class="reset-btn" onclick="resetFill('lieuxB','scoreLB')">Recommencer</button>
+    </div>
+    <div id="scoreLB" style="margin-top:10px;font-weight:700;font-size:14px;"></div>
+  </div>
+  <div class="guide-footer"><strong>French.WithDrChan</strong> — Révision Unités 3 &amp; 4</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TAB 7 — FUTUR PROCHE -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="t7" class="tab-panel">
+<div class="page">
+  <div class="tab-instruction-card" style="--tab-color:#db2777;">
+    <div class="tic-icon">🔮</div>
+    <div class="tic-body">
+      <div class="tic-title">Exercice 7 — Le futur proche</div>
+      <p class="tic-text">Study the conjugation table and examples, then complete the fill-in-the-blank drill including the pronoun <em>y</em>.</p>
+    </div>
+  </div>
+
+  <!-- REFERENCE TWO-COL -->
+  <div class="two-col">
+    <div class="ref-box">
+      <h4>Formation</h4>
+      <p><strong>aller</strong> (conjugué) + infinitif</p>
+      <table class="gram-table" style="margin-top:8px;">
+        <thead><tr><th>Pronom</th><th>Aller</th></tr></thead>
+        <tbody>
+          <tr><td>je</td><td>vais</td></tr>
+          <tr><td>tu</td><td>vas</td></tr>
+          <tr><td>il / elle / on</td><td>va</td></tr>
+          <tr><td>nous</td><td>allons</td></tr>
+          <tr><td>vous</td><td>allez</td></tr>
+          <tr><td>ils / elles</td><td>vont</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="ref-box">
+      <h4>Exemples &amp; règles</h4>
+      <p>Affirmatif : <em>Je vais manger une pizza.</em></p>
+      <p>Négatif : <em>Je ne vais pas manger de pizza.</em></p>
+      <p style="margin-top:10px;">Avec le pronom <strong>y</strong> :</p>
+      <p><em>Tu vas à la piscine ?</em></p>
+      <p>→ <em>Tu vas y aller ?</em> (y remplace le lieu)</p>
+      <p style="font-size:12px;color:#6b7280;margin-top:6px;">Y se place entre aller conjugué et l'infinitif.</p>
+    </div>
+  </div>
+
+  <h2>🔮 Drill — Futur proche</h2>
+  <div class="ex-block">
+    <p class="ex-instruction">Complétez au futur proche. Utilisez la forme négative ou le pronom y si indiqué.</p>
+    <div id="fpFill">
+      <div class="fill-row"><span>1.</span> Ce soir, je <input class="fill-inp" id="fp1" data-ans="vais regarder" size="14"> un film. <em style="font-size:12px;color:#6b7280;">(regarder)</em></div>
+      <div class="fill-row"><span>2.</span> Demain, elle <input class="fill-inp" id="fp2" data-ans="va prendre" size="12"> le train. <em style="font-size:12px;color:#6b7280;">(prendre)</em></div>
+      <div class="fill-row"><span>3.</span> Nous <input class="fill-inp" id="fp3" data-ans="n'allons pas sortir" size="18"> ce week-end. <em style="font-size:12px;color:#6b7280;">(sortir — négatif)</em></div>
+      <div class="fill-row"><span>4.</span> Vous <input class="fill-inp" id="fp4" data-ans="allez visiter" size="14"> le musée demain ? <em style="font-size:12px;color:#6b7280;">(visiter)</em></div>
+      <div class="fill-row"><span>5.</span> Ils <input class="fill-inp" id="fp5" data-ans="vont faire" size="11"> du sport samedi. <em style="font-size:12px;color:#6b7280;">(faire)</em></div>
+      <div class="fill-row"><span>6.</span> Tu vas à la bibliothèque ? → Tu <input class="fill-inp" id="fp6" data-ans="vas y aller" size="12"> ? <em style="font-size:12px;color:#6b7280;">(y — aller)</em></div>
+      <div class="fill-row"><span>7.</span> Elle ne <input class="fill-inp" id="fp7" data-ans="va pas venir" size="14"> à la fête. <em style="font-size:12px;color:#6b7280;">(venir — négatif)</em></div>
+      <div class="fill-row"><span>8.</span> On <input class="fill-inp" id="fp8" data-ans="va y aller" size="12"> ensemble ? <em style="font-size:12px;color:#6b7280;">(y — aller)</em></div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+      <button class="check-btn" onclick="checkFill('fpFill','scoreFP')">Vérifier ✓</button>
+      <button class="reveal-btn" onclick="revealFill('fpFill')">Révéler</button>
+      <button class="reset-btn" onclick="resetFill('fpFill','scoreFP')">Recommencer</button>
+    </div>
+    <div id="scoreFP" style="margin-top:10px;font-weight:700;font-size:14px;"></div>
+  </div>
+
+  <!-- ── FUTUR PROCHE DRILL ── -->
+  <div class="drill-section">
+    <h2>🎲 Drill — Le futur proche</h2>
+    <div class="card">
+      <p style="font-size:13px;color:#374151;">Choose a subject and form (or click 🎲🎲), then write the complete futur proche sentence. Remember: <strong>aller (conjugué) + infinitif</strong>. Negative: <strong>ne + aller + pas + infinitif</strong>.</p>
+    </div>
+    <div class="drill-controls">
+      <select id="drillFPSubj" onchange="drillFPFromDropdowns()">
+        <option value="">[Qui ?]</option>
+        <option value="je">je</option><option value="tu">tu</option>
+        <option value="il">il</option><option value="elle">elle</option>
+        <option value="nous">nous</option><option value="vous">vous</option>
+        <option value="ils">ils</option><option value="elles">elles</option>
+      </select>
+      <select id="drillFPForm" onchange="drillFPFromDropdowns()">
+        <option value="affirm">affirmatif</option>
+        <option value="neg">négatif</option>
+      </select>
+      <button class="drill-random-btn" onclick="drillFPRandom()">🎲🎲 Générer</button>
+    </div>
+    <div id="drillFPPrompt" class="drill-prompt-box" style="opacity:0;">
+      <div class="dp-prep" id="dfpSubjText"></div>
+      <div class="dp-noun" id="dfpVerbText"></div>
+      <div class="dp-en" id="dfpEnText"></div>
+    </div>
+    <div class="drill-answer-row">
+      <input type="text" id="drillFPInput" placeholder="Écrivez la phrase complète…" size="36" onkeydown="if(event.key==='Enter')drillFPCheck()">
+    </div>
+    <div id="drillFPFB" class="drill-feedback"></div>
+    <div class="drill-btn-row">
+      <button class="check-btn" onclick="drillFPCheck()">Vérifier ✓</button>
+      <button class="reveal-btn" onclick="drillFPReveal()">Révéler</button>
+      <button class="reset-btn" onclick="drillFPNext()">Suivant →</button>
+    </div>
+    <div class="drill-score-bar">
+      <span>Score : <span class="ds-correct" id="drillFPCorrect">0</span> / <span class="ds-total" id="drillFPTotal">0</span></span>
+      <span class="ds-streak">Streak : <span id="drillFPStreak">0</span></span>
+    </div>
+  </div>
+
+  <div class="guide-footer"><strong>French.WithDrChan</strong> — Révision Unités 3 &amp; 4</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TAB 8 — ADJECTIFS DÉMONSTRATIFS -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="t8" class="tab-panel">
+<div class="page">
+  <div class="tab-instruction-card" style="--tab-color:#4f46e5;">
+    <div class="tic-icon">👆</div>
+    <div class="tic-body">
+      <div class="tic-title">Exercice 8 — Les adjectifs démonstratifs</div>
+      <p class="tic-text">Study the two-column reference, then complete the fill-in-the-blank drill.</p>
+    </div>
+  </div>
+
+  <!-- REFERENCE TWO-COL -->
+  <div class="two-col">
+    <div class="ref-box">
+      <h4>Les formes</h4>
+      <table class="gram-table">
+        <thead><tr><th>Genre / Nombre</th><th>Forme</th></tr></thead>
+        <tbody>
+          <tr><td>masculin singulier</td><td>ce</td></tr>
+          <tr><td>masculin singulier (voyelle ou h muet)</td><td>cet</td></tr>
+          <tr><td>féminin singulier</td><td>cette</td></tr>
+          <tr><td>pluriel (m. et f.)</td><td>ces</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="ref-box">
+      <h4>Exemples contextuels</h4>
+      <p><em>ce livre</em> — this / that book (m.)</p>
+      <p><em>cet hôtel</em> — this / that hotel (m. + h muet)</p>
+      <p><em>cet avion</em> — this / that plane (m. + voyelle)</p>
+      <p><em>cette table</em> — this / that table (f.)</p>
+      <p><em>ces enfants</em> — these / those children (pl.)</p>
+      <p style="font-size:12px;color:#6b7280;margin-top:8px;">Ce / cet / cette / ces can mean "this" or "that" — context determines which.</p>
+    </div>
+  </div>
+
+  <h2>👆 Drill — Choisissez la bonne forme</h2>
+  <div class="ex-block">
+    <p class="ex-instruction">Complétez avec <em>ce</em>, <em>cet</em>, <em>cette</em> ou <em>ces</em>.</p>
+    <div id="demoFill">
+      <div class="fill-row"><span>1.</span> <input class="fill-inp" id="d1" data-ans="Ce" size="5"> restaurant est excellent. <em style="font-size:12px;color:#6b7280;">(restaurant — m.)</em></div>
+      <div class="fill-row"><span>2.</span> <input class="fill-inp" id="d2" data-ans="Cet" size="5"> hôtel est très cher. <em style="font-size:12px;color:#6b7280;">(hôtel — m. + h muet)</em></div>
+      <div class="fill-row"><span>3.</span> <input class="fill-inp" id="d3" data-ans="Cette" size="6"> robe est magnifique. <em style="font-size:12px;color:#6b7280;">(robe — f.)</em></div>
+      <div class="fill-row"><span>4.</span> <input class="fill-inp" id="d4" data-ans="Ces" size="5"> chaussures sont confortables. <em style="font-size:12px;color:#6b7280;">(chaussures — pl.)</em></div>
+      <div class="fill-row"><span>5.</span> <input class="fill-inp" id="d5" data-ans="Cet" size="5"> avion part à 10h. <em style="font-size:12px;color:#6b7280;">(avion — m. + voyelle)</em></div>
+      <div class="fill-row"><span>6.</span> <input class="fill-inp" id="d6" data-ans="Cette" size="6"> question est difficile. <em style="font-size:12px;color:#6b7280;">(question — f.)</em></div>
+      <div class="fill-row"><span>7.</span> <input class="fill-inp" id="d7" data-ans="Ces" size="5"> étudiants sont brillants. <em style="font-size:12px;color:#6b7280;">(étudiants — pl.)</em></div>
+      <div class="fill-row"><span>8.</span> <input class="fill-inp" id="d8" data-ans="Ce" size="5"> film est très long. <em style="font-size:12px;color:#6b7280;">(film — m.)</em></div>
+      <div class="fill-row"><span>9.</span> <input class="fill-inp" id="d9" data-ans="Cet" size="5"> enfant est adorable. <em style="font-size:12px;color:#6b7280;">(enfant — m. + voyelle)</em></div>
+      <div class="fill-row"><span>10.</span> <input class="fill-inp" id="d10" data-ans="Ces" size="5"> livres sont intéressants. <em style="font-size:12px;color:#6b7280;">(livres — pl.)</em></div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+      <button class="check-btn" onclick="checkFill('demoFill','scoreD')">Vérifier ✓</button>
+      <button class="reveal-btn" onclick="revealFill('demoFill')">Révéler</button>
+      <button class="reset-btn" onclick="resetFill('demoFill','scoreD')">Recommencer</button>
+    </div>
+    <div id="scoreD" style="margin-top:10px;font-weight:700;font-size:14px;"></div>
+  </div>
+  <div class="guide-footer"><strong>French.WithDrChan</strong> — Révision Unités 3 &amp; 4</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TAB 9 — PRONOM Y -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="t9" class="tab-panel">
+<div class="page">
+  <div class="tab-instruction-card" style="--tab-color:#65a30d;">
+    <div class="tic-icon">🔄</div>
+    <div class="tic-body">
+      <div class="tic-title">Exercice 9 — Le pronom Y</div>
+      <p class="tic-text">Study the rule, then rewrite each sentence replacing the underlined place with <em>y</em>.</p>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="ref-box">
+      <h4>Règle</h4>
+      <p><em>Y</em> remplace un lieu introduit par <em>à, au, à la, à l', aux, dans, en, chez</em>.</p>
+      <p style="margin-top:8px;">Position : <strong>avant le verbe conjugué</strong>.</p>
+      <p style="margin-top:4px;font-size:12px;color:#6b7280;">Exception : au futur proche, y se place entre aller et l'infinitif.</p>
+    </div>
+    <div class="ref-box">
+      <h4>Exemples</h4>
+      <p><em>Tu vas à la piscine ?</em></p>
+      <p>→ <em>Tu y vas ?</em></p>
+      <p style="margin-top:8px;"><em>Elle travaille au bureau.</em></p>
+      <p>→ <em>Elle y travaille.</em></p>
+      <p style="margin-top:8px;"><em>Nous allons y aller demain.</em> (futur proche)</p>
+    </div>
+  </div>
+
+  <h2>🔄 Drill — Remplacez par Y</h2>
+  <div class="ex-block">
+    <p class="ex-instruction">Réécrivez chaque phrase en remplaçant le lieu souligné par <em>y</em>.</p>
+    <div id="yFill">
+      <div class="fill-row"><span>1.</span> Je vais <u>au cinéma</u> ce soir. → <input class="fill-inp" id="y1" data-ans="J'y vais" size="10"> ce soir.</div>
+      <div class="fill-row"><span>2.</span> Elle travaille <u>à la bibliothèque</u>. → Elle <input class="fill-inp" id="y2" data-ans="y travaille" size="11">.</div>
+      <div class="fill-row"><span>3.</span> Nous habitons <u>en France</u>. → Nous <input class="fill-inp" id="y3" data-ans="y habitons" size="11">.</div>
+      <div class="fill-row"><span>4.</span> Tu vas <u>chez le médecin</u> demain ? → Tu <input class="fill-inp" id="y4" data-ans="y vas" size="7"> demain ?</div>
+      <div class="fill-row"><span>5.</span> Ils sont <u>dans le jardin</u>. → Ils <input class="fill-inp" id="y5" data-ans="y sont" size="8">.</div>
+      <div class="fill-row"><span>6.</span> Vous allez <u>au supermarché</u> ? → Vous <input class="fill-inp" id="y6" data-ans="y allez" size="8"> ?</div>
+      <div class="fill-row"><span>7.</span> Il va aller <u>à la piscine</u>. → Il va <input class="fill-inp" id="y7" data-ans="y aller" size="8">. <em style="font-size:12px;color:#6b7280;">(futur proche)</em></div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+      <button class="check-btn" onclick="checkFill('yFill','scoreY')">Vérifier ✓</button>
+      <button class="reveal-btn" onclick="revealFill('yFill')">Révéler</button>
+      <button class="reset-btn" onclick="resetFill('yFill','scoreY')">Recommencer</button>
+    </div>
+    <div id="scoreY" style="margin-top:10px;font-weight:700;font-size:14px;"></div>
+  </div>
+
+  <h2>🔄 Partie B — Y à la forme négative</h2>
+  <div class="card" style="border-left:3px solid #65a30d;margin-bottom:16px;">
+    <p style="font-size:13px;font-weight:700;color:#65a30d;margin:0 0 8px;">📝 Rappel — Forme négative avec Y</p>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+      <span class="pill pill-blue">ne + y + verbe + pas</span>
+      <span class="pill pill-blue">je → je n'y … pas</span>
+      <span class="pill pill-blue">elle → elle n'y … pas</span>
+      <span class="pill pill-blue">tu → tu n'y … pas</span>
+      <span class="pill pill-blue">ils → ils n'y … pas</span>
+    </div>
+    <p style="font-size:12px;color:#6b7280;margin:8px 0 0;">Présent : sujet + <strong>n'y</strong> + verbe + <strong>pas</strong>. Futur proche : sujet + <strong>ne va pas y</strong> + infinitif.</p>
+  </div>
+  <div class="ex-block">
+    <p class="ex-instruction">Mettez chaque phrase à la forme négative en gardant le pronom <em>y</em>.</p>
+    <div id="yNeg">
+      <div class="fill-row"><span>1.</span> Je vais <u>au bureau</u> aujourd'hui. → <input class="fill-inp" id="yn1" data-ans="Je n'y vais pas" size="18"> aujourd'hui.</div>
+      <div class="fill-row"><span>2.</span> Elle habite <u>en France</u>. → <input class="fill-inp" id="yn2" data-ans="Elle n'y habite pas" size="20">.</div>
+      <div class="fill-row"><span>3.</span> Nous allons <u>au cinéma</u> ce soir. → <input class="fill-inp" id="yn3" data-ans="Nous n'y allons pas" size="20"> ce soir.</div>
+      <div class="fill-row"><span>4.</span> Tu restes <u>à la maison</u>. → <input class="fill-inp" id="yn4" data-ans="Tu n'y restes pas" size="18">.</div>
+      <div class="fill-row"><span>5.</span> Ils travaillent <u>au bureau</u> le lundi. → <input class="fill-inp" id="yn5" data-ans="Ils n'y travaillent pas" size="24"> le lundi.</div>
+      <div class="fill-row"><span>6.</span> Vous allez <u>à la piscine</u> demain. → <input class="fill-inp" id="yn6" data-ans="Vous n'y allez pas" size="20"> demain.</div>
+      <div class="fill-row"><span>7.</span> Il va aller <u>au stade</u>. → <input class="fill-inp" id="yn7" data-ans="Il ne va pas y aller" size="22">. <em style="font-size:12px;color:#6b7280;">(futur proche)</em></div>
+      <div class="fill-row"><span>8.</span> On va manger <u>au restaurant</u>. → <input class="fill-inp" id="yn8" data-ans="On ne va pas y manger" size="22">. <em style="font-size:12px;color:#6b7280;">(futur proche)</em></div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+      <button class="check-btn" onclick="checkFill('yNeg','scoreYN')">Vérifier ✓</button>
+      <button class="reveal-btn" onclick="revealFill('yNeg')">Révéler</button>
+      <button class="reset-btn" onclick="resetFill('yNeg','scoreYN')">Recommencer</button>
+    </div>
+    <div id="scoreYN" style="margin-top:10px;font-weight:700;font-size:14px;"></div>
+  </div>
+
+  <!-- ── PRONOM Y DRILL ── -->
+  <div class="drill-section">
+    <h2>🎲 Drill — Le pronom Y</h2>
+    <div class="card">
+      <p style="font-size:13px;color:#374151;">Choose a subject, verb, and form (or click 🎲🎲). You'll see a sentence with a place — rewrite it using <strong>y</strong>. In the negative: <strong>n'y + verbe + pas</strong>. In futur proche: <strong>aller + y + infinitif</strong> or <strong>ne + aller + pas + y + infinitif</strong>.</p>
+    </div>
+    <div class="drill-controls">
+      <select id="drillYSubj" onchange="drillYFromDropdowns()">
+        <option value="">[Qui ?]</option>
+        <option value="je">je</option><option value="tu">tu</option>
+        <option value="il">il</option><option value="elle">elle</option>
+        <option value="nous">nous</option><option value="vous">vous</option>
+        <option value="ils">ils</option><option value="elles">elles</option>
+      </select>
+      <select id="drillYTense" onchange="drillYFromDropdowns()">
+        <option value="present">présent</option>
+        <option value="fp">futur proche</option>
+      </select>
+      <select id="drillYForm" onchange="drillYFromDropdowns()">
+        <option value="affirm">affirmatif</option>
+        <option value="neg">négatif</option>
+      </select>
+      <button class="drill-random-btn" onclick="drillYRandom()">🎲🎲 Générer</button>
+    </div>
+    <div id="drillYPrompt" class="drill-prompt-box" style="opacity:0;">
+      <div class="dp-prep" id="dyOrigText"></div>
+      <div class="dp-noun" id="dyTaskText"></div>
+      <div class="dp-en" id="dyEnText"></div>
+    </div>
+    <div class="drill-answer-row">
+      <input type="text" id="drillYInput" placeholder="Réécrivez avec y…" size="36" onkeydown="if(event.key==='Enter')drillYCheck()">
+    </div>
+    <div id="drillYFB" class="drill-feedback"></div>
+    <div class="drill-btn-row">
+      <button class="check-btn" onclick="drillYCheck()">Vérifier ✓</button>
+      <button class="reveal-btn" onclick="drillYReveal()">Révéler</button>
+      <button class="reset-btn" onclick="drillYNext()">Suivant →</button>
+    </div>
+    <div class="drill-score-bar">
+      <span>Score : <span class="ds-correct" id="drillYCorrect">0</span> / <span class="ds-total" id="drillYTotal">0</span></span>
+      <span class="ds-streak">Streak : <span id="drillYStreak">0</span></span>
+    </div>
+  </div>
+
+  <div class="guide-footer"><strong>French.WithDrChan</strong> — Révision Unités 3 &amp; 4</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TAB 10 — CONJUGAISON -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="t10" class="tab-panel">
+<div class="page">
+  <div class="tab-instruction-card" style="--tab-color:#d97706;">
+    <div class="tic-icon">⚙️</div>
+    <div class="tic-body">
+      <div class="tic-title">Exercice 10 — Conjugaison</div>
+      <p class="tic-text">Each row uses a different pronoun. Fill in the correct conjugated form. Use the verb selector to switch between the 12 verbs.</p>
+    </div>
+  </div>
+
+  <div style="margin-bottom:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+    <label style="font-weight:700;font-size:14px;">Choisissez un verbe :</label>
+    <select id="verbSelector" onchange="loadVerb()" style="padding:8px 12px;border-radius:8px;border:1.5px solid var(--line);background:var(--card);color:var(--text);font-size:14px;font-weight:700;">
+      <option value="être">ÊTRE</option>
+      <option value="avoir">AVOIR</option>
+      <option value="faire">FAIRE</option>
+      <option value="prendre">PRENDRE</option>
+      <option value="vouloir">VOULOIR</option>
+      <option value="aller">ALLER</option>
+      <option value="pouvoir">POUVOIR</option>
+      <option value="devoir">DEVOIR</option>
+      <option value="falloir">FALLOIR</option>
+      <option value="boire">BOIRE</option>
+      <option value="manger">MANGER</option>
+      <option value="venir">VENIR</option>
+    </select>
+    <button class="drill-random-btn" onclick="randomVerb()">🎲🎲 Générer</button>
+    <button class="reveal-btn" onclick="revealConj()">Révéler</button>
+    <button class="reset-btn" onclick="resetConj()">Recommencer</button>
+  </div>
+
+  <div class="conj-wrap">
+    <table class="conj-table" id="conjTable">
+      <thead>
+        <tr>
+          <th>Pronom</th>
+          <th>Forme conjuguée</th>
+          <th>Exemple</th>
+        </tr>
+      </thead>
+      <tbody id="conjBody"></tbody>
+    </table>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+    <button class="check-btn" onclick="checkConj()">Vérifier ✓</button>
+  </div>
+  <div id="scoreConj" style="margin-top:10px;font-weight:700;font-size:14px;"></div>
+
+  <div class="guide-footer"><strong>French.WithDrChan</strong> — Révision Unités 3 &amp; 4</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TAB LEXIQUE — VOCABULARY REFERENCE -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="tLex" class="tab-panel">
+<div class="page">
+  <div class="guide-header" style="background:linear-gradient(135deg,#4c1d95,#7c3aed);">
+    <div class="tag">Unités 3 &amp; 4 · Révision</div>
+    <h1>📚 Le lexique</h1>
+    <p>All key vocabulary from Units 3 &amp; 4 — click any French cell to hear it spoken aloud.</p>
+  </div>
+
+  <div class="tab-instruction-card" style="--tab-color:#7c3aed;">
+    <div class="tic-icon">💡</div>
+    <div class="tic-body">
+      <div class="tic-title">Study Tips</div>
+      <p class="tic-text">Use the category filter to focus on one topic at a time. Click any cell in the French column to hear the pronunciation. Use the toggle buttons to hide columns and test yourself.</p>
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="card" style="border-top:3px solid #7c3aed;margin-bottom:16px;">
+    <div style="font-weight:700;color:#7c3aed;margin-bottom:10px;">Filter &amp; Study Mode</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+      <button class="filter-tab active" onclick="lexFilter('all',this)">Tout</button>
+      <button class="filter-tab" onclick="lexFilter('prepositions',this)">Prépositions</button>
+      <button class="filter-tab" onclick="lexFilter('questions',this)">Questions</button>
+      <button class="filter-tab" onclick="lexFilter('meteo',this)">Météo</button>
+      <button class="filter-tab" onclick="lexFilter('conseils',this)">Conseils</button>
+      <button class="filter-tab" onclick="lexFilter('alimentation',this)">Alimentation</button>
+      <button class="filter-tab" onclick="lexFilter('lieux',this)">Lieux</button>
+      <button class="filter-tab" onclick="lexFilter('frequence',this)">Fréquence</button>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="vocab-col-btn active" id="lexColFr" onclick="lexToggleCol('fr')">🇫🇷 French</button>
+      <button class="vocab-col-btn active" id="lexColEn" onclick="lexToggleCol('en')">🇬🇧 English</button>
+      <button class="vocab-col-btn active" id="lexColEx" onclick="lexToggleCol('ex')">💬 Example</button>
+      <span style="width:1px;height:28px;background:var(--line);margin:0 4px;display:inline-block;"></span>
+      <button class="reset-btn" onclick="lexRevealAll()">Reveal all</button>
+    </div>
+  </div>
+
+  <!-- VOCABULARY TABLE -->
+  <div class="card">
+    <table class="diff-table" style="font-size:13px;" id="lexTable">
+      <thead>
+        <tr>
+          <th class="lex-col-fr" style="width:30%;">Français</th>
+          <th class="lex-col-en" style="width:30%;">English</th>
+          <th class="lex-col-ex" style="width:40%;">Exemple</th>
+        </tr>
+      </thead>
+      <tbody id="lexBody"></tbody>
+    </table>
+    <p id="lexCount" style="font-size:11px;color:#9ca3af;margin-top:6px;text-align:right;"></p>
+  </div>
+
+  <div class="guide-footer"><strong>French.WithDrChan</strong> — Révision Unités 3 &amp; 4</div>
+</div>
+</div>
+
+<!-- FEEDBACK BUTTON -->
+<button class="feedback-fab" onclick="alert('Merci pour votre retour ! Contactez Dr Chan.')">💬 Feedback</button>
+
+</div><!-- end .app -->
+
+<script>
+/* ── TEXT-TO-SPEECH (French) ── */
+function speakFr(text,btn){
+  if(!('speechSynthesis' in window))return;
+  window.speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(text);
+  u.lang='fr-FR';u.rate=0.9;
+  /* try to pick a French voice */
+  var voices=window.speechSynthesis.getVoices();
+  var frVoice=voices.find(function(v){return v.lang.startsWith('fr');});
+  if(frVoice)u.voice=frVoice;
+  if(btn){btn.textContent='🔊 …';u.onend=function(){btn.textContent='🔊';};}
+  window.speechSynthesis.speak(u);
+}
+function appendTTS(parent,text){
+  var b=document.createElement('button');b.textContent='🔊';
+  b.style.cssText='background:#6b7280;color:#fff;border:none;border-radius:8px;padding:4px 10px;font-size:12px;cursor:pointer;margin-left:8px;';
+  b.onclick=function(){speakFr(text,b);};parent.appendChild(b);
+}
+/* preload voices */
+if('speechSynthesis' in window){speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=function(){speechSynthesis.getVoices();};}
+
+/* ── DARK MODE ── */
+function toggleDark(){document.body.classList.toggle('dark');localStorage.setItem('dark',document.body.classList.contains('dark'));}
+if(localStorage.getItem('dark')==='true')document.body.classList.add('dark');
+
+/* ── TAB SWITCHING ── */
+function switchTab(id){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const btnId='btn_'+id;
+  if(document.getElementById(btnId))document.getElementById(btnId).classList.add('active');
+}
+
+/* ── NORMALISE ANSWER ── */
+function norm(s){return s.trim().toLowerCase().replace(/['']/g,"'").replace(/\s+/g,' ');}
+
+/* ── CHECK FILL-IN-THE-BLANK (single accepted answer) ── */
+function checkFill(containerId, scoreId){
+  const container=document.getElementById(containerId);
+  const inputs=container.querySelectorAll('.fill-inp');
+  let correct=0;
+  inputs.forEach(inp=>{
+    const ans=inp.dataset.ans||'';
+    if(norm(inp.value)===norm(ans)){inp.classList.add('correct');inp.classList.remove('wrong');correct++;}
+    else{inp.classList.add('wrong');inp.classList.remove('correct');}
+  });
+  if(scoreId){const el=document.getElementById(scoreId);if(el)el.innerHTML=`Score : <span class="score-badge">${correct} / ${inputs.length}</span>`;}
+}
+
+/* ── CHECK FILL WITH MULTIPLE ACCEPTED ANSWERS (pipe-separated) ── */
+function checkFillMulti(containerId, scoreId){
+  const container=document.getElementById(containerId);
+  const inputs=container.querySelectorAll('.fill-inp');
+  let correct=0;
+  inputs.forEach(inp=>{
+    const ans=inp.dataset.ans||'';
+    const accepted=ans.split('|').map(a=>norm(a));
+    if(accepted.includes(norm(inp.value))){inp.classList.add('correct');inp.classList.remove('wrong');correct++;}
+    else{inp.classList.add('wrong');inp.classList.remove('correct');}
+  });
+  if(scoreId){const el=document.getElementById(scoreId);if(el)el.innerHTML=`Score : <span class="score-badge">${correct} / ${inputs.length}</span>`;}
+}
+
+/* ── REVEAL FILL ── */
+function revealFill(containerId){
+  const container=document.getElementById(containerId);
+  container.querySelectorAll('.fill-inp').forEach(inp=>{
+    const ans=inp.dataset.ans||'';
+    inp.value=ans.split('|')[0];
+    inp.classList.add('revealed');inp.classList.remove('correct','wrong');
+  });
+}
+
+/* ── REVEAL FILL MULTI ── */
+function revealFillMulti(containerId){revealFill(containerId);}
+
+/* ── RESET FILL ── */
+function resetFill(containerId, scoreId){
+  const container=document.getElementById(containerId);
+  container.querySelectorAll('.fill-inp').forEach(inp=>{inp.value='';inp.classList.remove('correct','wrong','revealed');});
+  if(scoreId){const el=document.getElementById(scoreId);if(el)el.innerHTML='';}
+}
+
+/* ── CHECK SELECTS ── */
+function checkSelects(containerId, scoreId){
+  const container=document.getElementById(containerId);
+  const selects=container.querySelectorAll('select');
+  let correct=0;
+  selects.forEach(sel=>{
+    const ans=sel.dataset.ans||'';
+    const accepted=ans.split('|').map(a=>norm(a));
+    if(accepted.includes(norm(sel.value))){sel.classList.add('correct');sel.classList.remove('wrong');correct++;}
+    else{sel.classList.add('wrong');sel.classList.remove('correct');}
+  });
+  if(scoreId){const el=document.getElementById(scoreId);if(el)el.innerHTML=`Score : <span class="score-badge">${correct} / ${selects.length}</span>`;}
+}
+
+/* ── RESET SELECTS ── */
+function resetSelects(containerId, scoreId){
+  const container=document.getElementById(containerId);
+  container.querySelectorAll('select').forEach(sel=>{sel.value='';sel.classList.remove('correct','wrong');});
+  if(scoreId){const el=document.getElementById(scoreId);if(el)el.innerHTML='';}
+}
+
+/* ═══════════════════════════════════════════════════
+   EXERCISE 10 — CONJUGATION TABLE
+═══════════════════════════════════════════════════ */
+const PRONOUNS=[
+  {label:'je / j\'',pron:'je'},
+  {label:'tu',pron:'tu'},
+  {label:'il / elle / on',pron:'il'},
+  {label:'nous',pron:'nous'},
+  {label:'vous',pron:'vous'},
+  {label:'ils / elles',pron:'ils'},
+  {label:'XX et moi (→ nous)',pron:'nous2'},
+  {label:'XX et toi (→ vous)',pron:'vous2'},
+  {label:'XX et YY (→ ils)',pron:'ils2'},
+  {label:'Marie et moi',pron:'nous3'},
+  {label:'Paul et toi',pron:'vous3'},
+  {label:'Léa et Marc',pron:'ils3'},
+  {label:'on',pron:'on'},
+];
+
+const VERBS={
+  être:{
+    forms:{je:'suis',tu:'es',il:'est',nous:'sommes',vous:'êtes',ils:'sont',nous2:'sommes',vous2:'êtes',ils2:'sont',nous3:'sommes',vous3:'êtes',ils3:'sont',on:'est'},
+    examples:{je:"Je suis étudiant.",tu:"Tu es français ?",il:"Elle est médecin.",nous:"Nous sommes à Paris.",vous:"Vous êtes prêts ?",ils:"Ils sont fatigués.",nous2:"Marie et moi sommes amis.",vous2:"Paul et toi êtes en retard.",ils2:"Léa et Marc sont contents.",nous3:"Marie et moi sommes ici.",vous3:"Paul et toi êtes d'accord.",ils3:"Léa et Marc sont absents.",on:"On est ensemble."}
+  },
+  avoir:{
+    forms:{je:'ai',tu:'as',il:'a',nous:'avons',vous:'avez',ils:'ont',nous2:'avons',vous2:'avez',ils2:'ont',nous3:'avons',vous3:'avez',ils3:'ont',on:'a'},
+    examples:{je:"J'ai un chien.",tu:"Tu as faim ?",il:"Il a vingt ans.",nous:"Nous avons cours.",vous:"Vous avez une question ?",ils:"Elles ont froid.",nous2:"Marie et moi avons un cours.",vous2:"Paul et toi avez de la chance.",ils2:"Léa et Marc ont raison.",nous3:"Marie et moi avons faim.",vous3:"Paul et toi avez tort.",ils3:"Léa et Marc ont un chat.",on:"On a le temps."}
+  },
+  faire:{
+    forms:{je:'fais',tu:'fais',il:'fait',nous:'faisons',vous:'faites',ils:'font',nous2:'faisons',vous2:'faites',ils2:'font',nous3:'faisons',vous3:'faites',ils3:'font',on:'fait'},
+    examples:{je:"Je fais du sport.",tu:"Tu fais quoi ?",il:"Elle fait la cuisine.",nous:"Nous faisons une promenade.",vous:"Vous faites du vélo ?",ils:"Ils font leurs devoirs.",nous2:"Marie et moi faisons du yoga.",vous2:"Paul et toi faites du sport ?",ils2:"Léa et Marc font du théâtre.",nous3:"Marie et moi faisons la vaisselle.",vous3:"Paul et toi faites quoi ?",ils3:"Léa et Marc font du bruit.",on:"On fait une pause."}
+  },
+  prendre:{
+    forms:{je:'prends',tu:'prends',il:'prend',nous:'prenons',vous:'prenez',ils:'prennent',nous2:'prenons',vous2:'prenez',ils2:'prennent',nous3:'prenons',vous3:'prenez',ils3:'prennent',on:'prend'},
+    examples:{je:"Je prends le bus.",tu:"Tu prends un café ?",il:"Il prend le déjeuner.",nous:"Nous prenons le train.",vous:"Vous prenez quoi ?",ils:"Elles prennent le métro.",nous2:"Marie et moi prenons l'avion.",vous2:"Paul et toi prenez le bus ?",ils2:"Léa et Marc prennent un taxi.",nous3:"Marie et moi prenons un café.",vous3:"Paul et toi prenez le train ?",ils3:"Léa et Marc prennent le métro.",on:"On prend le bus."}
+  },
+  vouloir:{
+    forms:{je:'veux',tu:'veux',il:'veut',nous:'voulons',vous:'voulez',ils:'veulent',nous2:'voulons',vous2:'voulez',ils2:'veulent',nous3:'voulons',vous3:'voulez',ils3:'veulent',on:'veut'},
+    examples:{je:"Je veux partir.",tu:"Tu veux du café ?",il:"Elle veut apprendre.",nous:"Nous voulons voyager.",vous:"Vous voulez venir ?",ils:"Ils veulent rester.",nous2:"Marie et moi voulons sortir.",vous2:"Paul et toi voulez partir ?",ils2:"Léa et Marc veulent manger.",nous3:"Marie et moi voulons du thé.",vous3:"Paul et toi voulez quoi ?",ils3:"Léa et Marc veulent dormir.",on:"On veut s'amuser."}
+  },
+  aller:{
+    forms:{je:'vais',tu:'vas',il:'va',nous:'allons',vous:'allez',ils:'vont',nous2:'allons',vous2:'allez',ils2:'vont',nous3:'allons',vous3:'allez',ils3:'vont',on:'va'},
+    examples:{je:"Je vais à l'école.",tu:"Tu vas bien ?",il:"Il va au cinéma.",nous:"Nous allons au parc.",vous:"Vous allez où ?",ils:"Elles vont à la plage.",nous2:"Marie et moi allons au marché.",vous2:"Paul et toi allez au stade ?",ils2:"Léa et Marc vont au restaurant.",nous3:"Marie et moi allons bien.",vous3:"Paul et toi allez où ?",ils3:"Léa et Marc vont à Paris.",on:"On va au café."}
+  },
+  pouvoir:{
+    forms:{je:'peux',tu:'peux',il:'peut',nous:'pouvons',vous:'pouvez',ils:'peuvent',nous2:'pouvons',vous2:'pouvez',ils2:'peuvent',nous3:'pouvons',vous3:'pouvez',ils3:'peuvent',on:'peut'},
+    examples:{je:"Je peux venir.",tu:"Tu peux partir.",il:"Elle peut rester.",nous:"Nous pouvons aider.",vous:"Vous pouvez entrer.",ils:"Ils peuvent sortir.",nous2:"Marie et moi pouvons venir.",vous2:"Paul et toi pouvez rester ?",ils2:"Léa et Marc peuvent partir.",nous3:"Marie et moi pouvons aider.",vous3:"Paul et toi pouvez entrer.",ils3:"Léa et Marc peuvent venir.",on:"On peut essayer."}
+  },
+  devoir:{
+    forms:{je:'dois',tu:'dois',il:'doit',nous:'devons',vous:'devez',ils:'doivent',nous2:'devons',vous2:'devez',ils2:'doivent',nous3:'devons',vous3:'devez',ils3:'doivent',on:'doit'},
+    examples:{je:"Je dois travailler.",tu:"Tu dois partir.",il:"Il doit étudier.",nous:"Nous devons rentrer.",vous:"Vous devez attendre.",ils:"Elles doivent choisir.",nous2:"Marie et moi devons décider.",vous2:"Paul et toi devez partir ?",ils2:"Léa et Marc doivent venir.",nous3:"Marie et moi devons travailler.",vous3:"Paul et toi devez attendre.",ils3:"Léa et Marc doivent répondre.",on:"On doit se dépêcher."}
+  },
+  falloir:{
+    forms:{je:'—',tu:'—',il:'faut',nous:'—',vous:'—',ils:'—',nous2:'—',vous2:'—',ils2:'—',nous3:'—',vous3:'—',ils3:'—',on:'—'},
+    examples:{je:"(impersonnel)",tu:"(impersonnel)",il:"Il faut travailler.",nous:"(impersonnel)",vous:"(impersonnel)",ils:"(impersonnel)",nous2:"(impersonnel)",vous2:"(impersonnel)",ils2:"(impersonnel)",nous3:"(impersonnel)",vous3:"(impersonnel)",ils3:"(impersonnel)",on:"(impersonnel)"}
+  },
+  boire:{
+    forms:{je:'bois',tu:'bois',il:'boit',nous:'buvons',vous:'buvez',ils:'boivent',nous2:'buvons',vous2:'buvez',ils2:'boivent',nous3:'buvons',vous3:'buvez',ils3:'boivent',on:'boit'},
+    examples:{je:"Je bois de l'eau.",tu:"Tu bois du café ?",il:"Elle boit du thé.",nous:"Nous buvons du jus.",vous:"Vous buvez quoi ?",ils:"Ils boivent de la bière.",nous2:"Marie et moi buvons du café.",vous2:"Paul et toi buvez du thé ?",ils2:"Léa et Marc boivent de l'eau.",nous3:"Marie et moi buvons du lait.",vous3:"Paul et toi buvez quoi ?",ils3:"Léa et Marc boivent du jus.",on:"On boit un verre."}
+  },
+  manger:{
+    forms:{je:'mange',tu:'manges',il:'mange',nous:'mangeons',vous:'mangez',ils:'mangent',nous2:'mangeons',vous2:'mangez',ils2:'mangent',nous3:'mangeons',vous3:'mangez',ils3:'mangent',on:'mange'},
+    examples:{je:"Je mange une pomme.",tu:"Tu manges quoi ?",il:"Il mange du riz.",nous:"Nous mangeons ensemble.",vous:"Vous mangez ici ?",ils:"Elles mangent des pâtes.",nous2:"Marie et moi mangeons dehors.",vous2:"Paul et toi mangez quoi ?",ils2:"Léa et Marc mangent au restaurant.",nous3:"Marie et moi mangeons une salade.",vous3:"Paul et toi mangez ici ?",ils3:"Léa et Marc mangent des sushis.",on:"On mange à midi."}
+  },
+  venir:{
+    forms:{je:'viens',tu:'viens',il:'vient',nous:'venons',vous:'venez',ils:'viennent',nous2:'venons',vous2:'venez',ils2:'viennent',nous3:'venons',vous3:'venez',ils3:'viennent',on:'vient'},
+    examples:{je:"Je viens de Paris.",tu:"Tu viens ce soir ?",il:"Elle vient avec nous.",nous:"Nous venons demain.",vous:"Vous venez d'où ?",ils:"Ils viennent à pied.",nous2:"Marie et moi venons ensemble.",vous2:"Paul et toi venez quand ?",ils2:"Léa et Marc viennent aussi.",nous3:"Marie et moi venons de Lyon.",vous3:"Paul et toi venez comment ?",ils3:"Léa et Marc viennent ce soir.",on:"On vient tout de suite."}
+  }
+};
+
+function loadVerb(){
+  const v=document.getElementById('verbSelector').value;
+  const data=VERBS[v];
+  const tbody=document.getElementById('conjBody');
+  tbody.innerHTML='';
+  PRONOUNS.forEach(p=>{
+    const form=data.forms[p.pron]||'—';
+    const ex=data.examples[p.pron]||'';
+    const isFixed=(form==='—'||form==='faut');
+    const inp=isFixed
+      ? `<td style="font-weight:700;color:var(--primary);">${form}</td>`
+      : `<td><input class="conj-inp" data-ans="${form}" value="" placeholder="…"></td>`;
+    tbody.innerHTML+=`<tr><td>${p.label}</td>${inp}<td style="font-size:12px;color:#6b7280;font-style:italic;">${ex}</td></tr>`;
+  });
+  document.getElementById('scoreConj').innerHTML='';
+}
+
+function checkConj(){
+  const inputs=document.querySelectorAll('#conjBody .conj-inp');
+  let correct=0,total=0;
+  inputs.forEach(inp=>{
+    total++;
+    if(norm(inp.value)===norm(inp.dataset.ans)){inp.classList.add('correct');inp.classList.remove('wrong');correct++;}
+    else{inp.classList.add('wrong');inp.classList.remove('correct');}
+  });
+  const el=document.getElementById('scoreConj');
+  if(el)el.innerHTML=`Score : <span class="score-badge">${correct} / ${total}</span>`;
+}
+
+function revealConj(){
+  document.querySelectorAll('#conjBody .conj-inp').forEach(inp=>{
+    inp.value=inp.dataset.ans;
+    inp.classList.add('revealed');inp.classList.remove('correct','wrong');
+  });
+}
+
+function resetConj(){
+  document.querySelectorAll('#conjBody .conj-inp').forEach(inp=>{
+    inp.value='';inp.classList.remove('correct','wrong','revealed');
+  });
+  document.getElementById('scoreConj').innerHTML='';
+}
+
+function randomVerb(){
+  const sel=document.getElementById('verbSelector');
+  const opts=Array.from(sel.options);
+  const cur=sel.value;
+  let pick;
+  do{ pick=opts[Math.floor(Math.random()*opts.length)].value; }while(pick===cur&&opts.length>1);
+  sel.value=pick;
+  loadVerb();
+}
+
+/* ═══════════════════════════════════════════════════
+   LEXIQUE — VOCABULARY TABLE
+═══════════════════════════════════════════════════ */
+const LEX_DATA=[
+  // Prépositions de lieu
+  {cat:'prepositions',emoji:'📍',fr:'devant',en:'in front of',ex:'Le chat est devant la porte.'},
+  {cat:'prepositions',emoji:'📍',fr:'derrière',en:'behind',ex:'Le jardin est derrière la maison.'},
+  {cat:'prepositions',emoji:'📍',fr:'sur',en:'on',ex:'Le livre est sur la table.'},
+  {cat:'prepositions',emoji:'📍',fr:'sous',en:'under',ex:'Le chat est sous le lit.'},
+  {cat:'prepositions',emoji:'📍',fr:'dans',en:'in / inside',ex:'Les clés sont dans le sac.'},
+  {cat:'prepositions',emoji:'📍',fr:'à côté de',en:'next to',ex:'La pharmacie est à côté du supermarché.'},
+  {cat:'prepositions',emoji:'📍',fr:'à gauche de',en:'to the left of',ex:'La banque est à gauche de la poste.'},
+  {cat:'prepositions',emoji:'📍',fr:'à droite de',en:'to the right of',ex:'Le cinéma est à droite de la gare.'},
+  {cat:'prepositions',emoji:'📍',fr:'loin de',en:'far from',ex:"C'est loin d'ici."},
+  {cat:'prepositions',emoji:'📍',fr:'près de',en:'near / close to',ex:"L'école est près de la gare."},
+  {cat:'prepositions',emoji:'📍',fr:'en face de',en:'opposite / facing',ex:'Le restaurant est en face de la mairie.'},
+  {cat:'prepositions',emoji:'📍',fr:'entre',en:'between',ex:'Le parc est entre la banque et la poste.'},
+  // Questions
+  {cat:'questions',emoji:'❓',fr:'est-ce que',en:'(yes/no question marker)',ex:'Est-ce que tu aimes le café ?'},
+  {cat:'questions',emoji:'❓',fr:'quand',en:'when',ex:'Quand est-ce que tu pars ?'},
+  {cat:'questions',emoji:'❓',fr:'à quelle heure',en:'at what time',ex:'À quelle heure est-ce que le train arrive ?'},
+  {cat:'questions',emoji:'❓',fr:'où',en:'where',ex:'Où est-ce que tu habites ?'},
+  {cat:'questions',emoji:'❓',fr:'qui',en:'who',ex:'Qui est-ce que tu appelles ?'},
+  {cat:'questions',emoji:'❓',fr:'pourquoi',en:'why',ex:'Pourquoi est-ce que tu pleures ?'},
+  {cat:'questions',emoji:'❓',fr:"qu'est-ce que",en:'what (with est-ce que)',ex:"Qu'est-ce que tu manges ?"},
+  {cat:'questions',emoji:'❓',fr:'quoi',en:'what (informal, at end)',ex:'Tu regardes quoi ?'},
+  // Météo
+  {cat:'meteo',emoji:'🌤',fr:'il fait beau',en:'the weather is nice',ex:'Aujourd\'hui il fait beau.'},
+  {cat:'meteo',emoji:'⛈️',fr:'il fait mauvais',en:'the weather is bad',ex:'Il fait mauvais, reste à la maison.'},
+  {cat:'meteo',emoji:'🔥',fr:'il fait chaud',en:'it is hot',ex:'En été, il fait chaud.'},
+  {cat:'meteo',emoji:'🥶',fr:'il fait froid',en:'it is cold',ex:'En hiver, il fait froid.'},
+  {cat:'meteo',emoji:'🌬️',fr:'il fait frais',en:'it is cool',ex:'Le matin, il fait frais.'},
+  {cat:'meteo',emoji:'💨',fr:'il fait du vent',en:'it is windy',ex:'Il fait du vent à la plage.'},
+  {cat:'meteo',emoji:'☁️',fr:'il y a des nuages',en:'there are clouds',ex:'Il y a des nuages mais il ne pleut pas.'},
+  {cat:'meteo',emoji:'🌧️',fr:'il pleut',en:'it is raining',ex:'Il pleut, prends un parapluie.'},
+  {cat:'meteo',emoji:'🌨️',fr:'il neige',en:'it is snowing',ex:'Il neige en décembre.'},
+  {cat:'meteo',emoji:'🌞',fr:'il y a du soleil',en:'there is sunshine',ex:'Il y a du soleil, allons au parc.'},
+  {cat:'meteo',emoji:'🌫️',fr:'il y a du brouillard',en:'there is fog',ex:'Il y a du brouillard ce matin.'},
+  // Conseils
+  {cat:'conseils',emoji:'💬',fr:'il faut + inf.',en:'one must / you need to',ex:'Il faut étudier pour l\'examen.'},
+  {cat:'conseils',emoji:'💬',fr:'tu peux + inf.',en:'you can (informal)',ex:'Tu peux partir maintenant.'},
+  {cat:'conseils',emoji:'💬',fr:'vous pouvez + inf.',en:'you can (formal)',ex:'Vous pouvez entrer.'},
+  {cat:'conseils',emoji:'💬',fr:'tu dois + inf.',en:'you must (informal)',ex:'Tu dois arriver à l\'heure.'},
+  {cat:'conseils',emoji:'💬',fr:'vous devez + inf.',en:'you must (formal)',ex:'Vous devez montrer votre billet.'},
+  {cat:'conseils',emoji:'💬',fr:'montrer',en:'to show',ex:'Vous devez montrer votre passeport.'},
+  {cat:'conseils',emoji:'💬',fr:'réserver',en:'to reserve',ex:'Il faut réserver à l\'avance.'},
+  {cat:'conseils',emoji:'💬',fr:'stationner',en:'to park',ex:'Vous ne pouvez pas stationner ici.'},
+  {cat:'conseils',emoji:'💬',fr:'fumer',en:'to smoke',ex:'Il ne faut pas fumer.'},
+  // Alimentation
+  {cat:'alimentation',emoji:'🍽',fr:'déjeuner',en:'to have lunch',ex:'Nous déjeunons à la cantine.'},
+  {cat:'alimentation',emoji:'🍽',fr:'dîner',en:'to have dinner',ex:'Ma famille dîne à 19h.'},
+  {cat:'alimentation',emoji:'🍽',fr:'manger',en:'to eat',ex:'Ils mangent des sushis.'},
+  {cat:'alimentation',emoji:'🍽',fr:'prendre',en:'to have (a meal)',ex:'Je prends le petit déjeuner à 7h.'},
+  {cat:'alimentation',emoji:'🍎',fr:'un fruit',en:'a fruit',ex:'Une pomme est un fruit.'},
+  {cat:'alimentation',emoji:'🥦',fr:'un légume',en:'a vegetable',ex:'Une carotte est un légume.'},
+  {cat:'alimentation',emoji:'🍗',fr:'une viande',en:'a meat',ex:'Du poulet est une viande.'},
+  {cat:'alimentation',emoji:'🧀',fr:'un produit laitier',en:'a dairy product',ex:'Du fromage est un produit laitier.'},
+  {cat:'alimentation',emoji:'🌾',fr:'une céréale',en:'a cereal / grain',ex:'Du riz est une céréale.'},
+  // Fréquence
+  {cat:'frequence',emoji:'📅',fr:'toujours',en:'always',ex:'Je prends toujours le petit déjeuner.'},
+  {cat:'frequence',emoji:'📅',fr:'souvent',en:'often',ex:'Nous déjeunons souvent au restaurant.'},
+  {cat:'frequence',emoji:'📅',fr:'parfois / quelquefois',en:'sometimes',ex:'Ils mangent parfois des pâtes le soir.'},
+  {cat:'frequence',emoji:'📅',fr:'rarement',en:'rarely',ex:'Tu dînes rarement avant 20h.'},
+  {cat:'frequence',emoji:'📅',fr:'ne … jamais',en:'never',ex:'Elle ne mange jamais de viande.'},
+  // Lieux
+  {cat:'lieux',emoji:'🏪',fr:'au cinéma',en:'to/at the cinema',ex:'Nous regardons un film au cinéma.'},
+  {cat:'lieux',emoji:'🏪',fr:'à la piscine',en:'to/at the pool',ex:'Je fais de la natation à la piscine.'},
+  {cat:'lieux',emoji:'🏪',fr:'à la bibliothèque',en:'to/at the library',ex:'Tu lis des livres à la bibliothèque.'},
+  {cat:'lieux',emoji:'🏪',fr:'au stade',en:'to/at the stadium',ex:'Ils font du sport au stade.'},
+  {cat:'lieux',emoji:'🏪',fr:'à la boulangerie',en:'to/at the bakery',ex:"J'achète du pain à la boulangerie."},
+  {cat:'lieux',emoji:'🏪',fr:'à la poissonnerie',en:'to/at the fishmonger',ex:'Elle achète du saumon à la poissonnerie.'},
+  {cat:'lieux',emoji:'🏪',fr:'au théâtre',en:'to/at the theatre',ex:'Nous voyons une pièce au théâtre.'},
+  {cat:'lieux',emoji:'🏪',fr:'au supermarché',en:'to/at the supermarket',ex:'Je vais au supermarché.'},
+  {cat:'lieux',emoji:'🏪',fr:'chez + personne',en:'at someone\'s place/shop',ex:'J\'achète du pain chez le boulanger.'}
+];
+
+let lexHiddenCols={fr:false,en:false,ex:false};
+let lexCurrentFilter='all';
+
+function buildLex(filter){
+  lexCurrentFilter=filter||'all';
+  const tbody=document.getElementById('lexBody');
+  if(!tbody)return;
+  tbody.innerHTML='';
+  let count=0;
+  LEX_DATA.forEach(row=>{
+    if(filter!=='all'&&row.cat!==filter)return;
+    count++;
+    const tr=document.createElement('tr');
+    tr.dataset.cat=row.cat;
+    const frHidden=lexHiddenCols.fr;
+    const enHidden=lexHiddenCols.en;
+    const exHidden=lexHiddenCols.ex;
+    tr.innerHTML=
+      '<td class="lex-col-fr'+(frHidden?' lex-hidden':'')+'" style="font-weight:700;cursor:pointer;" onclick="lexRevealCell(this);speakFr(\'' + row.fr.replace(/'/g, "\\'") + '\')"'+(frHidden?' data-hidden="1"':'')+'>'+
+        (frHidden?'<span style="background:var(--line);color:transparent;border-radius:4px;padding:1px 6px;user-select:none;">'+row.fr+'</span>':row.fr)+'</td>'+
+      '<td class="lex-col-en'+(enHidden?' lex-hidden':'')+'"'+(enHidden?' data-hidden="1" onclick="lexRevealCell(this)" style="cursor:pointer;"':'')+'>'+
+        (enHidden?'<span style="background:var(--line);color:transparent;border-radius:4px;padding:1px 6px;user-select:none;">'+row.en+'</span>':row.en)+'</td>'+
+      '<td class="lex-col-ex'+(exHidden?' lex-hidden':'')+'" style="font-size:12px;color:#6b7280;font-style:italic;'+(exHidden?'cursor:pointer;':'')+'"'+(exHidden?' data-hidden="1" onclick="lexRevealCell(this)"':'')+'>'+
+        (exHidden?'<span style="background:var(--line);color:transparent;border-radius:4px;padding:1px 6px;user-select:none;">'+row.ex+'</span>':row.ex)+'</td>';
+    tbody.appendChild(tr);
+  });
+  const el=document.getElementById('lexCount');
+  if(el)el.textContent=count+' entrées';
+}
+
+function lexFilter(cat,btn){
+  document.querySelectorAll('#tLex .filter-tab').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  buildLex(cat);
+}
+
+function lexToggleCol(col){
+  lexHiddenCols[col]=!lexHiddenCols[col];
+  const btn=document.getElementById('lexCol'+col.charAt(0).toUpperCase()+col.slice(1));
+  if(btn)btn.classList.toggle('active',!lexHiddenCols[col]);
+  buildLex(lexCurrentFilter);
+}
+
+function lexRevealCell(td){
+  if(!td.dataset.hidden)return;
+  const span=td.querySelector('span');
+  if(span){span.style.color='';span.style.background='transparent';}
+  td.removeAttribute('data-hidden');
+}
+
+function lexRevealAll(){
+  document.querySelectorAll('#lexBody td[data-hidden]').forEach(td=>lexRevealCell(td));
+}
+
+/* ═══════════════════════════════════════════════════
+   FOOD VOCABULARY TABLE (inline in Exercise 5)
+═══════════════════════════════════════════════════ */
+let foodHiddenCols={def:false,art:false,fr:false,en:false};
+let foodCurrentFilter='all';
+const FOOD_CAT_EMOJI={fruit:'🍎',legume:'🥦',viande:'🍗',laitier:'🧀',cereale:'🌾',boisson:'☕',autre:'🍬'};
+
+function buildFood(filter){
+  foodCurrentFilter=filter||'all';
+  const tbody=document.getElementById('foodBody');
+  if(!tbody)return;
+  tbody.innerHTML='';
+  let count=0;
+  ALI_FOODS.forEach(row=>{
+    if(filter!=='all'&&row.cat!==filter)return;
+    count++;
+    const tr=document.createElement('tr');
+    tr.dataset.cat=row.cat;
+    const defH=foodHiddenCols.def;
+    const artH=foodHiddenCols.art;
+    const frH=foodHiddenCols.fr;
+    const enH=foodHiddenCols.en;
+    const emoji=row.emoji||FOOD_CAT_EMOJI[row.cat]||'🍽';
+    function hid(val,cls){return '<span style="background:var(--line);color:transparent;border-radius:4px;padding:1px 6px;user-select:none;">'+val+'</span>';}
+    tr.innerHTML=
+      '<td style="text-align:center;font-size:16px;min-width:50px;">'+emoji+'</td>'+
+      '<td class="food-col-def" style="font-weight:700;color:var(--primary);'+(defH?'cursor:pointer;':'')+'"'+(defH?' data-hidden="1" onclick="foodRevealCell(this)"':'')+'>'+
+        (defH?hid(row.defArt):row.defArt)+'</td>'+
+      '<td class="food-col-art" style="font-weight:700;color:var(--primary);'+(artH?'cursor:pointer;':'')+'"'+(artH?' data-hidden="1" onclick="foodRevealCell(this)"':'')+'>'+
+        (artH?hid(row.partArt):row.partArt)+'</td>'+
+      '<td class="food-col-fr" style="font-weight:700;'+(frH?'cursor:pointer;':'')+'"'+(frH?' data-hidden="1" onclick="foodRevealCell(this)"':'')+'>'+
+        (frH?hid(row.fr):row.fr)+'</td>'+
+      '<td class="food-col-en" style="'+(enH?'cursor:pointer;':'')+'"'+(enH?' data-hidden="1" onclick="foodRevealCell(this)"':'')+'>'+
+        (enH?hid(row.en):row.en)+'</td>';
+    tbody.appendChild(tr);
+  });
+  const el=document.getElementById('foodCount');
+  if(el)el.textContent=count+' aliments';
+}
+
+function foodFilter(cat,btn){
+  document.querySelectorAll('#t5 .filter-tab').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  buildFood(cat);
+}
+
+function foodToggleCol(col){
+  foodHiddenCols[col]=!foodHiddenCols[col];
+  const btnMap={def:'foodColDef',art:'foodColArt',fr:'foodColFr',en:'foodColEn'};
+  const btn=document.getElementById(btnMap[col]);
+  if(btn)btn.classList.toggle('active',!foodHiddenCols[col]);
+  buildFood(foodCurrentFilter);
+}
+
+function foodRevealCell(td){
+  if(!td.dataset.hidden)return;
+  const span=td.querySelector('span');
+  if(span){span.style.color='';span.style.background='transparent';}
+  td.removeAttribute('data-hidden');
+}
+
+function foodRevealAll(){
+  document.querySelectorAll('#foodBody td[data-hidden]').forEach(td=>foodRevealCell(td));
+}
+
+/* ═══════════════════════════════════════════════════
+   DRILL 1 — PRÉPOSITIONS + CONTRACTIONS
+═══════════════════════════════════════════════════ */
+const PREP_NOUNS=[
+  {fr:'cinéma',en:'cinema',art:'le'},
+  {fr:'maison',en:'house',art:'la'},
+  {fr:'école',en:'school',art:"l'"},
+  {fr:'magasins',en:'shops',art:'les'},
+  {fr:'parc',en:'park',art:'le'},
+  {fr:'gare',en:'station',art:'la'},
+  {fr:'hôpital',en:'hospital',art:"l'"},
+  {fr:'restaurants',en:'restaurants',art:'les'},
+  {fr:'supermarché',en:'supermarket',art:'le'},
+  {fr:'bibliothèque',en:'library',art:'la'},
+  {fr:'aéroport',en:'airport',art:"l'"},
+  {fr:'toilettes',en:'toilets',art:'les'},
+  {fr:'banque',en:'bank',art:'la'},
+  {fr:'musée',en:'museum',art:'le'},
+  {fr:'église',en:'church',art:"l'"},
+  {fr:'bureaux',en:'offices',art:'les'},
+  {fr:'pharmacie',en:'pharmacy',art:'la'},
+  {fr:'stade',en:'stadium',art:'le'},
+  {fr:'université',en:'university',art:"l'"},
+  {fr:'hôtels',en:'hotels',art:'les'}
+];
+
+const PREPS_WITH_DE=['à côté de','à gauche de','à droite de','loin de','près de','en face de'];
+const ALL_PREPS=PREPS_WITH_DE; /* drill focuses only on contractions */
+
+let drillPrepAnswer='';
+let drillPrepStats={correct:0,total:0,streak:0};
+
+function contractDe(prep,art,noun){
+  /* prep ends with "de", we must contract with the article */
+  const base=prep.slice(0,-2).trimEnd(); /* e.g. "à côté" from "à côté de" */
+  if(art==='le') return base+' du '+noun;
+  if(art==='les') return base+' des '+noun;
+  if(art==="l'") return base+" de l'"+noun;
+  /* art==='la' */ return base+' de la '+noun;
+}
+
+function buildPrepPhrase(prep,noun){
+  const art=noun.art;
+  if(PREPS_WITH_DE.includes(prep)){
+    return contractDe(prep,art,noun.fr);
+  }else{
+    return prep+' '+art+(art==="l'"?'':' ')+noun.fr;
+  }
+}
+
+const PREP_STARTERS=['Nous sommes','Il se trouve','C\'est','Elle est','Le magasin est','La banque est','Mon ami est','Le chat est'];
+const PREP_EN_MAP={'à côté de':'next to','à gauche de':'to the left of','à droite de':'to the right of','loin de':'far from','près de':'near','en face de':'opposite'};
+
+function drillPrepGenerate(prep,noun){
+  if(!prep) prep=ALL_PREPS[Math.floor(Math.random()*ALL_PREPS.length)];
+  if(!noun) noun=PREP_NOUNS[Math.floor(Math.random()*PREP_NOUNS.length)];
+  var starter=PREP_STARTERS[Math.floor(Math.random()*PREP_STARTERS.length)];
+  /* set dropdown */
+  document.getElementById('drillPrepSel').value=prep;
+  var phrase=buildPrepPhrase(prep,noun);
+  drillPrepAnswer=starter+' '+phrase+'.';
+  /* show prompt */
+  const box=document.getElementById('drillPrepPrompt');
+  box.style.opacity='1';
+  document.getElementById('dpStarterText').textContent=starter+' …';
+  document.getElementById('dpPrepText').textContent=prep;
+  document.getElementById('dpNounText').textContent=noun.art+(noun.art==="l'"?'':' ')+noun.fr;
+  var enPrep=PREP_EN_MAP[prep]||prep;
+  document.getElementById('dpEnText').textContent=enPrep+' the '+noun.en;
+  /* reset input */
+  const inp=document.getElementById('drillPrepInput');
+  inp.value='';inp.classList.remove('correct','wrong');
+  document.getElementById('drillPrepFB').textContent='';
+  document.getElementById('drillPrepFB').className='drill-feedback';
+  var oldTts=document.getElementById('drillPrepTTS');if(oldTts)oldTts.remove();
+}
+
+function drillPrepRandom(){
+  drillPrepGenerate(null,null);
+}
+
+function drillPrepCheck(){
+  if(!drillPrepAnswer)return;
+  const inp=document.getElementById('drillPrepInput');
+  const fb=document.getElementById('drillPrepFB');
+  drillPrepStats.total++;
+  if(norm(inp.value)===norm(drillPrepAnswer)){
+    inp.classList.add('correct');inp.classList.remove('wrong');
+    fb.textContent='✓ Correct !';fb.className='drill-feedback fb-correct';appendTTS(fb,drillPrepAnswer);
+    drillPrepStats.correct++;drillPrepStats.streak++;
+  }else{
+    inp.classList.add('wrong');inp.classList.remove('correct');
+    fb.innerHTML='✗ Réponse : <strong>'+drillPrepAnswer+'</strong>';fb.className='drill-feedback fb-wrong';appendTTS(fb,drillPrepAnswer);
+    drillPrepStats.streak=0;
+  }
+  document.getElementById('drillPrepCorrect').textContent=drillPrepStats.correct;
+  document.getElementById('drillPrepTotal').textContent=drillPrepStats.total;
+  document.getElementById('drillPrepStreak').textContent=drillPrepStats.streak;
+}
+
+function drillPrepReveal(){
+  if(!drillPrepAnswer)return;
+  const inp=document.getElementById('drillPrepInput');
+  inp.value=drillPrepAnswer;inp.classList.add('correct');inp.classList.remove('wrong');
+}
+
+function drillPrepNext(){
+  drillPrepGenerate(null,null);
+}
+
+/* ═══════════════════════════════════════════════════
+   DRILL 2 — ALIMENTATION (PARTITIVE ARTICLES)
+═══════════════════════════════════════════════════ */
+const ALI_FOODS=[
+  /* ── Fruits ── */
+  {fr:'ananas',en:'pineapple',partArt:"de l'",negArt:"d'",gender:'mv',cat:'fruit',defArt:"l'",emoji:'🍍'},
+  {fr:'banane',en:'banana',partArt:'de la',negArt:'de',gender:'f',cat:'fruit',defArt:'la',emoji:'🍌'},
+  {fr:'bananes',en:'bananas',partArt:'des',negArt:'de',gender:'pl',cat:'fruit',defArt:'les',emoji:'🍌🍌'},
+  {fr:'citron',en:'lemon',partArt:'du',negArt:'de',gender:'m',cat:'fruit',defArt:'le',emoji:'🍋'},
+  {fr:'citrons',en:'lemons',partArt:'des',negArt:'de',gender:'pl',cat:'fruit',defArt:'les',emoji:'🍋🍋'},
+  {fr:'fraise',en:'strawberry',partArt:'de la',negArt:'de',gender:'f',cat:'fruit',defArt:'la',emoji:'🍓'},
+  {fr:'fraises',en:'strawberries',partArt:'des',negArt:'de',gender:'pl',cat:'fruit',defArt:'les',emoji:'🍓🍓'},
+  {fr:'kiwi',en:'kiwi',partArt:'du',negArt:'de',gender:'m',cat:'fruit',defArt:'le',emoji:'🥝'},
+  {fr:'orange',en:'orange',partArt:"de l'",negArt:"d'",gender:'fv',cat:'fruit',defArt:"l'",emoji:'🍊'},
+  {fr:'oranges',en:'oranges',partArt:'des',negArt:"d'",gender:'pl',cat:'fruit',defArt:'les',emoji:'🍊🍊'},
+  {fr:'pastèque',en:'watermelon',partArt:'de la',negArt:'de',gender:'f',cat:'fruit',defArt:'la',emoji:'🍉'},
+  {fr:'pêche',en:'peach',partArt:'de la',negArt:'de',gender:'f',cat:'fruit',defArt:'la',emoji:'🍑'},
+  {fr:'poire',en:'pear',partArt:'de la',negArt:'de',gender:'f',cat:'fruit',defArt:'la',emoji:'🍐'},
+  {fr:'pomme',en:'apple',partArt:'de la',negArt:'de',gender:'f',cat:'fruit',defArt:'la',emoji:'🍎'},
+  {fr:'pommes',en:'apples',partArt:'des',negArt:'de',gender:'pl',cat:'fruit',defArt:'les',emoji:'🍎🍎'},
+  {fr:'tomate',en:'tomato',partArt:'de la',negArt:'de',gender:'f',cat:'fruit',defArt:'la',emoji:'🍅'},
+  {fr:'tomates',en:'tomatoes',partArt:'des',negArt:'de',gender:'pl',cat:'fruit',defArt:'les',emoji:'🍅🍅'},
+  /* ── Légumes ── */
+  {fr:'ail',en:'garlic',partArt:"de l'",negArt:"d'",gender:'mv',cat:'legume',defArt:"l'",emoji:'🧄'},
+  {fr:'avocat',en:'avocado',partArt:"de l'",negArt:"d'",gender:'mv',cat:'legume',defArt:"l'",emoji:'🥑'},
+  {fr:'brocoli',en:'broccoli',partArt:'du',negArt:'de',gender:'m',cat:'legume',defArt:'le',emoji:'🥦'},
+  {fr:'carotte',en:'carrot',partArt:'de la',negArt:'de',gender:'f',cat:'legume',defArt:'la',emoji:'🥕'},
+  {fr:'champignon',en:'mushroom',partArt:'du',negArt:'de',gender:'m',cat:'legume',defArt:'le',emoji:'🍄'},
+  {fr:'concombre',en:'cucumber',partArt:'du',negArt:'de',gender:'m',cat:'legume',defArt:'le',emoji:'🥒'},
+  {fr:'poivron',en:'bell pepper',partArt:'du',negArt:'de',gender:'m',cat:'legume',defArt:'le',emoji:'🫑'},
+  {fr:'pommes de terre',en:'potatoes',partArt:'des',negArt:'de',gender:'pl',cat:'legume',defArt:'les',emoji:'🥔🥔'},
+  {fr:'salade',en:'lettuce',partArt:'de la',negArt:'de',gender:'f',cat:'legume',defArt:'la',emoji:'🥬'},
+  /* ── Viande & Poisson ── */
+  {fr:'poulet',en:'chicken',partArt:'du',negArt:'de',gender:'m',cat:'viande',defArt:'le',emoji:'🍗'},
+  {fr:'sushis',en:'sushi',partArt:'des',negArt:'de',gender:'pl',cat:'viande',defArt:'les',emoji:'🍣🍣'},
+  {fr:'viande',en:'meat',partArt:'de la',negArt:'de',gender:'f',cat:'viande',defArt:'la',emoji:'🥩'},
+  /* ── Produits laitiers ── */
+  {fr:'beurre',en:'butter',partArt:'du',negArt:'de',gender:'m',cat:'laitier',defArt:'le',emoji:'🧈'},
+  {fr:'fromage',en:'cheese',partArt:'du',negArt:'de',gender:'m',cat:'laitier',defArt:'le',emoji:'🧀'},
+  {fr:'lait',en:'milk',partArt:'du',negArt:'de',gender:'m',cat:'laitier',defArt:'le',emoji:'🥛'},
+  {fr:'œufs',en:'eggs',partArt:'des',negArt:"d'",gender:'pl',cat:'laitier',defArt:'les',emoji:'🥚🥚'},
+  /* ── Pain & Céréales ── */
+  {fr:'baguette',en:'baguette',partArt:'de la',negArt:'de',gender:'f',cat:'cereale',defArt:'la',emoji:'🥖'},
+  {fr:'croissant',en:'croissant',partArt:'du',negArt:'de',gender:'m',cat:'cereale',defArt:'le',emoji:'🥐'},
+  {fr:'pain',en:'bread',partArt:'du',negArt:'de',gender:'m',cat:'cereale',defArt:'le',emoji:'🍞'},
+  {fr:'pâtes',en:'pasta',partArt:'des',negArt:'de',gender:'pl',cat:'cereale',defArt:'les',emoji:'🍝'},
+  {fr:'riz',en:'rice',partArt:'du',negArt:'de',gender:'m',cat:'cereale',defArt:'le',emoji:'🍚'},
+  /* ── Condiments & Divers ── */
+  {fr:'chocolat',en:'chocolate',partArt:'du',negArt:'de',gender:'m',cat:'autre',defArt:'le',emoji:'🍫'},
+  {fr:'miel',en:'honey',partArt:'du',negArt:'de',gender:'m',cat:'autre',defArt:'le',emoji:'🍯'},
+  {fr:'sel',en:'salt',partArt:'du',negArt:'de',gender:'m',cat:'autre',defArt:'le',emoji:'🧂'},
+  {fr:'pizza',en:'pizza',partArt:'de la',negArt:'de',gender:'f',cat:'autre',defArt:'la',emoji:'🍕'},
+  {fr:'gâteau au chocolat',en:'chocolate cake',partArt:'du',negArt:'de',gender:'m',cat:'autre',defArt:'le',emoji:'🎂'},
+  /* ── Boissons ── */
+  {fr:'eau',en:'water',partArt:"de l'",negArt:"d'",gender:'fv',cat:'boisson',defArt:"l'",emoji:'💧'},
+  {fr:'café',en:'coffee',partArt:'du',negArt:'de',gender:'m',cat:'boisson',defArt:'le',emoji:'☕'},
+  {fr:'thé',en:'tea',partArt:'du',negArt:'de',gender:'m',cat:'boisson',defArt:'le',emoji:'🍵'},
+  {fr:'jus',en:'juice',partArt:'du',negArt:'de',gender:'m',cat:'boisson',defArt:'le',emoji:'🧃'}
+];
+
+const ALI_VERBS={
+  manger:{je:'mange',tu:'manges',il:'mange',elle:'mange',nous:'mangeons',vous:'mangez',ils:'mangent',elles:'mangent',en:'eat'},
+  boire:{je:'bois',tu:'bois',il:'boit',elle:'boit',nous:'buvons',vous:'buvez',ils:'boivent',elles:'boivent',en:'drink'},
+  prendre:{je:'prends',tu:'prends',il:'prend',elle:'prend',nous:'prenons',vous:'prenez',ils:'prennent',elles:'prennent',en:'have'}
+};
+
+let drillAliAnswer='';
+let drillAliStats={correct:0,total:0,streak:0};
+
+function buildAliSentence(subj,verb,food,neg){
+  const conj=ALI_VERBS[verb][subj];
+  const art=neg?food.negArt:food.partArt;
+  /* elision: je → j' before vowel when ne is absent; ne...pas wrapping */
+  let s='';
+  if(neg){
+    const isVowelVerb=/^[aeéèêiouâîôûh]/i.test(conj);
+    if(subj==='je'){
+      s=isVowelVerb?("Je n'"+conj+' pas'):("Je ne "+conj+' pas');
+    }else{
+      const cap=subj.charAt(0).toUpperCase()+subj.slice(1);
+      s=cap+(isVowelVerb?(" n'"+conj+' pas'):(" ne "+conj+' pas'));
+    }
+    s+=' '+art+(art==="d'"?'':' ')+food.fr+'.';
+  }else{
+    const cap=(subj==='je'&&/^[aeéèêiouâîôûh]/i.test(conj))?("J'"):(subj.charAt(0).toUpperCase()+subj.slice(1)+' ');
+    s=cap+conj+' '+art+(art==="de l'"||art==="d'"?'':' ')+food.fr+'.';
+  }
+  return s;
+}
+
+function drillAliGenerate(subj,verb,neg,food){
+  const subjects=['je','tu','il','elle','nous','vous','ils','elles'];
+  const verbs=['manger','boire','prendre'];
+  if(!subj) subj=subjects[Math.floor(Math.random()*subjects.length)];
+  if(!verb) verb=verbs[Math.floor(Math.random()*verbs.length)];
+  if(neg===null||neg===undefined) neg=Math.random()<0.4;
+  if(!food){
+    if(verb==='boire'){var pool=ALI_FOODS.filter(function(f){return f.cat==='boisson';});food=pool[Math.floor(Math.random()*pool.length)];}
+    else{var pool2=ALI_FOODS.filter(function(f){return f.cat!=='boisson';});food=pool2[Math.floor(Math.random()*pool2.length)];}
+  }
+  document.getElementById('drillAliSubj').value=subj;
+  document.getElementById('drillAliVerb').value=verb;
+  document.getElementById('drillAliForm').value=neg?'neg':'affirm';
+  drillAliAnswer=buildAliSentence(subj,verb,food,neg);
+  /* show prompt */
+  const box=document.getElementById('drillAliPrompt');box.style.opacity='1';
+  document.getElementById('daSubjVerbText').textContent=subj+' / '+verb+(neg?' (négatif)':'');
+  document.getElementById('daFoodText').textContent='🍽 '+food.fr+' ('+food.en+')';
+  const enVerb=ALI_VERBS[verb].en;
+  document.getElementById('daEnText').textContent=(neg?'not ':'')+ enVerb+' '+food.en;
+  const inp=document.getElementById('drillAliInput');
+  inp.value='';inp.classList.remove('correct','wrong');
+  document.getElementById('drillAliFB').textContent='';
+  document.getElementById('drillAliFB').className='drill-feedback';
+}
+
+function drillAliFromDropdowns(){
+  var s=document.getElementById('drillAliSubj').value||null;
+  var v=document.getElementById('drillAliVerb').value||null;
+  var f=document.getElementById('drillAliForm').value;
+  var neg=(f==='neg');
+  drillAliGenerate(s,v,neg,null);
+}
+
+function drillAliRandom(){
+  drillAliGenerate(null,null,null,null);
+}
+
+function drillAliCheck(){
+  if(!drillAliAnswer)return;
+  const inp=document.getElementById('drillAliInput');
+  const fb=document.getElementById('drillAliFB');
+  drillAliStats.total++;
+  if(norm(inp.value)===norm(drillAliAnswer)){
+    inp.classList.add('correct');inp.classList.remove('wrong');
+    fb.textContent='✓ Correct !';fb.className='drill-feedback fb-correct';appendTTS(fb,drillAliAnswer);
+    drillAliStats.correct++;drillAliStats.streak++;
+  }else{
+    inp.classList.add('wrong');inp.classList.remove('correct');
+    fb.innerHTML='✗ Réponse : <strong>'+drillAliAnswer+'</strong>';fb.className='drill-feedback fb-wrong';appendTTS(fb,drillAliAnswer);
+    drillAliStats.streak=0;
+  }
+  document.getElementById('drillAliCorrect').textContent=drillAliStats.correct;
+  document.getElementById('drillAliTotal').textContent=drillAliStats.total;
+  document.getElementById('drillAliStreak').textContent=drillAliStats.streak;
+}
+
+function drillAliReveal(){
+  if(!drillAliAnswer)return;
+  const inp=document.getElementById('drillAliInput');
+  inp.value=drillAliAnswer;inp.classList.add('correct');inp.classList.remove('wrong');
+}
+
+function drillAliNext(){
+  drillAliGenerate(null,null,null,null);
+}
+
+/* ═══════════════════════════════════════════════════
+   DRILL 3 — FUTUR PROCHE
+═══════════════════════════════════════════════════ */
+const FP_ACTIONS=[
+  {inf:'manger',en:'eat',compl:'au restaurant',enC:'at the restaurant'},
+  {inf:'regarder',en:'watch',compl:'un film',enC:'a film'},
+  {inf:'travailler',en:'work',compl:'ce soir',enC:'this evening'},
+  {inf:'étudier',en:'study',compl:'le français',enC:'French'},
+  {inf:'voyager',en:'travel',compl:'en France',enC:'to France'},
+  {inf:'sortir',en:'go out',compl:'avec des amis',enC:'with friends'},
+  {inf:'dormir',en:'sleep',compl:'tôt',enC:'early'},
+  {inf:'faire',en:'do',compl:'du sport',enC:'sport'},
+  {inf:'prendre',en:'take',compl:'le bus',enC:'the bus'},
+  {inf:'lire',en:'read',compl:'un livre',enC:'a book'},
+  {inf:'acheter',en:'buy',compl:'des vêtements',enC:'clothes'},
+  {inf:'cuisiner',en:'cook',compl:'ce soir',enC:'this evening'},
+  {inf:'jouer',en:'play',compl:'au tennis',enC:'tennis'},
+  {inf:'visiter',en:'visit',compl:'le musée',enC:'the museum'},
+  {inf:'nager',en:'swim',compl:'à la piscine',enC:'at the pool'}
+];
+
+const FP_ALLER={je:'vais',tu:'vas',il:'va',elle:'va',nous:'allons',vous:'allez',ils:'vont',elles:'vont'};
+
+let drillFPAnswer='';
+let drillFPStats={correct:0,total:0,streak:0};
+
+function buildFPSentence(subj,action,neg){
+  const aller=FP_ALLER[subj];
+  const inf=action.inf;
+  const compl=action.compl;
+  let s='';
+  if(neg){
+    const isVowelAller=/^[aeéèêiouâîôûh]/i.test(aller);
+    if(subj==='je'){
+      s="Je ne vais pas "+inf+' '+compl+'.';
+    }else{
+      const cap=subj.charAt(0).toUpperCase()+subj.slice(1);
+      s=cap+(isVowelAller?(" n'"+aller):(" ne "+aller))+' pas '+inf+' '+compl+'.';
+    }
+  }else{
+    if(subj==='je'&&aller==='vais'){
+      s="Je vais "+inf+' '+compl+'.';
+    }else{
+      const cap=subj.charAt(0).toUpperCase()+subj.slice(1);
+      s=cap+' '+aller+' '+inf+' '+compl+'.';
+    }
+  }
+  return s;
+}
+
+function drillFPGenerate(subj,neg,action){
+  const subjects=['je','tu','il','elle','nous','vous','ils','elles'];
+  if(!subj) subj=subjects[Math.floor(Math.random()*subjects.length)];
+  if(neg===null||neg===undefined) neg=Math.random()<0.4;
+  if(!action) action=FP_ACTIONS[Math.floor(Math.random()*FP_ACTIONS.length)];
+  document.getElementById('drillFPSubj').value=subj;
+  document.getElementById('drillFPForm').value=neg?'neg':'affirm';
+  drillFPAnswer=buildFPSentence(subj,action,neg);
+  const box=document.getElementById('drillFPPrompt');box.style.opacity='1';
+  document.getElementById('dfpSubjText').textContent=subj+(neg?' (négatif)':'');
+  document.getElementById('dfpVerbText').textContent='aller + '+action.inf+' '+action.compl;
+  document.getElementById('dfpEnText').textContent=(neg?'not ':'')+'going to '+action.en+' '+action.enC;
+  const inp=document.getElementById('drillFPInput');
+  inp.value='';inp.classList.remove('correct','wrong');
+  document.getElementById('drillFPFB').textContent='';
+  document.getElementById('drillFPFB').className='drill-feedback';
+}
+
+function drillFPFromDropdowns(){
+  var s=document.getElementById('drillFPSubj').value||null;
+  var f=document.getElementById('drillFPForm').value;
+  var neg=(f==='neg');
+  drillFPGenerate(s,neg,null);
+}
+
+function drillFPRandom(){drillFPGenerate(null,null,null);}
+
+function drillFPCheck(){
+  if(!drillFPAnswer)return;
+  const inp=document.getElementById('drillFPInput');
+  const fb=document.getElementById('drillFPFB');
+  drillFPStats.total++;
+  if(norm(inp.value)===norm(drillFPAnswer)){
+    inp.classList.add('correct');inp.classList.remove('wrong');
+    fb.textContent='✓ Correct !';fb.className='drill-feedback fb-correct';appendTTS(fb,drillFPAnswer);
+    drillFPStats.correct++;drillFPStats.streak++;
+  }else{
+    inp.classList.add('wrong');inp.classList.remove('correct');
+    fb.innerHTML='✗ Réponse : <strong>'+drillFPAnswer+'</strong>';fb.className='drill-feedback fb-wrong';appendTTS(fb,drillFPAnswer);
+    drillFPStats.streak=0;
+  }
+  document.getElementById('drillFPCorrect').textContent=drillFPStats.correct;
+  document.getElementById('drillFPTotal').textContent=drillFPStats.total;
+  document.getElementById('drillFPStreak').textContent=drillFPStats.streak;
+}
+
+function drillFPReveal(){
+  if(!drillFPAnswer)return;
+  const inp=document.getElementById('drillFPInput');
+  inp.value=drillFPAnswer;inp.classList.add('correct');inp.classList.remove('wrong');
+}
+
+function drillFPNext(){drillFPGenerate(null,null,null);}
+
+/* ═══════════════════════════════════════════════════
+   DRILL 4 — PRONOM Y
+═══════════════════════════════════════════════════ */
+const Y_VERBS={
+  aller:{je:'vais',tu:'vas',il:'va',elle:'va',nous:'allons',vous:'allez',ils:'vont',elles:'vont',en:'go'},
+  travailler:{je:'travaille',tu:'travailles',il:'travaille',elle:'travaille',nous:'travaillons',vous:'travaillez',ils:'travaillent',elles:'travaillent',en:'work'},
+  manger:{je:'mange',tu:'manges',il:'mange',elle:'mange',nous:'mangeons',vous:'mangez',ils:'mangent',elles:'mangent',en:'eat'},
+  rester:{je:'reste',tu:'restes',il:'reste',elle:'reste',nous:'restons',vous:'restez',ils:'restent',elles:'restent',en:'stay'},
+  habiter:{je:'habite',tu:'habites',il:'habite',elle:'habite',nous:'habitons',vous:'habitez',ils:'habitent',elles:'habitent',en:'live'}
+};
+
+const Y_PLACES=[
+  {fr:'au cinéma',en:'to the cinema'},
+  {fr:'à la piscine',en:'to the pool'},
+  {fr:'à la bibliothèque',en:'to the library'},
+  {fr:'au bureau',en:'to the office'},
+  {fr:'au stade',en:'to the stadium'},
+  {fr:'au supermarché',en:'to the supermarket'},
+  {fr:'au restaurant',en:'to the restaurant'},
+  {fr:'à la maison',en:'at home'},
+  {fr:'au parc',en:'to the park'},
+  {fr:"à l'école",en:'to school'},
+  {fr:"à l'hôpital",en:'to the hospital'},
+  {fr:'au musée',en:'to the museum'},
+  {fr:'à la gare',en:'to the station'},
+  {fr:'au théâtre',en:'to the theatre'}
+];
+
+let drillYAnswer='';
+let drillYOriginal='';
+let drillYStats={correct:0,total:0,streak:0};
+
+function buildYSentence(subj,verbKey,place,tense,neg){
+  const vData=Y_VERBS[verbKey];
+  const conj=vData[subj];
+  /* Build original sentence (with place) */
+  let orig='';
+  /* Build Y sentence */
+  let ySent='';
+
+  if(tense==='present'){
+    /* Original */
+    const cap=(subj==='je'&&/^[aeéèêiouâîôûh]/i.test(conj))?"J'":(subj.charAt(0).toUpperCase()+subj.slice(1)+' ');
+    orig=cap+conj+' '+place.fr+'.';
+
+    /* Y version */
+    if(neg){
+      const isVowel=/^[aeéèêiouâîôûh]/i.test('y');/* y starts with consonant sound but "n'y" is correct elision */
+      if(subj==='je'){
+        ySent="Je n'y "+conj+' pas.';
+      }else{
+        const c2=subj.charAt(0).toUpperCase()+subj.slice(1);
+        ySent=c2+" n'y "+conj+' pas.';
+      }
+    }else{
+      if(subj==='je'){
+        ySent="J'y "+conj+'.';
+      }else{
+        const c2=subj.charAt(0).toUpperCase()+subj.slice(1);
+        ySent=c2+' y '+conj+'.';
+      }
+    }
+  }else{
+    /* futur proche: aller + infinitif */
+    const allerConj=FP_ALLER[subj];
+    const inf=verbKey;
+    const cap=(subj==='je')?"Je ":(subj.charAt(0).toUpperCase()+subj.slice(1)+' ');
+    orig=cap+allerConj+' '+inf+' '+place.fr+'.';
+
+    if(neg){
+      if(subj==='je'){
+        ySent="Je ne vais pas y "+inf+'.';
+      }else{
+        const c2=subj.charAt(0).toUpperCase()+subj.slice(1);
+        ySent=c2+' ne '+allerConj+' pas y '+inf+'.';
+      }
+    }else{
+      if(subj==='je'){
+        ySent="Je vais y "+inf+'.';
+      }else{
+        const c2=subj.charAt(0).toUpperCase()+subj.slice(1);
+        ySent=c2+' '+allerConj+' y '+inf+'.';
+      }
+    }
+  }
+  return {orig:orig,ySent:ySent};
+}
+
+function drillYGenerate(subj,tense,neg,verbKey,place){
+  const subjects=['je','tu','il','elle','nous','vous','ils','elles'];
+  const verbKeys=Object.keys(Y_VERBS);
+  if(!subj) subj=subjects[Math.floor(Math.random()*subjects.length)];
+  if(!tense) tense=Math.random()<0.5?'present':'fp';
+  if(neg===null||neg===undefined) neg=Math.random()<0.4;
+  if(!verbKey) verbKey=verbKeys[Math.floor(Math.random()*verbKeys.length)];
+  if(!place) place=Y_PLACES[Math.floor(Math.random()*Y_PLACES.length)];
+  document.getElementById('drillYSubj').value=subj;
+  document.getElementById('drillYTense').value=tense;
+  document.getElementById('drillYForm').value=neg?'neg':'affirm';
+  const result=buildYSentence(subj,verbKey,place,tense,neg);
+  drillYOriginal=result.orig;
+  drillYAnswer=result.ySent;
+  const box=document.getElementById('drillYPrompt');box.style.opacity='1';
+  document.getElementById('dyOrigText').textContent=result.orig;
+  document.getElementById('dyTaskText').textContent='→ Réécrivez avec y'+(neg?' (négatif)':'');
+  const enVerb=Y_VERBS[verbKey].en;
+  document.getElementById('dyEnText').textContent=(tense==='fp'?'going to ':'')+enVerb+' there'+(neg?' (negative)':'');
+  const inp=document.getElementById('drillYInput');
+  inp.value='';inp.classList.remove('correct','wrong');
+  document.getElementById('drillYFB').textContent='';
+  document.getElementById('drillYFB').className='drill-feedback';
+}
+
+function drillYFromDropdowns(){
+  var s=document.getElementById('drillYSubj').value||null;
+  var t=document.getElementById('drillYTense').value||null;
+  var f=document.getElementById('drillYForm').value;
+  var neg=(f==='neg');
+  drillYGenerate(s,t,neg,null,null);
+}
+
+function drillYRandom(){drillYGenerate(null,null,null,null,null);}
+
+function drillYCheck(){
+  if(!drillYAnswer)return;
+  const inp=document.getElementById('drillYInput');
+  const fb=document.getElementById('drillYFB');
+  drillYStats.total++;
+  if(norm(inp.value)===norm(drillYAnswer)){
+    inp.classList.add('correct');inp.classList.remove('wrong');
+    fb.textContent='✓ Correct !';fb.className='drill-feedback fb-correct';appendTTS(fb,drillYAnswer);
+    drillYStats.correct++;drillYStats.streak++;
+  }else{
+    inp.classList.add('wrong');inp.classList.remove('correct');
+    fb.innerHTML='✗ Réponse : <strong>'+drillYAnswer+'</strong>';fb.className='drill-feedback fb-wrong';appendTTS(fb,drillYAnswer);
+    drillYStats.streak=0;
+  }
+  document.getElementById('drillYCorrect').textContent=drillYStats.correct;
+  document.getElementById('drillYTotal').textContent=drillYStats.total;
+  document.getElementById('drillYStreak').textContent=drillYStats.streak;
+}
+
+function drillYReveal(){
+  if(!drillYAnswer)return;
+  const inp=document.getElementById('drillYInput');
+  inp.value=drillYAnswer;inp.classList.add('correct');inp.classList.remove('wrong');
+}
+
+function drillYNext(){drillYGenerate(null,null,null,null,null);}
+
+/* ── INIT ── */
+loadVerb();
+buildLex('all');
+buildFood('all');
+
+/* ═══════════════════════════════════════════════════
+   GLOBAL TTS — add 🔊 to ALL French content
+═══════════════════════════════════════════════════ */
+(function(){
+  /* ── 1. Dialogue bubbles: add a small 🔊 button ── */
+  document.querySelectorAll('.bubble').forEach(function(bub){
+    /* Extract French text: everything that isn't the label or the English line */
+    var clone=bub.cloneNode(true);
+    var label=clone.querySelector('.bubble-label');if(label)label.remove();
+    var en=clone.querySelector('.bubble-en');if(en)en.remove();
+    /* Also strip input placeholders — get the visible text + answer values */
+    clone.querySelectorAll('input.fill-inp').forEach(function(inp){
+      var span=document.createElement('span');
+      span.textContent=inp.getAttribute('data-ans')||'___';
+      inp.parentNode.replaceChild(span,inp);
+    });
+    var frText=clone.textContent.replace(/\s+/g,' ').trim();
+    if(frText.length>2){
+      var btn=document.createElement('button');
+      btn.textContent='🔊';
+      btn.title='Écouter';
+      btn.style.cssText='background:none;border:none;cursor:pointer;font-size:14px;margin-left:6px;opacity:0.6;';
+      btn.onmouseover=function(){this.style.opacity='1';};
+      btn.onmouseout=function(){this.style.opacity='0.6';};
+      btn.onclick=function(e){e.stopPropagation();speakFr(frText,btn);};
+      bub.appendChild(btn);
+    }
+  });
+
+  /* ── 2. Reference tables (gram-table, diff-table): French cells ── */
+  document.querySelectorAll('.gram-table td, .diff-table td').forEach(function(td){
+    var text=td.textContent.trim();
+    /* Skip English, skip very short, skip headers, skip cells with only — */
+    if(!text||text.length<2||text==='—'||/^[A-Z][a-z]+ /.test(text)&&!/[àâéèêëîïôùûüç]/.test(text))return;
+    /* Only add TTS if the cell contains French characters or patterns */
+    if(/[àâéèêëîïôùûüçæœ]/.test(text)||/^(je |tu |il |elle |nous |vous |ils |elles |on |le |la |les |du |de |un |une |des |au )/i.test(text)||td.style.fontWeight==='700'||td.parentElement.cellIndex===0){
+      td.style.cursor='pointer';
+      td.title='🔊 Cliquez pour écouter';
+      td.addEventListener('click',function(){speakFr(text);});
+    }
+  });
+
+  /* ── 3. Conjugation table example cells ── */
+  document.querySelectorAll('.conj-table td').forEach(function(td){
+    var text=td.textContent.trim();
+    if(/[àâéèêëîïôùûüçæœ]/.test(text)||/^(Je |Tu |Il |Elle |Nous |Vous |Ils |Elles |On |Marie |Paul |Léa )/.test(text)){
+      td.style.cursor='pointer';
+      td.title='🔊 Cliquez pour écouter';
+      td.addEventListener('click',function(){speakFr(text);});
+    }
+  });
+
+  /* ── 4. Fill-in exercise rows: add 🔊 to hear the complete sentence ── */
+  document.querySelectorAll('.fill-row').forEach(function(row){
+    var clone=row.cloneNode(true);
+    /* Replace inputs with their answers */
+    clone.querySelectorAll('input.fill-inp').forEach(function(inp){
+      var span=document.createElement('span');
+      span.textContent=inp.getAttribute('data-ans')||'___';
+      inp.parentNode.replaceChild(span,inp);
+    });
+    /* Remove English hints */
+    clone.querySelectorAll('.en').forEach(function(e){e.remove();});
+    /* Remove numbering span */
+    var num=clone.querySelector('span');
+    var frText=clone.textContent.replace(/^\d+\.\s*/,'').replace(/\s+/g,' ').trim();
+    /* Only if it looks French */
+    if(frText.length>4&&(/[àâéèêëîïôùûüçæœ]/.test(frText)||/^(Je |Tu |Il |Elle |Nous |Vous |Ils |On )/.test(frText))){
+      var btn=document.createElement('button');
+      btn.textContent='🔊';
+      btn.title='Écouter la phrase complète';
+      btn.style.cssText='background:none;border:none;cursor:pointer;font-size:13px;margin-left:4px;opacity:0.6;';
+      btn.onmouseover=function(){this.style.opacity='1';};
+      btn.onmouseout=function(){this.style.opacity='0.6';};
+      btn.onclick=function(e){e.stopPropagation();speakFr(frText,btn);};
+      row.appendChild(btn);
+    }
+  });
+
+  /* ── 5. Drill prompt French text: make clickable ── */
+  ['dpPrepText','dpNounText','dpStarterText',
+   'daSubjVerbText','daFoodText',
+   'dfpSubjText','dfpVerbText',
+   'dyOrigText'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el){
+      el.style.cursor='pointer';
+      el.title='🔊 Cliquez pour écouter';
+      el.addEventListener('click',function(){
+        var t=el.textContent.replace(/\s+/g,' ').trim();
+        if(t.length>1)speakFr(t);
+      });
+    }
+  });
+
+  /* ── 6. Tip boxes with French examples ── */
+  document.querySelectorAll('.tip em, .card em').forEach(function(em){
+    var text=em.textContent.trim();
+    if(text.length>3&&(/[àâéèêëîïôùûüçæœ]/.test(text)||/^(Je |Tu |Il |Elle |Nous |Vous |Ils |Elles |On )/.test(text))){
+      em.style.cursor='pointer';
+      em.title='🔊 Cliquez pour écouter';
+      em.addEventListener('click',function(){speakFr(text);});
+    }
+  });
+
+  /* ── 7. Météo country cards (preposition blanks row) ── */
+  document.querySelectorAll('.meteo-row .meteo-country').forEach(function(el){
+    var frEl=el.querySelector('.mc-phrase');
+    if(frEl){
+      frEl.style.cursor='pointer';
+      frEl.title='🔊 Cliquez pour écouter';
+      frEl.addEventListener('click',function(){
+        var clone2=frEl.cloneNode(true);
+        clone2.querySelectorAll('input,select').forEach(function(inp){
+          var span=document.createElement('span');
+          span.textContent=inp.getAttribute('data-ans')||inp.value||'';
+          inp.parentNode.replaceChild(span,inp);
+        });
+        var t=clone2.textContent.replace(/\s+/g,' ').trim();
+        if(t.length>3)speakFr(t);
+      });
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
