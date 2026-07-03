@@ -14,6 +14,7 @@ let ctx: AudioContext | null = null;
 let master: GainNode | null = null;
 let musicBus: GainNode | null = null; // the loop runs through this so SFX can duck it
 let vol = 0.6;
+let tempoScale = 1; // >1 slows the loop (notes spaced further + held longer) — used at "nightfall"
 
 function initAudio() {
   if (ctx) return;
@@ -196,7 +197,7 @@ let timer: number | null = null;
 const LOOKAHEAD = 0.1, TICK = 25;
 
 function scheduleStep(song: Song, s: number, t: number) {
-  const spb = 60 / song.bpm / 4;
+  const spb = (60 / song.bpm / 4) * tempoScale;
   const swingDelay = s % 4 === 2 ? spb * 2 * song.swing * 0.5 : 0;
   song.ch.forEach((c) => {
     const ev = c.byStep![s]; if (!ev) return;
@@ -212,7 +213,7 @@ function loop() {
   const song = SONGS[current];
   while (nextTime < ctx.currentTime + LOOKAHEAD) {
     scheduleStep(song, step, nextTime);
-    nextTime += 60 / song.bpm / 4;
+    nextTime += (60 / song.bpm / 4) * tempoScale;
     step = (step + 1) % song.len!;
   }
 }
@@ -222,6 +223,7 @@ export const chiptune = {
     if (!SONGS[key]) return;
     initAudio();
     if (ctx!.state === "suspended") ctx!.resume();
+    tempoScale = 1; // a fresh tune always starts at normal speed (no cross-game leak)
     this.stop(); // kill any prior loop + its ringing tail so the new tune starts clean
     const n = ctx!.currentTime;
     musicBus!.gain.cancelScheduledValues(n);
@@ -246,6 +248,8 @@ export const chiptune = {
   },
   toggle(key: string) { if (current === key) this.stop(); else this.play(key); },
   playing(): string | null { return current; },
+  // Slow (or restore) the running loop's tempo — 1 = normal, >1 = slower.
+  setTempoScale(s: number) { tempoScale = Math.max(0.25, Math.min(4, s)); },
   setVolume(v: number) { vol = Math.max(0, Math.min(1, v)); if (master) master.gain.value = vol * 0.5; },
   // wordless victory jingle (C major rising run → climbing line → held tonic chord + crash)
   fanfare() {
