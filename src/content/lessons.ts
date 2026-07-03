@@ -33,6 +33,8 @@ export const LESSONS: Record<string, Lesson> = {
   "partitifs":         { slug: "partitifs",         file: "19-partitifs.html",         title: "Les articles partitifs",       unit: 4 },
   "manger-boire":      { slug: "manger-boire",      file: "20-manger-boire.html",      title: "Manger & boire",               unit: 4 },
   "futur-proche":      { slug: "futur-proche",      file: "21-futur-proche.html",      title: "Le futur proche",              unit: 4 },
+  "frequence":         { slug: "frequence",         file: "22-frequence.html",         title: "Les adverbes de fréquence",    unit: 4 },
+  "demonstratifs":     { slug: "demonstratifs",     file: "23-demonstratifs.html",     title: "Les adjectifs démonstratifs",  unit: 4 },
 };
 
 /**
@@ -57,6 +59,8 @@ export const LESSONS_BY_SIO: Record<string, string[]> = {
   "SIO-042": ["partitifs"],
   "SIO-043": ["partitifs"],
   "SIO-044": ["manger-boire"],
+  "SIO-045": ["frequence"],
+  "SIO-046": ["demonstratifs"],
 };
 
 export const ALL_LESSONS: Lesson[] = Object.values(LESSONS);
