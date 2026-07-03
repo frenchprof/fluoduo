@@ -1,48 +1,52 @@
 rules_version = '2';
-// FLUOLINGO Firestore security rules.
-// Deploy via: Firebase Console → Firestore Database → Rules → paste → Publish
-// (or `firebase deploy --only firestore:rules` if you use the CLI).
-
+// Reconciled rules for the unified laf1201 project (hub · pretest · reviser · FluoLingo).
+// House style: owner-only writes, signed-in collection reads for the leaderboard,
+// admin email allowlist, leaderboard exclusion list.
+// Deploy: Firebase console → Firestore → Rules, or `firebase deploy --only firestore:rules`.
+//
+//   users/{uid}                      profile + reviser XP/progress  (owner write, signed-in read)
+//   users/{uid}/{sub=**}             pretest state/skills/runs/attempts + reviser sessions
+//   leaderboard/{uid}                unified combined-total board    (owner write, signed-in read)
+//   events / authEvents              telemetry                        (signed-in create)
+//   feedback                         bug reports                      (ANONYMOUS create, admin read)
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    function signedIn() { return request.auth != null; }
-    function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
-
-    // ── User-created collections ───────────────────────────────
-    // Readable if public/unlisted, or by the owner.
-    // Writable only by the owner, and the owner field can't be spoofed or reassigned.
-    match /collections/{collectionId} {
-      allow read: if resource.data.visibility in ['public', 'unlisted']
-                  || isOwner(resource.data.owner);
-      allow create: if signedIn() && request.resource.data.owner == request.auth.uid;
-      allow update: if isOwner(resource.data.owner)
-                    && request.resource.data.owner == resource.data.owner;
-      allow delete: if isOwner(resource.data.owner);
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(uid) { return isSignedIn() && request.auth.uid == uid; }
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.email in [
+        "drneilchan@gmail.com", "monsieur.chan@gmail.com", "dan@chank.wang",
+        "kaygeedan@gmail.com", "daniel.chan@nus.edu.sg", "kwangguan@gmail.com"
+      ];
     }
-
-    // ── Per-user private data (SRS progress, profile, gamification) ─
-    match /users/{uid}/{document=**} {
-      allow read, write: if isOwner(uid);
+    function isExcludedFromLeaderboard() {
+      return isSignedIn() && request.auth.token.email in [
+        "wanghaoshu2016@gmail.com", "theneonwolf0404@gmail.com", "clariseloke13@gmail.com",
+        "nusally2023@gmail.com", "adrihashim@gmail.com", "enileg864@gmail.com",
+        "mielanjames@gmail.com", "chee.advanced@gmail.com", "lohkelsey@gmail.com",
+        "adamelistewart@gmail.com", "danielbordeaux89@gmail.com", "e1088156@u.nus.edu",
+        "2964836865@qq.com", "wyanfong@gmail.com", "tcyy.10204@gmail.com",
+        "azhari619@gmail.com", "clariceteoworking@gmail.com"
+      ];
     }
-
-    // ── Bug reports / feedback ─────────────────────────────────
-    // Anyone (signed in or not) may CREATE a bounded feedback doc — the report
-    // form. No client read/edit/delete; triage happens admin-side (console).
+    match /users/{uid} {
+      allow read:  if isSignedIn();
+      allow write: if isOwner(uid);
+      match /{sub=**} {
+        allow read:  if isOwner(uid) || isAdmin();
+        allow write: if isOwner(uid);
+      }
+    }
+    match /leaderboard/{uid} {
+      allow read:  if isSignedIn();
+      allow write: if isOwner(uid) && !isExcludedFromLeaderboard();
+    }
+    match /events/{id}     { allow create: if isSignedIn(); allow read: if isAdmin(); }
+    match /authEvents/{id} { allow create: if isSignedIn(); allow read: if isAdmin(); }
+    // Bug reports: anyone may submit (signed in or not); only admins read/triage.
     match /feedback/{id} {
-      allow create: if request.resource.data.details is string
-                    && request.resource.data.details.size() < 2000
-                    && request.resource.data.categories is list
-                    && request.resource.data.categories.size() < 20;
-      allow read, update, delete: if false;
-    }
-
-    // ── Usage events (telemetry) ───────────────────────────────
-    // Create-only for the signed-in user on their own uid. No client read/edit/delete.
-    // Cross-user analytics happen admin-side (console / BigQuery export).
-    match /events/{eventId} {
-      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
-      allow read, update, delete: if false;
+      allow create: if true;
+      allow read, update: if isAdmin();
     }
   }
 }

@@ -18,6 +18,7 @@ import Link from "next/link";
 import { sioStatement, type Sio } from "@/content/sios";
 import type { Collection } from "@/lib/collections/schema";
 import { getAtelier } from "@/content/ateliers";
+import AuthGate from "@/components/AuthGate";
 import PretestQuiz from "./PretestQuiz";
 import DialoguePlayer from "./DialoguePlayer";
 
@@ -68,7 +69,9 @@ export default function SioDetail({
       ) : pretestId ? (
         <div className="space-y-3">
           <div className="rounded-xl border-2 p-3" style={{ borderColor: "#7c6cff" }}>
-            <PretestQuiz pretestId={pretestId} />
+            <AuthGate what="take the pre-test" compact>
+              <PretestQuiz pretestId={pretestId} />
+            </AuthGate>
           </div>
           {practiceTile}
         </div>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ConveyorMatch, { type ConveyorPair } from "@/games/conveyor/ConveyorMatch";
 import Lexicalator, { type LexEntry } from "@/games/lexicalator/Lexicalator";
+import AuthGate from "@/components/AuthGate";
 import { CURATED } from "@/content/collections";
 import { bareWord } from "@/lib/collections/display";
 
@@ -44,15 +45,17 @@ export default async function ConveyorPage({
     }));
     const decoys = collection.gameConfig?.lexicalator?.decoys ?? [];
     return (
-      <main className="min-h-screen" style={{ background: "linear-gradient(180deg,#eaf7ff 0%,#f6fbff 100%)" }}>
-        <div className="border-b-2 border-white/70 bg-white/60 backdrop-blur">
-          <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3 text-sm font-bold">
-            <Link href="/" className="text-[#1cb0f6] hover:text-[#1899d6]">← FluoLingo</Link>
-            <span className="text-[#075985]/60">🧰 Lexicalator</span>
+      <AuthGate what="play">
+        <main className="min-h-screen" style={{ background: "linear-gradient(180deg,#eaf7ff 0%,#f6fbff 100%)" }}>
+          <div className="border-b-2 border-white/70 bg-white/60 backdrop-blur">
+            <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3 text-sm font-bold">
+              <Link href="/" className="text-[#1cb0f6] hover:text-[#1899d6]">← FluoLingo</Link>
+              <span className="text-[#075985]/60">🧰 Lexicalator</span>
+            </div>
           </div>
-        </div>
-        <Lexicalator title={collection.title} subtitle={collection.subtitle} entries={entries} decoys={decoys} />
-      </main>
+          <Lexicalator title={collection.title} subtitle={collection.subtitle} entries={entries} decoys={decoys} />
+        </main>
+      </AuthGate>
     );
   }
 
@@ -75,14 +78,16 @@ export default async function ConveyorPage({
     : undefined;
 
   return (
-    <main className="min-h-screen" style={{ background: "linear-gradient(180deg,#fff3d6 0%,#ffe9bd 50%,#fff8e8 100%)" }}>
-      <div className="border-b-2 border-white/70 bg-white/60 backdrop-blur">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3 text-sm font-bold">
-          <Link href="/" className="text-[#e8852e] hover:text-[#c96a15]">← FluoLingo</Link>
-          <span className="text-[#4a3413]/60">⚙️ Lexicalator</span>
+    <AuthGate what="play">
+      <main className="min-h-screen" style={{ background: "linear-gradient(180deg,#fff3d6 0%,#ffe9bd 50%,#fff8e8 100%)" }}>
+        <div className="border-b-2 border-white/70 bg-white/60 backdrop-blur">
+          <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3 text-sm font-bold">
+            <Link href="/" className="text-[#e8852e] hover:text-[#c96a15]">← FluoLingo</Link>
+            <span className="text-[#4a3413]/60">⚙️ Lexicalator</span>
+          </div>
         </div>
-      </div>
-      <ConveyorMatch title={collection.title} subtitle={collection.subtitle} pairs={pairs} instruction={instruction} splitMode={split} />
-    </main>
+        <ConveyorMatch title={collection.title} subtitle={collection.subtitle} pairs={pairs} instruction={instruction} splitMode={split} />
+      </main>
+    </AuthGate>
   );
 }

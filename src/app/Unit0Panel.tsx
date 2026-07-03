@@ -20,6 +20,7 @@ import { SIOS, sioStatement } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import { UNIT0_QUESTIONS, type Unit0Question } from "@/content/sios/unit0-questions";
 import { getAtelier } from "@/content/ateliers";
+import AuthGate from "@/components/AuthGate";
 import SioModal, { popupActivityTabs } from "./SioModal";
 import DialoguePlayer from "./DialoguePlayer";
 
@@ -91,7 +92,9 @@ export default function Unit0Panel() {
               </p>
             </div>
           ) : (
-            <Unit0Questions sio={openSio} />
+            <AuthGate what="try these" compact>
+              <Unit0Questions sio={openSio} />
+            </AuthGate>
           )}
         </SioModal>
       )}
