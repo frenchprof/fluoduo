@@ -37,7 +37,10 @@ function shuffle<T>(a: T[]): T[] {
   return o;
 }
 
-type Chest = { entry: LexEntry; filled: number };
+// `filled` is per-slot, not a count: syllables can be dropped in ANY order
+// (Dan, 2026-07-03), so we track which keyholes are done, not how many.
+type Chest = { entry: LexEntry; filled: boolean[] };
+const blankFill = (e: LexEntry): boolean[] => e.syllables.map(() => false);
 
 export default function Lexicalator({
   title,
@@ -90,7 +93,7 @@ export default function Lexicalator({
     let pool = entries.filter((e) => e.syllables.length >= min);
     if (pool.length < LANE) pool = entries.slice();
     const shuffled = shuffle(pool);
-    setChests(shuffled.slice(0, LANE).map((entry) => ({ entry, filled: 0 })));
+    setChests(shuffled.slice(0, LANE).map((entry) => ({ entry, filled: blankFill(entry) })));
     setQueue(shuffled.slice(LANE));
     // No chest sits in the central bay at first — the learner is nudged to
     // pick one to begin (Dan, 2026-07-03).
@@ -106,17 +109,29 @@ export default function Lexicalator({
   // duplicated for a seamless scroll. Recomputed only when the chest set changes.
   const beltPool = useMemo(() => {
     const real = new Set<string>();
-    for (const c of chests) for (const s of c.entry.syllables) real.add(s);
-    return shuffle([...real, ...decoys.filter((d) => !real.has(d))]);
+    const monos: string[] = []; // whole-word keys of monosyllabic answers in play
+    for (const c of chests) {
+      for (const s of c.entry.syllables) real.add(s);
+      if (c.entry.syllables.length === 1) monos.push(c.entry.syllables[0]);
+    }
+    // A monosyllable's only key is the whole word; a decoy that is a slice of it
+    // ("pai" for "pain") invites "but that's part of the answer!" disputes — so
+    // never surface a partial-of-a-monosyllable as an option (Dan, 2026-07-03).
+    const isPartialOfMono = (d: string) => monos.some((m) => m !== d && m.includes(d));
+    const usable = decoys.filter((d) => !real.has(d) && !isPartialOfMono(d));
+    return shuffle([...real, ...usable]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chests.map((c) => c.entry.id).join(",")]);
 
   function tapKey(token: string) {
     if (over || levelDone || !active) return;
-    const need = active.entry.syllables[active.filled];
-    if (token === need) {
-      const nextFilled = active.filled + 1;
-      const complete = nextFilled >= active.entry.syllables.length;
+    // Any-order fill: the key fits the FIRST still-empty keyhole that needs
+    // this syllable, wherever it sits in the word.
+    const slot = active.entry.syllables.findIndex((s, i) => !active.filled[i] && s === token);
+    if (slot >= 0) {
+      const nextFilled = active.filled.slice();
+      nextFilled[slot] = true;
+      const complete = nextFilled.every(Boolean);
       if (complete) {
         recordItemResult(active.entry.id, true);
         speak(active.entry.fr, "fr-FR");
@@ -130,19 +145,16 @@ export default function Lexicalator({
           setDone((d) => [...d, finished]);
           setDescend(null);
         }, 900);
-        // remove chest, pull a replacement from the queue
-        setChests((cs) => {
-          const rest = cs.filter((c) => c.entry.id !== active.entry.id);
-          setQueue((q) => {
-            if (q.length) {
-              rest.push({ entry: q[0], filled: 0 });
-              return q.slice(1);
-            }
-            return q;
-          });
-          setSelected(rest[0]?.entry.id ?? null);
-          return rest;
-        });
+        // Remove the cleared chest and pull a replacement from the queue.
+        // Computed purely from the current lane/queue (not nested state
+        // updaters mutating a captured array — that double-ran under Strict
+        // Mode and duplicated the replacement chest).
+        const rest = chests.filter((c) => c.entry.id !== active.entry.id);
+        const nextUp = queue[0];
+        const newChests = nextUp ? [...rest, { entry: nextUp, filled: blankFill(nextUp) }] : rest;
+        setChests(newChests);
+        setSelected(newChests[0]?.entry.id ?? null);
+        if (nextUp) setQueue((q) => q.slice(1));
         setCleared((n) => {
           const nn = n + 1;
           if (nn >= QUOTA) setLevelDone(true);
@@ -172,7 +184,7 @@ export default function Lexicalator({
     // re-deal via the level effect (setLevel(1) won't refire if already 1)
     const min = 1;
     const shuffled = shuffle(entries.filter((e) => e.syllables.length >= min));
-    setChests(shuffled.slice(0, LANE).map((entry) => ({ entry, filled: 0 })));
+    setChests(shuffled.slice(0, LANE).map((entry) => ({ entry, filled: blankFill(entry) })));
     setQueue(shuffled.slice(LANE));
     setSelected(null);
     setCleared(0); setLevelDone(false);
@@ -219,7 +231,7 @@ export default function Lexicalator({
       </header>
 
       <p className="mb-2 text-center text-xs font-semibold" style={{ color: "#075985" }}>
-        Pick a chest, then tap its syllables in order to unlock the French word.
+        Pick a chest, then tap its syllables — in any order — to unlock the French word.
         {hard && <b style={{ color: "#c0392b" }}> Hard: the syllable count is hidden.</b>}
       </p>
 
@@ -236,9 +248,10 @@ export default function Lexicalator({
                     on white instead of pale brand blue, darker progress dashes. */}
                 <span className="block text-sm font-black" style={{ color: "#075985" }}>{c.entry.en}</span>
                 <span className="mt-1 flex justify-center gap-1">
-                  {(hard ? [c.entry.syllables.length] : c.entry.syllables).map((s, i) => (
-                    <span key={i} className="h-2 rounded-full" style={{ width: hard ? 24 : Math.max(8, String(s).length * 5), background: i < c.filled ? "#46a302" : "#8a5a00" }} />
-                  ))}
+                  {(hard ? [c.entry.syllables.length] : c.entry.syllables).map((s, i) => {
+                    const doneSlot = hard ? c.filled.some(Boolean) : c.filled[i];
+                    return <span key={i} className="h-2 rounded-full" style={{ width: hard ? 24 : Math.max(8, String(s).length * 5), background: doneSlot ? "#46a302" : "#8a5a00" }} />;
+                  })}
                 </span>
               </button>
             );
@@ -258,23 +271,23 @@ export default function Lexicalator({
             <div className="mb-3 text-lg font-black" style={{ color: "#075985" }}>{active.entry.en}</div>
             {hard ? (
               <div className="mx-auto flex min-h-[3rem] min-w-[8rem] items-center justify-center rounded-xl border-2 border-dashed px-4 text-xl font-black" style={{ borderColor: "#e08600", color: "#0c4a6e" }}>
-                {active.entry.syllables.slice(0, active.filled).join("") || <span style={{ color: "#4a7fa6" }}>?</span>}
+                {active.entry.syllables.filter((s, i) => active.filled[i]).join("") || <span style={{ color: "#4a7fa6" }}>?</span>}
               </div>
             ) : (
               <div className="flex justify-center gap-2">
                 {active.entry.syllables.map((s, i) => {
-                  const filled = i < active.filled;
-                  const aim = i === active.filled;
+                  // Any-order: every empty keyhole is a live target, so they all
+                  // wear the dashed "ready" ring (no single aim slot anymore).
+                  const filled = active.filled[i];
                   return (
                     <span key={i} lang="fr"
                       className="grid h-12 place-items-center rounded-xl border-2 text-lg font-black"
                       style={{
                         width: keyW(s),
                         borderStyle: filled ? "solid" : "dashed",
-                        borderColor: filled ? "#2e7d00" : aim ? "#e08600" : "#7fb0d3",
+                        borderColor: filled ? "#2e7d00" : "#e08600",
                         background: filled ? "#46a302" : "#eef7ff",
                         color: filled ? "#fff" : "#4a7fa6",
-                        animation: aim ? "lxaim 1.5s ease-in-out infinite" : undefined,
                       }}>
                       {filled ? s : "▯"}
                     </span>
