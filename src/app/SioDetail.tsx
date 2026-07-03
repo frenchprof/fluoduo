@@ -94,7 +94,7 @@ export function PracticeChips({ deck }: { deck: Collection }) {
   const chips = [
     { key: "flip", label: "🃏 Flip It", href: `/practice/flip-it/${deck.id}` },
     { key: "say", label: "🎤 Say It", href: `/practice/say-it/${deck.id}` },
-    { key: "complete", label: "✏️ Complete It", href: undefined },
+    { key: "complete", label: "✏️ Complete It", href: `/practice/complete-it/${deck.id}` },
     { key: "match", label: "⚙️ Lexicalator", href: `/games/conveyor/${deck.id}` },
     ...(hasLetris
       ? [{ key: "classify", label: "🌧️ Vocabularain", href: `/games/letris/${deck.id.replace("-letris", "")}` }]
