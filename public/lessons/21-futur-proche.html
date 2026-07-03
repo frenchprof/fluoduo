@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 21 — Le futur proche | Unité 4</title>
+<style>
+:root{--primary:#003366;--accent:#c8963e;--bg1:#F4F6F9;--bg2:#E9EDF5;--text:#111;--card:#fff;--line:#d0d7e2;--soft:#6b7280;--success:#1e7a1e;--error:#a30000;}
+body.dark{--primary:#4da3ff;--accent:#e6c878;--bg1:#2a2d32;--bg2:#23262b;--text:#e9eef5;--card:#32363c;--line:#4a5060;--soft:#9aa5b4;--success:#74ff74;--error:#ff7a7a;}
+*{box-sizing:border-box;}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--text);background:linear-gradient(180deg,var(--bg1),var(--bg2));min-height:100vh;transition:background .4s,color .4s;}
+header{display:flex;align-items:center;gap:12px;padding:14px 18px;background:linear-gradient(135deg,#002244,#003366 40%,#004488);color:#fff;box-shadow:0 4px 18px rgba(0,0,0,.35);}
+header h1{margin:0;font-size:18px;font-weight:900;flex:1;}
+header .sub{font-size:11px;opacity:.8;font-weight:600;}
+.icon-btn{background:rgba(255,255,255,.14);border:none;color:#fff;border-radius:10px;padding:8px 12px;font-size:14px;font-weight:800;cursor:pointer;}
+.icon-btn:hover{background:rgba(255,255,255,.26);}
+.tabs{display:flex;gap:6px;padding:10px 14px;overflow-x:auto;background:linear-gradient(180deg,#e8ecf2,#d8dde6);}
+body.dark .tabs{background:linear-gradient(180deg,#2e3136,#262a2f);}
+.tab-btn{padding:9px 16px;border:none;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;color:#555;background:#f0f2f6;box-shadow:0 2px 6px rgba(0,0,0,.12);}
+body.dark .tab-btn{background:#3a3e45;color:#9aa5b4;}
+.tab-btn.active{color:#fff;background:linear-gradient(135deg,var(--primary),#0059b3);}
+.wrap{max-width:760px;margin:0 auto;padding:18px 16px 60px;}
+.panel{display:none;}
+.panel.active{display:block;}
+.card{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:14px;box-shadow:0 6px 20px -14px rgba(0,0,0,.4);}
+.card h2{margin:0 0 8px;font-size:16px;color:var(--primary);}
+.ex{color:var(--soft);font-style:italic;font-size:13px;}
+.tip{background:linear-gradient(180deg,rgba(200,150,62,.14),rgba(200,150,62,.06));border-left:4px solid var(--accent);border-radius:8px;padding:10px 12px;font-size:14px;margin-top:10px;}
+.formula{text-align:center;font-size:19px;font-weight:800;color:var(--primary);margin:10px 0;}
+.formula b{color:var(--accent);}
+.conj table{width:100%;border-collapse:collapse;font-size:15px;max-width:320px;}
+.conj caption{font-weight:900;color:var(--accent);font-size:16px;margin-bottom:4px;text-align:left;}
+.conj td{padding:5px 6px;border-bottom:1px solid var(--line);}
+.conj td b{color:var(--primary);}
+.prompt{text-align:center;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px;}
+.prompt .meta{font-size:13px;color:var(--soft);}
+.prompt .big{font-size:26px;font-weight:900;color:var(--primary);margin:6px 0 2px;}
+.prompt .en{font-size:14px;color:var(--soft);font-style:italic;}
+.prompt .pol{display:inline-block;margin-top:6px;font-size:13px;font-weight:800;padding:2px 10px;border-radius:50px;}
+.prompt .pol.aff{background:rgba(30,122,30,.14);color:var(--success);}
+.prompt .pol.neg{background:rgba(163,0,0,.14);color:var(--error);}
+.opts{display:flex;flex-direction:column;gap:8px;max-width:480px;margin:0 auto;}
+.opt{background:var(--card);border:2px solid var(--line);border-radius:10px;padding:12px 16px;font-size:17px;text-align:center;cursor:pointer;color:var(--text);transition:transform .1s;}
+.opt:hover{transform:translateY(-1px);border-color:var(--accent);}
+.opt.ok{border-color:var(--success);background:rgba(30,122,30,.12);}
+.opt.no{border-color:var(--error);background:rgba(163,0,0,.12);}
+select,input[type=text]{font-size:18px;padding:8px 10px;border:2px solid var(--line);border-radius:10px;background:var(--card);color:var(--text);}
+.btn{border:none;border-radius:12px;padding:11px 18px;font-size:15px;font-weight:800;cursor:pointer;color:#fff;}
+.btn.roll{background:#c05621;}
+.btn.check{background:#0a7d4f;}
+.btn.speak{background:#0d7377;}
+.btn.ghost{background:#374151;}
+.center{text-align:center;}
+.row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px;}
+.feedback{text-align:center;font-size:16px;margin:12px 0 4px;min-height:24px;font-weight:700;}
+.feedback .correct{color:var(--success);}
+.feedback .wrong{color:var(--error);}
+.bar-wrap{height:8px;background:var(--line);border-radius:50px;overflow:hidden;margin-top:14px;}
+.bar{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--success));transition:width .3s;}
+.stats{display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:var(--soft);margin-top:6px;}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50;}
+.sum{background:var(--card);border-radius:16px;padding:18px;max-width:560px;width:100%;max-height:86vh;overflow:auto;}
+.sum h2{margin:0 0 12px;color:var(--primary);}
+.sum-stats{display:flex;gap:10px;margin-bottom:14px;}
+.stat{flex:1;text-align:center;background:var(--bg2);border-radius:12px;padding:10px;}
+.stat .v{font-size:24px;font-weight:900;color:var(--primary);}
+.stat .l{font-size:11px;color:var(--soft);text-transform:uppercase;}
+.sum table{width:100%;border-collapse:collapse;font-size:14px;}
+.sum th,.sum td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);}
+.row-ok{background:rgba(30,122,30,.08);}
+.row-err{background:rgba(163,0,0,.08);}
+</style>
+</head>
+<body>
+<header>
+  <div style="flex:1;">
+    <h1>🔜 Le futur proche</h1>
+    <div class="sub">Unité 4 · aller + infinitif</div>
+  </div>
+  <button class="icon-btn" onclick="toggleDark()" id="darkBtn">🌙</button>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" id="t_memo" onclick="showTab('memo')">📖 Mémo</button>
+  <button class="tab-btn" id="t_ex" onclick="showTab('ex')">🎲 Exercice</button>
+  <button class="tab-btn" id="t_bonus" onclick="showTab('bonus')">⭐ Bonus</button>
+</div>
+
+<div class="wrap">
+
+<!-- MÉMO -->
+<div id="memo" class="panel active">
+  <div class="card">
+    <h2>Parler du futur proche</h2>
+    <div class="formula"><b>aller</b> (au présent) + <b>verbe à l'infinitif</b></div>
+    <div class="conj"><table><caption>aller (présent)</caption><tbody>
+      <tr><td>je</td><td><b>vais</b></td></tr>
+      <tr><td>tu</td><td><b>vas</b></td></tr>
+      <tr><td>il / elle / on</td><td><b>va</b></td></tr>
+      <tr><td>nous</td><td><b>allons</b></td></tr>
+      <tr><td>vous</td><td><b>allez</b></td></tr>
+      <tr><td>ils / elles</td><td><b>vont</b></td></tr>
+    </tbody></table></div>
+    <p style="margin-top:10px;">— Je <b>vais</b> faire du sport. &nbsp; — On <b>va</b> partir en vacances.</p>
+    <div class="tip">💡 <b>La négation encadre <u>aller</u></b>, pas l'infinitif :<br>
+      Je <b>ne</b> vais <b>pas</b> sortir ce soir. &nbsp;·&nbsp; Nous <b>n'</b>allons <b>pas</b> travailler.</div>
+  </div>
+</div>
+
+<!-- EXERCICE -->
+<div id="ex" class="panel">
+  <div class="card center">
+    <p style="margin:0 0 4px;">Construisez la phrase au futur proche.</p>
+    <p class="ex" style="margin:0 0 10px;">Subject + aller + infinitive — watch the ✅/🚫 polarity.</p>
+    <button class="btn ghost" id="diffBtn" onclick="cycleDiff()" style="font-size:13px;padding:7px 14px;">★ Facile — tap to change</button>
+    <div style="margin-top:12px;"><button class="btn roll" onclick="newQ()">🎲 Nouvelle question</button></div>
+  </div>
+  <div id="promptArea"></div>
+  <div id="answerArea" class="center"></div>
+  <div id="feedback" class="feedback"></div>
+  <div id="afterButtons" class="row" style="display:none;">
+    <button class="btn speak" onclick="pronounce()">🔊 J'écoute</button>
+    <button class="btn roll" onclick="newQ()">🎲 Nouvelle question</button>
+    <button class="btn ghost" onclick="finish()">🏁 Je termine</button>
+  </div>
+  <div class="bar-wrap"><div class="bar" id="bar"></div></div>
+  <div class="stats"><span>Score : <b id="score">0%</b></span><span>Streak : <b id="streak">0</b></span></div>
+</div>
+
+<!-- BONUS -->
+<div id="bonus" class="panel">
+  <div class="card center">
+    <p style="margin:0 0 4px;">Traduisez en français (futur proche).</p>
+    <p class="ex" style="margin:0 0 10px;">Negatives wrap aller: ne vais pas, n'allons pas…</p>
+    <button class="btn roll" onclick="B_newQ()">🎲 Nouvelle question</button>
+  </div>
+  <div id="B_promptArea" class="prompt"><span class="ex">Cliquez sur 🎲 pour commencer.</span></div>
+  <div id="B_answerArea" class="center"></div>
+  <div id="B_feedback" class="feedback"></div>
+  <div id="B_afterButtons" class="row" style="display:none;">
+    <button class="btn speak" onclick="B_pronounce()">🔊 J'écoute</button>
+    <button class="btn roll" onclick="B_newQ()">🎲 Nouvelle question</button>
+    <button class="btn ghost" onclick="B_finish()">🏁 Je termine</button>
+  </div>
+  <div class="bar-wrap"><div class="bar" id="B_bar"></div></div>
+  <div class="stats"><span>Score : <b id="B_score">0%</b></span><span>Streak : <b id="B_streak">0</b></span></div>
+</div>
+
+</div>
+
+<script>
+function safeSpeakFrench(t){
+  try{
+    if(!t||!window.speechSynthesis)return;
+    speechSynthesis.cancel();
+    var u=new SpeechSynthesisUtterance(t);u.lang="fr-FR";u.rate=.95;
+    var vs=speechSynthesis.getVoices().filter(function(v){return v.lang&&v.lang.indexOf("fr")===0;});
+    if(vs[0])u.voice=vs[0];
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+function toggleDark(){document.body.classList.toggle('dark');document.getElementById('darkBtn').textContent=document.body.classList.contains('dark')?'☀️':'🌙';}
+function showTab(id){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  document.getElementById('t_'+id).classList.add('active');
+}
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+
+/* subject → aller form + negation. "ne"→"n'" before a vowel (allons/allez). */
+const SUBJECTS=[
+  {fr:"Je",aff:"vais",neg:"ne vais pas"},
+  {fr:"Tu",aff:"vas",neg:"ne vas pas"},
+  {fr:"Il",aff:"va",neg:"ne va pas"},
+  {fr:"Elle",aff:"va",neg:"ne va pas"},
+  {fr:"On",aff:"va",neg:"ne va pas"},
+  {fr:"Nous",aff:"allons",neg:"n'allons pas"},
+  {fr:"Vous",aff:"allez",neg:"n'allez pas"},
+  {fr:"Ils",aff:"vont",neg:"ne vont pas"},
+  {fr:"Elles",aff:"vont",neg:"ne vont pas"}
+];
+const INFS=[
+  {fr:"faire du sport",en:"do sport"},
+  {fr:"manger équilibré",en:"eat healthily"},
+  {fr:"sortir ce soir",en:"go out tonight"},
+  {fr:"partir en vacances",en:"go on holiday"},
+  {fr:"dormir plus",en:"sleep more"},
+  {fr:"courir demain",en:"run tomorrow"},
+  {fr:"arrêter le café",en:"quit coffee"},
+  {fr:"étudier le français",en:"study French"},
+  {fr:"préparer le dîner",en:"make dinner"},
+  {fr:"regarder un film",en:"watch a film"}
+];
+const ALL_AFF=["vais","vas","va","allons","allez","vont"];
+
+let diff=0,score=0,total=0,streak=0,best=0,hist=[],curQ=null,lastCorrect="";
+const DIFF=[["★","Facile"],["★★","Intermédiaire"],["★★★","Difficile"]];
+function cycleDiff(){diff=(diff+1)%3;applyDiff();if(curQ)newQ();}
+function applyDiff(){document.getElementById('diffBtn').textContent=DIFF[diff][0]+" "+DIFF[diff][1]+" — tap to change";}
+
+function newQ(){
+  const s=pick(SUBJECTS);
+  const inf=pick(INFS);
+  const neg=Math.random()<0.4;
+  const verb=neg?s.neg:s.aff;
+  curQ={s:s,inf:inf,neg:neg,verb:verb};
+  lastCorrect=s.fr+" "+verb+" "+inf.fr+".";
+  document.getElementById('promptArea').innerHTML=
+    '<div class="prompt"><div class="meta">Sujet : <b>'+s.fr+'</b></div>'+
+    '<div class="big">'+inf.fr+'</div><div class="en">'+inf.en+'</div>'+
+    '<span class="pol '+(neg?'neg':'aff')+'">'+(neg?'🚫 Négatif':'✅ Affirmatif')+'</span></div>';
+  document.getElementById('feedback').innerHTML="";
+  document.getElementById('afterButtons').style.display="none";
+  if(diff===0)renderEasy();else if(diff===1)renderMed();else renderHard();
+}
+function renderEasy(){
+  /* distractors: other aller forms in the same polarity */
+  const pool=curQ.neg
+    ? SUBJECTS.map(function(x){return x.neg;})
+    : ALL_AFF.slice();
+  const uniq=[];pool.forEach(function(v){if(uniq.indexOf(v)<0)uniq.push(v);});
+  const others=uniq.filter(function(v){return v!==curQ.verb;}).sort(function(){return Math.random()-.5;}).slice(0,3);
+  const opts=[curQ.verb].concat(others).sort(function(){return Math.random()-.5;});
+  let h='<div class="opts">';
+  opts.forEach(function(v){
+    const sent=curQ.s.fr+" "+v+" "+curQ.inf.fr+".";
+    h+='<button class="opt" onclick="checkEasy(this,\''+v.replace(/'/g,"\\'")+'\')">'+sent+'</button>';
+  });
+  h+='</div>';
+  document.getElementById('answerArea').innerHTML=h;
+}
+function checkEasy(btn,v){
+  const ok=v===curQ.verb;
+  document.querySelectorAll('#answerArea .opt').forEach(function(b){b.style.pointerEvents='none';});
+  btn.classList.add(ok?'ok':'no');
+  grade(ok,curQ.s.fr+" "+v+" "+curQ.inf.fr);
+}
+function renderMed(){
+  /* choose the aller form (affirmative slot); polarity is given, so in the
+     negative the "ne … pas" frame is shown and only the aller form varies. */
+  let o='<option value="">[aller]</option>';
+  ALL_AFF.slice().sort(function(){return Math.random()-.5;}).forEach(function(v){o+='<option value="'+v+'">'+v+'</option>';});
+  const frame=curQ.neg
+    ? curQ.s.fr+' ne <select id="aDrop">'+o+'</select> pas '+curQ.inf.fr+'.'
+    : curQ.s.fr+' <select id="aDrop">'+o+'</select> '+curQ.inf.fr+'.';
+  /* nous/vous elide ne→n'; show that hint in the negative frame */
+  document.getElementById('answerArea').innerHTML=
+    '<div style="font-size:20px;margin:8px 0;">'+frame+'</div>'+
+    (curQ.neg?'<div class="ex">nous / vous : ne → n\'</div>':'')+
+    '<button class="btn check" onclick="checkMed()" style="margin-top:8px;">✅ Je vérifie</button>';
+}
+function checkMed(){
+  const val=document.getElementById('aDrop').value;
+  /* the dropdown holds the bare aller form; the correct bare form is the
+     affirmative slot for this subject */
+  grade(val===curQ.s.aff, curQ.s.fr+" "+curQ.verb.replace(curQ.s.aff,val||"?")+" "+curQ.inf.fr);
+}
+function renderHard(){
+  document.getElementById('answerArea').innerHTML=
+    '<input id="txt" type="text" placeholder="Écrivez la phrase complète…" autocomplete="off" autocorrect="off" spellcheck="false" style="min-width:300px;"><br>'+
+    '<button class="btn check" onclick="checkHard()" style="margin-top:10px;">✅ Je vérifie</button>';
+  document.getElementById('txt').addEventListener('keydown',function(e){if(e.key==='Enter')checkHard();});
+}
+function norm(s){return s.toLowerCase().replace(/[.,!?]/g,"").replace(/\s+/g," ").trim();}
+function checkHard(){
+  const u=document.getElementById('txt').value;
+  grade(norm(u)===norm(lastCorrect), u);
+}
+function grade(ok,user){
+  total++;if(ok){score++;streak++;}else{streak=0;}
+  if(streak>best)best=streak;
+  hist.push({q:curQ.s.fr+" · "+(curQ.neg?"🚫":"✅"),user:user,correct:lastCorrect,ok:ok});
+  document.getElementById('feedback').innerHTML=ok
+    ?'<span class="correct">✔ Correct !</span> '+lastCorrect
+    :'<span class="wrong">✘ Presque…</span> '+lastCorrect;
+  document.getElementById('afterButtons').style.display="flex";
+  document.getElementById('score').textContent=Math.round(score/total*100)+"%";
+  document.getElementById('bar').style.width=Math.round(score/total*100)+"%";
+  document.getElementById('streak').textContent=streak;
+  safeSpeakFrench(lastCorrect);
+}
+function pronounce(){safeSpeakFrench(lastCorrect);}
+function finish(){showSummary("Résumé",hist,score,total,best,"Sujet");}
+
+/* Bonus EN → FR */
+const BONUS=[
+  {en:"I am going to do sport.",fr:"Je vais faire du sport."},
+  {en:"We are going to go out.",fr:"Nous allons sortir."},
+  {en:"She is going to sleep more.",fr:"Elle va dormir plus."},
+  {en:"They (m.) are going to study French.",fr:"Ils vont étudier le français."},
+  {en:"You (sg.) are going to make dinner.",fr:"Tu vas préparer le dîner."},
+  {en:"I am not going to go out tonight.",fr:"Je ne vais pas sortir ce soir."},
+  {en:"We are not going to work.",fr:"Nous n'allons pas travailler."},
+  {en:"He is not going to quit coffee.",fr:"Il ne va pas arrêter le café."},
+  {en:"You (pl.) are going to watch a film.",fr:"Vous allez regarder un film."},
+  {en:"They (f.) are not going to run.",fr:"Elles ne vont pas courir."}
+];
+let B_score=0,B_total=0,B_streak=0,B_best=0,B_hist=[],B_cur=null;
+function B_newQ(){
+  B_cur=pick(BONUS);
+  document.getElementById('B_promptArea').innerHTML='<span style="font-size:21px;font-weight:800;color:var(--primary);">'+B_cur.en+'</span>';
+  document.getElementById('B_answerArea').innerHTML=
+    '<input id="B_txt" type="text" placeholder="Écrivez en français…" autocomplete="off" autocorrect="off" spellcheck="false" style="min-width:300px;"><br>'+
+    '<button class="btn check" onclick="B_check()" style="margin-top:10px;">✅ Je vérifie</button>';
+  document.getElementById('B_feedback').innerHTML="";
+  document.getElementById('B_afterButtons').style.display="none";
+  document.getElementById('B_txt').addEventListener('keydown',function(e){if(e.key==='Enter')B_check();});
+}
+function B_check(){
+  if(!B_cur)return;
+  const u=document.getElementById('B_txt').value;
+  const ok=norm(u)===norm(B_cur.fr);
+  B_total++;if(ok){B_score++;B_streak++;}else{B_streak=0;}
+  if(B_streak>B_best)B_best=B_streak;
+  B_hist.push({q:B_cur.en,user:u,correct:B_cur.fr,ok:ok});
+  document.getElementById('B_feedback').innerHTML=ok
+    ?'<span class="correct">✔ Correct !</span> '+B_cur.fr
+    :'<span class="wrong">✘ Presque…</span> '+B_cur.fr;
+  document.getElementById('B_afterButtons').style.display="flex";
+  document.getElementById('B_score').textContent=Math.round(B_score/B_total*100)+"%";
+  document.getElementById('B_bar').style.width=Math.round(B_score/B_total*100)+"%";
+  document.getElementById('B_streak').textContent=B_streak;
+  safeSpeakFrench(B_cur.fr);
+}
+function B_pronounce(){safeSpeakFrench(B_cur?B_cur.fr:"");}
+function B_finish(){showSummary("Résumé — Bonus",B_hist,B_score,B_total,B_best,"English");}
+
+function showSummary(title,h,sc,tt,bs,col){
+  if(!h.length){alert("Complétez au moins une question !");return;}
+  const pct=Math.round(sc/tt*100);
+  const rows=h.map(function(x,i){return '<tr class="'+(x.ok?'row-ok':'row-err')+'"><td>'+(i+1)+'</td><td>'+x.q+'</td><td style="font-style:italic;">'+(x.user||"—")+'</td><td style="color:var(--success);">'+x.correct+'</td><td>'+(x.ok?"✔":"✘")+'</td></tr>';}).join("");
+  const ov=document.createElement("div");ov.className="overlay";
+  ov.onclick=function(e){if(e.target===ov)ov.remove();};
+  ov.innerHTML='<div class="sum"><h2>'+title+'</h2><div class="sum-stats">'+
+    '<div class="stat"><div class="v">'+pct+'%</div><div class="l">Score</div></div>'+
+    '<div class="stat"><div class="v">'+sc+'/'+tt+'</div><div class="l">Correct</div></div>'+
+    '<div class="stat"><div class="v">'+bs+'</div><div class="l">Streak</div></div></div>'+
+    '<table><thead><tr><th>#</th><th>'+col+'</th><th>Vous</th><th>Correct</th><th></th></tr></thead><tbody>'+rows+'</tbody></table>'+
+    '<div class="row" style="margin-top:14px;"><button class="btn ghost" onclick="this.closest(\'.overlay\').remove()">Fermer</button></div></div>';
+  document.body.appendChild(ov);
+}
+
+if(window.speechSynthesis)speechSynthesis.getVoices();
+applyDiff();
+</script>
+</body>
+</html>

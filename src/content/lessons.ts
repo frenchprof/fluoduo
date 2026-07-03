@@ -30,26 +30,43 @@ export const LESSONS: Record<string, Lesson> = {
   "rendezvous":        { slug: "rendezvous",        file: "16-rendezvous-revision.html",title: "Proposer, accepter, refuser", unit: 2 },
   "prepositions":      { slug: "prepositions",      file: "17-prepositions.html",      title: "Prépositions : de & à",        unit: 3 },
   "revision-u3u4":     { slug: "revision-u3u4",     file: "18-revision-u3u4.html",     title: "Révision — Unités 3 & 4",      unit: 3 },
+  "partitifs":         { slug: "partitifs",         file: "19-partitifs.html",         title: "Les articles partitifs",       unit: 4 },
+  "manger-boire":      { slug: "manger-boire",      file: "20-manger-boire.html",      title: "Manger & boire",               unit: 4 },
+  "futur-proche":      { slug: "futur-proche",      file: "21-futur-proche.html",      title: "Le futur proche",              unit: 4 },
+  "frequence":         { slug: "frequence",         file: "22-frequence.html",         title: "Les adverbes de fréquence",    unit: 4 },
+  "demonstratifs":     { slug: "demonstratifs",     file: "23-demonstratifs.html",     title: "Les adjectifs démonstratifs",  unit: 4 },
+  "revision-u4":       { slug: "revision-u4",       file: "24-revision-u4.html",       title: "Révision — Unité 4",           unit: 4 },
 };
 
-/** SIO id → lesson slug (best-guess; adjust freely). One lesson per SIO. */
-export const LESSON_BY_SIO: Record<string, string> = {
-  "SIO-014": "se-presenter",
-  "SIO-015": "articles-pays",
-  "SIO-022": "possessifs",
-  "SIO-023": "aimer",
-  "SIO-024": "faire",
-  "SIO-026": "aller",
-  "SIO-027": "quand",
-  "SIO-029": "rendezvous",
-  "SIO-032": "prepositions",
-  "SIO-035": "mots-interrogatifs",
-  "SIO-048": "modaux",
+/**
+ * SIO id → the lesson(s) that teach its grammar (best-guess; adjust freely).
+ * A SIO can have several lessons, and a lesson can sit under several SIOs.
+ * Lessons are reached from their SIO's popup; the two cross-unit revisions
+ * (revision-u1, revision-u3u4) have no single SIO home and live in the gallery.
+ */
+export const LESSONS_BY_SIO: Record<string, string[]> = {
+  "SIO-014": ["se-presenter", "negation", "conjugaison-u1"],
+  "SIO-015": ["articles-pays"],
+  "SIO-035": ["questions-oui-non", "mots-interrogatifs"],
+  "SIO-022": ["possessifs"],
+  "SIO-023": ["aimer", "aimer-infinitif", "conjugaison-er"],
+  "SIO-024": ["faire"],
+  "SIO-026": ["aller"],
+  "SIO-027": ["quand"],
+  "SIO-029": ["rendezvous"],
+  "SIO-037": ["modaux"],
+  "SIO-048": ["modaux", "futur-proche"],
+  "SIO-032": ["prepositions"],
+  "SIO-042": ["partitifs"],
+  "SIO-043": ["partitifs"],
+  "SIO-044": ["manger-boire"],
+  "SIO-045": ["frequence"],
+  "SIO-046": ["demonstratifs"],
 };
 
 export const ALL_LESSONS: Lesson[] = Object.values(LESSONS);
 
-export function lessonForSio(sioId: string): Lesson | undefined {
-  const slug = LESSON_BY_SIO[sioId];
-  return slug ? LESSONS[slug] : undefined;
+/** All lessons attached to a SIO (empty if none). */
+export function lessonsForSio(sioId: string): Lesson[] {
+  return (LESSONS_BY_SIO[sioId] ?? []).map((slug) => LESSONS[slug]).filter(Boolean);
 }

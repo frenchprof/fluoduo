@@ -16,6 +16,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { speak } from "@/games/letris/speech";
+import { chiptune } from "@/games/audio/chiptune";
 import { recordItemResult, spendHeart } from "@/lib/progress";
 
 export type LexEntry = { id: string; fr: string; en: string; syllables: string[] };
@@ -65,8 +66,23 @@ export default function Lexicalator({
   const [descend, setDescend] = useState<LexEntry | null>(null);
   const [firstDone, setFirstDone] = useState(false);
   const [rattle, setRattle] = useState<string | null>(null);
+  const [music, setMusic] = useState(false);
+  const musicAutoRef = useRef(false);
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+  useEffect(() => () => chiptune.stop(), []); // stop the loop on unmount
+
+  // The A-minor swung loop starts with the game itself: the first chest pick
+  // (a user gesture, so the AudioContext may be created) — Dan 2026-07-03,
+  // "the music is missing".
+  function pickChest(id: string) {
+    setSelected(id);
+    if (!musicAutoRef.current) {
+      musicAutoRef.current = true;
+      chiptune.play("conveyor");
+      setMusic(true);
+    }
+  }
 
   // (Re)deal the lane for the current level. Runs on mount and each level.
   useEffect(() => {
@@ -76,7 +92,9 @@ export default function Lexicalator({
     const shuffled = shuffle(pool);
     setChests(shuffled.slice(0, LANE).map((entry) => ({ entry, filled: 0 })));
     setQueue(shuffled.slice(LANE));
-    setSelected(shuffled[0]?.id ?? null);
+    // No chest sits in the central bay at first — the learner is nudged to
+    // pick one to begin (Dan, 2026-07-03).
+    setSelected(null);
     setCleared(0);
     setLevelDone(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -156,12 +174,15 @@ export default function Lexicalator({
     const shuffled = shuffle(entries.filter((e) => e.syllables.length >= min));
     setChests(shuffled.slice(0, LANE).map((entry) => ({ entry, filled: 0 })));
     setQueue(shuffled.slice(LANE));
-    setSelected(shuffled[0]?.id ?? null);
+    setSelected(null);
     setCleared(0); setLevelDone(false);
   }
 
-  const beltFrozen = !firstDone;
-  const beltSecs = beltSecsFor(level);
+  // The belt is dead-still until a chest is picked; once one is selected it
+  // begins an almost-imperceptible crawl (Dan, 2026-07-03), then — after the
+  // first word is forged — eases into real time-pressure as levels rise.
+  const beltFrozen = !selected;
+  const beltSecs = firstDone ? beltSecsFor(level) : 140;
 
   // Client-only game: the belt shuffles with Math.random, so don't SSR it.
   if (!mounted) return null;
@@ -172,7 +193,7 @@ export default function Lexicalator({
         @keyframes lxscroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
         @keyframes lxrattle{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px) rotate(-4deg)}75%{transform:translateX(4px) rotate(4deg)}}
         @keyframes lxdescend{0%{transform:translate(-50%,0) scale(1);opacity:0}12%{opacity:1}70%{opacity:1;transform:translate(-50%,240px) scale(1)}100%{opacity:0;transform:translate(-50%,270px) scale(.5)}}
-        @keyframes lxaim{0%,100%{box-shadow:0 0 0 0 rgba(255,150,0,0)}50%{box-shadow:0 0 0 6px rgba(255,150,0,.22)}}
+        @keyframes lxaim{0%,100%{box-shadow:0 0 0 0 rgba(224,134,0,0)}50%{box-shadow:0 0 0 6px rgba(224,134,0,.45)}}
       `}</style>
 
       {/* HUD */}
@@ -187,6 +208,10 @@ export default function Lexicalator({
         <span className="rounded-xl border-2 border-b-4 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">Lvl <b style={{ color: "#1cb0f6" }}>{level}</b></span>
         <span className="rounded-xl border-2 border-b-4 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">{cleared}/{QUOTA}</span>
         <span className="text-lg" style={{ color: "#ff4b4b" }}>{"♥".repeat(Math.max(0, lives))}<span className="opacity-20">{"♥".repeat(Math.max(0, START_LIVES - lives))}</span></span>
+        <button type="button" onClick={() => { chiptune.toggle("conveyor"); setMusic(chiptune.playing() === "conveyor"); }}
+          title="Music" className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-xs font-bold">
+          {music ? "🔊" : "🎵"}
+        </button>
         <button type="button" onClick={() => setHard((h) => !h)}
           className={`rounded-xl border-2 px-2 py-0.5 text-xs font-bold ${hard ? "border-rose-400 bg-rose-500 text-white" : "border-sky-200 bg-white"}`}>
           {hard ? "Hard ✓" : "Hard"}
@@ -204,13 +229,15 @@ export default function Lexicalator({
           {chests.map((c) => {
             const picked = c.entry.id === selected;
             return (
-              <button key={c.entry.id} type="button" onClick={() => setSelected(c.entry.id)}
+              <button key={c.entry.id} type="button" onClick={() => pickChest(c.entry.id)}
                 className="w-36 rounded-xl border-2 border-b-4 bg-white p-2 text-center transition"
-                style={{ borderColor: picked ? "#e08600" : "#f0c052", transform: picked ? "translateY(-4px)" : undefined, boxShadow: picked ? "0 0 0 4px rgba(255,200,0,.35)" : undefined }}>
-                <span className="block text-sm font-black" style={{ color: "#1cb0f6" }}>{c.entry.en}</span>
+                style={{ borderColor: picked ? "#c56a00" : "#d9a63a", transform: picked ? "translateY(-4px)" : undefined, boxShadow: picked ? "0 0 0 4px rgba(224,134,0,.5)" : undefined }}>
+                {/* Dan 2026-07-03: contrasts weren't strong enough — dark ink
+                    on white instead of pale brand blue, darker progress dashes. */}
+                <span className="block text-sm font-black" style={{ color: "#075985" }}>{c.entry.en}</span>
                 <span className="mt-1 flex justify-center gap-1">
                   {(hard ? [c.entry.syllables.length] : c.entry.syllables).map((s, i) => (
-                    <span key={i} className="h-1.5 rounded-full" style={{ width: hard ? 24 : Math.max(8, String(s).length * 5), background: i < c.filled ? "#58cc02" : "#d9a63a" }} />
+                    <span key={i} className="h-2 rounded-full" style={{ width: hard ? 24 : Math.max(8, String(s).length * 5), background: i < c.filled ? "#46a302" : "#8a5a00" }} />
                   ))}
                 </span>
               </button>
@@ -221,12 +248,17 @@ export default function Lexicalator({
 
       {/* Assembly bay — the active chest with syllable-sized keyholes */}
       <div className="relative flex min-h-[7rem] items-center justify-center py-5">
+        {!active && !descend && (
+          <p className="animate-pulse text-center text-sm font-black" style={{ color: "#e08600" }}>
+            👆 Pick a chest to begin
+          </p>
+        )}
         {active && (
-          <div className="rounded-2xl border-4 bg-white px-4 py-3 text-center" style={{ borderColor: "#ffc800", boxShadow: "0 10px 24px -16px rgba(12,74,110,.5)" }}>
-            <div className="mb-3 text-lg font-black" style={{ color: "#1cb0f6" }}>{active.entry.en}</div>
+          <div className="rounded-2xl border-4 bg-white px-4 py-3 text-center" style={{ borderColor: "#e08600", boxShadow: "0 10px 24px -16px rgba(12,74,110,.5)" }}>
+            <div className="mb-3 text-lg font-black" style={{ color: "#075985" }}>{active.entry.en}</div>
             {hard ? (
-              <div className="mx-auto flex min-h-[3rem] min-w-[8rem] items-center justify-center rounded-xl border-2 border-dashed px-4 text-xl font-black" style={{ borderColor: "#ff9600", color: "#0c4a6e" }}>
-                {active.entry.syllables.slice(0, active.filled).join("") || <span className="opacity-40">?</span>}
+              <div className="mx-auto flex min-h-[3rem] min-w-[8rem] items-center justify-center rounded-xl border-2 border-dashed px-4 text-xl font-black" style={{ borderColor: "#e08600", color: "#0c4a6e" }}>
+                {active.entry.syllables.slice(0, active.filled).join("") || <span style={{ color: "#4a7fa6" }}>?</span>}
               </div>
             ) : (
               <div className="flex justify-center gap-2">
@@ -239,9 +271,9 @@ export default function Lexicalator({
                       style={{
                         width: keyW(s),
                         borderStyle: filled ? "solid" : "dashed",
-                        borderColor: filled ? "#46a302" : aim ? "#ff9600" : "#cfe8fb",
-                        background: filled ? "#58cc02" : "#f4fbff",
-                        color: filled ? "#fff" : "#a9cbe6",
+                        borderColor: filled ? "#2e7d00" : aim ? "#e08600" : "#7fb0d3",
+                        background: filled ? "#46a302" : "#eef7ff",
+                        color: filled ? "#fff" : "#4a7fa6",
                         animation: aim ? "lxaim 1.5s ease-in-out infinite" : undefined,
                       }}>
                       {filled ? s : "▯"}
@@ -260,16 +292,17 @@ export default function Lexicalator({
         )}
       </div>
 
-      {/* Key belt — a static, fully-visible set until the first word is done
-          (so the first word's syllables are always reachable), then a scrolling
-          belt that eases from a crawl to real time-pressure as levels rise. */}
+      {/* Key belt — a static, fully-visible set until a chest is picked (so the
+          first word's syllables are always reachable), then a scrolling belt
+          that starts imperceptibly slow and eases into real time-pressure as
+          levels rise. */}
       <div className="relative overflow-hidden rounded-2xl border-4 border-white py-3" style={{ background: "linear-gradient(180deg,#bfe6ff,#9fd8fb)" }}>
         {beltFrozen ? (
           <div className="flex flex-wrap justify-center gap-3 px-4">
             {beltPool.map((t, i) => (
               <button key={i} type="button" onClick={() => tapKey(t)} lang="fr"
                 className="grid h-12 place-items-center rounded-xl border-2 border-b-4 bg-white text-lg font-black"
-                style={{ width: keyW(t), color: "#0c4a6e", borderColor: "#cfeafd", animation: rattle === t ? "lxrattle 300ms" : undefined }}>
+                style={{ width: keyW(t), color: "#0c4a6e", borderColor: "#4a94c4", animation: rattle === t ? "lxrattle 300ms" : undefined }}>
                 {t}
               </button>
             ))}
@@ -279,7 +312,7 @@ export default function Lexicalator({
             {[...beltPool, ...beltPool].map((t, i) => (
               <button key={i} type="button" onClick={() => tapKey(t)} lang="fr"
                 className="grid h-12 place-items-center rounded-xl border-2 border-b-4 bg-white text-lg font-black"
-                style={{ width: keyW(t), color: "#0c4a6e", borderColor: "#cfeafd", animation: rattle === t ? "lxrattle 300ms" : undefined }}>
+                style={{ width: keyW(t), color: "#0c4a6e", borderColor: "#4a94c4", animation: rattle === t ? "lxrattle 300ms" : undefined }}>
                 {t}
               </button>
             ))}

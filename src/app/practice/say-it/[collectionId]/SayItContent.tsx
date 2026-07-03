@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { CURATED } from "@/content/collections";
 import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
+import { recordItemResult } from "@/lib/progress";
 import type { Item } from "@/lib/collections/schema";
 
 type Phase = "idle" | "listening" | "result";
@@ -65,14 +66,28 @@ const GRADE_UI: Record<Grade, { icon: string; label: string; cls: string }> = {
 export default function SayItContent({ collectionId }: { collectionId: string }) {
   const deck = CURATED.find((c) => c.id === collectionId);
 
+  // A run is a working queue, NOT an endless carousel (Dan, 2026-07-03: "there
+  // should be a natural end rather than looping continuously"). `card` is on
+  // screen; `queue` is what's still ahead; `history` is what's behind (drives
+  // Back and the progress count). Skip defers the current word to the end of
+  // the queue; End here jumps straight to the summary.
+  const [cards, setCards] = useState<Item[]>([]); // stable deck order (mount shuffle)
+  const [card, setCard] = useState<Item | null>(null);
+  const [queue, setQueue] = useState<Item[]>([]);
+  const [history, setHistory] = useState<Item[]>([]);
+  const [finished, setFinished] = useState(false);
+
   // Shuffle on mount only — shuffling during render breaks SSR hydration
   // (the AGENTS/handoff "no Math.random() during render" rule).
-  const [cards, setCards] = useState<Item[]>([]);
   useEffect(() => {
-    setCards(deck ? shuffle(deck.items.filter((i) => i.fr)) : []);
+    const list = deck ? shuffle(deck.items.filter((i) => i.fr)) : [];
+    setCards(list);
+    setCard(list[0] ?? null);
+    setQueue(list.slice(1));
+    setHistory([]);
+    setFinished(false);
   }, [deck]);
 
-  const [index, setIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>("idle");
   const [transcript, setTranscript] = useState("");
   const [result, setResult] = useState<{ grade: Grade; recognized: string } | null>(null);
@@ -81,28 +96,79 @@ export default function SayItContent({ collectionId }: { collectionId: string })
   const recRef = useRef<any>(null);
   const phaseRef = useRef<Phase>("idle");
   phaseRef.current = phase;
-  const cardRef = useRef(cards[0]);
+  const cardRef = useRef<Item | null>(null);
+  cardRef.current = card;
 
   useEffect(() => {
     const win = window as any;
     setSupported(!!(win.SpeechRecognition || win.webkitSpeechRecognition));
   }, []);
 
-  const card = cards[index];
-  cardRef.current = card;
-
   const stopRec = useCallback(() => {
     recRef.current?.stop();
     recRef.current = null;
   }, []);
 
-  const next = useCallback(() => {
+  const resetTurn = useCallback(() => {
     stopRec();
-    setIndex((i) => (i + 1) % cards.length);
     setPhase("idle");
     setTranscript("");
     setResult(null);
-  }, [cards.length, stopRec]);
+  }, [stopRec]);
+
+  // Advance after answering: the current card joins history; the next card
+  // comes off the queue, or — when the queue is empty — the run ends.
+  const next = useCallback(() => {
+    resetTurn();
+    if (card) setHistory((h) => [...h, card]);
+    if (queue.length > 0) {
+      setCard(queue[0]);
+      setQueue(queue.slice(1));
+    } else {
+      setCard(null);
+      setFinished(true);
+    }
+  }, [card, queue, resetTurn]);
+
+  // Skip = defer this word: move it to the back of the queue (not graded, not
+  // counted) and show the next one. A no-op when nothing else is queued.
+  const skip = useCallback(() => {
+    if (!card || queue.length === 0) return;
+    resetTurn();
+    setCard(queue[0]);
+    setQueue([...queue.slice(1), card]);
+  }, [card, queue, resetTurn]);
+
+  // Back = revisit the previous card: pop history, push the current card back
+  // to the front of the queue.
+  const back = useCallback(() => {
+    if (history.length === 0) return;
+    resetTurn();
+    const prev = history[history.length - 1];
+    setHistory(history.slice(0, -1));
+    setQueue((q) => (card ? [card, ...q] : q));
+    setCard(prev);
+  }, [history, card, resetTurn]);
+
+  // End here = stop now and show the summary.
+  const endNow = useCallback(() => {
+    stopRec();
+    setCard(null);
+    setFinished(true);
+  }, [stopRec]);
+
+  const restart = useCallback(() => {
+    const list = shuffle(cards);
+    setCards(list);
+    setCard(list[0] ?? null);
+    setQueue(list.slice(1));
+    setHistory([]);
+    setScore({ ok: 0, total: 0 });
+    setFinished(false);
+    setPhase("idle");
+    setTranscript("");
+    setResult(null);
+  }, [cards]);
 
   const startListening = useCallback(() => {
     const c = cardRef.current;
@@ -133,8 +199,13 @@ export default function SayItContent({ collectionId }: { collectionId: string })
       setPhase("result");
       setTranscript((t) => {
         const g = gradeAnswer(t, c.fr, /^\d+$/.test((c.en ?? "").trim()) ? c.en : undefined);
+        const ok = g === "perfect" || g === "good";
         setResult({ grade: g, recognized: t });
-        setScore((s) => ({ ok: s.ok + (g === "perfect" || g === "good" ? 1 : 0), total: s.total + 1 }));
+        setScore((s) => ({ ok: s.ok + (ok ? 1 : 0), total: s.total + 1 }));
+        // Feed the Reviser: a miss (or a partial "close") resurfaces the word;
+        // a clean say advances its spacing ladder. Say It items are curated deck
+        // items, so their ids line up with the Reviser's review queue.
+        if (c.id) recordItemResult(c.id, ok);
         return t;
       });
     };
@@ -145,6 +216,7 @@ export default function SayItContent({ collectionId }: { collectionId: string })
         setPhase("result");
         setResult({ grade: "miss", recognized: "(rien entendu)" });
         setScore((s) => ({ ...s, total: s.total + 1 }));
+        if (c.id) recordItemResult(c.id, false);
       } else if (e.error === "not-allowed") {
         setPhase("idle");
         alert("Veuillez autoriser l'accès au microphone dans votre navigateur.");
@@ -214,18 +286,36 @@ export default function SayItContent({ collectionId }: { collectionId: string })
       <div className="mx-auto max-w-2xl px-4 py-4">
         <div className="mb-4 text-center">
           <p className="fluo-label">{deck.title}</p>
-          <p className="text-xs text-[color:var(--fluo-ink-soft)]">{index + 1} / {cards.length}</p>
+          {!finished && card && (
+            <p className="text-xs text-[color:var(--fluo-ink-soft)]">{history.length + 1} / {cards.length}</p>
+          )}
         </div>
 
         {/* Progress bar */}
         <div className="h-1.5 rounded-full bg-[color:var(--fluo-line)] mb-6 overflow-hidden">
           <div
             className="h-full rounded-full bg-emerald-500 transition-all"
-            style={{ width: `${((index + 1) / cards.length) * 100}%` }}
+            style={{ width: `${cards.length ? ((finished ? cards.length : history.length) / cards.length) * 100 : 0}%` }}
           />
         </div>
 
-        {card && (
+        {finished && (
+          <div className="cahier-sheet rounded-2xl p-8 text-center shadow-md">
+            <p className="mb-2 text-4xl">🎉</p>
+            <h1 className="fluo-serif text-2xl font-black text-[color:var(--fluo-ink)]">Terminé !</h1>
+            <p className="mt-2 text-sm text-[color:var(--fluo-ink-soft)]">
+              You said {score.total} {score.total === 1 ? "word" : "words"}
+              {score.total > 0 && <> · ✓ {score.ok} ({Math.round((score.ok / score.total) * 100)}%)</>}.
+            </p>
+            <div className="mt-5 flex flex-wrap justify-center gap-2">
+              <button type="button" onClick={restart} className="fluo-btn fluo-btn-sm">🔁 Recommencer</button>
+              <Link href="/reviser" className="fluo-btn fluo-btn-sm fluo-btn-ghost">🔁 Réviser</Link>
+              <Link href="/" className="fluo-btn fluo-btn-sm fluo-btn-ghost">← Back to the path</Link>
+            </div>
+          </div>
+        )}
+
+        {!finished && card && (
           <div className="cahier-sheet rounded-2xl p-6 shadow-md">
             {/* Prompt */}
             <div className="mb-6 text-center">
@@ -298,9 +388,36 @@ export default function SayItContent({ collectionId }: { collectionId: string })
           </div>
         )}
 
-        <p className="mt-4 text-center text-xs text-[color:var(--fluo-ink-soft)]">
-          Space = speak / stop · Enter = next card
-        </p>
+        {!finished && card && (
+          <div className="mt-4 flex items-center justify-center gap-2">
+            <button
+              type="button"
+              onClick={back}
+              disabled={history.length === 0}
+              className="fluo-btn fluo-btn-sm fluo-btn-ghost disabled:opacity-40"
+            >
+              ⏮ Back
+            </button>
+            <button
+              type="button"
+              onClick={skip}
+              disabled={queue.length === 0}
+              className="fluo-btn fluo-btn-sm fluo-btn-ghost disabled:opacity-40"
+              title="Defer this word to the end"
+            >
+              ⤼ Skip
+            </button>
+            <button type="button" onClick={endNow} className="fluo-btn fluo-btn-sm fluo-btn-ghost">
+              ⏹ End here
+            </button>
+          </div>
+        )}
+
+        {!finished && card && (
+          <p className="mt-4 text-center text-xs text-[color:var(--fluo-ink-soft)]">
+            Space = speak / stop · Enter = next card
+          </p>
+        )}
       </div>
     </CahierShell>
   );

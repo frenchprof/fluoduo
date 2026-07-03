@@ -35,6 +35,25 @@ const ROWS = 10;
 const INITIAL_TICK_MS = 800;
 const MIN_TICK_MS = 260;
 const SPEEDUP_EVERY = 6;
+/* Night falls after this many landed drops (Dan, 2026-07-03): the sky darkens
+ * and some letters on each falling word become unclear, so the learner has to
+ * recall the word from knowledge rather than read it. */
+const NIGHT_AFTER = 10;
+
+/** Which letter positions the dark hides — deterministic per word (the same
+ *  word is always unclear in the same places), never the first letter. */
+function nightMask(text: string): Set<number> {
+  let h = 0;
+  for (let i = 0; i < text.length; i++) h = (h * 31 + text.charCodeAt(i)) >>> 0;
+  const letters: number[] = [];
+  for (let i = 1; i < text.length; i++) if (/\p{L}/u.test(text[i])) letters.push(i);
+  const want = Math.min(letters.length, 1 + Math.floor(text.length / 5));
+  const out = new Set<number>();
+  for (let k = 0; out.size < want && k < letters.length * 3; k++) {
+    out.add(letters[(h + k * 7) % letters.length]);
+  }
+  return out;
+}
 
 /* One colour per category (the base + every tile that belongs to it). Revealed
  * only when a tile lands — while falling, a tile is a neutral RAINDROP (the
@@ -62,6 +81,26 @@ function emptyBoard(cols: number): Cell[][] {
   return Array.from({ length: ROWS }, () => Array<Cell>(cols).fill(null));
 }
 
+/** The falling word at night: its masked letters are smudged into the dark —
+ *  still occupying their space, no longer readable — so the learner completes
+ *  the word from memory. */
+function NightWord({ text }: { text: string }) {
+  const masked = nightMask(text);
+  return (
+    <span aria-label={text.length + " letters"}>
+      {text.split("").map((ch, i) =>
+        masked.has(i) ? (
+          <span key={i} style={{ filter: "blur(3.5px)", opacity: 0.45 }} aria-hidden>
+            {ch}
+          </span>
+        ) : (
+          <span key={i}>{ch}</span>
+        ),
+      )}
+    </span>
+  );
+}
+
 export default function LetrisGame({ set }: { set: LetrisSet }) {
   const cols = set.categories.length;
   const catIndex = useMemo(() => {
@@ -83,7 +122,17 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
   const [score, setScore] = useState(0);
   const [paused, setPaused] = useState(false);
   const [music, setMusic] = useState(false);
+  const [drops, setDrops] = useState(0); // tiles landed — night falls after a few
   const musicAutoRef = useRef(false);
+  // First interaction — key OR tap — starts the tune (both are user gestures,
+  // so the AudioContext may be created). Keydown-only left tap players silent
+  // until it was "too late" (Dan, 2026-07-03).
+  const autoMusic = useCallback(() => {
+    if (musicAutoRef.current) return;
+    musicAutoRef.current = true;
+    chiptune.play("letris");
+    setMusic(true);
+  }, []);
   const [showHelp, setShowHelp] = useState(false);
   useEffect(() => () => chiptune.stop(), []); // stop the loop on unmount
   const [gameOver, setGameOver] = useState(false);
@@ -114,12 +163,14 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
     setPaused(false);
     setGameOver(false);
     setFlash(null);
+    setDrops(0); // dawn breaks again
     tickRef.current = INITIAL_TICK_MS;
   }, [cols, set.tiles]);
 
   const landTile = useCallback(
     (a: Active) => {
       const correct = catIndex.get(a.tile.category) === a.col;
+      setDrops((d) => d + 1);
       setFlash({ col: a.col, kind: correct ? "ok" : "bad" });
       window.setTimeout(() => setFlash(null), 220);
       if (correct) {
@@ -215,11 +266,7 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
         return;
       }
       if (paused || !active) return;
-      if (!musicAutoRef.current) {
-        musicAutoRef.current = true;
-        chiptune.play("letris");
-        setMusic(true);
-      }
+      autoMusic();
       if (e.key === "ArrowLeft") {
         const nc = Math.max(0, active.col - 1);
         if (board[active.row][nc] === null) setActive({ ...active, col: nc });
@@ -242,16 +289,19 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [active, board, cols, gameOver, landTile, paused, restart]);
+  }, [active, autoMusic, board, cols, gameOver, landTile, paused, restart]);
 
   const moveTo = (col: number) => {
     if (!active || paused || gameOver) return;
+    autoMusic();
     if (board[active.row][col] !== null) return;
     setActive({ ...active, col });
   };
 
   const pillCls =
     "rounded-xl border-2 border-b-4 border-sky-200 bg-white px-2.5 py-1 font-bold text-sky-800 shadow-sm transition hover:bg-sky-50 active:translate-y-[2px] active:border-b-2";
+
+  const night = drops >= NIGHT_AFTER;
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 px-4 py-6 text-sky-950">
@@ -326,6 +376,23 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
               }}
             />
           ))}
+          {/* night falls after a few drops: the sky dims (the falling word sits
+              ABOVE this veil, but its masked letters blur) and the moon rises */}
+          <div
+            className="pointer-events-none absolute inset-0 z-10"
+            style={{
+              background: "linear-gradient(180deg, rgba(3,15,36,.85) 0%, rgba(8,28,56,.72) 55%, rgba(14,42,76,.5) 100%)",
+              opacity: night ? 1 : 0,
+              transition: "opacity 3s ease",
+            }}
+          />
+          <span
+            className="pointer-events-none absolute right-3 top-2 z-10 text-3xl"
+            style={{ opacity: night ? 1 : 0, transition: "opacity 3s ease", textShadow: "0 0 14px rgba(255,244,190,.8)" }}
+            aria-hidden
+          >
+            🌙
+          </span>
           {Array.from({ length: ROWS }).map((_, r) =>
             Array.from({ length: cols }).map((_, c) => {
               const stacked = board[r][c];
@@ -346,16 +413,20 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
                       style={
                         isActive
                           ? {
-                              // falling = a neutral raindrop: colour hidden until it lands
+                              // falling = a neutral raindrop: colour hidden until it lands.
+                              // At night it rides ABOVE the dark veil — only its
+                              // masked letters are unclear, not the whole word.
                               background: "linear-gradient(180deg, #ffffff 0%, #cdeeff 100%)",
                               color: "#075985",
                               border: "2px solid #9fdcff",
                               borderRadius: "14px 14px 20px 20px",
+                              position: "relative",
+                              zIndex: 20,
                             }
                           : { background: colorOf(tile), color: "#fff", borderRadius: 10, boxShadow: "inset 0 -3px 0 rgba(0,0,0,.2)" }
                       }
                     >
-                      {tile.text}
+                      {isActive && night ? <NightWord text={tile.text} /> : tile.text}
                     </div>
                   )}
                 </div>

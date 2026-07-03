@@ -16,13 +16,15 @@ type SpeakOpts = {
    * and always sets pitch (the one dependable differentiator).
    */
   gender?: "f" | "m";
+  /** Speaking rate override — e.g. 0.6 for the 🐌 slow-playback buttons. */
+  rate?: number;
 };
 
 const FEMALE_VOICE = /amelie|audrey|aurélie|aurelie|marie|julie|hortense|virginie|chantal|léa|lea|female|femme|woman/i;
 const MALE_VOICE = /thomas|nicolas|paul|claude|henri|mathieu|male|homme|man/i;
 
 /** Pick a language- and gender-appropriate voice + pitch for an utterance. */
-function applyVoiceAndPitch(u: SpeechSynthesisUtterance, lang: string, gender?: "f" | "m") {
+function applyVoiceAndPitch(u: SpeechSynthesisUtterance, lang: string, gender?: "f" | "m", rate?: number) {
   const voices = window.speechSynthesis.getVoices();
   const inLang = voices.filter(
     (x) => x.lang === lang || x.lang.startsWith(lang.split("-")[0]),
@@ -30,7 +32,7 @@ function applyVoiceAndPitch(u: SpeechSynthesisUtterance, lang: string, gender?: 
   const rx = gender === "f" ? FEMALE_VOICE : gender === "m" ? MALE_VOICE : null;
   const v = (rx && inLang.find((x) => rx.test(x.name))) || inLang[0];
   if (v) u.voice = v;
-  u.rate = 0.95;
+  u.rate = rate ?? 0.95;
   // Pitch is the reliable gender cue when a named voice isn't available.
   u.pitch = gender === "f" ? 1.35 : gender === "m" ? 0.75 : 1;
 }
@@ -42,6 +44,7 @@ function applyVoiceAndPitch(u: SpeechSynthesisUtterance, lang: string, gender?: 
 export function speakSequence(
   parts: { text: string; gender?: "f" | "m" }[],
   lang = "fr-FR",
+  opts: { rate?: number } = {},
 ): () => void {
   if (typeof window === "undefined" || !window.speechSynthesis) return () => {};
   const synth = window.speechSynthesis;
@@ -53,7 +56,7 @@ export function speakSequence(
     const p = parts[i++];
     const u = new SpeechSynthesisUtterance(p.text);
     u.lang = lang;
-    applyVoiceAndPitch(u, lang, p.gender);
+    applyVoiceAndPitch(u, lang, p.gender, opts.rate);
     u.onend = next;
     u.onerror = next;
     if (synth.paused) synth.resume();
@@ -75,9 +78,13 @@ export function speak(text: string, lang = "fr-FR", opts: SpeakOpts = {}) {
   // the speech would lag noticeably behind the falling tiles.
   if (!interrupt && pending >= 2) return;
 
-  const u = new SpeechSynthesisUtterance(text);
+  // A lone capital letter is read by French TTS as "H majuscule" (H capital);
+  // the alphabet pretest wants just the letter's name, so speak it lowercase.
+  const spoken = /^[A-Za-z]$/.test(text) ? text.toLowerCase() : text;
+
+  const u = new SpeechSynthesisUtterance(spoken);
   u.lang = lang;
-  applyVoiceAndPitch(u, lang, opts.gender);
+  applyVoiceAndPitch(u, lang, opts.gender, opts.rate);
 
   if (interrupt) {
     synth.cancel();
