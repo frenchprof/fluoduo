@@ -75,7 +75,11 @@ export function speak(text: string, lang = "fr-FR", opts: SpeakOpts = {}) {
   // the speech would lag noticeably behind the falling tiles.
   if (!interrupt && pending >= 2) return;
 
-  const u = new SpeechSynthesisUtterance(text);
+  // A lone capital letter is read by French TTS as "H majuscule" (H capital);
+  // the alphabet pretest wants just the letter's name, so speak it lowercase.
+  const spoken = /^[A-Za-z]$/.test(text) ? text.toLowerCase() : text;
+
+  const u = new SpeechSynthesisUtterance(spoken);
   u.lang = lang;
   applyVoiceAndPitch(u, lang, opts.gender);
 
