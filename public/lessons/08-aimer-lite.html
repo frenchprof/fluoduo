@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 08 (lite) — Aimer + le / la / les | Unité 2</title>
+<style>
+/* Reskinned to the FluoLingo look: peach foolscap paper, deep-navy ink, tan
+   borders, paper cards, a serif for headings, Unité 2's gold accent. */
+:root{--primary:#22305a;--accent:#e3a700;--tint:#fbeec4;--hl:#d4f24c;--bg1:#fce8d4;--bg2:#f6dcbf;--text:#22305a;--card:#fffaf0;--line:#e2caa2;--soft:#5d6488;--success:#2f8f2f;--error:#c0392b;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;}
+body.dark{--primary:#9db4ff;--accent:#f0c040;--tint:#3a3320;--hl:#d4f24c;--bg1:#20242e;--bg2:#191c24;--text:#eef0f7;--card:#2b2f3a;--line:#454b5c;--soft:#9aa3bf;--success:#7bd67b;--error:#ff8a8a;}
+*{box-sizing:border-box;}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--text);background:linear-gradient(180deg,var(--bg1),var(--bg2));min-height:100vh;transition:background .4s,color .4s;}
+header{display:flex;align-items:center;gap:12px;padding:14px 18px;background:linear-gradient(135deg,#22305a,#2b3a6b);color:#fff8ef;box-shadow:0 4px 18px rgba(34,48,90,.3);}
+header h1{margin:0;font-size:18px;font-weight:900;flex:1;font-family:var(--serif);}
+header .sub{font-size:11px;opacity:.8;font-weight:600;}
+.icon-btn{background:rgba(255,255,255,.14);border:none;color:#fff;border-radius:10px;padding:8px 12px;font-size:14px;font-weight:800;cursor:pointer;}
+.tabs{display:flex;gap:6px;padding:10px 14px;overflow-x:auto;background:linear-gradient(180deg,#e8ecf2,#d8dde6);}
+body.dark .tabs{background:linear-gradient(180deg,#2e3136,#262a2f);}
+.tab-btn{padding:9px 16px;border:none;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;color:#555;background:#f0f2f6;box-shadow:0 2px 6px rgba(0,0,0,.12);}
+body.dark .tab-btn{background:#3a3e45;color:#9aa5b4;}
+.tab-btn.active{color:#fff8ef;background:var(--primary);}
+.wrap{max-width:760px;margin:0 auto;padding:18px 16px 60px;}
+.panel{display:none;}.panel.active{display:block;}
+.card{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:14px;box-shadow:0 6px 20px -14px rgba(0,0,0,.4);}
+.card h2{margin:0 0 8px;font-size:17px;color:var(--primary);font-family:var(--serif);}
+.ex{color:var(--soft);font-style:italic;font-size:13px;}
+.rule{display:grid;grid-template-columns:auto 1fr;gap:8px 12px;align-items:baseline;font-size:15px;margin:8px 0;}
+.rule b{font-size:19px;color:var(--accent);font-weight:900;}
+.tip{background:linear-gradient(180deg,rgba(200,150,62,.14),rgba(200,150,62,.06));border-left:4px solid var(--accent);border-radius:8px;padding:10px 12px;font-size:14px;margin-top:10px;}
+.scale{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:13px;font-weight:700;}
+.scale span{background:var(--bg2);border-radius:50px;padding:4px 10px;}
+.prompt{text-align:center;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px;}
+.prompt .meta{font-size:13px;color:var(--soft);}
+.prompt .big{font-size:26px;font-weight:900;color:var(--primary);margin:6px 0 2px;font-family:var(--serif);}
+.prompt .en{font-size:14px;color:var(--soft);font-style:italic;}
+.opts{display:flex;flex-direction:column;gap:8px;max-width:440px;margin:0 auto;}
+.opt{background:var(--card);border:2px solid var(--line);border-radius:10px;padding:12px 16px;font-size:17px;text-align:center;cursor:pointer;color:var(--text);}
+.opt:hover{border-color:var(--accent);}
+.opt.ok{border-color:var(--success);background:rgba(30,122,30,.12);}
+.opt.no{border-color:var(--error);background:rgba(163,0,0,.12);}
+select,input[type=text]{font-size:18px;padding:8px 10px;border:2px solid var(--line);border-radius:10px;background:var(--card);color:var(--text);}
+.btn{border:none;border-radius:12px;padding:11px 18px;font-size:15px;font-weight:800;cursor:pointer;color:#fff8ef;font-family:var(--serif);box-shadow:0 3px 0 rgba(34,48,90,.22);}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(34,48,90,.22);}
+.btn.roll{background:var(--accent);color:#3a2c00;}.btn.check{background:var(--success);}.btn.speak{background:#2bb6c2;}.btn.ghost{background:transparent;color:var(--primary);border:2px solid var(--line);box-shadow:none;}
+.row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px;}
+.feedback{text-align:center;font-size:16px;margin:12px 0 4px;min-height:24px;font-weight:700;}
+.feedback .correct{color:var(--success);}.feedback .wrong{color:var(--error);}
+.bar-wrap{height:8px;background:var(--line);border-radius:50px;overflow:hidden;margin-top:14px;}
+.bar{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--success));transition:width .3s;}
+.stats{display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:var(--soft);margin-top:6px;}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50;}
+.sum{background:var(--card);border-radius:16px;padding:18px;max-width:560px;width:100%;max-height:86vh;overflow:auto;}
+.sum h2{margin:0 0 12px;color:var(--primary);}
+.sum-stats{display:flex;gap:10px;margin-bottom:14px;}
+.stat{flex:1;text-align:center;background:var(--bg2);border-radius:12px;padding:10px;}
+.stat .v{font-size:24px;font-weight:900;color:var(--primary);}.stat .l{font-size:11px;color:var(--soft);text-transform:uppercase;}
+.sum table{width:100%;border-collapse:collapse;font-size:14px;}
+.sum th,.sum td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);}
+.row-ok{background:rgba(30,122,30,.08);}.row-err{background:rgba(163,0,0,.08);}
+</style>
+</head>
+<body>
+<header>
+  <div style="flex:1;"><h1>❤️ Aimer + le / la / les</h1><div class="sub">Unité 2 · lite pilot — Mémo + 🎲 only</div></div>
+  <button class="icon-btn" onclick="toggleDark()" id="darkBtn">🌙</button>
+</header>
+<div class="tabs">
+  <button class="tab-btn active" id="t_memo" onclick="showTab('memo')">📖 Mémo</button>
+  <button class="tab-btn" id="t_ex" onclick="showTab('ex')">🎲 Exercice</button>
+  <button class="tab-btn" id="t_bonus" onclick="showTab('bonus')">⭐ Bonus</button>
+</div>
+<div class="wrap">
+
+<div id="memo" class="panel active">
+  <div class="card">
+    <h2>Aimer, adorer, détester + <em>toute la catégorie</em></h2>
+    <p>With verbs of preference (aimer, adorer, détester, préférer) you talk about the
+       thing <strong>in general</strong>, so you use the <b>definite</b> article:</p>
+    <div class="rule"><b>le</b><span>+ nom masculin <span class="ex">J'aime le sport.</span></span></div>
+    <div class="rule"><b>la</b><span>+ nom féminin <span class="ex">J'adore la musique.</span></span></div>
+    <div class="rule"><b>l'</b><span>+ voyelle <span class="ex">J'aime l'art.</span></span></div>
+    <div class="rule"><b>les</b><span>+ pluriel <span class="ex">Je déteste les films d'horreur.</span></span></div>
+    <div class="tip">⚠️ <b>Even in the negative, the article stays le / la / les</b> — it does <u>not</u>
+      become <i>de</i> (that's the partitive, for quantities):<br>
+      J'aime <u>le</u> sport → Je n'aime <b>pas le</b> sport. &nbsp;·&nbsp; J'adore <u>l'</u>art → Je n'adore <b>pas l'</b>art.</div>
+    <div class="scale">
+      <span>je déteste 💔</span><span>je n'aime pas 🤍</span><span>j'aime bien 🙂</span><span>j'aime ❤️</span><span>j'adore ❤️❤️</span>
+    </div>
+  </div>
+</div>
+
+<div id="ex" class="panel">
+  <div class="card" style="text-align:center;">
+    <p style="margin:0 0 4px;">Choose the right definite article for the thing liked.</p>
+    <p class="ex" style="margin:0 0 10px;">Build: subject + preference verb + le/la/l'/les + noun.</p>
+    <button class="btn ghost" id="diffBtn" onclick="cycleDiff()" style="font-size:13px;padding:7px 14px;">★ Facile — tap to change</button>
+    <div style="margin-top:12px;"><button class="btn roll" onclick="newQ()">🎲 Nouvelle question</button></div>
+  </div>
+  <div id="promptArea"></div>
+  <div id="answerArea" style="text-align:center;"></div>
+  <div id="feedback" class="feedback"></div>
+  <div id="afterButtons" class="row" style="display:none;">
+    <button class="btn speak" onclick="pronounce()">🔊 J'écoute</button>
+    <button class="btn roll" onclick="newQ()">🎲 Nouvelle question</button>
+    <button class="btn ghost" onclick="finish()">🏁 Je termine</button>
+  </div>
+  <div class="bar-wrap"><div class="bar" id="bar"></div></div>
+  <div class="stats"><span>Score : <b id="score">0%</b></span><span>Streak : <b id="streak">0</b></span></div>
+</div>
+
+<div id="bonus" class="panel">
+  <div class="card" style="text-align:center;">
+    <p style="margin:0 0 4px;">Traduisez en français.</p>
+    <p class="ex" style="margin:0 0 10px;">Keep the definite article, even in the negative.</p>
+    <button class="btn roll" onclick="B_newQ()">🎲 Nouvelle question</button>
+  </div>
+  <div id="B_promptArea" class="prompt"><span class="ex">Cliquez sur 🎲 pour commencer.</span></div>
+  <div id="B_answerArea" style="text-align:center;"></div>
+  <div id="B_feedback" class="feedback"></div>
+  <div id="B_afterButtons" class="row" style="display:none;">
+    <button class="btn speak" onclick="B_pronounce()">🔊 J'écoute</button>
+    <button class="btn roll" onclick="B_newQ()">🎲 Nouvelle question</button>
+    <button class="btn ghost" onclick="B_finish()">🏁 Je termine</button>
+  </div>
+  <div class="bar-wrap"><div class="bar" id="B_bar"></div></div>
+  <div class="stats"><span>Score : <b id="B_score">0%</b></span><span>Streak : <b id="B_streak">0</b></span></div>
+</div>
+</div>
+
+<script>
+function safeSpeakFrench(t){try{if(!t||!window.speechSynthesis)return;speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="fr-FR";u.rate=.95;var vs=speechSynthesis.getVoices().filter(function(v){return v.lang&&v.lang.indexOf("fr")===0;});if(vs[0])u.voice=vs[0];speechSynthesis.speak(u);}catch(e){}}
+function toggleDark(){document.body.classList.toggle('dark');document.getElementById('darkBtn').textContent=document.body.classList.contains('dark')?'☀️':'🌙';}
+function showTab(id){document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});document.getElementById(id).classList.add('active');document.getElementById('t_'+id).classList.add('active');}
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+
+const SUBJECTS=[
+  {disp:"Je",slot:"je"},{disp:"Tu",slot:"tu"},{disp:"Il",slot:"il"},{disp:"Elle",slot:"il"},
+  {disp:"On",slot:"il"},{disp:"Nous",slot:"nous"},{disp:"Vous",slot:"vous"},{disp:"Ils",slot:"ils"},{disp:"Elles",slot:"ils"}
+];
+const END={je:"e",tu:"es",il:"e",nous:"ons",vous:"ez",ils:"ent"};
+const VERBS=[{inf:"aimer",stem:"aim",en:"like"},{inf:"adorer",stem:"ador",en:"love"},{inf:"détester",stem:"détest",en:"hate"}];
+const NOUNS=[
+  {fr:"sport",art:"le",en:"sport"},{fr:"football",art:"le",en:"football"},{fr:"tennis",art:"le",en:"tennis"},
+  {fr:"yoga",art:"le",en:"yoga"},{fr:"piano",art:"le",en:"piano"},{fr:"cinéma",art:"le",en:"cinema"},{fr:"chant",art:"le",en:"singing"},
+  {fr:"danse",art:"la",en:"dance"},{fr:"natation",art:"la",en:"swimming"},{fr:"musique",art:"la",en:"music"},{fr:"lecture",art:"la",en:"reading"},{fr:"boxe",art:"la",en:"boxing"},
+  {fr:"art",art:"l'",en:"art"},{fr:"athlétisme",art:"l'",en:"athletics"},{fr:"escalade",art:"l'",en:"climbing"},{fr:"équitation",art:"l'",en:"horse-riding"},
+  {fr:"films",art:"les",en:"films"},{fr:"livres",art:"les",en:"books"},{fr:"concerts",art:"les",en:"concerts"}
+];
+const ARTS=["le","la","l'","les"];
+function conj(v,slot){return v.stem+END[slot];}
+function subjVerb(s,v){const c=conj(v,s.slot);const el=s.slot==="je"&&/^[aeiouéèêhAEIOU]/.test(c);return el?("J'"+c):(s.disp+" "+c);}
+function nounPhrase(art,fr){return art+(art==="l'"?"":" ")+fr;}
+
+let diff=0,score=0,total=0,streak=0,best=0,hist=[],curQ=null,lastCorrect="";
+const DIFF=[["★","Facile"],["★★","Intermédiaire"],["★★★","Difficile"]];
+function cycleDiff(){diff=(diff+1)%3;applyDiff();if(curQ)newQ();}
+function applyDiff(){document.getElementById('diffBtn').textContent=DIFF[diff][0]+" "+DIFF[diff][1]+" — tap to change";}
+function newQ(){
+  const s=pick(SUBJECTS),v=pick(VERBS),n=pick(NOUNS);
+  curQ={s:s,v:v,n:n,sv:subjVerb(s,v)};
+  lastCorrect=curQ.sv+" "+nounPhrase(n.art,n.fr)+".";
+  document.getElementById('promptArea').innerHTML='<div class="prompt"><div class="meta">'+curQ.sv+' … ('+v.en+')</div><div class="big">'+n.fr+'</div><div class="en">'+n.en+'</div></div>';
+  document.getElementById('feedback').innerHTML="";document.getElementById('afterButtons').style.display="none";
+  if(diff===0)renderEasy();else if(diff===1)renderMed();else renderHard();
+}
+function renderEasy(){
+  const opts=ARTS.slice().sort(function(){return Math.random()-.5;});
+  let h='<div class="opts">';
+  opts.forEach(function(a){h+='<button class="opt" onclick="checkEasy(this,\''+a+'\')">'+curQ.sv+' '+nounPhrase(a,curQ.n.fr)+'.</button>';});
+  h+='</div>';document.getElementById('answerArea').innerHTML=h;
+}
+function checkEasy(btn,a){const ok=a===curQ.n.art;document.querySelectorAll('#answerArea .opt').forEach(function(b){b.style.pointerEvents='none';});btn.classList.add(ok?'ok':'no');grade(ok,curQ.sv+" "+nounPhrase(a,curQ.n.fr));}
+function renderMed(){let o='<option value="">[article]</option>';ARTS.slice().sort(function(){return Math.random()-.5;}).forEach(function(a){o+='<option value="'+a+'">'+a+'</option>';});document.getElementById('answerArea').innerHTML='<div style="font-size:20px;margin:8px 0;">'+curQ.sv+' <select id="d">'+o+'</select> '+curQ.n.fr+'.</div><button class="btn check" onclick="checkMed()">✅ Je vérifie</button>';}
+function checkMed(){const v=document.getElementById('d').value;grade(v===curQ.n.art,curQ.sv+" "+nounPhrase(v||"?",curQ.n.fr));}
+function renderHard(){document.getElementById('answerArea').innerHTML='<input id="t" type="text" placeholder="Écrivez la phrase complète…" autocomplete="off" autocorrect="off" spellcheck="false" style="min-width:300px;"><br><button class="btn check" onclick="checkHard()" style="margin-top:10px;">✅ Je vérifie</button>';document.getElementById('t').addEventListener('keydown',function(e){if(e.key==='Enter')checkHard();});}
+function norm(s){return s.toLowerCase().replace(/[.,!?]/g,"").replace(/\s+/g," ").replace(/’/g,"'").trim();}
+function checkHard(){grade(norm(document.getElementById('t').value)===norm(lastCorrect),document.getElementById('t').value);}
+function grade(ok,user){total++;if(ok){score++;streak++;}else{streak=0;}if(streak>best)best=streak;hist.push({q:curQ.n.fr,user:user,correct:lastCorrect,ok:ok});document.getElementById('feedback').innerHTML=ok?'<span class="correct">✔ Correct !</span> '+lastCorrect:'<span class="wrong">✘ Presque…</span> '+lastCorrect;document.getElementById('afterButtons').style.display="flex";document.getElementById('score').textContent=Math.round(score/total*100)+"%";document.getElementById('bar').style.width=Math.round(score/total*100)+"%";document.getElementById('streak').textContent=streak;safeSpeakFrench(lastCorrect);}
+function pronounce(){safeSpeakFrench(lastCorrect);}
+function finish(){showSummary("Résumé",hist,score,total,best,"Noun");}
+
+const BONUS=[
+  {en:"I like sport.",fr:"J'aime le sport."},{en:"She loves music.",fr:"Elle adore la musique."},
+  {en:"We hate films.",fr:"Nous détestons les films."},{en:"I love art.",fr:"J'adore l'art."},
+  {en:"He doesn't like tennis.",fr:"Il n'aime pas le tennis."},{en:"They (m.) love reading.",fr:"Ils adorent la lecture."},
+  {en:"You (sg.) hate boxing.",fr:"Tu détestes la boxe."},{en:"I don't like books.",fr:"Je n'aime pas les livres."},
+  {en:"You (pl.) love the piano.",fr:"Vous adorez le piano."},{en:"She doesn't like athletics.",fr:"Elle n'aime pas l'athlétisme."}
+];
+let B_score=0,B_total=0,B_streak=0,B_best=0,B_hist=[],B_cur=null;
+function B_newQ(){B_cur=pick(BONUS);document.getElementById('B_promptArea').innerHTML='<span style="font-size:22px;font-weight:800;color:var(--primary);">'+B_cur.en+'</span>';document.getElementById('B_answerArea').innerHTML='<input id="B_t" type="text" placeholder="Écrivez en français…" autocomplete="off" autocorrect="off" spellcheck="false" style="min-width:300px;"><br><button class="btn check" onclick="B_check()" style="margin-top:10px;">✅ Je vérifie</button>';document.getElementById('B_feedback').innerHTML="";document.getElementById('B_afterButtons').style.display="none";document.getElementById('B_t').addEventListener('keydown',function(e){if(e.key==='Enter')B_check();});}
+function B_check(){if(!B_cur)return;const ok=norm(document.getElementById('B_t').value)===norm(B_cur.fr);B_total++;if(ok){B_score++;B_streak++;}else{B_streak=0;}if(B_streak>B_best)B_best=B_streak;B_hist.push({q:B_cur.en,user:document.getElementById('B_t').value,correct:B_cur.fr,ok:ok});document.getElementById('B_feedback').innerHTML=ok?'<span class="correct">✔ Correct !</span> '+B_cur.fr:'<span class="wrong">✘ Presque…</span> '+B_cur.fr;document.getElementById('B_afterButtons').style.display="flex";document.getElementById('B_score').textContent=Math.round(B_score/B_total*100)+"%";document.getElementById('B_bar').style.width=Math.round(B_score/B_total*100)+"%";document.getElementById('B_streak').textContent=B_streak;safeSpeakFrench(B_cur.fr);}
+function B_pronounce(){safeSpeakFrench(B_cur?B_cur.fr:"");}
+function B_finish(){showSummary("Résumé — Bonus",B_hist,B_score,B_total,B_best,"English");}
+
+function showSummary(title,h,sc,tt,bs,col){if(!h.length){alert("Complétez au moins une question !");return;}const pct=Math.round(sc/tt*100);const rows=h.map(function(x,i){return '<tr class="'+(x.ok?'row-ok':'row-err')+'"><td>'+(i+1)+'</td><td>'+x.q+'</td><td style="font-style:italic;">'+(x.user||"—")+'</td><td style="color:var(--success);">'+x.correct+'</td><td>'+(x.ok?"✔":"✘")+'</td></tr>';}).join("");const ov=document.createElement("div");ov.className="overlay";ov.onclick=function(e){if(e.target===ov)ov.remove();};ov.innerHTML='<div class="sum"><h2>'+title+'</h2><div class="sum-stats"><div class="stat"><div class="v">'+pct+'%</div><div class="l">Score</div></div><div class="stat"><div class="v">'+sc+'/'+tt+'</div><div class="l">Correct</div></div><div class="stat"><div class="v">'+bs+'</div><div class="l">Streak</div></div></div><table><thead><tr><th>#</th><th>'+col+'</th><th>Vous</th><th>Correct</th><th></th></tr></thead><tbody>'+rows+'</tbody></table><div class="row" style="margin-top:14px;"><button class="btn ghost" onclick="this.closest(\'.overlay\').remove()">Fermer</button></div></div>';document.body.appendChild(ov);}
+
+if(window.speechSynthesis)speechSynthesis.getVoices();
+applyDiff();
+</script>
+</body>
+</html>
