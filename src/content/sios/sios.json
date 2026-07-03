@@ -160,8 +160,8 @@
     "cefrMode": "Spoken Production",
     "skill": "production",
     "isProduction": false,
-    "canDo": "I can highlight who I am talking about using the right pronoun in simple sentences.",
-    "competence": "Match each of the 8 subject pronouns to its stressed pronoun (moi, toi, lui, elle, nous, vous, eux, elles); sort stressed pronouns into subject-only / stressed-only / either (≥7/8).",
+    "canDo": "I can identify any of the 8 stressed pronouns (moi, toi, lui, elle, nous, vous, eux, elles) by their position — after a preposition, after c'est, or standing alone (avec moi, c'est moi, moi !).",
+    "competence": "Match each of them to their 8 subject pronouns (je, tu, …) (≥7/8).",
     "collectionId": "stress-pronouns"
   },
   {
