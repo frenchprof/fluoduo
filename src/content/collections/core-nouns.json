@@ -26,7 +26,20 @@
       ]
     },
     "lexicalator": {
-      "decoys": ["pre", "non", "fam", "dan", "teu", "prof", "sère", "clos", "yan", "hié", "cri", "seu"]
+      "decoys": [
+        "pre",
+        "non",
+        "fam",
+        "dan",
+        "teu",
+        "prof",
+        "sère",
+        "clos",
+        "yan",
+        "hié",
+        "cri",
+        "seu"
+      ]
     }
   },
   "items": [
@@ -34,7 +47,10 @@
       "id": "core-nouns-01",
       "fr": "prénom",
       "en": "first name",
-      "syllables": ["pré", "nom"],
+      "syllables": [
+        "pré",
+        "nom"
+      ],
       "tags": [
         "col:un"
       ]
@@ -43,7 +59,9 @@
       "id": "core-nouns-02",
       "fr": "nom",
       "en": "surname",
-      "syllables": ["nom"],
+      "syllables": [
+        "nom"
+      ],
       "tags": [
         "col:un"
       ]
@@ -52,7 +70,9 @@
       "id": "core-nouns-03",
       "fr": "femme",
       "en": "woman",
-      "syllables": ["femme"],
+      "syllables": [
+        "femme"
+      ],
       "tags": [
         "col:une"
       ]
@@ -61,7 +81,9 @@
       "id": "core-nouns-04",
       "fr": "fille",
       "en": "girl",
-      "syllables": ["fille"],
+      "syllables": [
+        "fille"
+      ],
       "tags": [
         "col:une"
       ]
@@ -70,7 +92,9 @@
       "id": "core-nouns-05",
       "fr": "dame",
       "en": "lady",
-      "syllables": ["dame"],
+      "syllables": [
+        "dame"
+      ],
       "tags": [
         "col:une"
       ]
@@ -79,7 +103,9 @@
       "id": "core-nouns-06",
       "fr": "homme",
       "en": "man",
-      "syllables": ["homme"],
+      "syllables": [
+        "homme"
+      ],
       "tags": [
         "col:un"
       ]
@@ -88,7 +114,11 @@
       "id": "core-nouns-07",
       "fr": "étudiant",
       "en": "student (m)",
-      "syllables": ["é", "tu", "diant"],
+      "syllables": [
+        "é",
+        "tu",
+        "diant"
+      ],
       "tags": [
         "col:un"
       ]
@@ -97,7 +127,11 @@
       "id": "core-nouns-08",
       "fr": "étudiante",
       "en": "student (f)",
-      "syllables": ["é", "tu", "diante"],
+      "syllables": [
+        "é",
+        "tu",
+        "diante"
+      ],
       "tags": [
         "col:une"
       ]
@@ -106,7 +140,11 @@
       "id": "core-nouns-09",
       "fr": "professeur",
       "en": "teacher (m)",
-      "syllables": ["pro", "fes", "seur"],
+      "syllables": [
+        "pro",
+        "fes",
+        "seur"
+      ],
       "tags": [
         "col:un"
       ]
@@ -115,7 +153,11 @@
       "id": "core-nouns-10",
       "fr": "professeure",
       "en": "teacher (f)",
-      "syllables": ["pro", "fes", "seure"],
+      "syllables": [
+        "pro",
+        "fes",
+        "seure"
+      ],
       "tags": [
         "col:une"
       ]
@@ -124,7 +166,13 @@
       "id": "core-nouns-11",
       "fr": "salle de classe",
       "en": "classroom",
-      "syllables": ["sal", "le", " de", " clas", "se"],
+      "syllables": [
+        "sal",
+        "le",
+        "de",
+        "clas",
+        "se"
+      ],
       "tags": [
         "col:une"
       ]
@@ -133,7 +181,10 @@
       "id": "core-nouns-12",
       "fr": "tableau",
       "en": "board",
-      "syllables": ["ta", "bleau"],
+      "syllables": [
+        "ta",
+        "bleau"
+      ],
       "tags": [
         "col:un"
       ]
@@ -142,7 +193,9 @@
       "id": "core-nouns-13",
       "fr": "livre",
       "en": "book",
-      "syllables": ["livre"],
+      "syllables": [
+        "livre"
+      ],
       "tags": [
         "col:un"
       ]
@@ -151,7 +204,10 @@
       "id": "core-nouns-14",
       "fr": "crayon",
       "en": "pencil",
-      "syllables": ["cra", "yon"],
+      "syllables": [
+        "cra",
+        "yon"
+      ],
       "tags": [
         "col:un"
       ]
@@ -160,7 +216,10 @@
       "id": "core-nouns-15",
       "fr": "cahier",
       "en": "exercise book",
-      "syllables": ["ca", "hier"],
+      "syllables": [
+        "ca",
+        "hier"
+      ],
       "tags": [
         "col:un"
       ]
@@ -169,7 +228,9 @@
       "id": "core-nouns-16",
       "fr": "casque",
       "en": "headphones",
-      "syllables": ["casque"],
+      "syllables": [
+        "casque"
+      ],
       "tags": [
         "col:un"
       ]
@@ -178,7 +239,10 @@
       "id": "core-nouns-17",
       "fr": "micro",
       "en": "microphone",
-      "syllables": ["mi", "cro"],
+      "syllables": [
+        "mi",
+        "cro"
+      ],
       "tags": [
         "col:un"
       ]
