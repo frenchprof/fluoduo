@@ -279,25 +279,25 @@ export default function Lexicalator({
           moved down into the main area / bay), so it's never in two places. */}
       <div className="rounded-2xl border-4 border-white p-3" style={{ background: "linear-gradient(180deg,#ffe08a,#ffcf5c)" }}>
         <div className="flex min-h-[3.5rem] flex-wrap justify-center gap-3">
-          {chests.filter((c) => c.entry.id !== selected).map((c) => {
-            const picked = false;
-            return (
-              <button key={c.entry.id} type="button" onClick={() => pickChest(c.entry.id)}
-                onPointerDown={(e) => startDrag(e, c.entry.id)}
-                className="w-36 cursor-grab touch-none rounded-xl border-2 border-b-4 bg-white p-2 text-center transition active:cursor-grabbing"
-                style={{ borderColor: picked ? "#c56a00" : "#d9a63a", transform: picked ? "translateY(-4px)" : undefined, boxShadow: picked ? "0 0 0 4px rgba(224,134,0,.5)" : undefined, opacity: ghost?.id === c.entry.id ? 0.4 : 1 }}>
-                {/* Dan 2026-07-03: contrasts weren't strong enough — dark ink
-                    on white instead of pale brand blue, darker progress dashes. */}
-                <span className="block text-sm font-black" style={{ color: "#075985" }}>{c.entry.en}</span>
-                <span className="mt-1 flex justify-center gap-1">
-                  {(hard ? [c.entry.syllables.length] : c.entry.syllables).map((s, i) => {
-                    const doneSlot = hard ? c.filled.some(Boolean) : c.filled[i];
-                    return <span key={i} className="h-2 rounded-full" style={{ width: hard ? 24 : Math.max(8, String(s).length * 5), background: doneSlot ? "#46a302" : "#8a5a00" }} />;
-                  })}
-                </span>
-              </button>
-            );
-          })}
+          {chests.filter((c) => c.entry.id !== selected).map((c) => (
+            // A locked treasure chest waiting in the holding area: gold body,
+            // a darker lid band with a clasp, and the syllable-count lock below.
+            <button key={c.entry.id} type="button" onClick={() => pickChest(c.entry.id)}
+              onPointerDown={(e) => startDrag(e, c.entry.id)}
+              className="w-36 cursor-grab touch-none overflow-hidden rounded-lg border-2 border-b-4 text-center transition active:cursor-grabbing"
+              style={{ borderColor: "#7a4e0a", background: "linear-gradient(180deg,#ffe08a,#eaa61c)", boxShadow: "inset 0 -2px 0 rgba(0,0,0,.15)", opacity: ghost?.id === c.entry.id ? 0.4 : 1 }}>
+              <span className="flex items-center justify-center" style={{ height: 10, background: "linear-gradient(180deg,#c8860f,#96600c)" }}>
+                <span style={{ width: 12, height: 4, borderRadius: 1, background: "#ffe9a8" }} />
+              </span>
+              <span className="block px-2 pt-1 text-sm font-black" style={{ color: "#5a3a08" }}>{c.entry.en}</span>
+              <span className="mb-1.5 mt-1 flex justify-center gap-1">
+                {(hard ? [c.entry.syllables.length] : c.entry.syllables).map((s, i) => {
+                  const doneSlot = hard ? c.filled.some(Boolean) : c.filled[i];
+                  return <span key={i} className="h-2 rounded-full" style={{ width: hard ? 24 : Math.max(8, String(s).length * 5), background: doneSlot ? "#2e7d00" : "#8a5a0f" }} />;
+                })}
+              </span>
+            </button>
+          ))}
         </div>
       </div>
 
@@ -322,8 +322,13 @@ export default function Lexicalator({
           </div>
         )}
         {active && (
-          <div className="rounded-2xl border-4 bg-white px-4 py-3 text-center" style={{ borderColor: "#e08600", boxShadow: "0 10px 24px -16px rgba(12,74,110,.5)" }}>
-            <div className="mb-3 text-lg font-black" style={{ color: "#075985" }}>{active.entry.en}</div>
+          <div className="overflow-hidden rounded-xl border-2 text-center" style={{ borderColor: "#7a4e0a", borderBottomWidth: 6, background: "linear-gradient(180deg,#ffe6a0,#eaa61c)", boxShadow: "0 12px 24px -14px rgba(122,78,10,.7)" }}>
+            {/* the opened lid */}
+            <div className="flex items-center justify-center" style={{ height: 14, background: "linear-gradient(180deg,#c8860f,#8a5709)" }}>
+              <span style={{ width: 18, height: 6, borderRadius: 2, background: "#ffe9a8" }} />
+            </div>
+            <div className="px-4 py-3">
+            <div className="mb-3 text-lg font-black" style={{ color: "#5a3a08" }}>{active.entry.en}</div>
             {hard ? (
               <div className="mx-auto flex min-h-[3rem] min-w-[8rem] items-center justify-center rounded-xl border-2 border-dashed px-4 text-xl font-black" style={{ borderColor: "#e08600", color: "#0c4a6e" }}>
                 {active.entry.syllables.filter((s, i) => active.filled[i]).join("") || <span style={{ color: "#4a7fa6" }}>?</span>}
@@ -350,6 +355,7 @@ export default function Lexicalator({
                 })}
               </div>
             )}
+            </div>
           </div>
         )}
       </div>
@@ -382,27 +388,25 @@ export default function Lexicalator({
         )}
       </div>
 
-      {/* Votre trésor — each freed word lands here as a little treasure chest */}
-      <div className="mt-3 flex min-h-[3rem] flex-wrap items-end gap-2">
+      {/* Votre trésor — the words RELEASED from the chests (no boxes here; the
+          chests stay up in the waiting/main areas — Dan, 2026-07-03). */}
+      <div className="mt-3 flex min-h-[2.5rem] flex-wrap items-center gap-2">
         <span className="mr-1 text-[0.7rem] font-black uppercase tracking-wider" style={{ color: "#e08600" }}>🧰 Votre trésor :</span>
         {done.map((d, i) => (
           <span
             key={i}
             lang="fr"
-            className="relative inline-flex flex-col items-center overflow-hidden rounded-md border-2 border-b-4"
+            className="inline-flex items-center gap-1 rounded-full border-2 px-2.5 py-1 text-sm font-black"
             style={{
-              borderColor: "#8a5a0f",
-              background: "linear-gradient(180deg,#ffe08a 0%,#f0b429 100%)",
-              color: "#5a3a08",
-              boxShadow: "inset 0 -2px 0 rgba(0,0,0,.12)",
+              borderColor: "#e0a500",
+              background: "#fff8e1",
+              color: "#9a6600",
+              boxShadow: "0 1px 4px rgba(224,165,0,.4)",
               animation: "lxland 520ms cubic-bezier(.2,.7,.3,1.25) both",
             }}
           >
-            {/* the chest lid — a darker gold band with a clasp */}
-            <span className="flex w-full items-center justify-center" style={{ height: 7, background: "linear-gradient(180deg,#c8860f,#a8700f)" }}>
-              <span style={{ width: 6, height: 3, borderRadius: 1, background: "#ffe9a8" }} />
-            </span>
-            <span className="px-2 py-0.5 text-sm font-black">{d.fr}</span>
+            <span aria-hidden>✨</span>
+            {d.fr}
           </span>
         ))}
       </div>
