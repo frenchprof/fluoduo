@@ -187,7 +187,9 @@ export default function Lexicalator({
         const nextUp = queue[0];
         const newChests = nextUp ? [...rest, { entry: nextUp, filled: blankFill(nextUp) }] : rest;
         setChests(newChests);
-        setSelected(newChests[0]?.entry.id ?? null);
+        // Empty the bay — the learner drags down the next chest (same as the
+        // opening), so a chest is never auto-placed in the bay AND the lane.
+        setSelected(null);
         if (nextUp) setQueue((q) => q.slice(1));
         setCleared((n) => {
           const nn = n + 1;
@@ -273,11 +275,12 @@ export default function Lexicalator({
         {hard && <b style={{ color: "#c0392b" }}> Hard: the syllable count is hidden.</b>}
       </p>
 
-      {/* Chest lane — stationary; pick one */}
+      {/* Chest lane — the holding area; the picked chest LEAVES it (it has
+          moved down into the main area / bay), so it's never in two places. */}
       <div className="rounded-2xl border-4 border-white p-3" style={{ background: "linear-gradient(180deg,#ffe08a,#ffcf5c)" }}>
-        <div className="flex flex-wrap justify-center gap-3">
-          {chests.map((c) => {
-            const picked = c.entry.id === selected;
+        <div className="flex min-h-[3.5rem] flex-wrap justify-center gap-3">
+          {chests.filter((c) => c.entry.id !== selected).map((c) => {
+            const picked = false;
             return (
               <button key={c.entry.id} type="button" onClick={() => pickChest(c.entry.id)}
                 onPointerDown={(e) => startDrag(e, c.entry.id)}
