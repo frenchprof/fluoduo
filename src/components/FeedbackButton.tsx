@@ -1,17 +1,59 @@
 "use client";
 
+/**
+ * Bug-report form (Dan, 2026-07-03: "not an email — a form to submit bug
+ * reports, standard bugs the user can check off, plus Other (Specify)").
+ * Writes to the Firestore `feedback` collection (see firestore.rules — the
+ * feedback rule must be deployed for this to persist). Works for anyone, signed
+ * in or not; the uid is attached when available.
+ */
+
 import { useState } from "react";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db, auth } from "@/lib/firebase/client";
+
+const ISSUES = [
+  "A page won't load or is blank",
+  "Audio / pronunciation didn't play",
+  "A question's marked answer seems wrong",
+  "A French word or translation is incorrect",
+  "A game or activity got stuck",
+  "The layout looks broken on my screen",
+];
+
+type Status = "idle" | "sending" | "sent" | "error";
 
 export default function FeedbackButton() {
   const [open, setOpen] = useState(false);
-  const [msg, setMsg] = useState("");
+  const [checked, setChecked] = useState<Record<string, boolean>>({});
+  const [other, setOther] = useState(false);
+  const [details, setDetails] = useState("");
+  const [status, setStatus] = useState<Status>("idle");
 
-  function send() {
-    const subject = encodeURIComponent("FluoLingo feedback");
-    const body = encodeURIComponent(msg.trim() || "(no message)");
-    window.open(`mailto:dan@chank.wang?subject=${subject}&body=${body}`);
-    setMsg("");
-    setOpen(false);
+  const categories = [...ISSUES.filter((i) => checked[i]), ...(other ? ["Other"] : [])];
+  const canSend = categories.length > 0 || details.trim().length > 0;
+
+  function reset() {
+    setChecked({}); setOther(false); setDetails(""); setStatus("idle");
+  }
+  function close() { setOpen(false); reset(); }
+
+  async function send() {
+    if (!canSend || status === "sending") return;
+    setStatus("sending");
+    try {
+      await addDoc(collection(db, "feedback"), {
+        categories,
+        details: details.trim().slice(0, 2000),
+        url: typeof window !== "undefined" ? window.location.pathname : "",
+        userAgent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 300) : "",
+        uid: auth.currentUser?.uid ?? null,
+        createdAt: serverTimestamp(),
+      });
+      setStatus("sent");
+    } catch {
+      setStatus("error");
+    }
   }
 
   return (
@@ -19,39 +61,62 @@ export default function FeedbackButton() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        title="Send feedback or report a bug"
+        title="Report a bug"
         className="fixed bottom-5 right-5 z-50 flex items-center gap-1.5 rounded-full bg-[var(--fluo-hl)] px-3.5 py-2 text-sm font-bold text-[color:var(--fluo-ink)] shadow-lg hover:brightness-95 active:scale-95 transition-transform"
       >
         💬 Feedback
       </button>
 
       {open && (
-        <div
-          className="fixed inset-0 z-50 flex items-end justify-end p-5"
-          onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}
-        >
+        <div className="fixed inset-0 z-50 flex items-end justify-end p-5" onClick={(e) => { if (e.target === e.currentTarget) close(); }}>
           <div className="cahier-sheet w-full max-w-sm rounded-2xl p-5 shadow-2xl ring-1 ring-black/10">
-            <h2 className="fluo-serif mb-1 text-lg font-bold text-[color:var(--fluo-ink)]">
-              Report a bug · Suggest something
-            </h2>
-            <p className="mb-3 text-xs text-[color:var(--fluo-ink-soft)]">
-              Describe what happened or what you'd like to see — opens your email app with the message ready to send.
-            </p>
-            <textarea
-              value={msg}
-              onChange={(e) => setMsg(e.target.value)}
-              rows={4}
-              placeholder="What went wrong? What should change?"
-              className="w-full rounded-lg border border-[color:var(--cahier-rule)] bg-white/60 p-2.5 text-sm text-[color:var(--fluo-ink)] placeholder:text-[color:var(--fluo-ink-soft)] focus:outline-none focus:ring-2 focus:ring-[var(--fluo-hl)] resize-none"
-            />
-            <div className="mt-3 flex gap-2">
-              <button type="button" onClick={send} className="fluo-btn flex-1">
-                Open in email
-              </button>
-              <button type="button" onClick={() => setOpen(false)} className="fluo-btn fluo-btn-ghost">
-                Cancel
-              </button>
-            </div>
+            {status === "sent" ? (
+              <div className="text-center">
+                <p className="fluo-serif text-lg font-bold text-[color:var(--fluo-ink)]">Thanks! 🙌</p>
+                <p className="mt-1 text-sm text-[color:var(--fluo-ink-soft)]">Your report was sent.</p>
+                <button type="button" onClick={close} className="fluo-btn fluo-btn-sm mt-4">Close</button>
+              </div>
+            ) : (
+              <>
+                <h2 className="fluo-serif mb-1 text-lg font-bold text-[color:var(--fluo-ink)]">Report a bug</h2>
+                <p className="mb-3 text-xs text-[color:var(--fluo-ink-soft)]">Tick anything that went wrong — add details if you like.</p>
+
+                <div className="space-y-1.5">
+                  {ISSUES.map((issue) => (
+                    <label key={issue} className="flex cursor-pointer items-start gap-2 text-sm text-[color:var(--fluo-ink)]">
+                      <input type="checkbox" checked={!!checked[issue]} onChange={(e) => setChecked((c) => ({ ...c, [issue]: e.target.checked }))}
+                        className="mt-0.5 h-4 w-4 accent-[var(--fluo-card-accent)]" />
+                      <span>{issue}</span>
+                    </label>
+                  ))}
+                  <label className="flex cursor-pointer items-start gap-2 text-sm font-bold text-[color:var(--fluo-ink)]">
+                    <input type="checkbox" checked={other} onChange={(e) => setOther(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 accent-[var(--fluo-card-accent)]" />
+                    <span>Other (specify below)</span>
+                  </label>
+                </div>
+
+                <textarea
+                  value={details}
+                  onChange={(e) => setDetails(e.target.value)}
+                  rows={3}
+                  placeholder={other ? "Please describe the issue…" : "Anything else? (optional)"}
+                  className="mt-3 w-full resize-none rounded-lg border border-[color:var(--cahier-rule)] bg-white/60 p-2.5 text-sm text-[color:var(--fluo-ink)] placeholder:text-[color:var(--fluo-ink-soft)] focus:outline-none focus:ring-2 focus:ring-[var(--fluo-hl)]"
+                />
+
+                {status === "error" && (
+                  <p className="mt-2 text-xs font-bold text-rose-600">Couldn&rsquo;t send — check your connection and try again.</p>
+                )}
+
+                <div className="mt-3 flex gap-2">
+                  <button type="button" onClick={send} disabled={!canSend || status === "sending"}
+                    className="fluo-btn flex-1 disabled:opacity-50">
+                    {status === "sending" ? "Sending…" : "Send report"}
+                  </button>
+                  <button type="button" onClick={close} className="fluo-btn fluo-btn-ghost">Cancel</button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}

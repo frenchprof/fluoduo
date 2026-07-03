@@ -26,6 +26,17 @@ service cloud.firestore {
       allow read, write: if isOwner(uid);
     }
 
+    // ── Bug reports / feedback ─────────────────────────────────
+    // Anyone (signed in or not) may CREATE a bounded feedback doc — the report
+    // form. No client read/edit/delete; triage happens admin-side (console).
+    match /feedback/{id} {
+      allow create: if request.resource.data.details is string
+                    && request.resource.data.details.size() < 2000
+                    && request.resource.data.categories is list
+                    && request.resource.data.categories.size() < 20;
+      allow read, update, delete: if false;
+    }
+
     // ── Usage events (telemetry) ───────────────────────────────
     // Create-only for the signed-in user on their own uid. No client read/edit/delete.
     // Cross-user analytics happen admin-side (console / BigQuery export).
