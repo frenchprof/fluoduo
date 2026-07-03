@@ -25,11 +25,13 @@
  *     spent by the Pretest — see the pretesting-effect rule in the handoff doc.
  *   - itemSrs: per-item spacing state written by Practice-side surfaces with a
  *     binary correctness check (dice Practice, Match It, Flip It's Test
- *     Yourself). Fixed ladder, NOT SM-2 (src/lib/firebase/srs.ts stays the
- *     future synced upgrade path, unwired by design — it needs auth). Read by
- *     the Reviser (when built) to bias its mixed set toward due items. The
- *     Pretest and Say It never write here: the Pretest is a cold diagnostic,
- *     and Say It's STT grader is a placeholder, not a trustworthy signal yet.
+ *     Yourself, Complete It, Say It). Fixed ladder, NOT SM-2
+ *     (src/lib/firebase/srs.ts stays the future synced upgrade path, unwired by
+ *     design — it needs auth). Read by the Reviser to bias its set toward due
+ *     items. Say It now feeds it too (Dan, 2026-07-03: the Reviser must "take
+ *     note of what has been missed") — its grader has since been hardened
+ *     (accents, hyphens, numeric forms). The Pretest still never writes here:
+ *     it's a deliberate cold diagnostic on a separate item-id namespace.
  */
 
 export type Progress = {
