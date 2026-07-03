@@ -25,7 +25,10 @@ const START_LIVES = 3;
 const LANE = 3; // chests on the lane at once
 const QUOTA = 6; // words to clear a level
 const minSylForLevel = (l: number) => (l <= 1 ? 1 : l <= 2 ? 2 : 3);
-const beltSecsFor = (l: number) => Math.max(7, 30 - (l - 1) * 5); // slower at low levels
+// Belt loop time in seconds — gentle acceleration (Dan, 2026-07-03: "go easy on
+// the acceleration"): a slow ~60s at level 1, easing by 5s a level to a calm
+// 20s floor, so it never jumps to a frantic pace.
+const beltSecsFor = (l: number) => Math.max(20, 60 - (l - 1) * 5);
 const keyW = (s: string) => Math.max(40, 24 + s.length * 15);
 
 function shuffle<T>(a: T[]): T[] {
@@ -226,10 +229,11 @@ export default function Lexicalator({
     setCleared(0); setLevelDone(false);
   }
 
-  // The belt is dead-still until a chest is picked; once one is selected it
-  // begins an almost-imperceptible crawl (Dan, 2026-07-03), then — after the
-  // first word is forged — eases into real time-pressure as levels rise.
-  const beltFrozen = !selected;
+  // The belt is dead-still only at the very start (before any chest is picked).
+  // Once the first word is forged it keeps scrolling continuously — including
+  // the gap between clearing one chest and picking the next (Dan, 2026-07-03:
+  // that transition shouldn't stall the belt) — easing gently as levels rise.
+  const beltFrozen = !firstDone && !selected;
   const beltSecs = firstDone ? beltSecsFor(level) : 140;
 
   // Client-only game: the belt shuffles with Math.random, so don't SSR it.
