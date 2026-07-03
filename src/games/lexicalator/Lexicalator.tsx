@@ -14,7 +14,7 @@
  * demand longer words. Syllables are hand-authored (see lib/syllabify.ts).
  */
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { speak } from "@/games/letris/speech";
 import { chiptune } from "@/games/audio/chiptune";
 import { recordItemResult, spendHeart } from "@/lib/progress";
@@ -77,15 +77,53 @@ export default function Lexicalator({
 
   // The A-minor swung loop starts with the game itself: the first chest pick
   // (a user gesture, so the AudioContext may be created) — Dan 2026-07-03,
-  // "the music is missing".
-  function pickChest(id: string) {
+  // "the music is missing". pickChest is idempotent (same id → same state,
+  // music guarded by musicAutoRef), so a drag-release AND its trailing click
+  // can both fire harmlessly.
+  const pickChest = useCallback((id: string) => {
     setSelected(id);
     if (!musicAutoRef.current) {
       musicAutoRef.current = true;
       chiptune.play("conveyor");
       setMusic(true);
     }
-  }
+  }, []);
+
+  // Drag-to-pick (Dan, 2026-07-03: "allow for both dragging or clicking"). A
+  // pointer-down on a chest starts a drag; a ghost chest follows the pointer,
+  // and releasing picks that chest. Clicking (no movement) still works via the
+  // button's onClick, as does keyboard.
+  const dragRef = useRef<{ id: string; sx: number; sy: number; moved: boolean } | null>(null);
+  const [ghost, setGhost] = useState<{ id: string; x: number; y: number } | null>(null);
+  useEffect(() => {
+    const move = (e: PointerEvent) => {
+      const d = dragRef.current;
+      if (!d) return;
+      if (!d.moved && Math.hypot(e.clientX - d.sx, e.clientY - d.sy) < 6) return;
+      d.moved = true;
+      setGhost({ id: d.id, x: e.clientX, y: e.clientY });
+    };
+    const end = (select: boolean) => {
+      const d = dragRef.current;
+      dragRef.current = null;
+      setGhost(null);
+      if (select && d) pickChest(d.id);
+    };
+    const up = () => end(true);
+    const cancel = () => end(false);
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+    window.addEventListener("pointercancel", cancel);
+    return () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", cancel);
+    };
+  }, [pickChest]);
+  const startDrag = (e: React.PointerEvent, id: string) => {
+    dragRef.current = { id, sx: e.clientX, sy: e.clientY, moved: false };
+  };
+  const ghostEntry = ghost ? chests.find((c) => c.entry.id === ghost.id)?.entry : undefined;
 
   // (Re)deal the lane for the current level. Runs on mount and each level.
   useEffect(() => {
@@ -246,8 +284,9 @@ export default function Lexicalator({
             const picked = c.entry.id === selected;
             return (
               <button key={c.entry.id} type="button" onClick={() => pickChest(c.entry.id)}
-                className="w-36 rounded-xl border-2 border-b-4 bg-white p-2 text-center transition"
-                style={{ borderColor: picked ? "#c56a00" : "#d9a63a", transform: picked ? "translateY(-4px)" : undefined, boxShadow: picked ? "0 0 0 4px rgba(224,134,0,.5)" : undefined }}>
+                onPointerDown={(e) => startDrag(e, c.entry.id)}
+                className="w-36 cursor-grab touch-none rounded-xl border-2 border-b-4 bg-white p-2 text-center transition active:cursor-grabbing"
+                style={{ borderColor: picked ? "#c56a00" : "#d9a63a", transform: picked ? "translateY(-4px)" : undefined, boxShadow: picked ? "0 0 0 4px rgba(224,134,0,.5)" : undefined, opacity: ghost?.id === c.entry.id ? 0.4 : 1 }}>
                 {/* Dan 2026-07-03: contrasts weren't strong enough — dark ink
                     on white instead of pale brand blue, darker progress dashes. */}
                 <span className="block text-sm font-black" style={{ color: "#075985" }}>{c.entry.en}</span>
@@ -377,6 +416,16 @@ export default function Lexicalator({
                 className="mt-3 rounded-2xl border-b-4 border-[#1899d6] bg-[#1cb0f6] px-4 py-2 font-black text-white">Play again</button>
             </>
           )}
+        </div>
+      )}
+
+      {/* Drag ghost — the chest that follows the pointer while dragging */}
+      {ghost && ghostEntry && (
+        <div
+          className="pointer-events-none fixed z-[60] w-36 rounded-xl border-2 border-b-4 bg-white p-2 text-center opacity-90 shadow-xl"
+          style={{ left: ghost.x, top: ghost.y, transform: "translate(-50%,-50%) rotate(-3deg)", borderColor: "#c56a00" }}
+        >
+          <span className="block text-sm font-black" style={{ color: "#075985" }}>{ghostEntry.en}</span>
         </div>
       )}
     </div>
