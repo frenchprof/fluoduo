@@ -18,6 +18,7 @@ import Link from "next/link";
 import { sioStatement, type Sio } from "@/content/sios";
 import type { Collection } from "@/lib/collections/schema";
 import { getAtelier } from "@/content/ateliers";
+import { lessonForSio } from "@/content/lessons";
 import AuthGate from "@/components/AuthGate";
 import PretestQuiz from "./PretestQuiz";
 import DialoguePlayer from "./DialoguePlayer";
@@ -56,6 +57,9 @@ export default function SioDetail({
   // (play-all or tap a line), then perform in class — no pretest/practice grid.
   const dialogue = sio.isProduction ? getAtelier(sio.id) : undefined;
 
+  // A ported grammar lesson (with the 🎲 dice sentence-trainer), if this SIO has one.
+  const lesson = lessonForSio(sio.id);
+
   // Dan's litmus test (see AGENTS.md) applies to TEXT only: the tile border
   // stays (decorative, serves the visual), the label text does not.
   return (
@@ -63,6 +67,12 @@ export default function SioDetail({
       <p className="fluo-serif mb-4 text-base font-bold leading-snug text-[color:var(--fluo-ink)]">
         <span className="fluo-hl">{sioStatement(sio)}</span>
       </p>
+
+      {lesson && (
+        <Link href={`/lessons/${lesson.slug}`} className="fluo-btn fluo-btn-sm mb-4 inline-flex">
+          🎲 Grammar lesson &amp; dice trainer
+        </Link>
+      )}
 
       {dialogue ? (
         <DialoguePlayer lines={dialogue} />
