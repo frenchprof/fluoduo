@@ -215,13 +215,13 @@
     "unit": 1,
     "unitLabel": "Unité 1",
     "topic": "Countries",
-    "description": "Name and identify 27 countries with correct article (le, la, l', les, ∅); ask C'est quel pays?",
+    "description": "Name and identify 25 countries with correct article (le, la, l', les, ∅); ask C'est quel pays?",
     "setId": "1.05",
     "cefrMode": "Spoken Production",
     "skill": "production",
     "isProduction": false,
     "canDo": "I can name countries with the correct article and ask which country something is.",
-    "competence": "Label 27 countries with le/la/l'/les/∅ (≥22/27); ask C'est quel pays ?",
+    "competence": "Label 25 countries with le/la/l'/les/∅ (≥20/25); ask C'est quel pays ?",
     "collectionId": "countries-letris"
   },
   {

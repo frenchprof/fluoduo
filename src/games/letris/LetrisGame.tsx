@@ -50,6 +50,10 @@ const NIGHT_MUSIC_SLOW = 2.2; // music tempo scale at night (storm = normal temp
  * more within that phase. Mercy: 3 misses during the storm → back to night. */
 const PHASE_CORRECT_EACH = 1;
 const STORM_MERCY_MISSES = 3;
+/* Each session plays a random hand of at most this many tiles per category
+ * (Dan, 2026-07-04) — big sets stay fresh across replays, and the pre-game
+ * study table shows exactly the hand that will fall. */
+const MAX_PER_CATEGORY = 4;
 type Phase = "day" | "night" | "storm";
 type PhaseMsg = "night" | "storm" | "dawn" | "mercy";
 
@@ -96,6 +100,19 @@ function shuffle<T>(arr: T[]): T[] {
     [out[i], out[j]] = [out[j], out[i]];
   }
   return out;
+}
+
+/** This session's hand: at most MAX_PER_CATEGORY random tiles per category. */
+function sampleTiles(tiles: LetrisTile[]): LetrisTile[] {
+  const byCat = new Map<string, LetrisTile[]>();
+  for (const t of tiles) {
+    const arr = byCat.get(t.category) ?? [];
+    arr.push(t);
+    byCat.set(t.category, arr);
+  }
+  const pool: LetrisTile[] = [];
+  for (const arr of byCat.values()) pool.push(...shuffle(arr).slice(0, MAX_PER_CATEGORY));
+  return pool;
 }
 function emptyBoard(cols: number): Cell[][] {
   return Array.from({ length: ROWS }, () => Array<Cell>(cols).fill(null));
@@ -146,7 +163,8 @@ export default function LetrisGame({
 
   const [board, setBoard] = useState<Cell[][]>(() => emptyBoard(cols));
   const [active, setActive] = useState<Active | null>(null);
-  const [queue, setQueue] = useState<LetrisTile[]>(() => shuffle(set.tiles));
+  const [pool, setPool] = useState<LetrisTile[]>(() => sampleTiles(set.tiles));
+  const [queue, setQueue] = useState<LetrisTile[]>(() => shuffle(pool));
   const [score, setScore] = useState(0);
   const [paused, setPaused] = useState(false);
   const [music, setMusic] = useState(false);
@@ -160,7 +178,7 @@ export default function LetrisGame({
   const correctRef = useRef<Map<string, number>>(new Map());
   const phaseCorrectRef = useRef<Map<string, number>>(new Map());
   const stormMissesRef = useRef(0);
-  const wordTexts = useMemo(() => [...new Set(set.tiles.map((t) => t.text))], [set.tiles]);
+  const wordTexts = useMemo(() => [...new Set(pool.map((t) => t.text))], [pool]);
   const musicAutoRef = useRef(false);
   const musicRef = useRef(false);
   musicRef.current = music;
@@ -199,18 +217,22 @@ export default function LetrisGame({
   const spawnTile = useCallback(() => {
     setQueue((q) => {
       let next = q;
-      if (next.length === 0) next = shuffle(set.tiles);
+      if (next.length === 0) next = shuffle(pool);
       const tile = next[0];
       const startCol = Math.floor(Math.random() * cols);
       setActive({ tile, row: 0, col: startCol });
       return next.slice(1);
     });
-  }, [set.tiles, cols]);
+  }, [pool, cols]);
 
   const restart = useCallback(() => {
     setBoard(emptyBoard(cols));
     setActive(null);
-    setQueue(shuffle(set.tiles));
+    // New game, new hand — and the study table reopens to show it.
+    const fresh = sampleTiles(set.tiles);
+    setPool(fresh);
+    setQueue(shuffle(fresh));
+    setStudied(false);
     setScore(0);
     setPaused(false);
     setGameOver(false);
@@ -447,7 +469,7 @@ export default function LetrisGame({
                 <div key={c.key} className="rounded-xl border-2 border-sky-100 p-3">
                   <p className="mb-2 text-xs font-black uppercase tracking-wider text-sky-500">{c.label}</p>
                   <ul className="space-y-1">
-                    {set.tiles.filter((t) => t.category === c.key).map((t) => (
+                    {pool.filter((t) => t.category === c.key).map((t) => (
                       <li key={`${t.text}-${t.category}`} className="text-sm leading-snug">
                         {t.emoji ? <span className="mr-1" aria-hidden>{t.emoji}</span> : null}
                         <span lang="fr" className="font-bold text-sky-900">{t.displayName}</span>
