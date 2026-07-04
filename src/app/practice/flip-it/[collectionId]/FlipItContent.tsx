@@ -27,7 +27,7 @@ import {
   NOTE_MAX,
   type DeckNotes,
 } from "@/lib/notes/store";
-import { displayEn, practiceItems } from "@/lib/collections/display";
+import { bareWord, displayEn, practiceItems } from "@/lib/collections/display";
 import { loadBuckets, setBucket, type Bucket } from "@/lib/practice/buckets";
 import { recordItemResult } from "@/lib/progress";
 import { CahierFrame, TAB_HUES, type CahierTab } from "../CahierFrame";
@@ -821,13 +821,13 @@ type ColKey = "pick" | "flag" | "eng" | "art" | "fr" | "ms" | "fs" | "mp" | "fp"
 type ColDef = { key: ColKey; label: string; w: number };
 
 const STD_COLS: ColDef[] = [
-  { key: "pick", label: "pick", w: 42 }, { key: "flag", label: "flag", w: 80 },
+  { key: "pick", label: "pick", w: 42 }, { key: "flag", label: "emoji", w: 80 },
   { key: "eng", label: "English", w: 150 }, { key: "art", label: "art.", w: 72 },
   { key: "fr", label: "French", w: 170 }, { key: "deck", label: "Reviewed", w: 120 },
   { key: "notes", label: "notes", w: 240 },
 ];
 const NAT_COLS: ColDef[] = [
-  { key: "pick", label: "pick", w: 42 }, { key: "flag", label: "flag", w: 80 },
+  { key: "pick", label: "pick", w: 42 }, { key: "flag", label: "emoji", w: 80 },
   { key: "fr", label: "country", w: 130 }, { key: "ms", label: "il est", w: 120 },
   { key: "fs", label: "elle est", w: 120 }, { key: "mp", label: "ils sont", w: 120 },
   { key: "fp", label: "elles sont", w: 120 }, { key: "deck", label: "Reviewed", w: 120 },
@@ -864,12 +864,15 @@ function Overview({
   // Answer columns differ by deck: nat tests the 4 forms (country stays as the
   // prompt); standard tests article + French noun (English stays as the prompt).
   const answerCols: ColKey[] = isNat ? ["ms", "fs", "mp", "fp"] : hasArt ? ["art", "fr"] : ["fr"];
-  // English rides the flag's hover tooltip ONLY when every row has a flag/emoji
-  // to hover; decks without visuals keep the English column — otherwise covering
-  // Le/la or the French leaves nothing identifying the row.
+  // English gets its own column wherever it actually differs from the French
+  // (Dan, 2026-07-04). It is hidden only where it would ECHO the French —
+  // countries/nationalities-style decks where en ≈ fr ("France | France"
+  // teaches nothing; the emoji tooltip covers those rows).
   const hasLang = rows.some((r) => r.item.lang); // languages deck → relabel flag col, drop article
-  const allVisual = rows.length > 0 && rows.every((r) => r.item.emoji || r.item.lang);
-  const cols = (isNat || !allVisual ? COLS : COLS.filter((c) => c.key !== "eng"))
+  const redundantEn =
+    rows.length > 0 &&
+    rows.filter((r) => bareWord(r.item.en).toLowerCase() === r.fr.toLowerCase()).length >= rows.length * 0.8;
+  const cols = (isNat || !redundantEn ? COLS : COLS.filter((c) => c.key !== "eng"))
     .filter((c) => !((hasLang || !hasArt) && c.key === "art")) // no article axis → no art column
     .filter((c) => !(c.key === "flag" && !rows.some((r) => r.item.emoji || r.item.lang))); // no visuals → no flag column
   const lastAnswerKey = answerCols[answerCols.length - 1]; // holds the single Check/Reveal
