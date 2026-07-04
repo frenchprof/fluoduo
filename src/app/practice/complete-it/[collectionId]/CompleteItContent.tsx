@@ -8,7 +8,6 @@
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
 import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
 import { CURATED } from "@/content/collections";
 import { bareWord, practiceItems } from "@/lib/collections/display";
@@ -141,7 +140,6 @@ export default function CompleteItContent({ collectionId }: { collectionId: stri
     <CahierShell
       tabs={tabs}
       active="complete"
-      crumb={<Link href="/" className="fluo-hl font-black">← FluoLingo</Link>}
       topRight={!done ? <span className="fluo-mono text-sm font-bold">{i}/{total} · ✓ {score.ok}</span> : null}
     >
       <div className="mx-auto max-w-lg px-4 py-6">

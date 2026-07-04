@@ -21,6 +21,7 @@ import { getAtelier } from "@/content/ateliers";
 import { lessonsForSio } from "@/content/lessons";
 import { isLexReady } from "@/lib/collections/lexReady";
 import { UNIT_PAGES } from "@/components/CahierShell";
+import { getLetrisSet } from "@/games/letris/sets";
 import AuthGate from "@/components/AuthGate";
 import PretestQuiz from "./PretestQuiz";
 import DialoguePlayer from "./DialoguePlayer";
@@ -112,7 +113,7 @@ export default function SioDetail({
 }
 
 export function PracticeChips({ deck }: { deck: Collection }) {
-  const hasLetris = !!deck.gameConfig?.letris;
+  const hasLetris = !!getLetrisSet(deck.id.replace("-letris", ""));
   const chips = [
     { key: "flip", label: "🃏 Flip It", href: `/practice/flip-it/${deck.id}` },
     { key: "say", label: "🎤 Say It", href: `/practice/say-it/${deck.id}` },

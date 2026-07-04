@@ -85,7 +85,6 @@ export default function ReviserPage() {
     <CahierShell
       tabs={TABS}
       active="reviser"
-      crumb={<Link href="/" className="fluo-hl font-black">← FluoLingo</Link>}
       topRight={total > 0 && !done ? <span className="fluo-mono text-sm font-bold">{i}/{total} · ✓ {score}</span> : null}
     >
       <div className="mx-auto max-w-xl px-4 py-6">

@@ -19,7 +19,7 @@ const steps = [
   },
   {
     slug: "/games/directions/map",
-    name: "3. Practice map",
+    name: "3. Mapless Route Builder",
     emoji: "🗺️",
     desc: "Assemble the route from A to B by clicking phrases.",
   },

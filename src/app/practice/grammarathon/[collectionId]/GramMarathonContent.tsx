@@ -9,7 +9,6 @@
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
 import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
 import { CURATED } from "@/content/collections";
 import { speak } from "@/games/letris/speech";
@@ -93,7 +92,10 @@ export default function GramMarathonContent({ collectionId }: { collectionId: st
 
   function check() {
     if (result !== null || !item) return;
-    const g = grade(value, gap);
+    // d' IS de (elided): grade against both surface forms, keep the better.
+    const alternates = [gap, ...(gap.endsWith("d'") ? [gap.slice(0, -2) + "de"] : [])];
+    const grades = alternates.map((a) => grade(value, a));
+    const g = grades.includes("perfect") ? "perfect" : grades.includes("good") ? "good" : "wrong";
     setResult(g);
     setScore((s) => ({ ok: s.ok + (g !== "wrong" ? 1 : 0), total: s.total + 1 }));
     recordItemResult(item.id, g !== "wrong");
@@ -115,7 +117,6 @@ export default function GramMarathonContent({ collectionId }: { collectionId: st
     <CahierShell
       tabs={tabs}
       active="grammarathon"
-      crumb={<Link href="/" className="fluo-hl font-black">← FluoLingo</Link>}
       topRight={!done ? <span className="fluo-mono text-sm font-bold">{i}/{total} · ✓ {score.ok}</span> : null}
     >
       <div className="mx-auto max-w-lg px-4 py-6">

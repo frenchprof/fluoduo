@@ -13,6 +13,7 @@ import { lessonsForDeck } from "@/content/lessons";
 import { isLexReadyId } from "@/lib/collections/lexReady";
 import { isConjugaZoneReadyId } from "@/lib/collections/conjugaZoneReady";
 import { isGramMarathonReadyId } from "@/lib/collections/gramMarathonReady";
+import { getLetrisSet } from "@/games/letris/sets";
 import type { Collection } from "@/lib/collections/schema";
 
 type Cell = { emoji: string; title: string; href: string | null };
@@ -27,7 +28,7 @@ function cellsFor(c: Collection): Cell[] {
     { emoji: "🎲", title: "Practice", href: hasDicePractice(c.id) ? `/practice/dice/${c.id}` : null },
     { emoji: "🎯", title: "ConjugaZone", href: isConjugaZoneReadyId(c.id) ? `/practice/conjugazone/${c.id}` : null },
     { emoji: "🏃", title: "GramMarathon", href: isGramMarathonReadyId(c.id) ? `/practice/grammarathon/${c.id}` : null },
-    { emoji: "🌧️", title: "Vocabularain", href: c.gameConfig?.letris ? `/games/letris/${c.id.replace("-letris", "")}` : null },
+    { emoji: "🌧️", title: "Vocabularain", href: getLetrisSet(c.id.replace("-letris", "")) ? `/games/letris/${c.id.replace("-letris", "")}` : null },
     { emoji: "🧰", title: "Lexicalator", href: isLexReadyId(c.id) ? `/games/conveyor/${c.id}` : null },
     { emoji: UNIT_PAGES[c.id]?.emoji ?? "🎪", title: UNIT_PAGES[c.id]?.label ?? "Unit", href: UNIT_PAGES[c.id]?.href ?? null },
   ];

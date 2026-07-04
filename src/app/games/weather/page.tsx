@@ -9,7 +9,7 @@ const steps = [
     slug: "/games/weather/lesson",
     name: "1. Lesson",
     emoji: "📚",
-    desc: "Learn the 32 expressions with flippable flashcards (Got it / Review loop).",
+    desc: "Learn the 23 expressions with flippable flashcards (Got it / Review loop).",
   },
   {
     slug: "/games/weather/match",

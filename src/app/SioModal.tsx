@@ -22,6 +22,7 @@ import { isConjugaZoneReadyId } from "@/lib/collections/conjugaZoneReady";
 import { isGramMarathonReady } from "@/lib/collections/gramMarathonReady";
 import { UNIT_PAGES } from "@/components/CahierShell";
 import { lessonsForDeck } from "@/content/lessons";
+import { getLetrisSet } from "@/games/letris/sets";
 
 const SIZE_KEY = "fluolingo:popupSize";
 
@@ -50,7 +51,7 @@ export function popupActivityTabs(
       ? [{ key: "pretest", label: "Pre-Test", emoji: "🧪", href: pretest.inline ? undefined : pretest.href ?? undefined, active: pretest.inline }]
       : [];
   if (!deck) return pretestTab.length ? pretestTab : undefined;
-  const hasLetris = !!deck.gameConfig?.letris;
+  const hasLetris = !!getLetrisSet(deck.id.replace("-letris", "")); // registry-gated: config alone ≠ a playable rain set
   const lessons = lessonsForDeck(deck.id);
   return [
     ...pretestTab,

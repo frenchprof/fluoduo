@@ -5,10 +5,12 @@
  * Privacy: rules allow an authed user to CREATE their own events only; no client
  * read/update/delete. Cross-user analytics happen admin-side (console / export).
  * Fire-and-forget — never block UI or throw into the caller.
+ *
+ * Firestore is imported DYNAMICALLY: this module sits in the AuthGate graph of
+ * every page (via auth), and a static import shipped the ~167 KB gz Firestore
+ * bundle site-wide for a fire-and-forget telemetry call.
  */
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { auth } from "./client";
-import { db } from "./db";
 
 export type EventType =
   | "auth.signin"
@@ -26,6 +28,10 @@ export async function logEvent(
   try {
     const uid = auth.currentUser?.uid;
     if (!uid) return; // only log for signed-in users
+    const [{ addDoc, collection, serverTimestamp }, { db }] = await Promise.all([
+      import("firebase/firestore"),
+      import("./db"),
+    ]);
     await addDoc(collection(db, "events"), {
       uid,
       type,

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
 import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
 import { CURATED } from "@/content/collections";
 import { speak } from "@/games/letris/speech";
@@ -93,7 +92,6 @@ export default function ConjugaZoneContent({ collectionId }: { collectionId: str
     <CahierShell
       tabs={tabs}
       active="conjugazone"
-      crumb={<Link href="/" className="fluo-hl font-black">← FluoLingo</Link>}
       topRight={!done ? <span className="fluo-mono text-sm font-bold">{i}/{total} · ✓ {score.ok}</span> : null}
     >
       <div className="mx-auto max-w-lg px-4 py-6">
