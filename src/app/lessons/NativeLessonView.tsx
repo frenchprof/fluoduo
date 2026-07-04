@@ -29,12 +29,13 @@ export default function NativeLessonView({ slug, title, unit }: { slug: string; 
   // A lesson is part of its SIO's flow, not a standalone page (Dan,
   // 2026-07-04): when it belongs to a deck, it carries THAT deck's activity
   // tabs — the learner rolls straight from the lesson into Flip It / drills.
-  // Cross-unit revisions (no single deck home) keep the gallery tabs.
+  // No lessons gallery exists (Dan, 2026-07-05: everything parks under the
+  // units) — cross-unit revisions tab home instead.
   const deckId = deckForLesson(slug);
   const tabs = deckId
     ? withActive(deckActivityTabs(deckId), "lesson")
     : [
-        { key: "gallery", label: "Lessons", emoji: "📚", href: "/lessons" },
+        { key: "home", label: "Accueil", emoji: "🏠", href: "/" },
         { key: "lesson", label: title, emoji: "🎲" },
       ];
 

@@ -125,11 +125,11 @@ export default function SioHub() {
             )}
           </Link>
           <Link
-            href="/lessons"
+            href="/guide"
             className="fluo-mono flex items-center gap-1 rounded-full border-2 px-3 py-1 text-sm font-bold text-[color:var(--fluo-ink)] transition hover:bg-[var(--fluo-card-tint)]"
             style={{ borderColor: "var(--fluo-card-accent)" }}
           >
-            📚 Lessons
+            ❓ Guide
           </Link>
         </div>
         <span className="fluo-mono flex items-center gap-1 text-sm font-bold text-[color:var(--fluo-ink)]">
