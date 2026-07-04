@@ -44,10 +44,10 @@ export default function SioDetail({
   const practiceTile = !showPractice ? null : (
     <div className="rounded-xl border-2 p-3" style={{ borderColor: "#3a9b5c" }}>
       <p className="fluo-label mb-2" style={{ color: "#3a9b5c" }}>Post-Class Practice</p>
-      {sio.isProduction ? (
-        <span className="text-xs text-[color:var(--fluo-ink-soft)]">🗣️ In-class task</span>
-      ) : deck ? (
+      {deck ? (
         <PracticeChips deck={deck} />
+      ) : sio.isProduction ? (
+        <span className="text-xs text-[color:var(--fluo-ink-soft)]">🗣️ In-class task</span>
       ) : (
         <span className="text-xs text-[color:var(--fluo-ink-soft)]">Planned</span>
       )}
@@ -80,7 +80,10 @@ export default function SioDetail({
       )}
 
       {dialogue ? (
-        <DialoguePlayer lines={dialogue} />
+        <div className="space-y-3">
+          <DialoguePlayer lines={dialogue} />
+          {practiceTile}
+        </div>
       ) : pretestId ? (
         <div className="space-y-3">
           <div className="rounded-xl border-2 p-3" style={{ borderColor: "#7c6cff" }}>

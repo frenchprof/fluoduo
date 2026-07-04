@@ -592,12 +592,16 @@ function ReviewToggle({ value, onChange }: { value: Bucket | undefined; onChange
 
 /* ─────────────────────────── card faces ─────────────────────────── */
 
-function FrenchAnswer({ row }: { row: Row }) {
+function FrenchAnswer({ row, hasArt }: { row: Row; hasArt: boolean }) {
   if (row.item.nat) return <NatForms nat={row.item.nat} />;
+  // ∅ marks a genuinely article-less item in an ARTICLE deck (Cuba); decks with
+  // no article axis at all (sentences, letters) just show the French.
   return (
     <span lang="fr" className="cahier-display text-4xl font-black text-[color:var(--cahier-ink)]">
-      {row.art ? <span className="cahier-hl">{row.full}</span> : (
+      {row.art ? <span className="cahier-hl">{row.full}</span> : hasArt ? (
         <><span className="text-[color:var(--cahier-ink-soft)]">∅ </span><span className="cahier-hl">{row.fr}</span></>
+      ) : (
+        <span className="cahier-hl">{row.fr}</span>
       )}
     </span>
   );
@@ -692,7 +696,7 @@ function Cards({
                 </span>
                 <span className="mt-2 text-[0.7rem] uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">tap or Space to flip</span>
               </Face>
-              <Face back><FrenchAnswer row={row} /></Face>
+              <Face back><FrenchAnswer row={row} hasArt={articleOptions.some((a) => a !== "")} /></Face>
             </div>
           </div>
         )}
@@ -757,7 +761,9 @@ function AllCards({
                   {showBack(row.item.id) ? (
                     row.item.nat ? <NatForms nat={row.item.nat} size="sm" /> : (
                       <span lang="fr" className="cahier-display text-lg font-black text-[color:var(--cahier-ink)]">
-                        {row.art ? <span className="cahier-hl">{row.full}</span> : <><span className="text-[color:var(--cahier-ink-soft)]">∅ </span><span className="cahier-hl">{row.fr}</span></>}
+                        {row.art ? <span className="cahier-hl">{row.full}</span>
+                          : articleOptions.some((a) => a !== "") ? <><span className="text-[color:var(--cahier-ink-soft)]">∅ </span><span className="cahier-hl">{row.fr}</span></>
+                          : <span className="cahier-hl">{row.fr}</span>}
                       </span>
                     )
                   ) : (
@@ -818,14 +824,15 @@ function Overview({
 }) {
   const COLS = isNat ? NAT_COLS : STD_COLS;
   const coverableHere = COLS.filter((c) => COVERABLE.includes(c.key)).map((c) => c.key);
+  const hasArt = articleOptions.some((a) => a !== ""); // deck has an article/prefix axis at all
   // Answer columns differ by deck: nat tests the 4 forms (country stays as the
   // prompt); standard tests article + French noun (English stays as the prompt).
-  const answerCols: ColKey[] = isNat ? ["ms", "fs", "mp", "fp"] : ["art", "fr"];
+  const answerCols: ColKey[] = isNat ? ["ms", "fs", "mp", "fp"] : hasArt ? ["art", "fr"] : ["fr"];
   // Drop the English column for flag/emoji decks (it's a tooltip on the flag) to
   // save space — in both Study and Test.
   const hasLang = rows.some((r) => r.item.lang); // languages deck → relabel flag col, drop article
   const cols = (isNat ? COLS : COLS.filter((c) => c.key !== "eng"))
-    .filter((c) => !(hasLang && c.key === "art")); // languages take no article
+    .filter((c) => !((hasLang || !hasArt) && c.key === "art")); // no article axis → no art column
   const lastAnswerKey = answerCols[answerCols.length - 1]; // holds the single Check/Reveal
   // In Test: article column is narrow ("-"), the last answer column is wide (input + ✓ + 💡).
   const colW = (c: ColDef) => {
