@@ -102,21 +102,21 @@
     },
     {
       "id": "u4-sio048-06",
-      "sentenceBefore": "Il ",
+      "sentenceBefore": "Nous ",
       "sentenceAfter": " boire de l'eau.",
-      "answer": "faut",
+      "answer": "devons",
       "distractors": [
-        "doit",
-        "va",
-        "peut"
+        "faut",
+        "devez",
+        "pouvons"
       ],
-      "fullSentence": "Il faut boire de l'eau.",
-      "sentenceTrans": "One must drink water.",
+      "fullSentence": "Nous devons boire de l'eau.",
+      "sentenceTrans": "We must drink water.",
       "transFirst": true,
       "whyWrong": {
-        "doit": "'il doit' means 'he must' (a specific person), not the impersonal 'one must'.",
-        "va": "'il va boire' means 'he's going to drink', not 'one must'.",
-        "peut": "'il peut' means 'he can', not 'one must'."
+        "faut": "faut is impersonal — it only ever takes il ('il faut'); with nous it's devons.",
+        "devez": "That's the vous form — nous devons.",
+        "pouvons": "'nous pouvons' means 'we can', not 'we must'."
       }
     },
     {

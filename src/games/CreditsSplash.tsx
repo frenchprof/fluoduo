@@ -51,7 +51,7 @@ export default function CreditsSplash({
           <span style={{ color: "#ffd34d" }}>{game}</span> is an original concept by{" "}
           <span className="whitespace-nowrap">Dr&nbsp;Daniel&nbsp;Chan</span>
         </p>
-        <p className="mt-2 text-sm text-white/80">Mechanics and Music co-created with Claude</p>
+        <p className="mt-2 text-sm text-white/80">Mechanics and Music created using Claude</p>
         <p className="mt-3 text-xs text-white/50">© June 2027 — All rights reserved</p>
         <p className="mt-5 text-[10px] font-bold uppercase tracking-[0.25em] text-white/30">tap to skip</p>
       </div>

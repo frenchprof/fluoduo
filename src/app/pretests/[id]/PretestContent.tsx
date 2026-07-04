@@ -276,8 +276,9 @@ function ItemCard({
             <button
               key={c}
               type="button"
-              onClick={() => onPick(c)}
-              disabled={!!submitted}
+              // Once answered, every option stays tappable purely for its sound
+              // (Dan, 2026-07-04) — same pattern as the Unit-0 alphabet quiz.
+              onClick={() => (submitted ? speak(c, "fr-FR") : onPick(c))}
               lang="fr"
               className={`rounded-xl border-2 px-4 py-3 text-left text-base font-bold transition ${cls}`}
             >
