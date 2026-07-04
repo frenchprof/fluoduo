@@ -65,14 +65,14 @@
       "sentenceAfter": " deux croissants, s'il vous plaît.",
       "answer": "je voudrais",
       "distractors": [
-        "je veux",
+        "je veut",
         "je voudrai",
         "je voulais"
       ],
       "fullSentence": "Bonjour, je voudrais deux croissants, s'il vous plaît.",
       "sentenceTrans": "Hello, I'd like two croissants, please.",
       "whyWrong": {
-        "je veux": "'I want' is too blunt when ordering — use je voudrais.",
+        "je veut": "veut is the il/elle form — je takes veux (and the polite request is je voudrais).",
         "je voudrai": "That's the future 'I will want' — the polite formula is je voudrais (with final -s).",
         "je voulais": "That's the past 'I wanted'; the polite request is je voudrais."
       }

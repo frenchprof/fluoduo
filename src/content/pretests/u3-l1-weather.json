@@ -85,15 +85,15 @@
       "distractors": [
         "mal",
         "mauvaise",
-        "pas beau"
+        "pluie"
       ],
       "fullSentence": "Il fait mauvais — je reste à la maison.",
       "sentenceTrans": "The weather is bad — I'm staying home.",
-      "why": "<strong>il fait mauvais</strong> — the adjective used after <em>il fait</em> stays masculine singular (no agreement). <em>mauvaise</em> would be the feminine form — correct for a noun like <em>une mauvaise journée</em>, but NOT after the impersonal <em>il fait</em>. <em>mal</em> is an adverb (badly), not an adjective. <em>pas beau</em> is colloquial but not standard written French.",
+      "why": "<strong>il fait mauvais</strong> — the adjective used after <em>il fait</em> stays masculine singular (no agreement). <em>mauvaise</em> would be the feminine form — correct for a noun like <em>une mauvaise journée</em>, but NOT after the impersonal <em>il fait</em>. <em>mal</em> is an adverb (badly), not an adjective. <em>pluie</em> is a noun — it needs <em>il y a de la pluie</em> or <em>il pleut</em>.",
       "whyWrong": {
         "mal": "mal is an adverb (badly) — il fait takes an adjective: mauvais.",
         "mauvaise": "mauvaise is feminine — after impersonal il fait the adjective stays masculine singular.",
-        "pas beau": "il fait pas beau is colloquial speech, not standard written French."
+        "pluie": "pluie is a noun — weather nouns take il y a (il y a de la pluie) or the verb (il pleut); il fait takes an adjective."
       }
     },
     {
@@ -261,15 +261,15 @@
       "answer": "Quel temps fait-il",
       "distractors": [
         "Comment il fait",
-        "Il fait quel temps",
+        "Quel temps est-il",
         "Qu'est-ce que le temps"
       ],
       "fullSentence": "Quel temps fait-il à Lyon en ce moment ?",
       "sentenceTrans": "What's the weather like in Lyon right now? — the formal question.",
-      "why": "<strong>Quel temps fait-il ?</strong> — the standard question form. <em>Quel</em> is an interrogative adjective agreeing with <em>temps</em> (masculine singular). The inversion <em>fait-il</em> marks it as formal/standard. <em>Il fait quel temps ?</em> is also correct and common in casual spoken French (no inversion). <em>Comment il fait</em> mixes two different question structures incorrectly. <em>Qu'est-ce que le temps</em> is not a real French structure.",
+      "why": "<strong>Quel temps fait-il ?</strong> — the standard question form. <em>Quel</em> is an interrogative adjective agreeing with <em>temps</em> (masculine singular); the inversion <em>fait-il</em> marks it as formal. The casual <em>Il fait quel temps ?</em> is also perfectly acceptable spoken French. <em>Quel temps est-il</em> borrows the verb from telling the time (<em>Quelle heure est-il ?</em>) — weather uses <em>faire</em>.",
       "whyWrong": {
-        "Comment il fait": "Comment doesn't combine with il fait for weather — the question is Quel temps fait-il ?",
-        "Il fait quel temps": "Fine in casual speech — but the formal question inverts: Quel temps fait-il ?",
+        "Comment il fait": "Comment doesn’t combine with il fait for weather — the question is Quel temps fait-il ?",
+        "Quel temps est-il": "est is for the time (Quelle heure est-il ?) — weather uses faire: Quel temps fait-il ?",
         "Qu'est-ce que le temps": "Not a real French structure."
       },
       "transFirst": true

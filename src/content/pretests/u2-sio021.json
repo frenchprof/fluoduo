@@ -83,14 +83,14 @@
       "sentenceAfter": " des livres.",
       "answer": "Ce sont",
       "distractors": [
-        "C'est",
+        "Ils sont",
         "Il est",
         "Elle est"
       ],
       "fullSentence": "Ce sont des livres.",
       "sentenceTrans": "They are books.",
       "whyWrong": {
-        "C'est": "C'est is singular — for plural (des livres) use Ce sont.",
+        "Ils sont": "Before a noun phrase like des livres, French presents with Ce sont — Ils sont would need an adjective (Ils sont grands).",
         "Il est": "Il est means 'he/it is', not 'they are'.",
         "Elle est": "Elle est means 'she/it is', not 'they are'."
       }

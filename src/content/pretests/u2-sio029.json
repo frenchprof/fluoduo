@@ -83,14 +83,14 @@
       "sentenceAfter": " un sac, s'il vous plaît.",
       "answer": "voudrais",
       "distractors": [
-        "veux",
+        "veut",
         "voudrai",
         "voulez"
       ],
       "fullSentence": "Je voudrais un sac, s'il vous plaît.",
       "sentenceTrans": "I'd like a bag, please (polite).",
       "whyWrong": {
-        "veux": "veux ('I want') is blunt — the polite request is voudrais.",
+        "veut": "veut is the il/elle form — with je it's veux, and the polite request is voudrais.",
         "voudrai": "voudrai is future ('I will want') — the polite form is voudrais with -s.",
         "voulez": "voulez is the vous form — with je it's voudrais."
       }
