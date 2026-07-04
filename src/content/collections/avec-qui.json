@@ -15,55 +15,112 @@
       "id": "avec-qui-01",
       "fr": "avec moi",
       "en": "with me",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "a",
+        "vec",
+        "moi"
+      ]
     },
     {
       "id": "avec-qui-02",
       "fr": "avec toi",
       "en": "with you",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "a",
+        "vec",
+        "toi"
+      ]
     },
     {
       "id": "avec-qui-03",
       "fr": "avec lui",
       "en": "with him",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "a",
+        "vec",
+        "lui"
+      ]
     },
     {
       "id": "avec-qui-04",
       "fr": "avec elle",
       "en": "with her",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "a",
+        "vec",
+        "elle"
+      ]
     },
     {
       "id": "avec-qui-05",
       "fr": "avec nous",
       "en": "with us",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "a",
+        "vec",
+        "nous"
+      ]
     },
     {
       "id": "avec-qui-06",
       "fr": "avec vous",
       "en": "with you (pl.)",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "a",
+        "vec",
+        "vous"
+      ]
     },
     {
       "id": "avec-qui-07",
       "fr": "avec eux",
       "en": "with them (m)",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "a",
+        "vec",
+        "eux"
+      ]
     },
     {
       "id": "avec-qui-08",
       "fr": "avec elles",
       "en": "with them (f)",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "a",
+        "vec",
+        "elles"
+      ]
     },
     {
       "id": "avec-qui-09",
       "fr": "seul(e)",
       "en": "alone",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "seul"
+      ]
     }
-  ]
+  ],
+  "gameConfig": {
+    "lexicalator": {
+      "decoys": [
+        "é",
+        "vek",
+        "mois",
+        "toit",
+        "luis",
+        "eu",
+        "el",
+        "nou"
+      ]
+    }
+  }
 }

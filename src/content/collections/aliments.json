@@ -16,112 +16,207 @@
       "fr": "le petit-déjeuner",
       "en": "breakfast",
       "emoji": "🌅",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "le",
+        "pe",
+        "tit",
+        "-dé",
+        "jeu",
+        "ner"
+      ]
     },
     {
       "id": "aliments-02",
       "fr": "le déjeuner",
       "en": "lunch",
       "emoji": "🕛",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "le",
+        "dé",
+        "jeu",
+        "ner"
+      ]
     },
     {
       "id": "aliments-03",
       "fr": "le goûter",
       "en": "afternoon snack",
       "emoji": "🍪",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "le",
+        "goû",
+        "ter"
+      ]
     },
     {
       "id": "aliments-04",
       "fr": "le dîner",
       "en": "dinner",
       "emoji": "🌙",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "le",
+        "dî",
+        "ner"
+      ]
     },
     {
       "id": "aliments-05",
       "fr": "un croissant",
       "en": "a croissant",
       "emoji": "🥐",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "un",
+        "crois",
+        "sant"
+      ]
     },
     {
       "id": "aliments-06",
       "fr": "du café",
       "en": "coffee",
       "emoji": "☕",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "du",
+        "ca",
+        "fé"
+      ]
     },
     {
       "id": "aliments-07",
       "fr": "du lait",
       "en": "milk",
       "emoji": "🥛",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "du",
+        "lait"
+      ]
     },
     {
       "id": "aliments-08",
       "fr": "du pain",
       "en": "bread",
       "emoji": "🥖",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "du",
+        "pain"
+      ]
     },
     {
       "id": "aliments-09",
       "fr": "du fromage",
       "en": "cheese",
       "emoji": "🧀",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "du",
+        "fro",
+        "mage"
+      ]
     },
     {
       "id": "aliments-10",
       "fr": "de la viande",
       "en": "meat",
       "emoji": "🥩",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "de",
+        "la",
+        "viande"
+      ]
     },
     {
       "id": "aliments-11",
       "fr": "du poisson",
       "en": "fish",
       "emoji": "🐟",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "du",
+        "pois",
+        "son"
+      ]
     },
     {
       "id": "aliments-12",
       "fr": "du riz",
       "en": "rice",
       "emoji": "🍚",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "du",
+        "riz"
+      ]
     },
     {
       "id": "aliments-13",
       "fr": "des pâtes",
       "en": "pasta",
       "emoji": "🍝",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "des",
+        "pâtes"
+      ]
     },
     {
       "id": "aliments-14",
       "fr": "une pomme",
       "en": "an apple",
       "emoji": "🍎",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "une",
+        "pomme"
+      ]
     },
     {
       "id": "aliments-15",
       "fr": "de la salade",
       "en": "salad",
       "emoji": "🥗",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "de",
+        "la",
+        "sa",
+        "lade"
+      ]
     },
     {
       "id": "aliments-16",
       "fr": "de l'eau",
       "en": "water",
       "emoji": "💧",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "de",
+        "l'eau"
+      ]
     }
-  ]
+  ],
+  "gameConfig": {
+    "lexicalator": {
+      "decoys": [
+        "cro",
+        "fé-",
+        "pin",
+        "vian",
+        "sal",
+        "pom",
+        "lai",
+        "déj",
+        "goi",
+        "frau"
+      ]
+    }
+  }
 }

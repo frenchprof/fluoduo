@@ -1,6 +1,8 @@
 import Link from "next/link";
 import AuthGate from "@/components/AuthGate";
 import { LESSONS } from "@/content/lessons";
+import { getNativeLesson } from "@/content/lessons/native";
+import NativeLessonView from "../NativeLessonView";
 
 export function generateStaticParams() {
   return Object.keys(LESSONS).map((slug) => ({ slug }));
@@ -12,6 +14,17 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
   if (!lesson) {
     return <main className="p-6 text-[color:var(--fluo-ink)]">No lesson <code>{slug}</code>.</main>;
   }
+
+  // Converted lessons render as native in-app content (CahierShell + Mémo +
+  // dice trainer); the rest keep the iframed drchan HTML until their turn.
+  if (getNativeLesson(slug)) {
+    return (
+      <AuthGate what="open the lesson">
+        <NativeLessonView slug={slug} title={lesson.title} unit={lesson.unit} />
+      </AuthGate>
+    );
+  }
+
   return (
     <AuthGate what="open the lesson">
       <div className="flex h-screen flex-col">
