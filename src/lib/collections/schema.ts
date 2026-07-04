@@ -46,6 +46,12 @@ export type Item = {
   /** Example sentence containing the target — blankable for gapfill. */
   example?: string;
   /**
+   * GramMarathon cloze target: the exact grammar word(s) inside `fr` to blank
+   * out (e.g. "du", "de la", "d'"). MUST occur verbatim in `fr`. A deck where
+   * every item has one gets the GramMarathon tab (see gramMarathonReady.ts).
+   */
+  gap?: string;
+  /**
    * Spoken-syllable segmentation of `fr`, used by Lexicalator (the syllable
    * key/keyhole game). Concatenated, it MUST equal `fr` exactly (spaces and
    * all). Hand-authored — French syllabification + the silent-tail rule is an

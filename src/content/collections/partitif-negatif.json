@@ -16,56 +16,64 @@
       "fr": "Je ne mange pas de viande.",
       "en": "I don't eat meat.",
       "example": "Je mange de la viande.",
-      "tags": []
+      "tags": [],
+      "gap": "de"
     },
     {
       "id": "partitif-negatif-02",
       "fr": "Il ne boit pas de café.",
       "en": "He doesn't drink coffee.",
       "example": "Il boit du café.",
-      "tags": []
+      "tags": [],
+      "gap": "de"
     },
     {
       "id": "partitif-negatif-03",
       "fr": "Nous ne mangeons pas de légumes.",
       "en": "We don't eat vegetables.",
       "example": "Nous mangeons des légumes.",
-      "tags": []
+      "tags": [],
+      "gap": "de"
     },
     {
       "id": "partitif-negatif-04",
       "fr": "Elle ne boit pas d'eau gazeuse.",
       "en": "She doesn't drink sparkling water.",
       "example": "Elle boit de l'eau gazeuse.",
-      "tags": []
+      "tags": [],
+      "gap": "d'"
     },
     {
       "id": "partitif-negatif-05",
       "fr": "Je ne mange pas de poisson.",
       "en": "I don't eat fish.",
       "example": "Je mange du poisson.",
-      "tags": []
+      "tags": [],
+      "gap": "de"
     },
     {
       "id": "partitif-negatif-06",
       "fr": "Ils ne mangent pas de sushis.",
       "en": "They don't eat sushi.",
       "example": "Ils mangent des sushis.",
-      "tags": []
+      "tags": [],
+      "gap": "de"
     },
     {
       "id": "partitif-negatif-07",
       "fr": "Tu ne bois pas de lait.",
       "en": "You don't drink milk.",
       "example": "Tu bois du lait.",
-      "tags": []
+      "tags": [],
+      "gap": "de"
     },
     {
       "id": "partitif-negatif-08",
       "fr": "Vous ne mangez pas d'œufs.",
       "en": "You don't eat eggs.",
       "example": "Vous mangez des œufs.",
-      "tags": []
+      "tags": [],
+      "gap": "d'"
     }
   ]
 }

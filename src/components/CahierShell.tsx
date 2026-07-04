@@ -16,6 +16,7 @@ import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { isLexReadyId } from "@/lib/collections/lexReady";
 import { isConjugaZoneReadyId } from "@/lib/collections/conjugaZoneReady";
+import { isGramMarathonReadyId } from "@/lib/collections/gramMarathonReady";
 
 const TAB_HUES = [
   "var(--cahier-t0)",
@@ -155,6 +156,9 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     { key: "dice", label: "Practice", emoji: "🎲", href: `/games/practice/${collectionId}` },
     ...(isConjugaZoneReadyId(collectionId)
       ? [{ key: "conjugazone", label: "ConjugaZone", emoji: "🎯", href: `/practice/conjugazone/${collectionId}` } as ShellTab]
+      : []),
+    ...(isGramMarathonReadyId(collectionId)
+      ? [{ key: "grammarathon", label: "GramMarathon", emoji: "🏃", href: `/practice/grammarathon/${collectionId}` } as ShellTab]
       : []),
     ...(isLexReadyId(collectionId)
       ? [{ key: "match", label: "Lexicalator", emoji: "🧰", href: `/games/conveyor/${collectionId}` } as ShellTab]

@@ -16,56 +16,64 @@
       "fr": "Je mange du pain.",
       "en": "I eat bread.",
       "example": "J'aime le pain.",
-      "tags": []
+      "tags": [],
+      "gap": "du"
     },
     {
       "id": "partitifs-02",
       "fr": "Je mange de la viande.",
       "en": "I eat meat.",
       "example": "J'aime la viande.",
-      "tags": []
+      "tags": [],
+      "gap": "de la"
     },
     {
       "id": "partitifs-03",
       "fr": "Je bois de l'eau gazeuse.",
       "en": "I drink sparkling water.",
       "example": "J'aime l'eau gazeuse.",
-      "tags": []
+      "tags": [],
+      "gap": "de l'"
     },
     {
       "id": "partitifs-04",
       "fr": "Je mange des pâtes.",
       "en": "I eat pasta.",
       "example": "J'aime les pâtes.",
-      "tags": []
+      "tags": [],
+      "gap": "des"
     },
     {
       "id": "partitifs-05",
       "fr": "Je bois du café.",
       "en": "I drink coffee.",
       "example": "J'aime le café.",
-      "tags": []
+      "tags": [],
+      "gap": "du"
     },
     {
       "id": "partitifs-06",
       "fr": "Je mange de la confiture.",
       "en": "I eat jam.",
       "example": "J'aime la confiture.",
-      "tags": []
+      "tags": [],
+      "gap": "de la"
     },
     {
       "id": "partitifs-07",
       "fr": "Je mange du fromage.",
       "en": "I eat cheese.",
       "example": "J'aime le fromage.",
-      "tags": []
+      "tags": [],
+      "gap": "du"
     },
     {
       "id": "partitifs-08",
       "fr": "Je mange des fraises.",
       "en": "I eat strawberries.",
       "example": "J'aime les fraises.",
-      "tags": []
+      "tags": [],
+      "gap": "des"
     }
   ]
 }
