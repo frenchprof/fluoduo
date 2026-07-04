@@ -129,7 +129,7 @@ export default function VocabularainClient({ set }: { set: LetrisSet }) {
 
   return (
     <>
-      <LetrisGame set={set} onGameEnd={handleGameEnd} />
+      <LetrisGame set={set} onGameEnd={handleGameEnd} speech={false} />
       {pendingScore !== null && (
         <NamePrompt
           score={pendingScore}

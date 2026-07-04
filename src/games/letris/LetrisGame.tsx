@@ -124,9 +124,11 @@ function NightWord({ text }: { text: string }) {
 export default function LetrisGame({
   set,
   onGameEnd,
+  speech = true,
 }: {
   set: LetrisSet;
   onGameEnd?: (score: number) => void;
+  speech?: boolean;
 }) {
   const cols = set.categories.length;
   const catIndex = useMemo(() => {
@@ -248,7 +250,7 @@ export default function LetrisGame({
       };
 
       if (correct) {
-        speak(
+        if (speech) speak(
           buildSentence(set.categories[a.col], a.tile),
           set.language ? `${set.language}-FR` : "fr-FR",
           { interrupt: false },
