@@ -151,6 +151,24 @@ export default function SioModal({
     return () => ro.disconnect();
   }, []);
 
+  // Pointer-drag resize from the visible ◢ grip (works on touch too).
+  function startResize(e: React.PointerEvent<HTMLDivElement>) {
+    const el = panelRef.current;
+    if (!el) return;
+    e.preventDefault();
+    const sw = el.offsetWidth, sh = el.offsetHeight, sx = e.clientX, sy = e.clientY;
+    const move = (ev: PointerEvent) => {
+      el.style.width = `${Math.min(Math.max(256, sw + ev.clientX - sx), window.innerWidth * 0.9)}px`;
+      el.style.height = `${Math.min(Math.max(160, sh + ev.clientY - sy), window.innerHeight * 0.88)}px`;
+    };
+    const up = () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+    };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+  }
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
@@ -159,6 +177,7 @@ export default function SioModal({
       aria-modal="true"
     >
       <div className="flex max-w-full items-start" onClick={(e) => e.stopPropagation()}>
+        <div className="relative max-w-full">
         <div
           ref={panelRef}
           className="resize overflow-auto rounded-2xl border-2 bg-[var(--fluo-card)] p-5"
@@ -191,6 +210,18 @@ export default function SioModal({
             </div>
           )}
           {children}
+        </div>
+        {/* Visible resize grip: the native CSS handle is a faint browser
+            triangle nobody finds (Dan, 2026-07-05) and touch screens never
+            show it — this one works with any pointer. */}
+        <div
+          onPointerDown={startResize}
+          className="absolute bottom-0 right-0 z-10 flex h-7 w-7 cursor-nwse-resize touch-none items-end justify-end rounded-br-2xl pb-0.5 pr-1"
+          title="Drag to resize"
+          aria-hidden
+        >
+          <span className="text-sm leading-none" style={{ color: "var(--fluo-card-accent)" }}>◢</span>
+        </div>
         </div>
         {/* wide screens: flaps poke off the popup's right edge, home-page style */}
         {tabs && tabs.length > 0 && (

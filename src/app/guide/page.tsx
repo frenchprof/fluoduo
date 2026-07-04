@@ -6,6 +6,7 @@
  */
 import Link from "next/link";
 import CahierShell from "@/components/CahierShell";
+import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 
 const ACTIVITIES: { emoji: string; name: string; what: string }[] = [
   { emoji: "🃏", name: "Flip It", what: "Flashcards. Tap to flip French ↔ English; group and sort the deck." },
@@ -20,14 +21,7 @@ const ACTIVITIES: { emoji: string; name: string; what: string }[] = [
 
 export default function GuidePage() {
   return (
-    <CahierShell
-      tabs={[
-        { key: "home", label: "Accueil", emoji: "🏠", href: "/" },
-        { key: "guide", label: "Guide", emoji: "❓" },
-      ]}
-      active="guide"
-      crumb="❓ Guide"
-    >
+    <CahierShell tabs={tabsWithActive(siteTabs(), "guide")} active="guide" crumb="❓ Guide">
       <div className="mx-auto max-w-2xl px-3 py-5">
         <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">❓ How this site works</h1>
         <p className="mt-2 text-sm leading-relaxed text-[color:var(--cahier-ink)]">
@@ -39,10 +33,11 @@ export default function GuidePage() {
         <section className="mt-6">
           <h2 className="cahier-section rounded-md px-3 py-1.5">1 · Find your goal</h2>
           <p className="mt-2 text-sm leading-relaxed text-[color:var(--cahier-ink)]">
-            The home page is the whole course: five units (Unité 0–4), each a list of
-            goal cards — things you&rsquo;ll be able to <i>do</i> in French, like introducing
-            yourself or ordering food. <b>Tap the goal your class is working on.</b>{" "}
-            A popup opens with everything for that goal.
+            The 🏠 Home page shows your whole journey — every goal in the course, with
+            your progress. The <b>Unité 0–4</b> flaps hold the goals themselves: things
+            you&rsquo;ll be able to <i>do</i> in French, like introducing yourself or
+            ordering food. <b>Tap the goal your class is working on</b> — a popup opens
+            with everything for that goal.
           </p>
         </section>
 
@@ -92,11 +87,10 @@ export default function GuidePage() {
         </section>
 
         <section className="mt-6">
-          <h2 className="cahier-section rounded-md px-3 py-1.5">5 · Signing in (optional)</h2>
+          <h2 className="cahier-section rounded-md px-3 py-1.5">5 · Signing in</h2>
           <p className="mt-2 text-sm leading-relaxed text-[color:var(--cahier-ink)]">
-            Everything works without an account. Signing in with Google adds memory:
-            your 💎 gems, 🔥 streak, ✓ completed goals and review schedule are saved
-            and follow you to any device you sign in on.
+            Sign in with Google: your 💎 gems, 🔥 streak, ✓ completed goals and review
+            schedule are saved and follow you to any device you sign in on.
           </p>
         </section>
 

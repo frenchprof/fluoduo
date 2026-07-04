@@ -78,6 +78,21 @@ export default function Lexicalator({
   useEffect(() => setMounted(true), []);
   useEffect(() => () => chiptune.stop(), []); // stop the loop on unmount
 
+  // One volume for music AND sound effects (chiptune's master gain), shared
+  // across games via localStorage.
+  const [volume, setVolume] = useState(0.6);
+  useEffect(() => {
+    try {
+      const v = parseFloat(window.localStorage.getItem("fluolingo:volume") ?? "");
+      if (!Number.isNaN(v)) { setVolume(v); chiptune.setVolume(v); }
+    } catch {}
+  }, []);
+  function changeVolume(v: number) {
+    setVolume(v);
+    chiptune.setVolume(v);
+    try { window.localStorage.setItem("fluolingo:volume", String(v)); } catch {}
+  }
+
   // The A-minor swung loop starts with the game itself: the first chest pick
   // (a user gesture, so the AudioContext may be created) — Dan 2026-07-03,
   // "the music is missing". pickChest is idempotent (same id → same state,
@@ -261,18 +276,35 @@ export default function Lexicalator({
           </h1>
           <p className="text-xs font-bold" style={{ color: "#075985" }}>{title}{subtitle ? ` — ${subtitle}` : ""}</p>
         </div>
-        <span className="rounded-xl border-2 border-b-4 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">Score <b style={{ color: "#58cc02" }}>{score}</b></span>
-        <span className="rounded-xl border-2 border-b-4 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">Lvl <b style={{ color: "#1cb0f6" }}>{level}</b></span>
-        <span className="rounded-xl border-2 border-b-4 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">{cleared}/{QUOTA}</span>
-        <span className="text-lg" style={{ color: "#ff4b4b" }}>{"♥".repeat(Math.max(0, lives))}<span className="opacity-20">{"♥".repeat(Math.max(0, START_LIVES - lives))}</span></span>
-        <button type="button" onClick={() => { chiptune.toggle("conveyor"); setMusic(chiptune.playing() === "conveyor"); }}
-          title="Music" className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-xs font-bold">
-          {music ? "🔊" : "🎵"}
-        </button>
-        <button type="button" onClick={() => setHard((h) => !h)}
-          className={`rounded-xl border-2 px-2 py-0.5 text-xs font-bold ${hard ? "border-rose-400 bg-rose-500 text-white" : "border-sky-200 bg-white"}`}>
-          {hard ? "Hard ✓" : "Hard"}
-        </button>
+        {/* Status chips: flat white, read-only. Buttons live in the raised
+            yellow cluster below — two shapes so tappable is obvious at a
+            glance (Dan, 2026-07-05: "i cannot tell which are tappable"). */}
+        <span title="Points earned" className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">Score <b style={{ color: "#58cc02" }}>{score}</b></span>
+        <span title="Level — higher levels bring longer words and a faster belt" className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">Niveau <b style={{ color: "#1cb0f6" }}>{level}</b></span>
+        <span title={`Words unlocked this level — ${QUOTA} clears it`} className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">Mots <b style={{ color: "#ff9600" }}>{cleared}/{QUOTA}</b></span>
+        <span title="Lives — a wrong syllable costs one" className="text-lg" style={{ color: "#ff4b4b" }}>{"♥".repeat(Math.max(0, lives))}<span className="opacity-20">{"♥".repeat(Math.max(0, START_LIVES - lives))}</span></span>
+        <span className="flex items-center gap-2 rounded-xl border-2 border-sky-300 bg-sky-100 px-2 py-1">
+          <button type="button" onClick={() => { chiptune.toggle("conveyor"); setMusic(chiptune.playing() === "conveyor"); }}
+            title={music ? "Turn the music off" : "Turn the music on"}
+            className={`rounded-lg border-2 border-b-4 px-2 py-0.5 text-xs font-black transition active:translate-y-0.5 active:border-b-2 ${
+              music ? "border-[#3f9c17] bg-[#58cc02] text-white" : "border-[#e08600] bg-[#ffc800] text-[#5a3a08]"
+            }`}>
+            {music ? "🔊 Musique" : "🎵 Musique"}
+          </button>
+          <input
+            type="range" min={0} max={1} step={0.05} value={volume}
+            onChange={(e) => changeVolume(Number(e.target.value))}
+            aria-label="Volume" title="Volume — music and sounds"
+            className="h-1.5 w-20 cursor-pointer accent-[#1cb0f6]"
+          />
+          <button type="button" onClick={() => setHard((h) => !h)}
+            title="Hard mode — hides how many syllables each word has"
+            className={`rounded-lg border-2 border-b-4 px-2 py-0.5 text-xs font-black transition active:translate-y-0.5 active:border-b-2 ${
+              hard ? "border-rose-700 bg-rose-500 text-white" : "border-[#e08600] bg-[#ffc800] text-[#5a3a08]"
+            }`}>
+            {hard ? "😤 Hard ✓" : "😤 Hard"}
+          </button>
+        </span>
       </header>
 
       <p className="mb-2 text-center text-xs font-semibold" style={{ color: "#075985" }}>

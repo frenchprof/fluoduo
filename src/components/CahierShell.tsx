@@ -107,9 +107,15 @@ export default function CahierShell({
 
           <div className="sticky top-0 z-10 border-b-2 border-[color:var(--cahier-ink)]/15 bg-[color:var(--cahier-paper)]/90 backdrop-blur">
             <div className="flex items-center justify-between gap-2 py-3 pl-12 pr-3 sm:pl-16 sm:pr-5">
-              <Link href="/" className="cahier-display text-lg font-black text-[color:var(--cahier-ink)]">
-                ← <span className="cahier-hl">FluoLingo</span>
-              </Link>
+              {active === "home" ? (
+                <span className="cahier-display text-lg font-black text-[color:var(--cahier-ink)]">
+                  <span className="cahier-hl">FluoLingo</span> <span aria-hidden>✨</span>
+                </span>
+              ) : (
+                <Link href="/" className="cahier-display text-lg font-black text-[color:var(--cahier-ink)]">
+                  ← <span className="cahier-hl">FluoLingo</span>
+                </Link>
+              )}
               <div className="flex items-center gap-2">
                 {crumb && (
                   <span className="text-xs font-bold uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">

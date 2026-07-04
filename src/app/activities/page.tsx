@@ -7,7 +7,8 @@
  * Unité; columns = activities; every filled cell is a direct link.
  */
 import Link from "next/link";
-import CahierShell, { hasDicePractice, UNIT_PAGES } from "@/components/CahierShell";
+import CahierShell, { hasDicePractice, withActive, UNIT_PAGES } from "@/components/CahierShell";
+import { siteTabs } from "@/components/siteTabs";
 import { CURATED } from "@/content/collections";
 import { lessonsForDeck } from "@/content/lessons";
 import { isLexReadyId } from "@/lib/collections/lexReady";
@@ -40,14 +41,7 @@ const HEAD_TITLES = ["Lesson", "Flip It", "Say It", "Complete It", "Practice", "
 export default function ActivitiesIndexPage() {
   const units = [0, 1, 2, 3, 4];
   return (
-    <CahierShell
-      tabs={[
-        { key: "home", label: "Accueil", emoji: "🏠", href: "/" },
-        { key: "index", label: "Index", emoji: "🗂️" },
-      ]}
-      active="index"
-      crumb="🗂️ Practice Index"
-    >
+    <CahierShell tabs={withActive(siteTabs(), "index")} active="index" crumb="🗂️ Practice Index">
       <div className="mx-auto max-w-4xl px-2 py-4">
         <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">🗂️ Practice Index</h1>
         <p className="mt-1 mb-4 text-sm text-[color:var(--cahier-ink-soft)]">Every deck × every activity — tap any cell.</p>
