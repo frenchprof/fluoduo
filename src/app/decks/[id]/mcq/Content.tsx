@@ -285,8 +285,9 @@ function Question({
             <button
               key={c}
               type="button"
-              onClick={() => onPick(c)}
-              disabled={!!picked}
+              // Answered → options stay tappable purely for their sound (Dan,
+              // 2026-07-04), in the option's own language.
+              onClick={() => (picked ? speak(c, dir === "fr-en" ? "en-US" : "fr-FR") : onPick(c))}
               lang={dir === "fr-en" ? "en" : "fr"}
               className={`rounded-xl border-2 px-4 py-3 text-left text-base font-bold transition ${cls}`}
             >

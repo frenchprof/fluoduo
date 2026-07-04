@@ -154,8 +154,9 @@ function QuestionCard({
               <button
                 key={c}
                 type="button"
-                disabled={showResult}
-                onClick={() => onPick(c)}
+                // Answered → every option stays tappable purely for its sound
+                // (Dan, 2026-07-04), matching the Unit-0 quiz behaviour.
+                onClick={() => (showResult ? speak(c, "fr-FR") : onPick(c))}
                 lang="fr"
                 className={`rounded-full border-2 px-3 py-1.5 text-sm font-bold transition ${cls}`}
               >
