@@ -252,6 +252,134 @@
       "tags": [
         "col:des"
       ]
+    },
+    {
+      "id": "faire-activites-17",
+      "fr": "Je ne fais pas de sport.",
+      "en": "I don't do sport.",
+      "gap": "de",
+      "syllables": [
+        "Je",
+        "ne",
+        "fais",
+        "pas",
+        "de",
+        "sport."
+      ],
+      "tags": []
+    },
+    {
+      "id": "faire-activites-18",
+      "fr": "Tu ne fais pas de vélo.",
+      "en": "You don't cycle.",
+      "gap": "de",
+      "syllables": [
+        "Tu",
+        "ne",
+        "fais",
+        "pas",
+        "de",
+        "vé",
+        "lo."
+      ],
+      "tags": []
+    },
+    {
+      "id": "faire-activites-19",
+      "fr": "Elle ne fait pas de natation.",
+      "en": "She doesn't swim.",
+      "gap": "de",
+      "syllables": [
+        "Elle",
+        "ne",
+        "fait",
+        "pas",
+        "de",
+        "na",
+        "ta",
+        "tion."
+      ],
+      "tags": []
+    },
+    {
+      "id": "faire-activites-20",
+      "fr": "Nous ne faisons pas de courses.",
+      "en": "We don't run errands.",
+      "gap": "de",
+      "syllables": [
+        "Nous",
+        "ne",
+        "fai",
+        "sons",
+        "pas",
+        "de",
+        "courses."
+      ],
+      "tags": []
+    },
+    {
+      "id": "faire-activites-21",
+      "fr": "Il ne fait pas d'équitation.",
+      "en": "He doesn't do horse riding.",
+      "gap": "d'",
+      "syllables": [
+        "Il",
+        "ne",
+        "fait",
+        "pas",
+        "d'é",
+        "qui",
+        "ta",
+        "tion."
+      ],
+      "tags": []
+    },
+    {
+      "id": "faire-activites-22",
+      "fr": "Vous ne faites pas d'escalade.",
+      "en": "You (pl) don't climb.",
+      "gap": "d'",
+      "syllables": [
+        "Vous",
+        "ne",
+        "faites",
+        "pas",
+        "d'es",
+        "ca",
+        "lade."
+      ],
+      "tags": []
+    },
+    {
+      "id": "faire-activites-23",
+      "fr": "Ils ne font pas de judo.",
+      "en": "They don't do judo.",
+      "gap": "de",
+      "syllables": [
+        "Ils",
+        "ne",
+        "font",
+        "pas",
+        "de",
+        "ju",
+        "do."
+      ],
+      "tags": []
+    },
+    {
+      "id": "faire-activites-24",
+      "fr": "Elles ne font pas de danse.",
+      "en": "They (f) don't dance.",
+      "gap": "de",
+      "syllables": [
+        "Elles",
+        "ne",
+        "font",
+        "pas",
+        "de",
+        "danse."
+      ],
+      "tags": []
     }
   ]
 }

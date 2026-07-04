@@ -199,6 +199,96 @@
       "tags": [
         "role:right"
       ]
+    },
+    {
+      "id": "directions-full-01",
+      "fr": "Vous sortez du parc.",
+      "en": "You exit the park.",
+      "tags": []
+    },
+    {
+      "id": "directions-full-02",
+      "fr": "Vous sortez de la station de métro.",
+      "en": "You exit the metro station.",
+      "tags": []
+    },
+    {
+      "id": "directions-full-03",
+      "fr": "Vous allez tout droit.",
+      "en": "You go straight ahead.",
+      "tags": []
+    },
+    {
+      "id": "directions-full-04",
+      "fr": "Vous continuez tout droit.",
+      "en": "You continue straight ahead.",
+      "tags": []
+    },
+    {
+      "id": "directions-full-05",
+      "fr": "Vous allez jusqu'au carrefour.",
+      "en": "You go as far as the intersection.",
+      "tags": []
+    },
+    {
+      "id": "directions-full-06",
+      "fr": "Vous continuez jusqu'au carrefour.",
+      "en": "You continue as far as the intersection.",
+      "tags": []
+    },
+    {
+      "id": "directions-full-07",
+      "fr": "C'est au bout de la rue.",
+      "en": "It's at the end of the street.",
+      "tags": []
+    },
+    {
+      "id": "directions-full-08",
+      "fr": "Vous tournez à gauche.",
+      "en": "You turn left.",
+      "tags": []
+    },
+    {
+      "id": "directions-full-09",
+      "fr": "Vous tournez à droite.",
+      "en": "You turn right.",
+      "tags": []
+    },
+    {
+      "id": "directions-full-10",
+      "fr": "Vous prenez la première rue à gauche.",
+      "en": "You take the first street on the left.",
+      "tags": []
+    },
+    {
+      "id": "directions-full-11",
+      "fr": "Vous prenez la deuxième rue à droite.",
+      "en": "You take the second street on the right.",
+      "tags": []
+    },
+    {
+      "id": "directions-full-12",
+      "fr": "Vous traversez le passage piéton.",
+      "en": "You cross at the crosswalk.",
+      "tags": []
+    },
+    {
+      "id": "directions-full-13",
+      "fr": "Vous traversez le pont.",
+      "en": "You cross the bridge.",
+      "tags": []
+    },
+    {
+      "id": "directions-full-14",
+      "fr": "Vous traversez la place.",
+      "en": "You cross the square.",
+      "tags": []
+    },
+    {
+      "id": "directions-full-15",
+      "fr": "Vous êtes arrivé(e).",
+      "en": "You have arrived.",
+      "tags": []
     }
   ],
   "gameConfig": {

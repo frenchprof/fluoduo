@@ -68,3 +68,29 @@ export const ALL_LESSONS: Lesson[] = Object.values(LESSONS);
 export function lessonsForSio(sioId: string): Lesson[] {
   return (LESSONS_BY_SIO[sioId] ?? []).map((slug) => LESSONS[slug]).filter(Boolean);
 }
+
+/* Lessons are PART of their SIO's flow, not standalone (Dan, 2026-07-04:
+ * "they should merge with the SIOs that refer to the same skills") — the two
+ * reverse maps below let the deck tab rail carry a Lesson tab and the lesson
+ * page carry the deck's activity tabs. */
+import { SIOS } from "@/content/sios";
+
+/** Lessons for a deck: via the SIO(s) whose collectionId is this deck. */
+export function lessonsForDeck(collectionId: string): Lesson[] {
+  const out: Lesson[] = [];
+  for (const s of SIOS) {
+    if (s.collectionId !== collectionId) continue;
+    for (const l of lessonsForSio(s.id)) if (!out.includes(l)) out.push(l);
+  }
+  return out;
+}
+
+/** The deck a lesson belongs to (first SIO that lists it), or null. */
+export function deckForLesson(slug: string): string | null {
+  for (const [sioId, slugs] of Object.entries(LESSONS_BY_SIO)) {
+    if (!slugs.includes(slug)) continue;
+    const sio = SIOS.find((s) => s.id === sioId);
+    if (sio?.collectionId) return sio.collectionId;
+  }
+  return null;
+}

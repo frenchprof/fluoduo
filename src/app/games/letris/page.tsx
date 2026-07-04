@@ -1,8 +1,28 @@
 import Link from "next/link";
 import { listLetrisSets } from "@/games/letris/sets";
+import { CURATED } from "@/content/collections";
+
+/** Rain sets grouped by Unité (Dan, 2026-07-04: "organised rather than just
+ *  listed out"). A set's unit comes from its backing collection; sets without
+ *  one land under Extra. */
+function groupedSets() {
+  const unitOf = (slug: string): number | null => {
+    const c = CURATED.find((x) => x.id === slug || x.id === `${slug}-letris`);
+    return c?.unit ?? null;
+  };
+  const groups = new Map<string, ReturnType<typeof listLetrisSets>>();
+  for (const s of listLetrisSets()) {
+    const u = unitOf(s.slug);
+    const key = u === null ? "Extra" : `Unité ${u}`;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(s);
+  }
+  const order = ["Unité 0", "Unité 1", "Unité 2", "Unité 3", "Unité 4", "Extra"];
+  return order.filter((k) => groups.has(k)).map((k) => ({ label: k, sets: groups.get(k)! }));
+}
 
 export default function LetrisIndexPage() {
-  const sets = listLetrisSets();
+  const groups = groupedSets();
   return (
     <main
       className="min-h-screen text-sky-950"
@@ -27,30 +47,37 @@ export default function LetrisIndexPage() {
           </p>
         </header>
 
-        <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {sets.map((s) => (
-            <Link
-              key={s.slug}
-              href={`/games/letris/${s.slug}`}
-              className="group flex h-full flex-col rounded-3xl border-4 border-white bg-white/85 p-5 shadow-md transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-lg"
-            >
-              <div className="flex items-center gap-3">
-                <span className="text-3xl" aria-hidden>
-                  {s.emoji}
-                </span>
-                <div>
-                  <h2 className="text-lg font-black text-sky-900">{s.title}</h2>
-                  {s.subtitle && (
-                    <p className="text-xs font-semibold text-sky-900/60">{s.subtitle}</p>
-                  )}
-                </div>
-              </div>
-              <div className="mt-4 text-xs font-bold text-sky-700">
-                💧 {s.tileCount} drops · {s.categoryCount} puddles
-              </div>
-            </Link>
-          ))}
-        </section>
+        {groups.map((g) => (
+          <section key={g.label} className="mb-8">
+            <h2 className="mb-3 text-xl font-black text-sky-800" style={{ textShadow: "0 1px 0 #fff" }}>
+              {g.label}
+            </h2>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {g.sets.map((s) => (
+                <Link
+                  key={s.slug}
+                  href={`/games/letris/${s.slug}`}
+                  className="group flex h-full flex-col rounded-3xl border-4 border-white bg-white/85 p-5 shadow-md transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-lg"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-3xl" aria-hidden>
+                      {s.emoji}
+                    </span>
+                    <div>
+                      <h2 className="text-lg font-black text-sky-900">{s.title}</h2>
+                      {s.subtitle && (
+                        <p className="text-xs font-semibold text-sky-900/60">{s.subtitle}</p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="mt-4 text-xs font-bold text-sky-700">
+                    💧 {s.tileCount} drops · {s.categoryCount} puddles
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        ))}
       </div>
     </main>
   );

@@ -21,6 +21,7 @@ import { isLexReady } from "@/lib/collections/lexReady";
 import { isConjugaZoneReadyId } from "@/lib/collections/conjugaZoneReady";
 import { isGramMarathonReady } from "@/lib/collections/gramMarathonReady";
 import { UNIT_PAGES } from "@/components/CahierShell";
+import { lessonsForDeck } from "@/content/lessons";
 
 const SIZE_KEY = "fluolingo:popupSize";
 
@@ -50,8 +51,12 @@ export function popupActivityTabs(
       : [];
   if (!deck) return pretestTab.length ? pretestTab : undefined;
   const hasLetris = !!deck.gameConfig?.letris;
+  const lessons = lessonsForDeck(deck.id);
   return [
     ...pretestTab,
+    ...(lessons.length > 0
+      ? [{ key: "lesson", label: "Lesson", emoji: "📚", href: `/lessons/${lessons[0].slug}` }]
+      : []),
     { key: "flip", label: "Flip It", emoji: "🃏", href: `/practice/flip-it/${deck.id}` },
     { key: "say", label: "Say It", emoji: "🎤", href: `/practice/say-it/${deck.id}` },
     { key: "complete", label: "Complete It", emoji: "✏️", href: `/practice/complete-it/${deck.id}` },

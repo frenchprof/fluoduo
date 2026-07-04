@@ -11,7 +11,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
 import { CURATED } from "@/content/collections";
-import { bareWord } from "@/lib/collections/display";
+import { bareWord, practiceItems } from "@/lib/collections/display";
 import { speak } from "@/games/letris/speech";
 import { recordItemResult } from "@/lib/progress";
 import type { Collection, Item } from "@/lib/collections/schema";
@@ -76,7 +76,7 @@ export default function CompleteItContent({ collectionId }: { collectionId: stri
   useEffect(() => {
     if (!deck) return;
     const entries: QEntry[] = [];
-    deck.items.forEach((item, idx) => {
+    practiceItems(deck).forEach((item, idx) => {
       if (item.nat) {
         NAT_FORMS.forEach((form) => entries.push({ itemIdx: idx, natForm: form }));
       } else {
@@ -129,7 +129,7 @@ export default function CompleteItContent({ collectionId }: { collectionId: stri
 
   function restart() {
     const entries: QEntry[] = [];
-    deck!.items.forEach((it, idx) => {
+    practiceItems(deck!).forEach((it, idx) => {
       if (it.nat) NAT_FORMS.forEach((form) => entries.push({ itemIdx: idx, natForm: form }));
       else entries.push({ itemIdx: idx });
     });

@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { CURATED } from "@/content/collections";
 import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
+import { practiceItems } from "@/lib/collections/display";
 import { recordItemResult } from "@/lib/progress";
 import type { Collection, Item } from "@/lib/collections/schema";
 
@@ -92,7 +93,7 @@ export default function SayItContent({ collectionId }: { collectionId: string })
   // Shuffle on mount only — shuffling during render breaks SSR hydration
   // (the AGENTS/handoff "no Math.random() during render" rule).
   useEffect(() => {
-    const list = deck ? shuffle(deck.items.filter((i) => i.fr)) : [];
+    const list = deck ? shuffle(practiceItems(deck).filter((i) => i.fr)) : [];
     setCards(list);
     setCard(list[0] ?? null);
     setQueue(list.slice(1));

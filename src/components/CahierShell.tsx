@@ -18,6 +18,7 @@ import { isLexReadyId } from "@/lib/collections/lexReady";
 import { isConjugaZoneReadyId } from "@/lib/collections/conjugaZoneReady";
 import { isGramMarathonReadyId } from "@/lib/collections/gramMarathonReady";
 import { CURATED } from "@/content/collections";
+import { lessonsForDeck } from "@/content/lessons";
 
 /** Dice Practice is an MCQ over the deck's letris columns — no columns, no game. */
 export function hasDicePractice(collectionId: string): boolean {
@@ -162,7 +163,12 @@ export default function CahierShell({
  *  The Lexicalator tab appears only where the deck is hand-syllabified (no old-game
  *  fallback anymore). */
 export function deckActivityTabs(collectionId: string): ShellTab[] {
+  const lessons = lessonsForDeck(collectionId);
   return [
+    // The lesson leads its SIO's flow — Receive before Integrate.
+    ...(lessons.length > 0
+      ? [{ key: "lesson", label: "Lesson", emoji: "📚", href: `/lessons/${lessons[0].slug}` } as ShellTab]
+      : []),
     { key: "flip", label: "Flip It", emoji: "🃏", href: `/practice/flip-it/${collectionId}` },
     { key: "say", label: "Say It", emoji: "🎤", href: `/practice/say-it/${collectionId}` },
     { key: "complete", label: "Complete It", emoji: "✏️", href: `/practice/complete-it/${collectionId}` },

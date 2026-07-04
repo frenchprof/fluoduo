@@ -27,7 +27,7 @@ import {
   NOTE_MAX,
   type DeckNotes,
 } from "@/lib/notes/store";
-import { displayEn } from "@/lib/collections/display";
+import { displayEn, practiceItems } from "@/lib/collections/display";
 import { loadBuckets, setBucket, type Bucket } from "@/lib/practice/buckets";
 import { recordItemResult } from "@/lib/progress";
 import { CahierFrame, TAB_HUES, type CahierTab } from "../CahierFrame";
@@ -140,7 +140,7 @@ export default function FlipItPage({
   // entry requirement. (An old emoji?.trim() filter here silently emptied
   // whole decks — matieres, the ateliers, alphabet… — which is why "No
   // flippable vocab" kept coming back no matter how the links were fixed.)
-  const items = collection ? collection.items : [];
+  const items = collection ? practiceItems(collection) : [];
 
   if (!collection || items.length === 0) {
     return (
@@ -275,7 +275,7 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
       onSelect={(k) => setView(k as View)}
       topBar={<TopBar crumb={collection.title} />}
     >
-      <StepLabel n={1} label="Select view — use the tabs above" />
+      <StepLabel n={1} label="Select view — use the flaps or burger menu on the top right" />
       <StepLabel n={2} label="Select mode" />
       {/* Test Yourself — a clearly separate study-mode switch (not a view) */}
       <div className="mb-4 flex flex-wrap items-center gap-3">

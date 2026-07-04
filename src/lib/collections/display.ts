@@ -37,3 +37,15 @@ export function bareWord(s: string): string {
   return s.replace(/\s*\([^)]*\)/g, "").replace(/\s+/g, " ").trim();
 }
 
+/**
+ * Items for the flip/say/complete drill surfaces. `role:`-tagged items are
+ * MATCHING-GAME structure (left/right fragments like "Vous tournez" / "du
+ * parc") — confusing as standalone cards (Dan, 2026-07-04) — so they are
+ * hidden whenever the deck also carries full-phrase items. A deck with ONLY
+ * fragments keeps them (never empty a deck).
+ */
+export function practiceItems(c: Collection): Item[] {
+  const full = c.items.filter((i) => !i.tags.some((t) => t.startsWith("role:")));
+  return full.length > 0 ? full : c.items;
+}
+

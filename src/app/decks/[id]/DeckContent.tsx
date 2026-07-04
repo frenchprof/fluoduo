@@ -26,7 +26,10 @@ export function deckTabs(id: string): ShellTab[] {
     { key: "home", label: "Accueil", emoji: "🏠", href: "/" },
     { key: "deck", label: "Deck", emoji: "📖", href: `/decks/${id}` },
     { key: "study", label: "Study", emoji: "🃏", href: `/decks/${id}/study` },
-    { key: "mcq", label: "MCQ", emoji: "❓", href: `/decks/${id}/mcq` },
+    // Auto-MCQ only for user decks — curated decks have authored pretests.
+    ...(CURATED.some((c) => c.id === id)
+      ? []
+      : [{ key: "mcq", label: "MCQ", emoji: "❓", href: `/decks/${id}/mcq` } as ShellTab]),
   ];
 }
 
@@ -164,7 +167,7 @@ function DeckView({
 }) {
   const games = {
     flashcard: collection.items.length > 0,
-    mcq: hasMcq(collection),
+    mcq: source === "firestore" && hasMcq(collection), // curated decks have authored pretests — the auto-MCQ adds nothing there
     gapfill: gapfillItems(collection).length > 0,
     letris: hasLetris(collection),
     matching: hasMatching(collection),

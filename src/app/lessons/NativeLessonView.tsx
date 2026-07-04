@@ -7,9 +7,10 @@
  * flap tabs (→ ☰ burger when narrow) come from the shared shell.
  */
 
-import CahierShell from "@/components/CahierShell";
+import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
 import DiceTrainer, { BonusTrainer } from "@/games/dice/DiceTrainer";
 import { getNativeLesson } from "@/content/lessons/native";
+import { deckForLesson } from "@/content/lessons";
 
 function StepLabel({ n, label }: { n: number; label: string }) {
   return (
@@ -25,12 +26,21 @@ export default function NativeLessonView({ slug, title, unit }: { slug: string; 
   const lesson = getNativeLesson(slug);
   if (!lesson) return null;
 
-  return (
-    <CahierShell
-      tabs={[
+  // A lesson is part of its SIO's flow, not a standalone page (Dan,
+  // 2026-07-04): when it belongs to a deck, it carries THAT deck's activity
+  // tabs — the learner rolls straight from the lesson into Flip It / drills.
+  // Cross-unit revisions (no single deck home) keep the gallery tabs.
+  const deckId = deckForLesson(slug);
+  const tabs = deckId
+    ? withActive(deckActivityTabs(deckId), "lesson")
+    : [
         { key: "gallery", label: "Lessons", emoji: "📚", href: "/lessons" },
         { key: "lesson", label: title, emoji: "🎲" },
-      ]}
+      ];
+
+  return (
+    <CahierShell
+      tabs={tabs}
       active="lesson"
       crumb={`Unité ${unit}`}
     >
