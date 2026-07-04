@@ -30,8 +30,8 @@ type Category = {
 const PHRASE_BANK: Category[] = [
   {
     label: "Verbs",
-    color: "from-blue-700 to-blue-900",
-    chip: "bg-blue-500/30 text-blue-100",
+    color: "bg-blue-100 text-blue-900",
+    chip: "border-blue-300 bg-blue-50 text-blue-900 hover:bg-blue-100",
     phrases: [
       "Vous sortez",
       "Vous allez",
@@ -44,8 +44,8 @@ const PHRASE_BANK: Category[] = [
   },
   {
     label: "Completions",
-    color: "from-emerald-700 to-emerald-900",
-    chip: "bg-emerald-500/30 text-emerald-100",
+    color: "bg-emerald-100 text-emerald-900",
+    chip: "border-emerald-300 bg-emerald-50 text-emerald-900 hover:bg-emerald-100",
     phrases: [
       "du parc",
       "de la station de métro",
@@ -64,8 +64,8 @@ const PHRASE_BANK: Category[] = [
   },
   {
     label: "Connectors",
-    color: "from-purple-700 to-purple-900",
-    chip: "bg-purple-500/30 text-purple-100",
+    color: "bg-purple-100 text-purple-900",
+    chip: "border-purple-300 bg-purple-50 text-purple-900 hover:bg-purple-100",
     phrases: ["puis", "ensuite", ", et", "d'abord", "enfin", ", "],
   },
 ];
@@ -111,11 +111,11 @@ export default function DirectionsMapGame() {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 py-6 text-white">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 py-6 text-[color:var(--cahier-ink)]">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">Quel est le chemin pour … ?</h1>
-          <p className="text-sm text-slate-300">
+          <h1 className="cahier-display text-2xl font-black">Quel est le chemin pour … ?</h1>
+          <p className="text-sm text-[color:var(--cahier-ink-soft)]">
             Practice map — assemble the route from <b>A</b> to <b>B</b>.
           </p>
         </div>
@@ -124,7 +124,7 @@ export default function DirectionsMapGame() {
             type="button"
             onClick={undo}
             disabled={dialogue.length === 0}
-            className="neo-btn neo-btn-sm"
+            className="cahier-btn cahier-btn-sm"
           >
             ↶ Undo
           </button>
@@ -132,14 +132,14 @@ export default function DirectionsMapGame() {
             type="button"
             onClick={clearOnly}
             disabled={dialogue.length === 0}
-            className="neo-btn neo-btn-sm"
+            className="cahier-btn cahier-btn-sm"
           >
             🧹 Clear
           </button>
           <button
             type="button"
             onClick={reset}
-            className="neo-btn neo-btn-sm"
+            className="cahier-btn cahier-btn-sm"
           >
             🔄 New route
           </button>
@@ -147,10 +147,10 @@ export default function DirectionsMapGame() {
       </header>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <div className="neo-panel flex items-center gap-3 p-4">
+        <div className="flex items-center gap-3 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white p-4">
           <div className="text-3xl">📍</div>
           <div>
-            <div className="text-xs uppercase tracking-widest text-slate-400">
+            <div className="text-xs uppercase tracking-widest text-[color:var(--cahier-ink-soft)]">
               Point A · Departure
             </div>
             <div className="text-xl font-bold">
@@ -158,10 +158,10 @@ export default function DirectionsMapGame() {
             </div>
           </div>
         </div>
-        <div className="neo-panel flex items-center gap-3 p-4">
+        <div className="flex items-center gap-3 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white p-4">
           <div className="text-3xl">🎯</div>
           <div>
-            <div className="text-xs uppercase tracking-widest text-slate-400">
+            <div className="text-xs uppercase tracking-widest text-[color:var(--cahier-ink-soft)]">
               Point B · Destination
             </div>
             <div className="text-xl font-bold">
@@ -171,7 +171,7 @@ export default function DirectionsMapGame() {
         </div>
       </div>
 
-      <div className="neo-panel mx-auto flex max-w-3xl items-center justify-center gap-3 px-4 py-3 text-sm font-semibold">
+      <div className="mx-auto flex max-w-3xl items-center justify-center gap-3 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white px-4 py-3 text-sm font-semibold">
         <span className="text-2xl" aria-hidden>
           👇
         </span>
@@ -180,12 +180,12 @@ export default function DirectionsMapGame() {
         </span>
       </div>
 
-      <div className="neo-inset min-h-[100px] p-5">
-        <div className="mb-2 text-xs uppercase tracking-widest text-amber-300">
+      <div className="min-h-[100px] rounded-xl border-2 border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-2)] p-5">
+        <div className="mb-2 text-xs uppercase tracking-widest text-[color:var(--cahier-ink-soft)]">
           Your route
         </div>
         {dialogue.length === 0 ? (
-          <p className="italic text-slate-500">
+          <p className="italic text-[color:var(--cahier-ink-soft)]">
             Start by tapping a verb phrase below…
           </p>
         ) : (
@@ -202,7 +202,7 @@ export default function DirectionsMapGame() {
             type="button"
             onClick={speakDialogue}
             disabled={dialogue.length === 0}
-            className="neo-btn neo-btn-primary"
+            className="cahier-btn cahier-btn-primary"
           >
             🔊 Speak the route
           </button>
@@ -211,9 +211,12 @@ export default function DirectionsMapGame() {
 
       <div className="flex flex-col gap-4">
         {PHRASE_BANK.map((cat) => (
-          <section key={cat.label} className="neo-panel overflow-hidden">
+          <section
+            key={cat.label}
+            className="overflow-hidden rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white"
+          >
             <header
-              className={`bg-gradient-to-br px-4 py-3 text-sm font-bold uppercase tracking-widest ${cat.color}`}
+              className={`px-4 py-3 text-sm font-bold uppercase tracking-widest ${cat.color}`}
             >
               {cat.label}
             </header>
@@ -223,7 +226,7 @@ export default function DirectionsMapGame() {
                   key={p}
                   type="button"
                   onClick={() => addPhrase(p)}
-                  className={`neo-btn ${cat.chip}`}
+                  className={`rounded-lg border-2 px-3 py-2 text-sm font-bold transition ${cat.chip}`}
                   title={`Add ${p}`}
                 >
                   {p === ", " ? ",  (comma)" : p}

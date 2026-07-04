@@ -86,72 +86,68 @@ export default function WeatherMCQGame({ set }: { set: LetrisSet }) {
   const accuracy = attempts === 0 ? 0 : Math.round((correctCount / attempts) * 100);
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-4 py-6 text-white">
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-4 py-6 text-[color:var(--cahier-ink)]">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">{set.title}</h1>
-          <p className="text-sm text-slate-300">
+          <h1 className="cahier-display text-2xl font-black">{set.title}</h1>
+          <p className="text-sm text-[color:var(--cahier-ink-soft)]">
             MCQ · question {Math.min(idx + 1, order.length)} of {order.length}
           </p>
         </div>
         <div className="flex items-center gap-3 text-sm font-mono">
           <span>
-            Score <b className="text-emerald-400">{correctCount}</b>/{attempts}
+            Score <b className="text-emerald-700">{correctCount}</b>/{attempts}
           </span>
           <span>
-            Accuracy <b className="text-amber-300">{accuracy}%</b>
+            Accuracy <b className="text-amber-700">{accuracy}%</b>
           </span>
-          <label className="flex items-center gap-2 text-slate-300">
+          <label className="flex items-center gap-2 text-[color:var(--cahier-ink-soft)]">
             <input
               type="checkbox"
               checked={audioOn}
               onChange={(e) => setAudioOn(e.target.checked)}
-              className="h-4 w-4 accent-amber-400"
+              className="h-4 w-4 accent-[#2a2e6e]"
             />
             Audio
           </label>
-          <button
-            type="button"
-            onClick={restart}
-            className="rounded border border-slate-500 px-2 py-1 hover:bg-slate-700"
-          >
+          <button type="button" onClick={restart} className="cahier-btn cahier-btn-sm">
             Restart
           </button>
         </div>
       </header>
 
-      <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-[color:var(--cahier-rule)]">
         <div
-          className="h-full bg-amber-400 transition-all duration-200"
+          className="h-full bg-[color:var(--cahier-hl-edge)] transition-all duration-200"
           style={{ width: `${(idx / order.length) * 100}%` }}
         />
       </div>
 
       {done ? (
-        <div className="rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-900 p-10 text-center shadow-xl">
+        <div className="rounded-2xl border-2 border-emerald-600 bg-white p-10 text-center">
           <div className="text-6xl">🎉</div>
-          <h2 className="mt-2 text-3xl font-bold">Quiz complete!</h2>
-          <p className="mt-2 text-emerald-100">
+          <h2 className="mt-2 text-3xl font-black">Quiz complete!</h2>
+          <p className="mt-2 text-[color:var(--cahier-ink-soft)]">
             {correctCount} correct out of {order.length} ({accuracy}%).
           </p>
           <button
             type="button"
             onClick={restart}
-            className="mt-6 rounded-md bg-white px-6 py-3 font-bold text-emerald-800 hover:bg-emerald-50"
+            className="cahier-btn cahier-btn-primary mt-6"
           >
             Play again
           </button>
         </div>
       ) : (
         <>
-          <div className="rounded-2xl bg-slate-800 p-8 text-center shadow-xl">
+          <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white p-8 text-center">
             <div className="text-7xl" aria-hidden>
               {current.emoji}
             </div>
-            <div className="mt-3 text-xl italic text-slate-200 sm:text-2xl">
+            <div className="mt-3 text-xl italic sm:text-2xl">
               {current.meaning}
             </div>
-            <div className="mt-1 text-xs uppercase tracking-widest text-slate-500">
+            <div className="mt-1 text-xs uppercase tracking-widest text-[color:var(--cahier-ink-soft)]">
               Pick the correct French sentence
             </div>
           </div>
@@ -161,14 +157,14 @@ export default function WeatherMCQGame({ set }: { set: LetrisSet }) {
               const isCorrect = o.id === current.id;
               const isPicked = picked === o.id;
               let color =
-                "border-slate-700 bg-slate-800 hover:border-slate-500 hover:bg-slate-700";
+                "border-[color:var(--cahier-rule)] bg-white hover:border-[color:var(--cahier-ink-soft)] hover:bg-[color:var(--cahier-paper-2)]";
               if (picked) {
                 if (isCorrect) {
-                  color = "border-emerald-400 bg-emerald-900/40";
+                  color = "border-emerald-500 bg-emerald-50";
                 } else if (isPicked) {
-                  color = "border-rose-400 bg-rose-900/40";
+                  color = "border-rose-500 bg-rose-50";
                 } else {
-                  color = "border-slate-800 bg-slate-900/50 opacity-60";
+                  color = "border-[color:var(--cahier-rule)] bg-white opacity-60";
                 }
               }
               return (
@@ -177,21 +173,21 @@ export default function WeatherMCQGame({ set }: { set: LetrisSet }) {
                     type="button"
                     disabled={!!picked}
                     onClick={() => pick(o.id)}
-                    className={`flex w-full items-center gap-3 rounded-lg border px-4 py-4 text-left transition ${color}`}
+                    className={`flex w-full items-center gap-3 rounded-lg border-2 px-4 py-4 text-left transition ${color}`}
                   >
-                    <span className="font-mono text-sm text-slate-400">
+                    <span className="font-mono text-sm text-[color:var(--cahier-ink-soft)]">
                       {i + 1}
                     </span>
                     <span className="text-base font-bold uppercase sm:text-lg">
                       {o.sentence}
                     </span>
                     {picked && isCorrect && (
-                      <span className="ml-auto text-emerald-300" aria-hidden>
+                      <span className="ml-auto text-emerald-600" aria-hidden>
                         ✓
                       </span>
                     )}
                     {picked && isPicked && !isCorrect && (
-                      <span className="ml-auto text-rose-300" aria-hidden>
+                      <span className="ml-auto text-rose-600" aria-hidden>
                         ✗
                       </span>
                     )}
@@ -203,14 +199,14 @@ export default function WeatherMCQGame({ set }: { set: LetrisSet }) {
 
           {picked && (
             <div className="flex items-center justify-between">
-              <p className="text-sm text-slate-400">
-                {picked === current.id ? "Nice." : "Correct answer above."}
-              </p>
-              <button
-                type="button"
-                onClick={next}
-                className="rounded-md bg-amber-400 px-5 py-2 font-bold text-slate-900 hover:bg-amber-300"
+              <p
+                className={`text-sm font-bold ${
+                  picked === current.id ? "text-emerald-700" : "text-rose-700"
+                }`}
               >
+                {picked === current.id ? "✅ Parfait !" : `❌ → ${current.sentence}`}
+              </p>
+              <button type="button" onClick={next} className="cahier-btn cahier-btn-primary">
                 Next →
               </button>
             </div>

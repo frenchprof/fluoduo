@@ -104,81 +104,77 @@ export default function WeatherMatchingGame({ set }: { set: LetrisSet }) {
     current.filter((c) => matchedIds.has(c.id)).length;
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 py-6 text-white">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 py-6 text-[color:var(--cahier-ink)]">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">{set.title}</h1>
-          <p className="text-sm text-slate-300">
+          <h1 className="cahier-display text-2xl font-black">{set.title}</h1>
+          <p className="text-sm text-[color:var(--cahier-ink-soft)]">
             Matching · batch {batchIdx + 1} of {batches.length}
           </p>
         </div>
         <div className="flex items-center gap-3 text-sm font-mono">
           <span>
-            Matched <b className="text-emerald-400">{matchedTotal}</b>/
+            Matched <b className="text-emerald-700">{matchedTotal}</b>/
             {allCards.length}
           </span>
           <span>
-            Accuracy <b className="text-amber-300">{accuracy}%</b>
+            Accuracy <b className="text-amber-700">{accuracy}%</b>
           </span>
-          <label className="flex items-center gap-2 text-slate-300">
+          <label className="flex items-center gap-2 text-[color:var(--cahier-ink-soft)]">
             <input
               type="checkbox"
               checked={audioOn}
               onChange={(e) => setAudioOn(e.target.checked)}
-              className="h-4 w-4 accent-amber-400"
+              className="h-4 w-4 accent-[#2a2e6e]"
             />
             Audio
           </label>
-          <button
-            type="button"
-            onClick={restart}
-            className="rounded border border-slate-500 px-2 py-1 hover:bg-slate-700"
-          >
+          <button type="button" onClick={restart} className="cahier-btn cahier-btn-sm">
             Restart
           </button>
         </div>
       </header>
 
-      <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-[color:var(--cahier-rule)]">
         <div
-          className="h-full bg-amber-400 transition-all duration-200"
+          className="h-full bg-[color:var(--cahier-hl-edge)] transition-all duration-200"
           style={{ width: `${(matchedTotal / allCards.length) * 100}%` }}
         />
       </div>
 
       {overallDone ? (
-        <div className="rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-900 p-10 text-center shadow-xl">
+        <div className="rounded-2xl border-2 border-emerald-600 bg-white p-10 text-center">
           <div className="text-6xl">🎉</div>
-          <h2 className="mt-2 text-3xl font-bold">All matched!</h2>
-          <p className="mt-2 text-emerald-100">
+          <h2 className="mt-2 text-3xl font-black">All matched!</h2>
+          <p className="mt-2 text-[color:var(--cahier-ink-soft)]">
             {correct} correct out of {attempts} attempts ({accuracy}%).
           </p>
           <button
             type="button"
             onClick={restart}
-            className="mt-6 rounded-md bg-white px-6 py-3 font-bold text-emerald-800 hover:bg-emerald-50"
+            className="cahier-btn cahier-btn-primary mt-6"
           >
             Play again
           </button>
         </div>
       ) : batchDone ? (
-        <div className="rounded-2xl bg-slate-800 p-8 text-center shadow-xl">
-          <h2 className="text-2xl font-bold">Batch {batchIdx + 1} complete</h2>
-          <p className="mt-2 text-slate-300">
+        <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white p-8 text-center">
+          <h2 className="text-2xl font-black">Batch {batchIdx + 1} complete</h2>
+          <p className="mt-2 text-[color:var(--cahier-ink-soft)]">
             On to the next {Math.min(BATCH_SIZE, allCards.length - (batchIdx + 1) * BATCH_SIZE)} pairs.
           </p>
           <button
             type="button"
             onClick={goNextBatch}
-            className="mt-6 rounded-md bg-amber-400 px-6 py-3 font-bold text-slate-900 hover:bg-amber-300"
+            className="cahier-btn cahier-btn-primary mt-6"
           >
             Next batch →
           </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-3">
-            <h3 className="mb-2 px-2 text-xs font-bold uppercase tracking-widest text-blue-300">
+          <section className="rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white p-3">
+            <h3 className="mb-2 px-2 text-xs font-bold uppercase tracking-widest text-[color:var(--cahier-le)]">
               French sentence
             </h3>
             <ul className="flex flex-col gap-2">
@@ -191,19 +187,19 @@ export default function WeatherMatchingGame({ set }: { set: LetrisSet }) {
                       type="button"
                       onClick={() => onLeftClick(c.id)}
                       disabled={solved}
-                      className={`flex w-full items-center gap-2 rounded-lg border px-3 py-3 text-left transition ${
+                      className={`flex w-full items-center gap-2 rounded-lg border-2 px-3 py-3 text-left transition ${
                         solved
-                          ? "border-emerald-700 bg-emerald-900/30 text-emerald-200 opacity-60"
+                          ? "border-emerald-300 bg-emerald-50 text-emerald-700 opacity-70"
                           : isSel
-                            ? "border-amber-300 bg-amber-300/20 ring-2 ring-amber-300"
-                            : "border-slate-700 bg-slate-800 hover:border-slate-500 hover:bg-slate-700"
+                            ? "border-[color:var(--cahier-ink)] bg-[color:var(--cahier-hl)]/40 ring-2 ring-[color:var(--cahier-ink)]"
+                            : "border-[color:var(--cahier-rule)] bg-white hover:border-[color:var(--cahier-ink-soft)] hover:bg-[color:var(--cahier-paper-2)]"
                       }`}
                     >
                       <span className="text-base font-bold uppercase sm:text-lg">
                         {c.sentence}
                       </span>
                       {solved && (
-                        <span className="ml-auto text-emerald-300" aria-hidden>
+                        <span className="ml-auto text-emerald-600" aria-hidden>
                           ✓
                         </span>
                       )}
@@ -214,8 +210,8 @@ export default function WeatherMatchingGame({ set }: { set: LetrisSet }) {
             </ul>
           </section>
 
-          <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-3">
-            <h3 className="mb-2 px-2 text-xs font-bold uppercase tracking-widest text-emerald-300">
+          <section className="rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white p-3">
+            <h3 className="mb-2 px-2 text-xs font-bold uppercase tracking-widest text-emerald-700">
               Meaning
             </h3>
             <ul className="flex flex-col gap-2">
@@ -228,17 +224,17 @@ export default function WeatherMatchingGame({ set }: { set: LetrisSet }) {
                       type="button"
                       onClick={() => onRightClick(c.id)}
                       disabled={solved}
-                      className={`flex w-full items-center gap-3 rounded-lg border px-3 py-3 text-left transition ${
+                      className={`flex w-full items-center gap-3 rounded-lg border-2 px-3 py-3 text-left transition ${
                         solved
-                          ? "border-emerald-700 bg-emerald-900/30 text-emerald-200 opacity-60"
-                          : "border-slate-700 bg-slate-800 hover:border-slate-500 hover:bg-slate-700"
+                          ? "border-emerald-300 bg-emerald-50 text-emerald-700 opacity-70"
+                          : "border-[color:var(--cahier-rule)] bg-white hover:border-[color:var(--cahier-ink-soft)] hover:bg-[color:var(--cahier-paper-2)]"
                       } ${
                         !solved && isFlash && flash!.kind === "ok"
-                          ? "border-emerald-300 bg-emerald-300/20"
+                          ? "!border-emerald-500 !bg-emerald-100"
                           : ""
                       } ${
                         !solved && isFlash && flash!.kind === "bad"
-                          ? "border-rose-400 bg-rose-400/20"
+                          ? "!border-rose-500 !bg-rose-100"
                           : ""
                       }`}
                     >
@@ -249,7 +245,7 @@ export default function WeatherMatchingGame({ set }: { set: LetrisSet }) {
                         {c.meaning}
                       </span>
                       {solved && (
-                        <span className="text-lg text-emerald-300" aria-hidden>
+                        <span className="text-lg text-emerald-600" aria-hidden>
                           ✓
                         </span>
                       )}

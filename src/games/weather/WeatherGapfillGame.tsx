@@ -79,74 +79,70 @@ export default function WeatherGapfillGame({ set }: { set: LetrisSet }) {
   const accuracy = attempts === 0 ? 0 : Math.round((correctCount / attempts) * 100);
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-5 px-4 py-6 text-white">
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-5 px-4 py-6 text-[color:var(--cahier-ink)]">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">{set.title}</h1>
-          <p className="text-sm text-slate-300">
+          <h1 className="cahier-display text-2xl font-black">{set.title}</h1>
+          <p className="text-sm text-[color:var(--cahier-ink-soft)]">
             Gapfill · question {Math.min(idx + 1, order.length)} of {order.length}
           </p>
         </div>
         <div className="flex items-center gap-3 text-sm font-mono">
           <span>
-            Score <b className="text-emerald-400">{correctCount}</b>/{attempts}
+            Score <b className="text-emerald-700">{correctCount}</b>/{attempts}
           </span>
           <span>
-            Accuracy <b className="text-amber-300">{accuracy}%</b>
+            Accuracy <b className="text-amber-700">{accuracy}%</b>
           </span>
-          <label className="flex items-center gap-2 text-slate-300">
+          <label className="flex items-center gap-2 text-[color:var(--cahier-ink-soft)]">
             <input
               type="checkbox"
               checked={audioOn}
               onChange={(e) => setAudioOn(e.target.checked)}
-              className="h-4 w-4 accent-amber-400"
+              className="h-4 w-4 accent-[#2a2e6e]"
             />
             Audio
           </label>
-          <button
-            type="button"
-            onClick={restart}
-            className="rounded border border-slate-500 px-2 py-1 hover:bg-slate-700"
-          >
+          <button type="button" onClick={restart} className="cahier-btn cahier-btn-sm">
             Restart
           </button>
         </div>
       </header>
 
-      <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-[color:var(--cahier-rule)]">
         <div
-          className="h-full bg-amber-400 transition-all duration-200"
+          className="h-full bg-[color:var(--cahier-hl-edge)] transition-all duration-200"
           style={{ width: `${(idx / order.length) * 100}%` }}
         />
       </div>
 
       {done ? (
-        <div className="rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-900 p-10 text-center shadow-xl">
+        <div className="rounded-2xl border-2 border-emerald-600 bg-white p-10 text-center">
           <div className="text-6xl">🎉</div>
-          <h2 className="mt-2 text-3xl font-bold">All done!</h2>
-          <p className="mt-2 text-emerald-100">
+          <h2 className="mt-2 text-3xl font-black">All done!</h2>
+          <p className="mt-2 text-[color:var(--cahier-ink-soft)]">
             {correctCount} correct out of {order.length} ({accuracy}%).
           </p>
           <button
             type="button"
             onClick={restart}
-            className="mt-6 rounded-md bg-white px-6 py-3 font-bold text-emerald-800 hover:bg-emerald-50"
+            className="cahier-btn cahier-btn-primary mt-6"
           >
             Play again
           </button>
         </div>
       ) : (
         <>
-          <div className="rounded-2xl bg-slate-800 p-8 text-center shadow-xl">
+          <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white p-8 text-center">
             <div className="text-7xl" aria-hidden>
               {current.emoji}
             </div>
-            <div className="mt-2 text-sm italic text-slate-300">
+            <div className="mt-2 text-sm italic text-[color:var(--cahier-ink-soft)]">
               {current.meaning}
             </div>
             <div className="mt-5 text-3xl font-bold sm:text-4xl">
               <span>{prefix.trim()}</span>{" "}
-              <span className="rounded bg-slate-700 px-3 py-1">
+              <span className="rounded border-b-2 border-[color:var(--cahier-ink)] bg-[color:var(--cahier-paper-2)] px-3 py-1">
                 {verdict === "ok" || revealed ? answer : "___"}
               </span>
             </div>
@@ -177,40 +173,30 @@ export default function WeatherGapfillGame({ set }: { set: LetrisSet }) {
               }}
               disabled={verdict === "ok" || revealed}
               placeholder="Fill in the missing word(s)"
-              className={`w-full rounded-lg border bg-slate-900 px-4 py-3 text-lg outline-none transition ${
+              className={`w-full rounded-lg px-4 py-3 text-lg outline-none transition ${
                 verdict === "ok"
-                  ? "border-emerald-400"
+                  ? "!border-emerald-500"
                   : verdict === "bad"
-                    ? "border-rose-400"
-                    : "border-slate-700 focus:border-amber-300"
+                    ? "!border-rose-500"
+                    : ""
               }`}
             />
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="text-xs text-slate-500">
+              <div className="text-xs text-[color:var(--cahier-ink-soft)]">
                 Accents and capitalisation don&apos;t matter.
               </div>
               <div className="flex gap-2">
                 {verdict !== "ok" && !revealed && (
-                  <button
-                    type="button"
-                    onClick={reveal}
-                    className="rounded border border-slate-600 px-3 py-2 text-sm hover:bg-slate-800"
-                  >
+                  <button type="button" onClick={reveal} className="cahier-btn cahier-btn-sm">
                     Show answer
                   </button>
                 )}
                 {verdict === "ok" || revealed ? (
-                  <button
-                    type="submit"
-                    className="rounded-md bg-amber-400 px-5 py-2 font-bold text-slate-900 hover:bg-amber-300"
-                  >
+                  <button type="submit" className="cahier-btn cahier-btn-primary">
                     Next →
                   </button>
                 ) : (
-                  <button
-                    type="submit"
-                    className="rounded-md bg-emerald-500 px-5 py-2 font-bold text-white hover:bg-emerald-400"
-                  >
+                  <button type="submit" className="cahier-btn cahier-btn-primary">
                     Check
                   </button>
                 )}

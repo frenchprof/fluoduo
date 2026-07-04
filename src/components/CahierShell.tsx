@@ -24,6 +24,13 @@ export function hasDicePractice(collectionId: string): boolean {
   return !!CURATED.find((c) => c.id === collectionId)?.gameConfig?.letris;
 }
 
+/** Decks with a multi-step UNIT page beyond the standard activities (the
+ *  adopted weather and directions units — content that exists nowhere else). */
+export const UNIT_PAGES: Record<string, { label: string; emoji: string; href: string }> = {
+  "weather-letris": { label: "Weather Unit", emoji: "🌦️", href: "/games/weather" },
+  "directions-matching": { label: "Directions Unit", emoji: "🧭", href: "/games/directions" },
+};
+
 const TAB_HUES = [
   "var(--cahier-t0)",
   "var(--cahier-t1)",
@@ -170,6 +177,9 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
       : []),
     ...(isLexReadyId(collectionId)
       ? [{ key: "match", label: "Lexicalator", emoji: "🧰", href: `/games/conveyor/${collectionId}` } as ShellTab]
+      : []),
+    ...(UNIT_PAGES[collectionId]
+      ? [{ key: "unit", ...UNIT_PAGES[collectionId] } as ShellTab]
       : []),
   ];
 }

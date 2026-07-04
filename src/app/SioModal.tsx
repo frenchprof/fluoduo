@@ -20,6 +20,7 @@ import type { Collection } from "@/lib/collections/schema";
 import { isLexReady } from "@/lib/collections/lexReady";
 import { isConjugaZoneReadyId } from "@/lib/collections/conjugaZoneReady";
 import { isGramMarathonReady } from "@/lib/collections/gramMarathonReady";
+import { UNIT_PAGES } from "@/components/CahierShell";
 
 const SIZE_KEY = "fluolingo:popupSize";
 
@@ -65,6 +66,9 @@ export function popupActivityTabs(
       : []),
     ...(hasLetris
       ? [{ key: "rain", label: "Vocabularain", emoji: "🌧️", href: `/games/letris/${deck.id.replace("-letris", "")}` }]
+      : []),
+    ...(UNIT_PAGES[deck.id]
+      ? [{ key: "unit", ...UNIT_PAGES[deck.id] }]
       : []),
   ];
 }

@@ -22,12 +22,14 @@ type Card = {
   categoryLabel: string;
 };
 
+/* Pastel index-tab hues (same family as the cahier tab flaps), ink text. */
 const CATEGORY_BG: Record<string, string> = {
-  0: "from-blue-700 to-blue-900",
-  1: "from-teal-600 to-teal-900",
-  2: "from-orange-700 to-orange-900",
-  3: "from-purple-700 to-purple-900",
+  0: "bg-[#cbb7e6]",
+  1: "bg-[#8fd3cd]",
+  2: "bg-[#f3cba0]",
+  3: "bg-[#f0d24e]",
 };
+const CATEGORY_BG_FALLBACK = "bg-[#b6d77f]";
 
 type Rating = "got" | "review";
 
@@ -55,22 +57,25 @@ function ListView({
       {categories.map((cat, i) => {
         const items = byKey.get(cat.key) || [];
         if (items.length === 0) return null;
-        const bg = CATEGORY_BG[i] ?? "from-slate-700 to-slate-900";
+        const bg = CATEGORY_BG[i] ?? CATEGORY_BG_FALLBACK;
         return (
-          <section key={cat.key} className="neo-panel overflow-hidden">
+          <section
+            key={cat.key}
+            className="overflow-hidden rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white"
+          >
             <header
-              className={`bg-gradient-to-br px-4 py-3 text-sm font-bold uppercase tracking-widest ${bg}`}
+              className={`px-4 py-3 text-sm font-bold uppercase tracking-widest text-[color:var(--cahier-ink)] ${bg}`}
             >
               {cat.label}
               <span className="ml-2 text-xs font-normal opacity-70">
                 {items.length} items
               </span>
             </header>
-            <ul className="divide-y divide-slate-700/50">
+            <ul className="divide-y divide-[color:var(--cahier-rule)]">
               {items.map((it, j) => (
                 <li
                   key={`${cat.key}-${j}`}
-                  className="flex items-center gap-3 px-4 py-3 hover:bg-slate-800/40"
+                  className="flex items-center gap-3 px-4 py-3 hover:bg-[color:var(--cahier-paper-2)]"
                 >
                   <span className="shrink-0 text-2xl" aria-hidden>
                     {it.emoji}
@@ -80,7 +85,7 @@ function ListView({
                       {it.sentence}
                     </div>
                     {it.meaning && (
-                      <div className="truncate text-xs italic text-slate-400">
+                      <div className="truncate text-xs italic text-[color:var(--cahier-ink-soft)]">
                         {it.meaning}
                       </div>
                     )}
@@ -89,7 +94,7 @@ function ListView({
                     type="button"
                     onClick={() => speak(it.sentence, lang)}
                     aria-label={`Play ${it.sentence}`}
-                    className="neo-btn neo-btn-sm shrink-0"
+                    className="cahier-btn cahier-btn-sm shrink-0"
                   >
                     🔊
                   </button>
@@ -284,52 +289,52 @@ export default function FlashcardLesson({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stage, pos, queue, ratings, flipped, card, lang]);
 
-  const bg = CATEGORY_BG[categoryIdx] ?? "from-slate-700 to-slate-900";
+  const bg = CATEGORY_BG[categoryIdx] ?? CATEGORY_BG_FALLBACK;
   const progress = queue.length === 0 ? 100 : (ratedInPass / queue.length) * 100;
   const passLabel =
     pass === 1 ? "Pass 1" : `Review pass ${pass}`;
 
   // ===== RENDER =====
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-6 text-white">
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-6 text-[color:var(--cahier-ink)]">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">{set.title}</h1>
-          <p className="text-sm text-slate-300">
+          <h1 className="cahier-display text-2xl font-black">{set.title}</h1>
+          <p className="text-sm text-[color:var(--cahier-ink-soft)]">
             {passLabel} · {queue.length} card{queue.length === 1 ? "" : "s"} ·{" "}
-            <span className="text-emerald-400">{gotInPass} ✓</span>{" "}
-            <span className="text-amber-300">{reviewedInPass} ⟳</span>
+            <span className="text-emerald-700">{gotInPass} ✓</span>{" "}
+            <span className="text-amber-700">{reviewedInPass} ⟳</span>
           </p>
         </div>
         <div className="flex items-center gap-3 text-sm">
-          <label className="flex cursor-pointer items-center gap-2 text-slate-300">
+          <label className="flex cursor-pointer items-center gap-2 text-[color:var(--cahier-ink-soft)]">
             <span
-              className="neo-switch"
+              className="cahier-modeswitch"
               data-on={autoSpeak}
               role="switch"
               aria-checked={autoSpeak}
               onClick={() => setAutoSpeak((s) => !s)}
             >
-              <span className="neo-switch-thumb" />
+              <span className="cahier-modeswitch-knob">🔊</span>
             </span>
             Auto-play audio
           </label>
-          <label className="flex cursor-pointer items-center gap-2 text-slate-300">
+          <label className="flex cursor-pointer items-center gap-2 text-[color:var(--cahier-ink-soft)]">
             <span
-              className="neo-switch"
+              className="cahier-modeswitch"
               data-on={shuffleOn}
               role="switch"
               aria-checked={shuffleOn}
               onClick={() => setShuffleOn((s) => !s)}
             >
-              <span className="neo-switch-thumb" />
+              <span className="cahier-modeswitch-knob">🔀</span>
             </span>
             Shuffle
           </label>
           <button
             type="button"
             onClick={() => setView((v) => (v === "cards" ? "list" : "cards"))}
-            className="neo-btn neo-btn-sm"
+            className="cahier-btn cahier-btn-sm"
             title="Toggle view"
           >
             {view === "cards" ? "📋 List" : "🃏 Cards"}
@@ -337,20 +342,20 @@ export default function FlashcardLesson({
           <button
             type="button"
             onClick={onStartGame}
-            className="neo-btn neo-btn-sm"
+            className="cahier-btn cahier-btn-sm"
           >
             Skip to game →
           </button>
         </div>
       </header>
 
-      <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-[color:var(--cahier-rule)]">
         <div
-          className="h-full bg-amber-400 transition-all duration-200"
+          className="h-full bg-[color:var(--cahier-hl-edge)] transition-all duration-200"
           style={{ width: `${progress}%` }}
         />
       </div>
-      <div className="-mt-4 text-right text-xs text-slate-400">
+      <div className="-mt-4 text-right text-xs text-[color:var(--cahier-ink-soft)]">
         {ratedInPass} / {queue.length}
       </div>
 
@@ -376,13 +381,13 @@ export default function FlashcardLesson({
             >
               {/* FRONT — French target sentence */}
               <div
-                className={`absolute inset-0 flex flex-col items-center justify-center gap-5 rounded-2xl bg-gradient-to-br ${bg} p-10 shadow-xl`}
+                className={`absolute inset-0 flex flex-col items-center justify-center gap-5 rounded-2xl border-2 border-[color:var(--cahier-ink)]/20 ${bg} p-10 text-[color:var(--cahier-ink)] shadow-lg`}
                 style={{
                   backfaceVisibility: "hidden",
                   WebkitBackfaceVisibility: "hidden",
                 }}
               >
-                <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-widest">
+                <span className="rounded-full bg-white/60 px-3 py-1 text-xs font-semibold uppercase tracking-widest">
                   {card.categoryLabel}
                 </span>
                 <div className="text-center">
@@ -392,7 +397,7 @@ export default function FlashcardLesson({
                 </div>
                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2 animate-pulse">
                   <span
-                    className="neo-btn neo-btn-primary neo-btn-sm"
+                    className="cahier-btn cahier-btn-sm"
                     style={{ pointerEvents: "none" }}
                   >
                     👆 Tap the card to see the meaning
@@ -405,7 +410,7 @@ export default function FlashcardLesson({
                     speak(card.sentence, lang);
                   }}
                   aria-label="Replay audio"
-                  className="neo-btn neo-btn-sm absolute right-4 top-4"
+                  className="cahier-btn cahier-btn-sm absolute right-4 top-4"
                 >
                   🔊 Replay
                 </button>
@@ -413,7 +418,7 @@ export default function FlashcardLesson({
 
               {/* BACK — meaning + rating */}
               <div
-                className="absolute inset-0 flex flex-col items-center justify-center gap-4 rounded-2xl bg-slate-100 p-8 text-slate-900 shadow-xl ring-1 ring-slate-300"
+                className="absolute inset-0 flex flex-col items-center justify-center gap-4 rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white p-8 text-[color:var(--cahier-ink)] shadow-lg"
                 style={{
                   backfaceVisibility: "hidden",
                   WebkitBackfaceVisibility: "hidden",
@@ -442,7 +447,7 @@ export default function FlashcardLesson({
                   <button
                     type="button"
                     onClick={() => rateAndAdvance("review")}
-                    className="neo-btn neo-btn-warn flex-1 justify-center"
+                    className="flex flex-1 items-center justify-center rounded-xl border-2 border-amber-600 bg-amber-100 px-4 py-2 font-bold text-amber-900 transition hover:bg-amber-200"
                     style={{ flexDirection: "column", gap: 0 }}
                     title="Review again (key: 2)"
                   >
@@ -454,7 +459,7 @@ export default function FlashcardLesson({
                   <button
                     type="button"
                     onClick={() => rateAndAdvance("got")}
-                    className="neo-btn neo-btn-success flex-1 justify-center"
+                    className="flex flex-1 items-center justify-center rounded-xl border-2 border-emerald-600 bg-emerald-100 px-4 py-2 font-bold text-emerald-900 transition hover:bg-emerald-200"
                     style={{ flexDirection: "column", gap: 0 }}
                     title="Got it (key: 1)"
                   >
@@ -473,19 +478,19 @@ export default function FlashcardLesson({
               type="button"
               disabled={pos === 0}
               onClick={() => setPos((p) => Math.max(0, p - 1))}
-              className="neo-btn neo-btn-sm"
+              className="cahier-btn cahier-btn-sm"
             >
               ← Previous
             </button>
 
-            <div className="text-center text-xs text-slate-400">
-              <kbd className="rounded bg-slate-800 px-1.5 py-0.5">Space</kbd>{" "}
+            <div className="text-center text-xs text-[color:var(--cahier-ink-soft)]">
+              <kbd className="rounded border border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-2)] px-1.5 py-0.5">Space</kbd>{" "}
               flip ·{" "}
-              <kbd className="rounded bg-slate-800 px-1.5 py-0.5">1</kbd>{" "}
+              <kbd className="rounded border border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-2)] px-1.5 py-0.5">1</kbd>{" "}
               got ·{" "}
-              <kbd className="rounded bg-slate-800 px-1.5 py-0.5">2</kbd>{" "}
+              <kbd className="rounded border border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-2)] px-1.5 py-0.5">2</kbd>{" "}
               review ·{" "}
-              <kbd className="rounded bg-slate-800 px-1.5 py-0.5">R</kbd>{" "}
+              <kbd className="rounded border border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-2)] px-1.5 py-0.5">R</kbd>{" "}
               replay
             </div>
 
@@ -495,7 +500,7 @@ export default function FlashcardLesson({
                 const next = findNextUnrated(pos + 1, queue, ratings);
                 if (next !== -1) setPos(next);
               }}
-              className="neo-btn neo-btn-sm"
+              className="cahier-btn cahier-btn-sm"
             >
               Skip →
             </button>
@@ -504,12 +509,12 @@ export default function FlashcardLesson({
       )}
 
       {stage === "pass-complete" && (
-        <div className="neo-panel p-8 text-center">
-          <h2 className="text-2xl font-bold">Pass {pass} complete</h2>
-          <p className="mt-2 text-slate-300">
-            You got <span className="font-bold text-emerald-400">{gotInPass}</span>{" "}
+        <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white p-8 text-center">
+          <h2 className="text-2xl font-black">Pass {pass} complete</h2>
+          <p className="mt-2 text-[color:var(--cahier-ink-soft)]">
+            You got <span className="font-bold text-emerald-700">{gotInPass}</span>{" "}
             and marked{" "}
-            <span className="font-bold text-amber-300">{reviewedInPass}</span>{" "}
+            <span className="font-bold text-amber-700">{reviewedInPass}</span>{" "}
             for review.
           </p>
           <div className="mt-6 flex justify-center">
@@ -517,7 +522,7 @@ export default function FlashcardLesson({
               <button
                 type="button"
                 onClick={() => setStage("done")}
-                className="neo-btn neo-btn-primary neo-btn-lg"
+                className="cahier-btn cahier-btn-primary"
               >
                 All learned — continue →
               </button>
@@ -525,39 +530,36 @@ export default function FlashcardLesson({
               <button
                 type="button"
                 onClick={startNextPass}
-                className="neo-btn neo-btn-primary neo-btn-lg"
+                className="cahier-btn cahier-btn-primary"
               >
                 Review the {reviewedInPass} card
                 {reviewedInPass === 1 ? "" : "s"} →
               </button>
             )}
           </div>
-          <div className="mt-3 text-xs text-slate-500">
+          <div className="mt-3 text-xs text-[color:var(--cahier-ink-soft)]">
             (Space / Enter to continue)
           </div>
         </div>
       )}
 
       {stage === "done" && (
-        <div
-          className="neo-panel p-10 text-center"
-          style={{ background: "linear-gradient(145deg, #047857, #065f46)" }}
-        >
+        <div className="rounded-2xl border-2 border-emerald-600 bg-white p-10 text-center">
           <div className="text-6xl">🎉</div>
-          <h2 className="mt-2 text-3xl font-bold">All learned!</h2>
-          <p className="mt-2 text-emerald-100">
+          <h2 className="mt-2 text-3xl font-black">All learned!</h2>
+          <p className="mt-2 text-[color:var(--cahier-ink-soft)]">
             You marked every card as known. Time to test it in the game.
           </p>
           <div className="mt-6 flex justify-center">
             <button
               type="button"
               onClick={onStartGame}
-              className="neo-btn neo-btn-primary neo-btn-lg"
+              className="cahier-btn cahier-btn-primary"
             >
               Start Vocabularain →
             </button>
           </div>
-          <div className="mt-3 text-xs text-emerald-200/80">
+          <div className="mt-3 text-xs text-[color:var(--cahier-ink-soft)]">
             (Space / Enter to start)
           </div>
         </div>

@@ -20,6 +20,7 @@ import type { Collection } from "@/lib/collections/schema";
 import { getAtelier } from "@/content/ateliers";
 import { lessonsForSio } from "@/content/lessons";
 import { isLexReady } from "@/lib/collections/lexReady";
+import { UNIT_PAGES } from "@/components/CahierShell";
 import AuthGate from "@/components/AuthGate";
 import PretestQuiz from "./PretestQuiz";
 import DialoguePlayer from "./DialoguePlayer";
@@ -122,6 +123,9 @@ export function PracticeChips({ deck }: { deck: Collection }) {
       : []),
     ...(hasLetris
       ? [{ key: "classify", label: "🌧️ Vocabularain", href: `/games/letris/${deck.id.replace("-letris", "")}` }]
+      : []),
+    ...(UNIT_PAGES[deck.id]
+      ? [{ key: "unit", label: `${UNIT_PAGES[deck.id].emoji} ${UNIT_PAGES[deck.id].label}`, href: UNIT_PAGES[deck.id].href }]
       : []),
   ];
   return (
