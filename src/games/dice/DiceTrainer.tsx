@@ -13,6 +13,16 @@
 import { useState } from "react";
 import { speak } from "@/games/letris/speech";
 
+function StepLabel({ n, label }: { n: number; label: string }) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[color:var(--cahier-ink)] text-[10px] font-black text-white">{n}</span>
+      <span className="text-xs font-bold uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">{label}</span>
+      <div className="h-px flex-1 bg-[color:var(--cahier-rule)]" />
+    </div>
+  );
+}
+
 export type DiceQuestion = {
   /** Small context line above the prompt, e.g. "J'aime … (like)". */
   meta: string;
@@ -105,9 +115,11 @@ export default function DiceTrainer({ config }: { config: DiceConfig }) {
 
   const answered = result !== null;
   const okCount = attempts.filter((a) => a.ok).length;
+  const step4Labels = ["Check answer", "Complete answer", "Write the full answer"] as const;
 
   return (
-    <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
+    <div className="space-y-3 rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
+      <StepLabel n={2} label="Select difficulty" />
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm font-bold text-[color:var(--cahier-ink)]">🎲 {config.instruction}</p>
         <div className="flex items-center gap-2">
@@ -118,17 +130,20 @@ export default function DiceTrainer({ config }: { config: DiceConfig }) {
         </div>
       </div>
 
-      <div className="mt-3 text-center">
+      <StepLabel n={3} label="Roll the dice" />
+      <div className="text-center">
         <button type="button" onClick={roll} className="cahier-btn cahier-btn-accent font-black">🎲 Nouvelle question</button>
       </div>
 
       {q && (
-        <div className="mt-4">
+        <div className="space-y-3">
           <div className="rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white p-4 text-center">
             <p className="text-xs font-bold text-[color:var(--cahier-ink-soft)]">{q.meta}</p>
             <p lang="fr" className="cahier-display mt-1 text-2xl font-black text-[color:var(--cahier-ink)]">{q.big}</p>
             {q.en && <p className="mt-0.5 text-sm italic text-[color:var(--cahier-ink-soft)]">{q.en}</p>}
           </div>
+
+          {!answered && <StepLabel n={4} label={step4Labels[diff]} />}
 
           {!answered && diff === 0 && (
             <div className="mx-auto mt-3 flex max-w-md flex-col gap-2">
@@ -208,7 +223,8 @@ export function BonusTrainer({ items }: { items: { en: string; fr: string }[] })
   }
 
   return (
-    <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
+    <div className="space-y-3 rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
+      <StepLabel n={5} label="Bonus: Translate into French" />
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm font-bold text-[color:var(--cahier-ink)]">⭐ Traduisez en français.</p>
         <button type="button" onClick={roll} className="cahier-btn cahier-btn-sm cahier-btn-accent">🎲 Nouvelle question</button>
