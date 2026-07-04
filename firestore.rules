@@ -60,7 +60,7 @@ service cloud.firestore {
     // with size caps matching what the client itself enforces.
     match /feedback/{id} {
       allow create: if request.resource.data.keys().hasOnly(
-          ['categories', 'details', 'url', 'userAgent', 'uid', 'createdAt'])
+          ['categories', 'details', 'url', 'userAgent', 'uid', 'createdAt', 'screenshot'])
         && request.resource.data.categories is list
         && request.resource.data.categories.size() <= 10
         && request.resource.data.details is string
@@ -71,7 +71,10 @@ service cloud.firestore {
         && request.resource.data.userAgent.size() <= 400
         && (request.resource.data.uid == null
             || (isSignedIn() && request.resource.data.uid == request.auth.uid))
-        && request.resource.data.createdAt == request.time;
+        && request.resource.data.createdAt == request.time
+        && (!('screenshot' in request.resource.data)
+            || (request.resource.data.screenshot is string
+                && request.resource.data.screenshot.size() <= 300000));
       allow read, update: if isAdmin();
     }
     // Vocabularain hidden language-sorter leaderboard.

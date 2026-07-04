@@ -36,11 +36,12 @@ export const ATELIER_DIALOGUES: Record<string, DialogueLine[]> = {
 
   // Unité 1 — present a country (countries, nationalities, languages, aimer).
   "SIO-020": [
-    { who: "A", fr: "Bonjour ! Je te présente le Japon.", en: "Hello! Let me introduce Japan." },
-    { who: "A", fr: "C'est un pays en Asie.", en: "It's a country in Asia." },
-    { who: "A", fr: "Au Japon, on parle japonais.", en: "In Japan, people speak Japanese." },
-    { who: "A", fr: "Les Japonais aiment le sport et l'art.", en: "The Japanese like sport and art." },
-    { who: "A", fr: "Moi, j'aime beaucoup le Japon !", en: "Me, I really like Japan!" },
+    { who: "A", fr: "Bonjour ! Voici le Japon.", en: "Hello! Here is Japan." },
+    { who: "A", fr: "C'est un pays asiatique.", en: "It's an Asian country." },
+    { who: "A", fr: "Ici, il y a des Japonais.", en: "Here, there are Japanese people." },
+    { who: "A", fr: "Beaucoup de Japonais parlent japonais.", en: "Many Japanese people speak Japanese." },
+    { who: "A", fr: "Le drapeau a deux couleurs : le rouge et le blanc.", en: "The flag has two colours: red and white." },
+    { who: "A", fr: "Il y a un rond rouge sur un fond blanc.", en: "There is a red circle on a white background." },
   ],
 
   // Unité 2 — a short friendly email (aller, faire, avec, connectors, well wishes).

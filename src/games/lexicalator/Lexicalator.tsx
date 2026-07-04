@@ -370,9 +370,9 @@ export default function Lexicalator({
           first word's syllables are always reachable), then a scrolling belt
           that starts imperceptibly slow and eases into real time-pressure as
           levels rise. */}
-      <div className="relative overflow-hidden rounded-2xl border-4 border-white py-3" style={{ background: "linear-gradient(180deg,#bfe6ff,#9fd8fb)" }}>
+      <div className="relative overflow-hidden rounded-2xl border-4 border-white py-3" style={{ background: "linear-gradient(180deg,#bfe6ff,#9fd8fb)", height: "4.5rem" }}>
         {beltFrozen ? (
-          <div className="flex flex-wrap justify-center gap-3 px-4">
+          <div className="flex flex-nowrap items-center gap-3 overflow-x-auto px-4" style={{ scrollbarWidth: "none" }}>
             {beltPool.map((t, i) => (
               <button key={i} type="button" onClick={() => tapKey(t)} lang="fr"
                 className="grid h-12 place-items-center rounded-xl border-2 border-b-4 bg-white text-lg font-black"

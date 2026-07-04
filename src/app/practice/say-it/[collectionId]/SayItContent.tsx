@@ -7,10 +7,22 @@ import Link from "next/link";
 import { CURATED } from "@/content/collections";
 import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
 import { recordItemResult } from "@/lib/progress";
-import type { Item } from "@/lib/collections/schema";
+import type { Collection, Item } from "@/lib/collections/schema";
 
 type Phase = "idle" | "listening" | "result";
 type Grade = "perfect" | "good" | "close" | "miss";
+
+function articleOf(deck: Collection, item: Item): string {
+  const cols = deck.gameConfig?.letris?.columns ?? [];
+  const tag = item.tags?.find((t) => t.startsWith("col:"));
+  if (!tag) return "";
+  const raw = cols.find((c: { key: string }) => c.key === tag.slice(4))?.prefix ?? "";
+  return raw ? (raw.charAt(0).toLowerCase() + raw.slice(1)).trim() : "";
+}
+function frFull(article: string, fr: string): string {
+  if (!article) return fr;
+  return article.endsWith("'") ? `${article}${fr}` : `${article} ${fr}`;
+}
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -198,7 +210,9 @@ export default function SayItContent({ collectionId }: { collectionId: string })
       recRef.current = null;
       setPhase("result");
       setTranscript((t) => {
-        const g = gradeAnswer(t, c.fr, /^\d+$/.test((c.en ?? "").trim()) ? c.en : undefined);
+        const art = deck ? articleOf(deck, c) : "";
+        const expected = frFull(art, c.fr);
+        const g = gradeAnswer(t, expected, /^\d+$/.test((c.en ?? "").trim()) ? c.en : undefined);
         const ok = g === "perfect" || g === "good";
         setResult({ grade: g, recognized: t });
         setScore((s) => ({ ok: s.ok + (ok ? 1 : 0), total: s.total + 1 }));
@@ -371,7 +385,7 @@ export default function SayItContent({ collectionId }: { collectionId: string })
                   <div>
                     <span className="font-bold">Expected: </span>
                     <span lang="fr" className={`font-black ${isCorrect ? "text-emerald-700" : "text-rose-700"}`}>
-                      {card.fr}
+                      {deck ? frFull(articleOf(deck, card), card.fr) : card.fr}
                     </span>
                   </div>
                 </div>

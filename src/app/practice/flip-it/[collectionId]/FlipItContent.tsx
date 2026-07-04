@@ -31,6 +31,18 @@ import { loadBuckets, setBucket, type Bucket } from "@/lib/practice/buckets";
 import { recordItemResult } from "@/lib/progress";
 import { CahierFrame, TAB_HUES, type CahierTab } from "../CahierFrame";
 
+/* ─────────────────────────── step labels ─────────────────────────── */
+
+function StepLabel({ n, label }: { n: number; label: string }) {
+  return (
+    <div className="mb-3 flex items-center gap-2">
+      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[color:var(--cahier-ink)] text-[10px] font-black text-white">{n}</span>
+      <span className="text-xs font-bold uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">{label}</span>
+      <div className="h-px flex-1 bg-[color:var(--cahier-rule)]" />
+    </div>
+  );
+}
+
 /* ─────────────────────────── model ─────────────────────────── */
 
 type Row = { item: Item; art: string; fr: string; full: string };
@@ -257,6 +269,8 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
       onSelect={(k) => setView(k as View)}
       topBar={<TopBar crumb={collection.title} />}
     >
+      <StepLabel n={1} label="Select view — use the tabs above" />
+      <StepLabel n={2} label="Select mode" />
       {/* Test Yourself — a clearly separate study-mode switch (not a view) */}
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <span className="inline-flex items-center gap-2">
@@ -318,6 +332,7 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
         </div>
       </div>
 
+      <StepLabel n={3} label="Filter (optional)" />
       {/* Rows — one compact selector for the single-select filters; subsets kept inline */}
       <div className="mb-5 flex flex-wrap items-center gap-2">
         <span className="text-[0.7rem] font-bold uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">{view === "overview" ? "rows" : "cards"}</span>
@@ -383,6 +398,7 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
         );
       })()}
 
+      <StepLabel n={4} label="Study / Self-test" />
       {rows.length === 0 ? (
         <p className="rounded-xl border-2 border-dashed border-[color:var(--cahier-rule)] p-6 text-center text-[color:var(--cahier-ink-soft)]">
           No rows shown.{" "}
@@ -635,6 +651,7 @@ function Cards({
       if (e.key === "ArrowRight") go(1);
       else if (e.key === "ArrowLeft") go(-1);
       else if (e.key === "ArrowUp") { e.preventDefault(); speak(sayText(row), "fr-FR"); }
+      else if (e.key === " " && !test) { e.preventDefault(); setFlipped((f) => !f); }
       else if (e.key === "t" || e.key === "T") onBucket(row.item.id, "toReview");
       else if (e.key === "r" || e.key === "R") onBucket(row.item.id, "reviewed");
     }
@@ -673,7 +690,7 @@ function Cards({
                   {row.item.en}
                   {row.item.note ? <span className="ml-1 text-base font-medium text-[color:var(--cahier-ink-soft)]">{row.item.note}</span> : null}
                 </span>
-                <span className="mt-2 text-[0.7rem] uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">tap to flip</span>
+                <span className="mt-2 text-[0.7rem] uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">tap or Space to flip</span>
               </Face>
               <Face back><FrenchAnswer row={row} /></Face>
             </div>
@@ -682,11 +699,11 @@ function Cards({
       </div>
 
       <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-        <button type="button" onClick={() => speak(sayText(row), "fr-FR")} className="cahier-btn cahier-btn-sm">🔊 Say it <kbd className="ml-1 opacity-60">↑</kbd></button>
+        <button type="button" onClick={() => speak(sayText(row), "fr-FR")} className="cahier-btn cahier-btn-sm">🔊 Hear it <kbd className="ml-1 opacity-60">↑</kbd></button>
         <button type="button" onClick={() => go(-1)} className="cahier-btn cahier-btn-sm">← Prev</button>
         <button type="button" onClick={() => go(1)} className="cahier-btn cahier-btn-sm cahier-btn-primary">Next →</button>
       </div>
-      <p className="mt-3 text-[0.7rem] text-[color:var(--cahier-ink-soft)]">shortcuts: T to-review · R reviewed · ↑ say · ← prev · → next</p>
+      <p className="mt-3 text-[0.7rem] text-[color:var(--cahier-ink-soft)]">shortcuts: T to-review · R reviewed · Space flip · ↑ hear · ← prev · → next</p>
     </div>
   );
 }
@@ -987,7 +1004,8 @@ function Overview({
           </thead>
           <tbody>
             {grouped.map((grp, gi) => (
-              <FragmentRows key={gi} label={grp.label} span={cols.length}>
+              <FragmentRows key={gi} label={grp.label} span={cols.length}
+                groupIds={grp.rows.map((r) => r.item.id)} selected={selected} onSelectAll={onSelectAll}>
                 {grp.rows.map((row) => {
                   const status = buckets[row.item.id];
                   if (test) {
@@ -1161,11 +1179,28 @@ function TestRow({
   );
 }
 
-function FragmentRows({ label, span, children }: { label: string; span: number; children: React.ReactNode }) {
+function FragmentRows({ label, span, children, groupIds, selected, onSelectAll }: {
+  label: string; span: number; children: React.ReactNode;
+  groupIds?: string[]; selected?: Set<string>; onSelectAll?: (ids: string[], on: boolean) => void;
+}) {
   return (
     <>
       {label && (
-        <tr><td colSpan={span} className="cahier-section px-3 py-1.5">{label}</td></tr>
+        <tr>
+          <td colSpan={span} className="cahier-section px-3 py-1.5">
+            {groupIds && selected && onSelectAll ? (
+              <span className="inline-flex items-center gap-2">
+                <input type="checkbox"
+                  checked={groupIds.length > 0 && groupIds.every((id) => selected.has(id))}
+                  onChange={() => onSelectAll(groupIds, !groupIds.every((id) => selected.has(id)))}
+                  title="Select / deselect this group"
+                  aria-label="Select / deselect this group"
+                  style={{ width: "1.1rem", height: "1.1rem", padding: 0, accentColor: "#2d5bff" }} />
+                {label}
+              </span>
+            ) : label}
+          </td>
+        </tr>
       )}
       {children}
     </>
