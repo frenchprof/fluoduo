@@ -29,6 +29,18 @@
           "prefix": ""
         }
       ]
+    },
+    "lexicalator": {
+      "decoys": [
+        "lan",
+        "wik",
+        "jour-",
+        "ma-",
+        "mi-",
+        "heur",
+        "tou-",
+        "len"
+      ]
     }
   },
   "items": [
@@ -38,6 +50,11 @@
       "en": "on Mondays",
       "tags": [
         "col:jour"
+      ],
+      "syllables": [
+        "le",
+        "lun",
+        "di"
       ]
     },
     {
@@ -46,6 +63,11 @@
       "en": "on weekends",
       "tags": [
         "col:jour"
+      ],
+      "syllables": [
+        "le",
+        "week",
+        "-end"
       ]
     },
     {
@@ -54,6 +76,11 @@
       "en": "every day",
       "tags": [
         "col:frequence"
+      ],
+      "syllables": [
+        "tous",
+        "les",
+        "jours"
       ]
     },
     {
@@ -62,6 +89,12 @@
       "en": "every morning",
       "tags": [
         "col:frequence"
+      ],
+      "syllables": [
+        "tous",
+        "les",
+        "ma",
+        "tins"
       ]
     },
     {
@@ -70,6 +103,11 @@
       "en": "at 8 o'clock",
       "tags": [
         "col:heure"
+      ],
+      "syllables": [
+        "à",
+        "8",
+        "heures"
       ]
     },
     {
@@ -78,6 +116,11 @@
       "en": "at noon",
       "tags": [
         "col:heure"
+      ],
+      "syllables": [
+        "à",
+        "mi",
+        "di"
       ]
     }
   ]

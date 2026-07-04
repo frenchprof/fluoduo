@@ -18,6 +18,9 @@
       "emoji": "⬆️",
       "tags": [
         "col:group1"
+      ],
+      "syllables": [
+        "sur"
       ]
     },
     {
@@ -27,6 +30,9 @@
       "emoji": "⬇️",
       "tags": [
         "col:group1"
+      ],
+      "syllables": [
+        "sous"
       ]
     },
     {
@@ -36,6 +42,10 @@
       "emoji": "⏪",
       "tags": [
         "col:group1"
+      ],
+      "syllables": [
+        "de",
+        "vant"
       ]
     },
     {
@@ -45,6 +55,10 @@
       "emoji": "⏩",
       "tags": [
         "col:group1"
+      ],
+      "syllables": [
+        "der",
+        "rière"
       ]
     },
     {
@@ -54,6 +68,9 @@
       "emoji": "📦",
       "tags": [
         "col:group1"
+      ],
+      "syllables": [
+        "dans"
       ]
     },
     {
@@ -63,6 +80,9 @@
       "emoji": "↔️",
       "tags": [
         "col:group1"
+      ],
+      "syllables": [
+        "entre"
       ]
     },
     {
@@ -72,6 +92,11 @@
       "emoji": "🤝",
       "tags": [
         "col:group2"
+      ],
+      "syllables": [
+        "à",
+        "cô",
+        "té"
       ]
     },
     {
@@ -81,6 +106,10 @@
       "emoji": "⬅️",
       "tags": [
         "col:group2"
+      ],
+      "syllables": [
+        "à",
+        "gauche"
       ]
     },
     {
@@ -90,6 +119,10 @@
       "emoji": "➡️",
       "tags": [
         "col:group2"
+      ],
+      "syllables": [
+        "à",
+        "droite"
       ]
     },
     {
@@ -99,6 +132,9 @@
       "emoji": "📏",
       "tags": [
         "col:group2"
+      ],
+      "syllables": [
+        "près"
       ]
     },
     {
@@ -108,6 +144,9 @@
       "emoji": "🛣️",
       "tags": [
         "col:group2"
+      ],
+      "syllables": [
+        "loin"
       ]
     },
     {
@@ -117,6 +156,10 @@
       "emoji": "🪞",
       "tags": [
         "col:group2"
+      ],
+      "syllables": [
+        "en",
+        "face"
       ]
     }
   ],
@@ -133,6 +176,18 @@
           "label": "AVEC de",
           "prefix": ""
         }
+      ]
+    },
+    "lexicalator": {
+      "decoys": [
+        "do",
+        "vron",
+        "riè",
+        "cô-",
+        "gau",
+        "drou",
+        "fa",
+        "prè-"
       ]
     }
   },

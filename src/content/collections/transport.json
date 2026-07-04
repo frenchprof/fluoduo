@@ -15,49 +15,99 @@
       "id": "transport-01",
       "fr": "le train",
       "en": "train",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "le",
+        "train"
+      ]
     },
     {
       "id": "transport-02",
       "fr": "le bus",
       "en": "bus",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "le",
+        "bus"
+      ]
     },
     {
       "id": "transport-03",
       "fr": "le métro",
       "en": "metro",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "le",
+        "mé",
+        "tro"
+      ]
     },
     {
       "id": "transport-04",
       "fr": "la voiture",
       "en": "car",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "la",
+        "voi",
+        "ture"
+      ]
     },
     {
       "id": "transport-05",
       "fr": "le vélo",
       "en": "bike",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "le",
+        "vé",
+        "lo"
+      ]
     },
     {
       "id": "transport-06",
       "fr": "l'avion",
       "en": "plane",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "l'a",
+        "vion"
+      ]
     },
     {
       "id": "transport-07",
       "fr": "le bateau",
       "en": "boat",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "le",
+        "ba",
+        "teau"
+      ]
     },
     {
       "id": "transport-08",
       "fr": "à pied",
       "en": "on foot",
-      "tags": []
+      "tags": [],
+      "syllables": [
+        "à",
+        "pied"
+      ]
     }
-  ]
+  ],
+  "gameConfig": {
+    "lexicalator": {
+      "decoys": [
+        "tra",
+        "bu",
+        "mé-",
+        "vo",
+        "vé-",
+        "ba-",
+        "pié",
+        "av"
+      ]
+    }
+  }
 }
