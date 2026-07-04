@@ -74,6 +74,21 @@ service cloud.firestore {
         && request.resource.data.createdAt == request.time;
       allow read, update: if isAdmin();
     }
+    // Vocabularain hidden language-sorter leaderboard.
+    // Anonymous create: open to any visitor (no sign-in required).
+    // Shape-checked to prevent abuse: exactly score/name/ts, reasonable bounds.
+    match /vlrain_hiscores/{id} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(['score', 'name', 'ts'])
+        && request.resource.data.score is int
+        && request.resource.data.score >= 0
+        && request.resource.data.score <= 99999
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 1
+        && request.resource.data.name.size() <= 20
+        && request.resource.data.ts == request.time;
+      allow update, delete: if false;
+    }
     // Explicit default-deny for anything unmatched (self-documenting; Firestore
     // already denies unmatched paths).
     match /{document=**} {

@@ -121,7 +121,13 @@ function NightWord({ text }: { text: string }) {
   );
 }
 
-export default function LetrisGame({ set }: { set: LetrisSet }) {
+export default function LetrisGame({
+  set,
+  onGameEnd,
+}: {
+  set: LetrisSet;
+  onGameEnd?: (score: number) => void;
+}) {
   const cols = set.categories.length;
   const catIndex = useMemo(() => {
     const m = new Map<string, number>();
@@ -171,6 +177,9 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
     if (dawnTimerRef.current) window.clearTimeout(dawnTimerRef.current);
   }, []); // stop on unmount, cancel any pending dawn restart
   const [gameOver, setGameOver] = useState(false);
+  const onGameEndRef = useRef(onGameEnd);
+  onGameEndRef.current = onGameEnd;
+  useEffect(() => { if (gameOver) onGameEndRef.current?.(score); }, [gameOver]); // eslint-disable-line react-hooks/exhaustive-deps
   const [flash, setFlash] = useState<{ col: number; kind: "ok" | "bad" } | null>(null);
   const [creditsDone, setCreditsDone] = useState(false); // hold tiles until the credits splash clears
 

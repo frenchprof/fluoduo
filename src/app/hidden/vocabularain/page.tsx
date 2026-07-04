@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import LetrisGame from "@/games/letris/LetrisGame";
+import VocabularainClient from "./VocabularainClient";
 import type { LetrisSet } from "@/games/letris/LetrisGame";
 
 export const metadata: Metadata = {
@@ -8,9 +8,6 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-/** 18 tiles (6 cognate sets × 3 languages). Player sorts each dropping word
- *  into the correct language column — spotting Français vs English is the fun
- *  part; 中文 is visually distinct but anchors the set conceptually. */
 const COGNATES: LetrisSet = {
   id: "hidden-multilang",
   title: "Language Sorter · 语言分类",
@@ -22,15 +19,9 @@ const COGNATES: LetrisSet = {
     { key: "zh", label: "中文 🇨🇳" },
   ],
   tiles: [
-    { text: "cinema",      category: "en" },
-    { text: "cinéma",      category: "fr" },
-    { text: "电影院",      category: "zh" },
     { text: "music",       category: "en" },
     { text: "musique",     category: "fr" },
     { text: "音乐",        category: "zh" },
-    { text: "theatre",     category: "en" },
-    { text: "théâtre",     category: "fr" },
-    { text: "剧院",        category: "zh" },
     { text: "hospital",    category: "en" },
     { text: "hôpital",     category: "fr" },
     { text: "医院",        category: "zh" },
@@ -44,9 +35,7 @@ const COGNATES: LetrisSet = {
 };
 
 const LEGEND = [
-  { fr: "cinéma",      en: "cinema",      zh: "电影院", py: "diànyǐngyuàn" },
   { fr: "musique",     en: "music",       zh: "音乐",   py: "yīnyuè" },
-  { fr: "théâtre",     en: "theatre",     zh: "剧院",   py: "jùyuàn" },
   { fr: "hôpital",     en: "hospital",    zh: "医院",   py: "yīyuàn" },
   { fr: "pharmacie",   en: "pharmacy",    zh: "药店",   py: "yàodiàn" },
   { fr: "université",  en: "university",  zh: "大学",   py: "dàxué" },
@@ -57,16 +46,14 @@ export default function VocabularainHidden() {
     <main className="min-h-screen bg-sky-50 px-4 py-8">
       <div className="mx-auto max-w-4xl space-y-6">
 
-        {/* header */}
         <div className="rounded-2xl border-2 border-sky-200 bg-white overflow-hidden shadow-sm">
           <div className="bg-sky-700 px-5 py-4">
             <h1 className="text-xl font-black text-white">🌧️ Vocabularain · Language Sorter</h1>
             <p className="mt-0.5 text-sm text-sky-200">
-              18 words drop from the sky — spot which language each one belongs to, then steer it into the right column.
+              12 words drop from the sky — spot which language each one belongs to, then steer it into the right column.
             </p>
           </div>
 
-          {/* legend table */}
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead>
@@ -92,12 +79,11 @@ export default function VocabularainHidden() {
 
           <p className="px-5 py-3 text-xs text-sky-600 border-t border-sky-100">
             <b>How to play:</b> use ← → to steer the falling word, ↓ to nudge, Space to drop instantly. Tap a column on mobile.
-            The tricky part: <em>cinéma</em> (FR) vs <em>cinema</em> (EN) — spot the accent!
+            The tricky part: <em>musique</em> (FR) vs <em>music</em> (EN) — spot the extra letters!
           </p>
         </div>
 
-        {/* game */}
-        <LetrisGame set={COGNATES} />
+        <VocabularainClient set={COGNATES} />
       </div>
     </main>
   );
