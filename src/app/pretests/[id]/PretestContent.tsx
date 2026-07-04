@@ -245,11 +245,15 @@ function ItemCard({
         </span>
         <span lang="fr">{item.sentenceAfter}</span>
       </p>
-      {item.sentenceTrans && (item.transFirst || submitted) && (
+      {item.sentenceTrans && item.transFirst && !submitted ? (
+        <p className="mx-auto mt-1 w-fit rounded-lg border-l-4 border-[color:var(--fluo-hl)] bg-[color:var(--fluo-hl)]/20 px-3 py-1.5 text-center text-base font-bold text-[color:var(--fluo-ink)]">
+          🎯 {item.sentenceTrans}
+        </p>
+      ) : item.sentenceTrans && submitted ? (
         <p className="text-center text-sm italic text-slate-500">
           {item.sentenceTrans}
         </p>
-      )}
+      ) : null}
 
       <div className="mt-3 flex justify-center">
         <button

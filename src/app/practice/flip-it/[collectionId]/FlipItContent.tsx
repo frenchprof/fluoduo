@@ -212,10 +212,11 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
     return [...set].sort((a, b) => ART_ORDER.indexOf(a) - ART_ORDER.indexOf(b));
   }, [base]);
   const canGroupArt = !isNat && articleOptions.some((a) => a !== "");
+  const artRank = useMemo(() => artRankOf(collection), [collection]);
 
   const ordered = useMemo(
-    () => orderRows(base, order, seed, sortCol, sortDir, buckets, notes),
-    [base, order, seed, sortCol, sortDir, buckets, notes],
+    () => orderRows(base, order, seed, sortCol, sortDir, buckets, notes, artRank),
+    [base, order, seed, sortCol, sortDir, buckets, notes, artRank],
   );
 
   function applyOrder(o: Order) {
@@ -456,17 +457,35 @@ function sortVal(r: Row, k: SortKey, buckets: Record<string, Bucket>, notes: Dec
   }
 }
 
+/** Rank an article/prefix by ITS DECK's column order (un/une, il est/elle est,
+ *  mon/ma/mes… — the hardcoded le/la list only knew 4 values, so every other
+ *  deck's rows tied, fell back to alphabetical, and grouping fragmented into
+ *  alternating one-row sections). Articleless rows sink to the bottom. */
+function artRankOf(collection: Collection): Map<string, number> {
+  const cols = collection.gameConfig?.letris?.columns ?? [];
+  const m = new Map<string, number>();
+  cols.forEach((c, i) => {
+    const key = (c.prefix ?? "").trim().toLowerCase();
+    if (key && !m.has(key)) m.set(key, i);
+  });
+  return m;
+}
+
 function orderRows(
   base: Row[], order: Order, seed: number, sortCol: SortKey | null, dir: "asc" | "desc",
-  buckets: Record<string, Bucket>, notes: DeckNotes,
+  buckets: Record<string, Bucket>, notes: DeckNotes, artRank: Map<string, number>,
 ): Row[] {
   switch (order) {
     case "shuffle": return seed >= 0 ? shuffleArr(base) : base;
-    case "article": return [...base].sort((a, b) => (ART_RANK[a.art] ?? 5) - (ART_RANK[b.art] ?? 5) || a.fr.localeCompare(b.fr, "fr"));
+    case "article": return [...base].sort((a, b) =>
+      ((artRank.get(a.art.toLowerCase()) ?? 99) - (artRank.get(b.art.toLowerCase()) ?? 99)) || a.fr.localeCompare(b.fr, "fr"));
     case "continent": return [...base].sort((a, b) => (REGION_RANK[regionOf(a.item)] ?? 9) - (REGION_RANK[regionOf(b.item)] ?? 9) || a.fr.localeCompare(b.fr, "fr"));
     case "col": {
       if (!sortCol) return base;
-      const out = [...base].sort((a, b) => sortVal(a, sortCol, buckets, notes).localeCompare(sortVal(b, sortCol, buckets, notes), "fr"));
+      const out = sortCol === "art"
+        ? [...base].sort((a, b) =>
+            ((artRank.get(a.art.toLowerCase()) ?? 99) - (artRank.get(b.art.toLowerCase()) ?? 99)) || a.fr.localeCompare(b.fr, "fr"))
+        : [...base].sort((a, b) => sortVal(a, sortCol, buckets, notes).localeCompare(sortVal(b, sortCol, buckets, notes), "fr"));
       return dir === "asc" ? out : out.reverse();
     }
     default: return base;

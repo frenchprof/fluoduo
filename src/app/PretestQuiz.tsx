@@ -166,9 +166,13 @@ function QuestionCard({
           })}
         </span>
       </div>
-      {item.sentenceTrans && (item.transFirst || showResult) && (
+      {item.sentenceTrans && item.transFirst && !showResult ? (
+        <p className="mt-1 w-fit rounded-md border-l-4 border-[color:var(--fluo-hl)] bg-[color:var(--fluo-hl)]/20 px-2 py-1 text-sm font-bold text-[color:var(--fluo-ink)]">
+          🎯 {item.sentenceTrans}
+        </p>
+      ) : item.sentenceTrans && showResult ? (
         <p className="mt-1 text-xs italic text-[color:var(--fluo-ink-soft)]">{item.sentenceTrans}</p>
-      )}
+      ) : null}
 
       {showWhy && whyText && (
         <div className="mt-2 rounded-lg bg-white/70 p-2.5 text-xs text-[color:var(--fluo-ink)]">{whyText}</div>
