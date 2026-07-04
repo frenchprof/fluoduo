@@ -68,9 +68,11 @@ export default function GramMarathonContent({ collectionId }: { collectionId: st
   const [score, setScore] = useState({ ok: 0, total: 0 });
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Only the gapped items play — a line with no grammar word ("Oui, bonne
+  // idée !") sits the game out.
   useEffect(() => {
     if (!deck) return;
-    setOrder(shuffle(deck.items.map((_, idx) => idx)));
+    setOrder(shuffle(deck.items.map((it, idx) => (it.gap && it.fr.includes(it.gap) ? idx : -1)).filter((x) => x >= 0)));
   }, [deck]);
 
   useEffect(() => {
@@ -103,7 +105,7 @@ export default function GramMarathonContent({ collectionId }: { collectionId: st
   }
 
   function restart() {
-    setOrder(shuffle(deck!.items.map((_, idx) => idx)));
+    setOrder(shuffle(deck!.items.map((it, idx) => (it.gap && it.fr.includes(it.gap) ? idx : -1)).filter((x) => x >= 0)));
     setI(0); setValue(""); setResult(null); setScore({ ok: 0, total: 0 });
   }
 

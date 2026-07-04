@@ -15,73 +15,85 @@
       "id": "modaux-01",
       "fr": "Je vais faire du sport.",
       "en": "I'm going to do sport.",
-      "tags": []
+      "tags": [],
+      "gap": "vais"
     },
     {
       "id": "modaux-02",
       "fr": "Elle va manger au restaurant.",
       "en": "She's going to eat at the restaurant.",
-      "tags": []
+      "tags": [],
+      "gap": "va"
     },
     {
       "id": "modaux-03",
       "fr": "Nous allons visiter le marché.",
       "en": "We're going to visit the market.",
-      "tags": []
+      "tags": [],
+      "gap": "allons"
     },
     {
       "id": "modaux-04",
       "fr": "Elle peut cuisiner.",
       "en": "She can cook.",
-      "tags": []
+      "tags": [],
+      "gap": "peut"
     },
     {
       "id": "modaux-05",
       "fr": "Tu peux goûter.",
       "en": "You can taste.",
-      "tags": []
+      "tags": [],
+      "gap": "peux"
     },
     {
       "id": "modaux-06",
       "fr": "On peut acheter des fruits ici.",
       "en": "We can buy fruit here.",
-      "tags": []
+      "tags": [],
+      "gap": "peut"
     },
     {
       "id": "modaux-07",
       "fr": "Tu dois manger des légumes.",
       "en": "You must eat vegetables.",
-      "tags": []
+      "tags": [],
+      "gap": "dois"
     },
     {
       "id": "modaux-08",
       "fr": "Je dois boire de l'eau.",
       "en": "I must drink water.",
-      "tags": []
+      "tags": [],
+      "gap": "dois"
     },
     {
       "id": "modaux-09",
       "fr": "Vous devez réserver une table.",
       "en": "You must book a table.",
-      "tags": []
+      "tags": [],
+      "gap": "devez"
     },
     {
       "id": "modaux-10",
       "fr": "Il faut boire de l'eau.",
       "en": "One must drink water.",
-      "tags": []
+      "tags": [],
+      "gap": "faut"
     },
     {
       "id": "modaux-11",
       "fr": "Il faut manger le matin.",
       "en": "One must eat in the morning.",
-      "tags": []
+      "tags": [],
+      "gap": "faut"
     },
     {
       "id": "modaux-12",
       "fr": "Il faut acheter du pain.",
       "en": "One must buy bread.",
-      "tags": []
+      "tags": [],
+      "gap": "faut"
     }
   ]
 }

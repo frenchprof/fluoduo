@@ -15,19 +15,22 @@
       "id": "vouloir-inviter-01",
       "fr": "Tu veux venir au cinéma ?",
       "en": "Invite a friend to the cinema",
-      "tags": []
+      "tags": [],
+      "gap": "veux"
     },
     {
       "id": "vouloir-inviter-02",
       "fr": "Vous voulez manger avec nous ?",
       "en": "Invite a group to eat together",
-      "tags": []
+      "tags": [],
+      "gap": "voulez"
     },
     {
       "id": "vouloir-inviter-03",
       "fr": "Je veux bien !",
       "en": "Accept enthusiastically",
-      "tags": []
+      "tags": [],
+      "gap": "veux"
     },
     {
       "id": "vouloir-inviter-04",
@@ -39,25 +42,29 @@
       "id": "vouloir-inviter-05",
       "fr": "Désolé(e), je ne peux pas.",
       "en": "Decline politely",
-      "tags": []
+      "tags": [],
+      "gap": "peux"
     },
     {
       "id": "vouloir-inviter-06",
       "fr": "Merci, mais je ne suis pas libre.",
       "en": "Decline — not free",
-      "tags": []
+      "tags": [],
+      "gap": "suis"
     },
     {
       "id": "vouloir-inviter-07",
       "fr": "On peut se voir samedi ?",
       "en": "Suggest another day",
-      "tags": []
+      "tags": [],
+      "gap": "peut"
     },
     {
       "id": "vouloir-inviter-08",
       "fr": "Tu es libre dimanche ?",
       "en": "Ask if they're free another day",
-      "tags": []
+      "tags": [],
+      "gap": "es"
     }
   ]
 }

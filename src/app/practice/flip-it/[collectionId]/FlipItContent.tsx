@@ -27,6 +27,7 @@ import {
   NOTE_MAX,
   type DeckNotes,
 } from "@/lib/notes/store";
+import { displayEn } from "@/lib/collections/display";
 import { loadBuckets, setBucket, type Bucket } from "@/lib/practice/buckets";
 import { recordItemResult } from "@/lib/progress";
 import { CahierFrame, TAB_HUES, type CahierTab } from "../CahierFrame";
@@ -828,11 +829,14 @@ function Overview({
   // Answer columns differ by deck: nat tests the 4 forms (country stays as the
   // prompt); standard tests article + French noun (English stays as the prompt).
   const answerCols: ColKey[] = isNat ? ["ms", "fs", "mp", "fp"] : hasArt ? ["art", "fr"] : ["fr"];
-  // Drop the English column for flag/emoji decks (it's a tooltip on the flag) to
-  // save space — in both Study and Test.
+  // English rides the flag's hover tooltip ONLY when every row has a flag/emoji
+  // to hover; decks without visuals keep the English column — otherwise covering
+  // Le/la or the French leaves nothing identifying the row.
   const hasLang = rows.some((r) => r.item.lang); // languages deck → relabel flag col, drop article
-  const cols = (isNat ? COLS : COLS.filter((c) => c.key !== "eng"))
-    .filter((c) => !((hasLang || !hasArt) && c.key === "art")); // no article axis → no art column
+  const allVisual = rows.length > 0 && rows.every((r) => r.item.emoji || r.item.lang);
+  const cols = (isNat || !allVisual ? COLS : COLS.filter((c) => c.key !== "eng"))
+    .filter((c) => !((hasLang || !hasArt) && c.key === "art")) // no article axis → no art column
+    .filter((c) => !(c.key === "flag" && !rows.some((r) => r.item.emoji || r.item.lang))); // no visuals → no flag column
   const lastAnswerKey = answerCols[answerCols.length - 1]; // holds the single Check/Reveal
   // In Test: article column is narrow ("-"), the last answer column is wide (input + ✓ + 💡).
   const colW = (c: ColDef) => {
@@ -851,9 +855,8 @@ function Overview({
   const [hidden, setHidden] = useState<Set<string>>(new Set()); // covered cells `${id}:${col}`
   const [revealedCell, setRevealedCell] = useState<Set<string>>(new Set()); // answered/clicked open
   const [coveredCols, setCoveredCols] = useState<Set<ColKey>>(new Set());
-  const [engShown, setEngShown] = useState<Set<string>>(new Set()); // tap-flag reveals English inline
-  const toggleEng = (id: string) =>
-    setEngShown((s) => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  // English on a flag/emoji is an AUTOMATIC MOUSEOVER (title tooltip) — never
+  // text that appears in the layout (Dan, 2026-07-04).
   // manual column resizing — drag the handle on a header's right edge
   const [colWidths, setColWidths] = useState<Partial<Record<ColKey, number>>>({});
   const dragRef = useRef<{ key: ColKey; startX: number; startW: number } | null>(null);
@@ -1021,8 +1024,7 @@ function Overview({
                         articleOptions={articleOptions} status={status}
                         onBucket={onBucket} selected={selected} onToggleSelect={onToggleSelect}
                         notes={notes} editNotes={editNotes}
-                        onNote={(t) => setNotes(setNote(deckId, row.item.id, t))} tint={rowTint(row)}
-                        engShown={engShown} onToggleEng={toggleEng} />
+                        onNote={(t) => setNotes(setNote(deckId, row.item.id, t))} tint={rowTint(row)} />
                     );
                   }
                   const cellContent = (k: ColKey): React.ReactNode => {
@@ -1032,17 +1034,14 @@ function Overview({
                           onChange={() => onToggleSelect(row.item.id)}
                           style={{ width: "1.1rem", height: "1.1rem", padding: 0, accentColor: "#2d5bff" }} />;
                       case "flag": return (
-                        <span className="inline-flex flex-col items-center leading-tight">
-                          <button type="button" onClick={(e) => { e.stopPropagation(); toggleEng(row.item.id); }}
-                            aria-label="Show English" className={row.item.lang ? "inline-flex items-baseline gap-1.5 whitespace-nowrap" : "text-2xl"}>
-                            {row.item.lang ? (
-                              <>
-                                <span lang="fr" className="text-base font-bold text-[color:var(--cahier-ink)]">{row.item.lang.greeting}</span>
-                                <span className="text-[11px] text-[color:var(--cahier-ink-soft)]">{row.item.lang.autonym}</span>
-                              </>
-                            ) : row.item.emoji}
-                          </button>
-                          {engShown.has(row.item.id) && <span className="text-[10px] leading-tight text-[color:var(--cahier-ink-soft)]">{row.item.en}</span>}
+                        <span title={displayEn(row.item)}
+                          className={row.item.lang ? "inline-flex items-baseline gap-1.5 whitespace-nowrap" : "text-2xl"}>
+                          {row.item.lang ? (
+                            <>
+                              <span lang="fr" className="text-base font-bold text-[color:var(--cahier-ink)]">{row.item.lang.greeting}</span>
+                              <span className="text-[11px] text-[color:var(--cahier-ink-soft)]">{row.item.lang.autonym}</span>
+                            </>
+                          ) : row.item.emoji}
                         </span>
                       );
                       case "eng": return <span>{row.item.en}{row.item.note ? <span className="text-[color:var(--cahier-ink-soft)]"> {row.item.note}</span> : null}</span>;
@@ -1090,13 +1089,11 @@ function Overview({
  * once (article + noun, or the four nationality forms), inline on the same row. */
 function TestRow({
   row, cols, isNat, articleOptions, status, onBucket, selected, onToggleSelect, notes, editNotes, onNote, tint,
-  engShown, onToggleEng,
 }: {
   row: Row; cols: ColDef[]; isNat: boolean; articleOptions: string[];
   status: Bucket | undefined; onBucket: (id: string, b: Bucket) => void;
   selected: Set<string>; onToggleSelect: (id: string) => void;
   notes: DeckNotes; editNotes: boolean; onNote: (t: string) => void; tint?: string;
-  engShown: Set<string>; onToggleEng: (id: string) => void;
 }) {
   const parts = partsFor(row, isNat, articleOptions.some((a) => a !== ""));
   const [vals, setVals] = useState<Record<string, string>>({});
@@ -1157,10 +1154,7 @@ function TestRow({
         let content: React.ReactNode = null;
         if (c.key === "pick") content = <input type="checkbox" checked={selected.has(row.item.id)} onChange={() => onToggleSelect(row.item.id)} style={{ width: "1.1rem", height: "1.1rem", padding: 0, accentColor: "#2d5bff" }} />;
         else if (c.key === "flag") content = (
-          <span className="inline-flex flex-col items-center leading-tight">
-            <button type="button" onClick={() => onToggleEng(row.item.id)} aria-label="Show English" className="text-2xl">{row.item.emoji}</button>
-            {engShown.has(row.item.id) && <span className="text-[10px] leading-tight text-[color:var(--cahier-ink-soft)]">{row.item.en}</span>}
-          </span>
+          <span title={displayEn(row.item)} className="text-2xl">{row.item.emoji}</span>
         );
         else if (c.key === "fr" && isNat) content = <span lang="fr" className="font-bold">{row.fr}</span>;
         else if (answerKeys.includes(c.key)) {

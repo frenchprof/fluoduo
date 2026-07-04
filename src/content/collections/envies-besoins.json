@@ -15,49 +15,57 @@
       "id": "envies-besoins-01",
       "fr": "Je voudrais un café.",
       "en": "I would like a coffee.",
-      "tags": []
+      "tags": [],
+      "gap": "voudrais"
     },
     {
       "id": "envies-besoins-02",
       "fr": "Je voudrais visiter le Louvre.",
       "en": "I would like to visit the Louvre.",
-      "tags": []
+      "tags": [],
+      "gap": "voudrais"
     },
     {
       "id": "envies-besoins-03",
       "fr": "J'aimerais voyager.",
       "en": "I'd like to travel.",
-      "tags": []
+      "tags": [],
+      "gap": "aimerais"
     },
     {
       "id": "envies-besoins-04",
       "fr": "J'aimerais une chambre pour deux personnes.",
       "en": "I'd like a room for two.",
-      "tags": []
+      "tags": [],
+      "gap": "aimerais"
     },
     {
       "id": "envies-besoins-05",
       "fr": "J'ai besoin d'un hôtel.",
       "en": "I need a hotel.",
-      "tags": []
+      "tags": [],
+      "gap": "besoin d'"
     },
     {
       "id": "envies-besoins-06",
       "fr": "J'ai besoin d'un plan.",
       "en": "I need a map.",
-      "tags": []
+      "tags": [],
+      "gap": "besoin d'"
     },
     {
       "id": "envies-besoins-07",
       "fr": "Je veux visiter Paris.",
       "en": "I want to visit Paris.",
-      "tags": []
+      "tags": [],
+      "gap": "veux"
     },
     {
       "id": "envies-besoins-08",
       "fr": "Je veux partir en vacances.",
       "en": "I want to go on holiday.",
-      "tags": []
+      "tags": [],
+      "gap": "veux"
     }
   ]
 }

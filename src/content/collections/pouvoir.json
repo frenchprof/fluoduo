@@ -15,49 +15,57 @@
       "id": "pouvoir-01",
       "fr": "Je peux manger ici ?",
       "en": "Can I eat here?",
-      "tags": []
+      "tags": [],
+      "gap": "peux"
     },
     {
       "id": "pouvoir-02",
       "fr": "On peut visiter le musée.",
       "en": "We can visit the museum.",
-      "tags": []
+      "tags": [],
+      "gap": "peut"
     },
     {
       "id": "pouvoir-03",
       "fr": "Tu peux te garer là.",
       "en": "You can park there.",
-      "tags": []
+      "tags": [],
+      "gap": "peux"
     },
     {
       "id": "pouvoir-04",
       "fr": "Vous pouvez acheter les billets ici.",
       "en": "You (formal) can buy tickets here.",
-      "tags": []
+      "tags": [],
+      "gap": "pouvez"
     },
     {
       "id": "pouvoir-05",
       "fr": "On peut se promener.",
       "en": "We can walk around.",
-      "tags": []
+      "tags": [],
+      "gap": "peut"
     },
     {
       "id": "pouvoir-06",
       "fr": "Elle peut venir avec nous.",
       "en": "She can come with us.",
-      "tags": []
+      "tags": [],
+      "gap": "peut"
     },
     {
       "id": "pouvoir-07",
       "fr": "Ils peuvent attendre ici.",
       "en": "They can wait here.",
-      "tags": []
+      "tags": [],
+      "gap": "peuvent"
     },
     {
       "id": "pouvoir-08",
       "fr": "On ne peut pas fumer ici.",
       "en": "You can't smoke here.",
-      "tags": []
+      "tags": [],
+      "gap": "peut"
     }
   ]
 }
