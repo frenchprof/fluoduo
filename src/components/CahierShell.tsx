@@ -17,6 +17,12 @@ import type { CSSProperties, ReactNode } from "react";
 import { isLexReadyId } from "@/lib/collections/lexReady";
 import { isConjugaZoneReadyId } from "@/lib/collections/conjugaZoneReady";
 import { isGramMarathonReadyId } from "@/lib/collections/gramMarathonReady";
+import { CURATED } from "@/content/collections";
+
+/** Dice Practice is an MCQ over the deck's letris columns — no columns, no game. */
+export function hasDicePractice(collectionId: string): boolean {
+  return !!CURATED.find((c) => c.id === collectionId)?.gameConfig?.letris;
+}
 
 const TAB_HUES = [
   "var(--cahier-t0)",
@@ -153,7 +159,9 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     { key: "flip", label: "Flip It", emoji: "🃏", href: `/practice/flip-it/${collectionId}` },
     { key: "say", label: "Say It", emoji: "🎤", href: `/practice/say-it/${collectionId}` },
     { key: "complete", label: "Complete It", emoji: "✏️", href: `/practice/complete-it/${collectionId}` },
-    { key: "dice", label: "Practice", emoji: "🎲", href: `/practice/dice/${collectionId}` },
+    ...(hasDicePractice(collectionId)
+      ? [{ key: "dice", label: "Practice", emoji: "🎲", href: `/practice/dice/${collectionId}` } as ShellTab]
+      : []),
     ...(isConjugaZoneReadyId(collectionId)
       ? [{ key: "conjugazone", label: "ConjugaZone", emoji: "🎯", href: `/practice/conjugazone/${collectionId}` } as ShellTab]
       : []),

@@ -53,7 +53,8 @@ const LOCKED_UNITS = new Set<number>(); // all units unlocked (Unité 4 decks ad
 function deckAndPretestFor(sio: Sio) {
   const deck = sio.collectionId ? CURATED.find((c) => c.id === sio.collectionId) : undefined;
   const pretest = getPretestForSio(sio.id);
-  const pretestHref = pretest ? `/pretests/${pretest.id}` : deck ? `/practice/dice/${deck.id}` : null;
+  // Dice fallback only where the deck actually supports dice (has letris columns).
+  const pretestHref = pretest ? `/pretests/${pretest.id}` : deck?.gameConfig?.letris ? `/practice/dice/${deck.id}` : null;
   return { deck, pretestHref, pretestId: pretest?.id ?? null };
 }
 

@@ -8,6 +8,7 @@ import {
   getCollection,
 } from "@/lib/firebase/collections";
 import { CURATED } from "@/content/collections";
+import { getLetrisSet } from "@/games/letris/sets";
 import { useAuthUser } from "@/lib/firebase/auth";
 import { logEvent } from "@/lib/firebase/usage";
 import { displayEn, displayFr } from "@/lib/collections/display";
@@ -240,32 +241,19 @@ function DeckView({
               🎯 MCQ
             </Link>
           )}
-          {games.letris && (
-            <button
-              type="button"
+          {/* Buttons exist only where a real runner exists — no alert() stubs. */}
+          {games.letris && getLetrisSet(collection.id.replace("-letris", "")) && (
+            <Link
+              href={`/games/letris/${collection.id.replace("-letris", "")}`}
               className="fluo-btn fluo-btn-secondary"
-              onClick={() => alert("Letris launcher: wire to /games/letris.")}
             >
-              🧱 Letris
-            </button>
+              🌧️ Vocabularain
+            </Link>
           )}
-          {games.matching && (
-            <button
-              type="button"
-              className="fluo-btn fluo-btn-secondary"
-              onClick={() => alert("Matching launcher: wire to /games/matching.")}
-            >
+          {games.matching && collection.id === "directions-matching" && (
+            <Link href="/games/matching" className="fluo-btn fluo-btn-secondary">
               🔗 Matching
-            </button>
-          )}
-          {games.gapfill && (
-            <button
-              type="button"
-              className="fluo-btn fluo-btn-secondary"
-              onClick={() => alert("Gapfill runner lands next.")}
-            >
-              ✍️ Gapfill
-            </button>
+            </Link>
           )}
           {ownedByMe && (
             <>
