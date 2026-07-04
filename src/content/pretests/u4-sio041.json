@@ -53,6 +53,7 @@
       ],
       "fullSentence": "Il mange de la salade et des tomates.",
       "sentenceTrans": "He eats (some) salad and tomatoes.",
+      "transFirst": true,
       "whyWrong": {
         "du salade": "salade is feminine — de la, not du.",
         "la salade": "la means salad in general; here he eats 'some', so de la.",
@@ -83,14 +84,14 @@
       "sentenceAfter": " après le plat principal.",
       "answer": "du fromage",
       "distractors": [
-        "le fromage",
+        "de le fromage",
         "de la fromage",
         "des fromages"
       ],
       "fullSentence": "En France, on mange du fromage après le plat principal.",
       "sentenceTrans": "In France, people eat cheese after the main course.",
       "whyWrong": {
-        "le fromage": "le means cheese in general; here they eat 'some', so du.",
+        "de le fromage": "de + le always contracts to du — 'de le' never exists in French.",
         "de la fromage": "fromage is masculine — du, not de la.",
         "des fromages": "des is plural 'cheeses'; the uncountable amount is du fromage."
       }

@@ -313,7 +313,7 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
     { title: "Class is over. You say goodbye specifically to your professor as you leave.", options: [
       { v: "Au revoir.", ok: true },
       { v: "Bonjour, monsieur.", ok: false, why: "That's a hello, not a goodbye." },
-      { v: "À bientôt !", ok: false, why: "À bientôt is casual — the safe goodbye to a professor is Au revoir." },
+      { v: "À plus !", ok: false, why: "À plus is casual slang between friends — the safe goodbye to a professor is Au revoir." },
       { v: "Coucou !", ok: false, why: "Coucou is a very informal hello — not a goodbye, not for professors." },
     ] },
     { title: "You're leaving a friend's place after a short visit. Which phrase is NOT appropriate here?", options: [
@@ -331,7 +331,7 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
     { title: "You wave goodbye to a shopkeeper as you leave the store, around 7pm.", options: [
       { v: "Bonne soirée !", ok: true },
       { v: "Bonne journée !", ok: false, why: "Bonne journée is the daytime wish — at 7pm wish a good evening." },
-      { v: "Bonsoir.", ok: false, why: "Bonsoir is an evening hello, not a leaving wish." },
+      { v: "Bonjour !", ok: false, why: "Bonjour is a daytime hello — at 7pm, and when leaving, you wish Bonne soirée." },
       { v: "Bonne nuit.", ok: false, why: "Bonne nuit is only for bedtime." },
     ] },
     { title: "Class ends in the early afternoon. You wish the professor a good rest of the day.", options: [

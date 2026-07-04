@@ -53,6 +53,7 @@
       ],
       "fullSentence": "Elle est actrice.",
       "sentenceTrans": "She is an actress.",
+      "transFirst": true,
       "whyWrong": {
         "acteur": "acteur means “actor” (masculine) — the feminine is actrice.",
         "acteurs": "acteurs means “actors” (masculine plural).",
@@ -71,6 +72,7 @@
       ],
       "fullSentence": "Il est acteur.",
       "sentenceTrans": "He is an actor.",
+      "transFirst": true,
       "whyWrong": {
         "actrice": "actrice means “actress” (feminine) — for a man it's acteur.",
         "acteurs": "acteurs means “actors” (plural) — one man is acteur.",
@@ -83,14 +85,14 @@
       "sentenceAfter": ".",
       "answer": "cheffe",
       "distractors": [
-        "chef",
+        "chefe",
         "chefs",
         "cuisine"
       ],
       "fullSentence": "Elle est cheffe.",
       "sentenceTrans": "She is a chef.",
       "whyWrong": {
-        "chef": "chef means “chef” (masculine) — the feminine is cheffe.",
+        "chefe": "“chefe” isn't a French word — the feminine of chef is cheffe (double f).",
         "chefs": "chefs means “chefs” (plural).",
         "cuisine": "cuisine means “kitchen / cooking”, not the person."
       }

@@ -17,6 +17,7 @@
       ],
       "fullSentence": "Il est midi. Vous avez faim ?",
       "sentenceTrans": "It's noon. Are you hungry?",
+      "transFirst": true,
       "whyWrong": {
         "soif": "soif means 'thirsty'; the noon cue is hunger — avoir faim.",
         "froid": "froid means 'cold', not hungry — avoir faim.",
@@ -43,7 +44,7 @@
     },
     {
       "id": "u1-sio019-03",
-      "sentenceBefore": "Je ",
+      "sentenceBefore": "J'",
       "sentenceAfter": " sommeil. Je rentre.",
       "answer": "ai",
       "distractors": [
@@ -51,7 +52,7 @@
         "a",
         "est"
       ],
-      "fullSentence": "Je ai sommeil. Je rentre.",
+      "fullSentence": "J'ai sommeil. Je rentre.",
       "sentenceTrans": "I'm sleepy. I'm going home.",
       "whyWrong": {
         "suis": "'sleepy' uses avoir, not être — j'ai sommeil, not je suis.",

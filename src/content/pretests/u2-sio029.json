@@ -31,14 +31,14 @@
       "distractors": [
         "veut",
         "voulez",
-        "aimes"
+        "veulent"
       ],
       "fullSentence": "Tu veux venir avec nous au cinéma ?",
       "sentenceTrans": "Do you want to come to the cinema with us?",
       "whyWrong": {
         "veut": "veut is the il/elle form — with tu it's veux.",
         "voulez": "voulez is the vous form — with tu it's veux.",
-        "aimes": "aimes is from aimer (to like), not vouloir."
+        "veulent": "veulent is the ils/elles form — with tu it's veux."
       }
     },
     {

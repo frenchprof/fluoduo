@@ -17,6 +17,7 @@
       ],
       "fullSentence": "Je mange toujours du riz le soir.",
       "sentenceTrans": "I always eat rice in the evening.",
+      "transFirst": true,
       "whyWrong": {
         "parfois": "That means 'sometimes', but the sentence says 'always'.",
         "jamais": "That means 'never' and needs 'ne'; the meaning here is 'always'.",
@@ -35,6 +36,7 @@
       ],
       "fullSentence": "Nous mangeons parfois du gâteau le week-end.",
       "sentenceTrans": "We sometimes eat cake at the weekend.",
+      "transFirst": true,
       "whyWrong": {
         "souvent": "That means 'often', but the sentence says 'sometimes'.",
         "parfois de": "parfois is a complete adverb — no 'de' follows it here.",
@@ -47,14 +49,14 @@
       "sentenceAfter": " de la restauration rapide.",
       "answer": "rarement",
       "distractors": [
-        "peu souvent",
+        "rares",
         "très rare",
         "rare"
       ],
       "fullSentence": "Je mange rarement de la restauration rapide.",
       "sentenceTrans": "I rarely eat fast food.",
       "whyWrong": {
-        "peu souvent": "French says rarement, not 'peu souvent'.",
+        "rares": "rares is a plural adjective — to modify the verb you need the adverb rarement.",
         "très rare": "rare is an adjective ('rare'); the adverb is rarement.",
         "rare": "That's the adjective; you need the adverb rarement to modify the verb."
       }
@@ -71,6 +73,7 @@
       ],
       "fullSentence": "Elle ne mange jamais de sucre.",
       "sentenceTrans": "She never eats sugar.",
+      "transFirst": true,
       "whyWrong": {
         "pas": "ne...pas means 'not'; for 'never' use ne...jamais.",
         "pas jamais": "Use only one negative word — ne...jamais.",

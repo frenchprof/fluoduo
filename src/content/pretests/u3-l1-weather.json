@@ -116,7 +116,8 @@
         "froid": "froid is genuinely cold — it wouldn't prompt « c'est agréable ».",
         "frais et froid": "frais and froid are different temperatures — you can't stack both.",
         "fraîs": "spelling — frais has no circumflex on the i."
-      }
+      },
+      "transFirst": true
     },
     {
       "id": "06-du-vent",
@@ -216,7 +217,7 @@
       "answer": "pleut",
       "distractors": [
         "fait pleuvoir",
-        "y a de la pluie",
+        "pleuvoir",
         "pluie"
       ],
       "fullSentence": "Il pleut depuis ce matin.",
@@ -224,7 +225,7 @@
       "why": "<strong>il pleut</strong> — from the verb <em>pleuvoir</em>, which only exists as an impersonal form. Present: <em>il pleut</em>. No other person or number. Do not say <em>il fait pleuvoir</em> — that would mean 'he makes it rain'. <em>il y a de la pluie</em> is grammatically fine but more formal/written; <em>il pleut</em> is the standard spoken form. <em>pluie</em> alone is a noun, not a verb.",
       "whyWrong": {
         "fait pleuvoir": "il fait pleuvoir would mean 'he makes it rain' — pleuvoir conjugates directly: il pleut.",
-        "y a de la pluie": "Il y a de la pluie is possible but heavy — the natural verb form is il pleut.",
+        "pleuvoir": "pleuvoir is the infinitive — the impersonal present is il pleut.",
         "pluie": "pluie is the noun (rain) — the sentence needs the verb: pleut."
       }
     },

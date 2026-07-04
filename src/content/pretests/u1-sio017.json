@@ -85,14 +85,14 @@
       "distractors": [
         "l'",
         "la",
-        "en"
+        "les"
       ],
       "fullSentence": "En France, on parle le français.",
       "sentenceTrans": "In France, people speak French.",
       "whyWrong": {
         "l'": "français starts with a consonant, so no elision — le français.",
         "la": "français (the language) is masculine — le français.",
-        "en": "en isn't used here; the language takes the article le."
+        "les": "les is plural — the language name is singular: le français."
       }
     },
     {
@@ -107,6 +107,7 @@
       ],
       "fullSentence": "À Singapour, on parle l'anglais et le chinois.",
       "sentenceTrans": "In Singapore, people speak English and Chinese.",
+      "transFirst": true,
       "whyWrong": {
         "avec": "avec means 'with'; listing two languages needs 'et' (and).",
         "mais": "mais means 'but'; the two languages are simply added with 'et'.",

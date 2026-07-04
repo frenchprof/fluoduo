@@ -66,14 +66,14 @@
       "answer": "je voudrais",
       "distractors": [
         "je veux",
-        "donnez-moi",
+        "je voudrai",
         "je voulais"
       ],
       "fullSentence": "Bonjour, je voudrais deux croissants, s'il vous plaît.",
       "sentenceTrans": "Hello, I'd like two croissants, please.",
       "whyWrong": {
         "je veux": "'I want' is too blunt when ordering — use je voudrais.",
-        "donnez-moi": "'Give me' is too direct and impolite for a shop request.",
+        "je voudrai": "That's the future 'I will want' — the polite formula is je voudrais (with final -s).",
         "je voulais": "That's the past 'I wanted'; the polite request is je voudrais."
       }
     },
@@ -84,14 +84,14 @@
       "answer": "Ça fait combien",
       "distractors": [
         "Combien de",
-        "Quel est le prix",
+        "Combien coûte",
         "C'est cher non"
       ],
       "fullSentence": "Le client demande : « Ça fait combien ? »",
       "sentenceTrans": "The customer asks: \"How much is it?\"",
       "whyWrong": {
         "Combien de": "That means 'how many/much of' and needs a noun after it.",
-        "Quel est le prix": "Understandable but stiff; the everyday counter phrase is Ça fait combien ?.",
+        "Combien coûte": "Combien coûte needs a subject (Combien coûte le pain ?) — at the till you ask Ça fait combien ?",
         "C'est cher non": "That means 'it's expensive, isn't it?', not a request for the price."
       }
     },

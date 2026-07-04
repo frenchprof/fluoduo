@@ -87,7 +87,7 @@
         "à la",
         "à le"
       ],
-      "fullSentence": "Le patient va à l' hôpital.",
+      "fullSentence": "Le patient va à l'hôpital.",
       "sentenceTrans": "The patient is going to the hospital.",
       "whyWrong": {
         "au": "hôpital starts with a vowel sound — à l', not au.",

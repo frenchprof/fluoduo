@@ -121,14 +121,14 @@
       "distractors": [
         "en face du",
         "devant de",
-        "face à"
+        "en face à"
       ],
       "fullSentence": "La mairie se trouve en face de la gare.",
       "sentenceTrans": "The town hall is opposite the station.",
       "whyWrong": {
         "en face du": "du already contains le — before la gare it's en face de.",
         "devant de": "devant takes no de — it's devant la gare or en face de la gare.",
-        "face à": "face à la gare is possible, but the expression practised here is en face de."
+        "en face à": "en face à mixes two patterns — the expression is en face de (la gare)."
       }
     },
     {

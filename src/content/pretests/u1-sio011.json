@@ -13,14 +13,14 @@
       "distractors": [
         "vous",
         "elles",
-        "nous"
+        "je"
       ],
       "fullSentence": "— Qui est là ? — C'est moi !",
       "sentenceTrans": "— Who's there? — It's me!",
       "whyWrong": {
         "vous": "vous means 'you', not 'me'.",
         "elles": "elles means 'they' (feminine), not 'me'.",
-        "nous": "nous means 'us / we', not just 'me'."
+        "je": "je is a subject pronoun — after c'est you need the stressed form moi."
       }
     },
     {
@@ -35,6 +35,7 @@
       ],
       "fullSentence": "Moi, c'est Léa. Et toi ?",
       "sentenceTrans": "Me, I'm Léa. And you?",
+      "transFirst": true,
       "whyWrong": {
         "tu": "tu is a subject pronoun; after 'et' you need the stressed form toi.",
         "nous": "nous means 'us', not 'you'.",

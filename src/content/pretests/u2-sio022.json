@@ -12,14 +12,14 @@
       "answer": "mon",
       "distractors": [
         "mes",
-        "ton",
+        "sa",
         "ma"
       ],
       "fullSentence": "J'ai oublié mon livre chez moi.",
       "sentenceTrans": "I left my book at home.",
       "whyWrong": {
         "mes": "mes is plural — one book takes mon.",
-        "ton": "ton means 'your', not 'my'.",
+        "sa": "sa is feminine — livre is masculine (and sa means 'his/her', not 'my').",
         "ma": "livre is masculine — mon livre, not ma."
       }
     },
@@ -48,14 +48,14 @@
       "answer": "son",
       "distractors": [
         "sa",
-        "mon",
+        "ma",
         "ses"
       ],
       "fullSentence": "Pierre a posé son sac sur la chaise.",
       "sentenceTrans": "Pierre put his bag on the chair.",
       "whyWrong": {
         "sa": "sac is masculine — son sac, not sa.",
-        "mon": "mon means 'my' — it's Pierre's bag, so son.",
+        "ma": "ma is feminine — sac is masculine (and it means 'my', not 'his').",
         "ses": "ses is plural — one bag takes son."
       }
     },
@@ -107,6 +107,7 @@
       ],
       "fullSentence": "Bienvenue dans notre appartement !",
       "sentenceTrans": "Welcome to our apartment!",
+      "transFirst": true,
       "whyWrong": {
         "nos": "nos is plural — one apartment takes notre.",
         "votre": "votre means 'your', not 'our'.",
@@ -139,14 +140,14 @@
       "distractors": [
         "leurs",
         "son",
-        "notre"
+        "ses"
       ],
       "fullSentence": "Les étudiants écoutent leur professeur.",
       "sentenceTrans": "The students listen to their teacher.",
       "whyWrong": {
         "leurs": "leurs is plural — one teacher takes leur.",
         "son": "son is 'his/her' (one owner) — the students share, so leur.",
-        "notre": "notre means 'our', not 'their'."
+        "ses": "ses is plural (and one owner) — one shared teacher takes leur."
       }
     }
   ]

@@ -17,6 +17,7 @@
       ],
       "fullSentence": "Chaque matin, je bois du café.",
       "sentenceTrans": "Every morning, I drink (some) coffee.",
+      "transFirst": true,
       "whyWrong": {
         "le": "le café means coffee in general; drinking 'some' takes du.",
         "un": "un café means 'a coffee' (a cup); for an amount use du.",
@@ -35,6 +36,7 @@
       ],
       "fullSentence": "Elle mange de la salade tous les midis.",
       "sentenceTrans": "She eats (some) salad every lunchtime.",
+      "transFirst": true,
       "whyWrong": {
         "la": "la salade means salad in general; eating 'some' takes de la.",
         "une": "une salade means a whole salad; for an amount use de la.",
@@ -51,8 +53,9 @@
         "du",
         "de la"
       ],
-      "fullSentence": "Tu veux de l' eau ?",
+      "fullSentence": "Tu veux de l'eau ?",
       "sentenceTrans": "Do you want some water?",
+      "transFirst": true,
       "whyWrong": {
         "l'": "l'eau means 'the water'; asking for 'some' takes de l'.",
         "du": "eau is feminine and starts with a vowel — de l', not du.",
@@ -105,7 +108,7 @@
         "du",
         "une"
       ],
-      "fullSentence": "On ajoute de l' huile d'olive.",
+      "fullSentence": "On ajoute de l'huile d'olive.",
       "sentenceTrans": "You add some olive oil.",
       "whyWrong": {
         "de la": "huile starts with a vowel — de la elides to de l'.",

@@ -51,7 +51,7 @@
         "de la",
         "des"
       ],
-      "fullSentence": "Elle vient de l' hôpital.",
+      "fullSentence": "Elle vient de l'hôpital.",
       "sentenceTrans": "She's coming from the hospital.",
       "whyWrong": {
         "du": "du (de + le) is for masculine nouns after a consonant — hôpital has a silent h, so de l'.",
@@ -69,7 +69,7 @@
         "à la",
         "aux"
       ],
-      "fullSentence": "Nous allons à l' hôtel.",
+      "fullSentence": "Nous allons à l'hôtel.",
       "sentenceTrans": "We're going to the hotel.",
       "whyWrong": {
         "au": "au is masculine before a consonant — hôtel has a silent h, so à l'.",
