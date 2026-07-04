@@ -207,6 +207,7 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
     set.add("");
     return [...set].sort((a, b) => ART_ORDER.indexOf(a) - ART_ORDER.indexOf(b));
   }, [base]);
+  const canGroupArt = !isNat && articleOptions.some((a) => a !== "");
 
   const ordered = useMemo(
     () => orderRows(base, order, seed, sortCol, sortDir, buckets, notes),
@@ -302,21 +303,27 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
             <div className="fixed inset-0 z-20" onClick={() => setShowOptions(false)} aria-hidden />
             <div className="absolute right-0 z-30 mt-1 flex w-72 flex-col gap-3 rounded-xl border-2 border-[color:var(--cahier-ink)]/20 bg-white p-3 shadow-xl">
               <div className="flex flex-col gap-1.5">
-                <span className={CTRL_LABEL}>group by</span>
+                {/* "By article" only where the deck HAS an article axis — on a
+                    deck without one the button grouped everything under a
+                    single pointless "no article" header. No group axis at all
+                    → the row is honestly just "order" (shuffle). */}
+                <span className={CTRL_LABEL}>{canGroupArt || hasRegion ? "group by" : "order"}</span>
                 <div className="flex flex-wrap items-center gap-2">
                   {([
-                    ["none", "✕", "No grouping"],
-                    ...(!isNat ? ([["article", "le·la", "By article"]] as ["none" | "article" | "continent", string, string][]) : []),
+                    ...(canGroupArt || hasRegion ? ([["none", "✕", "No grouping"]] as ["none" | "article" | "continent", string, string][]) : []),
+                    ...(canGroupArt ? ([["article", "le·la", "By article"]] as ["none" | "article" | "continent", string, string][]) : []),
                     ...(hasRegion ? ([["continent", "🌍", "By continent"]] as ["none" | "article" | "continent", string, string][]) : []),
                   ] as ["none" | "article" | "continent", string, string][]).map(([k, icon, title]) => (
                     <button key={k} type="button" onClick={() => setGroup(k)} title={title} aria-label={title}
                       className={`cahier-btn cahier-btn-sm ${groupBy === k ? "cahier-btn-primary" : ""}`}>{icon}</button>
                   ))}
-                  <span className="mx-1 h-5 w-px bg-[color:var(--cahier-rule)]" aria-hidden />
+                  {(canGroupArt || hasRegion) && <span className="mx-1 h-5 w-px bg-[color:var(--cahier-rule)]" aria-hidden />}
                   <button type="button" onClick={() => applyOrder("shuffle")} title="Shuffle" aria-label="Shuffle"
                     className={`cahier-btn cahier-btn-sm ${order === "shuffle" ? "cahier-btn-primary" : ""}`}>🔀</button>
                 </div>
-                <span className="text-[0.7rem] text-[color:var(--cahier-ink-soft)]">groups + sections + colours rows · sort A–Z via column headers</span>
+                {(canGroupArt || hasRegion) && (
+                  <span className="text-[0.7rem] text-[color:var(--cahier-ink-soft)]">groups + sections + colours rows · sort A–Z via column headers</span>
+                )}
               </div>
               <div className="flex items-center gap-2 border-t border-[color:var(--cahier-rule)] pt-2">
                 <button type="button" onClick={() => setEditNotes((e) => !e)}
