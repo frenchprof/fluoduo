@@ -40,9 +40,18 @@ const SPEEDUP_EVERY = 6;
  * falling word go unclear, so the learner recalls the word from knowledge
  * rather than reading it. It only falls once every word has been correctly
  * categorised MORE than twice, and then the rain + music slow dramatically. */
-const NIGHT_CORRECT_EACH = 2; // each word must be sorted correctly > this many times
-const NIGHT_RAIN_SLOW = 3.2; // tiles fall this many× slower in the dark
-const NIGHT_MUSIC_SLOW = 2.2; // music tempo scale in the dark
+const NIGHT_CORRECT_EACH = 2; // day→night: each word sorted correctly > this many times
+const NIGHT_RAIN_SLOW = 3.2; // tiles fall this many× slower at night (storm = normal speed)
+const NIGHT_MUSIC_SLOW = 2.2; // music tempo scale at night (storm = normal tempo)
+/* The weather CYCLE (Dan, 2026-07-04): ☀️ day → 🌙 night (slow + blurred, the
+ * crutch) → ⛈️ storm (normal speed, still blurred — memory at full tempo) →
+ * 🌅 dawn (= day again; tallies reset, fanfare, the cycle can repeat).
+ * night→storm and storm→dawn each require every word sorted correctly ONCE
+ * more within that phase. Mercy: 3 misses during the storm → back to night. */
+const PHASE_CORRECT_EACH = 1;
+const STORM_MERCY_MISSES = 3;
+type Phase = "day" | "night" | "storm";
+type PhaseMsg = "night" | "storm" | "dawn" | "mercy";
 
 /** Which letter positions the dark hides — deterministic per word (the same
  *  word is always unclear in the same places), never the first letter. At most
@@ -133,13 +142,15 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
   const [score, setScore] = useState(0);
   const [paused, setPaused] = useState(false);
   const [music, setMusic] = useState(false);
-  const [night, setNight] = useState(false);
-  const [showNightMsg, setShowNightMsg] = useState(false);
-  const nightRef = useRef(false);
-  nightRef.current = night;
-  // How many times each distinct word has been sorted correctly — night falls
-  // only once every word is above NIGHT_CORRECT_EACH.
+  const [phase, setPhase] = useState<Phase>("day");
+  const [phaseMsg, setPhaseMsg] = useState<PhaseMsg | null>(null);
+  const phaseRef = useRef<Phase>("day");
+  phaseRef.current = phase;
+  // Lifetime per-word correct tally (drives day→night); per-PHASE tally (each
+  // word once more within night / within storm); storm misses for the mercy rule.
   const correctRef = useRef<Map<string, number>>(new Map());
+  const phaseCorrectRef = useRef<Map<string, number>>(new Map());
+  const stormMissesRef = useRef(0);
   const wordTexts = useMemo(() => [...new Set(set.tiles.map((t) => t.text))], [set.tiles]);
   const musicAutoRef = useRef(false);
   // First interaction — key OR tap — starts the tune (both are user gestures,
@@ -183,9 +194,11 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
     setGameOver(false);
     setFlash(null);
     // dawn breaks again
-    setNight(false);
-    setShowNightMsg(false);
+    setPhase("day");
+    setPhaseMsg(null);
     correctRef.current.clear();
+    phaseCorrectRef.current.clear();
+    stormMissesRef.current = 0;
     chiptune.setTempoScale(1);
     tickRef.current = INITIAL_TICK_MS;
   }, [cols, set.tiles]);
@@ -195,21 +208,46 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
       const correct = catIndex.get(a.tile.category) === a.col;
       setFlash({ col: a.col, kind: correct ? "ok" : "bad" });
       window.setTimeout(() => setFlash(null), 220);
+      // Enter a new weather phase: swap state, reset the per-phase tally, show
+      // the explainer (pausing the fall), and match the music tempo to the sky.
+      const enterPhase = (next: Phase, msg: PhaseMsg) => {
+        setPhase(next);
+        phaseCorrectRef.current.clear();
+        stormMissesRef.current = 0;
+        setPhaseMsg(msg);
+        setPaused(true);
+        chiptune.setTempoScale(next === "night" ? NIGHT_MUSIC_SLOW : 1);
+      };
+
       if (correct) {
         speak(
           buildSentence(set.categories[a.col], a.tile),
           set.language ? `${set.language}-FR` : "fr-FR",
           { interrupt: false },
         );
-        // Tally the correct sort; night falls once EVERY word is above the bar.
         const m = correctRef.current;
         m.set(a.tile.text, (m.get(a.tile.text) ?? 0) + 1);
-        if (!nightRef.current && wordTexts.every((w) => (m.get(w) ?? 0) > NIGHT_CORRECT_EACH)) {
-          setNight(true);
-          setShowNightMsg(true);
-          setPaused(true); // hold the fall while the learner reads the warning
-          chiptune.setTempoScale(NIGHT_MUSIC_SLOW);
+        const pm = phaseCorrectRef.current;
+        pm.set(a.tile.text, (pm.get(a.tile.text) ?? 0) + 1);
+        const phaseCleared = wordTexts.every((w) => (pm.get(w) ?? 0) >= PHASE_CORRECT_EACH);
+        if (phaseRef.current === "day") {
+          // Night falls once EVERY word has been sorted correctly more than twice.
+          if (wordTexts.every((w) => (m.get(w) ?? 0) > NIGHT_CORRECT_EACH)) enterPhase("night", "night");
+        } else if (phaseRef.current === "night") {
+          // Re-proven every word in the dark → the crutch goes: storm at full speed.
+          if (phaseCleared) enterPhase("storm", "storm");
+        } else if (phaseRef.current === "storm" && phaseCleared) {
+          // Survived the storm → dawn breaks; lifetime tallies reset so the
+          // whole cycle can be earned again.
+          correctRef.current.clear();
+          chiptune.fanfare();
+          enterPhase("day", "dawn");
         }
+      } else if (phaseRef.current === "storm") {
+        // Mercy rule: 3 misses in the storm → the clouds part back to night
+        // (slow + blurred), not all the way to day.
+        stormMissesRef.current += 1;
+        if (stormMissesRef.current >= STORM_MERCY_MISSES) enterPhase("night", "mercy");
       }
 
       setBoard((b) => {
@@ -265,7 +303,8 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
         rafRef.current = requestAnimationFrame(step);
         return;
       }
-      const effTick = tickRef.current * (nightRef.current ? NIGHT_RAIN_SLOW : 1);
+      // Only NIGHT slows the rain — the storm runs at full speed (blur stays).
+      const effTick = tickRef.current * (phaseRef.current === "night" ? NIGHT_RAIN_SLOW : 1);
       if (ts - lastDropRef.current >= effTick) {
         lastDropRef.current = ts;
         const a = s.active;
@@ -333,10 +372,11 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
   const pillCls =
     "rounded-xl border-2 border-b-4 border-sky-200 bg-white px-2.5 py-1 font-bold text-sky-800 shadow-sm transition hover:bg-sky-50 active:translate-y-[2px] active:border-b-2";
 
-  const dismissNight = () => {
-    setShowNightMsg(false);
-    setPaused(false); // resume the fall in the dark
+  const dismissPhaseMsg = () => {
+    setPhaseMsg(null);
+    setPaused(false); // resume the fall under the new sky
   };
+  const dark = phase !== "day"; // night AND storm keep the veil + blurred letters
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 px-4 py-6 text-sky-950">
@@ -357,7 +397,7 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
             Score <b className="text-[#58cc02]">{score}</b>
           </span>
           <button type="button" onClick={() => setShowHelp(true)} title="How to play" className={pillCls}>?</button>
-          <button type="button" onClick={() => { chiptune.toggle("letris"); setMusic(chiptune.playing() === "letris"); if (chiptune.playing() === "letris" && night) chiptune.setTempoScale(NIGHT_MUSIC_SLOW); }}
+          <button type="button" onClick={() => { chiptune.toggle("letris"); setMusic(chiptune.playing() === "letris"); if (chiptune.playing() === "letris" && phase === "night") chiptune.setTempoScale(NIGHT_MUSIC_SLOW); }}
             title="Music" className={pillCls}>{music ? "🔊" : "🎵"}</button>
           <button type="button" onClick={() => setPaused((p) => !p)} className={pillCls}>
             {paused ? "Resume" : "Pause"}
@@ -368,27 +408,47 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
         </div>
       </header>
 
-      {showNightMsg && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/80 p-4">
-          <div className="max-w-sm rounded-3xl border-4 border-indigo-400/60 bg-slate-900 p-6 text-center text-indigo-50 shadow-2xl">
-            <div className="text-5xl" aria-hidden>🌙</div>
-            <h2 className="mt-2 text-xl font-black text-indigo-100">La nuit tombe…</h2>
-            <p className="mt-2 text-sm leading-relaxed text-indigo-100/85">
-              You&rsquo;ve mastered every word — so night falls. In the dark a
-              letter or two on each drop is <b>too faint to read</b>. Trust your
-              memory of the word to steer it into the right puddle. The rain and
-              the music <b>slow right down</b> to help you think.
-            </p>
-            <button
-              type="button"
-              onClick={dismissNight}
-              className="mt-4 w-full rounded-2xl border-b-4 border-indigo-700 bg-indigo-500 py-2 text-sm font-black text-white transition hover:brightness-110 active:translate-y-[2px] active:border-b-0"
-            >
-              Continuer dans le noir 🌙
-            </button>
+      {phaseMsg && (() => {
+        const M: Record<PhaseMsg, { emoji: string; title: string; body: React.ReactNode; btn: string }> = {
+          night: {
+            emoji: "🌙", title: "La nuit tombe…",
+            body: <>You&rsquo;ve mastered every word — so night falls. In the dark a letter or two on each drop is <b>too faint to read</b>. Trust your memory of the word. The rain and the music <b>slow right down</b> to help you think.</>,
+            btn: "Continuer dans le noir 🌙",
+          },
+          storm: {
+            emoji: "⛈️", title: "L'orage arrive !",
+            body: <>You read the dark like a pro — so the storm rolls in: <b>full speed again</b>, letters <b>still too faint to read</b>. Memory at full tempo. Sort every word once more to reach the dawn.</>,
+            btn: "Affronter l'orage ⛈️",
+          },
+          dawn: {
+            emoji: "🌅", title: "Le jour se lève !",
+            body: <>You read the rain blind, at full speed — <b>bravo !</b> The sun is back, the letters are clear, and the whole cycle starts fresh. Can you bring the night back?</>,
+            btn: "Continuer au soleil 🌅",
+          },
+          mercy: {
+            emoji: "🌙", title: "L'orage s'éloigne…",
+            body: <>Three drops went astray in the storm, so the clouds part back to a calm night: <b>slow rain again</b>, letters still faint. Re-prove every word in the dark to summon the storm once more.</>,
+            btn: "Reprendre dans le noir 🌙",
+          },
+        };
+        const m = M[phaseMsg];
+        return (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/80 p-4">
+            <div className="max-w-sm rounded-3xl border-4 border-indigo-400/60 bg-slate-900 p-6 text-center text-indigo-50 shadow-2xl">
+              <div className="text-5xl" aria-hidden>{m.emoji}</div>
+              <h2 className="mt-2 text-xl font-black text-indigo-100">{m.title}</h2>
+              <p className="mt-2 text-sm leading-relaxed text-indigo-100/85">{m.body}</p>
+              <button
+                type="button"
+                onClick={dismissPhaseMsg}
+                className="mt-4 w-full rounded-2xl border-b-4 border-indigo-700 bg-indigo-500 py-2 text-sm font-black text-white transition hover:brightness-110 active:translate-y-[2px] active:border-b-0"
+              >
+                {m.btn}
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {showHelp && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-sky-950/50 p-4" onClick={() => setShowHelp(false)}>
@@ -430,7 +490,7 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
                 top: 0,
                 height: 16,
                 background: "rgba(255,255,255,.55)",
-                animation: `vrain ${(2.2 + (i % 5) * 0.5) * (night ? 3 : 1)}s linear ${(i * 0.63) % 3}s infinite`,
+                animation: `vrain ${(2.2 + (i % 5) * 0.5) * (phase === "night" ? 3 : 1)}s linear ${(i * 0.63) % 3}s infinite`,
               }}
             />
           ))}
@@ -440,16 +500,16 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
             className="pointer-events-none absolute inset-0 z-10"
             style={{
               background: "linear-gradient(180deg, rgba(3,15,36,.85) 0%, rgba(8,28,56,.72) 55%, rgba(14,42,76,.5) 100%)",
-              opacity: night ? 1 : 0,
+              opacity: dark ? 1 : 0,
               transition: "opacity 3s ease",
             }}
           />
           <span
             className="pointer-events-none absolute right-3 top-2 z-10 text-3xl"
-            style={{ opacity: night ? 1 : 0, transition: "opacity 3s ease", textShadow: "0 0 14px rgba(255,244,190,.8)" }}
+            style={{ opacity: dark ? 1 : 0, transition: "opacity 3s ease", textShadow: "0 0 14px rgba(255,244,190,.8)" }}
             aria-hidden
           >
-            🌙
+            {phase === "storm" ? "⛈️" : "🌙"}
           </span>
           {Array.from({ length: ROWS }).map((_, r) =>
             Array.from({ length: cols }).map((_, c) => {
@@ -484,7 +544,7 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
                           : { background: colorOf(tile), color: "#fff", borderRadius: 10, boxShadow: "inset 0 -3px 0 rgba(0,0,0,.2)" }
                       }
                     >
-                      {isActive && night ? <NightWord text={tile.text} /> : tile.text}
+                      {isActive && dark ? <NightWord text={tile.text} /> : tile.text}
                     </div>
                   )}
                 </div>
