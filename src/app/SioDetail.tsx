@@ -15,7 +15,12 @@
  * these as mutually exclusive; that was wrong, this shows both when both apply.
  */
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { sioStatement, type Sio } from "@/content/sios";
+import {
+  missesForSio,
+  PRETEST_RECORD_EVENT,
+} from "@/lib/pretestRecord";
 import type { Collection } from "@/lib/collections/schema";
 import { getAtelier } from "@/content/ateliers";
 import { lessonsForSio } from "@/content/lessons";
@@ -93,6 +98,7 @@ export default function SioDetail({
               <PretestQuiz pretestId={pretestId} />
             </AuthGate>
           </div>
+          <BringToClass sioId={sio.id} />
           {practiceTile}
         </div>
       ) : showPractice ? (
@@ -108,6 +114,42 @@ export default function SioDetail({
           {practiceTile}
         </div>
       ) : null /* popups: the Pre-Test flap on the popup edge carries the link */}
+    </div>
+  );
+}
+
+/** The learner's gap report (PRIME "bring to class"): items whose LAST attempt
+ *  was wrong. Reads localStorage on mount (so a reopened popup shows the
+ *  latest attempt) and refreshes on every recorded answer while mounted. */
+function BringToClass({ sioId }: { sioId: string }) {
+  const [misses, setMisses] = useState<ReturnType<typeof missesForSio>>([]);
+  useEffect(() => {
+    const read = () => setMisses(missesForSio(sioId));
+    read();
+    window.addEventListener(PRETEST_RECORD_EVENT, read);
+    return () => window.removeEventListener(PRETEST_RECORD_EVENT, read);
+  }, [sioId]);
+
+  if (misses.length === 0) return null;
+  const shown = misses.slice(0, 6);
+  const extra = misses.length - shown.length;
+  return (
+    <div className="rounded-xl border-2 p-3" style={{ borderColor: "#e8a13a" }}>
+      <p className="fluo-label mb-2" style={{ color: "#b06e10" }}>📝 Bring to class</p>
+      <ul className="space-y-1">
+        {shown.map((m) => (
+          <li key={m.itemId} className="text-xs leading-snug text-[color:var(--fluo-ink)]">
+            <span lang="fr">{m.stem}</span>
+            <span aria-hidden> → </span>
+            <span lang="fr" className="font-bold">{m.answer}</span>
+          </li>
+        ))}
+      </ul>
+      {extra > 0 && (
+        <p className="mt-1 text-[0.65rem] font-bold text-[color:var(--fluo-ink-soft)]">
+          +{extra} more
+        </p>
+      )}
     </div>
   );
 }

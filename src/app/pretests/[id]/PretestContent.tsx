@@ -2,8 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { getPretest } from "@/content/pretests";
+import { getPretest, sioIdForPretest } from "@/content/pretests";
 import { speak } from "@/games/letris/speech";
+import { logEvent } from "@/lib/firebase/usage";
+import { recordPretestAnswer, stemForItem } from "@/lib/pretestRecord";
 import CahierShell, { type ShellTab } from "@/components/CahierShell";
 import type { Pretest, PretestItem } from "@/lib/pretests/schema";
 
@@ -110,7 +112,24 @@ function PretestRunner({ pretest }: { pretest: Pretest }) {
 
   function pick(choice: string) {
     if (submitted || !item) return;
-    setSubmitted({ picked: choice, correct: choice === item.answer });
+    const correct = choice === item.answer;
+    setSubmitted({ picked: choice, correct });
+    // Gap report (audit R1): persist the verdict so it survives navigation.
+    recordPretestAnswer({
+      pretestId: pretest.id,
+      sioId: sioIdForPretest(pretest.id) ?? "",
+      itemId: item.id,
+      correct,
+      picked: choice,
+      answer: item.answer,
+      stem: stemForItem(item),
+    });
+    void logEvent("pretest.answer", {
+      pretestId: pretest.id,
+      itemId: item.id,
+      correct,
+      picked: choice,
+    });
   }
   function next() {
     if (!submitted || !item) return;

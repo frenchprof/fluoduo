@@ -136,3 +136,8 @@ export function getPretestForSio(sioId: string): Pretest | undefined {
   const id = PRETEST_BY_SIO[sioId];
   return id ? getPretest(id) : undefined;
 }
+
+/** Reverse of the attachment above — which SIO a pretest belongs to. */
+export function sioIdForPretest(pretestId: string): string | undefined {
+  return Object.keys(PRETEST_BY_SIO).find((s) => PRETEST_BY_SIO[s] === pretestId);
+}

@@ -19,7 +19,8 @@ export type EventType =
   | "deck.create"
   | "flashcard.review" // { itemId, rating }
   | "game.start" // { game, collectionId }
-  | "game.end"; // { game, collectionId, score }
+  | "game.end" // { game, collectionId, score }
+  | "pretest.answer"; // { pretestId, itemId, correct, picked }
 
 export async function logEvent(
   type: EventType,

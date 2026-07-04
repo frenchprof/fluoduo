@@ -2,30 +2,38 @@
  * Native "Quand ? Quel moment ?" lesson (Unité 2 · L12) — the Mémo + 🎲 dice
  * trainer + EN→FR bonus distilled from the 12-quand.html drchan import, as
  * real in-app content following the aimer.tsx template.
+ *
+ * Dan, 2026-07-04: time-telling is 24-hour "A heures B" ONLY (A = 0–23,
+ * B = minutes) — no et quart / et demie / moins le quart, no midi/minuit,
+ * no du matin/du soir.
  */
 import type { NativeLesson } from "./types";
 
-const TIMES: { h: number; m: number; fr: string }[] = [
-  { h: 8, m: 0, fr: "Il est huit heures du matin." },
-  { h: 9, m: 15, fr: "Il est neuf heures et quart du matin." },
-  { h: 10, m: 30, fr: "Il est dix heures et demie du matin." },
-  { h: 11, m: 45, fr: "Il est midi moins le quart." },
-  { h: 12, m: 0, fr: "Il est midi." },
-  { h: 14, m: 0, fr: "Il est deux heures de l'après-midi." },
-  { h: 15, m: 30, fr: "Il est trois heures et demie de l'après-midi." },
-  { h: 17, m: 45, fr: "Il est six heures moins le quart du soir." },
-  { h: 19, m: 0, fr: "Il est sept heures du soir." },
-  { h: 20, m: 15, fr: "Il est huit heures et quart du soir." },
-  { h: 22, m: 30, fr: "Il est dix heures et demie du soir." },
-  { h: 0, m: 0, fr: "Il est minuit." },
-  { h: 1, m: 0, fr: "Il est une heure du matin." },
-];
+/** Hour words 0–23, feminine forms (heure): une, vingt et une. */
+const HOURS = [
+  "zéro", "une", "deux", "trois", "quatre", "cinq", "six", "sept", "huit",
+  "neuf", "dix", "onze", "douze", "treize", "quatorze", "quinze", "seize",
+  "dix-sept", "dix-huit", "dix-neuf", "vingt", "vingt et une", "vingt-deux",
+  "vingt-trois",
+] as const;
 
-const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)];
+/** Minute words — 5-minute steps keep A1 numbers simple; 0 is silent. */
+const MINUTES: Record<number, string> = {
+  5: "cinq", 10: "dix", 15: "quinze", 20: "vingt", 25: "vingt-cinq",
+  30: "trente", 35: "trente-cinq", 40: "quarante", 45: "quarante-cinq",
+  50: "cinquante", 55: "cinquante-cinq",
+};
+const MINUTE_KEYS = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55] as const;
+
+/** "vingt heures quinze" — the part after "Il est". */
+const frTime = (h: number, m: number) =>
+  `${HOURS[h]} heure${h === 0 || h === 1 ? "" : "s"}${m ? ` ${MINUTES[m]}` : ""}`;
+
 const clock = (h: number, m: number) => `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
 const ampm = (h: number, m: number) => `${(h % 12) || 12}:${String(m).padStart(2, "0")} ${h < 12 ? "am" : "pm"}`;
-/** "Il est huit heures du matin." → "huit heures du matin" (the dropdown gap). */
-const gap = (fr: string) => fr.slice("Il est ".length, -1);
+
+const randH = () => Math.floor(Math.random() * 24);
+const randM = () => MINUTE_KEYS[Math.floor(Math.random() * MINUTE_KEYS.length)];
 
 export const quandLesson: NativeLesson = {
   slug: "quand",
@@ -35,14 +43,11 @@ export const quandLesson: NativeLesson = {
         Quelle heure est-il ? — <em lang="fr">Il est…</em>
       </h2>
       <ul className="mt-2 space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
-        <li><b className="text-[color:var(--cahier-la)]">Il est deux heures.</b> — 2:00 (<i lang="fr">une heure</i> stays singular)</li>
-        <li><b className="text-[color:var(--cahier-la)]">et quart</b> :15 · <b className="text-[color:var(--cahier-la)]">et demie</b> :30 · <b className="text-[color:var(--cahier-la)]">moins le quart</b> :45</li>
-        <li><b className="text-[color:var(--cahier-la)]">midi</b> 12:00 · <b className="text-[color:var(--cahier-la)]">minuit</b> 00:00 — no <i lang="fr">heures</i></li>
-        <li>am/pm: <b lang="fr">du matin</b> · <b lang="fr">de l&rsquo;après-midi</b> · <b lang="fr">du soir</b></li>
+        <li><b className="text-[color:var(--cahier-la)]">Il est vingt heures quinze.</b> — 20:15</li>
+        <li><b className="text-[color:var(--cahier-la)]">Il est huit heures.</b> — 08:00</li>
+        <li><b className="text-[color:var(--cahier-la)]">Il est une heure cinq.</b> — 01:05 (<i lang="fr">une heure</i> stays singular)</li>
+        <li><b className="text-[color:var(--cahier-la)]">Il est zéro heure trente.</b> — 00:30</li>
       </ul>
-      <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
-        ⚠️ <b><i lang="fr">moins le quart</i> counts back from the NEXT hour</b>: 11:45 → <span lang="fr">Il est <b>midi</b> moins le quart.</span>
-      </p>
       <p className="mt-3 flex flex-wrap gap-1.5 text-[13px] font-bold text-[color:var(--cahier-ink)]">
         {["le matin", "l'après-midi", "le soir", "la nuit"].map((s) => (
           <span key={s} lang="fr" className="rounded-full border border-[color:var(--cahier-rule)] bg-white px-2.5 py-0.5">{s}</span>
@@ -53,28 +58,46 @@ export const quandLesson: NativeLesson = {
   dice: {
     instruction: "Say the time on the clock in French.",
     newQuestion() {
-      const t = pick(TIMES);
-      const others = TIMES.filter((x) => x !== t).sort(() => Math.random() - 0.5).slice(0, 3);
+      const h = randH();
+      const m = randM();
+      const correct = `Il est ${frTime(h, m)}.`;
+      // Three distinct wrong times, biased toward near-misses (hour ±1, or
+      // hour/minute digits swapped when that is a valid time).
+      const wrong = new Set<string>();
+      const add = (wh: number, wm: number) => {
+        const f = `Il est ${frTime(wh, wm)}.`;
+        if (f !== correct) wrong.add(f);
+      };
+      add((h + 1) % 24, m);
+      add((h + 23) % 24, m);
+      if (m < 24 && (MINUTE_KEYS as readonly number[]).includes(h)) add(m, h);
+      while (wrong.size < 3) add(randH(), randM());
+      const others = [...wrong].slice(0, 3);
       return {
         meta: "Quelle heure est-il ?",
-        big: clock(t.h, t.m),
-        en: ampm(t.h, t.m),
-        correct: t.fr,
-        easyOptions: [t.fr, ...others.map((o) => o.fr)],
-        med: { before: "Il est", choices: [gap(t.fr), ...others.map((o) => gap(o.fr))], correct: gap(t.fr), after: "." },
+        big: clock(h, m),
+        en: ampm(h, m),
+        correct,
+        easyOptions: [correct, ...others],
+        med: {
+          before: "Il est",
+          choices: [frTime(h, m), ...others.map((o) => o.slice("Il est ".length, -1))],
+          correct: frTime(h, m),
+          after: ".",
+        },
       };
     },
   },
   bonus: [
-    { en: "It is eight o'clock in the morning.", fr: "Il est huit heures du matin." },
-    { en: "It is quarter past nine in the morning.", fr: "Il est neuf heures et quart du matin." },
-    { en: "It is half past ten in the morning.", fr: "Il est dix heures et demie du matin." },
-    { en: "It is quarter to noon.", fr: "Il est midi moins le quart." },
-    { en: "It is noon.", fr: "Il est midi." },
-    { en: "It is two o'clock in the afternoon.", fr: "Il est deux heures de l'après-midi." },
-    { en: "It is half past three in the afternoon.", fr: "Il est trois heures et demie de l'après-midi." },
-    { en: "It is seven o'clock in the evening.", fr: "Il est sept heures du soir." },
-    { en: "It is quarter past eight in the evening.", fr: "Il est huit heures et quart du soir." },
-    { en: "It is midnight.", fr: "Il est minuit." },
+    { en: "It is 8:00 am.", fr: "Il est huit heures." },
+    { en: "It is 9:15 am.", fr: "Il est neuf heures quinze." },
+    { en: "It is 10:30 am.", fr: "Il est dix heures trente." },
+    { en: "It is 12:00.", fr: "Il est douze heures." },
+    { en: "It is 2:45 pm.", fr: "Il est quatorze heures quarante-cinq." },
+    { en: "It is 5:50 pm.", fr: "Il est dix-sept heures cinquante." },
+    { en: "It is 9:05 pm.", fr: "Il est vingt et une heures cinq." },
+    { en: "It is 11:35 pm.", fr: "Il est vingt-trois heures trente-cinq." },
+    { en: "It is 1:00 am.", fr: "Il est une heure." },
+    { en: "It is 0:20 (twenty past midnight).", fr: "Il est zéro heure vingt." },
   ],
 };

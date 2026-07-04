@@ -13,8 +13,10 @@
  */
 
 import { useEffect, useState } from "react";
-import { getPretest } from "@/content/pretests";
+import { getPretest, sioIdForPretest } from "@/content/pretests";
 import { speak } from "@/games/letris/speech";
+import { logEvent } from "@/lib/firebase/usage";
+import { recordPretestAnswer, stemForItem } from "@/lib/pretestRecord";
 import type { PretestItem } from "@/lib/pretests/schema";
 
 /** Speak the FULL sentence, never the lonely answer word. */
@@ -62,7 +64,24 @@ export default function PretestQuiz({ pretestId }: { pretestId: string }) {
   function pick(q: Q, choice: string) {
     if (picked[q.item.id] !== undefined) return;
     setPicked({ ...picked, [q.item.id]: choice });
-    if (choice === q.item.answer) speak(ttsTextForItem(q.item), "fr-FR");
+    const correct = choice === q.item.answer;
+    if (correct) speak(ttsTextForItem(q.item), "fr-FR");
+    // Gap report (audit R1): persist the verdict so it survives popup close.
+    recordPretestAnswer({
+      pretestId,
+      sioId: sioIdForPretest(pretestId) ?? "",
+      itemId: q.item.id,
+      correct,
+      picked: choice,
+      answer: q.item.answer,
+      stem: stemForItem(q.item),
+    });
+    void logEvent("pretest.answer", {
+      pretestId,
+      itemId: q.item.id,
+      correct,
+      picked: choice,
+    });
   }
 
   // Per Dan: the counter stays (learners track progress with it); no labels.

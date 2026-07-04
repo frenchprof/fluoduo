@@ -18,7 +18,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { speak } from "@/games/letris/speech";
 import { chiptune } from "@/games/audio/chiptune";
 import CreditsSplash from "@/games/CreditsSplash";
-import { recordItemResult, spendHeart } from "@/lib/progress";
+import { recordItemResult } from "@/lib/progress";
 
 export type LexEntry = { id: string; fr: string; en: string; syllables: string[] };
 
@@ -209,7 +209,6 @@ export default function Lexicalator({
       window.setTimeout(() => setRattle(null), 300);
       setCombo(0);
       recordItemResult(active.entry.id, false);
-      spendHeart();
       setLives((l) => {
         const nl = l - 1;
         if (nl <= 0) setOver(true);

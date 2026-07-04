@@ -17,12 +17,11 @@
  *   - Gems: a flat amount per newly-done SIO. Not yet split by
  *     pretest-attempt-floor vs practice-completion — see docs/handoff §4.2 for
  *     that nuance, still to be layered in once pretests themselves write back.
- *   - Streak: bumps once per calendar day the learner marks anything done.
- *   - Hearts: a running pool, decremented by Match It on a wrong match (see
- *     ConveyorMatch.tsx). NOT YET used to gate entry to anything, and there is
- *     no refill mechanic yet (deliberately deferred — a refill/spend design
- *     needs its own decision, don't invent one here). Hearts must never be
- *     spent by the Pretest — see the pretesting-effect rule in the handoff doc.
+ *   - Streak: bumps once per calendar day of ANY practice (recordItemResult)
+ *     or self-mark — showing up counts, being wrong never breaks it.
+ *   - Hearts: REMOVED (2026-07-04). The canonical Blueprint names hearts an
+ *     anti-pattern ("punishes errors" [EST]); errors are learning signals here,
+ *     never a cost. The streak took over as the show-up motivator.
  *   - itemSrs: per-item spacing state written by Practice-side surfaces with a
  *     binary correctness check (dice Practice, Match It, Flip It's Test
  *     Yourself, Complete It, Say It). Fixed ladder, NOT SM-2
@@ -36,7 +35,6 @@
 
 export type Progress = {
   doneSios: string[];
-  hearts: number;
   gems: number;
   streak: number;
   lastActiveDay: string | null; // "YYYY-MM-DD"
@@ -48,7 +46,6 @@ export type ItemSrs = {
   intervalDays: number;
 };
 
-export const MAX_HEARTS = 5;
 // Correctness-weighted XP: completing a SIO always earns the base; on top of
 // that a mastery bonus scales with how many of the SIO's practice items the
 // learner has actually gotten right (their itemSrs state). Someone who drilled
@@ -63,7 +60,7 @@ function todayStr(): string {
 }
 
 export function defaultProgress(): Progress {
-  return { doneSios: [], hearts: MAX_HEARTS, gems: 0, streak: 0, lastActiveDay: null, itemSrs: {} };
+  return { doneSios: [], gems: 0, streak: 0, lastActiveDay: null, itemSrs: {} };
 }
 
 export function loadProgress(): Progress {
@@ -77,12 +74,31 @@ export function loadProgress(): Progress {
   }
 }
 
+// The sync layer (lib/firebase/progressSync) registers here; progress.ts itself
+// stays firebase-free so the static graph carries zero Firestore.
+let onSave: ((p: Progress) => void) | null = null;
+export function setOnProgressSave(fn: ((p: Progress) => void) | null) {
+  onSave = fn;
+}
+
 function saveProgress(p: Progress): Progress {
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
   } catch {
     // localStorage unavailable — state still works for this session
   }
+  onSave?.(p);
+  return p;
+}
+
+/** Overwrite local state WITHOUT notifying the sync listener (used by the sync
+ *  layer itself after a pull-merge, to avoid an echo push loop). Broadcasts a
+ *  window event so mounted HUDs (SioHub) can refresh. */
+export function replaceProgress(p: Progress): Progress {
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
+    window.dispatchEvent(new CustomEvent("fluolingo:progress-updated"));
+  } catch {}
   return p;
 }
 
@@ -130,12 +146,6 @@ export function unmarkSioDone(id: string): Progress {
   return saveProgress({ ...p, doneSios: p.doneSios.filter((x) => x !== id) });
 }
 
-/** Called on a wrong match in a Practice-side game (e.g. Match It). Never call this from a Pretest. */
-export function spendHeart(): Progress {
-  const p = loadProgress();
-  return saveProgress({ ...p, hearts: Math.max(0, p.hearts - 1) });
-}
-
 // ladder: correct → 1d → 3d → 7d → 14d (cap); miss resets to 0 (due now)
 const SRS_LADDER_DAYS = [1, 3, 7, 14];
 const DAY_MS = 86_400_000;
@@ -160,7 +170,9 @@ export function stepItemSrs(prev: ItemSrs | undefined, correct: boolean, now: nu
 export function recordItemResult(itemId: string, correct: boolean): Progress {
   const p = loadProgress();
   const itemSrs = { ...p.itemSrs, [itemId]: stepItemSrs(p.itemSrs[itemId], correct, Date.now()) };
-  return saveProgress({ ...p, itemSrs });
+  // Practising ANYTHING keeps the streak alive — motivation comes from showing
+  // up, not from being right (hearts, which punished errors, are gone).
+  return saveProgress(bumpStreakToday({ ...p, itemSrs }));
 }
 
 /** True if the item was never practiced or its interval has elapsed — the Reviser's bias signal. */

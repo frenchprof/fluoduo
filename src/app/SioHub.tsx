@@ -36,7 +36,7 @@ import { useEffect, useState } from "react";
 import { SIOS, UNIT_META, unitNumbers, groupSiosForUnit, type Sio } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import { getPretestForSio } from "@/content/pretests";
-import { defaultProgress, loadProgress, isSioDone, MAX_HEARTS, type Progress } from "@/lib/progress";
+import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { dueForReview } from "@/lib/reviser";
 import Link from "next/link";
 import Unit0Panel from "./Unit0Panel";
@@ -83,9 +83,15 @@ export default function SioHub() {
       // storage unavailable — fall back to whatever `saved` held
     }
     setCollapsed(saved);
-    const p = loadProgress();
-    setProgress(p);
-    setDueCount(dueForReview(p, Date.now()).length);
+    const refresh = () => {
+      const p = loadProgress();
+      setProgress(p);
+      setDueCount(dueForReview(p, Date.now()).length);
+    };
+    refresh();
+    // cross-device sync just merged remote progress → re-read
+    window.addEventListener("fluolingo:progress-updated", refresh);
+    return () => window.removeEventListener("fluolingo:progress-updated", refresh);
   }, []);
 
   function toggle(key: string) {
@@ -131,10 +137,6 @@ export default function SioHub() {
         </span>
         <span className="fluo-mono flex items-center gap-1 text-sm font-bold text-[color:var(--fluo-ink)]">
           💎 {progress.gems}
-        </span>
-        <span className="fluo-mono flex items-center gap-1 text-sm font-bold text-[color:var(--fluo-ink)]">
-          {"❤️".repeat(progress.hearts)}
-          {"🤍".repeat(Math.max(0, MAX_HEARTS - progress.hearts))}
         </span>
       </div>
 
