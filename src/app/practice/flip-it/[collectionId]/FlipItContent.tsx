@@ -160,7 +160,7 @@ function TopBar({ crumb }: { crumb: string }) {
   return (
     <div className="border-b-2 border-[color:var(--cahier-ink)]/15 bg-[var(--cahier-paper-2)]/85 backdrop-blur">
       <div className="flex items-center gap-3 py-3 pl-12 pr-4 sm:pl-16">
-        <Link href="/" className="cahier-btn cahier-btn-sm">← Practice Zone</Link>
+        <Link href="/" className="cahier-btn cahier-btn-sm">← FluoLingo</Link>
         <span className="cahier-display truncate text-sm font-bold text-[color:var(--cahier-ink)]">
           🃏 Flip It · {crumb}
         </span>
@@ -1090,7 +1090,7 @@ function Overview({
         </table>
       </div>
       <p className="mt-2 text-[0.7rem] text-[color:var(--cahier-ink-soft)]">
-        {test ? "Write each covered answer and check it — your answer stays beside the correct one." : "Tap any cell to cover or reveal it · tap a column header to sort (▲/▼) · Columns covers content, never moves it."}
+        {test ? "Write each covered answer and check it — your answer stays beside the correct one." : "Tap any cell to cover or reveal it · tap a column header to sort (▲/▼)."}
       </p>
     </div>
   );

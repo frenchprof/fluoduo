@@ -55,7 +55,7 @@ export default function MarkDoneButton({ sioId }: { sioId: string }) {
           <span className="text-xs text-[color:var(--fluo-ink-soft)]">
             {done
               ? "Unlocked the next objective · 💎 earned"
-              : `Unlocks the next objective · earns 💎 (up to +${GEMS_MASTERY_BONUS} more for mastered practice)`}
+              : `Earns 💎 (up to +${GEMS_MASTERY_BONUS} more for mastered practice)`}
           </span>
         </div>
       </AuthGate>

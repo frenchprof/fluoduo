@@ -60,42 +60,42 @@
     },
     {
       "text": "À CÔTÉ",
-      "displayName": "à côté de",
+      "displayName": "à côté",
       "category": "avec_de",
       "meaning": "next to / beside",
       "emoji": "🤝"
     },
     {
       "text": "À GAUCHE",
-      "displayName": "à gauche de",
+      "displayName": "à gauche",
       "category": "avec_de",
       "meaning": "to the left of",
       "emoji": "⬅️"
     },
     {
       "text": "À DROITE",
-      "displayName": "à droite de",
+      "displayName": "à droite",
       "category": "avec_de",
       "meaning": "to the right of",
       "emoji": "➡️"
     },
     {
       "text": "PRÈS",
-      "displayName": "près de",
+      "displayName": "près",
       "category": "avec_de",
       "meaning": "near",
       "emoji": "📏"
     },
     {
       "text": "LOIN",
-      "displayName": "loin de",
+      "displayName": "loin",
       "category": "avec_de",
       "meaning": "far from",
       "emoji": "🛣️"
     },
     {
       "text": "EN FACE",
-      "displayName": "en face de",
+      "displayName": "en face",
       "category": "avec_de",
       "meaning": "opposite / facing",
       "emoji": "🪞"

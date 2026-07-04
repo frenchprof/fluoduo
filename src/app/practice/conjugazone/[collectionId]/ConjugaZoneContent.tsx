@@ -48,6 +48,7 @@ export default function ConjugaZoneContent({ collectionId }: { collectionId: str
   const [result, setResult] = useState<Grade | null>(null);
   const [score, setScore] = useState({ ok: 0, total: 0 });
   const inputRef = useRef<HTMLInputElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!deck) return;
@@ -56,6 +57,7 @@ export default function ConjugaZoneContent({ collectionId }: { collectionId: str
 
   useEffect(() => {
     if (result === null) inputRef.current?.focus();
+    else nextRef.current?.focus(); // keep the type→Enter→Enter rhythm — no mouse needed
   }, [i, result]);
 
   if (!deck) return <main className="p-6">No deck <code>{collectionId}</code>.</main>;
@@ -130,7 +132,7 @@ export default function ConjugaZoneContent({ collectionId }: { collectionId: str
                     {!isRight && <span lang="fr" className="text-[color:var(--fluo-ink)]">→ {predicate}</span>}
                     <button type="button" onClick={() => speak(item.fr, "fr-FR")} className="ml-auto text-base opacity-70 hover:opacity-100" title="Hear it">🔊</button>
                   </div>
-                  <button type="submit" className="fluo-btn mt-3 w-full">{i + 1 >= total ? "Finish" : "Next →"}</button>
+                  <button ref={nextRef} type="submit" className="fluo-btn mt-3 w-full">{i + 1 >= total ? "Finish" : "Next →"}</button>
                 </>
               )}
             </form>

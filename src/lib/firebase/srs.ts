@@ -4,7 +4,8 @@
  * so progress follows them across devices.
  */
 import { doc, getDocs, setDoc, collection as fsCollection } from "firebase/firestore";
-import { db, auth } from "./client";
+import { auth } from "./client";
+import { db } from "./db";
 
 export type SrsRating = "again" | "hard" | "good" | "easy";
 

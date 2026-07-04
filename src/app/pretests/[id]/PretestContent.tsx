@@ -324,7 +324,7 @@ function Recap({
         </h2>
         <p className="text-slate-600">
           {pct === 100
-            ? "Sans-faute. You’re ready for the speed drill."
+            ? "Sans-faute !"
             : pct >= 75
               ? "Solid grasp — drill the missed ones once more."
               : pct >= 50

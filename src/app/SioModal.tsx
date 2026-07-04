@@ -61,7 +61,7 @@ export function popupActivityTabs(
       ? [{ key: "grammarathon", label: "GramMarathon", emoji: "🏃", href: `/practice/grammarathon/${deck.id}` }]
       : []),
     ...(isLexReady(deck)
-      ? [{ key: "match", label: "Lexicalator", emoji: "⚙️", href: `/games/conveyor/${deck.id}` }]
+      ? [{ key: "match", label: "Lexicalator", emoji: "🧰", href: `/games/conveyor/${deck.id}` }]
       : []),
     ...(hasLetris
       ? [{ key: "rain", label: "Vocabularain", emoji: "🌧️", href: `/games/letris/${deck.id.replace("-letris", "")}` }]
@@ -78,15 +78,10 @@ function Flap({ tab, hue, className }: { tab: PopupTab; hue: string; className?:
     </>
   );
   if (!tab.href) {
-    // Active = the current view (e.g. Pre-Test while its questions show in the
-    // body); inactive+no-href = not built yet.
+    // No href = the current view (e.g. Pre-Test while its questions show in
+    // the body) — every other flap always links somewhere.
     return (
-      <span
-        data-active={tab.active || undefined}
-        className={`cahier-tab cursor-default ${tab.active ? "" : "opacity-50"} ${className ?? ""}`}
-        style={style}
-        title={tab.active ? undefined : "Coming soon"}
-      >
+      <span data-active className={`cahier-tab cursor-default ${className ?? ""}`} style={style}>
         {body}
       </span>
     );
@@ -111,6 +106,16 @@ export default function SioModal({
 }) {
   const hueOf = (i: number) => TAB_HUES[i % TAB_HUES.length];
   const panelRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  // Dialog keyboard basics: Escape closes; focus starts on the ✕ so keyboard
+  // and screen-reader users land inside the dialog.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKey);
+    closeRef.current?.focus();
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
 
   // The panel is user-resizable (drag the bottom-right corner). Widening it
   // lets a question's four options stay on one line; they only wrap when the
@@ -163,7 +168,7 @@ export default function SioModal({
               </span>
               <h2 className="fluo-readable mt-1 text-xl font-bold text-[color:var(--fluo-ink)]">{sio.topic}</h2>
             </div>
-            <button type="button" onClick={onClose} className="fluo-btn fluo-btn-sm" aria-label="Close">
+            <button ref={closeRef} type="button" onClick={onClose} className="fluo-btn fluo-btn-sm" aria-label="Close">
               ✕
             </button>
           </div>

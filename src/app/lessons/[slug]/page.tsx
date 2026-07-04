@@ -1,7 +1,5 @@
-import Link from "next/link";
 import AuthGate from "@/components/AuthGate";
 import { LESSONS } from "@/content/lessons";
-import { getNativeLesson } from "@/content/lessons/native";
 import NativeLessonView from "../NativeLessonView";
 
 export function generateStaticParams() {
@@ -14,30 +12,9 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
   if (!lesson) {
     return <main className="p-6 text-[color:var(--fluo-ink)]">No lesson <code>{slug}</code>.</main>;
   }
-
-  // Converted lessons render as native in-app content (CahierShell + Mémo +
-  // dice trainer); the rest keep the iframed drchan HTML until their turn.
-  if (getNativeLesson(slug)) {
-    return (
-      <AuthGate what="open the lesson">
-        <NativeLessonView slug={slug} title={lesson.title} unit={lesson.unit} />
-      </AuthGate>
-    );
-  }
-
   return (
     <AuthGate what="open the lesson">
-      <div className="flex h-screen flex-col">
-        <div className="flex items-center justify-between border-b-2 border-[color:var(--fluo-line)] bg-[#fce8d4]/90 px-4 py-2 text-sm font-bold">
-          <Link href="/" className="fluo-hl font-black">← FluoLingo</Link>
-          <span lang="fr" className="text-[color:var(--fluo-ink-soft)]">{lesson.title}</span>
-        </div>
-        <iframe
-          src={`/lessons/${lesson.file}`}
-          title={lesson.title}
-          className="w-full flex-1 border-0"
-        />
-      </div>
+      <NativeLessonView slug={slug} title={lesson.title} unit={lesson.unit} />
     </AuthGate>
   );
 }

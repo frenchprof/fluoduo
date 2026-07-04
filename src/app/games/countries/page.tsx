@@ -23,7 +23,7 @@ export default function CountriesUnitPage() {
       <div className="border-b border-slate-800 bg-slate-900/60">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 text-sm">
           <Link href="/" className="text-slate-400 hover:text-white">
-            ← Apps &amp; Games
+            ← FluoLingo
           </Link>
           <span className="text-slate-500">C&apos;est quel pays ?</span>
         </div>

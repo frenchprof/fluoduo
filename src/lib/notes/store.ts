@@ -14,7 +14,8 @@
  * consistent across all scripts).
  */
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { db, auth } from "@/lib/firebase/client";
+import { auth } from "@/lib/firebase/client";
+import { db } from "@/lib/firebase/db";
 
 export type Note = { text: string; updatedAt: number };
 export type DeckNotes = Record<string, Note>; // itemId -> Note

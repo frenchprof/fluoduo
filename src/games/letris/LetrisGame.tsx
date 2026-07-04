@@ -82,15 +82,15 @@ function nightMask(text: string): Set<number> {
 /* One colour per category (the base + every tile that belongs to it). Revealed
  * only when a tile lands — while falling, a tile is a neutral RAINDROP (the
  * Vocabularain story: words rain from the sky, you steer each drop into the
- * right puddle). Duolingo-bright hues, all legible under white text. */
+ * right puddle). Darkened so white tile text meets WCAG AA (>=4.5:1). */
 const PALETTE = [
-  "#ff4b4b", // red
-  "#1cb0f6", // sky blue
-  "#58cc02", // green
-  "#ce82ff", // purple
-  "#ff9600", // orange
-  "#2ec4b6", // teal
-  "#e0567f", // pink
+  "#c62828", // red
+  "#0d6aa8", // blue
+  "#2e7d0f", // green
+  "#7b3fb5", // purple
+  "#a85b00", // orange
+  "#0e7c72", // teal
+  "#b03a5f", // pink
 ];
 
 function shuffle<T>(arr: T[]): T[] {

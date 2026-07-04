@@ -69,6 +69,7 @@ export default function CompleteItContent({ collectionId }: { collectionId: stri
   const [result, setResult] = useState<Grade | null>(null);
   const [score, setScore] = useState({ ok: 0, total: 0 });
   const inputRef = useRef<HTMLInputElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
 
   const isNat = deck ? deck.items.some((it) => it.nat) : false;
 
@@ -87,6 +88,7 @@ export default function CompleteItContent({ collectionId }: { collectionId: stri
 
   useEffect(() => {
     if (result === null) inputRef.current?.focus();
+    else nextRef.current?.focus(); // keep the type→Enter→Enter rhythm — no mouse needed
   }, [i, result]);
 
   if (!deck) {
@@ -194,7 +196,7 @@ export default function CompleteItContent({ collectionId }: { collectionId: stri
                   {item.example && !natForm && (
                     <p lang="fr" className="mt-2 text-sm italic text-[color:var(--fluo-ink-soft)]">{item.example}</p>
                   )}
-                  <button type="submit" className="fluo-btn mt-3 w-full">{i + 1 >= total ? "Finish" : "Next →"}</button>
+                  <button ref={nextRef} type="submit" className="fluo-btn mt-3 w-full">{i + 1 >= total ? "Finish" : "Next →"}</button>
                 </>
               )}
             </form>

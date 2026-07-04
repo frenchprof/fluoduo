@@ -9,8 +9,9 @@
  */
 
 import { useRef, useState } from "react";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { db, auth } from "@/lib/firebase/client";
+// Firebase is imported DYNAMICALLY inside send(): this button sits in the root
+// layout, and a static import would ship the whole Firestore bundle (~184 KB gz)
+// on every page for a form almost nobody opens.
 
 const ISSUES = [
   "A page won't load or is blank",
@@ -76,6 +77,10 @@ export default function FeedbackButton() {
     if (!canSend || status === "sending") return;
     setStatus("sending");
     try {
+      const [{ addDoc, collection, serverTimestamp }, { db, auth }] = await Promise.all([
+        import("firebase/firestore"),
+        import("@/lib/firebase/db").then(async (m) => ({ db: m.db, auth: (await import("@/lib/firebase/client")).auth })),
+      ]);
       await addDoc(collection(db, "feedback"), {
         categories,
         details: details.trim().slice(0, 2000),

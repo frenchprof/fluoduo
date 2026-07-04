@@ -87,7 +87,7 @@ export const frequenceLesson: NativeLesson = {
     { en: "We sometimes cook.", fr: "Nous cuisinons parfois." },
     { en: "They (m.) regularly play football.", fr: "Ils jouent régulièrement au foot." },
     { en: "You (sg.) rarely dance.", fr: "Tu danses rarement." },
-    { en: "I don't often listen to music.", fr: "Je n'écoute pas souvent de la musique." },
+    { en: "I don't often listen to music.", fr: "Je n'écoute pas souvent de musique." },
     { en: "He never watches TV.", fr: "Il ne regarde jamais la télé." },
     { en: "We never work.", fr: "Nous ne travaillons jamais." },
     { en: "She doesn't often cook.", fr: "Elle ne cuisine pas souvent." },

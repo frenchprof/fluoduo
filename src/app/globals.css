@@ -678,3 +678,20 @@ body {
   border-top: 1.5px solid var(--cahier-ink);
   letter-spacing: 0.01em;
 }
+
+/* Motion sensitivity: kill decorative CSS animation/transitions for users who
+   ask for reduced motion. Gameplay tile-fall is JS-driven and stays (it IS the
+   game); the ambient rain, belt scroll and blinks are decoration. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Keyboard users get a visible focus ring on every control. */
+:focus-visible {
+  outline: 3px solid #2d5bff;
+  outline-offset: 2px;
+}

@@ -67,6 +67,7 @@ export default function GramMarathonContent({ collectionId }: { collectionId: st
   const [result, setResult] = useState<Grade | null>(null);
   const [score, setScore] = useState({ ok: 0, total: 0 });
   const inputRef = useRef<HTMLInputElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
 
   // Only the gapped items play — a line with no grammar word ("Oui, bonne
   // idée !") sits the game out.
@@ -77,6 +78,7 @@ export default function GramMarathonContent({ collectionId }: { collectionId: st
 
   useEffect(() => {
     if (result === null) inputRef.current?.focus();
+    else nextRef.current?.focus(); // keep the type→Enter→Enter rhythm — no mouse needed
   }, [i, result]);
 
   if (!deck) return <main className="p-6">No deck <code>{collectionId}</code>.</main>;
@@ -159,7 +161,7 @@ export default function GramMarathonContent({ collectionId }: { collectionId: st
                   {item.example && (
                     <p lang="fr" className="mt-2 text-sm italic text-[color:var(--fluo-ink-soft)]">{item.example}</p>
                   )}
-                  <button type="submit" className="fluo-btn mt-3 w-full">{i + 1 >= total ? "Finish" : "Next →"}</button>
+                  <button ref={nextRef} type="submit" className="fluo-btn mt-3 w-full">{i + 1 >= total ? "Finish" : "Next →"}</button>
                 </>
               )}
             </form>

@@ -5,7 +5,7 @@ import {
   collection, addDoc, query, orderBy, limit,
   onSnapshot, serverTimestamp,
 } from "firebase/firestore";
-import { db } from "@/lib/firebase/client";
+import { db } from "@/lib/firebase/db";
 import LetrisGame from "@/games/letris/LetrisGame";
 import type { LetrisSet } from "@/games/letris/LetrisGame";
 

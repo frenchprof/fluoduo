@@ -1,9 +1,6 @@
 /**
  * Registry of lessons converted to NATIVE in-app content (CahierShell + Mémo +
- * DiceTrainer) — Dan, 2026-07-03. A slug present here renders natively at
- * /lessons/[slug]; absent slugs fall back to the iframed drchan HTML until
- * their conversion lands. Full reskin pass 2026-07-04: all 20 grammar lessons
- * are native; only the three cross-unit Révision compilations still iframe.
+ * DiceTrainer) — Dan, 2026-07-03. Every lesson (all 21 grammar lessons + the three Révision mixes) is native.
  */
 import type { NativeLesson } from "./types";
 import { aimerLesson } from "./aimer";

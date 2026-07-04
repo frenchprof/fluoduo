@@ -7,7 +7,8 @@
  * Fire-and-forget — never block UI or throw into the caller.
  */
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { auth, db } from "./client";
+import { auth } from "./client";
+import { db } from "./db";
 
 export type EventType =
   | "auth.signin"

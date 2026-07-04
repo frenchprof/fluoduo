@@ -1,41 +1,37 @@
 /**
- * Grammar lessons ported from the frenchwithdrchan worker (Dan, 2026-07-03).
- * The originals are password-gated (a matric-number allowlist) on that site, so
- * students can't reach them; the recovered, gate-/tracker-stripped HTML lives in
- * /public/lessons and is served inside FluoLingo behind the app's own sign-in
- * (see /lessons/[slug] and the /lessons gallery). Each is a self-contained
- * lesson; most feature the 🎲 "dice" sentence-generator exercise. Linked from
- * the matching SIO where one exists (LESSON_BY_SIO — a best-guess mapping, easy
- * to adjust), and all reachable from the gallery.
+ * Grammar lessons, all NATIVE in-app content (converted 2026-07-04 from the
+ * frenchwithdrchan imports — see content/lessons/native/). Each is Mémo +
+ * 🎲 dice trainer + EN→FR bonus; linked from the matching SIO where one
+ * exists (LESSONS_BY_SIO) and all reachable from the /lessons gallery.
  */
 
-export type Lesson = { slug: string; file: string; title: string; unit: number };
+export type Lesson = { slug: string; title: string; unit: number };
 
 export const LESSONS: Record<string, Lesson> = {
-  "se-presenter":      { slug: "se-presenter",      file: "01-se-presenter.html",      title: "Se présenter",                 unit: 1 },
-  "negation":          { slug: "negation",          file: "02-negation.html",          title: "La négation",                  unit: 1 },
-  "conjugaison-u1":    { slug: "conjugaison-u1",    file: "03-conjugaison-u1.html",    title: "Conjugaison (Unité 1)",        unit: 1 },
-  "questions-oui-non": { slug: "questions-oui-non", file: "04-questions-oui-non.html", title: "Questions : oui ou non",       unit: 1 },
-  "mots-interrogatifs":{ slug: "mots-interrogatifs",file: "05-mots-interrogatifs.html",title: "Les mots interrogatifs",       unit: 1 },
-  "articles-pays":     { slug: "articles-pays",     file: "06-articles-pays.html",     title: "Les articles des pays",        unit: 1 },
-  "revision-u1":       { slug: "revision-u1",       file: "07-revision-u1.html",       title: "Révision — Unité 1",           unit: 1 },
-  "aimer":             { slug: "aimer",             file: "08-aimer-le-la-les.html",   title: "Aimer + le / la / les",        unit: 2 },
-  "faire":             { slug: "faire",             file: "09-faire-du-de-la.html",    title: "Faire + du / de la",           unit: 2 },
-  "aimer-infinitif":   { slug: "aimer-infinitif",   file: "10-aimer-infinitif.html",   title: "Aimer + infinitif",            unit: 2 },
-  "aller":             { slug: "aller",             file: "11-aller-a.html",           title: "Aller à + lieu",               unit: 2 },
-  "quand":             { slug: "quand",             file: "12-quand.html",             title: "Quand ? Quel moment ?",        unit: 2 },
-  "possessifs":        { slug: "possessifs",        file: "13-possessifs.html",        title: "Les adjectifs possessifs",     unit: 2 },
-  "conjugaison-er":    { slug: "conjugaison-er",    file: "14-conjugaison-er.html",    title: "Conjugaison : -er, faire, aller", unit: 2 },
-  "modaux":            { slug: "modaux",            file: "15-modaux.html",            title: "Modaux : vouloir, pouvoir",    unit: 2 },
-  "rendezvous":        { slug: "rendezvous",        file: "16-rendezvous-revision.html",title: "Proposer, accepter, refuser", unit: 2 },
-  "prepositions":      { slug: "prepositions",      file: "17-prepositions.html",      title: "Prépositions : de & à",        unit: 3 },
-  "revision-u3u4":     { slug: "revision-u3u4",     file: "18-revision-u3u4.html",     title: "Révision — Unités 3 & 4",      unit: 3 },
-  "partitifs":         { slug: "partitifs",         file: "19-partitifs.html",         title: "Les articles partitifs",       unit: 4 },
-  "manger-boire":      { slug: "manger-boire",      file: "20-manger-boire.html",      title: "Manger & boire",               unit: 4 },
-  "futur-proche":      { slug: "futur-proche",      file: "21-futur-proche.html",      title: "Le futur proche",              unit: 4 },
-  "frequence":         { slug: "frequence",         file: "22-frequence.html",         title: "Les adverbes de fréquence",    unit: 4 },
-  "demonstratifs":     { slug: "demonstratifs",     file: "23-demonstratifs.html",     title: "Les adjectifs démonstratifs",  unit: 4 },
-  "revision-u4":       { slug: "revision-u4",       file: "24-revision-u4.html",       title: "Révision — Unité 4",           unit: 4 },
+  "se-presenter":      { slug: "se-presenter",      title: "Se présenter",                 unit: 1 },
+  "negation":          { slug: "negation",          title: "La négation",                  unit: 1 },
+  "conjugaison-u1":    { slug: "conjugaison-u1",    title: "Conjugaison (Unité 1)",        unit: 1 },
+  "questions-oui-non": { slug: "questions-oui-non", title: "Questions : oui ou non",       unit: 1 },
+  "mots-interrogatifs":{ slug: "mots-interrogatifs",title: "Les mots interrogatifs",       unit: 1 },
+  "articles-pays":     { slug: "articles-pays",     title: "Les articles des pays",        unit: 1 },
+  "revision-u1":       { slug: "revision-u1",       title: "Révision — Unité 1",           unit: 1 },
+  "aimer":             { slug: "aimer",             title: "Aimer + le / la / les",        unit: 2 },
+  "faire":             { slug: "faire",             title: "Faire + du / de la",           unit: 2 },
+  "aimer-infinitif":   { slug: "aimer-infinitif",   title: "Aimer + infinitif",            unit: 2 },
+  "aller":             { slug: "aller",             title: "Aller à + lieu",               unit: 2 },
+  "quand":             { slug: "quand",             title: "Quand ? Quel moment ?",        unit: 2 },
+  "possessifs":        { slug: "possessifs",        title: "Les adjectifs possessifs",     unit: 2 },
+  "conjugaison-er":    { slug: "conjugaison-er",    title: "Conjugaison : -er, faire, aller", unit: 2 },
+  "modaux":            { slug: "modaux",            title: "Modaux : vouloir, pouvoir",    unit: 2 },
+  "rendezvous":        { slug: "rendezvous",        title: "Proposer, accepter, refuser", unit: 2 },
+  "prepositions":      { slug: "prepositions",      title: "Prépositions : de & à",        unit: 3 },
+  "revision-u3u4":     { slug: "revision-u3u4",     title: "Révision — Unités 3 & 4",      unit: 3 },
+  "partitifs":         { slug: "partitifs",         title: "Les articles partitifs",       unit: 4 },
+  "manger-boire":      { slug: "manger-boire",      title: "Manger & boire",               unit: 4 },
+  "futur-proche":      { slug: "futur-proche",      title: "Le futur proche",              unit: 4 },
+  "frequence":         { slug: "frequence",         title: "Les adverbes de fréquence",    unit: 4 },
+  "demonstratifs":     { slug: "demonstratifs",     title: "Les adjectifs démonstratifs",  unit: 4 },
+  "revision-u4":       { slug: "revision-u4",       title: "Révision — Unité 4",           unit: 4 },
 };
 
 /**

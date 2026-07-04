@@ -19,7 +19,8 @@ import {
   where,
   serverTimestamp,
 } from "firebase/firestore";
-import { db, auth } from "./client";
+import { auth } from "./client";
+import { db } from "./db";
 import type { Collection } from "@/lib/collections/schema";
 
 const COL = "collections";
