@@ -32,53 +32,18 @@
   ],
   "tiles": [
     {
-      "text": "FRANCE",
-      "displayName": "France",
-      "category": "la",
-      "meaning": "France",
-      "emoji": "🇫🇷"
+      "text": "CHYPRE",
+      "displayName": "Chypre",
+      "category": "no_article",
+      "meaning": "Cyprus",
+      "emoji": "🇨🇾"
     },
     {
-      "text": "PORTUGAL",
-      "displayName": "Portugal",
-      "category": "le",
-      "meaning": "Portugal",
-      "emoji": "🇵🇹"
-    },
-    {
-      "text": "CHINE",
-      "displayName": "Chine",
-      "category": "la",
-      "meaning": "China",
-      "emoji": "🇨🇳"
-    },
-    {
-      "text": "INDONÉSIE",
-      "displayName": "Indonésie",
-      "category": "l_apos",
-      "meaning": "Indonesia",
-      "emoji": "🇮🇩"
-    },
-    {
-      "text": "CORÉE",
-      "displayName": "Corée",
-      "category": "la",
-      "meaning": "Korea",
-      "emoji": "🇰🇷"
-    },
-    {
-      "text": "ÉTATS-UNIS",
-      "displayName": "États-Unis",
-      "category": "les",
-      "meaning": "United States",
-      "emoji": "🇺🇸"
-    },
-    {
-      "text": "MEXIQUE",
-      "displayName": "Mexique",
-      "category": "le",
-      "meaning": "Mexico",
-      "emoji": "🇲🇽"
+      "text": "MALTE",
+      "displayName": "Malte",
+      "category": "no_article",
+      "meaning": "Malta",
+      "emoji": "🇲🇹"
     },
     {
       "text": "CUBA",
@@ -88,60 +53,39 @@
       "emoji": "🇨🇺"
     },
     {
-      "text": "PHILIPPINES",
-      "displayName": "Philippines",
-      "category": "les",
-      "meaning": "Philippines",
-      "emoji": "🇵🇭"
+      "text": "SINGAPOUR",
+      "displayName": "Singapour",
+      "category": "no_article",
+      "meaning": "Singapore",
+      "emoji": "🇸🇬"
     },
     {
-      "text": "ARGENTINE",
-      "displayName": "Argentine",
-      "category": "l_apos",
-      "meaning": "Argentina",
-      "emoji": "🇦🇷"
+      "text": "MADAGASCAR",
+      "displayName": "Madagascar",
+      "category": "no_article",
+      "meaning": "Madagascar",
+      "emoji": "🇲🇬"
     },
     {
-      "text": "RUSSIE",
-      "displayName": "Russie",
-      "category": "la",
-      "meaning": "Russia",
-      "emoji": "🇷🇺"
+      "text": "SURINAME",
+      "displayName": "Suriname",
+      "category": "le",
+      "meaning": "Suriname",
+      "emoji": "🇸🇷"
     },
     {
-      "text": "SUISSE",
-      "displayName": "Suisse",
-      "category": "la",
-      "meaning": "Switzerland",
-      "emoji": "🇨🇭"
+      "text": "MEXIQUE",
+      "displayName": "Mexique",
+      "category": "le",
+      "meaning": "Mexico",
+      "emoji": "🇲🇽"
     },
     {
-      "text": "BELGIQUE",
-      "displayName": "Belgique",
-      "category": "la",
-      "meaning": "Belgium",
-      "emoji": "🇧🇪"
-    },
-    {
-      "text": "GRÈCE",
-      "displayName": "Grèce",
-      "category": "la",
-      "meaning": "Greece",
-      "emoji": "🇬🇷"
-    },
-    {
-      "text": "TURQUIE",
-      "displayName": "Turquie",
-      "category": "la",
-      "meaning": "Turkey",
-      "emoji": "🇹🇷"
-    },
-    {
-      "text": "ALLEMAGNE",
-      "displayName": "Allemagne",
-      "category": "l_apos",
-      "meaning": "Germany",
-      "emoji": "🇩🇪"
+      "text": "MOZAMBIQUE",
+      "displayName": "Mozambique",
+      "category": "le",
+      "meaning": "Mozambique",
+      "emoji": "🇲🇿"
     },
     {
       "text": "CAMBODGE",
@@ -151,25 +95,81 @@
       "emoji": "🇰🇭"
     },
     {
-      "text": "SINGAPOUR",
-      "displayName": "Singapour",
-      "category": "no_article",
-      "meaning": "Singapore",
-      "emoji": "🇸🇬"
+      "text": "BELIZE",
+      "displayName": "Belize",
+      "category": "le",
+      "meaning": "Belize",
+      "emoji": "🇧🇿"
     },
     {
-      "text": "MALAISIE",
-      "displayName": "Malaisie",
-      "category": "la",
-      "meaning": "Malaysia",
-      "emoji": "🇲🇾"
+      "text": "ZIMBABWE",
+      "displayName": "Zimbabwe",
+      "category": "le",
+      "meaning": "Zimbabwe",
+      "emoji": "🇿🇼"
     },
     {
-      "text": "THAÏLANDE",
-      "displayName": "Thaïlande",
+      "text": "FRANCE",
+      "displayName": "France",
       "category": "la",
-      "meaning": "Thailand",
-      "emoji": "🇹🇭"
+      "meaning": "France",
+      "emoji": "🇫🇷"
+    },
+    {
+      "text": "SUISSE",
+      "displayName": "Suisse",
+      "category": "la",
+      "meaning": "Switzerland",
+      "emoji": "🇨🇭"
+    },
+    {
+      "text": "CHINE",
+      "displayName": "Chine",
+      "category": "la",
+      "meaning": "China",
+      "emoji": "🇨🇳"
+    },
+    {
+      "text": "CORÉE",
+      "displayName": "Corée",
+      "category": "la",
+      "meaning": "Korea",
+      "emoji": "🇰🇷"
+    },
+    {
+      "text": "RUSSIE",
+      "displayName": "Russie",
+      "category": "la",
+      "meaning": "Russia",
+      "emoji": "🇷🇺"
+    },
+    {
+      "text": "GRÈCE",
+      "displayName": "Grèce",
+      "category": "la",
+      "meaning": "Greece",
+      "emoji": "🇬🇷"
+    },
+    {
+      "text": "IRAK",
+      "displayName": "Irak",
+      "category": "l_apos",
+      "meaning": "Iraq",
+      "emoji": "🇮🇶"
+    },
+    {
+      "text": "ÉQUATEUR",
+      "displayName": "Équateur",
+      "category": "l_apos",
+      "meaning": "Ecuador",
+      "emoji": "🇪🇨"
+    },
+    {
+      "text": "ALLEMAGNE",
+      "displayName": "Allemagne",
+      "category": "l_apos",
+      "meaning": "Germany",
+      "emoji": "🇩🇪"
     },
     {
       "text": "ANGLETERRE",
@@ -179,32 +179,46 @@
       "emoji": "🏴󠁧󠁢󠁥󠁮󠁧󠁿"
     },
     {
-      "text": "GRANDE-BRETAGNE",
-      "displayName": "Grande-Bretagne",
-      "category": "la",
-      "meaning": "Great Britain",
-      "emoji": "🇬🇧"
-    },
-    {
-      "text": "TUNISIE",
-      "displayName": "Tunisie",
-      "category": "la",
-      "meaning": "Tunisia",
-      "emoji": "🇹🇳"
-    },
-    {
-      "text": "MAROC",
-      "displayName": "Maroc",
-      "category": "le",
-      "meaning": "Morocco",
-      "emoji": "🇲🇦"
-    },
-    {
-      "text": "ALGÉRIE",
-      "displayName": "Algérie",
+      "text": "ÉCOSSE",
+      "displayName": "Écosse",
       "category": "l_apos",
-      "meaning": "Algeria",
-      "emoji": "🇩🇿"
+      "meaning": "Scotland",
+      "emoji": "🏴󠁧󠁢󠁳󠁣󠁴󠁿"
+    },
+    {
+      "text": "ÉTATS-UNIS",
+      "displayName": "États-Unis",
+      "category": "les",
+      "meaning": "United States",
+      "emoji": "🇺🇸"
+    },
+    {
+      "text": "PHILIPPINES",
+      "displayName": "Philippines",
+      "category": "les",
+      "meaning": "Philippines",
+      "emoji": "🇵🇭"
+    },
+    {
+      "text": "ÉMIRATS ARABES UNIS",
+      "displayName": "Émirats arabes unis",
+      "category": "les",
+      "meaning": "United Arab Emirates",
+      "emoji": "🇦🇪"
+    },
+    {
+      "text": "SEYCHELLES",
+      "displayName": "Seychelles",
+      "category": "les",
+      "meaning": "Seychelles",
+      "emoji": "🇸🇨"
+    },
+    {
+      "text": "PAYS-BAS",
+      "displayName": "Pays-Bas",
+      "category": "les",
+      "meaning": "Netherlands",
+      "emoji": "🇳🇱"
     }
   ]
 }

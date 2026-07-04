@@ -1,7 +1,7 @@
 {
   "id": "commerces",
   "title": "Les commerces",
-  "subtitle": "un ou une ?",
+  "subtitle": "un, une ou des ?",
   "categories": [
     {
       "key": "un",
@@ -12,51 +12,14 @@
       "key": "une",
       "label": "Une ___",
       "prefix": "une "
+    },
+    {
+      "key": "des",
+      "label": "Des ___",
+      "prefix": "des "
     }
   ],
   "tiles": [
-    {
-      "text": "BOULANGERIE",
-      "displayName": "boulangerie",
-      "category": "une",
-      "meaning": "bakery",
-      "emoji": "🥖"
-    },
-    {
-      "text": "PÂTISSERIE",
-      "displayName": "pâtisserie",
-      "category": "une",
-      "meaning": "pastry shop",
-      "emoji": "🍰"
-    },
-    {
-      "text": "BOUCHERIE",
-      "displayName": "boucherie",
-      "category": "une",
-      "meaning": "butcher",
-      "emoji": "🥩"
-    },
-    {
-      "text": "POISSONNERIE",
-      "displayName": "poissonnerie",
-      "category": "une",
-      "meaning": "fishmonger",
-      "emoji": "🐟"
-    },
-    {
-      "text": "ÉPICERIE",
-      "displayName": "épicerie",
-      "category": "une",
-      "meaning": "grocery",
-      "emoji": "🛒"
-    },
-    {
-      "text": "FROMAGERIE",
-      "displayName": "fromagerie",
-      "category": "une",
-      "meaning": "cheese shop",
-      "emoji": "🧀"
-    },
     {
       "text": "MARCHÉ",
       "displayName": "marché",
@@ -79,25 +42,109 @@
       "emoji": "☕"
     },
     {
-      "text": "RESTAURANT",
-      "displayName": "restaurant",
+      "text": "GARAGE",
+      "displayName": "garage",
       "category": "un",
-      "meaning": "restaurant",
-      "emoji": "🍽️"
+      "meaning": "garage",
+      "emoji": "🚗"
     },
     {
-      "text": "MAGASIN",
-      "displayName": "magasin",
+      "text": "VILLAGE",
+      "displayName": "village",
       "category": "un",
-      "meaning": "shop",
+      "meaning": "village",
+      "emoji": "🏡"
+    },
+    {
+      "text": "STADE",
+      "displayName": "stade",
+      "category": "un",
+      "meaning": "stadium",
+      "emoji": "🏟️"
+    },
+    {
+      "text": "BIBLIOTHÈQUE",
+      "displayName": "bibliothèque",
+      "category": "une",
+      "meaning": "library",
+      "emoji": "📚"
+    },
+    {
+      "text": "GARE",
+      "displayName": "gare",
+      "category": "une",
+      "meaning": "train station",
+      "emoji": "🚆"
+    },
+    {
+      "text": "PÂTISSERIE",
+      "displayName": "pâtisserie",
+      "category": "une",
+      "meaning": "pastry shop",
+      "emoji": "🍰"
+    },
+    {
+      "text": "ÉCOLE",
+      "displayName": "école",
+      "category": "une",
+      "meaning": "school",
+      "emoji": "🏫"
+    },
+    {
+      "text": "LIBRAIRIE",
+      "displayName": "librairie",
+      "category": "une",
+      "meaning": "bookshop",
+      "emoji": "📖"
+    },
+    {
+      "text": "BOUTIQUE",
+      "displayName": "boutique",
+      "category": "une",
+      "meaning": "boutique",
+      "emoji": "🛍️"
+    },
+    {
+      "text": "MAGASINS",
+      "displayName": "magasins",
+      "category": "des",
+      "meaning": "shops",
       "emoji": "🏪"
     },
     {
-      "text": "SALON DE THÉ",
-      "displayName": "salon de thé",
-      "category": "un",
-      "meaning": "tea room",
-      "emoji": "🍵"
+      "text": "STATIONS DE MÉTRO",
+      "displayName": "stations de métro",
+      "category": "des",
+      "meaning": "metro stations",
+      "emoji": "🚇"
+    },
+    {
+      "text": "RESTAURANTS",
+      "displayName": "restaurants",
+      "category": "des",
+      "meaning": "restaurants",
+      "emoji": "🍽️"
+    },
+    {
+      "text": "RUES",
+      "displayName": "rues",
+      "category": "des",
+      "meaning": "streets",
+      "emoji": "🛣️"
+    },
+    {
+      "text": "HÔTELS",
+      "displayName": "hôtels",
+      "category": "des",
+      "meaning": "hotels",
+      "emoji": "🏨"
+    },
+    {
+      "text": "TOILETTES",
+      "displayName": "toilettes",
+      "category": "des",
+      "meaning": "toilets",
+      "emoji": "🚻"
     }
   ]
 }

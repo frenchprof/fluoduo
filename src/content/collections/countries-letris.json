@@ -20,90 +20,89 @@
   "seq": 106,
   "items": [
     {
-      "id": "countries-letris-01-france",
-      "fr": "France",
-      "en": "France",
-      "emoji": "🇫🇷",
+      "id": "countries-letris-01-chypre",
+      "fr": "Chypre",
+      "en": "Cyprus",
+      "emoji": "🇨🇾",
       "tags": [
-        "col:la",
+        "col:no_article",
         "region:europe"
       ],
       "syllables": [
-        "France"
+        "Chypre"
       ]
     },
     {
-      "id": "countries-letris-02-portugal",
-      "fr": "Portugal",
-      "en": "Portugal",
-      "emoji": "🇵🇹",
+      "id": "countries-letris-02-malte",
+      "fr": "Malte",
+      "en": "Malta",
+      "emoji": "🇲🇹",
       "tags": [
-        "col:le",
+        "col:no_article",
         "region:europe"
       ],
       "syllables": [
-        "Por",
-        "tu",
-        "gal"
+        "Malte"
       ]
     },
     {
-      "id": "countries-letris-03-chine",
-      "fr": "Chine",
-      "en": "China",
-      "emoji": "🇨🇳",
+      "id": "countries-letris-03-cuba",
+      "fr": "Cuba",
+      "en": "Cuba",
+      "emoji": "🇨🇺",
       "tags": [
-        "col:la",
-        "region:asia"
-      ],
-      "syllables": [
-        "Chine"
-      ]
-    },
-    {
-      "id": "countries-letris-04-indonesie",
-      "fr": "Indonésie",
-      "en": "Indonesia",
-      "emoji": "🇮🇩",
-      "tags": [
-        "col:l_apos",
-        "region:asia"
-      ],
-      "syllables": [
-        "In",
-        "do",
-        "né",
-        "sie"
-      ]
-    },
-    {
-      "id": "countries-letris-05-coree",
-      "fr": "Corée",
-      "en": "Korea",
-      "emoji": "🇰🇷",
-      "tags": [
-        "col:la",
-        "region:asia"
-      ],
-      "syllables": [
-        "Co",
-        "rée"
-      ]
-    },
-    {
-      "id": "countries-letris-06-etats-unis",
-      "fr": "États-Unis",
-      "en": "United States",
-      "emoji": "🇺🇸",
-      "tags": [
-        "col:les",
+        "col:no_article",
         "region:americas"
       ],
       "syllables": [
-        "É",
-        "tats",
-        "-U",
-        "nis"
+        "Cu",
+        "ba"
+      ]
+    },
+    {
+      "id": "countries-letris-04-singapour",
+      "fr": "Singapour",
+      "en": "Singapore",
+      "emoji": "🇸🇬",
+      "tags": [
+        "col:no_article",
+        "region:asia"
+      ],
+      "syllables": [
+        "Sin",
+        "ga",
+        "pour"
+      ]
+    },
+    {
+      "id": "countries-letris-05-madagascar",
+      "fr": "Madagascar",
+      "en": "Madagascar",
+      "emoji": "🇲🇬",
+      "tags": [
+        "col:no_article",
+        "region:africa"
+      ],
+      "syllables": [
+        "Ma",
+        "da",
+        "gas",
+        "car"
+      ]
+    },
+    {
+      "id": "countries-letris-06-suriname",
+      "fr": "Suriname",
+      "en": "Suriname",
+      "emoji": "🇸🇷",
+      "tags": [
+        "col:le",
+        "region:americas"
+      ],
+      "syllables": [
+        "Su",
+        "ri",
+        "name"
       ]
     },
     {
@@ -121,135 +120,22 @@
       ]
     },
     {
-      "id": "countries-letris-08-cuba",
-      "fr": "Cuba",
-      "en": "Cuba",
-      "emoji": "🇨🇺",
+      "id": "countries-letris-08-mozambique",
+      "fr": "Mozambique",
+      "en": "Mozambique",
+      "emoji": "🇲🇿",
       "tags": [
-        "col:no_article",
-        "region:americas"
+        "col:le",
+        "region:africa"
       ],
       "syllables": [
-        "Cu",
-        "ba"
+        "Mo",
+        "zam",
+        "bique"
       ]
     },
     {
-      "id": "countries-letris-09-philippines",
-      "fr": "Philippines",
-      "en": "Philippines",
-      "emoji": "🇵🇭",
-      "tags": [
-        "col:les",
-        "region:asia"
-      ],
-      "syllables": [
-        "Phi",
-        "lip",
-        "pines"
-      ]
-    },
-    {
-      "id": "countries-letris-10-argentine",
-      "fr": "Argentine",
-      "en": "Argentina",
-      "emoji": "🇦🇷",
-      "tags": [
-        "col:l_apos",
-        "region:americas"
-      ],
-      "syllables": [
-        "Ar",
-        "gen",
-        "tine"
-      ]
-    },
-    {
-      "id": "countries-letris-11-russie",
-      "fr": "Russie",
-      "en": "Russia",
-      "emoji": "🇷🇺",
-      "tags": [
-        "col:la",
-        "region:europe"
-      ],
-      "syllables": [
-        "Rus",
-        "sie"
-      ]
-    },
-    {
-      "id": "countries-letris-12-suisse",
-      "fr": "Suisse",
-      "en": "Switzerland",
-      "emoji": "🇨🇭",
-      "tags": [
-        "col:la",
-        "region:europe"
-      ],
-      "syllables": [
-        "Suisse"
-      ]
-    },
-    {
-      "id": "countries-letris-13-belgique",
-      "fr": "Belgique",
-      "en": "Belgium",
-      "emoji": "🇧🇪",
-      "tags": [
-        "col:la",
-        "region:europe"
-      ],
-      "syllables": [
-        "Bel",
-        "gique"
-      ]
-    },
-    {
-      "id": "countries-letris-14-grece",
-      "fr": "Grèce",
-      "en": "Greece",
-      "emoji": "🇬🇷",
-      "tags": [
-        "col:la",
-        "region:europe"
-      ],
-      "syllables": [
-        "Grèce"
-      ]
-    },
-    {
-      "id": "countries-letris-15-turquie",
-      "fr": "Turquie",
-      "en": "Turkey",
-      "emoji": "🇹🇷",
-      "tags": [
-        "col:la",
-        "region:asia"
-      ],
-      "syllables": [
-        "Tur",
-        "quie"
-      ]
-    },
-    {
-      "id": "countries-letris-16-allemagne",
-      "fr": "Allemagne",
-      "en": "Germany",
-      "emoji": "🇩🇪",
-      "tags": [
-        "col:l_apos",
-        "region:europe"
-      ],
-      "syllables": [
-        "Al",
-        "le",
-        "ma",
-        "gne"
-      ]
-    },
-    {
-      "id": "countries-letris-17-cambodge",
+      "id": "countries-letris-09-cambodge",
       "fr": "Cambodge",
       "en": "Cambodia",
       "emoji": "🇰🇭",
@@ -263,48 +149,157 @@
       ]
     },
     {
-      "id": "countries-letris-18-singapour",
-      "fr": "Singapour",
-      "en": "Singapore",
-      "emoji": "🇸🇬",
+      "id": "countries-letris-10-belize",
+      "fr": "Belize",
+      "en": "Belize",
+      "emoji": "🇧🇿",
       "tags": [
-        "col:no_article",
-        "region:asia"
+        "col:le",
+        "region:americas"
       ],
       "syllables": [
-        "Sin",
-        "ga",
-        "pour"
+        "Be",
+        "lize"
       ]
     },
     {
-      "id": "countries-letris-19-malaisie",
-      "fr": "Malaisie",
-      "en": "Malaysia",
-      "emoji": "🇲🇾",
+      "id": "countries-letris-11-zimbabwe",
+      "fr": "Zimbabwe",
+      "en": "Zimbabwe",
+      "emoji": "🇿🇼",
+      "tags": [
+        "col:le",
+        "region:africa"
+      ],
+      "syllables": [
+        "Zim",
+        "bab",
+        "we"
+      ]
+    },
+    {
+      "id": "countries-letris-12-france",
+      "fr": "France",
+      "en": "France",
+      "emoji": "🇫🇷",
+      "tags": [
+        "col:la",
+        "region:europe"
+      ],
+      "syllables": [
+        "France"
+      ]
+    },
+    {
+      "id": "countries-letris-13-suisse",
+      "fr": "Suisse",
+      "en": "Switzerland",
+      "emoji": "🇨🇭",
+      "tags": [
+        "col:la",
+        "region:europe"
+      ],
+      "syllables": [
+        "Suisse"
+      ]
+    },
+    {
+      "id": "countries-letris-14-chine",
+      "fr": "Chine",
+      "en": "China",
+      "emoji": "🇨🇳",
       "tags": [
         "col:la",
         "region:asia"
       ],
       "syllables": [
-        "Ma",
-        "lai",
+        "Chine"
+      ]
+    },
+    {
+      "id": "countries-letris-15-coree",
+      "fr": "Corée",
+      "en": "Korea",
+      "emoji": "🇰🇷",
+      "tags": [
+        "col:la",
+        "region:asia"
+      ],
+      "syllables": [
+        "Co",
+        "rée"
+      ]
+    },
+    {
+      "id": "countries-letris-16-russie",
+      "fr": "Russie",
+      "en": "Russia",
+      "emoji": "🇷🇺",
+      "tags": [
+        "col:la",
+        "region:europe"
+      ],
+      "syllables": [
+        "Rus",
         "sie"
       ]
     },
     {
-      "id": "countries-letris-20-thailande",
-      "fr": "Thaïlande",
-      "en": "Thailand",
-      "emoji": "🇹🇭",
+      "id": "countries-letris-17-grece",
+      "fr": "Grèce",
+      "en": "Greece",
+      "emoji": "🇬🇷",
       "tags": [
         "col:la",
+        "region:europe"
+      ],
+      "syllables": [
+        "Grèce"
+      ]
+    },
+    {
+      "id": "countries-letris-18-irak",
+      "fr": "Irak",
+      "en": "Iraq",
+      "emoji": "🇮🇶",
+      "tags": [
+        "col:l_apos",
         "region:asia"
       ],
       "syllables": [
-        "Tha",
-        "ï",
-        "lande"
+        "I",
+        "rak"
+      ]
+    },
+    {
+      "id": "countries-letris-19-equateur",
+      "fr": "Équateur",
+      "en": "Ecuador",
+      "emoji": "🇪🇨",
+      "tags": [
+        "col:l_apos",
+        "region:americas"
+      ],
+      "syllables": [
+        "É",
+        "qua",
+        "teur"
+      ]
+    },
+    {
+      "id": "countries-letris-20-allemagne",
+      "fr": "Allemagne",
+      "en": "Germany",
+      "emoji": "🇩🇪",
+      "tags": [
+        "col:l_apos",
+        "region:europe"
+      ],
+      "syllables": [
+        "Al",
+        "le",
+        "ma",
+        "gne"
       ]
     },
     {
@@ -323,62 +318,95 @@
       ]
     },
     {
-      "id": "countries-letris-22-grande-bretagne",
-      "fr": "Grande-Bretagne",
-      "en": "Great Britain",
-      "emoji": "🇬🇧",
+      "id": "countries-letris-22-ecosse",
+      "fr": "Écosse",
+      "en": "Scotland",
+      "emoji": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
       "tags": [
-        "col:la",
+        "col:l_apos",
         "region:europe"
       ],
       "syllables": [
-        "Grande",
-        "-Bre",
-        "tagne"
+        "É",
+        "cosse"
       ]
     },
     {
-      "id": "countries-letris-23-tunisie",
-      "fr": "Tunisie",
-      "en": "Tunisia",
-      "emoji": "🇹🇳",
+      "id": "countries-letris-23-etats-unis",
+      "fr": "États-Unis",
+      "en": "United States",
+      "emoji": "🇺🇸",
       "tags": [
-        "col:la",
-        "region:africa"
+        "col:les",
+        "region:americas"
       ],
       "syllables": [
-        "Tu",
-        "ni",
-        "sie"
+        "É",
+        "tats",
+        "-U",
+        "nis"
       ]
     },
     {
-      "id": "countries-letris-24-maroc",
-      "fr": "Maroc",
-      "en": "Morocco",
-      "emoji": "🇲🇦",
+      "id": "countries-letris-24-philippines",
+      "fr": "Philippines",
+      "en": "Philippines",
+      "emoji": "🇵🇭",
       "tags": [
-        "col:le",
-        "region:africa"
+        "col:les",
+        "region:asia"
       ],
       "syllables": [
-        "Ma",
-        "roc"
+        "Phi",
+        "lip",
+        "pines"
       ]
     },
     {
-      "id": "countries-letris-25-algerie",
-      "fr": "Algérie",
-      "en": "Algeria",
-      "emoji": "🇩🇿",
+      "id": "countries-letris-25-emirats-arabes-unis",
+      "fr": "Émirats arabes unis",
+      "en": "United Arab Emirates",
+      "emoji": "🇦🇪",
       "tags": [
-        "col:l_apos",
+        "col:les",
+        "region:asia"
+      ],
+      "syllables": [
+        "É",
+        "mi",
+        "rats",
+        "a",
+        "rabes",
+        "u",
+        "nis"
+      ]
+    },
+    {
+      "id": "countries-letris-26-seychelles",
+      "fr": "Seychelles",
+      "en": "Seychelles",
+      "emoji": "🇸🇨",
+      "tags": [
+        "col:les",
         "region:africa"
       ],
       "syllables": [
-        "Al",
-        "gé",
-        "rie"
+        "Sey",
+        "chelles"
+      ]
+    },
+    {
+      "id": "countries-letris-27-pays-bas",
+      "fr": "Pays-Bas",
+      "en": "Netherlands",
+      "emoji": "🇳🇱",
+      "tags": [
+        "col:les",
+        "region:europe"
+      ],
+      "syllables": [
+        "Pays",
+        "-Bas"
       ]
     }
   ],

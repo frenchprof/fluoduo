@@ -1,7 +1,7 @@
 {
   "id": "avoir-etats",
   "title": "Avoir ou être ?",
-  "subtitle": "Sort each state by its verb",
+  "subtitle": "ils ont faim · il est calme · ils sont calmes",
   "langPair": "fr-en",
   "owner": "curated",
   "visibility": "public",
@@ -14,14 +14,19 @@
     "letris": {
       "columns": [
         {
-          "key": "avoir",
-          "label": "J'AI",
-          "prefix": "j'ai "
+          "key": "ils_ont",
+          "label": "ILS ONT",
+          "prefix": "ils ont "
         },
         {
-          "key": "etre",
-          "label": "JE SUIS",
-          "prefix": "je suis "
+          "key": "il_est",
+          "label": "IL EST",
+          "prefix": "il est "
+        },
+        {
+          "key": "ils_sont",
+          "label": "ILS SONT",
+          "prefix": "ils sont "
         }
       ]
     },
@@ -51,7 +56,7 @@
         "faim"
       ],
       "tags": [
-        "col:avoir"
+        "col:ils_ont"
       ]
     },
     {
@@ -62,7 +67,7 @@
         "soif"
       ],
       "tags": [
-        "col:avoir"
+        "col:ils_ont"
       ]
     },
     {
@@ -73,7 +78,7 @@
         "froid"
       ],
       "tags": [
-        "col:avoir"
+        "col:ils_ont"
       ]
     },
     {
@@ -84,12 +89,36 @@
         "chaud"
       ],
       "tags": [
-        "col:avoir"
+        "col:ils_ont"
       ]
     },
     {
       "id": "avoir-etats-05",
-      "fr": "fatigué(e)",
+      "fr": "envie",
+      "en": "a desire (to)",
+      "syllables": [
+        "en",
+        "vie"
+      ],
+      "tags": [
+        "col:ils_ont"
+      ]
+    },
+    {
+      "id": "avoir-etats-06",
+      "fr": "besoin",
+      "en": "a need (to)",
+      "syllables": [
+        "be",
+        "soin"
+      ],
+      "tags": [
+        "col:ils_ont"
+      ]
+    },
+    {
+      "id": "avoir-etats-07",
+      "fr": "fatigué",
       "en": "tired",
       "syllables": [
         "fa",
@@ -97,42 +126,19 @@
         "gué"
       ],
       "tags": [
-        "col:etre"
+        "col:il_est"
       ]
     },
     {
-      "id": "avoir-etats-06",
-      "fr": "content(e)",
+      "id": "avoir-etats-08",
+      "fr": "content",
       "en": "happy",
       "syllables": [
         "con",
         "tent"
       ],
       "tags": [
-        "col:etre"
-      ]
-    },
-    {
-      "id": "avoir-etats-07",
-      "fr": "sommeil",
-      "en": "sleepy",
-      "syllables": [
-        "som",
-        "meil"
-      ],
-      "tags": [
-        "col:avoir"
-      ]
-    },
-    {
-      "id": "avoir-etats-08",
-      "fr": "peur",
-      "en": "scared",
-      "syllables": [
-        "peur"
-      ],
-      "tags": [
-        "col:avoir"
+        "col:il_est"
       ]
     },
     {
@@ -144,7 +150,7 @@
         "lade"
       ],
       "tags": [
-        "col:etre"
+        "col:il_est"
       ]
     },
     {
@@ -155,20 +161,77 @@
         "triste"
       ],
       "tags": [
-        "col:etre"
+        "col:il_est"
       ]
     },
     {
       "id": "avoir-etats-11",
-      "fr": "en retard",
-      "en": "late",
+      "fr": "calme",
+      "en": "calm",
       "syllables": [
-        "en",
-        "re",
-        "tard"
+        "calme"
       ],
       "tags": [
-        "col:etre"
+        "col:il_est"
+      ]
+    },
+    {
+      "id": "avoir-etats-12",
+      "fr": "fatigués",
+      "en": "tired (pl)",
+      "syllables": [
+        "fa",
+        "ti",
+        "gués"
+      ],
+      "tags": [
+        "col:ils_sont"
+      ]
+    },
+    {
+      "id": "avoir-etats-13",
+      "fr": "contents",
+      "en": "happy (pl)",
+      "syllables": [
+        "con",
+        "tents"
+      ],
+      "tags": [
+        "col:ils_sont"
+      ]
+    },
+    {
+      "id": "avoir-etats-14",
+      "fr": "malades",
+      "en": "sick (pl)",
+      "syllables": [
+        "ma",
+        "lades"
+      ],
+      "tags": [
+        "col:ils_sont"
+      ]
+    },
+    {
+      "id": "avoir-etats-15",
+      "fr": "tristes",
+      "en": "sad (pl)",
+      "syllables": [
+        "tristes"
+      ],
+      "tags": [
+        "col:ils_sont"
+      ]
+    },
+    {
+      "id": "avoir-etats-16",
+      "fr": "calmes",
+      "en": "calm (pl)",
+      "syllables": [
+        "calmes"
+      ],
+      "tags": [
+        "col:ils_sont"
       ]
     }
   ]

@@ -185,6 +185,10 @@ export default function LetrisGame({
   useEffect(() => { if (gameOver) onGameEndRef.current?.(score); }, [gameOver]); // eslint-disable-line react-hooks/exhaustive-deps
   const [flash, setFlash] = useState<{ col: number; kind: "ok" | "bad" } | null>(null);
   const [creditsDone, setCreditsDone] = useState(false); // hold tiles until the credits splash clears
+  // Pre-game study table (Dan, 2026-07-04: "always present the table of items
+  // at the start of the game for learners to take note") — tiles hold until
+  // the learner has seen the full item list and pressed start.
+  const [studied, setStudied] = useState(false);
 
   const tickRef = useRef(INITIAL_TICK_MS);
   const lastDropRef = useRef(0);
@@ -343,11 +347,11 @@ export default function LetrisGame({
   }, [phase, music]);
 
   useEffect(() => {
-    if (creditsDone && !active && !gameOver && !paused) {
+    if (creditsDone && studied && !active && !gameOver && !paused) {
       const t = window.setTimeout(spawnTile, 250);
       return () => window.clearTimeout(t);
     }
-  }, [creditsDone, active, gameOver, paused, spawnTile]);
+  }, [creditsDone, studied, active, gameOver, paused, spawnTile]);
 
   useEffect(() => {
     const step = (ts: number) => {
@@ -434,6 +438,38 @@ export default function LetrisGame({
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 px-4 py-6 text-sky-950">
       <CreditsSplash game="Vocabularain" emoji="🌧️" onDone={() => setCreditsDone(true)} />
+      {creditsDone && !studied && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-sky-950/50 p-4" role="dialog" aria-modal="true">
+          <div className="max-h-[85vh] w-full max-w-3xl overflow-auto rounded-2xl border-2 border-sky-200 bg-white p-5 shadow-xl">
+            <h2 className="text-xl font-black text-sky-700">📋 {set.title}</h2>
+            <div className="mt-4 grid gap-3" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(11rem, 1fr))" }}>
+              {set.categories.map((c) => (
+                <div key={c.key} className="rounded-xl border-2 border-sky-100 p-3">
+                  <p className="mb-2 text-xs font-black uppercase tracking-wider text-sky-500">{c.label}</p>
+                  <ul className="space-y-1">
+                    {set.tiles.filter((t) => t.category === c.key).map((t) => (
+                      <li key={`${t.text}-${t.category}`} className="text-sm leading-snug">
+                        {t.emoji ? <span className="mr-1" aria-hidden>{t.emoji}</span> : null}
+                        <span lang="fr" className="font-bold text-sky-900">{t.displayName}</span>
+                        {t.meaning && t.meaning !== t.displayName && (
+                          <span className="text-sky-900/60"> — {t.meaning}</span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => { setStudied(true); autoMusic(); }}
+              className="mt-5 w-full rounded-xl border-2 border-b-4 border-sky-300 bg-sky-100 px-4 py-2 text-lg font-black text-sky-800 transition hover:bg-sky-50 active:translate-y-[2px] active:border-b-2"
+            >
+              ▶ C'est parti !
+            </button>
+          </div>
+        </div>
+      )}
       <style>{`@keyframes vrain{0%{transform:translateY(-24px);opacity:0}12%{opacity:.7}100%{transform:translateY(520px);opacity:0}}`}</style>
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>

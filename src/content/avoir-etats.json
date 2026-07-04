@@ -1,85 +1,120 @@
 {
   "id": "avoir-etats",
   "title": "Avoir ou être ?",
-  "subtitle": "Sort each state by its verb",
+  "subtitle": "ils ont faim · il est calme · ils sont calmes",
   "categories": [
     {
-      "key": "avoir",
-      "label": "J'AI",
-      "prefix": "j'ai "
+      "key": "ils_ont",
+      "label": "ILS ONT",
+      "prefix": "ils ont "
     },
     {
-      "key": "etre",
-      "label": "JE SUIS",
-      "prefix": "je suis "
+      "key": "il_est",
+      "label": "IL EST",
+      "prefix": "il est "
+    },
+    {
+      "key": "ils_sont",
+      "label": "ILS SONT",
+      "prefix": "ils sont "
     }
   ],
   "tiles": [
     {
       "text": "FAIM",
       "displayName": "faim",
-      "category": "avoir",
+      "category": "ils_ont",
       "meaning": "hungry"
     },
     {
       "text": "SOIF",
       "displayName": "soif",
-      "category": "avoir",
+      "category": "ils_ont",
       "meaning": "thirsty"
     },
     {
       "text": "FROID",
       "displayName": "froid",
-      "category": "avoir",
+      "category": "ils_ont",
       "meaning": "cold"
     },
     {
       "text": "CHAUD",
       "displayName": "chaud",
-      "category": "avoir",
+      "category": "ils_ont",
       "meaning": "hot"
     },
     {
-      "text": "FATIGUÉ(E)",
-      "displayName": "fatigué(e)",
-      "category": "etre",
+      "text": "ENVIE",
+      "displayName": "envie",
+      "category": "ils_ont",
+      "meaning": "a desire (to)"
+    },
+    {
+      "text": "BESOIN",
+      "displayName": "besoin",
+      "category": "ils_ont",
+      "meaning": "a need (to)"
+    },
+    {
+      "text": "FATIGUÉ",
+      "displayName": "fatigué",
+      "category": "il_est",
       "meaning": "tired"
     },
     {
-      "text": "CONTENT(E)",
-      "displayName": "content(e)",
-      "category": "etre",
+      "text": "CONTENT",
+      "displayName": "content",
+      "category": "il_est",
       "meaning": "happy"
-    },
-    {
-      "text": "SOMMEIL",
-      "displayName": "sommeil",
-      "category": "avoir",
-      "meaning": "sleepy"
-    },
-    {
-      "text": "PEUR",
-      "displayName": "peur",
-      "category": "avoir",
-      "meaning": "scared"
     },
     {
       "text": "MALADE",
       "displayName": "malade",
-      "category": "etre",
+      "category": "il_est",
       "meaning": "sick"
     },
     {
       "text": "TRISTE",
       "displayName": "triste",
-      "category": "etre",
+      "category": "il_est",
       "meaning": "sad"
     },
     {
-      "text": "EN RETARD",
-      "displayName": "en retard",
-      "category": "etre",
-      "meaning": "late"
+      "text": "CALME",
+      "displayName": "calme",
+      "category": "il_est",
+      "meaning": "calm"
+    },
+    {
+      "text": "FATIGUÉS",
+      "displayName": "fatigués",
+      "category": "ils_sont",
+      "meaning": "tired (pl)"
+    },
+    {
+      "text": "CONTENTS",
+      "displayName": "contents",
+      "category": "ils_sont",
+      "meaning": "happy (pl)"
+    },
+    {
+      "text": "MALADES",
+      "displayName": "malades",
+      "category": "ils_sont",
+      "meaning": "sick (pl)"
+    },
+    {
+      "text": "TRISTES",
+      "displayName": "tristes",
+      "category": "ils_sont",
+      "meaning": "sad (pl)"
+    },
+    {
+      "text": "CALMES",
+      "displayName": "calmes",
+      "category": "ils_sont",
+      "meaning": "calm (pl)"
     }
   ]
 }

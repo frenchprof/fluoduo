@@ -20,7 +20,7 @@
         },
         {
           "key": "subject",
-          "label": "___ (verb)",
+          "label": "___ + verb",
           "prefix": ""
         },
         {

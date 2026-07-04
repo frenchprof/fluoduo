@@ -1,34 +1,173 @@
 {
   "id": "core-nouns",
-  "title": "Qui ou quoi ?",
-  "subtitle": "Person or thing · masculine or feminine",
+  "title": "Qui ou quoi ? Un ou une ?",
+  "subtitle": "people vs things · masculine vs feminine",
   "categories": [
-    { "key": "qui-m", "label": "Qui 🚹", "prefix": "un " },
-    { "key": "qui-f", "label": "Qui 🚺", "prefix": "une " },
-    { "key": "quoi-m", "label": "Quoi ♂", "prefix": "un " },
-    { "key": "quoi-f", "label": "Quoi ♀", "prefix": "une " }
+    {
+      "key": "qui_m",
+      "label": "QUI (m)",
+      "prefix": "un "
+    },
+    {
+      "key": "qui_f",
+      "label": "QUI (f)",
+      "prefix": "une "
+    },
+    {
+      "key": "quoi_m",
+      "label": "QUOI (m)",
+      "prefix": "un "
+    },
+    {
+      "key": "quoi_f",
+      "label": "QUOI (f)",
+      "prefix": "une "
+    }
   ],
   "tiles": [
-    { "text": "HOMME", "displayName": "homme", "category": "qui-m", "meaning": "man" },
-    { "text": "MONSIEUR", "displayName": "monsieur", "category": "qui-m", "meaning": "gentleman / sir" },
-    { "text": "GARÇON", "displayName": "garçon", "category": "qui-m", "meaning": "boy" },
-    { "text": "ÉTUDIANT", "displayName": "étudiant", "category": "qui-m", "meaning": "student (m)" },
-    { "text": "PROFESSEUR", "displayName": "professeur", "category": "qui-m", "meaning": "teacher (m)" },
-    { "text": "FEMME", "displayName": "femme", "category": "qui-f", "meaning": "woman" },
-    { "text": "FILLE", "displayName": "fille", "category": "qui-f", "meaning": "girl" },
-    { "text": "[MA]DAME", "displayName": "dame", "category": "qui-f", "meaning": "lady / madam" },
-    { "text": "ÉTUDIANTE", "displayName": "étudiante", "category": "qui-f", "meaning": "student (f)" },
-    { "text": "PROFESSEURE", "displayName": "professeure", "category": "qui-f", "meaning": "teacher (f)" },
-    { "text": "TABLEAU", "displayName": "tableau", "category": "quoi-m", "meaning": "board" },
-    { "text": "LIVRE", "displayName": "livre", "category": "quoi-m", "meaning": "book" },
-    { "text": "CRAYON", "displayName": "crayon", "category": "quoi-m", "meaning": "pencil" },
-    { "text": "CAHIER", "displayName": "cahier", "category": "quoi-m", "meaning": "exercise book" },
-    { "text": "CASQUE", "displayName": "casque", "category": "quoi-m", "meaning": "headphones" },
-    { "text": "MICRO", "displayName": "micro", "category": "quoi-m", "meaning": "microphone" },
-    { "text": "TABLE", "displayName": "table", "category": "quoi-f", "meaning": "table" },
-    { "text": "CHAISE", "displayName": "chaise", "category": "quoi-f", "meaning": "chair" },
-    { "text": "SALLE", "displayName": "salle", "category": "quoi-f", "meaning": "room" },
-    { "text": "CLASSE", "displayName": "classe", "category": "quoi-f", "meaning": "class" },
-    { "text": "SALLE DE CLASSE", "displayName": "salle de classe", "category": "quoi-f", "meaning": "classroom" }
+    {
+      "text": "PRÉNOM",
+      "displayName": "prénom",
+      "category": "quoi_m",
+      "meaning": "first name"
+    },
+    {
+      "text": "NOM",
+      "displayName": "nom",
+      "category": "quoi_m",
+      "meaning": "surname"
+    },
+    {
+      "text": "FEMME",
+      "displayName": "femme",
+      "category": "qui_f",
+      "meaning": "woman"
+    },
+    {
+      "text": "FILLE",
+      "displayName": "fille",
+      "category": "qui_f",
+      "meaning": "girl"
+    },
+    {
+      "text": "DAME",
+      "displayName": "dame",
+      "category": "qui_f",
+      "meaning": "lady"
+    },
+    {
+      "text": "HOMME",
+      "displayName": "homme",
+      "category": "qui_m",
+      "meaning": "man"
+    },
+    {
+      "text": "ÉTUDIANT",
+      "displayName": "étudiant",
+      "category": "qui_m",
+      "meaning": "student (m)"
+    },
+    {
+      "text": "ÉTUDIANTE",
+      "displayName": "étudiante",
+      "category": "qui_f",
+      "meaning": "student (f)"
+    },
+    {
+      "text": "PROFESSEUR",
+      "displayName": "professeur",
+      "category": "qui_m",
+      "meaning": "teacher (m)"
+    },
+    {
+      "text": "PROFESSEURE",
+      "displayName": "professeure",
+      "category": "qui_f",
+      "meaning": "teacher (f)"
+    },
+    {
+      "text": "SALLE DE CLASSE",
+      "displayName": "salle de classe",
+      "category": "quoi_f",
+      "meaning": "classroom"
+    },
+    {
+      "text": "TABLEAU",
+      "displayName": "tableau",
+      "category": "quoi_m",
+      "meaning": "board"
+    },
+    {
+      "text": "LIVRE",
+      "displayName": "livre",
+      "category": "quoi_m",
+      "meaning": "book"
+    },
+    {
+      "text": "CRAYON",
+      "displayName": "crayon",
+      "category": "quoi_m",
+      "meaning": "pencil"
+    },
+    {
+      "text": "CAHIER",
+      "displayName": "cahier",
+      "category": "quoi_m",
+      "meaning": "exercise book"
+    },
+    {
+      "text": "CASQUE",
+      "displayName": "casque",
+      "category": "quoi_m",
+      "meaning": "headphones"
+    },
+    {
+      "text": "MICRO",
+      "displayName": "micro",
+      "category": "quoi_m",
+      "meaning": "microphone"
+    },
+    {
+      "text": "AMI",
+      "displayName": "ami",
+      "category": "qui_m",
+      "meaning": "friend (m)"
+    },
+    {
+      "text": "GARÇON",
+      "displayName": "garçon",
+      "category": "qui_m",
+      "meaning": "boy"
+    },
+    {
+      "text": "TABLE",
+      "displayName": "table",
+      "category": "quoi_f",
+      "meaning": "table"
+    },
+    {
+      "text": "SALLE",
+      "displayName": "salle",
+      "category": "quoi_f",
+      "meaning": "room"
+    },
+    {
+      "text": "CLASSE",
+      "displayName": "classe",
+      "category": "quoi_f",
+      "meaning": "class"
+    },
+    {
+      "text": "MONSIEUR",
+      "displayName": "monsieur",
+      "category": "qui_m",
+      "meaning": "gentleman / sir"
+    },
+    {
+      "text": "CHAISE",
+      "displayName": "chaise",
+      "category": "quoi_f",
+      "meaning": "chair"
+    }
   ]
 }
