@@ -136,7 +136,11 @@ export default function FlipItPage({
   collectionId: string;
 }) {
   const collection = CURATED.find((c) => c.id === collectionId);
-  const items = collection ? collection.items.filter((i) => i.emoji?.trim()) : [];
+  // EVERY item is flippable — emoji is decoration on the card face, not an
+  // entry requirement. (An old emoji?.trim() filter here silently emptied
+  // whole decks — matieres, the ateliers, alphabet… — which is why "No
+  // flippable vocab" kept coming back no matter how the links were fixed.)
+  const items = collection ? collection.items : [];
 
   if (!collection || items.length === 0) {
     return (
