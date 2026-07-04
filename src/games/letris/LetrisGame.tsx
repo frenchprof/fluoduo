@@ -153,6 +153,9 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
   const stormMissesRef = useRef(0);
   const wordTexts = useMemo(() => [...new Set(set.tiles.map((t) => t.text))], [set.tiles]);
   const musicAutoRef = useRef(false);
+  const musicRef = useRef(false);
+  musicRef.current = music;
+  const dawnTimerRef = useRef<number | null>(null);
   // First interaction — key OR tap — starts the tune (both are user gestures,
   // so the AudioContext may be created). Keydown-only left tap players silent
   // until it was "too late" (Dan, 2026-07-03).
@@ -163,7 +166,10 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
     setMusic(true);
   }, []);
   const [showHelp, setShowHelp] = useState(false);
-  useEffect(() => () => chiptune.stop(), []); // stop the loop on unmount
+  useEffect(() => () => {
+    chiptune.stop();
+    if (dawnTimerRef.current) window.clearTimeout(dawnTimerRef.current);
+  }, []); // stop on unmount, cancel any pending dawn restart
   const [gameOver, setGameOver] = useState(false);
   const [flash, setFlash] = useState<{ col: number; kind: "ok" | "bad" } | null>(null);
   const [creditsDone, setCreditsDone] = useState(false); // hold tiles until the credits splash clears
@@ -199,7 +205,9 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
     correctRef.current.clear();
     phaseCorrectRef.current.clear();
     stormMissesRef.current = 0;
-    chiptune.setTempoScale(1);
+    if (dawnTimerRef.current) { window.clearTimeout(dawnTimerRef.current); dawnTimerRef.current = null; }
+    if (chiptune.playing() === "storm") chiptune.play("letris");
+    else chiptune.setTempoScale(1);
     tickRef.current = INITIAL_TICK_MS;
   }, [cols, set.tiles]);
 
@@ -216,7 +224,18 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
         stormMissesRef.current = 0;
         setPhaseMsg(msg);
         setPaused(true);
-        chiptune.setTempoScale(next === "night" ? NIGHT_MUSIC_SLOW : 1);
+        const playing = chiptune.playing();
+        if (playing) {
+          if (next === "storm") {
+            chiptune.play("storm");
+          } else if (next === "night") {
+            // coming from day or from storm (mercy) → letris at night tempo
+            if (playing !== "letris") chiptune.play("letris");
+            chiptune.setTempoScale(NIGHT_MUSIC_SLOW);
+          }
+          // "day" (dawn) is handled in the dawn branch: storm stopped before
+          // fanfare fires; letris restarts via dawnTimerRef after ~2.2 s
+        }
       };
 
       if (correct) {
@@ -240,7 +259,15 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
           // Survived the storm → dawn breaks; lifetime tallies reset so the
           // whole cycle can be earned again.
           correctRef.current.clear();
+          // Stop the storm track first so fanfare plays clean; then after the
+          // jingle (~2.2 s), restart letris at normal tempo if music is still on.
+          if (chiptune.playing()) chiptune.stop();
           chiptune.fanfare();
+          if (dawnTimerRef.current) window.clearTimeout(dawnTimerRef.current);
+          dawnTimerRef.current = window.setTimeout(() => {
+            dawnTimerRef.current = null;
+            if (musicRef.current) chiptune.play("letris");
+          }, 2250);
           enterPhase("day", "dawn");
         }
       } else if (phaseRef.current === "storm") {
@@ -288,6 +315,20 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
     },
     [catIndex, catColor, colorOf, set.categories, set.language, wordTexts],
   );
+
+  // Random thunder during storm: irregular noise+kick bursts every 4-12 s
+  useEffect(() => {
+    if (phase !== "storm" || !music) return;
+    let tid: number;
+    const scheduleThunder = () => {
+      tid = window.setTimeout(() => {
+        chiptune.thunder();
+        scheduleThunder();
+      }, 4000 + Math.random() * 8000);
+    };
+    scheduleThunder();
+    return () => window.clearTimeout(tid);
+  }, [phase, music]);
 
   useEffect(() => {
     if (creditsDone && !active && !gameOver && !paused) {
@@ -397,8 +438,10 @@ export default function LetrisGame({ set }: { set: LetrisSet }) {
             Score <b className="text-[#58cc02]">{score}</b>
           </span>
           <button type="button" onClick={() => setShowHelp(true)} title="How to play" className={pillCls}>?</button>
-          <button type="button" onClick={() => { chiptune.toggle("letris"); setMusic(chiptune.playing() === "letris"); if (chiptune.playing() === "letris" && phase === "night") chiptune.setTempoScale(NIGHT_MUSIC_SLOW); }}
-            title="Music" className={pillCls}>{music ? "🔊" : "🎵"}</button>
+          <button type="button" onClick={() => {
+            if (chiptune.playing()) { chiptune.stop(); setMusic(false); }
+            else { const key = phase === "storm" ? "storm" : "letris"; chiptune.play(key); if (phase === "night") chiptune.setTempoScale(NIGHT_MUSIC_SLOW); setMusic(true); }
+          }} title="Music" className={pillCls}>{music ? "🔊" : "🎵"}</button>
           <button type="button" onClick={() => setPaused((p) => !p)} className={pillCls}>
             {paused ? "Resume" : "Pause"}
           </button>

@@ -183,7 +183,49 @@ const conveyor: Song = {
   drums: "k.h.r.h.k.h.r.h.".repeat(8).split(""),
 };
 
-const SONGS: Record<string, Song> = { letris, conveyor };
+// Storm track — A-minor, 168 bpm, no swing. Driving eighth-note triangle bass,
+// two-note arpeggio pulse, urgent descending/ascending lead. 128 steps = 8 bars.
+const storm: Song = {
+  bpm: 168, swing: 0,
+  ch: [
+    // Lead: dramatic A-minor run — descend, ascend, leap, cascade, resolve
+    { type: "pulse" as OscillatorType, duty: 0.5, vol: 0.15, notes: [
+      ["A5",2],["G5",2],["F5",2],["E5",2],["D5",2],["C5",2],["B4",2],["A4",2], // bar 1
+      ["A4",2],["B4",2],["C5",2],["D5",2],["E5",2],["F5",2],["G5",2],["A5",2], // bar 2
+      ["F5",2],["E5",2],["D5",2],["C5",2],["A4",2],["C5",2],["E5",2],["F5",2], // bar 3
+      ["C5",2],["E5",2],["G5",2],["E5",2],["C5",2],["B4",2],["A4",2],["G4",2], // bar 4
+      ["A4",2],["A5",2],["G5",2],["F5",2],["E5",2],["D5",2],["C5",2],["B4",2], // bar 5
+      ["A4",2],["E5",2],["A5",2],["E5",2],["A5",2],["G5",2],["F5",2],["E5",2], // bar 6
+      ["E5",2],["D5",2],["C5",2],["B4",2],["A4",2],["G#4",2],["A4",2],["0",2], // bar 7
+      ["E5",2],["E5",2],["F5",2],["G5",2],["A5",2],["0",2],["0",2],["0",2],   // bar 8
+    ]},
+    // Arp: two-note pulse outlining chord changes every 2 bars
+    { type: "pulse" as OscillatorType, duty: 0.25, vol: 0.065, notes: [
+      ["A4",2],["C5",2],["A4",2],["C5",2],["A4",2],["C5",2],["A4",2],["C5",2], // Am bar 1
+      ["A4",2],["C5",2],["A4",2],["C5",2],["A4",2],["C5",2],["A4",2],["C5",2], // Am bar 2
+      ["F4",2],["A4",2],["F4",2],["A4",2],["F4",2],["A4",2],["F4",2],["A4",2], // F  bar 3
+      ["F4",2],["A4",2],["F4",2],["A4",2],["F4",2],["A4",2],["F4",2],["A4",2], // F  bar 4
+      ["A4",2],["E5",2],["A4",2],["E5",2],["A4",2],["E5",2],["A4",2],["E5",2], // Am bar 5
+      ["A4",2],["E5",2],["A4",2],["E5",2],["A4",2],["E5",2],["A4",2],["E5",2], // Am bar 6
+      ["E4",2],["B4",2],["E4",2],["B4",2],["E4",2],["B4",2],["E4",2],["B4",2], // E  bar 7
+      ["E4",2],["B4",2],["E4",2],["B4",2],["E4",2],["B4",2],["E4",2],["B4",2], // E  bar 8
+    ]},
+    // Bass: driving eighth-note triangle — A-minor / F / A-minor / E progression
+    { type: "triangle", vol: 0.25, notes: [
+      ["A2",2],["E3",2],["A2",2],["C3",2],["A2",2],["E3",2],["G2",2],["E3",2], // Am
+      ["A2",2],["E3",2],["A2",2],["C3",2],["A2",2],["E3",2],["G2",2],["E3",2], // Am
+      ["F2",2],["C3",2],["F2",2],["A2",2],["F2",2],["C3",2],["E3",2],["C3",2], // F
+      ["F2",2],["C3",2],["F2",2],["A2",2],["F2",2],["C3",2],["E3",2],["C3",2], // F
+      ["A2",2],["E3",2],["A2",2],["C3",2],["A2",2],["E3",2],["G2",2],["E3",2], // Am
+      ["A2",2],["E3",2],["A2",2],["C3",2],["A2",2],["E3",2],["G2",2],["E3",2], // Am
+      ["E3",2],["B2",2],["E3",2],["G#3",2],["E3",2],["B2",2],["D3",2],["B2",2], // E
+      ["E3",2],["B2",2],["E3",2],["G#3",2],["E3",2],["B2",2],["D3",2],["B2",2], // E
+    ]},
+  ],
+  drums: ("KhhhShkhKhhhShkh".repeat(4) + "KHhHShHhKHhHSHhH".repeat(4)).split(""),
+};
+
+const SONGS: Record<string, Song> = { letris, conveyor, storm };
 function prepare(song: Song) {
   const L = 128; song.len = L;
   song.ch.forEach((c) => { const map: Record<number, { note: Note; dur: number }> = {}; let step = 0; c.notes.forEach(([note, dur]) => { map[step] = { note, dur }; step += dur; }); c.byStep = map; });
@@ -283,6 +325,18 @@ export const chiptune = {
     tone("triangle", freq("A2"), t + 0.0, 0.22, 0.20);
     tone("triangle", freq("E2"), t + 0.30, 0.34, 0.20);
     perc("r", t + 0.0); kick(t + 0.30, 0.5);
+  },
+  // thunder crack + rumble: short noise crack, long low-pass rumble, double kick
+  thunder() {
+    initAudio();
+    if (ctx!.state === "suspended") ctx!.resume();
+    duckMusic();
+    const t = ctx!.currentTime + 0.02;
+    noiseHit(t, 0.18, 0.65, 300, 3500);   // sharp crack (mid-band)
+    noiseHit(t + 0.06, 1.6, 0.55, undefined, 180); // deep rumble
+    noiseHit(t + 0.10, 1.0, 0.35, undefined, 110); // sub rumble tail
+    kick(t, 0.9);
+    kick(t + 0.14, 0.55);
   },
   // all lives gone: stop the loop, play a sad A-minor descent
   gameOver() {
