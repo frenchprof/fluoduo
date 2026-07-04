@@ -150,6 +150,7 @@ export default function LetrisGame({
   const [score, setScore] = useState(0);
   const [paused, setPaused] = useState(false);
   const [music, setMusic] = useState(false);
+  const [tts, setTts] = useState(true);
   const [phase, setPhase] = useState<Phase>("day");
   const [phaseMsg, setPhaseMsg] = useState<PhaseMsg | null>(null);
   const phaseRef = useRef<Phase>("day");
@@ -250,7 +251,7 @@ export default function LetrisGame({
       };
 
       if (correct) {
-        if (speech) speak(
+        if (speech && tts) speak(
           buildSentence(set.categories[a.col], a.tile),
           set.language ? `${set.language}-FR` : "fr-FR",
           { interrupt: false },
@@ -452,7 +453,12 @@ export default function LetrisGame({
           <button type="button" onClick={() => {
             if (chiptune.playing()) { chiptune.stop(); setMusic(false); }
             else { const key = phase === "storm" ? "storm" : "letris"; chiptune.play(key); if (phase === "night") chiptune.setTempoScale(NIGHT_MUSIC_SLOW); setMusic(true); }
-          }} title="Music" className={pillCls}>{music ? "🔊" : "🎵"}</button>
+          }} title="Music" className={pillCls}>{music ? "🔊" : "🔇"}</button>
+          {speech && (
+            <button type="button" onClick={() => setTts((v) => !v)} title="Voice" className={pillCls}>
+              {tts ? "🗣️" : "🤫"}
+            </button>
+          )}
           <button type="button" onClick={() => setPaused((p) => !p)} className={pillCls}>
             {paused ? "Resume" : "Pause"}
           </button>
