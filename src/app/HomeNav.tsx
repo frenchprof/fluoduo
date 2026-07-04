@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 const UNITS = [
@@ -30,6 +31,10 @@ export function HomeNavTabs() {
           <span>{u.label}</span>
         </button>
       ))}
+      <Link href="/activities" className="cahier-tab" style={{ "--tab-hue": "#5b8def" } as React.CSSProperties}>
+        <span aria-hidden>🗂️</span>
+        <span>Index</span>
+      </Link>
     </nav>
   );
 }
@@ -64,6 +69,15 @@ export function HomeNavBurger() {
               <span>{u.label}</span>
             </button>
           ))}
+          <Link
+            href="/activities"
+            onClick={() => setOpen(false)}
+            className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-bold text-[color:var(--cahier-ink,#2a2e6e)] hover:bg-[#f0f0ea] last:rounded-b-xl"
+            style={{ borderLeft: "4px solid #5b8def" }}
+          >
+            <span aria-hidden>🗂️</span>
+            <span>Index</span>
+          </Link>
         </div>
       )}
     </div>

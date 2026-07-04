@@ -426,7 +426,7 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
         <Cards rows={rows} isNat={isNat} test={test} buckets={buckets} onBucket={setRowBucket}
           articleOptions={articleOptions} />
       ) : (
-        <AllCards rows={rows} isNat={isNat} test={test} buckets={buckets} onBucket={setRowBucket}
+        <AllCards rows={rows} isNat={isNat} test={test} order={order} buckets={buckets} onBucket={setRowBucket}
           articleOptions={articleOptions} flipAll={flipAll} flippedIds={flippedIds} setFlippedIds={setFlippedIds} />
       )}
       <AccentBar />
@@ -735,10 +735,27 @@ function Face({ children, back }: { children: React.ReactNode; back?: boolean })
 
 /* ─────────────────────────── All Cards ─────────────────────────── */
 
+/** Contiguous group runs for section headers — shared by Overview and All
+ *  Cards so "group by" is VISIBLE in both (Dan, 2026-07-04: selecting le·la
+ *  showed nothing in the card grid). */
+function groupRows(rows: Row[], order: Order): { label: string; rows: Row[] }[] {
+  const keyOf = (r: Row) => order === "article" ? (r.art || "∅") : order === "continent" ? regionOf(r.item) : "";
+  const labelOf = (g: string) => order === "continent" ? (REGION_LABEL[g] ?? "—") : (g === "∅" ? "no article" : g);
+  if (order !== "article" && order !== "continent") return [{ label: "", rows }];
+  const out: { label: string; rows: Row[] }[] = [];
+  let cur = "";
+  rows.forEach((r) => {
+    const g = keyOf(r);
+    if (g !== cur || out.length === 0) { out.push({ label: labelOf(g), rows: [] }); cur = g; }
+    out[out.length - 1].rows.push(r);
+  });
+  return out;
+}
+
 function AllCards({
-  rows, isNat, test, buckets, onBucket, articleOptions, flipAll, flippedIds, setFlippedIds,
+  rows, isNat, test, order, buckets, onBucket, articleOptions, flipAll, flippedIds, setFlippedIds,
 }: {
-  rows: Row[]; isNat: boolean; test: boolean;
+  rows: Row[]; isNat: boolean; test: boolean; order: Order;
   buckets: Record<string, Bucket>; onBucket: (id: string, b: Bucket) => void;
   articleOptions: string[];
   flipAll: boolean; flippedIds: Set<string>; setFlippedIds: (fn: (s: Set<string>) => Set<string>) => void;
@@ -750,9 +767,14 @@ function AllCards({
 
   return (
     <div>
-      {/* same grid in both modes; cards hold the individual-card 3:2 ratio */}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {rows.map((row) => {
+      {groupRows(rows, order).map((grp, gi) => (
+        <div key={grp.label || gi}>
+          {grp.label && (
+            <div lang="fr" className="cahier-section mb-2 mt-4 rounded-md px-3 py-1.5 first:mt-0">{grp.label}</div>
+          )}
+          {/* same grid in both modes; cards hold the individual-card 3:2 ratio */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {grp.rows.map((row) => {
           const status = buckets[row.item.id];
           return (
             <div key={row.item.id} className="relative flex aspect-[3/2] flex-col overflow-hidden rounded-xl border-2 border-[color:var(--cahier-ink)]/15 bg-white p-2">
@@ -785,8 +807,10 @@ function AllCards({
               )}
             </div>
           );
-        })}
-      </div>
+            })}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -953,20 +977,8 @@ function Overview({
 
   const expected = (row: Row, k: ColKey) => (k === "art" ? row.art : k === "fr" ? row.fr : natVal(row, k));
 
-  // grouping → section header rows
-  const grouped = useMemo(() => {
-    const keyOf = (r: Row) => order === "article" ? (r.art || "∅") : order === "continent" ? regionOf(r.item) : "";
-    const labelOf = (g: string) => order === "continent" ? (REGION_LABEL[g] ?? "—") : (g === "∅" ? "no article" : g);
-    if (order !== "article" && order !== "continent") return [{ label: "", rows }];
-    const out: { label: string; rows: Row[] }[] = [];
-    let cur = "";
-    rows.forEach((r) => {
-      const g = keyOf(r);
-      if (g !== cur || out.length === 0) { out.push({ label: labelOf(g), rows: [] }); cur = g; }
-      out[out.length - 1].rows.push(r);
-    });
-    return out;
-  }, [rows, order]);
+  // grouping → section header rows (same helper drives All Cards)
+  const grouped = useMemo(() => groupRows(rows, order), [rows, order]);
 
   const totalW = cols.reduce((s, c) => s + widthOf(c), 0);
 

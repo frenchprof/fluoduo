@@ -6,7 +6,7 @@ import { DIRECTIONS_TABS } from "@/games/directions/tabs";
 
 export default function DirectionsMapPage() {
   return (
-    <CahierShell tabs={withActive(DIRECTIONS_TABS, "map")} active="map" crumb="Practice map">
+    <CahierShell tabs={withActive(DIRECTIONS_TABS, "map")} active="map" crumb="🧩 Mapless Route Builder">
       <DirectionsMapGame />
     </CahierShell>
   );

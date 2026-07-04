@@ -116,7 +116,7 @@ export default function DirectionsMapGame() {
         <div>
           <h1 className="cahier-display text-2xl font-black">Quel est le chemin pour … ?</h1>
           <p className="text-sm text-[color:var(--cahier-ink-soft)]">
-            Practice map — assemble the route from <b>A</b> to <b>B</b>.
+            Mapless Route Builder — assemble the route from <b>A</b> to <b>B</b> in words.
           </p>
         </div>
         <div className="flex items-center gap-2 text-sm">

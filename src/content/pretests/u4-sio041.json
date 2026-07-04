@@ -13,15 +13,16 @@
       "distractors": [
         "le déjeuner",
         "la matinée",
-        "le repas du matin"
+        "le dîner"
       ],
       "fullSentence": "Je prends le petit-déjeuner à sept heures.",
       "sentenceTrans": "I have breakfast at seven o'clock.",
       "whyWrong": {
         "le déjeuner": "That means 'lunch', not breakfast.",
         "la matinée": "That means 'the morning' (the time), not the meal.",
-        "le repas du matin": "Literally 'the morning meal', but the set word for breakfast is le petit-déjeuner."
-      }
+        "le dîner": "That means 'dinner', not breakfast."
+      },
+      "transFirst": true
     },
     {
       "id": "u4-sio041-02",
@@ -49,7 +50,7 @@
       "distractors": [
         "du salade",
         "la salade",
-        "une salade"
+        "de le salade"
       ],
       "fullSentence": "Il mange de la salade et des tomates.",
       "sentenceTrans": "He eats (some) salad and tomatoes.",
@@ -57,7 +58,7 @@
       "whyWrong": {
         "du salade": "salade is feminine — de la, not du.",
         "la salade": "la means salad in general; here he eats 'some', so de la.",
-        "une salade": "une is 'a whole salad'; for an amount use de la."
+        "de le salade": "de + le never stays split — and salade is feminine anyway: de la."
       }
     },
     {
