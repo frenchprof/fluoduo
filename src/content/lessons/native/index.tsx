@@ -27,6 +27,7 @@ import { mangerBoireLesson } from "./manger-boire";
 import { futurProcheLesson } from "./futur-proche";
 import { frequenceLesson } from "./frequence";
 import { demonstratifsLesson } from "./demonstratifs";
+import { revisionU1Lesson, revisionU3U4Lesson, revisionU4Lesson } from "./revisions";
 
 export const NATIVE_LESSONS: Record<string, NativeLesson> = {
   "se-presenter": sePresenterLesson,
@@ -50,6 +51,9 @@ export const NATIVE_LESSONS: Record<string, NativeLesson> = {
   "futur-proche": futurProcheLesson,
   frequence: frequenceLesson,
   demonstratifs: demonstratifsLesson,
+  "revision-u1": revisionU1Lesson,
+  "revision-u3u4": revisionU3U4Lesson,
+  "revision-u4": revisionU4Lesson,
 };
 
 export function getNativeLesson(slug: string): NativeLesson | undefined {
