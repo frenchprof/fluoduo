@@ -2,13 +2,54 @@
  * Registry of lessons converted to NATIVE in-app content (CahierShell + Mémo +
  * DiceTrainer) — Dan, 2026-07-03. A slug present here renders natively at
  * /lessons/[slug]; absent slugs fall back to the iframed drchan HTML until
- * their conversion lands.
+ * their conversion lands. Full reskin pass 2026-07-04: all 20 grammar lessons
+ * are native; only the three cross-unit Révision compilations still iframe.
  */
 import type { NativeLesson } from "./types";
 import { aimerLesson } from "./aimer";
+import { sePresenterLesson } from "./se-presenter";
+import { negationLesson } from "./negation";
+import { conjugaisonU1Lesson } from "./conjugaison-u1";
+import { questionsOuiNonLesson } from "./questions-oui-non";
+import { motsInterrogatifsLesson } from "./mots-interrogatifs";
+import { articlesPaysLesson } from "./articles-pays";
+import { faireLesson } from "./faire";
+import { aimerInfinitifLesson } from "./aimer-infinitif";
+import { allerLesson } from "./aller";
+import { quandLesson } from "./quand";
+import { possessifsLesson } from "./possessifs";
+import { conjugaisonErLesson } from "./conjugaison-er";
+import { modauxLesson } from "./modaux";
+import { rendezvousLesson } from "./rendezvous";
+import { prepositionsLesson } from "./prepositions";
+import { partitifsLesson } from "./partitifs";
+import { mangerBoireLesson } from "./manger-boire";
+import { futurProcheLesson } from "./futur-proche";
+import { frequenceLesson } from "./frequence";
+import { demonstratifsLesson } from "./demonstratifs";
 
 export const NATIVE_LESSONS: Record<string, NativeLesson> = {
+  "se-presenter": sePresenterLesson,
+  negation: negationLesson,
+  "conjugaison-u1": conjugaisonU1Lesson,
+  "questions-oui-non": questionsOuiNonLesson,
+  "mots-interrogatifs": motsInterrogatifsLesson,
+  "articles-pays": articlesPaysLesson,
   aimer: aimerLesson,
+  faire: faireLesson,
+  "aimer-infinitif": aimerInfinitifLesson,
+  aller: allerLesson,
+  quand: quandLesson,
+  possessifs: possessifsLesson,
+  "conjugaison-er": conjugaisonErLesson,
+  modaux: modauxLesson,
+  rendezvous: rendezvousLesson,
+  prepositions: prepositionsLesson,
+  partitifs: partitifsLesson,
+  "manger-boire": mangerBoireLesson,
+  "futur-proche": futurProcheLesson,
+  frequence: frequenceLesson,
+  demonstratifs: demonstratifsLesson,
 };
 
 export function getNativeLesson(slug: string): NativeLesson | undefined {
