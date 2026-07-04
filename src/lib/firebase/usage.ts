@@ -39,6 +39,8 @@ export async function logEvent(
       payload,
       ts: serverTimestamp(),
       ua: typeof navigator !== "undefined" ? navigator.userAgent : null,
+      // Several sites share this Firebase project — record which one.
+      site: typeof location !== "undefined" ? location.hostname : null,
     });
   } catch {
     // swallow — telemetry must never break the learner experience
