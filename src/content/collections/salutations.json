@@ -1,0 +1,42 @@
+{
+  "id": "salutations",
+  "title": "Salutations",
+  "subtitle": "saluer · prendre congé",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 0,
+  "lessonNo": 9,
+  "lessonSlug": "greetings",
+  "tags": [],
+  "seq": 9,
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        { "key": "saluer_std", "label": "SALUER · passe-partout", "prefix": "" },
+        { "key": "saluer_fam", "label": "SALUER · familier", "prefix": "" },
+        { "key": "partir_std", "label": "PARTIR · passe-partout", "prefix": "" },
+        { "key": "partir_fam", "label": "PARTIR · familier", "prefix": "" }
+      ]
+    },
+    "practice": {
+      "prompt": "Saluer ou partir ? Passe-partout ou familier ?"
+    }
+  },
+  "items": [
+    { "id": "salutations-01", "fr": "Bonjour !", "en": "Hello! / Good day!", "emoji": "☀️", "tags": ["col:saluer_std"] },
+    { "id": "salutations-02", "fr": "Bonsoir !", "en": "Good evening!", "emoji": "🌆", "tags": ["col:saluer_std"] },
+    { "id": "salutations-03", "fr": "Enchanté !", "en": "Nice to meet you!", "emoji": "🤝", "tags": ["col:saluer_std"] },
+    { "id": "salutations-04", "fr": "Salut !", "en": "Hi!", "note": "(arriving)", "emoji": "👋", "tags": ["col:saluer_fam"] },
+    { "id": "salutations-05", "fr": "Coucou !", "en": "Hey there!", "emoji": "🙋", "tags": ["col:saluer_fam"] },
+    { "id": "salutations-06", "fr": "Ça va ?", "en": "How's it going?", "emoji": "🙂", "tags": ["col:saluer_fam"] },
+    { "id": "salutations-07", "fr": "Au revoir !", "en": "Goodbye!", "emoji": "👋", "tags": ["col:partir_std"] },
+    { "id": "salutations-08", "fr": "À demain !", "en": "See you tomorrow!", "emoji": "📅", "tags": ["col:partir_std"] },
+    { "id": "salutations-09", "fr": "À bientôt !", "en": "See you soon!", "emoji": "🔜", "tags": ["col:partir_std"] },
+    { "id": "salutations-10", "fr": "Bonne journée !", "en": "Have a good day!", "emoji": "🌞", "tags": ["col:partir_std"] },
+    { "id": "salutations-11", "fr": "Bonne nuit !", "en": "Good night!", "emoji": "🌙", "tags": ["col:partir_std"] },
+    { "id": "salutations-12", "fr": "À plus tard !", "en": "See you later!", "emoji": "🕐", "tags": ["col:partir_fam"] },
+    { "id": "salutations-13", "fr": "À plus !", "en": "Later!", "emoji": "✌️", "tags": ["col:partir_fam"] },
+    { "id": "salutations-14", "fr": "Salut !", "en": "Bye!", "note": "(leaving)", "emoji": "🚪", "tags": ["col:partir_fam"] }
+  ]
+}

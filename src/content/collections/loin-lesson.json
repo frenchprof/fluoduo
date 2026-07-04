@@ -17,7 +17,7 @@
       "en": "on / on top of",
       "emoji": "⬆️",
       "tags": [
-        "col:group1"
+        "col:sans_de"
       ],
       "syllables": [
         "sur"
@@ -29,7 +29,7 @@
       "en": "under",
       "emoji": "⬇️",
       "tags": [
-        "col:group1"
+        "col:sans_de"
       ],
       "syllables": [
         "sous"
@@ -41,7 +41,7 @@
       "en": "in front of",
       "emoji": "⏪",
       "tags": [
-        "col:group1"
+        "col:sans_de"
       ],
       "syllables": [
         "de",
@@ -54,7 +54,7 @@
       "en": "behind",
       "emoji": "⏩",
       "tags": [
-        "col:group1"
+        "col:sans_de"
       ],
       "syllables": [
         "der",
@@ -67,7 +67,7 @@
       "en": "in / inside",
       "emoji": "📦",
       "tags": [
-        "col:group1"
+        "col:sans_de"
       ],
       "syllables": [
         "dans"
@@ -79,7 +79,7 @@
       "en": "between",
       "emoji": "↔️",
       "tags": [
-        "col:group1"
+        "col:sans_de"
       ],
       "syllables": [
         "entre"
@@ -91,7 +91,7 @@
       "en": "next to / beside",
       "emoji": "🤝",
       "tags": [
-        "col:group2"
+        "col:avec_de"
       ],
       "syllables": [
         "à",
@@ -105,7 +105,7 @@
       "en": "to the left of",
       "emoji": "⬅️",
       "tags": [
-        "col:group2"
+        "col:avec_de"
       ],
       "syllables": [
         "à",
@@ -118,7 +118,7 @@
       "en": "to the right of",
       "emoji": "➡️",
       "tags": [
-        "col:group2"
+        "col:avec_de"
       ],
       "syllables": [
         "à",
@@ -131,7 +131,7 @@
       "en": "near",
       "emoji": "📏",
       "tags": [
-        "col:group2"
+        "col:avec_de"
       ],
       "syllables": [
         "près"
@@ -143,7 +143,7 @@
       "en": "far from",
       "emoji": "🛣️",
       "tags": [
-        "col:group2"
+        "col:avec_de"
       ],
       "syllables": [
         "loin"
@@ -155,7 +155,7 @@
       "en": "opposite / facing",
       "emoji": "🪞",
       "tags": [
-        "col:group2"
+        "col:avec_de"
       ],
       "syllables": [
         "en",
@@ -167,13 +167,13 @@
     "letris": {
       "columns": [
         {
-          "key": "group1",
-          "label": "SANS de",
+          "key": "sans_de",
+          "label": "___ la table",
           "prefix": ""
         },
         {
-          "key": "group2",
-          "label": "AVEC de",
+          "key": "avec_de",
+          "label": "___ DE la table",
           "prefix": ""
         }
       ]

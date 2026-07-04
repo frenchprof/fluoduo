@@ -72,6 +72,54 @@
       "displayName": "randonnées",
       "category": "des",
       "meaning": "hikes"
+    },
+    {
+      "text": "JUDO",
+      "displayName": "judo",
+      "category": "du",
+      "meaning": "judo"
+    },
+    {
+      "text": "PIANO",
+      "displayName": "piano",
+      "category": "du",
+      "meaning": "piano"
+    },
+    {
+      "text": "DANSE",
+      "displayName": "danse",
+      "category": "de_la",
+      "meaning": "dance"
+    },
+    {
+      "text": "MUSIQUE",
+      "displayName": "musique",
+      "category": "de_la",
+      "meaning": "music"
+    },
+    {
+      "text": "ESCALADE",
+      "displayName": "escalade",
+      "category": "de_l",
+      "meaning": "climbing"
+    },
+    {
+      "text": "AVIRON",
+      "displayName": "aviron",
+      "category": "de_l",
+      "meaning": "rowing"
+    },
+    {
+      "text": "PROMENADES",
+      "displayName": "promenades",
+      "category": "des",
+      "meaning": "walks"
+    },
+    {
+      "text": "ACHATS",
+      "displayName": "achats",
+      "category": "des",
+      "meaning": "shopping"
     }
   ]
 }

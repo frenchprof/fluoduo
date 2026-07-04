@@ -153,7 +153,7 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     { key: "flip", label: "Flip It", emoji: "🃏", href: `/practice/flip-it/${collectionId}` },
     { key: "say", label: "Say It", emoji: "🎤", href: `/practice/say-it/${collectionId}` },
     { key: "complete", label: "Complete It", emoji: "✏️", href: `/practice/complete-it/${collectionId}` },
-    { key: "dice", label: "Practice", emoji: "🎲", href: `/games/practice/${collectionId}` },
+    { key: "dice", label: "Practice", emoji: "🎲", href: `/practice/dice/${collectionId}` },
     ...(isConjugaZoneReadyId(collectionId)
       ? [{ key: "conjugazone", label: "ConjugaZone", emoji: "🎯", href: `/practice/conjugazone/${collectionId}` } as ShellTab]
       : []),

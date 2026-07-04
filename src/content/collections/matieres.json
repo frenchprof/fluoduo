@@ -179,6 +179,79 @@
       "syllables": [
         "langues"
       ]
+    },
+    {
+      "id": "matieres-11",
+      "fr": "sport",
+      "en": "sport",
+      "syllables": [
+        "sport"
+      ],
+      "tags": [
+        "col:le"
+      ]
+    },
+    {
+      "id": "matieres-12",
+      "fr": "théâtre",
+      "en": "drama",
+      "syllables": [
+        "thé",
+        "âtre"
+      ],
+      "tags": [
+        "col:le"
+      ]
+    },
+    {
+      "id": "matieres-13",
+      "fr": "chimie",
+      "en": "chemistry",
+      "syllables": [
+        "chi",
+        "mie"
+      ],
+      "tags": [
+        "col:la"
+      ]
+    },
+    {
+      "id": "matieres-14",
+      "fr": "musique",
+      "en": "music",
+      "syllables": [
+        "mu",
+        "sique"
+      ],
+      "tags": [
+        "col:la"
+      ]
+    },
+    {
+      "id": "matieres-15",
+      "fr": "espagnol",
+      "en": "Spanish",
+      "syllables": [
+        "es",
+        "pa",
+        "gnol"
+      ],
+      "tags": [
+        "col:l_apos"
+      ]
+    },
+    {
+      "id": "matieres-16",
+      "fr": "arts plastiques",
+      "en": "visual arts",
+      "syllables": [
+        "arts",
+        "plas",
+        "tiques"
+      ],
+      "tags": [
+        "col:les"
+      ]
     }
   ]
 }

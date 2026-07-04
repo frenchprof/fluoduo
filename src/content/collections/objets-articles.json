@@ -214,6 +214,42 @@
       "tags": [
         "col:une"
       ]
+    },
+    {
+      "id": "objets-articles-15",
+      "fr": "règle",
+      "en": "ruler",
+      "syllables": [
+        "règle"
+      ],
+      "tags": [
+        "col:une"
+      ]
+    },
+    {
+      "id": "objets-articles-16",
+      "fr": "écouteurs",
+      "en": "headphones",
+      "syllables": [
+        "é",
+        "cou",
+        "teurs"
+      ],
+      "tags": [
+        "col:des"
+      ]
+    },
+    {
+      "id": "objets-articles-17",
+      "fr": "mouchoirs",
+      "en": "tissues",
+      "syllables": [
+        "mou",
+        "choirs"
+      ],
+      "tags": [
+        "col:des"
+      ]
     }
   ]
 }

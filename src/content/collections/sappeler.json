@@ -1,0 +1,91 @@
+{
+  "id": "sappeler",
+  "title": "S'appeler — les présentations",
+  "subtitle": "Je m'appelle… / Comment tu t'appelles ?",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 0,
+  "lessonNo": 1,
+  "lessonSlug": "introductions",
+  "tags": [],
+  "seq": 1,
+  "items": [
+    {
+      "id": "sappeler-01",
+      "fr": "Je m'appelle Léa.",
+      "en": "My name is Léa.",
+      "gap": "m'appelle",
+      "tags": []
+    },
+    {
+      "id": "sappeler-02",
+      "fr": "Tu t'appelles Marc.",
+      "en": "Your name is Marc.",
+      "note": "(informal)",
+      "gap": "t'appelles",
+      "tags": []
+    },
+    {
+      "id": "sappeler-03",
+      "fr": "Il s'appelle Paul.",
+      "en": "His name is Paul.",
+      "gap": "s'appelle",
+      "tags": []
+    },
+    {
+      "id": "sappeler-04",
+      "fr": "Elle s'appelle Marie.",
+      "en": "Her name is Marie.",
+      "gap": "s'appelle",
+      "tags": []
+    },
+    {
+      "id": "sappeler-05",
+      "fr": "Nous nous appelons Léa et Marc.",
+      "en": "Our names are Léa and Marc.",
+      "gap": "nous appelons",
+      "tags": []
+    },
+    {
+      "id": "sappeler-06",
+      "fr": "Vous vous appelez Madame Martin.",
+      "en": "Your name is Mrs Martin.",
+      "note": "(formal)",
+      "gap": "vous appelez",
+      "tags": []
+    },
+    {
+      "id": "sappeler-07",
+      "fr": "Ils s'appellent Paul et Thomas.",
+      "en": "Their names are Paul and Thomas.",
+      "note": "(m)",
+      "gap": "s'appellent",
+      "tags": []
+    },
+    {
+      "id": "sappeler-08",
+      "fr": "Elles s'appellent Marie et Julie.",
+      "en": "Their names are Marie and Julie.",
+      "note": "(f)",
+      "gap": "s'appellent",
+      "tags": []
+    },
+    {
+      "id": "sappeler-09",
+      "fr": "Comment tu t'appelles ?",
+      "en": "What's your name?",
+      "note": "(informal)",
+      "gap": "t'appelles",
+      "tags": []
+    },
+    {
+      "id": "sappeler-10",
+      "fr": "Comment vous vous appelez ?",
+      "en": "What's your name?",
+      "note": "(formal)",
+      "gap": "vous appelez",
+      "tags": []
+    }
+  ]
+}

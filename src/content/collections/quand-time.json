@@ -122,6 +122,86 @@
         "mi",
         "di"
       ]
+    },
+    {
+      "id": "quand-time-07",
+      "fr": "le mardi",
+      "en": "on Tuesdays",
+      "syllables": [
+        "le",
+        "mar",
+        "di"
+      ],
+      "tags": [
+        "col:jour"
+      ]
+    },
+    {
+      "id": "quand-time-08",
+      "fr": "le samedi",
+      "en": "on Saturdays",
+      "syllables": [
+        "le",
+        "sa",
+        "me",
+        "di"
+      ],
+      "tags": [
+        "col:jour"
+      ]
+    },
+    {
+      "id": "quand-time-09",
+      "fr": "tous les soirs",
+      "en": "every evening",
+      "syllables": [
+        "tous",
+        "les",
+        "soirs"
+      ],
+      "tags": [
+        "col:frequence"
+      ]
+    },
+    {
+      "id": "quand-time-10",
+      "fr": "tous les week-ends",
+      "en": "every weekend",
+      "syllables": [
+        "tous",
+        "les",
+        "week",
+        "-ends"
+      ],
+      "tags": [
+        "col:frequence"
+      ]
+    },
+    {
+      "id": "quand-time-11",
+      "fr": "à 10 heures",
+      "en": "at 10 o’clock",
+      "syllables": [
+        "à",
+        "10",
+        "heures"
+      ],
+      "tags": [
+        "col:heure"
+      ]
+    },
+    {
+      "id": "quand-time-12",
+      "fr": "à minuit",
+      "en": "at midnight",
+      "syllables": [
+        "à",
+        "mi",
+        "nuit"
+      ],
+      "tags": [
+        "col:heure"
+      ]
     }
   ]
 }

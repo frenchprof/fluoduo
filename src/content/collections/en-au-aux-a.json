@@ -151,6 +151,103 @@
       "tags": [
         "col:a"
       ]
+    },
+    {
+      "id": "en-au-aux-a-09",
+      "fr": "Espagne",
+      "en": "Spain (f. country)",
+      "syllables": [
+        "Es",
+        "pagne"
+      ],
+      "tags": [
+        "col:en"
+      ]
+    },
+    {
+      "id": "en-au-aux-a-10",
+      "fr": "Chine",
+      "en": "China (f. country)",
+      "syllables": [
+        "Chine"
+      ],
+      "tags": [
+        "col:en"
+      ]
+    },
+    {
+      "id": "en-au-aux-a-11",
+      "fr": "Portugal",
+      "en": "Portugal (m. country)",
+      "syllables": [
+        "Por",
+        "tu",
+        "gal"
+      ],
+      "tags": [
+        "col:au"
+      ]
+    },
+    {
+      "id": "en-au-aux-a-12",
+      "fr": "Brésil",
+      "en": "Brazil (m. country)",
+      "syllables": [
+        "Bré",
+        "sil"
+      ],
+      "tags": [
+        "col:au"
+      ]
+    },
+    {
+      "id": "en-au-aux-a-13",
+      "fr": "Philippines",
+      "en": "Philippines (pl. country)",
+      "syllables": [
+        "Phi",
+        "lip",
+        "pines"
+      ],
+      "tags": [
+        "col:aux"
+      ]
+    },
+    {
+      "id": "en-au-aux-a-14",
+      "fr": "Maldives",
+      "en": "Maldives (pl. country)",
+      "syllables": [
+        "Mal",
+        "dives"
+      ],
+      "tags": [
+        "col:aux"
+      ]
+    },
+    {
+      "id": "en-au-aux-a-15",
+      "fr": "Londres",
+      "en": "London (city)",
+      "syllables": [
+        "Londres"
+      ],
+      "tags": [
+        "col:a"
+      ]
+    },
+    {
+      "id": "en-au-aux-a-16",
+      "fr": "Singapour",
+      "en": "Singapore (city)",
+      "syllables": [
+        "Sin",
+        "ga",
+        "pour"
+      ],
+      "tags": [
+        "col:a"
+      ]
     }
   ]
 }

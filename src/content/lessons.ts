@@ -45,7 +45,9 @@ export const LESSONS: Record<string, Lesson> = {
  * (revision-u1, revision-u3u4) have no single SIO home and live in the gallery.
  */
 export const LESSONS_BY_SIO: Record<string, string[]> = {
+  "SIO-001": ["se-presenter", "conjugaison-u1"], // s'appeler: taught in L01 + L03
   "SIO-014": ["se-presenter", "negation", "conjugaison-u1"],
+  "SIO-019": ["conjugaison-u1"], // avoir: L03 covers s'appeler, être, avoir
   "SIO-015": ["articles-pays"],
   "SIO-035": ["questions-oui-non", "mots-interrogatifs"],
   "SIO-022": ["possessifs"],

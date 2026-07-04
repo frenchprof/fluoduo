@@ -158,6 +158,62 @@
         "mar",
         "ché"
       ]
+    },
+    {
+      "id": "commerces-09",
+      "fr": "café",
+      "en": "café",
+      "emoji": "☕",
+      "syllables": [
+        "ca",
+        "fé"
+      ],
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "commerces-10",
+      "fr": "restaurant",
+      "en": "restaurant",
+      "emoji": "🍽️",
+      "syllables": [
+        "res",
+        "tau",
+        "rant"
+      ],
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "commerces-11",
+      "fr": "magasin",
+      "en": "shop",
+      "emoji": "🏪",
+      "syllables": [
+        "ma",
+        "ga",
+        "sin"
+      ],
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "commerces-12",
+      "fr": "salon de thé",
+      "en": "tea room",
+      "emoji": "🍵",
+      "syllables": [
+        "sa",
+        "lon",
+        "de",
+        "thé"
+      ],
+      "tags": [
+        "col:un"
+      ]
     }
   ]
 }

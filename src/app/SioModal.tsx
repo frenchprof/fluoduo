@@ -17,6 +17,9 @@ import { useEffect, useRef } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import type { Sio } from "@/content/sios";
 import type { Collection } from "@/lib/collections/schema";
+import { isLexReady } from "@/lib/collections/lexReady";
+import { isConjugaZoneReadyId } from "@/lib/collections/conjugaZoneReady";
+import { isGramMarathonReady } from "@/lib/collections/gramMarathonReady";
 
 const SIZE_KEY = "fluolingo:popupSize";
 
@@ -51,7 +54,15 @@ export function popupActivityTabs(
     { key: "flip", label: "Flip It", emoji: "🃏", href: `/practice/flip-it/${deck.id}` },
     { key: "say", label: "Say It", emoji: "🎤", href: `/practice/say-it/${deck.id}` },
     { key: "complete", label: "Complete It", emoji: "✏️", href: `/practice/complete-it/${deck.id}` },
-    { key: "match", label: "Lexicalator", emoji: "⚙️", href: `/games/conveyor/${deck.id}` },
+    ...(isConjugaZoneReadyId(deck.id)
+      ? [{ key: "conjugazone", label: "ConjugaZone", emoji: "🎯", href: `/practice/conjugazone/${deck.id}` }]
+      : []),
+    ...(isGramMarathonReady(deck)
+      ? [{ key: "grammarathon", label: "GramMarathon", emoji: "🏃", href: `/practice/grammarathon/${deck.id}` }]
+      : []),
+    ...(isLexReady(deck)
+      ? [{ key: "match", label: "Lexicalator", emoji: "⚙️", href: `/games/conveyor/${deck.id}` }]
+      : []),
     ...(hasLetris
       ? [{ key: "rain", label: "Vocabularain", emoji: "🌧️", href: `/games/letris/${deck.id.replace("-letris", "")}` }]
       : []),

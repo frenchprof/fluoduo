@@ -39,7 +39,7 @@ export default async function SioPage({ params }: { params: Promise<{ id: string
   const pretestHref = pretest
     ? `/pretests/${pretest.id}`
     : deck
-      ? `/games/practice/${deck.id}` // deck MCQ as the cold-guess fallback
+      ? `/practice/dice/${deck.id}` // deck MCQ as the cold-guess fallback
       : null;
   const chain = chainFor(sio.id);
 

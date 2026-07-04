@@ -111,6 +111,65 @@
       "tags": [
         "col:etre"
       ]
+    },
+    {
+      "id": "avoir-etats-07",
+      "fr": "sommeil",
+      "en": "sleepy",
+      "syllables": [
+        "som",
+        "meil"
+      ],
+      "tags": [
+        "col:avoir"
+      ]
+    },
+    {
+      "id": "avoir-etats-08",
+      "fr": "peur",
+      "en": "scared",
+      "syllables": [
+        "peur"
+      ],
+      "tags": [
+        "col:avoir"
+      ]
+    },
+    {
+      "id": "avoir-etats-09",
+      "fr": "malade",
+      "en": "sick",
+      "syllables": [
+        "ma",
+        "lade"
+      ],
+      "tags": [
+        "col:etre"
+      ]
+    },
+    {
+      "id": "avoir-etats-10",
+      "fr": "triste",
+      "en": "sad",
+      "syllables": [
+        "triste"
+      ],
+      "tags": [
+        "col:etre"
+      ]
+    },
+    {
+      "id": "avoir-etats-11",
+      "fr": "en retard",
+      "en": "late",
+      "syllables": [
+        "en",
+        "re",
+        "tard"
+      ],
+      "tags": [
+        "col:etre"
+      ]
     }
   ]
 }

@@ -154,6 +154,104 @@
       "tags": [
         "col:des"
       ]
+    },
+    {
+      "id": "faire-activites-09",
+      "fr": "judo",
+      "en": "judo",
+      "syllables": [
+        "ju",
+        "do"
+      ],
+      "tags": [
+        "col:du"
+      ]
+    },
+    {
+      "id": "faire-activites-10",
+      "fr": "piano",
+      "en": "piano",
+      "syllables": [
+        "pia",
+        "no"
+      ],
+      "tags": [
+        "col:du"
+      ]
+    },
+    {
+      "id": "faire-activites-11",
+      "fr": "danse",
+      "en": "dance",
+      "syllables": [
+        "danse"
+      ],
+      "tags": [
+        "col:de_la"
+      ]
+    },
+    {
+      "id": "faire-activites-12",
+      "fr": "musique",
+      "en": "music",
+      "syllables": [
+        "mu",
+        "sique"
+      ],
+      "tags": [
+        "col:de_la"
+      ]
+    },
+    {
+      "id": "faire-activites-13",
+      "fr": "escalade",
+      "en": "climbing",
+      "syllables": [
+        "es",
+        "ca",
+        "lade"
+      ],
+      "tags": [
+        "col:de_l"
+      ]
+    },
+    {
+      "id": "faire-activites-14",
+      "fr": "aviron",
+      "en": "rowing",
+      "syllables": [
+        "a",
+        "vi",
+        "ron"
+      ],
+      "tags": [
+        "col:de_l"
+      ]
+    },
+    {
+      "id": "faire-activites-15",
+      "fr": "promenades",
+      "en": "walks",
+      "syllables": [
+        "pro",
+        "me",
+        "nades"
+      ],
+      "tags": [
+        "col:des"
+      ]
+    },
+    {
+      "id": "faire-activites-16",
+      "fr": "achats",
+      "en": "shopping",
+      "syllables": [
+        "a",
+        "chats"
+      ],
+      "tags": [
+        "col:des"
+      ]
     }
   ]
 }

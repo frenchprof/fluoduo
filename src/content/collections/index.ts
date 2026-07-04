@@ -45,6 +45,13 @@ import demonstratifs from "./demonstratifs.json";
 import commerces from "./commerces.json";
 import modaux from "./modaux.json";
 
+import sappeler from "./sappeler.json";
+import tuVous from "./tu-vous.json";
+import alphabet from "./alphabet.json";
+import consignes from "./consignes.json";
+import salutations from "./salutations.json";
+import { ATELIER_DECKS } from "./atelierDecks";
+
 import etreEtudiant from "./etre-etudiant.json";
 import parceQue from "./parce-que.json";
 import vouloirInviter from "./vouloir-inviter.json";
@@ -91,4 +98,10 @@ export const CURATED: Collection[] = [
   vouloirInviter as Collection,
   pouvoir as Collection,
   enviesBesoins as Collection,
+  sappeler as Collection,
+  tuVous as Collection,
+  alphabet as Collection,
+  consignes as Collection,
+  salutations as Collection,
+  ...ATELIER_DECKS,
 ].sort((a, b) => (a.seq ?? 999) - (b.seq ?? 999));

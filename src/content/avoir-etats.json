@@ -50,6 +50,36 @@
       "displayName": "content(e)",
       "category": "etre",
       "meaning": "happy"
+    },
+    {
+      "text": "SOMMEIL",
+      "displayName": "sommeil",
+      "category": "avoir",
+      "meaning": "sleepy"
+    },
+    {
+      "text": "PEUR",
+      "displayName": "peur",
+      "category": "avoir",
+      "meaning": "scared"
+    },
+    {
+      "text": "MALADE",
+      "displayName": "malade",
+      "category": "etre",
+      "meaning": "sick"
+    },
+    {
+      "text": "TRISTE",
+      "displayName": "triste",
+      "category": "etre",
+      "meaning": "sad"
+    },
+    {
+      "text": "EN RETARD",
+      "displayName": "en retard",
+      "category": "etre",
+      "meaning": "late"
     }
   ]
 }

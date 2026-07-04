@@ -1,0 +1,141 @@
+{
+  "id": "demonstratifs",
+  "title": "Ce, cet, cette, ces",
+  "subtitle": "this / these",
+  "categories": [
+    {
+      "key": "ce",
+      "label": "Ce ___",
+      "prefix": "ce "
+    },
+    {
+      "key": "cet",
+      "label": "Cet ___",
+      "prefix": "cet "
+    },
+    {
+      "key": "cette",
+      "label": "Cette ___",
+      "prefix": "cette "
+    },
+    {
+      "key": "ces",
+      "label": "Ces ___",
+      "prefix": "ces "
+    }
+  ],
+  "tiles": [
+    {
+      "text": "PAIN",
+      "displayName": "pain",
+      "category": "ce",
+      "meaning": "bread",
+      "emoji": "🍞"
+    },
+    {
+      "text": "GÂTEAU",
+      "displayName": "gâteau",
+      "category": "ce",
+      "meaning": "cake",
+      "emoji": "🍰"
+    },
+    {
+      "text": "ANANAS",
+      "displayName": "ananas",
+      "category": "cet",
+      "meaning": "pineapple",
+      "emoji": "🍍"
+    },
+    {
+      "text": "AVOCAT",
+      "displayName": "avocat",
+      "category": "cet",
+      "meaning": "avocado",
+      "emoji": "🥑"
+    },
+    {
+      "text": "TARTE",
+      "displayName": "tarte",
+      "category": "cette",
+      "meaning": "tart",
+      "emoji": "🥧"
+    },
+    {
+      "text": "POMME",
+      "displayName": "pomme",
+      "category": "cette",
+      "meaning": "apple",
+      "emoji": "🍎"
+    },
+    {
+      "text": "LÉGUMES",
+      "displayName": "légumes",
+      "category": "ces",
+      "meaning": "vegetables",
+      "emoji": "🥕"
+    },
+    {
+      "text": "FRAISES",
+      "displayName": "fraises",
+      "category": "ces",
+      "meaning": "strawberries",
+      "emoji": "🍓"
+    },
+    {
+      "text": "CROISSANT",
+      "displayName": "croissant",
+      "category": "ce",
+      "meaning": "croissant",
+      "emoji": "🥐"
+    },
+    {
+      "text": "FROMAGE",
+      "displayName": "fromage",
+      "category": "ce",
+      "meaning": "cheese",
+      "emoji": "🧀"
+    },
+    {
+      "text": "ABRICOT",
+      "displayName": "abricot",
+      "category": "cet",
+      "meaning": "apricot",
+      "emoji": "🍑"
+    },
+    {
+      "text": "ŒUF",
+      "displayName": "œuf",
+      "category": "cet",
+      "meaning": "egg",
+      "emoji": "🥚"
+    },
+    {
+      "text": "ORANGE",
+      "displayName": "orange",
+      "category": "cette",
+      "meaning": "orange",
+      "emoji": "🍊"
+    },
+    {
+      "text": "BANANE",
+      "displayName": "banane",
+      "category": "cette",
+      "meaning": "banana",
+      "emoji": "🍌"
+    },
+    {
+      "text": "CAROTTES",
+      "displayName": "carottes",
+      "category": "ces",
+      "meaning": "carrots",
+      "emoji": "🥕"
+    },
+    {
+      "text": "OLIVES",
+      "displayName": "olives",
+      "category": "ces",
+      "meaning": "olives",
+      "emoji": "🫒"
+    }
+  ]
+}

@@ -53,7 +53,7 @@ const LOCKED_UNITS = new Set<number>(); // all units unlocked (Unité 4 decks ad
 function deckAndPretestFor(sio: Sio) {
   const deck = sio.collectionId ? CURATED.find((c) => c.id === sio.collectionId) : undefined;
   const pretest = getPretestForSio(sio.id);
-  const pretestHref = pretest ? `/pretests/${pretest.id}` : deck ? `/games/practice/${deck.id}` : null;
+  const pretestHref = pretest ? `/pretests/${pretest.id}` : deck ? `/practice/dice/${deck.id}` : null;
   return { deck, pretestHref, pretestId: pretest?.id ?? null };
 }
 
@@ -260,7 +260,7 @@ export default function SioHub() {
             onClose={() => setOpenId(null)}
             tabs={
               openSio.isProduction
-                ? undefined
+                ? popupActivityTabs(deck) // atelier decks: flip/say/complete on the model lines
                 : popupActivityTabs(deck, { inline: !!pretestId, href: pretestHref })
             }
           >

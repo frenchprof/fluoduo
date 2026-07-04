@@ -72,6 +72,48 @@
       "displayName": "magasins",
       "category": "aux",
       "meaning": "shops"
+    },
+    {
+      "text": "RESTAURANT",
+      "displayName": "restaurant",
+      "category": "au",
+      "meaning": "restaurant"
+    },
+    {
+      "text": "PARC",
+      "displayName": "parc",
+      "category": "au",
+      "meaning": "park"
+    },
+    {
+      "text": "GARE",
+      "displayName": "gare",
+      "category": "a_la",
+      "meaning": "train station"
+    },
+    {
+      "text": "BANQUE",
+      "displayName": "banque",
+      "category": "a_la",
+      "meaning": "bank"
+    },
+    {
+      "text": "AÉROPORT",
+      "displayName": "aéroport",
+      "category": "a_l",
+      "meaning": "airport"
+    },
+    {
+      "text": "UNIVERSITÉ",
+      "displayName": "université",
+      "category": "a_l",
+      "meaning": "university"
+    },
+    {
+      "text": "URGENCES",
+      "displayName": "urgences",
+      "category": "aux",
+      "meaning": "emergency room"
     }
   ]
 }

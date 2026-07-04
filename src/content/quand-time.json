@@ -55,6 +55,42 @@
       "displayName": "à midi",
       "category": "heure",
       "meaning": "at noon"
+    },
+    {
+      "text": "LE MARDI",
+      "displayName": "le mardi",
+      "category": "jour",
+      "meaning": "on Tuesdays"
+    },
+    {
+      "text": "LE SAMEDI",
+      "displayName": "le samedi",
+      "category": "jour",
+      "meaning": "on Saturdays"
+    },
+    {
+      "text": "TOUS LES SOIRS",
+      "displayName": "tous les soirs",
+      "category": "frequence",
+      "meaning": "every evening"
+    },
+    {
+      "text": "TOUS LES WEEK-ENDS",
+      "displayName": "tous les week-ends",
+      "category": "frequence",
+      "meaning": "every weekend"
+    },
+    {
+      "text": "À 10 HEURES",
+      "displayName": "à 10 heures",
+      "category": "heure",
+      "meaning": "at 10 o’clock"
+    },
+    {
+      "text": "À MINUIT",
+      "displayName": "à minuit",
+      "category": "heure",
+      "meaning": "at midnight"
     }
   ]
 }

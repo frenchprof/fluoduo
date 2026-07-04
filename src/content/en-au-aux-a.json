@@ -72,6 +72,54 @@
       "displayName": "Tokyo",
       "category": "a",
       "meaning": "Tokyo (city)"
+    },
+    {
+      "text": "ESPAGNE",
+      "displayName": "Espagne",
+      "category": "en",
+      "meaning": "Spain (f. country)"
+    },
+    {
+      "text": "CHINE",
+      "displayName": "Chine",
+      "category": "en",
+      "meaning": "China (f. country)"
+    },
+    {
+      "text": "PORTUGAL",
+      "displayName": "Portugal",
+      "category": "au",
+      "meaning": "Portugal (m. country)"
+    },
+    {
+      "text": "BRÉSIL",
+      "displayName": "Brésil",
+      "category": "au",
+      "meaning": "Brazil (m. country)"
+    },
+    {
+      "text": "PHILIPPINES",
+      "displayName": "Philippines",
+      "category": "aux",
+      "meaning": "Philippines (pl. country)"
+    },
+    {
+      "text": "MALDIVES",
+      "displayName": "Maldives",
+      "category": "aux",
+      "meaning": "Maldives (pl. country)"
+    },
+    {
+      "text": "LONDRES",
+      "displayName": "Londres",
+      "category": "a",
+      "meaning": "London (city)"
+    },
+    {
+      "text": "SINGAPOUR",
+      "displayName": "Singapour",
+      "category": "a",
+      "meaning": "Singapore (city)"
     }
   ]
 }

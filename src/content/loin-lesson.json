@@ -5,13 +5,13 @@
   "language": "fr",
   "categories": [
     {
-      "key": "group1",
-      "label": "SANS de",
+      "key": "sans_de",
+      "label": "___ la table",
       "prefix": ""
     },
     {
-      "key": "group2",
-      "label": "AVEC de",
+      "key": "avec_de",
+      "label": "___ DE la table",
       "prefix": ""
     }
   ],
@@ -19,84 +19,84 @@
     {
       "text": "SUR",
       "displayName": "sur",
-      "category": "group1",
+      "category": "sans_de",
       "meaning": "on / on top of",
       "emoji": "⬆️"
     },
     {
       "text": "SOUS",
       "displayName": "sous",
-      "category": "group1",
+      "category": "sans_de",
       "meaning": "under",
       "emoji": "⬇️"
     },
     {
       "text": "DEVANT",
       "displayName": "devant",
-      "category": "group1",
+      "category": "sans_de",
       "meaning": "in front of",
       "emoji": "⏪"
     },
     {
       "text": "DERRIÈRE",
       "displayName": "derrière",
-      "category": "group1",
+      "category": "sans_de",
       "meaning": "behind",
       "emoji": "⏩"
     },
     {
       "text": "DANS",
       "displayName": "dans",
-      "category": "group1",
+      "category": "sans_de",
       "meaning": "in / inside",
       "emoji": "📦"
     },
     {
       "text": "ENTRE",
       "displayName": "entre",
-      "category": "group1",
+      "category": "sans_de",
       "meaning": "between",
       "emoji": "↔️"
     },
     {
       "text": "À CÔTÉ",
       "displayName": "à côté de",
-      "category": "group2",
+      "category": "avec_de",
       "meaning": "next to / beside",
       "emoji": "🤝"
     },
     {
       "text": "À GAUCHE",
       "displayName": "à gauche de",
-      "category": "group2",
+      "category": "avec_de",
       "meaning": "to the left of",
       "emoji": "⬅️"
     },
     {
       "text": "À DROITE",
       "displayName": "à droite de",
-      "category": "group2",
+      "category": "avec_de",
       "meaning": "to the right of",
       "emoji": "➡️"
     },
     {
       "text": "PRÈS",
       "displayName": "près de",
-      "category": "group2",
+      "category": "avec_de",
       "meaning": "near",
       "emoji": "📏"
     },
     {
       "text": "LOIN",
       "displayName": "loin de",
-      "category": "group2",
+      "category": "avec_de",
       "meaning": "far from",
       "emoji": "🛣️"
     },
     {
       "text": "EN FACE",
       "displayName": "en face de",
-      "category": "group2",
+      "category": "avec_de",
       "meaning": "opposite / facing",
       "emoji": "🪞"
     }

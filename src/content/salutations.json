@@ -1,0 +1,120 @@
+{
+  "id": "salutations",
+  "title": "Salutations",
+  "subtitle": "saluer · prendre congé",
+  "categories": [
+    {
+      "key": "saluer_std",
+      "label": "SALUER · passe-partout",
+      "prefix": ""
+    },
+    {
+      "key": "saluer_fam",
+      "label": "SALUER · familier",
+      "prefix": ""
+    },
+    {
+      "key": "partir_std",
+      "label": "PARTIR · passe-partout",
+      "prefix": ""
+    },
+    {
+      "key": "partir_fam",
+      "label": "PARTIR · familier",
+      "prefix": ""
+    }
+  ],
+  "tiles": [
+    {
+      "text": "BONJOUR !",
+      "displayName": "Bonjour !",
+      "category": "saluer_std",
+      "meaning": "Hello! / Good day!",
+      "emoji": "☀️"
+    },
+    {
+      "text": "BONSOIR !",
+      "displayName": "Bonsoir !",
+      "category": "saluer_std",
+      "meaning": "Good evening!",
+      "emoji": "🌆"
+    },
+    {
+      "text": "ENCHANTÉ !",
+      "displayName": "Enchanté !",
+      "category": "saluer_std",
+      "meaning": "Nice to meet you!",
+      "emoji": "🤝"
+    },
+    {
+      "text": "SALUT !",
+      "displayName": "Salut !",
+      "category": "saluer_fam",
+      "meaning": "Hi!",
+      "emoji": "👋"
+    },
+    {
+      "text": "COUCOU !",
+      "displayName": "Coucou !",
+      "category": "saluer_fam",
+      "meaning": "Hey there!",
+      "emoji": "🙋"
+    },
+    {
+      "text": "ÇA VA ?",
+      "displayName": "Ça va ?",
+      "category": "saluer_fam",
+      "meaning": "How's it going?",
+      "emoji": "🙂"
+    },
+    {
+      "text": "AU REVOIR !",
+      "displayName": "Au revoir !",
+      "category": "partir_std",
+      "meaning": "Goodbye!",
+      "emoji": "👋"
+    },
+    {
+      "text": "À DEMAIN !",
+      "displayName": "À demain !",
+      "category": "partir_std",
+      "meaning": "See you tomorrow!",
+      "emoji": "📅"
+    },
+    {
+      "text": "À BIENTÔT !",
+      "displayName": "À bientôt !",
+      "category": "partir_std",
+      "meaning": "See you soon!",
+      "emoji": "🔜"
+    },
+    {
+      "text": "BONNE JOURNÉE !",
+      "displayName": "Bonne journée !",
+      "category": "partir_std",
+      "meaning": "Have a good day!",
+      "emoji": "🌞"
+    },
+    {
+      "text": "BONNE NUIT !",
+      "displayName": "Bonne nuit !",
+      "category": "partir_std",
+      "meaning": "Good night!",
+      "emoji": "🌙"
+    },
+    {
+      "text": "À PLUS TARD !",
+      "displayName": "À plus tard !",
+      "category": "partir_fam",
+      "meaning": "See you later!",
+      "emoji": "🕐"
+    },
+    {
+      "text": "À PLUS !",
+      "displayName": "À plus !",
+      "category": "partir_fam",
+      "meaning": "Later!",
+      "emoji": "✌️"
+    }
+  ]
+}

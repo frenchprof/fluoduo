@@ -1,0 +1,25 @@
+{
+  "id": "consignes",
+  "title": "Les consignes de classe",
+  "subtitle": "Écoutez ! Répétez ! …",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 0,
+  "lessonNo": 8,
+  "lessonSlug": "classroom",
+  "tags": [],
+  "seq": 8,
+  "items": [
+    { "id": "consignes-01", "fr": "Écoutez !", "en": "Listen!", "emoji": "👂", "tags": [] },
+    { "id": "consignes-02", "fr": "Regardez !", "en": "Look!", "emoji": "👀", "tags": [] },
+    { "id": "consignes-03", "fr": "Répétez !", "en": "Repeat!", "emoji": "🔁", "tags": [] },
+    { "id": "consignes-04", "fr": "Lisez !", "en": "Read!", "emoji": "📖", "tags": [] },
+    { "id": "consignes-05", "fr": "Écrivez !", "en": "Write!", "emoji": "✍️", "tags": [] },
+    { "id": "consignes-06", "fr": "Parlez !", "en": "Speak!", "emoji": "🗣️", "tags": [] },
+    { "id": "consignes-07", "fr": "Notez !", "en": "Note it down!", "emoji": "📝", "tags": [] },
+    { "id": "consignes-08", "fr": "Comptez !", "en": "Count!", "emoji": "🔢", "tags": [] },
+    { "id": "consignes-09", "fr": "Associez !", "en": "Match!", "emoji": "🔗", "tags": [] },
+    { "id": "consignes-10", "fr": "On fait quoi ?", "en": "What are we doing?", "emoji": "❓", "tags": [] }
+  ]
+}

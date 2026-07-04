@@ -12,7 +12,7 @@
     "isProduction": false,
     "canDo": "I can introduce myself and other people, ask someone their name, and address someone politely with M./Mme.",
     "competence": "Conjugate s'appeler in all 6 persons (≥5/6); ask a name with tu and with vous; introduce a third person (Il/Elle s'appelle…); use M./Mme as a form of address.",
-    "collectionId": null
+    "collectionId": "sappeler"
   },
   {
     "id": "SIO-002",
@@ -27,7 +27,7 @@
     "isProduction": false,
     "canDo": "I can tell which pronoun (tu vs vous) is more appropriate in a particular context.",
     "competence": "Select tu / vous (polite sg) / vous (pl) correctly in ≥10/12 situations; give a one-phrase reason for each choice.",
-    "collectionId": null
+    "collectionId": "tu-vous"
   },
   {
     "id": "SIO-003",
@@ -42,7 +42,7 @@
     "isProduction": false,
     "canDo": "I can say how a name is spelled, or ask how it is spelled.",
     "competence": "Name all 26 letters; sort them into the 7 vowel-sound groups; spell a given word aloud (≥90% letters correct).",
-    "collectionId": null
+    "collectionId": "alphabet"
   },
   {
     "id": "SIO-004",
@@ -117,7 +117,7 @@
     "isProduction": false,
     "canDo": "I can understand and respond to classroom instructions like Écoutez !, Regardez !, Répétez !, Lisez !, Écrivez !, Parlez !, Notez !, Comptez !, Associez !, or ask what we are doing.",
     "competence": "Perform the correct action for the 9 instructions (≥8/9); ask On fait quoi ?",
-    "collectionId": null
+    "collectionId": "consignes"
   },
   {
     "id": "SIO-009",
@@ -132,7 +132,7 @@
     "isProduction": false,
     "canDo": "I can greet and say goodbye based on time of day and register (casual or formal).",
     "competence": "Produce the register-appropriate greeting/leave-taking for a given time and relationship (≥8/10); sort phrases into meeting vs parting and universal vs familiar.",
-    "collectionId": null
+    "collectionId": "salutations"
   },
   {
     "id": "SIO-010",
@@ -147,7 +147,7 @@
     "isProduction": true,
     "canDo": "I can simulate a simple first-time meeting in French, from Bonjour, to Comment tu t'appelles, to Et toi ?, to Comment ça s'écrit, to Enchanté, to Au revoir !",
     "competence": "Complete all steps of a first-meeting exchange: greet, ask a name (tu or vous), give one's own name, ask Et toi ?, ask/answer Comment ça s'écrit ?, say Enchanté(e), and take leave (Au revoir).",
-    "collectionId": null
+    "collectionId": "atelier-sio-010"
   },
   {
     "id": "SIO-011",
@@ -297,7 +297,7 @@
     "isProduction": true,
     "canDo": "I can write a few simple sentences about a francophone country I know, if I can prepare.",
     "competence": "Write 3–4 comprehensible sentences with all 4 elements present (name, location, language, one cultural fact).",
-    "collectionId": null
+    "collectionId": "atelier-sio-020"
   },
   {
     "id": "SIO-021",
@@ -447,7 +447,7 @@
     "isProduction": true,
     "canDo": "I can write a short, friendly message with good wishes and simple linking words, if I can prepare.",
     "competence": "Produce well-wish formulas; write a 4–6 sentence email using ≥3 connectors (d'abord/ensuite/aussi/mais/et/enfin) correctly.",
-    "collectionId": null
+    "collectionId": "atelier-sio-030"
   },
   {
     "id": "SIO-031",
@@ -597,7 +597,7 @@
     "isProduction": true,
     "canDo": "I can explain step by step how to get somewhere, linking the steps in order.",
     "competence": "Describe ≥4 ordered steps using d'abord/puis/ensuite/après/enfin with il faut + inf / on + present and transport + direction vocabulary.",
-    "collectionId": null
+    "collectionId": "atelier-sio-040"
   },
   {
     "id": "SIO-041",
@@ -732,7 +732,7 @@
     "isProduction": true,
     "canDo": "I can give a simple opinion about a restaurant, mentioning good and bad points.",
     "competence": "State ≥1 positive point, ≥1 negative point, and a clear recommendation (Je recommande / Je ne recommande pas).",
-    "collectionId": null
+    "collectionId": "atelier-sio-049"
   },
   {
     "id": "SIO-050",
@@ -747,6 +747,6 @@
     "isProduction": true,
     "canDo": "I can get by in a simple restaurant visit from arrival to paying, using set phrases, as long as staff are patient.",
     "competence": "Complete all 6 steps: greet, read the menu, order (entrée/plat/boisson/dessert), interact, ask for the bill, pay and say goodbye.",
-    "collectionId": null
+    "collectionId": "atelier-sio-050"
   }
 ]

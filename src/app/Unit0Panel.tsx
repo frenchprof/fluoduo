@@ -15,8 +15,10 @@
  * handoff doc, not silently dropped.
  */
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { speak } from "@/games/letris/speech";
 import { SIOS, sioStatement } from "@/content/sios";
+import { lessonsForSio } from "@/content/lessons";
 import { CURATED } from "@/content/collections";
 import { UNIT0_QUESTIONS, type Unit0Question } from "@/content/sios/unit0-questions";
 import { getAtelier } from "@/content/ateliers";
@@ -73,15 +75,21 @@ export default function Unit0Panel() {
         <SioModal
           sio={openSio}
           onClose={() => setOpenId(null)}
-          tabs={
-            openSio.isProduction
-              ? undefined
-              : popupActivityTabs(openSio.collectionId ? CURATED.find((c) => c.id === openSio.collectionId) : undefined)
-          }
+          tabs={popupActivityTabs(openSio.collectionId ? CURATED.find((c) => c.id === openSio.collectionId) : undefined)}
         >
           <p className="fluo-serif mb-4 text-base font-bold leading-snug text-[color:var(--fluo-ink)]">
             <span className="fluo-hl">{sioStatement(openSio)}</span>
           </p>
+
+          {lessonsForSio(openSio.id).length > 0 && (
+            <div className="mb-4 flex flex-wrap gap-2">
+              {lessonsForSio(openSio.id).map((l) => (
+                <Link key={l.slug} href={`/lessons/${l.slug}`} className="fluo-btn fluo-btn-sm inline-flex">
+                  🎲 {l.title}
+                </Link>
+              ))}
+            </div>
+          )}
 
           {openSio.id === "SIO-010" ? (
             <DialoguePlayer lines={getAtelier(openSio.id) ?? []} />

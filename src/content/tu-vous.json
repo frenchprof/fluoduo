@@ -1,0 +1,108 @@
+{
+  "id": "tu-vous",
+  "title": "Tu ou vous ?",
+  "subtitle": "tu · vous (poli) · vous (pluriel)",
+  "categories": [
+    {
+      "key": "tu",
+      "label": "TU",
+      "prefix": ""
+    },
+    {
+      "key": "vous_poli",
+      "label": "VOUS (poli)",
+      "prefix": ""
+    },
+    {
+      "key": "vous_pl",
+      "label": "VOUS (pluriel)",
+      "prefix": ""
+    }
+  ],
+  "tiles": [
+    {
+      "text": "UN COPAIN",
+      "displayName": "un copain",
+      "category": "tu",
+      "meaning": "a buddy",
+      "emoji": "🧑"
+    },
+    {
+      "text": "TA PETITE SŒUR",
+      "displayName": "ta petite sœur",
+      "category": "tu",
+      "meaning": "your little sister",
+      "emoji": "👧"
+    },
+    {
+      "text": "UN ENFANT",
+      "displayName": "un enfant",
+      "category": "tu",
+      "meaning": "a child",
+      "emoji": "🧒"
+    },
+    {
+      "text": "TON MEILLEUR AMI",
+      "displayName": "ton meilleur ami",
+      "category": "tu",
+      "meaning": "your best friend",
+      "emoji": "🤝"
+    },
+    {
+      "text": "LE PROFESSEUR",
+      "displayName": "le professeur",
+      "category": "vous_poli",
+      "meaning": "the teacher",
+      "emoji": "👨‍🏫"
+    },
+    {
+      "text": "UNE VENDEUSE",
+      "displayName": "une vendeuse",
+      "category": "vous_poli",
+      "meaning": "a saleswoman",
+      "emoji": "🛍️"
+    },
+    {
+      "text": "LE DIRECTEUR",
+      "displayName": "le directeur",
+      "category": "vous_poli",
+      "meaning": "the headmaster",
+      "emoji": "💼"
+    },
+    {
+      "text": "UNE PERSONNE ÂGÉE",
+      "displayName": "une personne âgée",
+      "category": "vous_poli",
+      "meaning": "an elderly person",
+      "emoji": "👵"
+    },
+    {
+      "text": "DEUX COPAINS",
+      "displayName": "deux copains",
+      "category": "vous_pl",
+      "meaning": "two buddies",
+      "emoji": "👬"
+    },
+    {
+      "text": "TES PARENTS",
+      "displayName": "tes parents",
+      "category": "vous_pl",
+      "meaning": "your parents",
+      "emoji": "👪"
+    },
+    {
+      "text": "LES VOISINS",
+      "displayName": "les voisins",
+      "category": "vous_pl",
+      "meaning": "the neighbours",
+      "emoji": "🏘️"
+    },
+    {
+      "text": "MONSIEUR ET MADAME MARTIN",
+      "displayName": "Monsieur et Madame Martin",
+      "category": "vous_pl",
+      "meaning": "Mr and Mrs Martin",
+      "emoji": "🧑‍🤝‍🧑"
+    }
+  ]
+}

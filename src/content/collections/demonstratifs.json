@@ -154,6 +154,110 @@
       "syllables": [
         "fraises"
       ]
+    },
+    {
+      "id": "demonstratifs-09",
+      "fr": "croissant",
+      "en": "croissant",
+      "emoji": "🥐",
+      "syllables": [
+        "crois",
+        "sant"
+      ],
+      "tags": [
+        "col:ce"
+      ]
+    },
+    {
+      "id": "demonstratifs-10",
+      "fr": "fromage",
+      "en": "cheese",
+      "emoji": "🧀",
+      "syllables": [
+        "fro",
+        "mage"
+      ],
+      "tags": [
+        "col:ce"
+      ]
+    },
+    {
+      "id": "demonstratifs-11",
+      "fr": "abricot",
+      "en": "apricot",
+      "emoji": "🍑",
+      "syllables": [
+        "a",
+        "bri",
+        "cot"
+      ],
+      "tags": [
+        "col:cet"
+      ]
+    },
+    {
+      "id": "demonstratifs-12",
+      "fr": "œuf",
+      "en": "egg",
+      "emoji": "🥚",
+      "syllables": [
+        "œuf"
+      ],
+      "tags": [
+        "col:cet"
+      ]
+    },
+    {
+      "id": "demonstratifs-13",
+      "fr": "orange",
+      "en": "orange",
+      "emoji": "🍊",
+      "syllables": [
+        "o",
+        "range"
+      ],
+      "tags": [
+        "col:cette"
+      ]
+    },
+    {
+      "id": "demonstratifs-14",
+      "fr": "banane",
+      "en": "banana",
+      "emoji": "🍌",
+      "syllables": [
+        "ba",
+        "nane"
+      ],
+      "tags": [
+        "col:cette"
+      ]
+    },
+    {
+      "id": "demonstratifs-15",
+      "fr": "carottes",
+      "en": "carrots",
+      "emoji": "🥕",
+      "syllables": [
+        "ca",
+        "rottes"
+      ],
+      "tags": [
+        "col:ces"
+      ]
+    },
+    {
+      "id": "demonstratifs-16",
+      "fr": "olives",
+      "en": "olives",
+      "emoji": "🫒",
+      "syllables": [
+        "o",
+        "lives"
+      ],
+      "tags": [
+        "col:ces"
+      ]
     }
   ]
 }

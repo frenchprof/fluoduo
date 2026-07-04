@@ -14,6 +14,10 @@ import faireActivites from "@/content/faire-activites.json";
 import allerDestinations from "@/content/aller-destinations.json";
 import quandTime from "@/content/quand-time.json";
 import enAuAuxA from "@/content/en-au-aux-a.json";
+import demonstratifs from "@/content/demonstratifs.json";
+import commerces from "@/content/commerces.json";
+import tuVous from "@/content/tu-vous.json";
+import salutations from "@/content/salutations.json";
 import type { LetrisSet } from "./LetrisGame";
 
 export type LetrisSetMeta = {
@@ -42,6 +46,10 @@ const REGISTRY: Record<string, LetrisSet> = {
   "aller-destinations": allerDestinations as LetrisSet,
   "quand-time": quandTime as LetrisSet,
   "en-au-aux-a": enAuAuxA as LetrisSet,
+  demonstratifs: demonstratifs as LetrisSet,
+  commerces: commerces as LetrisSet,
+  "tu-vous": tuVous as LetrisSet,
+  salutations: salutations as LetrisSet,
 };
 
 const META: Record<string, { emoji: string }> = {
@@ -61,6 +69,10 @@ const META: Record<string, { emoji: string }> = {
   "aller-destinations": { emoji: "🚏" },
   "quand-time": { emoji: "⏰" },
   "en-au-aux-a": { emoji: "🗺️" },
+  demonstratifs: { emoji: "👉" },
+  commerces: { emoji: "🛍️" },
+  "tu-vous": { emoji: "🤝" },
+  salutations: { emoji: "👋" },
 };
 
 // Out-of-syllabus pools — reachable by slug, but hidden from the default lesson

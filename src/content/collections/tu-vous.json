@@ -1,0 +1,111 @@
+{
+  "id": "tu-vous",
+  "title": "Tu ou vous ?",
+  "subtitle": "tu · vous (poli) · vous (pluriel)",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 0,
+  "lessonNo": 2,
+  "lessonSlug": "tu-vous",
+  "tags": [],
+  "seq": 2,
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        { "key": "tu", "label": "TU", "prefix": "" },
+        { "key": "vous_poli", "label": "VOUS (poli)", "prefix": "" },
+        { "key": "vous_pl", "label": "VOUS (pluriel)", "prefix": "" }
+      ]
+    },
+    "practice": {
+      "prompt": "Tu, vous (poli) ou vous (pluriel) ?"
+    }
+  },
+  "items": [
+    {
+      "id": "tu-vous-01",
+      "fr": "un copain",
+      "en": "a buddy",
+      "emoji": "🧑",
+      "tags": ["col:tu"]
+    },
+    {
+      "id": "tu-vous-02",
+      "fr": "ta petite sœur",
+      "en": "your little sister",
+      "emoji": "👧",
+      "tags": ["col:tu"]
+    },
+    {
+      "id": "tu-vous-03",
+      "fr": "un enfant",
+      "en": "a child",
+      "emoji": "🧒",
+      "tags": ["col:tu"]
+    },
+    {
+      "id": "tu-vous-04",
+      "fr": "ton meilleur ami",
+      "en": "your best friend",
+      "emoji": "🤝",
+      "tags": ["col:tu"]
+    },
+    {
+      "id": "tu-vous-05",
+      "fr": "le professeur",
+      "en": "the teacher",
+      "emoji": "👨‍🏫",
+      "tags": ["col:vous_poli"]
+    },
+    {
+      "id": "tu-vous-06",
+      "fr": "une vendeuse",
+      "en": "a saleswoman",
+      "emoji": "🛍️",
+      "tags": ["col:vous_poli"]
+    },
+    {
+      "id": "tu-vous-07",
+      "fr": "le directeur",
+      "en": "the headmaster",
+      "emoji": "💼",
+      "tags": ["col:vous_poli"]
+    },
+    {
+      "id": "tu-vous-08",
+      "fr": "une personne âgée",
+      "en": "an elderly person",
+      "emoji": "👵",
+      "tags": ["col:vous_poli"]
+    },
+    {
+      "id": "tu-vous-09",
+      "fr": "deux copains",
+      "en": "two buddies",
+      "emoji": "👬",
+      "tags": ["col:vous_pl"]
+    },
+    {
+      "id": "tu-vous-10",
+      "fr": "tes parents",
+      "en": "your parents",
+      "emoji": "👪",
+      "tags": ["col:vous_pl"]
+    },
+    {
+      "id": "tu-vous-11",
+      "fr": "les voisins",
+      "en": "the neighbours",
+      "emoji": "🏘️",
+      "tags": ["col:vous_pl"]
+    },
+    {
+      "id": "tu-vous-12",
+      "fr": "Monsieur et Madame Martin",
+      "en": "Mr and Mrs Martin",
+      "emoji": "🧑‍🤝‍🧑",
+      "tags": ["col:vous_pl"]
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "id": "commerces",
+  "title": "Les commerces",
+  "subtitle": "un ou une ?",
+  "categories": [
+    {
+      "key": "un",
+      "label": "Un ___",
+      "prefix": "un "
+    },
+    {
+      "key": "une",
+      "label": "Une ___",
+      "prefix": "une "
+    }
+  ],
+  "tiles": [
+    {
+      "text": "BOULANGERIE",
+      "displayName": "boulangerie",
+      "category": "une",
+      "meaning": "bakery",
+      "emoji": "🥖"
+    },
+    {
+      "text": "PÂTISSERIE",
+      "displayName": "pâtisserie",
+      "category": "une",
+      "meaning": "pastry shop",
+      "emoji": "🍰"
+    },
+    {
+      "text": "BOUCHERIE",
+      "displayName": "boucherie",
+      "category": "une",
+      "meaning": "butcher",
+      "emoji": "🥩"
+    },
+    {
+      "text": "POISSONNERIE",
+      "displayName": "poissonnerie",
+      "category": "une",
+      "meaning": "fishmonger",
+      "emoji": "🐟"
+    },
+    {
+      "text": "ÉPICERIE",
+      "displayName": "épicerie",
+      "category": "une",
+      "meaning": "grocery",
+      "emoji": "🛒"
+    },
+    {
+      "text": "FROMAGERIE",
+      "displayName": "fromagerie",
+      "category": "une",
+      "meaning": "cheese shop",
+      "emoji": "🧀"
+    },
+    {
+      "text": "MARCHÉ",
+      "displayName": "marché",
+      "category": "un",
+      "meaning": "market",
+      "emoji": "🍅"
+    },
+    {
+      "text": "SUPERMARCHÉ",
+      "displayName": "supermarché",
+      "category": "un",
+      "meaning": "supermarket",
+      "emoji": "🏬"
+    },
+    {
+      "text": "CAFÉ",
+      "displayName": "café",
+      "category": "un",
+      "meaning": "café",
+      "emoji": "☕"
+    },
+    {
+      "text": "RESTAURANT",
+      "displayName": "restaurant",
+      "category": "un",
+      "meaning": "restaurant",
+      "emoji": "🍽️"
+    },
+    {
+      "text": "MAGASIN",
+      "displayName": "magasin",
+      "category": "un",
+      "meaning": "shop",
+      "emoji": "🏪"
+    },
+    {
+      "text": "SALON DE THÉ",
+      "displayName": "salon de thé",
+      "category": "un",
+      "meaning": "tea room",
+      "emoji": "🍵"
+    }
+  ]
+}

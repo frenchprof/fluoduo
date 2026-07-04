@@ -150,6 +150,93 @@
       "tags": [
         "col:aux"
       ]
+    },
+    {
+      "id": "aller-destinations-09",
+      "fr": "restaurant",
+      "en": "restaurant",
+      "syllables": [
+        "res",
+        "tau",
+        "rant"
+      ],
+      "tags": [
+        "col:au"
+      ]
+    },
+    {
+      "id": "aller-destinations-10",
+      "fr": "parc",
+      "en": "park",
+      "syllables": [
+        "parc"
+      ],
+      "tags": [
+        "col:au"
+      ]
+    },
+    {
+      "id": "aller-destinations-11",
+      "fr": "gare",
+      "en": "train station",
+      "syllables": [
+        "gare"
+      ],
+      "tags": [
+        "col:a_la"
+      ]
+    },
+    {
+      "id": "aller-destinations-12",
+      "fr": "banque",
+      "en": "bank",
+      "syllables": [
+        "banque"
+      ],
+      "tags": [
+        "col:a_la"
+      ]
+    },
+    {
+      "id": "aller-destinations-13",
+      "fr": "aéroport",
+      "en": "airport",
+      "syllables": [
+        "a",
+        "é",
+        "ro",
+        "port"
+      ],
+      "tags": [
+        "col:a_l"
+      ]
+    },
+    {
+      "id": "aller-destinations-14",
+      "fr": "université",
+      "en": "university",
+      "syllables": [
+        "u",
+        "ni",
+        "ver",
+        "si",
+        "té"
+      ],
+      "tags": [
+        "col:a_l"
+      ]
+    },
+    {
+      "id": "aller-destinations-15",
+      "fr": "urgences",
+      "en": "emergency room",
+      "syllables": [
+        "ur",
+        "gences"
+      ],
+      "tags": [
+        "col:aux"
+      ]
     }
   ]
 }

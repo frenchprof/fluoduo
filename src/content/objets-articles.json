@@ -103,6 +103,24 @@
       "displayName": "clé",
       "category": "une",
       "meaning": "key"
+    },
+    {
+      "text": "RÈGLE",
+      "displayName": "règle",
+      "category": "une",
+      "meaning": "ruler"
+    },
+    {
+      "text": "ÉCOUTEURS",
+      "displayName": "écouteurs",
+      "category": "des",
+      "meaning": "headphones"
+    },
+    {
+      "text": "MOUCHOIRS",
+      "displayName": "mouchoirs",
+      "category": "des",
+      "meaning": "tissues"
     }
   ]
 }

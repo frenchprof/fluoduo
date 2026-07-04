@@ -84,6 +84,42 @@
       "displayName": "langues",
       "category": "les",
       "meaning": "languages"
+    },
+    {
+      "text": "SPORT",
+      "displayName": "sport",
+      "category": "le",
+      "meaning": "sport"
+    },
+    {
+      "text": "THÉÂTRE",
+      "displayName": "théâtre",
+      "category": "le",
+      "meaning": "drama"
+    },
+    {
+      "text": "CHIMIE",
+      "displayName": "chimie",
+      "category": "la",
+      "meaning": "chemistry"
+    },
+    {
+      "text": "MUSIQUE",
+      "displayName": "musique",
+      "category": "la",
+      "meaning": "music"
+    },
+    {
+      "text": "ESPAGNOL",
+      "displayName": "espagnol",
+      "category": "l_apos",
+      "meaning": "Spanish"
+    },
+    {
+      "text": "ARTS PLASTIQUES",
+      "displayName": "arts plastiques",
+      "category": "les",
+      "meaning": "visual arts"
     }
   ]
 }
