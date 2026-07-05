@@ -77,8 +77,11 @@ export default function LessonFlow({
       ? getAtelier(sio?.id ?? collectionId.slice("atelier-".length).toUpperCase())
       : undefined;
   const lire = memo ?? (atelierLines ? <DialoguePlayer lines={atelierLines} /> : undefined);
-  // Sibling lessons of this deck stay one tap away from Lire.
-  const siblings = deckLessons.filter((l) => l.slug !== (lessonSlug ?? deckLessons[0]?.slug));
+  const currentSlug = lessonSlug ?? deckLessons[0]?.slug;
+  // Multi-lesson decks: ALL lessons as one toggle row — the active one
+  // depressed, the others waiting (Dan, 2026-07-05). Short names: drop the
+  // "(Unité 1)" / "— …" / ": …" tails to save space.
+  const shortTitle = (t: string) => t.split("—")[0].split("(")[0].split(" : ")[0].trim();
 
   const sections: Section[] = [];
   // No Lire content at all (defensive — waves 1+2 cover every deck): skip the
@@ -104,13 +107,23 @@ export default function LessonFlow({
       <h1 lang="fr" className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
         📚 {shown?.title ?? deck.title}
       </h1>
-      {siblings.length > 0 && (
+      {deckLessons.length > 1 && (
         <div className="flex flex-wrap gap-1.5">
-          {siblings.map((l) => (
-            <Link key={l.slug} href={`/lessons/${l.slug}`} className="fluo-btn fluo-btn-sm">
-              📚 {l.title}
-            </Link>
-          ))}
+          {deckLessons.map((l) =>
+            l.slug === currentSlug ? (
+              <span
+                key={l.slug}
+                aria-current="page"
+                className="fluo-btn fluo-btn-sm pointer-events-none translate-y-[1px] !bg-[color:var(--cahier-hl,#eaff00)] !shadow-none font-black"
+              >
+                📚 {shortTitle(l.title)}
+              </span>
+            ) : (
+              <Link key={l.slug} href={`/lessons/${l.slug}`} className="fluo-btn fluo-btn-sm">
+                {shortTitle(l.title)}
+              </Link>
+            ),
+          )}
         </div>
       )}
 
