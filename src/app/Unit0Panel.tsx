@@ -65,7 +65,7 @@ export default function Unit0Panel({
   // header of its own.
   return (
     <div className="fluo-h-0">
-      <div className="grid grid-cols-5 gap-3">
+      <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-5 sm:gap-3">
         {UNIT0_SIOS.map((s) => (
           <button
             key={s.id}

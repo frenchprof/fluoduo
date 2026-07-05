@@ -35,14 +35,21 @@ import BackLink from "@/components/BackLink";
 
 /* ─────────────────────────── step labels ─────────────────────────── */
 
-function StepLabel({ n, label }: { n: number; label: string }) {
-  // Big, bold, contrasting (Dan, 2026-07-05: steps were "not salient enough
-  // for the users to notice what to do where").
+function Step({ n, label, children }: { n: number; label: string; children: React.ReactNode }) {
+  // Number in a fixed left gutter; label + content share an indented right
+  // column so the numbers stay a clean column and content never sits under
+  // them (Dan, 2026-07-05: "the column of numbers should be kept clear of
+  // content, which should be indented to the right").
   return (
-    <div className="flex items-center gap-2.5">
+    <div className="mb-4 flex gap-2.5">
       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[color:var(--cahier-ink)] text-base font-black text-white shadow-[2px_2px_0_var(--cahier-hl,#ffe000)]">{n}</span>
-      <span className="cahier-hl rounded-sm px-1.5 text-base font-black text-[color:var(--cahier-ink)]">{label}</span>
-      <div className="h-[2px] flex-1 bg-[color:var(--cahier-ink)]/25" />
+      <div className="min-w-0 flex-1">
+        <div className="mb-2 flex items-center gap-2.5">
+          <span className="cahier-hl rounded-sm px-1.5 text-base font-black text-[color:var(--cahier-ink)]">{label}</span>
+          <div className="h-[2px] flex-1 bg-[color:var(--cahier-ink)]/25" />
+        </div>
+        {children}
+      </div>
     </div>
   );
 }
@@ -279,7 +286,7 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
       onSelect={(k) => setView(k as View)}
       topBar={<TopBar crumb={collection.title} />}
     >
-      <StepLabel n={1} label="Select view" />
+      <Step n={1} label="Select view">
       {/* The three views as plain buttons right here (Dan, 2026-07-05: "we
           don't need the burger menu — there are only three view modes");
           the side flaps remain on wide screens as the notebook look. */}
@@ -297,7 +304,8 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
           </button>
         ))}
       </div>
-      <StepLabel n={2} label="Select mode" />
+      </Step>
+      <Step n={2} label="Select mode">
       {/* Test Yourself — a clearly separate study-mode switch (not a view) */}
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <span className="inline-flex items-center gap-2">
@@ -365,7 +373,8 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
         </div>
       </div>
 
-      <StepLabel n={3} label="Filter (optional)" />
+      </Step>
+      <Step n={3} label="Filter (optional)">
       {/* Rows — one compact selector for the single-select filters; subsets kept inline */}
       <div className="mb-5 flex flex-wrap items-center gap-2">
         <span className="text-[0.7rem] font-bold text-[color:var(--cahier-ink-soft)]">{view === "overview" ? "rows" : "cards"}</span>
@@ -431,7 +440,8 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
         );
       })()}
 
-      <StepLabel n={4} label="Study / Self-test" />
+      </Step>
+      <Step n={4} label="Study / Self-test">
       {rows.length === 0 ? (
         <p className="rounded-xl border-2 border-dashed border-[color:var(--cahier-rule)] p-6 text-center text-[color:var(--cahier-ink-soft)]">
           No rows shown.{" "}
@@ -450,6 +460,7 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
         <AllCards rows={rows} isNat={isNat} test={test} order={order} buckets={buckets} onBucket={setRowBucket}
           articleOptions={articleOptions} flipAll={flipAll} flippedIds={flippedIds} setFlippedIds={setFlippedIds} />
       )}
+      </Step>
       <AccentBar />
     </CahierFrame>
   );
