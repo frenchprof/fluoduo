@@ -471,6 +471,16 @@ export default function LetrisGame({
     setActive({ ...active, col });
   };
 
+  // Tap a category base (the coloured puddle) to send the falling drop
+  // straight into it — steer + hard-drop in one tap (Dan, 2026-07-05:
+  // "accept clicking on the base itself"). landTile lands it in the chosen
+  // column regardless of where the drop currently sits.
+  const dropInto = (col: number) => {
+    if (!active || paused || gameOver) return;
+    autoMusic();
+    landTile({ ...active, col });
+  };
+
   const pillCls =
     "rounded-xl border-2 border-b-4 border-sky-200 bg-white px-2.5 py-1 font-bold text-sky-800 shadow-sm transition hover:bg-sky-50 active:translate-y-[2px] active:border-b-2";
 
@@ -704,15 +714,19 @@ export default function LetrisGame({
         {/* coloured puddles — the category bases the drops sort into */}
         <div className="grid border-t-4 border-white" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
           {set.categories.map((c, i) => (
-            <div
+            <button
               key={c.key}
-              className={`px-2 py-3 text-center text-sm font-black tracking-wider text-white sm:text-base ${
+              type="button"
+              onClick={() => dropInto(i)}
+              title={`Poser ici : ${c.label}`}
+              disabled={!active || paused || gameOver}
+              className={`cursor-pointer px-2 py-3 text-center text-sm font-black tracking-wider text-white transition hover:brightness-110 active:translate-y-[2px] disabled:cursor-default sm:text-base ${
                 i < cols - 1 ? "border-r-2 border-white/50" : ""
               }`}
               style={{ background: catColor(i), boxShadow: "inset 0 -5px 0 rgba(0,0,0,.18), inset 0 4px 6px rgba(255,255,255,.25)" }}
             >
               {c.label}
-            </div>
+            </button>
           ))}
         </div>
 
