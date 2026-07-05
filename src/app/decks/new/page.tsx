@@ -123,7 +123,9 @@ export default function NewDeckPage() {
       const lessonNo = draft.lessonNo ? Number(draft.lessonNo) : undefined;
       const payload: Omit<Collection, "id" | "owner"> = {
         title: draft.title.trim(),
-        subtitle: draft.subtitle.trim() || undefined,
+        // Blank subtitle: OMIT the key — an explicit `undefined` is what
+        // Firestore's addDoc rejects (Dan's add-deck bug, 2026-07-05).
+        ...(draft.subtitle.trim() ? { subtitle: draft.subtitle.trim() } : {}),
         langPair: "fr-en",
         visibility: draft.visibility,
         tags: [],

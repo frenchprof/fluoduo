@@ -25,6 +25,22 @@ import type { Collection } from "@/lib/collections/schema";
 
 const COL = "collections";
 
+/** Firestore rejects `undefined` anywhere in a document. Settings-level
+ *  ignoreUndefinedProperties (db.ts) should catch these, but strip here too
+ *  so no write path can ever hit "Unsupported field value: undefined"
+ *  regardless of which Firestore instance/settings won the init race. */
+function stripUndefined<T>(value: T): T {
+  if (Array.isArray(value)) return value.map(stripUndefined) as T;
+  if (value !== null && typeof value === "object" && value.constructor === Object) {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>)
+        .filter(([, v]) => v !== undefined)
+        .map(([k, v]) => [k, stripUndefined(v)]),
+    ) as T;
+  }
+  return value;
+}
+
 /** All decks owned by the current user. */
 export async function getMyCollections(): Promise<Collection[]> {
   const uid = auth.currentUser?.uid;
@@ -53,7 +69,7 @@ export async function createCollection(
   const uid = auth.currentUser?.uid;
   if (!uid) throw new Error("Must be signed in to create a collection.");
   const ref = await addDoc(fsCollection(db, COL), {
-    ...data,
+    ...stripUndefined(data),
     owner: uid,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
@@ -67,7 +83,7 @@ export async function saveCollection(c: Collection): Promise<void> {
   if (!uid) throw new Error("Must be signed in.");
   await setDoc(
     doc(db, COL, c.id),
-    { ...c, owner: uid, updatedAt: serverTimestamp() },
+    { ...stripUndefined(c), owner: uid, updatedAt: serverTimestamp() },
     { merge: true },
   );
 }
