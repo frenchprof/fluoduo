@@ -549,9 +549,30 @@ body {
 }
 /* Page-size hierarchy mirroring the flap tiers: level-2 pages (a deck's
  * activities) sit a step lower and narrower than level-1 site pages; level-3
- * (Flip It, which adds the view layer) a step further — nested sheets. */
-.cahier-page.cahier-page--d2 { flex-basis: 930px; margin-top: 18px; min-height: calc(100vh - 18px); }
-.cahier-page.cahier-page--d3 { flex-basis: 880px; margin-top: 34px; min-height: calc(100vh - 34px); }
+ * (Flip It, which adds the view layer) a step further. The PARENT sheet stays
+ * visible behind (Dan, 2026-07-05: "we can still see the larger page in the
+ * background", like the SIO popup) — drawn as solid offset paper shadows
+ * peeking out above/left; the right edge stays clean for the flaps. */
+.cahier-page.cahier-page--d2 {
+  flex-basis: 930px;
+  margin: 18px 0 0 14px;
+  min-height: calc(100vh - 18px);
+  box-shadow:
+    -14px -18px 0 0 #efede3,
+    -14px -18px 0 1.5px rgba(42, 46, 110, 0.22),
+    0 12px 34px rgba(34, 40, 80, 0.20);
+}
+.cahier-page.cahier-page--d3 {
+  flex-basis: 880px;
+  margin: 34px 0 0 28px;
+  min-height: calc(100vh - 34px);
+  box-shadow:
+    -14px -17px 0 0 #efede3,
+    -14px -17px 0 1.5px rgba(42, 46, 110, 0.22),
+    -28px -34px 0 0 #e7e5d9,
+    -28px -34px 0 1.5px rgba(42, 46, 110, 0.18),
+    0 12px 34px rgba(34, 40, 80, 0.20);
+}
 .cahier-tabs {
   position: sticky;
   top: 18px;
