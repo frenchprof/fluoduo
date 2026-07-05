@@ -109,6 +109,13 @@ export default function CahierShell({
   const site = tabsWithActive(siteTabs(), active);
   // Pages that pass the site row itself just deduplicate to no context group.
   const context = tabs.filter((t) => !site.some((s) => s.key === t.key));
+  // On a deck's activity page, the deck's Unité is the active layer of the
+  // site row (Dan, 2026-07-05: "the activated Unité layer is not marked") —
+  // highlighted but still clickable.
+  const deckId = context.map((t) => t.href?.match(/^\/practice\/[a-z-]+\/([^/#?]+)/)?.[1]).find(Boolean);
+  const deckUnit = deckId ? CURATED.find((c) => c.id === deckId)?.unit : undefined;
+  const unitKey = deckUnit === undefined ? undefined : `unit-${deckUnit}`;
+  const isActiveFlap = (t: ShellTab) => active === t.key || t.key === unitKey;
 
   return (
     <div className="cahier-desk">
@@ -151,7 +158,7 @@ export default function CahierShell({
                           key={t.key}
                           tab={t}
                           hue={hueOf(t, i)}
-                          active={active === t.key}
+                          active={isActiveFlap(t)}
                           className="cahier-tab !rounded-md text-left"
                           onNavigate={() => setMenuOpen(false)}
                         />
@@ -179,7 +186,7 @@ export default function CahierShell({
 
         <nav className="cahier-tabs" aria-label="Pages">
           {site.map((t, i) => (
-            <TabFlap key={t.key} tab={t} hue={hueOf(t, i)} active={active === t.key} className="cahier-tab" />
+            <TabFlap key={t.key} tab={t} hue={hueOf(t, i)} active={isActiveFlap(t)} className="cahier-tab" />
           ))}
           {context.length > 0 && <span aria-hidden className="h-4" />}
           {context.map((t, i) => (

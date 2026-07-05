@@ -13,6 +13,7 @@ import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import type { ShellTab } from "@/components/CahierShell";
 import { siteTabs } from "@/components/siteTabs";
+import { CURATED } from "@/content/collections";
 
 export const TAB_HUES = [
   "var(--cahier-t0)",
@@ -65,6 +66,10 @@ export function CahierFrame({
   const [menuOpen, setMenuOpen] = useState(false);
   const hueOf = (t: CahierTab, i: number) => t.hue ?? TAB_HUES[i % TAB_HUES.length];
   const site = siteTabs();
+  // Mark the deck's Unité as the site row's active layer (still clickable).
+  const deckId = navTabs.map((t) => t.href?.match(/^\/practice\/[a-z-]+\/([^/#?]+)/)?.[1]).find(Boolean);
+  const deckUnit = deckId ? CURATED.find((c) => c.id === deckId)?.unit : undefined;
+  const unitKey = deckUnit === undefined ? undefined : `unit-${deckUnit}`;
 
   return (
     <div className="cahier-desk">
@@ -86,7 +91,7 @@ export function CahierFrame({
             {menuOpen && (
               <div className="absolute right-0 mt-1 flex max-h-[70vh] w-48 flex-col gap-1 overflow-y-auto rounded-lg border-2 border-[color:var(--cahier-ink)]/20 bg-white p-1 shadow-lg">
                 {site.map((t, i) => (
-                  <NavFlap key={t.key} tab={t} hue={TAB_HUES[i % TAB_HUES.length]} active={false}
+                  <NavFlap key={t.key} tab={t} hue={TAB_HUES[i % TAB_HUES.length]} active={t.key === unitKey}
                     className="cahier-tab !rounded-md text-left" onNavigate={() => setMenuOpen(false)} />
                 ))}
                 {navTabs.length > 0 && <hr className="my-0.5 border-[color:var(--cahier-ink)]/15" />}
@@ -118,7 +123,7 @@ export function CahierFrame({
 
         <nav className="cahier-tabs" aria-label="Pages and views">
           {site.map((t, i) => (
-            <NavFlap key={t.key} tab={t} hue={TAB_HUES[i % TAB_HUES.length]} active={false} className="cahier-tab" />
+            <NavFlap key={t.key} tab={t} hue={TAB_HUES[i % TAB_HUES.length]} active={t.key === unitKey} className="cahier-tab" />
           ))}
           {navTabs.length > 0 && <span aria-hidden className="h-4" />}
           {navTabs.map((t, i) => (
