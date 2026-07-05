@@ -103,7 +103,7 @@ function Runner({ collection }: { collection: Collection }) {
         <p className="mt-1 text-sm">
           MCQ needs at least 4 items with both `fr` and `en`. This deck has {glossed.length}.
         </p>
-        <Link href={`/decks/${collection.id}`} className="fluo-btn fluo-btn-ghost mt-4 inline-flex">
+        <Link href={`/decks/view?id=${collection.id}`} className="fluo-btn fluo-btn-ghost mt-4 inline-flex">
           ← Back to deck
         </Link>
       </div>
@@ -201,7 +201,7 @@ function Runner({ collection }: { collection: Collection }) {
           score={score}
           total={total}
           onRestart={restart}
-          backHref={`/decks/${collection.id}`}
+          backHref={`/decks/view?id=${collection.id}`}
         />
       )}
     </>

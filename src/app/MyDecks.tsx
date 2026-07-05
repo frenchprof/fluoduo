@@ -35,7 +35,7 @@ export default function MyDecks({ bare = false }: { bare?: boolean }) {
           return (
             <Link
               key={d.id}
-              href={`/decks/${d.id}`}
+              href={`/decks/view?id=${d.id}`}
               data-hue={hue}
               className={`fluo-card fluo-h-${hue} hover:scale-[1.01] transition`}
             >

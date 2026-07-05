@@ -173,7 +173,7 @@ export default function NewDeckPage() {
       const id = await createCollection(payload);
       await logEvent("deck.create", { id, items: items.length });
       localStorage.removeItem(DRAFT_KEY);
-      router.push(`/decks/${id}`);
+      router.push(`/decks/view?id=${id}`);
     } catch (e) {
       setSaveError(e instanceof Error ? e.message : "Save failed.");
       setSaving(false);

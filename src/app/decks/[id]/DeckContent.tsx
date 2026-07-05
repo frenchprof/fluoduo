@@ -24,12 +24,12 @@ import CahierShell, { type ShellTab } from "@/components/CahierShell";
 export function deckTabs(id: string): ShellTab[] {
   return [
     { key: "home", label: "Accueil", emoji: "🏠", href: "/" },
-    { key: "deck", label: "Deck", emoji: "📖", href: `/decks/${id}` },
-    { key: "study", label: "Study", emoji: "🃏", href: `/decks/${id}/study` },
+    { key: "deck", label: "Deck", emoji: "📖", href: `/decks/view?id=${id}` },
+    { key: "study", label: "Study", emoji: "🃏", href: `/decks/study?id=${id}` },
     // Auto-MCQ only for user decks — curated decks have authored pretests.
     ...(CURATED.some((c) => c.id === id)
       ? []
-      : [{ key: "mcq", label: "MCQ", emoji: "❓", href: `/decks/${id}/mcq` } as ShellTab]),
+      : [{ key: "mcq", label: "MCQ", emoji: "❓", href: `/decks/mcq?id=${id}` } as ShellTab]),
   ];
 }
 
@@ -232,13 +232,13 @@ function DeckView({
       {anyGames && (
         <section className="mb-8 flex flex-wrap items-center gap-3">
           {games.flashcard && (
-            <Link href={`/decks/${collection.id}/study`} className="fluo-btn fluo-btn-lg">
+            <Link href={`/decks/study?id=${collection.id}`} className="fluo-btn fluo-btn-lg">
               🎴 Study cards
             </Link>
           )}
           {games.mcq && (
             <Link
-              href={`/decks/${collection.id}/mcq`}
+              href={`/decks/mcq?id=${collection.id}`}
               className="fluo-btn fluo-btn-secondary"
             >
               🎯 MCQ
