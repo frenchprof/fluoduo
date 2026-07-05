@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Fraunces, Public_Sans, Roboto } from "next/font/google";
 import "./globals.css";
+import BetaNotice from "@/components/BetaNotice";
 import FeedbackButton from "@/components/FeedbackButton";
 import ProgressSync from "@/components/ProgressSync";
 
@@ -58,6 +59,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         {children}
         <FeedbackButton />
+        <BetaNotice />
         <ProgressSync />
       </body>
     </html>

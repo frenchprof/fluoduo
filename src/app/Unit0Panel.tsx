@@ -16,6 +16,7 @@
  */
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { SIOS, sioStatement } from "@/content/sios";
 import { lessonsForSio } from "@/content/lessons";
@@ -38,9 +39,26 @@ function shuffle<T>(arr: T[]): T[] {
   return out;
 }
 
-export default function Unit0Panel() {
-  const [openId, setOpenId] = useState<string | null>(null);
+export default function Unit0Panel({
+  forceOpen,
+}: {
+  /** Same contract as UnitSection's — /practice/* URLs for Unit-0 decks land
+   *  here with the popup pre-opened on an activity view. */
+  forceOpen?: { sioId: string; view?: string; lessonSlug?: string };
+}) {
+  const [openId, setOpenId] = useState<string | null>(forceOpen?.sioId ?? null);
   const openSio = openId ? UNIT0_SIOS.find((s) => s.id === openId) : undefined;
+
+  // Deep link: /unit/0#SIO-00X opens that popup — the home learning path links
+  // Unit-0 SIOs this way. UnitSection's generic popup body has no Unit-0 MCQs
+  // (that popup opened EMPTY, Dan's 2026-07-05 bug report), so unit 0's hash
+  // handling lives here where the questions are.
+  useEffect(() => {
+    if (forceOpen) return;
+    const hash = window.location.hash.replace("#", "");
+    if (hash && UNIT0_SIOS.some((s) => s.id === hash)) setOpenId(hash);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // The pink "Unité 0" header + done-counter is rendered by SioHub's collapse
   // header (same as Units 1–4); this panel is just the tile grid — no second
@@ -75,8 +93,15 @@ export default function Unit0Panel() {
       {openSio && (
         <SioModal
           sio={openSio}
-          onClose={() => setOpenId(null)}
+          onClose={() => {
+            setOpenId(null);
+            // An activity URL with its popup closed IS the unit page — make
+            // the address bar agree so refresh/share land right.
+            if (forceOpen) window.history.replaceState(null, "", "/unit/0");
+          }}
           deck={openSio.collectionId ? CURATED.find((c) => c.id === openSio.collectionId) : undefined}
+          initialView={openSio.id === forceOpen?.sioId ? forceOpen?.view : undefined}
+          lessonSlug={openSio.id === forceOpen?.sioId ? forceOpen?.lessonSlug : undefined}
           tabs={popupActivityTabs(
             openSio.collectionId ? CURATED.find((c) => c.id === openSio.collectionId) : undefined,
             // Unit-0 questions render inline right here → Pre-Test is the
@@ -182,6 +207,7 @@ function QuizQuestion({ q, onAnswered }: { q: Unit0Question; onAnswered?: () => 
     if (!answered) {
       setPicked(o.v);
       onAnswered?.();
+      if (o.ok) sfx.correct(); else sfx.wrong();
       if (o.ok) speak(ttsFor(q, o.v), "fr-FR");
     } else {
       speak(o.v, "fr-FR");

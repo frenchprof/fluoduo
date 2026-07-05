@@ -5,6 +5,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { CURATED } from "@/content/collections";
+import { sfx } from "@/games/audio/sfx";
 import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
 import { practiceItems } from "@/lib/collections/display";
 import { recordItemResult } from "@/lib/progress";
@@ -154,6 +155,7 @@ export default function SayItContent({ collectionId, embedded = false }: { colle
     } else {
       setCard(null);
       setFinished(true);
+      sfx.stage(); // run complete — the Terminé card is about to show
     }
   }, [card, queue, resetTurn]);
 
@@ -182,7 +184,8 @@ export default function SayItContent({ collectionId, embedded = false }: { colle
     stopRec();
     setCard(null);
     setFinished(true);
-  }, [stopRec]);
+    if (score.total > 0) sfx.stage(); // something was attempted — celebrate the run
+  }, [stopRec, score.total]);
 
   const restart = useCallback(() => {
     const list = shuffle(cards);
@@ -229,6 +232,8 @@ export default function SayItContent({ collectionId, embedded = false }: { colle
         const expected = frFull(art, c.fr);
         const g = gradeAnswer(t, expected, /^\d+$/.test((c.en ?? "").trim()) ? c.en : undefined);
         const ok = g === "perfect" || g === "good" || g === "homophone";
+        // Jingle first, independent of any TTS — short enough not to clash.
+        if (ok) sfx.correct(); else sfx.wrong();
         setResult({ grade: g, recognized: t });
         setScore((s) => ({ ok: s.ok + (ok ? 1 : 0), total: s.total + 1 }));
         // Feed the Reviser: a miss (or a partial "close") resurfaces the word;
@@ -243,6 +248,7 @@ export default function SayItContent({ collectionId, embedded = false }: { colle
       recRef.current = null;
       if (e.error === "no-speech") {
         setPhase("result");
+        sfx.wrong();
         setResult({ grade: "miss", recognized: "(rien entendu)" });
         setScore((s) => ({ ...s, total: s.total + 1 }));
         if (c.id) recordItemResult(c.id, false);

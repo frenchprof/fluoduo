@@ -14,6 +14,7 @@
 
 import { useEffect, useState } from "react";
 import { getPretest, sioIdForPretest } from "@/content/pretests";
+import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { logEvent } from "@/lib/firebase/usage";
 import { recordPretestAnswer, stemForItem } from "@/lib/pretestRecord";
@@ -66,10 +67,13 @@ export default function PretestQuiz({ pretestId }: { pretestId: string }) {
     setPicked({ ...picked, [q.item.id]: choice });
     // Last answer in → the popup may reveal its post-pretest content (Dan,
     // 2026-07-05: the lesson button appears only AFTER the pretest is done).
-    if (Object.keys(picked).length + 1 === total && total > 0) {
+    const last = Object.keys(picked).length + 1 === total && total > 0;
+    if (last) {
       window.dispatchEvent(new CustomEvent("fluolingo:pretest-complete", { detail: { id: pretestId } }));
     }
     const correct = choice === q.item.answer;
+    if (correct) sfx.correct(); else sfx.wrong();
+    if (last) sfx.stage(); // pretest finished — the bigger stage jingle too
     if (correct) speak(ttsTextForItem(q.item), "fr-FR");
     // Gap report (audit R1): persist the verdict so it survives popup close.
     recordPretestAnswer({

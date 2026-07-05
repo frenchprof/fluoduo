@@ -12,6 +12,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
 import { CURATED } from "@/content/collections";
+import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { gradeGap, splitGap, type Grade } from "@/lib/practice/cloze";
 import { recordItemResult } from "@/lib/progress";
@@ -65,10 +66,12 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
     setResult(g);
     setScore((s) => ({ ok: s.ok + (g !== "wrong" ? 1 : 0), total: s.total + 1 }));
     recordItemResult(item.id, g !== "wrong");
+    if (g !== "wrong") sfx.correct(); else sfx.wrong();
     if (g !== "wrong") speak(item.fr, "fr-FR");
   }
 
   function next() {
+    if (i + 1 >= total) sfx.stage(); // run complete — the done card is about to show
     setResult(null);
     setValue("");
     setI((n) => n + 1);

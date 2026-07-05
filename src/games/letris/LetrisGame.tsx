@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { buildSentence, speak } from "./speech";
 import { resolveBoard } from "./resolve";
 import { chiptune } from "@/games/audio/chiptune";
+import { sfx } from "@/games/audio/sfx";
 import CreditsSplash from "@/games/CreditsSplash";
 
 export type LetrisCategory = {
@@ -276,6 +277,8 @@ export default function LetrisGame({
         }
       };
 
+      // Dawn plays the big fanfare below — the small ta-daa would double it.
+      let dawnFanfare = false;
       if (correct) {
         if (speech && tts) speak(
           buildSentence(set.categories[a.col], a.tile),
@@ -296,6 +299,7 @@ export default function LetrisGame({
         } else if (phaseRef.current === "storm" && phaseCleared) {
           // Survived the storm → dawn breaks; lifetime tallies reset so the
           // whole cycle can be earned again.
+          dawnFanfare = true;
           correctRef.current.clear();
           // Stop the storm track first so fanfare plays clean; then after the
           // jingle (~2.2 s), restart letris at normal tempo if music is still on.
@@ -308,11 +312,15 @@ export default function LetrisGame({
           }, 2250);
           enterPhase("day", "dawn");
         }
-      } else if (phaseRef.current === "storm") {
-        // Mercy rule: 3 misses in the storm → the clouds part back to night
-        // (slow + blurred), not all the way to day.
-        stormMissesRef.current += 1;
-        if (stormMissesRef.current >= STORM_MERCY_MISSES) enterPhase("night", "mercy");
+        if (!dawnFanfare) sfx.correct(); // site-wide ta-daa on a correct catch
+      } else {
+        sfx.wrong(); // site-wide soft buzz on a wrong catch
+        if (phaseRef.current === "storm") {
+          // Mercy rule: 3 misses in the storm → the clouds part back to night
+          // (slow + blurred), not all the way to day.
+          stormMissesRef.current += 1;
+          if (stormMissesRef.current >= STORM_MERCY_MISSES) enterPhase("night", "mercy");
+        }
       }
 
       setBoard((b) => {

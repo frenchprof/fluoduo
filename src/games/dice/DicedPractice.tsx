@@ -22,6 +22,7 @@
 import { useRef, useState } from "react";
 import CompleteItContent from "@/app/practice/complete-it/[collectionId]/CompleteItContent";
 import { Summary } from "@/games/dice/DiceTrainer";
+import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { CURATED } from "@/content/collections";
 import { gappedItems } from "@/lib/collections/gramMarathonReady";
@@ -118,6 +119,7 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
     setAttempts((a) => [...a, { q: qText, user, correct: item.fr, ok }]);
     setStreak((s) => (ok ? s + 1 : 0));
     recordItemResult(item.id, ok);
+    if (ok) sfx.correct(); else sfx.wrong();
     speak(item.fr, "fr-FR");
   }
 
@@ -245,7 +247,7 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
                   <div className="mt-2 flex flex-wrap justify-center gap-2">
                     <button type="button" onClick={() => speak(item.fr, "fr-FR")} className="cahier-btn cahier-btn-sm">🔊 J&rsquo;écoute</button>
                     <button type="button" onClick={roll} className="cahier-btn cahier-btn-sm cahier-btn-accent">🎲 Nouvelle question</button>
-                    <button type="button" onClick={() => setShowSum(true)} className="cahier-btn cahier-btn-sm">🏁 Je termine</button>
+                    <button type="button" onClick={() => { if (attempts.length > 0) sfx.stage(); setShowSum(true); }} className="cahier-btn cahier-btn-sm">🏁 Je termine</button>
                   </div>
                 </div>
               )}

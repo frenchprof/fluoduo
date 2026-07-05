@@ -107,15 +107,15 @@
       "distractors": [
         "froid",
         "frais et froid",
-        "fraîs"
+        "fraîche"
       ],
       "fullSentence": "Il fait frais mais c'est agréable.",
       "sentenceTrans": "It's cool but pleasant.",
-      "why": "<strong>il fait frais</strong> — note the spelling: <em>frais</em>, not <em>fraîs</em> (no circumflex on the <em>i</em>). <em>frais</em> implies pleasantly cool — the kind of weather where you don't need a coat but you wouldn't say it's cold. <em>froid</em> is genuinely cold and would not prompt the comment 'c'est agréable'.",
+      "why": "<strong>il fait frais</strong> — pleasantly cool: the kind of weather where you don't need a coat but you wouldn't say it's cold. <em>froid</em> is genuinely cold and would not prompt the comment 'c'est agréable'.",
       "whyWrong": {
         "froid": "froid is genuinely cold — it wouldn't prompt « c'est agréable ».",
         "frais et froid": "frais and froid are different temperatures — you can't stack both.",
-        "fraîs": "spelling — frais has no circumflex on the i."
+        "fraîche": "fraîche is feminine — after impersonal il fait the adjective stays masculine: frais."
       },
       "transFirst": true
     },

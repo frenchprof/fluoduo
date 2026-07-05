@@ -17,6 +17,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { speak } from "@/games/letris/speech";
 import { chiptune } from "@/games/audio/chiptune";
+import { sfx } from "@/games/audio/sfx";
 import CreditsSplash from "@/games/CreditsSplash";
 import { recordItemResult } from "@/lib/progress";
 
@@ -190,6 +191,7 @@ export default function Lexicalator({
       const complete = nextFilled.every(Boolean);
       if (complete) {
         recordItemResult(active.entry.id, true);
+        sfx.correct(); // ta-daa BEFORE the word is spoken
         speak(active.entry.fr, "fr-FR");
         setScore((s) => s + 10 + Math.min(combo, 5) * 2);
         setCombo((c) => c + 1);
@@ -210,6 +212,9 @@ export default function Lexicalator({
         // opening), so a chest is never auto-placed in the bay AND the lane.
         setSelected(null);
         if (nextUp) setQueue((q) => q.slice(1));
+        // Level cleared → the big stage jingle (outside the updater so Strict
+        // Mode's double-run can't fire it twice). No fanfare plays here today.
+        if (cleared + 1 >= QUOTA) sfx.stage();
         setCleared((n) => {
           const nn = n + 1;
           if (nn >= QUOTA) setLevelDone(true);
@@ -226,6 +231,7 @@ export default function Lexicalator({
       window.setTimeout(() => setRattle(null), 300);
     } else {
       // wrong key — rattle, lose a life
+      sfx.wrong();
       setRattle(token);
       window.setTimeout(() => setRattle(null), 300);
       setCombo(0);

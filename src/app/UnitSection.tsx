@@ -63,7 +63,9 @@ export default function UnitSection({
     refresh();
     window.addEventListener("fluolingo:progress-updated", refresh);
     // Deep link: /unit/N#SIO-0XX opens that popup (home path lands here).
-    if (!forceOpen) {
+    // Unit 0 popups belong to Unit0Panel (its modal carries the MCQs — this
+    // generic one would open empty), so it handles its own deep links.
+    if (!forceOpen && unit !== 0) {
       const hash = window.location.hash.replace("#", "");
       if (hash && SIOS.some((s) => s.id === hash && s.unit === unit)) setOpenId(hash);
     }
@@ -107,7 +109,7 @@ export default function UnitSection({
       </div>
 
       {unit === 0 ? (
-        <Unit0Panel />
+        <Unit0Panel forceOpen={forceOpen} />
       ) : (
         <div className="space-y-5">
           {groups.map((group) => {
@@ -156,7 +158,7 @@ export default function UnitSection({
         </div>
       )}
 
-      {openSio && (() => {
+      {unit !== 0 && openSio && (() => {
         const { deck, pretestHref, pretestId } = deckAndPretestFor(openSio);
         return (
           <SioModal

@@ -11,6 +11,7 @@
  */
 
 import { useState } from "react";
+import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 
 function StepLabel({ n, label }: { n: number; label: string }) {
@@ -114,6 +115,7 @@ export default function DiceTrainer({ config }: { config: DiceConfig }) {
     setResult({ ok, user });
     setAttempts((a) => [...a, { q: q.big, user, correct: q.correct, ok }]);
     setStreak((s) => (ok ? s + 1 : 0));
+    if (ok) sfx.correct(); else sfx.wrong();
     speak(q.correct, "fr-FR");
   }
 
@@ -202,7 +204,7 @@ export default function DiceTrainer({ config }: { config: DiceConfig }) {
               <div className="mt-2 flex flex-wrap justify-center gap-2">
                 <button type="button" onClick={() => speak(q.correct, "fr-FR")} className="cahier-btn cahier-btn-sm">🔊 J&rsquo;écoute</button>
                 <button type="button" onClick={roll} className="cahier-btn cahier-btn-sm cahier-btn-accent">🎲 Nouvelle question</button>
-                <button type="button" onClick={() => setShowSum(true)} className="cahier-btn cahier-btn-sm">🏁 Je termine</button>
+                <button type="button" onClick={() => { if (attempts.length > 0) sfx.stage(); setShowSum(true); }} className="cahier-btn cahier-btn-sm">🏁 Je termine</button>
               </div>
             </div>
           )}
@@ -231,6 +233,7 @@ export function BonusTrainer({ items }: { items: { en: string; fr: string; alt?:
     const ok = [cur.fr, ...(cur.alt ?? [])].some((a) => norm(typed) === norm(a));
     setResult(ok);
     setAttempts((a) => [...a, { q: cur.en, user: typed, correct: cur.fr, ok }]);
+    if (ok) sfx.correct(); else sfx.wrong();
     speak(cur.fr, "fr-FR");
   }
 
@@ -257,7 +260,7 @@ export function BonusTrainer({ items }: { items: { en: string; fr: string; alt?:
               <div className="mt-2 flex justify-center gap-2">
                 <button type="button" onClick={() => speak(cur.fr, "fr-FR")} className="cahier-btn cahier-btn-sm">🔊</button>
                 <button type="button" onClick={roll} className="cahier-btn cahier-btn-sm cahier-btn-accent">🎲</button>
-                <button type="button" onClick={() => setShowSum(true)} className="cahier-btn cahier-btn-sm">🏁</button>
+                <button type="button" onClick={() => { if (attempts.length > 0) sfx.stage(); setShowSum(true); }} className="cahier-btn cahier-btn-sm">🏁</button>
               </div>
             </div>
           )}

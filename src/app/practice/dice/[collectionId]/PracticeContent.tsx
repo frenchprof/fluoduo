@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CURATED } from "@/content/collections";
 import { toPracticeSet } from "@/lib/practice/engine";
 import { bareWord } from "@/lib/collections/display";
+import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { recordItemResult } from "@/lib/progress";
 import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
@@ -122,6 +123,7 @@ function PracticeRunner({ set }: { set: PracticeSet }) {
   function pick(choice: PracticeChoice) {
     if (submitted || !item) return;
     const correct = choice.key === item.correctColKey;
+    if (correct) sfx.correct(); else sfx.wrong();
     setSubmitted({ picked: choice.key, correct });
     if (!(item.id in firstResults)) {
       setFirstResults({ ...firstResults, [item.id]: correct });
@@ -137,6 +139,8 @@ function PracticeRunner({ set }: { set: PracticeSet }) {
     if (step === queue.length - 1 && willReview) {
       setQueue([...queue, ...shuffle(missedSoFar)]);
       setReviewRound(true);
+    } else if (step === queue.length - 1) {
+      sfx.stage(); // last card, no review round — the recap is about to show
     }
     setStep(step + 1);
   }

@@ -10,6 +10,7 @@
  */
 
 import { useEffect, useRef, useState } from "react";
+import { sfx } from "@/games/audio/sfx";
 import { speak, speakSequence } from "@/games/letris/speech";
 import { CAFE_PRICES, categoryHeaderClass, type ComposeBank } from "@/games/compose/banks";
 
@@ -93,6 +94,10 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
       setStage(next);
       setDraft([]);
       setNudge(null);
+      // Accepted turn → ta-daa; the closing exchange (bonne soirée → recap)
+      // gets the stage jingle instead — never both for one send. Nudges stay
+      // silent (a buzz would be too harsh for a gentle redirect).
+      if (next === "done") sfx.stage(); else sfx.correct();
       speakSequence(
         [
           { text: myText, gender: "f" as const },
