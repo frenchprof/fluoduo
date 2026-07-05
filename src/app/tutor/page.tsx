@@ -1,0 +1,127 @@
+"use client";
+
+/**
+ * 🤖 Le Tuteur — chat surface for the AI tutor (backend: /api/tutor, a
+ * Cloudflare Pages Function; see functions/api/tutor.js for the prompt and
+ * the ANTHROPIC_API_KEY setup). Ported concept from laf1201's tutor (Dan,
+ * 2026-07-05). Until the key is configured — and on any non-Cloudflare
+ * preview, where /api/tutor 404s — the page degrades to a friendly
+ * "not wired up yet" card instead of a broken chat.
+ */
+import { useEffect, useRef, useState } from "react";
+import CahierShell from "@/components/CahierShell";
+import { siteTabs, tabsWithActive } from "@/components/siteTabs";
+import { speak } from "@/games/letris/speech";
+
+type ChatMsg = { role: "user" | "assistant"; content: string };
+
+const GREETING =
+  "Bonjour ! 👋 I'm your French tutor. Ask me anything about the course — or just write a sentence in French and I'll help you polish it.";
+
+export default function TutorPage() {
+  const [messages, setMessages] = useState<ChatMsg[]>([{ role: "assistant", content: GREETING }]);
+  const [input, setInput] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [offline, setOffline] = useState(false);
+  const endRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [messages, busy]);
+
+  async function send() {
+    const text = input.trim();
+    if (!text || busy) return;
+    const next: ChatMsg[] = [...messages, { role: "user" as const, content: text }];
+    setMessages(next);
+    setInput("");
+    setBusy(true);
+    try {
+      const r = await fetch("/api/tutor", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        // The greeting is UI furniture, not conversation — don't send it.
+        body: JSON.stringify({ messages: next.slice(1) }),
+      });
+      // No backend here: 503 = function deployed but no API key yet; the
+      // rest = hosts without Pages Functions at all (local preview etc.).
+      if ([503, 404, 405, 501].includes(r.status)) {
+        setOffline(true);
+        return;
+      }
+      const data = await r.json().catch(() => null);
+      if (!r.ok || !data?.reply) {
+        setMessages((m) => [...m, { role: "assistant", content: "Oups — j'ai eu un souci technique. Réessayez !" }]);
+        return;
+      }
+      setMessages((m) => [...m, { role: "assistant", content: data.reply }]);
+    } catch {
+      setMessages((m) => [...m, { role: "assistant", content: "Oups — j'ai eu un souci technique. Réessayez !" }]);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="tutor" crumb="🤖 Tuteur">
+      <div className="mx-auto flex max-w-2xl flex-col gap-4 px-3 py-5">
+        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">🤖 Le Tuteur</h1>
+
+        {offline ? (
+          <div className="rounded-2xl border-2 border-dashed border-[color:var(--cahier-ink)]/40 bg-white p-5">
+            <p className="text-sm font-bold text-[color:var(--cahier-ink)]">
+              Le tuteur n&rsquo;est pas encore branché ici. 🔌
+            </p>
+            <p className="mt-1.5 text-sm text-[color:var(--cahier-ink-soft)]">
+              In the meantime, the tutor still lives on{" "}
+              <a href="https://laf1201.withdrchan.com" className="font-bold underline">laf1201.withdrchan.com</a>.
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="flex max-h-[55vh] flex-col gap-2 overflow-y-auto rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
+              {messages.map((m, i) => (
+                <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                  <button
+                    type="button"
+                    onClick={() => speak(m.content, "fr-FR")}
+                    title="🔊"
+                    className={`max-w-[85%] whitespace-pre-wrap rounded-2xl border-2 px-4 py-2 text-left text-sm leading-relaxed transition hover:brightness-95 ${
+                      m.role === "user"
+                        ? "rounded-br-sm border-[color:var(--cahier-ink)] bg-[color:var(--cahier-hl,#eaff00)]/50 text-[color:var(--cahier-ink)]"
+                        : "rounded-bl-sm border-[color:var(--cahier-rule)] bg-white text-[color:var(--cahier-ink)]"
+                    }`}
+                  >
+                    {m.role === "assistant" && <span className="mr-1.5" aria-hidden>🤖</span>}
+                    {m.content}
+                  </button>
+                </div>
+              ))}
+              {busy && (
+                <p className="animate-pulse text-sm text-[color:var(--cahier-ink-soft)]">🤖 …</p>
+              )}
+              <div ref={endRef} />
+            </div>
+
+            <form
+              onSubmit={(e) => { e.preventDefault(); void send(); }}
+              className="flex gap-2"
+            >
+              <input
+                lang="fr"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Écrivez en français ou posez une question…"
+                className="cahier-answer flex-1"
+                autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
+              />
+              <button type="submit" disabled={busy || !input.trim()} className="cahier-btn cahier-btn-accent font-black disabled:opacity-40">
+                Envoyer
+              </button>
+            </form>
+          </>
+        )}
+      </div>
+    </CahierShell>
+  );
+}

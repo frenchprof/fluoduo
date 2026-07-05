@@ -55,6 +55,29 @@ async function push(p: Progress): Promise<void> {
   } catch {
     // offline / rules hiccup — local state is still authoritative on-device
   }
+  void publishLeaderboard(p);
+}
+
+/** Mirror the public bits to leaderboard/{uid} (ported surface from the old
+ *  laf1201 suite — Dan, 2026-07-05). Separate try/catch: the rules DENY this
+ *  write for excluded emails, and that must never break the progress push. */
+async function publishLeaderboard(p: Progress): Promise<void> {
+  try {
+    const u = auth.currentUser;
+    if (!u) return;
+    const [{ doc, setDoc }, { db }] = await Promise.all([
+      import("firebase/firestore"),
+      import("./db"),
+    ]);
+    const name = u.displayName || (u.email ? u.email.split("@")[0] : "Anonyme");
+    await setDoc(
+      doc(db, "leaderboard", u.uid),
+      { name, gems: p.gems, streak: p.streak, updatedAt: Date.now() },
+      { merge: true },
+    );
+  } catch {
+    // excluded from the board / offline — never surfaces to the learner
+  }
 }
 
 function schedulePush(p: Progress): void {
