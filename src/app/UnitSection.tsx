@@ -44,7 +44,7 @@ export default function UnitSection({
   /** The /practice/* and /lessons/* URLs render the unit page with this SIO's
    *  popup already open on an activity view — level 2 floats from every
    *  entrance, not just popup flaps (Dan, 2026-07-05). */
-  forceOpen?: { sioId: string; view?: string };
+  forceOpen?: { sioId: string; view?: string; lessonSlug?: string };
 }) {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [progress, setProgress] = useState<Progress>(defaultProgress());
@@ -169,6 +169,7 @@ export default function UnitSection({
             }}
             deck={deck}
             initialView={openSio.id === forceOpen?.sioId ? forceOpen?.view : undefined}
+            lessonSlug={openSio.id === forceOpen?.sioId ? forceOpen?.lessonSlug : undefined}
             tabs={
               openSio.isProduction
                 ? popupActivityTabs(deck) // atelier decks: flip/say/complete on the model lines

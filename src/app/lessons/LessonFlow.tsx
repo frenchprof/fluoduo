@@ -57,13 +57,26 @@ function FlipItCard({ collectionId }: { collectionId: string }) {
 
 type Section = { id: string; label: string; node: ReactNode };
 
-export default function LessonFlow({ collectionId, embedded = false }: { collectionId: string; embedded?: boolean }) {
+export default function LessonFlow({
+  collectionId,
+  lessonSlug,
+  embedded = false,
+}: {
+  collectionId: string;
+  /** Which of the deck's lessons drives Lire (+ trainer/bonus fallbacks) —
+   *  decks like SIO-035's carry several; /lessons/[slug] passes its own so
+   *  every authored lesson stays reachable. Default: the deck's first. */
+  lessonSlug?: string;
+  embedded?: boolean;
+}) {
   const deck = CURATED.find((c) => c.id === collectionId);
   if (!deck) return <main className="p-6 text-[color:var(--fluo-ink)]">No deck <code>{collectionId}</code>.</main>;
 
-  const lessonMeta = lessonsForDeck(collectionId)[0];
-  const lesson = lessonMeta ? getNativeLesson(lessonMeta.slug) : undefined;
+  const deckLessons = lessonsForDeck(collectionId);
+  const lesson = getNativeLesson(lessonSlug ?? deckLessons[0]?.slug ?? "");
   const memo = lesson?.memo ?? memoForDeck(collectionId);
+  // Sibling lessons of this deck stay one tap away from Lire.
+  const siblings = deckLessons.filter((l) => l.slug !== (lessonSlug ?? deckLessons[0]?.slug));
 
   const sections: Section[] = [
     { id: "lire", label: "Lire", node: memo ?? <FlipItCard collectionId={collectionId} /> },
@@ -80,11 +93,21 @@ export default function LessonFlow({ collectionId, embedded = false }: { collect
     sections.push({ id: "difficile", label: "Difficile", node: <BonusTrainer items={lesson.bonus} /> });
   }
 
+  const shown = deckLessons.find((l) => l.slug === (lessonSlug ?? deckLessons[0]?.slug));
   const body = (
     <div className="mx-auto max-w-2xl space-y-5 px-2 py-4">
       <h1 lang="fr" className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
-        📚 {lessonMeta?.title ?? deck.title}
+        📚 {shown?.title ?? deck.title}
       </h1>
+      {siblings.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {siblings.map((l) => (
+            <Link key={l.slug} href={`/lessons/${l.slug}`} className="fluo-btn fluo-btn-sm">
+              📚 {l.title}
+            </Link>
+          ))}
+        </div>
+      )}
 
       <div className={`sticky ${embedded ? "top-0" : "top-[58px]"} z-[5] -mx-2 flex flex-wrap gap-1.5 rounded-lg bg-[color:var(--cahier-paper,#fdfbf4)]/90 px-2 py-1.5 backdrop-blur`}>
         {sections.map((s, i) => (

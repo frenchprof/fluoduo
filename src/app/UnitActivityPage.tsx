@@ -18,10 +18,13 @@ import UnitSection from "./UnitSection";
 export default function UnitActivityPage({
   collectionId,
   view,
+  lessonSlug,
   fallback,
 }: {
   collectionId: string;
   view: string;
+  /** For view="lesson": which of the deck's lessons to show. */
+  lessonSlug?: string;
   fallback: ReactNode;
 }) {
   const sio = SIOS.find((s) => s.collectionId === collectionId);
@@ -35,7 +38,7 @@ export default function UnitActivityPage({
       crumb={`${meta?.emoji ?? ""} ${meta?.label ?? `Unité ${sio.unit}`}`}
     >
       <div className="mx-auto max-w-3xl px-1 py-2">
-        <UnitSection unit={sio.unit} forceOpen={{ sioId: sio.id, view }} />
+        <UnitSection unit={sio.unit} forceOpen={{ sioId: sio.id, view, lessonSlug }} />
       </div>
     </CahierShell>
   );

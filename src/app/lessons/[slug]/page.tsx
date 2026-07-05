@@ -28,7 +28,8 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
     <UnitActivityPage
       collectionId={deckId}
       view="lesson"
-      fallback={<AuthGate what="open the lesson"><LessonFlow collectionId={deckId} /></AuthGate>}
+      lessonSlug={slug}
+      fallback={<AuthGate what="open the lesson"><LessonFlow collectionId={deckId} lessonSlug={slug} /></AuthGate>}
     />
   );
 }

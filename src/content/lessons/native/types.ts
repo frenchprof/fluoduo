@@ -7,5 +7,5 @@ export type NativeLesson = {
   slug: string;
   memo: ReactNode;
   dice: DiceConfig;
-  bonus: { en: string; fr: string }[];
+  bonus: { en: string; fr: string; alt?: string[] }[];
 };

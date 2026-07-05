@@ -123,6 +123,7 @@ export default function SioModal({
   tabs,
   deck,
   initialView,
+  lessonSlug,
   children,
 }: {
   sio: Sio;
@@ -133,6 +134,8 @@ export default function SioModal({
   deck?: Collection;
   /** Open directly on an activity view (the /practice/* URLs land here). */
   initialView?: string;
+  /** For the lesson view: which of the deck's lessons to show. */
+  lessonSlug?: string;
   children: ReactNode;
 }) {
   const hueOf = (i: number) => TAB_HUES[i % TAB_HUES.length];
@@ -154,7 +157,7 @@ export default function SioModal({
         complete: <CompleteItContent collectionId={deck.id} embedded />,
         dice: <DicePractice collectionId={deck.id} embedded />,
         grammarathon: <GramMarathonContent collectionId={deck.id} embedded />,
-        lesson: <LessonFlow collectionId={deck.id} embedded />,
+        lesson: <LessonFlow collectionId={deck.id} lessonSlug={lessonSlug} embedded />,
       }
     : {};
   const flapProps = (t: PopupTab) => {

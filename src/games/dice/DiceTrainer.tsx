@@ -34,6 +34,10 @@ export type DiceQuestion = {
   en?: string;
   /** The full correct sentence (graded + spoken). */
   correct: string;
+  /** Other fully-correct phrasings accepted when TYPING (e.g. the in-situ
+   *  question order "Tu t'appelles comment ?") — displayed form stays
+   *  `correct`. */
+  alternates?: string[];
   /** Facile: full-sentence options (must include `correct`). */
   easyOptions: string[];
   /** Intermédiaire: frame with a dropdown gap. */
@@ -182,9 +186,9 @@ export default function DiceTrainer({ config }: { config: DiceConfig }) {
           {!answered && diff === 2 && (
             <div className="mx-auto mt-3 max-w-md text-center">
               <input value={typed} onChange={(e) => setTyped(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter" && typed.trim()) grade(typed, norm(typed) === norm(q.correct)); }}
+                onKeyDown={(e) => { if (e.key === "Enter" && typed.trim()) grade(typed, [q.correct, ...(q.alternates ?? [])].some((a) => norm(typed) === norm(a))); }}
                 placeholder="Écrivez la phrase complète…" autoComplete="off" spellCheck={false} lang="fr" />
-              <button type="button" disabled={!typed.trim()} onClick={() => grade(typed, norm(typed) === norm(q.correct))}
+              <button type="button" disabled={!typed.trim()} onClick={() => grade(typed, [q.correct, ...(q.alternates ?? [])].some((a) => norm(typed) === norm(a)))}
                 className="cahier-btn cahier-btn-primary mt-3 disabled:opacity-40">✅ Je vérifie</button>
             </div>
           )}
@@ -211,8 +215,8 @@ export default function DiceTrainer({ config }: { config: DiceConfig }) {
 }
 
 /** EN→FR type-in bonus — the drchan lessons' ⭐ tab, as a compact card. */
-export function BonusTrainer({ items }: { items: { en: string; fr: string }[] }) {
-  const [cur, setCur] = useState<{ en: string; fr: string } | null>(null);
+export function BonusTrainer({ items }: { items: { en: string; fr: string; alt?: string[] }[] }) {
+  const [cur, setCur] = useState<{ en: string; fr: string; alt?: string[] } | null>(null);
   const [typed, setTyped] = useState("");
   const [result, setResult] = useState<null | boolean>(null);
   const [attempts, setAttempts] = useState<Attempt[]>([]);
@@ -224,7 +228,7 @@ export function BonusTrainer({ items }: { items: { en: string; fr: string }[] })
   }
   function check() {
     if (!cur || !typed.trim()) return;
-    const ok = norm(typed) === norm(cur.fr);
+    const ok = [cur.fr, ...(cur.alt ?? [])].some((a) => norm(typed) === norm(a));
     setResult(ok);
     setAttempts((a) => [...a, { q: cur.en, user: typed, correct: cur.fr, ok }]);
     speak(cur.fr, "fr-FR");
