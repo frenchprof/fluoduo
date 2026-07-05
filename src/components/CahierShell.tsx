@@ -25,6 +25,7 @@ import { getPretestForSio } from "@/content/pretests";
 import { UNIT0_QUESTIONS } from "@/content/sios/unit0-questions";
 import { getLetrisSet } from "@/games/letris/sets";
 import { composeBankForDeck } from "@/games/compose/banks";
+import FirstTour from "@/components/FirstTour";
 
 /** Dice Practice is an MCQ over the deck's letris columns — no columns, no game. */
 export function hasDicePractice(collectionId: string): boolean {
@@ -251,6 +252,7 @@ export default function CahierShell({
             <TabFlap key={t.key} tab={t} hue={hueOf(t, i)} active={active === t.key} className="cahier-tab cahier-tab--sm" />
           ))}
         </nav>
+        <FirstTour />
       </div>
     </div>
   );

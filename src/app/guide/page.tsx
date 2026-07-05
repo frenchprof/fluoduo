@@ -6,6 +6,7 @@
  */
 import Link from "next/link";
 import CahierShell from "@/components/CahierShell";
+import { ReplayTour } from "@/components/FirstTour";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 
 const ACTIVITIES: { emoji: string; name: string; what: string }[] = [
@@ -21,10 +22,10 @@ export default function GuidePage() {
   return (
     <CahierShell tabs={tabsWithActive(siteTabs(), "guide")} active="guide" crumb="❓ Guide">
       <div className="mx-auto max-w-2xl px-3 py-5">
-        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">❓ How this site works</h1>
+        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">❓ How <span className="cahier-hl px-1">FluoLingo</span> works</h1>
         <p className="mt-2 text-sm leading-relaxed text-[color:var(--cahier-ink)]">
           FluoLingo is the companion to your French class. It does two jobs:
-          it <b>prepares</b> you before each lesson, and it gives you <b>practice</b> after it.
+          it <b className="cahier-hl px-0.5">prepares</b> you before each lesson, and it gives you <b className="cahier-hl px-0.5">practice</b> after it.
           Nothing here is graded — mistakes are part of the method.
         </p>
 
@@ -34,7 +35,7 @@ export default function GuidePage() {
             The 🏠 Home page shows your whole journey — every goal in the course, with
             your progress. The <b>Unité 0–4</b> flaps hold the goals themselves: things
             you&rsquo;ll be able to <i>do</i> in French, like introducing yourself or
-            ordering food. <b>Tap the goal your class is working on</b> — a popup opens
+            ordering food. <b className="cahier-hl px-0.5">Tap the goal your class is working on</b> — a popup opens
             with everything for that goal.
           </p>
         </section>
@@ -42,13 +43,13 @@ export default function GuidePage() {
         <section className="mt-6">
           <h2 className="cahier-section rounded-md px-3 py-1.5">2 · Before class — take the Pre-Test</h2>
           <p className="mt-2 text-sm leading-relaxed text-[color:var(--cahier-ink)]">
-            Inside the popup, answer the short quiz <b>before</b> the topic is taught.
+            Inside the popup, answer the short quiz <b className="cahier-hl px-0.5">before</b> the topic is taught.
             Getting answers wrong is expected — trying first is what makes the lesson
             stick. After a wrong answer, tap <b>WHY</b> (top right of the question) to
             see what tripped you.
           </p>
           <p className="mt-2 text-sm leading-relaxed text-[color:var(--fluo-ink)]">
-            Your wrong answers collect in <b>📝 Bring to class</b> — that little list
+            Your wrong answers collect in <b className="cahier-hl px-0.5">📝 Bring to class</b> — that little list
             is exactly what to listen for during the lesson. Answer an item correctly
             later and it leaves the list.
           </p>
@@ -95,6 +96,10 @@ export default function GuidePage() {
           Short version: tap your class&rsquo;s goal → try the Pre-Test → after class,
           play until it feels easy. <Link href="/" className="underline">Commencez ici 🏠</Link>
         </p>
+
+        <div className="mt-4">
+          <ReplayTour />
+        </div>
       </div>
     </CahierShell>
   );
