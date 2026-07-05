@@ -11,7 +11,7 @@ import { recordItemResult } from "@/lib/progress";
 import type { Collection, Item } from "@/lib/collections/schema";
 
 type Phase = "idle" | "listening" | "result";
-type Grade = "perfect" | "good" | "close" | "miss";
+type Grade = "perfect" | "good" | "homophone" | "close" | "miss";
 
 function articleOf(deck: Collection, item: Item): string {
   const cols = deck.gameConfig?.letris?.columns ?? [];
@@ -49,12 +49,25 @@ function deaccent(s: string) {
   return s.normalize("NFD").replace(/[̀-ͯ]/g, "");
 }
 
+/** SPEECH-only tolerance: French silent endings make "il s'appelle" and
+ *  "ils s'appellent" perfect homophones — the recognizer picks a spelling,
+ *  and the learner must never be penalized for its choice (Dan, 2026-07-05).
+ *  Word pairs are equal when they differ only by a silent -s / -x / -nt. */
+function silentEq(a: string, b: string): boolean {
+  if (a === b) return true;
+  const grows = (x: string, y: string) => y === `${x}s` || y === `${x}x` || y === `${x}nt`;
+  return grows(a, b) || grows(b, a);
+}
+
 function gradeAnswer(recognized: string, expected: string, expectedAlt?: string): Grade {
   const nr = normalize(recognized);
   const ne = normalize(expected);
   if (!nr) return "miss";
   if (nr === ne) return "perfect";
   if (deaccent(nr) === deaccent(ne)) return "good";
+  const tr = deaccent(nr).split(" ");
+  const te = deaccent(ne).split(" ");
+  if (tr.length === te.length && tr.every((w, i) => silentEq(w, te[i]))) return "homophone";
   // Number decks: speech engines transcribe "dix-sept" as the numeral "17".
   // Accept the digit form (item.en when it is purely numeric) as correct.
   if (expectedAlt) {
@@ -72,6 +85,7 @@ function gradeAnswer(recognized: string, expected: string, expectedAlt?: string)
 const GRADE_UI: Record<Grade, { icon: string; label: string; cls: string }> = {
   perfect: { icon: "✅", label: "Parfait !", cls: "text-emerald-700 bg-emerald-50 border-emerald-300" },
   good: { icon: "✅", label: "Bien ! (accent différent)", cls: "text-emerald-700 bg-emerald-50 border-emerald-300" },
+  homophone: { icon: "✅", label: "Parfait ! (même prononciation)", cls: "text-emerald-700 bg-emerald-50 border-emerald-300" },
   close: { icon: "🟡", label: "Presque !", cls: "text-amber-700 bg-amber-50 border-amber-300" },
   miss: { icon: "❌", label: "Pas tout à fait…", cls: "text-rose-700 bg-rose-50 border-rose-300" },
 };
@@ -214,7 +228,7 @@ export default function SayItContent({ collectionId, embedded = false }: { colle
         const art = deck ? articleOf(deck, c) : "";
         const expected = frFull(art, c.fr);
         const g = gradeAnswer(t, expected, /^\d+$/.test((c.en ?? "").trim()) ? c.en : undefined);
-        const ok = g === "perfect" || g === "good";
+        const ok = g === "perfect" || g === "good" || g === "homophone";
         setResult({ grade: g, recognized: t });
         setScore((s) => ({ ok: s.ok + (ok ? 1 : 0), total: s.total + 1 }));
         // Feed the Reviser: a miss (or a partial "close") resurfaces the word;
@@ -284,7 +298,7 @@ export default function SayItContent({ collectionId, embedded = false }: { colle
   }
 
   const ui = result ? GRADE_UI[result.grade] : null;
-  const isCorrect = result?.grade === "perfect" || result?.grade === "good";
+  const isCorrect = result?.grade === "perfect" || result?.grade === "good" || result?.grade === "homophone";
 
   return wrap(
       <div className="mx-auto max-w-2xl px-4 py-4">
