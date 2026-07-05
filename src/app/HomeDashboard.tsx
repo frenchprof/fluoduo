@@ -32,7 +32,10 @@ export default function HomeDashboard() {
     return () => window.removeEventListener("fluolingo:progress-updated", refresh);
   }, []);
 
-  const activeId = SIOS.find((s) => s.unit > 0 && !isSioDone(s.id, progress))?.id;
+  // "Continuer" = the earliest not-done goal across the WHOLE course, Unit 0
+  // included — a new learner starts at SIO-001 (Introductions), not Unit 1's
+  // stressed pronouns (Dan, 2026-07-05: the default shouldn't skip Unité 0).
+  const activeId = SIOS.find((s) => !isSioDone(s.id, progress))?.id;
   const activeSio = SIOS.find((s) => s.id === activeId);
   const doneTotal = SIOS.filter((s) => isSioDone(s.id, progress)).length;
   const pct = Math.round((doneTotal / SIOS.length) * 100);

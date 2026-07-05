@@ -86,7 +86,9 @@ export default function UnitSection({
   }
 
   // The single "you are here" node across the whole course.
-  const activeId = SIOS.find((s) => s.unit > 0 && !isSioDone(s.id, progress))?.id;
+  // Earliest not-done goal across the whole course — Unit 0 included, so the
+  // "you are here" marker starts at SIO-001 for a new learner (Dan, 2026-07-05).
+  const activeId = SIOS.find((s) => !isSioDone(s.id, progress))?.id;
   const openSio = openId ? sios.find((s) => s.id === openId) : undefined;
   const doneCount = sios.filter((s) => isSioDone(s.id, progress)).length;
   const groups = groupSiosForUnit(unit);
