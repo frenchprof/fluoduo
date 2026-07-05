@@ -7,7 +7,9 @@
  * with only the sections that apply:
  *
  *   Lire          — the native lesson's Mémo, or the deck's Mémo card
- *                   (memos.tsx); decks with neither get a Flip It link-card.
+ *                   (memos.tsx); atelier decks read the model dialogue
+ *                   (DialoguePlayer). Decks with neither skip Lire entirely
+ *                   (Dan, 2026-07-05: no pointing Lire at Flip It).
  *   Débutant      — the dice MCQ (hasDicePractice) or the lesson's 🎲 trainer.
  *   Intermédiaire — Complete It (always).
  *   Difficile     — GramMarathon (gap-ready decks) or the lesson's ⭐ bonus.
@@ -19,7 +21,10 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import CahierShell, { deckActivityTabs, hasDicePractice, withActive } from "@/components/CahierShell";
+import DialoguePlayer from "@/app/DialoguePlayer";
 import DiceTrainer, { BonusTrainer } from "@/games/dice/DiceTrainer";
+import { getAtelier } from "@/content/ateliers";
+import { SIOS } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import { isGramMarathonReadyId } from "@/lib/collections/gramMarathonReady";
 import { lessonsForDeck } from "@/content/lessons";
@@ -39,18 +44,6 @@ function StepLabel({ n, label }: { n: number; label: string }) {
       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[color:var(--cahier-ink)] text-base font-black text-white shadow-[2px_2px_0_var(--cahier-hl,#ffe000)]">{n}</span>
       <span className="cahier-hl rounded-sm px-1.5 text-base font-black uppercase tracking-wide text-[color:var(--cahier-ink)]">{label}</span>
       <div className="h-[2px] flex-1 bg-[color:var(--cahier-ink)]/25" />
-    </div>
-  );
-}
-
-/** Lire fallback when a deck has no Mémo (ateliers + wave-2 decks): one
- *  prominent link-card to the deck's Flip It cards. */
-function FlipItCard({ collectionId }: { collectionId: string }) {
-  return (
-    <div className="flex justify-center rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-6">
-      <Link href={`/practice/flip-it/${collectionId}`} className="fluo-btn">
-        🃏 Lire les cartes — Flip It
-      </Link>
     </div>
   );
 }
@@ -75,12 +68,21 @@ export default function LessonFlow({
   const deckLessons = lessonsForDeck(collectionId);
   const lesson = getNativeLesson(lessonSlug ?? deckLessons[0]?.slug ?? "");
   const memo = lesson?.memo ?? memoForDeck(collectionId);
+  // Atelier decks read the model dialogue instead of a Mémo — resolve the deck
+  // back to its production SIO (atelier deck ids are "atelier-sio-0xx").
+  const sio = SIOS.find((s) => s.collectionId === collectionId);
+  const atelierLines =
+    collectionId.startsWith("atelier-") || sio?.isProduction
+      ? getAtelier(sio?.id ?? collectionId.slice("atelier-".length).toUpperCase())
+      : undefined;
+  const lire = memo ?? (atelierLines ? <DialoguePlayer lines={atelierLines} /> : undefined);
   // Sibling lessons of this deck stay one tap away from Lire.
   const siblings = deckLessons.filter((l) => l.slug !== (lessonSlug ?? deckLessons[0]?.slug));
 
-  const sections: Section[] = [
-    { id: "lire", label: "Lire", node: memo ?? <FlipItCard collectionId={collectionId} /> },
-  ];
+  const sections: Section[] = [];
+  // No Lire content at all (defensive — waves 1+2 cover every deck): skip the
+  // section; numbering adjusts naturally and the flow starts at Débutant.
+  if (lire) sections.push({ id: "lire", label: "Lire", node: lire });
   if (hasDicePractice(collectionId)) {
     sections.push({ id: "debutant", label: "Débutant", node: <PracticeContent collectionId={collectionId} embedded /> });
   } else if (lesson) {

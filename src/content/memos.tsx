@@ -1,8 +1,9 @@
 /**
- * Mémo wave 1 (Dan, 2026-07-05) — every deck's Lesson opens with a Mémo card.
+ * Mémo waves 1+2 (Dan, 2026-07-05) — every deck's Lesson opens with a Mémo card.
  * Same card markup style as the native lessons' memos (quand.tsx): rounded-2xl
  * card on --cahier-rule, cahier-display heading, bold pattern lines with
  * glosses, pill rows, one ⚠ line max. Litmus rule: pattern + examples only.
+ * All examples are REAL items from the deck JSONs — never invented words.
  */
 import type { ReactNode } from "react";
 
@@ -241,6 +242,159 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
     </Card>
   ),
 
+  /* ---------- Quel jour on est ? ---------- */
+  days: (
+    <Card title="Les jours — la famille -di">
+      <p lang="fr" className="mt-2 flex flex-wrap items-center gap-1.5 text-[13px] font-bold text-[color:var(--cahier-ink)]">
+        <Pill>lun<B>di</B></Pill>
+        <Pill>mar<B>di</B></Pill>
+        <Pill>mercre<B>di</B></Pill>
+        <Pill>jeu<B>di</B></Pill>
+        <Pill>vendre<B>di</B></Pill>
+        <Pill>same<B>di</B></Pill>
+      </p>
+      <Lines>
+        <li><span lang="fr">dimanche</span> flips it — <B>di</B><span lang="fr">manche</span></li>
+      </Lines>
+      <Warn>No capitals in French: <span lang="fr">lundi</span>, not <span lang="fr">Lundi</span>.</Warn>
+    </Card>
+  ),
+
+  /* ---------- 0 à 20 ---------- */
+  "numbers-0-20": (
+    <Card title="0 à 20">
+      <PillRow
+        label="0–16 — unique words"
+        items={[
+          "zéro", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit",
+          "neuf", "dix", "onze", "douze", "treize", "quatorze", "quinze", "seize",
+        ]}
+      />
+      <PillRow
+        label={<span>17–19 = <B>dix</B> + …</span>}
+        items={["dix-sept", "dix-huit", "dix-neuf"]}
+      />
+    </Card>
+  ),
+
+  /* ---------- 20 à 69 ---------- */
+  "numbers-20-69": (
+    <Card title="20 à 69 — cinq dizaines">
+      <PillRow items={["vingt", "trente", "quarante", "cinquante", "soixante"]} />
+      <Lines>
+        <li>+1 → <B>et un</B> — <span lang="fr">vingt <b className="text-[color:var(--cahier-la)]">et un</b>, trente <b className="text-[color:var(--cahier-la)]">et un</b>, soixante <b className="text-[color:var(--cahier-la)]">et un</b></span></li>
+        <li>the rest → hyphen — <span lang="fr">vingt<B>-</B>deux, quarante<B>-</B>sept, soixante<B>-</B>neuf</span></li>
+      </Lines>
+    </Card>
+  ),
+
+  /* ---------- Salutations ---------- */
+  salutations: (
+    <Card title="Salutations">
+      <div className="mt-2 grid grid-cols-2 gap-2 text-[14px] text-[color:var(--cahier-ink)]">
+        <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
+          <B>→ arriver</B>, poli
+          <p lang="fr" className="mt-1">Bonjour ! Bonsoir !</p>
+        </div>
+        <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
+          <B>→ arriver</B>, copains
+          <p lang="fr" className="mt-1">Salut ! Coucou !</p>
+        </div>
+        <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
+          <B>partir →</B>, poli
+          <p lang="fr" className="mt-1">Au revoir ! Bonne journée ! À demain ! À bientôt !</p>
+        </div>
+        <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
+          <B>partir →</B>, copains
+          <p lang="fr" className="mt-1">Salut ! À plus tard ! À plus !</p>
+        </div>
+      </div>
+    </Card>
+  ),
+
+  /* ---------- Les consignes de classe ---------- */
+  consignes: (
+    <Card title="La classe parle en -ez">
+      <p lang="fr" className="mt-2 flex flex-wrap items-center gap-1.5 text-[13px] font-bold text-[color:var(--cahier-ink)]">
+        <Pill>Écout<B>ez</B> !</Pill>
+        <Pill>Regard<B>ez</B> !</Pill>
+        <Pill>Répét<B>ez</B> !</Pill>
+        <Pill>Lis<B>ez</B> !</Pill>
+        <Pill>Écriv<B>ez</B> !</Pill>
+        <Pill>Parl<B>ez</B> !</Pill>
+        <Pill>Not<B>ez</B> !</Pill>
+        <Pill>Compt<B>ez</B> !</Pill>
+      </p>
+      <p className="mt-3 text-[15px] text-[color:var(--cahier-ink)]">
+        verb + <B>-ez</B> = polite command to the class
+      </p>
+    </Card>
+  ),
+
+  /* ---------- Quelles langues parlez-vous ? ---------- */
+  languages: (
+    <Card title="Quelles langues ?">
+      <Lines>
+        <li>language = <B>le</B> + masculine nationality, no capital</li>
+        <li><B>le</B> <span lang="fr">français</span>, <B>le</B> <span lang="fr">chinois</span>, <B>l'</B><span lang="fr">anglais</span>, <B>l'</B><span lang="fr">espagnol</span></li>
+      </Lines>
+      <PillRow items={["français", "anglais", "chinois", "espagnol", "japonais", "russe", "coréen"]} />
+      <Warn><span lang="fr">Je parle français</span> — no article after <span lang="fr">parler</span>.</Warn>
+    </Card>
+  ),
+
+  /* ---------- C'est quel adjectif ? ---------- */
+  nationalities: (
+    <Card title="C'est quel adjectif ? — feminine endings">
+      <Lines>
+        <li><B>-ais → -aise</B> — <span lang="fr">français / française, portugais / portugaise</span></li>
+        <li><B>-ien → -ienne</B> — <span lang="fr">indonésien / indonésienne, tunisien / tunisienne</span></li>
+        <li><B>-ain → -aine</B> — <span lang="fr">américain / américaine, mexicain / mexicaine</span></li>
+        <li>ends in <B>-e</B> → no change — <span lang="fr">russe, suisse, belge</span></li>
+      </Lines>
+    </Card>
+  ),
+
+  /* ---------- Quelle matière ? ---------- */
+  matieres: (
+    <Card title="Quelle matière ?">
+      <PillRow
+        label="Gratuit (same as English)"
+        items={["la géographie", "la biologie", "l'histoire", "les mathématiques", "la musique", "le sport"]}
+      />
+      <p className="mt-2 text-[13px] font-bold text-[color:var(--cahier-ink)]">À apprendre (the few to learn)</p>
+      <Lines>
+        <li><B>le dessin</B> — art</li>
+        <li><B>l'informatique</B> — computer science</li>
+        <li><B>les langues</B> — languages</li>
+      </Lines>
+    </Card>
+  ),
+
+  /* ---------- Quel est votre lieu préféré ? ---------- */
+  "lieux-letris": (
+    <Card title="Les lieux — le, la ou l' ?">
+      <PillRow label={<B>le</B>} items={["le parc", "le café", "le cinéma", "le musée", "le marché"]} />
+      <PillRow label={<B>la</B>} items={["la gare", "la banque", "la poste", "la piscine", "la pharmacie"]} />
+      <PillRow label={<span><B>l'</B> + vowel</span>} items={["l'hôtel", "l'école", "l'hôpital", "l'église", "l'université"]} />
+    </Card>
+  ),
+
+  /* ---------- Les repas et les aliments ---------- */
+  aliments: (
+    <Card title="Les aliments — du, de la, des">
+      <Lines>
+        <li><B>le</B> <span lang="fr">pain</span> → <B>du</B> <span lang="fr">pain</span> — <span lang="fr">du café, du lait, du fromage</span></li>
+        <li><B>la</B> <span lang="fr">salade</span> → <B>de la</B> <span lang="fr">salade</span> — <span lang="fr">de la viande</span></li>
+        <li><B>l'</B><span lang="fr">eau</span> → <B>de l'</B><span lang="fr">eau</span></li>
+        <li><B>les</B> <span lang="fr">pâtes</span> → <B>des</B> <span lang="fr">pâtes</span></li>
+      </Lines>
+      <p className="mt-3 text-[15px] text-[color:var(--cahier-ink)]">
+        "some of it" = <B>du</B> / <B>de la</B> / <B>des</B>
+      </p>
+    </Card>
+  ),
+
   /* ---------- Quelle profession ? ---------- */
   professions: (
     <Card title="Quelle profession ? — feminine endings">
@@ -255,7 +409,7 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
   ),
 };
 
-/** The Mémo card for a deck, or undefined (ateliers + wave-2 decks). */
+/** The Mémo card for a deck, or undefined (ateliers — their Lire is the model dialogue). */
 export function memoForDeck(id: string): ReactNode | undefined {
   return DECK_MEMOS[id];
 }
