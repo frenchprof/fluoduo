@@ -23,6 +23,7 @@ import {
   setNote,
   syncIfDue,
   syncNow,
+  hasDirtyNotes,
   graphemeCount,
   NOTE_MAX,
   type DeckNotes,
@@ -206,6 +207,16 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
     setNotes(loadLocal(collection.id));
     syncIfDue(collection.id).then(setNotes).catch(() => {});
   }, [collection.id]);
+  // Background auto-sync: whenever a note edit leaves the deck dirty, push it
+  // to the cloud after a short debounce — no manual Sync button (Dan,
+  // 2026-07-05). syncNow clears the dirty flag, so this settles, not loops.
+  useEffect(() => {
+    if (!hasDirtyNotes(collection.id)) return;
+    const t = window.setTimeout(() => {
+      syncNow(collection.id).then(setNotes).catch(() => {});
+    }, 2500);
+    return () => window.clearTimeout(t);
+  }, [notes, collection.id]);
 
   const base = useMemo<Row[]>(
     () => items.map((it) => {
@@ -318,58 +329,50 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
             {test ? "Test (type the name)" : "Study (click to reveal/hide)"}
           </span>
         </span>
-        <div className="ml-auto flex items-center gap-2">
-        {/* Flip-all sits just left of ⚙ Options; only meaningful in All Cards study mode */}
+        <div className="ml-auto flex flex-wrap items-center gap-2">
+        {/* Shuffle + Edit notes are exposed, not buried in a menu (Dan,
+            2026-07-05). Notes sync in the background — no manual Sync button. */}
+        <button type="button" onClick={() => applyOrder("shuffle")} title="Shuffle the order"
+          className={`cahier-btn cahier-btn-sm ${order === "shuffle" ? "cahier-btn-primary" : ""}`}>🔀 Shuffle</button>
+        <button type="button" onClick={() => setEditNotes((e) => !e)}
+          className={`cahier-btn cahier-btn-sm ${editNotes ? "cahier-btn-accent" : ""}`}>
+          {editNotes ? "✓ editing notes" : "✎ Edit notes"}
+        </button>
+        {/* Flip-all sits just left of ⚙; only meaningful in All Cards study mode */}
         {view === "allcards" && !test && (
           <button type="button" onClick={flipEverything} className="cahier-btn cahier-btn-sm">
             {flipAll ? "Show all English" : "Flip all to French"}
           </button>
         )}
-        {/* ⚙ settings popover — ORDER + COLOUR + notes, so they don't reflow the page */}
+        {/* ⚙ grouping popover — only for decks that actually have a group axis
+            (article / continent); simple decks have nothing to put here. */}
+        {(canGroupArt || hasRegion) && (
         <div className="relative">
           <button type="button" onClick={() => setShowOptions((o) => !o)} aria-expanded={showOptions}
             className={`cahier-btn cahier-btn-sm ${showOptions ? "cahier-btn-primary" : ""}`}>
-            ⚙ Options {showOptions ? "▴" : "▾"}
+            ⚙ Group {showOptions ? "▴" : "▾"}
           </button>
           {showOptions && (
             <>
             <div className="fixed inset-0 z-20" onClick={() => setShowOptions(false)} aria-hidden />
-            <div className="absolute right-0 z-30 mt-1 flex w-72 flex-col gap-3 rounded-xl border-2 border-[color:var(--cahier-ink)]/20 bg-white p-3 shadow-xl">
-              <div className="flex flex-col gap-1.5">
-                {/* "By article" only where the deck HAS an article axis — on a
-                    deck without one the button grouped everything under a
-                    single pointless "no article" header. No group axis at all
-                    → the row is honestly just "order" (shuffle). */}
-                <span className={CTRL_LABEL}>{canGroupArt || hasRegion ? "group by" : "order"}</span>
-                <div className="flex flex-wrap items-center gap-2">
-                  {([
-                    ...(canGroupArt || hasRegion ? ([["none", "✕", "No grouping"]] as ["none" | "article" | "continent", string, string][]) : []),
-                    ...(canGroupArt ? ([["article", "le·la", "By article"]] as ["none" | "article" | "continent", string, string][]) : []),
-                    ...(hasRegion ? ([["continent", "🌍", "By continent"]] as ["none" | "article" | "continent", string, string][]) : []),
-                  ] as ["none" | "article" | "continent", string, string][]).map(([k, icon, title]) => (
-                    <button key={k} type="button" onClick={() => setGroup(k)} title={title} aria-label={title}
-                      className={`cahier-btn cahier-btn-sm ${groupBy === k ? "cahier-btn-primary" : ""}`}>{icon}</button>
-                  ))}
-                  {(canGroupArt || hasRegion) && <span className="mx-1 h-5 w-px bg-[color:var(--cahier-rule)]" aria-hidden />}
-                  <button type="button" onClick={() => applyOrder("shuffle")} title="Shuffle" aria-label="Shuffle"
-                    className={`cahier-btn cahier-btn-sm ${order === "shuffle" ? "cahier-btn-primary" : ""}`}>🔀</button>
-                </div>
-                {(canGroupArt || hasRegion) && (
-                  <span className="text-[0.7rem] text-[color:var(--cahier-ink-soft)]">groups + sections + colours rows · sort A–Z via column headers</span>
-                )}
+            <div className="absolute right-0 z-30 mt-1 flex w-64 flex-col gap-2 rounded-xl border-2 border-[color:var(--cahier-ink)]/20 bg-white p-3 shadow-xl">
+              <span className={CTRL_LABEL}>group by</span>
+              <div className="flex flex-wrap items-center gap-2">
+                {([
+                  ["none", "✕", "No grouping"] as ["none" | "article" | "continent", string, string],
+                  ...(canGroupArt ? ([["article", "le·la", "By article"]] as ["none" | "article" | "continent", string, string][]) : []),
+                  ...(hasRegion ? ([["continent", "🌍", "By continent"]] as ["none" | "article" | "continent", string, string][]) : []),
+                ] as ["none" | "article" | "continent", string, string][]).map(([k, icon, title]) => (
+                  <button key={k} type="button" onClick={() => setGroup(k)} title={title} aria-label={title}
+                    className={`cahier-btn cahier-btn-sm ${groupBy === k ? "cahier-btn-primary" : ""}`}>{icon}</button>
+                ))}
               </div>
-              <div className="flex items-center gap-2 border-t border-[color:var(--cahier-rule)] pt-2">
-                <button type="button" onClick={() => setEditNotes((e) => !e)}
-                  className={`cahier-btn cahier-btn-sm ${editNotes ? "cahier-btn-accent" : ""}`}>
-                  {editNotes ? "✓ editing notes" : "✎ Edit notes"}
-                </button>
-                <button type="button" onClick={() => syncNow(collection.id).then(setNotes).catch(() => {})}
-                  title="Sync notes" className="cahier-btn cahier-btn-sm">⟳ Sync</button>
-              </div>
+              <span className="text-[0.7rem] text-[color:var(--cahier-ink-soft)]">groups + sections + colours rows · sort A–Z via column headers</span>
             </div>
             </>
           )}
         </div>
+        )}
         </div>
       </div>
 

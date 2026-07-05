@@ -128,9 +128,16 @@ export async function syncIfDue(deckId: string): Promise<DeckNotes> {
   return pullMergePush(deckId, uid);
 }
 
-/** Manual "Sync now" — bypasses the daily gate. */
+/** Push now — bypasses the daily gate. Used by the background auto-sync after
+ *  edits settle (and previously by the manual button, now removed). */
 export async function syncNow(deckId: string): Promise<DeckNotes> {
   const uid = auth.currentUser?.uid;
   if (!uid) return loadLocal(deckId);
   return pullMergePush(deckId, uid);
+}
+
+/** True when this deck has note edits not yet pushed to the cloud — drives the
+ *  background auto-sync (Dan, 2026-07-05: syncing should just happen). */
+export function hasDirtyNotes(deckId: string): boolean {
+  return readMeta(deckId).dirty;
 }
