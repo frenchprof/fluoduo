@@ -199,7 +199,7 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
                       type="button"
                       lang="fr"
                       onClick={() => grade(o, o === (hasGaps ? item.gap : item.fr), qText)}
-                      className="rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-2.5 text-[color:var(--cahier-ink)] transition hover:border-[color:var(--cahier-gold)]"
+                      className="cahier-option text-center"
                     >
                       {o}
                     </button>

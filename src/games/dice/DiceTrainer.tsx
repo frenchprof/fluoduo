@@ -156,7 +156,7 @@ export default function DiceTrainer({ config }: { config: DiceConfig }) {
             <div className="mx-auto mt-3 flex max-w-md flex-col gap-2">
               {easyOpts.map((o) => (
                 <button key={o} type="button" lang="fr" onClick={() => { setPicked(o); grade(o, o === q.correct); }}
-                  className="rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-2.5 text-[color:var(--cahier-ink)] transition hover:border-[color:var(--cahier-gold)]">
+                  className="cahier-option text-center">
                   {o}
                 </button>
               ))}

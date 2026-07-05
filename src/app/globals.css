@@ -679,16 +679,46 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   user-select: none;
   background: var(--cahier-paper);
   color: var(--cahier-ink);
-  transition: background 0.14s, color 0.14s, transform 0.05s;
+  /* Solid bottom lip so a button reads as pressable, not a flat label
+     (Dan, 2026-07-05: buttons "not obvious that they are to be clicked on"). */
+  box-shadow: 0 2px 0 0 var(--cahier-ink);
+  transition: background 0.14s, color 0.14s, transform 0.06s, box-shadow 0.06s, filter 0.14s;
 }
-.cahier-btn:hover { background: #f1f1ea; }
-.cahier-btn:active { transform: translateY(1px); }
-.cahier-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-.cahier-btn-primary { background: var(--cahier-ink); color: #fff; border-color: var(--cahier-ink); }
+.cahier-btn:hover { background: #f1f1ea; filter: brightness(1.01); }
+.cahier-btn:active { transform: translateY(2px); box-shadow: 0 0 0 0 var(--cahier-ink); }
+.cahier-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: 0 2px 0 0 rgba(42, 46, 110, 0.3); }
+.cahier-btn-primary { background: var(--cahier-ink); color: #fff; border-color: var(--cahier-ink); box-shadow: 0 2px 0 0 #191c50; }
 .cahier-btn-primary:hover { background: #383d86; }
-.cahier-btn-accent { background: var(--cahier-hl); border-color: var(--cahier-hl-edge); color: var(--cahier-ink); }
+.cahier-btn-primary:active { box-shadow: 0 0 0 0 #191c50; }
+.cahier-btn-accent { background: var(--cahier-hl); border-color: var(--cahier-hl-edge); color: var(--cahier-ink); box-shadow: 0 2px 0 0 var(--cahier-hl-edge); }
 .cahier-btn-accent:hover { filter: brightness(1.03); }
+.cahier-btn-accent:active { box-shadow: 0 0 0 0 var(--cahier-hl-edge); }
+/* Gold call-to-action variant — breaks the navy/paper monotony for the one
+   "do this next" button on a screen (Générateur roll, Continue, etc.). */
+.cahier-btn-gold { background: var(--cahier-gold); border-color: #a9852f; color: #3a2b04; box-shadow: 0 2px 0 0 #a9852f; }
+.cahier-btn-gold:hover { filter: brightness(1.04); }
+.cahier-btn-gold:active { box-shadow: 0 0 0 0 #a9852f; }
+/* Size modifier only — never re-set box-shadow here, or it would override the
+   variant lip colour (primary/accent/gold) since -sm is declared last. */
 .cahier-btn-sm { padding: 0.3rem 0.65rem; font-size: 0.78rem; border-radius: 8px; }
+
+/* Tappable choice card — a multiple-choice option is a BUTTON, not a static
+   tile. Bottom lip + gold hover-lift make that unmistakable. */
+.cahier-option {
+  display: block;
+  width: 100%;
+  border: 2px solid rgba(42, 46, 110, 0.22);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--cahier-ink);
+  padding: 0.65rem 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 0 0 rgba(42, 46, 110, 0.18);
+  transition: transform 0.06s, box-shadow 0.08s, border-color 0.12s, background 0.12s;
+}
+.cahier-option:hover { border-color: var(--cahier-gold); background: #fffdf3; box-shadow: 0 3px 0 0 var(--cahier-gold); }
+.cahier-option:active { transform: translateY(2px); box-shadow: 0 0 0 0 var(--cahier-gold); }
 
 /* Reviewed / To-Review — a single sliding switch (green ✓ = reviewed,
  * red ↺ = to review). Exactly one state, always. */
