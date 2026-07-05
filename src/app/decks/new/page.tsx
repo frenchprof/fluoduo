@@ -19,6 +19,7 @@ import { slugify } from "@/lib/importer/parse";
 import { SIOS } from "@/content/sios";
 import type { Collection, Item } from "@/lib/collections/schema";
 import CahierShell from "@/components/CahierShell";
+import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 
 /** French characters the EN/US keyboard hides (Dan, 2026-07-05: "the builder
  *  is missing punctuation marks") — one tap inserts at the cursor of the
@@ -182,10 +183,11 @@ export default function NewDeckPage() {
 
   return (
     <CahierShell
-      tabs={[
-        { key: "home", label: "Accueil", emoji: "🏠", href: "/" },
-        { key: "new", label: "New Deck", emoji: "📚" },
-      ]}
+      // Plain site row — a non-site "context" flap would flip CahierShell into
+      // its nested level-2 layout and detach the rail from the page (Dan,
+      // 2026-07-05). "new" matches no site key, so nothing is marked active
+      // and every flap keeps its link; the crumb names the page.
+      tabs={tabsWithActive(siteTabs(), "new")}
       active="new"
       crumb="📚 Your Custom Deck"
     >
