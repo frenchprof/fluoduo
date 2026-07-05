@@ -10,14 +10,20 @@
  * columns are used, a letris gameConfig so Classify It works too.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { signInWithGoogle, useAuthUser } from "@/lib/firebase/auth";
 import { createCollection } from "@/lib/firebase/collections";
 import { logEvent } from "@/lib/firebase/usage";
 import { slugify } from "@/lib/importer/parse";
+import { SIOS } from "@/content/sios";
 import type { Collection, Item } from "@/lib/collections/schema";
 import CahierShell from "@/components/CahierShell";
+
+/** French characters the EN/US keyboard hides (Dan, 2026-07-05: "the builder
+ *  is missing punctuation marks") — one tap inserts at the cursor of the
+ *  last-focused text field. ’ is the French apostrophe (j’aime). */
+const FR_CHARS = ["é", "è", "ê", "ë", "à", "â", "ç", "î", "ï", "ô", "œ", "ù", "û", "ü", "’", "«", "»", "?", "!"];
 
 type Card = {
   emoji: string;
@@ -34,6 +40,10 @@ const EMPTY_CARD: Card = { emoji: "", en: "", note: "", hint: "", article: "", f
 type Draft = {
   title: string;
   subtitle: string;
+  /** SIO this deck complements (Dan, 2026-07-05: learners position their
+   *  cards next to a course objective) — supersedes the old raw unit/lessonNo
+   *  inputs, which remain in the draft shape for saved-draft compatibility. */
+  sio: string;
   unit: string;
   lessonNo: string;
   lessonSlug: string;
@@ -43,6 +53,7 @@ type Draft = {
 const EMPTY: Draft = {
   title: "",
   subtitle: "",
+  sio: "",
   unit: "",
   lessonNo: "",
   lessonSlug: "",
@@ -67,6 +78,27 @@ export default function NewDeckPage() {
   const [hydrated, setHydrated] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+
+  // Accent bar target: the last text field the user was typing in.
+  const lastField = useRef<HTMLInputElement | null>(null);
+  function rememberFocus(e: React.FocusEvent) {
+    const t = e.target;
+    if (t instanceof HTMLInputElement && t.type === "text") lastField.current = t;
+  }
+  function insertChar(ch: string) {
+    const el = lastField.current;
+    if (!el) return;
+    const s = el.selectionStart ?? el.value.length;
+    const e2 = el.selectionEnd ?? s;
+    // Native setter + input event so React's controlled onChange fires.
+    Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")?.set?.call(
+      el,
+      el.value.slice(0, s) + ch + el.value.slice(e2),
+    );
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+    el.focus();
+    el.setSelectionRange(s + ch.length, s + ch.length);
+  }
 
   useEffect(() => {
     try {
@@ -119,8 +151,11 @@ export default function NewDeckPage() {
       const arts = [...new Set(validCards.map((c) => c.article))];
       const cols = arts.length >= 2 ? arts.map((a) => COL_FOR[a]) : null;
 
-      const unit = draft.unit ? Number(draft.unit) : undefined;
-      const lessonNo = draft.lessonNo ? Number(draft.lessonNo) : undefined;
+      // Position: the chosen SIO pins the deck to that objective's unit/number
+      // (Dan, 2026-07-05: cards as "a complement to another current SIO").
+      const sio = draft.sio ? SIOS.find((s) => s.id === draft.sio) : undefined;
+      const unit = sio ? sio.unit : draft.unit ? Number(draft.unit) : undefined;
+      const lessonNo = sio ? sio.num : draft.lessonNo ? Number(draft.lessonNo) : undefined;
       const payload: Omit<Collection, "id" | "owner"> = {
         title: draft.title.trim(),
         // Blank subtitle: OMIT the key — an explicit `undefined` is what
@@ -128,7 +163,7 @@ export default function NewDeckPage() {
         ...(draft.subtitle.trim() ? { subtitle: draft.subtitle.trim() } : {}),
         langPair: "fr-en",
         visibility: draft.visibility,
-        tags: [],
+        tags: sio ? [`sio:${sio.id}`] : [],
         items,
         ...(unit !== undefined ? { unit } : {}),
         ...(lessonNo !== undefined ? { lessonNo } : {}),
@@ -154,7 +189,7 @@ export default function NewDeckPage() {
       active="new"
       crumb="📚 Your Custom Deck"
     >
-      <div className="mx-auto max-w-5xl px-4 py-4">
+      <div className="mx-auto max-w-5xl px-4 py-4" onFocusCapture={rememberFocus}>
         <h1 className="fluo-serif text-3xl font-black text-[color:var(--fluo-ink)]">
           Your <span className="fluo-hl">Custom Deck</span>
         </h1>
@@ -173,15 +208,20 @@ export default function NewDeckPage() {
             <input value={draft.subtitle} onChange={(e) => setDraft({ ...draft, subtitle: e.target.value })} placeholder="One-line description" />
           </Field>
         </section>
-        <section className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <Field label="Unit">
-            <select value={draft.unit} onChange={(e) => setDraft({ ...draft, unit: e.target.value })}>
-              <option value="">—</option>
-              {[0, 1, 2, 3, 4].map((u) => <option key={u} value={u}>Unit {u}</option>)}
+        <section className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <Field label="Complements which goal? (optional)">
+            <select value={draft.sio} onChange={(e) => setDraft({ ...draft, sio: e.target.value })}>
+              <option value="">— none, it stands alone —</option>
+              {[0, 1, 2, 3, 4].map((u) => (
+                <optgroup key={u} label={`Unité ${u}`}>
+                  {SIOS.filter((s) => s.unit === u).map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {String(s.num).padStart(2, "0")} · {s.topic}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
             </select>
-          </Field>
-          <Field label="Lesson no.">
-            <input type="number" min={1} value={draft.lessonNo} onChange={(e) => setDraft({ ...draft, lessonNo: e.target.value })} />
           </Field>
           <Field label="Topic tag">
             <input value={draft.lessonSlug} onChange={(e) => setDraft({ ...draft, lessonSlug: e.target.value })} placeholder="e.g. colours, transport" />
@@ -195,7 +235,24 @@ export default function NewDeckPage() {
           </Field>
         </section>
 
-        <h2 className="fluo-label mt-8 mb-3">cards ({validCards.length} ready)</h2>
+        {/* One-tap French characters — inserts at the cursor of whichever
+            field you were typing in (mousedown is swallowed so focus stays). */}
+        <div className="sticky top-[58px] z-[5] mt-6 -mx-1 flex flex-wrap gap-1 rounded-xl border-2 border-[color:var(--fluo-line)] bg-[var(--fluo-card)]/95 px-2 py-1.5 backdrop-blur">
+          {FR_CHARS.map((ch) => (
+            <button
+              key={ch}
+              type="button"
+              lang="fr"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => insertChar(ch)}
+              className="h-8 min-w-8 rounded-md border border-[color:var(--fluo-line)] bg-white px-1.5 text-base font-bold text-[color:var(--fluo-ink)] transition hover:border-[color:var(--fluo-ink)] hover:-translate-y-0.5 active:translate-y-0"
+            >
+              {ch}
+            </button>
+          ))}
+        </div>
+
+        <h2 className="fluo-label mt-4 mb-3">cards ({validCards.length} ready)</h2>
         <ol className="space-y-3">
           {draft.cards.map((c, i) => (
             <CardEditor key={i} index={i} card={c} onChange={(p) => setCard(i, p)} onRemove={() => removeCard(i)} />

@@ -1,12 +1,12 @@
-import Link from "next/link";
 import CahierShell from "@/components/CahierShell";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 import HomeDashboard from "./HomeDashboard";
-import MyDecks from "./MyDecks";
 
 /** The true Home page (Dan, 2026-07-05): the learning-journey overview —
  *  where you are across all 50 SIOs — plus Réviser/streak/gems. The units
- *  themselves live behind the Unité 0–4 flaps. */
+ *  live behind the Unité 0–4 flaps; the deck library — including YOUR custom
+ *  decks and the deck builder — lives in the 🗂️ Index (Dan, 2026-07-05:
+ *  Home is the journey, the Index is the library). */
 export default function Home() {
   return (
     <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="home" crumb="🏠 Home">
@@ -14,16 +14,6 @@ export default function Home() {
         {/* Hero + journey both live in HomeDashboard (client: they need
             live progress for the CTA, chips and bar). */}
         <HomeDashboard />
-
-        <div className="mt-8">
-          <MyDecks />
-        </div>
-
-        <div className="mt-6">
-          <Link href="/decks/new" className="fluo-btn fluo-btn-sm">
-            ➕ Your Custom Deck
-          </Link>
-        </div>
       </div>
     </CahierShell>
   );

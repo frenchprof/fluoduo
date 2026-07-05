@@ -14,6 +14,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import CahierShell, { withActive, pretestHrefForDeck } from "@/components/CahierShell";
+import MyDecks from "@/app/MyDecks";
 import { composeBankForDeck } from "@/games/compose/banks";
 import { siteTabs } from "@/components/siteTabs";
 import { CURATED } from "@/content/collections";
@@ -138,6 +139,21 @@ export default function ActivitiesIndexPage() {
             </section>
           );
         })}
+
+        {/* The learner's own shelf — deck-building is a library action, so it
+            lives here, not on Home (Dan, 2026-07-05: "Home = where am I,
+            Index = the library"). */}
+        <section className="fluo-h-5 mb-6">
+          <div className="mb-2 flex items-center gap-2 rounded-xl px-4 py-2" style={{ background: "var(--fluo-card-accent)" }}>
+            <span aria-hidden>✨</span>
+            <span className="fluo-serif font-black text-white">Vos decks</span>
+            <span lang="fr" className="hidden text-sm text-white/85 sm:inline">Les cartes que vous créez vous-même</span>
+          </div>
+          <MyDecks bare />
+          <Link href="/decks/new" className="fluo-btn fluo-btn-sm mt-3 inline-flex">
+            ➕ Nouveau deck
+          </Link>
+        </section>
       </div>
     </CahierShell>
   );
