@@ -69,6 +69,10 @@ async function completeRedirect(): Promise<void> {
 export async function signOut(): Promise<void> {
   await logEvent("auth.signout", {});
   await fbSignOut(auth);
+  // Drop this device's local learner cache so the next person doesn't see —
+  // or merge into their account — the previous user's progress/reviser data.
+  const { clearLocalLearnerData } = await import("@/lib/progress");
+  clearLocalLearnerData();
 }
 
 /** React hook: current user (null = signed out, undefined = still resolving). */

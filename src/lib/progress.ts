@@ -102,6 +102,35 @@ export function replaceProgress(p: Progress): Progress {
   return p;
 }
 
+/** Wipe all device-local LEARNER data — progress + reviser schedule
+ *  (fluolingo:progress), pretest misses (fluolingo:pretest.v1), and per-deck
+ *  notes / study buckets (fln-*). Called on sign-out so the next user on a
+ *  shared device never sees or merges someone else's work (Dan, 2026-07-05:
+ *  "if i have signed out why do i still see the information about what i have
+ *  left to revise"). Device preferences (volume, tour flags, widths) are kept. */
+export function clearLocalLearnerData(): void {
+  if (typeof window === "undefined") return;
+  try {
+    const ls = window.localStorage;
+    const kill: string[] = [];
+    for (let i = 0; i < ls.length; i++) {
+      const k = ls.key(i);
+      if (
+        k &&
+        (k === STORAGE_KEY ||
+          k === "fluolingo:pretest.v1" ||
+          k.startsWith("fln-notes:") ||
+          k.startsWith("fln-notes-meta:") ||
+          k.startsWith("fln-buckets:"))
+      ) {
+        kill.push(k);
+      }
+    }
+    kill.forEach((k) => ls.removeItem(k));
+    window.dispatchEvent(new CustomEvent("fluolingo:progress-updated"));
+  } catch {}
+}
+
 function bumpStreakToday(p: Progress): Progress {
   const today = todayStr();
   if (p.lastActiveDay === today) return p;
