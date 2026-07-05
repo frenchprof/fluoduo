@@ -170,7 +170,7 @@ export default function CahierShell({
                           tab={t}
                           hue={hueOf(t, i)}
                           active={active === t.key}
-                          className="cahier-tab !rounded-md text-left"
+                          className="cahier-tab cahier-tab--sm !rounded-md text-left"
                           onNavigate={() => setMenuOpen(false)}
                         />
                       ))}
@@ -188,9 +188,9 @@ export default function CahierShell({
           {site.map((t, i) => (
             <TabFlap key={t.key} tab={t} hue={hueOf(t, i)} active={isActiveFlap(t)} className="cahier-tab" />
           ))}
-          {context.length > 0 && <span aria-hidden className="h-4" />}
+          {context.length > 0 && <span aria-hidden className="h-3" />}
           {context.map((t, i) => (
-            <TabFlap key={t.key} tab={t} hue={hueOf(t, i)} active={active === t.key} className="cahier-tab" />
+            <TabFlap key={t.key} tab={t} hue={hueOf(t, i)} active={active === t.key} className="cahier-tab cahier-tab--sm" />
           ))}
         </nav>
       </div>

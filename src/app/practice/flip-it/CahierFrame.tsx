@@ -98,7 +98,7 @@ export function CahierFrame({
                 {navTabs.map((t, i) => (
                   <NavFlap key={t.key} tab={navActive === t.key ? { ...t, href: undefined } : t}
                     hue={TAB_HUES[i % TAB_HUES.length]} active={navActive === t.key}
-                    className="cahier-tab !rounded-md text-left" onNavigate={() => setMenuOpen(false)} />
+                    className="cahier-tab cahier-tab--sm !rounded-md text-left" onNavigate={() => setMenuOpen(false)} />
                 ))}
                 <hr className="my-0.5 border-[color:var(--cahier-ink)]/15" />
                 {tabs.map((t, i) => (
@@ -107,7 +107,7 @@ export function CahierFrame({
                     type="button"
                     data-active={active === t.key}
                     onClick={() => { onSelect(t.key); setMenuOpen(false); }}
-                    className="cahier-tab !rounded-md text-left"
+                    className="cahier-tab cahier-tab--xs !rounded-md text-left"
                     style={{ "--tab-hue": hueOf(t, i) } as CSSProperties}
                   >
                     {t.label}
@@ -125,19 +125,19 @@ export function CahierFrame({
           {site.map((t, i) => (
             <NavFlap key={t.key} tab={t} hue={TAB_HUES[i % TAB_HUES.length]} active={t.key === unitKey} className="cahier-tab" />
           ))}
-          {navTabs.length > 0 && <span aria-hidden className="h-4" />}
+          {navTabs.length > 0 && <span aria-hidden className="h-3" />}
           {navTabs.map((t, i) => (
             <NavFlap key={t.key} tab={navActive === t.key ? { ...t, href: undefined } : t}
-              hue={TAB_HUES[i % TAB_HUES.length]} active={navActive === t.key} className="cahier-tab" />
+              hue={TAB_HUES[i % TAB_HUES.length]} active={navActive === t.key} className="cahier-tab cahier-tab--sm" />
           ))}
-          <span aria-hidden className="h-4" />
+          <span aria-hidden className="h-3" />
           {tabs.map((t, i) => (
             <button
               key={t.key}
               type="button"
               data-active={active === t.key}
               onClick={() => onSelect(t.key)}
-              className="cahier-tab"
+              className="cahier-tab cahier-tab--xs"
               style={{ "--tab-hue": hueOf(t, i) } as CSSProperties}
             >
               {t.label}
