@@ -19,6 +19,7 @@ import { isConjugaZoneReadyId } from "@/lib/collections/conjugaZoneReady";
 import { isGramMarathonReadyId } from "@/lib/collections/gramMarathonReady";
 import { CURATED } from "@/content/collections";
 import { lessonsForDeck } from "@/content/lessons";
+import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 
 /** Dice Practice is an MCQ over the deck's letris columns — no columns, no game. */
 export function hasDicePractice(collectionId: string): boolean {
@@ -71,7 +72,7 @@ function TabFlap({
   );
   if (!tab.href) {
     return (
-      <span data-active={active} className={className} style={style}>
+      <span data-active={active} aria-current={active ? "page" : undefined} className={className} style={style}>
         {body}
       </span>
     );
@@ -84,13 +85,16 @@ function TabFlap({
 }
 
 export default function CahierShell({
-  tabs,
+  tabs = [],
   active,
   crumb,
   topRight,
   children,
 }: {
-  tabs: ShellTab[];
+  /** Page-context flaps (a deck's activities, Teacher, …). The site row
+   *  (Home/Guide/Unités/Index) is ALWAYS rendered above them — the flap rail
+   *  must never "randomly disappear" between pages (Dan, 2026-07-05). */
+  tabs?: ShellTab[];
   active: string;
   crumb?: ReactNode; // small label on the top bar's right side
   topRight?: ReactNode; // extra top-bar content (e.g. a live score)
@@ -98,6 +102,9 @@ export default function CahierShell({
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const hueOf = (t: ShellTab, i: number) => t.hue ?? TAB_HUES[i % TAB_HUES.length];
+  const site = tabsWithActive(siteTabs(), active);
+  // Pages that pass the site row itself just deduplicate to no context group.
+  const context = tabs.filter((t) => !site.some((s) => s.key === t.key));
 
   return (
     <div className="cahier-desk">
@@ -134,8 +141,19 @@ export default function CahierShell({
                     {menuOpen ? "✕" : "☰"}
                   </button>
                   {menuOpen && (
-                    <div className="absolute right-0 top-full z-50 mt-1 flex w-44 flex-col gap-1 rounded-lg border-2 border-[color:var(--cahier-ink)]/20 bg-white p-1 shadow-lg">
-                      {tabs.map((t, i) => (
+                    <div className="absolute right-0 top-full z-50 mt-1 flex w-48 flex-col gap-1 rounded-lg border-2 border-[color:var(--cahier-ink)]/20 bg-white p-1 shadow-lg">
+                      {site.map((t, i) => (
+                        <TabFlap
+                          key={t.key}
+                          tab={t}
+                          hue={hueOf(t, i)}
+                          active={active === t.key}
+                          className="cahier-tab !rounded-md text-left"
+                          onNavigate={() => setMenuOpen(false)}
+                        />
+                      ))}
+                      {context.length > 0 && <hr className="my-0.5 border-[color:var(--cahier-ink)]/15" />}
+                      {context.map((t, i) => (
                         <TabFlap
                           key={t.key}
                           tab={t}
@@ -156,7 +174,11 @@ export default function CahierShell({
         </main>
 
         <nav className="cahier-tabs" aria-label="Pages">
-          {tabs.map((t, i) => (
+          {site.map((t, i) => (
+            <TabFlap key={t.key} tab={t} hue={hueOf(t, i)} active={active === t.key} className="cahier-tab" />
+          ))}
+          {context.length > 0 && <span aria-hidden className="h-4" />}
+          {context.map((t, i) => (
             <TabFlap key={t.key} tab={t} hue={hueOf(t, i)} active={active === t.key} className="cahier-tab" />
           ))}
         </nav>

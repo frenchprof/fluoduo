@@ -31,6 +31,7 @@ import { bareWord, displayEn, practiceItems } from "@/lib/collections/display";
 import { loadBuckets, setBucket, type Bucket } from "@/lib/practice/buckets";
 import { recordItemResult } from "@/lib/progress";
 import { CahierFrame, TAB_HUES, type CahierTab } from "../CahierFrame";
+import { deckActivityTabs } from "@/components/CahierShell";
 
 /* ─────────────────────────── step labels ─────────────────────────── */
 
@@ -274,6 +275,8 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
       tabs={VIEW_TABS}
       active={view}
       onSelect={(k) => setView(k as View)}
+      navTabs={deckActivityTabs(collection.id)}
+      navActive="flip"
       topBar={<TopBar crumb={collection.title} />}
     >
       <StepLabel n={1} label="Select view — use the flaps or burger menu on the top right" />

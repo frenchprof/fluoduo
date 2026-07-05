@@ -151,22 +151,29 @@ export default function SioModal({
     return () => ro.disconnect();
   }, []);
 
-  // Pointer-drag resize from the visible ◢ grip (works on touch too).
+  // Pointer-drag resize from the visible ◢ grip. setPointerCapture is what
+  // makes this work on iPad — without it, iOS Safari stops delivering move
+  // events as soon as the finger leaves the tiny grip.
   function startResize(e: React.PointerEvent<HTMLDivElement>) {
     const el = panelRef.current;
     if (!el) return;
     e.preventDefault();
+    const grip = e.currentTarget;
+    try { grip.setPointerCapture(e.pointerId); } catch {}
     const sw = el.offsetWidth, sh = el.offsetHeight, sx = e.clientX, sy = e.clientY;
     const move = (ev: PointerEvent) => {
+      ev.preventDefault();
       el.style.width = `${Math.min(Math.max(256, sw + ev.clientX - sx), window.innerWidth * 0.9)}px`;
       el.style.height = `${Math.min(Math.max(160, sh + ev.clientY - sy), window.innerHeight * 0.88)}px`;
     };
-    const up = () => {
-      window.removeEventListener("pointermove", move);
-      window.removeEventListener("pointerup", up);
+    const done = () => {
+      grip.removeEventListener("pointermove", move);
+      grip.removeEventListener("pointerup", done);
+      grip.removeEventListener("pointercancel", done);
     };
-    window.addEventListener("pointermove", move);
-    window.addEventListener("pointerup", up);
+    grip.addEventListener("pointermove", move);
+    grip.addEventListener("pointerup", done);
+    grip.addEventListener("pointercancel", done);
   }
 
   return (
@@ -216,11 +223,16 @@ export default function SioModal({
             show it — this one works with any pointer. */}
         <div
           onPointerDown={startResize}
-          className="absolute bottom-0 right-0 z-10 flex h-7 w-7 cursor-nwse-resize touch-none items-end justify-end rounded-br-2xl pb-0.5 pr-1"
+          className="absolute -bottom-2 -right-2 z-10 flex h-11 w-11 cursor-nwse-resize touch-none select-none items-end justify-end pb-2.5 pr-2.5"
           title="Drag to resize"
           aria-hidden
         >
-          <span className="text-sm leading-none" style={{ color: "var(--fluo-card-accent)" }}>◢</span>
+          <span
+            className="flex h-6 w-6 items-center justify-center rounded-full border-2 bg-white text-xs leading-none shadow"
+            style={{ color: "var(--fluo-card-accent)", borderColor: "var(--fluo-card-accent)" }}
+          >
+            ◢
+          </span>
         </div>
         </div>
         {/* wide screens: flaps poke off the popup's right edge, home-page style */}

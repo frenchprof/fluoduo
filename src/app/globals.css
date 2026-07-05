@@ -508,6 +508,8 @@ body {
 .cahier-tab[data-active="true"] {
   background: var(--tab-hue, var(--cahier-hl));
   color: var(--cahier-ink);
+  font-weight: 900;
+  border-color: var(--cahier-ink);
   transform: translateX(-6px);
   box-shadow: 3px 3px 0 rgba(42, 46, 110, 0.18);
 }
@@ -550,6 +552,9 @@ body {
   padding-top: 70px;        /* clears the page's top bar */
   flex-shrink: 0;
   z-index: 1;
+  max-height: calc(100vh - 36px);  /* site row + deck row + views can get tall */
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .cahier-menu { display: block; }   /* the ☰ wrapper — shown below 1100px */
 @media (min-width: 1100px) {

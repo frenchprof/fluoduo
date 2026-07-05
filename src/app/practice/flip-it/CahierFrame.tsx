@@ -9,7 +9,10 @@
  */
 
 import { useState } from "react";
+import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
+import type { ShellTab } from "@/components/CahierShell";
+import { siteTabs } from "@/components/siteTabs";
 
 export const TAB_HUES = [
   "var(--cahier-t0)",
@@ -22,21 +25,46 @@ export const TAB_HUES = [
 
 export type CahierTab = { key: string; label: string; hue?: string };
 
+/** A nav flap (link) for the rail — site row + deck activities, matching the
+ *  CahierShell rail so the flap set never changes between pages. */
+function NavFlap({ tab, hue, active, className, onNavigate }: {
+  tab: ShellTab; hue: string; active: boolean; className: string; onNavigate?: () => void;
+}) {
+  const style = { "--tab-hue": tab.hue ?? hue } as CSSProperties;
+  const body = (
+    <>
+      {tab.emoji && <span aria-hidden>{tab.emoji}</span>}
+      <span>{tab.label}</span>
+    </>
+  );
+  if (!tab.href) {
+    return <span data-active={active} aria-current={active ? "page" : undefined} className={className} style={style}>{body}</span>;
+  }
+  return <Link href={tab.href} data-active={active} className={className} style={style} onClick={onNavigate}>{body}</Link>;
+}
+
 export function CahierFrame({
   tabs,
   active,
   onSelect,
+  navTabs = [],
+  navActive,
   topBar,
   children,
 }: {
   tabs: CahierTab[];
   active: string;
   onSelect: (key: string) => void;
+  /** Deck-activity link flaps shown between the site row and the view flaps. */
+  navTabs?: ShellTab[];
+  /** Key in navTabs marking THIS page (e.g. "flip"). */
+  navActive?: string;
   topBar?: ReactNode;
   children: ReactNode;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const hueOf = (t: CahierTab, i: number) => t.hue ?? TAB_HUES[i % TAB_HUES.length];
+  const site = siteTabs();
 
   return (
     <div className="cahier-desk">
@@ -56,7 +84,18 @@ export function CahierFrame({
               ☰
             </button>
             {menuOpen && (
-              <div className="absolute right-0 mt-1 flex w-40 flex-col gap-1 rounded-lg border-2 border-[color:var(--cahier-ink)]/20 bg-white p-1 shadow-lg">
+              <div className="absolute right-0 mt-1 flex max-h-[70vh] w-48 flex-col gap-1 overflow-y-auto rounded-lg border-2 border-[color:var(--cahier-ink)]/20 bg-white p-1 shadow-lg">
+                {site.map((t, i) => (
+                  <NavFlap key={t.key} tab={t} hue={TAB_HUES[i % TAB_HUES.length]} active={false}
+                    className="cahier-tab !rounded-md text-left" onNavigate={() => setMenuOpen(false)} />
+                ))}
+                {navTabs.length > 0 && <hr className="my-0.5 border-[color:var(--cahier-ink)]/15" />}
+                {navTabs.map((t, i) => (
+                  <NavFlap key={t.key} tab={navActive === t.key ? { ...t, href: undefined } : t}
+                    hue={TAB_HUES[i % TAB_HUES.length]} active={navActive === t.key}
+                    className="cahier-tab !rounded-md text-left" onNavigate={() => setMenuOpen(false)} />
+                ))}
+                <hr className="my-0.5 border-[color:var(--cahier-ink)]/15" />
                 {tabs.map((t, i) => (
                   <button
                     key={t.key}
@@ -77,7 +116,16 @@ export function CahierFrame({
           <div className="py-5 pl-12 pr-4 sm:pl-16 sm:pr-7">{children}</div>
         </main>
 
-        <nav className="cahier-tabs" aria-label="Views">
+        <nav className="cahier-tabs" aria-label="Pages and views">
+          {site.map((t, i) => (
+            <NavFlap key={t.key} tab={t} hue={TAB_HUES[i % TAB_HUES.length]} active={false} className="cahier-tab" />
+          ))}
+          {navTabs.length > 0 && <span aria-hidden className="h-4" />}
+          {navTabs.map((t, i) => (
+            <NavFlap key={t.key} tab={navActive === t.key ? { ...t, href: undefined } : t}
+              hue={TAB_HUES[i % TAB_HUES.length]} active={navActive === t.key} className="cahier-tab" />
+          ))}
+          <span aria-hidden className="h-4" />
           {tabs.map((t, i) => (
             <button
               key={t.key}
