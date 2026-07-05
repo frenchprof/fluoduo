@@ -27,6 +27,7 @@ import AuthGate from "@/components/AuthGate";
 import SioModal, { popupActivityTabs } from "./SioModal";
 import { AfterPretest } from "./SioDetail";
 import DialoguePlayer from "./DialoguePlayer";
+import MarkDoneButton from "./sio/[id]/MarkDoneButton";
 
 const UNIT0_SIOS = SIOS.filter((s) => s.unit === 0);
 
@@ -143,6 +144,11 @@ export default function Unit0Panel({
             );
             return openSio.isProduction ? chips : <AfterPretest>{chips}</AfterPretest>;
           })()}
+
+          {/* Mark-as-done — Unit 0 popups were missing it while Units 1-4
+              (UnitSection) had it, so Unit-0 goals could never be completed
+              (Dan, 2026-07-05). */}
+          <MarkDoneButton sioId={openSio.id} />
         </SioModal>
       )}
     </div>
