@@ -137,6 +137,61 @@
         "doit": "'elle doit' means 'she must', not 'she can'.",
         "faut": "faut is impersonal ('il faut'); it can't take 'elle' as its subject."
       }
+    },
+    {
+      "id": "u4-sio048-08",
+      "sentenceBefore": "Tu ",
+      "sentenceAfter": " boire du café ?",
+      "answer": "vas",
+      "distractors": [
+        "va",
+        "vais",
+        "allez"
+      ],
+      "fullSentence": "Tu vas boire du café ?",
+      "sentenceTrans": "Are you going to drink some coffee?",
+      "whyWrong": {
+        "va": "va is the il/elle form — tu vas.",
+        "vais": "vais is the je form — tu vas.",
+        "allez": "allez is the vous form — tu vas."
+      }
+    },
+    {
+      "id": "u4-sio048-09",
+      "sentenceBefore": "Ils ",
+      "sentenceAfter": " faire les courses demain.",
+      "answer": "vont",
+      "distractors": [
+        "va",
+        "allons",
+        "allez"
+      ],
+      "fullSentence": "Ils vont faire les courses demain.",
+      "sentenceTrans": "They're going to do the shopping tomorrow.",
+      "whyWrong": {
+        "va": "Ils is plural — ils vont.",
+        "allons": "allons is the nous form — ils vont.",
+        "allez": "allez is the vous form — ils vont."
+      }
+    },
+    {
+      "id": "u4-sio048-10",
+      "sentenceBefore": "Pour rester en bonne santé, ",
+      "sentenceAfter": " manger équilibré.",
+      "answer": "il faut",
+      "distractors": [
+        "tu peux",
+        "tu devrais",
+        "il devrait"
+      ],
+      "fullSentence": "Pour rester en bonne santé, il faut manger équilibré.",
+      "sentenceTrans": "To stay healthy, you need to eat a balanced diet.",
+      "transFirst": true,
+      "whyWrong": {
+        "tu peux": "'You can' — the sentence states a necessity: il faut.",
+        "tu devrais": "'You should' (conditional) — a general necessity is il faut.",
+        "il devrait": "'It should' — the set phrase for necessity is il faut."
+      }
     }
   ]
 }

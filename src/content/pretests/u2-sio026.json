@@ -130,6 +130,42 @@
         "à la": "Cities take plain à — à Paris, not à la.",
         "en": "en is for feminine countries — cities take à: à Paris."
       }
+    },
+    {
+      "id": "u2-sio026-08",
+      "sentenceBefore": "Tu ",
+      "sentenceAfter": " où ?",
+      "answer": "vas",
+      "distractors": [
+        "va",
+        "vais",
+        "allez"
+      ],
+      "fullSentence": "Tu vas où ?",
+      "sentenceTrans": "Where are you going?",
+      "whyWrong": {
+        "va": "va is the il/elle form — tu vas.",
+        "vais": "vais is the je form — tu vas.",
+        "allez": "allez is the vous form — tu vas."
+      }
+    },
+    {
+      "id": "u2-sio026-09",
+      "sentenceBefore": "Mes amis ",
+      "sentenceAfter": " au concert ce soir.",
+      "answer": "vont",
+      "distractors": [
+        "va",
+        "allons",
+        "allez"
+      ],
+      "fullSentence": "Mes amis vont au concert ce soir.",
+      "sentenceTrans": "My friends are going to the concert tonight.",
+      "whyWrong": {
+        "va": "Mes amis is plural — ils vont.",
+        "allons": "allons is the nous form — ils vont.",
+        "allez": "allez is the vous form — ils vont."
+      }
     }
   ]
 }

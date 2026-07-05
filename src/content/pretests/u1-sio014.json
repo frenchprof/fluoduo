@@ -148,6 +148,42 @@
         "est": "est goes with il/elle, not je — je suis.",
         "sommes": "sommes goes with nous, not je — je suis."
       }
+    },
+    {
+      "id": "u1-sio014-09",
+      "sentenceBefore": "Le café ? ",
+      "sentenceAfter": " est fermé aujourd'hui.",
+      "answer": "Il",
+      "distractors": [
+        "Elle",
+        "On",
+        "Ils"
+      ],
+      "fullSentence": "Le café ? Il est fermé aujourd'hui.",
+      "sentenceTrans": "The café? It's closed today.",
+      "whyWrong": {
+        "Elle": "Le café is masculine — a masculine thing is il.",
+        "On": "on means 'we / people in general' — the café is a thing: il.",
+        "Ils": "ils is plural — one café: il."
+      }
+    },
+    {
+      "id": "u1-sio014-10",
+      "sentenceBefore": "Non, je ",
+      "sentenceAfter": " français. Je suis singapourien.",
+      "answer": "ne suis pas",
+      "distractors": [
+        "ne suis",
+        "n'suis pas",
+        "suis pas"
+      ],
+      "fullSentence": "Non, je ne suis pas français. Je suis singapourien.",
+      "sentenceTrans": "No, I'm not French. I'm Singaporean.",
+      "whyWrong": {
+        "ne suis": "pas is missing — negation wraps the verb: ne suis pas.",
+        "n'suis pas": "ne only contracts before a vowel — suis starts with a consonant.",
+        "suis pas": "Dropping ne is casual speech — write the full ne … pas."
+      }
     }
   ]
 }

@@ -130,6 +130,60 @@
         "le": "le is a direct-object pronoun — a place introduced by à is replaced by y.",
         "me": "me means 'me/to me' — the place pronoun is y."
       }
+    },
+    {
+      "id": "u3-sio038-08",
+      "sentenceBefore": "Les touristes ",
+      "sentenceAfter": " beaucoup de photos.",
+      "answer": "prennent",
+      "distractors": [
+        "prend",
+        "prenons",
+        "prenent"
+      ],
+      "fullSentence": "Les touristes prennent beaucoup de photos.",
+      "sentenceTrans": "The tourists take a lot of photos.",
+      "whyWrong": {
+        "prend": "Les touristes is plural — ils prennent.",
+        "prenons": "That's the nous form — ils prennent.",
+        "prenent": "Spelling — double n: prennent."
+      }
+    },
+    {
+      "id": "u3-sio038-09",
+      "sentenceBefore": "On va ",
+      "sentenceAfter": " aller la semaine prochaine.",
+      "answer": "y",
+      "distractors": [
+        "là",
+        "le",
+        "en"
+      ],
+      "fullSentence": "On va y aller la semaine prochaine.",
+      "sentenceTrans": "We're going to go there next week.",
+      "whyWrong": {
+        "là": "là can't sit between va and aller — the pronoun y goes before the infinitive.",
+        "le": "le replaces a thing — a place with à takes y.",
+        "en": "en replaces de + noun — going TO a place is y."
+      }
+    },
+    {
+      "id": "u3-sio038-10",
+      "sentenceBefore": "Je ",
+      "sentenceAfter": " vais pas encore cette année.",
+      "answer": "n'y",
+      "distractors": [
+        "ne y",
+        "y ne",
+        "n'en"
+      ],
+      "fullSentence": "Je n'y vais pas encore cette année.",
+      "sentenceTrans": "I'm not going there yet this year.",
+      "whyWrong": {
+        "ne y": "ne contracts before y: n'y.",
+        "y ne": "ne comes before y — n'y vais pas.",
+        "n'en": "en replaces de + noun — the place is y."
+      }
     }
   ]
 }

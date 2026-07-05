@@ -112,6 +112,60 @@
         "n'veux": "ne doesn't elide before a consonant — say ne veux, not n'veux.",
         "ne veut": "veut is the il form — with je it's ne veux."
       }
+    },
+    {
+      "id": "u2-sio029-07",
+      "sentenceBefore": "Mes amis ",
+      "sentenceAfter": " partir tôt.",
+      "answer": "veulent",
+      "distractors": [
+        "veut",
+        "voulons",
+        "voulent"
+      ],
+      "fullSentence": "Mes amis veulent partir tôt.",
+      "sentenceTrans": "My friends want to leave early.",
+      "whyWrong": {
+        "veut": "Mes amis is plural — ils veulent.",
+        "voulons": "That's the nous form — ils veulent.",
+        "voulent": "The ils stem is veul-: veulent."
+      }
+    },
+    {
+      "id": "u2-sio029-08",
+      "sentenceBefore": "— Tu veux venir au cinéma ? — ",
+      "sentenceAfter": " J'adore les films !",
+      "answer": "Avec plaisir !",
+      "distractors": [
+        "Désolé, je ne peux pas.",
+        "C'est dommage.",
+        "Je refuse."
+      ],
+      "fullSentence": "— Tu veux venir au cinéma ? — Avec plaisir ! J'adore les films !",
+      "sentenceTrans": "— Do you want to come to the cinema? — With pleasure! I love films!",
+      "whyWrong": {
+        "Désolé, je ne peux pas.": "That refuses — but the reply says they love films.",
+        "C'est dommage.": "'What a pity' — not an acceptance.",
+        "Je refuse.": "A blunt refusal — the reply is enthusiastic."
+      }
+    },
+    {
+      "id": "u2-sio029-09",
+      "sentenceBefore": "— On va au café ce soir ? — ",
+      "sentenceAfter": ", je suis occupé.",
+      "answer": "Désolé, je ne peux pas",
+      "distractors": [
+        "Avec plaisir",
+        "Je veux bien",
+        "Tant pis"
+      ],
+      "fullSentence": "— On va au café ce soir ? — Désolé, je ne peux pas, je suis occupé.",
+      "sentenceTrans": "— Shall we go to the café tonight? — Sorry, I can't, I'm busy.",
+      "whyWrong": {
+        "Avec plaisir": "That accepts — but the speaker is busy.",
+        "Je veux bien": "That accepts the invitation.",
+        "Tant pis": "'Too bad' — not a polite refusal."
+      }
     }
   ]
 }

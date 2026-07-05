@@ -149,6 +149,42 @@
         "son": "son is 'his/her' (one owner) — the students share, so leur.",
         "ses": "ses is plural (and one owner) — one shared teacher takes leur."
       }
+    },
+    {
+      "id": "u2-sio022-09",
+      "sentenceBefore": "Comment va ",
+      "sentenceAfter": " copine ?",
+      "answer": "ta",
+      "distractors": [
+        "ton",
+        "tes",
+        "sa"
+      ],
+      "fullSentence": "Comment va ta copine ?",
+      "sentenceTrans": "How is your girlfriend?",
+      "whyWrong": {
+        "ton": "copine is feminine — ta copine.",
+        "tes": "tes is plural — one copine: ta.",
+        "sa": "sa is 'his/her' — the question asks about yours: ta."
+      }
+    },
+    {
+      "id": "u2-sio022-10",
+      "sentenceBefore": "Tu as pris ",
+      "sentenceAfter": " affaires ?",
+      "answer": "tes",
+      "distractors": [
+        "ta",
+        "ton",
+        "ses"
+      ],
+      "fullSentence": "Tu as pris tes affaires ?",
+      "sentenceTrans": "Did you take your things?",
+      "whyWrong": {
+        "ta": "affaires is plural — tes.",
+        "ton": "affaires is plural — tes.",
+        "ses": "ses is 'his/her' — the question asks about your things: tes."
+      }
     }
   ]
 }

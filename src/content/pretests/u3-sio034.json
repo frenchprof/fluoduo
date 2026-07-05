@@ -112,6 +112,43 @@
         "loin de le": "de le never exists — it always contracts to du: loin du.",
         "loin des": "des (de + les) is plural — centre-ville is singular: loin du."
       }
+    },
+    {
+      "id": "u3-sio034-07",
+      "sentenceBefore": "Le chat dort ",
+      "sentenceAfter": " le lit.",
+      "answer": "sous",
+      "distractors": [
+        "sur",
+        "dans",
+        "devant"
+      ],
+      "fullSentence": "Le chat dort sous le lit.",
+      "sentenceTrans": "The cat is sleeping under the bed.",
+      "transFirst": true,
+      "whyWrong": {
+        "sur": "sur is 'on top of'.",
+        "dans": "dans is 'inside'.",
+        "devant": "devant is 'in front of'."
+      }
+    },
+    {
+      "id": "u3-sio034-08",
+      "sentenceBefore": "Je préfère un café ",
+      "sentenceAfter": " la Tour Eiffel.",
+      "answer": "près de",
+      "distractors": [
+        "près du",
+        "près des",
+        "près au"
+      ],
+      "fullSentence": "Je préfère un café près de la Tour Eiffel.",
+      "sentenceTrans": "I prefer a café near the Eiffel Tower.",
+      "whyWrong": {
+        "près du": "du = de + le — but la Tour Eiffel keeps its la: près de la.",
+        "près des": "des = de + les (plural) — one tower.",
+        "près au": "près takes de, not à."
+      }
     }
   ]
 }

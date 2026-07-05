@@ -112,6 +112,43 @@
         "à la": "théâtre is masculine — à + le = au, not à la.",
         "que le": "préférer X à Y uses à for 'to', not que."
       }
+    },
+    {
+      "id": "u2-sio023-07",
+      "sentenceBefore": "Je déteste ",
+      "sentenceAfter": " le soir.",
+      "answer": "cuisiner",
+      "distractors": [
+        "cuisine",
+        "cuisines",
+        "à cuisiner"
+      ],
+      "fullSentence": "Je déteste cuisiner le soir.",
+      "sentenceTrans": "I hate cooking in the evening.",
+      "whyWrong": {
+        "cuisine": "Conjugated form — after détester use the infinitive: cuisiner.",
+        "cuisines": "Conjugated (tu) form — use the infinitive: cuisiner.",
+        "à cuisiner": "No à after détester — the infinitive follows directly."
+      }
+    },
+    {
+      "id": "u2-sio023-08",
+      "sentenceBefore": "J'",
+      "sentenceAfter": " la musique — c'est ma passion !",
+      "answer": "adore",
+      "distractors": [
+        "aime",
+        "déteste",
+        "aime pas"
+      ],
+      "fullSentence": "J'adore la musique — c'est ma passion !",
+      "sentenceTrans": "I LOVE music — it's my passion!",
+      "transFirst": true,
+      "whyWrong": {
+        "aime": "j'aime is only 'I like' — 'ma passion' calls for the stronger j'adore.",
+        "déteste": "That's 'I hate'.",
+        "aime pas": "Negative (and missing ne) — the sentence is enthusiastic."
+      }
     }
   ]
 }

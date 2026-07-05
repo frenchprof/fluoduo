@@ -115,6 +115,25 @@
         "de temps à temps": "The set expression is 'de temps en temps' (or de temps à autre).",
         "du temps en temps": "The fixed phrase starts with de, not du."
       }
+    },
+    {
+      "id": "u4-sio045-07",
+      "sentenceBefore": "Elle mange ",
+      "sentenceAfter": " de la salade au déjeuner.",
+      "answer": "souvent",
+      "distractors": [
+        "souvent de",
+        "souvents",
+        "parfois"
+      ],
+      "fullSentence": "Elle mange souvent de la salade au déjeuner.",
+      "sentenceTrans": "She often eats salad at lunch.",
+      "transFirst": true,
+      "whyWrong": {
+        "souvent de": "The adverb stands alone — de la salade already has its article.",
+        "souvents": "Adverbs are invariable — no s.",
+        "parfois": "That's 'sometimes' — the sentence says often."
+      }
     }
   ]
 }

@@ -137,6 +137,38 @@
       "whyWrong": {
         "Il": "Il is the subject pronoun; the standalone emphatic form here is Lui."
       }
+    },
+    {
+      "id": "u1-sio011-09",
+      "sentenceBefore": "— Wei, Marc, Anna et Léa, ces croissants sont pour ",
+      "sentenceAfter": " !",
+      "answer": "vous",
+      "distractors": [
+        "eux",
+        "toi",
+        "nous"
+      ],
+      "fullSentence": "— Wei, Marc, Anna et Léa, ces croissants sont pour vous !",
+      "sentenceTrans": "— Wei, Marc, Anna and Léa, these croissants are for you!",
+      "whyWrong": {
+        "eux": "eux is 'them' — the speaker is talking TO the four people: vous.",
+        "toi": "toi is one person — four people are being addressed: vous.",
+        "nous": "nous means 'us' — the croissants are for the people addressed, 'you'."
+      }
+    },
+    {
+      "id": "u1-sio011-10",
+      "sentenceBefore": "",
+      "sentenceAfter": ", ils sont dans mon groupe.",
+      "answer": "Eux",
+      "distractors": [
+        "Ils"
+      ],
+      "fullSentence": "Eux, ils sont dans mon groupe.",
+      "sentenceTrans": "Them, they're in my group.",
+      "whyWrong": {
+        "Ils": "Ils can't stand alone before the comma — the standalone emphatic form is Eux."
+      }
     }
   ]
 }

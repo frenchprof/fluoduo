@@ -130,6 +130,24 @@
         "mange": "That's the je/il form — vous mangez.",
         "mangerez": "That's the future tense — for the present use mangez."
       }
+    },
+    {
+      "id": "u4-sio044-08",
+      "sentenceBefore": "Il ",
+      "sentenceAfter": " du vin rouge avec le dîner.",
+      "answer": "boit",
+      "distractors": [
+        "bois",
+        "boivent",
+        "buvez"
+      ],
+      "fullSentence": "Il boit du vin rouge avec le dîner.",
+      "sentenceTrans": "He drinks red wine with dinner.",
+      "whyWrong": {
+        "bois": "bois is the je/tu form — il boit.",
+        "boivent": "That's the ils/elles form — il boit.",
+        "buvez": "That's the vous form — il boit."
+      }
     }
   ]
 }

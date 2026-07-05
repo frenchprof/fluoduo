@@ -112,6 +112,24 @@
         "Quand": "Quand asks 'when' — 'by bus' answers how: Comment.",
         "Pourquoi": "Pourquoi asks 'why' — 'by bus' answers how: Comment."
       }
+    },
+    {
+      "id": "u3-sio035-07",
+      "sentenceBefore": "— ",
+      "sentenceAfter": " parle ? — C'est Amara.",
+      "answer": "Qui",
+      "distractors": [
+        "Quoi",
+        "Où",
+        "Quand"
+      ],
+      "fullSentence": "— Qui parle ? — C'est Amara.",
+      "sentenceTrans": "— Who's speaking? — It's Amara.",
+      "whyWrong": {
+        "Quoi": "quoi asks about a thing — the answer is a person: Qui.",
+        "Où": "où asks where.",
+        "Quand": "quand asks when."
+      }
     }
   ]
 }

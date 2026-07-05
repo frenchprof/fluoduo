@@ -130,6 +130,24 @@
         "d'": "d' is de before a vowel, and un is kept here anyway (identity after ce n'est pas).",
         "le": "le is 'the' — you're identifying it as a book, so un."
       }
+    },
+    {
+      "id": "u2-sio021-08",
+      "sentenceBefore": "Non, ",
+      "sentenceAfter": " des stylos, ce sont des crayons.",
+      "answer": "ce ne sont pas",
+      "distractors": [
+        "ce n'est pas",
+        "ce n'sont pas",
+        "ce sont pas"
+      ],
+      "fullSentence": "Non, ce ne sont pas des stylos, ce sont des crayons.",
+      "sentenceTrans": "No, they're not pens, they're pencils.",
+      "whyWrong": {
+        "ce n'est pas": "des stylos is plural — ce sont → ce ne sont pas.",
+        "ce n'sont pas": "ne doesn't contract before a consonant — ce ne sont pas.",
+        "ce sont pas": "ne is missing — ne … pas wraps sont."
+      }
     }
   ]
 }

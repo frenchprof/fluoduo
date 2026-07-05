@@ -150,6 +150,42 @@
         "joueurs": "joueurs means “players” (plural).",
         "jeu": "jeu means “game”, not the player."
       }
+    },
+    {
+      "id": "u1-sio012-09",
+      "sentenceBefore": "Elle est ",
+      "sentenceAfter": ".",
+      "answer": "boulangère",
+      "distractors": [
+        "boulanger",
+        "boulangeuse",
+        "boulangerie"
+      ],
+      "fullSentence": "Elle est boulangère.",
+      "sentenceTrans": "She is a baker.",
+      "whyWrong": {
+        "boulanger": "That's the masculine form — Elle takes boulangère.",
+        "boulangeuse": "Not a French word — -er becomes -ère: boulangère.",
+        "boulangerie": "That's the bakery (the shop), not the person."
+      }
+    },
+    {
+      "id": "u1-sio012-10",
+      "sentenceBefore": "Elle est ",
+      "sentenceAfter": ".",
+      "answer": "musicienne",
+      "distractors": [
+        "musicien",
+        "musicieuse",
+        "musique"
+      ],
+      "fullSentence": "Elle est musicienne.",
+      "sentenceTrans": "She is a musician.",
+      "whyWrong": {
+        "musicien": "That's the masculine form — Elle takes musicienne.",
+        "musicieuse": "Not a word — -ien becomes -ienne: musicienne.",
+        "musique": "That's 'music', not the person playing it."
+      }
     }
   ]
 }

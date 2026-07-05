@@ -94,6 +94,42 @@
         "douze": "douze is 12, not 2 — 22 is vingt-deux.",
         "deuxième": "deuxième means 'second' (ordinal); the number 2 is deux."
       }
+    },
+    {
+      "id": "u1-sio018-06",
+      "sentenceBefore": "Marie a ",
+      "sentenceAfter": " ans. (21)",
+      "answer": "vingt et un",
+      "distractors": [
+        "vingt-un",
+        "vingt et une",
+        "vingt-deux"
+      ],
+      "fullSentence": "Marie a vingt et un ans. (21)",
+      "sentenceTrans": "Marie is 21.",
+      "whyWrong": {
+        "vingt-un": "21 keeps et: vingt et un.",
+        "vingt et une": "an/ans is masculine — vingt et un ans.",
+        "vingt-deux": "That's 22."
+      }
+    },
+    {
+      "id": "u1-sio018-07",
+      "sentenceBefore": "Mon père a ",
+      "sentenceAfter": " ans. (60)",
+      "answer": "soixante",
+      "distractors": [
+        "soixante-zéro",
+        "six-dix",
+        "soixant"
+      ],
+      "fullSentence": "Mon père a soixante ans. (60)",
+      "sentenceTrans": "My father is 60.",
+      "whyWrong": {
+        "soixante-zéro": "Round tens stand alone — no -zéro.",
+        "six-dix": "French doesn't build 60 as 6-10 — soixante is its own word.",
+        "soixant": "Spelling — soixante ends in -e."
+      }
     }
   ]
 }

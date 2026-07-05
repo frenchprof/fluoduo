@@ -148,6 +148,42 @@
         "proche": "proche means 'near/close' — the opposite of what's meant: loin.",
         "lointain": "lointain means 'distant/faraway' as an adjective — the set phrase is pas loin du tout."
       }
+    },
+    {
+      "id": "u3-sio036-09",
+      "sentenceBefore": "Elle est arrivée ",
+      "sentenceAfter": " au marathon. (5e)",
+      "answer": "cinquième",
+      "distractors": [
+        "cinqième",
+        "cinquièmes",
+        "cinq"
+      ],
+      "fullSentence": "Elle est arrivée cinquième au marathon. (5e)",
+      "sentenceTrans": "She finished fifth in the marathon.",
+      "whyWrong": {
+        "cinqième": "cinq adds a u before -ième: cinquième.",
+        "cinquièmes": "Singular — no s.",
+        "cinq": "That's the number five, not fifth."
+      }
+    },
+    {
+      "id": "u3-sio036-10",
+      "sentenceBefore": "C'est notre ",
+      "sentenceAfter": " soirée ensemble. (9e)",
+      "answer": "neuvième",
+      "distractors": [
+        "neufième",
+        "neuvièmes",
+        "neuf"
+      ],
+      "fullSentence": "C'est notre neuvième soirée ensemble. (9e)",
+      "sentenceTrans": "It's our ninth evening together.",
+      "whyWrong": {
+        "neufième": "neuf changes f to v: neuvième.",
+        "neuvièmes": "Singular soirée — no s.",
+        "neuf": "That's the number nine, not ninth."
+      }
     }
   ]
 }

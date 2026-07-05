@@ -149,6 +149,42 @@
         "avez": "avez goes with vous; 'Marc et moi' = nous takes avons.",
         "êtes": "êtes is être for vous; cold uses avoir — nous avons."
       }
+    },
+    {
+      "id": "u1-sio019-09",
+      "sentenceBefore": "Il fait 32°C. J'ai ",
+      "sentenceAfter": " !",
+      "answer": "chaud",
+      "distractors": [
+        "froid",
+        "faim",
+        "sommeil"
+      ],
+      "fullSentence": "Il fait 32°C. J'ai chaud !",
+      "sentenceTrans": "It's 32°C. I'm hot!",
+      "whyWrong": {
+        "froid": "That's 'cold' — at 32°C you're hot: j'ai chaud.",
+        "faim": "faim is hunger — the context is heat.",
+        "sommeil": "sommeil is sleepiness — the context is heat."
+      }
+    },
+    {
+      "id": "u1-sio019-10",
+      "sentenceBefore": "Non, je ",
+      "sentenceAfter": " 20 ans. J'ai 22 ans.",
+      "answer": "n'ai pas",
+      "distractors": [
+        "n'a pas",
+        "ne ai pas",
+        "n'as pas"
+      ],
+      "fullSentence": "Non, je n'ai pas 20 ans. J'ai 22 ans.",
+      "sentenceTrans": "No, I'm not 20. I'm 22.",
+      "whyWrong": {
+        "n'a pas": "a is the il/elle form — je → n'ai pas.",
+        "ne ai pas": "ne + ai contracts: n'ai pas.",
+        "n'as pas": "as is the tu form — je → n'ai pas."
+      }
     }
   ]
 }

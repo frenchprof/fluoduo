@@ -112,6 +112,44 @@
         "à": "à doesn't fit here — the habitual is le matin.",
         "en": "'en matin' isn't used — say le matin."
       }
+    },
+    {
+      "id": "u2-sio027-07",
+      "sentenceBefore": "Il est deux heures ",
+      "sentenceAfter": ".",
+      "answer": "et demie",
+      "distractors": [
+        "et demi",
+        "et trente",
+        "demie"
+      ],
+      "fullSentence": "Il est deux heures et demie.",
+      "sentenceTrans": "It's half past two.",
+      "transFirst": true,
+      "whyWrong": {
+        "et demi": "heure is feminine — demie takes -e.",
+        "et trente": "Say deux heures trente (no et) or deux heures et demie — not et trente.",
+        "demie": "Half past needs et: et demie."
+      }
+    },
+    {
+      "id": "u2-sio027-08",
+      "sentenceBefore": "Il est ",
+      "sentenceAfter": ", on mange !",
+      "answer": "midi",
+      "distractors": [
+        "minuit",
+        "douze heures",
+        "midi heures"
+      ],
+      "fullSentence": "Il est midi, on mange !",
+      "sentenceTrans": "It's noon — let's eat!",
+      "transFirst": true,
+      "whyWrong": {
+        "minuit": "That's midnight.",
+        "douze heures": "Everyday French says midi for 12 noon.",
+        "midi heures": "midi stands alone — no heures."
+      }
     }
   ]
 }

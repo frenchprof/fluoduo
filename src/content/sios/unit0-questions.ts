@@ -12,6 +12,11 @@
  * SIO-006 (core nouns) has no equivalent in the source site — authored fresh.
  * SIO-010 (the first-meeting role-play) is intentionally absent — it's a
  * mini-oral simulation done in class with the instructor, not an online MCQ.
+ *
+ * 2026-07-05 QC pass: the remaining keepers from the same legacy bank were
+ * ported (s'appellent + third-person introduction for SIO-001, dimanche + the
+ * three moments for SIO-004, four more greetings for SIO-009) — full audit in
+ * docs/audit2/LEGACY_MCQ_AUDIT_2026-07-05.md.
  */
 
 export type Unit0Option = {
@@ -74,6 +79,10 @@ const letterQ = (name: string, opts: [string, boolean][]): Unit0Question => ({
 const DAY: Record<string, string> = {
   lundi: "Monday", mardi: "Tuesday", mercredi: "Wednesday", jeudi: "Thursday",
   vendredi: "Friday", samedi: "Saturday", dimanche: "Sunday",
+};
+const MOMENT: Record<string, string> = {
+  matin: "the morning", "après-midi": "the afternoon",
+  soir: "the evening", nuit: "the night",
 };
 const COLOR: Record<string, string> = {
   rouge: "red", bleu: "blue", vert: "green", jaune: "yellow", noir: "black",
@@ -186,6 +195,15 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
     { stem: "[Elle,] Elle ___ Juliette.", en: "Her name is Juliette.", options: appelerOpts("s'appelle", ["nous appelons", "t'appelles", "m'appelle"]) },
     { stem: "[Nous,] Nous ___ Marc et Léa.", en: "Our names are Marc and Léa.", options: appelerOpts("nous appelons", ["s'appellent", "s'appelle", "m'appelle"]) },
     { stem: "[Vous,] Vous ___ comment ?", en: "What is your name? (formal/plural)", options: appelerOpts("vous appelez", ["s'appelle", "t'appelles", "m'appelle"]) },
+    // 2026-07-05 port: the ils/elles person + introducing a third person.
+    { stem: "[Eux,] Ils ___ Pierre et Marc.", en: "Their names are Pierre and Marc.", options: appelerOpts("s'appellent", ["s'appelle", "nous appelons", "vous appelez"]) },
+    { stem: "[Elles,] Elles ___ Marie et Léa.", en: "Their names are Marie and Léa.", options: appelerOpts("s'appellent", ["m'appelle", "t'appelles", "s'appelle"]) },
+    { title: "You're introducing your friend Marc to your professor.", options: [
+      { v: "Monsieur, je vous présente Marc. Il s'appelle Marc Tan.", ok: true },
+      { v: "Monsieur, je te présente Marc.", ok: false, why: "Te is tu-register — with your professor it's je vous présente." },
+      { v: "Monsieur, je m'appelle Marc.", ok: false, why: "Je m'appelle gives YOUR name — you're introducing Marc." },
+      { v: "Monsieur, vous vous appelez Marc.", ok: false, why: "That tells the professor his own name is Marc." },
+    ] },
   ],
   "SIO-002": [
     // All 12 situations represented, per Dan (2026-07-02).
@@ -220,6 +238,11 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
     glossQ("Thursday", "jeudi", ["vendredi", "mercredi", "samedi"], DAY),
     glossQ("Friday", "vendredi", ["jeudi", "mardi", "mercredi"], DAY),
     glossQ("Saturday", "samedi", ["lundi", "dimanche", "mardi"], DAY),
+    // 2026-07-05 port: dimanche + the 3 moments of the day (SIO-004 scope).
+    glossQ("Sunday", "dimanche", ["mardi", "lundi", "jeudi"], DAY),
+    glossQ("Morning", "matin", ["soir", "nuit", "après-midi"], MOMENT),
+    glossQ("Afternoon", "après-midi", ["matin", "soir", "nuit"], MOMENT),
+    glossQ("Evening", "soir", ["après-midi", "nuit", "matin"], MOMENT),
   ],
   "SIO-005": [
     // Dan's 12 colours (2026-07-02) — the word shown IN its colour; the
@@ -339,6 +362,32 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
       { v: "Bonne soirée !", ok: false, why: "Bonne soirée is for the evening — it's early afternoon." },
       { v: "Coucou !", ok: false, why: "Coucou is a very informal hello." },
       { v: "Merci.", ok: false, why: "Merci means 'thank you'." },
+    ] },
+    // 2026-07-05 port: the greeting side (hellos by time + register) — the
+    // first six items were all leave-takings.
+    { title: "It's 9am. You meet your French professor in the hallway for the first time.", options: [
+      { v: "Bonjour, monsieur.", ok: true },
+      { v: "Enchanté.", ok: false, why: "Enchanté is the reply when someone is introduced to you." },
+      { v: "Je m'appelle Dan.", ok: false, why: "That gives your name — greet first." },
+      { v: "Vous vous appelez comment ?", ok: false, why: "That asks a name — greet first." },
+    ] },
+    { title: "You see your classmate just before class starts.", options: [
+      { v: "Salut !", ok: true },
+      { v: "Bonsoir.", ok: false, why: "Bonsoir is the evening greeting — and formal for a classmate." },
+      { v: "Au revoir.", ok: false, why: "That's a goodbye, not a hello." },
+      { v: "Merci.", ok: false, why: "Merci means 'thank you'." },
+    ] },
+    { title: "It's 8pm. You greet a stranger you're seated next to at a dinner.", options: [
+      { v: "Bonsoir.", ok: true },
+      { v: "Bonjour, monsieur.", ok: false, why: "Bonjour is the daytime greeting — after ~6pm it's Bonsoir." },
+      { v: "Tu t'appelles comment ?", ok: false, why: "Tu is too familiar for a stranger — and greet before asking a name." },
+      { v: "Enchanté.", ok: false, why: "Enchanté is for when you're introduced to someone — just greet: Bonsoir." },
+    ] },
+    { title: "You're heading to bed and say this to family before sleeping.", options: [
+      { v: "Bonne nuit.", ok: true },
+      { v: "Bonsoir.", ok: false, why: "Bonsoir greets in the evening — at bedtime you wish Bonne nuit." },
+      { v: "Bonne journée !", ok: false, why: "Bonne journée is a daytime send-off." },
+      { v: "Bonjour, monsieur.", ok: false, why: "A formal daytime hello — not a bedtime wish to family." },
     ] },
   ],
 };

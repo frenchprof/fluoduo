@@ -131,6 +131,44 @@
         "ne parler pas": "parler is the infinitive; with 'je' you conjugate: ne parle pas.",
         "n'parle pas": "ne only elides to n' before a vowel; before 'parle' it stays ne parle pas."
       }
+    },
+    {
+      "id": "u1-sio017-08",
+      "sentenceBefore": "Tu viens de ",
+      "sentenceAfter": " pays ?",
+      "answer": "quel",
+      "distractors": [
+        "quelle",
+        "quels",
+        "quelles"
+      ],
+      "fullSentence": "Tu viens de quel pays ?",
+      "sentenceTrans": "Which country are you from?",
+      "transFirst": true,
+      "whyWrong": {
+        "quelle": "pays is masculine — quel.",
+        "quels": "Grammatical for several countries — but you come from one: quel.",
+        "quelles": "Feminine plural — pays here is masculine singular."
+      }
+    },
+    {
+      "id": "u1-sio017-09",
+      "sentenceBefore": "",
+      "sentenceAfter": " pays tu visites ?",
+      "answer": "Quels",
+      "distractors": [
+        "Quel",
+        "Quelle",
+        "Quelles"
+      ],
+      "fullSentence": "Quels pays tu visites ?",
+      "sentenceTrans": "Which countries are you visiting?",
+      "transFirst": true,
+      "whyWrong": {
+        "Quel": "Grammatical for one country — but the meaning here is several: Quels.",
+        "Quelle": "pays is masculine — Quels.",
+        "Quelles": "pays is masculine — Quels."
+      }
     }
   ]
 }

@@ -130,6 +130,43 @@
         "un verre de": "That's 'a glass of', for drinks, not tomatoes.",
         "une bouteille de": "That's 'a bottle of', for liquids, not tomatoes."
       }
+    },
+    {
+      "id": "u4-sio047-08",
+      "sentenceBefore": "Pour acheter du saumon frais, on va à la ",
+      "sentenceAfter": ".",
+      "answer": "poissonnerie",
+      "distractors": [
+        "boucherie",
+        "boulangerie",
+        "fromagerie"
+      ],
+      "fullSentence": "Pour acheter du saumon frais, on va à la poissonnerie.",
+      "sentenceTrans": "To buy fresh salmon, you go to the fishmonger's.",
+      "whyWrong": {
+        "boucherie": "That's the butcher's — meat, not fish.",
+        "boulangerie": "That's the bakery.",
+        "fromagerie": "That's the cheese shop."
+      }
+    },
+    {
+      "id": "u4-sio047-09",
+      "sentenceBefore": "Il me faut ",
+      "sentenceAfter": " jambon, s'il vous plaît.",
+      "answer": "une tranche de",
+      "distractors": [
+        "un kilo de",
+        "une bouteille de",
+        "un morceau de"
+      ],
+      "fullSentence": "Il me faut une tranche de jambon, s'il vous plaît.",
+      "sentenceTrans": "I need a slice of ham, please.",
+      "transFirst": true,
+      "whyWrong": {
+        "un kilo de": "A whole kilo — the sentence asks for a slice: une tranche.",
+        "une bouteille de": "Bottles are for liquids.",
+        "un morceau de": "'A piece' — the deli word for sliced ham is une tranche."
+      }
     }
   ]
 }

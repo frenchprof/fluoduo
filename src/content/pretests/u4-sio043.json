@@ -112,6 +112,43 @@
         "assez de le": "After a quantity word you just use de — no article.",
         "beaucoup de": "That means 'a lot of'; the sentence needs 'enough' (assez de)."
       }
+    },
+    {
+      "id": "u4-sio043-07",
+      "sentenceBefore": "Ce gâteau contient ",
+      "sentenceAfter": " sucre.",
+      "answer": "trop de",
+      "distractors": [
+        "trop du",
+        "trop de la",
+        "beaucoup de"
+      ],
+      "fullSentence": "Ce gâteau contient trop de sucre.",
+      "sentenceTrans": "This cake contains too much sugar.",
+      "transFirst": true,
+      "whyWrong": {
+        "trop du": "Quantity words take bare de: trop de sucre.",
+        "trop de la": "Quantity words take bare de: trop de sucre.",
+        "beaucoup de": "That's 'a lot of' — the sentence says too much: trop de."
+      }
+    },
+    {
+      "id": "u4-sio043-08",
+      "sentenceBefore": "Il mange ",
+      "sentenceAfter": " abricots en été.",
+      "answer": "beaucoup d'",
+      "distractors": [
+        "beaucoup de",
+        "beaucoup des",
+        "beaucoup d'les"
+      ],
+      "fullSentence": "Il mange beaucoup d' abricots en été.",
+      "sentenceTrans": "He eats a lot of apricots in summer.",
+      "whyWrong": {
+        "beaucoup de": "abricots starts with a vowel — de elides: beaucoup d'.",
+        "beaucoup des": "Quantities take de, not des.",
+        "beaucoup d'les": "No article after d'."
+      }
     }
   ]
 }
