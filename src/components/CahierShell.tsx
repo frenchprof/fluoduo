@@ -47,6 +47,11 @@ export type ShellTab = {
   href?: string; // omit on the active page's own tab
   emoji?: string;
   hue?: string;
+  /** Tiny action verb under the name ("browse the cards") — activity names
+   *  alone don't tell a first-timer how Flip It differs from Lesson (Dan,
+   *  2026-07-05). Navigation text: it points at the right door, so it
+   *  survives the litmus rule. */
+  hint?: string;
 };
 
 function TabFlap({
@@ -66,7 +71,10 @@ function TabFlap({
   const body = (
     <>
       {tab.emoji && <span aria-hidden>{tab.emoji}</span>}
-      <span>{tab.label}</span>
+      <span className={tab.hint ? "cahier-tab-text" : undefined}>
+        <span>{tab.label}</span>
+        {tab.hint && <span className="cahier-tab-hint">{tab.hint}</span>}
+      </span>
     </>
   );
   if (!tab.href) {
@@ -279,27 +287,28 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
   const composeBank = composeBankForDeck(collectionId);
   return [
     ...(pretestHref
-      ? [{ key: "pretest", label: "Pre-Test", emoji: "🧪", href: pretestHref } as ShellTab]
+      ? [{ key: "pretest", label: "Pre-Test", emoji: "🧪", href: pretestHref, hint: "try it first" } as ShellTab]
       : []),
     // Learning order (Dan, 2026-07-05): Pre-Test → flashcards → Lesson. EVERY
     // deck has a Lesson since the unification (Lire → Débutant → Intermédiaire
     // → Difficile absorbed Complete It / dice / GramMarathon).
-    { key: "flip", label: "Flip It", emoji: "🃏", href: `/practice/flip-it/${collectionId}` },
+    { key: "flip", label: "Flip It", emoji: "🃏", href: `/practice/flip-it/${collectionId}`, hint: "browse the cards" },
     {
       key: "lesson",
       label: "Lesson",
       emoji: "📚",
       href: lessons.length > 0 ? `/lessons/${lessons[0].slug}` : `/lessons/deck/${collectionId}`,
+      hint: "rule + drills",
     },
-    { key: "say", label: "Say It", emoji: "🎤", href: `/practice/say-it/${collectionId}` },
+    { key: "say", label: "Say It", emoji: "🎤", href: `/practice/say-it/${collectionId}`, hint: "speak it" },
     ...(isLexReadyId(collectionId)
-      ? [{ key: "match", label: "Lexicalator", emoji: "🧰", href: `/games/conveyor/${collectionId}` } as ShellTab]
+      ? [{ key: "match", label: "Lexicalator", emoji: "🧰", href: `/games/conveyor/${collectionId}`, hint: "build words" } as ShellTab]
       : []),
     ...(rainSet
-      ? [{ key: "rain", label: "Vocabularain", emoji: "🌧️", href: `/games/letris/${collectionId.replace("-letris", "")}` } as ShellTab]
+      ? [{ key: "rain", label: "Vocabularain", emoji: "🌧️", href: `/games/letris/${collectionId.replace("-letris", "")}`, hint: "sort words" } as ShellTab]
       : []),
     ...(composeBank
-      ? [{ key: "compose", label: "Compose It", emoji: "🧩", href: `/games/compose/${composeBank.id}` } as ShellTab]
+      ? [{ key: "compose", label: "Compose It", emoji: "🧩", href: `/games/compose/${composeBank.id}`, hint: "build dialogues" } as ShellTab]
       : []),
   ];
 }

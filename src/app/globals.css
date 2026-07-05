@@ -514,6 +514,12 @@ body {
 .cahier-tabs .cahier-tab--sm { width: 152px; }
 .cahier-tabs .cahier-tab--xs { width: 144px; }
 .cahier-tabs .cahier-tab > span:last-child { overflow: hidden; text-overflow: ellipsis; }
+/* Two-line flap: activity name over a tiny action verb ("browse the cards")
+ * — first-timers can't tell Flip It from Lesson by name alone (Dan,
+ * 2026-07-05). Both lines ellipsize inside the fixed flap width. */
+.cahier-tab-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.15; }
+.cahier-tab-text > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cahier-tab-hint { font-size: 0.62rem; font-weight: 600; opacity: 0.72; letter-spacing: 0.01em; }
 /* Ancestor-level flaps start at THEIR OWN sheet's edge — the parent sheet
  * surrounds the current page (spread shadows below), so level-1 flaps poke
  * out of the level-1 sheet, never out of the current page (Dan, 2026-07-05:

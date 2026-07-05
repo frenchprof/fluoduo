@@ -35,7 +35,7 @@ const EMBEDDABLE = new Set(["say", "complete", "dice", "grammarathon", "lesson"]
 
 const SIZE_KEY = "fluolingo:popupSize";
 
-export type PopupTab = { key: string; label: string; emoji: string; href?: string; active?: boolean };
+export type PopupTab = { key: string; label: string; emoji: string; href?: string; active?: boolean; hint?: string };
 
 const TAB_HUES = [
   "var(--cahier-t0)",
@@ -58,12 +58,12 @@ export function popupActivityTabs(
   pretest?: { inline: boolean; href: string | null },
 ): PopupTab[] | undefined {
   const base: PopupTab[] = deck
-    ? deckActivityTabs(deck.id).map((t) => ({ key: t.key, label: t.label, emoji: t.emoji ?? "", href: t.href }))
+    ? deckActivityTabs(deck.id).map((t) => ({ key: t.key, label: t.label, emoji: t.emoji ?? "", href: t.href, hint: t.hint }))
     : [];
   if (pretest && (pretest.inline || pretest.href)) {
     const tab: PopupTab = pretest.inline
-      ? { key: "pretest", label: "Pre-Test", emoji: "🧪", active: true }
-      : { key: "pretest", label: "Pre-Test", emoji: "🧪", href: pretest.href ?? undefined };
+      ? { key: "pretest", label: "Pre-Test", emoji: "🧪", active: true, hint: "try it first" }
+      : { key: "pretest", label: "Pre-Test", emoji: "🧪", href: pretest.href ?? undefined, hint: "try it first" };
     const i = base.findIndex((t) => t.key === "pretest");
     if (i >= 0) base[i] = tab;
     else base.unshift(tab);
@@ -90,7 +90,10 @@ function Flap({
   const body = (
     <>
       <span aria-hidden>{tab.emoji}</span>
-      <span>{tab.label}</span>
+      <span className={tab.hint ? "cahier-tab-text" : undefined}>
+        <span>{tab.label}</span>
+        {tab.hint && <span className="cahier-tab-hint">{tab.hint}</span>}
+      </span>
     </>
   );
   if (onSelect) {
