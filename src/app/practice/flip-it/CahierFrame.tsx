@@ -123,12 +123,12 @@ export function CahierFrame({
 
         <nav className="cahier-tabs" aria-label="Pages and views">
           {site.map((t, i) => (
-            <NavFlap key={t.key} tab={t} hue={TAB_HUES[i % TAB_HUES.length]} active={t.key === unitKey} className="cahier-tab" />
+            <NavFlap key={t.key} tab={t} hue={TAB_HUES[i % TAB_HUES.length]} active={t.key === unitKey} className="cahier-tab cahier-tab--back2" />
           ))}
           {navTabs.length > 0 && <span aria-hidden className="h-3" />}
           {navTabs.map((t, i) => (
             <NavFlap key={t.key} tab={navActive === t.key ? { ...t, href: undefined } : t}
-              hue={TAB_HUES[i % TAB_HUES.length]} active={navActive === t.key} className="cahier-tab cahier-tab--sm" />
+              hue={TAB_HUES[i % TAB_HUES.length]} active={navActive === t.key} className="cahier-tab cahier-tab--sm cahier-tab--back1" />
           ))}
           <span aria-hidden className="h-3" />
           {tabs.map((t, i) => (

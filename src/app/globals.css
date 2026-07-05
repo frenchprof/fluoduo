@@ -508,6 +508,12 @@ body {
  * in-page views (Flip It). */
 .cahier-tab--sm { padding: 0.28rem 0.65rem; font-size: 0.74rem; border-left-width: 5px; }
 .cahier-tab--xs { padding: 0.2rem 0.55rem; font-size: 0.68rem; border-left-width: 4px; }
+/* Ancestor-level flaps start at THEIR OWN sheet's edge — the parent sheet
+ * surrounds the current page (spread shadows below), so level-1 flaps poke
+ * out of the level-1 sheet, never out of the current page (Dan, 2026-07-05:
+ * exactly like the SIO popup over its page). */
+.cahier-tab--back1 { margin-left: 18px; }
+.cahier-tab--back2 { margin-left: 36px; }
 .cahier-tab:hover { transform: translateX(-3px); }
 .cahier-tab[data-active="true"] {
   background: var(--tab-hue, var(--cahier-hl));
@@ -555,23 +561,23 @@ body {
  * peeking out above/left; the right edge stays clean for the flaps. */
 .cahier-page.cahier-page--d2 {
   flex-basis: 930px;
-  margin: 18px 0 0 14px;
-  min-height: calc(100vh - 18px);
+  margin: 20px 0 0 20px;
+  min-height: calc(100vh - 20px);
   box-shadow:
-    -14px -18px 0 0 #efede3,
-    -14px -18px 0 1.5px rgba(42, 46, 110, 0.22),
-    0 12px 34px rgba(34, 40, 80, 0.20);
+    0 0 0 18px #efede3,
+    0 0 0 19.5px rgba(42, 46, 110, 0.22),
+    0 12px 34px 18px rgba(34, 40, 80, 0.20);
 }
 .cahier-page.cahier-page--d3 {
   flex-basis: 880px;
-  margin: 34px 0 0 28px;
-  min-height: calc(100vh - 34px);
+  margin: 40px 0 0 40px;
+  min-height: calc(100vh - 40px);
   box-shadow:
-    -14px -17px 0 0 #efede3,
-    -14px -17px 0 1.5px rgba(42, 46, 110, 0.22),
-    -28px -34px 0 0 #e7e5d9,
-    -28px -34px 0 1.5px rgba(42, 46, 110, 0.18),
-    0 12px 34px rgba(34, 40, 80, 0.20);
+    0 0 0 18px #efede3,
+    0 0 0 19.5px rgba(42, 46, 110, 0.22),
+    0 0 0 36px #e7e5d9,
+    0 0 0 37.5px rgba(42, 46, 110, 0.18),
+    0 12px 34px 36px rgba(34, 40, 80, 0.20);
 }
 .cahier-tabs {
   position: sticky;
@@ -581,7 +587,7 @@ body {
   gap: 6px;
   padding-top: 0;           /* first flap starts at the page's very top edge */
   flex-shrink: 0;
-  z-index: 1;
+  z-index: 3;               /* above the parent-sheet bands drawn by page shadows */
   max-height: calc(100vh - 36px);  /* site row + deck row + views can get tall */
   overflow-y: auto;
   overscroll-behavior: contain;

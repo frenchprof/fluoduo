@@ -185,7 +185,13 @@ export default function CahierShell({
 
         <nav className="cahier-tabs" aria-label="Pages">
           {site.map((t, i) => (
-            <TabFlap key={t.key} tab={t} hue={hueOf(t, i)} active={isActiveFlap(t)} className="cahier-tab" />
+            <TabFlap
+              key={t.key}
+              tab={t}
+              hue={hueOf(t, i)}
+              active={isActiveFlap(t)}
+              className={`cahier-tab ${context.length > 0 ? "cahier-tab--back1" : ""}`}
+            />
           ))}
           {context.length > 0 && <span aria-hidden className="h-3" />}
           {context.map((t, i) => (
