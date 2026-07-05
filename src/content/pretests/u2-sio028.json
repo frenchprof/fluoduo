@@ -2,79 +2,151 @@
   "id": "u2-sio028",
   "unit": 2,
   "lessonNo": 8,
-  "lessonSlug": "avec-with-whom",
-  "title": "avec — with whom",
+  "lessonSlug": "negation-pas",
+  "title": "Pas de ou pas le ?",
   "items": [
     {
       "id": "u2-sio028-01",
-      "sentenceBefore": "Je vais au cinéma avec ",
-      "sentenceAfter": ".",
-      "answer": "eux",
+      "sentenceBefore": "Je ne fais pas ",
+      "sentenceAfter": " tennis.",
+      "answer": "de",
       "distractors": [
-        "ils",
-        "les",
-        "leur"
+        "du",
+        "le",
+        "des"
       ],
-      "fullSentence": "Je vais au cinéma avec eux.",
-      "sentenceTrans": "I go to the cinema with them (m).",
+      "fullSentence": "Je ne fais pas de tennis.",
+      "sentenceTrans": "I don't play tennis.",
       "whyWrong": {
-        "ils": "ils is a subject pronoun — after avec use the stressed eux.",
-        "les": "les is an object pronoun — after avec use eux.",
-        "leur": "leur is 'to them' / 'their' — after avec use eux."
+        "du": "du survives only in positive sentences — after ne … pas it collapses to de.",
+        "le": "le stays only after liking verbs (aimer, adorer, détester) — faire takes de in the negative.",
+        "des": "des also collapses to de after ne … pas."
       }
     },
     {
       "id": "u2-sio028-02",
-      "sentenceBefore": "Tu viens avec ",
-      "sentenceAfter": " ?",
-      "answer": "moi",
+      "sentenceBefore": "Je n'aime pas ",
+      "sentenceAfter": " tennis.",
+      "answer": "le",
       "distractors": [
-        "je",
-        "me",
-        "mon"
+        "de",
+        "du",
+        "un"
       ],
-      "fullSentence": "Tu viens avec moi ?",
-      "sentenceTrans": "Are you coming with me?",
+      "fullSentence": "Je n'aime pas le tennis.",
+      "sentenceTrans": "I don't like tennis.",
       "whyWrong": {
-        "je": "je is a subject pronoun — after avec use the stressed moi.",
-        "me": "me is an object pronoun — after avec use moi.",
-        "mon": "mon means 'my' — after avec you need the pronoun moi."
+        "de": "after aimer/adorer/détester the article does NOT collapse — le stays.",
+        "du": "du is for doing/consuming some of something — liking takes le.",
+        "un": "likes and dislikes are about tennis in general — le, not un."
       }
     },
     {
       "id": "u2-sio028-03",
-      "sentenceBefore": "Elle étudie ",
-      "sentenceAfter": ".",
-      "answer": "seule",
+      "sentenceBefore": "Il n'y a pas ",
+      "sentenceAfter": " café.",
+      "answer": "de",
       "distractors": [
-        "seul",
-        "seules",
-        "la seule"
+        "du",
+        "le",
+        "de la"
       ],
-      "fullSentence": "Elle étudie seule.",
-      "sentenceTrans": "She studies alone.",
+      "fullSentence": "Il n'y a pas de café.",
+      "sentenceTrans": "There is no coffee.",
       "whyWrong": {
-        "seul": "seul is masculine — for elle it's seule.",
-        "seules": "seules is plural — one person (elle) takes seule.",
-        "la seule": "la seule means 'the only one' — 'alone' here is just seule."
+        "du": "il y a du café, but after ne … pas the du collapses to de.",
+        "le": "le survives negation only after liking verbs — il y a takes de.",
+        "de la": "café is masculine, and in the negative everything collapses to plain de anyway."
       }
     },
     {
       "id": "u2-sio028-04",
-      "sentenceBefore": "Nous mangeons avec ",
-      "sentenceAfter": " amis.",
-      "answer": "nos",
+      "sentenceBefore": "Elle n'aime pas ",
+      "sentenceAfter": " natation.",
+      "answer": "la",
       "distractors": [
-        "notre",
-        "les",
-        "nous"
+        "de",
+        "de la",
+        "une"
       ],
-      "fullSentence": "Nous mangeons avec nos amis.",
-      "sentenceTrans": "We eat with our friends.",
+      "fullSentence": "Elle n'aime pas la natation.",
+      "sentenceTrans": "She doesn't like swimming.",
       "whyWrong": {
-        "notre": "notre is singular — amis is plural, so nos.",
-        "les": "les is 'the' — 'our friends' needs the possessive nos.",
-        "nous": "nous means 'we/us' — 'our' is nos."
+        "de": "aimer keeps its article under negation — la stays.",
+        "de la": "de la is partitive (doing/consuming) — liking takes plain la.",
+        "une": "general likes take the definite article — la natation."
+      }
+    },
+    {
+      "id": "u2-sio028-05",
+      "sentenceBefore": "Nous ne mangeons pas ",
+      "sentenceAfter": " chocolat.",
+      "answer": "de",
+      "distractors": [
+        "du",
+        "le",
+        "au"
+      ],
+      "fullSentence": "Nous ne mangeons pas de chocolat.",
+      "sentenceTrans": "We don't eat chocolate.",
+      "whyWrong": {
+        "du": "manger du chocolat — but ne … pas turns du into de.",
+        "le": "le would need a liking verb; manger takes de in the negative.",
+        "au": "au means 'to the / with' — not an amount of chocolate."
+      }
+    },
+    {
+      "id": "u2-sio028-06",
+      "sentenceBefore": "Ils n'aiment pas ",
+      "sentenceAfter": " bonbons.",
+      "answer": "les",
+      "distractors": [
+        "de",
+        "des",
+        "un"
+      ],
+      "fullSentence": "Ils n'aiment pas les bonbons.",
+      "sentenceTrans": "They don't like sweets.",
+      "whyWrong": {
+        "de": "after aimer the article survives — les stays.",
+        "des": "des collapses to de after pas — but aimer doesn't use des at all: les.",
+        "un": "bonbons is plural and general — les."
+      }
+    },
+    {
+      "id": "u2-sio028-07",
+      "sentenceBefore": "Il n'y a pas ",
+      "sentenceAfter": "eau.",
+      "answer": "d'",
+      "distractors": [
+        "de",
+        "de l'",
+        "l'"
+      ],
+      "fullSentence": "Il n'y a pas d'eau.",
+      "sentenceTrans": "There is no water.",
+      "whyWrong": {
+        "de": "before a vowel de elides — d'eau.",
+        "de l'": "the partitive de l' collapses to d' after ne … pas.",
+        "l'": "l' survives negation only after liking verbs — il y a takes d'."
+      }
+    },
+    {
+      "id": "u2-sio028-08",
+      "sentenceBefore": "Tu ne fais pas ",
+      "sentenceAfter": " musique ?",
+      "answer": "de",
+      "distractors": [
+        "de la",
+        "la",
+        "du"
+      ],
+      "fullSentence": "Tu ne fais pas de musique ?",
+      "sentenceTrans": "You don't play music?",
+      "whyWrong": {
+        "de la": "de la collapses to plain de after ne … pas.",
+        "la": "la survives negation after aimer — faire takes de.",
+        "du": "musique is feminine, and the negative collapses everything to de anyway."
       }
     }
   ]

@@ -6,13 +6,17 @@
  * sections, each headed by the big salient StepLabel, numbered sequentially
  * with only the sections that apply:
  *
- *   Lire          — the native lesson's Mémo, or the deck's Mémo card
- *                   (memos.tsx); atelier decks read the model dialogue
- *                   (DialoguePlayer). Decks with neither skip Lire entirely
- *                   (Dan, 2026-07-05: no pointing Lire at Flip It).
- *   Débutant      — the dice MCQ (hasDicePractice) or the lesson's 🎲 trainer.
- *   Intermédiaire — Complete It (always).
- *   Difficile     — GramMarathon (gap-ready decks) or the lesson's ⭐ bonus.
+ *   Lire       — the native lesson's Mémo, or the deck's Mémo card
+ *                (memos.tsx); atelier decks read the model dialogue
+ *                (DialoguePlayer). Decks with neither skip Lire entirely
+ *                (Dan, 2026-07-05: no pointing Lire at Flip It).
+ *   Pratique   — Diced Practice, the one 4-level widget over the deck's own
+ *                items (★ Facile → ★★ Intermédiaire → ★★★ Difficile → ⭐
+ *                Bonus); it absorbed the former Débutant / Intermédiaire /
+ *                Difficile drill sections (Dan's BIG ASK, 2026-07-05).
+ *   Générateur — where a native lesson exists, its 🎲 trainer + ⭐ bonus: the
+ *                lesson's infinite generated sentences complement the deck's
+ *                finite items.
  *
  * A sticky chip row up top jumps to the rendered sections by anchor.
  */
@@ -20,21 +24,18 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import CahierShell, { deckActivityTabs, hasDicePractice, withActive } from "@/components/CahierShell";
+import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
 import DialoguePlayer from "@/app/DialoguePlayer";
 import DiceTrainer, { BonusTrainer } from "@/games/dice/DiceTrainer";
 import { getAtelier } from "@/content/ateliers";
 import { SIOS } from "@/content/sios";
 import { CURATED } from "@/content/collections";
-import { isGramMarathonReadyId } from "@/lib/collections/gramMarathonReady";
 import { lessonsForDeck } from "@/content/lessons";
 import { getNativeLesson } from "@/content/lessons/native";
 import { memoForDeck } from "@/content/memos";
 
-// The three drill engines are heavy — load them only when the flow mounts.
-const PracticeContent = dynamic(() => import("@/app/practice/dice/[collectionId]/PracticeContent"));
-const CompleteItContent = dynamic(() => import("@/app/practice/complete-it/[collectionId]/CompleteItContent"));
-const GramMarathonContent = dynamic(() => import("@/app/practice/grammarathon/[collectionId]/GramMarathonContent"));
+// The drill engine is heavy — load it only when the flow mounts.
+const DicedPractice = dynamic(() => import("@/games/dice/DicedPractice"));
 
 function StepLabel({ n, label }: { n: number; label: string }) {
   // Big, bold, contrasting (Dan, 2026-07-05: steps were "not salient enough
@@ -83,16 +84,18 @@ export default function LessonFlow({
   // No Lire content at all (defensive — waves 1+2 cover every deck): skip the
   // section; numbering adjusts naturally and the flow starts at Débutant.
   if (lire) sections.push({ id: "lire", label: "Lire", node: lire });
-  if (hasDicePractice(collectionId)) {
-    sections.push({ id: "debutant", label: "Débutant", node: <PracticeContent collectionId={collectionId} embedded /> });
-  } else if (lesson) {
-    sections.push({ id: "debutant", label: "Débutant", node: <DiceTrainer config={lesson.dice} /> });
-  }
-  sections.push({ id: "intermediaire", label: "Intermédiaire", node: <CompleteItContent collectionId={collectionId} embedded /> });
-  if (isGramMarathonReadyId(collectionId)) {
-    sections.push({ id: "difficile", label: "Difficile", node: <GramMarathonContent collectionId={collectionId} embedded /> });
-  } else if (lesson) {
-    sections.push({ id: "difficile", label: "Difficile", node: <BonusTrainer items={lesson.bonus} /> });
+  sections.push({ id: "pratique", label: "Pratique", node: <DicedPractice collectionId={collectionId} embedded /> });
+  if (lesson) {
+    sections.push({
+      id: "generateur",
+      label: "Générateur 🎲",
+      node: (
+        <div className="space-y-3">
+          <DiceTrainer config={lesson.dice} />
+          <BonusTrainer items={lesson.bonus} />
+        </div>
+      ),
+    });
   }
 
   const shown = deckLessons.find((l) => l.slug === (lessonSlug ?? deckLessons[0]?.slug));

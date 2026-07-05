@@ -13,23 +13,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
 import { CURATED } from "@/content/collections";
 import { speak } from "@/games/letris/speech";
+import { gradeGap, splitGap, type Grade } from "@/lib/practice/cloze";
 import { recordItemResult } from "@/lib/progress";
-
-function normalize(s: string) {
-  return s.toLowerCase().trim().replace(/[-–—]/g, " ").replace(/[.,!?;:'"«»()]/g, "").replace(/\s+/g, " ").trim();
-}
-function deaccent(s: string) {
-  return s.normalize("NFD").replace(/[̀-ͯ]/g, "");
-}
-type Grade = "perfect" | "good" | "wrong";
-function grade(typed: string, answer: string): Grade {
-  const t = normalize(typed);
-  const a = normalize(answer);
-  if (!t) return "wrong";
-  if (t === a) return "perfect";
-  if (deaccent(t) === deaccent(a)) return "good";
-  return "wrong";
-}
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -38,23 +23,6 @@ function shuffle<T>(arr: T[]): T[] {
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
-}
-
-/**
- * Split `fr` around the gap occurrence, word-boundary aware so "de" never
- * matches inside "des"/"mange". A gap ending in an apostrophe elides into the
- * next word ("d'" + "eau"), so no boundary is required after it.
- */
-function splitGap(fr: string, gap: string): { before: string; after: string } {
-  const letter = /[a-zà-öø-ÿœæ]/i;
-  for (let idx = fr.indexOf(gap); idx !== -1; idx = fr.indexOf(gap, idx + 1)) {
-    const prev = fr[idx - 1];
-    const next = fr[idx + gap.length];
-    const okBefore = prev === undefined || !letter.test(prev);
-    const okAfter = gap.endsWith("'") || next === undefined || !letter.test(next);
-    if (okBefore && okAfter) return { before: fr.slice(0, idx), after: fr.slice(idx + gap.length) };
-  }
-  return { before: fr, after: "" };
 }
 
 export default function GramMarathonContent({ collectionId, embedded = false }: { collectionId: string; embedded?: boolean }) {
@@ -93,10 +61,7 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
 
   function check() {
     if (result !== null || !item) return;
-    // d' IS de (elided): grade against both surface forms, keep the better.
-    const alternates = [gap, ...(gap.endsWith("d'") ? [gap.slice(0, -2) + "de"] : [])];
-    const grades = alternates.map((a) => grade(value, a));
-    const g = grades.includes("perfect") ? "perfect" : grades.includes("good") ? "good" : "wrong";
+    const g = gradeGap(value, gap);
     setResult(g);
     setScore((s) => ({ ok: s.ok + (g !== "wrong" ? 1 : 0), total: s.total + 1 }));
     recordItemResult(item.id, g !== "wrong");

@@ -409,15 +409,15 @@
     "num": 28,
     "unit": 2,
     "unitLabel": "Unité 2",
-    "topic": "avec — with whom",
+    "topic": "Négation — pas de ou pas le ?",
     "description": "Say with whom one does something: avec + stressed pronoun or noun (avec moi, avec mon ami, avec ma famille, seul(e))",
     "setId": "2.08",
     "cefrMode": "Spoken Production",
     "skill": "production",
     "isProduction": false,
-    "canDo": "I can say who I do things with, or that I do them alone.",
-    "competence": "Use avec + stressed pronoun/noun and seul(e) for ≥5 prompts.",
-    "collectionId": "avec-qui"
+    "canDo": "I can say what I don't do and what I don't like.",
+    "competence": "use ne … pas de after faire/il y a and quantities, but keep le/la/les after aimer, adorer and détester",
+    "collectionId": "negation-pas"
   },
   {
     "id": "SIO-029",

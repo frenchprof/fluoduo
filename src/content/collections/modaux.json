@@ -16,84 +16,96 @@
       "fr": "Je vais faire du sport.",
       "en": "I'm going to do sport.",
       "tags": [],
-      "gap": "vais"
+      "gap": "vais",
+      "lemma": "aller"
     },
     {
       "id": "modaux-02",
       "fr": "Elle va manger au restaurant.",
       "en": "She's going to eat at the restaurant.",
       "tags": [],
-      "gap": "va"
+      "gap": "va",
+      "lemma": "aller"
     },
     {
       "id": "modaux-03",
       "fr": "Nous allons visiter le marché.",
       "en": "We're going to visit the market.",
       "tags": [],
-      "gap": "allons"
+      "gap": "allons",
+      "lemma": "aller"
     },
     {
       "id": "modaux-04",
       "fr": "Elle peut cuisiner.",
       "en": "She can cook.",
       "tags": [],
-      "gap": "peut"
+      "gap": "peut",
+      "lemma": "pouvoir"
     },
     {
       "id": "modaux-05",
       "fr": "Tu peux goûter.",
       "en": "You can taste.",
       "tags": [],
-      "gap": "peux"
+      "gap": "peux",
+      "lemma": "pouvoir"
     },
     {
       "id": "modaux-06",
       "fr": "On peut acheter des fruits ici.",
       "en": "We can buy fruit here.",
       "tags": [],
-      "gap": "peut"
+      "gap": "peut",
+      "lemma": "pouvoir"
     },
     {
       "id": "modaux-07",
       "fr": "Tu dois manger des légumes.",
       "en": "You must eat vegetables.",
       "tags": [],
-      "gap": "dois"
+      "gap": "dois",
+      "lemma": "devoir"
     },
     {
       "id": "modaux-08",
       "fr": "Je dois boire de l'eau.",
       "en": "I must drink water.",
       "tags": [],
-      "gap": "dois"
+      "gap": "dois",
+      "lemma": "devoir"
     },
     {
       "id": "modaux-09",
       "fr": "Vous devez réserver une table.",
       "en": "You must book a table.",
       "tags": [],
-      "gap": "devez"
+      "gap": "devez",
+      "lemma": "devoir"
     },
     {
       "id": "modaux-10",
       "fr": "Il faut boire de l'eau.",
       "en": "One must drink water.",
       "tags": [],
-      "gap": "faut"
+      "gap": "faut",
+      "lemma": "falloir"
     },
     {
       "id": "modaux-11",
       "fr": "Il faut manger le matin.",
       "en": "One must eat in the morning.",
       "tags": [],
-      "gap": "faut"
+      "gap": "faut",
+      "lemma": "falloir"
     },
     {
       "id": "modaux-12",
       "fr": "Il faut acheter du pain.",
       "en": "One must buy bread.",
       "tags": [],
-      "gap": "faut"
+      "gap": "faut",
+      "lemma": "falloir"
     }
   ]
 }

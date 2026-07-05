@@ -52,6 +52,12 @@ export type Item = {
    */
   gap?: string;
   /**
+   * Citation form of the gapped word (gap "veut" → lemma "vouloir"). Diced
+   * Practice's ★★★ Difficile shows `fr` with the gap replaced by "(lemma)" as
+   * a French-only production cue. Only meaningful alongside `gap`.
+   */
+  lemma?: string;
+  /**
    * Spoken-syllable segmentation of `fr`, used by Lexicalator (the syllable
    * key/keyhole game). Concatenated, it MUST equal `fr` exactly (spaces and
    * all). Hand-authored — French syllabification + the silent-tail rule is an

@@ -1,0 +1,37 @@
+{
+  "id": "negation-pas",
+  "title": "Pas de ou pas le ?",
+  "subtitle": "Saying what I don't do and don't like",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 2,
+  "lessonNo": 28,
+  "lessonSlug": "negation-pas",
+  "tags": [],
+  "seq": 228,
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        { "key": "de", "label": "ne … pas de / d'" },
+        { "key": "def", "label": "ne … pas le / la / les" }
+      ]
+    }
+  },
+  "items": [
+    { "id": "negpas-01", "fr": "Je ne fais pas de tennis.", "en": "I don't play tennis.", "gap": "de", "emoji": "🎾", "tags": ["col:de"], "example": "faire du tennis → ne … pas de tennis" },
+    { "id": "negpas-02", "fr": "Je n'aime pas le tennis.", "en": "I don't like tennis.", "gap": "le", "emoji": "🎾", "tags": ["col:def"], "example": "aimer keeps le : j'aime le tennis → je n'aime pas le tennis" },
+    { "id": "negpas-03", "fr": "Il n'y a pas de café.", "en": "There is no coffee.", "gap": "de", "emoji": "☕", "tags": ["col:de"], "example": "il y a du café → il n'y a pas de café" },
+    { "id": "negpas-04", "fr": "Je n'aime pas le café.", "en": "I don't like coffee.", "gap": "le", "emoji": "☕", "tags": ["col:def"] },
+    { "id": "negpas-05", "fr": "Elle ne fait pas de natation.", "en": "She doesn't swim.", "gap": "de", "emoji": "🏊", "tags": ["col:de"] },
+    { "id": "negpas-06", "fr": "Elle n'aime pas la natation.", "en": "She doesn't like swimming.", "gap": "la", "emoji": "🏊", "tags": ["col:def"] },
+    { "id": "negpas-07", "fr": "Nous ne faisons pas de vélo.", "en": "We don't cycle.", "gap": "de", "emoji": "🚴", "tags": ["col:de"] },
+    { "id": "negpas-08", "fr": "Il n'aime pas le vélo.", "en": "He doesn't like cycling.", "gap": "le", "emoji": "🚴", "tags": ["col:def"] },
+    { "id": "negpas-09", "fr": "Je ne mange pas de chocolat.", "en": "I don't eat chocolate.", "gap": "de", "emoji": "🍫", "tags": ["col:de"], "example": "manger du chocolat → ne … pas de chocolat" },
+    { "id": "negpas-10", "fr": "Ils n'aiment pas les bonbons.", "en": "They don't like sweets.", "gap": "les", "emoji": "🍬", "tags": ["col:def"] },
+    { "id": "negpas-11", "fr": "Il n'y a pas d'eau.", "en": "There is no water.", "gap": "d'", "emoji": "💧", "tags": ["col:de"], "example": "de + voyelle → d' : pas d'eau" },
+    { "id": "negpas-12", "fr": "Je n'aime pas l'eau gazeuse.", "en": "I don't like sparkling water.", "gap": "l'", "emoji": "🫧", "tags": ["col:def"] },
+    { "id": "negpas-13", "fr": "Tu ne fais pas de musique ?", "en": "You don't play music?", "gap": "de", "emoji": "🎵", "tags": ["col:de"] },
+    { "id": "negpas-14", "fr": "Elles adorent la musique, mais pas le sport.", "en": "They love music, but not sport.", "gap": "le", "emoji": "🎵", "tags": ["col:def"] }
+  ]
+}

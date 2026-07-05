@@ -31,7 +31,7 @@ import aimerActivites from "./aimer-activites.json";
 import faireActivites from "./faire-activites.json";
 import allerDestinations from "./aller-destinations.json";
 import quandTime from "./quand-time.json";
-import avecQui from "./avec-qui.json";
+import negationPas from "./negation-pas.json";
 import enAuAuxA from "./en-au-aux-a.json";
 import questionWords from "./question-words.json";
 import transport from "./transport.json";
@@ -81,7 +81,7 @@ export const CURATED: Collection[] = [
   faireActivites as Collection,
   allerDestinations as Collection,
   quandTime as Collection,
-  avecQui as Collection,
+  negationPas as Collection,
   enAuAuxA as Collection,
   questionWords as Collection,
   transport as Collection,

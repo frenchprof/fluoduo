@@ -149,16 +149,17 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
     </Card>
   ),
 
-  /* ---------- Avec qui ? ---------- */
-  "avec-qui": (
-    <Card title="Avec qui ?">
-      <PillRow
-        label={<span lang="fr">avec</span>}
-        items={["moi", "toi", "lui / elle", "nous", "vous", "eux / elles"]}
-      />
+  /* ---------- Négation : pas de ou pas le ? (SIO-028 rededicated,
+     2026-07-05 — the old avec-qui content lives in the stress-pronouns
+     memo's "after prepositions" line) ---------- */
+  "negation-pas": (
+    <Card title="Pas de ou pas le ?">
       <Lines>
-        <li><span lang="fr">Tu vas au cinéma avec qui ?</span> — <span lang="fr">Avec</span> <B>eux</B> !</li>
+        <li><B>ne … pas de</B> — <span lang="fr">Je fais <b className="text-[color:var(--cahier-la)]">du</b> tennis. → Je ne fais pas <b className="text-[color:var(--cahier-la)]">de</b> tennis.</span></li>
+        <li><B>ne … pas de</B> — <span lang="fr">Il y a <b className="text-[color:var(--cahier-la)]">du</b> café. → Il n'y a pas <b className="text-[color:var(--cahier-la)]">de</b> café.</span></li>
+        <li><span lang="fr">❤️ aimer · adorer · détester</span> keep <B>le / la / les</B> — <span lang="fr">J'aime <b className="text-[color:var(--cahier-la)]">le</b> tennis. → Je n'aime pas <b className="text-[color:var(--cahier-la)]">le</b> tennis.</span></li>
       </Lines>
+      <Warn><span lang="fr">de</span> + vowel → <span lang="fr">d'</span> : <span lang="fr">pas d'eau</span>.</Warn>
     </Card>
   ),
 
