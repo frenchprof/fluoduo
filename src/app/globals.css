@@ -624,6 +624,12 @@ body {
   .cahier-tabs { display: flex; }
   .cahier-menu { display: none; }
 }
+/* Number fields: the native spinner sat ON TOP of the digit in narrow boxes
+ * (Dan, 2026-07-05, Flip It subsets) — type the number instead. */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+
 /* form fields inside the page */
 .cahier-page input:not([type="checkbox"]):not([type="radio"]),
 .cahier-page select,

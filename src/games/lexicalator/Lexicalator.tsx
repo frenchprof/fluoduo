@@ -218,6 +218,12 @@ export default function Lexicalator({
       } else {
         setChests((cs) => cs.map((c) => (c.entry.id === active.entry.id ? { ...c, filled: nextFilled } : c)));
       }
+    } else if (active.entry.fr.toLowerCase().includes(token.toLowerCase())) {
+      // The key IS part of the word being forged ("ge" while forging "beige",
+      // stored as one syllable) — it just isn't cut at this word's joints.
+      // Rattle as feedback, but no life, no combo break (Dan, 2026-07-05).
+      setRattle(token);
+      window.setTimeout(() => setRattle(null), 300);
     } else {
       // wrong key — rattle, lose a life
       setRattle(token);
