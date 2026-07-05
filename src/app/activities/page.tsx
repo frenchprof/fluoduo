@@ -5,12 +5,19 @@
  * activity types at once (Dan, 2026-07-04: an index per activity type would be
  * eight galleries; a deck × activity matrix is one). Rows = decks grouped by
  * Unité; columns = activities; every filled cell is a direct link.
+ *
+ * Color (Dan, 2026-07-05: "it looks pretty bland"): each Unité section wears
+ * its own hue (banner + table frame + tinted header row), and the activity
+ * columns wear the same colors their tiles have on the Guide page. The cell
+ * grid itself stays calm — the color frames the matrix, it doesn't fill it.
  */
 import Link from "next/link";
+import { useState } from "react";
 import CahierShell, { withActive, pretestHrefForDeck } from "@/components/CahierShell";
 import { composeBankForDeck } from "@/games/compose/banks";
 import { siteTabs } from "@/components/siteTabs";
 import { CURATED } from "@/content/collections";
+import { UNIT_META } from "@/content/sios";
 import { lessonsForDeck } from "@/content/lessons";
 import { isLexReadyId } from "@/lib/collections/lexReady";
 import { getLetrisSet } from "@/games/letris/sets";
@@ -37,33 +44,73 @@ function cellsFor(c: Collection): Cell[] {
 
 const HEAD = ["🧪", "🃏", "📚", "🎤", "🌧️", "🧰", "🧩"];
 const HEAD_TITLES = ["Pre-Test", "Flip It", "Lesson", "Say It", "Vocabularain", "Lexicalator", "Compose It"];
+/** Column chip colors — the same hue each activity's tile wears on the Guide
+ *  page (Pre-Test gets the highlighter yellow). */
+const HEAD_CHIPS: { bg: string; border: string }[] = [
+  { bg: "var(--cahier-hl, #eaff00)", border: "#2a2e6e" },
+  { bg: "#def3f5", border: "#2bb6c2" },
+  { bg: "#fbe3ec", border: "#e0567f" },
+  { bg: "#fbeec4", border: "#e3a700" },
+  { bg: "#ece2fa", border: "#8a5fd4" },
+  { bg: "#fbe6cf", border: "#e8852e" },
+  { bg: "#ecf7cf", border: "#7bbf2e" },
+];
+
+/** Accent-blind match: "cafe" finds Café, "ou" finds Où. */
+const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 
 export default function ActivitiesIndexPage() {
   const units = [0, 1, 2, 3, 4];
+  const [q, setQ] = useState("");
+  const matches = (c: Collection) => !q.trim() || norm(`${c.title} ${c.subtitle ?? ""}`).includes(norm(q.trim()));
+  const totalHits = CURATED.filter(matches).length;
   return (
     <CahierShell tabs={withActive(siteTabs(), "index")} active="index" crumb="🗂️ Practice Index">
       <div className="mx-auto max-w-4xl px-2 py-4">
         <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">🗂️ Practice Index</h1>
-        <p className="mt-1 mb-4 text-sm text-[color:var(--cahier-ink-soft)]">Every deck × every activity — tap any cell.</p>
+        <p className="mt-1 text-sm text-[color:var(--cahier-ink-soft)]">Every deck × every activity — tap any cell.</p>
+        <input
+          type="search"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="🔍 couleurs, aller, café…"
+          aria-label="Search decks"
+          className="mt-3 mb-4 w-full max-w-sm rounded-full border-2 border-[color:var(--cahier-ink)] bg-white px-4 py-2 text-sm font-bold text-[color:var(--cahier-ink)] outline-none placeholder:font-normal focus:shadow-[3px_3px_0_var(--cahier-hl,#eaff00)]"
+        />
+        {totalHits === 0 && (
+          <p className="mb-4 text-sm font-bold text-[color:var(--cahier-ink-soft)]">Aucun résultat pour « {q} »</p>
+        )}
         {units.map((u) => {
-          const decks = CURATED.filter((c) => c.unit === u);
+          const decks = CURATED.filter((c) => c.unit === u).filter(matches);
           if (decks.length === 0) return null;
+          const meta = UNIT_META[u] ?? { label: `Unité ${u}`, subtitle: "", emoji: "📚" };
           return (
-            <section key={u} className="mb-6">
-              <h2 className="cahier-section mb-2 rounded-md px-3 py-1.5">Unité {u}</h2>
-              <div className="overflow-x-auto rounded-xl border-2 border-[color:var(--cahier-ink)]/15 bg-white">
+            <section key={u} className={`fluo-h-${u % 6} mb-6`}>
+              <div className="mb-2 flex items-center gap-2 rounded-xl px-4 py-2" style={{ background: "var(--fluo-card-accent)" }}>
+                <span aria-hidden>{meta.emoji}</span>
+                <span className="fluo-serif font-black text-white">{meta.label}</span>
+                {meta.subtitle && <span lang="fr" className="hidden text-sm text-white/85 sm:inline">{meta.subtitle}</span>}
+              </div>
+              <div className="overflow-x-auto rounded-xl border-2 bg-white" style={{ borderColor: "var(--fluo-card-accent)" }}>
                 <table className="w-full text-left text-sm" style={{ minWidth: 560 }}>
                   <thead>
-                    <tr className="border-b-2 border-[color:var(--cahier-rule)]">
+                    <tr className="border-b-2" style={{ background: "var(--fluo-card-tint)", borderColor: "var(--fluo-card-accent)" }}>
                       <th className="px-3 py-2 text-[0.7rem] font-bold uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">Deck</th>
                       {HEAD.map((h, i) => (
-                        <th key={h} title={HEAD_TITLES[i]} className="px-1.5 py-2 text-center text-base" aria-label={HEAD_TITLES[i]}>{h}</th>
+                        <th key={h} title={HEAD_TITLES[i]} className="px-1.5 py-2 text-center" aria-label={HEAD_TITLES[i]}>
+                          <span
+                            className="inline-flex h-7 w-7 items-center justify-center rounded-full border-2 text-sm"
+                            style={{ background: HEAD_CHIPS[i].bg, borderColor: HEAD_CHIPS[i].border }}
+                          >
+                            {h}
+                          </span>
+                        </th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     {decks.map((c) => (
-                      <tr key={c.id} className="border-t border-[color:var(--cahier-rule)]">
+                      <tr key={c.id} className="border-t border-[color:var(--cahier-rule)] transition hover:bg-[color:var(--fluo-card-tint)]">
                         <td lang="fr" className="max-w-[14rem] truncate px-3 py-1.5 font-bold text-[color:var(--cahier-ink)]">{c.title}</td>
                         {cellsFor(c).map((cell, i) => (
                           <td key={i} className="px-1.5 py-1.5 text-center">
