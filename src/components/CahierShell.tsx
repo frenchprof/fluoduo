@@ -26,6 +26,7 @@ import { UNIT0_QUESTIONS } from "@/content/sios/unit0-questions";
 import { getLetrisSet } from "@/games/letris/sets";
 import { composeBankForDeck } from "@/games/compose/banks";
 import FirstTour from "@/components/FirstTour";
+import AccountButton from "@/components/AccountButton";
 
 /** Dice Practice is an MCQ over the deck's letris columns — no columns, no game. */
 export function hasDicePractice(collectionId: string): boolean {
@@ -201,6 +202,7 @@ export default function CahierShell({
                   </span>
                 )}
                 {topRight}
+                <AccountButton />
                 <div className="cahier-menu relative">
                   <button
                     type="button"
