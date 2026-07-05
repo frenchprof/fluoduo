@@ -31,7 +31,7 @@ import { bareWord, displayEn, practiceItems } from "@/lib/collections/display";
 import { loadBuckets, setBucket, type Bucket } from "@/lib/practice/buckets";
 import { recordItemResult } from "@/lib/progress";
 import { CahierFrame, TAB_HUES, type CahierTab } from "../CahierFrame";
-import { deckActivityTabs } from "@/components/CahierShell";
+import BackLink from "@/components/BackLink";
 
 /* ─────────────────────────── step labels ─────────────────────────── */
 
@@ -161,7 +161,7 @@ function TopBar({ crumb }: { crumb: string }) {
   return (
     <div className="border-b-2 border-[color:var(--cahier-ink)]/15 bg-[var(--cahier-paper-2)]/85 backdrop-blur">
       <div className="flex items-center gap-3 py-3 pl-12 pr-4 sm:pl-16">
-        <Link href="/" className="cahier-btn cahier-btn-sm">← FluoLingo</Link>
+        <BackLink fallback="/" className="cahier-btn cahier-btn-sm">← Back</BackLink>
         <span className="cahier-display truncate text-sm font-bold text-[color:var(--cahier-ink)]">
           🃏 Flip It · {crumb}
         </span>
@@ -275,8 +275,6 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
       tabs={VIEW_TABS}
       active={view}
       onSelect={(k) => setView(k as View)}
-      navTabs={deckActivityTabs(collection.id)}
-      navActive="flip"
       topBar={<TopBar crumb={collection.title} />}
     >
       <StepLabel n={1} label="Select view — use the flaps or burger menu on the top right" />

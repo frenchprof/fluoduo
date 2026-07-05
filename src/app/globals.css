@@ -537,6 +537,11 @@ body {
   background: var(--cahier-desk);
   padding: 18px 0 64px;
 }
+/* Flip It's own world: the same exercise book, but on ITS warm wooden desk —
+ * a full interface like the rain/conveyor games, not a site page. */
+.cahier-desk--flip {
+  background: linear-gradient(180deg, #8b6a48 0%, #7a5a3b 55%, #6e4f33 100%);
+}
 .cahier-deskrow {
   display: flex;
   align-items: flex-start;
