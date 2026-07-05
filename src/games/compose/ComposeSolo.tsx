@@ -9,6 +9,7 @@
 
 import { useEffect, useState } from "react";
 import { speak } from "@/games/letris/speech";
+import { sfx } from "@/games/audio/sfx";
 import { categoryHeaderClass, type ComposeBank } from "@/games/compose/banks";
 
 /** Join tapped chips into readable French (", " chips collapse into commas). */
@@ -26,6 +27,12 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
   const [scenario, setScenario] = useState<{ instructionEn: string; headline: string } | null>(null);
   const [line, setLine] = useState<string[]>([]); // sentence in progress
   const [lines, setLines] = useState<string[]>([]); // committed sentences
+  // AI "check my work" pass (aiCheck banks only). The passer-by reads the whole
+  // itinerary and reacts. `unavailable` latches when the backend isn't there
+  // (no ANTHROPIC_API_KEY / local preview) so the button quietly disappears.
+  const [checking, setChecking] = useState(false);
+  const [feedback, setFeedback] = useState<{ reply: string; done: boolean } | null>(null);
+  const [unavailable, setUnavailable] = useState(false);
 
   useEffect(() => {
     setScenario(bank.newScenario());
@@ -42,13 +49,51 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
   const clearOnly = () => {
     setLine([]);
     setLines([]);
+    setFeedback(null);
     if (typeof window !== "undefined") window.speechSynthesis?.cancel();
   };
   const reset = () => {
     setLine([]);
     setLines([]);
+    setFeedback(null);
     setScenario(bank.newScenario());
     if (typeof window !== "undefined") window.speechSynthesis?.cancel();
+  };
+
+  // Ask the AI passer-by to read the whole itinerary and react. Degrades
+  // silently to "unavailable" if the backend is missing (503/404).
+  const check = async () => {
+    const text = dialogueText;
+    if (!text || checking) return;
+    setChecking(true);
+    setFeedback(null);
+    try {
+      const r = await fetch("/api/compose", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          scene: bank.id,
+          context: scenario?.instructionEn ?? "",
+          messages: [{ role: "user", content: text }],
+        }),
+      });
+      if ([404, 405, 501, 503].includes(r.status)) {
+        setUnavailable(true);
+        return;
+      }
+      const data = (await r.json().catch(() => null)) as { reply?: string; done?: boolean } | null;
+      if (!data?.reply) {
+        setFeedback({ reply: "Pardon, un petit souci… réessayez !", done: false });
+        return;
+      }
+      setFeedback({ reply: data.reply, done: data.done === true });
+      speak(data.reply, lang, { gender: "m" });
+      if (data.done) sfx.stage(); else sfx.correct();
+    } catch {
+      setUnavailable(true);
+    } finally {
+      setChecking(false);
+    }
   };
   const commitLine = () => {
     if (!lineText) return;
@@ -145,7 +190,40 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
           >
             🔊 Speak it all
           </button>
+          {bank.aiCheck && !unavailable && (
+            <button
+              type="button"
+              onClick={check}
+              disabled={!dialogueText || checking}
+              className="cahier-btn cahier-btn-gold"
+            >
+              {checking ? "🚶 …" : "🚶 Le passant vérifie"}
+            </button>
+          )}
         </div>
+
+        {feedback && (
+          <div
+            className={`mt-3 flex items-start gap-2 rounded-xl border-2 px-4 py-3 ${
+              feedback.done
+                ? "border-emerald-600/50 bg-emerald-600/10"
+                : "border-[color:var(--cahier-gold)] bg-[color:var(--cahier-gold)]/10"
+            }`}
+          >
+            <button
+              type="button"
+              onClick={() => speak(feedback.reply, lang, { gender: "m" })}
+              className="shrink-0 text-2xl leading-none"
+              aria-label="Réécouter"
+              title="🔊"
+            >
+              🚶
+            </button>
+            <p lang="fr" className="text-base leading-relaxed text-[color:var(--cahier-ink)]">
+              {feedback.reply}
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col gap-4">

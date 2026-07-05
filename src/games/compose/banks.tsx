@@ -16,6 +16,11 @@ export type ComposeBank = {
   unit: number;
   deckId: string; // which deck's activity rail this bank attaches to
   mode: "solo" | "dialogue";
+  /** Solo banks only: offer an AI "check my work" pass (POSTs to /api/compose
+   *  with scene=id). Directions used to accept anything with nothing checking
+   *  the French (Dan, 2026-07-05) — this closes that gap without turning the
+   *  builder into a full back-and-forth dialogue. */
+  aiCheck?: boolean;
   categories: ComposeCategory[];
   /** Solo mode: a fresh prompt. Random — call only from handlers/mount effects. */
   newScenario(): { instructionEn: string; headline: string };
@@ -73,6 +78,7 @@ const DIRECTIONS_BANK: ComposeBank = {
   unit: 3,
   deckId: "directions-matching",
   mode: "solo",
+  aiCheck: true,
   categories: withPalette([
     {
       label: "Verbs",

@@ -21,6 +21,17 @@ un croissant — 2€ · un sandwich au fromage — 5€ · une salade verte —
 un café — 3€ · un thé — 3€ · un jus d'orange — 4€ · une eau minérale — 3€ · un coca — 4€`,
     flow: `FLOW: greet → take the order → if they have no drink yet ask « Et comme boisson ? » → « Autre chose ? » → when they finish (C'est tout / Non merci / l'addition), ADD UP the prices of what they actually ordered and say « Ça fait X euros. » → then a warm goodbye and set done=true.`,
   },
+  // The itinerary builder (Compose It "solo" directions) used to accept any
+  // string of chips with nothing checking the French (Dan, 2026-07-05). This
+  // scene is a lost passer-by who READS the learner's whole set of directions
+  // in one shot and reacts: confirms if they'd get there, else names the one
+  // step that doesn't make sense. `context` carries this session's A→B route.
+  directions: {
+    persona:
+      "You are « un passant » (a friendly passer-by) lost in a French town. An A1 French beginner has written you walking directions and you must react in character.",
+    menu: "",
+    flow: `FLOW: You receive the learner's full directions in one message. If they are clear, plausible French that would plausibly get you to the destination, react warmly, echo the route in your own words to show you followed it (« Alors je tourne à gauche, puis tout droit jusqu'au carrefour… »), thank them and set done=true. If a step is garbled, not real French, or contradictory, stay in character, DO NOT set done, and gently ask them to fix that ONE step (« Pardon, je tourne où exactement ? »). Never invent directions they didn't give.`,
+  },
 };
 
 export async function onRequestPost(context) {
@@ -34,6 +45,8 @@ export async function onRequestPost(context) {
     return json({ error: "bad-json" }, 400);
   }
   const scene = SCENES[body && body.scene] || SCENES.cafe;
+  // Per-session specifics (e.g. the directions route "from le parc to la gare").
+  const context = typeof (body && body.context) === "string" ? body.context.slice(0, 300) : "";
   const messages = (Array.isArray(body && body.messages) ? body.messages : [])
     .slice(-24)
     .filter((m) => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string")
@@ -43,10 +56,9 @@ export async function onRequestPost(context) {
   }
 
   const system = `${scene.persona}
-
-${scene.menu}
-
+${scene.menu ? `\n${scene.menu}\n` : ""}
 ${scene.flow}
+${context ? `\nTHIS SESSION: ${context}` : ""}
 
 RULES:
 - Reply ONLY in simple French, 1-2 short A1 sentences.
