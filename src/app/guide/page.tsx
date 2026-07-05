@@ -13,8 +13,7 @@ const ACTIVITIES: { emoji: string; name: string; what: string }[] = [
   { emoji: "🎤", name: "Say It", what: "Say the word out loud — the microphone checks your pronunciation." },
   { emoji: "✏️", name: "Complete It", what: "Type the missing letters or words." },
   { emoji: "🎲", name: "Dice trainer", what: "Roll the dice, build the sentence. Three levels: pick it, fill it, type it." },
-  { emoji: "🎯", name: "ConjugaZone", what: "Conjugation drills — match the verb form to the subject." },
-  { emoji: "🏃", name: "GramMarathon", what: "A grammar race: fill each gap before the clock runs." },
+  { emoji: "🏃", name: "GramMarathon", what: "Type the missing grammar word or verb form — no options given." },
   { emoji: "🌧️", name: "Vocabularain", what: "Words rain down — sort them into the right columns before they land." },
   { emoji: "🧰", name: "Lexicalator", what: "Build words from syllables moving on a conveyor belt." },
 ];

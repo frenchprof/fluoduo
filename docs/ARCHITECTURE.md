@@ -139,9 +139,9 @@ variants), and the progress store. Each targets a different retrieval mode:
 - **🎲 Dice trainer** (in lessons + `/practice/dice`) — roll → assemble a
   sentence from the lesson's pattern; three difficulty tiers (easy: pick
   the sentence; medium: pick the gap; hard: type).
-- **🎯 ConjugaZone** — conjugation drill (verb-table decks).
-- **🏃 GramMarathon** — grammar cloze race over `gap` items (accepts
-  elision alternates, e.g. *de* for *d'*).
+- **🏃 GramMarathon** — typed cloze over `gap` items, from one grammar
+  word (*du / d'*, elision alternates accepted) to a whole predicate
+  (verb-table decks — absorbed the former ConjugaZone, 2026-07-05).
 - **🌧️ Vocabularain (letris)** — falling words sorted into 3–5 category
   columns; pre-round study table; hidden language-sorter leaderboard;
   night mode.

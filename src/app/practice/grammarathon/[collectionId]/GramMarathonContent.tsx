@@ -1,11 +1,12 @@
 "use client";
 
 /**
- * GramMarathon — the grammar-word cloze drill. The sentence is shown with ONE
- * grammar word blanked out (the item's hand-authored `gap`: du / de la / d' …);
- * the student types just that word. Everything around the blank is context, so
- * every keystroke lands on the grammar point itself — unlike ConjugaZone, where
- * the whole predicate (verb + agreement) is the target.
+ * GramMarathon — the typed cloze drill over a deck's authored `gap`s. The
+ * sentence is shown with the gap blanked out and the student types it — no
+ * options. Gaps range from one grammar word (du / de la / d' …) to a whole
+ * predicate (être-étudiant: "est étudiante"), which is how the former
+ * ConjugaZone folded in here (Dan, 2026-07-05: "we don't even need to
+ * separate out conjugazone and grammarathon anymore").
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";

@@ -15,7 +15,6 @@ import { useState } from "react";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { isLexReadyId } from "@/lib/collections/lexReady";
-import { isConjugaZoneReadyId } from "@/lib/collections/conjugaZoneReady";
 import { isGramMarathonReadyId } from "@/lib/collections/gramMarathonReady";
 import { CURATED } from "@/content/collections";
 import { lessonsForDeck } from "@/content/lessons";
@@ -229,9 +228,6 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     { key: "complete", label: "Complete It", emoji: "✏️", href: `/practice/complete-it/${collectionId}` },
     ...(hasDicePractice(collectionId)
       ? [{ key: "dice", label: "Practice", emoji: "🎲", href: `/practice/dice/${collectionId}` } as ShellTab]
-      : []),
-    ...(isConjugaZoneReadyId(collectionId)
-      ? [{ key: "conjugazone", label: "ConjugaZone", emoji: "🎯", href: `/practice/conjugazone/${collectionId}` } as ShellTab]
       : []),
     ...(isGramMarathonReadyId(collectionId)
       ? [{ key: "grammarathon", label: "GramMarathon", emoji: "🏃", href: `/practice/grammarathon/${collectionId}` } as ShellTab]

@@ -12,7 +12,6 @@ import { siteTabs } from "@/components/siteTabs";
 import { CURATED } from "@/content/collections";
 import { lessonsForDeck } from "@/content/lessons";
 import { isLexReadyId } from "@/lib/collections/lexReady";
-import { isConjugaZoneReadyId } from "@/lib/collections/conjugaZoneReady";
 import { isGramMarathonReadyId } from "@/lib/collections/gramMarathonReady";
 import { getLetrisSet } from "@/games/letris/sets";
 import type { Collection } from "@/lib/collections/schema";
@@ -27,7 +26,6 @@ function cellsFor(c: Collection): Cell[] {
     { emoji: "🎤", title: "Say It", href: `/practice/say-it/${c.id}` },
     { emoji: "✏️", title: "Complete It", href: `/practice/complete-it/${c.id}` },
     { emoji: "🎲", title: "Practice", href: hasDicePractice(c.id) ? `/practice/dice/${c.id}` : null },
-    { emoji: "🎯", title: "ConjugaZone", href: isConjugaZoneReadyId(c.id) ? `/practice/conjugazone/${c.id}` : null },
     { emoji: "🏃", title: "GramMarathon", href: isGramMarathonReadyId(c.id) ? `/practice/grammarathon/${c.id}` : null },
     { emoji: "🌧️", title: "Vocabularain", href: getLetrisSet(c.id.replace("-letris", "")) ? `/games/letris/${c.id.replace("-letris", "")}` : null },
     { emoji: "🧰", title: "Lexicalator", href: isLexReadyId(c.id) ? `/games/conveyor/${c.id}` : null },
@@ -35,8 +33,8 @@ function cellsFor(c: Collection): Cell[] {
   ];
 }
 
-const HEAD = ["📚", "🃏", "🎤", "✏️", "🎲", "🎯", "🏃", "🌧️", "🧰", "🎪"];
-const HEAD_TITLES = ["Lesson", "Flip It", "Say It", "Complete It", "Practice", "ConjugaZone", "GramMarathon", "Vocabularain", "Lexicalator", "Unit"];
+const HEAD = ["📚", "🃏", "🎤", "✏️", "🎲", "🏃", "🌧️", "🧰", "🎪"];
+const HEAD_TITLES = ["Lesson", "Flip It", "Say It", "Complete It", "Practice", "GramMarathon", "Vocabularain", "Lexicalator", "Unit"];
 
 export default function ActivitiesIndexPage() {
   const units = [0, 1, 2, 3, 4];
