@@ -116,14 +116,13 @@ export default function CahierShell({
   const unitKey = deckUnit === undefined ? undefined : `unit-${deckUnit}`;
   const isActiveFlap = (t: ShellTab) => active === t.key || t.key === unitKey;
 
-  return (
-    <div className="cahier-desk">
-      <div className="cahier-deskrow">
-        <main className={`cahier-page min-h-screen ${context.length > 0 ? "cahier-page--d2" : ""}`}>
-          <div className="cahier-binding" aria-hidden />
+  const nested = context.length > 0;
+  const page = (
+        <main className={`cahier-page ${nested ? "min-h-[calc(100vh-18px)]" : "min-h-screen"}`}>
+          {!nested && <div className="cahier-binding" aria-hidden />}
 
           <div className="sticky top-0 z-10 border-b-2 border-[color:var(--cahier-ink)]/15 bg-[color:var(--cahier-paper)]/90 backdrop-blur">
-            <div className="flex items-center justify-between gap-2 py-3 pl-12 pr-3 sm:pl-16 sm:pr-5">
+            <div className={`flex items-center justify-between gap-2 py-3 pr-3 sm:pr-5 ${nested ? "pl-5 sm:pl-7" : "pl-12 sm:pl-16"}`}>
               {active === "home" ? (
                 <span className="cahier-display text-lg font-black text-[color:var(--cahier-ink)]">
                   <span className="cahier-hl">FluoLingo</span> <span aria-hidden>✨</span>
@@ -180,8 +179,21 @@ export default function CahierShell({
             </div>
           </div>
 
-          <div className="py-5 pl-12 pr-4 sm:pl-16 sm:pr-7">{children}</div>
+          <div className={`py-5 pr-4 sm:pr-7 ${nested ? "pl-5 sm:pl-7" : "pl-12 sm:pl-16"}`}>{children}</div>
         </main>
+  );
+
+  return (
+    <div className="cahier-desk">
+      <div className="cahier-deskrow">
+        {nested ? (
+          <div className="cahier-stack min-h-screen">
+            <div className="cahier-binding" aria-hidden />
+            {page}
+          </div>
+        ) : (
+          page
+        )}
 
         <nav className="cahier-tabs" aria-label="Pages">
           {site.map((t, i) => (

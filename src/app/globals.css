@@ -565,25 +565,32 @@ body {
  * visible behind (Dan, 2026-07-05: "we can still see the larger page in the
  * background", like the SIO popup) — drawn as solid offset paper shadows
  * peeking out above/left; the right edge stays clean for the flaps. */
-.cahier-page.cahier-page--d2 {
-  flex-basis: 930px;
-  margin: 20px 0 0 20px;
-  min-height: calc(100vh - 20px);
-  box-shadow:
-    0 0 0 18px #efede3,
-    0 0 0 19.5px rgba(42, 46, 110, 0.22),
-    0 12px 34px 18px rgba(34, 40, 80, 0.20);
+/* Nested sheets are REAL elements, not shadow paint (Dan, 2026-07-05: the
+ * illusion neglected details — the binding shrank inwards). The parent sheet
+ * is a wrapper that OWNS the spiral binding at its left gutter; the smaller
+ * page lies on it as a loose sheet (no coils of its own). */
+.cahier-stack {
+  position: relative;
+  flex: 0 1 980px;
+  min-width: 0;
+  border-radius: 4px 16px 16px 4px;
+  background: #efede3;
+  box-shadow: 0 0 0 1.5px rgba(42, 46, 110, 0.22), 0 12px 34px rgba(34, 40, 80, 0.20);
+  padding: 18px 18px 0 48px;
 }
-.cahier-page.cahier-page--d3 {
-  flex-basis: 880px;
-  margin: 40px 0 0 40px;
-  min-height: calc(100vh - 40px);
-  box-shadow:
-    0 0 0 18px #efede3,
-    0 0 0 19.5px rgba(42, 46, 110, 0.22),
-    0 0 0 36px #e7e5d9,
-    0 0 0 37.5px rgba(42, 46, 110, 0.18),
-    0 12px 34px 36px rgba(34, 40, 80, 0.20);
+.cahier-stack--inner {
+  position: relative;
+  border-radius: 4px 14px 14px 4px;
+  background: #f4f2e7;
+  box-shadow: 0 0 0 1.5px rgba(42, 46, 110, 0.16), 0 8px 22px rgba(34, 40, 80, 0.14);
+  padding: 18px 18px 0 18px;
+}
+.cahier-stack .cahier-page,
+.cahier-stack--inner .cahier-page {
+  flex: none;
+  width: 100%;
+  border-radius: 4px 14px 14px 4px;
+  box-shadow: 0 6px 18px rgba(34, 40, 80, 0.16), 0 0 0 1.5px rgba(42, 46, 110, 0.14);
 }
 .cahier-tabs {
   position: sticky;

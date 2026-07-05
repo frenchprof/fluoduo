@@ -74,8 +74,13 @@ export function CahierFrame({
   return (
     <div className="cahier-desk">
       <div className="cahier-deskrow">
-        <main className="cahier-page cahier-page--d3">
+        {/* Real nested sheets: the outer wrapper is the bound notebook page
+            (it owns the coils), the middle is the deck layer, the top sheet
+            is this view — loose sheets carry no binding of their own. */}
+        <div className="cahier-stack min-h-screen">
           <div className="cahier-binding" aria-hidden />
+          <div className="cahier-stack--inner min-h-[calc(100vh-18px)]">
+        <main className="cahier-page min-h-[calc(100vh-36px)]">
 
           {/* narrow-screen ☰ menu (top-right is free — the title sits on the left) */}
           <div className="cahier-menu absolute right-2 top-2 z-20">
@@ -118,8 +123,10 @@ export function CahierFrame({
           </div>
 
           {topBar}
-          <div className="py-5 pl-12 pr-4 sm:pl-16 sm:pr-7">{children}</div>
+          <div className="py-5 pl-5 pr-4 sm:pl-7 sm:pr-7">{children}</div>
         </main>
+          </div>
+        </div>
 
         <nav className="cahier-tabs" aria-label="Pages and views">
           {site.map((t, i) => (
