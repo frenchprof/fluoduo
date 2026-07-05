@@ -72,7 +72,13 @@ export default function ActivitiesIndexPage() {
                                 {cell.emoji}
                               </Link>
                             ) : (
-                              <span className="text-[color:var(--cahier-ink-soft)]/40" aria-hidden>·</span>
+                              <span
+                                title={`${cell.title} — not available for this deck`}
+                                aria-label={`${cell.title} — not available for this deck`}
+                                className="cursor-help text-[color:var(--cahier-ink-soft)]/40"
+                              >
+                                ·
+                              </span>
                             )}
                           </td>
                         ))}

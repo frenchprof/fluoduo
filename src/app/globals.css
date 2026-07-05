@@ -542,6 +542,15 @@ body {
 .cahier-desk--flip {
   background: linear-gradient(180deg, #8b6a48 0%, #7a5a3b 55%, #6e4f33 100%);
 }
+/* Its view flaps: thicker and set lower down the page edge (Dan, 2026-07-05)
+ * — no hierarchy to encode inside its own world, so they can be generous. */
+.cahier-desk--flip .cahier-tabs { padding-top: 148px; gap: 10px; }
+.cahier-desk--flip .cahier-tabs .cahier-tab {
+  width: 182px;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  border-left-width: 8px;
+}
 .cahier-deskrow {
   display: flex;
   align-items: flex-start;

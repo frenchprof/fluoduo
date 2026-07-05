@@ -11,9 +11,11 @@
  * A tab without an href (typically the active page) renders as a static flap.
  */
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
+
+const PAGE_WIDTH_KEY = "fluolingo:pageWidth";
 import { isLexReadyId } from "@/lib/collections/lexReady";
 import { isGramMarathonReadyId } from "@/lib/collections/gramMarathonReady";
 import { CURATED } from "@/content/collections";
@@ -111,9 +113,54 @@ export default function CahierShell({
   const isActiveFlap = (t: ShellTab) => active === t.key || t.key === unitKey;
 
   const nested = context.length > 0;
+
+  // Every page's right edge is drag-widenable (Dan, 2026-07-05: "all the
+  // pages should have their own draggable right edge") — resizes the outer
+  // sheet (the stack on nested pages), persisted site-wide.
+  const outerRef = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    try {
+      const w = parseInt(window.localStorage.getItem(PAGE_WIDTH_KEY) ?? "", 10);
+      if (w && outerRef.current) outerRef.current.style.flexBasis = `${Math.min(w, window.innerWidth - 150)}px`;
+    } catch {}
+  }, []);
+  function startEdgeDrag(e: React.PointerEvent<HTMLDivElement>) {
+    const el = outerRef.current;
+    if (!el) return;
+    e.preventDefault();
+    const grip = e.currentTarget;
+    try { grip.setPointerCapture(e.pointerId); } catch {}
+    const sw = el.offsetWidth, sx = e.clientX;
+    const move = (ev: PointerEvent) => {
+      ev.preventDefault();
+      el.style.flexBasis = `${Math.min(Math.max(560, sw + ev.clientX - sx), window.innerWidth - 150)}px`;
+    };
+    const done = () => {
+      grip.removeEventListener("pointermove", move);
+      grip.removeEventListener("pointerup", done);
+      grip.removeEventListener("pointercancel", done);
+      try { window.localStorage.setItem(PAGE_WIDTH_KEY, String(el.offsetWidth)); } catch {}
+    };
+    grip.addEventListener("pointermove", move);
+    grip.addEventListener("pointerup", done);
+    grip.addEventListener("pointercancel", done);
+  }
+  const edgeGrip = (
+    <div
+      onPointerDown={startEdgeDrag}
+      className="absolute bottom-0 right-0 top-0 z-20 w-3 cursor-ew-resize touch-none select-none"
+      title="Drag to widen the page"
+      aria-hidden
+    />
+  );
+
   const page = (
-        <main className={`cahier-page ${nested ? "min-h-[calc(100vh-18px)]" : "min-h-screen"}`}>
+        <main
+          ref={(el) => { if (!nested) outerRef.current = el; }}
+          className={`cahier-page ${nested ? "min-h-[calc(100vh-18px)]" : "min-h-screen"}`}
+        >
           {!nested && <div className="cahier-binding" aria-hidden />}
+          {!nested && edgeGrip}
 
           <div className="sticky top-0 z-10 border-b-2 border-[color:var(--cahier-ink)]/15 bg-[color:var(--cahier-paper)]/90 backdrop-blur">
             <div className={`flex items-center justify-between gap-2 py-3 pr-3 sm:pr-5 ${nested ? "pl-5 sm:pl-7" : "pl-12 sm:pl-16"}`}>
@@ -181,9 +228,10 @@ export default function CahierShell({
     <div className="cahier-desk">
       <div className="cahier-deskrow">
         {nested ? (
-          <div className="cahier-stack min-h-screen">
+          <div ref={(el) => { outerRef.current = el; }} className="cahier-stack min-h-screen">
             <div className="cahier-binding" aria-hidden />
             {page}
+            {edgeGrip}
           </div>
         ) : (
           page

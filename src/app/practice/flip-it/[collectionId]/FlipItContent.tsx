@@ -36,11 +36,13 @@ import BackLink from "@/components/BackLink";
 /* ─────────────────────────── step labels ─────────────────────────── */
 
 function StepLabel({ n, label }: { n: number; label: string }) {
+  // Big, bold, contrasting (Dan, 2026-07-05: steps were "not salient enough
+  // for the users to notice what to do where").
   return (
-    <div className="mb-3 flex items-center gap-2">
-      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[color:var(--cahier-ink)] text-[10px] font-black text-white">{n}</span>
-      <span className="text-xs font-bold uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">{label}</span>
-      <div className="h-px flex-1 bg-[color:var(--cahier-rule)]" />
+    <div className="flex items-center gap-2.5">
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[color:var(--cahier-ink)] text-base font-black text-white shadow-[2px_2px_0_var(--cahier-hl,#ffe000)]">{n}</span>
+      <span className="cahier-hl rounded-sm px-1.5 text-base font-black uppercase tracking-wide text-[color:var(--cahier-ink)]">{label}</span>
+      <div className="h-[2px] flex-1 bg-[color:var(--cahier-ink)]/25" />
     </div>
   );
 }
