@@ -60,23 +60,28 @@ async function push(p: Progress): Promise<void> {
 
 /** Mirror the public bits to leaderboard/{uid} (ported surface from the old
  *  laf1201 suite — Dan, 2026-07-05). Separate try/catch: the rules DENY this
- *  write for excluded emails, and that must never break the progress push. */
+ *  write for admins/excluded emails, and that must never break the progress
+ *  push. When the write is denied (this user is excluded), we DELETE any row
+ *  they wrote before being excluded, so a teacher/opt-out never lingers on
+ *  the board (the delete rule always allows the owner). */
 async function publishLeaderboard(p: Progress): Promise<void> {
+  const u = auth.currentUser;
+  if (!u) return;
+  let mods: typeof import("firebase/firestore") | undefined;
+  let database: typeof import("./db") | undefined;
   try {
-    const u = auth.currentUser;
-    if (!u) return;
-    const [{ doc, setDoc }, { db }] = await Promise.all([
-      import("firebase/firestore"),
-      import("./db"),
-    ]);
-    const name = u.displayName || (u.email ? u.email.split("@")[0] : "Anonyme");
-    await setDoc(
-      doc(db, "leaderboard", u.uid),
-      { name, gems: p.gems, streak: p.streak, updatedAt: Date.now() },
-      { merge: true },
-    );
+    [mods, database] = await Promise.all([import("firebase/firestore"), import("./db")]);
   } catch {
-    // excluded from the board / offline — never surfaces to the learner
+    return; // offline / bundle unavailable
+  }
+  const { doc, setDoc, deleteDoc } = mods;
+  const ref = doc(database.db, "leaderboard", u.uid);
+  const name = u.displayName || (u.email ? u.email.split("@")[0] : "Anonyme");
+  try {
+    await setDoc(ref, { name, gems: p.gems, streak: p.streak, updatedAt: Date.now() }, { merge: true });
+  } catch {
+    // Write denied → excluded (admin / opt-out). Remove any stale entry.
+    try { await deleteDoc(ref); } catch {}
   }
 }
 

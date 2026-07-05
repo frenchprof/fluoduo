@@ -51,7 +51,12 @@ service cloud.firestore {
     }
     match /leaderboard/{uid} {
       allow read:  if isSignedIn();
-      allow write: if isOwner(uid) && !isExcludedFromLeaderboard();
+      // Admins (teachers) are auto-excluded — they shouldn't appear on the
+      // student board (Dan, 2026-07-05) — as are the explicit opt-out emails.
+      allow create, update: if isOwner(uid) && !isAdmin() && !isExcludedFromLeaderboard();
+      // Owner may ALWAYS delete their own row — so an excluded user's client
+      // can clean up a stale entry it wrote before being excluded.
+      allow delete: if isOwner(uid);
     }
     match /events/{id}     { allow create: if isSignedIn(); allow read: if isAdmin(); }
     match /authEvents/{id} { allow create: if isSignedIn(); allow read: if isAdmin(); }
