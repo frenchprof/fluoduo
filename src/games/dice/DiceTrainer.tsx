@@ -14,12 +14,13 @@ import { useState } from "react";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 
-function StepLabel({ n, label }: { n: number; label: string }) {
-  // Big, bold, contrasting (Dan, 2026-07-05: steps were "not salient enough
-  // for the users to notice what to do where").
+function StepLabel({ label }: { label: string }) {
+  // UN-numbered on purpose: this widget lives inside LessonFlow, whose
+  // sections carry the page's 1·2·3 — a second numbered ladder here made the
+  // page read "1 2 3 2 3 4 5" (Dan, 2026-07-05: "why are there multiple 2s
+  // and 3s"). The salient highlight stays; the counter goes.
   return (
     <div className="flex items-center gap-2.5">
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[color:var(--cahier-ink)] text-base font-black text-white shadow-[2px_2px_0_var(--cahier-hl,#ffe000)]">{n}</span>
       <span className="cahier-hl rounded-sm px-1.5 text-base font-black uppercase tracking-wide text-[color:var(--cahier-ink)]">{label}</span>
       <div className="h-[2px] flex-1 bg-[color:var(--cahier-ink)]/25" />
     </div>
@@ -125,7 +126,7 @@ export default function DiceTrainer({ config }: { config: DiceConfig }) {
 
   return (
     <div className="space-y-3 rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
-      <StepLabel n={2} label="Select difficulty" />
+      <StepLabel label="Select difficulty" />
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm font-bold text-[color:var(--cahier-ink)]">🎲 {config.instruction}</p>
         <div className="flex items-center gap-2">
@@ -136,7 +137,7 @@ export default function DiceTrainer({ config }: { config: DiceConfig }) {
         </div>
       </div>
 
-      <StepLabel n={3} label="Roll the dice" />
+      <StepLabel label="Roll the dice" />
       <div className="text-center">
         <button type="button" onClick={roll} className="cahier-btn cahier-btn-accent font-black">🎲 Nouvelle question</button>
       </div>
@@ -149,7 +150,7 @@ export default function DiceTrainer({ config }: { config: DiceConfig }) {
             {q.en && <p className="mt-0.5 text-sm italic text-[color:var(--cahier-ink-soft)]">{q.en}</p>}
           </div>
 
-          {!answered && <StepLabel n={4} label={step4Labels[diff]} />}
+          {!answered && <StepLabel label={step4Labels[diff]} />}
 
           {!answered && diff === 0 && (
             <div className="mx-auto mt-3 flex max-w-md flex-col gap-2">
@@ -239,7 +240,7 @@ export function BonusTrainer({ items }: { items: { en: string; fr: string; alt?:
 
   return (
     <div className="space-y-3 rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
-      <StepLabel n={5} label="Bonus: Translate into French" />
+      <StepLabel label="Bonus: Translate into French" />
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm font-bold text-[color:var(--cahier-ink)]">⭐ Traduisez en français.</p>
         <button type="button" onClick={roll} className="cahier-btn cahier-btn-sm cahier-btn-accent">🎲 Nouvelle question</button>

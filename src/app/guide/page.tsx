@@ -87,6 +87,19 @@ export default function GuidePage() {
           ))}
         </ul>
 
+        <div className="mt-5 rounded-xl border-2 border-dashed border-[color:var(--cahier-ink)]/40 p-3">
+          <p className="text-sm font-black text-[color:var(--cahier-ink)]">Why it works this way</p>
+          <ul className="mt-1.5 space-y-1 text-sm leading-snug text-[color:var(--cahier-ink)]">
+            <li>🧪 Test first — trying before you&rsquo;re taught makes the lesson stick.</li>
+            <li>📝 Mistakes are your class agenda, not your grade.</li>
+            <li>🎲 You produce more than you read — that&rsquo;s where learning lives.</li>
+            <li>🔁 Little and often beats cramming — Réviser times it for you.</li>
+          </ul>
+          <p className="mt-1.5 text-sm text-[color:var(--cahier-ink)]">
+            The full thinking, with the science: <Link href="/about" className="font-bold underline">💡 About</Link>
+          </p>
+        </div>
+
         <p className="mt-5 text-sm leading-relaxed text-[color:var(--cahier-ink)]">
           🔊 speaks the French (🐌 = slowly) — use it constantly. The{" "}
           <Link href="/activities" className="font-bold underline">🗂️ Index</Link> lists every
