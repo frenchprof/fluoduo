@@ -1,49 +1,123 @@
 "use client";
 
 /**
- * First-visit tour (Dan, 2026-07-05: "the first time any user gets to any
- * part of the page, offer a tutorial that takes the user one round through
- * the parts"). Rendered by CahierShell on every notebook page: on a first
- * visit (no localStorage flag) a small invite appears; accepting walks one
- * round of spotlight steps over the page's parts. Declining — or finishing —
- * sets the flag, after which a compact ✨ chip stays PERMANENTLY at the
- * bottom left (Dan, 2026-07-05: "the tour guide should be permanently on
- * the bottom left" / "revoir le petit tour should be floating") — tap it to
- * rerun the tour from any page, any time.
+ * Hands-on page tours (Dan, 2026-07-05: first "offer a tutorial that takes
+ * the user one round through the parts", then "a hands-on guide … for all
+ * the different types of pages"). Rendered by CahierShell on every notebook
+ * page. Each PAGE TYPE (home / unit / index / lesson) has its own short
+ * spotlight tour:
+ *   - first visit to that page type → a small invite (accept, decline, or
+ *     "never offer again" globally);
+ *   - after that, the permanent ✨ chip bottom-left replays the CURRENT
+ *     page's tour any time (Dan: "permanently on the bottom left").
+ * Steps are DO-to-advance (Dan: "user need to interact to advance"): tap
+ * steps catch the tap on the spotlighted part without navigating away; the
+ * drag step lets the width grip really drag.
  */
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
-const KEY = "fluolingo:toured.v1";
+const SEEN_KEY = "fluolingo:tours.v2"; // JSON map { [tourKey]: 1 }
+const NEVER_KEY = "fluolingo:tours.never"; // "1" = never auto-offer anywhere
+const LEGACY_KEY = "fluolingo:toured.v1"; // pre-v2 flag → counts as home seen
 
 type Step = {
   selector?: string;
   text: string;
-  /** How the learner advances by DOING (Dan, 2026-07-05: "user need to
-   *  interact to advance"): tap = a catcher over the spotlight advances on
-   *  click (without navigating away); drag = real pointer events reach the
-   *  element (the width grip actually drags), advancing on release. */
+  /** tap = catcher over the hole advances on click; drag = events pass
+   *  through so the width grip actually drags, release advances. */
   action?: "tap" | "drag";
 };
 
-const STEPS: Step[] = [
-  { selector: "nav.cahier-tabs, .cahier-menu > button", action: "tap", text: "Tap a flap: 🏠 Home, ❓ Guide, the five Unités, and the 🗂️ Index. They follow you everywhere." },
-  { selector: "main.cahier-page", action: "tap", text: "Tap the sheet — each place is a sheet in the notebook, and deeper sheets stack on top of their parent." },
-  { selector: '[title="Drag to widen the page"]', action: "drag", text: "Drag this edge to make the page wider — try it! The popups resize from their ◢ corner too." },
-  { text: "Start on 🏠 Home and tap the goal your class is working on: Pre-Test first, then the cards, then the Lesson. The full manual lives under ❓ Guide. Bonne route !" },
-];
+type Tour = { key: string; steps: Step[] };
+
+/** Which tour a URL gets. Lesson/practice URLs render as a popup over the
+ *  unit page, but the popup's parts are in the same document — selectors
+ *  simply target them there. */
+function tourFor(rawPath: string): Tour | null {
+  // Normalize static-export forms: "/index.html" and "/unit/1.html" are the
+  // same pages as "/" and "/unit/1".
+  let path = rawPath.replace(/\.html$/, "");
+  if (path === "/index") path = "/";
+  if (path === "/" || path === "") {
+    return {
+      key: "home",
+      steps: [
+        { selector: "nav.cahier-tabs, .cahier-menu > button", action: "tap", text: "Tap a flap: 🏠 Home, ❓ Guide, the five Unités, and the 🗂️ Index. They follow you everywhere." },
+        { selector: "main.cahier-page", action: "tap", text: "Tap the sheet — each place is a sheet in the notebook, and deeper sheets stack on top of their parent." },
+        { selector: '[title="Drag to widen the page"]', action: "drag", text: "Drag this edge to make the page wider — try it! The popups resize from their ◢ corner too." },
+        { text: "Start on 🏠 Home and tap the goal your class is working on: Pre-Test first, then the cards, then the Lesson. The full manual lives under ❓ Guide. Bonne route !" },
+      ],
+    };
+  }
+  if (/^\/unit\//.test(path)) {
+    return {
+      key: "unit",
+      steps: [
+        { selector: "main .grid.grid-cols-5 > button, main button.group", action: "tap", text: "Every circle is a goal. Tap one and its sheet opens: Pre-Test first, then the cards, then the Lesson." },
+        { selector: "nav.cahier-tabs, .cahier-menu > button", action: "tap", text: "The flaps stay with you — switch Unité or head 🏠 Home any time." },
+        { text: "✓ green = done, the highlighted circle = where your class is. Mistakes are welcome — they become your 📝 Bring to class list." },
+      ],
+    };
+  }
+  if (path.startsWith("/activities")) {
+    return {
+      key: "index",
+      steps: [
+        { selector: 'input[type="search"]', action: "tap", text: "Search any topic here — accents optional (cafe finds café)." },
+        { selector: "thead tr", action: "tap", text: "Each column is one activity — same colors as in the ❓ Guide." },
+        { selector: "tbody tr", action: "tap", text: "A row is one topic. Every icon is a door — tap any cell to play." },
+        { selector: "section.fluo-h-5", action: "tap", text: "✨ Vos decks: build your own cards with ➕ and they appear here." },
+      ],
+    };
+  }
+  if (/^\/lessons\//.test(path)) {
+    return {
+      key: "lesson",
+      steps: [
+        { selector: ".sticky.backdrop-blur", action: "tap", text: "A lesson is one page: Lire → Pratique → Générateur. These chips jump between the parts." },
+        { selector: "#lf-pratique", action: "tap", text: "Pratique climbs four levels: pick it ★, type the word ★★, write the whole sentence ★★★, then translate ⭐." },
+        { text: "Finish with the 🎲 Générateur — it rolls endless fresh sentences. Wrong answers cost nothing; they teach." },
+      ],
+    };
+  }
+  return null;
+}
+
+function readSeen(): Record<string, 1> {
+  try {
+    const seen = JSON.parse(window.localStorage.getItem(SEEN_KEY) || "{}");
+    if (window.localStorage.getItem(LEGACY_KEY)) seen.home = 1;
+    return seen;
+  } catch {
+    return {};
+  }
+}
 
 export default function FirstTour() {
+  const pathname = usePathname() ?? "/";
+  const tour = tourFor(pathname);
   const [mode, setMode] = useState<"hidden" | "offer" | "chip" | "tour">("hidden");
   const [step, setStep] = useState(0);
   // Steps actually VISITED (absent targets get skipped) — Back pops this.
   const [hist, setHist] = useState<number[]>([]);
   const [rect, setRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
 
+  const STEPS = tour?.steps ?? [];
+
   useEffect(() => {
+    if (!tour) {
+      setMode("hidden");
+      return;
+    }
     try {
-      setMode(window.localStorage.getItem(KEY) ? "chip" : "offer");
-    } catch {}
-  }, []);
+      const never = window.localStorage.getItem(NEVER_KEY) === "1";
+      setMode(never || readSeen()[tour.key] ? "chip" : "offer");
+    } catch {
+      setMode("chip");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   // Measure the current step's target (skipping steps whose target is absent
   // or hidden on this page/viewport).
@@ -92,8 +166,23 @@ export default function FirstTour() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, step]);
 
+  function markSeen() {
+    if (!tour) return;
+    try {
+      const seen = readSeen();
+      seen[tour.key] = 1;
+      window.localStorage.setItem(SEEN_KEY, JSON.stringify(seen));
+    } catch {}
+  }
+
   function finish() {
-    try { window.localStorage.setItem(KEY, "1"); } catch {}
+    markSeen();
+    setMode("chip");
+  }
+
+  function neverAgain() {
+    try { window.localStorage.setItem(NEVER_KEY, "1"); } catch {}
+    markSeen();
     setMode("chip");
   }
 
@@ -117,9 +206,10 @@ export default function FirstTour() {
     });
   }
 
-  if (mode === "hidden") return null;
+  if (!tour || mode === "hidden") return null;
 
-  // The permanent bottom-left guide: always there, one tap replays the tour.
+  // The permanent bottom-left guide: always there, one tap replays this
+  // page's tour.
   if (mode === "chip") {
     return (
       <button
@@ -138,7 +228,7 @@ export default function FirstTour() {
     return (
       <div className="fixed bottom-4 left-4 z-[80] max-w-[16rem] rounded-2xl border-2 border-[color:var(--cahier-ink)] bg-white p-3 shadow-[4px_4px_0_var(--cahier-hl,#eaff00)]">
         <p className="text-sm font-black text-[color:var(--cahier-ink)]">
-          ✨ Première visite ?
+          ✨ Première visite ici ?
         </p>
         <div className="mt-2 flex gap-2">
           <button type="button" onClick={startTour} className="cahier-btn cahier-btn-sm cahier-btn-accent font-black">
@@ -148,6 +238,13 @@ export default function FirstTour() {
             Non merci
           </button>
         </div>
+        <button
+          type="button"
+          onClick={neverAgain}
+          className="mt-1.5 text-[0.65rem] font-bold text-[color:var(--cahier-ink-soft)] underline-offset-2 hover:underline"
+        >
+          Ne plus jamais proposer
+        </button>
       </div>
     );
   }

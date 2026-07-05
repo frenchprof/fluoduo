@@ -520,6 +520,12 @@ body {
 .cahier-tab-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.15; }
 .cahier-tab-text > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .cahier-tab-hint { font-size: 0.62rem; font-weight: 600; opacity: 0.72; letter-spacing: 0.01em; }
+
+/* Stage-complete confetti (sfx.stage) — pieces set --dx/--rot inline. */
+@keyframes fluo-confetti {
+  0%   { opacity: 1; transform: translate3d(0, 0, 0) rotate(0deg); }
+  100% { opacity: 0.9; transform: translate3d(var(--dx, 0px), 108vh, 0) rotate(var(--rot, 720deg)); }
+}
 /* Ancestor-level flaps start at THEIR OWN sheet's edge — the parent sheet
  * surrounds the current page (spread shadows below), so level-1 flaps poke
  * out of the level-1 sheet, never out of the current page (Dan, 2026-07-05:

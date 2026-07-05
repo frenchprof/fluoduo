@@ -84,6 +84,17 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
     const drinks = items.filter((p) => BOISSONS.includes(p));
     const closing = TERMINER.some((p) => text.includes(p)) || text.includes("merci");
 
+    // Grammar gate: two items side by side need the connector — the bank has
+    // an "et" chip for exactly this. "un croissant un coca" is not a French
+    // sentence and the waiter must not accept it (Dan, 2026-07-05: "who
+    // would accept croissant coca").
+    let tokenized = text;
+    for (const p of [...PLATS, ...BOISSONS]) tokenized = tokenized.split(p).join("§");
+    if (/§\s*§/.test(tokenized)) {
+      setNudge("Two things in a row need et between them — un croissant ET un coca.");
+      return;
+    }
+
     const exchange = (myText: string, waiterLines: string[], next: Stage, addItems: string[]) => {
       setMessages((m) => [
         ...m,

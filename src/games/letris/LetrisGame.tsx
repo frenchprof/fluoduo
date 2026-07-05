@@ -304,7 +304,7 @@ export default function LetrisGame({
           // Stop the storm track first so fanfare plays clean; then after the
           // jingle (~2.2 s), restart letris at normal tempo if music is still on.
           if (chiptune.playing()) chiptune.stop();
-          chiptune.fanfare();
+          sfx.stage(); // the dawn fanfare, plus the site-wide confetti
           if (dawnTimerRef.current) window.clearTimeout(dawnTimerRef.current);
           dawnTimerRef.current = window.setTimeout(() => {
             dawnTimerRef.current = null;
