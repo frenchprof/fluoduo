@@ -6,8 +6,8 @@
  * sections, each headed by the big salient StepLabel, numbered sequentially
  * with only the sections that apply:
  *
- *   Lire          — the native lesson's Mémo (when one exists) + a compact
- *                   read table of the deck (fr 🔊 | en).
+ *   Lire          — the native lesson's Mémo, or the deck's Mémo card
+ *                   (memos.tsx); decks with neither get a Flip It link-card.
  *   Débutant      — the dice MCQ (hasDicePractice) or the lesson's 🎲 trainer.
  *   Intermédiaire — Complete It (always).
  *   Difficile     — GramMarathon (gap-ready decks) or the lesson's ⭐ bonus.
@@ -16,16 +16,15 @@
  */
 
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import type { ReactNode } from "react";
 import CahierShell, { deckActivityTabs, hasDicePractice, withActive } from "@/components/CahierShell";
 import DiceTrainer, { BonusTrainer } from "@/games/dice/DiceTrainer";
 import { CURATED } from "@/content/collections";
-import { displayEn, displayFr, practiceItems } from "@/lib/collections/display";
 import { isGramMarathonReadyId } from "@/lib/collections/gramMarathonReady";
 import { lessonsForDeck } from "@/content/lessons";
 import { getNativeLesson } from "@/content/lessons/native";
-import { speak } from "@/games/letris/speech";
-import type { Collection } from "@/lib/collections/schema";
+import { memoForDeck } from "@/content/memos";
 
 // The three drill engines are heavy — load them only when the flow mounts.
 const PracticeContent = dynamic(() => import("@/app/practice/dice/[collectionId]/PracticeContent"));
@@ -44,30 +43,14 @@ function StepLabel({ n, label }: { n: number; label: string }) {
   );
 }
 
-/** Compact read table: fr (bold, spoken form, 🔊) | en. Fragments hidden the
- *  same way the drill surfaces hide them (practiceItems). */
-function ReadTable({ deck }: { deck: Collection }) {
+/** Lire fallback when a deck has no Mémo (ateliers + wave-2 decks): one
+ *  prominent link-card to the deck's Flip It cards. */
+function FlipItCard({ collectionId }: { collectionId: string }) {
   return (
-    <div className="overflow-hidden rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white">
-      <table className="w-full border-collapse text-sm">
-        <tbody>
-          {practiceItems(deck).map((it) => {
-            const fr = displayFr(it, deck);
-            return (
-              <tr key={it.id} className="border-b border-[color:var(--cahier-rule)]/60 last:border-b-0">
-                <td className="w-8 px-2 py-1.5 text-center">
-                  <button type="button" onClick={() => speak(fr, "fr-FR")} className="opacity-70 transition hover:opacity-100" title="Écouter" aria-label={`Écouter : ${fr}`}>🔊</button>
-                </td>
-                <td lang="fr" className="px-2 py-1.5 font-bold text-[color:var(--cahier-ink)]">
-                  {it.emoji && <span aria-hidden className="mr-1">{it.emoji}</span>}
-                  {fr}
-                </td>
-                <td className="px-2 py-1.5 text-[color:var(--cahier-ink-soft)]">{displayEn(it)}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+    <div className="flex justify-center rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-6">
+      <Link href={`/practice/flip-it/${collectionId}`} className="fluo-btn">
+        🃏 Lire les cartes — Flip It
+      </Link>
     </div>
   );
 }
@@ -80,18 +63,10 @@ export default function LessonFlow({ collectionId, embedded = false }: { collect
 
   const lessonMeta = lessonsForDeck(collectionId)[0];
   const lesson = lessonMeta ? getNativeLesson(lessonMeta.slug) : undefined;
+  const memo = lesson?.memo ?? memoForDeck(collectionId);
 
   const sections: Section[] = [
-    {
-      id: "lire",
-      label: "Lire",
-      node: (
-        <div className="space-y-3">
-          {lesson?.memo}
-          <ReadTable deck={deck} />
-        </div>
-      ),
-    },
+    { id: "lire", label: "Lire", node: memo ?? <FlipItCard collectionId={collectionId} /> },
   ];
   if (hasDicePractice(collectionId)) {
     sections.push({ id: "debutant", label: "Débutant", node: <PracticeContent collectionId={collectionId} embedded /> });
