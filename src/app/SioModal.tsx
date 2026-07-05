@@ -123,6 +123,7 @@ export default function SioModal({
   onClose,
   tabs,
   deck,
+  initialView,
   children,
 }: {
   sio: Sio;
@@ -131,12 +132,14 @@ export default function SioModal({
   /** When given, embeddable activity flaps switch the popup body in place —
    *  level 2 floats above the unit page instead of navigating away. */
   deck?: Collection;
+  /** Open directly on an activity view (the /practice/* URLs land here). */
+  initialView?: string;
   children: ReactNode;
 }) {
   const hueOf = (i: number) => TAB_HUES[i % TAB_HUES.length];
   const panelRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
-  const [view, setView] = useState("main");
+  const [view, setView] = useState(initialView ?? "main");
 
   // Activities need elbow room: widen the panel when leaving the main view
   // (unless the learner already sized it bigger themselves).

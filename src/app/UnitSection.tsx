@@ -36,10 +36,19 @@ function deckAndPretestFor(sio: Sio) {
   return { deck, pretestHref, pretestId: pretest?.id ?? null };
 }
 
-export default function UnitSection({ unit }: { unit: number }) {
+export default function UnitSection({
+  unit,
+  forceOpen,
+}: {
+  unit: number;
+  /** The /practice/* and /lessons/* URLs render the unit page with this SIO's
+   *  popup already open on an activity view — level 2 floats from every
+   *  entrance, not just popup flaps (Dan, 2026-07-05). */
+  forceOpen?: { sioId: string; view?: string };
+}) {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [progress, setProgress] = useState<Progress>(defaultProgress());
-  const [openId, setOpenId] = useState<string | null>(null);
+  const [openId, setOpenId] = useState<string | null>(forceOpen?.sioId ?? null);
 
   const sios = SIOS.filter((s) => s.unit === unit);
   const meta = UNIT_META[unit] ?? { label: `Unité ${unit}`, subtitle: "", emoji: "📚" };
@@ -54,9 +63,12 @@ export default function UnitSection({ unit }: { unit: number }) {
     refresh();
     window.addEventListener("fluolingo:progress-updated", refresh);
     // Deep link: /unit/N#SIO-0XX opens that popup (home path lands here).
-    const hash = window.location.hash.replace("#", "");
-    if (hash && SIOS.some((s) => s.id === hash && s.unit === unit)) setOpenId(hash);
+    if (!forceOpen) {
+      const hash = window.location.hash.replace("#", "");
+      if (hash && SIOS.some((s) => s.id === hash && s.unit === unit)) setOpenId(hash);
+    }
     return () => window.removeEventListener("fluolingo:progress-updated", refresh);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unit]);
 
   function toggle(key: string) {
@@ -149,8 +161,14 @@ export default function UnitSection({ unit }: { unit: number }) {
         return (
           <SioModal
             sio={openSio}
-            onClose={() => setOpenId(null)}
+            onClose={() => {
+              setOpenId(null);
+              // An activity URL with its popup closed IS the unit page — make
+              // the address bar agree so refresh/share land right.
+              if (forceOpen) window.history.replaceState(null, "", `/unit/${unit}`);
+            }}
             deck={deck}
+            initialView={openSio.id === forceOpen?.sioId ? forceOpen?.view : undefined}
             tabs={
               openSio.isProduction
                 ? popupActivityTabs(deck) // atelier decks: flip/say/complete on the model lines
