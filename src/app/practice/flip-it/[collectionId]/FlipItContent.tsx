@@ -373,12 +373,12 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
               setSubsetSize(ok ? Math.ceil(ordered.length / c) : null);
               setRowFilter(ok ? { kind: "subset", idx: 0 } : { kind: "all" }); // default to subset 1
             }}
-            className="!w-12" />
+            className="!w-20 !px-2 text-center text-base font-bold" />
           <span className="text-[0.7rem] font-bold uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">subsets of</span>
           <input type="number" min={1} max={ordered.length} value={subsetSize ?? ""} placeholder="N"
             title="cards per subset"
             onChange={(e) => { const v = parseInt(e.target.value, 10); const ok = Number.isFinite(v) && v > 0; setSubsetSize(ok ? v : null); setRowFilter(ok ? { kind: "subset", idx: 0 } : { kind: "all" }); }}
-            className="!w-12" />
+            className="!w-20 !px-2 text-center text-base font-bold" />
           {subsetSize && (
             <button type="button" title="Clear subsets" aria-label="Clear subsets"
               onClick={() => { setSubsetSize(null); setRowFilter({ kind: "all" }); }}
