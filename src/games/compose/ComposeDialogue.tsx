@@ -14,10 +14,10 @@ import { sfx } from "@/games/audio/sfx";
 import { speak, speakSequence } from "@/games/letris/speech";
 import { CAFE_PRICES, categoryHeaderClass, type ComposeBank } from "@/games/compose/banks";
 
+// "waiter" is the internal key for the persona (café waiter, classmate,
+// friend, shopkeeper…) whatever the scene; "me" is the learner.
 type Msg = { who: "waiter" | "me"; text: string };
 type Stage = "order" | "drink" | "more" | "pay" | "done";
-
-const OPENING = "Bonsoir ! Vous désirez ?";
 
 /** Join tapped chips into readable French (same cleanup as solo mode). */
 function joinChips(chips: string[]): string {
@@ -34,6 +34,11 @@ function countIn(text: string, phrase: string): number {
 
 export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
   const lang = "fr-FR";
+  // Persona config (café keeps its defaults; other scenes bring their own).
+  const opening = bank.scene?.opening ?? "Bonsoir ! Vous désirez ?";
+  const personaEmoji = bank.scene?.emoji ?? "🤵";
+  const personaVoice: "m" | "f" = bank.scene?.voice ?? "m";
+  const aiOnly = bank.scene?.aiOnly ?? false; // no rule fallback (non-café)
   const phrasesOf = (label: string) =>
     bank.categories.find((c) => c.label === label)?.phrases ?? [];
   const COMMANDER = phrasesOf("Commander");
@@ -54,19 +59,22 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
   const [aiMode, setAiMode] = useState<"unknown" | "ai" | "rules">("unknown");
   const [aiDone, setAiDone] = useState(false);
   const [busy, setBusy] = useState(false);
+  // aiOnly scenes have no rule engine: if the backend is missing we show a
+  // friendly notice instead of silently accepting nonsense.
+  const [unavailable, setUnavailable] = useState(false);
   const startedRef = useRef(false);
   const endRef = useRef<HTMLDivElement>(null);
 
   const start = () => {
     if (typeof window !== "undefined") window.speechSynthesis?.cancel();
-    setMessages([{ who: "waiter", text: OPENING }]);
+    setMessages([{ who: "waiter", text: opening }]);
     setStage("order");
     setOrdered([]);
     setDraft([]);
     setTyped("");
     setNudge(null);
     setAiDone(false);
-    speak(OPENING, lang, { gender: "m" });
+    speak(opening, lang, { gender: personaVoice });
   };
 
   useEffect(() => {
@@ -114,9 +122,10 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
         }),
       });
       if ([404, 405, 501, 503].includes(r.status)) {
+        setMessages(messages); // roll back the optimistic turn
+        if (aiOnly) { setUnavailable(true); return; }
         setAiMode("rules");
-        setMessages(messages); // roll back the optimistic turn; the rule engine re-adds it
-        sendRuleBased(text);
+        sendRuleBased(text); // café-only rule fallback re-adds the turn
         return;
       }
       const data = (await r.json().catch(() => null)) as { reply?: string; done?: boolean } | null;
@@ -126,11 +135,12 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
       }
       setAiMode("ai");
       setMessages((m) => [...m, { who: "waiter", text: data.reply! }]);
-      speakSequence([{ text, gender: "f" as const }, { text: data.reply, gender: "m" as const }], lang);
+      speakSequence([{ text, gender: "f" as const }, { text: data.reply, gender: personaVoice }], lang);
       if (data.done) { setAiDone(true); sfx.stage(); } else sfx.correct();
     } catch {
-      setAiMode("rules");
       setMessages(messages);
+      if (aiOnly) { setUnavailable(true); return; }
+      setAiMode("rules");
       sendRuleBased(text);
     } finally {
       setBusy(false);
@@ -230,7 +240,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
 
   const playAll = () => {
     speakSequence(
-      messages.map((m) => ({ text: m.text, gender: m.who === "waiter" ? ("m" as const) : ("f" as const) })),
+      messages.map((m) => ({ text: m.text, gender: m.who === "waiter" ? personaVoice : ("f" as const) })),
       lang,
     );
   };
@@ -244,7 +254,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
             <button
               type="button"
               lang="fr"
-              onClick={() => speak(m.text, lang, { gender: m.who === "waiter" ? "m" : "f" })}
+              onClick={() => speak(m.text, lang, { gender: m.who === "waiter" ? personaVoice : "f" })}
               title="🔊"
               className={`max-w-[85%] rounded-2xl border-2 px-4 py-2 text-left text-base leading-snug shadow-sm transition hover:brightness-95 ${
                 m.who === "waiter"
@@ -254,7 +264,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
             >
               {m.who === "waiter" && (
                 <span className="mr-1.5" aria-hidden>
-                  🤵
+                  {personaEmoji}
                 </span>
               )}
               {m.text}
@@ -264,7 +274,21 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
         <div ref={endRef} />
       </div>
 
-      {done ? (
+      {unavailable ? (
+        /* aiOnly scene with no backend (local preview / key not set): degrade
+           gracefully rather than accept nonsense. */
+        <div className="rounded-xl border-2 border-[#e8c49a] bg-white p-5 text-center text-[#4a2c14]">
+          <p className="text-lg font-black">🔌 L&rsquo;assistant n&rsquo;est pas disponible ici</p>
+          <p className="mt-1 text-sm">Cette conversation a besoin d&rsquo;une connexion. Réessayez sur le site en ligne.</p>
+          <button
+            type="button"
+            onClick={() => { setUnavailable(false); start(); }}
+            className="mt-4 rounded-xl border-2 border-[#d98e46] bg-white px-4 py-2 font-black text-[#b96f2e] transition hover:bg-[#fff3e0]"
+          >
+            🔁 Réessayer
+          </button>
+        </div>
+      ) : done ? (
         /* Recap card — the rule engine tracked a priced order; the AI waiter
            gave the total in the chat, so its recap is just the replay. */
         <div className="rounded-xl border-2 border-[#d98e46] bg-white p-5">
@@ -317,7 +341,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
                 <span className="animate-pulse" aria-hidden>▏</span>
               </p>
             )}
-            {busy && <p className="mt-2 text-sm font-bold text-[#b96f2e]">🤵 …</p>}
+            {busy && <p className="mt-2 text-sm font-bold text-[#b96f2e]">{personaEmoji} …</p>}
             {nudge && <p className="mt-2 text-sm font-bold text-rose-700">{nudge}</p>}
             <form onSubmit={(e) => { e.preventDefault(); void send(); }} className="mt-3 flex flex-wrap items-center gap-2">
               <input

@@ -9,6 +9,17 @@
 
 export type ComposeCategory = { label: string; chip: string; phrases: string[] };
 
+/** Dialogue banks: the AI persona the learner talks to (drives ComposeDialogue). */
+export type DialogueScene = {
+  opening: string; // the persona's first line
+  emoji: string; // avatar on the persona's chat bubbles
+  voice: "m" | "f"; // TTS voice for the persona
+  /** No rule-engine fallback (only the café has one). When the AI backend is
+   *  absent, show a friendly "needs connection" notice rather than accepting
+   *  nonsense. Every scene except the café sets this. */
+  aiOnly?: boolean;
+};
+
 export type ComposeBank = {
   id: string;
   title: string;
@@ -21,6 +32,8 @@ export type ComposeBank = {
    *  the French (Dan, 2026-07-05) — this closes that gap without turning the
    *  builder into a full back-and-forth dialogue. */
   aiCheck?: boolean;
+  /** Dialogue banks: the persona config for ComposeDialogue. */
+  scene?: DialogueScene;
   categories: ComposeCategory[];
   /** Solo mode: a fresh prompt. Random — call only from handlers/mount effects. */
   newScenario(): { instructionEn: string; headline: string };
@@ -150,6 +163,7 @@ const CAFE_BANK: ComposeBank = {
   unit: 4,
   deckId: "aliments",
   mode: "dialogue",
+  scene: { opening: "Bonsoir ! Vous désirez ?", emoji: "🤵", voice: "m" },
   categories: withPalette([
     { label: "Commander", phrases: ["Je voudrais", "Je prends", "Pour moi,"] },
     {
@@ -179,10 +193,79 @@ const CAFE_BANK: ComposeBank = {
 };
 
 // ---------------------------------------------------------------------------
+// Se saluer (AI classmate — greetings & small talk)
+// ---------------------------------------------------------------------------
+
+const GREETINGS_BANK: ComposeBank = {
+  id: "greetings",
+  title: "Se saluer",
+  emoji: "👋",
+  unit: 1,
+  deckId: "salutations",
+  mode: "dialogue",
+  scene: { opening: "Salut ! Ça va ?", emoji: "🙋", voice: "f", aiOnly: true },
+  categories: withPalette([
+    { label: "Saluer", phrases: ["Bonjour", "Salut", "Bonsoir", "Coucou"] },
+    { label: "Ça va", phrases: ["Ça va bien", "Très bien", "Ça va, merci", "Comme ci comme ça", "Et toi ?"] },
+    { label: "Se présenter", phrases: ["Je m'appelle", "Moi, c'est", "Enchanté", "Enchantée"] },
+    { label: "Prendre congé", phrases: ["Au revoir", "À bientôt", "À demain", "Bonne journée", "Salut !"] },
+  ]),
+  newScenario() {
+    return { headline: "👋 Se saluer", instructionEn: "Greet your classmate and chat — answer by tapping phrases." };
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Prendre rendez-vous (AI friend — invite, accept, refuse, arrange)
+// ---------------------------------------------------------------------------
+
+const RENDEZVOUS_BANK: ComposeBank = {
+  id: "rendezvous",
+  title: "Prendre rendez-vous",
+  emoji: "📅",
+  unit: 2,
+  deckId: "vouloir-inviter",
+  mode: "dialogue",
+  scene: { opening: "Tu es libre ce week-end ? Tu veux venir au cinéma ?", emoji: "🙋‍♂️", voice: "m", aiOnly: true },
+  categories: withPalette([
+    { label: "Accepter", phrases: ["Oui, je veux bien", "Bonne idée", "D'accord", "Avec plaisir"] },
+    { label: "Refuser", phrases: ["Désolé, je ne peux pas", "Je ne suis pas libre", "Une autre fois"] },
+    { label: "Proposer", phrases: ["On peut se voir samedi", "Tu es libre dimanche", "à quelle heure ?", "On se retrouve où ?"] },
+    { label: "Politesse", phrases: ["merci", "s'il te plaît", "à bientôt"] },
+  ]),
+  newScenario() {
+    return { headline: "📅 Prendre rendez-vous", instructionEn: "A friend invites you out — accept, decline, or arrange a day." };
+  },
+};
+
+// ---------------------------------------------------------------------------
+// À la papeterie (AI shopkeeper — buy objects, ask the price)
+// ---------------------------------------------------------------------------
+
+const SHOP_BANK: ComposeBank = {
+  id: "magasin",
+  title: "À la papeterie",
+  emoji: "🛍️",
+  unit: 2,
+  deckId: "objets-articles",
+  mode: "dialogue",
+  scene: { opening: "Bonjour ! Je peux vous aider ?", emoji: "🛍️", voice: "f", aiOnly: true },
+  categories: withPalette([
+    { label: "Demander", phrases: ["Je voudrais", "Je cherche", "Avez-vous"] },
+    { label: "Objets", phrases: ["un cahier", "un stylo", "un crayon", "une trousse", "une gomme", "un sac", "des ciseaux"] },
+    { label: "Quantité / prix", phrases: ["deux", "trois", "C'est combien ?", "Ça fait combien ?"] },
+    { label: "Terminer", phrases: ["s'il vous plaît", "C'est tout", "merci", "Au revoir"] },
+  ]),
+  newScenario() {
+    return { headline: "🛍️ À la papeterie", instructionEn: "Buy what you need at the stationery shop — answer the shopkeeper." };
+  },
+};
+
+// ---------------------------------------------------------------------------
 // Registry
 // ---------------------------------------------------------------------------
 
-const BANKS: ComposeBank[] = [DIRECTIONS_BANK, CAFE_BANK];
+const BANKS: ComposeBank[] = [DIRECTIONS_BANK, CAFE_BANK, GREETINGS_BANK, RENDEZVOUS_BANK, SHOP_BANK];
 
 export function listComposeBanks(): ComposeBank[] {
   return BANKS;
