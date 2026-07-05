@@ -537,7 +537,7 @@ export default function LetrisGame({
             {set.subtitle ? <span className="font-medium text-sky-900/60"> — {set.subtitle}</span> : null}
           </p>
         </div>
-        <div className="flex items-center gap-2 font-mono text-sm">
+        <div className="flex flex-wrap items-center justify-end gap-2 font-mono text-sm">
           <span className="rounded-xl border-2 border-sky-200 bg-white px-2.5 py-1 font-bold shadow-sm">
             Score <b className="text-[#58cc02]">{score}</b>
           </span>
