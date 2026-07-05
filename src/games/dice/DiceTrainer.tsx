@@ -88,9 +88,8 @@ export default function DiceTrainer({ config }: { config: DiceConfig }) {
   const [diff, setDiff] = useState(0);
   const [q, setQ] = useState<DiceQuestion | null>(null);
   const [easyOpts, setEasyOpts] = useState<string[]>([]);
-  const [medOpts, setMedOpts] = useState<string[]>([]);
   const [picked, setPicked] = useState<string | null>(null); // easy pick
-  const [medPick, setMedPick] = useState("");
+  const [medTyped, setMedTyped] = useState("");
   const [typed, setTyped] = useState("");
   const [result, setResult] = useState<null | { ok: boolean; user: string }>(null);
   const [attempts, setAttempts] = useState<Attempt[]>([]);
@@ -101,8 +100,7 @@ export default function DiceTrainer({ config }: { config: DiceConfig }) {
     const nq = config.newQuestion();
     setQ(nq);
     setEasyOpts(shuffle(nq.easyOptions));
-    setMedOpts(shuffle(nq.med.choices));
-    setPicked(null); setMedPick(""); setTyped(""); setResult(null);
+    setPicked(null); setMedTyped(""); setTyped(""); setResult(null);
   }
 
   function grade(user: string, ok: boolean) {
@@ -115,7 +113,7 @@ export default function DiceTrainer({ config }: { config: DiceConfig }) {
 
   const answered = result !== null;
   const okCount = attempts.filter((a) => a.ok).length;
-  const step4Labels = ["Check answer", "Complete answer", "Write the full answer"] as const;
+  const step4Labels = ["Check answer", "Type the missing part", "Write the full answer"] as const;
 
   return (
     <div className="space-y-3 rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
@@ -156,17 +154,25 @@ export default function DiceTrainer({ config }: { config: DiceConfig }) {
             </div>
           )}
 
+          {/* ★★: the frame is shown, the missing part is TYPED — no options.
+              A dropdown here read as a twin of ★ Facile (Dan, 2026-07-05:
+              "Facile and Intermédiaire look the same to me"); typing makes
+              the middle rung real cued production. */}
           {!answered && diff === 1 && (
             <div className="mt-3 text-center">
-              <p lang="fr" className="text-lg text-[color:var(--cahier-ink)]">
-                {q.med.before}{" "}
-                <select value={medPick} onChange={(e) => setMedPick(e.target.value)} className="!w-auto align-baseline text-base">
-                  <option value="">[…]</option>
-                  {medOpts.map((c) => <option key={c} value={c}>{c}</option>)}
-                </select>{" "}
-                {q.med.after}
+              <p lang="fr" className="flex flex-wrap items-baseline justify-center gap-x-2 text-lg text-[color:var(--cahier-ink)]">
+                <span>{q.med.before}</span>
+                <input
+                  value={medTyped}
+                  onChange={(e) => setMedTyped(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter" && medTyped.trim()) grade(`${q.med.before} ${medTyped} ${q.med.after}`.trim(), norm(medTyped) === norm(q.med.correct)); }}
+                  placeholder="…"
+                  autoComplete="off" spellCheck={false} lang="fr"
+                  className="!w-44 border-b-2 border-dashed text-center align-baseline text-base"
+                />
+                <span>{q.med.after}</span>
               </p>
-              <button type="button" disabled={!medPick} onClick={() => grade(`${q.med.before} ${medPick} ${q.med.after}`, medPick === q.med.correct)}
+              <button type="button" disabled={!medTyped.trim()} onClick={() => grade(`${q.med.before} ${medTyped} ${q.med.after}`.trim(), norm(medTyped) === norm(q.med.correct))}
                 className="cahier-btn cahier-btn-primary mt-3 disabled:opacity-40">✅ Je vérifie</button>
             </div>
           )}
