@@ -508,6 +508,12 @@ body {
  * in-page views (Flip It). */
 .cahier-tab--sm { padding: 0.28rem 0.65rem; font-size: 0.74rem; border-left-width: 5px; }
 .cahier-tab--xs { padding: 0.2rem 0.55rem; font-size: 0.68rem; border-left-width: 4px; }
+/* In the rail, flap LENGTH steps down by the same proportion as the sheets
+ * (980/930/880): deeper tiers are shorter tongues. Long labels ellipsize. */
+.cahier-tabs .cahier-tab { width: 160px; }
+.cahier-tabs .cahier-tab--sm { width: 152px; }
+.cahier-tabs .cahier-tab--xs { width: 144px; }
+.cahier-tabs .cahier-tab > span:last-child { overflow: hidden; text-overflow: ellipsis; }
 /* Ancestor-level flaps start at THEIR OWN sheet's edge — the parent sheet
  * surrounds the current page (spread shadows below), so level-1 flaps poke
  * out of the level-1 sheet, never out of the current page (Dan, 2026-07-05:
