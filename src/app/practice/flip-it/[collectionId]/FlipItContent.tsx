@@ -464,7 +464,7 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
           articleOptions={articleOptions} flipAll={flipAll} flippedIds={flippedIds} setFlippedIds={setFlippedIds} />
       )}
       </Step>
-      <AccentBar />
+      {/* accent keyboard is now the global one mounted in layout.tsx */}
     </CahierFrame>
   );
 }
@@ -1300,58 +1300,3 @@ function NoteCell({ value, editable, onChange }: { value: string; editable: bool
   );
 }
 
-/* ─────────────────────────── accent keyboard ─────────────────────────── */
-
-function insertAtCursor(input: HTMLInputElement, ch: string) {
-  const start = input.selectionStart ?? input.value.length;
-  const end = input.selectionEnd ?? input.value.length;
-  const next = input.value.slice(0, start) + ch + input.value.slice(end);
-  const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
-  setter?.call(input, next);
-  input.dispatchEvent(new Event("input", { bubbles: true })); // let React update the controlled value
-  const pos = start + ch.length;
-  input.setSelectionRange(pos, pos);
-  input.focus();
-}
-
-const ACCENTS_LOWER = ["é", "è", "à", "ù", "ç", "ê", "â", "ô", "û", "î", "ï", "ë", "ü", "œ", "æ", "«"];
-const ACCENTS_UPPER = ["É", "È", "À", "Ù", "Ç", "Ê", "Â", "Ô", "Û", "Î", "Ï", "Ë", "Ü", "Œ", "Æ", "»"];
-
-/** On-screen French accent pad — appears when a French answer input is focused
- * (mobile keyboards can't type accents). 4×4 grid + a shift toggle (lower/UPPER;
- * the « key becomes » when shifted). */
-function AccentBar() {
-  const [shift, setShift] = useState(false);
-  const [visible, setVisible] = useState(false);
-  const targetRef = useRef<HTMLInputElement | null>(null);
-  useEffect(() => {
-    const isFr = (el: EventTarget | null) =>
-      el instanceof HTMLInputElement && el.getAttribute("lang") === "fr";
-    const onIn = (e: FocusEvent) => { if (isFr(e.target)) { targetRef.current = e.target as HTMLInputElement; setVisible(true); } };
-    const onOut = () => { setTimeout(() => { if (!isFr(document.activeElement)) setVisible(false); }, 120); };
-    document.addEventListener("focusin", onIn);
-    document.addEventListener("focusout", onOut);
-    return () => { document.removeEventListener("focusin", onIn); document.removeEventListener("focusout", onOut); };
-  }, []);
-
-  if (!visible) return null;
-  const keys = shift ? ACCENTS_UPPER : ACCENTS_LOWER;
-  // pointerdown + preventDefault keeps focus in the input so the insert lands there
-  const press = (fn: () => void) => (e: React.PointerEvent) => { e.preventDefault(); fn(); };
-
-  return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t-2 border-[color:var(--cahier-ink)]/20 bg-[var(--cahier-paper-2)] p-2 shadow-[0_-4px_16px_rgba(34,40,80,0.12)]">
-      <div className="mx-auto flex max-w-md items-stretch gap-2">
-        <button type="button" onPointerDown={press(() => setShift((s) => !s))}
-          className={`cahier-btn cahier-btn-sm ${shift ? "cahier-btn-primary" : ""}`} aria-label="Shift case" title="Shift (uppercase / »)">⇧</button>
-        <div className="grid flex-1 grid-cols-4 gap-1">
-          {keys.map((ch) => (
-            <button key={ch} type="button" onPointerDown={press(() => targetRef.current && insertAtCursor(targetRef.current, ch))}
-              className="cahier-btn cahier-btn-sm !px-0 text-base" aria-label={`Insert ${ch}`}>{ch}</button>
-          ))}
-        </div>
-        <button type="button" onPointerDown={press(() => setVisible(false))} className="cahier-btn cahier-btn-sm" aria-label="Hide accents">✕</button>
-      </div>
-    </div>
-  );
-}

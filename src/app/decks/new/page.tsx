@@ -10,7 +10,7 @@
  * columns are used, a letris gameConfig so Classify It works too.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { signInWithGoogle, useAuthUser } from "@/lib/firebase/auth";
 import { createCollection } from "@/lib/firebase/collections";
@@ -20,11 +20,6 @@ import { SIOS } from "@/content/sios";
 import type { Collection, Item } from "@/lib/collections/schema";
 import CahierShell from "@/components/CahierShell";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
-
-/** French characters the EN/US keyboard hides (Dan, 2026-07-05: "the builder
- *  is missing punctuation marks") — one tap inserts at the cursor of the
- *  last-focused text field. ’ is the French apostrophe (j’aime). */
-const FR_CHARS = ["é", "è", "ê", "ë", "à", "â", "ç", "î", "ï", "ô", "œ", "ù", "û", "ü", "’", "«", "»", "?", "!"];
 
 type Card = {
   emoji: string;
@@ -79,27 +74,6 @@ export default function NewDeckPage() {
   const [hydrated, setHydrated] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
-
-  // Accent bar target: the last text field the user was typing in.
-  const lastField = useRef<HTMLInputElement | null>(null);
-  function rememberFocus(e: React.FocusEvent) {
-    const t = e.target;
-    if (t instanceof HTMLInputElement && t.type === "text") lastField.current = t;
-  }
-  function insertChar(ch: string) {
-    const el = lastField.current;
-    if (!el) return;
-    const s = el.selectionStart ?? el.value.length;
-    const e2 = el.selectionEnd ?? s;
-    // Native setter + input event so React's controlled onChange fires.
-    Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")?.set?.call(
-      el,
-      el.value.slice(0, s) + ch + el.value.slice(e2),
-    );
-    el.dispatchEvent(new Event("input", { bubbles: true }));
-    el.focus();
-    el.setSelectionRange(s + ch.length, s + ch.length);
-  }
 
   useEffect(() => {
     try {
@@ -191,7 +165,7 @@ export default function NewDeckPage() {
       active="new"
       crumb="📚 Your Custom Deck"
     >
-      <div className="mx-auto max-w-5xl px-4 py-4" onFocusCapture={rememberFocus}>
+      <div className="mx-auto max-w-5xl px-4 py-4">
         <h1 className="fluo-serif text-3xl font-black text-[color:var(--fluo-ink)]">
           Your <span className="fluo-hl">Custom Deck</span>
         </h1>
@@ -204,7 +178,7 @@ export default function NewDeckPage() {
 
         <section className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
           <Field label="Title" required>
-            <input value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} placeholder="C'est quel pays ?" />
+            <input lang="fr" value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} placeholder="C'est quel pays ?" />
           </Field>
           <Field label="Subtitle">
             <input value={draft.subtitle} onChange={(e) => setDraft({ ...draft, subtitle: e.target.value })} placeholder="One-line description" />
@@ -237,24 +211,7 @@ export default function NewDeckPage() {
           </Field>
         </section>
 
-        {/* One-tap French characters — inserts at the cursor of whichever
-            field you were typing in (mousedown is swallowed so focus stays). */}
-        <div className="sticky top-[58px] z-[5] mt-6 -mx-1 flex flex-wrap gap-1 rounded-xl border-2 border-[color:var(--fluo-line)] bg-[var(--fluo-card)]/95 px-2 py-1.5 backdrop-blur">
-          {FR_CHARS.map((ch) => (
-            <button
-              key={ch}
-              type="button"
-              lang="fr"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => insertChar(ch)}
-              className="h-8 min-w-8 rounded-md border border-[color:var(--fluo-line)] bg-white px-1.5 text-base font-bold text-[color:var(--fluo-ink)] transition hover:border-[color:var(--fluo-ink)] hover:-translate-y-0.5 active:translate-y-0"
-            >
-              {ch}
-            </button>
-          ))}
-        </div>
-
-        <h2 className="fluo-label mt-4 mb-3">cards ({validCards.length} ready)</h2>
+        <h2 className="fluo-label mt-6 mb-3">cards ({validCards.length} ready)</h2>
         <ol className="space-y-3">
           {draft.cards.map((c, i) => (
             <CardEditor key={i} index={i} card={c} onChange={(p) => setCard(i, p)} onRemove={() => removeCard(i)} />
