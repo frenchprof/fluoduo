@@ -16,6 +16,7 @@ const ACTIVITIES: { emoji: string; name: string; what: string }[] = [
   { emoji: "🏃", name: "GramMarathon", what: "Type the missing grammar word or verb form — no options given." },
   { emoji: "🌧️", name: "Vocabularain", what: "Words rain down — sort them into the right columns before they land." },
   { emoji: "🧰", name: "Lexicalator", what: "Build words from syllables moving on a conveyor belt." },
+  { emoji: "🧩", name: "Compose It", what: "Build your own sentences and dialogues from a phrase bank — directions, ordering at the café." },
 ];
 
 export default function GuidePage() {

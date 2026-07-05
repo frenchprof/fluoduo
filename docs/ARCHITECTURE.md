@@ -115,7 +115,7 @@ src/content/
 | SIO popup | The learner's home per objective: merged can-do statement, inline pretest (Unit-0 style, instant per-question grading, WHY on wrong answers), 📝 Bring-to-class card, lesson links, activity flaps |
 | `/activities` | Practice Index — deck × activity matrix, every filled cell a direct link ("where is everything?") |
 | `/practice/{flip-it,say-it,complete-it,dice,conjugazone,grammarathon}/[deckId]` | Drill engines over a deck |
-| `/games/{letris,conveyor,matching,directions,weather}/…` | Game engines (Vocabularain, Lexicalator, Match It, Mapless Route Builder, weather mastery cycle) |
+| `/games/{letris,conveyor,matching,compose}/…` | Game engines (Vocabularain, Lexicalator, Match It, Compose It) |
 | `/lessons/[slug]` | Native grammar lesson: Mémo card + 🎲 dice sentence trainer + EN→FR bonus round |
 | `/pretests/[id]` | Standalone pretest page (same bank as the popup quiz) |
 | `/reviser` | Interleaved revision mixes |
@@ -148,9 +148,14 @@ variants), and the progress store. Each targets a different retrieval mode:
 - **🧰 Lexicalator (conveyor)** — syllable-assembly against the clock
   (in-game session lives only — no global hearts).
 - **Match It (matching/conveyor)** — FR/EN pair matching, works for any deck.
-- **Weather / Mapless Route Builder** — bespoke unit games kept where the
-  content demands more than a generic engine (scaffolding-removal mastery
-  cycle; form-only route reconstruction).
+- **🧩 Compose It (`/games/compose/[bankId]`)** — open sentence/dialogue
+  composition from a categorised phrase bank (Constructive→Interactive on
+  ICAP). Two modes: *solo* (random scenario, e.g. give directions from A
+  to B) and *scripted dialogue* (a waiter walks the learner through
+  ordering at the café, with a bill summed from menu prices). The Weather
+  Unit and the Directions unit hub were dissolved into the standard
+  activities (2026-07-05); the directions phrase bank lives on as a
+  Compose It bank.
 
 ## 6. Learner state
 

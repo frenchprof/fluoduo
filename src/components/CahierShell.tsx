@@ -23,18 +23,12 @@ import { SIOS } from "@/content/sios";
 import { getPretestForSio } from "@/content/pretests";
 import { UNIT0_QUESTIONS } from "@/content/sios/unit0-questions";
 import { getLetrisSet } from "@/games/letris/sets";
+import { composeBankForDeck } from "@/games/compose/banks";
 
 /** Dice Practice is an MCQ over the deck's letris columns — no columns, no game. */
 export function hasDicePractice(collectionId: string): boolean {
   return !!CURATED.find((c) => c.id === collectionId)?.gameConfig?.letris;
 }
-
-/** Decks with a multi-step UNIT page beyond the standard activities (the
- *  adopted weather and directions units — content that exists nowhere else). */
-export const UNIT_PAGES: Record<string, { label: string; emoji: string; href: string }> = {
-  "weather-letris": { label: "Weather Unit", emoji: "🌦️", href: "/games/weather" },
-  "directions-matching": { label: "Directions Unit", emoji: "🧭", href: "/games/directions" },
-};
 
 const TAB_HUES = [
   "var(--cahier-t0)",
@@ -233,6 +227,7 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
   const lessons = lessonsForDeck(collectionId);
   const pretestHref = pretestHrefForDeck(collectionId);
   const rainSet = getLetrisSet(collectionId.replace("-letris", ""));
+  const composeBank = composeBankForDeck(collectionId);
   return [
     ...(pretestHref
       ? [{ key: "pretest", label: "Pre-Test", emoji: "🧪", href: pretestHref } as ShellTab]
@@ -256,8 +251,8 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     ...(rainSet
       ? [{ key: "rain", label: "Vocabularain", emoji: "🌧️", href: `/games/letris/${collectionId.replace("-letris", "")}` } as ShellTab]
       : []),
-    ...(UNIT_PAGES[collectionId]
-      ? [{ key: "unit", ...UNIT_PAGES[collectionId] } as ShellTab]
+    ...(composeBank
+      ? [{ key: "compose", label: "Compose It", emoji: "🧩", href: `/games/compose/${composeBank.id}` } as ShellTab]
       : []),
   ];
 }

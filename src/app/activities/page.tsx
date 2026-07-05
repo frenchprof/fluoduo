@@ -7,7 +7,8 @@
  * Unité; columns = activities; every filled cell is a direct link.
  */
 import Link from "next/link";
-import CahierShell, { hasDicePractice, withActive, UNIT_PAGES } from "@/components/CahierShell";
+import CahierShell, { hasDicePractice, withActive } from "@/components/CahierShell";
+import { composeBankForDeck } from "@/games/compose/banks";
 import { siteTabs } from "@/components/siteTabs";
 import { CURATED } from "@/content/collections";
 import { lessonsForDeck } from "@/content/lessons";
@@ -29,12 +30,12 @@ function cellsFor(c: Collection): Cell[] {
     { emoji: "🏃", title: "GramMarathon", href: isGramMarathonReadyId(c.id) ? `/practice/grammarathon/${c.id}` : null },
     { emoji: "🌧️", title: "Vocabularain", href: getLetrisSet(c.id.replace("-letris", "")) ? `/games/letris/${c.id.replace("-letris", "")}` : null },
     { emoji: "🧰", title: "Lexicalator", href: isLexReadyId(c.id) ? `/games/conveyor/${c.id}` : null },
-    { emoji: UNIT_PAGES[c.id]?.emoji ?? "🎪", title: UNIT_PAGES[c.id]?.label ?? "Unit", href: UNIT_PAGES[c.id]?.href ?? null },
+    { emoji: "🧩", title: "Compose It", href: composeBankForDeck(c.id) ? `/games/compose/${composeBankForDeck(c.id)!.id}` : null },
   ];
 }
 
-const HEAD = ["📚", "🃏", "🎤", "✏️", "🎲", "🏃", "🌧️", "🧰", "🎪"];
-const HEAD_TITLES = ["Lesson", "Flip It", "Say It", "Complete It", "Practice", "GramMarathon", "Vocabularain", "Lexicalator", "Unit"];
+const HEAD = ["📚", "🃏", "🎤", "✏️", "🎲", "🏃", "🌧️", "🧰", "🧩"];
+const HEAD_TITLES = ["Lesson", "Flip It", "Say It", "Complete It", "Practice", "GramMarathon", "Vocabularain", "Lexicalator", "Compose It"];
 
 export default function ActivitiesIndexPage() {
   const units = [0, 1, 2, 3, 4];

@@ -25,7 +25,7 @@ import type { Collection } from "@/lib/collections/schema";
 import { getAtelier } from "@/content/ateliers";
 import { lessonsForSio } from "@/content/lessons";
 import { isLexReady } from "@/lib/collections/lexReady";
-import { UNIT_PAGES } from "@/components/CahierShell";
+import { composeBankForDeck } from "@/games/compose/banks";
 import { getLetrisSet } from "@/games/letris/sets";
 import AuthGate from "@/components/AuthGate";
 import PretestQuiz from "./PretestQuiz";
@@ -156,6 +156,7 @@ function BringToClass({ sioId }: { sioId: string }) {
 
 export function PracticeChips({ deck }: { deck: Collection }) {
   const hasLetris = !!getLetrisSet(deck.id.replace("-letris", ""));
+  const composeBank = composeBankForDeck(deck.id);
   const chips = [
     { key: "flip", label: "🃏 Flip It", href: `/practice/flip-it/${deck.id}` },
     { key: "say", label: "🎤 Say It", href: `/practice/say-it/${deck.id}` },
@@ -167,8 +168,8 @@ export function PracticeChips({ deck }: { deck: Collection }) {
     ...(hasLetris
       ? [{ key: "classify", label: "🌧️ Vocabularain", href: `/games/letris/${deck.id.replace("-letris", "")}` }]
       : []),
-    ...(UNIT_PAGES[deck.id]
-      ? [{ key: "unit", label: `${UNIT_PAGES[deck.id].emoji} ${UNIT_PAGES[deck.id].label}`, href: UNIT_PAGES[deck.id].href }]
+    ...(composeBank
+      ? [{ key: "compose", label: "🧩 Compose It", href: `/games/compose/${composeBank.id}` }]
       : []),
   ];
   return (
