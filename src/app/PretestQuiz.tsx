@@ -64,6 +64,11 @@ export default function PretestQuiz({ pretestId }: { pretestId: string }) {
   function pick(q: Q, choice: string) {
     if (picked[q.item.id] !== undefined) return;
     setPicked({ ...picked, [q.item.id]: choice });
+    // Last answer in → the popup may reveal its post-pretest content (Dan,
+    // 2026-07-05: the lesson button appears only AFTER the pretest is done).
+    if (Object.keys(picked).length + 1 === total && total > 0) {
+      window.dispatchEvent(new CustomEvent("fluolingo:pretest-complete", { detail: { id: pretestId } }));
+    }
     const correct = choice === q.item.answer;
     if (correct) speak(ttsTextForItem(q.item), "fr-FR");
     // Gap report (audit R1): persist the verdict so it survives popup close.

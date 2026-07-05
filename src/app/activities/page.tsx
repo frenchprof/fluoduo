@@ -7,13 +7,12 @@
  * Unité; columns = activities; every filled cell is a direct link.
  */
 import Link from "next/link";
-import CahierShell, { hasDicePractice, withActive } from "@/components/CahierShell";
+import CahierShell, { withActive, pretestHrefForDeck } from "@/components/CahierShell";
 import { composeBankForDeck } from "@/games/compose/banks";
 import { siteTabs } from "@/components/siteTabs";
 import { CURATED } from "@/content/collections";
 import { lessonsForDeck } from "@/content/lessons";
 import { isLexReadyId } from "@/lib/collections/lexReady";
-import { isGramMarathonReadyId } from "@/lib/collections/gramMarathonReady";
 import { getLetrisSet } from "@/games/letris/sets";
 import type { Collection } from "@/lib/collections/schema";
 
@@ -22,20 +21,22 @@ type Cell = { emoji: string; title: string; href: string | null };
 function cellsFor(c: Collection): Cell[] {
   const lessons = lessonsForDeck(c.id);
   return [
-    { emoji: "📚", title: "Lesson", href: lessons.length ? `/lessons/${lessons[0].slug}` : null },
+    // Learning order (Dan, 2026-07-05): Pre-Test first, then the flashcards,
+    // and only after that the Lesson (which since the unification runs Lire →
+    // Débutant → Intermédiaire → Difficile, absorbing Complete It / dice /
+    // GramMarathon).
+    { emoji: "🧪", title: "Pre-Test", href: pretestHrefForDeck(c.id) },
     { emoji: "🃏", title: "Flip It", href: `/practice/flip-it/${c.id}` },
+    { emoji: "📚", title: "Lesson", href: lessons.length ? `/lessons/${lessons[0].slug}` : `/lessons/deck/${c.id}` },
     { emoji: "🎤", title: "Say It", href: `/practice/say-it/${c.id}` },
-    { emoji: "✏️", title: "Complete It", href: `/practice/complete-it/${c.id}` },
-    { emoji: "🎲", title: "Practice", href: hasDicePractice(c.id) ? `/practice/dice/${c.id}` : null },
-    { emoji: "🏃", title: "GramMarathon", href: isGramMarathonReadyId(c.id) ? `/practice/grammarathon/${c.id}` : null },
     { emoji: "🌧️", title: "Vocabularain", href: getLetrisSet(c.id.replace("-letris", "")) ? `/games/letris/${c.id.replace("-letris", "")}` : null },
     { emoji: "🧰", title: "Lexicalator", href: isLexReadyId(c.id) ? `/games/conveyor/${c.id}` : null },
     { emoji: "🧩", title: "Compose It", href: composeBankForDeck(c.id) ? `/games/compose/${composeBankForDeck(c.id)!.id}` : null },
   ];
 }
 
-const HEAD = ["📚", "🃏", "🎤", "✏️", "🎲", "🏃", "🌧️", "🧰", "🧩"];
-const HEAD_TITLES = ["Lesson", "Flip It", "Say It", "Complete It", "Practice", "GramMarathon", "Vocabularain", "Lexicalator", "Compose It"];
+const HEAD = ["🧪", "🃏", "📚", "🎤", "🌧️", "🧰", "🧩"];
+const HEAD_TITLES = ["Pre-Test", "Flip It", "Lesson", "Say It", "Vocabularain", "Lexicalator", "Compose It"];
 
 export default function ActivitiesIndexPage() {
   const units = [0, 1, 2, 3, 4];

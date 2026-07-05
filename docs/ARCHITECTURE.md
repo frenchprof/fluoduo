@@ -114,9 +114,10 @@ src/content/
 | `/` | SioHub — the whole course on one page: Unité 0 panel + 4 unit sections, each SIO a tile opening a popup (SioModal) |
 | SIO popup | The learner's home per objective: merged can-do statement, inline pretest (Unit-0 style, instant per-question grading, WHY on wrong answers), 📝 Bring-to-class card, lesson links, activity flaps |
 | `/activities` | Practice Index — deck × activity matrix, every filled cell a direct link ("where is everything?") |
-| `/practice/{flip-it,say-it,complete-it,dice,conjugazone,grammarathon}/[deckId]` | Drill engines over a deck |
+| `/practice/{flip-it,say-it,complete-it,dice,conjugazone,grammarathon}/[deckId]` | Drill engines over a deck; the complete-it/dice/grammarathon routes still exist for direct links but are no longer flapped — those drills live inside the 📚 Lesson flow (2026-07-05) |
 | `/games/{letris,conveyor,matching,compose}/…` | Game engines (Vocabularain, Lexicalator, Match It, Compose It) |
-| `/lessons/[slug]` | Native grammar lesson: Mémo card + 🎲 dice sentence trainer + EN→FR bonus round |
+| `/lessons/[slug]` | Deck lessons render the unified Lesson flow of their deck; deckless revision slugs keep the standalone Mémo + 🎲 trainer + ⭐ bonus page |
+| `/lessons/deck/[id]` | The unified Lesson flow for decks that have no authored lesson slug (every deck gets a 📚 Lesson) |
 | `/pretests/[id]` | Standalone pretest page (same bank as the popup quiz) |
 | `/reviser` | Interleaved revision mixes |
 | `/decks/…` | My-decks area (create/study custom decks, Firestore-backed) |
@@ -135,13 +136,15 @@ variants), and the progress store. Each targets a different retrieval mode:
 - **🃏 Flip It** — flashcards with grouping by article/column axis,
   FR↔EN direction, sorting; fragments (`role:` tags) excluded.
 - **🎤 Say It** — pronunciation practice against the browser mic.
-- **✏️ Complete It** — typed cloze recall.
-- **🎲 Dice trainer** (in lessons + `/practice/dice`) — roll → assemble a
-  sentence from the lesson's pattern; three difficulty tiers (easy: pick
-  the sentence; medium: pick the gap; hard: type).
-- **🏃 GramMarathon** — typed cloze over `gap` items, from one grammar
-  word (*du / d'*, elision alternates accepted) to a whole predicate
-  (verb-table decks — absorbed the former ConjugaZone, 2026-07-05).
+- **📚 Lesson** (`LessonFlow`) — one scrolling flow per deck, absorbing
+  the Complete It / dice / GramMarathon drills (2026-07-05): **Lire**
+  (the native lesson's Mémo where one exists + a read table of the deck)
+  → **Débutant** (the dice MCQ, or the lesson's 🎲 roll-a-sentence
+  trainer) → **Intermédiaire** (Complete It — typed cloze recall) →
+  **Difficile** (GramMarathon — typed cloze over `gap` items, from one
+  grammar word with *du / d'* elision alternates to a whole predicate,
+  absorbed the former ConjugaZone; or the lesson's ⭐ EN→FR bonus).
+  Sections render only where their data exists, numbered sequentially.
 - **🌧️ Vocabularain (letris)** — falling words sorted into 3–5 category
   columns; pre-round study table; hidden language-sorter leaderboard;
   night mode.

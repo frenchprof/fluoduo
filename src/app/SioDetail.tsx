@@ -15,7 +15,7 @@
  * these as mutually exclusive; that was wrong, this shows both when both apply.
  */
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { sioStatement, type Sio } from "@/content/sios";
 import {
   missesForSio,
@@ -24,9 +24,7 @@ import {
 import type { Collection } from "@/lib/collections/schema";
 import { getAtelier } from "@/content/ateliers";
 import { lessonsForSio } from "@/content/lessons";
-import { isLexReady } from "@/lib/collections/lexReady";
-import { composeBankForDeck } from "@/games/compose/banks";
-import { getLetrisSet } from "@/games/letris/sets";
+import { deckActivityTabs } from "@/components/CahierShell";
 import AuthGate from "@/components/AuthGate";
 import PretestQuiz from "./PretestQuiz";
 import DialoguePlayer from "./DialoguePlayer";
@@ -66,7 +64,19 @@ export default function SioDetail({
   const dialogue = sio.isProduction ? getAtelier(sio.id) : undefined;
 
   // Ported grammar lessons (with the 🎲 dice sentence-trainer) for this SIO.
+  // Rendered at the BOTTOM, and — when the pretest runs inline — only after
+  // every question is answered (Dan, 2026-07-05: pretest first, lesson after).
   const lessons = lessonsForSio(sio.id);
+  const lessonChips =
+    lessons.length > 0 ? (
+      <div className="flex flex-wrap gap-2">
+        {lessons.map((l) => (
+          <Link key={l.slug} href={`/lessons/${l.slug}`} className="fluo-btn fluo-btn-sm inline-flex">
+            🎲 {l.title}
+          </Link>
+        ))}
+      </div>
+    ) : null;
 
   // Dan's litmus test (see AGENTS.md) applies to TEXT only: the tile border
   // stays (decorative, serves the visual), the label text does not.
@@ -76,20 +86,11 @@ export default function SioDetail({
         <span className="fluo-hl">{sioStatement(sio)}</span>
       </p>
 
-      {lessons.length > 0 && (
-        <div className="mb-4 flex flex-wrap gap-2">
-          {lessons.map((l) => (
-            <Link key={l.slug} href={`/lessons/${l.slug}`} className="fluo-btn fluo-btn-sm inline-flex">
-              🎲 {l.title}
-            </Link>
-          ))}
-        </div>
-      )}
-
       {dialogue ? (
         <div className="space-y-3">
           <DialoguePlayer lines={dialogue} />
           {practiceTile}
+          {lessonChips}
         </div>
       ) : pretestId ? (
         <div className="space-y-3">
@@ -100,6 +101,7 @@ export default function SioDetail({
           </div>
           <BringToClass sioId={sio.id} />
           {practiceTile}
+          <AfterPretest>{lessonChips}</AfterPretest>
         </div>
       ) : showPractice ? (
         <div className="grid grid-cols-2 gap-3">
@@ -116,6 +118,19 @@ export default function SioDetail({
       ) : null /* popups: the Pre-Test flap on the popup edge carries the link */}
     </div>
   );
+}
+
+/** Hidden until the inline pretest fires its completion event — the lesson
+ *  button must not tempt learners away before they finish (Dan, 2026-07-05). */
+export function AfterPretest({ children }: { children: ReactNode }) {
+  const [done, setDone] = useState(false);
+  useEffect(() => {
+    const onDone = () => setDone(true);
+    window.addEventListener("fluolingo:pretest-complete", onDone);
+    return () => window.removeEventListener("fluolingo:pretest-complete", onDone);
+  }, []);
+  if (!done || !children) return null;
+  return <>{children}</>;
 }
 
 /** The learner's gap report (PRIME "bring to class"): items whose LAST attempt
@@ -155,23 +170,11 @@ function BringToClass({ sioId }: { sioId: string }) {
 }
 
 export function PracticeChips({ deck }: { deck: Collection }) {
-  const hasLetris = !!getLetrisSet(deck.id.replace("-letris", ""));
-  const composeBank = composeBankForDeck(deck.id);
-  const chips = [
-    { key: "flip", label: "🃏 Flip It", href: `/practice/flip-it/${deck.id}` },
-    { key: "say", label: "🎤 Say It", href: `/practice/say-it/${deck.id}` },
-    { key: "complete", label: "✏️ Complete It", href: `/practice/complete-it/${deck.id}` },
-    // Lexicalator only where the deck is hand-syllabified (no old-game fallback).
-    ...(isLexReady(deck)
-      ? [{ key: "match", label: "🧰 Lexicalator", href: `/games/conveyor/${deck.id}` }]
-      : []),
-    ...(hasLetris
-      ? [{ key: "classify", label: "🌧️ Vocabularain", href: `/games/letris/${deck.id.replace("-letris", "")}` }]
-      : []),
-    ...(composeBank
-      ? [{ key: "compose", label: "🧩 Compose It", href: `/games/compose/${composeBank.id}` }]
-      : []),
-  ];
+  // Derived from the ONE unified flap list so chips can never drift from the
+  // rails/popup again; the Pre-Test entry is dropped (this tile is post-class).
+  const chips = deckActivityTabs(deck.id)
+    .filter((t) => t.key !== "pretest")
+    .map((t) => ({ key: t.key, label: `${t.emoji} ${t.label}`, href: t.href }));
   return (
     <div className="flex flex-wrap gap-1.5">
       {chips.map((c) =>

@@ -19,7 +19,6 @@ import type { CSSProperties, ReactNode } from "react";
 import type { Sio } from "@/content/sios";
 import type { Collection } from "@/lib/collections/schema";
 import { deckActivityTabs } from "@/components/CahierShell";
-import { lessonsForDeck } from "@/content/lessons";
 import AuthGate from "@/components/AuthGate";
 
 // Level-2 activities float INSIDE this popup (Dan, 2026-07-05: "can i ask for
@@ -29,7 +28,7 @@ const SayItContent = dynamic(() => import("@/app/practice/say-it/[collectionId]/
 const CompleteItContent = dynamic(() => import("@/app/practice/complete-it/[collectionId]/CompleteItContent"));
 const DicePractice = dynamic(() => import("@/app/practice/dice/[collectionId]/PracticeContent"));
 const GramMarathonContent = dynamic(() => import("@/app/practice/grammarathon/[collectionId]/GramMarathonContent"));
-const NativeLessonView = dynamic(() => import("@/app/lessons/NativeLessonView"));
+const LessonFlow = dynamic(() => import("@/app/lessons/LessonFlow"));
 
 /** Activity keys that render inside the popup; the rest navigate out. */
 const EMBEDDABLE = new Set(["say", "complete", "dice", "grammarathon", "lesson"]);
@@ -155,10 +154,7 @@ export default function SioModal({
         complete: <CompleteItContent collectionId={deck.id} embedded />,
         dice: <DicePractice collectionId={deck.id} embedded />,
         grammarathon: <GramMarathonContent collectionId={deck.id} embedded />,
-        lesson: (() => {
-          const l = lessonsForDeck(deck.id)[0];
-          return l ? <NativeLessonView slug={l.slug} title={l.title} unit={l.unit} embedded /> : null;
-        })(),
+        lesson: <LessonFlow collectionId={deck.id} embedded />,
       }
     : {};
   const flapProps = (t: PopupTab) => {

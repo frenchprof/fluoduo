@@ -9,11 +9,9 @@ import CahierShell from "@/components/CahierShell";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 
 const ACTIVITIES: { emoji: string; name: string; what: string }[] = [
+  { emoji: "📚", name: "Lesson", what: "Read the pattern, then climb: Débutant (pick it), Intermédiaire (type the missing part), Difficile (type it all)." },
   { emoji: "🃏", name: "Flip It", what: "Flashcards. Tap to flip French ↔ English; group and sort the deck." },
   { emoji: "🎤", name: "Say It", what: "Say the word out loud — the microphone checks your pronunciation." },
-  { emoji: "✏️", name: "Complete It", what: "Type the missing letters or words." },
-  { emoji: "🎲", name: "Dice trainer", what: "Roll the dice, build the sentence. Three levels: pick it, fill it, type it." },
-  { emoji: "🏃", name: "GramMarathon", what: "Type the missing grammar word or verb form — no options given." },
   { emoji: "🌧️", name: "Vocabularain", what: "Words rain down — sort them into the right columns before they land." },
   { emoji: "🧰", name: "Lexicalator", what: "Build words from syllables moving on a conveyor belt." },
   { emoji: "🧩", name: "Compose It", what: "Build your own sentences and dialogues from a phrase bank — directions, ordering at the café." },
@@ -71,7 +69,6 @@ export default function GuidePage() {
             ))}
           </ul>
           <p className="mt-3 text-sm leading-relaxed text-[color:var(--cahier-ink)]">
-            📚 Lessons have a Mémo (the pattern on one card) with a 🎲 trainer underneath.
             Looking for something specific? The{" "}
             <Link href="/activities" className="font-bold underline">🗂️ Index</Link>{" "}
             lists every topic × every activity on one page.

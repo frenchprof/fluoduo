@@ -17,7 +17,6 @@ import type { CSSProperties, ReactNode } from "react";
 
 const PAGE_WIDTH_KEY = "fluolingo:pageWidth";
 import { isLexReadyId } from "@/lib/collections/lexReady";
-import { isGramMarathonReadyId } from "@/lib/collections/gramMarathonReady";
 import { CURATED } from "@/content/collections";
 import { lessonsForDeck } from "@/content/lessons";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
@@ -280,19 +279,17 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     ...(pretestHref
       ? [{ key: "pretest", label: "Pre-Test", emoji: "🧪", href: pretestHref } as ShellTab]
       : []),
-    // The lesson leads its SIO's flow — Receive before Integrate.
-    ...(lessons.length > 0
-      ? [{ key: "lesson", label: "Lesson", emoji: "📚", href: `/lessons/${lessons[0].slug}` } as ShellTab]
-      : []),
+    // Learning order (Dan, 2026-07-05): Pre-Test → flashcards → Lesson. EVERY
+    // deck has a Lesson since the unification (Lire → Débutant → Intermédiaire
+    // → Difficile absorbed Complete It / dice / GramMarathon).
     { key: "flip", label: "Flip It", emoji: "🃏", href: `/practice/flip-it/${collectionId}` },
+    {
+      key: "lesson",
+      label: "Lesson",
+      emoji: "📚",
+      href: lessons.length > 0 ? `/lessons/${lessons[0].slug}` : `/lessons/deck/${collectionId}`,
+    },
     { key: "say", label: "Say It", emoji: "🎤", href: `/practice/say-it/${collectionId}` },
-    { key: "complete", label: "Complete It", emoji: "✏️", href: `/practice/complete-it/${collectionId}` },
-    ...(hasDicePractice(collectionId)
-      ? [{ key: "dice", label: "Practice", emoji: "🎲", href: `/practice/dice/${collectionId}` } as ShellTab]
-      : []),
-    ...(isGramMarathonReadyId(collectionId)
-      ? [{ key: "grammarathon", label: "GramMarathon", emoji: "🏃", href: `/practice/grammarathon/${collectionId}` } as ShellTab]
-      : []),
     ...(isLexReadyId(collectionId)
       ? [{ key: "match", label: "Lexicalator", emoji: "🧰", href: `/games/conveyor/${collectionId}` } as ShellTab]
       : []),

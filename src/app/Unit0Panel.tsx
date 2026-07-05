@@ -24,6 +24,7 @@ import { UNIT0_QUESTIONS, type Unit0Question } from "@/content/sios/unit0-questi
 import { getAtelier } from "@/content/ateliers";
 import AuthGate from "@/components/AuthGate";
 import SioModal, { popupActivityTabs } from "./SioModal";
+import { AfterPretest } from "./SioDetail";
 import DialoguePlayer from "./DialoguePlayer";
 
 const UNIT0_SIOS = SIOS.filter((s) => s.unit === 0);
@@ -89,16 +90,6 @@ export default function Unit0Panel() {
             <span className="fluo-hl">{sioStatement(openSio)}</span>
           </p>
 
-          {lessonsForSio(openSio.id).length > 0 && (
-            <div className="mb-4 flex flex-wrap gap-2">
-              {lessonsForSio(openSio.id).map((l) => (
-                <Link key={l.slug} href={`/lessons/${l.slug}`} className="fluo-btn fluo-btn-sm inline-flex">
-                  🎲 {l.title}
-                </Link>
-              ))}
-            </div>
-          )}
-
           {openSio.id === "SIO-010" ? (
             <DialoguePlayer lines={getAtelier(openSio.id) ?? []} />
           ) : openSio.isProduction ? (
@@ -112,6 +103,21 @@ export default function Unit0Panel() {
               <Unit0Questions sio={openSio} />
             </AuthGate>
           )}
+
+          {/* Lesson buttons: bottom only, and (for question SIOs) only after
+              every question is answered — pretest first (Dan, 2026-07-05). */}
+          {lessonsForSio(openSio.id).length > 0 && (() => {
+            const chips = (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {lessonsForSio(openSio.id).map((l) => (
+                  <Link key={l.slug} href={`/lessons/${l.slug}`} className="fluo-btn fluo-btn-sm inline-flex">
+                    🎲 {l.title}
+                  </Link>
+                ))}
+              </div>
+            );
+            return openSio.isProduction ? chips : <AfterPretest>{chips}</AfterPretest>;
+          })()}
         </SioModal>
       )}
     </div>
@@ -123,15 +129,28 @@ function Unit0Questions({ sio }: { sio: (typeof UNIT0_SIOS)[number] }) {
   // component mounts per open) — never the authored order. Activity modes
   // live on the popup's flap tabs, not in the body.
   const [questions, setQuestions] = useState<Unit0Question[]>([]);
+  const [answered, setAnswered] = useState(0);
   useEffect(() => {
     const base = UNIT0_QUESTIONS[sio.id] ?? [];
     setQuestions(shuffle(base).map((q) => ({ ...q, options: shuffle(q.options) })));
+    setAnswered(0);
   }, [sio.id]);
+
+  function onAnswered() {
+    setAnswered((n) => {
+      const next = n + 1;
+      // All answered → post-pretest content (lesson button) may appear.
+      if (next === questions.length && questions.length > 0) {
+        window.dispatchEvent(new CustomEvent("fluolingo:pretest-complete", { detail: { id: sio.id } }));
+      }
+      return next;
+    });
+  }
 
   return (
     <div className="space-y-3">
       {questions.map((q, i) => (
-        <QuizQuestion key={i} q={q} />
+        <QuizQuestion key={i} q={q} onAnswered={onAnswered} />
       ))}
     </div>
   );
@@ -146,7 +165,7 @@ function ttsFor(q: Unit0Question, v: string): string {
   return v;
 }
 
-function QuizQuestion({ q }: { q: Unit0Question }) {
+function QuizQuestion({ q, onAnswered }: { q: Unit0Question; onAnswered?: () => void }) {
   const [picked, setPicked] = useState<string | null>(null);
   const [showWhy, setShowWhy] = useState(false);
   const [showExample, setShowExample] = useState(false);
@@ -162,6 +181,7 @@ function QuizQuestion({ q }: { q: Unit0Question }) {
   function tap(o: { v: string; ok: boolean }, answered: boolean) {
     if (!answered) {
       setPicked(o.v);
+      onAnswered?.();
       if (o.ok) speak(ttsFor(q, o.v), "fr-FR");
     } else {
       speak(o.v, "fr-FR");
