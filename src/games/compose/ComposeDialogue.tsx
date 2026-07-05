@@ -45,7 +45,15 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
   const [stage, setStage] = useState<Stage>("order");
   const [ordered, setOrdered] = useState<string[]>([]); // priced items, with repeats
   const [draft, setDraft] = useState<string[]>([]);
+  const [typed, setTyped] = useState(""); // free-text the learner adds to the chips
   const [nudge, setNudge] = useState<string | null>(null);
+  // AI mode (Dan, 2026-07-05: the rule engine still accepted nonsense). The
+  // waiter is driven by /api/compose when it's live; on any host without the
+  // backend (503/404 — no ANTHROPIC_API_KEY yet, or a local preview) we fall
+  // back to the rule engine below. "unknown" until the first send decides.
+  const [aiMode, setAiMode] = useState<"unknown" | "ai" | "rules">("unknown");
+  const [aiDone, setAiDone] = useState(false);
+  const [busy, setBusy] = useState(false);
   const startedRef = useRef(false);
   const endRef = useRef<HTMLDivElement>(null);
 
@@ -55,7 +63,9 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
     setStage("order");
     setOrdered([]);
     setDraft([]);
+    setTyped("");
     setNudge(null);
+    setAiDone(false);
     speak(OPENING, lang, { gender: "m" });
   };
 
@@ -69,14 +79,65 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
     endRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }, [messages]);
 
-  const draftText = joinChips(draft);
+  // The learner's reply = tapped chips + anything they typed.
+  const draftText = [joinChips(draft), typed.trim()].filter(Boolean).join(" ").trim();
   const total = ordered.reduce((sum, p) => sum + (CAFE_PRICES[p] ?? 0), 0);
+  const done = stage === "done" || aiDone;
 
   const itemsIn = (text: string): string[] =>
     [...PLATS, ...BOISSONS].flatMap((p) => Array<string>(countIn(text, p)).fill(p));
 
-  const send = () => {
+  // Entry point: try the AI waiter; if the backend isn't there, latch to the
+  // rule engine and replay this turn through it (state is still fresh enough).
+  async function send() {
     const text = draftText;
+    if (!text || done || busy) return;
+    setDraft([]);
+    setTyped("");
+    setNudge(null);
+
+    if (aiMode === "rules") {
+      sendRuleBased(text);
+      return;
+    }
+
+    const withMine: Msg[] = [...messages, { who: "me", text }];
+    setMessages(withMine);
+    setBusy(true);
+    try {
+      const r = await fetch("/api/compose", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          scene: bank.id,
+          messages: withMine.map((m) => ({ role: m.who === "waiter" ? "assistant" : "user", content: m.text })),
+        }),
+      });
+      if ([404, 405, 501, 503].includes(r.status)) {
+        setAiMode("rules");
+        setMessages(messages); // roll back the optimistic turn; the rule engine re-adds it
+        sendRuleBased(text);
+        return;
+      }
+      const data = (await r.json().catch(() => null)) as { reply?: string; done?: boolean } | null;
+      if (!data?.reply) {
+        setMessages((m) => [...m, { who: "waiter", text: "Pardon, un petit souci… réessayez !" }]);
+        return;
+      }
+      setAiMode("ai");
+      setMessages((m) => [...m, { who: "waiter", text: data.reply! }]);
+      speakSequence([{ text, gender: "f" as const }, { text: data.reply, gender: "m" as const }], lang);
+      if (data.done) { setAiDone(true); sfx.stage(); } else sfx.correct();
+    } catch {
+      setAiMode("rules");
+      setMessages(messages);
+      sendRuleBased(text);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function sendRuleBased(text: string) {
     if (!text || stage === "done") return;
 
     const hasCommander = COMMANDER.some((p) => text.includes(p));
@@ -203,24 +264,29 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
         <div ref={endRef} />
       </div>
 
-      {stage === "done" ? (
-        /* Recap card */
+      {done ? (
+        /* Recap card — the rule engine tracked a priced order; the AI waiter
+           gave the total in the chat, so its recap is just the replay. */
         <div className="rounded-xl border-2 border-[#d98e46] bg-white p-5">
-          <h2 lang="fr" className="text-lg font-black">
-            🧾 L&rsquo;addition
-          </h2>
-          <ul className="mt-2 flex flex-col gap-1">
-            {ordered.map((p, i) => (
-              <li key={`${i}-${p}`} lang="fr" className="flex justify-between text-sm">
-                <span>{p}</span>
-                <span className="font-bold">{CAFE_PRICES[p] ?? 0} €</span>
-              </li>
-            ))}
-          </ul>
-          <p lang="fr" className="mt-2 flex justify-between border-t-2 border-[#e8c49a] pt-2 font-black">
-            <span>Total</span>
-            <span>{total} €</span>
-          </p>
+          {ordered.length > 0 ? (
+            <>
+              <h2 lang="fr" className="text-lg font-black">🧾 L&rsquo;addition</h2>
+              <ul className="mt-2 flex flex-col gap-1">
+                {ordered.map((p, i) => (
+                  <li key={`${i}-${p}`} lang="fr" className="flex justify-between text-sm">
+                    <span>{p}</span>
+                    <span className="font-bold">{CAFE_PRICES[p] ?? 0} €</span>
+                  </li>
+                ))}
+              </ul>
+              <p lang="fr" className="mt-2 flex justify-between border-t-2 border-[#e8c49a] pt-2 font-black">
+                <span>Total</span>
+                <span>{total} €</span>
+              </p>
+            </>
+          ) : (
+            <h2 lang="fr" className="text-lg font-black">👋 Merci, à bientôt !</h2>
+          )}
           <div className="mt-4 flex flex-wrap gap-2">
             <button
               type="button"
@@ -240,40 +306,45 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
         </div>
       ) : (
         <>
-          {/* Reply under construction */}
+          {/* Reply under construction: tapped chips + free text (Dan,
+              2026-07-05: "a combination of fixed phrases and user input"). */}
           <div className="rounded-xl border-2 border-[#e8c49a] bg-[#fff8ef] p-4">
-            {draft.length === 0 ? (
-              <p className="italic text-[#4a2c14]/60">Tap phrases below to build your reply…</p>
+            {draft.length === 0 && !typed ? (
+              <p className="italic text-[#4a2c14]/60">Tap phrases below and / or type your reply…</p>
             ) : (
               <p lang="fr" className="text-lg leading-relaxed">
                 {draftText}
-                <span className="animate-pulse" aria-hidden>
-                  ▏
-                </span>
+                <span className="animate-pulse" aria-hidden>▏</span>
               </p>
             )}
+            {busy && <p className="mt-2 text-sm font-bold text-[#b96f2e]">🤵 …</p>}
             {nudge && <p className="mt-2 text-sm font-bold text-rose-700">{nudge}</p>}
-            <div className="mt-3 flex flex-wrap justify-end gap-2">
+            <form onSubmit={(e) => { e.preventDefault(); void send(); }} className="mt-3 flex flex-wrap items-center gap-2">
+              <input
+                lang="fr"
+                value={typed}
+                onChange={(e) => setTyped(e.target.value)}
+                placeholder="…ou tapez ici"
+                disabled={busy || done}
+                className="min-w-[8rem] flex-1 rounded-lg border-2 border-[#e8c49a] bg-white px-3 py-1.5 text-base text-[#4a2c14] outline-none focus:border-[#d98e46]"
+                autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
+              />
               <button
                 type="button"
-                onClick={() => {
-                  setDraft((d) => d.slice(0, -1));
-                  setNudge(null);
-                }}
-                disabled={draft.length === 0}
+                onClick={() => { setDraft((d) => d.slice(0, -1)); setNudge(null); }}
+                disabled={draft.length === 0 || busy}
                 className="rounded-xl border-2 border-[#e8c49a] bg-white px-3 py-1.5 text-sm font-bold text-[#4a2c14] transition hover:bg-[#fff3e0] disabled:opacity-40"
               >
                 ↶ Undo
               </button>
               <button
-                type="button"
-                onClick={send}
-                disabled={draft.length === 0}
+                type="submit"
+                disabled={!draftText || busy}
                 className="rounded-xl border-b-4 border-[#b96f2e] bg-[#d98e46] px-4 py-1.5 font-black text-white transition hover:brightness-105 disabled:opacity-40"
               >
                 ✔ Je réponds
               </button>
-            </div>
+            </form>
           </div>
 
           {/* Phrase bank */}

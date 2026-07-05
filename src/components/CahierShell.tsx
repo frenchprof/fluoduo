@@ -292,7 +292,7 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     // Learning order (Dan, 2026-07-05): Pre-Test → flashcards → Lesson. EVERY
     // deck has a Lesson since the unification (Lire → Débutant → Intermédiaire
     // → Difficile absorbed Complete It / dice / GramMarathon).
-    { key: "flip", label: "Flip It", emoji: "🃏", href: `/practice/flip-it/${collectionId}`, hint: "browse the cards" },
+    { key: "flip", label: "Flip It", emoji: "🃏", href: `/practice/flip-it/${collectionId}`, hint: "study the cards" },
     {
       key: "lesson",
       label: "Lesson",

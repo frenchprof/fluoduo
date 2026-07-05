@@ -80,32 +80,33 @@
     {
       "id": "u1-sio017-05",
       "sentenceBefore": "En France, on parle ",
-      "sentenceAfter": " français.",
-      "answer": "le",
+      "sentenceAfter": ".",
+      "answer": "français",
       "distractors": [
-        "l'",
-        "la",
-        "les"
+        "le français",
+        "du français",
+        "la France"
       ],
-      "fullSentence": "En France, on parle le français.",
+      "fullSentence": "En France, on parle français.",
       "sentenceTrans": "In France, people speak French.",
+      "why": "After <strong>parler</strong>, a language takes <strong>no article</strong>: <em>on parle français, je parle anglais</em>. (The article comes back with other verbs: <em>j'aime le français</em>.)",
       "whyWrong": {
-        "l'": "français starts with a consonant, so no elision — le français.",
-        "la": "français (the language) is masculine — le français.",
-        "les": "les is plural — the language name is singular: le français."
+        "le français": "No article after parler — on parle français. (le français is for aimer/étudier: j'aime le français.)",
+        "du français": "No partitive after parler either — just on parle français.",
+        "la France": "La France is the country; the language is français."
       }
     },
     {
       "id": "u1-sio017-06",
-      "sentenceBefore": "À Singapour, on parle l'anglais ",
-      "sentenceAfter": " le chinois.",
+      "sentenceBefore": "À Singapour, on parle anglais ",
+      "sentenceAfter": " chinois.",
       "answer": "et",
       "distractors": [
         "avec",
         "mais",
         "ou"
       ],
-      "fullSentence": "À Singapour, on parle l'anglais et le chinois.",
+      "fullSentence": "À Singapour, on parle anglais et chinois.",
       "sentenceTrans": "In Singapore, people speak English and Chinese.",
       "transFirst": true,
       "whyWrong": {
