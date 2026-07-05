@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BackLink from "@/components/BackLink";
 import { listLetrisSets } from "@/games/letris/sets";
 import { CURATED } from "@/content/collections";
 
@@ -30,9 +31,9 @@ export default function LetrisIndexPage() {
     >
       <div className="border-b-2 border-white/70 bg-white/60 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 text-sm font-bold">
-          <Link href="/" className="text-sky-700 hover:text-sky-900">
-            ← FluoLingo
-          </Link>
+          <BackLink fallback="/" className="text-sky-700 hover:text-sky-900">
+            ← Back
+          </BackLink>
           <span className="text-sky-900/60">🌧️ Vocabularain</span>
         </div>
       </div>

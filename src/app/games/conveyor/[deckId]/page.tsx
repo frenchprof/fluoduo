@@ -1,4 +1,4 @@
-import Link from "next/link";
+import BackLink from "@/components/BackLink";
 import Lexicalator, { type LexEntry } from "@/games/lexicalator/Lexicalator";
 import AuthGate from "@/components/AuthGate";
 import { CURATED } from "@/content/collections";
@@ -33,7 +33,7 @@ export default async function ConveyorPage({
       <main className="min-h-screen" style={{ background: "linear-gradient(180deg,#eaf7ff 0%,#f6fbff 100%)" }}>
         <div className="border-b-2 border-white/70 bg-white/60 backdrop-blur">
           <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3 text-sm font-bold">
-            <Link href="/" className="text-[#1cb0f6] hover:text-[#1899d6]">← FluoLingo</Link>
+            <BackLink fallback="/" className="text-[#1cb0f6] hover:text-[#1899d6]">← Back</BackLink>
             <span className="text-[#075985]/60">🧰 Lexicalator</span>
           </div>
         </div>
@@ -50,7 +50,7 @@ export default async function ConveyorPage({
         <p className="text-4xl" aria-hidden>🧰</p>
         <h1 className="mt-3 text-xl font-black">Lexicalator is being prepared for “{collection.title}”.</h1>
         <p className="mt-2 text-sm text-[#075985]/80">This deck&rsquo;s words still need their syllables. Try another activity in the meantime.</p>
-        <Link href="/" className="mt-5 inline-block rounded-2xl border-b-4 border-[#1899d6] bg-[#1cb0f6] px-4 py-2 font-black text-white">← Back to the path</Link>
+        <BackLink fallback="/" className="mt-5 inline-block rounded-2xl border-b-4 border-[#1899d6] bg-[#1cb0f6] px-4 py-2 font-black text-white">← Back</BackLink>
       </div>,
     );
   }
