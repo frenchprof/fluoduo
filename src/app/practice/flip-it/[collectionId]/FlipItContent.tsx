@@ -41,7 +41,7 @@ function StepLabel({ n, label }: { n: number; label: string }) {
   return (
     <div className="flex items-center gap-2.5">
       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[color:var(--cahier-ink)] text-base font-black text-white shadow-[2px_2px_0_var(--cahier-hl,#ffe000)]">{n}</span>
-      <span className="cahier-hl rounded-sm px-1.5 text-base font-black uppercase tracking-wide text-[color:var(--cahier-ink)]">{label}</span>
+      <span className="cahier-hl rounded-sm px-1.5 text-base font-black text-[color:var(--cahier-ink)]">{label}</span>
       <div className="h-[2px] flex-1 bg-[color:var(--cahier-ink)]/25" />
     </div>
   );
@@ -55,7 +55,7 @@ type Order = "deck" | "shuffle" | "article" | "continent" | "col";
 type SortKey = "en" | "fr" | "art" | "ms" | "fs" | "mp" | "fp" | "reviewed" | "notes";
 
 const CTRL_LABEL =
-  "w-20 shrink-0 text-[0.7rem] font-bold uppercase tracking-wider text-[color:var(--cahier-ink-soft)]";
+  "w-20 shrink-0 text-[0.7rem] font-bold text-[color:var(--cahier-ink-soft)]";
 
 const VIEW_TABS: CahierTab[] = [
   { key: "overview", label: "▦ Overview", hue: TAB_HUES[0] },
@@ -279,7 +279,24 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
       onSelect={(k) => setView(k as View)}
       topBar={<TopBar crumb={collection.title} />}
     >
-      <StepLabel n={1} label="Select view — use the flaps or burger menu on the top right" />
+      <StepLabel n={1} label="Select view" />
+      {/* The three views as plain buttons right here (Dan, 2026-07-05: "we
+          don't need the burger menu — there are only three view modes");
+          the side flaps remain on wide screens as the notebook look. */}
+      <div className="mb-4 mt-2 flex flex-wrap gap-2">
+        {VIEW_TABS.map((t) => (
+          <button
+            key={t.key}
+            type="button"
+            data-active={view === t.key}
+            onClick={() => setView(t.key as View)}
+            className="cahier-tab !rounded-md"
+            style={{ "--tab-hue": t.hue } as React.CSSProperties}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
       <StepLabel n={2} label="Select mode" />
       {/* Test Yourself — a clearly separate study-mode switch (not a view) */}
       <div className="mb-4 flex flex-wrap items-center gap-3">
@@ -351,7 +368,7 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
       <StepLabel n={3} label="Filter (optional)" />
       {/* Rows — one compact selector for the single-select filters; subsets kept inline */}
       <div className="mb-5 flex flex-wrap items-center gap-2">
-        <span className="text-[0.7rem] font-bold uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">{view === "overview" ? "rows" : "cards"}</span>
+        <span className="text-[0.7rem] font-bold text-[color:var(--cahier-ink-soft)]">{view === "overview" ? "rows" : "cards"}</span>
         <select
           aria-label="Show rows"
           value={rowFilter.kind === "subset" ? "all" : rowFilter.kind}
@@ -374,7 +391,7 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
               setRowFilter(ok ? { kind: "subset", idx: 0 } : { kind: "all" }); // default to subset 1
             }}
             className="!w-20 !px-2 text-center text-base font-bold" />
-          <span className="text-[0.7rem] font-bold uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">subsets of</span>
+          <span className="text-[0.7rem] font-bold text-[color:var(--cahier-ink-soft)]">subsets of</span>
           <input type="number" min={1} max={ordered.length} value={subsetSize ?? ""} placeholder="N"
             title="cards per subset"
             onChange={(e) => { const v = parseInt(e.target.value, 10); const ok = Number.isFinite(v) && v > 0; setSubsetSize(ok ? v : null); setRowFilter(ok ? { kind: "subset", idx: 0 } : { kind: "all" }); }}
@@ -397,7 +414,7 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
         const cur = rowFilter.kind === "subset" ? rowFilter.idx : -1;
         return (
           <div className="mb-4 flex flex-wrap items-center gap-2">
-            <span className="text-[0.7rem] font-bold uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">subset</span>
+            <span className="text-[0.7rem] font-bold text-[color:var(--cahier-ink-soft)]">subset</span>
             {cur < 0 ? (
               <button type="button" onClick={() => setRowFilter({ kind: "subset", idx: 0 })} className="cahier-btn cahier-btn-sm cahier-btn-primary">
                 Work through subsets (1/{subsetCount}) →
@@ -701,7 +718,7 @@ function Cards({
 
   return (
     <div className="flex flex-col items-center">
-      <div className="mb-3 text-[0.7rem] font-bold uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">
+      <div className="mb-3 text-[0.7rem] font-bold text-[color:var(--cahier-ink-soft)]">
         {idx + 1} / {rows.length}{test && <span className="ml-2 text-[color:var(--cahier-la)]">✍️ test yourself</span>}
       </div>
 
@@ -728,7 +745,7 @@ function Cards({
                   {row.item.en}
                   {row.item.note ? <span className="ml-1 text-base font-medium text-[color:var(--cahier-ink-soft)]">{row.item.note}</span> : null}
                 </span>
-                <span className="mt-2 text-[0.7rem] uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">tap or Space to flip</span>
+                <span className="mt-2 text-[0.7rem] text-[color:var(--cahier-ink-soft)]">tap or Space to flip</span>
               </Face>
               <Face back><FrenchAnswer row={row} hasArt={articleOptions.some((a) => a !== "")} /></Face>
             </div>
@@ -1015,7 +1032,7 @@ function Overview({
       <div className="overflow-x-auto rounded-xl border-2 border-[color:var(--cahier-ink)]/15 bg-white">
         <table className="text-left text-sm" style={{ tableLayout: "fixed", width: totalW, minWidth: "100%" }}>
           <colgroup>{cols.map((c) => <col key={c.key} style={{ width: widthOf(c) }} />)}</colgroup>
-          <thead className="bg-[var(--cahier-paper-2)] text-[0.7rem] font-bold uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">
+          <thead className="bg-[var(--cahier-paper-2)] text-[0.7rem] font-bold text-[color:var(--cahier-ink-soft)]">
             <tr>{cols.map((c) => {
               const sk = SORT_OF[c.key];
               const active = sk && sortCol === sk;

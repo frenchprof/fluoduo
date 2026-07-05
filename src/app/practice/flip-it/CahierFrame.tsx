@@ -8,10 +8,12 @@
  * the left gutter, pastel index tabs off the right edge switching the VIEWS
  * (Overview / Cards / All Cards). Navigation back out is the ← Back in the
  * top bar — no site/deck rail here, same convention as the games.
- * On narrow screens the side rail is replaced by a ☰ menu at the top-right.
+ * No ☰ menu (Dan, 2026-07-05): with only three views, FlipItContent renders
+ * them as plain buttons under step 1 — that covers narrow screens; the side
+ * rail stays on wide ones.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import type { CSSProperties, ReactNode } from "react";
 
 const WIDTH_KEY = "fluolingo:flipWidth";
@@ -40,7 +42,6 @@ export function CahierFrame({
   topBar?: ReactNode;
   children: ReactNode;
 }) {
-  const [menuOpen, setMenuOpen] = useState(false);
   const hueOf = (t: CahierTab, i: number) => t.hue ?? TAB_HUES[i % TAB_HUES.length];
   const pageRef = useRef<HTMLElement>(null);
 
@@ -91,35 +92,6 @@ export function CahierFrame({
             <span className="rounded-full bg-[color:var(--cahier-ink)]/25 px-[1.5px] py-2 text-[8px] leading-[5px] text-transparent">
               ⋮
             </span>
-          </div>
-
-          {/* narrow-screen ☰ menu (top-right is free — the title sits on the left) */}
-          <div className="cahier-menu absolute right-2 top-2 z-20">
-            <button
-              type="button"
-              aria-label="Choose view"
-              aria-expanded={menuOpen}
-              onClick={() => setMenuOpen((o) => !o)}
-              className="cahier-btn cahier-btn-sm"
-            >
-              ☰
-            </button>
-            {menuOpen && (
-              <div className="absolute right-0 mt-1 flex w-40 flex-col gap-1 rounded-lg border-2 border-[color:var(--cahier-ink)]/20 bg-white p-1 shadow-lg">
-                {tabs.map((t, i) => (
-                  <button
-                    key={t.key}
-                    type="button"
-                    data-active={active === t.key}
-                    onClick={() => { onSelect(t.key); setMenuOpen(false); }}
-                    className="cahier-tab !rounded-md text-left"
-                    style={{ "--tab-hue": hueOf(t, i) } as CSSProperties}
-                  >
-                    {t.label}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
 
           {topBar}

@@ -169,6 +169,21 @@ export default function LetrisGame({
   const [score, setScore] = useState(0);
   const [paused, setPaused] = useState(false);
   const [music, setMusic] = useState(false);
+  // One volume for music AND sound effects — same chiptune master gain and
+  // localStorage key as Lexicalator's slider (Dan, 2026-07-05: "the volume
+  // button is missing in vocabularain").
+  const [volume, setVolumeState] = useState(0.6);
+  useEffect(() => {
+    try {
+      const v = parseFloat(window.localStorage.getItem("fluolingo:volume") ?? "");
+      if (!Number.isNaN(v)) { setVolumeState(v); chiptune.setVolume(v); }
+    } catch {}
+  }, []);
+  function changeVolume(v: number) {
+    setVolumeState(v);
+    chiptune.setVolume(v);
+    try { window.localStorage.setItem("fluolingo:volume", String(v)); } catch {}
+  }
   const [tts, setTts] = useState(true);
   const [phase, setPhase] = useState<Phase>("day");
   const [phaseMsg, setPhaseMsg] = useState<PhaseMsg | null>(null);
@@ -521,6 +536,12 @@ export default function LetrisGame({
             if (chiptune.playing()) { chiptune.stop(); setMusic(false); }
             else { const key = phase === "storm" ? "storm" : "letris"; chiptune.play(key); if (phase === "night") chiptune.setTempoScale(NIGHT_MUSIC_SLOW); setMusic(true); }
           }} title="Music" className={pillCls}>{music ? "🔊" : "🔇"}</button>
+          <input
+            type="range" min={0} max={1} step={0.05} value={volume}
+            onChange={(e) => changeVolume(Number(e.target.value))}
+            aria-label="Volume" title="Volume — music and sounds"
+            className="h-1.5 w-20 cursor-pointer accent-sky-500"
+          />
           {speech && (
             <button type="button" onClick={() => setTts((v) => !v)} title="Voice" className={pillCls}>
               {tts ? "🗣️" : "🤫"}
