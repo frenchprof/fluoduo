@@ -48,11 +48,22 @@ export function CahierFrame({
   // The notebook is user-widenable: drag the page's right edge (Dan,
   // 2026-07-05). Width persists; restore happens post-mount so SSR stays
   // deterministic.
+  // Saved width applies only where the tab rail shows (≥1100px); below that
+  // it would leave grey on the right, so clear it and let the page fill (Dan,
+  // 2026-07-05). Re-evaluate on resize.
   useEffect(() => {
-    try {
-      const w = parseInt(window.localStorage.getItem(WIDTH_KEY) ?? "", 10);
-      if (w && pageRef.current) pageRef.current.style.flexBasis = `${Math.min(w, window.innerWidth - 150)}px`;
-    } catch {}
+    const apply = () => {
+      const el = pageRef.current;
+      if (!el) return;
+      if (window.innerWidth < 1100) { el.style.flexBasis = ""; return; }
+      try {
+        const w = parseInt(window.localStorage.getItem(WIDTH_KEY) ?? "", 10);
+        el.style.flexBasis = w ? `${Math.min(w, window.innerWidth - 150)}px` : "";
+      } catch {}
+    };
+    apply();
+    window.addEventListener("resize", apply);
+    return () => window.removeEventListener("resize", apply);
   }, []);
   function startEdgeDrag(e: React.PointerEvent<HTMLDivElement>) {
     const el = pageRef.current;

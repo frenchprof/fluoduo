@@ -126,11 +126,24 @@ export default function CahierShell({
   // pages should have their own draggable right edge") — resizes the outer
   // sheet (the stack on nested pages), persisted site-wide.
   const outerRef = useRef<HTMLElement | null>(null);
+  // The saved page-width only applies where the tab rail actually shows (wide
+  // screens ≥1100px). Below that the rail is hidden, so a saved desktop width
+  // would leave the page short of full-width with wasted grey on the right
+  // (Dan, 2026-07-05: "it was spanning the full screen width"). On mobile we
+  // clear the inline basis so the page fills the screen; re-apply on resize.
   useEffect(() => {
-    try {
-      const w = parseInt(window.localStorage.getItem(PAGE_WIDTH_KEY) ?? "", 10);
-      if (w && outerRef.current) outerRef.current.style.flexBasis = `${Math.min(w, window.innerWidth - 150)}px`;
-    } catch {}
+    const apply = () => {
+      const el = outerRef.current;
+      if (!el) return;
+      if (window.innerWidth < 1100) { el.style.flexBasis = ""; return; }
+      try {
+        const w = parseInt(window.localStorage.getItem(PAGE_WIDTH_KEY) ?? "", 10);
+        el.style.flexBasis = w ? `${Math.min(w, window.innerWidth - 150)}px` : "";
+      } catch {}
+    };
+    apply();
+    window.addEventListener("resize", apply);
+    return () => window.removeEventListener("resize", apply);
   }, []);
   function startEdgeDrag(e: React.PointerEvent<HTMLDivElement>) {
     const el = outerRef.current;
