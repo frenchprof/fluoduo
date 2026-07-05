@@ -20,6 +20,10 @@ import { isGramMarathonReadyId } from "@/lib/collections/gramMarathonReady";
 import { CURATED } from "@/content/collections";
 import { lessonsForDeck } from "@/content/lessons";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
+import { SIOS } from "@/content/sios";
+import { getPretestForSio } from "@/content/pretests";
+import { UNIT0_QUESTIONS } from "@/content/sios/unit0-questions";
+import { getLetrisSet } from "@/games/letris/sets";
 
 /** Dice Practice is an MCQ over the deck's letris columns — no columns, no game. */
 export function hasDicePractice(collectionId: string): boolean {
@@ -187,12 +191,28 @@ export default function CahierShell({
   );
 }
 
-/** Tab set for a deck's activity pages — Flip It / Say It / dice Practice / Lexicalator.
- *  The Lexicalator tab appears only where the deck is hand-syllabified (no old-game
- *  fallback anymore). */
+/** Where this deck's Pre-Test lives: the authored pretest page, or (Unit 0)
+ *  the SIO popup whose body carries the questions. Null = no pretest. */
+export function pretestHrefForDeck(collectionId: string): string | null {
+  const sio = SIOS.find((s) => s.collectionId === collectionId);
+  if (!sio) return null;
+  const pretest = getPretestForSio(sio.id);
+  if (pretest) return `/pretests/${pretest.id}`;
+  if ((UNIT0_QUESTIONS[sio.id] ?? []).length > 0) return `/unit/0#${sio.id}`;
+  return null;
+}
+
+/** THE deck activity list — popup flaps and page rails both render exactly
+ *  this set (Dan, 2026-07-05: leaving via a flap must show the same flaps).
+ *  Conditional tabs appear only where their readiness predicate passes. */
 export function deckActivityTabs(collectionId: string): ShellTab[] {
   const lessons = lessonsForDeck(collectionId);
+  const pretestHref = pretestHrefForDeck(collectionId);
+  const rainSet = getLetrisSet(collectionId.replace("-letris", ""));
   return [
+    ...(pretestHref
+      ? [{ key: "pretest", label: "Pre-Test", emoji: "🧪", href: pretestHref } as ShellTab]
+      : []),
     // The lesson leads its SIO's flow — Receive before Integrate.
     ...(lessons.length > 0
       ? [{ key: "lesson", label: "Lesson", emoji: "📚", href: `/lessons/${lessons[0].slug}` } as ShellTab]
@@ -211,6 +231,9 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
       : []),
     ...(isLexReadyId(collectionId)
       ? [{ key: "match", label: "Lexicalator", emoji: "🧰", href: `/games/conveyor/${collectionId}` } as ShellTab]
+      : []),
+    ...(rainSet
+      ? [{ key: "rain", label: "Vocabularain", emoji: "🌧️", href: `/games/letris/${collectionId.replace("-letris", "")}` } as ShellTab]
       : []),
     ...(UNIT_PAGES[collectionId]
       ? [{ key: "unit", ...UNIT_PAGES[collectionId] } as ShellTab]

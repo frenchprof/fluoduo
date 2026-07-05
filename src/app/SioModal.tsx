@@ -17,12 +17,7 @@ import { useEffect, useRef } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import type { Sio } from "@/content/sios";
 import type { Collection } from "@/lib/collections/schema";
-import { isLexReady } from "@/lib/collections/lexReady";
-import { isConjugaZoneReadyId } from "@/lib/collections/conjugaZoneReady";
-import { isGramMarathonReady } from "@/lib/collections/gramMarathonReady";
-import { UNIT_PAGES } from "@/components/CahierShell";
-import { lessonsForDeck } from "@/content/lessons";
-import { getLetrisSet } from "@/games/letris/sets";
+import { deckActivityTabs } from "@/components/CahierShell";
 
 const SIZE_KEY = "fluolingo:popupSize";
 
@@ -38,45 +33,28 @@ const TAB_HUES = [
 ] as const;
 
 /**
- * Pre-Test on top, then the five activity modes. The Pre-Test flap is the
- * ACTIVE (current-view) flap when the pretest questions render inline in the
- * popup body; otherwise it links out to the pretest surface.
+ * The popup renders EXACTLY the deck's unified activity list
+ * (deckActivityTabs — same set the activity pages' rail shows, so leaving
+ * via a flap never changes the flaps). The Pre-Test flap becomes the ACTIVE
+ * (current-view) flap when the pretest questions render inline in this
+ * popup's body; a pretest with no deck still gets its lone flap.
  */
 export function popupActivityTabs(
   deck?: Collection,
   pretest?: { inline: boolean; href: string | null },
 ): PopupTab[] | undefined {
-  const pretestTab: PopupTab[] =
-    pretest && (pretest.inline || pretest.href)
-      ? [{ key: "pretest", label: "Pre-Test", emoji: "🧪", href: pretest.inline ? undefined : pretest.href ?? undefined, active: pretest.inline }]
-      : [];
-  if (!deck) return pretestTab.length ? pretestTab : undefined;
-  const hasLetris = !!getLetrisSet(deck.id.replace("-letris", "")); // registry-gated: config alone ≠ a playable rain set
-  const lessons = lessonsForDeck(deck.id);
-  return [
-    ...pretestTab,
-    ...(lessons.length > 0
-      ? [{ key: "lesson", label: "Lesson", emoji: "📚", href: `/lessons/${lessons[0].slug}` }]
-      : []),
-    { key: "flip", label: "Flip It", emoji: "🃏", href: `/practice/flip-it/${deck.id}` },
-    { key: "say", label: "Say It", emoji: "🎤", href: `/practice/say-it/${deck.id}` },
-    { key: "complete", label: "Complete It", emoji: "✏️", href: `/practice/complete-it/${deck.id}` },
-    ...(isConjugaZoneReadyId(deck.id)
-      ? [{ key: "conjugazone", label: "ConjugaZone", emoji: "🎯", href: `/practice/conjugazone/${deck.id}` }]
-      : []),
-    ...(isGramMarathonReady(deck)
-      ? [{ key: "grammarathon", label: "GramMarathon", emoji: "🏃", href: `/practice/grammarathon/${deck.id}` }]
-      : []),
-    ...(isLexReady(deck)
-      ? [{ key: "match", label: "Lexicalator", emoji: "🧰", href: `/games/conveyor/${deck.id}` }]
-      : []),
-    ...(hasLetris
-      ? [{ key: "rain", label: "Vocabularain", emoji: "🌧️", href: `/games/letris/${deck.id.replace("-letris", "")}` }]
-      : []),
-    ...(UNIT_PAGES[deck.id]
-      ? [{ key: "unit", ...UNIT_PAGES[deck.id] }]
-      : []),
-  ];
+  const base: PopupTab[] = deck
+    ? deckActivityTabs(deck.id).map((t) => ({ key: t.key, label: t.label, emoji: t.emoji ?? "", href: t.href }))
+    : [];
+  if (pretest && (pretest.inline || pretest.href)) {
+    const tab: PopupTab = pretest.inline
+      ? { key: "pretest", label: "Pre-Test", emoji: "🧪", active: true }
+      : { key: "pretest", label: "Pre-Test", emoji: "🧪", href: pretest.href ?? undefined };
+    const i = base.findIndex((t) => t.key === "pretest");
+    if (i >= 0) base[i] = tab;
+    else base.unshift(tab);
+  }
+  return base.length ? base : undefined;
 }
 
 function Flap({ tab, hue, className }: { tab: PopupTab; hue: string; className?: string }) {

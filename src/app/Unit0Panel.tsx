@@ -75,7 +75,14 @@ export default function Unit0Panel() {
         <SioModal
           sio={openSio}
           onClose={() => setOpenId(null)}
-          tabs={popupActivityTabs(openSio.collectionId ? CURATED.find((c) => c.id === openSio.collectionId) : undefined)}
+          tabs={popupActivityTabs(
+            openSio.collectionId ? CURATED.find((c) => c.id === openSio.collectionId) : undefined,
+            // Unit-0 questions render inline right here → Pre-Test is the
+            // popup's active flap, matching the Units 1-4 popups.
+            !openSio.isProduction && (UNIT0_QUESTIONS[openSio.id] ?? []).length > 0
+              ? { inline: true, href: null }
+              : undefined,
+          )}
         >
           <p className="fluo-serif mb-4 text-base font-bold leading-snug text-[color:var(--fluo-ink)]">
             <span className="fluo-hl">{sioStatement(openSio)}</span>
