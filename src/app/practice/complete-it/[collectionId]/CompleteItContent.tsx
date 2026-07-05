@@ -58,7 +58,7 @@ const NAT_SUBJECT: Record<NatForm, string> = { ms: "il est", fs: "elle est", mp:
 
 type QEntry = { itemIdx: number; natForm?: NatForm };
 
-export default function CompleteItContent({ collectionId }: { collectionId: string }) {
+export default function CompleteItContent({ collectionId, embedded = false }: { collectionId: string; embedded?: boolean }) {
   const deck = CURATED.find((c) => c.id === collectionId);
   const tabs = useMemo(() => (deck ? withActive(deckActivityTabs(deck.id), "complete") : []), [deck]);
 
@@ -136,12 +136,7 @@ export default function CompleteItContent({ collectionId }: { collectionId: stri
     setI(0); setValue(""); setResult(null); setScore({ ok: 0, total: 0 });
   }
 
-  return (
-    <CahierShell
-      tabs={tabs}
-      active="complete"
-      topRight={!done ? <span className="fluo-mono text-sm font-bold">{i}/{total} · ✓ {score.ok}</span> : null}
-    >
+  const body = (
       <div className="mx-auto max-w-lg px-4 py-6">
         <h1 className="fluo-serif text-2xl font-black text-[color:var(--fluo-ink)]">✏️ Complete It</h1>
         <p lang="fr" className="mt-1 mb-5 text-sm text-[color:var(--fluo-ink-soft)]">{deck.title}</p>
@@ -201,6 +196,15 @@ export default function CompleteItContent({ collectionId }: { collectionId: stri
           </div>
         ) : null}
       </div>
+  );
+  if (embedded) return body;
+  return (
+    <CahierShell
+      tabs={tabs}
+      active="complete"
+      topRight={!done ? <span className="fluo-mono text-sm font-bold">{i}/{total} · ✓ {score.ok}</span> : null}
+    >
+      {body}
     </CahierShell>
   );
 }

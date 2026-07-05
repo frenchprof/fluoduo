@@ -57,7 +57,7 @@ function splitGap(fr: string, gap: string): { before: string; after: string } {
   return { before: fr, after: "" };
 }
 
-export default function GramMarathonContent({ collectionId }: { collectionId: string }) {
+export default function GramMarathonContent({ collectionId, embedded = false }: { collectionId: string; embedded?: boolean }) {
   const deck = CURATED.find((c) => c.id === collectionId);
   const tabs = useMemo(() => (deck ? withActive(deckActivityTabs(deck.id), "grammarathon") : []), [deck]);
 
@@ -114,12 +114,7 @@ export default function GramMarathonContent({ collectionId }: { collectionId: st
     setI(0); setValue(""); setResult(null); setScore({ ok: 0, total: 0 });
   }
 
-  return (
-    <CahierShell
-      tabs={tabs}
-      active="grammarathon"
-      topRight={!done ? <span className="fluo-mono text-sm font-bold">{i}/{total} · ✓ {score.ok}</span> : null}
-    >
+  const body = (
       <div className="mx-auto max-w-lg px-4 py-6">
         <h1 className="fluo-serif text-2xl font-black text-[color:var(--fluo-ink)]">🏃 GramMarathon</h1>
         <p lang="fr" className="mt-1 mb-5 text-sm text-[color:var(--fluo-ink-soft)]">{deck.title}</p>
@@ -170,6 +165,15 @@ export default function GramMarathonContent({ collectionId }: { collectionId: st
           </div>
         ) : null}
       </div>
+  );
+  if (embedded) return body;
+  return (
+    <CahierShell
+      tabs={tabs}
+      active="grammarathon"
+      topRight={!done ? <span className="fluo-mono text-sm font-bold">{i}/{total} · ✓ {score.ok}</span> : null}
+    >
+      {body}
     </CahierShell>
   );
 }

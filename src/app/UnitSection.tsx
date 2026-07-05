@@ -150,6 +150,7 @@ export default function UnitSection({ unit }: { unit: number }) {
           <SioModal
             sio={openSio}
             onClose={() => setOpenId(null)}
+            deck={deck}
             tabs={
               openSio.isProduction
                 ? popupActivityTabs(deck) // atelier decks: flip/say/complete on the model lines

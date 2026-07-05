@@ -75,6 +75,7 @@ export default function Unit0Panel() {
         <SioModal
           sio={openSio}
           onClose={() => setOpenId(null)}
+          deck={openSio.collectionId ? CURATED.find((c) => c.id === openSio.collectionId) : undefined}
           tabs={popupActivityTabs(
             openSio.collectionId ? CURATED.find((c) => c.id === openSio.collectionId) : undefined,
             // Unit-0 questions render inline right here → Pre-Test is the

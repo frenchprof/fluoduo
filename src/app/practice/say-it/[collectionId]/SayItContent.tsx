@@ -76,7 +76,7 @@ const GRADE_UI: Record<Grade, { icon: string; label: string; cls: string }> = {
   miss: { icon: "❌", label: "Pas tout à fait…", cls: "text-rose-700 bg-rose-50 border-rose-300" },
 };
 
-export default function SayItContent({ collectionId }: { collectionId: string }) {
+export default function SayItContent({ collectionId, embedded = false }: { collectionId: string; embedded?: boolean }) {
   const deck = CURATED.find((c) => c.id === collectionId);
 
   // A run is a working queue, NOT an endless carousel (Dan, 2026-07-03: "there
@@ -255,18 +255,19 @@ export default function SayItContent({ collectionId }: { collectionId: string })
   }, [startListening, stopRec, next]);
 
   const tabs = withActive(deckActivityTabs(collectionId), "say");
+  // Embedded = floating inside the SIO popup (the unit page stays visible
+  // behind); the standalone page keeps the full CahierShell chrome.
+  const wrap = (body: React.ReactNode, topRight?: React.ReactNode) =>
+    embedded ? <>{body}</> : (
+      <CahierShell tabs={tabs} active="say" crumb="🎤 Say It" topRight={topRight}>{body}</CahierShell>
+    );
 
   if (!deck) {
-    return (
-      <CahierShell tabs={tabs} active="say" crumb="🎤 Say It">
-        <p className="py-16 text-center text-[color:var(--cahier-ink-soft)]">Deck not found.</p>
-      </CahierShell>
-    );
+    return wrap(<p className="py-16 text-center text-[color:var(--cahier-ink-soft)]">Deck not found.</p>);
   }
 
   if (supported === false) {
-    return (
-      <CahierShell tabs={tabs} active="say" crumb="🎤 Say It">
+    return wrap(
         <div className="mx-auto max-w-md py-16 text-center">
           <p className="text-3xl mb-3">🎤</p>
           <h1 className="fluo-serif text-xl font-black text-[color:var(--fluo-ink)] mb-2">
@@ -278,26 +279,14 @@ export default function SayItContent({ collectionId }: { collectionId: string })
           <Link href={`/practice/flip-it/${collectionId}`} className="fluo-btn">
             Use Flip It instead
           </Link>
-        </div>
-      </CahierShell>
+        </div>,
     );
   }
 
   const ui = result ? GRADE_UI[result.grade] : null;
   const isCorrect = result?.grade === "perfect" || result?.grade === "good";
 
-  return (
-    <CahierShell
-      tabs={tabs}
-      active="say"
-      crumb="🎤 Say It"
-      topRight={
-        <span className="fluo-mono text-sm font-bold text-[color:var(--cahier-ink)]">
-          {score.ok}/{score.total}
-          {score.total > 0 && ` (${Math.round((score.ok / score.total) * 100)}%)`}
-        </span>
-      }
-    >
+  return wrap(
       <div className="mx-auto max-w-2xl px-4 py-4">
         <div className="mb-4 text-center">
           <p className="fluo-label">{deck.title}</p>
@@ -433,7 +422,10 @@ export default function SayItContent({ collectionId }: { collectionId: string })
             Space = speak / stop · Enter = next card
           </p>
         )}
-      </div>
-    </CahierShell>
+      </div>,
+    <span className="fluo-mono text-sm font-bold text-[color:var(--cahier-ink)]">
+      {score.ok}/{score.total}
+      {score.total > 0 && ` (${Math.round((score.ok / score.total) * 100)}%)`}
+    </span>,
   );
 }

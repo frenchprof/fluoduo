@@ -22,9 +22,20 @@ function StepLabel({ n, label }: { n: number; label: string }) {
   );
 }
 
-export default function NativeLessonView({ slug, title, unit }: { slug: string; title: string; unit: number }) {
+export default function NativeLessonView({ slug, title, unit, embedded = false }: { slug: string; title: string; unit: number; embedded?: boolean }) {
   const lesson = getNativeLesson(slug);
   if (!lesson) return null;
+
+  const body = (
+      <div className="mx-auto max-w-2xl space-y-4 px-2 py-4">
+        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]" lang="fr">{title}</h1>
+        <StepLabel n={1} label="Recall the idea" />
+        {lesson.memo}
+        <DiceTrainer config={lesson.dice} />
+        <BonusTrainer items={lesson.bonus} />
+      </div>
+  );
+  if (embedded) return body;
 
   // A lesson is part of its SIO's flow, not a standalone page (Dan,
   // 2026-07-04): when it belongs to a deck, it carries THAT deck's activity
@@ -45,13 +56,7 @@ export default function NativeLessonView({ slug, title, unit }: { slug: string; 
       active="lesson"
       crumb={`Unité ${unit}`}
     >
-      <div className="mx-auto max-w-2xl space-y-4 px-2 py-4">
-        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]" lang="fr">{title}</h1>
-        <StepLabel n={1} label="Recall the idea" />
-        {lesson.memo}
-        <DiceTrainer config={lesson.dice} />
-        <BonusTrainer items={lesson.bonus} />
-      </div>
+      {body}
     </CahierShell>
   );
 }

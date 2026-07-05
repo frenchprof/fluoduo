@@ -13,11 +13,26 @@
  * navigation, not body content (Dan: minimalist body).
  */
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
+import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import type { Sio } from "@/content/sios";
 import type { Collection } from "@/lib/collections/schema";
 import { deckActivityTabs } from "@/components/CahierShell";
+import { lessonsForDeck } from "@/content/lessons";
+import AuthGate from "@/components/AuthGate";
+
+// Level-2 activities float INSIDE this popup (Dan, 2026-07-05: "can i ask for
+// level 2 to be all floating like the SIOs pretest") — the unit page stays
+// visible behind. Loaded lazily so unit pages don't bundle every activity.
+const SayItContent = dynamic(() => import("@/app/practice/say-it/[collectionId]/SayItContent"));
+const CompleteItContent = dynamic(() => import("@/app/practice/complete-it/[collectionId]/CompleteItContent"));
+const DicePractice = dynamic(() => import("@/app/practice/dice/[collectionId]/PracticeContent"));
+const GramMarathonContent = dynamic(() => import("@/app/practice/grammarathon/[collectionId]/GramMarathonContent"));
+const NativeLessonView = dynamic(() => import("@/app/lessons/NativeLessonView"));
+
+/** Activity keys that render inside the popup; the rest navigate out. */
+const EMBEDDABLE = new Set(["say", "complete", "dice", "grammarathon", "lesson"]);
 
 const SIZE_KEY = "fluolingo:popupSize";
 
@@ -57,7 +72,21 @@ export function popupActivityTabs(
   return base.length ? base : undefined;
 }
 
-function Flap({ tab, hue, className }: { tab: PopupTab; hue: string; className?: string }) {
+function Flap({
+  tab,
+  hue,
+  className,
+  active,
+  onSelect,
+}: {
+  tab: PopupTab;
+  hue: string;
+  className?: string;
+  /** Overrides tab.active — the popup's current in-body view. */
+  active?: boolean;
+  /** When set, this flap switches the popup's body instead of navigating. */
+  onSelect?: () => void;
+}) {
   const style = { "--tab-hue": hue } as CSSProperties;
   const body = (
     <>
@@ -65,11 +94,19 @@ function Flap({ tab, hue, className }: { tab: PopupTab; hue: string; className?:
       <span>{tab.label}</span>
     </>
   );
+  if (onSelect) {
+    return (
+      <button type="button" onClick={onSelect} data-active={active || undefined}
+        className={`cahier-tab ${className ?? ""}`} style={style}>
+        {body}
+      </button>
+    );
+  }
   if (!tab.href) {
     // No href = the current view (e.g. Pre-Test while its questions show in
     // the body) — every other flap always links somewhere.
     return (
-      <span data-active className={`cahier-tab cursor-default ${className ?? ""}`} style={style}>
+      <span data-active={active !== false || undefined} className={`cahier-tab cursor-default ${className ?? ""}`} style={style}>
         {body}
       </span>
     );
@@ -85,16 +122,52 @@ export default function SioModal({
   sio,
   onClose,
   tabs,
+  deck,
   children,
 }: {
   sio: Sio;
   onClose: () => void;
   tabs?: PopupTab[];
+  /** When given, embeddable activity flaps switch the popup body in place —
+   *  level 2 floats above the unit page instead of navigating away. */
+  deck?: Collection;
   children: ReactNode;
 }) {
   const hueOf = (i: number) => TAB_HUES[i % TAB_HUES.length];
   const panelRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const [view, setView] = useState("main");
+
+  // Activities need elbow room: widen the panel when leaving the main view
+  // (unless the learner already sized it bigger themselves).
+  useEffect(() => {
+    const el = panelRef.current;
+    if (!el || view === "main") return;
+    if (el.offsetWidth < 700) el.style.width = `${Math.min(880, window.innerWidth * 0.9)}px`;
+  }, [view]);
+
+  const embeds: Record<string, ReactNode> = deck
+    ? {
+        say: <SayItContent collectionId={deck.id} embedded />,
+        complete: <CompleteItContent collectionId={deck.id} embedded />,
+        dice: <DicePractice collectionId={deck.id} embedded />,
+        grammarathon: <GramMarathonContent collectionId={deck.id} embedded />,
+        lesson: (() => {
+          const l = lessonsForDeck(deck.id)[0];
+          return l ? <NativeLessonView slug={l.slug} title={l.title} unit={l.unit} embedded /> : null;
+        })(),
+      }
+    : {};
+  const flapProps = (t: PopupTab) => {
+    if (deck && EMBEDDABLE.has(t.key) && embeds[t.key]) {
+      return { active: view === t.key, onSelect: () => setView(t.key) };
+    }
+    if (t.key === "pretest" && !t.href) {
+      // The inline pretest lives in the main body — its flap returns there.
+      return { active: view === "main", onSelect: () => setView("main") };
+    }
+    return { active: view === "main" ? undefined : false };
+  };
 
   // Dialog keyboard basics: Escape closes; focus starts on the ✕ so keyboard
   // and screen-reader users land inside the dialog.
@@ -190,11 +263,13 @@ export default function SioModal({
           {tabs && tabs.length > 0 && (
             <div className="mb-3 flex flex-wrap gap-1.5 sm:hidden">
               {tabs.map((t, i) => (
-                <Flap key={t.key} tab={t} hue={hueOf(i)} className="!rounded-md !px-2 !py-1 text-xs" />
+                <Flap key={t.key} tab={t} hue={hueOf(i)} className="!rounded-md !px-2 !py-1 text-xs" {...flapProps(t)} />
               ))}
             </div>
           )}
-          {children}
+          {view === "main" || !embeds[view] ? children : (
+            <AuthGate what="practice" compact>{embeds[view]}</AuthGate>
+          )}
         </div>
         {/* Visible resize grip: the native CSS handle is a faint browser
             triangle nobody finds (Dan, 2026-07-05) and touch screens never
@@ -217,7 +292,7 @@ export default function SioModal({
         {tabs && tabs.length > 0 && (
           <nav className="mt-14 hidden shrink-0 flex-col gap-2 sm:flex" aria-label="Practice activities">
             {tabs.map((t, i) => (
-              <Flap key={t.key} tab={t} hue={hueOf(i)} />
+              <Flap key={t.key} tab={t} hue={hueOf(i)} {...flapProps(t)} />
             ))}
           </nav>
         )}

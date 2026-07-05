@@ -14,12 +14,15 @@ const TTS_KEY = "fluolingo.practiceTts.v1";
 
 type Verdict = { picked: string; correct: boolean };
 
-export default function PracticePage({ collectionId }: { collectionId: string }) {
+export default function PracticePage({ collectionId, embedded = false }: { collectionId: string; embedded?: boolean }) {
   const collection = CURATED.find((c) => c.id === collectionId);
   const practiceSet = collection ? toPracticeSet(collection) : null;
   const tabs = withActive(deckActivityTabs(collectionId), "dice");
 
   if (!practiceSet) {
+    if (embedded) {
+      return <p className="py-10 text-center text-sm text-[color:var(--fluo-ink-soft)]">No dice practice for this deck yet.</p>;
+    }
     return (
       <CahierShell tabs={tabs} active="dice" crumb="🎲 Practice">
         <div className="mx-auto max-w-3xl px-4 py-10">
@@ -46,6 +49,7 @@ export default function PracticePage({ collectionId }: { collectionId: string })
     );
   }
 
+  if (embedded) return <PracticeRunner set={practiceSet} />;
   return (
     <CahierShell tabs={tabs} active="dice" crumb={`🎲 Practice · ${practiceSet.title}`}>
       <PracticeRunner set={practiceSet} />
