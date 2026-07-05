@@ -119,7 +119,7 @@ export default function CahierShell({
   return (
     <div className="cahier-desk">
       <div className="cahier-deskrow">
-        <main className="cahier-page min-h-screen">
+        <main className={`cahier-page min-h-screen ${context.length > 0 ? "cahier-page--d2" : ""}`}>
           <div className="cahier-binding" aria-hidden />
 
           <div className="sticky top-0 z-10 border-b-2 border-[color:var(--cahier-ink)]/15 bg-[color:var(--cahier-paper)]/90 backdrop-blur">

@@ -74,7 +74,7 @@ export function CahierFrame({
   return (
     <div className="cahier-desk">
       <div className="cahier-deskrow">
-        <main className="cahier-page">
+        <main className="cahier-page cahier-page--d3">
           <div className="cahier-binding" aria-hidden />
 
           {/* narrow-screen ☰ menu (top-right is free — the title sits on the left) */}

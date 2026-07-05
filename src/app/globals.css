@@ -547,6 +547,11 @@ body {
   color: var(--cahier-ink);
   overflow: hidden;
 }
+/* Page-size hierarchy mirroring the flap tiers: level-2 pages (a deck's
+ * activities) sit a step lower and narrower than level-1 site pages; level-3
+ * (Flip It, which adds the view layer) a step further — nested sheets. */
+.cahier-page.cahier-page--d2 { flex-basis: 930px; margin-top: 18px; min-height: calc(100vh - 18px); }
+.cahier-page.cahier-page--d3 { flex-basis: 880px; margin-top: 34px; min-height: calc(100vh - 34px); }
 .cahier-tabs {
   position: sticky;
   top: 18px;
