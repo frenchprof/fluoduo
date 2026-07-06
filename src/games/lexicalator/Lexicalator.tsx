@@ -256,12 +256,13 @@ export default function Lexicalator({
     setCleared(0); setLevelDone(false);
   }
 
-  // The belt is dead-still only at the very start (before any chest is picked).
-  // Once the first word is forged it keeps scrolling continuously — including
-  // the gap between clearing one chest and picking the next (Dan, 2026-07-03:
-  // that transition shouldn't stall the belt) — easing gently as levels rise.
-  const beltFrozen = !firstDone && !selected;
-  const beltSecs = firstDone ? beltSecsFor(level) : 140;
+  // The belt stays dead-still AND fully browsable for the whole FIRST word —
+  // not just until a chest is picked (Dan, 2026-07-06: if the belt starts
+  // crawling the moment you pick a chest, the syllable you need is off-screen
+  // for ~a minute and the learner is stuck). Once the first word is forged the
+  // belt scrolls continuously as real time-pressure, easing gently by level.
+  const beltFrozen = !firstDone;
+  const beltSecs = beltSecsFor(level);
 
   // Client-only game: the belt shuffles with Math.random, so don't SSR it.
   if (!mounted) return null;
@@ -413,13 +414,13 @@ export default function Lexicalator({
         )}
       </div>
 
-      {/* Key belt — a static, fully-visible set until a chest is picked (so the
-          first word's syllables are always reachable), then a scrolling belt
-          that starts imperceptibly slow and eases into real time-pressure as
-          levels rise. */}
-      <div className="relative overflow-hidden rounded-2xl border-4 border-white py-3" style={{ background: "linear-gradient(180deg,#bfe6ff,#9fd8fb)", height: "4.5rem" }}>
+      {/* Key belt — for the FIRST word it's a static, fully-wrapped set so every
+          syllable is on-screen and reachable (no waiting, no off-screen answers);
+          after that it becomes a scrolling belt that eases into real
+          time-pressure as levels rise. */}
+      <div className="relative rounded-2xl border-4 border-white py-3" style={{ background: "linear-gradient(180deg,#bfe6ff,#9fd8fb)", ...(beltFrozen ? { minHeight: "4.5rem" } : { height: "4.5rem", overflow: "hidden" }) }}>
         {beltFrozen ? (
-          <div className="flex flex-nowrap items-center gap-3 overflow-x-auto px-4" style={{ scrollbarWidth: "none" }}>
+          <div className="flex flex-wrap items-center justify-center gap-3 px-4">
             {beltPool.map((t, i) => (
               <button key={i} type="button" onClick={() => tapKey(t)} lang="fr"
                 className="grid h-12 place-items-center rounded-xl border-2 border-b-4 bg-white text-lg font-black"
