@@ -11,8 +11,11 @@ import { useEffect, useState } from "react";
 import CahierShell from "@/components/CahierShell";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 import { signInWithGoogle, useAuthUser } from "@/lib/firebase/auth";
+import { levelForXp } from "@/lib/economy";
 
-type BoardRow = { uid: string; name: string; gems: number; streak: number };
+// Older rows predate xp/level (they only had gems) — read defensively.
+type BoardRow = { uid: string; name: string; xp?: number; level?: number; gems?: number; streak: number };
+const rowXp = (r: BoardRow) => r.xp ?? r.gems ?? 0;
 
 export default function LeaderboardPage() {
   const user = useAuthUser();
@@ -31,9 +34,14 @@ export default function LeaderboardPage() {
           import("firebase/firestore"),
           import("@/lib/firebase/db"),
         ]);
+        // Order by gems at the DB level (every row has it, including pre-xp
+        // rows Firestore would drop from an orderBy("xp")), then re-rank by XP
+        // client-side — XP is the true ranking now.
         const snap = await getDocs(query(collection(db, "leaderboard"), orderBy("gems", "desc"), limit(50)));
         if (!cancelled) {
-          setRows(snap.docs.map((d) => ({ uid: d.id, ...(d.data() as Omit<BoardRow, "uid">) })));
+          const list = snap.docs.map((d) => ({ uid: d.id, ...(d.data() as Omit<BoardRow, "uid">) }));
+          list.sort((a, b) => rowXp(b) - rowXp(a));
+          setRows(list);
         }
       } catch {
         if (!cancelled) setFailed(true);
@@ -50,7 +58,7 @@ export default function LeaderboardPage() {
     <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="leaderboard" crumb="🏆 Classement">
       <div className="mx-auto max-w-xl px-3 py-5">
         <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">🏆 Le Classement</h1>
-        <p className="mt-1 mb-4 text-sm text-[color:var(--cahier-ink-soft)]">💎 gems win the ranking; 🔥 is the streak.</p>
+        <p className="mt-1 mb-4 text-sm text-[color:var(--cahier-ink-soft)]">⭐ XP wins the ranking; 🔥 is the streak.</p>
 
         {!user ? (
           <div className="rounded-2xl border-2 border-[color:var(--cahier-ink)] bg-white p-5 text-center">
@@ -79,8 +87,11 @@ export default function LeaderboardPage() {
                   <span className="w-8 text-center text-base font-black">{medal(i)}</span>
                   <span className="min-w-0 flex-1 truncate text-sm font-bold text-[color:var(--cahier-ink)]">
                     {r.name}{me && " (vous)"}
+                    <span className="ml-1.5 rounded-full bg-[color:var(--cahier-hl,#eaff00)]/50 px-1.5 py-0.5 text-[11px] font-bold text-[color:var(--cahier-ink)]">
+                      N{r.level ?? levelForXp(rowXp(r)).level} · {levelForXp(rowXp(r)).name}
+                    </span>
                   </span>
-                  <span className="fluo-mono text-sm font-black text-[color:var(--cahier-ink)]">💎 {r.gems}</span>
+                  <span className="fluo-mono text-sm font-black text-[color:var(--cahier-ink)]">⭐ {rowXp(r)}</span>
                   <span className="fluo-mono w-14 text-right text-sm font-bold text-[color:var(--cahier-ink-soft)]">🔥 {r.streak}</span>
                 </li>
               );

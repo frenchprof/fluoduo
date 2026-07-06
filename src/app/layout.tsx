@@ -5,6 +5,7 @@ import BetaNotice from "@/components/BetaNotice";
 import FeedbackButton from "@/components/FeedbackButton";
 import ProgressSync from "@/components/ProgressSync";
 import AccentBar from "@/components/AccentBar";
+import RewardToast from "@/components/RewardToast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -63,6 +64,7 @@ export default function RootLayout({
         <BetaNotice />
         <ProgressSync />
         <AccentBar />
+        <RewardToast />
       </body>
     </html>
   );

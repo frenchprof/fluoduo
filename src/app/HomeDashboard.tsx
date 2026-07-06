@@ -15,6 +15,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { SIOS, UNIT_META } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
+import { equippedAccent, levelForXp, xpMultiplier } from "@/lib/economy";
 import { dueForReview } from "@/lib/reviser";
 
 export default function HomeDashboard() {
@@ -40,6 +41,13 @@ export default function HomeDashboard() {
   const doneTotal = SIOS.filter((s) => isSioDone(s.id, progress)).length;
   const pct = Math.round((doneTotal / SIOS.length) * 100);
 
+  // Economy view: level from lifetime XP, the fire multiplier, and the accent
+  // colour the learner has equipped (drives the hero CTA + bars).
+  const lvl = levelForXp(progress.xp);
+  const mult = xpMultiplier(progress.streak);
+  const accent = equippedAccent(progress);
+  const xpPct = Math.round((lvl.into / lvl.span) * 100);
+
   const chip = "fluo-mono flex items-center gap-1.5 rounded-full border-2 border-[color:var(--fluo-ink)] bg-white/75 px-3 py-1 text-sm font-bold text-[color:var(--fluo-ink)]";
 
   return (
@@ -59,7 +67,8 @@ export default function HomeDashboard() {
           {activeSio && (
             <Link
               href={`/unit/${activeSio.unit}#${activeSio.id}`}
-              className="rounded-full border-2 border-[var(--fluo-danger)] bg-[var(--fluo-danger)] px-5 py-2 text-base font-black text-white shadow-[3px_3px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
+              style={{ background: accent, borderColor: accent }}
+              className="rounded-full border-2 px-5 py-2 text-base font-black text-white shadow-[3px_3px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
             >
               ▶ Continuer · {activeSio.topic}
             </Link>
@@ -91,18 +100,40 @@ export default function HomeDashboard() {
           >
             🤖 Tuteur
           </Link>
+          <Link
+            href="/profil"
+            className="fluo-mono flex items-center gap-1 rounded-full border-2 border-[color:var(--fluo-ink)] bg-white/75 px-4 py-2 text-sm font-bold text-[color:var(--fluo-ink)] transition hover:-translate-y-0.5"
+          >
+            🎖️ Profil
+          </Link>
         </div>
 
         <div className="mt-4 flex flex-wrap items-center gap-2.5">
+          <Link href="/profil" className={`${chip} hover:-translate-y-0.5`} title="Votre niveau">🎚️ N{lvl.level} · {lvl.name}</Link>
           <span className={chip}>✓ {doneTotal}/{SIOS.length}</span>
-          <span className={chip}>🔥 {progress.streak}</span>
-          <span className={chip}>💎 {progress.gems}</span>
-          <span className="h-2.5 min-w-[8rem] flex-1 overflow-hidden rounded-full border-2 border-[color:var(--fluo-ink)] bg-white/75">
-            <span
-              className="block h-full rounded-full transition-all duration-500"
-              style={{ width: `${Math.max(pct, 2)}%`, background: "var(--fluo-danger)" }}
-            />
+          <span className={chip} title={mult > 1 ? `Série active : XP ×${mult}` : "Série de jours"}>
+            🔥 {progress.streak}{mult > 1 && <b className="text-[color:var(--fluo-danger)]"> ×{mult}</b>}
           </span>
+          <span className={chip}>⭐ {progress.xp}</span>
+          <Link href="/profil" className={`${chip} hover:-translate-y-0.5`} title="Boutique">💎 {progress.gems}</Link>
+        </div>
+
+        {/* Two bars: overall course completion, and XP into the current level. */}
+        <div className="mt-3 space-y-2">
+          <div className="flex items-center gap-2">
+            <span className="fluo-mono w-16 shrink-0 text-xs font-bold text-[color:var(--fluo-ink)]">Cours</span>
+            <span className="h-2.5 flex-1 overflow-hidden rounded-full border-2 border-[color:var(--fluo-ink)] bg-white/75">
+              <span className="block h-full rounded-full transition-all duration-500" style={{ width: `${Math.max(pct, 2)}%`, background: accent }} />
+            </span>
+            <span className="fluo-mono w-10 shrink-0 text-right text-xs font-bold text-[color:var(--fluo-ink)]">{pct}%</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="fluo-mono w-16 shrink-0 text-xs font-bold text-[color:var(--fluo-ink)]">Niveau {lvl.level}</span>
+            <span className="h-2.5 flex-1 overflow-hidden rounded-full border-2 border-[color:var(--fluo-ink)] bg-white/75">
+              <span className="block h-full rounded-full bg-[var(--fluo-hl)] transition-all duration-500" style={{ width: `${Math.max(xpPct, 2)}%` }} />
+            </span>
+            <span className="fluo-mono w-14 shrink-0 text-right text-xs font-bold text-[color:var(--fluo-ink)]">{lvl.into}/{lvl.span}</span>
+          </div>
         </div>
       </section>
 

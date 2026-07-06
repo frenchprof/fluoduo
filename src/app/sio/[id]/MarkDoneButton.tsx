@@ -12,7 +12,8 @@
  * Practice-side action only.
  */
 import { useEffect, useState } from "react";
-import { isSioDone, itemsMastery, loadProgress, markSioDone, unmarkSioDone, GEMS_MASTERY_BONUS, type Progress } from "@/lib/progress";
+import { isSioDone, itemsMastery, loadProgress, markSioDone, unmarkSioDone, type Progress } from "@/lib/progress";
+import { XP_SIO_BASE, XP_SIO_MASTERY } from "@/lib/economy";
 import { SIOS } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import AuthGate from "@/components/AuthGate";
@@ -54,8 +55,8 @@ export default function MarkDoneButton({ sioId }: { sioId: string }) {
           </button>
           <span className="text-xs text-[color:var(--fluo-ink-soft)]">
             {done
-              ? "Unlocked the next objective · 💎 earned"
-              : `Earns 💎 (up to +${GEMS_MASTERY_BONUS} more for mastered practice)`}
+              ? "⭐ XP earned"
+              : `Earns ⭐ ${XP_SIO_BASE}–${XP_SIO_BASE + XP_SIO_MASTERY} XP (more for mastered practice), ×fire streak`}
           </span>
         </div>
       </AuthGate>

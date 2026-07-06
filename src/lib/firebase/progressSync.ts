@@ -17,6 +17,7 @@ import {
   setOnProgressSave,
   type Progress,
 } from "@/lib/progress";
+import { levelForXp } from "@/lib/economy";
 
 const DOC_PATH = ["app", "progress"] as const;
 const PUSH_DEBOUNCE_MS = 2500;
@@ -30,7 +31,10 @@ export function mergeProgress(local: Progress, remote: Partial<Progress> | undef
   }
   return {
     doneSios: [...new Set([...(remote.doneSios ?? []), ...local.doneSios])],
+    // gems are a spendable balance; max favours the learner (a tiny refund on
+    // the rare spend-then-merge is acceptable in beta). xp is monotonic.
     gems: Math.max(local.gems, remote.gems ?? 0),
+    xp: Math.max(local.xp ?? 0, remote.xp ?? 0),
     streak: Math.max(local.streak, remote.streak ?? 0),
     lastActiveDay:
       [local.lastActiveDay, remote.lastActiveDay ?? null]
@@ -38,6 +42,12 @@ export function mergeProgress(local: Progress, remote: Partial<Progress> | undef
         .sort()
         .pop() ?? null,
     itemSrs,
+    badges: [...new Set([...(remote.badges ?? []), ...(local.badges ?? [])])],
+    cosmetics: {
+      owned: [...new Set([...(remote.cosmetics?.owned ?? []), ...(local.cosmetics?.owned ?? [])])],
+      // equipped: the device the learner is on wins, else whatever remote had.
+      equipped: { ...(remote.cosmetics?.equipped ?? {}), ...(local.cosmetics?.equipped ?? {}) },
+    },
   };
 }
 
@@ -78,7 +88,9 @@ async function publishLeaderboard(p: Progress): Promise<void> {
   const ref = doc(database.db, "leaderboard", u.uid);
   const name = u.displayName || (u.email ? u.email.split("@")[0] : "Anonyme");
   try {
-    await setDoc(ref, { name, gems: p.gems, streak: p.streak, updatedAt: Date.now() }, { merge: true });
+    // Rank by XP now (the lifetime score); keep gems for continuity and publish
+    // the level so the board can show each learner's rank name.
+    await setDoc(ref, { name, xp: p.xp, level: levelForXp(p.xp).level, gems: p.gems, streak: p.streak, updatedAt: Date.now() }, { merge: true });
   } catch {
     // Write denied → excluded (admin / opt-out). Remove any stale entry.
     try { await deleteDoc(ref); } catch {}

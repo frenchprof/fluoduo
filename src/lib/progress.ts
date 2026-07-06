@@ -33,12 +33,28 @@
  *     it's a deliberate cold diagnostic on a separate item-id namespace.
  */
 
+import {
+  BADGES,
+  badgeContext,
+  cosmeticById,
+  levelForXp,
+  xpMultiplier,
+  XP_CORRECT,
+  XP_WRONG,
+  XP_SIO_BASE,
+  XP_SIO_MASTERY,
+  XP_CONVERSATION,
+} from "@/lib/economy";
+
 export type Progress = {
   doneSios: string[];
-  gems: number;
+  gems: number; // SPENDABLE balance (paid by badges, spent on cosmetics)
+  xp: number; // lifetime score (drives levels + leaderboard); never spent
   streak: number;
   lastActiveDay: string | null; // "YYYY-MM-DD"
   itemSrs: Record<string, ItemSrs>;
+  badges: string[]; // earned badge ids
+  cosmetics: { owned: string[]; equipped: Record<string, string> };
 };
 
 export type ItemSrs = {
@@ -51,8 +67,7 @@ export type ItemSrs = {
 // learner has actually gotten right (their itemSrs state). Someone who drilled
 // the deck to mastery earns up to GEMS_BASE + GEMS_MASTERY_BONUS; a bare
 // self-mark with no practice still earns the base.
-const GEMS_BASE = 10;
-export const GEMS_MASTERY_BONUS = 10;
+export const GEMS_MASTERY_BONUS = XP_SIO_MASTERY; // kept as a re-export for callers
 const STORAGE_KEY = "fluolingo:progress";
 
 function todayStr(): string {
@@ -60,7 +75,22 @@ function todayStr(): string {
 }
 
 export function defaultProgress(): Progress {
-  return { doneSios: [], gems: 0, streak: 0, lastActiveDay: null, itemSrs: {} };
+  return { doneSios: [], gems: 0, xp: 0, streak: 0, lastActiveDay: null, itemSrs: {}, badges: [], cosmetics: { owned: [], equipped: {} } };
+}
+
+/** Fill in fields added after a learner's blob was first written, and migrate
+ *  pre-economy saves: their old `gems` total WAS lifetime XP (the code used the
+ *  two interchangeably), so seed `xp` from it and let `gems` become the fresh
+ *  spendable balance. Idempotent — only seeds when `xp` is absent. */
+function normalize(raw: Partial<Progress>): Progress {
+  const p = { ...defaultProgress(), ...raw };
+  if (raw.xp == null && typeof raw.gems === "number") p.xp = raw.gems;
+  p.badges = Array.isArray(raw.badges) ? raw.badges : [];
+  p.cosmetics = {
+    owned: Array.isArray(raw.cosmetics?.owned) ? raw.cosmetics!.owned : [],
+    equipped: raw.cosmetics?.equipped && typeof raw.cosmetics.equipped === "object" ? raw.cosmetics.equipped : {},
+  };
+  return p;
 }
 
 export function loadProgress(): Progress {
@@ -68,7 +98,7 @@ export function loadProgress(): Progress {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return defaultProgress();
-    return { ...defaultProgress(), ...JSON.parse(raw) };
+    return normalize(JSON.parse(raw));
   } catch {
     return defaultProgress();
   }
@@ -131,6 +161,43 @@ export function clearLocalLearnerData(): void {
   } catch {}
 }
 
+/** Add XP for one action, scaled by today's fire multiplier. */
+function addXp(p: Progress, base: number): Progress {
+  return { ...p, xp: p.xp + Math.round(base * xpMultiplier(p.streak)) };
+}
+
+/** Award any newly-earned badges (crediting their gem bounty), then persist.
+ *  Emits a `fluolingo:reward` event per new badge and on a level-up so any
+ *  mounted HUD can celebrate. Every earning path ends here. */
+function finalize(p: Progress): Progress {
+  const beforeXp = loadProgress().xp; // persisted state, pre-save
+  const ctx = badgeContext(p);
+  let gems = p.gems;
+  const badges = [...p.badges];
+  const fresh: string[] = [];
+  for (const b of BADGES) {
+    if (!badges.includes(b.id) && b.earned(p, ctx)) {
+      badges.push(b.id);
+      gems += b.gems;
+      fresh.push(b.id);
+    }
+  }
+  const saved = saveProgress({ ...p, gems, badges });
+  try {
+    if (typeof window !== "undefined") {
+      if (levelForXp(saved.xp).level > levelForXp(beforeXp).level) {
+        window.dispatchEvent(new CustomEvent("fluolingo:reward", { detail: { type: "level", level: levelForXp(saved.xp).level } }));
+      }
+      for (const id of fresh) {
+        window.dispatchEvent(new CustomEvent("fluolingo:reward", { detail: { type: "badge", id } }));
+      }
+    }
+  } catch {
+    /* celebration is best-effort */
+  }
+  return saved;
+}
+
 function bumpStreakToday(p: Progress): Progress {
   const today = todayStr();
   if (p.lastActiveDay === today) return p;
@@ -161,13 +228,46 @@ export function itemsMastery(itemIds: string[], p: Progress): number {
  * Omit it (or pass a deckless SIO's 0) and only the base is awarded.
  */
 export function markSioDone(id: string, accuracy?: number): Progress {
-  let p = loadProgress();
+  let p = bumpStreakToday(loadProgress());
   if (!p.doneSios.includes(id)) {
     const acc = accuracy == null ? 0 : Math.max(0, Math.min(1, accuracy));
-    const gain = GEMS_BASE + Math.round(GEMS_MASTERY_BONUS * acc);
-    p = { ...p, doneSios: [...p.doneSios, id], gems: p.gems + gain };
+    p = { ...p, doneSios: [...p.doneSios, id] };
+    p = addXp(p, XP_SIO_BASE + Math.round(XP_SIO_MASTERY * acc));
   }
-  return saveProgress(bumpStreakToday(p));
+  return finalize(p);
+}
+
+/** Award XP for finishing an AI role-play conversation (café, greetings, …). */
+export function awardConversationXp(): Progress {
+  return finalize(addXp(bumpStreakToday(loadProgress()), XP_CONVERSATION));
+}
+
+/** Buy a cosmetic with gems and equip it (idempotent; no-op if owned already or
+ *  the balance is short). The only thing gems ever buy — never learning. */
+export function buyCosmetic(id: string): Progress {
+  const p = loadProgress();
+  const c = cosmeticById(id);
+  if (!c) return p;
+  if (p.cosmetics.owned.includes(id)) return equipCosmetic(id);
+  if (p.gems < c.cost) return p;
+  return saveProgress({
+    ...p,
+    gems: p.gems - c.cost,
+    cosmetics: { owned: [...p.cosmetics.owned, id], equipped: { ...p.cosmetics.equipped, [c.slot]: id } },
+  });
+}
+
+/** Equip an owned cosmetic, or pass null to revert a slot to its default. */
+export function equipCosmetic(id: string | null): Progress {
+  const p = loadProgress();
+  if (id === null) {
+    const equipped = { ...p.cosmetics.equipped };
+    delete equipped.homeAccent;
+    return saveProgress({ ...p, cosmetics: { ...p.cosmetics, equipped } });
+  }
+  const c = cosmeticById(id);
+  if (!c || !p.cosmetics.owned.includes(id)) return p;
+  return saveProgress({ ...p, cosmetics: { ...p.cosmetics, equipped: { ...p.cosmetics.equipped, [c.slot]: id } } });
 }
 
 export function unmarkSioDone(id: string): Progress {
@@ -197,11 +297,14 @@ export function stepItemSrs(prev: ItemSrs | undefined, correct: boolean, now: nu
  * intended "repaired but fragile" signal, don't gate this to first attempts.
  */
 export function recordItemResult(itemId: string, correct: boolean): Progress {
-  const p = loadProgress();
-  const itemSrs = { ...p.itemSrs, [itemId]: stepItemSrs(p.itemSrs[itemId], correct, Date.now()) };
+  const prev = loadProgress();
+  const itemSrs = { ...prev.itemSrs, [itemId]: stepItemSrs(prev.itemSrs[itemId], correct, Date.now()) };
   // Practising ANYTHING keeps the streak alive — motivation comes from showing
-  // up, not from being right (hearts, which punished errors, are gone).
-  return saveProgress(bumpStreakToday({ ...p, itemSrs }));
+  // up, not from being right (hearts, which punished errors, are gone). A right
+  // answer earns more XP than a wrong one, but a wrong one still earns (effort
+  // counts, errors are never punished).
+  const p = bumpStreakToday({ ...prev, itemSrs });
+  return finalize(addXp(p, correct ? XP_CORRECT : XP_WRONG));
 }
 
 /** True if the item was never practiced or its interval has elapsed — the Reviser's bias signal. */

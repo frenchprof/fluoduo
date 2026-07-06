@@ -10,6 +10,7 @@
 import { useEffect, useState } from "react";
 import { speak } from "@/games/letris/speech";
 import { sfx } from "@/games/audio/sfx";
+import { awardConversationXp } from "@/lib/progress";
 import { categoryHeaderClass, type ComposeBank } from "@/games/compose/banks";
 
 /** Join tapped chips into readable French (", " chips collapse into commas). */
@@ -88,7 +89,7 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
       }
       setFeedback({ reply: data.reply, done: data.done === true });
       speak(data.reply, lang, { gender: "m" });
-      if (data.done) sfx.stage(); else sfx.correct();
+      if (data.done) { sfx.stage(); awardConversationXp(); } else sfx.correct();
     } catch {
       setUnavailable(true);
     } finally {
