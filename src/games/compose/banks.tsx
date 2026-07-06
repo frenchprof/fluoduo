@@ -9,6 +9,17 @@
 
 export type ComposeCategory = { label: string; chip: string; phrases: string[] };
 
+/** Per-persona colourway for the dialogue chrome (bubbles, buttons, inputs).
+ *  Each field maps to a CSS variable read by ComposeDialogue. */
+export type DialogueTheme = {
+  edge: string; // light border — persona bubble, containers, inputs
+  strong: string; // accent — learner bubble border, button fills, focus ring
+  deep: string; // deep shade — button lip, accent text
+  personaBg: string; // persona bubble background (light tint)
+  meBg: string; // learner bubble background
+  ink: string; // body text colour
+};
+
 /** Dialogue banks: the AI persona the learner talks to (drives ComposeDialogue). */
 export type DialogueScene = {
   opening: string; // the persona's first line
@@ -18,7 +29,15 @@ export type DialogueScene = {
    *  absent, show a friendly "needs connection" notice rather than accepting
    *  nonsense. Every scene except the café sets this. */
   aiOnly?: boolean;
+  /** Colourway; omitted → café warm-brown default. */
+  theme?: DialogueTheme;
 };
+
+// Persona palettes — one hue family each, warm and legible on paper.
+const THEME_CAFE: DialogueTheme = { edge: "#e8c49a", strong: "#d98e46", deep: "#b96f2e", personaBg: "#fff8ef", meBg: "#ffdcb3", ink: "#4a2c14" };
+const THEME_GREEN: DialogueTheme = { edge: "#bfe0b6", strong: "#5aa657", deep: "#3d7a3d", personaBg: "#f1fbee", meBg: "#d6f0cf", ink: "#22401f" };
+const THEME_PURPLE: DialogueTheme = { edge: "#cdbdea", strong: "#8b6fd0", deep: "#6247a0", personaBg: "#f5f0fc", meBg: "#e2d7f6", ink: "#2a1c4a" };
+const THEME_BLUE: DialogueTheme = { edge: "#b7d4ea", strong: "#4a90c2", deep: "#33698f", personaBg: "#eef6fb", meBg: "#cfe6f5", ink: "#123650" };
 
 export type ComposeBank = {
   id: string;
@@ -163,7 +182,7 @@ const CAFE_BANK: ComposeBank = {
   unit: 4,
   deckId: "aliments",
   mode: "dialogue",
-  scene: { opening: "Bonsoir ! Vous désirez ?", emoji: "🤵", voice: "m" },
+  scene: { opening: "Bonsoir ! Vous désirez ?", emoji: "🤵", voice: "m", theme: THEME_CAFE },
   categories: withPalette([
     { label: "Commander", phrases: ["Je voudrais", "Je prends", "Pour moi,"] },
     {
@@ -203,7 +222,7 @@ const GREETINGS_BANK: ComposeBank = {
   unit: 1,
   deckId: "salutations",
   mode: "dialogue",
-  scene: { opening: "Salut ! Ça va ?", emoji: "🙋", voice: "f", aiOnly: true },
+  scene: { opening: "Salut ! Ça va ?", emoji: "🙋", voice: "f", aiOnly: true, theme: THEME_GREEN },
   categories: withPalette([
     { label: "Saluer", phrases: ["Bonjour", "Salut", "Bonsoir", "Coucou"] },
     { label: "Ça va", phrases: ["Ça va bien", "Très bien", "Ça va, merci", "Comme ci comme ça", "Et toi ?"] },
@@ -226,7 +245,7 @@ const RENDEZVOUS_BANK: ComposeBank = {
   unit: 2,
   deckId: "vouloir-inviter",
   mode: "dialogue",
-  scene: { opening: "Tu es libre ce week-end ? Tu veux venir au cinéma ?", emoji: "🙋‍♂️", voice: "m", aiOnly: true },
+  scene: { opening: "Tu es libre ce week-end ? Tu veux venir au cinéma ?", emoji: "🙋‍♂️", voice: "m", aiOnly: true, theme: THEME_PURPLE },
   categories: withPalette([
     { label: "Accepter", phrases: ["Oui, je veux bien", "Bonne idée", "D'accord", "Avec plaisir"] },
     { label: "Refuser", phrases: ["Désolé, je ne peux pas", "Je ne suis pas libre", "Une autre fois"] },
@@ -249,7 +268,7 @@ const SHOP_BANK: ComposeBank = {
   unit: 2,
   deckId: "objets-articles",
   mode: "dialogue",
-  scene: { opening: "Bonjour ! Je peux vous aider ?", emoji: "🛍️", voice: "f", aiOnly: true },
+  scene: { opening: "Bonjour ! Je peux vous aider ?", emoji: "🛍️", voice: "f", aiOnly: true, theme: THEME_BLUE },
   categories: withPalette([
     { label: "Demander", phrases: ["Je voudrais", "Je cherche", "Avez-vous"] },
     { label: "Objets", phrases: ["un cahier", "un stylo", "un crayon", "une trousse", "une gomme", "un sac", "des ciseaux"] },

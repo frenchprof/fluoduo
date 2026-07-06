@@ -9,7 +9,7 @@
  * a reply doesn't move the script forward.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { sfx } from "@/games/audio/sfx";
 import { speak, speakSequence } from "@/games/letris/speech";
 import { CAFE_PRICES, categoryHeaderClass, type ComposeBank } from "@/games/compose/banks";
@@ -39,6 +39,16 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
   const personaEmoji = bank.scene?.emoji ?? "🤵";
   const personaVoice: "m" | "f" = bank.scene?.voice ?? "m";
   const aiOnly = bank.scene?.aiOnly ?? false; // no rule fallback (non-café)
+  // Per-persona colourway → CSS variables consumed by the chrome below.
+  const theme = bank.scene?.theme ?? { edge: "#e8c49a", strong: "#d98e46", deep: "#b96f2e", personaBg: "#fff8ef", meBg: "#ffdcb3", ink: "#4a2c14" };
+  const themeVars = {
+    "--dlg-edge": theme.edge,
+    "--dlg-strong": theme.strong,
+    "--dlg-deep": theme.deep,
+    "--dlg-persona-bg": theme.personaBg,
+    "--dlg-me-bg": theme.meBg,
+    "--dlg-ink": theme.ink,
+  } as CSSProperties;
   const phrasesOf = (label: string) =>
     bank.categories.find((c) => c.label === label)?.phrases ?? [];
   const COMMANDER = phrasesOf("Commander");
@@ -246,9 +256,9 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-4 py-6 text-[#4a2c14]">
+    <div style={themeVars} className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-4 py-6 text-[color:var(--dlg-ink)]">
       {/* Chat column */}
-      <div className="flex flex-col gap-2 rounded-xl border-2 border-[#e8c49a] bg-white/70 p-4">
+      <div className="flex flex-col gap-2 rounded-xl border-2 border-[color:var(--dlg-edge)] bg-white/70 p-4">
         {messages.map((m, i) => (
           <div key={i} className={`flex ${m.who === "me" ? "justify-end" : "justify-start"}`}>
             <button
@@ -258,8 +268,8 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
               title="🔊"
               className={`max-w-[85%] rounded-2xl border-2 px-4 py-2 text-left text-base leading-snug shadow-sm transition hover:brightness-95 ${
                 m.who === "waiter"
-                  ? "rounded-bl-sm border-[#e8c49a] bg-[#fff8ef]"
-                  : "rounded-br-sm border-[#d98e46] bg-[#ffdcb3]"
+                  ? "rounded-bl-sm border-[color:var(--dlg-edge)] bg-[var(--dlg-persona-bg)]"
+                  : "rounded-br-sm border-[color:var(--dlg-strong)] bg-[var(--dlg-me-bg)]"
               }`}
             >
               {m.who === "waiter" && (
@@ -277,13 +287,13 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
       {unavailable ? (
         /* aiOnly scene with no backend (local preview / key not set): degrade
            gracefully rather than accept nonsense. */
-        <div className="rounded-xl border-2 border-[#e8c49a] bg-white p-5 text-center text-[#4a2c14]">
+        <div className="rounded-xl border-2 border-[color:var(--dlg-edge)] bg-white p-5 text-center text-[color:var(--dlg-ink)]">
           <p className="text-lg font-black">🔌 L&rsquo;assistant n&rsquo;est pas disponible ici</p>
           <p className="mt-1 text-sm">Cette conversation a besoin d&rsquo;une connexion. Réessayez sur le site en ligne.</p>
           <button
             type="button"
             onClick={() => { setUnavailable(false); start(); }}
-            className="mt-4 rounded-xl border-2 border-[#d98e46] bg-white px-4 py-2 font-black text-[#b96f2e] transition hover:bg-[#fff3e0]"
+            className="mt-4 rounded-xl border-2 border-[color:var(--dlg-strong)] bg-white px-4 py-2 font-black text-[color:var(--dlg-deep)] transition hover:bg-[var(--dlg-persona-bg)]"
           >
             🔁 Réessayer
           </button>
@@ -291,7 +301,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
       ) : done ? (
         /* Recap card — the rule engine tracked a priced order; the AI waiter
            gave the total in the chat, so its recap is just the replay. */
-        <div className="rounded-xl border-2 border-[#d98e46] bg-white p-5">
+        <div className="rounded-xl border-2 border-[color:var(--dlg-strong)] bg-white p-5">
           {ordered.length > 0 ? (
             <>
               <h2 lang="fr" className="text-lg font-black">🧾 L&rsquo;addition</h2>
@@ -303,7 +313,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
                   </li>
                 ))}
               </ul>
-              <p lang="fr" className="mt-2 flex justify-between border-t-2 border-[#e8c49a] pt-2 font-black">
+              <p lang="fr" className="mt-2 flex justify-between border-t-2 border-[color:var(--dlg-edge)] pt-2 font-black">
                 <span>Total</span>
                 <span>{total} €</span>
               </p>
@@ -315,14 +325,14 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
             <button
               type="button"
               onClick={playAll}
-              className="rounded-xl border-b-4 border-[#b96f2e] bg-[#d98e46] px-4 py-2 font-black text-white transition hover:brightness-105"
+              className="rounded-xl border-b-4 border-[color:var(--dlg-deep)] bg-[var(--dlg-strong)] px-4 py-2 font-black text-white transition hover:brightness-105"
             >
               ▶️ Écouter le dialogue
             </button>
             <button
               type="button"
               onClick={start}
-              className="rounded-xl border-2 border-[#d98e46] bg-white px-4 py-2 font-black text-[#b96f2e] transition hover:bg-[#fff3e0]"
+              className="rounded-xl border-2 border-[color:var(--dlg-strong)] bg-white px-4 py-2 font-black text-[color:var(--dlg-deep)] transition hover:bg-[var(--dlg-persona-bg)]"
             >
               🔁 Rejouer
             </button>
@@ -332,16 +342,16 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
         <>
           {/* Reply under construction: tapped chips + free text (Dan,
               2026-07-05: "a combination of fixed phrases and user input"). */}
-          <div className="rounded-xl border-2 border-[#e8c49a] bg-[#fff8ef] p-4">
+          <div className="rounded-xl border-2 border-[color:var(--dlg-edge)] bg-[var(--dlg-persona-bg)] p-4">
             {draft.length === 0 && !typed ? (
-              <p className="italic text-[#4a2c14]/60">Tap phrases below and / or type your reply…</p>
+              <p className="italic text-[color:var(--dlg-ink)] opacity-60">Tap phrases below and / or type your reply…</p>
             ) : (
               <p lang="fr" className="text-lg leading-relaxed">
                 {draftText}
                 <span className="animate-pulse" aria-hidden>▏</span>
               </p>
             )}
-            {busy && <p className="mt-2 text-sm font-bold text-[#b96f2e]">{personaEmoji} …</p>}
+            {busy && <p className="mt-2 text-sm font-bold text-[color:var(--dlg-deep)]">{personaEmoji} …</p>}
             {nudge && <p className="mt-2 text-sm font-bold text-rose-700">{nudge}</p>}
             <form onSubmit={(e) => { e.preventDefault(); void send(); }} className="mt-3 flex flex-wrap items-center gap-2">
               <input
@@ -350,21 +360,21 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
                 onChange={(e) => setTyped(e.target.value)}
                 placeholder="…ou tapez ici"
                 disabled={busy || done}
-                className="min-w-[8rem] flex-1 rounded-lg border-2 border-[#e8c49a] bg-white px-3 py-1.5 text-base text-[#4a2c14] outline-none focus:border-[#d98e46]"
+                className="min-w-[8rem] flex-1 rounded-lg border-2 border-[color:var(--dlg-edge)] bg-white px-3 py-1.5 text-base text-[color:var(--dlg-ink)] outline-none focus:border-[color:var(--dlg-strong)]"
                 autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
               />
               <button
                 type="button"
                 onClick={() => { setDraft((d) => d.slice(0, -1)); setNudge(null); }}
                 disabled={draft.length === 0 || busy}
-                className="rounded-xl border-2 border-[#e8c49a] bg-white px-3 py-1.5 text-sm font-bold text-[#4a2c14] transition hover:bg-[#fff3e0] disabled:opacity-40"
+                className="rounded-xl border-2 border-[color:var(--dlg-edge)] bg-white px-3 py-1.5 text-sm font-bold text-[color:var(--dlg-ink)] transition hover:bg-[var(--dlg-persona-bg)] disabled:opacity-40"
               >
                 ↶ Undo
               </button>
               <button
                 type="submit"
                 disabled={!draftText || busy}
-                className="rounded-xl border-b-4 border-[#b96f2e] bg-[#d98e46] px-4 py-1.5 font-black text-white transition hover:brightness-105 disabled:opacity-40"
+                className="rounded-xl border-b-4 border-[color:var(--dlg-deep)] bg-[var(--dlg-strong)] px-4 py-1.5 font-black text-white transition hover:brightness-105 disabled:opacity-40"
               >
                 ✔ Je réponds
               </button>
@@ -376,7 +386,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
             {bank.categories.map((cat, i) => (
               <section
                 key={cat.label}
-                className="overflow-hidden rounded-xl border-2 border-[#e8c49a] bg-white"
+                className="overflow-hidden rounded-xl border-2 border-[color:var(--dlg-edge)] bg-white"
               >
                 <header
                   className={`px-4 py-2.5 text-sm font-bold uppercase tracking-widest ${categoryHeaderClass(i)}`}
