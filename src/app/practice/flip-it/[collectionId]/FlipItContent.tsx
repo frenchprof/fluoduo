@@ -886,6 +886,18 @@ const NAT_COLS: ColDef[] = [
   { key: "fp", label: "elles sont", w: 120 }, { key: "deck", label: "Reviewed", w: 120 },
   { key: "notes", label: "notes", w: 220 },
 ];
+// The "art." column is populated by articleOf(), which reads the deck's Letris
+// columns. For a deck sorted by PREPOSITION (en/au/aux/à…) those values are
+// prepositions, not articles (Dan, 2026-07-06: "grossly misnamed: it is not
+// article") — so title the column accordingly.
+const PREP_PURE = new Set(["à", "en", "au", "aux", "de", "d'"]);
+const PREP_ALL = new Set(["à", "en", "au", "aux", "de", "du", "des", "d'", "à la", "à l'", "de la", "de l'"]);
+function articleColLabel(articleOptions: string[]): string {
+  const vals = articleOptions.filter((a) => a !== "");
+  const isPrep = vals.length > 0 && vals.every((a) => PREP_ALL.has(a)) && vals.some((a) => PREP_PURE.has(a));
+  return isPrep ? "prép." : "art.";
+}
+
 const COVERABLE: ColKey[] = ["eng", "art", "fr", "ms", "fs", "mp", "fp", "notes"];
 const ANSWER_COLS: ColKey[] = ["art", "fr", "ms", "fs", "mp", "fp"];
 const LANG_COLS: ColKey[] = ["eng", "fr", "ms", "fs", "mp", "fp"];
@@ -911,7 +923,8 @@ function Overview({
   selected: Set<string>; onToggleSelect: (id: string) => void; onSelectAll: (ids: string[], on: boolean) => void;
   notes: DeckNotes; setNotes: (n: DeckNotes) => void; articleOptions: string[];
 }) {
-  const COLS = isNat ? NAT_COLS : STD_COLS;
+  const COLS = (isNat ? NAT_COLS : STD_COLS).map((c) =>
+    c.key === "art" ? { ...c, label: articleColLabel(articleOptions) } : c);
   const coverableHere = COLS.filter((c) => COVERABLE.includes(c.key)).map((c) => c.key);
   const hasArt = articleOptions.some((a) => a !== ""); // deck has an article/prefix axis at all
   // Answer columns differ by deck: nat tests the 4 forms (country stays as the
