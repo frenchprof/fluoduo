@@ -116,7 +116,18 @@ export async function startProgressSync(): Promise<void> {
       import("./db"),
     ]);
     const snap = await getDoc(doc(db, "users", uid, ...DOC_PATH));
-    const merged = mergeProgress(loadProgress(), snap.exists() ? (snap.data() as Partial<Progress>) : undefined);
+    let merged = mergeProgress(loadProgress(), snap.exists() ? (snap.data() as Partial<Progress>) : undefined);
+    // One-time carry-over of prior-course XP (Dan, 2026-07-06). The old laf1201
+    // suite shares this Firebase project + leaderboard collection; its rows hold
+    // a lifetime `totalXP`. Seed it as an XP FLOOR so a returning student keeps
+    // their standing. Idempotent — max() means later sign-ins don't re-add.
+    try {
+      const oldRow = await getDoc(doc(db, "leaderboard", uid));
+      const oldXp = Number((oldRow.exists() ? oldRow.data() : {})?.totalXP ?? 0);
+      if (Number.isFinite(oldXp) && oldXp > merged.xp) merged = { ...merged, xp: oldXp };
+    } catch {
+      /* no old row / read denied — nothing to carry over */
+    }
     replaceProgress(merged);
     void push(merged);
   } catch {

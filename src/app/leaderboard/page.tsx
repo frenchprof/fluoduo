@@ -13,9 +13,22 @@ import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 import { signInWithGoogle, useAuthUser } from "@/lib/firebase/auth";
 import { levelForXp } from "@/lib/economy";
 
-// Older rows predate xp/level (they only had gems) — read defensively.
-type BoardRow = { uid: string; name: string; xp?: number; level?: number; gems?: number; streak: number };
-const rowXp = (r: BoardRow) => r.xp ?? r.gems ?? 0;
+// Rows come from two eras of the SAME course (Dan, 2026-07-06: "same course,
+// upgraded platform"): the old laf1201 suite wrote { displayName, totalXP },
+// FluoLingo writes { name, xp, level, gems, streak }. Read both defensively so
+// every student — old and new — appears on one board.
+type BoardRow = {
+  uid: string;
+  name?: string;
+  displayName?: string;
+  xp?: number;
+  totalXP?: number;
+  level?: number;
+  gems?: number;
+  streak?: number;
+};
+const rowXp = (r: BoardRow) => r.xp ?? r.totalXP ?? r.gems ?? 0;
+const rowName = (r: BoardRow) => r.name ?? r.displayName ?? "Anonyme";
 
 export default function LeaderboardPage() {
   const user = useAuthUser();
@@ -30,18 +43,19 @@ export default function LeaderboardPage() {
     let cancelled = false;
     (async () => {
       try {
-        const [{ collection, getDocs, limit, orderBy, query }, { db }] = await Promise.all([
+        const [{ collection, getDocs, limit, query }, { db }] = await Promise.all([
           import("firebase/firestore"),
           import("@/lib/firebase/db"),
         ]);
-        // Order by gems at the DB level (every row has it, including pre-xp
-        // rows Firestore would drop from an orderBy("xp")), then re-rank by XP
-        // client-side — XP is the true ranking now.
-        const snap = await getDocs(query(collection(db, "leaderboard"), orderBy("gems", "desc"), limit(50)));
+        // Old rows have neither `xp` nor `gems`, so an orderBy on either would
+        // DROP them (Firestore excludes docs missing the sort field). The board
+        // is one classroom, so fetch all and rank by XP client-side across both
+        // schemas, then take the top 50.
+        const snap = await getDocs(query(collection(db, "leaderboard"), limit(300)));
         if (!cancelled) {
           const list = snap.docs.map((d) => ({ uid: d.id, ...(d.data() as Omit<BoardRow, "uid">) }));
           list.sort((a, b) => rowXp(b) - rowXp(a));
-          setRows(list);
+          setRows(list.slice(0, 50));
         }
       } catch {
         if (!cancelled) setFailed(true);
@@ -86,13 +100,13 @@ export default function LeaderboardPage() {
                 >
                   <span className="w-8 text-center text-base font-black">{medal(i)}</span>
                   <span className="min-w-0 flex-1 truncate text-sm font-bold text-[color:var(--cahier-ink)]">
-                    {r.name}{me && " (vous)"}
+                    {rowName(r)}{me && " (vous)"}
                     <span className="ml-1.5 rounded-full bg-[color:var(--cahier-hl,#eaff00)]/50 px-1.5 py-0.5 text-[11px] font-bold text-[color:var(--cahier-ink)]">
                       N{r.level ?? levelForXp(rowXp(r)).level} · {levelForXp(rowXp(r)).name}
                     </span>
                   </span>
                   <span className="fluo-mono text-sm font-black text-[color:var(--cahier-ink)]">⭐ {rowXp(r)}</span>
-                  <span className="fluo-mono w-14 text-right text-sm font-bold text-[color:var(--cahier-ink-soft)]">🔥 {r.streak}</span>
+                  <span className="fluo-mono w-14 text-right text-sm font-bold text-[color:var(--cahier-ink-soft)]">🔥 {r.streak ?? 0}</span>
                 </li>
               );
             })}
