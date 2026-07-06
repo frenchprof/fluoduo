@@ -19,6 +19,7 @@ import { conjugaisonErLesson } from "./conjugaison-er";
 import { modauxLesson } from "./modaux";
 import { rendezvousLesson } from "./rendezvous";
 import { prepositionsLesson } from "./prepositions";
+import { prepositionsLieuxLesson } from "./prepositions-lieux";
 import { partitifsLesson } from "./partitifs";
 import { mangerBoireLesson } from "./manger-boire";
 import { futurProcheLesson } from "./futur-proche";
@@ -43,6 +44,7 @@ export const NATIVE_LESSONS: Record<string, NativeLesson> = {
   modaux: modauxLesson,
   rendezvous: rendezvousLesson,
   prepositions: prepositionsLesson,
+  "prepositions-lieux": prepositionsLieuxLesson,
   partitifs: partitifsLesson,
   "manger-boire": mangerBoireLesson,
   "futur-proche": futurProcheLesson,
