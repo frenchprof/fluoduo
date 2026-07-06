@@ -146,7 +146,7 @@ export default function ActivitiesIndexPage() {
         <section className="fluo-h-5 mb-6">
           <div className="mb-2 flex items-center gap-2 rounded-xl px-4 py-2" style={{ background: "var(--fluo-card-accent)" }}>
             <span aria-hidden>✨</span>
-            <span className="fluo-serif font-black text-white">Vos decks</span>
+            <span className="fluo-serif font-black text-white">Vos decks <span className="font-bold text-white/70">· Your decks</span></span>
             <span lang="fr" className="hidden text-sm text-white/85 sm:inline">Les cartes que vous créez vous-même</span>
           </div>
           <MyDecks bare />

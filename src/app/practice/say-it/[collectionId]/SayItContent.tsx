@@ -326,7 +326,7 @@ export default function SayItContent({ collectionId, embedded = false }: { colle
         {finished && (
           <div className="cahier-sheet rounded-2xl p-8 text-center shadow-md">
             <p className="mb-2 text-4xl">🎉</p>
-            <h1 className="fluo-serif text-2xl font-black text-[color:var(--fluo-ink)]">Terminé !</h1>
+            <h1 className="fluo-serif text-2xl font-black text-[color:var(--fluo-ink)]">Terminé ! <span className="text-lg font-bold text-[color:var(--fluo-ink-soft)]">· Done!</span></h1>
             <p className="mt-2 text-sm text-[color:var(--fluo-ink-soft)]">
               You said {score.total} {score.total === 1 ? "word" : "words"}
               {score.total > 0 && <> · ✓ {score.ok} ({Math.round((score.ok / score.total) * 100)}%)</>}.

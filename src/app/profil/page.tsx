@@ -44,7 +44,7 @@ export default function ProfilePage() {
   return (
     <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="profil" crumb="🎖️ Profil">
       <div className="mx-auto max-w-xl px-3 py-5">
-        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">🎖️ Votre profil</h1>
+        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">🎖️ Votre profil <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· Your profile</span></h1>
 
         {/* Level + XP */}
         <section className="mt-4 rounded-2xl border-2 border-[color:var(--cahier-ink)] bg-white p-5">
@@ -96,7 +96,7 @@ export default function ProfilePage() {
 
         {/* Boutique */}
         <section className="mt-5">
-          <h2 className="cahier-display text-lg font-black text-[color:var(--cahier-ink)]">Boutique</h2>
+          <h2 className="cahier-display text-lg font-black text-[color:var(--cahier-ink)]">Boutique <span className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">· Shop</span></h2>
           <p className="text-xs text-[color:var(--cahier-ink-soft)]">Dépensez vos 💎 en couleur d&rsquo;accent de l&rsquo;accueil. (Rien ne bloque l&rsquo;apprentissage.)</p>
           <div className="mt-2 space-y-2">
             {/* Default (always free / equippable) */}
