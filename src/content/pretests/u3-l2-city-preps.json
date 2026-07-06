@@ -172,7 +172,7 @@
       "distractors": [
         "de",
         "d'",
-        "au"
+        "des"
       ],
       "fullSentence": "Ce saké vient du Japon.",
       "sentenceTrans": "This sake comes from Japan.",
@@ -180,7 +180,7 @@
       "whyWrong": {
         "de": "masculine countries keep their article for origin: du Japon, not de Japon.",
         "d'": "Japon starts with a consonant, and masculine countries need du anyway.",
-        "au": "au means 'to/in' — coming from is du."
+        "des": "des is for plural countries (des États-Unis) — le Japon is masculine singular: du."
       }
     },
     {
@@ -258,15 +258,15 @@
       "sentenceAfter": " États-Unis.",
       "answer": "des",
       "distractors": [
-        "aux",
+        "du",
         "de les",
         "de"
       ],
       "fullSentence": "Elle vient des États-Unis.",
       "sentenceTrans": "She comes from the United States.",
-      "why": "<strong>des États-Unis</strong> — plural country names use <em>des</em> (= <em>de + les</em>) for origin. <em>de les</em> does not exist — it always contracts to <em>des</em>. <em>aux</em> is for location ('going to'/'in'), not origin. Compare: <em>elle va aux États-Unis</em> (going there) vs <em>elle vient des États-Unis</em> (coming from there).",
+      "why": "<strong>des États-Unis</strong> — plural country names use <em>des</em> (= <em>de + les</em>) for origin. <em>de les</em> never exists — it always contracts to <em>des</em>. <em>du</em> is for masculine <em>singular</em> countries (<em>du Japon</em>), and bare <em>de</em> drops the article, which plural country names keep.",
       "whyWrong": {
-        "aux": "aux is 'to/in' (elle va aux États-Unis) — coming from is des.",
+        "du": "du is masculine singular (du Japon) — plural country names take des.",
         "de les": "de les doesn't exist — it contracts to des.",
         "de": "plural country names keep the article: des États-Unis."
       }
