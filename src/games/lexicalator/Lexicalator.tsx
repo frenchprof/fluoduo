@@ -278,6 +278,10 @@ export default function Lexicalator({
         @keyframes lxdrop{0%{transform:translateY(-6px);opacity:.35}50%{transform:translateY(7px);opacity:1}100%{transform:translateY(-6px);opacity:.35}}
         @keyframes lxpointR{0%,100%{transform:translateX(-4px)}50%{transform:translateX(4px)}}
         @keyframes lxpointL{0%,100%{transform:translateX(4px)}50%{transform:translateX(-4px)}}
+        /* The belt IS the game — it must keep scrolling even under the global
+           prefers-reduced-motion kill-switch (a .lx-belt class outranks the *
+           rule). Decorative motion elsewhere still calms as intended. */
+        .lx-belt{animation:lxscroll var(--lx-belt-secs,60s) linear infinite !important}
       `}</style>
 
       {/* HUD */}
@@ -425,7 +429,7 @@ export default function Lexicalator({
             ))}
           </div>
         ) : (
-          <div className="flex w-max gap-3 px-4" style={{ animation: `lxscroll ${beltSecs}s linear infinite` }}>
+          <div className="lx-belt flex w-max gap-3 px-4" style={{ "--lx-belt-secs": `${beltSecs}s` } as React.CSSProperties}>
             {[...beltPool, ...beltPool].map((t, i) => (
               <button key={i} type="button" onClick={() => tapKey(t)} lang="fr"
                 className="grid h-12 place-items-center rounded-xl border-2 border-b-4 bg-white text-lg font-black"
