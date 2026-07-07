@@ -228,25 +228,25 @@
       }
     },
     {
-      "id": "11-a-14h",
-      "contextLabel": "[Plotting itinerary] The flight destination board",
-      "icon": "🛫",
-      "meta": "à + time",
-      "sentenceBefore": "Le vol pour Londres part",
-      "sentenceAfter": " 14h.",
-      "answer": "à",
+      "id": "11-en-inde",
+      "contextLabel": "[Plotting itinerary] A pen pal's address",
+      "icon": "🇮🇳",
+      "meta": "en + vowel country",
+      "sentenceBefore": "Elle habite",
+      "sentenceAfter": " Inde.",
+      "answer": "en",
       "distractors": [
-        "en",
+        "à l'",
         "au",
-        "de"
+        "dans l'"
       ],
-      "fullSentence": "Le vol pour Londres part à 14h.",
-      "sentenceTrans": "The flight to London departs at 2 pm.",
-      "why": "<strong>à 14h</strong> — here <em>à</em> is used for time ('at'), not location. This is the same preposition, demonstrating a second use. Compare: <em>je vais à Paris</em> (location) vs <em>je pars à 14h</em> (time). Both use <em>à</em>. This item tests recognition of <em>à</em> in a different context to avoid over-fitting the city rule.",
+      "fullSentence": "Elle habite en Inde.",
+      "sentenceTrans": "She lives in India.",
+      "why": "<strong>en Inde</strong> — countries starting with a vowel take <em>en</em>, even the masculine ones: <em>en Inde, en Iran, en Irak</em>. (And their origin form elides: <em>d'Inde</em>, never <em>de l'Inde</em>.) The article you know from <em>l'Inde</em> disappears after the preposition.",
       "whyWrong": {
-        "en": "en isn't used for clock times — 'at 2pm' is à 14h.",
-        "au": "au is à + le — no article before a clock time: à 14h.",
-        "de": "de means 'from/of' — a departure time takes à."
+        "à l'": "à l' is for places (à l'école) — country names drop the article: en Inde.",
+        "au": "au is for masculine consonant-initial countries (au Japon) — vowel-initial ones take en.",
+        "dans l'": "dans l' isn't used for being in a country — en Inde."
       }
     },
     {
