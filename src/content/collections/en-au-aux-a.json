@@ -1,7 +1,7 @@
 {
   "id": "en-au-aux-a",
-  "title": "Prépositions + pays : à / de",
-  "subtitle": "Aller & venir — en/au/aux/à (to) · de/du/des/d' (from)",
+  "title": "Prépositions + pays",
+  "subtitle": "à · en · au · aux — la bonne préposition pour chaque lieu",
   "langPair": "fr-en",
   "owner": "curated",
   "visibility": "public",
@@ -10,132 +10,276 @@
   "lessonSlug": "en-au-aux-a",
   "tags": [],
   "seq": 332,
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        {
+          "key": "en",
+          "label": "EN",
+          "prefix": "en "
+        },
+        {
+          "key": "au",
+          "label": "AU",
+          "prefix": "au "
+        },
+        {
+          "key": "aux",
+          "label": "AUX",
+          "prefix": "aux "
+        },
+        {
+          "key": "a",
+          "label": "À",
+          "prefix": "à "
+        }
+      ]
+    },
+    "lexicalator": {
+      "decoys": [
+        "Fran",
+        "ce",
+        "tas",
+        "li",
+        "pom",
+        "Co",
+        "no",
+        "tan",
+        "nit",
+        "Bar",
+        "kyu",
+        "ras"
+      ]
+    }
+  },
   "items": [
     {
       "id": "en-au-aux-a-01",
-      "fr": "Je vais en France.",
-      "en": "I'm going to France.",
-      "gap": "en",
-      "tags": []
+      "fr": "France",
+      "en": "France (f. country)",
+      "syllables": [
+        "France"
+      ],
+      "tags": [
+        "col:en"
+      ],
+      "example": "Je vais en France.",
+      "gap": "en"
     },
     {
       "id": "en-au-aux-a-02",
-      "fr": "Nous allons en Italie.",
-      "en": "We're going to Italy.",
-      "gap": "en",
-      "tags": []
+      "fr": "Italie",
+      "en": "Italy (f. country)",
+      "syllables": [
+        "I",
+        "ta",
+        "lie"
+      ],
+      "tags": [
+        "col:en"
+      ],
+      "example": "Nous allons en Italie.",
+      "gap": "en"
     },
     {
       "id": "en-au-aux-a-03",
-      "fr": "Elles vont en Chine.",
-      "en": "They're going to China.",
-      "gap": "en",
-      "tags": []
+      "fr": "Japon",
+      "en": "Japan (m. country)",
+      "syllables": [
+        "Ja",
+        "pon"
+      ],
+      "tags": [
+        "col:au"
+      ],
+      "example": "Tu vas au Japon.",
+      "gap": "au"
     },
     {
       "id": "en-au-aux-a-04",
-      "fr": "Tu vas au Japon.",
-      "en": "You're going to Japan.",
-      "gap": "au",
-      "tags": []
+      "fr": "Canada",
+      "en": "Canada (m. country)",
+      "syllables": [
+        "Ca",
+        "na",
+        "da"
+      ],
+      "tags": [
+        "col:au"
+      ],
+      "example": "Il va au Canada.",
+      "gap": "au"
     },
     {
       "id": "en-au-aux-a-05",
-      "fr": "Il va au Canada.",
-      "en": "He's going to Canada.",
-      "gap": "au",
-      "tags": []
+      "fr": "États-Unis",
+      "en": "United States (pl. country)",
+      "syllables": [
+        "É",
+        "tats-",
+        "U",
+        "nis"
+      ],
+      "tags": [
+        "col:aux"
+      ],
+      "example": "Elle va aux États-Unis.",
+      "gap": "aux"
     },
     {
       "id": "en-au-aux-a-06",
-      "fr": "Je vais au Portugal.",
-      "en": "I'm going to Portugal.",
-      "gap": "au",
-      "tags": []
+      "fr": "Pays-Bas",
+      "en": "Netherlands (pl. country)",
+      "syllables": [
+        "Pays",
+        "-Bas"
+      ],
+      "tags": [
+        "col:aux"
+      ],
+      "example": "Vous allez aux Pays-Bas.",
+      "gap": "aux"
     },
     {
       "id": "en-au-aux-a-07",
-      "fr": "Elle va aux États-Unis.",
-      "en": "She's going to the United States.",
-      "gap": "aux",
-      "tags": []
+      "fr": "Paris",
+      "en": "Paris (city)",
+      "syllables": [
+        "Pa",
+        "ris"
+      ],
+      "tags": [
+        "col:a"
+      ],
+      "example": "Je suis à Paris.",
+      "gap": "à"
     },
     {
       "id": "en-au-aux-a-08",
-      "fr": "Vous allez aux Pays-Bas.",
-      "en": "You're going to the Netherlands.",
-      "gap": "aux",
-      "tags": []
+      "fr": "Tokyo",
+      "en": "Tokyo (city)",
+      "syllables": [
+        "To",
+        "kyo"
+      ],
+      "tags": [
+        "col:a"
+      ],
+      "example": "Nous sommes à Tokyo.",
+      "gap": "à"
     },
     {
       "id": "en-au-aux-a-09",
-      "fr": "Je suis à Paris.",
-      "en": "I'm in Paris.",
-      "gap": "à",
-      "tags": []
+      "fr": "Espagne",
+      "en": "Spain (f. country)",
+      "syllables": [
+        "Es",
+        "pagne"
+      ],
+      "tags": [
+        "col:en"
+      ],
+      "example": "Il est en Espagne.",
+      "gap": "en"
     },
     {
       "id": "en-au-aux-a-10",
-      "fr": "Nous sommes à Tokyo.",
-      "en": "We're in Tokyo.",
-      "gap": "à",
-      "tags": []
+      "fr": "Chine",
+      "en": "China (f. country)",
+      "syllables": [
+        "Chine"
+      ],
+      "tags": [
+        "col:en"
+      ],
+      "example": "Elles vont en Chine.",
+      "gap": "en"
     },
     {
       "id": "en-au-aux-a-11",
-      "fr": "Je viens de France.",
-      "en": "I come from France.",
-      "gap": "de",
-      "tags": []
+      "fr": "Portugal",
+      "en": "Portugal (m. country)",
+      "syllables": [
+        "Por",
+        "tu",
+        "gal"
+      ],
+      "tags": [
+        "col:au"
+      ],
+      "example": "Je vais au Portugal.",
+      "gap": "au"
     },
     {
       "id": "en-au-aux-a-12",
-      "fr": "Je viens de Londres.",
-      "en": "I come from London.",
-      "gap": "de",
-      "tags": []
+      "fr": "Brésil",
+      "en": "Brazil (m. country)",
+      "syllables": [
+        "Bré",
+        "sil"
+      ],
+      "tags": [
+        "col:au"
+      ],
+      "example": "Tu vas au Brésil.",
+      "gap": "au"
     },
     {
       "id": "en-au-aux-a-13",
-      "fr": "Elle vient d'Espagne.",
-      "en": "She comes from Spain.",
-      "gap": "d'",
-      "tags": []
+      "fr": "Philippines",
+      "en": "Philippines (pl. country)",
+      "syllables": [
+        "Phi",
+        "lip",
+        "pines"
+      ],
+      "tags": [
+        "col:aux"
+      ],
+      "example": "Nous allons aux Philippines.",
+      "gap": "aux"
     },
     {
       "id": "en-au-aux-a-14",
-      "fr": "Vous venez d'Inde.",
-      "en": "You come from India.",
-      "gap": "d'",
-      "tags": []
+      "fr": "Maldives",
+      "en": "Maldives (pl. country)",
+      "syllables": [
+        "Mal",
+        "dives"
+      ],
+      "tags": [
+        "col:aux"
+      ],
+      "example": "Ils vont aux Maldives.",
+      "gap": "aux"
     },
     {
       "id": "en-au-aux-a-15",
-      "fr": "Il vient du Japon.",
-      "en": "He comes from Japan.",
-      "gap": "du",
-      "tags": []
+      "fr": "Londres",
+      "en": "London (city)",
+      "syllables": [
+        "Londres"
+      ],
+      "tags": [
+        "col:a"
+      ],
+      "example": "Elle est à Londres.",
+      "gap": "à"
     },
     {
       "id": "en-au-aux-a-16",
-      "fr": "Tu viens du Brésil.",
-      "en": "You come from Brazil.",
-      "gap": "du",
-      "tags": []
-    },
-    {
-      "id": "en-au-aux-a-17",
-      "fr": "Nous venons des États-Unis.",
-      "en": "We come from the United States.",
-      "gap": "des",
-      "tags": []
-    },
-    {
-      "id": "en-au-aux-a-18",
-      "fr": "Elles viennent des Philippines.",
-      "en": "They come from the Philippines.",
-      "gap": "des",
-      "tags": []
+      "fr": "Singapour",
+      "en": "Singapore (city-state)",
+      "syllables": [
+        "Sin",
+        "ga",
+        "pour"
+      ],
+      "tags": [
+        "col:a"
+      ],
+      "example": "Je suis à Singapour.",
+      "gap": "à"
     }
   ]
 }

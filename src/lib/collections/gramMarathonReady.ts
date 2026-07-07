@@ -12,7 +12,9 @@ import { CURATED } from "@/content/collections";
 const MIN_GAPPED = 4;
 
 export function gappedItems(c: Collection): Item[] {
-  return c.items.filter((it) => !!it.gap && it.fr.includes(it.gap));
+  // The gap must occur in the drilled sentence — `example` when the item carries
+  // one (so `fr` can stay a short grid label), else `fr` itself.
+  return c.items.filter((it) => !!it.gap && (it.example ?? it.fr).includes(it.gap));
 }
 
 export function isGramMarathonReady(c: Collection | undefined): boolean {

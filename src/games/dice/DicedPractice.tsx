@@ -49,6 +49,11 @@ function shuffle<T>(a: T[]): T[] {
   return o;
 }
 
+// The cloze sentence for a gapped item: its `example` when present (so a deck
+// can keep `fr` as a short label for Flip It's grid while still drilling a full
+// gapped sentence here — Dan, 2026-07-06), else `fr` itself.
+const sentenceOf = (it: Item) => it.example ?? it.fr;
+
 function Blank() {
   return <span className="mx-1 inline-block min-w-[3ch] border-b-2 border-[color:var(--cahier-ink)] align-baseline">&nbsp;</span>;
 }
@@ -116,11 +121,11 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
     if (!q) return;
     const item = q.item;
     setResult({ ok, user });
-    setAttempts((a) => [...a, { q: qText, user, correct: item.fr, ok }]);
+    setAttempts((a) => [...a, { q: qText, user, correct: sentenceOf(item), ok }]);
     setStreak((s) => (ok ? s + 1 : 0));
     recordItemResult(item.id, ok);
     if (ok) sfx.correct(); else sfx.wrong();
-    speak(item.fr, "fr-FR");
+    speak(sentenceOf(item), "fr-FR");
   }
 
   const isCompleteIt = !hasGaps && level === "inter";
@@ -128,7 +133,7 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
   const okCount = attempts.filter((a) => a.ok).length;
 
   const item = q?.item ?? null;
-  const gapSplit = item && hasGaps ? splitGap(item.fr, item.gap!) : null;
+  const gapSplit = item && hasGaps ? splitGap(sentenceOf(item), item.gap!) : null;
   const cue = item && gapSplit ? `${gapSplit.before}${item.lemma ? `(${item.lemma})` : "＿＿＿"}${gapSplit.after}` : "";
   const qText = !item
     ? ""
@@ -138,7 +143,7 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
         ? item.en
         : gapSplit
           ? `${gapSplit.before}＿＿＿${gapSplit.after}`
-          : item.fr;
+          : sentenceOf(item);
 
   function checkGapTyped() {
     if (!item || !typed.trim()) return;
@@ -146,7 +151,7 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
   }
   function checkFullTyped() {
     if (!item || !typed.trim()) return;
-    grade(typed, gradeAnswer(typed, item.fr) !== "wrong", qText);
+    grade(typed, gradeAnswer(typed, sentenceOf(item)) !== "wrong", qText);
   }
 
   return (
@@ -242,10 +247,10 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
               {answered && (
                 <div className={`rounded-xl border-2 p-3 text-center ${result!.ok ? "border-emerald-600/50 bg-emerald-600/10" : "border-rose-600/50 bg-rose-600/10"}`}>
                   <p className="font-black text-[color:var(--cahier-ink)]">
-                    {result!.ok ? "✔ Correct !" : "✘ Presque…"} <span lang="fr">{item.fr}</span>
+                    {result!.ok ? "✔ Correct !" : "✘ Presque…"} <span lang="fr">{sentenceOf(item)}</span>
                   </p>
                   <div className="mt-2 flex flex-wrap justify-center gap-2">
-                    <button type="button" onClick={() => speak(item.fr, "fr-FR")} className="cahier-btn cahier-btn-sm">🔊 J&rsquo;écoute</button>
+                    <button type="button" onClick={() => speak(sentenceOf(item), "fr-FR")} className="cahier-btn cahier-btn-sm">🔊 J&rsquo;écoute</button>
                     <button type="button" onClick={roll} className="cahier-btn cahier-btn-sm cahier-btn-accent">🎲 Nouvelle question</button>
                     <button type="button" onClick={() => { if (attempts.length > 0) sfx.stage(); setShowSum(true); }} className="cahier-btn cahier-btn-sm">🏁 Je termine</button>
                   </div>
