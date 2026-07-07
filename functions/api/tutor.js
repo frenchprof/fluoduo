@@ -30,6 +30,26 @@ const MODEL = "claude-sonnet-5";
 // redeploy. Fetched server-side by the Worker (not the browser) and edge-cached.
 const DEFAULT_SOURCE = "https://st2fr26.withdrchan.com/";
 
+// Static snapshot of the key course facts — used only if the live fetch fails
+// or returns nothing, so schedule/test questions still get answered. The live
+// site (above) is preferred and keeps announcements/word-of-day current.
+const COURSE_FALLBACK = `LAF1201 French 1 — Special Term 2, 2025/26 (NUS, Centre for Language Studies). 22 June → 29 July 2026, Mondays & Wednesdays 1pm–4pm, room AS8-04-01. 100% continuous assessment — NO final exam.
+Weights: Tests (Reading+Writing) 40% · Oral (Listening+Speaking) 35% · Quizzes 10% · Homework (e-learning + group project) 10% · Attendance & participation 5%.
+Schedule (unit coverage + assessments):
+- Week 1: Mon 22 Jun Unit 0–1 · Wed 24 Jun Unit 1
+- Week 2: Mon 29 Jun Unit 1–2 — QUIZ 1 · Wed 1 Jul Unit 2
+- Week 3: Mon 6 Jul Unit 2–3 · Wed 8 Jul Unit 3 — TEST 1 (Vodcast HW due 8 Jul 23:59)
+- Week 4: Mon 13 Jul Unit 3 · Wed 15 Jul Unit 4 — QUIZ 2
+- Week 5: Mon 20 Jul Unit 4 · Wed 22 Jul E-learning (Cultural project «Voyage francophone» due Fri 24 Jul 23:59)
+- Week 6: Mon 27 Jul Unit 4 · Wed 29 Jul Review — FINAL + ORAL TEST
+What each covers:
+- Quizzes ×2 — short in-class checks on the most recent units (vocab, grammar, basic comprehension). Quiz 1 = Mon 29 Jun; Quiz 2 = Wed 15 Jul.
+- Tests ×2 (40%) — reading comprehension + writing at A1. Test 1 = Wed 8 Jul, covers Units 2–3.
+- Oral test — role-play (pair/trio) on the final day (Wed 29 Jul): three scenarios to prepare (1 premier jour à NUS, 2 au restaurant, 3), one drawn at random. See oraltest.withdrchan.com.
+- Vodcast — 2-minute self-introduction video in French, due 8 July 23:59.
+- «Voyage francophone» cultural project — reflection under 250 words on a Francophone-culture activity in Singapore, due Fri 24 July 23:59.
+Textbook: L'atelier+ A1 (2022 edition, with the "+") — Livre de l'élève + Cahier d'activités.`;
+
 async function fetchCourseContext(env) {
   const url = (env && env.TUTOR_SOURCE_URL) || DEFAULT_SOURCE;
   try {
@@ -50,7 +70,7 @@ async function fetchCourseContext(env) {
       .replace(/&gt;/gi, ">")
       .replace(/\s+/g, " ")
       .trim();
-    return text.slice(0, 12000); // bound the prompt spend
+    return text.slice(0, 24000); // bound the prompt spend (the class site is ~18k)
   } catch {
     return "";
   }
@@ -78,10 +98,8 @@ export async function onRequestPost(context) {
     return json({ error: "no-user-message" }, 400);
   }
 
-  const courseText = await fetchCourseContext(env);
-  const system = courseText
-    ? `${SYSTEM_PROMPT}\n\nCLASS SITE (live, from ${(env && env.TUTOR_SOURCE_URL) || DEFAULT_SOURCE} — schedule, tests, announcements). Use it for course-logistics questions; if the answer isn't here, say so.\n---\n${courseText}\n---`
-    : SYSTEM_PROMPT;
+  const courseText = (await fetchCourseContext(env)) || COURSE_FALLBACK;
+  const system = `${SYSTEM_PROMPT}\n\nCLASS SITE (from ${(env && env.TUTOR_SOURCE_URL) || DEFAULT_SOURCE} — schedule, tests, deadlines, announcements). Use it for course-logistics questions; if the answer isn't here, say so.\n---\n${courseText}\n---`;
 
   try {
     const r = await fetch("https://api.anthropic.com/v1/messages", {
