@@ -2,6 +2,41 @@
 // cap the backlog without ever fully silencing the game.
 let pending = 0;
 
+// ── Global TTS mute ─────────────────────────────────────────────────────────
+// A site-wide switch to silence spoken audio (Dan, 2026-07-07: a button to
+// silence the TTS, esp. in the tutor). It's a PREFERENCE (kept across sessions
+// and sign-out); the chiptune volume (fluolingo:volume) is separate and
+// unaffected. Every speak()/speakSequence() call honours it.
+const MUTE_KEY = "fluolingo:tts.muted";
+let ttsMuted = (() => {
+  try {
+    return localStorage.getItem(MUTE_KEY) === "1";
+  } catch {
+    return false;
+  }
+})();
+const muteSubs = new Set<(m: boolean) => void>();
+
+export function isTtsMuted(): boolean {
+  return ttsMuted;
+}
+export function setTtsMuted(m: boolean): void {
+  ttsMuted = m;
+  try {
+    localStorage.setItem(MUTE_KEY, m ? "1" : "0");
+  } catch {
+    /* storage unavailable — still applies for this session */
+  }
+  // Muting stops anything already speaking, immediately.
+  if (m && typeof window !== "undefined") window.speechSynthesis?.cancel();
+  muteSubs.forEach((fn) => fn(m));
+}
+/** Subscribe a UI control to mute-state changes; returns an unsubscribe fn. */
+export function onTtsMuteChange(fn: (m: boolean) => void): () => void {
+  muteSubs.add(fn);
+  return () => { muteSubs.delete(fn); };
+}
+
 type SpeakOpts = {
   /**
    * When true (default), cancel any in-flight speech before speaking — good for
@@ -56,7 +91,7 @@ export function speakSequence(
   lang = "fr-FR",
   opts: { rate?: number } = {},
 ): () => void {
-  if (typeof window === "undefined" || !window.speechSynthesis) return () => {};
+  if (typeof window === "undefined" || !window.speechSynthesis || ttsMuted) return () => {};
   const synth = window.speechSynthesis;
   synth.cancel();
   let cancelled = false;
@@ -80,7 +115,7 @@ export function speakSequence(
 }
 
 export function speak(text: string, lang = "fr-FR", opts: SpeakOpts = {}) {
-  if (typeof window === "undefined" || !window.speechSynthesis) return;
+  if (typeof window === "undefined" || !window.speechSynthesis || ttsMuted) return;
   const synth = window.speechSynthesis;
   const interrupt = opts.interrupt ?? true;
 
