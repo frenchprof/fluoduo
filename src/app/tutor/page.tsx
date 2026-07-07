@@ -18,16 +18,30 @@ type ChatMsg = { role: "user" | "assistant"; content: string };
 const GREETING =
   "Bonjour ! 👋 I'm your French tutor. Ask me anything about the course — or just write a sentence in French and I'll help you polish it.";
 
+/** Grow the textarea to fit its content (up to a cap); the user can still drag
+ *  it taller via the resize handle. */
+function autoGrow(el: HTMLTextAreaElement | null) {
+  if (!el) return;
+  el.style.height = "auto";
+  el.style.height = `${Math.min(el.scrollHeight, 260)}px`;
+}
+
 export default function TutorPage() {
   const [messages, setMessages] = useState<ChatMsg[]>([{ role: "assistant", content: GREETING }]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [offline, setOffline] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
+  const taRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }, [messages, busy]);
+
+  // Reset the box back to one row once it's been cleared (after sending).
+  useEffect(() => {
+    if (input === "" && taRef.current) taRef.current.style.height = "auto";
+  }, [input]);
 
   async function send() {
     const text = input.trim();
@@ -105,14 +119,19 @@ export default function TutorPage() {
 
             <form
               onSubmit={(e) => { e.preventDefault(); void send(); }}
-              className="flex gap-2"
+              className="flex items-end gap-2"
             >
-              <input
+              <textarea
                 lang="fr"
+                ref={taRef}
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Écrivez en français ou posez une question…"
-                className="cahier-answer flex-1"
+                onChange={(e) => { setInput(e.target.value); autoGrow(e.target); }}
+                onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void send(); } }}
+                placeholder="Écrivez en français ou posez une question…  (Entrée = envoyer · Maj+Entrée = nouvelle ligne)"
+                rows={1}
+                /* NB: not .cahier-answer — that pins height:30px!important, which
+                   would kill grow/resize. AccentBar still shows via lang="fr". */
+                className="max-h-[260px] min-h-[2.7rem] flex-1 resize-y rounded-lg border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-2 text-[0.95rem] leading-snug text-[color:var(--cahier-ink)] outline-none focus:border-[color:var(--cahier-le)]"
                 autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
               />
               <button type="submit" disabled={busy || !input.trim()} className="cahier-btn cahier-btn-accent font-black disabled:opacity-40">
