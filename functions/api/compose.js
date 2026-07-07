@@ -67,7 +67,7 @@ export async function onRequestPost(context) {
   }
   const scene = SCENES[body && body.scene] || SCENES.cafe;
   // Per-session specifics (e.g. the directions route "from le parc to la gare").
-  const context = typeof (body && body.context) === "string" ? body.context.slice(0, 300) : "";
+  const sessionCtx = typeof (body && body.context) === "string" ? body.context.slice(0, 300) : "";
   const messages = (Array.isArray(body && body.messages) ? body.messages : [])
     .slice(-24)
     .filter((m) => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string")
@@ -79,7 +79,7 @@ export async function onRequestPost(context) {
   const system = `${scene.persona}
 ${scene.menu ? `\n${scene.menu}\n` : ""}
 ${scene.flow}
-${context ? `\nTHIS SESSION: ${context}` : ""}
+${sessionCtx ? `\nTHIS SESSION: ${sessionCtx}` : ""}
 
 RULES:
 - Reply ONLY in simple French, 1-2 short A1 sentences.
