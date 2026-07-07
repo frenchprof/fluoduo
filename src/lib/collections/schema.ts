@@ -45,6 +45,10 @@ export type Item = {
   ipa?: string;
   /** Example sentence containing the target — blankable for gapfill. */
   example?: string;
+  /** English gloss of `example` — the Bonus prompt / cloze gloss for hybrid
+   *  decks whose `en` is just the word ("the café"), which under-specifies
+   *  the sentence the learner must produce. */
+  exampleEn?: string;
   /**
    * GramMarathon cloze target: the exact grammar word(s) inside `fr` to blank
    * out (e.g. "du", "de la", "d'"). MUST occur verbatim in `fr`. A deck where

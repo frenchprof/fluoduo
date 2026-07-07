@@ -26,11 +26,16 @@
 import type { Progress } from "@/lib/progress";
 
 // ── XP earning amounts ──────────────────────────────────────────────────────
-export const XP_CORRECT = 3; // a right practice answer
-export const XP_WRONG = 1; // a wrong one — effort still counts, never punished
-export const XP_SIO_BASE = 15; // completing a SIO
-export const XP_SIO_MASTERY = 15; // + up to this, scaled by demonstrated mastery
-export const XP_CONVERSATION = 6; // finishing an AI role-play
+// Scale (Dan, 2026-07-07): ×20 vs the first pass, so new work is commensurate
+// with the XP carried over from the old platform (totals in the thousands —
+// donny ~22k, Jordan ~26k). The level curve below is scaled by the same ×20,
+// so level pacing for a fresh learner is IDENTICAL; only the numbers are
+// bigger, and a returning student's ranking is no longer frozen.
+export const XP_CORRECT = 60; // a right practice answer
+export const XP_WRONG = 20; // a wrong one — effort still counts, never punished
+export const XP_SIO_BASE = 300; // completing a SIO
+export const XP_SIO_MASTERY = 300; // + up to this, scaled by demonstrated mastery
+export const XP_CONVERSATION = 120; // finishing an AI role-play
 
 /** Fire streak → XP multiplier. Showing up for days in a row earns faster. */
 export function xpMultiplier(streak: number): number {
@@ -62,9 +67,10 @@ export type LevelInfo = {
   floor: number; // cumulative XP at the start of this level
 };
 
-/** Cost to climb from `level` to the next — a gentle ramp. */
+/** Cost to climb from `level` to the next — a gentle ramp (×20 with the
+ *  award scale above, so pacing is unchanged). */
 function levelCost(level: number): number {
-  return 30 * level + 20; // L1→2: 50, L2→3: 80, L3→4: 110, …
+  return 600 * level + 400; // L1→2: 1000, L2→3: 1600, L3→4: 2200, …
 }
 
 export function levelForXp(xp: number): LevelInfo {

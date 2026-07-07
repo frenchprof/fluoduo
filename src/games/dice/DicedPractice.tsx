@@ -51,8 +51,11 @@ function shuffle<T>(a: T[]): T[] {
 
 // The cloze sentence for a gapped item: its `example` when present (so a deck
 // can keep `fr` as a short label for Flip It's grid while still drilling a full
-// gapped sentence here — Dan, 2026-07-06), else `fr` itself.
+// gapped sentence here — Dan, 2026-07-06), else `fr` itself. Its English gloss
+// mirrors that: `exampleEn` when present — crucial for ⭐ Bonus, where "the
+// café" under-specifies "Je suis au café."
 const sentenceOf = (it: Item) => it.example ?? it.fr;
+const sentenceEnOf = (it: Item) => it.exampleEn ?? it.en;
 
 function Blank() {
   return <span className="mx-1 inline-block min-w-[3ch] border-b-2 border-[color:var(--cahier-ink)] align-baseline">&nbsp;</span>;
@@ -139,9 +142,11 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
     ? ""
     : level === "difficile"
       ? cue
-      : level === "bonus" || (level === "facile" && !hasGaps)
-        ? item.en
-        : gapSplit
+      : level === "bonus"
+        ? sentenceEnOf(item)
+        : level === "facile" && !hasGaps
+          ? item.en
+          : gapSplit
           ? `${gapSplit.before}＿＿＿${gapSplit.after}`
           : sentenceOf(item);
 
@@ -186,12 +191,12 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
                         <Blank />
                         {gapSplit.after}
                       </p>
-                      <p className="mt-0.5 text-sm italic text-[color:var(--cahier-ink-soft)]">{item.en}</p>
+                      <p className="mt-0.5 text-sm italic text-[color:var(--cahier-ink-soft)]">{sentenceEnOf(item)}</p>
                     </>
                   ) : level === "difficile" ? (
                     <p lang="fr" className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">{cue}</p>
                   ) : (
-                    <p className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">{item.en}</p>
+                    <p className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">{level === "bonus" ? sentenceEnOf(item) : item.en}</p>
                   )}
                 </div>
               )}
@@ -226,7 +231,7 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
                     />
                     <span>{gapSplit.after}</span>
                   </p>
-                  <p className="mt-1 text-sm italic text-[color:var(--cahier-ink-soft)]">{item.en}</p>
+                  <p className="mt-1 text-sm italic text-[color:var(--cahier-ink-soft)]">{sentenceEnOf(item)}</p>
                   <button type="button" disabled={!typed.trim()} onClick={checkGapTyped} className="cahier-btn cahier-btn-primary mt-3 disabled:opacity-40">✅ Je vérifie</button>
                 </div>
               )}

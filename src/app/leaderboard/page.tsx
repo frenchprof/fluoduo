@@ -30,6 +30,34 @@ type BoardRow = {
 const rowXp = (r: BoardRow) => r.xp ?? r.totalXP ?? r.gems ?? 0;
 const rowName = (r: BoardRow) => r.name ?? r.displayName ?? "Anonyme";
 
+// Rows hidden from the board (Dan, 2026-07-07) — prior-term students whose old
+// leaderboard docs linger in the shared collection. Firestore rules can't
+// retroactively hide existing docs from a collection read, so filter here.
+// (Their XP still carries over if they ever sign in — this is display-only.)
+const EXCLUDED_UIDS = new Set([
+  "6pHSergetUdBoTicHe930dztnq03",
+  "8FXea0gBTQWry0mz9V0hGQpcHcn1",
+  "A0gPWad5dbhrEj7xPl1ZvxELlsD2",
+  "F72Cp1q1wPWzNFBhnSaJuvGNvJi2",
+  "K2oqGupnUJhJXr9l54eJxUG7gHx2",
+  "MCa37VnnyBUfBV13JMw6jMub79S2",
+  "Ucxgyw7PRNhIYQlZBYq5hCMlWVq1",
+  "Y8VWbC1DgYOCsJvSTwc2yTjHO982",
+  "ao8eQgHtKXU23d5CRZ6qvkZTKuH3",
+  "dENNssIfItW6a9mhxCNYN7O3WbA3",
+  "f8QFvdmv33VQlkaIzVSlAKUl1vp1",
+  "fmbfRMU475U4bNAmroFIAChjRRC3",
+  "hFDtdL7VbUOVH6LQojinNNEddxA3",
+  "lf98Dn7AniMtDDW2QYZjB9zqGBX2",
+  "lzRqpbYzAfWOHv2BGuNwaRFjJK23",
+  "nObXWQxQCGO6TNugnrgC5xsAQhx1",
+  "nnO1UHbvTrdAXcLdff6f6egfr5L2",
+  "oJRObzsgLOQw9BfFGRmqJAWwBOy1",
+  "qvrNbMnULycr5sczxjNGqiAxWPj2",
+  "rYwNEok19RN7eDafWhA0dxgszN42",
+  "urmvD4pzesNDvLtCggdi3212I5b2",
+]);
+
 export default function LeaderboardPage() {
   const user = useAuthUser();
   const [rows, setRows] = useState<BoardRow[] | null>(null);
@@ -53,7 +81,9 @@ export default function LeaderboardPage() {
         // schemas, then take the top 50.
         const snap = await getDocs(query(collection(db, "leaderboard"), limit(300)));
         if (!cancelled) {
-          const list = snap.docs.map((d) => ({ uid: d.id, ...(d.data() as Omit<BoardRow, "uid">) }));
+          const list = snap.docs
+            .map((d) => ({ uid: d.id, ...(d.data() as Omit<BoardRow, "uid">) }))
+            .filter((r) => !EXCLUDED_UIDS.has(r.uid));
           list.sort((a, b) => rowXp(b) - rowXp(a));
           setRows(list.slice(0, 50));
         }

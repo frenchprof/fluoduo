@@ -22,7 +22,10 @@
       "syllables": [
         "ca",
         "fé"
-      ]
+      ],
+      "example": "Je suis au café.",
+      "exampleEn": "I'm at the café.",
+      "gap": "au"
     },
     {
       "id": "lieux-letris-02-restaurant",
@@ -36,7 +39,10 @@
         "res",
         "tau",
         "rant"
-      ]
+      ],
+      "example": "Tu vas au restaurant.",
+      "exampleEn": "You're going to the restaurant.",
+      "gap": "au"
     },
     {
       "id": "lieux-letris-03-cinema",
@@ -50,7 +56,10 @@
         "ci",
         "né",
         "ma"
-      ]
+      ],
+      "example": "Elle va au cinéma.",
+      "exampleEn": "She's going to the cinema.",
+      "gap": "au"
     },
     {
       "id": "lieux-letris-04-musee",
@@ -63,7 +72,10 @@
       "syllables": [
         "mu",
         "sée"
-      ]
+      ],
+      "example": "Nous allons au musée.",
+      "exampleEn": "We're going to the museum.",
+      "gap": "au"
     },
     {
       "id": "lieux-letris-05-parc",
@@ -75,7 +87,10 @@
       ],
       "syllables": [
         "parc"
-      ]
+      ],
+      "example": "Il est au parc.",
+      "exampleEn": "He's at the park.",
+      "gap": "au"
     },
     {
       "id": "lieux-letris-06-marche",
@@ -88,7 +103,10 @@
       "syllables": [
         "mar",
         "ché"
-      ]
+      ],
+      "example": "Je vais au marché.",
+      "exampleEn": "I'm going to the market.",
+      "gap": "au"
     },
     {
       "id": "lieux-letris-07-supermarche",
@@ -103,7 +121,10 @@
         "per",
         "mar",
         "ché"
-      ]
+      ],
+      "example": "Vous allez au supermarché.",
+      "exampleEn": "You're going to the supermarket.",
+      "gap": "au"
     },
     {
       "id": "lieux-letris-08-stade",
@@ -115,7 +136,10 @@
       ],
       "syllables": [
         "stade"
-      ]
+      ],
+      "example": "Ils sont au stade.",
+      "exampleEn": "They're at the stadium.",
+      "gap": "au"
     },
     {
       "id": "lieux-letris-09-banque",
@@ -128,7 +152,10 @@
       "syllables": [
         "ban",
         "que"
-      ]
+      ],
+      "example": "Je suis à la banque.",
+      "exampleEn": "I'm at the bank.",
+      "gap": "à la"
     },
     {
       "id": "lieux-letris-10-pharmacie",
@@ -142,7 +169,10 @@
         "phar",
         "ma",
         "cie"
-      ]
+      ],
+      "example": "Tu vas à la pharmacie.",
+      "exampleEn": "You're going to the pharmacy.",
+      "gap": "à la"
     },
     {
       "id": "lieux-letris-11-bibliotheque",
@@ -156,7 +186,10 @@
         "bi",
         "blio",
         "thèque"
-      ]
+      ],
+      "example": "Elle est à la bibliothèque.",
+      "exampleEn": "She's at the library.",
+      "gap": "à la"
     },
     {
       "id": "lieux-letris-12-boulangerie",
@@ -171,7 +204,10 @@
         "lan",
         "ge",
         "rie"
-      ]
+      ],
+      "example": "Je vais à la boulangerie.",
+      "exampleEn": "I'm going to the bakery.",
+      "gap": "à la"
     },
     {
       "id": "lieux-letris-13-gare",
@@ -183,7 +219,10 @@
       ],
       "syllables": [
         "gare"
-      ]
+      ],
+      "example": "Nous sommes à la gare.",
+      "exampleEn": "We're at the train station.",
+      "gap": "à la"
     },
     {
       "id": "lieux-letris-14-poste",
@@ -195,7 +234,10 @@
       ],
       "syllables": [
         "poste"
-      ]
+      ],
+      "example": "Il va à la poste.",
+      "exampleEn": "He's going to the post office.",
+      "gap": "à la"
     },
     {
       "id": "lieux-letris-15-piscine",
@@ -208,7 +250,10 @@
       "syllables": [
         "pis",
         "cine"
-      ]
+      ],
+      "example": "Vous allez à la piscine.",
+      "exampleEn": "You're going to the pool.",
+      "gap": "à la"
     },
     {
       "id": "lieux-letris-16-mairie",
@@ -221,7 +266,10 @@
       "syllables": [
         "mai",
         "rie"
-      ]
+      ],
+      "example": "Elle va à la mairie.",
+      "exampleEn": "She's going to the town hall.",
+      "gap": "à la"
     },
     {
       "id": "lieux-letris-17-hopital",
@@ -235,7 +283,10 @@
         "hô",
         "pi",
         "tal"
-      ]
+      ],
+      "example": "Je suis à l'hôpital.",
+      "exampleEn": "I'm at the hospital.",
+      "gap": "à l'"
     },
     {
       "id": "lieux-letris-18-eglise",
@@ -248,7 +299,10 @@
       "syllables": [
         "é",
         "glise"
-      ]
+      ],
+      "example": "Il est à l'église.",
+      "exampleEn": "He's at the church.",
+      "gap": "à l'"
     },
     {
       "id": "lieux-letris-19-ecole",
@@ -261,7 +315,10 @@
       "syllables": [
         "é",
         "cole"
-      ]
+      ],
+      "example": "Nous allons à l'école.",
+      "exampleEn": "We're going to school.",
+      "gap": "à l'"
     },
     {
       "id": "lieux-letris-20-universite",
@@ -277,7 +334,10 @@
         "ver",
         "si",
         "té"
-      ]
+      ],
+      "example": "Tu es à l'université.",
+      "exampleEn": "You're at the university.",
+      "gap": "à l'"
     },
     {
       "id": "lieux-letris-21-aeroport",
@@ -292,7 +352,10 @@
         "é",
         "ro",
         "port"
-      ]
+      ],
+      "example": "Elle va à l'aéroport.",
+      "exampleEn": "She's going to the airport.",
+      "gap": "à l'"
     },
     {
       "id": "lieux-letris-22-hotel",
@@ -305,7 +368,10 @@
       "syllables": [
         "hô",
         "tel"
-      ]
+      ],
+      "example": "Je suis à l'hôtel.",
+      "exampleEn": "I'm at the hotel.",
+      "gap": "à l'"
     },
     {
       "id": "lieux-letris-23-arret-de-bus",
@@ -320,7 +386,10 @@
         "rêt",
         "de",
         "bus"
-      ]
+      ],
+      "example": "Il est à l'arrêt de bus.",
+      "exampleEn": "He's at the bus stop.",
+      "gap": "à l'"
     },
     {
       "id": "lieux-letris-24-magasins",
@@ -334,7 +403,10 @@
         "ma",
         "ga",
         "sins"
-      ]
+      ],
+      "example": "Je vais aux magasins.",
+      "exampleEn": "I'm going to the shops.",
+      "gap": "aux"
     },
     {
       "id": "lieux-letris-25-commerces",
@@ -348,7 +420,10 @@
         "com",
         "mer",
         "ces"
-      ]
+      ],
+      "example": "Il va aux commerces.",
+      "exampleEn": "He's going to the businesses.",
+      "gap": "aux"
     },
     {
       "id": "lieux-letris-26-toilettes-publiques",
@@ -363,7 +438,10 @@
         "lettes",
         "pu",
         "bliques"
-      ]
+      ],
+      "example": "Je vais aux toilettes publiques.",
+      "exampleEn": "I'm going to the public toilets.",
+      "gap": "aux"
     },
     {
       "id": "lieux-letris-27-feux-de-circulation",
@@ -380,7 +458,10 @@
         "cu",
         "la",
         "tion"
-      ]
+      ],
+      "example": "Nous sommes aux feux de circulation.",
+      "exampleEn": "We're at the traffic lights.",
+      "gap": "aux"
     },
     {
       "id": "lieux-letris-28-jardins-publics",
@@ -395,7 +476,10 @@
         "dins",
         "pu",
         "blics"
-      ]
+      ],
+      "example": "Ils vont aux jardins publics.",
+      "exampleEn": "They're going to the public gardens.",
+      "gap": "aux"
     }
   ],
   "gameConfig": {

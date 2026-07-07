@@ -64,7 +64,8 @@
         "col:en"
       ],
       "example": "Je vais en France.",
-      "gap": "en"
+      "gap": "en",
+      "exampleEn": "I'm going to France."
     },
     {
       "id": "en-au-aux-a-02",
@@ -79,7 +80,8 @@
         "col:en"
       ],
       "example": "Nous allons en Italie.",
-      "gap": "en"
+      "gap": "en",
+      "exampleEn": "We're going to Italy."
     },
     {
       "id": "en-au-aux-a-03",
@@ -93,7 +95,8 @@
         "col:au"
       ],
       "example": "Tu vas au Japon.",
-      "gap": "au"
+      "gap": "au",
+      "exampleEn": "You're going to Japan."
     },
     {
       "id": "en-au-aux-a-04",
@@ -108,7 +111,8 @@
         "col:au"
       ],
       "example": "Il va au Canada.",
-      "gap": "au"
+      "gap": "au",
+      "exampleEn": "He's going to Canada."
     },
     {
       "id": "en-au-aux-a-05",
@@ -124,7 +128,8 @@
         "col:aux"
       ],
       "example": "Elle va aux États-Unis.",
-      "gap": "aux"
+      "gap": "aux",
+      "exampleEn": "She's going to the United States."
     },
     {
       "id": "en-au-aux-a-06",
@@ -138,7 +143,8 @@
         "col:aux"
       ],
       "example": "Vous allez aux Pays-Bas.",
-      "gap": "aux"
+      "gap": "aux",
+      "exampleEn": "You're going to the Netherlands."
     },
     {
       "id": "en-au-aux-a-07",
@@ -152,7 +158,8 @@
         "col:a"
       ],
       "example": "Je suis à Paris.",
-      "gap": "à"
+      "gap": "à",
+      "exampleEn": "I'm in Paris."
     },
     {
       "id": "en-au-aux-a-08",
@@ -166,7 +173,8 @@
         "col:a"
       ],
       "example": "Nous sommes à Tokyo.",
-      "gap": "à"
+      "gap": "à",
+      "exampleEn": "We're in Tokyo."
     },
     {
       "id": "en-au-aux-a-09",
@@ -180,7 +188,8 @@
         "col:en"
       ],
       "example": "Il est en Espagne.",
-      "gap": "en"
+      "gap": "en",
+      "exampleEn": "He's in Spain."
     },
     {
       "id": "en-au-aux-a-10",
@@ -193,7 +202,8 @@
         "col:en"
       ],
       "example": "Elles vont en Chine.",
-      "gap": "en"
+      "gap": "en",
+      "exampleEn": "They're going to China."
     },
     {
       "id": "en-au-aux-a-11",
@@ -208,7 +218,8 @@
         "col:au"
       ],
       "example": "Je vais au Portugal.",
-      "gap": "au"
+      "gap": "au",
+      "exampleEn": "I'm going to Portugal."
     },
     {
       "id": "en-au-aux-a-12",
@@ -222,7 +233,8 @@
         "col:au"
       ],
       "example": "Tu vas au Brésil.",
-      "gap": "au"
+      "gap": "au",
+      "exampleEn": "You're going to Brazil."
     },
     {
       "id": "en-au-aux-a-13",
@@ -237,7 +249,8 @@
         "col:aux"
       ],
       "example": "Nous allons aux Philippines.",
-      "gap": "aux"
+      "gap": "aux",
+      "exampleEn": "We're going to the Philippines."
     },
     {
       "id": "en-au-aux-a-14",
@@ -251,7 +264,8 @@
         "col:aux"
       ],
       "example": "Ils vont aux Maldives.",
-      "gap": "aux"
+      "gap": "aux",
+      "exampleEn": "They're going to the Maldives."
     },
     {
       "id": "en-au-aux-a-15",
@@ -264,7 +278,8 @@
         "col:a"
       ],
       "example": "Elle est à Londres.",
-      "gap": "à"
+      "gap": "à",
+      "exampleEn": "She's in London."
     },
     {
       "id": "en-au-aux-a-16",
@@ -279,7 +294,8 @@
         "col:a"
       ],
       "example": "Je suis à Singapour.",
-      "gap": "à"
+      "gap": "à",
+      "exampleEn": "I'm in Singapore."
     }
   ]
 }
