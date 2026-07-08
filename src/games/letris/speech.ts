@@ -40,7 +40,10 @@ type SpeakOpts = {
 const FR_LETTER_NAME: Record<string, string> = {
   a: "a", b: "bé", c: "cé", d: "dé", e: "e", f: "effe", g: "gé", h: "ache",
   i: "i", j: "ji", k: "ka", l: "elle", m: "emme", n: "enne", o: "o", p: "pé",
-  q: "ku", r: "erre", s: "esse", t: "té", u: "u", v: "vé", w: "double vé",
+  // "cu" is the dictionary spelling of Q's name (/ky/); the ad-hoc "ku" isn't a
+  // French word-form and some voices skipped it silently (Dan, 2026-07-07:
+  // "Q in the alphabet has no sound").
+  q: "cu", r: "erre", s: "esse", t: "té", u: "u", v: "vé", w: "double vé",
   x: "ixe", y: "i grec", z: "zède",
 };
 
