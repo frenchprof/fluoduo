@@ -19,7 +19,7 @@ const PAGE_WIDTH_KEY = "fluolingo:pageWidth";
 import { isLexReadyId } from "@/lib/collections/lexReady";
 import { CURATED } from "@/content/collections";
 import { lessonsForDeck } from "@/content/lessons";
-import { siteTabs, tabsWithActive } from "@/components/siteTabs";
+import { siteTabs, toolTabs, tabsWithActive } from "@/components/siteTabs";
 import { SIOS } from "@/content/sios";
 import { getPretestForSio } from "@/content/pretests";
 import { UNIT0_QUESTIONS } from "@/content/sios/unit0-questions";
@@ -111,8 +111,12 @@ export default function CahierShell({
   const [menuOpen, setMenuOpen] = useState(false);
   const hueOf = (t: ShellTab, i: number) => t.hue ?? TAB_HUES[i % TAB_HUES.length];
   const site = tabsWithActive(siteTabs(), active);
+  // Tool pages (Réviser / ConjugaZone / Classement / Tuteur / Profil) live in
+  // the ☰ menu only (Dan, 2026-07-08: complete the burger menu) — the flap
+  // rail stays the course structure.
+  const tools = tabsWithActive(toolTabs(), active);
   // Pages that pass the site row itself just deduplicate to no context group.
-  const context = tabs.filter((t) => !site.some((s) => s.key === t.key));
+  const context = tabs.filter((t) => !site.some((s) => s.key === t.key) && !tools.some((s) => s.key === t.key));
   // On a deck's activity page, the deck's Unité is the active layer of the
   // site row (Dan, 2026-07-05: "the activated Unité layer is not marked") —
   // highlighted but still clickable.
@@ -222,6 +226,17 @@ export default function CahierShell({
                           hue={hueOf(t, i)}
                           active={isActiveFlap(t)}
                           className="cahier-tab !rounded-md text-left"
+                          onNavigate={() => setMenuOpen(false)}
+                        />
+                      ))}
+                      <hr className="my-0.5 border-[color:var(--cahier-ink)]/15" />
+                      {tools.map((t, i) => (
+                        <TabFlap
+                          key={t.key}
+                          tab={t}
+                          hue={hueOf(t, i)}
+                          active={active === t.key}
+                          className="cahier-tab cahier-tab--sm !rounded-md text-left"
                           onNavigate={() => setMenuOpen(false)}
                         />
                       ))}

@@ -303,26 +303,35 @@ export const chiptune = {
   // Slow (or restore) the running loop's tempo — 1 = normal, >1 = slower.
   setTempoScale(s: number) { tempoScale = Math.max(0.25, Math.min(4, s)); },
   setVolume(v: number) { vol = Math.max(0, Math.min(1, v)); if (master && !isSoundMuted()) master.gain.value = vol * 0.5; },
-  // site-wide correct-answer "ta-daa" (Dan, 2026-07-05): a light two-note
-  // ascending major arpeggio — bright but deliberately smaller and quieter
-  // than fanfare(). Routes through `master`, so the volume slider governs it.
+  // site-wide correct-answer "ta-daaaa" (Dan, 2026-07-08: sustain it like the
+  // Duolingo win jingle — the old two-note version was too short): a short
+  // pickup, then a held high tonic over a major chord that decays. Still
+  // smaller and quieter than fanfare(). Routes through `master`, so the
+  // volume slider governs it.
   correct() {
     initAudio();
     if (ctx!.state === "suspended") ctx!.resume();
     const t = ctx!.currentTime + 0.02;
-    tone("triangle", freq("C5"), t, 0.1, 0.18);
-    tone("square", freq("C5"), t, 0.1, 0.05);
-    tone("triangle", freq("G5"), t + 0.1, 0.18, 0.18);
-    tone("square", freq("G5"), t + 0.1, 0.18, 0.05);
+    // "ta" — the pickup
+    tone("triangle", freq("G5"), t, 0.11, 0.17);
+    tone("square", freq("G5"), t, 0.11, 0.045);
+    // "daaaa" — held top note + C-major chord underneath
+    tone("triangle", freq("C6"), t + 0.12, 0.68, 0.18);
+    tone("square", freq("C6"), t + 0.12, 0.68, 0.05);
+    tone("triangle", freq("E5"), t + 0.12, 0.55, 0.07);
+    tone("triangle", freq("G5"), t + 0.12, 0.55, 0.07);
+    tone("triangle", freq("C5"), t + 0.12, 0.55, 0.06);
   },
-  // site-wide wrong-answer sound: a short, soft low descending buzz —
-  // gentle feedback, not punishment. Same master routing as correct().
+  // site-wide wrong-answer sound (Dan, 2026-07-08): exactly two clear notes,
+  // high then low — gentle feedback, not punishment. Same master routing.
   wrong() {
     initAudio();
     if (ctx!.state === "suspended") ctx!.resume();
     const t = ctx!.currentTime + 0.02;
-    tone("sawtooth", freq("E3"), t, 0.12, 0.09);
-    tone("sawtooth", freq("D#3"), t + 0.11, 0.14, 0.08);
+    tone("square", freq("D5"), t, 0.14, 0.08);
+    tone("triangle", freq("D5"), t, 0.14, 0.1);
+    tone("square", freq("G4"), t + 0.16, 0.26, 0.08);
+    tone("triangle", freq("G4"), t + 0.16, 0.26, 0.1);
   },
   // wordless victory jingle (C major rising run → climbing line → held tonic chord + crash)
   fanfare() {

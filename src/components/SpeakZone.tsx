@@ -11,7 +11,7 @@
  * Real controls inside (buttons, links, inputs) keep their own behaviour.
  */
 import type { ReactNode } from "react";
-import { speak } from "@/games/letris/speech";
+import { speak, speakSequence } from "@/games/letris/speech";
 
 // Conjugation tables: a bare cell like « peux » is never heard alone in real
 // French (Dan, 2026-07-08) — when the tapped word is a single token and its
@@ -33,6 +33,18 @@ function withSubject(el: HTMLElement, text: string): string {
   return `${s} ${text}`;
 }
 
+// Set lines like « à · en · au · aux » run together when read as one utterance
+// (Dan, 2026-07-08: pause for a second between each) — split on the « · »
+// list separator and speak the items with a beat between them.
+function sayTapped(el: HTMLElement, text: string) {
+  const parts = text.split("·").map((s) => s.trim()).filter(Boolean);
+  if (parts.length > 1) {
+    speakSequence(parts.map((t) => ({ text: t })), "fr-FR", { gapMs: 1000 });
+    return;
+  }
+  speak(withSubject(el, text), "fr-FR");
+}
+
 export default function SpeakZone({ children }: { children: ReactNode }) {
   return (
     <div
@@ -43,14 +55,14 @@ export default function SpeakZone({ children }: { children: ReactNode }) {
         const fr = target.closest<HTMLElement>('[lang="fr"]');
         const frText = fr?.textContent?.trim() ?? "";
         if (fr && frText && frText.length <= 80) {
-          speak(withSubject(fr, frText), "fr-FR");
+          sayTapped(fr, frText);
           return;
         }
         const row = target.closest<HTMLElement>("li, td, th, p");
         const rowText = row?.textContent?.trim() ?? "";
         if (row && rowText && rowText.length <= 160) {
           // « French — English gloss » lines: speak only the French half.
-          speak(withSubject(row, rowText.split("—")[0].trim()), "fr-FR");
+          sayTapped(row, rowText.split("—")[0].trim());
         }
       }}
     >

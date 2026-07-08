@@ -21,12 +21,14 @@ function Card({ title, children }: { title: ReactNode; children: ReactNode }) {
 
 // Pretest-style pill: tap to hear it (Dan, 2026-07-08 — "relevant phrases in
 // pill shaped text boxes that can be tapped to hear TTS, just like in pretest").
-function Pill({ children }: { children: ReactNode }) {
+// `say` overrides the spoken text: a fragment shown alone but meant inside a
+// sentence (« beau », « près de ») is heard in that sentence (Dan, 2026-07-08).
+function Pill({ children, say }: { children: ReactNode; say?: string }) {
   return (
     <button
       type="button"
       lang="fr"
-      onClick={(e) => speak(e.currentTarget.textContent ?? "", "fr-FR")}
+      onClick={(e) => speak(say ?? e.currentTarget.textContent ?? "", "fr-FR")}
       className="rounded-full border-2 border-[color:var(--cahier-rule)] bg-white px-2.5 py-0.5 transition hover:border-[color:var(--cahier-gold)] hover:bg-[#fffdf3] active:scale-95"
       title="🔊"
     >
@@ -35,13 +37,15 @@ function Pill({ children }: { children: ReactNode }) {
   );
 }
 
-function PillRow({ label, items }: { label?: ReactNode; items: string[] }) {
+type PillItem = string | { t: string; say: string };
+
+function PillRow({ label, items }: { label?: ReactNode; items: PillItem[] }) {
   return (
     <p className="mt-2 flex flex-wrap items-center gap-1.5 text-[13px] font-bold text-[color:var(--cahier-ink)]">
       {label != null && <span className="mr-0.5">{label}</span>}
-      {items.map((s) => (
-        <Pill key={s}>{s}</Pill>
-      ))}
+      {items.map((s) =>
+        typeof s === "string" ? <Pill key={s}>{s}</Pill> : <Pill key={s.t} say={s.say}>{s.t}</Pill>,
+      )}
     </p>
   );
 }
@@ -191,11 +195,25 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
       <Lines>
         <li><B>en</B> + vehicle you sit inside</li>
       </Lines>
-      <PillRow items={["en bus", "en voiture", "en métro", "en train", "en avion"]} />
+      <PillRow
+        items={[
+          { t: "en bus", say: "J'y vais en bus." },
+          { t: "en voiture", say: "J'y vais en voiture." },
+          { t: "en métro", say: "J'y vais en métro." },
+          { t: "en train", say: "J'y vais en train." },
+          { t: "en avion", say: "J'y vais en avion." },
+        ]}
+      />
       <Lines>
         <li><B>à</B> + astride / on foot</li>
       </Lines>
-      <PillRow items={["à pied", "à vélo", "à moto"]} />
+      <PillRow
+        items={[
+          { t: "à pied", say: "J'y vais à pied." },
+          { t: "à vélo", say: "J'y vais à vélo." },
+          { t: "à moto", say: "J'y vais à moto." },
+        ]}
+      />
     </Card>
   ),
 
@@ -205,15 +223,40 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
       <Lines>
         <li><B>___ + (art) noun</B> — <span lang="fr">devant <B>la gare</B>, sous <B>le pont</B></span></li>
       </Lines>
-      <PillRow items={["devant", "derrière", "sur", "sous", "dans", "entre"]} />
+      <PillRow
+        items={[
+          { t: "devant", say: "C'est devant la gare." },
+          { t: "derrière", say: "C'est derrière la gare." },
+          { t: "sur", say: "C'est sur le pont." },
+          { t: "sous", say: "C'est sous le pont." },
+          { t: "dans", say: "C'est dans la rue." },
+          { t: "entre", say: "C'est entre le café et la gare." },
+        ]}
+      />
       <Lines>
         <li><B>___ + de + (art) noun</B> — <span lang="fr">près <B>de la gare</B>, à côté <B>du parc</B></span></li>
       </Lines>
-      <PillRow items={["à côté de", "près de", "loin de", "en face de", "à gauche de", "à droite de"]} />
+      <PillRow
+        items={[
+          { t: "à côté de", say: "C'est à côté du parc." },
+          { t: "près de", say: "C'est près de la gare." },
+          { t: "loin de", say: "C'est loin de la gare." },
+          { t: "en face de", say: "C'est en face de la gare." },
+          { t: "à gauche de", say: "C'est à gauche de la banque." },
+          { t: "à droite de", say: "C'est à droite de la banque." },
+        ]}
+      />
       <Lines>
         <li><B>(no noun)</B> — <span lang="fr">C'est <B>là-bas</B> !</span></li>
       </Lines>
-      <PillRow items={["ici", "là", "là-bas", "partout"]} />
+      <PillRow
+        items={[
+          { t: "ici", say: "C'est ici !" },
+          { t: "là", say: "C'est là." },
+          { t: "là-bas", say: "C'est là-bas !" },
+          { t: "partout", say: "Il y en a partout." },
+        ]}
+      />
       <p className="mt-3 text-[15px] text-[color:var(--cahier-ink)]">
         Distance: <B>c'est à</B> + duration — <span lang="fr">C'est <B>à dix minutes</B> à pied.</span>
       </p>
@@ -226,11 +269,24 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
       <Lines>
         <li><B>Il fait</B> + adjective</li>
       </Lines>
-      <PillRow items={["beau", "chaud", "froid", "mauvais"]} />
+      <PillRow
+        items={[
+          { t: "beau", say: "Il fait beau." },
+          { t: "chaud", say: "Il fait chaud." },
+          { t: "froid", say: "Il fait froid." },
+          { t: "mauvais", say: "Il fait mauvais." },
+        ]}
+      />
       <Lines>
         <li><B>Il y a</B> + noun</li>
       </Lines>
-      <PillRow items={["du soleil", "du vent", "des nuages"]} />
+      <PillRow
+        items={[
+          { t: "du soleil", say: "Il y a du soleil." },
+          { t: "du vent", say: "Il y a du vent." },
+          { t: "des nuages", say: "Il y a des nuages." },
+        ]}
+      />
       <Lines>
         <li>verb alone — <span lang="fr">Il</span> <B>pleut</B>, <span lang="fr">il</span> <B>neige</B></li>
       </Lines>
@@ -243,7 +299,14 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
       <Lines>
         <li><B>Vous</B> + verb</li>
       </Lines>
-      <PillRow items={["vous sortez", "vous continuez", "vous tournez", "vous prenez"]} />
+      <PillRow
+        items={[
+          { t: "vous sortez", say: "Vous sortez de la station." },
+          { t: "vous continuez", say: "Vous continuez tout droit." },
+          { t: "vous tournez", say: "Vous tournez à gauche." },
+          { t: "vous prenez", say: "Vous prenez la première rue à droite." },
+        ]}
+      />
       <p className="mt-3 text-[15px] text-[color:var(--cahier-ink)]">
         <B>d'abord</B> → <B>puis</B> → <B>ensuite</B> → <B>enfin</B>
       </p>

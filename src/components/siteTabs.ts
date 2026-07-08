@@ -37,3 +37,16 @@ export function siteTabs(): ShellTab[] {
     { key: "index", label: "Index", emoji: "🗂️", href: "/activities", hue: "#5b8def" },
   ];
 }
+
+/** The tool pages (Dan, 2026-07-08: the ☰ menu should be complete) — shown as
+ *  a second group in the burger menu. NOT in the physical flap rail, which
+ *  stays the course structure (Home / Guide / Unités / Index). */
+export function toolTabs(): ShellTab[] {
+  return [
+    { key: "reviser", label: "Réviser", emoji: "🔁", href: "/reviser", hue: "#7bbf2e" },
+    { key: "conjugaison", label: "ConjugaZone", emoji: "🔤", href: "/conjugaison", hue: "#2bb6c2" },
+    { key: "leaderboard", label: "Classement", emoji: "🏆", href: "/leaderboard", hue: "#e3a700" },
+    { key: "tutor", label: "Tuteur", emoji: "🤖", href: "/tutor", hue: "#8a5fd4" },
+    { key: "profil", label: "Profil", emoji: "🎖️", href: "/profil", hue: "#e0567f" },
+  ];
+}

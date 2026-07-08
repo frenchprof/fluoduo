@@ -71,7 +71,7 @@ function applyVoiceAndPitch(u: SpeechSynthesisUtterance, lang: string, gender?: 
 export function speakSequence(
   parts: { text: string; gender?: "f" | "m" }[],
   lang = "fr-FR",
-  opts: { rate?: number } = {},
+  opts: { rate?: number; gapMs?: number } = {},
 ): () => void {
   if (typeof window === "undefined" || !window.speechSynthesis || isSoundMuted()) return () => {};
   const synth = window.speechSynthesis;
@@ -103,7 +103,7 @@ export function speakSequence(
     // Defer the hand-off out of the onend callback — speaking synchronously
     // from inside it drops utterances on some engines (iOS), and the beat
     // between lines reads naturally in a dialogue.
-    u.onend = () => { window.setTimeout(next, 120); };
+    u.onend = () => { window.setTimeout(next, opts.gapMs ?? 120); };
     u.onerror = () => { window.setTimeout(next, 120); };
     if (synth.paused) synth.resume();
     synth.speak(u);
