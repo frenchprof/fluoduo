@@ -13,6 +13,26 @@
 import type { ReactNode } from "react";
 import { speak } from "@/games/letris/speech";
 
+// Conjugation tables: a bare cell like « peux » is never heard alone in real
+// French (Dan, 2026-07-08) — when the tapped word is a single token and its
+// table row starts with a subject-pronoun cell (je / tu / il / elle / on…),
+// speak « je peux », not « peux ». Rows like "je / j'" or "il / elle / on"
+// contribute their first pronoun; je elides to j' before a vowel or h.
+const SUBJECT_TOKENS = new Set(["je", "j'", "tu", "il", "elle", "on", "nous", "vous", "ils", "elles"]);
+const NON_VERB = new Set(["ne", "n'", "pas"]);
+
+function withSubject(el: HTMLElement, text: string): string {
+  if (/\s/.test(text) || NON_VERB.has(text.toLowerCase())) return text;
+  const row = el.closest("tr");
+  const head = row?.querySelector<HTMLElement>("th, td");
+  if (!row || !head || head.contains(el)) return text;
+  const subj = head.textContent?.trim().split(/[\s/()]+/)[0]?.toLowerCase() ?? "";
+  if (!SUBJECT_TOKENS.has(subj)) return text;
+  const s = subj === "j'" ? "je" : subj;
+  if (s === "je" && /^[aeéèêiîoôuh]/i.test(text)) return `j'${text}`;
+  return `${s} ${text}`;
+}
+
 export default function SpeakZone({ children }: { children: ReactNode }) {
   return (
     <div
@@ -23,14 +43,14 @@ export default function SpeakZone({ children }: { children: ReactNode }) {
         const fr = target.closest<HTMLElement>('[lang="fr"]');
         const frText = fr?.textContent?.trim() ?? "";
         if (fr && frText && frText.length <= 80) {
-          speak(frText, "fr-FR");
+          speak(withSubject(fr, frText), "fr-FR");
           return;
         }
         const row = target.closest<HTMLElement>("li, td, th, p");
         const rowText = row?.textContent?.trim() ?? "";
-        if (rowText && rowText.length <= 160) {
+        if (row && rowText && rowText.length <= 160) {
           // « French — English gloss » lines: speak only the French half.
-          speak(rowText.split("—")[0].trim(), "fr-FR");
+          speak(withSubject(row, rowText.split("—")[0].trim()), "fr-FR");
         }
       }}
     >

@@ -111,7 +111,7 @@ export default function HomeDashboard() {
             href="/conjugaison"
             className="fluo-mono flex items-center gap-1 rounded-full border-2 border-[color:var(--fluo-ink)] bg-white/75 px-4 py-2 text-sm font-bold text-[color:var(--fluo-ink)] transition hover:-translate-y-0.5"
           >
-            🔤 Conjugaison
+            🔤 ConjugaZone
           </Link>
         </div>
 

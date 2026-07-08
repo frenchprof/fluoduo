@@ -44,6 +44,21 @@ export default function AccentBar() {
   const [shift, setShift] = useState(false);
   const [visible, setVisible] = useState(false);
   const targetRef = useRef<Field | null>(null);
+  const barRef = useRef<HTMLDivElement | null>(null);
+
+  // iOS Safari: React's root touchstart listener is PASSIVE, so preventDefault
+  // in the onPointerDown handlers can't stop the tap from blurring the field —
+  // the phone keyboard collapsed on every accent tap. A NATIVE non-passive
+  // touchstart listener on the bar keeps the field focused, so the phone
+  // keyboard and the accent bar stay up together. Pointer events fire before
+  // touchstart, so the insert handlers still run.
+  useEffect(() => {
+    const bar = barRef.current;
+    if (!bar || !visible) return;
+    const keepFocus = (e: TouchEvent) => e.preventDefault();
+    bar.addEventListener("touchstart", keepFocus, { passive: false });
+    return () => bar.removeEventListener("touchstart", keepFocus);
+  }, [visible]);
 
   useEffect(() => {
     const onIn = (e: FocusEvent) => {
@@ -68,7 +83,7 @@ export default function AccentBar() {
   const press = (fn: () => void) => (e: React.PointerEvent) => { e.preventDefault(); fn(); };
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-[85] border-t-2 border-[color:var(--cahier-ink)]/20 bg-[var(--cahier-paper-2,#fdfbf4)] p-2 shadow-[0_-4px_16px_rgba(34,40,80,0.14)]">
+    <div ref={barRef} className="fixed inset-x-0 bottom-0 z-[85] border-t-2 border-[color:var(--cahier-ink)]/20 bg-[var(--cahier-paper-2,#fdfbf4)] p-2 shadow-[0_-4px_16px_rgba(34,40,80,0.14)]">
       <div className="mx-auto flex max-w-lg items-stretch gap-2">
         <button type="button" onPointerDown={press(() => setShift((s) => !s))}
           className={`cahier-btn cahier-btn-sm shrink-0 ${shift ? "cahier-btn-primary" : ""}`}
