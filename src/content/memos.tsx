@@ -188,16 +188,23 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
     </Card>
   ),
 
-  /* ---------- C'est loin ? ---------- */
+  /* ---------- C'est loin ? — the 3 families of place words (Dan, 2026-07-07) */
   "loin-lesson": (
     <Card title="C'est loin ?">
       <Lines>
-        <li><span lang="fr">C'est</span> <B>loin</B> ? <span lang="fr">C'est</span> <B>près</B> ?</li>
-        <li><span lang="fr">C'est</span> <B>à dix minutes à pied</B>.</li>
-        <li><span lang="fr">C'est</span> <B>à deux stations de métro</B>.</li>
+        <li><B>___ + (art) noun</B> — <span lang="fr">devant <B>la gare</B>, sous <B>le pont</B></span></li>
       </Lines>
+      <PillRow items={["devant", "derrière", "sur", "sous", "dans", "entre"]} />
+      <Lines>
+        <li><B>___ + de + (art) noun</B> — <span lang="fr">près <B>de la gare</B>, à côté <B>du parc</B></span></li>
+      </Lines>
+      <PillRow items={["à côté de", "près de", "loin de", "en face de", "à gauche de", "à droite de"]} />
+      <Lines>
+        <li><B>(no noun)</B> — <span lang="fr">C'est <B>là-bas</B> !</span></li>
+      </Lines>
+      <PillRow items={["ici", "là", "là-bas", "partout"]} />
       <p className="mt-3 text-[15px] text-[color:var(--cahier-ink)]">
-        <B>c'est à</B> + duration/distance + transport
+        Distance: <B>c'est à</B> + duration — <span lang="fr">C'est <B>à dix minutes</B> à pied.</span>
       </p>
     </Card>
   ),

@@ -1,22 +1,22 @@
 {
   "id": "loin-lesson",
   "title": "C'est loin ?",
-  "subtitle": "Sort the 18 place words: + noun · + DE + noun · standalone",
+  "subtitle": "Sort each place word: + noun · + de + noun · no noun",
   "language": "fr",
   "categories": [
     {
       "key": "sans_de",
-      "label": "___ la table",
+      "label": "___ + (art) Noun",
       "prefix": ""
     },
     {
       "key": "avec_de",
-      "label": "___ DE la table",
+      "label": "___ + de + (art) Noun",
       "prefix": ""
     },
     {
       "key": "tout_seul",
-      "label": "tout seul · no noun",
+      "label": "(no noun)",
       "prefix": ""
     }
   ],
@@ -125,20 +125,6 @@
       "category": "tout_seul",
       "meaning": "over there",
       "emoji": "🔭"
-    },
-    {
-      "text": "DEHORS",
-      "displayName": "dehors",
-      "category": "tout_seul",
-      "meaning": "outside",
-      "emoji": "🌤️"
-    },
-    {
-      "text": "DEDANS",
-      "displayName": "dedans",
-      "category": "tout_seul",
-      "meaning": "inside",
-      "emoji": "📦"
     },
     {
       "text": "PARTOUT",

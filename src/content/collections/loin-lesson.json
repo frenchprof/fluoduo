@@ -198,30 +198,6 @@
       ]
     },
     {
-      "id": "loin-lesson-dehors",
-      "fr": "dehors",
-      "en": "outside",
-      "syllables": [
-        "de",
-        "hors"
-      ],
-      "tags": [
-        "col:tout_seul"
-      ]
-    },
-    {
-      "id": "loin-lesson-dedans",
-      "fr": "dedans",
-      "en": "inside",
-      "syllables": [
-        "de",
-        "dans"
-      ],
-      "tags": [
-        "col:tout_seul"
-      ]
-    },
-    {
       "id": "loin-lesson-partout",
       "fr": "partout",
       "en": "everywhere",
@@ -239,17 +215,17 @@
       "columns": [
         {
           "key": "sans_de",
-          "label": "___ la table",
+          "label": "___ + (art) Noun",
           "prefix": ""
         },
         {
           "key": "avec_de",
-          "label": "___ DE la table",
+          "label": "___ + de + (art) Noun",
           "prefix": ""
         },
         {
           "key": "tout_seul",
-          "label": "TOUT SEUL",
+          "label": "(no noun)",
           "prefix": ""
         }
       ]
