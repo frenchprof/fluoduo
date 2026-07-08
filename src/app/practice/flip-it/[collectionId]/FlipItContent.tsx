@@ -602,7 +602,7 @@ function AnswerField({
             <select aria-label="article" value={vals[p.key] ?? "__unset__"}
               onChange={(e) => setVals((v) => ({ ...v, [p.key]: e.target.value }))} className="!w-16">
               <option value="__unset__" disabled>-</option>
-              {articleOptions.map((a) => <option key={a} value={a}>{ART_LABEL[a]}</option>)}
+              {articleOptions.map((a) => <option key={a} value={a}>{ART_LABEL[a] ?? a}</option>)}
             </select>
           ) : (
             <input lang="fr" autoFocus={autoFocus && i === firstText} value={vals[p.key] ?? ""}
@@ -895,7 +895,11 @@ const PREP_ALL = new Set(["à", "en", "au", "aux", "de", "du", "des", "d'", "à 
 function articleColLabel(articleOptions: string[]): string {
   const vals = articleOptions.filter((a) => a !== "");
   const isPrep = vals.length > 0 && vals.every((a) => PREP_ALL.has(a)) && vals.some((a) => PREP_PURE.has(a));
-  return isPrep ? "prép." : "art.";
+  if (isPrep) return "prép.";
+  // Neither articles nor prepositions (e.g. stress-pronouns' "c'est" frame):
+  // a neutral header beats a wrong one.
+  if (vals.some((a) => !(a in ART_LABEL))) return "forme";
+  return "art.";
 }
 
 const COVERABLE: ColKey[] = ["eng", "art", "fr", "ms", "fs", "mp", "fp", "notes"];
@@ -1209,11 +1213,11 @@ function TestRow({
     const p = partByKey[key];
     if (phase !== "idle") {
       const ok = judge(p);
-      const mine = p.type === "article" ? (vals[p.key] === undefined ? "" : ART_LABEL[vals[p.key]]) : (vals[p.key] ?? "");
+      const mine = p.type === "article" ? (vals[p.key] === undefined ? "" : (ART_LABEL[vals[p.key]] ?? vals[p.key])) : (vals[p.key] ?? "");
       return (
         <span className="flex flex-wrap items-baseline gap-x-1 text-sm">
           {phase === "checked" && <span lang="fr" className={`font-semibold ${ok ? "text-emerald-700" : "text-[color:var(--cahier-la)] line-through"}`}>{mine?.trim() ? mine : "—"}</span>}
-          {(!ok || phase === "revealed") && <span lang="fr" className="cahier-display font-bold"><span className="cahier-hl">{p.type === "article" ? ART_LABEL[p.correct] : p.correct}</span></span>}
+          {(!ok || phase === "revealed") && <span lang="fr" className="cahier-display font-bold"><span className="cahier-hl">{p.type === "article" ? (ART_LABEL[p.correct] ?? p.correct) : p.correct}</span></span>}
           {phase === "checked" && <span>{ok ? "✓" : "✗"}</span>}
         </span>
       );
@@ -1222,7 +1226,7 @@ function TestRow({
       <select aria-label="article" value={vals[p.key] ?? "__unset__"} onKeyDown={onKey}
         onChange={(e) => setVals((v) => ({ ...v, [p.key]: e.target.value }))} className="!w-14">
         <option value="__unset__" disabled>-</option>
-        {articleOptions.map((a) => <option key={a} value={a}>{ART_LABEL[a]}</option>)}
+        {articleOptions.map((a) => <option key={a} value={a}>{ART_LABEL[a] ?? a}</option>)}
       </select>
     ) : (
       <input lang="fr" value={vals[p.key] ?? ""} onKeyDown={onKey}
