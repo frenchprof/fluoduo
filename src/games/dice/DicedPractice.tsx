@@ -108,9 +108,9 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
     setResult(null);
   }
 
-  function cycle() {
-    const next = levels[(lvlIdx + 1) % levels.length];
-    setLvlIdx((i) => (i + 1) % levels.length);
+  function jumpTo(i: number) {
+    const next = levels[i];
+    setLvlIdx(i);
     if (!hasGaps && next === "inter") {
       setQ(null);
       setTyped("");
@@ -162,9 +162,17 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
   return (
     <div className="space-y-3 rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <button type="button" onClick={cycle} className="cahier-btn cahier-btn-sm text-xs">
-          {LEVEL_LABELS[level]} — change
-        </button>
+        {/* One button per level, active inverted + doubled 3D lip (Dan,
+            2026-07-08: the flat cycler didn't read as a button). */}
+        <span className="flex flex-wrap gap-1.5">
+          {levels.map((lv, i) => (
+            <button key={lv} type="button" onClick={() => jumpTo(i)}
+              aria-pressed={level === lv}
+              className={`cahier-btn cahier-btn-sm text-xs !shadow-[0_4px_0_0_var(--cahier-ink)] active:!shadow-none ${level === lv ? "cahier-btn-primary !shadow-[0_4px_0_0_#191c50]" : ""}`}>
+              {LEVEL_LABELS[lv]}
+            </button>
+          ))}
+        </span>
         {!isCompleteIt && (
           <span className="fluo-mono text-xs font-bold text-[color:var(--cahier-ink-soft)]">
             ✓ {okCount}/{attempts.length} · streak {streak}

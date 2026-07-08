@@ -129,10 +129,19 @@ export default function DiceTrainer({ config }: { config: DiceConfig }) {
       <StepLabel label="Select difficulty" />
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm font-bold text-[color:var(--cahier-ink)]">🎲 {config.instruction}</p>
-        <div className="flex items-center gap-2">
-          <button type="button" onClick={() => { setDiff((d) => (d + 1) % 3); if (q) roll(); }} className="cahier-btn cahier-btn-sm text-xs">
-            {DIFF_LABELS[diff]} — change
-          </button>
+        <div className="flex flex-wrap items-center gap-2">
+          {/* One button per level, the ACTIVE one inverted (ink fill, white
+              text) and all wearing a doubled 3D lip — a flat "— change" cycler
+              didn't read as pressable (Dan, 2026-07-08). */}
+          <span className="flex flex-wrap gap-1.5">
+            {DIFF_LABELS.map((lbl, i) => (
+              <button key={lbl} type="button" onClick={() => { setDiff(i); if (q) roll(); }}
+                aria-pressed={diff === i}
+                className={`cahier-btn cahier-btn-sm text-xs !shadow-[0_4px_0_0_var(--cahier-ink)] active:!shadow-none ${diff === i ? "cahier-btn-primary !shadow-[0_4px_0_0_#191c50]" : ""}`}>
+                {lbl}
+              </button>
+            ))}
+          </span>
           <span className="fluo-mono text-xs font-bold text-[color:var(--cahier-ink-soft)]">✓ {okCount}/{attempts.length} · streak {streak}</span>
         </div>
       </div>
