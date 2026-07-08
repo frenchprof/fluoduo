@@ -33,16 +33,19 @@ function withSubject(el: HTMLElement, text: string): string {
   return `${s} ${text}`;
 }
 
-// Set lines like « à · en · au · aux » run together when read as one utterance
-// (Dan, 2026-07-08: pause for a second between each) — split on the « · »
-// list separator and speak the items with a beat between them.
+// Set lines like « à · en · au · aux » and conjugation runs like « je fais ·
+// tu fais · il/elle fait… » run together when read as one utterance (Dan,
+// 2026-07-08: force a 1-second break between each) — split on the « · » list
+// separator and speak the items with a beat between them. Per item: cut any
+// « — gloss » tail, and read « il/elle » as « il, elle » (never the slash).
 function sayTapped(el: HTMLElement, text: string) {
-  const parts = text.split("·").map((s) => s.trim()).filter(Boolean);
+  const clean = (t: string) => t.split("—")[0].replace(/\s*\/\s*/g, ", ").trim();
+  const parts = text.split("·").map(clean).filter(Boolean);
   if (parts.length > 1) {
     speakSequence(parts.map((t) => ({ text: t })), "fr-FR", { gapMs: 1000 });
     return;
   }
-  speak(withSubject(el, text), "fr-FR");
+  speak(withSubject(el, clean(text)), "fr-FR");
 }
 
 export default function SpeakZone({ children }: { children: ReactNode }) {
