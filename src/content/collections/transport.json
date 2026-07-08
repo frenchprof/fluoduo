@@ -1,7 +1,7 @@
 {
   "id": "transport",
   "title": "Comment tu y vas ?",
-  "subtitle": "Modes of transport",
+  "subtitle": "en voiture · à vélo · prendre le métro — the right frame for each mode",
   "langPair": "fr-en",
   "owner": "curated",
   "visibility": "public",
@@ -12,87 +12,173 @@
   "seq": 338,
   "items": [
     {
-      "id": "transport-01",
-      "fr": "le train",
-      "en": "train",
+      "id": "transport-01-en-train",
+      "fr": "en train",
+      "en": "by train",
       "tags": [],
+      "example": "J'y vais en train.",
+      "exampleEn": "I go there by train.",
+      "gap": "en",
       "syllables": [
-        "le",
+        "en",
         "train"
       ]
     },
     {
-      "id": "transport-02",
-      "fr": "le bus",
-      "en": "bus",
+      "id": "transport-02-en-bus",
+      "fr": "en bus",
+      "en": "by bus",
       "tags": [],
+      "example": "Tu y vas en bus ?",
+      "exampleEn": "Are you going there by bus?",
+      "gap": "en",
       "syllables": [
-        "le",
+        "en",
         "bus"
       ]
     },
     {
-      "id": "transport-03",
-      "fr": "le métro",
-      "en": "metro",
+      "id": "transport-03-en-metro",
+      "fr": "en métro",
+      "en": "by metro",
       "tags": [],
+      "example": "J'y vais en métro.",
+      "exampleEn": "I go there by metro.",
+      "gap": "en",
       "syllables": [
+        "en",
+        "mé",
+        "tro"
+      ]
+    },
+    {
+      "id": "transport-04-en-voiture",
+      "fr": "en voiture",
+      "en": "by car",
+      "tags": [],
+      "example": "On y va en voiture.",
+      "exampleEn": "We're going there by car.",
+      "gap": "en",
+      "syllables": [
+        "en",
+        "voi",
+        "ture"
+      ]
+    },
+    {
+      "id": "transport-05-en-avion",
+      "fr": "en avion",
+      "en": "by plane",
+      "tags": [],
+      "example": "Nous y allons en avion.",
+      "exampleEn": "We go there by plane.",
+      "gap": "en",
+      "syllables": [
+        "en",
+        "a",
+        "vion"
+      ]
+    },
+    {
+      "id": "transport-06-en-bateau",
+      "fr": "en bateau",
+      "en": "by boat",
+      "tags": [],
+      "example": "Ils y vont en bateau.",
+      "exampleEn": "They go there by boat.",
+      "gap": "en",
+      "syllables": [
+        "en",
+        "ba",
+        "teau"
+      ]
+    },
+    {
+      "id": "transport-07-a-velo",
+      "fr": "à vélo",
+      "en": "by bike",
+      "tags": [],
+      "example": "J'y vais à vélo.",
+      "exampleEn": "I go there by bike.",
+      "gap": "à",
+      "syllables": [
+        "à",
+        "vé",
+        "lo"
+      ]
+    },
+    {
+      "id": "transport-08-a-pied",
+      "fr": "à pied",
+      "en": "on foot",
+      "tags": [],
+      "example": "J'y vais à pied.",
+      "exampleEn": "I go there on foot.",
+      "gap": "à",
+      "syllables": [
+        "à",
+        "pied"
+      ]
+    },
+    {
+      "id": "transport-09-a-moto",
+      "fr": "à moto",
+      "en": "by motorbike",
+      "tags": [],
+      "example": "Elle y va à moto.",
+      "exampleEn": "She goes there by motorbike.",
+      "gap": "à",
+      "syllables": [
+        "à",
+        "mo",
+        "to"
+      ]
+    },
+    {
+      "id": "transport-10-prendre-metro",
+      "fr": "prendre le métro",
+      "en": "to take the metro",
+      "tags": [],
+      "example": "Je prends le métro.",
+      "exampleEn": "I take the metro.",
+      "gap": "le",
+      "syllables": [
+        "pren",
+        "dre",
         "le",
         "mé",
         "tro"
       ]
     },
     {
-      "id": "transport-04",
-      "fr": "la voiture",
-      "en": "car",
+      "id": "transport-11-prendre-voiture",
+      "fr": "prendre la voiture",
+      "en": "to take the car",
       "tags": [],
+      "example": "Tu prends la voiture ?",
+      "exampleEn": "Are you taking the car?",
+      "gap": "la",
       "syllables": [
+        "pren",
+        "dre",
         "la",
         "voi",
         "ture"
       ]
     },
     {
-      "id": "transport-05",
-      "fr": "le vélo",
-      "en": "bike",
+      "id": "transport-12-prendre-avion",
+      "fr": "prendre l'avion",
+      "en": "to take the plane",
       "tags": [],
+      "example": "Nous prenons l'avion.",
+      "exampleEn": "We take the plane.",
+      "gap": "l'",
       "syllables": [
-        "le",
-        "vé",
-        "lo"
-      ]
-    },
-    {
-      "id": "transport-06",
-      "fr": "l'avion",
-      "en": "plane",
-      "tags": [],
-      "syllables": [
+        "pren",
+        "dre",
         "l'a",
         "vion"
-      ]
-    },
-    {
-      "id": "transport-07",
-      "fr": "le bateau",
-      "en": "boat",
-      "tags": [],
-      "syllables": [
-        "le",
-        "ba",
-        "teau"
-      ]
-    },
-    {
-      "id": "transport-08",
-      "fr": "à pied",
-      "en": "on foot",
-      "tags": [],
-      "syllables": [
-        "à",
-        "pied"
       ]
     }
   ],
