@@ -61,6 +61,9 @@ export default function Lexicalator({
   const [level, setLevel] = useState(1);
   const [score, setScore] = useState(0);
   const [cleared, setCleared] = useState(0);
+  // Words needed to clear THIS level — QUOTA, capped at what the deck can
+  // actually deal (a 5-word deck can never clear 6).
+  const [quota, setQuota] = useState(QUOTA);
   const [lives, setLives] = useState(START_LIVES);
   const [combo, setCombo] = useState(0);
   const [hard, setHard] = useState(false);
@@ -147,11 +150,18 @@ export default function Lexicalator({
   // (Re)deal the lane for the current level. Runs on mount and each level.
   useEffect(() => {
     const min = minSylForLevel(level);
-    let pool = entries.filter((e) => e.syllables.length >= min);
-    if (pool.length < LANE) pool = entries.slice();
-    const shuffled = shuffle(pool);
-    setChests(shuffled.slice(0, LANE).map((entry) => ({ entry, filled: blankFill(entry) })));
-    setQueue(shuffled.slice(LANE));
+    // Prefer level-appropriate (longer) words, but PAD with shorter ones up to
+    // the quota — a level must always deal enough words to be completable.
+    // (question-words has only three 2-syllable words: level 2 dealt 3 chests,
+    // then the lane went dead at 3/6 forever — Dan, 2026-07-07. Ten decks had
+    // such levels.) Longer words deal first so the level's intent still leads;
+    // tiny decks (frequence: 5 words total) cap the quota itself below.
+    const long = shuffle(entries.filter((e) => e.syllables.length >= min));
+    const short = shuffle(entries.filter((e) => e.syllables.length < min));
+    const pool = long.length >= QUOTA ? long : [...long, ...short].slice(0, QUOTA);
+    setQuota(Math.min(QUOTA, pool.length));
+    setChests(pool.slice(0, LANE).map((entry) => ({ entry, filled: blankFill(entry) })));
+    setQueue(pool.slice(LANE));
     // No chest sits in the central bay at first — the learner is nudged to
     // pick one to begin (Dan, 2026-07-03).
     setSelected(null);
@@ -212,14 +222,14 @@ export default function Lexicalator({
         // opening), so a chest is never auto-placed in the bay AND the lane.
         setSelected(null);
         if (nextUp) setQueue((q) => q.slice(1));
-        // Level cleared → the big stage jingle (outside the updater so Strict
-        // Mode's double-run can't fire it twice). No fanfare plays here today.
-        if (cleared + 1 >= QUOTA) sfx.stage();
-        setCleared((n) => {
-          const nn = n + 1;
-          if (nn >= QUOTA) setLevelDone(true);
-          return nn;
-        });
+        // Level cleared at the quota — or when the pool is exhausted (backstop:
+        // the deal above guarantees pool ≥ quota, so lane+queue running empty
+        // means the level's words are simply all done). Jingle stays outside
+        // the updater so Strict Mode's double-run can't fire it twice.
+        const levelCleared = cleared + 1 >= quota || newChests.length === 0;
+        if (levelCleared) sfx.stage();
+        setCleared((n) => n + 1);
+        if (levelCleared) setLevelDone(true);
       } else {
         setChests((cs) => cs.map((c) => (c.entry.id === active.entry.id ? { ...c, filled: nextFilled } : c)));
       }
@@ -248,8 +258,8 @@ export default function Lexicalator({
     setLevel(1); setScore(0); setLives(START_LIVES); setCombo(0);
     setOver(false); setDone([]); setFirstDone(false);
     // re-deal via the level effect (setLevel(1) won't refire if already 1)
-    const min = 1;
-    const shuffled = shuffle(entries.filter((e) => e.syllables.length >= min));
+    const shuffled = shuffle(entries.slice()); // level 1: every word qualifies
+    setQuota(Math.min(QUOTA, shuffled.length));
     setChests(shuffled.slice(0, LANE).map((entry) => ({ entry, filled: blankFill(entry) })));
     setQueue(shuffled.slice(LANE));
     setSelected(null);
@@ -298,7 +308,7 @@ export default function Lexicalator({
             glance (Dan, 2026-07-05: "i cannot tell which are tappable"). */}
         <span title="Points earned" className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">Score <b style={{ color: "#58cc02" }}>{score}</b></span>
         <span title="Level — higher levels bring longer words and a faster belt" className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">Niveau <b style={{ color: "#1cb0f6" }}>{level}</b></span>
-        <span title={`Words unlocked this level — ${QUOTA} clears it`} className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">Mots <b style={{ color: "#ff9600" }}>{cleared}/{QUOTA}</b></span>
+        <span title={`Words unlocked this level — ${quota} clears it`} className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">Mots <b style={{ color: "#ff9600" }}>{cleared}/{quota}</b></span>
         <span title="Lives — a wrong syllable costs one" className="text-lg" style={{ color: "#ff4b4b" }}>{"♥".repeat(Math.max(0, lives))}<span className="opacity-20">{"♥".repeat(Math.max(0, START_LIVES - lives))}</span></span>
         <span className="flex items-center gap-2 rounded-xl border-2 border-sky-300 bg-sky-100 px-2 py-1">
           <button type="button" onClick={() => { chiptune.toggle("conveyor"); setMusic(chiptune.playing() === "conveyor"); }}

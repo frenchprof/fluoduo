@@ -161,6 +161,77 @@
         "en",
         "face"
       ]
+    },
+    {
+      "id": "loin-lesson-ici",
+      "fr": "ici",
+      "en": "here",
+      "syllables": [
+        "i",
+        "ci"
+      ],
+      "tags": [
+        "col:tout_seul"
+      ]
+    },
+    {
+      "id": "loin-lesson-là",
+      "fr": "là",
+      "en": "there",
+      "syllables": [
+        "là"
+      ],
+      "tags": [
+        "col:tout_seul"
+      ]
+    },
+    {
+      "id": "loin-lesson-làbas",
+      "fr": "là-bas",
+      "en": "over there",
+      "syllables": [
+        "là-",
+        "bas"
+      ],
+      "tags": [
+        "col:tout_seul"
+      ]
+    },
+    {
+      "id": "loin-lesson-dehors",
+      "fr": "dehors",
+      "en": "outside",
+      "syllables": [
+        "de",
+        "hors"
+      ],
+      "tags": [
+        "col:tout_seul"
+      ]
+    },
+    {
+      "id": "loin-lesson-dedans",
+      "fr": "dedans",
+      "en": "inside",
+      "syllables": [
+        "de",
+        "dans"
+      ],
+      "tags": [
+        "col:tout_seul"
+      ]
+    },
+    {
+      "id": "loin-lesson-partout",
+      "fr": "partout",
+      "en": "everywhere",
+      "syllables": [
+        "par",
+        "tout"
+      ],
+      "tags": [
+        "col:tout_seul"
+      ]
     }
   ],
   "gameConfig": {
@@ -174,6 +245,11 @@
         {
           "key": "avec_de",
           "label": "___ DE la table",
+          "prefix": ""
+        },
+        {
+          "key": "tout_seul",
+          "label": "TOUT SEUL",
           "prefix": ""
         }
       ]

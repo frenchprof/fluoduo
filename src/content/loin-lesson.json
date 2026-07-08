@@ -1,7 +1,7 @@
 {
   "id": "loin-lesson",
   "title": "C'est loin ?",
-  "subtitle": "Learn the 12 prepositions of location",
+  "subtitle": "Sort the 18 place words: + noun · + DE + noun · standalone",
   "language": "fr",
   "categories": [
     {
@@ -12,6 +12,11 @@
     {
       "key": "avec_de",
       "label": "___ DE la table",
+      "prefix": ""
+    },
+    {
+      "key": "tout_seul",
+      "label": "tout seul · no noun",
       "prefix": ""
     }
   ],
@@ -99,6 +104,48 @@
       "category": "avec_de",
       "meaning": "opposite / facing",
       "emoji": "🪞"
+    },
+    {
+      "text": "ICI",
+      "displayName": "ici",
+      "category": "tout_seul",
+      "meaning": "here",
+      "emoji": "📍"
+    },
+    {
+      "text": "LÀ",
+      "displayName": "là",
+      "category": "tout_seul",
+      "meaning": "there",
+      "emoji": "👉"
+    },
+    {
+      "text": "LÀ-BAS",
+      "displayName": "là-bas",
+      "category": "tout_seul",
+      "meaning": "over there",
+      "emoji": "🔭"
+    },
+    {
+      "text": "DEHORS",
+      "displayName": "dehors",
+      "category": "tout_seul",
+      "meaning": "outside",
+      "emoji": "🌤️"
+    },
+    {
+      "text": "DEDANS",
+      "displayName": "dedans",
+      "category": "tout_seul",
+      "meaning": "inside",
+      "emoji": "📦"
+    },
+    {
+      "text": "PARTOUT",
+      "displayName": "partout",
+      "category": "tout_seul",
+      "meaning": "everywhere",
+      "emoji": "🌐"
     }
   ]
 }
