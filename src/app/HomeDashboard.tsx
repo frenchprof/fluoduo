@@ -68,6 +68,7 @@ export default function HomeDashboard() {
             <Link
               href={`/unit/${activeSio.unit}#${activeSio.id}`}
               style={{ background: accent, borderColor: accent }}
+              title="Continues at your first objective not yet marked done — 'Mark as done' is what moves this forward."
               className="rounded-full border-2 px-5 py-2 text-base font-black text-white shadow-[3px_3px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
             >
               ▶ Continuer · {activeSio.topic}
@@ -105,6 +106,12 @@ export default function HomeDashboard() {
             className="fluo-mono flex items-center gap-1 rounded-full border-2 border-[color:var(--fluo-ink)] bg-white/75 px-4 py-2 text-sm font-bold text-[color:var(--fluo-ink)] transition hover:-translate-y-0.5"
           >
             🎖️ Profil
+          </Link>
+          <Link
+            href="/conjugaison"
+            className="fluo-mono flex items-center gap-1 rounded-full border-2 border-[color:var(--fluo-ink)] bg-white/75 px-4 py-2 text-sm font-bold text-[color:var(--fluo-ink)] transition hover:-translate-y-0.5"
+          >
+            🔤 Conjugaison
           </Link>
         </div>
 

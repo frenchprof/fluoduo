@@ -7,6 +7,7 @@ import { speak } from "@/games/letris/speech";
 import { logEvent } from "@/lib/firebase/usage";
 import { recordPretestAnswer, stemForItem } from "@/lib/pretestRecord";
 import CahierShell, { type ShellTab } from "@/components/CahierShell";
+import MarkDoneButton from "@/app/sio/[id]/MarkDoneButton";
 import type { Pretest, PretestItem } from "@/lib/pretests/schema";
 
 // The Pretest is a cold pre-lesson diagnostic — its tab rail deliberately does
@@ -378,6 +379,24 @@ function Recap({
           </table>
         </div>
       )}
+
+      {/* Done-nudge (Dan, 2026-07-08): finishing a pretest should prompt the
+          mark-as-done — and explain that ▶ Continuer only advances past
+          objectives MARKED done. */}
+      {(() => {
+        const sioId = sioIdForPretest(pretest.id);
+        return sioId ? (
+          <div className="mt-6 rounded-xl border-2 border-[color:var(--fluo-hl,#eaff00)] bg-[color:var(--fluo-hl,#eaff00)]/20 p-4">
+            <p className="text-sm font-bold text-slate-900">
+              Pretest complete — mark <span className="fluo-mono">{sioId}</span> as done?
+            </p>
+            <p className="mt-0.5 text-xs text-slate-600">
+              ▶ Continuer on the home page moves to your first objective <b>not yet marked done</b> — marking done is what moves it forward.
+            </p>
+            <MarkDoneButton sioId={sioId} />
+          </div>
+        ) : null;
+      })()}
 
       <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
         <button type="button" onClick={onRestart} className="fluo-btn fluo-btn-lg">
