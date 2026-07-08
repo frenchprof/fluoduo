@@ -78,20 +78,40 @@ export function speakSequence(
   synth.cancel();
   let cancelled = false;
   let i = 0;
+  // Two engine quirks stop long runs partway (Dan, 2026-07-07: "play all is
+  // not playing all"):
+  //  - Chrome GARBAGE-COLLECTS utterances whose JS refs are gone mid-queue, so
+  //    onend never fires and the chain dies → hold a ref to every utterance
+  //    for the run's lifetime.
+  //  - Chrome silently PAUSES long synthesis runs → nudge resume() on a timer
+  //    while the run is active.
+  const alive: SpeechSynthesisUtterance[] = [];
+  const keepAlive = window.setInterval(() => {
+    if (!cancelled && synth.paused) synth.resume();
+  }, 3000);
+  const finish = () => {
+    window.clearInterval(keepAlive);
+    alive.length = 0;
+  };
   const next = () => {
-    if (cancelled || i >= parts.length) return;
+    if (cancelled || i >= parts.length) { finish(); return; }
     const p = parts[i++];
     const u = new SpeechSynthesisUtterance(p.text);
+    alive.push(u);
     u.lang = lang;
     applyVoiceAndPitch(u, lang, p.gender, opts.rate);
-    u.onend = next;
-    u.onerror = next;
+    // Defer the hand-off out of the onend callback — speaking synchronously
+    // from inside it drops utterances on some engines (iOS), and the beat
+    // between lines reads naturally in a dialogue.
+    u.onend = () => { window.setTimeout(next, 120); };
+    u.onerror = () => { window.setTimeout(next, 120); };
     if (synth.paused) synth.resume();
     synth.speak(u);
   };
   next();
   return () => {
     cancelled = true;
+    finish();
     synth.cancel();
   };
 }
