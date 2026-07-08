@@ -346,7 +346,14 @@ export default function Lexicalator({
           {chests.filter((c) => c.entry.id !== selected).map((c) => (
             // A locked treasure chest waiting in the holding area: gold body,
             // a darker lid band with a clasp, and the syllable-count lock below.
-            <button key={c.entry.id} type="button" onClick={() => pickChest(c.entry.id)}
+            // onClick is KEYBOARD-ONLY (detail === 0). Touch/mouse taps are fully
+            // handled by the pointerup drag path; on iOS the trailing synthetic
+            // click hit-tests the CURRENT layout — after the picked chest leaves
+            // the lane and its neighbour reflows into the same spot, that click
+            // used to pick the neighbour instead (Dan, 2026-07-07: "the chest I
+            // tap is not the chest that descends").
+            <button key={c.entry.id} type="button"
+              onClick={(e) => { if (e.detail === 0) pickChest(c.entry.id); }}
               onPointerDown={(e) => startDrag(e, c.entry.id)}
               className="w-36 cursor-grab touch-none overflow-hidden rounded-lg border-2 border-b-4 text-center transition active:cursor-grabbing"
               style={{ borderColor: "#7a4e0a", background: "linear-gradient(180deg,#ffe08a,#eaa61c)", boxShadow: "inset 0 -2px 0 rgba(0,0,0,.15)", opacity: ghost?.id === c.entry.id ? 0.4 : 1 }}>
