@@ -250,6 +250,45 @@
       "tags": [
         "col:des"
       ]
+    },
+    {
+      "id": "objets-articles-18",
+      "fr": "ordinateur",
+      "en": "computer",
+      "syllables": [
+        "or",
+        "di",
+        "na",
+        "teur"
+      ],
+      "tags": [
+        "col:un"
+      ]
+    },
+    {
+      "id": "objets-articles-19",
+      "fr": "agrafeuse",
+      "en": "stapler",
+      "syllables": [
+        "a",
+        "gra",
+        "feuse"
+      ],
+      "tags": [
+        "col:une"
+      ]
+    },
+    {
+      "id": "objets-articles-20",
+      "fr": "souris",
+      "en": "mouse",
+      "syllables": [
+        "sou",
+        "ris"
+      ],
+      "tags": [
+        "col:une"
+      ]
     }
   ]
 }

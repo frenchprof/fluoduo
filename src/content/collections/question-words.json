@@ -94,6 +94,30 @@
         "quoi"
       ],
       "tags": []
+    },
+    {
+      "id": "question-words-08",
+      "fr": "est-ce que",
+      "en": "turns a statement into a yes/no question",
+      "example": "Est-ce que tu es libre ?",
+      "exampleEn": "Are you free?",
+      "tags": []
+    },
+    {
+      "id": "question-words-09",
+      "fr": "qu'est-ce que",
+      "en": "what …? (keeps statement order)",
+      "example": "Qu'est-ce que tu manges ?",
+      "exampleEn": "What are you eating?",
+      "tags": []
+    },
+    {
+      "id": "question-words-10",
+      "fr": "Parles-tu français ?",
+      "en": "Do you speak French? (inversion)",
+      "example": "Parles-tu français ?",
+      "exampleEn": "Do you speak French?",
+      "tags": []
     }
   ]
 }

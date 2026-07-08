@@ -65,6 +65,49 @@
       "en": "Ask if they're free another day",
       "tags": [],
       "gap": "es"
+    },
+    {
+      "id": "vouloir-inviter-09",
+      "fr": "On se retrouve samedi ?",
+      "en": "Shall we meet on Saturday?",
+      "gap": "se retrouve",
+      "tags": []
+    },
+    {
+      "id": "vouloir-inviter-10",
+      "fr": "Plutôt dimanche ?",
+      "en": "Rather Sunday? (counter-propose)",
+      "gap": "Plutôt",
+      "tags": []
+    },
+    {
+      "id": "vouloir-inviter-11",
+      "fr": "Ça me convient.",
+      "en": "That works for me.",
+      "gap": "convient",
+      "lemma": "convenir",
+      "tags": []
+    },
+    {
+      "id": "vouloir-inviter-12",
+      "fr": "Avec plaisir !",
+      "en": "With pleasure!",
+      "gap": "plaisir",
+      "tags": []
+    },
+    {
+      "id": "vouloir-inviter-13",
+      "fr": "D'accord !",
+      "en": "Okay! / Agreed!",
+      "gap": "D'accord",
+      "tags": []
+    },
+    {
+      "id": "vouloir-inviter-14",
+      "fr": "Désolé, je suis occupé ce soir.",
+      "en": "Sorry, I'm busy tonight. (m.)",
+      "gap": "occupé",
+      "tags": []
     }
   ]
 }

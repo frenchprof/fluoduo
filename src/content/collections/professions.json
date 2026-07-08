@@ -247,6 +247,69 @@
       "tags": [
         "col:both"
       ]
+    },
+    {
+      "id": "professions-17",
+      "fr": "médecin",
+      "en": "doctor (m/f)",
+      "syllables": [
+        "mé",
+        "de",
+        "cin"
+      ],
+      "tags": [
+        "col:both"
+      ]
+    },
+    {
+      "id": "professions-18",
+      "fr": "serveur",
+      "en": "waiter (m)",
+      "syllables": [
+        "ser",
+        "veur"
+      ],
+      "tags": [
+        "col:il"
+      ]
+    },
+    {
+      "id": "professions-19",
+      "fr": "serveuse",
+      "en": "waitress (f)",
+      "syllables": [
+        "ser",
+        "veuse"
+      ],
+      "tags": [
+        "col:elle"
+      ]
+    },
+    {
+      "id": "professions-20",
+      "fr": "musicien",
+      "en": "musician (m)",
+      "syllables": [
+        "mu",
+        "si",
+        "cien"
+      ],
+      "tags": [
+        "col:il"
+      ]
+    },
+    {
+      "id": "professions-21",
+      "fr": "musicienne",
+      "en": "musician (f)",
+      "syllables": [
+        "mu",
+        "si",
+        "cienne"
+      ],
+      "tags": [
+        "col:elle"
+      ]
     }
   ]
 }

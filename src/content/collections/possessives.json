@@ -150,6 +150,146 @@
       "tags": [
         "col:mes"
       ]
+    },
+    {
+      "id": "possessives-10",
+      "fr": "père",
+      "en": "father (m)",
+      "syllables": [
+        "père"
+      ],
+      "tags": [
+        "col:mon"
+      ]
+    },
+    {
+      "id": "possessives-11",
+      "fr": "mère",
+      "en": "mother (f)",
+      "syllables": [
+        "mère"
+      ],
+      "tags": [
+        "col:ma"
+      ]
+    },
+    {
+      "id": "possessives-12",
+      "fr": "frère",
+      "en": "brother (m)",
+      "syllables": [
+        "frère"
+      ],
+      "tags": [
+        "col:mon"
+      ]
+    },
+    {
+      "id": "possessives-13",
+      "fr": "grand-père",
+      "en": "grandfather (m)",
+      "syllables": [
+        "grand",
+        "-père"
+      ],
+      "tags": [
+        "col:mon"
+      ]
+    },
+    {
+      "id": "possessives-14",
+      "fr": "grand-mère",
+      "en": "grandmother (f)",
+      "syllables": [
+        "grand",
+        "-mère"
+      ],
+      "tags": [
+        "col:ma"
+      ]
+    },
+    {
+      "id": "possessives-15",
+      "fr": "grands-parents",
+      "en": "grandparents (pl)",
+      "syllables": [
+        "grands",
+        "-pa",
+        "rents"
+      ],
+      "tags": [
+        "col:mes"
+      ]
+    },
+    {
+      "id": "possessives-16",
+      "fr": "oncle",
+      "en": "uncle (m)",
+      "syllables": [
+        "oncle"
+      ],
+      "tags": [
+        "col:mon"
+      ]
+    },
+    {
+      "id": "possessives-17",
+      "fr": "tante",
+      "en": "aunt (f)",
+      "syllables": [
+        "tante"
+      ],
+      "tags": [
+        "col:ma"
+      ]
+    },
+    {
+      "id": "possessives-18",
+      "fr": "cousin",
+      "en": "cousin (m)",
+      "syllables": [
+        "cou",
+        "sin"
+      ],
+      "tags": [
+        "col:mon"
+      ]
+    },
+    {
+      "id": "possessives-19",
+      "fr": "cousine",
+      "en": "cousin (f)",
+      "syllables": [
+        "cou",
+        "sine"
+      ],
+      "tags": [
+        "col:ma"
+      ]
+    },
+    {
+      "id": "possessives-20",
+      "fr": "famille",
+      "en": "family (f)",
+      "syllables": [
+        "fa",
+        "mille"
+      ],
+      "tags": [
+        "col:ma"
+      ]
+    },
+    {
+      "id": "possessives-21",
+      "fr": "enfants",
+      "en": "children (pl)",
+      "syllables": [
+        "en",
+        "fants"
+      ],
+      "tags": [
+        "col:mes"
+      ]
     }
   ]
 }

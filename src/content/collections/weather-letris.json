@@ -226,6 +226,78 @@
       "tags": [
         "col:il_y_a"
       ]
+    },
+    {
+      "id": "weather-letris-25-printemps",
+      "fr": "le printemps",
+      "en": "spring",
+      "emoji": "🌸",
+      "example": "Au printemps, il pleut souvent.",
+      "exampleEn": "In spring, it often rains.",
+      "tags": []
+    },
+    {
+      "id": "weather-letris-26-ete",
+      "fr": "l'été",
+      "en": "summer",
+      "emoji": "☀️",
+      "example": "En été, il fait chaud.",
+      "exampleEn": "In summer, it is hot.",
+      "tags": []
+    },
+    {
+      "id": "weather-letris-27-automne",
+      "fr": "l'automne",
+      "en": "autumn / fall",
+      "emoji": "🍂",
+      "example": "En automne, il y a du vent.",
+      "exampleEn": "In autumn, it is windy.",
+      "tags": []
+    },
+    {
+      "id": "weather-letris-28-hiver",
+      "fr": "l'hiver",
+      "en": "winter",
+      "emoji": "❄️",
+      "example": "En hiver, il fait froid.",
+      "exampleEn": "In winter, it is cold.",
+      "tags": []
+    },
+    {
+      "id": "weather-letris-29-saison",
+      "fr": "la saison",
+      "en": "season",
+      "emoji": "📆",
+      "example": "Il y a quatre saisons dans l'année.",
+      "exampleEn": "There are four seasons in a year.",
+      "tags": []
+    },
+    {
+      "id": "weather-letris-30-semaine",
+      "fr": "la semaine",
+      "en": "week",
+      "emoji": "📅",
+      "example": "Il pleut toute la semaine.",
+      "exampleEn": "It is raining all week.",
+      "tags": []
+    },
+    {
+      "id": "weather-letris-31-mois",
+      "fr": "le mois",
+      "en": "month",
+      "emoji": "🗓️",
+      "example": "Il fait beau ce mois-ci.",
+      "exampleEn": "The weather is nice this month.",
+      "tags": []
+    },
+    {
+      "id": "weather-letris-32-annee",
+      "fr": "l'année",
+      "en": "year",
+      "emoji": "🌍",
+      "example": "Il fait chaud toute l'année à Singapour.",
+      "exampleEn": "It is hot all year in Singapore.",
+      "tags": []
     }
   ],
   "gameConfig": {

@@ -201,6 +201,124 @@
         "de",
         "l'eau"
       ]
+    },
+    {
+      "id": "aliments-17",
+      "fr": "du beurre",
+      "en": "butter",
+      "emoji": "🧈",
+      "syllables": [
+        "du",
+        "beurre"
+      ],
+      "tags": []
+    },
+    {
+      "id": "aliments-18",
+      "fr": "du sucre",
+      "en": "sugar",
+      "emoji": "🍬",
+      "syllables": [
+        "du",
+        "sucre"
+      ],
+      "tags": []
+    },
+    {
+      "id": "aliments-19",
+      "fr": "de la farine",
+      "en": "flour",
+      "emoji": "🌾",
+      "syllables": [
+        "de",
+        "la",
+        "fa",
+        "rine"
+      ],
+      "tags": []
+    },
+    {
+      "id": "aliments-20",
+      "fr": "de l'huile",
+      "en": "oil",
+      "emoji": "🫒",
+      "syllables": [
+        "de",
+        "l'huile"
+      ],
+      "tags": []
+    },
+    {
+      "id": "aliments-21",
+      "fr": "du poulet",
+      "en": "chicken",
+      "emoji": "🍗",
+      "syllables": [
+        "du",
+        "pou",
+        "let"
+      ],
+      "tags": []
+    },
+    {
+      "id": "aliments-22",
+      "fr": "de la soupe",
+      "en": "soup",
+      "emoji": "🍲",
+      "syllables": [
+        "de",
+        "la",
+        "soupe"
+      ],
+      "tags": []
+    },
+    {
+      "id": "aliments-23",
+      "fr": "des frites",
+      "en": "fries",
+      "emoji": "🍟",
+      "syllables": [
+        "des",
+        "frites"
+      ],
+      "tags": []
+    },
+    {
+      "id": "aliments-24",
+      "fr": "des asperges",
+      "en": "asparagus",
+      "emoji": "🥬",
+      "syllables": [
+        "des",
+        "as",
+        "perges"
+      ],
+      "tags": []
+    },
+    {
+      "id": "aliments-25",
+      "fr": "des champignons",
+      "en": "mushrooms",
+      "emoji": "🍄",
+      "syllables": [
+        "des",
+        "cham",
+        "pi",
+        "gnons"
+      ],
+      "tags": []
+    },
+    {
+      "id": "aliments-26",
+      "fr": "des oignons",
+      "en": "onions",
+      "emoji": "🧅",
+      "syllables": [
+        "des",
+        "oi",
+        "gnons"
+      ],
+      "tags": []
     }
   ],
   "gameConfig": {

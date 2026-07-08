@@ -380,6 +380,101 @@
         "danse."
       ],
       "tags": []
+    },
+    {
+      "id": "faire-activites-25",
+      "fr": "football",
+      "en": "football / soccer",
+      "syllables": [
+        "foot",
+        "ball"
+      ],
+      "tags": [
+        "col:du"
+      ]
+    },
+    {
+      "id": "faire-activites-26",
+      "fr": "basket",
+      "en": "basketball",
+      "syllables": [
+        "bas",
+        "ket"
+      ],
+      "tags": [
+        "col:du"
+      ]
+    },
+    {
+      "id": "faire-activites-27",
+      "fr": "ski",
+      "en": "skiing",
+      "syllables": [
+        "ski"
+      ],
+      "tags": [
+        "col:du"
+      ]
+    },
+    {
+      "id": "faire-activites-28",
+      "fr": "karaté",
+      "en": "karate",
+      "syllables": [
+        "ka",
+        "ra",
+        "té"
+      ],
+      "tags": [
+        "col:du"
+      ]
+    },
+    {
+      "id": "faire-activites-29",
+      "fr": "yoga",
+      "en": "yoga",
+      "syllables": [
+        "yo",
+        "ga"
+      ],
+      "tags": [
+        "col:du"
+      ]
+    },
+    {
+      "id": "faire-activites-30",
+      "fr": "boxe",
+      "en": "boxing",
+      "syllables": [
+        "boxe"
+      ],
+      "tags": [
+        "col:de_la"
+      ]
+    },
+    {
+      "id": "faire-activites-31",
+      "fr": "peinture",
+      "en": "painting",
+      "syllables": [
+        "pein",
+        "ture"
+      ],
+      "tags": [
+        "col:de_la"
+      ]
+    },
+    {
+      "id": "faire-activites-32",
+      "fr": "escrime",
+      "en": "fencing",
+      "syllables": [
+        "es",
+        "crime"
+      ],
+      "tags": [
+        "col:de_l"
+      ]
     }
   ]
 }

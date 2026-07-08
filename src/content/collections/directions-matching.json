@@ -289,6 +289,42 @@
       "fr": "Vous êtes arrivé(e).",
       "en": "You have arrived.",
       "tags": []
+    },
+    {
+      "id": "directions-matching-conn-dabord",
+      "fr": "d'abord",
+      "en": "first (of all)",
+      "emoji": "1️⃣",
+      "example": "D'abord, vous sortez de la station.",
+      "exampleEn": "First, you exit the station.",
+      "tags": []
+    },
+    {
+      "id": "directions-matching-conn-puis",
+      "fr": "puis",
+      "en": "then",
+      "emoji": "2️⃣",
+      "example": "Puis, vous continuez tout droit.",
+      "exampleEn": "Then, you continue straight ahead.",
+      "tags": []
+    },
+    {
+      "id": "directions-matching-conn-ensuite",
+      "fr": "ensuite",
+      "en": "next / afterwards",
+      "emoji": "3️⃣",
+      "example": "Ensuite, vous tournez à gauche.",
+      "exampleEn": "Next, you turn left.",
+      "tags": []
+    },
+    {
+      "id": "directions-matching-conn-enfin",
+      "fr": "enfin",
+      "en": "finally",
+      "emoji": "🏁",
+      "example": "Enfin, vous traversez la place.",
+      "exampleEn": "Finally, you cross the square.",
+      "tags": []
     }
   ],
   "gameConfig": {
