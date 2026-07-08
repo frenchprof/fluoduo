@@ -239,8 +239,16 @@ export default function Lexicalator({
       // Rattle as feedback, but no life, no combo break (Dan, 2026-07-05).
       setRattle(token);
       window.setTimeout(() => setRattle(null), 300);
+    } else if (chests.some((c) => c.entry.syllables.includes(token))) {
+      // The key is a REAL syllable — of another chest in the lane, not the
+      // active word ("de" waiting for joueur de tennis). That's a mix-up, not
+      // a fall for a fake: rattle, break the combo, but spare the life (Dan,
+      // 2026-07-07). Lives are spent on DECOYS only.
+      setRattle(token);
+      window.setTimeout(() => setRattle(null), 300);
+      setCombo(0);
     } else {
-      // wrong key — rattle, lose a life
+      // decoy — rattle, lose a life
       sfx.wrong();
       setRattle(token);
       window.setTimeout(() => setRattle(null), 300);
