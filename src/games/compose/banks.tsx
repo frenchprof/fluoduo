@@ -79,29 +79,26 @@ function withPalette(cats: { label: string; phrases: string[] }[]): ComposeCateg
 // Directions (ported verbatim from DirectionsMapGame, retired 2026-07-05)
 // ---------------------------------------------------------------------------
 
+// `exit` is the contracted "sortir de" form — scenarios START from a place
+// that has one, so step 1 « D'abord, vous sortez … » is always composable
+// from the bank's chips (Dan, 2026-07-08).
 const MAP_PLACES = [
-  { name: "le parc", emoji: "🌳" },
-  { name: "le café", emoji: "☕" },
+  { name: "le parc", emoji: "🌳", exit: "du parc" },
+  { name: "le café", emoji: "☕", exit: "du café" },
   { name: "le cinéma", emoji: "🎬" },
-  { name: "le musée", emoji: "🏛️" },
+  { name: "le musée", emoji: "🏛️", exit: "du musée" },
   { name: "le stade", emoji: "🏟️" },
-  { name: "la gare", emoji: "🚉" },
-  { name: "la banque", emoji: "🏦" },
+  { name: "la gare", emoji: "🚉", exit: "de la gare" },
+  { name: "la banque", emoji: "🏦", exit: "de la banque" },
   { name: "la pharmacie", emoji: "💊" },
   { name: "la poste", emoji: "📮" },
   { name: "la bibliothèque", emoji: "📚" },
-  { name: "l'hôtel", emoji: "🏨" },
+  { name: "l'hôtel", emoji: "🏨", exit: "de l'hôtel" },
   { name: "l'école", emoji: "🏫" },
   { name: "l'aéroport", emoji: "✈️" },
   { name: "l'hôpital", emoji: "🏥" },
+  { name: "la station de métro", emoji: "🚇", exit: "de la station de métro" },
 ];
-
-function pickRandomPair<T>(arr: T[]): [T, T] {
-  const a = arr[Math.floor(Math.random() * arr.length)];
-  let b = a;
-  while (b === a) b = arr[Math.floor(Math.random() * arr.length)];
-  return [a, b];
-}
 
 const DIRECTIONS_BANK: ComposeBank = {
   id: "directions",
@@ -113,7 +110,8 @@ const DIRECTIONS_BANK: ComposeBank = {
   aiCheck: true,
   categories: withPalette([
     {
-      label: "Verbs",
+      // Directions stay VOUS throughout — you give them to strangers (Dan).
+      label: "Verbs (vous)",
       phrases: [
         "Vous sortez",
         "Vous allez",
@@ -125,10 +123,20 @@ const DIRECTIONS_BANK: ComposeBank = {
       ],
     },
     {
-      label: "Completions",
+      label: "D'abord : sortir de…",
       phrases: [
         "du parc",
+        "du café",
+        "du musée",
+        "de la gare",
+        "de la banque",
+        "de l'hôtel",
         "de la station de métro",
+      ],
+    },
+    {
+      label: "Completions",
+      phrases: [
         "tout droit",
         "jusqu'au carrefour",
         "au bout de la rue",
@@ -143,15 +151,28 @@ const DIRECTIONS_BANK: ComposeBank = {
       ],
     },
     {
+      label: "Rues (streets)",
+      phrases: [
+        "la rue de la République",
+        "l'avenue Victor-Hugo",
+        "le boulevard Saint-Michel",
+        "la rue du Marché",
+      ],
+    },
+    {
       label: "Connectors",
-      phrases: ["puis", "ensuite", ", et", "d'abord", "enfin", ", "],
+      phrases: ["d'abord", "puis", "ensuite", ", et", "enfin", ", "],
     },
   ]),
   newScenario() {
-    const [a, b] = pickRandomPair(MAP_PLACES);
+    // Start from a place whose "sortir de" chip exists; end anywhere else.
+    const starts = MAP_PLACES.filter((p) => p.exit);
+    const a = starts[Math.floor(Math.random() * starts.length)];
+    let b = MAP_PLACES[Math.floor(Math.random() * MAP_PLACES.length)];
+    while (b.name === a.name) b = MAP_PLACES[Math.floor(Math.random() * MAP_PLACES.length)];
     return {
       headline: `${a.emoji} ${a.name} → ${b.emoji} ${b.name}`,
-      instructionEn: `Give directions from ${a.name} to ${b.name} — tap phrases to build each sentence.`,
+      instructionEn: `Directions from ${a.name} to ${b.name}. Start: « D'abord, vous sortez ${a.exit}… » — then street by street to ${b.name}.`,
     };
   },
 };
