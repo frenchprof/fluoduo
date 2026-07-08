@@ -10,6 +10,8 @@ type Note = string | string[];
 type Chan = { type: OscillatorType; duty?: number; vol: number; notes: [Note, number][]; byStep?: Record<number, { note: Note; dur: number }> };
 type Song = { bpm: number; swing: number; ch: Chan[]; drums: string[]; len?: number };
 
+import { isSoundMuted, onSoundMuteChange } from "@/games/audio/mute";
+
 let ctx: AudioContext | null = null;
 let master: GainNode | null = null;
 let musicBus: GainNode | null = null; // the loop runs through this so SFX can duck it
@@ -21,12 +23,20 @@ function initAudio() {
   const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
   ctx = new Ctx();
   master = ctx.createGain();
-  master.gain.value = vol * 0.5;
+  // The global 🔇 governs game audio too (Dan, 2026-07-07: the sound-off
+  // button must work in games): muted → master at 0. Music keeps scheduling
+  // silently, so unmuting mid-game brings the tune straight back.
+  master.gain.value = isSoundMuted() ? 0 : vol * 0.5;
   master.connect(ctx.destination);
   musicBus = ctx.createGain();
   musicBus.gain.value = 1;
   musicBus.connect(master);
 }
+
+// React to the toggle live — silences (or restores) anything already playing.
+onSoundMuteChange((m) => {
+  if (master) master.gain.value = m ? 0 : vol * 0.5;
+});
 
 const pulseCache: Record<number, PeriodicWave> = {};
 function pulseWave(duty: number): PeriodicWave {
@@ -292,7 +302,7 @@ export const chiptune = {
   playing(): string | null { return current; },
   // Slow (or restore) the running loop's tempo — 1 = normal, >1 = slower.
   setTempoScale(s: number) { tempoScale = Math.max(0.25, Math.min(4, s)); },
-  setVolume(v: number) { vol = Math.max(0, Math.min(1, v)); if (master) master.gain.value = vol * 0.5; },
+  setVolume(v: number) { vol = Math.max(0, Math.min(1, v)); if (master && !isSoundMuted()) master.gain.value = vol * 0.5; },
   // site-wide correct-answer "ta-daa" (Dan, 2026-07-05): a light two-note
   // ascending major arpeggio — bright but deliberately smaller and quieter
   // than fanfare(). Routes through `master`, so the volume slider governs it.
