@@ -296,6 +296,20 @@
       "example": "Je suis à Singapour.",
       "gap": "à",
       "exampleEn": "I'm in Singapore."
+    },
+    {
+      "id": "en-au-aux-a-17",
+      "fr": "Inde",
+      "en": "India (f. country, vowel)",
+      "syllables": [
+        "Inde"
+      ],
+      "tags": [
+        "col:en"
+      ],
+      "example": "Elle habite en Inde.",
+      "gap": "en",
+      "exampleEn": "She lives in India."
     }
   ]
 }
