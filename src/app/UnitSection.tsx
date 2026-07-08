@@ -142,7 +142,7 @@ export default function UnitSection({
                   )}
                 </button>
                 {!groupCollapsed && (
-                  <div className="flex flex-wrap justify-center gap-x-6 gap-y-4 py-1">
+                  <div className="grid grid-cols-3 gap-2.5 py-1 sm:grid-cols-5 sm:gap-3">
                     {group.sios.map((s) => (
                       <SioNode
                         key={s.id}
@@ -189,6 +189,10 @@ export default function UnitSection({
   );
 }
 
+/** One SIO as a Unit-0-style TILE (Dan, 2026-07-08: units 1–4 adopt Unit 0's
+ *  look) — same card, circle, "atelier" label and topic as Unit0Panel's grid,
+ *  with the 1–4 progress semantics kept: ✓ circle when done, Continuer badge +
+ *  highlight when it's the course's active node. */
 function SioNode({
   sio,
   done,
@@ -200,21 +204,22 @@ function SioNode({
   active: boolean;
   onOpen: () => void;
 }) {
-  const circleCls = `flex items-center justify-center rounded-full border-2 font-black transition group-hover:-translate-y-0.5 group-hover:shadow-[2px_3px_0_var(--fluo-card-accent)] ${
-    active ? "h-16 w-16 text-xl" : "h-12 w-12 text-base"
-  }`;
-
   return (
-    <button type="button" onClick={onOpen} className="group flex w-20 flex-col items-center gap-1 text-center">
+    <button
+      type="button"
+      onClick={onOpen}
+      className="flex flex-col items-center justify-center gap-1 rounded-2xl border-2 bg-[var(--fluo-card)] p-3 text-center transition hover:-translate-y-0.5"
+      style={{ borderColor: "var(--fluo-card-accent)", background: active ? "var(--fluo-hl)" : undefined }}
+    >
       {active && (
-        <span className="fluo-mono mb-0.5 rounded-full bg-[var(--fluo-danger)] px-2 py-0.5 text-[10px] font-bold text-white">
+        <span className="fluo-mono rounded-full bg-[var(--fluo-danger)] px-2 py-0.5 text-[10px] font-bold text-white">
           Continuer
         </span>
       )}
       <span
-        className={circleCls}
+        className="flex h-11 w-11 items-center justify-center rounded-full border-2 text-sm font-black"
         style={{
-          background: done ? "var(--fluo-card-accent)" : active ? "var(--fluo-hl)" : "var(--fluo-card-tint)",
+          background: done ? "var(--fluo-card-accent)" : "var(--fluo-card-tint)",
           borderColor: "var(--fluo-card-accent)",
           color: done ? "#fff" : "var(--fluo-ink)",
         }}
