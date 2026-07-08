@@ -25,6 +25,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
+import SpeakZone from "@/components/SpeakZone";
 import DialoguePlayer from "@/app/DialoguePlayer";
 import DiceTrainer, { BonusTrainer } from "@/games/dice/DiceTrainer";
 import { getAtelier } from "@/content/ateliers";
@@ -86,7 +87,9 @@ export default function LessonFlow({
   const sections: Section[] = [];
   // No Lire content at all (defensive — waves 1+2 cover every deck): skip the
   // section; numbering adjusts naturally and the flow starts at Débutant.
-  if (lire) sections.push({ id: "lire", label: "Lire", node: lire });
+  // Lire is wrapped so every French phrase in it speaks on tap (memos AND
+  // native lessons, no per-file wiring — Dan, 2026-07-08).
+  if (lire) sections.push({ id: "lire", label: "Lire", node: <SpeakZone>{lire}</SpeakZone> });
   sections.push({ id: "pratique", label: "Pratique", node: <DicedPractice collectionId={collectionId} embedded /> });
   if (lesson) {
     sections.push({

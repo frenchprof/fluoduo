@@ -811,3 +811,7 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   outline: 3px solid #2d5bff;
   outline-offset: 2px;
 }
+
+/* Tap-to-hear lesson zone: every French bit is speakable — show it. */
+.speak-zone [lang="fr"] { cursor: pointer; }
+.speak-zone li, .speak-zone td { cursor: pointer; }

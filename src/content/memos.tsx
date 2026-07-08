@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * Mémo waves 1+2 (Dan, 2026-07-05) — every deck's Lesson opens with a Mémo card.
  * Same card markup style as the native lessons' memos (quand.tsx): rounded-2xl
@@ -6,6 +8,7 @@
  * All examples are REAL items from the deck JSONs — never invented words.
  */
 import type { ReactNode } from "react";
+import { speak } from "@/games/letris/speech";
 
 function Card({ title, children }: { title: ReactNode; children: ReactNode }) {
   return (
@@ -16,11 +19,19 @@ function Card({ title, children }: { title: ReactNode; children: ReactNode }) {
   );
 }
 
+// Pretest-style pill: tap to hear it (Dan, 2026-07-08 — "relevant phrases in
+// pill shaped text boxes that can be tapped to hear TTS, just like in pretest").
 function Pill({ children }: { children: ReactNode }) {
   return (
-    <span lang="fr" className="rounded-full border border-[color:var(--cahier-rule)] bg-white px-2.5 py-0.5">
+    <button
+      type="button"
+      lang="fr"
+      onClick={(e) => speak(e.currentTarget.textContent ?? "", "fr-FR")}
+      className="rounded-full border-2 border-[color:var(--cahier-rule)] bg-white px-2.5 py-0.5 transition hover:border-[color:var(--cahier-gold)] hover:bg-[#fffdf3] active:scale-95"
+      title="🔊"
+    >
       {children}
-    </span>
+    </button>
   );
 }
 
