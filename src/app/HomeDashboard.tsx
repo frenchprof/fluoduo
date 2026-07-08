@@ -13,6 +13,7 @@
  */
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import DeckSearch from "@/components/DeckSearch";
 import { SIOS, UNIT_META } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { equippedAccent, levelForXp, xpMultiplier } from "@/lib/economy";
@@ -114,6 +115,10 @@ export default function HomeDashboard() {
             🔤 ConjugaZone
           </Link>
         </div>
+
+        {/* Front-and-centre word search (Dan, 2026-07-08) — finds any word
+            inside any deck, not just deck titles. */}
+        <DeckSearch />
 
         <div className="mt-4 flex flex-wrap items-center gap-2.5">
           <Link href="/profil" className={`${chip} hover:-translate-y-0.5`} title="Votre niveau">🎚️ N{lvl.level} · {lvl.name}</Link>

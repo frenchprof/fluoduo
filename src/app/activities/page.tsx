@@ -22,6 +22,7 @@ import { UNIT_META } from "@/content/sios";
 import { lessonsForDeck } from "@/content/lessons";
 import { isLexReadyId } from "@/lib/collections/lexReady";
 import { getLetrisSet } from "@/games/letris/sets";
+import { searchDecks } from "@/lib/search";
 import type { Collection } from "@/lib/collections/schema";
 
 type Cell = { emoji: string; title: string; href: string | null };
@@ -57,13 +58,14 @@ const HEAD_CHIPS: { bg: string; border: string }[] = [
   { bg: "#ecf7cf", border: "#7bbf2e" },
 ];
 
-/** Accent-blind match: "cafe" finds Café, "ou" finds Où. */
-const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
-
 export default function ActivitiesIndexPage() {
   const units = [0, 1, 2, 3, 4];
   const [q, setQ] = useState("");
-  const matches = (c: Collection) => !q.trim() || norm(`${c.title} ${c.subtitle ?? ""}`).includes(norm(q.trim()));
+  // Word-level search (Dan, 2026-07-08): matches every item inside every deck
+  // (« bruine » finds the weather deck), not just deck titles — shared with
+  // the Home search box via lib/search.
+  const hitMap = new Map(q.trim() ? searchDecks(q).map((h) => [h.deck.id, h]) : []);
+  const matches = (c: Collection) => !q.trim() || hitMap.has(c.id);
   const totalHits = CURATED.filter(matches).length;
   return (
     <CahierShell tabs={withActive(siteTabs(), "index")} active="index" crumb="🗂️ Practice Index">
@@ -74,8 +76,8 @@ export default function ActivitiesIndexPage() {
           type="search"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="🔍 couleurs, aller, café…"
-          aria-label="Search decks"
+          placeholder="🔍 bruine, aller, café… (any word)"
+          aria-label="Search words and decks"
           className="mt-3 mb-4 w-full max-w-sm rounded-full border-2 border-[color:var(--cahier-ink)] bg-white px-4 py-2 text-sm font-bold text-[color:var(--cahier-ink)] outline-none placeholder:font-normal focus:shadow-[3px_3px_0_var(--cahier-hl,#eaff00)]"
         />
         {totalHits === 0 && (
@@ -112,7 +114,20 @@ export default function ActivitiesIndexPage() {
                   <tbody>
                     {decks.map((c) => (
                       <tr key={c.id} className="border-t border-[color:var(--cahier-rule)] transition hover:bg-[color:var(--fluo-card-tint)]">
-                        <td lang="fr" className="max-w-[14rem] truncate px-3 py-1.5 font-bold text-[color:var(--cahier-ink)]">{c.title}</td>
+                        <td className="max-w-[14rem] px-3 py-1.5 font-bold text-[color:var(--cahier-ink)]">
+                          <div lang="fr" className="truncate">{c.title}</div>
+                          {/* Which words inside the deck matched the search. */}
+                          {(hitMap.get(c.id)?.words.length ?? 0) > 0 && (
+                            <div className="truncate text-xs font-normal text-[color:var(--cahier-ink-soft)]">
+                              {hitMap.get(c.id)!.words.map((w, i) => (
+                                <span key={w.id}>
+                                  {i > 0 && " · "}
+                                  <b lang="fr">{w.fr}</b> — {w.en}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </td>
                         {cellsFor(c).map((cell, i) => (
                           <td key={i} className="px-1.5 py-1.5 text-center">
                             {cell.href ? (

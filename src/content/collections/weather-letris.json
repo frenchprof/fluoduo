@@ -217,6 +217,15 @@
       "tags": [
         "col:il"
       ]
+    },
+    {
+      "id": "weather-letris-24-du-brouillard",
+      "fr": "du brouillard",
+      "en": "There is fog.",
+      "emoji": "🌫️",
+      "tags": [
+        "col:il_y_a"
+      ]
     }
   ],
   "gameConfig": {
