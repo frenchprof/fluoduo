@@ -21,6 +21,7 @@ import { SIOS, UNIT_META, groupSiosForUnit, type Sio } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import { getPretestForSio } from "@/content/pretests";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
+import { nextSioId } from "@/lib/continuer";
 import Unit0Panel from "./Unit0Panel";
 import SioModal, { popupActivityTabs } from "./SioModal";
 import SioDetail from "./SioDetail";
@@ -85,10 +86,9 @@ export default function UnitSection({
     });
   }
 
-  // The single "you are here" node across the whole course.
-  // Earliest not-done goal across the whole course — Unit 0 included, so the
-  // "you are here" marker starts at SIO-001 for a new learner (Dan, 2026-07-05).
-  const activeId = SIOS.find((s) => !isSioDone(s.id, progress))?.id;
+  // The single "you are here" node across the whole course — the first
+  // not-done goal after the furthest « done » (see lib/continuer).
+  const activeId = nextSioId(progress);
   const openSio = openId ? sios.find((s) => s.id === openId) : undefined;
   const doneCount = sios.filter((s) => isSioDone(s.id, progress)).length;
   const groups = groupSiosForUnit(unit);

@@ -14,6 +14,7 @@ import StatsHelp from "@/components/StatsHelp";
 import RoadMap from "@/components/RoadMap";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
+import { nextSioId } from "@/lib/continuer";
 import { equippedAccent, levelForXp, xpMultiplier } from "@/lib/economy";
 import { dueForReview } from "@/lib/reviser";
 
@@ -32,10 +33,9 @@ export default function HomeDashboard() {
     return () => window.removeEventListener("fluolingo:progress-updated", refresh);
   }, []);
 
-  // "Continuer" = the earliest not-done goal across the WHOLE course, Unit 0
-  // included — a new learner starts at SIO-001 (Introductions), not Unit 1's
-  // stressed pronouns (Dan, 2026-07-05: the default shouldn't skip Unité 0).
-  const activeId = SIOS.find((s) => !isSioDone(s.id, progress))?.id;
+  // "Continuer" = the first not-done goal AFTER the furthest « done » (Dan,
+  // 2026-07-08: a learner who marked a later step done continues from there).
+  const activeId = nextSioId(progress);
   const activeSio = SIOS.find((s) => s.id === activeId);
   const doneTotal = SIOS.filter((s) => isSioDone(s.id, progress)).length;
   const pct = Math.round((doneTotal / SIOS.length) * 100);
@@ -73,7 +73,7 @@ export default function HomeDashboard() {
               <Link
                 href={`/unit/${activeSio.unit}#${activeSio.id}`}
                 aria-label="Continuer"
-                title={`Continuer — « ${activeSio.topic} », your first objective not yet marked done.`}
+                title={`Continuer — « ${activeSio.topic} », the next objective after your latest 'done'.`}
                 className="flex h-8 w-9 items-center justify-center rounded-lg border-2 border-[color:var(--fluo-danger)] bg-[var(--fluo-danger)] text-base text-white shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
               >
                 <span aria-hidden>▶</span>
