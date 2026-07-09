@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import StatsHelp from "@/components/StatsHelp";
 import { SIOS, UNIT_META } from "@/content/sios";
 import { sioKind, KIND_LABEL } from "@/content/sioKinds";
+import { CHAPTERS } from "@/content/chapters";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { equippedAccent, levelForXp, xpMultiplier } from "@/lib/economy";
 import { dueForReview } from "@/lib/reviser";
@@ -32,11 +33,21 @@ export default function HomeDashboard() {
     try { window.localStorage.setItem("fluolingo:home.profil-open", profilOpen ? "1" : "0"); } catch {}
   }, [profilOpen]);
 
+  // Best bilan score per unit (0–100) — solidifies the 🏁 node on a pass.
+  const [bilanBest, setBilanBest] = useState<Record<number, number>>({});
+
   useEffect(() => {
     const refresh = () => {
       const p = loadProgress();
       setProgress(p);
       setDueCount(dueForReview(p, Date.now()).length);
+      try {
+        const b: Record<number, number> = {};
+        for (const u of [0, 1, 2, 3, 4]) {
+          b[u] = parseFloat(window.localStorage.getItem(`fluolingo:bilan.u${u}`) ?? "0") || 0;
+        }
+        setBilanBest(b);
+      } catch {}
     };
     refresh();
     window.addEventListener("fluolingo:progress-updated", refresh);
@@ -50,6 +61,12 @@ export default function HomeDashboard() {
   const activeSio = SIOS.find((s) => s.id === activeId);
   const doneTotal = SIOS.filter((s) => isSioDone(s.id, progress)).length;
   const pct = Math.round((doneTotal / SIOS.length) * 100);
+  // Done-in-order run from the very start — the streak-momentum counter.
+  let seqRun = 0;
+  for (const s of SIOS) {
+    if (isSioDone(s.id, progress)) seqRun++;
+    else break;
+  }
 
   // Economy view: level from lifetime XP, the fire multiplier, and the accent
   // colour the learner has equipped (drives the hero CTA + bars).
@@ -146,6 +163,12 @@ export default function HomeDashboard() {
         </div>
       </section>
 
+      {/* Streak momentum (Dan, 2026-07-08, episode model): counts done-in-order
+          from the start; a skip simply stops the run — never blocks. */}
+      {seqRun >= 2 && seqRun < SIOS.length && (
+        <p className="fluo-mono mb-2 text-xs font-black text-[color:var(--fluo-ink)]">🔗 {seqRun} d&rsquo;affilée !</p>
+      )}
+
       <div className="space-y-4">
         {[0, 1, 2, 3, 4].map((unit) => {
           const sios = SIOS.filter((s) => s.unit === unit);
@@ -154,14 +177,16 @@ export default function HomeDashboard() {
           return (
             <section key={unit} className={`fluo-h-${unit % 6}`}>
               <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                {/* Compact unit chip, just larger than the nodes (Dan,
+                    2026-07-08: "we don't [want] whole big button headings") —
+                    full name, scenario and count live in the tooltip. */}
                 <Link
                   href={`/unit/${unit}`}
-                  className="flex w-40 shrink-0 items-center gap-2 rounded-xl px-3 py-2 font-black text-white transition hover:-translate-y-0.5"
+                  title={`${meta.label} — ${CHAPTERS[unit]?.scenario ?? ""} · ${done}/${sios.length}`}
+                  className="flex h-10 w-12 shrink-0 items-center justify-center rounded-xl text-sm font-black text-white transition hover:-translate-y-0.5"
                   style={{ background: "var(--fluo-card-accent)" }}
                 >
-                  <span aria-hidden>{meta.emoji}</span>
-                  <span className="fluo-serif">{meta.label}</span>
-                  <span className="fluo-label ml-auto text-[10px] text-white/90">{done}/{sios.length}</span>
+                  U{unit}
                 </Link>
                 {/* The circles spread across the full remaining width (Dan,
                     2026-07-08: "stretch them out across the width — justify"). */}
@@ -201,6 +226,20 @@ export default function HomeDashboard() {
                       </Link>
                     );
                   })}
+                  {/* Chapter-end fluency check — never a lock, always open. */}
+                  <Link
+                    href={`/bilan/${unit}`}
+                    title={`Bilan de fluidité — ${CHAPTERS[unit]?.scenario ?? meta.label} (retakes illimités)`}
+                    className={`flex h-9 w-9 items-center justify-center rounded-xl border-2 text-sm transition hover:-translate-y-0.5 ${
+                      (bilanBest[unit] ?? 0) >= 80 ? "" : "border-dashed"
+                    }`}
+                    style={{
+                      borderColor: "var(--fluo-card-accent)",
+                      background: (bilanBest[unit] ?? 0) >= 80 ? "var(--fluo-card-accent)" : "white",
+                    }}
+                  >
+                    <span aria-hidden>🏁</span>
+                  </Link>
                 </div>
               </div>
             </section>
