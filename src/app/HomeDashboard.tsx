@@ -13,7 +13,9 @@
  */
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import StatsHelp from "@/components/StatsHelp";
 import { SIOS, UNIT_META } from "@/content/sios";
+import { sioKind, KIND_LABEL } from "@/content/sioKinds";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { equippedAccent, levelForXp, xpMultiplier } from "@/lib/economy";
 import { dueForReview } from "@/lib/reviser";
@@ -118,6 +120,7 @@ export default function HomeDashboard() {
                   to the Classement. */}
               <Link href="/leaderboard" className={`${chip} hover:-translate-y-0.5`} title="Classement · votre rang">⭐ {progress.xp}</Link>
               <Link href="/profil" className={`${chip} hover:-translate-y-0.5`} title="Boutique">💎 {progress.gems}</Link>
+              <StatsHelp />
             </>
           )}
         </div>
@@ -164,17 +167,27 @@ export default function HomeDashboard() {
                   {sios.map((s) => {
                     const sDone = isSioDone(s.id, progress);
                     const sActive = s.id === activeId;
+                    // One size for every node (Dan, 2026-07-08: the size
+                    // difference read as noise) — the glow marks "you are
+                    // here". The SHAPE tells the kind of work: ● vocab,
+                    // ▢ grammar, 💬 phrases (bubble), ◆ atelier (diamond).
+                    const kind = sioKind(s.id);
+                    const shape =
+                      kind === "production" ? "rotate-45 rounded-md"
+                      : kind === "grammar" ? "rounded-lg"
+                      : kind === "phrases" ? "rounded-2xl rounded-bl-[4px]"
+                      : "rounded-full";
                     return (
                       <Link
                         key={s.id}
                         href={`/unit/${unit}#${s.id}`}
-                        title={`${s.id} · ${s.topic}`}
-                        className={`flex items-center justify-center rounded-full border-2 font-black transition hover:-translate-y-0.5 ${
+                        title={`${s.id} · ${s.topic} (${KIND_LABEL[kind]})`}
+                        className={`flex h-9 w-9 items-center justify-center border-2 text-xs font-black transition hover:-translate-y-0.5 ${shape} ${
                           sActive
-                            ? "fluo-node-active h-10 w-10 text-sm ring-2 ring-[var(--fluo-danger)] ring-offset-1"
+                            ? "fluo-node-active ring-2 ring-[var(--fluo-danger)] ring-offset-1"
                             : sDone
-                              ? "h-8 w-8 text-[11px]"
-                              : "h-8 w-8 text-[11px] opacity-75" // ahead of the glow: visible, just calmer
+                              ? ""
+                              : "opacity-75" // ahead of the glow: visible, just calmer
                         }`}
                         style={{
                           background: sDone ? "var(--fluo-card-accent)" : sActive ? "var(--fluo-hl)" : "var(--fluo-card-tint)",
@@ -182,7 +195,7 @@ export default function HomeDashboard() {
                           color: sDone ? "#fff" : "var(--fluo-ink)",
                         }}
                       >
-                        {sDone ? "✓" : s.num}
+                        <span className={kind === "production" ? "-rotate-45" : undefined}>{sDone ? "✓" : s.num}</span>
                       </Link>
                     );
                   })}
@@ -192,6 +205,14 @@ export default function HomeDashboard() {
           );
         })}
       </div>
+
+      {/* Shape legend — the node's shape says what kind of work it is. */}
+      <p className="fluo-mono mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] font-bold text-[color:var(--fluo-ink)]/70">
+        <span className="flex items-center gap-1.5"><span className="inline-block h-3 w-3 rounded-full border-2 border-current" /> {KIND_LABEL.vocab}</span>
+        <span className="flex items-center gap-1.5"><span className="inline-block h-3 w-3 rounded-[4px] border-2 border-current" /> {KIND_LABEL.grammar}</span>
+        <span className="flex items-center gap-1.5"><span className="inline-block h-3 w-3 rounded-full rounded-bl-[2px] border-2 border-current" /> {KIND_LABEL.phrases}</span>
+        <span className="flex items-center gap-1.5"><span className="inline-block h-3 w-3 rotate-45 rounded-[2px] border-2 border-current" /> {KIND_LABEL.production}</span>
+      </p>
     </>
   );
 }

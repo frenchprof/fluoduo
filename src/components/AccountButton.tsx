@@ -10,6 +10,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuthUser, signInWithGoogle, signOut } from "@/lib/firebase/auth";
+import StatsHelp from "@/components/StatsHelp";
 import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
 import { levelForXp, xpMultiplier } from "@/lib/economy";
 
@@ -76,11 +77,12 @@ export default function AccountButton() {
                     <span className="block h-full rounded-full bg-[color:var(--cahier-hl,#eaff00)]" style={{ width: `${Math.max(pct, 3)}%` }} />
                   </div>
                   <p className="px-1 pt-0.5 text-right text-[10px] font-bold text-[color:var(--cahier-ink-soft)]">{lvl.into}/{lvl.span} XP</p>
-                  <div className="mt-1 flex flex-wrap gap-1.5 px-1 text-xs font-bold text-[color:var(--cahier-ink)]">
+                  <div className="mt-1 flex flex-wrap items-center gap-1.5 px-1 text-xs font-bold text-[color:var(--cahier-ink)]">
                     <span>🔥 {progress.streak}{mult > 1 && <b className="text-rose-600"> ×{mult}</b>}</span>
                     <span>⭐ {progress.xp}</span>
                     <span>💎 {progress.gems}</span>
                     <span>🎖️ {progress.badges?.length ?? 0} badges</span>
+                    <StatsHelp />
                   </div>
                 </>
               );
