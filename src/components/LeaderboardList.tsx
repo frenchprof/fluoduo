@@ -135,10 +135,16 @@ export default function LeaderboardList() {
             <span className="w-8 text-center text-base font-black">{medal(i)}</span>
             <span className="min-w-0 flex-1 truncate text-sm font-bold text-[color:var(--cahier-ink)]">
               {rowName(r)}{me && " (vous)"}
+            </span>
+            {/* Own fixed-width column so every badge lines up vertically.
+                Level is ALWAYS derived from XP — docs written before the ×20
+                retune carry stale `level` fields from the old cheap curve
+                (Dan, 2026-07-08: "how is it that some people are N41"). */}
+            <span className="w-[7.5rem] shrink-0 text-center">
               <RankBadge
-                level={r.level ?? levelForXp(rowXp(r)).level}
+                level={levelForXp(rowXp(r)).level}
                 name={levelForXp(rowXp(r)).name}
-                className="ml-1.5 text-[11px]"
+                className="text-[11px]"
               />
             </span>
             <span className="fluo-mono text-sm font-black text-[color:var(--cahier-ink)]">⭐ {rowXp(r)}</span>
