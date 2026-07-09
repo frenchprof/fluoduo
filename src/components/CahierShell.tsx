@@ -29,6 +29,7 @@ import FirstTour from "@/components/FirstTour";
 import AccountButton from "@/components/AccountButton";
 import SearchOverlay from "@/components/SearchOverlay";
 import RankingOverlay from "@/components/RankingOverlay";
+import SoundControl from "@/components/SoundControl";
 
 /** Dice Practice is an MCQ over the deck's letris columns — no columns, no game. */
 export function hasDicePractice(collectionId: string): boolean {
@@ -225,6 +226,7 @@ export default function CahierShell({
                 >
                   🏆
                 </button>
+                <SoundControl />
                 <Link href="/" aria-label="Home" title="Home" className="cahier-btn cahier-btn-sm">
                   🏠
                 </Link>

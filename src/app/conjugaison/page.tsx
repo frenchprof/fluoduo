@@ -9,7 +9,7 @@
  *   typing — cells become inputs; ✅ grades the column (accent-lenient),
  *            every cell feeds XP/SRS via recordItemResult
  */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CahierShell from "@/components/CahierShell";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 import AuthGate from "@/components/AuthGate";
@@ -36,6 +36,14 @@ const fresh = (): ColState => ({
 export default function ConjugaisonPage() {
   const [picked, setPicked] = useState<string[]>(["etre", "avoir", "aller"]);
   const [cols, setCols] = useState<Record<string, ColState>>({});
+  // Lesson pages deep-link their verbs: /conjugaison?v=vouloir,pouvoir
+  useEffect(() => {
+    try {
+      const v = new URLSearchParams(window.location.search).get("v");
+      const ids = (v ?? "").split(",").filter((id) => VERBS.some((x) => x.id === id));
+      if (ids.length > 0) setPicked(ids);
+    } catch {}
+  }, []);
   const st = (id: string): ColState => cols[id] ?? fresh();
   const patch = (id: string, p: Partial<ColState>) =>
     setCols((c) => ({ ...c, [id]: { ...st(id), ...p } }));
@@ -49,6 +57,8 @@ export default function ConjugaisonPage() {
   function check(v: ConjVerb) {
     const s = st(v.id);
     const result = v.forms.map((f, i) => {
+      // Impersonal gaps (falloir outside « il faut ») are not gradable cells.
+      if (f === "—") return true;
       const t = s.typed[i].trim();
       const ok = t !== "" && (gradeAnswer(t, f) !== "wrong" || gradeAnswer(t, conjSpoken(i, f)) !== "wrong");
       recordItemResult(`conj-${v.id}-${i}`, ok);
@@ -119,6 +129,11 @@ export default function ConjugaisonPage() {
                       {shown.map((v) => {
                         const s = st(v.id);
                         const form = v.forms[i];
+                        // Impersonal verbs (falloir) only exist in one person —
+                        // the rest are inert dashes: no tap, no typing, no TTS.
+                        if (form === "—") {
+                          return <td key={v.id} className="p-1.5 text-center font-bold text-[color:var(--cahier-ink-soft)]/40">—</td>;
+                        }
                         if (s.mode === "typing") {
                           const r = s.result[i];
                           return (

@@ -21,9 +21,12 @@ export function sioKind(sioId: string): SioKind {
   return "vocab";
 }
 
+// Legend labels (Dan, 2026-07-08): "communication" over "atelier"; and
+// "expressions" over "phrases" — the kind means formulaic chunks (English
+// sense), and French « phrase » = sentence would mislead.
 export const KIND_LABEL: Record<SioKind, string> = {
   vocab: "vocabulaire",
   grammar: "grammaire",
-  phrases: "phrases",
-  production: "atelier",
+  phrases: "expressions",
+  production: "communication",
 };

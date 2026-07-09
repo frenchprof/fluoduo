@@ -31,7 +31,29 @@ export const VERBS: ConjVerb[] = [
   { id: "prendre", inf: "prendre", en: "to take", forms: ["prends", "prends", "prend", "prenons", "prenez", "prennent"] },
   { id: "manger", inf: "manger", en: "to eat", forms: ["mange", "manges", "mange", "mangeons", "mangez", "mangent"] },
   { id: "boire", inf: "boire", en: "to drink", forms: ["bois", "bois", "boit", "buvons", "buvez", "boivent"] },
+  { id: "devoir", inf: "devoir", en: "to have to / must", forms: ["dois", "dois", "doit", "devons", "devez", "doivent"] },
+  // Impersonal: falloir exists ONLY as « il faut » — the other persons render
+  // as inert dashes in the table (see /conjugaison's "—" handling).
+  { id: "falloir", inf: "falloir", en: "to be necessary (il faut)", forms: ["—", "—", "faut", "—", "—", "—"] },
 ];
+
+/** Which ConjugaZone verbs each conjugation-heavy SIO drills — powers the
+ *  « 🔤 ConjugaZone » link on those SIOs' lesson pages (deep-links ?v=…). */
+export const CONJ_BY_SIO: Record<string, string[]> = {
+  "SIO-001": ["sappeler", "etre"],
+  "SIO-014": ["etre"],
+  "SIO-019": ["avoir", "etre"],
+  "SIO-023": ["aimer", "parler", "habiter"],
+  "SIO-024": ["faire"],
+  "SIO-026": ["aller"],
+  "SIO-029": ["vouloir", "pouvoir"],
+  "SIO-032": ["etre", "aller", "venir"],
+  "SIO-033": ["etre", "aller", "venir"],
+  "SIO-037": ["pouvoir"],
+  "SIO-038": ["prendre", "aller"],
+  "SIO-044": ["manger", "boire"],
+  "SIO-048": ["aller", "pouvoir", "devoir", "falloir"],
+};
 
 /** The spoken phrase for a cell — subject + form with je→j' elision
  *  ("j'ai", "j'habite"; "je m'appelle" survives since m isn't a vowel). */

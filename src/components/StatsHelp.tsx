@@ -26,11 +26,11 @@ export default function StatsHelp() {
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} aria-hidden />
           <div className="absolute left-1/2 top-full z-50 mt-1.5 w-72 max-w-[88vw] -translate-x-1/2 rounded-2xl border-2 border-[color:var(--fluo-ink,#222850)] bg-white p-3 text-left shadow-xl">
             <ul className="space-y-1.5 text-xs font-bold text-[color:var(--fluo-ink,#222850)]">
-              <li>🎚️ <b>Niveau</b> — monte avec vos ⭐ XP.</li>
+              <li>🎚️ Niveau — monte avec vos ⭐ XP.</li>
               <li>✓ — objectives marked « done », out of 50.</li>
               <li>🔥 — days in a row; ≥ 3 days → XP ×1.5, ≥ 7 → ×2.</li>
-              <li>⭐ <b>XP</b> — earned on every answer; ranks the 🏆 Classement.</li>
-              <li>💎 <b>Gemmes</b> — paid out by 🎖️ badges; spend them in the Boutique.</li>
+              <li>⭐ XP — earned on every answer;<br />ranks the 🏆 Classement.</li>
+              <li>💎 Gemmes — paid out by 🎖️ badges;<br />spend them in the Boutique.</li>
             </ul>
           </div>
         </>

@@ -34,6 +34,7 @@ import { CURATED } from "@/content/collections";
 import { lessonsForDeck } from "@/content/lessons";
 import { getNativeLesson } from "@/content/lessons/native";
 import { memoForDeck } from "@/content/memos";
+import { CONJ_BY_SIO } from "@/content/conjugaison";
 
 // The drill engine is heavy — load it only when the flow mounts.
 const DicedPractice = dynamic(() => import("@/games/dice/DicedPractice"));
@@ -110,6 +111,13 @@ export default function LessonFlow({
       <h1 lang="fr" className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
         📚 {shown?.title ?? deck.title}
       </h1>
+      {/* Conjugation-heavy SIOs link straight to their verb tables, pre-picked
+          (Dan, 2026-07-08: "yes" to ConjugaZone links from these lessons). */}
+      {sio && CONJ_BY_SIO[sio.id] && (
+        <Link href={`/conjugaison?v=${CONJ_BY_SIO[sio.id].join(",")}`} className="fluo-btn fluo-btn-sm inline-flex">
+          🔤 ConjugaZone — les tables de ces verbes
+        </Link>
+      )}
       {deckLessons.length > 1 && (
         <div className="flex flex-wrap gap-1.5">
           {deckLessons.map((l) =>
