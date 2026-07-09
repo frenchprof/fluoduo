@@ -121,6 +121,14 @@ export default function Lexicalator({
   useEffect(() => setMounted(true), []);
   useEffect(() => () => chiptune.stop(), []); // stop the loop on unmount
 
+  // Auto-advance between levels (Dan, 2026-07-08: no OK tap) — the fanfare
+  // gets a beat, then the next level deals itself and taps land in the game.
+  useEffect(() => {
+    if (!levelDone) return;
+    const t = window.setTimeout(() => setLevel((l) => l + 1), 1800);
+    return () => window.clearTimeout(t);
+  }, [levelDone]);
+
   // One volume for music AND sound effects (chiptune's master gain), shared
   // across games via localStorage.
   const [volume, setVolume] = useState(0.6);
@@ -598,11 +606,11 @@ export default function Lexicalator({
       {(over || levelDone) && (
         <div className="mt-4 rounded-3xl border-4 border-sky-200 bg-white p-4 text-center">
           {levelDone ? (
+            // No OK tap between levels (Dan, 2026-07-08) — the banner shows
+            // while the next level deals itself (see the auto-advance effect).
             <>
               <p className="text-2xl font-black" style={{ color: "#ff9600" }}>Niveau {level} terminé !</p>
-              <p className="text-sm font-semibold" style={{ color: "#075985" }}>Score {score} · on continue ?</p>
-              <button type="button" onClick={() => setLevel((l) => l + 1)}
-                className="mt-3 rounded-2xl border-b-4 border-[#e08600] bg-[#ffc800] px-4 py-2 font-black" style={{ color: "#0c4a6e" }}>Niveau {level + 1} →</button>
+              <p className="text-sm font-semibold" style={{ color: "#075985" }}>Score {score} · niveau {level + 1} arrive…</p>
             </>
           ) : (
             <>
