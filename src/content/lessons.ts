@@ -11,6 +11,7 @@ export const LESSONS: Record<string, Lesson> = {
   "se-presenter":      { slug: "se-presenter",      title: "Se présenter",                 unit: 1 },
   "negation":          { slug: "negation",          title: "La négation",                  unit: 1 },
   "conjugaison-u1":    { slug: "conjugaison-u1",    title: "Conjugaison (Unité 1)",        unit: 1 },
+  "avoir-etats":       { slug: "avoir-etats",       title: "Avoir ou être ? — les états",  unit: 1 },
   "questions-oui-non": { slug: "questions-oui-non", title: "Questions : oui ou non",       unit: 1 },
   "mots-interrogatifs":{ slug: "mots-interrogatifs",title: "Les mots interrogatifs",       unit: 1 },
   "articles-pays":     { slug: "articles-pays",     title: "Les articles des pays",        unit: 1 },
@@ -44,7 +45,9 @@ export const LESSONS: Record<string, Lesson> = {
 export const LESSONS_BY_SIO: Record<string, string[]> = {
   "SIO-001": ["se-presenter", "conjugaison-u1"], // s'appeler: taught in L01 + L03
   "SIO-014": ["se-presenter", "negation", "conjugaison-u1"],
-  "SIO-019": ["conjugaison-u1"], // avoir: L03 covers s'appeler, être, avoir
+  // avoir-etats FIRST: the SIO's grammar is avoir-vs-être states + age, not
+  // the paradigm tables (Dan, 2026-07-08: "the avoir SIO doesn't match").
+  "SIO-019": ["avoir-etats", "conjugaison-u1"],
   "SIO-015": ["articles-pays"],
   "SIO-035": ["questions-oui-non", "mots-interrogatifs"],
   "SIO-022": ["possessifs"],
@@ -52,7 +55,7 @@ export const LESSONS_BY_SIO: Record<string, string[]> = {
   "SIO-024": ["faire"],
   "SIO-026": ["aller"],
   "SIO-027": ["quand"],
-  "SIO-029": ["rendezvous"],
+  "SIO-029": ["rendezvous", "modaux"], // vouloir forms live in the modaux lesson
   "SIO-037": ["modaux"],
   "SIO-048": ["modaux", "futur-proche"],
   "SIO-032": ["prepositions"],

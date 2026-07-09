@@ -7,6 +7,7 @@ import { aimerLesson } from "./aimer";
 import { sePresenterLesson } from "./se-presenter";
 import { negationLesson } from "./negation";
 import { conjugaisonU1Lesson } from "./conjugaison-u1";
+import { avoirEtatsLesson } from "./avoir-etats";
 import { questionsOuiNonLesson } from "./questions-oui-non";
 import { motsInterrogatifsLesson } from "./mots-interrogatifs";
 import { articlesPaysLesson } from "./articles-pays";
@@ -31,6 +32,7 @@ export const NATIVE_LESSONS: Record<string, NativeLesson> = {
   "se-presenter": sePresenterLesson,
   negation: negationLesson,
   "conjugaison-u1": conjugaisonU1Lesson,
+  "avoir-etats": avoirEtatsLesson,
   "questions-oui-non": questionsOuiNonLesson,
   "mots-interrogatifs": motsInterrogatifsLesson,
   "articles-pays": articlesPaysLesson,

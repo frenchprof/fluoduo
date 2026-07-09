@@ -18,6 +18,12 @@ const MODALS = [
     inf: "pouvoir", en: "can",
     forms: { je: "peux", tu: "peux", il: "peut", nous: "pouvons", vous: "pouvez", ils: "peuvent" } as Record<string, string>,
   },
+  // devoir joins the family (Dan, 2026-07-08: SIO-048 drills aller · pouvoir ·
+  // devoir · falloir, but the lesson stopped at vouloir/pouvoir).
+  {
+    inf: "devoir", en: "must / have to",
+    forms: { je: "dois", tu: "dois", il: "doit", nous: "devons", vous: "devez", ils: "doivent" } as Record<string, string>,
+  },
 ] as const;
 const ACTIVITIES = [
   { fr: "aller au cinéma", en: "go to the cinema" },
@@ -38,7 +44,7 @@ export const modauxLesson: NativeLesson = {
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">
-        Vouloir &amp; pouvoir
+        Vouloir, pouvoir &amp; devoir
       </h2>
       <table className="w-full border-collapse text-[15px] text-[color:var(--cahier-ink)]">
         <thead>
@@ -46,20 +52,25 @@ export const modauxLesson: NativeLesson = {
             <th className="p-1"></th>
             <th className="p-1" lang="fr">vouloir (want)</th>
             <th className="p-1" lang="fr">pouvoir (can)</th>
+            <th className="p-1" lang="fr">devoir (must)</th>
           </tr>
         </thead>
         <tbody lang="fr">
-          <tr><td className="p-1">je</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">veux</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">peux</td></tr>
-          <tr><td className="p-1">tu</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">veux</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">peux</td></tr>
-          <tr><td className="p-1">il / elle / on</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">veut</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">peut</td></tr>
-          <tr><td className="p-1">nous</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">voulons</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">pouvons</td></tr>
-          <tr><td className="p-1">vous</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">voulez</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">pouvez</td></tr>
-          <tr><td className="p-1">ils / elles</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">veulent</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">peuvent</td></tr>
+          <tr><td className="p-1">je</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">veux</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">peux</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">dois</td></tr>
+          <tr><td className="p-1">tu</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">veux</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">peux</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">dois</td></tr>
+          <tr><td className="p-1">il / elle / on</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">veut</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">peut</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">doit</td></tr>
+          <tr><td className="p-1">nous</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">voulons</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">pouvons</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">devons</td></tr>
+          <tr><td className="p-1">vous</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">voulez</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">pouvez</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">devez</td></tr>
+          <tr><td className="p-1">ils / elles</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">veulent</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">peuvent</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">doivent</td></tr>
         </tbody>
       </table>
+      <p className="mt-2 text-[14px] text-[color:var(--cahier-ink)]">
+        <b lang="fr" className="text-[color:var(--cahier-la)]">il faut</b> + infinitive — impersonal obligation, one form only:{" "}
+        <i lang="fr">Il faut venir à 8 heures.</i>
+      </p>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
         ⚠️ <b>Conjugated modal + infinitive</b> — the second verb is never conjugated:{" "}
-        <i lang="fr">Je veux <u>aller</u> au cinéma.</i>{" "}
+        <i lang="fr">Je veux <u>aller</u> au cinéma. · Nous devons <u>partir</u>.</i>{" "}
         Negative wraps the modal: <i lang="fr">Ils <b>ne</b> peuvent <b>pas</b> venir.</i>
       </p>
     </div>
