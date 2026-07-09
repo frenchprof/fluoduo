@@ -33,21 +33,11 @@ export default function HomeDashboard() {
     try { window.localStorage.setItem("fluolingo:home.profil-open", profilOpen ? "1" : "0"); } catch {}
   }, [profilOpen]);
 
-  // Best bilan score per unit (0–100) — solidifies the 🏁 node on a pass.
-  const [bilanBest, setBilanBest] = useState<Record<number, number>>({});
-
   useEffect(() => {
     const refresh = () => {
       const p = loadProgress();
       setProgress(p);
       setDueCount(dueForReview(p, Date.now()).length);
-      try {
-        const b: Record<number, number> = {};
-        for (const u of [0, 1, 2, 3, 4]) {
-          b[u] = parseFloat(window.localStorage.getItem(`fluolingo:bilan.u${u}`) ?? "0") || 0;
-        }
-        setBilanBest(b);
-      } catch {}
     };
     refresh();
     window.addEventListener("fluolingo:progress-updated", refresh);
@@ -244,21 +234,6 @@ export default function HomeDashboard() {
                       </Link>
                     );
                   })}
-                  {/* Chapter-end fluency check — never a lock, always open.
-                      Unité 0 (warm-up) has none (Dan, 2026-07-08). */}
-                  {unit > 0 && <Link
-                    href={`/bilan/${unit}`}
-                    title={`Bilan de fluidité — ${CHAPTERS[unit]?.scenario ?? meta.label} (retakes illimités)`}
-                    className={`relative z-[1] flex h-9 w-9 items-center justify-center rounded-xl border-2 text-sm transition hover:-translate-y-0.5 ${
-                      (bilanBest[unit] ?? 0) >= 80 ? "" : "border-dashed"
-                    }`}
-                    style={{
-                      borderColor: "var(--fluo-card-accent)",
-                      background: (bilanBest[unit] ?? 0) >= 80 ? "var(--fluo-card-accent)" : "white",
-                    }}
-                  >
-                    <span aria-hidden>🏁</span>
-                  </Link>}
                 </div>
               </div>
             </section>
