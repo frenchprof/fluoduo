@@ -116,9 +116,12 @@ export const BADGES: BadgeDef[] = [
   { id: "en-feu", icon: "🔥", label: "En feu", desc: "Série de 7 jours", gems: 10, earned: (p) => p.streak >= 7 },
   { id: "inarretable", icon: "🌟", label: "Inarrêtable", desc: "Série de 30 jours", gems: 30, earned: (p) => p.streak >= 30 },
   { id: "collectionneur", icon: "📚", label: "Collectionneur", desc: "Maîtriser 50 mots", gems: 15, earned: (_p, c) => c.mastered >= 50 },
-  { id: "erudit", icon: "🦉", label: "Érudit", desc: "Maîtriser 200 mots", gems: 30, earned: (_p, c) => c.mastered >= 200 },
-  { id: "niveau-5", icon: "🎚️", label: "Niveau 5", desc: "Atteindre le niveau 5", gems: 10, earned: (_p, c) => c.level >= 5 },
-  { id: "niveau-10", icon: "👑", label: "Niveau 10", desc: "Atteindre le niveau 10", gems: 25, earned: (_p, c) => c.level >= 10 },
+  // "Savant", not "Érudit" — Érudit is the N9 RANK name; a badge sharing it
+  // read as the same thing (Dan, 2026-07-08). Ids stay stable (already earned).
+  { id: "erudit", icon: "🦉", label: "Savant", desc: "Maîtriser 200 mots", gems: 30, earned: (_p, c) => c.mastered >= 200 },
+  // The level badges carry their RANK names so the two systems visibly agree.
+  { id: "niveau-5", icon: "🎚️", label: "Bavard", desc: "Atteindre le niveau 5 · Bavard", gems: 10, earned: (_p, c) => c.level >= 5 },
+  { id: "niveau-10", icon: "👑", label: "Maître", desc: "Atteindre le niveau 10 · Maître", gems: 25, earned: (_p, c) => c.level >= 10 },
 ];
 
 export function badgeById(id: string): BadgeDef | undefined {
