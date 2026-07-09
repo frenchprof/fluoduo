@@ -48,6 +48,7 @@ export function toolTabs(): ShellTab[] {
     { key: "leaderboard", label: "Classement", emoji: "🏆", href: "/leaderboard", hue: "#e3a700" },
     { key: "tutor", label: "Tuteur", emoji: "🤖", href: "/tutor", hue: "#8a5fd4" },
     { key: "tts", label: "TTS", emoji: "🔊", href: "/tts", hue: "#e8852e" },
-    { key: "profil", label: "Profil", emoji: "🎖️", href: "/profil", hue: "#e0567f" },
+    // No Profil entry (Dan, 2026-07-08) — the circled-initial account chip in
+    // the top bar IS the profile door (its window links to /profil).
   ];
 }
