@@ -11,6 +11,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import StatsHelp from "@/components/StatsHelp";
+import RankBadge from "@/components/RankBadge";
 import RoadMap from "@/components/RoadMap";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
@@ -94,7 +95,9 @@ export default function HomeDashboard() {
         </div>
 
         <div className="mt-4 flex flex-wrap items-center gap-2.5">
-          <Link href="/profil" className={`${chip} hover:-translate-y-0.5`} title="Votre niveau">🎚️ N{lvl.level} · {lvl.name}</Link>
+          <Link href="/profil" className={`${chip} hover:-translate-y-0.5 !px-2`} title="Votre niveau">
+            🎚️ <RankBadge level={lvl.level} name={lvl.name} className="text-xs" />
+          </Link>
           <span className={chip}>✓ {doneTotal}/{SIOS.length}</span>
           <span className={chip} title={mult > 1 ? `Série active : XP ×${mult}` : "Série de jours"}>
             🔥 {progress.streak}{mult > 1 && <b className="text-[color:var(--fluo-danger)]"> ×{mult}</b>}

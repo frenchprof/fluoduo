@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuthUser, signInWithGoogle, signOut } from "@/lib/firebase/auth";
 import StatsHelp from "@/components/StatsHelp";
+import RankBadge from "@/components/RankBadge";
 import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
 import { levelForXp, xpMultiplier } from "@/lib/economy";
 
@@ -71,7 +72,7 @@ export default function AccountButton() {
               return (
                 <>
                   <p className="mt-1.5 px-1 text-xs font-bold text-[color:var(--cahier-ink-soft)]">
-                    🎚️ Niveau {lvl.level} · {lvl.name}
+                    🎚️ <RankBadge level={lvl.level} name={lvl.name} />
                   </p>
                   <div className="mx-1 mt-1 h-2 overflow-hidden rounded-full border border-[color:var(--cahier-ink)]/40 bg-[color:var(--cahier-paper-2,#f4f1e4)]">
                     <span className="block h-full rounded-full bg-[color:var(--cahier-hl,#eaff00)]" style={{ width: `${Math.max(pct, 3)}%` }} />

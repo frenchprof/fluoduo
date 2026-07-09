@@ -9,6 +9,7 @@
  */
 import { useEffect, useState } from "react";
 import CahierShell from "@/components/CahierShell";
+import RankBadge from "@/components/RankBadge";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 import {
   buyCosmetic,
@@ -54,7 +55,9 @@ export default function ProfilePage() {
               <span className="text-2xl font-black leading-none text-[color:var(--cahier-ink)]">{lvl.level}</span>
             </div>
             <div className="min-w-0 flex-1">
-              <p className="cahier-display text-xl font-black text-[color:var(--cahier-ink)]">{lvl.name}</p>
+              <p className="cahier-display text-xl font-black text-[color:var(--cahier-ink)]">
+                <RankBadge level={lvl.level} name={lvl.name} />
+              </p>
               <span className="mt-1 block h-2.5 overflow-hidden rounded-full border-2 border-[color:var(--cahier-ink)] bg-white">
                 <span className="block h-full rounded-full bg-[var(--cahier-hl)] transition-all duration-500" style={{ width: `${Math.max(xpPct, 2)}%` }} />
               </span>

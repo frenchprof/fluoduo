@@ -11,6 +11,7 @@
 import { useEffect, useState } from "react";
 import { signInWithGoogle, useAuthUser } from "@/lib/firebase/auth";
 import { levelForXp } from "@/lib/economy";
+import RankBadge from "@/components/RankBadge";
 
 type BoardRow = {
   uid: string;
@@ -134,9 +135,11 @@ export default function LeaderboardList() {
             <span className="w-8 text-center text-base font-black">{medal(i)}</span>
             <span className="min-w-0 flex-1 truncate text-sm font-bold text-[color:var(--cahier-ink)]">
               {rowName(r)}{me && " (vous)"}
-              <span className="ml-1.5 rounded-full bg-[color:var(--cahier-hl,#eaff00)]/50 px-1.5 py-0.5 text-[11px] font-bold text-[color:var(--cahier-ink)]">
-                N{r.level ?? levelForXp(rowXp(r)).level} · {levelForXp(rowXp(r)).name}
-              </span>
+              <RankBadge
+                level={r.level ?? levelForXp(rowXp(r)).level}
+                name={levelForXp(rowXp(r)).name}
+                className="ml-1.5 text-[11px]"
+              />
             </span>
             <span className="fluo-mono text-sm font-black text-[color:var(--cahier-ink)]">⭐ {rowXp(r)}</span>
             <span className="fluo-mono w-14 text-right text-sm font-bold text-[color:var(--cahier-ink-soft)]">🔥 {r.streak ?? 0}</span>
