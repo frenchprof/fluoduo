@@ -80,7 +80,7 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
   /* ---------- De quelle couleur ? ---------- */
   colors: (
     <Card title="De quelle couleur ?">
-      <PillRow label="Gratuit (same as English)" items={["bleu", "orange", "violet", "beige", "rose"]} />
+      <PillRow label="Gratuit (same as English)" items={["le bleu", "l'orange", "le violet", "le beige", "le rose"]} />
       <p className="mt-2 text-[13px] font-bold text-[color:var(--cahier-ink)]">Caché en anglais (hidden in English)</p>
       <Lines>
         <li><B>noir</B> → film noir</li>

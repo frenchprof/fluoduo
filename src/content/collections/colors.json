@@ -12,92 +12,143 @@
   "seq": 5,
   "gameConfig": {
     "lexicalator": {
-      "decoys": ["rou", "ran", "jaun", "vé", "blin", "noire", "gri", "ros", "bei", "vlo", "lette", "mor"]
+      "decoys": [
+        "rou",
+        "ran",
+        "jaun",
+        "vé",
+        "blin",
+        "noire",
+        "gri",
+        "ros",
+        "bei",
+        "vlo",
+        "lette",
+        "mor"
+      ]
     }
   },
   "items": [
     {
       "id": "colors-01",
-      "fr": "rouge",
+      "fr": "le rouge",
       "en": "red",
-      "syllables": ["rouge"],
+      "syllables": [
+        "le",
+        "rouge"
+      ],
       "tags": []
     },
     {
       "id": "colors-02",
-      "fr": "orange",
+      "fr": "l'orange",
       "en": "orange",
-      "syllables": ["o", "range"],
+      "syllables": [
+        "l'o",
+        "range"
+      ],
       "tags": []
     },
     {
       "id": "colors-03",
-      "fr": "jaune",
+      "fr": "le jaune",
       "en": "yellow",
-      "syllables": ["jaune"],
+      "syllables": [
+        "le",
+        "jaune"
+      ],
       "tags": []
     },
     {
       "id": "colors-04",
-      "fr": "vert",
+      "fr": "le vert",
       "en": "green",
-      "syllables": ["vert"],
+      "syllables": [
+        "le",
+        "vert"
+      ],
       "tags": []
     },
     {
       "id": "colors-05",
-      "fr": "bleu",
+      "fr": "le bleu",
       "en": "blue",
-      "syllables": ["bleu"],
+      "syllables": [
+        "le",
+        "bleu"
+      ],
       "tags": []
     },
     {
       "id": "colors-06",
-      "fr": "violet",
+      "fr": "le violet",
       "en": "purple",
-      "syllables": ["vio", "let"],
+      "syllables": [
+        "le",
+        "vio",
+        "let"
+      ],
       "tags": []
     },
     {
       "id": "colors-07",
-      "fr": "marron",
+      "fr": "le marron",
       "en": "brown",
-      "syllables": ["mar", "ron"],
+      "syllables": [
+        "le",
+        "mar",
+        "ron"
+      ],
       "tags": []
     },
     {
       "id": "colors-08",
-      "fr": "blanc",
+      "fr": "le blanc",
       "en": "white",
-      "syllables": ["blanc"],
+      "syllables": [
+        "le",
+        "blanc"
+      ],
       "tags": []
     },
     {
       "id": "colors-09",
-      "fr": "noir",
+      "fr": "le noir",
       "en": "black",
-      "syllables": ["noir"],
+      "syllables": [
+        "le",
+        "noir"
+      ],
       "tags": []
     },
     {
       "id": "colors-10",
-      "fr": "gris",
+      "fr": "le gris",
       "en": "grey",
-      "syllables": ["gris"],
+      "syllables": [
+        "le",
+        "gris"
+      ],
       "tags": []
     },
     {
       "id": "colors-11",
-      "fr": "rose",
+      "fr": "le rose",
       "en": "pink",
-      "syllables": ["rose"],
+      "syllables": [
+        "le",
+        "rose"
+      ],
       "tags": []
     },
     {
       "id": "colors-12",
-      "fr": "beige",
+      "fr": "le beige",
       "en": "beige",
-      "syllables": ["beige"],
+      "syllables": [
+        "le",
+        "beige"
+      ],
       "tags": []
     }
   ]

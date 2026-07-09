@@ -76,6 +76,28 @@ function sayTapped(el: HTMLElement, text: string) {
   speak(single, "fr-FR");
 }
 
+/** A row's French half when it is ONE contiguous French run split across
+ *  several spans (« Parce qu'<b>il fait beau</b> », « Il pleut, il neige ») —
+ *  those must be spoken WHOLE, not span by span (Dan, 2026-07-08). Returns
+ *  null when the half mixes real English words (chips, glosses) — buttons'
+ *  text never counts (they speak for themselves). */
+function frenchRun(row: HTMLElement): string | null {
+  const half = (row.textContent ?? "").split("—")[0].trim();
+  if (!half || half.length > 160) return null;
+  const frs = [...row.querySelectorAll<HTMLElement>('[lang="fr"]')].filter((f) => !f.closest("button"));
+  if (frs.length === 0) return null;
+  let rest = half;
+  for (const f of frs) {
+    const t = (f.textContent ?? "").trim();
+    if (!t) continue;
+    const k = rest.indexOf(t);
+    if (k >= 0) rest = rest.slice(0, k) + rest.slice(k + t.length);
+  }
+  // Whatever isn't inside a lang="fr" span must be pure connective tissue
+  // (spaces, punctuation) — a single leftover letter means English is mixed in.
+  return /^[\s.,;:!?…·«»()'’"\-–—→+/⚠️™]*$/u.test(rest) ? half : null;
+}
+
 export default function SpeakZone({ children }: { children: ReactNode }) {
   return (
     <div
@@ -83,24 +105,33 @@ export default function SpeakZone({ children }: { children: ReactNode }) {
       onClick={(e) => {
         const target = e.target as HTMLElement;
         if (target.closest("a, button, input, select, textarea, audio, video")) return;
+        const row = target.closest<HTMLElement>("li, td, th, p");
+        const rowText = row?.textContent?.trim() ?? "";
+        // Inside a lang="fr" region (conjugation tbody, French paragraph):
+        // the whole row IS French — read it (minus any « — gloss » tail).
+        if (row && rowText && rowText.length <= 160 && row.closest('[lang="fr"]')) {
+          sayTapped(row, rowText.split("—")[0].trim());
+          return;
+        }
+        // One contiguous French run split across spans → speak it WHOLE
+        // (« parce qu'il fait beau », « il pleut, il neige »), even when the
+        // tap landed on just one of its spans.
+        const run = row ? frenchRun(row) : null;
+        if (row && run) {
+          sayTapped(row, run);
+          return;
+        }
+        // Otherwise: the tapped French span, if reasonably phrase-sized.
         const fr = target.closest<HTMLElement>('[lang="fr"]');
         const frText = fr?.textContent?.trim() ?? "";
         if (fr && frText && frText.length <= 80) {
           sayTapped(fr, frText);
           return;
         }
-        const row = target.closest<HTMLElement>("li, td, th, p");
-        const rowText = row?.textContent?.trim() ?? "";
+        // Mixed row fallback: NEVER read the English. Exactly one French span
+        // → say that; several (a chip scale) or none → silent.
         if (row && rowText && rowText.length <= 160) {
-          // Inside a lang="fr" region (conjugation tbody, French paragraph):
-          // the whole row IS French — read it (minus any « — gloss » tail).
-          if (row.closest('[lang="fr"]')) {
-            sayTapped(row, rowText.split("—")[0].trim());
-            return;
-          }
-          // Mixed row: NEVER read the English. Exactly one French span → say
-          // that; several (a chip scale) or none (English-only row) → silent.
-          const frs = row.querySelectorAll<HTMLElement>('[lang="fr"]');
+          const frs = [...row.querySelectorAll<HTMLElement>('[lang="fr"]')].filter((f) => !f.closest("button"));
           if (frs.length === 1) {
             const t = frs[0].textContent?.trim() ?? "";
             if (t && t.length <= 80) sayTapped(frs[0], t);

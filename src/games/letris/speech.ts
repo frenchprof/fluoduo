@@ -7,14 +7,17 @@ let pending = 0;
 // must silence games too, not just the voice). Speech consumes it here; the
 // chiptune synth (music + jingles) consumes it separately. The old TTS-named
 // exports stay as aliases for existing imports.
-import { isSoundMuted, setSoundMuted, onSoundMuteChange } from "@/games/audio/mute";
+import { isChannelMuted, setChannelMuted, onChannelMuteChange } from "@/games/audio/mute";
 
 // Muting stops anything already speaking, immediately.
 if (typeof window !== "undefined") {
-  onSoundMuteChange((m) => { if (m) window.speechSynthesis?.cancel(); });
+  onChannelMuteChange((ch, m) => { if (ch === "voice" && m) window.speechSynthesis?.cancel(); });
 }
 
-export { isSoundMuted as isTtsMuted, setSoundMuted as setTtsMuted, onSoundMuteChange as onTtsMuteChange };
+export const isTtsMuted = () => isChannelMuted("voice");
+export const setTtsMuted = (m: boolean) => setChannelMuted("voice", m);
+export const onTtsMuteChange = (fn: (m: boolean) => void) =>
+  onChannelMuteChange((ch, m) => { if (ch === "voice") fn(m); });
 
 type SpeakOpts = {
   /**
@@ -73,7 +76,7 @@ export function speakSequence(
   lang = "fr-FR",
   opts: { rate?: number; gapMs?: number } = {},
 ): () => void {
-  if (typeof window === "undefined" || !window.speechSynthesis || isSoundMuted()) return () => {};
+  if (typeof window === "undefined" || !window.speechSynthesis || isChannelMuted("voice")) return () => {};
   const synth = window.speechSynthesis;
   synth.cancel();
   let cancelled = false;
@@ -117,7 +120,7 @@ export function speakSequence(
 }
 
 export function speak(text: string, lang = "fr-FR", opts: SpeakOpts = {}) {
-  if (typeof window === "undefined" || !window.speechSynthesis || isSoundMuted()) return;
+  if (typeof window === "undefined" || !window.speechSynthesis || isChannelMuted("voice")) return;
   const synth = window.speechSynthesis;
   const interrupt = opts.interrupt ?? true;
 

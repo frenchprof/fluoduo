@@ -2,7 +2,7 @@ import BackLink from "@/components/BackLink";
 import Lexicalator, { type LexEntry } from "@/games/lexicalator/Lexicalator";
 import AuthGate from "@/components/AuthGate";
 import { CURATED } from "@/content/collections";
-import { bareWord } from "@/lib/collections/display";
+import { bareWord, displayFr } from "@/lib/collections/display";
 import { isLexReady, lexBase } from "@/lib/collections/lexReady";
 
 export function generateStaticParams() {
@@ -55,9 +55,15 @@ export default async function ConveyorPage({
     );
   }
 
-  const entries: LexEntry[] = collection.items.map((it) => ({
-    id: it.id, fr: lexBase(it.fr), en: bareWord(it.en), syllables: it.syllables!,
-  }));
+  const entries: LexEntry[] = collection.items.map((it) => {
+    // Bare fragments never speak alone (Dan, 2026-07-08: « sciences » must be
+    // heard as « Les sciences ») — completion TTS says the article/prefix form.
+    const say = displayFr(it, collection);
+    return {
+      id: it.id, fr: lexBase(it.fr), en: bareWord(it.en), syllables: it.syllables!,
+      say: say !== it.fr ? say : undefined,
+    };
+  });
   const decoys = collection.gameConfig?.lexicalator?.decoys ?? [];
   return shell(<Lexicalator title={collection.title} subtitle={collection.subtitle} entries={entries} decoys={decoys} />);
 }

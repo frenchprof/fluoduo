@@ -10,32 +10,42 @@ type Note = string | string[];
 type Chan = { type: OscillatorType; duty?: number; vol: number; notes: [Note, number][]; byStep?: Record<number, { note: Note; dur: number }> };
 type Song = { bpm: number; swing: number; ch: Chan[]; drums: string[]; len?: number };
 
-import { isSoundMuted, onSoundMuteChange } from "@/games/audio/mute";
+import { isChannelMuted, onChannelMuteChange } from "@/games/audio/mute";
 
 let ctx: AudioContext | null = null;
-let master: GainNode | null = null;
+let master: GainNode | null = null; // the volume knob — channels mute separately
 let musicBus: GainNode | null = null; // the loop runs through this so SFX can duck it
+let fxBus: GainNode | null = null; // jingles & stings — the "sfx" mute channel
 let vol = 0.6;
 let tempoScale = 1; // >1 slows the loop (notes spaced further + held longer) — used at "nightfall"
+
+const musicGain = () => (isChannelMuted("music") ? 0 : 1);
 
 function initAudio() {
   if (ctx) return;
   const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
   ctx = new Ctx();
   master = ctx.createGain();
-  // The global 🔇 governs game audio too (Dan, 2026-07-07: the sound-off
-  // button must work in games): muted → master at 0. Music keeps scheduling
-  // silently, so unmuting mid-game brings the tune straight back.
-  master.gain.value = isSoundMuted() ? 0 : vol * 0.5;
+  master.gain.value = vol * 0.5;
   master.connect(ctx.destination);
+  // Two channel buses under the master (Dan, 2026-07-08: music and effects
+  // mute separately). Muted music keeps scheduling silently, so unmuting
+  // mid-game brings the tune straight back.
   musicBus = ctx.createGain();
-  musicBus.gain.value = 1;
+  musicBus.gain.value = musicGain();
   musicBus.connect(master);
+  fxBus = ctx.createGain();
+  fxBus.gain.value = isChannelMuted("sfx") ? 0 : 1;
+  fxBus.connect(master);
 }
 
-// React to the toggle live — silences (or restores) anything already playing.
-onSoundMuteChange((m) => {
-  if (master) master.gain.value = m ? 0 : vol * 0.5;
+// React to the toggles live — silences (or restores) anything already playing.
+onChannelMuteChange((ch, m) => {
+  if (ch === "music" && musicBus && ctx) {
+    musicBus.gain.cancelScheduledValues(ctx.currentTime);
+    musicBus.gain.value = m ? 0 : 1;
+  }
+  if (ch === "sfx" && fxBus) fxBus.gain.value = m ? 0 : 1;
 });
 
 const pulseCache: Record<number, PeriodicWave> = {};
@@ -78,7 +88,7 @@ function tone(type: OscillatorType, f: number, t0: number, dur: number, v: numbe
   g.gain.linearRampToValueAtTime(v, t0 + a);
   g.gain.setValueAtTime(v, t0 + Math.max(a, dur - r));
   g.gain.exponentialRampToValueAtTime(0.0005, t0 + dur);
-  o.connect(g); g.connect(dest || master);
+  o.connect(g); g.connect(dest || fxBus || master);
   o.start(t0); o.stop(t0 + dur + 0.02);
 }
 function bendTone(f0: number, f1: number, t0: number, dur: number, v: number, duty?: number) { // glide for "sigh" SFX
@@ -92,7 +102,7 @@ function bendTone(f0: number, f1: number, t0: number, dur: number, v: number, du
   g.gain.linearRampToValueAtTime(v, t0 + a);
   g.gain.setValueAtTime(v, t0 + Math.max(a, dur - r));
   g.gain.exponentialRampToValueAtTime(0.0005, t0 + dur);
-  o.connect(g); g.connect(master);
+  o.connect(g); g.connect(fxBus || master);
   o.start(t0); o.stop(t0 + dur + 0.02);
 }
 function noiseHit(t0: number, dur: number, v: number, hp?: number, lp?: number, dest?: AudioNode) {
@@ -101,7 +111,7 @@ function noiseHit(t0: number, dur: number, v: number, hp?: number, lp?: number, 
   const g = ctx.createGain(); let node: AudioNode = s;
   if (hp) { const f = ctx.createBiquadFilter(); f.type = "highpass"; f.frequency.value = hp; node.connect(f); node = f; }
   if (lp) { const f = ctx.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = lp; node.connect(f); node = f; }
-  node.connect(g); g.connect(dest || master);
+  node.connect(g); g.connect(dest || fxBus || master);
   g.gain.setValueAtTime(v, t0);
   g.gain.exponentialRampToValueAtTime(0.0008, t0 + dur);
   s.start(t0); s.stop(t0 + dur + 0.02);
@@ -114,7 +124,7 @@ function kick(t0: number, v: number, dest?: AudioNode) {
   o.frequency.exponentialRampToValueAtTime(48, t0 + 0.11);
   g.gain.setValueAtTime(v, t0);
   g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.16);
-  o.connect(g); g.connect(dest || master);
+  o.connect(g); g.connect(dest || fxBus || master);
   o.start(t0); o.stop(t0 + 0.18);
 }
 function perc(tok: string, t0: number, dest?: AudioNode) {
@@ -132,9 +142,9 @@ function duckMusic() { // dip the loop under a sting, then bring it back
   const n = ctx.currentTime;
   musicBus.gain.cancelScheduledValues(n);
   musicBus.gain.setValueAtTime(musicBus.gain.value, n);
-  musicBus.gain.linearRampToValueAtTime(0.22, n + 0.03);
-  musicBus.gain.setValueAtTime(0.22, n + 0.55);
-  musicBus.gain.linearRampToValueAtTime(1, n + 0.8);
+  musicBus.gain.linearRampToValueAtTime(0.22 * musicGain(), n + 0.03);
+  musicBus.gain.setValueAtTime(0.22 * musicGain(), n + 0.55);
+  musicBus.gain.linearRampToValueAtTime(musicGain(), n + 0.8);
 }
 
 /* ---- song data ---- */
@@ -279,7 +289,7 @@ export const chiptune = {
     this.stop(); // kill any prior loop + its ringing tail so the new tune starts clean
     const n = ctx!.currentTime;
     musicBus!.gain.cancelScheduledValues(n);
-    musicBus!.gain.setValueAtTime(1, n);
+    musicBus!.gain.setValueAtTime(musicGain(), n);
     current = key; step = 0; nextTime = n + 0.08;
     timer = window.setInterval(loop, TICK);
     loop();
@@ -294,7 +304,7 @@ export const chiptune = {
     if (ctx && musicBus && master) {
       try { musicBus.disconnect(); } catch { /* already gone */ }
       musicBus = ctx.createGain();
-      musicBus.gain.value = 1;
+      musicBus.gain.value = musicGain();
       musicBus.connect(master);
     }
   },
@@ -302,7 +312,7 @@ export const chiptune = {
   playing(): string | null { return current; },
   // Slow (or restore) the running loop's tempo — 1 = normal, >1 = slower.
   setTempoScale(s: number) { tempoScale = Math.max(0.25, Math.min(4, s)); },
-  setVolume(v: number) { vol = Math.max(0, Math.min(1, v)); if (master && !isSoundMuted()) master.gain.value = vol * 0.5; },
+  setVolume(v: number) { vol = Math.max(0, Math.min(1, v)); if (master) master.gain.value = vol * 0.5; },
   // site-wide correct-answer "ta-daaaa" (Dan, 2026-07-08: sustain it like the
   // Duolingo win jingle — the old two-note version was too short): a short
   // pickup, then a held high tonic over a major chord that decays. Still

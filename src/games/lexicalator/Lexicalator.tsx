@@ -21,7 +21,7 @@ import { sfx } from "@/games/audio/sfx";
 import CreditsSplash from "@/games/CreditsSplash";
 import { recordItemResult } from "@/lib/progress";
 
-export type LexEntry = { id: string; fr: string; en: string; syllables: string[] };
+export type LexEntry = { id: string; fr: string; en: string; syllables: string[]; say?: string };
 
 const START_LIVES = 3;
 const LANE = 3; // chests on the lane at once
@@ -305,7 +305,7 @@ export default function Lexicalator({
       if (complete) {
         recordItemResult(entry.id, true);
         sfx.correct(); // ta-daa BEFORE the word is spoken
-        speak(entry.fr, "fr-FR");
+        speak(entry.say ?? entry.fr, "fr-FR"); // article/prefix form when the deck has one
         setScore((s) => s + 10 + Math.min(combo, 5) * 2);
         setCombo((c) => c + 1);
         setFirstDone(true);

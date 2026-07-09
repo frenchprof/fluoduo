@@ -1,38 +1,60 @@
 /**
- * ONE site-wide sound switch (Dan, 2026-07-07: "the sound off button doesn't
- * seem to work in games" — it only muted TTS; a sound-off button must silence
- * EVERYTHING). This tiny dependency-free store is the single source of truth;
- * the speech layer (TTS) and the chiptune synth (game music + jingles) both
- * consume it. It's a device PREFERENCE — kept across sessions and sign-out.
+ * Site-wide sound switches (Dan, 2026-07-08: "we can separate muting TTS or
+ * muting sound effects and muting background music") — THREE channels now:
+ *   voice — TTS (speech.ts consumes it)
+ *   music — the chiptune loops (musicBus)
+ *   sfx   — jingles & game effects (fxBus)
+ * Device PREFERENCES, kept across sessions and sign-out. The legacy
+ * single-switch API stays for the floating in-game toggle: it reads/writes
+ * ALL three at once. Old single-key prefs seed all channels once.
  */
-const KEY = "fluolingo:sound.muted";
-const OLD_KEY = "fluolingo:tts.muted"; // pre-rename pref, read once as fallback
+const CHANNELS = ["voice", "music", "sfx"] as const;
+export type SoundChannel = (typeof CHANNELS)[number];
 
-let muted = (() => {
+const KEY = (ch: SoundChannel) => `fluolingo:sound.${ch}.muted`;
+const LEGACY_KEYS = ["fluolingo:sound.muted", "fluolingo:tts.muted"];
+
+const muted: Record<SoundChannel, boolean> = (() => {
   try {
-    return (localStorage.getItem(KEY) ?? localStorage.getItem(OLD_KEY)) === "1";
+    const legacy = LEGACY_KEYS.some((k) => localStorage.getItem(k) === "1");
+    const read = (ch: SoundChannel) => {
+      const v = localStorage.getItem(KEY(ch));
+      return v === null ? legacy : v === "1";
+    };
+    return { voice: read("voice"), music: read("music"), sfx: read("sfx") };
   } catch {
-    return false;
+    return { voice: false, music: false, sfx: false };
   }
 })();
-const subs = new Set<(m: boolean) => void>();
 
-export function isSoundMuted(): boolean {
-  return muted;
+const subs = new Set<(ch: SoundChannel, m: boolean) => void>();
+
+export function isChannelMuted(ch: SoundChannel): boolean {
+  return muted[ch];
 }
 
-export function setSoundMuted(m: boolean): void {
-  muted = m;
+export function setChannelMuted(ch: SoundChannel, m: boolean): void {
+  muted[ch] = m;
   try {
-    localStorage.setItem(KEY, m ? "1" : "0");
+    localStorage.setItem(KEY(ch), m ? "1" : "0");
   } catch {
     /* storage unavailable — still applies for this session */
   }
-  subs.forEach((fn) => fn(m));
+  subs.forEach((fn) => fn(ch, m));
 }
 
-/** Subscribe to mute changes; returns an unsubscribe fn. */
-export function onSoundMuteChange(fn: (m: boolean) => void): () => void {
+/** Subscribe to any channel's changes; returns an unsubscribe fn. */
+export function onChannelMuteChange(fn: (ch: SoundChannel, m: boolean) => void): () => void {
   subs.add(fn);
   return () => { subs.delete(fn); };
+}
+
+export const isAllMuted = () => CHANNELS.every((c) => muted[c]);
+export const setAllMuted = (m: boolean) => CHANNELS.forEach((c) => setChannelMuted(c, m));
+
+/* Legacy single-switch API — all-or-nothing (the floating 🔇 in games). */
+export const isSoundMuted = isAllMuted;
+export const setSoundMuted = setAllMuted;
+export function onSoundMuteChange(fn: (m: boolean) => void): () => void {
+  return onChannelMuteChange(() => fn(isAllMuted()));
 }
