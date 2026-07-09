@@ -243,8 +243,9 @@ export default function HomeDashboard() {
                       </Link>
                     );
                   })}
-                  {/* Chapter-end fluency check — never a lock, always open. */}
-                  <Link
+                  {/* Chapter-end fluency check — never a lock, always open.
+                      Unité 0 (warm-up) has none (Dan, 2026-07-08). */}
+                  {unit > 0 && <Link
                     href={`/bilan/${unit}`}
                     title={`Bilan de fluidité — ${CHAPTERS[unit]?.scenario ?? meta.label} (retakes illimités)`}
                     className={`relative z-[1] flex h-9 w-9 items-center justify-center rounded-xl border-2 text-sm transition hover:-translate-y-0.5 ${
@@ -256,7 +257,7 @@ export default function HomeDashboard() {
                     }}
                   >
                     <span aria-hidden>🏁</span>
-                  </Link>
+                  </Link>}
                 </div>
               </div>
             </section>

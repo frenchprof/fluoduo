@@ -4,8 +4,10 @@ import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 import { CHAPTERS } from "@/content/chapters";
 import { UNIT_META } from "@/content/sios";
 
+// No bilan for Unité 0 (Dan, 2026-07-08) — the warm-up unit doesn't need a
+// fluency gate-marker; checks start where the real grammar starts.
 export function generateStaticParams() {
-  return ["0", "1", "2", "3", "4"].map((unit) => ({ unit }));
+  return ["1", "2", "3", "4"].map((unit) => ({ unit }));
 }
 
 export default async function BilanPage({ params }: { params: Promise<{ unit: string }> }) {

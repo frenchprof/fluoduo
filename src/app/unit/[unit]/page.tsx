@@ -35,16 +35,19 @@ export default async function UnitPage({ params }: { params: Promise<{ unit: str
 
         <UnitSection unit={u} />
 
-        {/* Chapter end: the fluency check + the tease for the next chapter. */}
+        {/* Chapter end: the fluency check (none for the Unité 0 warm-up —
+            Dan, 2026-07-08) + the tease for the next chapter. */}
         <section className={`fluo-h-${u % 6} mt-4 space-y-2`}>
-          <Link
-            href={`/bilan/${u}`}
-            className="flex items-center gap-3 rounded-2xl border-2 px-4 py-3 font-black text-white transition hover:-translate-y-0.5"
-            style={{ background: "var(--fluo-card-accent)", borderColor: "var(--fluo-card-accent)" }}
-          >
-            <span className="text-xl" aria-hidden>🏁</span>
-            <span lang="fr">Bilan de fluidité — toute l&rsquo;unité en 15 questions</span>
-          </Link>
+          {u > 0 && (
+            <Link
+              href={`/bilan/${u}`}
+              className="flex items-center gap-3 rounded-2xl border-2 px-4 py-3 font-black text-white transition hover:-translate-y-0.5"
+              style={{ background: "var(--fluo-card-accent)", borderColor: "var(--fluo-card-accent)" }}
+            >
+              <span className="text-xl" aria-hidden>🏁</span>
+              <span lang="fr">Bilan de fluidité — toute l&rsquo;unité en 15 questions</span>
+            </Link>
+          )}
           {chapter?.cliffhanger && u < 4 && (
             <Link
               href={`/unit/${u + 1}`}
