@@ -248,6 +248,11 @@ export default function CahierShell({
                     {menuOpen ? "✕" : "☰"}
                   </button>
                   {menuOpen && (
+                    // tap-away closes (Dan, 2026-07-08) — the catcher sits
+                    // under the dropdown.
+                    <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} aria-hidden />
+                  )}
+                  {menuOpen && (
                     // max-h + scroll: with the tools group the list outgrows
                     // small screens and items were cut off (Dan, 2026-07-08).
                     <div className="absolute right-0 top-full z-50 mt-1 flex max-h-[75vh] w-48 flex-col gap-1 overflow-y-auto rounded-lg border-2 border-[color:var(--cahier-ink)]/20 bg-white p-1 shadow-lg">
@@ -318,6 +323,13 @@ export default function CahierShell({
               active={isActiveFlap(t)}
               className={`cahier-tab ${context.length > 0 ? "cahier-tab--back1" : ""}`}
             />
+          ))}
+          {/* The tools live in the ☰ on mobile — but desktop hides the ☰
+              (Dan, 2026-07-08: "the desktop version does not have them"), so
+              they get their own small-flap group in the rail. */}
+          <span aria-hidden className="h-3" />
+          {tools.map((t, i) => (
+            <TabFlap key={t.key} tab={t} hue={hueOf(t, i)} active={active === t.key} className="cahier-tab cahier-tab--sm" />
           ))}
           {context.length > 0 && <span aria-hidden className="h-3" />}
           {context.map((t, i) => (
