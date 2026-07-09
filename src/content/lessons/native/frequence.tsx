@@ -1,8 +1,11 @@
+"use client";
+
 /**
  * Native "Adverbes de fréquence" lesson (Unité 4) — distilled from
  * 22-frequence.html: the Mémo + the 🎲 dice trainer + EN→FR bonus.
  */
 import type { NativeLesson } from "./types";
+import { speak } from "@/games/letris/speech";
 
 const SUBJECTS = [
   { disp: "Je", slot: "je" }, { disp: "Tu", slot: "tu" }, { disp: "Il", slot: "il" },
@@ -40,13 +43,22 @@ export const frequenceLesson: NativeLesson = {
       <p className="text-[15px] text-[color:var(--cahier-ink)]" lang="fr">
         <i>Je cours <b>souvent</b>. · Elle regarde <b>rarement</b> la télé.</i>
       </p>
-      <p className="mt-3 flex flex-wrap gap-1.5 text-[13px] font-bold text-[color:var(--cahier-ink)]">
+      {/* Each chip speaks ITS OWN adverb — as plain spans in one <p>, a tap
+          on a chip's padding fell through to the whole paragraph and TTS read
+          « toujours… » for everything (Dan, 2026-07-08). */}
+      <div className="mt-3 flex flex-wrap gap-1.5 text-[13px] font-bold text-[color:var(--cahier-ink)]">
         {SCALE.map((a) => (
-          <span key={a.fr} className="rounded-full border border-[color:var(--cahier-rule)] bg-white px-2.5 py-0.5">
+          <button
+            key={a.fr}
+            type="button"
+            onClick={() => speak(a.fr, "fr-FR")}
+            title="🔊"
+            className="rounded-full border border-[color:var(--cahier-rule)] bg-white px-2.5 py-0.5 transition hover:border-[color:var(--cahier-gold)] active:scale-95"
+          >
             <span lang="fr">{a.fr}</span> · {a.en}
-          </span>
+          </button>
         ))}
-      </p>
+      </div>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
         ⚠️ Negative: <span lang="fr">Je <b>ne</b> cours <b>pas</b> souvent.</span> — but{" "}
         <b lang="fr">jamais</b> replaces <i lang="fr">pas</i>:{" "}

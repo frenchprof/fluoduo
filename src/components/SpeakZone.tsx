@@ -64,6 +64,11 @@ export default function SpeakZone({ children }: { children: ReactNode }) {
         const row = target.closest<HTMLElement>("li, td, th, p");
         const rowText = row?.textContent?.trim() ?? "";
         if (row && rowText && rowText.length <= 160) {
+          // A row holding SEVERAL French chips (a scale of pills) must not be
+          // read as one run — a padding tap would recite from the first chip
+          // (« toujours… » for everything, Dan 2026-07-08). Each chip is its
+          // own target; the missed tap stays silent.
+          if (row.querySelectorAll('[lang="fr"]').length > 1) return;
           // « French — English gloss » lines: speak only the French half.
           sayTapped(row, rowText.split("—")[0].trim());
         }
