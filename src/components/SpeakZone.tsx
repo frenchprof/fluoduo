@@ -3,11 +3,18 @@
 /**
  * Tap-to-hear delegation for lesson content (Dan, 2026-07-08: every lesson's
  * phrases should be tappable for TTS, like the pretest pills). Wraps a Mémo /
- * Lire block; a tap on any French bit speaks it — no per-lesson wiring:
- *   1. nearest [lang="fr"] element (pill spans, bold patterns, table cells) —
- *      when its text is short enough to be a phrase, not a whole table;
- *   2. else the enclosing line/cell, speaking the French half of a
- *      « phrase — gloss » line.
+ * Lire block; a tap on any French bit speaks it — no per-lesson wiring.
+ *
+ * TTS discipline (Dan, 2026-07-08):
+ *  - FRENCH ONLY. The voice never reads English: a row is only read whole
+ *    when it sits inside a lang="fr" region; a mixed row speaks just its
+ *    French span, and an English-only row stays silent.
+ *  - No bare function words. « veux », « du », « au » are never said alone in
+ *    real speech — a lone article/preposition stays silent (conjugation-table
+ *    cells get their row's subject pronoun: « je peux »), while series and
+ *    full phrases are always fine.
+ *  - Same-category series (« à · en · au · aux », « du / de la / de l' /
+ *    des ») are spoken item by item with a one-second pause between them.
  * Real controls inside (buttons, links, inputs) keep their own behaviour.
  */
 import type { ReactNode } from "react";
@@ -21,6 +28,16 @@ import { speak, speakSequence } from "@/games/letris/speech";
 const SUBJECT_TOKENS = new Set(["je", "j'", "tu", "il", "elle", "on", "nous", "vous", "ils", "elles"]);
 const NON_VERB = new Set(["ne", "n'", "pas"]);
 
+// Words that never occur alone in speech — a lone tap on one stays silent
+// rather than voicing a fragment (Dan, 2026-07-08). In a SERIES they are
+// spoken (with pauses); with a subject pronoun they become a phrase.
+const FUNCTION_WORDS = new Set([
+  "le", "la", "les", "l'", "un", "une", "des", "du", "de", "d'",
+  "à", "au", "aux", "en", "ne", "n'", "pas", "et", "ou",
+  "mon", "ma", "mes", "ton", "ta", "tes", "son", "sa", "ses",
+  "ce", "cet", "cette", "ces", "que", "qu'",
+]);
+
 function withSubject(el: HTMLElement, text: string): string {
   if (/\s/.test(text) || NON_VERB.has(text.toLowerCase())) return text;
   const row = el.closest("tr");
@@ -33,19 +50,30 @@ function withSubject(el: HTMLElement, text: string): string {
   return `${s} ${text}`;
 }
 
-// Set lines like « à · en · au · aux » and conjugation runs like « je fais ·
-// tu fais · il/elle fait… » run together when read as one utterance (Dan,
-// 2026-07-08: force a 1-second break between each) — split on the « · » list
-// separator and speak the items with a beat between them. Per item: cut any
-// « — gloss » tail, and read « il/elle » as « il, elle » (never the slash).
+const series = (parts: string[]) =>
+  speakSequence(parts.map((t) => ({ text: t })), "fr-FR", { gapMs: 1000 });
+
 function sayTapped(el: HTMLElement, text: string) {
   const clean = (t: string) => t.split("—")[0].replace(/\s*\/\s*/g, ", ").trim();
-  const parts = text.split("·").map(clean).filter(Boolean);
-  if (parts.length > 1) {
-    speakSequence(parts.map((t) => ({ text: t })), "fr-FR", { gapMs: 1000 });
+  // « à · en · au · aux » set lines and conjugation runs: item by item, with
+  // a one-second beat between each.
+  const dotParts = text.split("·").map(clean).filter(Boolean);
+  if (dotParts.length > 1) {
+    series(dotParts);
     return;
   }
-  speak(withSubject(el, clean(text)), "fr-FR");
+  // Slash series like « du / de la / de l' / des »: same treatment — but only
+  // when it clearly IS a series (3+ short items), so « il/elle fait » still
+  // reads as one phrase (« il, elle fait »).
+  const slashParts = text.split("/").map((s) => s.trim()).filter(Boolean);
+  if (slashParts.length >= 3 && slashParts.every((p) => p.split(/\s+/).length <= 2)) {
+    series(slashParts.map(clean));
+    return;
+  }
+  const single = withSubject(el, clean(text));
+  // Still a lone function word after the pronoun pass → not sayable speech.
+  if (!single.includes(" ") && FUNCTION_WORDS.has(single.toLowerCase().replace(/[.,!?;:]/g, ""))) return;
+  speak(single, "fr-FR");
 }
 
 export default function SpeakZone({ children }: { children: ReactNode }) {
@@ -64,13 +92,19 @@ export default function SpeakZone({ children }: { children: ReactNode }) {
         const row = target.closest<HTMLElement>("li, td, th, p");
         const rowText = row?.textContent?.trim() ?? "";
         if (row && rowText && rowText.length <= 160) {
-          // A row holding SEVERAL French chips (a scale of pills) must not be
-          // read as one run — a padding tap would recite from the first chip
-          // (« toujours… » for everything, Dan 2026-07-08). Each chip is its
-          // own target; the missed tap stays silent.
-          if (row.querySelectorAll('[lang="fr"]').length > 1) return;
-          // « French — English gloss » lines: speak only the French half.
-          sayTapped(row, rowText.split("—")[0].trim());
+          // Inside a lang="fr" region (conjugation tbody, French paragraph):
+          // the whole row IS French — read it (minus any « — gloss » tail).
+          if (row.closest('[lang="fr"]')) {
+            sayTapped(row, rowText.split("—")[0].trim());
+            return;
+          }
+          // Mixed row: NEVER read the English. Exactly one French span → say
+          // that; several (a chip scale) or none (English-only row) → silent.
+          const frs = row.querySelectorAll<HTMLElement>('[lang="fr"]');
+          if (frs.length === 1) {
+            const t = frs[0].textContent?.trim() ?? "";
+            if (t && t.length <= 80) sayTapped(frs[0], t);
+          }
         }
       }}
     >
