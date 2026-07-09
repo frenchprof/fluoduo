@@ -54,7 +54,6 @@ const EXCLUDED_UIDS = new Set([
   "f8QFvdmv33VQlkaIzVSlAKUl1vp1",
   "fmbfRMU475U4bNAmroFIAChjRRC3",
   "hFDtdL7VbUOVH6LQojinNNEddxA3",
-  "kQVWo2UmsoZrFhQvThBWeRS1nN03",
   "lf98Dn7AniMtDDW2QYZjB9zqGBX2",
   "lzRqpbYzAfWOHv2BGuNwaRFjJK23",
   "nObXWQxQCGO6TNugnrgC5xsAQhx1",
