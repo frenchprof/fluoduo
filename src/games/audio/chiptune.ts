@@ -249,27 +249,33 @@ const storm: Song = {
 // musical notes by half — instead of 1 1 1 1, we have ½ ½ ½ ½ ½ ½ ½ ½"):
 // every even-length note becomes TWO half-length repeats; odd/1-step notes
 // keep the grid. The loop alternates base ↔ variation on each full pass.
+const halfTimeCh = (c: Chan): Chan => ({
+  ...c,
+  byStep: undefined,
+  notes: c.notes.flatMap(([note, dur]): [Note, number][] =>
+    dur >= 2 && dur % 2 === 0 && note !== "0"
+      ? [[note, dur / 2], [note, dur / 2]]
+      : [[note, dur]]),
+});
 function halfTime(song: Song): Song {
-  return {
-    ...song,
-    ch: song.ch.map((c) => ({
-      ...c,
-      byStep: undefined,
-      notes: c.notes.flatMap(([note, dur]): [Note, number][] =>
-        dur >= 2 && dur % 2 === 0 && note !== "0"
-          ? [[note, dur / 2], [note, dur / 2]]
-          : [[note, dur]]),
-    })),
-  };
+  return { ...song, ch: song.ch.map(halfTimeCh) };
+}
+// The HYBRID pass (Dan, 2026-07-08: "a third version between 1 and 2"): only
+// the LEAD line goes half-time; accompaniment and bass keep the original feel.
+function hybridTime(song: Song): Song {
+  return { ...song, ch: song.ch.map((c, i) => (i === 0 ? halfTimeCh(c) : { ...c, byStep: undefined, notes: [...c.notes] })) };
 }
 const SONGS: Record<string, Song> = {
   letris, conveyor, storm,
   "letris-var": halfTime(letris),
+  "letris-mix": hybridTime(letris),
   "conveyor-var": halfTime(conveyor),
+  "conveyor-mix": hybridTime(conveyor),
 };
+// Pass rotation: base → half-time → hybrid → base …
 const TWIN: Record<string, string> = {
-  letris: "letris-var", "letris-var": "letris",
-  conveyor: "conveyor-var", "conveyor-var": "conveyor",
+  letris: "letris-var", "letris-var": "letris-mix", "letris-mix": "letris",
+  conveyor: "conveyor-var", "conveyor-var": "conveyor-mix", "conveyor-mix": "conveyor",
 };
 function prepare(song: Song) {
   const L = 128; song.len = L;
@@ -337,7 +343,7 @@ export const chiptune = {
   },
   toggle(key: string) { if (this.playing() === key) this.stop(); else this.play(key); },
   // Reports the BASE track — callers never see the "-var" pass.
-  playing(): string | null { return current ? (current.endsWith("-var") ? current.slice(0, -4) : current) : null; },
+  playing(): string | null { return current ? current.replace(/-(var|mix)$/, "") : null; },
   // Slow (or restore) the running loop's tempo — 1 = normal, >1 = slower.
   setTempoScale(s: number) { tempoScale = Math.max(0.25, Math.min(4, s)); },
   setVolume(v: number) { vol = Math.max(0, Math.min(1, v)); if (master) master.gain.value = vol * 0.5; },
