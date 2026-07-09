@@ -192,30 +192,83 @@ export default function Lexicalator({
 
   function tapKey(token: string) {
     if (over || levelDone || !active) return;
+    // The state we grade against — may be swapped below when the key fits a
+    // sibling FORM of the word instead.
+    let entry = active.entry;
+    let filled = active.filled;
+    let lane = chests;
+    let laneQueue = queue;
     // Any-order fill: the key fits the FIRST still-empty keyhole that needs
     // this syllable, wherever it sits in the word.
-    const slot = active.entry.syllables.findIndex((s, i) => !active.filled[i] && s === token);
+    let slot = entry.syllables.findIndex((s, i) => !filled[i] && s === token);
+
+    if (slot < 0) {
+      // ALL FORMS OF THE WORD ARE FAIR (Dan, 2026-07-08: « gués » on the
+      // "tired" chest — the plural « fatigués » must count, not rattle).
+      // If the key fits a SIBLING entry consistent with everything already
+      // forged (same filled syllables + this key), the bay chest MORPHS into
+      // that sibling and the sibling's old spot inherits this entry — both
+      // words stay buildable, and the looping belt owes nothing.
+      const filledTokens = entry.syllables.filter((s, i) => filled[i]);
+      const fits = (e: typeof entry) => {
+        if (e.id === entry.id) return false;
+        const pool = [...e.syllables];
+        for (const t of [...filledTokens, token]) {
+          const k = pool.indexOf(t);
+          if (k < 0) return false;
+          pool.splice(k, 1);
+        }
+        return true;
+      };
+      const laneAlt = chests.find((c) => fits(c.entry));
+      const queueIdx = laneAlt ? -1 : queue.findIndex((e) => fits(e));
+      const alt = laneAlt?.entry ?? (queueIdx >= 0 ? queue[queueIdx] : undefined);
+      if (alt) {
+        const marks = blankFill(alt);
+        for (const t of filledTokens) {
+          const k = alt.syllables.findIndex((s, i) => !marks[i] && s === t);
+          if (k >= 0) marks[k] = true;
+        }
+        if (laneAlt) {
+          lane = chests.map((c) =>
+            c.entry.id === entry.id ? { entry: alt, filled: marks }
+            : c.entry.id === alt.id ? { entry, filled: blankFill(entry) }
+            : c,
+          );
+        } else {
+          lane = chests.map((c) => (c.entry.id === entry.id ? { entry: alt, filled: marks } : c));
+          laneQueue = queue.map((e, i) => (i === queueIdx ? entry : e));
+          setQueue(laneQueue);
+        }
+        setChests(lane);
+        setSelected(alt.id); // the bay chest kept its place, new identity
+        entry = alt;
+        filled = marks;
+        slot = entry.syllables.findIndex((s, i) => !filled[i] && s === token);
+      }
+    }
+
     if (slot >= 0) {
-      const nextFilled = active.filled.slice();
+      const nextFilled = filled.slice();
       nextFilled[slot] = true;
       const complete = nextFilled.every(Boolean);
       if (complete) {
-        recordItemResult(active.entry.id, true);
+        recordItemResult(entry.id, true);
         sfx.correct(); // ta-daa BEFORE the word is spoken
-        speak(active.entry.fr, "fr-FR");
+        speak(entry.fr, "fr-FR");
         setScore((s) => s + 10 + Math.min(combo, 5) * 2);
         setCombo((c) => c + 1);
         setFirstDone(true);
         // The whole chest descends straight into VOTRE TRÉSOR: add it now and
         // let the trésor tile drop in from the play area (lxland) and land in
         // place — the freed word no longer overshoots past the keyhole.
-        setDone((d) => [...d, active.entry]);
+        setDone((d) => [...d, entry]);
         // Remove the cleared chest and pull a replacement from the queue.
-        // Computed purely from the current lane/queue (not nested state
-        // updaters mutating a captured array — that double-ran under Strict
-        // Mode and duplicated the replacement chest).
-        const rest = chests.filter((c) => c.entry.id !== active.entry.id);
-        const nextUp = queue[0];
+        // Computed purely from the (possibly swapped) lane/queue — not nested
+        // state updaters mutating a captured array (that double-ran under
+        // Strict Mode and duplicated the replacement chest).
+        const rest = lane.filter((c) => c.entry.id !== entry.id);
+        const nextUp = laneQueue[0];
         const newChests = nextUp ? [...rest, { entry: nextUp, filled: blankFill(nextUp) }] : rest;
         setChests(newChests);
         // Empty the bay — the learner drags down the next chest (same as the
@@ -231,7 +284,7 @@ export default function Lexicalator({
         setCleared((n) => n + 1);
         if (levelCleared) setLevelDone(true);
       } else {
-        setChests((cs) => cs.map((c) => (c.entry.id === active.entry.id ? { ...c, filled: nextFilled } : c)));
+        setChests((cs) => cs.map((c) => (c.entry.id === entry.id ? { ...c, filled: nextFilled } : c)));
       }
     } else if (active.entry.fr.toLowerCase().includes(token.toLowerCase())) {
       // The key IS part of the word being forged ("ge" while forging "beige",
