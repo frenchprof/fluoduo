@@ -245,7 +245,32 @@ const storm: Song = {
   drums: ("KhhhShkhKhhhShkh".repeat(4) + "KHhHShHhKHhHSHhH".repeat(4)).split(""),
 };
 
-const SONGS: Record<string, Song> = { letris, conveyor, storm };
+// Variation passes (Dan, 2026-07-08: "alternative versions that cut the
+// musical notes by half — instead of 1 1 1 1, we have ½ ½ ½ ½ ½ ½ ½ ½"):
+// every even-length note becomes TWO half-length repeats; odd/1-step notes
+// keep the grid. The loop alternates base ↔ variation on each full pass.
+function halfTime(song: Song): Song {
+  return {
+    ...song,
+    ch: song.ch.map((c) => ({
+      ...c,
+      byStep: undefined,
+      notes: c.notes.flatMap(([note, dur]): [Note, number][] =>
+        dur >= 2 && dur % 2 === 0 && note !== "0"
+          ? [[note, dur / 2], [note, dur / 2]]
+          : [[note, dur]]),
+    })),
+  };
+}
+const SONGS: Record<string, Song> = {
+  letris, conveyor, storm,
+  "letris-var": halfTime(letris),
+  "conveyor-var": halfTime(conveyor),
+};
+const TWIN: Record<string, string> = {
+  letris: "letris-var", "letris-var": "letris",
+  conveyor: "conveyor-var", "conveyor-var": "conveyor",
+};
 function prepare(song: Song) {
   const L = 128; song.len = L;
   song.ch.forEach((c) => { const map: Record<number, { note: Note; dur: number }> = {}; let step = 0; c.notes.forEach(([note, dur]) => { map[step] = { note, dur }; step += dur; }); c.byStep = map; });
@@ -272,11 +297,13 @@ function scheduleStep(song: Song, s: number, t: number) {
 }
 function loop() {
   if (!current || !ctx) return;
-  const song = SONGS[current];
   while (nextTime < ctx.currentTime + LOOKAHEAD) {
+    const song = SONGS[current];
     scheduleStep(song, step, nextTime);
     nextTime += (60 / song.bpm / 4) * tempoScale;
     step = (step + 1) % song.len!;
+    // A ↔ A′: swap to the half-time variation (and back) each full pass.
+    if (step === 0 && TWIN[current]) current = TWIN[current];
   }
 }
 
@@ -308,8 +335,9 @@ export const chiptune = {
       musicBus.connect(master);
     }
   },
-  toggle(key: string) { if (current === key) this.stop(); else this.play(key); },
-  playing(): string | null { return current; },
+  toggle(key: string) { if (this.playing() === key) this.stop(); else this.play(key); },
+  // Reports the BASE track — callers never see the "-var" pass.
+  playing(): string | null { return current ? (current.endsWith("-var") ? current.slice(0, -4) : current) : null; },
   // Slow (or restore) the running loop's tempo — 1 = normal, >1 = slower.
   setTempoScale(s: number) { tempoScale = Math.max(0.25, Math.min(4, s)); },
   setVolume(v: number) { vol = Math.max(0, Math.min(1, v)); if (master) master.gain.value = vol * 0.5; },

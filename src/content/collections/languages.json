@@ -13,7 +13,7 @@
   "items": [
     {
       "id": "languages-01-anglais",
-      "fr": "anglais",
+      "fr": "l'anglais",
       "en": "English",
       "emoji": "🇬🇧",
       "tags": [],
@@ -22,13 +22,13 @@
         "autonym": "English"
       },
       "syllables": [
-        "an",
+        "l'an",
         "glais"
       ]
     },
     {
       "id": "languages-02-chinois",
-      "fr": "chinois",
+      "fr": "le chinois",
       "en": "Mandarin / Chinese",
       "emoji": "🇨🇳",
       "tags": [],
@@ -37,13 +37,14 @@
         "autonym": "中文"
       },
       "syllables": [
+        "le",
         "chi",
         "nois"
       ]
     },
     {
       "id": "languages-03-hindi",
-      "fr": "hindi",
+      "fr": "le hindi",
       "en": "Hindi / Urdu",
       "emoji": "🇮🇳",
       "tags": [],
@@ -52,13 +53,14 @@
         "autonym": "हिन्दी"
       },
       "syllables": [
+        "le",
         "hin",
         "di"
       ]
     },
     {
       "id": "languages-04-espagnol",
-      "fr": "espagnol",
+      "fr": "l'espagnol",
       "en": "Spanish",
       "emoji": "🇪🇸",
       "tags": [],
@@ -67,14 +69,14 @@
         "autonym": "Español"
       },
       "syllables": [
-        "es",
+        "l'es",
         "pa",
         "gnol"
       ]
     },
     {
       "id": "languages-05-arabe",
-      "fr": "arabe",
+      "fr": "l'arabe",
       "en": "Arabic",
       "emoji": "🇸🇦",
       "tags": [],
@@ -83,13 +85,13 @@
         "autonym": "العربية"
       },
       "syllables": [
-        "a",
+        "l'a",
         "rabe"
       ]
     },
     {
       "id": "languages-06-francais",
-      "fr": "français",
+      "fr": "le français",
       "en": "French",
       "emoji": "🇫🇷",
       "tags": [],
@@ -98,13 +100,14 @@
         "autonym": "Français"
       },
       "syllables": [
+        "le",
         "fran",
         "çais"
       ]
     },
     {
       "id": "languages-07-portugais",
-      "fr": "portugais",
+      "fr": "le portugais",
       "en": "Portuguese",
       "emoji": "🇵🇹",
       "tags": [],
@@ -113,6 +116,7 @@
         "autonym": "Português"
       },
       "syllables": [
+        "le",
         "por",
         "tu",
         "gais"
@@ -120,7 +124,7 @@
     },
     {
       "id": "languages-08-russe",
-      "fr": "russe",
+      "fr": "le russe",
       "en": "Russian",
       "emoji": "🇷🇺",
       "tags": [],
@@ -129,12 +133,13 @@
         "autonym": "Русский"
       },
       "syllables": [
+        "le",
         "russe"
       ]
     },
     {
       "id": "languages-09-indonesien",
-      "fr": "indonésien",
+      "fr": "l'indonésien",
       "en": "Indonesian",
       "emoji": "🇮🇩",
       "tags": [],
@@ -143,7 +148,7 @@
         "autonym": "Bahasa Indonesia"
       },
       "syllables": [
-        "in",
+        "l'in",
         "do",
         "né",
         "sien"
@@ -151,7 +156,7 @@
     },
     {
       "id": "languages-10-allemand",
-      "fr": "allemand",
+      "fr": "l'allemand",
       "en": "German",
       "emoji": "🇩🇪",
       "tags": [],
@@ -160,14 +165,14 @@
         "autonym": "Deutsch"
       },
       "syllables": [
-        "al",
+        "l'al",
         "le",
         "mand"
       ]
     },
     {
       "id": "languages-11-japonais",
-      "fr": "japonais",
+      "fr": "le japonais",
       "en": "Japanese",
       "emoji": "🇯🇵",
       "tags": [],
@@ -176,6 +181,7 @@
         "autonym": "日本語"
       },
       "syllables": [
+        "le",
         "ja",
         "po",
         "nais"
@@ -183,7 +189,7 @@
     },
     {
       "id": "languages-12-turc",
-      "fr": "turc",
+      "fr": "le turc",
       "en": "Turkish",
       "emoji": "🇹🇷",
       "tags": [],
@@ -192,12 +198,13 @@
         "autonym": "Türkçe"
       },
       "syllables": [
+        "le",
         "turc"
       ]
     },
     {
       "id": "languages-13-tamoul",
-      "fr": "tamoul",
+      "fr": "le tamoul",
       "en": "Tamil",
       "emoji": "🇱🇰",
       "tags": [],
@@ -206,13 +213,14 @@
         "autonym": "தமிழ்"
       },
       "syllables": [
+        "le",
         "ta",
         "moul"
       ]
     },
     {
       "id": "languages-14-cantonais",
-      "fr": "cantonais",
+      "fr": "le cantonais",
       "en": "Cantonese",
       "emoji": "🇭🇰",
       "tags": [],
@@ -221,6 +229,7 @@
         "autonym": "廣東話"
       },
       "syllables": [
+        "le",
         "can",
         "to",
         "nais"
@@ -228,7 +237,7 @@
     },
     {
       "id": "languages-15-vietnamien",
-      "fr": "vietnamien",
+      "fr": "le vietnamien",
       "en": "Vietnamese",
       "emoji": "🇻🇳",
       "tags": [],
@@ -237,6 +246,7 @@
         "autonym": "Tiếng Việt"
       },
       "syllables": [
+        "le",
         "viet",
         "na",
         "mien"
@@ -244,7 +254,7 @@
     },
     {
       "id": "languages-16-filipino",
-      "fr": "filipino",
+      "fr": "le filipino",
       "en": "Filipino",
       "emoji": "🇵🇭",
       "tags": [],
@@ -253,6 +263,7 @@
         "autonym": "Filipino"
       },
       "syllables": [
+        "le",
         "fi",
         "li",
         "pi",
@@ -261,7 +272,7 @@
     },
     {
       "id": "languages-17-coreen",
-      "fr": "coréen",
+      "fr": "le coréen",
       "en": "Korean",
       "emoji": "🇰🇷",
       "tags": [],
@@ -270,6 +281,7 @@
         "autonym": "한국어"
       },
       "syllables": [
+        "le",
         "co",
         "ré",
         "en"
@@ -277,7 +289,7 @@
     },
     {
       "id": "languages-18-thai",
-      "fr": "thaï",
+      "fr": "le thaï",
       "en": "Thai",
       "emoji": "🇹🇭",
       "tags": [],
@@ -286,13 +298,14 @@
         "autonym": "ภาษาไทย"
       },
       "syllables": [
+        "le",
         "tha",
         "ï"
       ]
     },
     {
       "id": "languages-19-malais",
-      "fr": "malais",
+      "fr": "le malais",
       "en": "Malay",
       "emoji": "🇲🇾",
       "tags": [],
@@ -301,6 +314,7 @@
         "autonym": "Bahasa Melayu"
       },
       "syllables": [
+        "le",
         "ma",
         "lais"
       ]
