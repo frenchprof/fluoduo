@@ -152,7 +152,9 @@ export default function HomeDashboard() {
                   <span className="fluo-serif">{meta.label}</span>
                   <span className="fluo-label ml-auto text-[10px] text-white/90">{done}/{sios.length}</span>
                 </Link>
-                <div className="flex flex-wrap items-center gap-1.5">
+                {/* The circles spread across the full remaining width (Dan,
+                    2026-07-08: "stretch them out across the width — justify"). */}
+                <div className="flex flex-1 flex-wrap items-center gap-1.5 sm:justify-between">
                   {sios.map((s) => {
                     const sDone = isSioDone(s.id, progress);
                     const sActive = s.id === activeId;

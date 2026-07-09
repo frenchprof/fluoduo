@@ -47,6 +47,7 @@ export function toolTabs(): ShellTab[] {
     { key: "conjugaison", label: "ConjugaZone", emoji: "🔤", href: "/conjugaison", hue: "#2bb6c2" },
     { key: "leaderboard", label: "Classement", emoji: "🏆", href: "/leaderboard", hue: "#e3a700" },
     { key: "tutor", label: "Tuteur", emoji: "🤖", href: "/tutor", hue: "#8a5fd4" },
+    { key: "tts", label: "TTS", emoji: "🔊", href: "/tts", hue: "#e8852e" },
     { key: "profil", label: "Profil", emoji: "🎖️", href: "/profil", hue: "#e0567f" },
   ];
 }

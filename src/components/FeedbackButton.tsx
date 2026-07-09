@@ -101,10 +101,11 @@ export default function FeedbackButton() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        title="Report a bug"
-        className="fixed bottom-5 right-5 z-50 flex items-center gap-1.5 rounded-full bg-[var(--fluo-hl)] px-3.5 py-2 text-sm font-bold text-[color:var(--fluo-ink)] shadow-lg hover:brightness-95 active:scale-95 transition-transform"
+        title="Feedback — report a bug"
+        aria-label="Feedback"
+        className="fixed bottom-5 right-5 z-50 flex items-center justify-center rounded-full bg-[var(--fluo-hl)] px-3 py-2 text-base font-bold text-[color:var(--fluo-ink)] shadow-lg hover:brightness-95 active:scale-95 transition-transform"
       >
-        💬 Feedback
+        💬
       </button>
 
       {open && (
