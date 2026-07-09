@@ -109,7 +109,9 @@ export default function ConjugaisonPage() {
                             <button type="button" onClick={() => setMode(v.id, s.mode === "hidden" ? "shown" : "hidden")}
                               title={s.mode === "hidden" ? "Tout montrer" : "Cacher la colonne"}
                               className={`cahier-btn cahier-btn-sm ${s.mode === "hidden" ? "cahier-btn-primary" : ""}`}>
-                              {s.mode === "hidden" ? "🙈" : "👁"}
+                              {/* no eye icons (Dan, 2026-07-08) — the monkey
+                                  pair carries the hide/show meaning */}
+                              {s.mode === "hidden" ? "🙈" : "🐵"}
                             </button>
                             <button type="button" onClick={() => setMode(v.id, s.mode === "typing" ? "shown" : "typing")}
                               title={s.mode === "typing" ? "Arrêter de taper" : "Taper pour vérifier"}

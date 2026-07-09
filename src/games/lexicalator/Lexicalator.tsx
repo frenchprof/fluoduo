@@ -27,6 +27,45 @@ const START_LIVES = 3;
 const LANE = 3; // chests on the lane at once
 const QUOTA = 6; // words to clear a level
 const minSylForLevel = (l: number) => (l <= 1 ? 1 : l <= 2 ? 2 : 3);
+
+// ── The breakdown ladder (Dan, 2026-07-08) ──────────────────────────────────
+// Level 1: ENTIRE words and phrases — one key, no breakdown (recognise the
+//          written word for its gloss).
+// Levels 2–3: syllables (the hand-authored joints).
+// Level 4+: spelling mode — random 2–4 letter chunks, pure ORTHOGRAPHE,
+//          syllabation not a concern; re-rolled every deal so the same word
+//          spells differently each time.
+const SPELL_LEVEL = 4;
+function gearEntry<E extends { fr: string; syllables: string[] }>(level: number, e: E): E {
+  if (level >= SPELL_LEVEL) return { ...e, syllables: chunkSpelling(e.fr) };
+  if (level <= 1) return { ...e, syllables: [e.fr.trim()] };
+  return e;
+}
+function chunkSpelling(fr: string): string[] {
+  const key = fr.replace(/\s+/g, ""); // the same assembly key syllables use
+  const out: string[] = [];
+  let i = 0;
+  while (i < key.length) {
+    let size = 2 + Math.floor(Math.random() * 3); // 2..4
+    const left = key.length - i;
+    if (left - size === 1) size += size < 4 ? 1 : -1; // never strand 1 letter
+    size = Math.min(size, left);
+    out.push(key.slice(i, i + size));
+    i += size;
+  }
+  return out;
+}
+// Chunk decoys: a real chunk with one vowel swapped (or reversed when it has
+// none) — plausible spellings only a reader of the word rejects.
+const VOWEL_SWAP: Record<string, string> = { a: "e", e: "a", i: "y", o: "au", u: "ou", é: "è", è: "é" };
+function mutateChunk(c: string): string | null {
+  for (let i = 0; i < c.length; i++) {
+    const sub = VOWEL_SWAP[c[i]];
+    if (sub) return c.slice(0, i) + sub + c.slice(i + 1);
+  }
+  const rev = [...c].reverse().join("");
+  return rev === c ? null : rev;
+}
 // Belt loop time in seconds — gentle acceleration (Dan, 2026-07-03: "go easy on
 // the acceleration"): a slow ~60s at level 1, easing by 5s a level to a calm
 // 20s floor, so it never jumps to a frantic pace.
@@ -159,9 +198,12 @@ export default function Lexicalator({
     const long = shuffle(entries.filter((e) => e.syllables.length >= min));
     const short = shuffle(entries.filter((e) => e.syllables.length < min));
     const pool = long.length >= QUOTA ? long : [...long, ...short].slice(0, QUOTA);
-    setQuota(Math.min(QUOTA, pool.length));
-    setChests(pool.slice(0, LANE).map((entry) => ({ entry, filled: blankFill(entry) })));
-    setQueue(pool.slice(LANE));
+    // Re-gear each word for the level's breakdown (whole word / syllables /
+    // spelling chunks — see the ladder above).
+    const geared = pool.map((e) => gearEntry(level, e));
+    setQuota(Math.min(QUOTA, geared.length));
+    setChests(geared.slice(0, LANE).map((entry) => ({ entry, filled: blankFill(entry) })));
+    setQueue(geared.slice(LANE));
     // No chest sits in the central bay at first — the learner is nudged to
     // pick one to begin (Dan, 2026-07-03).
     setSelected(null);
@@ -185,10 +227,18 @@ export default function Lexicalator({
     // ("pai" for "pain") invites "but that's part of the answer!" disputes — so
     // never surface a partial-of-a-monosyllable as an option (Dan, 2026-07-03).
     const isPartialOfMono = (d: string) => monos.some((m) => m !== d && m.includes(d));
-    const usable = decoys.filter((d) => !real.has(d) && !isPartialOfMono(d));
+    // Fake keys match the level's joints: level 1 (whole words) baits with
+    // OTHER words of the deck; spelling mode with mutated real chunks (one
+    // vowel off); the syllable levels with the deck's hand-authored decoys.
+    const usable =
+      level <= 1
+        ? shuffle(entries.map((e) => e.fr.trim()).filter((w) => !real.has(w) && !isPartialOfMono(w))).slice(0, 4)
+        : level >= SPELL_LEVEL
+          ? [...new Set([...real].map(mutateChunk).filter((m): m is string => !!m && !real.has(m)))].slice(0, 6)
+          : decoys.filter((d) => !real.has(d) && !isPartialOfMono(d));
     return shuffle([...real, ...usable]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chests.map((c) => c.entry.id).join(",")]);
+  }, [chests.map((c) => c.entry.id).join(","), level]);
 
   function tapKey(token: string) {
     if (over || levelDone || !active) return;
@@ -319,7 +369,7 @@ export default function Lexicalator({
     setLevel(1); setScore(0); setLives(START_LIVES); setCombo(0);
     setOver(false); setDone([]); setFirstDone(false);
     // re-deal via the level effect (setLevel(1) won't refire if already 1)
-    const shuffled = shuffle(entries.slice()); // level 1: every word qualifies
+    const shuffled = shuffle(entries.slice()).map((e) => gearEntry(1, e)); // level 1: whole words
     setQuota(Math.min(QUOTA, shuffled.length));
     setChests(shuffled.slice(0, LANE).map((entry) => ({ entry, filled: blankFill(entry) })));
     setQueue(shuffled.slice(LANE));
@@ -368,7 +418,9 @@ export default function Lexicalator({
             yellow cluster below — two shapes so tappable is obvious at a
             glance (Dan, 2026-07-05: "i cannot tell which are tappable"). */}
         <span title="Points earned" className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">Score <b style={{ color: "#58cc02" }}>{score}</b></span>
-        <span title="Level — higher levels bring longer words and a faster belt" className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">Niveau <b style={{ color: "#1cb0f6" }}>{level}</b></span>
+        <span title={level <= 1 ? "Whole words — pick the entire word for its meaning" : level >= SPELL_LEVEL ? "Orthographe — the word is cut into 2–4 letter chunks, not syllables" : "Syllables — longer words and a faster belt as levels rise"} className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">
+          Niveau <b style={{ color: "#1cb0f6" }}>{level}</b>{level >= SPELL_LEVEL && <b style={{ color: "#ff9600" }}> · ✍️ épelle !</b>}
+        </span>
         <span title={`Words unlocked this level — ${quota} clears it`} className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">Mots <b style={{ color: "#ff9600" }}>{cleared}/{quota}</b></span>
         <span title="Lives — a wrong syllable costs one" className="text-lg" style={{ color: "#ff4b4b" }}>{"♥".repeat(Math.max(0, lives))}<span className="opacity-20">{"♥".repeat(Math.max(0, START_LIVES - lives))}</span></span>
         <span className="flex items-center gap-2 rounded-xl border-2 border-sky-300 bg-sky-100 px-2 py-1">

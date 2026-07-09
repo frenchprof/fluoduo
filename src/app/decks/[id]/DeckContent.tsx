@@ -397,7 +397,7 @@ function ItemList({ items, collection }: { items: Item[]; collection: Collection
             }`}
             title={hidden[c] ? `Show ${c} column` : `Hide ${c} column`}
           >
-            {hidden[c] ? "👁 " : ""}
+            {hidden[c] ? "🙈 " : ""}
             {c.toUpperCase()}
             {hidden[c] && " (hidden)"}
           </button>
