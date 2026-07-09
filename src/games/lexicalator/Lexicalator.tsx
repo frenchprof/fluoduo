@@ -72,6 +72,19 @@ function mutateChunk(c: string): string | null {
 const beltSecsFor = (l: number) => Math.max(20, 60 - (l - 1) * 5);
 const keyW = (s: string) => Math.max(40, 24 + s.length * 15);
 
+// Five clearly-distinct chest liveries (Dan, 2026-07-09: "the chests can
+// appear in slightly different colors because it's hard to see if we brought
+// down the chests desired"). A chest keeps its livery from the lane through
+// the drag ghost into the assembly bay, and no two lane chests share one.
+type ChestTint = { body: string; lid: string; edge: string };
+const CHEST_TINTS: ChestTint[] = [
+  { body: "linear-gradient(180deg,#ffe08a,#eaa61c)", lid: "linear-gradient(180deg,#c8860f,#96600c)", edge: "#7a4e0a" }, // or
+  { body: "linear-gradient(180deg,#ffd3de,#e56a8f)", lid: "linear-gradient(180deg,#c04a6e,#8f2d4c)", edge: "#7a2438" }, // rose
+  { body: "linear-gradient(180deg,#cdeaff,#57a6dc)", lid: "linear-gradient(180deg,#3d7fb0,#2a5c82)", edge: "#1e4f70" }, // bleu
+  { body: "linear-gradient(180deg,#d9f2c4,#83c04f)", lid: "linear-gradient(180deg,#5c9433,#446e24)", edge: "#33591b" }, // vert
+  { body: "linear-gradient(180deg,#e9dcff,#a284de)", lid: "linear-gradient(180deg,#7a58b8,#5a3f8c)", edge: "#4b2f7a" }, // violet
+];
+
 function shuffle<T>(a: T[]): T[] {
   const o = [...a];
   for (let i = o.length - 1; i > 0; i--) {
@@ -83,7 +96,9 @@ function shuffle<T>(a: T[]): T[] {
 
 // `filled` is per-slot, not a count: syllables can be dropped in ANY order
 // (Dan, 2026-07-03), so we track which keyholes are done, not how many.
-type Chest = { entry: LexEntry; filled: boolean[] };
+// `tint` is the chest's livery index into CHEST_TINTS — it belongs to the
+// physical chest, so a sibling-form morph keeps the colour in place.
+type Chest = { entry: LexEntry; filled: boolean[]; tint: number };
 const blankFill = (e: LexEntry): boolean[] => e.syllables.map(() => false);
 
 export default function Lexicalator({
@@ -192,7 +207,18 @@ export default function Lexicalator({
   const startDrag = (e: React.PointerEvent, id: string) => {
     dragRef.current = { id, sx: e.clientX, sy: e.clientY, moved: false };
   };
-  const ghostEntry = ghost ? chests.find((c) => c.entry.id === ghost.id)?.entry : undefined;
+  const ghostChest = ghost ? chests.find((c) => c.entry.id === ghost.id) : undefined;
+
+  // Rolling livery counter — a replacement chest takes the next colour that
+  // is NOT already on the lane, so the lane never shows two alike.
+  const tintSeq = useRef(LANE);
+  const tintFor = (lane: Chest[]) => {
+    const used = new Set(lane.map((c) => c.tint));
+    let t = tintSeq.current;
+    while (used.has(t % CHEST_TINTS.length)) t++;
+    tintSeq.current = t + 1;
+    return t % CHEST_TINTS.length;
+  };
 
   // (Re)deal the lane for the current level. Runs on mount and each level.
   useEffect(() => {
@@ -210,7 +236,8 @@ export default function Lexicalator({
     // spelling chunks — see the ladder above).
     const geared = pool.map((e) => gearEntry(level, e));
     setQuota(Math.min(QUOTA, geared.length));
-    setChests(geared.slice(0, LANE).map((entry) => ({ entry, filled: blankFill(entry) })));
+    setChests(geared.slice(0, LANE).map((entry, i) => ({ entry, filled: blankFill(entry), tint: i % CHEST_TINTS.length })));
+    tintSeq.current = LANE;
     setQueue(geared.slice(LANE));
     // No chest sits in the central bay at first — the learner is nudged to
     // pick one to begin (Dan, 2026-07-03).
@@ -289,12 +316,12 @@ export default function Lexicalator({
         }
         if (laneAlt) {
           lane = chests.map((c) =>
-            c.entry.id === entry.id ? { entry: alt, filled: marks }
-            : c.entry.id === alt.id ? { entry, filled: blankFill(entry) }
+            c.entry.id === entry.id ? { ...c, entry: alt, filled: marks }
+            : c.entry.id === alt.id ? { ...c, entry, filled: blankFill(entry) }
             : c,
           );
         } else {
-          lane = chests.map((c) => (c.entry.id === entry.id ? { entry: alt, filled: marks } : c));
+          lane = chests.map((c) => (c.entry.id === entry.id ? { ...c, entry: alt, filled: marks } : c));
           laneQueue = queue.map((e, i) => (i === queueIdx ? entry : e));
           setQueue(laneQueue);
         }
@@ -327,7 +354,7 @@ export default function Lexicalator({
         // Strict Mode and duplicated the replacement chest).
         const rest = lane.filter((c) => c.entry.id !== entry.id);
         const nextUp = laneQueue[0];
-        const newChests = nextUp ? [...rest, { entry: nextUp, filled: blankFill(nextUp) }] : rest;
+        const newChests = nextUp ? [...rest, { entry: nextUp, filled: blankFill(nextUp), tint: tintFor(rest) }] : rest;
         setChests(newChests);
         // Empty the bay — the learner drags down the next chest (same as the
         // opening), so a chest is never auto-placed in the bay AND the lane.
@@ -379,7 +406,8 @@ export default function Lexicalator({
     // re-deal via the level effect (setLevel(1) won't refire if already 1)
     const shuffled = shuffle(entries.slice()).map((e) => gearEntry(1, e)); // level 1: whole words
     setQuota(Math.min(QUOTA, shuffled.length));
-    setChests(shuffled.slice(0, LANE).map((entry) => ({ entry, filled: blankFill(entry) })));
+    setChests(shuffled.slice(0, LANE).map((entry, i) => ({ entry, filled: blankFill(entry), tint: i % CHEST_TINTS.length })));
+    tintSeq.current = LANE;
     setQueue(shuffled.slice(LANE));
     setSelected(null);
     setCleared(0); setLevelDone(false);
@@ -477,15 +505,15 @@ export default function Lexicalator({
               onClick={(e) => { if (e.detail === 0) pickChest(c.entry.id); }}
               onPointerDown={(e) => startDrag(e, c.entry.id)}
               className="w-36 cursor-grab touch-none overflow-hidden rounded-lg border-2 border-b-4 text-center transition active:cursor-grabbing"
-              style={{ borderColor: "#7a4e0a", background: "linear-gradient(180deg,#ffe08a,#eaa61c)", boxShadow: "inset 0 -2px 0 rgba(0,0,0,.15)", opacity: ghost?.id === c.entry.id ? 0.4 : 1 }}>
-              <span className="flex items-center justify-center" style={{ height: 10, background: "linear-gradient(180deg,#c8860f,#96600c)" }}>
+              style={{ borderColor: CHEST_TINTS[c.tint].edge, background: CHEST_TINTS[c.tint].body, boxShadow: "inset 0 -2px 0 rgba(0,0,0,.15)", opacity: ghost?.id === c.entry.id ? 0.4 : 1 }}>
+              <span className="flex items-center justify-center" style={{ height: 10, background: CHEST_TINTS[c.tint].lid }}>
                 <span style={{ width: 12, height: 4, borderRadius: 1, background: "#ffe9a8" }} />
               </span>
-              <span className="block px-2 pt-1 text-sm font-black" style={{ color: "#5a3a08" }}>{c.entry.en}</span>
+              <span className="block px-2 pt-1 text-sm font-black" style={{ color: CHEST_TINTS[c.tint].edge }}>{c.entry.en}</span>
               <span className="mb-1.5 mt-1 flex justify-center gap-1">
                 {(hard ? [c.entry.syllables.length] : c.entry.syllables).map((s, i) => {
                   const doneSlot = hard ? c.filled.some(Boolean) : c.filled[i];
-                  return <span key={i} className="h-2 rounded-full" style={{ width: hard ? 24 : Math.max(8, String(s).length * 5), background: doneSlot ? "#2e7d00" : "#8a5a0f" }} />;
+                  return <span key={i} className="h-2 rounded-full" style={{ width: hard ? 24 : Math.max(8, String(s).length * 5), background: doneSlot ? "#2e7d00" : CHEST_TINTS[c.tint].edge }} />;
                 })}
               </span>
             </button>
@@ -514,13 +542,13 @@ export default function Lexicalator({
           </div>
         )}
         {active && (
-          <div className="overflow-hidden rounded-xl border-2 text-center" style={{ borderColor: "#7a4e0a", borderBottomWidth: 6, background: "linear-gradient(180deg,#ffe6a0,#eaa61c)", boxShadow: "0 12px 24px -14px rgba(122,78,10,.7)" }}>
+          <div className="overflow-hidden rounded-xl border-2 text-center" style={{ borderColor: CHEST_TINTS[active.tint].edge, borderBottomWidth: 6, background: CHEST_TINTS[active.tint].body, boxShadow: "0 12px 24px -14px rgba(0,0,0,.5)" }}>
             {/* the opened lid */}
-            <div className="flex items-center justify-center" style={{ height: 14, background: "linear-gradient(180deg,#c8860f,#8a5709)" }}>
+            <div className="flex items-center justify-center" style={{ height: 14, background: CHEST_TINTS[active.tint].lid }}>
               <span style={{ width: 18, height: 6, borderRadius: 2, background: "#ffe9a8" }} />
             </div>
             <div className="px-4 py-3">
-            <div className="mb-3 text-lg font-black" style={{ color: "#5a3a08" }}>{active.entry.en}</div>
+            <div className="mb-3 text-lg font-black" style={{ color: CHEST_TINTS[active.tint].edge }}>{active.entry.en}</div>
             {hard ? (
               <div className="mx-auto flex min-h-[3rem] min-w-[8rem] items-center justify-center rounded-xl border-2 border-dashed px-4 text-xl font-black" style={{ borderColor: "#e08600", color: "#0c4a6e" }}>
                 {active.entry.syllables.filter((s, i) => active.filled[i]).join("") || <span style={{ color: "#4a7fa6" }}>?</span>}
@@ -533,9 +561,9 @@ export default function Lexicalator({
                   const filled = active.filled[i];
                   return (
                     <span key={i} lang="fr"
-                      className="grid h-12 place-items-center rounded-xl border-2 text-lg font-black"
+                      className="grid h-12 place-items-center whitespace-nowrap rounded-xl border-2 px-2 text-lg font-black"
                       style={{
-                        width: keyW(s),
+                        minWidth: keyW(s),
                         borderStyle: filled ? "solid" : "dashed",
                         borderColor: filled ? "#2e7d00" : "#e08600",
                         background: filled ? "#46a302" : "#eef7ff",
@@ -557,12 +585,15 @@ export default function Lexicalator({
           after that it becomes a scrolling belt that eases into real
           time-pressure as levels rise. */}
       <div className="relative rounded-2xl border-4 border-white py-3" style={{ background: "linear-gradient(180deg,#bfe6ff,#9fd8fb)", ...(beltFrozen ? { minHeight: "4.5rem" } : { height: "4.5rem", overflow: "hidden" }) }}>
+        {/* A key never wraps or shrinks: level-1 keys are whole PHRASES, and a
+            fixed-width key let long ones wrap onto the neighbouring key —
+            tiles looked "stacked over each other" (Dan, 2026-07-09). */}
         {beltFrozen ? (
           <div className="flex flex-wrap items-center justify-center gap-3 px-4">
             {beltPool.map((t, i) => (
               <button key={i} type="button" onClick={() => tapKey(t)} lang="fr"
-                className="grid h-12 place-items-center rounded-xl border-2 border-b-4 bg-white text-lg font-black"
-                style={{ width: keyW(t), color: "#0c4a6e", borderColor: "#4a94c4", animation: rattle === t ? "lxrattle 300ms" : undefined }}>
+                className="grid h-12 shrink-0 place-items-center whitespace-nowrap rounded-xl border-2 border-b-4 bg-white px-2 text-lg font-black"
+                style={{ minWidth: keyW(t), color: "#0c4a6e", borderColor: "#4a94c4", animation: rattle === t ? "lxrattle 300ms" : undefined }}>
                 {t}
               </button>
             ))}
@@ -571,8 +602,8 @@ export default function Lexicalator({
           <div className="lx-belt flex w-max gap-3 px-4" style={{ "--lx-belt-secs": `${beltSecs}s` } as React.CSSProperties}>
             {[...beltPool, ...beltPool].map((t, i) => (
               <button key={i} type="button" onClick={() => tapKey(t)} lang="fr"
-                className="grid h-12 place-items-center rounded-xl border-2 border-b-4 bg-white text-lg font-black"
-                style={{ width: keyW(t), color: "#0c4a6e", borderColor: "#4a94c4", animation: rattle === t ? "lxrattle 300ms" : undefined }}>
+                className="grid h-12 shrink-0 place-items-center whitespace-nowrap rounded-xl border-2 border-b-4 bg-white px-2 text-lg font-black"
+                style={{ minWidth: keyW(t), color: "#0c4a6e", borderColor: "#4a94c4", animation: rattle === t ? "lxrattle 300ms" : undefined }}>
                 {t}
               </button>
             ))}
@@ -603,33 +634,39 @@ export default function Lexicalator({
         ))}
       </div>
 
+      {/* Level-done / out-of-lives: a POPUP in the middle of the screen, not a
+          card below the fold (Dan, 2026-07-09). The level banner dismisses
+          itself via the auto-advance effect; game over keeps its button. */}
       {(over || levelDone) && (
-        <div className="mt-4 rounded-3xl border-4 border-sky-200 bg-white p-4 text-center">
-          {levelDone ? (
-            // No OK tap between levels (Dan, 2026-07-08) — the banner shows
-            // while the next level deals itself (see the auto-advance effect).
-            <>
-              <p className="text-2xl font-black" style={{ color: "#ff9600" }}>Niveau {level} terminé !</p>
-              <p className="text-sm font-semibold" style={{ color: "#075985" }}>Score {score} · niveau {level + 1} arrive…</p>
-            </>
-          ) : (
-            <>
-              <p className="text-lg font-black">Out of lives</p>
-              <p className="text-sm" style={{ color: "#075985" }}>Reached level {level} · score {score}</p>
-              <button type="button" onClick={reset}
-                className="mt-3 rounded-2xl border-b-4 border-[#1899d6] bg-[#1cb0f6] px-4 py-2 font-black text-white">Play again</button>
-            </>
-          )}
+        <div className="fixed inset-0 z-[70] grid place-items-center bg-black/30 p-4" role="dialog" aria-modal="true">
+          <div className="w-full max-w-sm rounded-3xl border-4 border-sky-200 bg-white p-5 text-center shadow-2xl">
+            {levelDone ? (
+              // No OK tap between levels (Dan, 2026-07-08) — the banner shows
+              // while the next level deals itself (see the auto-advance effect).
+              <>
+                <p className="text-2xl font-black" style={{ color: "#ff9600" }}>Niveau {level} terminé !</p>
+                <p className="text-sm font-semibold" style={{ color: "#075985" }}>Score {score} · niveau {level + 1} arrive…</p>
+              </>
+            ) : (
+              <>
+                <p className="text-lg font-black">Out of lives</p>
+                <p className="text-sm" style={{ color: "#075985" }}>Reached level {level} · score {score}</p>
+                <button type="button" onClick={reset}
+                  className="mt-3 rounded-2xl border-b-4 border-[#1899d6] bg-[#1cb0f6] px-4 py-2 font-black text-white">Play again</button>
+              </>
+            )}
+          </div>
         </div>
       )}
 
-      {/* Drag ghost — the chest that follows the pointer while dragging */}
-      {ghost && ghostEntry && (
+      {/* Drag ghost — the chest that follows the pointer while dragging, in
+          the SAME livery as its lane chest so you can see which one you hold. */}
+      {ghost && ghostChest && (
         <div
-          className="pointer-events-none fixed z-[60] w-36 rounded-xl border-2 border-b-4 bg-white p-2 text-center opacity-90 shadow-xl"
-          style={{ left: ghost.x, top: ghost.y, transform: "translate(-50%,-50%) rotate(-3deg)", borderColor: "#c56a00" }}
+          className="pointer-events-none fixed z-[60] w-36 rounded-xl border-2 border-b-4 p-2 text-center opacity-90 shadow-xl"
+          style={{ left: ghost.x, top: ghost.y, transform: "translate(-50%,-50%) rotate(-3deg)", borderColor: CHEST_TINTS[ghostChest.tint].edge, background: CHEST_TINTS[ghostChest.tint].body }}
         >
-          <span className="block text-sm font-black" style={{ color: "#075985" }}>{ghostEntry.en}</span>
+          <span className="block text-sm font-black" style={{ color: CHEST_TINTS[ghostChest.tint].edge }}>{ghostChest.entry.en}</span>
         </div>
       )}
     </div>
