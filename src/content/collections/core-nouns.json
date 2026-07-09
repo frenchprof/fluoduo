@@ -16,22 +16,26 @@
         {
           "key": "qui_m",
           "label": "QUI (m)",
-          "prefix": "un "
+          "prefix": "un ",
+          "choiceLabel": "person (masculine)"
         },
         {
           "key": "qui_f",
           "label": "QUI (f)",
-          "prefix": "une "
+          "prefix": "une ",
+          "choiceLabel": "person (feminine)"
         },
         {
           "key": "quoi_m",
           "label": "QUOI (m)",
-          "prefix": "un "
+          "prefix": "un ",
+          "choiceLabel": "thing (masculine)"
         },
         {
           "key": "quoi_f",
           "label": "QUOI (f)",
-          "prefix": "une "
+          "prefix": "une ",
+          "choiceLabel": "thing (feminine)"
         }
       ]
     },

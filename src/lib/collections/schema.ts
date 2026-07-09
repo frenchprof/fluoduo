@@ -109,6 +109,10 @@ export type LetrisColumn = {
   label: string;
   /** Literal prefix for buildSentence()/TTS, e.g. "Il fait ", "Le ", "Devant ", "". */
   prefix?: string;
+  /** Friendlier wording for MCQ choices (bilan / Diced Practice) where the
+   *  rain column's terse header ("QUI (m)") wouldn't explain itself —
+   *  e.g. "person (masculine)". Falls back to `label`. */
+  choiceLabel?: string;
 };
 
 /** Matching is relational — a directed validity graph between role:left and role:right items. */

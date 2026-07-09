@@ -49,7 +49,7 @@ function buildQuestions(unit: number): Q[] {
         const choices = it.choices.map((c) => c.label);
         pool.push({
           id: it.id,
-          prompt: set.prompt ?? "Quelle forme va avec… ?",
+          prompt: set.prompt ?? "Which category does this belong to?",
           fr: it.fr,
           choices,
           correctIdx: it.choices.findIndex((c) => c.key === it.correctColKey),

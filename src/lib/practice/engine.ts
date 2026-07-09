@@ -49,7 +49,7 @@ export function toPracticeSet(collection: Collection): PracticeSet | null {
     if (!column) continue;
     const choices: PracticeChoice[] = letrisConfig.columns.map((c) => ({
       key: c.key,
-      label: item.frames?.[c.key] ?? c.label,
+      label: item.frames?.[c.key] ?? c.choiceLabel ?? c.label,
     }));
     const correctFrame = item.frames?.[colKey];
     items.push({
