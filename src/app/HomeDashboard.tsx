@@ -13,7 +13,6 @@
  */
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import DeckSearch from "@/components/DeckSearch";
 import { SIOS, UNIT_META } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { equippedAccent, levelForXp, xpMultiplier } from "@/lib/economy";
@@ -22,6 +21,14 @@ import { dueForReview } from "@/lib/reviser";
 export default function HomeDashboard() {
   const [progress, setProgress] = useState<Progress>(defaultProgress());
   const [dueCount, setDueCount] = useState(0);
+  // « Votre profil : » pills fold away on tap (Dan, 2026-07-08); remembered.
+  const [profilOpen, setProfilOpen] = useState(true);
+  useEffect(() => {
+    try { setProfilOpen(window.localStorage.getItem("fluolingo:home.profil-open") !== "0"); } catch {}
+  }, []);
+  useEffect(() => {
+    try { window.localStorage.setItem("fluolingo:home.profil-open", profilOpen ? "1" : "0"); } catch {}
+  }, [profilOpen]);
 
   useEffect(() => {
     const refresh = () => {
@@ -53,67 +60,66 @@ export default function HomeDashboard() {
 
   return (
     <>
-      {/* Search first, at the very top of the page — level with the Home flap
-          (Dan, 2026-07-08). Finds any word inside any deck. */}
-      <DeckSearch className="mb-4 max-w-md" />
-
       <section
         className="mb-7 rounded-2xl border-2 border-[color:var(--fluo-ink)] p-5 shadow-[5px_5px_0_var(--fluo-hl)]"
         style={{ background: "linear-gradient(120deg, #fbe3ec 0%, #def3f5 45%, #ecf7cf 100%)" }}
       >
-        {/* Continuer sits top-right as a thick two-line button spanning the
-            heading + tagline (Dan, 2026-07-08). Everything else that used to
-            crowd this row lives in the ☰ menu. */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch sm:justify-between">
-          <div>
-            <h1 className="fluo-serif text-3xl font-black text-[color:var(--fluo-ink)]">
-              Bienvenue sur <span className="fluo-hl px-1">FluoLingo</span> ✨
-            </h1>
-            <p className="mt-1.5 text-base text-[color:var(--fluo-ink)]">
-              Your French 1 companion — <b>50 things you&rsquo;ll learn to do</b> in French.
-            </p>
-          </div>
-          {activeSio && (
-            <Link
-              href={`/unit/${activeSio.unit}#${activeSio.id}`}
-              style={{ background: accent, borderColor: accent }}
-              title="Continues at your first objective not yet marked done — 'Mark as done' is what moves this forward."
-              className="flex shrink-0 flex-col items-center justify-center rounded-2xl border-2 px-6 py-2 text-center text-white shadow-[3px_3px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
-            >
-              <span className="text-lg font-black">▶ Continuer</span>
-              <span className="max-w-[14rem] text-xs font-bold text-white/90">{activeSio.topic}</span>
-            </Link>
-          )}
-        </div>
-
-        <div className="mt-4 flex flex-wrap items-center gap-2.5">
-          <Link
-            href="/tutor"
-            className="fluo-mono flex items-center gap-1 rounded-full border-2 border-[color:var(--fluo-ink)] bg-white/75 px-4 py-2 text-sm font-bold text-[color:var(--fluo-ink)] transition hover:-translate-y-0.5"
-          >
-            🤖 Votre Tuteur
-          </Link>
-          <Link
-            href="/reviser"
-            className="fluo-mono flex items-center gap-1 rounded-full border-2 border-[color:var(--fluo-ink)] bg-white/75 px-4 py-2 text-sm font-bold text-[color:var(--fluo-ink)] transition hover:-translate-y-0.5"
-          >
-            🔁 Votre Réviseur
-            {dueCount > 0 && (
-              <span className="rounded-full bg-[var(--fluo-danger)] px-1.5 text-xs text-white">{dueCount}</span>
+        {/* Exactly two buttons right of the heading (Dan, 2026-07-08): a red
+            PLAY with fine print CONTINUER, and a REPEAT with fine print
+            RÉVISER. Everything else lives in the ☰ menu / 🔍 spotlight. */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <h1 className="fluo-serif text-3xl font-black text-[color:var(--fluo-ink)]">
+            Bienvenue sur <span className="fluo-hl px-1">FluoLingo</span> ✨
+          </h1>
+          <div className="flex shrink-0 gap-2.5">
+            {activeSio && (
+              <Link
+                href={`/unit/${activeSio.unit}#${activeSio.id}`}
+                title={`Continues at « ${activeSio.topic} » — your first objective not yet marked done. 'Mark as done' is what moves this forward.`}
+                className="flex flex-col items-center justify-center rounded-2xl border-2 border-[color:var(--fluo-danger)] bg-[var(--fluo-danger)] px-5 py-1.5 text-white shadow-[3px_3px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
+              >
+                <span className="text-2xl leading-none" aria-hidden>▶</span>
+                <span className="text-[10px] font-black tracking-widest">CONTINUER</span>
+              </Link>
             )}
-          </Link>
+            <Link
+              href="/reviser"
+              title="Réviser — vos mots à revoir"
+              className="relative flex flex-col items-center justify-center rounded-2xl border-2 border-[color:var(--fluo-ink)] bg-white/80 px-5 py-1.5 text-[color:var(--fluo-ink)] shadow-[3px_3px_0_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5"
+            >
+              <span className="text-2xl leading-none" aria-hidden>🔁</span>
+              <span className="text-[10px] font-black tracking-widest">RÉVISER</span>
+              {dueCount > 0 && (
+                <span className="absolute -right-2 -top-2 rounded-full bg-[var(--fluo-danger)] px-1.5 text-xs font-bold text-white">{dueCount}</span>
+              )}
+            </Link>
+          </div>
         </div>
 
+        {/* « Votre profil : » heads the stat pills; tapping it folds them away
+            (Dan, 2026-07-08). */}
         <div className="mt-4 flex flex-wrap items-center gap-2.5">
-          <Link href="/profil" className={`${chip} hover:-translate-y-0.5`} title="Votre niveau">🎚️ N{lvl.level} · {lvl.name}</Link>
-          <span className={chip}>✓ {doneTotal}/{SIOS.length}</span>
-          <span className={chip} title={mult > 1 ? `Série active : XP ×${mult}` : "Série de jours"}>
-            🔥 {progress.streak}{mult > 1 && <b className="text-[color:var(--fluo-danger)]"> ×{mult}</b>}
-          </span>
-          {/* XP is exactly what the leaderboard ranks — the chip IS the way to
-              the Classement now that its hero chip moved to the ☰ menu. */}
-          <Link href="/leaderboard" className={`${chip} hover:-translate-y-0.5`} title="Classement · votre rang">⭐ {progress.xp}</Link>
-          <Link href="/profil" className={`${chip} hover:-translate-y-0.5`} title="Boutique">💎 {progress.gems}</Link>
+          <button
+            type="button"
+            onClick={() => setProfilOpen((o) => !o)}
+            aria-expanded={profilOpen}
+            className="fluo-mono text-sm font-black text-[color:var(--fluo-ink)] transition hover:-translate-y-0.5"
+          >
+            Votre profil : {profilOpen ? "▾" : "▸"}
+          </button>
+          {profilOpen && (
+            <>
+              <Link href="/profil" className={`${chip} hover:-translate-y-0.5`} title="Votre niveau">🎚️ N{lvl.level} · {lvl.name}</Link>
+              <span className={chip}>✓ {doneTotal}/{SIOS.length}</span>
+              <span className={chip} title={mult > 1 ? `Série active : XP ×${mult}` : "Série de jours"}>
+                🔥 {progress.streak}{mult > 1 && <b className="text-[color:var(--fluo-danger)]"> ×{mult}</b>}
+              </span>
+              {/* XP is exactly what the leaderboard ranks — the chip IS the way
+                  to the Classement. */}
+              <Link href="/leaderboard" className={`${chip} hover:-translate-y-0.5`} title="Classement · votre rang">⭐ {progress.xp}</Link>
+              <Link href="/profil" className={`${chip} hover:-translate-y-0.5`} title="Boutique">💎 {progress.gems}</Link>
+            </>
+          )}
         </div>
 
         {/* Two bars: overall course completion, and XP into the current level. */}
@@ -164,7 +170,11 @@ export default function HomeDashboard() {
                         href={`/unit/${unit}#${s.id}`}
                         title={`${s.id} · ${s.topic}`}
                         className={`flex items-center justify-center rounded-full border-2 font-black transition hover:-translate-y-0.5 ${
-                          sActive ? "h-10 w-10 text-sm ring-2 ring-[var(--fluo-danger)] ring-offset-1" : "h-8 w-8 text-[11px]"
+                          sActive
+                            ? "fluo-node-active h-10 w-10 text-sm ring-2 ring-[var(--fluo-danger)] ring-offset-1"
+                            : sDone
+                              ? "h-8 w-8 text-[11px]"
+                              : "h-8 w-8 text-[11px] opacity-75" // ahead of the glow: visible, just calmer
                         }`}
                         style={{
                           background: sDone ? "var(--fluo-card-accent)" : sActive ? "var(--fluo-hl)" : "var(--fluo-card-tint)",

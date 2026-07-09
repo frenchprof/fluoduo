@@ -815,3 +815,17 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 /* Tap-to-hear lesson zone: every French bit is speakable — show it. */
 .speak-zone [lang="fr"] { cursor: pointer; }
 .speak-zone li, .speak-zone td { cursor: pointer; }
+
+/* The "glow" mechanic (Dan, 2026-07-08): the next uncompleted node is the
+   most alive thing on the map — a soft pulsing halo pulls the eye forward
+   without locking anything. Nodes ahead stay tappable, just calmer. */
+@keyframes fluo-node-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 224, 0, 0.85); }
+  55% { box-shadow: 0 0 0 10px rgba(255, 224, 0, 0); }
+}
+.fluo-node-active {
+  animation: fluo-node-glow 1.8s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fluo-node-active { animation: none; }
+}

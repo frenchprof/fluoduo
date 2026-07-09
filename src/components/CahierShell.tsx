@@ -27,6 +27,8 @@ import { getLetrisSet } from "@/games/letris/sets";
 import { composeBankForDeck } from "@/games/compose/banks";
 import FirstTour from "@/components/FirstTour";
 import AccountButton from "@/components/AccountButton";
+import SearchOverlay from "@/components/SearchOverlay";
+import RankingOverlay from "@/components/RankingOverlay";
 
 /** Dice Practice is an MCQ over the deck's letris columns — no columns, no game. */
 export function hasDicePractice(collectionId: string): boolean {
@@ -109,6 +111,8 @@ export default function CahierShell({
   children: ReactNode;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [rankingOpen, setRankingOpen] = useState(false);
   const hueOf = (t: ShellTab, i: number) => t.hue ?? TAB_HUES[i % TAB_HUES.length];
   const site = tabsWithActive(siteTabs(), active);
   // Tool pages (Réviser / ConjugaZone / Classement / Tuteur / Profil) live in
@@ -200,6 +204,30 @@ export default function CahierShell({
                 </Link>
               )}
               <div className="flex items-center gap-2">
+                {/* Icon strip, macOS-menu-bar style (Dan, 2026-07-08): 🔍 opens
+                    the floating search, 🏆 floats the ranking, 🏠 goes home —
+                    icons only, no words. */}
+                <button
+                  type="button"
+                  aria-label="Rechercher un mot"
+                  title="Rechercher un mot · Search a word"
+                  onClick={() => setSearchOpen(true)}
+                  className="cahier-btn cahier-btn-sm"
+                >
+                  🔍
+                </button>
+                <button
+                  type="button"
+                  aria-label="Classement"
+                  title="Classement · Leaderboard"
+                  onClick={() => setRankingOpen(true)}
+                  className="cahier-btn cahier-btn-sm"
+                >
+                  🏆
+                </button>
+                <Link href="/" aria-label="Home" title="Home" className="cahier-btn cahier-btn-sm">
+                  🏠
+                </Link>
                 {crumb && (
                   <span className="text-xs font-bold uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">
                     {crumb}
@@ -218,7 +246,9 @@ export default function CahierShell({
                     {menuOpen ? "✕" : "☰"}
                   </button>
                   {menuOpen && (
-                    <div className="absolute right-0 top-full z-50 mt-1 flex w-48 flex-col gap-1 rounded-lg border-2 border-[color:var(--cahier-ink)]/20 bg-white p-1 shadow-lg">
+                    // max-h + scroll: with the tools group the list outgrows
+                    // small screens and items were cut off (Dan, 2026-07-08).
+                    <div className="absolute right-0 top-full z-50 mt-1 flex max-h-[75vh] w-48 flex-col gap-1 overflow-y-auto rounded-lg border-2 border-[color:var(--cahier-ink)]/20 bg-white p-1 shadow-lg">
                       {site.map((t, i) => (
                         <TabFlap
                           key={t.key}
@@ -275,6 +305,8 @@ export default function CahierShell({
           page
         )}
 
+        {searchOpen && <SearchOverlay onClose={() => setSearchOpen(false)} />}
+        {rankingOpen && <RankingOverlay onClose={() => setRankingOpen(false)} />}
         <nav className="cahier-tabs" aria-label="Pages">
           {site.map((t, i) => (
             <TabFlap

@@ -20,7 +20,10 @@ function lessonHref(deckId: string): string {
   return lessons.length > 0 ? `/lessons/${lessons[0].slug}` : `/lessons/deck/${deckId}`;
 }
 
-export default function DeckSearch({ className = "mt-4 max-w-md" }: { className?: string }) {
+export default function DeckSearch({
+  className = "mt-4 max-w-md",
+  autoFocus = false,
+}: { className?: string; autoFocus?: boolean }) {
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const boxRef = useRef<HTMLDivElement | null>(null);
@@ -39,6 +42,7 @@ export default function DeckSearch({ className = "mt-4 max-w-md" }: { className?
       <input
         type="search"
         value={q}
+        autoFocus={autoFocus}
         onChange={(e) => { setQ(e.target.value); setOpen(true); }}
         onFocus={() => setOpen(true)}
         placeholder="🔍 Chercher un mot · Search a word — bruine, aller, café…"

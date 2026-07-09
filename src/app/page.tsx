@@ -9,7 +9,7 @@ import HomeDashboard from "./HomeDashboard";
  *  Home is the journey, the Index is the library). */
 export default function Home() {
   return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="home" crumb="🏠 Home">
+    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="home">
       <div className="mx-auto max-w-3xl px-1 py-2">
         {/* Hero + journey both live in HomeDashboard (client: they need
             live progress for the CTA, chips and bar). */}
