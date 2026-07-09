@@ -86,19 +86,20 @@ export default function HomeDashboard() {
         {/* Exactly two buttons right of the heading (Dan, 2026-07-08): a red
             PLAY with fine print CONTINUER, and a REPEAT with fine print
             RÉVISER. Everything else lives in the ☰ menu / 🔍 spotlight. */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        {/* ONE row at every width (Dan, 2026-07-08: the réviser icon must sit
+            on the same line as Bienvenue, extreme right, smaller) — icons
+            only; tooltips and aria-labels carry the words. */}
+        <div className="flex items-center justify-between gap-3">
           <h1 className="fluo-serif text-3xl font-black text-[color:var(--fluo-ink)]">
             Bienvenue sur <span className="fluo-hl px-1">FluoLingo</span> ✨
           </h1>
-          {/* Icon-only (Dan, 2026-07-08: no fine print) — the tooltip and
-              aria-label carry the words. */}
-          <div className="flex shrink-0 items-center gap-2.5">
+          <div className="flex shrink-0 items-center gap-2">
             {activeSio && (
               <Link
                 href={`/unit/${activeSio.unit}#${activeSio.id}`}
                 aria-label="Continuer"
                 title={`Continuer — « ${activeSio.topic} », your first objective not yet marked done.`}
-                className="flex h-14 w-16 items-center justify-center rounded-2xl border-2 border-[color:var(--fluo-danger)] bg-[var(--fluo-danger)] text-3xl text-white shadow-[3px_3px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
+                className="flex h-10 w-11 items-center justify-center rounded-xl border-2 border-[color:var(--fluo-danger)] bg-[var(--fluo-danger)] text-xl text-white shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
               >
                 <span aria-hidden>▶</span>
               </Link>
@@ -107,11 +108,11 @@ export default function HomeDashboard() {
               href="/reviser"
               aria-label="Réviser"
               title="Réviser — vos mots à revoir"
-              className="relative flex h-14 w-16 items-center justify-center rounded-2xl border-2 border-[color:var(--fluo-ink)] bg-white/80 text-3xl text-[color:var(--fluo-ink)] shadow-[3px_3px_0_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5"
+              className="relative flex h-10 w-11 items-center justify-center rounded-xl border-2 border-[color:var(--fluo-ink)] bg-white/80 text-xl text-[color:var(--fluo-ink)] shadow-[2px_2px_0_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5"
             >
               <span aria-hidden>🔁</span>
               {dueCount > 0 && (
-                <span className="absolute -right-2 -top-2 rounded-full bg-[var(--fluo-danger)] px-1.5 text-xs font-bold text-white">{dueCount}</span>
+                <span className="absolute -right-2 -top-2 rounded-full bg-[var(--fluo-danger)] px-1.5 text-[10px] font-bold text-white">{dueCount}</span>
               )}
             </Link>
           </div>
