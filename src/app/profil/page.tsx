@@ -100,7 +100,11 @@ export default function ProfilePage() {
         {/* Boutique */}
         <section className="mt-5">
           <h2 className="cahier-display text-lg font-black text-[color:var(--cahier-ink)]">Boutique <span className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">· Shop</span></h2>
-          <p className="text-xs text-[color:var(--cahier-ink-soft)]">Dépensez vos 💎 en couleur d&rsquo;accent de l&rsquo;accueil. (Rien ne bloque l&rsquo;apprentissage.)</p>
+          <p className="text-xs text-[color:var(--cahier-ink-soft)]">
+            Vos 💎 achètent une <b>couleur d&rsquo;accent</b> : elle repeint VOTRE page d&rsquo;accueil —
+            le bouton ▶, les barres de progression, la route parcourue. Décoratif uniquement ;
+            rien ne bloque l&rsquo;apprentissage.
+          </p>
           <div className="mt-2 space-y-2">
             {/* Default (always free / equippable) */}
             <div className="flex items-center gap-3 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-2">
