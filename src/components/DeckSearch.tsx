@@ -20,7 +20,7 @@ function lessonHref(deckId: string): string {
   return lessons.length > 0 ? `/lessons/${lessons[0].slug}` : `/lessons/deck/${deckId}`;
 }
 
-export default function DeckSearch() {
+export default function DeckSearch({ className = "mt-4 max-w-md" }: { className?: string }) {
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const boxRef = useRef<HTMLDivElement | null>(null);
@@ -30,7 +30,7 @@ export default function DeckSearch() {
   return (
     <div
       ref={boxRef}
-      className="relative mt-4 max-w-md"
+      className={`relative ${className}`}
       // Keep the panel up while focus moves between the field and its links.
       onBlur={(e) => {
         if (!boxRef.current?.contains(e.relatedTarget as Node)) setOpen(false);
