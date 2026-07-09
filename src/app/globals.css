@@ -829,3 +829,11 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 @media (prefers-reduced-motion: reduce) {
   .fluo-node-active { animation: none; }
 }
+
+/* Metro-map fog of war (Dan, 2026-07-08, episode model item 4): lines beyond
+   the current chapter are hazed — silhouette visible, details muted — but
+   every station stays tappable. Hover/focus lifts the haze (curiosity, not
+   restriction). */
+.fluo-fog { filter: saturate(0.45) opacity(0.65); transition: filter 0.35s ease; }
+.fluo-fog:hover, .fluo-fog:focus-within { filter: none; }
+@media (prefers-reduced-motion: reduce) { .fluo-fog { transition: none; } }

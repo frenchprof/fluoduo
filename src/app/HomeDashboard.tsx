@@ -174,8 +174,13 @@ export default function HomeDashboard() {
           const sios = SIOS.filter((s) => s.unit === unit);
           const meta = UNIT_META[unit];
           const done = sios.filter((s) => isSioDone(s.id, progress)).length;
+          // Metro map (Dan, 2026-07-08, episode model item 4): each unité is a
+          // line; lines beyond the current chapter sit under a haze that lifts
+          // on hover/focus — fog of war with NO locks (everything tappable).
+          const activeUnit = activeSio?.unit ?? 4;
+          const fogged = unit > activeUnit;
           return (
-            <section key={unit} className={`fluo-h-${unit % 6}`}>
+            <section key={unit} className={`fluo-h-${unit % 6} ${fogged ? "fluo-fog" : ""}`}>
               <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                 {/* Compact unit chip, just larger than the nodes (Dan,
                     2026-07-08: "we don't [want] whole big button headings") —
@@ -189,8 +194,20 @@ export default function HomeDashboard() {
                   U{unit}
                 </Link>
                 {/* The circles spread across the full remaining width (Dan,
-                    2026-07-08: "stretch them out across the width — justify"). */}
-                <div className="flex flex-1 flex-wrap items-center gap-1.5 sm:justify-between">
+                    2026-07-08: "stretch them out across the width — justify").
+                    The metro TRACK runs behind the stations: a tinted rail with
+                    a solid fill as far as the line has been travelled. */}
+                <div className="relative flex flex-1 flex-wrap items-center gap-1.5 sm:justify-between">
+                  <div
+                    aria-hidden
+                    className="absolute left-1 right-1 top-1/2 hidden h-1.5 -translate-y-1/2 rounded-full opacity-40 sm:block"
+                    style={{ background: "var(--fluo-card-accent)" }}
+                  />
+                  <div
+                    aria-hidden
+                    className="absolute left-1 top-1/2 hidden h-1.5 -translate-y-1/2 rounded-full sm:block"
+                    style={{ background: "var(--fluo-card-accent)", width: `${Math.min(96, (done / (sios.length + 1)) * 100)}%` }}
+                  />
                   {sios.map((s) => {
                     const sDone = isSioDone(s.id, progress);
                     const sActive = s.id === activeId;
@@ -209,7 +226,7 @@ export default function HomeDashboard() {
                         key={s.id}
                         href={`/unit/${unit}#${s.id}`}
                         title={`${s.id} · ${s.topic} (${KIND_LABEL[kind]})`}
-                        className={`flex h-9 w-9 items-center justify-center border-2 text-xs font-black transition hover:-translate-y-0.5 ${shape} ${
+                        className={`relative z-[1] flex h-9 w-9 items-center justify-center border-2 text-xs font-black transition hover:-translate-y-0.5 ${shape} ${
                           sActive
                             ? "fluo-node-active ring-2 ring-[var(--fluo-danger)] ring-offset-1"
                             : sDone
@@ -230,7 +247,7 @@ export default function HomeDashboard() {
                   <Link
                     href={`/bilan/${unit}`}
                     title={`Bilan de fluidité — ${CHAPTERS[unit]?.scenario ?? meta.label} (retakes illimités)`}
-                    className={`flex h-9 w-9 items-center justify-center rounded-xl border-2 text-sm transition hover:-translate-y-0.5 ${
+                    className={`relative z-[1] flex h-9 w-9 items-center justify-center rounded-xl border-2 text-sm transition hover:-translate-y-0.5 ${
                       (bilanBest[unit] ?? 0) >= 80 ? "" : "border-dashed"
                     }`}
                     style={{
