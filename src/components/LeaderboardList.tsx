@@ -128,27 +128,29 @@ export default function LeaderboardList() {
         return (
           <li
             key={r.uid}
-            className={`flex items-center gap-3 rounded-xl border-2 px-3 py-2 ${
+            className={`flex items-center gap-1.5 rounded-xl border-2 px-2.5 py-2 sm:gap-2 ${
               me ? "border-[color:var(--cahier-ink)] bg-[color:var(--cahier-hl,#eaff00)]/40" : "border-[color:var(--cahier-rule)] bg-white"
             }`}
           >
-            <span className="w-8 text-center text-base font-black">{medal(i)}</span>
+            <span className="w-7 shrink-0 text-center text-base font-black">{medal(i)}</span>
             <span className="min-w-0 flex-1 truncate text-sm font-bold text-[color:var(--cahier-ink)]">
               {rowName(r)}{me && " (vous)"}
             </span>
-            {/* Own fixed-width column so every badge lines up vertically.
-                Level is ALWAYS derived from XP — docs written before the ×20
-                retune carry stale `level` fields from the old cheap curve
-                (Dan, 2026-07-08: "how is it that some people are N41"). */}
-            <span className="w-[7.5rem] shrink-0 text-center">
+            {/* Digit-only rank in its tier colours (Dan, 2026-07-08: names
+                were invisible on mobile) — full name in the tooltip; a fixed
+                narrow column keeps every badge vertically aligned. Level is
+                ALWAYS derived from XP: docs written before the ×20 retune
+                carry stale `level` fields from the old cheap curve. */}
+            <span className="w-8 shrink-0 text-center">
               <RankBadge
                 level={levelForXp(rowXp(r)).level}
                 name={levelForXp(rowXp(r)).name}
-                className="text-[11px]"
+                className="text-xs"
+                compact
               />
             </span>
-            <span className="fluo-mono text-sm font-black text-[color:var(--cahier-ink)]">⭐ {rowXp(r)}</span>
-            <span className="fluo-mono w-14 text-right text-sm font-bold text-[color:var(--cahier-ink-soft)]">🔥 {r.streak ?? 0}</span>
+            <span className="fluo-mono w-[4.5rem] shrink-0 text-right text-sm font-black text-[color:var(--cahier-ink)]">⭐{rowXp(r)}</span>
+            <span className="fluo-mono w-10 shrink-0 text-right text-sm font-bold text-[color:var(--cahier-ink-soft)]">🔥{r.streak ?? 0}</span>
           </li>
         );
       })}

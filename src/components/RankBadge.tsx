@@ -8,16 +8,27 @@ export default function RankBadge({
   level,
   name,
   className = "",
+  compact = false,
 }: {
   level: number;
   name: string;
   className?: string;
+  /** Digit-only variant (same tier background) — for tight rows like the
+   *  leaderboard on mobile (Dan, 2026-07-08); full name stays in the title. */
+  compact?: boolean;
 }) {
   const tier = Math.min(10, Math.max(1, level));
   return (
-    <span className={`fluo-rank fluo-rank-${tier} ${className}`}>
-      {tier >= 10 && <span aria-hidden>👑 </span>}
-      N{level} · {name}
+    <span
+      className={`fluo-rank fluo-rank-${tier} ${className}`}
+      title={`N${level} · ${name}`}
+    >
+      {compact ? level : (
+        <>
+          {tier >= 10 && <span aria-hidden>👑 </span>}
+          N{level} · {name}
+        </>
+      )}
     </span>
   );
 }
