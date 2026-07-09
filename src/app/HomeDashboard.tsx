@@ -73,24 +73,26 @@ export default function HomeDashboard() {
           <h1 className="fluo-serif text-3xl font-black text-[color:var(--fluo-ink)]">
             Bienvenue sur <span className="fluo-hl px-1">FluoLingo</span> ✨
           </h1>
-          <div className="flex shrink-0 gap-2.5">
+          {/* Icon-only (Dan, 2026-07-08: no fine print) — the tooltip and
+              aria-label carry the words. */}
+          <div className="flex shrink-0 items-center gap-2.5">
             {activeSio && (
               <Link
                 href={`/unit/${activeSio.unit}#${activeSio.id}`}
-                title={`Continues at « ${activeSio.topic} » — your first objective not yet marked done. 'Mark as done' is what moves this forward.`}
-                className="flex flex-col items-center justify-center rounded-2xl border-2 border-[color:var(--fluo-danger)] bg-[var(--fluo-danger)] px-5 py-1.5 text-white shadow-[3px_3px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
+                aria-label="Continuer"
+                title={`Continuer — « ${activeSio.topic} », your first objective not yet marked done.`}
+                className="flex h-14 w-16 items-center justify-center rounded-2xl border-2 border-[color:var(--fluo-danger)] bg-[var(--fluo-danger)] text-3xl text-white shadow-[3px_3px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
               >
-                <span className="text-2xl leading-none" aria-hidden>▶</span>
-                <span className="text-[10px] font-black tracking-widest">CONTINUER</span>
+                <span aria-hidden>▶</span>
               </Link>
             )}
             <Link
               href="/reviser"
+              aria-label="Réviser"
               title="Réviser — vos mots à revoir"
-              className="relative flex flex-col items-center justify-center rounded-2xl border-2 border-[color:var(--fluo-ink)] bg-white/80 px-5 py-1.5 text-[color:var(--fluo-ink)] shadow-[3px_3px_0_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5"
+              className="relative flex h-14 w-16 items-center justify-center rounded-2xl border-2 border-[color:var(--fluo-ink)] bg-white/80 text-3xl text-[color:var(--fluo-ink)] shadow-[3px_3px_0_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5"
             >
-              <span className="text-2xl leading-none" aria-hidden>🔁</span>
-              <span className="text-[10px] font-black tracking-widest">RÉVISER</span>
+              <span aria-hidden>🔁</span>
               {dueCount > 0 && (
                 <span className="absolute -right-2 -top-2 rounded-full bg-[var(--fluo-danger)] px-1.5 text-xs font-bold text-white">{dueCount}</span>
               )}
