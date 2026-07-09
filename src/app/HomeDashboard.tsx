@@ -89,7 +89,7 @@ export default function HomeDashboard() {
                 href={`/unit/${activeSio.unit}#${activeSio.id}`}
                 aria-label="Continuer"
                 title={`Continuer — « ${activeSio.topic} », your first objective not yet marked done.`}
-                className="flex h-10 w-11 items-center justify-center rounded-xl border-2 border-[color:var(--fluo-danger)] bg-[var(--fluo-danger)] text-xl text-white shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
+                className="flex h-8 w-9 items-center justify-center rounded-lg border-2 border-[color:var(--fluo-danger)] bg-[var(--fluo-danger)] text-base text-white shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
               >
                 <span aria-hidden>▶</span>
               </Link>
@@ -98,7 +98,7 @@ export default function HomeDashboard() {
               href="/reviser"
               aria-label="Réviser"
               title="Réviser — vos mots à revoir"
-              className="relative flex h-10 w-11 items-center justify-center rounded-xl border-2 border-[color:var(--fluo-ink)] bg-white/80 text-xl text-[color:var(--fluo-ink)] shadow-[2px_2px_0_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5"
+              className="relative flex h-8 w-9 items-center justify-center rounded-lg border-2 border-[color:var(--fluo-ink)] bg-white/80 text-base text-[color:var(--fluo-ink)] shadow-[2px_2px_0_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5"
             >
               <span aria-hidden>🔁</span>
               {dueCount > 0 && (
