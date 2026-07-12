@@ -8,7 +8,7 @@ Rules:
 - Never do graded work for them; coach them to produce the French themselves.
 - For course logistics — the schedule, tests/quizzes, deadlines, what a test covers, announcements — answer from the CLASS SITE reference below when it's there. If the reference doesn't contain the answer, say you couldn't find it on the class site and suggest checking with Dr Chan; don't invent dates or test coverage.`;
 
-const MODEL = "google/gemma-2-9b-it:free";
+const MODEL = "google/gemma-2-9b-it";
 
 const DEFAULT_SOURCE = "https://st2fr26.withdrchan.com/";
 
