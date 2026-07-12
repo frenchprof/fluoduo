@@ -234,7 +234,7 @@ const FR_HINTS = new Set([
   "bonne", "bon", "allez", "alors", "voici", "comme", "moi", "toi", "ça",
   "peux", "peut", "veux", "veut", "fais", "fait", "faites", "dois", "doit", "où",
 ]);
-function guessLang(segment: string): "fr-FR" | "en-US" {
+export function guessLang(segment: string): "fr-FR" | "en-US" {
   // Elision (j', l', qu', n'…) is French; English apostrophes are 's / n't.
   if (/\b[jlcdnstm]['’](?![st]\b)|\bqu['’]/i.test(segment)) return "fr-FR";
   // Subject-pronoun inversion (« peux-tu », « est-il », « allons-nous ») is
@@ -257,7 +257,7 @@ function guessLang(segment: string): "fr-FR" | "en-US" {
 function segmentBilingual(text: string): { text: string; lang: "fr-FR" | "en-US" }[] {
   const out: { text: string; lang: "fr-FR" | "en-US" }[] = [];
   const push = (raw: string, lang?: "fr-FR" | "en-US") => {
-    const clean = raw.replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}«»]/gu, "").trim();
+    const clean = raw.replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}«»*#]/gu, "").trim();
     if (!/[a-zà-ÿ]/i.test(clean)) return;
     out.push({ text: clean, lang: lang ?? guessLang(clean) });
   };
@@ -280,26 +280,106 @@ function multilingualVoice(): SpeechSynthesisVoice | undefined {
     .find((v) => /multilingual/i.test(v.name) && /^(fr|en)/i.test(v.lang));
 }
 
-/** Speak a bilingual message (Dan, 2026-07-12: same voice throughout, and
- *  code-mixing WITHIN a sentence must work). Two tiers:
+export type MixedPlayback = {
+  stop: () => void;
+  /** Jump to a fraction of the spoken response (the balloon's slider). */
+  seek: (frac: number) => void;
+};
+
+/** Speak a bilingual message (Dan, 2026-07-12/13: same voice throughout,
+ *  code-mixing within sentences, 🐌 rate, and a slider to zoom to any spot).
+ *  Emoji are stripped in BOTH tiers — never verbalised. Two tiers:
  *  - Device has a MULTILINGUAL voice → the whole message is ONE utterance;
- *    the voice switches accent internally mid-sentence — truly seamless.
- *  - Otherwise → segment at « … » (and heuristics), one utterance per span
- *    through the cast narrators. Each switch has a small audible re-attack;
- *    that is the browser engine's physical limit, not a tuning problem.
- *  Returns a stop() (null when there was nothing to speak); onDone fires when
- *  the run completes naturally. */
-export function speakMixed(text: string, onDone?: () => void): (() => void) | null {
+ *    the voice switches accent internally. Progress/seek work at word
+ *    granularity via boundary events (like the /tts drag bar).
+ *  - Otherwise → one utterance per « … »/heuristic segment through the cast
+ *    narrators; progress/seek work at segment granularity. The re-attack at
+ *    each language switch is the engine's physical limit in this mode.
+ *  Returns a controller (null when there was nothing to speak); onDone fires
+ *  only on natural completion. */
+export function speakMixed(
+  text: string,
+  opts: { rate?: number; onDone?: () => void; onProgress?: (frac: number) => void } = {},
+): MixedPlayback | null {
   if (typeof window === "undefined" || !window.speechSynthesis || isChannelMuted("voice")) return null;
+  const synth = window.speechSynthesis;
   const mv = multilingualVoice();
+  let done = false;
+  let token = 0;
+  const alive: SpeechSynthesisUtterance[] = [];
+  const keepAlive = window.setInterval(() => {
+    if (!done && !userPaused && synth.paused) synth.resume();
+  }, 3000);
+  const finish = (natural: boolean) => {
+    if (done) return;
+    done = true;
+    window.clearInterval(keepAlive);
+    alive.length = 0;
+    if (natural) opts.onDone?.();
+  };
+  userPaused = false;
+
   if (mv) {
-    const clean = text.replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}«»]/gu, " ").replace(/\s+/g, " ").trim();
-    if (!clean) return null;
-    return speakSequence([{ text: clean, lang: mv.lang }], mv.lang, { onDone, voice: mv });
+    const clean = text.replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}«»*#]/gu, " ").replace(/\s+/g, " ").trim();
+    if (!clean) { window.clearInterval(keepAlive); return null; }
+    const speakFrom = (idx: number) => {
+      const my = ++token;
+      synth.cancel();
+      const u = new SpeechSynthesisUtterance(clean.slice(idx));
+      alive.push(u);
+      u.voice = mv;
+      u.lang = mv.lang;
+      u.rate = opts.rate ?? 0.95;
+      u.pitch = 1;
+      u.onboundary = (e) => {
+        if (my === token && !done && typeof e.charIndex === "number") {
+          opts.onProgress?.(Math.min(1, (idx + e.charIndex) / clean.length));
+        }
+      };
+      u.onend = () => { if (my === token && !done) finish(true); };
+      u.onerror = () => { if (my === token && !done) finish(true); };
+      if (synth.paused) synth.resume();
+      synth.speak(u);
+    };
+    speakFrom(0);
+    return {
+      stop: () => { finish(false); synth.cancel(); },
+      seek: (frac) => {
+        if (done) return;
+        let idx = Math.max(0, Math.min(clean.length - 1, Math.floor(frac * clean.length)));
+        while (idx > 0 && !/\s/.test(clean[idx - 1])) idx--;
+        opts.onProgress?.(idx / Math.max(1, clean.length));
+        speakFrom(idx);
+      },
+    };
   }
+
   const parts = segmentBilingual(text);
-  if (!parts.length) return null;
-  return speakSequence(parts, "fr-FR", { gapMs: 0, onDone });
+  if (!parts.length) { window.clearInterval(keepAlive); return null; }
+  const speakPart = (k: number) => {
+    if (k >= parts.length) { finish(true); return; }
+    const my = ++token;
+    synth.cancel();
+    const p = parts[k];
+    const u = new SpeechSynthesisUtterance(p.text);
+    alive.push(u);
+    u.lang = p.lang;
+    applyVoiceAndPitch(u, p.lang, undefined, opts.rate);
+    opts.onProgress?.(k / parts.length);
+    const advance = () => { if (my === token && !done) speakPart(k + 1); };
+    u.onend = advance;
+    u.onerror = advance;
+    if (synth.paused) synth.resume();
+    synth.speak(u);
+  };
+  speakPart(0);
+  return {
+    stop: () => { finish(false); synth.cancel(); },
+    seek: (frac) => {
+      if (done) return;
+      speakPart(Math.max(0, Math.min(parts.length - 1, Math.floor(frac * parts.length))));
+    },
+  };
 }
 
 export function speak(text: string, lang = "fr-FR", opts: SpeakOpts = {}) {

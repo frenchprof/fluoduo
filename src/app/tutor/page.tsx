@@ -11,12 +11,58 @@
 import { useEffect, useRef, useState } from "react";
 import CahierShell from "@/components/CahierShell";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
-import { speakMixed, pauseSpeech, resumeSpeech, isSpeechPaused } from "@/games/letris/speech";
+import { speakMixed, pauseSpeech, resumeSpeech, isSpeechPaused, guessLang, type MixedPlayback } from "@/games/letris/speech";
+import type { ReactNode } from "react";
 
 type ChatMsg = { role: "user" | "assistant"; content: string };
 
 const GREETING =
   "Bonjour ! 👋 I'm your French tutor. Ask me anything about the course, or just write a sentence in French and I'll help you polish it.";
+
+/** Balloon renderer (Dan, 2026-07-13): French in blue, English in the
+ *  default ink, using the SAME markers the TTS speaks from (« … » spans,
+ *  then the heuristic) so eyes and ears always agree; markdown headings
+ *  (#, ##, …) and **bold** render bold. */
+function renderBilingual(text: string): ReactNode[] {
+  let key = 0;
+  const langSpans = (t: string): ReactNode[] => {
+    const nodes: ReactNode[] = [];
+    const fr = (x: string) => nodes.push(<span key={key++} lang="fr" className="font-semibold text-[#0b63c4]">{x}</span>);
+    for (const span of t.split(/(«[^»]*»|\([^)]*\))/g)) {
+      if (!span) continue;
+      if (span.startsWith("«")) { fr(span); continue; }
+      if (span.startsWith("(")) { nodes.push(<span key={key++}>{span}</span>); continue; }
+      for (const chunk of span.split(/((?<=[.!?…:])\s+)/g)) {
+        if (!chunk) continue;
+        if (/^\s+$/.test(chunk) || !/[a-zà-ÿ]/i.test(chunk)) { nodes.push(<span key={key++}>{chunk}</span>); continue; }
+        if (guessLang(chunk) === "fr-FR") fr(chunk);
+        else nodes.push(<span key={key++}>{chunk}</span>);
+      }
+    }
+    return nodes;
+  };
+  const inline = (t: string): ReactNode[] => {
+    const nodes: ReactNode[] = [];
+    for (const part of t.split(/(\*\*[^*]+\*\*)/g)) {
+      if (!part) continue;
+      if (part.startsWith("**") && part.endsWith("**")) {
+        nodes.push(<strong key={key++}>{langSpans(part.slice(2, -2))}</strong>);
+      } else {
+        nodes.push(...langSpans(part));
+      }
+    }
+    return nodes;
+  };
+  const out: ReactNode[] = [];
+  for (const line of text.split(/(\n+)/g)) {
+    if (!line) continue;
+    if (/^\n+$/.test(line)) { out.push(<span key={key++}>{line}</span>); continue; }
+    const h = line.match(/^\s{0,3}#{1,4}\s+(.*)$/);
+    if (h) out.push(<strong key={key++}>{inline(h[1])}</strong>);
+    else out.push(...inline(line));
+  }
+  return out;
+}
 
 /** Grow the textarea to fit its content (up to a cap); the user can still drag
  *  it taller via the resize handle. */
@@ -35,29 +81,36 @@ export default function TutorPage() {
   // to or below each balloon"): which bubble is being read, and paused state.
   const [playingIdx, setPlayingIdx] = useState<number | null>(null);
   const [paused, setPaused] = useState(false);
-  const stopRef = useRef<(() => void) | null>(null);
+  const [progress, setProgress] = useState(0);
+  const playerRef = useRef<MixedPlayback | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
   const taRef = useRef<HTMLTextAreaElement>(null);
 
-  function playMsg(i: number, content: string) {
-    stopRef.current?.();
+  function playMsg(i: number, content: string, rate?: number) {
+    playerRef.current?.stop();
     setPaused(false);
-    const stop = speakMixed(content, () => { setPlayingIdx(null); setPaused(false); });
-    stopRef.current = stop;
-    setPlayingIdx(stop ? i : null);
+    setProgress(0);
+    const player = speakMixed(content, {
+      rate,
+      onDone: () => { setPlayingIdx(null); setPaused(false); setProgress(0); },
+      onProgress: setProgress,
+    });
+    playerRef.current = player;
+    setPlayingIdx(player ? i : null);
   }
   function togglePause() {
     if (isSpeechPaused()) { resumeSpeech(); setPaused(false); }
     else { pauseSpeech(); setPaused(true); }
   }
   function stopPlayback() {
-    stopRef.current?.();
-    stopRef.current = null;
+    playerRef.current?.stop();
+    playerRef.current = null;
     setPlayingIdx(null);
     setPaused(false);
+    setProgress(0);
   }
   // Leaving the page mid-read must not leave the voice running.
-  useEffect(() => () => stopRef.current?.(), []);
+  useEffect(() => () => playerRef.current?.stop(), []);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
@@ -137,11 +190,11 @@ export default function TutorPage() {
                     }`}
                   >
                     {m.role === "assistant" && <span className="mr-1.5" aria-hidden>🤖</span>}
-                    {m.content}
+                    {renderBilingual(m.content)}
                   </button>
-                  {/* Player row under the balloon: ▶ when idle; ⏸/▶ + ⏹ while
-                      THIS balloon is being read. */}
-                  <div className="mt-0.5 flex gap-1">
+                  {/* Player row under the balloon: ▶ + 🐌 when idle; ⏸/▶, ⏹
+                      and a seek slider while THIS balloon is being read. */}
+                  <div className="mt-0.5 flex w-full max-w-[85%] items-center gap-1">
                     {playingIdx === i ? (
                       <>
                         <button type="button" onClick={togglePause}
@@ -152,12 +205,24 @@ export default function TutorPage() {
                           className="rounded-lg border border-[color:var(--cahier-rule)] bg-white px-2 py-0.5 text-xs font-bold text-[color:var(--cahier-ink)]">
                           ⏹
                         </button>
+                        <input
+                          type="range" min={0} max={1000} value={Math.round(progress * 1000)}
+                          onChange={(e) => { const f = Number(e.target.value) / 1000; setProgress(f); playerRef.current?.seek(f); }}
+                          aria-label="Position dans la lecture"
+                          className="h-1.5 min-w-0 flex-1 cursor-pointer accent-[#0b63c4]"
+                        />
                       </>
                     ) : (
-                      <button type="button" onClick={() => playMsg(i, m.content)} title="Écouter"
-                        className="rounded-lg border border-transparent px-2 py-0.5 text-xs font-bold text-[color:var(--cahier-ink-soft)] hover:border-[color:var(--cahier-rule)] hover:bg-white">
-                        ▶
-                      </button>
+                      <>
+                        <button type="button" onClick={() => playMsg(i, m.content)} title="Écouter"
+                          className="rounded-lg border border-transparent px-2 py-0.5 text-xs font-bold text-[color:var(--cahier-ink-soft)] hover:border-[color:var(--cahier-rule)] hover:bg-white">
+                          ▶
+                        </button>
+                        <button type="button" onClick={() => playMsg(i, m.content, 0.6)} title="Lecture lente"
+                          className="rounded-lg border border-transparent px-2 py-0.5 text-xs font-bold text-[color:var(--cahier-ink-soft)] hover:border-[color:var(--cahier-rule)] hover:bg-white">
+                          🐌
+                        </button>
+                      </>
                     )}
                   </div>
                 </div>
