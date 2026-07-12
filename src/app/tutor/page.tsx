@@ -65,12 +65,13 @@ export default function TutorPage() {
       }
       const data = await r.json().catch(() => null);
       if (!r.ok || !data?.reply) {
-        setMessages((m) => [...m, { role: "assistant", content: "Oups — j'ai eu un souci technique. Réessayez !" }]);
+        const errorMsg = data?.error || `Status ${r.status}`;
+        setMessages((m) => [...m, { role: "assistant", content: `DEBUG ERROR: ${errorMsg}` }]);
         return;
       }
       setMessages((m) => [...m, { role: "assistant", content: data.reply }]);
-    } catch {
-      setMessages((m) => [...m, { role: "assistant", content: "Oups — j'ai eu un souci technique. Réessayez !" }]);
+    } catch (err) {
+      setMessages((m) => [...m, { role: "assistant", content: `DEBUG NETWORK ERROR: ${err}` }]);
     } finally {
       setBusy(false);
     }
