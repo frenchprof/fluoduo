@@ -112,6 +112,38 @@ export default function TutorPage() {
   // Leaving the page mid-read must not leave the voice running.
   useEffect(() => () => playerRef.current?.stop(), []);
 
+  /** Print-to-PDF of the conversation so far (Dan, 2026-07-13: a "Save as
+   *  pdf" button on the latest tutor reply, gone once a new input is sent).
+   *  Opens a print-styled window; the browser's print dialog offers PDF. */
+  function savePdf() {
+    const w = window.open("", "_blank", "width=800,height=900");
+    if (!w) return;
+    const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const fmt = (t: string) =>
+      esc(t)
+        .replace(/(«[^»]*»)/g, '<span style="color:#0b63c4;font-weight:600">$1</span>')
+        .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")
+        .replace(/^\s{0,3}#{1,4}\s+(.*)$/gm, "<b>$1</b>")
+        .replace(/\n/g, "<br>");
+    const rows = messages
+      .map((m) => `<div class="${m.role}"><b class="who">${m.role === "user" ? "Vous" : "Le Tuteur"}</b><p>${fmt(m.content)}</p></div>`)
+      .join("");
+    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Le Tuteur · FluoLingo</title><style>
+      body{font-family:Georgia,serif;max-width:640px;margin:24px auto;color:#222850}
+      h1{font-size:18px;margin:0 0 2px}
+      .meta{color:#666;font-size:12px;margin-bottom:16px}
+      .user,.assistant{margin:10px 0;padding:10px 14px;border-radius:12px;border:1px solid #ccc}
+      .user{background:#fdf6c8}
+      .assistant{background:#fff}
+      .who{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#666}
+      p{margin:4px 0 0;font-size:14px;line-height:1.5}
+    </style></head><body>
+    <h1>🤖 Le Tuteur · FluoLingo</h1><div class="meta">${new Date().toLocaleString("en-SG")}</div>${rows}
+    <script>window.onload = () => window.print()<\/script>
+    </body></html>`);
+    w.document.close();
+  }
+
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }, [messages, busy]);
@@ -223,6 +255,14 @@ export default function TutorPage() {
                           🐌
                         </button>
                       </>
+                    )}
+                    {/* Latest finished tutor reply only; vanishes the moment a
+                        new input is sent (the last message becomes the user's). */}
+                    {m.role === "assistant" && i === messages.length - 1 && i > 0 && !busy && (
+                      <button type="button" onClick={savePdf}
+                        className="ml-auto rounded-lg border border-[color:var(--cahier-rule)] bg-white px-2 py-0.5 text-xs font-bold text-[color:var(--cahier-ink)]">
+                        💾 Save as PDF
+                      </button>
                     )}
                   </div>
                 </div>
