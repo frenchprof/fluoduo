@@ -60,7 +60,7 @@ export default function TtsPage() {
   // Tracked-changes proofread: corrected text (null = none yet).
   const [fix, setFix] = useState<string | null>(null);
   const [fixBusy, setFixBusy] = useState(false);
-  const [fixOff, setFixOff] = useState(false);
+  const [fixErr, setFixErr] = useState<string | null>(null);
   const taRef = useRef<HTMLTextAreaElement | null>(null);
   // Monotonic run id: cancel() fires the old utterance's onend on some
   // engines AFTER the replacement started — stale handlers must not touch state.
@@ -170,17 +170,24 @@ export default function TtsPage() {
     if (!t || fixBusy) return;
     setFixBusy(true);
     setFix(null);
+    setFixErr(null);
     try {
       const r = await fetch("/api/correct", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ text: t }),
       });
-      if ([503, 404, 405, 501].includes(r.status)) { setFixOff(true); return; }
+      // NEVER fail silently (Dan, 2026-07-10: "the corriger button is not
+      // doing any work") — name the failure so it can be diagnosed.
+      if ([503, 404, 405, 501].includes(r.status)) {
+        setFixErr("✏️ pas encore branché ici (clé API absente ou déploiement en cours)");
+        return;
+      }
       const data = (await r.json().catch(() => null)) as { corrected?: string } | null;
       if (r.ok && data?.corrected) setFix(data.corrected);
+      else setFixErr("⚠️ correction indisponible — réessayez dans un instant");
     } catch {
-      // network hiccup — no verdict shown
+      setFixErr("⚠️ pas de connexion — réessayez");
     } finally {
       setFixBusy(false);
     }
@@ -240,14 +247,14 @@ export default function TtsPage() {
               {mp3Busy ? "⏳…" : "🎧 Générer le MP3"}
             </button>
           )}
-          {!fixOff && (
-            <button type="button" onClick={() => void corriger()} disabled={!text.trim() || fixBusy}
-              title="Vérifier et corriger le français"
-              className="cahier-btn cahier-btn-sm font-black disabled:opacity-50">
-              {fixBusy ? "⏳…" : "✏️ Corriger"}
-            </button>
-          )}
+          <button type="button" onClick={() => void corriger()} disabled={!text.trim() || fixBusy}
+            title="Vérifier et corriger le français"
+            className="cahier-btn cahier-btn-sm font-black disabled:opacity-50">
+            {fixBusy ? "⏳…" : "✏️ Corriger"}
+          </button>
         </div>
+
+        {fixErr && <p className="mt-2 text-sm font-bold text-rose-700">{fixErr}</p>}
 
         {/* Tracked-changes proofread: deletions struck through, insertions
             underlined. Display-only (never TTS'd — fragments aren't speech);
