@@ -229,12 +229,14 @@ export default function TutorPage() {
                   <div className="mt-0.5 flex w-full max-w-[85%] items-center gap-1">
                     {playingIdx === i ? (
                       <>
+                        {/* Traffic-light player (Dan, 2026-07-13): resume ▶ green,
+                            pause ⏸ blue (yellow belongs to the snail), stop ⏹ red. */}
                         <button type="button" onClick={togglePause}
-                          className="rounded-lg border border-[color:var(--cahier-rule)] bg-white px-2 py-0.5 text-xs font-bold text-[color:var(--cahier-ink)]">
+                          className={`rounded-lg border px-2 py-0.5 text-xs font-bold text-white ${paused ? "border-[#3f9c17] bg-[#58cc02]" : "border-[#1899d6] bg-[#1cb0f6]"}`}>
                           {paused ? "▶" : "⏸"}
                         </button>
                         <button type="button" onClick={stopPlayback}
-                          className="rounded-lg border border-[color:var(--cahier-rule)] bg-white px-2 py-0.5 text-xs font-bold text-[color:var(--cahier-ink)]">
+                          className="rounded-lg border border-[#d33131] bg-[#ff4b4b] px-2 py-0.5 text-xs font-bold text-white">
                           ⏹
                         </button>
                         <input
@@ -247,11 +249,11 @@ export default function TutorPage() {
                     ) : (
                       <>
                         <button type="button" onClick={() => playMsg(i, m.content)} title="Écouter"
-                          className="rounded-lg border border-transparent px-2 py-0.5 text-xs font-bold text-[color:var(--cahier-ink-soft)] hover:border-[color:var(--cahier-rule)] hover:bg-white">
+                          className="rounded-lg border border-[#3f9c17] bg-[#58cc02] px-2 py-0.5 text-xs font-bold text-white">
                           ▶
                         </button>
                         <button type="button" onClick={() => playMsg(i, m.content, 0.6)} title="Lecture lente"
-                          className="rounded-lg border border-transparent px-2 py-0.5 text-xs font-bold text-[color:var(--cahier-ink-soft)] hover:border-[color:var(--cahier-rule)] hover:bg-white">
+                          className="rounded-lg border border-[#e08600] bg-[#ffc800] px-2 py-0.5 text-xs font-bold text-[#5a3a08]">
                           🐌
                         </button>
                       </>
