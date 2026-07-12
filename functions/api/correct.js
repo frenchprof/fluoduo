@@ -5,7 +5,8 @@
  * Returns ONLY the corrected French; the /tts page renders the tracked-
  * changes diff client-side and offers to adopt the correction.
  *
- * Shares ANTHROPIC_API_KEY with the tutor/compose functions — no extra setup.
+ * Shares MISTRAL_API_KEY with the tutor/compose functions — no extra setup.
+ * Provider: Mistral (Dan, 2026-07-10).
  *
  * Contract: POST /api/correct  { text }
  *           → 200 { corrected }  |  503 { error: "not-configured" }  |  502 { error }
@@ -20,7 +21,7 @@ You receive a French text. Return ONLY the corrected French text — no preamble
 
 export async function onRequestPost(context) {
   const { request, env } = context;
-  if (!env.ANTHROPIC_API_KEY) return json({ error: "not-configured" }, 503);
+  if (!env.MISTRAL_API_KEY) return json({ error: "not-configured" }, 503);
 
   let body;
   try {
@@ -32,27 +33,24 @@ export async function onRequestPost(context) {
   if (!text) return json({ error: "no-text" }, 400);
 
   try {
-    const r = await fetch("https://api.anthropic.com/v1/messages", {
+    const r = await fetch("https://api.mistral.ai/v1/chat/completions", {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "x-api-key": env.ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
+        authorization: "Bearer " + env.MISTRAL_API_KEY,
       },
       body: JSON.stringify({
-        model: "claude-sonnet-5",
+        model: "mistral-large-latest",
         max_tokens: 600,
-        system: SYSTEM,
-        messages: [{ role: "user", content: text }],
+        messages: [
+          { role: "system", content: SYSTEM },
+          { role: "user", content: text },
+        ],
       }),
     });
     if (!r.ok) return json({ error: "upstream-" + r.status }, 502);
     const data = await r.json();
-    const corrected = (data.content || [])
-      .filter((b) => b.type === "text")
-      .map((b) => b.text)
-      .join("")
-      .trim();
+    const corrected = ((data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || "").trim();
     return json({ corrected: corrected || text });
   } catch {
     return json({ error: "upstream-unreachable" }, 502);

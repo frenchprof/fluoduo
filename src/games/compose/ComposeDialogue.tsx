@@ -65,7 +65,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
   const [nudge, setNudge] = useState<string | null>(null);
   // AI mode (Dan, 2026-07-05: the rule engine still accepted nonsense). The
   // waiter is driven by /api/compose when it's live; on any host without the
-  // backend (503/404 — no ANTHROPIC_API_KEY yet, or a local preview) we fall
+  // backend (503/404 — no MISTRAL_API_KEY yet, or a local preview) we fall
   // back to the rule engine below. "unknown" until the first send decides.
   const [aiMode, setAiMode] = useState<"unknown" | "ai" | "rules">("unknown");
   const [aiDone, setAiDone] = useState(false);

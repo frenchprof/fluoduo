@@ -30,7 +30,7 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
   const [lines, setLines] = useState<string[]>([]); // committed sentences
   // AI "check my work" pass (aiCheck banks only). The passer-by reads the whole
   // itinerary and reacts. `unavailable` latches when the backend isn't there
-  // (no ANTHROPIC_API_KEY / local preview) so the button quietly disappears.
+  // (no MISTRAL_API_KEY / local preview) so the button quietly disappears.
   const [checking, setChecking] = useState(false);
   const [feedback, setFeedback] = useState<{ reply: string; done: boolean } | null>(null);
   const [unavailable, setUnavailable] = useState(false);

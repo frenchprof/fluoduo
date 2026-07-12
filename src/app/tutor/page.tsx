@@ -1,5 +1,13 @@
 "use client";
 
+/**
+ * 🤖 Le Tuteur — chat surface for the AI tutor (backend: /api/tutor, a
+ * Cloudflare Pages Function; see functions/api/tutor.js for the prompt and
+ * the MISTRAL_API_KEY setup). Ported concept from laf1201's tutor (Dan,
+ * 2026-07-05). Until the key is configured — and on any non-Cloudflare
+ * preview, where /api/tutor 404s — the page degrades to a friendly
+ * "not wired up yet" card instead of a broken chat.
+ */
 import { useEffect, useRef, useState } from "react";
 import CahierShell from "@/components/CahierShell";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
@@ -10,6 +18,8 @@ type ChatMsg = { role: "user" | "assistant"; content: string };
 const GREETING =
   "Bonjour ! 👋 I'm your French tutor. Ask me anything about the course — or just write a sentence in French and I'll help you polish it.";
 
+/** Grow the textarea to fit its content (up to a cap); the user can still drag
+ *  it taller via the resize handle. */
 function autoGrow(el: HTMLTextAreaElement | null) {
   if (!el) return;
   el.style.height = "auto";
@@ -28,6 +38,7 @@ export default function TutorPage() {
     endRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }, [messages, busy]);
 
+  // Reset the box back to one row once it's been cleared (after sending).
   useEffect(() => {
     if (input === "" && taRef.current) taRef.current.style.height = "auto";
   }, [input]);
@@ -43,31 +54,23 @@ export default function TutorPage() {
       const r = await fetch("/api/tutor", {
         method: "POST",
         headers: { "content-type": "application/json" },
+        // The greeting is UI furniture, not conversation — don't send it.
         body: JSON.stringify({ messages: next.slice(1) }),
       });
-      
+      // No backend here: 503 = function deployed but no API key yet; the
+      // rest = hosts without Pages Functions at all (local preview etc.).
       if ([503, 404, 405, 501].includes(r.status)) {
         setOffline(true);
         return;
       }
-     // Read the raw text first so we never crash on bad JSON
-      const rawText = await r.text();
-      let data;
-      try {
-        data = JSON.parse(rawText);
-      } catch (e) {
-        setMessages((m) => [...m, { role: "assistant", content: `DEBUG RAW RESPONSE: ${rawText.slice(0, 500)}` }]);
-        return;
-      }
-
+      const data = await r.json().catch(() => null);
       if (!r.ok || !data?.reply) {
-        const errorMsg = data?.error || `Status ${r.status}`;
-        setMessages((m) => [...m, { role: "assistant", content: `DEBUG ERROR: ${errorMsg}` }]);
+        setMessages((m) => [...m, { role: "assistant", content: "Oups — j'ai eu un souci technique. Réessayez !" }]);
         return;
       }
       setMessages((m) => [...m, { role: "assistant", content: data.reply }]);
-    } catch (err) {
-      setMessages((m) => [...m, { role: "assistant", content: `DEBUG NETWORK ERROR: ${err}` }]);
+    } catch {
+      setMessages((m) => [...m, { role: "assistant", content: "Oups — j'ai eu un souci technique. Réessayez !" }]);
     } finally {
       setBusy(false);
     }
@@ -80,27 +83,60 @@ export default function TutorPage() {
 
         {offline ? (
           <div className="rounded-2xl border-2 border-dashed border-[color:var(--cahier-ink)]/40 bg-white p-5">
-            <p className="text-sm font-bold text-[color:var(--cahier-ink)]">Le tuteur n&rsquo;est pas encore branché ici. 🔌</p>
-            <p className="mt-1.5 text-sm text-[color:var(--cahier-ink-soft)]">In the meantime, the tutor still lives on <a href="https://laf1201.withdrchan.com" className="font-bold underline">laf1201.withdrchan.com</a>.</p>
+            <p className="text-sm font-bold text-[color:var(--cahier-ink)]">
+              Le tuteur n&rsquo;est pas encore branché ici. 🔌
+            </p>
+            <p className="mt-1.5 text-sm text-[color:var(--cahier-ink-soft)]">
+              In the meantime, the tutor still lives on{" "}
+              <a href="https://laf1201.withdrchan.com" className="font-bold underline">laf1201.withdrchan.com</a>.
+            </p>
           </div>
         ) : (
           <>
             <div className="flex max-h-[55vh] flex-col gap-2 overflow-y-auto rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
               {messages.map((m, i) => (
                 <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-                  <button type="button" onClick={() => speak(m.content, "fr-FR")} title="🔊" className={`max-w-[85%] whitespace-pre-wrap rounded-2xl border-2 px-4 py-2 text-left text-sm leading-relaxed transition hover:brightness-95 ${m.role === "user" ? "rounded-br-sm border-[color:var(--cahier-ink)] bg-[color:var(--cahier-hl,#eaff00)]/50 text-[color:var(--cahier-ink)]" : "rounded-bl-sm border-[color:var(--cahier-rule)] bg-white text-[color:var(--cahier-ink)]"}`}>
+                  <button
+                    type="button"
+                    onClick={() => speak(m.content, "fr-FR")}
+                    title="🔊"
+                    className={`max-w-[85%] whitespace-pre-wrap rounded-2xl border-2 px-4 py-2 text-left text-sm leading-relaxed transition hover:brightness-95 ${
+                      m.role === "user"
+                        ? "rounded-br-sm border-[color:var(--cahier-ink)] bg-[color:var(--cahier-hl,#eaff00)]/50 text-[color:var(--cahier-ink)]"
+                        : "rounded-bl-sm border-[color:var(--cahier-rule)] bg-white text-[color:var(--cahier-ink)]"
+                    }`}
+                  >
                     {m.role === "assistant" && <span className="mr-1.5" aria-hidden>🤖</span>}
                     {m.content}
                   </button>
                 </div>
               ))}
-              {busy && (<p className="animate-pulse text-sm text-[color:var(--cahier-ink-soft)]">🤖 …</p>)}
+              {busy && (
+                <p className="animate-pulse text-sm text-[color:var(--cahier-ink-soft)]">🤖 …</p>
+              )}
               <div ref={endRef} />
             </div>
 
-            <form onSubmit={(e) => { e.preventDefault(); void send(); }} className="flex items-end gap-2">
-              <textarea lang="fr" ref={taRef} value={input} onChange={(e) => { setInput(e.target.value); autoGrow(e.target); }} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void send(); } }} placeholder="Écrivez en français ou posez une question…  (Entrée = envoyer · Maj+Entrée = nouvelle ligne)" rows={1} className="max-h-[260px] min-h-[2.7rem] flex-1 resize-y rounded-lg border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-2 text-[0.95rem] leading-snug text-[color:var(--cahier-ink)] outline-none focus:border-[color:var(--cahier-le)]" autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false} />
-              <button type="submit" disabled={busy || !input.trim()} className="cahier-btn cahier-btn-accent font-black disabled:opacity-40">Envoyer</button>
+            <form
+              onSubmit={(e) => { e.preventDefault(); void send(); }}
+              className="flex items-end gap-2"
+            >
+              <textarea
+                lang="fr"
+                ref={taRef}
+                value={input}
+                onChange={(e) => { setInput(e.target.value); autoGrow(e.target); }}
+                onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void send(); } }}
+                placeholder="Écrivez en français ou posez une question…  (Entrée = envoyer · Maj+Entrée = nouvelle ligne)"
+                rows={1}
+                /* NB: not .cahier-answer — that pins height:30px!important, which
+                   would kill grow/resize. AccentBar still shows via lang="fr". */
+                className="max-h-[260px] min-h-[2.7rem] flex-1 resize-y rounded-lg border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-2 text-[0.95rem] leading-snug text-[color:var(--cahier-ink)] outline-none focus:border-[color:var(--cahier-le)]"
+                autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
+              />
+              <button type="submit" disabled={busy || !input.trim()} className="cahier-btn cahier-btn-accent font-black disabled:opacity-40">
+                Envoyer
+              </button>
             </form>
           </>
         )}

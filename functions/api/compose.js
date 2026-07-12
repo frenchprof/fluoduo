@@ -4,7 +4,7 @@
  * for Compose It's dialogue mode (Dan, 2026-07-05: the rules still accepted
  * nonsense like "Je prends Au revoir" — the waiter must actually understand).
  *
- * SETUP is shared with the tutor: the same ANTHROPIC_API_KEY env var on the
+ * SETUP is shared with the tutor: the same MISTRAL_API_KEY env var on the
  * Pages project. Until it exists the endpoint answers 503 and ComposeDialogue
  * falls back to its rule-based engine.
  *
@@ -55,9 +55,12 @@ un café — 3€ · un thé — 3€ · un jus d'orange — 4€ · une eau min
   },
 };
 
+// Mistral's flagship — best French; "mistral-medium-latest" is the cheaper lever.
+const MODEL = "mistral-large-latest";
+
 export async function onRequestPost(context) {
   const { request, env } = context;
-  if (!env.ANTHROPIC_API_KEY) return json({ error: "not-configured" }, 503);
+  if (!env.MISTRAL_API_KEY) return json({ error: "not-configured" }, 503);
 
   let body;
   try {
@@ -90,23 +93,24 @@ Write the debrief in English, keeping every French example in French. No headers
 - One concrete tip for the next conversation.
 If their French was essentially error-free, say so warmly and give one stretch tip instead of corrections. Ignore missing accents on chip-composed text only when nothing else is wrong with the line.`;
     try {
-      const r = await fetch("https://api.anthropic.com/v1/messages", {
+      const r = await fetch("https://api.mistral.ai/v1/chat/completions", {
         method: "POST",
         headers: {
           "content-type": "application/json",
-          "x-api-key": env.ANTHROPIC_API_KEY,
-          "anthropic-version": "2023-06-01",
+          authorization: "Bearer " + env.MISTRAL_API_KEY,
         },
         body: JSON.stringify({
-          model: "claude-sonnet-5",
+          model: MODEL,
           max_tokens: 500,
-          system,
-          messages: [{ role: "user", content: "DIALOGUE:\n" + transcript }],
+          messages: [
+            { role: "system", content: system },
+            { role: "user", content: "DIALOGUE:\n" + transcript },
+          ],
         }),
       });
       if (!r.ok) return json({ error: "upstream-" + r.status }, 502);
       const data = await r.json();
-      const reply = (data.content || []).filter((b) => b.type === "text").map((b) => b.text).join("\n").trim();
+      const reply = ((data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || "").trim();
       return json({ reply: reply || "…", done: true });
     } catch {
       return json({ error: "upstream-unreachable" }, 502);
@@ -132,18 +136,24 @@ Respond with ONLY a JSON object, no other text:
 {"reply": "<your French line>", "done": <true ONLY after you have said goodbye>}`;
 
   try {
-    const r = await fetch("https://api.anthropic.com/v1/messages", {
+    const r = await fetch("https://api.mistral.ai/v1/chat/completions", {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "x-api-key": env.ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
+        authorization: "Bearer " + env.MISTRAL_API_KEY,
       },
-      body: JSON.stringify({ model: "claude-sonnet-5", max_tokens: 300, system, messages }),
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: 300,
+        // The system prompt demands a bare JSON object; json_object mode
+        // makes the model honour it.
+        response_format: { type: "json_object" },
+        messages: [{ role: "system", content: system }, ...messages],
+      }),
     });
     if (!r.ok) return json({ error: "upstream-" + r.status }, 502);
     const data = await r.json();
-    const raw = (data.content || []).filter((b) => b.type === "text").map((b) => b.text).join("").trim();
+    const raw = ((data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || "").trim();
     let reply = raw;
     let done = false;
     try {
