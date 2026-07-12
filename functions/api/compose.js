@@ -4,8 +4,9 @@
  * for Compose It's dialogue mode (Dan, 2026-07-05: the rules still accepted
  * nonsense like "Je prends Au revoir" — the waiter must actually understand).
  *
- * SETUP is shared with the tutor: the same MISTRAL_API_KEY env var on the
- * Pages project. Until it exists the endpoint answers 503 and ComposeDialogue
+ * SETUP is shared with the tutor: the same key env var on the Pages project
+ * (an OpenRouter sk-or-… key in ANTHROPIC_API_KEY, or a native Mistral key
+ * in MISTRAL_API_KEY — auto-detected). Until it exists the endpoint answers 503 and ComposeDialogue
  * falls back to its rule-based engine.
  *
  * Contract: POST /api/compose  { scene, menu?, messages:[{role,content}] }
@@ -55,12 +56,22 @@ un café — 3€ · un thé — 3€ · un jus d'orange — 4€ · une eau min
   },
 };
 
-// Mistral's flagship — best French; "mistral-medium-latest" is the cheaper lever.
-const MODEL = "mistral-large-latest";
+
+// Key + endpoint resolution: the live setup runs an OpenRouter key (sk-or-…)
+// in the legacy ANTHROPIC_API_KEY slot (tutor.js does the same); a native
+// Mistral key in MISTRAL_API_KEY works too. Same Mistral Large either way.
+function resolveProvider(env) {
+  const key = env.MISTRAL_API_KEY || env.OPENROUTER_API_KEY || env.ANTHROPIC_API_KEY;
+  if (!key) return null;
+  return key.startsWith("sk-or-")
+    ? { key, url: "https://openrouter.ai/api/v1/chat/completions", model: "mistralai/mistral-large-2512" }
+    : { key, url: "https://api.mistral.ai/v1/chat/completions", model: "mistral-large-latest" };
+}
 
 export async function onRequestPost(context) {
   const { request, env } = context;
-  if (!env.MISTRAL_API_KEY) return json({ error: "not-configured" }, 503);
+  const provider = resolveProvider(env);
+  if (!provider) return json({ error: "not-configured" }, 503);
 
   let body;
   try {
@@ -93,14 +104,14 @@ Write the debrief in English, keeping every French example in French. No headers
 - One concrete tip for the next conversation.
 If their French was essentially error-free, say so warmly and give one stretch tip instead of corrections. Ignore missing accents on chip-composed text only when nothing else is wrong with the line.`;
     try {
-      const r = await fetch("https://api.mistral.ai/v1/chat/completions", {
+      const r = await fetch(provider.url, {
         method: "POST",
         headers: {
           "content-type": "application/json",
-          authorization: "Bearer " + env.MISTRAL_API_KEY,
+          authorization: "Bearer " + provider.key,
         },
         body: JSON.stringify({
-          model: MODEL,
+          model: provider.model,
           max_tokens: 500,
           messages: [
             { role: "system", content: system },
@@ -136,14 +147,14 @@ Respond with ONLY a JSON object, no other text:
 {"reply": "<your French line>", "done": <true ONLY after you have said goodbye>}`;
 
   try {
-    const r = await fetch("https://api.mistral.ai/v1/chat/completions", {
+    const r = await fetch(provider.url, {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        authorization: "Bearer " + env.MISTRAL_API_KEY,
+        authorization: "Bearer " + provider.key,
       },
       body: JSON.stringify({
-        model: MODEL,
+        model: provider.model,
         max_tokens: 300,
         // The system prompt demands a bare JSON object; json_object mode
         // makes the model honour it.

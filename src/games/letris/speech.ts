@@ -143,7 +143,7 @@ function applyVoiceAndPitch(u: SpeechSynthesisUtterance, lang: string, gender?: 
  * atelier dialogues' "play all" control. Returns a stop() that cancels the run.
  */
 export function speakSequence(
-  parts: { text: string; gender?: "f" | "m" | "kid" }[],
+  parts: { text: string; gender?: "f" | "m" | "kid"; lang?: string }[],
   lang = "fr-FR",
   opts: { rate?: number; gapMs?: number } = {},
 ): () => void {
@@ -172,8 +172,9 @@ export function speakSequence(
     const p = parts[i++];
     const u = new SpeechSynthesisUtterance(p.text);
     alive.push(u);
-    u.lang = lang;
-    applyVoiceAndPitch(u, lang, p.gender, opts.rate);
+    const plang = p.lang ?? lang;
+    u.lang = plang;
+    applyVoiceAndPitch(u, plang, p.gender, opts.rate);
     // Defer the hand-off out of the onend callback — speaking synchronously
     // from inside it drops utterances on some engines (iOS), and the beat
     // between lines reads naturally in a dialogue.
@@ -188,6 +189,56 @@ export function speakSequence(
     finish();
     synth.cancel();
   };
+}
+
+// ── Bilingual speaking (the tutor) ──────────────────────────────────────────
+// The tutor's replies are English prose with French examples; one fr-FR
+// utterance reads the English with a French accent (Dan, 2026-07-12: "make
+// it recognise the language before TTSing"). speechSynthesis cannot detect
+// language, so: split into segments (parentheticals — the English glosses —
+// first, then sentences), guess fr/en per segment, and speak each with the
+// right cast voice, queued back to back.
+const FR_HINTS = new Set([
+  "le", "la", "les", "un", "une", "des", "du", "de", "au", "aux",
+  "je", "tu", "il", "elle", "on", "nous", "vous", "ils", "elles",
+  "est", "es", "suis", "sommes", "êtes", "sont", "ai", "as", "avons", "avez", "ont",
+  "ne", "pas", "et", "ou", "mais", "que", "qui", "quoi", "avec", "pour", "dans", "sur",
+  "mon", "ma", "mes", "ton", "ta", "tes", "son", "sa", "ses", "ce", "cette", "ces",
+  "très", "bien", "merci", "bonjour", "salut", "oui", "non", "voilà", "aussi",
+  "j'ai", "c'est", "n'est", "qu'est-ce", "s'il", "aime", "aimes", "vais", "vas", "va",
+]);
+function guessLang(segment: string): "fr-FR" | "en-US" {
+  // Diacritics and guillemets are near-certain French signals.
+  if (/[àâçéèêëîïôùûüœÀÂÇÉÈÊËÎÏÔÙÛÜŒ«»]/.test(segment)) return "fr-FR";
+  // Elision (j', l', qu', n'…) is French; English apostrophes are 's / n't.
+  if (/\b[jlcdnstm]['’](?![st]\b)|\bqu['’]/i.test(segment)) return "fr-FR";
+  const words = segment.toLowerCase().match(/[a-zà-ÿ'’-]+/g) ?? [];
+  if (words.length === 0) return "en-US";
+  const hits = words.filter((w) => FR_HINTS.has(w)).length;
+  return hits / words.length >= 0.4 ? "fr-FR" : "en-US";
+}
+/** Split into speakable chunks: (…) glosses become their own segments, the
+ *  rest splits at sentence boundaries; emoji are stripped (some voices
+ *  announce them: "robot face"). */
+function segmentBilingual(text: string): { text: string; lang: "fr-FR" | "en-US" }[] {
+  const out: { text: string; lang: "fr-FR" | "en-US" }[] = [];
+  for (const part of text.split(/(\([^)]*\))/g)) {
+    const chunks = part.startsWith("(")
+      ? [part.replace(/^\(|\)$/g, "")]
+      : part.split(/(?<=[.!?…:])\s+|\n+/g);
+    for (const raw of chunks) {
+      const clean = raw.replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}]/gu, "").trim();
+      if (!/[a-zà-ÿ]/i.test(clean)) continue;
+      out.push({ text: clean, lang: guessLang(clean) });
+    }
+  }
+  return out;
+}
+/** Speak a bilingual message, switching voice per segment. */
+export function speakMixed(text: string): void {
+  if (typeof window === "undefined" || !window.speechSynthesis || isChannelMuted("voice")) return;
+  const parts = segmentBilingual(text);
+  if (parts.length) speakSequence(parts, "fr-FR", { gapMs: 120 });
 }
 
 export function speak(text: string, lang = "fr-FR", opts: SpeakOpts = {}) {

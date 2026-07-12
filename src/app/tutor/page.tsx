@@ -11,7 +11,7 @@
 import { useEffect, useRef, useState } from "react";
 import CahierShell from "@/components/CahierShell";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
-import { speak } from "@/games/letris/speech";
+import { speakMixed } from "@/games/letris/speech";
 
 type ChatMsg = { role: "user" | "assistant"; content: string };
 
@@ -98,7 +98,10 @@ export default function TutorPage() {
                 <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
                   <button
                     type="button"
-                    onClick={() => speak(m.content, "fr-FR")}
+                    // Bilingual bubbles: per-segment language detection, so the
+                    // English prose gets an English voice and the French examples
+                    // a French one (Dan, 2026-07-12).
+                    onClick={() => speakMixed(m.content)}
                     title="🔊"
                     className={`max-w-[85%] whitespace-pre-wrap rounded-2xl border-2 px-4 py-2 text-left text-sm leading-relaxed transition hover:brightness-95 ${
                       m.role === "user"

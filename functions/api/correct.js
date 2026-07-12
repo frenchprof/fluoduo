@@ -5,12 +5,25 @@
  * Returns ONLY the corrected French; the /tts page renders the tracked-
  * changes diff client-side and offers to adopt the correction.
  *
- * Shares MISTRAL_API_KEY with the tutor/compose functions — no extra setup.
+ * Shares the tutor/compose key — an OpenRouter sk-or-… key in
+ * ANTHROPIC_API_KEY, or a native Mistral key in MISTRAL_API_KEY (auto-detected).
  * Provider: Mistral (Dan, 2026-07-10).
  *
  * Contract: POST /api/correct  { text }
  *           → 200 { corrected }  |  503 { error: "not-configured" }  |  502 { error }
  */
+
+
+// Key + endpoint resolution: the live setup runs an OpenRouter key (sk-or-…)
+// in the legacy ANTHROPIC_API_KEY slot (tutor.js does the same); a native
+// Mistral key in MISTRAL_API_KEY works too. Same Mistral Large either way.
+function resolveProvider(env) {
+  const key = env.MISTRAL_API_KEY || env.OPENROUTER_API_KEY || env.ANTHROPIC_API_KEY;
+  if (!key) return null;
+  return key.startsWith("sk-or-")
+    ? { key, url: "https://openrouter.ai/api/v1/chat/completions", model: "mistralai/mistral-large-2512" }
+    : { key, url: "https://api.mistral.ai/v1/chat/completions", model: "mistral-large-latest" };
+}
 
 const SYSTEM = `You are a precise French proofreader for A1 (absolute beginner) learners.
 You receive a French text. Return ONLY the corrected French text — no preamble, no explanations, no quotes, no markdown.
@@ -21,7 +34,8 @@ You receive a French text. Return ONLY the corrected French text — no preamble
 
 export async function onRequestPost(context) {
   const { request, env } = context;
-  if (!env.MISTRAL_API_KEY) return json({ error: "not-configured" }, 503);
+  const provider = resolveProvider(env);
+  if (!provider) return json({ error: "not-configured" }, 503);
 
   let body;
   try {
@@ -33,14 +47,14 @@ export async function onRequestPost(context) {
   if (!text) return json({ error: "no-text" }, 400);
 
   try {
-    const r = await fetch("https://api.mistral.ai/v1/chat/completions", {
+    const r = await fetch(provider.url, {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        authorization: "Bearer " + env.MISTRAL_API_KEY,
+        authorization: "Bearer " + provider.key,
       },
       body: JSON.stringify({
-        model: "mistral-large-latest",
+        model: provider.model,
         max_tokens: 600,
         messages: [
           { role: "system", content: SYSTEM },
