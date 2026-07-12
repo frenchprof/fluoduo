@@ -22,19 +22,26 @@ const firebaseConfig = {
 export const app: FirebaseApp = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
 // App Check (Dan, 2026-07-10: restrict the API door without adding login
-// friction). reCAPTCHA v3 attests the page invisibly — no puzzles, no login
+// friction). reCAPTCHA attests the page invisibly — no puzzles, no login
 // change — and Firestore can then reject requests that didn't come from the
 // real site (config-copied scripts, curl). Activates only when the site key
 // env var is set at build time, so previews and local dev are unaffected.
+// Provider: classic v3 site key by default; set
+// NEXT_PUBLIC_FIREBASE_APPCHECK_PROVIDER=enterprise when the key was created
+// in Google Cloud's reCAPTCHA (Enterprise) console — Google no longer offers
+// classic key creation everywhere (Dan, 2026-07-10: "i can't generate a key").
 // Keep Firestore enforcement OFF in the Firebase console until App Check
 // metrics show ~100% verified traffic (the legacy laf1201 sites share this
 // project and must be attested too before enforcing).
 const APPCHECK_KEY = process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_KEY;
+const APPCHECK_ENTERPRISE = process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_PROVIDER === "enterprise";
 if (typeof window !== "undefined" && APPCHECK_KEY) {
-  void import("firebase/app-check").then(({ initializeAppCheck, ReCaptchaV3Provider }) => {
+  void import("firebase/app-check").then(({ initializeAppCheck, ReCaptchaV3Provider, ReCaptchaEnterpriseProvider }) => {
     try {
       initializeAppCheck(app, {
-        provider: new ReCaptchaV3Provider(APPCHECK_KEY),
+        provider: APPCHECK_ENTERPRISE
+          ? new ReCaptchaEnterpriseProvider(APPCHECK_KEY)
+          : new ReCaptchaV3Provider(APPCHECK_KEY),
         isTokenAutoRefreshEnabled: true,
       });
     } catch {
