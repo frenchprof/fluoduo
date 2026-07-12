@@ -142,14 +142,30 @@ function applyVoiceAndPitch(u: SpeechSynthesisUtterance, lang: string, gender?: 
  * Play a list of lines back-to-back, each with its own gender voice — for the
  * atelier dialogues' "play all" control. Returns a stop() that cancels the run.
  */
+// Manual pause must survive the Chrome keep-alive below (which exists to
+// undo Chrome's SILENT pauses, not the user's deliberate one).
+let userPaused = false;
+export function pauseSpeech(): void {
+  userPaused = true;
+  window.speechSynthesis?.pause();
+}
+export function resumeSpeech(): void {
+  userPaused = false;
+  window.speechSynthesis?.resume();
+}
+export function isSpeechPaused(): boolean {
+  return userPaused;
+}
+
 export function speakSequence(
   parts: { text: string; gender?: "f" | "m" | "kid"; lang?: string }[],
   lang = "fr-FR",
-  opts: { rate?: number; gapMs?: number } = {},
+  opts: { rate?: number; gapMs?: number; onDone?: () => void; voice?: SpeechSynthesisVoice } = {},
 ): () => void {
   if (typeof window === "undefined" || !window.speechSynthesis || isChannelMuted("voice")) return () => {};
   const synth = window.speechSynthesis;
   synth.cancel();
+  userPaused = false;
   let cancelled = false;
   let i = 0;
   // Two engine quirks stop long runs partway (Dan, 2026-07-07: "play all is
@@ -161,11 +177,12 @@ export function speakSequence(
   //    while the run is active.
   const alive: SpeechSynthesisUtterance[] = [];
   const keepAlive = window.setInterval(() => {
-    if (!cancelled && synth.paused) synth.resume();
+    if (!cancelled && !userPaused && synth.paused) synth.resume();
   }, 3000);
   const finish = () => {
     window.clearInterval(keepAlive);
     alive.length = 0;
+    if (!cancelled && opts.onDone) opts.onDone();
   };
   const next = () => {
     if (cancelled || i >= parts.length) { finish(); return; }
@@ -174,7 +191,15 @@ export function speakSequence(
     alive.push(u);
     const plang = p.lang ?? lang;
     u.lang = plang;
-    applyVoiceAndPitch(u, plang, p.gender, opts.rate);
+    if (opts.voice) {
+      // One multilingual voice for the whole run — same persona in both
+      // languages, the utterance lang switches its accent natively.
+      u.voice = opts.voice;
+      u.rate = opts.rate ?? 0.95;
+      u.pitch = 1;
+    } else {
+      applyVoiceAndPitch(u, plang, p.gender, opts.rate);
+    }
     // Defer the hand-off out of the onend callback — speaking synchronously
     // from inside it drops utterances on some engines (iOS), and the beat
     // between lines reads naturally in a dialogue.
@@ -240,11 +265,35 @@ function segmentBilingual(text: string): { text: string; lang: "fr-FR" | "en-US"
   }
   return out;
 }
-/** Speak a bilingual message, switching voice per segment. */
-export function speakMixed(text: string): void {
-  if (typeof window === "undefined" || !window.speechSynthesis || isChannelMuted("voice")) return;
+/** ONE voice for both languages when the device has a multilingual voice
+ *  (Edge's "…Multilingual" voices, some Android voices) — same persona
+ *  throughout, accent switching handled natively by utterance.lang. */
+function multilingualVoice(): SpeechSynthesisVoice | undefined {
+  return window.speechSynthesis
+    .getVoices()
+    .find((v) => /multilingual/i.test(v.name) && /^(fr|en)/i.test(v.lang));
+}
+
+/** Speak a bilingual message (Dan, 2026-07-12: same voice throughout, and
+ *  code-mixing WITHIN a sentence must work). Two tiers:
+ *  - Device has a MULTILINGUAL voice → the whole message is ONE utterance;
+ *    the voice switches accent internally mid-sentence — truly seamless.
+ *  - Otherwise → segment at « … » (and heuristics), one utterance per span
+ *    through the cast narrators. Each switch has a small audible re-attack;
+ *    that is the browser engine's physical limit, not a tuning problem.
+ *  Returns a stop() (null when there was nothing to speak); onDone fires when
+ *  the run completes naturally. */
+export function speakMixed(text: string, onDone?: () => void): (() => void) | null {
+  if (typeof window === "undefined" || !window.speechSynthesis || isChannelMuted("voice")) return null;
+  const mv = multilingualVoice();
+  if (mv) {
+    const clean = text.replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}«»]/gu, " ").replace(/\s+/g, " ").trim();
+    if (!clean) return null;
+    return speakSequence([{ text: clean, lang: mv.lang }], mv.lang, { onDone, voice: mv });
+  }
   const parts = segmentBilingual(text);
-  if (parts.length) speakSequence(parts, "fr-FR", { gapMs: 120 });
+  if (!parts.length) return null;
+  return speakSequence(parts, "fr-FR", { gapMs: 0, onDone });
 }
 
 export function speak(text: string, lang = "fr-FR", opts: SpeakOpts = {}) {

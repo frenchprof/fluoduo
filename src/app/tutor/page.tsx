@@ -11,7 +11,7 @@
 import { useEffect, useRef, useState } from "react";
 import CahierShell from "@/components/CahierShell";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
-import { speakMixed } from "@/games/letris/speech";
+import { speakMixed, pauseSpeech, resumeSpeech, isSpeechPaused } from "@/games/letris/speech";
 
 type ChatMsg = { role: "user" | "assistant"; content: string };
 
@@ -31,8 +31,33 @@ export default function TutorPage() {
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [offline, setOffline] = useState(false);
+  // Per-balloon player (Dan, 2026-07-12: "play, pause and stop buttons next
+  // to or below each balloon"): which bubble is being read, and paused state.
+  const [playingIdx, setPlayingIdx] = useState<number | null>(null);
+  const [paused, setPaused] = useState(false);
+  const stopRef = useRef<(() => void) | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
   const taRef = useRef<HTMLTextAreaElement>(null);
+
+  function playMsg(i: number, content: string) {
+    stopRef.current?.();
+    setPaused(false);
+    const stop = speakMixed(content, () => { setPlayingIdx(null); setPaused(false); });
+    stopRef.current = stop;
+    setPlayingIdx(stop ? i : null);
+  }
+  function togglePause() {
+    if (isSpeechPaused()) { resumeSpeech(); setPaused(false); }
+    else { pauseSpeech(); setPaused(true); }
+  }
+  function stopPlayback() {
+    stopRef.current?.();
+    stopRef.current = null;
+    setPlayingIdx(null);
+    setPaused(false);
+  }
+  // Leaving the page mid-read must not leave the voice running.
+  useEffect(() => () => stopRef.current?.(), []);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
@@ -95,13 +120,12 @@ export default function TutorPage() {
           <>
             <div className="flex max-h-[55vh] flex-col gap-2 overflow-y-auto rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
               {messages.map((m, i) => (
-                <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                <div key={i} className={`flex flex-col ${m.role === "user" ? "items-end" : "items-start"}`}>
                   <button
                     type="button"
-                    // Bilingual bubbles: per-segment language detection, so the
-                    // English prose gets an English voice and the French examples
-                    // a French one (Dan, 2026-07-12).
-                    onClick={() => speakMixed(m.content)}
+                    // Bilingual bubbles: the tutor marks French in « … », and
+                    // speech switches language exactly there (Dan, 2026-07-12).
+                    onClick={() => playMsg(i, m.content)}
                     title="🔊"
                     className={`max-w-[85%] whitespace-pre-wrap rounded-2xl border-2 px-4 py-2 text-left text-sm leading-relaxed transition hover:brightness-95 ${
                       m.role === "user"
@@ -112,6 +136,27 @@ export default function TutorPage() {
                     {m.role === "assistant" && <span className="mr-1.5" aria-hidden>🤖</span>}
                     {m.content}
                   </button>
+                  {/* Player row under the balloon: ▶ when idle; ⏸/▶ + ⏹ while
+                      THIS balloon is being read. */}
+                  <div className="mt-0.5 flex gap-1">
+                    {playingIdx === i ? (
+                      <>
+                        <button type="button" onClick={togglePause}
+                          className="rounded-lg border border-[color:var(--cahier-rule)] bg-white px-2 py-0.5 text-xs font-bold text-[color:var(--cahier-ink)]">
+                          {paused ? "▶" : "⏸"}
+                        </button>
+                        <button type="button" onClick={stopPlayback}
+                          className="rounded-lg border border-[color:var(--cahier-rule)] bg-white px-2 py-0.5 text-xs font-bold text-[color:var(--cahier-ink)]">
+                          ⏹
+                        </button>
+                      </>
+                    ) : (
+                      <button type="button" onClick={() => playMsg(i, m.content)} title="Écouter"
+                        className="rounded-lg border border-transparent px-2 py-0.5 text-xs font-bold text-[color:var(--cahier-ink-soft)] hover:border-[color:var(--cahier-rule)] hover:bg-white">
+                        ▶
+                      </button>
+                    )}
+                  </div>
                 </div>
               ))}
               {busy && (
