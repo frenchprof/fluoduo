@@ -20,6 +20,30 @@ const firebaseConfig = {
 
 // Reuse the app across hot-reloads / re-imports.
 export const app: FirebaseApp = getApps().length ? getApp() : initializeApp(firebaseConfig);
+
+// App Check (Dan, 2026-07-10: restrict the API door without adding login
+// friction). reCAPTCHA v3 attests the page invisibly — no puzzles, no login
+// change — and Firestore can then reject requests that didn't come from the
+// real site (config-copied scripts, curl). Activates only when the site key
+// env var is set at build time, so previews and local dev are unaffected.
+// Keep Firestore enforcement OFF in the Firebase console until App Check
+// metrics show ~100% verified traffic (the legacy laf1201 sites share this
+// project and must be attested too before enforcing).
+const APPCHECK_KEY = process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_KEY;
+if (typeof window !== "undefined" && APPCHECK_KEY) {
+  void import("firebase/app-check").then(({ initializeAppCheck, ReCaptchaV3Provider }) => {
+    try {
+      initializeAppCheck(app, {
+        provider: new ReCaptchaV3Provider(APPCHECK_KEY),
+        isTokenAutoRefreshEnabled: true,
+      });
+    } catch {
+      // Already initialised (hot reload) or provider hiccup — the app still
+      // works; requests just go out unattested.
+    }
+  });
+}
+
 export const auth: Auth = getAuth(app);
 // db lives in ./db — see that file for why it must NOT be exported from here.
 
