@@ -107,31 +107,34 @@ export default function TutorPage() {
   // balloons by talking instead of by typing"). Browser SpeechRecognition,
   // fr-FR: the pedagogical point is producing FRENCH speech. Hidden where
   // the API doesn't exist (Firefox).
-  const [recording, setRecording] = useState(false);
+  const [recording, setRecording] = useState<"fr-FR" | "en-US" | null>(null);
   const [sttAvailable, setSttAvailable] = useState(false);
   const recRef = useRef<SpeechRecognitionLike | null>(null);
   useEffect(() => { setSttAvailable(getRecognizer() !== null); }, []);
 
-  function toggleMic() {
+  /** One mic per language (Dan, 2026-07-13: "separate STT buttons for
+   *  English and for French") — tapping the active mic stops; tapping the
+   *  other switches language for the next utterance. */
+  function toggleMic(lang: "fr-FR" | "en-US") {
     if (recording) {
       recRef.current?.stop();
-      return;
+      if (recording === lang) return; // same mic: just stop
     }
     const rec = getRecognizer();
     if (!rec) return;
     window.speechSynthesis?.cancel(); // don't transcribe our own TTS
     const base = input.trim();
-    rec.lang = "fr-FR";
+    rec.lang = lang;
     rec.interimResults = true;
     rec.continuous = false; // one utterance; stops at the natural pause
     rec.onresult = (e) => {
       const heard = Array.from({ length: e.results.length }, (_, k) => e.results[k][0]?.transcript ?? "").join("");
       setInput(base ? `${base} ${heard}` : heard);
     };
-    rec.onend = () => { setRecording(false); recRef.current = null; taRef.current?.focus(); };
-    rec.onerror = () => { setRecording(false); recRef.current = null; };
+    rec.onend = () => { setRecording(null); recRef.current = null; taRef.current?.focus(); };
+    rec.onerror = () => { setRecording(null); recRef.current = null; };
     recRef.current = rec;
-    setRecording(true);
+    setRecording(lang);
     rec.start();
   }
 
@@ -340,7 +343,7 @@ export default function TutorPage() {
                 value={input}
                 onChange={(e) => { setInput(e.target.value); autoGrow(e.target); }}
                 onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void send(); } }}
-                placeholder="Type something. Press Enter to send, or Shift-Enter for line-break"
+                placeholder={"Type something or say something via the voice function.\nPress \u23CE to send; Shift + \u23CE for line break."}
                 rows={1}
                 /* NB: not .cahier-answer — that pins height:30px!important, which
                    would kill grow/resize. AccentBar still shows via lang="fr". */
@@ -348,15 +351,26 @@ export default function TutorPage() {
                 autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
               />
               {sttAvailable && (
-                <button
-                  type="button"
-                  onClick={toggleMic}
-                  title={recording ? "Arrêter la dictée" : "Parler au lieu de taper (français)"}
-                  aria-pressed={recording}
-                  className={`cahier-btn font-black ${recording ? "!border-[#d33131] !bg-[#ff4b4b] !text-white animate-pulse" : ""}`}
-                >
-                  🎤
-                </button>
+                <>
+                  <button
+                    type="button"
+                    onClick={() => toggleMic("fr-FR")}
+                    title={recording === "fr-FR" ? "Arrêter la dictée" : "Dicter en français"}
+                    aria-pressed={recording === "fr-FR"}
+                    className={`cahier-btn font-black ${recording === "fr-FR" ? "!border-[#d33131] !bg-[#ff4b4b] !text-white animate-pulse" : ""}`}
+                  >
+                    🎤🇫🇷
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => toggleMic("en-US")}
+                    title={recording === "en-US" ? "Stop dictating" : "Dictate in English"}
+                    aria-pressed={recording === "en-US"}
+                    className={`cahier-btn font-black ${recording === "en-US" ? "!border-[#d33131] !bg-[#ff4b4b] !text-white animate-pulse" : ""}`}
+                  >
+                    🎤🇬🇧
+                  </button>
+                </>
               )}
               <button type="submit" disabled={busy || !input.trim()} className="cahier-btn cahier-btn-accent font-black disabled:opacity-40">
                 Envoyer
