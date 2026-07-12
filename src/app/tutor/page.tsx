@@ -178,7 +178,7 @@ export default function TutorPage() {
                 value={input}
                 onChange={(e) => { setInput(e.target.value); autoGrow(e.target); }}
                 onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void send(); } }}
-                placeholder="Écrivez en français ou posez une question…  (Entrée = envoyer · Maj+Entrée = nouvelle ligne)"
+                placeholder="Type something. Press Enter to send, or Shift-Enter for line-break"
                 rows={1}
                 /* NB: not .cahier-answer — that pins height:30px!important, which
                    would kill grow/resize. AccentBar still shows via lang="fr". */

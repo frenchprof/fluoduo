@@ -94,7 +94,12 @@ export async function onRequestPost(context) {
   }
 
   const courseText = (await fetchCourseContext(env)) || COURSE_FALLBACK;
-  const systemContent = `${SYSTEM_PROMPT}\n\nCLASS SITE (from ${(env && env.TUTOR_SOURCE_URL) || DEFAULT_SOURCE} — schedule, tests, deadlines, announcements). Use it for course-logistics questions; if the answer isn't here, say so.\n---\n${courseText}\n---`;
+  // Today's date in the class's timezone — without it the model can't turn
+  // the schedule into "Quiz 2 is THIS Wednesday" (Dan, 2026-07-13).
+  const today = new Date().toLocaleDateString("en-SG", {
+    timeZone: "Asia/Singapore", weekday: "long", year: "numeric", month: "long", day: "numeric",
+  });
+  const systemContent = `${SYSTEM_PROMPT}\n\nTODAY is ${today} (Singapore). Use this with the schedule below: when a test, quiz or deadline is coming up soon, remind the learner of it when relevant (e.g. at the start of a conversation or when they ask what to revise) — with the exact date and what it covers. Never invent events not in the schedule.\n\nCLASS SITE (from ${(env && env.TUTOR_SOURCE_URL) || DEFAULT_SOURCE} — schedule, tests, deadlines, announcements). Use it for course-logistics questions; if the answer isn't here, say so.\n---\n${courseText}\n---`;
 
   // OpenRouter uses OpenAI format: system prompt goes INSIDE the messages array
   const apiMessages = [
