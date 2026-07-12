@@ -50,7 +50,16 @@ export default function TutorPage() {
         setOffline(true);
         return;
       }
-      const data = await r.json().catch(() => null);
+     // Read the raw text first so we never crash on bad JSON
+      const rawText = await r.text();
+      let data;
+      try {
+        data = JSON.parse(rawText);
+      } catch (e) {
+        setMessages((m) => [...m, { role: "assistant", content: `DEBUG RAW RESPONSE: ${rawText.slice(0, 500)}` }]);
+        return;
+      }
+
       if (!r.ok || !data?.reply) {
         const errorMsg = data?.error || `Status ${r.status}`;
         setMessages((m) => [...m, { role: "assistant", content: `DEBUG ERROR: ${errorMsg}` }]);
