@@ -2,19 +2,17 @@
  * AI tutor backend — a Cloudflare Pages Function (deployed automatically with
  * the site; NOT part of the Next.js static export, hence plain .js outside
  * src/). Ported concept from the laf1201 tutor (Dan, 2026-07-05).
- * Provider: Mistral (Dan, 2026-07-10: "Mistral as my AI tool on FluoLingo").
+ * Updated to use OpenRouter.ai for API routing.
  *
- * SETUP (Dan): console.mistral.ai → API keys → create a key, then Cloudflare
- * dashboard → the Pages project → Settings → Environment variables → add
- * MISTRAL_API_KEY (encrypted, Production). Until then the endpoint answers
- * 503 and the /tutor page shows its "not wired up yet" card.
+ * SETUP (Dan): Cloudflare dashboard → the Pages project → Settings →
+ * Environment variables → add ANTHROPIC_API_KEY (Production) with your
+ * OpenRouter key value. Until then the endpoint answers 503 and the /tutor
+ * page shows its "not wired up yet" card.
  *
  * Contract: POST /api/tutor  { messages: [{ role: "user"|"assistant", content: string }] }
  *           → 200 { reply }  |  503 { error: "not-configured" }  |  502 { error }
  */
 
-// Edit freely — this is the tutor's whole personality. Replace with the
-// laf1201 tutor prompt (or merge the two) when Dan digs it out.
 const SYSTEM_PROMPT = `You are the FluoLingo tutor for LAF1201 (French 1, A1 beginners) — the class companion of Dr Chan's course.
 The course is organised as 50 can-do objectives across Unité 0-4: introductions, tu/vous, alphabet, numbers, dates, colours, nationalities, likes (aimer/faire/aller), negation (ne…pas de vs le/la/les), food & partitives, café ordering, directions, weather, time.
 Rules:
@@ -25,18 +23,11 @@ Rules:
 - Never do graded work for them; coach them to produce the French themselves.
 - For course logistics — the schedule, tests/quizzes, deadlines, what a test covers, announcements — answer from the CLASS SITE reference below when it's there. If the reference doesn't contain the answer, say you couldn't find it on the class site and suggest checking with Dr Chan; don't invent dates or test coverage.`;
 
-// Mistral's flagship — the strongest fit for French grammar, correction and
-// tutoring. Downshift to "mistral-medium-latest" if cost ever matters.
-const MODEL = "mistral-large-latest";
+// OpenRouter model ID — must match EXACTLY what openrouter.ai/models shows
+const MODEL = "anthropic/claude-3.5-sonnet";
 
-// The class site the tutor reads for schedule / test / announcement questions
-// (Dan, 2026-07-07). Overridable via env so it can be re-pointed without a
-// redeploy. Fetched server-side by the Worker (not the browser) and edge-cached.
 const DEFAULT_SOURCE = "https://st2fr26.withdrchan.com/";
 
-// Static snapshot of the key course facts — used only if the live fetch fails
-// or returns nothing, so schedule/test questions still get answered. The live
-// site (above) is preferred and keeps announcements/word-of-day current.
 const COURSE_FALLBACK = `LAF1201 French 1 — Special Term 2, 2025/26 (NUS, Centre for Language Studies). 22 June → 29 July 2026, Mondays & Wednesdays 1pm–4pm, room AS8-04-01. 100% continuous assessment — NO final exam.
 Weights: Tests (Reading+Writing) 40% · Oral (Listening+Speaking) 35% · Quizzes 10% · Homework (e-learning + group project) 10% · Attendance & participation 5%.
 Schedule (unit coverage + assessments):
@@ -74,7 +65,7 @@ async function fetchCourseContext(env) {
       .replace(/&gt;/gi, ">")
       .replace(/\s+/g, " ")
       .trim();
-    return text.slice(0, 24000); // bound the prompt spend (the class site is ~18k)
+    return text.slice(0, 24000);
   } catch {
     return "";
   }
@@ -82,7 +73,7 @@ async function fetchCourseContext(env) {
 
 export async function onRequestPost(context) {
   const { request, env } = context;
-  if (!env.MISTRAL_API_KEY) {
+  if (!env.ANTHROPIC_API_KEY) {
     return json({ error: "not-configured" }, 503);
   }
 
@@ -93,7 +84,6 @@ export async function onRequestPost(context) {
     return json({ error: "bad-json" }, 400);
   }
   const raw = Array.isArray(body && body.messages) ? body.messages : [];
-  // Hard caps: this endpoint is public on the site, so bound the spend.
   const messages = raw
     .slice(-20)
     .filter((m) => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string")
@@ -103,28 +93,38 @@ export async function onRequestPost(context) {
   }
 
   const courseText = (await fetchCourseContext(env)) || COURSE_FALLBACK;
-  const system = `${SYSTEM_PROMPT}\n\nCLASS SITE (from ${(env && env.TUTOR_SOURCE_URL) || DEFAULT_SOURCE} — schedule, tests, deadlines, announcements). Use it for course-logistics questions; if the answer isn't here, say so.\n---\n${courseText}\n---`;
+  const systemContent = `${SYSTEM_PROMPT}\n\nCLASS SITE (from ${(env && env.TUTOR_SOURCE_URL) || DEFAULT_SOURCE} — schedule, tests, deadlines, announcements). Use it for course-logistics questions; if the answer isn't here, say so.\n---\n${courseText}\n---`;
+
+  // OpenRouter uses OpenAI format: system prompt goes INSIDE the messages array
+  const apiMessages = [
+    { role: "system", content: systemContent },
+    ...messages,
+  ];
 
   try {
-    const r = await fetch("https://api.mistral.ai/v1/chat/completions", {
+    const r = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        authorization: "Bearer " + env.MISTRAL_API_KEY,
+        "Authorization": `Bearer ${env.ANTHROPIC_API_KEY}`,
       },
       body: JSON.stringify({
         model: MODEL,
         max_tokens: 700,
-        messages: [{ role: "system", content: system }, ...messages],
+        messages: apiMessages,
       }),
     });
     if (!r.ok) {
-      return json({ error: "upstream-" + r.status }, 502);
+      const errText = await r.text();
+      console.error("OpenRouter upstream error:", r.status, errText);
+      return json({ error: "upstream-" + r.status, detail: errText }, 502);
     }
     const data = await r.json();
-    const reply = ((data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || "").trim();
+    // OpenRouter response: data.choices[0].message.content  (NOT data.content[0].text)
+    const reply = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content || "").trim();
     return json({ reply: reply || "…" });
-  } catch {
+  } catch (e) {
+    console.error("Fetch to OpenRouter failed:", e);
     return json({ error: "upstream-unreachable" }, 502);
   }
 }
