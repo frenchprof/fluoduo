@@ -260,9 +260,21 @@ export default function SioModal({
               </span>
               <h2 className="fluo-readable mt-1 text-xl font-bold text-[color:var(--fluo-ink)]">{sio.topic}</h2>
             </div>
-            <button ref={closeRef} type="button" onClick={onClose} className="fluo-btn fluo-btn-sm" aria-label="Close">
-              ✕
-            </button>
+            <div className="flex items-center gap-1.5">
+              {/* Escape hatch from the floating window to the SIO's own page
+                  (Dan, 2026-07-12: "Expand to a full page link at the top"). */}
+              <Link
+                href={`/sio/${sio.id}`}
+                className="fluo-btn fluo-btn-sm"
+                aria-label="Ouvrir en pleine page"
+                title="Ouvrir en pleine page"
+              >
+                ⤢
+              </Link>
+              <button ref={closeRef} type="button" onClick={onClose} className="fluo-btn fluo-btn-sm" aria-label="Close">
+                ✕
+              </button>
+            </div>
           </div>
           {/* narrow screens: the flaps as a row under the header */}
           {tabs && tabs.length > 0 && (

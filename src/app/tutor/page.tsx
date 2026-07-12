@@ -118,7 +118,10 @@ export default function TutorPage() {
           </div>
         ) : (
           <>
-            <div className="flex max-h-[55vh] flex-col gap-2 overflow-y-auto rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
+            {/* The conversation scrolls INSIDE this box (intended: the input
+                stays reachable below) — but let it use the real viewport
+                height instead of a stingy 55vh (Dan, 2026-07-12). */}
+            <div className="flex max-h-[calc(100dvh-16rem)] min-h-[16rem] flex-col gap-2 overflow-y-auto rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
               {messages.map((m, i) => (
                 <div key={i} className={`flex flex-col ${m.role === "user" ? "items-end" : "items-start"}`}>
                   <button
