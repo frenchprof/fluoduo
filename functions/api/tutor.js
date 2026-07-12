@@ -2,6 +2,7 @@
  * AI tutor backend — a Cloudflare Pages Function (deployed automatically with
  * the site; NOT part of the Next.js static export, hence plain .js outside
  * src/). Ported concept from the laf1201 tutor (Dan, 2026-07-05).
+ * Updated to use OpenRouter.ai for API routing.
  *
  * SETUP (Dan): Cloudflare dashboard → the Pages project → Settings →
  * Environment variables → add ANTHROPIC_API_KEY (Production). Until then the
@@ -23,7 +24,8 @@ Rules:
 - Never do graded work for them; coach them to produce the French themselves.
 - For course logistics — the schedule, tests/quizzes, deadlines, what a test covers, announcements — answer from the CLASS SITE reference below when it's there. If the reference doesn't contain the answer, say you couldn't find it on the class site and suggest checking with Dr Chan; don't invent dates or test coverage.`;
 
-const MODEL = "claude-sonnet-5";
+// OpenRouter format: provider/model-name
+const MODEL = "anthropic/claude-3.5-sonnet";
 
 // The class site the tutor reads for schedule / test / announcement questions
 // (Dan, 2026-07-07). Overridable via env so it can be re-pointed without a
@@ -102,30 +104,36 @@ export async function onRequestPost(context) {
   const system = `${SYSTEM_PROMPT}\n\nCLASS SITE (from ${(env && env.TUTOR_SOURCE_URL) || DEFAULT_SOURCE} — schedule, tests, deadlines, announcements). Use it for course-logistics questions; if the answer isn't here, say so.\n---\n${courseText}\n---`;
 
   try {
-    const r = await fetch("https://api.anthropic.com/v1/messages", {
+    // --- OPENROUTER API CALL ---
+    const r = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "x-api-key": env.ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
+        "Authorization": `Bearer ${env.ANTHROPIC_API_KEY}`,
+        "HTTP-Referer": "https://fluolingo.pages.dev", // Optional, helps OpenRouter with analytics
+        "X-Title": "FluoLingo Tutor", // Optional, identifies your app
       },
       body: JSON.stringify({
         model: MODEL,
         max_tokens: 700,
-        system,
-        messages,
+        // OpenRouter uses the OpenAI standard format: system prompt goes IN the messages array
+        messages: [
+          { role: "system", content: system },
+          ...messages
+        ],
       }),
     });
+    
     if (!r.ok) {
       return json({ error: "upstream-" + r.status }, 502);
     }
+    
     const data = await r.json();
-    const reply = (data.content || [])
-      .filter((b) => b.type === "text")
-      .map((b) => b.text)
-      .join("\n")
-      .trim();
-    return json({ reply: reply || "…" });
+    
+    // OpenRouter response format: data.choices[0].message.content
+    const reply = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || "…";
+    
+    return json({ reply: reply.trim() });
   } catch {
     return json({ error: "upstream-unreachable" }, 502);
   }
