@@ -32,7 +32,7 @@ type SpeakOpts = {
    * data is unreliable, so this prefers a matching named voice when present
    * and always sets pitch (the one dependable differentiator).
    */
-  gender?: "f" | "m";
+  gender?: "f" | "m" | "kid";
   /** Speaking rate override — e.g. 0.6 for the 🐌 slow-playback buttons. */
   rate?: number;
 };
@@ -53,18 +53,45 @@ const FR_LETTER_NAME: Record<string, string> = {
 const FEMALE_VOICE = /amelie|audrey|aurélie|aurelie|marie|julie|hortense|virginie|chantal|léa|lea|female|femme|woman/i;
 const MALE_VOICE = /thomas|nicolas|paul|claude|henri|mathieu|male|homme|man/i;
 
-/** Pick a language- and gender-appropriate voice + pitch for an utterance. */
-function applyVoiceAndPitch(u: SpeechSynthesisUtterance, lang: string, gender?: "f" | "m", rate?: number) {
-  const voices = window.speechSynthesis.getVoices();
-  const inLang = voices.filter(
+// ── Site-wide voice cast (Dan, 2026-07-10: "two at most three voices — at
+// least one male and one female for conversations, maybe a childisher third
+// — throughout all the website") ────────────────────────────────────────────
+// ONE stable female and ONE stable male voice are chosen per device and used
+// by every page and game; the "kid" profile is the female voice pitched up.
+// True sameness ACROSS devices would need server-generated audio — browsers
+// ship different voices — but on any given device the cast never varies.
+// The pick prefers a gender-named voice, then an enhanced/premium build of it.
+const voiceCache = new Map<string, SpeechSynthesisVoice | null>();
+if (typeof window !== "undefined") {
+  // Voices load asynchronously — a cast chosen from an early partial list
+  // must be re-chosen once the full list arrives.
+  window.speechSynthesis?.addEventListener("voiceschanged", () => voiceCache.clear());
+}
+function castVoice(lang: string, profile: "f" | "m"): SpeechSynthesisVoice | null {
+  const key = `${lang.split("-")[0]}:${profile}`;
+  const hit = voiceCache.get(key);
+  if (hit !== undefined) return hit;
+  const inLang = window.speechSynthesis.getVoices().filter(
     (x) => x.lang === lang || x.lang.startsWith(lang.split("-")[0]),
   );
-  const rx = gender === "f" ? FEMALE_VOICE : gender === "m" ? MALE_VOICE : null;
-  const v = (rx && inLang.find((x) => rx.test(x.name))) || inLang[0];
+  const rx = profile === "f" ? FEMALE_VOICE : MALE_VOICE;
+  const named = inLang.filter((x) => rx.test(x.name));
+  const pool = named.length ? named : inLang;
+  const v = pool.find((x) => /premium|enhanced|natural|neural/i.test(x.name)) ?? pool[0] ?? null;
+  voiceCache.set(key, v);
+  return v;
+}
+
+/** Pick the cast voice + pitch for an utterance. No gender → the female
+ *  narrator at neutral pitch, so the whole site speaks with one voice. */
+function applyVoiceAndPitch(u: SpeechSynthesisUtterance, lang: string, gender?: "f" | "m" | "kid", rate?: number) {
+  const v = castVoice(lang, gender === "m" ? "m" : "f");
   if (v) u.voice = v;
   u.rate = rate ?? 0.95;
-  // Pitch is the reliable gender cue when a named voice isn't available.
-  u.pitch = gender === "f" ? 1.35 : gender === "m" ? 0.75 : 1;
+  // Pitch is the reliable cue when a device has no gender-named voice:
+  // narrator 1 · femme 1.35 · homme 0.75 · enfant 1.6 (the "childish" third
+  // voice = the female voice pitched up).
+  u.pitch = gender === "kid" ? 1.6 : gender === "f" ? 1.35 : gender === "m" ? 0.75 : 1;
 }
 
 /**
@@ -72,7 +99,7 @@ function applyVoiceAndPitch(u: SpeechSynthesisUtterance, lang: string, gender?: 
  * atelier dialogues' "play all" control. Returns a stop() that cancels the run.
  */
 export function speakSequence(
-  parts: { text: string; gender?: "f" | "m" }[],
+  parts: { text: string; gender?: "f" | "m" | "kid" }[],
   lang = "fr-FR",
   opts: { rate?: number; gapMs?: number } = {},
 ): () => void {
