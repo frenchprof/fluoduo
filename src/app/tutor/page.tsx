@@ -255,7 +255,10 @@ export default function TutorPage() {
             {/* The conversation scrolls INSIDE this box (intended: the input
                 stays reachable below) — but let it use the real viewport
                 height instead of a stingy 55vh (Dan, 2026-07-12). */}
-            <div className="flex max-h-[calc(100dvh-16rem)] min-h-[16rem] flex-col gap-2 overflow-y-auto rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
+            <div
+              className="flex max-h-[calc(100dvh-16rem)] min-h-[16rem] flex-col gap-2.5 overflow-y-auto rounded-2xl border-2 border-[#a8cdf0] p-4 shadow-inner"
+              style={{ background: "linear-gradient(180deg,#eef7ff 0%,#fdf9f0 100%)" }}
+            >
               {messages.map((m, i) => (
                 <div key={i} className={`flex flex-col ${m.role === "user" ? "items-end" : "items-start"}`}>
                   <button
@@ -264,11 +267,14 @@ export default function TutorPage() {
                     // speech switches language exactly there (Dan, 2026-07-12).
                     onClick={() => playMsg(i, m.content)}
                     title="🔊"
-                    className={`max-w-[85%] whitespace-pre-wrap rounded-2xl border-2 px-4 py-2 text-left text-sm leading-relaxed transition hover:brightness-95 ${
+                    className={`max-w-[85%] whitespace-pre-wrap rounded-2xl border-2 px-4 py-2 text-left text-sm leading-relaxed shadow-sm transition hover:brightness-[0.97] ${
                       m.role === "user"
-                        ? "rounded-br-sm border-[color:var(--cahier-ink)] bg-[color:var(--cahier-hl,#eaff00)]/50 text-[color:var(--cahier-ink)]"
-                        : "rounded-bl-sm border-[color:var(--cahier-rule)] bg-white text-[color:var(--cahier-ink)]"
+                        ? "rounded-br-sm border-[#e0b400] text-[color:var(--cahier-ink)]"
+                        : "rounded-bl-sm border-[#a8cdf0] text-[color:var(--cahier-ink)]"
                     }`}
+                    style={m.role === "user"
+                      ? { background: "linear-gradient(180deg,#fff8c4,#ffec80)" }
+                      : { background: "linear-gradient(180deg,#ffffff,#f2f8ff)" }}
                   >
                     {m.role === "assistant" && <span className="mr-1.5" aria-hidden>🤖</span>}
                     {renderBilingual(m.content)}
