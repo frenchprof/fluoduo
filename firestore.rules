@@ -1,22 +1,27 @@
 rules_version = '2';
 // Reconciled rules for the unified laf1201 project (hub · pretest · reviser · FluoLingo).
-// House style: owner-only writes, signed-in collection reads for the leaderboard,
-// admin email allowlist, leaderboard exclusion list.
+// House style: owner-only writes, admin email allowlist, leaderboard exclusion list.
 // Deploy: Firebase console → Firestore → Rules, or `firebase deploy --only firestore:rules`.
 //
-//   users/{uid}                      profile + reviser XP/progress  (owner write, signed-in read)
-//   users/{uid}/attempts/{id}        APPEND-ONLY audit log           (owner create, never edited)
-//   users/{uid}/{sub=**}             pretest state/skills/runs + reviser sessions
-//   leaderboard/{uid}                unified combined-total board    (owner write, signed-in read)
-//   events / authEvents              telemetry                        (signed-in create)
+//   users/{uid}                      profile + reviser XP/progress   (owner read/write, admin read)
+//   users/{uid}/attempts/{id}        APPEND-ONLY audit log            (owner create, never edited)
+//   users/{uid}/responses/{id}       APPEND-ONLY item-level analytics (owner create, shape-checked)
+//   users/{uid}/sessions/{id}        session telemetry                (owner create/update, monotonic)
+//   users/{uid}/{sub=**}             pretest state/skills/runs, srs, notes, reviser sessions
+//   leaderboard/{uid}                unified combined-total board     (owner write, VALUE-CHECKED, signed-in read)
+//   events / authEvents              telemetry                        (signed-in create; events shape-checked)
 //   feedback                         bug reports                      (ANONYMOUS create, shape-checked, admin read)
 //   collections/{id}                 user-created decks               (owner write, public/unlisted read)
 service cloud.firestore {
   match /databases/{database}/documents {
     function isSignedIn() { return request.auth != null; }
     function isOwner(uid) { return isSignedIn() && request.auth.uid == uid; }
+    // email_verified guard: Google sign-in always verifies, but if another
+    // auth provider is ever enabled, an attacker could otherwise mint an
+    // UNVERIFIED token bearing an admin email and pass the allowlist.
     function isAdmin() {
-      return isSignedIn() && request.auth.token.email in [
+      return isSignedIn() && request.auth.token.email_verified == true
+        && request.auth.token.email in [
         "drneilchan@gmail.com", "monsieur.chan@gmail.com", "dan@chank.wang",
         "kaygeedan@gmail.com", "daniel.chan@nus.edu.sg", "kwangguan@gmail.com"
       ];
@@ -31,8 +36,61 @@ service cloud.firestore {
         "azhari619@gmail.com", "clariceteoworking@gmail.com"
       ];
     }
+    function validLeaderboardRow() {
+      return request.resource.data.name is string
+        && request.resource.data.name.size() >= 1
+        && request.resource.data.name.size() <= 60
+        && request.resource.data.xp is int
+        && request.resource.data.xp >= 0
+        && request.resource.data.xp <= 10000000
+        && request.resource.data.level is int
+        && request.resource.data.level >= 1
+        && request.resource.data.level <= 1000
+        && request.resource.data.gems is int
+        && request.resource.data.gems >= 0
+        && request.resource.data.gems <= 1000000
+        && request.resource.data.streak is int
+        && request.resource.data.streak >= 0
+        && request.resource.data.streak <= 100000;
+    }
+    function validSession() {
+      return request.resource.data.keys().hasOnly(
+          ['xp', 'level', 'streak', 'lastStreakDate', 'itemPointer',
+           'startedAt', 'updatedAt', 'durationMs', 'activityId'])
+        && request.resource.data.xp is int
+        && request.resource.data.xp >= 0
+        && request.resource.data.xp <= 10000000
+        && request.resource.data.level is int
+        && request.resource.data.level >= 1
+        && request.resource.data.level <= 1000
+        && request.resource.data.streak is int
+        && request.resource.data.streak >= 0
+        && request.resource.data.streak <= 100000
+        && (!('durationMs' in request.resource.data)
+            || (request.resource.data.durationMs is int
+                && request.resource.data.durationMs >= 0
+                && request.resource.data.durationMs <= 86400000))
+        && (!('activityId' in request.resource.data)
+            || (request.resource.data.activityId is string
+                && request.resource.data.activityId.size() <= 60));
+    }
+    function validDeck() {
+      return request.resource.data.title is string
+        && request.resource.data.title.size() >= 1
+        && request.resource.data.title.size() <= 120
+        && request.resource.data.items is list
+        && request.resource.data.items.size() >= 1
+        && request.resource.data.items.size() <= 500
+        && (!('visibility' in request.resource.data)
+            || request.resource.data.visibility in ['public', 'unlisted', 'private']);
+    }
     match /users/{uid} {
-      allow read:  if isSignedIn();
+      // Owner + admin only. The old "signed-in read" existed for a leaderboard
+      // that now lives in its own collection; leaving it open let any student
+      // enumerate every other student's profile. If a LEGACY site (hub /
+      // pretest / reviser) still lists /users cross-user, it will start
+      // getting permission-denied — loosen back deliberately if that happens.
+      allow read:  if isOwner(uid) || isAdmin();
       allow write: if isOwner(uid);
       // Append-only audit log: attempt records can be created and read, never
       // edited or deleted — a trustworthy history even against the owner.
@@ -41,24 +99,119 @@ service cloud.firestore {
         allow create: if isOwner(uid);
         allow update, delete: if false;
       }
-      // Everything else under the user doc (pretest state/skills/runs, reviser
-      // sessions). The sub[0] guard keeps this wildcard from re-granting the
-      // update/delete the attempts match above just denied (rules are OR-ed).
+      // Item-level learning analytics, APPEND-ONLY and shape-checked. Field
+      // names align with the SRS store (srs.ts): intervalDays + due, so the
+      // response log and the scheduler speak the same language. latencyMs and
+      // givenAnswer are optional analytics fields (fluency curves / error
+      // taxonomy) — validated when present so they can ship later without a
+      // rules redeploy.
+      match /responses/{responseId} {
+        allow read:   if isOwner(uid) || isAdmin();
+        allow create: if isOwner(uid)
+          && request.resource.data.keys().hasOnly(
+              ['item', 'attempts', 'status', 'xp', 'timestamp', 'sessionId', 'activityId',
+               'latencyMs', 'givenAnswer', 'intervalDays', 'due'])
+          && request.resource.data.item is string
+          && request.resource.data.item.size() >= 1
+          && request.resource.data.item.size() <= 200
+          && request.resource.data.attempts is list
+          && request.resource.data.attempts.size() >= 1
+          && request.resource.data.attempts.size() <= 20
+          && request.resource.data.status in ['met', 'missed', 'retried', 'mastered']
+          && request.resource.data.xp is int
+          && request.resource.data.xp >= 0
+          && request.resource.data.xp <= 100
+          && request.resource.data.timestamp == request.time
+          && (!('sessionId' in request.resource.data)
+              || (request.resource.data.sessionId is string
+                  && request.resource.data.sessionId.size() <= 100))
+          && (!('activityId' in request.resource.data)
+              || (request.resource.data.activityId is string
+                  && request.resource.data.activityId.size() <= 60))
+          && (!('latencyMs' in request.resource.data)
+              || (request.resource.data.latencyMs is int
+                  && request.resource.data.latencyMs >= 0
+                  && request.resource.data.latencyMs <= 3600000))
+          && (!('givenAnswer' in request.resource.data)
+              || (request.resource.data.givenAnswer is string
+                  && request.resource.data.givenAnswer.size() <= 200))
+          && (!('intervalDays' in request.resource.data)
+              || (request.resource.data.intervalDays is number
+                  && request.resource.data.intervalDays >= 0
+                  && request.resource.data.intervalDays <= 3650))
+          && (!('due' in request.resource.data)
+              || (request.resource.data.due is int
+                  && request.resource.data.due >= 0));
+        allow update, delete: if false;
+      }
+      // Session summaries: xp/level only ever rise (a client can't quietly
+      // rewrite history), everything bounded so nobody teleports to 2^53.
+      match /sessions/{sessionId} {
+        allow read:   if isOwner(uid) || isAdmin();
+        allow create: if isOwner(uid) && validSession();
+        allow update: if isOwner(uid) && validSession()
+          && request.resource.data.xp >= resource.data.xp
+          && request.resource.data.level >= resource.data.level;
+        allow delete: if false;
+      }
+      // Everything else under the user doc (pretest state/skills/runs, srs,
+      // notes, reviser sessions). The sub[0] guard keeps this wildcard from
+      // re-granting what the append-only matches above just denied (rules are
+      // OR-ed). NOTE: this perimeter means the shape checks above only bind
+      // collections the honest client writes — admin analytics must read ONLY
+      // the canonical paths (attempts/responses/sessions), never trust
+      // sibling collections a client could invent.
       match /{sub=**} {
         allow read:  if isOwner(uid) || isAdmin();
-        allow write: if isOwner(uid) && sub[0] != 'attempts';
+        allow write: if isOwner(uid)
+          && !(sub[0] in ['attempts', 'responses', 'sessions']);
       }
     }
     match /leaderboard/{uid} {
       allow read:  if isSignedIn();
       // Admins (teachers) are auto-excluded — they shouldn't appear on the
       // student board (Dan, 2026-07-05) — as are the explicit opt-out emails.
-      allow create, update: if isOwner(uid) && !isAdmin() && !isExcludedFromLeaderboard();
+      // VALUE CHECKS on both create and update: this is the most public
+      // surface in the app and was previously the only unvalidated write.
+      // CREATE gets a strict key allowlist (new rows come only from the
+      // current client). UPDATE deliberately does NOT use hasOnly: the app
+      // writes with merge:true onto legacy laf1201 rows that still carry
+      // totalXP etc., so request.resource.data (the post-merge doc) would
+      // fail a strict list — and a denied write makes the client DELETE the
+      // user's own row (its excluded-user fallback). Values are what matter.
+      allow create: if isOwner(uid) && !isAdmin() && !isExcludedFromLeaderboard()
+        && request.resource.data.keys().hasOnly(
+            ['name', 'xp', 'level', 'gems', 'streak', 'updatedAt'])
+        && validLeaderboardRow();
+      allow update: if isOwner(uid) && !isAdmin() && !isExcludedFromLeaderboard()
+        && validLeaderboardRow();
       // Owner may ALWAYS delete their own row — so an excluded user's client
       // can clean up a stale entry it wrote before being excluded.
       allow delete: if isOwner(uid);
     }
-    match /events/{id}     { allow create: if isSignedIn(); allow read: if isAdmin(); }
+    // Usage telemetry (usage.ts): shape-checked so evidence-grade analytics
+    // can't be polluted with arbitrary documents. Exactly the fields logEvent
+    // sends. If a LEGACY site writes events in a different shape, its writes
+    // will start failing silently (logEvent swallows errors) — loosen
+    // deliberately if legacy telemetry matters.
+    match /events/{id} {
+      allow create: if isSignedIn()
+        && request.resource.data.keys().hasOnly(['uid', 'type', 'payload', 'ts', 'ua', 'site'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.type is string
+        && request.resource.data.type.size() >= 1
+        && request.resource.data.type.size() <= 40
+        && request.resource.data.payload is map
+        && request.resource.data.payload.size() <= 20
+        && request.resource.data.ts == request.time
+        && (request.resource.data.ua == null
+            || (request.resource.data.ua is string && request.resource.data.ua.size() <= 400))
+        && (request.resource.data.site == null
+            || (request.resource.data.site is string && request.resource.data.site.size() <= 120));
+      allow read: if isAdmin();
+    }
+    // Written by the LEGACY suite (no writer in this repo) — left unshaped on
+    // purpose; shape-checking a writer we can't see would break it blind.
     match /authEvents/{id} { allow create: if isSignedIn(); allow read: if isAdmin(); }
     // Bug reports: anyone may submit (signed in or not); only admins read/triage.
     // Anonymous create is shape-checked so the open write can't be used to park
@@ -81,7 +234,7 @@ service cloud.firestore {
         && (!('screenshot' in request.resource.data)
             || (request.resource.data.screenshot is string
                 && request.resource.data.screenshot.size() <= 300000));
-      allow read, update: if isAdmin();
+      allow read, update, delete: if isAdmin();
     }
     // Vocabularain hidden language-sorter leaderboard.
     // Anonymous create: open to any visitor (no sign-in required).
@@ -100,25 +253,21 @@ service cloud.firestore {
     }
     // USER-CREATED decks (the custom-deck builder). Curated decks are bundled
     // with the app and never touch Firestore — this collection is only what
-    // learners author themselves. There was NO rule here before, so the
-    // default-deny blocked every save ("Missing or insufficient permissions",
-    // Dan 2026-07-05) even signed-in.
+    // learners author themselves. Update re-applies the create caps (saves
+    // send the full document, so the post-merge doc always has title/items)
+    // and visibility is whitelisted to the schema's three values.
     match /collections/{id} {
       allow read: if resource.data.visibility in ['public', 'unlisted']
         || (isSignedIn() && resource.data.owner == request.auth.uid)
         || isAdmin();
       allow create: if isSignedIn()
         && request.resource.data.owner == request.auth.uid
-        && request.resource.data.title is string
-        && request.resource.data.title.size() >= 1
-        && request.resource.data.title.size() <= 120
-        && request.resource.data.items is list
-        && request.resource.data.items.size() >= 1
-        && request.resource.data.items.size() <= 500;
+        && validDeck();
       // Owner may edit but never reassign ownership.
       allow update: if isSignedIn()
         && resource.data.owner == request.auth.uid
-        && request.resource.data.owner == resource.data.owner;
+        && request.resource.data.owner == resource.data.owner
+        && validDeck();
       allow delete: if isSignedIn() && resource.data.owner == request.auth.uid;
     }
     // Explicit default-deny for anything unmatched (self-documenting; Firestore
