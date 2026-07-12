@@ -24,7 +24,7 @@ Rules:
 - For course logistics — the schedule, tests/quizzes, deadlines, what a test covers, announcements — answer from the CLASS SITE reference below when it's there. If the reference doesn't contain the answer, say you couldn't find it on the class site and suggest checking with Dr Chan; don't invent dates or test coverage.`;
 
 // OpenRouter model ID — must match EXACTLY what openrouter.ai/models shows
-const MODEL = "anthropic/claude-3.5-sonnet";
+const MODEL = "mistralai/mistral-large-2512";
 
 const DEFAULT_SOURCE = "https://st2fr26.withdrchan.com/";
 
