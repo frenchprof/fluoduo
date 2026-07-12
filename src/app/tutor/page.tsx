@@ -16,7 +16,7 @@ import { speakMixed, pauseSpeech, resumeSpeech, isSpeechPaused } from "@/games/l
 type ChatMsg = { role: "user" | "assistant"; content: string };
 
 const GREETING =
-  "Bonjour ! 👋 I'm your French tutor. Ask me anything about the course — or just write a sentence in French and I'll help you polish it.";
+  "Bonjour ! 👋 I'm your French tutor. Ask me anything about the course, or just write a sentence in French and I'll help you polish it.";
 
 /** Grow the textarea to fit its content (up to a cap); the user can still drag
  *  it taller via the resize handle. */

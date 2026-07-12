@@ -232,11 +232,17 @@ const FR_HINTS = new Set([
   "très", "bien", "merci", "bonjour", "salut", "oui", "non", "voilà", "aussi",
   "j'ai", "c'est", "n'est", "qu'est-ce", "s'il", "aime", "aimes", "vais", "vas", "va",
   "bonne", "bon", "allez", "alors", "voici", "comme", "moi", "toi", "ça",
+  "peux", "peut", "veux", "veut", "fais", "fait", "faites", "dois", "doit", "où",
 ]);
 function guessLang(segment: string): "fr-FR" | "en-US" {
   // Elision (j', l', qu', n'…) is French; English apostrophes are 's / n't.
   if (/\b[jlcdnstm]['’](?![st]\b)|\bqu['’]/i.test(segment)) return "fr-FR";
-  const words = segment.toLowerCase().match(/[a-zà-ÿ'’-]+/g) ?? [];
+  // Subject-pronoun inversion (« peux-tu », « est-il », « allons-nous ») is
+  // unmistakably French — the hyphen hid the pronoun from the word test
+  // (Dan, 2026-07-13: "why does it think peux-tu dessiner is in english").
+  if (/-(tu|vous|je|il|elle|on|nous|ils|elles|toi|moi|ce)\b/i.test(segment)) return "fr-FR";
+  // Split AT hyphens so compounds contribute their parts.
+  const words = segment.toLowerCase().match(/[a-zà-ÿ'’]+/g) ?? [];
   if (words.length === 0) return "en-US";
   // A diacritic marks THAT WORD as French, not the whole segment — "We use
   // au because cinéma is masculine" is an English sentence quoting French.

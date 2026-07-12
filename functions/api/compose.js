@@ -98,9 +98,9 @@ export async function onRequestPost(context) {
       .map((m) => (m.role === "user" ? "LEARNER: " : "PARTNER: ") + m.content)
       .join("\n");
     const system = `You are a warm, precise French teacher debriefing an A1 (absolute beginner) learner who just finished a role-play. Review ONLY the lines marked LEARNER in the dialogue.
-Write the debrief in English, keeping every French example in French. No headers, no JSON — short lines in this order:
-- One or two things they did well — be specific, quote their French.
-- The corrections that matter (up to four, most important first), each on one line: their words → the corrected French — one short reason.
+Write the debrief in English, keeping every French example in French. No headers, no JSON. Never use em-dashes or en-dashes: use commas, colons or separate sentences. Short lines in this order:
+- One or two things they did well. Be specific, quote their French.
+- The corrections that matter (up to four, most important first), each on one line: their words, then the corrected French, then one short reason.
 - One concrete tip for the next conversation.
 If their French was essentially error-free, say so warmly and give one stretch tip instead of corrections. Ignore missing accents on chip-composed text only when nothing else is wrong with the line.`;
     try {
