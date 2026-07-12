@@ -70,6 +70,12 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
   const [aiMode, setAiMode] = useState<"unknown" | "ai" | "rules">("unknown");
   const [aiDone, setAiDone] = useState(false);
   const [busy, setBusy] = useState(false);
+  // Post-roleplay debrief (Dan, 2026-07-10: the roleplay carried on through
+  // serious mistakes with no learning points at the end). Fetched once the
+  // dialogue is done; the persona never breaks character — the BILAN does
+  // the teaching. English + French mixed, so it is NEVER wired to TTS.
+  const [debrief, setDebrief] = useState<string | null>(null);
+  const [debriefBusy, setDebriefBusy] = useState(false);
   // aiOnly scenes have no rule engine: if the backend is missing we show a
   // friendly notice instead of silently accepting nonsense.
   const [unavailable, setUnavailable] = useState(false);
@@ -85,8 +91,36 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
     setTyped("");
     setNudge(null);
     setAiDone(false);
+    setDebrief(null);
+    setDebriefBusy(false);
     speak(opening, lang, { gender: personaVoice });
   };
+
+  // The learner can ask for the bilan any time; it also auto-loads when the
+  // dialogue ends (see the recap card). Works whenever the AI backend is up —
+  // including café sessions that ran on the rule engine.
+  async function fetchDebrief(transcript: Msg[]) {
+    if (debriefBusy || transcript.length < 2) return;
+    setDebriefBusy(true);
+    try {
+      const r = await fetch("/api/compose", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          scene: bank.id,
+          debrief: true,
+          messages: transcript.map((m) => ({ role: m.who === "waiter" ? "assistant" : "user", content: m.text })),
+        }),
+      });
+      const data = (await r.json().catch(() => null)) as { reply?: string } | null;
+      if (r.ok && data?.reply) setDebrief(data.reply);
+      else setDebrief(null);
+    } catch {
+      setDebrief(null);
+    } finally {
+      setDebriefBusy(false);
+    }
+  }
 
   useEffect(() => {
     if (startedRef.current) return; // survive dev double-mount
@@ -98,10 +132,16 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
     endRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }, [messages]);
 
+  // Dialogue over → pull the teacher's bilan automatically.
+  const done = stage === "done" || aiDone;
+  useEffect(() => {
+    if (done && debrief === null && !debriefBusy && messages.length >= 2) void fetchDebrief(messages);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [done]);
+
   // The learner's reply = tapped chips + anything they typed.
   const draftText = [joinChips(draft), typed.trim()].filter(Boolean).join(" ").trim();
   const total = ordered.reduce((sum, p) => sum + (CAFE_PRICES[p] ?? 0), 0);
-  const done = stage === "done" || aiDone;
 
   const itemsIn = (text: string): string[] =>
     [...PLATS, ...BOISSONS].flatMap((p) => Array<string>(countIn(text, p)).fill(p));
@@ -321,6 +361,19 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
             </>
           ) : (
             <h2 lang="fr" className="text-lg font-black">👋 Merci, à bientôt !</h2>
+          )}
+          {/* Le bilan du prof — the debrief the roleplay itself never gives
+              (the persona stays in character; the teaching lands here).
+              English + French mixed, so deliberately NOT a speak button. */}
+          {(debrief || debriefBusy) && (
+            <div className="mt-4 rounded-xl border-2 border-dashed border-[color:var(--dlg-strong)] bg-[var(--dlg-persona-bg)] p-4">
+              <h3 className="text-sm font-black uppercase tracking-widest text-[color:var(--dlg-deep)]">✍️ Le bilan du prof</h3>
+              {debriefBusy ? (
+                <p className="mt-2 animate-pulse text-sm">Je relis votre conversation…</p>
+              ) : (
+                <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed">{debrief}</p>
+              )}
+            </div>
           )}
           <div className="mt-4 flex flex-wrap gap-2">
             <button

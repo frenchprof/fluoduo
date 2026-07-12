@@ -308,8 +308,13 @@ function loop() {
     scheduleStep(song, step, nextTime);
     nextTime += (60 / song.bpm / 4) * tempoScale;
     step = (step + 1) % song.len!;
-    // A ↔ A′: swap to the half-time variation (and back) each full pass.
-    if (step === 0 && TWIN[current]) current = TWIN[current];
+    // base → half-time → hybrid → base…: rotate every HALF pass (64 steps ≈
+    // 9 s), not every full one — at a full 128-step pass the first variation
+    // only arrived after ~18 s and games that restart the tune on phase
+    // changes reset to base, so the variations were practically never heard
+    // (Dan, 2026-07-10). All variants share the same 128-step grid, so a
+    // mid-pass swap stays in time.
+    if (step % 64 === 0 && TWIN[current]) current = TWIN[current];
   }
 }
 

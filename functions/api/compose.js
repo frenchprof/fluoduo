@@ -72,6 +72,47 @@ export async function onRequestPost(context) {
     .slice(-24)
     .filter((m) => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string")
     .map((m) => ({ role: m.role, content: m.content.slice(0, 600) }));
+
+  // DEBRIEF mode (Dan, 2026-07-10: the waiter roleplays through serious
+  // mistakes and there were "neither debrief nor learning points"). After the
+  // roleplay the client sends { debrief: true, messages } and gets back a
+  // teacher's bilan of the LEARNER's lines: what worked, the corrections that
+  // matter, one tip. Roleplay stays pure in-character; the teaching happens here.
+  if (body && body.debrief === true) {
+    if (!messages.length) return json({ error: "no-user-message" }, 400);
+    const transcript = messages
+      .map((m) => (m.role === "user" ? "LEARNER: " : "PARTNER: ") + m.content)
+      .join("\n");
+    const system = `You are a warm, precise French teacher debriefing an A1 (absolute beginner) learner who just finished a role-play. Review ONLY the lines marked LEARNER in the dialogue.
+Write the debrief in English, keeping every French example in French. No headers, no JSON — short lines in this order:
+- One or two things they did well — be specific, quote their French.
+- The corrections that matter (up to four, most important first), each on one line: their words → the corrected French — one short reason.
+- One concrete tip for the next conversation.
+If their French was essentially error-free, say so warmly and give one stretch tip instead of corrections. Ignore missing accents on chip-composed text only when nothing else is wrong with the line.`;
+    try {
+      const r = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-api-key": env.ANTHROPIC_API_KEY,
+          "anthropic-version": "2023-06-01",
+        },
+        body: JSON.stringify({
+          model: "claude-sonnet-5",
+          max_tokens: 500,
+          system,
+          messages: [{ role: "user", content: "DIALOGUE:\n" + transcript }],
+        }),
+      });
+      if (!r.ok) return json({ error: "upstream-" + r.status }, 502);
+      const data = await r.json();
+      const reply = (data.content || []).filter((b) => b.type === "text").map((b) => b.text).join("\n").trim();
+      return json({ reply: reply || "…", done: true });
+    } catch {
+      return json({ error: "upstream-unreachable" }, 502);
+    }
+  }
+
   if (!messages.length || messages[messages.length - 1].role !== "user") {
     return json({ error: "no-user-message" }, 400);
   }

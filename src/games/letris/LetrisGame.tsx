@@ -6,6 +6,7 @@ import { resolveBoard } from "./resolve";
 import { chiptune } from "@/games/audio/chiptune";
 import { sfx } from "@/games/audio/sfx";
 import CreditsSplash from "@/games/CreditsSplash";
+import SoundControl from "@/components/SoundControl";
 
 export type LetrisCategory = {
   key: string;
@@ -169,21 +170,15 @@ export default function LetrisGame({
   const [score, setScore] = useState(0);
   const [paused, setPaused] = useState(false);
   const [music, setMusic] = useState(false);
-  // One volume for music AND sound effects — same chiptune master gain and
-  // localStorage key as Lexicalator's slider (Dan, 2026-07-05: "the volume
-  // button is missing in vocabularain").
-  const [volume, setVolumeState] = useState(0.6);
+  // Apply the shared volume (fluolingo:volume) on mount; the slider itself
+  // now lives inside the SoundControl popover in the HUD (Dan, 2026-07-10:
+  // the game interface was missing the full sound controls).
   useEffect(() => {
     try {
       const v = parseFloat(window.localStorage.getItem("fluolingo:volume") ?? "");
-      if (!Number.isNaN(v)) { setVolumeState(v); chiptune.setVolume(v); }
+      if (!Number.isNaN(v)) chiptune.setVolume(v);
     } catch {}
   }, []);
-  function changeVolume(v: number) {
-    setVolumeState(v);
-    chiptune.setVolume(v);
-    try { window.localStorage.setItem("fluolingo:volume", String(v)); } catch {}
-  }
   const [tts, setTts] = useState(true);
   const [phase, setPhase] = useState<Phase>("day");
   const [phaseMsg, setPhaseMsg] = useState<PhaseMsg | null>(null);
@@ -546,12 +541,9 @@ export default function LetrisGame({
             if (chiptune.playing()) { chiptune.stop(); setMusic(false); }
             else { const key = phase === "storm" ? "storm" : "letris"; chiptune.play(key); if (phase === "night") chiptune.setTempoScale(NIGHT_MUSIC_SLOW); setMusic(true); }
           }} title="Music" className={pillCls}>{music ? "🔊" : "🔇"}</button>
-          <input
-            type="range" min={0} max={1} step={0.05} value={volume}
-            onChange={(e) => changeVolume(Number(e.target.value))}
-            aria-label="Volume" title="Volume — music and sounds"
-            className="h-1.5 w-20 cursor-pointer accent-sky-500"
-          />
+          {/* Full sound popover — 🗣 voix / 🎵 musique / 🔔 effets + volume —
+              in the game itself, not only the site top bar (Dan, 2026-07-10). */}
+          <SoundControl />
           {speech && (
             <button type="button" onClick={() => setTts((v) => !v)} title="Voice" className={pillCls}>
               {tts ? "🗣️" : "🤫"}

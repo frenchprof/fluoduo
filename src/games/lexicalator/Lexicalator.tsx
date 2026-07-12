@@ -19,6 +19,7 @@ import { speak } from "@/games/letris/speech";
 import { chiptune } from "@/games/audio/chiptune";
 import { sfx } from "@/games/audio/sfx";
 import CreditsSplash from "@/games/CreditsSplash";
+import SoundControl from "@/components/SoundControl";
 import { recordItemResult } from "@/lib/progress";
 
 export type LexEntry = { id: string; fr: string; en: string; syllables: string[]; say?: string };
@@ -144,20 +145,14 @@ export default function Lexicalator({
     return () => window.clearTimeout(t);
   }, [levelDone]);
 
-  // One volume for music AND sound effects (chiptune's master gain), shared
-  // across games via localStorage.
-  const [volume, setVolume] = useState(0.6);
+  // Apply the shared volume (fluolingo:volume) on mount; the slider itself
+  // now lives inside the SoundControl popover in the HUD.
   useEffect(() => {
     try {
       const v = parseFloat(window.localStorage.getItem("fluolingo:volume") ?? "");
-      if (!Number.isNaN(v)) { setVolume(v); chiptune.setVolume(v); }
+      if (!Number.isNaN(v)) chiptune.setVolume(v);
     } catch {}
   }, []);
-  function changeVolume(v: number) {
-    setVolume(v);
-    chiptune.setVolume(v);
-    try { window.localStorage.setItem("fluolingo:volume", String(v)); } catch {}
-  }
 
   // The A-minor swung loop starts with the game itself: the first chest pick
   // (a user gesture, so the AudioContext may be created) — Dan 2026-07-03,
@@ -276,11 +271,26 @@ export default function Lexicalator({
   }, [chests.map((c) => c.entry.id).join(","), level]);
 
   function tapKey(token: string) {
-    if (over || levelDone || !active) return;
+    if (over || levelDone) return;
+    // No chest in the bay yet? A key that fits a WAITING chest brings that
+    // chest down and starts filling it (Dan, 2026-07-10: taps on any word or
+    // fragment must count even before a chest has been dragged down). A key
+    // that fits nothing on the lane just rattles — nothing was at stake.
+    let cur = active;
+    if (!cur) {
+      const host = chests.find((c) => c.entry.syllables.some((s, i) => !c.filled[i] && s === token));
+      if (!host) {
+        setRattle(token);
+        window.setTimeout(() => setRattle(null), 300);
+        return;
+      }
+      pickChest(host.entry.id);
+      cur = host;
+    }
     // The state we grade against — may be swapped below when the key fits a
     // sibling FORM of the word instead.
-    let entry = active.entry;
-    let filled = active.filled;
+    let entry = cur.entry;
+    let filled = cur.filled;
     let lane = chests;
     let laneQueue = queue;
     // Any-order fill: the key fits the FIRST still-empty keyhole that needs
@@ -371,7 +381,7 @@ export default function Lexicalator({
       } else {
         setChests((cs) => cs.map((c) => (c.entry.id === entry.id ? { ...c, filled: nextFilled } : c)));
       }
-    } else if (active.entry.fr.toLowerCase().includes(token.toLowerCase())) {
+    } else if (cur.entry.fr.toLowerCase().includes(token.toLowerCase())) {
       // The key IS part of the word being forged ("ge" while forging "beige",
       // stored as one syllable) — it just isn't cut at this word's joints.
       // Rattle as feedback, but no life, no combo break (Dan, 2026-07-05).
@@ -391,7 +401,7 @@ export default function Lexicalator({
       setRattle(token);
       window.setTimeout(() => setRattle(null), 300);
       setCombo(0);
-      recordItemResult(active.entry.id, false);
+      recordItemResult(cur.entry.id, false);
       setLives((l) => {
         const nl = l - 1;
         if (nl <= 0) setOver(true);
@@ -467,12 +477,9 @@ export default function Lexicalator({
             }`}>
             {music ? "🔊 Musique" : "🎵 Musique"}
           </button>
-          <input
-            type="range" min={0} max={1} step={0.05} value={volume}
-            onChange={(e) => changeVolume(Number(e.target.value))}
-            aria-label="Volume" title="Volume — music and sounds"
-            className="h-1.5 w-20 cursor-pointer accent-[#1cb0f6]"
-          />
+          {/* Full sound popover — 🗣 voix / 🎵 musique / 🔔 effets + volume —
+              in the game itself, not only the site top bar (Dan, 2026-07-10). */}
+          <SoundControl />
           <button type="button" onClick={() => setHard((h) => !h)}
             title="Hard mode — hides how many syllables each word has"
             className={`rounded-lg border-2 border-b-4 px-2 py-0.5 text-xs font-black transition active:translate-y-0.5 active:border-b-2 ${
@@ -484,7 +491,7 @@ export default function Lexicalator({
       </header>
 
       <p className="mb-2 text-center text-xs font-semibold" style={{ color: "#075985" }}>
-        Drag a chest down, then tap its syllables — in any order — to unlock the French word.
+        Drag a chest down — or just tap a key it needs — then fill its syllables in any order to unlock the French word.
         {hard && <b style={{ color: "#c0392b" }}> Hard: the syllable count is hidden.</b>}
       </p>
 
