@@ -45,7 +45,11 @@ export function toolTabs(): ShellTab[] {
   return [
     { key: "reviser", label: "Réviser", emoji: "🔁", href: "/reviser", hue: "#7bbf2e" },
     { key: "conjugaison", label: "ConjugaZone", emoji: "🔤", href: "/conjugaison", hue: "#2bb6c2" },
-    { key: "leaderboard", label: "Classement", emoji: "🏆", href: "/leaderboard", hue: "#e3a700" },
+    // Game galleries (Dan, 2026-07-13) — every VocabulaRain / Lexicalator
+    // link in one place each. Classement removed: the 🏆 top-bar icon is
+    // the door (Dan: "we don't need the flap tab for classement").
+    { key: "vocabularain", label: "VocabulaRain", emoji: "🌧️", href: "/games/letris", hue: "#5b8def" },
+    { key: "lexicalator", label: "Lexicalator", emoji: "🧰", href: "/games/conveyor", hue: "#e3a700" },
     { key: "tutor", label: "Tuteur", emoji: "🤖", href: "/tutor", hue: "#8a5fd4" },
     { key: "tts", label: "TTS", emoji: "🔊", href: "/tts", hue: "#e8852e" },
     // No Profil entry (Dan, 2026-07-08) — the circled-initial account chip in

@@ -56,7 +56,7 @@ export default function TtsPage() {
   const [progress, setProgress] = useState(0); // 0..1, in characters spoken
   const [mp3Url, setMp3Url] = useState<string | null>(null);
   const [mp3Busy, setMp3Busy] = useState(false);
-  const [mp3Off, setMp3Off] = useState(false);
+  const [mp3Err, setMp3Err] = useState<string | null>(null);
   // Tracked-changes proofread: corrected text (null = none yet).
   const [fix, setFix] = useState<string | null>(null);
   const [fixBusy, setFixBusy] = useState(false);
@@ -151,8 +151,14 @@ export default function TtsPage() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ text: t, voice: `fr-${voiceSel}`, rate: speed }),
       });
-      if ([503, 404, 405, 501].includes(r.status)) { setMp3Off(true); return; }
-      if (!r.ok) return;
+      // NEVER fail silently (Dan, 2026-07-13: "not generating any mp3 as
+      // promised") — the missing Google TTS key is the usual cause.
+      if ([503, 404, 405, 501].includes(r.status)) {
+        setMp3Err("🎧 pas encore branché : la clé GOOGLE_TTS_API_KEY manque sur Cloudflare");
+        return;
+      }
+      if (!r.ok) { setMp3Err("⚠️ génération impossible — réessayez dans un instant"); return; }
+      setMp3Err(null);
       const blob = await r.blob();
       setMp3Url((old) => {
         if (old) URL.revokeObjectURL(old);
@@ -209,6 +215,12 @@ export default function TtsPage() {
           🔊 Le Studio TTS
         </h1>
 
+        {/* Same warm panel as the Tutor (Dan, 2026-07-13: "adopt similar
+            colors for Studio TTS just like the Tutor"). */}
+        <div
+          className="mt-3 rounded-2xl border-2 border-[#a8cdf0] p-4 shadow-inner"
+          style={{ background: "linear-gradient(180deg,#eef7ff 0%,#fdf9f0 100%)" }}
+        >
         <textarea
           ref={taRef}
           lang="fr"
@@ -217,7 +229,8 @@ export default function TtsPage() {
           rows={4}
           placeholder="Écrivez votre texte ici…"
           autoComplete="off" autoCorrect="off" spellCheck={false}
-          className="mt-3 w-full resize-y rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white p-4 text-lg text-[color:var(--cahier-ink)] outline-none focus:border-[color:var(--cahier-le)]"
+          className="w-full resize-y rounded-2xl border-2 border-[#a8cdf0] p-4 text-lg text-[color:var(--cahier-ink)] shadow-sm outline-none focus:border-[color:var(--cahier-le)]"
+          style={{ background: "linear-gradient(180deg,#ffffff,#f2f8ff)" }}
         />
 
         {/* ONE compact row, one voice paradigm: 👩/👨 cast toggle drives both
@@ -241,12 +254,10 @@ export default function TtsPage() {
               ⏹ Stop
             </button>
           )}
-          {!mp3Off && (
-            <button type="button" onClick={() => void makeMp3()} disabled={!text.trim() || mp3Busy}
-              className="cahier-btn cahier-btn-sm cahier-btn-accent font-black disabled:opacity-50">
-              {mp3Busy ? "⏳…" : "🎧 Générer le MP3"}
-            </button>
-          )}
+          <button type="button" onClick={() => void makeMp3()} disabled={!text.trim() || mp3Busy}
+            className="cahier-btn cahier-btn-sm cahier-btn-accent font-black disabled:opacity-50">
+            {mp3Busy ? "⏳…" : "🎧 Générer le MP3"}
+          </button>
           <button type="button" onClick={() => void corriger()} disabled={!text.trim() || fixBusy}
             title="Vérifier et corriger le français"
             className="cahier-btn cahier-btn-sm font-black disabled:opacity-50">
@@ -255,6 +266,7 @@ export default function TtsPage() {
         </div>
 
         {fixErr && <p className="mt-2 text-sm font-bold text-rose-700">{fixErr}</p>}
+        {mp3Err && <p className="mt-2 text-sm font-bold text-rose-700">{mp3Err}</p>}
 
         {/* Tracked-changes proofread: deletions struck through, insertions
             underlined. Display-only (never TTS'd — fragments aren't speech);
@@ -310,6 +322,7 @@ export default function TtsPage() {
             </a>
           </div>
         )}
+        </div>
       </div>
     </CahierShell>
   );

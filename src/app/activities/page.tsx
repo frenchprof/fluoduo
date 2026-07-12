@@ -88,12 +88,14 @@ export default function ActivitiesIndexPage() {
           if (decks.length === 0) return null;
           const meta = UNIT_META[u] ?? { label: `Unité ${u}`, subtitle: "", emoji: "📚" };
           return (
-            <section key={u} className={`fluo-h-${u % 6} mb-6`}>
-              <div className="mb-2 flex items-center gap-2 rounded-xl px-4 py-2" style={{ background: "var(--fluo-card-accent)" }}>
+            <details key={u} className={`fluo-h-${u % 6} group mb-6`} open={q.trim() ? true : undefined}>
+              <summary className="mb-2 flex cursor-pointer list-none items-center gap-2 rounded-xl px-4 py-2 [&::-webkit-details-marker]:hidden" style={{ background: "var(--fluo-card-accent)" }}>
+                <span aria-hidden className="text-white transition-transform group-open:rotate-90">▸</span>
                 <span aria-hidden>{meta.emoji}</span>
                 <span className="fluo-serif font-black text-white">{meta.label}</span>
                 {meta.subtitle && <span lang="fr" className="hidden text-sm text-white/85 sm:inline">{meta.subtitle}</span>}
-              </div>
+                <span className="ml-auto text-xs font-bold text-white/85">{decks.length} decks</span>
+              </summary>
               <div className="overflow-x-auto rounded-xl border-2 bg-white" style={{ borderColor: "var(--fluo-card-accent)" }}>
                 <table className="w-full text-left text-sm" style={{ minWidth: 560 }}>
                   <thead>
@@ -102,7 +104,8 @@ export default function ActivitiesIndexPage() {
                       {HEAD.map((h, i) => (
                         <th key={h} title={HEAD_TITLES[i]} className="px-1.5 py-2 text-center" aria-label={HEAD_TITLES[i]}>
                           <span
-                            className="inline-flex h-7 w-7 items-center justify-center rounded-full border-2 text-sm"
+                            title={HEAD_TITLES[i]}
+                            className="inline-flex h-7 w-7 cursor-help items-center justify-center rounded-full border-2 text-sm"
                             style={{ background: HEAD_CHIPS[i].bg, borderColor: HEAD_CHIPS[i].border }}
                           >
                             {h}
@@ -114,8 +117,8 @@ export default function ActivitiesIndexPage() {
                   <tbody>
                     {decks.map((c) => (
                       <tr key={c.id} className="border-t border-[color:var(--cahier-rule)] transition hover:bg-[color:var(--fluo-card-tint)]">
-                        <td className="max-w-[14rem] px-3 py-1.5 font-bold text-[color:var(--cahier-ink)]">
-                          <div lang="fr" className="truncate">{c.title}</div>
+                        <td className="max-w-[9rem] px-3 py-1.5 font-bold text-[color:var(--cahier-ink)]">
+                          <div lang="fr" className="truncate" title={c.title}>{c.title}</div>
                           {/* Which words inside the deck matched the search. */}
                           {(hitMap.get(c.id)?.words.length ?? 0) > 0 && (
                             <div className="truncate text-xs font-normal text-[color:var(--cahier-ink-soft)]">
@@ -151,7 +154,7 @@ export default function ActivitiesIndexPage() {
                   </tbody>
                 </table>
               </div>
-            </section>
+            </details>
           );
         })}
 

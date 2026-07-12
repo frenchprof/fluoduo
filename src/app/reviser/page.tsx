@@ -43,9 +43,14 @@ function buildCard(item: ReviewItem, pool: ReviewItem[]): Card {
 
 const TABS = [{ key: "reviser", label: "Réviser", emoji: "🔁" }];
 
+// Long queues are split into pages of 20 (Dan, 2026-07-13) — a bounded
+// session beats an 80-card wall; the next page is offered at the end.
+const PAGE = 20;
+
 export default function ReviserPage() {
   const [cards, setCards] = useState<Card[] | null>(null);
   const [gaps, setGaps] = useState<Gap[]>([]);
+  const [offset, setOffset] = useState(0);
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<string | null>(null);
   const [score, setScore] = useState(0);
@@ -60,9 +65,11 @@ export default function ReviserPage() {
 
   if (cards === null) return null; // pre-mount: avoid hydration mismatch
 
-  const total = cards.length;
+  const chunk = cards.slice(offset, offset + PAGE);
+  const total = chunk.length;
+  const remaining = cards.length - offset - PAGE;
   const done = i >= total;
-  const card = done ? null : cards[i];
+  const card = done ? null : chunk[i];
 
   function pick(choice: string) {
     if (picked !== null || !card) return;
@@ -90,7 +97,7 @@ export default function ReviserPage() {
       <div className="mx-auto max-w-xl px-4 py-6">
         <h1 className="fluo-serif text-2xl font-black text-[color:var(--fluo-ink)]">🔁 Réviser <span className="text-lg font-bold text-[color:var(--fluo-ink-soft)]">· Review</span></h1>
         <p className="mt-1 mb-5 text-sm text-[color:var(--fluo-ink-soft)]">
-          Words you&rsquo;ve practised that are due again. Answering here reschedules them.
+          Words you&rsquo;ve practised that are due again. Answering here reschedules them.{cards.length > PAGE ? ` ${cards.length} dus — par pages de ${PAGE}.` : ""}
         </p>
 
         {total === 0 ? (
@@ -105,7 +112,15 @@ export default function ReviserPage() {
           <div className="space-y-4">
             <div className="rounded-2xl border-2 p-5 text-center" style={{ borderColor: "#3a9b5c" }}>
               <p className="text-lg font-black text-[color:var(--fluo-ink)]">Review done · ✓ {score}/{total}</p>
-              <p className="mt-1 text-sm text-[color:var(--fluo-ink-soft)]">Come back tomorrow for the next batch.</p>
+              {remaining > 0 ? (
+                <button type="button"
+                  onClick={() => { setOffset((o) => o + PAGE); setI(0); setScore(0); setPicked(null); }}
+                  className="fluo-btn mt-3">
+                  ▶ Les {Math.min(PAGE, remaining)} suivants ({remaining} restants)
+                </button>
+              ) : (
+                <p className="mt-1 text-sm text-[color:var(--fluo-ink-soft)]">Come back tomorrow for the next batch.</p>
+              )}
             </div>
             <GapPanel gaps={gapsByDeck(loadProgress(), Date.now())} />
           </div>

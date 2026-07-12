@@ -61,10 +61,14 @@ function renderBilingual(text: string): ReactNode[] {
   };
   const inline = (t: string): ReactNode[] => {
     const nodes: ReactNode[] = [];
-    for (const part of t.split(/(\*\*[^*]+\*\*)/g)) {
+    for (const part of t.split(/(\*\*[^*]+\*\*|~~[^~]+~~)/g)) {
       if (!part) continue;
       if (part.startsWith("**") && part.endsWith("**")) {
         nodes.push(<strong key={key++}>{langSpans(part.slice(2, -2))}</strong>);
+      } else if (part.startsWith("~~") && part.endsWith("~~")) {
+        // Word tracked-changes look: the learner's wrong words struck
+        // through in red; never spoken (speech strips these spans).
+        nodes.push(<span key={key++} className="text-rose-600 line-through decoration-2">{part.slice(2, -2)}</span>);
       } else {
         nodes.push(...langSpans(part));
       }
@@ -174,6 +178,7 @@ export default function TutorPage() {
     const fmt = (t: string) =>
       esc(t)
         .replace(/(«[^»]*»)/g, '<span style="color:#0b63c4;font-weight:600">$1</span>')
+        .replace(/~~([^~]+)~~/g, '<span style="color:#dc2626;text-decoration:line-through">$1</span>')
         .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")
         .replace(/^\s{0,3}#{1,4}\s+(.*)$/gm, "<b>$1</b>")
         .replace(/\n/g, "<br>");
@@ -194,6 +199,15 @@ export default function TutorPage() {
     <script>window.onload = () => window.print()<\/script>
     </body></html>`);
     w.document.close();
+  }
+
+  /** Save, then close the session: the conversation resets to the greeting
+   *  (Dan, 2026-07-13: "Save as PDF ... & End Session"). */
+  function savePdfAndEnd() {
+    savePdf();
+    stopPlayback();
+    setMessages([{ role: "assistant", content: GREETING }]);
+    setInput("");
   }
 
   useEffect(() => {
@@ -319,9 +333,9 @@ export default function TutorPage() {
                     {/* Latest finished tutor reply only; vanishes the moment a
                         new input is sent (the last message becomes the user's). */}
                     {m.role === "assistant" && i === messages.length - 1 && i > 0 && !busy && (
-                      <button type="button" onClick={savePdf}
+                      <button type="button" onClick={savePdfAndEnd}
                         className="ml-auto rounded-lg border border-[color:var(--cahier-rule)] bg-white px-2 py-0.5 text-xs font-bold text-[color:var(--cahier-ink)]">
-                        💾 Save as PDF
+                        💾 Save as PDF &amp; End Session
                       </button>
                     )}
                   </div>

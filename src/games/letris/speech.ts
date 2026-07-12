@@ -257,7 +257,7 @@ export function guessLang(segment: string): "fr-FR" | "en-US" {
 function segmentBilingual(text: string): { text: string; lang: "fr-FR" | "en-US" }[] {
   const out: { text: string; lang: "fr-FR" | "en-US" }[] = [];
   const push = (raw: string, lang?: "fr-FR" | "en-US") => {
-    const clean = raw.replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}«»*#]/gu, "").trim();
+    const clean = raw.replace(/~~[^~]*~~/g, " ").replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}«»*#]/gu, "").trim();
     if (!/[a-zà-ÿ]/i.test(clean)) return;
     out.push({ text: clean, lang: lang ?? guessLang(clean) });
   };
@@ -320,7 +320,7 @@ export function speakMixed(
   userPaused = false;
 
   if (mv) {
-    const clean = text.replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}«»*#]/gu, " ").replace(/\s+/g, " ").trim();
+    const clean = text.replace(/~~[^~]*~~/g, " ").replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}«»*#]/gu, " ").replace(/\s+/g, " ").trim();
     if (!clean) { window.clearInterval(keepAlive); return null; }
     const speakFrom = (idx: number) => {
       const my = ++token;

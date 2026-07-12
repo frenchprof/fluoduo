@@ -76,7 +76,11 @@ export default function ProfilePage() {
 
         {/* Badges */}
         <section className="mt-5">
-          <h2 className="cahier-display text-lg font-black text-[color:var(--cahier-ink)]">Badges</h2>
+          <h2 className="cahier-display text-lg font-black text-[color:var(--cahier-ink)]">🎖️ Badges <span className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">· one-off achievements — each pays 💎</span></h2>
+          <p className="text-xs text-[color:var(--cahier-ink-soft)]">
+            Deux systèmes distincts : le <b>Niveau N1–N10</b> (ci-dessus) monte sans fin avec vos ⭐ XP ;
+            les <b>badges</b> sont des trophées uniques qui rapportent des 💎 une seule fois.
+          </p>
           <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
             {BADGES.map((b) => {
               const has = p.badges.includes(b.id);

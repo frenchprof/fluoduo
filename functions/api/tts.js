@@ -27,7 +27,11 @@ const VOICES = {
 
 export async function onRequestPost(context) {
   const { request, env } = context;
-  if (!env.GOOGLE_TTS_API_KEY) return json({ error: "not-configured" }, 503);
+  // Provider preference (Dan, 2026-07-13: "integrate Voxtral as TTS"):
+  // a NATIVE Mistral key (MISTRAL_API_KEY — the OpenRouter sk-or- key can
+  // NOT reach Mistral's audio endpoint) drives Mistral text-to-speech;
+  // otherwise GOOGLE_TTS_API_KEY drives Google. Neither → 503.
+  if (!env.MISTRAL_API_KEY && !env.GOOGLE_TTS_API_KEY) return json({ error: "not-configured" }, 503);
 
   let body;
   try {
@@ -39,6 +43,45 @@ export async function onRequestPost(context) {
   if (!text) return json({ error: "no-text" }, 400);
   const voice = VOICES[body && body.voice] || VOICES["fr-f"];
   const rate = Math.min(1.4, Math.max(0.5, Number(body && body.rate) || 1));
+
+  // ── Mistral TTS (docs.mistral.ai → Studio API → audio → text_to_speech).
+  // OpenAI-compatible shape; model/voice are env-overridable so the exact
+  // ids from the docs can be set without a redeploy of code:
+  //   MISTRAL_TTS_MODEL  (e.g. the TTS model id shown in the docs)
+  //   MISTRAL_TTS_VOICE  (a voice id from the docs; optional)
+  if (env.MISTRAL_API_KEY) {
+    try {
+      const payload = {
+        model: env.MISTRAL_TTS_MODEL || "voxtral-tts-latest",
+        input: text,
+        response_format: "mp3",
+        speed: rate,
+      };
+      if (env.MISTRAL_TTS_VOICE) payload.voice = env.MISTRAL_TTS_VOICE;
+      const r = await fetch("https://api.mistral.ai/v1/audio/speech", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          authorization: "Bearer " + env.MISTRAL_API_KEY,
+        },
+        body: JSON.stringify(payload),
+      });
+      if (!r.ok) {
+        const detail = await r.text();
+        console.error("Mistral TTS upstream error:", r.status, detail);
+        // If Google is also configured, fall through to it instead of failing.
+        if (!env.GOOGLE_TTS_API_KEY) return json({ error: "upstream-" + r.status, detail: detail.slice(0, 400) }, 502);
+      } else {
+        const buf = await r.arrayBuffer();
+        return new Response(buf, {
+          headers: { "content-type": "audio/mpeg", "cache-control": "no-store" },
+        });
+      }
+    } catch (e) {
+      console.error("Mistral TTS unreachable:", e);
+      if (!env.GOOGLE_TTS_API_KEY) return json({ error: "upstream-unreachable" }, 502);
+    }
+  }
 
   try {
     const r = await fetch(

@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import StatsHelp from "@/components/StatsHelp";
 import RankBadge from "@/components/RankBadge";
 import RoadMap from "@/components/RoadMap";
+import GuideSplash from "@/components/GuideSplash";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
@@ -58,6 +59,7 @@ export default function HomeDashboard() {
 
   return (
     <>
+      <GuideSplash />
       <section
         className="mb-7 rounded-2xl border-2 border-[color:var(--fluo-ink)] p-5 shadow-[5px_5px_0_var(--fluo-hl)]"
         style={{ background: "linear-gradient(120deg, #fbe3ec 0%, #def3f5 45%, #ecf7cf 100%)" }}
@@ -75,7 +77,8 @@ export default function HomeDashboard() {
                 href={`/unit/${activeSio.unit}#${activeSio.id}`}
                 aria-label="Continuer"
                 title={`Continuer — « ${activeSio.topic} », the next objective after your latest 'done'.`}
-                className="flex h-8 w-9 items-center justify-center rounded-lg border-2 border-[color:var(--fluo-danger)] bg-[var(--fluo-danger)] text-base text-white shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
+                className="flex h-8 w-9 items-center justify-center rounded-lg border-2 text-base text-white shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
+                style={{ background: accent, borderColor: accent }}
               >
                 <span aria-hidden>▶</span>
               </Link>
@@ -121,7 +124,7 @@ export default function HomeDashboard() {
           <div className="flex items-center gap-2">
             <span className="fluo-mono w-16 shrink-0 text-xs font-bold text-[color:var(--fluo-ink)]">Niveau {lvl.level}</span>
             <span className="h-2.5 flex-1 overflow-hidden rounded-full border-2 border-[color:var(--fluo-ink)] bg-white/75">
-              <span className="block h-full rounded-full bg-[var(--fluo-hl)] transition-all duration-500" style={{ width: `${Math.max(xpPct, 2)}%` }} />
+              <span className="block h-full rounded-full transition-all duration-500" style={{ width: `${Math.max(xpPct, 2)}%`, background: accent }} />
             </span>
             <span className="fluo-mono w-14 shrink-0 text-right text-xs font-bold text-[color:var(--fluo-ink)]">{lvl.into}/{lvl.span}</span>
           </div>
@@ -134,7 +137,7 @@ export default function HomeDashboard() {
         <p className="fluo-mono mb-2 text-xs font-black text-[color:var(--fluo-ink)]">🔗 {seqRun} d&rsquo;affilée !</p>
       )}
 
-      <RoadMap progress={progress} activeId={activeId} />
+      <RoadMap progress={progress} activeId={activeId} accent={accent} />
     </>
   );
 }

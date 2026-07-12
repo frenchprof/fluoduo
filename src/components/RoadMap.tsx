@@ -37,7 +37,7 @@ const STOPS: Stop[] = (() => {
   return out;
 })();
 
-export default function RoadMap({ progress, activeId }: { progress: Progress; activeId?: string }) {
+export default function RoadMap({ progress, activeId, accent }: { progress: Progress; activeId?: string; accent?: string }) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [w, setW] = useState(0);
 
@@ -87,7 +87,9 @@ export default function RoadMap({ progress, activeId }: { progress: Progress; ac
           >
             <path d={roadPath(STOPS.length)} fill="none" stroke="rgba(34,40,80,0.10)" strokeWidth={16} strokeLinejoin="round" strokeLinecap="round" />
             {activeIdx > 0 && (
-              <path d={roadPath(activeIdx + 1)} fill="none" stroke="rgba(34,40,80,0.22)" strokeWidth={16} strokeLinejoin="round" strokeLinecap="round" />
+              // The TRAVELLED road wears the boutique accent (the shop
+              // promises exactly this), noticeably darker than the road ahead.
+              <path d={roadPath(activeIdx + 1)} fill="none" stroke={accent ?? "rgba(34,40,80,0.35)"} strokeOpacity={accent ? 0.5 : 1} strokeWidth={16} strokeLinejoin="round" strokeLinecap="round" />
             )}
             <path d={roadPath(STOPS.length)} fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth={2} strokeDasharray="6 9" strokeLinejoin="round" />
           </svg>
@@ -131,10 +133,12 @@ export default function RoadMap({ progress, activeId }: { progress: Progress; ac
                   href={`/unit/${st.unit}#${st.id}`}
                   title={`${st.id} · ${st.topic} (${KIND_LABEL[kind]})`}
                   className={`relative z-[1] flex h-9 w-9 items-center justify-center border-2 text-xs font-black transition hover:-translate-y-0.5 ${shape} ${
-                    sActive ? "fluo-node-active ring-2 ring-[var(--fluo-danger)] ring-offset-1" : sDone ? "" : "opacity-75"
+                    sActive ? "fluo-node-active ring-2 ring-[var(--fluo-danger)] ring-offset-1" : sDone ? "shadow-[0_2px_6px_rgba(0,0,0,0.3)]" : "opacity-55 border-dashed"
                   }`}
                   style={{
-                    background: sDone ? "var(--fluo-card-accent)" : sActive ? "var(--fluo-hl)" : "var(--fluo-card-tint)",
+                    // Stronger done/to-come contrast (Dan, 2026-07-13): done =
+                    // solid + shadow; to-come = white, dashed, faded.
+                    background: sDone ? "var(--fluo-card-accent)" : sActive ? "var(--fluo-hl)" : "#ffffff",
                     borderColor: "var(--fluo-card-accent)",
                     color: sDone ? "#fff" : "var(--fluo-ink)",
                   }}
