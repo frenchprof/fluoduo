@@ -206,30 +206,36 @@ const FR_HINTS = new Set([
   "mon", "ma", "mes", "ton", "ta", "tes", "son", "sa", "ses", "ce", "cette", "ces",
   "très", "bien", "merci", "bonjour", "salut", "oui", "non", "voilà", "aussi",
   "j'ai", "c'est", "n'est", "qu'est-ce", "s'il", "aime", "aimes", "vais", "vas", "va",
+  "bonne", "bon", "allez", "alors", "voici", "comme", "moi", "toi", "ça",
 ]);
 function guessLang(segment: string): "fr-FR" | "en-US" {
-  // Diacritics and guillemets are near-certain French signals.
-  if (/[àâçéèêëîïôùûüœÀÂÇÉÈÊËÎÏÔÙÛÜŒ«»]/.test(segment)) return "fr-FR";
   // Elision (j', l', qu', n'…) is French; English apostrophes are 's / n't.
   if (/\b[jlcdnstm]['’](?![st]\b)|\bqu['’]/i.test(segment)) return "fr-FR";
   const words = segment.toLowerCase().match(/[a-zà-ÿ'’-]+/g) ?? [];
   if (words.length === 0) return "en-US";
-  const hits = words.filter((w) => FR_HINTS.has(w)).length;
+  // A diacritic marks THAT WORD as French, not the whole segment — "We use
+  // au because cinéma is masculine" is an English sentence quoting French.
+  const hits = words.filter((w) => FR_HINTS.has(w) || /[àâçéèêëîïôùûüœ]/.test(w)).length;
+  if (words.length <= 2 && hits > 0) return "fr-FR"; // « Bonne chance ! »
   return hits / words.length >= 0.4 ? "fr-FR" : "en-US";
 }
-/** Split into speakable chunks: (…) glosses become their own segments, the
- *  rest splits at sentence boundaries; emoji are stripped (some voices
- *  announce them: "robot face"). */
+/** Split into speakable chunks: « guillemet-quoted French » and (…) glosses
+ *  become their own segments (that's exactly where the tutor's format flips
+ *  language), the rest splits at sentence boundaries; emoji are stripped
+ *  (some voices announce them: "robot face"). */
 function segmentBilingual(text: string): { text: string; lang: "fr-FR" | "en-US" }[] {
   const out: { text: string; lang: "fr-FR" | "en-US" }[] = [];
-  for (const part of text.split(/(\([^)]*\))/g)) {
-    const chunks = part.startsWith("(")
-      ? [part.replace(/^\(|\)$/g, "")]
-      : part.split(/(?<=[.!?…:])\s+|\n+/g);
-    for (const raw of chunks) {
-      const clean = raw.replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}]/gu, "").trim();
-      if (!/[a-zà-ÿ]/i.test(clean)) continue;
-      out.push({ text: clean, lang: guessLang(clean) });
+  const push = (raw: string, lang?: "fr-FR" | "en-US") => {
+    const clean = raw.replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}«»]/gu, "").trim();
+    if (!/[a-zà-ÿ]/i.test(clean)) return;
+    out.push({ text: clean, lang: lang ?? guessLang(clean) });
+  };
+  // Guillemets are an authoritative French marker — no guessing inside them.
+  for (const span of text.split(/(«[^»]*»)/g)) {
+    if (span.startsWith("«")) { push(span, "fr-FR"); continue; }
+    for (const part of span.split(/(\([^)]*\))/g)) {
+      if (part.startsWith("(")) push(part.replace(/^\(|\)$/g, ""));
+      else for (const raw of part.split(/(?<=[.!?…:])\s+|\n+/g)) push(raw);
     }
   }
   return out;
