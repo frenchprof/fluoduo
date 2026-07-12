@@ -47,6 +47,11 @@ const publicSans = Public_Sans({
 export const metadata: Metadata = {
   title: "FluoLingo",
   description: "Language-agnostic practice games portal.",
+  // Browsers must NEVER offer to auto-translate this site (Dan, 2026-07-10):
+  // rewriting the French into English destroys the learning content. The
+  // meta tag is Chrome/Google Translate's opt-out; translate="no" on <html>
+  // (below) is the standards-based signal other engines honour.
+  other: { google: "notranslate" },
 };
 
 export default function RootLayout({
@@ -57,6 +62,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      translate="no"
       className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} ${publicSans.variable} ${roboto.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
