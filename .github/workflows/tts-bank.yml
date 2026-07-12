@@ -1,0 +1,31 @@
+# Generate the pre-recorded TTS audio bank (public/tts-bank/) with Google
+# Cloud Text-to-Speech, so core vocabulary sounds identical on every device.
+#
+# SETUP (once): repo → Settings → Secrets and variables → Actions →
+# New repository secret → GOOGLE_TTS_API_KEY (the same key as the Cloudflare
+# env var). RUN: repo → Actions → "Generate TTS bank" → Run workflow.
+# Idempotent — re-run after deck edits; only new strings are synthesised.
+name: Generate TTS bank
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Synthesise missing clips
+        env:
+          GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
+        run: node scripts/generate-tts-bank.mjs
+      - name: Commit the bank
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/tts-bank
+          git diff --cached --quiet || git commit -m "Generate TTS audio bank"
+          git push

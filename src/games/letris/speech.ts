@@ -9,9 +9,53 @@ let pending = 0;
 // exports stay as aliases for existing imports.
 import { isChannelMuted, setChannelMuted, onChannelMuteChange } from "@/games/audio/mute";
 
-// Muting stops anything already speaking, immediately.
+// Muting stops anything already speaking, immediately — the synth AND any
+// playing bank clip.
 if (typeof window !== "undefined") {
-  onChannelMuteChange((ch, m) => { if (ch === "voice" && m) window.speechSynthesis?.cancel(); });
+  onChannelMuteChange((ch, m) => {
+    if (ch === "voice" && m) {
+      window.speechSynthesis?.cancel();
+      bankAudio?.pause();
+    }
+  });
+}
+
+// ── Pre-generated audio bank ────────────────────────────────────────────────
+// public/tts-bank/ holds one studio-voice MP3 per deck item (built by
+// scripts/generate-tts-bank.mjs / the "Generate TTS bank" GitHub action), so
+// core vocabulary sounds IDENTICAL on every device (Dan, 2026-07-10). Clips
+// are ~10 KB, CDN-served and browser-cached; any miss — manifest absent,
+// string not banked, fetch still loading — falls back to the browser voice,
+// so a partial or missing bank never breaks speech.
+let bankManifest: Record<string, string> | null | undefined; // undefined = not requested yet
+let bankAudio: HTMLAudioElement | null = null;
+const bankNorm = (t: string) => t.replace(/\s+/g, " ").trim();
+function loadBank() {
+  if (bankManifest !== undefined) return;
+  bankManifest = null; // absent until proven otherwise
+  fetch("/tts-bank/manifest.json")
+    .then((r) => (r.ok ? r.json() : null))
+    .then((j) => { if (j && j.entries) bankManifest = j.entries as Record<string, string>; })
+    .catch(() => {});
+}
+/** Play `text` from the bank if it's there. Bank clips are the female
+ *  narrator, so gendered dialogue lines stay on the synth voices. */
+function tryBank(text: string, lang: string, opts: SpeakOpts): boolean {
+  if (!lang.startsWith("fr") || opts.gender || opts.interrupt === false) return false;
+  if (bankManifest === undefined) { loadBank(); return false; }
+  const file = bankManifest?.[bankNorm(text)];
+  if (!file) return false;
+  try {
+    window.speechSynthesis?.cancel();
+    bankAudio?.pause();
+    const a = new Audio("/tts-bank/" + file);
+    a.playbackRate = opts.rate ?? 1;
+    bankAudio = a;
+    void a.play().catch(() => {});
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export const isTtsMuted = () => isChannelMuted("voice");
@@ -67,7 +111,7 @@ if (typeof window !== "undefined") {
   // must be re-chosen once the full list arrives.
   window.speechSynthesis?.addEventListener("voiceschanged", () => voiceCache.clear());
 }
-function castVoice(lang: string, profile: "f" | "m"): SpeechSynthesisVoice | null {
+export function castVoice(lang: string, profile: "f" | "m"): SpeechSynthesisVoice | null {
   const key = `${lang.split("-")[0]}:${profile}`;
   const hit = voiceCache.get(key);
   if (hit !== undefined) return hit;
@@ -161,6 +205,9 @@ export function speak(text: string, lang = "fr-FR", opts: SpeakOpts = {}) {
   // A–Z to its spoken French name ("H" → "ache"), which no voice can suffix
   // with "majuscule". Falls through untouched for everything else.
   const spoken = /^[A-Za-z]$/.test(text) ? (FR_LETTER_NAME[text.toLowerCase()] ?? text.toLowerCase()) : text;
+
+  // Banked studio clip when one exists — identical audio on every device.
+  if (tryBank(spoken, lang, opts)) return;
 
   const u = new SpeechSynthesisUtterance(spoken);
   u.lang = lang;
