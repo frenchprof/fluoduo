@@ -91,7 +91,7 @@ function renderBilingual(text: string): ReactNode[] {
 function autoGrow(el: HTMLTextAreaElement | null) {
   if (!el) return;
   el.style.height = "auto";
-  el.style.height = `${Math.min(el.scrollHeight, 260)}px`;
+  el.style.height = `${Math.min(el.scrollHeight, 320)}px`;
 }
 
 export default function TutorPage() {
@@ -347,9 +347,13 @@ export default function TutorPage() {
               <div ref={endRef} />
             </div>
 
+            {/* STACKED input (Dan, 2026-07-13: "way too small on mobile"):
+                the textarea gets the FULL width on its own line and auto-grows
+                as you type (drag-resize doesn't exist on touch); the buttons
+                live on their own row beneath. */}
             <form
               onSubmit={(e) => { e.preventDefault(); void send(); }}
-              className="flex items-end gap-2"
+              className="flex flex-col gap-2"
             >
               <textarea
                 lang="fr"
@@ -358,12 +362,13 @@ export default function TutorPage() {
                 onChange={(e) => { setInput(e.target.value); autoGrow(e.target); }}
                 onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void send(); } }}
                 placeholder={"Type something or say something via the voice function.\nPress \u23CE to send; Shift + \u23CE for line break."}
-                rows={1}
+                rows={2}
                 /* NB: not .cahier-answer — that pins height:30px!important, which
                    would kill grow/resize. AccentBar still shows via lang="fr". */
-                className="max-h-[260px] min-h-[2.7rem] flex-1 resize-y rounded-lg border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-2 text-[0.95rem] leading-snug text-[color:var(--cahier-ink)] outline-none focus:border-[color:var(--cahier-le)]"
+                className="max-h-[320px] min-h-[4.5rem] w-full resize-y rounded-lg border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-2 text-[0.95rem] leading-snug text-[color:var(--cahier-ink)] outline-none focus:border-[color:var(--cahier-le)]"
                 autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
               />
+              <div className="flex items-center justify-end gap-1.5">
               {sttAvailable && (
                 <>
                   <button
@@ -389,6 +394,7 @@ export default function TutorPage() {
               <button type="submit" disabled={busy || !input.trim()} className="cahier-btn cahier-btn-accent font-black disabled:opacity-40">
                 Envoyer
               </button>
+              </div>
             </form>
           </>
         )}
