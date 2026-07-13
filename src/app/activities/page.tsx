@@ -70,16 +70,19 @@ export default function ActivitiesIndexPage() {
   return (
     <CahierShell tabs={withActive(siteTabs(), "index")} active="index" crumb="🗂️ Practice Index">
       <div className="mx-auto max-w-4xl px-2 py-4">
-        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">🗂️ Practice Index</h1>
-        <p className="mt-1 text-sm text-[color:var(--cahier-ink-soft)]">Every deck × every activity — tap any cell.</p>
-        <input
-          type="search"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="🔍 bruine, aller, café… (any word)"
-          aria-label="Search words and decks"
-          className="mt-3 mb-4 w-full max-w-sm rounded-full border-2 border-[color:var(--cahier-ink)] bg-white px-4 py-2 text-sm font-bold text-[color:var(--cahier-ink)] outline-none placeholder:font-normal focus:shadow-[3px_3px_0_var(--cahier-hl,#eaff00)]"
-        />
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">🗂️ Practice Index</h1>
+          {/* Search at the header's height, high-contrast (Dan, 2026-07-13). */}
+          <input
+            type="search"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="🔍 bruine, aller, café…"
+            aria-label="Search words and decks"
+            className="w-full max-w-xs rounded-full border-[3px] border-[color:var(--cahier-ink)] bg-[color:var(--cahier-hl,#eaff00)]/40 px-4 py-2 text-sm font-black text-[color:var(--cahier-ink)] shadow-[3px_3px_0_var(--cahier-ink)] outline-none placeholder:font-bold placeholder:text-[color:var(--cahier-ink)]/60 focus:bg-white"
+          />
+        </div>
+        <p className="mb-4 mt-1 text-sm text-[color:var(--cahier-ink-soft)]">Every deck × every activity — tap any cell.</p>
         {totalHits === 0 && (
           <p className="mb-4 text-sm font-bold text-[color:var(--cahier-ink-soft)]">Aucun résultat pour « {q} »</p>
         )}

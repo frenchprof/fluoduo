@@ -1,0 +1,156 @@
+{
+ "id": "aliments-letris",
+ "title": "Légumes, viande… ou boisson ?",
+ "subtitle": "Sort each food into its group — partitives included",
+ "language": "fr",
+ "categories": [
+  {
+   "key": "legumes",
+   "label": "LÉGUMES",
+   "prefix": ""
+  },
+  {
+   "key": "viandes",
+   "label": "VIANDE & POISSON",
+   "prefix": ""
+  },
+  {
+   "key": "fruits",
+   "label": "FRUITS",
+   "prefix": ""
+  },
+  {
+   "key": "boissons",
+   "label": "BOISSONS",
+   "prefix": ""
+  }
+ ],
+ "tiles": [
+  {
+   "text": "SALADE",
+   "displayName": "de la salade",
+   "category": "legumes",
+   "meaning": "some salad",
+   "emoji": "🥗"
+  },
+  {
+   "text": "ASPERGES",
+   "displayName": "des asperges",
+   "category": "legumes",
+   "meaning": "some asparagus",
+   "emoji": "🌱"
+  },
+  {
+   "text": "CHAMPIGNONS",
+   "displayName": "des champignons",
+   "category": "legumes",
+   "meaning": "some mushrooms",
+   "emoji": "🍄"
+  },
+  {
+   "text": "OIGNONS",
+   "displayName": "des oignons",
+   "category": "legumes",
+   "meaning": "some onions",
+   "emoji": "🧅"
+  },
+  {
+   "text": "CAROTTES",
+   "displayName": "des carottes",
+   "category": "legumes",
+   "meaning": "some carrots",
+   "emoji": "🥕"
+  },
+  {
+   "text": "POULET",
+   "displayName": "du poulet",
+   "category": "viandes",
+   "meaning": "some chicken",
+   "emoji": "🍗"
+  },
+  {
+   "text": "POISSON",
+   "displayName": "du poisson",
+   "category": "viandes",
+   "meaning": "some fish",
+   "emoji": "🐟"
+  },
+  {
+   "text": "STEAK",
+   "displayName": "du steak",
+   "category": "viandes",
+   "meaning": "some steak",
+   "emoji": "🥩"
+  },
+  {
+   "text": "JAMBON",
+   "displayName": "du jambon",
+   "category": "viandes",
+   "meaning": "some ham",
+   "emoji": "🍖"
+  },
+  {
+   "text": "POMME",
+   "displayName": "une pomme",
+   "category": "fruits",
+   "meaning": "an apple",
+   "emoji": "🍎"
+  },
+  {
+   "text": "BANANE",
+   "displayName": "une banane",
+   "category": "fruits",
+   "meaning": "a banana",
+   "emoji": "🍌"
+  },
+  {
+   "text": "ORANGE",
+   "displayName": "une orange",
+   "category": "fruits",
+   "meaning": "an orange",
+   "emoji": "🍊"
+  },
+  {
+   "text": "FRAISE",
+   "displayName": "une fraise",
+   "category": "fruits",
+   "meaning": "a strawberry",
+   "emoji": "🍓"
+  },
+  {
+   "text": "EAU",
+   "displayName": "de l'eau",
+   "category": "boissons",
+   "meaning": "some water",
+   "emoji": "💧"
+  },
+  {
+   "text": "CAFÉ",
+   "displayName": "du café",
+   "category": "boissons",
+   "meaning": "some coffee",
+   "emoji": "☕"
+  },
+  {
+   "text": "LAIT",
+   "displayName": "du lait",
+   "category": "boissons",
+   "meaning": "some milk",
+   "emoji": "🥛"
+  },
+  {
+   "text": "THÉ",
+   "displayName": "du thé",
+   "category": "boissons",
+   "meaning": "some tea",
+   "emoji": "🍵"
+  },
+  {
+   "text": "JUS D'ORANGE",
+   "displayName": "du jus d'orange",
+   "category": "boissons",
+   "meaning": "some orange juice",
+   "emoji": "🧃"
+  }
+ ]
+}

@@ -6,6 +6,16 @@ import { CURATED } from "@/content/collections";
 /** Rain sets grouped by Unité (Dan, 2026-07-04: "organised rather than just
  *  listed out"). A set's unit comes from its backing collection; sets without
  *  one land under Extra. */
+// Unit accent colours — same palette as the site flaps.
+const UNIT_COLORS: Record<string, { accent: string; tint: string }> = {
+  "Unité 0": { accent: "#e0567f", tint: "#fbe3ec" },
+  "Unité 1": { accent: "#2bb6c2", tint: "#def3f5" },
+  "Unité 2": { accent: "#e3a700", tint: "#fbeec4" },
+  "Unité 3": { accent: "#8a5fd4", tint: "#ece2fa" },
+  "Unité 4": { accent: "#e8852e", tint: "#fbe6cf" },
+  Extra: { accent: "#5b8def", tint: "#e0eaff" },
+};
+
 function groupedSets() {
   const unitOf = (slug: string): number | null => {
     const c = CURATED.find((x) => x.id === slug || x.id === `${slug}-letris`);
@@ -48,37 +58,38 @@ export default function LetrisIndexPage() {
           </p>
         </header>
 
-        {groups.map((g) => (
-          <section key={g.label} className="mb-8">
-            <h2 className="mb-3 text-xl font-black text-sky-800" style={{ textShadow: "0 1px 0 #fff" }}>
-              {g.label}
-            </h2>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {g.sets.map((s) => (
-                <Link
-                  key={s.slug}
-                  href={`/games/letris/${s.slug}`}
-                  className="group flex h-full flex-col rounded-3xl border-4 border-white bg-white/85 p-5 shadow-md transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-lg"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl" aria-hidden>
+        {/* iCloud-gallery layout (Dan, 2026-07-13): compact photo-like tiles,
+            prominent titles, colour-coded by Unit. */}
+        {groups.map((g) => {
+          const col = UNIT_COLORS[g.label] ?? UNIT_COLORS.Extra;
+          return (
+            <section key={g.label} className="mb-8">
+              <h2 className="mb-3 inline-block rounded-full px-4 py-1 text-base font-black text-white" style={{ background: col.accent }}>
+                {g.label}
+              </h2>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                {g.sets.map((s) => (
+                  <Link
+                    key={s.slug}
+                    href={`/games/letris/${s.slug}`}
+                    className="group flex h-full flex-col items-center rounded-2xl border-2 border-b-4 bg-white p-4 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                    style={{ borderColor: col.accent }}
+                  >
+                    <span className="flex h-14 w-14 items-center justify-center rounded-2xl text-3xl" style={{ background: col.tint }} aria-hidden>
                       {s.emoji}
                     </span>
-                    <div>
-                      <h2 className="text-lg font-black text-sky-900">{s.title}</h2>
-                      {s.subtitle && (
-                        <p className="text-xs font-semibold text-sky-900/60">{s.subtitle}</p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="mt-4 text-xs font-bold text-sky-700">
-                    💧 {s.tileCount} drops · {s.categoryCount} puddles
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </section>
-        ))}
+                    <span className="mt-2 line-clamp-2 text-sm font-black leading-snug text-sky-950" lang="fr" title={s.title}>
+                      {s.title}
+                    </span>
+                    <span className="mt-auto pt-2 text-[11px] font-bold" style={{ color: col.accent }}>
+                      💧 {s.tileCount} · {s.categoryCount} puddles
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          );
+        })}
       </div>
     </main>
   );

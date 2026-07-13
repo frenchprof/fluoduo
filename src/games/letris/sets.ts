@@ -18,6 +18,7 @@ import demonstratifs from "@/content/demonstratifs.json";
 import commerces from "@/content/commerces.json";
 import tuVous from "@/content/tu-vous.json";
 import salutations from "@/content/salutations.json";
+import alimentsLetris from "@/content/aliments-letris.json";
 import type { LetrisSet } from "./LetrisGame";
 
 export type LetrisSetMeta = {
@@ -50,6 +51,8 @@ const REGISTRY: Record<string, LetrisSet> = {
   commerces: commerces as LetrisSet,
   "tu-vous": tuVous as LetrisSet,
   salutations: salutations as LetrisSet,
+  // Unit 4's third rain (Dan, 2026-07-13): food GROUPS, partitives spoken.
+  aliments: alimentsLetris as LetrisSet,
 };
 
 const META: Record<string, { emoji: string }> = {
@@ -73,6 +76,7 @@ const META: Record<string, { emoji: string }> = {
   commerces: { emoji: "🛍️" },
   "tu-vous": { emoji: "🤝" },
   salutations: { emoji: "👋" },
+  aliments: { emoji: "🍽️" },
 };
 
 // Out-of-syllabus pools — reachable by slug, but hidden from the default lesson

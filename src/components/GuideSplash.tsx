@@ -38,9 +38,9 @@ export default function GuideSplash() {
         <GuideBody />
         <div className="mt-5 flex flex-wrap items-center gap-2">
           <button type="button" onClick={never} className="cahier-btn cahier-btn-accent font-black">
-            ✓ Compris — ne plus me montrer
+            ✓ Got it, don't show me again
           </button>
-          <Link href="/guide" onClick={never} className="cahier-btn">Ouvrir la page Guide</Link>
+          <Link href="/guide" onClick={never} className="cahier-btn">Open the Guide page</Link>
         </div>
       </div>
     </div>
