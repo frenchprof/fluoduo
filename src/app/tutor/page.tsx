@@ -12,6 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import CahierShell from "@/components/CahierShell";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 import { speakMixed, pauseSpeech, resumeSpeech, isSpeechPaused, guessLang, type MixedPlayback } from "@/games/letris/speech";
+import { logEvent } from "@/lib/firebase/usage";
 import type { ReactNode } from "react";
 
 type ChatMsg = { role: "user" | "assistant"; content: string };
@@ -222,6 +223,9 @@ export default function TutorPage() {
   async function send() {
     const text = input.trim();
     if (!text || busy) return;
+    // Usage telemetry only — the LENGTH, never the text. A learner's chat
+    // with the tutor stays private even from the teacher dashboard.
+    void logEvent("tutor.message", { chars: text.length });
     const next: ChatMsg[] = [...messages, { role: "user" as const, content: text }];
     setMessages(next);
     setInput("");

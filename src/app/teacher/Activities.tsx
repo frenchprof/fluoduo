@@ -19,9 +19,15 @@ export default function Activities({ events, roster }: { events: Ev[]; roster: L
       scoreSum: number; scoreN: number; best: number | null; bestBy: string | null;
     }>();
     const decks = new Map<string, { opens: number; people: Set<string> }>();
-    const supplements = new Map<string, { opens: number; people: Set<string> }>();
+    // Keyed by href so supplement.open (flap) and supplement.answer (in-page)
+    // land on the same row; label remembered for display.
+    const supplements = new Map<string, {
+      label: string; opens: number; people: Set<string>; answers: number; correct: number;
+    }>();
     let reviews = 0;
     const reviewers = new Set<string>();
+    let tutorMsgs = 0;
+    const tutorUsers = new Set<string>();
 
     for (const ev of evs) {
       if (ev.type === "game.start" || ev.type === "game.end") {
@@ -50,16 +56,26 @@ export default function Activities({ events, roster }: { events: Ev[]; roster: L
         d.opens += 1;
         d.people.add(ev.uid);
       }
-      if (ev.type === "supplement.open") {
-        const key = str(ev.payload.label) ?? str(ev.payload.href) ?? "?";
+      if (ev.type === "supplement.open" || ev.type === "supplement.answer") {
+        const key = str(ev.payload.href) ?? str(ev.payload.label) ?? "?";
         let s = supplements.get(key);
-        if (!s) supplements.set(key, (s = { opens: 0, people: new Set() }));
-        s.opens += 1;
+        if (!s) supplements.set(key, (s = { label: key, opens: 0, people: new Set(), answers: 0, correct: 0 }));
+        const label = str(ev.payload.label);
+        if (label) s.label = label;
         s.people.add(ev.uid);
+        if (ev.type === "supplement.open") s.opens += 1;
+        else {
+          s.answers += 1;
+          if (ev.payload.correct === true) s.correct += 1;
+        }
       }
       if (ev.type === "flashcard.review") {
         reviews += 1;
         reviewers.add(ev.uid);
+      }
+      if (ev.type === "tutor.message") {
+        tutorMsgs += 1;
+        tutorUsers.add(ev.uid);
       }
     }
 
@@ -68,16 +84,18 @@ export default function Activities({ events, roster }: { events: Ev[]; roster: L
       decks: [...decks.entries()].sort((a, b) => b[1].opens - a[1].opens),
       supplements: [...supplements.entries()].sort((a, b) => b[1].opens - a[1].opens),
       reviews, reviewers: reviewers.size,
+      tutorMsgs, tutorUsers: tutorUsers.size,
     };
   }, [events, roster]);
 
   return (
     <div>
-      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-5">
         <Kpi label="Game variants played" value={model.games.length} />
         <Kpi label="Decks opened" value={model.decks.length} />
         <Kpi label="Flashcard reviews" value={model.reviews} sub={`${model.reviewers} learners`} />
         <Kpi label="Supplement opens" value={model.supplements.reduce((s, [, x]) => s + x.opens, 0)} />
+        <Kpi label="Tutor messages" value={model.tutorMsgs} sub={`${model.tutorUsers} learners`} />
       </div>
 
       <SectionTitle>Games</SectionTitle>
@@ -112,16 +130,20 @@ export default function Activities({ events, roster }: { events: Ev[]; roster: L
       </TableBox>
 
       <SectionTitle>Supplements</SectionTitle>
-      <TableBox head={["Supplement", "Opens", "People"]}>
+      <TableBox head={["Supplement", "Opens", "People", "Answers", "Correct"]}>
         {model.supplements.map(([key, s]) => (
           <tr key={key} className="border-t border-slate-100">
-            <td className="px-3 py-2 font-bold text-slate-900">{key}</td>
+            <td className="px-3 py-2 font-bold text-slate-900">{s.label}</td>
             <td className="px-3 py-2 text-right text-slate-700">{s.opens}</td>
             <td className="px-3 py-2 text-right font-black text-slate-900">{s.people.size}</td>
+            <td className="px-3 py-2 text-right text-slate-700">{s.answers}</td>
+            <td className="px-3 py-2 text-right text-slate-700">
+              {s.answers > 0 ? `${Math.round((s.correct / s.answers) * 100)}%` : "—"}
+            </td>
           </tr>
         ))}
         {model.supplements.length === 0 && (
-          <tr><td className="px-3 py-3 text-slate-500" colSpan={3}>No supplement opens recorded yet.</td></tr>
+          <tr><td className="px-3 py-3 text-slate-500" colSpan={5}>No supplement opens recorded yet.</td></tr>
         )}
       </TableBox>
     </div>

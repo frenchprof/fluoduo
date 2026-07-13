@@ -22,7 +22,9 @@ export type EventType =
   | "game.end" // { game, collectionId, score }
   | "pretest.answer" // { pretestId, itemId, correct, picked }
   | "page.view" // { path }
-  | "supplement.open"; // { deck, key, label, href }
+  | "supplement.open" // { deck, key, label, href }
+  | "supplement.answer" // { href, item, correct, mode } — written by the standalone supplement HTML
+  | "tutor.message"; // { chars } — length only, never the text (a learner's chat stays private)
 
 export async function logEvent(
   type: EventType,

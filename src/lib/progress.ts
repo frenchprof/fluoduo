@@ -296,7 +296,14 @@ export function stepItemSrs(prev: ItemSrs | undefined, correct: boolean, now: nu
  * ladder, so correct-after-retry lands back at the 1-day rung — that IS the
  * intended "repaired but fragile" signal, don't gate this to first attempts.
  */
-export function recordItemResult(itemId: string, correct: boolean): Progress {
+export function recordItemResult(itemId: string, correct: boolean, given?: string): Progress {
+  // Evidence trail (Dan, 2026-07-13: "every question, every attempt"): every
+  // graded answer anywhere also lands in users/{uid}/responses for the
+  // teacher dashboard. Dynamic import keeps Firestore out of this module's
+  // static graph (usage.ts rule); fire-and-forget, signed-out is a no-op.
+  void import("@/lib/firebase/responses")
+    .then((m) => m.recordResponse(itemId, correct, { given }))
+    .catch(() => {});
   const prev = loadProgress();
   const itemSrs = { ...prev.itemSrs, [itemId]: stepItemSrs(prev.itemSrs[itemId], correct, Date.now()) };
   // Practising ANYTHING keeps the streak alive — motivation comes from showing

@@ -383,5 +383,81 @@ document.addEventListener('keydown', e=>{
   }
 });
 </script>
+<script>
+/* ── Attendance + answer telemetry (Dan, 2026-07-13: "everything, every page,
+   every question, every attempt"). This page is standalone HTML outside the
+   app, so it carries its own tracker: the Firebase compat SDK loads lazily
+   from gstatic, picks up the SAME signed-in session the main site stored for
+   this origin, then writes the site's usual `events` documents (page.view on
+   load, supplement.answer per graded question — matching firestore.rules'
+   shape check). Never-signed-in visitors have no identity: nothing is
+   logged, same policy as the rest of the site. Every failure is swallowed —
+   telemetry must never break the activity. ── */
+(function(){
+  var PAGE = '/supplements/aliments-devine.html';
+  var CFG = {
+    apiKey: "AIzaSyDEEhlkmXTcZ69etUNk2KJWngyp7meeP5M",
+    authDomain: "laf1201.firebaseapp.com",
+    projectId: "laf1201",
+    storageBucket: "laf1201.firebasestorage.app",
+    messagingSenderId: "84075254825",
+    appId: "1:84075254825:web:5fe21c20a467fab977b838"
+  };
+  var fbUser = null, fbDb = null, pending = [];
+  function flush(){
+    if(!fbUser || !fbDb) return;
+    pending.splice(0).forEach(function(e){
+      try {
+        fbDb.collection('events').add({
+          uid: fbUser.uid,
+          type: e.type,
+          payload: Object.assign(
+            { name: fbUser.displayName || null, email: fbUser.email || null },
+            e.payload
+          ),
+          ts: firebase.firestore.FieldValue.serverTimestamp(),
+          ua: navigator.userAgent.slice(0, 400),
+          site: location.hostname
+        }).catch(function(){});
+      } catch(err){}
+    });
+  }
+  function track(type, payload){ pending.push({ type: type, payload: payload || {} }); flush(); }
+  function load(src){
+    return new Promise(function(res, rej){
+      var s = document.createElement('script');
+      s.src = src; s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+  }
+  var V = '10.14.1';
+  load('https://www.gstatic.com/firebasejs/' + V + '/firebase-app-compat.js')
+    .then(function(){ return load('https://www.gstatic.com/firebasejs/' + V + '/firebase-auth-compat.js'); })
+    .then(function(){ return load('https://www.gstatic.com/firebasejs/' + V + '/firebase-firestore-compat.js'); })
+    .then(function(){
+      firebase.initializeApp(CFG);
+      fbDb = firebase.firestore();
+      firebase.auth().onAuthStateChanged(function(u){
+        if(u && !fbUser){ fbUser = u; track('page.view', { path: PAGE }); }
+      });
+    })
+    .catch(function(){});
+  /* Wrap the two grading points without touching the game code. Both guard on
+     `locked` internally, so the wrapper logs only when the call really graded
+     (locked flipped false → true). */
+  var _answer = answer;
+  answer = function(el, it){
+    var was = locked;
+    _answer(el, it);
+    if(!was && locked) track('supplement.answer', { href: PAGE, item: it.w, correct: el.dataset.ok === 'true', mode: mode });
+  };
+  var _sayVerdict = sayVerdict;
+  sayVerdict = function(good, it){
+    var was = locked;
+    _sayVerdict(good, it);
+    if(!was && locked) track('supplement.answer', { href: PAGE, item: it.w, correct: !!good, mode: mode });
+  };
+})();
+</script>
 </body>
 </html>

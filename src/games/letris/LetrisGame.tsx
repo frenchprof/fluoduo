@@ -263,6 +263,15 @@ export default function LetrisGame({
   const landTile = useCallback(
     (a: Active) => {
       const correct = catIndex.get(a.tile.category) === a.col;
+      // Every drop is a graded sorting answer — record it (Dan, 2026-07-13:
+      // "every question, every attempt"). Direct write, NOT recordItemResult:
+      // Letris has its own scoring and must not double-pay XP per tile.
+      void import("@/lib/firebase/responses")
+        .then((m) => m.recordResponse(a.tile.text, correct, {
+          given: set.categories[a.col]?.label ?? String(a.col),
+          activity: `letris:${set.id}`,
+        }))
+        .catch(() => {});
       setFlash({ col: a.col, kind: correct ? "ok" : "bad" });
       window.setTimeout(() => setFlash(null), 220);
       // Enter a new weather phase: swap state, reset the per-phase tally, show

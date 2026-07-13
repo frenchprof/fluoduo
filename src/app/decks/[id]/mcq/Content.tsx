@@ -7,6 +7,7 @@ import { getCollection } from "@/lib/firebase/collections";
 import { displayEn, displayFr } from "@/lib/collections/display";
 import { speak } from "@/games/letris/speech";
 import { logEvent } from "@/lib/firebase/usage";
+import { recordResponse } from "@/lib/firebase/responses";
 import type { Collection, Item } from "@/lib/collections/schema";
 import CahierShell, { withActive } from "@/components/CahierShell";
 import { deckTabs } from "../DeckContent";
@@ -124,6 +125,9 @@ function Runner({ collection }: { collection: Collection }) {
     if (!question || picked) return;
     setPicked(text);
     const correct = sideText(question, dir).answer === text;
+    // MCQ grades outside recordItemResult (it never fed the SRS), so it
+    // writes the evidence trail directly.
+    recordResponse(question.id, correct, { given: text, activity: `mcq:${collection.id}` });
     if (correct) setScore((s) => s + 1);
   }
   function next() {

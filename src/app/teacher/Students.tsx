@@ -68,6 +68,9 @@ function StudentPanel({ learner, events }: { learner: Learner; events: Ev[] }) {
     const games = new Map<string, { plays: number; best: number | null }>();
     let answers = 0;
     let correct = 0;
+    let supAnswers = 0;
+    let supCorrect = 0;
+    let tutorMsgs = 0;
     const days = new Set<string>();
     for (const ev of mine) {
       if (ev.ts) days.add(SG_DAY_KEY.format(ev.ts));
@@ -87,11 +90,16 @@ function StudentPanel({ learner, events }: { learner: Learner; events: Ev[] }) {
         answers += 1;
         if (ev.payload.correct === true) correct += 1;
       }
+      if (ev.type === "supplement.answer") {
+        supAnswers += 1;
+        if (ev.payload.correct === true) supCorrect += 1;
+      }
+      if (ev.type === "tutor.message") tutorMsgs += 1;
     }
     return {
       topPages: [...pages.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10),
       games: [...games.entries()].sort((a, b) => b[1].plays - a[1].plays),
-      answers, correct, daysActive: days.size,
+      answers, correct, supAnswers, supCorrect, tutorMsgs, daysActive: days.size,
     };
   }, [events, learner.uid]);
 
@@ -254,15 +262,21 @@ function StudentPanel({ learner, events }: { learner: Learner; events: Ev[] }) {
         <p className="mt-2 text-sm text-slate-500">No page views yet (tracking starts with the attendance deploy).</p>
       )}
 
-      {(trail.games.length > 0 || trail.answers > 0) && (
+      {(trail.games.length > 0 || trail.answers > 0 || trail.supAnswers > 0 || trail.tutorMsgs > 0) && (
         <>
-          <SectionTitle>Games &amp; pretests</SectionTitle>
+          <SectionTitle>Games, pretests &amp; more</SectionTitle>
           <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
             <Kpi
               label="Pretest answers"
               value={trail.answers}
               sub={trail.answers > 0 ? `${Math.round((trail.correct / trail.answers) * 100)}% correct` : undefined}
             />
+            <Kpi
+              label="Supplement answers"
+              value={trail.supAnswers}
+              sub={trail.supAnswers > 0 ? `${Math.round((trail.supCorrect / trail.supAnswers) * 100)}% correct` : undefined}
+            />
+            <Kpi label="Tutor messages" value={trail.tutorMsgs} sub="length only, text stays private" />
           </div>
           {trail.games.length > 0 && (
             <TableBox head={["Game", "Plays", "Best score"]}>
