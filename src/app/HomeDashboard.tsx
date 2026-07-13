@@ -69,7 +69,20 @@ export default function HomeDashboard() {
             only; tooltips and aria-labels carry the words. */}
         <div className="flex items-center justify-between gap-3">
           <h1 className="fluo-serif text-3xl font-black text-[color:var(--fluo-ink)]">
-            Bienvenue sur <span className="fluo-hl px-1">FluoLingo</span> ✨
+            {/* "Bienvenue sur" stays still; FluoLingo performs the Kallang
+                Wave, then the fluo highlighter sweeps over it, then the ✨
+                blinks for a beat (Dan, 2026-07-13). Once per page load. */}
+            Bienvenue sur{" "}
+            <span className="fluo-brand" aria-label="FluoLingo">
+              <span aria-hidden>
+                {"FluoLingo".split("").map((ch, i) => (
+                  <span key={i} className="fluo-brand-letter" style={{ animationDelay: `${0.15 + i * 0.07}s` }}>
+                    {ch}
+                  </span>
+                ))}
+              </span>
+            </span>{" "}
+            <span className="fluo-brand-star" aria-hidden>✨</span>
           </h1>
           <div className="flex shrink-0 items-center gap-2">
             {activeSio && (

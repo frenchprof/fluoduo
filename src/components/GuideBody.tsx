@@ -92,13 +92,13 @@ export default function GuideBody() {
           <li>🔁 Little and often beats cramming — Réviser times it for you.</li>
         </ul>
         <p className="mt-1.5 text-sm text-[color:var(--cahier-ink)]">
-          The full thinking, with the science: <Link href="/about" className="font-bold underline">💡 About</Link>
+          The full thinking, with the science: <Link href="/about" className="cahier-btn cahier-btn-sm mx-0.5 align-middle">💡 About</Link>
         </p>
       </div>
 
       <p className="mt-5 text-sm leading-relaxed text-[color:var(--cahier-ink)]">
         🔊 speaks the French (🐌 = slowly) — use it constantly. The{" "}
-        <Link href="/activities" className="font-bold underline">🗂️ Index</Link> lists every
+        <Link href="/activities" className="cahier-btn cahier-btn-sm mx-0.5 align-middle">🗂️ Index</Link> lists every
         topic × activity. Sign in with Google to keep 💎 🔥 ✓ on every device.
         The ✨ button (bottom left) replays the tour.
       </p>

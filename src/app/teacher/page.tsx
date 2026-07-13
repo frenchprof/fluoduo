@@ -19,7 +19,8 @@
  */
 
 import { useEffect, useMemo, useState } from "react";
-import CahierShell, { type ShellTab } from "@/components/CahierShell";
+import CahierShell from "@/components/CahierShell";
+import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 import { useAuthUser, signInWithGoogle } from "@/lib/firebase/auth";
 import {
   ADMIN_EMAILS, type BoardRow, type Ev,
@@ -31,11 +32,6 @@ import Students from "./Students";
 import Activities from "./Activities";
 import Pretests from "./Pretests";
 import FeedbackPanel from "./FeedbackPanel";
-
-const TABS: ShellTab[] = [
-  { key: "home", label: "Accueil", emoji: "🏠", href: "/" },
-  { key: "teacher", label: "Teacher", emoji: "🧑‍🏫" },
-];
 
 const PANELS = [
   { key: "overview", label: "📊 Overview" },
@@ -52,7 +48,9 @@ export default function TeacherPage() {
   const isAdmin = !!user?.email && ADMIN_EMAILS.includes(user.email);
 
   return (
-    <CahierShell tabs={TABS} active="teacher" crumb="🧑‍🏫 Teacher">
+    // Site row only, like ConjugaZone/Tuteur — a custom context flap group
+    // left the tab rail hanging clear of the page edges (Dan, 2026-07-13).
+    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="teacher" crumb="🧑‍🏫 Teacher">
       <div className="mx-auto max-w-5xl px-4 py-8">
         {user === undefined ? (
           <p className="text-sm text-slate-500">Loading…</p>

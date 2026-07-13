@@ -33,14 +33,20 @@ export default function GuideSplash() {
       >
         <div className="flex items-center justify-between gap-2">
           <h2 className="cahier-display text-xl font-black text-[color:var(--cahier-ink)]">❓ Guide <span className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">· How FluoLingo works</span></h2>
-          <button type="button" onClick={() => setOpen(false)} aria-label="Fermer" className="cahier-btn cahier-btn-sm">✕</button>
+          <div className="flex items-center gap-1.5">
+            {/* Same ⤢ escape hatch as the SIO popup (Dan, 2026-07-13: a
+                "Open the Guide page" button reads oddly on the Guide itself). */}
+            <Link href="/guide" onClick={never} className="cahier-btn cahier-btn-sm" aria-label="Ouvrir en pleine page" title="Ouvrir en pleine page">
+              ⤢
+            </Link>
+            <button type="button" onClick={() => setOpen(false)} aria-label="Fermer" className="cahier-btn cahier-btn-sm">✕</button>
+          </div>
         </div>
         <GuideBody />
-        <div className="mt-5 flex flex-wrap items-center gap-2">
+        <div className="mt-5">
           <button type="button" onClick={never} className="cahier-btn cahier-btn-accent font-black">
             ✓ Got it, don't show me again
           </button>
-          <Link href="/guide" onClick={never} className="cahier-btn">Open the Guide page</Link>
         </div>
       </div>
     </div>
