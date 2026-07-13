@@ -19,6 +19,7 @@ const PAGE_WIDTH_KEY = "fluolingo:pageWidth";
 import { isLexReadyId } from "@/lib/collections/lexReady";
 import { CURATED } from "@/content/collections";
 import { lessonsForDeck } from "@/content/lessons";
+import { supplementsForDeck } from "@/content/supplements";
 import { siteTabs, toolTabs, tabsWithActive } from "@/components/siteTabs";
 import { SIOS } from "@/content/sios";
 import { getPretestForSio } from "@/content/pretests";
@@ -365,6 +366,11 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     ...(pretestHref
       ? [{ key: "pretest", label: "Pre-Test", emoji: "🧪", href: pretestHref, hint: "try it first" } as ShellTab]
       : []),
+    // PRE-lesson supplements (Dan, 2026-07-14: « Devine d'abord ! » for
+    // aliments) — guess-first material belongs between Pre-Test and study.
+    ...supplementsForDeck(collectionId).map((sup) => ({
+      key: sup.key, label: sup.label, emoji: sup.emoji, href: sup.href, hint: sup.hint,
+    }) as ShellTab),
     // Learning order (Dan, 2026-07-05): Pre-Test → flashcards → Lesson. EVERY
     // deck has a Lesson since the unification (Lire → Débutant → Intermédiaire
     // → Difficile absorbed Complete It / dice / GramMarathon).
