@@ -71,6 +71,7 @@ function StudentPanel({ learner, events }: { learner: Learner; events: Ev[] }) {
     let supAnswers = 0;
     let supCorrect = 0;
     let tutorMsgs = 0;
+    const tutorRecent: { ts: Date | null; text: string }[] = [];
     const days = new Set<string>();
     for (const ev of mine) {
       if (ev.ts) days.add(SG_DAY_KEY.format(ev.ts));
@@ -94,12 +95,19 @@ function StudentPanel({ learner, events }: { learner: Learner; events: Ev[] }) {
         supAnswers += 1;
         if (ev.payload.correct === true) supCorrect += 1;
       }
-      if (ev.type === "tutor.message") tutorMsgs += 1;
+      if (ev.type === "tutor.message") {
+        tutorMsgs += 1;
+        const text = str(ev.payload.text);
+        if (text) tutorRecent.push({ ts: ev.ts, text });
+      }
     }
+    tutorRecent.sort((a, b) => (b.ts?.getTime() ?? 0) - (a.ts?.getTime() ?? 0));
     return {
       topPages: [...pages.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10),
       games: [...games.entries()].sort((a, b) => b[1].plays - a[1].plays),
-      answers, correct, supAnswers, supCorrect, tutorMsgs, daysActive: days.size,
+      answers, correct, supAnswers, supCorrect, tutorMsgs,
+      tutorRecent: tutorRecent.slice(0, 10),
+      daysActive: days.size,
     };
   }, [events, learner.uid]);
 
@@ -276,7 +284,7 @@ function StudentPanel({ learner, events }: { learner: Learner; events: Ev[] }) {
               value={trail.supAnswers}
               sub={trail.supAnswers > 0 ? `${Math.round((trail.supCorrect / trail.supAnswers) * 100)}% correct` : undefined}
             />
-            <Kpi label="Tutor messages" value={trail.tutorMsgs} sub="length only, text stays private" />
+            <Kpi label="Tutor messages" value={trail.tutorMsgs} />
           </div>
           {trail.games.length > 0 && (
             <TableBox head={["Game", "Plays", "Best score"]}>
@@ -288,6 +296,19 @@ function StudentPanel({ learner, events }: { learner: Learner; events: Ev[] }) {
                 </tr>
               ))}
             </TableBox>
+          )}
+          {trail.tutorRecent.length > 0 && (
+            <>
+              <SectionTitle>Recent tutor messages</SectionTitle>
+              <TableBox head={["When", "Message"]}>
+                {trail.tutorRecent.map((m, i) => (
+                  <tr key={i} className="border-t border-slate-100 align-top">
+                    <td className="px-3 py-2 text-slate-700 whitespace-nowrap">{fmtWhen(m.ts)}</td>
+                    <td className="px-3 py-2 text-slate-900">{m.text}</td>
+                  </tr>
+                ))}
+              </TableBox>
+            </>
           )}
         </>
       )}

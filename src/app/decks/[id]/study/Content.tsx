@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import AuthGate from "@/components/AuthGate";
 import Link from "next/link";
 import { CURATED } from "@/content/collections";
 import { getCollection } from "@/lib/firebase/collections";
@@ -13,7 +14,7 @@ import { deckTabs } from "../DeckContent";
 type Dir = "fr-en" | "en-fr";
 const DIR_KEY = "fluolingo.studyDir.v1";
 
-export default function StudyPage({ id }: { id: string }) {
+function StudyPageInner({ id }: { id: string }) {
   const [collection, setCollection] = useState<Collection | null | undefined>(undefined);
 
   useEffect(() => {
@@ -191,5 +192,16 @@ function ProgressBar({ i, total }: { i: number; total: number }) {
         />
       </div>
     </div>
+  );
+}
+
+// Sign-in wall (Dan, 2026-07-13: close ALL anonymous gaps — these deck pages
+// predate the wall). Gated HERE so every route that renders this content
+// (static /decks/[id]/… and query-param /decks/…?id=) is covered at once.
+export default function StudyPage({ id }: { id: string }) {
+  return (
+    <AuthGate what="study the cards">
+      <StudyPageInner id={id} />
+    </AuthGate>
   );
 }

@@ -24,7 +24,7 @@ export type EventType =
   | "page.view" // { path }
   | "supplement.open" // { deck, key, label, href }
   | "supplement.answer" // { href, item, correct, mode } — written by the standalone supplement HTML
-  | "tutor.message"; // { chars } — length only, never the text (a learner's chat stays private)
+  | "tutor.message"; // { chars, text ≤500 } — content recorded (Dan, 2026-07-13: close all gaps)
 
 export async function logEvent(
   type: EventType,

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import AuthGate from "@/components/AuthGate";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -42,7 +43,7 @@ type LoadState =
   | { kind: "missing" }
   | { kind: "error"; message: string };
 
-export default function DeckPage({ id }: { id: string }) {
+function DeckPageInner({ id }: { id: string }) {
   const user = useAuthUser();
   const router = useRouter();
   const [state, setState] = useState<LoadState>({ kind: "loading" });
@@ -487,5 +488,16 @@ function Cell({
     >
       <span className="text-lg font-bold">•••</span>
     </button>
+  );
+}
+
+// Sign-in wall (Dan, 2026-07-13: close ALL anonymous gaps — these deck pages
+// predate the wall). Gated HERE so every route that renders this content
+// (static /decks/[id]/… and query-param /decks/…?id=) is covered at once.
+export default function DeckPage({ id }: { id: string }) {
+  return (
+    <AuthGate what="browse this deck">
+      <DeckPageInner id={id} />
+    </AuthGate>
   );
 }

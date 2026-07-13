@@ -390,9 +390,9 @@ document.addEventListener('keydown', e=>{
    from gstatic, picks up the SAME signed-in session the main site stored for
    this origin, then writes the site's usual `events` documents (page.view on
    load, supplement.answer per graded question — matching firestore.rules'
-   shape check). Never-signed-in visitors have no identity: nothing is
-   logged, same policy as the rest of the site. Every failure is swallowed —
-   telemetry must never break the activity. ── */
+   shape check). It also carries the SIGN-IN WALL: like every learning
+   activity, this page requires a Google sign-in (Dan, 2026-07-13: close all
+   anonymous gaps). Telemetry failures are swallowed; the wall is not. ── */
 (function(){
   var PAGE = '/supplements/aliments-devine.html';
   var CFG = {
@@ -404,6 +404,24 @@ document.addEventListener('keydown', e=>{
     appId: "1:84075254825:web:5fe21c20a467fab977b838"
   };
   var fbUser = null, fbDb = null, pending = [];
+  /* Sign-in wall (Dan, 2026-07-13: "any learning activity requires sign-in"
+     must hold here too). LOCKED BY DEFAULT the moment the page opens; the
+     overlay lifts only when Firebase confirms a signed-in user. If the SDK
+     can't load (offline / CDN blocked) the page STAYS locked — fail closed. */
+  var overlay = document.createElement('div');
+  overlay.id = 'signin-wall';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,.72);backdrop-filter:blur(3px);padding:16px;';
+  overlay.innerHTML =
+    '<div style="max-width:340px;width:100%;background:#fff;border-radius:18px;padding:24px;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.35);">' +
+      '<div style="font-size:34px;">\uD83D\uDD12</div>' +
+      '<h2 style="margin:8px 0 4px;font-size:19px;">Sign in to play</h2>' +
+      '<p id="wall-msg" style="margin:0 0 14px;font-size:13px;color:#475569;">Learning activities are saved to your account. Use your Google account to continue.</p>' +
+      '<button id="wall-btn" disabled style="width:100%;padding:10px 14px;border:0;border-radius:12px;background:#0b63c4;color:#fff;font-weight:800;font-size:15px;cursor:pointer;opacity:.6;">Continue with Google</button>' +
+      '<a href="https://fluolingo.withdrchan.com/" style="display:inline-block;margin-top:12px;font-size:12px;color:#64748b;font-weight:700;">\u2190 Back to FluoLingo</a>' +
+    '</div>';
+  function mountWall(){ if(document.body && !document.getElementById('signin-wall')) document.body.appendChild(overlay); }
+  if(document.body) mountWall(); else document.addEventListener('DOMContentLoaded', mountWall);
+  function unlock(){ var w = document.getElementById('signin-wall'); if(w) w.remove(); }
   function flush(){
     if(!fbUser || !fbDb) return;
     pending.splice(0).forEach(function(e){
@@ -437,11 +455,21 @@ document.addEventListener('keydown', e=>{
     .then(function(){
       firebase.initializeApp(CFG);
       fbDb = firebase.firestore();
+      var btn = overlay.querySelector('#wall-btn');
+      btn.disabled = false; btn.style.opacity = '1';
+      btn.onclick = function(){
+        btn.disabled = true;
+        firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())
+          .catch(function(){ btn.disabled = false; });
+      };
       firebase.auth().onAuthStateChanged(function(u){
-        if(u && !fbUser){ fbUser = u; track('page.view', { path: PAGE }); }
+        if(u && !fbUser){ fbUser = u; unlock(); track('page.view', { path: PAGE }); }
       });
     })
-    .catch(function(){});
+    .catch(function(){
+      var m = overlay.querySelector('#wall-msg');
+      if(m) m.textContent = 'Connection check failed. Open this activity from fluolingo.withdrchan.com while signed in.';
+    });
   /* Wrap the two grading points without touching the game code. Both guard on
      `locked` internally, so the wrapper logs only when the call really graded
      (locked flipped false → true). */

@@ -13,6 +13,7 @@ import CahierShell from "@/components/CahierShell";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 import { speakMixed, pauseSpeech, resumeSpeech, isSpeechPaused, guessLang, type MixedPlayback } from "@/games/letris/speech";
 import { logEvent } from "@/lib/firebase/usage";
+import AuthGate from "@/components/AuthGate";
 import type { ReactNode } from "react";
 
 type ChatMsg = { role: "user" | "assistant"; content: string };
@@ -95,7 +96,7 @@ function autoGrow(el: HTMLTextAreaElement | null) {
   el.style.height = `${Math.min(el.scrollHeight, 320)}px`;
 }
 
-export default function TutorPage() {
+function TutorPageInner() {
   const [messages, setMessages] = useState<ChatMsg[]>([{ role: "assistant", content: GREETING }]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -223,9 +224,10 @@ export default function TutorPage() {
   async function send() {
     const text = input.trim();
     if (!text || busy) return;
-    // Usage telemetry only — the LENGTH, never the text. A learner's chat
-    // with the tutor stays private even from the teacher dashboard.
-    void logEvent("tutor.message", { chars: text.length });
+    // Recorded WITH the text (Dan, 2026-07-13: "message content recorded")
+    // so the dashboard can show what learners actually practise; capped at
+    // 500 chars to stay well inside the events document budget.
+    void logEvent("tutor.message", { chars: text.length, text: text.slice(0, 500) });
     const next: ChatMsg[] = [...messages, { role: "user" as const, content: text }];
     setMessages(next);
     setInput("");
@@ -404,5 +406,15 @@ export default function TutorPage() {
         )}
       </div>
     </CahierShell>
+  );
+}
+
+// Sign-in wall (Dan, 2026-07-13: close the cost exposure — every tutor turn
+// spends API credits, so no anonymous chats).
+export default function TutorPage() {
+  return (
+    <AuthGate what="talk to the tutor">
+      <TutorPageInner />
+    </AuthGate>
   );
 }

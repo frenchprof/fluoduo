@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import AuthGate from "@/components/AuthGate";
 import Link from "next/link";
 import { CURATED } from "@/content/collections";
 import { getCollection } from "@/lib/firebase/collections";
@@ -17,7 +18,7 @@ const DIR_KEY = "fluolingo.mcqDir.v1";
 const TTS_KEY = "fluolingo.mcqTts.v1";
 const ROUND_SIZE = 10;
 
-export default function McqPage({ id }: { id: string }) {
+function McqPageInner({ id }: { id: string }) {
   const [collection, setCollection] = useState<Collection | null | undefined>(undefined);
 
   useEffect(() => {
@@ -403,4 +404,15 @@ function stableShuffle<T>(arr: T[], seedStr: string): T[] {
     [out[i], out[j]] = [out[j], out[i]];
   }
   return out;
+}
+
+// Sign-in wall (Dan, 2026-07-13: close ALL anonymous gaps — these deck pages
+// predate the wall). Gated HERE so every route that renders this content
+// (static /decks/[id]/… and query-param /decks/…?id=) is covered at once.
+export default function McqPage({ id }: { id: string }) {
+  return (
+    <AuthGate what="take the quiz">
+      <McqPageInner id={id} />
+    </AuthGate>
+  );
 }

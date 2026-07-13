@@ -18,6 +18,7 @@
  * where /api/tts isn't wired up (no GOOGLE_TTS_API_KEY).
  */
 import { useEffect, useRef, useState } from "react";
+import AuthGate from "@/components/AuthGate";
 import CahierShell from "@/components/CahierShell";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 import { castVoice } from "@/games/letris/speech";
@@ -48,7 +49,7 @@ function diffWords(a: string, b: string): DiffChunk[] {
   return out;
 }
 
-export default function TtsPage() {
+function TtsPageInner() {
   const [text, setText] = useState(SAMPLE);
   const [voiceSel, setVoiceSel] = useState<"f" | "m">("f");
   const [speed, setSpeed] = useState(1);
@@ -325,5 +326,15 @@ export default function TtsPage() {
         </div>
       </div>
     </CahierShell>
+  );
+}
+
+// Sign-in wall (Dan, 2026-07-13: close the cost exposure — MP3 generation
+// spends Google/Mistral credits, so no anonymous use).
+export default function TtsPage() {
+  return (
+    <AuthGate what="use the TTS studio">
+      <TtsPageInner />
+    </AuthGate>
   );
 }
