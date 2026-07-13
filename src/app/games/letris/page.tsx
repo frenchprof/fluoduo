@@ -2,6 +2,7 @@ import Link from "next/link";
 import BackLink from "@/components/BackLink";
 import { listLetrisSets } from "@/games/letris/sets";
 import { CURATED } from "@/content/collections";
+import { shortTitle } from "@/lib/shortTitles";
 
 /** Rain sets grouped by Unité (Dan, 2026-07-04: "organised rather than just
  *  listed out"). A set's unit comes from its backing collection; sets without
@@ -79,7 +80,7 @@ export default function LetrisIndexPage() {
                       {s.emoji}
                     </span>
                     <span className="mt-2 line-clamp-2 text-sm font-black leading-snug text-sky-950" lang="fr" title={s.title}>
-                      {s.title}
+                      {shortTitle(s.slug, s.title)}
                     </span>
                     <span className="mt-auto pt-2 text-[11px] font-bold" style={{ color: col.accent }}>
                       💧 {s.tileCount} · {s.categoryCount} puddles

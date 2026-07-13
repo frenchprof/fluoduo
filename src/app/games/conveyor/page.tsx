@@ -2,6 +2,7 @@ import Link from "next/link";
 import BackLink from "@/components/BackLink";
 import { CURATED } from "@/content/collections";
 import { isLexReadyId } from "@/lib/collections/lexReady";
+import { shortTitle } from "@/lib/shortTitles";
 
 /** Every Lexicalator in one place (Dan, 2026-07-13: a flap tab "leading to a
  *  page consolidating all the links towards that game") — the 🧰 twin of the
@@ -46,8 +47,7 @@ export default function LexicalatorIndexPage() {
                   href={`/games/conveyor/${c.id}`}
                   className="rounded-2xl border-2 border-b-4 border-[#e0a500] bg-white p-4 font-bold shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                 >
-                  <span lang="fr" className="block text-[#5a3a08]">{c.title}</span>
-                  {c.subtitle && <span className="mt-0.5 block text-xs font-semibold text-[#5a3a08]/60">{c.subtitle}</span>}
+                  <span lang="fr" className="block text-lg font-black text-[#5a3a08]" title={c.title}>{shortTitle(c.id, c.title)}</span>
                   <span className="mt-2 inline-block rounded-full bg-[#ffe08a] px-2 py-0.5 text-xs text-[#7a4e0a]">{c.items.length} mots</span>
                 </Link>
               ))}

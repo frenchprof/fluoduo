@@ -23,6 +23,7 @@ import { lessonsForDeck } from "@/content/lessons";
 import { isLexReadyId } from "@/lib/collections/lexReady";
 import { getLetrisSet } from "@/games/letris/sets";
 import { searchDecks } from "@/lib/search";
+import { shortTitle } from "@/lib/shortTitles";
 import type { Collection } from "@/lib/collections/schema";
 
 type Cell = { emoji: string; title: string; href: string | null };
@@ -121,7 +122,7 @@ export default function ActivitiesIndexPage() {
                     {decks.map((c) => (
                       <tr key={c.id} className="border-t border-[color:var(--cahier-rule)] transition hover:bg-[color:var(--fluo-card-tint)]">
                         <td className="max-w-[9rem] px-3 py-1.5 font-bold text-[color:var(--cahier-ink)]">
-                          <div lang="fr" className="truncate" title={c.title}>{c.title}</div>
+                          <div lang="fr" className="truncate" title={c.title}>{shortTitle(c.id, c.title)}</div>
                           {/* Which words inside the deck matched the search. */}
                           {(hitMap.get(c.id)?.words.length ?? 0) > 0 && (
                             <div className="truncate text-xs font-normal text-[color:var(--cahier-ink-soft)]">
