@@ -13,13 +13,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import type { CSSProperties, ReactNode } from "react";
+import type { CSSProperties, MouseEvent as ReactMouseEvent, ReactNode } from "react";
 
 const PAGE_WIDTH_KEY = "fluolingo:pageWidth";
 import { isLexReadyId } from "@/lib/collections/lexReady";
 import { CURATED } from "@/content/collections";
 import { lessonsForDeck } from "@/content/lessons";
-import { supplementsForDeck } from "@/content/supplements";
+import { supplementsForDeck, type Supplement } from "@/content/supplements";
+import { auth } from "@/lib/firebase/client";
+import { logEvent } from "@/lib/firebase/usage";
 import { siteTabs, toolTabs, tabsWithActive } from "@/components/siteTabs";
 import { SIOS } from "@/content/sios";
 import { getPretestForSio } from "@/content/pretests";
@@ -57,6 +59,8 @@ export type ShellTab = {
    *  2026-07-05). Navigation text: it points at the right door, so it
    *  survives the litmus rule. */
   hint?: string;
+  /** Extra click work (e.g. visit telemetry) — runs before navigation. */
+  onClick?: (e: ReactMouseEvent<HTMLAnchorElement>) => void;
 };
 
 function TabFlap({
@@ -90,7 +94,16 @@ function TabFlap({
     );
   }
   return (
-    <Link href={tab.href} data-active={active} className={className} style={style} onClick={onNavigate}>
+    <Link
+      href={tab.href}
+      data-active={active}
+      className={className}
+      style={style}
+      onClick={(e) => {
+        tab.onClick?.(e);
+        onNavigate?.();
+      }}
+    >
       {body}
     </Link>
   );
@@ -354,6 +367,27 @@ export function pretestHrefForDeck(collectionId: string): string | null {
   return null;
 }
 
+/** Visit telemetry for supplement pages (Dan, 2026-07-13: "who went into
+ *  these pages"). Supplements are standalone HTML OUTSIDE the app, so the
+ *  visit is recorded here at the door — and because a same-tab navigation
+ *  unloads the app (cancelling an in-flight Firestore write), navigation is
+ *  held until the write lands or 600 ms passes, whichever is first. Modified
+ *  clicks (⌘/ctrl → new tab) keep the app alive, so they just log. */
+function trackSupplementOpen(
+  e: ReactMouseEvent<HTMLAnchorElement>,
+  deck: string,
+  sup: Supplement,
+): void {
+  if (!auth.currentUser) return; // logEvent would no-op; don't delay navigation
+  const done = logEvent("supplement.open", {
+    deck, key: sup.key, label: sup.label, href: sup.href,
+  });
+  if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  e.preventDefault();
+  const go = () => window.location.assign(sup.href);
+  void Promise.race([done, new Promise((r) => setTimeout(r, 600))]).then(go, go);
+}
+
 /** THE deck activity list — popup flaps and page rails both render exactly
  *  this set (Dan, 2026-07-05: leaving via a flap must show the same flaps).
  *  Conditional tabs appear only where their readiness predicate passes. */
@@ -370,6 +404,7 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     // aliments) — guess-first material belongs between Pre-Test and study.
     ...supplementsForDeck(collectionId).map((sup) => ({
       key: sup.key, label: sup.label, emoji: sup.emoji, href: sup.href, hint: sup.hint,
+      onClick: (e: ReactMouseEvent<HTMLAnchorElement>) => trackSupplementOpen(e, collectionId, sup),
     }) as ShellTab),
     // Learning order (Dan, 2026-07-05): Pre-Test → flashcards → Lesson. EVERY
     // deck has a Lesson since the unification (Lire → Débutant → Intermédiaire

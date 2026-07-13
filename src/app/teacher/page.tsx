@@ -1,9 +1,15 @@
 "use client";
 
 /**
- * Teacher gap view (PRIME gap report, audit R1) — class-wide pretest misses.
- * Reads the `events` collection (type == "pretest.answer") and aggregates
- * client-side: per pretest → per item → attempts / miss rate / top wrong pick.
+ * Teacher view — class-wide analytics off the `events` collection, aggregated
+ * client-side (single-where queries only, no composite indexes):
+ *   1. Attendance (Dan, 2026-07-13: "how many people was on which page on
+ *      which days") — day × page → unique visitors, from `page.view` events
+ *      (every route change, signed-in users) plus `supplement.open` events
+ *      (standalone supplement HTML has no tracker; the deck-flap click at the
+ *      door stands in for its page view).
+ *   2. Pretest gap report (PRIME, audit R1) — per pretest → per item →
+ *      attempts / miss rate / top wrong pick, from `pretest.answer` events.
  * Firestore rules already restrict `events` reads to admins, so the email gate
  * here is UX, not security. Not linked from learner surfaces — teachers get
  * the URL. Firestore is imported dynamically (usage.ts pattern) so the bundle
@@ -56,7 +62,16 @@ export default function TeacherPage() {
         {user === undefined ? (
           <p className="text-sm text-slate-500">Loading…</p>
         ) : isAdmin ? (
-          <GapReport />
+          <div className="space-y-12">
+            <section>
+              <h1 className="text-xl font-black text-slate-900">👣 Attendance: who was on which page</h1>
+              <AttendanceReport />
+            </section>
+            <section>
+              <h1 className="text-xl font-black text-slate-900">🧪 Pretest gaps</h1>
+              <GapReport />
+            </section>
+          </div>
         ) : (
           <TeachersOnly />
         )}
@@ -86,6 +101,142 @@ function TeachersOnly() {
       >
         {busy ? "Signing in…" : "Continue with Google"}
       </button>
+    </div>
+  );
+}
+
+type DayAgg = {
+  /** YYYY-MM-DD in Asia/Singapore — sortable. */
+  dayKey: string;
+  /** Human form of the same day ("Monday 13 July 2026"). */
+  dayLabel: string;
+  pages: {
+    path: string;
+    people: number;
+    views: number;
+    names: string[]; // sorted, deduped
+  }[]; // sorted by people desc, views desc
+};
+
+const DAY_KEY_FMT = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "Asia/Singapore", year: "numeric", month: "2-digit", day: "2-digit",
+});
+const DAY_LABEL_FMT = new Intl.DateTimeFormat("en-SG", {
+  timeZone: "Asia/Singapore", weekday: "long", day: "numeric", month: "long", year: "numeric",
+});
+const MAX_DAYS_SHOWN = 30;
+
+function AttendanceReport() {
+  const [days, setDays] = useState<DayAgg[] | null>(null);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const [{ getDocs, query, where, collection }, { db }] = await Promise.all([
+          import("firebase/firestore"),
+          import("@/lib/firebase/db"),
+        ]);
+        const snap = await getDocs(
+          query(collection(db, "events"), where("type", "in", ["page.view", "supplement.open"])),
+        );
+
+        // day → path → uid → display name
+        const byDay = new Map<string, Map<string, { people: Map<string, string>; views: number }>>();
+        const labels = new Map<string, string>();
+        snap.forEach((doc) => {
+          const d = doc.data() as {
+            uid?: unknown;
+            ts?: { toDate?: () => Date };
+            payload?: { path?: unknown; href?: unknown; name?: unknown; email?: unknown };
+          };
+          const when = d.ts?.toDate?.();
+          const uid = typeof d.uid === "string" ? d.uid : null;
+          const p = d.payload ?? {};
+          // page.view carries `path`; supplement.open carries `href` — the
+          // supplement's own URL, so both land in the same page column.
+          const path = typeof p.path === "string" ? p.path : typeof p.href === "string" ? p.href : null;
+          if (!when || !uid || !path) return;
+          const dayKey = DAY_KEY_FMT.format(when);
+          if (!labels.has(dayKey)) labels.set(dayKey, DAY_LABEL_FMT.format(when));
+          let pages = byDay.get(dayKey);
+          if (!pages) byDay.set(dayKey, (pages = new Map()));
+          let agg = pages.get(path);
+          if (!agg) pages.set(path, (agg = { people: new Map(), views: 0 }));
+          agg.views += 1;
+          const name =
+            (typeof p.name === "string" && p.name) ||
+            (typeof p.email === "string" && p.email.split("@")[0]) ||
+            uid.slice(0, 8);
+          agg.people.set(uid, name);
+        });
+
+        const out: DayAgg[] = [...byDay.entries()]
+          .sort((a, b) => b[0].localeCompare(a[0]))
+          .slice(0, MAX_DAYS_SHOWN)
+          .map(([dayKey, pages]) => ({
+            dayKey,
+            dayLabel: labels.get(dayKey) ?? dayKey,
+            pages: [...pages.entries()]
+              .map(([path, a]) => ({
+                path,
+                people: a.people.size,
+                views: a.views,
+                names: [...new Set(a.people.values())].sort((x, y) => x.localeCompare(y)),
+              }))
+              .sort((x, y) => y.people - x.people || y.views - x.views || x.path.localeCompare(y.path)),
+          }));
+
+        if (!cancelled) setDays(out);
+      } catch {
+        if (!cancelled) setError(true);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (error) return <p className="mt-3 text-sm font-bold text-rose-600">Couldn&rsquo;t load events.</p>;
+  if (days === null) return <p className="mt-3 text-sm text-slate-500">Loading…</p>;
+  if (days.length === 0) {
+    return (
+      <p className="mt-3 text-sm text-slate-500">
+        No visits recorded yet. Tracking starts with this deploy, signed-in visitors only.
+      </p>
+    );
+  }
+
+  return (
+    <div className="mt-4 space-y-8">
+      {days.map((day) => (
+        <section key={day.dayKey}>
+          <h2 className="text-lg font-black text-slate-900">{day.dayLabel}</h2>
+          <div className="mt-2 overflow-x-auto rounded-xl border-2 border-slate-200 bg-white">
+            <table className="min-w-full text-sm">
+              <thead className="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+                <tr>
+                  <th className="px-3 py-2 text-left">Page</th>
+                  <th className="px-3 py-2 text-right">People</th>
+                  <th className="px-3 py-2 text-right">Views</th>
+                  <th className="px-3 py-2 text-left">Who</th>
+                </tr>
+              </thead>
+              <tbody>
+                {day.pages.map((row) => (
+                  <tr key={row.path} className="border-t border-slate-100 align-top">
+                    <td className="px-3 py-2 font-bold text-slate-900 break-all">{row.path}</td>
+                    <td className="px-3 py-2 text-right font-black text-slate-900">{row.people}</td>
+                    <td className="px-3 py-2 text-right text-slate-700">{row.views}</td>
+                    <td className="px-3 py-2 text-slate-700">{row.names.join(" · ")}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      ))}
     </div>
   );
 }

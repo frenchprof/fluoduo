@@ -20,14 +20,17 @@ export type EventType =
   | "flashcard.review" // { itemId, rating }
   | "game.start" // { game, collectionId }
   | "game.end" // { game, collectionId, score }
-  | "pretest.answer"; // { pretestId, itemId, correct, picked }
+  | "pretest.answer" // { pretestId, itemId, correct, picked }
+  | "page.view" // { path }
+  | "supplement.open"; // { deck, key, label, href }
 
 export async function logEvent(
   type: EventType,
   payload: Record<string, unknown> = {},
 ): Promise<void> {
   try {
-    const uid = auth.currentUser?.uid;
+    const u = auth.currentUser;
+    const uid = u?.uid;
     if (!uid) return; // only log for signed-in users
     const [{ addDoc, collection, serverTimestamp }, { db }] = await Promise.all([
       import("firebase/firestore"),
@@ -36,7 +39,10 @@ export async function logEvent(
     await addDoc(collection(db, "events"), {
       uid,
       type,
-      payload,
+      // Every event self-describes WHO (Dan, 2026-07-13: "who went into these
+      // pages") — the teacher dashboard reads events alone, no uid→profile
+      // join. Explicit payload keys win over the stamped identity.
+      payload: { name: u?.displayName ?? null, email: u?.email ?? null, ...payload },
       ts: serverTimestamp(),
       ua: typeof navigator !== "undefined" ? navigator.userAgent : null,
       // Several sites share this Firebase project — record which one.

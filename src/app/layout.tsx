@@ -4,6 +4,7 @@ import "./globals.css";
 import BetaNotice from "@/components/BetaNotice";
 import FeedbackButton from "@/components/FeedbackButton";
 import ProgressSync from "@/components/ProgressSync";
+import PageViewTracker from "@/components/PageViewTracker";
 import AccentBar from "@/components/AccentBar";
 import RewardToast from "@/components/RewardToast";
 import TtsToggle from "@/components/TtsToggle";
@@ -70,6 +71,7 @@ export default function RootLayout({
         <FeedbackButton />
         <BetaNotice />
         <ProgressSync />
+        <PageViewTracker />
         <AccentBar />
         <RewardToast />
         <TtsToggle />
