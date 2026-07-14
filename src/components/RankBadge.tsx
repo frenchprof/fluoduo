@@ -23,7 +23,7 @@ export default function RankBadge({
       className={`fluo-rank fluo-rank-${tier} ${className}`}
       title={`N${level} · ${name}`}
     >
-      {compact ? level : (
+      {compact ? <>N{level}</> : (
         <>
           {tier >= 10 && <span aria-hidden>👑 </span>}
           N{level} · {name}

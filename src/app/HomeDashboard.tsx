@@ -130,8 +130,11 @@ export default function HomeDashboard() {
         </div>
 
         <div className="mt-4 flex flex-wrap items-center gap-2.5">
-          <Link href="/profil" className={`${chip} hover:-translate-y-0.5 !px-2`} title="Votre niveau">
-            🎚️ <RankBadge level={lvl.level} name={lvl.name} className="text-xs" />
+          {/* Compact rank (N5, name in the tooltip) — the spelled-out name
+              made the chip row wrap and pushed QuickGuide onto its own line
+              (Dan, 2026-07-14). */}
+          <Link href="/profil" className={`${chip} hover:-translate-y-0.5 !px-2`} title={`Votre niveau — N${lvl.level} · ${lvl.name}`}>
+            🎚️ <RankBadge level={lvl.level} name={lvl.name} compact className="text-xs" />
           </Link>
           <span className={chip}>✓ {doneTotal}/{SIOS.length}</span>
           <span className={chip} title={mult > 1 ? `Série active : XP ×${mult}` : "Série de jours"}>
