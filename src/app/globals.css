@@ -217,29 +217,63 @@ body {
   display: inline-block;
   padding: 0 0.18em;
 }
+/* The ink: an IRREGULAR, slightly rotated blob that overshoots the letters
+   (real strokes spill past ascenders), streaked by a gradient (heavy press
+   at the start, drier tail). Revealed by a clip-path WIPE — not scaleX — so
+   the blobby edges never stretch, and paced like a wrist: it hesitates
+   mid-word, then finishes the pull. */
 .fluo-brand::before {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: -0.12em -0.24em -0.18em -0.2em;
   z-index: -1;
-  background-color: var(--fluo-hl);
-  border-radius: 3px;
-  transform: skewX(-8deg) scaleX(0);
-  transform-origin: left center;
-  animation: fluo-brand-hl 1.1s cubic-bezier(0.65, 0, 0.35, 1) 1.45s forwards;
+  background: linear-gradient(
+    100deg,
+    rgba(199, 236, 47, 0.95) 0%,
+    rgba(212, 242, 76, 0.9) 12%,
+    rgba(190, 230, 40, 0.85) 34%,
+    rgba(212, 242, 76, 0.92) 58%,
+    rgba(199, 236, 47, 0.8) 78%,
+    rgba(212, 242, 76, 0.62) 100%
+  );
+  border-radius: 0.6em 0.3em 0.7em 0.25em / 0.9em 0.5em 0.8em 0.6em;
+  transform: rotate(-1.3deg);
+  mix-blend-mode: multiply;
+  clip-path: inset(-20% 105% -20% -5%);
+  animation: fluo-brand-hl 1.3s cubic-bezier(0.5, 0.05, 0.4, 1) 1.45s forwards;
 }
 @keyframes fluo-brand-hl {
-  0% {
-    transform: skewX(-8deg) scaleX(0);
-    box-shadow: 0 0 0 rgba(212, 242, 76, 0);
-  }
-  70% {
-    box-shadow: 0 0 16px rgba(212, 242, 76, 0.85);
-  }
-  100% {
-    transform: skewX(-8deg) scaleX(1);
-    box-shadow: 0 0 6px rgba(212, 242, 76, 0.4);
-  }
+  0%   { clip-path: inset(-20% 105% -20% -5%); }
+  25%  { clip-path: inset(-20% 68% -20% -5%); }
+  40%  { clip-path: inset(-20% 58% -20% -5%); } /* the wrist hesitates */
+  70%  { clip-path: inset(-20% 22% -20% -5%); }
+  100% { clip-path: inset(-20% -5% -20% -5%); }
+}
+/* The pen itself: a glowing chisel nib that travels just ahead of the ink
+   edge (same easing + keyframe beats as the wipe), then lifts off the page
+   past the final o. */
+.fluo-brand::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -3%;
+  width: 0.34em;
+  height: 1.3em;
+  z-index: 1;
+  border-radius: 0.12em;
+  background: linear-gradient(180deg, #e2fa60, #b5d92e);
+  box-shadow: 0 0 10px rgba(212, 242, 76, 0.95), 0 1px 2px rgba(0, 0, 0, 0.28);
+  transform: translateY(-50%) rotate(14deg);
+  opacity: 0;
+  animation: fluo-brand-nib 1.3s cubic-bezier(0.5, 0.05, 0.4, 1) 1.45s;
+}
+@keyframes fluo-brand-nib {
+  0%   { left: -3%;  opacity: 1; }
+  25%  { left: 30%;  }
+  40%  { left: 40%;  } /* matches the wipe's hesitation */
+  70%  { left: 76%;  }
+  90%  { opacity: 1; }
+  100% { left: 103%; opacity: 0; }
 }
 .fluo-brand-letter {
   display: inline-block;
@@ -283,7 +317,8 @@ body {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .fluo-brand::before { animation: none; transform: scaleX(1); }
+  .fluo-brand::before { animation: none; clip-path: none; }
+  .fluo-brand::after { display: none; }
   .fluo-brand-letter, .fluo-brand-star { animation: none; }
 }
 
