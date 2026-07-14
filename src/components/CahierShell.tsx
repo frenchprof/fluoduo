@@ -11,7 +11,7 @@
  * A tab without an href (typically the active page) renders as a static flap.
  */
 
-import { Fragment, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import GuideSplash from "@/components/GuideSplash";
 import type { CSSProperties, MouseEvent as ReactMouseEvent, ReactNode } from "react";
@@ -274,27 +274,28 @@ export default function CahierShell({
                     // max-h + scroll: with the tools group the list outgrows
                     // small screens and items were cut off (Dan, 2026-07-08).
                     <div className="absolute right-0 top-full z-50 mt-1 flex max-h-[75vh] w-48 flex-col gap-1 overflow-y-auto rounded-lg border-2 border-[color:var(--cahier-ink)]/20 bg-white p-1 shadow-lg">
-                      {site.map((t, i) => (
-                        <Fragment key={t.key}>
+                      {site.map((t, i) =>
+                        t.key === "guide" ? (
+                          <button
+                            key="quickguide"
+                            type="button"
+                            onClick={() => { setQuickGuideOpen(true); setMenuOpen(false); }}
+                            className="cahier-tab !rounded-md text-left font-black"
+                            style={{ background: "var(--cahier-ink)", borderColor: "var(--cahier-ink)", color: "#d4f24c" }}
+                          >
+                            <span aria-hidden>❓</span> QuickGuide
+                          </button>
+                        ) : (
                           <TabFlap
+                            key={t.key}
                             tab={t}
                             hue={hueOf(t, i)}
                             active={isActiveFlap(t)}
                             className="cahier-tab !rounded-md text-left"
                             onNavigate={() => setMenuOpen(false)}
                           />
-                          {t.key === "guide" && (
-                            <button
-                              type="button"
-                              onClick={() => { setQuickGuideOpen(true); setMenuOpen(false); }}
-                              className="cahier-tab !rounded-md text-left font-black"
-                              style={{ background: "var(--cahier-ink)", borderColor: "var(--cahier-ink)", color: "#d4f24c" }}
-                            >
-                              QuickGuide
-                            </button>
-                          )}
-                        </Fragment>
-                      ))}
+                        ),
+                      )}
                       <hr className="my-0.5 border-[color:var(--cahier-ink)]/15" />
                       {tools.map((t, i) => (
                         <TabFlap
@@ -345,28 +346,30 @@ export default function CahierShell({
         {rankingOpen && <RankingOverlay onClose={() => setRankingOpen(false)} />}
         {quickGuideOpen && <GuideSplash onClose={() => setQuickGuideOpen(false)} />}
         <nav className="cahier-tabs" aria-label="Pages">
-          {site.map((t, i) => (
-            <Fragment key={t.key}>
+          {site.map((t, i) =>
+            t.key === "guide" ? (
+              // The Guide flap IS the QuickGuide now (Dan, 2026-07-14:
+              // "remove the guide tab but put the ? in the new tab") —
+              // inverted colors, opens the popup instead of navigating.
+              <button
+                key="quickguide"
+                type="button"
+                onClick={() => setQuickGuideOpen(true)}
+                className={`cahier-tab ${context.length > 0 ? "cahier-tab--back1" : ""} font-black`}
+                style={{ background: "var(--cahier-ink)", borderColor: "var(--cahier-ink)", color: "#d4f24c" }}
+              >
+                <span aria-hidden>❓</span> QuickGuide
+              </button>
+            ) : (
               <TabFlap
+                key={t.key}
                 tab={t}
                 hue={hueOf(t, i)}
                 active={isActiveFlap(t)}
                 className={`cahier-tab ${context.length > 0 ? "cahier-tab--back1" : ""}`}
               />
-              {/* Inverted-color QuickGuide right after the ❓ flap (Dan,
-                  2026-07-14) — opens the popup the site no longer forces. */}
-              {t.key === "guide" && (
-                <button
-                  type="button"
-                  onClick={() => setQuickGuideOpen(true)}
-                  className={`cahier-tab ${context.length > 0 ? "cahier-tab--back1" : ""} font-black`}
-                  style={{ background: "var(--cahier-ink)", borderColor: "var(--cahier-ink)", color: "#d4f24c" }}
-                >
-                  QuickGuide
-                </button>
-              )}
-            </Fragment>
-          ))}
+            ),
+          )}
           {/* The tools live in the ☰ on mobile — but desktop hides the ☰
               (Dan, 2026-07-08: "the desktop version does not have them"), so
               they get their own small-flap group in the rail. */}

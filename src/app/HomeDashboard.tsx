@@ -11,6 +11,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import StatsHelp from "@/components/StatsHelp";
+import GuideSplash from "@/components/GuideSplash";
 import RankBadge from "@/components/RankBadge";
 import RoadMap from "@/components/RoadMap";
 import { SIOS } from "@/content/sios";
@@ -29,6 +30,9 @@ export default function HomeDashboard() {
   // drop a finished animation's fill state (Dan, 2026-07-14: "the color
   // disappears right after").
   const [inkDone, setInkDone] = useState(false);
+  // Quick Guide popup, summoned from the hero button next to the (?) circle
+  // (Dan, 2026-07-14: "insert a QuickGuide link where my red arrow points").
+  const [qgOpen, setQgOpen] = useState(false);
 
   useEffect(() => {
     const refresh = () => {
@@ -138,7 +142,16 @@ export default function HomeDashboard() {
           <Link href="/leaderboard" className={`${chip} hover:-translate-y-0.5`} title="Classement · votre rang">⭐ {progress.xp}</Link>
           <Link href="/profil" className={`${chip} hover:-translate-y-0.5`} title="Boutique">💎 {progress.gems}</Link>
           <StatsHelp />
+          <button
+            type="button"
+            onClick={() => setQgOpen(true)}
+            className="rounded-lg border-2 px-3 py-1 text-sm font-black shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
+            style={{ background: "var(--fluo-ink)", borderColor: "var(--fluo-ink)", color: "#d4f24c" }}
+          >
+            QuickGuide
+          </button>
         </div>
+        {qgOpen && <GuideSplash onClose={() => setQgOpen(false)} />}
 
         {/* Two bars: overall course completion, and XP into the current level. */}
         <div className="mt-3 space-y-2">
