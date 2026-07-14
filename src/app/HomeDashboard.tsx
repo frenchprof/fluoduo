@@ -23,6 +23,15 @@ import { dueForReview } from "@/lib/reviser";
 export default function HomeDashboard() {
   const [progress, setProgress] = useState<Progress>(defaultProgress());
   const [dueCount, setDueCount] = useState(0);
+  // The FluoLingo brand animation waits until the stage is clear — playing
+  // it behind the first-visit Guide popup wasted the whole show (Dan,
+  // 2026-07-14). If the splash is about to open (its key unset while the
+  // beta notice is done), hold; its close event starts the performance.
+  const [heroPlay, setHeroPlay] = useState(false);
+  // Once the stroke has played, the ink is pinned by class — engines can
+  // drop a finished animation's fill state (Dan, 2026-07-14: "the color
+  // disappears right after").
+  const [inkDone, setInkDone] = useState(false);
 
   useEffect(() => {
     const refresh = () => {
@@ -32,7 +41,21 @@ export default function HomeDashboard() {
     };
     refresh();
     window.addEventListener("fluolingo:progress-updated", refresh);
-    return () => window.removeEventListener("fluolingo:progress-updated", refresh);
+
+    const startHero = () => setHeroPlay(true);
+    try {
+      const splashComing =
+        !window.localStorage.getItem("fluolingo:guide-splash.v1") &&
+        !!window.localStorage.getItem("fluolingo:beta-notice.v1");
+      if (!splashComing) startHero();
+    } catch {
+      startHero();
+    }
+    window.addEventListener("fluolingo:guide-splash-closed", startHero);
+    return () => {
+      window.removeEventListener("fluolingo:progress-updated", refresh);
+      window.removeEventListener("fluolingo:guide-splash-closed", startHero);
+    };
   }, []);
 
   // "Continuer" = the first not-done goal AFTER the furthest « done » (Dan,
@@ -73,7 +96,13 @@ export default function HomeDashboard() {
                 Wave, then the fluo highlighter sweeps over it, then the ✨
                 blinks for a beat (Dan, 2026-07-13). Once per page load. */}
             Bienvenue sur{" "}
-            <span className="fluo-brand" aria-label="FluoLingo">
+            <span
+              className={`fluo-brand${heroPlay ? " is-play" : ""}${inkDone ? " is-inked" : ""}`}
+              aria-label="FluoLingo"
+              onAnimationEnd={(e) => {
+                if (e.animationName === "fluo-brand-hl") setInkDone(true);
+              }}
+            >
               <span aria-hidden>
                 {"FluoLingo".split("").map((ch, i) => (
                   <span key={i} className="fluo-brand-letter" style={{ animationDelay: `${0.15 + i * 0.07}s` }}>
@@ -82,7 +111,7 @@ export default function HomeDashboard() {
                 ))}
               </span>
             </span>{" "}
-            <span className="fluo-brand-star" aria-hidden>✨</span>
+            <span className={`fluo-brand-star${heroPlay ? " is-play" : ""}`} aria-hidden>✨</span>
           </h1>
           <div className="flex shrink-0 items-center gap-2">
             {activeSio && (

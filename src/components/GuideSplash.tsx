@@ -21,12 +21,19 @@ export default function GuideSplash() {
     } catch {}
   }, []);
   if (!open) return null;
+  // The home hero holds its FluoLingo animation while this popup is up
+  // (Dan, 2026-07-14: "all the animation got wasted behind the forced
+  // popped up guide") — closing announces the stage is clear.
+  const close = () => {
+    setOpen(false);
+    try { window.dispatchEvent(new Event("fluolingo:guide-splash-closed")); } catch {}
+  };
   const never = () => {
     try { window.localStorage.setItem(KEY, "1"); } catch {}
-    setOpen(false);
+    close();
   };
   return (
-    <div className="fixed inset-0 z-[85] bg-black/35 p-4 backdrop-blur-[2px]" role="dialog" aria-modal="true" aria-label="Guide" onClick={() => setOpen(false)}>
+    <div className="fixed inset-0 z-[85] bg-black/35 p-4 backdrop-blur-[2px]" role="dialog" aria-modal="true" aria-label="Guide" onClick={close}>
       <div
         className="mx-auto mt-[4vh] max-h-[88vh] w-[min(94vw,42rem)] overflow-y-auto rounded-2xl border-2 border-[color:var(--cahier-ink,#222850)] bg-[color:var(--cahier-paper,#fdfbf4)] p-5 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
@@ -39,7 +46,7 @@ export default function GuideSplash() {
             <Link href="/guide" onClick={never} className="cahier-btn cahier-btn-sm" aria-label="Ouvrir en pleine page" title="Ouvrir en pleine page">
               ⤢
             </Link>
-            <button type="button" onClick={() => setOpen(false)} aria-label="Fermer" className="cahier-btn cahier-btn-sm">✕</button>
+            <button type="button" onClick={close} aria-label="Fermer" className="cahier-btn cahier-btn-sm">✕</button>
           </div>
         </div>
         <GuideBody />
