@@ -39,7 +39,7 @@ export default function GuideSplash() {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between gap-2">
-          <h2 className="cahier-display text-xl font-black text-[color:var(--cahier-ink)]">❓ Guide <span className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">· How FluoLingo works</span></h2>
+          <h2 className="cahier-display text-xl font-black text-[color:var(--cahier-ink)]">❓ Quick Guide <span className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">· How FluoLingo works</span></h2>
           <div className="flex items-center gap-1.5">
             {/* Same ⤢ escape hatch as the SIO popup (Dan, 2026-07-13: a
                 "Open the Guide page" button reads oddly on the Guide itself). */}
