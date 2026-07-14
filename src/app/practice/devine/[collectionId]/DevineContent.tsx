@@ -1,33 +1,37 @@
 "use client";
 
 /**
- * « Devine d'abord ! » — the guess-first food activity, native (Dan,
- * 2026-07-14: "included under Unit 4, not as a supplement… count XP like
- * other pages… reskinned into the current fluolingo look"). Port of the
- * standalone public/supplements/aliments-devine.html: same five modes
- * (Mixte / Mot→Image / Image→Mot / 🎤 Répète / 🎤 Devine et dis), same
- * accent-tolerant Say It grading, now in the Cahier skin with every answer
- * paying XP + streak + SRS through recordItemResult (which also writes the
- * teacher evidence trail). Photos live in /public/devine; data in
- * src/content/devine-aliments.json.
+ * « Devine d'abord ! » — the guess-first activity (Dan, 2026-07-14).
+ * aliments runs on its photo bank (public/devine + devine-aliments.json);
+ * every other DEVINE_READY deck runs on its items' emoji as the image
+ * (Dan approved the generalization the same day). Five modes (Mixte /
+ * Mot→Image / Image→Mot / 🎤 Répète / 🎤 Devine et dis), accent-tolerant
+ * Say It grading, keyboard 1–4/⏎/R, Cahier skin, and every answer pays
+ * XP + streak + SRS through recordItemResult (which also writes the
+ * teacher evidence trail).
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import CahierShell, { withActive, deckActivityTabs } from "@/components/CahierShell";
+import { CURATED } from "@/content/collections";
 import { speak } from "@/games/letris/speech";
 import { recordItemResult } from "@/lib/progress";
 import { sfx } from "@/games/audio/sfx";
 import { useChoiceKeys, CHOICE_KEYS_HINT } from "@/lib/useChoiceKeys";
-import ITEMS_RAW from "@/content/devine-aliments.json";
+import PHOTO_ITEMS from "@/content/devine-aliments.json";
 
-type Item = { w: string; g: "m" | "f"; n: 0 | 1; s: 1 | 2; img: string };
-const ITEMS = ITEMS_RAW as Item[];
+/** One playable card: the word, its grammar tag (colored), and its visual
+ *  (photo for aliments, emoji elsewhere). s = aliments pack number. */
+type DevItem = { w: string; tag: string | null; color: string; img?: string; emoji?: string; s?: number };
 
 type Mode = "mix" | "wi" | "iw" | "say-t" | "say-s";
 type Dir = "wi" | "iw" | "say-t" | "say-s";
-type Deck = "all" | "1" | "2";
 
-/* Accent-tolerant, article-optional matching — as in the supplement. */
+const MASC = "#0b63c4";
+const FEM = "#e0567f";
+const INK = "var(--cahier-ink)";
+
+/* Accent-tolerant, article-optional matching — as in the original. */
 const strip = (t: string) =>
   t.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z' ]/g, " ").replace(/\s+/g, " ").trim();
 const baseWord = (w: string) =>
@@ -45,6 +49,34 @@ const shuffle = <T,>(a: T[]): T[] => {
   return b;
 };
 
+/** Grammar tag + color from the French article (emoji decks have no g/n
+ *  fields — the article says it). Null when the article is mute (l', …). */
+function tagFromArticle(w: string): { tag: string | null; color: string } {
+  const lw = w.toLowerCase();
+  if (/^(les|des) /.test(lw)) return { tag: "pluriel", color: INK };
+  if (/^(le|un) /.test(lw)) return { tag: "masculin", color: MASC };
+  if (/^(la|une) /.test(lw)) return { tag: "féminin", color: FEM };
+  return { tag: null, color: INK };
+}
+
+function buildItems(collectionId: string): { items: DevItem[]; subtitle: string; hasPacks: boolean } {
+  if (collectionId === "aliments") {
+    const items = (PHOTO_ITEMS as { w: string; g: "m" | "f"; n: 0 | 1; s: 1 | 2; img: string }[]).map((it) => ({
+      w: it.w,
+      tag: (it.n ? "pluriel · " : "") + (it.g === "m" ? "masculin" : "féminin"),
+      color: it.g === "m" ? MASC : FEM,
+      img: it.img,
+      s: it.s,
+    }));
+    return { items, subtitle: "Les aliments", hasPacks: true };
+  }
+  const deck = CURATED.find((c) => c.id === collectionId);
+  const items = (deck?.items ?? [])
+    .filter((it) => it.fr && it.emoji)
+    .map((it) => ({ w: it.fr, ...tagFromArticle(it.fr), emoji: it.emoji as string }));
+  return { items, subtitle: deck?.title ?? collectionId, hasPacks: false };
+}
+
 type RecLike = {
   lang: string; interimResults: boolean; maxAlternatives: number;
   start: () => void; stop: () => void;
@@ -59,36 +91,44 @@ function getRec(): RecLike | null {
   return C ? new C() : null;
 }
 
-const gtxt = (it: Item) => (it.n ? "pluriel · " : "") + (it.g === "m" ? "masculin" : "féminin");
-const genderColor = (it: Item) => (it.g === "m" ? "#0b63c4" : "#e0567f");
+type Trial = { it: DevItem; dir: Dir };
 
-type Trial = { it: Item; dir: Dir };
+function Visual({ it, className }: { it: DevItem; className: string }) {
+  return it.img ? (
+    <img src={it.img} alt="" className={`${className} bg-white object-contain`} />
+  ) : (
+    <span aria-hidden className={`${className} flex items-center justify-center bg-white text-6xl`}>
+      {it.emoji}
+    </span>
+  );
+}
 
 export default function DevineContent({ collectionId }: { collectionId: string }) {
+  const { items: ITEMS, subtitle, hasPacks } = useMemo(() => buildItems(collectionId), [collectionId]);
   const [screen, setScreen] = useState<"start" | "quiz" | "end">("start");
   const [mode, setMode] = useState<Mode>("mix");
-  const [deck, setDeck] = useState<Deck>("all");
+  const [deck, setDeck] = useState<"all" | "1" | "2">("all");
   const [sttOk, setSttOk] = useState(false);
   const [queue, setQueue] = useState<Trial[]>([]);
   const [idx, setIdx] = useState(0);
   const [score, setScore] = useState(0);
-  const [wrong, setWrong] = useState<Item[]>([]);
+  const [wrong, setWrong] = useState<DevItem[]>([]);
   const [locked, setLocked] = useState(false);
-  const [picked, setPicked] = useState<Item | null>(null);
+  const [picked, setPicked] = useState<DevItem | null>(null);
   const [heard, setHeard] = useState("");
   const [listening, setListening] = useState(false);
-  const [opts, setOpts] = useState<Item[]>([]);
+  const [opts, setOpts] = useState<DevItem[]>([]);
   const [verdictGood, setVerdictGood] = useState<boolean | null>(null);
   const recRef = useRef<RecLike | null>(null);
-  const retryRef = useRef<Item[] | null>(null);
+  const retryRef = useRef<DevItem[] | null>(null);
 
   useEffect(() => { setSttOk(getRec() !== null); }, []);
   useEffect(() => () => { try { recRef.current?.stop(); } catch {} }, []);
 
-  const pool = (): Item[] =>
-    retryRef.current ?? (deck === "all" ? ITEMS : ITEMS.filter((i) => i.s === Number(deck)));
+  const pool = (): DevItem[] =>
+    retryRef.current ?? (deck === "all" || !hasPacks ? ITEMS : ITEMS.filter((i) => i.s === Number(deck)));
 
-  const distractors = (it: Item): Item[] => {
+  const distractors = (it: DevItem): DevItem[] => {
     const same = pool().filter((x) => x !== it);
     const base = same.length >= 3 ? same : ITEMS.filter((x) => x !== it);
     return shuffle(base).slice(0, 3);
@@ -113,7 +153,7 @@ export default function DevineContent({ collectionId }: { collectionId: string }
   };
 
   /** One graded outcome — XP/streak/SRS + the teacher evidence trail. */
-  const grade = (it: Item, good: boolean, given?: string) => {
+  const grade = (it: DevItem, good: boolean, given?: string) => {
     recordItemResult(`devine:${baseWord(it.w)}`, good, given);
     if (good) { setScore((s) => s + 1); sfx.correct(); } else { setWrong((w) => [...w, it]); sfx.wrong(); }
     setVerdictGood(good);
@@ -121,13 +161,13 @@ export default function DevineContent({ collectionId }: { collectionId: string }
     speak(it.w, "fr-FR");
   };
 
-  const pick = (o: Item, it: Item) => {
+  const pick = (o: DevItem, it: DevItem) => {
     if (locked) return;
     setPicked(o);
     grade(it, o === it, o.w);
   };
 
-  const listen = (it: Item) => {
+  const listen = (it: DevItem) => {
     if (recRef.current) { try { recRef.current.stop(); } catch {} recRef.current = null; setListening(false); return; }
     const rec = getRec();
     if (!rec) return;
@@ -181,7 +221,7 @@ export default function DevineContent({ collectionId }: { collectionId: string }
     <CahierShell tabs={withActive(deckActivityTabs(collectionId), "devine")} active="devine" crumb="🔮 Devine d'abord">
       <div className="mx-auto max-w-2xl px-3 py-5">
         <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
-          🔮 Devine d&rsquo;abord ! <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· Les aliments</span>
+          🔮 Devine d&rsquo;abord ! <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· {subtitle}</span>
         </h1>
 
         {screen === "start" && (
@@ -193,14 +233,14 @@ export default function DevineContent({ collectionId }: { collectionId: string }
               </p>
             </div>
             <div className={card}>
-              <h2 className="text-base font-black text-[color:var(--cahier-ink)]">1 · Choisis ta direction</h2>
+              <h2 className="text-base font-black text-[color:var(--cahier-ink)]">{hasPacks ? "1 · Choisis ta direction" : "Choisis ta direction"}</h2>
               <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {([
                   ["mix", "Mixte", "les deux directions"],
-                  ["wi", "Mot → Image", "lis le mot, choisis la photo"],
-                  ["iw", "Image → Mot", "regarde la photo, choisis le mot"],
+                  ["wi", "Mot → Image", "lis le mot, choisis l'image"],
+                  ["iw", "Image → Mot", "regarde l'image, choisis le mot"],
                   ...(sttOk
-                    ? ([["say-t", "🎤 Répète", "écoute, puis dis-le"], ["say-s", "🎤 Devine et dis", "photo seule — dis le mot"]] as const)
+                    ? ([["say-t", "🎤 Répète", "écoute, puis dis-le"], ["say-s", "🎤 Devine et dis", "image seule — dis le mot"]] as const)
                     : []),
                 ] as [Mode, string, string][]).map(([m, label, hint]) => (
                   <button key={m} type="button" onClick={() => setMode(m)} className={pillCls(mode === m)}>
@@ -209,24 +249,26 @@ export default function DevineContent({ collectionId }: { collectionId: string }
                 ))}
               </div>
             </div>
-            <div className={card}>
-              <h2 className="text-base font-black text-[color:var(--cahier-ink)]">2 · Choisis ton paquet</h2>
-              <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3">
-                {([
-                  ["all", "Tout", ITEMS.length],
-                  ["1", "Fruits, légumes & douceurs", ITEMS.filter((i) => i.s === 1).length],
-                  ["2", "À table : viandes, laitages, épicerie", ITEMS.filter((i) => i.s === 2).length],
-                ] as [Deck, string, number][]).map(([d, label, count]) => (
-                  <button key={d} type="button" onClick={() => setDeck(d)} className={pillCls(deck === d)}>
-                    {label} <span className="block text-xs font-normal opacity-70">{count} mots</span>
-                  </button>
-                ))}
+            {hasPacks && (
+              <div className={card}>
+                <h2 className="text-base font-black text-[color:var(--cahier-ink)]">2 · Choisis ton paquet</h2>
+                <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3">
+                  {([
+                    ["all", "Tout", ITEMS.length],
+                    ["1", "Fruits, légumes & douceurs", ITEMS.filter((i) => i.s === 1).length],
+                    ["2", "À table : viandes, laitages, épicerie", ITEMS.filter((i) => i.s === 2).length],
+                  ] as ["all" | "1" | "2", string, number][]).map(([d, label, count]) => (
+                    <button key={d} type="button" onClick={() => setDeck(d)} className={pillCls(deck === d)}>
+                      {label} <span className="block text-xs font-normal opacity-70">{count} mots</span>
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-2 text-xs text-[color:var(--cahier-ink-soft)]">
+                  <i className="mr-1 inline-block h-2.5 w-2.5 rounded-full align-middle" style={{ background: MASC }} /> masculin ·{" "}
+                  <i className="mx-1 inline-block h-2.5 w-2.5 rounded-full align-middle" style={{ background: FEM }} /> féminin — comme sur tes fiches !
+                </p>
               </div>
-              <p className="mt-2 text-xs text-[color:var(--cahier-ink-soft)]">
-                <i className="mr-1 inline-block h-2.5 w-2.5 rounded-full align-middle" style={{ background: "#0b63c4" }} /> masculin ·{" "}
-                <i className="mx-1 inline-block h-2.5 w-2.5 rounded-full align-middle" style={{ background: "#e0567f" }} /> féminin — comme sur tes fiches !
-              </p>
-            </div>
+            )}
             <button type="button" onClick={() => { retryRef.current = null; start(); }} className="fluo-btn w-full font-black">
               C&rsquo;est parti ! →
             </button>
@@ -250,9 +292,9 @@ export default function DevineContent({ collectionId }: { collectionId: string }
                   <p className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">
                     {t.dir === "say-t" ? "Écoute, puis dis-le à voix haute" : "Qu'est-ce que c'est ? Dis-le en français !"}
                   </p>
-                  <img src={t.it.img} alt="" className="mx-auto mt-3 h-40 w-40 rounded-xl border-2 border-[color:var(--cahier-ink)]/20 bg-white object-contain" />
+                  <Visual it={t.it} className="mx-auto mt-3 h-40 w-40 rounded-xl border-2 border-[color:var(--cahier-ink)]/20" />
                   {t.dir === "say-t" && (
-                    <button type="button" onClick={() => speak(t.it.w, "fr-FR")} className="mt-2 text-xl font-black" style={{ color: genderColor(t.it) }} title="🔊">
+                    <button type="button" onClick={() => speak(t.it.w, "fr-FR")} className="mt-2 text-xl font-black" style={{ color: t.it.color }} title="🔊">
                       {t.it.w} 🔊
                     </button>
                   )}
@@ -273,8 +315,8 @@ export default function DevineContent({ collectionId }: { collectionId: string }
                 </>
               ) : t.dir === "wi" ? (
                 <>
-                  <p className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">Choisis la bonne photo</p>
-                  <button type="button" onClick={() => speak(t.it.w, "fr-FR")} className="mt-1 text-2xl font-black" style={{ color: genderColor(t.it) }} title="🔊">
+                  <p className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">Choisis la bonne image</p>
+                  <button type="button" onClick={() => speak(t.it.w, "fr-FR")} className="mt-1 text-2xl font-black" style={{ color: t.it.color }} title="🔊">
                     {t.it.w} 🔊
                   </button>
                   <div className="mt-3 grid grid-cols-2 gap-2">
@@ -293,8 +335,8 @@ export default function DevineContent({ collectionId }: { collectionId: string }
                             : "border-slate-300 hover:border-slate-900"
                         }`}
                       >
-                        <span className="absolute left-1 top-1 rounded bg-black/60 px-1.5 text-xs font-bold text-white">{i + 1}</span>
-                        <img src={o.img} alt="" className="h-32 w-full bg-white object-contain sm:h-40" />
+                        <span className="absolute left-1 top-1 z-10 rounded bg-black/60 px-1.5 text-xs font-bold text-white">{i + 1}</span>
+                        <Visual it={o} className="h-32 w-full sm:h-40" />
                       </button>
                     ))}
                   </div>
@@ -302,7 +344,7 @@ export default function DevineContent({ collectionId }: { collectionId: string }
               ) : (
                 <>
                   <p className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">Choisis le bon mot</p>
-                  <img src={t.it.img} alt="" className="mx-auto mt-2 h-40 w-40 rounded-xl border-2 border-[color:var(--cahier-ink)]/20 bg-white object-contain" />
+                  <Visual it={t.it} className="mx-auto mt-2 h-40 w-40 rounded-xl border-2 border-[color:var(--cahier-ink)]/20" />
                   <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
                     {opts.map((o, i) => (
                       <button
@@ -332,10 +374,10 @@ export default function DevineContent({ collectionId }: { collectionId: string }
                   <p className="text-sm font-black text-[color:var(--cahier-ink)]">
                     {verdictGood ? "Bravo !" : "Pas tout à fait…"}
                   </p>
-                  <button type="button" onClick={() => speak(t.it.w, "fr-FR")} className="mt-1 text-xl font-black" style={{ color: genderColor(t.it) }}>
+                  <button type="button" onClick={() => speak(t.it.w, "fr-FR")} className="mt-1 text-xl font-black" style={{ color: t.it.color }}>
                     {t.it.w} 🔊
                   </button>
-                  <p className="text-xs italic text-[color:var(--cahier-ink-soft)]">{gtxt(t.it)}</p>
+                  {t.it.tag && <p className="text-xs italic text-[color:var(--cahier-ink-soft)]">{t.it.tag}</p>}
                   <button type="button" onClick={next} className="fluo-btn fluo-btn-sm mt-2 font-black">
                     {idx + 1 >= queue.length ? "Résultat →" : "Suivant →"}
                   </button>
@@ -350,7 +392,7 @@ export default function DevineContent({ collectionId }: { collectionId: string }
             <p className="text-3xl font-black text-[color:var(--cahier-ink)]">{score} / {queue.length}</p>
             <p className="mt-1 text-sm text-[color:var(--cahier-ink-soft)]">
               {score === queue.length
-                ? "Parfait ! Tu connais tous ces aliments."
+                ? "Parfait ! Tu connais tous ces mots."
                 : score >= queue.length * 0.8
                   ? "Très bien ! Encore quelques mots à consolider."
                   : score >= queue.length * 0.5

@@ -9,6 +9,13 @@
  */
 import { useEffect } from "react";
 
+// While any choice exercise is mounted+enabled, global single/double-digit
+// shortcuts (KeyNav's SIO jump) must stand down — digits mean answers here.
+let activeCount = 0;
+export function choiceKeysBusy(): boolean {
+  return activeCount > 0;
+}
+
 export function useChoiceKeys({
   count,
   onPick,
@@ -24,6 +31,7 @@ export function useChoiceKeys({
 }) {
   useEffect(() => {
     if (!enabled) return;
+    activeCount++;
     const h = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement | null;
       if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT" || t.isContentEditable)) return;
@@ -35,6 +43,10 @@ export function useChoiceKeys({
         return;
       }
       if (e.key === "Enter") {
+        // A control focused via arrow navigation activates natively — only a
+        // "free" Enter advances the question.
+        const a = document.activeElement;
+        if (a && (a.tagName === "BUTTON" || a.tagName === "A")) return;
         e.preventDefault();
         onNext?.();
         return;
@@ -45,7 +57,10 @@ export function useChoiceKeys({
       }
     };
     window.addEventListener("keydown", h);
-    return () => window.removeEventListener("keydown", h);
+    return () => {
+      activeCount--;
+      window.removeEventListener("keydown", h);
+    };
   });
 }
 

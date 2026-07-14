@@ -18,6 +18,7 @@ import type { CSSProperties, MouseEvent as ReactMouseEvent, ReactNode } from "re
 
 const PAGE_WIDTH_KEY = "fluolingo:pageWidth";
 import { isLexReadyId } from "@/lib/collections/lexReady";
+import { isDevineReady } from "@/lib/collections/devineReady";
 import { CURATED } from "@/content/collections";
 import { lessonsForDeck } from "@/content/lessons";
 import { supplementsForDeck, type Supplement } from "@/content/supplements";
@@ -432,10 +433,10 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     ...(pretestHref
       ? [{ key: "pretest", label: "Pre-Test", emoji: "🧪", href: pretestHref, hint: "try it first" } as ShellTab]
       : []),
-    // Guess-first activity (Dan, 2026-07-14: native page now, "not a
-    // supplement") — belongs between Pre-Test and study.
-    ...(collectionId === "aliments"
-      ? [{ key: "devine", label: "Devine d'abord", emoji: "🔮", href: "/practice/devine/aliments", hint: "guess before the lesson" } as ShellTab]
+    // Guess-first activity (Dan, 2026-07-14: native page, "not a
+    // supplement") — photos for aliments, emoji everywhere else.
+    ...(isDevineReady(collectionId)
+      ? [{ key: "devine", label: "Devine d'abord", emoji: "🔮", href: `/practice/devine/${collectionId}`, hint: "guess before the lesson" } as ShellTab]
       : []),
     // PRE-lesson supplements (standalone HTML outside the app) — none right
     // now; the plumbing (incl. visit tracking) stays for future material.

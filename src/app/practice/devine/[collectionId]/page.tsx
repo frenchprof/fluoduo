@@ -1,10 +1,9 @@
 import DevineContent from "./DevineContent";
 import AuthGate from "@/components/AuthGate";
+import { DEVINE_READY } from "@/lib/collections/devineReady";
 
 export function generateStaticParams() {
-  // Only the aliments deck has Devine data today; add ids here as more
-  // photo banks are authored.
-  return [{ collectionId: "aliments" }];
+  return DEVINE_READY.map((collectionId) => ({ collectionId }));
 }
 
 export default async function Page({ params }: { params: Promise<{ collectionId: string }> }) {

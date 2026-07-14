@@ -1,71 +1,85 @@
 {
-  "id": "envies-besoins",
-  "title": "Envies et besoins",
-  "subtitle": "voudrais · aimerais · besoin de · veux",
-  "langPair": "fr-en",
-  "owner": "curated",
-  "visibility": "public",
-  "unit": 3,
-  "lessonNo": 9,
-  "lessonSlug": "wants-needs",
-  "tags": [],
-  "seq": 309,
-  "items": [
-    {
-      "id": "envies-besoins-01",
-      "fr": "Je voudrais un café.",
-      "en": "I would like a coffee.",
-      "tags": [],
-      "gap": "voudrais"
-    },
-    {
-      "id": "envies-besoins-02",
-      "fr": "Je voudrais visiter le Louvre.",
-      "en": "I would like to visit the Louvre.",
-      "tags": [],
-      "gap": "voudrais"
-    },
-    {
-      "id": "envies-besoins-03",
-      "fr": "J'aimerais voyager.",
-      "en": "I'd like to travel.",
-      "tags": [],
-      "gap": "aimerais"
-    },
-    {
-      "id": "envies-besoins-04",
-      "fr": "J'aimerais une chambre pour deux personnes.",
-      "en": "I'd like a room for two.",
-      "tags": [],
-      "gap": "aimerais"
-    },
-    {
-      "id": "envies-besoins-05",
-      "fr": "J'ai besoin d'un hôtel.",
-      "en": "I need a hotel.",
-      "tags": [],
-      "gap": "besoin d'"
-    },
-    {
-      "id": "envies-besoins-06",
-      "fr": "J'ai besoin d'un plan.",
-      "en": "I need a map.",
-      "tags": [],
-      "gap": "besoin d'"
-    },
-    {
-      "id": "envies-besoins-07",
-      "fr": "Je veux visiter Paris.",
-      "en": "I want to visit Paris.",
-      "tags": [],
-      "gap": "veux"
-    },
-    {
-      "id": "envies-besoins-08",
-      "fr": "Je veux partir en vacances.",
-      "en": "I want to go on holiday.",
-      "tags": [],
-      "gap": "veux"
-    }
-  ]
+ "id": "envies-besoins",
+ "title": "Envies et besoins",
+ "subtitle": "voudrais · aimerais · besoin de · veux",
+ "langPair": "fr-en",
+ "owner": "curated",
+ "visibility": "public",
+ "unit": 3,
+ "lessonNo": 9,
+ "lessonSlug": "wants-needs",
+ "tags": [],
+ "seq": 309,
+ "items": [
+  {
+   "id": "envies-besoins-01",
+   "fr": "Je voudrais un café.",
+   "en": "I would like a coffee. (polite request)",
+   "tags": [],
+   "gap": "voudrais"
+  },
+  {
+   "id": "envies-besoins-02",
+   "fr": "Je voudrais visiter le Louvre.",
+   "en": "I would like to visit the Louvre. (polite request)",
+   "tags": [],
+   "gap": "voudrais"
+  },
+  {
+   "id": "envies-besoins-03",
+   "fr": "J'aimerais voyager.",
+   "en": "I'd love to travel. (wish)",
+   "tags": [],
+   "gap": "aimerais"
+  },
+  {
+   "id": "envies-besoins-04",
+   "fr": "J'aimerais une chambre pour deux personnes.",
+   "en": "I'd love a room for two. (wish)",
+   "tags": [],
+   "gap": "aimerais"
+  },
+  {
+   "id": "envies-besoins-05",
+   "fr": "J'ai besoin d'un hôtel.",
+   "en": "I need a hotel.",
+   "tags": [],
+   "gap": "besoin d'"
+  },
+  {
+   "id": "envies-besoins-06",
+   "fr": "J'ai besoin d'un plan.",
+   "en": "I need a map.",
+   "tags": [],
+   "gap": "besoin d'"
+  },
+  {
+   "id": "envies-besoins-07",
+   "fr": "Je veux visiter Paris.",
+   "en": "I want to visit Paris.",
+   "tags": [],
+   "gap": "veux"
+  },
+  {
+   "id": "envies-besoins-08",
+   "fr": "Je veux partir en vacances.",
+   "en": "I want to go on holiday.",
+   "tags": [],
+   "gap": "veux"
+  },
+  {
+   "id": "envies-besoins-09",
+   "fr": "J'ai envie d'un chocolat chaud.",
+   "en": "I feel like a hot chocolate.",
+   "tags": [],
+   "gap": "voudrais"
+  },
+  {
+   "id": "envies-besoins-10",
+   "fr": "J'ai envie de dormir.",
+   "en": "I feel like sleeping.",
+   "tags": [],
+   "gap": "voudrais"
+  }
+ ]
 }

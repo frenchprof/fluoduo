@@ -495,7 +495,9 @@ export default function LetrisGame({
   const dark = phase !== "day"; // night AND storm keep the veil + blurred letters
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 px-4 py-6 text-sky-950">
+    // data-kbnav-off: arrows steer the falling tile here — the site-wide
+    // arrow navigation (KeyNav) must stand down on this page.
+    <div data-kbnav-off className="mx-auto flex w-full max-w-4xl flex-col gap-4 px-4 py-6 text-sky-950">
       <CreditsSplash game="Vocabularain" emoji="🌧️" onDone={() => setCreditsDone(true)} />
       {creditsDone && !studied && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-sky-950/50 p-4" role="dialog" aria-modal="true">

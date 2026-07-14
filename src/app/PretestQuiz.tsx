@@ -13,6 +13,7 @@
  */
 
 import { useEffect, useState } from "react";
+import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import { getPretest, sioIdForPretest } from "@/content/pretests";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
@@ -62,6 +63,27 @@ export default function PretestQuiz({ pretestId }: { pretestId: string }) {
   const answered = Object.keys(picked).length;
   const score = qs.filter((q) => picked[q.item.id] === q.item.answer).length;
 
+  // Keyboard (Dan, 2026-07-14): with several questions on screen, digits
+  // answer the FIRST unanswered one (the natural reading order), then the
+  // next unanswered question scrolls into view; Enter jumps to it.
+  const activeQ = qs.find((q) => picked[q.item.id] === undefined);
+  const scrollToActive = () => {
+    window.setTimeout(() => {
+      document.querySelector("[data-preq-active]")?.scrollIntoView({ block: "center", behavior: "smooth" });
+    }, 60);
+  };
+  useChoiceKeys({
+    count: activeQ?.choices.length ?? 0,
+    enabled: !!activeQ,
+    onPick: (i) => {
+      if (activeQ && activeQ.choices[i] !== undefined) {
+        pick(activeQ, activeQ.choices[i]);
+        scrollToActive();
+      }
+    },
+    onNext: scrollToActive,
+  });
+
   function pick(q: Q, choice: string) {
     if (picked[q.item.id] !== undefined) return;
     setPicked({ ...picked, [q.item.id]: choice });
@@ -102,7 +124,9 @@ export default function PretestQuiz({ pretestId }: { pretestId: string }) {
         </p>
       )}
       {qs.map((q) => (
-        <QuestionCard key={q.item.id} q={q} picked={picked[q.item.id]} onPick={(c) => pick(q, c)} />
+        <div key={q.item.id} {...(q === activeQ ? { "data-preq-active": true } : {})}>
+          <QuestionCard q={q} picked={picked[q.item.id]} onPick={(c) => pick(q, c)} />
+        </div>
       ))}
     </div>
   );
