@@ -8,6 +8,7 @@ import { bareWord } from "@/lib/collections/display";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { recordItemResult } from "@/lib/progress";
+import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
 import type { PracticeChoice, PracticeItem, PracticeSet } from "@/lib/practice/engine";
 
@@ -119,6 +120,14 @@ function PracticeRunner({ set }: { set: PracticeSet }) {
   const willReview = missedSoFar.length > 0;
   const isLast = step === queue.length - 1 && !willReview;
   const inReview = reviewRound && step >= uniqueTotal;
+
+  useChoiceKeys({
+    count: choices.length,
+    enabled: !!item,
+    onPick: (i) => { if (choices[i]) pick(choices[i]); },
+    onNext: () => { if (submitted) next(); },
+    onSpeak: () => { if (item) speak(item.ttsText, "fr-FR"); },
+  });
 
   function pick(choice: PracticeChoice) {
     if (submitted || !item) return;

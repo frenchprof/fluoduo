@@ -9,6 +9,7 @@ import { displayEn, displayFr } from "@/lib/collections/display";
 import { speak } from "@/games/letris/speech";
 import { logEvent } from "@/lib/firebase/usage";
 import { recordResponse } from "@/lib/firebase/responses";
+import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import type { Collection, Item } from "@/lib/collections/schema";
 import CahierShell, { withActive } from "@/components/CahierShell";
 import { deckTabs } from "../DeckContent";
@@ -98,6 +99,19 @@ function Runner({ collection }: { collection: Collection }) {
   const done = step >= total;
   const question = !done ? round[step] : null;
 
+  const choices = question && glossed.length >= 4
+    ? buildChoices(question, glossed, dir, seed + step)
+    : [];
+
+  // Hook must sit above the small-deck early return (rules of hooks).
+  useChoiceKeys({
+    count: choices.length,
+    enabled: !!question,
+    onPick: (i) => { if (choices[i]) pick(choices[i]); },
+    onNext: () => { if (picked) next(); },
+    onSpeak: () => { if (question) speakItem(question); },
+  });
+
   if (glossed.length < 4) {
     return (
       <div className="rounded-2xl border-2 border-amber-300 bg-amber-50 p-6 text-amber-900">
@@ -112,9 +126,6 @@ function Runner({ collection }: { collection: Collection }) {
     );
   }
 
-  const choices = question
-    ? buildChoices(question, glossed, dir, seed + step)
-    : [];
 
   function speakItem(it: Item) {
     if (!ttsOn) return;

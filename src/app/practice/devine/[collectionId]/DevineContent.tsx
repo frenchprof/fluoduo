@@ -17,6 +17,7 @@ import CahierShell, { withActive, deckActivityTabs } from "@/components/CahierSh
 import { speak } from "@/games/letris/speech";
 import { recordItemResult } from "@/lib/progress";
 import { sfx } from "@/games/audio/sfx";
+import { useChoiceKeys, CHOICE_KEYS_HINT } from "@/lib/useChoiceKeys";
 import ITEMS_RAW from "@/content/devine-aliments.json";
 
 type Item = { w: string; g: "m" | "f"; n: 0 | 1; s: 1 | 2; img: string };
@@ -162,6 +163,14 @@ export default function DevineContent({ collectionId }: { collectionId: string }
   };
 
   const t = queue[idx];
+  useChoiceKeys({
+    count: opts.length,
+    enabled: screen === "quiz" && !!t,
+    onPick: (i) => { const o = opts[i]; if (o && t && !locked) pick(o, t.it); },
+    onNext: next,
+    // In « Devine et dis » the word must not be heard before answering.
+    onSpeak: () => { if (t && (t.dir !== "say-s" || locked)) speak(t.it.w, "fr-FR"); },
+  });
   const pillCls = (sel: boolean) =>
     `rounded-xl border-2 px-3 py-2 text-left text-sm font-bold transition ${
       sel ? "border-slate-900 bg-slate-900 text-white" : "border-slate-300 bg-white text-slate-700 hover:border-slate-500"
@@ -233,6 +242,7 @@ export default function DevineContent({ collectionId }: { collectionId: string }
             <div className="mt-1 h-2 overflow-hidden rounded-full border-2 border-[color:var(--cahier-ink)]/30 bg-white">
               <div className="h-full rounded-full bg-[var(--fluo-hl)] transition-all" style={{ width: `${(100 * idx) / queue.length}%` }} />
             </div>
+            <p className="mt-1 hidden text-right text-[10px] font-bold text-[color:var(--cahier-ink-soft)] sm:block">{CHOICE_KEYS_HINT}</p>
 
             <div className={`${card} mt-4 text-center`}>
               {(t.dir === "say-t" || t.dir === "say-s") ? (

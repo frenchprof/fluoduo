@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import Link from "next/link";
 import { getPretest, sioIdForPretest } from "@/content/pretests";
 import { speak } from "@/games/letris/speech";
@@ -110,6 +111,14 @@ function PretestRunner({ pretest }: { pretest: Pretest }) {
 
   const score = verdicts.filter((v) => v.correct).length;
   const done = total > 0 && step >= total;
+
+  useChoiceKeys({
+    count: choices.length,
+    enabled: !!item && !done,
+    onPick: (i) => { if (choices[i] !== undefined) pick(choices[i]); },
+    onNext: () => { if (submitted) next(); },
+    onSpeak: () => { if (item && ttsOn) speak(ttsTextForItem(item), "fr-FR"); },
+  });
 
   function pick(choice: string) {
     if (submitted || !item) return;
