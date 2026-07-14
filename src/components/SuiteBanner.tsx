@@ -9,8 +9,10 @@
  * not sticky here — FluoLingo has its own chrome below.
  */
 
+// One Menu, four items, identical on every site of the suite (Dan, 2026-07-14).
 const LINKS = [
-  { label: "Fluolingo", href: "/", here: true },
+  { label: "Course Info", href: "https://french1.withdrchan.com/" },
+  { label: "FluoLingo", href: "/", here: true },
   { label: "Reader", href: "https://4aparis.withdrchan.com/" },
   { label: "Songs", href: "https://chansongs.withdrchan.com/" },
 ];
@@ -57,7 +59,7 @@ export default function SuiteBanner() {
         <div className="utb-nav">
           <div className="utb-dd">
             <button className="utb-dd-btn" type="button" aria-haspopup="true">
-              Tools &amp; Resources <span className="dd-caret" aria-hidden>▾</span>
+              Menu <span className="dd-caret" aria-hidden>▾</span>
             </button>
             <div className="utb-dd-panel" role="menu">
               {LINKS.map((l) => (
