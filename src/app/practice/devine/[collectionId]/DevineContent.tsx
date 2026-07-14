@@ -240,7 +240,7 @@ export default function DevineContent({ collectionId }: { collectionId: string }
                   <p className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">
                     {t.dir === "say-t" ? "Écoute, puis dis-le à voix haute" : "Qu'est-ce que c'est ? Dis-le en français !"}
                   </p>
-                  <img src={t.it.img} alt="" className="mx-auto mt-3 h-40 w-40 rounded-xl border-2 border-[color:var(--cahier-ink)]/20 object-cover" />
+                  <img src={t.it.img} alt="" className="mx-auto mt-3 h-40 w-40 rounded-xl border-2 border-[color:var(--cahier-ink)]/20 bg-white object-contain" />
                   {t.dir === "say-t" && (
                     <button type="button" onClick={() => speak(t.it.w, "fr-FR")} className="mt-2 text-xl font-black" style={{ color: genderColor(t.it) }} title="🔊">
                       {t.it.w} 🔊
@@ -284,7 +284,7 @@ export default function DevineContent({ collectionId }: { collectionId: string }
                         }`}
                       >
                         <span className="absolute left-1 top-1 rounded bg-black/60 px-1.5 text-xs font-bold text-white">{i + 1}</span>
-                        <img src={o.img} alt="" className="h-32 w-full object-cover sm:h-40" />
+                        <img src={o.img} alt="" className="h-32 w-full bg-white object-contain sm:h-40" />
                       </button>
                     ))}
                   </div>
@@ -292,7 +292,7 @@ export default function DevineContent({ collectionId }: { collectionId: string }
               ) : (
                 <>
                   <p className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">Choisis le bon mot</p>
-                  <img src={t.it.img} alt="" className="mx-auto mt-2 h-40 w-40 rounded-xl border-2 border-[color:var(--cahier-ink)]/20 object-cover" />
+                  <img src={t.it.img} alt="" className="mx-auto mt-2 h-40 w-40 rounded-xl border-2 border-[color:var(--cahier-ink)]/20 bg-white object-contain" />
                   <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
                     {opts.map((o, i) => (
                       <button

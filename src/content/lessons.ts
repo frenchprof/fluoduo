@@ -57,7 +57,7 @@ export const LESSONS_BY_SIO: Record<string, string[]> = {
   "SIO-027": ["quand"],
   "SIO-029": ["rendezvous", "modaux"], // vouloir forms live in the modaux lesson
   "SIO-037": ["modaux"],
-  "SIO-047": ["modaux", "futur-proche"],
+  "SIO-047": ["futur-proche", "modaux"],
   "SIO-048": ["modaux"],
   "SIO-032": ["prepositions"],
   "SIO-033": ["prepositions-lieux"],

@@ -1,8 +1,8 @@
 [
  {
-  "w": "l'abricot",
+  "w": "les abricots",
   "g": "m",
-  "n": 0,
+  "n": 1,
   "s": 1,
   "img": "/devine/l-abricot.jpg"
  },
@@ -14,9 +14,9 @@
   "img": "/devine/l-ananas.jpg"
  },
  {
-  "w": "la banane",
+  "w": "les bananes",
   "g": "f",
-  "n": 0,
+  "n": 1,
   "s": 1,
   "img": "/devine/la-banane.jpg"
  },
@@ -70,23 +70,23 @@
   "img": "/devine/la-peche.jpg"
  },
  {
-  "w": "la poire",
+  "w": "les poires",
   "g": "f",
-  "n": 0,
+  "n": 1,
   "s": 1,
   "img": "/devine/la-poire.jpg"
  },
  {
-  "w": "la pomme",
+  "w": "les pommes",
   "g": "f",
-  "n": 0,
+  "n": 1,
   "s": 1,
   "img": "/devine/la-pomme.jpg"
  },
  {
-  "w": "la tomate",
+  "w": "les tomates",
   "g": "f",
-  "n": 0,
+  "n": 1,
   "s": 1,
   "img": "/devine/la-tomate.jpg"
  },
@@ -133,9 +133,9 @@
   "img": "/devine/le-chou-fleur.jpg"
  },
  {
-  "w": "le concombre",
+  "w": "les concombres",
   "g": "m",
-  "n": 0,
+  "n": 1,
   "s": 1,
   "img": "/devine/le-concombre.jpg"
  },
@@ -154,9 +154,9 @@
   "img": "/devine/les-petits-pois.jpg"
  },
  {
-  "w": "le poivron",
+  "w": "les poivrons",
   "g": "m",
-  "n": 0,
+  "n": 1,
   "s": 1,
   "img": "/devine/le-poivron.jpg"
  },

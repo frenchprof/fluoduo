@@ -748,6 +748,13 @@ body {
   box-shadow: 0 0 0 1.5px rgba(42, 46, 110, 0.16), 0 8px 22px rgba(34, 40, 80, 0.14);
   padding: 18px 18px 0 18px;
 }
+/* Nested pages (expanded popups, deck activities): the stack folder's 18px
+   right padding left the whole flap rail hanging clear of the paper's edge
+   (Dan, 2026-07-14: "showing a gap with the edge of the page (again)") —
+   tuck the rail back over the stack so flaps touch the page like real
+   index tabs. The rail is z-index 3, above the stack's edge bands. */
+.cahier-stack ~ .cahier-tabs { margin-left: -19px; }
+
 .cahier-stack .cahier-page,
 .cahier-stack--inner .cahier-page {
   flex: none;
