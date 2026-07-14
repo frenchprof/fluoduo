@@ -18,7 +18,7 @@ const MODALS = [
     inf: "pouvoir", en: "can",
     forms: { je: "peux", tu: "peux", il: "peut", nous: "pouvons", vous: "pouvez", ils: "peuvent" } as Record<string, string>,
   },
-  // devoir joins the family (Dan, 2026-07-08: SIO-048 drills aller · pouvoir ·
+  // devoir joins the family (Dan, 2026-07-08: SIO-047 drills aller · pouvoir ·
   // devoir · falloir, but the lesson stopped at vouloir/pouvoir).
   {
     inf: "devoir", en: "must / have to",

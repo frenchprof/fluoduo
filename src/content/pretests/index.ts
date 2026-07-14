@@ -123,13 +123,15 @@ const PRETEST_BY_SIO: Record<string, string> = {
   "SIO-038": "u3-sio038",
   "SIO-039": "u3-sio039",
   "SIO-041": "u4-sio041",
+  // Unit 4 re-cut (Dan, 2026-07-14): the merged SIO-042 keeps the partitive
+  // pretest (u4-sio043/044 stay in content, unmapped); renumbered SIOs keep
+  // their original pretests; the two NEW SIOs (045 market dialogue, 048
+  // giving advice) have none yet.
   "SIO-042": "u4-sio042",
-  "SIO-043": "u4-sio043",
-  "SIO-044": "u4-sio044",
-  "SIO-045": "u4-sio045",
+  "SIO-043": "u4-sio045",
+  "SIO-044": "u4-sio047",
   "SIO-046": "u4-sio046",
-  "SIO-047": "u4-sio047",
-  "SIO-048": "u4-sio048",
+  "SIO-047": "u4-sio048",
 };
 
 export function getPretestForSio(sioId: string): Pretest | undefined {

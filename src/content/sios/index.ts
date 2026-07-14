@@ -135,10 +135,14 @@ const UNIT_SITUATIONS: Record<number, { label: string; ids: string[] }[]> = {
     { label: "Situation 2 — S'informer sur une ville", ids: ["SIO-033", "SIO-034", "SIO-035"] },
     { label: "Situation 3 — Demander et indiquer son chemin", ids: ["SIO-036", "SIO-037", "SIO-038", "SIO-039"] },
   ],
+  // Unit 4 re-cut (Dan, 2026-07-14): 42 = partitives + negation + manger/boire
+  // merged; 43 = frequency; Situation 2 = commerces + the market dialogue;
+  // Situation 3 = demonstratives + modaux + giving advice (Atelier appended
+  // by groupSiosForUnit below).
   4: [
-    { label: "Situation 1 — Parler de ses habitudes alimentaires", ids: ["SIO-041", "SIO-042", "SIO-043", "SIO-044", "SIO-045"] },
-    { label: "Situation 2 — Faire ses courses", ids: ["SIO-047"] },
-    { label: "Situation 3 — Faire des projets", ids: ["SIO-046", "SIO-048"] },
+    { label: "Situation 1 — Parler de ses habitudes alimentaires", ids: ["SIO-041", "SIO-042", "SIO-043"] },
+    { label: "Situation 2 — Faire ses courses", ids: ["SIO-044", "SIO-045"] },
+    { label: "Situation 3 — Faire des projets", ids: ["SIO-046", "SIO-047", "SIO-048"] },
   ],
 };
 
@@ -168,7 +172,15 @@ export function groupSiosForUnit(unit: number): SioGroup[] {
     label: s.label,
     sios: s.ids.map((id) => getSio(id)).filter((s): s is Sio => !!s),
   }));
-  if (atelier.length > 0) groups.push({ key: "atelier", label: "Atelier", sios: atelier });
+  // The unit overview shows THREE subsections, not four: the Atelier rides
+  // inside Situation 3 (Dan, 2026-07-14: "merge situation 3 with Atelier as
+  // one sub-section").
+  if (atelier.length > 0 && groups.length > 0) {
+    const last = groups[groups.length - 1];
+    last.label = last.label.replace(/^Situation 3 — /, "Situation 3 + Atelier — ");
+    if (!last.label.includes("Atelier")) last.label += " + Atelier";
+    last.sios = [...last.sios, ...atelier];
+  }
   return groups;
 }
 
