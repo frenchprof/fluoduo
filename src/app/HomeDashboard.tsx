@@ -13,7 +13,6 @@ import { useEffect, useState } from "react";
 import StatsHelp from "@/components/StatsHelp";
 import RankBadge from "@/components/RankBadge";
 import RoadMap from "@/components/RoadMap";
-import GuideSplash from "@/components/GuideSplash";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
@@ -23,10 +22,8 @@ import { dueForReview } from "@/lib/reviser";
 export default function HomeDashboard() {
   const [progress, setProgress] = useState<Progress>(defaultProgress());
   const [dueCount, setDueCount] = useState(0);
-  // The FluoLingo brand animation waits until the stage is clear — playing
-  // it behind the first-visit Guide popup wasted the whole show (Dan,
-  // 2026-07-14). If the splash is about to open (its key unset while the
-  // beta notice is done), hold; its close event starts the performance.
+  // Armed on mount: nothing pops up by default any more (Dan, 2026-07-14),
+  // so the FluoLingo brand animation plays on a clear stage right away.
   const [heroPlay, setHeroPlay] = useState(false);
   // Once the stroke has played, the ink is pinned by class — engines can
   // drop a finished animation's fill state (Dan, 2026-07-14: "the color
@@ -42,19 +39,9 @@ export default function HomeDashboard() {
     refresh();
     window.addEventListener("fluolingo:progress-updated", refresh);
 
-    const startHero = () => setHeroPlay(true);
-    try {
-      const splashComing =
-        !window.localStorage.getItem("fluolingo:guide-splash.v1") &&
-        !!window.localStorage.getItem("fluolingo:beta-notice.v1");
-      if (!splashComing) startHero();
-    } catch {
-      startHero();
-    }
-    window.addEventListener("fluolingo:guide-splash-closed", startHero);
+    setHeroPlay(true);
     return () => {
       window.removeEventListener("fluolingo:progress-updated", refresh);
-      window.removeEventListener("fluolingo:guide-splash-closed", startHero);
     };
   }, []);
 
@@ -82,7 +69,6 @@ export default function HomeDashboard() {
 
   return (
     <>
-      <GuideSplash />
       <section
         className="mb-7 rounded-2xl border-2 border-[color:var(--fluo-ink)] p-5 shadow-[5px_5px_0_var(--fluo-hl)]"
         style={{ background: "linear-gradient(120deg, #fbe3ec 0%, #def3f5 45%, #ecf7cf 100%)" }}

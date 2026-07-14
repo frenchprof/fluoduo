@@ -11,6 +11,11 @@ import { useCallback, useEffect, useState } from "react";
 
 const KEY = "fluolingo:beta-notice.v1";
 
+// SUSPENDED (Dan, 2026-07-14: "suspend the beta testing mode message") — the
+// QuickGuide button in the tab rail replaced the first-arrival popups. Flip
+// to false to reinstate.
+const SUSPENDED = true;
+
 export default function BetaNotice() {
   const [open, setOpen] = useState(false);
 
@@ -36,7 +41,7 @@ export default function BetaNotice() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open, dismiss]);
 
-  if (!open) return null;
+  if (SUSPENDED || !open) return null;
 
   return (
     <div className="fixed inset-0 z-[90] flex items-center justify-center bg-[color:var(--fluo-ink)]/45 p-4" role="dialog" aria-modal="true" aria-label="Un mot de Dr Chan">

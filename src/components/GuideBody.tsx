@@ -32,11 +32,13 @@ const CONTINUE_STYLE =
 export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
   return (
     <>
-      <ol className="mt-3 space-y-2.5">
+      {/* Steps 1 and 2 share the row, half each; step 3 (with the icons)
+          takes the full width (Dan, 2026-07-14). */}
+      <ol className="mt-3 grid grid-cols-2 gap-2.5">
         {STEPS.map((s, i) => (
           <li
             key={i}
-            className={`fluo-h-${s.hue} flex items-center gap-3 rounded-xl border-2 p-3`}
+            className={`fluo-h-${s.hue} flex items-center gap-3 rounded-xl border-2 p-3 ${i === 2 ? "col-span-2 !items-start" : ""}`}
             style={{ borderColor: "var(--fluo-card-accent)", background: "var(--fluo-card-tint)" }}
           >
             <span

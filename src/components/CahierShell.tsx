@@ -11,8 +11,9 @@
  * A tab without an href (typically the active page) renders as a static flap.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import GuideSplash from "@/components/GuideSplash";
 import type { CSSProperties, MouseEvent as ReactMouseEvent, ReactNode } from "react";
 
 const PAGE_WIDTH_KEY = "fluolingo:pageWidth";
@@ -128,6 +129,9 @@ export default function CahierShell({
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [rankingOpen, setRankingOpen] = useState(false);
+  // The Quick Guide no longer pops up by default (Dan, 2026-07-14) — it
+  // opens from the inverted QuickGuide button right after the ❓ flap.
+  const [quickGuideOpen, setQuickGuideOpen] = useState(false);
   const hueOf = (t: ShellTab, i: number) => t.hue ?? TAB_HUES[i % TAB_HUES.length];
   const site = tabsWithActive(siteTabs(), active);
   // Tool pages (Réviser / ConjugaZone / Classement / Tuteur / Profil) live in
@@ -271,14 +275,25 @@ export default function CahierShell({
                     // small screens and items were cut off (Dan, 2026-07-08).
                     <div className="absolute right-0 top-full z-50 mt-1 flex max-h-[75vh] w-48 flex-col gap-1 overflow-y-auto rounded-lg border-2 border-[color:var(--cahier-ink)]/20 bg-white p-1 shadow-lg">
                       {site.map((t, i) => (
-                        <TabFlap
-                          key={t.key}
-                          tab={t}
-                          hue={hueOf(t, i)}
-                          active={isActiveFlap(t)}
-                          className="cahier-tab !rounded-md text-left"
-                          onNavigate={() => setMenuOpen(false)}
-                        />
+                        <Fragment key={t.key}>
+                          <TabFlap
+                            tab={t}
+                            hue={hueOf(t, i)}
+                            active={isActiveFlap(t)}
+                            className="cahier-tab !rounded-md text-left"
+                            onNavigate={() => setMenuOpen(false)}
+                          />
+                          {t.key === "guide" && (
+                            <button
+                              type="button"
+                              onClick={() => { setQuickGuideOpen(true); setMenuOpen(false); }}
+                              className="cahier-tab !rounded-md text-left font-black"
+                              style={{ background: "var(--cahier-ink)", borderColor: "var(--cahier-ink)", color: "#d4f24c" }}
+                            >
+                              QuickGuide
+                            </button>
+                          )}
+                        </Fragment>
                       ))}
                       <hr className="my-0.5 border-[color:var(--cahier-ink)]/15" />
                       {tools.map((t, i) => (
@@ -328,15 +343,29 @@ export default function CahierShell({
 
         {searchOpen && <SearchOverlay onClose={() => setSearchOpen(false)} />}
         {rankingOpen && <RankingOverlay onClose={() => setRankingOpen(false)} />}
+        {quickGuideOpen && <GuideSplash onClose={() => setQuickGuideOpen(false)} />}
         <nav className="cahier-tabs" aria-label="Pages">
           {site.map((t, i) => (
-            <TabFlap
-              key={t.key}
-              tab={t}
-              hue={hueOf(t, i)}
-              active={isActiveFlap(t)}
-              className={`cahier-tab ${context.length > 0 ? "cahier-tab--back1" : ""}`}
-            />
+            <Fragment key={t.key}>
+              <TabFlap
+                tab={t}
+                hue={hueOf(t, i)}
+                active={isActiveFlap(t)}
+                className={`cahier-tab ${context.length > 0 ? "cahier-tab--back1" : ""}`}
+              />
+              {/* Inverted-color QuickGuide right after the ❓ flap (Dan,
+                  2026-07-14) — opens the popup the site no longer forces. */}
+              {t.key === "guide" && (
+                <button
+                  type="button"
+                  onClick={() => setQuickGuideOpen(true)}
+                  className={`cahier-tab ${context.length > 0 ? "cahier-tab--back1" : ""} font-black`}
+                  style={{ background: "var(--cahier-ink)", borderColor: "var(--cahier-ink)", color: "#d4f24c" }}
+                >
+                  QuickGuide
+                </button>
+              )}
+            </Fragment>
           ))}
           {/* The tools live in the ☰ on mobile — but desktop hides the ☰
               (Dan, 2026-07-08: "the desktop version does not have them"), so
