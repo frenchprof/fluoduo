@@ -1,0 +1,100 @@
+{
+ "id": "question-words-letris",
+ "title": "Quelle question ?",
+ "subtitle": "match each answer to the question it answers",
+ "language": "fr",
+ "categories": [
+  {
+   "key": "ou",
+   "label": "OÙ ?",
+   "prefix": ""
+  },
+  {
+   "key": "quand",
+   "label": "QUAND ?",
+   "prefix": ""
+  },
+  {
+   "key": "qui",
+   "label": "QUI ?",
+   "prefix": ""
+  },
+  {
+   "key": "comment",
+   "label": "COMMENT ?",
+   "prefix": ""
+  }
+ ],
+ "tiles": [
+  {
+   "text": "À PARIS",
+   "category": "ou",
+   "displayName": "à Paris"
+  },
+  {
+   "text": "ICI",
+   "category": "ou",
+   "displayName": "ici"
+  },
+  {
+   "text": "À GAUCHE",
+   "category": "ou",
+   "displayName": "à gauche"
+  },
+  {
+   "text": "AU CAFÉ",
+   "category": "ou",
+   "displayName": "au café"
+  },
+  {
+   "text": "DEMAIN",
+   "category": "quand",
+   "displayName": "demain"
+  },
+  {
+   "text": "À MIDI",
+   "category": "quand",
+   "displayName": "à midi"
+  },
+  {
+   "text": "LE SOIR",
+   "category": "quand",
+   "displayName": "le soir"
+  },
+  {
+   "text": "LUNDI",
+   "category": "quand",
+   "displayName": "lundi"
+  },
+  {
+   "text": "MARIE",
+   "category": "qui",
+   "displayName": "Marie"
+  },
+  {
+   "text": "MON AMI",
+   "category": "qui",
+   "displayName": "mon ami"
+  },
+  {
+   "text": "LE PROF",
+   "category": "qui",
+   "displayName": "le prof"
+  },
+  {
+   "text": "EN BUS",
+   "category": "comment",
+   "displayName": "en bus"
+  },
+  {
+   "text": "À PIED",
+   "category": "comment",
+   "displayName": "à pied"
+  },
+  {
+   "text": "TRÈS BIEN",
+   "category": "comment",
+   "displayName": "très bien"
+  }
+ ]
+}

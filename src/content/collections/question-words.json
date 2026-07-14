@@ -1,123 +1,140 @@
 {
-  "id": "question-words",
-  "title": "Quel mot interrogatif ?",
-  "subtitle": "The 7 core question words",
-  "langPair": "fr-en",
-  "owner": "curated",
-  "visibility": "public",
-  "unit": 3,
-  "lessonNo": 35,
-  "lessonSlug": "question-words",
-  "tags": [],
-  "seq": 335,
-  "gameConfig": {
-    "lexicalator": {
-      "decoys": [
-        "quant",
-        "bein",
-        "mant",
-        "koi",
-        "ki",
-        "poure",
-        "quon",
-        "cou",
-        "bianc",
-        "mont",
-        "qua",
-        "pur"
-      ]
-    }
+ "id": "question-words",
+ "title": "Quel mot interrogatif ?",
+ "subtitle": "The 7 core question words",
+ "langPair": "fr-en",
+ "owner": "curated",
+ "visibility": "public",
+ "unit": 3,
+ "lessonNo": 35,
+ "lessonSlug": "question-words",
+ "tags": [],
+ "seq": 335,
+ "gameConfig": {
+  "lexicalator": {
+   "decoys": [
+    "quant",
+    "bein",
+    "mant",
+    "koi",
+    "ki",
+    "poure",
+    "quon",
+    "cou",
+    "bianc",
+    "mont",
+    "qua",
+    "pur"
+   ]
+  }
+ },
+ "items": [
+  {
+   "id": "question-words-01",
+   "fr": "où",
+   "en": "where",
+   "syllables": [
+    "où"
+   ],
+   "tags": []
   },
-  "items": [
-    {
-      "id": "question-words-01",
-      "fr": "où",
-      "en": "where",
-      "syllables": [
-        "où"
-      ],
-      "tags": []
-    },
-    {
-      "id": "question-words-02",
-      "fr": "quand",
-      "en": "when",
-      "syllables": [
-        "quand"
-      ],
-      "tags": []
-    },
-    {
-      "id": "question-words-03",
-      "fr": "combien",
-      "en": "how much / many",
-      "syllables": [
-        "com",
-        "bien"
-      ],
-      "tags": []
-    },
-    {
-      "id": "question-words-04",
-      "fr": "comment",
-      "en": "how",
-      "syllables": [
-        "com",
-        "ment"
-      ],
-      "tags": []
-    },
-    {
-      "id": "question-words-05",
-      "fr": "quoi",
-      "en": "what",
-      "syllables": [
-        "quoi"
-      ],
-      "tags": []
-    },
-    {
-      "id": "question-words-06",
-      "fr": "qui",
-      "en": "who",
-      "syllables": [
-        "qui"
-      ],
-      "tags": []
-    },
-    {
-      "id": "question-words-07",
-      "fr": "pourquoi",
-      "en": "why",
-      "syllables": [
-        "pour",
-        "quoi"
-      ],
-      "tags": []
-    },
-    {
-      "id": "question-words-08",
-      "fr": "est-ce que",
-      "en": "turns a statement into a yes/no question",
-      "example": "Est-ce que tu es libre ?",
-      "exampleEn": "Are you free?",
-      "tags": []
-    },
-    {
-      "id": "question-words-09",
-      "fr": "qu'est-ce que",
-      "en": "what …? (keeps statement order)",
-      "example": "Qu'est-ce que tu manges ?",
-      "exampleEn": "What are you eating?",
-      "tags": []
-    },
-    {
-      "id": "question-words-10",
-      "fr": "Parles-tu français ?",
-      "en": "Do you speak French? (inversion)",
-      "example": "Parles-tu français ?",
-      "exampleEn": "Do you speak French?",
-      "tags": []
-    }
-  ]
+  {
+   "id": "question-words-02",
+   "fr": "quand",
+   "en": "when",
+   "syllables": [
+    "quand"
+   ],
+   "tags": []
+  },
+  {
+   "id": "question-words-03",
+   "fr": "combien",
+   "en": "how much / many",
+   "syllables": [
+    "com",
+    "bien"
+   ],
+   "tags": []
+  },
+  {
+   "id": "question-words-04",
+   "fr": "comment",
+   "en": "how",
+   "syllables": [
+    "com",
+    "ment"
+   ],
+   "tags": []
+  },
+  {
+   "id": "question-words-05",
+   "fr": "quoi",
+   "en": "what",
+   "syllables": [
+    "quoi"
+   ],
+   "tags": []
+  },
+  {
+   "id": "question-words-06",
+   "fr": "qui",
+   "en": "who",
+   "syllables": [
+    "qui"
+   ],
+   "tags": []
+  },
+  {
+   "id": "question-words-07",
+   "fr": "pourquoi",
+   "en": "why",
+   "syllables": [
+    "pour",
+    "quoi"
+   ],
+   "tags": []
+  },
+  {
+   "id": "question-words-08",
+   "fr": "est-ce que",
+   "en": "turns a statement into a yes/no question",
+   "example": "Est-ce que tu es libre ?",
+   "exampleEn": "Are you free?",
+   "tags": [],
+   "syllables": [
+    "est-",
+    "ce",
+    "que"
+   ]
+  },
+  {
+   "id": "question-words-09",
+   "fr": "qu'est-ce que",
+   "en": "what …? (keeps statement order)",
+   "example": "Qu'est-ce que tu manges ?",
+   "exampleEn": "What are you eating?",
+   "tags": [],
+   "syllables": [
+    "qu'est-",
+    "ce",
+    "que"
+   ]
+  },
+  {
+   "id": "question-words-10",
+   "fr": "Parles-tu français ?",
+   "en": "Do you speak French? (inversion)",
+   "example": "Parles-tu français ?",
+   "exampleEn": "Do you speak French?",
+   "tags": [],
+   "syllables": [
+    "Par",
+    "les-",
+    "tu",
+    "fran",
+    "çais?"
+   ]
+  }
+ ]
 }

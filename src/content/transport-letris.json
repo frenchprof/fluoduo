@@ -1,0 +1,80 @@
+{
+ "id": "transport-letris",
+ "title": "À pied ou en métro ?",
+ "subtitle": "à + open transport, en + enclosed — sort the ride",
+ "language": "fr",
+ "categories": [
+  {
+   "key": "a",
+   "label": "À …",
+   "prefix": "Je vais à "
+  },
+  {
+   "key": "en",
+   "label": "EN …",
+   "prefix": "Je vais en "
+  }
+ ],
+ "tiles": [
+  {
+   "text": "PIED",
+   "category": "a",
+   "meaning": "on foot"
+  },
+  {
+   "text": "VÉLO",
+   "category": "a",
+   "meaning": "by bike"
+  },
+  {
+   "text": "MOTO",
+   "category": "a",
+   "meaning": "by motorbike"
+  },
+  {
+   "text": "CHEVAL",
+   "category": "a",
+   "meaning": "on horseback"
+  },
+  {
+   "text": "BUS",
+   "category": "en",
+   "meaning": "by bus"
+  },
+  {
+   "text": "MÉTRO",
+   "category": "en",
+   "meaning": "by metro"
+  },
+  {
+   "text": "VOITURE",
+   "category": "en",
+   "meaning": "by car"
+  },
+  {
+   "text": "TRAIN",
+   "category": "en",
+   "meaning": "by train"
+  },
+  {
+   "text": "AVION",
+   "category": "en",
+   "meaning": "by plane"
+  },
+  {
+   "text": "BATEAU",
+   "category": "en",
+   "meaning": "by boat"
+  },
+  {
+   "text": "TAXI",
+   "category": "en",
+   "meaning": "by taxi"
+  },
+  {
+   "text": "TRAMWAY",
+   "category": "en",
+   "meaning": "by tram"
+  }
+ ]
+}

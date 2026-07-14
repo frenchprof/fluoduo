@@ -1,0 +1,120 @@
+{
+ "id": "partitifs-letris",
+ "title": "Du, de la, de l' ou des ?",
+ "subtitle": "pick the right partitive for each food",
+ "language": "fr",
+ "categories": [
+  {
+   "key": "du",
+   "label": "DU",
+   "prefix": "Je prends du "
+  },
+  {
+   "key": "dela",
+   "label": "DE LA",
+   "prefix": "Je prends de la "
+  },
+  {
+   "key": "delap",
+   "label": "DE L'",
+   "prefix": "Je prends de l'"
+  },
+  {
+   "key": "des",
+   "label": "DES",
+   "prefix": "Je prends des "
+  }
+ ],
+ "tiles": [
+  {
+   "text": "PAIN",
+   "category": "du",
+   "meaning": "bread"
+  },
+  {
+   "text": "FROMAGE",
+   "category": "du",
+   "meaning": "cheese"
+  },
+  {
+   "text": "RIZ",
+   "category": "du",
+   "meaning": "rice"
+  },
+  {
+   "text": "POULET",
+   "category": "du",
+   "meaning": "chicken"
+  },
+  {
+   "text": "CAFÉ",
+   "category": "du",
+   "meaning": "coffee"
+  },
+  {
+   "text": "SALADE",
+   "category": "dela",
+   "meaning": "salad"
+  },
+  {
+   "text": "VIANDE",
+   "category": "dela",
+   "meaning": "meat"
+  },
+  {
+   "text": "CONFITURE",
+   "category": "dela",
+   "meaning": "jam"
+  },
+  {
+   "text": "SOUPE",
+   "category": "dela",
+   "meaning": "soup"
+  },
+  {
+   "text": "GLACE",
+   "category": "dela",
+   "meaning": "ice cream"
+  },
+  {
+   "text": "EAU",
+   "category": "delap",
+   "meaning": "water"
+  },
+  {
+   "text": "HUILE",
+   "category": "delap",
+   "meaning": "oil"
+  },
+  {
+   "text": "AIL",
+   "category": "delap",
+   "meaning": "garlic"
+  },
+  {
+   "text": "PÂTES",
+   "category": "des",
+   "meaning": "pasta"
+  },
+  {
+   "text": "FRITES",
+   "category": "des",
+   "meaning": "fries"
+  },
+  {
+   "text": "LÉGUMES",
+   "category": "des",
+   "meaning": "vegetables"
+  },
+  {
+   "text": "ŒUFS",
+   "category": "des",
+   "meaning": "eggs"
+  },
+  {
+   "text": "CÉRÉALES",
+   "category": "des",
+   "meaning": "cereal"
+  }
+ ]
+}

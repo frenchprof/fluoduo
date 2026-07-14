@@ -35,6 +35,19 @@ export const VERBS: ConjVerb[] = [
   // Impersonal: falloir exists ONLY as « il faut » — the other persons render
   // as inert dashes in the table (see /conjugaison's "—" handling).
   { id: "falloir", inf: "falloir", en: "to be necessary (il faut)", forms: ["—", "—", "faut", "—", "—", "—"] },
+  // Completing the set of verbs the course meets by the end of Unit 4
+  // (Dan, 2026-07-14): the -er regulars of Unité 2's likes/activities, the
+  // shopping verbs of Unité 4, and choisir as the -ir model for ordering.
+  { id: "adorer", inf: "adorer", en: "to love (things)", forms: ["adore", "adores", "adore", "adorons", "adorez", "adorent"] },
+  { id: "detester", inf: "détester", en: "to hate", forms: ["déteste", "détestes", "déteste", "détestons", "détestez", "détestent"] },
+  { id: "etudier", inf: "étudier", en: "to study", forms: ["étudie", "étudies", "étudie", "étudions", "étudiez", "étudient"] },
+  { id: "travailler", inf: "travailler", en: "to work", forms: ["travaille", "travailles", "travaille", "travaillons", "travaillez", "travaillent"] },
+  { id: "regarder", inf: "regarder", en: "to watch", forms: ["regarde", "regardes", "regarde", "regardons", "regardez", "regardent"] },
+  { id: "ecouter", inf: "écouter", en: "to listen (to)", forms: ["écoute", "écoutes", "écoute", "écoutons", "écoutez", "écoutent"] },
+  { id: "jouer", inf: "jouer", en: "to play", forms: ["joue", "joues", "joue", "jouons", "jouez", "jouent"] },
+  { id: "acheter", inf: "acheter", en: "to buy (è stem)", forms: ["achète", "achètes", "achète", "achetons", "achetez", "achètent"] },
+  { id: "payer", inf: "payer", en: "to pay", forms: ["paie", "paies", "paie", "payons", "payez", "paient"] },
+  { id: "choisir", inf: "choisir", en: "to choose (-ir)", forms: ["choisis", "choisis", "choisit", "choisissons", "choisissez", "choisissent"] },
 ];
 
 /** Which ConjugaZone verbs each conjugation-heavy SIO drills — powers the
@@ -52,6 +65,8 @@ export const CONJ_BY_SIO: Record<string, string[]> = {
   "SIO-037": ["pouvoir"],
   "SIO-038": ["prendre", "aller"],
   "SIO-042": ["manger", "boire"],
+  "SIO-044": ["acheter", "payer"],
+  "SIO-045": ["acheter", "payer", "vouloir"],
   "SIO-047": ["aller", "pouvoir", "devoir", "falloir"],
 };
 

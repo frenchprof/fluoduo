@@ -19,6 +19,10 @@ import commerces from "@/content/commerces.json";
 import tuVous from "@/content/tu-vous.json";
 import salutations from "@/content/salutations.json";
 import alimentsLetris from "@/content/aliments-letris.json";
+import transportLetris from "@/content/transport-letris.json";
+import partitifsLetris from "@/content/partitifs-letris.json";
+import modauxLetris from "@/content/modaux-letris.json";
+import questionWordsLetris from "@/content/question-words-letris.json";
 import type { LetrisSet } from "./LetrisGame";
 
 export type LetrisSetMeta = {
@@ -53,6 +57,13 @@ const REGISTRY: Record<string, LetrisSet> = {
   salutations: salutations as LetrisSet,
   // Unit 4's third rain (Dan, 2026-07-13): food GROUPS, partitives spoken.
   aliments: alimentsLetris as LetrisSet,
+  // Units 3-4 expansion (Dan, 2026-07-14: "more vocabularain items for
+  // units 3 and 4") — keys match the backing deck ids so the rain flap
+  // appears on those decks and the gallery colors them by unit.
+  transport: transportLetris as LetrisSet,
+  partitifs: partitifsLetris as LetrisSet,
+  modaux: modauxLetris as LetrisSet,
+  "question-words": questionWordsLetris as LetrisSet,
 };
 
 const META: Record<string, { emoji: string }> = {
@@ -77,6 +88,10 @@ const META: Record<string, { emoji: string }> = {
   "tu-vous": { emoji: "🤝" },
   salutations: { emoji: "👋" },
   aliments: { emoji: "🍽️" },
+  transport: { emoji: "🚌" },
+  partitifs: { emoji: "🥖" },
+  modaux: { emoji: "🚦" },
+  "question-words": { emoji: "🗨️" },
 };
 
 // Out-of-syllabus pools — reachable by slug, but hidden from the default lesson

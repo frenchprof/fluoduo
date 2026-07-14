@@ -1,0 +1,105 @@
+{
+ "id": "modaux-letris",
+ "title": "aller, pouvoir ou devoir ?",
+ "subtitle": "sort each conjugated form under its infinitive",
+ "language": "fr",
+ "categories": [
+  {
+   "key": "aller",
+   "label": "ALLER",
+   "prefix": ""
+  },
+  {
+   "key": "pouvoir",
+   "label": "POUVOIR",
+   "prefix": ""
+  },
+  {
+   "key": "devoir",
+   "label": "DEVOIR",
+   "prefix": ""
+  }
+ ],
+ "tiles": [
+  {
+   "text": "VAIS",
+   "category": "aller",
+   "meaning": "je …"
+  },
+  {
+   "text": "VAS",
+   "category": "aller",
+   "meaning": "tu …"
+  },
+  {
+   "text": "VA",
+   "category": "aller",
+   "meaning": "il/elle …"
+  },
+  {
+   "text": "ALLONS",
+   "category": "aller",
+   "meaning": "nous …"
+  },
+  {
+   "text": "ALLEZ",
+   "category": "aller",
+   "meaning": "vous …"
+  },
+  {
+   "text": "VONT",
+   "category": "aller",
+   "meaning": "ils/elles …"
+  },
+  {
+   "text": "PEUX",
+   "category": "pouvoir",
+   "meaning": "je/tu …"
+  },
+  {
+   "text": "PEUT",
+   "category": "pouvoir",
+   "meaning": "il/elle …"
+  },
+  {
+   "text": "POUVONS",
+   "category": "pouvoir",
+   "meaning": "nous …"
+  },
+  {
+   "text": "POUVEZ",
+   "category": "pouvoir",
+   "meaning": "vous …"
+  },
+  {
+   "text": "PEUVENT",
+   "category": "pouvoir",
+   "meaning": "ils/elles …"
+  },
+  {
+   "text": "DOIS",
+   "category": "devoir",
+   "meaning": "je/tu …"
+  },
+  {
+   "text": "DOIT",
+   "category": "devoir",
+   "meaning": "il/elle …"
+  },
+  {
+   "text": "DEVONS",
+   "category": "devoir",
+   "meaning": "nous …"
+  },
+  {
+   "text": "DEVEZ",
+   "category": "devoir",
+   "meaning": "vous …"
+  },
+  {
+   "text": "DOIVENT",
+   "category": "devoir",
+   "meaning": "ils/elles …"
+  }
+ ]
+}
