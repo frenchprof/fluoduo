@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import CahierShell from "@/components/CahierShell";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 import AuthGate from "@/components/AuthGate";
-import { PERSONS, VERBS, conjSpoken, type ConjVerb } from "@/content/conjugaison";
+import { CONJ_GROUPS, PERSONS, VERBS, conjSpoken, type ConjVerb } from "@/content/conjugaison";
 import { gradeAnswer } from "@/lib/practice/cloze";
 import { recordItemResult } from "@/lib/progress";
 import { speak } from "@/games/letris/speech";
@@ -81,13 +81,20 @@ export default function ConjugaisonPage() {
         </p>
 
         <AuthGate what="practise" compact>
-          {/* Verb picker */}
-          <div className="mb-4 flex flex-wrap gap-1.5">
-            {VERBS.map((v) => (
-              <button key={v.id} type="button" lang="fr" onClick={() => toggleVerb(v.id)}
-                className={`cahier-btn cahier-btn-sm ${picked.includes(v.id) ? "cahier-btn-primary" : ""}`}>
-                {v.inf}
-              </button>
+          {/* Verb picker — one row per verb group (Dan, 2026-07-14) */}
+          <div className="mb-4 space-y-2">
+            {CONJ_GROUPS.map((g) => (
+              <div key={g}>
+                <p className="fluo-label mb-1">{g}</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {VERBS.filter((v) => v.group === g).map((v) => (
+                    <button key={v.id} type="button" lang="fr" onClick={() => toggleVerb(v.id)}
+                      className={`cahier-btn cahier-btn-sm ${picked.includes(v.id) ? "cahier-btn-primary" : ""}`}>
+                      {v.inf}
+                    </button>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
 
