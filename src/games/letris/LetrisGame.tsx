@@ -493,6 +493,21 @@ export default function LetrisGame({
     setPaused(false); // resume the fall under the new sky
   };
   const dark = phase !== "day"; // night AND storm keep the veil + blurred letters
+  // Ambient dusk (Dan, 2026-07-14: "sky turns dark periodically, e.g. after
+  // 30 seconds"): a passing cloud every 30 s of daytime play, ~6 s long —
+  // scenery only; the pedagogical night/storm veil always wins.
+  const [dusk, setDusk] = useState(false);
+  useEffect(() => {
+    if (phase !== "day" || paused) {
+      setDusk(false);
+      return;
+    }
+    const iv = window.setInterval(() => {
+      setDusk(true);
+      window.setTimeout(() => setDusk(false), 6000);
+    }, 30000);
+    return () => window.clearInterval(iv);
+  }, [phase, paused]);
 
   return (
     // data-kbnav-off: arrows steer the falling tile here — the site-wide
@@ -532,7 +547,10 @@ export default function LetrisGame({
           </div>
         </div>
       )}
-      <style>{`@keyframes vrain{0%{transform:translateY(-24px);opacity:0}12%{opacity:.7}100%{transform:translateY(520px);opacity:0}}`}</style>
+      <style>{`
+        @keyframes vrain{0%{transform:translateY(-60px);opacity:0}10%{opacity:1}100%{transform:translateY(560px);opacity:0}}
+        @keyframes vrain-slant{0%{transform:translate(0,-60px) rotate(9deg);opacity:0}10%{opacity:1}100%{transform:translate(64px,560px) rotate(9deg);opacity:0}}
+      `}</style>
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-3xl font-black tracking-tight text-sky-700" style={{ textShadow: "0 2px 0 #fff" }}>
@@ -641,27 +659,36 @@ export default function LetrisGame({
             background: "linear-gradient(180deg, #59b8f2 0%, #8fd0f8 55%, #c8e9fc 100%)",
           }}
         >
-          {/* ambient rain — deterministic positions/timings (no Math.random in render) */}
-          {Array.from({ length: 12 }).map((_, i) => (
-            <span
-              key={`drop-${i}`}
-              className="pointer-events-none absolute w-[3px] rounded-full"
-              style={{
-                left: `${(i * 89 + 7) % 100}%`,
-                top: 0,
-                height: 16,
-                background: "rgba(255,255,255,.55)",
-                animation: `vrain ${(2.2 + (i % 5) * 0.5) * (phase === "night" ? 3 : 1)}s linear ${(i * 0.63) % 3}s infinite`,
-              }}
-            />
-          ))}
+          {/* Ambient rain STREAKS (Dan, 2026-07-14) — deterministic
+              positions/timings (no Math.random in render). Two depths: near
+              streaks longer/brighter/faster, far ones thinner and slower;
+              every third streak falls slightly diagonally, wind-blown. */}
+          {Array.from({ length: 20 }).map((_, i) => {
+            const near = i % 2 === 0;
+            const slant = i % 3 === 0;
+            const dur = ((near ? 1.6 : 2.6) + (i % 5) * 0.35) * (phase === "night" ? 3 : 1);
+            return (
+              <span
+                key={`drop-${i}`}
+                className="pointer-events-none absolute rounded-full"
+                style={{
+                  left: `${(i * 53 + 5) % 100}%`,
+                  top: 0,
+                  width: near ? 3 : 2,
+                  height: near ? 44 : 26,
+                  background: `linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,${near ? 0.8 : 0.45}) 100%)`,
+                  animation: `${slant ? "vrain-slant" : "vrain"} ${dur}s linear ${(i * 0.63) % 3}s infinite`,
+                }}
+              />
+            );
+          })}
           {/* night falls after a few drops: the sky dims (the falling word sits
               ABOVE this veil, but its masked letters blur) and the moon rises */}
           <div
             className="pointer-events-none absolute inset-0 z-10"
             style={{
               background: "linear-gradient(180deg, rgba(3,15,36,.85) 0%, rgba(8,28,56,.72) 55%, rgba(14,42,76,.5) 100%)",
-              opacity: dark ? 1 : 0,
+              opacity: dark ? 1 : dusk ? 0.4 : 0,
               transition: "opacity 3s ease",
             }}
           />
