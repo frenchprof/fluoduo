@@ -20,7 +20,7 @@
     { "id": "tout_droit",     "text": "tout droit",             "meaning": "straight ahead",               "emoji": "⬆️", "validLefts": ["allez", "continuez"] },
     { "id": "jusqu_carre",    "text": "jusqu'au carrefour",     "meaning": "as far as the intersection",   "emoji": "🚦", "validLefts": ["allez", "continuez"] },
 
-    { "id": "la_rue",         "text": "la rue",                 "meaning": "the street",                   "emoji": "🛣️", "validLefts": ["au_bout"] },
+    { "id": "la_rue",         "text": "la rue",                 "meaning": "the street",                   "emoji": "🏘️", "validLefts": ["au_bout"] },
 
     { "id": "a_gauche",       "text": "à gauche",               "meaning": "to the left",                  "emoji": "⬅️", "validLefts": ["tournez"] },
     { "id": "a_droite",       "text": "à droite",               "meaning": "to the right",                 "emoji": "➡️", "validLefts": ["tournez"] },

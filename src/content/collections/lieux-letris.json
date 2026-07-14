@@ -93,40 +93,6 @@
    "gap": "au"
   },
   {
-   "id": "lieux-letris-06-marche",
-   "fr": "marché",
-   "en": "the market",
-   "emoji": "🍅",
-   "tags": [
-    "col:le"
-   ],
-   "syllables": [
-    "mar",
-    "ché"
-   ],
-   "example": "Je vais au marché.",
-   "exampleEn": "I'm going to the market.",
-   "gap": "au"
-  },
-  {
-   "id": "lieux-letris-07-supermarche",
-   "fr": "supermarché",
-   "en": "the supermarket",
-   "emoji": "🛒",
-   "tags": [
-    "col:le"
-   ],
-   "syllables": [
-    "su",
-    "per",
-    "mar",
-    "ché"
-   ],
-   "example": "Vous allez au supermarché.",
-   "exampleEn": "You're going to the supermarket.",
-   "gap": "au"
-  },
-  {
    "id": "lieux-letris-08-stade",
    "fr": "stade",
    "en": "the stadium",
@@ -189,24 +155,6 @@
    ],
    "example": "Elle est à la bibliothèque.",
    "exampleEn": "She's at the library.",
-   "gap": "à la"
-  },
-  {
-   "id": "lieux-letris-12-boulangerie",
-   "fr": "boulangerie",
-   "en": "the bakery",
-   "emoji": "🥖",
-   "tags": [
-    "col:la"
-   ],
-   "syllables": [
-    "bou",
-    "lan",
-    "ge",
-    "rie"
-   ],
-   "example": "Je vais à la boulangerie.",
-   "exampleEn": "I'm going to the bakery.",
    "gap": "à la"
   },
   {
@@ -390,40 +338,6 @@
    "example": "Il est à l'arrêt de bus.",
    "exampleEn": "He's at the bus stop.",
    "gap": "à l'"
-  },
-  {
-   "id": "lieux-letris-24-magasins",
-   "fr": "magasins",
-   "en": "the shops",
-   "emoji": "🛍️",
-   "tags": [
-    "col:les"
-   ],
-   "syllables": [
-    "ma",
-    "ga",
-    "sins"
-   ],
-   "example": "Je vais aux magasins.",
-   "exampleEn": "I'm going to the shops.",
-   "gap": "aux"
-  },
-  {
-   "id": "lieux-letris-25-commerces",
-   "fr": "commerces",
-   "en": "the businesses",
-   "emoji": "🏪",
-   "tags": [
-    "col:les"
-   ],
-   "syllables": [
-    "com",
-    "mer",
-    "ces"
-   ],
-   "example": "Il va aux commerces.",
-   "exampleEn": "He's going to the businesses.",
-   "gap": "aux"
   },
   {
    "id": "lieux-letris-26-toilettes-publiques",

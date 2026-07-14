@@ -1,45 +1,191 @@
 {
-  "id": "lieux-letris",
-  "title": "Quel est votre lieu préféré dans la ville ?",
-  "subtitle": "Sort each place into its correct article column",
-  "language": "fr",
-  "categories": [
-    { "key": "le",     "label": "LE",  "prefix": "Le " },
-    { "key": "la",     "label": "LA",  "prefix": "La " },
-    { "key": "l_apos", "label": "L'",  "prefix": "L'" },
-    { "key": "les",    "label": "LES", "prefix": "Les " }
-  ],
-  "tiles": [
-    { "text": "CAFÉ",        "displayName": "café",         "category": "le", "meaning": "the café",        "emoji": "☕" },
-    { "text": "RESTAURANT",  "displayName": "restaurant",   "category": "le", "meaning": "the restaurant",  "emoji": "🍽️" },
-    { "text": "CINÉMA",      "displayName": "cinéma",       "category": "le", "meaning": "the cinema",      "emoji": "🎬" },
-    { "text": "MUSÉE",       "displayName": "musée",        "category": "le", "meaning": "the museum",      "emoji": "🏛️" },
-    { "text": "PARC",        "displayName": "parc",         "category": "le", "meaning": "the park",        "emoji": "🌳" },
-    { "text": "MARCHÉ",      "displayName": "marché",       "category": "le", "meaning": "the market",      "emoji": "🛒" },
-    { "text": "SUPERMARCHÉ", "displayName": "supermarché",  "category": "le", "meaning": "the supermarket", "emoji": "🛍️" },
-    { "text": "STADE",       "displayName": "stade",        "category": "le", "meaning": "the stadium",     "emoji": "🏟️" },
-
-    { "text": "BANQUE",       "displayName": "banque",       "category": "la", "meaning": "the bank",          "emoji": "🏦" },
-    { "text": "PHARMACIE",    "displayName": "pharmacie",    "category": "la", "meaning": "the pharmacy",      "emoji": "💊" },
-    { "text": "BIBLIOTHÈQUE", "displayName": "bibliothèque", "category": "la", "meaning": "the library",       "emoji": "📚" },
-    { "text": "BOULANGERIE",  "displayName": "boulangerie",  "category": "la", "meaning": "the bakery",        "emoji": "🥖" },
-    { "text": "GARE",         "displayName": "gare",         "category": "la", "meaning": "the train station", "emoji": "🚉" },
-    { "text": "POSTE",        "displayName": "poste",        "category": "la", "meaning": "the post office",   "emoji": "📮" },
-    { "text": "PISCINE",      "displayName": "piscine",      "category": "la", "meaning": "the pool",          "emoji": "🏊" },
-    { "text": "MAIRIE",       "displayName": "mairie",       "category": "la", "meaning": "the town hall",     "emoji": "🏛️" },
-
-    { "text": "HÔPITAL",     "displayName": "hôpital",     "category": "l_apos", "meaning": "the hospital",     "emoji": "🏥" },
-    { "text": "ÉGLISE",      "displayName": "église",      "category": "l_apos", "meaning": "the church",       "emoji": "⛪" },
-    { "text": "ÉCOLE",       "displayName": "école",       "category": "l_apos", "meaning": "the school",       "emoji": "🏫" },
-    { "text": "UNIVERSITÉ",  "displayName": "université",  "category": "l_apos", "meaning": "the university",   "emoji": "🎓" },
-    { "text": "AÉROPORT",    "displayName": "aéroport",    "category": "l_apos", "meaning": "the airport",      "emoji": "✈️" },
-    { "text": "HÔTEL",       "displayName": "hôtel",       "category": "l_apos", "meaning": "the hotel",        "emoji": "🏨" },
-    { "text": "ARRÊT DE BUS","displayName": "arrêt de bus","category": "l_apos", "meaning": "the bus stop",     "emoji": "🚏" },
-
-    { "text": "MAGASINS",                "displayName": "magasins",                "category": "les", "meaning": "the shops",            "emoji": "🛍️" },
-    { "text": "COMMERCES",               "displayName": "commerces",               "category": "les", "meaning": "the businesses",       "emoji": "🏪" },
-    { "text": "TOILETTES PUBLIQUES",     "displayName": "toilettes publiques",     "category": "les", "meaning": "the public toilets",   "emoji": "🚻" },
-    { "text": "FEUX DE CIRCULATION",     "displayName": "feux de circulation",     "category": "les", "meaning": "the traffic lights",   "emoji": "🚦" },
-    { "text": "JARDINS PUBLICS",         "displayName": "jardins publics",         "category": "les", "meaning": "the public gardens",   "emoji": "🌳" }
-  ]
+ "id": "lieux-letris",
+ "title": "Quel est votre lieu préféré dans la ville ?",
+ "subtitle": "Sort each place into its correct article column",
+ "language": "fr",
+ "categories": [
+  {
+   "key": "le",
+   "label": "LE",
+   "prefix": "Le "
+  },
+  {
+   "key": "la",
+   "label": "LA",
+   "prefix": "La "
+  },
+  {
+   "key": "l_apos",
+   "label": "L'",
+   "prefix": "L'"
+  },
+  {
+   "key": "les",
+   "label": "LES",
+   "prefix": "Les "
+  }
+ ],
+ "tiles": [
+  {
+   "text": "CAFÉ",
+   "displayName": "café",
+   "category": "le",
+   "meaning": "the café",
+   "emoji": "☕"
+  },
+  {
+   "text": "RESTAURANT",
+   "displayName": "restaurant",
+   "category": "le",
+   "meaning": "the restaurant",
+   "emoji": "🍽️"
+  },
+  {
+   "text": "CINÉMA",
+   "displayName": "cinéma",
+   "category": "le",
+   "meaning": "the cinema",
+   "emoji": "🎬"
+  },
+  {
+   "text": "MUSÉE",
+   "displayName": "musée",
+   "category": "le",
+   "meaning": "the museum",
+   "emoji": "🏛️"
+  },
+  {
+   "text": "PARC",
+   "displayName": "parc",
+   "category": "le",
+   "meaning": "the park",
+   "emoji": "🌳"
+  },
+  {
+   "text": "STADE",
+   "displayName": "stade",
+   "category": "le",
+   "meaning": "the stadium",
+   "emoji": "🏟️"
+  },
+  {
+   "text": "BANQUE",
+   "displayName": "banque",
+   "category": "la",
+   "meaning": "the bank",
+   "emoji": "🏦"
+  },
+  {
+   "text": "PHARMACIE",
+   "displayName": "pharmacie",
+   "category": "la",
+   "meaning": "the pharmacy",
+   "emoji": "💊"
+  },
+  {
+   "text": "BIBLIOTHÈQUE",
+   "displayName": "bibliothèque",
+   "category": "la",
+   "meaning": "the library",
+   "emoji": "📚"
+  },
+  {
+   "text": "GARE",
+   "displayName": "gare",
+   "category": "la",
+   "meaning": "the train station",
+   "emoji": "🚉"
+  },
+  {
+   "text": "POSTE",
+   "displayName": "poste",
+   "category": "la",
+   "meaning": "the post office",
+   "emoji": "📮"
+  },
+  {
+   "text": "PISCINE",
+   "displayName": "piscine",
+   "category": "la",
+   "meaning": "the pool",
+   "emoji": "🏊"
+  },
+  {
+   "text": "MAIRIE",
+   "displayName": "mairie",
+   "category": "la",
+   "meaning": "the town hall",
+   "emoji": "🏛️"
+  },
+  {
+   "text": "HÔPITAL",
+   "displayName": "hôpital",
+   "category": "l_apos",
+   "meaning": "the hospital",
+   "emoji": "🏥"
+  },
+  {
+   "text": "ÉGLISE",
+   "displayName": "église",
+   "category": "l_apos",
+   "meaning": "the church",
+   "emoji": "⛪"
+  },
+  {
+   "text": "ÉCOLE",
+   "displayName": "école",
+   "category": "l_apos",
+   "meaning": "the school",
+   "emoji": "🏫"
+  },
+  {
+   "text": "UNIVERSITÉ",
+   "displayName": "université",
+   "category": "l_apos",
+   "meaning": "the university",
+   "emoji": "🎓"
+  },
+  {
+   "text": "AÉROPORT",
+   "displayName": "aéroport",
+   "category": "l_apos",
+   "meaning": "the airport",
+   "emoji": "✈️"
+  },
+  {
+   "text": "HÔTEL",
+   "displayName": "hôtel",
+   "category": "l_apos",
+   "meaning": "the hotel",
+   "emoji": "🏨"
+  },
+  {
+   "text": "ARRÊT DE BUS",
+   "displayName": "arrêt de bus",
+   "category": "l_apos",
+   "meaning": "the bus stop",
+   "emoji": "🚏"
+  },
+  {
+   "text": "TOILETTES PUBLIQUES",
+   "displayName": "toilettes publiques",
+   "category": "les",
+   "meaning": "the public toilets",
+   "emoji": "🚻"
+  },
+  {
+   "text": "FEUX DE CIRCULATION",
+   "displayName": "feux de circulation",
+   "category": "les",
+   "meaning": "the traffic lights",
+   "emoji": "🚦"
+  },
+  {
+   "text": "JARDINS PUBLICS",
+   "displayName": "jardins publics",
+   "category": "les",
+   "meaning": "the public gardens",
+   "emoji": "🌳"
+  }
+ ]
 }

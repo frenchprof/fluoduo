@@ -1,294 +1,251 @@
 {
-  "id": "commerces",
-  "title": "Les commerces",
-  "subtitle": "un, une ou des ?",
-  "langPair": "fr-en",
-  "owner": "curated",
-  "visibility": "public",
-  "unit": 4,
-  "lessonNo": 7,
-  "lessonSlug": "commerces",
-  "tags": [],
-  "seq": 407,
-  "gameConfig": {
-    "letris": {
-      "columns": [
-        {
-          "key": "un",
-          "label": "Un ___",
-          "prefix": "un "
-        },
-        {
-          "key": "une",
-          "label": "Une ___",
-          "prefix": "une "
-        },
-        {
-          "key": "des",
-          "label": "Des ___",
-          "prefix": "des "
-        }
-      ]
+ "id": "commerces",
+ "title": "Les commerces",
+ "subtitle": "un, une ou des ?",
+ "langPair": "fr-en",
+ "owner": "curated",
+ "visibility": "public",
+ "unit": 4,
+ "lessonNo": 7,
+ "lessonSlug": "commerces",
+ "tags": [],
+ "seq": 407,
+ "gameConfig": {
+  "letris": {
+   "columns": [
+    {
+     "key": "un",
+     "label": "Un ___",
+     "prefix": "un "
     },
-    "lexicalator": {
-      "decoys": [
-        "pou",
-        "lin",
-        "gi",
-        "ria",
-        "pa",
-        "tas",
-        "cho",
-        "sou",
-        "na",
-        "po",
-        "fru",
-        "mor"
-      ]
+    {
+     "key": "une",
+     "label": "Une ___",
+     "prefix": "une "
+    },
+    {
+     "key": "des",
+     "label": "Des ___",
+     "prefix": "des "
     }
+   ]
   },
-  "items": [
-    {
-      "id": "commerces-01",
-      "fr": "marché",
-      "en": "market",
-      "emoji": "🍅",
-      "syllables": [
-        "mar",
-        "ché"
-      ],
-      "tags": [
-        "col:un"
-      ]
-    },
-    {
-      "id": "commerces-02",
-      "fr": "supermarché",
-      "en": "supermarket",
-      "emoji": "🏬",
-      "syllables": [
-        "su",
-        "per",
-        "mar",
-        "ché"
-      ],
-      "tags": [
-        "col:un"
-      ]
-    },
-    {
-      "id": "commerces-03",
-      "fr": "café",
-      "en": "café",
-      "emoji": "☕",
-      "syllables": [
-        "ca",
-        "fé"
-      ],
-      "tags": [
-        "col:un"
-      ]
-    },
-    {
-      "id": "commerces-04",
-      "fr": "garage",
-      "en": "garage",
-      "emoji": "🚗",
-      "syllables": [
-        "ga",
-        "rage"
-      ],
-      "tags": [
-        "col:un"
-      ]
-    },
-    {
-      "id": "commerces-05",
-      "fr": "village",
-      "en": "village",
-      "emoji": "🏡",
-      "syllables": [
-        "vil",
-        "lage"
-      ],
-      "tags": [
-        "col:un"
-      ]
-    },
-    {
-      "id": "commerces-06",
-      "fr": "stade",
-      "en": "stadium",
-      "emoji": "🏟️",
-      "syllables": [
-        "stade"
-      ],
-      "tags": [
-        "col:un"
-      ]
-    },
-    {
-      "id": "commerces-07",
-      "fr": "bibliothèque",
-      "en": "library",
-      "emoji": "📚",
-      "syllables": [
-        "bi",
-        "blio",
-        "thèque"
-      ],
-      "tags": [
-        "col:une"
-      ]
-    },
-    {
-      "id": "commerces-08",
-      "fr": "gare",
-      "en": "train station",
-      "emoji": "🚆",
-      "syllables": [
-        "gare"
-      ],
-      "tags": [
-        "col:une"
-      ]
-    },
-    {
-      "id": "commerces-09",
-      "fr": "pâtisserie",
-      "en": "pastry shop",
-      "emoji": "🍰",
-      "syllables": [
-        "pâ",
-        "tis",
-        "se",
-        "rie"
-      ],
-      "tags": [
-        "col:une"
-      ]
-    },
-    {
-      "id": "commerces-10",
-      "fr": "école",
-      "en": "school",
-      "emoji": "🏫",
-      "syllables": [
-        "é",
-        "cole"
-      ],
-      "tags": [
-        "col:une"
-      ]
-    },
-    {
-      "id": "commerces-11",
-      "fr": "librairie",
-      "en": "bookshop",
-      "emoji": "📖",
-      "syllables": [
-        "li",
-        "brai",
-        "rie"
-      ],
-      "tags": [
-        "col:une"
-      ]
-    },
-    {
-      "id": "commerces-12",
-      "fr": "boutique",
-      "en": "boutique",
-      "emoji": "🛍️",
-      "syllables": [
-        "bou",
-        "tique"
-      ],
-      "tags": [
-        "col:une"
-      ]
-    },
-    {
-      "id": "commerces-13",
-      "fr": "magasins",
-      "en": "shops",
-      "emoji": "🏪",
-      "syllables": [
-        "ma",
-        "ga",
-        "sins"
-      ],
-      "tags": [
-        "col:des"
-      ]
-    },
-    {
-      "id": "commerces-14",
-      "fr": "stations de métro",
-      "en": "metro stations",
-      "emoji": "🚇",
-      "syllables": [
-        "sta",
-        "tions",
-        "de",
-        "mé",
-        "tro"
-      ],
-      "tags": [
-        "col:des"
-      ]
-    },
-    {
-      "id": "commerces-15",
-      "fr": "restaurants",
-      "en": "restaurants",
-      "emoji": "🍽️",
-      "syllables": [
-        "res",
-        "tau",
-        "rants"
-      ],
-      "tags": [
-        "col:des"
-      ]
-    },
-    {
-      "id": "commerces-16",
-      "fr": "rues",
-      "en": "streets",
-      "emoji": "🛣️",
-      "syllables": [
-        "rues"
-      ],
-      "tags": [
-        "col:des"
-      ]
-    },
-    {
-      "id": "commerces-17",
-      "fr": "hôtels",
-      "en": "hotels",
-      "emoji": "🏨",
-      "syllables": [
-        "hô",
-        "tels"
-      ],
-      "tags": [
-        "col:des"
-      ]
-    },
-    {
-      "id": "commerces-18",
-      "fr": "toilettes",
-      "en": "toilets",
-      "emoji": "🚻",
-      "syllables": [
-        "toi",
-        "lettes"
-      ],
-      "tags": [
-        "col:des"
-      ]
-    }
-  ]
+  "lexicalator": {
+   "decoys": [
+    "pou",
+    "lin",
+    "gi",
+    "ria",
+    "pa",
+    "tas",
+    "cho",
+    "sou",
+    "na",
+    "po",
+    "fru",
+    "mor"
+   ]
+  }
+ },
+ "items": [
+  {
+   "id": "commerces-01",
+   "fr": "marché",
+   "en": "market",
+   "emoji": "🍅",
+   "syllables": [
+    "mar",
+    "ché"
+   ],
+   "tags": [
+    "col:un"
+   ]
+  },
+  {
+   "id": "commerces-02",
+   "fr": "supermarché",
+   "en": "supermarket",
+   "emoji": "🛒",
+   "syllables": [
+    "su",
+    "per",
+    "mar",
+    "ché"
+   ],
+   "tags": [
+    "col:un"
+   ]
+  },
+  {
+   "id": "commerces-03",
+   "fr": "magasin",
+   "en": "shop",
+   "emoji": "🏬",
+   "syllables": [
+    "ma",
+    "ga",
+    "sin"
+   ],
+   "tags": [
+    "col:un"
+   ]
+  },
+  {
+   "id": "commerces-04",
+   "fr": "centre commercial",
+   "en": "shopping centre",
+   "emoji": "🛍️",
+   "syllables": [
+    "cen",
+    "tre",
+    "com",
+    "mer",
+    "cial"
+   ],
+   "tags": [
+    "col:un"
+   ]
+  },
+  {
+   "id": "commerces-05",
+   "fr": "boulangerie",
+   "en": "bakery",
+   "emoji": "🥖",
+   "syllables": [
+    "bou",
+    "lan",
+    "ge",
+    "rie"
+   ],
+   "tags": [
+    "col:une"
+   ]
+  },
+  {
+   "id": "commerces-06",
+   "fr": "pâtisserie",
+   "en": "pastry shop",
+   "emoji": "🧁",
+   "syllables": [
+    "pâ",
+    "tis",
+    "se",
+    "rie"
+   ],
+   "tags": [
+    "col:une"
+   ]
+  },
+  {
+   "id": "commerces-07",
+   "fr": "boucherie",
+   "en": "butcher's",
+   "emoji": "🥩",
+   "syllables": [
+    "bou",
+    "che",
+    "rie"
+   ],
+   "tags": [
+    "col:une"
+   ]
+  },
+  {
+   "id": "commerces-08",
+   "fr": "épicerie",
+   "en": "grocery store",
+   "emoji": "🏪",
+   "syllables": [
+    "é",
+    "pi",
+    "ce",
+    "rie"
+   ],
+   "tags": [
+    "col:une"
+   ]
+  },
+  {
+   "id": "commerces-09",
+   "fr": "poissonnerie",
+   "en": "fishmonger's",
+   "emoji": "🐟",
+   "syllables": [
+    "pois",
+    "son",
+    "ne",
+    "rie"
+   ],
+   "tags": [
+    "col:une"
+   ]
+  },
+  {
+   "id": "commerces-10",
+   "fr": "librairie",
+   "en": "bookshop",
+   "emoji": "📚",
+   "syllables": [
+    "li",
+    "brai",
+    "rie"
+   ],
+   "tags": [
+    "col:une"
+   ]
+  },
+  {
+   "id": "commerces-11",
+   "fr": "boutique",
+   "en": "boutique",
+   "emoji": "👗",
+   "syllables": [
+    "bou",
+    "tique"
+   ],
+   "tags": [
+    "col:une"
+   ]
+  },
+  {
+   "id": "commerces-12",
+   "fr": "magasins",
+   "en": "shops",
+   "emoji": "🏬",
+   "syllables": [
+    "ma",
+    "ga",
+    "sins"
+   ],
+   "tags": [
+    "col:des"
+   ]
+  },
+  {
+   "id": "commerces-13",
+   "fr": "boutiques",
+   "en": "boutiques",
+   "emoji": "👜",
+   "syllables": [
+    "bou",
+    "tiques"
+   ],
+   "tags": [
+    "col:des"
+   ]
+  },
+  {
+   "id": "commerces-14",
+   "fr": "commerces",
+   "en": "shops / businesses",
+   "emoji": "🏪",
+   "syllables": [
+    "com",
+    "merces"
+   ],
+   "tags": [
+    "col:des"
+   ]
+  }
+ ]
 }
