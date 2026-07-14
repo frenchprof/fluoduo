@@ -1,0 +1,394 @@
+[
+ {
+  "w": "l'abricot",
+  "g": "m",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/l-abricot.jpg"
+ },
+ {
+  "w": "l'ananas",
+  "g": "m",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/l-ananas.jpg"
+ },
+ {
+  "w": "la banane",
+  "g": "f",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/la-banane.jpg"
+ },
+ {
+  "w": "le citron",
+  "g": "m",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/le-citron.jpg"
+ },
+ {
+  "w": "la fraise",
+  "g": "f",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/la-fraise.jpg"
+ },
+ {
+  "w": "le kiwi",
+  "g": "m",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/le-kiwi.jpg"
+ },
+ {
+  "w": "l'orange",
+  "g": "f",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/l-orange.jpg"
+ },
+ {
+  "w": "le pamplemousse",
+  "g": "m",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/le-pamplemousse.jpg"
+ },
+ {
+  "w": "la pastèque",
+  "g": "f",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/la-pasteque.jpg"
+ },
+ {
+  "w": "la pêche",
+  "g": "f",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/la-peche.jpg"
+ },
+ {
+  "w": "la poire",
+  "g": "f",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/la-poire.jpg"
+ },
+ {
+  "w": "la pomme",
+  "g": "f",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/la-pomme.jpg"
+ },
+ {
+  "w": "la tomate",
+  "g": "f",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/la-tomate.jpg"
+ },
+ {
+  "w": "l'ail",
+  "g": "m",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/l-ail.jpg"
+ },
+ {
+  "w": "l'avocat",
+  "g": "m",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/l-avocat.jpg"
+ },
+ {
+  "w": "le brocoli",
+  "g": "m",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/le-brocoli.jpg"
+ },
+ {
+  "w": "la carotte",
+  "g": "f",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/la-carotte.jpg"
+ },
+ {
+  "w": "le champignon",
+  "g": "m",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/le-champignon.jpg"
+ },
+ {
+  "w": "le chou-fleur",
+  "g": "m",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/le-chou-fleur.jpg"
+ },
+ {
+  "w": "le concombre",
+  "g": "m",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/le-concombre.jpg"
+ },
+ {
+  "w": "les haricots verts",
+  "g": "m",
+  "n": 1,
+  "s": 1,
+  "img": "/devine/les-haricots-verts.jpg"
+ },
+ {
+  "w": "les petits pois",
+  "g": "m",
+  "n": 1,
+  "s": 1,
+  "img": "/devine/les-petits-pois.jpg"
+ },
+ {
+  "w": "le poivron",
+  "g": "m",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/le-poivron.jpg"
+ },
+ {
+  "w": "les pommes de terre",
+  "g": "f",
+  "n": 1,
+  "s": 1,
+  "img": "/devine/les-pommes-de-terre.jpg"
+ },
+ {
+  "w": "la salade",
+  "g": "f",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/la-salade.jpg"
+ },
+ {
+  "w": "le gâteau au chocolat",
+  "g": "m",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/le-gateau-au-chocolat.jpg"
+ },
+ {
+  "w": "les macarons",
+  "g": "m",
+  "n": 1,
+  "s": 1,
+  "img": "/devine/les-macarons.jpg"
+ },
+ {
+  "w": "la pizza",
+  "g": "f",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/la-pizza.jpg"
+ },
+ {
+  "w": "la vanille",
+  "g": "f",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/la-vanille.jpg"
+ },
+ {
+  "w": "le sucre",
+  "g": "m",
+  "n": 0,
+  "s": 1,
+  "img": "/devine/le-sucre.jpg"
+ },
+ {
+  "w": "le jambon",
+  "g": "m",
+  "n": 0,
+  "s": 2,
+  "img": "/devine/le-jambon.jpg"
+ },
+ {
+  "w": "le poisson",
+  "g": "m",
+  "n": 0,
+  "s": 2,
+  "img": "/devine/le-poisson.jpg"
+ },
+ {
+  "w": "le poulet",
+  "g": "m",
+  "n": 0,
+  "s": 2,
+  "img": "/devine/le-poulet.jpg"
+ },
+ {
+  "w": "les sushis",
+  "g": "m",
+  "n": 1,
+  "s": 2,
+  "img": "/devine/les-sushis.jpg"
+ },
+ {
+  "w": "la viande",
+  "g": "f",
+  "n": 0,
+  "s": 2,
+  "img": "/devine/la-viande.jpg"
+ },
+ {
+  "w": "le beurre",
+  "g": "m",
+  "n": 0,
+  "s": 2,
+  "img": "/devine/le-beurre.jpg"
+ },
+ {
+  "w": "le fromage",
+  "g": "m",
+  "n": 0,
+  "s": 2,
+  "img": "/devine/le-fromage.jpg"
+ },
+ {
+  "w": "le lait",
+  "g": "m",
+  "n": 0,
+  "s": 2,
+  "img": "/devine/le-lait.jpg"
+ },
+ {
+  "w": "les œufs",
+  "g": "m",
+  "n": 1,
+  "s": 2,
+  "img": "/devine/les-ufs.jpg"
+ },
+ {
+  "w": "le yaourt",
+  "g": "m",
+  "n": 0,
+  "s": 2,
+  "img": "/devine/le-yaourt.jpg"
+ },
+ {
+  "w": "la baguette",
+  "g": "f",
+  "n": 0,
+  "s": 2,
+  "img": "/devine/la-baguette.jpg"
+ },
+ {
+  "w": "les crêpes",
+  "g": "f",
+  "n": 1,
+  "s": 2,
+  "img": "/devine/les-crepes.jpg"
+ },
+ {
+  "w": "le croissant",
+  "g": "m",
+  "n": 0,
+  "s": 2,
+  "img": "/devine/le-croissant.jpg"
+ },
+ {
+  "w": "le pain",
+  "g": "m",
+  "n": 0,
+  "s": 2,
+  "img": "/devine/le-pain.jpg"
+ },
+ {
+  "w": "les pâtes",
+  "g": "f",
+  "n": 1,
+  "s": 2,
+  "img": "/devine/les-pates.jpg"
+ },
+ {
+  "w": "le riz",
+  "g": "m",
+  "n": 0,
+  "s": 2,
+  "img": "/devine/le-riz.jpg"
+ },
+ {
+  "w": "le poivre",
+  "g": "m",
+  "n": 0,
+  "s": 2,
+  "img": "/devine/le-poivre.jpg"
+ },
+ {
+  "w": "le chocolat",
+  "g": "m",
+  "n": 0,
+  "s": 2,
+  "img": "/devine/le-chocolat.jpg"
+ },
+ {
+  "w": "la confiture",
+  "g": "f",
+  "n": 0,
+  "s": 2,
+  "img": "/devine/la-confiture.jpg"
+ },
+ {
+  "w": "l'eau",
+  "g": "f",
+  "n": 0,
+  "s": 2,
+  "img": "/devine/l-eau.jpg"
+ },
+ {
+  "w": "l'huile d'olive",
+  "g": "f",
+  "n": 0,
+  "s": 2,
+  "img": "/devine/l-huile-d-olive.jpg"
+ },
+ {
+  "w": "le miel",
+  "g": "m",
+  "n": 0,
+  "s": 2,
+  "img": "/devine/le-miel.jpg"
+ },
+ {
+  "w": "le sel",
+  "g": "m",
+  "n": 0,
+  "s": 2,
+  "img": "/devine/le-sel.jpg"
+ },
+ {
+  "w": "le vinaigre",
+  "g": "m",
+  "n": 0,
+  "s": 2,
+  "img": "/devine/le-vinaigre.jpg"
+ },
+ {
+  "w": "le café",
+  "g": "m",
+  "n": 0,
+  "s": 2,
+  "img": "/devine/le-cafe.jpg"
+ },
+ {
+  "w": "le saucisson",
+  "g": "m",
+  "n": 0,
+  "s": 2,
+  "img": "/devine/le-saucisson.jpg"
+ }
+]

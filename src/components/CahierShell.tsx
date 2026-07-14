@@ -432,8 +432,13 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     ...(pretestHref
       ? [{ key: "pretest", label: "Pre-Test", emoji: "🧪", href: pretestHref, hint: "try it first" } as ShellTab]
       : []),
-    // PRE-lesson supplements (Dan, 2026-07-14: « Devine d'abord ! » for
-    // aliments) — guess-first material belongs between Pre-Test and study.
+    // Guess-first activity (Dan, 2026-07-14: native page now, "not a
+    // supplement") — belongs between Pre-Test and study.
+    ...(collectionId === "aliments"
+      ? [{ key: "devine", label: "Devine d'abord", emoji: "🔮", href: "/practice/devine/aliments", hint: "guess before the lesson" } as ShellTab]
+      : []),
+    // PRE-lesson supplements (standalone HTML outside the app) — none right
+    // now; the plumbing (incl. visit tracking) stays for future material.
     ...supplementsForDeck(collectionId).map((sup) => ({
       key: sup.key, label: sup.label, emoji: sup.emoji, href: sup.href, hint: sup.hint,
       onClick: (e: ReactMouseEvent<HTMLAnchorElement>) => trackSupplementOpen(e, collectionId, sup),
