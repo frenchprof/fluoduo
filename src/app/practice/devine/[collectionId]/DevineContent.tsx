@@ -59,6 +59,19 @@ function tagFromArticle(w: string): { tag: string | null; color: string } {
   return { tag: null, color: INK };
 }
 
+/** The article an item's letris column tag encodes (Dan, 2026-07-14: "ALL
+ *  articles in such exercises are inseparable from the nouns") — countries
+ *  and lieux store bare nouns and sort them into article columns. */
+const COL_ARTICLE: Record<string, string> = {
+  "col:le": "le ", "col:la": "la ", "col:l_apos": "l'", "col:les": "les ",
+  "col:un": "un ", "col:une": "une ", "col:des": "des ",
+};
+function withArticle(fr: string, tags: string[] | undefined): string {
+  if (/^(le |la |les |l'|un |une |des |du )/i.test(fr)) return fr;
+  const col = (tags ?? []).find((t) => t in COL_ARTICLE);
+  return col ? COL_ARTICLE[col] + fr : fr;
+}
+
 function buildItems(collectionId: string): { items: DevItem[]; subtitle: string; hasPacks: boolean } {
   if (collectionId === "aliments") {
     const items = (PHOTO_ITEMS as { w: string; g: "m" | "f"; n: 0 | 1; s: 1 | 2; img: string }[]).map((it) => ({
@@ -73,7 +86,10 @@ function buildItems(collectionId: string): { items: DevItem[]; subtitle: string;
   const deck = CURATED.find((c) => c.id === collectionId);
   const items = (deck?.items ?? [])
     .filter((it) => it.fr && it.emoji)
-    .map((it) => ({ w: it.fr, ...tagFromArticle(it.fr), emoji: it.emoji as string }));
+    .map((it) => {
+      const w = withArticle(it.fr, it.tags);
+      return { w, ...tagFromArticle(w), emoji: it.emoji as string };
+    });
   return { items, subtitle: deck?.title ?? collectionId, hasPacks: false };
 }
 

@@ -10,15 +10,15 @@
  *   tu-vous        (the point is the register choice; the person emoji are
  *                   near-indistinguishable as options)
  *   negation-pas   (full sentences don't fit a guess-the-word game)
+ *   weather-letris (Dan, 2026-07-14: "the pictures are not at all a match")
+ *   salutations    (Dan, 2026-07-14: impossible to picture the register)
  */
 export const DEVINE_READY = [
   "aliments",
   "consignes",
-  "salutations",
   "countries-letris",
   "languages",
   "lieux-letris",
-  "weather-letris",
   "commerces",
 ] as const;
 
