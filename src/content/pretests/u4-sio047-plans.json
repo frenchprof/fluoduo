@@ -1,0 +1,159 @@
+{
+  "id": "u4-sio047-plans",
+  "unit": 4,
+  "lessonNo": 8,
+  "lessonSlug": "futur-proche",
+  "title": "Making plans — aller + infinitif",
+  "items": [
+    {
+      "id": "u4-sio047-plans-01",
+      "sentenceBefore": "Je ",
+      "sentenceAfter": " manger de la pizza ce soir.",
+      "answer": "vais",
+      "distractors": [
+        "vas",
+        "va",
+        "allons"
+      ],
+      "fullSentence": "Je vais manger de la pizza ce soir.",
+      "sentenceTrans": "I'm going to eat pizza this evening.",
+      "transFirst": true,
+      "whyWrong": {
+        "vas": "That's the tu form — je vais.",
+        "va": "That's the il/elle form — je vais.",
+        "allons": "That's the nous form — je vais."
+      }
+    },
+    {
+      "id": "u4-sio047-plans-02",
+      "sentenceBefore": "Nous ",
+      "sentenceAfter": " cuisiner ensemble cette semaine.",
+      "answer": "allons",
+      "distractors": [
+        "va",
+        "vont",
+        "allez"
+      ],
+      "fullSentence": "Nous allons cuisiner ensemble cette semaine.",
+      "sentenceTrans": "We're going to cook together this week.",
+      "transFirst": true,
+      "whyWrong": {
+        "va": "That's the singular il form — nous allons.",
+        "vont": "That's the ils form — nous allons.",
+        "allez": "That's the vous form — nous allons."
+      }
+    },
+    {
+      "id": "u4-sio047-plans-03",
+      "sentenceBefore": "Qu'est-ce que vous ",
+      "sentenceAfter": " commander ?",
+      "answer": "allez",
+      "distractors": [
+        "allons",
+        "vont",
+        "va"
+      ],
+      "fullSentence": "Qu'est-ce que vous allez commander ?",
+      "sentenceTrans": "What are you going to order?",
+      "transFirst": true,
+      "whyWrong": {
+        "allons": "That's the nous form — vous allez.",
+        "vont": "That's the ils form — vous allez.",
+        "va": "That's the il form — vous allez."
+      }
+    },
+    {
+      "id": "u4-sio047-plans-04",
+      "sentenceBefore": "Je ne vais pas ",
+      "sentenceAfter": " de viande ce soir.",
+      "answer": "manger",
+      "distractors": [
+        "mange",
+        "manges",
+        "mangé"
+      ],
+      "fullSentence": "Je ne vais pas manger de viande ce soir.",
+      "sentenceTrans": "I'm not going to eat meat this evening.",
+      "transFirst": true,
+      "whyWrong": {
+        "mange": "After 'vais' you use the infinitive manger, not the conjugated form.",
+        "manges": "That's a conjugated tu form; after aller you need the infinitive manger.",
+        "mangé": "That's the past participle; the near future takes the infinitive manger."
+      }
+    },
+    {
+      "id": "u4-sio047-plans-05",
+      "sentenceBefore": "Tu ",
+      "sentenceAfter": " boire du café ?",
+      "answer": "vas",
+      "distractors": [
+        "va",
+        "vais",
+        "allez"
+      ],
+      "fullSentence": "Tu vas boire du café ?",
+      "sentenceTrans": "Are you going to drink some coffee?",
+      "whyWrong": {
+        "va": "va is the il/elle form — tu vas.",
+        "vais": "vais is the je form — tu vas.",
+        "allez": "allez is the vous form — tu vas."
+      }
+    },
+    {
+      "id": "u4-sio047-plans-06",
+      "sentenceBefore": "Ils ",
+      "sentenceAfter": " faire les courses demain.",
+      "answer": "vont",
+      "distractors": [
+        "va",
+        "allons",
+        "allez"
+      ],
+      "fullSentence": "Ils vont faire les courses demain.",
+      "sentenceTrans": "They're going to do the shopping tomorrow.",
+      "whyWrong": {
+        "va": "Ils is plural — ils vont.",
+        "allons": "allons is the nous form — ils vont.",
+        "allez": "allez is the vous form — ils vont."
+      }
+    },
+    {
+      "id": "u4-sio047-plans-07",
+      "sentenceBefore": "Après le cours, on ",
+      "sentenceAfter": " manger au café.",
+      "answer": "va",
+      "distractors": [
+        "vais",
+        "vas",
+        "allons"
+      ],
+      "fullSentence": "Après le cours, on va manger au café.",
+      "sentenceTrans": "After class, we're going to eat at the café.",
+      "transFirst": true,
+      "whyWrong": {
+        "vais": "That's the je form — on va.",
+        "vas": "That's the tu form — on va.",
+        "allons": "on takes the il/elle form — on va (nous allons)."
+      }
+    },
+    {
+      "id": "u4-sio047-plans-08",
+      "sentenceBefore": "Nous n'",
+      "sentenceAfter": " pas manger au restaurant ce soir.",
+      "answer": "allons",
+      "distractors": [
+        "allez",
+        "vont",
+        "va"
+      ],
+      "fullSentence": "Nous n'allons pas manger au restaurant ce soir.",
+      "sentenceTrans": "We're not going to eat at the restaurant tonight.",
+      "transFirst": true,
+      "whyWrong": {
+        "allez": "That's the vous form — nous allons.",
+        "vont": "That's the ils form — nous allons.",
+        "va": "That's the il/elle form — nous allons."
+      }
+    }
+  ]
+}

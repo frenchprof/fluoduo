@@ -1,0 +1,161 @@
+{
+  "id": "u4-sio048-advice",
+  "unit": 4,
+  "lessonNo": 8,
+  "lessonSlug": "modaux",
+  "title": "Giving advice — devoir / falloir / pouvoir",
+  "items": [
+    {
+      "id": "u4-sio048-advice-01",
+      "sentenceBefore": "Tu ",
+      "sentenceAfter": " manger des légumes.",
+      "answer": "dois",
+      "distractors": [
+        "vas",
+        "peux",
+        "veux"
+      ],
+      "fullSentence": "Tu dois manger des légumes.",
+      "sentenceTrans": "You must eat vegetables.",
+      "transFirst": true,
+      "whyWrong": {
+        "vas": "'tu vas manger' means 'you're going to eat', not 'you must'.",
+        "peux": "'tu peux' means 'you can', not 'you must'.",
+        "veux": "'tu veux' means 'you want', not 'you must'."
+      }
+    },
+    {
+      "id": "u4-sio048-advice-02",
+      "sentenceBefore": "Nous ",
+      "sentenceAfter": " boire de l'eau.",
+      "answer": "devons",
+      "distractors": [
+        "faut",
+        "devez",
+        "pouvons"
+      ],
+      "fullSentence": "Nous devons boire de l'eau.",
+      "sentenceTrans": "We must drink water.",
+      "transFirst": true,
+      "whyWrong": {
+        "faut": "faut is impersonal — it only ever takes il ('il faut'); with nous it's devons.",
+        "devez": "That's the vous form — nous devons.",
+        "pouvons": "'nous pouvons' means 'we can', not 'we must'."
+      }
+    },
+    {
+      "id": "u4-sio048-advice-03",
+      "sentenceBefore": "Elle ",
+      "sentenceAfter": " cuisiner.",
+      "answer": "peut",
+      "distractors": [
+        "va",
+        "doit",
+        "faut"
+      ],
+      "fullSentence": "Elle peut cuisiner.",
+      "sentenceTrans": "She can cook.",
+      "transFirst": true,
+      "whyWrong": {
+        "va": "'elle va cuisiner' means 'she's going to cook', not 'she can'.",
+        "doit": "'elle doit' means 'she must', not 'she can'.",
+        "faut": "faut is impersonal ('il faut'); it can't take 'elle' as its subject."
+      }
+    },
+    {
+      "id": "u4-sio048-advice-04",
+      "sentenceBefore": "Pour rester en bonne santé, ",
+      "sentenceAfter": " manger équilibré.",
+      "answer": "il faut",
+      "distractors": [
+        "tu peux",
+        "tu devrais",
+        "il devrait"
+      ],
+      "fullSentence": "Pour rester en bonne santé, il faut manger équilibré.",
+      "sentenceTrans": "To stay healthy, you need to eat a balanced diet.",
+      "transFirst": true,
+      "whyWrong": {
+        "tu peux": "'You can' — the sentence states a necessity: il faut.",
+        "tu devrais": "'You should' (conditional) — a general necessity is il faut.",
+        "il devrait": "'It should' — the set phrase for necessity is il faut."
+      }
+    },
+    {
+      "id": "u4-sio048-advice-05",
+      "sentenceBefore": "Pour être en forme, il ",
+      "sentenceAfter": " faire du sport.",
+      "answer": "faut",
+      "distractors": [
+        "dois",
+        "peut",
+        "va"
+      ],
+      "fullSentence": "Pour être en forme, il faut faire du sport.",
+      "sentenceTrans": "To be in shape, one must do sport.",
+      "transFirst": true,
+      "whyWrong": {
+        "dois": "dois goes with tu — here it's the impersonal il faut.",
+        "peut": "pouvoir says it's possible, not necessary — il faut.",
+        "va": "That would be a plan (going to), not a necessity — il faut."
+      }
+    },
+    {
+      "id": "u4-sio048-advice-06",
+      "sentenceBefore": "Vous ",
+      "sentenceAfter": " étudier pour le quiz.",
+      "answer": "devez",
+      "distractors": [
+        "devons",
+        "doivent",
+        "dois"
+      ],
+      "fullSentence": "Vous devez étudier pour le quiz.",
+      "sentenceTrans": "You must study for the quiz.",
+      "transFirst": true,
+      "whyWrong": {
+        "devons": "That's the nous form — vous devez.",
+        "doivent": "That's the ils form — vous devez.",
+        "dois": "That's the je/tu form — vous devez."
+      }
+    },
+    {
+      "id": "u4-sio048-advice-07",
+      "sentenceBefore": "Tu ",
+      "sentenceAfter": " prendre le bus pour aller au marché.",
+      "answer": "peux",
+      "distractors": [
+        "peut",
+        "pouvez",
+        "veux"
+      ],
+      "fullSentence": "Tu peux prendre le bus pour aller au marché.",
+      "sentenceTrans": "You can take the bus to go to the market.",
+      "transFirst": true,
+      "whyWrong": {
+        "peut": "That's the il/elle form — tu peux.",
+        "pouvez": "That's the vous form — tu peux.",
+        "veux": "vouloir is wanting — the suggestion is tu peux (you can)."
+      }
+    },
+    {
+      "id": "u4-sio048-advice-08",
+      "sentenceBefore": "Elles ",
+      "sentenceAfter": " boire plus d'eau.",
+      "answer": "doivent",
+      "distractors": [
+        "doit",
+        "devez",
+        "devons"
+      ],
+      "fullSentence": "Elles doivent boire plus d'eau.",
+      "sentenceTrans": "They must drink more water.",
+      "transFirst": true,
+      "whyWrong": {
+        "doit": "That's the singular elle form — elles doivent.",
+        "devez": "That's the vous form — elles doivent.",
+        "devons": "That's the nous form — elles doivent."
+      }
+    }
+  ]
+}
