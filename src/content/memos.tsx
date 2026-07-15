@@ -110,6 +110,20 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
     </Card>
   ),
 
+  /* ---------- Au marché — qui dit quoi ? ---------- */
+  "au-marche": (
+    <Card title="Au marché — qui dit quoi ?">
+      <Lines>
+        <li lang="fr">🧑‍🌾 Bonjour, vous désirez ?</li>
+        <li lang="fr">🧺 <B>Je voudrais</B> deux kilos de pommes de terre, s&rsquo;il vous plaît.</li>
+        <li lang="fr">🧑‍🌾 <B>Et avec ceci ?</B></li>
+        <li lang="fr">🧺 <B>C&rsquo;est tout</B>, merci ! <B>Ça fait combien ?</B></li>
+        <li lang="fr">🧑‍🌾 <B>Ça fait</B> 5,89 euros. … Voici votre monnaie !</li>
+      </Lines>
+      <Warn><span lang="fr">Ça fait combien ?</span> = the client asking · <span lang="fr">Ça fait 5,89 €</span> = the marchand answering.</Warn>
+    </Card>
+  ),
+
   /* ---------- Tu ou vous ? ---------- */
   "tu-vous": (
     <Card title="Tu ou vous ?">

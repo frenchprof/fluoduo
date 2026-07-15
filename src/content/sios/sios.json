@@ -672,7 +672,7 @@
     "isProduction": false,
     "canDo": "I can handle a simple market exchange, on either side of the stall.",
     "competence": "Assign each line of a market dialogue to le marchand or le client, put the exchange in order, and produce Je voudrais…, Ça fait combien ?, Et avec ceci ?",
-    "collectionId": "commerces"
+    "collectionId": "au-marche"
   },
   {
     "id": "SIO-046",

@@ -43,6 +43,7 @@ import mangerBoire from "./manger-boire.json";
 import frequence from "./frequence.json";
 import demonstratifs from "./demonstratifs.json";
 import commerces from "./commerces.json";
+import auMarche from "./au-marche.json";
 import modaux from "./modaux.json";
 
 import sappeler from "./sappeler.json";
@@ -92,6 +93,7 @@ export const CURATED: Collection[] = [
   frequence as Collection,
   demonstratifs as Collection,
   commerces as Collection,
+  auMarche as Collection,
   modaux as Collection,
   etreEtudiant as Collection,
   parceQue as Collection,
