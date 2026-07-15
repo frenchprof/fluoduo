@@ -336,10 +336,29 @@ body {
     filter: drop-shadow(0 0 9px rgba(255, 208, 70, 0.95));
   }
 }
+/* « par Dr Chan » writes itself (Dan, 2026-07-15): every stroke is an SVG
+   path with pathLength=1; drawing = wiping the dash offset. Delays are
+   inline per stroke so each letter waits for the previous pen lift. Without
+   .is-play (no JS) the byline is simply there, fully written. */
+.fluo-byline path {
+  stroke-dashoffset: 0;
+}
+.fluo-byline.is-play path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: fluo-byline-write 0.17s ease-out forwards;
+}
+@keyframes fluo-byline-write {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .fluo-brand::before, .fluo-brand.is-play::before { animation: none; clip-path: none; }
   .fluo-brand::after, .fluo-brand.is-play::after { display: none; }
   .fluo-brand.is-play .fluo-brand-letter, .fluo-brand-star.is-play { animation: none; }
+  .fluo-byline.is-play path { animation: none; stroke-dashoffset: 0; }
 }
 
 /* Six rotating accent hues for item cards (paper-tinted). */

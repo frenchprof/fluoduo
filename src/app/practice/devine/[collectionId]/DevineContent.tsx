@@ -60,6 +60,13 @@ function tagFromArticle(w: string): { tag: string | null; color: string } {
   return { tag: null, color: INK };
 }
 
+/** Building-look emojis are banned from Devine (Dan, 2026-07-15): a generic
+ *  storefront/tower can't tell épicerie from magasin (🏪 even serves two
+ *  words in the same deck). Only unmistakable buildings stay — ⛪ église,
+ *  🏟️ stade, 🚉 gare read as themselves. The items stay in every other
+ *  activity; they just can't be guessed from a picture. */
+const BUILDING_EMOJI = new Set(["🏬", "🏪", "🏛️", "🏛", "🏦", "🏥", "🏫", "🏨", "🏢", "🏤", "🏣", "🏩", "🏭"]);
+
 /** The article an item's letris column tag encodes (Dan, 2026-07-14: "ALL
  *  articles in such exercises are inseparable from the nouns") — countries
  *  and lieux store bare nouns and sort them into article columns. */
@@ -86,7 +93,7 @@ function buildItems(collectionId: string): { items: DevItem[]; subtitle: string;
   }
   const deck = CURATED.find((c) => c.id === collectionId);
   const items = (deck?.items ?? [])
-    .filter((it) => it.fr && it.emoji)
+    .filter((it) => it.fr && it.emoji && !BUILDING_EMOJI.has(it.emoji))
     .map((it) => {
       const w = withArticle(it.fr, it.tags);
       return { w, ...tagFromArticle(w), emoji: it.emoji as string };
