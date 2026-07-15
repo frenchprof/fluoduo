@@ -35,6 +35,9 @@ export function siteTabs(): ShellTab[] {
       hue: UNIT_ACCENTS[u],
     })),
     { key: "index", label: "Index", emoji: "🗂️", href: "/activities", hue: "#5b8def" },
+    // WorDrill earns a physical flap (Dan, 2026-07-15) — the one activity
+    // that spans the whole course rather than living inside a deck.
+    { key: "wordrill", label: "WorDrill", emoji: "🎤", href: "/practice/wordrill", hue: "#7bbf2e" },
   ];
 }
 

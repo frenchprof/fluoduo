@@ -2,22 +2,26 @@
 
 /**
  * WorDrill (Dan, 2026-07-15: "compile ALL the say-its into one space for
- * continuous oral practice"; named by Dan the same day) — every curated deck's Say It items in a single
- * shuffled run. Articles/prefixes are baked into fr here (the synthetic deck
- * has no letris columns to derive them from), item ids are preserved so every
- * say still feeds the Reviser and XP exactly like the per-deck pages.
+ * continuous oral practice"; named and given its flap the same day) — every
+ * curated deck's Say It items in one shuffled run. The page lands on a unit
+ * picker (Tout · Unité 0–4); each scope compiles its decks with articles/
+ * prefixes baked into fr (the synthetic deck has no letris columns to derive
+ * them from) and duplicates removed. Item ids are preserved so every say
+ * feeds the Reviser and XP exactly like the per-deck pages.
  */
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import CahierShell from "@/components/CahierShell";
-import { siteTabs, tabsWithActive } from "@/components/siteTabs";
+import { siteTabs, tabsWithActive, UNIT_ACCENTS } from "@/components/siteTabs";
 import SayItContent from "@/app/practice/say-it/[collectionId]/SayItContent";
 import { CURATED } from "@/content/collections";
+import { UNIT_META } from "@/content/sios";
 import { practiceItems } from "@/lib/collections/display";
 import type { Collection, Item } from "@/lib/collections/schema";
 
 // Letters aren't sayable words — the recognizer can't grade "bé" — so the
 // alphabet deck sits this one out.
 const EXCLUDED = new Set(["alphabet"]);
+const UNITS = [0, 1, 2, 3, 4];
 
 function articleOf(deck: Collection, item: Item): string {
   const cols = deck.gameConfig?.letris?.columns ?? [];
@@ -27,11 +31,12 @@ function articleOf(deck: Collection, item: Item): string {
   return raw ? (raw.charAt(0).toLowerCase() + raw.slice(1)).trim() : "";
 }
 
-function buildMarathonDeck(): Collection {
+function buildDrillDeck(unit: number | "all"): Collection {
   const seen = new Set<string>();
   const items: Item[] = [];
   for (const deck of CURATED) {
     if (EXCLUDED.has(deck.id)) continue;
+    if (unit !== "all" && deck.unit !== unit) continue;
     for (const it of practiceItems(deck)) {
       if (!it.fr || !it.en) continue;
       const art = articleOf(deck, it);
@@ -44,14 +49,15 @@ function buildMarathonDeck(): Collection {
       items.push({ ...it, fr, tags: [] });
     }
   }
+  const label = unit === "all" ? "tout" : UNIT_META[unit]?.label ?? `Unité ${unit}`;
   return {
-    id: "wordrill",
-    title: "WorDrill",
-    subtitle: "tous les decks, un seul drill",
+    id: unit === "all" ? "wordrill" : `wordrill-u${unit}`,
+    title: `WorDrill — ${label}`,
+    subtitle: "un seul drill",
     langPair: "fr-en",
     owner: "curated",
     visibility: "public",
-    unit: 4,
+    unit: unit === "all" ? 4 : unit,
     lessonNo: 0,
     lessonSlug: "wordrill",
     tags: [],
@@ -61,19 +67,71 @@ function buildMarathonDeck(): Collection {
 }
 
 export default function WorDrillPage() {
-  // ONE stable deck object — SayItContent reshuffles whenever its deck
-  // identity changes, so this must not be rebuilt per render.
-  const deck = useMemo(buildMarathonDeck, []);
+  // ONE stable deck object per scope — SayItContent reshuffles whenever its
+  // deck identity changes, so these must not be rebuilt per render.
+  const decks = useMemo(
+    () =>
+      new Map<number | "all", Collection>([
+        ["all", buildDrillDeck("all")],
+        ...UNITS.map((u) => [u, buildDrillDeck(u)] as const),
+      ]),
+    [],
+  );
+  const [scope, setScope] = useState<number | "all" | null>(null);
+  const deck = scope === null ? null : decks.get(scope)!;
+
   return (
-    // Site row only, like ConjugaZone/Teacher — this space belongs to no
-    // single deck, so there is no deck flap group to show.
-    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="wordrill" crumb="🎤 WorDrill">
-      <div className="mx-auto max-w-2xl px-4 pt-4">
-        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
-          🎤 WorDrill <span className="text-base font-bold text-[color:var(--cahier-ink-soft)]">· {deck.items.length} mots</span>
-        </h1>
-      </div>
-      <SayItContent collectionId="wordrill" deckOverride={deck} embedded />
+    <CahierShell tabs={tabsWithActive(siteTabs(), "wordrill")} active="wordrill" crumb="🎤 WorDrill">
+      {deck === null ? (
+        // Landing: pick the scope. Tout first, then the five units, each
+        // wearing its accent and word count.
+        <div className="mx-auto max-w-2xl px-4 py-6">
+          <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">🎤 WorDrill</h1>
+          <p className="mb-4 mt-1 text-sm text-[color:var(--cahier-ink-soft)]">Continuous oral practice — pick your ground.</p>
+          <button
+            type="button"
+            onClick={() => setScope("all")}
+            className="mb-3 flex w-full items-center justify-between rounded-xl border-2 border-[color:var(--cahier-ink)] bg-[color:var(--cahier-hl,#eaff00)] px-4 py-3 text-left font-black text-[color:var(--cahier-ink)] shadow-[3px_3px_0_var(--cahier-ink)] transition hover:-translate-y-0.5"
+          >
+            <span>🌍 Tout <span className="font-bold text-[color:var(--cahier-ink)]/70">· les cinq unités</span></span>
+            <span className="fluo-mono text-sm">{decks.get("all")!.items.length} mots</span>
+          </button>
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+            {UNITS.map((u) => {
+              const meta = UNIT_META[u] ?? { label: `Unité ${u}`, subtitle: "", emoji: "📚" };
+              const n = decks.get(u)!.items.length;
+              return (
+                <button
+                  key={u}
+                  type="button"
+                  onClick={() => setScope(u)}
+                  className="flex items-center justify-between rounded-xl border-2 bg-white px-4 py-3 text-left font-black text-[color:var(--cahier-ink)] shadow-[3px_3px_0_rgba(0,0,0,0.15)] transition hover:-translate-y-0.5"
+                  style={{ borderColor: UNIT_ACCENTS[u] }}
+                >
+                  <span>
+                    {meta.emoji} {meta.label}
+                    {meta.subtitle && <span lang="fr" className="ml-1.5 hidden text-sm font-bold text-[color:var(--cahier-ink-soft)] sm:inline">{meta.subtitle}</span>}
+                  </span>
+                  <span className="fluo-mono shrink-0 pl-2 text-sm" style={{ color: UNIT_ACCENTS[u] }}>{n} mots</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="mx-auto flex max-w-2xl items-center gap-3 px-4 pt-4">
+            <button type="button" onClick={() => setScope(null)} className="fluo-btn fluo-btn-sm fluo-btn-ghost">
+              ← Unités
+            </button>
+            <h1 className="cahier-display text-xl font-black text-[color:var(--cahier-ink)]">
+              🎤 {deck.title} <span className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">· {deck.items.length} mots</span>
+            </h1>
+          </div>
+          {/* key: switching scope must reset the run, not resume the old one */}
+          <SayItContent key={deck.id} collectionId={deck.id} deckOverride={deck} embedded />
+        </>
+      )}
     </CahierShell>
   );
 }
