@@ -39,16 +39,12 @@ export default function AccountButton() {
           setBusy(false);
         }}
         aria-label="Se connecter"
+        title="Se connecter"
         className="cahier-btn cahier-btn-sm whitespace-nowrap disabled:opacity-60"
       >
-        {/* Words only where the bar has room — on a phone the pill was
-            pushing the ☰ off screen (Dan, 2026-07-15). */}
-        {busy ? "…" : (
-          <>
-            <span className="sm:hidden" aria-hidden>👤</span>
-            <span className="hidden sm:inline">Se connecter</span>
-          </>
-        )}
+        {/* ⏻ at every width (Dan, 2026-07-15) — the words live in the
+            tooltip/aria; the wordy pill was pushing the ☰ off phones. */}
+        {busy ? "…" : <span aria-hidden>⏻</span>}
       </button>
     );
   }
