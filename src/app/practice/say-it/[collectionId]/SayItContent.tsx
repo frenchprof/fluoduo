@@ -118,6 +118,9 @@ export default function SayItContent({ collectionId, embedded = false }: { colle
   }, [deck]);
 
   const [phase, setPhase] = useState<Phase>("idle");
+  // Peek at the French (Dan, 2026-07-15: "a button to see the French words
+  // too") — per-card, cleared on advance so the default stays recall-first.
+  const [revealed, setRevealed] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [result, setResult] = useState<{ grade: Grade; recognized: string } | null>(null);
   const [score, setScore] = useState({ ok: 0, total: 0 });
@@ -141,6 +144,7 @@ export default function SayItContent({ collectionId, embedded = false }: { colle
   const resetTurn = useCallback(() => {
     stopRec();
     setPhase("idle");
+    setRevealed(false);
     setTranscript("");
     setResult(null);
   }, [stopRec]);
@@ -197,6 +201,7 @@ export default function SayItContent({ collectionId, embedded = false }: { colle
     setScore({ ok: 0, total: 0 });
     setFinished(false);
     setPhase("idle");
+    setRevealed(false);
     setTranscript("");
     setResult(null);
   }, [cards]);
@@ -364,6 +369,11 @@ export default function SayItContent({ collectionId, embedded = false }: { colle
               {card.note && (
                 <p className="mt-1 text-sm text-[color:var(--cahier-ink-soft)]">{card.note}</p>
               )}
+              {revealed && phase !== "result" && (
+                <p lang="fr" className="cahier-hl mx-auto mt-2 inline-block rounded-sm px-2 fluo-serif text-xl font-black text-[color:var(--cahier-ink)]">
+                  {frFull(articleOf(deck, card), card.fr)}
+                </p>
+              )}
             </div>
 
             {/* Mic button — with a listen button beside it (Dan, 2026-07-15),
@@ -396,8 +406,23 @@ export default function SayItContent({ collectionId, embedded = false }: { colle
                   >
                     {phase === "listening" ? "⏹" : "🎤"}
                   </button>
-                  {/* keeps the mic centred while the 🔊 sits to its left */}
-                  {phase === "idle" && <span className="h-12 w-12" aria-hidden />}
+                  {/* 👁 mirrors the 🔊, keeping the mic centred (Dan,
+                      2026-07-15: "a button to see the French words too") */}
+                  {phase === "idle" && (
+                    <button
+                      type="button"
+                      onClick={() => setRevealed((r) => !r)}
+                      className={`flex h-12 w-12 items-center justify-center rounded-full border-2 text-xl shadow-md transition-all active:scale-95 ${
+                        revealed
+                          ? "border-[color:var(--cahier-ink)] bg-[color:var(--cahier-hl,#eaff00)]"
+                          : "border-[color:var(--cahier-ink)]/25 bg-white hover:border-[color:var(--cahier-ink)]"
+                      }`}
+                      aria-label="Voir le mot"
+                      title="Voir"
+                    >
+                      👁
+                    </button>
+                  )}
                 </div>
                 <p className="text-sm text-[color:var(--cahier-ink-soft)]">
                   {phase === "listening" ? "Listening… (tap to stop)" : "Tap to speak"}
