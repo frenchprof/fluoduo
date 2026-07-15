@@ -38,9 +38,17 @@ export default function AccountButton() {
           try { await signInWithGoogle(); } catch {} // redirect flow navigates away on mobile
           setBusy(false);
         }}
+        aria-label="Se connecter"
         className="cahier-btn cahier-btn-sm whitespace-nowrap disabled:opacity-60"
       >
-        {busy ? "…" : "Se connecter"}
+        {/* Words only where the bar has room — on a phone the pill was
+            pushing the ☰ off screen (Dan, 2026-07-15). */}
+        {busy ? "…" : (
+          <>
+            <span className="sm:hidden" aria-hidden>👤</span>
+            <span className="hidden sm:inline">Se connecter</span>
+          </>
+        )}
       </button>
     );
   }

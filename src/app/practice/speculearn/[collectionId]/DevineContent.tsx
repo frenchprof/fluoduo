@@ -248,11 +248,15 @@ export default function DevineContent({ collectionId }: { collectionId: string }
       <div className="mx-auto max-w-2xl px-3 py-3">
         {/* One tight line each — a long deck subtitle was wrapping the title
             to three lines and pushing the start screen past a phone's fold
-            (Dan, 2026-07-15). */}
-        <h1 className="cahier-display text-xl font-black text-[color:var(--cahier-ink)]">
-          🔮 SpecuLearn
-          <span className="block truncate text-sm font-bold text-[color:var(--cahier-ink-soft)]" lang="fr" title={subtitle}>{subtitle}</span>
-        </h1>
+            (Dan, 2026-07-15). During the quiz there is NO header at all: the
+            deck name rides the progress row instead ("the header for
+            SpecuLearn is taking up too much space"). */}
+        {screen !== "quiz" && (
+          <h1 className="cahier-display text-xl font-black text-[color:var(--cahier-ink)]">
+            🔮 SpecuLearn
+            <span className="block truncate text-sm font-bold text-[color:var(--cahier-ink-soft)]" lang="fr" title={subtitle}>{subtitle}</span>
+          </h1>
+        )}
 
         {screen === "start" && (
           /* ONE mobile screen (Dan, 2026-07-15: "Choisis ta direction,
@@ -308,10 +312,10 @@ export default function DevineContent({ collectionId }: { collectionId: string }
         )}
 
         {screen === "quiz" && t && (
-          <div className="mt-4">
-            <div className="flex items-center justify-between text-xs font-bold text-[color:var(--cahier-ink-soft)]">
-              <span>{idx + 1}/{queue.length}</span>
-              <span>{score} pt</span>
+          <div className="mt-1">
+            <div className="flex items-center justify-between gap-2 text-xs font-bold text-[color:var(--cahier-ink-soft)]">
+              <span className="min-w-0 truncate" lang="fr" title={subtitle}>🔮 {subtitle}</span>
+              <span className="shrink-0">{idx + 1}/{queue.length} · {score} pt</span>
             </div>
             <div className="mt-1 h-2 overflow-hidden rounded-full border-2 border-[color:var(--cahier-ink)]/30 bg-white">
               <div className="h-full rounded-full bg-[var(--fluo-hl)] transition-all" style={{ width: `${(100 * idx) / queue.length}%` }} />

@@ -251,7 +251,7 @@ export default function CahierShell({
                   ← <span className="cahier-hl">FluoLingo</span>
                 </Link>
               )}
-              <div className="flex items-center gap-2">
+              <div className="flex shrink-0 items-center gap-1 sm:gap-2">
                 {/* Icon strip, macOS-menu-bar style (Dan, 2026-07-08): 🔍 opens
                     the floating search, 🏆 floats the ranking, 🏠 goes home —
                     icons only, no words. */}
@@ -274,11 +274,16 @@ export default function CahierShell({
                   🏆
                 </button>
                 <SoundControl />
-                <Link href="/" aria-label="Home" title="Home" className="cahier-btn cahier-btn-sm">
+                {/* 🏠 and the crumb yield below sm — the ← FluoLingo link is
+                    the home door there, and they were pushing the ☰ off a
+                    phone screen (Dan, 2026-07-15). */}
+                {/* !important — .cahier-btn's own display rule beats a bare
+                    `hidden` utility. */}
+                <Link href="/" aria-label="Home" title="Home" className="cahier-btn cahier-btn-sm !hidden sm:!inline-flex">
                   🏠
                 </Link>
                 {crumb && (
-                  <span className="text-xs font-bold uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">
+                  <span className="hidden text-xs font-bold uppercase tracking-wider text-[color:var(--cahier-ink-soft)] md:inline">
                     {crumb}
                   </span>
                 )}
