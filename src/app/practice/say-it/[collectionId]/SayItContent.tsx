@@ -7,6 +7,7 @@ import Link from "next/link";
 import { CURATED } from "@/content/collections";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
+import { logEvent } from "@/lib/firebase/usage";
 import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
 import { practiceItems } from "@/lib/collections/display";
 import { recordItemResult } from "@/lib/progress";
@@ -145,6 +146,23 @@ export default function SayItContent({
     const win = window as any;
     setSupported(!!(win.SpeechRecognition || win.webkitSpeechRecognition));
   }, []);
+
+  // Session telemetry (2026-07-15 XP/analytics audit): Say It fed the Reviser
+  // and XP but never the teacher Activities panel — WorDrill runs were
+  // invisible. Same game.start/game.end pair every other game logs.
+  useEffect(() => {
+    void logEvent("game.start", { game: "say-it", collectionId });
+  }, [collectionId]);
+  const endLogged = useRef(false);
+  useEffect(() => {
+    if (!finished) {
+      endLogged.current = false; // Recommencer starts a fresh run
+      return;
+    }
+    if (endLogged.current) return;
+    endLogged.current = true;
+    void logEvent("game.end", { game: "say-it", collectionId, score: score.ok, total: score.total });
+  }, [finished, collectionId, score]);
 
   const stopRec = useCallback(() => {
     recRef.current?.stop();

@@ -8,5 +8,5 @@ export function generateStaticParams() {
 
 export default async function Page({ params }: { params: Promise<{ collectionId: string }> }) {
   const { collectionId } = await params;
-  return <AuthGate what="play Devine d'abord"><DevineContent collectionId={collectionId} /></AuthGate>;
+  return <AuthGate what="play SpecuLearn"><DevineContent collectionId={collectionId} /></AuthGate>;
 }

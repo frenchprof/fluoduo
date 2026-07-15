@@ -53,6 +53,7 @@ export function toolTabs(): ShellTab[] {
     // the door (Dan: "we don't need the flap tab for classement").
     { key: "vocabularain", label: "VocabulaRain", emoji: "🌧️", href: "/games/letris", hue: "#5b8def" },
     { key: "lexicalator", label: "Lexicalator", emoji: "🧰", href: "/games/conveyor", hue: "#e3a700" },
+    { key: "speculearn", label: "SpecuLearn", emoji: "🔮", href: "/practice/speculearn", hue: "#8a5fd4" },
     { key: "tutor", label: "Tuteur", emoji: "🤖", href: "/tutor", hue: "#8a5fd4" },
     { key: "tts", label: "TTS", emoji: "🔊", href: "/tts", hue: "#e8852e" },
     // No Profil entry (Dan, 2026-07-08) — the circled-initial account chip in

@@ -1,7 +1,8 @@
 "use client";
 
 /**
- * « Devine d'abord ! » — the guess-first activity (Dan, 2026-07-14).
+ * SpecuLearn (né « Devine d'abord ! », renamed by Dan 2026-07-15) — the
+ * guess-first activity (Dan, 2026-07-14).
  * aliments runs on its photo bank (public/devine + devine-aliments.json);
  * every other DEVINE_READY deck runs on its items' emoji as the image
  * (Dan approved the generalization the same day). Five modes (Mixte /
@@ -18,6 +19,7 @@ import { speak } from "@/games/letris/speech";
 import { recordItemResult } from "@/lib/progress";
 import { sfx } from "@/games/audio/sfx";
 import { logEvent } from "@/lib/firebase/usage";
+import { BUILDING_EMOJI } from "@/lib/collections/devineReady";
 import { useChoiceKeys, CHOICE_KEYS_HINT } from "@/lib/useChoiceKeys";
 import PHOTO_ITEMS from "@/content/devine-aliments.json";
 
@@ -59,13 +61,6 @@ function tagFromArticle(w: string): { tag: string | null; color: string } {
   if (/^(la|une) /.test(lw)) return { tag: "féminin", color: FEM };
   return { tag: null, color: INK };
 }
-
-/** Building-look emojis are banned from Devine (Dan, 2026-07-15): a generic
- *  storefront/tower can't tell épicerie from magasin (🏪 even serves two
- *  words in the same deck). Only unmistakable buildings stay — ⛪ église,
- *  🏟️ stade, 🚉 gare read as themselves. The items stay in every other
- *  activity; they just can't be guessed from a picture. */
-const BUILDING_EMOJI = new Set(["🏬", "🏪", "🏛️", "🏛", "🏦", "🏥", "🏫", "🏨", "🏢", "🏤", "🏣", "🏩", "🏭"]);
 
 /** The article an item's letris column tag encodes (Dan, 2026-07-14: "ALL
  *  articles in such exercises are inseparable from the nouns") — countries
@@ -172,13 +167,15 @@ export default function DevineContent({ collectionId }: { collectionId: string }
       dir: (mode === "mix" ? (Math.random() < 0.5 ? "wi" : "iw") : mode) as Dir,
     }));
     setQueue(q); setIdx(0); setScore(0); setWrong([]);
-    void logEvent("game.start", { game: "devine", collectionId });
+    void logEvent("game.start", { game: "speculearn", collectionId });
     setScreen("quiz");
     prepare(q, 0);
   };
 
   /** One graded outcome — XP/streak/SRS + the teacher evidence trail. */
   const grade = (it: DevItem, good: boolean, given?: string) => {
+    // The devine: prefix predates the SpecuLearn rename — kept so every
+    // learner's SRS history for these words survives (ids are invisible).
     recordItemResult(`devine:${baseWord(it.w)}`, good, given);
     if (good) { setScore((s) => s + 1); sfx.correct(); } else { setWrong((w) => [...w, it]); sfx.wrong(); }
     setVerdictGood(good);
@@ -217,7 +214,7 @@ export default function DevineContent({ collectionId }: { collectionId: string }
   const next = () => {
     if (!locked) return;
     if (idx + 1 >= queue.length) {
-      void logEvent("game.end", { game: "devine", collectionId, score });
+      void logEvent("game.end", { game: "speculearn", collectionId, score });
       setScreen("end");
       return;
     }
@@ -247,10 +244,10 @@ export default function DevineContent({ collectionId }: { collectionId: string }
   const card = "rounded-2xl border-2 border-[color:var(--cahier-ink)]/25 bg-white p-4";
 
   return (
-    <CahierShell tabs={withActive(deckActivityTabs(collectionId), "devine")} active="devine" crumb="🔮 Devine d'abord">
+    <CahierShell tabs={withActive(deckActivityTabs(collectionId), "speculearn")} active="speculearn" crumb="🔮 SpecuLearn">
       <div className="mx-auto max-w-2xl px-3 py-5">
         <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
-          🔮 Devine d&rsquo;abord ! <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· {subtitle}</span>
+          🔮 SpecuLearn <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· {subtitle}</span>
         </h1>
 
         {screen === "start" && (

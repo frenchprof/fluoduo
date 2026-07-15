@@ -436,7 +436,7 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     // Guess-first activity (Dan, 2026-07-14: native page, "not a
     // supplement") — photos for aliments, emoji everywhere else.
     ...(isDevineReady(collectionId)
-      ? [{ key: "devine", label: "Devine d'abord", emoji: "🔮", href: `/practice/devine/${collectionId}`, hint: "guess before the lesson" } as ShellTab]
+      ? [{ key: "speculearn", label: "SpecuLearn", emoji: "🔮", href: `/practice/speculearn/${collectionId}`, hint: "guess before the lesson" } as ShellTab]
       : []),
     // PRE-lesson supplements (standalone HTML outside the app) — none right
     // now; the plumbing (incl. visit tracking) stays for future material.

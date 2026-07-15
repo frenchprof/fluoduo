@@ -1,5 +1,5 @@
 /**
- * Which decks offer « Devine d'abord » (/practice/devine/[id]). aliments
+ * Which decks offer SpecuLearn, né « Devine d'abord » (/practice/speculearn/[id]). aliments
  * runs on its photo bank; the rest qualified in the 2026-07-14 audit by
  * having an emoji on (almost) every item — the emoji plays the image role.
  * EXCLUDED after review (Dan, 2026-07-14: demonstratifs "is not making any
@@ -25,3 +25,10 @@ export const DEVINE_READY = [
 export function isDevineReady(id: string): boolean {
   return (DEVINE_READY as readonly string[]).includes(id);
 }
+
+/** Building-look emojis are banned from SpecuLearn (Dan, 2026-07-15): a
+ *  generic storefront/tower can't tell épicerie from magasin (🏪 even
+ *  serves two words in the same deck). Only unmistakable buildings stay —
+ *  ⛪ église, 🏟️ stade, 🚉 gare read as themselves. Shared by the game
+ *  (filters play) and the gallery (honest word counts). */
+export const BUILDING_EMOJI = new Set(["🏬", "🏪", "🏛️", "🏛", "🏦", "🏥", "🏫", "🏨", "🏢", "🏤", "🏣", "🏩", "🏭"]);

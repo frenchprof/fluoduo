@@ -1,6 +1,8 @@
 # Old standalone supplement → its native, XP-earning replacement (Dan, 2026-07-14)
-/supplements/aliments-devine /practice/devine/aliments 301
-/supplements/aliments-devine.html /practice/devine/aliments 301
+/supplements/aliments-devine /practice/speculearn/aliments 301
+/supplements/aliments-devine.html /practice/speculearn/aliments 301
 # Marathon oral shipped for an hour on 2026-07-15 before Dan named it WorDrill
 /practice/oral /practice/wordrill 301
 /practice/oral.html /practice/wordrill 301
+# Devine d'abord was renamed SpecuLearn (Dan, 2026-07-15)
+/practice/devine/* /practice/speculearn/:splat 301

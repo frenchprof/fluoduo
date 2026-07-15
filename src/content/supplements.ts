@@ -5,7 +5,7 @@
  */
 export type Supplement = { key: string; label: string; emoji: string; href: string; hint?: string };
 
-// « Devine d'abord » graduated to a native activity (/practice/devine/…,
+// SpecuLearn (né « Devine d'abord ») graduated to a native activity (/practice/speculearn/…,
 // Dan 2026-07-14) — the registry stays for future standalone material.
 export const SUPPLEMENTS: Record<string, Supplement[]> = {};
 
