@@ -174,6 +174,34 @@ export default function CahierShell({
     window.addEventListener("resize", apply);
     return () => window.removeEventListener("resize", apply);
   }, []);
+  // Accidental shrink rescue (Dan, 2026-07-15 screenshot): on a phone the
+  // drag edge is easy to grab without noticing, leaving the page stuck
+  // narrow with unexplained grey desk. When that state is detected (no tab
+  // rail on screen, page well short of the viewport) a pulsing ⤢ arrow
+  // floats in the gap — tap it, or double-tap the grey space, to expand
+  // back to full width.
+  const [shrunk, setShrunk] = useState(false);
+  useEffect(() => {
+    const check = () => {
+      const el = outerRef.current;
+      setShrunk(!!el && window.innerWidth < 1100 && el.offsetWidth < window.innerWidth - 60);
+    };
+    check();
+    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(check) : null;
+    if (ro && outerRef.current) ro.observe(outerRef.current);
+    window.addEventListener("resize", check);
+    return () => {
+      ro?.disconnect();
+      window.removeEventListener("resize", check);
+    };
+  }, []);
+  const expandFull = () => {
+    const el = outerRef.current;
+    if (el) el.style.flexBasis = "";
+    try { window.localStorage.removeItem(PAGE_WIDTH_KEY); } catch {}
+    setShrunk(false);
+  };
+
   function startEdgeDrag(e: React.PointerEvent<HTMLDivElement>) {
     const el = outerRef.current;
     if (!el) return;
@@ -329,7 +357,13 @@ export default function CahierShell({
 
   return (
     <div className="cahier-desk">
-      <div className="cahier-deskrow">
+      <div
+        className="cahier-deskrow"
+        onDoubleClick={(e) => {
+          // Only the grey desk itself — not clicks bubbling up from the page.
+          if (e.target === e.currentTarget) expandFull();
+        }}
+      >
         {nested ? (
           <div ref={(el) => { outerRef.current = el; }} className="cahier-stack min-h-screen">
             <div className="cahier-binding" aria-hidden />
@@ -340,6 +374,17 @@ export default function CahierShell({
           page
         )}
 
+        {shrunk && (
+          <button
+            type="button"
+            onClick={expandFull}
+            aria-label="Agrandir la page · Expand to full width"
+            title="Tap (or double-tap the grey space) to expand the page"
+            className="fixed right-2 top-1/2 z-40 flex h-11 w-11 -translate-y-1/2 animate-pulse items-center justify-center rounded-full border-2 border-[color:var(--cahier-ink)] bg-white text-xl text-[color:var(--cahier-ink)] shadow-lg"
+          >
+            <span aria-hidden>⤢</span>
+          </button>
+        )}
         {searchOpen && <SearchOverlay onClose={() => setSearchOpen(false)} />}
         {rankingOpen && <RankingOverlay onClose={() => setRankingOpen(false)} />}
         {quickGuideOpen && <GuideSplash onClose={() => setQuickGuideOpen(false)} />}

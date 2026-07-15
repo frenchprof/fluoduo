@@ -238,29 +238,35 @@ export default function DevineContent({ collectionId }: { collectionId: string }
     onSpeak: () => { if (t && (t.dir !== "say-s" || locked)) speak(t.it.w, "fr-FR"); },
   });
   const pillCls = (sel: boolean) =>
-    `rounded-xl border-2 px-3 py-2 text-left text-sm font-bold transition ${
+    `rounded-xl border-2 px-2.5 py-1.5 text-left text-sm font-bold transition ${
       sel ? "border-slate-900 bg-slate-900 text-white" : "border-slate-300 bg-white text-slate-700 hover:border-slate-500"
     }`;
-  const card = "rounded-2xl border-2 border-[color:var(--cahier-ink)]/25 bg-white p-4";
+  const card = "rounded-2xl border-2 border-[color:var(--cahier-ink)]/25 bg-white p-3";
 
   return (
     <CahierShell tabs={withActive(deckActivityTabs(collectionId), "speculearn")} active="speculearn" crumb="🔮 SpecuLearn">
-      <div className="mx-auto max-w-2xl px-3 py-5">
-        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
-          🔮 SpecuLearn <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· {subtitle}</span>
+      <div className="mx-auto max-w-2xl px-3 py-3">
+        {/* One tight line each — a long deck subtitle was wrapping the title
+            to three lines and pushing the start screen past a phone's fold
+            (Dan, 2026-07-15). */}
+        <h1 className="cahier-display text-xl font-black text-[color:var(--cahier-ink)]">
+          🔮 SpecuLearn
+          <span className="block truncate text-sm font-bold text-[color:var(--cahier-ink-soft)]" lang="fr" title={subtitle}>{subtitle}</span>
         </h1>
 
         {screen === "start" && (
-          <div className="mt-4 space-y-4">
+          /* ONE mobile screen (Dan, 2026-07-15: "Choisis ta direction,
+             choisis ton paquet — all that can easily fit on the same screen
+             without scrolling"): the how-it-works card became one whisper
+             line, both pickers run 2-up/3-up on the smallest screens, and
+             the vertical rhythm is halved. */
+          <div className="mt-2 space-y-2">
+            <p className="text-[13px] text-[color:var(--cahier-ink)]">
+              <b>Devine d&rsquo;abord</b> — l&rsquo;essai aide à retenir.
+            </p>
             <div className={card}>
-              <h2 className="text-base font-black text-[color:var(--cahier-ink)]">Comment ça marche ?</h2>
-              <p className="mt-1 text-sm text-[color:var(--cahier-ink)]">
-                <b>Devine d&rsquo;abord, la réponse vient ensuite.</b> Même si tu te trompes, essayer avant de voir la solution t&rsquo;aide à mieux retenir le mot.
-              </p>
-            </div>
-            <div className={card}>
-              <h2 className="text-base font-black text-[color:var(--cahier-ink)]">{hasPacks ? "1 · Choisis ta direction" : "Choisis ta direction"}</h2>
-              <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <h2 className="text-sm font-black text-[color:var(--cahier-ink)]">{hasPacks ? "1 · Choisis ta direction" : "Choisis ta direction"}</h2>
+              <div className="mt-1.5 grid grid-cols-2 gap-1.5">
                 {([
                   ["mix", "Mixte", "les deux directions"],
                   ["wi", "Mot → Image", "lis le mot, choisis l'image"],
@@ -270,26 +276,26 @@ export default function DevineContent({ collectionId }: { collectionId: string }
                     : []),
                 ] as [Mode, string, string][]).map(([m, label, hint]) => (
                   <button key={m} type="button" onClick={() => setMode(m)} className={pillCls(mode === m)}>
-                    {label} <span className="block text-xs font-normal opacity-70">{hint}</span>
+                    {label} <span className="block text-[11px] font-normal leading-tight opacity-70">{hint}</span>
                   </button>
                 ))}
               </div>
             </div>
             {hasPacks && (
               <div className={card}>
-                <h2 className="text-base font-black text-[color:var(--cahier-ink)]">2 · Choisis ton paquet</h2>
-                <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3">
+                <h2 className="text-sm font-black text-[color:var(--cahier-ink)]">2 · Choisis ton paquet</h2>
+                <div className="mt-1.5 grid grid-cols-3 gap-1.5">
                   {([
                     ["all", "Tout", ITEMS.length],
-                    ["1", "Fruits, légumes & douceurs", ITEMS.filter((i) => i.s === 1).length],
-                    ["2", "À table : viandes, laitages, épicerie", ITEMS.filter((i) => i.s === 2).length],
+                    ["1", "Fruits & douceurs", ITEMS.filter((i) => i.s === 1).length],
+                    ["2", "À table", ITEMS.filter((i) => i.s === 2).length],
                   ] as ["all" | "1" | "2", string, number][]).map(([d, label, count]) => (
                     <button key={d} type="button" onClick={() => setDeck(d)} className={pillCls(deck === d)}>
-                      {label} <span className="block text-xs font-normal opacity-70">{count} mots</span>
+                      <span className="block text-[12px] leading-tight">{label} <span className="font-normal opacity-70">· {count}</span></span>
                     </button>
                   ))}
                 </div>
-                <p className="mt-2 text-xs text-[color:var(--cahier-ink-soft)]">
+                <p className="mt-1.5 text-xs text-[color:var(--cahier-ink-soft)]">
                   <i className="mr-1 inline-block h-2.5 w-2.5 rounded-full align-middle" style={{ background: MASC }} /> masculin ·{" "}
                   <i className="mx-1 inline-block h-2.5 w-2.5 rounded-full align-middle" style={{ background: FEM }} /> féminin — comme sur tes fiches !
                 </p>

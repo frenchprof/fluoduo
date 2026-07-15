@@ -93,6 +93,22 @@ export default function SpecuLearnIndexPage() {
             );
           })}
         </div>
+
+        {/* Why guess first — the pretesting effect, from the Chua & Pan
+            (2026) NUS study Dan supplied (2026-07-15). Deliberately tiny:
+            the menu must still end above the fold on a phone. */}
+        <section className="mt-4 rounded-xl border-2 border-indigo-200 bg-white/70 p-3">
+          <h2 className="text-[13px] font-black text-indigo-900">Pourquoi deviner d&rsquo;abord ? C&rsquo;est prouvé.</h2>
+          <p className="mt-1 text-[12px] leading-snug text-indigo-950/80">
+            In 4 NUS experiments (341 beginners), <b>guessing a word before being taught it — then seeing
+            the answer right away — beat passive study</b>, in both directions (Mot → Image and
+            Image → Mot). Wrong guesses didn&rsquo;t hurt: with immediate feedback, the error is part of
+            how the word sticks.
+          </p>
+          <p className="mt-1 text-[10px] font-semibold text-indigo-900/50">
+            Chua &amp; Pan (2026), <i>Cognitive Research: Principles and Implications</i> — the pretesting effect.
+          </p>
+        </section>
       </div>
     </main>
   );
