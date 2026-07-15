@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { CURATED } from "@/content/collections";
 import { toPracticeSet } from "@/lib/practice/engine";
@@ -9,6 +9,7 @@ import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { recordItemResult } from "@/lib/progress";
 import { useChoiceKeys } from "@/lib/useChoiceKeys";
+import { logEvent } from "@/lib/firebase/usage";
 import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
 import type { PracticeChoice, PracticeItem, PracticeSet } from "@/lib/practice/engine";
 
@@ -97,6 +98,20 @@ function PracticeRunner({ set }: { set: PracticeSet }) {
 
   const item = queue[step];
   const done = step >= queue.length && queue.length > 0;
+  // Game telemetry (Dan, 2026-07-15: the Activities panel was empty because
+  // no game ever logged) — one start per mount, one end at the recap.
+  useEffect(() => {
+    void logEvent("game.start", { game: "dice", collectionId: set.collectionId });
+  }, [set.collectionId]);
+  const endLogged = useRef(false);
+  useEffect(() => {
+    if (done && !endLogged.current) {
+      endLogged.current = true;
+      const finalScore = set.items.filter((it) => firstResults[it.id]).length;
+      void logEvent("game.end", { game: "dice", collectionId: set.collectionId, score: finalScore });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [done]);
   const uniqueTotal = set.items.length;
 
   // Random order every time an item is shown — the queue only ever has an

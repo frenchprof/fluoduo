@@ -7,6 +7,7 @@ import { chiptune } from "@/games/audio/chiptune";
 import { sfx } from "@/games/audio/sfx";
 import CreditsSplash from "@/games/CreditsSplash";
 import SoundControl from "@/components/SoundControl";
+import { logEvent } from "@/lib/firebase/usage";
 
 export type LetrisCategory = {
   key: string;
@@ -211,9 +212,19 @@ export default function LetrisGame({
   const [gameOver, setGameOver] = useState(false);
   const onGameEndRef = useRef(onGameEnd);
   onGameEndRef.current = onGameEnd;
-  useEffect(() => { if (gameOver) onGameEndRef.current?.(score); }, [gameOver]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (gameOver) {
+      onGameEndRef.current?.(score);
+      void logEvent("game.end", { game: "letris", collectionId: set.id, score });
+    }
+  }, [gameOver]); // eslint-disable-line react-hooks/exhaustive-deps
   const [flash, setFlash] = useState<{ col: number; kind: "ok" | "bad" } | null>(null);
   const [creditsDone, setCreditsDone] = useState(false); // hold tiles until the credits splash clears
+  // The play actually begins when the credits clear (Dan, 2026-07-15: the
+  // Activities panel showed zero because game events were never wired).
+  useEffect(() => {
+    if (creditsDone) void logEvent("game.start", { game: "letris", collectionId: set.id });
+  }, [creditsDone]); // eslint-disable-line react-hooks/exhaustive-deps
   // Pre-game study table (Dan, 2026-07-04: "always present the table of items
   // at the start of the game for learners to take note") — tiles hold until
   // the learner has seen the full item list and pressed start.

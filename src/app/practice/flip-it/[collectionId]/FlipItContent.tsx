@@ -14,6 +14,7 @@
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { logEvent } from "@/lib/firebase/usage";
 import Link from "next/link";
 import { CURATED } from "@/content/collections";
 import { speak } from "@/games/letris/speech";
@@ -747,7 +748,7 @@ function Cards({
             <span className="text-6xl" aria-hidden>{row.item.emoji}</span>
             <span className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">{row.item.en}</span>
             <AnswerField key={row.item.id} parts={partsFor(row, isNat, articleOptions.some((a) => a !== ""))} articleOptions={articleOptions} autoFocus
-              onResult={(ok) => { recordItemResult(row.item.id, ok); if (ok) onBucket(row.item.id, "reviewed"); }} />
+              onResult={(ok) => { recordItemResult(row.item.id, ok); void logEvent("flashcard.review", { itemId: row.item.id, rating: ok ? "good" : "again" }); if (ok) onBucket(row.item.id, "reviewed"); }} />
           </div>
         ) : (
           <div className="cursor-pointer select-none" style={{ perspective: "1200px" }}
@@ -841,7 +842,7 @@ function AllCards({
               {test ? (
                 <div className="flex flex-1 items-center px-1">
                   <AnswerField key={row.item.id} parts={partsFor(row, isNat, articleOptions.some((a) => a !== ""))} articleOptions={articleOptions}
-                    onResult={(ok) => { recordItemResult(row.item.id, ok); if (ok) onBucket(row.item.id, "reviewed"); }} />
+                    onResult={(ok) => { recordItemResult(row.item.id, ok); void logEvent("flashcard.review", { itemId: row.item.id, rating: ok ? "good" : "again" }); if (ok) onBucket(row.item.id, "reviewed"); }} />
                 </div>
               ) : (
                 <button type="button" onClick={() => flipOne(row.item.id)} className="flex flex-1 flex-col items-center justify-center p-1 text-center transition hover:brightness-95">

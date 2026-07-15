@@ -17,6 +17,7 @@ import { CURATED } from "@/content/collections";
 import { speak } from "@/games/letris/speech";
 import { recordItemResult } from "@/lib/progress";
 import { sfx } from "@/games/audio/sfx";
+import { logEvent } from "@/lib/firebase/usage";
 import { useChoiceKeys, CHOICE_KEYS_HINT } from "@/lib/useChoiceKeys";
 import PHOTO_ITEMS from "@/content/devine-aliments.json";
 
@@ -164,6 +165,7 @@ export default function DevineContent({ collectionId }: { collectionId: string }
       dir: (mode === "mix" ? (Math.random() < 0.5 ? "wi" : "iw") : mode) as Dir,
     }));
     setQueue(q); setIdx(0); setScore(0); setWrong([]);
+    void logEvent("game.start", { game: "devine", collectionId });
     setScreen("quiz");
     prepare(q, 0);
   };
@@ -207,7 +209,11 @@ export default function DevineContent({ collectionId }: { collectionId: string }
 
   const next = () => {
     if (!locked) return;
-    if (idx + 1 >= queue.length) { setScreen("end"); return; }
+    if (idx + 1 >= queue.length) {
+      void logEvent("game.end", { game: "devine", collectionId, score });
+      setScreen("end");
+      return;
+    }
     setIdx(idx + 1);
     prepare(queue, idx + 1);
   };

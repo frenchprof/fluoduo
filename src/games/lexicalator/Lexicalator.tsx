@@ -15,6 +15,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { logEvent } from "@/lib/firebase/usage";
 import { speak } from "@/games/letris/speech";
 import { chiptune } from "@/games/audio/chiptune";
 import { sfx } from "@/games/audio/sfx";
@@ -124,6 +125,9 @@ export default function Lexicalator({
   const [hard, setHard] = useState(false);
   const [over, setOver] = useState(false);
   const [levelDone, setLevelDone] = useState(false);
+  useEffect(() => {
+    void logEvent("game.start", { game: "lexicalator", collectionId: title });
+  }, [title]);
 
   const [chests, setChests] = useState<Chest[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
@@ -141,6 +145,7 @@ export default function Lexicalator({
   // gets a beat, then the next level deals itself and taps land in the game.
   useEffect(() => {
     if (!levelDone) return;
+    void logEvent("game.end", { game: "lexicalator", collectionId: title, score });
     const t = window.setTimeout(() => setLevel((l) => l + 1), 1800);
     return () => window.clearTimeout(t);
   }, [levelDone]);

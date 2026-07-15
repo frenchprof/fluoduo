@@ -10,6 +10,7 @@
  */
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { logEvent } from "@/lib/firebase/usage";
 import { sfx } from "@/games/audio/sfx";
 import { speak, speakSequence } from "@/games/letris/speech";
 import { awardConversationXp } from "@/lib/progress";
@@ -34,6 +35,9 @@ function countIn(text: string, phrase: string): number {
 }
 
 export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
+  useEffect(() => {
+    void logEvent("game.start", { game: "compose", collectionId: bank.id });
+  }, [bank.id]);
   const lang = "fr-FR";
   // Persona config (café keeps its defaults; other scenes bring their own).
   const opening = bank.scene?.opening ?? "Bonsoir ! Vous désirez ?";
@@ -187,7 +191,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
       setAiMode("ai");
       setMessages((m) => [...m, { who: "waiter", text: data.reply! }]);
       speakSequence([{ text, gender: "f" as const }, { text: data.reply, gender: personaVoice }], lang);
-      if (data.done) { setAiDone(true); sfx.stage(); awardConversationXp(); } else sfx.correct();
+      if (data.done) { setAiDone(true); sfx.stage(); awardConversationXp(); void logEvent("game.end", { game: "compose", collectionId: bank.id }); } else sfx.correct();
     } catch {
       setMessages(messages);
       if (aiOnly) { setUnavailable(true); return; }
@@ -230,7 +234,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
       // Accepted turn → ta-daa; the closing exchange (bonne soirée → recap)
       // gets the stage jingle instead — never both for one send. Nudges stay
       // silent (a buzz would be too harsh for a gentle redirect).
-      if (next === "done") { sfx.stage(); awardConversationXp(); } else sfx.correct();
+      if (next === "done") { sfx.stage(); awardConversationXp(); void logEvent("game.end", { game: "compose", collectionId: bank.id }); } else sfx.correct();
       speakSequence(
         [
           { text: myText, gender: "f" as const },

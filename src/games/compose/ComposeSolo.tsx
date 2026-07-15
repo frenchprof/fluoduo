@@ -8,6 +8,7 @@
  */
 
 import { useEffect, useState } from "react";
+import { logEvent } from "@/lib/firebase/usage";
 import { speak } from "@/games/letris/speech";
 import { sfx } from "@/games/audio/sfx";
 import { awardConversationXp } from "@/lib/progress";
@@ -23,6 +24,9 @@ function joinChips(chips: string[]): string {
 }
 
 export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
+  useEffect(() => {
+    void logEvent("game.start", { game: "compose-solo", collectionId: bank.id });
+  }, [bank.id]);
   const lang = "fr-FR";
   // Deterministic on the server; randomised in the mount effect (SSR-safe).
   const [scenario, setScenario] = useState<{ instructionEn: string; headline: string } | null>(null);
@@ -89,7 +93,7 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
       }
       setFeedback({ reply: data.reply, done: data.done === true });
       speak(data.reply, lang, { gender: "m" });
-      if (data.done) { sfx.stage(); awardConversationXp(); } else sfx.correct();
+      if (data.done) { sfx.stage(); awardConversationXp(); void logEvent("game.end", { game: "compose-solo", collectionId: bank.id }); } else sfx.correct();
     } catch {
       setUnavailable(true);
     } finally {
