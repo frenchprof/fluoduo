@@ -89,7 +89,7 @@ export default function ActivitiesIndexPage() {
           href="/practice/wordrill"
           className="mb-4 flex items-center gap-2 rounded-xl border-2 border-[color:var(--cahier-ink)] bg-[#fbeec4] px-4 py-2 font-black text-[color:var(--cahier-ink)] shadow-[3px_3px_0_var(--cahier-ink)] transition hover:-translate-y-0.5"
         >
-          🎤 WorDrill <span className="font-bold text-[color:var(--cahier-ink-soft)]">— all Say It decks, one continuous drill</span>
+          🎙️ WorDrill <span className="font-bold text-[color:var(--cahier-ink-soft)]">— all Say It decks, one continuous drill</span>
         </Link>
         {totalHits === 0 && (
           <p className="mb-4 text-sm font-bold text-[color:var(--cahier-ink-soft)]">Aucun résultat pour « {q} »</p>

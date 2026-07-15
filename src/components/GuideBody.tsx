@@ -9,9 +9,11 @@ import Link from "next/link";
 /** "Drill with these": every activity as an iPhone-style app icon — name
  *  beneath, the short phrase on mouseover. */
 const ACTIVITIES: { emoji: string; name: string; hue: number; what: string }[] = [
+  { emoji: "🔮", name: "SpecuLearn", hue: 3, what: "guess first — then the answer" },
   { emoji: "📚", name: "Lesson", hue: 0, what: "the rule, then drills" },
   { emoji: "🃏", name: "Flip It", hue: 1, what: "flashcards" },
   { emoji: "🎤", name: "Say It", hue: 2, what: "speak — the mic checks" },
+  { emoji: "🎙️", name: "WorDrill", hue: 4, what: "all decks, one speaking drill" },
   { emoji: "🌧️", name: "Vocabularain", hue: 3, what: "sort the falling words" },
   { emoji: "🧰", name: "Lexicalator", hue: 4, what: "build the words" },
   { emoji: "🧩", name: "Compose It", hue: 5, what: "build dialogues" },

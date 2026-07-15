@@ -118,9 +118,10 @@ export default function CahierShell({
   topRight,
   children,
 }: {
-  /** Page-context flaps (a deck's activities, Teacher, …). The site row
-   *  (Home/Guide/Unités/Index) is ALWAYS rendered above them — the flap rail
-   *  must never "randomly disappear" between pages (Dan, 2026-07-05). */
+  /** Page-context flaps (a deck's activities, Teacher, …). The two site
+   *  tiers (Unités on top; QuickGuide + Index/WorDrill/SpecuLearn/tools as
+   *  thin flaps below — Dan, 2026-07-15) are ALWAYS rendered above them —
+   *  the flap rail must never "randomly disappear" (Dan, 2026-07-05). */
   tabs?: ShellTab[];
   active: string;
   crumb?: ReactNode; // small label on the top bar's right side
@@ -135,9 +136,8 @@ export default function CahierShell({
   const [quickGuideOpen, setQuickGuideOpen] = useState(false);
   const hueOf = (t: ShellTab, i: number) => t.hue ?? TAB_HUES[i % TAB_HUES.length];
   const site = tabsWithActive(siteTabs(), active);
-  // Tool pages (Réviser / ConjugaZone / Classement / Tuteur / Profil) live in
-  // the ☰ menu only (Dan, 2026-07-08: complete the burger menu) — the flap
-  // rail stays the course structure.
+  // Everything non-Unité (Index, WorDrill, SpecuLearn, Réviser, …) is the
+  // demoted thin tier (Dan, 2026-07-15) — rendered in the rail AND the ☰.
   const tools = tabsWithActive(toolTabs(), active);
   // Pages that pass the site row itself just deduplicate to no context group.
   const context = tabs.filter((t) => !site.some((s) => s.key === t.key) && !tools.some((s) => s.key === t.key));
@@ -275,29 +275,26 @@ export default function CahierShell({
                     // max-h + scroll: with the tools group the list outgrows
                     // small screens and items were cut off (Dan, 2026-07-08).
                     <div className="absolute right-0 top-full z-50 mt-1 flex max-h-[75vh] w-48 flex-col gap-1 overflow-y-auto rounded-lg border-2 border-[color:var(--cahier-ink)]/20 bg-white p-1 shadow-lg">
-                      {site.map((t, i) =>
-                        t.key === "guide" ? (
-                          <button
-                            key="quickguide"
-                            type="button"
-                            onClick={() => { setQuickGuideOpen(true); setMenuOpen(false); }}
-                            className="cahier-tab !rounded-md text-left font-black"
-                            style={{ background: "var(--cahier-ink)", borderColor: "var(--cahier-ink)", color: "#d4f24c" }}
-                          >
-                            <span aria-hidden>❓</span> QuickGuide
-                          </button>
-                        ) : (
-                          <TabFlap
-                            key={t.key}
-                            tab={t}
-                            hue={hueOf(t, i)}
-                            active={isActiveFlap(t)}
-                            className="cahier-tab !rounded-md text-left"
-                            onNavigate={() => setMenuOpen(false)}
-                          />
-                        ),
-                      )}
+                      {site.map((t, i) => (
+                        <TabFlap
+                          key={t.key}
+                          tab={t}
+                          hue={hueOf(t, i)}
+                          active={isActiveFlap(t)}
+                          className="cahier-tab !rounded-md text-left"
+                          onNavigate={() => setMenuOpen(false)}
+                        />
+                      ))}
                       <hr className="my-0.5 border-[color:var(--cahier-ink)]/15" />
+                      <button
+                        key="quickguide"
+                        type="button"
+                        onClick={() => { setQuickGuideOpen(true); setMenuOpen(false); }}
+                        className="cahier-tab cahier-tab--sm !rounded-md text-left font-black"
+                        style={{ background: "var(--cahier-ink)", borderColor: "var(--cahier-ink)", color: "#d4f24c" }}
+                      >
+                        <span aria-hidden>❓</span> QuickGuide
+                      </button>
                       {tools.map((t, i) => (
                         <TabFlap
                           key={t.key}
@@ -347,36 +344,32 @@ export default function CahierShell({
         {rankingOpen && <RankingOverlay onClose={() => setRankingOpen(false)} />}
         {quickGuideOpen && <GuideSplash onClose={() => setQuickGuideOpen(false)} />}
         <nav className="cahier-tabs" aria-label="Pages">
-          {site.map((t, i) =>
-            t.key === "guide" ? (
-              // The Guide flap IS the QuickGuide now (Dan, 2026-07-14:
-              // "remove the guide tab but put the ? in the new tab") —
-              // inverted colors, opens the popup instead of navigating.
-              <button
-                key="quickguide"
-                type="button"
-                onClick={() => setQuickGuideOpen(true)}
-                className={`cahier-tab ${context.length > 0 ? "cahier-tab--back1" : ""} font-black`}
-                style={{ background: "var(--cahier-ink)", borderColor: "var(--cahier-ink)", color: "#d4f24c" }}
-              >
-                <span aria-hidden>❓</span> QuickGuide
-              </button>
-            ) : (
-              <TabFlap
-                key={t.key}
-                tab={t}
-                hue={hueOf(t, i)}
-                active={isActiveFlap(t)}
-                className={`cahier-tab ${context.length > 0 ? "cahier-tab--back1" : ""}`}
-              />
-            ),
-          )}
-          {/* The tools live in the ☰ on mobile — but desktop hides the ☰
-              (Dan, 2026-07-08: "the desktop version does not have them"), so
-              they get their own small-flap group in the rail. */}
+          {/* TOP tier: Unités only (Dan, 2026-07-15) — Home's doors are the
+              top-left FluoLingo link and the 🏠 icon. */}
+          {site.map((t, i) => (
+            <TabFlap
+              key={t.key}
+              tab={t}
+              hue={hueOf(t, i)}
+              active={isActiveFlap(t)}
+              className={`cahier-tab ${context.length > 0 ? "cahier-tab--back1" : ""}`}
+            />
+          ))}
+          {/* LOWER tier (Dan, 2026-07-15: everything non-Unité, thin so ALL
+              of them fit): QuickGuide keeps its inverted colors, then Index,
+              WorDrill, SpecuLearn and the tools. */}
           <span aria-hidden className="h-3" />
+          <button
+            key="quickguide"
+            type="button"
+            onClick={() => setQuickGuideOpen(true)}
+            className="cahier-tab cahier-tab--xs font-black"
+            style={{ background: "var(--cahier-ink)", borderColor: "var(--cahier-ink)", color: "#d4f24c" }}
+          >
+            <span aria-hidden>❓</span> QuickGuide
+          </button>
           {tools.map((t, i) => (
-            <TabFlap key={t.key} tab={t} hue={hueOf(t, i)} active={active === t.key} className="cahier-tab cahier-tab--sm" />
+            <TabFlap key={t.key} tab={t} hue={hueOf(t, i)} active={active === t.key} className="cahier-tab cahier-tab--xs" />
           ))}
           {context.length > 0 && <span aria-hidden className="h-3" />}
           {context.map((t, i) => (

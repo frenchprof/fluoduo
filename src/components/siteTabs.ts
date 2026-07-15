@@ -23,29 +23,28 @@ export function tabsWithActive(tabs: ShellTab[], activeKey: string): ShellTab[] 
   return tabs.map((t) => (t.key === activeKey ? { ...t, href: undefined } : t));
 }
 
+/** The TOP tier of the flap rail: Unités 0–4, nothing else (Dan, 2026-07-15:
+ *  "I don't think we need the Flaptab for Home… All the flaptabs that are
+ *  not Units 0 to 4 must now be demoted"). Home's doors are the top-left
+ *  FluoLingo link and the 🏠 icon. */
 export function siteTabs(): ShellTab[] {
-  return [
-    { key: "home", label: "Home", emoji: "🏠", href: "/" },
-    { key: "guide", label: "Guide", emoji: "❓", href: "/guide", hue: "#7c6cff" },
-    ...[0, 1, 2, 3, 4].map((u) => ({
-      key: `unit-${u}`,
-      label: UNIT_META[u]?.label ?? `Unité ${u}`,
-      emoji: UNIT_META[u]?.emoji ?? "📚",
-      href: `/unit/${u}`,
-      hue: UNIT_ACCENTS[u],
-    })),
-    { key: "index", label: "Index", emoji: "🗂️", href: "/activities", hue: "#5b8def" },
-    // WorDrill earns a physical flap (Dan, 2026-07-15) — the one activity
-    // that spans the whole course rather than living inside a deck.
-    { key: "wordrill", label: "WorDrill", emoji: "🎤", href: "/practice/wordrill", hue: "#7bbf2e" },
-  ];
+  return [0, 1, 2, 3, 4].map((u) => ({
+    key: `unit-${u}`,
+    label: UNIT_META[u]?.label ?? `Unité ${u}`,
+    emoji: UNIT_META[u]?.emoji ?? "📚",
+    href: `/unit/${u}`,
+    hue: UNIT_ACCENTS[u],
+  }));
 }
 
-/** The tool pages (Dan, 2026-07-08: the ☰ menu should be complete) — shown as
- *  a second group in the burger menu. NOT in the physical flap rail, which
- *  stays the course structure (Home / Guide / Unités / Index). */
+/** The LOWER tier (Dan, 2026-07-15): everything that isn't a Unité, as one
+ *  thin-flap group — Index, WorDrill, SpecuLearn and the tools, in the rail
+ *  AND the ☰ menu. */
 export function toolTabs(): ShellTab[] {
   return [
+    { key: "index", label: "Index", emoji: "🗂️", href: "/activities", hue: "#5b8def" },
+    { key: "wordrill", label: "WorDrill", emoji: "🎙️", href: "/practice/wordrill", hue: "#7bbf2e" },
+    { key: "speculearn", label: "SpecuLearn", emoji: "🔮", href: "/practice/speculearn", hue: "#8a5fd4" },
     { key: "reviser", label: "Réviser", emoji: "🔁", href: "/reviser", hue: "#7bbf2e" },
     { key: "conjugaison", label: "ConjugaZone", emoji: "🔤", href: "/conjugaison", hue: "#2bb6c2" },
     // Game galleries (Dan, 2026-07-13) — every VocabulaRain / Lexicalator
@@ -53,7 +52,6 @@ export function toolTabs(): ShellTab[] {
     // the door (Dan: "we don't need the flap tab for classement").
     { key: "vocabularain", label: "VocabulaRain", emoji: "🌧️", href: "/games/letris", hue: "#5b8def" },
     { key: "lexicalator", label: "Lexicalator", emoji: "🧰", href: "/games/conveyor", hue: "#e3a700" },
-    { key: "speculearn", label: "SpecuLearn", emoji: "🔮", href: "/practice/speculearn", hue: "#8a5fd4" },
     { key: "tutor", label: "Tuteur", emoji: "🤖", href: "/tutor", hue: "#8a5fd4" },
     { key: "tts", label: "TTS", emoji: "🔊", href: "/tts", hue: "#e8852e" },
     // No Profil entry (Dan, 2026-07-08) — the circled-initial account chip in

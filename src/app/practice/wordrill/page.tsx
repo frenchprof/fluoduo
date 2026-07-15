@@ -81,12 +81,12 @@ export default function WorDrillPage() {
   const deck = scope === null ? null : decks.get(scope)!;
 
   return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "wordrill")} active="wordrill" crumb="🎤 WorDrill">
+    <CahierShell tabs={tabsWithActive(siteTabs(), "wordrill")} active="wordrill" crumb="🎙️ WorDrill">
       {deck === null ? (
         // Landing: pick the scope. Tout first, then the five units, each
         // wearing its accent and word count.
         <div className="mx-auto max-w-2xl px-4 py-6">
-          <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">🎤 WorDrill</h1>
+          <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">🎙️ WorDrill</h1>
           <p className="mb-4 mt-1 text-sm text-[color:var(--cahier-ink-soft)]">Continuous oral practice — pick your ground.</p>
           <button
             type="button"
@@ -125,7 +125,7 @@ export default function WorDrillPage() {
               ← Unités
             </button>
             <h1 className="cahier-display text-xl font-black text-[color:var(--cahier-ink)]">
-              🎤 {deck.title} <span className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">· {deck.items.length} mots</span>
+              🎙️ {deck.title} <span className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">· {deck.items.length} mots</span>
             </h1>
           </div>
           {/* key: switching scope must reset the run, not resume the old one */}
