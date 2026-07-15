@@ -32,3 +32,19 @@ export function isDevineReady(id: string): boolean {
  *  ⛪ église, 🏟️ stade, 🚉 gare read as themselves. Shared by the game
  *  (filters play) and the gallery (honest word counts). */
 export const BUILDING_EMOJI = new Set(["🏬", "🏪", "🏛️", "🏛", "🏦", "🏥", "🏫", "🏨", "🏢", "🏤", "🏣", "🏩", "🏭"]);
+
+/** Item-level SpecuLearn bans (Dan, 2026-07-15: "boutique is too ambiguous —
+ *  all the images can be boutique… marché supermarché also impossible to
+ *  tell the diff"). A target's image must map to exactly ONE word in its
+ *  deck: product-for-shop metonymy only works when the product is exclusive
+ *  to that shop (🥖 → boulangerie yes; 🍅 → marché OR supermarché no), and
+ *  no picture can carry a singular/plural split (boutique vs boutiques).
+ *  These items stay in Letris/Flip It/MCQ — they just can't be guessed. */
+export const SPECULEARN_EXCLUDED_ITEMS = new Set([
+  "commerces-01", // marché — a 🍅 is sold at the supermarché too
+  "commerces-02", // supermarché — 🛒 vs 🍅 doesn't separate them
+  "commerces-04", // centre commercial — 🛍️ is any shopping at all
+  "commerces-11", // boutique — every shop image "can be boutique"
+  "commerces-13", // boutiques — and no image shows the plural
+  "lieux-letris-28-jardins-publics", // 🌳 already means parc in this deck
+]);

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import BackLink from "@/components/BackLink";
 import { CURATED } from "@/content/collections";
-import { DEVINE_READY, BUILDING_EMOJI } from "@/lib/collections/devineReady";
+import { DEVINE_READY, BUILDING_EMOJI, SPECULEARN_EXCLUDED_ITEMS } from "@/lib/collections/devineReady";
 import PHOTO_ITEMS from "@/content/devine-aliments.json";
 import { shortTitle } from "@/lib/shortTitles";
 
@@ -35,7 +35,7 @@ const DECK_FACE: Record<string, string> = {
 function playableCount(id: string): number {
   if (id === "aliments") return PHOTO_ITEMS.length;
   const deck = CURATED.find((c) => c.id === id);
-  return (deck?.items ?? []).filter((i) => i.fr && i.emoji && !BUILDING_EMOJI.has(i.emoji)).length;
+  return (deck?.items ?? []).filter((i) => i.fr && i.emoji && !BUILDING_EMOJI.has(i.emoji) && !SPECULEARN_EXCLUDED_ITEMS.has(i.id)).length;
 }
 
 export default function SpecuLearnIndexPage() {

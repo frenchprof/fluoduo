@@ -19,7 +19,7 @@ import { speak } from "@/games/letris/speech";
 import { recordItemResult } from "@/lib/progress";
 import { sfx } from "@/games/audio/sfx";
 import { logEvent } from "@/lib/firebase/usage";
-import { BUILDING_EMOJI } from "@/lib/collections/devineReady";
+import { BUILDING_EMOJI, SPECULEARN_EXCLUDED_ITEMS } from "@/lib/collections/devineReady";
 import { useChoiceKeys, CHOICE_KEYS_HINT } from "@/lib/useChoiceKeys";
 import PHOTO_ITEMS from "@/content/devine-aliments.json";
 
@@ -88,7 +88,7 @@ function buildItems(collectionId: string): { items: DevItem[]; subtitle: string;
   }
   const deck = CURATED.find((c) => c.id === collectionId);
   const items = (deck?.items ?? [])
-    .filter((it) => it.fr && it.emoji && !BUILDING_EMOJI.has(it.emoji))
+    .filter((it) => it.fr && it.emoji && !BUILDING_EMOJI.has(it.emoji) && !SPECULEARN_EXCLUDED_ITEMS.has(it.id))
     .map((it) => {
       const w = withArticle(it.fr, it.tags);
       return { w, ...tagFromArticle(w), emoji: it.emoji as string };
