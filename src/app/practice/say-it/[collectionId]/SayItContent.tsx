@@ -55,11 +55,21 @@ function deaccent(s: string) {
 /** SPEECH-only tolerance: French silent endings make "il s'appelle" and
  *  "ils s'appellent" perfect homophones — the recognizer picks a spelling,
  *  and the learner must never be penalized for its choice (Dan, 2026-07-05).
- *  Word pairs are equal when they differ only by a silent -s / -x / -nt. */
+ *  Word pairs are equal when they differ only by a silent -s / -x / -nt,
+ *  or by an -er / -ez / -ée(s) ending — all /e/, so "parler" and "parlez"
+ *  are the same sound and the recognizer picks one arbitrarily (Dan,
+ *  2026-07-15: "parler and parlez are treated as different??"). Inputs
+ *  arrive deaccented. Stems under 3 letters are exempt: in "cher" / "mer" /
+ *  "chez"-class words the ending isn't the verb /e/. */
 function silentEq(a: string, b: string): boolean {
   if (a === b) return true;
   const grows = (x: string, y: string) => y === `${x}s` || y === `${x}x` || y === `${x}nt`;
-  return grows(a, b) || grows(b, a);
+  if (grows(a, b) || grows(b, a)) return true;
+  const foldE = (w: string) => {
+    const m = /^(.{3,})(er|ez|ee|ees)$/.exec(w);
+    return m ? `${m[1]}É` : w;
+  };
+  return foldE(a) === foldE(b);
 }
 
 function gradeAnswer(recognized: string, expected: string, expectedAlt?: string): Grade {

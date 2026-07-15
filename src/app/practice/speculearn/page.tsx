@@ -41,15 +41,18 @@ function playableCount(id: string): number {
 export default function SpecuLearnIndexPage() {
   const decks = DEVINE_READY
     .map((id) => CURATED.find((c) => c.id === id))
-    .filter((c): c is NonNullable<typeof c> => !!c);
-  const units = [...new Set(decks.map((d) => d.unit ?? 0))].sort((a, b) => a - b);
+    .filter((c): c is NonNullable<typeof c> => !!c)
+    .sort((a, b) => (a.unit ?? 0) - (b.unit ?? 0));
   return (
+    // ONE mobile screen (Dan, 2026-07-15: "it should fit into a single
+    // mobile screen") — no per-unit sections; the unit lives as a colored
+    // chip on each compact tile instead.
     <main
       className="min-h-screen text-indigo-950"
       style={{ background: "linear-gradient(180deg, #ded1fb 0%, #f0e9ff 45%, #fbf9ff 100%)" }}
     >
       <div className="border-b-2 border-white/70 bg-white/60 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 text-sm font-bold">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-2 text-sm font-bold">
           <BackLink fallback="/" className="text-indigo-700 hover:text-indigo-900">
             ← Back
           </BackLink>
@@ -57,47 +60,39 @@ export default function SpecuLearnIndexPage() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-5xl px-4 py-10">
-        <header className="mb-8">
-          <h1 className="text-4xl font-black tracking-tight text-indigo-700" style={{ textShadow: "0 2px 0 #fff" }}>
+      <div className="mx-auto max-w-3xl px-4 py-5">
+        <header className="mb-4">
+          <h1 className="text-2xl font-black tracking-tight text-indigo-700" style={{ textShadow: "0 2px 0 #fff" }}>
             🔮 Specu<span className="text-indigo-400">Learn</span>
+            <span className="ml-2 text-sm font-semibold text-indigo-900/70">guess first — that&rsquo;s how it sticks</span>
           </h1>
-          <p className="mt-1 font-semibold text-indigo-900/70">
-            Guess first — trying before you know is how the word sticks.
-          </p>
         </header>
 
-        {units.map((u) => {
-          const col = UNIT_COLORS[`Unité ${u}`] ?? UNIT_COLORS["Unité 0"];
-          const group = decks.filter((d) => (d.unit ?? 0) === u);
-          return (
-            <section key={u} className="mb-8">
-              <h2 className="mb-3 inline-block rounded-full px-4 py-1 text-base font-black text-white" style={{ background: col.accent }}>
-                Unité {u}
-              </h2>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-                {group.map((d) => (
-                  <Link
-                    key={d.id}
-                    href={`/practice/speculearn/${d.id}`}
-                    className="group flex h-full flex-col items-center rounded-2xl border-2 border-b-4 bg-white p-4 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-                    style={{ borderColor: col.accent }}
-                  >
-                    <span className="flex h-14 w-14 items-center justify-center rounded-2xl text-3xl" style={{ background: col.tint }} aria-hidden>
-                      {DECK_FACE[d.id] ?? "🔮"}
-                    </span>
-                    <span className="mt-2 line-clamp-2 text-sm font-black leading-snug text-indigo-950" lang="fr" title={d.title}>
-                      {shortTitle(d.id, d.title)}
-                    </span>
-                    <span className="mt-auto pt-2 text-[11px] font-bold" style={{ color: col.accent }}>
-                      🔮 {playableCount(d.id)} mots
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          );
-        })}
+        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+          {decks.map((d) => {
+            const col = UNIT_COLORS[`Unité ${d.unit ?? 0}`] ?? UNIT_COLORS["Unité 0"];
+            return (
+              <Link
+                key={d.id}
+                href={`/practice/speculearn/${d.id}`}
+                className="flex items-center gap-2.5 rounded-xl border-2 border-b-4 bg-white p-2.5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                style={{ borderColor: col.accent }}
+              >
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xl" style={{ background: col.tint }} aria-hidden>
+                  {DECK_FACE[d.id] ?? "🔮"}
+                </span>
+                <span className="min-w-0">
+                  <span className="block truncate text-[13px] font-black leading-tight text-indigo-950" lang="fr" title={d.title}>
+                    {shortTitle(d.id, d.title)}
+                  </span>
+                  <span className="block text-[11px] font-bold" style={{ color: col.accent }}>
+                    U{d.unit ?? 0} · {playableCount(d.id)} mots
+                  </span>
+                </span>
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </main>
   );
