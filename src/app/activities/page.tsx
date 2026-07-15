@@ -83,7 +83,14 @@ export default function ActivitiesIndexPage() {
             className="w-full max-w-xs rounded-full border-[3px] border-[color:var(--cahier-ink)] bg-[color:var(--cahier-hl,#eaff00)]/40 px-4 py-2 text-sm font-black text-[color:var(--cahier-ink)] shadow-[3px_3px_0_var(--cahier-ink)] outline-none placeholder:font-bold placeholder:text-[color:var(--cahier-ink)]/60 focus:bg-white"
           />
         </div>
-        <p className="mb-4 mt-1 text-sm text-[color:var(--cahier-ink-soft)]">Every deck × every activity — tap any cell.</p>
+        <p className="mb-2 mt-1 text-sm text-[color:var(--cahier-ink-soft)]">Every deck × every activity — tap any cell.</p>
+        {/* The one Say It that spans the whole matrix (Dan, 2026-07-15). */}
+        <Link
+          href="/practice/oral"
+          className="mb-4 flex items-center gap-2 rounded-xl border-2 border-[color:var(--cahier-ink)] bg-[#fbeec4] px-4 py-2 font-black text-[color:var(--cahier-ink)] shadow-[3px_3px_0_var(--cahier-ink)] transition hover:-translate-y-0.5"
+        >
+          🎤 Marathon oral <span className="font-bold text-[color:var(--cahier-ink-soft)]">— all Say It decks, one continuous run</span>
+        </Link>
         {totalHits === 0 && (
           <p className="mb-4 text-sm font-bold text-[color:var(--cahier-ink-soft)]">Aucun résultat pour « {q} »</p>
         )}

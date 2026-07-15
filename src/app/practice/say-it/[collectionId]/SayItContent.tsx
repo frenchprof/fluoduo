@@ -92,8 +92,18 @@ const GRADE_UI: Record<Grade, { icon: string; label: string; cls: string }> = {
   miss: { icon: "❌", label: "Pas tout à fait…", cls: "text-rose-700 bg-rose-50 border-rose-300" },
 };
 
-export default function SayItContent({ collectionId, embedded = false }: { collectionId: string; embedded?: boolean }) {
-  const deck = CURATED.find((c) => c.id === collectionId);
+export default function SayItContent({
+  collectionId,
+  embedded = false,
+  deckOverride,
+}: {
+  collectionId: string;
+  embedded?: boolean;
+  /** A synthetic deck (the Marathon oral compiles every deck into one) —
+   *  items arrive with articles already baked into fr. */
+  deckOverride?: Collection;
+}) {
+  const deck = deckOverride ?? CURATED.find((c) => c.id === collectionId);
 
   // A run is a working queue, NOT an endless carousel (Dan, 2026-07-03: "there
   // should be a natural end rather than looping continuously"). `card` is on
@@ -278,17 +288,26 @@ export default function SayItContent({ collectionId, embedded = false }: { colle
     speak(deck ? frFull(articleOf(deck, c), c.fr) : c.fr, "fr-FR");
   }, [deck]);
 
+  // Every function has a key (Dan, 2026-07-15): Space drives the mic (and
+  // retries from the result card), Enter advances, and the letters mirror
+  // the buttons — R écouter, V voir, S skip, B back, E end.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const p = phaseRef.current;
-      if (e.key === " " && p === "idle") { e.preventDefault(); startListening(); }
-      if (e.key === " " && p === "listening") { e.preventDefault(); stopRec(); }
+      const k = e.key.toLowerCase();
+      if (e.key === " " && p === "listening") { e.preventDefault(); stopRec(); return; }
+      if (e.key === " ") { e.preventDefault(); startListening(); return; } // idle start + result retry
       if (e.key === "Enter" && p === "result") next();
-      if ((e.key === "r" || e.key === "R") && p !== "listening") listenModel();
+      if (p === "listening") return; // no side actions while the mic is open
+      if (k === "r") listenModel();
+      if (k === "v") setRevealed((r) => !r);
+      if (k === "s") skip();
+      if (k === "b") back();
+      if (k === "e") endNow();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [startListening, stopRec, next, listenModel]);
+  }, [startListening, stopRec, next, listenModel, skip, back, endNow]);
 
   const tabs = withActive(deckActivityTabs(collectionId), "say");
   // Embedded = floating inside the SIO popup (the unit page stays visible
@@ -312,9 +331,11 @@ export default function SayItContent({ collectionId, embedded = false }: { colle
           <p className="text-sm text-[color:var(--fluo-ink-soft)] mb-4">
             Say It requires Chrome or Edge. Please open this page in one of those browsers.
           </p>
-          <Link href={`/practice/flip-it/${collectionId}`} className="fluo-btn">
-            Use Flip It instead
-          </Link>
+          {!deckOverride && (
+            <Link href={`/practice/flip-it/${collectionId}`} className="fluo-btn">
+              Use Flip It instead
+            </Link>
+          )}
         </div>,
     );
   }
@@ -418,9 +439,9 @@ export default function SayItContent({ collectionId, embedded = false }: { colle
                           : "border-[color:var(--cahier-ink)]/25 bg-white hover:border-[color:var(--cahier-ink)]"
                       }`}
                       aria-label="Voir le mot"
-                      title="Voir"
+                      title="Voir (V)"
                     >
-                      👁
+                      🔤
                     </button>
                   )}
                 </div>
@@ -474,6 +495,7 @@ export default function SayItContent({ collectionId, embedded = false }: { colle
               onClick={back}
               disabled={history.length === 0}
               className="fluo-btn fluo-btn-sm fluo-btn-ghost disabled:opacity-40"
+              title="Back (B)"
             >
               ⏮ Back
             </button>
@@ -482,11 +504,11 @@ export default function SayItContent({ collectionId, embedded = false }: { colle
               onClick={skip}
               disabled={queue.length === 0}
               className="fluo-btn fluo-btn-sm fluo-btn-ghost disabled:opacity-40"
-              title="Defer this word to the end"
+              title="Defer this word to the end (S)"
             >
               ⤼ Skip
             </button>
-            <button type="button" onClick={endNow} className="fluo-btn fluo-btn-sm fluo-btn-ghost">
+            <button type="button" onClick={endNow} className="fluo-btn fluo-btn-sm fluo-btn-ghost" title="End here (E)">
               ⏹ End here
             </button>
           </div>
@@ -494,7 +516,7 @@ export default function SayItContent({ collectionId, embedded = false }: { colle
 
         {!finished && card && (
           <p className="mt-4 text-center text-xs text-[color:var(--fluo-ink-soft)]">
-            Space = speak / stop · Enter = next card · R = 🔊
+            Space = 🎤 / stop / retry · Enter = next · R = 🔊 · V = 🔤 · S = skip · B = back · E = end
           </p>
         )}
       </div>,
