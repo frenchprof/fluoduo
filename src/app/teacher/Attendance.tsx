@@ -11,9 +11,9 @@ import { TableBox } from "./ui";
 
 const MAX_DAYS_SHOWN = 30;
 
-export default function Attendance({ events, roster }: { events: Ev[]; roster: Learner[] }) {
+export default function Attendance({ events, roster, includeTeachers = false }: { events: Ev[]; roster: Learner[]; includeTeachers?: boolean }) {
   const days = useMemo(() => {
-    const teachers = new Set(roster.filter((l) => l.isTeacher).map((l) => l.uid));
+    const teachers = new Set(includeTeachers ? [] : roster.filter((l) => l.isTeacher).map((l) => l.uid));
     const nameOf = new Map(roster.map((l) => [l.uid, l.name]));
     // day → path → uids
     const byDay = new Map<string, Map<string, { people: Set<string>; views: number }>>();
@@ -49,7 +49,7 @@ export default function Attendance({ events, roster }: { events: Ev[]; roster: L
           }))
           .sort((x, y) => y.people - x.people || y.views - x.views || x.path.localeCompare(y.path)),
       }));
-  }, [events, roster]);
+  }, [events, roster, includeTeachers]);
 
   if (days.length === 0) {
     return (

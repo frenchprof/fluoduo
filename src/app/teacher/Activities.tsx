@@ -8,9 +8,9 @@ import { useMemo } from "react";
 import { type Ev, type Learner, str, num } from "./data";
 import { Kpi, TableBox, SectionTitle } from "./ui";
 
-export default function Activities({ events, roster }: { events: Ev[]; roster: Learner[] }) {
+export default function Activities({ events, roster, includeTeachers = false }: { events: Ev[]; roster: Learner[]; includeTeachers?: boolean }) {
   const model = useMemo(() => {
-    const teachers = new Set(roster.filter((l) => l.isTeacher).map((l) => l.uid));
+    const teachers = new Set(includeTeachers ? [] : roster.filter((l) => l.isTeacher).map((l) => l.uid));
     const nameOf = new Map(roster.map((l) => [l.uid, l.name]));
     const evs = events.filter((e) => !teachers.has(e.uid));
 
@@ -86,7 +86,7 @@ export default function Activities({ events, roster }: { events: Ev[]; roster: L
       reviews, reviewers: reviewers.size,
       tutorMsgs, tutorUsers: tutorUsers.size,
     };
-  }, [events, roster]);
+  }, [events, roster, includeTeachers]);
 
   return (
     <div>

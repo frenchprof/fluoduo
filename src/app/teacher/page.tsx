@@ -94,14 +94,23 @@ function Dashboard() {
   const [events, setEvents] = useState<Ev[] | null>(null);
   const [board, setBoard] = useState<Map<string, BoardRow> | null>(null);
   const [error, setError] = useState(false);
+  // Dan tests with a teacher account, which the panels exclude by default —
+  // this toggle makes his own actions visible so "is it recording?" is
+  // answerable at a glance (Dan, 2026-07-14).
+  const [includeTeachers, setIncludeTeachers] = useState(false);
+  const [loadedAt, setLoadedAt] = useState<Date | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
+    setEvents(null);
+    setBoard(null);
     Promise.all([fetchAllEvents(), fetchLeaderboard()]).then(
       ([evs, b]) => {
         if (cancelled) return;
         setEvents(evs);
         setBoard(b);
+        setLoadedAt(new Date());
       },
       () => {
         if (!cancelled) setError(true);
@@ -110,7 +119,7 @@ function Dashboard() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [reloadKey]);
 
   const roster = useMemo(
     () => (events && board ? buildRoster(events, board) : []),
@@ -121,8 +130,25 @@ function Dashboard() {
   if (error) return <p className="text-sm font-bold text-rose-600">Couldn&rsquo;t load the analytics streams.</p>;
   if (!events || !board) return <p className="text-sm text-slate-500">Loading analytics…</p>;
 
+  const newest = events && events.length > 0 ? events[events.length - 1].ts : null;
+
   return (
     <div>
+      <div className="mb-2 flex flex-wrap items-center gap-3 text-xs text-slate-500">
+        <button type="button" onClick={() => setReloadKey((k) => k + 1)} className="rounded-lg border-2 border-slate-300 bg-white px-2.5 py-1 font-bold text-slate-700 hover:border-slate-500">
+          ↻ Refresh
+        </button>
+        <label className="flex cursor-pointer items-center gap-1.5 font-bold">
+          <input type="checkbox" checked={includeTeachers} onChange={(e) => setIncludeTeachers(e.target.checked)} />
+          include teacher accounts
+        </label>
+        {events && (
+          <span>
+            {events.length} events loaded{loadedAt ? ` at ${loadedAt.toLocaleTimeString()}` : ""} · newest event{" "}
+            {newest ? newest.toLocaleTimeString() : "—"}
+          </span>
+        )}
+      </div>
       <div className="flex flex-wrap gap-2">
         {PANELS.map((p) => (
           <button
@@ -140,10 +166,10 @@ function Dashboard() {
         ))}
       </div>
       <div className="mt-2">
-        {panel === "overview" && <Overview events={events} roster={roster} />}
-        {panel === "attendance" && <Attendance events={events} roster={roster} />}
+        {panel === "overview" && <Overview events={events} roster={roster} includeTeachers={includeTeachers} />}
+        {panel === "attendance" && <Attendance events={events} roster={roster} includeTeachers={includeTeachers} />}
         {panel === "students" && <Students events={events} roster={roster} />}
-        {panel === "activities" && <Activities events={events} roster={roster} />}
+        {panel === "activities" && <Activities events={events} roster={roster} includeTeachers={includeTeachers} />}
         {panel === "pretests" && <Pretests events={events} />}
         {panel === "feedback" && <FeedbackPanel nameOf={nameOf} />}
       </div>

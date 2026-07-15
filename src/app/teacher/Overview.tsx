@@ -10,9 +10,9 @@ import { Kpi, TableBox, SectionTitle } from "./ui";
 
 const DAYS_SHOWN = 14;
 
-export default function Overview({ events, roster }: { events: Ev[]; roster: Learner[] }) {
+export default function Overview({ events, roster, includeTeachers = false }: { events: Ev[]; roster: Learner[]; includeTeachers?: boolean }) {
   const model = useMemo(() => {
-    const students = roster.filter((l) => !l.isTeacher);
+    const students = roster.filter((l) => includeTeachers || !l.isTeacher);
     const uids = new Set(students.map((s) => s.uid));
     const evs = events.filter((e) => uids.has(e.uid) && e.ts);
 
@@ -77,7 +77,7 @@ export default function Overview({ events, roster }: { events: Ev[]; roster: Lea
       .slice(0, 10);
 
     return { students, activeToday, active7d, views7d, plays7d, answers7d, correct7d, days, topPages, topXp };
-  }, [events, roster]);
+  }, [events, roster, includeTeachers]);
 
   return (
     <div>
