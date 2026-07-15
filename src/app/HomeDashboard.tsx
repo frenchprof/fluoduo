@@ -139,12 +139,12 @@ const BYLINE_STROKES = [
                 previous one is complete. Hand-authored print-italic strokes
                 (no cursive faces per the house type rule), starting after
                 the ✨ blink. */}
-            <span className="-mt-1 block pl-1">
+            <span className="block pl-1">
               <svg
                 role="img"
                 aria-label="par Dr Chan"
                 viewBox="0 0 134 36"
-                className={`fluo-byline h-[1.6em] w-auto${heroPlay ? " is-play" : ""}`}
+                className={`fluo-byline h-[1.25em] w-auto${heroPlay ? " is-play" : ""}`}
               >
                 <g
                   transform="translate(4 0) skewX(-8)"
