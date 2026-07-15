@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { CURATED } from "@/content/collections";
 import { sfx } from "@/games/audio/sfx";
+import { speak } from "@/games/letris/speech";
 import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
 import { practiceItems } from "@/lib/collections/display";
 import { recordItemResult } from "@/lib/progress";
@@ -263,16 +264,26 @@ export default function SayItContent({ collectionId, embedded = false }: { colle
     rec.start();
   }, []);
 
+  // Hear the model pronunciation (Dan, 2026-07-15: "offer a button to listen
+  // next to Saying it"). Never while the mic is open — the recognizer would
+  // transcribe the TTS and grade the browser instead of the learner.
+  const listenModel = useCallback(() => {
+    const c = cardRef.current;
+    if (!c || phaseRef.current === "listening") return;
+    speak(deck ? frFull(articleOf(deck, c), c.fr) : c.fr, "fr-FR");
+  }, [deck]);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const p = phaseRef.current;
       if (e.key === " " && p === "idle") { e.preventDefault(); startListening(); }
       if (e.key === " " && p === "listening") { e.preventDefault(); stopRec(); }
       if (e.key === "Enter" && p === "result") next();
+      if ((e.key === "r" || e.key === "R") && p !== "listening") listenModel();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [startListening, stopRec, next]);
+  }, [startListening, stopRec, next, listenModel]);
 
   const tabs = withActive(deckActivityTabs(collectionId), "say");
   // Embedded = floating inside the SIO popup (the unit page stays visible
@@ -355,23 +366,39 @@ export default function SayItContent({ collectionId, embedded = false }: { colle
               )}
             </div>
 
-            {/* Mic button */}
+            {/* Mic button — with a listen button beside it (Dan, 2026-07-15),
+                hidden while the mic is open so TTS can't grade itself. */}
             {phase !== "result" && (
               <div className="flex flex-col items-center gap-3">
-                <button
-                  type="button"
-                  onClick={phase === "idle" ? startListening : stopRec}
-                  className={[
-                    "flex h-20 w-20 items-center justify-center rounded-full text-3xl",
-                    "shadow-lg transition-all active:scale-95",
-                    phase === "listening"
-                      ? "bg-rose-500 text-white ring-4 ring-rose-300 animate-pulse"
-                      : "bg-[var(--fluo-hl)] text-[color:var(--fluo-ink)] hover:brightness-95",
-                  ].join(" ")}
-                  aria-label={phase === "listening" ? "Stop" : "Start speaking"}
-                >
-                  {phase === "listening" ? "⏹" : "🎤"}
-                </button>
+                <div className="flex items-center gap-4">
+                  {phase === "idle" && (
+                    <button
+                      type="button"
+                      onClick={listenModel}
+                      className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-[color:var(--cahier-ink)]/25 bg-white text-xl shadow-md transition-all hover:border-[color:var(--cahier-ink)] active:scale-95"
+                      aria-label="Écouter"
+                      title="Écouter (R)"
+                    >
+                      🔊
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={phase === "idle" ? startListening : stopRec}
+                    className={[
+                      "flex h-20 w-20 items-center justify-center rounded-full text-3xl",
+                      "shadow-lg transition-all active:scale-95",
+                      phase === "listening"
+                        ? "bg-rose-500 text-white ring-4 ring-rose-300 animate-pulse"
+                        : "bg-[var(--fluo-hl)] text-[color:var(--fluo-ink)] hover:brightness-95",
+                    ].join(" ")}
+                    aria-label={phase === "listening" ? "Stop" : "Start speaking"}
+                  >
+                    {phase === "listening" ? "⏹" : "🎤"}
+                  </button>
+                  {/* keeps the mic centred while the 🔊 sits to its left */}
+                  {phase === "idle" && <span className="h-12 w-12" aria-hidden />}
+                </div>
                 <p className="text-sm text-[color:var(--cahier-ink-soft)]">
                   {phase === "listening" ? "Listening… (tap to stop)" : "Tap to speak"}
                 </p>
@@ -397,6 +424,9 @@ export default function SayItContent({ collectionId, embedded = false }: { colle
                     <span lang="fr" className={`font-black ${isCorrect ? "text-emerald-700" : "text-rose-700"}`}>
                       {deck ? frFull(articleOf(deck, card), card.fr) : card.fr}
                     </span>
+                    <button type="button" onClick={listenModel} className="ml-2 align-middle text-base" aria-label="Écouter" title="Écouter (R)">
+                      🔊
+                    </button>
                   </div>
                 </div>
                 <div className="mt-4 flex gap-2">
@@ -439,7 +469,7 @@ export default function SayItContent({ collectionId, embedded = false }: { colle
 
         {!finished && card && (
           <p className="mt-4 text-center text-xs text-[color:var(--fluo-ink-soft)]">
-            Space = speak / stop · Enter = next card
+            Space = speak / stop · Enter = next card · R = 🔊
           </p>
         )}
       </div>,
