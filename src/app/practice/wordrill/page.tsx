@@ -1,8 +1,8 @@
 "use client";
 
 /**
- * Marathon oral (Dan, 2026-07-15: "compile ALL the say-its into one space for
- * continuous oral practice") — every curated deck's Say It items in a single
+ * WorDrill (Dan, 2026-07-15: "compile ALL the say-its into one space for
+ * continuous oral practice"; named by Dan the same day) — every curated deck's Say It items in a single
  * shuffled run. Articles/prefixes are baked into fr here (the synthetic deck
  * has no letris columns to derive them from), item ids are preserved so every
  * say still feeds the Reviser and XP exactly like the per-deck pages.
@@ -45,35 +45,35 @@ function buildMarathonDeck(): Collection {
     }
   }
   return {
-    id: "oral-marathon",
-    title: "Marathon oral",
-    subtitle: "tous les decks, une seule course",
+    id: "wordrill",
+    title: "WorDrill",
+    subtitle: "tous les decks, un seul drill",
     langPair: "fr-en",
     owner: "curated",
     visibility: "public",
     unit: 4,
     lessonNo: 0,
-    lessonSlug: "oral-marathon",
+    lessonSlug: "wordrill",
     tags: [],
     seq: 999,
     items,
   } as Collection;
 }
 
-export default function OralMarathonPage() {
+export default function WorDrillPage() {
   // ONE stable deck object — SayItContent reshuffles whenever its deck
   // identity changes, so this must not be rebuilt per render.
   const deck = useMemo(buildMarathonDeck, []);
   return (
     // Site row only, like ConjugaZone/Teacher — this space belongs to no
     // single deck, so there is no deck flap group to show.
-    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="oral" crumb="🎤 Marathon oral">
+    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="wordrill" crumb="🎤 WorDrill">
       <div className="mx-auto max-w-2xl px-4 pt-4">
         <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
-          🎤 Marathon oral <span className="text-base font-bold text-[color:var(--cahier-ink-soft)]">· {deck.items.length} mots</span>
+          🎤 WorDrill <span className="text-base font-bold text-[color:var(--cahier-ink-soft)]">· {deck.items.length} mots</span>
         </h1>
       </div>
-      <SayItContent collectionId="oral-marathon" deckOverride={deck} embedded />
+      <SayItContent collectionId="wordrill" deckOverride={deck} embedded />
     </CahierShell>
   );
 }
