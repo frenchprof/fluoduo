@@ -102,6 +102,11 @@ export default function HomeDashboard() {
               </span>
             </span>{" "}
             <span className={`fluo-brand-star${heroPlay ? " is-play" : ""}`} aria-hidden>✨</span>
+            {/* Byline (Dan, 2026-07-15) — italic serif, tucked under the
+                highlighted word; no cursive faces per the house type rule. */}
+            <span className="-mt-1 block pl-1 text-base font-bold italic text-[color:var(--fluo-ink-soft)]">
+              par Dr Chan
+            </span>
           </h1>
           <div className="flex shrink-0 items-center gap-2">
             {activeSio && (
