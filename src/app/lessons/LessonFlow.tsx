@@ -115,7 +115,7 @@ export default function LessonFlow({
           (Dan, 2026-07-08: "yes" to ConjugaZone links from these lessons). */}
       {sio && CONJ_BY_SIO[sio.id] && (
         <Link href={`/conjugaison?v=${CONJ_BY_SIO[sio.id].join(",")}`} className="fluo-btn fluo-btn-sm inline-flex">
-          🔤 ConjugaZone — les tables de ces verbes
+          🔤 ConjugaZone — les tableaux de ces verbes
         </Link>
       )}
       {deckLessons.length > 1 && (
