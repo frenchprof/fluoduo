@@ -11,6 +11,7 @@
 import { useEffect, useState } from "react";
 import { signInWithGoogle, useAuthUser } from "@/lib/firebase/auth";
 import { levelForXp } from "@/lib/economy";
+import { ALIAS_BOARD_NAMES } from "@/lib/accountAliases";
 import RankBadge from "@/components/RankBadge";
 
 type BoardRow = {
@@ -90,9 +91,27 @@ export default function LeaderboardList() {
         // schemas, then take the top 50.
         const snap = await getDocs(query(collection(db, "leaderboard"), limit(300)));
         if (!cancelled) {
-          const list = snap.docs
+          let list = snap.docs
             .map((d) => ({ uid: d.id, ...(d.data() as Omit<BoardRow, "uid">) }))
             .filter((r) => !EXCLUDED_UIDS.has(r.uid));
+          // One student, two accounts (Dan, 2026-07-16): fold alias rows into
+          // the canonical row — XP and gems ADD (both are her effort), streak
+          // takes the max. Rows carry no email, so the match is by the known
+          // display names. If the canonical row doesn't exist yet, the alias
+          // row is simply renamed.
+          for (const [aliasName, targetName] of Object.entries(ALIAS_BOARD_NAMES)) {
+            const src = list.find((r) => rowName(r) === aliasName);
+            if (!src) continue;
+            const target = list.find((r) => rowName(r) === targetName);
+            if (target) {
+              target.xp = rowXp(target) + rowXp(src);
+              target.gems = (target.gems ?? 0) + (src.gems ?? 0);
+              target.streak = Math.max(target.streak ?? 0, src.streak ?? 0);
+              list = list.filter((r) => r !== src);
+            } else {
+              src.name = targetName;
+            }
+          }
           list.sort((a, b) => rowXp(b) - rowXp(a));
           setRows(list.slice(0, 50));
         }

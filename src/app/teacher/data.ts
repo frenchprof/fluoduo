@@ -10,6 +10,8 @@
  * ships to learners.
  */
 
+import { canonicalEmail } from "@/lib/accountAliases";
+
 // Mirror of firestore.rules isAdmin() — keep the two lists in sync.
 export const ADMIN_EMAILS = [
   "drneilchan@gmail.com",
@@ -37,6 +39,9 @@ export type BoardRow = {
 
 export type Learner = {
   uid: string;
+  /** All uids belonging to this person — >1 when accounts are aliased
+   *  (accountAliases.ts). Drilldowns and event filters must use this. */
+  uids: string[];
   name: string;
   email: string | null;
   isTeacher: boolean;
@@ -161,7 +166,7 @@ export function buildRoster(events: Ev[], board: Map<string, BoardRow>): Learner
     let l = byUid.get(uid);
     if (!l) {
       byUid.set(uid, (l = {
-        uid, name: uid.slice(0, 8), email: null, isTeacher: false,
+        uid, uids: [uid], name: uid.slice(0, 8), email: null, isTeacher: false,
         firstSeen: null, lastSeen: null, daysActive: 0,
         pageViews: 0, gamePlays: 0, pretestAnswers: 0,
         board: board.get(uid) ?? null,
@@ -192,13 +197,76 @@ export function buildRoster(events: Ev[], board: Map<string, BoardRow>): Learner
     const l = ensure(uid);
     if (l.name === uid.slice(0, 8)) l.name = row.name;
   }
-  for (const l of byUid.values()) l.daysActive = days.get(l.uid)?.size ?? 0;
-  return [...byUid.values()].sort(
+  // Fold aliased accounts into one person (Dan, 2026-07-16): counts add,
+  // board XP/gems add (both accounts are the same student's effort), the
+  // name and email come from the canonical account.
+  const byCanon = new Map<string, Learner>();
+  const merged: Learner[] = [];
+  for (const l of byUid.values()) {
+    const canon = canonicalEmail(l.email);
+    const t = canon ? byCanon.get(canon) : undefined;
+    if (!canon || !t) {
+      if (canon) byCanon.set(canon, l);
+      merged.push(l);
+      continue;
+    }
+    const canonSide = l.email?.toLowerCase() === canon ? l : t;
+    t.name = canonSide.name;
+    t.email = canon;
+    t.uids = [...t.uids, ...l.uids];
+    t.isTeacher = t.isTeacher || l.isTeacher;
+    t.pageViews += l.pageViews;
+    t.gamePlays += l.gamePlays;
+    t.pretestAnswers += l.pretestAnswers;
+    if (l.firstSeen && (!t.firstSeen || l.firstSeen < t.firstSeen)) t.firstSeen = l.firstSeen;
+    if (l.lastSeen && (!t.lastSeen || l.lastSeen > t.lastSeen)) t.lastSeen = l.lastSeen;
+    if (t.board || l.board) {
+      t.board = {
+        name: canonSide.board?.name ?? canonSide.name,
+        xp: (t.board?.xp ?? 0) + (l.board?.xp ?? 0),
+        level: Math.max(t.board?.level ?? 1, l.board?.level ?? 1),
+        gems: (t.board?.gems ?? 0) + (l.board?.gems ?? 0),
+        streak: Math.max(t.board?.streak ?? 0, l.board?.streak ?? 0),
+      };
+    }
+  }
+  for (const l of merged) {
+    const union = new Set<string>();
+    for (const uid of l.uids) for (const d of days.get(uid) ?? []) union.add(d);
+    l.daysActive = union.size;
+  }
+  return merged.sort(
     (a, b) => (b.lastSeen?.getTime() ?? 0) - (a.lastSeen?.getTime() ?? 0),
   );
 }
 
-export async function fetchStudentDetail(uid: string): Promise<StudentDetail> {
+/** Fetch one person's stores. Aliased students have several uids — every
+ *  store is fetched per-uid and combined (XP/gems add, SIOs/badges union,
+ *  responses/sessions concatenate). */
+export async function fetchStudentDetail(uids: string[]): Promise<StudentDetail> {
+  const parts = await Promise.all(uids.map(fetchOneStudent));
+  if (parts.length === 1) return parts[0];
+  const progresses = parts.map((p) => p.progress).filter((p): p is NonNullable<StudentDetail["progress"]> => !!p);
+  return {
+    progress: progresses.length === 0 ? null : {
+      xp: progresses.reduce((n, p) => n + (p.xp ?? 0), 0),
+      gems: progresses.reduce((n, p) => n + (p.gems ?? 0), 0),
+      streak: Math.max(...progresses.map((p) => p.streak ?? 0)),
+      lastActiveDay: progresses.map((p) => p.lastActiveDay ?? "").sort().pop() || null,
+      doneSios: [...new Set(progresses.flatMap((p) => p.doneSios ?? []))],
+      badges: [...new Set(progresses.flatMap((p) => p.badges ?? []))],
+      itemSrs: Object.assign({}, ...progresses.map((p) => p.itemSrs ?? {})),
+      updatedAt: Math.max(...progresses.map((p) => p.updatedAt ?? 0)) || undefined,
+    },
+    sessions: parts.flatMap((p) => p.sessions),
+    responses: parts.flatMap((p) => p.responses).sort((a, b) => (b.ts?.getTime() ?? 0) - (a.ts?.getTime() ?? 0)),
+    attemptsCount: parts.some((p) => p.attemptsCount !== null)
+      ? parts.reduce((n, p) => n + (p.attemptsCount ?? 0), 0)
+      : null,
+  };
+}
+
+async function fetchOneStudent(uid: string): Promise<StudentDetail> {
   const [{ getDoc, getDocs, getCountFromServer, doc, collection }, { db }] = await Promise.all([
     import("firebase/firestore"),
     import("@/lib/firebase/db"),

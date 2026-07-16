@@ -118,13 +118,15 @@ export default function SayItContent({
 
   // A run is a working queue, NOT an endless carousel (Dan, 2026-07-03: "there
   // should be a natural end rather than looping continuously"). `card` is on
-  // screen; `queue` is what's still ahead; `history` is what's behind (drives
-  // Back and the progress count). Skip defers the current word to the end of
-  // the queue; End here jumps straight to the summary.
+  // screen; `queue` is what's still ahead; `trail` is every card left behind —
+  // answered OR skipped — so Back can always retrace (Dan, 2026-07-16: "the
+  // back button is not active when I skip questions"). Only answered entries
+  // count toward progress; a skipped card also waits at the queue's end, and
+  // going Back to it pulls it out of the queue again (no duplicates).
   const [cards, setCards] = useState<Item[]>([]); // stable deck order (mount shuffle)
   const [card, setCard] = useState<Item | null>(null);
   const [queue, setQueue] = useState<Item[]>([]);
-  const [history, setHistory] = useState<Item[]>([]);
+  const [trail, setTrail] = useState<{ it: Item; skipped: boolean }[]>([]);
   const [finished, setFinished] = useState(false);
 
   // Shuffle on mount only — shuffling during render breaks SSR hydration
@@ -134,7 +136,7 @@ export default function SayItContent({
     setCards(list);
     setCard(list[0] ?? null);
     setQueue(list.slice(1));
-    setHistory([]);
+    setTrail([]);
     setFinished(false);
   }, [deck]);
 
@@ -187,11 +189,11 @@ export default function SayItContent({
     setResult(null);
   }, [stopRec]);
 
-  // Advance after answering: the current card joins history; the next card
+  // Advance after answering: the current card joins the trail; the next card
   // comes off the queue, or — when the queue is empty — the run ends.
   const next = useCallback(() => {
     resetTurn();
-    if (card) setHistory((h) => [...h, card]);
+    if (card) setTrail((t) => [...t, { it: card, skipped: false }]);
     if (queue.length > 0) {
       setCard(queue[0]);
       setQueue(queue.slice(1));
@@ -203,24 +205,34 @@ export default function SayItContent({
   }, [card, queue, resetTurn]);
 
   // Skip = defer this word: move it to the back of the queue (not graded, not
-  // counted) and show the next one. A no-op when nothing else is queued.
+  // counted) and show the next one. It still joins the trail, so Back can
+  // return to it. A no-op when nothing else is queued.
   const skip = useCallback(() => {
     if (!card || queue.length === 0) return;
     resetTurn();
+    setTrail((t) => [...t, { it: card, skipped: true }]);
     setCard(queue[0]);
     setQueue([...queue.slice(1), card]);
   }, [card, queue, resetTurn]);
 
-  // Back = revisit the previous card: pop history, push the current card back
-  // to the front of the queue.
+  // Back = revisit the previous card, answered or skipped. A skipped card is
+  // also waiting at the queue's END — pull that copy out so it can't appear
+  // twice; the current card returns to the queue's front either way.
   const back = useCallback(() => {
-    if (history.length === 0) return;
+    if (trail.length === 0) return;
     resetTurn();
-    const prev = history[history.length - 1];
-    setHistory(history.slice(0, -1));
-    setQueue((q) => (card ? [card, ...q] : q));
-    setCard(prev);
-  }, [history, card, resetTurn]);
+    const prev = trail[trail.length - 1];
+    setTrail(trail.slice(0, -1));
+    setQueue((q) => {
+      let rest = q;
+      if (prev.skipped) {
+        const k = rest.lastIndexOf(prev.it);
+        if (k !== -1) rest = [...rest.slice(0, k), ...rest.slice(k + 1)];
+      }
+      return card ? [card, ...rest] : rest;
+    });
+    setCard(prev.it);
+  }, [trail, card, resetTurn]);
 
   // End here = stop now and show the summary.
   const endNow = useCallback(() => {
@@ -235,7 +247,7 @@ export default function SayItContent({
     setCards(list);
     setCard(list[0] ?? null);
     setQueue(list.slice(1));
-    setHistory([]);
+    setTrail([]);
     setScore({ ok: 0, total: 0 });
     setFinished(false);
     setPhase("idle");
@@ -368,6 +380,7 @@ export default function SayItContent({
     );
   }
 
+  const answered = trail.filter((t) => !t.skipped).length;
   const ui = result ? GRADE_UI[result.grade] : null;
   const isCorrect = result?.grade === "perfect" || result?.grade === "good" || result?.grade === "homophone";
 
@@ -376,7 +389,7 @@ export default function SayItContent({
         <div className="mb-4 text-center">
           <p className="fluo-label">{deck.title}</p>
           {!finished && card && (
-            <p className="text-xs text-[color:var(--fluo-ink-soft)]">{history.length + 1} / {cards.length}</p>
+            <p className="text-xs text-[color:var(--fluo-ink-soft)]">{answered + 1} / {cards.length}</p>
           )}
         </div>
 
@@ -384,7 +397,7 @@ export default function SayItContent({
         <div className="h-1.5 rounded-full bg-[color:var(--fluo-line)] mb-6 overflow-hidden">
           <div
             className="h-full rounded-full bg-emerald-500 transition-all"
-            style={{ width: `${cards.length ? ((finished ? cards.length : history.length) / cards.length) * 100 : 0}%` }}
+            style={{ width: `${cards.length ? ((finished ? cards.length : answered) / cards.length) * 100 : 0}%` }}
           />
         </div>
 
@@ -521,7 +534,7 @@ export default function SayItContent({
             <button
               type="button"
               onClick={back}
-              disabled={history.length === 0}
+              disabled={trail.length === 0}
               className="fluo-btn fluo-btn-sm fluo-btn-ghost disabled:opacity-40"
               title="Back (B)"
             >

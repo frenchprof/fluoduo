@@ -125,7 +125,7 @@ function Dashboard() {
     () => (events && board ? buildRoster(events, board) : []),
     [events, board],
   );
-  const nameOf = useMemo(() => new Map(roster.map((l) => [l.uid, l.name])), [roster]);
+  const nameOf = useMemo(() => new Map(roster.flatMap((l) => l.uids.map((u) => [u, l.name] as const))), [roster]);
 
   if (error) return <p className="text-sm font-bold text-rose-600">Couldn&rsquo;t load the analytics streams.</p>;
   if (!events || !board) return <p className="text-sm text-slate-500">Loading analytics…</p>;

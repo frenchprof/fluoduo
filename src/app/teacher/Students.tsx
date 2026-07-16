@@ -56,15 +56,16 @@ function StudentPanel({ learner, events }: { learner: Learner; events: Ev[] }) {
 
   useEffect(() => {
     let cancelled = false;
-    fetchStudentDetail(learner.uid).then(
+    fetchStudentDetail(learner.uids).then(
       (d) => { if (!cancelled) setDetail(d); },
       () => { if (!cancelled) setError(true); },
     );
     return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- key={uid} remounts the panel per learner
   }, [learner.uid]);
 
   const trail = useMemo(() => {
-    const mine = events.filter((e) => e.uid === learner.uid);
+    const mine = events.filter((e) => learner.uids.includes(e.uid));
     const pages = new Map<string, number>();
     const games = new Map<string, { plays: number; best: number | null }>();
     let answers = 0;
@@ -110,7 +111,7 @@ function StudentPanel({ learner, events }: { learner: Learner; events: Ev[] }) {
       tutorRecent: tutorRecent.slice(0, 10),
       daysActive: days.size,
     };
-  }, [events, learner.uid]);
+  }, [events, learner.uids]);
 
   const respStats = useMemo(() => {
     if (!detail) return null;
@@ -158,6 +159,11 @@ function StudentPanel({ learner, events }: { learner: Learner; events: Ev[] }) {
       <h2 className="text-lg font-black text-slate-900">
         {learner.name}
         {learner.email && <span className="ml-2 text-sm font-normal text-slate-500">{learner.email}</span>}
+        {learner.uids.length > 1 && (
+          <span className="ml-2 rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-bold text-indigo-800" title={learner.uids.join(" + ")}>
+            {learner.uids.length} accounts merged
+          </span>
+        )}
       </h2>
       <p className="mt-1 text-xs text-slate-500">
         First seen {fmtWhen(learner.firstSeen)} · last seen {fmtWhen(learner.lastSeen)} · active on {trail.daysActive} day{trail.daysActive === 1 ? "" : "s"}
@@ -196,7 +202,7 @@ function StudentPanel({ learner, events }: { learner: Learner; events: Ev[] }) {
             const ko = respStats ? respStats.total - ok : 0;
             const sios = p?.doneSios?.length ?? 0;
             const convs = events.filter(
-              (e) => e.uid === learner.uid && e.type === "game.end" && String((e.payload as Record<string, unknown>)?.game ?? "").startsWith("compose"),
+              (e) => learner.uids.includes(e.uid) && e.type === "game.end" && String((e.payload as Record<string, unknown>)?.game ?? "").startsWith("compose"),
             ).length;
             const floor = ok * XP_CORRECT + ko * XP_WRONG + sios * XP_SIO_BASE + convs * XP_CONVERSATION;
             const syncOk = boardXp === null || progXp === null || boardXp === progXp;

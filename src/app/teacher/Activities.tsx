@@ -10,8 +10,8 @@ import { Kpi, TableBox, SectionTitle } from "./ui";
 
 export default function Activities({ events, roster, includeTeachers = false }: { events: Ev[]; roster: Learner[]; includeTeachers?: boolean }) {
   const model = useMemo(() => {
-    const teachers = new Set(includeTeachers ? [] : roster.filter((l) => l.isTeacher).map((l) => l.uid));
-    const nameOf = new Map(roster.map((l) => [l.uid, l.name]));
+    const teachers = new Set(includeTeachers ? [] : roster.filter((l) => l.isTeacher).flatMap((l) => l.uids));
+    const nameOf = new Map(roster.flatMap((l) => l.uids.map((u) => [u, l.name] as const)));
     const evs = events.filter((e) => !teachers.has(e.uid));
 
     const games = new Map<string, {
