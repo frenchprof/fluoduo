@@ -81,21 +81,39 @@ export default function ConjugaisonPage() {
         </p>
 
         <AuthGate what="practise" compact>
-          {/* Verb picker — one row per verb group (Dan, 2026-07-14) */}
-          <div className="mb-4 space-y-2">
+          {/* Verb picker — one DROPDOWN per verb group (Dan, 2026-07-15: the
+              67-chip wall "looks very messy"). Selecting toggles the verb
+              (✓ marks the ones already on the table); the picked verbs sit
+              below as chips, tap × to drop one. */}
+          <div className="mb-2 flex flex-wrap gap-1.5">
             {CONJ_GROUPS.map((g) => (
-              <div key={g}>
-                <p className="fluo-label mb-1">{g}</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {VERBS.filter((v) => v.group === g).map((v) => (
-                    <button key={v.id} type="button" lang="fr" onClick={() => toggleVerb(v.id)}
-                      className={`cahier-btn cahier-btn-sm ${picked.includes(v.id) ? "cahier-btn-primary" : ""}`}>
-                      {v.inf}
-                    </button>
-                  ))}
-                </div>
-              </div>
+              <select
+                key={g}
+                value=""
+                aria-label={g}
+                onChange={(e) => { if (e.target.value) toggleVerb(e.target.value); }}
+                className="max-w-full cursor-pointer rounded-lg border-2 border-[color:var(--cahier-ink)]/30 bg-white px-2 py-1.5 text-sm font-bold text-[color:var(--cahier-ink)] shadow-[2px_2px_0_rgba(0,0,0,0.08)] outline-none hover:border-[color:var(--cahier-ink)]"
+              >
+                <option value="">{g} ▾</option>
+                {VERBS.filter((v) => v.group === g).map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {picked.includes(v.id) ? "✓ " : ""}{v.inf} — {v.en}
+                  </option>
+                ))}
+              </select>
             ))}
+          </div>
+          <div className="mb-4 flex flex-wrap gap-1.5">
+            {shown.length === 0 ? (
+              <p className="text-sm text-[color:var(--cahier-ink-soft)]">Choisis tes verbes dans les listes ↑</p>
+            ) : (
+              shown.map((v) => (
+                <button key={v.id} type="button" lang="fr" onClick={() => toggleVerb(v.id)}
+                  title="Retirer" className="cahier-btn cahier-btn-sm cahier-btn-primary">
+                  {v.inf} <span aria-hidden className="opacity-70">×</span>
+                </button>
+              ))
+            )}
           </div>
 
           {shown.length === 0 ? (

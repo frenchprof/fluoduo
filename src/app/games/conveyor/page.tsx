@@ -1,60 +1,51 @@
 import Link from "next/link";
-import BackLink from "@/components/BackLink";
+import CahierShell from "@/components/CahierShell";
+import { siteTabs, tabsWithActive, UNIT_ACCENTS } from "@/components/siteTabs";
 import { CURATED } from "@/content/collections";
 import { isLexReadyId } from "@/lib/collections/lexReady";
 import { shortTitle } from "@/lib/shortTitles";
 
-/** Every Lexicalator in one place (Dan, 2026-07-13: a flap tab "leading to a
- *  page consolidating all the links towards that game") — the 🧰 twin of the
- *  Vocabularain gallery, grouped by Unité. */
-function groups() {
-  const decks = CURATED.filter((c) => isLexReadyId(c.id));
-  return [0, 1, 2, 3, 4]
-    .map((u) => ({ unit: u, decks: decks.filter((c) => c.unit === u) }))
-    .filter((g) => g.decks.length > 0);
-}
+/** The Lexicalator gallery — Cahier skin like every other section page
+ *  (Dan, 2026-07-15), compact one-grid layout with the Unité as a colored
+ *  chip on each tile. */
+
+const UNIT_TINTS: Record<number, string> = { 0: "#fbe3ec", 1: "#def3f5", 2: "#fbeec4", 3: "#ece2fa", 4: "#fbe6cf" };
 
 export default function LexicalatorIndexPage() {
+  const decks = CURATED.filter((c) => isLexReadyId(c.id)).sort((a, b) => (a.unit ?? 9) - (b.unit ?? 9));
   return (
-    <main
-      className="min-h-screen text-[#5a3a08]"
-      style={{ background: "linear-gradient(180deg, #ffe9b0 0%, #fff4d6 45%, #fffdf4 100%)" }}
-    >
-      <div className="border-b-2 border-white/70 bg-white/60 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 text-sm font-bold">
-          <BackLink fallback="/" className="text-[#a06a10] hover:text-[#5a3a08]">← Back</BackLink>
-          <span className="text-[#5a3a08]/60">🧰 Lexicalator</span>
+    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="lexicalator" crumb="🧰 Lexicalator">
+      <div className="mx-auto max-w-3xl px-4 py-4">
+        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
+          🧰 Lexicalator
+          <span className="ml-2 text-sm font-bold text-[color:var(--cahier-ink-soft)]">forge the French from the syllables on the belt</span>
+        </h1>
+        <div className="mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+          {decks.map((c) => {
+            const u = c.unit ?? 0;
+            return (
+              <Link
+                key={c.id}
+                href={`/games/conveyor/${c.id}`}
+                className="flex items-center gap-2.5 rounded-xl border-2 border-b-4 bg-white p-2.5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                style={{ borderColor: UNIT_ACCENTS[u] }}
+              >
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xl" style={{ background: UNIT_TINTS[u] }} aria-hidden>
+                  {c.items.find((i) => i.emoji)?.emoji ?? "🧰"}
+                </span>
+                <span className="min-w-0">
+                  <span className="block truncate text-[13px] font-black leading-tight text-[color:var(--cahier-ink)]" lang="fr" title={c.title}>
+                    {shortTitle(c.id, c.title)}
+                  </span>
+                  <span className="block text-[11px] font-bold" style={{ color: UNIT_ACCENTS[u] }}>
+                    U{u} · {c.items.length} mots
+                  </span>
+                </span>
+              </Link>
+            );
+          })}
         </div>
       </div>
-
-      <div className="mx-auto max-w-5xl px-4 py-10">
-        <header className="mb-8">
-          <h1 className="text-4xl font-black tracking-tight text-[#c8860f]" style={{ textShadow: "0 2px 0 #fff" }}>
-            🧰 Lexic<span className="text-[#e3a700]">alator</span>
-          </h1>
-          <p className="mt-1 font-semibold text-[#5a3a08]/70">
-            Pick a chest, forge its French from the syllables on the belt.
-          </p>
-        </header>
-
-        {groups().map((g) => (
-          <section key={g.unit} className="mb-8">
-            <h2 className="mb-3 text-lg font-black text-[#5a3a08]">Unité {g.unit}</h2>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {g.decks.map((c) => (
-                <Link
-                  key={c.id}
-                  href={`/games/conveyor/${c.id}`}
-                  className="rounded-2xl border-2 border-b-4 border-[#e0a500] bg-white p-4 font-bold shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-                >
-                  <span lang="fr" className="block text-lg font-black text-[#5a3a08]" title={c.title}>{shortTitle(c.id, c.title)}</span>
-                  <span className="mt-2 inline-block rounded-full bg-[#ffe08a] px-2 py-0.5 text-xs text-[#7a4e0a]">{c.items.length} mots</span>
-                </Link>
-              ))}
-            </div>
-          </section>
-        ))}
-      </div>
-    </main>
+    </CahierShell>
   );
 }

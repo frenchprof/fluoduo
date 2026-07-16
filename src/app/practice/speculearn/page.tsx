@@ -1,5 +1,6 @@
 import Link from "next/link";
-import BackLink from "@/components/BackLink";
+import CahierShell from "@/components/CahierShell";
+import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 import { CURATED } from "@/content/collections";
 import { DEVINE_READY, BUILDING_EMOJI, SPECULEARN_EXCLUDED_ITEMS } from "@/lib/collections/devineReady";
 import PHOTO_ITEMS from "@/content/devine-aliments.json";
@@ -44,29 +45,16 @@ export default function SpecuLearnIndexPage() {
     .filter((c): c is NonNullable<typeof c> => !!c)
     .sort((a, b) => (a.unit ?? 0) - (b.unit ?? 0));
   return (
-    // ONE mobile screen (Dan, 2026-07-15: "it should fit into a single
-    // mobile screen") — no per-unit sections; the unit lives as a colored
-    // chip on each compact tile instead.
-    <main
-      className="min-h-screen text-indigo-950"
-      style={{ background: "linear-gradient(180deg, #ded1fb 0%, #f0e9ff 45%, #fbf9ff 100%)" }}
-    >
-      <div className="border-b-2 border-white/70 bg-white/60 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-2 text-sm font-bold">
-          <BackLink fallback="/" className="text-indigo-700 hover:text-indigo-900">
-            ← Back
-          </BackLink>
-          <span className="text-indigo-900/60">🔮 SpecuLearn</span>
-        </div>
-      </div>
-
-      <div className="mx-auto max-w-3xl px-4 py-5">
-        <header className="mb-4">
-          <h1 className="text-2xl font-black tracking-tight text-indigo-700" style={{ textShadow: "0 2px 0 #fff" }}>
-            🔮 Specu<span className="text-indigo-400">Learn</span>
-            <span className="ml-2 text-sm font-semibold text-indigo-900/70">guess first — that&rsquo;s how it sticks</span>
-          </h1>
-        </header>
+    // Cahier skin like every other section page (Dan, 2026-07-15), still ONE
+    // mobile screen: no per-unit sections; the unit lives as a colored chip
+    // on each compact tile.
+    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="speculearn" crumb="🔮 SpecuLearn">
+      <div className="mx-auto max-w-3xl px-4 py-4">
+        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
+          🔮 SpecuLearn
+          <span className="ml-2 text-sm font-bold text-[color:var(--cahier-ink-soft)]">guess first — that&rsquo;s how it sticks</span>
+        </h1>
+        <div className="mt-3">
 
         <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
           {decks.map((d) => {
@@ -82,7 +70,7 @@ export default function SpecuLearnIndexPage() {
                   {DECK_FACE[d.id] ?? "🔮"}
                 </span>
                 <span className="min-w-0">
-                  <span className="block truncate text-[13px] font-black leading-tight text-indigo-950" lang="fr" title={d.title}>
+                  <span className="block truncate text-[13px] font-black leading-tight text-[color:var(--cahier-ink)]" lang="fr" title={d.title}>
                     {shortTitle(d.id, d.title)}
                   </span>
                   <span className="block text-[11px] font-bold" style={{ color: col.accent }}>
@@ -97,26 +85,27 @@ export default function SpecuLearnIndexPage() {
         {/* Why guess first — the pretesting effect, from the Chua & Pan
             (2026) NUS study Dan supplied (2026-07-15). Deliberately tiny:
             the menu must still end above the fold on a phone. */}
-        <section className="mt-4 rounded-xl border-2 border-indigo-200 bg-white/70 p-3">
-          <h2 className="text-[13px] font-black text-indigo-900">Pourquoi deviner d&rsquo;abord ? C&rsquo;est prouvé.</h2>
-          <p className="mt-1 text-[12px] leading-snug text-indigo-950/80">
+        <section className="mt-4 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-3">
+          <h2 className="text-[13px] font-black text-[color:var(--cahier-ink)]">Pourquoi deviner d&rsquo;abord ? C&rsquo;est prouvé.</h2>
+          <p className="mt-1 text-[12px] leading-snug text-[color:var(--cahier-ink)]/80">
             In 4 NUS experiments (341 beginners), <b>guessing a word before being taught it — then seeing
             the answer right away — beat passive study</b>, in both directions (Mot → Image and
             Image → Mot). Wrong guesses didn&rsquo;t hurt: with immediate feedback, the error is part of
             how the word sticks.
           </p>
-          <p className="mt-1 text-[10px] font-semibold text-indigo-900/50">
+          <p className="mt-1 text-[10px] font-semibold text-[color:var(--cahier-ink-soft)]">
             <a
               href="https://news.nus.edu.sg/study-confirms-guessing-before-learning-improves-memory-in-language-learning/"
               target="_blank"
               rel="noopener noreferrer"
-              className="underline decoration-indigo-300 underline-offset-2 hover:text-indigo-800"
+              className="underline underline-offset-2 hover:text-[color:var(--cahier-ink)]"
             >
               Chua &amp; Pan (2026), <i>Cognitive Research: Principles and Implications</i> — the pretesting effect ↗
             </a>
           </p>
         </section>
+        </div>
       </div>
-    </main>
+    </CahierShell>
   );
 }
