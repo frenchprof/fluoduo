@@ -17,9 +17,9 @@ const ACTIVITIES: { emoji: string; name: string; hue: number; what: string }[] =
   { emoji: "🌧️", name: "Vocabularain", hue: 3, what: "sort the falling words" },
   { emoji: "🧰", name: "Lexicalator", hue: 4, what: "build the words" },
   { emoji: "🧩", name: "Compose It", hue: 5, what: "build dialogues" },
-  { emoji: "🔁", name: "Réviser", hue: 0, what: "resurfaces your misses at the right moment" },
+  { emoji: "🔁", name: "DéjàRevu", hue: 0, what: "resurfaces your misses at the right moment" },
   { emoji: "🔤", name: "ConjugaZone", hue: 2, what: "conjugation sprints" },
-  { emoji: "🤖", name: "Tuteur", hue: 5, what: "chat, role-play, get corrected" },
+  { emoji: "🤖", name: "Chatuteur", hue: 5, what: "chat, role-play, get corrected" },
 ];
 
 const STEPS: { hue: number; what: React.ReactNode }[] = [

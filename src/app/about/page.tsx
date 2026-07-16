@@ -72,7 +72,7 @@ const COMMITMENTS: { emoji: string; title: string; hue: number; body: React.Reac
     body: (
       <>
         The 50 goals here are <b>your course&rsquo;s</b>{" "}can-do objectives — not an app company&rsquo;s syllabus. FluoLingo
-        prepares you before each class and consolidates after it, with reviews spaced over time (<b>🔁 Réviser</b>).
+        prepares you before each class and consolidates after it, with reviews spaced over time (<b>🔁 DéjàRevu</b>).
         Commercial apps teach their own curriculum to nobody in particular; this one exists to make{" "}
         <b>your next lesson</b>{" "}work better. That&rsquo;s a different job — and it&rsquo;s the job that matters here.
       </>

@@ -185,9 +185,9 @@ function TutorPageInner() {
         .replace(/^\s{0,3}#{1,4}\s+(.*)$/gm, "<b>$1</b>")
         .replace(/\n/g, "<br>");
     const rows = messages
-      .map((m) => `<div class="${m.role}"><b class="who">${m.role === "user" ? "Vous" : "Le Tuteur"}</b><p>${fmt(m.content)}</p></div>`)
+      .map((m) => `<div class="${m.role}"><b class="who">${m.role === "user" ? "Vous" : "Chatuteur"}</b><p>${fmt(m.content)}</p></div>`)
       .join("");
-    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Le Tuteur · FluoLingo</title><style>
+    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Chatuteur · FluoLingo</title><style>
       body{font-family:Georgia,serif;max-width:640px;margin:24px auto;color:#222850}
       h1{font-size:18px;margin:0 0 2px}
       .meta{color:#666;font-size:12px;margin-bottom:16px}
@@ -197,7 +197,7 @@ function TutorPageInner() {
       .who{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#666}
       p{margin:4px 0 0;font-size:14px;line-height:1.5}
     </style></head><body>
-    <h1>🤖 Le Tuteur · FluoLingo</h1><div class="meta">${new Date().toLocaleString("en-SG")}</div>${rows}
+    <h1>🤖 Chatuteur · FluoLingo</h1><div class="meta">${new Date().toLocaleString("en-SG")}</div>${rows}
     <script>window.onload = () => window.print()<\/script>
     </body></html>`);
     w.document.close();
@@ -259,9 +259,9 @@ function TutorPageInner() {
   }
 
   return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="tutor" crumb="🤖 Tuteur">
+    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="tutor" crumb="🤖 Chatuteur">
       <div className="mx-auto flex max-w-2xl flex-col gap-4 px-3 py-5">
-        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">🤖 Le Tuteur <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· Tutor</span></h1>
+        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">🤖 Chatuteur <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· Tutor</span></h1>
 
         {offline ? (
           <div className="rounded-2xl border-2 border-dashed border-[color:var(--cahier-ink)]/40 bg-white p-5">

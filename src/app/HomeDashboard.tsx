@@ -175,8 +175,8 @@ const BYLINE_STROKES = [
             )}
             <Link
               href="/reviser"
-              aria-label="Réviser"
-              title="Réviser — vos mots à revoir"
+              aria-label="DéjàRevu"
+              title="DéjàRevu — vos mots à revoir"
               className="relative flex h-8 w-9 items-center justify-center rounded-lg border-2 border-[color:var(--fluo-ink)] bg-white/80 text-base text-[color:var(--fluo-ink)] shadow-[2px_2px_0_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5"
             >
               <span aria-hidden>🔁</span>
@@ -209,7 +209,7 @@ const BYLINE_STROKES = [
             className="rounded-lg border-2 px-3 py-1 text-sm font-black shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
             style={{ background: "var(--fluo-ink)", borderColor: "var(--fluo-ink)", color: "#d4f24c" }}
           >
-            QuickGuide
+            Késako
           </button>
         </div>
         {qgOpen && <GuideSplash onClose={() => setQgOpen(false)} />}

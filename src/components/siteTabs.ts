@@ -42,18 +42,18 @@ export function siteTabs(): ShellTab[] {
  *  AND the ☰ menu. */
 export function toolTabs(): ShellTab[] {
   return [
-    { key: "index", label: "Index", emoji: "🗂️", href: "/activities", hue: "#5b8def" },
+    { key: "index", label: "Indexicon", emoji: "🗂️", href: "/activities", hue: "#5b8def" },
     { key: "wordrill", label: "WorDrill", emoji: "🎙️", href: "/practice/wordrill", hue: "#7bbf2e" },
     { key: "speculearn", label: "SpecuLearn", emoji: "🔮", href: "/practice/speculearn", hue: "#8a5fd4" },
-    { key: "reviser", label: "Réviser", emoji: "🔁", href: "/reviser", hue: "#7bbf2e" },
+    { key: "reviser", label: "DéjàRevu", emoji: "🔁", href: "/reviser", hue: "#7bbf2e" },
     { key: "conjugaison", label: "ConjugaZone", emoji: "🔤", href: "/conjugaison", hue: "#2bb6c2" },
     // Game galleries (Dan, 2026-07-13) — every VocabulaRain / Lexicalator
     // link in one place each. Classement removed: the 🏆 top-bar icon is
     // the door (Dan: "we don't need the flap tab for classement").
     { key: "vocabularain", label: "VocabulaRain", emoji: "🌧️", href: "/games/letris", hue: "#5b8def" },
     { key: "lexicalator", label: "Lexicalator", emoji: "🧰", href: "/games/conveyor", hue: "#e3a700" },
-    { key: "tutor", label: "Tuteur", emoji: "🤖", href: "/tutor", hue: "#8a5fd4" },
-    { key: "tts", label: "TTS", emoji: "🔊", href: "/tts", hue: "#e8852e" },
+    { key: "tutor", label: "Chatuteur", emoji: "🤖", href: "/tutor", hue: "#8a5fd4" },
+    { key: "tts", label: "VoixLà", emoji: "🔊", href: "/tts", hue: "#e8852e" },
     // No Profil entry (Dan, 2026-07-08) — the circled-initial account chip in
     // the top bar IS the profile door (its window links to /profil).
   ];

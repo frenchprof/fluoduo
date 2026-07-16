@@ -43,7 +43,7 @@ function tourFor(rawPath: string): Tour | null {
     return {
       key: "home",
       steps: [
-        { selector: "nav.cahier-tabs, .cahier-menu > button", action: "tap", text: "Tap a flap: 🏠 Home, ❓ Guide, the five Unités, and the 🗂️ Index. They follow you everywhere." },
+        { selector: "nav.cahier-tabs, .cahier-menu > button", action: "tap", text: "Tap a flap: the five Unités on top; below, ❓ Késako, 🗂️ Indexicon and the tools. They follow you everywhere." },
         { selector: "main.cahier-page", action: "tap", text: "Tap the sheet — each place is a sheet in the notebook, and deeper sheets stack on top of their parent." },
         { selector: '[title="Drag to widen the page"]', action: "drag", text: "Drag this edge to make the page wider — try it! The popups resize from their ◢ corner too." },
         { text: "Start on 🏠 Home and tap the goal your class is working on: Pre-Test first, then the cards, then the Lesson. The full manual lives under ❓ Guide. Bonne route !" },

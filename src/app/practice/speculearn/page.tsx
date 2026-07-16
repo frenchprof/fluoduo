@@ -106,7 +106,14 @@ export default function SpecuLearnIndexPage() {
             how the word sticks.
           </p>
           <p className="mt-1 text-[10px] font-semibold text-indigo-900/50">
-            Chua &amp; Pan (2026), <i>Cognitive Research: Principles and Implications</i> — the pretesting effect.
+            <a
+              href="https://news.nus.edu.sg/study-confirms-guessing-before-learning-improves-memory-in-language-learning/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline decoration-indigo-300 underline-offset-2 hover:text-indigo-800"
+            >
+              Chua &amp; Pan (2026), <i>Cognitive Research: Principles and Implications</i> — the pretesting effect ↗
+            </a>
           </p>
         </section>
       </div>

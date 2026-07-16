@@ -103,7 +103,7 @@ export default function DeckSearch({
           {hits.length > MAX_DECKS && (
             <p className="px-3 py-1.5 text-xs font-bold text-[color:var(--fluo-ink)]/60">
               + {hits.length - MAX_DECKS} autres decks — voir l&rsquo;
-              <Link href="/activities" className="underline">Index</Link>
+              <Link href="/activities" className="underline">Indexicon</Link>
             </p>
           )}
         </div>

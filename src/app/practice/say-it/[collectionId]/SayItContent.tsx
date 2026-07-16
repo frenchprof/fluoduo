@@ -398,7 +398,7 @@ export default function SayItContent({
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-2">
               <button type="button" onClick={restart} className="fluo-btn fluo-btn-sm">🔁 Recommencer</button>
-              <Link href="/reviser" className="fluo-btn fluo-btn-sm fluo-btn-ghost">🔁 Réviser</Link>
+              <Link href="/reviser" className="fluo-btn fluo-btn-sm fluo-btn-ghost">🔁 DéjàRevu</Link>
               <Link href="/" className="fluo-btn fluo-btn-sm fluo-btn-ghost">← Back to the path</Link>
             </div>
           </div>
