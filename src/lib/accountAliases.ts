@@ -30,9 +30,20 @@ export const HIDDEN_ROSTER_NAMES = new Set([
 ]);
 export const HIDDEN_ROSTER_UID_PREFIXES = ["a529sUZM"];
 
-/** alias board display-name → canonical board display-name. */
+/** alias board display-name → canonical board display-name. Covers rows
+ *  already written before the email anchoring below existed. */
 export const ALIAS_BOARD_NAMES: Record<string, string> = {
   "su yeoniiOO315": "Su Yeon",
+};
+
+/** EMAIL-anchored board identity (Dan, 2026-07-16: "i also gave u the two
+ *  email addresses"): when one of these emails signs in, its leaderboard row
+ *  publishes under the canonical display name — so the board merge no longer
+ *  depends on what she renames her Google accounts to. The row itself still
+ *  carries no email (any student can read the board). */
+export const ALIAS_PUBLISH_NAMES: Record<string, string> = {
+  "chosuyeon33@gmail.com": "Su Yeon",
+  "sjc031103@gmail.com": "Su Yeon",
 };
 
 export function canonicalEmail(email: string | null | undefined): string | null {

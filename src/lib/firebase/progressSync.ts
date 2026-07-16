@@ -18,6 +18,7 @@ import {
   type Progress,
 } from "@/lib/progress";
 import { levelForXp } from "@/lib/economy";
+import { ALIAS_PUBLISH_NAMES } from "@/lib/accountAliases";
 
 const DOC_PATH = ["app", "progress"] as const;
 const PUSH_DEBOUNCE_MS = 2500;
@@ -86,7 +87,12 @@ async function publishLeaderboard(p: Progress): Promise<void> {
   }
   const { doc, setDoc, deleteDoc } = mods;
   const ref = doc(database.db, "leaderboard", u.uid);
-  const name = u.displayName || (u.email ? u.email.split("@")[0] : "Anonyme");
+  // Aliased accounts publish under their canonical display name, keyed by
+  // EMAIL (Dan, 2026-07-16) — so the board's fold survives Google renames.
+  const name =
+    ALIAS_PUBLISH_NAMES[u.email?.toLowerCase() ?? ""] ||
+    u.displayName ||
+    (u.email ? u.email.split("@")[0] : "Anonyme");
   try {
     // Rank by XP now (the lifetime score); keep gems for continuity and publish
     // the level so the board can show each learner's rank name.

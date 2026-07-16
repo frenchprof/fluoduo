@@ -11,7 +11,7 @@
 import { useEffect, useState } from "react";
 import { signInWithGoogle, useAuthUser } from "@/lib/firebase/auth";
 import { levelForXp } from "@/lib/economy";
-import { ALIAS_BOARD_NAMES, EXCLUDED_BOARD_UIDS } from "@/lib/accountAliases";
+import { ALIAS_BOARD_NAMES, ALIAS_PUBLISH_NAMES, EXCLUDED_BOARD_UIDS } from "@/lib/accountAliases";
 import RankBadge from "@/components/RankBadge";
 
 type BoardRow = {
@@ -72,6 +72,21 @@ export default function LeaderboardList() {
             } else {
               src.name = targetName;
             }
+          }
+          // Aliased accounts publish under one canonical name (email-anchored
+          // in progressSync) — fold any remaining same-name rows for those
+          // canonical names into one entry.
+          const canonNames = new Set(Object.values(ALIAS_PUBLISH_NAMES));
+          for (const cn of canonNames) {
+            const dupes = list.filter((r) => rowName(r) === cn);
+            if (dupes.length < 2) continue;
+            const [keep, ...rest] = dupes;
+            for (const r of rest) {
+              keep.xp = rowXp(keep) + rowXp(r);
+              keep.gems = (keep.gems ?? 0) + (r.gems ?? 0);
+              keep.streak = Math.max(keep.streak ?? 0, r.streak ?? 0);
+            }
+            list = list.filter((r) => !rest.includes(r));
           }
           list.sort((a, b) => rowXp(b) - rowXp(a));
           setRows(list.slice(0, 50));
