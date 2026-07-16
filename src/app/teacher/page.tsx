@@ -121,9 +121,20 @@ function Dashboard() {
     };
   }, [reloadKey]);
 
-  const roster = useMemo(
+  const rosterAll = useMemo(
     () => (events && board ? buildRoster(events, board) : []),
     [events, board],
+  );
+  // Hidden accounts (Dan, 2026-07-16) vanish from every panel — roster AND
+  // their stray events.
+  const roster = useMemo(() => rosterAll.filter((l) => !l.hidden), [rosterAll]);
+  const hiddenUids = useMemo(
+    () => new Set(rosterAll.filter((l) => l.hidden).flatMap((l) => l.uids)),
+    [rosterAll],
+  );
+  const shown = useMemo(
+    () => (events ? events.filter((e) => !hiddenUids.has(e.uid)) : null),
+    [events, hiddenUids],
   );
   const nameOf = useMemo(() => new Map(roster.flatMap((l) => l.uids.map((u) => [u, l.name] as const))), [roster]);
 
@@ -166,11 +177,11 @@ function Dashboard() {
         ))}
       </div>
       <div className="mt-2">
-        {panel === "overview" && <Overview events={events} roster={roster} includeTeachers={includeTeachers} />}
-        {panel === "attendance" && <Attendance events={events} roster={roster} includeTeachers={includeTeachers} />}
-        {panel === "students" && <Students events={events} roster={roster} />}
-        {panel === "activities" && <Activities events={events} roster={roster} includeTeachers={includeTeachers} />}
-        {panel === "pretests" && <Pretests events={events} />}
+        {panel === "overview" && <Overview events={shown ?? []} roster={roster} includeTeachers={includeTeachers} />}
+        {panel === "attendance" && <Attendance events={shown ?? []} roster={roster} includeTeachers={includeTeachers} />}
+        {panel === "students" && <Students events={shown ?? []} roster={roster} />}
+        {panel === "activities" && <Activities events={shown ?? []} roster={roster} includeTeachers={includeTeachers} />}
+        {panel === "pretests" && <Pretests events={shown ?? []} />}
         {panel === "feedback" && <FeedbackPanel nameOf={nameOf} />}
       </div>
     </div>

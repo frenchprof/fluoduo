@@ -209,7 +209,7 @@ const BYLINE_STROKES = [
             className="rounded-lg border-2 px-3 py-1 text-sm font-black shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
             style={{ background: "var(--fluo-ink)", borderColor: "var(--fluo-ink)", color: "#d4f24c" }}
           >
-            Késako
+            HELP!
           </button>
         </div>
         {qgOpen && <GuideSplash onClose={() => setQgOpen(false)} />}

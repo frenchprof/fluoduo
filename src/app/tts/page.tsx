@@ -210,10 +210,10 @@ function TtsPageInner() {
   const fixClean = fix !== null && fix.replace(/\s+/g, " ").trim() === text.replace(/\s+/g, " ").trim();
 
   return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="tts" crumb="🔊 VoixLà">
+    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="tts" crumb="🔊 VoixLà (TTS)">
       <div className="mx-auto max-w-2xl px-3 py-5">
         <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
-          🔊 VoixLà <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· le studio de la voix</span>
+          🔊 VoixLà <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">(TTS) · le studio de la voix</span>
         </h1>
 
         {/* Same warm panel as the Tutor (Dan, 2026-07-13: "adopt similar

@@ -42,7 +42,7 @@ export function siteTabs(): ShellTab[] {
  *  AND the ☰ menu. */
 export function toolTabs(): ShellTab[] {
   return [
-    { key: "index", label: "Indexicon", emoji: "🗂️", href: "/activities", hue: "#5b8def" },
+    { key: "index", label: "Index", emoji: "🗂️", href: "/activities", hue: "#5b8def" },
     { key: "wordrill", label: "WorDrill", emoji: "🎙️", href: "/practice/wordrill", hue: "#7bbf2e" },
     { key: "speculearn", label: "SpecuLearn", emoji: "🔮", href: "/practice/speculearn", hue: "#8a5fd4" },
     { key: "reviser", label: "DéjàRevu", emoji: "🔁", href: "/reviser", hue: "#7bbf2e" },
@@ -53,7 +53,7 @@ export function toolTabs(): ShellTab[] {
     { key: "vocabularain", label: "VocabulaRain", emoji: "🌧️", href: "/games/letris", hue: "#5b8def" },
     { key: "lexicalator", label: "Lexicalator", emoji: "🧰", href: "/games/conveyor", hue: "#e3a700" },
     { key: "tutor", label: "ChaTutor", emoji: "🤖", href: "/tutor", hue: "#8a5fd4" },
-    { key: "tts", label: "VoixLà", emoji: "🔊", href: "/tts", hue: "#e8852e" },
+    { key: "tts", label: "VoixLà (TTS)", emoji: "🔊", href: "/tts", hue: "#e8852e" },
     // No Profil entry (Dan, 2026-07-08) — the circled-initial account chip in
     // the top bar IS the profile door (its window links to /profil).
   ];

@@ -69,10 +69,10 @@ export default function ActivitiesIndexPage() {
   const matches = (c: Collection) => !q.trim() || hitMap.has(c.id);
   const totalHits = CURATED.filter(matches).length;
   return (
-    <CahierShell tabs={withActive(siteTabs(), "index")} active="index" crumb="🗂️ Indexicon">
+    <CahierShell tabs={withActive(siteTabs(), "index")} active="index" crumb="🗂️ Index">
       <div className="mx-auto max-w-4xl px-2 py-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">🗂️ Indexicon</h1>
+          <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">🗂️ Index</h1>
           {/* Search at the header's height, high-contrast (Dan, 2026-07-13). */}
           <input
             type="search"

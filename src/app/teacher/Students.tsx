@@ -45,12 +45,12 @@ export default function Students({ events, roster }: { events: Ev[]; roster: Lea
           <tr><td className="px-3 py-3 text-slate-500" colSpan={8}>No learners recorded yet.</td></tr>
         )}
       </TableBox>
-      {selected && <StudentPanel key={selected.uid} learner={selected} events={events} />}
+      {selected && <StudentPanel key={selected.uid} learner={selected} events={events} onClose={() => setSel(null)} />}
     </div>
   );
 }
 
-function StudentPanel({ learner, events }: { learner: Learner; events: Ev[] }) {
+function StudentPanel({ learner, events, onClose }: { learner: Learner; events: Ev[]; onClose: () => void }) {
   const [detail, setDetail] = useState<StudentDetail | null>(null);
   const [error, setError] = useState(false);
 
@@ -155,7 +155,27 @@ function StudentPanel({ learner, events }: { learner: Learner; events: Ev[] }) {
   const srsDue = srsIds.filter((id) => (srs[id]?.due ?? Infinity) <= now).length;
 
   return (
-    <div className="mt-6 rounded-2xl border-2 border-amber-200 bg-amber-50/40 p-4">
+    // Centered modal (Dan, 2026-07-16: details must "POP UP in my face in
+    // the middle of the screen", and tapping anywhere else closes it).
+    <div
+      className="fixed inset-0 z-[80] flex items-center justify-center bg-black/40 p-4 backdrop-blur-[2px]"
+      role="dialog"
+      aria-modal="true"
+      aria-label={learner.name}
+      onClick={onClose}
+    >
+    <div
+      className="max-h-[88vh] w-full max-w-3xl overflow-y-auto rounded-2xl border-2 border-amber-300 bg-[#fffdf6] p-4 shadow-2xl"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label="Fermer"
+        className="float-right rounded-lg border-2 border-slate-300 bg-white px-2 py-0.5 text-sm font-black text-slate-600 hover:border-slate-500"
+      >
+        ✕
+      </button>
       <h2 className="text-lg font-black text-slate-900">
         {learner.name}
         {learner.email && <span className="ml-2 text-sm font-normal text-slate-500">{learner.email}</span>}
@@ -312,7 +332,7 @@ function StudentPanel({ learner, events }: { learner: Learner; events: Ev[] }) {
           ))}
         </TableBox>
       ) : (
-        <p className="mt-2 text-sm text-slate-500">No page views yet (tracking starts with the attendance deploy).</p>
+        <p className="mt-2 text-sm text-slate-500">No page views yet (visit tracking shipped 13 Jul 2026; earlier visits were never recorded).</p>
       )}
 
       {(trail.games.length > 0 || trail.answers > 0 || trail.supAnswers > 0 || trail.tutorMsgs > 0) && (
@@ -357,6 +377,7 @@ function StudentPanel({ learner, events }: { learner: Learner; events: Ev[] }) {
           )}
         </>
       )}
+    </div>
     </div>
   );
 }

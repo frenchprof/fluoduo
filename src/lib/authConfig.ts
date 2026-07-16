@@ -8,4 +8,4 @@
  * Flip this one line to turn the wall on/off; nothing else needs to change.
  * Remember to re-enable (true) before a real launch.
  */
-export const REQUIRE_SIGN_IN = true;
+export const REQUIRE_SIGN_IN = false;

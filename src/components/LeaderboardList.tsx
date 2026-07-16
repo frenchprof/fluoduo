@@ -11,7 +11,7 @@
 import { useEffect, useState } from "react";
 import { signInWithGoogle, useAuthUser } from "@/lib/firebase/auth";
 import { levelForXp } from "@/lib/economy";
-import { ALIAS_BOARD_NAMES } from "@/lib/accountAliases";
+import { ALIAS_BOARD_NAMES, EXCLUDED_BOARD_UIDS } from "@/lib/accountAliases";
 import RankBadge from "@/components/RankBadge";
 
 type BoardRow = {
@@ -27,46 +27,7 @@ type BoardRow = {
 const rowXp = (r: BoardRow) => r.xp ?? r.totalXP ?? r.gems ?? 0;
 const rowName = (r: BoardRow) => r.name ?? r.displayName ?? "Anonyme";
 
-// Rows hidden from the board (Dan, 2026-07-07) — prior-term students whose old
-// leaderboard docs linger in the shared collection. Firestore rules can't
-// retroactively hide existing docs from a collection read, so filter here.
-// (Their XP still carries over if they ever sign in — this is display-only.)
-const EXCLUDED_UIDS = new Set([
-  "6pHSergetUdBoTicHe930dztnq03",
-  "6uyQO9YgBTRLC5Dw1JuU7Fe2cTB3",
-  "8FXea0gBTQWry0mz9V0hGQpcHcn1",
-  "A0gPWad5dbhrEj7xPl1ZvxELlsD2",
-  "A7BPzNnI3MWlSIXqSkdKpwGALFB2",
-  "F72Cp1q1wPWzNFBhnSaJuvGNvJi2",
-  "K2oqGupnUJhJXr9l54eJxUG7gHx2",
-  "MCa37VnnyBUfBV13JMw6jMub79S2",
-  "S7uVFj2wtDYy5k97UJiRlDAxHaH2",
-  "SB1hAmMEcrZGhNByqqY2leKVnho2",
-  "TW4D8HEgNHONelHbtlAY83KR7EG2",
-  "UCzhJxIRauVYfiA7s7KVm1f9EuH2",
-  "Ucxgyw7PRNhIYQlZBYq5hCMlWVq1",
-  "UhUSSLlSRqRjmmjuHw6UJNuKru93",
-  "VURCmcsjTaXvMjbHjf1DCeumqWm2",
-  "Xtn5klg5SVa4eUtI09pWxFcJFZi2",
-  "Y8VWbC1DgYOCsJvSTwc2yTjHO982",
-  "ZKvLZyfOfLZFYAEUoTzApQMYClf2",
-  "aPngs8CtKZhwqjNTDjELv0BJNYK2",
-  "ao8eQgHtKXU23d5CRZ6qvkZTKuH3",
-  "dENNssIfItW6a9mhxCNYN7O3WbA3",
-  "f8QFvdmv33VQlkaIzVSlAKUl1vp1",
-  "fmbfRMU475U4bNAmroFIAChjRRC3",
-  "hFDtdL7VbUOVH6LQojinNNEddxA3",
-  "lf98Dn7AniMtDDW2QYZjB9zqGBX2",
-  "lzRqpbYzAfWOHv2BGuNwaRFjJK23",
-  "nObXWQxQCGO6TNugnrgC5xsAQhx1",
-  "nnO1UHbvTrdAXcLdff6f6egfr5L2",
-  "oJRObzsgLOQw9BfFGRmqJAWwBOy1",
-  "qvrNbMnULycr5sczxjNGqiAxWPj2",
-  "rYwNEok19RN7eDafWhA0dxgszN42",
-  "reJvyqud8JhuhtVC8Qfvj5Ow9uu2",
-  "urmvD4pzesNDvLtCggdi3212I5b2",
-  "wvEs5cMH9cOcPLpyWlYFNdGapAg1",
-]);
+
 
 export default function LeaderboardList() {
   const user = useAuthUser();
@@ -93,7 +54,7 @@ export default function LeaderboardList() {
         if (!cancelled) {
           let list = snap.docs
             .map((d) => ({ uid: d.id, ...(d.data() as Omit<BoardRow, "uid">) }))
-            .filter((r) => !EXCLUDED_UIDS.has(r.uid));
+            .filter((r) => !EXCLUDED_BOARD_UIDS.has(r.uid));
           // One student, two accounts (Dan, 2026-07-16): fold alias rows into
           // the canonical row — XP and gems ADD (both are her effort), streak
           // takes the max. Rows carry no email, so the match is by the known

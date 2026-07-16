@@ -54,7 +54,7 @@ export default function Attendance({ events, roster, includeTeachers = false }: 
   if (days.length === 0) {
     return (
       <p className="mt-3 text-sm text-slate-500">
-        No visits recorded yet. Tracking starts with the attendance deploy, signed-in visitors only.
+        No visits recorded yet. Visit tracking shipped on 13 Jul 2026 — anything earlier was never recorded, and anonymous (signed-out) visitors never are.
       </p>
     );
   }

@@ -10,7 +10,7 @@
  * ships to learners.
  */
 
-import { canonicalEmail } from "@/lib/accountAliases";
+import { canonicalEmail, EXCLUDED_BOARD_UIDS, HIDDEN_ROSTER_NAMES, HIDDEN_ROSTER_UID_PREFIXES } from "@/lib/accountAliases";
 
 // Mirror of firestore.rules isAdmin() — keep the two lists in sync.
 export const ADMIN_EMAILS = [
@@ -42,6 +42,8 @@ export type Learner = {
   /** All uids belonging to this person — >1 when accounts are aliased
    *  (accountAliases.ts). Drilldowns and event filters must use this. */
   uids: string[];
+  /** Excluded from the teacher page entirely (accountAliases hidden lists). */
+  hidden?: boolean;
   name: string;
   email: string | null;
   isTeacher: boolean;
@@ -234,6 +236,13 @@ export function buildRoster(events: Ev[], board: Map<string, BoardRow>): Learner
     const union = new Set<string>();
     for (const uid of l.uids) for (const d of days.get(uid) ?? []) union.add(d);
     l.daysActive = union.size;
+  }
+  // Hidden accounts (Dan, 2026-07-16: "need not be monitored or appear on
+  // my Teacher's Page") — prior-term board leftovers and test accounts.
+  for (const l of merged) {
+    l.hidden =
+      HIDDEN_ROSTER_NAMES.has(l.name) ||
+      l.uids.some((u) => EXCLUDED_BOARD_UIDS.has(u) || HIDDEN_ROSTER_UID_PREFIXES.some((pre) => u.startsWith(pre)));
   }
   return merged.sort(
     (a, b) => (b.lastSeen?.getTime() ?? 0) - (a.lastSeen?.getTime() ?? 0),
