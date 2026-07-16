@@ -9,7 +9,7 @@
  "lessonNo": 9,
  "lessonSlug": "au-marche",
  "tags": [],
- "seq": 409,
+ "seq": 407,
  "gameConfig": {
   "letris": {
    "columns": [
@@ -37,84 +37,108 @@
    "fr": "Je voudrais deux kilos de pommes.",
    "en": "I'd like two kilos of apples.",
    "emoji": "🍎",
-   "tags": ["col:client"]
+   "tags": [
+    "col:client"
+   ]
   },
   {
    "id": "au-marche-02",
    "fr": "Ça fait combien ?",
    "en": "How much is it (all together)?",
    "emoji": "💶",
-   "tags": ["col:client"]
+   "tags": [
+    "col:client"
+   ]
   },
   {
    "id": "au-marche-03",
    "fr": "C'est tout, merci !",
    "en": "That's all, thank you!",
    "emoji": "✅",
-   "tags": ["col:client"]
+   "tags": [
+    "col:client"
+   ]
   },
   {
    "id": "au-marche-04",
    "fr": "Vous avez des fraises ?",
    "en": "Do you have any strawberries?",
    "emoji": "🍓",
-   "tags": ["col:client"]
+   "tags": [
+    "col:client"
+   ]
   },
   {
    "id": "au-marche-05",
    "fr": "Voilà dix euros.",
    "en": "Here's ten euros.",
    "emoji": "💸",
-   "tags": ["col:client"]
+   "tags": [
+    "col:client"
+   ]
   },
   {
    "id": "au-marche-06",
    "fr": "Je vais prendre un melon.",
    "en": "I'll take a melon.",
    "emoji": "🍈",
-   "tags": ["col:client"]
+   "tags": [
+    "col:client"
+   ]
   },
   {
    "id": "au-marche-07",
    "fr": "Bonjour, vous désirez ?",
    "en": "Hello, what would you like?",
    "emoji": "🧑‍🌾",
-   "tags": ["col:marchand"]
+   "tags": [
+    "col:marchand"
+   ]
   },
   {
    "id": "au-marche-08",
    "fr": "Et avec ceci ?",
    "en": "Anything else?",
    "emoji": "➕",
-   "tags": ["col:marchand"]
+   "tags": [
+    "col:marchand"
+   ]
   },
   {
    "id": "au-marche-09",
    "fr": "Ça fait 5,89 euros.",
    "en": "That comes to 5.89 euros.",
    "emoji": "🧾",
-   "tags": ["col:marchand"]
+   "tags": [
+    "col:marchand"
+   ]
   },
   {
    "id": "au-marche-10",
    "fr": "C'est trois euros le kilo.",
    "en": "It's three euros a kilo.",
    "emoji": "⚖️",
-   "tags": ["col:marchand"]
+   "tags": [
+    "col:marchand"
+   ]
   },
   {
    "id": "au-marche-11",
    "fr": "Voici votre monnaie.",
    "en": "Here's your change.",
    "emoji": "🪙",
-   "tags": ["col:marchand"]
+   "tags": [
+    "col:marchand"
+   ]
   },
   {
    "id": "au-marche-12",
    "fr": "Je vous en mets combien ?",
    "en": "How much shall I give you?",
    "emoji": "🤲",
-   "tags": ["col:marchand"]
+   "tags": [
+    "col:marchand"
+   ]
   }
  ]
 }

@@ -1,85 +1,85 @@
 {
-  "id": "manger-boire",
-  "title": "Manger ou boire ?",
-  "subtitle": "je mange / je bois",
-  "langPair": "fr-en",
-  "owner": "curated",
-  "visibility": "public",
-  "unit": 4,
-  "lessonNo": 4,
-  "lessonSlug": "manger-boire",
-  "tags": [],
-  "seq": 404,
-  "items": [
-    {
-      "id": "manger-boire-01",
-      "fr": "Je mange du riz.",
-      "en": "I eat rice.",
-      "tags": [],
-      "gap": "mange"
-    },
-    {
-      "id": "manger-boire-02",
-      "fr": "Tu manges une pomme.",
-      "en": "You eat an apple.",
-      "tags": [],
-      "gap": "manges"
-    },
-    {
-      "id": "manger-boire-03",
-      "fr": "Il mange des pâtes.",
-      "en": "He eats pasta.",
-      "tags": [],
-      "gap": "mange"
-    },
-    {
-      "id": "manger-boire-04",
-      "fr": "Nous mangeons du pain.",
-      "en": "We eat bread.",
-      "tags": [],
-      "gap": "mangeons"
-    },
-    {
-      "id": "manger-boire-05",
-      "fr": "Vous mangez des légumes.",
-      "en": "You (pl) eat vegetables.",
-      "tags": [],
-      "gap": "mangez"
-    },
-    {
-      "id": "manger-boire-06",
-      "fr": "Elles mangent du fromage.",
-      "en": "They (f) eat cheese.",
-      "tags": [],
-      "gap": "mangent"
-    },
-    {
-      "id": "manger-boire-07",
-      "fr": "Je bois de l'eau.",
-      "en": "I drink water.",
-      "tags": [],
-      "gap": "bois"
-    },
-    {
-      "id": "manger-boire-08",
-      "fr": "Elle boit du café.",
-      "en": "She drinks coffee.",
-      "tags": [],
-      "gap": "boit"
-    },
-    {
-      "id": "manger-boire-09",
-      "fr": "Nous buvons du thé.",
-      "en": "We drink tea.",
-      "tags": [],
-      "gap": "buvons"
-    },
-    {
-      "id": "manger-boire-10",
-      "fr": "Ils boivent du jus d'orange.",
-      "en": "They drink orange juice.",
-      "tags": [],
-      "gap": "boivent"
-    }
-  ]
+ "id": "manger-boire",
+ "title": "Manger ou boire ?",
+ "subtitle": "je mange / je bois",
+ "langPair": "fr-en",
+ "owner": "curated",
+ "visibility": "public",
+ "unit": 4,
+ "lessonNo": 4,
+ "lessonSlug": "manger-boire",
+ "tags": [],
+ "seq": 404,
+ "items": [
+  {
+   "id": "manger-boire-01",
+   "fr": "Je mange du riz.",
+   "en": "I eat rice.",
+   "tags": [],
+   "gap": "mange"
+  },
+  {
+   "id": "manger-boire-02",
+   "fr": "Tu manges une pomme.",
+   "en": "You eat an apple.",
+   "tags": [],
+   "gap": "manges"
+  },
+  {
+   "id": "manger-boire-03",
+   "fr": "Il mange des pâtes.",
+   "en": "He eats pasta.",
+   "tags": [],
+   "gap": "mange"
+  },
+  {
+   "id": "manger-boire-04",
+   "fr": "Nous mangeons du pain.",
+   "en": "We eat bread.",
+   "tags": [],
+   "gap": "mangeons"
+  },
+  {
+   "id": "manger-boire-05",
+   "fr": "Vous mangez des légumes.",
+   "en": "You (pl) eat vegetables.",
+   "tags": [],
+   "gap": "mangez"
+  },
+  {
+   "id": "manger-boire-06",
+   "fr": "Elles mangent du fromage.",
+   "en": "They (f) eat cheese.",
+   "tags": [],
+   "gap": "mangent"
+  },
+  {
+   "id": "manger-boire-07",
+   "fr": "Je bois de l'eau.",
+   "en": "I drink water.",
+   "tags": [],
+   "gap": "bois"
+  },
+  {
+   "id": "manger-boire-08",
+   "fr": "Elle boit du café.",
+   "en": "She drinks coffee.",
+   "tags": [],
+   "gap": "boit"
+  },
+  {
+   "id": "manger-boire-09",
+   "fr": "Nous buvons du thé.",
+   "en": "We drink tea.",
+   "tags": [],
+   "gap": "buvons"
+  },
+  {
+   "id": "manger-boire-10",
+   "fr": "Ils boivent du jus d'orange.",
+   "en": "They drink orange juice.",
+   "tags": [],
+   "gap": "boivent"
+  }
+ ]
 }

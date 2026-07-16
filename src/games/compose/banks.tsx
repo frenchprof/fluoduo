@@ -302,10 +302,56 @@ const SHOP_BANK: ComposeBank = {
 };
 
 // ---------------------------------------------------------------------------
+// Chez les commerçants (AI shopkeeper across the SIO-044/045 shops — the
+// client/marchand dialogue Dan asked for on 4.5, 2026-07-15). The AI runs
+// whichever shop sells what the client asks for first, redirects them to
+// the right commerce when they ask the wrong one, and closes with the
+// total + change — the full « Et avec ceci ? » exchange.
+// ---------------------------------------------------------------------------
+
+const THEME_MARCHE: DialogueTheme = { edge: "#f0c0a4", strong: "#d96f3f", deep: "#a84f26", personaBg: "#fdf3ec", meBg: "#f8d9c6", ink: "#4a2210" };
+
+const MARCHE_BANK: ComposeBank = {
+  id: "marche",
+  title: "Chez les commerçants",
+  emoji: "🧺",
+  unit: 4,
+  deckId: "au-marche",
+  mode: "dialogue",
+  scene: { opening: "Bonjour ! Vous désirez ?", emoji: "🧑‍🌾", voice: "m", aiOnly: true, theme: THEME_MARCHE },
+  categories: withPalette([
+    { label: "Demander", phrases: ["Bonjour", "Je voudrais", "Je vais prendre", "Vous avez", "Il me faut"] },
+    {
+      label: "Produits",
+      phrases: [
+        "une baguette",
+        "un gâteau",
+        "du poulet",
+        "du saumon",
+        "un kilo de pommes",
+        "deux kilos de pommes de terre",
+        "des fraises",
+        "une tranche de jambon",
+        "un livre",
+      ],
+    },
+    { label: "Prix", phrases: ["Ça fait combien ?", "C'est combien ?", "C'est cher !"] },
+    { label: "Payer", phrases: ["Voilà dix euros", "Voilà vingt euros"] },
+    { label: "Terminer", phrases: ["s'il vous plaît", "et", "aussi", "C'est tout", "merci", "Au revoir"] },
+  ]),
+  newScenario() {
+    return {
+      headline: "🧺 Chez les commerçants",
+      instructionEn: "Buy what you need — the shopkeeper runs whichever shop sells it (boulangerie, marché, boucherie…).",
+    };
+  },
+};
+
+// ---------------------------------------------------------------------------
 // Registry
 // ---------------------------------------------------------------------------
 
-const BANKS: ComposeBank[] = [DIRECTIONS_BANK, CAFE_BANK, GREETINGS_BANK, RENDEZVOUS_BANK, SHOP_BANK];
+const BANKS: ComposeBank[] = [DIRECTIONS_BANK, CAFE_BANK, GREETINGS_BANK, RENDEZVOUS_BANK, SHOP_BANK, MARCHE_BANK];
 
 export function listComposeBanks(): ComposeBank[] {
   return BANKS;

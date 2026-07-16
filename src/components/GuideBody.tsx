@@ -19,7 +19,7 @@ const ACTIVITIES: { emoji: string; name: string; hue: number; what: string }[] =
   { emoji: "🧩", name: "Compose It", hue: 5, what: "build dialogues" },
   { emoji: "🔁", name: "DéjàRevu", hue: 0, what: "resurfaces your misses at the right moment" },
   { emoji: "🔤", name: "ConjugaZone", hue: 2, what: "conjugation sprints" },
-  { emoji: "🤖", name: "Chatuteur", hue: 5, what: "chat, role-play, get corrected" },
+  { emoji: "🤖", name: "ChaTutor", hue: 5, what: "chat, role-play, get corrected" },
 ];
 
 const STEPS: { hue: number; what: React.ReactNode }[] = [
