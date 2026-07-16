@@ -11,6 +11,7 @@ import {
   type Ev, type Learner, type StudentDetail,
   fetchStudentDetail, fmtWhen, fmtDuration, str, num, SG_DAY_KEY,
 } from "./data";
+import { XP_CORRECT, XP_WRONG, XP_SIO_BASE, XP_CONVERSATION } from "@/lib/economy";
 import { Kpi, TableBox, SectionTitle } from "./ui";
 
 export default function Students({ events, roster }: { events: Ev[]; roster: Learner[] }) {
@@ -180,6 +181,44 @@ function StudentPanel({ learner, events }: { learner: Learner; events: Ev[] }) {
               value={p?.updatedAt ? fmtWhen(new Date(p.updatedAt)) : "never"}
             />
           </div>
+
+          {/* XP audit (Dan, 2026-07-15: "check if XPs awarded correctly e.g.
+              for Parker"). Two checks: (1) leaderboard must equal the synced
+              progress XP — a gap means stale publishes; (2) XP must be AT
+              LEAST the evidence floor implied by everything recorded (graded
+              answers pay 60/20, SIOs ≥300, role-plays 120). Above the floor
+              is normal: streak ×1.5, SIO mastery bonus up to +300, and any
+              practice from before the evidence store (13 Jul) all add. */}
+          {(() => {
+            const boardXp = learner.board?.xp ?? null;
+            const progXp = p?.xp ?? null;
+            const ok = respStats ? (respStats.byStatus.get("met") ?? 0) + (respStats.byStatus.get("mastered") ?? 0) : 0;
+            const ko = respStats ? respStats.total - ok : 0;
+            const sios = p?.doneSios?.length ?? 0;
+            const convs = events.filter(
+              (e) => e.uid === learner.uid && e.type === "game.end" && String((e.payload as Record<string, unknown>)?.game ?? "").startsWith("compose"),
+            ).length;
+            const floor = ok * XP_CORRECT + ko * XP_WRONG + sios * XP_SIO_BASE + convs * XP_CONVERSATION;
+            const syncOk = boardXp === null || progXp === null || boardXp === progXp;
+            const floorOk = progXp === null || progXp >= floor;
+            return (
+              <div className={`mt-4 rounded-xl border-2 p-3 text-sm ${syncOk && floorOk ? "border-emerald-300 bg-emerald-50/60" : "border-rose-300 bg-rose-50/60"}`}>
+                <p className="font-black text-slate-900">
+                  XP audit {syncOk && floorOk ? "✓" : "⚠️"}
+                </p>
+                <p className="mt-1 text-slate-700">
+                  Leaderboard <b>{boardXp ?? "—"}</b> vs progress <b>{progXp ?? "—"}</b>{" "}
+                  {syncOk ? "· in sync ✓" : "· OUT OF SYNC — the leaderboard publish is stale (learner should open the app signed-in once)"}
+                </p>
+                <p className="mt-0.5 text-slate-700">
+                  Evidence floor: {ok}✓ + {ko}✗ answers, {sios} SIOs, {convs} role-plays → <b>≥ {floor} XP</b>{" "}
+                  {floorOk
+                    ? "· progress covers it ✓ (streak ×1.5, mastery bonuses and pre-13-Jul practice explain the rest)"
+                    : "· BELOW FLOOR — some recorded answers did not pay XP, or progress was reset on a device"}
+                </p>
+              </div>
+            );
+          })()}
 
           {respStats && respStats.total > 0 && (
             <>
