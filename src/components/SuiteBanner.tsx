@@ -11,7 +11,7 @@
 
 // One Menu, four items, identical on every site of the suite (Dan, 2026-07-14).
 const LINKS = [
-  { label: "Course Info", href: "https://french1.withdrchan.com/" },
+  { label: "Course Info", href: "https://st2fr26.withdrchan.com/" },
   { label: "FluoLingo", href: "/", here: true },
   { label: "Reader", href: "https://4aparis.withdrchan.com/" },
   { label: "Songs", href: "https://chansongs.withdrchan.com/" },
@@ -51,7 +51,7 @@ export default function SuiteBanner() {
         @media (max-width: 720px) { .utb { padding: 0 14px; } }
       `}</style>
       <nav className="utb" aria-label="LAF1201 ecosystem">
-        <a className="utb-brand" href="https://french1.withdrchan.com/">
+        <a className="utb-brand" href="https://st2fr26.withdrchan.com/">
           <span className="utb-code">LAF1201</span>
           <span className="utb-bsep" aria-hidden>·</span>
           <span className="utb-name">French I</span>
