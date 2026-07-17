@@ -211,20 +211,35 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
           {/* XP audit (Dan, 2026-07-15: "check if XPs awarded correctly e.g.
               for Parker"). Two checks: (1) leaderboard must equal the synced
               progress XP — a gap means stale publishes; (2) XP must be AT
-              LEAST the evidence floor implied by everything recorded (graded
-              answers pay 60/20, SIOs ≥300, role-plays 120). Above the floor
-              is normal: streak ×1.5, SIO mastery bonus up to +300, and any
-              practice from before the evidence store (13 Jul) all add. */}
+              LEAST the evidence floor implied by everything recorded. The
+              floor prices each answer at the rate IN FORCE WHEN IT WAS GIVEN
+              — the 8 Jul ×20 retune (3/1 → 60/20) means week-one answers
+              paid twentyfold less, and pricing them at today's rates raised
+              false BELOW-FLOOR alarms (Dan, 2026-07-17). SIOs are priced at
+              the old 15 (undatable, so the strict lower bound); role-play
+              events only exist post-retune. Above the floor is normal:
+              streak ×1.5 and SIO mastery bonuses add. */}
           {(() => {
             const boardXp = learner.board?.xp ?? null;
             const progXp = p?.xp ?? null;
-            const ok = respStats ? (respStats.byStatus.get("met") ?? 0) + (respStats.byStatus.get("mastered") ?? 0) : 0;
-            const ko = respStats ? respStats.total - ok : 0;
+            // The ×20 retune deploy: 2026-07-08 05:07 SGT.
+            const RETUNE = Date.UTC(2026, 6, 7, 21, 7, 31);
+            let okOld = 0, koOld = 0, okNew = 0, koNew = 0;
+            for (const r of detail.responses) {
+              const good = r.status === "met" || r.status === "mastered";
+              const old = (r.ts?.getTime() ?? 0) < RETUNE; // undated → old rate (strict floor)
+              if (good) { if (old) okOld++; else okNew++; }
+              else { if (old) koOld++; else koNew++; }
+            }
             const sios = p?.doneSios?.length ?? 0;
             const convs = events.filter(
               (e) => learner.uids.includes(e.uid) && e.type === "game.end" && String((e.payload as Record<string, unknown>)?.game ?? "").startsWith("compose"),
             ).length;
-            const floor = ok * XP_CORRECT + ko * XP_WRONG + sios * XP_SIO_BASE + convs * XP_CONVERSATION;
+            const floor =
+              okNew * XP_CORRECT + koNew * XP_WRONG + okOld * 3 + koOld * 1 +
+              sios * 15 + convs * XP_CONVERSATION;
+            const ok = okOld + okNew;
+            const ko = koOld + koNew;
             const syncOk = boardXp === null || progXp === null || boardXp === progXp;
             const floorOk = progXp === null || progXp >= floor;
             return (
@@ -237,9 +252,9 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
                   {syncOk ? "· in sync ✓" : "· OUT OF SYNC — the leaderboard publish is stale (learner should open the app signed-in once)"}
                 </p>
                 <p className="mt-0.5 text-slate-700">
-                  Evidence floor: {ok}✓ + {ko}✗ answers, {sios} SIOs, {convs} role-plays → <b>≥ {floor} XP</b>{" "}
+                  Evidence floor: {ok}✓ + {ko}✗ answers{okOld + koOld > 0 ? ` (${okOld + koOld} at pre-8-Jul rates)` : ""}, {sios} SIOs, {convs} role-plays → <b>≥ {floor} XP</b>{" "}
                   {floorOk
-                    ? "· progress covers it ✓ (streak ×1.5, mastery bonuses and pre-13-Jul practice explain the rest)"
+                    ? "· progress covers it ✓ (streak ×1.5 and mastery bonuses explain the rest)"
                     : "· BELOW FLOOR — some recorded answers did not pay XP, or progress was reset on a device"}
                 </p>
               </div>

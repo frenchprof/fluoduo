@@ -117,7 +117,10 @@ const BYLINE_STROKES = [
             {/* "Bienvenue sur" stays still; FluoLingo performs the Kallang
                 Wave, then the fluo highlighter sweeps over it (Dan,
                 2026-07-13). Once per page load. */}
-            Bienvenue sur{" "}
+            {/* nowrap: with a boosted phone text size the two words split
+                across lines (Dan, 2026-07-17) — break before FluoLingo
+                instead. */}
+            <span className="whitespace-nowrap">Bienvenue sur</span>{" "}
             <span
               className={`fluo-brand${heroPlay ? " is-play" : ""}${inkDone ? " is-inked" : ""}`}
               aria-label="FluoLingo"
