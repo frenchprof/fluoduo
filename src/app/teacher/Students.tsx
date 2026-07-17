@@ -224,8 +224,13 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
             const progXp = p?.xp ?? null;
             // The ×20 retune deploy: 2026-07-08 05:07 SGT.
             const RETUNE = Date.UTC(2026, 6, 7, 21, 7, 31);
-            let okOld = 0, koOld = 0, okNew = 0, koNew = 0;
+            let okOld = 0, koOld = 0, okNew = 0, koNew = 0, unpaid = 0;
             for (const r of detail.responses) {
+              // VocabulaRain drops and deck-MCQ answers write evidence but
+              // deliberately pay NO per-answer XP (Letris scores in-game;
+              // MCQ predates the SRS) — counting them raised false BELOW
+              // FLOOR alarms (Dan, 2026-07-17: "still red for some").
+              if (r.activityId?.startsWith("letris:") || r.activityId?.startsWith("mcq:")) { unpaid++; continue; }
               const good = r.status === "met" || r.status === "mastered";
               const old = (r.ts?.getTime() ?? 0) < RETUNE; // undated → old rate (strict floor)
               if (good) { if (old) okOld++; else okNew++; }
@@ -252,7 +257,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
                   {syncOk ? "· in sync ✓" : "· OUT OF SYNC — the leaderboard publish is stale (learner should open the app signed-in once)"}
                 </p>
                 <p className="mt-0.5 text-slate-700">
-                  Evidence floor: {ok}✓ + {ko}✗ answers{okOld + koOld > 0 ? ` (${okOld + koOld} at pre-8-Jul rates)` : ""}, {sios} SIOs, {convs} role-plays → <b>≥ {floor} XP</b>{" "}
+                  Evidence floor: {ok}✓ + {ko}✗ paying answers{okOld + koOld > 0 ? ` (${okOld + koOld} at pre-8-Jul rates)` : ""}{unpaid > 0 ? ` (+${unpaid} rain/MCQ answers, no per-answer XP)` : ""}, {sios} SIOs, {convs} role-plays → <b>≥ {floor} XP</b>{" "}
                   {floorOk
                     ? "· progress covers it ✓ (streak ×1.5 and mastery bonuses explain the rest)"
                     : "· BELOW FLOOR — some recorded answers did not pay XP, or progress was reset on a device"}
