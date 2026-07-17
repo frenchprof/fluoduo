@@ -76,7 +76,18 @@ export default function Overview({ events, roster, includeTeachers = false }: { 
       .sort((a, b) => (b.board?.xp ?? 0) - (a.board?.xp ?? 0))
       .slice(0, 10);
 
-    return { students, activeToday, active7d, views7d, plays7d, answers7d, correct7d, days, topPages, topXp };
+    // Board vs events reconciliation (Dan, 2026-07-17: "why is the number of
+    // students not the same between the leaderboard and the learners ever
+    // seen"): the two count different populations — a board row needs a
+    // signed-in XP sync (any time, incl. the old laf1201 era); "seen" needs
+    // an event, and events only exist since 13 Jul. Name the odd ones out.
+    const onBoard = students.filter((st) => st.board);
+    const seen = students.filter((st) => st.lastSeen !== null);
+    const boardOnly = onBoard.filter((st) => st.lastSeen === null).map((st) => st.name);
+    const eventsOnly = seen.filter((st) => !st.board).map((st) => st.name);
+
+    return { students, activeToday, active7d, views7d, plays7d, answers7d, correct7d, days, topPages, topXp,
+             onBoard: onBoard.length, seen: seen.length, boardOnly, eventsOnly };
   }, [events, roster, includeTeachers]);
 
   return (
@@ -93,6 +104,16 @@ export default function Overview({ events, roster, includeTeachers = false }: { 
           sub={model.answers7d > 0 ? `${Math.round((model.correct7d / model.answers7d) * 100)}% correct` : undefined}
         />
       </div>
+      {/* Why "Learners" ≠ the leaderboard count — the odd ones out, named. */}
+      <p className="mt-2 text-xs text-slate-500">
+        {model.onBoard} with a leaderboard row · {model.seen} seen in events (tracking began 13 Jul).
+        {model.boardOnly.length > 0 && (
+          <> On the board but never seen since tracking: <b>{model.boardOnly.slice(0, 8).join(", ")}{model.boardOnly.length > 8 ? ` +${model.boardOnly.length - 8}` : ""}</b>.</>
+        )}
+        {model.eventsOnly.length > 0 && (
+          <> Seen but not on the board (XP never synced): <b>{model.eventsOnly.slice(0, 8).join(", ")}{model.eventsOnly.length > 8 ? ` +${model.eventsOnly.length - 8}` : ""}</b>.</>
+        )}
+      </p>
 
       <SectionTitle>Day by day</SectionTitle>
       <TableBox head={["Day", "Learners", "Page views", "Games", "Pretest answers"]}>
