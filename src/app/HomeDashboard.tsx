@@ -115,8 +115,8 @@ const BYLINE_STROKES = [
         <div className="flex items-center justify-between gap-3">
           <h1 className="fluo-serif text-2xl font-black text-[color:var(--fluo-ink)]">
             {/* "Bienvenue sur" stays still; FluoLingo performs the Kallang
-                Wave, then the fluo highlighter sweeps over it, then the ✨
-                blinks for a beat (Dan, 2026-07-13). Once per page load. */}
+                Wave, then the fluo highlighter sweeps over it (Dan,
+                2026-07-13). Once per page load. */}
             Bienvenue sur{" "}
             <span
               className={`fluo-brand${heroPlay ? " is-play" : ""}${inkDone ? " is-inked" : ""}`}
@@ -132,8 +132,9 @@ const BYLINE_STROKES = [
                   </span>
                 ))}
               </span>
-            </span>{" "}
-            <span className={`fluo-brand-star${heroPlay ? " is-play" : ""}`} aria-hidden>✨</span>
+            </span>
+            {/* No trailing ✨ — on a phone it wrapped onto a line of its own
+                (Dan, 2026-07-17: "occupying an entire line"). */}
             {/* Byline (Dan, 2026-07-15) — "written on the spot": each pen
                 stroke draws itself and the next letter only starts once the
                 previous one is complete. Hand-authored print-italic strokes
@@ -155,7 +156,7 @@ const BYLINE_STROKES = [
                   strokeLinejoin="round"
                 >
                   {BYLINE_STROKES.map((d, i) => (
-                    <path key={i} d={d} pathLength={1} style={{ animationDelay: `${2.9 + i * 0.17}s` }} />
+                    <path key={i} d={d} pathLength={1} style={{ animationDelay: `${2.8 + i * 0.17}s` }} />
                   ))}
                 </g>
               </svg>

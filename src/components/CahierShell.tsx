@@ -244,7 +244,7 @@ export default function CahierShell({
             <div className={`flex items-center justify-between gap-2 py-3 pr-3 sm:pr-5 ${nested ? "pl-5 sm:pl-7" : "pl-12 sm:pl-16"}`}>
               {active === "home" ? (
                 <span className="cahier-display text-lg font-black text-[color:var(--cahier-ink)]">
-                  <span className="cahier-hl">FluoLingo</span> <span aria-hidden>✨</span>
+                  <span className="cahier-hl">FluoLingo</span>
                 </span>
               ) : (
                 <Link href="/" className="cahier-display text-lg font-black text-[color:var(--cahier-ink)]">

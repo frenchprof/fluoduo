@@ -209,10 +209,10 @@ body {
    the letters of FluoLingo do a Kallang Wave — each letter swells slightly
    and GLOWS at the top of its arc, then settles back — then the fluo
    highlighter is dragged across the word F→…→o like a real marker stroke
-   (skewed nib, soft glow while wet), and finally the ✨ blinks with a golden
-   pulse. Armed via .is-play — the home page adds it only once the Guide
-   splash is out of the way. Timings chain:
-   wave ≈ 0.15–1.3 s → highlighter 1.45–2.55 s → star blink 2.7–3.8 s. */
+   (skewed nib, soft glow while wet). Armed via .is-play. Timings chain:
+   wave ≈ 0.15–1.3 s → highlighter 1.45–2.75 s → byline writes from 2.8 s.
+   (The trailing ✨ blink was cut 2026-07-17 — it wrapped to its own line
+   on phones.) */
 .fluo-brand {
   position: relative;
   display: inline-block;
@@ -314,28 +314,6 @@ body {
     text-shadow: none;
   }
 }
-.fluo-brand-star {
-  display: inline-block;
-}
-.fluo-brand-star.is-play {
-  animation: fluo-brand-blink 1.1s ease-in-out 2.7s;
-}
-@keyframes fluo-brand-blink {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-    filter: none;
-  }
-  15%, 55% {
-    opacity: 0;
-    transform: scale(0.55);
-  }
-  35%, 75% {
-    opacity: 1;
-    transform: scale(1.35);
-    filter: drop-shadow(0 0 9px rgba(255, 208, 70, 0.95));
-  }
-}
 /* « par Dr Chan » writes itself (Dan, 2026-07-15): every stroke is an SVG
    path with pathLength=1; drawing = wiping the dash offset. Delays are
    inline per stroke so each letter waits for the previous pen lift. Without
@@ -357,7 +335,7 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .fluo-brand::before, .fluo-brand.is-play::before { animation: none; clip-path: none; }
   .fluo-brand::after, .fluo-brand.is-play::after { display: none; }
-  .fluo-brand.is-play .fluo-brand-letter, .fluo-brand-star.is-play { animation: none; }
+  .fluo-brand.is-play .fluo-brand-letter { animation: none; }
   .fluo-byline.is-play path { animation: none; stroke-dashoffset: 0; }
 }
 
