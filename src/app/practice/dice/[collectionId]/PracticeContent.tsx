@@ -311,7 +311,7 @@ function ItemCard({
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
-        {choices.map((c) => {
+        {choices.map((c, i) => {
           const isPicked = submitted?.picked === c.key;
           const isAnswer = c.key === item.correctColKey;
           let cls =
@@ -332,6 +332,8 @@ function ItemCard({
               lang="fr"
               className={`rounded-xl border-2 px-4 py-3 text-center text-lg font-extrabold transition ${cls}`}
             >
+              {/* The 1-4 keys answer (useChoiceKeys) — show them (Dan, 2026-07-16). */}
+              <span aria-hidden className="mr-2 align-middle text-xs font-bold opacity-50">{i + 1}</span>
               {c.label}
               {submitted && isAnswer && (
                 <span className="ml-2" aria-hidden>

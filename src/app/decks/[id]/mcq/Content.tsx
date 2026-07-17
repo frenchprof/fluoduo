@@ -288,7 +288,7 @@ function Question({
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-        {choices.map((c) => {
+        {choices.map((c, i) => {
           const isPicked = picked === c;
           const isAnswer = c === answer;
           let cls = "border-slate-200 bg-white text-slate-900 hover:border-slate-400";
@@ -307,6 +307,9 @@ function Question({
               lang={dir === "fr-en" ? "en" : "fr"}
               className={`rounded-xl border-2 px-4 py-3 text-left text-base font-bold transition ${cls}`}
             >
+              {/* The 1-4 keys answer (useChoiceKeys) — show them so learners
+                  know (Dan, 2026-07-16). */}
+              <span aria-hidden className="mr-2 text-xs font-bold opacity-50">{i + 1}</span>
               {c}
               {picked && isAnswer && <span className="ml-2" aria-hidden>✓</span>}
               {picked && isPicked && !isAnswer && <span className="ml-2" aria-hidden>✗</span>}

@@ -125,7 +125,7 @@ export default function PretestQuiz({ pretestId }: { pretestId: string }) {
       )}
       {qs.map((q) => (
         <div key={q.item.id} {...(q === activeQ ? { "data-preq-active": true } : {})}>
-          <QuestionCard q={q} picked={picked[q.item.id]} onPick={(c) => pick(q, c)} />
+          <QuestionCard q={q} picked={picked[q.item.id]} active={q === activeQ} onPick={(c) => pick(q, c)} />
         </div>
       ))}
     </div>
@@ -135,10 +135,15 @@ export default function PretestQuiz({ pretestId }: { pretestId: string }) {
 function QuestionCard({
   q,
   picked,
+  active = false,
   onPick,
 }: {
   q: Q;
   picked?: string;
+  /** The first unanswered question — the one the 1-4 keys answer. Only IT
+   *  wears the numeral chips (Dan, 2026-07-16: "appear on the active
+   *  question waiting to be answered, and not on others [yet]"). */
+  active?: boolean;
   onPick: (c: string) => void;
 }) {
   const { item, choices } = q;
@@ -191,7 +196,7 @@ function QuestionCard({
           </button>
         </span>
         <span className="flex flex-wrap items-center gap-2">
-          {choices.map((c) => {
+          {choices.map((c, i) => {
             const isPicked = picked === c;
             const isAnswer = c === item.answer;
             // Same strong solid-fill contrast as the Unit-0 quiz.
@@ -212,6 +217,11 @@ function QuestionCard({
                 lang="fr"
                 className={`rounded-full border-2 px-3 py-1.5 text-sm font-bold transition ${cls}`}
               >
+                {active && !showResult && (
+                  <span aria-hidden className="mr-1.5 inline-flex h-4 w-4 items-center justify-center rounded-full bg-[color:var(--fluo-ink)] text-[10px] font-black text-white">
+                    {i + 1}
+                  </span>
+                )}
                 {c}
               </button>
             );

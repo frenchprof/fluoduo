@@ -296,7 +296,7 @@ function ItemCard({
       </div>
 
       <div className="mt-5 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-        {choices.map((c) => {
+        {choices.map((c, i) => {
           const isPicked = submitted?.picked === c;
           const isAnswer = c === item.answer;
           let cls = "border-slate-200 bg-white text-slate-900 hover:border-slate-400";
@@ -315,6 +315,9 @@ function ItemCard({
               lang="fr"
               className={`rounded-xl border-2 px-4 py-3 text-left text-base font-bold transition ${cls}`}
             >
+              {/* 1-4 answer by keyboard (useChoiceKeys) — show the keys
+                  (Dan, 2026-07-16). Hidden once answered. */}
+              {!submitted && <span aria-hidden className="mr-2 text-xs font-bold opacity-50">{i + 1}</span>}
               {c}
               {submitted && isAnswer && <span className="ml-2" aria-hidden>✓</span>}
               {submitted && isPicked && !isAnswer && <span className="ml-2" aria-hidden>✗</span>}
