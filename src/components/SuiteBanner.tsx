@@ -1,7 +1,7 @@
 /**
  * The LAF1201 ecosystem banner (Dan, 2026-07-14: "we need the top most
  * banner like on this page") — the same dark navy band the course site
- * (st2fr26 / french1.withdrchan.com) carries, so the suite reads as one
+ * (st2fr26.withdrchan.com) carries, so the suite reads as one
  * family: brand LAF1201 · French I on the left, a Tools & Resources
  * dropdown on the right. Here the "Practice & AI tutor" entry is Fluolingo
  * itself (marked as the current site) and TTS is dropped per Dan's call.
