@@ -23,6 +23,7 @@ import { lessonsForSio } from "@/content/lessons";
 import { CURATED } from "@/content/collections";
 import { UNIT0_QUESTIONS, type Unit0Question } from "@/content/sios/unit0-questions";
 import { getAtelier } from "@/content/ateliers";
+import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import AuthGate from "@/components/AuthGate";
 import SioModal, { popupActivityTabs } from "./SioModal";
 import { AfterPretest } from "./SioDetail";
@@ -158,30 +159,57 @@ export default function Unit0Panel({
 function Unit0Questions({ sio }: { sio: (typeof UNIT0_SIOS)[number] }) {
   // Fresh random question AND option order on every popup open (this
   // component mounts per open) — never the authored order. Activity modes
-  // live on the popup's flap tabs, not in the body.
+  // live on the popup's flap tabs, not in the body. Answers are held HERE
+  // (not per-question) so the 1-N keys can answer the first unanswered
+  // question and its options can wear the numeral chips — same behaviour
+  // as the Units 1-4 pretest popup (Dan, 2026-07-16: "does not seem to be
+  // the case in Unit 0").
   const [questions, setQuestions] = useState<Unit0Question[]>([]);
-  const [answered, setAnswered] = useState(0);
+  const [picked, setPicked] = useState<Record<number, string>>({});
   useEffect(() => {
     const base = UNIT0_QUESTIONS[sio.id] ?? [];
     setQuestions(shuffle(base).map((q) => ({ ...q, options: shuffle(q.options) })));
-    setAnswered(0);
+    setPicked({});
   }, [sio.id]);
 
-  function onAnswered() {
-    setAnswered((n) => {
-      const next = n + 1;
-      // All answered → post-pretest content (lesson button) may appear.
-      if (next === questions.length && questions.length > 0) {
-        window.dispatchEvent(new CustomEvent("fluolingo:pretest-complete", { detail: { id: sio.id } }));
-      }
-      return next;
-    });
+  const activeIdx = questions.findIndex((_, i) => picked[i] === undefined);
+
+  function doPick(i: number, o: { v: string; ok: boolean }) {
+    if (picked[i] !== undefined) return;
+    const q = questions[i];
+    setPicked((prev) => ({ ...prev, [i]: o.v }));
+    if (o.ok) sfx.correct(); else sfx.wrong();
+    if (o.ok) speak(ttsFor(q, o.v), "fr-FR");
+    // All answered → post-pretest content (lesson button) may appear.
+    if (Object.keys(picked).length + 1 === questions.length && questions.length > 0) {
+      window.dispatchEvent(new CustomEvent("fluolingo:pretest-complete", { detail: { id: sio.id } }));
+    }
   }
+
+  const scrollToActive = () => {
+    window.setTimeout(() => {
+      document.querySelector("[data-u0q-active]")?.scrollIntoView({ block: "center", behavior: "smooth" });
+    }, 60);
+  };
+  useChoiceKeys({
+    count: activeIdx >= 0 ? questions[activeIdx]?.options.length ?? 0 : 0,
+    enabled: activeIdx >= 0,
+    onPick: (k) => {
+      const q = questions[activeIdx];
+      if (q && q.options[k]) {
+        doPick(activeIdx, q.options[k]);
+        scrollToActive();
+      }
+    },
+    onNext: scrollToActive,
+  });
 
   return (
     <div className="space-y-3">
       {questions.map((q, i) => (
-        <QuizQuestion key={i} q={q} onAnswered={onAnswered} />
+        <div key={i} {...(i === activeIdx ? { "data-u0q-active": true } : {})}>
+          <QuizQuestion q={q} picked={picked[i] ?? null} active={i === activeIdx} onPick={(o) => doPick(i, o)} />
+        </div>
       ))}
     </div>
   );
@@ -196,8 +224,19 @@ function ttsFor(q: Unit0Question, v: string): string {
   return v;
 }
 
-function QuizQuestion({ q, onAnswered }: { q: Unit0Question; onAnswered?: () => void }) {
-  const [picked, setPicked] = useState<string | null>(null);
+function QuizQuestion({
+  q,
+  picked,
+  active = false,
+  onPick,
+}: {
+  q: Unit0Question;
+  picked: string | null;
+  /** The first unanswered question — the one the 1-N keys answer; only IT
+   *  wears the numeral chips. */
+  active?: boolean;
+  onPick: (o: { v: string; ok: boolean }) => void;
+}) {
   const [showWhy, setShowWhy] = useState(false);
   const [showExample, setShowExample] = useState(false);
   // WHY appears only on a WRONG pick, and explains only why THAT choice is
@@ -210,14 +249,8 @@ function QuizQuestion({ q, onAnswered }: { q: Unit0Question; onAnswered?: () => 
   // the one already picked — speaks it (Dan, 2026-07-02: all letters
   // playable; a click reveals that letter's name).
   function tap(o: { v: string; ok: boolean }, answered: boolean) {
-    if (!answered) {
-      setPicked(o.v);
-      onAnswered?.();
-      if (o.ok) sfx.correct(); else sfx.wrong();
-      if (o.ok) speak(ttsFor(q, o.v), "fr-FR");
-    } else {
-      speak(o.v, "fr-FR");
-    }
+    if (!answered) onPick(o);
+    else speak(o.v, "fr-FR");
   }
 
   // The "exemple" button appears once attempted (the mnemonic contains the
@@ -276,7 +309,7 @@ function QuizQuestion({ q, onAnswered }: { q: Unit0Question; onAnswered?: () => 
           </span>
         )}
         <span className="flex flex-wrap items-center gap-2">
-          {q.options.map((o) => {
+          {q.options.map((o, oi) => {
             const isPicked = picked === o.v;
             const showResult = picked !== null;
             // Strong, solid-fill contrast (Dan: "i cannot tell what is what if
@@ -296,6 +329,11 @@ function QuizQuestion({ q, onAnswered }: { q: Unit0Question; onAnswered?: () => 
                 onClick={() => tap(o, showResult)}
                 className={`rounded-full border-2 px-3 py-1.5 text-sm font-bold transition ${cls}`}
               >
+                {active && !showResult && oi < 9 && (
+                  <span aria-hidden className="mr-1.5 inline-flex h-4 w-4 items-center justify-center rounded-full bg-[color:var(--fluo-ink)] text-[10px] font-black text-white">
+                    {oi + 1}
+                  </span>
+                )}
                 {o.v}
               </button>
             );

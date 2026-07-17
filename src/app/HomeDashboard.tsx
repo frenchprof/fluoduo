@@ -113,7 +113,7 @@ const BYLINE_STROKES = [
             on the same line as Bienvenue, extreme right, smaller) — icons
             only; tooltips and aria-labels carry the words. */}
         <div className="flex items-center justify-between gap-3">
-          <h1 className="fluo-serif text-3xl font-black text-[color:var(--fluo-ink)]">
+          <h1 className="fluo-serif text-2xl font-black text-[color:var(--fluo-ink)]">
             {/* "Bienvenue sur" stays still; FluoLingo performs the Kallang
                 Wave, then the fluo highlighter sweeps over it, then the ✨
                 blinks for a beat (Dan, 2026-07-13). Once per page load. */}
@@ -139,12 +139,12 @@ const BYLINE_STROKES = [
                 previous one is complete. Hand-authored print-italic strokes
                 (no cursive faces per the house type rule), starting after
                 the ✨ blink. */}
-            <span className="block pl-1">
+            <span className="mt-0.5 block pl-1">
               <svg
                 role="img"
                 aria-label="par Dr Chan"
                 viewBox="0 0 134 36"
-                className={`fluo-byline h-[1.25em] w-auto${heroPlay ? " is-play" : ""}`}
+                className={`fluo-byline h-[1.1em] w-auto${heroPlay ? " is-play" : ""}`}
               >
                 <g
                   transform="translate(4 0) skewX(-8)"
