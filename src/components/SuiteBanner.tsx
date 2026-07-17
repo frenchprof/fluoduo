@@ -5,8 +5,10 @@
  * family: brand LAF1201 · French I on the left, a Tools & Resources
  * dropdown on the right. Here the "Practice & AI tutor" entry is Fluolingo
  * itself (marked as the current site) and TTS is dropped per Dan's call.
- * Static markup + scoped classes copied from the course page's `.utb` CSS;
- * not sticky here — FluoLingo has its own chrome below.
+ * Static markup + scoped classes copied from the course page's `.utb` CSS.
+ * Sticky like every sister site (Dan, 2026-07-16: "fluolingo seems to defy
+ * the conformity") — the app's own bar pins just below it; z stays under
+ * the app's popups so modals still cover the full screen.
  */
 
 // One Menu, four items, identical on every site of the suite (Dan, 2026-07-14).
@@ -21,7 +23,7 @@ export default function SuiteBanner() {
   return (
     <>
       <style>{`
-        .utb { display: flex; align-items: center; gap: 18px; padding: 0 28px; height: 56px;
+        .utb { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 18px; padding: 0 28px; height: 56px;
                background: #0e1530; border-bottom: 1px solid rgba(200,150,62,0.15);
                box-shadow: 0 2px 12px rgba(0,0,0,0.35); color: #e8ddd0;
                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif; }

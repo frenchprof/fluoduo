@@ -240,7 +240,7 @@ export default function CahierShell({
           {!nested && <div className="cahier-binding" aria-hidden />}
           {!nested && edgeGrip}
 
-          <div className="sticky top-0 z-10 border-b-2 border-[color:var(--cahier-ink)]/15 bg-[color:var(--cahier-paper)]/90 backdrop-blur">
+          <div className="sticky top-[56px] z-10 border-b-2 border-[color:var(--cahier-ink)]/15 bg-[color:var(--cahier-paper)]/90 backdrop-blur">
             <div className={`flex items-center justify-between gap-2 py-3 pr-3 sm:pr-5 ${nested ? "pl-5 sm:pl-7" : "pl-12 sm:pl-16"}`}>
               {active === "home" ? (
                 <span className="cahier-display text-lg font-black text-[color:var(--cahier-ink)]">

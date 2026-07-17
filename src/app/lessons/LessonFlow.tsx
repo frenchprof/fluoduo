@@ -138,7 +138,7 @@ export default function LessonFlow({
         </div>
       )}
 
-      <div className={`sticky ${embedded ? "top-0" : "top-[58px]"} z-[5] -mx-2 flex flex-wrap gap-1.5 rounded-lg bg-[color:var(--cahier-paper,#fdfbf4)]/90 px-2 py-1.5 backdrop-blur`}>
+      <div className={`sticky ${embedded ? "top-0" : "top-[114px]"} z-[5] -mx-2 flex flex-wrap gap-1.5 rounded-lg bg-[color:var(--cahier-paper,#fdfbf4)]/90 px-2 py-1.5 backdrop-blur`}>
         {sections.map((s, i) => (
           <button
             key={s.id}
