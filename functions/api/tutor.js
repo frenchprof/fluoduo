@@ -21,14 +21,27 @@ Rules:
 - Answer in English with the French examples IN French; put an English gloss in parentheses after each French sentence.
 - Wrap EVERY French word, phrase or sentence in guillemets « like this » — even single words mid-sentence (the site's text-to-speech switches to a French voice exactly inside the guillemets). Never put English inside guillemets.
 - Correct the student's French in tracked-changes style: wrap their wrong word(s) in ~~double tildes~~ (rendered struck through in red), immediately followed by the corrected French in guillemets, then ONE line on why. Example: ~~je aime~~ « j'aime » (elision before a vowel).
+- CORRECTION DISCIPLINE, the part you must never get wrong (a real student PDF showed every one of these failures):
+  * Only flag GENUINE errors. If the student's French is correct, say so, never "improve" it. Style preferences (adding « très », « pratiquer » vs « apprendre », idiomatic dislocation like « ma couleur préférée, c'est le rouge », « des cartes » vs « mes cartes ») are NOT errors and must never appear as tracked changes.
+  * Re-read the student's exact words before correcting. Never strike out something they did not actually write (they wrote « vingt-cinq » with the hyphen; do not "correct" it).
+  * Facts you must state correctly every time: nationality and language words used as ADJECTIVES are lowercase, « Je suis singapourien », « Il est singapourien », « Elle est française »; the capital belongs ONLY to the noun, « un Singapourien », « une Française ». Compound numbers 21 to 99 take hyphens, « vingt-cinq ».
+  * If the student challenges a correction, do not capitulate to be agreeable and do not double down blindly: re-derive the rule, then state the right answer ONCE, clearly, with the rule. Flip-flopping destroys their trust.
+- If asked what you are or what model powers you: you are an AI language model configured with Dr Chan's course materials. Do not claim to be a custom-built model and do not invent capabilities.
 - Stay at A1 level: simple vocabulary, present tense (+ futur proche at most).
 - Never do graded work for them; coach them to produce the French themselves.
 - ROLE-PLAY: when the learner asks to role-play a scene, stay fully in character (simple A1 French, one or two lines per turn) and do NOT correct mid-scene. The moment the scene ends (a goodbye, or the learner stops the scene), immediately give LE BILAN: what they did well (quote their French), their errors in tracked-changes style (~~wrong~~ « correct », one short reason each), and one tip for next time.
 - For course logistics — the schedule, tests/quizzes, deadlines, what a test covers, announcements — answer from the CLASS SITE reference below when it's there. If the reference doesn't contain the answer, say you couldn't find it on the class site and suggest checking with Dr Chan; don't invent dates or test coverage.
 - YOUR INTERFACE (guide the learner to it, never deny it exists): under each reply balloon there are playback buttons (green play, yellow snail for slow, and while playing: pause, red stop, and a slider to move within the audio). A "Save as PDF & End Session" button appears under your latest reply (right side) until the learner sends their next message: it saves the WHOLE conversation as a PDF and then starts a fresh session. Two microphone buttons beside "Envoyer" (French flag, English flag) let them dictate in either language instead of typing. If asked how to save or listen, point to these buttons.`;
 
-// OpenRouter model ID — must match EXACTLY what openrouter.ai/models shows
-const MODEL = "mistralai/mistral-large-2512";
+// OpenRouter model IDs — must match EXACTLY what openrouter.ai/models shows.
+// Upgraded from mistral-large (Dan, 2026-07-19: "the chat bot is really not
+// very good in grammar, i am concerned" — a student PDF showed invented
+// errors, a false nationality-capitalisation rule, and flip-flopping).
+// Claude Haiku 4.5: much stronger French grammar, ~$0.005 per tutor reply.
+// TUTOR_MODEL env var overrides without a redeploy; any upstream failure
+// retries once on the old Mistral model so the tutor never goes dark.
+const MODEL = "anthropic/claude-haiku-4.5";
+const FALLBACK_MODEL = "mistralai/mistral-large-2512";
 
 const DEFAULT_SOURCE = "https://st2fr26.withdrchan.com/";
 
@@ -111,18 +124,27 @@ export async function onRequestPost(context) {
   ];
 
   try {
-    const r = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "Authorization": `Bearer ${env.ANTHROPIC_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        max_tokens: 700,
-        messages: apiMessages,
-      }),
-    });
+    const call = (model) =>
+      fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "Authorization": `Bearer ${env.ANTHROPIC_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model,
+          max_tokens: 700,
+          // Grammar rulings must be stable, not creative.
+          temperature: 0.4,
+          messages: apiMessages,
+        }),
+      });
+    const primary = env.TUTOR_MODEL || MODEL;
+    let r = await call(primary);
+    if (!r.ok && primary !== FALLBACK_MODEL) {
+      console.error("Tutor primary model failed:", primary, r.status, (await r.text()).slice(0, 300));
+      r = await call(FALLBACK_MODEL);
+    }
     if (!r.ok) {
       const errText = await r.text();
       console.error("OpenRouter upstream error:", r.status, errText);
