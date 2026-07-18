@@ -19,6 +19,18 @@
  *           → 200 audio/mpeg  |  503 { error: "not-configured" }  |  502 { error }
  */
 
+// Two Google voice generations (Dan, 2026-07-18: "google neurals sound so
+// unhuman"): Chirp 3 HD is the current, far more natural family — same API,
+// same 1M-chars/month free tier — with quirks: no SSML, and speakingRate
+// support varies. So: try HD first (rate sent only when ≠1), and any non-OK
+// answer retries the same request on the classic Neural2 voice, which
+// accepts everything. Worst case a clip sounds like it did before.
+const VOICES_HD = {
+  "fr-f": { languageCode: "fr-FR", name: "fr-FR-Chirp3-HD-Kore" },
+  "fr-m": { languageCode: "fr-FR", name: "fr-FR-Chirp3-HD-Charon" },
+  "en-f": { languageCode: "en-US", name: "en-US-Chirp3-HD-Kore" },
+  "en-m": { languageCode: "en-US", name: "en-US-Chirp3-HD-Charon" },
+};
 const VOICES = {
   "fr-f": { languageCode: "fr-FR", name: "fr-FR-Neural2-A" },
   "fr-m": { languageCode: "fr-FR", name: "fr-FR-Neural2-B" },
@@ -41,7 +53,7 @@ export async function onRequestPost(context) {
   }
   const text = typeof (body && body.text) === "string" ? body.text.trim().slice(0, 1000) : "";
   if (!text) return json({ error: "no-text" }, 400);
-  const voice = VOICES[body && body.voice] || VOICES["fr-f"];
+  const voiceKey = VOICES[body && body.voice] ? body.voice : "fr-f";
   const rate = Math.min(1.4, Math.max(0.5, Number(body && body.rate) || 1));
   // Engine choice (Dan, 2026-07-18: "only use google api for tts from now"):
   // GOOGLE is the default whenever its key exists — its Neural2 pair is the
@@ -96,18 +108,25 @@ export async function onRequestPost(context) {
   }
 
   try {
-    const r = await fetch(
-      "https://texttospeech.googleapis.com/v1/text:synthesize?key=" + env.GOOGLE_TTS_API_KEY,
-      {
+    const synth = (v) =>
+      fetch("https://texttospeech.googleapis.com/v1/text:synthesize?key=" + env.GOOGLE_TTS_API_KEY, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           input: { text },
-          voice,
-          audioConfig: { audioEncoding: "MP3", speakingRate: rate },
+          voice: v,
+          // speakingRate only when the caller actually wants one — the HD
+          // voices can reject the parameter, and a plain request gives them
+          // their best shot before the Neural2 retry below.
+          audioConfig: rate === 1 ? { audioEncoding: "MP3" } : { audioEncoding: "MP3", speakingRate: rate },
         }),
-      },
-    );
+      });
+    let used = VOICES_HD[voiceKey];
+    let r = await synth(used);
+    if (!r.ok) {
+      used = VOICES[voiceKey];
+      r = await synth(used);
+    }
     if (!r.ok) return json({ error: "upstream-" + r.status }, 502);
     const data = await r.json();
     if (!data || typeof data.audioContent !== "string") return json({ error: "no-audio" }, 502);
@@ -118,7 +137,7 @@ export async function onRequestPost(context) {
       headers: {
         "content-type": "audio/mpeg",
         "cache-control": "no-store",
-        "x-tts-engine": "google:" + voice.name,
+        "x-tts-engine": "google:" + used.name,
       },
     });
   } catch {
