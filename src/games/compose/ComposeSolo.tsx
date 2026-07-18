@@ -9,7 +9,9 @@
 
 import { useEffect, useState } from "react";
 import { logEvent } from "@/lib/firebase/usage";
-import { speak } from "@/games/letris/speech";
+// Cloud (Google Neural2) speech with automatic browser fallback — the
+// exercises sound identical on every device (Dan, 2026-07-18).
+import { speakCloud as speak, stopCloudVoice } from "@/lib/cloudVoice";
 import { sfx } from "@/games/audio/sfx";
 import { awardConversationXp } from "@/lib/progress";
 import { categoryHeaderClass, type ComposeBank } from "@/games/compose/banks";
@@ -55,14 +57,14 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
     setLine([]);
     setLines([]);
     setFeedback(null);
-    if (typeof window !== "undefined") window.speechSynthesis?.cancel();
+    if (typeof window !== "undefined") { window.speechSynthesis?.cancel(); stopCloudVoice(); }
   };
   const reset = () => {
     setLine([]);
     setLines([]);
     setFeedback(null);
     setScenario(bank.newScenario());
-    if (typeof window !== "undefined") window.speechSynthesis?.cancel();
+    if (typeof window !== "undefined") { window.speechSynthesis?.cancel(); stopCloudVoice(); }
   };
 
   // Ask the AI passer-by to read the whole itinerary and react. Degrades

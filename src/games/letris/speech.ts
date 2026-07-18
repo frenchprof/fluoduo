@@ -145,13 +145,21 @@ function applyVoiceAndPitch(u: SpeechSynthesisUtterance, lang: string, gender?: 
 // Manual pause must survive the Chrome keep-alive below (which exists to
 // undo Chrome's SILENT pauses, not the user's deliberate one).
 let userPaused = false;
+// Cloud playback (lib/cloudVoice) registers here so the tutor's ⏸/▶ —
+// which calls pauseSpeech()/resumeSpeech() — also reaches its <audio> clip.
+let cloudPauseHooks: { pause: () => void; resume: () => void } | null = null;
+export function registerCloudPauseHooks(h: { pause: () => void; resume: () => void }): void {
+  cloudPauseHooks = h;
+}
 export function pauseSpeech(): void {
   userPaused = true;
   window.speechSynthesis?.pause();
+  cloudPauseHooks?.pause();
 }
 export function resumeSpeech(): void {
   userPaused = false;
   window.speechSynthesis?.resume();
+  cloudPauseHooks?.resume();
 }
 export function isSpeechPaused(): boolean {
   return userPaused;
@@ -254,7 +262,7 @@ export function guessLang(segment: string): "fr-FR" | "en-US" {
  *  become their own segments (that's exactly where the tutor's format flips
  *  language), the rest splits at sentence boundaries; emoji are stripped
  *  (some voices announce them: "robot face"). */
-function segmentBilingual(text: string): { text: string; lang: "fr-FR" | "en-US" }[] {
+export function segmentBilingual(text: string): { text: string; lang: "fr-FR" | "en-US" }[] {
   const out: { text: string; lang: "fr-FR" | "en-US" }[] = [];
   const push = (raw: string, lang?: "fr-FR" | "en-US") => {
     const clean = raw.replace(/~~[^~]*~~/g, " ").replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}«»*#]/gu, "").trim();

@@ -11,7 +11,10 @@
 import { useEffect, useRef, useState } from "react";
 import CahierShell from "@/components/CahierShell";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
-import { speakMixed, pauseSpeech, resumeSpeech, isSpeechPaused, guessLang, type MixedPlayback } from "@/games/letris/speech";
+import { pauseSpeech, resumeSpeech, isSpeechPaused, guessLang, type MixedPlayback } from "@/games/letris/speech";
+// Balloons read with the Google Neural2 cast (browser voices as automatic
+// fallback) so the tutor sounds identical on every device (Dan, 2026-07-18).
+import { speakMixedCloud as speakMixed, stopCloudVoice } from "@/lib/cloudVoice";
 import { logEvent } from "@/lib/firebase/usage";
 import AuthGate from "@/components/AuthGate";
 import type { ReactNode } from "react";
@@ -129,6 +132,7 @@ function TutorPageInner() {
     const rec = getRecognizer();
     if (!rec) return;
     window.speechSynthesis?.cancel(); // don't transcribe our own TTS
+    stopCloudVoice();
     const base = input.trim();
     rec.lang = lang;
     rec.interimResults = true;

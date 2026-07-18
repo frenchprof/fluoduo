@@ -12,7 +12,9 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { logEvent } from "@/lib/firebase/usage";
 import { sfx } from "@/games/audio/sfx";
-import { speak, speakSequence } from "@/games/letris/speech";
+// Cloud (Google Neural2) speech with automatic browser fallback — the
+// dialogues sound identical on every device (Dan, 2026-07-18).
+import { speakCloud as speak, speakSequenceCloud as speakSequence, stopCloudVoice } from "@/lib/cloudVoice";
 import { awardConversationXp } from "@/lib/progress";
 import { CAFE_PRICES, categoryHeaderClass, type ComposeBank } from "@/games/compose/banks";
 
@@ -87,7 +89,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
   const endRef = useRef<HTMLDivElement>(null);
 
   const start = () => {
-    if (typeof window !== "undefined") window.speechSynthesis?.cancel();
+    if (typeof window !== "undefined") { window.speechSynthesis?.cancel(); stopCloudVoice(); }
     setMessages([{ who: "waiter", text: opening }]);
     setStage("order");
     setOrdered([]);
