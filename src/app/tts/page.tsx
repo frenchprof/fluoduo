@@ -28,8 +28,9 @@ import { ADMIN_EMAILS } from "@/app/teacher/data";
 // Admin-only A/B: which backend engine renders the MP3 (Dan, 2026-07-18:
 // "how do I know how each one sounds"). "auto" = server decides
 // (TTS_PROVIDER pin, else Mistral-first). Invisible to students.
-const ENGINES = ["auto", "google", "mistral"] as const;
+const ENGINES = ["auto", "google", "mistral", "openai"] as const;
 type Engine = (typeof ENGINES)[number];
+const ENGINE_LABEL: Record<Engine, string> = { auto: "Auto", google: "Google", mistral: "Mistral", openai: "OpenAI" };
 
 const SAMPLE = "Utilisez-moi pour vérifier la prononciation d'un mot, d'une expression, ou d'un texte entier !";
 const SPEEDS = [1, 0.75, 0.5, 1.25, 1.5];
@@ -292,7 +293,7 @@ function TtsPageInner() {
               onClick={() => setEngine(ENGINES[(ENGINES.indexOf(engine) + 1) % ENGINES.length])}
               title="Moteur du MP3 (visible aux profs uniquement)"
               className="cahier-btn cahier-btn-sm font-black">
-              🎛 {engine === "auto" ? "Auto" : engine === "google" ? "Google" : "Mistral"}
+              🎛 {ENGINE_LABEL[engine]}
             </button>
           )}
           <button type="button" onClick={() => void corriger()} disabled={!text.trim() || fixBusy}

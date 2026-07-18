@@ -19,12 +19,13 @@
  *           → 200 audio/mpeg  |  503 { error: "not-configured" }  |  502 { error }
  */
 
-// Two Google voice generations (Dan, 2026-07-18: "google neurals sound so
-// unhuman"): Chirp 3 HD is the current, far more natural family — same API,
-// same 1M-chars/month free tier — with quirks: no SSML, and speakingRate
-// support varies. So: try HD first (rate sent only when ≠1), and any non-OK
-// answer retries the same request on the classic Neural2 voice, which
-// accepts everything. Worst case a clip sounds like it did before.
+// Two Google voice generations. Chirp 3 HD sounds far more natural BUT
+// mispronounces French elisions and sometimes drifts out of French entirely
+// (Dan, 2026-07-18: "we have to avoid this model at all cost") — so the
+// DEFAULT is the robotic-but-correct Neural2, and HD is opt-in via a
+// TTS_HD env var for the day Google fixes it upstream (the bug is
+// acknowledged: discuss.google.dev t/271804). When HD is opted in, any
+// non-OK answer still retries on Neural2.
 const VOICES_HD = {
   "fr-f": { languageCode: "fr-FR", name: "fr-FR-Chirp3-HD-Kore" },
   "fr-m": { languageCode: "fr-FR", name: "fr-FR-Chirp3-HD-Charon" },
@@ -40,10 +41,13 @@ const VOICES = {
 
 export async function onRequestPost(context) {
   const { request, env } = context;
-  // Neither key → 503 (engine choice happens after the body is parsed).
-  // Note the OpenRouter sk-or- key can NOT reach Mistral's audio endpoint —
-  // only a native MISTRAL_API_KEY counts.
-  if (!env.MISTRAL_API_KEY && !env.GOOGLE_TTS_API_KEY) return json({ error: "not-configured" }, 503);
+  // No speech-capable key at all → 503 (engine choice happens after the body
+  // is parsed). Note the OpenRouter sk-or- key can NOT reach Mistral's audio
+  // endpoint — only a native MISTRAL_API_KEY counts — but it CAN reach
+  // OpenRouter's own /audio/speech (the "openai" engine below).
+  const orKey = [env.OPENROUTER_API_KEY, env.ANTHROPIC_API_KEY, env.MISTRAL_API_KEY]
+    .find((k) => k && k.startsWith("sk-or-"));
+  if (!env.MISTRAL_API_KEY && !env.GOOGLE_TTS_API_KEY && !orKey) return json({ error: "not-configured" }, 503);
 
   let body;
   try {
@@ -63,8 +67,46 @@ export async function onRequestPost(context) {
   // when the Google key is missing. Pins never brick the studio: a pin
   // pointing at a missing key falls back to whichever engine has one.
   const reqEngine = typeof (body && body.engine) === "string" ? body.engine.toLowerCase() : "";
-  const pin = reqEngine === "google" || reqEngine === "mistral" ? reqEngine : (env.TTS_PROVIDER || "").trim().toLowerCase();
+  const KNOWN = ["google", "mistral", "openai"];
+  const pin = KNOWN.includes(reqEngine) ? reqEngine : (env.TTS_PROVIDER || "").trim().toLowerCase();
   const tryMistral = Boolean(env.MISTRAL_API_KEY) && (pin === "mistral" || !env.GOOGLE_TTS_API_KEY);
+
+  // ── OpenAI TTS via OpenRouter (Dan, 2026-07-18: "can we consider OpenAI
+  // mini") — gpt-4o-mini-tts: very natural French, no elision bug, but NO
+  // free tier (≈$0.015/min of audio). Runs when pinned via the admin 🎛
+  // button or TTS_PROVIDER=openai, or when it holds the only usable key.
+  // Any failure falls through to the Google/Mistral engines below.
+  if (orKey && (pin === "openai" || (!env.GOOGLE_TTS_API_KEY && !env.MISTRAL_API_KEY))) {
+    try {
+      const OPENAI_VOICES = { "fr-f": "coral", "fr-m": "onyx", "en-f": "coral", "en-m": "onyx" };
+      const payload = {
+        model: env.OPENROUTER_TTS_MODEL || "openai/gpt-4o-mini-tts",
+        input: text,
+        voice: env.OPENROUTER_TTS_VOICE || OPENAI_VOICES[voiceKey],
+        response_format: "mp3",
+      };
+      // The model has no numeric speed knob — the 🐌 rates become a style
+      // instruction instead.
+      if (rate <= 0.85) payload.instructions = "Speak slowly and very clearly, for a beginner learner.";
+      const r = await fetch("https://openrouter.ai/api/v1/audio/speech", {
+        method: "POST",
+        headers: { "content-type": "application/json", authorization: "Bearer " + orKey },
+        body: JSON.stringify(payload),
+      });
+      if (r.ok) {
+        return new Response(await r.arrayBuffer(), {
+          headers: {
+            "content-type": "audio/mpeg",
+            "cache-control": "no-store",
+            "x-tts-engine": "openai:" + payload.model + ":" + payload.voice,
+          },
+        });
+      }
+      console.error("OpenRouter TTS upstream error:", r.status, (await r.text()).slice(0, 400));
+    } catch (e) {
+      console.error("OpenRouter TTS unreachable:", e);
+    }
+  }
 
   // ── Mistral TTS (docs.mistral.ai → Studio API → audio → text_to_speech).
   // OpenAI-compatible shape; model/voice are env-overridable so the exact
@@ -132,10 +174,7 @@ export async function onRequestPost(context) {
           audioConfig: rate === 1 ? { audioEncoding: "MP3" } : { audioEncoding: "MP3", speakingRate: rate },
         }),
       });
-    // TTS_NO_HD (any value) on Cloudflare = escape hatch back to Neural2
-    // everywhere, no code redeploy — for when the HD family's French bugs
-    // outweigh its better sound.
-    let used = env.TTS_NO_HD ? VOICES[voiceKey] : VOICES_HD[voiceKey];
+    let used = env.TTS_HD ? VOICES_HD[voiceKey] : VOICES[voiceKey];
     let r = await synth(used);
     if (!r.ok && used !== VOICES[voiceKey]) {
       used = VOICES[voiceKey];
