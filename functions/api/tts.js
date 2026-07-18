@@ -28,13 +28,9 @@ const VOICES = {
 
 export async function onRequestPost(context) {
   const { request, env } = context;
-  // Provider preference (Dan, 2026-07-13: "integrate Voxtral as TTS";
-  // 2026-07-18: "how do I choose the TTS engine"): with BOTH keys present the
-  // engine used to be whichever won the try-order, invisible from the page.
-  // TTS_PROVIDER (Cloudflare env var, "google" or "mistral") now pins it —
-  // no code change needed to switch. Unset → Mistral first (native
-  // MISTRAL_API_KEY only; the OpenRouter sk-or- key can NOT reach Mistral's
-  // audio endpoint), Google as fallback. Neither key → 503.
+  // Neither key → 503 (engine choice happens after the body is parsed).
+  // Note the OpenRouter sk-or- key can NOT reach Mistral's audio endpoint —
+  // only a native MISTRAL_API_KEY counts.
   if (!env.MISTRAL_API_KEY && !env.GOOGLE_TTS_API_KEY) return json({ error: "not-configured" }, 503);
 
   let body;
@@ -47,13 +43,16 @@ export async function onRequestPost(context) {
   if (!text) return json({ error: "no-text" }, 400);
   const voice = VOICES[body && body.voice] || VOICES["fr-f"];
   const rate = Math.min(1.4, Math.max(0.5, Number(body && body.rate) || 1));
-  // Engine pin: a per-request `engine` (the page's admin-only A/B toggle,
-  // Dan 2026-07-18: "how do I know how each one sounds") beats the
-  // TTS_PROVIDER env pin. A pin pointing at a missing key must not brick
-  // the studio — fall back to whichever engine has a key.
+  // Engine choice (Dan, 2026-07-18: "only use google api for tts from now"):
+  // GOOGLE is the default whenever its key exists — its Neural2 pair is the
+  // only engine that honours the page's 👩/👨 voice choice (Mistral's sole
+  // French voice is Marie). Mistral speaks only when explicitly asked — the
+  // admin 🎛 button's per-request `engine`, or TTS_PROVIDER=mistral — or
+  // when the Google key is missing. Pins never brick the studio: a pin
+  // pointing at a missing key falls back to whichever engine has one.
   const reqEngine = typeof (body && body.engine) === "string" ? body.engine.toLowerCase() : "";
   const pin = reqEngine === "google" || reqEngine === "mistral" ? reqEngine : (env.TTS_PROVIDER || "").trim().toLowerCase();
-  const tryMistral = Boolean(env.MISTRAL_API_KEY) && (pin !== "google" || !env.GOOGLE_TTS_API_KEY);
+  const tryMistral = Boolean(env.MISTRAL_API_KEY) && (pin === "mistral" || !env.GOOGLE_TTS_API_KEY);
 
   // ── Mistral TTS (docs.mistral.ai → Studio API → audio → text_to_speech).
   // OpenAI-compatible shape; model/voice are env-overridable so the exact
