@@ -84,7 +84,9 @@ export async function onRequestPost(context) {
       } else {
         const buf = await r.arrayBuffer();
         return new Response(buf, {
-          headers: { "content-type": "audio/mpeg", "cache-control": "no-store" },
+          // x-tts-engine: proof of provenance (Dan, 2026-07-18: "how do we
+          // know it will go to google") — the page shows it to admins.
+          headers: { "content-type": "audio/mpeg", "cache-control": "no-store", "x-tts-engine": "mistral" },
         });
       }
     } catch (e) {
@@ -116,6 +118,7 @@ export async function onRequestPost(context) {
       headers: {
         "content-type": "audio/mpeg",
         "cache-control": "no-store",
+        "x-tts-engine": "google:" + voice.name,
       },
     });
   } catch {

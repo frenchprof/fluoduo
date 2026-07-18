@@ -73,6 +73,9 @@ function TtsPageInner() {
   const [mp3Busy, setMp3Busy] = useState(false);
   const [mp3Err, setMp3Err] = useState<string | null>(null);
   const [engine, setEngine] = useState<Engine>("auto");
+  // Which engine actually made the current clip (x-tts-engine response
+  // header) — provenance proof, shown to admins under the player.
+  const [madeBy, setMadeBy] = useState<string | null>(null);
   const user = useAuthUser();
   const isAdmin = !!user?.email && ADMIN_EMAILS.includes(user.email);
   // Tracked-changes proofread: corrected text (null = none yet).
@@ -182,6 +185,7 @@ function TtsPageInner() {
       }
       if (!r.ok) { setMp3Err("⚠️ génération impossible — réessayez dans un instant"); return; }
       setMp3Err(null);
+      setMadeBy(r.headers.get("x-tts-engine"));
       const blob = await r.blob();
       setMp3Url((old) => {
         if (old) URL.revokeObjectURL(old);
@@ -348,11 +352,16 @@ function TtsPageInner() {
 
         {/* The generated clip: native player (true drag-to-seek) + download. */}
         {mp3Url && (
-          <div className="mt-3 flex items-center gap-1.5">
-            <audio controls src={mp3Url} className="min-w-0 flex-1" />
-            <a href={mp3Url} download="fluolingo-tts.mp3" title="Télécharger" className="cahier-btn cahier-btn-sm">
-              ⬇
-            </a>
+          <div className="mt-3">
+            <div className="flex items-center gap-1.5">
+              <audio controls src={mp3Url} className="min-w-0 flex-1" />
+              <a href={mp3Url} download="fluolingo-tts.mp3" title="Télécharger" className="cahier-btn cahier-btn-sm">
+                ⬇
+              </a>
+            </div>
+            {isAdmin && madeBy && (
+              <p className="mt-1 text-xs font-bold text-slate-500">🎛 moteur : {madeBy}</p>
+            )}
           </div>
         )}
         </div>
