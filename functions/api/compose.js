@@ -111,7 +111,8 @@ Write the debrief in English, keeping every French example in French. No headers
 - One or two things they did well. Be specific, quote their French.
 - The corrections that matter (up to four, most important first), each on one line: their words, then the corrected French, then one short reason.
 - One concrete tip for the next conversation.
-If their French was essentially error-free, say so warmly and give one stretch tip instead of corrections. Ignore missing accents on chip-composed text only when nothing else is wrong with the line.`;
+If their French was essentially error-free, say so warmly and give one stretch tip instead of corrections. Ignore missing accents on chip-composed text only when nothing else is wrong with the line.
+Only flag GENUINE errors: correct French must never be "improved", and style preferences are not errors. Nationality and language adjectives are lowercase («je suis singapourien», «elle est française»); the capital belongs only to the noun («un Singapourien»).`;
     try {
       const r = await fetch(provider.url, {
         method: "POST",
