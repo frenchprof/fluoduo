@@ -108,12 +108,17 @@ export async function onRequestPost(context) {
   }
 
   try {
-    // Chirp 3 HD mangles French elisions written with the straight ASCII
-    // apostrophe — «J'ai» comes out "jee, ai" (documented: discuss.google.dev
-    // t/271804; Dan heard it 2026-07-18). Printed French uses the typographic
-    // ’ (U+2019), which is what the model expects — normalise every straight
-    // quote to it. Neural2 is indifferent, so this is safe for the retry too.
-    const gText = text.replace(/'/g, "’");
+    // Chirp 3 HD mangles French elisions — «J'ai» comes out "jee, ai"
+    // (documented: discuss.google.dev t/271804; Dan heard it 2026-07-18,
+    // and again AFTER apostrophe normalisation, but only in some sentences —
+    // the pattern points at CAPITALISED elisions, where the lone capital
+    // letter reads as an initial, "J. Dupont"-style). Two inaudible rewrites:
+    //  1. every straight quote → typographic ’ (printed-French form);
+    //  2. a single capital letter before ’ (and «Qu’») → lowercase.
+    // Neither changes the sound of correct speech; Neural2 is indifferent.
+    const gText = text
+      .replace(/'/g, "’")
+      .replace(/\b([A-ZÀ-Ü]|Qu)’(?=[a-zà-ÿéèêA-ZÀ-Ü])/g, (m, c) => c.toLowerCase() + "’");
     const synth = (v) =>
       fetch("https://texttospeech.googleapis.com/v1/text:synthesize?key=" + env.GOOGLE_TTS_API_KEY, {
         method: "POST",
@@ -127,9 +132,12 @@ export async function onRequestPost(context) {
           audioConfig: rate === 1 ? { audioEncoding: "MP3" } : { audioEncoding: "MP3", speakingRate: rate },
         }),
       });
-    let used = VOICES_HD[voiceKey];
+    // TTS_NO_HD (any value) on Cloudflare = escape hatch back to Neural2
+    // everywhere, no code redeploy — for when the HD family's French bugs
+    // outweigh its better sound.
+    let used = env.TTS_NO_HD ? VOICES[voiceKey] : VOICES_HD[voiceKey];
     let r = await synth(used);
-    if (!r.ok) {
+    if (!r.ok && used !== VOICES[voiceKey]) {
       used = VOICES[voiceKey];
       r = await synth(used);
     }
