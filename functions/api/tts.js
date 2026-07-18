@@ -27,11 +27,17 @@ const VOICES = {
 
 export async function onRequestPost(context) {
   const { request, env } = context;
-  // Provider preference (Dan, 2026-07-13: "integrate Voxtral as TTS"):
-  // a NATIVE Mistral key (MISTRAL_API_KEY — the OpenRouter sk-or- key can
-  // NOT reach Mistral's audio endpoint) drives Mistral text-to-speech;
-  // otherwise GOOGLE_TTS_API_KEY drives Google. Neither → 503.
+  // Provider preference (Dan, 2026-07-13: "integrate Voxtral as TTS";
+  // 2026-07-18: "how do I choose the TTS engine"): with BOTH keys present the
+  // engine used to be whichever won the try-order, invisible from the page.
+  // TTS_PROVIDER (Cloudflare env var, "google" or "mistral") now pins it —
+  // no code change needed to switch. Unset → Mistral first (native
+  // MISTRAL_API_KEY only; the OpenRouter sk-or- key can NOT reach Mistral's
+  // audio endpoint), Google as fallback. Neither key → 503.
   if (!env.MISTRAL_API_KEY && !env.GOOGLE_TTS_API_KEY) return json({ error: "not-configured" }, 503);
+  const provider = (env.TTS_PROVIDER || "").trim().toLowerCase();
+  // A pin pointing at a missing key must not brick the studio — fall back.
+  const tryMistral = Boolean(env.MISTRAL_API_KEY) && (provider !== "google" || !env.GOOGLE_TTS_API_KEY);
 
   let body;
   try {
@@ -49,7 +55,7 @@ export async function onRequestPost(context) {
   // ids from the docs can be set without a redeploy of code:
   //   MISTRAL_TTS_MODEL  (e.g. the TTS model id shown in the docs)
   //   MISTRAL_TTS_VOICE  (a voice id from the docs; optional)
-  if (env.MISTRAL_API_KEY) {
+  if (tryMistral) {
     try {
       const payload = {
         model: env.MISTRAL_TTS_MODEL || "voxtral-tts-latest",
