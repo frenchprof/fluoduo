@@ -108,12 +108,18 @@ export async function onRequestPost(context) {
   }
 
   try {
+    // Chirp 3 HD mangles French elisions written with the straight ASCII
+    // apostrophe — «J'ai» comes out "jee, ai" (documented: discuss.google.dev
+    // t/271804; Dan heard it 2026-07-18). Printed French uses the typographic
+    // ’ (U+2019), which is what the model expects — normalise every straight
+    // quote to it. Neural2 is indifferent, so this is safe for the retry too.
+    const gText = text.replace(/'/g, "’");
     const synth = (v) =>
       fetch("https://texttospeech.googleapis.com/v1/text:synthesize?key=" + env.GOOGLE_TTS_API_KEY, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          input: { text },
+          input: { text: gText },
           voice: v,
           // speakingRate only when the caller actually wants one — the HD
           // voices can reject the parameter, and a plain request gives them
