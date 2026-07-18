@@ -22,6 +22,14 @@ import AuthGate from "@/components/AuthGate";
 import CahierShell from "@/components/CahierShell";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 import { castVoice } from "@/games/letris/speech";
+import { useAuthUser } from "@/lib/firebase/auth";
+import { ADMIN_EMAILS } from "@/app/teacher/data";
+
+// Admin-only A/B: which backend engine renders the MP3 (Dan, 2026-07-18:
+// "how do I know how each one sounds"). "auto" = server decides
+// (TTS_PROVIDER pin, else Mistral-first). Invisible to students.
+const ENGINES = ["auto", "google", "mistral"] as const;
+type Engine = (typeof ENGINES)[number];
 
 const SAMPLE = "Utilisez-moi pour vérifier la prononciation d'un mot, d'une expression, ou d'un texte entier !";
 const SPEEDS = [1, 0.75, 0.5, 1.25, 1.5];
@@ -58,6 +66,9 @@ function TtsPageInner() {
   const [mp3Url, setMp3Url] = useState<string | null>(null);
   const [mp3Busy, setMp3Busy] = useState(false);
   const [mp3Err, setMp3Err] = useState<string | null>(null);
+  const [engine, setEngine] = useState<Engine>("auto");
+  const user = useAuthUser();
+  const isAdmin = !!user?.email && ADMIN_EMAILS.includes(user.email);
   // Tracked-changes proofread: corrected text (null = none yet).
   const [fix, setFix] = useState<string | null>(null);
   const [fixBusy, setFixBusy] = useState(false);
@@ -150,7 +161,12 @@ function TtsPageInner() {
       const r = await fetch("/api/tts", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ text: t, voice: `fr-${voiceSel}`, rate: speed }),
+        body: JSON.stringify({
+          text: t,
+          voice: `fr-${voiceSel}`,
+          rate: speed,
+          ...(isAdmin && engine !== "auto" ? { engine } : {}),
+        }),
       });
       // NEVER fail silently (Dan, 2026-07-13: "not generating any mp3 as
       // promised") — the missing Google TTS key is the usual cause.
@@ -259,6 +275,14 @@ function TtsPageInner() {
             className="cahier-btn cahier-btn-sm cahier-btn-accent font-black disabled:opacity-50">
             {mp3Busy ? "⏳…" : "🎧 Générer le MP3"}
           </button>
+          {isAdmin && (
+            <button type="button"
+              onClick={() => setEngine(ENGINES[(ENGINES.indexOf(engine) + 1) % ENGINES.length])}
+              title="Moteur du MP3 (visible aux profs uniquement)"
+              className="cahier-btn cahier-btn-sm font-black">
+              🎛 {engine === "auto" ? "Auto" : engine === "google" ? "Google" : "Mistral"}
+            </button>
+          )}
           <button type="button" onClick={() => void corriger()} disabled={!text.trim() || fixBusy}
             title="Vérifier et corriger le français"
             className="cahier-btn cahier-btn-sm font-black disabled:opacity-50">

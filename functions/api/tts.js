@@ -14,7 +14,8 @@
  * GOOGLE_TTS_API_KEY (encrypted, Production). Until then this answers 503
  * and the page hides the MP3 studio. Free tier: ~1M Neural2 chars/month.
  *
- * Contract: POST /api/tts  { text, voice?: "fr-f"|"fr-m"|"en-f"|"en-m", rate?: number }
+ * Contract: POST /api/tts  { text, voice?: "fr-f"|"fr-m"|"en-f"|"en-m", rate?: number,
+ *                            engine?: "google"|"mistral" }
  *           → 200 audio/mpeg  |  503 { error: "not-configured" }  |  502 { error }
  */
 
@@ -35,9 +36,6 @@ export async function onRequestPost(context) {
   // MISTRAL_API_KEY only; the OpenRouter sk-or- key can NOT reach Mistral's
   // audio endpoint), Google as fallback. Neither key → 503.
   if (!env.MISTRAL_API_KEY && !env.GOOGLE_TTS_API_KEY) return json({ error: "not-configured" }, 503);
-  const provider = (env.TTS_PROVIDER || "").trim().toLowerCase();
-  // A pin pointing at a missing key must not brick the studio — fall back.
-  const tryMistral = Boolean(env.MISTRAL_API_KEY) && (provider !== "google" || !env.GOOGLE_TTS_API_KEY);
 
   let body;
   try {
@@ -49,6 +47,13 @@ export async function onRequestPost(context) {
   if (!text) return json({ error: "no-text" }, 400);
   const voice = VOICES[body && body.voice] || VOICES["fr-f"];
   const rate = Math.min(1.4, Math.max(0.5, Number(body && body.rate) || 1));
+  // Engine pin: a per-request `engine` (the page's admin-only A/B toggle,
+  // Dan 2026-07-18: "how do I know how each one sounds") beats the
+  // TTS_PROVIDER env pin. A pin pointing at a missing key must not brick
+  // the studio — fall back to whichever engine has a key.
+  const reqEngine = typeof (body && body.engine) === "string" ? body.engine.toLowerCase() : "";
+  const pin = reqEngine === "google" || reqEngine === "mistral" ? reqEngine : (env.TTS_PROVIDER || "").trim().toLowerCase();
+  const tryMistral = Boolean(env.MISTRAL_API_KEY) && (pin !== "google" || !env.GOOGLE_TTS_API_KEY);
 
   // ── Mistral TTS (docs.mistral.ai → Studio API → audio → text_to_speech).
   // OpenAI-compatible shape; model/voice are env-overridable so the exact
