@@ -35,7 +35,13 @@ const SAMPLE = "Utilisez-moi pour vérifier la prononciation d'un mot, d'une exp
 const SPEEDS = [1, 0.75, 0.5, 1.25, 1.5];
 
 /** Word-level LCS diff for the tracked-changes view (Dan, 2026-07-10:
- *  "glaring errors must be flagged out to the learner"). */
+ *  "glaring errors must be flagged out to the learner"). Case-INsensitive:
+ *  this page's output is sound, and capitalisation is inaudible — a
+ *  case-only difference is not a correction (Dan, 2026-07-18: the model
+ *  wrongly capitalised «singapourien» and it showed as an error). Accents
+ *  still count — they change pronunciation. The author's own casing is
+ *  kept for matching words. */
+const sameWord = (a: string, b: string) => a.toLowerCase() === b.toLowerCase();
 type DiffChunk = { t: string; k: "same" | "del" | "ins" };
 function diffWords(a: string, b: string): DiffChunk[] {
   const A = a.split(/\s+/).filter(Boolean);
@@ -44,11 +50,11 @@ function diffWords(a: string, b: string): DiffChunk[] {
   const dp: number[][] = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
   for (let i = m - 1; i >= 0; i--)
     for (let j = n - 1; j >= 0; j--)
-      dp[i][j] = A[i] === B[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+      dp[i][j] = sameWord(A[i], B[j]) ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
   const out: DiffChunk[] = [];
   let i = 0, j = 0;
   while (i < m && j < n) {
-    if (A[i] === B[j]) { out.push({ t: A[i], k: "same" }); i++; j++; }
+    if (sameWord(A[i], B[j])) { out.push({ t: A[i], k: "same" }); i++; j++; }
     else if (dp[i + 1][j] >= dp[i][j + 1]) { out.push({ t: A[i], k: "del" }); i++; }
     else { out.push({ t: B[j], k: "ins" }); j++; }
   }
@@ -223,7 +229,9 @@ function TtsPageInner() {
     el.style.height = `${Math.min(el.scrollHeight, 320)}px`;
   };
 
-  const fixClean = fix !== null && fix.replace(/\s+/g, " ").trim() === text.replace(/\s+/g, " ").trim();
+  // Case-insensitive: a case-only "correction" counts as no error at all.
+  const fixClean = fix !== null &&
+    fix.replace(/\s+/g, " ").trim().toLowerCase() === text.replace(/\s+/g, " ").trim().toLowerCase();
 
   return (
     <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="tts" crumb="🔊 VoixLà (TTS)">
