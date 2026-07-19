@@ -14,10 +14,10 @@ const UNIT_TINTS: Record<number, string> = { 0: "#fbe3ec", 1: "#def3f5", 2: "#fb
 export default function LexicalatorIndexPage() {
   const decks = CURATED.filter((c) => isLexReadyId(c.id)).sort((a, b) => (a.unit ?? 9) - (b.unit ?? 9));
   return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="lexicalator" crumb="🧰 Lexicalator">
+    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="lexicalator" crumb="🧰 LexicaLater">
       <div className="mx-auto max-w-3xl px-4 py-4">
         <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
-          🧰 Lexicalator
+          🧰 LexicaLater
           <span className="ml-2 text-sm font-bold text-[color:var(--cahier-ink-soft)]">forge the French from the syllables on the belt</span>
         </h1>
         <div className="mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-3">

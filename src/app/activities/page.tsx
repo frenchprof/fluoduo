@@ -41,14 +41,14 @@ function cellsFor(c: Collection): Cell[] {
     { emoji: "📚", title: "Lesson", href: lessons.length ? `/lessons/${lessons[0].slug}` : `/lessons/deck/${c.id}` },
     { emoji: "🃏", title: "Flip It", href: `/practice/flip-it/${c.id}` },
     { emoji: "🌧️", title: "Vocabularain", href: getLetrisSet(c.id.replace("-letris", "")) ? `/games/letris/${c.id.replace("-letris", "")}` : null },
-    { emoji: "🧰", title: "Lexicalator", href: isLexReadyId(c.id) ? `/games/conveyor/${c.id}` : null },
+    { emoji: "🧰", title: "LexicaLater", href: isLexReadyId(c.id) ? `/games/conveyor/${c.id}` : null },
     { emoji: "🧩", title: "Compose It", href: composeBankForDeck(c.id) ? `/games/compose/${composeBankForDeck(c.id)!.id}` : null },
     { emoji: "🎙️", title: "WorDrill", href: `/practice/say-it/${c.id}` },
   ];
 }
 
 const HEAD = ["🧪", "🔮", "📚", "🃏", "🌧️", "🧰", "🧩", "🎙️"];
-const HEAD_TITLES = ["Pre-Test", "SpecuLearn", "Lesson", "Flip It", "Vocabularain", "Lexicalator", "Compose It", "WorDrill"];
+const HEAD_TITLES = ["Pre-Test", "SpecuLearn", "Lesson", "Flip It", "Vocabularain", "LexicaLater", "Compose It", "WorDrill"];
 /** Column chip colors — the same hue each activity's tile wears on the Guide
  *  page (Pre-Test gets the highlighter yellow). */
 const HEAD_CHIPS: { bg: string; border: string }[] = [

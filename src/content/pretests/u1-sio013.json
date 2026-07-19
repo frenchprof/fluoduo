@@ -404,19 +404,19 @@
     {
       "id": "u1-sio013-23",
       "sentenceBefore": "J'étudie ",
-      "sentenceAfter": " sciences des données.",
-      "answer": "les",
+      "sentenceAfter": " science des données.",
+      "answer": "la",
       "distractors": [
         "le",
-        "la",
-        "l'"
+        "l'",
+        "les"
       ],
-      "fullSentence": "J'étudie les sciences des données.",
-      "sentenceTrans": "I study data science.",
+      "fullSentence": "J'étudie la science des données.",
+      "sentenceTrans": "I study data science. (science)",
       "whyWrong": {
-        "le": "sciences des données is plural — les.",
-        "la": "sciences des données is plural — les.",
-        "l'": "l' is singular before a vowel — this noun is plural."
+        "le": "science is feminine — la science des données.",
+        "l'": "l' is only before a vowel; science starts with a consonant — la.",
+        "les": "One field of study, singular in French — la science des données."
       }
     },
     {

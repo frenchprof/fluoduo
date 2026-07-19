@@ -39,6 +39,7 @@ import transport from "./transport.json";
 import aliments from "./aliments.json";
 import partitifs from "./partitifs.json";
 import partitifNegatif from "./partitif-negatif.json";
+import lesDe from "./les-de.json";
 import mangerBoire from "./manger-boire.json";
 import frequence from "./frequence.json";
 import demonstratifs from "./demonstratifs.json";
@@ -89,6 +90,10 @@ export const CURATED: Collection[] = [
   aliments as Collection,
   partitifs as Collection,
   partitifNegatif as Collection,
+  // All the de forms in one LexicaLater deck (Dan, 2026-07-19: "the lesson is
+  // missing for beaucoup de and pas de — take all the various de and make a
+  // LexicaLater out of it").
+  lesDe as Collection,
   mangerBoire as Collection,
   frequence as Collection,
   demonstratifs as Collection,

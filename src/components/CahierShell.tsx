@@ -503,7 +503,7 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
       ? [{ key: "rain", label: "Vocabularain", emoji: "🌧️", href: `/games/letris/${collectionId.replace("-letris", "")}`, hint: "sort words" } as ShellTab]
       : []),
     ...(isLexReadyId(collectionId)
-      ? [{ key: "match", label: "Lexicalator", emoji: "🧰", href: `/games/conveyor/${collectionId}`, hint: "build words" } as ShellTab]
+      ? [{ key: "match", label: "LexicaLater", emoji: "🧰", href: `/games/conveyor/${collectionId}`, hint: "build words" } as ShellTab]
       : []),
     ...(composeBank
       ? [{ key: "compose", label: "Compose It", emoji: "🧩", href: `/games/compose/${composeBank.id}`, hint: "build dialogues" } as ShellTab]

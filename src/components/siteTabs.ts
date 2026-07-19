@@ -53,7 +53,7 @@ export function toolTabs(): ShellTab[] {
     // link in one place each. Classement removed: the 🏆 top-bar icon is
     // the door (Dan: "we don't need the flap tab for classement").
     { key: "vocabularain", label: "VocabulaRain", emoji: "🌧️", href: "/games/letris", hue: "#5b8def" },
-    { key: "lexicalator", label: "Lexicalator", emoji: "🧰", href: "/games/conveyor", hue: "#e3a700" },
+    { key: "lexicalator", label: "LexicaLater", emoji: "🧰", href: "/games/conveyor", hue: "#e3a700" },
     { key: "tutor", label: "ChaTutor", emoji: "🤖", href: "/tutor", hue: "#8a5fd4" },
     { key: "reviser", label: "DéjàRevu", emoji: "🔁", href: "/reviser", hue: "#7bbf2e" },
     { key: "wordrill", label: "WorDrill", emoji: "🎙️", href: "/practice/wordrill", hue: "#7bbf2e" },

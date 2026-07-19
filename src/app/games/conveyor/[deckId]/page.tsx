@@ -34,7 +34,7 @@ export default async function ConveyorPage({
         <div className="border-b-2 border-white/70 bg-white/60 backdrop-blur">
           <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3 text-sm font-bold">
             <BackLink fallback="/" className="text-[#1cb0f6] hover:text-[#1899d6]">← Back</BackLink>
-            <span className="text-[#075985]/60">🧰 Lexicalator</span>
+            <span className="text-[#075985]/60">🧰 LexicaLater</span>
           </div>
         </div>
         {body}
@@ -48,7 +48,7 @@ export default async function ConveyorPage({
     return shell(
       <div className="mx-auto max-w-md px-6 py-20 text-center text-[#075985]">
         <p className="text-4xl" aria-hidden>🧰</p>
-        <h1 className="mt-3 text-xl font-black">Lexicalator is being prepared for “{collection.title}”.</h1>
+        <h1 className="mt-3 text-xl font-black">LexicaLater is being prepared for “{collection.title}”.</h1>
         <p className="mt-2 text-sm text-[#075985]/80">This deck&rsquo;s words still need their syllables. Try another activity in the meantime.</p>
         <BackLink fallback="/" className="mt-5 inline-block rounded-2xl border-b-4 border-[#1899d6] bg-[#1cb0f6] px-4 py-2 font-black text-white">← Back</BackLink>
       </div>,

@@ -441,7 +441,7 @@ export default function Lexicalator({
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-4" style={{ color: "#0c4a6e" }}>
-      <CreditsSplash game="Lexicalator" emoji="🧰" />
+      <CreditsSplash game="LexicaLater" emoji="🧰" />
       <style>{`
         @keyframes lxscroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
         @keyframes lxrattle{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px) rotate(-4deg)}75%{transform:translateX(4px) rotate(4deg)}}

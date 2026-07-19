@@ -17,7 +17,7 @@ const ACTIVITIES: { emoji: string; name: string; hue: number; what: string }[] =
   { emoji: "🃏", name: "Flip It", hue: 1, what: "flashcards" },
   { emoji: "🔤", name: "ConjugaZone", hue: 2, what: "conjugation sprints" },
   { emoji: "🌧️", name: "Vocabularain", hue: 3, what: "sort the falling words" },
-  { emoji: "🧰", name: "Lexicalator", hue: 4, what: "build the words" },
+  { emoji: "🧰", name: "LexicaLater", hue: 4, what: "build the words" },
   { emoji: "🧩", name: "Compose It", hue: 5, what: "build dialogues" },
   { emoji: "🤖", name: "ChaTutor", hue: 5, what: "chat, role-play, get corrected" },
   { emoji: "🔁", name: "DéjàRevu", hue: 0, what: "resurfaces your misses at the right moment" },
