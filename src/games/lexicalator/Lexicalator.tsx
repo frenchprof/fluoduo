@@ -103,6 +103,15 @@ function shuffle<T>(a: T[]): T[] {
 type Chest = { entry: LexEntry; filled: boolean[]; tint: number };
 const blankFill = (e: LexEntry): boolean[] => e.syllables.map(() => false);
 
+// Words that name a colour ALSO painted on a chest livery — on such decks
+// the chest tints and the answers collide (a blue chest may hold « rouge »).
+// The tints must stay: they are how players track which chest they brought
+// down (Dan, 2026-07-09 and again 2026-07-20 — differentiation matters at
+// every level). The fix is DISCLOSURE, not removal: a one-line notice at the
+// start of colour decks says the liveries lie (Dan, 2026-07-20: "user should
+// be warned when it starts to happen").
+const LIVERY_COLOR_WORDS = ["rouge", "bleu", "vert", "jaune", "violet", "rose", "orange"];
+
 export default function Lexicalator({
   title,
   subtitle,
@@ -474,9 +483,14 @@ export default function Lexicalator({
       <header className="mb-3 flex flex-wrap items-center gap-2">
         <div className="mr-auto">
           <h1 className="text-2xl font-black tracking-tight" style={{ color: "#0c4a6e", textShadow: "0 2px 0 #fff" }}>
-            🧰 Lexic<span style={{ color: "#ffc800" }}>alator</span>
+            🧰 Lexica<span style={{ color: "#ffc800" }}>Later</span>
           </h1>
           <p className="text-xs font-bold" style={{ color: "#075985" }}>{title}{subtitle ? ` — ${subtitle}` : ""}</p>
+          {entries.some((e) => LIVERY_COLOR_WORDS.some((w) => e.fr.toLowerCase().includes(w))) && (
+            <p className="mt-0.5 text-[11px] font-black" style={{ color: "#b45309" }}>
+              ⚠️ La couleur des coffres ne correspond pas aux mots !
+            </p>
+          )}
         </div>
         {/* Status chips: flat white, read-only. Buttons live in the raised
             yellow cluster below — two shapes so tappable is obvious at a
