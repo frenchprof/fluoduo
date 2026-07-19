@@ -30,13 +30,16 @@
       "answer": "cet",
       "distractors": [
         "ce",
+        "cette",
         "ces"
       ],
       "fullSentence": "On fait les courses cet après-midi.",
       "sentenceTrans": "We're doing the shopping this afternoon.",
+      "transFirst": true,
       "whyWrong": {
-        "ce": "Before a vowel sound, ce becomes cet — après-midi starts with a vowel.",
-        "ces": "ces is plural; après-midi is singular here."
+        "ce": "après-midi starts with a vowel — ce becomes cet: cet après-midi.",
+        "cette": "après-midi is masculine — cet après-midi.",
+        "ces": "ces is plural — one afternoon: cet après-midi."
       }
     },
     {

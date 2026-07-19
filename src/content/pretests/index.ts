@@ -38,7 +38,6 @@ import pu4_sio044 from "./u4-sio044.json";
 import pu4_sio045 from "./u4-sio045.json";
 import pu4_sio046 from "./u4-sio046.json";
 import pu4_sio047 from "./u4-sio047.json";
-import pu4_sio048 from "./u4-sio048.json";
 import pu4_sio047p from "./u4-sio047-plans.json";
 import pu4_sio048a from "./u4-sio048-advice.json";
 import pu4_sio045m from "./u4-sio045-marche.json";
@@ -81,7 +80,6 @@ export const PRETESTS: Pretest[] = [
   pu4_sio045m as unknown as Pretest,
   pu4_sio047p as unknown as Pretest,
   pu4_sio048a as unknown as Pretest,
-  pu4_sio048 as unknown as Pretest,
 ];
 
 export function getPretest(id: string): Pretest | undefined {

@@ -69,16 +69,16 @@
       "answer": "il faut",
       "distractors": [
         "tu peux",
-        "tu devrais",
-        "il devrait"
+        "tu faut",
+        "il peux"
       ],
       "fullSentence": "Pour rester en bonne santé, il faut manger équilibré.",
-      "sentenceTrans": "To stay healthy, you need to eat a balanced diet.",
+      "sentenceTrans": "To stay healthy, one must eat a balanced diet.",
       "transFirst": true,
       "whyWrong": {
-        "tu peux": "'You can' — the sentence states a necessity: il faut.",
-        "tu devrais": "'You should' (conditional) — a general necessity is il faut.",
-        "il devrait": "'It should' — the set phrase for necessity is il faut."
+        "tu peux": "'You can' — the sentence states a general necessity: il faut.",
+        "tu faut": "falloir is impersonal — it only works with il: il faut.",
+        "il peux": "peux is the je/tu form — il peut; and the sentence states a necessity: il faut."
       }
     },
     {
@@ -155,6 +155,63 @@
         "doit": "That's the singular elle form — elles doivent.",
         "devez": "That's the vous form — elles doivent.",
         "devons": "That's the nous form — elles doivent."
+      }
+    },
+    {
+      "id": "u4-sio048-advice-09",
+      "sentenceBefore": "Il ne ",
+      "sentenceAfter": " pas manger trop de sucre.",
+      "answer": "faut",
+      "distractors": [
+        "faux",
+        "peux",
+        "dois"
+      ],
+      "fullSentence": "Il ne faut pas manger trop de sucre.",
+      "sentenceTrans": "One mustn't eat too much sugar.",
+      "transFirst": true,
+      "whyWrong": {
+        "faux": "faux means 'false' — the verb is falloir: il ne faut pas.",
+        "peux": "peux is the je/tu form — with il the necessity verb is faut.",
+        "dois": "dois is the je/tu form — with impersonal il the verb is faut."
+      }
+    },
+    {
+      "id": "u4-sio048-advice-10",
+      "sentenceBefore": "On ",
+      "sentenceAfter": " acheter des légumes frais au marché.",
+      "answer": "peut",
+      "distractors": [
+        "peux",
+        "pouvez",
+        "pouvons"
+      ],
+      "fullSentence": "On peut acheter des légumes frais au marché.",
+      "sentenceTrans": "You can buy fresh vegetables at the market.",
+      "transFirst": true,
+      "whyWrong": {
+        "peux": "peux is the je/tu form — on takes peut.",
+        "pouvez": "pouvez is the vous form — on takes peut.",
+        "pouvons": "pouvons is the nous form — on takes peut."
+      }
+    },
+    {
+      "id": "u4-sio048-advice-11",
+      "sentenceBefore": "Pour bien dormir, vous ne ",
+      "sentenceAfter": " pas boire de café le soir.",
+      "answer": "devez",
+      "distractors": [
+        "devons",
+        "doivent",
+        "dois"
+      ],
+      "fullSentence": "Pour bien dormir, vous ne devez pas boire de café le soir.",
+      "sentenceTrans": "To sleep well, you mustn't drink coffee in the evening.",
+      "transFirst": true,
+      "whyWrong": {
+        "devons": "devons is the nous form — vous devez.",
+        "doivent": "doivent is the ils/elles form — vous devez.",
+        "dois": "dois is the je/tu form — vous devez."
       }
     }
   ]

@@ -90,7 +90,7 @@
       "fullSentence": "— C'est du café ? — Non, ce n'est pas du café — c'est du thé.",
       "sentenceTrans": "— Is it coffee? — No, it's not coffee — it's tea.",
       "whyWrong": {
-        "ce n'est pas de": "With 'ce n'est pas' identifying a thing, the article stays — du café.",
+        "ce n'est pas de": "The pas → de rule applies to verbs like boire/manger/prendre — after être the partitive is retained: ce n'est pas du café.",
         "il n'y a pas de": "That means 'there isn't any'; here we're saying 'it isn't coffee'.",
         "ce n'est pas de la": "café is masculine — du, not de la."
       }
@@ -103,14 +103,15 @@
       "distractors": [
         "assez du",
         "assez de le",
-        "beaucoup de"
+        "assez des"
       ],
       "fullSentence": "Il n'y a pas assez de sel dans cette soupe.",
       "sentenceTrans": "There isn't enough salt in this soup.",
+      "transFirst": true,
       "whyWrong": {
-        "assez du": "After assez you use plain de, not du.",
-        "assez de le": "After a quantity word you just use de — no article.",
-        "beaucoup de": "That means 'a lot of'; the sentence needs 'enough' (assez de)."
+        "assez du": "Quantity expressions take plain de — assez de sel.",
+        "assez de le": "de + le never contract after a quantity word — assez de sel.",
+        "assez des": "sel is a mass noun and quantity words take plain de — assez de sel."
       }
     },
     {

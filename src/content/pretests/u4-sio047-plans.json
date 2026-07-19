@@ -154,6 +154,82 @@
         "vont": "That's the ils form — nous allons.",
         "va": "That's the il/elle form — nous allons."
       }
+    },
+    {
+      "id": "u4-sio047-plans-09",
+      "sentenceBefore": "Qu'est-ce qu'on ",
+      "sentenceAfter": " manger ce week-end ?",
+      "answer": "va",
+      "distractors": [
+        "vas",
+        "vont",
+        "allons"
+      ],
+      "fullSentence": "Qu'est-ce qu'on va manger ce week-end ?",
+      "sentenceTrans": "What are we going to eat this weekend?",
+      "transFirst": true,
+      "whyWrong": {
+        "vas": "vas is the tu form — on takes va.",
+        "vont": "vont is the ils/elles form — on takes va.",
+        "allons": "allons is the nous form — on takes va."
+      }
+    },
+    {
+      "id": "u4-sio047-plans-10",
+      "sentenceBefore": "Elles ",
+      "sentenceAfter": " acheter des fruits au marché.",
+      "answer": "vont",
+      "distractors": [
+        "va",
+        "allez",
+        "allons"
+      ],
+      "fullSentence": "Elles vont acheter des fruits au marché.",
+      "sentenceTrans": "They're going to buy fruit at the market.",
+      "transFirst": true,
+      "whyWrong": {
+        "va": "Elles is plural — elles vont.",
+        "allez": "allez is the vous form — elles vont.",
+        "allons": "allons is the nous form — elles vont."
+      }
+    },
+    {
+      "id": "u4-sio047-plans-11",
+      "sentenceBefore": "Est-ce que tu ",
+      "sentenceAfter": " prendre un dessert ?",
+      "answer": "vas",
+      "distractors": [
+        "va",
+        "vais",
+        "allez"
+      ],
+      "fullSentence": "Est-ce que tu vas prendre un dessert ?",
+      "sentenceTrans": "Are you going to have a dessert?",
+      "transFirst": true,
+      "whyWrong": {
+        "va": "va is the il/elle form — tu vas.",
+        "vais": "vais is the je form — tu vas.",
+        "allez": "allez is the vous form — tu vas."
+      }
+    },
+    {
+      "id": "u4-sio047-plans-12",
+      "sentenceBefore": "Vous n'",
+      "sentenceAfter": " pas commander de vin ?",
+      "answer": "allez",
+      "distractors": [
+        "allons",
+        "avez",
+        "êtes"
+      ],
+      "fullSentence": "Vous n'allez pas commander de vin ?",
+      "sentenceTrans": "Aren't you going to order wine?",
+      "transFirst": true,
+      "whyWrong": {
+        "allons": "allons is the nous form — vous allez.",
+        "avez": "avoir doesn't build the futur proche — aller + infinitive: vous allez commander.",
+        "êtes": "être doesn't build the futur proche — aller + infinitive: vous allez commander."
+      }
     }
   ]
 }

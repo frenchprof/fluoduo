@@ -29,16 +29,17 @@
       "sentenceAfter": " ? »",
       "answer": "ceci",
       "distractors": [
-        "cela",
-        "ça",
-        "celui"
+        "celui",
+        "ceux",
+        "cet"
       ],
       "fullSentence": "Et avec ceci ?",
       "sentenceTrans": "Anything else? (literally: and with this?)",
+      "transFirst": true,
       "whyWrong": {
-        "cela": "Grammatical, but the fixed shop formula is Et avec ceci ?",
-        "ça": "Too informal and not the formula — shopkeepers say Et avec ceci ?",
-        "celui": "Celui means 'the one (which…)' and can't stand alone here."
+        "celui": "celui needs a complement (celui-ci, celui de…) — the set phrase is « Et avec ceci ? »",
+        "ceux": "ceux is plural and needs a complement — the set phrase is « Et avec ceci ? »",
+        "cet": "cet is a determiner and must be followed by a noun — the set phrase is « Et avec ceci ? »"
       }
     },
     {
@@ -139,14 +140,15 @@
       "distractors": [
         "un",
         "du",
-        "au"
+        "des"
       ],
       "fullSentence": "C'est trois euros le kilo.",
       "sentenceTrans": "It's three euros a kilo.",
+      "transFirst": true,
       "whyWrong": {
-        "un": "English says 'a kilo' but French prices use LE kilo (per kilo).",
-        "du": "Du kilo would mean 'of the kilo' — the price formula is … euros le kilo.",
-        "au": "Au kilo exists (vendu au kilo) but after a price it's … euros le kilo."
+        "un": "Price per unit uses the definite article in French — trois euros le kilo.",
+        "du": "The partitive doesn't fit here — the fixed price pattern is le + unit.",
+        "des": "kilo is singular here — trois euros le kilo."
       }
     }
   ]

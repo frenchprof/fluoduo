@@ -32,33 +32,34 @@
       "distractors": [
         "souvent",
         "parfois de",
-        "quelque fois"
+        "jamais"
       ],
       "fullSentence": "Nous mangeons parfois du gâteau le week-end.",
       "sentenceTrans": "We sometimes eat cake at the weekend.",
       "transFirst": true,
       "whyWrong": {
-        "souvent": "That means 'often', but the sentence says 'sometimes'.",
-        "parfois de": "parfois is a complete adverb — no 'de' follows it here.",
-        "quelque fois": "The adverb is one word, quelquefois (or parfois) — not 'quelque fois'."
+        "souvent": "'Often' — the sentence says sometimes: parfois.",
+        "parfois de": "parfois is an adverb — it doesn't take de: parfois du gâteau.",
+        "jamais": "jamais needs ne … jamais — and the sentence says sometimes: parfois."
       }
     },
     {
       "id": "u4-sio045-03",
       "sentenceBefore": "Je mange ",
-      "sentenceAfter": " de la restauration rapide.",
+      "sentenceAfter": " au fast-food.",
       "answer": "rarement",
       "distractors": [
         "rares",
         "très rare",
         "rare"
       ],
-      "fullSentence": "Je mange rarement de la restauration rapide.",
-      "sentenceTrans": "I rarely eat fast food.",
+      "fullSentence": "Je mange rarement au fast-food.",
+      "sentenceTrans": "I rarely eat at fast-food places.",
+      "transFirst": true,
       "whyWrong": {
-        "rares": "rares is a plural adjective — to modify the verb you need the adverb rarement.",
-        "très rare": "rare is an adjective ('rare'); the adverb is rarement.",
-        "rare": "That's the adjective; you need the adverb rarement to modify the verb."
+        "rares": "rares is a plural adjective — the adverb is rarement.",
+        "très rare": "rare is an adjective — the adverb is rarement.",
+        "rare": "rare is an adjective — the adverb is rarement."
       }
     },
     {
