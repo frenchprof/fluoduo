@@ -10,7 +10,7 @@ import { getAuth, type Auth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDEEhlkmXTcZ69etUNk2KJWngyp7meeP5M",
-  authDomain: "fluolingo.withdrchan.com",
+  authDomain: "laf1201.firebaseapp.com",
   projectId: "laf1201",
   storageBucket: "laf1201.firebasestorage.app",
   messagingSenderId: "84075254825",
