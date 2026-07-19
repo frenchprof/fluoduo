@@ -21,7 +21,7 @@ import { CURATED } from "@/content/collections";
 import { UNIT_META } from "@/content/sios";
 import { lessonsForDeck } from "@/content/lessons";
 import { isLexReadyId } from "@/lib/collections/lexReady";
-import { isDevineReady } from "@/lib/collections/devineReady";
+import { isSpecuLearnReady } from "@/lib/collections/speculearnReady";
 import { getLetrisSet } from "@/games/letris/sets";
 import { searchDecks } from "@/lib/search";
 import { shortTitle } from "@/lib/shortTitles";
@@ -37,7 +37,7 @@ function cellsFor(c: Collection): Cell[] {
     // trails. The Lesson runs Lire → Débutant → Intermédiaire → Difficile
     // since the unification (absorbing Complete It / dice / GramMarathon).
     { emoji: "🧪", title: "Pre-Test", href: pretestHrefForDeck(c.id) },
-    { emoji: "🔮", title: "SpecuLearn", href: isDevineReady(c.id) ? `/practice/speculearn/${c.id}` : null },
+    { emoji: "🔮", title: "SpecuLearn", href: isSpecuLearnReady(c.id) ? `/practice/speculearn/${c.id}` : null },
     { emoji: "📚", title: "Lesson", href: lessons.length ? `/lessons/${lessons[0].slug}` : `/lessons/deck/${c.id}` },
     { emoji: "🃏", title: "Flip It", href: `/practice/flip-it/${c.id}` },
     { emoji: "🌧️", title: "Vocabularain", href: getLetrisSet(c.id.replace("-letris", "")) ? `/games/letris/${c.id.replace("-letris", "")}` : null },

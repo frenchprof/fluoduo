@@ -4,7 +4,7 @@
  * SpecuLearn (né « Devine d'abord ! », renamed by Dan 2026-07-15) — the
  * guess-first activity (Dan, 2026-07-14).
  * aliments runs on its photo bank (public/devine + devine-aliments.json);
- * every other DEVINE_READY deck runs on its items' emoji as the image
+ * every other SPECULEARN_READY deck runs on its items' emoji as the image
  * (Dan approved the generalization the same day). Five modes (Mixte /
  * Mot→Image / Image→Mot / 🎤 Répète / 🎤 Devine et dis), accent-tolerant
  * Say It grading, keyboard 1–4/⏎/R, Cahier skin, and every answer pays
@@ -19,7 +19,7 @@ import { speak } from "@/games/letris/speech";
 import { recordItemResult } from "@/lib/progress";
 import { sfx } from "@/games/audio/sfx";
 import { logEvent } from "@/lib/firebase/usage";
-import { BUILDING_EMOJI, SPECULEARN_EXCLUDED_ITEMS } from "@/lib/collections/devineReady";
+import { BUILDING_EMOJI, SPECULEARN_EXCLUDED_ITEMS } from "@/lib/collections/speculearnReady";
 import { useChoiceKeys, CHOICE_KEYS_HINT } from "@/lib/useChoiceKeys";
 import PHOTO_ITEMS from "@/content/devine-aliments.json";
 
@@ -122,7 +122,7 @@ function Visual({ it, className }: { it: DevItem; className: string }) {
   );
 }
 
-export default function DevineContent({ collectionId }: { collectionId: string }) {
+export default function SpecuLearnContent({ collectionId }: { collectionId: string }) {
   const { items: ITEMS, subtitle, hasPacks } = useMemo(() => buildItems(collectionId), [collectionId]);
   const [screen, setScreen] = useState<"start" | "quiz" | "end">("start");
   const [mode, setMode] = useState<Mode>("mix");

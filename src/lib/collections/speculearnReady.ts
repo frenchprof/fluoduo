@@ -1,5 +1,12 @@
 /**
- * Which decks offer SpecuLearn, né « Devine d'abord » (/practice/speculearn/[id]). aliments
+ * NAMING: SpecuLearn and "devine" are the SAME entity — the game launched as
+ * « Devine d'abord ! » and Dan renamed it SpecuLearn (2026-07-15); these code
+ * identifiers caught up on 2026-07-19. Only data-facing legacy names remain
+ * on purpose and must NOT be "modernised": the `devine:` SRS record prefix
+ * (learners' history rides on it), `content/devine-aliments.json`, and the
+ * `public/devine/` photo folder its img paths point into.
+ *
+ * Which decks offer SpecuLearn (/practice/speculearn/[id]). aliments
  * runs on its photo bank; the rest qualified in the 2026-07-14 audit by
  * having an emoji on (almost) every item — the emoji plays the image role.
  * EXCLUDED after review (Dan, 2026-07-14: demonstratifs "is not making any
@@ -13,7 +20,7 @@
  *   weather-letris (Dan, 2026-07-14: "the pictures are not at all a match")
  *   salutations    (Dan, 2026-07-14: impossible to picture the register)
  */
-export const DEVINE_READY = [
+export const SPECULEARN_READY = [
   "aliments",
   "consignes",
   "countries-letris",
@@ -22,8 +29,8 @@ export const DEVINE_READY = [
   "commerces",
 ] as const;
 
-export function isDevineReady(id: string): boolean {
-  return (DEVINE_READY as readonly string[]).includes(id);
+export function isSpecuLearnReady(id: string): boolean {
+  return (SPECULEARN_READY as readonly string[]).includes(id);
 }
 
 /** Building-look emojis are banned from SpecuLearn (Dan, 2026-07-15): a

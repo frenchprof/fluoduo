@@ -1,12 +1,12 @@
-import DevineContent from "./DevineContent";
+import SpecuLearnContent from "./SpecuLearnContent";
 import AuthGate from "@/components/AuthGate";
-import { DEVINE_READY } from "@/lib/collections/devineReady";
+import { SPECULEARN_READY } from "@/lib/collections/speculearnReady";
 
 export function generateStaticParams() {
-  return DEVINE_READY.map((collectionId) => ({ collectionId }));
+  return SPECULEARN_READY.map((collectionId) => ({ collectionId }));
 }
 
 export default async function Page({ params }: { params: Promise<{ collectionId: string }> }) {
   const { collectionId } = await params;
-  return <AuthGate what="play SpecuLearn"><DevineContent collectionId={collectionId} /></AuthGate>;
+  return <AuthGate what="play SpecuLearn"><SpecuLearnContent collectionId={collectionId} /></AuthGate>;
 }

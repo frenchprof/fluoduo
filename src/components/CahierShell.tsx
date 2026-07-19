@@ -18,7 +18,7 @@ import type { CSSProperties, MouseEvent as ReactMouseEvent, ReactNode } from "re
 
 const PAGE_WIDTH_KEY = "fluolingo:pageWidth";
 import { isLexReadyId } from "@/lib/collections/lexReady";
-import { isDevineReady } from "@/lib/collections/devineReady";
+import { isSpecuLearnReady } from "@/lib/collections/speculearnReady";
 import { CURATED } from "@/content/collections";
 import { lessonsForDeck } from "@/content/lessons";
 import { supplementsForDeck, type Supplement } from "@/content/supplements";
@@ -478,7 +478,7 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
       : []),
     // Guess-first activity (Dan, 2026-07-14: native page, "not a
     // supplement") — photos for aliments, emoji everywhere else.
-    ...(isDevineReady(collectionId)
+    ...(isSpecuLearnReady(collectionId)
       ? [{ key: "speculearn", label: "SpecuLearn", emoji: "🔮", href: `/practice/speculearn/${collectionId}`, hint: "guess before the lesson" } as ShellTab]
       : []),
     // PRE-lesson supplements (standalone HTML outside the app) — none right

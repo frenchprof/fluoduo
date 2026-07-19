@@ -2,7 +2,7 @@ import Link from "next/link";
 import CahierShell from "@/components/CahierShell";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 import { CURATED } from "@/content/collections";
-import { DEVINE_READY, BUILDING_EMOJI, SPECULEARN_EXCLUDED_ITEMS } from "@/lib/collections/devineReady";
+import { SPECULEARN_READY, BUILDING_EMOJI, SPECULEARN_EXCLUDED_ITEMS } from "@/lib/collections/speculearnReady";
 import PHOTO_ITEMS from "@/content/devine-aliments.json";
 import { shortTitle } from "@/lib/shortTitles";
 import TileKeys from "./TileKeys";
@@ -41,7 +41,7 @@ function playableCount(id: string): number {
 }
 
 export default function SpecuLearnIndexPage() {
-  const decks = DEVINE_READY
+  const decks = SPECULEARN_READY
     .map((id) => CURATED.find((c) => c.id === id))
     .filter((c): c is NonNullable<typeof c> => !!c)
     .sort((a, b) => (a.unit ?? 0) - (b.unit ?? 0));
