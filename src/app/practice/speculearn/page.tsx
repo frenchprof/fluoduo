@@ -5,6 +5,7 @@ import { CURATED } from "@/content/collections";
 import { DEVINE_READY, BUILDING_EMOJI, SPECULEARN_EXCLUDED_ITEMS } from "@/lib/collections/devineReady";
 import PHOTO_ITEMS from "@/content/devine-aliments.json";
 import { shortTitle } from "@/lib/shortTitles";
+import TileKeys from "./TileKeys";
 
 /**
  * The SpecuLearn gallery (Dan, 2026-07-15: "have them consolidated as a page
@@ -56,16 +57,20 @@ export default function SpecuLearnIndexPage() {
         </h1>
         <div className="mt-3">
 
+        <TileKeys hrefs={decks.map((d) => `/practice/speculearn/${d.id}`)} />
         <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
-          {decks.map((d) => {
+          {decks.map((d, i) => {
             const col = UNIT_COLORS[`Unité ${d.unit ?? 0}`] ?? UNIT_COLORS["Unité 0"];
             return (
               <Link
                 key={d.id}
                 href={`/practice/speculearn/${d.id}`}
-                className="flex items-center gap-2.5 rounded-xl border-2 border-b-4 bg-white p-2.5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                className="relative flex items-center gap-2.5 rounded-xl border-2 border-b-4 bg-white p-2.5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                 style={{ borderColor: col.accent }}
               >
+                <span className="absolute right-1.5 top-1 hidden text-[10px] font-bold opacity-50 sm:block" aria-hidden>
+                  {i + 1}
+                </span>
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xl" style={{ background: col.tint }} aria-hidden>
                   {DECK_FACE[d.id] ?? "🔮"}
                 </span>

@@ -487,10 +487,10 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
       key: sup.key, label: sup.label, emoji: sup.emoji, href: sup.href, hint: sup.hint,
       onClick: (e: ReactMouseEvent<HTMLAnchorElement>) => trackSupplementOpen(e, collectionId, sup),
     }) as ShellTab),
-    // Learning order (Dan, 2026-07-05): Pre-Test → flashcards → Lesson. EVERY
-    // deck has a Lesson since the unification (Lire → Débutant → Intermédiaire
-    // → Difficile absorbed Complete It / dice / GramMarathon).
-    { key: "flip", label: "Flip It", emoji: "🃏", href: `/practice/flip-it/${collectionId}`, hint: "study the cards" },
+    // Canonical app order (Dan, 2026-07-19): SpecuLearn-PreTest → Lesson +
+    // Flip-It (the core of each SIO) → … → Composer. EVERY deck has a Lesson
+    // since the unification (Lire → Débutant → Intermédiaire → Difficile
+    // absorbed Complete It / dice / GramMarathon).
     {
       key: "lesson",
       label: "Lesson",
@@ -498,16 +498,19 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
       href: lessons.length > 0 ? `/lessons/${lessons[0].slug}` : `/lessons/deck/${collectionId}`,
       hint: "rule + drills",
     },
-    { key: "say", label: "Say It", emoji: "🎤", href: `/practice/say-it/${collectionId}`, hint: "speak it" },
-    ...(isLexReadyId(collectionId)
-      ? [{ key: "match", label: "Lexicalator", emoji: "🧰", href: `/games/conveyor/${collectionId}`, hint: "build words" } as ShellTab]
-      : []),
+    { key: "flip", label: "Flip It", emoji: "🃏", href: `/practice/flip-it/${collectionId}`, hint: "study the cards" },
     ...(rainSet
       ? [{ key: "rain", label: "Vocabularain", emoji: "🌧️", href: `/games/letris/${collectionId.replace("-letris", "")}`, hint: "sort words" } as ShellTab]
+      : []),
+    ...(isLexReadyId(collectionId)
+      ? [{ key: "match", label: "Lexicalator", emoji: "🧰", href: `/games/conveyor/${collectionId}`, hint: "build words" } as ShellTab]
       : []),
     ...(composeBank
       ? [{ key: "compose", label: "Compose It", emoji: "🧩", href: `/games/compose/${composeBank.id}`, hint: "build dialogues" } as ShellTab]
       : []),
+    // né « Say It » — renamed WorDrill (Dan, 2026-07-19); key stays "say" so
+    // SioModal embedding and withActive callers keep working.
+    { key: "say", label: "WorDrill", emoji: "🎙️", href: `/practice/say-it/${collectionId}`, hint: "speak it" },
   ];
 }
 

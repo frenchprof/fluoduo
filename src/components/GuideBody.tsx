@@ -9,17 +9,19 @@ import Link from "next/link";
 /** "Drill with these": every activity as an iPhone-style app icon — name
  *  beneath, the short phrase on mouseover. */
 const ACTIVITIES: { emoji: string; name: string; hue: number; what: string }[] = [
+  // Canonical app order (Dan, 2026-07-19): SpecuLearn-PreTest · Lesson +
+  // Flip-It · ConjugaZone · VocabulaRain · Lexicalator · Composer · ChaTutor ·
+  // DéjàRevu — WorDrill (né Say It) rides along at the end.
   { emoji: "🔮", name: "SpecuLearn", hue: 3, what: "guess first — then the answer" },
   { emoji: "📚", name: "Lesson", hue: 0, what: "the rule, then drills" },
   { emoji: "🃏", name: "Flip It", hue: 1, what: "flashcards" },
-  { emoji: "🎤", name: "Say It", hue: 2, what: "speak — the mic checks" },
-  { emoji: "🎙️", name: "WorDrill", hue: 4, what: "all decks, one speaking drill" },
+  { emoji: "🔤", name: "ConjugaZone", hue: 2, what: "conjugation sprints" },
   { emoji: "🌧️", name: "Vocabularain", hue: 3, what: "sort the falling words" },
   { emoji: "🧰", name: "Lexicalator", hue: 4, what: "build the words" },
   { emoji: "🧩", name: "Compose It", hue: 5, what: "build dialogues" },
-  { emoji: "🔁", name: "DéjàRevu", hue: 0, what: "resurfaces your misses at the right moment" },
-  { emoji: "🔤", name: "ConjugaZone", hue: 2, what: "conjugation sprints" },
   { emoji: "🤖", name: "ChaTutor", hue: 5, what: "chat, role-play, get corrected" },
+  { emoji: "🔁", name: "DéjàRevu", hue: 0, what: "resurfaces your misses at the right moment" },
+  { emoji: "🎙️", name: "WorDrill", hue: 4, what: "speak — the mic checks (per deck or all decks)" },
 ];
 
 const STEPS: { hue: number; what: React.ReactNode }[] = [

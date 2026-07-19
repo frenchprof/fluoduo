@@ -21,6 +21,7 @@ import { CURATED } from "@/content/collections";
 import { UNIT_META } from "@/content/sios";
 import { lessonsForDeck } from "@/content/lessons";
 import { isLexReadyId } from "@/lib/collections/lexReady";
+import { isDevineReady } from "@/lib/collections/devineReady";
 import { getLetrisSet } from "@/games/letris/sets";
 import { searchDecks } from "@/lib/search";
 import { shortTitle } from "@/lib/shortTitles";
@@ -31,32 +32,34 @@ type Cell = { emoji: string; title: string; href: string | null };
 function cellsFor(c: Collection): Cell[] {
   const lessons = lessonsForDeck(c.id);
   return [
-    // Learning order (Dan, 2026-07-05): Pre-Test first, then the flashcards,
-    // and only after that the Lesson (which since the unification runs Lire →
-    // Débutant → Intermédiaire → Difficile, absorbing Complete It / dice /
-    // GramMarathon).
+    // Canonical app order (Dan, 2026-07-19): SpecuLearn-PreTest → Lesson +
+    // Flip-It → VocabulaRain → Lexicalator → Composer — WorDrill (né Say It)
+    // trails. The Lesson runs Lire → Débutant → Intermédiaire → Difficile
+    // since the unification (absorbing Complete It / dice / GramMarathon).
     { emoji: "🧪", title: "Pre-Test", href: pretestHrefForDeck(c.id) },
-    { emoji: "🃏", title: "Flip It", href: `/practice/flip-it/${c.id}` },
+    { emoji: "🔮", title: "SpecuLearn", href: isDevineReady(c.id) ? `/practice/speculearn/${c.id}` : null },
     { emoji: "📚", title: "Lesson", href: lessons.length ? `/lessons/${lessons[0].slug}` : `/lessons/deck/${c.id}` },
-    { emoji: "🎤", title: "Say It", href: `/practice/say-it/${c.id}` },
+    { emoji: "🃏", title: "Flip It", href: `/practice/flip-it/${c.id}` },
     { emoji: "🌧️", title: "Vocabularain", href: getLetrisSet(c.id.replace("-letris", "")) ? `/games/letris/${c.id.replace("-letris", "")}` : null },
     { emoji: "🧰", title: "Lexicalator", href: isLexReadyId(c.id) ? `/games/conveyor/${c.id}` : null },
     { emoji: "🧩", title: "Compose It", href: composeBankForDeck(c.id) ? `/games/compose/${composeBankForDeck(c.id)!.id}` : null },
+    { emoji: "🎙️", title: "WorDrill", href: `/practice/say-it/${c.id}` },
   ];
 }
 
-const HEAD = ["🧪", "🃏", "📚", "🎤", "🌧️", "🧰", "🧩"];
-const HEAD_TITLES = ["Pre-Test", "Flip It", "Lesson", "Say It", "Vocabularain", "Lexicalator", "Compose It"];
+const HEAD = ["🧪", "🔮", "📚", "🃏", "🌧️", "🧰", "🧩", "🎙️"];
+const HEAD_TITLES = ["Pre-Test", "SpecuLearn", "Lesson", "Flip It", "Vocabularain", "Lexicalator", "Compose It", "WorDrill"];
 /** Column chip colors — the same hue each activity's tile wears on the Guide
  *  page (Pre-Test gets the highlighter yellow). */
 const HEAD_CHIPS: { bg: string; border: string }[] = [
   { bg: "var(--cahier-hl, #eaff00)", border: "#2a2e6e" },
-  { bg: "#def3f5", border: "#2bb6c2" },
+  { bg: "#ece2fa", border: "#8a5fd4" },
   { bg: "#fbe3ec", border: "#e0567f" },
-  { bg: "#fbeec4", border: "#e3a700" },
+  { bg: "#def3f5", border: "#2bb6c2" },
   { bg: "#ece2fa", border: "#8a5fd4" },
   { bg: "#fbe6cf", border: "#e8852e" },
   { bg: "#ecf7cf", border: "#7bbf2e" },
+  { bg: "#fbeec4", border: "#e3a700" },
 ];
 
 export default function ActivitiesIndexPage() {

@@ -47,4 +47,8 @@ export const SPECULEARN_EXCLUDED_ITEMS = new Set([
   "commerces-11", // boutique — every shop image "can be boutique"
   "commerces-13", // boutiques — and no image shows the plural
   "lieux-letris-28-jardins-publics", // 🌳 already means parc in this deck
+  "consignes-07", // Notez — 📝 vs ✍️ (Écrivez) both picture writing, and the
+  //               words are near-synonyms: whichever is asked, the other is
+  //               defensible (Dan, 2026-07-19). Écrivez stays; Notez keeps
+  //               living in Flip It / Letris / MCQ.
 ]);

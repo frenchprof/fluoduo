@@ -42,10 +42,12 @@ export function siteTabs(): ShellTab[] {
  *  AND the ☰ menu. */
 export function toolTabs(): ShellTab[] {
   return [
+    // Canonical app order (Dan, 2026-07-19): SpecuLearn-PreTest · (Lesson +
+    // Flip-It live on each deck) · ConjugaZone · VocabulaRain · Lexicalator ·
+    // (Composer per deck) · ChaTutor · DéjàRevu. Index leads; WorDrill and
+    // VoixLà trail as the non-canonical extras.
     { key: "index", label: "Index", emoji: "🗂️", href: "/activities", hue: "#5b8def" },
-    { key: "wordrill", label: "WorDrill", emoji: "🎙️", href: "/practice/wordrill", hue: "#7bbf2e" },
     { key: "speculearn", label: "SpecuLearn", emoji: "🔮", href: "/practice/speculearn", hue: "#8a5fd4" },
-    { key: "reviser", label: "DéjàRevu", emoji: "🔁", href: "/reviser", hue: "#7bbf2e" },
     { key: "conjugaison", label: "ConjugaZone", emoji: "🔤", href: "/conjugaison", hue: "#2bb6c2" },
     // Game galleries (Dan, 2026-07-13) — every VocabulaRain / Lexicalator
     // link in one place each. Classement removed: the 🏆 top-bar icon is
@@ -53,6 +55,8 @@ export function toolTabs(): ShellTab[] {
     { key: "vocabularain", label: "VocabulaRain", emoji: "🌧️", href: "/games/letris", hue: "#5b8def" },
     { key: "lexicalator", label: "Lexicalator", emoji: "🧰", href: "/games/conveyor", hue: "#e3a700" },
     { key: "tutor", label: "ChaTutor", emoji: "🤖", href: "/tutor", hue: "#8a5fd4" },
+    { key: "reviser", label: "DéjàRevu", emoji: "🔁", href: "/reviser", hue: "#7bbf2e" },
+    { key: "wordrill", label: "WorDrill", emoji: "🎙️", href: "/practice/wordrill", hue: "#7bbf2e" },
     { key: "tts", label: "VoixLà (TTS)", emoji: "🔊", href: "/tts", hue: "#e8852e" },
     // No Profil entry (Dan, 2026-07-08) — the circled-initial account chip in
     // the top bar IS the profile door (its window links to /profil).

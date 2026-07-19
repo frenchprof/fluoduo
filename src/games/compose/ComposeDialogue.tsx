@@ -304,6 +304,13 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
 
   return (
     <div style={themeVars} className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-4 py-6 text-[color:var(--dlg-ink)]">
+      {/* Scenario reminder — who/where the learner is (Dan, 2026-07-19: "there
+          is a need to remind users that we are in the context of ___"). */}
+      {bank.scene?.contextEn && (
+        <p className="-mb-3 rounded-lg border-2 border-[color:var(--dlg-edge)] bg-white/60 px-3 py-1.5 text-xs font-bold text-[color:var(--dlg-ink)]/80">
+          {bank.emoji} {bank.scene.contextEn}
+        </p>
+      )}
       {/* Chat column */}
       <div className="flex flex-col gap-2 rounded-xl border-2 border-[color:var(--dlg-edge)] bg-white/70 p-4">
         {messages.map((m, i) => (

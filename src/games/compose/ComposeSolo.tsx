@@ -31,7 +31,7 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
   }, [bank.id]);
   const lang = "fr-FR";
   // Deterministic on the server; randomised in the mount effect (SSR-safe).
-  const [scenario, setScenario] = useState<{ instructionEn: string; headline: string } | null>(null);
+  const [scenario, setScenario] = useState<{ instructionEn: string; headline: string; openingFr?: string } | null>(null);
   const [line, setLine] = useState<string[]>([]); // sentence in progress
   const [lines, setLines] = useState<string[]>([]); // committed sentences
   // AI "check my work" pass (aiCheck banks only). The passer-by reads the whole
@@ -42,7 +42,11 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
   const [unavailable, setUnavailable] = useState(false);
 
   useEffect(() => {
-    setScenario(bank.newScenario());
+    const s = bank.newScenario();
+    setScenario(s);
+    // The Composer never opens on a blank sheet (Dan, 2026-07-19): the
+    // passer-by asks the way out loud before the learner builds a reply.
+    if (s.openingFr) speak(s.openingFr, "fr-FR", { gender: "m" });
   }, [bank]);
 
   const lineText = joinChips(line);
@@ -63,8 +67,10 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
     setLine([]);
     setLines([]);
     setFeedback(null);
-    setScenario(bank.newScenario());
     if (typeof window !== "undefined") { window.speechSynthesis?.cancel(); stopCloudVoice(); }
+    const s = bank.newScenario();
+    setScenario(s);
+    if (s.openingFr) speak(s.openingFr, "fr-FR", { gender: "m" });
   };
 
   // Ask the AI passer-by to read the whole itinerary and react. Degrades
@@ -147,6 +153,19 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
       </header>
 
       <div className="min-h-[120px] rounded-xl border-2 border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-2)] p-5">
+        {/* The passer-by's question opens the scene — tap to rehear. */}
+        {scenario?.openingFr && (
+          <button
+            type="button"
+            lang="fr"
+            onClick={() => speak(scenario.openingFr!, lang, { gender: "m" })}
+            className="mb-3 flex max-w-full items-start gap-2 rounded-2xl rounded-bl-sm border-2 border-[color:var(--cahier-rule)] bg-white px-4 py-2 text-left text-base leading-snug shadow-sm transition hover:brightness-95"
+            title="🔊"
+          >
+            <span aria-hidden>🧍</span>
+            <span>{scenario.openingFr}</span>
+          </button>
+        )}
         {lines.length > 0 && (
           <ol className="mb-3 flex flex-col gap-1.5">
             {lines.map((l, i) => (

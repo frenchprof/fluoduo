@@ -354,7 +354,7 @@ export default function SayItContent({
   // behind); the standalone page keeps the full CahierShell chrome.
   const wrap = (body: React.ReactNode, topRight?: React.ReactNode) =>
     embedded ? <>{body}</> : (
-      <CahierShell tabs={tabs} active="say" crumb="🎤 Say It" topRight={topRight}>{body}</CahierShell>
+      <CahierShell tabs={tabs} active="say" crumb="🎙️ WorDrill" topRight={topRight}>{body}</CahierShell>
     );
 
   if (!deck) {
@@ -369,7 +369,7 @@ export default function SayItContent({
             Speech recognition not available
           </h1>
           <p className="text-sm text-[color:var(--fluo-ink-soft)] mb-4">
-            Say It requires Chrome or Edge. Please open this page in one of those browsers.
+            WorDrill requires Chrome or Edge. Please open this page in one of those browsers.
           </p>
           {!deckOverride && (
             <Link href={`/practice/flip-it/${collectionId}`} className="fluo-btn">

@@ -25,6 +25,9 @@ export type DialogueScene = {
   opening: string; // the persona's first line
   emoji: string; // avatar on the persona's chat bubbles
   voice: "m" | "f"; // TTS voice for the persona
+  /** One-line English reminder of who/where the learner is — shown above the
+   *  chat for the whole session (Dan, 2026-07-19). */
+  contextEn?: string;
   /** No rule-engine fallback (only the café has one). When the AI backend is
    *  absent, show a friendly "needs connection" notice rather than accepting
    *  nonsense. Every scene except the café sets this. */
@@ -54,8 +57,10 @@ export type ComposeBank = {
   /** Dialogue banks: the persona config for ComposeDialogue. */
   scene?: DialogueScene;
   categories: ComposeCategory[];
-  /** Solo mode: a fresh prompt. Random — call only from handlers/mount effects. */
-  newScenario(): { instructionEn: string; headline: string };
+  /** Solo mode: a fresh prompt. Random — call only from handlers/mount effects.
+   *  openingFr, when present, is a persona line that opens the scene (spoken +
+   *  shown) so the Composer never starts on a blank sheet (Dan, 2026-07-19). */
+  newScenario(): { instructionEn: string; headline: string; openingFr?: string };
 };
 
 /** Fixed chip/header palette by category index (same hues as the original game). */
@@ -170,9 +175,12 @@ const DIRECTIONS_BANK: ComposeBank = {
     const a = starts[Math.floor(Math.random() * starts.length)];
     let b = MAP_PLACES[Math.floor(Math.random() * MAP_PLACES.length)];
     while (b.name === a.name) b = MAP_PLACES[Math.floor(Math.random() * MAP_PLACES.length)];
+    // « aller à + le X » contracts: au parc / à la gare / à l'hôtel.
+    const dest = b.name.startsWith("le ") ? `au ${b.name.slice(3)}` : `à ${b.name}`;
     return {
       headline: `${a.emoji} ${a.name} → ${b.emoji} ${b.name}`,
       instructionEn: `Directions from ${a.name} to ${b.name}. Start: « D'abord, vous sortez ${a.exit}… » — then street by street to ${b.name}.`,
+      openingFr: `Excusez-moi, pour aller ${dest}, s'il vous plaît ?`,
     };
   },
 };
@@ -203,7 +211,7 @@ const CAFE_BANK: ComposeBank = {
   unit: 4,
   deckId: "aliments",
   mode: "dialogue",
-  scene: { opening: "Bonsoir ! Vous désirez ?", emoji: "🤵", voice: "m", theme: THEME_CAFE },
+  scene: { opening: "Bonsoir ! Vous désirez ?", emoji: "🤵", voice: "m", theme: THEME_CAFE, contextEn: "You're the customer at a café — order food and drink from the waiter, then ask for the bill." },
   categories: withPalette([
     { label: "Commander", phrases: ["Je voudrais", "Je prends", "Pour moi,"] },
     {
@@ -243,7 +251,7 @@ const GREETINGS_BANK: ComposeBank = {
   unit: 1,
   deckId: "salutations",
   mode: "dialogue",
-  scene: { opening: "Salut ! Ça va ?", emoji: "🙋", voice: "f", aiOnly: true, theme: THEME_GREEN },
+  scene: { opening: "Salut ! Ça va ?", emoji: "🙋", voice: "f", aiOnly: true, theme: THEME_GREEN, contextEn: "A friend runs into you in the street — greet her, ask how she is, then say goodbye." },
   categories: withPalette([
     { label: "Saluer", phrases: ["Bonjour", "Salut", "Bonsoir", "Coucou"] },
     { label: "Ça va", phrases: ["Ça va bien", "Très bien", "Ça va, merci", "Comme ci comme ça", "Et toi ?"] },
@@ -266,7 +274,7 @@ const RENDEZVOUS_BANK: ComposeBank = {
   unit: 2,
   deckId: "vouloir-inviter",
   mode: "dialogue",
-  scene: { opening: "Tu es libre ce week-end ? Tu veux venir au cinéma ?", emoji: "🙋‍♂️", voice: "m", aiOnly: true, theme: THEME_PURPLE },
+  scene: { opening: "Tu es libre ce week-end ? Tu veux venir au cinéma ?", emoji: "🙋‍♂️", voice: "m", aiOnly: true, theme: THEME_PURPLE, contextEn: "A friend is inviting you out — accept, or suggest another day, place or time." },
   categories: withPalette([
     { label: "Accepter", phrases: ["Oui, je veux bien", "Bonne idée", "D'accord", "Avec plaisir"] },
     { label: "Refuser", phrases: ["Désolé, je ne peux pas", "Je ne suis pas libre", "Une autre fois"] },
@@ -289,7 +297,7 @@ const SHOP_BANK: ComposeBank = {
   unit: 2,
   deckId: "objets-articles",
   mode: "dialogue",
-  scene: { opening: "Bonjour ! Je peux vous aider ?", emoji: "🛍️", voice: "f", aiOnly: true, theme: THEME_BLUE },
+  scene: { opening: "Bonjour ! Je peux vous aider ?", emoji: "🛍️", voice: "f", aiOnly: true, theme: THEME_BLUE, contextEn: "You're at the stationery shop — ask for what you need and the price, then pay." },
   categories: withPalette([
     { label: "Demander", phrases: ["Je voudrais", "Je cherche", "Avez-vous"] },
     { label: "Objets", phrases: ["un cahier", "un stylo", "un crayon", "une trousse", "une gomme", "un sac", "des ciseaux"] },
@@ -318,7 +326,7 @@ const MARCHE_BANK: ComposeBank = {
   unit: 4,
   deckId: "au-marche",
   mode: "dialogue",
-  scene: { opening: "Bonjour ! Vous désirez ?", emoji: "🧑‍🌾", voice: "m", aiOnly: true, theme: THEME_MARCHE },
+  scene: { opening: "Bonjour ! Vous désirez ?", emoji: "🧑‍🌾", voice: "m", aiOnly: true, theme: THEME_MARCHE, contextEn: "You're shopping at the market stall — ask for quantities and prices, then pay." },
   categories: withPalette([
     { label: "Demander", phrases: ["Bonjour", "Je voudrais", "Je vais prendre", "Vous avez", "Il me faut"] },
     {
