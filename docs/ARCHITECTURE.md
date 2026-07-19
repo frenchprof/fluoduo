@@ -50,7 +50,7 @@ progress counters stay.
 ```
 ┌────────────────────────────────────────────────────────────┐
 │  Cloudflare Pages  (static hosting, auto-deploy from main) │
-│    fluolinguo.com  (+ fluolingo.com when migrated)         │
+│    fluolingo.withdrchan.com  (+ fluolingo.com redirect)    │
 │                                                            │
 │  Next.js 16 static export (`output: "export"`)             │
 │    699 pre-rendered pages, zero server code                │
@@ -203,7 +203,8 @@ the security boundary.
 
 - `npx next build` → static export in `out/` (699 pages). No server.
 - Cloudflare Pages project (`fluoguo.pages.dev`) builds from `main`;
-  custom domain fluolinguo.com (fluolingo.com to be attached at launch).
+  live URL fluolingo.withdrchan.com (fluolingo.com redirects there;
+  fluolinguo.com is retired — see docs/DEPLOY.md).
 - Firestore rules deploy separately (console paste or
   `firebase deploy --only firestore:rules`).
 - House verification pattern: typecheck → build → headless Chromium

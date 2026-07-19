@@ -17,11 +17,10 @@ touching anything. Previous long-form handoff: `HANDOFF_NEXT_CLAUDE.md`
   to `out/`) → `python3 -m http.server 88XX --directory out` + playwright-core
   with `executablePath: '/opt/pw-browsers/chromium'`. The python server needs
   explicit `.html` paths. Servers die between Bash calls — restart per test.
-- **Domains**: production = **fluolinguo.com** (Cloudflare Pages, auto-deploys
-  from `main`). fluolingo.com is Dan's OLD GitHub-Pages site; both domains are
-  on the same Cloudflare account (NS bryce/joan.ns.cloudflare.com). Switchover
-  later = add fluolingo.com as custom domain on the same Pages project.
-  Firebase auth: both domains already authorised; nothing to do.
+- **Domains** *(superseded 2026-07-19 — fluolinguo.com is RETIRED, no DNS
+  records; do not use it)*: production = **fluolingo.withdrchan.com**
+  (Cloudflare Pages, auto-deploys from `main`); fluolingo.com 302-redirects
+  there. See docs/DEPLOY.md for current domain facts.
 - SSR-safe randomness: `Math.random` only in mount effects / handlers.
 - Firestore rules hardened in repo (`firestore.rules`) — **Dan still has to
   paste them into the Firebase console** (pending on his side).

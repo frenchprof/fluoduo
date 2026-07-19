@@ -1,7 +1,13 @@
 # Deploying FluoLingo
 
-Production site: **fluolinguo.com** (Cloudflare Pages project `fluoguo`, also
-serving `www.fluolinguo.com` and `fluoguo.pages.dev`).
+Production site: **fluolingo.withdrchan.com** (Cloudflare Pages project
+`fluoguo`, also serving `fluoguo.pages.dev`; `fluolingo.com` 302-redirects to
+the withdrchan URL).
+
+> **fluolinguo.com is RETIRED** (2026-07-19). The domain has no DNS records and
+> must not be referenced anywhere — links, docs, QR codes, Firebase authorised
+> domains, or Pages custom domains. If it still appears as a custom domain on
+> the `fluoguo` Pages project, remove it (dashboard → fluoguo → Custom domains).
 
 ## How it deploys
 
@@ -46,6 +52,7 @@ the Cloudflare build. The sign-in wall toggle is `REQUIRE_SIGN_IN` in
 
 ## Custom domain (the go-live cutover)
 
-Adding `fluolingo.com` as a custom domain on this Pages project is the final
-switch — from that moment `fluolingo.com` serves this site instead of the old
-GitHub-Pages site. Do it last, after the site is verified on `fluolinguo.com`.
+Adding `fluolingo.com` as a direct custom domain on this Pages project is the
+final switch — today it 302-redirects to `fluolingo.withdrchan.com`, which is
+the live student-facing URL. Do it last, after verifying the site on
+`fluolingo.withdrchan.com`.
