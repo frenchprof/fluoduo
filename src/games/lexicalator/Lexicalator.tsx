@@ -103,14 +103,36 @@ function shuffle<T>(a: T[]): T[] {
 type Chest = { entry: LexEntry; filled: boolean[]; tint: number };
 const blankFill = (e: LexEntry): boolean[] => e.syllables.map(() => false);
 
-// Words that name a colour ALSO painted on a chest livery — on such decks
-// the chest tints and the answers collide (a blue chest may hold « rouge »).
-// The tints must stay: they are how players track which chest they brought
-// down (Dan, 2026-07-09 and again 2026-07-20 — differentiation matters at
-// every level). The fix is DISCLOSURE, not removal: a one-line notice at the
-// start of colour decks says the liveries lie (Dan, 2026-07-20: "user should
-// be warned when it starts to happen").
-const LIVERY_COLOR_WORDS = ["rouge", "bleu", "vert", "jaune", "violet", "rose", "orange"];
+// Colour decks (Dan, 2026-07-20, corrected spec): chest tints are IDENTITY —
+// players track which chest they brought down — so they must stay distinct
+// at every level. On decks whose WORDS are colours, distinct-but-arbitrary
+// liveries create a Stroop conflict (a blue chest holding « rouge »). The
+// fix: at levels 0–1 each chest wears ITS OWN word's colour (distinct AND
+// truthful); from level 2 the arbitrary liveries return as a deliberate
+// challenge, announced by the ⚠️ line exactly when it starts.
+const COLOR_LIVERIES: Record<string, ChestTint> = {
+  rouge:  { body: "linear-gradient(180deg,#ffb3b3,#e03131)", lid: "linear-gradient(180deg,#b02525,#7f1a1a)", edge: "#6b1414" },
+  bleu:   { body: "linear-gradient(180deg,#b3d9ff,#2f7fd4)", lid: "linear-gradient(180deg,#2361a8,#194a80)", edge: "#123a66" },
+  vert:   { body: "linear-gradient(180deg,#c2f0c2,#3fae3f)", lid: "linear-gradient(180deg,#2f8a2f,#226622)", edge: "#1a521a" },
+  jaune:  { body: "linear-gradient(180deg,#fff3b3,#f2cc0c)", lid: "linear-gradient(180deg,#c7a50a,#967c07)", edge: "#7a6506" },
+  violet: { body: "linear-gradient(180deg,#e0ccff,#8a4fd6)", lid: "linear-gradient(180deg,#6c3aae,#502b84)", edge: "#3f2268" },
+  rose:   { body: "linear-gradient(180deg,#ffd6e8,#f06ba8)", lid: "linear-gradient(180deg,#c74f87,#984069)", edge: "#7a3355" },
+  orange: { body: "linear-gradient(180deg,#ffd9b3,#f28c1b)", lid: "linear-gradient(180deg,#c26f13,#94550e)", edge: "#78450b" },
+  noir:   { body: "linear-gradient(180deg,#9aa0a6,#3c4043)", lid: "linear-gradient(180deg,#2b2e30,#1b1d1f)", edge: "#111213" },
+  blanc:  { body: "linear-gradient(180deg,#ffffff,#e8e8e8)", lid: "linear-gradient(180deg,#cfcfcf,#b0b0b0)", edge: "#8f8f8f" },
+  gris:   { body: "linear-gradient(180deg,#e0e0e0,#9e9e9e)", lid: "linear-gradient(180deg,#7d7d7d,#5f5f5f)", edge: "#4a4a4a" },
+  marron: { body: "linear-gradient(180deg,#e0c3a3,#8d5a2b)", lid: "linear-gradient(180deg,#6e4521,#523318)", edge: "#402713" },
+};
+const LIVERY_COLOR_WORDS = Object.keys(COLOR_LIVERIES);
+/** Livery for a chest: its word's own colour at levels 0–1 on colour decks;
+ *  the arbitrary rolling livery otherwise. */
+function liveryOf(fr: string, tint: number, level: number): ChestTint {
+  if (level <= 1) {
+    const w = LIVERY_COLOR_WORDS.find((k) => fr.toLowerCase().includes(k));
+    if (w) return COLOR_LIVERIES[w];
+  }
+  return CHEST_TINTS[tint % CHEST_TINTS.length];
+}
 
 export default function Lexicalator({
   title,
@@ -486,7 +508,7 @@ export default function Lexicalator({
             🧰 Lexica<span style={{ color: "#ffc800" }}>Later</span>
           </h1>
           <p className="text-xs font-bold" style={{ color: "#075985" }}>{title}{subtitle ? ` — ${subtitle}` : ""}</p>
-          {entries.some((e) => LIVERY_COLOR_WORDS.some((w) => e.fr.toLowerCase().includes(w))) && (
+          {level >= 2 && entries.some((e) => LIVERY_COLOR_WORDS.some((w) => e.fr.toLowerCase().includes(w))) && (
             <p className="mt-0.5 text-[11px] font-black" style={{ color: "#b45309" }}>
               ⚠️ La couleur des coffres ne correspond pas aux mots !
             </p>
@@ -544,15 +566,15 @@ export default function Lexicalator({
               onClick={(e) => { if (e.detail === 0) pickChest(c.entry.id); }}
               onPointerDown={(e) => startDrag(e, c.entry.id)}
               className="w-36 cursor-grab touch-none overflow-hidden rounded-lg border-2 border-b-4 text-center transition active:cursor-grabbing"
-              style={{ borderColor: CHEST_TINTS[c.tint].edge, background: CHEST_TINTS[c.tint].body, boxShadow: "inset 0 -2px 0 rgba(0,0,0,.15)", opacity: ghost?.id === c.entry.id ? 0.4 : 1 }}>
-              <span className="flex items-center justify-center" style={{ height: 10, background: CHEST_TINTS[c.tint].lid }}>
+              style={{ borderColor: liveryOf(c.entry.fr, c.tint, level).edge, background: liveryOf(c.entry.fr, c.tint, level).body, boxShadow: "inset 0 -2px 0 rgba(0,0,0,.15)", opacity: ghost?.id === c.entry.id ? 0.4 : 1 }}>
+              <span className="flex items-center justify-center" style={{ height: 10, background: liveryOf(c.entry.fr, c.tint, level).lid }}>
                 <span style={{ width: 12, height: 4, borderRadius: 1, background: "#ffe9a8" }} />
               </span>
-              <span className="block px-2 pt-1 text-sm font-black" style={{ color: CHEST_TINTS[c.tint].edge }}>{c.entry.en}</span>
+              <span className="block px-2 pt-1 text-sm font-black" style={{ color: liveryOf(c.entry.fr, c.tint, level).edge }}>{c.entry.en}</span>
               <span className="mb-1.5 mt-1 flex justify-center gap-1">
                 {(hard ? [c.entry.syllables.length] : c.entry.syllables).map((s, i) => {
                   const doneSlot = hard ? c.filled.some(Boolean) : c.filled[i];
-                  return <span key={i} className="h-2 rounded-full" style={{ width: hard ? 24 : Math.max(8, String(s).length * 5), background: doneSlot ? "#2e7d00" : CHEST_TINTS[c.tint].edge }} />;
+                  return <span key={i} className="h-2 rounded-full" style={{ width: hard ? 24 : Math.max(8, String(s).length * 5), background: doneSlot ? "#2e7d00" : liveryOf(c.entry.fr, c.tint, level).edge }} />;
                 })}
               </span>
             </button>
@@ -581,13 +603,13 @@ export default function Lexicalator({
           </div>
         )}
         {active && (
-          <div className="overflow-hidden rounded-xl border-2 text-center" style={{ borderColor: CHEST_TINTS[active.tint].edge, borderBottomWidth: 6, background: CHEST_TINTS[active.tint].body, boxShadow: "0 12px 24px -14px rgba(0,0,0,.5)" }}>
+          <div className="overflow-hidden rounded-xl border-2 text-center" style={{ borderColor: liveryOf(active.entry.fr, active.tint, level).edge, borderBottomWidth: 6, background: liveryOf(active.entry.fr, active.tint, level).body, boxShadow: "0 12px 24px -14px rgba(0,0,0,.5)" }}>
             {/* the opened lid */}
-            <div className="flex items-center justify-center" style={{ height: 14, background: CHEST_TINTS[active.tint].lid }}>
+            <div className="flex items-center justify-center" style={{ height: 14, background: liveryOf(active.entry.fr, active.tint, level).lid }}>
               <span style={{ width: 18, height: 6, borderRadius: 2, background: "#ffe9a8" }} />
             </div>
             <div className="px-4 py-3">
-            <div className="mb-3 text-lg font-black" style={{ color: CHEST_TINTS[active.tint].edge }}>{active.entry.en}</div>
+            <div className="mb-3 text-lg font-black" style={{ color: liveryOf(active.entry.fr, active.tint, level).edge }}>{active.entry.en}</div>
             {hard ? (
               <div className="mx-auto flex min-h-[3rem] min-w-[8rem] items-center justify-center rounded-xl border-2 border-dashed px-4 text-xl font-black" style={{ borderColor: "#e08600", color: "#0c4a6e" }}>
                 {active.entry.syllables.filter((s, i) => active.filled[i]).join("") || <span style={{ color: "#4a7fa6" }}>?</span>}
