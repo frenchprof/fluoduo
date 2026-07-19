@@ -15,7 +15,7 @@ export default function LexicalatorIndexPage() {
   const decks = CURATED.filter((c) => isLexReadyId(c.id)).sort((a, b) => (a.unit ?? 9) - (b.unit ?? 9));
   return (
     <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="lexicalator" crumb="🧰 LexicaLater">
-      <div className="mx-auto max-w-3xl px-4 py-4">
+      <div className="mx-auto max-w-3xl px-4 pb-4 pt-2">
         <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
           🧰 LexicaLater
           <span className="ml-2 text-sm font-bold text-[color:var(--cahier-ink-soft)]">forge the French from the syllables on the belt</span>
@@ -30,15 +30,12 @@ export default function LexicalatorIndexPage() {
                 className="flex items-center gap-2.5 rounded-xl border-2 border-b-4 bg-white p-2.5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                 style={{ borderColor: UNIT_ACCENTS[u] }}
               >
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xl" style={{ background: UNIT_TINTS[u] }} aria-hidden>
-                  {c.items.find((i) => i.emoji)?.emoji ?? "🧰"}
-                </span>
                 <span className="min-w-0">
                   <span className="block truncate text-[13px] font-black leading-tight text-[color:var(--cahier-ink)]" lang="fr" title={c.title}>
                     {shortTitle(c.id, c.title)}
                   </span>
                   <span className="block text-[11px] font-bold" style={{ color: UNIT_ACCENTS[u] }}>
-                    U{u} · {c.items.length} mots
+                    U{u}
                   </span>
                 </span>
               </Link>

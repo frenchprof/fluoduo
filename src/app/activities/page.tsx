@@ -73,21 +73,24 @@ export default function ActivitiesIndexPage() {
   const totalHits = CURATED.filter(matches).length;
   return (
     <CahierShell tabs={withActive(siteTabs(), "index")} active="index" crumb="🗂️ Index">
-      <div className="mx-auto max-w-4xl px-2 py-4">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">🗂️ Index</h1>
+      <div className="mx-auto max-w-4xl px-2 pb-4 pt-2">
+        {/* ONE row on every width (Dan, 2026-07-20: on phones the search sat
+            under the heading — vertical space lost). The input flexes into
+            whatever the heading leaves free. */}
+        <div className="flex flex-nowrap items-center gap-3">
+          <h1 className="cahier-display shrink-0 text-2xl font-black text-[color:var(--cahier-ink)]">🗂️ Index</h1>
           {/* Search at the header's height, high-contrast (Dan, 2026-07-13). */}
           <input
             type="search"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="🔍 bruine, aller, café…"
+            placeholder="🔍 bruine, aller…"
             aria-label="Search words and decks"
-            className="w-full max-w-xs rounded-full border-[3px] border-[color:var(--cahier-ink)] bg-[color:var(--cahier-hl,#eaff00)]/40 px-4 py-2 text-sm font-black text-[color:var(--cahier-ink)] shadow-[3px_3px_0_var(--cahier-ink)] outline-none placeholder:font-bold placeholder:text-[color:var(--cahier-ink)]/60 focus:bg-white"
+            className="w-full min-w-0 max-w-xs flex-1 rounded-full border-[3px] border-[color:var(--cahier-ink)] bg-[color:var(--cahier-hl,#eaff00)]/40 px-4 py-2 text-sm font-black text-[color:var(--cahier-ink)] shadow-[3px_3px_0_var(--cahier-ink)] outline-none placeholder:font-bold placeholder:text-[color:var(--cahier-ink)]/60 focus:bg-white"
           />
         </div>
         {/* No WorDrill banner here (Dan, 2026-07-16) — its flap is the door. */}
-        <p className="mb-4 mt-1 text-sm text-[color:var(--cahier-ink-soft)]">Every deck × every activity — tap any cell.</p>
+        <p className="mb-2 mt-1 text-sm text-[color:var(--cahier-ink-soft)]">Every deck × every activity — tap any cell.</p>
         {totalHits === 0 && (
           <p className="mb-4 text-sm font-bold text-[color:var(--cahier-ink-soft)]">Aucun résultat pour « {q} »</p>
         )}

@@ -23,7 +23,7 @@ export default function LetrisIndexPage() {
     .sort((a, b) => (a.unit ?? 9) - (b.unit ?? 9));
   return (
     <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="vocabularain" crumb="🌧️ VocabulaRain">
-      <div className="mx-auto max-w-3xl px-4 py-4">
+      <div className="mx-auto max-w-3xl px-4 pb-4 pt-2">
         <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
           🌧️ VocabulaRain
           <span className="ml-2 text-sm font-bold text-[color:var(--cahier-ink-soft)]">steer each falling word into the right puddle</span>
@@ -39,15 +39,12 @@ export default function LetrisIndexPage() {
                 className="flex items-center gap-2.5 rounded-xl border-2 border-b-4 bg-white p-2.5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                 style={{ borderColor: accent }}
               >
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xl" style={{ background: tint }} aria-hidden>
-                  {s.emoji}
-                </span>
                 <span className="min-w-0">
                   <span className="block truncate text-[13px] font-black leading-tight text-[color:var(--cahier-ink)]" lang="fr" title={s.title}>
                     {shortTitle(s.slug, s.title)}
                   </span>
                   <span className="block text-[11px] font-bold" style={{ color: accent }}>
-                    {s.unit === null ? "Extra" : `U${s.unit}`} · 💧 {s.tileCount}
+                    {s.unit === null ? "Extra" : `U${s.unit}`}
                   </span>
                 </span>
               </Link>

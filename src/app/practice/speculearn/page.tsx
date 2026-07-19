@@ -50,7 +50,7 @@ export default function SpecuLearnIndexPage() {
     // mobile screen: no per-unit sections; the unit lives as a colored chip
     // on each compact tile.
     <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="speculearn" crumb="🔮 SpecuLearn">
-      <div className="mx-auto max-w-3xl px-4 py-4">
+      <div className="mx-auto max-w-3xl px-4 pb-4 pt-2">
         <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
           🔮 SpecuLearn
           <span className="ml-2 text-sm font-bold text-[color:var(--cahier-ink-soft)]">guess first — that&rsquo;s how it sticks</span>

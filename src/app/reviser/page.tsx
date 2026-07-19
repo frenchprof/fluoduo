@@ -94,7 +94,7 @@ export default function ReviserPage() {
       active="reviser"
       topRight={total > 0 && !done ? <span className="fluo-mono text-sm font-bold">{i}/{total} · ✓ {score}</span> : null}
     >
-      <div className="mx-auto max-w-xl px-4 py-6">
+      <div className="mx-auto max-w-xl px-4 pb-6 pt-2">
         <h1 className="fluo-serif text-2xl font-black text-[color:var(--fluo-ink)]">🔁 DéjàRevu <span className="text-lg font-bold text-[color:var(--fluo-ink-soft)]">· Review</span></h1>
         <p className="mt-1 mb-5 text-sm text-[color:var(--fluo-ink-soft)]">
           Words you&rsquo;ve practised that are due again. Answering here reschedules them.{cards.length > PAGE ? ` ${cards.length} dus — par pages de ${PAGE}.` : ""}

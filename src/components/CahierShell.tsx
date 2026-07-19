@@ -129,6 +129,20 @@ export default function CahierShell({
   children: ReactNode;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  // Tap-away for the ☰ dropdown (Dan, 2026-07-20): the old full-screen
+  // z-40 "catcher" div lost to pages with their own stacking contexts —
+  // taps landed on higher-z widgets and the menu stayed open. A
+  // capture-phase document listener sees every pointerdown regardless of
+  // z-order: anything outside the menu wrapper closes it.
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!menuOpen) return;
+    const close = (e: PointerEvent) => {
+      if (!menuRef.current?.contains(e.target as Node)) setMenuOpen(false);
+    };
+    document.addEventListener("pointerdown", close, true);
+    return () => document.removeEventListener("pointerdown", close, true);
+  }, [menuOpen]);
   const [searchOpen, setSearchOpen] = useState(false);
   const [rankingOpen, setRankingOpen] = useState(false);
   // The Quick Guide no longer pops up by default (Dan, 2026-07-14) — it
@@ -302,7 +316,7 @@ export default function CahierShell({
                 )}
                 {topRight}
                 <AccountButton />
-                <div className="cahier-menu relative">
+                <div ref={menuRef} className="cahier-menu relative">
                   <button
                     type="button"
                     aria-label="Navigation"
@@ -312,11 +326,7 @@ export default function CahierShell({
                   >
                     {menuOpen ? "✕" : "☰"}
                   </button>
-                  {menuOpen && (
-                    // tap-away closes (Dan, 2026-07-08) — the catcher sits
-                    // under the dropdown.
-                    <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} aria-hidden />
-                  )}
+
                   {menuOpen && (
                     // max-h + scroll: with the tools group the list outgrows
                     // small screens and items were cut off (Dan, 2026-07-08).
@@ -492,7 +502,7 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     // Guess-first activity (Dan, 2026-07-14: native page, "not a
     // supplement") — photos for aliments, emoji everywhere else.
     ...(isSpecuLearnReady(collectionId)
-      ? [{ key: "speculearn", label: "SpecuLearn", emoji: "🔮", href: `/practice/speculearn/${collectionId}`, hint: "guess before the lesson" } as ShellTab]
+      ? [{ key: "speculearn", label: "SpecuLearn", emoji: "🔮", href: `/practice/speculearn/${collectionId}`, hint: "learn by guessing" } as ShellTab]
       : []),
     // PRE-lesson supplements (standalone HTML outside the app) — none right
     // now; the plumbing (incl. visit tracking) stays for future material.
@@ -523,7 +533,7 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
       : []),
     // né « Say It » — renamed WorDrill (Dan, 2026-07-19); key stays "say" so
     // SioModal embedding and withActive callers keep working.
-    { key: "say", label: "WorDrill", emoji: "🎙️", href: `/practice/say-it/${collectionId}`, hint: "speak it" },
+    { key: "say", label: "WorDrill", emoji: "🎙️", href: `/practice/say-it/${collectionId}`, hint: "pronunciation drill" },
   ];
 }
 

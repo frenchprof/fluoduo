@@ -22,7 +22,7 @@ export type ConjVerb = {
 export const CONJ_GROUPS = [
   "⭐ Essentiels",
   "1ᵉʳ groupe · -ER réguliers",
-  "1ᵉʳ groupe · orthographe particulière",
+  "1ᵉʳ groupe · -eR irrégulier",
   "2ᵉ groupe · -IR (…issons)",
   "3ᵉ groupe · -RE réguliers",
   "3ᵉ groupe · irréguliers",

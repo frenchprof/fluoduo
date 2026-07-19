@@ -417,10 +417,10 @@ function TutorPageInner() {
 export default function TutorPage() {
   return (
     <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="tutor" crumb="🤖 ChaTutor">
-      <div className="mx-auto flex max-w-2xl flex-col gap-4 px-3 py-5">
+      <div className="mx-auto flex max-w-2xl flex-col gap-3 px-3 pb-5 pt-2">
         <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">🤖 ChaTutor <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· Tutor</span></h1>
         <p className="-mt-2 text-sm text-[color:var(--cahier-ink-soft)]">
-          Ton tuteur IA — ask about the course, build French sentences in writing or speech, or role-play a scene from the syllabus.
+          Ton tuteur IA — write, speak, or role-play in French.
         </p>
         <AuthGate what="talk to the tutor" compact>
           <TutorPageInner />

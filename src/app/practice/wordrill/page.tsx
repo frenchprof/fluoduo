@@ -85,7 +85,7 @@ export default function WorDrillPage() {
       {deck === null ? (
         // Landing: pick the scope. Tout first, then the five units, each
         // wearing its accent and word count.
-        <div className="mx-auto max-w-2xl px-4 py-6">
+        <div className="mx-auto max-w-2xl px-4 pb-6 pt-2">
           <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">🎙️ WorDrill</h1>
           <p className="mb-4 mt-1 text-sm text-[color:var(--cahier-ink-soft)]">Continuous oral practice — pick your ground.</p>
           <button
@@ -93,7 +93,7 @@ export default function WorDrillPage() {
             onClick={() => setScope("all")}
             className="mb-3 flex w-full items-center justify-between rounded-xl border-2 border-[color:var(--cahier-ink)] bg-[color:var(--cahier-hl,#eaff00)] px-4 py-3 text-left font-black text-[color:var(--cahier-ink)] shadow-[3px_3px_0_var(--cahier-ink)] transition hover:-translate-y-0.5"
           >
-            <span>🌍 Tout <span className="font-bold text-[color:var(--cahier-ink)]/70">· les cinq unités</span></span>
+            <span>🌍 Unités 0–4</span>
             <span className="fluo-mono text-sm">{decks.get("all")!.items.length} mots</span>
           </button>
           <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">

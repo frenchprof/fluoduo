@@ -529,12 +529,12 @@ export default function LetrisGame({
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-sky-950/50 p-4" role="dialog" aria-modal="true">
           <div className="max-h-[85vh] w-full max-w-3xl overflow-auto rounded-2xl border-2 border-sky-200 bg-white p-5 shadow-xl">
             <h2 className="text-xl font-black text-sky-700">📋 {set.title}</h2>
-            <p className="mt-1 text-sm font-bold text-sky-900/70">Take a note of the following items for this round of play.</p>
-            <div className="mt-4 grid gap-3" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(11rem, 1fr))" }}>
+            <p className="mt-1 text-sm font-bold text-sky-900/70">Take note of the items involved:</p>
+            <div className="mt-3 grid gap-2" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(11rem, 1fr))" }}>
               {set.categories.map((c) => (
                 <div key={c.key} className="rounded-xl border-2 border-sky-100 p-3">
                   <p className="mb-2 text-xs font-black uppercase tracking-wider text-sky-500">{c.label}</p>
-                  <ul className="space-y-1">
+                  <ul className="space-y-0.5">
                     {pool.filter((t) => t.category === c.key).map((t) => (
                       <li key={`${t.text}-${t.category}`} className="text-sm leading-snug">
                         {t.emoji ? <span className="mr-1" aria-hidden>{t.emoji}</span> : null}

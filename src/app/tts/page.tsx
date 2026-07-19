@@ -240,9 +240,9 @@ function TtsPageInner() {
 
   return (
     <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="tts" crumb="🔊 VoixLà (TTS)">
-      <div className="mx-auto max-w-2xl px-3 py-5">
+      <div className="mx-auto max-w-2xl px-3 pb-5 pt-2">
         <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
-          🔊 VoixLà <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">(TTS) · le studio de la voix</span>
+          🔊 VoixLà <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· Text-to-Speech</span>
         </h1>
 
         {/* Same warm panel as the Tutor (Dan, 2026-07-13: "adopt similar
@@ -277,16 +277,16 @@ function TtsPageInner() {
           </button>
           <button type="button" onClick={play} disabled={!text.trim()}
             className="cahier-btn cahier-btn-sm cahier-btn-primary font-black disabled:opacity-50">
-            ▶ Écouter
+            ▶<span className="hidden sm:inline"> Écouter</span>
           </button>
           {speaking && (
             <button type="button" onClick={stop} className="cahier-btn cahier-btn-sm">
-              ⏹ Stop
+              ⏹<span className="hidden sm:inline"> Stop</span>
             </button>
           )}
           <button type="button" onClick={() => void makeMp3()} disabled={!text.trim() || mp3Busy}
             className="cahier-btn cahier-btn-sm cahier-btn-accent font-black disabled:opacity-50">
-            {mp3Busy ? "⏳…" : "🎧 Générer le MP3"}
+            {mp3Busy ? "⏳…" : <>🎧<span className="hidden sm:inline"> Générer le MP3</span></>}
           </button>
           {isAdmin && (
             <button type="button"
@@ -299,7 +299,7 @@ function TtsPageInner() {
           <button type="button" onClick={() => void corriger()} disabled={!text.trim() || fixBusy}
             title="Vérifier et corriger le français"
             className="cahier-btn cahier-btn-sm font-black disabled:opacity-50">
-            {fixBusy ? "⏳…" : "✏️ Corriger"}
+            {fixBusy ? "⏳…" : <>✏️<span className="hidden sm:inline"> Corriger</span></>}
           </button>
         </div>
 
