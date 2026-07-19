@@ -248,7 +248,7 @@ function DeckView({
           {/* Buttons exist only where a real runner exists — no alert() stubs. */}
           {games.letris && getLetrisSet(collection.id.replace("-letris", "")) && (
             <Link
-              href={`/games/letris/${collection.id.replace("-letris", "")}`}
+              href={`/games/vocabularain/${collection.id.replace("-letris", "")}`}
               className="fluo-btn fluo-btn-secondary"
             >
               🌧️ Vocabularain

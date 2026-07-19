@@ -511,12 +511,12 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
       href: lessons.length > 0 ? `/lessons/${lessons[0].slug}` : `/lessons/deck/${collectionId}`,
       hint: "rule + drills",
     },
-    { key: "flip", label: "Flip It", emoji: "🃏", href: `/practice/flip-it/${collectionId}`, hint: "study the cards" },
+    { key: "flip", label: "Flip It", emoji: "🃏", href: `/practice/flip-it/${collectionId}`, hint: "flip, repeat, recall" },
     ...(rainSet
-      ? [{ key: "rain", label: "Vocabularain", emoji: "🌧️", href: `/games/letris/${collectionId.replace("-letris", "")}`, hint: "sort words" } as ShellTab]
+      ? [{ key: "rain", label: "VocabulaRain", emoji: "🌧️", href: `/games/vocabularain/${collectionId.replace("-letris", "")}`, hint: "catch falling words" } as ShellTab]
       : []),
     ...(isLexReadyId(collectionId)
-      ? [{ key: "match", label: "LexicaLater", emoji: "🧰", href: `/games/conveyor/${collectionId}`, hint: "build words" } as ShellTab]
+      ? [{ key: "match", label: "LexicaLater", emoji: "🧰", href: `/games/lexicalater/${collectionId}`, hint: "stitch word parts" } as ShellTab]
       : []),
     ...(composeBank
       ? [{ key: "compose", label: "Compose It", emoji: "🧩", href: `/games/compose/${composeBank.id}`, hint: "build dialogues" } as ShellTab]

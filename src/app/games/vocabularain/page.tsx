@@ -35,7 +35,7 @@ export default function LetrisIndexPage() {
             return (
               <Link
                 key={s.slug}
-                href={`/games/letris/${s.slug}`}
+                href={`/games/vocabularain/${s.slug}`}
                 className="flex items-center gap-2.5 rounded-xl border-2 border-b-4 bg-white p-2.5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                 style={{ borderColor: accent }}
               >

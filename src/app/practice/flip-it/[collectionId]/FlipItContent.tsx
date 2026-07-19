@@ -1116,7 +1116,7 @@ function Overview({
                     ) : (
                       <span>{c.key === "flag" && hasLang ? "language" : c.label}</span>
                     )}
-                    {coverable && (
+                    {coverable && !test && (
                       <button type="button" onClick={() => toggleCol(c.key)}
                         title={coveredCols.has(c.key) ? "Show this column" : "Hide this column"}
                         aria-label={coveredCols.has(c.key) ? "Show this column" : "Hide this column"}

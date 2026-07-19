@@ -40,8 +40,8 @@ function cellsFor(c: Collection): Cell[] {
     { emoji: "🔮", title: "SpecuLearn", href: isSpecuLearnReady(c.id) ? `/practice/speculearn/${c.id}` : null },
     { emoji: "📚", title: "Lesson", href: lessons.length ? `/lessons/${lessons[0].slug}` : `/lessons/deck/${c.id}` },
     { emoji: "🃏", title: "Flip It", href: `/practice/flip-it/${c.id}` },
-    { emoji: "🌧️", title: "Vocabularain", href: getLetrisSet(c.id.replace("-letris", "")) ? `/games/letris/${c.id.replace("-letris", "")}` : null },
-    { emoji: "🧰", title: "LexicaLater", href: isLexReadyId(c.id) ? `/games/conveyor/${c.id}` : null },
+    { emoji: "🌧️", title: "VocabulaRain", href: getLetrisSet(c.id.replace("-letris", "")) ? `/games/vocabularain/${c.id.replace("-letris", "")}` : null },
+    { emoji: "🧰", title: "LexicaLater", href: isLexReadyId(c.id) ? `/games/lexicalater/${c.id}` : null },
     { emoji: "🧩", title: "Compose It", href: composeBankForDeck(c.id) ? `/games/compose/${composeBankForDeck(c.id)!.id}` : null },
     { emoji: "🎙️", title: "WorDrill", href: `/practice/say-it/${c.id}` },
   ];

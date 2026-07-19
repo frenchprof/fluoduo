@@ -6,3 +6,9 @@
 /practice/oral.html /practice/wordrill 301
 # Devine d'abord was renamed SpecuLearn (Dan, 2026-07-15)
 /practice/devine/* /practice/speculearn/:splat 301
+# Old internal game names dropped from URLs (Dan, 2026-07-20): letris → VocabulaRain,
+# conveyor → LexicaLater. 301s keep every previously shared link alive.
+/games/letris /games/vocabularain 301
+/games/letris/* /games/vocabularain/:splat 301
+/games/conveyor /games/lexicalater 301
+/games/conveyor/* /games/lexicalater/:splat 301

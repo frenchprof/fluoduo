@@ -26,7 +26,7 @@ export default function LexicalatorIndexPage() {
             return (
               <Link
                 key={c.id}
-                href={`/games/conveyor/${c.id}`}
+                href={`/games/lexicalater/${c.id}`}
                 className="flex items-center gap-2.5 rounded-xl border-2 border-b-4 bg-white p-2.5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                 style={{ borderColor: UNIT_ACCENTS[u] }}
               >
