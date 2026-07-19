@@ -1275,8 +1275,23 @@ function TestRow({
         let content: React.ReactNode = null;
         if (c.key === "pick") content = <input type="checkbox" checked={selected.has(row.item.id)} onChange={() => onToggleSelect(row.item.id)} style={{ width: "1.1rem", height: "1.1rem", padding: 0, accentColor: "#2d5bff" }} />;
         else if (c.key === "flag") content = (
-          <span title={displayEn(row.item)} className="text-2xl">{row.item.emoji}</span>
+          // Mirror the browse-mode flag cell (hotfix 2026-07-20): language
+          // decks carry greeting+autonym, not an emoji — the emoji-only
+          // version rendered those cells blank in Test Yourself.
+          <span title={displayEn(row.item)} className={row.item.lang ? "inline-flex items-baseline gap-1.5 whitespace-nowrap" : "text-2xl"}>
+            {row.item.lang ? (
+              <>
+                <span lang="fr" className="text-base font-bold text-[color:var(--cahier-ink)]">{row.item.lang.greeting}</span>
+                <span className="text-[11px] text-[color:var(--cahier-ink-soft)]">{row.item.lang.autonym}</span>
+              </>
+            ) : row.item.emoji}
+          </span>
         );
+        // The English PROMPT (hotfix 2026-07-20): TestRow's cell list simply
+        // had no "eng" branch, so the whole column rendered EMPTY in Test
+        // Yourself — students were answering with no prompt visible. Same
+        // markup as the browse-mode cell.
+        else if (c.key === "eng") content = <span>{row.item.en}{row.item.note ? <span className="text-[color:var(--cahier-ink-soft)]"> {row.item.note}</span> : null}</span>;
         else if (c.key === "fr" && isNat) content = <span lang="fr" className="font-bold">{row.fr}</span>;
         else if (answerKeys.includes(c.key)) {
           if (hasArt && phase !== "idle") {
