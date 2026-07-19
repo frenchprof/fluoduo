@@ -548,13 +548,15 @@ body {
 .cahier-sheet textarea::placeholder { color: #9b9bb0; }
 
 /* The learner's typed answer — plain legible body font, compact so table rows
- * keep a consistent height. */
+ * keep a consistent height. min-, not fixed, height (audit 2026-07-19): the
+ * hard 30px clipped descenders (g j p y) by ~1px; min-height keeps rows
+ * compact but lets the box breathe when the metrics need 31px. */
 .cahier-answer {
   font-family: var(--font-body-stack) !important;
   font-size: 0.92rem !important;
   line-height: 1.2 !important;
   padding: 0.3rem 0.5rem !important;
-  height: 30px !important;
+  min-height: 30px !important;
   color: var(--cahier-ink) !important;
 }
 

@@ -23,7 +23,10 @@ type Stop =
   | { kind: "unit"; unit: number }
   | { kind: "sio"; unit: number; id: string; num: number; topic: string };
 
-const CELL_H = 56;
+// 74, not 56 (audit 2026-07-19): the extra rows carry each stop's visible
+// label — on touch there is no hover, so title-only names left phone users
+// (most of the class) with a wall of anonymous numbers.
+const CELL_H = 74;
 const MIN_CELL_W = 56;
 
 const STOPS: Stop[] = (() => {
@@ -107,7 +110,7 @@ export default function RoadMap({ progress, activeId, accent }: { progress: Prog
               const meta = UNIT_META[st.unit];
               const done = SIOS.filter((s) => s.unit === st.unit && isSioDone(s.id, progress)).length;
               return (
-                <div key={`u${st.unit}`} style={cell} className={`flex items-center justify-center ${hue} ${fogged ? "fluo-fog" : ""}`}>
+                <div key={`u${st.unit}`} style={cell} className={`relative flex items-center justify-center ${hue} ${fogged ? "fluo-fog" : ""}`}>
                   <Link
                     href={`/unit/${st.unit}`}
                     title={`${meta?.label} — ${CHAPTERS[st.unit]?.scenario ?? ""} · ${done}/10`}
@@ -116,6 +119,9 @@ export default function RoadMap({ progress, activeId, accent }: { progress: Prog
                   >
                     U{st.unit}
                   </Link>
+                  <span aria-hidden className="pointer-events-none absolute left-0 right-0 top-[calc(50%+20px)] truncate px-0.5 text-center text-[9px] font-bold leading-none text-[color:var(--fluo-ink)]/70">
+                    {meta?.label}
+                  </span>
                 </div>
               );
             }
@@ -128,10 +134,11 @@ export default function RoadMap({ progress, activeId, accent }: { progress: Prog
               : kind === "phrases" ? "rounded-2xl rounded-bl-[4px]"
               : "rounded-full";
             return (
-              <div key={st.id} style={cell} className={`flex items-center justify-center ${hue} ${fogged ? "fluo-fog" : ""}`}>
+              <div key={st.id} style={cell} className={`relative flex items-center justify-center ${hue} ${fogged ? "fluo-fog" : ""}`}>
                 <Link
                   href={`/unit/${st.unit}#${st.id}`}
                   title={`${st.id} · ${st.topic} (${KIND_LABEL[kind]})`}
+                  aria-label={`${st.id} · ${st.topic} (${KIND_LABEL[kind]})`}
                   className={`relative z-[1] flex h-9 w-9 items-center justify-center border-2 text-xs font-black transition hover:-translate-y-0.5 ${shape} ${
                     sActive ? "fluo-node-active ring-2 ring-[var(--fluo-danger)] ring-offset-1" : sDone ? "shadow-[0_2px_6px_rgba(0,0,0,0.3)]" : "opacity-55 border-dashed"
                   }`}
@@ -145,6 +152,10 @@ export default function RoadMap({ progress, activeId, accent }: { progress: Prog
                 >
                   <span className={kind === "production" ? "-rotate-45" : undefined}>{sDone ? "✓" : st.num}</span>
                 </Link>
+                {/* The stop's name, visible without hover (audit 2026-07-19). */}
+                <span aria-hidden className="pointer-events-none absolute left-0 right-0 top-[calc(50%+20px)] truncate px-0.5 text-center text-[9px] font-bold leading-none text-[color:var(--fluo-ink)]/70">
+                  {st.topic}
+                </span>
               </div>
             );
           })}

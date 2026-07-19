@@ -48,8 +48,12 @@ const publicSans = Public_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "FluoLingo",
-  description: "Language-agnostic practice games portal.",
+  // Template so every page can name itself in tabs/history/bookmarks
+  // (audit 2026-07-19: every page was just "FluoLingo"). Client pages set
+  // theirs via CahierShell; server pages via metadata/generateMetadata.
+  title: { default: "FluoLingo", template: "%s · FluoLingo" },
+  description:
+    "Gamified French (A1) practice for NUS LAF1201 — vocabulary games, speech drills, spaced revision and an AI tutor.",
   // Browsers must NEVER offer to auto-translate this site (Dan, 2026-07-10):
   // rewriting the French into English destroys the learning content. The
   // meta tag is Chrome/Google Translate's opt-out; translate="no" on <html>
@@ -64,13 +68,25 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      // fr, not en (audit 2026-07-19): the chrome and the learning content
+      // skew French, and lang drives screen-reader/TTS pronunciation — a
+      // French vocab item read with English phonology is worse than the
+      // reverse. English-heavy blocks can opt out with lang="en" spans.
+      lang="fr"
       translate="no"
       className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} ${publicSans.variable} ${roboto.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <SuiteBanner />
         {children}
+        {/* Who runs this + what's collected (audit 2026-07-19): the app
+            records every answer for learning analytics on identifiable
+            students — say so, on every page. mt-auto pins it to the bottom
+            of the flex column when content is short. */}
+        <footer className="mt-auto px-4 pb-3 pt-6 text-center text-[11px] leading-relaxed text-neutral-500">
+          FluoLingo · built by Dr Daniel Chan, NUS Centre for Language Studies · answers and activity are
+          recorded for learning analytics · <a href="/about" className="underline">about</a>
+        </footer>
         <FeedbackButton />
         <BetaNotice />
         <ProgressSync />

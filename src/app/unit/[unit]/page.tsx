@@ -9,6 +9,14 @@ export function generateStaticParams() {
   return ["0", "1", "2", "3", "4"].map((unit) => ({ unit }));
 }
 
+// Server-rendered per-page title (audit 2026-07-19) — the root layout's
+// template appends " · FluoLingo".
+export async function generateMetadata({ params }: { params: Promise<{ unit: string }> }) {
+  const { unit } = await params;
+  const u = Number(unit);
+  return { title: UNIT_META[u]?.label ?? `Unité ${u}` };
+}
+
 export default async function UnitPage({ params }: { params: Promise<{ unit: string }> }) {
   const { unit } = await params;
   const u = Number(unit);

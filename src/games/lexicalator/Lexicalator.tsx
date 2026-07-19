@@ -178,6 +178,10 @@ export default function Lexicalator({
   // and releasing picks that chest. Clicking (no movement) still works via the
   // button's onClick, as does keyboard.
   const dragRef = useRef<{ id: string; sx: number; sy: number; moved: boolean } | null>(null);
+  // The board's bounds are the drag's "escape hatch" (audit 2026-07-19: once
+  // a drag began, ANY release picked the chest — there was no way to change
+  // your mind). Releasing a MOVED drag outside the board now puts it back.
+  const rootRef = useRef<HTMLDivElement | null>(null);
   const [ghost, setGhost] = useState<{ id: string; x: number; y: number } | null>(null);
   useEffect(() => {
     const move = (e: PointerEvent) => {
@@ -193,7 +197,16 @@ export default function Lexicalator({
       setGhost(null);
       if (select && d) pickChest(d.id);
     };
-    const up = () => end(true);
+    const up = (e: PointerEvent) => {
+      const d = dragRef.current;
+      const r = rootRef.current?.getBoundingClientRect();
+      // A tap (no movement) always picks; a drag released off the board is
+      // an abort. Anywhere on the board still picks, as before.
+      const escaped =
+        !!d?.moved && !!r &&
+        (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom);
+      end(!escaped);
+    };
     const cancel = () => end(false);
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", up);
@@ -440,7 +453,7 @@ export default function Lexicalator({
   if (!mounted) return null;
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-4" style={{ color: "#0c4a6e" }}>
+    <div ref={rootRef} className="mx-auto max-w-3xl px-4 py-4" style={{ color: "#0c4a6e" }}>
       <CreditsSplash game="LexicaLater" emoji="🧰" />
       <style>{`
         @keyframes lxscroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}

@@ -297,13 +297,6 @@ export function stepItemSrs(prev: ItemSrs | undefined, correct: boolean, now: nu
  * intended "repaired but fragile" signal, don't gate this to first attempts.
  */
 export function recordItemResult(itemId: string, correct: boolean, given?: string): Progress {
-  // Evidence trail (Dan, 2026-07-13: "every question, every attempt"): every
-  // graded answer anywhere also lands in users/{uid}/responses for the
-  // teacher dashboard. Dynamic import keeps Firestore out of this module's
-  // static graph (usage.ts rule); fire-and-forget, signed-out is a no-op.
-  void import("@/lib/firebase/responses")
-    .then((m) => m.recordResponse(itemId, correct, { given }))
-    .catch(() => {});
   const prev = loadProgress();
   const itemSrs = { ...prev.itemSrs, [itemId]: stepItemSrs(prev.itemSrs[itemId], correct, Date.now()) };
   // Practising ANYTHING keeps the streak alive — motivation comes from showing
@@ -311,6 +304,16 @@ export function recordItemResult(itemId: string, correct: boolean, given?: strin
   // answer earns more XP than a wrong one, but a wrong one still earns (effort
   // counts, errors are never punished).
   const p = bumpStreakToday({ ...prev, itemSrs });
+  // Evidence trail (Dan, 2026-07-13: "every question, every attempt"): every
+  // graded answer anywhere also lands in users/{uid}/responses for the
+  // teacher dashboard. The receipt states the EXACT amount this answer pays
+  // (base × streak multiplier — audit 2026-07-19, honest receipts). Dynamic
+  // import keeps Firestore out of this module's static graph (usage.ts
+  // rule); fire-and-forget, signed-out is a no-op.
+  const paid = Math.round((correct ? XP_CORRECT : XP_WRONG) * xpMultiplier(p.streak));
+  void import("@/lib/firebase/responses")
+    .then((m) => m.recordResponse(itemId, correct, { given, xpPaid: paid }))
+    .catch(() => {});
   return finalize(addXp(p, correct ? XP_CORRECT : XP_WRONG));
 }
 

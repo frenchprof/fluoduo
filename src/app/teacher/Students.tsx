@@ -226,11 +226,13 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
             const RETUNE = Date.UTC(2026, 6, 7, 21, 7, 31);
             let okOld = 0, koOld = 0, okNew = 0, koNew = 0, unpaid = 0;
             for (const r of detail.responses) {
-              // VocabulaRain drops and deck-MCQ answers write evidence but
-              // deliberately pay NO per-answer XP (Letris scores in-game;
-              // MCQ predates the SRS) — counting them raised false BELOW
-              // FLOOR alarms (Dan, 2026-07-17: "still red for some").
-              if (r.activityId?.startsWith("letris:") || r.activityId?.startsWith("mcq:")) { unpaid++; continue; }
+              // Unpaid answers write evidence but no per-answer XP. Since
+              // 2026-07-19 the receipt itself says so (xp: 0 — honest
+              // receipts), so ANY future unpaid activity is auto-excluded.
+              // The letris:/mcq: prefixes stay for LEGACY docs, which
+              // hardcoded phantom 60/20s (Dan, 2026-07-17: "still red for
+              // some").
+              if (r.xp === 0 || r.activityId?.startsWith("letris:") || r.activityId?.startsWith("mcq:")) { unpaid++; continue; }
               const good = r.status === "met" || r.status === "mastered";
               const old = (r.ts?.getTime() ?? 0) < RETUNE; // undated → old rate (strict floor)
               if (good) { if (old) okOld++; else okNew++; }

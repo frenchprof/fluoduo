@@ -104,7 +104,14 @@ function norm(s: string): string {
 // Case-sensitive variant (accents/spacing still lenient): proper nouns must be
 // capitalised — "france" is rejected, "France" required; adjectives stay lower-case.
 function normCase(s: string): string {
+  // Case-insensitive since 2026-07-19 (audit): the name always promised it,
+  // but the function only forgave accents/apostrophes — so "fatigue" (a real
+  // error) passed while "Fatigué" (phone auto-capitalisation) failed. That
+  // inverts the forgiveness philosophy (effort counts, errors are never
+  // punished — see progress.ts). Trade-off: proper-noun capitals (la France)
+  // are no longer enforced here; grading capitals is a separate objective.
   return s
+    .toLowerCase()
     .normalize("NFD")
     .replace(/[̀-ͯ]/g, "")
     .replace(/['’]/g, " ")
@@ -1083,15 +1090,32 @@ function Overview({
                 );
               }
               return (
-                <th key={c.key} className="relative px-3 py-2">
+                <th
+                  key={c.key}
+                  className="relative px-3 py-2"
+                  // Announce sort state to assistive tech (audit 2026-07-19).
+                  aria-sort={active ? (sortDir === "asc" ? "ascending" : "descending") : undefined}
+                >
                   <span className="inline-flex items-center gap-1">
-                    <span
-                      className={sk ? "cursor-pointer select-none hover:text-[color:var(--cahier-ink)]" : ""}
-                      onClick={sk ? () => onSortCol(sk) : undefined}
-                      title={sk ? "Sort by this column" : undefined}
-                    >
-                      {c.key === "flag" && hasLang ? "language" : c.label}{active ? (sortDir === "asc" ? " ▲" : " ▼") : ""}
-                    </span>
+                    {sk ? (
+                      // A real <button>, not a bare span (audit 2026-07-19):
+                      // spans gave no keyboard access and, on touch, no
+                      // affordance at all. The faint ⇅ makes "sortable"
+                      // visible without hover; it sharpens to ▲/▼ when active.
+                      <button
+                        type="button"
+                        onClick={() => onSortCol(sk)}
+                        title="Sort by this column"
+                        className="inline-flex cursor-pointer select-none items-center gap-0.5 hover:text-[color:var(--cahier-ink)]"
+                      >
+                        {c.key === "flag" && hasLang ? "language" : c.label}
+                        <span aria-hidden className={active ? "" : "opacity-40"}>
+                          {active ? (sortDir === "asc" ? "▲" : "▼") : "⇅"}
+                        </span>
+                      </button>
+                    ) : (
+                      <span>{c.key === "flag" && hasLang ? "language" : c.label}</span>
+                    )}
                     {coverable && (
                       <button type="button" onClick={() => toggleCol(c.key)}
                         title={coveredCols.has(c.key) ? "Show this column" : "Hide this column"}

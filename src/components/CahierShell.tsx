@@ -149,6 +149,19 @@ export default function CahierShell({
   const unitKey = deckUnit === undefined ? undefined : `unit-${deckUnit}`;
   const isActiveFlap = (t: ShellTab) => active === t.key || t.key === unitKey;
 
+  // Per-page browser-tab title (audit 2026-07-19: every page announced
+  // itself as just "FluoLingo" — tabs, history, bookmarks and screen-reader
+  // page announcements were indistinguishable). The active flap's label IS
+  // the page's name; deck/context pages fall back to their first context
+  // flap, then to a string crumb. Home (no matching flap) keeps the default.
+  const pageLabel =
+    [...site, ...tools, ...context].find((t) => t.key === active)?.label ??
+    context[0]?.label ??
+    (typeof crumb === "string" ? crumb : undefined);
+  useEffect(() => {
+    document.title = pageLabel ? `${pageLabel} · FluoLingo` : "FluoLingo";
+  }, [pageLabel]);
+
   const nested = context.length > 0;
 
   // Every page's right edge is drag-widenable (Dan, 2026-07-05: "all the

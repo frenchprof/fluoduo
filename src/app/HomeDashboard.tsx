@@ -43,7 +43,21 @@ export default function HomeDashboard() {
     refresh();
     window.addEventListener("fluolingo:progress-updated", refresh);
 
-    setHeroPlay(true);
+    // The full letter-wave + hand-written byline runs ~5½ s — delightful
+    // once, a toll on every return trip (audit 2026-07-19). Play the full
+    // show once per browser session; afterwards render the finished look
+    // instantly (no .is-play = static letters + written byline; .is-inked
+    // pins the highlighter ink).
+    try {
+      if (window.sessionStorage.getItem("fluolingo:heroPlayed")) {
+        setInkDone(true);
+      } else {
+        window.sessionStorage.setItem("fluolingo:heroPlayed", "1");
+        setHeroPlay(true);
+      }
+    } catch {
+      setHeroPlay(true); // storage blocked → just play
+    }
     return () => {
       window.removeEventListener("fluolingo:progress-updated", refresh);
     };
