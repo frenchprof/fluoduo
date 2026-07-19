@@ -34,6 +34,10 @@ const ENGINE_LABEL: Record<Engine, string> = { auto: "Auto", google: "Google", m
 
 const SAMPLE = "Utilisez-moi pour vérifier la prononciation d'un mot, d'une expression, ou d'un texte entier !";
 const SPEEDS = [1, 0.75, 0.5, 1.25, 1.5];
+// Calibration (Dan, 2026-07-20): "the current 0.75 is what we want for our
+// 1.0" — displayed speeds keep their labels, but every underlying rate is
+// scaled by this constant, for the ▶ player and the generated MP3 alike.
+const TTS_CAL = 0.75;
 
 /** Word-level LCS diff for the tracked-changes view (Dan, 2026-07-10:
  *  "glaring errors must be flagged out to the learner"). Case-INsensitive:
@@ -103,7 +107,7 @@ function TtsPageInner() {
     u.lang = "fr-FR";
     const v = castVoice("fr-FR", profile);
     if (v) u.voice = v;
-    u.rate = r * 0.95;
+    u.rate = r * TTS_CAL * 0.95;
     // The male cast member on devices without a named male voice = pitch cue.
     u.pitch = profile === "m" ? 0.75 : 1;
     u.onboundary = (e) => {
@@ -174,7 +178,7 @@ function TtsPageInner() {
         body: JSON.stringify({
           text: t,
           voice: `fr-${voiceSel}`,
-          rate: speed,
+          rate: speed * TTS_CAL,
           ...(isAdmin && engine !== "auto" ? { engine } : {}),
         }),
       });
