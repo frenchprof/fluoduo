@@ -213,13 +213,27 @@ const BYLINE_STROKES = [
             🎚️ <RankBadge level={lvl.level} name={lvl.name} compact className="text-xs" />
           </Link>
           <span className={chip}>✓ {doneTotal}/{SIOS.length}</span>
-          <span className={chip} title={mult > 1 ? `Série active : XP ×${mult}` : "Série de jours"}>
-            🔥 {progress.streak}{mult > 1 && <b className="text-[color:var(--fluo-danger)]"> ×{mult}</b>}
-          </span>
+          {/* Progressive disclosure (Dan, 2026-07-20: "hide the zeroes until
+              they are no longer zero"): a newcomer's row of 🔥0 ⭐0 💎0 read
+              as "you are behind" before their first action, and three
+              unexplained currencies are noise until their meaning is earned.
+              Each chip appears at its first non-zero value — a small unlock
+              moment that introduces the currency exactly when it becomes
+              relevant. Returning students see no change. Derived straight
+              from progress — no new storage. */}
+          {progress.streak > 0 && (
+            <span className={chip} title={mult > 1 ? `Série active : XP ×${mult}` : "Série de jours"}>
+              🔥 {progress.streak}{mult > 1 && <b className="text-[color:var(--fluo-danger)]"> ×{mult}</b>}
+            </span>
+          )}
           {/* XP is exactly what the leaderboard ranks — the chip IS the way
               to the Classement. */}
-          <Link href="/leaderboard" className={`${chip} hover:-translate-y-0.5`} title="Classement · votre rang">⭐ {progress.xp}</Link>
-          <Link href="/profil" className={`${chip} hover:-translate-y-0.5`} title="Boutique">💎 {progress.gems}</Link>
+          {progress.xp > 0 && (
+            <Link href="/leaderboard" className={`${chip} hover:-translate-y-0.5`} title="Classement · votre rang">⭐ {progress.xp}</Link>
+          )}
+          {progress.gems > 0 && (
+            <Link href="/profil" className={`${chip} hover:-translate-y-0.5`} title="Boutique">💎 {progress.gems}</Link>
+          )}
           <StatsHelp />
           <button
             type="button"

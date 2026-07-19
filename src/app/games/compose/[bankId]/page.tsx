@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import BackLink from "@/components/BackLink";
+import HelpDot from "@/components/HelpDot";
 import AuthGate from "@/components/AuthGate";
 import ComposeGame from "@/games/compose/ComposeGame";
 import { getComposeBank, listComposeBanks } from "@/games/compose/banks";

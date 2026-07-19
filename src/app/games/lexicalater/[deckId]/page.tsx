@@ -1,4 +1,5 @@
 import BackLink from "@/components/BackLink";
+import HelpDot from "@/components/HelpDot";
 import Lexicalator, { type LexEntry } from "@/games/lexicalator/Lexicalator";
 import AuthGate from "@/components/AuthGate";
 import { CURATED } from "@/content/collections";
@@ -34,7 +35,7 @@ export default async function ConveyorPage({
         <div className="border-b-2 border-white/70 bg-white/60 backdrop-blur">
           <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3 text-sm font-bold">
             <BackLink fallback="/" className="text-[#1cb0f6] hover:text-[#1899d6]">← Back</BackLink>
-            <span className="text-[#075985]/60">🧰 LexicaLater</span>
+            <span className="flex items-center gap-2 text-[#075985]/60">🧰 LexicaLater <HelpDot /></span>
           </div>
         </div>
         {body}

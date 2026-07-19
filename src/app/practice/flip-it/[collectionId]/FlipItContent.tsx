@@ -34,6 +34,7 @@ import { loadBuckets, setBucket, type Bucket } from "@/lib/practice/buckets";
 import { recordItemResult } from "@/lib/progress";
 import { CahierFrame, TAB_HUES, type CahierTab } from "../CahierFrame";
 import BackLink from "@/components/BackLink";
+import HelpDot from "@/components/HelpDot";
 
 /* ─────────────────────────── step labels ─────────────────────────── */
 
@@ -183,6 +184,7 @@ function TopBar({ crumb }: { crumb: string }) {
         <span className="cahier-display truncate text-sm font-bold text-[color:var(--cahier-ink)]">
           🃏 Flip It · {crumb}
         </span>
+        <HelpDot className="ml-auto text-[color:var(--cahier-ink)]" />
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import BackLink from "@/components/BackLink";
+import HelpDot from "@/components/HelpDot";
 import LetrisGame from "@/games/letris/LetrisGame";
 import AuthGate from "@/components/AuthGate";
 import { getLetrisSet, listLetrisSets } from "@/games/letris/sets";
@@ -28,7 +29,7 @@ export default async function LetrisSetPage({
             <BackLink fallback="/games/vocabularain" className="text-sky-700 hover:text-sky-900">
               ← Back
             </BackLink>
-            <span className="text-sky-900/60">☁️ {set.title}</span>
+            <span className="flex items-center gap-2 text-sky-900/60">☁️ {set.title} <HelpDot /></span>
           </div>
         </div>
         <LetrisGame set={set} />
