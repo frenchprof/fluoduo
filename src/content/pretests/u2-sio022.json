@@ -7,7 +7,7 @@
   "items": [
     {
       "id": "u2-sio022-01",
-      "sentenceBefore": "J'ai oublié ",
+      "sentenceBefore": "J'oublie toujours ",
       "sentenceAfter": " livre chez moi.",
       "answer": "mon",
       "distractors": [
@@ -15,8 +15,8 @@
         "sa",
         "ma"
       ],
-      "fullSentence": "J'ai oublié mon livre chez moi.",
-      "sentenceTrans": "I left my book at home.",
+      "fullSentence": "J'oublie toujours mon livre chez moi.",
+      "sentenceTrans": "I always leave my book at home.",
       "whyWrong": {
         "mes": "mes is plural — one book takes mon.",
         "sa": "sa is feminine — livre is masculine (and sa means 'his/her', not 'my').",
@@ -43,7 +43,7 @@
     },
     {
       "id": "u2-sio022-03",
-      "sentenceBefore": "Pierre a posé ",
+      "sentenceBefore": "Pierre pose ",
       "sentenceAfter": " sac sur la chaise.",
       "answer": "son",
       "distractors": [
@@ -51,8 +51,8 @@
         "ma",
         "ses"
       ],
-      "fullSentence": "Pierre a posé son sac sur la chaise.",
-      "sentenceTrans": "Pierre put his bag on the chair.",
+      "fullSentence": "Pierre pose son sac sur la chaise.",
+      "sentenceTrans": "Pierre puts his bag on the chair.",
       "whyWrong": {
         "sa": "sac is masculine — son sac, not sa.",
         "ma": "ma is feminine — sac is masculine (and it means 'my', not 'his').",
@@ -61,7 +61,7 @@
     },
     {
       "id": "u2-sio022-04",
-      "sentenceBefore": "J'ai perdu ",
+      "sentenceBefore": "Je cherche ",
       "sentenceAfter": " clés !",
       "answer": "mes",
       "distractors": [
@@ -69,8 +69,8 @@
         "ma",
         "tes"
       ],
-      "fullSentence": "J'ai perdu mes clés !",
-      "sentenceTrans": "I've lost my keys!",
+      "fullSentence": "Je cherche mes clés !",
+      "sentenceTrans": "I'm looking for my keys!",
       "whyWrong": {
         "mon": "mon is singular — clés is plural, so mes.",
         "ma": "ma is singular — clés is plural, so mes.",
@@ -170,7 +170,7 @@
     },
     {
       "id": "u2-sio022-10",
-      "sentenceBefore": "Tu as pris ",
+      "sentenceBefore": "Tu prends ",
       "sentenceAfter": " affaires ?",
       "answer": "tes",
       "distractors": [
@@ -178,8 +178,8 @@
         "ton",
         "ses"
       ],
-      "fullSentence": "Tu as pris tes affaires ?",
-      "sentenceTrans": "Did you take your things?",
+      "fullSentence": "Tu prends tes affaires ?",
+      "sentenceTrans": "Are you taking your things?",
       "whyWrong": {
         "ta": "affaires is plural — tes.",
         "ton": "affaires is plural — tes.",

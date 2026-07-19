@@ -18,15 +18,15 @@
       "distractors": [
         "en",
         "au",
-        "dans"
+        "aux"
       ],
       "fullSentence": "J'habite à Paris.",
       "sentenceTrans": "I live in Paris.",
-      "why": "<strong>à Paris</strong> — cities always take <em>à</em>, regardless of gender. <em>en</em> is for countries and regions; <em>au</em> is for masculine countries; <em>dans</em> is used with <em>dans le centre de Paris</em> (inside a part of), not for the city name itself.",
+      "why": "<strong>à Paris</strong> — cities always take <em>à</em>, regardless of gender. <em>en</em> is for countries and regions; <em>au</em> is for masculine countries; <em>aux</em> is for plural countries (<em>aux États-Unis</em>).",
       "whyWrong": {
         "en": "en is for countries and regions — Paris is a city: à.",
         "au": "au is for masculine countries (au Japon) — cities take à.",
-        "dans": "dans works for parts of a city (dans le centre de Paris), not the city name."
+        "aux": "aux is for plural countries (aux États-Unis) — cities take à."
       }
     },
     {

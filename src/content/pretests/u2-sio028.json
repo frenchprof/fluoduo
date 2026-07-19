@@ -19,7 +19,7 @@
       "sentenceTrans": "I don't play tennis.",
       "whyWrong": {
         "du": "du survives only in positive sentences — after ne … pas it collapses to de.",
-        "le": "le stays only after liking verbs (aimer, adorer, détester) — faire takes de in the negative.",
+        "le": "With faire + activity the negative takes de — le stays when you mean the thing in general after aimer-type verbs (je n'aime pas le tennis).",
         "des": "des also collapses to de after ne … pas."
       }
     },
@@ -55,7 +55,7 @@
       "sentenceTrans": "There is no coffee.",
       "whyWrong": {
         "du": "il y a du café, but after ne … pas the du collapses to de.",
-        "le": "le survives negation only after liking verbs — il y a takes de.",
+        "le": "il y a takes de in the negative — le stays after aimer-type verbs (je n'aime pas le café).",
         "de la": "café is masculine, and in the negative everything collapses to plain de anyway."
       }
     },
@@ -128,7 +128,7 @@
       "whyWrong": {
         "de": "before a vowel de elides — d'eau.",
         "de l'": "the partitive de l' collapses to d' after ne … pas.",
-        "l'": "l' survives negation only after liking verbs — il y a takes d'."
+        "l'": "il y a takes d' in the negative — l' stays after aimer-type verbs (je n'aime pas l'eau gazeuse)."
       }
     },
     {

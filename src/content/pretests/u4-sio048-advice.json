@@ -46,15 +46,15 @@
     {
       "id": "u4-sio048-advice-03",
       "sentenceBefore": "Elle ",
-      "sentenceAfter": " cuisiner.",
+      "sentenceAfter": " cuisiner ce soir.",
       "answer": "peut",
       "distractors": [
         "va",
         "doit",
         "faut"
       ],
-      "fullSentence": "Elle peut cuisiner.",
-      "sentenceTrans": "She can cook.",
+      "fullSentence": "Elle peut cuisiner ce soir.",
+      "sentenceTrans": "She can cook tonight.",
       "transFirst": true,
       "whyWrong": {
         "va": "'elle va cuisiner' means 'she's going to cook', not 'she can'.",

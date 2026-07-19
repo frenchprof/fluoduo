@@ -121,14 +121,14 @@
       "distractors": [
         "mangeons",
         "mange",
-        "mangerez"
+        "manges"
       ],
       "fullSentence": "Est-ce que vous mangez des légumes tous les jours ?",
       "sentenceTrans": "Do you eat vegetables every day?",
       "whyWrong": {
         "mangeons": "That's the nous form — vous mangez.",
         "mange": "That's the je/il form — vous mangez.",
-        "mangerez": "That's the future tense — for the present use mangez."
+        "manges": "That's the tu form — vous mangez."
       }
     },
     {

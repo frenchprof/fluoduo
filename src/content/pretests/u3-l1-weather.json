@@ -177,12 +177,12 @@
         "des"
       ],
       "fullSentence": "Il y a de l'orage prévu ce soir.",
-      "sentenceTrans": "There's a storm forecast tonight.",
+      "sentenceTrans": "There's stormy weather forecast for tonight.",
       "why": "<strong>il y a de l'orage</strong> — <em>orage</em> (thunderstorm) is masculine and starts with a vowel, so <em>de l'</em> is used (elision of <em>de la</em> or <em>de le</em> before a vowel). <em>du</em> would be used if there were no vowel elision needed; here the vowel triggers <em>de l'</em> regardless of gender. <em>des</em> would be plural (<em>des orages</em>).",
       "whyWrong": {
-        "du": "orage starts with a vowel — du elides to de l'.",
+        "du": "orage starts with a vowel — the partitive becomes de l', not du.",
         "de la": "orage is masculine, and before a vowel it elides to de l' anyway.",
-        "des": "des would be plural (des orages) — this is one storm tonight."
+        "des": "des is plural (des orages) — it can't sit before the singular orage."
       }
     },
     {

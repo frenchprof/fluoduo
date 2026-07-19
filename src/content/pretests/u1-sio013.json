@@ -214,7 +214,7 @@
         "les"
       ],
       "fullSentence": "J'étudie le génie.",
-      "sentenceTrans": "I study engineering. (le génie, m.)",
+      "sentenceTrans": "I study engineering. (génie)",
       "whyWrong": {
         "la": "génie is masculine — le génie.",
         "l'": "l' is only before a vowel; génie starts with a consonant.",
@@ -232,7 +232,7 @@
         "les"
       ],
       "fullSentence": "J'étudie l'ingénierie.",
-      "sentenceTrans": "I study engineering. (l'ingénierie, f.)",
+      "sentenceTrans": "I study engineering. (ingénierie)",
       "whyWrong": {
         "le": "ingénierie starts with a vowel — le elides to l'.",
         "la": "ingénierie starts with a vowel — la elides to l'.",

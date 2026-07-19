@@ -84,15 +84,15 @@
       "answer": "c'est à",
       "distractors": [
         "il est",
-        "il est à",
+        "il y a",
         "c'est"
       ],
       "fullSentence": "Le film, c'est à quelle heure ?",
       "sentenceTrans": "The film — (at) what time is it on?",
       "whyWrong": {
         "il est": "For an event's time, French uses c'est — and you need à: c'est à.",
-        "il est à": "The film as a topic takes c'est, not il est — c'est à quelle heure.",
-        "c'est": "You still need à before quelle heure — c'est à quelle heure."
+        "c'est": "You still need à before quelle heure — c'est à quelle heure.",
+        "il y a": "il y a means 'there is' — for an event's time it's c'est à: c'est à quelle heure."
       }
     },
     {

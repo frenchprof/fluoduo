@@ -151,7 +151,7 @@
     },
     {
       "id": "u3-sio036-09",
-      "sentenceBefore": "Elle est arrivée ",
+      "sentenceBefore": "Elle arrive ",
       "sentenceAfter": " au marathon. (5e)",
       "answer": "cinquième",
       "distractors": [
@@ -159,8 +159,8 @@
         "cinquièmes",
         "cinq"
       ],
-      "fullSentence": "Elle est arrivée cinquième au marathon. (5e)",
-      "sentenceTrans": "She finished fifth in the marathon.",
+      "fullSentence": "Elle arrive cinquième au marathon. (5e)",
+      "sentenceTrans": "She finishes fifth in the marathon.",
       "whyWrong": {
         "cinqième": "cinq adds a u before -ième: cinquième.",
         "cinquièmes": "Singular — no s.",

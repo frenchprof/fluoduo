@@ -54,7 +54,7 @@
       "fullSentence": "Elle vient de l'hôpital.",
       "sentenceTrans": "She's coming from the hospital.",
       "whyWrong": {
-        "du": "du (de + le) is for masculine nouns after a consonant — hôpital has a silent h, so de l'.",
+        "du": "du (de + le) is for masculine nouns starting with a consonant — hôpital starts with a vowel sound (silent h), so de l'.",
         "de la": "de la is feminine before a consonant — hôpital takes de l' before its vowel sound.",
         "des": "des (de + les) is plural — hôpital is singular: de l'."
       }

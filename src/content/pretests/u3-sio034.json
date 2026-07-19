@@ -85,14 +85,14 @@
       "distractors": [
         "en face de",
         "en face de la",
-        "face au"
+        "en face au"
       ],
       "fullSentence": "L'hôtel est en face du parc.",
       "sentenceTrans": "The hotel is opposite the park.",
       "whyWrong": {
         "en face de": "before the masculine parc, de + le contracts: en face du.",
         "en face de la": "de la is feminine — parc is masculine: en face du.",
-        "face au": "face au drops the en — the fixed expression is en face de/du."
+        "en face au": "en face takes de — and de + le contracts to du: en face du parc."
       }
     },
     {

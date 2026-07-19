@@ -83,7 +83,7 @@
       "sentenceAfter": ".",
       "answer": "français",
       "distractors": [
-        "le français",
+        "française",
         "du français",
         "la France"
       ],
@@ -91,9 +91,9 @@
       "sentenceTrans": "In France, people speak French.",
       "why": "After <strong>parler</strong>, a language takes <strong>no article</strong>: <em>on parle français, je parle anglais</em>. (The article comes back with other verbs: <em>j'aime le français</em>.)",
       "whyWrong": {
-        "le français": "No article after parler — on parle français. (le français is for aimer/étudier: j'aime le français.)",
         "du français": "No partitive after parler either — just on parle français.",
-        "la France": "La France is the country; the language is français."
+        "la France": "La France is the country; the language is français.",
+        "française": "française is the adjective (une chanson française) — the language is français; after parler: on parle français."
       }
     },
     {

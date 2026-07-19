@@ -126,7 +126,7 @@
       "fullSentence": "Non, ce n'est pas un livre, c'est un cahier.",
       "sentenceTrans": "No, it's not a book, it's a notebook.",
       "whyWrong": {
-        "de": "With ce n'est pas identifying a thing, un stays — de is only after il n'y a pas.",
+        "de": "After pas, un→de works with most verbs (il n'y a pas de…) — but not after être: with ce n'est pas (identifying), un stays.",
         "d'": "d' is de before a vowel, and un is kept here anyway (identity after ce n'est pas).",
         "le": "le is 'the' — you're identifying it as a book, so un."
       }
