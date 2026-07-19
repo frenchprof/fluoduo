@@ -67,10 +67,12 @@ type SortKey = "en" | "fr" | "art" | "ms" | "fs" | "mp" | "fp" | "reviewed" | "n
 const CTRL_LABEL =
   "w-20 shrink-0 text-[0.7rem] font-bold text-[color:var(--cahier-ink-soft)]";
 
+// Short names (Dan, 2026-07-20: "Overview/Cards/All Cards → List/Card/All"
+// — the toolbar must not wrap on phones).
 const VIEW_TABS: CahierTab[] = [
-  { key: "overview", label: "▦ Overview", hue: TAB_HUES[0] },
-  { key: "cards", label: "🂠 Cards", hue: TAB_HUES[1] },
-  { key: "allcards", label: "▤ All Cards", hue: TAB_HUES[3] },
+  { key: "overview", label: "▦ List", hue: TAB_HUES[0] },
+  { key: "cards", label: "🂠 Card", hue: TAB_HUES[1] },
+  { key: "allcards", label: "▤ All", hue: TAB_HUES[3] },
 ];
 
 function articleOf(collection: Collection, item: Item): string {
@@ -307,11 +309,12 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
       onSelect={(k) => setView(k as View)}
       topBar={<TopBar crumb={collection.title} />}
     >
-      <Step n={1} label="Select view">
-      {/* The three views as plain buttons right here (Dan, 2026-07-05: "we
-          don't need the burger menu — there are only three view modes");
-          the side flaps remain on wide screens as the notebook look. */}
-      <div className="mb-4 mt-2 flex flex-wrap gap-2">
+      <Step n={1} label="View & mode">
+      {/* ONE row (Dan, 2026-07-20: "Select view/mode/filter each took multiple
+          lines — the study switch does not have to be on a separate line").
+          Views as short buttons, the 📖/✍️ study–test switch beside them, and
+          the tool buttons emoji-only with full titles on hover/long-press. */}
+      <div className="mb-4 mt-1 flex flex-wrap items-center gap-2">
         {VIEW_TABS.map((t) => (
           <button
             key={t.key}
@@ -324,34 +327,30 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
             {t.label}
           </button>
         ))}
-      </div>
-      </Step>
-      <Step n={2} label="Select mode">
-      {/* Test Yourself — a clearly separate study-mode switch (not a view) */}
-      <div className="mb-4 flex flex-wrap items-center gap-3">
-        <span className="inline-flex items-center gap-2">
+        <span className="inline-flex items-center gap-1.5">
           <button type="button" role="switch" aria-checked={test}
             onClick={() => setTest((t) => !t)} title={test ? "Test (type the name)" : "Study (click to reveal/hide)"}
             data-on={test} className="cahier-modeswitch">
             <span className="cahier-modeswitch-knob">{test ? "✍️" : "📖"}</span>
           </button>
           <span className="cahier-display text-sm font-bold text-[color:var(--cahier-ink)]">
-            {test ? "Test (type the name)" : "Study (click to reveal/hide)"}
+            {test ? "Test" : "Study"}
           </span>
         </span>
         <div className="ml-auto flex flex-wrap items-center gap-2">
-        {/* Shuffle + Edit notes are exposed, not buried in a menu (Dan,
-            2026-07-05). Notes sync in the background — no manual Sync button. */}
-        <button type="button" onClick={() => applyOrder("shuffle")} title="Shuffle the order"
-          className={`cahier-btn cahier-btn-sm ${order === "shuffle" ? "cahier-btn-primary" : ""}`}>🔀 Shuffle</button>
+        {/* Emoji-only tools (Dan, 2026-07-20) — titles carry the words. */}
+        <button type="button" onClick={() => applyOrder("shuffle")} title="Shuffle the order" aria-label="Shuffle the order"
+          className={`cahier-btn cahier-btn-sm ${order === "shuffle" ? "cahier-btn-primary" : ""}`}>🔀</button>
         <button type="button" onClick={() => setEditNotes((e) => !e)}
+          title={editNotes ? "Stop editing notes" : "Edit notes"} aria-label={editNotes ? "Stop editing notes" : "Edit notes"}
           className={`cahier-btn cahier-btn-sm ${editNotes ? "cahier-btn-accent" : ""}`}>
-          {editNotes ? "✓ editing notes" : "✎ Edit notes"}
+          {editNotes ? "✓✎" : "✎"}
         </button>
         {/* Flip-all sits just left of ⚙; only meaningful in All Cards study mode */}
         {view === "allcards" && !test && (
-          <button type="button" onClick={flipEverything} className="cahier-btn cahier-btn-sm">
-            {flipAll ? "Show all English" : "Flip all to French"}
+          <button type="button" onClick={flipEverything} className="cahier-btn cahier-btn-sm"
+            title={flipAll ? "Show all English" : "Flip all to French"} aria-label={flipAll ? "Show all English" : "Flip all to French"}>
+            {flipAll ? "🇬🇧⇆" : "🇫🇷⇆"}
           </button>
         )}
         {/* ⚙ grouping popover — only for decks that actually have a group axis
@@ -387,7 +386,7 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
       </div>
 
       </Step>
-      <Step n={3} label="Filter (optional)">
+      <Step n={2} label="Filter (optional)">
       {/* Rows — one compact selector for the single-select filters; subsets kept inline */}
       <div className="mb-5 flex flex-wrap items-center gap-2">
         <span className="text-[0.7rem] font-bold text-[color:var(--cahier-ink-soft)]">{view === "overview" ? "rows" : "cards"}</span>
@@ -454,7 +453,7 @@ function FlipIt({ collection, items }: { collection: Collection; items: Item[] }
       })()}
 
       </Step>
-      <Step n={4} label="Study / Self-test">
+      <Step n={3} label="Study / Self-test">
       {rows.length === 0 ? (
         <p className="rounded-xl border-2 border-dashed border-[color:var(--cahier-rule)] p-6 text-center text-[color:var(--cahier-ink-soft)]">
           No rows shown.{" "}
