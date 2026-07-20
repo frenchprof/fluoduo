@@ -134,12 +134,74 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
     };
   }, [detail]);
 
+  // ── Exercise identity (2026-07-20, Dan: "merge some info — I cannot see
+  // the results of the individual exercises anymore") ─────────────────────
+  // activityId is the recording page's pathname, so the 2026-07-20 URL
+  // renames split ONE exercise's history into two labels. Normalize legacy
+  // paths to today's names before any grouping, so old and new evidence
+  // merge into a single row.
+  const normActivity = (id: string | null | undefined): string => {
+    if (!id) return "(unlabelled)";
+    return id
+      .replace(/^\/games\/letris(?=\/|$)/, "/games/vocabularain")
+      .replace(/^\/games\/conveyor(?=\/|$)/, "/games/lexicalater")
+      .replace(/^\/practice\/devine(?=\/|$)/, "/practice/speculearn")
+      .replace(/^\/practice\/oral(?=\/|$)/, "/practice/wordrill")
+      .replace(/^letris:/, "vocabularain:")
+      .replace(/^devine:/, "speculearn:");
+  };
+  // "/practice/speculearn/aliments" → "SpecuLearn · aliments" — the teacher
+  // reads exercises, not URLs.
+  const ACTIVITY_NAMES: [RegExp, string][] = [
+    [/^\/practice\/speculearn\/?/, "SpecuLearn"],
+    [/^\/practice\/flip-it\/?/, "Flip It"],
+    [/^\/practice\/say-it\/?|^\/practice\/wordrill\/?/, "WorDrill"],
+    [/^\/practice\/complete-it\/?/, "Complete It"],
+    [/^\/practice\/grammarathon\/?/, "GramMarathon"],
+    [/^\/practice\/dice\/?/, "Dice"],
+    [/^\/games\/vocabularain\/?|^vocabularain:/, "VocabulaRain"],
+    [/^\/games\/lexicalater\/?/, "LexicaLater"],
+    [/^\/games\/compose\/?/, "Composer"],
+    [/^\/conjugaison\/?/, "ConjugaZone"],
+    [/^\/reviser\/?/, "DéjàRevu"],
+    [/^mcq:/, "Deck MCQ"],
+    [/^\/lessons\/?/, "Lesson"],
+  ];
+  const labelActivity = (norm: string): string => {
+    for (const [re, name] of ACTIVITY_NAMES) {
+      if (re.test(norm)) {
+        const rest = norm.replace(re, "").replace(/^[/:]+/, "").split("/")[0];
+        return rest ? `${name} · ${rest}` : name;
+      }
+    }
+    return norm;
+  };
+
+  // ── Results by exercise: EVERY response, grouped (not just the last 15) ──
+  const byExercise = useMemo(() => {
+    if (!detail) return null;
+    type G = { label: string; n: number; ok: number; missed: number; retried: number; last: number };
+    const m = new Map<string, G>();
+    for (const r of detail.responses) {
+      const key = normActivity(r.activityId);
+      let g = m.get(key);
+      if (!g) m.set(key, (g = { label: labelActivity(key), n: 0, ok: 0, missed: 0, retried: 0, last: 0 }));
+      g.n += 1;
+      if (r.status === "met" || r.status === "mastered") g.ok += 1;
+      else if (r.status === "retried") g.retried += 1;
+      else g.missed += 1;
+      const t = r.ts?.getTime() ?? 0;
+      if (t > g.last) g.last = t;
+    }
+    return [...m.values()].sort((a, b) => b.last - a.last);
+  }, [detail]);
+
   const sessStats = useMemo(() => {
     if (!detail) return null;
     const byActivity = new Map<string, { n: number; ms: number }>();
     let totalMs = 0;
     for (const s of detail.sessions) {
-      const key = s.activityId ?? "(unlabelled)";
+      const key = normActivity(s.activityId);
       let a = byActivity.get(key);
       if (!a) byActivity.set(key, (a = { n: 0, ms: 0 }));
       a.n += 1;
@@ -299,6 +361,19 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
                   </TableBox>
                 </>
               )}
+              <SectionTitle>Results by exercise</SectionTitle>
+              <TableBox head={["Exercise", "Answers", "✓ ok", "✗ missed", "retried", "Last done"]}>
+                {(byExercise ?? []).map((g, i) => (
+                  <tr key={i} className="border-t border-slate-100">
+                    <td className="px-3 py-2 font-bold text-slate-900">{g.label}</td>
+                    <td className="px-3 py-2 text-right text-slate-700">{g.n}</td>
+                    <td className="px-3 py-2 text-right font-bold text-emerald-700">{g.ok}</td>
+                    <td className="px-3 py-2 text-right font-bold text-rose-600">{g.missed}</td>
+                    <td className="px-3 py-2 text-right text-amber-600">{g.retried}</td>
+                    <td className="px-3 py-2 text-slate-700 whitespace-nowrap">{g.last ? fmtWhen(new Date(g.last)) : "—"}</td>
+                  </tr>
+                ))}
+              </TableBox>
               <SectionTitle>Recent answers</SectionTitle>
               <TableBox head={["When", "Item", "Status", "Given answer", "Activity", "Time"]}>
                 {detail.responses.slice(0, 15).map((r, i) => (
@@ -309,7 +384,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
                       {r.status}
                     </td>
                     <td className="px-3 py-2 text-slate-700" lang="fr">{r.givenAnswer ?? "—"}</td>
-                    <td className="px-3 py-2 text-slate-700">{r.activityId ?? "—"}</td>
+                    <td className="px-3 py-2 text-slate-700">{r.activityId ? labelActivity(normActivity(r.activityId)) : "—"}</td>
                     <td className="px-3 py-2 text-right text-slate-700">
                       {r.latencyMs !== null ? `${(r.latencyMs / 1000).toFixed(1)} s` : "—"}
                     </td>
