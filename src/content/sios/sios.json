@@ -675,6 +675,21 @@
     "collectionId": "au-marche"
   },
   {
+    "id": "SIO-045A",
+    "num": 45.5,
+    "unit": 4,
+    "unitLabel": "Unité 4",
+    "topic": "Numbers 70–99",
+    "description": "Understand and produce the numbers 70–99 — the soixante-dix and quatre-vingt system needed to handle real market prices: Ça fait quatre-vingt-cinq euros.",
+    "setId": "4.05A",
+    "cefrMode": "Spoken Interaction",
+    "skill": "interaction",
+    "isProduction": false,
+    "canDo": "I can say and understand the numbers from 70 to 99, including in prices.",
+    "competence": "Count 70–99 following the soixante-dix / quatre-vingts patterns, and use them in market prices (Ça fait … euros).",
+    "collectionId": "numbers-70-99"
+  },
+  {
     "id": "SIO-046",
     "num": 46,
     "unit": 4,

@@ -23,7 +23,7 @@ import CahierShell from "@/components/CahierShell";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 import { useAuthUser, signInWithGoogle } from "@/lib/firebase/auth";
 import {
-  ADMIN_EMAILS, type BoardRow, type Ev,
+  ADMIN_EMAILS, REVIEWER_EMAILS, type BoardRow, type Ev,
   buildRoster, fetchAllEvents, fetchLeaderboard,
 } from "./data";
 import Overview from "./Overview";
@@ -46,6 +46,9 @@ type PanelKey = (typeof PANELS)[number]["key"];
 export default function TeacherPage() {
   const user = useAuthUser(); // undefined = resolving, null = signed out
   const isAdmin = !!user?.email && ADMIN_EMAILS.includes(user.email);
+  // Reviewers get the full read view, none of the write actions.
+  const isReviewer = !!user?.email && REVIEWER_EMAILS.includes(user.email);
+  const canView = isAdmin || isReviewer;
 
   return (
     // Site row only, like ConjugaZone/Tuteur — a custom context flap group
@@ -54,8 +57,8 @@ export default function TeacherPage() {
       <div className="mx-auto max-w-5xl px-4 py-8">
         {user === undefined ? (
           <p className="text-sm text-slate-500">Loading…</p>
-        ) : isAdmin ? (
-          <Dashboard />
+        ) : canView ? (
+          <Dashboard canWrite={isAdmin} />
         ) : (
           <TeachersOnly />
         )}
@@ -89,7 +92,7 @@ function TeachersOnly() {
   );
 }
 
-function Dashboard() {
+function Dashboard({ canWrite }: { canWrite: boolean }) {
   const [panel, setPanel] = useState<PanelKey>("overview");
   const [events, setEvents] = useState<Ev[] | null>(null);
   const [board, setBoard] = useState<Map<string, BoardRow> | null>(null);
@@ -182,7 +185,7 @@ function Dashboard() {
         {panel === "students" && <Students events={shown ?? []} roster={roster} />}
         {panel === "activities" && <Activities events={shown ?? []} roster={roster} includeTeachers={includeTeachers} />}
         {panel === "pretests" && <Pretests events={shown ?? []} />}
-        {panel === "feedback" && <FeedbackPanel nameOf={nameOf} />}
+        {panel === "feedback" && <FeedbackPanel nameOf={nameOf} canWrite={canWrite} />}
       </div>
     </div>
   );

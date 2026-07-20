@@ -113,7 +113,7 @@ export default function RoadMap({ progress, activeId, accent }: { progress: Prog
                 <div key={`u${st.unit}`} style={cell} className={`relative flex items-center justify-center ${hue} ${fogged ? "fluo-fog" : ""}`}>
                   <Link
                     href={`/unit/${st.unit}`}
-                    title={`${meta?.label} — ${CHAPTERS[st.unit]?.scenario ?? ""} · ${done}/10`}
+                    title={`${meta?.label} — ${CHAPTERS[st.unit]?.scenario ?? ""} · ${done}/${SIOS.filter((x) => x.unit === st.unit).length}`}
                     className="relative z-[1] flex h-9 w-11 items-center justify-center rounded-lg text-sm font-black text-white transition hover:-translate-y-0.5"
                     style={{ background: "var(--fluo-card-accent)" }}
                   >

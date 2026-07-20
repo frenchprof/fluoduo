@@ -24,6 +24,7 @@ import stressPronouns from "./stress-pronouns.json";
 import professions from "./professions.json";
 import matieres from "./matieres.json";
 import numbers2069 from "./numbers-20-69.json";
+import numbers7099 from "./numbers-70-99.json";
 import avoirEtats from "./avoir-etats.json";
 import objetsArticles from "./objets-articles.json";
 import possessives from "./possessives.json";
@@ -76,6 +77,7 @@ export const CURATED: Collection[] = [
   professions as Collection,
   matieres as Collection,
   numbers2069 as Collection,
+  numbers7099 as Collection,
   avoirEtats as Collection,
   objetsArticles as Collection,
   possessives as Collection,

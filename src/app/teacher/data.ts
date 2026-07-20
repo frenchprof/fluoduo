@@ -13,6 +13,13 @@
 import { canonicalEmail, EXCLUDED_BOARD_UIDS, HIDDEN_ROSTER_NAMES, HIDDEN_ROSTER_UID_PREFIXES } from "@/lib/accountAliases";
 
 // Mirror of firestore.rules isAdmin() — keep the two lists in sync.
+// Read-only tier (Dan, 2026-07-20): peer reviewers see the whole teacher
+// page but get no write actions (no feedback triage). Same UX-gate caveat
+// as ADMIN_EMAILS — this is presentation, not security.
+export const REVIEWER_EMAILS = [
+  "wanghaoshu2016@gmail.com",
+];
+
 export const ADMIN_EMAILS = [
   "drneilchan@gmail.com",
   "monsieur.chan@gmail.com",
