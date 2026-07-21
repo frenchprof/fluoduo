@@ -44,16 +44,23 @@ function gearEntry<E extends { fr: string; syllables: string[] }>(level: number,
   return e;
 }
 function chunkSpelling(fr: string): string[] {
-  const key = fr.replace(/\s+/g, ""); // the same assembly key syllables use
+  // Per-WORD chunking (Dan, 2026-07-21: « à côté » must never yield « àc » —
+  // a fragment never straddles a space). Deterministic per word (seeded by
+  // the word itself) so the same word always cuts the same way, deal after
+  // deal — no more « ran » here and « range » there for one spelling.
   const out: string[] = [];
-  let i = 0;
-  while (i < key.length) {
-    let size = 2 + Math.floor(Math.random() * 3); // 2..4
-    const left = key.length - i;
-    if (left - size === 1) size += size < 4 ? 1 : -1; // never strand 1 letter
-    size = Math.min(size, left);
-    out.push(key.slice(i, i + size));
-    i += size;
+  for (const word of fr.trim().split(/\s+/)) {
+    let h = [...word].reduce((a, c) => (Math.imul(a, 31) + c.charCodeAt(0)) | 0, 7);
+    const rnd = () => ((h = (Math.imul(h, 1103515245) + 12345) | 0), ((h >>> 16) & 0x7fff) / 0x8000);
+    let i = 0;
+    while (i < word.length) {
+      let size = 2 + Math.floor(rnd() * 3); // 2..4
+      const left = word.length - i;
+      if (left - size === 1) size += size < 4 ? 1 : -1; // never strand 1 letter
+      size = Math.min(size, left);
+      out.push(word.slice(i, i + size));
+      i += size;
+    }
   }
   return out;
 }
