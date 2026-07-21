@@ -21,7 +21,8 @@ import { isSioDone, type Progress } from "@/lib/progress";
 
 type Stop =
   | { kind: "unit"; unit: number }
-  | { kind: "sio"; unit: number; id: string; num: number; topic: string };
+  | { kind: "sio"; unit: number; id: string; num: number; topic: string }
+  | { kind: "finale"; unit: number };
 
 // 74, not 56 (audit 2026-07-19): the extra rows carry each stop's visible
 // label — on touch there is no hover, so title-only names left phone users
@@ -37,6 +38,10 @@ const STOPS: Stop[] = (() => {
       out.push({ kind: "sio", unit: u, id: s.id, num: s.num, topic: s.topic });
     }
   }
+  // 🏁 The FINAL is a stop on the map itself (Dan, 2026-07-21: "a node as
+  // part of the level map") — the journey's terminal station, after the
+  // last SIO.
+  out.push({ kind: "finale", unit: 4 });
   return out;
 })();
 
@@ -121,6 +126,24 @@ export default function RoadMap({ progress, activeId, accent }: { progress: Prog
                   </Link>
                   <span aria-hidden className="pointer-events-none absolute left-0 right-0 top-[calc(50%+20px)] truncate px-0.5 text-center text-[9px] font-bold leading-none text-[color:var(--fluo-ink)]/70">
                     {meta?.label}
+                  </span>
+                </div>
+              );
+            }
+            if (st.kind === "finale") {
+              return (
+                <div key="finale" style={cell} className={`relative flex items-center justify-center ${hue}`}>
+                  <Link
+                    href="/practice/grammarathon/finale"
+                    title="GramMarathon Final — 100 questions, toutes les leçons, pondérées sur vos points faibles"
+                    aria-label="GramMarathon Final"
+                    className="relative z-[1] flex h-11 w-11 items-center justify-center rounded-xl border-2 border-slate-900 text-lg font-black shadow-[0_3px_8px_rgba(0,0,0,0.35)] transition hover:-translate-y-0.5"
+                    style={{ background: "repeating-conic-gradient(#1f2440 0% 25%, #ffffff 0% 50%) 0 0/12px 12px", color: "#1f2440" }}
+                  >
+                    <span className="grid h-7 w-7 place-items-center rounded-lg bg-yellow-300 text-base">🏁</span>
+                  </Link>
+                  <span aria-hidden className="pointer-events-none absolute left-0 right-0 top-[calc(50%+22px)] truncate px-0.5 text-center text-[9px] font-black leading-none text-[color:var(--fluo-ink)]">
+                    FINAL
                   </span>
                 </div>
               );
