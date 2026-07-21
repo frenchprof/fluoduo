@@ -172,7 +172,7 @@ export const FINALE_BANK: FinaleItem[] = [
   { id: "finale:SIO-024:3", sio: "SIO-024", unit: 2, pre: "Elle fait ", post: " la danse.", a: ["de"], cat: "a small word (contraction)" },
   { id: "finale:SIO-024:4", sio: "SIO-024", unit: 2, pre: "Nous faisons ", post: " vélo.", a: ["du"], cat: "a contracted article" },
   { id: "finale:SIO-025:3", sio: "SIO-025", unit: 2, pre: "— Pourquoi tu manges ? — Parce que j'ai ", post: " !", a: ["faim"], cat: "a state (with avoir)" },
-  { id: "finale:SIO-025:4", sio: "SIO-025", unit: 2, pre: "— Pourquoi tu aimes ce café ? — Parce que c'est ", post: " !", a: ["bon", "délicieux", "delicieux"], cat: "an adjective" },
+  { id: "finale:SIO-025:4", sio: "SIO-025", unit: 2, pre: "— Pourquoi tu aimes ce café ? — Parce que c'est ", post: " et il y a une belle terrasse !", a: ["sympa", "agréable", "agreable", "calme", "joli", "tranquille", "super", "génial", "genial", "bien", "beau"], cat: "an adjective" },
   { id: "finale:SIO-026:3", sio: "SIO-026", unit: 2, pre: "On va à ", post: " piscine ?", a: ["la"], cat: "an article" },
   { id: "finale:SIO-026:4", sio: "SIO-026", unit: 2, pre: "Ils vont ", post: " toilettes.", a: ["aux"], cat: "a contracted article" },
   { id: "finale:SIO-027:3", sio: "SIO-027", unit: 2, pre: "Je nage ", post: " week-end — tous les samedis et dimanches !", a: ["le"], cat: "an article (time use)" },
