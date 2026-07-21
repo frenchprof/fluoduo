@@ -214,6 +214,10 @@ export default function Lexicalator({
   // your mind). Releasing a MOVED drag outside the board now puts it back.
   const rootRef = useRef<HTMLDivElement | null>(null);
   const [ghost, setGhost] = useState<{ id: string; x: number; y: number } | null>(null);
+  // Which decoys cost lives — shown on the game-over screen (Dan,
+  // 2026-07-21: \"when the game dies, there should be feedback about what
+  // went wrong\").
+  const missTokens = useRef<string[]>([]);
   useEffect(() => {
     const move = (e: PointerEvent) => {
       const d = dragRef.current;
@@ -295,6 +299,12 @@ export default function Lexicalator({
 
   // Belt tokens: every syllable the visible chests need, plus decoys — shuffled,
   // duplicated for a seamless scroll. Recomputed only when the chest set changes.
+  // Keyboard shortcuts (Dan, 2026-07-21): number keys 1-9,0 press the
+  // belt keys in order; letter keys A,B,C… select/pull the chests. The
+  // relevant key ACTIVATES the same code path as a tap — nothing new to
+  // learn, one more way to play. Badges on tiles and chests show the
+  // mapping. (Declared before beltPool so the effect below can close
+  // over it; defined right after it.)
   const beltPool = useMemo(() => {
     const real = new Set<string>();
     const monos: string[] = []; // whole-word keys of monosyllabic answers in play
@@ -306,18 +316,48 @@ export default function Lexicalator({
     // ("pai" for "pain") invites "but that's part of the answer!" disputes — so
     // never surface a partial-of-a-monosyllable as an option (Dan, 2026-07-03).
     const isPartialOfMono = (d: string) => monos.some((m) => m !== d && m.includes(d));
+    // NEVER release a fake that is genuinely part of a lane word (Dan,
+    // 2026-07-21: either don't let the wrong-sized fragment out at all, or
+    // never penalise it — we do BOTH; tapKey spares the life as backstop).
+    const laneWords = chests.map((c) => c.entry.fr.toLowerCase());
+    const isPartOfLaneWord = (d: string) => laneWords.some((w) => w.includes(d.toLowerCase()));
     // Fake keys match the level's joints: level 1 (whole words) baits with
     // OTHER words of the deck; spelling mode with mutated real chunks (one
     // vowel off); the syllable levels with the deck's hand-authored decoys.
     const usable =
       level <= 1
-        ? shuffle(entries.map((e) => e.fr.trim()).filter((w) => !real.has(w) && !isPartialOfMono(w))).slice(0, 4)
+        ? shuffle(entries.map((e) => e.fr.trim()).filter((w) => !real.has(w) && !isPartialOfMono(w) && !isPartOfLaneWord(w))).slice(0, 4)
         : level >= SPELL_LEVEL
-          ? [...new Set([...real].map(mutateChunk).filter((m): m is string => !!m && !real.has(m)))].slice(0, 6)
-          : decoys.filter((d) => !real.has(d) && !isPartialOfMono(d));
+          ? [...new Set([...real].map(mutateChunk).filter((m): m is string => !!m && !real.has(m) && !isPartOfLaneWord(m)))].slice(0, 6)
+          : decoys.filter((d) => !real.has(d) && !isPartialOfMono(d) && !isPartOfLaneWord(d));
     return shuffle([...real, ...usable]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chests.map((c) => c.entry.id).join(","), level]);
+
+  // The keyboard layer itself — attached to the window so no focus is
+  // needed; ignores typing surfaces and modifier chords.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (over || levelDone || e.metaKey || e.ctrlKey || e.altKey) return;
+      const tag = (e.target as HTMLElement | null)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || (e.target as HTMLElement | null)?.isContentEditable) return;
+      if (/^[1-9]$/.test(e.key) || e.key === "0") {
+        const idx = e.key === "0" ? 9 : Number(e.key) - 1;
+        const token = beltPool[idx];
+        if (token) { e.preventDefault(); tapKey(token); }
+        return;
+      }
+      if (/^[a-z]$/i.test(e.key)) {
+        const idx = e.key.toLowerCase().charCodeAt(0) - 97;
+        // Letters follow the VISIBLE waiting chests (same order as the badges).
+        const visible = chests.filter((c) => c.entry.id !== selected);
+        const chest = visible[idx];
+        if (chest) { e.preventDefault(); pickChest(chest.entry.id); }
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
 
   function tapKey(token: string) {
     if (over || levelDone) return;
@@ -430,10 +470,12 @@ export default function Lexicalator({
       } else {
         setChests((cs) => cs.map((c) => (c.entry.id === entry.id ? { ...c, filled: nextFilled } : c)));
       }
-    } else if (cur.entry.fr.toLowerCase().includes(token.toLowerCase())) {
-      // The key IS part of the word being forged ("ge" while forging "beige",
-      // stored as one syllable) — it just isn't cut at this word's joints.
-      // Rattle as feedback, but no life, no combo break (Dan, 2026-07-05).
+    } else if (chests.some((c) => c.entry.fr.toLowerCase().includes(token.toLowerCase()))) {
+      // The key IS part of a word on the lane ("ge" while forging "beige" —
+      // or "pain" while "copain" waits) — it just isn't cut at this level's
+      // joints. Rattle as feedback, but no life, no combo break (Dan,
+      // 2026-07-05, widened 2026-07-21: the user must NEVER be penalised
+      // for selecting a genuine part of a real word on screen).
       setRattle(token);
       window.setTimeout(() => setRattle(null), 300);
     } else if (chests.some((c) => c.entry.syllables.includes(token))) {
@@ -445,7 +487,8 @@ export default function Lexicalator({
       window.setTimeout(() => setRattle(null), 300);
       setCombo(0);
     } else {
-      // decoy — rattle, lose a life
+      // decoy — rattle, lose a life (and remember it for the post-mortem)
+      missTokens.current = [...missTokens.current.slice(-4), token];
       sfx.wrong();
       setRattle(token);
       window.setTimeout(() => setRattle(null), 300);
@@ -553,7 +596,7 @@ export default function Lexicalator({
           moved down into the main area / bay), so it's never in two places. */}
       <div className="rounded-2xl border-4 border-white p-3" style={{ background: "linear-gradient(180deg,#ffe08a,#ffcf5c)" }}>
         <div className="flex min-h-[3.5rem] flex-wrap justify-center gap-3">
-          {chests.filter((c) => c.entry.id !== selected).map((c) => (
+          {chests.filter((c) => c.entry.id !== selected).map((c, laneIdx) => (
             // A locked treasure chest waiting in the holding area: gold body,
             // a darker lid band with a clasp, and the syllable-count lock below.
             // onClick is KEYBOARD-ONLY (detail === 0). Touch/mouse taps are fully
@@ -565,11 +608,12 @@ export default function Lexicalator({
             <button key={c.entry.id} type="button"
               onClick={(e) => { if (e.detail === 0) pickChest(c.entry.id); }}
               onPointerDown={(e) => startDrag(e, c.entry.id)}
-              className="w-36 cursor-grab touch-none overflow-hidden rounded-lg border-2 border-b-4 text-center transition active:cursor-grabbing"
+              className="relative w-36 cursor-grab touch-none overflow-hidden rounded-lg border-2 border-b-4 text-center transition active:cursor-grabbing"
               style={{ borderColor: liveryOf(c.entry.fr, c.tint, level).edge, background: liveryOf(c.entry.fr, c.tint, level).body, boxShadow: "inset 0 -2px 0 rgba(0,0,0,.15)", opacity: ghost?.id === c.entry.id ? 0.4 : 1 }}>
               <span className="flex items-center justify-center" style={{ height: 10, background: liveryOf(c.entry.fr, c.tint, level).lid }}>
                 <span style={{ width: 12, height: 4, borderRadius: 1, background: "#ffe9a8" }} />
               </span>
+              {laneIdx < 26 && <span aria-hidden className="absolute left-1 top-1 grid h-4 w-4 place-items-center rounded bg-white/85 text-[10px] font-black" style={{ color: liveryOf(c.entry.fr, c.tint, level).edge }}>{String.fromCharCode(65 + laneIdx)}</span>}
               <span className="block px-2 pt-1 text-sm font-black" style={{ color: liveryOf(c.entry.fr, c.tint, level).edge }}>{c.entry.en}</span>
               <span className="mb-1.5 mt-1 flex justify-center gap-1">
                 {(hard ? [c.entry.syllables.length] : c.entry.syllables).map((s, i) => {
@@ -653,8 +697,9 @@ export default function Lexicalator({
           <div className="flex flex-wrap items-center justify-center gap-3 px-4">
             {beltPool.map((t, i) => (
               <button key={i} type="button" onClick={() => tapKey(t)} lang="fr"
-                className="grid h-12 shrink-0 place-items-center whitespace-nowrap rounded-xl border-2 border-b-4 bg-white px-2 text-lg font-black"
+                className="relative grid h-12 shrink-0 place-items-center whitespace-nowrap rounded-xl border-2 border-b-4 bg-white px-2 text-lg font-black"
                 style={{ minWidth: keyW(t), color: "#0c4a6e", borderColor: "#4a94c4", animation: rattle === t ? "lxrattle 300ms" : undefined }}>
+                {i < 10 && <span aria-hidden className="absolute -left-1 -top-1 grid h-4 w-4 place-items-center rounded-full text-[10px] font-black text-white" style={{ background: "#4a94c4" }}>{(i + 1) % 10}</span>}
                 {t}
               </button>
             ))}
@@ -663,8 +708,9 @@ export default function Lexicalator({
           <div className="lx-belt flex w-max gap-3 px-4" style={{ "--lx-belt-secs": `${beltSecs}s` } as React.CSSProperties}>
             {[...beltPool, ...beltPool].map((t, i) => (
               <button key={i} type="button" onClick={() => tapKey(t)} lang="fr"
-                className="grid h-12 shrink-0 place-items-center whitespace-nowrap rounded-xl border-2 border-b-4 bg-white px-2 text-lg font-black"
+                className="relative grid h-12 shrink-0 place-items-center whitespace-nowrap rounded-xl border-2 border-b-4 bg-white px-2 text-lg font-black"
                 style={{ minWidth: keyW(t), color: "#0c4a6e", borderColor: "#4a94c4", animation: rattle === t ? "lxrattle 300ms" : undefined }}>
+                {i % beltPool.length < 10 && <span aria-hidden className="absolute -left-1 -top-1 grid h-4 w-4 place-items-center rounded-full text-[10px] font-black text-white" style={{ background: "#4a94c4" }}>{((i % beltPool.length) + 1) % 10}</span>}
                 {t}
               </button>
             ))}
@@ -676,23 +722,34 @@ export default function Lexicalator({
           chests stay up in the waiting/main areas — Dan, 2026-07-03). */}
       <div className="mt-3 flex min-h-[2.5rem] flex-wrap items-center gap-2">
         <span className="mr-1 text-[0.7rem] font-black uppercase tracking-wider" style={{ color: "#e08600" }}>🧰 Votre trésor :</span>
-        {done.map((d, i) => (
-          <span
-            key={i}
-            lang="fr"
-            className="inline-flex items-center gap-1 rounded-full border-2 px-2.5 py-1 text-sm font-black"
-            style={{
-              borderColor: "#e0a500",
-              background: "#fff8e1",
-              color: "#9a6600",
-              boxShadow: "0 1px 4px rgba(224,165,0,.4)",
-              animation: "lxland 520ms cubic-bezier(.2,.7,.3,1.25) both",
-            }}
-          >
-            <span aria-hidden>✨</span>
-            {d.fr}
-          </span>
-        ))}
+        {/* Repeats ABSORB into the earlier copy with a ×n count instead of
+            stacking (Dan, 2026-07-21) — key by word so the chip persists and
+            only its counter updates. */}
+        {(() => {
+          const grouped: { fr: string; n: number }[] = [];
+          for (const d of done) {
+            const g = grouped.find((x) => x.fr === d.fr);
+            if (g) g.n += 1; else grouped.push({ fr: d.fr, n: 1 });
+          }
+          return grouped.map((g) => (
+            <span
+              key={g.fr}
+              lang="fr"
+              className="inline-flex items-center gap-1 rounded-full border-2 px-2.5 py-1 text-sm font-black"
+              style={{
+                borderColor: "#e0a500",
+                background: "#fff8e1",
+                color: "#9a6600",
+                boxShadow: "0 1px 4px rgba(224,165,0,.4)",
+                animation: "lxland 520ms cubic-bezier(.2,.7,.3,1.25) both",
+              }}
+            >
+              <span aria-hidden>✨</span>
+              {g.fr}
+              {g.n > 1 && <span className="ml-0.5 rounded-full bg-[#e0a500] px-1.5 text-[11px] font-black text-white">×{g.n}</span>}
+            </span>
+          ));
+        })()}
       </div>
 
       {/* Level-done / out-of-lives: a POPUP in the middle of the screen, not a
@@ -710,8 +767,17 @@ export default function Lexicalator({
               </>
             ) : (
               <>
-                <p className="text-lg font-black">Out of lives</p>
-                <p className="text-sm" style={{ color: "#075985" }}>Reached level {level} · score {score}</p>
+                <p className="text-lg font-black">Plus de vies !</p>
+                <p className="text-sm" style={{ color: "#075985" }}>Niveau {level} · score {score}</p>
+                {/* The post-mortem (Dan, 2026-07-21): SAY what went wrong.
+                    Lives are only ever lost to decoys, so the answer is
+                    always: these fragments belonged to no word. */}
+                {missTokens.current.length > 0 && (
+                  <p lang="fr" className="mt-2 text-sm" style={{ color: "#9a3412" }}>
+                    Vos vies sont parties sur des <b>leurres</b> — des fragments qui n'appartiennent à aucun mot :{" "}
+                    {[...new Set(missTokens.current)].map((t) => `« ${t} »`).join(", ")}. Astuce : chaque touche utile appartient à un coffre visible !
+                  </p>
+                )}
                 <button type="button" onClick={reset}
                   className="mt-3 rounded-2xl border-b-4 border-[#1899d6] bg-[#1cb0f6] px-4 py-2 font-black text-white">Play again</button>
               </>

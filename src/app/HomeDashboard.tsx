@@ -277,7 +277,7 @@ const BYLINE_STROKES = [
           journey ends. */}
       <a href="/practice/grammarathon/finale"
         className="mt-3 flex items-center justify-between rounded-2xl border-[3px] border-slate-900 bg-yellow-100 px-4 py-3 font-bold text-slate-900 shadow-[3px_3px_0_#1f2440] hover:translate-y-[1px] hover:shadow-[2px_2px_0_#1f2440]">
-        <span lang="fr">🏁 GramMarathon Finale — 100 questions, toutes les leçons, pondérées sur vos points faibles</span>
+        <span lang="fr">🏁 GramMarathon Final — 100 questions, toutes les leçons, pondérées sur vos points faibles</span>
         <span aria-hidden>→</span>
       </a>
     </>
