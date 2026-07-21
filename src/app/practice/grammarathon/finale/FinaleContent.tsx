@@ -1,23 +1,24 @@
 "use client";
 /**
  * 🏁 GramMarathon FINALE — the all-topic revision paper (students' request,
- * 2026-07-20; design locked with Dan that night):
+ * 2026-07-20; design locked with Dan that night; presentation reworked
+ * 2026-07-21 on Dan's ruling: ONE question at a time, the blank flowing
+ * inline within the sentence).
  *
- *  · OPEN REVISION, not assessment: a fresh 100-question paper every day.
+ *  · OPEN REVISION: a fresh 100-question paper every day.
  *  · WEAKNESS-WEIGHTED per student: every SIO contributes at least one
- *    question (the 360° floor); the remaining slots are drawn with extra
- *    weight on SIOs where this learner's own SRS shows due or fragile
- *    (short-interval) items — different student, different hundred, no
- *    server involved.
- *  · The day's draw is cached (localStorage) so the paper stays stable while
- *    being worked; tomorrow is a new draw.
- *  · Interaction = the pattern Dan validated in the trial paper: type one
- *    word, Enter grades and advances; 💡 shows the English category label
- *    (and logs hint.tap — the autonomy instrument's help-seeking construct);
- *    alternates are shown on BOTH verdicts; accent-strict items (où) grade
- *    with accents preserved.
- *  · Every answer pays through recordItemResult (ids finale:SIO-xxx:n), so
- *    XP, streak, SRS, DéjàRevu and the teacher dashboard all see the work.
+ *    question (the 360° floor); remaining slots draw with extra weight on
+ *    SIOs where this learner's own SRS shows due or fragile items.
+ *  · The day's draw is cached (localStorage) so the paper stays stable;
+ *    tomorrow is a new draw.
+ *  · Interaction: type one word · Enter grades and shows the verdict ·
+ *    Enter again moves on. 💡 shows the English category label (and logs
+ *    hint.tap — the autonomy instrument's help-seeking construct).
+ *    Alternates shown on BOTH verdicts; accent-strict items (où) grade with
+ *    accents preserved.
+ *  · Every answer pays through recordItemResult (ids finale:SIO-xxx:n) —
+ *    first grading only — so XP, streak, SRS, DéjàRevu and the teacher
+ *    dashboard all see the work.
  */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FINALE_BANK, FINALE_SIOS, type FinaleItem } from "@/content/finale";
@@ -28,7 +29,6 @@ import { loadProgress, recordItemResult } from "@/lib/progress";
 
 const DAILY_N = 100;
 
-// Deterministic PRNG so one day's draw is reproducible before it is cached.
 function mulberry32(seed: number) {
   return function () {
     seed |= 0; seed = (seed + 0x6d2b79f5) | 0;
@@ -39,8 +39,6 @@ function mulberry32(seed: number) {
 }
 const hash = (s: string) => [...s].reduce((h, c) => (Math.imul(h, 31) + c.charCodeAt(0)) | 0, 7);
 
-/** Per-SIO weakness from the learner's own SRS: due-now or short-interval
- *  items add weight; SIOs with no tracked items count as half-weak. */
 function sioWeakness(): Record<string, number> {
   const p = loadProgress();
   const now = Date.now();
@@ -64,7 +62,6 @@ function sioWeakness(): Record<string, number> {
   return w;
 }
 
-/** Today's paper: one per SIO as floor, weakness-weighted extras, seeded mix. */
 function drawDaily(dateKey: string): string[] {
   const rnd = mulberry32(hash(dateKey));
   const bySio = new Map<string, FinaleItem[]>();
@@ -97,20 +94,20 @@ function drawDaily(dateKey: string): string[] {
   return ids;
 }
 
-// Accent-PRESERVING normalizer for strict items (où must not equal ou).
 const normA = (s: string) => (s || "").toLowerCase().replace(/[’']/g, "").replace(/-/g, " ").replace(/\s+/g, " ").trim();
-// Display-dedupe normalizer (accent variants collapse into one shown form).
 const normD = (s: string) => (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
   .replace(/[’']/g, "").replace(/-/g, " ").replace(/\s+/g, " ").trim();
 
-type Verdict = { ok: boolean; others: string[]; expected: string[] } | null;
+type Verdict = { ok: boolean; others: string[]; expected: string[] };
 
 export default function FinaleContent() {
   const [ids, setIds] = useState<string[] | null>(null);
+  const [idx, setIdx] = useState(0);
   const [typed, setTyped] = useState<Record<string, string>>({});
   const [verdicts, setVerdicts] = useState<Record<string, Verdict>>({});
   const [hints, setHints] = useState<Record<string, boolean>>({});
   const graded = useRef<Set<string>>(new Set());
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     const dateKey = new Date().toISOString().slice(0, 10);
@@ -118,7 +115,7 @@ export default function FinaleContent() {
     try {
       const cached = localStorage.getItem(cacheKey);
       if (cached) { setIds(JSON.parse(cached)); return; }
-    } catch { /* fall through to a fresh draw */ }
+    } catch { /* fresh draw */ }
     const draw = drawDaily(dateKey);
     try { localStorage.setItem(cacheKey, JSON.stringify(draw)); } catch { /* fine */ }
     setIds(draw);
@@ -130,7 +127,14 @@ export default function FinaleContent() {
     return ids.map((id) => byId.get(id)!).filter(Boolean);
   }, [ids]);
 
-  function grade(q: FinaleItem, advance: boolean) {
+  // Focus the blank whenever the question changes.
+  useEffect(() => { inputRef.current?.focus(); }, [idx, paper]);
+
+  const done = paper ? paper.filter((q) => verdicts[q.id]).length : 0;
+  const okCount = paper ? paper.filter((q) => verdicts[q.id]?.ok).length : 0;
+  const finished = paper !== null && idx >= paper.length;
+
+  function grade(q: FinaleItem) {
     const given = (typed[q.id] ?? "").trim();
     const dd = q.strict ? normA : normD;
     const ok = given !== "" && (q.strict
@@ -139,85 +143,104 @@ export default function FinaleContent() {
     const forms: string[] = [];
     for (const x of q.a) if (!forms.some((f) => dd(f) === dd(x))) forms.push(x);
     setVerdicts((v) => ({ ...v, [q.id]: { ok, others: forms.filter((f) => dd(f) !== dd(given)), expected: forms } }));
-    // First grading of an item pays and feeds the SRS; regrades don't double-pay.
     if (!graded.current.has(q.id)) {
       graded.current.add(q.id);
       recordItemResult(q.id, ok, given);
     }
-    if (advance && paper) {
-      const i = paper.findIndex((x) => x.id === q.id);
-      const next = paper[i + 1];
-      if (next) {
-        const el = document.getElementById(`fin-${next.id}`);
-        el?.focus();
-        el?.scrollIntoView({ block: "center", behavior: "smooth" });
-      } else {
-        (document.activeElement as HTMLElement | null)?.blur();
-      }
-    }
+  }
+
+  function onEnter(q: FinaleItem) {
+    if (!verdicts[q.id]) grade(q);
+    else setIdx((i) => i + 1); // second Enter: onward
   }
 
   function hint(q: FinaleItem) {
     setHints((h) => ({ ...h, [q.id]: true }));
-    // Autonomy instrument (help-seeking calibration): the graduated 💡.
     void import("@/lib/firebase/usage")
       .then((m) => m.logEvent("hint.tap", { surface: "finale", itemId: q.id, sio: q.sio }))
       .catch(() => {});
   }
 
-  const done = paper ? paper.filter((q) => verdicts[q.id]).length : 0;
-  const okCount = paper ? paper.filter((q) => verdicts[q.id]?.ok).length : 0;
-
   if (!paper) {
-    return <p className="px-4 py-6 text-sm text-slate-500">Préparation de votre marathon du jour…</p>;
+    return <p className="px-1 py-6 text-sm text-slate-500">Préparation de votre marathon du jour…</p>;
   }
 
-  return (
-    <div className="pb-24">
-      <p className="text-sm text-slate-600">
-        <b>Votre marathon du jour</b> — {paper.length} questions, toutes les leçons, pondérées sur <i>vos</i> points
-        faibles. Une question, un mot · Entrée = vérifier et continuer · 💡 = un indice si besoin. Demain : un nouveau
-        tirage !
-      </p>
-      <ol className="mt-3 space-y-3">
-        {paper.map((q, n) => {
-          const v = verdicts[q.id];
-          return (
-            <li
-              key={q.id}
-              className={`rounded-xl border-2 p-3 ${v ? (v.ok ? "border-emerald-300 bg-emerald-50/60" : "border-rose-300 bg-rose-50/60") : "border-slate-200 bg-white"}`}
-            >
-              <div className="text-xs font-bold text-slate-400">{n + 1} · {q.sio}</div>
-              <div lang="fr" className="mt-1 text-[17px] leading-8 text-slate-900">
-                {q.pre}
-                <input
-                  id={`fin-${q.id}`}
-                  value={typed[q.id] ?? ""}
-                  onChange={(e) => setTyped((t) => ({ ...t, [q.id]: e.target.value }))}
-                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); grade(q, true); } }}
-                  autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
-                  className="mx-1 w-36 max-w-[44vw] border-0 border-b-[2.5px] border-slate-900 bg-yellow-100/70 px-1.5 text-center text-[16px] outline-none focus:border-blue-600"
-                />
-                {q.post}
-              </div>
-              <div className="mt-1.5 flex flex-wrap items-center gap-2 text-sm">
-                <button type="button" onClick={() => hint(q)} className="rounded-full border-2 border-amber-300 bg-amber-50 px-3 py-0.5 text-xs font-bold text-amber-800">💡 indice</button>
-                <button type="button" onClick={() => grade(q, false)} className="rounded-full border-2 border-slate-300 bg-white px-3 py-0.5 text-xs font-bold text-slate-700">✓ vérifier</button>
-                {hints[q.id] && <span className="text-xs font-bold text-amber-800">💡 {q.cat}</span>}
-                {v && (v.ok
-                  ? <span className="font-bold text-emerald-700">✓ Bravo !{v.others.length > 0 && <span className="font-normal text-slate-500"> (aussi accepté : {v.others.join(", ")})</span>}</span>
-                  : <span className="font-bold text-rose-600">✗ Réponse : {v.expected[0]}{v.expected.length > 1 ? ` (ou ${v.expected.slice(1).join(", ")})` : ""}</span>)}
-              </div>
-            </li>
-          );
-        })}
-      </ol>
-      <div className="fixed inset-x-0 bottom-0 z-20 border-t-[3px] border-slate-900 bg-white/95 px-4 py-2.5 backdrop-blur">
-        <div className="mx-auto flex max-w-2xl items-center justify-between text-sm font-bold text-slate-900">
-          <span>🏁 {done}/{paper.length}</span>
-          <span className="text-emerald-700">✓ {okCount}</span>
-        </div>
+  if (finished) {
+    return (
+      <div className="mx-auto max-w-md py-10 text-center">
+        <div className="text-5xl">🏁</div>
+        <h2 lang="fr" className="mt-2 text-xl font-bold text-slate-900">Marathon terminé !</h2>
+        <p lang="fr" className="mt-2 text-slate-700">
+          Score : <b className="text-emerald-700">{okCount}</b> / {paper.length}
+        </p>
+        <p lang="fr" className="mt-1 text-sm text-slate-500">Demain, un nouveau tirage de 100 questions vous attend.</p>
+        <button type="button" onClick={() => setIdx(0)}
+          className="mt-4 rounded-full border-2 border-slate-900 bg-white px-4 py-1.5 text-sm font-bold text-slate-900">
+          ↺ Revoir mes réponses
+        </button>
       </div>
+    );
+  }
+
+  const q = paper[idx];
+  const v = verdicts[q.id];
+
+  return (
+    <div className="pb-8">
+      {/* progress */}
+      <div className="flex items-center justify-between text-sm font-bold text-slate-900">
+        <span>🏁 Question {idx + 1} / {paper.length}</span>
+        <span className="text-emerald-700">✓ {okCount}{done > okCount ? <span className="ml-2 text-rose-600">✗ {done - okCount}</span> : null}</span>
+      </div>
+      <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-slate-200">
+        <div className="h-full bg-slate-900 transition-all" style={{ width: `${(done / paper.length) * 100}%` }} />
+      </div>
+
+      {/* the one question */}
+      <div className={`mt-4 rounded-2xl border-[3px] p-4 shadow-[3px_3px_0_#1f2440] ${v ? (v.ok ? "border-emerald-500 bg-emerald-50/70" : "border-rose-400 bg-rose-50/70") : "border-slate-900 bg-white"}`}>
+        <div className="text-xs font-bold text-slate-400">{q.sio}</div>
+        {/* Inline flow: pre, blank, post are all inline so the blank sits in
+            the sentence line and wraps WITH the text, never onto its own. */}
+        <p lang="fr" className="mt-2 text-lg leading-9 text-slate-900">
+          {q.pre}
+          <input
+            ref={inputRef}
+            value={typed[q.id] ?? ""}
+            onChange={(e) => setTyped((t) => ({ ...t, [q.id]: e.target.value }))}
+            onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); onEnter(q); } }}
+            autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
+            size={Math.max(6, (q.a[0] ?? "").length + 2)}
+            className="mx-1 inline-block w-auto border-0 border-b-[2.5px] border-slate-900 bg-yellow-100/70 px-1 text-center align-baseline text-[17px] outline-none focus:border-blue-600"
+            style={{ maxWidth: "60vw" }}
+          />
+          {q.post}
+        </p>
+        <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+          <button type="button" onClick={() => hint(q)} className="rounded-full border-2 border-amber-300 bg-amber-50 px-3 py-0.5 text-xs font-bold text-amber-800">💡 indice</button>
+          {!v && <button type="button" onClick={() => grade(q)} className="rounded-full border-2 border-slate-300 bg-white px-3 py-0.5 text-xs font-bold text-slate-700">✓ vérifier</button>}
+          {hints[q.id] && <span className="text-xs font-bold text-amber-800">💡 {q.cat}</span>}
+        </div>
+        {v && (
+          <div className="mt-2 text-[15px]">
+            {v.ok
+              ? <span className="font-bold text-emerald-700">✓ Bravo !{v.others.length > 0 && <span className="font-normal text-slate-600"> (aussi accepté : {v.others.join(", ")})</span>}</span>
+              : <span className="font-bold text-rose-600">✗ Réponse : {v.expected[0]}{v.expected.length > 1 ? ` (ou ${v.expected.slice(1).join(", ")})` : ""}</span>}
+          </div>
+        )}
+      </div>
+
+      {/* navigation */}
+      <div className="mt-4 flex items-center justify-between">
+        <button type="button" disabled={idx === 0} onClick={() => setIdx((i) => Math.max(0, i - 1))}
+          className="rounded-full border-2 border-slate-300 bg-white px-4 py-1.5 text-sm font-bold text-slate-600 disabled:opacity-40">
+          ← Précédente
+        </button>
+        <button type="button" onClick={() => (v ? setIdx((i) => i + 1) : grade(q))}
+          className="rounded-full border-2 border-slate-900 bg-yellow-100 px-5 py-1.5 text-sm font-bold text-slate-900 shadow-[2px_2px_0_#1f2440]">
+          {v ? "Suivante →" : "✓ Vérifier"}
+        </button>
+      </div>
+      <p className="mt-2 text-center text-xs text-slate-400">Entrée = vérifier, puis Entrée = question suivante</p>
     </div>
   );
 }
