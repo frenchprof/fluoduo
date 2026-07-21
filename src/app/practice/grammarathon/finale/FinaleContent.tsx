@@ -244,7 +244,21 @@ export default function FinaleContent() {
           <div className="mt-2 text-[15px]">
             {v.ok
               ? <span className="font-bold text-emerald-700">✓ Bravo !{v.others.length > 0 && <span className="font-normal text-slate-600"> (aussi accepté : {v.others.join(", ")})</span>}</span>
-              : <span className="font-bold text-rose-600">✗ Réponse : {v.expected[0]}{v.expected.length > 1 ? ` (ou ${v.expected.slice(1).join(", ")})` : ""}</span>}
+              : (
+                /* The WHY (Dan, 2026-07-21: "when it is wrong the student
+                   deserves to know why") — three always-true teachers: the
+                   corrected sentence whole, the word's category, the lesson
+                   it belongs to. */
+                <div>
+                  <span className="font-bold text-rose-600">✗ Réponse : {v.expected[0]}{v.expected.length > 1 ? ` (ou ${v.expected.slice(1).join(", ")})` : ""}</span>
+                  <p lang="fr" className="mt-1.5 rounded-lg border border-rose-200 bg-white/70 px-2.5 py-1.5 text-slate-800">
+                    {q.pre}<b className="text-rose-700 underline underline-offset-2">{v.expected[0]}</b>{q.post}
+                  </p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    💡 {q.cat} · <span lang="fr">{SIOS.find((x) => x.id === q.sio)?.topic ?? q.sio}</span>
+                  </p>
+                </div>
+              )}
           </div>
         )}
       </div>
