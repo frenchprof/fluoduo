@@ -150,7 +150,7 @@ export default function RoadMap({ progress, activeId, accent }: { progress: Prog
                     color: sDone ? "#fff" : "var(--fluo-ink)",
                   }}
                 >
-                  <span className={kind === "production" ? "-rotate-45" : undefined}>{sDone ? "✓" : st.num}</span>
+                  <span className={kind === "production" ? "-rotate-45" : undefined}>{sDone ? "✓" : Number.isInteger(st.num) ? st.num : st.id.replace(/^SIO-0*/, "")}</span>
                 </Link>
                 {/* The stop's name, visible without hover (audit 2026-07-19). */}
                 <span aria-hidden className="pointer-events-none absolute left-0 right-0 top-[calc(50%+20px)] truncate px-0.5 text-center text-[9px] font-bold leading-none text-[color:var(--fluo-ink)]/70">

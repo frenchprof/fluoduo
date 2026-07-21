@@ -1,0 +1,117 @@
+{
+  "id": "u4-sio045a-nombres",
+  "unit": 4,
+  "lessonNo": 5,
+  "lessonSlug": "numbers-70-99",
+  "title": "70 à 99",
+  "items": [
+    {
+      "id": "u4-sio045a-01",
+      "sentenceBefore": "Ça fait ",
+      "sentenceAfter": " euros. (71 €)",
+      "answer": "soixante et onze",
+      "distractors": [
+        "soixante-onze",
+        "soixante et un",
+        "septante et un"
+      ],
+      "fullSentence": "Ça fait soixante et onze euros.",
+      "sentenceTrans": "That's 71 euros.",
+      "whyWrong": {
+        "soixante-onze": "71 keeps the et — soixante ET onze.",
+        "soixante et un": "That's 61 — soixante et onze is 71.",
+        "septante et un": "Septante is Belgian/Swiss — this course uses soixante-dix for 70."
+      }
+    },
+    {
+      "id": "u4-sio045a-02",
+      "sentenceBefore": "Ma grand-mère a ",
+      "sentenceAfter": " ans. (80)",
+      "answer": "quatre-vingts",
+      "distractors": [
+        "quatre-vingt",
+        "quatre-vingts-un",
+        "huitante"
+      ],
+      "fullSentence": "Ma grand-mère a quatre-vingts ans.",
+      "sentenceTrans": "My grandmother is 80 years old.",
+      "whyWrong": {
+        "quatre-vingt": "Bare 80 takes the -s — quatre-vingts.",
+        "quatre-vingts-un": "That mixes 80 and 81 — 80 alone is quatre-vingts.",
+        "huitante": "Huitante is Swiss — this course uses quatre-vingts."
+      }
+    },
+    {
+      "id": "u4-sio045a-03",
+      "sentenceBefore": "Le livre coûte ",
+      "sentenceAfter": " euros. (85 €)",
+      "answer": "quatre-vingt-cinq",
+      "distractors": [
+        "quatre-vingts-cinq",
+        "quatre-vingt et cinq",
+        "quatre-cinq"
+      ],
+      "fullSentence": "Le livre coûte quatre-vingt-cinq euros.",
+      "sentenceTrans": "The book costs 85 euros.",
+      "whyWrong": {
+        "quatre-vingts-cinq": "The -s drops when a number follows — quatre-vingt-cinq.",
+        "quatre-vingt et cinq": "No et after quatre-vingt — hyphens only.",
+        "quatre-cinq": "That's not a French number — 85 is quatre-vingt-cinq."
+      }
+    },
+    {
+      "id": "u4-sio045a-04",
+      "sentenceBefore": "Mon oncle a ",
+      "sentenceAfter": " ans. (91)",
+      "answer": "quatre-vingt-onze",
+      "distractors": [
+        "quatre-vingt et onze",
+        "nonante et un",
+        "quatre-vingt-dix-un"
+      ],
+      "fullSentence": "Mon oncle a quatre-vingt-onze ans.",
+      "sentenceTrans": "My uncle is 91 years old.",
+      "whyWrong": {
+        "quatre-vingt et onze": "No et in the quatre-vingt series — quatre-vingt-onze.",
+        "nonante et un": "Nonante is Belgian/Swiss — this course uses quatre-vingt-dix for 90.",
+        "quatre-vingt-dix-un": "91 rides on onze, not dix + un — quatre-vingt-onze."
+      }
+    },
+    {
+      "id": "u4-sio045a-05",
+      "sentenceBefore": "Il y a ",
+      "sentenceAfter": " étudiants dans le cours. (76)",
+      "answer": "soixante-seize",
+      "distractors": [
+        "septante-six",
+        "soixante et seize",
+        "soixante-six"
+      ],
+      "fullSentence": "Il y a soixante-seize étudiants dans le cours.",
+      "sentenceTrans": "There are 76 students in the course.",
+      "whyWrong": {
+        "septante-six": "Septante is Belgian/Swiss — 70s ride on soixante-dix.",
+        "soixante et seize": "Only 71 takes et — 76 is soixante-seize.",
+        "soixante-six": "That's 66 — 76 is soixante-seize."
+      }
+    },
+    {
+      "id": "u4-sio045a-06",
+      "sentenceBefore": "Le total ? ",
+      "sentenceAfter": " euros ! (99 €)",
+      "answer": "quatre-vingt-dix-neuf",
+      "distractors": [
+        "nonante-neuf",
+        "quatre-vingts-dix-neuf",
+        "quatre-vingt-neuf"
+      ],
+      "fullSentence": "Le total ? Quatre-vingt-dix-neuf euros !",
+      "sentenceTrans": "The total? 99 euros!",
+      "whyWrong": {
+        "nonante-neuf": "Nonante is Belgian/Swiss — 90s ride on quatre-vingt-dix.",
+        "quatre-vingts-dix-neuf": "The -s drops when a number follows quatre-vingt.",
+        "quatre-vingt-neuf": "That's 89 — 99 is quatre-vingt-dix-neuf."
+      }
+    }
+  ]
+}

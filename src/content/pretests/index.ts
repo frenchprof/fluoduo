@@ -41,6 +41,7 @@ import pu4_sio047 from "./u4-sio047.json";
 import pu4_sio047p from "./u4-sio047-plans.json";
 import pu4_sio048a from "./u4-sio048-advice.json";
 import pu4_sio045m from "./u4-sio045-marche.json";
+import pu4_sio045a from "./u4-sio045a-nombres.json";
 
 export const PRETESTS: Pretest[] = [
   weather as unknown as Pretest,
@@ -78,6 +79,7 @@ export const PRETESTS: Pretest[] = [
   pu4_sio046 as unknown as Pretest,
   pu4_sio047 as unknown as Pretest,
   pu4_sio045m as unknown as Pretest,
+  pu4_sio045a as unknown as Pretest,
   pu4_sio047p as unknown as Pretest,
   pu4_sio048a as unknown as Pretest,
 ];
@@ -134,6 +136,7 @@ const PRETEST_BY_SIO: Record<string, string> = {
   "SIO-043": "u4-sio045",
   "SIO-044": "u4-sio047",
   "SIO-045": "u4-sio045-marche",
+  "SIO-045A": "u4-sio045a-nombres",
   "SIO-046": "u4-sio046",
   "SIO-047": "u4-sio047-plans",
   "SIO-048": "u4-sio048-advice",

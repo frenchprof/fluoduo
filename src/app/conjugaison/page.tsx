@@ -33,6 +33,40 @@ const fresh = (): ColState => ({
   result: [null, null, null, null, null, null],
 });
 
+// ── Phrases complètes (Dan, 2026-07-21): "what is genuinely missing from
+// ConjugaZone is the possibility to hear the conjugations in simple complete
+// sentences." Complement banks for the core verbs — the 🎲 button appears
+// only where a bank exists, because complements don't generalize across all
+// 67 verbs' transitivity. Every complement is invariable (no agreement traps)
+// and inside the A1 syllabus.
+const SENTENCE_BANKS: Record<string, string[]> = {
+  etre: ["à Singapour", "en France", "à la maison", "à l'université", "au restaurant", "au marché"],
+  avoir: ["faim", "soif", "froid", "chaud", "sommeil", "vingt ans", "un stylo", "besoin d'un café"],
+  aller: ["au cinéma", "à la plage", "au marché", "à l'université", "à la bibliothèque", "au restaurant", "en France"],
+  faire: ["du sport", "du yoga", "de la natation", "du vélo", "les courses", "la cuisine"],
+  falloir: ["un passeport", "étudier", "un billet", "manger des légumes"],
+  parler: ["français", "anglais", "un peu chinois", "de la famille", "du week-end"],
+  habiter: ["à Singapour", "à Paris", "près de l'université", "loin du centre", "en France"],
+  aimer: ["le chocolat", "la musique", "danser", "voyager", "le café", "les mathématiques"],
+  adorer: ["le cinéma", "la cuisine française", "chanter", "les week-ends", "le sport"],
+  detester: ["le lundi matin", "les examens", "attendre", "le café froid"],
+  etudier: ["le français", "la chimie", "à la bibliothèque", "le droit", "l'économie"],
+  travailler: ["à l'hôpital", "le week-end", "à Singapour", "au restaurant", "beaucoup"],
+  manger: ["du pain", "des légumes", "au restaurant", "un sandwich", "à midi"],
+  boire: ["du café", "de l'eau", "du thé", "un jus d'orange"],
+  vouloir: ["un café", "manger", "dormir", "voyager", "danser"],
+  pouvoir: ["entrer", "payer par carte", "venir demain", "commencer"],
+  devoir: ["étudier", "dormir", "travailler", "partir", "manger des légumes"],
+  prendre: ["le bus", "le métro", "un café", "le petit-déjeuner", "un taxi"],
+  venir: ["de Singapour", "à l'université", "au cinéma avec nous", "de France"],
+  dormir: ["bien", "beaucoup", "à minuit", "le week-end"],
+};
+function drawComplements(v: ConjVerb): string[] {
+  const bank = SENTENCE_BANKS[v.id] ?? [];
+  const pool = [...bank].sort(() => Math.random() - 0.5);
+  return v.forms.map((f, i) => (f === "—" ? "" : pool[i % pool.length]));
+}
+
 export default function ConjugaisonPage() {
   const [picked, setPicked] = useState<string[]>(["etre", "avoir", "aller"]);
   const [cols, setCols] = useState<Record<string, ColState>>({});
@@ -53,6 +87,28 @@ export default function ConjugaisonPage() {
 
   const setMode = (id: string, mode: ColMode) =>
     patch(id, { ...fresh(), mode });
+
+  // Phrases complètes: verbId → one drawn complement per person (null = closed)
+  const [sentences, setSentences] = useState<Record<string, string[] | null>>({});
+
+  // Per-FIELD validation (Dan, 2026-07-21): Enter grades this cell, speaks the
+  // correct form, and moves focus to the next blank in the column.
+  function checkCell(v: ConjVerb, i: number) {
+    const s = st(v.id);
+    const t = s.typed[i].trim();
+    const form = v.forms[i];
+    const ok = t !== "" && (gradeAnswer(t, form) !== "wrong" || gradeAnswer(t, conjSpoken(i, form)) !== "wrong");
+    recordItemResult(`conj-${v.id}-${i}`, ok);
+    const result = s.result.map((x, k) => (k === i ? ok : x));
+    patch(v.id, { result });
+    speak(conjSpoken(i, form), "fr-FR");
+    if (result.every((x, k) => v.forms[k] === "—" || x === true)) sfx.correct();
+    for (let j = i + 1; j < v.forms.length; j++) {
+      if (v.forms[j] === "—") continue;
+      document.getElementById(`cz-${v.id}-${j}`)?.focus();
+      break;
+    }
+  }
 
   function check(v: ConjVerb) {
     const s = st(v.id);
@@ -166,9 +222,10 @@ export default function ConjugaisonPage() {
                           return (
                             <td key={v.id} className="p-1.5 text-center">
                               <input
+                                id={`cz-${v.id}-${i}`}
                                 lang="fr" value={s.typed[i]}
                                 onChange={(e) => patch(v.id, { typed: s.typed.map((t, k) => (k === i ? e.target.value : t)), result: s.result.map((x, k) => (k === i ? null : x)) })}
-                                onKeyDown={(e) => { if (e.key === "Enter") check(v); }}
+                                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); checkCell(v, i); } }}
                                 placeholder="…" autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
                                 className={`w-full rounded-lg border-2 px-2 py-1 text-center text-[15px] outline-none ${
                                   r === true ? "border-emerald-600 bg-emerald-600/10" : r === false ? "border-rose-600 bg-rose-600/10" : "border-[color:var(--cahier-rule)] bg-white focus:border-[color:var(--cahier-le)]"
@@ -216,6 +273,39 @@ export default function ConjugaisonPage() {
                   </tr>
                 </tbody>
               </table>
+              {/* 🎲 Phrases complètes — hear each S+V inside a simple sentence */}
+              <div className="mt-3 flex flex-wrap gap-2">
+                {shown.filter((v) => SENTENCE_BANKS[v.id]).map((v) => (
+                  <button key={v.id} type="button" lang="fr"
+                    onClick={() => setSentences((m) => ({ ...m, [v.id]: drawComplements(v) }))}
+                    className="cahier-btn cahier-btn-sm">
+                    🎲 {v.inf} en phrases
+                  </button>
+                ))}
+              </div>
+              {shown.filter((v) => sentences[v.id]).map((v) => (
+                <div key={v.id} className="mt-2 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white p-3">
+                  <div className="flex items-center justify-between">
+                    <span lang="fr" className="text-sm font-bold text-[color:var(--cahier-ink)]">{v.inf} — phrases complètes</span>
+                    <span className="flex gap-1.5">
+                      <button type="button" title="D'autres phrases" onClick={() => setSentences((m) => ({ ...m, [v.id]: drawComplements(v) }))} className="cahier-btn cahier-btn-sm">🎲</button>
+                      <button type="button" title="Fermer" onClick={() => setSentences((m) => ({ ...m, [v.id]: null }))} className="cahier-btn cahier-btn-sm">✕</button>
+                    </span>
+                  </div>
+                  <ul className="mt-1.5 space-y-1">
+                    {v.forms.map((f, i) => {
+                      if (f === "—") return null;
+                      const phrase = `${conjSpoken(i, f)} ${sentences[v.id]![i]}`;
+                      return (
+                        <li key={i} className="flex items-center gap-2">
+                          <button type="button" title="Écouter" onClick={() => speak(phrase, "fr-FR")} className="cahier-btn cahier-btn-sm">🔊</button>
+                          <span lang="fr" className="text-[15px] text-[color:var(--cahier-ink)]">{phrase.charAt(0).toUpperCase() + phrase.slice(1)}.</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              ))}
             </div>
           )}
         </AuthGate>

@@ -384,6 +384,21 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
     </Card>
   ),
 
+  /* ---------- Numbers 70-99 (SIO-045A, 2026-07-20: the soixante-dix /
+     quatre-vingts system — the missing bridge to real market prices) ------ */
+  "numbers-70-99": (
+    <Card title="70 à 99 — le système change !">
+      <PillRow items={["soixante-dix", "quatre-vingts", "quatre-vingt-dix"]} />
+      <Lines>
+        <li>70–79 = <B>soixante + 10…19</B> — <span lang="fr">soixante-<b className="text-[color:var(--cahier-la)]">douze</b> (72), soixante-<b className="text-[color:var(--cahier-la)]">dix-neuf</b> (79)</span></li>
+        <li>71 garde le <B>et</B> — <span lang="fr">soixante <b className="text-[color:var(--cahier-la)]">et onze</b></span> · mais 81, 91 : <span lang="fr">quatre-vingt-un, quatre-vingt-onze</span> — <B>sans et !</B></li>
+        <li>80 = 4 × 20 → <span lang="fr">quatre-vingt<b className="text-[color:var(--cahier-la)]">s</b></span> avec un <B>-s</B>… qui <B>disparaît</B> devant un nombre : <span lang="fr">quatre-vingt-cinq (85)</span></li>
+        <li>90–99 = <B>quatre-vingt + 10…19</B> — <span lang="fr">quatre-vingt-<b className="text-[color:var(--cahier-la)]">quinze</b> (95), quatre-vingt-<b className="text-[color:var(--cahier-la)]">dix-neuf</b> (99)</span></li>
+        <li>Au marché : <span lang="fr">« Ça fait quatre-vingt-cinq euros. » (85 €)</span></li>
+      </Lines>
+    </Card>
+  ),
+
   /* ---------- Salutations ---------- */
   salutations: (
     <Card title="Salutations">

@@ -19,6 +19,7 @@ const SHORT_TITLES: Record<string, string> = {
   professions: "Quelle(s) profession(s)",
   matieres: "Quelles études",
   "numbers-20-69": "De 21 à 69",
+  "numbers-70-99": "De 70 à 99",
   "avoir-etats": "Être ou Avoir",
   // ── Unité 2 ──
   "objets-articles": "Un(e)/Des",
