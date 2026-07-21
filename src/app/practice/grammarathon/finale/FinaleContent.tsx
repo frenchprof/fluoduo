@@ -213,9 +213,25 @@ export default function FinaleContent() {
             onChange={(e) => setTyped((t) => ({ ...t, [q.id]: e.target.value }))}
             onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); onEnter(q); } }}
             autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
-            size={Math.max(6, (q.a[0] ?? "").length + 2)}
-            className="mx-1 inline-block w-auto border-0 border-b-[2.5px] border-slate-900 bg-yellow-100/70 px-1 text-center align-baseline text-[17px] outline-none focus:border-blue-600"
-            style={{ maxWidth: "60vw" }}
+            className="mx-1 text-center outline-none"
+            /* Inline styles on purpose: the cahier sheet declares every input
+               width:100% with a compound selector that beats any utility
+               class — only the style attribute outranks it (Dan, 2026-07-21:
+               the blank must sit IN the sentence line, sized like a word). */
+            style={{
+              display: "inline-block",
+              width: `${Math.min(18, Math.max(5, (q.a[0] ?? "").length + 2))}ch`,
+              maxWidth: "55vw",
+              verticalAlign: "baseline",
+              border: "none",
+              borderBottom: "2.5px solid #1f2440",
+              borderRadius: 0,
+              background: "rgba(254,240,138,0.7)",
+              padding: "0 4px",
+              fontSize: "17px",
+              fontFamily: "inherit",
+              color: "inherit",
+            }}
           />
           {q.post}
         </p>
