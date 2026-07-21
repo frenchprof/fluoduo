@@ -105,7 +105,11 @@ export default function FinaleContent() {
   const [idx, setIdx] = useState(0);
   const [typed, setTyped] = useState<Record<string, string>>({});
   const [verdicts, setVerdicts] = useState<Record<string, Verdict>>({});
-  const [hints, setHints] = useState<Record<string, boolean>>({});
+  // Socratic ladder (Dan, 2026-07-21: never reveal the answer — keep giving
+  // clues, none of which gives it away, until the student produces it).
+  const [clue, setClue] = useState<Record<string, number>>({});
+  const [wrongFlash, setWrongFlash] = useState<string | null>(null);
+  const [skipped, setSkipped] = useState<Record<string, boolean>>({});
   const graded = useRef<Set<string>>(new Set());
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -123,8 +127,9 @@ export default function FinaleContent() {
   // Focus the blank whenever the question changes.
   useEffect(() => { inputRef.current?.focus(); }, [idx, paper]);
 
-  const done = paper ? paper.filter((q) => verdicts[q.id]).length : 0;
   const okCount = paper ? paper.filter((q) => verdicts[q.id]?.ok).length : 0;
+  const skipCount = paper ? paper.filter((q) => skipped[q.id] && !verdicts[q.id]?.ok).length : 0;
+  const done = okCount + skipCount;
   const finished = paper !== null && idx >= paper.length;
 
   function grade(q: FinaleItem) {
@@ -135,23 +140,45 @@ export default function FinaleContent() {
       : q.a.some((a) => gradeAnswer(given, a) !== "wrong"));
     const forms: string[] = [];
     for (const x of q.a) if (!forms.some((f) => dd(f) === dd(x))) forms.push(x);
-    setVerdicts((v) => ({ ...v, [q.id]: { ok, others: forms.filter((f) => dd(f) !== dd(given)), expected: forms } }));
+    // First ATTEMPT is what pays and feeds the SRS — honest measurement;
+    // later retries resolve the item for learning, not for XP.
     if (!graded.current.has(q.id)) {
       graded.current.add(q.id);
       recordItemResult(q.id, ok, given);
     }
+    if (ok) {
+      setVerdicts((v) => ({ ...v, [q.id]: { ok, others: forms.filter((f) => dd(f) !== dd(given)), expected: forms } }));
+    } else {
+      // No reveal. One more rung on the clue ladder, and try again.
+      setClue((c) => ({ ...c, [q.id]: Math.min(4, (c[q.id] ?? 0) + 1) }));
+      setWrongFlash(q.id);
+      window.setTimeout(() => setWrongFlash(null), 450);
+    }
   }
 
   function onEnter(q: FinaleItem) {
-    if (!verdicts[q.id]) grade(q);
-    else setIdx((i) => i + 1); // second Enter: onward
+    if (!verdicts[q.id]?.ok) grade(q); // every Enter is another attempt
+    else setIdx((i) => i + 1); // solved: onward
   }
 
   function hint(q: FinaleItem) {
-    setHints((h) => ({ ...h, [q.id]: true }));
+    setClue((c) => ({ ...c, [q.id]: Math.min(4, (c[q.id] ?? 0) + 1) }));
     void import("@/lib/firebase/usage")
       .then((m) => m.logEvent("hint.tap", { surface: "finale", itemId: q.id, sio: q.sio }))
       .catch(() => {});
+  }
+  /** The ladder: category → lesson → first letter → skeleton. Never the word. */
+  function clues(q: FinaleItem, level: number): string[] {
+    const a0 = q.a[0] ?? "";
+    const topic = SIOS.find((x) => x.id === q.sio)?.topic ?? q.sio;
+    const skel = a0 ? a0[0] + " " + [...a0.slice(1)].map(() => "_").join(" ") : "";
+    const all = [
+      `💡 ${q.cat}`,
+      `📘 Leçon : ${topic}`,
+      `🔤 Une réponse possible commence par « ${a0[0]?.toUpperCase() ?? ""} »`,
+      `✏️ ${skel}  (${a0.length} lettres)`,
+    ];
+    return all.slice(0, level);
   }
 
   if (!paper) {
@@ -175,7 +202,7 @@ export default function FinaleContent() {
           <button type="button"
             onClick={() => {
               graded.current = new Set();
-              setTyped({}); setVerdicts({}); setHints({}); setIdx(0);
+              setTyped({}); setVerdicts({}); setClue({}); setSkipped({}); setIdx(0);
               setIds(drawDaily(Date.now() + ":" + Math.random()));
             }}
             className="rounded-full border-2 border-slate-900 bg-yellow-100 px-4 py-1.5 text-sm font-bold text-slate-900 shadow-[2px_2px_0_#1f2440]">
@@ -194,15 +221,19 @@ export default function FinaleContent() {
       {/* progress */}
       <div className="flex items-center justify-between text-sm font-bold text-slate-900">
         <span>🏁 Question {idx + 1} / {paper.length}</span>
-        <span className="text-emerald-700">✓ {okCount}{done > okCount ? <span className="ml-2 text-rose-600">✗ {done - okCount}</span> : null}</span>
+        <span className="text-emerald-700">✓ {okCount}{skipCount > 0 ? <span className="ml-2 text-slate-400">↷ {skipCount}</span> : null}</span>
       </div>
       <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-slate-200">
         <div className="h-full bg-slate-900 transition-all" style={{ width: `${(done / paper.length) * 100}%` }} />
       </div>
 
       {/* the one question */}
-      <div className={`mt-4 rounded-2xl border-[3px] p-4 shadow-[3px_3px_0_#1f2440] ${v ? (v.ok ? "border-emerald-500 bg-emerald-50/70" : "border-rose-400 bg-rose-50/70") : "border-slate-900 bg-white"}`}>
-        <div className="text-xs font-bold text-slate-400">{q.sio}</div>
+      <div className={`mt-4 rounded-2xl border-[3px] p-4 shadow-[3px_3px_0_#1f2440] ${v?.ok ? "border-emerald-500 bg-emerald-50/70" : wrongFlash === q.id ? "border-rose-400 bg-rose-50/70" : "border-slate-900 bg-white"}`}>
+        <div className="flex items-center justify-between text-xs font-bold text-slate-400">
+          <span>{q.sio}</span>
+          {/* Every question states the contract (Dan, 2026-07-21): ONE word. */}
+          <span lang="fr" className="rounded-full bg-slate-100 px-2 py-0.5">✍️ un seul mot</span>
+        </div>
         {/* Inline flow: pre, blank, post are all inline so the blank sits in
             the sentence line and wraps WITH the text, never onto its own. */}
         <p lang="fr" className="mt-2 text-lg leading-9 text-slate-900">
@@ -236,29 +267,22 @@ export default function FinaleContent() {
           {q.post}
         </p>
         <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
-          <button type="button" onClick={() => hint(q)} className="rounded-full border-2 border-amber-300 bg-amber-50 px-3 py-0.5 text-xs font-bold text-amber-800">💡 indice</button>
-          {!v && <button type="button" onClick={() => grade(q)} className="rounded-full border-2 border-slate-300 bg-white px-3 py-0.5 text-xs font-bold text-slate-700">✓ vérifier</button>}
-          {hints[q.id] && <span className="text-xs font-bold text-amber-800">💡 {q.cat}</span>}
+          {!v?.ok && <button type="button" onClick={() => hint(q)} className="rounded-full border-2 border-amber-300 bg-amber-50 px-3 py-0.5 text-xs font-bold text-amber-800">💡 un indice</button>}
+          {!v?.ok && <button type="button" onClick={() => grade(q)} className="rounded-full border-2 border-slate-300 bg-white px-3 py-0.5 text-xs font-bold text-slate-700">✓ vérifier</button>}
         </div>
-        {v && (
+        {(clue[q.id] ?? 0) > 0 && !v?.ok && (
+          <ul lang="fr" className="mt-2 space-y-1 text-sm text-amber-900">
+            {clues(q, clue[q.id] ?? 0).map((c, i) => (
+              <li key={i} className="rounded-lg bg-amber-50 px-2.5 py-1">{c}</li>
+            ))}
+          </ul>
+        )}
+        {(clue[q.id] ?? 0) > 0 && !v?.ok && (
+          <p lang="fr" className="mt-1.5 text-xs text-slate-500">Essayez encore — la réponse n'est jamais révélée : à vous de la trouver !</p>
+        )}
+        {v?.ok && (
           <div className="mt-2 text-[15px]">
-            {v.ok
-              ? <span className="font-bold text-emerald-700">✓ Bravo !{v.others.length > 0 && <span className="font-normal text-slate-600"> (aussi accepté : {v.others.join(", ")})</span>}</span>
-              : (
-                /* The WHY (Dan, 2026-07-21: "when it is wrong the student
-                   deserves to know why") — three always-true teachers: the
-                   corrected sentence whole, the word's category, the lesson
-                   it belongs to. */
-                <div>
-                  <span className="font-bold text-rose-600">✗ Réponse : {v.expected[0]}{v.expected.length > 1 ? ` (ou ${v.expected.slice(1).join(", ")})` : ""}</span>
-                  <p lang="fr" className="mt-1.5 rounded-lg border border-rose-200 bg-white/70 px-2.5 py-1.5 text-slate-800">
-                    {q.pre}<b className="text-rose-700 underline underline-offset-2">{v.expected[0]}</b>{q.post}
-                  </p>
-                  <p className="mt-1 text-xs text-slate-500">
-                    💡 {q.cat} · <span lang="fr">{SIOS.find((x) => x.id === q.sio)?.topic ?? q.sio}</span>
-                  </p>
-                </div>
-              )}
+            <span className="font-bold text-emerald-700">✓ Bravo !{v.others.length > 0 && <span className="font-normal text-slate-600"> (aussi accepté : {v.others.join(", ")})</span>}</span>
           </div>
         )}
       </div>
@@ -269,10 +293,20 @@ export default function FinaleContent() {
           className="rounded-full border-2 border-slate-300 bg-white px-4 py-1.5 text-sm font-bold text-slate-600 disabled:opacity-40">
           ← Précédente
         </button>
-        <button type="button" onClick={() => (v ? setIdx((i) => i + 1) : grade(q))}
-          className="rounded-full border-2 border-slate-900 bg-yellow-100 px-5 py-1.5 text-sm font-bold text-slate-900 shadow-[2px_2px_0_#1f2440]">
-          {v ? "Suivante →" : "✓ Vérifier"}
-        </button>
+        <div className="flex items-center gap-2">
+          {!v?.ok && (clue[q.id] ?? 0) >= 2 && (
+            <button type="button"
+              onClick={() => { setSkipped((k) => ({ ...k, [q.id]: true })); setIdx((i) => i + 1); }}
+              className="rounded-full border-2 border-slate-300 bg-white px-4 py-1.5 text-sm font-bold text-slate-500"
+              title="La réponse reste secrète — la question reviendra un autre jour !">
+              Passer →
+            </button>
+          )}
+          <button type="button" onClick={() => (v?.ok ? setIdx((i) => i + 1) : grade(q))}
+            className="rounded-full border-2 border-slate-900 bg-yellow-100 px-5 py-1.5 text-sm font-bold text-slate-900 shadow-[2px_2px_0_#1f2440]">
+            {v?.ok ? "Suivante →" : "✓ Vérifier"}
+          </button>
+        </div>
       </div>
       <p className="mt-2 text-center text-xs text-slate-400">Entrée = vérifier, puis Entrée = question suivante</p>
     </div>
