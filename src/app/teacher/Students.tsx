@@ -30,7 +30,7 @@ export default function Students({ events, roster }: { events: Ev[]; roster: Lea
             <td className="px-3 py-2 font-bold text-slate-900">
               {l.isTeacher && <span title="teacher account">🧑‍🏫 </span>}
               {l.name}
-              {l.email && <span className="ml-2 font-normal text-xs text-slate-500">{l.email}</span>}
+              {l.email && <a href={`mailto:${l.email}`} onClick={(e) => e.stopPropagation()} className="ml-2 font-normal text-xs text-slate-500 underline decoration-slate-300 hover:decoration-slate-900">{l.email}</a>}
             </td>
             <td className="px-3 py-2 text-right text-slate-700 whitespace-nowrap">{fmtWhen(l.lastSeen)}</td>
             <td className="px-3 py-2 text-right text-slate-700">{l.daysActive}</td>
@@ -177,15 +177,34 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
     return norm;
   };
 
+  // Every reference should be a road (Dan, 2026-07-21: "I am going to need
+  // links at wherever there can be links — I am very lost"). A normalized
+  // activity key IS a destination: paths link to themselves, prefix keys map
+  // to their activity's home page.
+  const hrefFor = (key: string): string | null => {
+    if (key.startsWith("/")) return key;
+    const m = /^mcq:(.+)$/.exec(key);
+    if (m) return `/decks/${m[1]}/mcq`;
+    if (key.startsWith("vocabularain:")) return "/games/vocabularain";
+    if (key.startsWith("speculearn:")) return "/practice/speculearn";
+    return null;
+  };
+  const ExLink = ({ k, label }: { k: string; label: string }) => {
+    const href = hrefFor(k);
+    return href
+      ? <a href={href} target="_blank" rel="noreferrer" className="underline decoration-slate-300 underline-offset-2 hover:decoration-slate-900">{label}</a>
+      : <>{label}</>;
+  };
+
   // ── Results by exercise: EVERY response, grouped (not just the last 15) ──
   const byExercise = useMemo(() => {
     if (!detail) return null;
-    type G = { label: string; n: number; ok: number; missed: number; retried: number; last: number };
+    type G = { key: string; label: string; n: number; ok: number; missed: number; retried: number; last: number };
     const m = new Map<string, G>();
     for (const r of detail.responses) {
       const key = normActivity(r.activityId);
       let g = m.get(key);
-      if (!g) m.set(key, (g = { label: labelActivity(key), n: 0, ok: 0, missed: 0, retried: 0, last: 0 }));
+      if (!g) m.set(key, (g = { key, label: labelActivity(key), n: 0, ok: 0, missed: 0, retried: 0, last: 0 }));
       g.n += 1;
       if (r.status === "met" || r.status === "mastered") g.ok += 1;
       else if (r.status === "retried") g.retried += 1;
@@ -240,7 +259,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
       </button>
       <h2 className="text-lg font-black text-slate-900">
         {learner.name}
-        {learner.email && <span className="ml-2 text-sm font-normal text-slate-500">{learner.email}</span>}
+        {learner.email && <a href={`mailto:${learner.email}`} className="ml-2 text-sm font-normal text-slate-500 underline decoration-slate-300 hover:decoration-slate-900">{learner.email}</a>}
         {learner.uids.length > 1 && (
           <span className="ml-2 rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-bold text-indigo-800" title={learner.uids.join(" + ")}>
             {learner.uids.length} accounts merged
@@ -365,7 +384,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
               <TableBox head={["Exercise", "Answers", "✓ ok", "✗ missed", "retried", "Last done"]}>
                 {(byExercise ?? []).map((g, i) => (
                   <tr key={i} className="border-t border-slate-100">
-                    <td className="px-3 py-2 font-bold text-slate-900">{g.label}</td>
+                    <td className="px-3 py-2 font-bold text-slate-900"><ExLink k={g.key} label={g.label} /></td>
                     <td className="px-3 py-2 text-right text-slate-700">{g.n}</td>
                     <td className="px-3 py-2 text-right font-bold text-emerald-700">{g.ok}</td>
                     <td className="px-3 py-2 text-right font-bold text-rose-600">{g.missed}</td>
@@ -384,7 +403,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
                       {r.status}
                     </td>
                     <td className="px-3 py-2 text-slate-700" lang="fr">{r.givenAnswer ?? "—"}</td>
-                    <td className="px-3 py-2 text-slate-700">{r.activityId ? labelActivity(normActivity(r.activityId)) : "—"}</td>
+                    <td className="px-3 py-2 text-slate-700">{r.activityId ? <ExLink k={normActivity(r.activityId)} label={labelActivity(normActivity(r.activityId))} /> : "—"}</td>
                     <td className="px-3 py-2 text-right text-slate-700">
                       {r.latencyMs !== null ? `${(r.latencyMs / 1000).toFixed(1)} s` : "—"}
                     </td>
@@ -423,7 +442,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
         <TableBox head={["Page", "Views"]}>
           {trail.topPages.map(([path, n]) => (
             <tr key={path} className="border-t border-slate-100">
-              <td className="px-3 py-2 font-bold text-slate-900 break-all">{path}</td>
+              <td className="px-3 py-2 font-bold text-slate-900 break-all"><a href={path} target="_blank" rel="noreferrer" className="underline decoration-slate-300 underline-offset-2 hover:decoration-slate-900">{path}</a></td>
               <td className="px-3 py-2 text-right text-slate-700">{n}</td>
             </tr>
           ))}
