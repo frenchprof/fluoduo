@@ -106,7 +106,7 @@ export default function FeedbackPanel({ nameOf, canWrite = true }: { nameOf: Map
             ))}
           </div>
           {r.details && <p className="mt-2 whitespace-pre-wrap text-sm text-slate-900">{r.details}</p>}
-          {r.url && <p className="mt-1 text-xs text-slate-500 break-all">on <a href={r.url} target="_blank" rel="noreferrer" className="underline decoration-slate-300 underline-offset-2 hover:decoration-slate-900">{r.url}</a></p>}
+          {r.url && <p className="mt-1 text-xs text-slate-500 break-all">on <a href={r.url} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{r.url}</a></p>}
           {r.screenshot && (
             // eslint-disable-next-line @next/next/no-img-element -- data URL from Firestore, not an optimizable asset
             <img src={r.screenshot} alt="screenshot attached to the report" className="mt-3 max-h-64 rounded-lg border border-slate-200" />

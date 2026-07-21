@@ -63,6 +63,10 @@ export const setTtsMuted = (m: boolean) => setChannelMuted("voice", m);
 export const onTtsMuteChange = (fn: (m: boolean) => void) =>
   onChannelMuteChange((ch, m) => { if (ch === "voice") fn(m); });
 
+// Sitewide speech calibration (Dan, 2026-07-21, extending his VoixLa ruling):
+// the old x0.75 pace is right for A1 listeners, so every utterance across
+// WorDrill, hear-it, ConjugaZone and the games is scaled by this constant.
+const TTS_CAL = 0.75;
 type SpeakOpts = {
   /** Set on USER-initiated plays only (🔊 buttons): logs a tts.play event for the autonomy instrument. */
   analytic?: "word" | "sentence" | "free";
@@ -133,7 +137,7 @@ export function castVoice(lang: string, profile: "f" | "m"): SpeechSynthesisVoic
 function applyVoiceAndPitch(u: SpeechSynthesisUtterance, lang: string, gender?: "f" | "m" | "kid", rate?: number) {
   const v = castVoice(lang, gender === "m" ? "m" : "f");
   if (v) u.voice = v;
-  u.rate = rate ?? 0.95;
+  u.rate = (rate ?? 0.95) * TTS_CAL;
   // Pitch is the reliable cue when a device has no gender-named voice:
   // narrator 1 · femme 1.35 · homme 0.75 · enfant 1.6 (the "childish" third
   // voice = the female voice pitched up).
@@ -205,7 +209,7 @@ export function speakSequence(
       // One multilingual voice for the whole run — same persona in both
       // languages, the utterance lang switches its accent natively.
       u.voice = opts.voice;
-      u.rate = opts.rate ?? 0.95;
+      u.rate = (opts.rate ?? 0.95) * TTS_CAL;
       u.pitch = 1;
     } else {
       applyVoiceAndPitch(u, plang, p.gender, opts.rate);
@@ -339,7 +343,7 @@ export function speakMixed(
       alive.push(u);
       u.voice = mv;
       u.lang = mv.lang;
-      u.rate = opts.rate ?? 0.95;
+      u.rate = (opts.rate ?? 0.95) * TTS_CAL;
       u.pitch = 1;
       u.onboundary = (e) => {
         if (my === token && !done && typeof e.charIndex === "number") {

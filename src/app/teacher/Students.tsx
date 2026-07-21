@@ -30,7 +30,7 @@ export default function Students({ events, roster }: { events: Ev[]; roster: Lea
             <td className="px-3 py-2 font-bold text-slate-900">
               {l.isTeacher && <span title="teacher account">🧑‍🏫 </span>}
               {l.name}
-              {l.email && <a href={`mailto:${l.email}`} onClick={(e) => e.stopPropagation()} className="ml-2 font-normal text-xs text-slate-500 underline decoration-slate-300 hover:decoration-slate-900">{l.email}</a>}
+              {l.email && <a href={`mailto:${l.email}`} onClick={(e) => e.stopPropagation()} className="ml-2 font-normal text-xs text-slate-500 text-blue-700 underline underline-offset-2 hover:text-blue-900">{l.email}</a>}
             </td>
             <td className="px-3 py-2 text-right text-slate-700 whitespace-nowrap">{fmtWhen(l.lastSeen)}</td>
             <td className="px-3 py-2 text-right text-slate-700">{l.daysActive}</td>
@@ -192,7 +192,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
   const ExLink = ({ k, label }: { k: string; label: string }) => {
     const href = hrefFor(k);
     return href
-      ? <a href={href} target="_blank" rel="noreferrer" className="underline decoration-slate-300 underline-offset-2 hover:decoration-slate-900">{label}</a>
+      ? <a href={href} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{label}</a>
       : <>{label}</>;
   };
 
@@ -259,7 +259,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
       </button>
       <h2 className="text-lg font-black text-slate-900">
         {learner.name}
-        {learner.email && <a href={`mailto:${learner.email}`} className="ml-2 text-sm font-normal text-slate-500 underline decoration-slate-300 hover:decoration-slate-900">{learner.email}</a>}
+        {learner.email && <a href={`mailto:${learner.email}`} className="ml-2 text-sm font-normal text-slate-500 text-blue-700 underline underline-offset-2 hover:text-blue-900">{learner.email}</a>}
         {learner.uids.length > 1 && (
           <span className="ml-2 rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-bold text-indigo-800" title={learner.uids.join(" + ")}>
             {learner.uids.length} accounts merged
@@ -442,7 +442,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
         <TableBox head={["Page", "Views"]}>
           {trail.topPages.map(([path, n]) => (
             <tr key={path} className="border-t border-slate-100">
-              <td className="px-3 py-2 font-bold text-slate-900 break-all"><a href={path} target="_blank" rel="noreferrer" className="underline decoration-slate-300 underline-offset-2 hover:decoration-slate-900">{path}</a></td>
+              <td className="px-3 py-2 font-bold text-slate-900 break-all"><a href={path} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{path}</a></td>
               <td className="px-3 py-2 text-right text-slate-700">{n}</td>
             </tr>
           ))}

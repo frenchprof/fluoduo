@@ -13,6 +13,12 @@ export default function Home() {
       <div className="mx-auto max-w-3xl px-1 py-2">
         {/* Hero + journey both live in HomeDashboard (client: they need
             live progress for the CTA, chips and bar). */}
+        {/* 🏁 Finale entry (Dan, 2026-07-21: the promised all-topic revision) */}
+        <a href="/practice/grammarathon/finale"
+          className="mb-3 flex items-center justify-between rounded-2xl border-[3px] border-slate-900 bg-yellow-100 px-4 py-3 font-bold text-slate-900 shadow-[3px_3px_0_#1f2440] hover:translate-y-[1px] hover:shadow-[2px_2px_0_#1f2440]">
+          <span lang="fr">🏁 GramMarathon Finale — 100 questions du jour, toutes les leçons</span>
+          <span aria-hidden>→</span>
+        </a>
         <HomeDashboard />
       </div>
     </CahierShell>
