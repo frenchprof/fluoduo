@@ -24,7 +24,15 @@ export type EventType =
   | "page.view" // { path }
   | "supplement.open" // { deck, key, label, href }
   | "supplement.answer" // { href, item, correct, mode } — written by the standalone supplement HTML
-  | "tutor.message"; // { chars, text ≤500 } — content recorded (Dan, 2026-07-13: close all gaps)
+  | "tutor.message" // { chars, text ≤500 } — content recorded (Dan, 2026-07-13: close all gaps)
+  // ── Autonomy-instrument events (Dan, 2026-07-21: sens/accueil/retrait
+  // research — help-seeking calibration + input-seeking constructs; designed
+  // pre-DERC so day-one data exists; research USE is consent-gated at export,
+  // collection itself is ordinary course analytics) ─────────────────────────
+  | "help.open" // { path } — a HelpDot "?" opened: solicited guidance
+  | "hint.tap" // { surface, itemId?, sio? } — graduated help-seeking (💡)
+  | "tts.play" // { surface, kind: "word"|"sentence"|"free", source: "user"|"auto" } — input-seeking; only user-initiated plays are analytic signal
+  | "review.self"; // { surface } — learner opens their own mistakes/DéjàRevu
 
 export async function logEvent(
   type: EventType,

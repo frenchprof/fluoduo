@@ -64,6 +64,8 @@ export const onTtsMuteChange = (fn: (m: boolean) => void) =>
   onChannelMuteChange((ch, m) => { if (ch === "voice") fn(m); });
 
 type SpeakOpts = {
+  /** Set on USER-initiated plays only (🔊 buttons): logs a tts.play event for the autonomy instrument. */
+  analytic?: "word" | "sentence" | "free";
   /**
    * When true (default), cancel any in-flight speech before speaking — good for
    * single-card flips. When false ("queue" mode), let utterances play back to
@@ -392,6 +394,14 @@ export function speakMixed(
 
 export function speak(text: string, lang = "fr-FR", opts: SpeakOpts = {}) {
   if (typeof window === "undefined" || !window.speechSynthesis || isChannelMuted("voice")) return;
+  // Autonomy instrument (input-seeking): log ONLY user-initiated plays —
+  // auto-speech (game callouts, per-cell validation) is the app talking, not
+  // the learner seeking input, so it carries no analytic tag.
+  if (opts.analytic) {
+    void import("@/lib/firebase/usage").then((m) =>
+      m.logEvent("tts.play", { surface: location.pathname, kind: opts.analytic!, source: "user" })
+    ).catch(() => {});
+  }
   const synth = window.speechSynthesis;
   const interrupt = opts.interrupt ?? true;
 

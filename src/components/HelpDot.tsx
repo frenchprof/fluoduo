@@ -19,7 +19,13 @@ export default function HelpDot({ className = "" }: { className?: string }) {
     <>
       <button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setOpen(true);
+          // Autonomy instrument: solicited guidance (help-seeking construct)
+          void import("@/lib/firebase/usage").then((m) =>
+            m.logEvent("help.open", { path: typeof location !== "undefined" ? location.pathname : "" })
+          ).catch(() => {});
+        }}
         title="Quick guide"
         aria-label="Open the quick guide"
         className={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-current text-xs font-black opacity-60 transition hover:opacity-100 ${className}`}

@@ -241,7 +241,7 @@ export default function ConjugaisonPage() {
                             <button type="button" lang="fr"
                               onClick={() => {
                                 if (masked) patch(v.id, { peeked: s.peeked.map((x, k) => (k === i ? true : x)) });
-                                speak(conjSpoken(i, form), "fr-FR");
+                                speak(conjSpoken(i, form), "fr-FR", { analytic: "word" });
                               }}
                               className={`w-full rounded-lg border-2 px-2 py-1 font-bold transition ${
                                 masked
@@ -298,7 +298,7 @@ export default function ConjugaisonPage() {
                       const phrase = `${conjSpoken(i, f)} ${sentences[v.id]![i]}`;
                       return (
                         <li key={i} className="flex items-center gap-2">
-                          <button type="button" title="Écouter" onClick={() => speak(phrase, "fr-FR")} className="cahier-btn cahier-btn-sm">🔊</button>
+                          <button type="button" title="Écouter" onClick={() => speak(phrase, "fr-FR", { analytic: "sentence" })} className="cahier-btn cahier-btn-sm">🔊</button>
                           <span lang="fr" className="text-[15px] text-[color:var(--cahier-ink)]">{phrase.charAt(0).toUpperCase() + phrase.slice(1)}.</span>
                         </li>
                       );
