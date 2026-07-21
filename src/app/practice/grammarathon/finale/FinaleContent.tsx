@@ -62,8 +62,8 @@ function sioWeakness(): Record<string, number> {
   return w;
 }
 
-function drawDaily(dateKey: string): string[] {
-  const rnd = mulberry32(hash(dateKey));
+function drawDaily(seedKey: string | number): string[] {
+  const rnd = mulberry32(hash(String(seedKey)));
   const bySio = new Map<string, FinaleItem[]>();
   for (const q of FINALE_BANK) {
     if (!bySio.has(q.sio)) bySio.set(q.sio, []);
@@ -109,17 +109,10 @@ export default function FinaleContent() {
   const graded = useRef<Set<string>>(new Set());
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  useEffect(() => {
-    const dateKey = new Date().toISOString().slice(0, 10);
-    const cacheKey = `fluo:finale:${dateKey}`;
-    try {
-      const cached = localStorage.getItem(cacheKey);
-      if (cached) { setIds(JSON.parse(cached)); return; }
-    } catch { /* fresh draw */ }
-    const draw = drawDaily(dateKey);
-    try { localStorage.setItem(cacheKey, JSON.stringify(draw)); } catch { /* fine */ }
-    setIds(draw);
-  }, []);
+  // Every visit is a FRESH weakness-weighted draw (Dan, 2026-07-21: the
+  // cached daily paper felt dead — and a reload loses typing anyway, so a
+  // frozen draw protected nothing). Seed = clock + entropy.
+  useEffect(() => { setIds(drawDaily(Date.now() + ":" + Math.random())); }, []);
 
   const paper = useMemo(() => {
     if (!ids) return null;
@@ -173,11 +166,22 @@ export default function FinaleContent() {
         <p lang="fr" className="mt-2 text-slate-700">
           Score : <b className="text-emerald-700">{okCount}</b> / {paper.length}
         </p>
-        <p lang="fr" className="mt-1 text-sm text-slate-500">Demain, un nouveau tirage de 100 questions vous attend.</p>
-        <button type="button" onClick={() => setIdx(0)}
-          className="mt-4 rounded-full border-2 border-slate-900 bg-white px-4 py-1.5 text-sm font-bold text-slate-900">
-          ↺ Revoir mes réponses
-        </button>
+        <p lang="fr" className="mt-1 text-sm text-slate-500">Chaque marathon est un nouveau tirage, pondéré sur vos points faibles.</p>
+        <div className="mt-4 flex justify-center gap-2">
+          <button type="button" onClick={() => setIdx(0)}
+            className="rounded-full border-2 border-slate-900 bg-white px-4 py-1.5 text-sm font-bold text-slate-900">
+            ↺ Revoir mes réponses
+          </button>
+          <button type="button"
+            onClick={() => {
+              graded.current = new Set();
+              setTyped({}); setVerdicts({}); setHints({}); setIdx(0);
+              setIds(drawDaily(Date.now() + ":" + Math.random()));
+            }}
+            className="rounded-full border-2 border-slate-900 bg-yellow-100 px-4 py-1.5 text-sm font-bold text-slate-900 shadow-[2px_2px_0_#1f2440]">
+            🎲 Un autre marathon !
+          </button>
+        </div>
       </div>
     );
   }
