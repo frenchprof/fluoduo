@@ -102,7 +102,7 @@ export default function Activities({ events, roster, includeTeachers = false }: 
       <TableBox head={["Game", "Plays", "Finished", "Players", "Avg score", "Best (who)"]}>
         {model.games.map(([key, g]) => (
           <tr key={key} className="border-t border-slate-100">
-            <td className="px-3 py-2 font-bold text-slate-900">{key}</td>
+            <td className="px-3 py-2"><a href={`/games/${key}`} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{key}</a></td>
             <td className="px-3 py-2 text-right text-slate-700">{g.starts}</td>
             <td className="px-3 py-2 text-right text-slate-700">{g.ends}</td>
             <td className="px-3 py-2 text-right font-black text-slate-900">{g.players.size}</td>
@@ -119,7 +119,7 @@ export default function Activities({ events, roster, includeTeachers = false }: 
       <TableBox head={["Deck", "Opens", "People"]}>
         {model.decks.map(([id, d]) => (
           <tr key={id} className="border-t border-slate-100">
-            <td className="px-3 py-2 font-bold text-slate-900">{id}</td>
+            <td className="px-3 py-2"><a href={`/decks/${id}`} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{id}</a></td>
             <td className="px-3 py-2 text-right text-slate-700">{d.opens}</td>
             <td className="px-3 py-2 text-right font-black text-slate-900">{d.people.size}</td>
           </tr>

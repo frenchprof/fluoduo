@@ -10,7 +10,7 @@ import { Kpi, TableBox, SectionTitle } from "./ui";
 
 const DAYS_SHOWN = 14;
 
-export default function Overview({ events, roster, includeTeachers = false }: { events: Ev[]; roster: Learner[]; includeTeachers?: boolean }) {
+export default function Overview({ events, roster, includeTeachers, onStudent }: { events: Ev[]; roster: Learner[]; includeTeachers?: boolean; onStudent?: (uid: string) => void }) {
   const model = useMemo(() => {
     const students = roster.filter((l) => includeTeachers || !l.isTeacher);
     const uids = new Set(students.map((s) => s.uid));
@@ -135,7 +135,7 @@ export default function Overview({ events, roster, includeTeachers = false }: { 
       <TableBox head={["Page", "People"]}>
         {model.topPages.map((p) => (
           <tr key={p.path} className="border-t border-slate-100">
-            <td className="px-3 py-2 font-bold text-slate-900 break-all">{p.path}</td>
+            <td className="px-3 py-2 break-all"><a href={p.path} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{p.path}</a></td>
             <td className="px-3 py-2 text-right font-black text-slate-900">{p.people}</td>
           </tr>
         ))}
@@ -148,7 +148,7 @@ export default function Overview({ events, roster, includeTeachers = false }: { 
       <TableBox head={["Learner", "XP", "Level", "Streak", "Gems"]}>
         {model.topXp.map((s) => (
           <tr key={s.uid} className="border-t border-slate-100">
-            <td className="px-3 py-2 font-bold text-slate-900">{s.board?.name ?? s.name}</td>
+            <td className="px-3 py-2"><button type="button" onClick={() => onStudent?.(s.uid)} className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{s.board?.name ?? s.name}</button></td>
             <td className="px-3 py-2 text-right font-black text-slate-900">{s.board?.xp ?? 0}</td>
             <td className="px-3 py-2 text-right text-slate-700">{s.board?.level ?? 1}</td>
             <td className="px-3 py-2 text-right text-slate-700">{s.board?.streak ?? 0}</td>

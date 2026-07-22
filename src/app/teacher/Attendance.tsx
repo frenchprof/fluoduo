@@ -67,7 +67,7 @@ export default function Attendance({ events, roster, includeTeachers = false }: 
           <TableBox head={["Page", "People", "Views", "Who"]}>
             {day.pages.map((row) => (
               <tr key={row.path} className="border-t border-slate-100 align-top">
-                <td className="px-3 py-2 font-bold text-slate-900 break-all">{row.path}</td>
+                <td className="px-3 py-2 break-all"><a href={row.path} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{row.path}</a></td>
                 <td className="px-3 py-2 text-right font-black text-slate-900">{row.people}</td>
                 <td className="px-3 py-2 text-right text-slate-700">{row.views}</td>
                 <td className="px-3 py-2 text-slate-700">{row.names.join(" · ")}</td>

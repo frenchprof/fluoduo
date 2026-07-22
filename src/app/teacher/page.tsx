@@ -94,6 +94,8 @@ function TeachersOnly() {
 
 function Dashboard({ canWrite }: { canWrite: boolean }) {
   const [panel, setPanel] = useState<PanelKey>("overview");
+  // XP-top-10 names jump straight into that student's modal (Dan, 2026-07-22).
+  const [jumpUid, setJumpUid] = useState<string | null>(null);
   const [events, setEvents] = useState<Ev[] | null>(null);
   const [board, setBoard] = useState<Map<string, BoardRow> | null>(null);
   const [error, setError] = useState(false);
@@ -180,9 +182,9 @@ function Dashboard({ canWrite }: { canWrite: boolean }) {
         ))}
       </div>
       <div className="mt-2">
-        {panel === "overview" && <Overview events={shown ?? []} roster={roster} includeTeachers={includeTeachers} />}
+        {panel === "overview" && <Overview events={shown ?? []} roster={roster} includeTeachers={includeTeachers} onStudent={(uid) => { setJumpUid(uid); setPanel("students"); }} />}
         {panel === "attendance" && <Attendance events={shown ?? []} roster={roster} includeTeachers={includeTeachers} />}
-        {panel === "students" && <Students events={shown ?? []} roster={roster} />}
+        {panel === "students" && <Students events={shown ?? []} roster={roster} initialUid={jumpUid} />}
         {panel === "activities" && <Activities events={shown ?? []} roster={roster} includeTeachers={includeTeachers} />}
         {panel === "pretests" && <Pretests events={shown ?? []} />}
         {panel === "feedback" && <FeedbackPanel nameOf={nameOf} canWrite={canWrite} />}

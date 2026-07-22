@@ -6,6 +6,8 @@
  *  event trail (pages, games, pretest accuracy). The deep stores live under
  *  users/{uid}/… and are fetched per student on drilldown. */
 
+import { CURATED } from "@/content/collections";
+import { SIOS } from "@/content/sios";
 import { useEffect, useMemo, useState } from "react";
 import {
   type Ev, type Learner, type StudentDetail,
@@ -14,8 +16,9 @@ import {
 import { XP_CORRECT, XP_WRONG, XP_SIO_BASE, XP_CONVERSATION } from "@/lib/economy";
 import { Kpi, TableBox, SectionTitle } from "./ui";
 
-export default function Students({ events, roster }: { events: Ev[]; roster: Learner[] }) {
-  const [sel, setSel] = useState<string | null>(null);
+export default function Students({ events, roster, initialUid }: { events: Ev[]; roster: Learner[]; initialUid?: string | null }) {
+  const [sel, setSel] = useState<string | null>(initialUid ?? null);
+  useEffect(() => { if (initialUid) setSel(initialUid); }, [initialUid]);
   const selected = roster.find((l) => l.uid === sel) ?? null;
   return (
     <div>
@@ -181,6 +184,17 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
   // links at wherever there can be links — I am very lost"). A normalized
   // activity key IS a destination: paths link to themselves, prefix keys map
   // to their activity's home page.
+  // Hardest ITEMS need their own resolver: an item id names the exercise
+  // that owns it (Dan, 2026-07-22: "click on the lines to access the
+  // questions in question — pllllease").
+  const itemHref = (item: string): string | null => {
+    if (item.startsWith("finale:")) return "/practice/grammarathon/finale";
+    if (item.startsWith("conj-")) return "/conjugaison";
+    if (item.startsWith("letris:") || item.startsWith("vocabularain:")) return "/games/vocabularain";
+    if (item.startsWith("devine:") || item.startsWith("speculearn:")) return "/practice/speculearn";
+    const c = CURATED.find((x) => x.items?.some((it: { id?: string }) => it.id === item));
+    return c ? `/decks/${c.id}` : null;
+  };
   const hrefFor = (key: string): string | null => {
     if (key.startsWith("/")) return key;
     const m = /^mcq:(.+)$/.exec(key);
@@ -279,7 +293,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
             <Kpi label="XP" value={p?.xp ?? learner.board?.xp ?? 0} />
             <Kpi label="Gems" value={p?.gems ?? learner.board?.gems ?? 0} />
             <Kpi label="Streak" value={p?.streak ?? learner.board?.streak ?? 0} />
-            <Kpi label="SIOs done" value={p?.doneSios?.length ?? 0} sub="of 50" />
+            <Kpi label="SIOs done" value={p?.doneSios?.length ?? 0} sub={`of ${SIOS.length}`} />
             <Kpi label="Badges" value={p?.badges?.length ?? 0} />
             <Kpi label="SRS items" value={srsIds.length} sub={`${srsDue} due now`} />
             <Kpi label="Attempts" value={detail.attemptsCount ?? "—"} sub="audit log" />
@@ -373,7 +387,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
                   <TableBox head={["Item", "Misses"]}>
                     {respStats.hardest.map(([item, n]) => (
                       <tr key={item} className="border-t border-slate-100">
-                        <td className="px-3 py-2 font-bold text-slate-900" lang="fr">{item}</td>
+                        <td className="px-3 py-2 font-bold text-slate-900" lang="fr">{(() => { const h = itemHref(item); return h ? <a href={h} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{item}</a> : item; })()}</td>
                         <td className="px-3 py-2 text-right font-black text-rose-600">{n}</td>
                       </tr>
                     ))}

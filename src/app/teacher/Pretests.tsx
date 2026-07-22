@@ -88,7 +88,7 @@ function PretestSection({ agg }: { agg: PretestAgg }) {
   return (
     <section>
       <h2 className="text-lg font-black text-slate-900">
-        {pretest?.title ?? agg.pretestId}
+        <a href={`/pretests/${agg.pretestId}`} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{pretest?.title ?? agg.pretestId}</a>
       </h2>
       <TableBox head={["Item", "Miss %", "Attempts", "Top wrong pick"]}>
         {agg.items.map((row) => {
