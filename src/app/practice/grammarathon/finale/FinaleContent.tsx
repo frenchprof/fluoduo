@@ -5,7 +5,7 @@
  * 2026-07-21 on Dan's ruling: ONE question at a time, the blank flowing
  * inline within the sentence).
  *
- *  · OPEN REVISION: a fresh 100-question paper every day.
+ *  · OPEN REVISION: a fresh 50-question paper every visit.
  *  · WEAKNESS-WEIGHTED per student: every SIO contributes at least one
  *    question (the 360° floor); remaining slots draw with extra weight on
  *    SIOs where this learner's own SRS shows due or fragile items.
@@ -27,7 +27,7 @@ import { CURATED } from "@/content/collections";
 import { gradeAnswer } from "@/lib/practice/cloze";
 import { loadProgress, recordItemResult } from "@/lib/progress";
 
-const DAILY_N = 100;
+const DAILY_N = 50; // Dan, 2026-07-22: 50, not 100
 
 function mulberry32(seed: number) {
   return function () {
@@ -70,7 +70,15 @@ function drawDaily(seedKey: string | number): string[] {
     bySio.get(q.sio)!.push(q);
   }
   const chosen = new Set<string>();
-  for (const sio of FINALE_SIOS) {
+  // With DAILY_N below the SIO count, the 360-degree floor takes a seeded
+  // shuffle of the SIOs and floors as many as fit — a different SIO sits
+  // out each draw, none is ever systematically skipped.
+  const floorSios = [...FINALE_SIOS];
+  for (let i = floorSios.length - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1));
+    [floorSios[i], floorSios[j]] = [floorSios[j], floorSios[i]];
+  }
+  for (const sio of floorSios.slice(0, Math.min(DAILY_N, floorSios.length))) {
     const pool = bySio.get(sio)!;
     chosen.add(pool[Math.floor(rnd() * pool.length)].id);
   }
