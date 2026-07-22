@@ -135,7 +135,7 @@ export default function RoadMap({ progress, activeId, accent }: { progress: Prog
                 <div key="finale" style={cell} className={`relative flex items-center justify-center ${hue}`}>
                   <Link
                     href="/practice/grammarathon/finale"
-                    title="GramMarathon Final — 100 questions, toutes les leçons, pondérées sur vos points faibles"
+                    title="GramMarathon Final — 50 questions, toutes les leçons, pondérées sur vos points faibles"
                     aria-label="GramMarathon Final"
                     className="relative z-[1] flex h-11 w-11 items-center justify-center rounded-xl border-2 border-slate-900 text-lg font-black shadow-[0_3px_8px_rgba(0,0,0,0.35)] transition hover:-translate-y-0.5"
                     style={{ background: "repeating-conic-gradient(#1f2440 0% 25%, #ffffff 0% 50%) 0 0/12px 12px", color: "#1f2440" }}
