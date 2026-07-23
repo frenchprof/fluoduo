@@ -4,13 +4,17 @@
  *  pages, and the XP top 10. Teacher accounts are excluded from every count
  *  so Dan's own browsing never inflates the class picture. */
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { type Ev, type Learner, SG_DAY_KEY, SG_DAY_LABEL, str } from "./data";
 import { Kpi, TableBox, SectionTitle } from "./ui";
 
 const DAYS_SHOWN = 14;
 
 export default function Overview({ events, roster, includeTeachers, onStudent }: { events: Ev[]; roster: Learner[]; includeTeachers?: boolean; onStudent?: (uid: string) => void }) {
+  // Per-day drill-down (Dan, 2026-07-22: "we can always [make] a page for
+  // it, don't tell me you are not capable of something liddat"). A day IS a
+  // page now: tap the row, get that day's pages, people, games, pretests.
+  const [dayOpen, setDayOpen] = useState<string | null>(null);
   const model = useMemo(() => {
     const students = roster.filter((l) => includeTeachers || !l.isTeacher);
     const uids = new Set(students.map((s) => s.uid));
@@ -119,7 +123,7 @@ export default function Overview({ events, roster, includeTeachers, onStudent }:
       <TableBox head={["Day", "Learners", "Page views", "Games", "Pretest answers"]}>
         {model.days.map((d) => (
           <tr key={d.key} className="border-t border-slate-100">
-            <td className="px-3 py-2 font-bold text-slate-900">{d.label}</td>
+            <td className="px-3 py-2"><button type="button" onClick={() => setDayOpen(d.key)} className="text-left font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{d.label}</button></td>
             <td className="px-3 py-2 text-right font-black text-slate-900">{d.peopleCount}</td>
             <td className="px-3 py-2 text-right text-slate-700">{d.views}</td>
             <td className="px-3 py-2 text-right text-slate-700">{d.plays}</td>
@@ -159,6 +163,66 @@ export default function Overview({ events, roster, includeTeachers, onStudent }:
           <tr><td className="px-3 py-3 text-slate-500" colSpan={5}>Nobody on the leaderboard yet.</td></tr>
         )}
       </TableBox>
+      {dayOpen && (() => {
+        const dayEvents = events.filter((e) => e.ts && SG_DAY_KEY.format(e.ts) === dayOpen);
+        const pages = new Map<string, { views: number; people: Set<string> }>();
+        const people = new Map<string, number>();
+        const games = new Map<string, number>();
+        let pretests = 0;
+        for (const ev of dayEvents) {
+          people.set(ev.uid, (people.get(ev.uid) ?? 0) + 1);
+          if (ev.type === "page.view") {
+            const path = String((ev.payload as { path?: unknown })?.path ?? "");
+            if (path) {
+              let p = pages.get(path);
+              if (!p) pages.set(path, (p = { views: 0, people: new Set() }));
+              p.views += 1; p.people.add(ev.uid);
+            }
+          } else if (ev.type === "game.start") {
+            const g = String((ev.payload as { game?: unknown })?.game ?? "?");
+            games.set(g, (games.get(g) ?? 0) + 1);
+          } else if (ev.type === "pretest.answer") pretests += 1;
+        }
+        const nameOf = (uid: string) => roster.find((l) => l.uid === uid)?.name ?? uid.slice(0, 8);
+        const label = model.days.find((d) => d.key === dayOpen)?.label ?? dayOpen;
+        return (
+          <div className="fixed inset-0 z-40 flex items-start justify-center overflow-y-auto bg-slate-900/40 p-4" onClick={() => setDayOpen(null)}>
+            <div className="mt-8 w-full max-w-2xl rounded-2xl border-[3px] border-slate-900 bg-white p-5 shadow-[4px_4px_0_#1f2440]" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-black text-slate-900">{label}</h3>
+                <button type="button" onClick={() => setDayOpen(null)} className="rounded-full border-2 border-slate-300 px-2.5 py-0.5 font-bold text-slate-600">✕</button>
+              </div>
+              <p className="mt-1 text-sm text-slate-500">{people.size} learners · {dayEvents.length} events · {pretests} pretest answers</p>
+              <h4 className="mt-4 text-sm font-black uppercase tracking-wide text-slate-500">Pages that day</h4>
+              {pages.size > 0 ? (
+                <table className="mt-1 w-full text-sm"><tbody>
+                  {[...pages.entries()].sort((a, b) => b[1].views - a[1].views).map(([path, p]) => (
+                    <tr key={path} className="border-t border-slate-100">
+                      <td className="px-2 py-1.5 break-all"><a href={path} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{path}</a></td>
+                      <td className="px-2 py-1.5 text-right text-slate-700">{p.views} views · {p.people.size} 👤</td>
+                    </tr>
+                  ))}
+                </tbody></table>
+              ) : <p className="mt-1 text-sm text-slate-500">No page views recorded that day.</p>}
+              <h4 className="mt-4 text-sm font-black uppercase tracking-wide text-slate-500">Who was here</h4>
+              <div className="mt-1 flex flex-wrap gap-1.5">
+                {[...people.entries()].sort((a, b) => b[1] - a[1]).map(([uid, n]) => (
+                  <button key={uid} type="button" onClick={() => onStudent?.(uid)}
+                    className="rounded-full border-2 border-slate-200 bg-slate-50 px-2.5 py-0.5 text-sm font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">
+                    {nameOf(uid)} <span className="font-normal text-slate-500">·{n}</span>
+                  </button>
+                ))}
+              </div>
+              {games.size > 0 && (
+                <>
+                  <h4 className="mt-4 text-sm font-black uppercase tracking-wide text-slate-500">Games started</h4>
+                  <p className="mt-1 text-sm text-slate-700">{[...games.entries()].map(([g, n]) => `${g} ×${n}`).join(" · ")}</p>
+                </>
+              )}
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
