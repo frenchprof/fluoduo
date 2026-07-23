@@ -43,6 +43,7 @@ function cellsFor(c: Collection): Cell[] {
     { emoji: "🌧️", title: "VocabulaRain", href: getLetrisSet(c.id.replace("-letris", "")) ? `/games/vocabularain/${c.id.replace("-letris", "")}` : null },
     { emoji: "🧰", title: "LexicaLater", href: isLexReadyId(c.id) ? `/games/lexicalater/${c.id}` : null },
     { emoji: "🧩", title: "Compose It", href: composeBankForDeck(c.id) ? `/games/compose/${composeBankForDeck(c.id)!.id}` : null },
+    { emoji: "🏃", title: "GramMarathon", href: c.items?.some((it) => it.gap && it.fr?.includes(it.gap)) ? `/practice/grammarathon/${c.id}` : null },
     { emoji: "🎙️", title: "WorDrill", href: `/practice/say-it/${c.id}` },
   ];
 }

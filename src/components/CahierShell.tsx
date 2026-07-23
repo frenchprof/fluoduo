@@ -531,6 +531,12 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     ...(composeBank
       ? [{ key: "compose", label: "Compose It", emoji: "🧩", href: `/games/compose/${composeBank.id}`, hint: "build dialogues" } as ShellTab]
       : []),
+    // Resurrected as a NAMED activity (Dan, 2026-07-22) — the per-deck typed
+    // sprint, distinct from the Final's authored bank. Only for decks whose
+    // items carry gaps, so the marathon is never empty.
+    ...(CURATED.find((c) => c.id === collectionId)?.items?.some((it: { gap?: string; fr?: string }) => it.gap && it.fr?.includes(it.gap))
+      ? [{ key: "grammarathon", label: "GramMarathon", emoji: "🏃", href: `/practice/grammarathon/${collectionId}`, hint: "typed grammar sprint" } as ShellTab]
+      : []),
     // né « Say It » — renamed WorDrill (Dan, 2026-07-19); key stays "say" so
     // SioModal embedding and withActive callers keep working.
     { key: "say", label: "WorDrill", emoji: "🎙️", href: `/practice/say-it/${collectionId}`, hint: "pronunciation drill" },

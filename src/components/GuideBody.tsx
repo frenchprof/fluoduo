@@ -8,20 +8,25 @@ import Link from "next/link";
 
 /** "Drill with these": every activity as an iPhone-style app icon — name
  *  beneath, the short phrase on mouseover. */
-const ACTIVITIES: { emoji: string; name: string; hue: number; what: string }[] = [
+const ACTIVITIES: { emoji: string; name: string; hue: number; what: string; href: string }[] = [
   // Canonical app order (Dan, 2026-07-19): SpecuLearn-PreTest · Lesson +
   // Flip-It · ConjugaZone · VocabulaRain · Lexicalator · Composer · ChaTutor ·
-  // DéjàRevu — WorDrill (né Say It) rides along at the end.
-  { emoji: "🔮", name: "SpecuLearn", hue: 3, what: "guess first — then the answer" },
-  { emoji: "📚", name: "Lesson", hue: 0, what: "the rule, then drills" },
-  { emoji: "🃏", name: "Flip It", hue: 1, what: "flashcards" },
-  { emoji: "🔤", name: "ConjugaZone", hue: 2, what: "conjugation sprints" },
-  { emoji: "🌧️", name: "Vocabularain", hue: 3, what: "sort the falling words" },
-  { emoji: "🧰", name: "LexicaLater", hue: 4, what: "build the words" },
-  { emoji: "🧩", name: "Compose It", hue: 5, what: "build dialogues" },
-  { emoji: "🤖", name: "ChaTutor", hue: 5, what: "chat, role-play, get corrected" },
-  { emoji: "🔁", name: "DéjàRevu", hue: 0, what: "resurfaces your misses at the right moment" },
-  { emoji: "🎙️", name: "WorDrill", hue: 4, what: "speak — the mic checks (per deck or all decks)" },
+  // DéjàRevu — WorDrill (né Say It) rides along at the end. Every tile LINKS
+  // to its page (Dan, 2026-07-22: "the HELP page is missing links to main
+  // pages, e.g. GramMarathon") — and the marathons join the family.
+  { emoji: "🔮", name: "SpecuLearn", hue: 3, what: "guess first — then the answer", href: "/practice/speculearn" },
+  { emoji: "📚", name: "Lesson", hue: 0, what: "the rule, then drills", href: "/activities" },
+  { emoji: "🃏", name: "Flip It", hue: 1, what: "flashcards", href: "/activities" },
+  { emoji: "🔤", name: "ConjugaZone", hue: 2, what: "conjugation sprints", href: "/conjugaison" },
+  { emoji: "🌧️", name: "Vocabularain", hue: 3, what: "sort the falling words", href: "/games/vocabularain" },
+  { emoji: "🧰", name: "LexicaLater", hue: 4, what: "build the words", href: "/games/lexicalater" },
+  { emoji: "🧩", name: "Compose It", hue: 5, what: "build dialogues", href: "/activities" },
+  { emoji: "🏃", name: "GramMarathon", hue: 2, what: "typed grammar sprints, deck by deck", href: "/activities" },
+  { emoji: "🏁", name: "GramMarathon Final", hue: 1, what: "50 questions, toutes les leçons — every visit a new draw", href: "/practice/grammarathon/finale" },
+  { emoji: "🤖", name: "ChaTutor", hue: 5, what: "chat, role-play, get corrected", href: "/tutor" },
+  { emoji: "🔁", name: "DéjàRevu", hue: 0, what: "resurfaces your misses at the right moment", href: "/reviser" },
+  { emoji: "🎙️", name: "WorDrill", hue: 4, what: "speak — the mic checks (per deck or all decks)", href: "/practice/wordrill" },
+  { emoji: "🗣️", name: "VoixLà", hue: 3, what: "hear any French, at your speed", href: "/tts" },
 ];
 
 const STEPS: { hue: number; what: React.ReactNode }[] = [
@@ -57,13 +62,13 @@ export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
                 <ul className="mt-3 grid grid-cols-3 gap-x-2 gap-y-3 sm:grid-cols-6">
                   {ACTIVITIES.map((a) => (
                     <li key={a.name} className={`fluo-h-${a.hue} flex flex-col items-center gap-1`} title={a.what}>
-                      <span
-                        aria-hidden
-                        className="flex h-12 w-12 items-center justify-center rounded-2xl border-2 bg-white/80 text-2xl shadow-[2px_2px_0_rgba(0,0,0,0.12)]"
+                      <Link
+                        href={a.href}
+                        className="flex h-12 w-12 items-center justify-center rounded-2xl border-2 bg-white/80 text-2xl shadow-[2px_2px_0_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5"
                         style={{ borderColor: "var(--fluo-card-accent)" }}
                       >
                         {a.emoji}
-                      </span>
+                      </Link>
                       <span className="max-w-full truncate text-center text-[11px] font-bold leading-tight text-[color:var(--cahier-ink)]">
                         {a.name}
                       </span>
