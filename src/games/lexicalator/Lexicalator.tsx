@@ -411,8 +411,19 @@ export default function Lexicalator({
         }
         return true;
       };
-      const laneAlt = chests.find((c) => fits(c.entry));
-      const queueIdx = laneAlt ? -1 : queue.findIndex((e) => fits(e));
+      // MORPH FENCE (Dan, 2026-07-23: he SAW Grèce and HEARD Turquie —
+      // "unforgivable"). Sibling-morph exists for grammatical variants of ONE
+      // word (beige→beiges, acteur→actrice), never for different lexemes: an
+      // alt only qualifies if it shares the entry's word family — same first
+      // three letters of the bare word, or same English gloss. A fragment of
+      // another country now rattles (fairness rule) instead of secretly
+      // transmuting the chest.
+      const bare = (e: { fr: string }) => e.fr.toLowerCase().replace(/^(le |la |les |l'|un |une |des )/, '');
+      const sameFamily = (e: { fr: string; en?: string }) =>
+        bare(e).slice(0, 3) === bare(entry).slice(0, 3) ||
+        (!!e.en && !!entry.en && e.en.toLowerCase() === entry.en.toLowerCase());
+      const laneAlt = chests.find((c) => c.entry.id !== entry.id && sameFamily(c.entry) && fits(c.entry));
+      const queueIdx = laneAlt ? -1 : queue.findIndex((e) => sameFamily(e) && fits(e));
       const alt = laneAlt?.entry ?? (queueIdx >= 0 ? queue[queueIdx] : undefined);
       if (alt) {
         const marks = blankFill(alt);
