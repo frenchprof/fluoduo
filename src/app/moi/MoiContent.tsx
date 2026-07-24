@@ -123,7 +123,10 @@ export default function MoiContent() {
   // per-SIO strength from local SRS (works signed-out too)
   const sioStats = useMemo(() => {
     if (!p) return [];
-    const now = Date.now();
+    // SOLID = the item has EARNED a multi-day interval (answered correctly
+    // enough to be trusted for days). Due-for-refresh is NOT weakness — with
+    // the old due-based test, any practice gap showed 0% everywhere (Dan,
+    // 2026-07-24). Due-ness lives in the review count, where it belongs.
     return (SIOS as { id: string; topic: string; unit: number; collectionId: string }[]).map((s) => {
       const c = CURATED.find((x) => x.id === s.collectionId);
       const ids = [...((c?.items ?? []).map((it: { id?: string }) => it.id).filter(Boolean) as string[])];
@@ -132,12 +135,12 @@ export default function MoiContent() {
         const st = p.itemSrs[id];
         if (!st) continue;
         tracked += 1;
-        if (st.due <= now || st.intervalDays <= 1) bad += 1;
+        if (st.intervalDays <= 1) bad += 1;
       }
       for (const [id, st] of Object.entries(p.itemSrs)) {
         if (!id.startsWith(`finale:${s.id}:`)) continue;
         tracked += 1;
-        if (st.due <= now || st.intervalDays <= 1) bad += 1;
+        if (st.intervalDays <= 1) bad += 1;
       }
       return { ...s, tracked, bad };
     });
