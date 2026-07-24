@@ -13,6 +13,7 @@ import { useEffect, useMemo, useState } from "react";
 import { SIOS } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import { loadProgress, type Progress } from "@/lib/progress";
+import { useAuthUser } from "@/lib/firebase/auth";
 
 const HUES = ["var(--cahier-t0)", "var(--cahier-t1)", "var(--cahier-t2)", "var(--cahier-t3)", "var(--cahier-t4)", "var(--cahier-t5)"] as const;
 
@@ -55,16 +56,20 @@ export default function MoiContent() {
   const [resp, setResp] = useState<Resp[] | null>(null);
   const [respState, setRespState] = useState<"loading" | "ready" | "signedout" | "error">("loading");
 
+  // Auth state arrives ASYNCHRONOUSLY — checking auth.currentUser on mount
+  // told signed-in users to sign in (Dan, 2026-07-24). useAuthUser waits:
+  // undefined = still resolving, null = truly signed out.
+  const user = useAuthUser();
+  useEffect(() => { setP(loadProgress()); }, []);
   useEffect(() => {
-    setP(loadProgress());
+    if (user === undefined) return; // still resolving — keep "loading"
     void (async () => {
       try {
-        const [{ auth }, { getDocs, collection }, { db }] = await Promise.all([
-          import("@/lib/firebase/client"),
+        const [{ getDocs, collection }, { db }] = await Promise.all([
           import("firebase/firestore"),
           import("@/lib/firebase/db"),
         ]);
-        const uid = auth.currentUser?.uid;
+        const uid = user?.uid;
         if (!uid) { setRespState("signedout"); return; }
         const snap = await getDocs(collection(db, "users", uid, "responses"));
         const rows: Resp[] = [];
@@ -83,7 +88,7 @@ export default function MoiContent() {
         setRespState("error");
       }
     })();
-  }, []);
+  }, [user]);
 
   // ── the quantitative picture, ranked (Dan: "% and so on") ──
   const byExercise = useMemo(() => {
