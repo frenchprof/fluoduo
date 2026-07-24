@@ -47,6 +47,13 @@ export default function ProfilePage() {
       <div className="mx-auto max-w-xl px-3 py-5">
         <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">🎖️ Votre profil <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· Your profile</span></h1>
 
+        {/* Door to the learning-data mirror (Dan, 2026-07-23: access from the
+            user info page). Profil = the economy; /moi = the learning. */}
+        <a href="/moi" className="mt-3 flex items-center justify-between rounded-2xl border-[3px] border-slate-900 bg-yellow-100 px-4 py-3 font-black text-slate-900 shadow-[3px_3px_0_#1f2440] transition hover:-translate-y-0.5">
+          <span>📊 Mes progrès — vos forces, vos faiblesses, vos conseils</span>
+          <span aria-hidden>→</span>
+        </a>
+
         {/* Level + XP */}
         <section className="mt-4 rounded-2xl border-2 border-[color:var(--cahier-ink)] bg-white p-5">
           <div className="flex items-center gap-4">
