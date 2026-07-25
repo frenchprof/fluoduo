@@ -12,6 +12,9 @@
 /** alias email → canonical email (all lowercase). */
 export const ALIAS_EMAILS: Record<string, string> = {
   "chosuyeon33@gmail.com": "sjc031103@gmail.com",
+  // Jovan Tan signed in with two accounts (Auth reconciliation, 2026-07-25):
+  // jovantanyk (22 Jun, abandoned) folds into jovantan630 (active).
+  "jovantanyk@gmail.com": "jovantan630@gmail.com",
   // Dan's own sign-ins (2026-07-16: "they are all me") — one teacher row.
   "monsieur.chan@gmail.com": "dan@chank.wang",
   "kwangguan@gmail.com": "dan@chank.wang",
@@ -28,7 +31,9 @@ export const HIDDEN_ROSTER_NAMES = new Set([
   "Chee How Chua",
   "Kavita Devi",
 ]);
-export const HIDDEN_ROSTER_UID_PREFIXES = ["a529sUZM"];
+// a529sUZM (QiZhi) UN-hidden 2026-07-25: identified as tracypang0728 —
+// a real ST2FR26 student, not a test account (Auth-console reconciliation).
+export const HIDDEN_ROSTER_UID_PREFIXES: string[] = [];
 
 /** alias board display-name → canonical board display-name. Covers rows
  *  already written before the email anchoring below existed. */
