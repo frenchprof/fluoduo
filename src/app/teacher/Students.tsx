@@ -20,7 +20,17 @@ import { Kpi, TableBox, SectionTitle } from "./ui";
  *  emails to filter (blank = everyone). Reuses fetchStudentDetail, so aliased
  *  accounts merge into one row exactly as the modal does. */
 function ExportCsv({ roster }: { roster: Learner[] }) {
-  const [emails, setEmails] = useState("");
+  // Dan's ST2FR26 roster baked in as the default (2026-07-25) — the export
+  // he wants is one click, not one paste. Editable for other cohorts.
+  const DEFAULT_EMAILS = [
+    "sjc031103@gmail.com", "chosuyeon33@gmail.com", "e1523337@u.nus.edu",
+    "jovantan630@gmail.com", "jungyj456@gmail.com", "laihaotian0524@gmail.com",
+    "preethicannot@gmail.com", "jovantanyk@gmail.com", "1241882085yjg@gmail.com",
+    "youth.romanticomedy@gmail.com", "junekeon1234@gmail.com", "tracypang0728@gmail.com",
+    "a.muhaimin2001@gmail.com", "mattlow1504@gmail.com", "rr7280523@gmail.com",
+    "lels.adventures@gmail.com", "dorcashoon221@gmail.com", "jordynwinnie@gmail.com",
+  ].join("\n");
+  const [emails, setEmails] = useState(DEFAULT_EMAILS);
   const [busy, setBusy] = useState(false);
   const run = async () => {
     setBusy(true);
