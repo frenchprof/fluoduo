@@ -294,15 +294,11 @@ export default function CahierShell({
 
           <div className="sticky top-0 z-10 border-b-2 border-[color:var(--cahier-ink)]/15 bg-[color:var(--cahier-paper)]/90 backdrop-blur">
             <div className={`flex items-center justify-between gap-2 py-3 pr-3 sm:pr-5 ${nested ? "pl-5 sm:pl-7" : "pl-12 sm:pl-16"}`}>
-              {active === "home" ? (
-                <span className="cahier-display text-lg font-black text-[color:var(--cahier-ink)]">
-                  <span className="cahier-hl">FluoLingo</span>
-                </span>
-              ) : (
-                <Link href="/" className="cahier-display text-lg font-black text-[color:var(--cahier-ink)]">
-                  ← <span className="cahier-hl">FluoLingo</span>
-                </Link>
-              )}
+              {/* The wordmark is ALWAYS a door home (Dan, 2026-07-25) — on
+                  the home page it simply arrives where you already are. */}
+              <Link href="/" className="cahier-display text-lg font-black text-[color:var(--cahier-ink)]">
+                {active !== "home" && <>← </>}<span className="cahier-hl">FluoLingo</span>
+              </Link>
               <div className="flex shrink-0 items-center gap-1 sm:gap-2">
                 {/* Icon strip, macOS-menu-bar style (Dan, 2026-07-08): 🔍 opens
                     the floating search, 🏆 floats the ranking, 🏠 goes home —
