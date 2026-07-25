@@ -20,34 +20,44 @@ import { Kpi, TableBox, SectionTitle } from "./ui";
  *  emails to filter (blank = everyone). Reuses fetchStudentDetail, so aliased
  *  accounts merge into one row exactly as the modal does. */
 function ExportCsv({ roster }: { roster: Learner[] }) {
-  // Dan's ST2FR26 roster baked in as the default (2026-07-25) — the export
-  // he wants is one click, not one paste. Editable for other cohorts.
-  const DEFAULT_EMAILS = [
-    "sjc031103@gmail.com", "chosuyeon33@gmail.com", "e1523337@u.nus.edu",
-    "jovantan630@gmail.com", "jungyj456@gmail.com", "laihaotian0524@gmail.com",
-    "preethicannot@gmail.com", "jovantanyk@gmail.com", "1241882085yjg@gmail.com",
-    "youth.romanticomedy@gmail.com", "junekeon1234@gmail.com", "tracypang0728@gmail.com",
-    "a.muhaimin2001@gmail.com", "mattlow1504@gmail.com", "rr7280523@gmail.com",
-    "lels.adventures@gmail.com", "dorcashoon221@gmail.com", "jordynwinnie@gmail.com",
-  ].join("\n");
-  const [emails, setEmails] = useState(DEFAULT_EMAILS);
+  // UID-keyed roster (Dan's Auth-console reconciliation, 2026-07-25). Email
+  // matching silently dropped learners whose telemetry carries no email
+  // (Su Yeon, wenyi, QiZhi) — UIDs are authoritative. Every person exports a
+  // row ALWAYS: zeros are visible, absence is not.
+  const CLASS: { who: string; email: string; uids: string[] }[] = [
+    { who: "Su Yeon", email: "sjc031103@gmail.com", uids: ["8IcpkURn0ldOXLiApCdhdsqQoxW2", "ZKvLZyfOfLZFYAEUoTzApQMYClf2"] },
+    { who: "Kai Xin Chen", email: "e1523337@u.nus.edu", uids: ["1S70OPFAAVPEsu6vOr8JZdk2U022"] },
+    { who: "wenyi zhang", email: "rr7280523@gmail.com", uids: ["C2sWIzLKdseHKUxgh67yPp3o7Rq1"] },
+    { who: "Jovan Tan", email: "jovantan630@gmail.com", uids: ["k1sTtpYd4ZXCFKYQU4OiBA4dD4l1", "6uyQO9YgBTRLC5Dw1JuU7Fe2cTB3"] },
+    { who: "청용", email: "jungyj456@gmail.com", uids: ["pyjnl9OaQcO8L2BXDWEFsfEB9kq2"] },
+    { who: "hao tiannn", email: "laihaotian0524@gmail.com", uids: ["JgMNsLKm2MNHWQwvNvRJJQRqc523"] },
+    { who: "preethi", email: "preethicannot@gmail.com", uids: ["OwiJwWynkrh0xqHgUWrjEJFqjVF3"] },
+    { who: "JG Yang", email: "1241882085yjg@gmail.com", uids: ["z60kqOZYZONTswgvhEJIZ4zWmLY2"] },
+    { who: "Parker Jack", email: "youth.romanticomedy@gmail.com", uids: ["yzb1vTPlhIbxgqwTy21wVUYRudr1"] },
+    { who: "JUNEKEON SUH", email: "junekeon1234@gmail.com", uids: ["iPWnxPgkzieTfJex4Z2Gtu0mfHR2"] },
+    { who: "QiZhi Pang", email: "tracypang0728@gmail.com", uids: ["a529sUZMsYUgKdWn4rJXvPu4A6V2"] },
+    { who: "Muhai", email: "a.muhaimin2001@gmail.com", uids: ["EkOHxvkcbOeb71CnIviR1RaON7L2"] },
+    { who: "Matthew Low", email: "mattlow1504@gmail.com", uids: ["kBwnJxptXQPVbbE22eEdFm0yDqw2"] },
+    { who: "Lela Malati", email: "lels.adventures@gmail.com", uids: ["Sn8AsHunJEbYcyLEedtWYZUODI73"] },
+    { who: "Dorcas Hoon", email: "dorcashoon221@gmail.com", uids: ["zLoCjj7H7ubON34tl2u1N7y8c7b2"] },
+    { who: "Jordan Khong", email: "jordynwinnie@gmail.com", uids: ["kQVWo2UmsoZrFhQvThBWeRS1nN03"] },
+  ];
   const [busy, setBusy] = useState(false);
   const run = async () => {
     setBusy(true);
     try {
-      const wanted = new Set(emails.toLowerCase().split(/[\s,;]+/).filter((w) => w.includes("@")));
-      const rows = roster.filter((l) => !l.isTeacher && (wanted.size === 0 || (l.email && wanted.has(l.email.toLowerCase()))));
       const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
-      const lines = ["Name,Email,UID,XP,Streak,SIOs done,Answers,Accuracy %,Last seen,Days active"];
-      for (const l of rows) {
-        const d = await fetchStudentDetail(l.uids);
+      const lines = ["Name,Email,UID(s),XP,Streak,SIOs done,Answers,Accuracy %,Last seen,Days active"];
+      for (const person of CLASS) {
+        const l = roster.find((r) => r.uids.some((u) => person.uids.includes(u))) ?? null;
+        const d = await fetchStudentDetail(person.uids);
         const answers = d.responses.length;
         const missed = d.responses.filter((r) => str(r.status) === "missed").length;
         const acc = answers > 0 ? Math.round(100 * (1 - missed / answers)) : "";
         lines.push([
-          esc(l.board?.name ?? l.name), esc(l.email), esc(l.uids.join(" + ")),
+          esc(person.who), esc(person.email), esc(person.uids.join(" + ")),
           d.progress?.xp ?? 0, d.progress?.streak ?? 0, d.progress?.doneSios?.length ?? 0,
-          answers, acc, esc(l.lastSeen ? fmtWhen(l.lastSeen) : ""), l.daysActive,
+          answers, acc, esc(l?.lastSeen ? fmtWhen(l.lastSeen) : ""), l?.daysActive ?? "",
         ].join(","));
       }
       const blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
@@ -61,9 +71,7 @@ function ExportCsv({ roster }: { roster: Learner[] }) {
   return (
     <div className="mt-3 rounded-2xl border-2 border-slate-200 bg-white p-3">
       <p className="text-sm font-black text-slate-700">⬇️ Export analytics summary (CSV)</p>
-      <textarea value={emails} onChange={(e) => setEmails(e.target.value)} rows={2}
-        placeholder="Paste emails to filter (any separator) — leave blank for the whole class"
-        className="mt-1.5 w-full rounded-xl border-2 border-slate-200 px-2 py-1 text-xs" />
+      <p className="mt-1 text-xs text-slate-500">ST2FR26 · 16 students, UID-matched (aliases merged) — one row each, always.</p>
       <button type="button" onClick={() => void run()} disabled={busy}
         className="mt-1.5 rounded-full border-2 border-slate-900 bg-yellow-100 px-4 py-1 text-sm font-black text-slate-900 shadow-[2px_2px_0_#1f2440] disabled:opacity-50">
         {busy ? "Building…" : "⬇️ Download CSV"}
