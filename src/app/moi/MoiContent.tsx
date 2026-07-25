@@ -13,6 +13,7 @@ import { useEffect, useMemo, useState } from "react";
 import { SIOS } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import { loadProgress, type Progress } from "@/lib/progress";
+import { SortableTable } from "@/lib/sortTable";
 import { useAuthUser } from "@/lib/firebase/auth";
 
 const HUES = ["var(--cahier-t0)", "var(--cahier-t1)", "var(--cahier-t2)", "var(--cahier-t3)", "var(--cahier-t4)", "var(--cahier-t5)"] as const;
@@ -208,10 +209,11 @@ export default function MoiContent() {
           {byExercise.length > 0 ? (
             <>
               <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Ranked: where you miss most, first — start at the top</p>
-              <table className="mt-1 w-full text-sm">
-                <thead><tr className="text-left text-xs uppercase text-slate-400"><th className="px-2 py-1">Exercise</th><th className="px-2 py-1 text-right">✓</th><th className="px-2 py-1 text-right">✗</th><th className="px-2 py-1 text-right">Score</th><th className="px-2 py-1 text-right">Last</th></tr></thead>
-                <tbody>
-                  {byExercise.map((g) => (
+              <div className="mt-1">
+                <SortableTable
+                  head={["Exercise", "✓", "✗", "Score", "Last"]}
+                  headAlign={(h, i) => (i === 0 ? "text-left" : "text-right")}
+                  rows={byExercise.map((g) => (
                     <tr key={g.label} className="border-t border-slate-100">
                       <td className="px-2 py-1.5 font-bold">{g.href ? <a href={g.href} className="text-blue-700 underline underline-offset-2 hover:text-blue-900">{g.label}</a> : g.label}</td>
                       <td className="px-2 py-1.5 text-right text-emerald-700">{g.ok}</td>
@@ -220,8 +222,8 @@ export default function MoiContent() {
                       <td className="px-2 py-1.5 text-right text-slate-400">{fmtWhen(g.last)}</td>
                     </tr>
                   ))}
-                </tbody>
-              </table>
+                />
+              </div>
             </>
           ) : respState === "ready" ? (
             <p className="text-sm text-slate-500">No recorded answers yet — practise anywhere and your picture appears here.</p>
@@ -277,10 +279,21 @@ export default function MoiContent() {
                 </tr>,
               );
             }
+            const flat = ordered.map((r) => (
+              <tr key={r.ts + r.item + Math.random()} className="border-t border-slate-100">
+                <td className="px-2 py-1 text-xs text-slate-400">{r.ts ? new Date(r.ts).toLocaleString("en-SG", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "—"}</td>
+                <td className="px-2 py-1 font-bold text-slate-800" lang="fr">{r.item}{r.given && <span className="font-normal text-slate-500"> · «{r.given}»</span>}</td>
+                <td className="px-2 py-1 text-center">{r.status === "missed" ? <span className="text-rose-600">✗</span> : <span className="text-emerald-700">✓</span>}</td>
+                <td className="px-2 py-1 text-xs">{r.activityId.startsWith("/") ? <a href={r.activityId} className="font-bold text-blue-700 underline underline-offset-2">{labelActivity(r.activityId)}</a> : labelActivity(r.activityId)}</td>
+              </tr>
+            ));
+            void rows;
             return (
               <>
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Your complete answer history — every response, newest first</p>
-                <table className="mt-1 w-full text-sm"><tbody>{rows}</tbody></table>
+                <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Your complete answer history — sortable by every column</p>
+                <div className="mt-1">
+                  <SortableTable head={["When", "Item", "✓/✗", "Activity"]} headAlign={(h, i) => (i === 2 ? "text-center" : "text-left")} rows={flat} />
+                </div>
               </>
             );
           })() : (

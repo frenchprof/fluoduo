@@ -2,6 +2,7 @@
 
 /** Tiny shared pieces for the teacher dashboard panels. */
 
+import { SortableTable } from "@/lib/sortTable";
 import type { ReactNode } from "react";
 
 export function Kpi({ label, value, sub }: { label: string; value: ReactNode; sub?: string }) {
@@ -15,20 +16,16 @@ export function Kpi({ label, value, sub }: { label: string; value: ReactNode; su
 }
 
 export function TableBox({ head, children }: { head: string[]; children: ReactNode }) {
+  // Every table on the teacher page renders through here — so this one
+  // delegation makes ALL records sortable by every column (Dan, 2026-07-25).
+  const rows = Array.isArray(children) ? children.flat() : [children];
   return (
     <div className="mt-2 overflow-x-auto rounded-xl border-2 border-slate-200 bg-white">
-      <table className="min-w-full text-sm">
-        <thead className="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
-          <tr>
-            {head.map((h, i) => (
-              <th key={h + i} className={`px-3 py-2 ${i === 0 ? "text-left" : /^(Who|Top|Item|Given|Activity|Best)/.test(h) ? "text-left" : "text-right"}`}>
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>{children}</tbody>
-      </table>
+      <SortableTable
+        head={head}
+        rows={rows as ReactNode[]}
+        headAlign={(h, i) => (i === 0 ? "text-left" : /^(Who|Top|Item|Given|Activity|Best)/.test(h) ? "text-left" : "text-right")}
+      />
     </div>
   );
 }
