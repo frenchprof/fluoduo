@@ -340,7 +340,9 @@ export default function CahierShell({
                 <MoiAnnounce />
                 {topRight}
                 <AccountButton />
-                <div ref={menuRef} className="cahier-menu relative">
+                {/* Half-a-button inward on mobile (Dan, 2026-07-25: the corner made ☰
+                    unreachable on some phones); flush again from sm up. */}
+                <div ref={menuRef} className="cahier-menu relative mr-5 sm:mr-0">
                   <button
                     type="button"
                     aria-label="Navigation"
