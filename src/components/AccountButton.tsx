@@ -92,16 +92,23 @@ export default function AccountButton() {
                 </>
               );
             })()}
+            {/* Three compact doors (Dan, 2026-07-25): Profile · History → /moi
+                · sign-out as a wave — labels shrunk so the row breathes. */}
             <div className="mt-3 flex gap-1.5">
               <Link href="/profil" onClick={() => setOpen(false)} className="cahier-btn cahier-btn-sm flex-1 text-center">
-                🎖️ Profil complet
+                🎖️ Profile
+              </Link>
+              <Link href="/moi" onClick={() => setOpen(false)} className="cahier-btn cahier-btn-sm flex-1 text-center">
+                📊 History
               </Link>
               <button
                 type="button"
                 onClick={async () => { setOpen(false); try { await signOut(); } catch {} }}
                 className="cahier-btn cahier-btn-sm"
+                title="Sign out"
+                aria-label="Sign out"
               >
-                Se déconnecter
+                👋
               </button>
             </div>
           </div>
