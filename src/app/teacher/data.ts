@@ -10,7 +10,7 @@
  * ships to learners.
  */
 
-import { canonicalEmail, EXCLUDED_BOARD_UIDS, HIDDEN_ROSTER_NAMES, HIDDEN_ROSTER_UID_PREFIXES } from "@/lib/accountAliases";
+import { canonicalEmail, EXCLUDED_BOARD_UIDS, HIDDEN_ROSTER_NAMES, HIDDEN_ROSTER_UID_PREFIXES, KNOWN_EMAILS } from "@/lib/accountAliases";
 
 // Mirror of firestore.rules isAdmin() — keep the two lists in sync.
 // Read-only tier (Dan, 2026-07-20): peer reviewers see the whole teacher
@@ -175,7 +175,7 @@ export function buildRoster(events: Ev[], board: Map<string, BoardRow>): Learner
     let l = byUid.get(uid);
     if (!l) {
       byUid.set(uid, (l = {
-        uid, uids: [uid], name: uid.slice(0, 8), email: null, isTeacher: false,
+        uid, uids: [uid], name: uid.slice(0, 8), email: canonicalEmail(KNOWN_EMAILS[uid]) ?? null, isTeacher: false,
         firstSeen: null, lastSeen: null, daysActive: 0,
         pageViews: 0, gamePlays: 0, pretestAnswers: 0,
         board: board.get(uid) ?? null,

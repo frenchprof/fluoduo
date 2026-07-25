@@ -51,6 +51,20 @@ export const ALIAS_PUBLISH_NAMES: Record<string, string> = {
   "sjc031103@gmail.com": "Su Yeon",
 };
 
+/** Auth-console seeds (Dan, 2026-07-25): uid → email for accounts whose only
+ *  sign-ins predate authEvents coverage (22 Jun) — without these the roster
+ *  shows them email-blind (Tracy, wenyi) and email-keyed features miss them. */
+export const KNOWN_EMAILS: Record<string, string> = {
+  "a529sUZMsYUgKdWn4rJXvPu4A6V2": "tracypang0728@gmail.com", // QiZhi Pang
+  "C2sWIzLKdseHKUxgh67yPp3o7Rq1": "rr7280523@gmail.com", // wenyi zhang
+  "8IcpkURn0ldOXLiApCdhdsqQoxW2": "sjc031103@gmail.com", // Su Yeon (primary)
+  "ZKvLZyfOfLZFYAEUoTzApQMYClf2": "chosuyeon33@gmail.com", // Su Yeon (second)
+  "6uyQO9YgBTRLC5Dw1JuU7Fe2cTB3": "jovantanyk@gmail.com", // Jovan (old)
+  "k1sTtpYd4ZXCFKYQU4OiBA4dD4l1": "jovantan630@gmail.com", // Jovan (active)
+  "1S70OPFAAVPEsu6vOr8JZdk2U022": "e1523337@u.nus.edu", // Kai Xin Chen
+  "yzb1vTPlhIbxgqwTy21wVUYRudr1": "youth.romanticomedy@gmail.com", // Parker Jack
+};
+
 export function canonicalEmail(email: string | null | undefined): string | null {
   if (!email) return null;
   const e = email.toLowerCase();
