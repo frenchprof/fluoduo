@@ -99,7 +99,7 @@ export default function AccountButton() {
                 🎖️ Profile
               </Link>
               <Link href="/moi" onClick={() => setOpen(false)} className="cahier-btn cahier-btn-sm flex-1 text-center">
-                📊 History
+                ⌛ History
               </Link>
               <button
                 type="button"
@@ -108,7 +108,7 @@ export default function AccountButton() {
                 title="Sign out"
                 aria-label="Sign out"
               >
-                👋
+                🚪➜
               </button>
             </div>
           </div>

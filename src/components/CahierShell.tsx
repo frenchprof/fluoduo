@@ -32,6 +32,31 @@ import { getLetrisSet } from "@/games/letris/sets";
 import { composeBankForDeck } from "@/games/compose/banks";
 import FirstTour from "@/components/FirstTour";
 import AccountButton from "@/components/AccountButton";
+
+/** One-time announcement (Dan, 2026-07-25): tell every learner the ⌛ at the
+ *  top now opens their complete learning history. Dismiss persists. */
+function MoiAnnounce() {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    try { if (!localStorage.getItem("fl.moiAnnounce.v1")) setShow(true); } catch {}
+  }, []);
+  if (!show) return null;
+  const dismiss = () => { setShow(false); try { localStorage.setItem("fl.moiAnnounce.v1", "seen"); } catch {} };
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4" onClick={dismiss}>
+      <div className="w-full max-w-sm rounded-2xl border-[3px] border-slate-900 bg-white p-5 text-center shadow-[4px_4px_0_#1f2440]" onClick={(e) => e.stopPropagation()}>
+        <div className="text-4xl">⌛</div>
+        <h3 className="mt-2 text-lg font-black text-slate-900">Your learning history is here!</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          Tap the <b>⌛ button at the top of the site</b> any time to see your complete history — every answer, your strengths and weaknesses, your time on task, and personal tips.
+        </p>
+        <button type="button" onClick={dismiss} className="mt-4 rounded-full border-2 border-slate-900 bg-yellow-100 px-5 py-1.5 font-black text-slate-900 shadow-[2px_2px_0_#1f2440]">
+          Got it — show me ⌛
+        </button>
+      </div>
+    </div>
+  );
+}
 import SearchOverlay from "@/components/SearchOverlay";
 import RankingOverlay from "@/components/RankingOverlay";
 import SoundControl from "@/components/SoundControl";
@@ -309,11 +334,14 @@ export default function CahierShell({
                 <Link href="/" aria-label="Home" title="Home" className="cahier-btn cahier-btn-sm !hidden sm:!inline-flex">
                   🏠
                 </Link>
-                {crumb && (
-                  <span className="hidden text-xs font-bold uppercase tracking-wider text-[color:var(--cahier-ink-soft)] md:inline">
-                    {crumb}
-                  </span>
-                )}
+                {/* ⌛ My learning history — always visible (Dan, 2026-07-25).
+                    The crumb text retired to make its room: the page name
+                    between 🏠 and the avatar was the least-load-bearing
+                    element on the bar. */}
+                <Link href="/moi" aria-label="My learning history" title="My learning history" className="cahier-btn cahier-btn-sm">
+                  ⌛
+                </Link>
+                <MoiAnnounce />
                 {topRight}
                 <AccountButton />
                 <div ref={menuRef} className="cahier-menu relative">
