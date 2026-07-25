@@ -61,9 +61,12 @@ export function canonicalEmail(email: string | null | undefined): string | null 
  *  board AND the teacher roster. Firestore rules can't retroactively hide
  *  existing docs from a collection read, so both surfaces filter here.
  *  (Their XP still carries over if they ever sign in — display-only.) */
+// ZKvLZ (chosuyeon33/Su Yeon) and 6uyQO9 (jovantanyk/Jovan) REMOVED
+// 2026-07-25: they are CURRENT students' second accounts, wrongly filed as
+// prior-term leftovers — exclusion nuked the whole alias-merged person from
+// the roster (Dan: "why is su yeon missing altogether"). Aliasing owns them.
 export const EXCLUDED_BOARD_UIDS = new Set([
   "6pHSergetUdBoTicHe930dztnq03",
-  "6uyQO9YgBTRLC5Dw1JuU7Fe2cTB3",
   "8FXea0gBTQWry0mz9V0hGQpcHcn1",
   "A0gPWad5dbhrEj7xPl1ZvxELlsD2",
   "A7BPzNnI3MWlSIXqSkdKpwGALFB2",
@@ -79,7 +82,6 @@ export const EXCLUDED_BOARD_UIDS = new Set([
   "VURCmcsjTaXvMjbHjf1DCeumqWm2",
   "Xtn5klg5SVa4eUtI09pWxFcJFZi2",
   "Y8VWbC1DgYOCsJvSTwc2yTjHO982",
-  "ZKvLZyfOfLZFYAEUoTzApQMYClf2",
   "aPngs8CtKZhwqjNTDjELv0BJNYK2",
   "ao8eQgHtKXU23d5CRZ6qvkZTKuH3",
   "dENNssIfItW6a9mhxCNYN7O3WbA3",
