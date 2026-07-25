@@ -16,6 +16,52 @@ import {
 import { XP_CORRECT, XP_WRONG, XP_SIO_BASE, XP_CONVERSATION } from "@/lib/economy";
 import { Kpi, TableBox, SectionTitle } from "./ui";
 
+/** ⬇️ Analytics summary CSV (Dan, 2026-07-25): one row per student — paste
+ *  emails to filter (blank = everyone). Reuses fetchStudentDetail, so aliased
+ *  accounts merge into one row exactly as the modal does. */
+function ExportCsv({ roster }: { roster: Learner[] }) {
+  const [emails, setEmails] = useState("");
+  const [busy, setBusy] = useState(false);
+  const run = async () => {
+    setBusy(true);
+    try {
+      const wanted = new Set(emails.toLowerCase().split(/[\s,;]+/).filter((w) => w.includes("@")));
+      const rows = roster.filter((l) => !l.isTeacher && (wanted.size === 0 || (l.email && wanted.has(l.email.toLowerCase()))));
+      const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+      const lines = ["Name,Email,UID,XP,Streak,SIOs done,Answers,Accuracy %,Last seen,Days active"];
+      for (const l of rows) {
+        const d = await fetchStudentDetail(l.uids);
+        const answers = d.responses.length;
+        const missed = d.responses.filter((r) => str(r.status) === "missed").length;
+        const acc = answers > 0 ? Math.round(100 * (1 - missed / answers)) : "";
+        lines.push([
+          esc(l.board?.name ?? l.name), esc(l.email), esc(l.uids.join(" + ")),
+          d.progress?.xp ?? 0, d.progress?.streak ?? 0, d.progress?.doneSios?.length ?? 0,
+          answers, acc, esc(l.lastSeen ? fmtWhen(l.lastSeen) : ""), l.daysActive,
+        ].join(","));
+      }
+      const blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `fluolingo-analytics-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    } finally { setBusy(false); }
+  };
+  return (
+    <div className="mt-3 rounded-2xl border-2 border-slate-200 bg-white p-3">
+      <p className="text-sm font-black text-slate-700">⬇️ Export analytics summary (CSV)</p>
+      <textarea value={emails} onChange={(e) => setEmails(e.target.value)} rows={2}
+        placeholder="Paste emails to filter (any separator) — leave blank for the whole class"
+        className="mt-1.5 w-full rounded-xl border-2 border-slate-200 px-2 py-1 text-xs" />
+      <button type="button" onClick={() => void run()} disabled={busy}
+        className="mt-1.5 rounded-full border-2 border-slate-900 bg-yellow-100 px-4 py-1 text-sm font-black text-slate-900 shadow-[2px_2px_0_#1f2440] disabled:opacity-50">
+        {busy ? "Building…" : "⬇️ Download CSV"}
+      </button>
+    </div>
+  );
+}
+
 export default function Students({ events, roster, initialUid }: { events: Ev[]; roster: Learner[]; initialUid?: string | null }) {
   const [sel, setSel] = useState<string | null>(initialUid ?? null);
   useEffect(() => { if (initialUid) setSel(initialUid); }, [initialUid]);
@@ -23,6 +69,7 @@ export default function Students({ events, roster, initialUid }: { events: Ev[];
   return (
     <div>
       <p className="mt-2 text-sm text-slate-500">Click a learner for the full picture.</p>
+      <ExportCsv roster={roster} />
       <TableBox head={["Learner", "Last seen", "Days active", "Page views", "Games", "Pretest answers", "XP", "Streak"]}>
         {roster.map((l) => (
           <tr

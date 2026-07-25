@@ -17,7 +17,7 @@ import { useAuthUser } from "@/lib/firebase/auth";
 
 const HUES = ["var(--cahier-t0)", "var(--cahier-t1)", "var(--cahier-t2)", "var(--cahier-t3)", "var(--cahier-t4)", "var(--cahier-t5)"] as const;
 
-type Resp = { item: string; status: string; activityId: string; ts: number };
+type Resp = { item: string; status: string; activityId: string; ts: number; given?: string };
 
 // ── activity naming (a friendly local cousin of the teacher's normalizer) ──
 function labelActivity(id: string): string {
@@ -44,6 +44,7 @@ function itemDeck(item: string): { label: string; href: string } | null {
 const TABS = [
   { key: "erreurs", label: "📉 Where I lose marks" },
   { key: "items", label: "🎯 My hardest items" },
+  { key: "histoire", label: "🕐 My history" },
   { key: "forces", label: "💪 Strong vs weak" },
   { key: "conseils", label: "💡 My tips" },
   { key: "parcours", label: "🏆 Journey" },
@@ -80,6 +81,7 @@ export default function MoiContent() {
             status: String(x.status ?? ""),
             activityId: String(x.activityId ?? ""),
             ts: x.timestamp?.toMillis?.() ?? 0,
+            given: typeof (x as { givenAnswer?: unknown }).givenAnswer === "string" ? (x as { givenAnswer?: string }).givenAnswer : undefined,
           });
         });
         setResp(rows);
@@ -249,6 +251,40 @@ export default function MoiContent() {
             </>
           ) : (
             <p className="text-sm text-slate-500">{respState === "ready" ? "No repeated misses — impressive!" : "Sign in to see your hardest items."}</p>
+          )}
+        </div>
+      )}
+
+      {tab === "histoire" && (
+        <div className="mt-4">
+          {resp && resp.length > 0 ? (() => {
+            const ordered = [...resp].sort((a, b) => b.ts - a.ts); // ALL of it, newest first
+            const dayOf = (t: number) => new Date(t).toLocaleDateString("en-SG", { weekday: "short", day: "numeric", month: "short" });
+            const rows: React.ReactNode[] = [];
+            let lastDay = "";
+            for (const r of ordered) {
+              const d = r.ts ? dayOf(r.ts) : "…";
+              if (d !== lastDay) {
+                lastDay = d;
+                rows.push(<tr key={"d" + d + rows.length}><td colSpan={4} className="bg-slate-50 px-2 py-1 text-xs font-black uppercase tracking-wide text-slate-500">{d}</td></tr>);
+              }
+              rows.push(
+                <tr key={r.ts + r.item + rows.length} className="border-t border-slate-100">
+                  <td className="px-2 py-1 text-xs text-slate-400">{r.ts ? new Date(r.ts).toLocaleTimeString("en-SG", { hour: "2-digit", minute: "2-digit" }) : "—"}</td>
+                  <td className="px-2 py-1 font-bold text-slate-800" lang="fr">{r.item}{r.given && <span className="font-normal text-slate-500"> · «{r.given}»</span>}</td>
+                  <td className="px-2 py-1 text-center">{r.status === "missed" ? <span className="text-rose-600">✗</span> : <span className="text-emerald-700">✓</span>}</td>
+                  <td className="px-2 py-1 text-xs">{r.activityId.startsWith("/") ? <a href={r.activityId} className="font-bold text-blue-700 underline underline-offset-2">{labelActivity(r.activityId)}</a> : labelActivity(r.activityId)}</td>
+                </tr>,
+              );
+            }
+            return (
+              <>
+                <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Your complete answer history — every response, newest first</p>
+                <table className="mt-1 w-full text-sm"><tbody>{rows}</tbody></table>
+              </>
+            );
+          })() : (
+            <p className="text-sm text-slate-500">{respState === "ready" ? "No recorded answers yet — practise anywhere and your history appears here." : "Sign in to see your answer history."}</p>
           )}
         </div>
       )}
