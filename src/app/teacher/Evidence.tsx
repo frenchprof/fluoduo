@@ -24,10 +24,12 @@ function pct(n: number, d: number): number | null { return d > 0 ? Math.round((1
 export default function Evidence({ roster }: { roster: Learner[] }) {
   const [busy, setBusy] = useState(false);
   const [rows, setRows] = useState<Row[] | null>(null);
+  const [raw, setRaw] = useState<string[][] | null>(null); // attempt-level, for the verifiable export
 
   async function compute() {
     setBusy(true);
     const out: Row[] = [];
+    const rawRows: string[][] = [];
     for (const l of roster) {
       try {
         const d = await fetchStudentDetail(l.uids);
@@ -36,6 +38,7 @@ export default function Evidence({ roster }: { roster: Learner[] }) {
         const finale: { ok: boolean; ts: number }[] = [];
         for (const r of d.responses) {
           if (!r.ts) continue;
+          rawRows.push([l.name, r.item, r.ts.toISOString(), r.status !== "missed" ? "correct" : "wrong", r.givenAnswer ?? "", r.activityId ?? ""]);
           const rec = { ok: r.status !== "missed", ts: r.ts.getTime(), act: r.activityId ?? "" };
           const arr = byItem.get(r.item) ?? [];
           arr.push(rec);
@@ -71,6 +74,7 @@ export default function Evidence({ roster }: { roster: Learner[] }) {
       } catch { /* skip unreadable learner */ }
     }
     setRows(out);
+    setRaw(rawRows);
     setBusy(false);
   }
 
@@ -91,9 +95,30 @@ export default function Evidence({ roster }: { roster: Learner[] }) {
     <div className="mt-4 rounded-2xl border-2 border-emerald-300 bg-emerald-50/40 p-4">
       <div className="flex items-center justify-between gap-2">
         <h3 className="text-sm font-black uppercase tracking-wide text-emerald-900">📈 Learning evidence — within-student gains</h3>
-        <button type="button" onClick={() => void compute()} disabled={busy} className="rounded-full border-2 border-emerald-700 bg-white px-3 py-1 text-xs font-black text-emerald-800 disabled:opacity-50">
-          {busy ? "Computing…" : rows ? "Recompute" : "Compute"}
-        </button>
+        <div className="flex gap-1.5">
+          <button type="button" onClick={() => void compute()} disabled={busy} className="rounded-full border-2 border-emerald-700 bg-white px-3 py-1 text-xs font-black text-emerald-800 disabled:opacity-50">
+            {busy ? "Computing…" : rows ? "Recompute" : "Compute"}
+          </button>
+          {raw && (
+            <button
+              type="button"
+              className="rounded-full border-2 border-emerald-700 bg-emerald-100 px-3 py-1 text-xs font-black text-emerald-900"
+              onClick={() => {
+                // Attempt-level export (Dan, 2026-07-27): the verifiable source
+                // behind the evidence panel — every recorded attempt, so any
+                // third party can recompute the gains independently.
+                const esc = (v: string) => `"` + v.replaceAll(`"`, `""`) + `"`;
+                const csv = "\uFEFF" + [["Student", "Item", "Timestamp", "Result", "Given answer", "Activity"], ...raw].map((r) => r.map(esc).join(",")).join("\n");
+                const a = document.createElement("a");
+                a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+                a.download = "fluolingo-attempts-" + new Date().toISOString().slice(0, 10) + ".csv";
+                a.click();
+              }}
+            >
+              ⬇️ Attempt-level CSV ({raw.length})
+            </button>
+          )}
+        </div>
       </div>
       {!rows && !busy && (
         <p className="mt-1 text-xs text-emerald-900/70">Reads every student's complete answer log. Same learner, same items, before vs after — no causal claim, no control group; stated as such.</p>
