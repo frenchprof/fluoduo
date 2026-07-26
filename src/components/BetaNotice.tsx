@@ -48,7 +48,7 @@ export default function BetaNotice() {
       <div className="w-full max-w-md rounded-2xl border-2 border-[color:var(--fluo-ink)] bg-white p-5 shadow-[6px_6px_0_var(--fluo-hl)]">
         <h2 className="fluo-serif text-xl font-black text-[color:var(--fluo-ink)]">Un mot de Dr Chan 👋</h2>
         <p className="mt-3 text-sm leading-relaxed text-[color:var(--fluo-ink)]">
-          FluoLingo is in beta. Many rounds of checks have been done, but some bugs and errors will
+          FluOlinGo is in beta. Many rounds of checks have been done, but some bugs and errors will
           have slipped through. You are among the first users of this platform — apologies in
           advance for any unworkable sections. Your feedback is extremely valuable: report anything
           odd with the 💬 Feedback button, and claim XP 💎 for every bug you identify.

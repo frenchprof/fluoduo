@@ -248,6 +248,19 @@ const FR_HINTS = new Set([
   "bonne", "bon", "allez", "alors", "voici", "comme", "moi", "toi", "ça",
   "peux", "peut", "veux", "veut", "fais", "fait", "faites", "dois", "doit", "où",
 ]);
+/** Non-Latin scripts identify their language outright — no word-list needed. */
+export function scriptLang(text: string): string | null {
+  if (/[\uAC00-\uD7AF]/.test(text)) return "ko-KR"; // Hangul
+  if (/[\u3040-\u30FF]/.test(text)) return "ja-JP"; // Kana
+  if (/[\u4E00-\u9FFF]/.test(text)) return "zh-CN"; // Han (after Kana test)
+  if (/[\u0900-\u097F]/.test(text)) return "hi-IN"; // Devanagari
+  if (/[\u0B80-\u0BFF]/.test(text)) return "ta-IN"; // Tamil
+  if (/[\u0E00-\u0E7F]/.test(text)) return "th-TH"; // Thai
+  if (/[\u0600-\u06FF]/.test(text)) return "ar-SA"; // Arabic
+  if (/[\u0400-\u04FF]/.test(text)) return "ru-RU"; // Cyrillic
+  return null;
+}
+
 export function guessLang(segment: string): "fr-FR" | "en-US" {
   // Elision (j', l', qu', n'…) is French; English apostrophes are 's / n't.
   if (/\b[jlcdnstm]['’](?![st]\b)|\bqu['’]/i.test(segment)) return "fr-FR";
@@ -268,12 +281,14 @@ export function guessLang(segment: string): "fr-FR" | "en-US" {
  *  become their own segments (that's exactly where the tutor's format flips
  *  language), the rest splits at sentence boundaries; emoji are stripped
  *  (some voices announce them: "robot face"). */
-export function segmentBilingual(text: string): { text: string; lang: "fr-FR" | "en-US" }[] {
-  const out: { text: string; lang: "fr-FR" | "en-US" }[] = [];
-  const push = (raw: string, lang?: "fr-FR" | "en-US") => {
+export function segmentBilingual(text: string): { text: string; lang: string }[] {
+  const out: { text: string; lang: string }[] = [];
+  const push = (raw: string, lang?: string) => {
     const clean = raw.replace(/~~[^~]*~~/g, " ").replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}«»*#]/gu, "").trim();
-    if (!/[a-zà-ÿ]/i.test(clean)) return;
-    out.push({ text: clean, lang: lang ?? guessLang(clean) });
+    // ANY letter keeps the segment — the old Latin-only test silently
+    // DROPPED Korean/Chinese/Tamil explanation text (Dan, 2026-07-25).
+    if (!/\p{L}/u.test(clean)) return;
+    out.push({ text: clean, lang: lang ?? scriptLang(clean) ?? guessLang(clean) });
   };
   // Guillemets are an authoritative French marker — no guessing inside them.
   for (const span of text.split(/(«[^»]*»)/g)) {
@@ -333,7 +348,10 @@ export function speakMixed(
   };
   userPaused = false;
 
-  if (mv) {
+  // The premium multilingual voice only covers French/English — other
+  // scripts route to the per-segment path so each part gets its own voice.
+  const hasOtherScript = scriptLang(text) !== null;
+  if (mv && !hasOtherScript) {
     const clean = text.replace(/~~[^~]*~~/g, " ").replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}«»*#]/gu, " ").replace(/\s+/g, " ").trim();
     if (!clean) { window.clearInterval(keepAlive); return null; }
     const speakFrom = (idx: number) => {

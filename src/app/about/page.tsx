@@ -3,7 +3,7 @@
  * the app is conceived, why it works better than commercial apps"). DRAFT for
  * Dan to edit down to what he'd defend in a department meeting. Deliberately
  * OFF every learner path — linked from the Guide footer only. The honest
- * framing throughout: FluoLingo does a different job than commercial apps,
+ * framing throughout: FluOlinGo does a different job than commercial apps,
  * not the same job better.
  */
 import Link from "next/link";
@@ -57,7 +57,7 @@ const COMMITMENTS: { emoji: string; title: string; hue: number; body: React.Reac
     hue: 2,
     body: (
       <>
-        When you <b>speak</b>, FluoLingo accepts what sounds right — <i lang="fr">il s&rsquo;appelle</i> and{" "}
+        When you <b>speak</b>, FluOlinGo accepts what sounds right — <i lang="fr">il s&rsquo;appelle</i> and{" "}
         <i lang="fr">ils s&rsquo;appellent</i> are the same in the mouth, and you&rsquo;re told so. When you{" "}
         <b>type</b>, the letters must be right, because spelling is what typing trains. Each modality is graded on what
         it actually teaches — difficulty is kept where it helps and removed where it only frustrates.
@@ -71,7 +71,7 @@ const COMMITMENTS: { emoji: string; title: string; hue: number; body: React.Reac
     hue: 5,
     body: (
       <>
-        The 50 goals here are <b>your course&rsquo;s</b>{" "}can-do objectives — not an app company&rsquo;s syllabus. FluoLingo
+        The 50 goals here are <b>your course&rsquo;s</b>{" "}can-do objectives — not an app company&rsquo;s syllabus. FluOlinGo
         prepares you before each class and consolidates after it, with reviews spaced over time (<b>🔁 DéjàRevu</b>).
         Commercial apps teach their own curriculum to nobody in particular; this one exists to make{" "}
         <b>your next lesson</b>{" "}work better. That&rsquo;s a different job — and it&rsquo;s the job that matters here.
@@ -96,10 +96,10 @@ export default function AboutPage() {
     <CahierShell tabs={tabsWithActive(siteTabs(), "guide")} active="guide" crumb="💡 About">
       <div className="mx-auto max-w-2xl px-3 py-5">
         <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
-          💡 Why <span className="cahier-hl px-1">FluoLingo</span> is built this way
+          💡 Why <span className="cahier-hl px-1">FluOlinGo</span> is built this way
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-[color:var(--cahier-ink)]">
-          FluoLingo was designed by your instructor around five commitments from the learning sciences. None of them are
+          FluOlinGo was designed by your instructor around five commitments from the learning sciences. None of them are
           decoration — each one shapes what you see (and don&rsquo;t see) on every page.
         </p>
 

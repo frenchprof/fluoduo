@@ -6,7 +6,7 @@ import FinaleContent from "./FinaleContent";
 /** 🏁 GramMarathon Finale — the all-topic, weakness-weighted daily revision
  *  paper. Static route beside /practice/grammarathon/[collectionId]; the
  *  static segment wins routing, so "finale" is never treated as a deck id. */
-export const metadata = { title: "GramMarathon Final — FluoLingo" };
+export const metadata = { title: "GramMarathon Final — FluOlinGo" };
 
 export default function Page() {
   return (

@@ -1,5 +1,5 @@
 /**
- * The 50-SIO spine — the navigation backbone of FluoLingo.
+ * The 50-SIO spine — the navigation backbone of FluOlinGo.
  *
  * Generated from docs/handoff/LAF1201_SIOs_Flashcards_v9.csv by scripts/gen-sios.mjs
  * (the v9 spec is the source of truth; regenerate, don't hand-edit sios.json).

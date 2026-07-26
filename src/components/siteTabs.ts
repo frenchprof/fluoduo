@@ -26,7 +26,7 @@ export function tabsWithActive(tabs: ShellTab[], activeKey: string): ShellTab[] 
 /** The TOP tier of the flap rail: Unités 0–4, nothing else (Dan, 2026-07-15:
  *  "I don't think we need the Flaptab for Home… All the flaptabs that are
  *  not Units 0 to 4 must now be demoted"). Home's doors are the top-left
- *  FluoLingo link and the 🏠 icon. */
+ *  FluOlinGo link and the 🏠 icon. */
 export function siteTabs(): ShellTab[] {
   return [0, 1, 2, 3, 4].map((u) => ({
     key: `unit-${u}`,

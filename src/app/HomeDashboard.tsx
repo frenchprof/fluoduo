@@ -24,7 +24,7 @@ export default function HomeDashboard() {
   const [progress, setProgress] = useState<Progress>(defaultProgress());
   const [dueCount, setDueCount] = useState(0);
   // Armed on mount: nothing pops up by default any more (Dan, 2026-07-14),
-  // so the FluoLingo brand animation plays on a clear stage right away.
+  // so the FluOlinGo brand animation plays on a clear stage right away.
   const [heroPlay, setHeroPlay] = useState(false);
   // Once the stroke has played, the ink is pinned by class — engines can
   // drop a finished animation's fill state (Dan, 2026-07-14: "the color
@@ -128,22 +128,22 @@ const BYLINE_STROKES = [
             only; tooltips and aria-labels carry the words. */}
         <div className="flex items-center justify-between gap-3">
           <h1 className="fluo-serif text-2xl font-black text-[color:var(--fluo-ink)]">
-            {/* "Bienvenue sur" stays still; FluoLingo performs the Kallang
+            {/* "Bienvenue sur" stays still; FluOlinGo performs the Kallang
                 Wave, then the fluo highlighter sweeps over it (Dan,
                 2026-07-13). Once per page load. */}
             {/* nowrap: with a boosted phone text size the two words split
-                across lines (Dan, 2026-07-17) — break before FluoLingo
+                across lines (Dan, 2026-07-17) — break before FluOlinGo
                 instead. */}
             <span className="whitespace-nowrap">Bienvenue sur</span>{" "}
             <span
               className={`fluo-brand${heroPlay ? " is-play" : ""}${inkDone ? " is-inked" : ""}`}
-              aria-label="FluoLingo"
+              aria-label="FluOlinGo"
               onAnimationEnd={(e) => {
                 if (e.animationName === "fluo-brand-hl") setInkDone(true);
               }}
             >
               <span aria-hidden>
-                {"FluoLingo".split("").map((ch, i) => (
+                {"FluOlinGo".split("").map((ch, i) => (
                   <span key={i} className="fluo-brand-letter" style={{ animationDelay: `${0.15 + i * 0.07}s` }}>
                     {ch}
                   </span>

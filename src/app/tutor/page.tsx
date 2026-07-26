@@ -212,7 +212,7 @@ function TutorPageInner() {
     const rows = messages
       .map((m) => `<div class="${m.role}"><b class="who">${m.role === "user" ? "Vous" : "ChaTutor"}</b><p>${fmt(m.content)}</p></div>`)
       .join("");
-    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>ChaTutor · FluoLingo</title><style>
+    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>ChaTutor · FluOlinGo</title><style>
       body{font-family:Georgia,serif;max-width:640px;margin:24px auto;color:#222850}
       h1{font-size:18px;margin:0 0 2px}
       .meta{color:#666;font-size:12px;margin-bottom:16px}
@@ -222,7 +222,7 @@ function TutorPageInner() {
       .who{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#666}
       p{margin:4px 0 0;font-size:14px;line-height:1.5}
     </style></head><body>
-    <h1>🤖 ChaTutor · FluoLingo</h1><div class="meta">${new Date().toLocaleString("en-SG")}</div>${rows}
+    <h1>🤖 ChaTutor · FluOlinGo</h1><div class="meta">${new Date().toLocaleString("en-SG")}</div>${rows}
     <script>window.onload = () => window.print()<\/script>
     </body></html>`);
     w.document.close();
@@ -275,7 +275,18 @@ function TutorPageInner() {
         setMessages((m) => [...m, { role: "assistant", content: "Oups — j'ai eu un souci technique. Réessayez !" }]);
         return;
       }
-      setMessages((m) => [...m, { role: "assistant", content: data.reply }]);
+      setMessages((m) => {
+        const next = [...m, { role: "assistant" as const, content: data.reply }];
+        // AUTO-SPEAK (Dan, 2026-07-25: "the chatbot does not automatically
+        // speak") — the reply voices itself on arrival unless the learner
+        // turned the 🔊 toggle off (persisted per device).
+        try {
+          if (localStorage.getItem("fl.tutor.autoSpeak") !== "off") {
+            setTimeout(() => playMsg(next.length - 1, data.reply), 250);
+          }
+        } catch {}
+        return next;
+      });
     } catch {
       setMessages((m) => [...m, { role: "assistant", content: "Oups — j'ai eu un souci technique. Réessayez !" }]);
     } finally {

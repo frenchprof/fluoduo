@@ -14,7 +14,7 @@
 // One Menu, four items, identical on every site of the suite (Dan, 2026-07-14).
 const LINKS = [
   { label: "Course Info", href: "https://st2fr26.withdrchan.com/" },
-  { label: "FluoLingo", href: "/", here: true },
+  { label: "FluOlinGo", href: "/", here: true },
   { label: "Reader", href: "https://4aparis.withdrchan.com/" },
   { label: "Songs", href: "https://chansongs.withdrchan.com/" },
 ];

@@ -49,9 +49,9 @@ const publicSans = Public_Sans({
 
 export const metadata: Metadata = {
   // Template so every page can name itself in tabs/history/bookmarks
-  // (audit 2026-07-19: every page was just "FluoLingo"). Client pages set
+  // (audit 2026-07-19: every page was just "FluOlinGo"). Client pages set
   // theirs via CahierShell; server pages via metadata/generateMetadata.
-  title: { default: "FluoLingo", template: "%s · FluoLingo" },
+  title: { default: "FluOlinGo", template: "%s · FluOlinGo" },
   description:
     "Gamified French (A1) practice for NUS LAF1201 — vocabulary games, speech drills, spaced revision and an AI tutor.",
   // Browsers must NEVER offer to auto-translate this site (Dan, 2026-07-10):
@@ -84,7 +84,7 @@ export default function RootLayout({
             students — say so, on every page. mt-auto pins it to the bottom
             of the flex column when content is short. */}
         <footer className="mt-auto px-4 pb-3 pt-6 text-center text-[11px] leading-relaxed text-neutral-500">
-          FluoLingo · built by Dr Daniel Chan, NUS Centre for Language Studies · answers and activity are
+          FluOlinGo · built by Dr Daniel Chan, NUS Centre for Language Studies · answers and activity are
           recorded for learning analytics · <a href="/about" className="underline">about</a>
         </footer>
         <FeedbackButton />

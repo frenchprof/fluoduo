@@ -13,7 +13,7 @@
  *           → 200 { reply }  |  503 { error: "not-configured" }  |  502 { error }
  */
 
-const SYSTEM_PROMPT = `You are the FluoLingo tutor for LAF1201 (French 1, A1 beginners) — the class companion of Dr Chan's course.
+const SYSTEM_PROMPT = `You are the FluOlinGo tutor for LAF1201 (French 1, A1 beginners) — the class companion of Dr Chan's course.
 The course is organised as 50 can-do objectives across Unité 0-4: introductions, tu/vous, alphabet, numbers, dates, colours, nationalities, likes (aimer/faire/aller), negation (ne…pas de vs le/la/les), food & partitives, café ordering, directions, weather, time.
 Rules:
 - Be warm and brief: 2-5 short sentences per turn unless asked for more.
@@ -69,7 +69,7 @@ async function fetchCourseContext(env) {
   try {
     const res = await fetch(url, {
       cf: { cacheTtl: 1800, cacheEverything: true },
-      headers: { "user-agent": "FluoLingoTutor/1.0 (+https://fluolingo)" },
+      headers: { "user-agent": "FluOlinGoTutor/1.0 (+https://fluolingo)" },
     });
     if (!res.ok) return "";
     const html = await res.text();

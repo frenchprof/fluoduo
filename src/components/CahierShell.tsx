@@ -33,12 +33,47 @@ import { composeBankForDeck } from "@/games/compose/banks";
 import FirstTour from "@/components/FirstTour";
 import AccountButton from "@/components/AccountButton";
 
+/** Oral-test booking nudge (Dan, 2026-07-26): daily reminder to book at
+ *  oraltest.withdrchan.com — reappears each day until the test, then
+ *  self-expires. Takes precedence over MoiAnnounce (no stacked modals). */
+function oralNudgeDue(): boolean {
+  if (Date.now() > new Date("2026-07-29T16:00:00+08:00").getTime()) return false;
+  try { return localStorage.getItem("fl.oralNudge.day") !== new Date().toDateString(); } catch { return false; }
+}
+
+function OralTestAnnounce() {
+  const [show, setShow] = useState(false);
+  useEffect(() => { if (oralNudgeDue()) setShow(true); }, []);
+  if (!show) return null;
+  const dismiss = () => { setShow(false); try { localStorage.setItem("fl.oralNudge.day", new Date().toDateString()); } catch {} };
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4" onClick={dismiss}>
+      <div className="w-full max-w-sm rounded-2xl border-[3px] border-slate-900 bg-white p-5 text-center shadow-[4px_4px_0_#1f2440]" onClick={(e) => e.stopPropagation()}>
+        <div className="text-4xl">🎤</div>
+        <h3 className="mt-2 text-lg font-black text-slate-900">Book your Oral Test slot!</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          <b>Wed 29 July · AS8-04-02</b> · written 1:00–2:30 pm · oral 2:50–4:00 pm.
+          Pick Duo / Trio, invite your teammate(s), and your slot is assigned once everyone confirms — <b>first come, first served</b>.
+          The 3 role-play scenarios are on the site. <span className="text-slate-500">📱 iPhone: use a normal tab, not Private Browsing.</span>
+        </p>
+        <a href="https://oraltest.withdrchan.com" target="_blank" rel="noopener" onClick={dismiss} className="mt-4 inline-block rounded-full border-2 border-slate-900 bg-emerald-100 px-5 py-1.5 font-black text-slate-900 shadow-[2px_2px_0_#1f2440]">
+          🎟️ Book my slot
+        </a>
+        <button type="button" onClick={dismiss} className="mt-2 block w-full text-xs font-bold text-slate-400">
+          Later today
+        </button>
+      </div>
+    </div>
+  );
+}
+
 /** One-time announcement (Dan, 2026-07-25): tell every learner the ⌛ at the
- *  top now opens their complete learning history. Dismiss persists. */
+ *  top now opens their complete learning history. Dismiss persists. Defers to
+ *  the oral-test nudge so two modals never stack. */
 function MoiAnnounce() {
   const [show, setShow] = useState(false);
   useEffect(() => {
-    try { if (!localStorage.getItem("fl.moiAnnounce.v1")) setShow(true); } catch {}
+    try { if (!oralNudgeDue() && !localStorage.getItem("fl.moiAnnounce.v1")) setShow(true); } catch {}
   }, []);
   if (!show) return null;
   const dismiss = () => { setShow(false); try { localStorage.setItem("fl.moiAnnounce.v1", "seen"); } catch {} };
@@ -189,7 +224,7 @@ export default function CahierShell({
   const isActiveFlap = (t: ShellTab) => active === t.key || t.key === unitKey;
 
   // Per-page browser-tab title (audit 2026-07-19: every page announced
-  // itself as just "FluoLingo" — tabs, history, bookmarks and screen-reader
+  // itself as just "FluOlinGo" — tabs, history, bookmarks and screen-reader
   // page announcements were indistinguishable). The active flap's label IS
   // the page's name; deck/context pages fall back to their first context
   // flap, then to a string crumb. Home (no matching flap) keeps the default.
@@ -198,7 +233,7 @@ export default function CahierShell({
     context[0]?.label ??
     (typeof crumb === "string" ? crumb : undefined);
   useEffect(() => {
-    document.title = pageLabel ? `${pageLabel} · FluoLingo` : "FluoLingo";
+    document.title = pageLabel ? `${pageLabel} · FluOlinGo` : "FluOlinGo";
   }, [pageLabel]);
 
   const nested = context.length > 0;
@@ -293,13 +328,13 @@ export default function CahierShell({
           {!nested && edgeGrip}
 
           <div className="sticky top-0 z-10 border-b-2 border-[color:var(--cahier-ink)]/15 bg-[color:var(--cahier-paper)]/90 backdrop-blur">
-            <div className={`flex items-center justify-between gap-2 py-3 pr-3 sm:pr-5 ${nested ? "pl-5 sm:pl-7" : "pl-12 sm:pl-16"}`}>
+            <div className={`flex items-center justify-between gap-2 py-3 pr-3 sm:pr-5 ${nested ? "pl-5 sm:pl-7" : "pl-9 sm:pl-16"}`}>
               {/* The wordmark is ALWAYS a door home (Dan, 2026-07-25) — on
                   the home page it simply arrives where you already are. */}
               <Link href="/" className="cahier-display text-lg font-black text-[color:var(--cahier-ink)]">
-                {active !== "home" && <>← </>}<span className="cahier-hl">FluoLingo</span>
+                {active !== "home" && <>← </>}<span className="cahier-hl">FluOlinGo</span>
               </Link>
-              <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+              <div className="cahier-topbar flex shrink-0 items-center gap-1 sm:gap-2">
                 {/* Icon strip, macOS-menu-bar style (Dan, 2026-07-08): 🔍 opens
                     the floating search, 🏆 floats the ranking, 🏠 goes home —
                     icons only, no words. */}
@@ -322,7 +357,7 @@ export default function CahierShell({
                   🏆
                 </button>
                 <SoundControl />
-                {/* 🏠 and the crumb yield below sm — the ← FluoLingo link is
+                {/* 🏠 and the crumb yield below sm — the ← FluOlinGo link is
                     the home door there, and they were pushing the ☰ off a
                     phone screen (Dan, 2026-07-15). */}
                 {/* !important — .cahier-btn's own display rule beats a bare
@@ -337,6 +372,7 @@ export default function CahierShell({
                 <Link href="/moi" aria-label="My learning history" title="My learning history" className="cahier-btn cahier-btn-sm">
                   ⌛
                 </Link>
+                <OralTestAnnounce />
                 <MoiAnnounce />
                 {topRight}
                 <AccountButton />
@@ -444,7 +480,7 @@ export default function CahierShell({
         {quickGuideOpen && <GuideSplash onClose={() => setQuickGuideOpen(false)} />}
         <nav className="cahier-tabs" aria-label="Pages">
           {/* TOP tier: Unités only (Dan, 2026-07-15) — Home's doors are the
-              top-left FluoLingo link and the 🏠 icon. */}
+              top-left FluOlinGo link and the 🏠 icon. */}
           {site.map((t, i) => (
             <TabFlap
               key={t.key}

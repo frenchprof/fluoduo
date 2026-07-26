@@ -5,7 +5,7 @@
  * top-bar icon can float the same ranking in an overlay (Dan, 2026-07-08).
  * Rows come from two eras of the SAME course (Dan, 2026-07-06: "same course,
  * upgraded platform"): the old laf1201 suite wrote { displayName, totalXP },
- * FluoLingo writes { name, xp, level, gems, streak }. Read both defensively so
+ * FluOlinGo writes { name, xp, level, gems, streak }. Read both defensively so
  * every student — old and new — appears on one board.
  */
 import { useEffect, useState } from "react";

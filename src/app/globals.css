@@ -845,6 +845,12 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
    variant lip colour (primary/accent/gold) since -sm is declared last. */
 .cahier-btn-sm { padding: 0.3rem 0.65rem; font-size: 0.78rem; border-radius: 8px; }
 
+/* Mobile top bar (Dan, 2026-07-26): the icon row was pushing ☰ off the
+   edge — thinner buttons below sm, scoped to the bar only. */
+@media (max-width: 639px) {
+  .cahier-topbar .cahier-btn { padding-left: 0.42rem; padding-right: 0.42rem; }
+}
+
 /* Tappable choice card — a multiple-choice option is a BUTTON, not a static
    tile. Bottom lip + gold hover-lift make that unmistakable. */
 .cahier-option {

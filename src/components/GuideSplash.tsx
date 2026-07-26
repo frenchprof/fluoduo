@@ -5,7 +5,7 @@
  * 2026-07-14: "don't make the guide pop up by default anymore") — it opens
  * on demand from the inverted QuickGuide button in the tab rail
  * (CahierShell). ▶ Continue or a backdrop tap closes it; closing announces
- * the stage is clear so the home hero can run its FluoLingo animation.
+ * the stage is clear so the home hero can run its FluOlinGo animation.
  */
 import GuideBody from "@/components/GuideBody";
 
