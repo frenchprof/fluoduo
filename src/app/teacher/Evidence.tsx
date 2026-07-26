@@ -31,6 +31,9 @@ export default function Evidence({ roster }: { roster: Learner[] }) {
     const out: Row[] = [];
     const rawRows: string[][] = [];
     for (const l of roster) {
+      // Instructor traffic must never enter the evidence (audit catch,
+      // 2026-07-27: the teacher's own account contributed ~3% of rows).
+      if (l.isTeacher) continue;
       try {
         const d = await fetchStudentDetail(l.uids);
         // group this learner's responses by item, chronological
