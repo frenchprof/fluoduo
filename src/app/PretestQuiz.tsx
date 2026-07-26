@@ -153,6 +153,9 @@ function QuestionCard({
   // WHY appears only on a WRONG answer, and explains only why THAT choice is
   // wrong (Dan, 2026-07-02). Correct answers get TTS + green — no explanation.
   const whyText = !correct && picked !== undefined ? item.whyWrong?.[picked] : undefined;
+  // Auto-open the correction (Dan, 2026-07-27): a wrong answer TRIGGERS the
+  // explanation — no second tap required; the WHY pill becomes a hide toggle.
+  useEffect(() => { if (whyText) setShowWhy(true); }, [whyText]);
 
   return (
     <div className="relative rounded-xl border-2 bg-[var(--fluo-card)] p-3" style={{ borderColor: "var(--fluo-line)" }}>
