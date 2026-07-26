@@ -237,7 +237,9 @@ function QuestionCard({
       ) : null}
 
       {showWhy && whyText && (
-        <div className="mt-2 rounded-lg bg-white/70 p-2.5 text-xs text-[color:var(--fluo-ink)]">{whyText}</div>
+        {/* Red border on the why-box (Dan, 2026-07-27): the explanation of a
+            wrong answer should look like what it is — a correction. */}
+        <div className="mt-2 rounded-lg border-2 border-rose-500 bg-white/70 p-2.5 text-xs text-[color:var(--fluo-ink)]">{whyText}</div>
       )}
     </div>
   );
