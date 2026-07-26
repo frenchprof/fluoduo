@@ -15,6 +15,7 @@ import {
 } from "./data";
 import { XP_CORRECT, XP_WRONG, XP_SIO_BASE, XP_CONVERSATION } from "@/lib/economy";
 import { Kpi, TableBox, SectionTitle } from "./ui";
+import Evidence from "./Evidence";
 
 /** ⬇️ Analytics summary CSV (Dan, 2026-07-25): one row per student — paste
  *  emails to filter (blank = everyone). Reuses fetchStudentDetail, so aliased
@@ -88,6 +89,7 @@ export default function Students({ events, roster, initialUid }: { events: Ev[];
     <div>
       <p className="mt-2 text-sm text-slate-500">Click a learner for the full picture.</p>
       <ExportCsv roster={roster} />
+      <Evidence roster={roster} />
       <TableBox head={["Learner", "Last seen", "Days active", "Page views", "Games", "Pretest answers", "XP", "Streak"]}>
         {roster.map((l) => (
           <tr
