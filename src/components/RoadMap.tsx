@@ -185,12 +185,14 @@ export default function RoadMap({ progress, activeId, accent }: { progress: Prog
         </div>
       </div>
 
-      {/* Shape legend — the node's shape says what kind of work it is. */}
+      {/* Shape legend — each shape marks the stop's PRIMARY learning focus
+          (Dan, 2026-07-26); secondary focus lives in sioSecondary(). */}
       <p className="fluo-mono mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] font-bold text-[color:var(--fluo-ink)]/70">
         <span className="flex items-center gap-1.5"><span className="inline-block h-3 w-3 rounded-full border-2 border-current" /> {KIND_LABEL.vocab}</span>
         <span className="flex items-center gap-1.5"><span className="inline-block h-3 w-3 rounded-[4px] border-2 border-current" /> {KIND_LABEL.grammar}</span>
         <span className="flex items-center gap-1.5"><span className="inline-block h-3 w-3 rounded-full rounded-bl-[2px] border-2 border-current" /> {KIND_LABEL.phrases}</span>
         <span className="flex items-center gap-1.5"><span className="inline-block h-3 w-3 rotate-45 rounded-[2px] border-2 border-current" /> {KIND_LABEL.production}</span>
+        <span className="opacity-60">(primary focus per stop)</span>
       </p>
     </div>
   );
