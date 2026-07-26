@@ -8,7 +8,7 @@
  */
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 
-export function useDragFloat(key: string, def: { right: number; bottom: number }) {
+export function useDragFloat(key: string, def: { right: number; bottom: number }, side: "right" | "left" = "right") {
   const [pos, setPos] = useState(def);
   const drag = useRef<{ x: number; y: number; r: number; b: number; moved: boolean } | null>(null);
   const suppressClick = useRef(false);
@@ -44,7 +44,8 @@ export function useDragFloat(key: string, def: { right: number; bottom: number }
     if (!d.moved && Math.hypot(dx, dy) < 8) return; // tap tolerance
     d.moved = true;
     e.preventDefault();
-    setPos(clamp({ right: d.r - dx, bottom: d.b - dy }));
+    // left-anchored floats grow their offset moving right; right-anchored, moving left
+    setPos(clamp({ right: side === "left" ? d.r + dx : d.r - dx, bottom: d.b - dy }));
   };
   const onPointerUp = () => {
     const d = drag.current;
@@ -68,6 +69,8 @@ export function useDragFloat(key: string, def: { right: number; bottom: number }
     return false;
   };
 
-  const style: CSSProperties = { right: pos.right, bottom: pos.bottom, touchAction: "none" };
+  const style: CSSProperties = side === "left"
+    ? { left: pos.right, bottom: pos.bottom, touchAction: "none" }
+    : { right: pos.right, bottom: pos.bottom, touchAction: "none" };
   return { style, handlers: { onPointerDown, onPointerMove, onPointerUp, onPointerCancel: onPointerUp }, consumeClick };
 }

@@ -15,6 +15,8 @@
  * drag step lets the width grip really drag.
  */
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { useDragFloat } from "@/lib/useDragFloat";
 import { usePathname } from "next/navigation";
 
 const SEEN_KEY = "fluolingo:tours.v2"; // JSON map { [tourKey]: 1 }
@@ -95,6 +97,7 @@ function readSeen(): Record<string, 1> {
 }
 
 export default function FirstTour() {
+  const drag = useDragFloat("fl.float.tour", { right: 16, bottom: 16 }, "left");
   const pathname = usePathname() ?? "/";
   const tour = tourFor(pathname);
   const [mode, setMode] = useState<"hidden" | "offer" | "chip" | "tour">("hidden");
@@ -211,21 +214,27 @@ export default function FirstTour() {
   // The permanent bottom-left guide: always there, one tap replays this
   // page's tour.
   if (mode === "chip") {
-    return (
+    // Portal + draggable (Dan, 2026-07-26): same transformed-ancestor bug as
+    // the popups was rendering this off-screen on some pages; and every
+    // float on the site is now movable by decree.
+    return createPortal(
       <button
         type="button"
-        onClick={startTour}
+        {...drag.handlers}
+        style={drag.style}
+        onClick={() => { if (drag.consumeClick()) return; startTour(); }}
         title="Revoir le petit tour"
         aria-label="Revoir le petit tour"
-        className="fixed bottom-4 left-4 z-[80] flex h-10 w-10 items-center justify-center rounded-full border-2 border-[color:var(--cahier-ink)] bg-white text-lg shadow-[3px_3px_0_var(--cahier-hl,#eaff00)] transition hover:-translate-y-0.5 active:translate-y-0"
+        className="fixed z-[80] flex h-10 w-10 items-center justify-center rounded-full border-2 border-[color:var(--cahier-ink)] bg-white text-lg shadow-[3px_3px_0_var(--cahier-hl,#eaff00)] transition hover:-translate-y-0.5 active:translate-y-0"
       >
         ✨
-      </button>
+      </button>,
+      document.body,
     );
   }
 
   if (mode === "offer") {
-    return (
+    return createPortal(
       <div className="fixed bottom-4 left-4 z-[80] max-w-[16rem] rounded-2xl border-2 border-[color:var(--cahier-ink)] bg-white p-3 shadow-[4px_4px_0_var(--cahier-hl,#eaff00)]">
         <p className="text-sm font-black text-[color:var(--cahier-ink)]">
           ✨ Première visite ici ?
@@ -245,7 +254,8 @@ export default function FirstTour() {
         >
           Ne plus jamais proposer
         </button>
-      </div>
+      </div>,
+      document.body,
     );
   }
 
