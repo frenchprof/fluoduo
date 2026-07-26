@@ -33,7 +33,9 @@ export default function Evidence({ roster }: { roster: Learner[] }) {
     for (const l of roster) {
       // Instructor traffic must never enter the evidence (audit catch,
       // 2026-07-27: the teacher's own account contributed ~3% of rows).
-      if (l.isTeacher) continue;
+      // isTeacher alone missed it — that flag needs a stamped admin email,
+      // which the cageyc@ account never left in telemetry. Belt and braces:
+      if (l.isTeacher || /cagey/i.test(l.name) || (l.email ?? "").toLowerCase().startsWith("cageyc")) continue;
       try {
         const d = await fetchStudentDetail(l.uids);
         // group this learner's responses by item, chronological
