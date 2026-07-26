@@ -9,6 +9,7 @@
  */
 
 import { useRef, useState } from "react";
+import { useDragFloat } from "@/lib/useDragFloat";
 // Firebase is imported DYNAMICALLY inside send(): this button sits in the root
 // layout, and a static import would ship the whole Firestore bundle (~184 KB gz)
 // on every page for a form almost nobody opens.
@@ -46,6 +47,7 @@ function compressImage(file: File): Promise<string> {
 }
 
 export default function FeedbackButton() {
+  const drag = useDragFloat("fl.float.chat", { right: 20, bottom: 20 });
   const [open, setOpen] = useState(false);
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [other, setOther] = useState(false);
@@ -100,10 +102,12 @@ export default function FeedbackButton() {
     <>
       <button
         type="button"
-        onClick={() => setOpen(true)}
+        {...drag.handlers}
+        style={drag.style}
+        onClick={() => { if (drag.consumeClick()) return; setOpen(true); }}
         title="Feedback — report a bug"
         aria-label="Feedback"
-        className="fixed bottom-5 right-5 z-50 flex items-center justify-center rounded-full bg-[var(--fluo-hl)] px-3 py-2 text-base font-bold text-[color:var(--fluo-ink)] shadow-lg hover:brightness-95 active:scale-95 transition-transform"
+        className="fixed z-50 flex items-center justify-center rounded-full bg-[var(--fluo-hl)] px-3 py-2 text-base font-bold text-[color:var(--fluo-ink)] shadow-lg hover:brightness-95 active:scale-95 transition-transform"
       >
         💬
       </button>
