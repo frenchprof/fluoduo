@@ -10,6 +10,7 @@
 
 import { useRef, useState } from "react";
 import { useDragFloat } from "@/lib/useDragFloat";
+import { createPortal } from "react-dom";
 // Firebase is imported DYNAMICALLY inside send(): this button sits in the root
 // layout, and a static import would ship the whole Firestore bundle (~184 KB gz)
 // on every page for a form almost nobody opens.
@@ -113,7 +114,8 @@ export default function FeedbackButton() {
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-end justify-end p-5" onClick={(e) => { if (e.target === e.currentTarget) close(); }}>
+        createPortal(
+        <div className="fixed inset-0 z-[100] flex items-end justify-end p-5" onClick={(e) => { if (e.target === e.currentTarget) close(); }}>
           <div className="cahier-sheet w-full max-w-sm rounded-2xl p-5 shadow-2xl ring-1 ring-black/10">
             {status === "sent" ? (
               <div className="text-center">
@@ -177,7 +179,8 @@ export default function FeedbackButton() {
               </>
             )}
           </div>
-        </div>
+        </div>,
+        document.body)
       )}
     </>
   );

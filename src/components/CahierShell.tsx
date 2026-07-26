@@ -12,6 +12,7 @@
  */
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import GuideSplash from "@/components/GuideSplash";
 import type { CSSProperties, MouseEvent as ReactMouseEvent, ReactNode } from "react";
@@ -46,9 +47,13 @@ function OralTestAnnounce() {
   useEffect(() => { if (oralNudgeDue()) setShow(true); }, []);
   if (!show) return null;
   const dismiss = () => { setShow(false); try { localStorage.setItem("fl.oralNudge.day", new Date().toDateString()); } catch {} };
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4" onClick={dismiss}>
-      <div className="w-full max-w-sm rounded-2xl border-[3px] border-slate-900 bg-white p-5 text-center shadow-[4px_4px_0_#1f2440]" onClick={(e) => e.stopPropagation()}>
+  // PORTAL to <body> (Dan, 2026-07-26: "pop-ups are never where they need to
+  // be" — fixed-position anchors to any transformed ancestor, and cahier pages
+  // have them; the portal escapes the page tree entirely, so the popup centres
+  // on the real viewport every time). max-h + scroll guard prevent clipping.
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 p-4" onClick={dismiss}>
+      <div className="max-h-[85vh] w-full max-w-sm overflow-y-auto rounded-2xl border-[3px] border-slate-900 bg-white p-5 text-center shadow-[4px_4px_0_#1f2440]" onClick={(e) => e.stopPropagation()}>
         <div className="text-4xl">🎤</div>
         <h3 className="mt-2 text-lg font-black text-slate-900">Book your Oral Test slot!</h3>
         <p className="mt-1 text-sm text-slate-600">
@@ -63,7 +68,8 @@ function OralTestAnnounce() {
           Later today
         </button>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
@@ -77,9 +83,9 @@ function MoiAnnounce() {
   }, []);
   if (!show) return null;
   const dismiss = () => { setShow(false); try { localStorage.setItem("fl.moiAnnounce.v1", "seen"); } catch {} };
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4" onClick={dismiss}>
-      <div className="w-full max-w-sm rounded-2xl border-[3px] border-slate-900 bg-white p-5 text-center shadow-[4px_4px_0_#1f2440]" onClick={(e) => e.stopPropagation()}>
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 p-4" onClick={dismiss}>
+      <div className="max-h-[85vh] w-full max-w-sm overflow-y-auto rounded-2xl border-[3px] border-slate-900 bg-white p-5 text-center shadow-[4px_4px_0_#1f2440]" onClick={(e) => e.stopPropagation()}>
         <div className="text-4xl">⌛</div>
         <h3 className="mt-2 text-lg font-black text-slate-900">Your learning history is here!</h3>
         <p className="mt-1 text-sm text-slate-600">
@@ -89,7 +95,8 @@ function MoiAnnounce() {
           Got it — show me ⌛
         </button>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 import SearchOverlay from "@/components/SearchOverlay";
