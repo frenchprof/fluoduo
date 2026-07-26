@@ -42,9 +42,18 @@ export default function AccountButton() {
         title="Se connecter"
         className="cahier-btn cahier-btn-sm whitespace-nowrap disabled:opacity-60"
       >
-        {/* ⏻ at every width (Dan, 2026-07-15) — the words live in the
-            tooltip/aria; the wordy pill was pushing the ☰ off phones. */}
-        {busy ? "…" : <span aria-hidden>⏻</span>}
+        {/* SVG power icon (Dan, 2026-07-26): the ⏻ CHARACTER is missing or
+            oversized in many phone fonts and overflowed to "…" — a drawn
+            vector renders identically everywhere and scales to any width.
+            Red = "power on" affordance; the words live in tooltip/aria. */}
+        {busy ? (
+          "…"
+        ) : (
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#dc2626" strokeWidth="2.6" strokeLinecap="round" aria-hidden="true" className="shrink-0">
+            <path d="M12 3v8" />
+            <path d="M6.2 6.2a8 8 0 1 0 11.6 0" />
+          </svg>
+        )}
       </button>
     );
   }
