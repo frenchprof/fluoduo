@@ -318,13 +318,11 @@ function TutorPageInner() {
             >
               {messages.map((m, i) => (
                 <div key={i} className={`flex flex-col ${m.role === "user" ? "items-end" : "items-start"}`}>
-                  <button
-                    type="button"
-                    // Bilingual bubbles: the tutor marks French in « … », and
-                    // speech switches language exactly there (Dan, 2026-07-12).
-                    onClick={() => playMsg(i, m.content)}
-                    title="🔊"
-                    className={`max-w-[85%] whitespace-pre-wrap rounded-2xl border-2 px-4 py-2 text-left text-sm leading-relaxed shadow-sm transition hover:brightness-[0.97] ${
+                  {/* A DIV, not a button (Dan, 2026-07-27): buttons make their
+                      text unselectable — learners could not copy the French.
+                      Tap-to-listen moves to the 🔊 control in the row below. */}
+                  <div
+                    className={`max-w-[85%] cursor-text select-text whitespace-pre-wrap rounded-2xl border-2 px-4 py-2 text-left text-sm leading-relaxed shadow-sm ${
                       m.role === "user"
                         ? "rounded-br-sm border-[#e0b400] text-[color:var(--cahier-ink)]"
                         : "rounded-bl-sm border-[#a8cdf0] text-[color:var(--cahier-ink)]"
@@ -335,7 +333,7 @@ function TutorPageInner() {
                   >
                     {m.role === "assistant" && <span className="mr-1.5" aria-hidden>🤖</span>}
                     {renderBilingual(m.content)}
-                  </button>
+                  </div>
                   {/* Player row under the balloon: ▶ + 🐌 when idle; ⏸/▶, ⏹
                       and a seek slider while THIS balloon is being read. */}
                   <div className="mt-0.5 flex w-full max-w-[85%] items-center gap-1">
