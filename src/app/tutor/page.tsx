@@ -174,7 +174,8 @@ function TutorPageInner() {
     setPaused(false);
     setProgress(0);
     const player = speakMixed(content, {
-      rate,
+      // Faster default (Dan, 2026-07-27: "too slow"); the 🐢 button still passes 0.6.
+      rate: rate ?? 1.15,
       onDone: () => { setPlayingIdx(null); setPaused(false); setProgress(0); },
       onProgress: setProgress,
     });
