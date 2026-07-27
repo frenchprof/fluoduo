@@ -117,10 +117,7 @@ function autoGrow(el: HTMLTextAreaElement | null) {
 }
 
 function TutorPageInner() {
-  const placeholder = useMemo(
-    () => DEMO_PROMPTS[Math.floor(Math.random() * DEMO_PROMPTS.length)] + "\n\u23CE to send \u00b7 Shift+\u23CE for a new line \u00b7 or use the mics",
-    [],
-  );
+  const placeholder = "";
   const [messages, setMessages] = useState<ChatMsg[]>([{ role: "assistant", content: GREETING }]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
