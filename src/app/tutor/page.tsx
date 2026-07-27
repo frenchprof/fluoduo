@@ -124,6 +124,9 @@ function TutorPageInner() {
   const [messages, setMessages] = useState<ChatMsg[]>([{ role: "assistant", content: GREETING }]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
+  // Auto-speak toggle (Dan, 2026-07-27: option to NOT verbalise every line).
+  const [autoSpeak, setAutoSpeak] = useState(true);
+  useEffect(() => { try { setAutoSpeak(localStorage.getItem("fl.tutor.autoSpeak") !== "off"); } catch {} }, []);
   const [offline, setOffline] = useState(false);
   // Per-balloon player (Dan, 2026-07-12: "play, pause and stop buttons next
   // to or below each balloon"): which bubble is being read, and paused state.
@@ -282,7 +285,7 @@ function TutorPageInner() {
         // speak") — the reply voices itself on arrival unless the learner
         // turned the 🔊 toggle off (persisted per device).
         try {
-          if (localStorage.getItem("fl.tutor.autoSpeak") !== "off") {
+          if (autoSpeak) {
             setTimeout(() => playMsg(next.length - 1, data.reply), 250);
           }
         } catch {}
@@ -426,6 +429,17 @@ function TutorPageInner() {
                     className={`cahier-btn font-black ${recording === "en-US" ? "!border-[#d33131] !bg-[#ff4b4b] !text-white animate-pulse" : ""}`}
                   >
                     🎤🇬🇧
+                  </button>
+                  {/* Auto-speak on/off (Dan, 2026-07-27) — 🔊 speaks each reply
+                      as it arrives; 🔇 stays silent (play buttons still work). */}
+                  <button
+                    type="button"
+                    onClick={() => { const v = !autoSpeak; setAutoSpeak(v); try { localStorage.setItem("fl.tutor.autoSpeak", v ? "on" : "off"); } catch {}; if (!v) playerRef.current?.stop(); }}
+                    title={autoSpeak ? "Replies speak automatically — tap to silence" : "Replies stay silent — tap to auto-speak"}
+                    aria-pressed={autoSpeak}
+                    className={`cahier-btn font-black ${autoSpeak ? "" : "opacity-60"}`}
+                  >
+                    {autoSpeak ? "🔊" : "🔇"}
                   </button>
                 </>
               )}
