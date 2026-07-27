@@ -38,6 +38,7 @@ import AccountButton from "@/components/AccountButton";
  *  oraltest.withdrchan.com — reappears each day until the test, then
  *  self-expires. Takes precedence over MoiAnnounce (no stacked modals). */
 function oralNudgeDue(): boolean {
+  return false; // reminder disabled (Dan)
   if (Date.now() > new Date("2026-07-29T16:00:00+08:00").getTime()) return false;
   try { return localStorage.getItem("fl.oralNudge.day") !== new Date().toDateString(); } catch { return false; }
 }
