@@ -29,15 +29,23 @@ const SORTS: SortOption<Day>[] = [
 ];
 
 export default function Attendance({ events, roster, includeTeachers = false }: { events: Ev[]; roster: Learner[]; includeTeachers?: boolean }) {
-  const days = useMemo(() => {
+  const { days, hiddenByFilter } = useMemo(() => {
     const teachers = new Set(includeTeachers ? [] : roster.filter((l) => l.isTeacher).flatMap((l) => l.uids));
+    // Counted so an empty table can name its own cause: "nothing recorded" and
+    // "all of it belongs to a teacher account" look identical otherwise, and
+    // the teacher filter is on by default.
+    let hiddenByFilter = 0;
     const nameOf = new Map(roster.flatMap((l) => l.uids.map((u) => [u, l.name] as const)));
     // day → path → uids
     const byDay = new Map<string, Map<string, { people: Set<string>; views: number }>>();
     const labels = new Map<string, string>();
     for (const ev of events) {
       if (ev.type !== "page.view" && ev.type !== "supplement.open") continue;
-      if (!ev.ts || teachers.has(ev.uid)) continue;
+      if (!ev.ts) continue;
+      if (teachers.has(ev.uid)) {
+        hiddenByFilter += 1;
+        continue;
+      }
       const path = str(ev.payload.path) ?? str(ev.payload.href);
       if (!path) continue;
       const dayKey = SG_DAY_KEY.format(ev.ts);
@@ -49,7 +57,7 @@ export default function Attendance({ events, roster, includeTeachers = false }: 
       agg.views += 1;
       agg.people.add(ev.uid);
     }
-    return [...byDay.entries()]
+    const days = [...byDay.entries()]
       .sort((a, b) => b[0].localeCompare(a[0]))
       .slice(0, MAX_DAYS_SHOWN)
       .map(([dayKey, pages]): Day => {
@@ -76,15 +84,28 @@ export default function Attendance({ events, roster, includeTeachers = false }: 
             .sort((x, y) => y.people - x.people || y.views - x.views || x.path.localeCompare(y.path)),
         };
       });
+    return { days, hiddenByFilter };
   }, [events, roster, includeTeachers]);
 
   const { sorted, bar } = useSortedSections(days, SORTS);
 
   if (days.length === 0) {
     return (
-      <p className="mt-3 text-sm text-slate-500">
-        No visits recorded yet. Visit tracking shipped on 13 Jul 2026 — anything earlier was never recorded, and anonymous (signed-out) visitors never are.
-      </p>
+      <div className="mt-3 space-y-2 text-sm text-slate-500">
+        {hiddenByFilter > 0 ? (
+          <p className="font-bold text-amber-700">
+            {hiddenByFilter} visits are hidden by the “include teacher accounts” tick-box above — every visit loaded belongs to a
+            teacher account. Tick it to see them.
+          </p>
+        ) : (
+          <p>No student visits in the events loaded.</p>
+        )}
+        <p>
+          Visit tracking shipped on 13 Jul 2026 — anything earlier was never recorded, and anonymous (signed-out) visitors never
+          are, so browsing before signing in leaves no trace. The event count in the bar above says whether writes are landing at
+          all.
+        </p>
+      </div>
     );
   }
 

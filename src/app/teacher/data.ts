@@ -121,12 +121,23 @@ export function num(v: unknown): number | null {
   return typeof v === "number" && Number.isFinite(v) ? v : null;
 }
 
+/**
+ * The dashboard reads the WHOLE event history on every open, and page views are
+ * the most numerous thing in it. Unbounded, that gets slower and pricier each
+ * week and eventually just fails to load — which reads as "nothing is being
+ * recorded". A newest-first cap keeps the page finite; `truncated` lets the UI
+ * admit when it is showing a window rather than everything.
+ */
+export const EVENT_FETCH_CAP = 50_000;
+
 export async function fetchAllEvents(): Promise<Ev[]> {
-  const [{ getDocs, collection }, { db }] = await Promise.all([
+  const [{ getDocs, collection, limit, orderBy, query }, { db }] = await Promise.all([
     import("firebase/firestore"),
     import("@/lib/firebase/db"),
   ]);
-  const snap = await getDocs(collection(db, "events"));
+  const snap = await getDocs(
+    query(collection(db, "events"), orderBy("ts", "desc"), limit(EVENT_FETCH_CAP)),
+  );
   const out: Ev[] = [];
   snap.forEach((doc) => {
     const d = doc.data() as {
