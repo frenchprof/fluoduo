@@ -469,10 +469,21 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
     after(0, pullIn);
   }, [creditsDone]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // A pending auto-submit lives outside the general timer pool so a correction
+  // can cancel it without disturbing the round's other timers.
+  const submitTimer = useRef<number | null>(null);
+  const cancelAutoSubmit = useCallback(() => {
+    if (submitTimer.current === null) return;
+    window.clearTimeout(submitTimer.current);
+    submitTimer.current = null;
+  }, []);
+  useEffect(() => cancelAutoSubmit, [cancelAutoSubmit]);
+
   const resolve = useCallback(
     (answer: string) => {
       if (!round) return;
       clearTimers();
+      cancelAutoSubmit();
       setTypingOpen(false);
       const won = answer.padStart(blindWidth(round.blind), "0") === round.digits;
       const fast = leftRef.current > 0.5;
@@ -497,7 +508,21 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
         setShowWhy(true);
       }
     },
-    [after, clearTimers, round, streak],
+    [after, cancelAutoSubmit, clearTimers, round, streak],
+  );
+
+  /** A full answer submits itself. iOS shows a digits-only keypad with no
+   *  return key, so Enter can never be the only way through — and the longer
+   *  shapes still leave a beat to backspace a mistyped last digit. */
+  const armAutoSubmit = useCallback(
+    (answer: string) => {
+      cancelAutoSubmit();
+      submitTimer.current = window.setTimeout(() => {
+        submitTimer.current = null;
+        resolve(answer);
+      }, width <= 4 ? 180 : 1200);
+    },
+    [cancelAutoSubmit, resolve, width],
   );
 
   useEffect(() => {
@@ -541,13 +566,12 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
     setMusic(true);
   }, [music]);
 
-  const autoSubmits = width > 0 && width <= 4;
-
   const key = useCallback(
     (k: string) => {
       startMusic();
       focus();
       if (stage !== "asking" || !round) return;
+      cancelAutoSubmit();
       // A tap is also consent to start the clock: if the voice never reported
       // back, the first key opens typing rather than being swallowed.
       if (!typingOpen) setTypingOpen(true);
@@ -556,10 +580,10 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
       else if (typed.length < width) {
         const next = typed + k;
         setTyped(next);
-        if (autoSubmits && next.length === width) after(180, () => resolve(next));
+        if (next.length === width) armAutoSubmit(next);
       }
     },
-    [after, autoSubmits, focus, resolve, round, stage, startMusic, typed, typingOpen, width],
+    [armAutoSubmit, cancelAutoSubmit, focus, resolve, round, stage, startMusic, typed, typingOpen, width],
   );
 
   const togglePause = useCallback(() => {
@@ -711,6 +735,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           ref={inputRef}
           value={typed}
           inputMode="numeric"
+          enterKeyHint="done"
           autoComplete="off"
           aria-label="Answer digits"
           style={{ outline: "none" }}
@@ -718,10 +743,11 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           onChange={(e) => {
             if (stage !== "asking") return;
             if (!typingOpen) setTypingOpen(true);
+            cancelAutoSubmit();
             const next = e.target.value.replace(/\D/g, "").slice(0, width);
             startMusic();
             setTyped(next);
-            if (autoSubmits && next.length === width) after(180, () => resolve(next));
+            if (next.length === width) armAutoSubmit(next);
           }}
           onKeyDown={(e) => {
             if (e.key !== "Enter") return;
