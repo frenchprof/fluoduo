@@ -4,7 +4,7 @@
  * as easily as the full spread.
  */
 
-import { explain, frenchNumber, frenchPhone, frenchPrice, frenchTime } from "./frenchNumber";
+import { frenchNumber, frenchPhone, frenchPrice, frenchTime } from "./frenchNumber";
 
 export type Blind = (number | string)[];
 
@@ -115,7 +115,6 @@ export type NumBusRound = {
   digits: string;
   blind: Blind;
   suffix?: string;
-  why: string[];
   /** Seconds once typing opens — longer for harder shapes. */
   seconds: number;
 };
@@ -147,7 +146,6 @@ function dealNumber(min: number, max: number): NumBusRound {
     words,
     digits: String(value).padStart(blindWidth(blind), "0"),
     blind,
-    why: explain(value),
     seconds: 24,
   };
 }
@@ -163,11 +161,6 @@ function dealTime(from: number, to: number): NumBusRound {
     words,
     digits: String(h).padStart(2, "0") + String(m).padStart(2, "0"),
     blind: [2, ":", 2],
-    why: [
-      "The 24-hour clock is the only one a French timetable uses: 14 h 30, never « 2:30 ».",
-      ...explain(h),
-      ...explain(m),
-    ].slice(0, 3),
     seconds: 28,
   };
 }
@@ -182,7 +175,6 @@ function dealPrice(from: number, to: number): NumBusRound {
     digits: String(Math.floor(cents / 100)).padStart(2, "0") + String(cents % 100).padStart(2, "0"),
     blind: [2, ",", 2],
     suffix: "€",
-    why: [...explain(Math.floor(cents / 100)), ...explain(cents % 100)].slice(0, 3),
     seconds: 30,
   };
 }
@@ -196,10 +188,6 @@ function dealPhone(style: PhoneStyle): NumBusRound {
       words: frenchPhone(digits),
       digits,
       blind: [4, " ", 4],
-      why: [
-        "Singapore mobiles are eight digits — read in four two-digit blocks (91 23 45 67).",
-        "Each pair is a French number word, except pairs starting with 0 which are spelled digit by digit.",
-      ],
       seconds: 32,
     };
   }
@@ -211,10 +199,6 @@ function dealPhone(style: PhoneStyle): NumBusRound {
     words: frenchPhone(digits),
     digits,
     blind: [2, " ", 2, " ", 2, " ", 2, " ", 2],
-    why: [
-      "A French phone number is read in five two-digit numbers, not ten digits — 06 12 is « zéro six, douze ».",
-      "A pair starting with 0 is the exception: it is spelled out, « zéro sept ».",
-    ],
     seconds: 36,
   };
 }

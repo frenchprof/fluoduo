@@ -372,7 +372,6 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
   const [left, setLeft] = useState(1);
   const leftRef = useRef(1);
   const [typingOpen, setTypingOpen] = useState(false);
-  const [showWhy, setShowWhy] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [music, setMusic] = useState(false);
   const [talking, setTalking] = useState(false);
@@ -451,7 +450,6 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
     setRound(next);
     setTyped("");
     setCorrect(false);
-    setShowWhy(false);
     setLeft(1);
     leftRef.current = 1;
     setTypingOpen(false);
@@ -505,7 +503,6 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
         setStreak(0);
         setLives((l) => l - 1);
         sfx.wrong();
-        setShowWhy(true);
       }
     },
     [after, cancelAutoSubmit, clearTimers, round, streak],
@@ -606,6 +603,46 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
     setServed(0);
     pullIn();
   }, [clearTimers, pullIn]);
+
+  /**
+   * ⏎ submit, then ⏎ again for the next stop · Space play/pause · ⇧Space
+   * slower · R from the top · Esc settings.
+   *
+   * Digits are deliberately NOT captured here: they belong to the focused
+   * input, and a window-level digit listener would fight the 1–4 answer keys
+   * the rest of the site uses.
+   */
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key === "Enter") {
+        e.preventDefault();
+        if (stage === "asking") resolve(typed);
+        else if (stage === "revealed") setStage("leaving");
+        else if (stage === "terminus") restart();
+        return;
+      }
+      if (e.key === " " || e.code === "Space") {
+        e.preventDefault();
+        if (!round) return;
+        if (e.shiftKey) repeatSay(round.say, SLOWER_RATE);
+        else if (talking || speechPaused) togglePause();
+        else if (stage === "asking") repeatSay(round.say);
+        return;
+      }
+      if ((e.key === "r" || e.key === "R") && round && stage === "asking") {
+        e.preventDefault();
+        repeatSay(round.say);
+        return;
+      }
+      if (e.key === "Escape" && onQuit) {
+        e.preventDefault();
+        onQuit();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onQuit, repeatSay, resolve, restart, round, speechPaused, stage, talking, togglePause, typed]);
 
   const spot: VehicleSpot = stage === "arriving" ? "off" : stage === "leaving" || stage === "terminus" ? "gone" : "stop";
   const boardState = stage === "revealed" ? (correct ? "ok" : "bad") : "typing";
@@ -710,17 +747,6 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           mode === "price" ? "border-[#ffb74d] bg-[#3e2723]/95" : mode === "phone" ? "border-[#78909c] bg-[#37474f]/95" : "border-white bg-slate-900/90"
         }`}
       >
-        {stage === "revealed" && round && round.why.length > 0 && (
-          <button
-            type="button"
-            onClick={() => setShowWhy((v) => !v)}
-            className={`absolute -top-3 right-4 z-10 rounded-full border-2 px-2 py-0.5 text-[0.6rem] font-black tracking-wider transition ${
-              showWhy ? "border-white bg-white text-slate-900" : "border-white/70 bg-slate-800 text-white/90 hover:bg-slate-700"
-            }`}
-          >
-            WHY
-          </button>
-        )}
         {round && (
           <Board
             blind={round.blind}
@@ -749,24 +775,11 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
             setTyped(next);
             if (next.length === width) armAutoSubmit(next);
           }}
-          onKeyDown={(e) => {
-            if (e.key !== "Enter") return;
-            e.preventDefault();
-            if (stage === "asking") resolve(typed);
-            else if (stage === "revealed" && !correct) setStage("leaving");
-          }}
         />
         {stage === "revealed" && round && (
           <p className="mt-3 text-center text-lg font-black" lang="fr" style={{ color: correct ? "#8ce563" : "#ff9d9d" }}>
             {round.words}
           </p>
-        )}
-        {showWhy && stage === "revealed" && round && (
-          <ul className="mt-2 space-y-1 rounded-2xl bg-white/10 p-3 text-[13px] leading-snug text-white/90">
-            {round.why.map((w, i) => (
-              <li key={i}>{w}</li>
-            ))}
-          </ul>
         )}
       </div>
 
@@ -816,6 +829,10 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
         ))}
       </div>
 
+      <p className="hidden text-center text-[11px] font-bold text-slate-500 pointer-fine:block">
+        ⏎ submit, ⏎ again for the next stop · Space play/pause · ⇧Space slower · R from the top · Esc settings
+      </p>
+
       {stage === "revealed" && !correct && (
         <button type="button" onClick={() => setStage("leaving")} className="rounded-2xl border-b-4 border-[#e08600] bg-[#ffc800] py-2 text-base font-black text-slate-900 transition hover:brightness-105 active:translate-y-[2px] active:border-b-0">
           {lives > 0 && served < ROUNDS_PER_RUN ? "Suivant ▶" : "Terminus ▶"}
@@ -851,8 +868,23 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
             <ol className="list-inside list-decimal space-y-2 text-sm">
               <li>Listen to the French number — it speaks <b>slowly</b>. ⏸ pauses, 🔊 repeats, 🐢 even slower.</li>
               <li>Type the answer in <b>digits</b> once the bar starts — the clock waits until the speech finishes.</li>
+              <li>A full answer sends itself; ✓ sends a short one.</li>
               <li>Clear ten rounds. Miss three and it&rsquo;s the terminus.</li>
             </ol>
+            <dl className="mt-3 space-y-1 rounded-2xl bg-slate-100 p-3 text-[13px]">
+              {[
+                ["⏎", "submit, then again for the next stop"],
+                ["Space", "play / pause"],
+                ["⇧Space", "slower"],
+                ["R", "from the top"],
+                ["Esc", "settings"],
+              ].map(([k, what]) => (
+                <div key={k} className="flex gap-2">
+                  <dt className="w-16 shrink-0 font-mono font-black">{k}</dt>
+                  <dd className="font-bold text-slate-600">{what}</dd>
+                </div>
+              ))}
+            </dl>
             <button type="button" onClick={() => setShowHelp(false)} className="mt-4 w-full rounded-2xl border-b-4 border-[#46a302] bg-[#58cc02] py-2 text-sm font-black text-white transition hover:brightness-105 active:translate-y-[2px] active:border-b-0">
               Got it — play!
             </button>
