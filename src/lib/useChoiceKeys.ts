@@ -16,6 +16,19 @@ export function choiceKeysBusy(): boolean {
   return activeCount > 0;
 }
 
+/** The same stand-down for an activity that types digits rather than picking
+ *  options (NumBus keys a bus number in). Call on mount, call the returned
+ *  function on unmount. */
+export function holdDigitKeys(): () => void {
+  activeCount++;
+  let released = false;
+  return () => {
+    if (released) return;
+    released = true;
+    activeCount--;
+  };
+}
+
 export function useChoiceKeys({
   count,
   onPick,
