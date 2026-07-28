@@ -1,26 +1,28 @@
 "use client";
 
 /**
- * NumBus setup — pick the range, pick what you want to hear, go.
- * Every choice shows a sample of the French it will produce, so the learner
- * can tell what a card does without a paragraph explaining it.
+ * NumBus setup — "I want to practice", then one tickable English sentence per
+ * kind of number, each with its own bounds as dropdowns. Defaults are the full
+ * range of every type, so the learner narrows rather than builds.
  */
 
 import { useEffect, useState } from "react";
-import { frenchNumber, frenchPhone, frenchPrice, frenchTime } from "./frenchNumber";
 import {
   DEFAULT_NUMBUS_CONFIG,
+  hasAnyMode,
+  hoursOf,
   loadNumBusConfig,
+  minutesOf,
   normalizeConfig,
   saveNumBusConfig,
   type NumBusConfig,
 } from "./config";
 
-const PRESETS = [
-  { min: 0, max: 20 },
-  { min: 0, max: 69 },
-  { min: 0, max: 99 },
-];
+const NUMBERS = Array.from({ length: 100 }, (_, i) => i);
+const HOURS = Array.from({ length: 24 }, (_, i) => i);
+const MINUTES = Array.from({ length: 60 }, (_, i) => i);
+const CENTS = Array.from({ length: 100 }, (_, i) => i);
+const TWO = (n: number) => String(n).padStart(2, "0");
 
 export default function NumBusSetup({ onStart }: { onStart: (c: NumBusConfig) => void }) {
   const [cfg, setCfg] = useState<NumBusConfig>(DEFAULT_NUMBUS_CONFIG);
@@ -31,9 +33,12 @@ export default function NumBusSetup({ onStart }: { onStart: (c: NumBusConfig) =>
 
   const set = (patch: Partial<NumBusConfig>) => setCfg((c) => normalizeConfig({ ...c, ...patch }));
 
-  /** Sliders push the other end rather than swapping under the thumb. */
-  const setMin = (v: number) => setCfg((c) => normalizeConfig({ ...c, min: v, max: Math.max(v, c.max) }));
-  const setMax = (v: number) => setCfg((c) => normalizeConfig({ ...c, max: v, min: Math.min(v, c.min) }));
+  const setTime = (which: "timeFrom" | "timeTo", h: number, m: number) =>
+    set({ [which]: h * 60 + m } as Partial<NumBusConfig>);
+  const setPrice = (which: "priceFrom" | "priceTo", euros: number, cents: number) =>
+    set({ [which]: euros * 100 + cents } as Partial<NumBusConfig>);
+
+  const ready = hasAnyMode(cfg);
 
   const start = () => {
     const c = normalizeConfig(cfg);
@@ -42,198 +47,173 @@ export default function NumBusSetup({ onStart }: { onStart: (c: NumBusConfig) =>
   };
 
   return (
-    <div className="mx-auto flex max-w-md flex-col gap-4">
-      <section className="rounded-3xl border-2 border-b-[6px] border-[#e0567f] bg-white p-5 shadow-sm">
-        <div className="flex items-baseline justify-between gap-2">
-          <span className="text-2xl font-black text-slate-800">🚌 Les bus</span>
-          <span className="font-mono text-2xl font-black text-[#e0567f]">
-            {cfg.min}–{cfg.max}
-          </span>
-        </div>
+    <div className="mx-auto max-w-xl">
+      <h2 className="text-xl font-black text-slate-800">I want to practice</h2>
 
-        <div className="mt-3 flex gap-2">
-          {PRESETS.map((p) => {
-            const on = cfg.min === p.min && cfg.max === p.max;
-            return (
-              <button
-                key={`${p.min}-${p.max}`}
-                type="button"
-                onClick={() => set(p)}
-                className={`flex-1 rounded-xl border-2 border-b-4 py-2 font-mono text-sm font-black transition active:translate-y-[2px] active:border-b-2 ${
-                  on
-                    ? "border-[#c94070] bg-[#e0567f] text-white"
-                    : "border-slate-200 bg-slate-50 text-slate-600 hover:bg-white"
-                }`}
-              >
-                {p.min}–{p.max}
-              </button>
-            );
-          })}
-        </div>
+      <div className="mt-3 flex flex-col gap-2">
+        <Row on={cfg.numbers} onToggle={() => set({ numbers: !cfg.numbers })} emoji="🚌">
+          numbers from{" "}
+          <Select value={cfg.min} onChange={(v) => set({ min: v })} options={NUMBERS} label="Lowest number" />
+          {" "}to{" "}
+          <Select value={cfg.max} onChange={(v) => set({ max: v })} options={NUMBERS} label="Highest number" />
+        </Row>
 
-        <div className="mt-4 grid grid-cols-[2rem_1fr] items-center gap-x-3 gap-y-2">
-          <label htmlFor="nb-min" className="text-sm font-bold text-slate-500">
-            de
-          </label>
-          <input
-            id="nb-min"
-            type="range"
-            min={0}
-            max={99}
-            value={cfg.min}
-            onChange={(e) => setMin(Number(e.target.value))}
-            className="w-full accent-[#e0567f]"
+        <Row on={cfg.times} onToggle={() => set({ times: !cfg.times })} emoji="🕑">
+          time from{" "}
+          <Select
+            value={hoursOf(cfg.timeFrom)}
+            onChange={(h) => setTime("timeFrom", h, minutesOf(cfg.timeFrom))}
+            options={HOURS}
+            pad
+            label="Earliest hour"
           />
-          <label htmlFor="nb-max" className="text-sm font-bold text-slate-500">
-            à
-          </label>
-          <input
-            id="nb-max"
-            type="range"
-            min={0}
-            max={99}
-            value={cfg.max}
-            onChange={(e) => setMax(Number(e.target.value))}
-            className="w-full accent-[#e0567f]"
+          h
+          <Select
+            value={minutesOf(cfg.timeFrom)}
+            onChange={(m) => setTime("timeFrom", hoursOf(cfg.timeFrom), m)}
+            options={MINUTES}
+            pad
+            label="Earliest minute"
           />
-        </div>
+          {" "}to{" "}
+          <Select
+            value={hoursOf(cfg.timeTo)}
+            onChange={(h) => setTime("timeTo", h, minutesOf(cfg.timeTo))}
+            options={HOURS}
+            pad
+            label="Latest hour"
+          />
+          h
+          <Select
+            value={minutesOf(cfg.timeTo)}
+            onChange={(m) => setTime("timeTo", hoursOf(cfg.timeTo), m)}
+            options={MINUTES}
+            pad
+            label="Latest minute"
+          />
+        </Row>
 
-        <p className="mt-3 rounded-xl bg-slate-50 px-3 py-2 text-center text-sm font-bold text-slate-600" lang="fr">
-          🔊 « le bus numéro {frenchNumber(cfg.max)} »
-        </p>
-      </section>
+        <Row on={cfg.prices} onToggle={() => set({ prices: !cfg.prices })} emoji="🍔">
+          prices from{" "}
+          <Select
+            value={Math.floor(cfg.priceFrom / 100)}
+            onChange={(e) => setPrice("priceFrom", e, cfg.priceFrom % 100)}
+            options={NUMBERS}
+            label="Lowest price, euros"
+          />
+          ,
+          <Select
+            value={cfg.priceFrom % 100}
+            onChange={(c) => setPrice("priceFrom", Math.floor(cfg.priceFrom / 100), c)}
+            options={CENTS}
+            pad
+            label="Lowest price, centimes"
+          />
+          {" "}to{" "}
+          <Select
+            value={Math.floor(cfg.priceTo / 100)}
+            onChange={(e) => setPrice("priceTo", e, cfg.priceTo % 100)}
+            options={NUMBERS}
+            label="Highest price, euros"
+          />
+          ,
+          <Select
+            value={cfg.priceTo % 100}
+            onChange={(c) => setPrice("priceTo", Math.floor(cfg.priceTo / 100), c)}
+            options={CENTS}
+            pad
+            label="Highest price, centimes"
+          />
+          {" "}euros
+        </Row>
 
-      <div className="flex flex-col gap-2">
-        <Card
-          on={cfg.times}
-          onClick={() => set({ times: !cfg.times })}
-          emoji="🕑"
-          title="L'heure"
-          sample={`« départ à ${frenchTime(14, 35)} »`}
-          hue="#546e7a"
-        />
-        <Card
-          on={cfg.prices}
-          onClick={() => set({ prices: !cfg.prices })}
-          emoji="🍔"
-          title="Les prix"
-          sample={`« ça fait ${frenchPrice(1250)} »`}
-          hue="#e65100"
-        />
-        <Card
-          on={cfg.phones}
-          onClick={() => set({ phones: !cfg.phones })}
-          emoji="📞"
-          title="Les numéros de téléphone"
-          sample={
-            cfg.phoneStyle === "sg"
-              ? `« ${frenchPhone("91234567")} »`
-              : `« ${frenchPhone("0612345678")} »`
-          }
-          hue="#1565c0"
-        >
-          <div className="mt-3 flex gap-2">
-            <StyleBtn
-              active={cfg.phoneStyle === "fr"}
-              onClick={() => set({ phoneStyle: "fr" })}
-              label="🇫🇷 France"
-              hint="06 12 34 56 78"
-            />
-            <StyleBtn
-              active={cfg.phoneStyle === "sg"}
-              onClick={() => set({ phoneStyle: "sg" })}
-              label="🇸🇬 Singapour"
-              hint="9123 4567"
-            />
-          </div>
-        </Card>
+        <Row on={cfg.phones} onToggle={() => set({ phones: !cfg.phones })} emoji="📞">
+          phone numbers —{" "}
+          <select
+            value={cfg.phoneStyle}
+            onChange={(e) => set({ phoneStyle: e.target.value === "sg" ? "sg" : "fr" })}
+            aria-label="Phone number length"
+            className="rounded-lg border-2 border-slate-300 bg-white px-2 py-1 font-bold text-slate-800"
+          >
+            <option value="fr">10 digits (France)</option>
+            <option value="sg">8 digits (Singapore)</option>
+          </select>
+        </Row>
       </div>
 
       <button
         type="button"
         onClick={start}
-        className="rounded-2xl border-2 border-b-[6px] border-[#46a302] bg-[#58cc02] py-4 text-xl font-black text-white shadow-sm transition hover:brightness-105 active:translate-y-[3px] active:border-b-2"
+        disabled={!ready}
+        className="mt-4 w-full rounded-2xl border-2 border-b-[6px] border-[#46a302] bg-[#58cc02] py-4 text-xl font-black text-white shadow-sm transition hover:brightness-105 active:translate-y-[3px] active:border-b-2 disabled:cursor-not-allowed disabled:opacity-40"
       >
-        ▶ C&apos;est parti !
+        ▶ Start
       </button>
     </div>
   );
 }
 
-function Card({
+function Row({
   on,
-  onClick,
+  onToggle,
   emoji,
-  title,
-  sample,
-  hue,
   children,
 }: {
   on: boolean;
-  onClick: () => void;
+  onToggle: () => void;
   emoji: string;
-  title: string;
-  sample: string;
-  hue: string;
-  children?: React.ReactNode;
+  children: React.ReactNode;
 }) {
   return (
     <div
-      className="rounded-2xl border-2 border-b-4 bg-white p-3 shadow-sm transition"
-      style={{ borderColor: on ? hue : "#e2e8f0" }}
+      className="flex items-start gap-3 rounded-2xl border-2 border-b-4 bg-white p-3 transition"
+      style={{ borderColor: on ? "#e0567f" : "#e2e8f0" }}
     >
-      <button
-        type="button"
-        onClick={onClick}
-        aria-pressed={on}
-        className="flex w-full items-center gap-3 text-left"
+      <input
+        type="checkbox"
+        checked={on}
+        onChange={onToggle}
+        className="mt-1 h-6 w-6 shrink-0 accent-[#e0567f]"
+      />
+      <span
+        className={`flex flex-wrap items-center gap-x-1 gap-y-2 text-sm font-bold ${
+          on ? "text-slate-800" : "text-slate-400"
+        }`}
       >
-        <span className="text-2xl" aria-hidden>
+        <span aria-hidden className="text-lg">
           {emoji}
         </span>
-        <span className="min-w-0 flex-1">
-          <span className="block text-sm font-black text-slate-800">{title}</span>
-          <span className="block truncate text-xs font-bold text-slate-500" lang="fr">
-            {sample}
-          </span>
-        </span>
-        <span
-          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 text-sm font-black text-white transition"
-          style={{
-            borderColor: on ? hue : "#cbd5e1",
-            background: on ? hue : "transparent",
-          }}
-        >
-          {on ? "✓" : ""}
-        </span>
-      </button>
-      {on && children}
+        {children}
+      </span>
     </div>
   );
 }
 
-function StyleBtn({
-  active,
-  onClick,
+function Select({
+  value,
+  onChange,
+  options,
+  pad,
   label,
-  hint,
 }: {
-  active: boolean;
-  onClick: () => void;
+  value: number;
+  onChange: (v: number) => void;
+  options: number[];
+  pad?: boolean;
   label: string;
-  hint: string;
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={active}
-      className={`flex-1 rounded-xl border-2 border-b-4 px-2 py-2 text-center transition active:translate-y-[2px] active:border-b-2 ${
-        active ? "border-[#0d47a1] bg-[#1565c0] text-white" : "border-slate-200 bg-slate-50 text-slate-600"
-      }`}
+    <select
+      value={value}
+      onChange={(e) => onChange(Number(e.target.value))}
+      aria-label={label}
+      className="rounded-lg border-2 border-slate-300 bg-white px-1.5 py-1 font-mono font-black text-slate-800"
     >
-      <span className="block text-xs font-black">{label}</span>
-      <span className="block font-mono text-[11px] font-bold opacity-80">{hint}</span>
-    </button>
+      {options.map((o) => (
+        <option key={o} value={o}>
+          {pad ? TWO(o) : o}
+        </option>
+      ))}
+    </select>
   );
 }
