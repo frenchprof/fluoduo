@@ -12,6 +12,7 @@ import { chiptune } from "@/games/audio/chiptune";
 import { sfx } from "@/games/audio/sfx";
 import CreditsSplash from "@/games/CreditsSplash";
 import { isChannelMuted, onChannelMuteChange, setChannelMuted } from "@/games/audio/mute";
+import SoundControl from "@/components/SoundControl";
 import { logEvent } from "@/lib/firebase/usage";
 import { claimDigitKeys } from "@/lib/useChoiceKeys";
 import { blindWidth, configKey, configSummary, dealRound, type Blind, type NumBusConfig, type NumBusMode, type NumBusRound } from "./config";
@@ -767,6 +768,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           >
             🎵
           </button>
+          <SoundControl />
         </div>
       </header>
 
