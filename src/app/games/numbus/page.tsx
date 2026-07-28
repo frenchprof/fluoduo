@@ -1,44 +1,44 @@
-import Link from "next/link";
-import CahierShell from "@/components/CahierShell";
-import { siteTabs, tabsWithActive, UNIT_ACCENTS } from "@/components/siteTabs";
-import { NUMBUS_ROUTES } from "@/games/numbus/lines";
+"use client";
 
-const EXTRA = "#e0567f";
+import { useState } from "react";
+import AuthGate from "@/components/AuthGate";
+import BackLink from "@/components/BackLink";
+import HelpDot from "@/components/HelpDot";
+import NumBus from "@/games/numbus/NumBus";
+import NumBusSetup from "@/games/numbus/NumBusSetup";
+import type { NumBusConfig } from "@/games/numbus/config";
 
-export default function NumBusIndexPage() {
+export default function NumBusClient() {
+  const [config, setConfig] = useState<NumBusConfig | null>(null);
+
   return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="numbus" crumb="🚌 NumBus">
-      <div className="mx-auto max-w-3xl px-4 pb-4 pt-2">
-        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
-          🚌 NumBus
-          <span className="ml-2 text-sm font-bold text-[color:var(--cahier-ink-soft)]">
-            hear the number — type the digits before time runs out
-          </span>
-        </h1>
-        <div className="mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-2">
-          {NUMBUS_ROUTES.map((r) => {
-            const accent = r.unit === null ? EXTRA : UNIT_ACCENTS[r.unit];
-            return (
-              <Link
-                key={r.id}
-                href={`/games/numbus/${r.id}`}
-                className="flex items-center gap-2.5 rounded-xl border-2 border-b-4 bg-white p-2.5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-                style={{ borderColor: accent }}
-              >
-                <span className="text-xl" aria-hidden>{r.emoji}</span>
-                <span className="min-w-0">
-                  <span className="block truncate text-[13px] font-black leading-tight text-[color:var(--cahier-ink)]" lang="fr">
-                    {r.brand === "NumBus" ? r.scale : r.brand}
-                  </span>
-                  <span className="block truncate text-[11px] font-bold" style={{ color: accent }}>
-                    {r.brand === "NumBus" ? r.place : r.scale}
-                  </span>
-                </span>
-              </Link>
-            );
-          })}
+    <AuthGate what="play">
+      <main
+        className="min-h-screen"
+        style={{ background: "linear-gradient(180deg,#cfe9fb 0%,#eaf6ff 45%,#f7fcff 100%)" }}
+      >
+        <div className="border-b-2 border-white/70 bg-white/60 backdrop-blur">
+          <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3 text-sm font-bold">
+            <BackLink fallback="/" className="text-[#c94070] hover:text-[#a92f5a]">
+              ← Back
+            </BackLink>
+            <span className="flex items-center gap-2 text-slate-600">
+              🚌 NumBus <HelpDot />
+            </span>
+          </div>
         </div>
-      </div>
-    </CahierShell>
+
+        {!config ? (
+          <div className="mx-auto max-w-3xl px-4 py-6">
+            <h1 className="cahier-display mb-4 text-center text-2xl font-black text-[color:var(--cahier-ink)]">
+              🚌 NumBus
+            </h1>
+            <NumBusSetup onStart={setConfig} />
+          </div>
+        ) : (
+          <NumBus config={config} onQuit={() => setConfig(null)} />
+        )}
+      </main>
+    </AuthGate>
   );
 }

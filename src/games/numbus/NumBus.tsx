@@ -1,16 +1,9 @@
 "use client";
 
 /**
- * NumBus family — hear a French number, type the digits before time runs out.
- *
- *   NumBus     three levels (0–20, 0–69, 0–99) at the morning bus stop
- *   Horaires   00:00–23:59 on a station departure board
- *   NumBurger  checkout totals up to 99,99 €
- *   NumBureau  a phone number in five two-digit blocks
- *
- * Speech defaults slow; ⏸ pause and 🔊/🐢 repeat are always available.
- * The countdown stays frozen until the announcement finishes, and again
- * while paused — the bar only drains once typing is open.
+ * NumBus — one game: hear French numbers, type digits before time runs out.
+ * Setup picks bus range (0–99), optional times, prices, and phones (FR/SG).
+ * Speech is slow by default; ⏸ pause and 🔊/🐢 repeat are always available.
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -21,10 +14,9 @@ import CreditsSplash from "@/games/CreditsSplash";
 import SoundControl from "@/components/SoundControl";
 import { logEvent } from "@/lib/firebase/usage";
 import { holdDigitKeys } from "@/lib/useChoiceKeys";
-import { blindWidth, getRoute, type Blind, type NumBusMode, type NumBusRound, type NumBusRoute } from "./lines";
+import { blindWidth, configSummary, dealRound, type Blind, type NumBusConfig, type NumBusMode, type NumBusRound } from "./config";
 
-const ROUNDS_FLAT = 10;
-const BUSES_PER_LEVEL = 6;
+const ROUNDS_PER_RUN = 10;
 const LIVES = 3;
 const ARRIVE_MS = 2200;
 const LEAVE_MS = 2000;
@@ -195,7 +187,8 @@ function Vehicle({
 }
 
 function BusStopScene({
-  route,
+  mode,
+  label,
   spot,
   panel,
   boardState,
@@ -206,7 +199,8 @@ function BusStopScene({
   onRepeat,
   talking,
 }: {
-  route: NumBusRoute;
+  mode: "bus" | "time";
+  label: string;
   spot: VehicleSpot;
   panel: string;
   boardState: "waiting" | "ok" | "bad";
@@ -217,7 +211,7 @@ function BusStopScene({
   onRepeat: () => void;
   talking: boolean;
 }) {
-  const train = route.mode === "time";
+  const train = mode === "time";
   const sky = train
     ? "linear-gradient(180deg,#48586e 0%,#8ba0b8 50%,#cbd8e4 100%)"
     : "linear-gradient(180deg,#5fb8ee 0%,#a8dcfa 52%,#e4f4fe 100%)";
@@ -243,20 +237,20 @@ function BusStopScene({
       <div className="pointer-events-none absolute bottom-[50px] left-1 flex items-end sm:left-4">
         <div className="flex flex-col items-center">
           <div className="rounded-md border-2 border-white/90 bg-[#14304a] px-2 py-[3px] text-[10px] font-black tracking-wider text-[#ffc233] shadow-md">
-            {route.label}
+            {label}
           </div>
           <div className="h-[86px] w-[4px] bg-[#aeb9c4]" />
         </div>
       </div>
-      {route.mode === "bus" && <Queue bubble={bubble} boarding={boarding} />}
-      {route.mode === "time" && (
+      {mode === "bus" && <Queue bubble={bubble} boarding={boarding} />}
+      {mode === "time" && (
         <div className="pointer-events-none absolute bottom-[58px] left-1/2 -translate-x-1/2 rounded-lg border-2 border-[#1e3a52] bg-[#0c1824] px-4 py-2 shadow-xl">
           <p className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-[#7eb8e8]">Prochains départs</p>
           <p className="mt-1 text-center font-mono text-2xl font-black text-[#ffc233]">{panel === "??" ? "--:--" : `${panel.slice(0, 2)}:${panel.slice(2, 4)}`}</p>
         </div>
       )}
-      {route.mode === "bus" && <Vehicle spot={spot} panel={panel} state={boardState} />}
-      {route.mode === "time" && spot !== "off" && spot !== "gone" && (
+      {mode === "bus" && <Vehicle spot={spot} panel={panel} state={boardState} />}
+      {mode === "time" && spot !== "off" && spot !== "gone" && (
         <Vehicle spot="stop" panel={panel} state={boardState} train />
       )}
       <button
@@ -322,11 +316,13 @@ function BureauScene({
   timerHue,
   onRepeat,
   talking,
+  phoneStyle,
 }: {
   left: number;
   timerHue: string;
   onRepeat: () => void;
   talking: boolean;
+  phoneStyle: "fr" | "sg";
 }) {
   return (
     <div
@@ -341,7 +337,7 @@ function BureauScene({
       <div className="absolute bottom-24 left-6 text-4xl opacity-60" aria-hidden>📁</div>
       <div className="absolute bottom-24 right-6 text-4xl opacity-60" aria-hidden>🗂️</div>
       <p className="absolute left-0 right-0 top-16 text-center text-xs font-bold uppercase tracking-widest text-[#455a64]">
-        Standard — cinq paires de chiffres
+        {phoneStyle === "sg" ? "Singapore — four two-digit blocks" : "Standard — five two-digit blocks"}
       </p>
       <button type="button" onClick={onRepeat} title="Repeat" className="absolute left-3 top-14 text-2xl" style={{ animation: talking ? "nbring .7s ease-in-out infinite" : undefined }}>
         📢
@@ -357,19 +353,12 @@ function BureauScene({
 
 type Stage = "arriving" | "asking" | "revealed" | "leaving" | "terminus";
 
-export default function NumBus({ lineId }: { lineId: string }) {
-  const route = getRoute(lineId)!;
-  const isLeveled = route.mode === "bus";
-  const quota = isLeveled ? BUSES_PER_LEVEL : ROUNDS_FLAT;
-  const maxLevel = route.levels?.length ?? 1;
-
+export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQuit?: () => void }) {
   const [creditsDone, setCreditsDone] = useState(false);
-  const [level, setLevel] = useState(1);
   const [round, setRound] = useState<NumBusRound | null>(null);
   const [stage, setStage] = useState<Stage>("arriving");
   const [typed, setTyped] = useState("");
   const [served, setServed] = useState(0);
-  const [levelServed, setLevelServed] = useState(0);
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
   const [lives, setLives] = useState(LIVES);
@@ -382,6 +371,8 @@ export default function NumBus({ lineId }: { lineId: string }) {
   const [music, setMusic] = useState(false);
   const [talking, setTalking] = useState(false);
   const [speechPaused, setSpeechPaused] = useState(false);
+
+  const mode = round?.mode ?? "bus";
 
   const inputRef = useRef<HTMLInputElement>(null);
   const timers = useRef<number[]>([]);
@@ -429,9 +420,8 @@ export default function NumBus({ lineId }: { lineId: string }) {
     speak(text, "fr-FR", { rate, onDone: () => setTalking(false) });
   }, []);
 
-  const pullIn = useCallback((lv?: number) => {
-    const lvUse = lv ?? level;
-    const next = route.next(lvUse);
+  const pullIn = useCallback(() => {
+    const next = dealRound(config);
     setRound(next);
     setTyped("");
     setCorrect(false);
@@ -445,11 +435,11 @@ export default function NumBus({ lineId }: { lineId: string }) {
       announce(next.say);
       focus();
     });
-  }, [after, announce, focus, level, route]);
+  }, [after, announce, config, focus]);
 
   useEffect(() => {
     if (!creditsDone) return;
-    void logEvent("game.start", { game: "numbus", collectionId: route.id });
+    void logEvent("game.start", { game: "numbus", collectionId: configSummary(config) });
     after(0, pullIn);
   }, [creditsDone]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -464,9 +454,8 @@ export default function NumBus({ lineId }: { lineId: string }) {
       setStage("revealed");
       setTyped(round.digits);
       setServed((n) => n + 1);
-      setLevelServed((n) => n + 1);
       void import("@/lib/firebase/responses")
-        .then((m) => m.recordResponse(round.words, won, { given: answer || "—", activity: `numbus:${route.id}` }))
+        .then((m) => m.recordResponse(round.words, won, { given: answer || "—", activity: "numbus" }))
         .catch(() => {});
 
       if (won) {
@@ -482,12 +471,12 @@ export default function NumBus({ lineId }: { lineId: string }) {
         setShowWhy(true);
       }
     },
-    [after, clearTimers, route.id, round, streak],
+    [after, clearTimers, round, streak],
   );
 
   useEffect(() => {
     if (stage !== "asking" || !round || !typingOpen) return;
-    const total = route.seconds * 1000;
+    const total = round.seconds * 1000;
     const start = performance.now();
     leftRef.current = 1;
     setLeft(1);
@@ -501,27 +490,19 @@ export default function NumBus({ lineId }: { lineId: string }) {
       }
     }, 100);
     return () => window.clearInterval(id);
-  }, [stage, round, route.seconds, typingOpen, resolve]);
+  }, [stage, round, typingOpen, resolve]);
 
   useEffect(() => {
     if (stage !== "leaving") return;
     after(LEAVE_MS, () => {
       const dead = lives <= 0;
-      const levelFull = levelServed >= quota;
-      const runDone = !isLeveled ? served >= ROUNDS_FLAT : level >= maxLevel && levelFull;
+      const runDone = served >= ROUNDS_PER_RUN;
       if (dead || runDone) {
         setStage("terminus");
         if (!dead) sfx.stage();
-        void logEvent("game.end", { game: "numbus", collectionId: route.id, score, level });
+        void logEvent("game.end", { game: "numbus", collectionId: configSummary(config), score });
         chiptune.stop();
         setMusic(false);
-      } else if (isLeveled && levelFull) {
-        setLevelServed(0);
-        setLevel((l) => {
-          const nl = l + 1;
-          after(0, () => pullIn(nl));
-          return nl;
-        });
       } else {
         pullIn();
       }
@@ -566,8 +547,6 @@ export default function NumBus({ lineId }: { lineId: string }) {
 
   const restart = useCallback(() => {
     clearTimers();
-    setLevel(1);
-    setLevelServed(0);
     setScore(0);
     setStreak(0);
     setLives(LIVES);
@@ -592,15 +571,13 @@ export default function NumBus({ lineId }: { lineId: string }) {
     "rounded-xl border-2 border-b-4 border-white/70 bg-white/85 px-2.5 py-1 font-bold text-slate-800 shadow-sm transition hover:bg-white active:translate-y-[2px] active:border-b-2";
   const timerHue = left > 0.5 ? "#58cc02" : left > 0.25 ? "#ffc800" : "#e0567f";
 
-  const brandHue = route.mode === "price" ? "#e65100" : route.mode === "phone" ? "#546e7a" : "#e0567f";
-  const progressLabel = isLeveled
-    ? `${levelServed}/${quota} · N${level}`
-    : `${Math.min(served + (stage === "terminus" ? 0 : 1), ROUNDS_FLAT)}/${ROUNDS_FLAT}`;
+  const brandHue = mode === "price" ? "#e65100" : mode === "phone" ? "#546e7a" : "#e0567f";
+  const progressLabel = `${Math.min(served + (stage === "terminus" ? 0 : 1), ROUNDS_PER_RUN)}/${ROUNDS_PER_RUN}`;
 
   const priceDisplay =
-    round && route.mode === "price" && typed.length >= 2
+    round && mode === "price" && typed.length >= 2
       ? `${typed.slice(0, 2)},${typed.slice(2).padEnd(2, "·")}`
-      : round && route.mode === "price" && typed.length > 0
+      : round && mode === "price" && typed.length > 0
         ? `${typed.padEnd(2, "·")},··`
         : "";
 
@@ -611,9 +588,11 @@ export default function NumBus({ lineId }: { lineId: string }) {
     talking,
   };
 
+  const stopLabel = mode === "time" ? "Horaires" : `${config.min}–${config.max}`;
+
   return (
     <div data-kbnav-off className="mx-auto flex w-full max-w-3xl flex-col gap-3 px-4 py-5">
-      <CreditsSplash game={route.brand} emoji={route.emoji} onDone={() => setCreditsDone(true)} />
+      <CreditsSplash game="NumBus" emoji="🚌" onDone={() => setCreditsDone(true)} />
       <style>{`
         @keyframes nbflip{0%{transform:rotateX(-88deg);opacity:.25}100%{transform:none;opacity:1}}
         @keyframes nbwheel{to{transform:rotate(360deg)}}
@@ -624,20 +603,17 @@ export default function NumBus({ lineId }: { lineId: string }) {
       <header className="flex flex-wrap items-end justify-between gap-2">
         <div>
           <h1 className="text-3xl font-black tracking-tight text-slate-800" style={{ textShadow: "0 2px 0 #fff" }}>
-            {route.emoji} {route.brand === "NumBus" ? (
-              <>Num<span style={{ color: brandHue }}>Bus</span></>
-            ) : route.brand === "NumBurger" ? (
-              <>Num<span style={{ color: brandHue }}>Burger</span></>
+            {mode === "price" ? (
+              <>🍔 Num<span style={{ color: brandHue }}>Burger</span></>
+            ) : mode === "phone" ? (
+              <>📞 Num<span style={{ color: brandHue }}>Bureau</span></>
+            ) : mode === "time" ? (
+              <>🕑 Horaires</>
             ) : (
-              <>Num<span style={{ color: brandHue }}>Bureau</span></>
+              <>🚌 Num<span style={{ color: brandHue }}>Bus</span></>
             )}
           </h1>
-          <p className="text-sm font-bold text-slate-600">
-            {route.place} <span className="font-medium text-slate-500">— {route.label}</span>
-            {isLeveled && route.levels && (
-              <span className="ml-1 font-black" style={{ color: brandHue }}>· {route.levels[level - 1]?.label}</span>
-            )}
-          </p>
+          <p className="text-sm font-bold text-slate-600">{configSummary(config)}</p>
         </div>
         <div className="flex flex-wrap items-center justify-end gap-2 font-mono text-sm">
           <span className="rounded-xl border-2 border-white/70 bg-white/85 px-2.5 py-1 font-bold shadow-sm">{progressLabel}</span>
@@ -647,6 +623,11 @@ export default function NumBus({ lineId }: { lineId: string }) {
             <span className="opacity-25">{"🖤".repeat(Math.max(0, LIVES - lives))}</span>
           </span>
           <button type="button" onClick={() => setShowHelp(true)} title="How to play" className={pillCls}>?</button>
+          {onQuit && (
+            <button type="button" onClick={onQuit} title="Settings" className={pillCls}>
+              ⚙️
+            </button>
+          )}
           <button type="button" title="Music" className={pillCls} onClick={() => { if (chiptune.playing()) { chiptune.stop(); setMusic(false); } else { chiptune.play("numbus"); setMusic(true); } }}>
             {music ? "🔊" : "🔇"}
           </button>
@@ -654,9 +635,10 @@ export default function NumBus({ lineId }: { lineId: string }) {
         </div>
       </header>
 
-      {route.mode === "bus" || route.mode === "time" ? (
+      {mode === "bus" || mode === "time" ? (
         <BusStopScene
-          route={route}
+          mode={mode}
+          label={stopLabel}
           spot={spot}
           panel={stage === "revealed" ? plate : "??"}
           boardState={boardState === "typing" ? "waiting" : boardState}
@@ -664,15 +646,15 @@ export default function NumBus({ lineId }: { lineId: string }) {
           boarding={stage === "revealed" && correct}
           {...sceneProps}
         />
-      ) : route.mode === "price" ? (
+      ) : mode === "price" ? (
         <BurgerScene {...sceneProps} totalLabel={priceDisplay} />
       ) : (
-        <BureauScene {...sceneProps} />
+        <BureauScene {...sceneProps} phoneStyle={config.phoneStyle} />
       )}
 
       <div
         className={`relative rounded-3xl border-4 px-4 py-3 shadow-xl transition focus-within:border-[#8ec5ff] ${
-          route.mode === "price" ? "border-[#ffb74d] bg-[#3e2723]/95" : route.mode === "phone" ? "border-[#78909c] bg-[#37474f]/95" : "border-white bg-slate-900/90"
+          mode === "price" ? "border-[#ffb74d] bg-[#3e2723]/95" : mode === "phone" ? "border-[#78909c] bg-[#37474f]/95" : "border-white bg-slate-900/90"
         }`}
       >
         {stage === "revealed" && round && round.why.length > 0 && (
@@ -693,7 +675,7 @@ export default function NumBus({ lineId }: { lineId: string }) {
             suffix={round.suffix}
             showCursor={stage === "asking" && typingOpen}
             state={boardState}
-            warm={route.mode === "price"}
+            warm={mode === "price"}
           />
         )}
         <input
@@ -780,7 +762,7 @@ export default function NumBus({ lineId }: { lineId: string }) {
 
       {stage === "revealed" && !correct && (
         <button type="button" onClick={() => setStage("leaving")} className="rounded-2xl border-b-4 border-[#e08600] bg-[#ffc800] py-2 text-base font-black text-slate-900 transition hover:brightness-105 active:translate-y-[2px] active:border-b-0">
-          {lives > 0 && !(isLeveled ? level >= maxLevel && levelServed >= quota : served >= ROUNDS_FLAT) ? "Suivant ▶" : "Terminus ▶"}
+          {lives > 0 && served < ROUNDS_PER_RUN ? "Suivant ▶" : "Terminus ▶"}
         </button>
       )}
 
@@ -791,11 +773,17 @@ export default function NumBus({ lineId }: { lineId: string }) {
             <h2 className="mt-2 text-2xl font-black text-slate-800">Terminus</h2>
             <p className="mt-1 text-lg font-bold text-slate-700">
               <b className="text-[#58cc02]">{score}</b>
-              {isLeveled && ` · niveau ${level}`}
             </p>
-            <button type="button" onClick={restart} className="mt-5 w-full rounded-2xl border-b-4 border-[#46a302] bg-[#58cc02] py-2 text-base font-black text-white transition hover:brightness-105 active:translate-y-[2px] active:border-b-0">
-              Encore ▶
-            </button>
+            <div className="mt-5 flex flex-col gap-2">
+              <button type="button" onClick={restart} className="w-full rounded-2xl border-b-4 border-[#46a302] bg-[#58cc02] py-2 text-base font-black text-white transition hover:brightness-105 active:translate-y-[2px] active:border-b-0">
+                Encore ▶
+              </button>
+              {onQuit && (
+                <button type="button" onClick={onQuit} className="w-full rounded-2xl border-b-4 border-slate-300 bg-white py-2 text-base font-black text-slate-700 transition hover:bg-slate-50 active:translate-y-[2px] active:border-b-0">
+                  ⚙️ Réglages
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -803,11 +791,11 @@ export default function NumBus({ lineId }: { lineId: string }) {
       {showHelp && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4" onClick={() => setShowHelp(false)}>
           <div className="max-w-sm rounded-3xl border-4 border-white bg-white p-6 text-slate-800 shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <h2 className="mb-3 text-xl font-black">How to play {route.brand} {route.emoji}</h2>
+            <h2 className="mb-3 text-xl font-black">How to play NumBus 🚌</h2>
             <ol className="list-inside list-decimal space-y-2 text-sm">
               <li>Listen to the French number — it speaks <b>slowly</b>. ⏸ pauses, 🔊 repeats, 🐢 even slower.</li>
               <li>Type the answer in <b>digits</b> once the bar starts — the clock waits until the speech finishes.</li>
-              <li>{route.mode === "bus" ? "Clear six buses per level (0–20, then 0–69, then 0–99)." : "Clear ten rounds. Miss three and it&rsquo;s the terminus."}</li>
+              <li>Clear ten rounds. Miss three and it&rsquo;s the terminus.</li>
             </ol>
             <button type="button" onClick={() => setShowHelp(false)} className="mt-4 w-full rounded-2xl border-b-4 border-[#46a302] bg-[#58cc02] py-2 text-sm font-black text-white transition hover:brightness-105 active:translate-y-[2px] active:border-b-0">
               Got it — play!
