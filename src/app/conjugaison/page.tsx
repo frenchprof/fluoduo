@@ -16,6 +16,7 @@ import AuthGate from "@/components/AuthGate";
 import { CONJ_GROUPS, PERSONS, VERBS, conjSpoken, type ConjVerb } from "@/content/conjugaison";
 import { gradeAnswer } from "@/lib/practice/cloze";
 import { recordItemResult } from "@/lib/progress";
+import { useActivityPlay } from "@/lib/firebase/activityLog";
 import { speak } from "@/games/letris/speech";
 import { sfx } from "@/games/audio/sfx";
 
@@ -68,6 +69,7 @@ function drawComplements(v: ConjVerb): string[] {
 }
 
 export default function ConjugaisonPage() {
+  useActivityPlay("conjugaison");
   const [picked, setPicked] = useState<string[]>(["etre", "avoir", "aller"]);
   const [cols, setCols] = useState<Record<string, ColState>>({});
   // Lesson pages deep-link their verbs: /conjugaison?v=vouloir,pouvoir

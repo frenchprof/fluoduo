@@ -23,6 +23,7 @@ import { gradeAnswer, type Grade } from "@/lib/practice/cloze";
 import { fingerprint, generateUnheard } from "@/lib/textgen/engine";
 import { clearHeard, loadHeard, saveHeard } from "@/lib/textgen/heard";
 import { MAX_SENTENCES, type MiniText, type UnitTextGen } from "@/lib/textgen/types";
+import { useActivityPlay } from "@/lib/firebase/activityLog";
 
 const SLOW_RATE = 0.6;
 /** A beat between sentences long enough to hear the sentence boundary. */
@@ -45,6 +46,7 @@ function words(fr: string): Word[] {
 }
 
 export default function EcouTexte({ gen, accent }: { gen: UnitTextGen; accent: string }) {
+  useActivityPlay("ecoutexte", `unite-${gen.unit}`);
   const [count, setCount] = useState(3);
   const [text, setText] = useState<MiniText | null>(null);
   const [exhausted, setExhausted] = useState(false);

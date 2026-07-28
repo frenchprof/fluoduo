@@ -25,6 +25,7 @@ import { Summary } from "@/games/dice/DiceTrainer";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { CURATED } from "@/content/collections";
+import { useActivityPlay } from "@/lib/firebase/activityLog";
 import { gappedItems } from "@/lib/collections/gramMarathonReady";
 import type { Item } from "@/lib/collections/schema";
 import { gradeAnswer, gradeGap, splitGap } from "@/lib/practice/cloze";
@@ -62,6 +63,7 @@ function Blank() {
 }
 
 export default function DicedPractice({ collectionId }: { collectionId: string; embedded?: boolean }) {
+  useActivityPlay("dice-practice", collectionId);
   const deck = CURATED.find((c) => c.id === collectionId);
   const pool = deck ? gappedItems(deck) : [];
   const hasGaps = pool.length > 0;
