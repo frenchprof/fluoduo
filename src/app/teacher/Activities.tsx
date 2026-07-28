@@ -5,8 +5,31 @@
  *  the events stream. Teacher accounts excluded. */
 
 import { useMemo } from "react";
+import { CURATED } from "@/content/collections";
 import { type Ev, type Learner, str, num } from "./data";
 import { Kpi, TableBox, Section, SectionGroup } from "./ui";
+
+/**
+ * Which deck a visited path belongs to.
+ *
+ * `deck.open` only ever fires on the deck-BROWSER routes (/decks/…), and no
+ * learner-facing link goes there: every deck flap points at a lesson, a
+ * practice route or a game, so the panel read zero however much deck work the
+ * class did. Attributing page views to the deck in their path measures the
+ * work itself, and it works on the events already collected.
+ */
+const DECK_IDS = new Set(CURATED.map((c) => c.id));
+
+function deckIdFromPath(path: string): string | null {
+  const segs = path.split("?")[0].split("/").filter(Boolean);
+  for (let i = segs.length - 1; i >= 0; i--) {
+    const s = decodeURIComponent(segs[i]);
+    if (DECK_IDS.has(s)) return s;
+    // VocabulaRain drops the suffix in its route (…/aliments → aliments-letris).
+    if (DECK_IDS.has(`${s}-letris`)) return `${s}-letris`;
+  }
+  return null;
+}
 
 export default function Activities({ events, roster, includeTeachers = false }: { events: Ev[]; roster: Learner[]; includeTeachers?: boolean }) {
   const model = useMemo(() => {
@@ -18,6 +41,7 @@ export default function Activities({ events, roster, includeTeachers = false }: 
       starts: number; ends: number; players: Set<string>;
       scoreSum: number; scoreN: number; best: number | null; bestBy: string | null;
     }>();
+    // opens = every visit to any activity scoped to that deck.
     const decks = new Map<string, { opens: number; people: Set<string> }>();
     // Keyed by href so supplement.open (flap) and supplement.answer (in-page)
     // land on the same row; label remembered for display.
@@ -49,12 +73,16 @@ export default function Activities({ events, roster, includeTeachers = false }: 
           }
         }
       }
-      if (ev.type === "deck.open") {
-        const id = str(ev.payload.id) ?? "?";
-        let d = decks.get(id);
-        if (!d) decks.set(id, (d = { opens: 0, people: new Set() }));
-        d.opens += 1;
-        d.people.add(ev.uid);
+      if (ev.type === "deck.open" || ev.type === "page.view") {
+        const id = ev.type === "deck.open"
+          ? str(ev.payload.id)
+          : deckIdFromPath(str(ev.payload.path) ?? "");
+        if (id) {
+          let d = decks.get(id);
+          if (!d) decks.set(id, (d = { opens: 0, people: new Set() }));
+          d.opens += 1;
+          d.people.add(ev.uid);
+        }
       }
       if (ev.type === "supplement.open" || ev.type === "supplement.answer") {
         const key = str(ev.payload.href) ?? str(ev.payload.label) ?? "?";
@@ -92,7 +120,7 @@ export default function Activities({ events, roster, includeTeachers = false }: 
     <div>
       <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-5">
         <Kpi label="Game variants played" value={model.games.length} />
-        <Kpi label="Decks opened" value={model.decks.length} />
+        <Kpi label="Decks worked on" value={model.decks.length} />
         <Kpi label="Flashcard reviews" value={model.reviews} sub={`${model.reviewers} learners`} />
         <Kpi label="Supplement opens" value={model.supplements.reduce((s, [, x]) => s + x.opens, 0)} />
         <Kpi label="Tutor messages" value={model.tutorMsgs} sub={`${model.tutorUsers} learners`} />
@@ -117,8 +145,8 @@ export default function Activities({ events, roster, includeTeachers = false }: 
           </TableBox>
         </Section>
 
-        <Section id="act:decks" title="Decks" meta={`${model.decks.length} decks · ${model.decks.reduce((s, [, d]) => s + d.opens, 0)} opens`}>
-          <TableBox head={["Deck", "Opens", "People"]}>
+        <Section id="act:decks" title="Decks" meta={`${model.decks.length} decks · ${model.decks.reduce((s, [, d]) => s + d.opens, 0)} visits`}>
+          <TableBox head={["Deck", "Visits", "People"]}>
             {model.decks.map(([id, d]) => (
               <tr key={id} className="border-t border-slate-100">
                 <td className="px-3 py-2"><a href={`/decks/${id}`} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{id}</a></td>
@@ -127,7 +155,7 @@ export default function Activities({ events, roster, includeTeachers = false }: 
               </tr>
             ))}
             {model.decks.length === 0 && (
-              <tr><td className="px-3 py-3 text-slate-500" colSpan={3}>No deck opens recorded yet.</td></tr>
+              <tr><td className="px-3 py-3 text-slate-500" colSpan={3}>No deck activity recorded yet.</td></tr>
             )}
           </TableBox>
         </Section>
@@ -146,7 +174,7 @@ export default function Activities({ events, roster, includeTeachers = false }: 
               </tr>
             ))}
             {model.supplements.length === 0 && (
-              <tr><td className="px-3 py-3 text-slate-500" colSpan={5}>No supplement opens recorded yet.</td></tr>
+              <tr><td className="px-3 py-3 text-slate-500" colSpan={5}>No standalone supplements are attached to any deck — SpecuLearn, the only one there was, became a native activity on 14 July. The plumbing stays for future material.</td></tr>
             )}
           </TableBox>
         </Section>
