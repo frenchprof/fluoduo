@@ -245,6 +245,46 @@ const storm: Song = {
   drums: ("KhhhShkhKhhhShkh".repeat(4) + "KHhHShHhKHhHSHhH".repeat(4)).split(""),
 };
 
+// NumBus — the ride to the stop: F major, 128 bpm, a light shuffle. A bouncy
+// two-bar hook over a walking bass that keeps the bus rolling, and a hi-hat
+// pattern that ticks like an indicator.
+const numbus: Song = {
+  bpm: 128, swing: 0.2,
+  ch: [
+    // Lead: a jaunty call-and-answer over F – Bb – C – F
+    { type: "pulse" as OscillatorType, duty: 0.5, vol: 0.15, notes: [
+      ["F5",2],["A5",2],["C6",2],["A5",2],["F5",2],["G5",2],["A5",4],          // bar 1
+      ["G5",2],["F5",2],["D5",2],["F5",2],["C5",4],["0",4],                    // bar 2
+      ["D5",2],["F5",2],["A5",2],["F5",2],["D5",2],["E5",2],["F5",4],          // bar 3
+      ["E5",2],["D5",2],["C5",2],["D5",2],["A4",4],["0",4],                    // bar 4
+      ["C5",2],["E5",2],["G5",2],["E5",2],["C5",2],["D5",2],["E5",4],          // bar 5
+      ["G5",2],["A5",2],["G5",2],["E5",2],["C5",4],["0",4],                    // bar 6
+      ["F5",2],["G5",2],["A5",2],["C6",2],["A5",2],["G5",2],["F5",4],          // bar 7
+      ["C5",2],["E5",2],["F5",4],["0",2],["F5",2],["0",4],                     // bar 8
+    ]},
+    // Off-beat chord stabs — the engine idling between stops. Two lines per
+    // bar of the bass below: F Dm Bb C Am Dm Bb F.
+    { type: "pulse" as OscillatorType, duty: 0.25, vol: 0.06, notes: ([] as [Note, number][]).concat(
+      ...([
+        ["F4", "A4", "C5"], ["F4", "A4", "C5"],
+        ["D4", "F4", "A4"], ["D4", "F4", "A4"],
+        ["A#4", "D5", "F5"], ["A#4", "D5", "F5"],
+        ["C5", "E5", "G5"], ["C5", "E5", "G5"],
+        ["A4", "C5", "E5"], ["A4", "C5", "E5"],
+        ["D4", "F4", "A4"], ["D4", "F4", "A4"],
+        ["A#4", "D5", "F5"], ["A#4", "D5", "F5"],
+        ["F4", "A4", "C5"], ["F4", "A4", "C5"],
+      ] as string[][]).map((chord): [Note, number][] => [["0", 2], [chord, 2], ["0", 2], [chord, 2]])) },
+    // Walking bass — the wheels
+    { type: "triangle", vol: 0.23, notes: ([] as [Note, number][]).concat(
+      seq(["F2", "A2", "C3", "A2"], 4), seq(["D3", "A2", "F2", "A2"], 4),
+      seq(["A#2", "D3", "F3", "D3"], 4), seq(["C3", "E3", "G3", "E3"], 4),
+      seq(["A2", "C3", "E3", "C3"], 4), seq(["D3", "F3", "A3", "F3"], 4),
+      seq(["A#2", "D3", "C3", "A2"], 4), seq(["F2", "C3", "F2", "C3"], 4)) },
+  ],
+  drums: ("K.h.S.h.K.h.S.hh".repeat(7) + "K.h.S.h.KhhhSKSK").split(""),
+};
+
 // Variation passes (Dan, 2026-07-08: "alternative versions that cut the
 // musical notes by half — instead of 1 1 1 1, we have ½ ½ ½ ½ ½ ½ ½ ½"):
 // every even-length note becomes TWO half-length repeats; odd/1-step notes
@@ -266,16 +306,19 @@ function hybridTime(song: Song): Song {
   return { ...song, ch: song.ch.map((c, i) => (i === 0 ? halfTimeCh(c) : { ...c, byStep: undefined, notes: [...c.notes] })) };
 }
 const SONGS: Record<string, Song> = {
-  letris, conveyor, storm,
+  letris, conveyor, storm, numbus,
   "letris-var": halfTime(letris),
   "letris-mix": hybridTime(letris),
   "conveyor-var": halfTime(conveyor),
   "conveyor-mix": hybridTime(conveyor),
+  "numbus-var": halfTime(numbus),
+  "numbus-mix": hybridTime(numbus),
 };
 // Pass rotation: base → half-time → hybrid → base …
 const TWIN: Record<string, string> = {
   letris: "letris-var", "letris-var": "letris-mix", "letris-mix": "letris",
   conveyor: "conveyor-var", "conveyor-var": "conveyor-mix", "conveyor-mix": "conveyor",
+  numbus: "numbus-var", "numbus-var": "numbus-mix", "numbus-mix": "numbus",
 };
 function prepare(song: Song) {
   const L = 128; song.len = L;

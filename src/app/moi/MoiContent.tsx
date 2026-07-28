@@ -28,6 +28,7 @@ function labelActivity(id: string): string {
   if (id.startsWith("/practice/grammarathon/")) return "🏃 GramMarathon · " + id.split("/").pop();
   if (id.startsWith("/games/lexicalater")) return "LexicaLater";
   if (id.startsWith("/games/vocabularain") || id.startsWith("/games/letris")) return "VocabulaRain";
+  if (id.startsWith("/games/numbus") || id.startsWith("numbus:")) return "NumBus";
   if (id.startsWith("/games/compose")) return "Compose It";
   if (id === "/conjugaison") return "ConjugaZone";
   if (id === "/reviser") return "DéjàRevu";

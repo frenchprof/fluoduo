@@ -231,6 +231,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
     [/^\/practice\/dice\/?/, "Dice"],
     [/^\/games\/vocabularain\/?|^vocabularain:/, "VocabulaRain"],
     [/^\/games\/lexicalater\/?/, "LexicaLater"],
+    [/^\/games\/numbus\/?|^numbus:/, "NumBus"],
     [/^\/games\/compose\/?/, "Composer"],
     [/^\/conjugaison\/?/, "ConjugaZone"],
     [/^\/reviser\/?/, "DéjàRevu"],
@@ -267,6 +268,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
     const m = /^mcq:(.+)$/.exec(key);
     if (m) return `/decks/${m[1]}/mcq`;
     if (key.startsWith("vocabularain:")) return "/games/vocabularain";
+    if (key.startsWith("numbus:")) return "/games/numbus";
     if (key.startsWith("speculearn:")) return "/practice/speculearn";
     return null;
   };
