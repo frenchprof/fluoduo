@@ -16,6 +16,18 @@ export function choiceKeysBusy(): boolean {
   return activeCount > 0;
 }
 
+/** The same stand-down for an activity that types digits rather than picking
+ *  options (NumBourse keys a valuation in). Return value is the unmount hook. */
+export function holdDigitKeys(): () => void {
+  activeCount++;
+  let released = false;
+  return () => {
+    if (released) return;
+    released = true;
+    activeCount--;
+  };
+}
+
 export function useChoiceKeys({
   count,
   onPick,

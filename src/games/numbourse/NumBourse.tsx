@@ -22,6 +22,7 @@ import { sfx } from "@/games/audio/sfx";
 import CreditsSplash from "@/games/CreditsSplash";
 import SoundControl from "@/components/SoundControl";
 import { frenchNumber, frenchDigits } from "./frenchNumbers";
+import { holdDigitKeys } from "@/lib/useChoiceKeys";
 
 const START_LIVES = 3;
 const QUOTA = 6; // trades to close a level
@@ -93,8 +94,10 @@ export default function NumBourse() {
   const resolvedRef = useRef(false); // the current ticket is settled (win/miss)
   const musicAutoRef = useRef(false);
   const missedRef = useRef<Order[]>([]);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => setMounted(true), []);
+  useEffect(() => holdDigitKeys(), []);
   useEffect(() => () => chiptune.stop(), []);
   useEffect(() => {
     void logEvent("game.start", { game: "numbourse" });
@@ -219,9 +222,21 @@ export default function NumBourse() {
   function press(key: string) {
     if (!order || resolvedRef.current || over || won || levelDone) return;
     ensureMusic();
+    inputRef.current?.focus({ preventScroll: true });
     if (key === "back") setTyped((t) => t.slice(0, -1));
     else setTyped((t) => (t.length >= 6 ? t : t + key));
   }
+
+  const canType =
+    started && !!order && !resolvedRef.current && !over && !won && !levelDone && flash !== "ok" && !reveal;
+
+  // Keep the numeric field focused while a ticket is live — digits stay in
+  // the input (NumBus pattern) so site-wide 1–4 pretest shortcuts are never
+  // captured at the window level.
+  useEffect(() => {
+    if (!canType) return;
+    inputRef.current?.focus({ preventScroll: true });
+  }, [canType, order?.value]);
 
   function reset() {
     setScore(0);
@@ -239,28 +254,6 @@ export default function NumBourse() {
     if (level === 1) deal(1);
     else setLevel(1);
   }
-
-  // Window-level keys — digits, Backspace, Enter (Enter also restarts).
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.metaKey || e.ctrlKey || e.altKey) return;
-      const tag = (e.target as HTMLElement | null)?.tagName;
-      if (tag === "INPUT" || tag === "TEXTAREA" || (e.target as HTMLElement | null)?.isContentEditable) return;
-      if (/^[0-9]$/.test(e.key)) {
-        e.preventDefault();
-        press(e.key);
-      } else if (e.key === "Backspace") {
-        e.preventDefault();
-        press("back");
-      } else if (e.key === "Enter") {
-        e.preventDefault();
-        if (over || won) reset();
-        else submit();
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  });
 
   // Decorative tape quotes — random deltas, rolled once per mount.
   const tape = useMemo(
@@ -412,15 +405,40 @@ export default function NumBourse() {
               )}
             </div>
 
-            {/* The trade being typed — LED figures. */}
-            <div
-              className="mx-auto flex h-14 max-w-xs items-center justify-center rounded-xl border-2 font-mono text-3xl font-black tracking-wider"
-              style={{ borderColor: "#1d3a2d", background: "#061410", color: "#4ade80" }}
-              aria-label="Your typed value"
-            >
-              {typed.replace(/\B(?=(\d{3})+(?!\d))/g, "\u202f")}
-              {!resolvedRef.current && <span style={{ animation: "nbcaret 1s step-end infinite" }}>▮</span>}
-              <span className="ml-2" style={{ color: "#3d6b56" }}>€</span>
+            {/* The trade being typed — LED figures; a real field sits on top so
+                digits never register as site-wide shortcuts. */}
+            <div className="relative mx-auto max-w-xs">
+              <div
+                className="pointer-events-none flex h-14 items-center justify-center rounded-xl border-2 font-mono text-3xl font-black tracking-wider"
+                style={{ borderColor: "#1d3a2d", background: "#061410", color: "#4ade80" }}
+                aria-hidden
+              >
+                {typed.replace(/\B(?=(\d{3})+(?!\d))/g, "\u202f")}
+                {canType && <span style={{ animation: "nbcaret 1s step-end infinite" }}>▮</span>}
+                <span className="ml-2" style={{ color: "#3d6b56" }}>€</span>
+              </div>
+              <input
+                ref={inputRef}
+                value={typed}
+                inputMode="numeric"
+                autoComplete="off"
+                aria-label="Your typed value"
+                readOnly={!canType}
+                tabIndex={canType ? 0 : -1}
+                style={{ outline: "none" }}
+                className="absolute inset-0 cursor-text bg-transparent text-transparent caret-transparent"
+                onFocus={() => ensureMusic()}
+                onChange={(e) => {
+                  if (!canType) return;
+                  ensureMusic();
+                  setTyped(e.target.value.replace(/\D/g, "").slice(0, 6));
+                }}
+                onKeyDown={(e) => {
+                  if (e.key !== "Enter") return;
+                  e.preventDefault();
+                  submit();
+                }}
+              />
             </div>
 
             {/* Ticket clock */}
