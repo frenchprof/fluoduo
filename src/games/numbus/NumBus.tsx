@@ -6,12 +6,12 @@
  * Speech is slow by default; ⏸ pause and 🔊/🐢 repeat are always available.
  */
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { speak, pauseSpeech, resumeSpeech, isSpeechPaused } from "@/games/letris/speech";
 import { chiptune } from "@/games/audio/chiptune";
 import { sfx } from "@/games/audio/sfx";
 import CreditsSplash from "@/games/CreditsSplash";
-import SoundControl from "@/components/SoundControl";
+import { isChannelMuted, onChannelMuteChange, setChannelMuted } from "@/games/audio/mute";
 import { logEvent } from "@/lib/firebase/usage";
 import { holdDigitKeys } from "@/lib/useChoiceKeys";
 import { blindWidth, configSummary, dealRound, type Blind, type NumBusConfig, type NumBusMode, type NumBusRound } from "./config";
@@ -558,7 +558,9 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
   }, [stage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const startMusic = useCallback(() => {
-    if (music || chiptune.playing()) return;
+    // Auto-start must respect a site-wide music mute — only the 🎵 button
+    // itself overrides it, since pressing it is an explicit request.
+    if (music || chiptune.playing() || isChannelMuted("music")) return;
     chiptune.play("numbus");
     setMusic(true);
   }, [music]);
@@ -680,6 +682,15 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
 
   const stopLabel = mode === "time" ? "Horaires" : `${config.min}–${config.max}`;
 
+  // Listening practice with the voice muted is unplayable, so say so rather
+  // than letting the learner stare at a silent bus stop. The floating 🔇 mutes
+  // every channel at once, which is the usual way this happens.
+  const voiceOff = useSyncExternalStore(
+    onChannelMuteChange,
+    () => isChannelMuted("voice"),
+    () => false,
+  );
+
   return (
     <div data-kbnav-off className="mx-auto flex w-full max-w-3xl flex-col gap-3 px-4 py-5">
       <CreditsSplash game="NumBus" emoji="🚌" onDone={() => setCreditsDone(true)} />
@@ -718,12 +729,49 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
               ⚙️
             </button>
           )}
-          <button type="button" title="Music" className={pillCls} onClick={() => { if (chiptune.playing()) { chiptune.stop(); setMusic(false); } else { chiptune.play("numbus"); setMusic(true); } }}>
-            {music ? "🔊" : "🔇"}
+          {/* Music only — never a speaker glyph, which is what made this look
+              like a second mute button next to the floating one. */}
+          <button
+            type="button"
+            title={music ? "Background music on" : "Background music off"}
+            aria-pressed={music}
+            className={`rounded-xl border-2 border-b-4 px-2.5 py-1 font-bold shadow-sm transition active:translate-y-[2px] active:border-b-2 ${
+              music
+                ? "border-violet-500 bg-violet-500 text-white"
+                : "border-violet-200 bg-white/85 text-violet-300"
+            }`}
+            onClick={() => {
+              if (chiptune.playing()) {
+                chiptune.stop();
+                setMusic(false);
+                return;
+              }
+              // The music channel may be muted site-wide, in which case play()
+              // runs silently — asking for music here means wanting to hear it.
+              setChannelMuted("music", false);
+              chiptune.play("numbus");
+              setMusic(true);
+            }}
+          >
+            🎵
           </button>
-          <SoundControl />
         </div>
       </header>
+
+      {voiceOff && (
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border-2 border-b-4 border-[#e0384e] bg-[#fff1f3] px-4 py-3">
+          <p className="text-sm font-black text-[#a3172b]">
+            🔇 The voice is off — there is nothing to listen to.
+          </p>
+          <button
+            type="button"
+            onClick={() => setChannelMuted("voice", false)}
+            className="rounded-xl border-2 border-b-4 border-[#a3172b] bg-[#e0384e] px-3 py-1.5 text-sm font-black text-white transition active:translate-y-[2px] active:border-b-2"
+          >
+            Turn the voice on
+          </button>
+        </div>
+      )}
 
       {mode === "bus" || mode === "time" ? (
         <BusStopScene
