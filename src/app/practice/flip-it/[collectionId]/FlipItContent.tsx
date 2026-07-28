@@ -35,6 +35,7 @@ import { recordItemResult } from "@/lib/progress";
 import { CahierFrame, TAB_HUES, type CahierTab } from "../CahierFrame";
 import BackLink from "@/components/BackLink";
 import HelpDot from "@/components/HelpDot";
+import SoundControl from "@/components/SoundControl";
 
 /* ─────────────────────────── step labels ─────────────────────────── */
 
@@ -186,7 +187,10 @@ function TopBar({ crumb }: { crumb: string }) {
         <span className="cahier-display truncate text-sm font-bold text-[color:var(--cahier-ink)]">
           🃏 Flip It · {crumb}
         </span>
-        <HelpDot className="ml-auto text-[color:var(--cahier-ink)]" />
+        <span className="ml-auto flex items-center gap-2">
+          <SoundControl />
+          <HelpDot className="text-[color:var(--cahier-ink)]" />
+        </span>
       </div>
     </div>
   );

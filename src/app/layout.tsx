@@ -9,7 +9,6 @@ import KeyNav from "@/components/KeyNav";
 import SuiteBanner from "@/components/SuiteBanner";
 import AccentBar from "@/components/AccentBar";
 import RewardToast from "@/components/RewardToast";
-import TtsToggle from "@/components/TtsToggle";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -94,7 +93,6 @@ export default function RootLayout({
         <KeyNav />
         <AccentBar />
         <RewardToast />
-        <TtsToggle />
       </body>
     </html>
   );

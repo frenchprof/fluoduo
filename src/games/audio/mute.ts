@@ -4,9 +4,10 @@
  *   voice — TTS (speech.ts consumes it)
  *   music — the chiptune loops (musicBus)
  *   sfx   — jingles & game effects (fxBus)
- * Device PREFERENCES, kept across sessions and sign-out. The legacy
- * single-switch API stays for the floating in-game toggle: it reads/writes
- * ALL three at once. Old single-key prefs seed all channels once.
+ * Device PREFERENCES, kept across sessions and sign-out. Old single-key prefs
+ * seed all channels once. The all-or-nothing API that the floating in-game
+ * toggle used is gone with it (2026-07-28) — every surface now carries the
+ * per-channel control instead.
  */
 const CHANNELS = ["voice", "music", "sfx"] as const;
 export type SoundChannel = (typeof CHANNELS)[number];
@@ -50,11 +51,3 @@ export function onChannelMuteChange(fn: (ch: SoundChannel, m: boolean) => void):
 }
 
 export const isAllMuted = () => CHANNELS.every((c) => muted[c]);
-export const setAllMuted = (m: boolean) => CHANNELS.forEach((c) => setChannelMuted(c, m));
-
-/* Legacy single-switch API — all-or-nothing (the floating 🔇 in games). */
-export const isSoundMuted = isAllMuted;
-export const setSoundMuted = setAllMuted;
-export function onSoundMuteChange(fn: (m: boolean) => void): () => void {
-  return onChannelMuteChange(() => fn(isAllMuted()));
-}

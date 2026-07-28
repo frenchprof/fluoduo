@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import BackLink from "@/components/BackLink";
 import HelpDot from "@/components/HelpDot";
+import SoundControl from "@/components/SoundControl";
 import AuthGate from "@/components/AuthGate";
 import ComposeGame from "@/games/compose/ComposeGame";
 import { getComposeBank, listComposeBanks } from "@/games/compose/banks";
@@ -41,8 +42,12 @@ export default async function ComposePage({
             <BackLink fallback="/" className={theme.bar}>
               ← Back
             </BackLink>
-            <span lang="fr" className={theme.crumb}>
-              {bank.emoji} {bank.title}
+            <span className="flex items-center gap-2">
+              <span lang="fr" className={theme.crumb}>
+                {bank.emoji} {bank.title}
+              </span>
+              <SoundControl />
+              <HelpDot />
             </span>
           </div>
         </div>
