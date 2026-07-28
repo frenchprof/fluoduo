@@ -6,7 +6,7 @@
 
 import { useMemo, useState } from "react";
 import { type Ev, type Learner, SG_DAY_KEY, SG_DAY_LABEL, str } from "./data";
-import { Kpi, TableBox, SectionTitle } from "./ui";
+import { Kpi, TableBox, Section, SectionGroup } from "./ui";
 
 const DAYS_SHOWN = 14;
 
@@ -119,50 +119,55 @@ export default function Overview({ events, roster, includeTeachers, onStudent }:
         )}
       </p>
 
-      <SectionTitle>Day by day</SectionTitle>
-      <TableBox head={["Day", "Learners", "Page views", "Games", "Pretest answers"]}>
-        {model.days.map((d) => (
-          <tr key={d.key} className="border-t border-slate-100">
-            <td className="px-3 py-2"><button type="button" onClick={() => setDayOpen(d.key)} className="text-left font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{d.label}</button></td>
-            <td className="px-3 py-2 text-right font-black text-slate-900">{d.peopleCount}</td>
-            <td className="px-3 py-2 text-right text-slate-700">{d.views}</td>
-            <td className="px-3 py-2 text-right text-slate-700">{d.plays}</td>
-            <td className="px-3 py-2 text-right text-slate-700">{d.answers}</td>
-          </tr>
-        ))}
-        {model.days.length === 0 && (
-          <tr><td className="px-3 py-3 text-slate-500" colSpan={5}>No student activity recorded yet.</td></tr>
-        )}
-      </TableBox>
+      <SectionGroup>
+        <Section id="ov:days" title="Day by day" meta={`last ${model.days.length} day${model.days.length === 1 ? "" : "s"}`}>
+          <TableBox head={["Day", "Learners", "Page views", "Games", "Pretest answers"]}>
+            {model.days.map((d) => (
+              <tr key={d.key} className="border-t border-slate-100">
+                <td className="px-3 py-2"><button type="button" onClick={() => setDayOpen(d.key)} className="text-left font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{d.label}</button></td>
+                <td className="px-3 py-2 text-right font-black text-slate-900">{d.peopleCount}</td>
+                <td className="px-3 py-2 text-right text-slate-700">{d.views}</td>
+                <td className="px-3 py-2 text-right text-slate-700">{d.plays}</td>
+                <td className="px-3 py-2 text-right text-slate-700">{d.answers}</td>
+              </tr>
+            ))}
+            {model.days.length === 0 && (
+              <tr><td className="px-3 py-3 text-slate-500" colSpan={5}>No student activity recorded yet.</td></tr>
+            )}
+          </TableBox>
+        </Section>
 
-      <SectionTitle>Most visited pages, last 7 days</SectionTitle>
-      <TableBox head={["Page", "People"]}>
-        {model.topPages.map((p) => (
-          <tr key={p.path} className="border-t border-slate-100">
-            <td className="px-3 py-2 break-all"><a href={p.path} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{p.path}</a></td>
-            <td className="px-3 py-2 text-right font-black text-slate-900">{p.people}</td>
-          </tr>
-        ))}
-        {model.topPages.length === 0 && (
-          <tr><td className="px-3 py-3 text-slate-500" colSpan={2}>No page views in the last 7 days.</td></tr>
-        )}
-      </TableBox>
+        <Section id="ov:pages" title="Most visited pages, last 7 days" meta={`${model.topPages.length} pages`}>
+          <TableBox head={["Page", "People"]}>
+            {model.topPages.map((p) => (
+              <tr key={p.path} className="border-t border-slate-100">
+                <td className="px-3 py-2 break-all"><a href={p.path} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{p.path}</a></td>
+                <td className="px-3 py-2 text-right font-black text-slate-900">{p.people}</td>
+              </tr>
+            ))}
+            {model.topPages.length === 0 && (
+              <tr><td className="px-3 py-3 text-slate-500" colSpan={2}>No page views in the last 7 days.</td></tr>
+            )}
+          </TableBox>
+        </Section>
 
-      <SectionTitle>XP top 10</SectionTitle>
-      <TableBox head={["Learner", "XP", "Level", "Streak", "Gems"]}>
-        {model.topXp.map((s) => (
-          <tr key={s.uid} className="border-t border-slate-100">
-            <td className="px-3 py-2"><button type="button" onClick={() => onStudent?.(s.uid)} className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{s.board?.name ?? s.name}</button></td>
-            <td className="px-3 py-2 text-right font-black text-slate-900">{s.board?.xp ?? 0}</td>
-            <td className="px-3 py-2 text-right text-slate-700">{s.board?.level ?? 1}</td>
-            <td className="px-3 py-2 text-right text-slate-700">{s.board?.streak ?? 0}</td>
-            <td className="px-3 py-2 text-right text-slate-700">{s.board?.gems ?? 0}</td>
-          </tr>
-        ))}
-        {model.topXp.length === 0 && (
-          <tr><td className="px-3 py-3 text-slate-500" colSpan={5}>Nobody on the leaderboard yet.</td></tr>
-        )}
-      </TableBox>
+        <Section id="ov:xp" title="XP top 10" meta={model.topXp.length > 0 ? `top ${model.topXp[0].board?.xp ?? 0} XP` : "nobody yet"}>
+          <TableBox head={["Learner", "XP", "Level", "Streak", "Gems"]}>
+            {model.topXp.map((s) => (
+              <tr key={s.uid} className="border-t border-slate-100">
+                <td className="px-3 py-2"><button type="button" onClick={() => onStudent?.(s.uid)} className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{s.board?.name ?? s.name}</button></td>
+                <td className="px-3 py-2 text-right font-black text-slate-900">{s.board?.xp ?? 0}</td>
+                <td className="px-3 py-2 text-right text-slate-700">{s.board?.level ?? 1}</td>
+                <td className="px-3 py-2 text-right text-slate-700">{s.board?.streak ?? 0}</td>
+                <td className="px-3 py-2 text-right text-slate-700">{s.board?.gems ?? 0}</td>
+              </tr>
+            ))}
+            {model.topXp.length === 0 && (
+              <tr><td className="px-3 py-3 text-slate-500" colSpan={5}>Nobody on the leaderboard yet.</td></tr>
+            )}
+          </TableBox>
+        </Section>
+      </SectionGroup>
       {dayOpen && (() => {
         const dayEvents = events.filter((e) => e.ts && SG_DAY_KEY.format(e.ts) === dayOpen);
         const pages = new Map<string, { views: number; people: Set<string> }>();

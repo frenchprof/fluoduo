@@ -97,9 +97,8 @@ export default function Evidence({ roster }: { roster: Learner[] }) {
   const rose = risers.filter((r) => (r.finLast ?? 0) > (r.finFirst ?? 0));
 
   return (
-    <div className="mt-4 rounded-2xl border-2 border-emerald-300 bg-emerald-50/40 p-4">
-      <div className="flex items-center justify-between gap-2">
-        <h3 className="text-sm font-black uppercase tracking-wide text-emerald-900">📈 Learning evidence — within-student gains</h3>
+    <div className="mt-2 rounded-2xl border-2 border-emerald-300 bg-emerald-50/40 p-4">
+      <div className="flex items-center justify-end gap-2">
         <div className="flex gap-1.5">
           <button type="button" onClick={() => void compute()} disabled={busy} className="rounded-full border-2 border-emerald-700 bg-white px-3 py-1 text-xs font-black text-emerald-800 disabled:opacity-50">
             {busy ? "Computing…" : rows ? "Recompute" : "Compute"}

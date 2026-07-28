@@ -14,7 +14,7 @@ import {
   fetchStudentDetail, fmtWhen, fmtDuration, str, num, SG_DAY_KEY,
 } from "./data";
 import { XP_CORRECT, XP_WRONG, XP_SIO_BASE, XP_CONVERSATION } from "@/lib/economy";
-import { Kpi, TableBox, SectionTitle } from "./ui";
+import { Kpi, TableBox, Section, SectionGroup } from "./ui";
 import Evidence from "./Evidence";
 
 /** ⬇️ Analytics summary CSV (Dan, 2026-07-25): one row per student — paste
@@ -70,14 +70,15 @@ function ExportCsv({ roster }: { roster: Learner[] }) {
     } finally { setBusy(false); }
   };
   return (
-    <div className="mt-3 rounded-2xl border-2 border-slate-200 bg-white p-3">
-      <p className="text-sm font-black text-slate-700">⬇️ Export analytics summary (CSV)</p>
-      <p className="mt-1 text-xs text-slate-500">ST2FR26 · 16 students, UID-matched (aliases merged) — one row each, always.</p>
-      <button type="button" onClick={() => void run()} disabled={busy}
-        className="mt-1.5 rounded-full border-2 border-slate-900 bg-yellow-100 px-4 py-1 text-sm font-black text-slate-900 shadow-[2px_2px_0_#1f2440] disabled:opacity-50">
-        {busy ? "Building…" : "⬇️ Download CSV"}
-      </button>
-    </div>
+    <Section id="stu:csv" title="⬇️ Export analytics summary (CSV)" meta={`${CLASS.length} students`}>
+      <div className="mt-2 rounded-xl border-2 border-slate-200 bg-white p-3">
+        <p className="text-xs text-slate-500">ST2FR26 · 16 students, UID-matched (aliases merged) — one row each, always.</p>
+        <button type="button" onClick={() => void run()} disabled={busy}
+          className="mt-1.5 rounded-full border-2 border-slate-900 bg-yellow-100 px-4 py-1 text-sm font-black text-slate-900 shadow-[2px_2px_0_#1f2440] disabled:opacity-50">
+          {busy ? "Building…" : "⬇️ Download CSV"}
+        </button>
+      </div>
+    </Section>
   );
 }
 
@@ -86,10 +87,12 @@ export default function Students({ events, roster, initialUid }: { events: Ev[];
   useEffect(() => { if (initialUid) setSel(initialUid); }, [initialUid]);
   const selected = roster.find((l) => l.uid === sel) ?? null;
   return (
-    <div>
-      <p className="mt-2 text-sm text-slate-500">Click a learner for the full picture.</p>
+    <SectionGroup>
       <ExportCsv roster={roster} />
-      <Evidence roster={roster} />
+      <Section id="stu:evidence" title="📈 Learning evidence — within-student gains">
+        <Evidence roster={roster} />
+      </Section>
+      <Section id="stu:roster" title="Roster" meta={`${roster.length} learners · click one for the full picture`} defaultOpen>
       <TableBox head={["Learner", "Last seen", "Days active", "Page views", "Games", "Pretest answers", "XP", "Streak"]}>
         {roster.map((l) => (
           <tr
@@ -115,8 +118,9 @@ export default function Students({ events, roster, initialUid }: { events: Ev[];
           <tr><td className="px-3 py-3 text-slate-500" colSpan={8}>No learners recorded yet.</td></tr>
         )}
       </TableBox>
+      </Section>
       {selected && <StudentPanel key={selected.uid} learner={selected} events={events} onClose={() => setSel(null)} />}
-    </div>
+    </SectionGroup>
   );
 }
 
@@ -231,6 +235,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
     [/^\/practice\/dice\/?/, "Dice"],
     [/^\/games\/vocabularain\/?|^vocabularain:/, "VocabulaRain"],
     [/^\/games\/lexicalater\/?/, "LexicaLater"],
+    [/^\/games\/numbus\/?|^numbus:/, "NumBus"],
     [/^\/games\/compose\/?/, "Composer"],
     [/^\/conjugaison\/?/, "ConjugaZone"],
     [/^\/reviser\/?/, "DéjàRevu"],
@@ -267,6 +272,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
     const m = /^mcq:(.+)$/.exec(key);
     if (m) return `/decks/${m[1]}/mcq`;
     if (key.startsWith("vocabularain:")) return "/games/vocabularain";
+    if (key.startsWith("numbus:")) return "/games/numbus";
     if (key.startsWith("speculearn:")) return "/practice/speculearn";
     return null;
   };
@@ -354,6 +360,10 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
       {error && <p className="mt-3 text-sm font-bold text-rose-600">Couldn&rsquo;t load this learner&rsquo;s stores.</p>}
       {!detail && !error && <p className="mt-3 text-sm text-slate-500">Loading…</p>}
 
+      {/* Own group: the modal's expand/collapse-all is its own, not the
+          roster page's (a nested provider wins for its children). */}
+      <SectionGroup>
+
       {detail && (
         <>
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
@@ -412,10 +422,12 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
             const syncOk = boardXp === null || progXp === null || boardXp === progXp;
             const floorOk = progXp === null || progXp >= floor;
             return (
-              <div className={`mt-4 rounded-xl border-2 p-3 text-sm ${syncOk && floorOk ? "border-emerald-300 bg-emerald-50/60" : "border-rose-300 bg-rose-50/60"}`}>
-                <p className="font-black text-slate-900">
-                  XP audit {syncOk && floorOk ? "✓" : "⚠️"}
-                </p>
+              <Section
+                id="sp:xp"
+                title="XP audit"
+                meta={<span className={`font-black ${syncOk && floorOk ? "text-emerald-700" : "text-rose-600"}`}>{syncOk && floorOk ? "✓ in sync, above floor" : "⚠️ check"}</span>}
+              >
+              <div className={`mt-2 rounded-xl border-2 p-3 text-sm ${syncOk && floorOk ? "border-emerald-300 bg-emerald-50/60" : "border-rose-300 bg-rose-50/60"}`}>
                 <p className="mt-1 text-slate-700">
                   Leaderboard <b>{boardXp ?? "—"}</b> vs progress <b>{progXp ?? "—"}</b>{" "}
                   {syncOk ? "· in sync ✓" : "· OUT OF SYNC — the leaderboard publish is stale (learner should open the app signed-in once)"}
@@ -427,12 +439,17 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
                     : "· BELOW FLOOR — some recorded answers did not pay XP, or progress was reset on a device"}
                 </p>
               </div>
+              </Section>
             );
           })()}
 
           {respStats && respStats.total > 0 && (
             <>
-              <SectionTitle>Item responses</SectionTitle>
+              <Section
+                id="sp:responses"
+                title="Item responses"
+                meta={`${respStats.total} answers${respStats.accuracy !== null ? ` · ${respStats.accuracy}% accuracy` : ""}`}
+              >
               <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
                 <Kpi label="Responses" value={respStats.total} />
                 <Kpi label="Accuracy" value={respStats.accuracy !== null ? `${respStats.accuracy}%` : "—"} sub="met + mastered" />
@@ -448,9 +465,9 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
                   }
                 />
               </div>
+              </Section>
               {respStats.hardest.length > 0 && (
-                <>
-                  <SectionTitle>Hardest items</SectionTitle>
+                <Section id="sp:hardest" title="Hardest items" meta={`${respStats.hardest.length} items · ${respStats.hardest[0][1]} misses at worst`}>
                   <TableBox head={["Item", "Misses"]}>
                     {respStats.hardest.map(([item, n]) => (
                       <tr key={item} className="border-t border-slate-100">
@@ -459,9 +476,9 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
                       </tr>
                     ))}
                   </TableBox>
-                </>
+                </Section>
               )}
-              <SectionTitle>Results by exercise</SectionTitle>
+              <Section id="sp:byexercise" title="Results by exercise" meta={`${(byExercise ?? []).length} exercises`}>
               <TableBox head={["Exercise", "Answers", "✓ ok", "✗ missed", "retried", "Last done"]}>
                 {(byExercise ?? []).map((g, i) => (
                   <tr key={i} className="border-t border-slate-100">
@@ -474,7 +491,8 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
                   </tr>
                 ))}
               </TableBox>
-              <SectionTitle>Recent answers</SectionTitle>
+              </Section>
+              <Section id="sp:recent" title="Recent answers" meta={`last ${Math.min(15, detail.responses.length)} of ${detail.responses.length}`}>
               <TableBox head={["When", "Item", "Status", "Given answer", "Activity", "Time"]}>
                 {detail.responses.slice(0, 15).map((r, i) => (
                   <tr key={i} className="border-t border-slate-100">
@@ -491,6 +509,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
                   </tr>
                 ))}
               </TableBox>
+              </Section>
             </>
           )}
           {respStats && respStats.total === 0 && (
@@ -498,8 +517,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
           )}
 
           {sessStats && detail.sessions.length > 0 && (
-            <>
-              <SectionTitle>Time on task</SectionTitle>
+            <Section id="sp:time" title="Time on task" meta={`${detail.sessions.length} sessions · ${fmtDuration(sessStats.totalMs)}`}>
               <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
                 <Kpi label="Sessions" value={detail.sessions.length} />
                 <Kpi label="Total time" value={fmtDuration(sessStats.totalMs)} />
@@ -513,12 +531,12 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
                   </tr>
                 ))}
               </TableBox>
-            </>
+            </Section>
           )}
         </>
       )}
 
-      <SectionTitle>Pages visited</SectionTitle>
+      <Section id="sp:pages" title="Pages visited" meta={`${trail.topPages.length} pages`}>
       {trail.topPages.length > 0 ? (
         <TableBox head={["Page", "Views"]}>
           {trail.topPages.map(([path, n]) => (
@@ -531,10 +549,15 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
       ) : (
         <p className="mt-2 text-sm text-slate-500">No page views yet (visit tracking shipped 13 Jul 2026; earlier visits were never recorded).</p>
       )}
+      </Section>
 
       {(trail.games.length > 0 || trail.answers > 0 || trail.supAnswers > 0 || trail.tutorMsgs > 0) && (
         <>
-          <SectionTitle>Games, pretests &amp; more</SectionTitle>
+          <Section
+            id="sp:games"
+            title="Games, pretests & more"
+            meta={`${trail.games.length} games · ${trail.answers} pretest answers · ${trail.tutorMsgs} tutor messages`}
+          >
           <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
             <Kpi
               label="Pretest answers"
@@ -559,9 +582,9 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
               ))}
             </TableBox>
           )}
+          </Section>
           {trail.tutorRecent.length > 0 && (
-            <>
-              <SectionTitle>Recent tutor messages</SectionTitle>
+            <Section id="sp:tutor" title="Recent tutor messages" meta={`last ${trail.tutorRecent.length} of ${trail.tutorMsgs}`}>
               <TableBox head={["When", "Message"]}>
                 {trail.tutorRecent.map((m, i) => (
                   <tr key={i} className="border-t border-slate-100 align-top">
@@ -570,10 +593,11 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
                   </tr>
                 ))}
               </TableBox>
-            </>
+            </Section>
           )}
         </>
       )}
+      </SectionGroup>
     </div>
     </div>
   );

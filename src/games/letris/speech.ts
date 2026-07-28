@@ -85,6 +85,8 @@ type SpeakOpts = {
   gender?: "f" | "m" | "kid";
   /** Speaking rate override — e.g. 0.6 for the 🐌 slow-playback buttons. */
   rate?: number;
+  /** Fires once when the utterance finishes (or errors). */
+  onDone?: () => void;
 };
 
 // Spoken French names of the alphabet, written the way fr-FR TTS reads them
@@ -449,9 +451,24 @@ export function speak(text: string, lang = "fr-FR", opts: SpeakOpts = {}) {
     synth.cancel();
   } else {
     pending++;
-    u.onend = u.onerror = () => {
+    const prevEnd = u.onend;
+    const prevErr = u.onerror;
+    u.onend = (ev) => {
       pending = Math.max(0, pending - 1);
+      prevEnd?.call(u, ev);
     };
+    u.onerror = (ev) => {
+      pending = Math.max(0, pending - 1);
+      prevErr?.call(u, ev);
+    };
+  }
+
+  if (opts.onDone) {
+    const done = opts.onDone;
+    const prevEnd = u.onend;
+    const prevErr = u.onerror;
+    u.onend = (ev) => { prevEnd?.call(u, ev); done(); };
+    u.onerror = (ev) => { prevErr?.call(u, ev); done(); };
   }
 
   // Chrome silently pauses the queue after long continuous use; nudge it.

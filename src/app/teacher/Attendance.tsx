@@ -3,13 +3,30 @@
 /** Day × page → unique visitors (Dan, 2026-07-13: "how many people was on
  *  which page on which days"). page.view covers every in-app route change;
  *  supplement.open stands in for the standalone supplement HTML (logged at
- *  the deck-flap door). Teacher accounts are excluded. */
+ *  the deck-flap door). Teacher accounts are excluded. Each day is a
+ *  collapsible section, and the days sort by turnout as well as by date
+ *  (Dan, 2026-07-28). */
 
 import { useMemo } from "react";
 import { type Ev, type Learner, SG_DAY_KEY, SG_DAY_LABEL, str } from "./data";
-import { TableBox } from "./ui";
+import { Section, SectionGroup, TableBox, useSortedSections, type SortOption } from "./ui";
 
 const MAX_DAYS_SHOWN = 30;
+
+type Day = {
+  dayKey: string;
+  dayLabel: string;
+  people: number;
+  views: number;
+  pages: { path: string; people: number; views: number; names: string[] }[];
+};
+
+const SORTS: SortOption<Day>[] = [
+  { key: "day", label: "Day", val: (d) => d.dayKey },
+  { key: "people", label: "People", val: (d) => d.people },
+  { key: "views", label: "Views", val: (d) => d.views },
+  { key: "pages", label: "Pages", val: (d) => d.pages.length },
+];
 
 export default function Attendance({ events, roster, includeTeachers = false }: { events: Ev[]; roster: Learner[]; includeTeachers?: boolean }) {
   const days = useMemo(() => {
@@ -35,21 +52,33 @@ export default function Attendance({ events, roster, includeTeachers = false }: 
     return [...byDay.entries()]
       .sort((a, b) => b[0].localeCompare(a[0]))
       .slice(0, MAX_DAYS_SHOWN)
-      .map(([dayKey, pages]) => ({
-        dayKey,
-        dayLabel: labels.get(dayKey) ?? dayKey,
-        pages: [...pages.entries()]
-          .map(([path, a]) => ({
-            path,
-            people: a.people.size,
-            views: a.views,
-            names: [...new Set([...a.people].map((uid) => nameOf.get(uid) ?? uid.slice(0, 8)))].sort((x, y) =>
-              x.localeCompare(y),
-            ),
-          }))
-          .sort((x, y) => y.people - x.people || y.views - x.views || x.path.localeCompare(y.path)),
-      }));
+      .map(([dayKey, pages]): Day => {
+        const everyone = new Set<string>();
+        let views = 0;
+        for (const a of pages.values()) {
+          for (const uid of a.people) everyone.add(uid);
+          views += a.views;
+        }
+        return {
+          dayKey,
+          dayLabel: labels.get(dayKey) ?? dayKey,
+          people: everyone.size,
+          views,
+          pages: [...pages.entries()]
+            .map(([path, a]) => ({
+              path,
+              people: a.people.size,
+              views: a.views,
+              names: [...new Set([...a.people].map((uid) => nameOf.get(uid) ?? uid.slice(0, 8)))].sort((x, y) =>
+                x.localeCompare(y),
+              ),
+            }))
+            .sort((x, y) => y.people - x.people || y.views - x.views || x.path.localeCompare(y.path)),
+        };
+      });
   }, [events, roster, includeTeachers]);
+
+  const { sorted, bar } = useSortedSections(days, SORTS);
 
   if (days.length === 0) {
     return (
@@ -60,10 +89,15 @@ export default function Attendance({ events, roster, includeTeachers = false }: 
   }
 
   return (
-    <div className="mt-4 space-y-8">
-      {days.map((day) => (
-        <section key={day.dayKey}>
-          <h2 className="text-lg font-black text-slate-900">{day.dayLabel}</h2>
+    <SectionGroup>
+      {bar}
+      {sorted.map((day) => (
+        <Section
+          key={day.dayKey}
+          id={`att:${day.dayKey}`}
+          title={day.dayLabel}
+          meta={`${day.people} people · ${day.views} views · ${day.pages.length} pages`}
+        >
           <TableBox head={["Page", "People", "Views", "Who"]}>
             {day.pages.map((row) => (
               <tr key={row.path} className="border-t border-slate-100 align-top">
@@ -74,8 +108,8 @@ export default function Attendance({ events, roster, includeTeachers = false }: 
               </tr>
             ))}
           </TableBox>
-        </section>
+        </Section>
       ))}
-    </div>
+    </SectionGroup>
   );
 }

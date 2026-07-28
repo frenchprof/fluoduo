@@ -5,6 +5,7 @@
 
 import { useEffect, useState } from "react";
 import { fmtWhen, str } from "./data";
+import { useSortedSections, type SortOption } from "./ui";
 
 type Report = {
   id: string;
@@ -69,14 +70,25 @@ export default function FeedbackPanel({ nameOf, canWrite = true }: { nameOf: Map
     return () => { cancelled = true; };
   }, []);
 
+  // The inbox sorts like every other record on the dashboard (Dan,
+  // 2026-07-28): by when it came in, by who sent it, by what it's about.
+  const visible = (reports ?? []).filter((r) => showDone || !r.done);
+  const SORTS: SortOption<Report>[] = [
+    { key: "when", label: "When", val: (r) => r.createdAt?.getTime() ?? 0 },
+    { key: "who", label: "Who", val: (r) => (r.uid ? nameOf.get(r.uid) ?? r.uid : "anonymous").toLowerCase(), dir: 1 },
+    { key: "what", label: "Category", val: (r) => r.categories.join(" ").toLowerCase(), dir: 1 },
+    { key: "status", label: "Open first", val: (r) => (r.done ? 1 : 0), dir: 1 },
+  ];
+  const { sorted, bar } = useSortedSections(visible, SORTS);
+
   if (error) return <p className="mt-3 text-sm font-bold text-rose-600">Couldn&rsquo;t load feedback.</p>;
   if (reports === null) return <p className="mt-3 text-sm text-slate-500">Loading…</p>;
   if (reports.length === 0) return <p className="mt-3 text-sm text-slate-500">No feedback submitted yet.</p>;
 
-  const visible = showDone ? reports : reports.filter((r) => !r.done);
   const doneCount = reports.length - reports.filter((r) => !r.done).length;
   return (
     <div className="mt-4 space-y-4">
+      {bar}
       <div className="flex items-center justify-between text-xs">
         <span className="font-bold text-slate-500">{visible.length} open{doneCount > 0 && !showDone ? ` · ${doneCount} completed hidden` : ""}</span>
         {doneCount > 0 && (
@@ -86,7 +98,7 @@ export default function FeedbackPanel({ nameOf, canWrite = true }: { nameOf: Map
           </button>
         )}
       </div>
-      {visible.map((r) => (
+      {sorted.map((r) => (
         <div key={r.id} className={`rounded-xl border-2 bg-white p-4 ${r.done ? "border-emerald-200 opacity-60" : "border-slate-200"}`}>
           <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
             {canWrite && (
