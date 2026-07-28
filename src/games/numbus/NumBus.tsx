@@ -13,7 +13,7 @@ import { sfx } from "@/games/audio/sfx";
 import CreditsSplash from "@/games/CreditsSplash";
 import { isChannelMuted, onChannelMuteChange, setChannelMuted } from "@/games/audio/mute";
 import { logEvent } from "@/lib/firebase/usage";
-import { holdDigitKeys } from "@/lib/useChoiceKeys";
+import { claimDigitKeys } from "@/lib/useChoiceKeys";
 import { blindWidth, configSummary, dealRound, type Blind, type NumBusConfig, type NumBusMode, type NumBusRound } from "./config";
 
 const ROUNDS_PER_RUN = 10;
@@ -225,7 +225,7 @@ function BusStopScene({
     ? "linear-gradient(180deg,#5a5f66 0%,#3a3e44 100%)"
     : "linear-gradient(180deg,#5c6470 0%,#3f4650 100%)";
   return (
-    <div className="relative h-[248px] overflow-hidden rounded-3xl border-4 border-white shadow-xl" style={{ background: sky }}>
+    <div className="relative h-[186px] overflow-hidden rounded-3xl border-4 border-white shadow-xl sm:h-[248px]" style={{ background: sky }}>
       <div className="pointer-events-none absolute inset-x-0 bottom-[52px] flex items-end gap-[5px] px-2 opacity-85">
         {Array.from({ length: 11 }).map((_, i) => (
           <div key={i} className="rounded-t-[4px] bg-[#7f96ad]" style={{ height: 34 + ((i * 43) % 68), width: 34 + ((i * 29) % 36), boxShadow: "inset -5px 0 0 rgba(0,0,0,.2)" }} />
@@ -256,8 +256,12 @@ function BusStopScene({
         </div>
       )}
       {mode === "bus" && <Vehicle spot={spot} panel={panel} state={boardState} />}
+      {/* On a phone the train and the departures board fight for the same
+          strip, and the board is the one carrying the answer. */}
       {mode === "time" && spot !== "off" && spot !== "gone" && (
-        <Vehicle spot="stop" panel={panel} state={boardState} train />
+        <div className="hidden sm:block">
+          <Vehicle spot="stop" panel={panel} state={boardState} train />
+        </div>
       )}
       <button
         type="button"
@@ -292,20 +296,20 @@ function BurgerScene({
 }) {
   return (
     <div
-      className="relative h-[248px] overflow-hidden rounded-3xl border-4 border-[#ffb74d] shadow-xl"
+      className="relative h-[186px] overflow-hidden rounded-3xl border-4 border-[#ffb74d] shadow-xl sm:h-[248px]"
       style={{ background: "linear-gradient(180deg,#fff8e8 0%,#ffe0b2 55%,#ffcc80 100%)" }}
     >
       <div className="absolute inset-x-0 top-0 flex items-center justify-between border-b-2 border-[#e65100]/20 bg-[#ff6f00] px-4 py-2">
         <span className="text-lg font-black text-white">🍔 Num<span className="text-[#ffe082]">Burger</span></span>
         <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs font-bold text-white">caisse</span>
       </div>
-      <div className="absolute left-4 top-14 text-6xl opacity-90" aria-hidden>🍔</div>
-      <div className="absolute right-4 top-14 text-5xl opacity-70" aria-hidden>🍟</div>
-      <div className="absolute inset-x-6 bottom-16 rounded-2xl border-2 border-[#bf360c] bg-[#3e2723] px-4 py-3 shadow-inner">
+      <div className="absolute left-4 top-12 text-5xl opacity-90 sm:top-14 sm:text-6xl" aria-hidden>🍔</div>
+      <div className="absolute right-4 top-12 text-4xl opacity-70 sm:top-14 sm:text-5xl" aria-hidden>🍟</div>
+      <div className="absolute inset-x-4 bottom-3 rounded-2xl border-2 border-[#bf360c] bg-[#3e2723] px-4 py-2 shadow-inner sm:inset-x-6 sm:bottom-16 sm:py-3">
         <p className="text-[10px] font-black uppercase tracking-[0.25em] text-[#a1887f]">Total à payer</p>
-        <p className="mt-1 font-mono text-3xl font-black text-[#ffb74d]">{totalLabel || "· · ·"}</p>
+        <p className="mt-1 font-mono text-2xl font-black text-[#ffb74d] sm:text-3xl">{totalLabel || "· · ·"}</p>
       </div>
-      <button type="button" onClick={onRepeat} title="Repeat" className="absolute left-3 top-14 text-2xl" style={{ animation: talking ? "nbring .7s ease-in-out infinite" : undefined }}>
+      <button type="button" onClick={onRepeat} title="Repeat" className="absolute left-1/2 top-[52px] -translate-x-1/2 text-2xl" style={{ animation: talking ? "nbring .7s ease-in-out infinite" : undefined }}>
         📢
       </button>
       <div className="absolute inset-x-0 top-[42px] h-[6px] bg-black/10">
@@ -332,20 +336,20 @@ function BureauScene({
 }) {
   return (
     <div
-      className="relative h-[248px] overflow-hidden rounded-3xl border-4 border-[#90a4ae] shadow-xl"
+      className="relative h-[186px] overflow-hidden rounded-3xl border-4 border-[#90a4ae] shadow-xl sm:h-[248px]"
       style={{ background: "linear-gradient(180deg,#eceff1 0%,#cfd8dc 55%,#b0bec5 100%)" }}
     >
       <div className="absolute inset-x-0 top-0 border-b border-[#78909c] bg-[#546e7a] px-4 py-2">
         <span className="text-lg font-black text-white">📞 Num<span className="text-[#b0bec5]">Bureau</span></span>
       </div>
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#8d6e63] to-[#a1887f]" />
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-7xl drop-shadow-lg" aria-hidden>☎️</div>
-      <div className="absolute bottom-24 left-6 text-4xl opacity-60" aria-hidden>📁</div>
-      <div className="absolute bottom-24 right-6 text-4xl opacity-60" aria-hidden>🗂️</div>
-      <p className="absolute left-0 right-0 top-16 text-center text-xs font-bold uppercase tracking-widest text-[#455a64]">
+      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#8d6e63] to-[#a1887f] sm:h-24" />
+      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-6xl drop-shadow-lg sm:bottom-10 sm:text-7xl" aria-hidden>☎️</div>
+      <div className="absolute bottom-24 left-6 hidden text-4xl opacity-60 sm:block" aria-hidden>📁</div>
+      <div className="absolute bottom-24 right-6 hidden text-4xl opacity-60 sm:block" aria-hidden>🗂️</div>
+      <p className="absolute left-0 right-0 top-14 text-center text-[11px] font-bold uppercase tracking-widest text-[#455a64] sm:top-16 sm:text-xs">
         {phoneStyle === "sg" ? "Singapore — four two-digit blocks" : "Standard — five two-digit blocks"}
       </p>
-      <button type="button" onClick={onRepeat} title="Repeat" className="absolute left-3 top-14 text-2xl" style={{ animation: talking ? "nbring .7s ease-in-out infinite" : undefined }}>
+      <button type="button" onClick={onRepeat} title="Repeat" className="absolute right-3 top-12 text-2xl sm:top-14" style={{ animation: talking ? "nbring .7s ease-in-out infinite" : undefined }}>
         📢
       </button>
       <div className="absolute inset-x-0 top-[42px] h-[6px] bg-black/10">
@@ -379,6 +383,14 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
 
   const mode = round?.mode ?? "bus";
 
+  // Listening practice with the voice muted is unplayable. The floating 🔇
+  // mutes every channel at once, which is the usual way this happens.
+  const voiceOff = useSyncExternalStore(
+    onChannelMuteChange,
+    () => isChannelMuted("voice"),
+    () => false,
+  );
+
   const inputRef = useRef<HTMLInputElement>(null);
   const timers = useRef<number[]>([]);
   const after = useCallback((ms: number, fn: () => void) => {
@@ -401,7 +413,11 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
     inputRef.current?.focus({ preventScroll: true });
   }, []);
 
-  useEffect(() => holdDigitKeys(), []);
+  // Physical-keyboard digits typed while the hidden input does not have focus
+  // still reach the game, arbitrated centrally (see claimDigitKeys) so they can
+  // never shadow another activity's answer keys.
+  const keyRef = useRef<(k: string) => void>(() => {});
+  useEffect(() => claimDigitKeys((d) => keyRef.current(d)), []);
   useEffect(() => {
     try {
       const v = parseFloat(window.localStorage.getItem("fluolingo:volume") ?? "");
@@ -523,7 +539,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
   );
 
   useEffect(() => {
-    if (stage !== "asking" || !round || !typingOpen) return;
+    if (stage !== "asking" || !round || !typingOpen || voiceOff) return;
     const total = round.seconds * 1000;
     const start = performance.now();
     leftRef.current = 1;
@@ -538,7 +554,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
       }
     }, 100);
     return () => window.clearInterval(id);
-  }, [stage, round, typingOpen, resolve]);
+  }, [stage, round, typingOpen, resolve, voiceOff]);
 
   useEffect(() => {
     if (stage !== "leaving") return;
@@ -584,6 +600,9 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
     },
     [armAutoSubmit, cancelAutoSubmit, focus, resolve, round, stage, startMusic, typed, typingOpen, width],
   );
+  useEffect(() => {
+    keyRef.current = key;
+  }, [key]);
 
   const togglePause = useCallback(() => {
     if (isSpeechPaused()) {
@@ -660,7 +679,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
         ? "?"
         : "";
   const pillCls =
-    "rounded-xl border-2 border-b-4 border-white/70 bg-white/85 px-2.5 py-1 font-bold text-slate-800 shadow-sm transition hover:bg-white active:translate-y-[2px] active:border-b-2";
+    "rounded-xl border-2 border-b-4 border-white/70 bg-white/85 px-2 py-1 font-bold text-slate-800 shadow-sm transition hover:bg-white active:translate-y-[2px] active:border-b-2 sm:px-2.5";
   const timerHue = left > 0.5 ? "#58cc02" : left > 0.25 ? "#ffc800" : "#e0567f";
 
   const brandHue = mode === "price" ? "#e65100" : mode === "phone" ? "#546e7a" : "#e0567f";
@@ -682,17 +701,8 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
 
   const stopLabel = mode === "time" ? "Horaires" : `${config.min}–${config.max}`;
 
-  // Listening practice with the voice muted is unplayable, so say so rather
-  // than letting the learner stare at a silent bus stop. The floating 🔇 mutes
-  // every channel at once, which is the usual way this happens.
-  const voiceOff = useSyncExternalStore(
-    onChannelMuteChange,
-    () => isChannelMuted("voice"),
-    () => false,
-  );
-
   return (
-    <div data-kbnav-off className="mx-auto flex w-full max-w-3xl flex-col gap-3 px-4 py-5">
+    <div data-kbnav-off className="mx-auto flex w-full max-w-3xl flex-col gap-2 px-3 py-3 sm:gap-3 sm:px-4 sm:py-5">
       <CreditsSplash game="NumBus" emoji="🚌" onDone={() => setCreditsDone(true)} />
       <style>{`
         @keyframes nbflip{0%{transform:rotateX(-88deg);opacity:.25}100%{transform:none;opacity:1}}
@@ -701,9 +711,9 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
         @keyframes nbring{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.18);opacity:1}}
       `}</style>
 
-      <header className="flex flex-wrap items-end justify-between gap-2">
-        <div>
-          <h1 className="text-3xl font-black tracking-tight text-slate-800" style={{ textShadow: "0 2px 0 #fff" }}>
+      <header className="flex items-center justify-between gap-2">
+        <div className="min-w-0">
+          <h1 className="truncate text-xl font-black tracking-tight text-slate-800 sm:text-3xl" style={{ textShadow: "0 2px 0 #fff" }}>
             {mode === "price" ? (
               <>🍔 Num<span style={{ color: brandHue }}>Burger</span></>
             ) : mode === "phone" ? (
@@ -714,12 +724,14 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
               <>🚌 Num<span style={{ color: brandHue }}>Bus</span></>
             )}
           </h1>
-          <p className="text-sm font-bold text-slate-600">{configSummary(config)}</p>
+          {/* The session recipe can be long — it is reference, not gameplay, so
+              it yields the phone's first screenful. */}
+          <p className="hidden truncate text-sm font-bold text-slate-600 sm:block">{configSummary(config)}</p>
         </div>
-        <div className="flex flex-wrap items-center justify-end gap-2 font-mono text-sm">
-          <span className="rounded-xl border-2 border-white/70 bg-white/85 px-2.5 py-1 font-bold shadow-sm">{progressLabel}</span>
-          <span className="rounded-xl border-2 border-white/70 bg-white/85 px-2.5 py-1 font-bold shadow-sm"><b className="text-[#58cc02]">{score}</b></span>
-          <span className="rounded-xl border-2 border-white/70 bg-white/85 px-2.5 py-1 shadow-sm" title="Lives">
+        <div className="flex shrink-0 flex-wrap items-center justify-end gap-1.5 font-mono text-xs sm:gap-2 sm:text-sm">
+          <span className="rounded-xl border-2 border-white/70 bg-white/85 px-2 py-1 font-bold shadow-sm sm:px-2.5">{progressLabel}</span>
+          <span className="rounded-xl border-2 border-white/70 bg-white/85 px-2 py-1 font-bold shadow-sm sm:px-2.5"><b className="text-[#58cc02]">{score}</b></span>
+          <span className="rounded-xl border-2 border-white/70 bg-white/85 px-2 py-1 shadow-sm sm:px-2.5" title="Lives">
             {"❤️".repeat(Math.max(0, lives))}
             <span className="opacity-25">{"🖤".repeat(Math.max(0, LIVES - lives))}</span>
           </span>
@@ -735,7 +747,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
             type="button"
             title={music ? "Background music on" : "Background music off"}
             aria-pressed={music}
-            className={`rounded-xl border-2 border-b-4 px-2.5 py-1 font-bold shadow-sm transition active:translate-y-[2px] active:border-b-2 ${
+            className={`rounded-xl border-2 border-b-4 px-2 py-1 font-bold shadow-sm transition active:translate-y-[2px] active:border-b-2 sm:px-2.5 ${
               music
                 ? "border-violet-500 bg-violet-500 text-white"
                 : "border-violet-200 bg-white/85 text-violet-300"
@@ -758,21 +770,6 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
         </div>
       </header>
 
-      {voiceOff && (
-        <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border-2 border-b-4 border-[#e0384e] bg-[#fff1f3] px-4 py-3">
-          <p className="text-sm font-black text-[#a3172b]">
-            🔇 The voice is off — there is nothing to listen to.
-          </p>
-          <button
-            type="button"
-            onClick={() => setChannelMuted("voice", false)}
-            className="rounded-xl border-2 border-b-4 border-[#a3172b] bg-[#e0384e] px-3 py-1.5 text-sm font-black text-white transition active:translate-y-[2px] active:border-b-2"
-          >
-            Turn the voice on
-          </button>
-        </div>
-      )}
-
       {mode === "bus" || mode === "time" ? (
         <BusStopScene
           mode={mode}
@@ -791,7 +788,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
       )}
 
       <div
-        className={`relative rounded-3xl border-4 px-4 py-3 shadow-xl transition focus-within:border-[#8ec5ff] ${
+        className={`relative rounded-3xl border-4 px-2 py-2.5 shadow-xl transition focus-within:border-[#8ec5ff] sm:px-4 sm:py-3 ${
           mode === "price" ? "border-[#ffb74d] bg-[#3e2723]/95" : mode === "phone" ? "border-[#78909c] bg-[#37474f]/95" : "border-white bg-slate-900/90"
         }`}
       >
@@ -813,7 +810,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           autoComplete="off"
           aria-label="Answer digits"
           style={{ outline: "none" }}
-          className="absolute inset-x-4 top-3 h-[78px] w-auto cursor-pointer bg-transparent text-transparent caret-transparent pointer-coarse:pointer-events-none"
+          className="absolute inset-x-2 top-2.5 h-[68px] w-auto cursor-pointer bg-transparent text-transparent caret-transparent pointer-coarse:pointer-events-none sm:inset-x-4 sm:top-3 sm:h-[78px]"
           onChange={(e) => {
             if (stage !== "asking") return;
             if (!typingOpen) setTypingOpen(true);
@@ -825,7 +822,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           }}
         />
         {stage === "revealed" && round && (
-          <p className="mt-3 text-center text-lg font-black" lang="fr" style={{ color: correct ? "#8ce563" : "#ff9d9d" }}>
+          <p className="mt-2 text-center text-base font-black sm:mt-3 sm:text-lg" lang="fr" style={{ color: correct ? "#8ce563" : "#ff9d9d" }}>
             {round.words}
           </p>
         )}
@@ -837,7 +834,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           onClick={() => round && repeatSay(round.say)}
           disabled={!round || stage !== "asking"}
           title="Repeat"
-          className="rounded-2xl border-2 border-b-4 border-sky-300 bg-sky-100 py-3 text-xl font-black text-sky-800 transition hover:bg-sky-50 active:translate-y-[2px] active:border-b-2 disabled:opacity-40"
+          className="rounded-2xl border-2 border-b-4 border-sky-300 bg-sky-100 py-2.5 text-xl font-black text-sky-800 sm:py-3 transition hover:bg-sky-50 active:translate-y-[2px] active:border-b-2 disabled:opacity-40"
         >
           🔊
         </button>
@@ -846,7 +843,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           onClick={togglePause}
           disabled={!round || stage !== "asking" || !talking && !speechPaused}
           title={speechPaused ? "Resume" : "Pause"}
-          className="rounded-2xl border-2 border-b-4 border-violet-300 bg-violet-100 py-3 text-xl font-black text-violet-800 transition hover:bg-violet-50 active:translate-y-[2px] active:border-b-2 disabled:opacity-40"
+          className="rounded-2xl border-2 border-b-4 border-violet-300 bg-violet-100 py-2.5 text-xl font-black text-violet-800 sm:py-3 transition hover:bg-violet-50 active:translate-y-[2px] active:border-b-2 disabled:opacity-40"
         >
           {speechPaused ? "▶️" : "⏸"}
         </button>
@@ -855,20 +852,22 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           onClick={() => round && repeatSay(round.say, SLOWER_RATE)}
           disabled={!round || stage !== "asking"}
           title="Repeat slowly"
-          className="rounded-2xl border-2 border-b-4 border-amber-300 bg-amber-100 py-3 text-xl font-black text-amber-900 transition hover:bg-amber-50 active:translate-y-[2px] active:border-b-2 disabled:opacity-40"
+          className="rounded-2xl border-2 border-b-4 border-amber-300 bg-amber-100 py-2.5 text-xl font-black text-amber-900 sm:py-3 transition hover:bg-amber-50 active:translate-y-[2px] active:border-b-2 disabled:opacity-40"
         >
           🐢
         </button>
       </div>
 
-      <div className="grid grid-cols-6 gap-2 sm:grid-cols-12">
+      {/* Three columns on a phone is the dial pad every thumb already knows
+          (1-2-3 / … / ⌫-0-✓); one row on a desktop, where width is free. */}
+      <div className="grid grid-cols-3 gap-2 sm:grid-cols-12">
         {KEYPAD.map((k) => (
           <button
             key={k}
             type="button"
             onClick={() => key(k)}
             disabled={stage !== "asking"}
-            className={`rounded-2xl border-2 border-b-4 py-3 text-xl font-black transition active:translate-y-[2px] active:border-b-2 disabled:opacity-40 ${
+            className={`rounded-2xl border-2 border-b-4 py-3.5 text-2xl font-black transition active:translate-y-[2px] active:border-b-2 disabled:opacity-40 sm:py-3 sm:text-xl ${
               k === "✓" ? "border-[#46a302] bg-[#58cc02] text-white" : k === "⌫" ? "border-slate-400 bg-slate-200 text-slate-700" : "border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
             }`}
           >
@@ -885,6 +884,42 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
         <button type="button" onClick={() => setStage("leaving")} className="rounded-2xl border-b-4 border-[#e08600] bg-[#ffc800] py-2 text-base font-black text-slate-900 transition hover:brightness-105 active:translate-y-[2px] active:border-b-0">
           {lives > 0 && served < ROUNDS_PER_RUN ? "Suivant ▶" : "Terminus ▶"}
         </button>
+      )}
+
+      {/* Muting the voice makes a listening drill impossible, so it stops the
+          game outright instead of leaving a silent bus stop and a draining
+          clock. Sits above every other layer. */}
+      {voiceOff && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-[#7f0f22]/95 p-4">
+          <div className="w-full max-w-sm rounded-3xl border-4 border-white bg-white p-6 text-center shadow-2xl">
+            <div className="text-6xl" aria-hidden style={{ animation: "nbring 1s ease-in-out infinite" }}>
+              🔇
+            </div>
+            <h2 className="mt-3 text-2xl font-black text-[#a3172b]">The sound is off</h2>
+            <p className="mt-2 text-sm font-bold text-slate-600">
+              NumBus is a listening game — there is nothing to see, only a number to hear.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                setChannelMuted("voice", false);
+                if (round && stage === "asking") repeatSay(round.say);
+              }}
+              className="mt-5 w-full rounded-2xl border-b-4 border-[#46a302] bg-[#58cc02] py-3 text-lg font-black text-white transition hover:brightness-105 active:translate-y-[2px] active:border-b-0"
+            >
+              🔊 Turn the sound on
+            </button>
+            {onQuit && (
+              <button
+                type="button"
+                onClick={onQuit}
+                className="mt-2 w-full rounded-2xl border-b-4 border-slate-300 bg-white py-2 text-sm font-black text-slate-600 transition hover:bg-slate-50 active:translate-y-[2px] active:border-b-0"
+              >
+                ⚙️ Settings
+              </button>
+            )}
+          </div>
+        </div>
       )}
 
       {stage === "terminus" && (
