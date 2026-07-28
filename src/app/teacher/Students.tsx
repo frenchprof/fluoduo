@@ -23,7 +23,7 @@ import Evidence from "./Evidence";
 function ExportCsv({ roster }: { roster: Learner[] }) {
   // UID-keyed roster (Dan's Auth-console reconciliation, 2026-07-25). Email
   // matching silently dropped learners whose telemetry carries no email
-  // (Su Yeon, wenyi, QiZhi) — UIDs are authoritative. Every person exports a
+  // (Su Yeon, wenyi, Tracy) — UIDs are authoritative. Every person exports a
   // row ALWAYS: zeros are visible, absence is not.
   const CLASS: { who: string; email: string; uids: string[] }[] = [
     { who: "Su Yeon", email: "sjc031103@gmail.com", uids: ["8IcpkURn0ldOXLiApCdhdsqQoxW2", "ZKvLZyfOfLZFYAEUoTzApQMYClf2"] },
@@ -36,7 +36,7 @@ function ExportCsv({ roster }: { roster: Learner[] }) {
     { who: "JG Yang", email: "1241882085yjg@gmail.com", uids: ["z60kqOZYZONTswgvhEJIZ4zWmLY2"] },
     { who: "Parker Jack", email: "youth.romanticomedy@gmail.com", uids: ["yzb1vTPlhIbxgqwTy21wVUYRudr1"] },
     { who: "JUNEKEON SUH", email: "junekeon1234@gmail.com", uids: ["iPWnxPgkzieTfJex4Z2Gtu0mfHR2"] },
-    { who: "QiZhi Pang", email: "tracypang0728@gmail.com", uids: ["a529sUZMsYUgKdWn4rJXvPu4A6V2"] },
+    { who: "Tracy Pang", email: "tracypang0728@gmail.com", uids: ["a529sUZMsYUgKdWn4rJXvPu4A6V2"] },
     { who: "Muhai", email: "a.muhaimin2001@gmail.com", uids: ["EkOHxvkcbOeb71CnIviR1RaON7L2"] },
     { who: "Matthew Low", email: "mattlow1504@gmail.com", uids: ["kBwnJxptXQPVbbE22eEdFm0yDqw2"] },
     { who: "Lela Malati", email: "lels.adventures@gmail.com", uids: ["Sn8AsHunJEbYcyLEedtWYZUODI73"] },

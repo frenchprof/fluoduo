@@ -14,7 +14,7 @@ import CreditsSplash from "@/games/CreditsSplash";
 import { isChannelMuted, onChannelMuteChange, setChannelMuted } from "@/games/audio/mute";
 import { logEvent } from "@/lib/firebase/usage";
 import { claimDigitKeys } from "@/lib/useChoiceKeys";
-import { blindWidth, configSummary, dealRound, type Blind, type NumBusConfig, type NumBusMode, type NumBusRound } from "./config";
+import { blindWidth, configKey, configSummary, dealRound, type Blind, type NumBusConfig, type NumBusMode, type NumBusRound } from "./config";
 
 const ROUNDS_PER_RUN = 10;
 const LIVES = 3;
@@ -479,7 +479,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
 
   useEffect(() => {
     if (!creditsDone) return;
-    void logEvent("game.start", { game: "numbus", collectionId: configSummary(config) });
+    void logEvent("game.start", { game: "numbus", collectionId: configKey(config) });
     after(0, pullIn);
   }, [creditsDone]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -564,7 +564,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
       if (dead || runDone) {
         setStage("terminus");
         if (!dead) sfx.stage();
-        void logEvent("game.end", { game: "numbus", collectionId: configSummary(config), score });
+        void logEvent("game.end", { game: "numbus", collectionId: configKey(config), score });
         chiptune.stop();
         setMusic(false);
       } else {

@@ -223,6 +223,20 @@ export function dealRound(config: NumBusConfig): NumBusRound {
   }
 }
 
+/** A STABLE analytics key: which kinds of number the session drills, never the
+ *  bounds. The teacher's activity table groups by `game · collectionId`, and a
+ *  per-learner range in that slot would splinter NumBus into a row per
+ *  session. */
+export function configKey(c: NumBusConfig): string {
+  const n = normalizeConfig(c);
+  const parts: string[] = [];
+  if (n.numbers) parts.push("numbers");
+  if (n.times) parts.push("times");
+  if (n.prices) parts.push("prices");
+  if (n.phones) parts.push(n.phoneStyle === "sg" ? "phones-sg" : "phones-fr");
+  return parts.join("+") || "numbers";
+}
+
 export function configSummary(c: NumBusConfig): string {
   const n = normalizeConfig(c);
   const parts: string[] = [];
