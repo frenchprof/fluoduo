@@ -6,7 +6,7 @@
 
 import { useMemo } from "react";
 import { type Ev, type Learner, str, num } from "./data";
-import { Kpi, TableBox, SectionTitle } from "./ui";
+import { Kpi, TableBox, Section, SectionGroup } from "./ui";
 
 export default function Activities({ events, roster, includeTeachers = false }: { events: Ev[]; roster: Learner[]; includeTeachers?: boolean }) {
   const model = useMemo(() => {
@@ -98,54 +98,59 @@ export default function Activities({ events, roster, includeTeachers = false }: 
         <Kpi label="Tutor messages" value={model.tutorMsgs} sub={`${model.tutorUsers} learners`} />
       </div>
 
-      <SectionTitle>Games</SectionTitle>
-      <TableBox head={["Game", "Plays", "Finished", "Players", "Avg score", "Best (who)"]}>
-        {model.games.map(([key, g]) => (
-          <tr key={key} className="border-t border-slate-100">
-            <td className="px-3 py-2"><a href={`/games/${key}`} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{key}</a></td>
-            <td className="px-3 py-2 text-right text-slate-700">{g.starts}</td>
-            <td className="px-3 py-2 text-right text-slate-700">{g.ends}</td>
-            <td className="px-3 py-2 text-right font-black text-slate-900">{g.players.size}</td>
-            <td className="px-3 py-2 text-right text-slate-700">{g.scoreN > 0 ? Math.round(g.scoreSum / g.scoreN) : "—"}</td>
-            <td className="px-3 py-2 text-slate-700">{g.best !== null ? `${g.best} (${g.bestBy})` : "—"}</td>
-          </tr>
-        ))}
-        {model.games.length === 0 && (
-          <tr><td className="px-3 py-3 text-slate-500" colSpan={6}>No game plays recorded yet.</td></tr>
-        )}
-      </TableBox>
+      <SectionGroup>
+        <Section id="act:games" title="Games" meta={`${model.games.length} variants · ${model.games.reduce((s, [, g]) => s + g.starts, 0)} plays`}>
+          <TableBox head={["Game", "Plays", "Finished", "Players", "Avg score", "Best (who)"]}>
+            {model.games.map(([key, g]) => (
+              <tr key={key} className="border-t border-slate-100">
+                <td className="px-3 py-2"><a href={`/games/${key}`} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{key}</a></td>
+                <td className="px-3 py-2 text-right text-slate-700">{g.starts}</td>
+                <td className="px-3 py-2 text-right text-slate-700">{g.ends}</td>
+                <td className="px-3 py-2 text-right font-black text-slate-900">{g.players.size}</td>
+                <td className="px-3 py-2 text-right text-slate-700">{g.scoreN > 0 ? Math.round(g.scoreSum / g.scoreN) : "—"}</td>
+                <td className="px-3 py-2 text-slate-700">{g.best !== null ? `${g.best} (${g.bestBy})` : "—"}</td>
+              </tr>
+            ))}
+            {model.games.length === 0 && (
+              <tr><td className="px-3 py-3 text-slate-500" colSpan={6}>No game plays recorded yet.</td></tr>
+            )}
+          </TableBox>
+        </Section>
 
-      <SectionTitle>Decks</SectionTitle>
-      <TableBox head={["Deck", "Opens", "People"]}>
-        {model.decks.map(([id, d]) => (
-          <tr key={id} className="border-t border-slate-100">
-            <td className="px-3 py-2"><a href={`/decks/${id}`} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{id}</a></td>
-            <td className="px-3 py-2 text-right text-slate-700">{d.opens}</td>
-            <td className="px-3 py-2 text-right font-black text-slate-900">{d.people.size}</td>
-          </tr>
-        ))}
-        {model.decks.length === 0 && (
-          <tr><td className="px-3 py-3 text-slate-500" colSpan={3}>No deck opens recorded yet.</td></tr>
-        )}
-      </TableBox>
+        <Section id="act:decks" title="Decks" meta={`${model.decks.length} decks · ${model.decks.reduce((s, [, d]) => s + d.opens, 0)} opens`}>
+          <TableBox head={["Deck", "Opens", "People"]}>
+            {model.decks.map(([id, d]) => (
+              <tr key={id} className="border-t border-slate-100">
+                <td className="px-3 py-2"><a href={`/decks/${id}`} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{id}</a></td>
+                <td className="px-3 py-2 text-right text-slate-700">{d.opens}</td>
+                <td className="px-3 py-2 text-right font-black text-slate-900">{d.people.size}</td>
+              </tr>
+            ))}
+            {model.decks.length === 0 && (
+              <tr><td className="px-3 py-3 text-slate-500" colSpan={3}>No deck opens recorded yet.</td></tr>
+            )}
+          </TableBox>
+        </Section>
 
-      <SectionTitle>Supplements</SectionTitle>
-      <TableBox head={["Supplement", "Opens", "People", "Answers", "Correct"]}>
-        {model.supplements.map(([key, s]) => (
-          <tr key={key} className="border-t border-slate-100">
-            <td className="px-3 py-2 font-bold text-slate-900">{s.label}</td>
-            <td className="px-3 py-2 text-right text-slate-700">{s.opens}</td>
-            <td className="px-3 py-2 text-right font-black text-slate-900">{s.people.size}</td>
-            <td className="px-3 py-2 text-right text-slate-700">{s.answers}</td>
-            <td className="px-3 py-2 text-right text-slate-700">
-              {s.answers > 0 ? `${Math.round((s.correct / s.answers) * 100)}%` : "—"}
-            </td>
-          </tr>
-        ))}
-        {model.supplements.length === 0 && (
-          <tr><td className="px-3 py-3 text-slate-500" colSpan={5}>No supplement opens recorded yet.</td></tr>
-        )}
-      </TableBox>
+        <Section id="act:supplements" title="Supplements" meta={`${model.supplements.length} supplements · ${model.supplements.reduce((s, [, x]) => s + x.opens, 0)} opens`}>
+          <TableBox head={["Supplement", "Opens", "People", "Answers", "Correct"]}>
+            {model.supplements.map(([key, s]) => (
+              <tr key={key} className="border-t border-slate-100">
+                <td className="px-3 py-2 font-bold text-slate-900">{s.label}</td>
+                <td className="px-3 py-2 text-right text-slate-700">{s.opens}</td>
+                <td className="px-3 py-2 text-right font-black text-slate-900">{s.people.size}</td>
+                <td className="px-3 py-2 text-right text-slate-700">{s.answers}</td>
+                <td className="px-3 py-2 text-right text-slate-700">
+                  {s.answers > 0 ? `${Math.round((s.correct / s.answers) * 100)}%` : "—"}
+                </td>
+              </tr>
+            ))}
+            {model.supplements.length === 0 && (
+              <tr><td className="px-3 py-3 text-slate-500" colSpan={5}>No supplement opens recorded yet.</td></tr>
+            )}
+          </TableBox>
+        </Section>
+      </SectionGroup>
     </div>
   );
 }
