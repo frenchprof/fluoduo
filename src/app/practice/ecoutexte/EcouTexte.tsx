@@ -52,6 +52,11 @@ export default function EcouTexte({ gen, accent }: { gen: UnitTextGen; accent: s
   const [showEn, setShowEn] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [paused, setPaused] = useState(false);
+  /** Who reads. Undefined is the site narrator (female, banked clips when they
+   *  exist); "m" switches to the cast's male voice for the whole text, so a
+   *  learner hears more than one speaker across sessions. */
+  const [voice, setVoice] = useState<"f" | "m">("f");
+  const gender = voice === "m" ? ("m" as const) : undefined;
   /** What the learner has written, and how it was marked — per sentence, per word. */
   const [written, setWritten] = useState<string[][]>([]);
   const [marks, setMarks] = useState<(Grade | null)[][]>([]);
@@ -98,7 +103,9 @@ export default function EcouTexte({ gen, accent }: { gen: UnitTextGen; accent: s
     saveHeard(gen.unit, set);
   }
 
-  function playAll(slow: boolean) {
+  /** `who` is passed explicitly when switching voice mid-text: the state set in
+   *  the same handler is not visible to this closure yet. */
+  function playAll(slow: boolean, who: "f" | "m" = voice) {
     // First tap draws as well as plays — one button, no empty state to explain.
     const t = text ?? draw(count);
     logHeard(t);
@@ -106,7 +113,7 @@ export default function EcouTexte({ gen, accent }: { gen: UnitTextGen; accent: s
     setPaused(false);
     setPlaying(true);
     stopRef.current = speakSequence(
-      t.sentences.map((s) => ({ text: s.fr })),
+      t.sentences.map((s) => ({ text: s.fr, gender: who === "m" ? ("m" as const) : undefined })),
       "fr-FR",
       { rate: slow ? SLOW_RATE : undefined, gapMs: GAP_MS, onDone: () => setPlaying(false) },
     );
@@ -117,7 +124,7 @@ export default function EcouTexte({ gen, accent }: { gen: UnitTextGen; accent: s
     stopRef.current?.();
     setPlaying(false);
     setPaused(false);
-    speak(fr, "fr-FR", { rate: slow ? SLOW_RATE : undefined, analytic: "sentence" });
+    speak(fr, "fr-FR", { rate: slow ? SLOW_RATE : undefined, analytic: "sentence", gender });
   }
 
   function togglePause() {
@@ -204,6 +211,21 @@ export default function EcouTexte({ gen, accent }: { gen: UnitTextGen; accent: s
         </button>
         <button type="button" onClick={() => playAll(true)} title="Écouter lentement" className="fluo-btn fluo-btn-sm">
           🐌
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            const next = voice === "f" ? "m" : "f";
+            setVoice(next);
+            // Switching while it reads restarts in the new voice — the button
+            // demonstrates itself instead of describing itself.
+            if (playing) playAll(false, next);
+          }}
+          title={voice === "m" ? "Voix masculine — cliquer pour la voix féminine" : "Voix féminine — cliquer pour la voix masculine"}
+          aria-label={voice === "m" ? "Voix masculine" : "Voix féminine"}
+          className="fluo-btn fluo-btn-sm"
+        >
+          {voice === "m" ? "👨" : "👩"}
         </button>
         <button
           type="button"
