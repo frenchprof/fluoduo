@@ -245,6 +245,41 @@ const storm: Song = {
   drums: ("KhhhShkhKhhhShkh".repeat(4) + "KHhHShHhKHhHSHhH".repeat(4)).split(""),
 };
 
+// Bourse track — E minor, 160 bpm, no swing: the trading floor. Driving
+// two-note bass, ticker-tape arpeggio pulse, urgent lead that climbs, dips
+// and resolves like a volatile session. 128 steps = 8 bars (Em Em C C Am Am
+// B7 Em).
+const Bprog = ["Em", "Em", "C", "C", "Am", "Am", "B7", "Em"] as const;
+const Barp: Record<string, Note[]> = {
+  Em: ["E4", "G4", "B4", "G4"],
+  C: ["C4", "E4", "G4", "E4"],
+  Am: ["A3", "C4", "E4", "C4"],
+  B7: ["B3", "D#4", "F#4", "D#4"],
+};
+const Bbass: Record<string, Note[]> = {
+  Em: ["E2", "B2"],
+  C: ["C2", "G2"],
+  Am: ["A2", "E3"],
+  B7: ["B2", "F#3"],
+};
+const bourse: Song = {
+  bpm: 160, swing: 0,
+  ch: [
+    { type: "pulse" as OscillatorType, duty: 0.5, vol: 0.15, notes: ([] as [Note, number][]).concat(
+      seq(["E5", "G5", "F#5", "E5", "B4", "E5", "G5", "B5"], 2), // Em — the opening bell
+      seq(["A5", "G5", "F#5", "E5", "F#5", "G5", "F#5", "E5"], 2), // Em
+      seq(["E5", "G5", "C6", "B5", "A5", "G5", "E5", "C5"], 2),   // C — the rally
+      seq(["D5", "E5", "F5", "E5", "D5", "C5", "B4", "C5"], 2),   // C
+      seq(["A4", "C5", "E5", "A5", "G5", "E5", "C5", "A4"], 2),   // Am — the dip
+      seq(["B4", "C5", "D5", "E5", "D5", "C5", "B4", "A4"], 2),   // Am
+      seq(["B4", "D#5", "F#5", "A5", "F#5", "D#5", "B4", "F#5"], 2), // B7 — tension
+      seq(["E5", "G5", "B5", "G5", "E5", "0", "B4", "0"], 2)) },  // Em — settle
+    { type: "pulse" as OscillatorType, duty: 0.25, vol: 0.07, notes: ([] as [Note, number][]).concat(...Bprog.map((c) => seq(rep(Barp[c], 4), 1))) },
+    { type: "triangle", vol: 0.23, notes: ([] as [Note, number][]).concat(...Bprog.map((c) => seq(rep(Bbass[c], 4), 2))) },
+  ],
+  drums: ("KhhhShhhKhhhShhh".repeat(7) + "KhhhShhhKhKhSKSS").split(""),
+};
+
 // NumBus — the ride to the stop: F major, 128 bpm, a light shuffle. A bouncy
 // two-bar hook over a walking bass that keeps the bus rolling, and a hi-hat
 // pattern that ticks like an indicator.
@@ -306,11 +341,13 @@ function hybridTime(song: Song): Song {
   return { ...song, ch: song.ch.map((c, i) => (i === 0 ? halfTimeCh(c) : { ...c, byStep: undefined, notes: [...c.notes] })) };
 }
 const SONGS: Record<string, Song> = {
-  letris, conveyor, storm, numbus,
+  letris, conveyor, storm, bourse, numbus,
   "letris-var": halfTime(letris),
   "letris-mix": hybridTime(letris),
   "conveyor-var": halfTime(conveyor),
   "conveyor-mix": hybridTime(conveyor),
+  "bourse-var": halfTime(bourse),
+  "bourse-mix": hybridTime(bourse),
   "numbus-var": halfTime(numbus),
   "numbus-mix": hybridTime(numbus),
 };
@@ -318,6 +355,7 @@ const SONGS: Record<string, Song> = {
 const TWIN: Record<string, string> = {
   letris: "letris-var", "letris-var": "letris-mix", "letris-mix": "letris",
   conveyor: "conveyor-var", "conveyor-var": "conveyor-mix", "conveyor-mix": "conveyor",
+  bourse: "bourse-var", "bourse-var": "bourse-mix", "bourse-mix": "bourse",
   numbus: "numbus-var", "numbus-var": "numbus-mix", "numbus-mix": "numbus",
 };
 function prepare(song: Song) {

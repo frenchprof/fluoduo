@@ -20,6 +20,7 @@ const ACTIVITIES: { emoji: string; name: string; hue: number; what: string; href
   { emoji: "🔤", name: "ConjugaZone", hue: 2, what: "conjugation sprints", href: "/conjugaison" },
   { emoji: "🌧️", name: "Vocabularain", hue: 3, what: "sort the falling words", href: "/games/vocabularain" },
   { emoji: "🧰", name: "LexicaLater", hue: 4, what: "build the words", href: "/games/lexicalater" },
+  { emoji: "📈", name: "NumBourse", hue: 2, what: "type the shouted stock prices in digits", href: "/games/numbourse" },
   { emoji: "🚌", name: "NumBus", hue: 0, what: "hear the bus number in French, type the digits", href: "/games/numbus" },
   { emoji: "🧩", name: "Compose It", hue: 5, what: "build dialogues", href: "/activities" },
   { emoji: "🏃", name: "GramMarathon", hue: 2, what: "typed grammar sprints, deck by deck", href: "/activities" },
