@@ -1,47 +1,44 @@
-import Link from "next/link";
-import CahierShell from "@/components/CahierShell";
-import { siteTabs, tabsWithActive, UNIT_ACCENTS } from "@/components/siteTabs";
-import { NUMBUS_LINES } from "@/games/numbus/lines";
+"use client";
 
-/** The NumBus gallery — Cahier skin like every other section page, one grid,
- *  each tile a route with the range it calls out. */
+import { useState } from "react";
+import AuthGate from "@/components/AuthGate";
+import BackLink from "@/components/BackLink";
+import HelpDot from "@/components/HelpDot";
+import NumBus from "@/games/numbus/NumBus";
+import NumBusSetup from "@/games/numbus/NumBusSetup";
+import type { NumBusConfig } from "@/games/numbus/config";
 
-const EXTRA = "#e0567f";
+export default function NumBusClient() {
+  const [config, setConfig] = useState<NumBusConfig | null>(null);
 
-export default function NumBusIndexPage() {
   return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="numbus" crumb="🚌 NumBus">
-      <div className="mx-auto max-w-3xl px-4 pb-4 pt-2">
-        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
-          🚌 NumBus
-          <span className="ml-2 text-sm font-bold text-[color:var(--cahier-ink-soft)]">
-            type the number you hear before the bus pulls away
-          </span>
-        </h1>
-        <div className="mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
-          {NUMBUS_LINES.map((l) => {
-            const accent = l.unit === null ? EXTRA : UNIT_ACCENTS[l.unit];
-            return (
-              <Link
-                key={l.id}
-                href={`/games/numbus/${l.id}`}
-                className="flex items-center gap-2.5 rounded-xl border-2 border-b-4 bg-white p-2.5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-                style={{ borderColor: accent }}
-              >
-                <span className="text-xl" aria-hidden>{l.emoji}</span>
-                <span className="min-w-0">
-                  <span className="block truncate text-[13px] font-black leading-tight text-[color:var(--cahier-ink)]" lang="fr">
-                    {l.scale}
-                  </span>
-                  <span className="block truncate text-[11px] font-bold" style={{ color: accent }}>
-                    {l.unit === null ? l.place : `U${l.unit}`}
-                  </span>
-                </span>
-              </Link>
-            );
-          })}
+    <AuthGate what="play">
+      <main
+        className="min-h-screen"
+        style={{ background: "linear-gradient(180deg,#cfe9fb 0%,#eaf6ff 45%,#f7fcff 100%)" }}
+      >
+        <div className="border-b-2 border-white/70 bg-white/60 backdrop-blur">
+          <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3 text-sm font-bold">
+            <BackLink fallback="/" className="text-[#c94070] hover:text-[#a92f5a]">
+              ← Back
+            </BackLink>
+            <span className="flex items-center gap-2 text-slate-600">
+              🚌 NumBus <HelpDot />
+            </span>
+          </div>
         </div>
-      </div>
-    </CahierShell>
+
+        {!config ? (
+          <div className="mx-auto max-w-3xl px-4 py-6">
+            <h1 className="cahier-display mb-4 text-center text-2xl font-black text-[color:var(--cahier-ink)]">
+              🚌 NumBus
+            </h1>
+            <NumBusSetup onStart={setConfig} />
+          </div>
+        ) : (
+          <NumBus config={config} onQuit={() => setConfig(null)} />
+        )}
+      </main>
+    </AuthGate>
   );
 }
