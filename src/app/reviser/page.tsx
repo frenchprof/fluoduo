@@ -16,6 +16,7 @@ import CahierShell from "@/components/CahierShell";
 import AuthGate from "@/components/AuthGate";
 import { speak } from "@/games/letris/speech";
 import { loadProgress, recordItemResult } from "@/lib/progress";
+import { useActivityPlay } from "@/lib/firebase/activityLog";
 import { dueForReview, gapsByDeck, allReviewItems, type ReviewItem, type Gap } from "@/lib/reviser";
 
 type Card = { item: ReviewItem; options: string[] };
@@ -48,6 +49,7 @@ const TABS = [{ key: "reviser", label: "DéjàRevu", emoji: "🔁" }];
 const PAGE = 20;
 
 export default function ReviserPage() {
+  useActivityPlay("reviser");
   const [cards, setCards] = useState<Card[] | null>(null);
   const [gaps, setGaps] = useState<Gap[]>([]);
   const [offset, setOffset] = useState(0);

@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { speak } from "@/games/letris/speech";
+import { recordItemResult } from "@/lib/progress";
+import { logEvent } from "@/lib/firebase/usage";
 
 export type MatchingLeft = {
   id: string;
@@ -91,11 +93,20 @@ export default function MatchingGame({ set }: { set: MatchingSet }) {
       const right = set.rights.find((r) => r.id === rightId);
       if (!right) return;
       const isValid = right.validLefts.includes(leftId);
+      // Match It recorded NOTHING before — no play, no answer, no evidence.
+      // Both events are derived from the counters rather than a mounted flag,
+      // so a restart (which zeroes them) is a fresh play: the first pair is the
+      // start, the pair that completes the board is the end.
+      if (attempts === 0) void logEvent("game.start", { game: "matching", collectionId: set.id });
       setAttempts((a) => a + 1);
+      const left = leftById.get(leftId);
+      recordItemResult(rightId, isValid, left?.text);
+      if (isValid && solvedRightIds.size + 1 >= total) {
+        void logEvent("game.end", { game: "matching", collectionId: set.id, score: correct + 1, total });
+      }
       setFlash({ leftId, rightId, kind: isValid ? "ok" : "bad" });
       window.setTimeout(() => setFlash(null), 450);
       if (isValid) {
-        const left = leftById.get(leftId);
         if (left && audioOn) speak(speakable(buildPairSentence(left, right)), lang);
         setCorrect((c) => c + 1);
         setSolvedRightIds((s) => {
@@ -108,7 +119,7 @@ export default function MatchingGame({ set }: { set: MatchingSet }) {
         setSelectedLeft(null);
       }
     },
-    [audioOn, lang, leftById, set.rights],
+    [attempts, audioOn, correct, lang, leftById, set.id, set.rights, solvedRightIds, total],
   );
 
   const onLeftClick = (id: string) => {

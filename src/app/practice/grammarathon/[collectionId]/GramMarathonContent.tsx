@@ -16,6 +16,7 @@ import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { gradeGap, splitGap, type Grade } from "@/lib/practice/cloze";
 import { recordItemResult } from "@/lib/progress";
+import { useActivityPlay } from "@/lib/firebase/activityLog";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -27,6 +28,7 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 export default function GramMarathonContent({ collectionId, embedded = false }: { collectionId: string; embedded?: boolean }) {
+  useActivityPlay("grammarathon", collectionId);
   const deck = CURATED.find((c) => c.id === collectionId);
   const tabs = useMemo(() => (deck ? withActive(deckActivityTabs(deck.id), "grammarathon") : []), [deck]);
 

@@ -14,6 +14,7 @@ import { bareWord, practiceItems } from "@/lib/collections/display";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { recordItemResult } from "@/lib/progress";
+import { useActivityPlay } from "@/lib/firebase/activityLog";
 import type { Collection, Item } from "@/lib/collections/schema";
 
 function normalize(s: string) {
@@ -60,6 +61,7 @@ const NAT_SUBJECT: Record<NatForm, string> = { ms: "il est", fs: "elle est", mp:
 type QEntry = { itemIdx: number; natForm?: NatForm };
 
 export default function CompleteItContent({ collectionId, embedded = false }: { collectionId: string; embedded?: boolean }) {
+  useActivityPlay("complete-it", collectionId);
   const deck = CURATED.find((c) => c.id === collectionId);
   const tabs = useMemo(() => (deck ? withActive(deckActivityTabs(deck.id), "complete") : []), [deck]);
 

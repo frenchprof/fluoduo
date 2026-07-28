@@ -9,6 +9,7 @@
 
 import { useMemo } from "react";
 import { type Ev, str } from "./data";
+import { CURATED } from "@/content/collections";
 import { getPretest, pretestNumber } from "@/content/pretests";
 import { stemForItem } from "@/lib/pretestRecord";
 import { Section, SectionGroup, TableBox, missColor, useSortedSections, type SortOption } from "./ui";
@@ -40,6 +41,16 @@ const SORTS: SortOption<PretestAgg>[] = [
   { key: "items", label: "Items", val: (a) => a.items.length },
   { key: "title", label: "Pretest", val: (a) => a.title.toLowerCase(), dir: 1 },
 ];
+
+/** Authored pretests carry a title; the per-deck picture pretests are keyed
+ *  `picture:<deck>` and name themselves after the deck. */
+function titleFor(pretestId: string): string {
+  const authored = getPretest(pretestId);
+  if (authored) return authored.title;
+  const deck = pretestId.startsWith("picture:") ? pretestId.slice("picture:".length) : null;
+  if (deck) return `🖼 ${CURATED.find((c) => c.id === deck)?.title ?? deck}`;
+  return pretestId;
+}
 
 export default function Pretests({ events }: { events: Ev[] }) {
   const aggs = useMemo(() => {
@@ -78,7 +89,7 @@ export default function Pretests({ events }: { events: Ev[] }) {
       return {
         pretestId,
         num: pretestNumber(pretestId),
-        title: getPretest(pretestId)?.title ?? pretestId,
+        title: titleFor(pretestId),
         attempts,
         misses,
         missRate: attempts > 0 ? misses / attempts : 0,
