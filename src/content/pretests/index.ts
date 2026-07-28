@@ -88,6 +88,24 @@ export function getPretest(id: string): Pretest | undefined {
   return PRETESTS.find((p) => p.id === id);
 }
 
+/**
+ * Stable curriculum numbering — unit, then lesson, then id. Reports sort
+ * themselves by miss rate or attempts, so a pretest needs a number that does
+ * NOT move with the view: "pretest 12" must mean the same one every time.
+ * Deliberately independent of the import order above, which is only the order
+ * the JSON happened to be added in.
+ */
+const NUMBERED = [...PRETESTS]
+  .sort((a, b) => a.unit - b.unit || a.lessonNo - b.lessonNo || a.id.localeCompare(b.id))
+  .map((p, i) => [p.id, i + 1] as const);
+
+const PRETEST_NUMBERS = new Map<string, number>(NUMBERED);
+
+/** 1-based curriculum position; null for an id that is not in the registry. */
+export function pretestNumber(id: string): number | null {
+  return PRETEST_NUMBERS.get(id) ?? null;
+}
+
 export function getPretestForLesson(
   unit: number,
   lessonNo: number,

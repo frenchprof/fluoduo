@@ -9,7 +9,7 @@
 
 import { useMemo } from "react";
 import { type Ev, str } from "./data";
-import { getPretest } from "@/content/pretests";
+import { getPretest, pretestNumber } from "@/content/pretests";
 import { stemForItem } from "@/lib/pretestRecord";
 import { Section, SectionGroup, TableBox, missColor, useSortedSections, type SortOption } from "./ui";
 
@@ -24,6 +24,8 @@ type ItemAgg = {
 
 type PretestAgg = {
   pretestId: string;
+  /** Curriculum position, fixed whatever the sort — the handle Dan reads out. */
+  num: number | null;
   title: string;
   attempts: number;
   misses: number;
@@ -33,6 +35,7 @@ type PretestAgg = {
 
 const SORTS: SortOption<PretestAgg>[] = [
   { key: "miss", label: "Miss %", val: (a) => a.missRate },
+  { key: "num", label: "No.", val: (a) => a.num ?? Number.MAX_SAFE_INTEGER, dir: 1 },
   { key: "answers", label: "Answers", val: (a) => a.attempts },
   { key: "items", label: "Items", val: (a) => a.items.length },
   { key: "title", label: "Pretest", val: (a) => a.title.toLowerCase(), dir: 1 },
@@ -74,6 +77,7 @@ export default function Pretests({ events }: { events: Ev[] }) {
       const misses = rows.reduce((s, r) => s + r.misses, 0);
       return {
         pretestId,
+        num: pretestNumber(pretestId),
         title: getPretest(pretestId)?.title ?? pretestId,
         attempts,
         misses,
@@ -108,7 +112,7 @@ function PretestSection({ agg }: { agg: PretestAgg }) {
   return (
     <Section
       id={`pre:${agg.pretestId}`}
-      title={agg.title}
+      title={agg.num ? `${agg.num}. ${agg.title}` : agg.title}
       href={`/pretests/${agg.pretestId}`}
       meta={
         <>
