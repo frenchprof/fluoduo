@@ -135,9 +135,17 @@ export async function fetchAllEvents(): Promise<Ev[]> {
     import("firebase/firestore"),
     import("@/lib/firebase/db"),
   ]);
-  const snap = await getDocs(
-    query(collection(db, "events"), orderBy("ts", "desc"), limit(EVENT_FETCH_CAP)),
-  );
+  const events = collection(db, "events");
+  // The ordered read is an optimisation, not a requirement: an ordering also
+  // DROPS documents that lack `ts` and needs its index to exist, so a failure
+  // here must not cost the whole dashboard. Fall back to the plain collection
+  // read that this replaced.
+  let snap;
+  try {
+    snap = await getDocs(query(events, orderBy("ts", "desc"), limit(EVENT_FETCH_CAP)));
+  } catch {
+    snap = await getDocs(events);
+  }
   const out: Ev[] = [];
   snap.forEach((doc) => {
     const d = doc.data() as {

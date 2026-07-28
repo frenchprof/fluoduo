@@ -92,13 +92,25 @@ function TeachersOnly() {
   );
 }
 
+/** Firestore's own code is the diagnosis: permission-denied means the rules or
+ *  the admin list, failed-precondition means a missing index, unavailable means
+ *  the network. Anything else at least gets its message shown. */
+function describe(err: unknown): string {
+  const e = err as { code?: unknown; message?: unknown } | null;
+  if (e && typeof e.code === "string") return e.code;
+  if (e && typeof e.message === "string") return e.message.slice(0, 120);
+  return "unknown error";
+}
+
 function Dashboard({ canWrite }: { canWrite: boolean }) {
   const [panel, setPanel] = useState<PanelKey>("overview");
   // XP-top-10 names jump straight into that student's modal (Dan, 2026-07-22).
   const [jumpUid, setJumpUid] = useState<string | null>(null);
   const [events, setEvents] = useState<Ev[] | null>(null);
   const [board, setBoard] = useState<Map<string, BoardRow> | null>(null);
-  const [error, setError] = useState(false);
+  /** Which streams failed, and what Firestore said — one opaque sentence for
+   *  both made "is it recording?" unanswerable from the page itself. */
+  const [failed, setFailed] = useState<string[]>([]);
   // Dan tests with a teacher account, which the panels exclude by default —
   // this toggle makes his own actions visible so "is it recording?" is
   // answerable at a glance (Dan, 2026-07-14).
@@ -110,17 +122,25 @@ function Dashboard({ canWrite }: { canWrite: boolean }) {
     let cancelled = false;
     setEvents(null);
     setBoard(null);
-    Promise.all([fetchAllEvents(), fetchLeaderboard()]).then(
-      ([evs, b]) => {
-        if (cancelled) return;
-        setEvents(evs);
-        setBoard(b);
-        setLoadedAt(new Date());
-      },
-      () => {
-        if (!cancelled) setError(true);
-      },
-    );
+    setFailed([]);
+    // One stream failing must not blank the page: the events trail and the
+    // leaderboard are independent, and most panels need only the first.
+    void Promise.allSettled([fetchAllEvents(), fetchLeaderboard()]).then(([e, b]) => {
+      if (cancelled) return;
+      const why: string[] = [];
+      if (e.status === "fulfilled") setEvents(e.value);
+      else {
+        setEvents([]);
+        why.push(`events (${describe(e.reason)})`);
+      }
+      if (b.status === "fulfilled") setBoard(b.value);
+      else {
+        setBoard(new Map());
+        why.push(`leaderboard (${describe(b.reason)})`);
+      }
+      setFailed(why);
+      setLoadedAt(new Date());
+    });
     return () => {
       cancelled = true;
     };
@@ -143,7 +163,6 @@ function Dashboard({ canWrite }: { canWrite: boolean }) {
   );
   const nameOf = useMemo(() => new Map(roster.flatMap((l) => l.uids.map((u) => [u, l.name] as const))), [roster]);
 
-  if (error) return <p className="text-sm font-bold text-rose-600">Couldn&rsquo;t load the analytics streams.</p>;
   if (!events || !board) return <p className="text-sm text-slate-500">Loading analytics…</p>;
 
   const newest = events && events.length > 0 ? events[events.length - 1].ts : null;
@@ -151,6 +170,11 @@ function Dashboard({ canWrite }: { canWrite: boolean }) {
 
   return (
     <div>
+      {failed.length > 0 && (
+        <p className="mb-2 rounded-xl border-2 border-rose-300 bg-rose-50 px-3 py-2 text-sm font-bold text-rose-700">
+          Couldn&rsquo;t load: {failed.join(" · ")}. Everything below is drawn from what did load.
+        </p>
+      )}
       <div className="mb-2 flex flex-wrap items-center gap-3 text-xs text-slate-500">
         <button type="button" onClick={() => setReloadKey((k) => k + 1)} className="rounded-lg border-2 border-slate-300 bg-white px-2.5 py-1 font-bold text-slate-700 hover:border-slate-500">
           ↻ Refresh
