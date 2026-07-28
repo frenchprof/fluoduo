@@ -12,7 +12,6 @@
  */
 
 import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import Link from "next/link";
 import GuideSplash from "@/components/GuideSplash";
 import type { CSSProperties, MouseEvent as ReactMouseEvent, ReactNode } from "react";
@@ -33,73 +32,6 @@ import { getLetrisSet } from "@/games/letris/sets";
 import { composeBankForDeck } from "@/games/compose/banks";
 import FirstTour from "@/components/FirstTour";
 import AccountButton from "@/components/AccountButton";
-
-/** Oral-test booking nudge (Dan, 2026-07-26): daily reminder to book at
- *  oraltest.withdrchan.com — reappears each day until the test, then
- *  self-expires. Takes precedence over MoiAnnounce (no stacked modals). */
-function oralNudgeDue(): boolean {
-  return false; // reminder disabled (Dan)
-  if (Date.now() > new Date("2026-07-29T16:00:00+08:00").getTime()) return false;
-  try { return localStorage.getItem("fl.oralNudge.day") !== new Date().toDateString(); } catch { return false; }
-}
-
-function OralTestAnnounce() {
-  const [show, setShow] = useState(false);
-  useEffect(() => { if (oralNudgeDue()) setShow(true); }, []);
-  if (!show) return null;
-  const dismiss = () => { setShow(false); try { localStorage.setItem("fl.oralNudge.day", new Date().toDateString()); } catch {} };
-  // PORTAL to <body> (Dan, 2026-07-26: "pop-ups are never where they need to
-  // be" — fixed-position anchors to any transformed ancestor, and cahier pages
-  // have them; the portal escapes the page tree entirely, so the popup centres
-  // on the real viewport every time). max-h + scroll guard prevent clipping.
-  return createPortal(
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 p-4" onClick={dismiss}>
-      <div className="max-h-[85vh] w-full max-w-sm overflow-y-auto rounded-2xl border-[3px] border-slate-900 bg-white p-5 text-center shadow-[4px_4px_0_#1f2440]" onClick={(e) => e.stopPropagation()}>
-        <div className="text-4xl">🎤</div>
-        <h3 className="mt-2 text-lg font-black text-slate-900">Book your Oral Test slot!</h3>
-        <p className="mt-1 text-sm text-slate-600">
-          <b>Wed 29 July · AS8-04-02</b> · written 1:00–2:30 pm · oral 2:50–4:00 pm.
-          Pick Duo / Trio, invite your teammate(s), and your slot is assigned once everyone confirms — <b>first come, first served</b>.
-          The 3 role-play scenarios are on the site. <span className="text-slate-500">📱 iPhone: use a normal tab, not Private Browsing.</span>
-        </p>
-        <a href="https://oraltest.withdrchan.com" target="_blank" rel="noopener" onClick={dismiss} className="mt-4 inline-block rounded-full border-2 border-slate-900 bg-emerald-100 px-5 py-1.5 font-black text-slate-900 shadow-[2px_2px_0_#1f2440]">
-          🎟️ Book my slot
-        </a>
-        <button type="button" onClick={dismiss} className="mt-2 block w-full text-xs font-bold text-slate-400">
-          Later today
-        </button>
-      </div>
-    </div>,
-    document.body,
-  );
-}
-
-/** One-time announcement (Dan, 2026-07-25): tell every learner the ⌛ at the
- *  top now opens their complete learning history. Dismiss persists. Defers to
- *  the oral-test nudge so two modals never stack. */
-function MoiAnnounce() {
-  const [show, setShow] = useState(false);
-  useEffect(() => {
-    try { if (!oralNudgeDue() && !localStorage.getItem("fl.moiAnnounce.v1")) setShow(true); } catch {}
-  }, []);
-  if (!show) return null;
-  const dismiss = () => { setShow(false); try { localStorage.setItem("fl.moiAnnounce.v1", "seen"); } catch {} };
-  return createPortal(
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 p-4" onClick={dismiss}>
-      <div className="max-h-[85vh] w-full max-w-sm overflow-y-auto rounded-2xl border-[3px] border-slate-900 bg-white p-5 text-center shadow-[4px_4px_0_#1f2440]" onClick={(e) => e.stopPropagation()}>
-        <div className="text-4xl">⌛</div>
-        <h3 className="mt-2 text-lg font-black text-slate-900">Your learning history is here!</h3>
-        <p className="mt-1 text-sm text-slate-600">
-          Tap the <b>⌛ button at the top of the site</b> any time to see your complete history — every answer, your strengths and weaknesses, your time on task, and personal tips.
-        </p>
-        <button type="button" onClick={dismiss} className="mt-4 rounded-full border-2 border-slate-900 bg-yellow-100 px-5 py-1.5 font-black text-slate-900 shadow-[2px_2px_0_#1f2440]">
-          Got it — show me ⌛
-        </button>
-      </div>
-    </div>,
-    document.body,
-  );
-}
 import SearchOverlay from "@/components/SearchOverlay";
 import RankingOverlay from "@/components/RankingOverlay";
 import SoundControl from "@/components/SoundControl";
@@ -380,8 +312,6 @@ export default function CahierShell({
                 <Link href="/moi" aria-label="My learning history" title="My learning history" className="cahier-btn cahier-btn-sm">
                   ⌛
                 </Link>
-                <OralTestAnnounce />
-                <MoiAnnounce />
                 {topRight}
                 <AccountButton />
                 {/* Half-a-button inward on mobile (Dan, 2026-07-25: the corner made ☰
