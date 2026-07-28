@@ -30,10 +30,36 @@ export const HIDDEN_ROSTER_NAMES = new Set([
   "Étudiant Type Sample Student",
   "Chee How Chua",
   "Kavita Devi",
+  // Retired 2026-07-28 (Dan: "we can retire Cagey Chan and Georgina from the
+  // learner analytics") — one of Dan's own sign-ins, not a learner.
+  "Cagey Chan",
 ]);
-// a529sUZM (QiZhi) UN-hidden 2026-07-25: identified as tracypang0728 —
+
+/** Retired accounts known by first name only — matched case-insensitively on
+ *  the whole name or its first word, since the display name may carry a
+ *  surname we have never seen. */
+export const HIDDEN_ROSTER_NAME_PREFIXES = ["georgina"];
+
+/** Does this display name belong to an account retired from the roster? */
+export function isHiddenRosterName(name: string | null | undefined): boolean {
+  if (!name) return false;
+  if (HIDDEN_ROSTER_NAMES.has(name)) return true;
+  const n = name.trim().toLowerCase();
+  return HIDDEN_ROSTER_NAME_PREFIXES.some((p) => n === p || n.startsWith(`${p} `));
+}
+
+// a529sUZM (QiZhi/Tracy) UN-hidden 2026-07-25: identified as tracypang0728 —
 // a real ST2FR26 student, not a test account (Auth-console reconciliation).
 export const HIDDEN_ROSTER_UID_PREFIXES: string[] = [];
+
+/** uid → the person, for accounts whose telemetry carries no display name and
+ *  whose leaderboard row is absent — the roster showed them as a bare uid
+ *  prefix (Dan, 2026-07-28: "6uyQO9Yg is Jovan Tan, a529sUZM is Tracy Pang").
+ *  Authoritative: it wins over whatever an event or board row claims. */
+export const ROSTER_NAMES: Record<string, string> = {
+  "6uyQO9YgBTRLC5Dw1JuU7Fe2cTB3": "Jovan Tan", // old account, aliased to jovantan630
+  "a529sUZMsYUgKdWn4rJXvPu4A6V2": "Tracy Pang", // tracypang0728, formerly shown as QiZhi Pang
+};
 
 /** alias board display-name → canonical board display-name. Covers rows
  *  already written before the email anchoring below existed. */
@@ -55,7 +81,7 @@ export const ALIAS_PUBLISH_NAMES: Record<string, string> = {
  *  sign-ins predate authEvents coverage (22 Jun) — without these the roster
  *  shows them email-blind (Tracy, wenyi) and email-keyed features miss them. */
 export const KNOWN_EMAILS: Record<string, string> = {
-  "a529sUZMsYUgKdWn4rJXvPu4A6V2": "tracypang0728@gmail.com", // QiZhi Pang
+  "a529sUZMsYUgKdWn4rJXvPu4A6V2": "tracypang0728@gmail.com", // Tracy Pang
   "C2sWIzLKdseHKUxgh67yPp3o7Rq1": "rr7280523@gmail.com", // wenyi zhang
   "8IcpkURn0ldOXLiApCdhdsqQoxW2": "sjc031103@gmail.com", // Su Yeon (primary)
   "ZKvLZyfOfLZFYAEUoTzApQMYClf2": "chosuyeon33@gmail.com", // Su Yeon (second)

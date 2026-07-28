@@ -10,7 +10,7 @@
  * ships to learners.
  */
 
-import { canonicalEmail, EXCLUDED_BOARD_UIDS, HIDDEN_ROSTER_NAMES, HIDDEN_ROSTER_UID_PREFIXES, KNOWN_EMAILS } from "@/lib/accountAliases";
+import { canonicalEmail, EXCLUDED_BOARD_UIDS, HIDDEN_ROSTER_UID_PREFIXES, isHiddenRosterName, KNOWN_EMAILS, ROSTER_NAMES } from "@/lib/accountAliases";
 
 // Mirror of firestore.rules isAdmin() — keep the two lists in sync.
 // Read-only tier (Dan, 2026-07-20): peer reviewers see the whole teacher
@@ -175,7 +175,7 @@ export function buildRoster(events: Ev[], board: Map<string, BoardRow>): Learner
     let l = byUid.get(uid);
     if (!l) {
       byUid.set(uid, (l = {
-        uid, uids: [uid], name: uid.slice(0, 8), email: canonicalEmail(KNOWN_EMAILS[uid]) ?? null, isTeacher: false,
+        uid, uids: [uid], name: ROSTER_NAMES[uid] ?? uid.slice(0, 8), email: canonicalEmail(KNOWN_EMAILS[uid]) ?? null, isTeacher: false,
         firstSeen: null, lastSeen: null, daysActive: 0,
         pageViews: 0, gamePlays: 0, pretestAnswers: 0,
         board: board.get(uid) ?? null,
@@ -188,7 +188,8 @@ export function buildRoster(events: Ev[], board: Map<string, BoardRow>): Learner
     const l = ensure(ev.uid);
     const name = str(ev.payload.name);
     const email = str(ev.payload.email);
-    if (name) l.name = name;
+    // A known uid keeps the name we were told, whatever the event claims.
+    if (name && !ROSTER_NAMES[ev.uid]) l.name = name;
     if (email) {
       l.email = email;
       if (ADMIN_EMAILS.includes(email)) l.isTeacher = true;
@@ -248,7 +249,7 @@ export function buildRoster(events: Ev[], board: Map<string, BoardRow>): Learner
   // my Teacher's Page") — prior-term board leftovers and test accounts.
   for (const l of merged) {
     l.hidden =
-      HIDDEN_ROSTER_NAMES.has(l.name) ||
+      isHiddenRosterName(l.name) ||
       l.uids.some((u) => EXCLUDED_BOARD_UIDS.has(u) || HIDDEN_ROSTER_UID_PREFIXES.some((pre) => u.startsWith(pre)));
   }
   return merged.sort(
