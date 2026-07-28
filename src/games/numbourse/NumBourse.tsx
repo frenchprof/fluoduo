@@ -95,6 +95,16 @@ export default function NumBourse() {
   const musicAutoRef = useRef(false);
   const missedRef = useRef<Order[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
+  // The hidden input exists so a physical keyboard can type digits. On a phone,
+  // focusing it only summons the OS keypad over the game — and that keypad has
+  // no return key, so it cannot even submit. Touch devices drive the on-screen
+  // keypad instead and never take focus.
+  const focusTyping = useCallback(() => {
+    try {
+      if (!window.matchMedia("(pointer: fine)").matches) return;
+    } catch {}
+    inputRef.current?.focus({ preventScroll: true });
+  }, []);
 
   useEffect(() => setMounted(true), []);
   useEffect(() => holdDigitKeys(), []);
@@ -222,7 +232,7 @@ export default function NumBourse() {
   function press(key: string) {
     if (!order || resolvedRef.current || over || won || levelDone) return;
     ensureMusic();
-    inputRef.current?.focus({ preventScroll: true });
+    focusTyping();
     if (key === "back") setTyped((t) => t.slice(0, -1));
     else setTyped((t) => (t.length >= 6 ? t : t + key));
   }
@@ -235,8 +245,8 @@ export default function NumBourse() {
   // captured at the window level.
   useEffect(() => {
     if (!canType) return;
-    inputRef.current?.focus({ preventScroll: true });
-  }, [canType, order?.value]);
+    focusTyping();
+  }, [canType, order?.value, focusTyping]);
 
   function reset() {
     setScore(0);
@@ -426,7 +436,7 @@ export default function NumBourse() {
                 readOnly={!canType}
                 tabIndex={canType ? 0 : -1}
                 style={{ outline: "none" }}
-                className="absolute inset-0 cursor-text bg-transparent text-transparent caret-transparent"
+                className="absolute inset-0 cursor-text bg-transparent text-transparent caret-transparent pointer-coarse:pointer-events-none"
                 onFocus={() => ensureMusic()}
                 onChange={(e) => {
                   if (!canType) return;
