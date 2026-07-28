@@ -25,6 +25,12 @@ const GRACE_MS = 1800;
 const DEFAULT_RATE = 0.48;
 const SLOWER_RATE = 0.32;
 
+/** Rough spoken length, used only as a safety net when the voice reports
+ *  nothing back. ~14 characters a second at rate 1, floored and capped so a
+ *  freak string can neither cut the announcement off nor stall the round. */
+const speechMs = (text: string, rate: number) =>
+  Math.min(15000, Math.max(2500, (text.length / (14 * Math.max(0.2, rate))) * 1000));
+
 /* ── shared board ──────────────────────────────────────────────────────── */
 
 function Board({
@@ -385,7 +391,16 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
   }, []);
 
   const width = round ? blindWidth(round.blind) : 0;
-  const focus = useCallback(() => inputRef.current?.focus({ preventScroll: true }), []);
+
+  // The hidden input exists so a physical keyboard can type digits. On a phone,
+  // focusing it only summons the OS keyboard over the game, so touch devices
+  // drive the on-screen keypad instead and never take focus.
+  const focus = useCallback(() => {
+    try {
+      if (!window.matchMedia("(pointer: fine)").matches) return;
+    } catch {}
+    inputRef.current?.focus({ preventScroll: true });
+  }, []);
 
   useEffect(() => holdDigitKeys(), []);
   useEffect(() => {
@@ -404,13 +419,24 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
     setTalking(true);
     setSpeechPaused(false);
     setTypingOpen(false);
+    let opened = false;
+    const open = () => {
+      if (opened) return;
+      opened = true;
+      setTalking(false);
+      setTypingOpen(true);
+    };
     speak(text, "fr-FR", {
       rate,
       onDone: () => {
         setTalking(false);
-        after(GRACE_MS, () => setTypingOpen(true));
+        after(GRACE_MS, open);
       },
     });
+    // iOS Safari never fires `onend` for speech it didn't start from a tap, and
+    // a muted or banked voice skips onDone altogether. Without this fallback
+    // typing would never open and the keypad would stay disabled for good.
+    after(speechMs(text, rate) + GRACE_MS, open);
   }, [after]);
 
   /** Replay without freezing an open countdown — for 🔊/🐢/⏸ mid-round. */
@@ -521,7 +547,10 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
     (k: string) => {
       startMusic();
       focus();
-      if (stage !== "asking" || !round || !typingOpen) return;
+      if (stage !== "asking" || !round) return;
+      // A tap is also consent to start the clock: if the voice never reported
+      // back, the first key opens typing rather than being swallowed.
+      if (!typingOpen) setTypingOpen(true);
       if (k === "⌫") setTyped((t) => t.slice(0, -1));
       else if (k === "✓") resolve(typed);
       else if (typed.length < width) {
@@ -685,9 +714,10 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           autoComplete="off"
           aria-label="Answer digits"
           style={{ outline: "none" }}
-          className="absolute inset-x-4 top-3 h-[78px] w-auto cursor-pointer bg-transparent text-transparent caret-transparent"
+          className="absolute inset-x-4 top-3 h-[78px] w-auto cursor-pointer bg-transparent text-transparent caret-transparent pointer-coarse:pointer-events-none"
           onChange={(e) => {
-            if (stage !== "asking" || !typingOpen) return;
+            if (stage !== "asking") return;
+            if (!typingOpen) setTypingOpen(true);
             const next = e.target.value.replace(/\D/g, "").slice(0, width);
             startMusic();
             setTyped(next);
@@ -750,7 +780,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
             key={k}
             type="button"
             onClick={() => key(k)}
-            disabled={stage !== "asking" || !typingOpen}
+            disabled={stage !== "asking"}
             className={`rounded-2xl border-2 border-b-4 py-3 text-xl font-black transition active:translate-y-[2px] active:border-b-2 disabled:opacity-40 ${
               k === "✓" ? "border-[#46a302] bg-[#58cc02] text-white" : k === "⌫" ? "border-slate-400 bg-slate-200 text-slate-700" : "border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
             }`}
