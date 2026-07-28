@@ -297,20 +297,21 @@ function BurgerScene({
 }) {
   return (
     <div
-      className="relative h-[186px] overflow-hidden rounded-3xl border-4 border-[#ffb74d] shadow-xl sm:h-[248px]"
+      className="relative h-[124px] overflow-hidden rounded-3xl border-4 border-[#ffb74d] shadow-xl sm:h-[248px]"
       style={{ background: "linear-gradient(180deg,#fff8e8 0%,#ffe0b2 55%,#ffcc80 100%)" }}
     >
       <div className="absolute inset-x-0 top-0 flex items-center justify-between border-b-2 border-[#e65100]/20 bg-[#ff6f00] px-4 py-2">
         <span className="text-lg font-black text-white">🍔 Num<span className="text-[#ffe082]">Burger</span></span>
         <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs font-bold text-white">caisse</span>
       </div>
-      <div className="absolute left-4 top-12 text-5xl opacity-90 sm:top-14 sm:text-6xl" aria-hidden>🍔</div>
-      <div className="absolute right-4 top-12 text-4xl opacity-70 sm:top-14 sm:text-5xl" aria-hidden>🍟</div>
-      <div className="absolute inset-x-4 bottom-3 rounded-2xl border-2 border-[#bf360c] bg-[#3e2723] px-4 py-2 shadow-inner sm:inset-x-6 sm:bottom-16 sm:py-3">
+      {/* The brand already says burger; a second one only pushed the total down
+          the screen (Dan, 2026-07-28). The fries stay, out of the way. */}
+      <div className="absolute right-4 top-12 hidden text-4xl opacity-70 sm:block sm:top-14 sm:text-5xl" aria-hidden>🍟</div>
+      <div className="absolute inset-x-4 bottom-2.5 rounded-2xl border-2 border-[#bf360c] bg-[#3e2723] px-4 py-2 shadow-inner sm:inset-x-6 sm:bottom-16 sm:py-3">
         <p className="text-[10px] font-black uppercase tracking-[0.25em] text-[#a1887f]">Total à payer</p>
         <p className="mt-1 font-mono text-2xl font-black text-[#ffb74d] sm:text-3xl">{totalLabel || "· · ·"}</p>
       </div>
-      <button type="button" onClick={onRepeat} title="Repeat" className="absolute left-1/2 top-[52px] -translate-x-1/2 text-2xl" style={{ animation: talking ? "nbring .7s ease-in-out infinite" : undefined }}>
+      <button type="button" onClick={onRepeat} title="Repeat" className="absolute left-4 top-[50px] text-2xl sm:left-1/2 sm:-translate-x-1/2" style={{ animation: talking ? "nbring .7s ease-in-out infinite" : undefined }}>
         📢
       </button>
       <div className="absolute inset-x-0 top-[42px] h-[6px] bg-black/10">
@@ -393,6 +394,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
   );
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const keypadRef = useRef<HTMLDivElement>(null);
   const timers = useRef<number[]>([]);
   const after = useCallback((ms: number, fn: () => void) => {
     timers.current.push(window.setTimeout(fn, ms));
@@ -538,6 +540,14 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
     },
     [cancelAutoSubmit, resolve, width],
   );
+
+  // Anchor the view on the pad as typing opens: on a phone the scene, the board
+  // and the pad together are taller than the screen, and a pad half below the
+  // fold is a pad you cannot use (Dan, 2026-07-28).
+  useEffect(() => {
+    if (stage !== "asking" || !typingOpen) return;
+    keypadRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
+  }, [stage, typingOpen, round]);
 
   useEffect(() => {
     if (stage !== "asking" || !round || !typingOpen || voiceOff) return;
@@ -862,14 +872,14 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
 
       {/* Three columns on a phone is the dial pad every thumb already knows
           (1-2-3 / … / ⌫-0-✓); one row on a desktop, where width is free. */}
-      <div className="grid grid-cols-3 gap-2 sm:grid-cols-12">
+      <div ref={keypadRef} className="grid grid-cols-3 gap-2 sm:grid-cols-12">
         {KEYPAD.map((k) => (
           <button
             key={k}
             type="button"
             onClick={() => key(k)}
             disabled={stage !== "asking"}
-            className={`rounded-2xl border-2 border-b-4 py-3.5 text-2xl font-black transition active:translate-y-[2px] active:border-b-2 disabled:opacity-40 sm:py-3 sm:text-xl ${
+            className={`rounded-2xl border-2 border-b-4 py-2.5 text-xl font-black transition active:translate-y-[2px] active:border-b-2 disabled:opacity-40 sm:py-3 ${
               k === "✓" ? "border-[#46a302] bg-[#58cc02] text-white" : k === "⌫" ? "border-slate-400 bg-slate-200 text-slate-700" : "border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
             }`}
           >
