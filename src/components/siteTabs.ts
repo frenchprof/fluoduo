@@ -56,6 +56,7 @@ export function toolTabs(): ShellTab[] {
     // the door (Dan: "we don't need the flap tab for classement").
     { key: "vocabularain", label: "VocabulaRain", emoji: "🌧️", href: "/games/vocabularain", hue: "#5b8def", hint: "catch falling words" },
     { key: "lexicalator", label: "LexicaLater", emoji: "🧰", href: "/games/lexicalater", hue: "#e3a700", hint: "stitch word parts" },
+    { key: "numbourse", label: "NumBourse", emoji: "📈", href: "/games/numbourse", hue: "#0f8a5f", hint: "type the shouted numbers" },
     { key: "tutor", label: "ChaTutor", emoji: "🤖", href: "/tutor", hue: "#8a5fd4", hint: "AI tutor chat" },
     { key: "reviser", label: "DéjàRevu", emoji: "🔁", href: "/reviser", hue: "#7bbf2e", hint: "revise past errors" },
     { key: "wordrill", label: "WorDrill", emoji: "🎙️", href: "/practice/wordrill", hue: "#7bbf2e", hint: "pronunciation drill" },
