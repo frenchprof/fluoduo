@@ -15,6 +15,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { CURATED } from "@/content/collections";
 import { speak } from "@/games/letris/speech";
+import { logEvent } from "@/lib/firebase/usage";
 import CahierShell, { type ShellTab } from "@/components/CahierShell";
 import type { Collection, Item } from "@/lib/collections/schema";
 
@@ -152,7 +153,19 @@ function PretestRunner({
   }
   function pick(choice: Item) {
     if (submitted || !q) return;
-    setSubmitted({ id: choice.id, correct: choice.id === q.item.id });
+    const correct = choice.id === q.item.id;
+    setSubmitted({ id: choice.id, correct });
+    // This format used to record NOTHING — every picture pretest a class sat was
+    // invisible to the gap report. Same event and shape as the authored pretests
+    // (/pretests/[id]) and the SIO popup quiz, keyed by deck since these are
+    // generated per deck rather than authored one by one.
+    void logEvent("pretest.answer", {
+      pretestId: `picture:${collection.id}`,
+      itemId: q.item.id,
+      correct,
+      picked: displayMap[choice.id] ?? choice.fr,
+      direction: q.direction,
+    });
   }
   function next() {
     if (!submitted || !q) return;
