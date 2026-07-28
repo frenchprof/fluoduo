@@ -29,6 +29,59 @@ export function holdDigitKeys(): () => void {
   };
 }
 
+/**
+ * Digit typing, arbitrated in ONE place.
+ *
+ * An activity that types numbers in (NumBus) used to attach its own window
+ * listener, which is how it once stole 1–4 from the pre-test's answer keys.
+ * The rules that make a global listener safe live here instead of in each game:
+ *
+ *   - ONE window listener exists, no matter how many claimants.
+ *   - A focused field owns its own keystrokes, so a game with a real <input>
+ *     never double-enters a digit.
+ *   - Only the most recent claim receives digits, and choice exercises yield
+ *     their 1–4 shortcuts while any claim is live — so the two can never both
+ *     act on the same keypress.
+ */
+type DigitClaim = { onDigit: (d: string) => void };
+const digitClaims: DigitClaim[] = [];
+let digitListener: ((e: KeyboardEvent) => void) | null = null;
+
+const inField = (t: EventTarget | null): boolean => {
+  const el = t as HTMLElement | null;
+  return !!el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT" || el.isContentEditable);
+};
+
+export function claimDigitKeys(onDigit: (d: string) => void): () => void {
+  const claim: DigitClaim = { onDigit };
+  digitClaims.push(claim);
+  activeCount++;
+  if (!digitListener) {
+    digitListener = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (inField(e.target)) return;
+      if (!/^[0-9]$/.test(e.key)) return;
+      const top = digitClaims[digitClaims.length - 1];
+      if (!top) return;
+      e.preventDefault();
+      top.onDigit(e.key);
+    };
+    window.addEventListener("keydown", digitListener);
+  }
+  let released = false;
+  return () => {
+    if (released) return;
+    released = true;
+    activeCount--;
+    const i = digitClaims.indexOf(claim);
+    if (i >= 0) digitClaims.splice(i, 1);
+    if (digitClaims.length === 0 && digitListener) {
+      window.removeEventListener("keydown", digitListener);
+      digitListener = null;
+    }
+  };
+}
+
 export function useChoiceKeys({
   count,
   onPick,
@@ -50,7 +103,9 @@ export function useChoiceKeys({
       if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT" || t.isContentEditable)) return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       const k = Number(e.key);
-      if (Number.isInteger(k) && k >= 1 && k <= count) {
+      // An activity that types digits has claimed them — yield rather than
+      // acting on the same keypress twice.
+      if (digitClaims.length === 0 && Number.isInteger(k) && k >= 1 && k <= count) {
         e.preventDefault();
         onPick(k - 1);
         return;
