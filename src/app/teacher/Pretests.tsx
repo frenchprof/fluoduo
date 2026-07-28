@@ -2,13 +2,16 @@
 
 /** Pretest gap report (PRIME, audit R1) — class-wide misses per pretest →
  *  per item → attempts / miss rate / top wrong pick. Derived from the shared
- *  events stream (type == "pretest.answer"). */
+ *  events stream (type == "pretest.answer"). Each pretest is a collapsible
+ *  section whose header carries its overall miss rate, and the sections
+ *  themselves sort by that rate (Dan, 2026-07-28) — worst first, so the gap
+ *  report opens on the gap. */
 
 import { useMemo } from "react";
 import { type Ev, str } from "./data";
 import { getPretest } from "@/content/pretests";
 import { stemForItem } from "@/lib/pretestRecord";
-import { TableBox } from "./ui";
+import { Section, SectionGroup, TableBox, missColor, useSortedSections, type SortOption } from "./ui";
 
 type ItemAgg = {
   itemId: string;
@@ -21,9 +24,19 @@ type ItemAgg = {
 
 type PretestAgg = {
   pretestId: string;
+  title: string;
   attempts: number;
+  misses: number;
+  missRate: number;
   items: ItemAgg[]; // sorted by missRate desc
 };
+
+const SORTS: SortOption<PretestAgg>[] = [
+  { key: "miss", label: "Miss %", val: (a) => a.missRate },
+  { key: "answers", label: "Answers", val: (a) => a.attempts },
+  { key: "items", label: "Items", val: (a) => a.items.length },
+  { key: "title", label: "Pretest", val: (a) => a.title.toLowerCase(), dir: 1 },
+];
 
 export default function Pretests({ events }: { events: Ev[] }) {
   const aggs = useMemo(() => {
@@ -47,35 +60,41 @@ export default function Pretests({ events }: { events: Ev[] }) {
         if (picked) agg.wrongPicks[picked] = (agg.wrongPicks[picked] ?? 0) + 1;
       }
     }
-    const out: PretestAgg[] = [...byPretest.entries()]
-      .map(([pretestId, items]) => {
-        const rows: ItemAgg[] = [...items.entries()]
-          .map(([itemId, a]) => ({
-            itemId,
-            attempts: a.attempts,
-            misses: a.misses,
-            missRate: a.attempts > 0 ? a.misses / a.attempts : 0,
-            wrongPicks: a.wrongPicks,
-          }))
-          .sort((x, y) => y.missRate - x.missRate || y.attempts - x.attempts);
-        return {
-          pretestId,
-          attempts: rows.reduce((s, r) => s + r.attempts, 0),
-          items: rows,
-        };
-      })
-      .sort((x, y) => x.pretestId.localeCompare(y.pretestId));
+    const out: PretestAgg[] = [...byPretest.entries()].map(([pretestId, items]) => {
+      const rows: ItemAgg[] = [...items.entries()]
+        .map(([itemId, a]) => ({
+          itemId,
+          attempts: a.attempts,
+          misses: a.misses,
+          missRate: a.attempts > 0 ? a.misses / a.attempts : 0,
+          wrongPicks: a.wrongPicks,
+        }))
+        .sort((x, y) => y.missRate - x.missRate || y.attempts - x.attempts);
+      const attempts = rows.reduce((s, r) => s + r.attempts, 0);
+      const misses = rows.reduce((s, r) => s + r.misses, 0);
+      return {
+        pretestId,
+        title: getPretest(pretestId)?.title ?? pretestId,
+        attempts,
+        misses,
+        missRate: attempts > 0 ? misses / attempts : 0,
+        items: rows,
+      };
+    });
     return out;
   }, [events]);
+
+  const { sorted, bar } = useSortedSections(aggs, SORTS);
 
   if (aggs.length === 0) return <p className="mt-3 text-sm text-slate-500">No pretest answers yet.</p>;
 
   return (
-    <div className="mt-4 space-y-8">
-      {aggs.map((agg) => (
+    <SectionGroup>
+      {bar}
+      {sorted.map((agg) => (
         <PretestSection key={agg.pretestId} agg={agg} />
       ))}
-    </div>
+    </SectionGroup>
   );
 }
 
@@ -85,27 +104,28 @@ function PretestSection({ agg }: { agg: PretestAgg }) {
     const item = pretest?.items.find((i) => i.id === itemId);
     return item ? stemForItem(item) : itemId;
   };
+  const pct = Math.round(agg.missRate * 100);
   return (
-    <section>
-      <h2 className="text-lg font-black text-slate-900">
-        <a href={`/pretests/${agg.pretestId}`} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{pretest?.title ?? agg.pretestId}</a>
-      </h2>
+    <Section
+      id={`pre:${agg.pretestId}`}
+      title={agg.title}
+      href={`/pretests/${agg.pretestId}`}
+      meta={
+        <>
+          <span className={`font-black ${missColor(pct)}`}>{pct}% missed</span> · {agg.attempts} answers · {agg.items.length} items
+        </>
+      }
+    >
       <TableBox head={["Item", "Miss %", "Attempts", "Top wrong pick"]}>
         {agg.items.map((row) => {
           const topWrong = Object.entries(row.wrongPicks).sort((a, b) => b[1] - a[1])[0];
-          const pct = Math.round(row.missRate * 100);
+          const itemPct = Math.round(row.missRate * 100);
           return (
             <tr key={row.itemId} className="border-t border-slate-100">
               <td className="px-3 py-2 font-bold text-slate-900" lang="fr">
                 {stemOf(row.itemId)}
               </td>
-              <td
-                className={`px-3 py-2 text-right font-black ${
-                  pct >= 50 ? "text-rose-600" : pct >= 25 ? "text-amber-600" : "text-emerald-700"
-                }`}
-              >
-                {pct}%
-              </td>
+              <td className={`px-3 py-2 text-right font-black ${missColor(itemPct)}`}>{itemPct}%</td>
               <td className="px-3 py-2 text-right text-slate-700">{row.attempts}</td>
               <td className="px-3 py-2 text-slate-700" lang="fr">
                 {topWrong ? `${topWrong[0]} ×${topWrong[1]}` : "—"}
@@ -114,6 +134,6 @@ function PretestSection({ agg }: { agg: PretestAgg }) {
           );
         })}
       </TableBox>
-    </section>
+    </Section>
   );
 }
