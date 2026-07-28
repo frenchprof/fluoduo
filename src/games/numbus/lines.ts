@@ -1,17 +1,12 @@
 /**
- * NumBus routes. Each line is a place where French numbers get shouted at you
- * and nobody around you understands them, arranged so the numbers grow as you
- * travel out from the city stop:
+ * NumBus routes — four drills, four skins:
  *
- *   Arrêt Mermoz   1–99      the bus you catch every morning
- *   Gare routière  100–999   regional coaches
- *   Gare SNCF      1 000+    train numbers, then departure times
- *   Guichet                  fares — euros and centimes
- *   Objets trouvés           a phone number, read in French pairs
- *   Dépôt de nuit  10 000+   thousands and millions on the counter
+ *   NumBus      0–99 in three levels (0–20, 0–69, 0–99) — the morning bus
+ *   Horaires    00:00–23:59 — station departure board
+ *   NumBurger   prix ≤ 99,99 € — checkout total
+ *   NumBureau   téléphone — five two-digit blocks
  *
- * A line only has to produce rounds; the game itself knows nothing about
- * fares or timetables — it just displays digits on a blind and grades them.
+ * The 100+ scales (cars, trains, counters) are gone — they live elsewhere.
  */
 
 import { explain, frenchNumber, frenchPhone, frenchPrice, frenchTime } from "./frenchNumber";
@@ -19,6 +14,8 @@ import { explain, frenchNumber, frenchPhone, frenchPrice, frenchTime } from "./f
 /** The shape of the destination blind: a number is that many digit cells, a
  *  string is a fixed separator painted between them. */
 export type Blind = (number | string)[];
+
+export type NumBusMode = "bus" | "time" | "price" | "phone";
 
 export type NumBusRound = {
   /** What the tannoy says, in French. */
@@ -33,22 +30,21 @@ export type NumBusRound = {
   why: string[];
 };
 
-export type NumBusLine = {
+export type NumBusRoute = {
   id: string;
-  /** Route name on the sign. */
+  mode: NumBusMode;
+  /** Screen title — NumBus, NumBurger, NumBureau… */
+  brand: string;
   label: string;
-  /** Where you are standing. */
   place: string;
-  /** The range chip on the gallery tile. */
   scale: string;
-  /** Which unit's numbers this drills, or null for an extra. */
   unit: number | null;
   emoji: string;
-  vehicle: "bus" | "car" | "train";
-  backdrop: "jour" | "crepuscule" | "gare" | "nuit";
-  /** How long the vehicle waits at the stop. */
+  /** How long the learner has once typing opens. */
   seconds: number;
-  next: () => NumBusRound;
+  /** Bus only — three ascending ceilings. */
+  levels?: { max: number; label: string }[];
+  next: (level: number) => NumBusRound;
 };
 
 const rnd = (min: number, max: number) => min + Math.floor(Math.random() * (max - min + 1));
@@ -59,133 +55,66 @@ export const blindWidth = (blind: Blind): number =>
 
 const digitsOf = (value: number, blind: Blind) => String(value).padStart(blindWidth(blind), "0");
 
-/** Digit cells grouped in threes from the right, the way a counter reads. */
-function groupedBlind(value: number): Blind {
-  const s = String(value);
-  const head = s.length % 3 || 3;
-  const out: Blind = [head];
-  for (let i = head; i < s.length; i += 3) out.push(" ", 3);
-  return out;
-}
-
 function plain(value: number, blind: Blind, say: (words: string) => string): NumBusRound {
   const words = frenchNumber(value);
   return { say: say(words), words, digits: digitsOf(value, blind), blind, why: explain(value) };
 }
 
-/* ── the lines ─────────────────────────────────────────────────────────── */
+function busValue(level: number): number {
+  const max = level === 1 ? 20 : level === 2 ? 69 : 99;
+  // Mostly from the new band above the previous ceiling, with review below.
+  const lo = level === 1 ? 0 : level === 2 ? 21 : 70;
+  if (level === 1 || Math.random() < 0.72) return rnd(lo, max);
+  return rnd(0, lo - 1);
+}
 
-export const NUMBUS_LINES: NumBusLine[] = [
+/* ── the routes ─────────────────────────────────────────────────────────── */
+
+export const NUMBUS_ROUTES: NumBusRoute[] = [
   {
-    id: "ligne-a",
+    id: "bus",
+    mode: "bus",
+    brand: "NumBus",
     label: "Ligne A",
     place: "Arrêt Mermoz",
-    scale: "1 – 20",
+    scale: "0 – 99",
     unit: 0,
     emoji: "🚌",
-    vehicle: "bus",
-    backdrop: "jour",
-    seconds: 12,
-    next: () => plain(rnd(1, 20), [2], (w) => `Le bus numéro ${w}.`),
-  },
-  {
-    id: "ligne-b",
-    label: "Ligne B",
-    place: "Arrêt Mermoz",
-    scale: "21 – 69",
-    unit: 1,
-    emoji: "🚌",
-    vehicle: "bus",
-    backdrop: "jour",
-    seconds: 12,
-    next: () => {
-      // Every third bus ends in 1, so "vingt et un" comes round often enough
-      // to stick — it is the shape learners drop the "et" from.
-      const value = Math.random() < 0.3 ? pick([21, 31, 41, 51, 61]) : rnd(21, 69);
-      return plain(value, [2], (w) => `Le bus numéro ${w}.`);
-    },
-  },
-  {
-    id: "ligne-c",
-    label: "Ligne C",
-    place: "Arrêt Mermoz",
-    scale: "70 – 99",
-    unit: 4,
-    emoji: "🚌",
-    vehicle: "bus",
-    backdrop: "jour",
-    seconds: 14,
-    next: () => plain(rnd(70, 99), [2], (w) => `Le bus numéro ${w}.`),
-  },
-  {
-    id: "gare-routiere",
-    label: "Car régional",
-    place: "Gare routière",
-    scale: "100 – 999",
-    unit: null,
-    emoji: "🚍",
-    vehicle: "car",
-    backdrop: "crepuscule",
-    seconds: 14,
-    next: () => plain(rnd(100, 999), [3], (w) => `Le car numéro ${w}, à quai.`),
-  },
-  {
-    id: "grandes-lignes",
-    label: "Grandes lignes",
-    place: "Gare SNCF",
-    scale: "1 000 – 9 999",
-    unit: null,
-    emoji: "🚄",
-    vehicle: "train",
-    backdrop: "gare",
-    seconds: 16,
-    next: () => plain(rnd(1000, 9999), [4], (w) => `Le train numéro ${w} entre en gare.`),
-  },
-  {
-    id: "guichet",
-    label: "Guichet",
-    place: "Arrêt Mermoz",
-    scale: "les prix",
-    unit: null,
-    emoji: "🎫",
-    vehicle: "bus",
-    backdrop: "jour",
-    seconds: 14,
-    next: () => {
-      // Real fares hover around the awkward end of the scale — 80, 90, 95, 99
-      // centimes are where soixante-dix and quatre-vingt live.
-      const cents = rnd(1, 99) * 100 + pick([0, 0, 20, 50, 60, 75, 80, 90, 95, 99]);
-      const blind: Blind = [2, ",", 2];
-      const words = frenchPrice(cents);
-      return {
-        say: `Ça fait ${words}.`,
-        words,
-        digits: digitsOf(cents, blind),
-        blind,
-        suffix: "€",
-        why: [...explain(Math.floor(cents / 100)), ...explain(cents % 100)].slice(0, 3),
-      };
+    seconds: 24,
+    levels: [
+      { max: 20, label: "0 – 20" },
+      { max: 69, label: "0 – 69" },
+      { max: 99, label: "0 – 99" },
+    ],
+    next: (level) => {
+      const value = busValue(level);
+      // Every third bus at level 2 ends in 1 — "vingt et un" must stick.
+      const v =
+        level === 2 && Math.random() < 0.3
+          ? pick([21, 31, 41, 51, 61].filter((n) => n <= 69))
+          : value;
+      return plain(v, [2], (w) => `Le bus numéro ${w}.`);
     },
   },
   {
     id: "horaires",
+    mode: "time",
+    brand: "NumBus",
     label: "Horaires",
     place: "Gare SNCF",
-    scale: "l’heure",
+    scale: "00:00 – 23:59",
     unit: null,
     emoji: "🕑",
-    vehicle: "train",
-    backdrop: "gare",
-    seconds: 14,
+    seconds: 28,
     next: () => {
-      const h = rnd(5, 23);
-      const m = pick([0, 5, 10, 15, 20, 25, 30, 30, 35, 40, 45, 45, 50, 55]);
+      const h = rnd(0, 23);
+      const m = rnd(0, 59);
       const blind: Blind = [2, ":", 2];
       const words = frenchTime(h, m);
       return {
         say: `Départ à ${words}.`,
         words,
-        digits: digitsOf(h * 100 + m, blind),
+        digits: String(h).padStart(2, "0") + String(m).padStart(2, "0"),
         blind,
         why: [
           "The 24-hour clock is the only one a French timetable uses: 14 h 30, never « 2:30 ».",
@@ -196,15 +125,41 @@ export const NUMBUS_LINES: NumBusLine[] = [
     },
   },
   {
-    id: "objets-trouves",
-    label: "Objets trouvés",
-    place: "Arrêt Mermoz",
-    scale: "un numéro",
+    id: "numburger",
+    mode: "price",
+    brand: "NumBurger",
+    label: "Caisse",
+    place: "NumBurger",
+    scale: "≤ 99,99 €",
+    unit: null,
+    emoji: "🍔",
+    seconds: 30,
+    next: () => {
+      const euros = rnd(0, 99);
+      const centimes = rnd(0, 99);
+      const blind: Blind = [2, ",", 2];
+      const digits = String(euros).padStart(2, "0") + String(centimes).padStart(2, "0");
+      const words = frenchPrice(euros * 100 + centimes);
+      return {
+        say: `Ça fait ${words}.`,
+        words,
+        digits,
+        blind,
+        suffix: "€",
+        why: [...explain(euros), ...explain(centimes)].slice(0, 3),
+      };
+    },
+  },
+  {
+    id: "numbureau",
+    mode: "phone",
+    brand: "NumBureau",
+    label: "Standard",
+    place: "NumBureau",
+    scale: "10 chiffres",
     unit: null,
     emoji: "📞",
-    vehicle: "bus",
-    backdrop: "crepuscule",
-    seconds: 22,
+    seconds: 36,
     next: () => {
       const rest = Array.from({ length: 8 }, () => rnd(0, 9)).join("");
       const digits = `0${pick([1, 2, 3, 4, 5, 6, 6, 7, 7, 9])}${rest}`;
@@ -222,26 +177,12 @@ export const NUMBUS_LINES: NumBusLine[] = [
       };
     },
   },
-  {
-    id: "compteur",
-    label: "Le compteur",
-    place: "Dépôt de nuit",
-    scale: "10 000 – 9 999 999",
-    unit: null,
-    emoji: "🔢",
-    vehicle: "bus",
-    backdrop: "nuit",
-    seconds: 20,
-    next: () => {
-      const [lo, hi] = pick([
-        [10_000, 99_999],
-        [100_000, 999_999],
-        [1_000_000, 9_999_999],
-      ]);
-      const value = rnd(lo, hi);
-      return plain(value, groupedBlind(value), (w) => `Le compteur affiche ${w} voyageurs.`);
-    },
-  },
 ];
 
-export const getLine = (id: string) => NUMBUS_LINES.find((l) => l.id === id);
+export const getRoute = (id: string) => NUMBUS_ROUTES.find((r) => r.id === id);
+
+/** @deprecated use NUMBUS_ROUTES — kept for any stale imports */
+export const NUMBUS_LINES = NUMBUS_ROUTES;
+export const getLine = getRoute;
+
+export type NumBusLine = NumBusRoute;
