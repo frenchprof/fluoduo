@@ -24,7 +24,7 @@ import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 import { useAuthUser, signInWithGoogle } from "@/lib/firebase/auth";
 import {
   ADMIN_EMAILS, REVIEWER_EMAILS, type BoardRow, type Ev,
-  buildRoster, fetchAllEvents, fetchLeaderboard,
+  buildRoster, EVENT_FETCH_CAP, fetchAllEvents, fetchLeaderboard,
 } from "./data";
 import Overview from "./Overview";
 import Attendance from "./Attendance";
@@ -147,6 +147,7 @@ function Dashboard({ canWrite }: { canWrite: boolean }) {
   if (!events || !board) return <p className="text-sm text-slate-500">Loading analytics…</p>;
 
   const newest = events && events.length > 0 ? events[events.length - 1].ts : null;
+  const oldest = events && events.length > 0 ? events[0].ts : null;
 
   return (
     <div>
@@ -162,6 +163,14 @@ function Dashboard({ canWrite }: { canWrite: boolean }) {
           <span>
             {events.length} events loaded{loadedAt ? ` at ${loadedAt.toLocaleTimeString()}` : ""} · newest event{" "}
             {newest ? newest.toLocaleTimeString() : "—"}
+          </span>
+        )}
+        {/* The cap is generous, but silently analysing a window would misstate
+            first-seen dates and days-active, so say when it bites. */}
+        {events && events.length >= EVENT_FETCH_CAP && (
+          <span className="font-bold text-amber-700">
+            capped at {EVENT_FETCH_CAP.toLocaleString()} newest events
+            {oldest ? ` — nothing before ${oldest.toLocaleDateString()} is counted here` : ""}
           </span>
         )}
       </div>
