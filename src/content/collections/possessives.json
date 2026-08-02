@@ -1,7 +1,7 @@
 {
   "id": "possessives",
   "title": "Mon, ma ou mes ?",
-  "subtitle": "Sort each noun by the matching possessive",
+  "subtitle": "Sort each noun by the matching possessive — then all six persons",
   "langPair": "fr-en",
   "owner": "curated",
   "visibility": "public",
@@ -95,17 +95,6 @@
     },
     {
       "id": "possessives-05",
-      "fr": "sœur",
-      "en": "sister (f)",
-      "syllables": [
-        "sœur"
-      ],
-      "tags": [
-        "col:ma"
-      ]
-    },
-    {
-      "id": "possessives-06",
       "fr": "maison",
       "en": "house (f)",
       "syllables": [
@@ -117,7 +106,7 @@
       ]
     },
     {
-      "id": "possessives-07",
+      "id": "possessives-06",
       "fr": "amis",
       "en": "friends (pl)",
       "syllables": [
@@ -129,19 +118,7 @@
       ]
     },
     {
-      "id": "possessives-08",
-      "fr": "parents",
-      "en": "parents (pl)",
-      "syllables": [
-        "pa",
-        "rents"
-      ],
-      "tags": [
-        "col:mes"
-      ]
-    },
-    {
-      "id": "possessives-09",
+      "id": "possessives-07",
       "fr": "clés",
       "en": "keys (pl)",
       "syllables": [
@@ -152,144 +129,88 @@
       ]
     },
     {
-      "id": "possessives-10",
-      "fr": "père",
-      "en": "father (m)",
-      "syllables": [
-        "père"
-      ],
-      "tags": [
-        "col:mon"
-      ]
+      "id": "possessives-ton",
+      "fr": "Voici ton livre.",
+      "en": "Here's your book.",
+      "tags": [],
+      "gap": "ton"
     },
     {
-      "id": "possessives-11",
-      "fr": "mère",
-      "en": "mother (f)",
-      "syllables": [
-        "mère"
-      ],
-      "tags": [
-        "col:ma"
-      ]
+      "id": "possessives-ta",
+      "fr": "Voici ta pomme.",
+      "en": "Here's your apple.",
+      "tags": [],
+      "gap": "ta"
     },
     {
-      "id": "possessives-12",
-      "fr": "frère",
-      "en": "brother (m)",
-      "syllables": [
-        "frère"
-      ],
-      "tags": [
-        "col:mon"
-      ]
+      "id": "possessives-tes",
+      "fr": "Voici tes clés.",
+      "en": "Here are your keys.",
+      "tags": [],
+      "gap": "tes"
     },
     {
-      "id": "possessives-13",
-      "fr": "grand-père",
-      "en": "grandfather (m)",
-      "syllables": [
-        "grand",
-        "-père"
-      ],
-      "tags": [
-        "col:mon"
-      ]
+      "id": "possessives-son",
+      "fr": "Voici son téléphone.",
+      "en": "Here's his/her phone.",
+      "tags": [],
+      "gap": "son"
     },
     {
-      "id": "possessives-14",
-      "fr": "grand-mère",
-      "en": "grandmother (f)",
-      "syllables": [
-        "grand",
-        "-mère"
-      ],
-      "tags": [
-        "col:ma"
-      ]
+      "id": "possessives-sa",
+      "fr": "Voici sa maison.",
+      "en": "Here's his/her house.",
+      "tags": [],
+      "gap": "sa"
     },
     {
-      "id": "possessives-15",
-      "fr": "grands-parents",
-      "en": "grandparents (pl)",
-      "syllables": [
-        "grands",
-        "-pa",
-        "rents"
-      ],
-      "tags": [
-        "col:mes"
-      ]
+      "id": "possessives-ses",
+      "fr": "Voici ses amis.",
+      "en": "Here are his/her friends.",
+      "tags": [],
+      "gap": "ses"
     },
     {
-      "id": "possessives-16",
-      "fr": "oncle",
-      "en": "uncle (m)",
-      "syllables": [
-        "oncle"
-      ],
-      "tags": [
-        "col:mon"
-      ]
+      "id": "possessives-notre",
+      "fr": "Voici notre stylo.",
+      "en": "Here's our pen.",
+      "tags": [],
+      "gap": "notre"
     },
     {
-      "id": "possessives-17",
-      "fr": "tante",
-      "en": "aunt (f)",
-      "syllables": [
-        "tante"
-      ],
-      "tags": [
-        "col:ma"
-      ]
+      "id": "possessives-nos",
+      "fr": "Voici nos clés.",
+      "en": "Here are our keys.",
+      "tags": [],
+      "gap": "nos"
     },
     {
-      "id": "possessives-18",
-      "fr": "cousin",
-      "en": "cousin (m)",
-      "syllables": [
-        "cou",
-        "sin"
-      ],
-      "tags": [
-        "col:mon"
-      ]
+      "id": "possessives-votre",
+      "fr": "Voici votre livre.",
+      "en": "Here's your (pl./formal) book.",
+      "tags": [],
+      "gap": "votre"
     },
     {
-      "id": "possessives-19",
-      "fr": "cousine",
-      "en": "cousin (f)",
-      "syllables": [
-        "cou",
-        "sine"
-      ],
-      "tags": [
-        "col:ma"
-      ]
+      "id": "possessives-vos",
+      "fr": "Voici vos amis.",
+      "en": "Here are your (pl./formal) friends.",
+      "tags": [],
+      "gap": "vos"
     },
     {
-      "id": "possessives-20",
-      "fr": "famille",
-      "en": "family (f)",
-      "syllables": [
-        "fa",
-        "mille"
-      ],
-      "tags": [
-        "col:ma"
-      ]
+      "id": "possessives-leur",
+      "fr": "Voici leur téléphone.",
+      "en": "Here's their phone.",
+      "tags": [],
+      "gap": "leur"
     },
     {
-      "id": "possessives-21",
-      "fr": "enfants",
-      "en": "children (pl)",
-      "syllables": [
-        "en",
-        "fants"
-      ],
-      "tags": [
-        "col:mes"
-      ]
+      "id": "possessives-leurs",
+      "fr": "Voici leurs clés.",
+      "en": "Here are their keys.",
+      "tags": [],
+      "gap": "leurs"
     }
   ]
 }

@@ -132,42 +132,6 @@
       "displayName": "ami",
       "category": "qui_m",
       "meaning": "friend (m)"
-    },
-    {
-      "text": "GARÇON",
-      "displayName": "garçon",
-      "category": "qui_m",
-      "meaning": "boy"
-    },
-    {
-      "text": "TABLE",
-      "displayName": "table",
-      "category": "quoi_f",
-      "meaning": "table"
-    },
-    {
-      "text": "SALLE",
-      "displayName": "salle",
-      "category": "quoi_f",
-      "meaning": "room"
-    },
-    {
-      "text": "CLASSE",
-      "displayName": "classe",
-      "category": "quoi_f",
-      "meaning": "class"
-    },
-    {
-      "text": "MONSIEUR",
-      "displayName": "monsieur",
-      "category": "qui_m",
-      "meaning": "gentleman / sir"
-    },
-    {
-      "text": "CHAISE",
-      "displayName": "chaise",
-      "category": "quoi_f",
-      "meaning": "chair"
     }
   ]
 }

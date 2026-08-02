@@ -12,18 +12,9 @@
   "seq": 308,
   "items": [
     {
-      "id": "directions-matching-L-sortez",
-      "fr": "Vous sortez",
-      "en": "You exit / leave",
-      "emoji": "🚪",
-      "tags": [
-        "role:left"
-      ]
-    },
-    {
       "id": "directions-matching-L-allez",
-      "fr": "Vous allez",
-      "en": "You go",
+      "fr": "On va",
+      "en": "One goes",
       "emoji": "🚶",
       "tags": [
         "role:left"
@@ -31,8 +22,8 @@
     },
     {
       "id": "directions-matching-L-continuez",
-      "fr": "Vous continuez",
-      "en": "You continue",
+      "fr": "On continue",
+      "en": "One continues",
       "emoji": "➡️",
       "tags": [
         "role:left"
@@ -49,8 +40,8 @@
     },
     {
       "id": "directions-matching-L-tournez",
-      "fr": "Vous tournez",
-      "en": "You turn",
+      "fr": "On tourne",
+      "en": "One turns",
       "emoji": "↪️",
       "tags": [
         "role:left"
@@ -58,8 +49,8 @@
     },
     {
       "id": "directions-matching-L-prenez",
-      "fr": "Vous prenez",
-      "en": "You take",
+      "fr": "Il faut prendre",
+      "en": "You must take",
       "emoji": "👉",
       "tags": [
         "role:left"
@@ -67,8 +58,8 @@
     },
     {
       "id": "directions-matching-L-traversez",
-      "fr": "Vous traversez",
-      "en": "You cross",
+      "fr": "On traverse",
+      "en": "One crosses",
       "emoji": "🚸",
       "tags": [
         "role:left"
@@ -76,29 +67,11 @@
     },
     {
       "id": "directions-matching-L-etes",
-      "fr": "Vous êtes",
-      "en": "You are",
+      "fr": "On est",
+      "en": "One is",
       "emoji": "📍",
       "tags": [
         "role:left"
-      ]
-    },
-    {
-      "id": "directions-matching-R-du_parc",
-      "fr": "du parc",
-      "en": "from the park",
-      "emoji": "🌳",
-      "tags": [
-        "role:right"
-      ]
-    },
-    {
-      "id": "directions-matching-R-de_la_station",
-      "fr": "de la station de métro",
-      "en": "from the metro station",
-      "emoji": "🚇",
-      "tags": [
-        "role:right"
       ]
     },
     {
@@ -201,39 +174,27 @@
       ]
     },
     {
-      "id": "directions-full-01",
-      "fr": "Vous sortez du parc.",
-      "en": "You exit the park.",
-      "tags": []
-    },
-    {
-      "id": "directions-full-02",
-      "fr": "Vous sortez de la station de métro.",
-      "en": "You exit the metro station.",
-      "tags": []
-    },
-    {
       "id": "directions-full-03",
-      "fr": "Vous allez tout droit.",
-      "en": "You go straight ahead.",
+      "fr": "On va tout droit.",
+      "en": "One goes straight ahead.",
       "tags": []
     },
     {
       "id": "directions-full-04",
-      "fr": "Vous continuez tout droit.",
-      "en": "You continue straight ahead.",
+      "fr": "On continue tout droit.",
+      "en": "One continues straight ahead.",
       "tags": []
     },
     {
       "id": "directions-full-05",
-      "fr": "Vous allez jusqu'au carrefour.",
-      "en": "You go as far as the intersection.",
+      "fr": "On va jusqu'au carrefour.",
+      "en": "One goes as far as the intersection.",
       "tags": []
     },
     {
       "id": "directions-full-06",
-      "fr": "Vous continuez jusqu'au carrefour.",
-      "en": "You continue as far as the intersection.",
+      "fr": "On continue jusqu'au carrefour.",
+      "en": "One continues as far as the intersection.",
       "tags": []
     },
     {
@@ -244,50 +205,50 @@
     },
     {
       "id": "directions-full-08",
-      "fr": "Vous tournez à gauche.",
-      "en": "You turn left.",
+      "fr": "On tourne à gauche.",
+      "en": "One turns left.",
       "tags": []
     },
     {
       "id": "directions-full-09",
-      "fr": "Vous tournez à droite.",
-      "en": "You turn right.",
+      "fr": "On tourne à droite.",
+      "en": "One turns right.",
       "tags": []
     },
     {
       "id": "directions-full-10",
-      "fr": "Vous prenez la première rue à gauche.",
-      "en": "You take the first street on the left.",
+      "fr": "Il faut prendre la première rue à gauche.",
+      "en": "You must take the first street on the left.",
       "tags": []
     },
     {
       "id": "directions-full-11",
-      "fr": "Vous prenez la deuxième rue à droite.",
-      "en": "You take the second street on the right.",
+      "fr": "Il faut prendre la deuxième rue à droite.",
+      "en": "You must take the second street on the right.",
       "tags": []
     },
     {
       "id": "directions-full-12",
-      "fr": "Vous traversez le passage piéton.",
-      "en": "You cross at the crosswalk.",
+      "fr": "On traverse le passage piéton.",
+      "en": "One crosses at the crosswalk.",
       "tags": []
     },
     {
       "id": "directions-full-13",
-      "fr": "Vous traversez le pont.",
-      "en": "You cross the bridge.",
+      "fr": "On traverse le pont.",
+      "en": "One crosses the bridge.",
       "tags": []
     },
     {
       "id": "directions-full-14",
-      "fr": "Vous traversez la place.",
-      "en": "You cross the square.",
+      "fr": "On traverse la place.",
+      "en": "One crosses the square.",
       "tags": []
     },
     {
       "id": "directions-full-15",
-      "fr": "Vous êtes arrivé(e).",
-      "en": "You have arrived.",
+      "fr": "On est arrivé(e).",
+      "en": "One has arrived.",
       "tags": []
     },
     {
@@ -295,8 +256,8 @@
       "fr": "d'abord",
       "en": "first (of all)",
       "emoji": "1️⃣",
-      "example": "D'abord, vous sortez de la station.",
-      "exampleEn": "First, you exit the station.",
+      "example": "D'abord, on va tout droit.",
+      "exampleEn": "First, one goes straight ahead.",
       "tags": []
     },
     {
@@ -304,8 +265,8 @@
       "fr": "puis",
       "en": "then",
       "emoji": "2️⃣",
-      "example": "Puis, vous continuez tout droit.",
-      "exampleEn": "Then, you continue straight ahead.",
+      "example": "Puis, on continue tout droit.",
+      "exampleEn": "Then, one continues straight ahead.",
       "tags": []
     },
     {
@@ -313,8 +274,8 @@
       "fr": "ensuite",
       "en": "next / afterwards",
       "emoji": "3️⃣",
-      "example": "Ensuite, vous tournez à gauche.",
-      "exampleEn": "Next, you turn left.",
+      "example": "Ensuite, on tourne à gauche.",
+      "exampleEn": "Next, one turns left.",
       "tags": []
     },
     {
@@ -322,22 +283,14 @@
       "fr": "enfin",
       "en": "finally",
       "emoji": "🏁",
-      "example": "Enfin, vous traversez la place.",
-      "exampleEn": "Finally, you cross the square.",
+      "example": "Enfin, on traverse la place.",
+      "exampleEn": "Finally, one crosses the square.",
       "tags": []
     }
   ],
   "gameConfig": {
     "matching": {
       "pairs": [
-        {
-          "leftId": "directions-matching-L-sortez",
-          "rightId": "directions-matching-R-du_parc"
-        },
-        {
-          "leftId": "directions-matching-L-sortez",
-          "rightId": "directions-matching-R-de_la_station"
-        },
         {
           "leftId": "directions-matching-L-allez",
           "rightId": "directions-matching-R-tout_droit"

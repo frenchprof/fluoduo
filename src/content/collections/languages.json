@@ -1,7 +1,7 @@
 {
   "id": "languages",
   "title": "Quelles langues parlez-vous ?",
-  "subtitle": "Name the languages you speak",
+  "subtitle": "Match each country to the language(s) spoken there",
   "langPair": "fr-en",
   "owner": "curated",
   "visibility": "public",
@@ -16,7 +16,9 @@
       "fr": "l'anglais",
       "en": "English",
       "emoji": "🇬🇧",
-      "tags": [],
+      "tags": [
+        "role:right"
+      ],
       "lang": {
         "greeting": "Hello",
         "autonym": "English"
@@ -31,7 +33,9 @@
       "fr": "le chinois",
       "en": "Mandarin / Chinese",
       "emoji": "🇨🇳",
-      "tags": [],
+      "tags": [
+        "role:right"
+      ],
       "lang": {
         "greeting": "你好",
         "autonym": "中文"
@@ -63,7 +67,9 @@
       "fr": "l'espagnol",
       "en": "Spanish",
       "emoji": "🇪🇸",
-      "tags": [],
+      "tags": [
+        "role:right"
+      ],
       "lang": {
         "greeting": "Hola",
         "autonym": "Español"
@@ -79,7 +85,9 @@
       "fr": "l'arabe",
       "en": "Arabic",
       "emoji": "🇸🇦",
-      "tags": [],
+      "tags": [
+        "role:right"
+      ],
       "lang": {
         "greeting": "مرحبا",
         "autonym": "العربية"
@@ -94,7 +102,9 @@
       "fr": "le français",
       "en": "French",
       "emoji": "🇫🇷",
-      "tags": [],
+      "tags": [
+        "role:right"
+      ],
       "lang": {
         "greeting": "Bonjour",
         "autonym": "Français"
@@ -110,7 +120,9 @@
       "fr": "le portugais",
       "en": "Portuguese",
       "emoji": "🇵🇹",
-      "tags": [],
+      "tags": [
+        "role:right"
+      ],
       "lang": {
         "greeting": "Olá",
         "autonym": "Português"
@@ -127,7 +139,9 @@
       "fr": "le russe",
       "en": "Russian",
       "emoji": "🇷🇺",
-      "tags": [],
+      "tags": [
+        "role:right"
+      ],
       "lang": {
         "greeting": "Привет",
         "autonym": "Русский"
@@ -142,7 +156,9 @@
       "fr": "l'indonésien",
       "en": "Indonesian",
       "emoji": "🇮🇩",
-      "tags": [],
+      "tags": [
+        "role:right"
+      ],
       "lang": {
         "greeting": "Halo",
         "autonym": "Bahasa Indonesia"
@@ -159,7 +175,9 @@
       "fr": "l'allemand",
       "en": "German",
       "emoji": "🇩🇪",
-      "tags": [],
+      "tags": [
+        "role:right"
+      ],
       "lang": {
         "greeting": "Hallo",
         "autonym": "Deutsch"
@@ -192,7 +210,9 @@
       "fr": "le turc",
       "en": "Turkish",
       "emoji": "🇹🇷",
-      "tags": [],
+      "tags": [
+        "role:right"
+      ],
       "lang": {
         "greeting": "Merhaba",
         "autonym": "Türkçe"
@@ -207,7 +227,9 @@
       "fr": "le tamoul",
       "en": "Tamil",
       "emoji": "🇱🇰",
-      "tags": [],
+      "tags": [
+        "role:right"
+      ],
       "lang": {
         "greeting": "வணக்கம்",
         "autonym": "தமிழ்"
@@ -257,7 +279,9 @@
       "fr": "le filipino",
       "en": "Filipino",
       "emoji": "🇵🇭",
-      "tags": [],
+      "tags": [
+        "role:right"
+      ],
       "lang": {
         "greeting": "Kumusta",
         "autonym": "Filipino"
@@ -275,7 +299,9 @@
       "fr": "le coréen",
       "en": "Korean",
       "emoji": "🇰🇷",
-      "tags": [],
+      "tags": [
+        "role:right"
+      ],
       "lang": {
         "greeting": "안녕하세요",
         "autonym": "한국어"
@@ -292,7 +318,9 @@
       "fr": "le thaï",
       "en": "Thai",
       "emoji": "🇹🇭",
-      "tags": [],
+      "tags": [
+        "role:right"
+      ],
       "lang": {
         "greeting": "สวัสดี",
         "autonym": "ภาษาไทย"
@@ -308,7 +336,9 @@
       "fr": "le malais",
       "en": "Malay",
       "emoji": "🇲🇾",
-      "tags": [],
+      "tags": [
+        "role:right"
+      ],
       "lang": {
         "greeting": "Apa khabar",
         "autonym": "Bahasa Melayu"
@@ -317,6 +347,265 @@
         "le",
         "ma",
         "lais"
+      ]
+    },
+    {
+      "id": "languages-20-grec",
+      "fr": "le grec",
+      "en": "Greek",
+      "emoji": "🇬🇷",
+      "tags": [
+        "role:right"
+      ],
+      "lang": {
+        "greeting": "Γεια σας",
+        "autonym": "Ελληνικά"
+      },
+      "syllables": [
+        "le",
+        "grec"
+      ]
+    },
+    {
+      "id": "languages-21-khmer",
+      "fr": "le khmer",
+      "en": "Khmer",
+      "emoji": "🇰🇭",
+      "tags": [
+        "role:right"
+      ],
+      "lang": {
+        "greeting": "សួស្តី",
+        "autonym": "ខ្មែរ"
+      },
+      "syllables": [
+        "le",
+        "khmer"
+      ]
+    },
+    {
+      "id": "languages-country-france",
+      "fr": "France",
+      "en": "France",
+      "emoji": "🇫🇷",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-portugal",
+      "fr": "Portugal",
+      "en": "Portugal",
+      "emoji": "🇵🇹",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-chine",
+      "fr": "Chine",
+      "en": "China",
+      "emoji": "🇨🇳",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-indonesie",
+      "fr": "Indonésie",
+      "en": "Indonesia",
+      "emoji": "🇮🇩",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-coree",
+      "fr": "Corée",
+      "en": "Korea",
+      "emoji": "🇰🇷",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-etats-unis",
+      "fr": "États-Unis",
+      "en": "United States",
+      "emoji": "🇺🇸",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-mexique",
+      "fr": "Mexique",
+      "en": "Mexico",
+      "emoji": "🇲🇽",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-cuba",
+      "fr": "Cuba",
+      "en": "Cuba",
+      "emoji": "🇨🇺",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-philippines",
+      "fr": "Philippines",
+      "en": "Philippines",
+      "emoji": "🇵🇭",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-argentine",
+      "fr": "Argentine",
+      "en": "Argentina",
+      "emoji": "🇦🇷",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-russie",
+      "fr": "Russie",
+      "en": "Russia",
+      "emoji": "🇷🇺",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-suisse",
+      "fr": "Suisse",
+      "en": "Switzerland",
+      "emoji": "🇨🇭",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-belgique",
+      "fr": "Belgique",
+      "en": "Belgium",
+      "emoji": "🇧🇪",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-grece",
+      "fr": "Grèce",
+      "en": "Greece",
+      "emoji": "🇬🇷",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-turquie",
+      "fr": "Turquie",
+      "en": "Turkey",
+      "emoji": "🇹🇷",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-allemagne",
+      "fr": "Allemagne",
+      "en": "Germany",
+      "emoji": "🇩🇪",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-cambodge",
+      "fr": "Cambodge",
+      "en": "Cambodia",
+      "emoji": "🇰🇭",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-singapour",
+      "fr": "Singapour",
+      "en": "Singapore",
+      "emoji": "🇸🇬",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-malaisie",
+      "fr": "Malaisie",
+      "en": "Malaysia",
+      "emoji": "🇲🇾",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-thailande",
+      "fr": "Thaïlande",
+      "en": "Thailand",
+      "emoji": "🇹🇭",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-angleterre",
+      "fr": "Angleterre",
+      "en": "England",
+      "emoji": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-grande-bretagne",
+      "fr": "Grande-Bretagne",
+      "en": "Great Britain",
+      "emoji": "🇬🇧",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-tunisie",
+      "fr": "Tunisie",
+      "en": "Tunisia",
+      "emoji": "🇹🇳",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-maroc",
+      "fr": "Maroc",
+      "en": "Morocco",
+      "emoji": "🇲🇦",
+      "tags": [
+        "role:left"
+      ]
+    },
+    {
+      "id": "languages-country-algerie",
+      "fr": "Algérie",
+      "en": "Algeria",
+      "emoji": "🇩🇿",
+      "tags": [
+        "role:left"
       ]
     }
   ],
@@ -335,6 +624,126 @@
         "tou",
         "gué",
         "nol"
+      ]
+    },
+    "matching": {
+      "pairs": [
+        {
+          "leftId": "languages-country-france",
+          "rightId": "languages-06-francais"
+        },
+        {
+          "leftId": "languages-country-portugal",
+          "rightId": "languages-07-portugais"
+        },
+        {
+          "leftId": "languages-country-chine",
+          "rightId": "languages-02-chinois"
+        },
+        {
+          "leftId": "languages-country-indonesie",
+          "rightId": "languages-09-indonesien"
+        },
+        {
+          "leftId": "languages-country-coree",
+          "rightId": "languages-17-coreen"
+        },
+        {
+          "leftId": "languages-country-etats-unis",
+          "rightId": "languages-01-anglais"
+        },
+        {
+          "leftId": "languages-country-mexique",
+          "rightId": "languages-04-espagnol"
+        },
+        {
+          "leftId": "languages-country-cuba",
+          "rightId": "languages-04-espagnol"
+        },
+        {
+          "leftId": "languages-country-philippines",
+          "rightId": "languages-16-filipino"
+        },
+        {
+          "leftId": "languages-country-argentine",
+          "rightId": "languages-04-espagnol"
+        },
+        {
+          "leftId": "languages-country-russie",
+          "rightId": "languages-08-russe"
+        },
+        {
+          "leftId": "languages-country-suisse",
+          "rightId": "languages-06-francais"
+        },
+        {
+          "leftId": "languages-country-suisse",
+          "rightId": "languages-10-allemand"
+        },
+        {
+          "leftId": "languages-country-belgique",
+          "rightId": "languages-06-francais"
+        },
+        {
+          "leftId": "languages-country-grece",
+          "rightId": "languages-20-grec"
+        },
+        {
+          "leftId": "languages-country-turquie",
+          "rightId": "languages-12-turc"
+        },
+        {
+          "leftId": "languages-country-allemagne",
+          "rightId": "languages-10-allemand"
+        },
+        {
+          "leftId": "languages-country-cambodge",
+          "rightId": "languages-21-khmer"
+        },
+        {
+          "leftId": "languages-country-singapour",
+          "rightId": "languages-01-anglais"
+        },
+        {
+          "leftId": "languages-country-singapour",
+          "rightId": "languages-19-malais"
+        },
+        {
+          "leftId": "languages-country-singapour",
+          "rightId": "languages-02-chinois"
+        },
+        {
+          "leftId": "languages-country-singapour",
+          "rightId": "languages-13-tamoul"
+        },
+        {
+          "leftId": "languages-country-malaisie",
+          "rightId": "languages-19-malais"
+        },
+        {
+          "leftId": "languages-country-thailande",
+          "rightId": "languages-18-thai"
+        },
+        {
+          "leftId": "languages-country-angleterre",
+          "rightId": "languages-01-anglais"
+        },
+        {
+          "leftId": "languages-country-grande-bretagne",
+          "rightId": "languages-01-anglais"
+        },
+        {
+          "leftId": "languages-country-tunisie",
+          "rightId": "languages-05-arabe"
+        },
+        {
+          "leftId": "languages-country-maroc",
+          "rightId": "languages-05-arabe"
+        },
+        {
+          "leftId": "languages-country-algerie",
+          "rightId": "languages-05-arabe"
+        }
       ]
     }
   }

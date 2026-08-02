@@ -45,12 +45,22 @@ export const ATELIER_DIALOGUES: Record<string, DialogueLine[]> = {
   ],
 
   // Unité 2 — a short friendly email (aller, faire, avec, connectors, well wishes).
+  // 2026-08-02: extended to actually demonstrate all 5 well-wish formulas and
+  // all 6 connectors SIO-030 names (Salut Marie/friends-at-the-cinema kept
+  // from the original) — each connector and each formula gets its own line
+  // so it's individually flashcard-drillable, not buried inside a longer
+  // sentence.
   "SIO-030": [
     { who: "A", fr: "Salut Marie !", en: "Hi Marie!" },
     { who: "A", fr: "Merci pour ton message.", en: "Thanks for your message." },
+    { who: "A", fr: "D'abord, bon anniversaire pour vendredi !", en: "First, happy birthday for Friday!" },
+    { who: "A", fr: "Ensuite, bonne chance pour ton examen la semaine prochaine !", en: "Then, good luck for your exam next week!" },
+    { who: "A", fr: "Aussi, bon voyage pour tes vacances en juillet !", en: "Also, safe travels for your holiday in July!" },
+    { who: "A", fr: "Mais surtout, bonne année pour dans deux semaines !", en: "But most of all, happy new year, in two weeks!" },
+    { who: "A", fr: "Et bonne fête à toi aussi !", en: "And happy name day to you too!" },
     { who: "A", fr: "Ce week-end, je vais au cinéma avec des amis.", en: "This weekend I'm going to the cinema with friends." },
     { who: "A", fr: "Et toi, qu'est-ce que tu fais ?", en: "And you, what are you doing?" },
-    { who: "A", fr: "Bonne journée et à bientôt !", en: "Have a good day and see you soon!" },
+    { who: "A", fr: "Enfin, bonne journée et à bientôt !", en: "Finally, have a good day and see you soon!" },
     { who: "A", fr: "Léa", en: "Léa", say: "Léa" },
   ],
 
@@ -65,14 +75,29 @@ export const ATELIER_DIALOGUES: Record<string, DialogueLine[]> = {
   ],
 
   // Unité 4 — restaurant role-play (vouloir/voudrais, aliments, partitives, politeness).
+  // 2026-08-02: extended to actually hit all 6 competence steps (greet, read
+  // the menu, order entrée/plat/boisson/dessert, interact during the meal,
+  // ask for the bill, pay and say goodbye) — the original 7 lines only
+  // covered greeting + a café-style order, missing the menu, the bill, and
+  // paying/leaving entirely.
   "SIO-049": [
-    { who: "B", fr: "Bonjour ! Vous désirez ?", en: "Hello! What would you like?" },
-    { who: "A", fr: "Bonjour ! Je voudrais un café, s'il vous plaît.", en: "Hello! I'd like a coffee, please." },
-    { who: "B", fr: "Et pour manger ?", en: "And to eat?" },
-    { who: "A", fr: "Je voudrais un croissant et une pomme.", en: "I'd like a croissant and an apple." },
-    { who: "B", fr: "Très bien. Vous voulez de l'eau ?", en: "Very well. Would you like some water?" },
-    { who: "A", fr: "Oui, je veux bien. Merci !", en: "Yes, please. Thank you!" },
-    { who: "B", fr: "Voilà ! Bon appétit !", en: "Here you are! Enjoy your meal!" },
+    { who: "B", fr: "Bonjour ! Une table pour un ?", en: "Hello! A table for one?" },
+    { who: "A", fr: "Bonjour ! Oui, merci.", en: "Hello! Yes, thank you." },
+    { who: "B", fr: "Voici la carte.", en: "Here's the menu." },
+    { who: "A", fr: "Merci. Qu'est-ce que vous recommandez ?", en: "Thanks. What do you recommend?" },
+    { who: "B", fr: "Le poulet est excellent aujourd'hui.", en: "The chicken is excellent today." },
+    { who: "A", fr: "Alors, une salade en entrée, le poulet comme plat, et de l'eau, s'il vous plaît.", en: "Then, a salad to start, the chicken for my main, and water, please." },
+    { who: "B", fr: "Très bien. Et comme dessert ?", en: "Very well. And for dessert?" },
+    { who: "A", fr: "Une glace, s'il vous plaît.", en: "Ice cream, please." },
+    { who: "B", fr: "Voilà votre plat. Bon appétit !", en: "Here's your dish. Enjoy your meal!" },
+    { who: "A", fr: "Merci ! C'est délicieux.", en: "Thanks! It's delicious." },
+    { who: "B", fr: "Tout va bien ?", en: "Is everything alright?" },
+    { who: "A", fr: "Oui, très bien, merci.", en: "Yes, very well, thank you." },
+    { who: "A", fr: "L'addition, s'il vous plaît.", en: "The bill, please." },
+    { who: "B", fr: "Voici l'addition.", en: "Here's the bill." },
+    { who: "A", fr: "Je peux payer par carte ?", en: "Can I pay by card?" },
+    { who: "B", fr: "Bien sûr. Merci et au revoir !", en: "Of course. Thank you and goodbye!" },
+    { who: "A", fr: "Au revoir, bonne journée !", en: "Goodbye, have a good day!" },
   ],
 
   // Unité 4 — review a restaurant (aimer, c'est, adjectives, frequency, recommander).

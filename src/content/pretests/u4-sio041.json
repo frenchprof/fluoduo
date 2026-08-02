@@ -8,129 +8,127 @@
     {
       "id": "u4-sio041-01",
       "sentenceBefore": "Je prends ",
-      "sentenceAfter": " à sept heures.",
+      "sentenceAfter": " à sept heures du matin.",
       "answer": "le petit-déjeuner",
       "distractors": [
         "le déjeuner",
-        "la matinée",
+        "le goûter",
         "le dîner"
       ],
-      "fullSentence": "Je prends le petit-déjeuner à sept heures.",
-      "sentenceTrans": "I have breakfast at seven o'clock.",
+      "fullSentence": "Je prends le petit-déjeuner à sept heures du matin.",
+      "sentenceTrans": "I have breakfast at seven in the morning.",
       "whyWrong": {
-        "le déjeuner": "That means 'lunch', not breakfast.",
-        "la matinée": "That means 'the morning' (the time), not the meal.",
-        "le dîner": "That means 'dinner', not breakfast."
-      },
-      "transFirst": true
+        "le déjeuner": "That's lunch — seven in the morning is breakfast.",
+        "le goûter": "That's the afternoon snack, not the morning meal.",
+        "le dîner": "That's dinner — seven in the morning is breakfast."
+      }
     },
     {
       "id": "u4-sio041-02",
-      "sentenceBefore": "Pour le goûter, elle mange ",
+      "sentenceBefore": "À midi, on prend ",
       "sentenceAfter": ".",
-      "answer": "une pomme",
+      "answer": "le déjeuner",
       "distractors": [
-        "un pomme",
-        "la pomme",
-        "de la pomme"
+        "le petit-déjeuner",
+        "le goûter",
+        "le dîner"
       ],
-      "fullSentence": "Pour le goûter, elle mange une pomme.",
-      "sentenceTrans": "For her snack, she eats an apple.",
+      "fullSentence": "À midi, on prend le déjeuner.",
+      "sentenceTrans": "At noon, one has lunch.",
       "whyWrong": {
-        "un pomme": "pomme is feminine — une pomme, not un.",
-        "la pomme": "la means 'the' specific apple; to eat one apple you need une.",
-        "de la pomme": "That's partitive 'some apple'; a whole apple is counted with une."
+        "le petit-déjeuner": "That's breakfast, eaten in the morning, not at noon.",
+        "le goûter": "That's the afternoon snack, later than noon.",
+        "le dîner": "That's dinner, eaten in the evening, not at noon."
       }
     },
     {
       "id": "u4-sio041-03",
-      "sentenceBefore": "Il mange ",
-      "sentenceAfter": " et des tomates.",
-      "answer": "de la salade",
+      "sentenceBefore": "Vers seize heures, les enfants prennent ",
+      "sentenceAfter": ".",
+      "answer": "le goûter",
       "distractors": [
-        "du salade",
-        "la salade",
-        "de le salade"
+        "le petit-déjeuner",
+        "le déjeuner",
+        "le dîner"
       ],
-      "fullSentence": "Il mange de la salade et des tomates.",
-      "sentenceTrans": "He eats (some) salad and tomatoes.",
-      "transFirst": true,
+      "fullSentence": "Vers seize heures, les enfants prennent le goûter.",
+      "sentenceTrans": "Around four in the afternoon, children have their snack.",
       "whyWrong": {
-        "du salade": "salade is feminine — de la, not du.",
-        "la salade": "la means salad in general; here he eats 'some', so de la.",
-        "de le salade": "de + le never stays split — and salade is feminine anyway: de la."
+        "le petit-déjeuner": "That's the morning meal, not mid-afternoon.",
+        "le déjeuner": "That's the midday meal, earlier than four o'clock.",
+        "le dîner": "That's the evening meal, later than four o'clock."
       }
     },
     {
       "id": "u4-sio041-04",
-      "sentenceBefore": "Je bois ",
-      "sentenceAfter": " minérale.",
-      "answer": "de l'eau",
+      "sentenceBefore": "Le soir, la famille prend ",
+      "sentenceAfter": " ensemble.",
+      "answer": "le dîner",
       "distractors": [
-        "l'eau",
-        "du eau",
-        "de l'eaux"
+        "le petit-déjeuner",
+        "le déjeuner",
+        "le goûter"
       ],
-      "fullSentence": "Je bois de l'eau minérale.",
-      "sentenceTrans": "I drink (some) mineral water.",
+      "fullSentence": "Le soir, la famille prend le dîner ensemble.",
+      "sentenceTrans": "In the evening, the family has dinner together.",
       "whyWrong": {
-        "l'eau": "That's 'the water'; to drink some, use de l'.",
-        "du eau": "eau is feminine and starts with a vowel — it takes de l', not du.",
-        "de l'eaux": "eau is singular here — eaux is the plural."
+        "le petit-déjeuner": "That's the morning meal, not the evening.",
+        "le déjeuner": "That's the midday meal, not the evening.",
+        "le goûter": "That's the afternoon snack, not the evening meal."
       }
     },
     {
       "id": "u4-sio041-05",
-      "sentenceBefore": "En France, on mange ",
-      "sentenceAfter": " après le plat principal.",
-      "answer": "du fromage",
+      "sentenceBefore": "Au petit-déjeuner, je bois souvent ",
+      "sentenceAfter": ".",
+      "answer": "du café",
       "distractors": [
-        "de le fromage",
-        "de la fromage",
-        "des fromages"
+        "de la soupe",
+        "des frites",
+        "du poisson"
       ],
-      "fullSentence": "En France, on mange du fromage après le plat principal.",
-      "sentenceTrans": "In France, people eat cheese after the main course.",
+      "fullSentence": "Au petit-déjeuner, je bois souvent du café.",
+      "sentenceTrans": "At breakfast, I often drink coffee.",
       "whyWrong": {
-        "de le fromage": "de + le always contracts to du — 'de le' never exists in French.",
-        "de la fromage": "fromage is masculine — du, not de la.",
-        "des fromages": "des is plural 'cheeses'; the uncountable amount is du fromage."
+        "de la soupe": "Soup isn't a typical breakfast drink in France.",
+        "des frites": "Fries aren't a drink at all, and not a breakfast food.",
+        "du poisson": "Fish isn't a breakfast drink."
       }
     },
     {
       "id": "u4-sio041-06",
-      "sentenceBefore": "Les Français mangent beaucoup de ",
-      "sentenceAfter": ".",
-      "answer": "pain",
+      "sentenceBefore": "Pour le déjeuner, on mange souvent ",
+      "sentenceAfter": " avec des légumes.",
+      "answer": "du poulet",
       "distractors": [
-        "du pain",
-        "le pain",
-        "pains"
+        "un croissant",
+        "du café",
+        "de la farine"
       ],
-      "fullSentence": "Les Français mangent beaucoup de pain.",
-      "sentenceTrans": "The French eat a lot of bread.",
+      "fullSentence": "Pour le déjeuner, on mange souvent du poulet avec des légumes.",
+      "sentenceTrans": "For lunch, one often eats chicken with vegetables.",
       "whyWrong": {
-        "du pain": "After beaucoup you use plain de, so no du here.",
-        "le pain": "After beaucoup de you drop the article — beaucoup de pain.",
-        "pains": "'a lot of bread' here is mass — beaucoup de pain; beaucoup de pains would mean 'a lot of loaves'."
+        "un croissant": "That's a breakfast food, not a lunch main course.",
+        "du café": "That's a drink, not something eaten with vegetables.",
+        "de la farine": "Flour is a raw baking ingredient, not a lunch dish."
       }
     },
     {
       "id": "u4-sio041-07",
-      "sentenceBefore": "On va manger ",
-      "sentenceAfter": " ce soir.",
-      "answer": "des pâtes",
+      "sentenceBefore": "Pour le goûter, elle mange souvent ",
+      "sentenceAfter": ".",
+      "answer": "une pomme",
       "distractors": [
-        "de la pâte",
-        "les pâtes",
-        "du pâtes"
+        "du poisson",
+        "de la viande",
+        "des oignons"
       ],
-      "fullSentence": "On va manger des pâtes ce soir.",
-      "sentenceTrans": "We're going to eat pasta tonight.",
+      "fullSentence": "Pour le goûter, elle mange souvent une pomme.",
+      "sentenceTrans": "For her afternoon snack, she often eats an apple.",
       "whyWrong": {
-        "de la pâte": "la pâte (singular) means 'dough'; pasta is always plural, des pâtes.",
-        "les pâtes": "les means the pasta in general; to eat 'some', use des.",
-        "du pâtes": "du is masculine singular; pâtes is feminine plural — des pâtes."
+        "du poisson": "Fish is a meal food, not a typical afternoon snack.",
+        "de la viande": "Meat is a meal food, not a typical afternoon snack.",
+        "des oignons": "Onions are a cooking ingredient, not a snack."
       }
     }
   ]
