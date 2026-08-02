@@ -14,6 +14,7 @@ import { logEvent } from "@/lib/firebase/usage";
 import { speakCloud as speak, stopCloudVoice } from "@/lib/cloudVoice";
 import { sfx } from "@/games/audio/sfx";
 import { awardConversationXp } from "@/lib/progress";
+import { recordResponse } from "@/lib/firebase/responses";
 import { categoryHeaderClass, type ComposeBank } from "@/games/compose/banks";
 
 /** Join tapped chips into readable French (", " chips collapse into commas). */
@@ -101,7 +102,12 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
       }
       setFeedback({ reply: data.reply, done: data.done === true });
       speak(data.reply, lang, { gender: "m" });
-      if (data.done) { sfx.stage(); awardConversationXp(); void logEvent("game.end", { game: "compose-solo", collectionId: bank.id }); } else sfx.correct();
+      if (data.done) {
+        sfx.stage();
+        awardConversationXp();
+        recordResponse(bank.id, true, { activity: `compose-solo:${bank.id}` });
+        void logEvent("game.end", { game: "compose-solo", collectionId: bank.id });
+      } else sfx.correct();
     } catch {
       setUnavailable(true);
     } finally {

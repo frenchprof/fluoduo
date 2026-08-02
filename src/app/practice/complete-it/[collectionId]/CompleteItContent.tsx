@@ -120,7 +120,7 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
     const g = grade(value, answer);
     setResult(g);
     setScore((s) => ({ ok: s.ok + (g !== "wrong" ? 1 : 0), total: s.total + 1 }));
-    recordItemResult(item.id, g !== "wrong");
+    recordItemResult(item.id, g !== "wrong", undefined, `complete-it:${collectionId}`);
     if (g !== "wrong") sfx.correct(); else sfx.wrong();
     if (g !== "wrong") speak(answer, "fr-FR");
   }

@@ -33,8 +33,8 @@ export default function NativeLessonView({ slug, title, unit, embedded = false }
         <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]" lang="fr">{title}</h1>
         <StepLabel n={1} label="Recall the idea" />
         {lesson.memo}
-        <DiceTrainer config={lesson.dice} />
-        <BonusTrainer items={lesson.bonus} />
+        <DiceTrainer config={lesson.dice} activity={`lesson-dice:${slug}`} />
+        <BonusTrainer items={lesson.bonus} activity={`lesson-dice:${slug}`} />
       </div>
   );
   if (embedded) return body;
