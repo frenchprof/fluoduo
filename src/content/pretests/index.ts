@@ -33,14 +33,11 @@ import pu3_sio038 from "./u3-sio038.json";
 import pu3_sio039 from "./u3-sio039.json";
 import pu4_sio041 from "./u4-sio041.json";
 import pu4_sio042 from "./u4-sio042.json";
-import pu4_sio043 from "./u4-sio043.json";
-import pu4_sio044 from "./u4-sio044.json";
 import pu4_sio045 from "./u4-sio045.json";
 import pu4_sio046 from "./u4-sio046.json";
 import pu4_sio047 from "./u4-sio047.json";
 import pu4_sio047p from "./u4-sio047-plans.json";
 import pu4_sio048a from "./u4-sio048-advice.json";
-import pu4_sio045m from "./u4-sio045-marche.json";
 import pu4_sio045a from "./u4-sio045a-nombres.json";
 
 export const PRETESTS: Pretest[] = [
@@ -73,12 +70,9 @@ export const PRETESTS: Pretest[] = [
   pu3_sio039 as unknown as Pretest,
   pu4_sio041 as unknown as Pretest,
   pu4_sio042 as unknown as Pretest,
-  pu4_sio043 as unknown as Pretest,
-  pu4_sio044 as unknown as Pretest,
   pu4_sio045 as unknown as Pretest,
   pu4_sio046 as unknown as Pretest,
   pu4_sio047 as unknown as Pretest,
-  pu4_sio045m as unknown as Pretest,
   pu4_sio045a as unknown as Pretest,
   pu4_sio047p as unknown as Pretest,
   pu4_sio048a as unknown as Pretest,
@@ -147,13 +141,22 @@ const PRETEST_BY_SIO: Record<string, string> = {
   "SIO-038": "u3-sio038",
   "SIO-039": "u3-sio039",
   "SIO-041": "u4-sio041",
-  // Unit 4 re-cut (Dan, 2026-07-14): the merged SIO-042 keeps the partitive
-  // pretest (u4-sio043/044 stay in content, unmapped); renumbered SIOs keep
+  // Unit 4 re-cut (Dan, 2026-07-14): SIO-042 is a merge of three old slots
+  // (definite-vs-partitive, partitive-negation, manger/boire conjugation).
+  // 2026-08-02 follow-up: the orphaned negation content (u4-sio043,
+  // partitif-negatif) is now folded into u4-sio042/partitifs; the orphaned
+  // manger/boire content (u4-sio044, manger-boire deck) is retired —
+  // ConjugaZone (CONJ_BY_SIO["SIO-042"]) already covers that conjugation.
+  // Quantity-expression content (beaucoup de/trop de/…) is cleaned up into
+  // the `les-de` deck but deliberately left unattached to any SIO pending a
+  // placement decision. SIO-045 ("Market phrases") is retired the same way
+  // — merged into SIO-044 ("Commerces"), which now covers both; its number
+  // is a deliberate permanent gap, not renumbered forward, so nothing
+  // downstream (045A/046/047/048) shifts. Renumbered SIOs otherwise keep
   // their original pretests.
   "SIO-042": "u4-sio042",
   "SIO-043": "u4-sio045",
   "SIO-044": "u4-sio047",
-  "SIO-045": "u4-sio045-marche",
   "SIO-045A": "u4-sio045a-nombres",
   "SIO-046": "u4-sio046",
   "SIO-047": "u4-sio047-plans",

@@ -3,7 +3,7 @@
   "unit": 4,
   "lessonNo": 7,
   "lessonSlug": "commerces",
-  "title": "Commerces",
+  "title": "Commerces — et au marché",
   "items": [
     {
       "id": "u4-sio047-01",
@@ -166,6 +166,134 @@
         "un kilo de": "A whole kilo — the sentence asks for a slice: une tranche.",
         "une bouteille de": "Bottles are for liquids.",
         "un morceau de": "'A piece' — the deli word for sliced ham is une tranche."
+      }
+    },
+    {
+      "id": "u4-sio047-10",
+      "sentenceBefore": "Le client : « Je voudrais deux ",
+      "sentenceAfter": " de pommes de terre, s'il vous plaît. »",
+      "answer": "kilos",
+      "distractors": [
+        "tranches",
+        "bouteilles",
+        "litres"
+      ],
+      "fullSentence": "Je voudrais deux kilos de pommes de terre, s'il vous plaît.",
+      "sentenceTrans": "I'd like two kilos of potatoes, please.",
+      "whyWrong": {
+        "tranches": "A tranche is a slice — for ham or bread, not potatoes by weight.",
+        "bouteilles": "Bottles are for liquids, not potatoes.",
+        "litres": "Litres measure liquids — potatoes are sold by the kilo."
+      }
+    },
+    {
+      "id": "u4-sio047-11",
+      "sentenceBefore": "Le marchand : « Et avec ",
+      "sentenceAfter": " ? »",
+      "answer": "ceci",
+      "distractors": [
+        "celui",
+        "ceux",
+        "cet"
+      ],
+      "fullSentence": "Et avec ceci ?",
+      "sentenceTrans": "Anything else? (literally: and with this?)",
+      "transFirst": true,
+      "whyWrong": {
+        "celui": "celui needs a complement (celui-ci, celui de…) — the set phrase is « Et avec ceci ? »",
+        "ceux": "ceux is plural and needs a complement — the set phrase is « Et avec ceci ? »",
+        "cet": "cet is a determiner and must be followed by a noun — the set phrase is « Et avec ceci ? »"
+      }
+    },
+    {
+      "id": "u4-sio047-12",
+      "sentenceBefore": "Le client demande le total : « Ça fait ",
+      "sentenceAfter": " ? »",
+      "answer": "combien",
+      "distractors": [
+        "comment",
+        "quoi",
+        "combien de"
+      ],
+      "fullSentence": "Ça fait combien ?",
+      "sentenceTrans": "How much is it (all together)?",
+      "whyWrong": {
+        "comment": "Comment asks 'how', not 'how much'.",
+        "quoi": "Ça fait quoi ? asks 'what does that do?', not the price.",
+        "combien de": "Combien de needs a noun after it (combien de pommes ?)."
+      }
+    },
+    {
+      "id": "u4-sio047-13",
+      "sentenceBefore": "Le marchand répond : « Ça ",
+      "sentenceAfter": " 5,89 euros. »",
+      "answer": "fait",
+      "distractors": [
+        "est",
+        "a",
+        "va"
+      ],
+      "fullSentence": "Ça fait 5,89 euros.",
+      "sentenceTrans": "That comes to 5.89 euros.",
+      "whyWrong": {
+        "est": "You can say C'est 5,89 € — but Ça est is never correct; with ça the total is Ça fait.",
+        "a": "Ça a 5,89 euros would mean 'it has €5.89' — the total uses faire.",
+        "va": "Ça va means 'it's fine / how are you', not a price."
+      }
+    },
+    {
+      "id": "u4-sio047-14",
+      "sentenceBefore": "Le marchand rend l'argent : « Voici votre ",
+      "sentenceAfter": ". »",
+      "answer": "monnaie",
+      "distractors": [
+        "argent",
+        "prix",
+        "porte-monnaie"
+      ],
+      "fullSentence": "Voici votre monnaie.",
+      "sentenceTrans": "Here's your change.",
+      "whyWrong": {
+        "argent": "Argent is money in general — the coins you get back are la monnaie.",
+        "prix": "The prix is the price on the label, not what you get back.",
+        "porte-monnaie": "That's the purse the client keeps their coins in!"
+      }
+    },
+    {
+      "id": "u4-sio047-15",
+      "sentenceBefore": "Le client : « Vous ",
+      "sentenceAfter": " des fraises ? »",
+      "answer": "avez",
+      "distractors": [
+        "êtes",
+        "faites",
+        "allez"
+      ],
+      "fullSentence": "Vous avez des fraises ?",
+      "sentenceTrans": "Do you have any strawberries?",
+      "whyWrong": {
+        "êtes": "Vous êtes des fraises would mean 'you ARE strawberries'.",
+        "faites": "Vous faites = 'you make/do' — asking about stock uses avoir.",
+        "allez": "Vous allez = 'you go' — asking about stock uses avoir."
+      }
+    },
+    {
+      "id": "u4-sio047-16",
+      "sentenceBefore": "Le prix au poids : « C'est trois euros ",
+      "sentenceAfter": " kilo. »",
+      "answer": "le",
+      "distractors": [
+        "un",
+        "du",
+        "des"
+      ],
+      "fullSentence": "C'est trois euros le kilo.",
+      "sentenceTrans": "It's three euros a kilo.",
+      "transFirst": true,
+      "whyWrong": {
+        "un": "Price per unit uses the definite article in French — trois euros le kilo.",
+        "du": "The partitive doesn't fit here — the fixed price pattern is le + unit.",
+        "des": "kilo is singular here — trois euros le kilo."
       }
     }
   ]

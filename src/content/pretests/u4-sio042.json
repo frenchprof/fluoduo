@@ -3,7 +3,7 @@
   "unit": 4,
   "lessonNo": 2,
   "lessonSlug": "definite-vs-partitive",
-  "title": "Definite vs partitive",
+  "title": "Definite vs partitive, and pas de",
   "items": [
     {
       "id": "u4-sio042-01",
@@ -132,6 +132,60 @@
         "le": "le vin means wine in general; drinking 'some' takes du.",
         "de la": "vin is masculine — du, not de la.",
         "un": "un vin means 'a wine' (a glass or type); for an amount use du."
+      }
+    },
+    {
+      "id": "u4-sio042-08",
+      "sentenceBefore": "Elle ne mange pas ",
+      "sentenceAfter": " viande.",
+      "answer": "de",
+      "distractors": [
+        "de la",
+        "du",
+        "pas de la"
+      ],
+      "fullSentence": "Elle ne mange pas de viande.",
+      "sentenceTrans": "She doesn't eat meat.",
+      "whyWrong": {
+        "de la": "After a negative, the partitive de la becomes plain de.",
+        "du": "After a negative, du becomes de.",
+        "pas de la": "The 'pas' is already in the sentence; the blank is just de."
+      }
+    },
+    {
+      "id": "u4-sio042-09",
+      "sentenceBefore": "Il ne boit pas ",
+      "sentenceAfter": " eau — seulement du jus.",
+      "answer": "d'",
+      "distractors": [
+        "de",
+        "de l'",
+        "pas d'"
+      ],
+      "fullSentence": "Il ne boit pas d'eau — seulement du jus.",
+      "sentenceTrans": "He doesn't drink water — only juice.",
+      "whyWrong": {
+        "de": "Before a vowel, de elides to d'.",
+        "de l'": "After a negative the partitive drops to d', not de l'.",
+        "pas d'": "The 'pas' is already there; the blank is just d'."
+      }
+    },
+    {
+      "id": "u4-sio042-10",
+      "sentenceBefore": "— C'est du café ? — Non, ",
+      "sentenceAfter": " café — c'est du thé.",
+      "answer": "ce n'est pas du",
+      "distractors": [
+        "ce n'est pas de",
+        "il n'y a pas de",
+        "ce n'est pas de la"
+      ],
+      "fullSentence": "— C'est du café ? — Non, ce n'est pas du café — c'est du thé.",
+      "sentenceTrans": "— Is it coffee? — No, it's not coffee — it's tea.",
+      "whyWrong": {
+        "ce n'est pas de": "The pas → de rule applies to verbs like boire/manger/prendre — after être the partitive is retained: ce n'est pas du café.",
+        "il n'y a pas de": "That means 'there isn't any'; here we're saying 'it isn't coffee'.",
+        "ce n'est pas de la": "café is masculine — du, not de la."
       }
     }
   ]
