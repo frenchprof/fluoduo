@@ -222,10 +222,12 @@ export default function Lexicalator({
   // your mind). Releasing a MOVED drag outside the board now puts it back.
   const rootRef = useRef<HTMLDivElement | null>(null);
   const [ghost, setGhost] = useState<{ id: string; x: number; y: number } | null>(null);
-  // Which decoys cost lives — shown on the game-over screen (Dan,
-  // 2026-07-21: \"when the game dies, there should be feedback about what
-  // went wrong\").
-  const missTokens = useRef<string[]>([]);
+  // Which decoys cost lives — shown live below the trésor as they happen,
+  // not just on the game-over screen (Dan, 2026-07-21: "when the game dies,
+  // there should be feedback about what went wrong"; 2026-08-02: surface it
+  // during play too, not only at the post-mortem). State (not a ref) so the
+  // belt below re-renders each time.
+  const [mistakes, setMistakes] = useState<string[]>([]);
   useEffect(() => {
     const move = (e: PointerEvent) => {
       const d = dragRef.current;
@@ -515,7 +517,7 @@ export default function Lexicalator({
       setCombo(0);
     } else {
       // decoy — rattle, lose a life (and remember it for the post-mortem)
-      missTokens.current = [...missTokens.current.slice(-4), token];
+      setMistakes((m) => [...m, token]);
       sfx.wrong();
       setRattle(token);
       window.setTimeout(() => setRattle(null), 300);
@@ -531,7 +533,7 @@ export default function Lexicalator({
 
   function reset() {
     setLevel(1); setScore(0); setLives(START_LIVES); setCombo(0);
-    setOver(false); setDone([]); setFirstDone(false);
+    setOver(false); setDone([]); setFirstDone(false); setMistakes([]);
     // re-deal via the level effect (setLevel(1) won't refire if already 1)
     const shuffled = shuffle(entries.slice()).map((e) => gearEntry(1, e)); // level 1: whole words
     setQuota(Math.min(QUOTA, shuffled.length));
@@ -779,6 +781,34 @@ export default function Lexicalator({
         })()}
       </div>
 
+      {/* Vos erreurs — the wrong fragments (decoys) tapped so far, live below
+          the trésor (Dan, 2026-08-02: show what went wrong as it happens, not
+          only in the game-over post-mortem). Same grouped-chip treatment as
+          the trésor, in a red/rose palette to read as "mistake" not "win". */}
+      {mistakes.length > 0 && (
+        <div className="mt-2 flex min-h-[2.5rem] flex-wrap items-center gap-2">
+          <span className="mr-1 text-[0.7rem] font-black uppercase tracking-wider" style={{ color: "#c0392b" }}>❌ Vos erreurs :</span>
+          {(() => {
+            const grouped: { token: string; n: number }[] = [];
+            for (const t of mistakes) {
+              const g = grouped.find((x) => x.token === t);
+              if (g) g.n += 1; else grouped.push({ token: t, n: 1 });
+            }
+            return grouped.map((g) => (
+              <span
+                key={g.token}
+                lang="fr"
+                className="inline-flex items-center gap-1 rounded-full border-2 px-2.5 py-1 text-sm font-black"
+                style={{ borderColor: "#e0a5a5", background: "#fff1f0", color: "#9a3412" }}
+              >
+                {g.token}
+                {g.n > 1 && <span className="ml-0.5 rounded-full bg-[#c0392b] px-1.5 text-[11px] font-black text-white">×{g.n}</span>}
+              </span>
+            ));
+          })()}
+        </div>
+      )}
+
       {/* Level-done / out-of-lives: a POPUP in the middle of the screen, not a
           card below the fold (Dan, 2026-07-09). The level banner dismisses
           itself via the auto-advance effect; game over keeps its button. */}
@@ -804,11 +834,12 @@ export default function Lexicalator({
                 <p className="text-sm" style={{ color: "#075985" }}>Niveau {level} · score {score}</p>
                 {/* The post-mortem (Dan, 2026-07-21): SAY what went wrong.
                     Lives are only ever lost to decoys, so the answer is
-                    always: these fragments belonged to no word. */}
-                {missTokens.current.length > 0 && (
+                    always: these fragments belonged to no word. Same
+                    `mistakes` state as the live row below the trésor. */}
+                {mistakes.length > 0 && (
                   <p lang="fr" className="mt-2 text-sm" style={{ color: "#9a3412" }}>
                     Vos vies sont parties sur des <b>leurres</b> — des fragments qui n'appartiennent à aucun mot :{" "}
-                    {[...new Set(missTokens.current)].map((t) => `« ${t} »`).join(", ")}. Astuce : chaque touche utile appartient à un coffre visible !
+                    {[...new Set(mistakes)].slice(-5).map((t) => `« ${t} »`).join(", ")}. Astuce : chaque touche utile appartient à un coffre visible !
                   </p>
                 )}
                 <button type="button" onClick={reset}
