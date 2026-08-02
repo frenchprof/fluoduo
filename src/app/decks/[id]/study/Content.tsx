@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import AuthGate from "@/components/AuthGate";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { CURATED } from "@/content/collections";
 import { getCollection } from "@/lib/firebase/collections";
 import { displayEn, displayFr } from "@/lib/collections/display";
@@ -16,12 +17,15 @@ const DIR_KEY = "fluolingo.studyDir.v1";
 
 function StudyPageInner({ id }: { id: string }) {
   const [collection, setCollection] = useState<Collection | null | undefined>(undefined);
+  const router = useRouter();
 
   useEffect(() => {
     let cancelled = false;
-    const curated = CURATED.find((c) => c.id === id);
-    if (curated) {
-      setCollection(curated);
+    // Same redirect as DeckContent.tsx's browser (Dan, 2026-08-02 Decks→Flip
+    // It merge) — curated flashcards are a strict subset of Flip It's Cards
+    // view, which also has notes/SRS/audio this runner never had.
+    if (CURATED.some((c) => c.id === id)) {
+      router.replace(`/practice/flip-it/${id}`);
       return;
     }
     (async () => {
@@ -35,7 +39,7 @@ function StudyPageInner({ id }: { id: string }) {
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [id, router]);
 
   return (
     <CahierShell tabs={withActive(deckTabs(id), "study")} active="study" crumb="🎴 Flashcards">
