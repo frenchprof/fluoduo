@@ -56,13 +56,14 @@
     "po",
     "fru",
     "mor",
-    "ke",
     "mou",
     "nai",
     "drai",
     "dés",
     "la",
-    "mé"
+    "au",
+    "ro",
+    "pri"
    ]
   }
  },
@@ -373,13 +374,13 @@
   },
   {
    "id": "commerces-27",
-   "fr": "kilo",
-   "en": "kilo",
-   "emoji": "⚖️",
+   "fr": "euros",
+   "en": "euros",
+   "emoji": "💶",
    "tags": [],
    "syllables": [
-    "ki",
-    "lo"
+    "eu",
+    "ros"
    ]
   },
   {
@@ -436,13 +437,12 @@
   },
   {
    "id": "commerces-33",
-   "fr": "melon",
-   "en": "melon",
-   "emoji": "🍈",
+   "fr": "prix",
+   "en": "price",
+   "emoji": "🏷️",
    "tags": [],
    "syllables": [
-    "me",
-    "lon"
+    "prix"
    ]
   }
  ]
