@@ -2,9 +2,10 @@
  * The design-rationale page (Dan, 2026-07-05: users "should be aware of how
  * the app is conceived, why it works better than commercial apps"). DRAFT for
  * Dan to edit down to what he'd defend in a department meeting. Deliberately
- * OFF every learner path — linked from the Guide footer only. The honest
- * framing throughout: FluOlinGo does a different job than commercial apps,
- * not the same job better.
+ * OFF every learner path — reachable only from the site-wide footer's small
+ * "about" link (src/app/layout.tsx), not from any in-flow navigation. The
+ * honest framing throughout: FluOlinGo does a different job than commercial
+ * apps, not the same job better.
  */
 import Link from "next/link";
 import CahierShell from "@/components/CahierShell";
@@ -131,8 +132,6 @@ export default function AboutPage() {
         </section>
 
         <p className="mt-6 text-sm font-bold text-[color:var(--cahier-ink)]">
-          <Link href="/guide" className="underline">← Back to the Guide</Link>
-          {" · "}
           <Link href="/" className="underline">Commencez ici 🏠</Link>
         </p>
       </div>
