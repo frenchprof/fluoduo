@@ -22,6 +22,20 @@ export function displayFr(item: Item, collection: Collection): string {
   return /[.!?…]$/.test(capitalised) ? capitalised : capitalised + ".";
 }
 
+/** The prefix column's own word(s) as separate lowercase tokens — "il est "
+ *  → ["il","est"], "à l'" → ["à","l'"]. Empty when the item carries no col:
+ *  tag or its column has no prefix. Shares displayFr()'s column lookup so the
+ *  two never disagree about which prefix an item gets. */
+export function prefixTokens(item: Item, collection: Collection): string[] {
+  const cols = collection.gameConfig?.letris?.columns ?? [];
+  const colTag = item.tags.find((t) => t.startsWith("col:"));
+  if (!colTag) return [];
+  const key = colTag.slice("col:".length);
+  const col = cols.find((c) => c.key === key);
+  const p = col?.prefix?.trim().toLocaleLowerCase("fr-FR");
+  return p ? p.split(/\s+/) : [];
+}
+
 /** English gloss with the optional disambiguation note appended ("Mexico (country)"). */
 export function displayEn(item: { en: string; note?: string }): string {
   return item.note ? `${item.en} ${item.note}` : item.en;
