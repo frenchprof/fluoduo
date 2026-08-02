@@ -43,7 +43,11 @@ import lesDe from "./les-de.json";
 import frequence from "./frequence.json";
 import demonstratifs from "./demonstratifs.json";
 import commerces from "./commerces.json";
-import modaux from "./modaux.json";
+// Split 2026-08-02: SIO-047 (making plans) and SIO-048 (giving advice) had
+// distinct topics but shared one deck — pretests were already split
+// (u4-sio047-plans / u4-sio048-advice); the flashcard deck now matches.
+import modauxPlans from "./modaux-plans.json";
+import modauxAvis from "./modaux-avis.json";
 
 import sappeler from "./sappeler.json";
 import tuVous from "./tu-vous.json";
@@ -93,13 +97,14 @@ export const CURATED: Collection[] = [
   // pas de — take all the various de and make a LexicaLater out of it".
   // Trimmed 2026-08-02: the partitive/negation items this deck used to also
   // carry are now covered by `partitifs` (merged from partitif-negatif); this
-  // deck is quantity-only. Not yet attached to a SIO — flagged for a
-  // separate placement decision.
+  // deck is quantity-only. Attached 2026-08-02 as SIO-042A, a lettered
+  // extension of SIO-042 (same pattern as SIO-045A).
   lesDe as Collection,
   frequence as Collection,
   demonstratifs as Collection,
   commerces as Collection,
-  modaux as Collection,
+  modauxPlans as Collection,
+  modauxAvis as Collection,
   etreEtudiant as Collection,
   parceQue as Collection,
   vouloirInviter as Collection,

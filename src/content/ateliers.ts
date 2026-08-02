@@ -64,18 +64,8 @@ export const ATELIER_DIALOGUES: Record<string, DialogueLine[]> = {
     { who: "A", fr: "Tu peux aussi prendre le bus numéro cinq.", en: "You can also take bus number five." },
   ],
 
-  // Unité 4 — review a restaurant (aimer, c'est, adjectives, frequency, recommander).
-  "SIO-049": [
-    { who: "A", fr: "J'aime beaucoup ce restaurant.", en: "I really like this restaurant." },
-    { who: "A", fr: "C'est délicieux !", en: "It's delicious!" },
-    { who: "A", fr: "Le service est rapide.", en: "The service is fast." },
-    { who: "A", fr: "Ce n'est pas cher.", en: "It's not expensive." },
-    { who: "A", fr: "Parfois, le service est un peu lent.", en: "Sometimes the service is a bit slow." },
-    { who: "A", fr: "Mais je recommande ce restaurant !", en: "But I recommend this restaurant!" },
-  ],
-
   // Unité 4 — restaurant role-play (vouloir/voudrais, aliments, partitives, politeness).
-  "SIO-050": [
+  "SIO-049": [
     { who: "B", fr: "Bonjour ! Vous désirez ?", en: "Hello! What would you like?" },
     { who: "A", fr: "Bonjour ! Je voudrais un café, s'il vous plaît.", en: "Hello! I'd like a coffee, please." },
     { who: "B", fr: "Et pour manger ?", en: "And to eat?" },
@@ -83,6 +73,16 @@ export const ATELIER_DIALOGUES: Record<string, DialogueLine[]> = {
     { who: "B", fr: "Très bien. Vous voulez de l'eau ?", en: "Very well. Would you like some water?" },
     { who: "A", fr: "Oui, je veux bien. Merci !", en: "Yes, please. Thank you!" },
     { who: "B", fr: "Voilà ! Bon appétit !", en: "Here you are! Enjoy your meal!" },
+  ],
+
+  // Unité 4 — review a restaurant (aimer, c'est, adjectives, frequency, recommander).
+  "SIO-050": [
+    { who: "A", fr: "J'aime beaucoup ce restaurant.", en: "I really like this restaurant." },
+    { who: "A", fr: "C'est délicieux !", en: "It's delicious!" },
+    { who: "A", fr: "Le service est rapide.", en: "The service is fast." },
+    { who: "A", fr: "Ce n'est pas cher.", en: "It's not expensive." },
+    { who: "A", fr: "Parfois, le service est un peu lent.", en: "Sometimes the service is a bit slow." },
+    { who: "A", fr: "Mais je recommande ce restaurant !", en: "But I recommend this restaurant!" },
   ],
 };
 

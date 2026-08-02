@@ -1,42 +1,18 @@
 {
- "id": "modaux",
- "title": "aller · pouvoir · devoir · falloir",
- "subtitle": "+ infinitif",
+ "id": "modaux-avis",
+ "title": "devoir · falloir · pouvoir",
+ "subtitle": "donner des conseils",
  "langPair": "fr-en",
  "owner": "curated",
  "visibility": "public",
  "unit": 4,
  "lessonNo": 8,
- "lessonSlug": "modals",
+ "lessonSlug": "modaux",
  "tags": [],
- "seq": 409,
+ "seq": 410,
  "items": [
   {
-   "id": "modaux-01",
-   "fr": "Je vais faire du sport.",
-   "en": "I'm going to do sport.",
-   "tags": [],
-   "gap": "vais",
-   "lemma": "aller"
-  },
-  {
-   "id": "modaux-02",
-   "fr": "Elle va manger au restaurant.",
-   "en": "She's going to eat at the restaurant.",
-   "tags": [],
-   "gap": "va",
-   "lemma": "aller"
-  },
-  {
-   "id": "modaux-03",
-   "fr": "Nous allons visiter le marché.",
-   "en": "We're going to visit the market.",
-   "tags": [],
-   "gap": "allons",
-   "lemma": "aller"
-  },
-  {
-   "id": "modaux-04",
+   "id": "modaux-avis-01",
    "fr": "Elle peut cuisiner.",
    "en": "She can cook.",
    "tags": [],
@@ -44,7 +20,7 @@
    "lemma": "pouvoir"
   },
   {
-   "id": "modaux-05",
+   "id": "modaux-avis-02",
    "fr": "Tu peux goûter.",
    "en": "You can taste.",
    "tags": [],
@@ -52,7 +28,7 @@
    "lemma": "pouvoir"
   },
   {
-   "id": "modaux-06",
+   "id": "modaux-avis-03",
    "fr": "On peut acheter des fruits ici.",
    "en": "We can buy fruit here.",
    "tags": [],
@@ -60,7 +36,7 @@
    "lemma": "pouvoir"
   },
   {
-   "id": "modaux-07",
+   "id": "modaux-avis-04",
    "fr": "Tu dois manger des légumes.",
    "en": "You must eat vegetables.",
    "tags": [],
@@ -68,7 +44,7 @@
    "lemma": "devoir"
   },
   {
-   "id": "modaux-08",
+   "id": "modaux-avis-05",
    "fr": "Je dois boire de l'eau.",
    "en": "I must drink water.",
    "tags": [],
@@ -76,7 +52,7 @@
    "lemma": "devoir"
   },
   {
-   "id": "modaux-09",
+   "id": "modaux-avis-06",
    "fr": "Vous devez réserver une table.",
    "en": "You must book a table.",
    "tags": [],
@@ -84,7 +60,7 @@
    "lemma": "devoir"
   },
   {
-   "id": "modaux-10",
+   "id": "modaux-avis-07",
    "fr": "Il faut boire de l'eau.",
    "en": "One must drink water.",
    "tags": [],
@@ -92,7 +68,7 @@
    "lemma": "falloir"
   },
   {
-   "id": "modaux-11",
+   "id": "modaux-avis-08",
    "fr": "Il faut manger le matin.",
    "en": "One must eat in the morning.",
    "tags": [],
@@ -100,7 +76,7 @@
    "lemma": "falloir"
   },
   {
-   "id": "modaux-12",
+   "id": "modaux-avis-09",
    "fr": "Il faut acheter du pain.",
    "en": "One must buy bread.",
    "tags": [],

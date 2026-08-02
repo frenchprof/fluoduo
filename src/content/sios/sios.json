@@ -630,6 +630,21 @@
     "collectionId": "partitifs"
   },
   {
+    "id": "SIO-042A",
+    "num": 42.5,
+    "unit": 4,
+    "unitLabel": "Unité 4",
+    "topic": "Quantity expressions",
+    "description": "Say how much with beaucoup de, trop de, assez de, un peu de, and un kilo de + noun (no article change regardless of gender/number)",
+    "setId": "4.02A",
+    "cefrMode": "Spoken Production",
+    "skill": "production",
+    "isProduction": false,
+    "canDo": "I can say how much or how many of something there is.",
+    "competence": "Produce beaucoup de/trop de/assez de/un peu de/un kilo de + noun correctly in ≥5 prompts (≥80%).",
+    "collectionId": "les-de"
+  },
+  {
     "id": "SIO-043",
     "num": 43,
     "unit": 4,
@@ -702,7 +717,7 @@
     "isProduction": false,
     "canDo": "I can say what I am going to do.",
     "competence": "Produce ≥5 futur-proche sentences with correctly conjugated aller + infinitive.",
-    "collectionId": "modaux"
+    "collectionId": "modaux-plans"
   },
   {
     "id": "SIO-048",
@@ -717,21 +732,21 @@
     "isProduction": false,
     "canDo": "I can give simple advice about food, health and daily life.",
     "competence": "Give ≥5 pieces of advice using devoir/falloir/pouvoir + infinitive with correct forms.",
-    "collectionId": "modaux"
+    "collectionId": "modaux-avis"
   },
   {
     "id": "SIO-049",
     "num": 49,
     "unit": 4,
     "unitLabel": "Unité 4",
-    "topic": "Reviewing a restaurant",
-    "description": "Give a simple restaurant review with positive and negative points (C'est délicieux ! / Le service est lent. / C'est trop cher mais c'est bon. / Je recommande / Je ne recommande pas.)",
+    "topic": "Role-play: restaurant scene",
+    "description": "Role-play a complete restaurant interaction: greet the waiter, read the menu, order (entrée/plat/boisson/dessert), interact during the meal, ask for the bill, pay and say goodbye",
     "setId": "4.09",
-    "cefrMode": "Spoken Production",
-    "skill": "production",
+    "cefrMode": "Spoken Interaction",
+    "skill": "interaction",
     "isProduction": true,
-    "canDo": "I can give a simple opinion about a restaurant, mentioning good and bad points.",
-    "competence": "State ≥1 positive point, ≥1 negative point, and a clear recommendation (Je recommande / Je ne recommande pas).",
+    "canDo": "I can get by in a simple restaurant visit from arrival to paying, using set phrases, as long as staff are patient.",
+    "competence": "Complete all 6 steps: greet, read the menu, order (entrée/plat/boisson/dessert), interact, ask for the bill, pay and say goodbye.",
     "collectionId": "atelier-sio-049"
   },
   {
@@ -739,14 +754,14 @@
     "num": 50,
     "unit": 4,
     "unitLabel": "Unité 4",
-    "topic": "Role-play: restaurant scene",
-    "description": "Role-play a complete restaurant interaction: greet the waiter, read the menu, order (entrée/plat/boisson/dessert), interact during the meal, ask for the bill, pay and say goodbye",
+    "topic": "Reviewing a restaurant",
+    "description": "Give a simple restaurant review with positive and negative points (C'est délicieux ! / Le service est lent. / C'est trop cher mais c'est bon. / Je recommande / Je ne recommande pas.)",
     "setId": "4.10",
-    "cefrMode": "Spoken Interaction",
-    "skill": "interaction",
+    "cefrMode": "Spoken Production",
+    "skill": "production",
     "isProduction": true,
-    "canDo": "I can get by in a simple restaurant visit from arrival to paying, using set phrases, as long as staff are patient.",
-    "competence": "Complete all 6 steps: greet, read the menu, order (entrée/plat/boisson/dessert), interact, ask for the bill, pay and say goodbye.",
+    "canDo": "I can give a simple opinion about a restaurant, mentioning good and bad points.",
+    "competence": "State ≥1 positive point, ≥1 negative point, and a clear recommendation (Je recommande / Je ne recommande pas).",
     "collectionId": "atelier-sio-050"
   }
 ]

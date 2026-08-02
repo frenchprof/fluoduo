@@ -139,8 +139,10 @@ const UNIT_SITUATIONS: Record<number, { label: string; ids: string[] }[]> = {
   // merged; 43 = frequency; Situation 2 = commerces + the market dialogue;
   // Situation 3 = demonstratives + modaux + giving advice (Atelier appended
   // by groupSiosForUnit below).
+  // 042A (quantity expressions) added 2026-08-02 as a lettered extension of
+  // 042, same pattern as 045A — see docs on the les-de deck.
   4: [
-    { label: "Situation 1 — Parler de ses habitudes alimentaires", ids: ["SIO-041", "SIO-042", "SIO-043"] },
+    { label: "Situation 1 — Parler de ses habitudes alimentaires", ids: ["SIO-041", "SIO-042", "SIO-042A", "SIO-043"] },
     { label: "Situation 2 — Faire ses courses", ids: ["SIO-044", "SIO-045A"] },
     { label: "Situation 3 — Faire des projets", ids: ["SIO-046", "SIO-047", "SIO-048"] },
   ],

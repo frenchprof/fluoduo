@@ -369,7 +369,7 @@ const LES_COURSES = scenario(
   ],
 );
 
-/** Au restaurant — the SIO-049 review, generated. `y` refers to the opener. */
+/** Au restaurant — the SIO-050 review, generated. `y` refers to the opener. */
 const AU_RESTAURANT = scenario(
   "au-restaurant",
   (r) => ({

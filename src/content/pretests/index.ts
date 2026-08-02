@@ -148,8 +148,8 @@ const PRETEST_BY_SIO: Record<string, string> = {
   // manger/boire content (u4-sio044, manger-boire deck) is retired —
   // ConjugaZone (CONJ_BY_SIO["SIO-042"]) already covers that conjugation.
   // Quantity-expression content (beaucoup de/trop de/…) is cleaned up into
-  // the `les-de` deck but deliberately left unattached to any SIO pending a
-  // placement decision. SIO-045 ("Market phrases") is retired the same way
+  // the `les-de` deck, attached 2026-08-02 as SIO-042A (no pretest yet).
+  // SIO-045 ("Market phrases") is retired the same way
   // — merged into SIO-044 ("Commerces"), which now covers both; its number
   // is a deliberate permanent gap, not renumbered forward, so nothing
   // downstream (045A/046/047/048) shifts. Renumbered SIOs otherwise keep

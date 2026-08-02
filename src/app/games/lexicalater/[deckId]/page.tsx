@@ -4,7 +4,7 @@ import Lexicalator, { type LexEntry } from "@/games/lexicalator/Lexicalator";
 import AuthGate from "@/components/AuthGate";
 import { CURATED } from "@/content/collections";
 import { displayFr } from "@/lib/collections/display";
-import { isLexReady, lexBase } from "@/lib/collections/lexReady";
+import { isLexReady, lexBase, lexReadyItems } from "@/lib/collections/lexReady";
 
 export function generateStaticParams() {
   return CURATED.map((c) => ({ deckId: c.id }));
@@ -56,7 +56,10 @@ export default async function ConveyorPage({
     );
   }
 
-  const entries: LexEntry[] = collection.items.map((it) => {
+  // Only the syllabified subset plays — a deck can be lexReady with some
+  // items still unsegmented (Dan, 2026-08-02: Commerces' dialogue sentences
+  // aren't syllabified and never will be; the vocabulary items are).
+  const entries: LexEntry[] = lexReadyItems(collection).map((it) => {
     // Bare fragments never speak alone (Dan, 2026-07-08: « sciences » must be
     // heard as « Les sciences ») — completion TTS says the article/prefix form.
     const say = displayFr(it, collection);

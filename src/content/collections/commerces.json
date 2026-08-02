@@ -55,7 +55,14 @@
     "na",
     "po",
     "fru",
-    "mor"
+    "mor",
+    "ke",
+    "mou",
+    "nai",
+    "drai",
+    "dés",
+    "la",
+    "mé"
    ]
   }
  },
@@ -362,6 +369,80 @@
    "emoji": "🤲",
    "tags": [
     "col:marchand"
+   ]
+  },
+  {
+   "id": "commerces-27",
+   "fr": "kilo",
+   "en": "kilo",
+   "emoji": "⚖️",
+   "tags": [],
+   "syllables": [
+    "ki",
+    "lo"
+   ]
+  },
+  {
+   "id": "commerces-28",
+   "fr": "monnaie",
+   "en": "change (money)",
+   "emoji": "🪙",
+   "tags": [],
+   "syllables": [
+    "mon",
+    "naie"
+   ]
+  },
+  {
+   "id": "commerces-29",
+   "fr": "voudrais",
+   "en": "would like",
+   "tags": [],
+   "syllables": [
+    "vou",
+    "drais"
+   ]
+  },
+  {
+   "id": "commerces-30",
+   "fr": "désirez",
+   "en": "would like (formal, vous)",
+   "tags": [],
+   "syllables": [
+    "dé",
+    "si",
+    "rez"
+   ]
+  },
+  {
+   "id": "commerces-31",
+   "fr": "ceci",
+   "en": "this / this here",
+   "tags": [],
+   "syllables": [
+    "ce",
+    "ci"
+   ]
+  },
+  {
+   "id": "commerces-32",
+   "fr": "voilà",
+   "en": "here you are",
+   "tags": [],
+   "syllables": [
+    "voi",
+    "là"
+   ]
+  },
+  {
+   "id": "commerces-33",
+   "fr": "melon",
+   "en": "melon",
+   "emoji": "🍈",
+   "tags": [],
+   "syllables": [
+    "me",
+    "lon"
    ]
   }
  ]
