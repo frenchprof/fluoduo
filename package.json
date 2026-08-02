@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "check:textgen": "node scripts/check-textgen.mjs"
+    "check:textgen": "node scripts/check-textgen.mjs",
+    "build:font": "node scripts/font/export-glyphs.mjs && fontforge -script scripts/font/build_font.py && python3 scripts/font/to-woff2.py"
   },
   "dependencies": {
     "firebase": "^12.15.0",
