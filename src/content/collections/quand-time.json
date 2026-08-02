@@ -47,6 +47,7 @@
     {
       "id": "quand-time-01",
       "fr": "le lundi",
+      "alt": ["les lundis"],
       "en": "on Mondays",
       "tags": [
         "col:jour"
@@ -60,6 +61,7 @@
     {
       "id": "quand-time-02",
       "fr": "le week-end",
+      "alt": ["les week-ends"],
       "en": "on weekends",
       "tags": [
         "col:jour"
@@ -126,6 +128,7 @@
     {
       "id": "quand-time-07",
       "fr": "le mardi",
+      "alt": ["les mardis"],
       "en": "on Tuesdays",
       "syllables": [
         "le",
@@ -139,6 +142,7 @@
     {
       "id": "quand-time-08",
       "fr": "le samedi",
+      "alt": ["les samedis"],
       "en": "on Saturdays",
       "syllables": [
         "le",
