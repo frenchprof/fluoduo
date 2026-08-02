@@ -120,6 +120,54 @@
       "displayName": "achats",
       "category": "des",
       "meaning": "shopping"
+    },
+    {
+      "text": "FOOTBALL",
+      "displayName": "football",
+      "category": "du",
+      "meaning": "football / soccer"
+    },
+    {
+      "text": "BASKET",
+      "displayName": "basket",
+      "category": "du",
+      "meaning": "basketball"
+    },
+    {
+      "text": "SKI",
+      "displayName": "ski",
+      "category": "du",
+      "meaning": "skiing"
+    },
+    {
+      "text": "KARATÉ",
+      "displayName": "karaté",
+      "category": "du",
+      "meaning": "karate"
+    },
+    {
+      "text": "YOGA",
+      "displayName": "yoga",
+      "category": "du",
+      "meaning": "yoga"
+    },
+    {
+      "text": "BOXE",
+      "displayName": "boxe",
+      "category": "de_la",
+      "meaning": "boxing"
+    },
+    {
+      "text": "PEINTURE",
+      "displayName": "peinture",
+      "category": "de_la",
+      "meaning": "painting"
+    },
+    {
+      "text": "ESCRIME",
+      "displayName": "escrime",
+      "category": "de_l",
+      "meaning": "fencing"
     }
   ]
 }

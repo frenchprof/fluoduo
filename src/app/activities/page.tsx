@@ -21,6 +21,7 @@ import { CURATED } from "@/content/collections";
 import { UNIT_META } from "@/content/sios";
 import { lessonsForDeck } from "@/content/lessons";
 import { isLexReadyId } from "@/lib/collections/lexReady";
+import { isGramMarathonReady } from "@/lib/collections/gramMarathonReady";
 import { isSpecuLearnReady } from "@/lib/collections/speculearnReady";
 import { getLetrisSet } from "@/games/letris/sets";
 import { searchDecks } from "@/lib/search";
@@ -45,15 +46,17 @@ function cellsFor(c: Collection): Cell[] {
     { emoji: "🌧️", title: "VocabulaRain", href: getLetrisSet(c.id.replace("-letris", "")) ? `/games/vocabularain/${c.id.replace("-letris", "")}` : null },
     { emoji: "🧰", title: "LexicaLater", href: isLexReadyId(c.id) ? `/games/lexicalater/${c.id}` : null },
     { emoji: "🧩", title: "Compose It", href: composeBankForDeck(c.id) ? `/games/compose/${composeBankForDeck(c.id)!.id}` : null },
-    { emoji: "🏃", title: "GramMarathon", href: c.items?.some((it) => it.gap && it.fr?.includes(it.gap)) ? `/practice/grammarathon/${c.id}` : null },
+    { emoji: "🏃", title: "GramMarathon", href: isGramMarathonReady(c) ? `/practice/grammarathon/${c.id}` : null },
     { emoji: "🎙️", title: "WorDrill", href: `/practice/say-it/${c.id}` },
   ];
 }
 
-const HEAD = ["🧪", "🔮", "📚", "🃏", "🌧️", "🧰", "🧩", "🎙️"];
-const HEAD_TITLES = ["Pre-Test", "SpecuLearn", "Lesson", "Flip It", "Vocabularain", "LexicaLater", "Compose It", "WorDrill"];
+const HEAD = ["🧪", "🔮", "📚", "🃏", "🌧️", "🧰", "🧩", "🏃", "🎙️"];
+const HEAD_TITLES = ["Pre-Test", "SpecuLearn", "Lesson", "Flip It", "Vocabularain", "LexicaLater", "Compose It", "GramMarathon", "WorDrill"];
 /** Column chip colors — the same hue each activity's tile wears on the Guide
- *  page (Pre-Test gets the highlighter yellow). */
+ *  page (Pre-Test gets the highlighter yellow). Must stay in lockstep with
+ *  HEAD/HEAD_TITLES and cellsFor()'s own 9-cell order — a dropped entry
+ *  here silently shifts every column one slot off (2026-08-02 bug). */
 const HEAD_CHIPS: { bg: string; border: string }[] = [
   { bg: "var(--cahier-hl, #eaff00)", border: "#2a2e6e" },
   { bg: "#ece2fa", border: "#8a5fd4" },
@@ -63,6 +66,7 @@ const HEAD_CHIPS: { bg: string; border: string }[] = [
   { bg: "#fbe6cf", border: "#e8852e" },
   { bg: "#ecf7cf", border: "#7bbf2e" },
   { bg: "#fbeec4", border: "#e3a700" },
+  { bg: "#fbe6cf", border: "#e8852e" },
 ];
 
 export default function ActivitiesIndexPage() {

@@ -97,31 +97,33 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
     </Card>
   ),
 
-  /* ---------- Les commerces ---------- */
+  /* ---------- Les commerces — et au marché ---------- */
+  // Merged 2026-08-02: this deck's own key ("au-marche") never matched any
+  // curated deck id, so this second card never rendered anywhere — the deck
+  // is "commerces" and covers both shop types and the market exchange, so
+  // both cards live under that one key now.
   commerces: (
-    <Card title="Les commerces">
-      <PillRow
-        label="-erie = the shop of the maker (feminine)"
-        items={["la boulangerie", "la pâtisserie", "la boucherie", "l'épicerie", "la librairie"]}
-      />
-      <PillRow label={<span lang="fr">la famille marché</span>} items={["le marché", "le supermarché"]} />
-      <PillRow label={<span lang="fr">les autres</span>} items={["le café", "la banque", "la poste", "la pharmacie"]} />
-      <Warn><span lang="fr">la librairie</span> = bookshop, NOT library.</Warn>
-    </Card>
-  ),
-
-  /* ---------- Au marché — qui dit quoi ? ---------- */
-  "au-marche": (
-    <Card title="Au marché — qui dit quoi ?">
-      <Lines>
-        <li lang="fr">🧑‍🌾 Bonjour, vous désirez ?</li>
-        <li lang="fr">🧺 <B>Je voudrais</B> deux kilos de pommes de terre, s&rsquo;il vous plaît.</li>
-        <li lang="fr">🧑‍🌾 <B>Et avec ceci ?</B></li>
-        <li lang="fr">🧺 <B>C&rsquo;est tout</B>, merci ! <B>Ça fait combien ?</B></li>
-        <li lang="fr">🧑‍🌾 <B>Ça fait</B> 5,89 euros. … Voici votre monnaie !</li>
-      </Lines>
-      <Warn><span lang="fr">Ça fait combien ?</span> = the client asking · <span lang="fr">Ça fait 5,89 €</span> = the marchand answering.</Warn>
-    </Card>
+    <>
+      <Card title="Les commerces">
+        <PillRow
+          label="-erie = the shop of the maker (feminine)"
+          items={["la boulangerie", "la pâtisserie", "la boucherie", "l'épicerie", "la librairie"]}
+        />
+        <PillRow label={<span lang="fr">la famille marché</span>} items={["le marché", "le supermarché"]} />
+        <PillRow label={<span lang="fr">les autres</span>} items={["le café", "la banque", "la poste", "la pharmacie"]} />
+        <Warn><span lang="fr">la librairie</span> = bookshop, NOT library.</Warn>
+      </Card>
+      <Card title="Au marché — qui dit quoi ?">
+        <Lines>
+          <li lang="fr">🧑‍🌾 Bonjour, vous désirez ?</li>
+          <li lang="fr">🧺 <B>Je voudrais</B> deux kilos de pommes de terre, s&rsquo;il vous plaît.</li>
+          <li lang="fr">🧑‍🌾 <B>Et avec ceci ?</B></li>
+          <li lang="fr">🧺 <B>C&rsquo;est tout</B>, merci ! <B>Ça fait combien ?</B></li>
+          <li lang="fr">🧑‍🌾 <B>Ça fait</B> 5,89 euros. … Voici votre monnaie !</li>
+        </Lines>
+        <Warn><span lang="fr">Ça fait combien ?</span> = the client asking · <span lang="fr">Ça fait 5,89 €</span> = the marchand answering.</Warn>
+      </Card>
+    </>
   ),
 
   /* ---------- Tu ou vous ? ---------- */

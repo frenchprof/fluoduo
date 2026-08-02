@@ -120,6 +120,12 @@
       "displayName": "Singapour",
       "category": "a",
       "meaning": "Singapore (city-state)"
+    },
+    {
+      "text": "INDE",
+      "displayName": "Inde",
+      "category": "en",
+      "meaning": "India (f. country, vowel)"
     }
   ]
 }

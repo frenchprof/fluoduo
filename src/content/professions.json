@@ -115,6 +115,36 @@
       "displayName": "architecte",
       "category": "both",
       "meaning": "architect"
+    },
+    {
+      "text": "MÉDECIN",
+      "displayName": "médecin",
+      "category": "both",
+      "meaning": "doctor (m/f)"
+    },
+    {
+      "text": "SERVEUR",
+      "displayName": "serveur",
+      "category": "il",
+      "meaning": "waiter (m)"
+    },
+    {
+      "text": "SERVEUSE",
+      "displayName": "serveuse",
+      "category": "elle",
+      "meaning": "waitress (f)"
+    },
+    {
+      "text": "MUSICIEN",
+      "displayName": "musicien",
+      "category": "il",
+      "meaning": "musician (m)"
+    },
+    {
+      "text": "MUSICIENNE",
+      "displayName": "musicienne",
+      "category": "elle",
+      "meaning": "musician (f)"
     }
   ]
 }

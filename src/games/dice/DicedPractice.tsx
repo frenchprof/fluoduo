@@ -32,7 +32,7 @@ import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { CURATED } from "@/content/collections";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
-import { gappedItems } from "@/lib/collections/gramMarathonReady";
+import { gappedItems, gapSentence } from "@/lib/collections/gramMarathonReady";
 import type { Item } from "@/lib/collections/schema";
 import { gradeAnswer, gradeGap, splitGap } from "@/lib/practice/cloze";
 import { recordItemResult } from "@/lib/progress";
@@ -56,13 +56,19 @@ function shuffle<T>(a: T[]): T[] {
   return o;
 }
 
-// The cloze sentence for a gapped item: its `example` when present (so a deck
-// can keep `fr` as a short label for Flip It's grid while still drilling a full
-// gapped sentence here — Dan, 2026-07-06), else `fr` itself. Its English gloss
-// mirrors that: `exampleEn` when present — crucial for ⭐ Bonus, where "the
-// café" under-specifies "Je suis au café."
-const sentenceOf = (it: Item) => it.example ?? it.fr;
-const sentenceEnOf = (it: Item) => it.exampleEn ?? it.en;
+// The cloze sentence for a gapped item — whichever of `fr`/`example` actually
+// carries its gap (gapSentence, gramMarathonReady.ts: `fr` first, `example`
+// only as a fallback for decks that keep `fr` as a short label for Flip
+// It's grid — Dan, 2026-07-06). Falls back to `fr` for the gapless levels,
+// where this is only ever used for display, not gap-matching. Its English
+// gloss mirrors whichever sentence was actually used: `exampleEn` only when
+// `example` was — crucial for ⭐ Bonus, where "the café" under-specifies
+// "Je suis au café.", but pairing `exampleEn` with an `fr`-based sentence is
+// just as wrong the other way (2026-08-02 fix — see partitifs, whose
+// `example` is a separate contrastive sentence, not an alternate gap
+// carrier: "J'aime le pain." next to the gapped "Je mange du pain.").
+const sentenceOf = (it: Item) => gapSentence(it) ?? it.fr;
+const sentenceEnOf = (it: Item) => (gapSentence(it) === it.example ? (it.exampleEn ?? it.en) : it.en);
 
 function Blank() {
   return <span className="mx-1 inline-block min-w-[3ch] border-b-2 border-[color:var(--cahier-ink)] align-baseline">&nbsp;</span>;

@@ -310,11 +310,14 @@ const SHOP_BANK: ComposeBank = {
 };
 
 // ---------------------------------------------------------------------------
-// Chez les commerçants (AI shopkeeper across the SIO-044/045 shops — the
+// Chez les commerçants (AI shopkeeper across the SIO-044 shops — SIO-045
+// "Market phrases" was retired and merged into SIO-044/commerces — the
 // client/marchand dialogue Dan asked for on 4.5, 2026-07-15). The AI runs
 // whichever shop sells what the client asks for first, redirects them to
 // the right commerce when they ask the wrong one, and closes with the
-// total + change — the full « Et avec ceci ? » exchange.
+// total + change — the full « Et avec ceci ? » exchange. deckId points at
+// `commerces` (2026-08-02 fix — it used to point at the retired `au-marche`
+// deck id, making this bank unreachable from the deck's own activity rail).
 // ---------------------------------------------------------------------------
 
 const THEME_MARCHE: DialogueTheme = { edge: "#f0c0a4", strong: "#d96f3f", deep: "#a84f26", personaBg: "#fdf3ec", meBg: "#f8d9c6", ink: "#4a2210" };
@@ -324,7 +327,7 @@ const MARCHE_BANK: ComposeBank = {
   title: "Chez les commerçants",
   emoji: "🧺",
   unit: 4,
-  deckId: "au-marche",
+  deckId: "commerces",
   mode: "dialogue",
   scene: { opening: "Bonjour ! Vous désirez ?", emoji: "🧑‍🌾", voice: "m", aiOnly: true, theme: THEME_MARCHE, contextEn: "You're shopping at the market stall — ask for quantities and prices, then pay." },
   categories: withPalette([

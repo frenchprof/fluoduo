@@ -73,6 +73,78 @@
       "displayName": "clés",
       "category": "mes",
       "meaning": "keys (pl)"
+    },
+    {
+      "text": "PÈRE",
+      "displayName": "père",
+      "category": "mon",
+      "meaning": "father (m)"
+    },
+    {
+      "text": "MÈRE",
+      "displayName": "mère",
+      "category": "ma",
+      "meaning": "mother (f)"
+    },
+    {
+      "text": "FRÈRE",
+      "displayName": "frère",
+      "category": "mon",
+      "meaning": "brother (m)"
+    },
+    {
+      "text": "GRAND-PÈRE",
+      "displayName": "grand-père",
+      "category": "mon",
+      "meaning": "grandfather (m)"
+    },
+    {
+      "text": "GRAND-MÈRE",
+      "displayName": "grand-mère",
+      "category": "ma",
+      "meaning": "grandmother (f)"
+    },
+    {
+      "text": "GRANDS-PARENTS",
+      "displayName": "grands-parents",
+      "category": "mes",
+      "meaning": "grandparents (pl)"
+    },
+    {
+      "text": "ONCLE",
+      "displayName": "oncle",
+      "category": "mon",
+      "meaning": "uncle (m)"
+    },
+    {
+      "text": "TANTE",
+      "displayName": "tante",
+      "category": "ma",
+      "meaning": "aunt (f)"
+    },
+    {
+      "text": "COUSIN",
+      "displayName": "cousin",
+      "category": "mon",
+      "meaning": "cousin (m)"
+    },
+    {
+      "text": "COUSINE",
+      "displayName": "cousine",
+      "category": "ma",
+      "meaning": "cousin (f)"
+    },
+    {
+      "text": "FAMILLE",
+      "displayName": "famille",
+      "category": "ma",
+      "meaning": "family (f)"
+    },
+    {
+      "text": "ENFANTS",
+      "displayName": "enfants",
+      "category": "mes",
+      "meaning": "children (pl)"
     }
   ]
 }

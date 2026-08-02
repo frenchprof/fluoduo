@@ -72,14 +72,14 @@
    "fr": "J'ai envie d'un chocolat chaud.",
    "en": "I feel like a hot chocolate.",
    "tags": [],
-   "gap": "voudrais"
+   "gap": "envie d'"
   },
   {
    "id": "envies-besoins-10",
    "fr": "J'ai envie de dormir.",
    "en": "I feel like sleeping.",
    "tags": [],
-   "gap": "voudrais"
+   "gap": "envie de"
   }
  ]
 }

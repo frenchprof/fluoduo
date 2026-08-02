@@ -121,6 +121,24 @@
       "displayName": "mouchoirs",
       "category": "des",
       "meaning": "tissues"
+    },
+    {
+      "text": "ORDINATEUR",
+      "displayName": "ordinateur",
+      "category": "un",
+      "meaning": "computer"
+    },
+    {
+      "text": "AGRAFEUSE",
+      "displayName": "agrafeuse",
+      "category": "une",
+      "meaning": "stapler"
+    },
+    {
+      "text": "SOURIS",
+      "displayName": "souris",
+      "category": "une",
+      "meaning": "mouse"
     }
   ]
 }

@@ -25,6 +25,7 @@ import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { gradeGap, splitGap, type Grade } from "@/lib/practice/cloze";
 import { recordItemResult } from "@/lib/progress";
+import { gapSentence } from "@/lib/collections/gramMarathonReady";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
 
 function shuffle<T>(arr: T[]): T[] {
@@ -53,7 +54,7 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
   // idée !") sits the game out.
   useEffect(() => {
     if (!deck) return;
-    setOrder(shuffle(deck.items.map((it, idx) => (it.gap && it.fr.includes(it.gap) ? idx : -1)).filter((x) => x >= 0)));
+    setOrder(shuffle(deck.items.map((it, idx) => (gapSentence(it) ? idx : -1)).filter((x) => x >= 0)));
   }, [deck]);
 
   useEffect(() => {
@@ -68,7 +69,14 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
   const done = i >= total;
   const item = done ? null : deck.items[order[i]];
   const gap = item?.gap ?? "";
-  const { before, after } = item ? splitGap(item.fr, gap) : { before: "", after: "" };
+  // The sentence that actually carries this item's gap — `fr` for the
+  // common case, `example` for the handful of decks that keep `fr` as a
+  // short label (gapSentence, gramMarathonReady.ts). item is always drawn
+  // from `order`, which already filtered to items where this resolves.
+  const sentence = item ? gapSentence(item) ?? item.fr : "";
+  const usedExample = !!item && sentence === item.example;
+  const gloss = item ? (usedExample ? (item.exampleEn ?? item.en) : item.en) : "";
+  const { before, after } = item ? splitGap(sentence, gap) : { before: "", after: "" };
   const isRight = result === "perfect" || result === "good";
 
   function check() {
@@ -78,7 +86,7 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
     setScore((s) => ({ ok: s.ok + (g !== "wrong" ? 1 : 0), total: s.total + 1 }));
     recordItemResult(item.id, g !== "wrong", undefined, `grammarathon:${collectionId}`);
     if (g !== "wrong") sfx.correct(); else sfx.wrong();
-    if (g !== "wrong") speak(item.fr, "fr-FR");
+    if (g !== "wrong") speak(sentence, "fr-FR");
   }
 
   function next() {
@@ -89,7 +97,7 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
   }
 
   function restart() {
-    setOrder(shuffle(deck!.items.map((it, idx) => (it.gap && it.fr.includes(it.gap) ? idx : -1)).filter((x) => x >= 0)));
+    setOrder(shuffle(deck!.items.map((it, idx) => (gapSentence(it) ? idx : -1)).filter((x) => x >= 0)));
     setI(0); setValue(""); setResult(null); setScore({ ok: 0, total: 0 });
   }
 
@@ -112,7 +120,7 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
               </span>
               {after}
             </p>
-            <p className="mt-1 text-sm text-[color:var(--fluo-ink-soft)]">{item.en}</p>
+            <p className="mt-1 text-sm text-[color:var(--fluo-ink-soft)]">{gloss}</p>
 
             <form onSubmit={(e) => { e.preventDefault(); result === null ? check() : next(); }} className="mt-4">
               <input
@@ -132,9 +140,12 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
                   <div className={`mt-3 flex items-center gap-2 rounded-xl border-2 px-3 py-2 text-sm font-bold ${isRight ? "border-emerald-300 bg-emerald-50 text-emerald-700" : "border-rose-300 bg-rose-50 text-rose-700"}`}>
                     <span>{isRight ? (result === "good" ? "✅ Bien ! (accent différent)" : "✅ Parfait !") : "❌"}</span>
                     {result !== "perfect" && <span lang="fr" className="text-[color:var(--fluo-ink)]">→ {gap}</span>}
-                    <button type="button" onClick={() => speak(item.fr, "fr-FR")} className="ml-auto text-base opacity-70 hover:opacity-100" title="Hear it">🔊</button>
+                    <button type="button" onClick={() => speak(sentence, "fr-FR")} className="ml-auto text-base opacity-70 hover:opacity-100" title="Hear it">🔊</button>
                   </div>
-                  {item.example && (
+                  {/* Only genuinely extra context (partitifs' contrastive
+                      "J'aime le pain." next to the gapped "Je mange du
+                      pain.") — not a repeat of the sentence just drilled. */}
+                  {item.example && !usedExample && (
                     <p lang="fr" className="mt-2 text-sm italic text-[color:var(--fluo-ink-soft)]">{item.example}</p>
                   )}
                   <button ref={nextRef} type="submit" className="fluo-btn mt-3 w-full">{i + 1 >= total ? "Finish" : "Next →"}</button>

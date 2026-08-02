@@ -18,6 +18,7 @@ import type { CSSProperties, MouseEvent as ReactMouseEvent, ReactNode } from "re
 
 const PAGE_WIDTH_KEY = "fluolingo:pageWidth";
 import { isLexReadyId } from "@/lib/collections/lexReady";
+import { isGramMarathonReady } from "@/lib/collections/gramMarathonReady";
 import { isSpecuLearnReady } from "@/lib/collections/speculearnReady";
 import { hasMatching } from "@/lib/collections/loadCollections";
 import { CURATED } from "@/content/collections";
@@ -545,9 +546,10 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
       ? [{ key: "compose", label: "Compose It", emoji: "🧩", href: `/games/compose/${composeBank.id}`, hint: "build dialogues" } as ShellTab]
       : []),
     // Resurrected as a NAMED activity (Dan, 2026-07-22) — the per-deck typed
-    // sprint, distinct from the Final's authored bank. Only for decks whose
-    // items carry gaps, so the marathon is never empty.
-    ...(curatedDeck?.items?.some((it) => it.gap && it.fr?.includes(it.gap))
+    // sprint, distinct from the Final's authored bank. Only for decks with
+    // ≥4 valid gaps (isGramMarathonReady — single source of truth shared
+    // with the Index matrix and the game itself, gramMarathonReady.ts).
+    ...(isGramMarathonReady(curatedDeck)
       ? [{ key: "grammarathon", label: "GramMarathon", emoji: "🏃", href: `/practice/grammarathon/${collectionId}`, hint: "typed grammar sprint" } as ShellTab]
       : []),
     // né « Say It » — renamed WorDrill (Dan, 2026-07-19); key stays "say" so

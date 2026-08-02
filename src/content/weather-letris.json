@@ -4,35 +4,190 @@
   "subtitle": "Sort each weather expression into its starter clause",
   "language": "fr",
   "categories": [
-    { "key": "il_fait", "label": "IL FAIT", "prefix": "Il fait " },
-    { "key": "il_y_a",  "label": "IL Y A",  "prefix": "Il y a " },
-    { "key": "il",      "label": "IL",      "prefix": "Il " }
+    {
+      "key": "il_fait",
+      "label": "IL FAIT",
+      "prefix": "Il fait "
+    },
+    {
+      "key": "il_y_a",
+      "label": "IL Y A",
+      "prefix": "Il y a "
+    },
+    {
+      "key": "il",
+      "label": "IL",
+      "prefix": "Il "
+    }
   ],
   "tiles": [
-    { "text": "BEAU",                "category": "il_fait", "meaning": "The weather is nice.",                  "emoji": "🌤️" },
-    { "text": "MAUVAIS",             "category": "il_fait", "meaning": "The weather is bad.",                   "emoji": "☁️" },
-    { "text": "CHAUD",               "category": "il_fait", "meaning": "The weather is hot.",                   "emoji": "🥵" },
-    { "text": "FROID",               "category": "il_fait", "meaning": "The weather is cold.",                  "emoji": "🥶" },
-    { "text": "FRAIS",               "category": "il_fait", "meaning": "The weather is cool / chilly.",         "emoji": "🍃" },
-    { "text": "DOUX",                "category": "il_fait", "meaning": "The weather is mild.",                  "emoji": "🌸" },
-    { "text": "X DEGRÉS",            "category": "il_fait", "meaning": "The weather is X degrees.",             "emoji": "🌡️" },
-    { "text": "ENTRE X ET Y DEGRÉS", "category": "il_fait", "meaning": "The weather is between X and Y degrees.", "emoji": "🌡️" },
-
-    { "text": "DU SOLEIL",   "category": "il_y_a", "meaning": "There is sunshine.",     "emoji": "☀️" },
-    { "text": "DU VENT",     "category": "il_y_a", "meaning": "There is wind.",         "emoji": "💨" },
-    { "text": "DE LA PLUIE", "category": "il_y_a", "meaning": "There is rain.",         "emoji": "🌧️" },
-    { "text": "DES ORAGES",  "category": "il_y_a", "meaning": "There are storms.",      "emoji": "⛈️" },
-    { "text": "DE LA NEIGE", "category": "il_y_a", "meaning": "There is snow.",         "emoji": "❄️" },
-    { "text": "DES ÉCLAIRS", "category": "il_y_a", "meaning": "There is lightning.",    "emoji": "⚡" },
-    { "text": "DU TONNERRE", "category": "il_y_a", "meaning": "There is thunder.",      "emoji": "🌩️" },
-    { "text": "UNE TEMPÊTE", "category": "il_y_a", "meaning": "There is a storm.",      "emoji": "🌪️" },
-
-    { "text": "PLEUT",  "category": "il", "meaning": "It is raining.",      "emoji": "🌧️" },
-    { "text": "NEIGE",  "category": "il", "meaning": "It is snowing.",      "emoji": "❄️" },
-    { "text": "GÈLE",   "category": "il", "meaning": "It is freezing.",     "emoji": "🧊" },
-    { "text": "GRÊLE",  "category": "il", "meaning": "It is hailing.",      "emoji": "🌨️" },
-    { "text": "VENTE",  "category": "il", "meaning": "The wind is blowing.","emoji": "💨" },
-    { "text": "TONNE",  "category": "il", "meaning": "It is thundering.",   "emoji": "🌩️" },
-    { "text": "BRUINE", "category": "il", "meaning": "It is drizzling.",    "emoji": "🌦️" }
+    {
+      "text": "BEAU",
+      "displayName": "beau",
+      "category": "il_fait",
+      "meaning": "The weather is nice.",
+      "emoji": "🌤️"
+    },
+    {
+      "text": "MAUVAIS",
+      "displayName": "mauvais",
+      "category": "il_fait",
+      "meaning": "The weather is bad.",
+      "emoji": "☁️"
+    },
+    {
+      "text": "CHAUD",
+      "displayName": "chaud",
+      "category": "il_fait",
+      "meaning": "The weather is hot.",
+      "emoji": "🥵"
+    },
+    {
+      "text": "FROID",
+      "displayName": "froid",
+      "category": "il_fait",
+      "meaning": "The weather is cold.",
+      "emoji": "🥶"
+    },
+    {
+      "text": "FRAIS",
+      "displayName": "frais",
+      "category": "il_fait",
+      "meaning": "The weather is cool / chilly.",
+      "emoji": "🍃"
+    },
+    {
+      "text": "DOUX",
+      "displayName": "doux",
+      "category": "il_fait",
+      "meaning": "The weather is mild.",
+      "emoji": "🌸"
+    },
+    {
+      "text": "X DEGRÉS",
+      "displayName": "x degrés",
+      "category": "il_fait",
+      "meaning": "The weather is X degrees.",
+      "emoji": "🌡️"
+    },
+    {
+      "text": "ENTRE X ET Y DEGRÉS",
+      "displayName": "entre x et y degrés",
+      "category": "il_fait",
+      "meaning": "The weather is between X and Y degrees.",
+      "emoji": "🌡️"
+    },
+    {
+      "text": "DU SOLEIL",
+      "displayName": "du soleil",
+      "category": "il_y_a",
+      "meaning": "There is sunshine.",
+      "emoji": "☀️"
+    },
+    {
+      "text": "DU VENT",
+      "displayName": "du vent",
+      "category": "il_y_a",
+      "meaning": "There is wind.",
+      "emoji": "💨"
+    },
+    {
+      "text": "DE LA PLUIE",
+      "displayName": "de la pluie",
+      "category": "il_y_a",
+      "meaning": "There is rain.",
+      "emoji": "🌧️"
+    },
+    {
+      "text": "DES ORAGES",
+      "displayName": "des orages",
+      "category": "il_y_a",
+      "meaning": "There are storms.",
+      "emoji": "⛈️"
+    },
+    {
+      "text": "DE LA NEIGE",
+      "displayName": "de la neige",
+      "category": "il_y_a",
+      "meaning": "There is snow.",
+      "emoji": "❄️"
+    },
+    {
+      "text": "DES ÉCLAIRS",
+      "displayName": "des éclairs",
+      "category": "il_y_a",
+      "meaning": "There is lightning.",
+      "emoji": "⚡"
+    },
+    {
+      "text": "DU TONNERRE",
+      "displayName": "du tonnerre",
+      "category": "il_y_a",
+      "meaning": "There is thunder.",
+      "emoji": "🌩️"
+    },
+    {
+      "text": "UNE TEMPÊTE",
+      "displayName": "une tempête",
+      "category": "il_y_a",
+      "meaning": "There is a storm.",
+      "emoji": "🌪️"
+    },
+    {
+      "text": "PLEUT",
+      "displayName": "pleut",
+      "category": "il",
+      "meaning": "It is raining.",
+      "emoji": "🌧️"
+    },
+    {
+      "text": "NEIGE",
+      "displayName": "neige",
+      "category": "il",
+      "meaning": "It is snowing.",
+      "emoji": "❄️"
+    },
+    {
+      "text": "GÈLE",
+      "displayName": "gèle",
+      "category": "il",
+      "meaning": "It is freezing.",
+      "emoji": "🧊"
+    },
+    {
+      "text": "GRÊLE",
+      "displayName": "grêle",
+      "category": "il",
+      "meaning": "It is hailing.",
+      "emoji": "🌨️"
+    },
+    {
+      "text": "VENTE",
+      "displayName": "vente",
+      "category": "il",
+      "meaning": "The wind is blowing.",
+      "emoji": "💨"
+    },
+    {
+      "text": "TONNE",
+      "displayName": "tonne",
+      "category": "il",
+      "meaning": "It is thundering.",
+      "emoji": "🌩️"
+    },
+    {
+      "text": "BRUINE",
+      "displayName": "bruine",
+      "category": "il",
+      "meaning": "It is drizzling.",
+      "emoji": "🌦️"
+    },
+    {
+      "text": "DU BROUILLARD",
+      "displayName": "du brouillard",
+      "category": "il_y_a",
+      "meaning": "There is fog.",
+      "emoji": "🌫️"
+    }
   ]
 }
