@@ -67,7 +67,7 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
     const g = gradeGap(value, gap);
     setResult(g);
     setScore((s) => ({ ok: s.ok + (g !== "wrong" ? 1 : 0), total: s.total + 1 }));
-    recordItemResult(item.id, g !== "wrong");
+    recordItemResult(item.id, g !== "wrong", undefined, `grammarathon:${collectionId}`);
     if (g !== "wrong") sfx.correct(); else sfx.wrong();
     if (g !== "wrong") speak(item.fr, "fr-FR");
   }

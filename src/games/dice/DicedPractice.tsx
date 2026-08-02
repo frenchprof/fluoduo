@@ -128,7 +128,7 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
     setResult({ ok, user });
     setAttempts((a) => [...a, { q: qText, user, correct: sentenceOf(item), ok }]);
     setStreak((s) => (ok ? s + 1 : 0));
-    recordItemResult(item.id, ok);
+    recordItemResult(item.id, ok, undefined, `dice-practice:${collectionId}`);
     if (ok) sfx.correct(); else sfx.wrong();
     speak(sentenceOf(item), "fr-FR");
   }

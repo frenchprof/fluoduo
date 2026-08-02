@@ -154,7 +154,7 @@ function PracticeRunner({ set }: { set: PracticeSet }) {
     }
     // Every attempt writes spacing state: a first-try miss resets the ladder,
     // a correct review-round repair steps back to the 1-day rung.
-    recordItemResult(item.id, correct);
+    recordItemResult(item.id, correct, undefined, `dice:${set.collectionId}`);
   }
 
   function next() {

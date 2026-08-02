@@ -1234,7 +1234,12 @@ function TestRow({
   const myArt = vals["art"] && vals["art"] !== "__unset__" ? vals["art"] : "";
   const mergedMine = frFull(myArt, vals["fr"] ?? "");
 
-  function check() { setPhase("checked"); if (allRight) onBucket(row.item.id, "reviewed"); }
+  function check() {
+    setPhase("checked");
+    recordItemResult(row.item.id, allRight);
+    void logEvent("flashcard.review", { itemId: row.item.id, rating: allRight ? "good" : "again" });
+    if (allRight) onBucket(row.item.id, "reviewed");
+  }
   function reveal() { setPhase("revealed"); }
   function retry() { setPhase("idle"); setVals({}); }
   const onKey = (e: React.KeyboardEvent) => { if (e.key === "Enter") { e.preventDefault(); check(); } };

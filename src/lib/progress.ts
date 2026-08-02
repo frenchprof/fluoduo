@@ -295,8 +295,14 @@ export function stepItemSrs(prev: ItemSrs | undefined, correct: boolean, now: nu
  * (never during render — Date.now()). Every attempt writes: a miss resets the
  * ladder, so correct-after-retry lands back at the 1-day rung — that IS the
  * intended "repaired but fragile" signal, don't gate this to first attempts.
+ *
+ * `activity` overrides the evidence record's activityId (otherwise it falls
+ * back to `location.pathname` — see responses.ts). Pass it explicitly for any
+ * game that can render embedded inside SioModal's tab-switcher, since that
+ * never navigates and would otherwise tag every embedded game's writes with
+ * whatever host page happened to be open (audit 2026-08-02).
  */
-export function recordItemResult(itemId: string, correct: boolean, given?: string): Progress {
+export function recordItemResult(itemId: string, correct: boolean, given?: string, activity?: string): Progress {
   const prev = loadProgress();
   const itemSrs = { ...prev.itemSrs, [itemId]: stepItemSrs(prev.itemSrs[itemId], correct, Date.now()) };
   // Practising ANYTHING keeps the streak alive — motivation comes from showing
@@ -312,7 +318,7 @@ export function recordItemResult(itemId: string, correct: boolean, given?: strin
   // rule); fire-and-forget, signed-out is a no-op.
   const paid = Math.round((correct ? XP_CORRECT : XP_WRONG) * xpMultiplier(p.streak));
   void import("@/lib/firebase/responses")
-    .then((m) => m.recordResponse(itemId, correct, { given, xpPaid: paid }))
+    .then((m) => m.recordResponse(itemId, correct, { given, xpPaid: paid, activity }))
     .catch(() => {});
   return finalize(addXp(p, correct ? XP_CORRECT : XP_WRONG));
 }

@@ -16,6 +16,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { logEvent } from "@/lib/firebase/usage";
+import { recordResponse } from "@/lib/firebase/responses";
 import { speak } from "@/games/letris/speech";
 import { chiptune } from "@/games/audio/chiptune";
 import { sfx } from "@/games/audio/sfx";
@@ -184,6 +185,7 @@ export default function NumBourse() {
   function miss() {
     if (!order || resolvedRef.current) return;
     resolvedRef.current = true;
+    recordResponse(order.words, false, { activity: "numbourse" });
     sfx.wrong();
     setCombo(0);
     missedRef.current = [...missedRef.current.slice(-4), order];
@@ -209,6 +211,7 @@ export default function NumBourse() {
       return;
     }
     resolvedRef.current = true;
+    recordResponse(order.words, true, { activity: "numbourse" });
     sfx.correct();
     setScore((s) => s + 10 + Math.min(combo, 5) * 2);
     setCombo((c) => c + 1);

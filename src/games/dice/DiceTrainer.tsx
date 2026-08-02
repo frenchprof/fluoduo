@@ -13,6 +13,7 @@
 import { useState } from "react";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
+import { recordItemResult } from "@/lib/progress";
 
 function StepLabel({ label }: { label: string }) {
   // UN-numbered on purpose: this widget lives inside LessonFlow, whose
@@ -92,7 +93,7 @@ export function Summary({ title, attempts, onClose }: { title: string; attempts:
   );
 }
 
-export default function DiceTrainer({ config }: { config: DiceConfig }) {
+export default function DiceTrainer({ config, activity }: { config: DiceConfig; activity?: string }) {
   const [diff, setDiff] = useState(0);
   const [q, setQ] = useState<DiceQuestion | null>(null);
   const [easyOpts, setEasyOpts] = useState<string[]>([]);
@@ -116,6 +117,7 @@ export default function DiceTrainer({ config }: { config: DiceConfig }) {
     setResult({ ok, user });
     setAttempts((a) => [...a, { q: q.big, user, correct: q.correct, ok }]);
     setStreak((s) => (ok ? s + 1 : 0));
+    recordItemResult(q.correct, ok, user, activity);
     if (ok) sfx.correct(); else sfx.wrong();
     speak(q.correct, "fr-FR");
   }
@@ -227,7 +229,7 @@ export default function DiceTrainer({ config }: { config: DiceConfig }) {
 }
 
 /** EN→FR type-in bonus — the drchan lessons' ⭐ tab, as a compact card. */
-export function BonusTrainer({ items }: { items: { en: string; fr: string; alt?: string[] }[] }) {
+export function BonusTrainer({ items, activity }: { items: { en: string; fr: string; alt?: string[] }[]; activity?: string }) {
   const [cur, setCur] = useState<{ en: string; fr: string; alt?: string[] } | null>(null);
   const [typed, setTyped] = useState("");
   const [result, setResult] = useState<null | boolean>(null);
@@ -243,6 +245,7 @@ export function BonusTrainer({ items }: { items: { en: string; fr: string; alt?:
     const ok = [cur.fr, ...(cur.alt ?? [])].some((a) => norm(typed) === norm(a));
     setResult(ok);
     setAttempts((a) => [...a, { q: cur.en, user: typed, correct: cur.fr, ok }]);
+    recordItemResult(cur.fr, ok, typed, activity);
     if (ok) sfx.correct(); else sfx.wrong();
     speak(cur.fr, "fr-FR");
   }

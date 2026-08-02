@@ -295,7 +295,7 @@ export default function SayItContent({
         // Feed the Reviser: a miss (or a partial "close") resurfaces the word;
         // a clean say advances its spacing ladder. Say It items are curated deck
         // items, so their ids line up with the Reviser's review queue.
-        if (c.id) recordItemResult(c.id, ok, t);
+        if (c.id) recordItemResult(c.id, ok, t, `say-it:${collectionId}`);
         return t;
       });
     };
@@ -307,7 +307,7 @@ export default function SayItContent({
         sfx.wrong();
         setResult({ grade: "miss", recognized: "(rien entendu)" });
         setScore((s) => ({ ...s, total: s.total + 1 }));
-        if (c.id) recordItemResult(c.id, false, "(rien entendu)");
+        if (c.id) recordItemResult(c.id, false, "(rien entendu)", `say-it:${collectionId}`);
       } else if (e.error === "not-allowed") {
         setPhase("idle");
         alert("Veuillez autoriser l'accès au microphone dans votre navigateur.");

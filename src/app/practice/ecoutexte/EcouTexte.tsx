@@ -24,6 +24,7 @@ import { fingerprint, generateUnheard } from "@/lib/textgen/engine";
 import { clearHeard, loadHeard, saveHeard } from "@/lib/textgen/heard";
 import { MAX_SENTENCES, type MiniText, type UnitTextGen } from "@/lib/textgen/types";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
+import { recordItemResult } from "@/lib/progress";
 
 const SLOW_RATE = 0.6;
 /** A beat between sentences long enough to hear the sentence boundary. */
@@ -160,15 +161,21 @@ export default function EcouTexte({ gen, accent }: { gen: UnitTextGen; accent: s
   }
 
   /** Mark one sentence word by word. An unwritten box stays unmarked rather
-   *  than counting as wrong — a blank left alone is not an attempt. */
+   *  than counting as wrong — a blank left alone is not an attempt. Every
+   *  graded word also feeds the evidence trail, tagged per-unit so it's
+   *  distinguishable from every other embedded activity. */
   function check(i: number) {
     if (!text) return;
     const expect = words(text.sentences[i].fr);
-    setMarks((m) =>
-      m.map((row, k) =>
-        k === i ? row.map((v, l) => (written[i]?.[l]?.trim() ? gradeAnswer(written[i][l], expect[l].core) : v)) : row,
-      ),
-    );
+    const activity = `ecoutexte:unite-${gen.unit}`;
+    const row = (marks[i] ?? []).map((v, l) => {
+      const typed = written[i]?.[l]?.trim();
+      if (!typed) return v;
+      const g = gradeAnswer(written[i][l], expect[l].core);
+      recordItemResult(expect[l].core, g !== "wrong", written[i][l], activity);
+      return g;
+    });
+    setMarks((m) => m.map((r, k) => (k === i ? row : r)));
   }
 
   function resetHeard() {
