@@ -123,6 +123,12 @@ const COLOR_LIVERIES: Record<string, ChestTint> = {
   blanc:  { body: "linear-gradient(180deg,#ffffff,#e8e8e8)", lid: "linear-gradient(180deg,#cfcfcf,#b0b0b0)", edge: "#8f8f8f" },
   gris:   { body: "linear-gradient(180deg,#e0e0e0,#9e9e9e)", lid: "linear-gradient(180deg,#7d7d7d,#5f5f5f)", edge: "#4a4a4a" },
   marron: { body: "linear-gradient(180deg,#e0c3a3,#8d5a2b)", lid: "linear-gradient(180deg,#6e4521,#523318)", edge: "#402713" },
+  // Missing until now (2026-08-02 bug report): colors.json's 12th color had
+  // no livery entry, so a "beige" chest fell through to the arbitrary
+  // CHEST_TINTS rotation even at levels 0-1, where every color word is
+  // supposed to get its own truthful livery — a beige chest could render as
+  // any of the 5 rotating tints, including green.
+  beige:  { body: "linear-gradient(180deg,#f0e6d2,#d4c19c)", lid: "linear-gradient(180deg,#b8a274,#8f7a52)", edge: "#6b5a3a" },
 };
 const LIVERY_COLOR_WORDS = Object.keys(COLOR_LIVERIES);
 /** Livery for a chest: its word's own colour at levels 0–1 on colour decks;
