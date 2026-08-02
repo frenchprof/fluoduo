@@ -6,11 +6,14 @@
  * (id + topic + close) + a body slot; callers decide what goes in the body
  * (pretest questions, statement, MarkDone…).
  *
- * Activity modes (Flip It / Say It / Complete It / Lexicalator /
- * Vocabularain) ride on FLAP TABS — the same pastel index-tab look as the
+ * Activity modes ride on FLAP TABS — the same pastel index-tab look as the
  * home page's Unité flaps — poking off the popup's right edge on wide
  * screens, or as a flap row under the header on narrow ones. They are
- * navigation, not body content (Dan: minimalist body).
+ * navigation, not body content (Dan: minimalist body). The tab list is
+ * deckActivityTabs() (CahierShell.tsx) — current names there: Say It is
+ * user-facing "WorDrill" (renamed 2026-07-19); Complete It has no flap of
+ * its own, it's the Pratique step's ★★ Intermédiaire on a gapless deck;
+ * GramMarathon has its own flap but only on decks with gap-authored items.
  */
 import Link from "next/link";
 import dynamic from "next/dynamic";

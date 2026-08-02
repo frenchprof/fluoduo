@@ -512,8 +512,12 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     }) as ShellTab),
     // Canonical app order (Dan, 2026-07-19): SpecuLearn-PreTest → Lesson +
     // Flip-It (the core of each SIO) → … → Composer. EVERY deck has a Lesson
-    // since the unification (Lire → Débutant → Intermédiaire → Difficile
-    // absorbed Complete It / dice / GramMarathon).
+    // since the unification folded Complete It and DicedPractice's own
+    // sub-drills into one "Pratique" step (Lire → Pratique → Générateur) —
+    // Complete It has no flap of its own now, it's just Pratique's ★★
+    // Intermédiaire level on a gapless deck. GramMarathon was NOT absorbed:
+    // it kept (and later regained, 2026-07-22) its own flap below, gated to
+    // decks with gap-authored items.
     {
       key: "lesson",
       label: "Lesson",
