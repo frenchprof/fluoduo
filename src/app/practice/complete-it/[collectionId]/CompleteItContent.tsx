@@ -5,6 +5,11 @@
  * For article decks (countries): graded against the full "article + noun" phrase.
  * For nationality decks: each country expands into 4 sub-questions (il est / elle
  * est / ils sont / elles sont) so all adjective forms are drilled.
+ *
+ * No flap/tab of its own in the current UI (folded into the Lesson unification,
+ * Dan 2026-07-05) — reached only as DicedPractice's ★★ Intermédiaire level on a
+ * gapless deck (see DicedPractice.tsx). The route/component still exist and are
+ * embeddable directly (SioModal's "complete" key), just not linked anywhere.
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";

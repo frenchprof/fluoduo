@@ -33,9 +33,11 @@ function cellsFor(c: Collection): Cell[] {
   const lessons = lessonsForDeck(c.id);
   return [
     // Canonical app order (Dan, 2026-07-19): SpecuLearn-PreTest → Lesson +
-    // Flip-It → VocabulaRain → Lexicalator → Composer — WorDrill (né Say It)
-    // trails. The Lesson runs Lire → Débutant → Intermédiaire → Difficile
-    // since the unification (absorbing Complete It / dice / GramMarathon).
+    // Flip-It → VocabulaRain → LexicaLater → Composer — WorDrill (né Say It)
+    // trails. The Lesson runs Lire → Pratique (★ Facile → ★★ Intermédiaire →
+    // ★★★ Difficile → ⭐ Bonus) → Générateur; Complete It has no flap of its
+    // own, it's Pratique's ★★ Intermédiaire on a gapless deck. GramMarathon
+    // was NOT absorbed — it kept its own flap, gated to gap-authored decks.
     { emoji: "🧪", title: "Pre-Test", href: pretestHrefForDeck(c.id) },
     { emoji: "🔮", title: "SpecuLearn", href: isSpecuLearnReady(c.id) ? `/practice/speculearn/${c.id}` : null },
     { emoji: "📚", title: "Lesson", href: lessons.length ? `/lessons/${lessons[0].slug}` : `/lessons/deck/${c.id}` },

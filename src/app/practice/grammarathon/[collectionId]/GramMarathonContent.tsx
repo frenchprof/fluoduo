@@ -7,6 +7,15 @@
  * predicate (être-étudiant: "est étudiante"), which is how the former
  * ConjugaZone folded in here (Dan, 2026-07-05: "we don't even need to
  * separate out conjugazone and grammarathon anymore").
+ *
+ * This is the per-deck round, reached via its own "🏃 GramMarathon" flap
+ * (deckActivityTabs, CahierShell.tsx) — shown only for decks with at least
+ * one valid gap item (it.gap present and actually occurring inside it.fr).
+ * Distinct from: (1) the Finale (FinaleContent.tsx, /practice/grammarathon/
+ * finale), a separate hand-authored 437-item bank across all SIOs, always
+ * reachable regardless of deck; (2) DicedPractice's own inline ★★
+ * Intermédiaire gap-fill on the same gapped deck (games/dice/DicedPractice.tsx)
+ * — same gap data, a completely separate drill.
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";

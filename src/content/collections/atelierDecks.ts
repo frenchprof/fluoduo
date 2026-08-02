@@ -1,9 +1,10 @@
 /**
  * Flip-card decks for the production SIOs (ateliers), generated from the model
  * mini-dialogues in content/ateliers.ts — the dialogue lines ARE the cards, so
- * students can drill the model line-by-line (Flip It / Say It / Complete It)
- * before performing it in class. One deck per production SIO; no letris/
- * syllables — games aren't forced where they don't fit.
+ * students can drill the model line-by-line (Flip It / WorDrill / the
+ * Lesson's Pratique step) before performing it in class. One deck per
+ * production SIO; no letris/syllables — games aren't forced where they don't
+ * fit.
  */
 import { ATELIER_DIALOGUES } from "@/content/ateliers";
 import type { Collection } from "@/lib/collections/schema";

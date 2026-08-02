@@ -17,6 +17,12 @@
  * Gapless decks keep Facile (en → pick the fr among 4), Intermédiaire
  * (Complete It, its own loop) and Bonus; Difficile hides — no French-only cue
  * exists. Every graded answer feeds recordItemResult.
+ *
+ * On a GAPPED deck, this widget's own ★★ Intermédiaire (checkGapTyped, below)
+ * is a separate, self-contained gap-fill — NOT the same component as the
+ * standalone GramMarathonContent behind the deck's own "🏃 GramMarathon" flap
+ * (CahierShell.tsx's deckActivityTabs, gated to gap-authored decks). Same
+ * underlying gap data, two independent drills; don't conflate them.
  */
 
 import { useRef, useState } from "react";

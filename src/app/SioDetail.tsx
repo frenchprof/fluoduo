@@ -8,11 +8,15 @@
  * Shared between SioHub's Units 1-4 popups and (indirectly, via the same
  * merged sentence) Unit0Panel's popup.
  *
- * Post-Class Practice always offers Flip It, Say It, Complete It, and Match It
- * (Conveyor — works for any FR/EN deck), PLUS Classify It (Letris) whenever the
- * deck has a sort-column axis. Dan, 2026-07-01: "some topics are better as
- * letris..., others as lexpress..., sometimes both" — an earlier pass treated
- * these as mutually exclusive; that was wrong, this shows both when both apply.
+ * Post-Class Practice's chips (PracticeChips, below) are derived straight from
+ * deckActivityTabs() (CahierShell.tsx) so this can't drift out of sync with
+ * the popup's own flaps again — don't hardcode an activity list here. As of
+ * 2026-08-02 that list shows as WorDrill (renamed from Say It, 2026-07-19)
+ * and has no separate Complete It chip (folded into the Lesson's Pratique
+ * step); check deckActivityTabs directly for the current set. Dan, 2026-07-01:
+ * "some topics are better as letris..., others as lexpress..., sometimes
+ * both" — Letris and Match It (Conveyor) show together whenever both apply,
+ * not as mutually-exclusive alternatives.
  */
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
