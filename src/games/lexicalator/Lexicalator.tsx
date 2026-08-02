@@ -763,6 +763,36 @@ export default function Lexicalator({
         {tresorChips}
       </div>
 
+      {/* Vos erreurs — the wrong fragments (decoys) tapped so far, live below
+          the trésor (Dan, 2026-08-02, ported 2026-08-20: show what went wrong
+          as it happens, not only in the game-over post-mortem). Same grouped-
+          chip treatment as the trésor, in the drill-bad palette so it reads
+          as "mistake", not "win". Sourced from the same `misses` rows the
+          post-mortem shows — one record, two surfaces. */}
+      {misses.length > 0 && !over && (
+        <div className="mt-2 flex min-h-[2.5rem] flex-wrap items-center gap-2">
+          <span className="mr-1 text-[0.7rem] font-black uppercase tracking-wider" style={{ color: "var(--drill-bad)" }}>❌ Vos erreurs :</span>
+          {(() => {
+            const grouped: { token: string; n: number }[] = [];
+            for (const t of misses.map((mi) => mi.given).filter((g): g is string => !!g)) {
+              const g = grouped.find((x) => x.token === t);
+              if (g) g.n += 1; else grouped.push({ token: t, n: 1 });
+            }
+            return grouped.map((g) => (
+              <span
+                key={g.token}
+                lang="fr"
+                className="inline-flex items-center gap-1 rounded-full border-2 px-2.5 py-1 text-sm font-black"
+                style={{ borderColor: "var(--drill-bad-soft)", background: "var(--drill-bad-bg)", color: "var(--drill-bad)" }}
+              >
+                {g.token}
+                {g.n > 1 && <span className="ml-0.5 rounded-full px-1.5 text-[11px] font-black text-white" style={{ background: "var(--drill-bad)" }}>×{g.n}</span>}
+              </span>
+            ));
+          })()}
+        </div>
+      )}
+
       {/* Level-done: a POPUP in the middle of the screen (Dan, 2026-07-09);
           it dismisses itself via the auto-advance effect. */}
       {levelDone && !over && (
