@@ -26,11 +26,12 @@ import { useAuthUser } from "@/lib/firebase/auth";
 import { ADMIN_EMAILS } from "@/app/teacher/data";
 
 // Admin-only A/B: which backend engine renders the MP3 (Dan, 2026-07-18:
-// "how do I know how each one sounds"). "auto" = server decides
-// (TTS_PROVIDER pin, else Mistral-first). Invisible to students.
-const ENGINES = ["auto", "google", "mistral", "openai"] as const;
+// "how do I know how each one sounds"). "auto" = server decides — Fish-first
+// as of 2026-08-02 (TTS_PROVIDER pin, else Fish → OpenAI/Mistral/Google
+// fallback chain). Invisible to students.
+const ENGINES = ["auto", "fish", "google", "mistral", "openai"] as const;
 type Engine = (typeof ENGINES)[number];
-const ENGINE_LABEL: Record<Engine, string> = { auto: "Auto", google: "Google", mistral: "Mistral", openai: "OpenAI" };
+const ENGINE_LABEL: Record<Engine, string> = { auto: "Auto", fish: "Fish", google: "Google", mistral: "Mistral", openai: "OpenAI" };
 
 const SAMPLE = "Utilisez-moi pour vérifier la prononciation d'un mot, d'une expression, ou d'un texte entier !";
 const SPEEDS = [1, 0.75, 0.5, 1.25, 1.5];
@@ -185,7 +186,7 @@ function TtsPageInner() {
       // NEVER fail silently (Dan, 2026-07-13: "not generating any mp3 as
       // promised") — the missing Google TTS key is the usual cause.
       if ([503, 404, 405, 501].includes(r.status)) {
-        setMp3Err("🎧 pas encore branché : la clé GOOGLE_TTS_API_KEY manque sur Cloudflare");
+        setMp3Err("🎧 pas encore branché : la clé FISH_AUDIO_API_KEY manque sur Cloudflare");
         return;
       }
       if (!r.ok) { setMp3Err("⚠️ génération impossible — réessayez dans un instant"); return; }

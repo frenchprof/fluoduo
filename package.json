@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "check:textgen": "node scripts/check-textgen.mjs"
+    "check:textgen": "node scripts/check-textgen.mjs",
+    "test:fish-tts": "node scripts/test-fish-tts.mjs",
+    "gen:tts-bank": "node scripts/generate-tts-bank.mjs"
   },
   "dependencies": {
     "firebase": "^12.15.0",

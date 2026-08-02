@@ -2,7 +2,8 @@
  * Pre-generate the TTS audio bank (Dan, 2026-07-10: same studio voice on
  * every device; browser voices differ per machine). Reads every deck JSON,
  * collects each item's spoken strings (fr, say, example), synthesises each
- * once with Google Cloud TTS, and writes:
+ * once with Fish Audio (Dan, 2026-08-02: migrating off Google/browser voices
+ * — s2.1-pro-free, urgent, the free tier may not last), and writes:
  *
  *   public/tts-bank/<hash>.mp3        one clip per distinct string
  *   public/tts-bank/manifest.json     { voice, generatedAt, entries: { "<normalized text>": "<hash>.mp3" } }
@@ -12,26 +13,29 @@
  * anything. Idempotent: existing clips are kept, only new strings are
  * synthesised — re-run after deck edits to top up.
  *
- * Run: GOOGLE_TTS_API_KEY=... node scripts/generate-tts-bank.mjs
+ * Run: FISH_AUDIO_API_KEY=... node scripts/generate-tts-bank.mjs
  * Or:  GitHub → Actions → "Generate TTS bank" (uses the repo secret).
- *
- * Cost: ~770 strings ≈ 10k characters ≈ 1% of Google's FREE monthly Neural2
- * tier for the entire bank.
+ * Optional: FISH_TTS_MODEL (default "s2.1-pro-free"), FISH_VOICE_FR_F (a
+ * fish.audio voice `reference_id` for the site's narrator — same env var
+ * the live /api/tts backend uses for its fr-f slot, so setting it once
+ * keeps the bank and live calls speaking with the same voice).
  */
 import { createHash } from "node:crypto";
 import { mkdirSync, readdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
-const KEY = process.env.GOOGLE_TTS_API_KEY;
+const KEY = process.env.FISH_AUDIO_API_KEY;
 if (!KEY) {
-  console.error("GOOGLE_TTS_API_KEY is not set — aborting (nothing written).");
+  console.error("FISH_AUDIO_API_KEY is not set — aborting (nothing written).");
   process.exit(1);
 }
 
 const DECKS_DIR = "src/content/collections";
 const OUT_DIR = "public/tts-bank";
+const MODEL = process.env.FISH_TTS_MODEL || "s2.1-pro-free";
 // The site-wide narrator: same voice the /api/tts studio's « Voix A » uses.
-const VOICE = { languageCode: "fr-FR", name: "fr-FR-Neural2-A" };
+const REFERENCE_ID = process.env.FISH_VOICE_FR_F || undefined;
+const VOICE_LABEL = `fish:${MODEL}${REFERENCE_ID ? ":" + REFERENCE_ID : ""}`;
 
 const norm = (t) => t.replace(/\s+/g, " ").trim();
 
@@ -52,7 +56,7 @@ mkdirSync(OUT_DIR, { recursive: true });
 const manifestPath = join(OUT_DIR, "manifest.json");
 const manifest = existsSync(manifestPath)
   ? JSON.parse(readFileSync(manifestPath, "utf8"))
-  : { voice: VOICE.name, entries: {} };
+  : { voice: VOICE_LABEL, entries: {} };
 
 let made = 0, kept = 0, failed = 0;
 for (const text of [...strings].sort()) {
@@ -60,21 +64,16 @@ for (const text of [...strings].sort()) {
   const file = `${hash}.mp3`;
   if (manifest.entries[text] === file && existsSync(join(OUT_DIR, file))) { kept++; continue; }
   try {
-    const r = await fetch(
-      "https://texttospeech.googleapis.com/v1/text:synthesize?key=" + KEY,
-      {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          input: { text },
-          voice: VOICE,
-          audioConfig: { audioEncoding: "MP3", speakingRate: 1.0 },
-        }),
-      },
-    );
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    const { audioContent } = await r.json();
-    writeFileSync(join(OUT_DIR, file), Buffer.from(audioContent, "base64"));
+    const payload = { text, format: "mp3" };
+    if (REFERENCE_ID) payload.reference_id = REFERENCE_ID;
+    const r = await fetch("https://api.fish.audio/v1/tts", {
+      method: "POST",
+      headers: { "content-type": "application/json", authorization: "Bearer " + KEY, model: MODEL },
+      body: JSON.stringify(payload),
+    });
+    if (!r.ok) throw new Error(`HTTP ${r.status}: ${(await r.text()).slice(0, 300)}`);
+    const buf = Buffer.from(await r.arrayBuffer());
+    writeFileSync(join(OUT_DIR, file), buf);
     manifest.entries[text] = file;
     made++;
     if (made % 50 === 0) console.log(`…${made} synthesised`);
@@ -84,7 +83,7 @@ for (const text of [...strings].sort()) {
   }
 }
 
-manifest.voice = VOICE.name;
+manifest.voice = VOICE_LABEL;
 manifest.generatedAt = new Date().toISOString();
 writeFileSync(manifestPath, JSON.stringify(manifest, null, 1));
 console.log(`done — ${made} new, ${kept} kept, ${failed} failed, manifest ${Object.keys(manifest.entries).length} entries`);

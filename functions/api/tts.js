@@ -1,21 +1,29 @@
 /**
- * MP3 generator backend — a Cloudflare Pages Function (deploys with the site;
- * plain JS, not part of the Next build). The browser speechSynthesis engine
- * the site uses everywhere is free but exposes NO timeline and NO audio
- * stream — nothing to scrub, nothing to save (Dan, 2026-07-10: "The TTS page
- * was supposed to have an mp3 generator… no stop, play, forward, rewind").
- * Real transport controls need a real audio file, so this calls Google Cloud
- * Text-to-Speech and returns an MP3 the page can play in a native <audio>
- * player (play/pause/drag-to-seek) and download.
+ * TTS backend — a Cloudflare Pages Function (deploys with the site; plain
+ * JS, not part of the Next build). The browser speechSynthesis engine the
+ * site used everywhere was free but gave NO timeline/audio stream — nothing
+ * to scrub, nothing to save (Dan, 2026-07-10) — AND no voice consistency
+ * across devices. Fish Audio (Dan, 2026-08-02: migrating off browser voices
+ * app-wide, urgent — the s2.1-pro-free free tier may not last) is now the
+ * DEFAULT engine: one real studio voice everywhere, real MP3 bytes the page
+ * can play in a native <audio> player (play/pause/drag-to-seek) and
+ * download. Google/Mistral/OpenAI stay wired as fallbacks and as the 🎛
+ * admin A/B options.
  *
- * SETUP (Dan): Google Cloud console → project laf1201 → enable the
- * "Cloud Text-to-Speech API" → Credentials → Create API key (restrict it to
- * that one API) → Cloudflare Pages → Settings → Environment variables → add
- * GOOGLE_TTS_API_KEY (encrypted, Production). Until then this answers 503
- * and the page hides the MP3 studio. Free tier: ~1M Neural2 chars/month.
+ * SETUP: fish.audio → API keys → create one → Cloudflare Pages → Settings →
+ * Environment variables → add FISH_AUDIO_API_KEY (encrypted, Production).
+ * Optional: FISH_TTS_MODEL (default "s2.1-pro-free"), and FISH_VOICE_FR_F /
+ * FISH_VOICE_FR_M / FISH_VOICE_EN_F / FISH_VOICE_EN_M — a fish.audio voice
+ * `reference_id` per site voice slot (browse ids at fish.audio); with none
+ * set, Fish's own default voice speaks (ungendered but real audio).
+ *
+ * Previously (Dan, 2026-07-18): Google Cloud console → project laf1201 →
+ * enable "Cloud Text-to-Speech API" → Credentials → API key → add
+ * GOOGLE_TTS_API_KEY. Still used as a fallback/admin option. Until AT LEAST
+ * ONE key is set this answers 503 and the page hides the MP3 studio.
  *
  * Contract: POST /api/tts  { text, voice?: "fr-f"|"fr-m"|"en-f"|"en-m", rate?: number,
- *                            engine?: "google"|"mistral" }
+ *                            engine?: "fish"|"google"|"mistral"|"openai" }
  *           → 200 audio/mpeg  |  503 { error: "not-configured" }  |  502 { error }
  */
 
@@ -47,7 +55,8 @@ export async function onRequestPost(context) {
   // OpenRouter's own /audio/speech (the "openai" engine below).
   const orKey = [env.OPENROUTER_API_KEY, env.ANTHROPIC_API_KEY, env.MISTRAL_API_KEY]
     .find((k) => k && k.startsWith("sk-or-"));
-  if (!env.MISTRAL_API_KEY && !env.GOOGLE_TTS_API_KEY && !orKey) return json({ error: "not-configured" }, 503);
+  if (!env.FISH_AUDIO_API_KEY && !env.MISTRAL_API_KEY && !env.GOOGLE_TTS_API_KEY && !orKey)
+    return json({ error: "not-configured" }, 503);
 
   let body;
   try {
@@ -59,17 +68,57 @@ export async function onRequestPost(context) {
   if (!text) return json({ error: "no-text" }, 400);
   const voiceKey = VOICES[body && body.voice] ? body.voice : "fr-f";
   const rate = Math.min(1.4, Math.max(0.5, Number(body && body.rate) || 1));
-  // Engine choice (Dan, 2026-07-18: "only use google api for tts from now"):
-  // GOOGLE is the default whenever its key exists — its Neural2 pair is the
-  // only engine that honours the page's 👩/👨 voice choice (Mistral's sole
-  // French voice is Marie). Mistral speaks only when explicitly asked — the
-  // admin 🎛 button's per-request `engine`, or TTS_PROVIDER=mistral — or
-  // when the Google key is missing. Pins never brick the studio: a pin
+  // Engine choice (Dan, 2026-08-02: migrating to Fish Audio — supersedes the
+  // 2026-07-18 "only Google" pin): FISH is the default whenever its key
+  // exists — same s2.1-pro-free model as the static bank, for one
+  // consistent voice everywhere. Google/Mistral/OpenAI speak only when
+  // explicitly asked — the admin 🎛 button's per-request `engine`, or
+  // TTS_PROVIDER=<name> — or as an automatic fallback chain when an earlier
+  // engine has no key or fails upstream. Pins never brick the studio: a pin
   // pointing at a missing key falls back to whichever engine has one.
   const reqEngine = typeof (body && body.engine) === "string" ? body.engine.toLowerCase() : "";
-  const KNOWN = ["google", "mistral", "openai"];
+  const KNOWN = ["fish", "google", "mistral", "openai"];
   const pin = KNOWN.includes(reqEngine) ? reqEngine : (env.TTS_PROVIDER || "").trim().toLowerCase();
-  const tryMistral = Boolean(env.MISTRAL_API_KEY) && (pin === "mistral" || !env.GOOGLE_TTS_API_KEY);
+  const tryFish = Boolean(env.FISH_AUDIO_API_KEY) && (pin === "fish" || !pin);
+  const tryMistral = Boolean(env.MISTRAL_API_KEY) && (pin === "mistral" || (!env.GOOGLE_TTS_API_KEY && !tryFish));
+
+  // ── Fish Audio TTS (docs.fish.audio → Text to Speech). Model is passed as
+  // a request HEADER, not a body field; voice is a `reference_id` (a
+  // voice-clone id from fish.audio's library), not a named voice — with
+  // none configured for this slot, Fish's own default voice speaks.
+  if (tryFish) {
+    try {
+      const FISH_VOICES = {
+        "fr-f": env.FISH_VOICE_FR_F, "fr-m": env.FISH_VOICE_FR_M,
+        "en-f": env.FISH_VOICE_EN_F, "en-m": env.FISH_VOICE_EN_M,
+      };
+      const model = env.FISH_TTS_MODEL || "s2.1-pro-free";
+      const refId = FISH_VOICES[voiceKey];
+      const payload = { text, format: "mp3" };
+      if (refId) payload.reference_id = refId;
+      const r = await fetch("https://api.fish.audio/v1/tts", {
+        method: "POST",
+        headers: { "content-type": "application/json", authorization: "Bearer " + env.FISH_AUDIO_API_KEY, model },
+        body: JSON.stringify(payload),
+      });
+      if (r.ok) {
+        return new Response(await r.arrayBuffer(), {
+          headers: {
+            "content-type": "audio/mpeg",
+            "cache-control": "no-store",
+            "x-tts-engine": "fish:" + model + (refId ? ":" + refId : ""),
+          },
+        });
+      }
+      const detail = await r.text();
+      console.error("Fish Audio TTS upstream error:", r.status, detail.slice(0, 400));
+      if (!env.GOOGLE_TTS_API_KEY && !env.MISTRAL_API_KEY && !orKey)
+        return json({ error: "upstream-" + r.status, detail: detail.slice(0, 400) }, 502);
+    } catch (e) {
+      console.error("Fish Audio TTS unreachable:", e);
+      if (!env.GOOGLE_TTS_API_KEY && !env.MISTRAL_API_KEY && !orKey) return json({ error: "upstream-unreachable" }, 502);
+    }
+  }
 
   // ── OpenAI TTS via OpenRouter (Dan, 2026-07-18: "can we consider OpenAI
   // mini") — gpt-4o-mini-tts: very natural French, no elision bug, but NO
