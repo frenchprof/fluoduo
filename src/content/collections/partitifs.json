@@ -1,7 +1,7 @@
 {
  "id": "partitifs",
  "title": "Défini ou partitif ?",
- "subtitle": "le pain → du pain",
+ "subtitle": "le pain → du pain → pas de pain",
  "langPair": "fr-en",
  "owner": "curated",
  "visibility": "public",
@@ -74,6 +74,70 @@
    "example": "J'aime les fraises.",
    "tags": [],
    "gap": "des"
+  },
+  {
+   "id": "partitifs-09",
+   "fr": "Je ne mange pas de viande.",
+   "en": "I don't eat meat.",
+   "example": "Je mange de la viande.",
+   "tags": [],
+   "gap": "de"
+  },
+  {
+   "id": "partitifs-10",
+   "fr": "Il ne boit pas de café.",
+   "en": "He doesn't drink coffee.",
+   "example": "Il boit du café.",
+   "tags": [],
+   "gap": "de"
+  },
+  {
+   "id": "partitifs-11",
+   "fr": "Nous ne mangeons pas de légumes.",
+   "en": "We don't eat vegetables.",
+   "example": "Nous mangeons des légumes.",
+   "tags": [],
+   "gap": "de"
+  },
+  {
+   "id": "partitifs-12",
+   "fr": "Elle ne boit pas d'eau gazeuse.",
+   "en": "She doesn't drink sparkling water.",
+   "example": "Elle boit de l'eau gazeuse.",
+   "tags": [],
+   "gap": "d'"
+  },
+  {
+   "id": "partitifs-13",
+   "fr": "Je ne mange pas de poisson.",
+   "en": "I don't eat fish.",
+   "example": "Je mange du poisson.",
+   "tags": [],
+   "gap": "de"
+  },
+  {
+   "id": "partitifs-14",
+   "fr": "Ils ne mangent pas de sushis.",
+   "en": "They don't eat sushi.",
+   "example": "Ils mangent des sushis.",
+   "tags": [],
+   "gap": "de"
+  },
+  {
+   "id": "partitifs-15",
+   "fr": "Tu ne bois pas de lait.",
+   "en": "You don't drink milk.",
+   "example": "Tu bois du lait.",
+   "tags": [],
+   "gap": "de"
+  },
+  {
+   "id": "partitifs-16",
+   "fr": "Vous ne mangez pas d'œufs.",
+   "en": "You don't eat eggs.",
+   "example": "Vous mangez des œufs.",
+   "tags": [],
+   "gap": "d'"
   }
  ]
 }

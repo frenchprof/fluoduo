@@ -39,13 +39,10 @@ import transport from "./transport.json";
 
 import aliments from "./aliments.json";
 import partitifs from "./partitifs.json";
-import partitifNegatif from "./partitif-negatif.json";
 import lesDe from "./les-de.json";
-import mangerBoire from "./manger-boire.json";
 import frequence from "./frequence.json";
 import demonstratifs from "./demonstratifs.json";
 import commerces from "./commerces.json";
-import auMarche from "./au-marche.json";
 import modaux from "./modaux.json";
 
 import sappeler from "./sappeler.json";
@@ -91,16 +88,17 @@ export const CURATED: Collection[] = [
   transport as Collection,
   aliments as Collection,
   partitifs as Collection,
-  partitifNegatif as Collection,
-  // All the de forms in one LexicaLater deck (Dan, 2026-07-19: "the lesson is
-  // missing for beaucoup de and pas de — take all the various de and make a
-  // LexicaLater out of it").
+  // Quantity expressions (beaucoup de / trop de / assez de / un peu de / un
+  // kilo de) — Dan, 2026-07-19: "the lesson is missing for beaucoup de and
+  // pas de — take all the various de and make a LexicaLater out of it".
+  // Trimmed 2026-08-02: the partitive/negation items this deck used to also
+  // carry are now covered by `partitifs` (merged from partitif-negatif); this
+  // deck is quantity-only. Not yet attached to a SIO — flagged for a
+  // separate placement decision.
   lesDe as Collection,
-  mangerBoire as Collection,
   frequence as Collection,
   demonstratifs as Collection,
   commerces as Collection,
-  auMarche as Collection,
   modaux as Collection,
   etreEtudiant as Collection,
   parceQue as Collection,

@@ -1,13 +1,13 @@
 {
   "id": "les-de",
-  "title": "Tous les « de »",
-  "subtitle": "du · de la · de l' · des · pas de · beaucoup de",
+  "title": "Beaucoup, trop, assez, un peu de...",
+  "subtitle": "quantity expressions with de",
   "langPair": "fr-en",
   "owner": "curated",
   "visibility": "public",
   "unit": 4,
   "lessonNo": 3,
-  "lessonSlug": "partitive-neg",
+  "lessonSlug": "quantites",
   "tags": [],
   "seq": 410,
   "gameConfig": {
@@ -16,17 +16,11 @@
     }
   },
   "items": [
-    { "id": "les-de-01", "fr": "du pain", "en": "(some) bread", "emoji": "🥖", "tags": [], "syllables": ["du", "pain"] },
-    { "id": "les-de-02", "fr": "de la soupe", "en": "(some) soup", "emoji": "🍲", "tags": [], "syllables": ["de", "la", "soupe"] },
-    { "id": "les-de-03", "fr": "de l'eau", "en": "(some) water", "emoji": "💧", "tags": [], "syllables": ["de", "l'eau"] },
-    { "id": "les-de-04", "fr": "des frites", "en": "(some) fries", "emoji": "🍟", "tags": [], "syllables": ["des", "frites"] },
-    { "id": "les-de-05", "fr": "pas de café", "en": "no coffee (after ne … pas)", "emoji": "☕", "tags": [], "syllables": ["pas", "de", "ca", "fé"] },
-    { "id": "les-de-06", "fr": "pas d'eau", "en": "no water (after ne … pas)", "emoji": "🚱", "tags": [], "syllables": ["pas", "d'eau"] },
-    { "id": "les-de-07", "fr": "beaucoup de pain", "en": "a lot of bread", "emoji": "🥖", "tags": [], "syllables": ["beau", "coup", "de", "pain"] },
-    { "id": "les-de-08", "fr": "beaucoup d'abricots", "en": "a lot of apricots", "emoji": "🍑", "tags": [], "syllables": ["beau", "coup", "d'a", "bri", "cots"] },
-    { "id": "les-de-09", "fr": "assez de sel", "en": "enough salt", "emoji": "🧂", "tags": [], "syllables": ["as", "sez", "de", "sel"] },
-    { "id": "les-de-10", "fr": "trop de sucre", "en": "too much sugar", "emoji": "🍬", "tags": [], "syllables": ["trop", "de", "sucre"] },
-    { "id": "les-de-11", "fr": "un peu de lait", "en": "a little milk", "emoji": "🥛", "tags": [], "syllables": ["un", "peu", "de", "lait"] },
-    { "id": "les-de-12", "fr": "un kilo de pommes", "en": "a kilo of apples", "emoji": "🍎", "tags": [], "syllables": ["un", "ki", "lo", "de", "pommes"] }
+    { "id": "les-de-01", "fr": "beaucoup de pain", "en": "a lot of bread", "emoji": "🥖", "tags": [], "syllables": ["beau", "coup", "de", "pain"] },
+    { "id": "les-de-02", "fr": "beaucoup d'abricots", "en": "a lot of apricots", "emoji": "🍑", "tags": [], "syllables": ["beau", "coup", "d'a", "bri", "cots"] },
+    { "id": "les-de-03", "fr": "assez de sel", "en": "enough salt", "emoji": "🧂", "tags": [], "syllables": ["as", "sez", "de", "sel"] },
+    { "id": "les-de-04", "fr": "trop de sucre", "en": "too much sugar", "emoji": "🍬", "tags": [], "syllables": ["trop", "de", "sucre"] },
+    { "id": "les-de-05", "fr": "un peu de lait", "en": "a little milk", "emoji": "🥛", "tags": [], "syllables": ["un", "peu", "de", "lait"] },
+    { "id": "les-de-06", "fr": "un kilo de pommes", "en": "a kilo of apples", "emoji": "🍎", "tags": [], "syllables": ["un", "ki", "lo", "de", "pommes"] }
   ]
 }
