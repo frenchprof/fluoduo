@@ -26,34 +26,58 @@
   ],
   "tiles": [
     {
-      "text": "FRANÇAIS",
-      "displayName": "français",
-      "category": "le",
-      "meaning": "French"
+      "text": "ARCHITECTURE",
+      "displayName": "architecture",
+      "category": "l_apos",
+      "meaning": "architecture"
     },
     {
-      "text": "DESSIN",
-      "displayName": "dessin",
+      "text": "CHIMIE",
+      "displayName": "chimie",
+      "category": "la",
+      "meaning": "chemistry"
+    },
+    {
+      "text": "COMMUNICATION",
+      "displayName": "communication",
+      "category": "la",
+      "meaning": "communication"
+    },
+    {
+      "text": "COMPTABILITÉ",
+      "displayName": "comptabilité",
+      "category": "la",
+      "meaning": "accounting"
+    },
+    {
+      "text": "COMMERCE",
+      "displayName": "commerce",
       "category": "le",
-      "meaning": "art"
+      "meaning": "business"
+    },
+    {
+      "text": "DROIT",
+      "displayName": "droit",
+      "category": "le",
+      "meaning": "law"
+    },
+    {
+      "text": "ÉCONOMIE",
+      "displayName": "économie",
+      "category": "l_apos",
+      "meaning": "economics"
+    },
+    {
+      "text": "FINANCE",
+      "displayName": "finance",
+      "category": "la",
+      "meaning": "finance"
     },
     {
       "text": "GÉOGRAPHIE",
       "displayName": "géographie",
       "category": "la",
       "meaning": "geography"
-    },
-    {
-      "text": "BIOLOGIE",
-      "displayName": "biologie",
-      "category": "la",
-      "meaning": "biology"
-    },
-    {
-      "text": "ANGLAIS",
-      "displayName": "anglais",
-      "category": "l_apos",
-      "meaning": "English"
     },
     {
       "text": "HISTOIRE",
@@ -68,22 +92,106 @@
       "meaning": "computer science"
     },
     {
+      "text": "GÉNIE",
+      "displayName": "génie",
+      "category": "le",
+      "meaning": "engineering (génie)"
+    },
+    {
+      "text": "INGÉNIERIE",
+      "displayName": "ingénierie",
+      "category": "l_apos",
+      "meaning": "engineering (ingénierie)"
+    },
+    {
+      "text": "LINGUISTIQUE",
+      "displayName": "linguistique",
+      "category": "la",
+      "meaning": "linguistics"
+    },
+    {
+      "text": "LITTÉRATURE",
+      "displayName": "littérature",
+      "category": "la",
+      "meaning": "literature"
+    },
+    {
       "text": "MATHÉMATIQUES",
       "displayName": "mathématiques",
       "category": "les",
-      "meaning": "maths"
+      "meaning": "mathematics"
     },
     {
-      "text": "SCIENCES",
-      "displayName": "sciences",
-      "category": "les",
-      "meaning": "science"
+      "text": "MÉDECINE",
+      "displayName": "médecine",
+      "category": "la",
+      "meaning": "medicine"
     },
     {
-      "text": "LANGUES",
-      "displayName": "langues",
+      "text": "MUSIQUE",
+      "displayName": "musique",
+      "category": "la",
+      "meaning": "music"
+    },
+    {
+      "text": "PHARMACIE",
+      "displayName": "pharmacie",
+      "category": "la",
+      "meaning": "pharmacy"
+    },
+    {
+      "text": "PHILOSOPHIE",
+      "displayName": "philosophie",
+      "category": "la",
+      "meaning": "philosophy"
+    },
+    {
+      "text": "PHYSIQUE",
+      "displayName": "physique",
+      "category": "la",
+      "meaning": "physics"
+    },
+    {
+      "text": "PSYCHOLOGIE",
+      "displayName": "psychologie",
+      "category": "la",
+      "meaning": "psychology"
+    },
+    {
+      "text": "SCIENCE DES DONNÉES",
+      "displayName": "science des données",
+      "category": "la",
+      "meaning": "data science"
+    },
+    {
+      "text": "SCIENCE POLITIQUE",
+      "displayName": "science politique",
+      "category": "la",
+      "meaning": "political science"
+    },
+    {
+      "text": "SCIENCES DE LA VIE",
+      "displayName": "sciences de la vie",
       "category": "les",
-      "meaning": "languages"
+      "meaning": "life sciences"
+    },
+    {
+      "text": "SCIENCES INFIRMIÈRES",
+      "displayName": "sciences infirmières",
+      "category": "les",
+      "meaning": "nursing"
+    },
+    {
+      "text": "SOCIOLOGIE",
+      "displayName": "sociologie",
+      "category": "la",
+      "meaning": "sociology"
+    },
+    {
+      "text": "SYSTÈMES D'INFORMATION",
+      "displayName": "systèmes d'information",
+      "category": "les",
+      "meaning": "information systems"
     },
     {
       "text": "SPORT",
@@ -95,31 +203,7 @@
       "text": "THÉÂTRE",
       "displayName": "théâtre",
       "category": "le",
-      "meaning": "drama"
-    },
-    {
-      "text": "CHIMIE",
-      "displayName": "chimie",
-      "category": "la",
-      "meaning": "chemistry"
-    },
-    {
-      "text": "MUSIQUE",
-      "displayName": "musique",
-      "category": "la",
-      "meaning": "music"
-    },
-    {
-      "text": "ESPAGNOL",
-      "displayName": "espagnol",
-      "category": "l_apos",
-      "meaning": "Spanish"
-    },
-    {
-      "text": "ARTS PLASTIQUES",
-      "displayName": "arts plastiques",
-      "category": "les",
-      "meaning": "visual arts"
+      "meaning": "theatre"
     }
   ]
 }

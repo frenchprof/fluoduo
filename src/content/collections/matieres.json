@@ -1,7 +1,7 @@
 {
   "id": "matieres",
   "title": "Quelle matière ?",
-  "subtitle": "Academic subjects, sorted by article",
+  "subtitle": "University fields of study, sorted by article",
   "langPair": "fr-en",
   "owner": "curated",
   "visibility": "public",
@@ -37,50 +37,129 @@
     },
     "lexicalator": {
       "decoys": [
-        "çait",
-        "sain",
-        "jo",
-        "graf",
-        "lo",
-        "gie",
-        "toir",
-        "matic",
-        "glai",
-        "thème",
-        "phy",
-        "sique",
-        "din",
-        "fran"
+        "sion",
+        "tic",
+        "je",
+        "teur",
+        "fie",
+        "mi",
+        "ci",
+        "ni",
+        "logue",
+        "rique",
+        "tés",
+        "van"
       ]
     }
   },
   "items": [
     {
       "id": "matieres-01",
-      "fr": "français",
-      "en": "French",
+      "fr": "architecture",
+      "en": "architecture",
       "tags": [
-        "col:le"
+        "col:l_apos"
       ],
       "syllables": [
-        "fran",
-        "çais"
+        "ar",
+        "chi",
+        "tec",
+        "ture"
       ]
     },
     {
       "id": "matieres-02",
-      "fr": "dessin",
-      "en": "art",
+      "fr": "chimie",
+      "en": "chemistry",
       "tags": [
-        "col:le"
+        "col:la"
       ],
       "syllables": [
-        "des",
-        "sin"
+        "chi",
+        "mie"
       ]
     },
     {
       "id": "matieres-03",
+      "fr": "communication",
+      "en": "communication",
+      "tags": [
+        "col:la"
+      ],
+      "syllables": [
+        "com",
+        "mu",
+        "ni",
+        "ca",
+        "tion"
+      ]
+    },
+    {
+      "id": "matieres-04",
+      "fr": "comptabilité",
+      "en": "accounting",
+      "tags": [
+        "col:la"
+      ],
+      "syllables": [
+        "comp",
+        "ta",
+        "bi",
+        "li",
+        "té"
+      ]
+    },
+    {
+      "id": "matieres-05",
+      "fr": "commerce",
+      "en": "business",
+      "tags": [
+        "col:le"
+      ],
+      "syllables": [
+        "com",
+        "merce"
+      ]
+    },
+    {
+      "id": "matieres-06",
+      "fr": "droit",
+      "en": "law",
+      "tags": [
+        "col:le"
+      ],
+      "syllables": [
+        "droit"
+      ]
+    },
+    {
+      "id": "matieres-07",
+      "fr": "économie",
+      "en": "economics",
+      "tags": [
+        "col:l_apos"
+      ],
+      "syllables": [
+        "é",
+        "co",
+        "no",
+        "mie"
+      ]
+    },
+    {
+      "id": "matieres-08",
+      "fr": "finance",
+      "en": "finance",
+      "tags": [
+        "col:la"
+      ],
+      "syllables": [
+        "fi",
+        "nance"
+      ]
+    },
+    {
+      "id": "matieres-09",
       "fr": "géographie",
       "en": "geography",
       "tags": [
@@ -94,32 +173,7 @@
       ]
     },
     {
-      "id": "matieres-04",
-      "fr": "biologie",
-      "en": "biology",
-      "tags": [
-        "col:la"
-      ],
-      "syllables": [
-        "bio",
-        "lo",
-        "gie"
-      ]
-    },
-    {
-      "id": "matieres-05",
-      "fr": "anglais",
-      "en": "English",
-      "tags": [
-        "col:l_apos"
-      ],
-      "syllables": [
-        "an",
-        "glais"
-      ]
-    },
-    {
-      "id": "matieres-06",
+      "id": "matieres-10",
       "fr": "histoire",
       "en": "history",
       "tags": [
@@ -131,7 +185,7 @@
       ]
     },
     {
-      "id": "matieres-07",
+      "id": "matieres-11",
       "fr": "informatique",
       "en": "computer science",
       "tags": [
@@ -145,112 +199,257 @@
       ]
     },
     {
-      "id": "matieres-08",
-      "fr": "mathématiques",
-      "en": "maths",
-      "tags": [
-        "col:les"
-      ],
-      "syllables": [
-        "ma",
-        "thé",
-        "ma",
-        "tiques"
-      ]
-    },
-    {
-      "id": "matieres-09",
-      "fr": "sciences",
-      "en": "science",
-      "tags": [
-        "col:les"
-      ],
-      "syllables": [
-        "sciences"
-      ]
-    },
-    {
-      "id": "matieres-10",
-      "fr": "langues",
-      "en": "languages",
-      "tags": [
-        "col:les"
-      ],
-      "syllables": [
-        "langues"
-      ]
-    },
-    {
-      "id": "matieres-11",
-      "fr": "sport",
-      "en": "sport",
-      "syllables": [
-        "sport"
-      ],
-      "tags": [
-        "col:le"
-      ]
-    },
-    {
       "id": "matieres-12",
-      "fr": "théâtre",
-      "en": "drama",
-      "syllables": [
-        "thé",
-        "âtre"
-      ],
+      "fr": "génie",
+      "en": "engineering (génie)",
       "tags": [
         "col:le"
+      ],
+      "syllables": [
+        "gé",
+        "nie"
       ]
     },
     {
       "id": "matieres-13",
-      "fr": "chimie",
-      "en": "chemistry",
-      "syllables": [
-        "chi",
-        "mie"
-      ],
+      "fr": "ingénierie",
+      "en": "engineering (ingénierie)",
       "tags": [
-        "col:la"
+        "col:l_apos"
+      ],
+      "syllables": [
+        "in",
+        "gé",
+        "nie",
+        "rie"
       ]
     },
     {
       "id": "matieres-14",
-      "fr": "musique",
-      "en": "music",
-      "syllables": [
-        "mu",
-        "sique"
-      ],
+      "fr": "linguistique",
+      "en": "linguistics",
       "tags": [
         "col:la"
+      ],
+      "syllables": [
+        "lin",
+        "guis",
+        "tique"
       ]
     },
     {
       "id": "matieres-15",
-      "fr": "espagnol",
-      "en": "Spanish",
-      "syllables": [
-        "es",
-        "pa",
-        "gnol"
-      ],
+      "fr": "littérature",
+      "en": "literature",
       "tags": [
-        "col:l_apos"
+        "col:la"
+      ],
+      "syllables": [
+        "lit",
+        "té",
+        "ra",
+        "ture"
       ]
     },
     {
       "id": "matieres-16",
-      "fr": "arts plastiques",
-      "en": "visual arts",
-      "syllables": [
-        "arts",
-        "plas",
-        "tiques"
-      ],
+      "fr": "mathématiques",
+      "en": "mathematics",
       "tags": [
         "col:les"
+      ],
+      "syllables": [
+        "ma",
+        "thé",
+        "ma",
+        "tiques"
+      ]
+    },
+    {
+      "id": "matieres-17",
+      "fr": "médecine",
+      "en": "medicine",
+      "tags": [
+        "col:la"
+      ],
+      "syllables": [
+        "mé",
+        "de",
+        "cine"
+      ]
+    },
+    {
+      "id": "matieres-18",
+      "fr": "musique",
+      "en": "music",
+      "tags": [
+        "col:la"
+      ],
+      "syllables": [
+        "mu",
+        "sique"
+      ]
+    },
+    {
+      "id": "matieres-19",
+      "fr": "pharmacie",
+      "en": "pharmacy",
+      "tags": [
+        "col:la"
+      ],
+      "syllables": [
+        "phar",
+        "ma",
+        "cie"
+      ]
+    },
+    {
+      "id": "matieres-20",
+      "fr": "philosophie",
+      "en": "philosophy",
+      "tags": [
+        "col:la"
+      ],
+      "syllables": [
+        "phi",
+        "lo",
+        "so",
+        "phie"
+      ]
+    },
+    {
+      "id": "matieres-21",
+      "fr": "physique",
+      "en": "physics",
+      "tags": [
+        "col:la"
+      ],
+      "syllables": [
+        "phy",
+        "sique"
+      ]
+    },
+    {
+      "id": "matieres-22",
+      "fr": "psychologie",
+      "en": "psychology",
+      "tags": [
+        "col:la"
+      ],
+      "syllables": [
+        "psy",
+        "cho",
+        "lo",
+        "gie"
+      ]
+    },
+    {
+      "id": "matieres-23",
+      "fr": "science des données",
+      "en": "data science",
+      "tags": [
+        "col:la"
+      ],
+      "syllables": [
+        "science",
+        "des",
+        "don",
+        "nées"
+      ]
+    },
+    {
+      "id": "matieres-24",
+      "fr": "science politique",
+      "en": "political science",
+      "tags": [
+        "col:la"
+      ],
+      "syllables": [
+        "science",
+        "po",
+        "li",
+        "tique"
+      ]
+    },
+    {
+      "id": "matieres-25",
+      "fr": "sciences de la vie",
+      "en": "life sciences",
+      "tags": [
+        "col:les"
+      ],
+      "syllables": [
+        "sciences",
+        "de",
+        "la",
+        "vie"
+      ]
+    },
+    {
+      "id": "matieres-26",
+      "fr": "sciences infirmières",
+      "en": "nursing",
+      "tags": [
+        "col:les"
+      ],
+      "syllables": [
+        "sciences",
+        "in",
+        "fir",
+        "mières"
+      ]
+    },
+    {
+      "id": "matieres-27",
+      "fr": "sociologie",
+      "en": "sociology",
+      "tags": [
+        "col:la"
+      ],
+      "syllables": [
+        "so",
+        "cio",
+        "lo",
+        "gie"
+      ]
+    },
+    {
+      "id": "matieres-28",
+      "fr": "systèmes d'information",
+      "en": "information systems",
+      "tags": [
+        "col:les"
+      ],
+      "syllables": [
+        "sys",
+        "tèmes",
+        "d'in",
+        "for",
+        "ma",
+        "tion"
+      ]
+    },
+    {
+      "id": "matieres-29",
+      "fr": "sport",
+      "en": "sport",
+      "tags": [
+        "col:le"
+      ],
+      "syllables": [
+        "sport"
+      ]
+    },
+    {
+      "id": "matieres-30",
+      "fr": "théâtre",
+      "en": "theatre",
+      "tags": [
+        "col:le"
+      ],
+      "syllables": [
+        "thé",
+        "âtre"
       ]
     }
   ]

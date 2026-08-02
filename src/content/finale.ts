@@ -380,7 +380,7 @@ export const FINALE_BANK: FinaleItem[] = [
   { id: "finale:SIO-011:6", sio: "SIO-011", unit: 1, pre: "Tu viens avec ", post: " ? Nous allons au parc.", a: ["nous", "moi", "lui", "elle", "eux", "elles"], cat: "a stressed pronoun" },
   { id: "finale:SIO-012:5", sio: "SIO-012", unit: 1, pre: "Il fait et il vend du pain et des croissants : il est ", post: ".", a: ["boulanger"], cat: "a profession" },
   { id: "finale:SIO-012:6", sio: "SIO-012", unit: 1, pre: "Elle joue dans des films : elle est ", post: ".", a: ["actrice", "comédienne", "comedienne"], cat: "a profession (feminine)" },
-  { id: "finale:SIO-013:5", sio: "SIO-013", unit: 1, pre: "Les plantes, les animaux, le corps humain — ma matière préférée, c'est la ", post: " !", a: ["biologie"], cat: "an academic subject" },
+  { id: "finale:SIO-013:5", sio: "SIO-013", unit: 1, pre: "Les hôpitaux, les maladies, les médicaments — ma matière préférée, c'est la ", post: " !", a: ["médecine", "medecine"], cat: "an academic subject" },
   { id: "finale:SIO-013:6", sio: "SIO-013", unit: 1, pre: "J'étudie ", post: " économie à NUS.", a: ["l'", "l"], cat: "an article (elided)" },
   { id: "finale:SIO-014:5", sio: "SIO-014", unit: 1, pre: "Tu ", post: " français ?", a: ["es", "parles"], cat: "a conjugated verb" },
   { id: "finale:SIO-014:6", sio: "SIO-014", unit: 1, pre: "Elle ", post: " étudiante en chimie.", a: ["est"], cat: "a conjugated verb" },

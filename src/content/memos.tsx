@@ -473,14 +473,15 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
     <Card title="Quelle matière ?">
       <PillRow
         label="Gratuit (same as English)"
-        items={["la géographie", "la biologie", "l'histoire", "les mathématiques", "la musique", "le sport"]}
+        items={["l'architecture", "la communication", "la philosophie", "la psychologie", "la sociologie"]}
       />
       <p className="mt-2 text-[13px] font-bold text-[color:var(--cahier-ink)]">À apprendre (the few to learn)</p>
       <Lines>
-        <li><B>le dessin</B> — art</li>
-        <li><B>l'informatique</B> — computer science</li>
-        <li><B>les langues</B> — languages</li>
+        <li><B>le droit</B> — law</li>
+        <li><B>la comptabilité</B> — accounting</li>
+        <li><B>le commerce</B> — business</li>
       </Lines>
+      <Warn>Same meaning, different gender: <B>le génie</B> vs <B>l&rsquo;ingénierie</B> — both mean &laquo;&nbsp;engineering&nbsp;&raquo;, but one is masculine and the other feminine.</Warn>
     </Card>
   ),
 

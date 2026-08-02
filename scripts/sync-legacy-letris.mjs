@@ -28,6 +28,7 @@ const DECKS = [
   "weather-letris",
   "en-au-aux-a",
   "core-nouns",
+  "matieres",
 ];
 
 for (const d of DECKS) {
