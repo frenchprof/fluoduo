@@ -173,6 +173,7 @@ export default function Lexicalator({
   const [done, setDone] = useState<LexEntry[]>([]);
   const [firstDone, setFirstDone] = useState(false);
   const [rattle, setRattle] = useState<string | null>(null);
+  const [popupNudge, setPopupNudge] = useState(false);
   const [music, setMusic] = useState(false);
   const musicAutoRef = useRef(false);
   const [mounted, setMounted] = useState(false);
@@ -367,7 +368,15 @@ export default function Lexicalator({
   });
 
   function tapKey(token: string) {
-    if (over || levelDone) return;
+    // A tap during the level-clear fanfare or the game-over screen used to do
+    // NOTHING — no rattle, no sound, nothing — which reads as "the game
+    // didn't respond" (2026-08-02 bug report) even though play is just
+    // paused behind the popup. Nudge the popup itself instead of the belt.
+    if (over || levelDone) {
+      setPopupNudge(true);
+      window.setTimeout(() => setPopupNudge(false), 300);
+      return;
+    }
     // No chest in the bay yet? A key that fits a WAITING chest brings that
     // chest down and starts filling it (Dan, 2026-07-10: taps on any word or
     // fragment must count even before a chest has been dragged down). A key
@@ -775,7 +784,13 @@ export default function Lexicalator({
           itself via the auto-advance effect; game over keeps its button. */}
       {(over || levelDone) && (
         <div className="fixed inset-0 z-[70] grid place-items-center bg-black/30 p-4" role="dialog" aria-modal="true">
-          <div className="w-full max-w-sm rounded-3xl border-4 border-sky-200 bg-white p-5 text-center shadow-2xl">
+          <div
+            className="w-full max-w-sm rounded-3xl border-4 border-sky-200 bg-white p-5 text-center shadow-2xl"
+            style={{ animation: popupNudge ? "lxrattle 300ms" : undefined }}
+          >
+            {/* A stray tap on the belt behind this popup lands here instead of
+                nowhere (2026-08-02) — the shake says "I heard that, but play
+                is paused right now" rather than staying silent. */}
             {levelDone ? (
               // No OK tap between levels (Dan, 2026-07-08) — the banner shows
               // while the next level deals itself (see the auto-advance effect).
