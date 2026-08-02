@@ -61,7 +61,7 @@ export const VERBS: ConjVerb[] = [
   { id: "rencontrer", inf: "rencontrer", en: "to meet", group: G[1], forms: ["rencontre", "rencontres", "rencontre", "rencontrons", "rencontrez", "rencontrent"] },
   { id: "consommer", inf: "consommer", en: "to consume", group: G[1], forms: ["consomme", "consommes", "consomme", "consommons", "consommez", "consomment"] },
   { id: "arreter", inf: "arrêter", en: "to stop", group: G[1], forms: ["arrête", "arrêtes", "arrête", "arrêtons", "arrêtez", "arrêtent"] },
-  { id: "sappeler", inf: "s'appeler", en: "to be called", group: G[2], forms: ["m'appelle", "t'appelles", "s'appelle", "nous appelons", "vous appelez", "s'appellent"] },
+  { id: "sappeler", inf: "s'appeler", en: "to be called", group: G[2], forms: ["m'appelle", "t'appelles", "s'appelle", "nous nous appelons", "vous vous appelez", "s'appellent"] },
   { id: "manger", inf: "manger", en: "to eat (-geons)", group: G[2], forms: ["mange", "manges", "mange", "mangeons", "mangez", "mangent"] },
   { id: "nager", inf: "nager", en: "to swim (-geons)", group: G[2], forms: ["nage", "nages", "nage", "nageons", "nagez", "nagent"] },
   { id: "voyager", inf: "voyager", en: "to travel (-geons)", group: G[2], forms: ["voyage", "voyages", "voyage", "voyageons", "voyagez", "voyagent"] },
@@ -126,5 +126,10 @@ export const CONJ_BY_SIO: Record<string, string[]> = {
 export function conjSpoken(personIdx: number, form: string): string {
   const subj = SPOKEN_SUBJECT[personIdx];
   if (subj === "je" && /^[aeéèêiîoôuh]/i.test(form)) return `j'${form}`;
+  // A reflexive verb's nous/vous form already bakes in its object pronoun
+  // ("nous nous appelons") — that pronoun happens to spell like the subject,
+  // so don't double it (2026-08-02: the doubling used to be an accident of
+  // this always prepending the subject onto an incomplete stored form).
+  if (form.startsWith(`${subj} `)) return form;
   return `${subj} ${form}`;
 }
