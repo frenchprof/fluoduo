@@ -118,7 +118,7 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
               <input
                 ref={inputRef}
                 lang="fr"
-                value={result === null ? value : gap}
+                value={value}
                 onChange={(e) => setValue(e.target.value)}
                 disabled={result !== null}
                 placeholder="le mot qui manque…"
@@ -131,7 +131,7 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
                 <>
                   <div className={`mt-3 flex items-center gap-2 rounded-xl border-2 px-3 py-2 text-sm font-bold ${isRight ? "border-emerald-300 bg-emerald-50 text-emerald-700" : "border-rose-300 bg-rose-50 text-rose-700"}`}>
                     <span>{isRight ? (result === "good" ? "✅ Bien ! (accent différent)" : "✅ Parfait !") : "❌"}</span>
-                    {!isRight && <span lang="fr" className="text-[color:var(--fluo-ink)]">→ {gap}</span>}
+                    {result !== "perfect" && <span lang="fr" className="text-[color:var(--fluo-ink)]">→ {gap}</span>}
                     <button type="button" onClick={() => speak(item.fr, "fr-FR")} className="ml-auto text-base opacity-70 hover:opacity-100" title="Hear it">🔊</button>
                   </div>
                   {item.example && (
