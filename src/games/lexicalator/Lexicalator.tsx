@@ -435,7 +435,15 @@ export default function Lexicalator({
       // three letters of the bare word, or same English gloss. A fragment of
       // another country now rattles (fairness rule) instead of secretly
       // transmuting the chest.
-      const bare = (e: { fr: string }) => e.fr.toLowerCase().replace(/^(le |la |les |l'|un |une |des )/, '');
+      // fr now carries the full prefixed phrase (2026-08-02), so family
+      // matching must strip ALL known prefixes — not just articles — to
+      // still compare the underlying word (nageur/nageuse must match through
+      // "il est "/"elle est ", not just through "un "/"une ").
+      const bare = (e: { fr: string }) =>
+        e.fr.toLowerCase().replace(
+          /^(ils sont |elles sont |ils ont |elles ont |il est |elle est |à la |à l’|à l'|de la |de l’|de l'|le |la |les |l’|l'|un |une |des |au |aux |en |à |du |ce |cet |cette |ces |mon |ma |mes |ton |ta |tes |son |sa |ses |notre |nos |votre |vos |leur |leurs )/,
+          '',
+        );
       const sameFamily = (e: { fr: string; en?: string }) =>
         bare(e).slice(0, 3) === bare(entry).slice(0, 3) ||
         (!!e.en && !!entry.en && e.en.toLowerCase() === entry.en.toLowerCase());

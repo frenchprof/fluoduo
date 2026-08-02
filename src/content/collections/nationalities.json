@@ -24,10 +24,7 @@
         "fs": "française",
         "mp": "français",
         "fp": "françaises"
-      },
-      "syllables": [
-        "France"
-      ]
+      }
     },
     {
       "id": "nat-02-portugal",
@@ -42,12 +39,7 @@
         "fs": "portugaise",
         "mp": "portugais",
         "fp": "portugaises"
-      },
-      "syllables": [
-        "Por",
-        "tu",
-        "gal"
-      ]
+      }
     },
     {
       "id": "nat-03-chine",
@@ -62,10 +54,7 @@
         "fs": "chinoise",
         "mp": "chinois",
         "fp": "chinoises"
-      },
-      "syllables": [
-        "Chine"
-      ]
+      }
     },
     {
       "id": "nat-04-indonesie",
@@ -80,13 +69,7 @@
         "fs": "indonésienne",
         "mp": "indonésiens",
         "fp": "indonésiennes"
-      },
-      "syllables": [
-        "In",
-        "do",
-        "né",
-        "sie"
-      ]
+      }
     },
     {
       "id": "nat-05-coree",
@@ -101,11 +84,7 @@
         "fs": "coréenne",
         "mp": "coréens",
         "fp": "coréennes"
-      },
-      "syllables": [
-        "Co",
-        "rée"
-      ]
+      }
     },
     {
       "id": "nat-06-etats-unis",
@@ -120,13 +99,7 @@
         "fs": "américaine",
         "mp": "américains",
         "fp": "américaines"
-      },
-      "syllables": [
-        "É",
-        "tats",
-        "-U",
-        "nis"
-      ]
+      }
     },
     {
       "id": "nat-07-mexique",
@@ -141,11 +114,7 @@
         "fs": "mexicaine",
         "mp": "mexicains",
         "fp": "mexicaines"
-      },
-      "syllables": [
-        "Me",
-        "xique"
-      ]
+      }
     },
     {
       "id": "nat-08-cuba",
@@ -160,11 +129,7 @@
         "fs": "cubaine",
         "mp": "cubains",
         "fp": "cubaines"
-      },
-      "syllables": [
-        "Cu",
-        "ba"
-      ]
+      }
     },
     {
       "id": "nat-09-philippines",
@@ -179,12 +144,7 @@
         "fs": "philippine",
         "mp": "philippins",
         "fp": "philippines"
-      },
-      "syllables": [
-        "Phi",
-        "lip",
-        "pines"
-      ]
+      }
     },
     {
       "id": "nat-10-argentine",
@@ -199,12 +159,7 @@
         "fs": "argentine",
         "mp": "argentins",
         "fp": "argentines"
-      },
-      "syllables": [
-        "Ar",
-        "gen",
-        "tine"
-      ]
+      }
     },
     {
       "id": "nat-11-russie",
@@ -219,11 +174,7 @@
         "fs": "russe",
         "mp": "russes",
         "fp": "russes"
-      },
-      "syllables": [
-        "Rus",
-        "sie"
-      ]
+      }
     },
     {
       "id": "nat-12-suisse",
@@ -238,10 +189,7 @@
         "fs": "suisse",
         "mp": "suisses",
         "fp": "suisses"
-      },
-      "syllables": [
-        "Suisse"
-      ]
+      }
     },
     {
       "id": "nat-13-belgique",
@@ -256,11 +204,7 @@
         "fs": "belge",
         "mp": "belges",
         "fp": "belges"
-      },
-      "syllables": [
-        "Bel",
-        "gique"
-      ]
+      }
     },
     {
       "id": "nat-14-grece",
@@ -275,10 +219,7 @@
         "fs": "grecque",
         "mp": "grecs",
         "fp": "grecques"
-      },
-      "syllables": [
-        "Grèce"
-      ]
+      }
     },
     {
       "id": "nat-15-turquie",
@@ -293,11 +234,7 @@
         "fs": "turque",
         "mp": "turcs",
         "fp": "turques"
-      },
-      "syllables": [
-        "Tur",
-        "quie"
-      ]
+      }
     },
     {
       "id": "nat-16-allemagne",
@@ -312,13 +249,7 @@
         "fs": "allemande",
         "mp": "allemands",
         "fp": "allemandes"
-      },
-      "syllables": [
-        "Al",
-        "le",
-        "ma",
-        "gne"
-      ]
+      }
     },
     {
       "id": "nat-17-cambodge",
@@ -333,11 +264,7 @@
         "fs": "cambodgienne",
         "mp": "cambodgiens",
         "fp": "cambodgiennes"
-      },
-      "syllables": [
-        "Cam",
-        "bodge"
-      ]
+      }
     },
     {
       "id": "nat-18-singapour",
@@ -352,12 +279,7 @@
         "fs": "singapourienne",
         "mp": "singapouriens",
         "fp": "singapouriennes"
-      },
-      "syllables": [
-        "Sin",
-        "ga",
-        "pour"
-      ]
+      }
     },
     {
       "id": "nat-19-malaisie",
@@ -372,12 +294,7 @@
         "fs": "malaisienne",
         "mp": "malaisiens",
         "fp": "malaisiennes"
-      },
-      "syllables": [
-        "Ma",
-        "lai",
-        "sie"
-      ]
+      }
     },
     {
       "id": "nat-20-thailande",
@@ -392,12 +309,7 @@
         "fs": "thaïlandaise",
         "mp": "thaïlandais",
         "fp": "thaïlandaises"
-      },
-      "syllables": [
-        "Tha",
-        "ï",
-        "lande"
-      ]
+      }
     },
     {
       "id": "nat-21-angleterre",
@@ -412,12 +324,7 @@
         "fs": "anglaise",
         "mp": "anglais",
         "fp": "anglaises"
-      },
-      "syllables": [
-        "An",
-        "gle",
-        "terre"
-      ]
+      }
     },
     {
       "id": "nat-22-grande-bretagne",
@@ -432,12 +339,7 @@
         "fs": "britannique",
         "mp": "britanniques",
         "fp": "britanniques"
-      },
-      "syllables": [
-        "Grande",
-        "-Bre",
-        "tagne"
-      ]
+      }
     },
     {
       "id": "nat-23-tunisie",
@@ -452,12 +354,7 @@
         "fs": "tunisienne",
         "mp": "tunisiens",
         "fp": "tunisiennes"
-      },
-      "syllables": [
-        "Tu",
-        "ni",
-        "sie"
-      ]
+      }
     },
     {
       "id": "nat-24-maroc",
@@ -472,11 +369,7 @@
         "fs": "marocaine",
         "mp": "marocains",
         "fp": "marocaines"
-      },
-      "syllables": [
-        "Ma",
-        "roc"
-      ]
+      }
     },
     {
       "id": "nat-25-algerie",
@@ -491,12 +384,7 @@
         "fs": "algérienne",
         "mp": "algériens",
         "fp": "algériennes"
-      },
-      "syllables": [
-        "Al",
-        "gé",
-        "rie"
-      ]
+      }
     }
   ],
   "gameConfig": {
@@ -527,22 +415,6 @@
           "label": "LES",
           "prefix": "Les "
         }
-      ]
-    },
-    "lexicalator": {
-      "decoys": [
-        "gue",
-        "stan",
-        "zil",
-        "nie",
-        "bré",
-        "lon",
-        "vie",
-        "cie",
-        "gan",
-        "der",
-        "ric",
-        "pou"
       ]
     }
   }
