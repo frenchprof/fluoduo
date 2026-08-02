@@ -541,7 +541,7 @@ function orderRows(
 
 /* ─────────────────────────── shared: AnswerField ─────────────────────────── */
 
-type Part = { key: string; type: "text" | "article"; label?: string; correct: string };
+type Part = { key: string; type: "text" | "article"; label?: string; correct: string; alt?: string[] };
 
 /**
  * The consistent check-answer widget used in every view: type/select the
@@ -560,7 +560,9 @@ function AnswerField({
   const [phase, setPhase] = useState<"idle" | "checked" | "revealed">("idle");
 
   const judge = (p: Part) =>
-    p.type === "article" ? vals[p.key] === p.correct : normCase(vals[p.key] ?? "") === normCase(p.correct);
+    p.type === "article"
+      ? vals[p.key] === p.correct
+      : [p.correct, ...(p.alt ?? [])].some((c) => normCase(vals[p.key] ?? "") === normCase(c));
   const allRight = parts.every(judge);
   const hasArt = parts.some((p) => p.key === "art");
   const multi = parts.length > 2; // nationality forms keep their labels
@@ -644,7 +646,7 @@ function partsFor(row: Row, isNat: boolean, hasArticles: boolean): Part[] {
   // For article decks, always ask for the article (∅ included) — the heading says "art.".
   const parts: Part[] = [];
   if (hasArticles) parts.push({ key: "art", type: "article", label: "article", correct: row.art });
-  parts.push({ key: "fr", type: "text", label: hasArticles ? "noun" : undefined, correct: row.fr });
+  parts.push({ key: "fr", type: "text", label: hasArticles ? "noun" : undefined, correct: row.fr, alt: row.item.alt });
   return parts;
 }
 
@@ -1224,7 +1226,10 @@ function TestRow({
   const parts = partsFor(row, isNat, articleOptions.some((a) => a !== ""));
   const [vals, setVals] = useState<Record<string, string>>({});
   const [phase, setPhase] = useState<"idle" | "checked" | "revealed">("idle");
-  const judge = (p: Part) => p.type === "article" ? vals[p.key] === p.correct : normCase(vals[p.key] ?? "") === normCase(p.correct);
+  const judge = (p: Part) =>
+    p.type === "article"
+      ? vals[p.key] === p.correct
+      : [p.correct, ...(p.alt ?? [])].some((c) => normCase(vals[p.key] ?? "") === normCase(c));
   const allRight = parts.every(judge);
   const answerKeys = parts.map((p) => p.key);
   const lastKey = answerKeys[answerKeys.length - 1];

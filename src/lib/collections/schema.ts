@@ -32,6 +32,15 @@ export type Item = {
    * column prefix to form the sentence (see lib/collections/display.ts).
    */
   fr: string;
+  /**
+   * Other written forms of `fr` that a typed-answer check should also accept
+   * as correct — same meaning, different legitimate phrasing (e.g. singular
+   * vs. generic-plural: "le sport" / "les sports"). Display always uses `fr`;
+   * this only widens grading. Currently read by Flip It's Test Yourself
+   * (FlipItContent.tsx's partsFor/judge) — not yet wired into other graders
+   * (Complete It, Say It, GramMarathon), which still check `fr` alone.
+   */
+  alt?: string[];
   /** English gloss / meaning. */
   en: string;
   /**
