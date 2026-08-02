@@ -39,12 +39,16 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 function speakable(text: string): string {
-  // Drop placeholder markers like Xᵉ so TTS reads cleanly
-  return text.replace(/Xᵉ/g, "");
+  // Drop placeholder markers like Xᵉ so TTS reads cleanly. Case-insensitive:
+  // buildPairSentence already lowercases its output before this runs, so a
+  // case-sensitive /Xᵉ/ here silently never matched ("la xᵉ rue à gauche"
+  // spoke as "la ᵉ rue à gauche" — the bare-x strip below only caught a
+  // word-bounded "x", never the glued "xᵉ").
+  return text.replace(/xᵉ/gi, "").replace(/\s+/g, " ").trim();
 }
 
 function buildPairSentence(left: MatchingLeft, right: MatchingRight): string {
-  return `${left.text} ${right.text}`.toLowerCase().replace(/\bx\b/g, "");
+  return `${left.text} ${right.text}`.toLowerCase();
 }
 
 export default function MatchingGame({ set }: { set: MatchingSet }) {
