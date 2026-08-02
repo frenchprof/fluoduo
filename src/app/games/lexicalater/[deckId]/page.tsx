@@ -3,7 +3,7 @@ import HelpDot from "@/components/HelpDot";
 import Lexicalator, { type LexEntry } from "@/games/lexicalator/Lexicalator";
 import AuthGate from "@/components/AuthGate";
 import { CURATED } from "@/content/collections";
-import { bareWord, displayFr } from "@/lib/collections/display";
+import { displayFr } from "@/lib/collections/display";
 import { isLexReady, lexBase } from "@/lib/collections/lexReady";
 
 export function generateStaticParams() {
@@ -61,7 +61,14 @@ export default async function ConveyorPage({
     // heard as « Les sciences ») — completion TTS says the article/prefix form.
     const say = displayFr(it, collection);
     return {
-      id: it.id, fr: lexBase(it.fr), en: bareWord(it.en), syllables: it.syllables!,
+      // Keep the full en gloss, register marker and all (2026-08-02 bug
+      // report): bareWord() used to strip "(m)"/"(f)" here, so gendered
+      // sibling pairs (nageur/nageuse, chef/cheffe, acteur/actrice…) showed
+      // an IDENTICAL chest label with nothing to tell them apart. The
+      // sibling-morph mechanic (tapKey) forgives most mixups, but only when
+      // the sibling is actually dealt — otherwise the tap reads as a plain
+      // decoy and the miss is unexplained.
+      id: it.id, fr: lexBase(it.fr), en: it.en, syllables: it.syllables!,
       say: say !== it.fr ? say : undefined,
     };
   });
