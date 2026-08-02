@@ -19,6 +19,7 @@ import type { CSSProperties, MouseEvent as ReactMouseEvent, ReactNode } from "re
 const PAGE_WIDTH_KEY = "fluolingo:pageWidth";
 import { isLexReadyId } from "@/lib/collections/lexReady";
 import { isSpecuLearnReady } from "@/lib/collections/speculearnReady";
+import { hasMatching } from "@/lib/collections/loadCollections";
 import { CURATED } from "@/content/collections";
 import { lessonsForDeck } from "@/content/lessons";
 import { supplementsForDeck, type Supplement } from "@/content/supplements";
@@ -495,6 +496,7 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
   const pretestHref = pretestHrefForDeck(collectionId);
   const rainSet = getLetrisSet(collectionId.replace("-letris", ""));
   const composeBank = composeBankForDeck(collectionId);
+  const curatedDeck = CURATED.find((c) => c.id === collectionId);
   return [
     ...(pretestHref
       ? [{ key: "pretest", label: "Pre-Test", emoji: "🧪", href: pretestHref, hint: "try it first" } as ShellTab]
@@ -532,13 +534,20 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     ...(isLexReadyId(collectionId)
       ? [{ key: "match", label: "LexicaLater", emoji: "🧰", href: `/games/lexicalater/${collectionId}`, hint: "stitch word parts" } as ShellTab]
       : []),
+    // Formerly reachable only through the Decks browser, and only for one
+    // hardcoded deck id (directions-matching) — hasMatching() was already
+    // generic, the restriction wasn't real (Dan, 2026-08-02 Decks→Flip It
+    // merge). Every deck with matching pairs authored gets this flap now.
+    ...(curatedDeck && hasMatching(curatedDeck)
+      ? [{ key: "matching", label: "Match It", emoji: "🔗", href: `/games/matching/${collectionId}`, hint: "match the pairs" } as ShellTab]
+      : []),
     ...(composeBank
       ? [{ key: "compose", label: "Compose It", emoji: "🧩", href: `/games/compose/${composeBank.id}`, hint: "build dialogues" } as ShellTab]
       : []),
     // Resurrected as a NAMED activity (Dan, 2026-07-22) — the per-deck typed
     // sprint, distinct from the Final's authored bank. Only for decks whose
     // items carry gaps, so the marathon is never empty.
-    ...(CURATED.find((c) => c.id === collectionId)?.items?.some((it: { gap?: string; fr?: string }) => it.gap && it.fr?.includes(it.gap))
+    ...(curatedDeck?.items?.some((it) => it.gap && it.fr?.includes(it.gap))
       ? [{ key: "grammarathon", label: "GramMarathon", emoji: "🏃", href: `/practice/grammarathon/${collectionId}`, hint: "typed grammar sprint" } as ShellTab]
       : []),
     // né « Say It » — renamed WorDrill (Dan, 2026-07-19); key stays "say" so

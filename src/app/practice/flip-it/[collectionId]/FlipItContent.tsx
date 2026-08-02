@@ -179,6 +179,12 @@ export default function FlipItPage({
   return <FlipIt collection={collection} items={items} />;
 }
 
+// Decks→Flip It merge (Dan, 2026-08-02): the retired Decks browser also
+// showed a unit/lesson badge, crossRefs ("Also revisited in…"), and the
+// deck's subtitle. Deliberately NOT ported here — Flip It is always reached
+// from inside a SIO page/popup that already carries that context, and none
+// of the three helps a learner find the correct answer (Dan's litmus test,
+// AGENTS.md 2026-07-02: text that doesn't do that is redundant).
 function TopBar({ crumb }: { crumb: string }) {
   return (
     <div className="border-b-2 border-[color:var(--cahier-ink)]/15 bg-[var(--cahier-paper-2)]/85 backdrop-blur">

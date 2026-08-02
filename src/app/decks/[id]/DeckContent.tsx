@@ -51,10 +51,12 @@ function DeckPageInner({ id }: { id: string }) {
 
   useEffect(() => {
     let cancelled = false;
-    const curated = CURATED.find((c) => c.id === id);
-    if (curated) {
-      setState({ kind: "ok", collection: curated, source: "curated" });
-      logEvent("deck.open", { id, source: "curated" });
+    // Curated decks no longer browse here — Flip It is a strict superset and
+    // this browser had no learner-facing link anyway (Dan, 2026-08-02
+    // Decks→Flip It merge). Redirect rather than 404 for any surviving
+    // bookmark/link. Firestore (user-created) decks are unaffected.
+    if (CURATED.some((c) => c.id === id)) {
+      router.replace(`/practice/flip-it/${id}`);
       return;
     }
     (async () => {
@@ -78,7 +80,7 @@ function DeckPageInner({ id }: { id: string }) {
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [id, router]);
 
   async function onDelete() {
     if (state.kind !== "ok") return;
@@ -254,8 +256,8 @@ function DeckView({
               🌧️ Vocabularain
             </Link>
           )}
-          {games.matching && collection.id === "directions-matching" && (
-            <Link href="/games/matching" className="fluo-btn fluo-btn-secondary">
+          {games.matching && (
+            <Link href={`/games/matching/${collection.id}`} className="fluo-btn fluo-btn-secondary">
               🔗 Matching
             </Link>
           )}
