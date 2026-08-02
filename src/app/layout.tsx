@@ -6,7 +6,6 @@ import FeedbackButton from "@/components/FeedbackButton";
 import ProgressSync from "@/components/ProgressSync";
 import PageViewTracker from "@/components/PageViewTracker";
 import KeyNav from "@/components/KeyNav";
-import SuiteBanner from "@/components/SuiteBanner";
 import AccentBar from "@/components/AccentBar";
 import RewardToast from "@/components/RewardToast";
 
@@ -76,7 +75,6 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} ${publicSans.variable} ${roboto.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <SuiteBanner />
         {children}
         {/* Who runs this + what's collected (audit 2026-07-19): the app
             records every answer for learning analytics on identifiable
