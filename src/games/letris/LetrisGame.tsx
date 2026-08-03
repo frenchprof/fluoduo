@@ -218,6 +218,12 @@ export default function LetrisGame({
     }
   }, [gameOver]); // eslint-disable-line react-hooks/exhaustive-deps
   const [flash, setFlash] = useState<{ col: number; kind: "ok" | "bad" } | null>(null);
+  // The full sentence a correct catch SPEAKS ("Le café.") never appeared as
+  // text anywhere — only the bare tile word does, and the article/prefix must
+  // stay off the falling tile itself (it would hand the learner the sorting
+  // answer). So it's written out here, briefly, synced with the TTS, right
+  // after the sort decision is already made (Dan, 2026-08-03).
+  const [sentenceFlash, setSentenceFlash] = useState<string | null>(null);
   const [creditsDone, setCreditsDone] = useState(false); // hold tiles until the credits splash clears
   // The play actually begins when the credits clear (Dan, 2026-07-15: the
   // Activities panel showed zero because game events were never wired).
@@ -319,11 +325,14 @@ export default function LetrisGame({
       // Dawn plays the big fanfare below — the small ta-daa would double it.
       let dawnFanfare = false;
       if (correct) {
+        const sentence = buildSentence(set.categories[a.col], a.tile);
         if (speech && tts) speak(
-          buildSentence(set.categories[a.col], a.tile),
+          sentence,
           set.language ? `${set.language}-FR` : "fr-FR",
           { interrupt: false },
         );
+        setSentenceFlash(sentence);
+        window.setTimeout(() => setSentenceFlash(null), 2000);
         const m = correctRef.current;
         m.set(a.tile.text, (m.get(a.tile.text) ?? 0) + 1);
         const pm = phaseCorrectRef.current;
@@ -647,6 +656,7 @@ export default function LetrisGame({
       <style>{`
         @keyframes vrain{0%{transform:translateY(-60px);opacity:0}10%{opacity:1}100%{transform:translateY(560px);opacity:0}}
         @keyframes vrain-slant{0%{transform:translate(0,-60px) rotate(9deg);opacity:0}10%{opacity:1}100%{transform:translate(64px,560px) rotate(9deg);opacity:0}}
+        @keyframes ltrsentence{0%{opacity:0;transform:translateY(-6px) scale(.92)}12%{opacity:1;transform:translateY(0) scale(1)}82%{opacity:1}100%{opacity:0}}
       `}</style>
       {phaseMsg && (() => {
         const M: Record<PhaseMsg, { emoji: string; title: string; body: React.ReactNode; btn: string }> = {
@@ -739,6 +749,19 @@ export default function LetrisGame({
           >
             {phase === "storm" ? "⛈️" : "🌙"}
           </span>
+          {/* The full form, written — synced with the completion TTS, AFTER
+              the sort is already made so it never leaks the answer. */}
+          {sentenceFlash && (
+            <div className="pointer-events-none absolute inset-x-0 top-2 z-30 flex justify-center px-2">
+              <span
+                lang="fr"
+                className="rounded-full border-2 border-white bg-[#2e7d00]/90 px-3 py-1 text-center text-sm font-black text-white shadow-lg"
+                style={{ animation: "ltrsentence 2000ms ease-out both" }}
+              >
+                ✓ {sentenceFlash}
+              </span>
+            </div>
+          )}
           {Array.from({ length: ROWS }).map((_, r) =>
             Array.from({ length: cols }).map((_, c) => {
               const stacked = board[r][c];
