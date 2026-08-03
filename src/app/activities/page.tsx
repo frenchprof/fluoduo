@@ -23,6 +23,7 @@ import { lessonsForDeck } from "@/content/lessons";
 import { isLexReadyId } from "@/lib/collections/lexReady";
 import { isGramMarathonReady } from "@/lib/collections/gramMarathonReady";
 import { isSpecuLearnReady } from "@/lib/collections/speculearnReady";
+import { hasMatching } from "@/lib/collections/loadCollections";
 import { getLetrisSet } from "@/games/letris/sets";
 import { searchDecks } from "@/lib/search";
 import { shortTitle } from "@/lib/shortTitles";
@@ -45,18 +46,22 @@ function cellsFor(c: Collection): Cell[] {
     { emoji: "🃏", title: "Flip It", href: `/practice/flip-it/${c.id}` },
     { emoji: "🌧️", title: "VocabulaRain", href: getLetrisSet(c.id.replace("-letris", "")) ? `/games/vocabularain/${c.id.replace("-letris", "")}` : null },
     { emoji: "🧰", title: "LexicaLater", href: isLexReadyId(c.id) ? `/games/lexicalater/${c.id}` : null },
+    { emoji: "🔗", title: "Match It", href: hasMatching(c) ? `/games/matching/${c.id}` : null },
     { emoji: "🧩", title: "Compose It", href: composeBankForDeck(c.id) ? `/games/compose/${composeBankForDeck(c.id)!.id}` : null },
     { emoji: "🏃", title: "GramMarathon", href: isGramMarathonReady(c) ? `/practice/grammarathon/${c.id}` : null },
     { emoji: "🎙️", title: "WorDrill", href: `/practice/say-it/${c.id}` },
   ];
 }
 
-const HEAD = ["🧪", "🔮", "📚", "🃏", "🌧️", "🧰", "🧩", "🏃", "🎙️"];
-const HEAD_TITLES = ["Pre-Test", "SpecuLearn", "Lesson", "Flip It", "Vocabularain", "LexicaLater", "Compose It", "GramMarathon", "WorDrill"];
+const HEAD = ["🧪", "🔮", "📚", "🃏", "🌧️", "🧰", "🔗", "🧩", "🏃", "🎙️"];
+const HEAD_TITLES = ["Pre-Test", "SpecuLearn", "Lesson", "Flip It", "Vocabularain", "LexicaLater", "Match It", "Compose It", "GramMarathon", "WorDrill"];
 /** Column chip colors — the same hue each activity's tile wears on the Guide
  *  page (Pre-Test gets the highlighter yellow). Must stay in lockstep with
- *  HEAD/HEAD_TITLES and cellsFor()'s own 9-cell order — a dropped entry
- *  here silently shifts every column one slot off (2026-08-02 bug). */
+ *  HEAD/HEAD_TITLES and cellsFor()'s own 10-cell order — a dropped entry
+ *  here silently shifts every column one slot off (2026-08-02 bug; Match It
+ *  itself was the dropped entry until 2026-08-03 — it had a real, working
+ *  per-deck flap in deckActivityTabs() but no column here at all, so
+ *  directions-matching/languages' Match It was invisible on this matrix). */
 const HEAD_CHIPS: { bg: string; border: string }[] = [
   { bg: "var(--cahier-hl, #eaff00)", border: "#2a2e6e" },
   { bg: "#ece2fa", border: "#8a5fd4" },
@@ -64,6 +69,7 @@ const HEAD_CHIPS: { bg: string; border: string }[] = [
   { bg: "#def3f5", border: "#2bb6c2" },
   { bg: "#ece2fa", border: "#8a5fd4" },
   { bg: "#fbe6cf", border: "#e8852e" },
+  { bg: "#dbeafe", border: "#3b82f6" },
   { bg: "#ecf7cf", border: "#7bbf2e" },
   { bg: "#fbeec4", border: "#e3a700" },
   { bg: "#fbe6cf", border: "#e8852e" },
