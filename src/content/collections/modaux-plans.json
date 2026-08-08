@@ -1,0 +1,79 @@
+{
+ "id": "modaux-plans",
+ "title": "Aller + infinitif",
+ "subtitle": "what I'm going to do",
+ "langPair": "fr-en",
+ "owner": "curated",
+ "visibility": "public",
+ "unit": 4,
+ "lessonNo": 7,
+ "lessonSlug": "futur-proche",
+ "tags": [],
+ "seq": 409,
+ "items": [
+  {
+   "id": "modaux-plans-01",
+   "fr": "Je vais faire du sport.",
+   "en": "I'm going to do sport.",
+   "tags": [],
+   "gap": "vais",
+   "lemma": "aller"
+  },
+  {
+   "id": "modaux-plans-02",
+   "fr": "Elle va manger au restaurant.",
+   "en": "She's going to eat at the restaurant.",
+   "tags": [],
+   "gap": "va",
+   "lemma": "aller"
+  },
+  {
+   "id": "modaux-plans-03",
+   "fr": "Nous allons visiter le marché.",
+   "en": "We're going to visit the market.",
+   "tags": [],
+   "gap": "allons",
+   "lemma": "aller"
+  },
+  {
+   "id": "modaux-plans-04",
+   "fr": "Vous allez commander une entrée.",
+   "en": "You're going to order a starter.",
+   "tags": [],
+   "gap": "allez",
+   "lemma": "aller"
+  },
+  {
+   "id": "modaux-plans-05",
+   "fr": "Je vais prendre le menu du jour.",
+   "en": "I'm going to have the set menu.",
+   "tags": [],
+   "gap": "vais",
+   "lemma": "aller"
+  },
+  {
+   "id": "modaux-plans-06",
+   "fr": "Ils vont réserver pour huit heures.",
+   "en": "They're going to book for eight o'clock.",
+   "tags": [],
+   "gap": "vont",
+   "lemma": "aller"
+  },
+  {
+   "id": "modaux-plans-07",
+   "fr": "Tu vas goûter le dessert.",
+   "en": "You're going to taste the dessert.",
+   "tags": [],
+   "gap": "vas",
+   "lemma": "aller"
+  },
+  {
+   "id": "modaux-plans-08",
+   "fr": "On va payer l'addition.",
+   "en": "We're going to pay the bill.",
+   "tags": [],
+   "gap": "va",
+   "lemma": "aller"
+  }
+ ]
+}

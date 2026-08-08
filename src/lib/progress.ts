@@ -45,13 +45,15 @@ import {
   XP_SIO_MASTERY,
   XP_CONVERSATION,
 } from "@/lib/economy";
+import { dayKey, previousDay, learnerZone } from "@/lib/dayKey";
 
 export type Progress = {
   doneSios: string[];
   gems: number; // SPENDABLE balance (paid by badges, spent on cosmetics)
   xp: number; // lifetime score (drives levels + leaderboard); never spent
   streak: number;
-  lastActiveDay: string | null; // "YYYY-MM-DD"
+  lastActiveDay: string | null; // "YYYY-MM-DD", learner-local, 04:00 rollover
+  timeZone?: string; // IANA zone lastActiveDay was computed in
   itemSrs: Record<string, ItemSrs>;
   badges: string[]; // earned badge ids
   cosmetics: { owned: string[]; equipped: Record<string, string> };
@@ -70,9 +72,7 @@ export type ItemSrs = {
 export const GEMS_MASTERY_BONUS = XP_SIO_MASTERY; // kept as a re-export for callers
 const STORAGE_KEY = "fluolingo:progress";
 
-function todayStr(): string {
-  return new Date().toISOString().slice(0, 10);
-}
+// todayStr() replaced by dayKey() - learner-local zone, 04:00 rollover.
 
 export function defaultProgress(): Progress {
   return { doneSios: [], gems: 0, xp: 0, streak: 0, lastActiveDay: null, itemSrs: {}, badges: [], cosmetics: { owned: [], equipped: {} } };
@@ -199,11 +199,10 @@ function finalize(p: Progress): Progress {
 }
 
 function bumpStreakToday(p: Progress): Progress {
-  const today = todayStr();
+  const today = dayKey();
   if (p.lastActiveDay === today) return p;
-  const yesterday = new Date(Date.now() - 86_400_000).toISOString().slice(0, 10);
-  const streak = p.lastActiveDay === yesterday ? p.streak + 1 : 1;
-  return { ...p, streak, lastActiveDay: today };
+  const streak = p.lastActiveDay === previousDay(today) ? p.streak + 1 : 1;
+  return { ...p, streak, lastActiveDay: today, timeZone: learnerZone() };
 }
 
 export function isSioDone(id: string, p: Progress): boolean {

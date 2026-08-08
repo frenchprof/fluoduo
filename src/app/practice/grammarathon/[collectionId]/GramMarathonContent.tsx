@@ -26,6 +26,7 @@ import { speak } from "@/games/letris/speech";
 import { gradeGap, splitGap, type Grade } from "@/lib/practice/cloze";
 import { recordItemResult } from "@/lib/progress";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
+import { gapSentence, isPlayableGap } from "@/lib/collections/gapSentence";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -53,7 +54,7 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
   // idée !") sits the game out.
   useEffect(() => {
     if (!deck) return;
-    setOrder(shuffle(deck.items.map((it, idx) => (it.gap && it.fr.includes(it.gap) ? idx : -1)).filter((x) => x >= 0)));
+    setOrder(shuffle(deck.items.map((it, idx) => (isPlayableGap(it) ? idx : -1)).filter((x) => x >= 0)));
   }, [deck]);
 
   useEffect(() => {
@@ -68,7 +69,7 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
   const done = i >= total;
   const item = done ? null : deck.items[order[i]];
   const gap = item?.gap ?? "";
-  const { before, after } = item ? splitGap(item.fr, gap) : { before: "", after: "" };
+  const { before, after } = item ? splitGap(gapSentence(item), gap) : { before: "", after: "" };
   const isRight = result === "perfect" || result === "good";
 
   function check() {
@@ -89,7 +90,7 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
   }
 
   function restart() {
-    setOrder(shuffle(deck!.items.map((it, idx) => (it.gap && it.fr.includes(it.gap) ? idx : -1)).filter((x) => x >= 0)));
+    setOrder(shuffle(deck!.items.map((it, idx) => (isPlayableGap(it) ? idx : -1)).filter((x) => x >= 0)));
     setI(0); setValue(""); setResult(null); setScore({ ok: 0, total: 0 });
   }
 

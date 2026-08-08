@@ -138,6 +138,115 @@
    "example": "Vous mangez des œufs.",
    "tags": [],
    "gap": "d'"
+  },
+  {
+   "id": "partitifs-q01",
+   "fr": "Je mange beaucoup de pain.",
+   "en": "I eat a lot of bread.",
+   "example": "Je mange du pain.",
+   "exampleEn": "I eat bread.",
+   "emoji": "🥖",
+   "tags": [
+    "quantite"
+   ],
+   "gap": "de",
+   "syllables": [
+    "beau",
+    "coup",
+    "de",
+    "pain"
+   ]
+  },
+  {
+   "id": "partitifs-q02",
+   "fr": "Il y a beaucoup d'abricots.",
+   "en": "There are a lot of apricots.",
+   "example": "Il y a des abricots.",
+   "exampleEn": "There are apricots.",
+   "emoji": "🍑",
+   "tags": [
+    "quantite"
+   ],
+   "gap": "d'",
+   "syllables": [
+    "beau",
+    "coup",
+    "d'a",
+    "bri",
+    "cots"
+   ]
+  },
+  {
+   "id": "partitifs-q03",
+   "fr": "J'ai assez de sel.",
+   "en": "I have enough salt.",
+   "example": "J'ai du sel.",
+   "exampleEn": "I have salt.",
+   "emoji": "🧂",
+   "tags": [
+    "quantite"
+   ],
+   "gap": "de",
+   "syllables": [
+    "as",
+    "sez",
+    "de",
+    "sel"
+   ]
+  },
+  {
+   "id": "partitifs-q04",
+   "fr": "Tu manges trop de sucre.",
+   "en": "You eat too much sugar.",
+   "example": "Tu manges du sucre.",
+   "exampleEn": "You eat sugar.",
+   "emoji": "🍬",
+   "tags": [
+    "quantite"
+   ],
+   "gap": "de",
+   "syllables": [
+    "trop",
+    "de",
+    "sucre"
+   ]
+  },
+  {
+   "id": "partitifs-q05",
+   "fr": "Je bois un peu de lait.",
+   "en": "I drink a little milk.",
+   "example": "Je bois du lait.",
+   "exampleEn": "I drink milk.",
+   "emoji": "🥛",
+   "tags": [
+    "quantite"
+   ],
+   "gap": "de",
+   "syllables": [
+    "un",
+    "peu",
+    "de",
+    "lait"
+   ]
+  },
+  {
+   "id": "partitifs-q06",
+   "fr": "Elle achète un kilo de pommes.",
+   "en": "She buys a kilo of apples.",
+   "example": "Elle achète des pommes.",
+   "exampleEn": "She buys apples.",
+   "emoji": "🍎",
+   "tags": [
+    "quantite"
+   ],
+   "gap": "de",
+   "syllables": [
+    "un",
+    "ki",
+    "lo",
+    "de",
+    "pommes"
+   ]
   }
  ]
 }

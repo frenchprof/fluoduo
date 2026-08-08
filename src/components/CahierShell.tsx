@@ -36,6 +36,7 @@ import AccountButton from "@/components/AccountButton";
 import SearchOverlay from "@/components/SearchOverlay";
 import RankingOverlay from "@/components/RankingOverlay";
 import SoundControl from "@/components/SoundControl";
+import { isPlayableGap } from "@/lib/collections/gapSentence";
 
 /** Dice Practice is an MCQ over the deck's letris columns — no columns, no game. */
 export function hasDicePractice(collectionId: string): boolean {
@@ -547,7 +548,7 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     // Resurrected as a NAMED activity (Dan, 2026-07-22) — the per-deck typed
     // sprint, distinct from the Final's authored bank. Only for decks whose
     // items carry gaps, so the marathon is never empty.
-    ...(curatedDeck?.items?.some((it) => it.gap && it.fr?.includes(it.gap))
+    ...(curatedDeck?.items?.some(isPlayableGap)
       ? [{ key: "grammarathon", label: "GramMarathon", emoji: "🏃", href: `/practice/grammarathon/${collectionId}`, hint: "typed grammar sprint" } as ShellTab]
       : []),
     // né « Say It » — renamed WorDrill (Dan, 2026-07-19); key stays "say" so
