@@ -26,6 +26,9 @@ import { speak } from "@/games/letris/speech";
 import { gradeGap, splitGap, type Grade } from "@/lib/practice/cloze";
 import { recordItemResult } from "@/lib/progress";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
+import { gapSentence, isPlayableGap } from "@/lib/collections/gapSentence";
+import { buildLadder, shownRungs } from "@/lib/help/ladder";
+import { SIOS } from "@/content/sios";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -46,6 +49,15 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
   const [value, setValue] = useState("");
   const [result, setResult] = useState<Grade | null>(null);
   const [score, setScore] = useState({ ok: 0, total: 0 });
+  // Help ladder (PRD §8). Per-deck GramMarathon had none at all — a learner
+  // stuck here got a bare "wrong", while the same grammar point in Finale
+  // offered four escalating clues. That asymmetry was backwards: Finale is the
+  // summative surface; the lesson drill is where scaffolding belongs most.
+  const [clue, setClue] = useState(0);
+  const sioTopic = useMemo(
+    () => SIOS.find((s) => s.collectionId === collectionId)?.topic,
+    [collectionId],
+  );
   const inputRef = useRef<HTMLInputElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
 
@@ -53,7 +65,7 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
   // idée !") sits the game out.
   useEffect(() => {
     if (!deck) return;
-    setOrder(shuffle(deck.items.map((it, idx) => (it.gap && it.fr.includes(it.gap) ? idx : -1)).filter((x) => x >= 0)));
+    setOrder(shuffle(deck.items.map((it, idx) => (isPlayableGap(it) ? idx : -1)).filter((x) => x >= 0)));
   }, [deck]);
 
   useEffect(() => {
@@ -68,20 +80,30 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
   const done = i >= total;
   const item = done ? null : deck.items[order[i]];
   const gap = item?.gap ?? "";
-  const { before, after } = item ? splitGap(item.fr, gap) : { before: "", after: "" };
+  const { before, after } = item ? splitGap(gapSentence(item), gap) : { before: "", after: "" };
   const isRight = result === "perfect" || result === "good";
+
+  /** Rungs for the current item. No `category` — per-deck items carry no
+   *  hand-authored label, so this ladder opens at the lesson rung and runs one
+   *  shorter than Finale's. Same shape, same ending: a reachable answer. */
+  function ladderForItem() {
+    return buildLadder({ answer: gap, topic: sioTopic });
+  }
 
   function check() {
     if (result !== null || !item) return;
     const g = gradeGap(value, gap);
     setResult(g);
     setScore((s) => ({ ok: s.ok + (g !== "wrong" ? 1 : 0), total: s.total + 1 }));
-    recordItemResult(item.id, g !== "wrong", undefined, `grammarathon:${collectionId}`);
+    recordItemResult(item.id, g !== "wrong", undefined, `grammarathon:${collectionId}`, {
+      hintsTaken: clue,
+    });
     if (g !== "wrong") sfx.correct(); else sfx.wrong();
-    if (g !== "wrong") speak(item.fr, "fr-FR");
+    if (g !== "wrong") speak(gapSentence(item), "fr-FR");
   }
 
   function next() {
+    setClue(0);
     if (i + 1 >= total) sfx.stage(); // run complete — the done card is about to show
     setResult(null);
     setValue("");
@@ -89,8 +111,8 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
   }
 
   function restart() {
-    setOrder(shuffle(deck!.items.map((it, idx) => (it.gap && it.fr.includes(it.gap) ? idx : -1)).filter((x) => x >= 0)));
-    setI(0); setValue(""); setResult(null); setScore({ ok: 0, total: 0 });
+    setOrder(shuffle(deck!.items.map((it, idx) => (isPlayableGap(it) ? idx : -1)).filter((x) => x >= 0)));
+    setI(0); setValue(""); setResult(null); setScore({ ok: 0, total: 0 }); setClue(0);
   }
 
   const body = (
@@ -113,6 +135,15 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
               {after}
             </p>
             <p className="mt-1 text-sm text-[color:var(--fluo-ink-soft)]">{item.en}</p>
+            {clue > 0 && (
+              <div className="mt-3 space-y-1">
+                {shownRungs(ladderForItem(), clue).map((r, k) => (
+                  <p key={k} lang="fr" className="rounded-lg bg-amber-50 px-2 py-1 text-sm text-amber-900">
+                    {r.text}
+                  </p>
+                ))}
+              </div>
+            )}
 
             <form onSubmit={(e) => { e.preventDefault(); result === null ? check() : next(); }} className="mt-4">
               <input
@@ -126,13 +157,44 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
                 autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
               />
               {result === null ? (
-                <button type="submit" className="fluo-btn mt-3 w-full">Check</button>
+                <>
+                  <button type="submit" className="fluo-btn mt-3 w-full">Check</button>
+                  {clue < ladderForItem().length && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const rungs = ladderForItem();
+                        const next = Math.min(rungs.length, clue + 1);
+                        setClue(next);
+                        const rung = rungs[next - 1]?.level ?? "nudge";
+                        void import("@/lib/firebase/usage")
+                          .then((m) =>
+                            m.logEvent(rung === "answer" ? "answer.reveal" : "hint.tap", {
+                              surface: "grammarathon",
+                              itemId: item.id,
+                              deck: collectionId,
+                              rung,
+                              level: next,
+                            }),
+                          )
+                          .catch(() => {});
+                      }}
+                      className="mt-2 w-full rounded-full border-2 border-amber-300 bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-800"
+                    >
+                      {clue === 0
+                        ? "💡 un indice"
+                        : clue >= ladderForItem().length - 1
+                          ? "✅ voir la réponse"
+                          : "💡 encore un indice"}
+                    </button>
+                  )}
+                </>
               ) : (
                 <>
                   <div className={`mt-3 flex items-center gap-2 rounded-xl border-2 px-3 py-2 text-sm font-bold ${isRight ? "border-emerald-300 bg-emerald-50 text-emerald-700" : "border-rose-300 bg-rose-50 text-rose-700"}`}>
                     <span>{isRight ? (result === "good" ? "✅ Bien ! (accent différent)" : "✅ Parfait !") : "❌"}</span>
                     {result !== "perfect" && <span lang="fr" className="text-[color:var(--fluo-ink)]">→ {gap}</span>}
-                    <button type="button" onClick={() => speak(item.fr, "fr-FR")} className="ml-auto text-base opacity-70 hover:opacity-100" title="Hear it">🔊</button>
+                    <button type="button" onClick={() => speak(gapSentence(item), "fr-FR")} className="ml-auto text-base opacity-70 hover:opacity-100" title="Hear it">🔊</button>
                   </div>
                   {item.example && (
                     <p lang="fr" className="mt-2 text-sm italic text-[color:var(--fluo-ink-soft)]">{item.example}</p>

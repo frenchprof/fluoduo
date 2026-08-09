@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Fraunces, Public_Sans, Roboto } from "next/font/google";
+import { Geist, Geist_Mono, Work_Sans, Patrick_Hand, Roboto } from "next/font/google";
 import "./globals.css";
 import BetaNotice from "@/components/BetaNotice";
 import FeedbackButton from "@/components/FeedbackButton";
 import ProgressSync from "@/components/ProgressSync";
 import PageViewTracker from "@/components/PageViewTracker";
 import KeyNav from "@/components/KeyNav";
-import SuiteBanner from "@/components/SuiteBanner";
 import AccentBar from "@/components/AccentBar";
 import RewardToast from "@/components/RewardToast";
 
@@ -34,14 +33,28 @@ const roboto = Roboto({
 
 // "Le Cahier" type system: characterful serif display, humanist body.
 // No handwriting/cursive font anywhere in the product — Dan's explicit call.
-const fraunces = Fraunces({
+// Work Sans is the FUNCTIONAL face: body, controls, navigation, metrics,
+// data, dense headings, anything accessibility-critical. It powers both
+// --font-body and --font-display, so the 73 existing .cahier-display uses
+// all become functional headings — correct by default.
+const workSans = Work_Sans({
+  variable: "--font-body",
+  subsets: ["latin"],
+  display: "swap",
+});
+const workSansDisplay = Work_Sans({
   variable: "--font-display",
   subsets: ["latin"],
   display: "swap",
 });
 
-const publicSans = Public_Sans({
-  variable: "--font-body",
+// Patrick Hand is the EXPRESSIVE display face: major page headings, selected
+// section headings, moments of personality. Deliberately OPT-IN via the
+// .cahier-hand class — never applied wholesale, because the rule is
+// "use it to establish expressive hierarchy", not "headings = Patrick Hand".
+const patrickHand = Patrick_Hand({
+  variable: "--font-hand",
+  weight: "400",
   subsets: ["latin"],
   display: "swap",
 });
@@ -73,10 +86,9 @@ export default function RootLayout({
       // reverse. English-heavy blocks can opt out with lang="en" spans.
       lang="fr"
       translate="no"
-      className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} ${publicSans.variable} ${roboto.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${workSans.variable} ${workSansDisplay.variable} ${patrickHand.variable} ${roboto.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <SuiteBanner />
         {children}
         {/* Who runs this + what's collected (audit 2026-07-19): the app
             records every answer for learning analytics on identifiable

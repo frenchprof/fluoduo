@@ -1,294 +1,354 @@
 {
-  "id": "objets-articles",
-  "title": "Un, une ou des ?",
-  "subtitle": "Everyday objects, sorted by article",
-  "langPair": "fr-en",
-  "owner": "curated",
-  "visibility": "public",
-  "unit": 2,
-  "lessonNo": 21,
-  "lessonSlug": "objets-articles",
-  "tags": [],
-  "seq": 221,
-  "gameConfig": {
-    "letris": {
-      "columns": [
-        {
-          "key": "un",
-          "label": "UN",
-          "prefix": "un "
-        },
-        {
-          "key": "une",
-          "label": "UNE",
-          "prefix": "une "
-        },
-        {
-          "key": "des",
-          "label": "DES",
-          "prefix": "des "
-        }
-      ]
+ "id": "objets-articles",
+ "title": "Un, une ou des ?",
+ "subtitle": "Everyday objects, sorted by article",
+ "langPair": "fr-en",
+ "owner": "curated",
+ "visibility": "public",
+ "unit": 2,
+ "lessonNo": 21,
+ "lessonSlug": "objets-articles",
+ "tags": [],
+ "seq": 221,
+ "gameConfig": {
+  "letris": {
+   "columns": [
+    {
+     "key": "un",
+     "label": "UN",
+     "prefix": "un "
     },
-    "lexicalator": {
-      "decoys": [
-        "sacs",
-        "livres",
-        "phane",
-        "yion",
-        "porte",
-        "seau",
-        "nette",
-        "cier",
-        "gome",
-        "feuil",
-        "denne",
-        "tisse"
-      ]
+    {
+     "key": "une",
+     "label": "UNE",
+     "prefix": "une "
+    },
+    {
+     "key": "des",
+     "label": "DES",
+     "prefix": "des "
     }
+   ]
   },
-  "items": [
-    {
-      "id": "objets-articles-01",
-      "fr": "sac",
-      "en": "bag",
-      "syllables": [
-        "sac"
-      ],
-      "tags": [
-        "col:un"
-      ]
-    },
-    {
-      "id": "objets-articles-02",
-      "fr": "livre",
-      "en": "book",
-      "syllables": [
-        "livre"
-      ],
-      "tags": [
-        "col:un"
-      ]
-    },
-    {
-      "id": "objets-articles-03",
-      "fr": "cahier",
-      "en": "exercise book",
-      "syllables": [
-        "ca",
-        "hier"
-      ],
-      "tags": [
-        "col:un"
-      ]
-    },
-    {
-      "id": "objets-articles-04",
-      "fr": "téléphone",
-      "en": "phone",
-      "syllables": [
-        "té",
-        "lé",
-        "phone"
-      ],
-      "tags": [
-        "col:un"
-      ]
-    },
-    {
-      "id": "objets-articles-05",
-      "fr": "stylo",
-      "en": "pen",
-      "syllables": [
-        "sty",
-        "lo"
-      ],
-      "tags": [
-        "col:un"
-      ]
-    },
-    {
-      "id": "objets-articles-06",
-      "fr": "crayon",
-      "en": "pencil",
-      "syllables": [
-        "cra",
-        "yon"
-      ],
-      "tags": [
-        "col:un"
-      ]
-    },
-    {
-      "id": "objets-articles-07",
-      "fr": "passeport",
-      "en": "passport",
-      "syllables": [
-        "passe",
-        "port"
-      ],
-      "tags": [
-        "col:un"
-      ]
-    },
-    {
-      "id": "objets-articles-08",
-      "fr": "carte d'identité",
-      "en": "ID card",
-      "syllables": [
-        "carte",
-        "d'i",
-        "den",
-        "ti",
-        "té"
-      ],
-      "tags": [
-        "col:une"
-      ]
-    },
-    {
-      "id": "objets-articles-09",
-      "fr": "trousse",
-      "en": "pencil case",
-      "syllables": [
-        "trousse"
-      ],
-      "tags": [
-        "col:une"
-      ]
-    },
-    {
-      "id": "objets-articles-10",
-      "fr": "ciseaux",
-      "en": "scissors",
-      "syllables": [
-        "ci",
-        "seaux"
-      ],
-      "tags": [
-        "col:des"
-      ]
-    },
-    {
-      "id": "objets-articles-11",
-      "fr": "gomme",
-      "en": "eraser",
-      "syllables": [
-        "gomme"
-      ],
-      "tags": [
-        "col:une"
-      ]
-    },
-    {
-      "id": "objets-articles-12",
-      "fr": "portefeuille",
-      "en": "wallet",
-      "syllables": [
-        "porte",
-        "feuille"
-      ],
-      "tags": [
-        "col:un"
-      ]
-    },
-    {
-      "id": "objets-articles-13",
-      "fr": "lunettes",
-      "en": "glasses",
-      "syllables": [
-        "lu",
-        "nettes"
-      ],
-      "tags": [
-        "col:des"
-      ]
-    },
-    {
-      "id": "objets-articles-14",
-      "fr": "clé",
-      "en": "key",
-      "syllables": [
-        "clé"
-      ],
-      "tags": [
-        "col:une"
-      ]
-    },
-    {
-      "id": "objets-articles-15",
-      "fr": "règle",
-      "en": "ruler",
-      "syllables": [
-        "règle"
-      ],
-      "tags": [
-        "col:une"
-      ]
-    },
-    {
-      "id": "objets-articles-16",
-      "fr": "écouteurs",
-      "en": "headphones",
-      "syllables": [
-        "é",
-        "cou",
-        "teurs"
-      ],
-      "tags": [
-        "col:des"
-      ]
-    },
-    {
-      "id": "objets-articles-17",
-      "fr": "mouchoirs",
-      "en": "tissues",
-      "syllables": [
-        "mou",
-        "choirs"
-      ],
-      "tags": [
-        "col:des"
-      ]
-    },
-    {
-      "id": "objets-articles-18",
-      "fr": "ordinateur",
-      "en": "computer",
-      "syllables": [
-        "or",
-        "di",
-        "na",
-        "teur"
-      ],
-      "tags": [
-        "col:un"
-      ]
-    },
-    {
-      "id": "objets-articles-19",
-      "fr": "agrafeuse",
-      "en": "stapler",
-      "syllables": [
-        "a",
-        "gra",
-        "feuse"
-      ],
-      "tags": [
-        "col:une"
-      ]
-    },
-    {
-      "id": "objets-articles-20",
-      "fr": "souris",
-      "en": "mouse",
-      "syllables": [
-        "sou",
-        "ris"
-      ],
-      "tags": [
-        "col:une"
-      ]
-    }
-  ]
+  "lexicalator": {
+   "decoys": [
+    "sacs",
+    "livres",
+    "phane",
+    "yion",
+    "porte",
+    "seau",
+    "nette",
+    "cier",
+    "gome",
+    "feuil",
+    "denne",
+    "tisse"
+   ]
+  }
+ },
+ "items": [
+  {
+   "id": "objets-articles-01",
+   "fr": "sac",
+   "en": "bag",
+   "syllables": [
+    "sac"
+   ],
+   "tags": [
+    "col:un"
+   ],
+   "example": "C'est un sac.",
+   "exampleEn": "It's a bag.",
+   "gap": "un"
+  },
+  {
+   "id": "objets-articles-02",
+   "fr": "livre",
+   "en": "book",
+   "syllables": [
+    "livre"
+   ],
+   "tags": [
+    "col:un"
+   ],
+   "example": "C'est un livre.",
+   "exampleEn": "It's a book.",
+   "gap": "un"
+  },
+  {
+   "id": "objets-articles-03",
+   "fr": "cahier",
+   "en": "exercise book",
+   "syllables": [
+    "ca",
+    "hier"
+   ],
+   "tags": [
+    "col:un"
+   ],
+   "example": "C'est un cahier.",
+   "exampleEn": "It's a exercise book.",
+   "gap": "un"
+  },
+  {
+   "id": "objets-articles-04",
+   "fr": "téléphone",
+   "en": "phone",
+   "syllables": [
+    "té",
+    "lé",
+    "phone"
+   ],
+   "tags": [
+    "col:un"
+   ],
+   "example": "C'est un téléphone.",
+   "exampleEn": "It's a phone.",
+   "gap": "un"
+  },
+  {
+   "id": "objets-articles-05",
+   "fr": "stylo",
+   "en": "pen",
+   "syllables": [
+    "sty",
+    "lo"
+   ],
+   "tags": [
+    "col:un"
+   ],
+   "example": "C'est un stylo.",
+   "exampleEn": "It's a pen.",
+   "gap": "un"
+  },
+  {
+   "id": "objets-articles-06",
+   "fr": "crayon",
+   "en": "pencil",
+   "syllables": [
+    "cra",
+    "yon"
+   ],
+   "tags": [
+    "col:un"
+   ],
+   "example": "C'est un crayon.",
+   "exampleEn": "It's a pencil.",
+   "gap": "un"
+  },
+  {
+   "id": "objets-articles-07",
+   "fr": "passeport",
+   "en": "passport",
+   "syllables": [
+    "passe",
+    "port"
+   ],
+   "tags": [
+    "col:un"
+   ],
+   "example": "C'est un passeport.",
+   "exampleEn": "It's a passport.",
+   "gap": "un"
+  },
+  {
+   "id": "objets-articles-08",
+   "fr": "carte d'identité",
+   "en": "ID card",
+   "syllables": [
+    "carte",
+    "d'i",
+    "den",
+    "ti",
+    "té"
+   ],
+   "tags": [
+    "col:une"
+   ],
+   "example": "C'est une carte d'identité.",
+   "exampleEn": "It's a ID card.",
+   "gap": "une"
+  },
+  {
+   "id": "objets-articles-09",
+   "fr": "trousse",
+   "en": "pencil case",
+   "syllables": [
+    "trousse"
+   ],
+   "tags": [
+    "col:une"
+   ],
+   "example": "C'est une trousse.",
+   "exampleEn": "It's a pencil case.",
+   "gap": "une"
+  },
+  {
+   "id": "objets-articles-10",
+   "fr": "ciseaux",
+   "en": "scissors",
+   "syllables": [
+    "ci",
+    "seaux"
+   ],
+   "tags": [
+    "col:des"
+   ],
+   "example": "Ce sont des ciseaux.",
+   "exampleEn": "They are scissors.",
+   "gap": "des"
+  },
+  {
+   "id": "objets-articles-11",
+   "fr": "gomme",
+   "en": "eraser",
+   "syllables": [
+    "gomme"
+   ],
+   "tags": [
+    "col:une"
+   ],
+   "example": "C'est une gomme.",
+   "exampleEn": "It's a eraser.",
+   "gap": "une"
+  },
+  {
+   "id": "objets-articles-12",
+   "fr": "portefeuille",
+   "en": "wallet",
+   "syllables": [
+    "porte",
+    "feuille"
+   ],
+   "tags": [
+    "col:un"
+   ],
+   "example": "C'est un portefeuille.",
+   "exampleEn": "It's a wallet.",
+   "gap": "un"
+  },
+  {
+   "id": "objets-articles-13",
+   "fr": "lunettes",
+   "en": "glasses",
+   "syllables": [
+    "lu",
+    "nettes"
+   ],
+   "tags": [
+    "col:des"
+   ],
+   "example": "Ce sont des lunettes.",
+   "exampleEn": "They are glasses.",
+   "gap": "des"
+  },
+  {
+   "id": "objets-articles-14",
+   "fr": "clé",
+   "en": "key",
+   "syllables": [
+    "clé"
+   ],
+   "tags": [
+    "col:une"
+   ],
+   "example": "C'est une clé.",
+   "exampleEn": "It's a key.",
+   "gap": "une"
+  },
+  {
+   "id": "objets-articles-15",
+   "fr": "règle",
+   "en": "ruler",
+   "syllables": [
+    "règle"
+   ],
+   "tags": [
+    "col:une"
+   ],
+   "example": "C'est une règle.",
+   "exampleEn": "It's a ruler.",
+   "gap": "une"
+  },
+  {
+   "id": "objets-articles-16",
+   "fr": "écouteurs",
+   "en": "headphones",
+   "syllables": [
+    "é",
+    "cou",
+    "teurs"
+   ],
+   "tags": [
+    "col:des"
+   ],
+   "example": "Ce sont des écouteurs.",
+   "exampleEn": "They are headphones.",
+   "gap": "des"
+  },
+  {
+   "id": "objets-articles-17",
+   "fr": "mouchoirs",
+   "en": "tissues",
+   "syllables": [
+    "mou",
+    "choirs"
+   ],
+   "tags": [
+    "col:des"
+   ],
+   "example": "Ce sont des mouchoirs.",
+   "exampleEn": "They are tissues.",
+   "gap": "des"
+  },
+  {
+   "id": "objets-articles-18",
+   "fr": "ordinateur",
+   "en": "computer",
+   "syllables": [
+    "or",
+    "di",
+    "na",
+    "teur"
+   ],
+   "tags": [
+    "col:un"
+   ],
+   "example": "C'est un ordinateur.",
+   "exampleEn": "It's a computer.",
+   "gap": "un"
+  },
+  {
+   "id": "objets-articles-19",
+   "fr": "agrafeuse",
+   "en": "stapler",
+   "syllables": [
+    "a",
+    "gra",
+    "feuse"
+   ],
+   "tags": [
+    "col:une"
+   ],
+   "example": "C'est une agrafeuse.",
+   "exampleEn": "It's a stapler.",
+   "gap": "une"
+  },
+  {
+   "id": "objets-articles-20",
+   "fr": "souris",
+   "en": "mouse",
+   "syllables": [
+    "sou",
+    "ris"
+   ],
+   "tags": [
+    "col:une"
+   ],
+   "example": "C'est une souris.",
+   "exampleEn": "It's a mouse.",
+   "gap": "une"
+  }
+ ]
 }

@@ -23,11 +23,24 @@ export function gradeAnswer(typed: string, answer: string): Grade {
   return "wrong";
 }
 
-/** d' IS de (elided): grade against both surface forms, keep the better. */
+/**
+ * d' IS de (elided) - same word, so a learner typing "de" for a "d'" gap has
+ * the CONCEPT right. But elision before a vowel is obligatory: "beaucoup de
+ * abricots" is not French. Scoring it perfect (as this did until 2026-08-10)
+ * gave full marks AND suppressed the reveal, so the learner never saw the
+ * correct form.
+ *
+ * It is now capped at "good" - the same verdict an accent slip earns. Right
+ * idea, wrong surface form, and the canonical spelling is shown, because the
+ * UI reveals the answer on anything that is not a perfect match (Dan,
+ * 2026-08-02).
+ */
 export function gradeGap(typed: string, gap: string): Grade {
-  const alternates = [gap, ...(gap.endsWith("d'") ? [gap.slice(0, -2) + "de"] : [])];
-  const grades = alternates.map((a) => gradeAnswer(typed, a));
-  return grades.includes("perfect") ? "perfect" : grades.includes("good") ? "good" : "wrong";
+  const direct = gradeAnswer(typed, gap);
+  if (direct === "perfect") return direct;
+  const elided = gap.endsWith("d'") ? gap.slice(0, -2) + "de" : null;
+  if (elided && gradeAnswer(typed, elided) !== "wrong") return "good";
+  return direct;
 }
 
 /**

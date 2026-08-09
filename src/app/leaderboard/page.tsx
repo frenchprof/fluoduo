@@ -14,7 +14,7 @@ export default function LeaderboardPage() {
   return (
     <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="leaderboard" crumb="🏆 Classement">
       <div className="mx-auto max-w-xl px-3 py-5">
-        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">🏆 Le Classement <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· Leaderboard</span></h1>
+        <h1 className="cahier-display cahier-hand text-3xl font-normal text-[color:var(--cahier-ink)]">🏆 Le Classement <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· Leaderboard</span></h1>
         <p className="mt-1 mb-4 text-sm text-[color:var(--cahier-ink-soft)]">⭐ XP wins the ranking; 🔥 is the streak.</p>
         <LeaderboardList />
       </div>

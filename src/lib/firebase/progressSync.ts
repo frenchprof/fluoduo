@@ -42,6 +42,7 @@ export function mergeProgress(local: Progress, remote: Partial<Progress> | undef
         .filter((d): d is string => !!d)
         .sort()
         .pop() ?? null,
+    timeZone: local.timeZone ?? remote.timeZone,
     itemSrs,
     badges: [...new Set([...(remote.badges ?? []), ...(local.badges ?? [])])],
     cosmetics: {

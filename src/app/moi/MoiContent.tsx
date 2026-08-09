@@ -15,25 +15,29 @@ import { CURATED } from "@/content/collections";
 import { loadProgress, type Progress } from "@/lib/progress";
 import { SortableTable } from "@/lib/sortTable";
 import { useAuthUser } from "@/lib/firebase/auth";
+import { describeActivity } from "@/lib/labels";
+import { hrefForActivity } from "@/lib/labels";
+import { describeItem } from "@/lib/labels";
 
 const HUES = ["var(--cahier-t0)", "var(--cahier-t1)", "var(--cahier-t2)", "var(--cahier-t3)", "var(--cahier-t4)", "var(--cahier-t5)"] as const;
 
 type Resp = { item: string; status: string; activityId: string; ts: number; given?: string };
 
 // ── activity naming (a friendly local cousin of the teacher's normalizer) ──
+/** Deck ids are historical (lieux-letris, weather-letris) and leak into the UI.
+ *  Never rename the id — it is embedded in activityId strings across every
+ *  stored response. Resolve to the deck's own title for display instead. */
+function deckTitle(id: string | undefined): string {
+  if (!id) return "";
+  return CURATED.find((c) => c.id === id)?.title ?? id;
+}
+
 function labelActivity(id: string): string {
-  if (id.startsWith("/practice/flip-it/")) return "Flip It · " + id.split("/").pop();
-  if (id.startsWith("/practice/speculearn/")) return "SpecuLearn · " + id.split("/").pop();
-  if (id === "/practice/grammarathon/finale") return "🏁 GramMarathon Final";
-  if (id.startsWith("/practice/grammarathon/")) return "🏃 GramMarathon · " + id.split("/").pop();
-  if (id.startsWith("/games/lexicalater")) return "LexicaLater";
-  if (id.startsWith("/games/vocabularain") || id.startsWith("/games/letris")) return "VocabulaRain";
-  if (id.startsWith("/games/numbus") || id.startsWith("numbus:")) return "NumBus";
-  if (id.startsWith("/games/compose")) return "Compose It";
-  if (id === "/conjugaison") return "ConjugaZone";
-  if (id === "/reviser") return "DéjàRevu";
-  if (id.startsWith("mcq:")) return "Deck MCQ · " + id.slice(4);
-  return id;
+  // Was a second, subtly different copy of the teacher page's table — it said
+  // "Compose It" where the teacher said "Composer", and knew nothing about
+  // SIOs. One definition now (@/lib/labels), so a learner and their teacher
+  // read the same name for the same exercise.
+  return describeActivity(id).label;
 }
 
 function itemDeck(item: string): { label: string; href: string } | null {
@@ -114,11 +118,11 @@ export default function MoiContent() {
   // ── the quantitative picture, ranked (Dan: "% and so on") ──
   const byExercise = useMemo(() => {
     if (!resp) return [];
-    const m = new Map<string, { label: string; href: string | null; n: number; ok: number; missed: number; last: number }>();
+    const m = new Map<string, { key: string; label: string; href: string | null; n: number; ok: number; missed: number; last: number }>();
     for (const r of resp) {
       const key = r.activityId || "unknown";
       let g = m.get(key);
-      if (!g) m.set(key, (g = { label: labelActivity(key), href: key.startsWith("/") ? key : null, n: 0, ok: 0, missed: 0, last: 0 }));
+      if (!g) m.set(key, (g = { key, label: labelActivity(key), href: hrefForActivity(key), n: 0, ok: 0, missed: 0, last: 0 }));
       g.n += 1;
       if (r.status === "missed") g.missed += 1; else g.ok += 1;
       if (r.ts > g.last) g.last = r.ts;
@@ -232,7 +236,7 @@ export default function MoiContent() {
                   head={["Exercise", "✓", "✗", "Score", "Last"]}
                   headAlign={(h, i) => (i === 0 ? "text-left" : "text-right")}
                   rows={byExercise.map((g) => (
-                    <tr key={g.label} className="border-t border-slate-100">
+                    <tr key={g.key} className="border-t border-slate-100">
                       <td className="px-2 py-1.5 font-bold">{g.href ? <a href={g.href} className="text-blue-700 underline underline-offset-2 hover:text-blue-900">{g.label}</a> : g.label}</td>
                       <td className="px-2 py-1.5 text-right text-emerald-700">{g.ok}</td>
                       <td className="px-2 py-1.5 text-right text-rose-600">{g.missed}</td>
@@ -259,7 +263,7 @@ export default function MoiContent() {
                   const d = itemDeck(item);
                   return (
                     <div key={item} className="flex items-center justify-between rounded-xl border-2 bg-white px-3 py-2 text-sm shadow-[2px_2px_0_rgba(0,0,0,0.08)]" style={{ borderColor: HUES[i % HUES.length] }}>
-                      <span className="font-bold text-slate-800" lang="fr">{item}</span>
+                      <span className="font-bold text-slate-800" lang="fr" title={item}>{describeItem(item).label}</span>
                       <span className="ml-2 shrink-0 text-xs">
                         <b className="text-rose-600">✗ {n}</b>
                         {d && <> · <a href={d.href} className="font-bold text-blue-700 underline underline-offset-2">practise</a></>}
@@ -291,18 +295,18 @@ export default function MoiContent() {
               rows.push(
                 <tr key={r.ts + r.item + rows.length} className="border-t border-slate-100">
                   <td className="px-2 py-1 text-xs text-slate-400">{r.ts ? new Date(r.ts).toLocaleTimeString("en-SG", { hour: "2-digit", minute: "2-digit" }) : "—"}</td>
-                  <td className="px-2 py-1 font-bold text-slate-800" lang="fr">{r.item}{r.given && <span className="font-normal text-slate-500"> · «{r.given}»</span>}</td>
+                  <td className="px-2 py-1 font-bold text-slate-800" lang="fr" title={r.item}>{describeItem(r.item).label}{r.given && <span className="font-normal text-slate-500"> · «{r.given}»</span>}</td>
                   <td className="px-2 py-1 text-center">{r.status === "missed" ? <span className="text-rose-600">✗</span> : <span className="text-emerald-700">✓</span>}</td>
-                  <td className="px-2 py-1 text-xs">{r.activityId.startsWith("/") ? <a href={r.activityId} className="font-bold text-blue-700 underline underline-offset-2">{labelActivity(r.activityId)}</a> : labelActivity(r.activityId)}</td>
+                  <td className="px-2 py-1 text-xs"><a href={hrefForActivity(r.activityId) ?? undefined} title={r.activityId} className={hrefForActivity(r.activityId) ? "font-bold text-blue-700 underline underline-offset-2" : "font-bold text-slate-700"}>{labelActivity(r.activityId)}</a></td>
                 </tr>,
               );
             }
             const flat = ordered.map((r) => (
               <tr key={r.ts + r.item + Math.random()} className="border-t border-slate-100">
                 <td className="px-2 py-1 text-xs text-slate-400">{r.ts ? new Date(r.ts).toLocaleString("en-SG", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "—"}</td>
-                <td className="px-2 py-1 font-bold text-slate-800" lang="fr">{r.item}{r.given && <span className="font-normal text-slate-500"> · «{r.given}»</span>}</td>
+                <td className="px-2 py-1 font-bold text-slate-800" lang="fr" title={r.item}>{describeItem(r.item).label}{r.given && <span className="font-normal text-slate-500"> · «{r.given}»</span>}</td>
                 <td className="px-2 py-1 text-center">{r.status === "missed" ? <span className="text-rose-600">✗</span> : <span className="text-emerald-700">✓</span>}</td>
-                <td className="px-2 py-1 text-xs">{r.activityId.startsWith("/") ? <a href={r.activityId} className="font-bold text-blue-700 underline underline-offset-2">{labelActivity(r.activityId)}</a> : labelActivity(r.activityId)}</td>
+                <td className="px-2 py-1 text-xs"><a href={hrefForActivity(r.activityId) ?? undefined} title={r.activityId} className={hrefForActivity(r.activityId) ? "font-bold text-blue-700 underline underline-offset-2" : "font-bold text-slate-700"}>{labelActivity(r.activityId)}</a></td>
               </tr>
             ));
             void rows;

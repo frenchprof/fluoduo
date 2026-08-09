@@ -460,7 +460,7 @@ export default function TutorPage() {
   return (
     <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="tutor" crumb="🤖 ChaTutor">
       <div className="mx-auto flex max-w-2xl flex-col gap-3 px-3 pb-5 pt-2">
-        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">🤖 ChaTutor <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· Tutor</span></h1>
+        <h1 className="cahier-display cahier-hand text-3xl font-normal text-[color:var(--cahier-ink)]">🤖 ChaTutor <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· Tutor</span></h1>
         <p className="-mt-2 text-sm text-[color:var(--cahier-ink-soft)]">
           Ton tuteur IA — write, speak, or role-play in French.
         </p>

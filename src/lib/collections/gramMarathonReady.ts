@@ -1,20 +1,25 @@
 /**
  * Is a deck ready for GramMarathon (the grammar-word cloze drill)? The game
  * plays only the items that carry a hand-authored `gap` — the exact grammar
- * word(s) to blank out of `fr` (e.g. "du", "mange", "besoin d'") — so a deck
+ * word(s) to blank out (e.g. "du", "mange", "besoin d'") — so a deck
  * qualifies once it has a playable handful of them; ungapped items (a line
  * with no grammar word, like "Oui, bonne idée !") simply sit the game out.
  * Data-driven like isLexReady: tag a deck's items and the tab appears.
+ *
+ * 2026-08-08: the "which sentence holds the gap?" question moved to the shared
+ * `gapSentence` helper, because this file and the game itself had answered it
+ * differently — this gate checked `example ?? fr` while GramMarathonContent
+ * filtered on `fr`. Three decks were affected (SIO-032, SIO-033, SIO-042); see
+ * gapSentence.ts for the full account.
  */
 import type { Collection, Item } from "./schema";
 import { CURATED } from "@/content/collections";
+import { isPlayableGap } from "./gapSentence";
 
 const MIN_GAPPED = 4;
 
 export function gappedItems(c: Collection): Item[] {
-  // The gap must occur in the drilled sentence — `example` when the item carries
-  // one (so `fr` can stay a short grid label), else `fr` itself.
-  return c.items.filter((it) => !!it.gap && (it.example ?? it.fr).includes(it.gap));
+  return c.items.filter(isPlayableGap);
 }
 
 export function isGramMarathonReady(c: Collection | undefined): boolean {

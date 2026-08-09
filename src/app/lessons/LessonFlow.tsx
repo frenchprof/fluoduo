@@ -108,7 +108,7 @@ export default function LessonFlow({
   const shown = deckLessons.find((l) => l.slug === (lessonSlug ?? deckLessons[0]?.slug));
   const body = (
     <div className="mx-auto max-w-2xl space-y-5 px-2 py-4">
-      <h1 lang="fr" className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
+      <h1 lang="fr" className="cahier-display cahier-hand text-3xl font-normal text-[color:var(--cahier-ink)]">
         📚 {shown?.title ?? deck.title}
       </h1>
       {/* Conjugation-heavy SIOs link straight to their verb tables, pre-picked

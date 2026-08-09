@@ -7,6 +7,8 @@
  * retired DirectionsMapGame.
  */
 
+import { PRODUCTION_BANKS } from "./banks-production";
+
 export type ComposeCategory = { label: string; chip: string; phrases: string[] };
 
 /** Per-persona colourway for the dialogue chrome (bubbles, buttons, inputs).
@@ -359,7 +361,7 @@ const MARCHE_BANK: ComposeBank = {
 // Registry
 // ---------------------------------------------------------------------------
 
-const BANKS: ComposeBank[] = [DIRECTIONS_BANK, CAFE_BANK, GREETINGS_BANK, RENDEZVOUS_BANK, SHOP_BANK, MARCHE_BANK];
+const BANKS: ComposeBank[] = [DIRECTIONS_BANK, CAFE_BANK, GREETINGS_BANK, RENDEZVOUS_BANK, SHOP_BANK, MARCHE_BANK, ...PRODUCTION_BANKS];
 
 export function listComposeBanks(): ComposeBank[] {
   return BANKS;

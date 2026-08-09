@@ -16,6 +16,10 @@ import {
 import { XP_CORRECT, XP_WRONG, XP_SIO_BASE, XP_CONVERSATION } from "@/lib/economy";
 import { Kpi, TableBox, Section, SectionGroup } from "./ui";
 import Evidence from "./Evidence";
+import { outcomeForItem } from "@/lib/evidence";
+import { describeActivity, describePath, hrefForActivity, normalizePath, titleFor } from "@/lib/labels";
+import { describeItem } from "@/lib/labels";
+import { describeGame } from "@/lib/labels";
 
 /** ⬇️ Analytics summary CSV (Dan, 2026-07-25): one row per student — paste
  *  emails to filter (blank = everyone). Reuses fetchStudentDetail, so aliased
@@ -141,6 +145,8 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
   const trail = useMemo(() => {
     const mine = events.filter((e) => learner.uids.includes(e.uid));
     const pages = new Map<string, number>();
+    // Timestamped views, for the dwell reconstruction below.
+    const views: { path: string; t: number }[] = [];
     const games = new Map<string, { plays: number; best: number | null }>();
     let answers = 0;
     let correct = 0;
@@ -153,10 +159,17 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
       if (ev.ts) days.add(SG_DAY_KEY.format(ev.ts));
       if (ev.type === "page.view" || ev.type === "supplement.open") {
         const path = str(ev.payload.path) ?? str(ev.payload.href);
-        if (path) pages.set(path, (pages.get(path) ?? 0) + 1);
+        if (path) {
+          pages.set(path, (pages.get(path) ?? 0) + 1);
+          if (ev.ts) views.push({ path, t: ev.ts.getTime() });
+        }
       }
       if (ev.type === "game.start" || ev.type === "game.end") {
-        const game = str(ev.payload.game) ?? "?";
+        // Key on game + deck, the way the Activities panel does. Keying on
+        // the game alone threw the collectionId away, which is why this
+        // table could never show an outcome: "letris" is a surface,
+        // "letris · objets-articles" is a lesson.
+        const game = `${str(ev.payload.game) ?? "?"} · ${str(ev.payload.collectionId) ?? ""}`.replace(/ · $/, "");
         let g = games.get(game);
         if (!g) games.set(game, (g = { plays: 0, best: null }));
         if (ev.type === "game.start") g.plays += 1;
@@ -178,7 +191,37 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
       }
     }
     tutorRecent.sort((a, b) => (b.ts?.getTime() ?? 0) - (a.ts?.getTime() ?? 0));
+    // ── Time on task, reconstructed ──────────────────────────────────────
+    // WHY: users/{uid}/sessions has two readers and NO writer — nothing in the
+    // codebase has created a session document since the writer was removed, so
+    // every session carries a real durationMs and a null activityId. The total
+    // was true; the per-activity breakdown read "(unlabelled)" for every row on
+    // every learner and could not be repaired by labelling, because there was
+    // nothing there to label (Dan, 2026-08-10). Logged as D6.
+    //
+    // page.view events DO carry a path and a timestamp, so dwell is the gap to
+    // the learner's NEXT view. Two honest bounds:
+    //   · a gap over VIEW_CAP_MS means they walked away — the tab was open, the
+    //     learner was not. Counting it would inflate a quiet evening into study.
+    //   · the last view before such a break still gets VIEW_TAIL_MS, not zero:
+    //     they did look at it. A floor, not a measurement.
+    // This is an ESTIMATE and is labelled as one on screen. It reads events
+    // already collected, so it works retroactively and writes nothing.
+    const VIEW_CAP_MS = 30 * 60_000;
+    const VIEW_TAIL_MS = 60_000;
+    views.sort((a, b) => a.t - b.t);
+    const dwell = new Map<string, { ms: number; n: number }>();
+    for (let k = 0; k < views.length; k++) {
+      const gap = k + 1 < views.length ? views[k + 1].t - views[k].t : Infinity;
+      const ms = gap > VIEW_CAP_MS || gap < 0 ? VIEW_TAIL_MS : gap;
+      const d = dwell.get(views[k].path) ?? { ms: 0, n: 0 };
+      d.ms += ms; d.n += 1;
+      dwell.set(views[k].path, d);
+    }
+
     return {
+      dwell: [...dwell.entries()].sort((a, b) => b[1].ms - a[1].ms),
+      dwellTotal: [...dwell.values()].reduce((s, d) => s + d.ms, 0),
       topPages: [...pages.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10),
       games: [...games.entries()].sort((a, b) => b[1].plays - a[1].plays),
       answers, correct, supAnswers, supCorrect, tutorMsgs,
@@ -210,47 +253,14 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
 
   // ── Exercise identity (2026-07-20, Dan: "merge some info — I cannot see
   // the results of the individual exercises anymore") ─────────────────────
-  // activityId is the recording page's pathname, so the 2026-07-20 URL
-  // renames split ONE exercise's history into two labels. Normalize legacy
-  // paths to today's names before any grouping, so old and new evidence
-  // merge into a single row.
-  const normActivity = (id: string | null | undefined): string => {
-    if (!id) return "(unlabelled)";
-    return id
-      .replace(/^\/games\/letris(?=\/|$)/, "/games/vocabularain")
-      .replace(/^\/games\/conveyor(?=\/|$)/, "/games/lexicalater")
-      .replace(/^\/practice\/devine(?=\/|$)/, "/practice/speculearn")
-      .replace(/^\/practice\/oral(?=\/|$)/, "/practice/wordrill")
-      .replace(/^letris:/, "vocabularain:")
-      .replace(/^devine:/, "speculearn:");
-  };
-  // "/practice/speculearn/aliments" → "SpecuLearn · aliments" — the teacher
-  // reads exercises, not URLs.
-  const ACTIVITY_NAMES: [RegExp, string][] = [
-    [/^\/practice\/speculearn\/?/, "SpecuLearn"],
-    [/^\/practice\/flip-it\/?/, "Flip It"],
-    [/^\/practice\/say-it\/?|^\/practice\/wordrill\/?/, "WorDrill"],
-    [/^\/practice\/complete-it\/?/, "Complete It"],
-    [/^\/practice\/grammarathon\/?/, "GramMarathon"],
-    [/^\/practice\/dice\/?/, "Dice"],
-    [/^\/games\/vocabularain\/?|^vocabularain:/, "VocabulaRain"],
-    [/^\/games\/lexicalater\/?/, "LexicaLater"],
-    [/^\/games\/numbus\/?|^numbus:/, "NumBus"],
-    [/^\/games\/compose\/?/, "Composer"],
-    [/^\/conjugaison\/?/, "ConjugaZone"],
-    [/^\/reviser\/?/, "DéjàRevu"],
-    [/^mcq:/, "Deck MCQ"],
-    [/^\/lessons\/?/, "Lesson"],
-  ];
-  const labelActivity = (norm: string): string => {
-    for (const [re, name] of ACTIVITY_NAMES) {
-      if (re.test(norm)) {
-        const rest = norm.replace(re, "").replace(/^[/:]+/, "").split("/")[0];
-        return rest ? `${name} · ${rest}` : name;
-      }
-    }
-    return norm;
-  };
+  // Legacy route renames live in @/lib/labels now, so /moi and the teacher
+  // page can no longer drift apart about what July was called.
+  const normActivity = (id: string | null | undefined): string =>
+    id ? normalizePath(id) : "(unlabelled)";
+  // "/practice/speculearn/aliments" → "SpecuLearn · SIO-039 · Aliments".
+  // The SIO is the point (Dan, 2026-08-10: "very hard to trace back what is
+  // what later"); the raw id stays as the link target.
+  const labelActivity = (norm: string): string => describeActivity(norm).label;
 
   // Every reference should be a road (Dan, 2026-07-21: "I am going to need
   // links at wherever there can be links — I am very lost"). A normalized
@@ -267,15 +277,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
     const c = CURATED.find((x) => x.items?.some((it: { id?: string }) => it.id === item));
     return c ? `/decks/${c.id}` : null;
   };
-  const hrefFor = (key: string): string | null => {
-    if (key.startsWith("/")) return key;
-    const m = /^mcq:(.+)$/.exec(key);
-    if (m) return `/decks/${m[1]}/mcq`;
-    if (key.startsWith("vocabularain:")) return "/games/vocabularain";
-    if (key.startsWith("numbus:")) return "/games/numbus";
-    if (key.startsWith("speculearn:")) return "/practice/speculearn";
-    return null;
-  };
+  const hrefFor = (key: string): string | null => hrefForActivity(key);
   const ExLink = ({ k, label }: { k: string; label: string }) => {
     const href = hrefFor(k);
     return href
@@ -471,7 +473,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
                   <TableBox head={["Item", "Misses"]}>
                     {respStats.hardest.map(([item, n]) => (
                       <tr key={item} className="border-t border-slate-100">
-                        <td className="px-3 py-2 font-bold text-slate-900" lang="fr">{(() => { const h = itemHref(item); return h ? <a href={h} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{item}</a> : item; })()}</td>
+                        <td className="px-3 py-2 font-bold text-slate-900" lang="fr">{(() => { const h = itemHref(item); return h ? <a href={h} target="_blank" rel="noreferrer" title={item} className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{describeItem(item).label}</a> : describeItem(item).label; })()}</td>
                         <td className="px-3 py-2 text-right font-black text-rose-600">{n}</td>
                       </tr>
                     ))}
@@ -493,11 +495,26 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
               </TableBox>
               </Section>
               <Section id="sp:recent" title="Recent answers" meta={`last ${Math.min(15, detail.responses.length)} of ${detail.responses.length}`}>
-              <TableBox head={["When", "Item", "Status", "Given answer", "Activity", "Time"]}>
+              <TableBox head={["When", "Item", "Lesson", "Status", "Given answer", "Activity", "Time"]}>
                 {detail.responses.slice(0, 15).map((r, i) => (
                   <tr key={i} className="border-t border-slate-100">
                     <td className="px-3 py-2 text-slate-700 whitespace-nowrap">{fmtWhen(r.ts)}</td>
                     <td className="px-3 py-2 font-bold text-slate-900" lang="fr">{r.item}</td>
+                    {/* Item ids do NOT reliably encode their outcome: after the
+                        2026-07-14 re-cut the pretest files kept their old names,
+                        so u4-sio045-01 is SIO-043 content. Resolved through the
+                        join table, never by parsing the id. Read-time, so all
+                        10,623 historical responses gain a label with no
+, since the collection
+                        is append-only. */}
+                    <td className="px-3 py-2 text-slate-600 whitespace-nowrap">
+                      {(() => {
+                        const sio = outcomeForItem(r.item);
+                        if (!sio) return <span className="text-slate-400">-</span>;
+                        const topic = SIOS.find((s) => s.id === sio)?.topic;
+                        return <span title={topic ?? sio}>{sio}{topic ? ` \u00b7 ${topic.slice(0, 28)}` : ""}</span>;
+                      })()}
+                    </td>
                     <td className={`px-3 py-2 font-bold ${r.status === "missed" ? "text-rose-600" : r.status === "retried" ? "text-amber-600" : "text-emerald-700"}`}>
                       {r.status}
                     </td>
@@ -516,21 +533,51 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
             <p className="mt-4 text-sm text-slate-500">No item-level responses recorded for this learner yet.</p>
           )}
 
-          {sessStats && detail.sessions.length > 0 && (
-            <Section id="sp:time" title="Time on task" meta={`${detail.sessions.length} sessions · ${fmtDuration(sessStats.totalMs)}`}>
+          {((sessStats && detail.sessions.length > 0) || trail.dwell.length > 0) && (
+            <Section
+              id="sp:time"
+              title="Time on task"
+              meta={
+                sessStats && detail.sessions.length > 0
+                  ? `${detail.sessions.length} sessions · ${fmtDuration(sessStats.totalMs)}`
+                  : `~${fmtDuration(trail.dwellTotal)} estimated`
+              }
+            >
+              {/* Session docs stopped being written at some point, so a learner
+                  can have page views and no sessions at all. The estimate still
+                  has something to say about them. */}
               <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
                 <Kpi label="Sessions" value={detail.sessions.length} />
-                <Kpi label="Total time" value={fmtDuration(sessStats.totalMs)} />
+                <Kpi label="Total time" value={sessStats && detail.sessions.length > 0 ? fmtDuration(sessStats.totalMs) : "—"} sub={sessStats && detail.sessions.length > 0 ? "measured" : "no session records"} />
+                <Kpi label="Est. from page views" value={fmtDuration(trail.dwellTotal)} sub={`${trail.dwell.length} activities`} />
               </div>
-              <TableBox head={["Activity", "Sessions", "Time"]}>
-                {sessStats.byActivity.map(([act, a]) => (
-                  <tr key={act} className="border-t border-slate-100">
-                    <td className="px-3 py-2 font-bold text-slate-900">{act}</td>
-                    <td className="px-3 py-2 text-right text-slate-700">{a.n}</td>
-                    <td className="px-3 py-2 text-right text-slate-700">{fmtDuration(a.ms)}</td>
-                  </tr>
-                ))}
-              </TableBox>
+              {/* The per-activity split comes from page-view dwell, NOT from the
+                  session docs: those carry a real durationMs and a null
+                  activityId, so this table read "(unlabelled)" for every row on
+                  every learner (D6 — session telemetry orphaned, 2026-08-10).
+                  The totals above are still the session docs, which are sound. */}
+              {trail.dwell.length > 0 ? (
+                <>
+                  <p className="mt-3 text-xs text-slate-500">
+                    Estimated from page views — time between one view and the next, ignoring gaps over 30 minutes
+                    (tab left open). Session totals above are measured; this split is an estimate.
+                  </p>
+                  <TableBox head={["Activity", "Views", "Est. time"]}>
+                    {trail.dwell.map(([path, d]) => (
+                      <tr key={path} className="border-t border-slate-100">
+                        <td className="px-3 py-2 font-bold text-slate-900" title={titleFor(path)}>{describePath(path).label}</td>
+                        <td className="px-3 py-2 text-right text-slate-700">{d.n}</td>
+                        <td className="px-3 py-2 text-right text-slate-700">{fmtDuration(d.ms)}</td>
+                      </tr>
+                    ))}
+                  </TableBox>
+                </>
+              ) : (
+                <p className="mt-3 text-sm text-slate-500">
+                  No page views recorded for this learner, so there is no activity split — visit tracking shipped
+                  13 Jul 2026.
+                </p>
+              )}
             </Section>
           )}
         </>
@@ -541,7 +588,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
         <TableBox head={["Page", "Views"]}>
           {trail.topPages.map(([path, n]) => (
             <tr key={path} className="border-t border-slate-100">
-              <td className="px-3 py-2 font-bold text-slate-900 break-all"><a href={path} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{path}</a></td>
+              <td className="px-3 py-2 font-bold text-slate-900 break-all"><a href={path} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900" title={titleFor(path)}>{describePath(path).label}</a></td>
               <td className="px-3 py-2 text-right text-slate-700">{n}</td>
             </tr>
           ))}
@@ -575,7 +622,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
             <TableBox head={["Game", "Plays", "Best score"]}>
               {trail.games.map(([game, g]) => (
                 <tr key={game} className="border-t border-slate-100">
-                  <td className="px-3 py-2 font-bold text-slate-900">{game}</td>
+                  <td className="px-3 py-2 font-bold text-slate-900" title={game}>{describeGame(game).label}</td>
                   <td className="px-3 py-2 text-right text-slate-700">{g.plays}</td>
                   <td className="px-3 py-2 text-right text-slate-700">{g.best ?? "—"}</td>
                 </tr>

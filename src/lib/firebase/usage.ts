@@ -31,6 +31,12 @@ export type EventType =
   // collection itself is ordinary course analytics) ─────────────────────────
   | "help.open" // { path } — a HelpDot "?" opened: solicited guidance
   | "hint.tap" // { surface, itemId?, sio? } — graduated help-seeking (💡)
+  | "answer.reveal" // { surface, itemId?, sio?, rung, level } — the LAST rung of
+  //   the help ladder, opened deliberately. Separate from hint.tap because a
+  //   revealed answer differs in KIND, not degree (PRD §7): it still counts as
+  //   encountered and practised, never as independent mastery. Counted
+  //   together, a rising reveal rate could hide inside a falling hint rate —
+  //   which is precisely the trend PRD §6 Goal 2 asks us to measure.
   | "tts.play" // { surface, kind: "word"|"sentence"|"free", source: "user"|"auto" } — input-seeking; only user-initiated plays are analytic signal
   | "review.self"; // { surface } — learner opens their own mistakes/DéjàRevu
 

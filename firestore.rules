@@ -42,7 +42,10 @@ service cloud.firestore {
         && request.resource.data.name.size() <= 60
         && request.resource.data.xp is int
         && request.resource.data.xp >= 0
-        && request.resource.data.xp <= 10000000
+        && request.resource.data.xp <= 2000   // was 100 — rejected every correct
+          // answer at streak >= 7 (60 x2 = 120), silently, since the x2 tier
+          // shipped. Ceiling now clears the largest legitimate payout
+          // (XP_SIO_BASE + XP_SIO_MASTERY = 600, x2 = 1200) with headroom.00000
         && request.resource.data.level is int
         && request.resource.data.level >= 1
         && request.resource.data.level <= 1000

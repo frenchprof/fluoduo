@@ -45,13 +45,16 @@ import {
   XP_SIO_MASTERY,
   XP_CONVERSATION,
 } from "@/lib/economy";
+import { dayKey, previousDay, learnerZone } from "@/lib/dayKey";
+import { buildEvidence } from "@/lib/evidence";
 
 export type Progress = {
   doneSios: string[];
   gems: number; // SPENDABLE balance (paid by badges, spent on cosmetics)
   xp: number; // lifetime score (drives levels + leaderboard); never spent
   streak: number;
-  lastActiveDay: string | null; // "YYYY-MM-DD"
+  lastActiveDay: string | null; // "YYYY-MM-DD", learner-local, 04:00 rollover
+  timeZone?: string; // IANA zone lastActiveDay was computed in
   itemSrs: Record<string, ItemSrs>;
   badges: string[]; // earned badge ids
   cosmetics: { owned: string[]; equipped: Record<string, string> };
@@ -70,9 +73,7 @@ export type ItemSrs = {
 export const GEMS_MASTERY_BONUS = XP_SIO_MASTERY; // kept as a re-export for callers
 const STORAGE_KEY = "fluolingo:progress";
 
-function todayStr(): string {
-  return new Date().toISOString().slice(0, 10);
-}
+// todayStr() replaced by dayKey() - learner-local zone, 04:00 rollover.
 
 export function defaultProgress(): Progress {
   return { doneSios: [], gems: 0, xp: 0, streak: 0, lastActiveDay: null, itemSrs: {}, badges: [], cosmetics: { owned: [], equipped: {} } };
@@ -199,11 +200,10 @@ function finalize(p: Progress): Progress {
 }
 
 function bumpStreakToday(p: Progress): Progress {
-  const today = todayStr();
+  const today = dayKey();
   if (p.lastActiveDay === today) return p;
-  const yesterday = new Date(Date.now() - 86_400_000).toISOString().slice(0, 10);
-  const streak = p.lastActiveDay === yesterday ? p.streak + 1 : 1;
-  return { ...p, streak, lastActiveDay: today };
+  const streak = p.lastActiveDay === previousDay(today) ? p.streak + 1 : 1;
+  return { ...p, streak, lastActiveDay: today, timeZone: learnerZone() };
 }
 
 export function isSioDone(id: string, p: Progress): boolean {
@@ -302,7 +302,15 @@ export function stepItemSrs(prev: ItemSrs | undefined, correct: boolean, now: nu
  * never navigates and would otherwise tag every embedded game's writes with
  * whatever host page happened to be open (audit 2026-08-02).
  */
-export function recordItemResult(itemId: string, correct: boolean, given?: string, activity?: string): Progress {
+export function recordItemResult(
+  itemId: string,
+  correct: boolean,
+  given?: string,
+  activity?: string,
+  /** How the answer was produced (PRD §7). Omit and the record still
+   *  stores, just without evidence meaning — adoption is incremental. */
+  ev?: { hintsTaken?: number; revealed?: boolean; latencyMs?: number },
+): Progress {
   const prev = loadProgress();
   const itemSrs = { ...prev.itemSrs, [itemId]: stepItemSrs(prev.itemSrs[itemId], correct, Date.now()) };
   // Practising ANYTHING keeps the streak alive — motivation comes from showing
@@ -318,7 +326,18 @@ export function recordItemResult(itemId: string, correct: boolean, given?: strin
   // rule); fire-and-forget, signed-out is a no-op.
   const paid = Math.round((correct ? XP_CORRECT : XP_WRONG) * xpMultiplier(p.streak));
   void import("@/lib/firebase/responses")
-    .then((m) => m.recordResponse(itemId, correct, { given, xpPaid: paid, activity }))
+    .then((m) =>
+      m.recordResponse(itemId, correct, {
+        given,
+        xpPaid: paid,
+        activity,
+        latencyMs: ev?.latencyMs,
+        evidence: buildEvidence(itemId, activity, {
+          hintsTaken: ev?.hintsTaken,
+          revealed: ev?.revealed,
+        }),
+      }),
+    )
     .catch(() => {});
   return finalize(addXp(p, correct ? XP_CORRECT : XP_WRONG));
 }

@@ -16,7 +16,7 @@ export default function LexicalatorIndexPage() {
   return (
     <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="lexicalator" crumb="🧰 LexicaLater">
       <div className="mx-auto max-w-3xl px-4 pb-4 pt-2">
-        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
+        <h1 className="cahier-display cahier-hand text-3xl font-normal text-[color:var(--cahier-ink)]">
           🧰 LexicaLater
           <span className="ml-2 text-sm font-bold text-[color:var(--cahier-ink-soft)]">forge the French from the syllables on the belt</span>
         </h1>

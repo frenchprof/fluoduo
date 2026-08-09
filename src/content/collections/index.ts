@@ -39,11 +39,11 @@ import transport from "./transport.json";
 
 import aliments from "./aliments.json";
 import partitifs from "./partitifs.json";
-import lesDe from "./les-de.json";
 import frequence from "./frequence.json";
 import demonstratifs from "./demonstratifs.json";
 import commerces from "./commerces.json";
-import modaux from "./modaux.json";
+import modauxPlans from "./modaux-plans.json";
+import modauxAvis from "./modaux-avis.json";
 
 import sappeler from "./sappeler.json";
 import tuVous from "./tu-vous.json";
@@ -95,11 +95,11 @@ export const CURATED: Collection[] = [
   // carry are now covered by `partitifs` (merged from partitif-negatif); this
   // deck is quantity-only. Not yet attached to a SIO — flagged for a
   // separate placement decision.
-  lesDe as Collection,
   frequence as Collection,
   demonstratifs as Collection,
   commerces as Collection,
-  modaux as Collection,
+  modauxPlans as Collection,
+  modauxAvis as Collection,
   etreEtudiant as Collection,
   parceQue as Collection,
   vouloirInviter as Collection,

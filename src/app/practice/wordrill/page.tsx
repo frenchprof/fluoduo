@@ -86,7 +86,7 @@ export default function WorDrillPage() {
         // Landing: pick the scope. Tout first, then the five units, each
         // wearing its accent and word count.
         <div className="mx-auto max-w-2xl px-4 pb-6 pt-2">
-          <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">🎙️ WorDrill</h1>
+          <h1 className="cahier-display cahier-hand text-3xl font-normal text-[color:var(--cahier-ink)]">🎙️ WorDrill</h1>
           <p className="mb-4 mt-1 text-sm text-[color:var(--cahier-ink-soft)]">Continuous oral practice — pick your ground.</p>
           <button
             type="button"

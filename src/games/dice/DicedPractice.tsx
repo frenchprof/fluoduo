@@ -36,6 +36,7 @@ import { gappedItems } from "@/lib/collections/gramMarathonReady";
 import type { Item } from "@/lib/collections/schema";
 import { gradeAnswer, gradeGap, splitGap } from "@/lib/practice/cloze";
 import { recordItemResult } from "@/lib/progress";
+import { gapSentence } from "@/lib/collections/gapSentence";
 
 type Attempt = { q: string; user: string; correct: string; ok: boolean };
 type Level = "facile" | "inter" | "difficile" | "bonus";
@@ -61,7 +62,7 @@ function shuffle<T>(a: T[]): T[] {
 // gapped sentence here — Dan, 2026-07-06), else `fr` itself. Its English gloss
 // mirrors that: `exampleEn` when present — crucial for ⭐ Bonus, where "the
 // café" under-specifies "Je suis au café."
-const sentenceOf = (it: Item) => it.example ?? it.fr;
+// sentenceOf moved to @/lib/collections/gapSentence (2026-08-08)
 const sentenceEnOf = (it: Item) => it.exampleEn ?? it.en;
 
 function Blank() {
@@ -132,11 +133,11 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
     if (!q) return;
     const item = q.item;
     setResult({ ok, user });
-    setAttempts((a) => [...a, { q: qText, user, correct: sentenceOf(item), ok }]);
+    setAttempts((a) => [...a, { q: qText, user, correct: gapSentence(item), ok }]);
     setStreak((s) => (ok ? s + 1 : 0));
     recordItemResult(item.id, ok, undefined, `dice-practice:${collectionId}`);
     if (ok) sfx.correct(); else sfx.wrong();
-    speak(sentenceOf(item), "fr-FR");
+    speak(gapSentence(item), "fr-FR");
   }
 
   const isCompleteIt = !hasGaps && level === "inter";
@@ -144,7 +145,7 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
   const okCount = attempts.filter((a) => a.ok).length;
 
   const item = q?.item ?? null;
-  const gapSplit = item && hasGaps ? splitGap(sentenceOf(item), item.gap!) : null;
+  const gapSplit = item && hasGaps ? splitGap(gapSentence(item), item.gap!) : null;
   const cue = item && gapSplit ? `${gapSplit.before}${item.lemma ? `(${item.lemma})` : "＿＿＿"}${gapSplit.after}` : "";
   const qText = !item
     ? ""
@@ -156,7 +157,7 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
           ? item.en
           : gapSplit
           ? `${gapSplit.before}＿＿＿${gapSplit.after}`
-          : sentenceOf(item);
+          : gapSentence(item);
 
   function checkGapTyped() {
     if (!item || !typed.trim()) return;
@@ -164,7 +165,7 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
   }
   function checkFullTyped() {
     if (!item || !typed.trim()) return;
-    grade(typed, gradeAnswer(typed, sentenceOf(item)) !== "wrong", qText);
+    grade(typed, gradeAnswer(typed, gapSentence(item)) !== "wrong", qText);
   }
 
   return (
@@ -268,10 +269,10 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
               {answered && (
                 <div className={`rounded-xl border-2 p-3 text-center ${result!.ok ? "border-emerald-600/50 bg-emerald-600/10" : "border-rose-600/50 bg-rose-600/10"}`}>
                   <p className="font-black text-[color:var(--cahier-ink)]">
-                    {result!.ok ? "✔ Correct !" : "✘ Presque…"} <span lang="fr">{sentenceOf(item)}</span>
+                    {result!.ok ? "✔ Correct !" : "✘ Presque…"} <span lang="fr">{gapSentence(item)}</span>
                   </p>
                   <div className="mt-2 flex flex-wrap justify-center gap-2">
-                    <button type="button" onClick={() => speak(sentenceOf(item), "fr-FR")} className="cahier-btn cahier-btn-sm">🔊 J&rsquo;écoute</button>
+                    <button type="button" onClick={() => speak(gapSentence(item), "fr-FR")} className="cahier-btn cahier-btn-sm">🔊 J&rsquo;écoute</button>
                     <button type="button" onClick={roll} className="cahier-btn cahier-btn-sm cahier-btn-accent">🎲 Nouvelle question</button>
                     <button type="button" onClick={() => { if (attempts.length > 0) sfx.stage(); setShowSum(true); }} className="cahier-btn cahier-btn-sm">🏁 Je termine</button>
                   </div>
