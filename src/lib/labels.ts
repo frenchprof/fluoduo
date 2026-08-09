@@ -33,6 +33,14 @@
 import { SIOS } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import { outcomeForItem } from "@/lib/evidence";
+import {
+  type Journey,
+  JOURNEY_APP,
+  journeyForSio,
+  journeyForSurface,
+  journeyForUnit,
+  sioForDeck,
+} from "@/lib/curriculum";
 
 /**
  * Decks that existed, were used, and are gone. History must stay readable.
@@ -40,12 +48,20 @@ import { outcomeForItem } from "@/lib/evidence";
  * is no place for a sentence but a teacher asking "what happened to this?"
  * deserves the answer within reach.
  */
-const RETIRED: Record<string, { name: string; story: string }> = {
+// CHECKED AGAINST sios.json, 2026-08-10. `directions-matching` was in this
+// table and should never have been: SIO-036 points at it and learners are
+// using it. Because describeDeck consults RETIRED *before* the outcome lookup,
+// every one of its responses rendered "(retiré)" with no SIO. An obituary for
+// something still alive is worse than no label at all — anything added here
+// must be absent from CURATED and unreferenced by any SIO.
+const RETIRED: Record<string, { name: string; story: string; wasSio?: string }> = {
   modaux: {
+    wasSio: "SIO-047",
     name: "Modaux",
     story: "Split into modaux-plans (SIO-047) + modaux-avis (SIO-048) on 2026-08-09.",
   },
   "les-de": {
+    wasSio: "SIO-042",
     name: "Quantités",
     story: "Folded into SIO-042 (partitifs) on 2026-08-09.",
   },
@@ -54,12 +70,9 @@ const RETIRED: Record<string, { name: string; story: string }> = {
     story: "Retired into ConjugaZone on 2026-08-02.",
   },
   "au-marche": {
+    wasSio: "SIO-044",
     name: "Au marché",
     story: "Never a real deck id — a Compose bank pointed here in error, repointed to commerces.",
-  },
-  "directions-matching": {
-    name: "Directions (matching)",
-    story: "Pre-migration legacy file, deleted 2026-08-02.",
   },
 };
 
@@ -73,7 +86,14 @@ export type PathInfo = {
   retired?: boolean;
   /** Extra context for a tooltip. Never needed to understand the label. */
   note?: string;
+  /** Where this sits on the learner's path, for chronological sorting. */
+  journey?: Journey;
 };
+
+/** Sort key for any labelled row. Unknown positions sort last, not first. */
+export function journeyKey(info: PathInfo): number {
+  return info.journey?.key ?? Number.MAX_SAFE_INTEGER;
+}
 
 /**
  * The 2026-07-20 route renames split ONE exercise's history into two labels.
@@ -107,10 +127,10 @@ const PATH_NAMES: Array<[string, string]> = [
   ["/practice/say-it/", "WorDrill"],
   ["/practice/wordrill", "WorDrill"],
   ["/practice/dice/", "Dice"],
-  ["/practice/speculearn/", "SpecuLearn"],
+  ["/practice/speculearn", "SpecuLearn"],
   ["/practice/ecoutexte", "ÉcouTexte"],
-  ["/games/lexicalater/", "LexicaLater"],
-  ["/games/vocabularain/", "VocabulaRain"],
+  ["/games/lexicalater", "LexicaLater"],
+  ["/games/vocabularain", "VocabulaRain"],
   ["/games/matching/", "Matching"],
   ["/games/compose/", "Compose It"],
   ["/games/numbourse", "NumBourse"],
@@ -127,6 +147,13 @@ const PATH_NAMES: Array<[string, string]> = [
   ["/activities", "Index"],
   ["/leaderboard", "Leaderboard"],
   ["/profil", "Profile"],
+  // Routes that existed in siteTabs.ts and nowhere here, so the teacher saw
+  // them raw: the three galleries above (their trailing-slash forms never
+  // matched the gallery route itself) plus these four.
+  ["/tts", "VoixLà"],
+  ["/guide", "Guide"],
+  ["/about", "À propos"],
+  ["/hidden/vocabularain", "VocabulaRain (hi-scores)"],
 ];
 
 /**
@@ -157,15 +184,6 @@ const KEY_SURFACES: Record<string, { name: string; href: (deck: string) => strin
   tutor: { name: "ChaTutor", href: () => "/tutor" },
 };
 
-let deckToSio: Map<string, string> | null = null;
-function sioForDeck(deckId: string): string | undefined {
-  if (!deckToSio) {
-    deckToSio = new Map();
-    for (const s of SIOS) if (s.collectionId) deckToSio.set(s.collectionId, s.id);
-  }
-  return deckToSio.get(deckId);
-}
-
 function deckTitle(deckId: string): string | undefined {
   return CURATED.find((c) => c.id === deckId)?.title;
 }
@@ -184,18 +202,26 @@ function topicOf(sio: string): string | undefined {
 export function describeDeck(id: string): PathInfo {
   if (!id) return { label: "—" };
   const gone = RETIRED[id];
-  if (gone) return { label: `${gone.name} (retiré)`, retired: true, note: gone.story };
+  // A retired deck keeps the position it taught from, so July's records still
+  // sort into the week they belong to rather than piling up at the end.
+  if (gone)
+    return {
+      label: `${gone.name} (retiré)`,
+      retired: true,
+      note: gone.story,
+      journey: journeyForSio(gone.wasSio),
+    };
 
   // `-letris` is a VocabulaRain packaging detail, not a curriculum one, and the
   // game's ROUTE drops it again (`/games/vocabularain/weather` for the deck
   // `weather-letris`). Try the id both ways so neither spelling reads as
   // unknown — the same both-ways lookup Activities.tsx already does.
   const bare = id.replace(/-letris$/, "");
-  const sio = sioForDeck(id) ?? sioForDeck(bare) ?? sioForDeck(`${id}-letris`);
+  const sio = sioForDeck(id);
   const title = deckTitle(id) ?? deckTitle(bare) ?? deckTitle(`${id}-letris`);
   if (sio) {
     const topic = topicOf(sio);
-    return { label: `${sio} · ${title ?? topic ?? id}`, sio, topic };
+    return { label: `${sio} · ${title ?? topic ?? id}`, sio, topic, journey: journeyForSio(sio) };
   }
   // A real deck with no SIO pointing at it, or an id we simply don't know.
   return { label: title ?? id };
@@ -215,13 +241,15 @@ export function describeDeck(id: string): PathInfo {
  * and inventing one would be worse than a ragged edge.
  */
 function withDeck(activity: string, tail: string): PathInfo {
-  if (!tail) return { label: activity };
+  // No deck: the surface itself has to say where it sits (NumBus drills
+  // numbers, WorDrill pronunciation, ConjugaZone spans everything).
+  if (!tail) return { label: activity, journey: journeyForSurface(activity) };
   const d = describeDeck(tail);
   if (d.sio) {
     const rest = deckTitle(tail) ?? d.topic;
     return { ...d, label: `${d.sio} · ${activity}${rest ? ` · ${rest}` : ""}` };
   }
-  return { ...d, label: `${activity} · ${d.label}` };
+  return { ...d, label: `${activity} · ${d.label}`, journey: d.journey ?? journeyForSurface(activity) };
 }
 
 /**
@@ -237,12 +265,14 @@ export function describePath(raw: string): PathInfo {
   if (sioMatch) {
     const sio = sioMatch[1];
     const topic = topicOf(sio);
-    return { label: topic ? `${sio} · ${topic}` : sio, sio, topic };
+    return { label: topic ? `${sio} · ${topic}` : sio, sio, topic, journey: journeyForSio(sio) };
   }
 
+  // A unit hub sorts at the HEAD of its unit — a learner opens it before
+  // anything taught inside it.
   const unit = /^\/unit\/(\d+)/.exec(path);
-  if (unit) return { label: `Unité ${unit[1]}` };
-  if (path === "/") return { label: "Accueil" };
+  if (unit) return { label: `Unité ${unit[1]}`, journey: journeyForUnit(Number(unit[1])) };
+  if (path === "/") return { label: "Accueil", journey: JOURNEY_APP };
 
   // Longest prefix wins, so /practice/grammarathon/finale beats /practice/grammarathon/.
   let activity: string | undefined;
@@ -330,7 +360,7 @@ export function describeItem(itemId: string): PathInfo {
   if (!itemId) return { label: "—" };
   const sio = outcomeForItem(itemId);
   if (!sio) return { label: itemId };
-  return { label: `${sio} · ${itemId}`, sio, topic: topicOf(sio) };
+  return { label: `${sio} · ${itemId}`, sio, topic: topicOf(sio), journey: journeyForSio(sio) };
 }
 
 /**

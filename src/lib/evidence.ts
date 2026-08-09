@@ -25,6 +25,8 @@
  * 2026-08-10 must carry that caveat.
  */
 import { SIOS } from "@/content/sios";
+import { CURATED } from "@/content/collections";
+import { sioForDeck, sioForItem } from "@/lib/curriculum";
 import { PRETESTS, sioIdForPretest } from "@/content/pretests";
 
 /** Kinds of performance, ordered roughly weakest → strongest as evidence.
@@ -117,13 +119,13 @@ export function evidenceTypeFor(activityId: string | undefined): EvidenceType | 
 // Commerces belonging to SIO-044. Anything that infers an outcome by parsing
 // digits out of an item id will misattribute those. Always resolve here.
 
-let deckToSio: Map<string, string> | null = null;
+// The deck→outcome index lives in @/lib/curriculum now — this module used to
+// build a second, subtly different copy of it (it never resolved the `-letris`
+// suffix, so three decks answered differently here than in labels.ts).
 let pretestToSio: Map<string, string> | null = null;
 
 function indexes() {
-  if (!deckToSio) {
-    deckToSio = new Map();
-    for (const s of SIOS) if (s.collectionId) deckToSio.set(s.collectionId, s.id);
+  if (!pretestToSio) {
     // PRETEST_BY_SIO is module-private; sioIdForPretest is its exported reverse.
     pretestToSio = new Map();
     for (const p of PRETESTS) {
@@ -131,7 +133,7 @@ function indexes() {
       if (sio) pretestToSio.set(p.id, sio);
     }
   }
-  return { deckToSio: deckToSio!, pretestToSio: pretestToSio! };
+  return { pretestToSio: pretestToSio! };
 }
 
 /**
@@ -142,7 +144,7 @@ function indexes() {
  */
 export function outcomeForItem(itemId: string): string | undefined {
   if (!itemId) return undefined;
-  const { deckToSio, pretestToSio } = indexes();
+  const { pretestToSio } = indexes();
 
   // finale:SIO-034:2 — the outcome is stated outright
   if (itemId.startsWith("finale:")) {
@@ -163,19 +165,30 @@ export function outcomeForItem(itemId: string): string | undefined {
   }
   if (bestPretest) return bestPretest;
 
-  // Deck items: `<collectionId>-NN`, again longest-prefix so `modaux-plans-03`
-  // beats a hypothetical `modaux-`.
+  // Deck items: resolved by MEMBERSHIP — which deck actually contains this id.
+  //
+  // This used to match on `itemId.startsWith(collectionId + "-")`, inside a
+  // function whose own header says "never by parsing the id". Four decks author
+  // ids that don't begin with their deck name (`nat-01-france` in
+  // `nationalities`, `num-70` in `numbers-70-99`, `negpas-01` in
+  // `negation-pas`, `directions-full-01` in `directions-matching`), so 84 of
+  // 806 curated items resolved to nothing — one in ten, and clustered, so a
+  // learner weak on numbers saw a whole screen of unlabelled ids.
+  const byMembership = sioForItem(itemId);
+  if (byMembership) return byMembership;
+
+  // Fallback for ids generated outside CURATED (a few games synthesise them).
+  // Longest prefix wins, so `modaux-plans-03` beats a hypothetical `modaux-`.
   let bestDeck: string | undefined;
   bestLen = -1;
-  for (const [collectionId, sio] of deckToSio) {
-    if (itemId.startsWith(collectionId + "-") && collectionId.length > bestLen) {
+  for (const c of CURATED) {
+    const sio = sioForDeck(c.id);
+    if (sio && itemId.startsWith(c.id + "-") && c.id.length > bestLen) {
       bestDeck = sio;
-      bestLen = collectionId.length;
+      bestLen = c.id.length;
     }
   }
-  if (bestDeck) return bestDeck;
-
-  return undefined;
+  return bestDeck;
 }
 
 // ── assistance ──────────────────────────────────────────────────────────────
