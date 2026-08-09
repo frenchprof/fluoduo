@@ -45,7 +45,7 @@ export default function ProfilePage() {
   return (
     <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="profil" crumb="🎖️ Profil">
       <div className="mx-auto max-w-xl px-3 py-5">
-        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">🎖️ Votre profil <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· Your profile</span></h1>
+        <h1 className="cahier-display cahier-hand text-3xl font-normal text-[color:var(--cahier-ink)]">🎖️ Votre profil <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· Your profile</span></h1>
 
         {/* Door to the learning-data mirror (Dan, 2026-07-23: access from the
             user info page). Profil = the economy; /moi = the learning. */}

@@ -131,7 +131,7 @@ export default function ConjugaisonPage() {
   return (
     <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="conjugaison" crumb="🔤 ConjugaZone">
       <div className="mx-auto max-w-4xl px-3 pb-5 pt-2">
-        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
+        <h1 className="cahier-display cahier-hand text-3xl font-normal text-[color:var(--cahier-ink)]">
           🔤 ConjugaZone <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· Conjugation tables</span>
         </h1>
         <p className="mt-1 mb-3 text-sm text-[color:var(--cahier-ink-soft)]">

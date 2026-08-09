@@ -497,12 +497,15 @@ body {
   /* six index-tab pastels (match Dan's reference image) */
   --cahier-t0: #cbb7e6;  --cahier-t1: #8fd3cd;  --cahier-t2: #f3cba0;
   --cahier-t3: #f0d24e;  --cahier-t4: #b6d77f;  --cahier-t5: #e290b6;
-  --font-display-stack: var(--font-display), "Iowan Old Style", Palatino, Georgia, serif;
+  --font-display-stack: var(--font-display), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-hand-stack:    var(--font-hand), "Bradley Hand", "Segoe Print", cursive;
   --font-body-stack:    var(--font-body), system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 .cahier-display { font-family: var(--font-display-stack); font-weight: 600; letter-spacing: -0.01em; }
 .cahier-body    { font-family: var(--font-body-stack); }
+/* Expressive display face. Apply DELIBERATELY to major page titles only. */
+.cahier-hand    { font-family: var(--font-hand-stack); font-weight: 400; letter-spacing: 0; }
 .cahier-hl {
   background-color: var(--cahier-hl);
   mix-blend-mode: multiply;

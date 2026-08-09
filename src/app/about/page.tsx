@@ -95,7 +95,7 @@ export default function AboutPage() {
   return (
     <CahierShell tabs={tabsWithActive(siteTabs(), "guide")} active="guide" crumb="💡 About">
       <div className="mx-auto max-w-2xl px-3 py-5">
-        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
+        <h1 className="cahier-display cahier-hand text-3xl font-normal text-[color:var(--cahier-ink)]">
           💡 Why <span className="cahier-hl px-1">FluOlinGo</span> is built this way
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-[color:var(--cahier-ink)]">

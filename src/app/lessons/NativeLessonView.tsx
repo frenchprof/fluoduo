@@ -30,7 +30,7 @@ export default function NativeLessonView({ slug, title, unit, embedded = false }
 
   const body = (
       <div className="mx-auto max-w-2xl space-y-4 px-2 py-4">
-        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]" lang="fr">{title}</h1>
+        <h1 className="cahier-display cahier-hand text-3xl font-normal text-[color:var(--cahier-ink)]" lang="fr">{title}</h1>
         <StepLabel n={1} label="Recall the idea" />
         {lesson.memo}
         <DiceTrainer config={lesson.dice} activity={`lesson-dice:${slug}`} />

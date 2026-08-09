@@ -30,7 +30,7 @@ export default function NumBusClient() {
 
         {!config ? (
           <div className="mx-auto max-w-3xl px-4 py-6">
-            <h1 className="cahier-display mb-4 text-center text-2xl font-black text-[color:var(--cahier-ink)]">
+            <h1 className="cahier-display cahier-hand mb-4 text-center text-3xl font-normal text-[color:var(--cahier-ink)]">
               🚌 NumBus
             </h1>
             <NumBusSetup onStart={setConfig} />
