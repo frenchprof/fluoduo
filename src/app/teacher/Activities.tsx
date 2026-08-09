@@ -8,6 +8,8 @@ import { useMemo } from "react";
 import { CURATED } from "@/content/collections";
 import { type Ev, type Learner, str, num } from "./data";
 import { Kpi, TableBox, Section, SectionGroup } from "./ui";
+import { describeDeck, titleFor } from "@/lib/labels";
+import { describeGame, hrefForGame } from "@/lib/labels";
 
 /**
  * Which deck a visited path belongs to.
@@ -131,7 +133,7 @@ export default function Activities({ events, roster, includeTeachers = false }: 
           <TableBox head={["Game", "Plays", "Finished", "Players", "Avg score", "Best (who)"]}>
             {model.games.map(([key, g]) => (
               <tr key={key} className="border-t border-slate-100">
-                <td className="px-3 py-2"><a href={`/games/${key}`} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{key}</a></td>
+                <td className="px-3 py-2"><a href={hrefForGame(key) ?? undefined} target="_blank" rel="noreferrer" title={key} className={hrefForGame(key) ? "font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900" : "font-bold text-slate-900"}>{describeGame(key).label}</a></td>
                 <td className="px-3 py-2 text-right text-slate-700">{g.starts}</td>
                 <td className="px-3 py-2 text-right text-slate-700">{g.ends}</td>
                 <td className="px-3 py-2 text-right font-black text-slate-900">{g.players.size}</td>
@@ -149,7 +151,7 @@ export default function Activities({ events, roster, includeTeachers = false }: 
           <TableBox head={["Deck", "Visits", "People"]}>
             {model.decks.map(([id, d]) => (
               <tr key={id} className="border-t border-slate-100">
-                <td className="px-3 py-2"><a href={`/decks/${id}`} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{id}</a></td>
+                <td className="px-3 py-2"><a href={`/decks/${id}`} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900" title={titleFor(id)}>{describeDeck(id).label}</a></td>
                 <td className="px-3 py-2 text-right text-slate-700">{d.opens}</td>
                 <td className="px-3 py-2 text-right font-black text-slate-900">{d.people.size}</td>
               </tr>

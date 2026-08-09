@@ -7,6 +7,8 @@
 import { useMemo, useState } from "react";
 import { type Ev, type Learner, SG_DAY_KEY, SG_DAY_LABEL, str } from "./data";
 import { Kpi, TableBox, Section, SectionGroup } from "./ui";
+import { describePath, titleFor } from "@/lib/labels";
+import { describeGame } from "@/lib/labels";
 
 const DAYS_SHOWN = 14;
 
@@ -141,7 +143,7 @@ export default function Overview({ events, roster, includeTeachers, onStudent }:
           <TableBox head={["Page", "People"]}>
             {model.topPages.map((p) => (
               <tr key={p.path} className="border-t border-slate-100">
-                <td className="px-3 py-2 break-all"><a href={p.path} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{p.path}</a></td>
+                <td className="px-3 py-2 break-all"><a href={p.path} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900" title={titleFor(p.path)}>{describePath(p.path).label}</a></td>
                 <td className="px-3 py-2 text-right font-black text-slate-900">{p.people}</td>
               </tr>
             ))}
@@ -203,7 +205,7 @@ export default function Overview({ events, roster, includeTeachers, onStudent }:
                 <table className="mt-1 w-full text-sm"><tbody>
                   {[...pages.entries()].sort((a, b) => b[1].views - a[1].views).map(([path, p]) => (
                     <tr key={path} className="border-t border-slate-100">
-                      <td className="px-2 py-1.5 break-all"><a href={path} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{path}</a></td>
+                      <td className="px-2 py-1.5 break-all"><a href={path} target="_blank" rel="noreferrer" title={titleFor(path)} className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{describePath(path).label}</a></td>
                       <td className="px-2 py-1.5 text-right text-slate-700">{p.views} views · {p.people.size} 👤</td>
                     </tr>
                   ))}
@@ -221,7 +223,7 @@ export default function Overview({ events, roster, includeTeachers, onStudent }:
               {games.size > 0 && (
                 <>
                   <h4 className="mt-4 text-sm font-black uppercase tracking-wide text-slate-500">Games started</h4>
-                  <p className="mt-1 text-sm text-slate-700">{[...games.entries()].map(([g, n]) => `${g} ×${n}`).join(" · ")}</p>
+                  <p className="mt-1 text-sm text-slate-700">{[...games.entries()].map(([g, n]) => `${describeGame(g).label} ×${n}`).join(" · ")}</p>
                 </>
               )}
             </div>

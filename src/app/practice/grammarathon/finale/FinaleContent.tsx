@@ -26,6 +26,8 @@ import { SIOS } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import { gradeAnswer } from "@/lib/practice/cloze";
 import { loadProgress, recordItemResult } from "@/lib/progress";
+import { buildLadder, shownRungs } from "@/lib/help/ladder";
+import { buildEvidence } from "@/lib/evidence";
 
 const DAILY_N = 50; // Dan, 2026-07-22: 50, not 100
 
@@ -150,15 +152,39 @@ export default function FinaleContent() {
     for (const x of q.a) if (!forms.some((f) => dd(f) === dd(x))) forms.push(x);
     // First ATTEMPT is what pays and feeds the SRS — honest measurement;
     // later retries resolve the item for learning, not for XP.
+    // The FIRST attempt is the independent measurement and the only one that
+    // pays — unchanged. What is new is that it now carries how much help had
+    // been taken before it, so "right, cold" and "right, after four clues" stop
+    // looking identical in the evidence store (PRD §7).
+    const hintsTaken = clue[q.id] ?? 0;
     if (!graded.current.has(q.id)) {
       graded.current.add(q.id);
-      recordItemResult(q.id, ok, given);
+      recordItemResult(q.id, ok, given, undefined, { hintsTaken });
+    } else if (ok) {
+      // Resolved AFTER assistance. The first attempt already stands as the
+      // independent measurement, so this pays nothing and does not touch the
+      // SRS — but PRD §7 is explicit that assistance changes evidentiary
+      // strength without making the learning event disappear. Recording it is
+      // how "got there with a scaffold" becomes visible at all.
+      const revealed = hintsTaken >= ladderFor(q).length;
+      void import("@/lib/firebase/responses")
+        .then((m) =>
+          m.recordResponse(q.id, true, {
+            given,
+            xpPaid: 0,
+            evidence: buildEvidence(q.id, "/practice/grammarathon/finale", {
+              hintsTaken,
+              revealed,
+            }),
+          }),
+        )
+        .catch(() => {});
     }
     if (ok) {
       setVerdicts((v) => ({ ...v, [q.id]: { ok, others: forms.filter((f) => dd(f) !== dd(given)), expected: forms } }));
     } else {
       // No reveal. One more rung on the clue ladder, and try again.
-      setClue((c) => ({ ...c, [q.id]: Math.min(4, (c[q.id] ?? 0) + 1) }));
+      setClue((c) => ({ ...c, [q.id]: Math.min(ladderFor(q).length, (c[q.id] ?? 0) + 1) }));
       setWrongFlash(q.id);
       window.setTimeout(() => setWrongFlash(null), 450);
     }
@@ -170,23 +196,38 @@ export default function FinaleContent() {
   }
 
   function hint(q: FinaleItem) {
-    setClue((c) => ({ ...c, [q.id]: Math.min(4, (c[q.id] ?? 0) + 1) }));
+    const rungs = ladderFor(q);
+    const next = Math.min(rungs.length, (clue[q.id] ?? 0) + 1);
+    setClue((c) => ({ ...c, [q.id]: next }));
+    // hint.tap is the help-seeking construct behind PRD §6 Goal 2's "declining
+    // reliance on hints and scaffolds over time". The answer rung gets its own
+    // event so reveals can be counted separately from clues.
+    const rung = rungs[next - 1]?.level ?? "nudge";
     void import("@/lib/firebase/usage")
-      .then((m) => m.logEvent("hint.tap", { surface: "finale", itemId: q.id, sio: q.sio }))
+      .then((m) =>
+        m.logEvent(rung === "answer" ? "answer.reveal" : "hint.tap", {
+          surface: "finale",
+          itemId: q.id,
+          sio: q.sio,
+          rung,
+          level: next,
+        }),
+      )
       .catch(() => {});
   }
-  /** The ladder: category → lesson → first letter → skeleton. Never the word. */
+  /** The shared ladder (src/lib/help/ladder.ts): nudge → guiding question →
+   *  scaffold → partial reveal → ANSWER. The fifth rung is new (Dan,
+   *  2026-08-09: Finale is practice, so the answer must be reachable —
+   *  PRD §8). Reaching it is recorded, not prevented. */
+  function ladderFor(q: FinaleItem) {
+    return buildLadder({
+      answer: q.a[0] ?? "",
+      topic: SIOS.find((x) => x.id === q.sio)?.topic ?? q.sio,
+      category: q.cat,
+    });
+  }
   function clues(q: FinaleItem, level: number): string[] {
-    const a0 = q.a[0] ?? "";
-    const topic = SIOS.find((x) => x.id === q.sio)?.topic ?? q.sio;
-    const skel = a0 ? a0[0] + " " + [...a0.slice(1)].map(() => "_").join(" ") : "";
-    const all = [
-      `💡 ${q.cat}`,
-      `📘 Leçon : ${topic}`,
-      `🔤 Une réponse possible commence par « ${a0[0]?.toUpperCase() ?? ""} »`,
-      `✏️ ${skel}  (${a0.length} lettres)`,
-    ];
-    return all.slice(0, level);
+    return shownRungs(ladderFor(q), level).map((r) => r.text);
   }
 
   if (!paper) {
