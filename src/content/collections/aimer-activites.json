@@ -1,252 +1,272 @@
 {
-  "id": "aimer-activites",
-  "title": "J'aime...",
-  "subtitle": "Things and activities I like",
-  "langPair": "fr-en",
-  "owner": "curated",
-  "visibility": "public",
-  "unit": 2,
-  "lessonNo": 23,
-  "lessonSlug": "aimer-activites",
-  "tags": [],
-  "seq": 223,
-  "items": [
-    {
-      "id": "aimer-activites-01",
-      "fr": "le sport",
-      "alt": ["les sports"],
-      "en": "sports",
-      "tags": [],
-      "syllables": [
-        "le",
-        "sport"
-      ]
-    },
-    {
-      "id": "aimer-activites-02",
-      "fr": "la musique",
-      "en": "music",
-      "tags": [],
-      "syllables": [
-        "la",
-        "mu",
-        "sique"
-      ]
-    },
-    {
-      "id": "aimer-activites-03",
-      "fr": "le cinéma",
-      "en": "cinema",
-      "tags": [],
-      "syllables": [
-        "le",
-        "ci",
-        "né",
-        "ma"
-      ]
-    },
-    {
-      "id": "aimer-activites-04",
-      "fr": "la lecture",
-      "en": "reading",
-      "tags": [],
-      "syllables": [
-        "la",
-        "lec",
-        "ture"
-      ]
-    },
-    {
-      "id": "aimer-activites-05",
-      "fr": "les jeux vidéo",
-      "en": "video games",
-      "tags": [],
-      "syllables": [
-        "les",
-        "jeux",
-        "vi",
-        "dé",
-        "o"
-      ]
-    },
-    {
-      "id": "aimer-activites-06",
-      "fr": "la danse",
-      "en": "dance",
-      "tags": [],
-      "syllables": [
-        "la",
-        "danse"
-      ]
-    },
-    {
-      "id": "aimer-activites-07",
-      "fr": "voyager",
-      "en": "to travel",
-      "tags": [],
-      "syllables": [
-        "vo",
-        "ya",
-        "ger"
-      ]
-    },
-    {
-      "id": "aimer-activites-08",
-      "fr": "cuisiner",
-      "en": "to cook",
-      "tags": [],
-      "syllables": [
-        "cui",
-        "si",
-        "ner"
-      ]
-    },
-    {
-      "id": "aimer-activites-09",
-      "fr": "dessiner",
-      "en": "to draw",
-      "tags": [],
-      "syllables": [
-        "des",
-        "si",
-        "ner"
-      ]
-    },
-    {
-      "id": "aimer-activites-10",
-      "fr": "chanter",
-      "en": "to sing",
-      "tags": [],
-      "syllables": [
-        "chan",
-        "ter"
-      ]
-    },
-    {
-      "id": "aimer-activites-11",
-      "fr": "danser",
-      "en": "to dance",
-      "syllables": [
-        "dan",
-        "ser"
-      ],
-      "example": "J'aime danser.",
-      "exampleEn": "I like dancing.",
-      "tags": []
-    },
-    {
-      "id": "aimer-activites-12",
-      "fr": "lire",
-      "en": "to read",
-      "syllables": [
-        "lire"
-      ],
-      "example": "J'aime lire.",
-      "exampleEn": "I like reading.",
-      "tags": []
-    },
-    {
-      "id": "aimer-activites-13",
-      "fr": "courir",
-      "en": "to run",
-      "syllables": [
-        "cou",
-        "rir"
-      ],
-      "example": "Je n'aime pas courir.",
-      "exampleEn": "I don't like running.",
-      "tags": []
-    },
-    {
-      "id": "aimer-activites-14",
-      "fr": "nager",
-      "en": "to swim",
-      "syllables": [
-        "na",
-        "ger"
-      ],
-      "example": "J'aime nager.",
-      "exampleEn": "I like swimming.",
-      "tags": []
-    },
-    {
-      "id": "aimer-activites-15",
-      "fr": "écouter",
-      "en": "to listen (to)",
-      "syllables": [
-        "é",
-        "cou",
-        "ter"
-      ],
-      "example": "J'aime écouter de la musique.",
-      "exampleEn": "I like listening to music.",
-      "tags": []
-    },
-    {
-      "id": "aimer-activites-16",
-      "fr": "regarder",
-      "en": "to watch",
-      "syllables": [
-        "re",
-        "gar",
-        "der"
-      ],
-      "example": "J'aime regarder la télé.",
-      "exampleEn": "I like watching TV.",
-      "tags": []
-    },
-    {
-      "id": "aimer-activites-17",
-      "fr": "sortir",
-      "en": "to go out",
-      "syllables": [
-        "sor",
-        "tir"
-      ],
-      "example": "J'adore sortir avec mes amis.",
-      "exampleEn": "I love going out with my friends.",
-      "tags": []
-    },
-    {
-      "id": "aimer-activites-18",
-      "fr": "adorer",
-      "en": "to love (stronger than aimer)",
-      "syllables": [
-        "a",
-        "do",
-        "rer"
-      ],
-      "example": "J'adore le cinéma.",
-      "exampleEn": "I love the cinema.",
-      "tags": []
-    },
-    {
-      "id": "aimer-activites-19",
-      "fr": "détester",
-      "en": "to hate",
-      "syllables": [
-        "dé",
-        "tes",
-        "ter"
-      ],
-      "example": "Je déteste les lundis.",
-      "exampleEn": "I hate Mondays.",
-      "tags": []
-    }
-  ],
-  "gameConfig": {
-    "lexicalator": {
-      "decoys": [
-        "zique",
-        "sé",
-        "na",
-        "ture-",
-        "van",
-        "cui-",
-        "chin",
-        "der",
-        "yo"
-      ]
-    }
+ "id": "aimer-activites",
+ "title": "J'aime...",
+ "subtitle": "Things and activities I like",
+ "langPair": "fr-en",
+ "owner": "curated",
+ "visibility": "public",
+ "unit": 2,
+ "lessonNo": 23,
+ "lessonSlug": "aimer-activites",
+ "tags": [],
+ "seq": 223,
+ "items": [
+  {
+   "id": "aimer-activites-01",
+   "fr": "le sport",
+   "alt": [
+    "les sports"
+   ],
+   "en": "sports",
+   "tags": [],
+   "syllables": [
+    "le",
+    "sport"
+   ],
+   "example": "J'aime le sport.",
+   "exampleEn": "I like sports.",
+   "gap": "le"
+  },
+  {
+   "id": "aimer-activites-02",
+   "fr": "la musique",
+   "en": "music",
+   "tags": [],
+   "syllables": [
+    "la",
+    "mu",
+    "sique"
+   ],
+   "example": "J'aime la musique.",
+   "exampleEn": "I like music.",
+   "gap": "la"
+  },
+  {
+   "id": "aimer-activites-03",
+   "fr": "le cinéma",
+   "en": "cinema",
+   "tags": [],
+   "syllables": [
+    "le",
+    "ci",
+    "né",
+    "ma"
+   ],
+   "example": "J'aime le cinéma.",
+   "exampleEn": "I like cinema.",
+   "gap": "le"
+  },
+  {
+   "id": "aimer-activites-04",
+   "fr": "la lecture",
+   "en": "reading",
+   "tags": [],
+   "syllables": [
+    "la",
+    "lec",
+    "ture"
+   ],
+   "example": "J'aime la lecture.",
+   "exampleEn": "I like reading.",
+   "gap": "la"
+  },
+  {
+   "id": "aimer-activites-05",
+   "fr": "les jeux vidéo",
+   "en": "video games",
+   "tags": [],
+   "syllables": [
+    "les",
+    "jeux",
+    "vi",
+    "dé",
+    "o"
+   ],
+   "example": "J'aime les jeux vidéo.",
+   "exampleEn": "I like video games.",
+   "gap": "les"
+  },
+  {
+   "id": "aimer-activites-06",
+   "fr": "la danse",
+   "en": "dance",
+   "tags": [],
+   "syllables": [
+    "la",
+    "danse"
+   ],
+   "example": "J'aime la danse.",
+   "exampleEn": "I like dance.",
+   "gap": "la"
+  },
+  {
+   "id": "aimer-activites-07",
+   "fr": "voyager",
+   "en": "to travel",
+   "tags": [],
+   "syllables": [
+    "vo",
+    "ya",
+    "ger"
+   ]
+  },
+  {
+   "id": "aimer-activites-08",
+   "fr": "cuisiner",
+   "en": "to cook",
+   "tags": [],
+   "syllables": [
+    "cui",
+    "si",
+    "ner"
+   ]
+  },
+  {
+   "id": "aimer-activites-09",
+   "fr": "dessiner",
+   "en": "to draw",
+   "tags": [],
+   "syllables": [
+    "des",
+    "si",
+    "ner"
+   ]
+  },
+  {
+   "id": "aimer-activites-10",
+   "fr": "chanter",
+   "en": "to sing",
+   "tags": [],
+   "syllables": [
+    "chan",
+    "ter"
+   ]
+  },
+  {
+   "id": "aimer-activites-11",
+   "fr": "danser",
+   "en": "to dance",
+   "syllables": [
+    "dan",
+    "ser"
+   ],
+   "example": "J'aime danser.",
+   "exampleEn": "I like dancing.",
+   "tags": []
+  },
+  {
+   "id": "aimer-activites-12",
+   "fr": "lire",
+   "en": "to read",
+   "syllables": [
+    "lire"
+   ],
+   "example": "J'aime lire.",
+   "exampleEn": "I like reading.",
+   "tags": []
+  },
+  {
+   "id": "aimer-activites-13",
+   "fr": "courir",
+   "en": "to run",
+   "syllables": [
+    "cou",
+    "rir"
+   ],
+   "example": "Je n'aime pas courir.",
+   "exampleEn": "I don't like running.",
+   "tags": []
+  },
+  {
+   "id": "aimer-activites-14",
+   "fr": "nager",
+   "en": "to swim",
+   "syllables": [
+    "na",
+    "ger"
+   ],
+   "example": "J'aime nager.",
+   "exampleEn": "I like swimming.",
+   "tags": []
+  },
+  {
+   "id": "aimer-activites-15",
+   "fr": "écouter",
+   "en": "to listen (to)",
+   "syllables": [
+    "é",
+    "cou",
+    "ter"
+   ],
+   "example": "J'aime écouter de la musique.",
+   "exampleEn": "I like listening to music.",
+   "tags": []
+  },
+  {
+   "id": "aimer-activites-16",
+   "fr": "regarder",
+   "en": "to watch",
+   "syllables": [
+    "re",
+    "gar",
+    "der"
+   ],
+   "example": "J'aime regarder la télé.",
+   "exampleEn": "I like watching TV.",
+   "tags": []
+  },
+  {
+   "id": "aimer-activites-17",
+   "fr": "sortir",
+   "en": "to go out",
+   "syllables": [
+    "sor",
+    "tir"
+   ],
+   "example": "J'adore sortir avec mes amis.",
+   "exampleEn": "I love going out with my friends.",
+   "tags": []
+  },
+  {
+   "id": "aimer-activites-18",
+   "fr": "adorer",
+   "en": "to love (stronger than aimer)",
+   "syllables": [
+    "a",
+    "do",
+    "rer"
+   ],
+   "example": "J'adore le cinéma.",
+   "exampleEn": "I love the cinema.",
+   "tags": []
+  },
+  {
+   "id": "aimer-activites-19",
+   "fr": "détester",
+   "en": "to hate",
+   "syllables": [
+    "dé",
+    "tes",
+    "ter"
+   ],
+   "example": "Je déteste les lundis.",
+   "exampleEn": "I hate Mondays.",
+   "tags": []
   }
+ ],
+ "gameConfig": {
+  "lexicalator": {
+   "decoys": [
+    "zique",
+    "sé",
+    "na",
+    "ture-",
+    "van",
+    "cui-",
+    "chin",
+    "der",
+    "yo"
+   ]
+  }
+ }
 }
