@@ -21,11 +21,19 @@ const HUES = ["var(--cahier-t0)", "var(--cahier-t1)", "var(--cahier-t2)", "var(-
 type Resp = { item: string; status: string; activityId: string; ts: number; given?: string };
 
 // ── activity naming (a friendly local cousin of the teacher's normalizer) ──
+/** Deck ids are historical (lieux-letris, weather-letris) and leak into the UI.
+ *  Never rename the id — it is embedded in activityId strings across every
+ *  stored response. Resolve to the deck's own title for display instead. */
+function deckTitle(id: string | undefined): string {
+  if (!id) return "";
+  return CURATED.find((c) => c.id === id)?.title ?? id;
+}
+
 function labelActivity(id: string): string {
-  if (id.startsWith("/practice/flip-it/")) return "Flip It · " + id.split("/").pop();
+  if (id.startsWith("/practice/flip-it/")) return "Flip It · " + deckTitle(id.split("/").pop());
   if (id.startsWith("/practice/speculearn/")) return "SpecuLearn · " + id.split("/").pop();
   if (id === "/practice/grammarathon/finale") return "🏁 GramMarathon Final";
-  if (id.startsWith("/practice/grammarathon/")) return "🏃 GramMarathon · " + id.split("/").pop();
+  if (id.startsWith("/practice/grammarathon/")) return "🏃 GramMarathon · " + deckTitle(id.split("/").pop());
   if (id.startsWith("/games/lexicalater")) return "LexicaLater";
   if (id.startsWith("/games/vocabularain") || id.startsWith("/games/letris")) return "VocabulaRain";
   if (id.startsWith("/games/numbus") || id.startsWith("numbus:")) return "NumBus";
@@ -114,11 +122,11 @@ export default function MoiContent() {
   // ── the quantitative picture, ranked (Dan: "% and so on") ──
   const byExercise = useMemo(() => {
     if (!resp) return [];
-    const m = new Map<string, { label: string; href: string | null; n: number; ok: number; missed: number; last: number }>();
+    const m = new Map<string, { key: string; label: string; href: string | null; n: number; ok: number; missed: number; last: number }>();
     for (const r of resp) {
       const key = r.activityId || "unknown";
       let g = m.get(key);
-      if (!g) m.set(key, (g = { label: labelActivity(key), href: key.startsWith("/") ? key : null, n: 0, ok: 0, missed: 0, last: 0 }));
+      if (!g) m.set(key, (g = { key, label: labelActivity(key), href: key.startsWith("/") ? key : null, n: 0, ok: 0, missed: 0, last: 0 }));
       g.n += 1;
       if (r.status === "missed") g.missed += 1; else g.ok += 1;
       if (r.ts > g.last) g.last = r.ts;
@@ -232,7 +240,7 @@ export default function MoiContent() {
                   head={["Exercise", "✓", "✗", "Score", "Last"]}
                   headAlign={(h, i) => (i === 0 ? "text-left" : "text-right")}
                   rows={byExercise.map((g) => (
-                    <tr key={g.label} className="border-t border-slate-100">
+                    <tr key={g.key} className="border-t border-slate-100">
                       <td className="px-2 py-1.5 font-bold">{g.href ? <a href={g.href} className="text-blue-700 underline underline-offset-2 hover:text-blue-900">{g.label}</a> : g.label}</td>
                       <td className="px-2 py-1.5 text-right text-emerald-700">{g.ok}</td>
                       <td className="px-2 py-1.5 text-right text-rose-600">{g.missed}</td>
