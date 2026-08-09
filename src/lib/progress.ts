@@ -46,6 +46,7 @@ import {
   XP_CONVERSATION,
 } from "@/lib/economy";
 import { dayKey, previousDay, learnerZone } from "@/lib/dayKey";
+import { buildEvidence } from "@/lib/evidence";
 
 export type Progress = {
   doneSios: string[];
@@ -301,7 +302,15 @@ export function stepItemSrs(prev: ItemSrs | undefined, correct: boolean, now: nu
  * never navigates and would otherwise tag every embedded game's writes with
  * whatever host page happened to be open (audit 2026-08-02).
  */
-export function recordItemResult(itemId: string, correct: boolean, given?: string, activity?: string): Progress {
+export function recordItemResult(
+  itemId: string,
+  correct: boolean,
+  given?: string,
+  activity?: string,
+  /** How the answer was produced (PRD §7). Omit and the record still
+   *  stores, just without evidence meaning — adoption is incremental. */
+  ev?: { hintsTaken?: number; revealed?: boolean; latencyMs?: number },
+): Progress {
   const prev = loadProgress();
   const itemSrs = { ...prev.itemSrs, [itemId]: stepItemSrs(prev.itemSrs[itemId], correct, Date.now()) };
   // Practising ANYTHING keeps the streak alive — motivation comes from showing
@@ -317,7 +326,18 @@ export function recordItemResult(itemId: string, correct: boolean, given?: strin
   // rule); fire-and-forget, signed-out is a no-op.
   const paid = Math.round((correct ? XP_CORRECT : XP_WRONG) * xpMultiplier(p.streak));
   void import("@/lib/firebase/responses")
-    .then((m) => m.recordResponse(itemId, correct, { given, xpPaid: paid, activity }))
+    .then((m) =>
+      m.recordResponse(itemId, correct, {
+        given,
+        xpPaid: paid,
+        activity,
+        latencyMs: ev?.latencyMs,
+        evidence: buildEvidence(itemId, activity, {
+          hintsTaken: ev?.hintsTaken,
+          revealed: ev?.revealed,
+        }),
+      }),
+    )
     .catch(() => {});
   return finalize(addXp(p, correct ? XP_CORRECT : XP_WRONG));
 }
