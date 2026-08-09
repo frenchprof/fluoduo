@@ -1,0 +1,77 @@
+# Preview build → GitHub Pages.
+#
+# WHY: the only way to look at this app has been `npm run dev` on the machine
+# that has the repo. That made every review a screenshot relay. This publishes
+# a real URL — https://frenchprof.github.io/fluoduo/ — that can be opened on a
+# phone, and it is entirely separate from production.
+#
+# IT DOES NOT TOUCH PRODUCTION. fluolingo.withdrchan.com is built by Cloudflare
+# Pages from its own connected repo. Nothing here writes to it.
+#
+# WHAT WILL NOT WORK ON THE PREVIEW, by design:
+#   /api/tutor, /api/tts, /api/correct, /api/compose
+# Those are Cloudflare Pages Functions — real server-side code holding the API
+# key. GitHub Pages has no server, so ChaTutor, text-to-speech and Compose's
+# answer-checking will fail there. Everything else — decks, games, drills,
+# /moi, /teacher — runs in the browser against Firebase and works normally.
+#
+# BEFORE THE FIRST RUN, one manual step (otherwise sign-in fails and /moi and
+# /teacher show nothing):
+#   Firebase console → Authentication → Settings → Authorised domains
+#   → Add domain → frenchprof.github.io
+name: Preview to GitHub Pages
+
+on:
+  workflow_dispatch:          # run it by hand from the Actions tab
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One preview at a time; a newer push supersedes an in-flight build.
+concurrency:
+  group: pages-preview
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build static export at the /fluoduo subpath
+        env:
+          PAGES_BASE_PATH: /fluoduo
+        run: npm run build
+
+      # Without this, GitHub Pages runs Jekyll, which strips any directory
+      # beginning with an underscore — including _next/, i.e. every script and
+      # stylesheet the app has.
+      - run: touch out/.nojekyll
+
+      # Pages has no server-side rewrites. Next's export writes out/404.html;
+      # GitHub Pages serves it for unknown paths, which is what makes deep
+      # links behave rather than showing GitHub's own 404.
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
