@@ -21,6 +21,7 @@ import {
 } from "@/lib/collections/loadCollections";
 import type { Collection, Item } from "@/lib/collections/schema";
 import CahierShell, { type ShellTab } from "@/components/CahierShell";
+import CuratedDeckTable from "./CuratedDeckTable";
 
 export function deckTabs(id: string): ShellTab[] {
   return [
@@ -49,16 +50,16 @@ function DeckPageInner({ id }: { id: string }) {
   const [state, setState] = useState<LoadState>({ kind: "loading" });
   const [deleting, setDeleting] = useState(false);
 
+  // Curated decks render the 4Mémoire TABLE here (patch 20–21: the drill
+  // route shows one card in DrillShell; the whole-deck table — cover/reveal,
+  // notes, grouping, subsets — split out to this page). This replaces the
+  // 2026-08-02 redirect to /practice/flip-it, which is now the drill.
+  // Firestore (user-created) decks are unaffected.
+  const curated = CURATED.find((c) => c.id === id);
+
   useEffect(() => {
+    if (curated) return;
     let cancelled = false;
-    // Curated decks no longer browse here — Flip It is a strict superset and
-    // this browser had no learner-facing link anyway (Dan, 2026-08-02
-    // Decks→Flip It merge). Redirect rather than 404 for any surviving
-    // bookmark/link. Firestore (user-created) decks are unaffected.
-    if (CURATED.some((c) => c.id === id)) {
-      router.replace(`/practice/flip-it/${id}`);
-      return;
-    }
     (async () => {
       try {
         const col = await getCollection(id);
@@ -80,7 +81,7 @@ function DeckPageInner({ id }: { id: string }) {
     return () => {
       cancelled = true;
     };
-  }, [id, router]);
+  }, [id, router, curated]);
 
   async function onDelete() {
     if (state.kind !== "ok") return;
@@ -94,6 +95,8 @@ function DeckPageInner({ id }: { id: string }) {
       setDeleting(false);
     }
   }
+
+  if (curated) return <CuratedDeckTable collection={curated} />;
 
   return (
     <CahierShell

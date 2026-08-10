@@ -491,6 +491,18 @@ body {
   --cahier-hl:         var(--fluo-hl);   /* chartreuse marker */
   --cahier-hl-edge:    #a6c130;
   --cahier-gold:       #c8a24b;
+  /* drill verdict palette (patch 20–21): correct/wrong is colour with
+     meaning, so it lives as tokens — one definition for the shell, every
+     drill, and the future GameFrame — and the 19b ratchet can hold. */
+  --drill-ok:        #10b981;
+  --drill-ok-soft:   #6ee7b7;
+  --drill-ok-bg:     #ecfdf5;
+  --drill-ok-ink:    #047857;
+  --drill-bad:       #e11d48;
+  --drill-bad-mid:   #f43f5e;
+  --drill-bad-soft:  #fda4af;
+  --drill-bad-bg:    #fff1f2;
+  --drill-bad-ink:   #be123c;
   --cahier-spiral-hi:  #e2e4e8;
   --cahier-spiral:     #b9bcc4;
   --cahier-spiral-lo:  #82868f;
@@ -847,6 +859,13 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 /* Size modifier only — never re-set box-shadow here, or it would override the
    variant lip colour (primary/accent/gold) since -sm is declared last. */
 .cahier-btn-sm { padding: 0.3rem 0.65rem; font-size: 0.78rem; border-radius: 8px; }
+
+/* DrillShell's feedback tray slides up OVER the footer — it must never push
+   the body (the reflow is what made six drills feel like six apps). */
+@keyframes drill-tray {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
 
 /* Mobile top bar (Dan, 2026-07-26): the icon row was pushing ☰ off the
    edge — thinner buttons below sm, scoped to the bar only. */

@@ -787,7 +787,9 @@ export default function LetrisGame({
       </div>
 
       <footer className="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-sky-900/70">
-        <div>
+        {/* Keyboards live above sm — a phone was rendering five shortcuts it
+            cannot press (patch 20–21). */}
+        <div className="hidden sm:block">
           <kbd className="rounded border border-sky-200 bg-white px-1.5 py-0.5">←</kbd>{" "}
           <kbd className="rounded border border-sky-200 bg-white px-1.5 py-0.5">→</kbd> move
           {"  · "}

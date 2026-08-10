@@ -13,13 +13,16 @@
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
+import DrillShell, { drillExitHref } from "@/components/DrillShell";
 import { CURATED } from "@/content/collections";
 import { bareWord, practiceItems } from "@/lib/collections/display";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { recordItemResult } from "@/lib/progress";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
+import { buildLadder, shownRungs } from "@/lib/help/ladder";
+import { SIOS } from "@/content/sios";
+import WordBank from "@/components/WordBank";
 import type { Collection, Item } from "@/lib/collections/schema";
 
 function normalize(s: string) {
@@ -68,13 +71,20 @@ type QEntry = { itemIdx: number; natForm?: NatForm };
 export default function CompleteItContent({ collectionId, embedded = false }: { collectionId: string; embedded?: boolean }) {
   useActivityPlay("complete-it", collectionId);
   const deck = CURATED.find((c) => c.id === collectionId);
-  const tabs = useMemo(() => (deck ? withActive(deckActivityTabs(deck.id), "complete") : []), [deck]);
 
   const [order, setOrder] = useState<QEntry[] | null>(null);
   const [i, setI] = useState(0);
   const [value, setValue] = useState("");
   const [result, setResult] = useState<Grade | null>(null);
   const [score, setScore] = useState({ ok: 0, total: 0 });
+  // Help ladder (PRD §8) — iComplete never had one: a learner stuck on a
+  // spelling got a bare "wrong" while GramMarathon offered escalating clues
+  // for the same kind of typed answer (patch 20–21 row).
+  const [clue, setClue] = useState(0);
+  const sioTopic = useMemo(
+    () => SIOS.find((s) => s.collectionId === collectionId)?.topic,
+    [collectionId],
+  );
   const inputRef = useRef<HTMLInputElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
 
@@ -125,16 +135,47 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
     const g = grade(value, answer);
     setResult(g);
     setScore((s) => ({ ok: s.ok + (g !== "wrong" ? 1 : 0), total: s.total + 1 }));
-    recordItemResult(item.id, g !== "wrong", undefined, `complete-it:${collectionId}`);
+    recordItemResult(item.id, g !== "wrong", undefined, `complete-it:${collectionId}`, {
+      hintsTaken: clue,
+    });
     if (g !== "wrong") sfx.correct(); else sfx.wrong();
     if (g !== "wrong") speak(answer, "fr-FR");
   }
   function next() {
+    setClue(0);
     if (i + 1 >= total) sfx.stage(); // run complete — the done card is about to show
     setResult(null);
     setValue("");
     setI((n) => n + 1);
   }
+
+  function ladderForItem() {
+    return buildLadder({ answer, topic: sioTopic });
+  }
+  function takeHint() {
+    if (!item) return;
+    const rungs = ladderForItem();
+    const n = Math.min(rungs.length, clue + 1);
+    setClue(n);
+    const rung = rungs[n - 1]?.level ?? "nudge";
+    void import("@/lib/firebase/usage")
+      .then((m) =>
+        m.logEvent(rung === "answer" ? "answer.reveal" : "hint.tap", {
+          surface: "complete-it",
+          itemId: item.id,
+          deck: collectionId,
+          rung,
+          level: n,
+        }),
+      )
+      .catch(() => {});
+  }
+  const hintLabel =
+    clue === 0
+      ? "💡 un indice"
+      : clue >= ladderForItem().length - 1
+        ? "✅ voir la réponse"
+        : "💡 encore un indice";
 
   function restart() {
     const entries: QEntry[] = [];
@@ -146,11 +187,69 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
     setI(0); setValue(""); setResult(null); setScore({ ok: 0, total: 0 });
   }
 
-  const body = (
-      <div className="mx-auto max-w-lg px-4 py-6">
-        <h1 className="fluo-serif text-2xl font-black text-[color:var(--fluo-ink)]">✏️ Complete It</h1>
-        <p lang="fr" className="mt-1 mb-5 text-sm text-[color:var(--fluo-ink-soft)]">{deck.title}</p>
+  const prompt = item ? (
+    natForm ? (
+      <>
+        <p className="text-[0.7rem] font-bold uppercase tracking-wider text-[color:var(--fluo-ink-soft)]">Write the nationality adjective</p>
+        <p className="mt-1 text-xl font-black text-[color:var(--fluo-ink)]">
+          {item.emoji && <span className="mr-1">{item.emoji}</span>}
+          <span className="text-[color:var(--cahier-ink-soft)] font-medium">{NAT_SUBJECT[natForm]} </span>
+          <span>{item.en}</span>
+        </p>
+      </>
+    ) : (
+      <p className="mt-1 text-xl font-black text-[color:var(--fluo-ink)]">
+        {art && <span className="text-[color:var(--cahier-ink-soft)] font-medium mr-1">{art}</span>}
+        <span>{bareWord(item.en)}{item.note ? <span className="ml-1 text-sm font-medium text-[color:var(--fluo-ink-soft)]">{item.note}</span> : null}</span>
+      </p>
+    )
+  ) : null;
 
+  const rungsShown = clue > 0 && item ? (
+    <div className="mt-3 space-y-1">
+      {shownRungs(ladderForItem(), clue).map((r, k) => (
+        <p key={k} lang="fr" className="rounded-lg bg-amber-50 px-2 py-1 text-sm text-amber-900">
+          {r.text}
+        </p>
+      ))}
+    </div>
+  ) : null;
+
+  // Word-bank distractors: a nationality question draws the same item's
+  // other three forms (chinois/chinoise/chinoises — the exact confusions
+  // being drilled); everything else draws other items' full answers.
+  const bankPool =
+    item && natForm && item.nat
+      ? NAT_FORMS.filter((f) => f !== natForm).map((f) => item.nat![f])
+      : item
+        ? practiceItems(deck).filter((it) => it.id !== item.id).map((it) => frFull(articleOf(deck!, it), it.fr))
+        : [];
+
+  // Typing above sm; word-bank tiles below it (patch 20–21) — one `value`,
+  // so grading/XP/evidence never know which surface produced the string.
+  const answerInput = (
+    <>
+      <input
+        ref={inputRef}
+        lang="fr"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        disabled={result !== null}
+        placeholder={`commence par « ${answer[0] ?? "?"} »…`}
+        className={`cahier-answer hidden w-full sm:block ${result === null ? "" : isRight ? "!border-[color:var(--drill-ok)] !text-[color:var(--drill-ok-ink)]" : "!border-[color:var(--drill-bad-mid)] !text-[color:var(--drill-bad-ink)]"}`}
+        autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
+      />
+      <div className="sm:hidden">
+        <WordBank answer={answer} pool={bankPool} value={value} onChange={setValue} disabled={result !== null} />
+      </div>
+    </>
+  );
+
+  // Inside the SioModal popup the drill keeps its inline sheet — the popup
+  // dies with patch 22's lesson pager, not here.
+  if (embedded) {
+    return (
+      <div className="mx-auto max-w-lg px-4 py-6">
         {done ? (
           <div className="rounded-2xl border-2 p-5 text-center" style={{ borderColor: "#3a9b5c" }}>
             <p className="text-lg font-black text-[color:var(--fluo-ink)]">Done · ✓ {score.ok}/{total}</p>
@@ -158,37 +257,23 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
           </div>
         ) : item ? (
           <div className="rounded-2xl border-2 bg-[var(--fluo-card)] p-4" style={{ borderColor: "var(--fluo-line)" }}>
-            {natForm ? (
-              <>
-                <p className="text-[0.7rem] font-bold uppercase tracking-wider text-[color:var(--fluo-ink-soft)]">Write the nationality adjective</p>
-                <p className="mt-1 text-xl font-black text-[color:var(--fluo-ink)]">
-                  {item.emoji && <span className="mr-1">{item.emoji}</span>}
-                  <span className="text-[color:var(--cahier-ink-soft)] font-medium">{NAT_SUBJECT[natForm]} </span>
-                  <span>{item.en}</span>
-                </p>
-              </>
-            ) : (
-              <>
-                <p className="mt-1 text-xl font-black text-[color:var(--fluo-ink)]">
-                  {art && <span className="text-[color:var(--cahier-ink-soft)] font-medium mr-1">{art}</span>}
-                  <span>{bareWord(item.en)}{item.note ? <span className="ml-1 text-sm font-medium text-[color:var(--fluo-ink-soft)]">{item.note}</span> : null}</span>
-                </p>
-              </>
-            )}
-
+            {prompt}
+            {rungsShown}
             <form onSubmit={(e) => { e.preventDefault(); result === null ? check() : next(); }} className="mt-4">
-              <input
-                ref={inputRef}
-                lang="fr"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                disabled={result !== null}
-                placeholder={`commence par « ${answer[0] ?? "?"} »…`}
-                className={`cahier-answer w-full ${result === null ? "" : isRight ? "!border-emerald-500 !text-emerald-700" : "!border-rose-500 !text-rose-700"}`}
-                autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
-              />
+              {answerInput}
               {result === null ? (
-                <button type="submit" className="fluo-btn mt-3 w-full">Check</button>
+                <>
+                  <button type="submit" className="fluo-btn mt-3 w-full">Check</button>
+                  {clue < ladderForItem().length && (
+                    <button
+                      type="button"
+                      onClick={takeHint}
+                      className="mt-2 w-full rounded-full border-2 border-amber-300 bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-800"
+                    >
+                      {hintLabel}
+                    </button>
+                  )}
+                </>
               ) : (
                 <>
                   <div className={`mt-3 flex items-center gap-2 rounded-xl border-2 px-3 py-2 text-sm font-bold ${isRight ? "border-emerald-300 bg-emerald-50 text-emerald-700" : "border-rose-300 bg-rose-50 text-rose-700"}`}>
@@ -206,15 +291,60 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
           </div>
         ) : null}
       </div>
-  );
-  if (embedded) return body;
+    );
+  }
+
+  // Full page = DrillShell (patch 20–21): the shell owns progress, the CTA
+  // and the feedback tray; the body is the prompt and the input, nothing else.
   return (
-    <CahierShell
-      tabs={tabs}
-      active="complete"
-      topRight={!done ? <span className="fluo-mono text-sm font-bold">{i}/{total} · ✓ {score.ok}</span> : null}
+    <DrillShell
+      exitHref={drillExitHref(collectionId)}
+      progress={done ? null : { done: i, total }}
+      right={<>✓ {score.ok}</>}
+      cta={
+        done
+          ? { label: "↻ Encore", onClick: restart }
+          : result === null
+            ? { label: "Check", onClick: check, disabled: !value.trim() }
+            : null
+      }
+      secondary={
+        !done && result === null && item && clue < ladderForItem().length
+          ? { label: hintLabel, onClick: takeHint }
+          : null
+      }
+      feedback={
+        result === null
+          ? null
+          : {
+              kind: isRight ? "correct" : "wrong",
+              body: (
+                <>
+                  {isRight ? (result === "good" ? "Bien ! (accent différent)" : "Parfait !") : null}
+                  {result !== "perfect" && <span lang="fr" className="ml-1">→ {answer}</span>}
+                  <button type="button" onClick={() => speak(answer, "fr-FR")} className="ml-2 text-base opacity-70 hover:opacity-100" title="Hear it">🔊</button>
+                  {item?.example && !natForm && (
+                    <span lang="fr" className="ml-2 font-medium italic opacity-80">{item.example}</span>
+                  )}
+                </>
+              ),
+              cta: { label: i + 1 >= total ? "Finish" : "Continue", onClick: next },
+            }
+      }
     >
-      {body}
-    </CahierShell>
+      {done ? (
+        <div className="text-center">
+          <p className="text-4xl" aria-hidden>🎉</p>
+          <p className="mt-2 text-2xl font-black text-[color:var(--cahier-ink)]">✓ {score.ok}/{total}</p>
+          <p lang="fr" className="mt-1 text-sm font-bold text-[color:var(--cahier-ink)]/60">{deck.title}</p>
+        </div>
+      ) : item ? (
+        <div>
+          {prompt}
+          {rungsShown}
+          <div className="mt-5">{answerInput}</div>
+        </div>
+      ) : null}
+    </DrillShell>
   );
 }

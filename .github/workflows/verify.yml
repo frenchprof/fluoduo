@@ -56,3 +56,6 @@ jobs:
 
       - name: Patch 19c — HELP derives from the registry; crumb prop gone
         run: python3 verify/verify19c.py
+
+      - name: Patch 20-21 — DrillShell phase 1 (shell, 4 routes, SioModal, legends)
+        run: python3 verify/verify20.py
