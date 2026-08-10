@@ -15,7 +15,10 @@ What it asserts (the things a screenshot cannot):
   4  SioModal lost its compensation chrome: drag-resize, the persisted
      panel size, auto-widen, and the ⤢ full-page hatch.
   5  Keyboard legends render only where a keyboard exists (>= sm, or
-     pointer-fine): Say It, Flip It, Letris, SpecuLearn, NumBus.
+     pointer-fine): Say It, Letris, SpecuLearn, NumBus. (4Mémoire's legend
+     died with its Cards view — the shell owns the keys now.)
+  6  4Mémoire: the card drill is on the shell, the whole-deck table split
+     out to /decks/:id, and one shared judge grades both surfaces.
 
 Run from the repo root:  python3 verify/verify20.py
 """
@@ -163,6 +166,43 @@ for name, p in (("iComplete", CONTENTS["iComplete"]), ("GramMarathon", CONTENTS[
           f"{name}: typing above sm, word-bank tiles below it",
           f"{p}: word-bank/input breakpoint pair missing")
 
+# 4Mémoire: the card drill in the shell; the whole-deck TABLE split out to
+# /decks/:id (CuratedDeckTable). One judge (shared.judgePart) grades both
+# surfaces; study self-marks in the footer; test answers by word-bank below
+# sm; 💡 Révéler is recorded as evidence (answer.reveal), like the ladder.
+flip = strip_comments(read("src/app/practice/flip-it/[collectionId]/FlipItContent.tsx"))
+check("DrillShell" in flip and "drillExitHref" in flip,
+      "4Mémoire runs in DrillShell",
+      "FlipItContent is not on DrillShell")
+check("CahierShell" not in flip and "CahierFrame" not in flip,
+      "4Mémoire carries no page-shell of its own",
+      "FlipItContent still wraps itself in CahierShell/CahierFrame")
+check('"✓ Je le sais"' in flip and '"↺ À revoir"' in flip and '"Retourner"' in flip,
+      "4Mémoire study mode self-marks in the shell footer",
+      "FlipItContent's study CTAs (Retourner / Je le sais / À revoir) are missing")
+check('"Vérifier"' in flip and '"answer.reveal"' in flip,
+      "4Mémoire test mode commits via Vérifier; reveals are recorded as evidence",
+      "FlipItContent's test mode lacks Vérifier or the answer.reveal event")
+check("WordBank" in flip and 'className="sm:hidden"' in flip and "hidden w-full sm:block" in flip,
+      "4Mémoire: typing above sm, word-bank tiles below it",
+      "FlipItContent: word-bank/input breakpoint pair missing")
+
+flip_shared = strip_comments(read("src/app/practice/flip-it/shared.tsx"))
+table = strip_comments(read("src/app/decks/[id]/CuratedDeckTable.tsx"))
+deck_content = strip_comments(read("src/app/decks/[id]/DeckContent.tsx"))
+check("export function judgePart" in flip_shared
+      and "judgePart" in flip and "judgePart" in table,
+      "one judge (shared.judgePart) grades the drill and the table",
+      "the drill and the table no longer share one judge")
+check(bool(table) and "loadBuckets" in table and "setNote" in table
+      and "/practice/flip-it/" in table,
+      "the 4Mémoire table lives at /decks/:id, same stores, with the drill's door",
+      "CuratedDeckTable missing, or lost the buckets/notes stores or the drill link")
+check("CuratedDeckTable" in deck_content
+      and "router.replace(`/practice/flip-it" not in deck_content,
+      "/decks/:id renders the curated table instead of redirecting",
+      "DeckContent still redirects curated decks to /practice/flip-it")
+
 # ÉcouTexte: full-screen in the shell; its own Enter (mark a sentence)
 # suppresses the shell CTA via preventDefault, which the shell honours.
 ecout = strip_comments(read("src/app/practice/ecoutexte/EcouTexte.tsx"))
@@ -209,8 +249,8 @@ for banned, why in (
 LEGENDS = [
     ("Say It", "src/app/practice/say-it/[collectionId]/SayItContent.tsx",
      "Space = 🎤", "hidden", "sm:block"),
-    ("Flip It", "src/app/practice/flip-it/[collectionId]/FlipItContent.tsx",
-     "Space flip", "hidden", "sm:block"),
+    # (4Mémoire's legend died with its Cards view — the shell owns Enter/Space
+    # now and no bespoke shortcuts remain, so there is nothing to gate.)
     ("Letris", "src/games/letris/LetrisGame.tsx",
      "hard drop", "hidden", "sm:block"),
     ("SpecuLearn", "src/app/practice/speculearn/[collectionId]/SpecuLearnContent.tsx",
