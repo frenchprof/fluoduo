@@ -36,8 +36,6 @@ const LessonFlow = dynamic(() => import("@/app/lessons/LessonFlow"));
 /** Activity keys that render inside the popup; the rest navigate out. */
 const EMBEDDABLE = new Set(["say", "complete", "dice", "grammarathon", "lesson"]);
 
-const SIZE_KEY = "fluolingo:popupSize";
-
 export type PopupTab = { key: string; label: string; emoji: string; href?: string; active?: boolean; hint?: string };
 
 const TAB_HUES = [
@@ -145,17 +143,8 @@ export default function SioModal({
   children: ReactNode;
 }) {
   const hueOf = (i: number) => TAB_HUES[i % TAB_HUES.length];
-  const panelRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const [view, setView] = useState(initialView ?? "main");
-
-  // Activities need elbow room: widen the panel when leaving the main view
-  // (unless the learner already sized it bigger themselves).
-  useEffect(() => {
-    const el = panelRef.current;
-    if (!el || view === "main") return;
-    if (el.offsetWidth < 700) el.style.width = `${Math.min(880, window.innerWidth * 0.9)}px`;
-  }, [view]);
 
   const embeds: Record<string, ReactNode> = deck
     ? {
@@ -186,54 +175,12 @@ export default function SioModal({
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  // The panel is user-resizable (drag the bottom-right corner). Widening it
-  // lets a question's four options stay on one line; they only wrap when the
-  // panel is too narrow (Dan, 2026-07-02). The chosen size persists across
-  // popups. Restore/clamp happens post-mount, so SSR stays deterministic.
-  useEffect(() => {
-    const el = panelRef.current;
-    if (!el) return;
-    try {
-      const raw = localStorage.getItem(SIZE_KEY);
-      if (raw) {
-        const { w, h } = JSON.parse(raw);
-        if (w) el.style.width = `${Math.min(w, window.innerWidth * 0.9)}px`;
-        if (h) el.style.height = `${Math.min(h, window.innerHeight * 0.88)}px`;
-      }
-    } catch {}
-    const ro = new ResizeObserver(() => {
-      try {
-        localStorage.setItem(SIZE_KEY, JSON.stringify({ w: el.offsetWidth, h: el.offsetHeight }));
-      } catch {}
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  // Pointer-drag resize from the visible ◢ grip. setPointerCapture is what
-  // makes this work on iPad — without it, iOS Safari stops delivering move
-  // events as soon as the finger leaves the tiny grip.
-  function startResize(e: React.PointerEvent<HTMLDivElement>) {
-    const el = panelRef.current;
-    if (!el) return;
-    e.preventDefault();
-    const grip = e.currentTarget;
-    try { grip.setPointerCapture(e.pointerId); } catch {}
-    const sw = el.offsetWidth, sh = el.offsetHeight, sx = e.clientX, sy = e.clientY;
-    const move = (ev: PointerEvent) => {
-      ev.preventDefault();
-      el.style.width = `${Math.min(Math.max(256, sw + ev.clientX - sx), window.innerWidth * 0.9)}px`;
-      el.style.height = `${Math.min(Math.max(160, sh + ev.clientY - sy), window.innerHeight * 0.88)}px`;
-    };
-    const done = () => {
-      grip.removeEventListener("pointermove", move);
-      grip.removeEventListener("pointerup", done);
-      grip.removeEventListener("pointercancel", done);
-    };
-    grip.addEventListener("pointermove", move);
-    grip.addEventListener("pointerup", done);
-    grip.addEventListener("pointercancel", done);
-  }
+  // ~120 lines of chrome left here on 2026-08-10 (patch 20–21): drag-resize
+  // (◢ grip + pointer capture), a persisted panel size, an auto-widen on
+  // leaving the main view, and the ⤢ full-page escape hatch. All of it was
+  // compensation for holding a drill inside a container that shouldn't hold
+  // one — the /practice/* routes now render drills full-screen in
+  // DrillShell, and the popup that remains is a fixed-size SIO card.
 
   return (
     <div
@@ -245,12 +192,10 @@ export default function SioModal({
       <div className="flex max-w-full items-start" onClick={(e) => e.stopPropagation()}>
         <div className="relative max-w-full">
         <div
-          ref={panelRef}
-          className="resize overflow-auto rounded-2xl border-2 bg-[var(--fluo-card)] p-5"
+          className="overflow-auto rounded-2xl border-2 bg-[var(--fluo-card)] p-5"
           style={{
             borderColor: "var(--fluo-card-accent)",
-            width: "32rem",
-            minWidth: "16rem",
+            width: view === "main" ? "32rem" : "52rem",
             maxWidth: "90vw",
             minHeight: "10rem",
             maxHeight: "88vh",
@@ -264,16 +209,6 @@ export default function SioModal({
               <h2 className="fluo-readable mt-1 text-xl font-bold text-[color:var(--fluo-ink)]">{sio.topic}</h2>
             </div>
             <div className="flex items-center gap-1.5">
-              {/* Escape hatch from the floating window to the SIO's own page
-                  (Dan, 2026-07-12: "Expand to a full page link at the top"). */}
-              <Link
-                href={`/sio/${sio.id}`}
-                className="fluo-btn fluo-btn-sm"
-                aria-label="Ouvrir en pleine page"
-                title="Ouvrir en pleine page"
-              >
-                ⤢
-              </Link>
               <button ref={closeRef} type="button" onClick={onClose} className="fluo-btn fluo-btn-sm" aria-label="Close">
                 ✕
               </button>
@@ -290,22 +225,6 @@ export default function SioModal({
           {view === "main" || !embeds[view] ? children : (
             <AuthGate what="practice" compact>{embeds[view]}</AuthGate>
           )}
-        </div>
-        {/* Visible resize grip: the native CSS handle is a faint browser
-            triangle nobody finds (Dan, 2026-07-05) and touch screens never
-            show it — this one works with any pointer. */}
-        <div
-          onPointerDown={startResize}
-          className="absolute -bottom-2 -right-2 z-10 flex h-11 w-11 cursor-nwse-resize touch-none select-none items-end justify-end pb-2.5 pr-2.5"
-          title="Drag to resize"
-          aria-hidden
-        >
-          <span
-            className="flex h-6 w-6 items-center justify-center rounded-full border-2 bg-white text-xs leading-none shadow"
-            style={{ color: "var(--fluo-card-accent)", borderColor: "var(--fluo-card-accent)" }}
-          >
-            ◢
-          </span>
         </div>
         </div>
         {/* wide screens: flaps poke off the popup's right edge, home-page style */}

@@ -848,6 +848,13 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
    variant lip colour (primary/accent/gold) since -sm is declared last. */
 .cahier-btn-sm { padding: 0.3rem 0.65rem; font-size: 0.78rem; border-radius: 8px; }
 
+/* DrillShell's feedback tray slides up OVER the footer — it must never push
+   the body (the reflow is what made six drills feel like six apps). */
+@keyframes drill-tray {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
 /* Mobile top bar (Dan, 2026-07-26): the icon row was pushing ☰ off the
    edge — thinner buttons below sm, scoped to the bar only. */
 @media (max-width: 639px) {

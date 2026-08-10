@@ -11,6 +11,7 @@ import { recordItemResult } from "@/lib/progress";
 import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import { logEvent } from "@/lib/firebase/usage";
 import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
+import DrillShell, { drillExitHref } from "@/components/DrillShell";
 import type { PracticeChoice, PracticeItem, PracticeSet } from "@/lib/practice/engine";
 
 const TTS_KEY = "fluolingo.practiceTts.v1";
@@ -53,11 +54,9 @@ export default function PracticePage({ collectionId, embedded = false }: { colle
   }
 
   if (embedded) return <PracticeRunner set={practiceSet} />;
-  return (
-    <CahierShell tabs={tabs} active="dice">
-      <PracticeRunner set={practiceSet} />
-    </CahierShell>
-  );
+  // Full page = DrillShell (patch 20–21) — no unit map, no popup, the first
+  // question is the first thing on screen.
+  return <PracticeRunner set={practiceSet} inShell />;
 }
 
 function shuffle<T>(arr: T[]): T[] {
@@ -69,7 +68,7 @@ function shuffle<T>(arr: T[]): T[] {
   return out;
 }
 
-function PracticeRunner({ set }: { set: PracticeSet }) {
+function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: boolean }) {
   const [queue, setQueue] = useState<PracticeItem[]>([]);
   const [step, setStep] = useState(0);
   // First-attempt verdict per item id — drives the score AND which items get
@@ -140,7 +139,9 @@ function PracticeRunner({ set }: { set: PracticeSet }) {
     count: choices.length,
     enabled: !!item,
     onPick: (i) => { if (choices[i]) pick(choices[i]); },
-    onNext: () => { if (submitted) next(); },
+    // In DrillShell the shell's own Enter/Space binding fires the tray CTA —
+    // a second Enter handler here would advance twice.
+    onNext: inShell ? undefined : () => { if (submitted) next(); },
     onSpeak: () => { if (item) speak(item.ttsText, "fr-FR"); },
   });
 
@@ -182,6 +183,47 @@ function PracticeRunner({ set }: { set: PracticeSet }) {
       <div className="mx-auto max-w-3xl px-4 py-10 text-center text-slate-500">
         Loading…
       </div>
+    );
+  }
+
+  if (inShell) {
+    return (
+      <DrillShell
+        exitHref={drillExitHref(set.collectionId)}
+        progress={done ? null : { done: step, total: queue.length }}
+        right={<>✓ {score}/{uniqueTotal}{inReview ? " · révision" : ""}</>}
+        cta={done ? { label: "🎲 Roll again", onClick: restart } : null}
+        feedback={
+          !done && submitted
+            ? {
+                kind: submitted.correct ? "correct" : "wrong",
+                body: (
+                  <>
+                    {submitted.correct ? "Correct !" : "La bonne réponse :"}{" "}
+                    <span lang="fr" className="font-extrabold">{item?.correctLabel}</span>
+                  </>
+                ),
+                cta: { label: isLast ? "🏁 See recap" : "Continue", onClick: next },
+              }
+            : null
+        }
+      >
+        {!done && item && (
+          <ItemCard
+            item={item}
+            choices={choices}
+            submitted={submitted}
+            onPick={pick}
+            onNext={next}
+            onSpeak={() => ttsOn && item && speak(item.ttsText, "fr-FR")}
+            isLast={isLast}
+            inline={false}
+            ttsOn={ttsOn}
+            onToggleTts={() => setTtsOn((v) => !v)}
+          />
+        )}
+        {done && <Recap score={score} total={uniqueTotal} onRestart={restart} inShell />}
+      </DrillShell>
     );
   }
 
@@ -276,6 +318,11 @@ function ItemCard({
   onNext,
   onSpeak,
   isLast,
+  /** false under DrillShell: the shell renders the verdict tray and the
+   *  Next CTA, so the card is the prompt and the options only. */
+  inline = true,
+  ttsOn,
+  onToggleTts,
 }: {
   item: PracticeItem;
   choices: PracticeChoice[];
@@ -284,9 +331,12 @@ function ItemCard({
   onNext: () => void;
   onSpeak: () => void;
   isLast: boolean;
+  inline?: boolean;
+  ttsOn?: boolean;
+  onToggleTts?: () => void;
 }) {
   return (
-    <article className="fluo-card fluo-h-2" data-hue={2}>
+    <article className={inline ? "fluo-card fluo-h-2" : undefined} data-hue={inline ? 2 : undefined}>
       {item.emoji && (
         <div className="my-2 text-center text-6xl" aria-hidden>
           {item.emoji}
@@ -299,7 +349,7 @@ function ItemCard({
       {/* bareWord: "chef (m)" would hand the learner the sorting answer */}
       <p className="mt-1 text-center text-base text-slate-500">{bareWord(item.en)}</p>
 
-      <div className="mt-3 flex justify-center">
+      <div className="mt-3 flex justify-center gap-2">
         <button
           type="button"
           onClick={onSpeak}
@@ -308,6 +358,18 @@ function ItemCard({
         >
           🔊 Listen
         </button>
+        {onToggleTts && (
+          <button
+            type="button"
+            onClick={onToggleTts}
+            title={ttsOn ? "TTS on — click to mute" : "TTS muted — click to enable"}
+            className={`rounded-full border-2 px-3 py-1.5 text-sm font-bold transition ${
+              ttsOn ? "border-emerald-300 bg-emerald-50 text-emerald-700" : "border-slate-200 bg-white text-slate-400"
+            }`}
+          >
+            {ttsOn ? "🔊" : "🔇"}
+          </button>
+        )}
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
@@ -350,7 +412,7 @@ function ItemCard({
         })}
       </div>
 
-      {submitted && (
+      {inline && submitted && (
         <div
           className={`mt-5 rounded-xl border-2 p-3 text-sm font-bold ${
             submitted.correct
@@ -372,7 +434,7 @@ function ItemCard({
         </div>
       )}
 
-      {submitted && (
+      {inline && submitted && (
         <div className="mt-5 flex justify-end">
           <button type="button" onClick={onNext} className="fluo-btn fluo-btn-lg">
             {isLast ? "🏁 See recap" : "Next →"}
@@ -387,14 +449,18 @@ function Recap({
   score,
   total,
   onRestart,
+  /** true under DrillShell: the shell's CTA is the Roll-again and its ✕ is
+   *  the exit, so the card carries no buttons of its own. */
+  inShell = false,
 }: {
   score: number;
   total: number;
   onRestart: () => void;
+  inShell?: boolean;
 }) {
   const pct = Math.round((score / total) * 100);
   return (
-    <article className="fluo-card fluo-h-5" data-hue={5}>
+    <article className={inShell ? undefined : "fluo-card fluo-h-5"} data-hue={inShell ? undefined : 5}>
       <div className="text-center">
         <div className="text-6xl" aria-hidden>
           {pct === 100 ? "🏆" : pct >= 75 ? "🎉" : pct >= 50 ? "💪" : "🎲"}
@@ -412,14 +478,16 @@ function Recap({
                 : "Keep rolling — repetition is the game."}
         </p>
       </div>
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-        <button type="button" onClick={onRestart} className="fluo-btn fluo-btn-lg">
-          🎲 Roll again
-        </button>
-        <Link href="/" className="fluo-btn fluo-btn-ghost">
-          ← Back to lessons
-        </Link>
-      </div>
+      {!inShell && (
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <button type="button" onClick={onRestart} className="fluo-btn fluo-btn-lg">
+            🎲 Roll again
+          </button>
+          <Link href="/" className="fluo-btn fluo-btn-ghost">
+            ← Back to lessons
+          </Link>
+        </div>
+      )}
     </article>
   );
 }

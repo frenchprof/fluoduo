@@ -8,7 +8,7 @@ import { CURATED } from "@/content/collections";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { logEvent } from "@/lib/firebase/usage";
-import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
+import DrillShell, { drillExitHref } from "@/components/DrillShell";
 import { practiceItems } from "@/lib/collections/display";
 import { recordItemResult } from "@/lib/progress";
 import type { Collection, Item } from "@/lib/collections/schema";
@@ -328,16 +328,19 @@ export default function SayItContent({
     speak(deck ? frFull(articleOf(deck, c), c.fr) : c.fr, "fr-FR");
   }, [deck]);
 
-  // Every function has a key (Dan, 2026-07-15): Space drives the mic (and
-  // retries from the result card), Enter advances, and the letters mirror
-  // the buttons — R écouter, V voir, S skip, B back, E end.
+  // Every function has a key (Dan, 2026-07-15): Space drives the mic, and
+  // the letters mirror the buttons — R écouter, V voir, S skip, B back,
+  // E end. On the RESULT card, standalone runs live inside DrillShell, whose
+  // single Enter/Space binding fires Continue — this handler stands down
+  // there (a second handler would retry AND advance on the same keypress).
+  // Embedded (SioModal) keeps the old Space-retry / Enter-next pair.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const p = phaseRef.current;
       const k = e.key.toLowerCase();
       if (e.key === " " && p === "listening") { e.preventDefault(); stopRec(); return; }
-      if (e.key === " ") { e.preventDefault(); startListening(); return; } // idle start + result retry
-      if (e.key === "Enter" && p === "result") next();
+      if (e.key === " " && (p !== "result" || embedded)) { e.preventDefault(); startListening(); return; }
+      if (e.key === "Enter" && p === "result" && embedded) next();
       if (p === "listening") return; // no side actions while the mic is open
       if (k === "r") listenModel();
       if (k === "v") setRevealed((r) => !r);
@@ -347,14 +350,56 @@ export default function SayItContent({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [startListening, stopRec, next, listenModel, skip, back, endNow]);
+  }, [startListening, stopRec, next, listenModel, skip, back, endNow, embedded]);
 
-  const tabs = withActive(deckActivityTabs(collectionId), "say");
+  const answered = trail.filter((t) => !t.skipped).length;
+  const ui = result ? GRADE_UI[result.grade] : null;
+  const isCorrect = result?.grade === "perfect" || result?.grade === "good" || result?.grade === "homophone";
+
   // Embedded = floating inside the SIO popup (the unit page stays visible
-  // behind); the standalone page keeps the full CahierShell chrome.
-  const wrap = (body: React.ReactNode, topRight?: React.ReactNode) =>
-    embedded ? <>{body}</> : (
-      <CahierShell tabs={tabs} active="say" topRight={topRight}>{body}</CahierShell>
+  // behind); standalone = DrillShell (patch 20–21), which owns progress,
+  // the score, the result tray and Continue.
+  const wrap = (body: React.ReactNode) =>
+    embedded ? (
+      <>{body}</>
+    ) : (
+      <DrillShell
+        exitHref={drillExitHref(collectionId)}
+        progress={finished ? null : { done: answered, total: cards.length }}
+        right={
+          <>
+            ✓ {score.ok}/{score.total}
+            {score.total > 0 && ` (${Math.round((score.ok / score.total) * 100)}%)`}
+          </>
+        }
+        cta={finished ? { label: "🔁 Recommencer", onClick: restart } : null}
+        feedback={
+          !finished && phase === "result" && result && ui && card
+            ? {
+                kind: isCorrect ? "correct" : "wrong",
+                body: (
+                  <>
+                    {ui.icon} {ui.label}
+                    <span className="ml-2 font-medium">&ldquo;{result.recognized || "—"}&rdquo;</span>
+                    <span className="ml-2">
+                      →{" "}
+                      <span lang="fr" className="font-black">
+                        {deck ? frFull(articleOf(deck, card), card.fr) : card.fr}
+                      </span>
+                    </span>
+                    <button type="button" onClick={listenModel} className="ml-2 align-middle text-base opacity-70 hover:opacity-100" aria-label="Écouter" title="Écouter (R)">🔊</button>
+                    <button type="button" onClick={startListening} className="ml-3 rounded-full border-2 border-current px-2 py-0.5 text-xs font-bold" title="Try again">
+                      🎤 Try again
+                    </button>
+                  </>
+                ),
+                cta: { label: "Continue", onClick: next },
+              }
+            : null
+        }
+      >
+        {body}
+      </DrillShell>
     );
 
   if (!deck) {
@@ -380,26 +425,24 @@ export default function SayItContent({
     );
   }
 
-  const answered = trail.filter((t) => !t.skipped).length;
-  const ui = result ? GRADE_UI[result.grade] : null;
-  const isCorrect = result?.grade === "perfect" || result?.grade === "good" || result?.grade === "homophone";
-
   return wrap(
       <div className="mx-auto max-w-2xl px-4 py-4">
         <div className="mb-4 text-center">
           <p className="fluo-label">{deck.title}</p>
-          {!finished && card && (
+          {embedded && !finished && card && (
             <p className="text-xs text-[color:var(--fluo-ink-soft)]">{answered + 1} / {cards.length}</p>
           )}
         </div>
 
-        {/* Progress bar */}
-        <div className="h-1.5 rounded-full bg-[color:var(--fluo-line)] mb-6 overflow-hidden">
-          <div
-            className="h-full rounded-full bg-emerald-500 transition-all"
-            style={{ width: `${cards.length ? ((finished ? cards.length : answered) / cards.length) * 100 : 0}%` }}
-          />
-        </div>
+        {/* Progress bar — DrillShell draws its own; only the popup needs one */}
+        {embedded && (
+          <div className="h-1.5 rounded-full bg-[color:var(--fluo-line)] mb-6 overflow-hidden">
+            <div
+              className="h-full rounded-full bg-emerald-500 transition-all"
+              style={{ width: `${cards.length ? ((finished ? cards.length : answered) / cards.length) * 100 : 0}%` }}
+            />
+          </div>
+        )}
 
         {finished && (
           <div className="cahier-sheet rounded-2xl p-8 text-center shadow-md">
@@ -410,9 +453,9 @@ export default function SayItContent({
               {score.total > 0 && <> · ✓ {score.ok} ({Math.round((score.ok / score.total) * 100)}%)</>}.
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-2">
-              <button type="button" onClick={restart} className="fluo-btn fluo-btn-sm">🔁 Recommencer</button>
+              {embedded && <button type="button" onClick={restart} className="fluo-btn fluo-btn-sm">🔁 Recommencer</button>}
               <Link href="/reviser" className="fluo-btn fluo-btn-sm fluo-btn-ghost">🔁 DéjàRevu</Link>
-              <Link href="/" className="fluo-btn fluo-btn-sm fluo-btn-ghost">← Back to the path</Link>
+              {embedded && <Link href="/" className="fluo-btn fluo-btn-sm fluo-btn-ghost">← Back to the path</Link>}
             </div>
           </div>
         )}
@@ -497,8 +540,9 @@ export default function SayItContent({
               </div>
             )}
 
-            {/* Result */}
-            {phase === "result" && result && ui && (
+            {/* Result — inline only in the popup; DrillShell's tray owns it
+                on the standalone page */}
+            {embedded && phase === "result" && result && ui && (
               <div className={`rounded-xl border-2 p-4 ${ui.cls}`}>
                 <p className="font-black text-lg mb-2">{ui.icon} {ui.label}</p>
                 <div className="space-y-2 text-sm">
@@ -525,6 +569,13 @@ export default function SayItContent({
                   </button>
                 </div>
               </div>
+            )}
+            {!embedded && phase === "result" && card && (
+              /* The word, restated large while the tray shows the verdict —
+                 the learner should study the target, not the toolbar. */
+              <p lang="fr" className="text-center fluo-serif text-2xl font-black text-[color:var(--cahier-ink)]">
+                {deck ? frFull(articleOf(deck, card), card.fr) : card.fr}
+              </p>
             )}
           </div>
         )}
@@ -555,15 +606,13 @@ export default function SayItContent({
           </div>
         )}
 
+        {/* Keyboard legend: keyboards live above sm — a phone renders 8
+            shortcuts it cannot press (patch 20–21). */}
         {!finished && card && (
-          <p className="mt-4 text-center text-xs text-[color:var(--fluo-ink-soft)]">
+          <p className="mt-4 hidden text-center text-xs text-[color:var(--fluo-ink-soft)] sm:block">
             Space = 🎤 / stop / retry · Enter = next · R = 🔊 · V = 🔤 · S = skip · B = back · E = end
           </p>
         )}
       </div>,
-    <span className="fluo-mono text-sm font-bold text-[color:var(--cahier-ink)]">
-      {score.ok}/{score.total}
-      {score.total > 0 && ` (${Math.round((score.ok / score.total) * 100)}%)`}
-    </span>,
   );
 }

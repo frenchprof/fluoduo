@@ -793,7 +793,9 @@ function Cards({
         <button type="button" onClick={() => go(-1)} className="cahier-btn cahier-btn-sm">← Prev</button>
         <button type="button" onClick={() => go(1)} className="cahier-btn cahier-btn-sm cahier-btn-primary">Next →</button>
       </div>
-      <p className="mt-3 text-[0.7rem] text-[color:var(--cahier-ink-soft)]">shortcuts: T to-review · R reviewed · Space flip · ↑ hear · ← prev · → next</p>
+      {/* Keyboards live above sm — a phone was rendering six shortcuts it
+          cannot press (patch 20–21). */}
+      <p className="mt-3 hidden text-[0.7rem] text-[color:var(--cahier-ink-soft)] sm:block">shortcuts: T to-review · R reviewed · Space flip · ↑ hear · ← prev · → next</p>
     </div>
   );
 }
