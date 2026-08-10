@@ -120,6 +120,29 @@ for name, p in CONTENTS.items():
               f"{name} carries no page-shell of its own",
               f"{p} still wraps itself in CahierShell")
 
+# SpecuLearn: migrated, and its config wizard is DELETED — the drill opens
+# straight into the first question; the 🎤 modes moved to the end card.
+specu = strip_comments(read("src/app/practice/speculearn/[collectionId]/SpecuLearnContent.tsx"))
+check("DrillShell" in specu and "CahierShell" not in specu,
+      "SpecuLearn runs in DrillShell",
+      "SpecuLearn is not on DrillShell / still wraps CahierShell")
+check("Choisis ta direction" not in specu and '"start"' not in specu,
+      "SpecuLearn's config wizard is gone — the first question is the first screen",
+      "SpecuLearn still renders a pre-question config screen")
+check("Devine et dis" in specu and "again(false, \"say-s\")" in specu,
+      "the 🎤 modes survive on the end card",
+      "the wizard's 🎤 modes were deleted instead of moved to the end card")
+
+# Select-then-commit (the shell's interaction grammar): in DrillShell an
+# option tap SELECTS and the Vérifier CTA COMMITS, for both MCQ drills.
+dice = strip_comments(read(CONTENTS["EtuDice"]))
+check("setSelected" in dice and '"Vérifier"' in dice,
+      "EtuDice is select-then-commit in the shell",
+      "EtuDice still commits on tap in the shell")
+check("setSelected" in specu and '"Vérifier"' in specu,
+      "SpecuLearn is select-then-commit in the shell",
+      "SpecuLearn still commits on tap in the shell")
+
 # iComplete gains the help ladder it never had (its row's second half): the
 # same buildLadder/shownRungs pair GramMarathon uses, hints recorded as
 # evidence (hintsTaken) like everywhere else.

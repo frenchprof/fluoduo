@@ -76,6 +76,11 @@ function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: 
   const [firstResults, setFirstResults] = useState<Record<string, boolean>>({});
   const [reviewRound, setReviewRound] = useState(false);
   const [submitted, setSubmitted] = useState<Verdict | null>(null);
+  // Select-then-commit (patch 20–21, DrillShell only): tapping an option
+  // SELECTS it; the shell's Vérifier COMMITS. Six drills had four different
+  // interaction grammars — this is the one the shell standardizes on. The
+  // SioModal-embedded form keeps instant-commit until patch 22 retires it.
+  const [selected, setSelected] = useState<PracticeChoice | null>(null);
   const [ttsOn, setTtsOn] = useState(true);
 
   // Shuffle on mount (client-side only — avoids SSR hydration mismatch).
@@ -145,7 +150,14 @@ function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: 
     onSpeak: () => { if (item) speak(item.ttsText, "fr-FR"); },
   });
 
+  /** Tap: instant-commit in the popup, select in the shell. */
   function pick(choice: PracticeChoice) {
+    if (submitted || !item) return;
+    if (inShell) { setSelected(choice); return; }
+    commit(choice);
+  }
+
+  function commit(choice: PracticeChoice) {
     if (submitted || !item) return;
     const correct = choice.key === item.correctColKey;
     if (correct) sfx.correct(); else sfx.wrong();
@@ -161,6 +173,7 @@ function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: 
   function next() {
     if (!submitted || !item) return;
     setSubmitted(null);
+    setSelected(null);
     if (step === queue.length - 1 && willReview) {
       setQueue([...queue, ...shuffle(missedSoFar)]);
       setReviewRound(true);
@@ -176,6 +189,7 @@ function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: 
     setFirstResults({});
     setReviewRound(false);
     setSubmitted(null);
+    setSelected(null);
   }
 
   if (queue.length === 0) {
@@ -192,7 +206,13 @@ function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: 
         exitHref={drillExitHref(set.collectionId)}
         progress={done ? null : { done: step, total: queue.length }}
         right={<>✓ {score}/{uniqueTotal}{inReview ? " · révision" : ""}</>}
-        cta={done ? { label: "🎲 Roll again", onClick: restart } : null}
+        cta={
+          done
+            ? { label: "🎲 Roll again", onClick: restart }
+            : !submitted
+              ? { label: "Vérifier", onClick: () => { if (selected) commit(selected); }, disabled: !selected }
+              : null
+        }
         feedback={
           !done && submitted
             ? {
@@ -213,6 +233,7 @@ function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: 
             item={item}
             choices={choices}
             submitted={submitted}
+            selected={selected}
             onPick={pick}
             onNext={next}
             onSpeak={() => ttsOn && item && speak(item.ttsText, "fr-FR")}
@@ -314,6 +335,7 @@ function ItemCard({
   item,
   choices,
   submitted,
+  selected = null,
   onPick,
   onNext,
   onSpeak,
@@ -327,6 +349,8 @@ function ItemCard({
   item: PracticeItem;
   choices: PracticeChoice[];
   submitted: Verdict | null;
+  /** Shell mode only: the picked-but-not-committed option. */
+  selected?: PracticeChoice | null;
   onPick: (c: PracticeChoice) => void;
   onNext: () => void;
   onSpeak: () => void;
@@ -384,6 +408,8 @@ function ItemCard({
             else if (isPicked)
               cls = "border-rose-500 bg-rose-50 text-rose-900";
             else cls = "border-slate-200 bg-white text-slate-400";
+          } else if (selected?.key === c.key) {
+            cls = "border-slate-900 bg-slate-900 text-white";
           }
           return (
             <button
