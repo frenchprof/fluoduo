@@ -243,7 +243,7 @@ function TtsPageInner() {
     fix.replace(/\s+/g, " ").trim().toLowerCase() === text.replace(/\s+/g, " ").trim().toLowerCase();
 
   return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="tts" crumb="🔊 VoixLà (TTS)">
+    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="tts">
       <div className="mx-auto max-w-2xl px-3 pb-5 pt-2">
         <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
           🔊 VoixLà <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· Text-to-Speech</span>

@@ -45,3 +45,6 @@ jobs:
 
       - name: Patch 19 — one name per activity, gates, nav, breakpoints
         run: python3 verify/verify19.py
+
+      - name: Patch 19c — HELP derives from the registry; crumb prop gone
+        run: python3 verify/verify19c.py

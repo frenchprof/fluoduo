@@ -99,7 +99,6 @@ function DeckPageInner({ id }: { id: string }) {
     <CahierShell
       tabs={deckTabs(id).map((t) => (t.key === "deck" ? { ...t, href: undefined } : t))}
       active="deck"
-      crumb="📖 Deck"
     >
       <div className="mx-auto max-w-5xl px-4 py-4">
         {state.kind === "loading" && (

@@ -27,7 +27,6 @@ export default function EcouTextePage() {
     <CahierShell
       tabs={tabsWithActive([...siteTabs(), ...toolTabs()], "ecoutexte")}
       active="ecoutexte"
-      crumb="🎧 ÉcouTexte"
     >
       <div className="mx-auto max-w-2xl px-1 py-2">
         <div className="mb-3 flex flex-wrap gap-1.5">

@@ -93,7 +93,7 @@ const REFERENCES: string[] = [
 
 export default function AboutPage() {
   return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "guide")} active="guide" crumb="💡 About">
+    <CahierShell tabs={tabsWithActive(siteTabs(), "guide")} active="guide">
       <div className="mx-auto max-w-2xl px-3 py-5">
         <h1 className="cahier-display cahier-hand text-3xl font-normal text-[color:var(--cahier-ink)]">
           💡 Why <span className="cahier-hl px-1">FluOlinGo</span> is built this way

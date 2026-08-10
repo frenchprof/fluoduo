@@ -14,7 +14,7 @@ const UNIT_TINTS: Record<number, string> = { 0: "#fbe3ec", 1: "#def3f5", 2: "#fb
 export default function LexicalatorIndexPage() {
   const decks = CURATED.filter((c) => isLexReadyId(c.id)).sort((a, b) => (a.unit ?? 9) - (b.unit ?? 9));
   return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="lexicalator" crumb="🧰 LexicaLater">
+    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="lexicalator">
       <div className="mx-auto max-w-3xl px-4 pb-4 pt-2">
         <h1 className="cahier-display cahier-hand text-3xl font-normal text-[color:var(--cahier-ink)]">
           🧰 LexicaLater

@@ -10,7 +10,7 @@ export const metadata = { title: "GramMarathon Final — FluOlinGo" };
 
 export default function Page() {
   return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="practice" crumb="🏁 GramMarathon Final">
+    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="practice">
       <div className="mx-auto max-w-2xl px-4 py-2">
         <AuthGate what="practise" compact>
           <FinaleContent />

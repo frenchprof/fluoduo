@@ -244,7 +244,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
   const card = "rounded-2xl border-2 border-[color:var(--cahier-ink)]/25 bg-white p-3";
 
   return (
-    <CahierShell tabs={withActive(deckActivityTabs(collectionId), "speculearn")} active="speculearn" crumb="🔮 SpecuLearn">
+    <CahierShell tabs={withActive(deckActivityTabs(collectionId), "speculearn")} active="speculearn">
       <div className="mx-auto max-w-2xl px-3 py-3">
         {/* One tight line each — a long deck subtitle was wrapping the title
             to three lines and pushing the start screen past a phone's fold

@@ -81,7 +81,7 @@ export default function WorDrillPage() {
   const deck = scope === null ? null : decks.get(scope)!;
 
   return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "wordrill")} active="wordrill" crumb="🎙️ WorDrill">
+    <CahierShell tabs={tabsWithActive(siteTabs(), "wordrill")} active="wordrill">
       {deck === null ? (
         // Landing: pick the scope. Tout first, then the five units, each
         // wearing its accent and word count.

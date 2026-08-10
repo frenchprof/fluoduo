@@ -43,7 +43,7 @@ export default function ProfilePage() {
   const equippedAccentId = p.cosmetics.equipped.homeAccent ?? null;
 
   return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="profil" crumb="🎖️ Profil">
+    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="profil">
       <div className="mx-auto max-w-xl px-3 py-5">
         <h1 className="cahier-display cahier-hand text-3xl font-normal text-[color:var(--cahier-ink)]">🎖️ Votre profil <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· Your profile</span></h1>
 

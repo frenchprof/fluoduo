@@ -37,7 +37,7 @@ export default function PretestPage({ id }: { id: string }) {
 
   if (!pretest) {
     return (
-      <CahierShell tabs={PRETEST_TABS} active="pretest" crumb="🧪 Pretest">
+      <CahierShell tabs={PRETEST_TABS} active="pretest">
         <div className="mx-auto max-w-3xl px-4 py-10">
           <div className="rounded-2xl border-2 border-slate-200 bg-white p-10 text-center">
             <div className="text-6xl" aria-hidden>🤷</div>
@@ -60,7 +60,6 @@ export default function PretestPage({ id }: { id: string }) {
     <CahierShell
       tabs={PRETEST_TABS}
       active="pretest"
-      crumb={`🧪 Unit ${pretest.unit} · Lesson ${pretest.lessonNo} · ${pretest.lessonSlug}`}
     >
       <PretestRunner pretest={pretest} />
     </CahierShell>

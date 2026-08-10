@@ -35,7 +35,6 @@ export default function UnitActivityPage({
     <CahierShell
       tabs={tabsWithActive(siteTabs(), key)}
       active={key}
-      crumb={`${meta?.emoji ?? ""} ${meta?.label ?? `Unité ${sio.unit}`}`}
     >
       <div className="mx-auto max-w-3xl px-1 py-2">
         <UnitSection unit={sio.unit} forceOpen={{ sioId: sio.id, view, lessonSlug }} />

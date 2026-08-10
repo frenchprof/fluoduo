@@ -162,7 +162,7 @@ export default function LessonFlow({
 
   if (embedded) return body;
   return (
-    <CahierShell tabs={withActive(deckActivityTabs(collectionId), "lesson")} active="lesson" crumb="📚 Lesson">
+    <CahierShell tabs={withActive(deckActivityTabs(collectionId), "lesson")} active="lesson">
       {body}
     </CahierShell>
   );

@@ -53,7 +53,7 @@ export default function TeacherPage() {
   return (
     // Site row only, like ConjugaZone/Tuteur — a custom context flap group
     // left the tab rail hanging clear of the page edges (Dan, 2026-07-13).
-    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="teacher" crumb="🧑‍🏫 Teacher">
+    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="teacher">
       <div className="mx-auto max-w-5xl px-4 py-8">
         {user === undefined ? (
           <p className="text-sm text-slate-500">Loading…</p>
