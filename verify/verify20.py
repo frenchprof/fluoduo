@@ -174,6 +174,24 @@ check("e.defaultPrevented" in shell_code,
       "the shell stands down when a body handled the key itself",
       "DrillShell ignores defaultPrevented — ÉcouTexte's Enter would draw a new text")
 
+# ConjugaZone: the drill leads, the table is the REWARD screen. The old
+# three-mode study table (shown/hidden/typing columns — a fourth interaction
+# grammar nobody else used) is gone; evidence ids (conj-<verb>-<person>) and
+# the phrases-complètes banks survive.
+conj = strip_comments(read("src/app/conjugaison/page.tsx"))
+check("DrillShell" in conj and "CahierShell" not in conj,
+      "ConjugaZone runs in DrillShell",
+      "ConjugaZone is not on DrillShell / still wraps CahierShell")
+check("RewardTable" in conj and "🙈" not in conj and "peeked" not in conj,
+      "the conjugation table is the reward screen; the column modes are gone",
+      "ConjugaZone still carries the shown/hidden/typing column modes")
+check("recordItemResult(`conj-" in conj and "SENTENCE_BANKS" in conj,
+      "ConjugaZone keeps its evidence ids and the phrases-complètes banks",
+      "ConjugaZone lost its evidence ids or the phrases-complètes banks")
+check("WordBank" in conj,
+      "ConjugaZone answers by word-bank below sm",
+      "ConjugaZone has no word-bank on the phone")
+
 # ── 4 · SioModal lost its compensation chrome ──────────────────────────────
 sio = strip_comments(read("src/app/SioModal.tsx"))
 for banned, why in (
