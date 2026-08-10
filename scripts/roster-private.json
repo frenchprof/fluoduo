@@ -1,0 +1,48 @@
+{
+  "notes": [
+    "Student-identifying roster maps. This file is the repo's canonical copy;",
+    "the app reads the Firestore mirror at admin/rosterPrivate (admin-only",
+    "rules), NEVER this file — nothing under scripts/ enters the Next build,",
+    "so none of this reaches the public CDN. After editing, re-run",
+    "scripts/seed-roster-private.mjs to push it to Firestore.",
+    "",
+    "aliasEmails: alias email -> canonical email (all lowercase).",
+    "  chosuyeon33 -> sjc031103: Su Yeon's second account.",
+    "  jovantanyk -> jovantan630: Jovan Tan signed in with two accounts (Auth",
+    "    reconciliation, 2026-07-25); jovantanyk (22 Jun, abandoned) folds into",
+    "    jovantan630 (active).",
+    "  Dan's own sign-ins (2026-07-16: 'they are all me') -> one teacher row.",
+    "",
+    "rosterNames: uid -> display name, where the telemetry's own name is wrong",
+    "  or absent. 6uyQO9... = Jovan Tan's old account, aliased to jovantan630.",
+    "  a529sU... = Tracy Pang (tracypang0728, formerly shown as QiZhi Pang).",
+    "",
+    "knownEmails: Auth-console seeds (Dan, 2026-07-25): uid -> email for",
+    "  accounts whose only sign-ins predate authEvents coverage (22 Jun) —",
+    "  without these the roster shows them email-blind (Tracy, wenyi) and",
+    "  email-keyed features miss them."
+  ],
+  "aliasEmails": {
+    "chosuyeon33@gmail.com": "sjc031103@gmail.com",
+    "jovantanyk@gmail.com": "jovantan630@gmail.com",
+    "monsieur.chan@gmail.com": "dan@chank.wang",
+    "kwangguan@gmail.com": "dan@chank.wang",
+    "daniel.chan@nus.edu.sg": "dan@chank.wang",
+    "drneilchan@gmail.com": "dan@chank.wang",
+    "kaygeedan@gmail.com": "dan@chank.wang"
+  },
+  "rosterNames": {
+    "6uyQO9YgBTRLC5Dw1JuU7Fe2cTB3": "Jovan Tan",
+    "a529sUZMsYUgKdWn4rJXvPu4A6V2": "Tracy Pang"
+  },
+  "knownEmails": {
+    "a529sUZMsYUgKdWn4rJXvPu4A6V2": "tracypang0728@gmail.com",
+    "C2sWIzLKdseHKUxgh67yPp3o7Rq1": "rr7280523@gmail.com",
+    "8IcpkURn0ldOXLiApCdhdsqQoxW2": "sjc031103@gmail.com",
+    "ZKvLZyfOfLZFYAEUoTzApQMYClf2": "chosuyeon33@gmail.com",
+    "6uyQO9YgBTRLC5Dw1JuU7Fe2cTB3": "jovantanyk@gmail.com",
+    "k1sTtpYd4ZXCFKYQU4OiBA4dD4l1": "jovantan630@gmail.com",
+    "1S70OPFAAVPEsu6vOr8JZdk2U022": "e1523337@u.nus.edu",
+    "yzb1vTPlhIbxgqwTy21wVUYRudr1": "youth.romanticomedy@gmail.com"
+  }
+}
