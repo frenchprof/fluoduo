@@ -129,7 +129,7 @@ export default function ConjugaisonPage() {
   const shown = VERBS.filter((v) => picked.includes(v.id));
 
   return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="conjugaison" crumb="🔤 ConjugaZone">
+    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="conjugaison">
       <div className="mx-auto max-w-4xl px-3 pb-5 pt-2">
         <h1 className="cahier-display cahier-hand text-3xl font-normal text-[color:var(--cahier-ink)]">
           🔤 ConjugaZone <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· Conjugation tables</span>

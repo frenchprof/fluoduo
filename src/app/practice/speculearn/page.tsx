@@ -49,7 +49,7 @@ export default function SpecuLearnIndexPage() {
     // Cahier skin like every other section page (Dan, 2026-07-15), still ONE
     // mobile screen: no per-unit sections; the unit lives as a colored chip
     // on each compact tile.
-    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="speculearn" crumb="🔮 SpecuLearn">
+    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="speculearn">
       <div className="mx-auto max-w-3xl px-4 pb-4 pt-2">
         <h1 className="cahier-display cahier-hand text-3xl font-normal text-[color:var(--cahier-ink)]">
           🔮 SpecuLearn

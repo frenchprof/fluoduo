@@ -86,7 +86,7 @@ export default function ActivitiesIndexPage() {
   const matches = (c: Collection) => !q.trim() || hitMap.has(c.id);
   const totalHits = CURATED.filter(matches).length;
   return (
-    <CahierShell tabs={withActive(siteTabs(), "index")} active="index" crumb="🗂️ Index">
+    <CahierShell tabs={withActive(siteTabs(), "index")} active="index">
       <div className="mx-auto max-w-4xl px-2 pb-4 pt-2">
         {/* ONE row on every width (Dan, 2026-07-20: on phones the search sat
             under the heading — vertical space lost). The input flexes into

@@ -127,7 +127,6 @@ function TabFlap({
 export default function CahierShell({
   tabs = [],
   active,
-  crumb,
   topRight,
   children,
 }: {
@@ -137,7 +136,6 @@ export default function CahierShell({
    *  the flap rail must never "randomly disappear" (Dan, 2026-07-05). */
   tabs?: ShellTab[];
   active: string;
-  crumb?: ReactNode; // small label on the top bar's right side
   topRight?: ReactNode; // extra top-bar content (e.g. a live score)
   children: ReactNode;
 }) {
@@ -180,11 +178,12 @@ export default function CahierShell({
   // itself as just "FluOlinGo" — tabs, history, bookmarks and screen-reader
   // page announcements were indistinguishable). The active flap's label IS
   // the page's name; deck/context pages fall back to their first context
-  // flap, then to a string crumb. Home (no matching flap) keeps the default.
+  // flap, then to the registry (patch 19c retired the `crumb` prop, whose
+  // only surviving job was this fallback). Home keeps the default.
   const pageLabel =
     [...site, ...tools, ...context].find((t) => t.key === active)?.label ??
     context[0]?.label ??
-    (typeof crumb === "string" ? crumb : undefined);
+    activity(active)?.name;
   useEffect(() => {
     document.title = pageLabel ? `${pageLabel} · FluOlinGo` : "FluOlinGo";
   }, [pageLabel]);
@@ -310,9 +309,9 @@ export default function CahierShell({
                   🏆
                 </button>
                 <SoundControl />
-                {/* 🏠 and the crumb yield below sm — the ← FluOlinGo link is
-                    the home door there, and they were pushing the ☰ off a
-                    phone screen (Dan, 2026-07-15). */}
+                {/* 🏠 yields below sm — the ← FluOlinGo link is the home
+                    door there, and it was pushing the ☰ off a phone screen
+                    (Dan, 2026-07-15). */}
                 {/* !important — .cahier-btn's own display rule beats a bare
                     `hidden` utility. */}
                 <Link href="/" aria-label="Home" title="Home" className="cahier-btn cahier-btn-sm !hidden sm:!inline-flex">

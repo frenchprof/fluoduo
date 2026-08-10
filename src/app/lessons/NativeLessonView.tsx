@@ -56,7 +56,6 @@ export default function NativeLessonView({ slug, title, unit, embedded = false }
     <CahierShell
       tabs={tabs}
       active="lesson"
-      crumb={`Unité ${unit}`}
     >
       {body}
     </CahierShell>

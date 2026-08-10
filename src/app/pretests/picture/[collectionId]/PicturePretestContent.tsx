@@ -40,7 +40,7 @@ export default function PicturePretestPage({ collectionId }: { collectionId: str
 
   if (!collection || pictureItems.length < N_CHOICES) {
     return (
-      <CahierShell tabs={PRETEST_TABS} active="pretest" crumb="🧪 Pretest">
+      <CahierShell tabs={PRETEST_TABS} active="pretest">
         <div className="mx-auto max-w-3xl px-4 py-10">
           <div className="rounded-2xl border-2 border-slate-200 bg-white p-10 text-center">
             <div className="text-6xl" aria-hidden>🖼️</div>
@@ -64,7 +64,7 @@ export default function PicturePretestPage({ collectionId }: { collectionId: str
   }
 
   return (
-    <CahierShell tabs={PRETEST_TABS} active="pretest" crumb={`🧪 Pretest · ${collection.title}`}>
+    <CahierShell tabs={PRETEST_TABS} active="pretest">
       <PretestRunner collection={collection} pictureItems={pictureItems} />
     </CahierShell>
   );

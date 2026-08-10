@@ -42,7 +42,7 @@ function StudyPageInner({ id }: { id: string }) {
   }, [id, router]);
 
   return (
-    <CahierShell tabs={withActive(deckTabs(id), "study")} active="study" crumb="🎴 Flashcards">
+    <CahierShell tabs={withActive(deckTabs(id), "study")} active="study">
       <div className="mx-auto max-w-3xl px-4 py-4">
         {collection === undefined && (
           <p className="rounded-2xl border-2 border-dashed border-slate-300 bg-white p-10 text-center text-base text-slate-500">

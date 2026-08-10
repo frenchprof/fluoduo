@@ -160,10 +160,9 @@ export default function NewDeckPage() {
       // Plain site row — a non-site "context" flap would flip CahierShell into
       // its nested level-2 layout and detach the rail from the page (Dan,
       // 2026-07-05). "new" matches no site key, so nothing is marked active
-      // and every flap keeps its link; the crumb names the page.
+      // and every flap keeps its link.
       tabs={tabsWithActive(siteTabs(), "new")}
       active="new"
-      crumb="📚 Your Custom Deck"
     >
       <div className="mx-auto max-w-5xl px-4 py-4">
         <h1 className="fluo-serif text-3xl font-black text-[color:var(--fluo-ink)]">

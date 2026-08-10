@@ -13,7 +13,7 @@ import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 
 export default function GuidePage() {
   return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "guide")} active="guide" crumb="❓ Guide">
+    <CahierShell tabs={tabsWithActive(siteTabs(), "guide")} active="guide">
       <div className="mx-auto max-w-2xl px-3 py-5">
         <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">❓ HELP!</h1>
         <GuideBody />

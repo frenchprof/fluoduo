@@ -53,3 +53,6 @@ jobs:
 
       - name: Patch 19b — visual pass tokens + drift ratchet
         run: python3 verify/verify19b.py
+
+      - name: Patch 19c — HELP derives from the registry; crumb prop gone
+        run: python3 verify/verify19c.py

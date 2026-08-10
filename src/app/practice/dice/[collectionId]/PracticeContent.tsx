@@ -27,7 +27,7 @@ export default function PracticePage({ collectionId, embedded = false }: { colle
       return <p className="py-10 text-center text-sm text-[color:var(--fluo-ink-soft)]">No dice practice for this deck yet.</p>;
     }
     return (
-      <CahierShell tabs={tabs} active="dice" crumb="🎲 Practice">
+      <CahierShell tabs={tabs} active="dice">
         <div className="mx-auto max-w-3xl px-4 py-10">
           <div className="rounded-2xl border-2 border-slate-200 bg-white p-10 text-center">
             <div className="text-6xl" aria-hidden>🎲</div>
@@ -54,7 +54,7 @@ export default function PracticePage({ collectionId, embedded = false }: { colle
 
   if (embedded) return <PracticeRunner set={practiceSet} />;
   return (
-    <CahierShell tabs={tabs} active="dice" crumb={`🎲 Practice · ${practiceSet.title}`}>
+    <CahierShell tabs={tabs} active="dice">
       <PracticeRunner set={practiceSet} />
     </CahierShell>
   );

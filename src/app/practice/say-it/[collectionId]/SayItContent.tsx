@@ -354,7 +354,7 @@ export default function SayItContent({
   // behind); the standalone page keeps the full CahierShell chrome.
   const wrap = (body: React.ReactNode, topRight?: React.ReactNode) =>
     embedded ? <>{body}</> : (
-      <CahierShell tabs={tabs} active="say" crumb="🎙️ WorDrill" topRight={topRight}>{body}</CahierShell>
+      <CahierShell tabs={tabs} active="say" topRight={topRight}>{body}</CahierShell>
     );
 
   if (!deck) {

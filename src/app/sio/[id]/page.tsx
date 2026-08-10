@@ -51,7 +51,6 @@ export default async function SioPage({ params }: { params: Promise<{ id: string
         { key: "sio", label: sio.id },
       ]}
       active="sio"
-      crumb={sio.unitLabel}
     >
       <div className="mx-auto max-w-3xl px-4 py-4">
         <header className="mb-6">

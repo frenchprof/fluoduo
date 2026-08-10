@@ -22,7 +22,7 @@ export default function LetrisIndexPage() {
     .map((s) => ({ ...s, unit: unitOf(s.slug) }))
     .sort((a, b) => (a.unit ?? 9) - (b.unit ?? 9));
   return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="vocabularain" crumb="🌧️ VocabulaRain">
+    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="vocabularain">
       <div className="mx-auto max-w-3xl px-4 pb-4 pt-2">
         <h1 className="cahier-display cahier-hand text-3xl font-normal text-[color:var(--cahier-ink)]">
           🌧️ VocabulaRain

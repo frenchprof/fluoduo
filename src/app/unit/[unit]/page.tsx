@@ -26,7 +26,6 @@ export default async function UnitPage({ params }: { params: Promise<{ unit: str
     <CahierShell
       tabs={tabsWithActive(siteTabs(), key)}
       active={key}
-      crumb={`${UNIT_META[u]?.emoji ?? ""} ${UNIT_META[u]?.label ?? `Unité ${u}`}`}
     >
       <div className="mx-auto max-w-3xl px-1 py-2">
         {/* Chapter intro card (episode model, Dan 2026-07-08). */}
