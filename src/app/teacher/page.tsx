@@ -23,8 +23,9 @@ import CahierShell from "@/components/CahierShell";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 import { useAuthUser, signInWithGoogle } from "@/lib/firebase/auth";
 import {
-  ADMIN_EMAILS, REVIEWER_EMAILS, type BoardRow, type Ev,
-  buildRoster, EVENT_FETCH_CAP, fetchAllEvents, fetchLeaderboard,
+  ADMIN_EMAILS, REVIEWER_EMAILS, type BoardRow, type Ev, type RosterMeta,
+  buildRoster, EMPTY_ROSTER_META, EVENT_FETCH_CAP,
+  fetchAllEvents, fetchLeaderboard, fetchRosterMeta,
 } from "./data";
 import Overview from "./Overview";
 import Attendance from "./Attendance";
@@ -108,6 +109,11 @@ function Dashboard({ canWrite }: { canWrite: boolean }) {
   const [jumpUid, setJumpUid] = useState<string | null>(null);
   const [events, setEvents] = useState<Ev[] | null>(null);
   const [board, setBoard] = useState<Map<string, BoardRow> | null>(null);
+  // Roster maps (aliases, name overrides, email seeds) come from Firestore —
+  // see data.ts fetchRosterMeta(). Absent maps degrade the roster (no alias
+  // merging), they don't blank it, so the miss is a note, not a failure.
+  const [meta, setMeta] = useState<RosterMeta | null>(null);
+  const [metaMiss, setMetaMiss] = useState<string | null>(null);
   /** Which streams failed, and what Firestore said — one opaque sentence for
    *  both made "is it recording?" unanswerable from the page itself. */
   const [failed, setFailed] = useState<string[]>([]);
@@ -122,10 +128,12 @@ function Dashboard({ canWrite }: { canWrite: boolean }) {
     let cancelled = false;
     setEvents(null);
     setBoard(null);
+    setMeta(null);
+    setMetaMiss(null);
     setFailed([]);
     // One stream failing must not blank the page: the events trail and the
     // leaderboard are independent, and most panels need only the first.
-    void Promise.allSettled([fetchAllEvents(), fetchLeaderboard()]).then(([e, b]) => {
+    void Promise.allSettled([fetchAllEvents(), fetchLeaderboard(), fetchRosterMeta()]).then(([e, b, m]) => {
       if (cancelled) return;
       const why: string[] = [];
       if (e.status === "fulfilled") setEvents(e.value);
@@ -138,6 +146,11 @@ function Dashboard({ canWrite }: { canWrite: boolean }) {
         setBoard(new Map());
         why.push(`leaderboard (${describe(b.reason)})`);
       }
+      if (m.status === "fulfilled" && m.value) setMeta(m.value);
+      else {
+        setMeta(EMPTY_ROSTER_META);
+        setMetaMiss(m.status === "fulfilled" ? "not seeded — run scripts/seed-roster-private.mjs" : describe(m.reason));
+      }
       setFailed(why);
       setLoadedAt(new Date());
     });
@@ -147,8 +160,8 @@ function Dashboard({ canWrite }: { canWrite: boolean }) {
   }, [reloadKey]);
 
   const rosterAll = useMemo(
-    () => (events && board ? buildRoster(events, board) : []),
-    [events, board],
+    () => (events && board && meta ? buildRoster(events, board, meta) : []),
+    [events, board, meta],
   );
   // Hidden accounts (Dan, 2026-07-16) vanish from every panel — roster AND
   // their stray events.
@@ -163,7 +176,7 @@ function Dashboard({ canWrite }: { canWrite: boolean }) {
   );
   const nameOf = useMemo(() => new Map(roster.flatMap((l) => l.uids.map((u) => [u, l.name] as const))), [roster]);
 
-  if (!events || !board) return <p className="text-sm text-slate-500">Loading analytics…</p>;
+  if (!events || !board || !meta) return <p className="text-sm text-slate-500">Loading analytics…</p>;
 
   const newest = events && events.length > 0 ? events[events.length - 1].ts : null;
   const oldest = events && events.length > 0 ? events[0].ts : null;
@@ -173,6 +186,12 @@ function Dashboard({ canWrite }: { canWrite: boolean }) {
       {failed.length > 0 && (
         <p className="mb-2 rounded-xl border-2 border-rose-300 bg-rose-50 px-3 py-2 text-sm font-bold text-rose-700">
           Couldn&rsquo;t load: {failed.join(" · ")}. Everything below is drawn from what did load.
+        </p>
+      )}
+      {metaMiss && (
+        <p className="mb-2 rounded-xl border-2 border-amber-300 bg-amber-50 px-3 py-2 text-sm font-bold text-amber-700">
+          Roster config (admin/rosterPrivate) didn&rsquo;t load: {metaMiss}. Account aliases and
+          name overrides are off — students with two accounts appear twice.
         </p>
       )}
       <div className="mb-2 flex flex-wrap items-center gap-3 text-xs text-slate-500">
