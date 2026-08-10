@@ -29,6 +29,7 @@ import { useActivityPlay } from "@/lib/firebase/activityLog";
 import { gapSentence, isPlayableGap } from "@/lib/collections/gapSentence";
 import { buildLadder, shownRungs } from "@/lib/help/ladder";
 import { SIOS } from "@/content/sios";
+import WordBank from "@/components/WordBank";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -159,17 +160,30 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
     </div>
   ) : null;
 
+  // Word-bank distractors: the deck's OTHER gaps — the grammar words the
+  // learner is actually choosing between (du / de la / des / d'…).
+  const bankPool = item
+    ? deck.items.filter((it) => isPlayableGap(it) && it.id !== item.id).map((it) => it.gap as string)
+    : [];
+
+  // Typing above sm; word-bank tiles below it (patch 20–21) — one `value`,
+  // so grading/XP/evidence never know which surface produced the string.
   const answerInput = (
-    <input
-      ref={inputRef}
-      lang="fr"
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-      disabled={result !== null}
-      placeholder="le mot qui manque…"
-      className={`cahier-answer w-full ${result === null ? "" : isRight ? "!border-emerald-500 !text-emerald-700" : "!border-rose-500 !text-rose-700"}`}
-      autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
-    />
+    <>
+      <input
+        ref={inputRef}
+        lang="fr"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        disabled={result !== null}
+        placeholder="le mot qui manque…"
+        className={`cahier-answer hidden w-full sm:block ${result === null ? "" : isRight ? "!border-emerald-500 !text-emerald-700" : "!border-rose-500 !text-rose-700"}`}
+        autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
+      />
+      <div className="sm:hidden">
+        <WordBank answer={gap} pool={bankPool} value={value} onChange={setValue} disabled={result !== null} />
+      </div>
+    </>
   );
 
   if (!embedded) {

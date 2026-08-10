@@ -18,6 +18,8 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
+import DrillShell from "@/components/DrillShell";
 import { pauseSpeech, resumeSpeech, speak, speakSequence } from "@/games/letris/speech";
 import { gradeAnswer, type Grade } from "@/lib/practice/cloze";
 import { fingerprint, generateUnheard } from "@/lib/textgen/engine";
@@ -46,7 +48,19 @@ function words(fr: string): Word[] {
   });
 }
 
-export default function EcouTexte({ gen, accent }: { gen: UnitTextGen; accent: string }) {
+export default function EcouTexte({
+  gen,
+  accent,
+  header,
+  shell = false,
+}: {
+  gen: UnitTextGen;
+  accent: string;
+  /** The page's unit picker, rendered inside the shell body (shell mode). */
+  header?: ReactNode;
+  /** Full-screen DrillShell chrome (patch 20–21). */
+  shell?: boolean;
+}) {
   useActivityPlay("ecoutexte", `unite-${gen.unit}`);
   const [count, setCount] = useState(3);
   const [text, setText] = useState<MiniText | null>(null);
@@ -185,9 +199,16 @@ export default function EcouTexte({ gen, accent }: { gen: UnitTextGen; accent: s
   }
 
   const allRevealed = revealed.length > 0 && revealed.every(Boolean);
+  // A sentence is "worked" once it is revealed or carries any mark — that is
+  // what the shell's progress bar counts. Listening alone is not progress;
+  // the scaffold's point is what the learner does with what they heard.
+  const worked = (text?.sentences ?? []).filter(
+    (_, i) => revealed[i] || (marks[i] ?? []).some((m) => m !== null),
+  ).length;
 
-  return (
+  const body = (
     <div className="space-y-3">
+      {header}
       {/* How many sentences. */}
       <div className="flex flex-wrap items-center gap-1.5">
         {LENGTHS.map((n) => (
@@ -205,9 +226,11 @@ export default function EcouTexte({ gen, accent }: { gen: UnitTextGen; accent: s
             {n}
           </button>
         ))}
-        <button type="button" onClick={() => draw(count)} className="fluo-btn fluo-btn-sm fluo-btn-secondary ml-auto">
-          🎲 Un autre
-        </button>
+        {!shell && (
+          <button type="button" onClick={() => draw(count)} className="fluo-btn fluo-btn-sm fluo-btn-secondary ml-auto">
+            🎲 Un autre
+          </button>
+        )}
       </div>
 
       {/* Playback. */}
@@ -345,6 +368,26 @@ export default function EcouTexte({ gen, accent }: { gen: UnitTextGen; accent: s
         </button>
       )}
     </div>
+  );
+
+  if (!shell) return body;
+
+  // Full page = DrillShell (patch 20–21). The CTA is the draw — the natural
+  // forward action; a body Enter that marked a sentence preventDefaults and
+  // the shell stands down, so typing can never draw a new text by accident.
+  return (
+    <DrillShell
+      exitHref="/activities"
+      progress={text ? { done: worked, total: text.sentences.length } : null}
+      right={text ? <>{worked}/{text.sentences.length}</> : undefined}
+      cta={
+        text
+          ? { label: "🎲 Un autre texte", onClick: () => draw(count) }
+          : { label: "🎧 Écouter", onClick: () => playAll(false) }
+      }
+    >
+      {body}
+    </DrillShell>
   );
 }
 

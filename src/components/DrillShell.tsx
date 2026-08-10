@@ -96,6 +96,9 @@ export default function DrillShell({
   liveRef.current = liveCta;
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // A body that handled the key itself (ÉcouTexte's per-word blanks mark
+      // their sentence on Enter) preventDefaults it — the shell stands down.
+      if (e.defaultPrevented) return;
       const t = e.target as HTMLElement | null;
       const typing =
         !!t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable);

@@ -151,6 +151,29 @@ check("buildLadder" in icomplete and "shownRungs" in icomplete and "hintsTaken" 
       "iComplete has the help ladder, and hints are recorded as evidence",
       "iComplete still has no help ladder (buildLadder/shownRungs/hintsTaken)")
 
+# Word-bank tiles below sm: the typed drills keep their <input> for sm-and-up
+# and render tappable chips beneath it — one `value`, either surface.
+bank = strip_comments(read("src/components/WordBank.tsx"))
+check(bool(bank) and "onChange(idxs.map((i) => tokens[i]).join(\" \"))" in bank,
+      "WordBank exists and mirrors chips into the host's value",
+      "src/components/WordBank.tsx missing or not mirroring value")
+for name, p in (("iComplete", CONTENTS["iComplete"]), ("GramMarathon", CONTENTS["GramMarathon"])):
+    src = read(p)
+    check("WordBank" in src and 'className="sm:hidden"' in src and "hidden w-full sm:block" in src,
+          f"{name}: typing above sm, word-bank tiles below it",
+          f"{p}: word-bank/input breakpoint pair missing")
+
+# ÉcouTexte: full-screen in the shell; its own Enter (mark a sentence)
+# suppresses the shell CTA via preventDefault, which the shell honours.
+ecout = strip_comments(read("src/app/practice/ecoutexte/EcouTexte.tsx"))
+ecout_page = strip_comments(read("src/app/practice/ecoutexte/page.tsx"))
+check("DrillShell" in ecout and "CahierShell" not in ecout_page,
+      "ÉcouTexte runs in DrillShell",
+      "ÉcouTexte is not on DrillShell / its page still wraps CahierShell")
+check("e.defaultPrevented" in shell_code,
+      "the shell stands down when a body handled the key itself",
+      "DrillShell ignores defaultPrevented — ÉcouTexte's Enter would draw a new text")
+
 # ── 4 · SioModal lost its compensation chrome ──────────────────────────────
 sio = strip_comments(read("src/app/SioModal.tsx"))
 for banned, why in (

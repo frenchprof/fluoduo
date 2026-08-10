@@ -22,6 +22,7 @@ import { recordItemResult } from "@/lib/progress";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
 import { buildLadder, shownRungs } from "@/lib/help/ladder";
 import { SIOS } from "@/content/sios";
+import WordBank from "@/components/WordBank";
 import type { Collection, Item } from "@/lib/collections/schema";
 
 function normalize(s: string) {
@@ -214,17 +215,34 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
     </div>
   ) : null;
 
+  // Word-bank distractors: a nationality question draws the same item's
+  // other three forms (chinois/chinoise/chinoises — the exact confusions
+  // being drilled); everything else draws other items' full answers.
+  const bankPool =
+    item && natForm && item.nat
+      ? NAT_FORMS.filter((f) => f !== natForm).map((f) => item.nat![f])
+      : item
+        ? practiceItems(deck).filter((it) => it.id !== item.id).map((it) => frFull(articleOf(deck!, it), it.fr))
+        : [];
+
+  // Typing above sm; word-bank tiles below it (patch 20–21) — one `value`,
+  // so grading/XP/evidence never know which surface produced the string.
   const answerInput = (
-    <input
-      ref={inputRef}
-      lang="fr"
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-      disabled={result !== null}
-      placeholder={`commence par « ${answer[0] ?? "?"} »…`}
-      className={`cahier-answer w-full ${result === null ? "" : isRight ? "!border-emerald-500 !text-emerald-700" : "!border-rose-500 !text-rose-700"}`}
-      autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
-    />
+    <>
+      <input
+        ref={inputRef}
+        lang="fr"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        disabled={result !== null}
+        placeholder={`commence par « ${answer[0] ?? "?"} »…`}
+        className={`cahier-answer hidden w-full sm:block ${result === null ? "" : isRight ? "!border-emerald-500 !text-emerald-700" : "!border-rose-500 !text-rose-700"}`}
+        autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
+      />
+      <div className="sm:hidden">
+        <WordBank answer={answer} pool={bankPool} value={value} onChange={setValue} disabled={result !== null} />
+      </div>
+    </>
   );
 
   // Inside the SioModal popup the drill keeps its inline sheet — the popup
