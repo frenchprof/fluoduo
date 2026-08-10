@@ -236,7 +236,7 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
         onChange={(e) => setValue(e.target.value)}
         disabled={result !== null}
         placeholder={`commence par « ${answer[0] ?? "?"} »…`}
-        className={`cahier-answer hidden w-full sm:block ${result === null ? "" : isRight ? "!border-emerald-500 !text-emerald-700" : "!border-rose-500 !text-rose-700"}`}
+        className={`cahier-answer hidden w-full sm:block ${result === null ? "" : isRight ? "!border-[color:var(--drill-ok)] !text-[color:var(--drill-ok-ink)]" : "!border-[color:var(--drill-bad-mid)] !text-[color:var(--drill-bad-ink)]"}`}
         autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
       />
       <div className="sm:hidden">

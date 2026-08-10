@@ -531,7 +531,7 @@ function AnswerField({
       const correct = frFull(artP.correct, frP.correct);
       return (
         <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
-          {phase === "checked" && <span lang="fr" className={`text-lg font-semibold ${allRight ? "text-emerald-700" : "text-[color:var(--cahier-la)] line-through"}`}>{mine.trim() || "—"}</span>}
+          {phase === "checked" && <span lang="fr" className={`text-lg font-semibold ${allRight ? "text-[color:var(--drill-ok-ink)]" : "text-[color:var(--cahier-la)] line-through"}`}>{mine.trim() || "—"}</span>}
           {(!allRight || phase === "revealed") && <span lang="fr" className="cahier-display text-lg font-bold"><span className="cahier-hl">{correct}</span></span>}
           {phase === "checked" && <span>{allRight ? "✓" : "✗"}</span>}
           <button type="button" onClick={retry} title="Try again" aria-label="Try again" className="cahier-btn cahier-btn-sm">↺</button>
@@ -546,7 +546,7 @@ function AnswerField({
           return (
             <div key={p.key} className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
               {p.label && <span className="text-xs text-[color:var(--cahier-ink-soft)]">{p.label}</span>}
-              {phase === "checked" && <span lang="fr" className={`font-semibold ${ok ? "text-emerald-700" : "text-[color:var(--cahier-la)] line-through"}`}>{mine.trim() ? mine : "—"}</span>}
+              {phase === "checked" && <span lang="fr" className={`font-semibold ${ok ? "text-[color:var(--drill-ok-ink)]" : "text-[color:var(--cahier-la)] line-through"}`}>{mine.trim() ? mine : "—"}</span>}
               {(!ok || phase === "revealed") && <span lang="fr" className="cahier-display font-bold"><span className="cahier-hl">{p.correct}</span></span>}
               {phase === "checked" && <span>{ok ? "✓" : "✗"}</span>}
             </div>
@@ -1024,7 +1024,7 @@ function TestRow({
       const mine = p.type === "article" ? (vals[p.key] === undefined ? "" : (ART_LABEL[vals[p.key]] ?? vals[p.key])) : (vals[p.key] ?? "");
       return (
         <span className="flex flex-wrap items-baseline gap-x-1 text-sm">
-          {phase === "checked" && <span lang="fr" className={`font-semibold ${ok ? "text-emerald-700" : "text-[color:var(--cahier-la)] line-through"}`}>{mine?.trim() ? mine : "—"}</span>}
+          {phase === "checked" && <span lang="fr" className={`font-semibold ${ok ? "text-[color:var(--drill-ok-ink)]" : "text-[color:var(--cahier-la)] line-through"}`}>{mine?.trim() ? mine : "—"}</span>}
           {(!ok || phase === "revealed") && <span lang="fr" className="cahier-display font-bold"><span className="cahier-hl">{p.type === "article" ? (ART_LABEL[p.correct] ?? p.correct) : p.correct}</span></span>}
           {phase === "checked" && <span>{ok ? "✓" : "✗"}</span>}
         </span>
@@ -1081,7 +1081,7 @@ function TestRow({
             // integrative result: the full "article + noun" phrase, one mark, shown in the French cell
             content = c.key === "fr" ? (
               <span className="flex w-full flex-wrap items-baseline gap-x-1.5 gap-y-0.5 text-sm">
-                {phase === "checked" && <span lang="fr" className={`font-semibold ${allRight ? "text-emerald-700" : "text-[color:var(--cahier-la)] line-through"}`}>{mergedMine.trim() || "—"}</span>}
+                {phase === "checked" && <span lang="fr" className={`font-semibold ${allRight ? "text-[color:var(--drill-ok-ink)]" : "text-[color:var(--cahier-la)] line-through"}`}>{mergedMine.trim() || "—"}</span>}
                 {(!allRight || phase === "revealed") && <span lang="fr" className="cahier-display font-bold"><span className="cahier-hl">{row.full}</span></span>}
                 {phase === "checked" && <span>{allRight ? "✓" : "✗"}</span>}
                 <button type="button" onClick={retry} title="Try again" aria-label="Try again" className="cahier-btn cahier-btn-sm">↺</button>
@@ -1135,7 +1135,7 @@ function NoteCell({ value, editable, onChange }: { value: string; editable: bool
   return (
     <div className="flex items-center gap-1">
       <input type="text" value={value} onChange={(e) => onChange(e.target.value)} placeholder="note…" className="!min-w-0 flex-1 text-sm" />
-      <span className={`text-[10px] tabular-nums ${n >= NOTE_MAX ? "font-bold text-rose-500" : "text-[color:var(--cahier-ink-soft)]"}`}>{n}/{NOTE_MAX}</span>
+      <span className={`text-[10px] tabular-nums ${n >= NOTE_MAX ? "font-bold text-[color:var(--drill-bad-mid)]" : "text-[color:var(--cahier-ink-soft)]"}`}>{n}/{NOTE_MAX}</span>
     </div>
   );
 }

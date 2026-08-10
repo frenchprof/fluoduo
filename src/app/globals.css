@@ -491,6 +491,18 @@ body {
   --cahier-hl:         var(--fluo-hl);   /* chartreuse marker */
   --cahier-hl-edge:    #a6c130;
   --cahier-gold:       #c8a24b;
+  /* drill verdict palette (patch 20–21): correct/wrong is colour with
+     meaning, so it lives as tokens — one definition for the shell, every
+     drill, and the future GameFrame — and the 19b ratchet can hold. */
+  --drill-ok:        #10b981;
+  --drill-ok-soft:   #6ee7b7;
+  --drill-ok-bg:     #ecfdf5;
+  --drill-ok-ink:    #047857;
+  --drill-bad:       #e11d48;
+  --drill-bad-mid:   #f43f5e;
+  --drill-bad-soft:  #fda4af;
+  --drill-bad-bg:    #fff1f2;
+  --drill-bad-ink:   #be123c;
   --cahier-spiral-hi:  #e2e4e8;
   --cahier-spiral:     #b9bcc4;
   --cahier-spiral-lo:  #82868f;

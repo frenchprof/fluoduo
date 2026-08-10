@@ -138,7 +138,7 @@ export default function DrillShell({
             aria-valuemax={progress.total}
           >
             <div
-              className="h-full rounded-full bg-emerald-500 transition-[width] duration-300"
+              className="h-full rounded-full bg-[color:var(--drill-ok)] transition-[width] duration-300"
               style={{ width: `${pct}%` }}
             />
           </div>
@@ -186,14 +186,14 @@ export default function DrillShell({
           <div
             className={`absolute inset-x-0 bottom-0 animate-[drill-tray_.18s_ease-out] border-t-2 ${
               feedback.kind === "correct"
-                ? "border-emerald-300 bg-emerald-50"
-                : "border-rose-300 bg-rose-50"
+                ? "border-[color:var(--drill-ok-soft)] bg-[color:var(--drill-ok-bg)]"
+                : "border-[color:var(--drill-bad-soft)] bg-[color:var(--drill-bad-bg)]"
             }`}
           >
             <div className="mx-auto flex w-full max-w-[600px] flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3">
               <p
                 className={`min-w-0 flex-1 text-sm font-black ${
-                  feedback.kind === "correct" ? "text-emerald-700" : "text-rose-700"
+                  feedback.kind === "correct" ? "text-[color:var(--drill-ok-ink)]" : "text-[color:var(--drill-bad-ink)]"
                 }`}
               >
                 <span className="mr-1.5" aria-hidden>{feedback.kind === "correct" ? "✓" : "✗"}</span>
@@ -204,7 +204,7 @@ export default function DrillShell({
                 onClick={feedback.cta.onClick}
                 disabled={feedback.cta.disabled}
                 className={`cahier-btn shrink-0 justify-center font-black ${
-                  feedback.kind === "correct" ? "cahier-btn-primary" : "!border-rose-700 !bg-rose-600 !text-white"
+                  feedback.kind === "correct" ? "cahier-btn-primary" : "!border-[color:var(--drill-bad-ink)] !bg-[color:var(--drill-bad)] !text-white"
                 }`}
               >
                 {feedback.cta.label}

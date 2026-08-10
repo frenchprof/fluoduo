@@ -266,7 +266,7 @@ function TestCard({
             return (
               <div key={p.key} className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
                 {p.label && <span className="text-xs text-[color:var(--cahier-ink-soft)]">{p.label}</span>}
-                {phase === "checked" && <span lang="fr" className={`font-semibold ${ok ? "text-emerald-700" : "text-[color:var(--cahier-la)] line-through"}`}>{shown.trim() ? shown : "—"}</span>}
+                {phase === "checked" && <span lang="fr" className={`font-semibold ${ok ? "text-[color:var(--drill-ok-ink)]" : "text-[color:var(--cahier-la)] line-through"}`}>{shown.trim() ? shown : "—"}</span>}
                 {(!ok || phase === "revealed") && <span lang="fr" className="cahier-display font-bold"><span className="cahier-hl">{p.type === "article" ? (ART_LABEL[p.correct] ?? p.correct) : p.correct}</span></span>}
                 {phase === "checked" && <span>{ok ? "✓" : "✗"}</span>}
               </div>
