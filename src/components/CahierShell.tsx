@@ -391,7 +391,10 @@ export default function CahierShell({
             </div>
           </div>
 
-          <div className={`py-5 pr-4 sm:pr-7 ${nested ? "pl-5 sm:pl-7" : "pl-12 sm:pl-16"}`}>{children}</div>
+          {/* Ruled paper behind the content well — horizontals only, no vertical
+              margin line (Dan, 2026-08-10). Opt-in class rather than a body
+              background so a drill or a game can turn it off. */}
+          <div className={`cahier-foolscap py-5 pr-4 sm:pr-7 ${nested ? "pl-5 sm:pl-7" : "pl-12 sm:pl-16"}`}>{children}</div>
           {/* Phone navigation. Nested shells (SioModal) must not draw a
               second one on top of the page's own. */}
           {!nested && <BottomBar />}

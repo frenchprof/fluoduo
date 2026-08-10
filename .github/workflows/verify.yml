@@ -43,8 +43,16 @@ jobs:
       - name: No student PII in a learner-facing bundle
         run: python3 verify/verify18.py
 
+      # 18b widens 18 to the whole export: no roster email or name override
+      # in ANY file the CDN serves — /teacher's chunks included.
+      - name: Patch 18b — no student PII anywhere on the public CDN
+        run: python3 verify/verify18b.py
+
       - name: Patch 19 — one name per activity, gates, nav, breakpoints
         run: python3 verify/verify19.py
+
+      - name: Patch 19b — visual pass tokens + drift ratchet
+        run: python3 verify/verify19b.py
 
       - name: Patch 19c — HELP derives from the registry; crumb prop gone
         run: python3 verify/verify19c.py

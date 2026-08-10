@@ -11,9 +11,54 @@
  */
 
 import { EXCLUDED_BOARD_UIDS, HIDDEN_ROSTER_UID_PREFIXES, isHiddenRosterName } from "@/lib/accountAliases";
-// Teacher-only, and deliberately in its own module so it cannot reach a
-// chunk the learner loads. See src/lib/rosterPrivate.ts.
-import { canonicalEmail, KNOWN_EMAILS, ROSTER_NAMES } from "@/lib/rosterPrivate";
+
+/**
+ * Student-identifying roster maps — fetched at runtime, NEVER bundled.
+ *
+ * These used to be compiled in (src/lib/rosterPrivate.ts, deleted 2026-08-10).
+ * /teacher is a statically exported page on a public CDN with no auth in
+ * front of it, so its chunk — student emails included — was downloadable by
+ * anyone with the URL. The maps now live in Firestore at admin/rosterPrivate
+ * behind the same isAdmin() rules as everything else this page reads.
+ * Canonical copy + provenance: scripts/roster-private.json; push it with
+ * scripts/seed-roster-private.mjs. verify/verify18b.py proves the build
+ * output stays clean.
+ */
+export type RosterMeta = {
+  /** alias email → canonical email (all lowercase). */
+  aliasEmails: Record<string, string>;
+  /** uid → display name, where the telemetry's own name is wrong or absent. */
+  rosterNames: Record<string, string>;
+  /** uid → email for accounts whose only sign-ins predate authEvents coverage. */
+  knownEmails: Record<string, string>;
+};
+
+export const EMPTY_ROSTER_META: RosterMeta = { aliasEmails: {}, rosterNames: {}, knownEmails: {} };
+
+/** null = the doc does not exist yet (seed script never ran). Throws on
+ *  permission-denied and network failures like every other fetch here. */
+export async function fetchRosterMeta(): Promise<RosterMeta | null> {
+  const [{ getDoc, doc }, { db }] = await Promise.all([
+    import("firebase/firestore"),
+    import("@/lib/firebase/db"),
+  ]);
+  const snap = await getDoc(doc(db, "admin", "rosterPrivate"));
+  if (!snap.exists()) return null;
+  const d = snap.data() as Record<string, unknown>;
+  const rec = (v: unknown): Record<string, string> => {
+    if (!v || typeof v !== "object" || Array.isArray(v)) return {};
+    const out: Record<string, string> = {};
+    for (const [k, val] of Object.entries(v)) if (typeof val === "string") out[k] = val;
+    return out;
+  };
+  return { aliasEmails: rec(d.aliasEmails), rosterNames: rec(d.rosterNames), knownEmails: rec(d.knownEmails) };
+}
+
+export function canonicalEmail(aliasEmails: Record<string, string>, email: string | null | undefined): string | null {
+  if (!email) return null;
+  const e = email.toLowerCase();
+  return aliasEmails[e] ?? e;
+}
 
 // Mirror of firestore.rules isAdmin() — keep the two lists in sync.
 // Read-only tier (Dan, 2026-07-20): peer reviewers see the whole teacher
@@ -189,15 +234,18 @@ export async function fetchLeaderboard(): Promise<Map<string, BoardRow>> {
 }
 
 /** Roster derived from events (every active account signs in → events exist)
- *  unioned with leaderboard rows, so pre-tracking students still appear. */
-export function buildRoster(events: Ev[], board: Map<string, BoardRow>): Learner[] {
+ *  unioned with leaderboard rows, so pre-tracking students still appear.
+ *  `meta` comes from fetchRosterMeta(); pass EMPTY_ROSTER_META when it is
+ *  unavailable — the roster still builds, just without alias merging and
+ *  name/email overrides. */
+export function buildRoster(events: Ev[], board: Map<string, BoardRow>, meta: RosterMeta): Learner[] {
   const byUid = new Map<string, Learner>();
   const days = new Map<string, Set<string>>();
   const ensure = (uid: string): Learner => {
     let l = byUid.get(uid);
     if (!l) {
       byUid.set(uid, (l = {
-        uid, uids: [uid], name: ROSTER_NAMES[uid] ?? uid.slice(0, 8), email: canonicalEmail(KNOWN_EMAILS[uid]) ?? null, isTeacher: false,
+        uid, uids: [uid], name: meta.rosterNames[uid] ?? uid.slice(0, 8), email: canonicalEmail(meta.aliasEmails, meta.knownEmails[uid]) ?? null, isTeacher: false,
         firstSeen: null, lastSeen: null, daysActive: 0,
         pageViews: 0, gamePlays: 0, pretestAnswers: 0,
         board: board.get(uid) ?? null,
@@ -211,7 +259,7 @@ export function buildRoster(events: Ev[], board: Map<string, BoardRow>): Learner
     const name = str(ev.payload.name);
     const email = str(ev.payload.email);
     // A known uid keeps the name we were told, whatever the event claims.
-    if (name && !ROSTER_NAMES[ev.uid]) l.name = name;
+    if (name && !meta.rosterNames[ev.uid]) l.name = name;
     if (email) {
       l.email = email;
       if (ADMIN_EMAILS.includes(email)) l.isTeacher = true;
@@ -235,7 +283,7 @@ export function buildRoster(events: Ev[], board: Map<string, BoardRow>): Learner
   const byCanon = new Map<string, Learner>();
   const merged: Learner[] = [];
   for (const l of byUid.values()) {
-    const canon = canonicalEmail(l.email);
+    const canon = canonicalEmail(meta.aliasEmails, l.email);
     const t = canon ? byCanon.get(canon) : undefined;
     if (!canon || !t) {
       if (canon) byCanon.set(canon, l);
