@@ -5,6 +5,7 @@ import AuthGate from "@/components/AuthGate";
 import { CURATED } from "@/content/collections";
 import { displayFr } from "@/lib/collections/display";
 import { isLexReady, lexBase } from "@/lib/collections/lexReady";
+import GameBar from "@/components/GameBar";
 
 export function generateStaticParams() {
   return CURATED.map((c) => ({ deckId: c.id }));
@@ -32,12 +33,7 @@ export default async function ConveyorPage({
   const shell = (body: React.ReactNode) => (
     <AuthGate what="play">
       <main className="min-h-screen" style={{ background: "linear-gradient(180deg,#eaf7ff 0%,#f6fbff 100%)" }}>
-        <div className="border-b-2 border-white/70 bg-white/60 backdrop-blur">
-          <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3 text-sm font-bold">
-            <BackLink fallback="/" className="text-[#1cb0f6] hover:text-[#1899d6]">← Back</BackLink>
-            <span className="flex items-center gap-2 text-[#075985]/60">🧰 LexicaLater <HelpDot /></span>
-          </div>
-        </div>
+        <GameBar title="🧰 LexicaLater" up="/games/lexicalater" />
         {body}
       </main>
     </AuthGate>

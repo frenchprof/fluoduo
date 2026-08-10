@@ -5,6 +5,7 @@ import SoundControl from "@/components/SoundControl";
 import AuthGate from "@/components/AuthGate";
 import ComposeGame from "@/games/compose/ComposeGame";
 import { getComposeBank, listComposeBanks } from "@/games/compose/banks";
+import GameBar from "@/components/GameBar";
 
 export function generateStaticParams() {
   return listComposeBanks().map((b) => ({ bankId: b.id }));
@@ -37,20 +38,7 @@ export default async function ComposePage({
   return (
     <AuthGate what="play">
       <main className="min-h-screen" style={{ background: theme.bg }}>
-        <div className="border-b-2 border-white/70 bg-white/60 backdrop-blur">
-          <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3 text-sm font-bold">
-            <BackLink fallback="/" className={theme.bar}>
-              ← Back
-            </BackLink>
-            <span className="flex items-center gap-2">
-              <span lang="fr" className={theme.crumb}>
-                {bank.emoji} {bank.title}
-              </span>
-              <SoundControl />
-              <HelpDot />
-            </span>
-          </div>
-        </div>
+        <GameBar title={`${bank.emoji} ${bank.title}`} up="/games/compose" />
         <ComposeGame bankId={bank.id} />
       </main>
     </AuthGate>

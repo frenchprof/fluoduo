@@ -7,6 +7,7 @@ import HelpDot from "@/components/HelpDot";
 import NumBus from "@/games/numbus/NumBus";
 import NumBusSetup from "@/games/numbus/NumBusSetup";
 import type { NumBusConfig } from "@/games/numbus/config";
+import GameBar from "@/components/GameBar";
 
 export default function NumBusClient() {
   const [config, setConfig] = useState<NumBusConfig | null>(null);
@@ -17,16 +18,7 @@ export default function NumBusClient() {
         className="min-h-screen"
         style={{ background: "linear-gradient(180deg,#cfe9fb 0%,#eaf6ff 45%,#f7fcff 100%)" }}
       >
-        <div className="border-b-2 border-white/70 bg-white/60 backdrop-blur">
-          <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3 text-sm font-bold">
-            <BackLink fallback="/" className="text-[#c94070] hover:text-[#a92f5a]">
-              ← Back
-            </BackLink>
-            <span className="flex items-center gap-2 text-slate-600">
-              🚌 NumBus <HelpDot />
-            </span>
-          </div>
-        </div>
+        <GameBar title="🚌 NumBus" />
 
         {!config ? (
           <div className="mx-auto max-w-3xl px-4 py-6">
