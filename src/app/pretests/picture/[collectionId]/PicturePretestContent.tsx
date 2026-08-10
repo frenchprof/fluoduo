@@ -221,13 +221,13 @@ function Intro({
           {collection.title}
         </h1>
         <p className="mt-3 text-center text-base text-slate-700">
-          This is a <strong>pretest</strong> — you haven&apos;t learned these yet,
+          This is a <strong>pretest</strong>{" "}— you haven&apos;t learned these yet,
           so <strong>guess anyway</strong>. Getting it wrong is how this works:
           attempting first and then seeing the answer makes the word stick far
           better than just reading it.
         </p>
         <p className="mt-2 text-center text-sm text-slate-500">
-          {count} quick guesses, both directions (word → flag and flag → word).
+          {count}&nbsp;quick guesses, both directions.
           You&apos;ll see the right answer right after each guess. No score
           pressure — whatever you miss becomes your focus list for class.
         </p>

@@ -37,6 +37,7 @@ import type { Item } from "@/lib/collections/schema";
 import { gradeAnswer, gradeGap, splitGap } from "@/lib/practice/cloze";
 import { recordItemResult } from "@/lib/progress";
 import { gapSentence } from "@/lib/collections/gapSentence";
+import { optionGridClass } from "@/lib/optionGrid";
 
 type Attempt = { q: string; user: string; correct: string; ok: boolean };
 type Level = "facile" | "inter" | "difficile" | "bonus";
@@ -219,7 +220,7 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
               )}
 
               {!answered && level === "facile" && (
-                <div className="mx-auto flex max-w-md flex-col gap-2">
+                <div className={`mx-auto max-w-md ${optionGridClass(q.options)}`}>
                   {q.options.map((o) => (
                     <button
                       key={o}

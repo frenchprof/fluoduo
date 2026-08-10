@@ -18,7 +18,7 @@ import MyDecks from "@/app/MyDecks";
 import { composeBankForDeck } from "@/games/compose/banks";
 import { siteTabs } from "@/components/siteTabs";
 import { CURATED } from "@/content/collections";
-import { UNIT_META } from "@/content/sios";
+import { SIOS, UNIT_META } from "@/content/sios";
 import { lessonsForDeck } from "@/content/lessons";
 import { isLexReadyId } from "@/lib/collections/lexReady";
 import { isSpecuLearnReady } from "@/lib/collections/speculearnReady";
@@ -29,6 +29,12 @@ import type { Collection } from "@/lib/collections/schema";
 import { isPlayableGap } from "@/lib/collections/gapSentence";
 
 type Cell = { emoji: string; title: string; href: string | null };
+
+/** The deck's stop on the course path — the same number the learner just
+ *  tapped on Home. `Sio.num` already existed; nothing rendered it here. */
+function stopNum(collectionId: string): number | null {
+  return SIOS.find((s) => s.collectionId === collectionId)?.num ?? null;
+}
 
 function cellsFor(c: Collection): Cell[] {
   const lessons = lessonsForDeck(c.id);
@@ -51,8 +57,11 @@ function cellsFor(c: Collection): Cell[] {
   ];
 }
 
-const HEAD = ["🧪", "🔮", "📚", "🃏", "🌧️", "🧰", "🧩", "🎙️"];
-const HEAD_TITLES = ["Pre-Test", "SpecuLearn", "Lesson", "Flip It", "Vocabularain", "LexicaLater", "Compose It", "WorDrill"];
+// 🏃 GramMarathon was missing here while cellsFor() emitted it — nine
+// cells under eight headings, so every row sat one column left of its
+// label and WorDrill fell into a tenth, header-less column.
+const HEAD = ["🧪", "🔮", "📚", "🃏", "🌧️", "🧰", "🧩", "🏃", "🎙️"];
+const HEAD_TITLES = ["Pre-Test", "SpecuLearn", "xPlain", "4Mémoire", "VocabulaRain", "LexicaLater", "ComposeIt", "GramMarathon", "WorDrill"];
 /** Column chip colors — the same hue each activity's tile wears on the Guide
  *  page (Pre-Test gets the highlighter yellow). */
 const HEAD_CHIPS: { bg: string; border: string }[] = [
@@ -63,6 +72,7 @@ const HEAD_CHIPS: { bg: string; border: string }[] = [
   { bg: "#ece2fa", border: "#8a5fd4" },
   { bg: "#fbe6cf", border: "#e8852e" },
   { bg: "#ecf7cf", border: "#7bbf2e" },
+  { bg: "#dbe7fb", border: "#3b6fd4" },
   { bg: "#fbeec4", border: "#e3a700" },
 ];
 
@@ -99,7 +109,9 @@ export default function ActivitiesIndexPage() {
           <p className="mb-4 text-sm font-bold text-[color:var(--cahier-ink-soft)]">Aucun résultat pour « {q} »</p>
         )}
         {units.map((u) => {
-          const decks = CURATED.filter((c) => c.unit === u).filter(matches);
+          const decks = CURATED.filter((c) => c.unit === u).filter(matches)
+            .slice()
+            .sort((a, b) => (stopNum(a.id) ?? 999) - (stopNum(b.id) ?? 999));
           if (decks.length === 0) return null;
           const meta = UNIT_META[u] ?? { label: `Unité ${u}`, subtitle: "", emoji: "📚" };
           return (
@@ -132,8 +144,19 @@ export default function ActivitiesIndexPage() {
                   <tbody>
                     {decks.map((c) => (
                       <tr key={c.id} className="border-t border-[color:var(--cahier-rule)] transition hover:bg-[color:var(--fluo-card-tint)]">
-                        <td className="max-w-[9rem] px-3 py-1.5 font-bold text-[color:var(--cahier-ink)]">
-                          <div lang="fr" className="truncate" title={c.title}>{shortTitle(c.id, c.title)}</div>
+                        <td className="max-w-[11rem] px-3 py-1.5 font-bold text-[color:var(--cahier-ink)]">
+                          <div className="flex items-center gap-2">
+                            {stopNum(c.id) !== null && (
+                              <span
+                                aria-hidden
+                                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[0.7rem] font-black text-white"
+                                style={{ background: "var(--fluo-card-accent)" }}
+                              >
+                                {stopNum(c.id)}
+                              </span>
+                            )}
+                            <div lang="fr" className="truncate" title={c.title}>{shortTitle(c.id, c.title)}</div>
+                          </div>
                           {/* Which words inside the deck matched the search. */}
                           {(hitMap.get(c.id)?.words.length ?? 0) > 0 && (
                             <div className="truncate text-xs font-normal text-[color:var(--cahier-ink-soft)]">

@@ -159,7 +159,10 @@ export default function MatchingGame({ set }: { set: MatchingSet }) {
             <p className="text-sm text-[color:var(--cahier-ink-soft)]">{set.subtitle}</p>
           )}
         </div>
-        <div className="flex items-center gap-3 text-sm font-mono">
+        {/* flex-wrap (bug, to 2026-08-10): on a 390px phone this row ran to
+            x=468, so Restart sat at x=402 — off-screen, and the page has no
+            horizontal scroll, so it could not be reached at all. */}
+        <div className="flex flex-wrap items-center gap-3 text-sm font-mono">
           <span>
             Pairs <b className="text-emerald-700">{solvedRightIds.size}</b>/{total}
           </span>

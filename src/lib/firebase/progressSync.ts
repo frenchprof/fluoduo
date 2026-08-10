@@ -18,7 +18,7 @@ import {
   type Progress,
 } from "@/lib/progress";
 import { levelForXp } from "@/lib/economy";
-import { ALIAS_PUBLISH_NAMES } from "@/lib/accountAliases";
+import { ALIAS_PUBLISH_UIDS } from "@/lib/accountAliases";
 
 const DOC_PATH = ["app", "progress"] as const;
 const PUSH_DEBOUNCE_MS = 2500;
@@ -89,9 +89,11 @@ async function publishLeaderboard(p: Progress): Promise<void> {
   const { doc, setDoc, deleteDoc } = mods;
   const ref = doc(database.db, "leaderboard", u.uid);
   // Aliased accounts publish under their canonical display name, keyed by
-  // EMAIL (Dan, 2026-07-16) — so the board's fold survives Google renames.
+  // UID (2026-08-10; was email, Dan 2026-07-16) — the fold still survives a
+  // Google rename, and no learner downloads another learner's address to
+  // look up their own.
   const name =
-    ALIAS_PUBLISH_NAMES[u.email?.toLowerCase() ?? ""] ||
+    ALIAS_PUBLISH_UIDS[u.uid] ||
     u.displayName ||
     (u.email ? u.email.split("@")[0] : "Anonyme");
   try {

@@ -11,7 +11,7 @@
 import { useEffect, useState } from "react";
 import { signInWithGoogle, useAuthUser } from "@/lib/firebase/auth";
 import { levelForXp } from "@/lib/economy";
-import { ALIAS_BOARD_NAMES, ALIAS_PUBLISH_NAMES, EXCLUDED_BOARD_UIDS } from "@/lib/accountAliases";
+import { ALIAS_BOARD_NAMES, ALIAS_CANON_NAMES, EXCLUDED_BOARD_UIDS } from "@/lib/accountAliases";
 import RankBadge from "@/components/RankBadge";
 
 type BoardRow = {
@@ -24,7 +24,10 @@ type BoardRow = {
   gems?: number;
   streak?: number;
 };
-const rowXp = (r: BoardRow) => r.xp ?? r.totalXP ?? r.gems ?? 0;
+// NOT `?? r.gems` (bug, to 2026-08-10): gems are SPENT in the Boutique, so a
+// learner who bought a colour dropped down a board that claims to rank XP.
+// A purchase cost you position. Absent xp is 0, not leftover currency.
+const rowXp = (r: BoardRow) => r.xp ?? r.totalXP ?? 0;
 const rowName = (r: BoardRow) => r.name ?? r.displayName ?? "Anonyme";
 
 
@@ -76,7 +79,7 @@ export default function LeaderboardList() {
           // Aliased accounts publish under one canonical name (email-anchored
           // in progressSync) — fold any remaining same-name rows for those
           // canonical names into one entry.
-          const canonNames = new Set(Object.values(ALIAS_PUBLISH_NAMES));
+          const canonNames = new Set(ALIAS_CANON_NAMES);
           for (const cn of canonNames) {
             const dupes = list.filter((r) => rowName(r) === cn);
             if (dupes.length < 2) continue;

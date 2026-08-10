@@ -856,9 +856,17 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 
 /* Tappable choice card — a multiple-choice option is a BUTTON, not a static
    tile. Bottom lip + gold hover-lift make that unmistakable. */
+/* Dan, 2026-08-10: "a button that occupies the entire width when a couple of
+   those could be condensed into a smaller space if they had smaller buttons."
+   `display:block; width:100%` here was the single cause, on every page that
+   asks a question. Options now size to their content and sit in a 2-column
+   grid (see lib/optionGrid.ts for the long-answer escape hatch). */
 .cahier-option {
-  display: block;
-  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-height: 3rem;
   border: 2px solid rgba(42, 46, 110, 0.22);
   border-radius: 12px;
   background: #fff;

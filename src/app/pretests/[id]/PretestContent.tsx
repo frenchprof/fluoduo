@@ -10,6 +10,7 @@ import { recordPretestAnswer, stemForItem } from "@/lib/pretestRecord";
 import CahierShell, { type ShellTab } from "@/components/CahierShell";
 import MarkDoneButton from "@/app/sio/[id]/MarkDoneButton";
 import type { Pretest, PretestItem } from "@/lib/pretests/schema";
+import { optionGridClass } from "@/lib/optionGrid";
 
 // The Pretest is a cold pre-lesson diagnostic — its tab rail deliberately does
 // NOT link to Practice activities (pre/post boundary, see PRETEST_BLUEPRINT.md).
@@ -295,7 +296,7 @@ function ItemCard({
         </button>
       </div>
 
-      <div className="mt-5 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+      <div className={`mt-5 ${optionGridClass(choices, "gap-2.5")}`}>
         {choices.map((c, i) => {
           const isPicked = submitted?.picked === c;
           const isAnswer = c === item.answer;
@@ -313,7 +314,7 @@ function ItemCard({
               // (Dan, 2026-07-04) — same pattern as the Unit-0 alphabet quiz.
               onClick={() => (submitted ? speak(c, "fr-FR") : onPick(c))}
               lang="fr"
-              className={`rounded-xl border-2 px-4 py-3 text-left text-base font-bold transition ${cls}`}
+              className={`rounded-xl border-2 px-4 py-3 text-center text-base font-bold transition ${cls}`}
             >
               {/* 1-4 answer by keyboard (useChoiceKeys) — show the keys
                   (Dan, 2026-07-16). Hidden once answered. */}

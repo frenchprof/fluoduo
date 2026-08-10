@@ -301,8 +301,8 @@ export default function MoiContent() {
                 </tr>,
               );
             }
-            const flat = ordered.map((r) => (
-              <tr key={r.ts + r.item + Math.random()} className="border-t border-slate-100">
+            const flat = ordered.map((r, i) => (
+              <tr key={`${r.ts}-${r.item}-${i}`} className="border-t border-slate-100">
                 <td className="px-2 py-1 text-xs text-slate-400">{r.ts ? new Date(r.ts).toLocaleString("en-SG", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "—"}</td>
                 <td className="px-2 py-1 font-bold text-slate-800" lang="fr" title={r.item}>{describeItem(r.item).label}{r.given && <span className="font-normal text-slate-500"> · «{r.given}»</span>}</td>
                 <td className="px-2 py-1 text-center">{r.status === "missed" ? <span className="text-rose-600">✗</span> : <span className="text-emerald-700">✓</span>}</td>

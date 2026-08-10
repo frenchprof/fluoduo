@@ -2,11 +2,28 @@
  * THE global flap row (Dan, 2026-07-05: "there should be a true blue Home
  * page… the guide should appear as one of the top flaps, after Home… then a
  * Unit 0 page… The Index page should also reveal the same accesses"). Every
- * top-level page renders this same row via CahierShell: Home · Guide ·
- * Unité 0–4 · Index.
+ * top-level page renders this same row via CahierShell: Unité 0–4 on top, the
+ * activities below.
+ *
+ * REWRITTEN 2026-08-10. The lower tier used to be a hand-kept list here, and
+ * three other surfaces kept their own — four lists of the same activities, no
+ * two agreeing, with the same activity wearing different emoji on different
+ * screens. It now derives from `src/content/activities.ts`, which is the only
+ * place an activity is written down.
+ *
+ * Two things went away with it:
+ *   · `hint` — twelve subtitles under twelve flaps, eight of which truncated
+ *     ("type the shouted n…", "every activity, one l…"). Dan, 2026-08-10:
+ *     "way too many words". The text survives as `blurb` in the registry, for
+ *     HELP and hover, where there is room for it.
+ *   · alphabetical order — Dan's five families are ordered by what the learner
+ *     is doing, and WITHIN a family by the order you'd actually do them
+ *     (Goals: guess → lesson → dice → cards → produce). Alphabetical would put
+ *     4Mémoire before SpecuLearn, which is backwards pedagogically.
  */
 import type { ShellTab } from "@/components/CahierShell";
 import { UNIT_META } from "@/content/sios";
+import { FAMILIES, navigableActivities } from "@/content/activities";
 
 /** Unit accent hues — match the fluo-h-* section palette. */
 export const UNIT_ACCENTS: Record<number, string> = {
@@ -37,33 +54,42 @@ export function siteTabs(): ShellTab[] {
   }));
 }
 
-/** The LOWER tier (Dan, 2026-07-15): everything that isn't a Unité, as one
- *  thin-flap group — Index, WorDrill, SpecuLearn and the tools, in the rail
- *  AND the ☰ menu. */
+/**
+ * The LOWER tier — every activity with a door of its own, grouped by Dan's
+ * five families and ordered inside each one.
+ *
+ * Index leads because it is the way into all fifty decks and it belongs to no
+ * family. Everything after it comes straight from the registry, so adding an
+ * activity there puts it in the rail, in HELP and in the ☰ menu at once — and
+ * it cannot appear in one of the three and not the others, which is the exact
+ * failure this replaces.
+ *
+ * NOT here: Match It. Dan, 2026-08-10 — KIV. One of fifty decks has pairs, so
+ * the gallery was a single tile and the other forty-nine links were 404s.
+ */
 export function toolTabs(): ShellTab[] {
   return [
-    // Canonical app order (Dan, 2026-07-19): SpecuLearn-PreTest · (Lesson +
-    // Flip-It live on each deck) · ConjugaZone · VocabulaRain · LexicaLater ·
-    // (Composer per deck) · ChaTutor · DéjàRevu. Index leads; WorDrill and
-    // VoixLà trail as the non-canonical extras. Hints = Dan's plain-English
-    // captions (2026-07-20): nine coined names were a recall burden without
-    // them (audit 2026-07-19).
-    { key: "index", label: "Index", emoji: "🗂️", href: "/activities", hue: "#5b8def", hint: "every activity, one list" },
-    { key: "speculearn", label: "SpecuLearn", emoji: "🔮", href: "/practice/speculearn", hue: "#8a5fd4", hint: "learn by guessing" },
-    { key: "conjugaison", label: "ConjugaZone", emoji: "🔤", href: "/conjugaison", hue: "#2bb6c2", hint: "verb ending drill" },
-    // Game galleries (Dan, 2026-07-13) — every VocabulaRain / LexicaLater
-    // link in one place each. Classement removed: the 🏆 top-bar icon is
-    // the door (Dan: "we don't need the flap tab for classement").
-    { key: "ecoutexte", label: "ÉcouTexte", emoji: "🎧", href: "/practice/ecoutexte", hue: "#e0567f", hint: "listen to a mini-text" },
-    { key: "vocabularain", label: "VocabulaRain", emoji: "🌧️", href: "/games/vocabularain", hue: "#5b8def", hint: "catch falling words" },
-    { key: "lexicalator", label: "LexicaLater", emoji: "🧰", href: "/games/lexicalater", hue: "#e3a700", hint: "stitch word parts" },
-    { key: "numbourse", label: "NumBourse", emoji: "📈", href: "/games/numbourse", hue: "#0f8a5f", hint: "type the shouted numbers" },
-    { key: "numbus", label: "NumBus", emoji: "🚌", href: "/games/numbus", hue: "#e0567f", hint: "type the number you hear" },
-    { key: "tutor", label: "ChaTutor", emoji: "🤖", href: "/tutor", hue: "#8a5fd4", hint: "AI tutor chat" },
-    { key: "reviser", label: "DéjàRevu", emoji: "🔁", href: "/reviser", hue: "#7bbf2e", hint: "revise past errors" },
-    { key: "wordrill", label: "WorDrill", emoji: "🎙️", href: "/practice/wordrill", hue: "#7bbf2e", hint: "pronunciation drill" },
-    { key: "tts", label: "VoixLà", emoji: "🔊", href: "/tts", hue: "#e8852e", hint: "text-to-speech tool" },
-    // No Profil entry (Dan, 2026-07-08) — the circled-initial account chip in
-    // the top bar IS the profile door (its window links to /profil).
+    { key: "index", label: "Index", emoji: "🗂️", href: "/activities", hue: "#5b8def" },
+    ...navigableActivities().map((a) => ({
+      key: a.key,
+      label: a.name,
+      emoji: a.emoji,
+      href: a.href as string,
+      hue: a.hue,
+    })),
   ];
+}
+
+/** The same activities, grouped — for HELP, and for the bottom bar that
+ *  replaces the ☰ dropdown on phones. */
+export function familyTabs(): { family: string; emoji: string; href: string; tabs: ShellTab[] }[] {
+  const all = navigableActivities();
+  return FAMILIES.map((f) => ({
+    family: f.name,
+    emoji: f.emoji,
+    href: f.href,
+    tabs: all
+      .filter((a) => a.family === f.key)
+      .map((a) => ({ key: a.key, label: a.name, emoji: a.emoji, href: a.href as string, hue: a.hue })),
+  }));
 }

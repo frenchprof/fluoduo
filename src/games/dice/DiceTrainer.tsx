@@ -14,6 +14,7 @@ import { useState } from "react";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { recordItemResult } from "@/lib/progress";
+import { optionGridClass } from "@/lib/optionGrid";
 
 function StepLabel({ label }: { label: string }) {
   // UN-numbered on purpose: this widget lives inside LessonFlow, whose
@@ -164,7 +165,7 @@ export default function DiceTrainer({ config, activity }: { config: DiceConfig; 
           {!answered && <StepLabel label={step4Labels[diff]} />}
 
           {!answered && diff === 0 && (
-            <div className="mx-auto mt-3 flex max-w-md flex-col gap-2">
+            <div className={`mx-auto mt-3 max-w-md ${optionGridClass(easyOpts)}`}>
               {easyOpts.map((o) => (
                 <button key={o} type="button" lang="fr" onClick={() => { setPicked(o); grade(o, o === q.correct); }}
                   className="cahier-option text-center">

@@ -10,7 +10,10 @@
  * ships to learners.
  */
 
-import { canonicalEmail, EXCLUDED_BOARD_UIDS, HIDDEN_ROSTER_UID_PREFIXES, isHiddenRosterName, KNOWN_EMAILS, ROSTER_NAMES } from "@/lib/accountAliases";
+import { EXCLUDED_BOARD_UIDS, HIDDEN_ROSTER_UID_PREFIXES, isHiddenRosterName } from "@/lib/accountAliases";
+// Teacher-only, and deliberately in its own module so it cannot reach a
+// chunk the learner loads. See src/lib/rosterPrivate.ts.
+import { canonicalEmail, KNOWN_EMAILS, ROSTER_NAMES } from "@/lib/rosterPrivate";
 
 // Mirror of firestore.rules isAdmin() — keep the two lists in sync.
 // Read-only tier (Dan, 2026-07-20): peer reviewers see the whole teacher

@@ -29,23 +29,34 @@ function ExportCsv({ roster }: { roster: Learner[] }) {
   // matching silently dropped learners whose telemetry carries no email
   // (Su Yeon, wenyi, Tracy) — UIDs are authoritative. Every person exports a
   // row ALWAYS: zeros are visible, absence is not.
-  const CLASS: { who: string; email: string; uids: string[] }[] = [
-    { who: "Su Yeon", email: "sjc031103@gmail.com", uids: ["8IcpkURn0ldOXLiApCdhdsqQoxW2", "ZKvLZyfOfLZFYAEUoTzApQMYClf2"] },
-    { who: "Kai Xin Chen", email: "e1523337@u.nus.edu", uids: ["1S70OPFAAVPEsu6vOr8JZdk2U022"] },
-    { who: "wenyi zhang", email: "rr7280523@gmail.com", uids: ["C2sWIzLKdseHKUxgh67yPp3o7Rq1"] },
-    { who: "Jovan Tan", email: "jovantan630@gmail.com", uids: ["k1sTtpYd4ZXCFKYQU4OiBA4dD4l1", "6uyQO9YgBTRLC5Dw1JuU7Fe2cTB3"] },
-    { who: "청용", email: "jungyj456@gmail.com", uids: ["pyjnl9OaQcO8L2BXDWEFsfEB9kq2"] },
-    { who: "hao tiannn", email: "laihaotian0524@gmail.com", uids: ["JgMNsLKm2MNHWQwvNvRJJQRqc523"] },
-    { who: "preethi", email: "preethicannot@gmail.com", uids: ["OwiJwWynkrh0xqHgUWrjEJFqjVF3"] },
-    { who: "JG Yang", email: "1241882085yjg@gmail.com", uids: ["z60kqOZYZONTswgvhEJIZ4zWmLY2"] },
-    { who: "Parker Jack", email: "youth.romanticomedy@gmail.com", uids: ["yzb1vTPlhIbxgqwTy21wVUYRudr1"] },
-    { who: "JUNEKEON SUH", email: "junekeon1234@gmail.com", uids: ["iPWnxPgkzieTfJex4Z2Gtu0mfHR2"] },
-    { who: "Tracy Pang", email: "tracypang0728@gmail.com", uids: ["a529sUZMsYUgKdWn4rJXvPu4A6V2"] },
-    { who: "Muhai", email: "a.muhaimin2001@gmail.com", uids: ["EkOHxvkcbOeb71CnIviR1RaON7L2"] },
-    { who: "Matthew Low", email: "mattlow1504@gmail.com", uids: ["kBwnJxptXQPVbbE22eEdFm0yDqw2"] },
-    { who: "Lela Malati", email: "lels.adventures@gmail.com", uids: ["Sn8AsHunJEbYcyLEedtWYZUODI73"] },
-    { who: "Dorcas Hoon", email: "dorcashoon221@gmail.com", uids: ["zLoCjj7H7ubON34tl2u1N7y8c7b2"] },
-    { who: "Jordan Khong", email: "jordynwinnie@gmail.com", uids: ["kQVWo2UmsoZrFhQvThBWeRS1nN03"] },
+  // UID-keyed roster (Dan's Auth-console reconciliation, 2026-07-25). Email
+  // matching silently dropped learners whose telemetry carries no email
+  // (Su Yeon, wenyi, Tracy) — UIDs are authoritative. Every person exports a
+  // row ALWAYS: zeros are visible, absence is not.
+  //
+  // NAMES AND EMAILS ARE NOT LISTED HERE (2026-08-10). This is a client
+  // component in a statically exported app: everything in it is downloadable
+  // from the CDN without signing in. The uids below are opaque and are what
+  // guarantee a row per person; the label comes from `roster`, which is read
+  // from Firestore behind the rules that check isAdmin(), by the very same
+  // uid lookup this loop already does for Last seen and Days active.
+  const CLASS_UIDS: string[][] = [
+    ["8IcpkURn0ldOXLiApCdhdsqQoxW2", "ZKvLZyfOfLZFYAEUoTzApQMYClf2"],
+    ["1S70OPFAAVPEsu6vOr8JZdk2U022"],
+    ["C2sWIzLKdseHKUxgh67yPp3o7Rq1"],
+    ["k1sTtpYd4ZXCFKYQU4OiBA4dD4l1", "6uyQO9YgBTRLC5Dw1JuU7Fe2cTB3"],
+    ["pyjnl9OaQcO8L2BXDWEFsfEB9kq2"],
+    ["JgMNsLKm2MNHWQwvNvRJJQRqc523"],
+    ["OwiJwWynkrh0xqHgUWrjEJFqjVF3"],
+    ["z60kqOZYZONTswgvhEJIZ4zWmLY2"],
+    ["yzb1vTPlhIbxgqwTy21wVUYRudr1"],
+    ["iPWnxPgkzieTfJex4Z2Gtu0mfHR2"],
+    ["a529sUZMsYUgKdWn4rJXvPu4A6V2"],
+    ["EkOHxvkcbOeb71CnIviR1RaON7L2"],
+    ["kBwnJxptXQPVbbE22eEdFm0yDqw2"],
+    ["Sn8AsHunJEbYcyLEedtWYZUODI73"],
+    ["zLoCjj7H7ubON34tl2u1N7y8c7b2"],
+    ["kQVWo2UmsoZrFhQvThBWeRS1nN03"],
   ];
   const [busy, setBusy] = useState(false);
   const run = async () => {
@@ -53,14 +64,16 @@ function ExportCsv({ roster }: { roster: Learner[] }) {
     try {
       const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
       const lines = ["Name,Email,UID(s),XP,Streak,SIOs done,Answers,Accuracy %,Last seen,Days active"];
-      for (const person of CLASS) {
-        const l = roster.find((r) => r.uids.some((u) => person.uids.includes(u))) ?? null;
-        const d = await fetchStudentDetail(person.uids);
+      for (const uids of CLASS_UIDS) {
+        const l = roster.find((r) => r.uids.some((u) => uids.includes(u))) ?? null;
+        const d = await fetchStudentDetail(uids);
         const answers = d.responses.length;
         const missed = d.responses.filter((r) => str(r.status) === "missed").length;
         const acc = answers > 0 ? Math.round(100 * (1 - missed / answers)) : "";
         lines.push([
-          esc(person.who), esc(person.email), esc(person.uids.join(" + ")),
+          // Falls back to the uid rather than inventing a name: a student with
+          // no roster entry has no telemetry at all, and that is worth seeing.
+          esc(l?.name ?? uids[0]), esc(l?.email ?? ""), esc(uids.join(" + ")),
           d.progress?.xp ?? 0, d.progress?.streak ?? 0, d.progress?.doneSios?.length ?? 0,
           answers, acc, esc(l?.lastSeen ? fmtWhen(l.lastSeen) : ""), l?.daysActive ?? "",
         ].join(","));
@@ -74,7 +87,7 @@ function ExportCsv({ roster }: { roster: Learner[] }) {
     } finally { setBusy(false); }
   };
   return (
-    <Section id="stu:csv" title="⬇️ Export analytics summary (CSV)" meta={`${CLASS.length} students`}>
+    <Section id="stu:csv" title="⬇️ Export analytics summary (CSV)" meta={`${CLASS_UIDS.length} students`}>
       <div className="mt-2 rounded-xl border-2 border-slate-200 bg-white p-3">
         <p className="text-xs text-slate-500">ST2FR26 · 16 students, UID-matched (aliases merged) — one row each, always.</p>
         <button type="button" onClick={() => void run()} disabled={busy}

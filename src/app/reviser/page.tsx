@@ -18,6 +18,7 @@ import { speak } from "@/games/letris/speech";
 import { loadProgress, recordItemResult } from "@/lib/progress";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
 import { dueForReview, gapsByDeck, allReviewItems, type ReviewItem, type Gap } from "@/lib/reviser";
+import { optionGridClass } from "@/lib/optionGrid";
 
 type Card = { item: ReviewItem; options: string[] };
 
@@ -135,7 +136,7 @@ export default function ReviserPage() {
               </div>
               <p className="mt-1 text-[0.7rem] font-bold uppercase tracking-wider text-[color:var(--fluo-ink-soft)]">{card.item.deckTitle}</p>
 
-              <div className="mt-4 grid gap-2">
+              <div className={`mt-4 ${optionGridClass(card.options)}`}>
                 {card.options.map((o) => {
                   const show = picked !== null;
                   const isAnswer = o === card.item.en;
@@ -149,7 +150,7 @@ export default function ReviserPage() {
                         : "border-[color:var(--fluo-line)] bg-transparent text-[color:var(--fluo-ink-soft)] opacity-40";
                   return (
                     <button key={o} type="button" disabled={show} onClick={() => pick(o)}
-                      className={`rounded-xl border-2 px-3 py-2 text-left text-sm font-bold transition ${cls}`}>
+                      className={`rounded-xl border-2 px-3 py-2 text-center text-sm font-bold transition ${cls}`}>
                       {o}
                     </button>
                   );
