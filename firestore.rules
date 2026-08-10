@@ -109,7 +109,7 @@ service cloud.firestore {
       // givenAnswer are optional analytics fields (fluency curves / error
       // taxonomy) — validated when present so they can ship later without a
       // rules redeploy.
-      match /responses/{responseId} {
+     match /responses/{responseId} {
         allow read:   if isOwner(uid) || isAdmin();
         allow create: if isOwner(uid)
           && request.resource.data.keys().hasOnly(
@@ -402,7 +402,7 @@ service cloud.firestore {
         && request.resource.data.visitCount == resource.data.visitCount + 1;
       allow delete: if isAdmin();
     }
-    // Teacher-only configuration. admin/rosterPrivate holds the roster maps
+   // Teacher-only configuration. admin/rosterPrivate holds the roster maps
     // (account aliases, name overrides, uid→email seeds) that used to be
     // compiled into the /teacher page — a public static asset anyone could
     // download. They live here precisely so they are never in the JS the CDN
