@@ -256,7 +256,13 @@ function TestCard({
           const mine = vals[p.key] ?? "";
           if (graded) {
             const ok = judgePart(p, vals[p.key]);
-            const shown = p.type === "article" ? (ART_LABEL[mine] ?? mine) : mine;
+            // An untouched select is NO answer ("—"), not ∅ — ∅ is a real
+            // article the learner must pick on purpose (screenshots caught
+            // ART_LABEL[""] painting "∅" struck-through for empty selects).
+            const shown =
+              p.type === "article"
+                ? vals[p.key] === undefined || mine === "__unset__" ? "" : (ART_LABEL[mine] ?? mine)
+                : mine;
             return (
               <div key={p.key} className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
                 {p.label && <span className="text-xs text-[color:var(--cahier-ink-soft)]">{p.label}</span>}
