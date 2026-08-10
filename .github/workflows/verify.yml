@@ -1,0 +1,47 @@
+# Every patch's check, on every push and every pull request.
+#
+# Dan, 2026-08-10: "Nothing gets reported to me as 'done' without a passing
+# check to back it up, not a description."
+#
+# To make this a REQUIRED check (so nothing merges red), after the first run:
+#
+#   gh api -X POST repos/OWNER/REPO/rulesets -f name='verify' \
+#     -f target=branch -f enforcement=active \
+#     --input .github/ruleset-verify.json
+#
+# or in the browser: Settings -> Rules -> New ruleset -> Require status checks
+# to pass -> add "verify". Add yourself to the bypass list: a broken CI must
+# never be the reason a security fix waits.
+name: verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Types
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build
+
+      # verify18 needs out/ — it walks the chunks each page actually loads.
+      - name: No student PII in a learner-facing bundle
+        run: python3 verify/verify18.py
+
+      - name: Patch 19 — one name per activity, gates, nav, breakpoints
+        run: python3 verify/verify19.py

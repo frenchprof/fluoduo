@@ -4,7 +4,7 @@
  * Shared "Le Cahier" page chrome — the same ring-bound-notebook look as Flip
  * It's CahierFrame (grey desk, ruled paper page, spiral binding down the left
  * gutter, pastel index tabs off the right edge), but the tabs here are LINKS
- * between pages rather than view switches. Below 1100px the tab rail
+ * between pages rather than view switches. Below 900px the tab rail
  * collapses into the ☰ menu in the top bar (same .cahier-tabs / .cahier-menu
  * breakpoint CSS that CahierFrame uses).
  *
@@ -13,6 +13,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+
+/** Below this the flap rail is hidden. Was 1100, which left every iPad and
+ *  every half-width laptop window with NO navigation but the burger.
+ *  Keep in sync with the media query in globals.css. */
+const RAIL_MIN_PX = 900;
 import GuideSplash from "@/components/GuideSplash";
 import type { CSSProperties, MouseEvent as ReactMouseEvent, ReactNode } from "react";
 
@@ -37,6 +42,9 @@ import SearchOverlay from "@/components/SearchOverlay";
 import RankingOverlay from "@/components/RankingOverlay";
 import SoundControl from "@/components/SoundControl";
 import { isPlayableGap } from "@/lib/collections/gapSentence";
+import { activity } from "@/content/activities";
+import { toPracticeSet } from "@/lib/practice/engine";
+import BottomBar from "@/components/BottomBar";
 
 /** Dice Practice is an MCQ over the deck's letris columns — no columns, no game. */
 export function hasDicePractice(collectionId: string): boolean {
@@ -85,7 +93,10 @@ function TabFlap({
     <>
       {tab.emoji && <span aria-hidden>{tab.emoji}</span>}
       <span className={tab.hint ? "cahier-tab-text" : undefined}>
-        <span>{tab.label}</span>
+        {/* ALWAYS classed (2026-08-10): a bare span gave the 640-900
+            icons-only rail nothing to hide once patch 17 removed the
+            hints. Structure the CSS can address, not incidental markup. */}
+        <span className="cahier-tab-label">{tab.label}</span>
         {tab.hint && <span className="cahier-tab-hint">{tab.hint}</span>}
       </span>
     </>
@@ -185,7 +196,7 @@ export default function CahierShell({
   // sheet (the stack on nested pages), persisted site-wide.
   const outerRef = useRef<HTMLElement | null>(null);
   // The saved page-width only applies where the tab rail actually shows (wide
-  // screens ≥1100px). Below that the rail is hidden, so a saved desktop width
+  // screens ≥900px). Below that the rail is hidden, so a saved desktop width
   // would leave the page short of full-width with wasted grey on the right
   // (Dan, 2026-07-05: "it was spanning the full screen width"). On mobile we
   // clear the inline basis so the page fills the screen; re-apply on resize.
@@ -193,7 +204,7 @@ export default function CahierShell({
     const apply = () => {
       const el = outerRef.current;
       if (!el) return;
-      if (window.innerWidth < 1100) { el.style.flexBasis = ""; return; }
+      if (window.innerWidth < RAIL_MIN_PX) { el.style.flexBasis = ""; return; }
       try {
         const w = parseInt(window.localStorage.getItem(PAGE_WIDTH_KEY) ?? "", 10);
         el.style.flexBasis = w ? `${Math.min(w, window.innerWidth - 150)}px` : "";
@@ -213,7 +224,7 @@ export default function CahierShell({
   useEffect(() => {
     const check = () => {
       const el = outerRef.current;
-      setShrunk(!!el && window.innerWidth < 1100 && el.offsetWidth < window.innerWidth - 60);
+      setShrunk(!!el && window.innerWidth < RAIL_MIN_PX && el.offsetWidth < window.innerWidth - 60);
     };
     check();
     const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(check) : null;
@@ -382,6 +393,9 @@ export default function CahierShell({
           </div>
 
           <div className={`py-5 pr-4 sm:pr-7 ${nested ? "pl-5 sm:pl-7" : "pl-12 sm:pl-16"}`}>{children}</div>
+          {/* Phone navigation. Nested shells (SioModal) must not draw a
+              second one on top of the page's own. */}
+          {!nested && <BottomBar />}
         </main>
   );
 
@@ -492,6 +506,23 @@ function trackSupplementOpen(
 /** THE deck activity list — popup flaps and page rails both render exactly
  *  this set (Dan, 2026-07-05: leaving via a flap must show the same flaps).
  *  Conditional tabs appear only where their readiness predicate passes. */
+/**
+ * One name, one emoji, one hue per activity — from `src/content/activities.ts`.
+ *
+ * The deck flaps used to spell things their own way: "Lesson" here and
+ * "xPlain" in the rail, "Flip It" here and "4Mémoire" there, "Compose It" here
+ * and "ComposeIt" there. Same activity, two names, two surfaces. Now a rename
+ * happens in the registry or it does not happen.
+ *
+ * No `hint`. Twelve subtitles, eight of which truncated (Dan, 2026-08-10:
+ * "way too many words"). The text lives on as `blurb` for HELP, where there is
+ * room for it.
+ */
+function registryTab(key: string, href: string): ShellTab {
+  const a = activity(key);
+  return { key, label: a?.name ?? key, emoji: a?.emoji ?? "", href, hue: a?.hue };
+}
+
 export function deckActivityTabs(collectionId: string): ShellTab[] {
   const lessons = lessonsForDeck(collectionId);
   const pretestHref = pretestHrefForDeck(collectionId);
@@ -500,12 +531,12 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
   const curatedDeck = CURATED.find((c) => c.id === collectionId);
   return [
     ...(pretestHref
-      ? [{ key: "pretest", label: "Pre-Test", emoji: "🧪", href: pretestHref, hint: "try it first" } as ShellTab]
+      ? [{ key: "pretest", label: "Pre-Test", emoji: "🧪", href: pretestHref } as ShellTab]
       : []),
     // Guess-first activity (Dan, 2026-07-14: native page, "not a
     // supplement") — photos for aliments, emoji everywhere else.
     ...(isSpecuLearnReady(collectionId)
-      ? [{ key: "speculearn", label: "SpecuLearn", emoji: "🔮", href: `/practice/speculearn/${collectionId}`, hint: "learn by guessing" } as ShellTab]
+      ? [registryTab("speculearn", `/practice/speculearn/${collectionId}`)]
       : []),
     // PRE-lesson supplements (standalone HTML outside the app) — none right
     // now; the plumbing (incl. visit tracking) stays for future material.
@@ -521,39 +552,46 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     // Intermédiaire level on a gapless deck. GramMarathon was NOT absorbed:
     // it kept (and later regained, 2026-07-22) its own flap below, gated to
     // decks with gap-authored items.
-    {
-      key: "lesson",
-      label: "Lesson",
-      emoji: "📚",
-      href: lessons.length > 0 ? `/lessons/${lessons[0].slug}` : `/lessons/deck/${collectionId}`,
-      hint: "rule + drills",
-    },
-    { key: "flip", label: "Flip It", emoji: "🃏", href: `/practice/flip-it/${collectionId}`, hint: "flip, repeat, recall" },
+    registryTab("lesson", lessons.length > 0 ? `/lessons/${lessons[0].slug}` : `/lessons/deck/${collectionId}`),
+    // EtuDice and iComplete, back after the 2026-07-19 unification orphaned
+    // them. Placed here so the row reads as FluOlin Goals' own sequence:
+    // xPlain -> EtuDice -> 4Memoire -> iComplete.
+    //
+    // EtuDice is gated exactly like VocabulaRain and GramMarathon: only the 21
+    // of 44 decks with >=2 letris columns can build a practice set, and on the
+    // rest /practice/dice/[id] renders "No dice practice for this deck yet".
+    // An absent flap beats a dead end -- and a rail slot could not be gated at
+    // all, which is why it is here and not in the rail.
+    ...(curatedDeck && toPracticeSet(curatedDeck)
+      ? [registryTab("dice", `/practice/dice/${collectionId}`)]
+      : []),
+    registryTab("complete", `/practice/complete-it/${collectionId}`),
+    registryTab("flip", `/practice/flip-it/${collectionId}`),
     ...(rainSet
-      ? [{ key: "rain", label: "VocabulaRain", emoji: "🌧️", href: `/games/vocabularain/${collectionId.replace("-letris", "")}`, hint: "catch falling words" } as ShellTab]
+      ? [registryTab("vocabularain", `/games/vocabularain/${collectionId.replace("-letris", "")}`)]
       : []),
     ...(isLexReadyId(collectionId)
-      ? [{ key: "match", label: "LexicaLater", emoji: "🧰", href: `/games/lexicalater/${collectionId}`, hint: "stitch word parts" } as ShellTab]
+      ? [registryTab("lexicalator", `/games/lexicalater/${collectionId}`)]
       : []),
     // Formerly reachable only through the Decks browser, and only for one
     // hardcoded deck id (directions-matching) — hasMatching() was already
     // generic, the restriction wasn't real (Dan, 2026-08-02 Decks→Flip It
     // merge). Every deck with matching pairs authored gets this flap now.
     ...(curatedDeck && hasMatching(curatedDeck)
-      ? [{ key: "matching", label: "Match It", emoji: "🔗", href: `/games/matching/${collectionId}`, hint: "match the pairs" } as ShellTab]
+      ? [{ key: "matching", label: "Match It", emoji: "🔗", href: `/games/matching/${collectionId}` } as ShellTab]
       : []),
     ...(composeBank
-      ? [{ key: "compose", label: "Compose It", emoji: "🧩", href: `/games/compose/${composeBank.id}`, hint: "build dialogues" } as ShellTab]
+      ? [registryTab("compose", `/games/compose/${composeBank.id}`)]
       : []),
     // Resurrected as a NAMED activity (Dan, 2026-07-22) — the per-deck typed
     // sprint, distinct from the Final's authored bank. Only for decks whose
     // items carry gaps, so the marathon is never empty.
     ...(curatedDeck?.items?.some(isPlayableGap)
-      ? [{ key: "grammarathon", label: "GramMarathon", emoji: "🏃", href: `/practice/grammarathon/${collectionId}`, hint: "typed grammar sprint" } as ShellTab]
+      ? [registryTab("grammarathon", `/practice/grammarathon/${collectionId}`)]
       : []),
     // né « Say It » — renamed WorDrill (Dan, 2026-07-19); key stays "say" so
     // SioModal embedding and withActive callers keep working.
-    { key: "say", label: "WorDrill", emoji: "🎙️", href: `/practice/say-it/${collectionId}`, hint: "pronunciation drill" },
+    { ...registryTab("wordrill", `/practice/say-it/${collectionId}`), key: "say" },
   ];
 }
 

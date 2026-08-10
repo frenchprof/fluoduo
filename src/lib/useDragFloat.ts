@@ -26,9 +26,15 @@ export function useDragFloat(key: string, def: { right: number; bottom: number }
   function clamp(p: { right: number; bottom: number }) {
     const w = typeof window === "undefined" ? 9999 : window.innerWidth;
     const h = typeof window === "undefined" ? 9999 : window.innerHeight;
+    // Below sm the bottom bar owns the last 56px + safe area. Without this
+    // floor the feedback bubble and the tour launcher sit on top of the
+    // first and last nav slots (seen 2026-08-10). BOTTOM_BAR_H must stay in
+    // sync with .cahier-bottombar in globals.css.
+    const BOTTOM_BAR_H = 60;
+    const floor = w < 640 ? BOTTOM_BAR_H + 8 : 4;
     return {
       right: Math.min(Math.max(p.right, 4), Math.max(w - 56, 4)),
-      bottom: Math.min(Math.max(p.bottom, 4), Math.max(h - 56, 4)),
+      bottom: Math.min(Math.max(p.bottom, floor), Math.max(h - 56, floor)),
     };
   }
 

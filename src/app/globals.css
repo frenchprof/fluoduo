@@ -767,7 +767,7 @@ body {
 .cahier-tabs {
   position: sticky;
   top: 18px;
-  display: none;            /* hidden below 1100px — a ☰ menu is used instead */
+  display: none;            /* hidden below 900px — icons-only 640-900, bottom bar under */
   flex-direction: column;
   gap: 6px;
   padding-top: 0;           /* first flap starts at the page's very top edge */
@@ -777,8 +777,8 @@ body {
   overflow-y: auto;
   overscroll-behavior: contain;
 }
-.cahier-menu { display: block; }   /* the ☰ wrapper — shown below 1100px */
-@media (min-width: 1100px) {
+.cahier-menu { display: block; }   /* the ☰ wrapper — shown below 900px */
+@media (min-width: 900px) {
   .cahier-tabs { display: flex; }
   .cahier-menu { display: none; }
 }
@@ -1062,4 +1062,75 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 
   --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px; --radius-pill: 999px;
   --shadow-card: 0 1px 2px oklch(24% 0.02 55 / 0.07), 0 6px 16px oklch(24% 0.02 55 / 0.08);
+}
+
+/* ── The phone's navigation, and the tablet band that had none ─────────────
+   Dan, 2026-08-10. Three things:
+
+   · The rail used to appear only at 1100px. Between 640 and 1100 — every iPad,
+     every half-width laptop window — it was display:none and the ONLY way
+     anywhere was the burger. It now returns at 900, and between 640 and 900 it
+     renders icons-only, because a 78px rail is worth more than no rail.
+   · Below 640 the bottom bar takes over: four icons, no words.
+   · Labels appear on press-and-hold, or permanently via Réglages. */
+.cahier-bottombar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  /* above FeedbackButton (z-50) and FirstTour's launcher (z-80): navigation
+     must never lose a fight with a floating bubble. */
+  z-index: 90;
+  display: flex;
+  align-items: stretch;
+  background: var(--cahier-paper-raised, #fff);
+  border-top: 2px solid var(--cahier-line-strong, #ddd);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  box-shadow: 0 -2px 10px rgba(34, 40, 80, 0.07);
+}
+.cahier-bottombar-slot {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  /* 56px + safe area: a thumb target, not a link. */
+  min-height: 56px;
+  text-decoration: none;
+  color: var(--cahier-ink-soft, #666);
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+.cahier-bottombar-slot[data-active="true"] { color: var(--cahier-accent, #2f4fa8); }
+.cahier-bottombar-slot[data-active="true"] .cahier-bottombar-icon {
+  transform: translateY(-1px) scale(1.12);
+}
+.cahier-bottombar-icon { font-size: 1.45rem; line-height: 1; transition: transform 0.12s; }
+.cahier-bottombar-label { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.02em; }
+.cahier-bottombar-tip {
+  position: absolute;
+  bottom: calc(100% - 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  background: var(--cahier-ink, #222);
+  color: var(--cahier-paper, #fff);
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 6px;
+  pointer-events: none;
+}
+/* The bar is fixed, so the last line of every page would sit under it. */
+@media (max-width: 639.98px) {
+  .cahier-page { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
+}
+/* Tablet: the rail returns, icons only. */
+@media (min-width: 640px) and (max-width: 899.98px) {
+  .cahier-tabs { display: flex; }
+  .cahier-tabs .cahier-tab-label,
+  .cahier-tabs .cahier-tab-text,
+  .cahier-tabs .cahier-tab-hint { display: none; }
+  .cahier-tabs .cahier-tab { justify-content: center; padding-left: 0.55rem; padding-right: 0.55rem; }
 }
