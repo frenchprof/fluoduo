@@ -273,6 +273,16 @@ service cloud.firestore {
         && validDeck();
       allow delete: if isSignedIn() && resource.data.owner == request.auth.uid;
     }
+    // Teacher-only configuration. admin/rosterPrivate holds the roster maps
+    // (account aliases, name overrides, uid→email seeds) that used to be
+    // compiled into the /teacher page — a public static asset anyone could
+    // download. They live here precisely so they are never in the JS the CDN
+    // serves. Writer: scripts/seed-roster-private.mjs (service account, which
+    // bypasses rules); the isAdmin() write keeps the door open for an
+    // in-console edit without a redeploy.
+    match /admin/{docId} {
+      allow read, write: if isAdmin();
+    }
     // Explicit default-deny for anything unmatched (self-documenting; Firestore
     // already denies unmatched paths).
     match /{document=**} {
