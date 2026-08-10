@@ -1134,3 +1134,82 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   .cahier-tabs .cahier-tab-hint { display: none; }
   .cahier-tabs .cahier-tab { justify-content: center; padding-left: 0.55rem; padding-right: 0.55rem; }
 }
+
+/* ── The visual pass, 2026-08-10 ───────────────────────────────────────────
+   Patch 13 imported the Cahier design system and left the three core tokens
+   alone on purpose, so no page would shift while the data work was in flight.
+   This is the patch that spends that deferral.
+
+   Everything below is an OVERRIDE of values declared earlier in this file, so
+   it must stay last. Nothing here adds a fourth palette: it collapses the
+   three that exist into one.
+
+   Dan, 2026-08-10: "it still looks visually like the old app, not like the
+   earlier Cahier/typography mockup." It looked like the old app because the
+   old app's colours were still the ones being read. */
+:root {
+  /* 1 · the three patch 13 held back. 777 component sites read these. */
+  --cahier-paper:      oklch(97.5% 0.012 85);   /* warm kraft-tinted paper */
+  --cahier-paper-2:    oklch(95.5% 0.016 85);
+  --cahier-ink:        oklch(28% 0.02 55);      /* warm near-black, not violet */
+  --cahier-ink-soft:   oklch(48% 0.016 60);
+  --cahier-rule:       var(--cahier-line);      /* one ruling colour, not two */
+  --cahier-desk:       oklch(90% 0.014 80);
+
+  /* 2 · --fluo-* stops holding a second opinion. 297 component sites follow.
+     Only the two that are genuinely their own thing keep a value: the
+     chartreuse highlighter (it IS the brand) and the teal secondary. */
+  --fluo-bg:            var(--cahier-paper);
+  --fluo-rule:          var(--cahier-line);
+  --fluo-line:          var(--cahier-line);
+  --fluo-ink:           var(--cahier-ink);
+  --fluo-ink-soft:      var(--cahier-ink-soft);
+  --fluo-card:          var(--cahier-paper-raised);
+  --fluo-primary-ink:   var(--cahier-ink);
+  --fluo-danger:        var(--tier-weak);
+  --fluo-danger-shadow: oklch(46% 0.15 25);
+  --fluo-warn:          var(--tier-medium);
+  --fluo-warn-shadow:   oklch(62% 0.14 78);
+
+  /* 3 · type. The scale existed and nothing read it. */
+  --font-display-size-h1: var(--fs-h1);
+  --font-display-size-h2: var(--fs-h2);
+}
+
+/* Typography (TYPOGRAPHY_AND_VISUAL_REFERENCE.md): the expressive face carries
+   headings, the functional face carries everything you have to read carefully.
+   Sizes come from the scale so a heading cannot be invented per page. */
+.cahier-display { font-size: var(--fs-h3); line-height: 1.15; }
+h1.cahier-display { font-size: var(--fs-h1); }
+h2.cahier-display { font-size: var(--fs-h2); }
+h3.cahier-display { font-size: var(--fs-h3); }
+.cahier-page p,
+.cahier-page li { font-size: var(--fs-body); }
+.cahier-page small,
+.cahier-page .text-xs { font-size: var(--fs-small); }
+
+/* Foolscap. HORIZONTAL RULES ONLY — Dan, 2026-08-10: "the background show up
+   as lines on a foolscap paper (without the vertical line)". Applied as a
+   surface any container can opt into, not a body background, so a drill or a
+   game can switch it off without fighting a global. */
+.cahier-foolscap {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 27px,
+    var(--cahier-line) 27px,
+    var(--cahier-line) 28px
+  );
+  background-position: 0 0;
+}
+.cahier-page { background-color: var(--cahier-paper); }
+
+/* Accuracy tiers, finally doing the job the rotating hue was pretending to do.
+   Deliberately distinct from --cahier-accent so "this is a link" never reads
+   as "this is good". */
+.tier-good   { color: var(--tier-good); }
+.tier-medium { color: oklch(48% 0.14 78); }
+.tier-weak   { color: var(--tier-weak); }
+.tier-good-bg   { background: var(--tier-good-soft); border-color: var(--tier-good); }
+.tier-medium-bg { background: var(--tier-medium-soft); border-color: var(--tier-medium); }
+.tier-weak-bg   { background: var(--tier-weak-soft); border-color: var(--tier-weak); }

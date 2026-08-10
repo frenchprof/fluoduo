@@ -50,3 +50,6 @@ jobs:
 
       - name: Patch 19 — one name per activity, gates, nav, breakpoints
         run: python3 verify/verify19.py
+
+      - name: Patch 19b — visual pass tokens + drift ratchet
+        run: python3 verify/verify19b.py

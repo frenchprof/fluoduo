@@ -19,7 +19,23 @@ import { describeActivity } from "@/lib/labels";
 import { hrefForActivity } from "@/lib/labels";
 import { describeItem } from "@/lib/labels";
 
-const HUES = ["var(--cahier-t0)", "var(--cahier-t1)", "var(--cahier-t2)", "var(--cahier-t3)", "var(--cahier-t4)", "var(--cahier-t5)"] as const;
+/**
+ * Card colour now MEANS something.
+ *
+ * `HUES[i % HUES.length]` gave every card a border colour from its position in
+ * a list — the strongest signal on the card, encoding nothing, six hues cycling
+ * through sixty rows. That is why "Hardest items" read as broken rather than as
+ * information (audit, 2026-08-10).
+ *
+ * Red at 50% missed, amber at 25%, otherwise the calm tier. The same scale the
+ * teacher dashboard uses, so a learner and their teacher read the same red.
+ */
+function tierFor(missPct: number | null | undefined): string {
+  if (missPct == null) return "var(--cahier-line-strong)";
+  if (missPct >= 50) return "var(--tier-weak)";
+  if (missPct >= 25) return "var(--tier-medium)";
+  return "var(--tier-good)";
+}
 
 type Resp = { item: string; status: string; activityId: string; ts: number; given?: string };
 
@@ -194,7 +210,7 @@ export default function MoiContent() {
         {TABS.map((t, i) => (
           <button key={t.key} type="button" onClick={() => setTab(t.key)}
             className={`rounded-full border-2 px-3.5 py-1 text-sm font-black transition ${tab === t.key ? "text-white shadow-[2px_2px_0_rgba(0,0,0,0.2)]" : "bg-white text-slate-700 hover:-translate-y-0.5"}`}
-            style={{ borderColor: HUES[i % HUES.length], background: tab === t.key ? HUES[i % HUES.length] : undefined }}>
+            style={{ borderColor: tab === t.key ? "var(--cahier-accent)" : "var(--cahier-line-strong)", background: tab === t.key ? "var(--cahier-accent)" : undefined }}>
             {t.label}
           </button>
         ))}
@@ -220,7 +236,7 @@ export default function MoiContent() {
                 { e: "🎯", k: "Overall accuracy", v: `${totals.acc}%` },
                 { e: "❌", k: "Total misses", v: totals.missed },
               ].map((c, i) => (
-                <div key={c.k} className="flex-1 rounded-2xl border-2 bg-white p-3 text-center shadow-[2px_2px_0_rgba(0,0,0,0.10)]" style={{ borderColor: HUES[i % HUES.length], minWidth: 110 }}>
+                <div key={c.k} className="flex-1 rounded-2xl border-2 bg-white p-3 text-center shadow-[2px_2px_0_rgba(0,0,0,0.10)]" style={{ borderColor: "var(--cahier-line-strong)", minWidth: 110 }}>
                   <div className="text-xl">{c.e}</div>
                   <div className="text-lg font-black text-slate-900">{c.v}</div>
                   <div className="text-[11px] font-bold text-slate-500">{c.k}</div>
@@ -262,7 +278,7 @@ export default function MoiContent() {
                 {hardest.map(([item, n], i) => {
                   const d = itemDeck(item);
                   return (
-                    <div key={item} className="flex items-center justify-between rounded-xl border-2 bg-white px-3 py-2 text-sm shadow-[2px_2px_0_rgba(0,0,0,0.08)]" style={{ borderColor: HUES[i % HUES.length] }}>
+                    <div key={item} className="flex items-center justify-between rounded-xl border-2 bg-white px-3 py-2 text-sm shadow-[2px_2px_0_rgba(0,0,0,0.08)]" style={{ borderColor: tierFor(hardest[0] ? Math.round((100 * n) / Number(hardest[0][1])) : null) }}>
                       <span className="font-bold text-slate-800" lang="fr" title={item}>{describeItem(item).label}</span>
                       <span className="ml-2 shrink-0 text-xs">
                         <b className="text-rose-600">✗ {n}</b>
@@ -399,7 +415,7 @@ export default function MoiContent() {
               { e: "🎖️", k: "Badges", v: p.badges.length },
               { e: "🧠", k: "Words tracked", v: Object.keys(p.itemSrs).length },
             ].map((c, i) => (
-              <div key={c.k} className="rounded-2xl border-2 bg-white p-3 text-center shadow-[2px_2px_0_rgba(0,0,0,0.10)]" style={{ borderColor: HUES[i % HUES.length] }}>
+              <div key={c.k} className="rounded-2xl border-2 bg-white p-3 text-center shadow-[2px_2px_0_rgba(0,0,0,0.10)]" style={{ borderColor: "var(--cahier-line-strong)" }}>
                 <div className="text-2xl">{c.e}</div>
                 <div className="text-xl font-black text-slate-900">{c.v}</div>
                 <div className="text-xs font-bold text-slate-500">{c.k}</div>
