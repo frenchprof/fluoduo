@@ -120,6 +120,14 @@ for name, p in CONTENTS.items():
               f"{name} carries no page-shell of its own",
               f"{p} still wraps itself in CahierShell")
 
+# iComplete gains the help ladder it never had (its row's second half): the
+# same buildLadder/shownRungs pair GramMarathon uses, hints recorded as
+# evidence (hintsTaken) like everywhere else.
+icomplete = strip_comments(read(CONTENTS["iComplete"]))
+check("buildLadder" in icomplete and "shownRungs" in icomplete and "hintsTaken" in icomplete,
+      "iComplete has the help ladder, and hints are recorded as evidence",
+      "iComplete still has no help ladder (buildLadder/shownRungs/hintsTaken)")
+
 # ── 4 · SioModal lost its compensation chrome ──────────────────────────────
 sio = strip_comments(read("src/app/SioModal.tsx"))
 for banned, why in (

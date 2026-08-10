@@ -12,7 +12,7 @@
  * embeddable directly (SioModal's "complete" key), just not linked anywhere.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import DrillShell, { drillExitHref } from "@/components/DrillShell";
 import { CURATED } from "@/content/collections";
 import { bareWord, practiceItems } from "@/lib/collections/display";
@@ -20,6 +20,8 @@ import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { recordItemResult } from "@/lib/progress";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
+import { buildLadder, shownRungs } from "@/lib/help/ladder";
+import { SIOS } from "@/content/sios";
 import type { Collection, Item } from "@/lib/collections/schema";
 
 function normalize(s: string) {
@@ -74,6 +76,14 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
   const [value, setValue] = useState("");
   const [result, setResult] = useState<Grade | null>(null);
   const [score, setScore] = useState({ ok: 0, total: 0 });
+  // Help ladder (PRD §8) — iComplete never had one: a learner stuck on a
+  // spelling got a bare "wrong" while GramMarathon offered escalating clues
+  // for the same kind of typed answer (patch 20–21 row).
+  const [clue, setClue] = useState(0);
+  const sioTopic = useMemo(
+    () => SIOS.find((s) => s.collectionId === collectionId)?.topic,
+    [collectionId],
+  );
   const inputRef = useRef<HTMLInputElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
 
@@ -124,16 +134,47 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
     const g = grade(value, answer);
     setResult(g);
     setScore((s) => ({ ok: s.ok + (g !== "wrong" ? 1 : 0), total: s.total + 1 }));
-    recordItemResult(item.id, g !== "wrong", undefined, `complete-it:${collectionId}`);
+    recordItemResult(item.id, g !== "wrong", undefined, `complete-it:${collectionId}`, {
+      hintsTaken: clue,
+    });
     if (g !== "wrong") sfx.correct(); else sfx.wrong();
     if (g !== "wrong") speak(answer, "fr-FR");
   }
   function next() {
+    setClue(0);
     if (i + 1 >= total) sfx.stage(); // run complete — the done card is about to show
     setResult(null);
     setValue("");
     setI((n) => n + 1);
   }
+
+  function ladderForItem() {
+    return buildLadder({ answer, topic: sioTopic });
+  }
+  function takeHint() {
+    if (!item) return;
+    const rungs = ladderForItem();
+    const n = Math.min(rungs.length, clue + 1);
+    setClue(n);
+    const rung = rungs[n - 1]?.level ?? "nudge";
+    void import("@/lib/firebase/usage")
+      .then((m) =>
+        m.logEvent(rung === "answer" ? "answer.reveal" : "hint.tap", {
+          surface: "complete-it",
+          itemId: item.id,
+          deck: collectionId,
+          rung,
+          level: n,
+        }),
+      )
+      .catch(() => {});
+  }
+  const hintLabel =
+    clue === 0
+      ? "💡 un indice"
+      : clue >= ladderForItem().length - 1
+        ? "✅ voir la réponse"
+        : "💡 encore un indice";
 
   function restart() {
     const entries: QEntry[] = [];
@@ -163,6 +204,16 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
     )
   ) : null;
 
+  const rungsShown = clue > 0 && item ? (
+    <div className="mt-3 space-y-1">
+      {shownRungs(ladderForItem(), clue).map((r, k) => (
+        <p key={k} lang="fr" className="rounded-lg bg-amber-50 px-2 py-1 text-sm text-amber-900">
+          {r.text}
+        </p>
+      ))}
+    </div>
+  ) : null;
+
   const answerInput = (
     <input
       ref={inputRef}
@@ -189,10 +240,22 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
         ) : item ? (
           <div className="rounded-2xl border-2 bg-[var(--fluo-card)] p-4" style={{ borderColor: "var(--fluo-line)" }}>
             {prompt}
+            {rungsShown}
             <form onSubmit={(e) => { e.preventDefault(); result === null ? check() : next(); }} className="mt-4">
               {answerInput}
               {result === null ? (
-                <button type="submit" className="fluo-btn mt-3 w-full">Check</button>
+                <>
+                  <button type="submit" className="fluo-btn mt-3 w-full">Check</button>
+                  {clue < ladderForItem().length && (
+                    <button
+                      type="button"
+                      onClick={takeHint}
+                      className="mt-2 w-full rounded-full border-2 border-amber-300 bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-800"
+                    >
+                      {hintLabel}
+                    </button>
+                  )}
+                </>
               ) : (
                 <>
                   <div className={`mt-3 flex items-center gap-2 rounded-xl border-2 px-3 py-2 text-sm font-bold ${isRight ? "border-emerald-300 bg-emerald-50 text-emerald-700" : "border-rose-300 bg-rose-50 text-rose-700"}`}>
@@ -227,6 +290,11 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
             ? { label: "Check", onClick: check, disabled: !value.trim() }
             : null
       }
+      secondary={
+        !done && result === null && item && clue < ladderForItem().length
+          ? { label: hintLabel, onClick: takeHint }
+          : null
+      }
       feedback={
         result === null
           ? null
@@ -255,6 +323,7 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
       ) : item ? (
         <div>
           {prompt}
+          {rungsShown}
           <div className="mt-5">{answerInput}</div>
         </div>
       ) : null}
