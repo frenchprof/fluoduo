@@ -31,6 +31,7 @@ import { lessonsForSio } from "@/content/lessons";
 import { deckActivityTabs } from "@/components/CahierShell";
 import AuthGate from "@/components/AuthGate";
 import PretestQuiz from "./PretestQuiz";
+import SioObjective from "@/components/SioObjective";
 import DialoguePlayer from "./DialoguePlayer";
 
 export default function SioDetail({
@@ -89,6 +90,7 @@ export default function SioDetail({
       <p className="fluo-serif mb-4 text-base font-bold leading-snug text-[color:var(--fluo-ink)]">
         <span className="fluo-hl">{sioStatement(sio)}</span>
       </p>
+      <SioObjective id={sio.id} />
 
       {dialogue ? (
         <div className="space-y-3">

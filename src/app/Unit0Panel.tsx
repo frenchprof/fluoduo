@@ -29,6 +29,7 @@ import SioModal, { popupActivityTabs } from "./SioModal";
 import { AfterPretest } from "./SioDetail";
 import DialoguePlayer from "./DialoguePlayer";
 import MarkDoneButton from "./sio/[id]/MarkDoneButton";
+import SioObjective from "@/components/SioObjective";
 
 const UNIT0_SIOS = SIOS.filter((s) => s.unit === 0);
 
@@ -104,6 +105,7 @@ export default function Unit0Panel() {
           <p className="fluo-serif mb-4 text-base font-bold leading-snug text-[color:var(--fluo-ink)]">
             <span className="fluo-hl">{sioStatement(openSio)}</span>
           </p>
+          <SioObjective id={openSio.id} />
 
           {openSio.id === "SIO-010" ? (
             <DialoguePlayer lines={getAtelier(openSio.id) ?? []} />
