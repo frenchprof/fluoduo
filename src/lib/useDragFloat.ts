@@ -14,13 +14,14 @@ export function useDragFloat(key: string, def: { right: number; bottom: number }
   const suppressClick = useRef(false);
 
   useEffect(() => {
+    // Clamp the DEFAULT too, not just a saved spot — a fresh device used to
+    // take `def` raw, which put both floats on top of the bottom bar
+    // (patch 19's floor only ever rescued remembered positions).
     try {
       const raw = localStorage.getItem(key);
-      if (raw) {
-        const p = JSON.parse(raw) as { right: number; bottom: number };
-        setPos(clamp(p));
-      }
+      setPos(clamp(raw ? (JSON.parse(raw) as { right: number; bottom: number }) : def));
     } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 
   function clamp(p: { right: number; bottom: number }) {
@@ -75,8 +76,14 @@ export function useDragFloat(key: string, def: { right: number; bottom: number }
     return false;
   };
 
+  // The rendered bottom respects a page-declared floor (DrillShell sets
+  // --float-floor while mounted so the floats clear its footer at every
+  // width). CSS max() keeps this reactive across client-side navigation
+  // with no route coupling; dragging still works — the visual position
+  // simply pins at the floor instead of sliding under the footer.
+  const bottom = `max(${pos.bottom}px, var(--float-floor, 0px))`;
   const style: CSSProperties = side === "left"
-    ? { left: pos.right, bottom: pos.bottom, touchAction: "none" }
-    : { right: pos.right, bottom: pos.bottom, touchAction: "none" };
+    ? { left: pos.right, bottom, touchAction: "none" }
+    : { right: pos.right, bottom, touchAction: "none" };
   return { style, handlers: { onPointerDown, onPointerMove, onPointerUp, onPointerCancel: onPointerUp }, consumeClick };
 }

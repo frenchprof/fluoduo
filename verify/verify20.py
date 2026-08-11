@@ -70,6 +70,21 @@ check("animate-[drill-tray" in shell_code and "absolute inset-x-0 bottom-0" in s
       "the feedback tray overlays; it cannot push the body",
       "the feedback tray is not an absolute overlay — feedback would reflow the body")
 
+# The draggable floats (by design, they stay) must clear the shell's footer:
+# the shell declares a floor while mounted, the floats render above it, and
+# the DEFAULT position is clamped like a saved one (a fresh device used to
+# take the raw default and sit on the bottom bar).
+check('setProperty("--float-floor"' in shell_code and "removeProperty" in shell_code,
+      "the shell declares a float floor while mounted (and removes it after)",
+      "DrillShell does not declare --float-floor — the floats sit on its footer")
+drag_code = strip_comments(read("src/lib/useDragFloat.ts"))
+check("var(--float-floor" in drag_code,
+      "the floats honour a page-declared floor",
+      "useDragFloat ignores --float-floor")
+check("setPos(clamp(raw ?" in drag_code,
+      "the floats' default position is clamped like a saved one",
+      "useDragFloat still takes the raw default — fresh devices overlap the bottom bar")
+
 # ── 2 · the four drill routes render the drill ─────────────────────────────
 ROUTES = {
     "dice": "src/app/practice/dice/[collectionId]/page.tsx",
