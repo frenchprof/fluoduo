@@ -12,12 +12,17 @@ that stop's competence spec.
 **SIO-001 · Introductions** — On completing this stop, the learner will be
 able to introduce themselves and a third person (*Je m'appelle…*, *Il/Elle
 s'appelle…*), ask someone's name with both *tu* (*Comment tu t'appelles ?*)
-and *vous* (*Comment vous vous appelez ?*), address a person with *M./Mme*,
-and conjugate *s'appeler* in all six persons with at least 5/6 correct.
+and *vous* (*Comment vous vous appelez ?*), and conjugate *s'appeler* across
+all 8 subject forms drilled in the deck (*je* → *elles*), with at least 5/6
+correct. (*M./Mme* as forms of address is assessed under SIO-006, where its
+content lives.)
 
-**SIO-002 · Tu / Vous** — Given 12 social situations, the learner will select
-the appropriate pronoun — *tu*, polite singular *vous*, or plural *vous* — in
-at least 10 of the 12, giving a one-phrase reason for each choice.
+**SIO-002 · Tu / Vous** — Given the 12 interlocutors in the deck (*un
+copain*, *le professeur*, *une vendeuse*…), the learner will classify each
+under the appropriate pronoun — *tu*, polite singular *vous*, or plural
+*vous* — in at least 10 of the 12. (The reason for each choice is revealed as
+feedback after the attempt; the learner selects, and is not asked to produce
+a justification.)
 
 **SIO-003 · Alphabet** — The learner will name all 26 letters of the French
 alphabet, sort them into the 7 vowel-sound groups (ah · ay · air · i · ü ·
@@ -34,8 +39,9 @@ least 10 of the 12.
 
 **SIO-006 · Core nouns — people, things, places** — Given the 18 core nouns
 (*un prénom* … *un micro*), the learner will label at least 15 with the
-correct article *un/une* and answer *C'est où ? / C'est qui ? / C'est quoi ?*
-appropriately for a given place, person, or object.
+correct article *un/une*, answer *C'est où ? / C'est qui ? / C'est quoi ?*
+appropriately for a given place, person, or object, and choose *Monsieur
+(M.)* or *Madame (Mme)* as the form of address for a given person.
 
 **SIO-007 · Numbers 0–20** — The learner will read aloud and say any number
 from 0 to 20, explain 17–19 as composites (*dix-sept* = 10 + 7), say 20, and
@@ -93,9 +99,12 @@ from 20 to 69, identify the 6 tens, and build the composites 21–69 — with *e
 un* where required — at 90% accuracy or better.
 
 **SIO-019 · Avoir — age & states** — The learner will conjugate *avoir* with
-at least 7/8 correct, state an age with *J'ai ___ ans*, express the 4 *avoir*
-states (*faim, soif, chaud, froid*), sort 6 states into *être* vs *avoir*
-with at least 5/6 correct, and produce both affirmative and negative forms.
+at least 7/8 correct, state an age with *J'ai ___ ans*, and sort the deck's
+11 states into their two families with at least 5/6 correct: *avoir* + noun
+(*faim, soif, chaud, froid, envie, besoin*) vs *être* + adjective (*fatigué,
+content, malade, triste, calme*), applying singular/plural agreement to the
+*être* adjectives. (Negative forms are not drilled in this stop's content —
+negation is built at SIO-028.)
 
 **SIO-020 · Mini-text: present a country** — With time to prepare, the
 learner will write 3–4 comprehensible sentences presenting a francophone
@@ -181,11 +190,15 @@ question with each of the 7 question words (*Où, Quand, Comment, Pourquoi,
 Qu'est-ce que, Qui, Combien de*), with at least 80% accuracy.
 
 **SIO-036 · Directions + ordinal numbers** — The learner will ask for and
-give directions without using the imperative — with *c'est* + preposition,
-*il faut* + infinitive, and *on* + present (*C'est tout droit. / Il faut
-tourner à gauche. / On prend la première rue à droite.*) — and use the
-ordinals *premier/première* through *dixième* in directional and address
-contexts, correctly for at least 4 prompts at 80% or better.
+give directions without using the imperative, producing the *vous* + present
+pattern the deck drills (*Vous allez tout droit. / Vous tournez à gauche. /
+Vous prenez la première rue à droite. / C'est au bout de la rue.*) and
+understanding the same itinerary steps in the *il faut* + infinitive and
+*on* + present variants met in the reading texts (*il faut prendre la
+deuxième rue à gauche / on va tout droit jusqu'au carrefour*); the learner
+will use the ordinals *première* and *deuxième* — the only ordinals this
+stop's content shows — in street directions, correctly for at least 4
+prompts at 80% or better.
 
 **SIO-037 · pouvoir — what one can do** — The learner will conjugate
 *pouvoir* in its key persons and produce at least 3 statements about what is
@@ -198,9 +211,9 @@ transport, and use the pronoun *y* (*J'y vais en bus. / On y va ?*) in at
 least 3 sentences.
 
 **SIO-039 · Wants and needs** — The learner will express wants and needs
-politely using all 4 frames — *je voudrais, j'aimerais, j'ai besoin de, je
-veux* — each followed by a noun or an infinitive (with *j'ai envie de* as an
-additional pattern met in this stop).
+politely using all 5 frames the deck teaches — *je voudrais, j'aimerais,
+j'ai envie de, j'ai besoin de, je veux* — each followed by a noun or an
+infinitive, as drilled in the deck's two examples per frame.
 
 **SIO-040 · Itinerary steps with connectors** — The learner will explain step
 by step how to get somewhere, describing at least 4 ordered steps linked with
@@ -218,8 +231,11 @@ accuracy.
 **SIO-042 · Partitives + manger/boire** — The learner will distinguish liking
 (*J'aime le pain* — definite) from consuming (*Je mange du pain* — partitive)
 in at least 8 prompts with at least 80% accuracy, rewrite at least 5
-negatives with *de/d'* (*Je ne mange pas de viande*), and conjugate *manger*
-and *boire* in all persons with at least 7/8 correct for each.
+negatives with *de/d'* (*Je ne mange pas de viande*), use quantity
+expressions with *de/d'* (*beaucoup de pain, assez de sel, trop de sucre, un
+peu de lait, un kilo de pommes*) as the deck's quantities category drills,
+and conjugate *manger* and *boire* in all persons with at least 7/8 correct
+for each.
 
 **SIO-043 · Frequency adverbs** — The learner will describe habits using the
 5 frequency adverbs (*toujours, souvent, parfois, rarement, ne… jamais*),
