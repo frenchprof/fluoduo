@@ -5,6 +5,7 @@
  * learners, in one admin-gated place (Dan, 2026-07-13: "a back end for me to
  * see everything there is to see in terms of learner analytics"):
  *   📊 Overview    class KPIs, day-by-day rhythm, top pages, XP top 10
+ *   📄 Reports     four report cards, each a headline number + CSV export
  *   👣 Attendance  day × page → unique visitors with names
  *   🧑‍🎓 Students    roster → per-learner drilldown (progress economy, SRS,
  *                  sessions/time-on-task, item responses, event trail)
@@ -18,7 +19,7 @@
  * learner surfaces — teachers get the URL.
  */
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import CahierShell from "@/components/CahierShell";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 import { useAuthUser, signInWithGoogle } from "@/lib/firebase/auth";
@@ -28,6 +29,7 @@ import {
   fetchAllEvents, fetchLeaderboard, fetchRosterMeta,
 } from "./data";
 import Overview from "./Overview";
+import Reports from "./Reports";
 import Attendance from "./Attendance";
 import Students from "./Students";
 import Activities from "./Activities";
@@ -36,6 +38,7 @@ import FeedbackPanel from "./FeedbackPanel";
 
 const PANELS = [
   { key: "overview", label: "📊 Overview" },
+  { key: "reports", label: "📄 Reports" },
   { key: "attendance", label: "👣 Attendance" },
   { key: "students", label: "🧑‍🎓 Students" },
   { key: "activities", label: "🕹️ Activities" },
@@ -105,6 +108,12 @@ function describe(err: unknown): string {
 
 function Dashboard({ canWrite }: { canWrite: boolean }) {
   const [panel, setPanel] = useState<PanelKey>("overview");
+  // One scrolling row, never a stack (Dan, 2026-08-11: the pills wrapped
+  // into four rows on the phone) — and the active pill stays in view.
+  const rail = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    rail.current?.querySelector('[data-active="true"]')?.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }, [panel]);
   // XP-top-10 names jump straight into that student's modal (Dan, 2026-07-22).
   const [jumpUid, setJumpUid] = useState<string | null>(null);
   const [events, setEvents] = useState<Ev[] | null>(null);
@@ -228,13 +237,14 @@ function Dashboard({ canWrite }: { canWrite: boolean }) {
           </span>
         )}
       </div>
-      <div className="flex flex-wrap gap-2">
+      <div ref={rail} className="flex gap-2 overflow-x-auto pb-1">
         {PANELS.map((p) => (
           <button
             key={p.key}
             type="button"
+            data-active={panel === p.key}
             onClick={() => setPanel(p.key)}
-            className={`rounded-full border-2 px-3 py-1.5 text-sm font-bold transition ${
+            className={`shrink-0 whitespace-nowrap rounded-full border-2 px-3 py-1.5 text-sm font-bold transition ${
               panel === p.key
                 ? "border-slate-900 bg-slate-900 text-white"
                 : "border-slate-300 bg-white text-slate-700 hover:border-slate-500"
@@ -246,6 +256,7 @@ function Dashboard({ canWrite }: { canWrite: boolean }) {
       </div>
       <div className="mt-2">
         {panel === "overview" && <Overview events={shown ?? []} roster={roster} includeTeachers={includeTeachers} onStudent={(uid) => { setJumpUid(uid); setPanel("students"); }} />}
+        {panel === "reports" && <Reports events={shown ?? []} roster={roster} includeTeachers={includeTeachers} />}
         {panel === "attendance" && <Attendance events={shown ?? []} roster={roster} includeTeachers={includeTeachers} />}
         {panel === "students" && <Students events={shown ?? []} roster={roster} initialUid={jumpUid} />}
         {panel === "activities" && <Activities events={shown ?? []} roster={roster} includeTeachers={includeTeachers} />}

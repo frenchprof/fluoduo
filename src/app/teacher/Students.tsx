@@ -21,83 +21,8 @@ import { describeActivity, describePath, hrefForActivity, normalizePath, titleFo
 import { describeItem } from "@/lib/labels";
 import { describeGame } from "@/lib/labels";
 
-/** ⬇️ Analytics summary CSV (Dan, 2026-07-25): one row per student — paste
- *  emails to filter (blank = everyone). Reuses fetchStudentDetail, so aliased
- *  accounts merge into one row exactly as the modal does. */
-function ExportCsv({ roster }: { roster: Learner[] }) {
-  // UID-keyed roster (Dan's Auth-console reconciliation, 2026-07-25). Email
-  // matching silently dropped learners whose telemetry carries no email
-  // (Su Yeon, wenyi, Tracy) — UIDs are authoritative. Every person exports a
-  // row ALWAYS: zeros are visible, absence is not.
-  // UID-keyed roster (Dan's Auth-console reconciliation, 2026-07-25). Email
-  // matching silently dropped learners whose telemetry carries no email
-  // (Su Yeon, wenyi, Tracy) — UIDs are authoritative. Every person exports a
-  // row ALWAYS: zeros are visible, absence is not.
-  //
-  // NAMES AND EMAILS ARE NOT LISTED HERE (2026-08-10). This is a client
-  // component in a statically exported app: everything in it is downloadable
-  // from the CDN without signing in. The uids below are opaque and are what
-  // guarantee a row per person; the label comes from `roster`, which is read
-  // from Firestore behind the rules that check isAdmin(), by the very same
-  // uid lookup this loop already does for Last seen and Days active.
-  const CLASS_UIDS: string[][] = [
-    ["8IcpkURn0ldOXLiApCdhdsqQoxW2", "ZKvLZyfOfLZFYAEUoTzApQMYClf2"],
-    ["1S70OPFAAVPEsu6vOr8JZdk2U022"],
-    ["C2sWIzLKdseHKUxgh67yPp3o7Rq1"],
-    ["k1sTtpYd4ZXCFKYQU4OiBA4dD4l1", "6uyQO9YgBTRLC5Dw1JuU7Fe2cTB3"],
-    ["pyjnl9OaQcO8L2BXDWEFsfEB9kq2"],
-    ["JgMNsLKm2MNHWQwvNvRJJQRqc523"],
-    ["OwiJwWynkrh0xqHgUWrjEJFqjVF3"],
-    ["z60kqOZYZONTswgvhEJIZ4zWmLY2"],
-    ["yzb1vTPlhIbxgqwTy21wVUYRudr1"],
-    ["iPWnxPgkzieTfJex4Z2Gtu0mfHR2"],
-    ["a529sUZMsYUgKdWn4rJXvPu4A6V2"],
-    ["EkOHxvkcbOeb71CnIviR1RaON7L2"],
-    ["kBwnJxptXQPVbbE22eEdFm0yDqw2"],
-    ["Sn8AsHunJEbYcyLEedtWYZUODI73"],
-    ["zLoCjj7H7ubON34tl2u1N7y8c7b2"],
-    ["kQVWo2UmsoZrFhQvThBWeRS1nN03"],
-  ];
-  const [busy, setBusy] = useState(false);
-  const run = async () => {
-    setBusy(true);
-    try {
-      const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
-      const lines = ["Name,Email,UID(s),XP,Streak,SIOs done,Answers,Accuracy %,Last seen,Days active"];
-      for (const uids of CLASS_UIDS) {
-        const l = roster.find((r) => r.uids.some((u) => uids.includes(u))) ?? null;
-        const d = await fetchStudentDetail(uids);
-        const answers = d.responses.length;
-        const missed = d.responses.filter((r) => str(r.status) === "missed").length;
-        const acc = answers > 0 ? Math.round(100 * (1 - missed / answers)) : "";
-        lines.push([
-          // Falls back to the uid rather than inventing a name: a student with
-          // no roster entry has no telemetry at all, and that is worth seeing.
-          esc(l?.name ?? uids[0]), esc(l?.email ?? ""), esc(uids.join(" + ")),
-          d.progress?.xp ?? 0, d.progress?.streak ?? 0, d.progress?.doneSios?.length ?? 0,
-          answers, acc, esc(l?.lastSeen ? fmtWhen(l.lastSeen) : ""), l?.daysActive ?? "",
-        ].join(","));
-      }
-      const blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = `fluolingo-analytics-${new Date().toISOString().slice(0, 10)}.csv`;
-      a.click();
-      URL.revokeObjectURL(a.href);
-    } finally { setBusy(false); }
-  };
-  return (
-    <Section id="stu:csv" title="⬇️ Export analytics summary (CSV)" meta={`${CLASS_UIDS.length} students`}>
-      <div className="mt-2 rounded-xl border-2 border-slate-200 bg-white p-3">
-        <p className="text-xs text-slate-500">ST2FR26 · 16 students, UID-matched (aliases merged) — one row each, always.</p>
-        <button type="button" onClick={() => void run()} disabled={busy}
-          className="mt-1.5 rounded-full border-2 border-slate-900 bg-yellow-100 px-4 py-1 text-sm font-black text-slate-900 shadow-[2px_2px_0_#1f2440] disabled:opacity-50">
-          {busy ? "Building…" : "⬇️ Download CSV"}
-        </button>
-      </div>
-    </Section>
-  );
-}
+// The analytics-summary CSV moved to the Reports tab (2026-08-11) — card 4,
+// same CLASS_UIDS, same rows. See Reports.tsx.
 
 export default function Students({ events, roster, initialUid }: { events: Ev[]; roster: Learner[]; initialUid?: string | null }) {
   const [sel, setSel] = useState<string | null>(initialUid ?? null);
@@ -105,7 +30,6 @@ export default function Students({ events, roster, initialUid }: { events: Ev[];
   const selected = roster.find((l) => l.uid === sel) ?? null;
   return (
     <SectionGroup>
-      <ExportCsv roster={roster} />
       <Section id="stu:evidence" title="📈 Learning evidence — within-student gains">
         <Evidence roster={roster} />
       </Section>

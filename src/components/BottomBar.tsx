@@ -31,6 +31,34 @@ export default function BottomBar() {
   const [held, setHeld] = useState<string | null>(null);
   const [labels, setLabels] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const nav = useRef<HTMLElement | null>(null);
+
+  // The draggable floats must clear this bar on EVERY page that shows it —
+  // 1502ee2 fixed the same overlap for DrillShell's footer by having the
+  // shell declare a floor, and the bar it turns out needs to be its own
+  // declarer too, or each new page re-discovers the bug (Reports did,
+  // 2026-08-11). Measured, not guessed: offsetHeight already includes the
+  // safe-area padding, and it is 0 while `sm:hidden` hides the bar, which
+  // correctly withdraws the floor on wide screens.
+  useEffect(() => {
+    const el = nav.current;
+    if (!el) return;
+    const root = document.documentElement;
+    const set = () => {
+      const h = el.offsetHeight;
+      if (h > 0) root.style.setProperty("--bottombar-floor", `${h + 8}px`);
+      else root.style.removeProperty("--bottombar-floor");
+    };
+    set();
+    const ro = new ResizeObserver(set);
+    ro.observe(el);
+    window.addEventListener("resize", set);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", set);
+      root.style.removeProperty("--bottombar-floor");
+    };
+  }, []);
 
   // Read after mount: prerender must not depend on localStorage or every page
   // ships one learner's preference baked into the HTML.
@@ -55,7 +83,7 @@ export default function BottomBar() {
   useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
 
   return (
-    <nav className="cahier-bottombar sm:hidden" aria-label="Sections">
+    <nav ref={nav} className="cahier-bottombar sm:hidden" aria-label="Sections">
       {BOTTOM_NAV.map((slot) => {
         const active = pathname === slot.href || pathname.startsWith(slot.href + "/");
         const showLabel = labels || held === slot.key;
