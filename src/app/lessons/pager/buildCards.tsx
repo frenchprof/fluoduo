@@ -41,16 +41,29 @@ export const RAMP: ExerciseKind[] = [
   "translate",
 ];
 
-/** Die face (1-6) → the ramp index you start at. EtuDice's roll: low faces
- *  walk the whole ramp, high faces drop you further up it. */
-export const ROLL_ENTRY: Record<number, number> = { 1: 0, 2: 0, 3: 4, 4: 4, 5: 8, 6: 11 };
+/** EtuDice is a d12 matching the 12-card ramp (Dan, 2026-08-11: "change
+ *  EtuDice to a 12-sided die — each face maps to a specific starting card").
+ *  Face N starts you at card N: a 1 walks the whole ramp, a 12 is the lone
+ *  translation card. */
+export const DIE_SIDES = 12;
 
-export const ROLL_LABEL: Record<number, string> = {
-  0: "the full ramp — warm up on the MCQs",
-  4: "skip the MCQs — start at the gap-fills",
-  8: "straight to sentence building",
-  11: "straight to translation",
+/** Die face (1-12) → the ramp index you start at. */
+export const ROLL_ENTRY: Record<number, number> = Object.fromEntries(
+  Array.from({ length: DIE_SIDES }, (_, k) => [k + 1, k]),
+);
+
+const KIND_LABEL: Record<ExerciseKind, string> = {
+  mcq: "MCQ",
+  gap: "gap-fill",
+  build: "sentence building",
+  translate: "translation",
 };
+
+/** One line naming where the settled die drops you. */
+export function rollLabel(entry: number): string {
+  if (entry === 0) return "card 1 — the full ramp";
+  return `start at card ${entry + 1} of ${RAMP.length} — ${KIND_LABEL[RAMP[entry]]}`;
+}
 
 export type Exercise = {
   kind: ExerciseKind;

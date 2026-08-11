@@ -22,7 +22,7 @@ import { SIOS } from "@/content/sios";
 import { lessonsForDeck } from "@/content/lessons";
 import { getNativeLesson } from "@/content/lessons/native";
 import { memoForDeck } from "@/content/memos";
-import { buildCards, ROLL_ENTRY, ROLL_LABEL, type Exercise } from "./buildCards";
+import { buildCards, DIE_SIDES, ROLL_ENTRY, rollLabel, type Exercise } from "./buildCards";
 import { gradeAnswer, gradeGap, type Grade } from "@/lib/practice/cloze";
 import { loadProgress, markSioDone, recordItemResult } from "@/lib/progress";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
@@ -30,8 +30,6 @@ import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import { optionGridClass } from "@/lib/optionGrid";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
-
-const DIE_FACES = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
 
 type QueuedEx = { ex: Exercise; requeued: boolean };
 
@@ -131,7 +129,7 @@ export default function LessonPager({
     setRolling(true);
     let spins = 0;
     rollTimerRef.current = window.setInterval(() => {
-      const f = 1 + Math.floor(Math.random() * 6);
+      const f = 1 + Math.floor(Math.random() * DIE_SIDES);
       setFace(f);
       if (++spins >= 9) {
         window.clearInterval(rollTimerRef.current!);
@@ -253,11 +251,20 @@ export default function LessonPager({
           <p className="text-xs font-bold uppercase tracking-wider text-[color:var(--cahier-ink)]/60">
             EtuDice — roll for your start
           </p>
-          <span className={`text-8xl leading-none ${rolling ? "animate-bounce" : ""}`} aria-hidden>
-            {face ? DIE_FACES[face - 1] : "🎲"}
-          </span>
+          {/* A d12 has no unicode face — the die is a rotated square (the
+              d12's diamond silhouette) with the face number upright inside. */}
+          {face ? (
+            <span
+              className={`flex h-24 w-24 rotate-45 items-center justify-center rounded-2xl border-4 border-[color:var(--cahier-ink)] bg-white shadow-[4px_4px_0_var(--cahier-hl,#ffe000)] ${rolling ? "animate-bounce" : ""}`}
+              aria-hidden
+            >
+              <span className="-rotate-45 text-5xl font-black leading-none text-[color:var(--cahier-ink)]">{face}</span>
+            </span>
+          ) : (
+            <span className="text-8xl leading-none" aria-hidden>🎲</span>
+          )}
           {rolled && face && (
-            <p className="text-sm font-bold text-[color:var(--cahier-ink)]">{ROLL_LABEL[ROLL_ENTRY[face]]}</p>
+            <p className="mt-2 text-sm font-bold text-[color:var(--cahier-ink)]">{rollLabel(ROLL_ENTRY[face])}</p>
           )}
         </div>
       ) : card === "ex" && ex ? (
