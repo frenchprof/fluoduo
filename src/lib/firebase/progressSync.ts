@@ -19,6 +19,7 @@ import {
 } from "@/lib/progress";
 import { levelForXp } from "@/lib/economy";
 import { ALIAS_PUBLISH_UIDS } from "@/lib/accountAliases";
+import { CURRENT_TERM, LEGACY_TERM } from "@/lib/term";
 
 const DOC_PATH = ["app", "progress"] as const;
 const PUSH_DEBOUNCE_MS = 2500;
@@ -50,6 +51,9 @@ export function mergeProgress(local: Progress, remote: Partial<Progress> | undef
       // equipped: the device the learner is on wins, else whatever remote had.
       equipped: { ...(remote.cosmetics?.equipped ?? {}), ...(local.cosmetics?.equipped ?? {}) },
     },
+    // Cohort marker: once stamped remotely it never changes. startProgressSync
+    // handles the pre-marker cases (remote doc without the field = legacy).
+    term: remote.term ?? local.term,
   };
 }
 
@@ -98,8 +102,10 @@ async function publishLeaderboard(p: Progress): Promise<void> {
     (u.email ? u.email.split("@")[0] : "Anonyme");
   try {
     // Rank by XP now (the lifetime score); keep gems for continuity and publish
-    // the level so the board can show each learner's rank name.
-    await setDoc(ref, { name, xp: p.xp, level: levelForXp(p.xp).level, gems: p.gems, streak: p.streak, updatedAt: Date.now() }, { merge: true });
+    // the level so the board can show each learner's rank name. `term` scopes
+    // the board to the current cohort (term.ts) — the create rule's allowlist
+    // in firestore.rules MUST include it (deployed 2026-08-11).
+    await setDoc(ref, { name, xp: p.xp, level: levelForXp(p.xp).level, gems: p.gems, streak: p.streak, term: p.term ?? CURRENT_TERM, updatedAt: Date.now() }, { merge: true });
   } catch {
     // Write denied → excluded (admin / opt-out). Remove any stale entry.
     try { await deleteDoc(ref); } catch {}
@@ -126,6 +132,11 @@ export async function startProgressSync(): Promise<void> {
     ]);
     const snap = await getDoc(doc(db, "users", uid, ...DOC_PATH));
     let merged = mergeProgress(loadProgress(), snap.exists() ? (snap.data() as Partial<Progress>) : undefined);
+    // Cohort stamp (term.ts). A remote doc WITHOUT the field predates the
+    // 2026-08-11 reset → legacy, whatever a fresh device's default says.
+    if (snap.exists() && !(snap.data() as Partial<Progress>).term) {
+      merged = { ...merged, term: LEGACY_TERM };
+    }
     // One-time carry-over of prior-course XP (Dan, 2026-07-06). The old laf1201
     // suite shares this Firebase project + leaderboard collection; its rows hold
     // a lifetime `totalXP`. Seed it as an XP FLOOR so a returning student keeps
@@ -134,6 +145,9 @@ export async function startProgressSync(): Promise<void> {
       const oldRow = await getDoc(doc(db, "leaderboard", uid));
       const oldXp = Number((oldRow.exists() ? oldRow.data() : {})?.totalXP ?? 0);
       if (Number.isFinite(oldXp) && oldXp > merged.xp) merged = { ...merged, xp: oldXp };
+      // A board row with no progress doc is also a pre-reset account (synced
+      // before progressSync existed) — legacy, not a freshman.
+      if (!snap.exists() && oldRow.exists()) merged = { ...merged, term: LEGACY_TERM };
     } catch {
       /* no old row / read denied — nothing to carry over */
     }

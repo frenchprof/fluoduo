@@ -121,6 +121,10 @@ function Dashboard({ canWrite }: { canWrite: boolean }) {
   // this toggle makes his own actions visible so "is it recording?" is
   // answerable at a glance (Dan, 2026-07-14).
   const [includeTeachers, setIncludeTeachers] = useState(false);
+  // Cohort reset (Dan, 2026-08-11): every panel defaults to the CURRENT
+  // cohort. Prior terms stay in Firestore for the research programme and
+  // reappear behind this toggle — a filter, not a deletion.
+  const [allCohorts, setAllCohorts] = useState(false);
   const [loadedAt, setLoadedAt] = useState<Date | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
 
@@ -165,10 +169,13 @@ function Dashboard({ canWrite }: { canWrite: boolean }) {
   );
   // Hidden accounts (Dan, 2026-07-16) vanish from every panel — roster AND
   // their stray events.
-  const roster = useMemo(() => rosterAll.filter((l) => !l.hidden), [rosterAll]);
+  const roster = useMemo(
+    () => rosterAll.filter((l) => !l.hidden && (allCohorts || l.currentTerm)),
+    [rosterAll, allCohorts],
+  );
   const hiddenUids = useMemo(
-    () => new Set(rosterAll.filter((l) => l.hidden).flatMap((l) => l.uids)),
-    [rosterAll],
+    () => new Set(rosterAll.filter((l) => l.hidden || !(allCohorts || l.currentTerm)).flatMap((l) => l.uids)),
+    [rosterAll, allCohorts],
   );
   const shown = useMemo(
     () => (events ? events.filter((e) => !hiddenUids.has(e.uid)) : null),
@@ -201,6 +208,10 @@ function Dashboard({ canWrite }: { canWrite: boolean }) {
         <label className="flex cursor-pointer items-center gap-1.5 font-bold">
           <input type="checkbox" checked={includeTeachers} onChange={(e) => setIncludeTeachers(e.target.checked)} />
           include teacher accounts
+        </label>
+        <label className="flex cursor-pointer items-center gap-1.5 font-bold">
+          <input type="checkbox" checked={allCohorts} onChange={(e) => setAllCohorts(e.target.checked)} />
+          all cohorts (research)
         </label>
         {events && (
           <span>
