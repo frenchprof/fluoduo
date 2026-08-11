@@ -312,7 +312,7 @@ export default function NumBourse() {
           title={`Valuations up to ${frenchDigits(maxNow)} this level`}
           className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold"
         >
-          Niveau <b style={{ color: "#1cb0f6" }}>{level}</b> <b style={{ color: "#ff9600" }}>≤ {frenchDigits(maxNow)}</b>
+          Level <b style={{ color: "#1cb0f6" }}>{level}</b> <b style={{ color: "#ff9600" }}>≤ {frenchDigits(maxNow)}</b>
         </span>
         <span title={`Trades locked this level — ${QUOTA} closes it`} className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">
           Ordres <b style={{ color: "#ff9600" }}>{doneCount}/{QUOTA}</b>
@@ -330,7 +330,7 @@ export default function NumBourse() {
               music ? "border-[#3f9c17] bg-[#58cc02] text-white" : "border-[#e08600] bg-[#ffc800] text-[#5a3a08]"
             }`}
           >
-            {music ? "🔊 Musique" : "🎵 Musique"}
+            {music ? "🔊 Music" : "🎵 Music"}
           </button>
           <SoundControl />
           <button
@@ -501,7 +501,7 @@ export default function NumBourse() {
 
       {/* Trades locked — the session blotter (same role as « Votre trésor »). */}
       <div className="mt-3 flex min-h-[2.5rem] flex-wrap items-center gap-2">
-        <span className="mr-1 text-[0.7rem] font-black uppercase tracking-wider" style={{ color: "#0f8a5f" }}>📋 Vos ordres :</span>
+        <span className="mr-1 text-[0.7rem] font-black uppercase tracking-wider" style={{ color: "#0f8a5f" }}>📋 Your orders:</span>
         {history.map((h, i) => (
           <span
             key={i}
@@ -522,9 +522,9 @@ export default function NumBourse() {
             {won ? (
               <>
                 <p className="text-3xl" aria-hidden>🔔</p>
-                <p className="text-2xl font-black" style={{ color: "#0f8a5f" }}>Clôture de la séance !</p>
+                <p className="text-2xl font-black" style={{ color: "#0f8a5f" }}>Market closed!</p>
                 <p className="mt-1 text-sm font-semibold" style={{ color: "#075985" }}>
-                  Les huit niveaux — jusqu&rsquo;à {frenchDigits(999999)} € — score <b>{score}</b>.
+                  All eight levels — up to {frenchDigits(999999)} € — score <b>{score}</b>.
                 </p>
                 <button type="button" onClick={reset} className="mt-3 rounded-2xl border-b-4 border-[#1899d6] bg-[#1cb0f6] px-4 py-2 font-black text-white">
                   Play again
@@ -532,15 +532,15 @@ export default function NumBourse() {
               </>
             ) : levelDone ? (
               <>
-                <p className="text-2xl font-black" style={{ color: "#ff9600" }}>Niveau {level} terminé !</p>
+                <p className="text-2xl font-black" style={{ color: "#ff9600" }}>Level {level} complete!</p>
                 <p className="text-sm font-semibold" style={{ color: "#075985" }}>
-                  Score {score} · niveau {level + 1} : jusqu&rsquo;à {frenchDigits(LEVELS[Math.min(level, LEVELS.length - 1)].max)}…
+                  Score {score} · level {level + 1}: up to {frenchDigits(LEVELS[Math.min(level, LEVELS.length - 1)].max)}…
                 </p>
               </>
             ) : (
               <>
                 <p className="text-lg font-black">Appel de marge !</p>
-                <p className="text-sm" style={{ color: "#075985" }}>Niveau {level} · score {score}</p>
+                <p className="text-sm" style={{ color: "#075985" }}>Level {level} · score {score}</p>
                 {/* Post-mortem (the LexicaLater rule): SAY what went wrong —
                     each lost trade with its words and its digits. */}
                 {missedRef.current.length > 0 && (

@@ -710,7 +710,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
     talking,
   };
 
-  const stopLabel = mode === "time" ? "Horaires" : `${config.min}–${config.max}`;
+  const stopLabel = mode === "time" ? "Timetable" : `${config.min}–${config.max}`;
 
   return (
     <div data-kbnav-off className="mx-auto flex w-full max-w-3xl flex-col gap-2 px-3 py-3 sm:gap-3 sm:px-4 sm:py-5">
@@ -730,7 +730,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
             ) : mode === "phone" ? (
               <>📞 Num<span style={{ color: brandHue }}>Bureau</span></>
             ) : mode === "time" ? (
-              <>🕑 Horaires</>
+              <>🕑 Timetable</>
             ) : (
               <>🚌 Num<span style={{ color: brandHue }}>Bus</span></>
             )}
@@ -894,7 +894,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
 
       {stage === "revealed" && !correct && (
         <button type="button" onClick={() => setStage("leaving")} className="rounded-2xl border-b-4 border-[#e08600] bg-[#ffc800] py-2 text-base font-black text-slate-900 transition hover:brightness-105 active:translate-y-[2px] active:border-b-0">
-          {lives > 0 && served < ROUNDS_PER_RUN ? "Suivant ▶" : "Terminus ▶"}
+          {lives > 0 && served < ROUNDS_PER_RUN ? "Next ▶" : "Terminus ▶"}
         </button>
       )}
 
@@ -944,11 +944,11 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
             </p>
             <div className="mt-5 flex flex-col gap-2">
               <button type="button" onClick={restart} className="w-full rounded-2xl border-b-4 border-[#46a302] bg-[#58cc02] py-2 text-base font-black text-white transition hover:brightness-105 active:translate-y-[2px] active:border-b-0">
-                Encore ▶
+                Again ▶
               </button>
               {onQuit && (
                 <button type="button" onClick={onQuit} className="w-full rounded-2xl border-b-4 border-slate-300 bg-white py-2 text-base font-black text-slate-700 transition hover:bg-slate-50 active:translate-y-[2px] active:border-b-0">
-                  ⚙️ Réglages
+                  ⚙️ Settings
                 </button>
               )}
             </div>

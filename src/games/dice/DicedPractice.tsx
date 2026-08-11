@@ -195,7 +195,7 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
       ) : (
         <>
           <div className="text-center">
-            <button type="button" onClick={roll} className="cahier-btn cahier-btn-accent font-black">🎲 Nouvelle question</button>
+            <button type="button" onClick={roll} className="cahier-btn cahier-btn-accent font-black">🎲 New question</button>
           </div>
 
           {q && item && (
@@ -250,7 +250,7 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
                     <span>{gapSplit.after}</span>
                   </p>
                   <p className="mt-1 text-sm italic text-[color:var(--cahier-ink-soft)]">{sentenceEnOf(item)}</p>
-                  <button type="button" disabled={!typed.trim()} onClick={checkGapTyped} className="cahier-btn cahier-btn-primary mt-3 disabled:opacity-40">✅ Je vérifie</button>
+                  <button type="button" disabled={!typed.trim()} onClick={checkGapTyped} className="cahier-btn cahier-btn-primary mt-3 disabled:opacity-40">✅ Check</button>
                 </div>
               )}
 
@@ -260,21 +260,21 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
                     value={typed}
                     onChange={(e) => setTyped(e.target.value)}
                     onKeyDown={(e) => { if (e.key === "Enter") checkFullTyped(); }}
-                    placeholder="Écrivez la phrase complète…"
+                    placeholder="Write the whole sentence…"
                     autoComplete="off" spellCheck={false} lang="fr"
                   />
-                  <button type="button" disabled={!typed.trim()} onClick={checkFullTyped} className="cahier-btn cahier-btn-primary mt-3 disabled:opacity-40">✅ Je vérifie</button>
+                  <button type="button" disabled={!typed.trim()} onClick={checkFullTyped} className="cahier-btn cahier-btn-primary mt-3 disabled:opacity-40">✅ Check</button>
                 </div>
               )}
 
               {answered && (
                 <div className={`rounded-xl border-2 p-3 text-center ${result!.ok ? "border-emerald-600/50 bg-emerald-600/10" : "border-rose-600/50 bg-rose-600/10"}`}>
                   <p className="font-black text-[color:var(--cahier-ink)]">
-                    {result!.ok ? "✔ Correct !" : "✘ Presque…"} <span lang="fr">{gapSentence(item)}</span>
+                    {result!.ok ? "✔ Correct !" : "✘ Almost…"} <span lang="fr">{gapSentence(item)}</span>
                   </p>
                   <div className="mt-2 flex flex-wrap justify-center gap-2">
-                    <button type="button" onClick={() => speak(gapSentence(item), "fr-FR")} className="cahier-btn cahier-btn-sm">🔊 J&rsquo;écoute</button>
-                    <button type="button" onClick={roll} className="cahier-btn cahier-btn-sm cahier-btn-accent">🎲 Nouvelle question</button>
+                    <button type="button" onClick={() => speak(gapSentence(item), "fr-FR")} className="cahier-btn cahier-btn-sm">🔊 Listen</button>
+                    <button type="button" onClick={roll} className="cahier-btn cahier-btn-sm cahier-btn-accent">🎲 New question</button>
                     <button type="button" onClick={() => { if (attempts.length > 0) sfx.stage(); setShowSum(true); }} className="cahier-btn cahier-btn-sm">🏁 Je termine</button>
                   </div>
                 </div>
@@ -284,7 +284,7 @@ export default function DicedPractice({ collectionId }: { collectionId: string; 
         </>
       )}
 
-      {showSum && attempts.length > 0 && <Summary title="Résumé" attempts={attempts} onClose={() => setShowSum(false)} />}
+      {showSum && attempts.length > 0 && <Summary title="Summary" attempts={attempts} onClose={() => setShowSum(false)} />}
     </div>
   );
 }

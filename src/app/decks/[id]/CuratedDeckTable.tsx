@@ -275,7 +275,7 @@ function DeckTable({ collection, items }: { collection: Collection; items: Item[
           tool buttons emoji-only with full titles on hover/long-press. */}
       <div className="mb-4 mt-1 flex flex-wrap items-center gap-2">
         <Link href={`/practice/flip-it/${collection.id}`} className="cahier-btn cahier-btn-sm cahier-btn-primary">
-          🃏 S&apos;entraîner
+          🃏 Practise
         </Link>
         {VIEW_TABS.map((t) => (
           <button

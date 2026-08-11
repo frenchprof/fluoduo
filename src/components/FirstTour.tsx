@@ -45,10 +45,10 @@ function tourFor(rawPath: string): Tour | null {
     return {
       key: "home",
       steps: [
-        { selector: "nav.cahier-tabs, .cahier-menu > button", action: "tap", text: "Tap a flap: the five Unités on top; below, ❓ HELP!, 🗂️ Index and the tools. They follow you everywhere." },
+        { selector: "nav.cahier-tabs, .cahier-menu > button", action: "tap", text: "Tap a flap: the five Units on top; below, ❓ HELP!, 🗂️ Index and the tools. They follow you everywhere." },
         { selector: "main.cahier-page", action: "tap", text: "Tap the sheet — each place is a sheet in the notebook, and deeper sheets stack on top of their parent." },
         { selector: '[title="Drag to widen the page"]', action: "drag", text: "Drag this edge to make the page wider — try it! The popups resize from their ◢ corner too." },
-        { text: "Start on 🏠 Home and tap the goal your class is working on: Pre-Test first, then the cards, then the Lesson. The full manual lives under ❓ Guide. Bonne route !" },
+        { text: "Start on 🏠 Home and tap the goal your class is working on: Pre-Test first, then the cards, then the Lesson. The full manual lives under ❓ Guide. Enjoy the ride!" },
       ],
     };
   }
@@ -57,7 +57,7 @@ function tourFor(rawPath: string): Tour | null {
       key: "unit",
       steps: [
         { selector: "main .grid.grid-cols-5 > button, main button.group", action: "tap", text: "Every circle is a goal. Tap one and its sheet opens: Pre-Test first, then the cards, then the Lesson." },
-        { selector: "nav.cahier-tabs, .cahier-menu > button", action: "tap", text: "The flaps stay with you — switch Unité or head 🏠 Home any time." },
+        { selector: "nav.cahier-tabs, .cahier-menu > button", action: "tap", text: "The flaps stay with you — switch Unit or head 🏠 Home any time." },
         { text: "✓ green = done, the highlighted circle = where your class is. Mistakes are welcome — they become your 📝 Bring to class list." },
       ],
     };
@@ -69,7 +69,7 @@ function tourFor(rawPath: string): Tour | null {
         { selector: 'input[type="search"]', action: "tap", text: "Search any topic here — accents optional (cafe finds café)." },
         { selector: "thead tr", action: "tap", text: "Each column is one activity — same colors as in the ❓ Guide." },
         { selector: "tbody tr", action: "tap", text: "A row is one topic. Every icon is a door — tap any cell to play." },
-        { selector: "section.fluo-h-5", action: "tap", text: "✨ Vos decks: build your own cards with ➕ and they appear here." },
+        { selector: "section.fluo-h-5", action: "tap", text: "✨ Your decks: build your own cards with ➕ and they appear here." },
       ],
     };
   }
@@ -78,7 +78,7 @@ function tourFor(rawPath: string): Tour | null {
       key: "lesson",
       steps: [
         { selector: ".sticky.backdrop-blur", action: "tap", text: "A lesson is one page: Lire → Pratique → Générateur. These chips jump between the parts." },
-        { selector: "#lf-pratique", action: "tap", text: "Pratique climbs four levels: pick it ★, type the word ★★, write the whole sentence ★★★, then translate ⭐." },
+        { selector: "#lf-pratique", action: "tap", text: "Practice climbs four levels: pick it ★, type the word ★★, write the whole sentence ★★★, then translate ⭐." },
         { text: "Finish with the 🎲 Générateur — it rolls endless fresh sentences. Wrong answers cost nothing; they teach." },
       ],
     };
@@ -223,8 +223,8 @@ export default function FirstTour() {
         {...drag.handlers}
         style={drag.style}
         onClick={() => { if (drag.consumeClick()) return; startTour(); }}
-        title="Revoir le petit tour"
-        aria-label="Revoir le petit tour"
+        title="Replay the tour"
+        aria-label="Replay the tour"
         className="fixed z-[80] flex h-10 w-10 items-center justify-center rounded-full border-2 border-[color:var(--cahier-ink)] bg-white text-lg shadow-[3px_3px_0_var(--cahier-hl,#eaff00)] transition hover:-translate-y-0.5 active:translate-y-0"
       >
         ✨
@@ -237,14 +237,14 @@ export default function FirstTour() {
     return createPortal(
       <div className="fixed bottom-4 left-4 z-[80] max-w-[16rem] rounded-2xl border-2 border-[color:var(--cahier-ink)] bg-white p-3 shadow-[4px_4px_0_var(--cahier-hl,#eaff00)]">
         <p className="text-sm font-black text-[color:var(--cahier-ink)]">
-          ✨ Première visite ici ?
+          ✨ First time here?
         </p>
         <div className="mt-2 flex gap-2">
           <button type="button" onClick={startTour} className="cahier-btn cahier-btn-sm cahier-btn-accent font-black">
-            Petit tour !
+            Quick tour!
           </button>
           <button type="button" onClick={finish} className="cahier-btn cahier-btn-sm">
-            Non merci
+            No thanks
           </button>
         </div>
         <button
@@ -252,7 +252,7 @@ export default function FirstTour() {
           onClick={neverAgain}
           className="mt-1.5 text-[0.65rem] font-bold text-[color:var(--cahier-ink-soft)] underline-offset-2 hover:underline"
         >
-          Ne plus jamais proposer
+          Never offer again
         </button>
       </div>,
       document.body,

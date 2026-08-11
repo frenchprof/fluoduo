@@ -100,7 +100,7 @@ export default function ReviserPage() {
       <div className="mx-auto max-w-xl px-4 pb-6 pt-2">
         <h1 className="fluo-serif text-2xl font-black text-[color:var(--fluo-ink)]">🔁 DéjàRevu <span className="text-lg font-bold text-[color:var(--fluo-ink-soft)]">· Review</span></h1>
         <p className="mt-1 mb-5 text-sm text-[color:var(--fluo-ink-soft)]">
-          Words you&rsquo;ve practised that are due again. Answering here reschedules them.{cards.length > PAGE ? ` ${cards.length} dus — par pages de ${PAGE}.` : ""}
+          Words you&rsquo;ve practised that are due again. Answering here reschedules them.{cards.length > PAGE ? ` ${cards.length} due — in pages of ${PAGE}.` : ""}
         </p>
 
         {total === 0 ? (
@@ -119,7 +119,7 @@ export default function ReviserPage() {
                 <button type="button"
                   onClick={() => { setOffset((o) => o + PAGE); setI(0); setScore(0); setPicked(null); }}
                   className="fluo-btn mt-3">
-                  ▶ Les {Math.min(PAGE, remaining)} suivants ({remaining} restants)
+                  ▶ Next {Math.min(PAGE, remaining)} ({remaining} left)
                 </button>
               ) : (
                 <p className="mt-1 text-sm text-[color:var(--fluo-ink-soft)]">Come back tomorrow for the next batch.</p>

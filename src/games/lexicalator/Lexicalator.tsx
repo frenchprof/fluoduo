@@ -580,7 +580,7 @@ export default function Lexicalator({
           <p className="text-xs font-bold" style={{ color: "#075985" }}>{title}{subtitle ? ` — ${subtitle}` : ""}</p>
           {level >= 2 && entries.some((e) => LIVERY_COLOR_WORDS.some((w) => e.fr.toLowerCase().includes(w))) && (
             <p className="mt-0.5 text-[11px] font-black" style={{ color: "#b45309" }}>
-              ⚠️ La couleur des coffres ne correspond pas aux mots !
+              ⚠️ Chest colours don't match the words!
             </p>
           )}
         </div>
@@ -589,9 +589,9 @@ export default function Lexicalator({
             glance (Dan, 2026-07-05: "i cannot tell which are tappable"). */}
         <span title="Points earned" className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">Score <b style={{ color: "#58cc02" }}>{score}</b></span>
         <span title={level <= 1 ? "Whole words — pick the entire word for its meaning" : level >= SPELL_LEVEL ? "Orthographe — the word is cut into 2–4 letter chunks, not syllables" : "Syllables — longer words and a faster belt as levels rise"} className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">
-          Niveau <b style={{ color: "#1cb0f6" }}>{level}</b>{level >= SPELL_LEVEL && <b style={{ color: "#ff9600" }}> · ✍️ épelle !</b>}
+          Level <b style={{ color: "#1cb0f6" }}>{level}</b>{level >= SPELL_LEVEL && <b style={{ color: "#ff9600" }}> · ✍️ spell it!</b>}
         </span>
-        <span title={`Words unlocked this level — ${quota} clears it`} className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">Mots <b style={{ color: "#ff9600" }}>{cleared}/{quota}</b></span>
+        <span title={`Words unlocked this level — ${quota} clears it`} className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">Words <b style={{ color: "#ff9600" }}>{cleared}/{quota}</b></span>
         <span title="Lives — a wrong syllable costs one" className="text-lg" style={{ color: "#ff4b4b" }}>{"♥".repeat(Math.max(0, lives))}<span className="opacity-20">{"♥".repeat(Math.max(0, START_LIVES - lives))}</span></span>
         <span className="flex items-center gap-2 rounded-xl border-2 border-sky-300 bg-sky-100 px-2 py-1">
           <button type="button" onClick={() => { chiptune.toggle("conveyor"); setMusic(chiptune.playing() === "conveyor"); }}
@@ -599,7 +599,7 @@ export default function Lexicalator({
             className={`rounded-lg border-2 border-b-4 px-2 py-0.5 text-xs font-black transition active:translate-y-0.5 active:border-b-2 ${
               music ? "border-[#3f9c17] bg-[#58cc02] text-white" : "border-[#e08600] bg-[#ffc800] text-[#5a3a08]"
             }`}>
-            {music ? "🔊 Musique" : "🎵 Musique"}
+            {music ? "🔊 Music" : "🎵 Music"}
           </button>
           {/* Full sound popover — 🗣 voix / 🎵 musique / 🔔 effets + volume —
               in the game itself, not only the site top bar (Dan, 2026-07-10). */}
@@ -748,7 +748,7 @@ export default function Lexicalator({
       {/* Votre trésor — the words RELEASED from the chests (no boxes here; the
           chests stay up in the waiting/main areas — Dan, 2026-07-03). */}
       <div className="mt-3 flex min-h-[2.5rem] flex-wrap items-center gap-2">
-        <span className="mr-1 text-[0.7rem] font-black uppercase tracking-wider" style={{ color: "#e08600" }}>🧰 Votre trésor :</span>
+        <span className="mr-1 text-[0.7rem] font-black uppercase tracking-wider" style={{ color: "#e08600" }}>🧰 Your treasure:</span>
         {/* Repeats ABSORB into the earlier copy with a ×n count instead of
             stacking (Dan, 2026-07-21) — key by word so the chip persists and
             only its counter updates. */}
@@ -795,20 +795,20 @@ export default function Lexicalator({
               // No OK tap between levels (Dan, 2026-07-08) — the banner shows
               // while the next level deals itself (see the auto-advance effect).
               <>
-                <p className="text-2xl font-black" style={{ color: "#ff9600" }}>Niveau {level} terminé !</p>
-                <p className="text-sm font-semibold" style={{ color: "#075985" }}>Score {score} · niveau {level + 1} arrive…</p>
+                <p className="text-2xl font-black" style={{ color: "#ff9600" }}>Level {level} complete!</p>
+                <p className="text-sm font-semibold" style={{ color: "#075985" }}>Score {score} · level {level + 1} incoming…</p>
               </>
             ) : (
               <>
-                <p className="text-lg font-black">Plus de vies !</p>
-                <p className="text-sm" style={{ color: "#075985" }}>Niveau {level} · score {score}</p>
+                <p className="text-lg font-black">Out of lives!</p>
+                <p className="text-sm" style={{ color: "#075985" }}>Level {level} · score {score}</p>
                 {/* The post-mortem (Dan, 2026-07-21): SAY what went wrong.
                     Lives are only ever lost to decoys, so the answer is
                     always: these fragments belonged to no word. */}
                 {missTokens.current.length > 0 && (
-                  <p lang="fr" className="mt-2 text-sm" style={{ color: "#9a3412" }}>
-                    Vos vies sont parties sur des <b>leurres</b> — des fragments qui n'appartiennent à aucun mot :{" "}
-                    {[...new Set(missTokens.current)].map((t) => `« ${t} »`).join(", ")}. Astuce : chaque touche utile appartient à un coffre visible !
+                  <p className="mt-2 text-sm" style={{ color: "#9a3412" }}>
+                    Your lives went on <b>decoys</b> — fragments that belong to no word:{" "}
+                    {[...new Set(missTokens.current)].map((t) => `« ${t} »`).join(", ")}. Tip: every useful key belongs to a visible chest!
                   </p>
                 )}
                 <button type="button" onClick={reset}

@@ -94,9 +94,9 @@ export const ACTIVITIES: Activity[] = [
   { key: "lexicalator", name: "LexicaLater", emoji: "🧰", family: "svplay", href: "/games/lexicalater", hue: "#e3a700", blurb: "Stitch word parts back together." },
 
   // ── 5 · FluOlin User ──────────────────────────────────────────────────────
-  { key: "moi", name: "Mon progrès", emoji: "📊", family: "user", href: "/moi", hue: "#5b8def", blurb: "What you know, what you don't." },
-  { key: "leaderboard", name: "Classement", emoji: "🏆", family: "user", href: "/leaderboard", hue: "#e3a700", blurb: "Where you sit against the class." },
-  { key: "profil", name: "Profil", emoji: "👤", family: "user", href: "/profil", hue: "#8a5fd4", blurb: "Streak, XP, badges, colours." },
+  { key: "moi", name: "My Progress", emoji: "📊", family: "user", href: "/moi", hue: "#5b8def", blurb: "What you know, what you don't." },
+  { key: "leaderboard", name: "Leaderboard", emoji: "🏆", family: "user", href: "/leaderboard", hue: "#e3a700", blurb: "Where you sit against the class." },
+  { key: "profil", name: "Profile", emoji: "👤", family: "user", href: "/profil", hue: "#8a5fd4", blurb: "Streak, XP, badges, colours." },
 ];
 
 /** Everything in one family, in its authored order. */

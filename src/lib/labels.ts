@@ -137,7 +137,7 @@ const PATH_NAMES: Array<[string, string]> = [
   ["/games/numbus", "NumBus"],
   ["/pretests/picture/", "Picture pretest"],
   ["/pretests/", "Pretest"],
-  ["/lessons/", "Leçon"],
+  ["/lessons/", "Lesson"],
   ["/decks/", "Deck"],
   ["/conjugaison", "ConjugaZone"],
   ["/reviser", "DéjàRevu"],
@@ -152,7 +152,7 @@ const PATH_NAMES: Array<[string, string]> = [
   // matched the gallery route itself) plus these four.
   ["/tts", "VoixLà"],
   ["/guide", "Guide"],
-  ["/about", "À propos"],
+  ["/about", "About"],
   ["/hidden/vocabularain", "VocabulaRain (hi-scores)"],
 ];
 
@@ -206,7 +206,7 @@ export function describeDeck(id: string): PathInfo {
   // sort into the week they belong to rather than piling up at the end.
   if (gone)
     return {
-      label: `${gone.name} (retiré)`,
+      label: `${gone.name} (retired)`,
       retired: true,
       note: gone.story,
       journey: journeyForSio(gone.wasSio),

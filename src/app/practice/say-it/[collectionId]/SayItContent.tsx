@@ -97,10 +97,10 @@ function gradeAnswer(recognized: string, expected: string, expectedAlt?: string)
 
 const GRADE_UI: Record<Grade, { icon: string; label: string; cls: string }> = {
   perfect: { icon: "✅", label: "Parfait !", cls: "text-emerald-700 bg-emerald-50 border-emerald-300" },
-  good: { icon: "✅", label: "Bien ! (accent différent)", cls: "text-emerald-700 bg-emerald-50 border-emerald-300" },
-  homophone: { icon: "✅", label: "Parfait ! (même prononciation)", cls: "text-emerald-700 bg-emerald-50 border-emerald-300" },
+  good: { icon: "✅", label: "Bien ! (accent differs)", cls: "text-emerald-700 bg-emerald-50 border-emerald-300" },
+  homophone: { icon: "✅", label: "Parfait ! (same pronunciation)", cls: "text-emerald-700 bg-emerald-50 border-emerald-300" },
   close: { icon: "🟡", label: "Presque !", cls: "text-amber-700 bg-amber-50 border-amber-300" },
-  miss: { icon: "❌", label: "Pas tout à fait…", cls: "text-rose-700 bg-rose-50 border-rose-300" },
+  miss: { icon: "❌", label: "Not quite…", cls: "text-rose-700 bg-rose-50 border-rose-300" },
 };
 
 export default function SayItContent({
@@ -310,7 +310,7 @@ export default function SayItContent({
         if (c.id) recordItemResult(c.id, false, "(rien entendu)", `say-it:${collectionId}`);
       } else if (e.error === "not-allowed") {
         setPhase("idle");
-        alert("Veuillez autoriser l'accès au microphone dans votre navigateur.");
+        alert("Please allow microphone access in your browser.");
       } else {
         setPhase("idle");
       }
@@ -372,7 +372,7 @@ export default function SayItContent({
             {score.total > 0 && ` (${Math.round((score.ok / score.total) * 100)}%)`}
           </>
         }
-        cta={finished ? { label: "🔁 Recommencer", onClick: restart } : null}
+        cta={finished ? { label: "🔁 Restart", onClick: restart } : null}
         feedback={
           !finished && phase === "result" && result && ui && card
             ? {
@@ -387,7 +387,7 @@ export default function SayItContent({
                         {deck ? frFull(articleOf(deck, card), card.fr) : card.fr}
                       </span>
                     </span>
-                    <button type="button" onClick={listenModel} className="ml-2 align-middle text-base opacity-70 hover:opacity-100" aria-label="Écouter" title="Écouter (R)">🔊</button>
+                    <button type="button" onClick={listenModel} className="ml-2 align-middle text-base opacity-70 hover:opacity-100" aria-label="Listen" title="Listen (R)">🔊</button>
                     <button type="button" onClick={startListening} className="ml-3 rounded-full border-2 border-current px-2 py-0.5 text-xs font-bold" title="Try again">
                       🎤 Try again
                     </button>
@@ -447,13 +447,13 @@ export default function SayItContent({
         {finished && (
           <div className="cahier-sheet rounded-2xl p-8 text-center shadow-md">
             <p className="mb-2 text-4xl">🎉</p>
-            <h1 className="fluo-serif text-2xl font-black text-[color:var(--fluo-ink)]">Terminé ! <span className="text-lg font-bold text-[color:var(--fluo-ink-soft)]">· Done!</span></h1>
+            <h1 className="fluo-serif text-2xl font-black text-[color:var(--fluo-ink)]">Done!</h1>
             <p className="mt-2 text-sm text-[color:var(--fluo-ink-soft)]">
               You said {score.total} {score.total === 1 ? "word" : "words"}
               {score.total > 0 && <> · ✓ {score.ok} ({Math.round((score.ok / score.total) * 100)}%)</>}.
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-2">
-              {embedded && <button type="button" onClick={restart} className="fluo-btn fluo-btn-sm">🔁 Recommencer</button>}
+              {embedded && <button type="button" onClick={restart} className="fluo-btn fluo-btn-sm">🔁 Restart</button>}
               <Link href="/reviser" className="fluo-btn fluo-btn-sm fluo-btn-ghost">🔁 DéjàRevu</Link>
               {embedded && <Link href="/" className="fluo-btn fluo-btn-sm fluo-btn-ghost">← Back to the path</Link>}
             </div>
@@ -491,8 +491,8 @@ export default function SayItContent({
                       type="button"
                       onClick={listenModel}
                       className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-[color:var(--cahier-ink)]/25 bg-white text-xl shadow-md transition-all hover:border-[color:var(--cahier-ink)] active:scale-95"
-                      aria-label="Écouter"
-                      title="Écouter (R)"
+                      aria-label="Listen"
+                      title="Listen (R)"
                     >
                       🔊
                     </button>
@@ -522,8 +522,8 @@ export default function SayItContent({
                           ? "border-[color:var(--cahier-ink)] bg-[color:var(--cahier-hl,#eaff00)]"
                           : "border-[color:var(--cahier-ink)]/25 bg-white hover:border-[color:var(--cahier-ink)]"
                       }`}
-                      aria-label="Voir le mot"
-                      title="Voir (V)"
+                      aria-label="Show the word"
+                      title="Show (V)"
                     >
                       🔤
                     </button>
@@ -555,7 +555,7 @@ export default function SayItContent({
                     <span lang="fr" className={`font-black ${isCorrect ? "text-emerald-700" : "text-rose-700"}`}>
                       {deck ? frFull(articleOf(deck, card), card.fr) : card.fr}
                     </span>
-                    <button type="button" onClick={listenModel} className="ml-2 align-middle text-base" aria-label="Écouter" title="Écouter (R)">
+                    <button type="button" onClick={listenModel} className="ml-2 align-middle text-base" aria-label="Listen" title="Listen (R)">
                       🔊
                     </button>
                   </div>

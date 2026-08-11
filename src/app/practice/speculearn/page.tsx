@@ -79,7 +79,7 @@ export default function SpecuLearnIndexPage() {
                     {shortTitle(d.id, d.title)}
                   </span>
                   <span className="block text-[11px] font-bold" style={{ color: col.accent }}>
-                    U{d.unit ?? 0} · {playableCount(d.id)} mots
+                    U{d.unit ?? 0} · {playableCount(d.id)} words
                   </span>
                 </span>
               </Link>
@@ -91,7 +91,7 @@ export default function SpecuLearnIndexPage() {
             (2026) NUS study Dan supplied (2026-07-15). Deliberately tiny:
             the menu must still end above the fold on a phone. */}
         <section className="mt-4 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-3">
-          <h2 className="text-[13px] font-black text-[color:var(--cahier-ink)]">Pourquoi deviner d&rsquo;abord ? C&rsquo;est prouvé.</h2>
+          <h2 className="text-[13px] font-black text-[color:var(--cahier-ink)]">Why guess first? It&rsquo;s proven.</h2>
           <p className="mt-1 text-[12px] leading-snug text-[color:var(--cahier-ink)]/80">
             In 4 NUS experiments (341 beginners), <b>guessing a word before being taught it — then seeing
             the answer right away — beat passive study</b>, in both directions (Mot → Image and

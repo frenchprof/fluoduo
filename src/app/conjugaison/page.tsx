@@ -154,9 +154,9 @@ export default function ConjugaisonPage() {
       right={<>✓ {score.ok}</>}
       cta={
         screen === "table"
-          ? { label: "↻ Encore", onClick: restart }
+          ? { label: "↻ Again", onClick: restart }
           : drilling && result === null
-            ? { label: "Vérifier", onClick: check, disabled: !value.trim() }
+            ? { label: "Check", onClick: check, disabled: !value.trim() }
             : null
       }
       feedback={
@@ -166,10 +166,10 @@ export default function ConjugaisonPage() {
               body: (
                 <>
                   <span lang="fr" className="font-black">{spoken}</span>
-                  <button type="button" onClick={() => speak(spoken, "fr-FR")} className="ml-2 text-base opacity-70 hover:opacity-100" title="Écouter">🔊</button>
+                  <button type="button" onClick={() => speak(spoken, "fr-FR")} className="ml-2 text-base opacity-70 hover:opacity-100" title="Listen">🔊</button>
                 </>
               ),
-              cta: { label: queue && k + 1 >= queue.length ? "📖 La table" : "Continue", onClick: next },
+              cta: { label: queue && k + 1 >= queue.length ? "📖 The table" : "Continue", onClick: next },
             }
           : null
       }
@@ -192,7 +192,7 @@ export default function ConjugaisonPage() {
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 disabled={result !== null}
-                placeholder="la forme du verbe…"
+                placeholder="the verb form…"
                 className={`cahier-answer hidden w-full sm:block ${result === null ? "" : result ? "!border-emerald-500 !text-emerald-700" : "!border-rose-500 !text-rose-700"}`}
                 autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
               />
@@ -205,9 +205,9 @@ export default function ConjugaisonPage() {
                 type="button"
                 onClick={() => { sfx.stage(); setScreen("table"); }}
                 className="fluo-btn fluo-btn-sm fluo-btn-ghost"
-                title="Arrêter et voir la table"
+                title="Stop and see the table"
               >
-                ⏹ Voir la table
+                ⏹ See the table
               </button>
             </div>
           </div>
@@ -222,7 +222,7 @@ export default function ConjugaisonPage() {
           />
         ) : (
           <p className="py-10 text-center text-sm text-[color:var(--cahier-ink-soft)]">
-            {shown.length === 0 ? "Choisis au moins un verbe." : "…"}
+            {shown.length === 0 ? "Pick at least one verb." : "…"}
           </p>
         )}
       </AuthGate>
@@ -303,17 +303,17 @@ function RewardTable({
             <button key={v.id} type="button" lang="fr"
               onClick={() => setSentences((m) => ({ ...m, [v.id]: drawComplements(v) }))}
               className="cahier-btn cahier-btn-sm">
-              🎲 {v.inf} en phrases
+              🎲 {v.inf} in sentences
             </button>
           ))}
         </div>
         {shown.filter((v) => sentences[v.id]).map((v) => (
           <div key={v.id} className="mt-2 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white p-3">
             <div className="flex items-center justify-between">
-              <span lang="fr" className="text-sm font-bold text-[color:var(--cahier-ink)]">{v.inf} — phrases complètes</span>
+              <span lang="fr" className="text-sm font-bold text-[color:var(--cahier-ink)]">{v.inf} — full sentences</span>
               <span className="flex gap-1.5">
-                <button type="button" title="D'autres phrases" onClick={() => setSentences((m) => ({ ...m, [v.id]: drawComplements(v) }))} className="cahier-btn cahier-btn-sm">🎲</button>
-                <button type="button" title="Fermer" onClick={() => setSentences((m) => ({ ...m, [v.id]: null }))} className="cahier-btn cahier-btn-sm">✕</button>
+                <button type="button" title="Other sentences" onClick={() => setSentences((m) => ({ ...m, [v.id]: drawComplements(v) }))} className="cahier-btn cahier-btn-sm">🎲</button>
+                <button type="button" title="Close" onClick={() => setSentences((m) => ({ ...m, [v.id]: null }))} className="cahier-btn cahier-btn-sm">✕</button>
               </span>
             </div>
             <ul className="mt-1.5 space-y-1">
@@ -322,7 +322,7 @@ function RewardTable({
                 const phrase = `${conjSpoken(i, f)} ${sentences[v.id]![i]}`;
                 return (
                   <li key={i} className="flex items-center gap-2">
-                    <button type="button" title="Écouter" onClick={() => speak(phrase, "fr-FR", { analytic: "sentence" })} className="cahier-btn cahier-btn-sm">🔊</button>
+                    <button type="button" title="Listen" onClick={() => speak(phrase, "fr-FR", { analytic: "sentence" })} className="cahier-btn cahier-btn-sm">🔊</button>
                     <span lang="fr" className="text-[15px] text-[color:var(--cahier-ink)]">{phrase.charAt(0).toUpperCase() + phrase.slice(1)}.</span>
                   </li>
                 );

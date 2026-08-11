@@ -17,9 +17,9 @@ import { chiptune } from "@/games/audio/chiptune";
 const VOL_KEY = "fluolingo:volume";
 
 const CHANNEL_ROWS: { ch: SoundChannel; label: string }[] = [
-  { ch: "voice", label: "🗣 Voix (TTS)" },
-  { ch: "music", label: "🎵 Musique" },
-  { ch: "sfx", label: "🔔 Effets" },
+  { ch: "voice", label: "🗣 Voice (TTS)" },
+  { ch: "music", label: "🎵 Music" },
+  { ch: "sfx", label: "🔔 Effects" },
 ];
 
 export default function SoundControl() {
@@ -53,9 +53,9 @@ export default function SoundControl() {
     <div className="relative">
       <button
         type="button"
-        aria-label="Son et volume"
+        aria-label="Sound and volume"
         aria-expanded={open}
-        title="Son · volume"
+        title="Sound · volume"
         onClick={() => setOpen((o) => !o)}
         className="cahier-btn cahier-btn-sm"
       >

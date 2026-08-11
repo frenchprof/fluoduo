@@ -133,7 +133,7 @@ export default function AboutPage() {
         <p className="mt-6 text-sm font-bold text-[color:var(--cahier-ink)]">
           <Link href="/guide" className="underline">← Back to the Guide</Link>
           {" · "}
-          <Link href="/" className="underline">Commencez ici 🏠</Link>
+          <Link href="/" className="underline">Start here 🏠</Link>
         </p>
       </div>
     </CahierShell>

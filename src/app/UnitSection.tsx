@@ -213,7 +213,7 @@ function SioNode({
     >
       {active && (
         <span className="fluo-mono rounded-full bg-[var(--fluo-danger)] px-2 py-0.5 text-[10px] font-bold text-white">
-          Continuer
+          Continue
         </span>
       )}
       <span

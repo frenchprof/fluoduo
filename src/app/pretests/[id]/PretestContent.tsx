@@ -15,7 +15,7 @@ import { optionGridClass } from "@/lib/optionGrid";
 // The Pretest is a cold pre-lesson diagnostic — its tab rail deliberately does
 // NOT link to Practice activities (pre/post boundary, see PRETEST_BLUEPRINT.md).
 const PRETEST_TABS: ShellTab[] = [
-  { key: "home", label: "Accueil", emoji: "🏠", href: "/" },
+  { key: "home", label: "Home", emoji: "🏠", href: "/" },
   { key: "pretest", label: "Pretest", emoji: "🧪" },
 ];
 

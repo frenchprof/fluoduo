@@ -23,10 +23,10 @@ export default function RewardToast() {
       const detail = (e as CustomEvent).detail as { type: string; level?: number; id?: string };
       let t: Toast | null = null;
       if (detail.type === "level" && detail.level != null) {
-        t = { key: ++seq, icon: "🎚️", title: `Niveau ${detail.level} !`, sub: "Vous montez en grade" };
+        t = { key: ++seq, icon: "🎚️", title: `Level ${detail.level}!`, sub: "You've ranked up" };
       } else if (detail.type === "badge" && detail.id) {
         const b = badgeById(detail.id);
-        if (b) t = { key: ++seq, icon: b.icon, title: "Badge débloqué !", sub: `${b.label} · 💎 +${b.gems}` };
+        if (b) t = { key: ++seq, icon: b.icon, title: "Badge unlocked!", sub: `${b.label} · 💎 +${b.gems}` };
       }
       if (!t) return;
       setToast(t);

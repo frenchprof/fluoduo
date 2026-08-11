@@ -147,17 +147,17 @@ check("DrillShell" in specu and "CahierShell" not in specu,
 check("Choisis ta direction" not in specu and '"start"' not in specu,
       "SpecuLearn's config wizard is gone — the first question is the first screen",
       "SpecuLearn still renders a pre-question config screen")
-check("Devine et dis" in specu and "again(false, \"say-s\")" in specu,
+check("Guess and say" in specu and "again(false, \"say-s\")" in specu,
       "the 🎤 modes survive on the end card",
       "the wizard's 🎤 modes were deleted instead of moved to the end card")
 
 # Select-then-commit (the shell's interaction grammar): in DrillShell an
-# option tap SELECTS and the Vérifier CTA COMMITS, for both MCQ drills.
+# option tap SELECTS and the Check CTA COMMITS, for both MCQ drills.
 dice = strip_comments(read(CONTENTS["EtuDice"]))
-check("setSelected" in dice and '"Vérifier"' in dice,
+check("setSelected" in dice and '"Check"' in dice,
       "EtuDice is select-then-commit in the shell",
       "EtuDice still commits on tap in the shell")
-check("setSelected" in specu and '"Vérifier"' in specu,
+check("setSelected" in specu and '"Check"' in specu,
       "SpecuLearn is select-then-commit in the shell",
       "SpecuLearn still commits on tap in the shell")
 
@@ -192,12 +192,12 @@ check("DrillShell" in flip and "drillExitHref" in flip,
 check("CahierShell" not in flip and "CahierFrame" not in flip,
       "4Mémoire carries no page-shell of its own",
       "FlipItContent still wraps itself in CahierShell/CahierFrame")
-check('"✓ Je le sais"' in flip and '"↺ À revoir"' in flip and '"Retourner"' in flip,
+check('"✓ I know it"' in flip and '"↺ To review"' in flip and '"Flip"' in flip,
       "4Mémoire study mode self-marks in the shell footer",
-      "FlipItContent's study CTAs (Retourner / Je le sais / À revoir) are missing")
-check('"Vérifier"' in flip and '"answer.reveal"' in flip,
-      "4Mémoire test mode commits via Vérifier; reveals are recorded as evidence",
-      "FlipItContent's test mode lacks Vérifier or the answer.reveal event")
+      "FlipItContent's study CTAs (Flip / I know it / To review) are missing")
+check('"Check"' in flip and '"answer.reveal"' in flip,
+      "4Mémoire test mode commits via Check; reveals are recorded as evidence",
+      "FlipItContent's test mode lacks Check or the answer.reveal event")
 check("WordBank" in flip and 'className="sm:hidden"' in flip and "hidden w-full sm:block" in flip,
       "4Mémoire: typing above sm, word-bank tiles below it",
       "FlipItContent: word-bank/input breakpoint pair missing")

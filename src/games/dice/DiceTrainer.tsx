@@ -88,7 +88,7 @@ export function Summary({ title, attempts, onClose }: { title: string; attempts:
             ))}
           </tbody>
         </table>
-        <button type="button" onClick={onClose} className="cahier-btn mt-4 w-full">Fermer</button>
+        <button type="button" onClick={onClose} className="cahier-btn mt-4 w-full">Close</button>
       </div>
     </div>
   );
@@ -151,7 +151,7 @@ export default function DiceTrainer({ config, activity }: { config: DiceConfig; 
 
       <StepLabel label="Roll the dice" />
       <div className="text-center">
-        <button type="button" onClick={roll} className="cahier-btn cahier-btn-accent font-black">🎲 Nouvelle question</button>
+        <button type="button" onClick={roll} className="cahier-btn cahier-btn-accent font-black">🎲 New question</button>
       </div>
 
       {q && (
@@ -194,7 +194,7 @@ export default function DiceTrainer({ config, activity }: { config: DiceConfig; 
                 <span>{q.med.after}</span>
               </p>
               <button type="button" disabled={!medTyped.trim()} onClick={() => grade(`${q.med.before} ${medTyped} ${q.med.after}`.trim(), norm(medTyped) === norm(q.med.correct))}
-                className="cahier-btn cahier-btn-primary mt-3 disabled:opacity-40">✅ Je vérifie</button>
+                className="cahier-btn cahier-btn-primary mt-3 disabled:opacity-40">✅ Check</button>
             </div>
           )}
 
@@ -202,21 +202,21 @@ export default function DiceTrainer({ config, activity }: { config: DiceConfig; 
             <div className="mx-auto mt-3 max-w-md text-center">
               <input value={typed} onChange={(e) => setTyped(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter" && typed.trim()) grade(typed, [q.correct, ...(q.alternates ?? [])].some((a) => norm(typed) === norm(a))); }}
-                placeholder="Écrivez la phrase complète…" autoComplete="off" spellCheck={false} lang="fr" />
+                placeholder="Write the whole sentence…" autoComplete="off" spellCheck={false} lang="fr" />
               <button type="button" disabled={!typed.trim()} onClick={() => grade(typed, [q.correct, ...(q.alternates ?? [])].some((a) => norm(typed) === norm(a)))}
-                className="cahier-btn cahier-btn-primary mt-3 disabled:opacity-40">✅ Je vérifie</button>
+                className="cahier-btn cahier-btn-primary mt-3 disabled:opacity-40">✅ Check</button>
             </div>
           )}
 
           {answered && (
             <div className={`mt-3 rounded-xl border-2 p-3 text-center ${result!.ok ? "border-emerald-600/50 bg-emerald-600/10" : "border-rose-600/50 bg-rose-600/10"}`}>
               <p className="font-black text-[color:var(--cahier-ink)]">
-                {result!.ok ? "✔ Correct !" : "✘ Presque…"}{" "}
+                {result!.ok ? "✔ Correct !" : "✘ Almost…"}{" "}
                 <span lang="fr" className={picked === null ? "" : ""}>{q.correct}</span>
               </p>
               <div className="mt-2 flex flex-wrap justify-center gap-2">
-                <button type="button" onClick={() => speak(q.correct, "fr-FR")} className="cahier-btn cahier-btn-sm">🔊 J&rsquo;écoute</button>
-                <button type="button" onClick={roll} className="cahier-btn cahier-btn-sm cahier-btn-accent">🎲 Nouvelle question</button>
+                <button type="button" onClick={() => speak(q.correct, "fr-FR")} className="cahier-btn cahier-btn-sm">🔊 Listen</button>
+                <button type="button" onClick={roll} className="cahier-btn cahier-btn-sm cahier-btn-accent">🎲 New question</button>
                 <button type="button" onClick={() => { if (attempts.length > 0) sfx.stage(); setShowSum(true); }} className="cahier-btn cahier-btn-sm">🏁 Je termine</button>
               </div>
             </div>
@@ -224,7 +224,7 @@ export default function DiceTrainer({ config, activity }: { config: DiceConfig; 
         </div>
       )}
 
-      {showSum && attempts.length > 0 && <Summary title="Résumé" attempts={attempts} onClose={() => setShowSum(false)} />}
+      {showSum && attempts.length > 0 && <Summary title="Summary" attempts={attempts} onClose={() => setShowSum(false)} />}
     </div>
   );
 }
@@ -255,8 +255,8 @@ export function BonusTrainer({ items, activity }: { items: { en: string; fr: str
     <div className="space-y-3 rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <StepLabel label="Bonus: Translate into French" />
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-sm font-bold text-[color:var(--cahier-ink)]">⭐ Traduisez en français.</p>
-        <button type="button" onClick={roll} className="cahier-btn cahier-btn-sm cahier-btn-accent">🎲 Nouvelle question</button>
+        <p className="text-sm font-bold text-[color:var(--cahier-ink)]">⭐ Translate into French.</p>
+        <button type="button" onClick={roll} className="cahier-btn cahier-btn-sm cahier-btn-accent">🎲 New question</button>
       </div>
       {cur && (
         <div className="mt-3 text-center">
@@ -265,12 +265,12 @@ export function BonusTrainer({ items, activity }: { items: { en: string; fr: str
             <div className="mx-auto mt-2 max-w-md">
               <input value={typed} onChange={(e) => setTyped(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") check(); }}
-                placeholder="Écrivez en français…" autoComplete="off" spellCheck={false} lang="fr" />
-              <button type="button" disabled={!typed.trim()} onClick={check} className="cahier-btn cahier-btn-primary mt-2 disabled:opacity-40">✅ Je vérifie</button>
+                placeholder="Write in French…" autoComplete="off" spellCheck={false} lang="fr" />
+              <button type="button" disabled={!typed.trim()} onClick={check} className="cahier-btn cahier-btn-primary mt-2 disabled:opacity-40">✅ Check</button>
             </div>
           ) : (
             <div className={`mt-2 rounded-xl border-2 p-3 ${result ? "border-emerald-600/50 bg-emerald-600/10" : "border-rose-600/50 bg-rose-600/10"}`}>
-              <p className="font-black text-[color:var(--cahier-ink)]">{result ? "✔ Correct !" : "✘ Presque…"} <span lang="fr">{cur.fr}</span></p>
+              <p className="font-black text-[color:var(--cahier-ink)]">{result ? "✔ Correct !" : "✘ Almost…"} <span lang="fr">{cur.fr}</span></p>
               <div className="mt-2 flex justify-center gap-2">
                 <button type="button" onClick={() => speak(cur.fr, "fr-FR")} className="cahier-btn cahier-btn-sm">🔊</button>
                 <button type="button" onClick={roll} className="cahier-btn cahier-btn-sm cahier-btn-accent">🎲</button>
@@ -280,7 +280,7 @@ export function BonusTrainer({ items, activity }: { items: { en: string; fr: str
           )}
         </div>
       )}
-      {showSum && attempts.length > 0 && <Summary title="Résumé — Bonus" attempts={attempts} onClose={() => setShowSum(false)} />}
+      {showSum && attempts.length > 0 && <Summary title="Summary — Bonus" attempts={attempts} onClose={() => setShowSum(false)} />}
     </div>
   );
 }

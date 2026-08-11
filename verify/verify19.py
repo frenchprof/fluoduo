@@ -98,6 +98,7 @@ check(len(slots) == 0 or "index" in nav, "bottom bar leads with Index",
 slot_labels = re.findall(r'label: "([^"]+)"', nav.split("export const BOTTOM_NAV")[-1])
 for banned, why in (("Accueil", "the FluOlinGo wordmark is the home link"),
                     ("Mon progrès", "the account chip is the profile door"),
+                    ("My Progress", "the account chip is the profile door"),
                     ("Moi", "the account chip is the profile door")):
     check(banned not in slot_labels, f"bottom bar has no {banned} ({why})",
           f"bottom bar still has {banned} — {why}")

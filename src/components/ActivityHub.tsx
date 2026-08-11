@@ -58,7 +58,7 @@ export default function ActivityHub({
   // Group by unit band ("Unité 0" … "Toutes unités"), preserving the sort.
   const groups: Array<{ band: string; items: typeof entries }> = [];
   for (const e of entries) {
-    const band = e.info.journey?.band ?? "Autres";
+    const band = e.info.journey?.band ?? "Other";
     const last = groups[groups.length - 1];
     if (last && last.band === band) last.items.push(e);
     else groups.push({ band, items: [e] });
@@ -72,12 +72,12 @@ export default function ActivityHub({
         </h1>
         <p className="mt-1 text-sm text-[color:var(--cahier-ink-soft)]">{blurb}</p>
         <p className="mt-1 text-xs text-[color:var(--cahier-ink-faint,#8a8a8a)]">
-          {entries.length} {entries.length === 1 ? "leçon" : "leçons"} · dans l&rsquo;ordre du cours
+          {entries.length} {entries.length === 1 ? "lesson" : "lessons"} · in course order
         </p>
 
         {groups.length === 0 && (
           <p className="mt-6 text-sm text-[color:var(--cahier-ink-soft)]">
-            Aucune leçon ne propose cette activité pour l&rsquo;instant.
+            No lesson offers this activity yet.
           </p>
         )}
 

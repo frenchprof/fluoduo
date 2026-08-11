@@ -268,14 +268,14 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
       right={<>{score} pt</>}
       cta={
         screen === "end"
-          ? { label: "↻ Rejouer", onClick: () => again(false) }
+          ? { label: "↻ Play again", onClick: () => again(false) }
           : t && (t.dir === "wi" || t.dir === "iw") && !locked
-            ? { label: "Vérifier", onClick: () => commit(t.it), disabled: !selected }
+            ? { label: "Check", onClick: () => commit(t.it), disabled: !selected }
             : null
       }
       secondary={
         screen === "end" && wrong.length > 0
-          ? { label: `🔁 Refaire mes erreurs (${[...new Set(wrong)].length})`, onClick: () => again(true) }
+          ? { label: `🔁 Redo my mistakes (${[...new Set(wrong)].length})`, onClick: () => again(true) }
           : null
       }
       feedback={
@@ -284,14 +284,14 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
               kind: verdictGood ? "correct" : "wrong",
               body: (
                 <>
-                  {verdictGood ? "Bravo !" : "Pas tout à fait…"}
+                  {verdictGood ? "Bravo !" : "Not quite…"}
                   <button type="button" onClick={() => speak(t.it.w, "fr-FR")} className="ml-2 font-black" style={{ color: t.it.color }}>
                     {t.it.w} 🔊
                   </button>
                   {t.it.tag && <span className="ml-2 text-xs font-medium italic opacity-80">{t.it.tag}</span>}
                 </>
               ),
-              cta: { label: idx + 1 >= queue.length ? "Résultat" : "Continue", onClick: next },
+              cta: { label: idx + 1 >= queue.length ? "Result" : "Continue", onClick: next },
             }
           : null
       }
@@ -308,7 +308,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
               {(t.dir === "say-t" || t.dir === "say-s") ? (
                 <>
                   <p className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">
-                    {t.dir === "say-t" ? "Écoute, puis dis-le à voix haute" : "Qu'est-ce que c'est ? Dis-le en français !"}
+                    {t.dir === "say-t" ? "Listen, then say it out loud" : "What is it? Say it in French!"}
                   </p>
                   <Visual it={t.it} className="mx-auto mt-3 h-40 w-40 rounded-xl border-2 border-[color:var(--cahier-ink)]/20" />
                   {t.dir === "say-t" && (
@@ -318,7 +318,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
                   )}
                   <div className="mt-3 flex items-center justify-center gap-2">
                     {t.dir === "say-t" && (
-                      <button type="button" onClick={() => speak(t.it.w, "fr-FR")} className="fluo-btn fluo-btn-sm">🔊 Réécouter</button>
+                      <button type="button" onClick={() => speak(t.it.w, "fr-FR")} className="fluo-btn fluo-btn-sm">🔊 Listen again</button>
                     )}
                     <button
                       type="button"
@@ -326,7 +326,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
                       className={`fluo-btn fluo-btn-sm ${listening ? "!bg-rose-600 !text-white" : ""}`}
                       disabled={locked}
                     >
-                      {listening ? "⏹ J'écoute…" : "🎤 Je le dis"}
+                      {listening ? "⏹ Listening…" : "🎤 Say it"}
                     </button>
                   </div>
                   {heard && <p className="mt-2 text-sm italic text-[color:var(--cahier-ink-soft)]">« {heard} »</p>}
@@ -396,7 +396,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
 
         {screen === "quiz" && !t && (
           <p className="py-10 text-center text-sm text-[color:var(--cahier-ink-soft)]">
-            {ITEMS.length === 0 ? "Rien à deviner dans ce paquet." : "…"}
+            {ITEMS.length === 0 ? "Nothing to guess in this deck." : "…"}
           </p>
         )}
 
@@ -405,20 +405,20 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
             <p className="text-3xl font-black text-[color:var(--cahier-ink)]">{score} / {queue.length}</p>
             <p className="mt-1 text-sm text-[color:var(--cahier-ink-soft)]">
               {score === queue.length
-                ? "Parfait ! Tu connais tous ces mots."
+                ? "Parfait ! You know all these words."
                 : score >= queue.length * 0.8
-                  ? "Très bien ! Encore quelques mots à consolider."
+                  ? "Très bien ! A few words left to consolidate."
                   : score >= queue.length * 0.5
-                    ? "Bon début — refais tes erreurs pour les retenir."
-                    : "Continue — deviner compte déjà comme apprentissage !"}
+                    ? "Good start — redo your mistakes to lock them in."
+                    : "Keep going — guessing already counts as learning!"}
             </p>
             {/* The 🎤 modes moved here from the deleted wizard: saying the
                 words is a choice for AFTER meeting them, not a gate before
                 the first question. */}
             {sttOk && (
               <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-                <button type="button" onClick={() => again(false, "say-t")} className="fluo-btn fluo-btn-sm">🎤 Répète</button>
-                <button type="button" onClick={() => again(false, "say-s")} className="fluo-btn fluo-btn-sm">🎤 Devine et dis</button>
+                <button type="button" onClick={() => again(false, "say-t")} className="fluo-btn fluo-btn-sm">🎤 Repeat</button>
+                <button type="button" onClick={() => again(false, "say-s")} className="fluo-btn fluo-btn-sm">🎤 Guess and say</button>
               </div>
             )}
           </div>

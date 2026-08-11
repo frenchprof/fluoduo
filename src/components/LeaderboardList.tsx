@@ -30,7 +30,7 @@ type BoardRow = {
 // learner who bought a colour dropped down a board that claims to rank XP.
 // A purchase cost you position. Absent xp is 0, not leftover currency.
 const rowXp = (r: BoardRow) => r.xp ?? r.totalXP ?? 0;
-const rowName = (r: BoardRow) => r.name ?? r.displayName ?? "Anonyme";
+const rowName = (r: BoardRow) => r.name ?? r.displayName ?? "Anonymous";
 
 
 
@@ -123,9 +123,9 @@ export default function LeaderboardList() {
       </div>
     );
   }
-  if (failed) return <p className="text-sm font-bold text-rose-600">Le classement est indisponible pour le moment.</p>;
-  if (rows === null) return <p className="text-sm text-[color:var(--cahier-ink-soft)]">Chargement…</p>;
-  if (rows.length === 0) return <p className="text-sm text-[color:var(--cahier-ink-soft)]">Personne encore — soyez le premier 💎 !</p>;
+  if (failed) return <p className="text-sm font-bold text-rose-600">The leaderboard is unavailable right now.</p>;
+  if (rows === null) return <p className="text-sm text-[color:var(--cahier-ink-soft)]">Loading…</p>;
+  if (rows.length === 0) return <p className="text-sm text-[color:var(--cahier-ink-soft)]">Nobody yet — be the first 💎!</p>;
 
   return (
     <ol className="space-y-1.5">
@@ -140,7 +140,7 @@ export default function LeaderboardList() {
           >
             <span className="w-7 shrink-0 text-center text-base font-black">{medal(i)}</span>
             <span className="min-w-0 flex-1 truncate text-sm font-bold text-[color:var(--cahier-ink)]">
-              {rowName(r)}{me && " (vous)"}
+              {rowName(r)}{me && " (you)"}
             </span>
             {/* Digit-only rank in its tier colours (Dan, 2026-07-08: names
                 were invisible on mobile) — full name in the tooltip; a fixed

@@ -354,14 +354,14 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
         /* aiOnly scene with no backend (local preview / key not set): degrade
            gracefully rather than accept nonsense. */
         <div className="rounded-xl border-2 border-[color:var(--dlg-edge)] bg-white p-5 text-center text-[color:var(--dlg-ink)]">
-          <p className="text-lg font-black">🔌 L&rsquo;assistant n&rsquo;est pas disponible ici</p>
-          <p className="mt-1 text-sm">Cette conversation a besoin d&rsquo;une connexion. Réessayez sur le site en ligne.</p>
+          <p className="text-lg font-black">🔌 The assistant isn&rsquo;t available here</p>
+          <p className="mt-1 text-sm">This conversation needs a connection. Try again on the live site.</p>
           <button
             type="button"
             onClick={() => { setUnavailable(false); start(); }}
             className="mt-4 rounded-xl border-2 border-[color:var(--dlg-strong)] bg-white px-4 py-2 font-black text-[color:var(--dlg-deep)] transition hover:bg-[var(--dlg-persona-bg)]"
           >
-            🔁 Réessayer
+            🔁 Retry
           </button>
         </div>
       ) : done ? (
@@ -394,7 +394,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
             <div className="mt-4 rounded-xl border-2 border-dashed border-[color:var(--dlg-strong)] bg-[var(--dlg-persona-bg)] p-4">
               <h3 className="text-sm font-black uppercase tracking-widest text-[color:var(--dlg-deep)]">✍️ Le bilan du prof</h3>
               {debriefBusy ? (
-                <p className="mt-2 animate-pulse text-sm">Je relis votre conversation…</p>
+                <p className="mt-2 animate-pulse text-sm">Reviewing your conversation…</p>
               ) : (
                 <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed">{debrief}</p>
               )}
@@ -406,14 +406,14 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
               onClick={playAll}
               className="rounded-xl border-b-4 border-[color:var(--dlg-deep)] bg-[var(--dlg-strong)] px-4 py-2 font-black text-white transition hover:brightness-105"
             >
-              ▶️ Écouter le dialogue
+              ▶️ Listen to the dialogue
             </button>
             <button
               type="button"
               onClick={start}
               className="rounded-xl border-2 border-[color:var(--dlg-strong)] bg-white px-4 py-2 font-black text-[color:var(--dlg-deep)] transition hover:bg-[var(--dlg-persona-bg)]"
             >
-              🔁 Rejouer
+              🔁 Play again
             </button>
           </div>
         </div>
@@ -437,7 +437,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
                 lang="fr"
                 value={typed}
                 onChange={(e) => setTyped(e.target.value)}
-                placeholder="…ou tapez ici"
+                placeholder="…or type here"
                 disabled={busy || done}
                 className="min-w-[8rem] flex-1 rounded-lg border-2 border-[color:var(--dlg-edge)] bg-white px-3 py-1.5 text-base text-[color:var(--dlg-ink)] outline-none focus:border-[color:var(--dlg-strong)]"
                 autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
@@ -455,7 +455,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
                 disabled={!draftText || busy}
                 className="rounded-xl border-b-4 border-[color:var(--dlg-deep)] bg-[var(--dlg-strong)] px-4 py-1.5 font-black text-white transition hover:brightness-105 disabled:opacity-40"
               >
-                ✔ Je réponds
+                ✔ Reply
               </button>
             </form>
           </div>

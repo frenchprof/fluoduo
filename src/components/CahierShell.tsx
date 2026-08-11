@@ -292,8 +292,8 @@ export default function CahierShell({
                     icons only, no words. */}
                 <button
                   type="button"
-                  aria-label="Rechercher un mot"
-                  title="Rechercher un mot · Search a word"
+                  aria-label="Search a word"
+                  title="Search a word"
                   onClick={() => setSearchOpen(true)}
                   className="cahier-btn cahier-btn-sm"
                 >
@@ -301,8 +301,8 @@ export default function CahierShell({
                 </button>
                 <button
                   type="button"
-                  aria-label="Classement"
-                  title="Classement · Leaderboard"
+                  aria-label="Leaderboard"
+                  title="Leaderboard"
                   onClick={() => setRankingOpen(true)}
                   className="cahier-btn cahier-btn-sm"
                 >
@@ -424,7 +424,7 @@ export default function CahierShell({
           <button
             type="button"
             onClick={expandFull}
-            aria-label="Agrandir la page · Expand to full width"
+            aria-label="Expand to full width"
             title="Tap (or double-tap the grey space) to expand the page"
             className="fixed right-2 top-1/2 z-40 flex h-11 w-11 -translate-y-1/2 animate-pulse items-center justify-center rounded-full border-2 border-[color:var(--cahier-ink)] bg-white text-xl text-[color:var(--cahier-ink)] shadow-lg"
           >
