@@ -102,6 +102,9 @@ check(len(kinds) == 12 and kinds.count("mcq") == 4 and kinds.count("gap") == 4
 check("ROLL_ENTRY" in cards and "ROLL_ENTRY" in pager,
       "the EtuDice roll maps a die face to a ramp entry point",
       "the roll→entry map is missing")
+check("DIE_SIDES = 12" in cards and "DIE_SIDES" in pager,
+      "the die is a d12 — one face per ramp card (face N starts at card N)",
+      "the die is not the 12-sided ramp die")
 check("requeued" in pager,
       "wrong answers re-queue (once — requeued repeats never re-queue again)",
       "no re-queue mechanism in the pager")

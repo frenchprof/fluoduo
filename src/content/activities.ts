@@ -71,7 +71,7 @@ export const ACTIVITIES: Activity[] = [
   // ── 1 · FluOlin Goals — the sequence for one objective ────────────────────
   { key: "speculearn", name: "SpecuLearn", emoji: "🔮", family: "goals", href: "/practice/speculearn", hue: "#8a5fd4", blurb: "Guess before you're taught. Pre-Tests live here too." },
   { key: "lesson", name: "xPlain", emoji: "📚", family: "goals", href: null, hue: "#e0567f", blurb: "The lesson: rule, then practice." },
-  { key: "dice", name: "EtuDice", emoji: "🎲", family: "goals", href: null, hue: "#e3a700", blurb: "Roll for your level — ★ Facile to ⭐ Bonus." },
+  { key: "dice", name: "EtuDice", emoji: "🎲", family: "goals", href: null, hue: "#e3a700", blurb: "Roll the d12 — it sets your starting card on the lesson ramp." },
   { key: "flip", name: "4Mémoire", emoji: "🃏", family: "goals", href: "/practice/flip-it", hue: "#2bb6c2", blurb: "Flashcards. English front, flip to French." },
   { key: "complete", name: "iComplete", emoji: "✏️", family: "goals", href: null, hue: "#7bbf2e", blurb: "Type the missing word." },
 
