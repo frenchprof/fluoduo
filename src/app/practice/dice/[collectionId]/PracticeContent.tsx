@@ -79,7 +79,8 @@ function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: 
   // Select-then-commit (patch 20–21, DrillShell only): tapping an option
   // SELECTS it; the shell's Vérifier COMMITS. Six drills had four different
   // interaction grammars — this is the one the shell standardizes on. The
-  // SioModal-embedded form keeps instant-commit until patch 22 retires it.
+  // SioModal-embedded form keeps instant-commit until the drill popup itself
+  // is retired (patch 22 took only the LESSON out of the popup).
   const [selected, setSelected] = useState<PracticeChoice | null>(null);
   const [ttsOn, setTtsOn] = useState(true);
 

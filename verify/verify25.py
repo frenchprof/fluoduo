@@ -8,11 +8,19 @@ relative to that standard, shrink it to match." The audit measured one
 offender: the Home hero at 303px. It is now a ~99px card (measured at
 390x844): chip row + two 3px hairlines + the paired actions.
 
+Amended the same day: Dan brought the brand animation BACK, compact ("i
+would rather you reduce the size of par Daniel Chan than remove it; the
+ink blob must come back even if you make it smaller"). So the heading
+prose ("Bienvenue sur") stays dead, but the animated FluOlinGo + a
+smaller « par Dr Chan » live on one line in the card, the whole show
+~3.5 s (was 5.5 s), once per browser session.
+
 What this asserts (the height itself is a screenshot's job):
 
-  1  The hero heading and the 5.5-second byline animation are gone — the
-     shell's wordmark already brands the page, and the byline kill is its
-     own patch-25 row.
+  1  The hero heading prose is gone ("Bienvenue sur" — the shell's
+     wordmark already brands the page), but the compact brand animation
+     is present: wave letters, ink blob, byline strokes, the
+     once-per-session gate, and the compressed timings.
   2  The bars are hairlines with real progressbar roles, not bordered
      furniture.
   3  The actions (Continue, DéjàRevu) live INSIDE the hero card, paired
@@ -48,13 +56,30 @@ if not os.path.isfile("package.json"):
 home = strip_comments(read("src/app/HomeDashboard.tsx"))
 check(bool(home), "HomeDashboard exists", "src/app/HomeDashboard.tsx missing")
 
-# 1 · heading + byline gone
+# 1 · heading prose gone, compact animation present
 check("Bienvenue sur" not in home,
-      "the hero heading is gone (the shell wordmark already brands the page)",
+      "the hero heading prose is gone (the shell wordmark already brands the page)",
       "the hero still greets — 'Bienvenue sur' is back")
-check("fluo-byline" not in home and "BYLINE_STROKES" not in home and "heroPlayed" not in home,
-      "the 5.5-second byline animation is gone",
-      "the byline animation is back in the hero")
+check("fluo-brand-letter" in home and "fluo-byline" in home and "BYLINE_STROKES" in home,
+      "the compact brand animation is back: wave letters, ink blob, byline",
+      "the brand animation is missing a piece (letters / ink / byline)")
+check("heroPlayed" in home,
+      "the once-per-session gate survives (full show once, finished look after)",
+      "the once-per-session gate is gone — the show would replay every visit")
+check("fluo-serif text-lg" in home,
+      "the brand line is text-lg — smaller than the old text-2xl heading",
+      "the brand line is not compact (expected fluo-serif text-lg)")
+check("text-2xl" not in home,
+      "no text-2xl heading crept back into the hero",
+      "a text-2xl heading is back — the shrink is undone")
+
+css = read("src/app/globals.css")
+check("fluo-brand-hl 1s" in css and "0.95s forwards" in css,
+      "the highlighter is compressed (1s from 0.95s, was 1.3s from 1.45s)",
+      "the highlighter still runs the original 5.5-second-era timings")
+check("2.0 + i * 0.08" in home,
+      "the byline strokes start at 2.0s with 0.08s stagger (~3.5s total)",
+      "the byline strokes still run the original 2.8s + 0.17s pacing")
 
 # 2 · hairlines with real roles
 check(home.count("h-[3px]") == 2,

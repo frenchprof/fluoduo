@@ -19,9 +19,48 @@ import { nextSioId } from "@/lib/continuer";
 import { equippedAccent, levelForXp, xpMultiplier } from "@/lib/economy";
 import { dueForReview } from "@/lib/reviser";
 
+/** « par Dr Chan » as pen strokes, in writing order (stem before bowl, the
+ *  way a hand actually writes print letters). Baseline y=25, x-height 13,
+ *  ascenders 6, descender 32; the italic slant comes from the group skew. */
+const BYLINE_STROKES = [
+  // p
+  "M4,13.5 L4,32",
+  "M4,15.5 C6,12.5 12,12.5 12,18.5 C12,24.5 6,24.5 4,21.5",
+  // a
+  "M23,15 C19,12 15,14.5 15,19 C15,23.5 19,26 23,22.5",
+  "M23.5,13.5 L23.5,25",
+  // r
+  "M30,13.5 L30,25",
+  "M30,18 C31,14 34,12.5 36.5,14",
+  // D
+  "M45,6 L45,25",
+  "M45,6 C56,6 58,12 58,15.5 C58,19 56,25 45,25",
+  // r
+  "M63,13.5 L63,25",
+  "M63,18 C64,14 67,12.5 69.5,14",
+  // C
+  "M87,9 C80,4.5 76,9 76,15.5 C76,22 80,26.5 87,22",
+  // h
+  "M92,6 L92,25",
+  "M92,17.5 C93,13.5 100,12 100,18 L100,25",
+  // a
+  "M111,15 C107,12 103,14.5 103,19 C103,23.5 107,26 111,22.5",
+  "M111.5,13.5 L111.5,25",
+  // n
+  "M118,13.5 L118,25",
+  "M118,17.5 C119,13.5 126,12 126,18 L126,25",
+];
+
 export default function HomeDashboard() {
   const [progress, setProgress] = useState<Progress>(defaultProgress());
   const [dueCount, setDueCount] = useState(0);
+  // Armed on mount: nothing pops up by default (Dan, 2026-07-14), so the
+  // FluOlinGo brand animation plays on a clear stage right away.
+  const [heroPlay, setHeroPlay] = useState(false);
+  // Once the stroke has played, the ink is pinned by class — engines can
+  // drop a finished animation's fill state (Dan, 2026-07-14: "the color
+  // disappears right after").
+  const [inkDone, setInkDone] = useState(false);
   // Quick Guide popup, summoned from the hero button next to the (?) circle
   // (Dan, 2026-07-14: "insert a QuickGuide link where my red arrow points").
   const [qgOpen, setQgOpen] = useState(false);
@@ -34,6 +73,22 @@ export default function HomeDashboard() {
     };
     refresh();
     window.addEventListener("fluolingo:progress-updated", refresh);
+
+    // The letter-wave + hand-written byline now runs ~3.5 s (compacted from
+    // the original 5.5 s when Dan brought it back, 2026-08-11). Play the
+    // full show once per browser session; afterwards render the finished
+    // look instantly (no .is-play = static letters + written byline;
+    // .is-inked pins the highlighter ink).
+    try {
+      if (window.sessionStorage.getItem("fluolingo:heroPlayed")) {
+        setInkDone(true);
+      } else {
+        window.sessionStorage.setItem("fluolingo:heroPlayed", "1");
+        setHeroPlay(true);
+      }
+    } catch {
+      setHeroPlay(true); // storage blocked → just play
+    }
     return () => {
       window.removeEventListener("fluolingo:progress-updated", refresh);
     };
@@ -64,20 +119,67 @@ export default function HomeDashboard() {
 
   return (
     <>
-      {/* The hero, shrunk 303px -> ~88px (patch 25; Dan, 2026-08-11: the
+      {/* The hero, shrunk 303px -> ~99px (patch 25; Dan, 2026-08-11: the
           DrillShell header bar is the reference — thin, static,
           information-only, never a page-dominating hero). What went: the
           "Bienvenue sur FluOlinGo" heading (the shell's wordmark two
-          centimetres above it already says so), the 5.5-second byline
-          animation (its own patch-25 row), and the two bordered bars.
+          centimetres above it already says so) and the two bordered bars.
           What stays: every progress counter (learner feedback), HELP!,
           and the two actions — grouped IN the card they describe,
-          side by side (the button-grouping rule). */}
+          side by side (the button-grouping rule).
+          The brand animation came BACK the same day (Dan: "i would rather
+          you reduce the size ... than remove it; the ink blob must come
+          back") — compacted: one line instead of heading + byline block,
+          text-lg instead of text-2xl, the byline at 16px tall beside the
+          word, the whole show ~3.5 s instead of 5.5 s. French on purpose:
+          the hero is the one place the chrome's English gives way. */}
       <section
         aria-label="Your progress"
         className="mb-7 rounded-2xl border-2 border-[color:var(--fluo-ink)] p-3 shadow-[5px_5px_0_var(--fluo-hl)]"
         style={{ background: "linear-gradient(120deg, #fbe3ec 0%, #def3f5 45%, #ecf7cf 100%)" }}
       >
+        {/* Decorative brand line — NOT a heading (the h1 died with patch 25;
+            the shell wordmark still brands the page for structure). The word
+            does the Kallang Wave, the ink blob sweeps F→o, then « par Dr
+            Chan » writes itself, smaller than before, on the same line. */}
+        <div className="mb-1.5 flex items-center gap-2">
+          <span className="fluo-serif text-lg font-black leading-none text-[color:var(--fluo-ink)]">
+            <span
+              className={`fluo-brand${heroPlay ? " is-play" : ""}${inkDone ? " is-inked" : ""}`}
+              aria-label="FluOlinGo"
+              onAnimationEnd={(e) => {
+                if (e.animationName === "fluo-brand-hl") setInkDone(true);
+              }}
+            >
+              <span aria-hidden>
+                {"FluOlinGo".split("").map((ch, i) => (
+                  <span key={i} className="fluo-brand-letter" style={{ animationDelay: `${0.1 + i * 0.05}s` }}>
+                    {ch}
+                  </span>
+                ))}
+              </span>
+            </span>
+          </span>
+          <svg
+            role="img"
+            aria-label="par Dr Chan"
+            viewBox="0 0 134 36"
+            className={`fluo-byline mt-1 h-4 w-auto${heroPlay ? " is-play" : ""}`}
+          >
+            <g
+              transform="translate(4 0) skewX(-8)"
+              fill="none"
+              stroke="var(--fluo-ink-soft)"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              {BYLINE_STROKES.map((d, i) => (
+                <path key={i} d={d} pathLength={1} style={{ animationDelay: `${2.0 + i * 0.08}s` }} />
+              ))}
+            </g>
+          </svg>
+        </div>
         <div className="flex flex-wrap items-center gap-1">
           <Link href="/profil" className={`${chip} hover:-translate-y-0.5 !px-1.5`} title={`Your level — N${lvl.level} · ${lvl.name}`}>
             🎚️ <RankBadge level={lvl.level} name={lvl.name} compact className="text-xs" />

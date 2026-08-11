@@ -37,19 +37,12 @@ function deckAndPretestFor(sio: Sio) {
   return { deck, pretestHref, pretestId: pretest?.id ?? null };
 }
 
-export default function UnitSection({
-  unit,
-  forceOpen,
-}: {
-  unit: number;
-  /** The /practice/* and /lessons/* URLs render the unit page with this SIO's
-   *  popup already open on an activity view — level 2 floats from every
-   *  entrance, not just popup flaps (Dan, 2026-07-05). */
-  forceOpen?: { sioId: string; view?: string; lessonSlug?: string };
-}) {
+export default function UnitSection({ unit }: { unit: number }) {
+  // (The forceOpen prop died with patch 22: the /lessons/* URLs render the
+  // full-screen pager now, so no route needs the popup pre-opened for it.)
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [progress, setProgress] = useState<Progress>(defaultProgress());
-  const [openId, setOpenId] = useState<string | null>(forceOpen?.sioId ?? null);
+  const [openId, setOpenId] = useState<string | null>(null);
 
   const sios = SIOS.filter((s) => s.unit === unit);
   const meta = UNIT_META[unit] ?? { label: `Unité ${unit}`, subtitle: "", emoji: "📚" };
@@ -66,7 +59,7 @@ export default function UnitSection({
     // Deep link: /unit/N#SIO-0XX opens that popup (home path lands here).
     // Unit 0 popups belong to Unit0Panel (its modal carries the MCQs — this
     // generic one would open empty), so it handles its own deep links.
-    if (!forceOpen && unit !== 0) {
+    if (unit !== 0) {
       const hash = window.location.hash.replace("#", "");
       if (hash && SIOS.some((s) => s.id === hash && s.unit === unit)) setOpenId(hash);
     }
@@ -111,7 +104,7 @@ export default function UnitSection({
       </div>
 
       {unit === 0 ? (
-        <Unit0Panel forceOpen={forceOpen} />
+        <Unit0Panel />
       ) : (
         <div className="space-y-5">
           {groups.map((group) => {
@@ -165,15 +158,8 @@ export default function UnitSection({
         return (
           <SioModal
             sio={openSio}
-            onClose={() => {
-              setOpenId(null);
-              // An activity URL with its popup closed IS the unit page — make
-              // the address bar agree so refresh/share land right.
-              if (forceOpen) window.history.replaceState(null, "", `/unit/${unit}`);
-            }}
+            onClose={() => setOpenId(null)}
             deck={deck}
-            initialView={openSio.id === forceOpen?.sioId ? forceOpen?.view : undefined}
-            lessonSlug={openSio.id === forceOpen?.sioId ? forceOpen?.lessonSlug : undefined}
             tabs={
               openSio.isProduction
                 ? popupActivityTabs(deck) // atelier decks: flip/say/complete on the model lines

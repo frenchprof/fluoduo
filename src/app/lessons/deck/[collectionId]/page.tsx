@@ -1,7 +1,6 @@
 import { CURATED } from "@/content/collections";
 import AuthGate from "@/components/AuthGate";
-import UnitActivityPage from "@/app/UnitActivityPage";
-import LessonFlow from "@/app/lessons/LessonFlow";
+import LessonPager from "@/app/lessons/pager/LessonPager";
 
 export function generateStaticParams() {
   return CURATED.map((c) => ({ collectionId: c.id }));
@@ -9,11 +8,11 @@ export function generateStaticParams() {
 
 export default async function Page({ params }: { params: Promise<{ collectionId: string }> }) {
   const { collectionId } = await params;
+  // Patch 22: the lesson is the full-screen card pager, not a popup on the
+  // unit map.
   return (
-    <UnitActivityPage
-      collectionId={collectionId}
-      view="lesson"
-      fallback={<AuthGate what="open the lesson"><LessonFlow collectionId={collectionId} /></AuthGate>}
-    />
+    <AuthGate what="open the lesson">
+      <LessonPager collectionId={collectionId} />
+    </AuthGate>
   );
 }

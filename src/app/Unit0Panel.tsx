@@ -41,14 +41,10 @@ function shuffle<T>(arr: T[]): T[] {
   return out;
 }
 
-export default function Unit0Panel({
-  forceOpen,
-}: {
-  /** Same contract as UnitSection's — /practice/* URLs for Unit-0 decks land
-   *  here with the popup pre-opened on an activity view. */
-  forceOpen?: { sioId: string; view?: string; lessonSlug?: string };
-}) {
-  const [openId, setOpenId] = useState<string | null>(forceOpen?.sioId ?? null);
+export default function Unit0Panel() {
+  // (The forceOpen prop died with patch 22 — no route pre-opens this popup
+  // any more; the lesson URLs render the full-screen pager instead.)
+  const [openId, setOpenId] = useState<string | null>(null);
   const openSio = openId ? UNIT0_SIOS.find((s) => s.id === openId) : undefined;
 
   // Deep link: /unit/0#SIO-00X opens that popup — the home learning path links
@@ -56,7 +52,6 @@ export default function Unit0Panel({
   // (that popup opened EMPTY, Dan's 2026-07-05 bug report), so unit 0's hash
   // handling lives here where the questions are.
   useEffect(() => {
-    if (forceOpen) return;
     const hash = window.location.hash.replace("#", "");
     if (hash && UNIT0_SIOS.some((s) => s.id === hash)) setOpenId(hash);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -95,15 +90,8 @@ export default function Unit0Panel({
       {openSio && (
         <SioModal
           sio={openSio}
-          onClose={() => {
-            setOpenId(null);
-            // An activity URL with its popup closed IS the unit page — make
-            // the address bar agree so refresh/share land right.
-            if (forceOpen) window.history.replaceState(null, "", "/unit/0");
-          }}
+          onClose={() => setOpenId(null)}
           deck={openSio.collectionId ? CURATED.find((c) => c.id === openSio.collectionId) : undefined}
-          initialView={openSio.id === forceOpen?.sioId ? forceOpen?.view : undefined}
-          lessonSlug={openSio.id === forceOpen?.sioId ? forceOpen?.lessonSlug : undefined}
           tabs={popupActivityTabs(
             openSio.collectionId ? CURATED.find((c) => c.id === openSio.collectionId) : undefined,
             // Unit-0 questions render inline right here → Pre-Test is the

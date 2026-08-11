@@ -11,11 +11,10 @@
  * This is the per-deck round, reached via its own "🏃 GramMarathon" flap
  * (deckActivityTabs, CahierShell.tsx) — shown only for decks with at least
  * one valid gap item (it.gap present and actually occurring inside it.fr).
- * Distinct from: (1) the Finale (FinaleContent.tsx, /practice/grammarathon/
+ * Distinct from the Finale (FinaleContent.tsx, /practice/grammarathon/
  * finale), a separate hand-authored 437-item bank across all SIOs, always
- * reachable regardless of deck; (2) DicedPractice's own inline ★★
- * Intermédiaire gap-fill on the same gapped deck (games/dice/DicedPractice.tsx)
- * — same gap data, a completely separate drill.
+ * reachable regardless of deck. (The lesson's own gap-fill over the same
+ * data is the pager's gap tier since patch 22.)
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";

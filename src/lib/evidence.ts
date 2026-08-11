@@ -73,6 +73,8 @@ const ACTIVITY_EVIDENCE: Array<[string, EvidenceType]> = [
   ["dice-practice", "constrained"],
   ["/practice/dice/", "constrained"],
   ["lesson-dice:", "constrained"],
+  ["lesson:", "constrained"],          // the lesson pager's gap/build/translate cards
+
   ["conj", "constrained"],
   ["/conjugaison", "constrained"],
   ["say-it", "productive"],
