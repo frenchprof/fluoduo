@@ -114,6 +114,16 @@ export default function DrillShell({
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  // The draggable floats (feedback bubble, tour launcher) default to the
+  // bottom corners — exactly where this shell's footer lives, at every
+  // width. Declare a floor while the shell is mounted; useDragFloat's
+  // rendered bottom is max(position, --float-floor), so both floats clear
+  // the CTA row and the tray, and stay draggable exactly as before.
+  useEffect(() => {
+    document.documentElement.style.setProperty("--float-floor", "84px");
+    return () => { document.documentElement.style.removeProperty("--float-floor"); };
+  }, []);
+
   const pct = progress && progress.total > 0
     ? Math.min(100, Math.round((progress.done / progress.total) * 100))
     : 0;
