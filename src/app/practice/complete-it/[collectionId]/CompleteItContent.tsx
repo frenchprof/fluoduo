@@ -6,10 +6,9 @@
  * For nationality decks: each country expands into 4 sub-questions (il est / elle
  * est / ils sont / elles sont) so all adjective forms are drilled.
  *
- * No flap/tab of its own in the current UI (folded into the Lesson unification,
- * Dan 2026-07-05) — reached only as DicedPractice's ★★ Intermédiaire level on a
- * gapless deck (see DicedPractice.tsx). The route/component still exist and are
- * embeddable directly (SioModal's "complete" key), just not linked anywhere.
+ * Reached via its /practice/complete-it route and SioModal's "complete"
+ * embed key. (Its old third door — DicedPractice's ★★ Intermédiaire level on
+ * a gapless deck — died with patch 22's lesson pager.)
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -245,8 +244,8 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
     </>
   );
 
-  // Inside the SioModal popup the drill keeps its inline sheet — the popup
-  // dies with patch 22's lesson pager, not here.
+  // Inside the SioModal popup the drill keeps its inline sheet — the drill
+  // popup outlived patch 22 (only the LESSON left it for the pager).
   if (embedded) {
     return (
       <div className="mx-auto max-w-lg px-4 py-6">

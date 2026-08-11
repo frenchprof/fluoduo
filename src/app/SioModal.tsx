@@ -31,10 +31,11 @@ const SayItContent = dynamic(() => import("@/app/practice/say-it/[collectionId]/
 const CompleteItContent = dynamic(() => import("@/app/practice/complete-it/[collectionId]/CompleteItContent"));
 const DicePractice = dynamic(() => import("@/app/practice/dice/[collectionId]/PracticeContent"));
 const GramMarathonContent = dynamic(() => import("@/app/practice/grammarathon/[collectionId]/GramMarathonContent"));
-const LessonFlow = dynamic(() => import("@/app/lessons/LessonFlow"));
 
-/** Activity keys that render inside the popup; the rest navigate out. */
-const EMBEDDABLE = new Set(["say", "complete", "dice", "grammarathon", "lesson"]);
+/** Activity keys that render inside the popup; the rest navigate out.
+ *  "lesson" left this set with patch 22 — the lesson is the full-screen card
+ *  pager now, so its flap navigates like any non-embeddable activity. */
+const EMBEDDABLE = new Set(["say", "complete", "dice", "grammarathon"]);
 
 export type PopupTab = { key: string; label: string; emoji: string; href?: string; active?: boolean; hint?: string };
 
@@ -126,8 +127,6 @@ export default function SioModal({
   onClose,
   tabs,
   deck,
-  initialView,
-  lessonSlug,
   children,
 }: {
   sio: Sio;
@@ -136,15 +135,11 @@ export default function SioModal({
   /** When given, embeddable activity flaps switch the popup body in place —
    *  level 2 floats above the unit page instead of navigating away. */
   deck?: Collection;
-  /** Open directly on an activity view (the /practice/* URLs land here). */
-  initialView?: string;
-  /** For the lesson view: which of the deck's lessons to show. */
-  lessonSlug?: string;
   children: ReactNode;
 }) {
   const hueOf = (i: number) => TAB_HUES[i % TAB_HUES.length];
   const closeRef = useRef<HTMLButtonElement>(null);
-  const [view, setView] = useState(initialView ?? "main");
+  const [view, setView] = useState("main");
 
   const embeds: Record<string, ReactNode> = deck
     ? {
@@ -152,7 +147,6 @@ export default function SioModal({
         complete: <CompleteItContent collectionId={deck.id} embedded />,
         dice: <DicePractice collectionId={deck.id} embedded />,
         grammarathon: <GramMarathonContent collectionId={deck.id} embedded />,
-        lesson: <LessonFlow collectionId={deck.id} lessonSlug={lessonSlug} embedded />,
       }
     : {};
   const flapProps = (t: PopupTab) => {

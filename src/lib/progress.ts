@@ -123,6 +123,12 @@ function saveProgress(p: Progress): Progress {
   } catch {
     // localStorage unavailable — state still works for this session
   }
+  // Announce EVERY save, not just sync pull-merges (patch 22): the Home road
+  // and unit HUDs listen for this event, so before this line an SIO write from
+  // a lesson's end card never repainted the path until a full reload.
+  try {
+    window.dispatchEvent(new CustomEvent("fluolingo:progress-updated"));
+  } catch {}
   onSave?.(p);
   return p;
 }

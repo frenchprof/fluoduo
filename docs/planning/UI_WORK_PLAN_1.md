@@ -148,16 +148,21 @@ raw hexes and 906 stock Tailwind classes did the painting.
 | ☐ | Select-then-commit everywhere (today: 6 drills, 4 grammars) | 1 |
 | ☐ | Hide every keyboard legend below `sm` | 0.5 |
 
-## 🔜 PATCH 22 — the lesson pager (10 units)
+## ✅ SHIPPED — patch 22, the lesson pager (10 units)
 
 | | task | units |
 |---|---|---|
-| ☐ | `buildCards()` — memo splitting rules, 3 rule cards max | 3 |
-| ☐ | The 12-card ramp: MCQ → gap → build → translate | 2.5 |
-| ☐ | EtuDice becomes the roll that sets where you start on the ramp | 1 |
-| ☐ | Delete both difficulty pickers, all 3 `🎲 Nouvelle question`, the chip row, the ConjugaZone slab | 1 |
-| ☐ | End card + XP/accuracy/time + the SIO write (today the path never reacts) | 2 |
-| ☐ | Route both pretest engines through the same runner | 0.5 |
+| ✅ | `buildCards()` — memo splitting rules, 3 rule cards max | 3 |
+| ✅ | The 12-card ramp: MCQ → gap → build → translate | 2.5 |
+| ✅ | EtuDice becomes the roll that sets where you start on the ramp | 1 |
+| ✅ | Delete both difficulty pickers, all 3 `🎲 Nouvelle question` (5 buttons, 3 components), the chip row, the ConjugaZone slab | 1 |
+| ✅ | End card + XP/accuracy/time + the SIO write — `saveProgress` now announces, so the path reacts | 2 |
+| ✅ | Route both pretest engines through the same runner (`lib/pretests/runner.ts`) | 0.5 |
+
+`verify22.py` (27 assertions, in CI) holds all six rows. Also retired with the
+popup path: `UnitActivityPage`, `NativeLessonView`, `LessonFlow`,
+`DicedPractice`, `DiceTrainer`, and the `forceOpen`/`initialView`/`lessonSlug`
+plumbing through UnitSection / Unit0Panel / SioModal.
 
 ## 🔜 PATCH 23 — games (14 units)
 

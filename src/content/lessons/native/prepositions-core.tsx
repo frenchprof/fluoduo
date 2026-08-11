@@ -6,7 +6,7 @@
  *   prepositions       → GEOS  (à/en/au/aux + de/du/des/d')   — SIO-032
  *   prepositions-lieux → PLACES (au/à la/à l'/aux + du/…/des) — SIO-033
  */
-import type { DiceConfig } from "@/games/dice/DiceTrainer";
+import type { DiceConfig } from "./types";
 
 export const SUBJECTS = [
   { disp: "Je", slot: "je" }, { disp: "Tu", slot: "tu" }, { disp: "Il", slot: "il" },

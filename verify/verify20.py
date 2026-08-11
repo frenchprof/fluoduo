@@ -9,8 +9,8 @@ What it asserts (the things a screenshot cannot):
      a real progressbar — and NO hearts (lives lockout is on the refused
      list of the settled gamification decisions, TODO.md §6).
   2  The four /practice/* drill routes render the drill, not the unit map:
-     no UnitActivityPage import. UnitActivityPage itself survives for the
-     two /lessons/* routes until patch 22 (the pager) replaces the popup.
+     no UnitActivityPage import. UnitActivityPage itself is gone — patch 22
+     (the pager) replaced the popup path it existed to carry.
   3  All four drill bodies are on the shell.
   4  SioModal lost its compensation chrome: drag-resize, the persisted
      panel size, auto-widen, and the ⤢ full-page hatch.
@@ -101,7 +101,8 @@ for name, p in ROUTES.items():
           f"/practice/{name} renders the drill, not the unit map",
           f"{p} still routes through UnitActivityPage")
 
-# The popup path survives for lessons ONLY (patch 22 retires it).
+# Patch 22 delivered the pager: the popup path for lessons is GONE, and
+# UnitActivityPage (whose only remaining job was carrying it) went with it.
 uap_importers = []
 for root, _, files in os.walk("src"):
     for f in files:
@@ -109,12 +110,9 @@ for root, _, files in os.walk("src"):
             p = os.path.join(root, f)
             if "UnitActivityPage" in strip_comments(read(p)) and not p.endswith("UnitActivityPage.tsx"):
                 uap_importers.append(p.replace(os.sep, "/"))
-check(sorted(uap_importers) == [
-        "src/app/lessons/[slug]/page.tsx",
-        "src/app/lessons/deck/[collectionId]/page.tsx",
-      ],
-      "UnitActivityPage survives for the two lesson routes only",
-      f"unexpected UnitActivityPage importers: {sorted(uap_importers)}")
+check(not os.path.isfile("src/app/UnitActivityPage.tsx") and uap_importers == [],
+      "UnitActivityPage is fully retired (patch 22's pager replaced the popup path)",
+      f"UnitActivityPage lives on: file={os.path.isfile('src/app/UnitActivityPage.tsx')}, importers={sorted(uap_importers)}")
 
 # ── 3 · the four drill bodies are on the shell ─────────────────────────────
 CONTENTS = {
