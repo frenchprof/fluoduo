@@ -66,5 +66,11 @@ jobs:
       - name: Patch 22 — the lesson pager (ramp, roll, end card, one pretest runner)
         run: python3 verify/verify22.py
 
+      # Peers' Reports tab shipped with its own check (PR #18) but no CI step —
+      # wired here by the review's follow-up, per the house rule that a check
+      # that CI never runs is not a check.
+      - name: Teacher Reports tab — four cards, CSVs, measured float floor
+        run: python3 verify/verify-reports.py
+
       - name: Patch 25 (hero rows) — hairline hero, actions grouped
         run: python3 verify/verify25.py
