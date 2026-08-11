@@ -162,9 +162,13 @@ export default function DrillShell({
         )}
       </div>
 
-      {/* ── one item, centred; stray <h1>s are swallowed ─────────────── */}
+      {/* ── one item, near the header; stray <h1>s are swallowed ─────── */}
+      {/* justify-start, not justify-center (Dan, 2026-08-11): dead-centre
+          left a short item (one flashcard) floating mid-viewport with a
+          header-sized hole above it. Content starts a fixed beat below the
+          bar; tall drills fill the slot exactly as before. */}
       <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 [&_h1]:hidden">
-        <div className="mx-auto flex w-full max-w-[600px] flex-1 flex-col justify-center py-4">
+        <div className="mx-auto flex w-full max-w-[600px] flex-1 flex-col justify-start pb-4 pt-6 sm:pt-10">
           {children}
         </div>
       </div>

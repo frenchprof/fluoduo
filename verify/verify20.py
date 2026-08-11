@@ -69,6 +69,9 @@ check("♥" not in shell_code and not re.search(r"\bhearts?\b", shell_code, re.I
 check("animate-[drill-tray" in shell_code and "absolute inset-x-0 bottom-0" in shell_code,
       "the feedback tray overlays; it cannot push the body",
       "the feedback tray is not an absolute overlay — feedback would reflow the body")
+check("justify-start" in shell_code and "justify-center py-4" not in shell_code,
+      "the body slot starts near the header — no dead-centre hole above a short item",
+      "the body slot dead-centres again — a short item floats mid-viewport (2026-08-11)")
 
 # The draggable floats (by design, they stay) must clear the shell's footer:
 # the shell declares a floor while mounted, the floats render above it, and
