@@ -205,12 +205,12 @@ function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: 
       <DrillShell
         exitHref={drillExitHref(set.collectionId)}
         progress={done ? null : { done: step, total: queue.length }}
-        right={<>✓ {score}/{uniqueTotal}{inReview ? " · révision" : ""}</>}
+        right={<>✓ {score}/{uniqueTotal}{inReview ? " · review" : ""}</>}
         cta={
           done
             ? { label: "🎲 Roll again", onClick: restart }
             : !submitted
-              ? { label: "Vérifier", onClick: () => { if (selected) commit(selected); }, disabled: !selected }
+              ? { label: "Check", onClick: () => { if (selected) commit(selected); }, disabled: !selected }
               : null
         }
         feedback={
@@ -219,7 +219,7 @@ function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: 
                 kind: submitted.correct ? "correct" : "wrong",
                 body: (
                   <>
-                    {submitted.correct ? "Correct !" : "La bonne réponse :"}{" "}
+                    {submitted.correct ? "Correct !" : "The answer:"}{" "}
                     <span lang="fr" className="font-extrabold">{item?.correctLabel}</span>
                   </>
                 ),

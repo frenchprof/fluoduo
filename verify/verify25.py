@@ -15,7 +15,7 @@ What this asserts (the height itself is a screenshot's job):
      own patch-25 row.
   2  The bars are hairlines with real progressbar roles, not bordered
      furniture.
-  3  The actions (Continuer, DéjàRevu) live INSIDE the hero card, paired
+  3  The actions (Continue, DéjàRevu) live INSIDE the hero card, paired
      side by side — the button-grouping rule.
   4  Every progress counter survives (litmus: learner feedback stays).
 
@@ -68,10 +68,10 @@ check(home.count('role="progressbar"') == 2,
 sec_start = home.find("<section")
 sec_end = home.find("</section>", sec_start)
 hero = home[sec_start:sec_end]
-check('aria-label="Continuer"' in hero and 'aria-label="DéjàRevu"' in hero,
-      "Continuer and DéjàRevu live inside the hero card they act on",
+check('aria-label="Continue"' in hero and 'aria-label="DéjàRevu"' in hero,
+      "Continue and DéjàRevu live inside the hero card they act on",
       "the hero's actions float outside the card (button-grouping rule)")
-cont = hero.find('aria-label="Continuer"')
+cont = hero.find('aria-label="Continue"')
 revu = hero.find('aria-label="DéjàRevu"')
 check(cont >= 0 and revu >= 0 and "</div>" not in "" and abs(revu - cont) < 1400,
       "the two actions are paired, not scattered",

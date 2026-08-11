@@ -19,7 +19,7 @@ export default function GuidePage() {
         <GuideBody />
         <p className="mt-5">
           <Link href="/" className="fluo-h-1 inline-block rounded-full border-2 px-4 py-1.5 text-sm font-black text-white shadow-[3px_3px_0_rgba(0,0,0,0.15)] transition hover:-translate-y-0.5" style={{ background: "var(--fluo-card-accent)", borderColor: "var(--fluo-card-accent)" }}>
-            Commencez ici 🏠
+            Start here 🏠
           </Link>
         </p>
       </div>

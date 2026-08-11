@@ -22,7 +22,7 @@ import type { Collection, Item } from "@/lib/collections/schema";
 // Cold pre-lesson diagnostic — no Practice-activity links on the rail
 // (pre/post boundary, same rule as /pretests/[id]).
 const PRETEST_TABS: ShellTab[] = [
-  { key: "home", label: "Accueil", emoji: "🏠", href: "/" },
+  { key: "home", label: "Home", emoji: "🏠", href: "/" },
   { key: "pretest", label: "Pretest", emoji: "🧪" },
 ];
 

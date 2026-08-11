@@ -229,7 +229,7 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
               disabled={!dialogueText || checking}
               className="cahier-btn cahier-btn-gold"
             >
-              {checking ? "🚶 …" : "🚶 Le passant vérifie"}
+              {checking ? "🚶 …" : "🚶 The passer-by checks"}
             </button>
           )}
         </div>
@@ -246,7 +246,7 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
               type="button"
               onClick={() => speak(feedback.reply, lang, { gender: "m" })}
               className="shrink-0 text-2xl leading-none"
-              aria-label="Réécouter"
+              aria-label="Listen again"
               title="🔊"
             >
               🚶

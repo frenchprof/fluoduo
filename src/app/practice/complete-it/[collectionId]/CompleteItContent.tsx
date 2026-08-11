@@ -172,10 +172,10 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
   }
   const hintLabel =
     clue === 0
-      ? "💡 un indice"
+      ? "💡 a hint"
       : clue >= ladderForItem().length - 1
-        ? "✅ voir la réponse"
-        : "💡 encore un indice";
+        ? "✅ show the answer"
+        : "💡 another hint";
 
   function restart() {
     const entries: QEntry[] = [];
@@ -235,7 +235,7 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
         value={value}
         onChange={(e) => setValue(e.target.value)}
         disabled={result !== null}
-        placeholder={`commence par « ${answer[0] ?? "?"} »…`}
+        placeholder={`starts with « ${answer[0] ?? "?"} »…`}
         className={`cahier-answer hidden w-full sm:block ${result === null ? "" : isRight ? "!border-[color:var(--drill-ok)] !text-[color:var(--drill-ok-ink)]" : "!border-[color:var(--drill-bad-mid)] !text-[color:var(--drill-bad-ink)]"}`}
         autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
       />
@@ -277,7 +277,7 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
               ) : (
                 <>
                   <div className={`mt-3 flex items-center gap-2 rounded-xl border-2 px-3 py-2 text-sm font-bold ${isRight ? "border-emerald-300 bg-emerald-50 text-emerald-700" : "border-rose-300 bg-rose-50 text-rose-700"}`}>
-                    <span>{isRight ? (result === "good" ? "✅ Bien ! (accent différent)" : "✅ Parfait !") : "❌"}</span>
+                    <span>{isRight ? (result === "good" ? "✅ Bien ! (accent differs)" : "✅ Parfait !") : "❌"}</span>
                     {result !== "perfect" && <span lang="fr" className="text-[color:var(--fluo-ink)]">→ {answer}</span>}
                     <button type="button" onClick={() => speak(answer, "fr-FR")} className="ml-auto text-base opacity-70 hover:opacity-100" title="Hear it">🔊</button>
                   </div>
@@ -303,7 +303,7 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
       right={<>✓ {score.ok}</>}
       cta={
         done
-          ? { label: "↻ Encore", onClick: restart }
+          ? { label: "↻ Again", onClick: restart }
           : result === null
             ? { label: "Check", onClick: check, disabled: !value.trim() }
             : null
@@ -320,7 +320,7 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
               kind: isRight ? "correct" : "wrong",
               body: (
                 <>
-                  {isRight ? (result === "good" ? "Bien ! (accent différent)" : "Parfait !") : null}
+                  {isRight ? (result === "good" ? "Bien ! (accent differs)" : "Parfait !") : null}
                   {result !== "perfect" && <span lang="fr" className="ml-1">→ {answer}</span>}
                   <button type="button" onClick={() => speak(answer, "fr-FR")} className="ml-2 text-base opacity-70 hover:opacity-100" title="Hear it">🔊</button>
                   {item?.example && !natForm && (

@@ -231,22 +231,22 @@ export default function FinaleContent() {
   }
 
   if (!paper) {
-    return <p className="px-1 py-6 text-sm text-slate-500">Préparation de votre marathon du jour…</p>;
+    return <p className="px-1 py-6 text-sm text-slate-500">Preparing today's marathon…</p>;
   }
 
   if (finished) {
     return (
       <div className="mx-auto max-w-md py-10 text-center">
         <div className="text-5xl">🏁</div>
-        <h2 lang="fr" className="mt-2 text-xl font-bold text-slate-900">Marathon terminé !</h2>
+        <h2 className="mt-2 text-xl font-bold text-slate-900">Marathon complete!</h2>
         <p lang="fr" className="mt-2 text-slate-700">
-          Score : <b className="text-emerald-700">{okCount}</b> / {paper.length}
+          Score: <b className="text-emerald-700">{okCount}</b> / {paper.length}
         </p>
-        <p lang="fr" className="mt-1 text-sm text-slate-500">Chaque marathon est un nouveau tirage, pondéré sur vos points faibles.</p>
+        <p className="mt-1 text-sm text-slate-500">Every marathon is a fresh draw, weighted to your weak spots.</p>
         <div className="mt-4 flex justify-center gap-2">
           <button type="button" onClick={() => setIdx(0)}
             className="rounded-full border-2 border-slate-900 bg-white px-4 py-1.5 text-sm font-bold text-slate-900">
-            ↺ Revoir mes réponses
+            ↺ Review my answers
           </button>
           <button type="button"
             onClick={() => {
@@ -255,7 +255,7 @@ export default function FinaleContent() {
               setIds(drawDaily(Date.now() + ":" + Math.random()));
             }}
             className="rounded-full border-2 border-slate-900 bg-yellow-100 px-4 py-1.5 text-sm font-bold text-slate-900 shadow-[2px_2px_0_#1f2440]">
-            🎲 Un autre marathon !
+            🎲 Another marathon!
           </button>
         </div>
       </div>
@@ -316,8 +316,8 @@ export default function FinaleContent() {
           {q.post}
         </p>
         <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
-          {!v?.ok && <button type="button" onClick={() => hint(q)} className="rounded-full border-2 border-amber-300 bg-amber-50 px-3 py-0.5 text-xs font-bold text-amber-800">💡 un indice</button>}
-          {!v?.ok && <button type="button" onClick={() => grade(q)} className="rounded-full border-2 border-slate-300 bg-white px-3 py-0.5 text-xs font-bold text-slate-700">✓ vérifier</button>}
+          {!v?.ok && <button type="button" onClick={() => hint(q)} className="rounded-full border-2 border-amber-300 bg-amber-50 px-3 py-0.5 text-xs font-bold text-amber-800">💡 a hint</button>}
+          {!v?.ok && <button type="button" onClick={() => grade(q)} className="rounded-full border-2 border-slate-300 bg-white px-3 py-0.5 text-xs font-bold text-slate-700">✓ check</button>}
         </div>
         {(clue[q.id] ?? 0) > 0 && !v?.ok && (
           <ul lang="fr" className="mt-2 space-y-1 text-sm text-amber-900">
@@ -327,11 +327,11 @@ export default function FinaleContent() {
           </ul>
         )}
         {(clue[q.id] ?? 0) > 0 && !v?.ok && (
-          <p lang="fr" className="mt-1.5 text-xs text-slate-500">Essayez encore — la réponse n'est jamais révélée : à vous de la trouver !</p>
+          <p className="mt-1.5 text-xs text-slate-500">Try again — the answer is never revealed: it's yours to find!</p>
         )}
         {v?.ok && (
           <div className="mt-2 text-[15px]">
-            <span className="font-bold text-emerald-700">✓ Bravo !{v.others.length > 0 && <span className="font-normal text-slate-600"> (aussi accepté : {v.others.join(", ")})</span>}</span>
+            <span className="font-bold text-emerald-700">✓ Bravo !{v.others.length > 0 && <span className="font-normal text-slate-600"> (also accepted: {v.others.join(", ")})</span>}</span>
           </div>
         )}
       </div>
@@ -340,24 +340,24 @@ export default function FinaleContent() {
       <div className="mt-4 flex items-center justify-between">
         <button type="button" disabled={idx === 0} onClick={() => setIdx((i) => Math.max(0, i - 1))}
           className="rounded-full border-2 border-slate-300 bg-white px-4 py-1.5 text-sm font-bold text-slate-600 disabled:opacity-40">
-          ← Précédente
+          ← Previous
         </button>
         <div className="flex items-center gap-2">
           {!v?.ok && (clue[q.id] ?? 0) >= 2 && (
             <button type="button"
               onClick={() => { setSkipped((k) => ({ ...k, [q.id]: true })); setIdx((i) => i + 1); }}
               className="rounded-full border-2 border-slate-300 bg-white px-4 py-1.5 text-sm font-bold text-slate-500"
-              title="La réponse reste secrète — la question reviendra un autre jour !">
-              Passer →
+              title="The answer stays secret — this question will come back another day!">
+              Skip →
             </button>
           )}
           <button type="button" onClick={() => (v?.ok ? setIdx((i) => i + 1) : grade(q))}
             className="rounded-full border-2 border-slate-900 bg-yellow-100 px-5 py-1.5 text-sm font-bold text-slate-900 shadow-[2px_2px_0_#1f2440]">
-            {v?.ok ? "Suivante →" : "✓ Vérifier"}
+            {v?.ok ? "Next →" : "✓ Check"}
           </button>
         </div>
       </div>
-      <p className="mt-2 text-center text-xs text-slate-400">Entrée = vérifier, puis Entrée = question suivante</p>
+      <p className="mt-2 text-center text-xs text-slate-400">Enter = check, then Enter = next question</p>
     </div>
   );
 }

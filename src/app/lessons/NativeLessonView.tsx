@@ -48,7 +48,7 @@ export default function NativeLessonView({ slug, title, unit, embedded = false }
   const tabs = deckId
     ? withActive(deckActivityTabs(deckId), "lesson")
     : [
-        { key: "home", label: "Accueil", emoji: "🏠", href: "/" },
+        { key: "home", label: "Home", emoji: "🏠", href: "/" },
         { key: "lesson", label: title, emoji: "🎲" },
       ];
 

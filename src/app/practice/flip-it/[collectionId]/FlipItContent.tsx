@@ -137,20 +137,20 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
       right={<>✓ {nReviewed}/{rows.length}</>}
       cta={
         done
-          ? { label: "🃏 Encore", onClick: restart }
+          ? { label: "🃏 Again", onClick: restart }
           : test
             ? phase === "idle"
-              ? { label: "Vérifier", onClick: check, disabled: nothingTyped }
+              ? { label: "Check", onClick: check, disabled: nothingTyped }
               : null
             : flipped
-              ? { label: "✓ Je le sais", onClick: () => markAndNext("reviewed") }
-              : { label: "Retourner", onClick: () => setFlipped(true) }
+              ? { label: "✓ I know it", onClick: () => markAndNext("reviewed") }
+              : { label: "Flip", onClick: () => setFlipped(true) }
       }
       secondary={
         done ? null
           : test
-            ? phase === "idle" ? { label: "💡 Révéler", onClick: reveal } : null
-            : flipped ? { label: "↺ À revoir", onClick: () => markAndNext("toReview") } : null
+            ? phase === "idle" ? { label: "💡 Reveal", onClick: reveal } : null
+            : flipped ? { label: "↺ To review", onClick: () => markAndNext("toReview") } : null
       }
       feedback={
         !done && test && phase !== "idle"
@@ -158,11 +158,11 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
               kind: phase === "checked" && allRight ? "correct" : "wrong",
               body: row.item.nat ? undefined : (
                 <>
-                  {phase === "checked" && allRight ? "Correct !" : "La bonne réponse :"}{" "}
+                  {phase === "checked" && allRight ? "Correct !" : "The answer:"}{" "}
                   <span lang="fr" className="font-extrabold">{row.full}</span>
                 </>
               ),
-              cta: { label: isLast ? "🏁 Bilan" : "Continuer", onClick: advance },
+              cta: { label: isLast ? "🏁 Recap" : "Continue", onClick: advance },
             }
           : null
       }
@@ -190,7 +190,7 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
           )}
           <div className="mt-5 flex justify-center">
             <button type="button" onClick={() => speak(sayText(row), "fr-FR")} className="cahier-btn cahier-btn-sm">
-              🔊 Écouter
+              🔊 Listen
             </button>
           </div>
         </>
@@ -329,7 +329,7 @@ function Recap({ test, run, nReviewed, total, deckId }: {
       </h2>
       <p className="mt-1 text-[color:var(--cahier-ink-soft)]">✓ {nReviewed}/{total}</p>
       <div className="mt-5 flex justify-center">
-        <Link href={`/decks/${deckId}`} className="cahier-btn">▦ Toute la liste</Link>
+        <Link href={`/decks/${deckId}`} className="cahier-btn">▦ Whole list</Link>
       </div>
     </div>
   );

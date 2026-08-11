@@ -20,7 +20,7 @@ function ViewInner() {
 
 export default function DeckViewPage() {
   return (
-    <Suspense fallback={<main className="p-6 text-[color:var(--fluo-ink-soft)]">Chargement…</main>}>
+    <Suspense fallback={<main className="p-6 text-[color:var(--fluo-ink-soft)]">Loading…</main>}>
       <ViewInner />
     </Suspense>
   );

@@ -51,7 +51,7 @@ export const UNIT_APP = 99;
 
 function journey(unit: number, seq: number): Journey {
   const band =
-    unit === UNIT_ALL ? "Toutes unités" : unit === UNIT_APP ? "Application" : `Unité ${unit}`;
+    unit === UNIT_ALL ? "All units" : unit === UNIT_APP ? "Application" : `Unité ${unit}`;
   return { unit, seq, key: unit * 1000 + seq, band };
 }
 
@@ -165,9 +165,9 @@ const SURFACE_APP = new Set([
   "Leaderboard",
   "Profile",
   "Deck",
-  "Leçon",
+  "Lesson",
   "Guide",
-  "À propos",
+  "About",
   "VocabulaRain (hi-scores)",
 ]);
 

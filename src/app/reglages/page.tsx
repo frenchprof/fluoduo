@@ -34,12 +34,12 @@ export default function ReglagesPage() {
   return (
     <CahierShell tabs={withActive(siteTabs(), "")} active="">
       <div className="mx-auto max-w-2xl px-2 pb-8 pt-2">
-        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">⚙️ Réglages</h1>
+        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">⚙️ Settings</h1>
 
         <div className="mt-2 flex gap-2 text-sm font-bold">
-          <Link href="/moi" className="no-underline text-[color:var(--cahier-accent,#2f4fa8)]">Mon progrès</Link>
-          <Link href="/leaderboard" className="no-underline text-[color:var(--cahier-accent,#2f4fa8)]">Classement</Link>
-          <Link href="/profil" className="no-underline text-[color:var(--cahier-accent,#2f4fa8)]">Profil</Link>
+          <Link href="/moi" className="no-underline text-[color:var(--cahier-accent,#2f4fa8)]">My Progress</Link>
+          <Link href="/leaderboard" className="no-underline text-[color:var(--cahier-accent,#2f4fa8)]">Leaderboard</Link>
+          <Link href="/profil" className="no-underline text-[color:var(--cahier-accent,#2f4fa8)]">Profile</Link>
         </div>
 
         <section
@@ -56,10 +56,10 @@ export default function ReglagesPage() {
             />
             <span>
               <span className="block font-bold text-[color:var(--cahier-ink)]">
-                Toujours afficher les mots sous les icônes
+                Always show labels under icons
               </span>
               <span className="block text-sm text-[color:var(--cahier-ink-soft)]">
-                Sinon, appuyez longuement sur une icône pour voir son nom.
+                Otherwise, press and hold an icon to see its name.
               </span>
             </span>
           </label>

@@ -228,7 +228,7 @@ export default function EcouTexte({
         ))}
         {!shell && (
           <button type="button" onClick={() => draw(count)} className="fluo-btn fluo-btn-sm fluo-btn-secondary ml-auto">
-            🎲 Un autre
+            🎲 Another
           </button>
         )}
       </div>
@@ -239,9 +239,9 @@ export default function EcouTexte({
         style={{ borderColor: accent, background: "var(--fluo-card-tint)" }}
       >
         <button type="button" onClick={() => playAll(false)} className="fluo-btn">
-          {playing ? "🔁 Réécouter" : "🎧 Écouter"}
+          {playing ? "🔁 Listen again" : "🎧 Listen"}
         </button>
-        <button type="button" onClick={() => playAll(true)} title="Écouter lentement" className="fluo-btn fluo-btn-sm">
+        <button type="button" onClick={() => playAll(true)} title="Listen slowly" className="fluo-btn fluo-btn-sm">
           🐌
         </button>
         <button
@@ -253,8 +253,8 @@ export default function EcouTexte({
             // demonstrates itself instead of describing itself.
             if (playing) playAll(false, next);
           }}
-          title={voice === "m" ? "Voix masculine — cliquer pour la voix féminine" : "Voix féminine — cliquer pour la voix masculine"}
-          aria-label={voice === "m" ? "Voix masculine" : "Voix féminine"}
+          title={voice === "m" ? "Male voice — tap for the female voice" : "Female voice — tap for the male voice"}
+          aria-label={voice === "m" ? "Male voice" : "Female voice"}
           className="fluo-btn fluo-btn-sm"
         >
           {voice === "m" ? "👨" : "👩"}
@@ -263,7 +263,7 @@ export default function EcouTexte({
           type="button"
           onClick={togglePause}
           disabled={!playing}
-          title={paused ? "Reprendre" : "Pause"}
+          title={paused ? "Resume" : "Pause"}
           className="fluo-btn fluo-btn-sm"
         >
           {paused ? "▶" : "⏸"}
@@ -274,7 +274,7 @@ export default function EcouTexte({
           disabled={!text || allRevealed}
           className="fluo-btn fluo-btn-sm fluo-btn-ghost ml-auto"
         >
-          👁 Tout révéler
+          👁 Reveal all
         </button>
         <button
           type="button"
@@ -299,7 +299,7 @@ export default function EcouTexte({
               <button
                 type="button"
                 onClick={() => playOne(s.fr)}
-                title="Écouter cette phrase"
+                title="Listen to this sentence"
                 className="shrink-0 self-center text-base transition hover:brightness-95"
               >
                 🔊
@@ -325,7 +325,7 @@ export default function EcouTexte({
               <button
                 type="button"
                 onClick={() => playOne(s.fr, true)}
-                title="Écouter lentement"
+                title="Listen slowly"
                 className="self-center rounded-full border-2 px-1.5 py-0.5 text-sm transition hover:bg-white/60"
                 style={{ borderColor: "var(--fluo-card-accent)" }}
               >
@@ -335,7 +335,7 @@ export default function EcouTexte({
                 <button
                   type="button"
                   onClick={() => check(i)}
-                  title="Corriger ce que j'ai écrit"
+                  title="Check what I wrote"
                   className="self-center rounded-full border-2 px-1.5 py-0.5 text-sm transition hover:bg-white/60"
                   style={{ borderColor: "var(--fluo-card-accent)" }}
                 >
@@ -346,7 +346,7 @@ export default function EcouTexte({
                 type="button"
                 onClick={() => reveal(i)}
                 disabled={revealed[i]}
-                title="Révéler cette phrase"
+                title="Reveal this sentence"
                 className="self-center rounded-full border-2 px-1.5 py-0.5 text-sm transition hover:bg-white/60 disabled:opacity-30"
                 style={{ borderColor: "var(--fluo-card-accent)" }}
               >
@@ -364,7 +364,7 @@ export default function EcouTexte({
           className="fluo-btn fluo-btn-sm fluo-btn-ghost w-full"
           style={{ borderColor: accent }}
         >
-          ♻️ Tout est déjà écouté — recommencer
+          ♻️ All heard — start over
         </button>
       )}
     </div>
@@ -382,8 +382,8 @@ export default function EcouTexte({
       right={text ? <>{worked}/{text.sentences.length}</> : undefined}
       cta={
         text
-          ? { label: "🎲 Un autre texte", onClick: () => draw(count) }
-          : { label: "🎧 Écouter", onClick: () => playAll(false) }
+          ? { label: "🎲 Another text", onClick: () => draw(count) }
+          : { label: "🎧 Listen", onClick: () => playAll(false) }
       }
     >
       {body}

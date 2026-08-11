@@ -25,7 +25,7 @@ import CuratedDeckTable from "./CuratedDeckTable";
 
 export function deckTabs(id: string): ShellTab[] {
   return [
-    { key: "home", label: "Accueil", emoji: "🏠", href: "/" },
+    { key: "home", label: "Home", emoji: "🏠", href: "/" },
     { key: "deck", label: "Deck", emoji: "📖", href: `/decks/view?id=${id}` },
     { key: "study", label: "Study", emoji: "🃏", href: `/decks/study?id=${id}` },
     // Auto-MCQ only for user decks — curated decks have authored pretests.

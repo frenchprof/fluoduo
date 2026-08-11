@@ -46,7 +46,7 @@ export default async function SioPage({ params }: { params: Promise<{ id: string
   return (
     <CahierShell
       tabs={[
-        { key: "home", label: "Accueil", emoji: "🏠", href: "/" },
+        { key: "home", label: "Home", emoji: "🏠", href: "/" },
         { key: "unit", label: sio.unitLabel, emoji: "📖", href: `/#unit-${sio.unit}` },
         { key: "sio", label: sio.id },
       ]}

@@ -45,15 +45,15 @@ export default function DeckSearch({
         autoFocus={autoFocus}
         onChange={(e) => { setQ(e.target.value); setOpen(true); }}
         onFocus={() => setOpen(true)}
-        placeholder="🔍 Chercher un mot · Search a word — bruine, aller, café…"
-        aria-label="Chercher un mot · Search a word"
+        placeholder="🔍 Search a word — bruine, aller, café…"
+        aria-label="Search a word"
         className="w-full rounded-full border-2 border-[color:var(--fluo-ink)] bg-white px-4 py-2 text-sm font-bold text-[color:var(--fluo-ink)] outline-none placeholder:font-normal focus:shadow-[3px_3px_0_rgba(0,0,0,0.18)]"
       />
       {open && q.trim() !== "" && (
         <div className="absolute inset-x-0 top-full z-30 mt-1.5 max-h-80 overflow-y-auto rounded-2xl border-2 border-[color:var(--fluo-ink)] bg-white p-1.5 shadow-[4px_4px_0_rgba(0,0,0,0.18)]">
           {hits.length === 0 && conj.length === 0 && (
             <p className="px-3 py-2 text-sm font-bold text-[color:var(--fluo-ink)]/60">
-              Aucun résultat pour « {q.trim()} »
+              No results for « {q.trim()} »
             </p>
           )}
           {/* Verb forms (« viens », « veut ») live in ConjugaZone, not decks. */}
@@ -102,7 +102,7 @@ export default function DeckSearch({
           ))}
           {hits.length > MAX_DECKS && (
             <p className="px-3 py-1.5 text-xs font-bold text-[color:var(--fluo-ink)]/60">
-              + {hits.length - MAX_DECKS} autres decks — voir l&rsquo;
+              + {hits.length - MAX_DECKS} more decks — see the
               <Link href="/activities" className="underline">Index</Link>
             </p>
           )}

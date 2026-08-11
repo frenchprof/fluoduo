@@ -38,8 +38,8 @@ export default function AccountButton() {
           try { await signInWithGoogle(); } catch {} // redirect flow navigates away on mobile
           setBusy(false);
         }}
-        aria-label="Se connecter"
-        title="Se connecter"
+        aria-label="Sign in"
+        title="Sign in"
         className="cahier-btn cahier-btn-sm whitespace-nowrap disabled:opacity-60"
       >
         {/* SVG power icon (Dan, 2026-07-26): the ⏻ CHARACTER is missing or
@@ -58,14 +58,14 @@ export default function AccountButton() {
     );
   }
 
-  const label = user.displayName || user.email || "Mon compte";
+  const label = user.displayName || user.email || "My account";
   const initial = (user.displayName || user.email || "?").trim().charAt(0).toUpperCase();
 
   return (
     <div className="relative">
       <button
         type="button"
-        aria-label="Mon compte"
+        aria-label="My account"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
         className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[color:var(--cahier-ink)] bg-[color:var(--cahier-hl,#eaff00)] text-sm font-black text-[color:var(--cahier-ink)]"

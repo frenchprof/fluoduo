@@ -74,27 +74,27 @@ export default function HomeDashboard() {
           and the two actions — grouped IN the card they describe,
           side by side (the button-grouping rule). */}
       <section
-        aria-label="Votre progression"
+        aria-label="Your progress"
         className="mb-7 rounded-2xl border-2 border-[color:var(--fluo-ink)] p-3 shadow-[5px_5px_0_var(--fluo-hl)]"
         style={{ background: "linear-gradient(120deg, #fbe3ec 0%, #def3f5 45%, #ecf7cf 100%)" }}
       >
         <div className="flex flex-wrap items-center gap-1">
-          <Link href="/profil" className={`${chip} hover:-translate-y-0.5 !px-1.5`} title={`Votre niveau — N${lvl.level} · ${lvl.name}`}>
+          <Link href="/profil" className={`${chip} hover:-translate-y-0.5 !px-1.5`} title={`Your level — N${lvl.level} · ${lvl.name}`}>
             🎚️ <RankBadge level={lvl.level} name={lvl.name} compact className="text-xs" />
           </Link>
           <span className={chip}>✓ {doneTotal}/{SIOS.length}</span>
           {/* Progressive disclosure (Dan, 2026-07-20: "hide the zeroes until
               they are no longer zero"). */}
           {progress.streak > 0 && (
-            <span className={chip} title={mult > 1 ? `Série active : XP ×${mult}` : "Série de jours"}>
+            <span className={chip} title={mult > 1 ? `Streak active: XP ×${mult}` : "Day streak"}>
               🔥 {progress.streak}{mult > 1 && <b className="text-[color:var(--fluo-danger)]"> ×{mult}</b>}
             </span>
           )}
           {progress.xp > 0 && (
-            <Link href="/leaderboard" className={`${chip} hover:-translate-y-0.5`} title="Classement · votre rang">⭐ {progress.xp}</Link>
+            <Link href="/leaderboard" className={`${chip} hover:-translate-y-0.5`} title="Leaderboard · your rank">⭐ {progress.xp}</Link>
           )}
           {progress.gems > 0 && (
-            <Link href="/profil" className={`${chip} hover:-translate-y-0.5`} title="Boutique">💎 {progress.gems}</Link>
+            <Link href="/profil" className={`${chip} hover:-translate-y-0.5`} title="Shop">💎 {progress.gems}</Link>
           )}
           <button
             type="button"
@@ -114,7 +114,7 @@ export default function HomeDashboard() {
         <div className="mt-2 flex items-center gap-2.5">
           <div className="min-w-0 flex-1 space-y-1">
             <div className="flex items-center gap-2">
-              <span className="fluo-mono w-12 shrink-0 text-[10px] font-bold text-[color:var(--fluo-ink)]">Cours</span>
+              <span className="fluo-mono w-12 shrink-0 text-[10px] font-bold text-[color:var(--fluo-ink)]">Course</span>
               <span
                 className="h-[3px] flex-1 overflow-hidden rounded-full bg-[color:var(--fluo-ink)]/15"
                 role="progressbar"
@@ -144,8 +144,8 @@ export default function HomeDashboard() {
             {activeSio && (
               <Link
                 href={`/unit/${activeSio.unit}#${activeSio.id}`}
-                aria-label="Continuer"
-                title={`Continuer — « ${activeSio.topic} », the next objective after your latest 'done'.`}
+                aria-label="Continue"
+                title={`Continue — « ${activeSio.topic} », the next objective after your latest 'done'.`}
                 className="flex h-7 w-8 items-center justify-center rounded-lg border-2 text-sm text-white shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
                 style={{ background: accent, borderColor: accent }}
               >
@@ -155,7 +155,7 @@ export default function HomeDashboard() {
             <Link
               href="/reviser"
               aria-label="DéjàRevu"
-              title="DéjàRevu — vos mots à revoir"
+              title="DéjàRevu — your words to review"
               className="relative flex h-7 w-8 items-center justify-center rounded-lg border-2 border-[color:var(--fluo-ink)] bg-white/80 text-sm text-[color:var(--fluo-ink)] shadow-[2px_2px_0_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5"
             >
               <span aria-hidden>🔁</span>
@@ -170,7 +170,7 @@ export default function HomeDashboard() {
       {/* Streak momentum (Dan, 2026-07-08, episode model): counts done-in-order
           from the start; a skip simply stops the run — never blocks. */}
       {seqRun >= 2 && seqRun < SIOS.length && (
-        <p className="fluo-mono mb-2 text-xs font-black text-[color:var(--fluo-ink)]">🔗 {seqRun} d&rsquo;affilée !</p>
+        <p className="fluo-mono mb-2 text-xs font-black text-[color:var(--fluo-ink)]">🔗 {seqRun} in a row!</p>
       )}
 
       <RoadMap progress={progress} activeId={activeId} accent={accent} />

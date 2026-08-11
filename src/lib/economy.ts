@@ -108,20 +108,20 @@ export function badgeContext(p: Progress): BadgeCtx {
 }
 
 export const BADGES: BadgeDef[] = [
-  { id: "premier-pas", icon: "🎉", label: "Premier pas", desc: "Finir votre première SIO", gems: 5, earned: (p) => p.doneSios.length >= 1 },
-  { id: "en-route", icon: "🧭", label: "En route", desc: "Finir 10 SIO", gems: 10, earned: (p) => p.doneSios.length >= 10 },
-  { id: "a-mi-chemin", icon: "🏔️", label: "À mi-chemin", desc: "Finir 25 SIO", gems: 20, earned: (p) => p.doneSios.length >= 25 },
-  { id: "diplome", icon: "🎓", label: "Diplômé", desc: "Finir 50 SIO", gems: 50, earned: (p) => p.doneSios.length >= 50 },
-  { id: "assidu-3", icon: "🔥", label: "Assidu", desc: "Série de 3 jours", gems: 5, earned: (p) => p.streak >= 3 },
-  { id: "en-feu", icon: "🔥", label: "En feu", desc: "Série de 7 jours", gems: 10, earned: (p) => p.streak >= 7 },
-  { id: "inarretable", icon: "🌟", label: "Inarrêtable", desc: "Série de 30 jours", gems: 30, earned: (p) => p.streak >= 30 },
-  { id: "collectionneur", icon: "📚", label: "Collectionneur", desc: "Maîtriser 50 mots", gems: 15, earned: (_p, c) => c.mastered >= 50 },
+  { id: "premier-pas", icon: "🎉", label: "Premier pas", desc: "Finish your first SIO", gems: 5, earned: (p) => p.doneSios.length >= 1 },
+  { id: "en-route", icon: "🧭", label: "En route", desc: "Finish 10 SIOs", gems: 10, earned: (p) => p.doneSios.length >= 10 },
+  { id: "a-mi-chemin", icon: "🏔️", label: "À mi-chemin", desc: "Finish 25 SIOs", gems: 20, earned: (p) => p.doneSios.length >= 25 },
+  { id: "diplome", icon: "🎓", label: "Diplômé", desc: "Finish 50 SIOs", gems: 50, earned: (p) => p.doneSios.length >= 50 },
+  { id: "assidu-3", icon: "🔥", label: "Assidu", desc: "3-day streak", gems: 5, earned: (p) => p.streak >= 3 },
+  { id: "en-feu", icon: "🔥", label: "En feu", desc: "7-day streak", gems: 10, earned: (p) => p.streak >= 7 },
+  { id: "inarretable", icon: "🌟", label: "Inarrêtable", desc: "30-day streak", gems: 30, earned: (p) => p.streak >= 30 },
+  { id: "collectionneur", icon: "📚", label: "Collectionneur", desc: "Master 50 words", gems: 15, earned: (_p, c) => c.mastered >= 50 },
   // "Savant", not "Érudit" — Érudit is the N9 RANK name; a badge sharing it
   // read as the same thing (Dan, 2026-07-08). Ids stay stable (already earned).
-  { id: "erudit", icon: "🦉", label: "Savant", desc: "Maîtriser 200 mots", gems: 30, earned: (_p, c) => c.mastered >= 200 },
+  { id: "erudit", icon: "🦉", label: "Savant", desc: "Master 200 words", gems: 30, earned: (_p, c) => c.mastered >= 200 },
   // The level badges carry their RANK names so the two systems visibly agree.
-  { id: "niveau-5", icon: "🎚️", label: "Bavard", desc: "Atteindre le niveau 5 · Bavard", gems: 10, earned: (_p, c) => c.level >= 5 },
-  { id: "niveau-10", icon: "👑", label: "Maître", desc: "Atteindre le niveau 10 · Maître", gems: 25, earned: (_p, c) => c.level >= 10 },
+  { id: "niveau-5", icon: "🎚️", label: "Bavard", desc: "Reach level 5 · Bavard", gems: 10, earned: (_p, c) => c.level >= 5 },
+  { id: "niveau-10", icon: "👑", label: "Maître", desc: "Reach level 10 · Maître", gems: 25, earned: (_p, c) => c.level >= 10 },
 ];
 
 export function badgeById(id: string): BadgeDef | undefined {

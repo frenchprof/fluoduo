@@ -553,7 +553,7 @@ export default function LetrisGame({
               onClick={() => { setStudied(true); autoMusic(); }}
               className="mt-5 w-full rounded-xl border-2 border-b-4 border-sky-300 bg-sky-100 px-4 py-2 text-lg font-black text-sky-800 transition hover:bg-sky-50 active:translate-y-[2px] active:border-b-2"
             >
-              ▶ C'est parti !
+              ▶ Let's go!
             </button>
           </div>
         </div>
@@ -601,24 +601,24 @@ export default function LetrisGame({
       {phaseMsg && (() => {
         const M: Record<PhaseMsg, { emoji: string; title: string; body: React.ReactNode; btn: string }> = {
           night: {
-            emoji: "🌙", title: "La nuit tombe…",
+            emoji: "🌙", title: "Night falls…",
             body: <>You&rsquo;ve mastered every word — so night falls. In the dark a letter or two on each drop is <b>too faint to read</b>. Trust your memory of the word. The rain and the music <b>slow right down</b> to help you think.</>,
-            btn: "Continuer dans le noir 🌙",
+            btn: "Continue in the dark 🌙",
           },
           storm: {
-            emoji: "⛈️", title: "L'orage arrive !",
+            emoji: "⛈️", title: "The storm is coming!",
             body: <>You read the dark like a pro — so the storm rolls in: <b>full speed again</b>, letters <b>still too faint to read</b>. Memory at full tempo. Sort every word once more to reach the dawn.</>,
-            btn: "Affronter l'orage ⛈️",
+            btn: "Face the storm ⛈️",
           },
           dawn: {
-            emoji: "🌅", title: "Le jour se lève !",
+            emoji: "🌅", title: "Day breaks!",
             body: <>You read the rain blind, at full speed — <b>bravo !</b> The sun is back, the letters are clear, and the whole cycle starts fresh. Can you bring the night back?</>,
-            btn: "Continuer au soleil 🌅",
+            btn: "Continue in the sun 🌅",
           },
           mercy: {
-            emoji: "🌙", title: "L'orage s'éloigne…",
+            emoji: "🌙", title: "The storm passes…",
             body: <>Three drops went astray in the storm, so the clouds part back to a calm night: <b>slow rain again</b>, letters still faint. Re-prove every word in the dark to summon the storm once more.</>,
-            btn: "Reprendre dans le noir 🌙",
+            btn: "Resume in the dark 🌙",
           },
         };
         const m = M[phaseMsg];

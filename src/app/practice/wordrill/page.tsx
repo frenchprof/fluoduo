@@ -49,7 +49,7 @@ function buildDrillDeck(unit: number | "all"): Collection {
       items.push({ ...it, fr, tags: [] });
     }
   }
-  const label = unit === "all" ? "tout" : UNIT_META[unit]?.label ?? `Unité ${unit}`;
+  const label = unit === "all" ? "all" : UNIT_META[unit]?.label ?? `Unité ${unit}`;
   return {
     id: unit === "all" ? "wordrill" : `wordrill-u${unit}`,
     title: `WorDrill — ${label}`,
@@ -94,7 +94,7 @@ export default function WorDrillPage() {
             className="mb-3 flex w-full items-center justify-between rounded-xl border-2 border-[color:var(--cahier-ink)] bg-[color:var(--cahier-hl,#eaff00)] px-4 py-3 text-left font-black text-[color:var(--cahier-ink)] shadow-[3px_3px_0_var(--cahier-ink)] transition hover:-translate-y-0.5"
           >
             <span>🌍 Unités 0–4</span>
-            <span className="fluo-mono text-sm">{decks.get("all")!.items.length} mots</span>
+            <span className="fluo-mono text-sm">{decks.get("all")!.items.length} words</span>
           </button>
           <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
             {UNITS.map((u) => {
@@ -112,7 +112,7 @@ export default function WorDrillPage() {
                     {meta.emoji} {meta.label}
                     {meta.subtitle && <span lang="fr" className="ml-1.5 hidden text-sm font-bold text-[color:var(--cahier-ink-soft)] sm:inline">{meta.subtitle}</span>}
                   </span>
-                  <span className="fluo-mono shrink-0 pl-2 text-sm" style={{ color: UNIT_ACCENTS[u] }}>{n} mots</span>
+                  <span className="fluo-mono shrink-0 pl-2 text-sm" style={{ color: UNIT_ACCENTS[u] }}>{n} words</span>
                 </button>
               );
             })}
@@ -122,10 +122,10 @@ export default function WorDrillPage() {
         <>
           <div className="mx-auto flex max-w-2xl items-center gap-3 px-4 pt-4">
             <button type="button" onClick={() => setScope(null)} className="fluo-btn fluo-btn-sm fluo-btn-ghost">
-              ← Unités
+              ← Units
             </button>
             <h1 className="cahier-display text-xl font-black text-[color:var(--cahier-ink)]">
-              🎙️ {deck.title} <span className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">· {deck.items.length} mots</span>
+              🎙️ {deck.title} <span className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">· {deck.items.length} words</span>
             </h1>
           </div>
           {/* key: switching scope must reset the run, not resume the old one */}

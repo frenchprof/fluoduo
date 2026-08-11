@@ -354,7 +354,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
       <button
         type="button"
         onClick={onClose}
-        aria-label="Fermer"
+        aria-label="Close"
         className="float-right rounded-lg border-2 border-slate-300 bg-white px-2 py-0.5 text-sm font-black text-slate-600 hover:border-slate-500"
       >
         ✕
