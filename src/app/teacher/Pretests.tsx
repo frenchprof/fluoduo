@@ -43,8 +43,9 @@ const SORTS: SortOption<PretestAgg>[] = [
 ];
 
 /** Authored pretests carry a title; the per-deck picture pretests are keyed
- *  `picture:<deck>` and name themselves after the deck. */
-function titleFor(pretestId: string): string {
+ *  `picture:<deck>` and name themselves after the deck. Exported for the
+ *  Reports tab's accuracy-by-group CSV — one name per group, both tabs. */
+export function pretestTitle(pretestId: string): string {
   const authored = getPretest(pretestId);
   if (authored) return authored.title;
   const deck = pretestId.startsWith("picture:") ? pretestId.slice("picture:".length) : null;
@@ -89,7 +90,7 @@ export default function Pretests({ events }: { events: Ev[] }) {
       return {
         pretestId,
         num: pretestNumber(pretestId),
-        title: titleFor(pretestId),
+        title: pretestTitle(pretestId),
         attempts,
         misses,
         missRate: attempts > 0 ? misses / attempts : 0,
