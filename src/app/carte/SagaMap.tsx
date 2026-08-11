@@ -172,25 +172,42 @@ export default function SagaMap() {
     return () => io.disconnect();
   }, [activeId, w]);
 
-  // Diorama parallax: each landmark drifts against the scroll by its depth,
-  // measured from its band's offset to the viewport centre. Transform-only,
-  // one rAF per scroll frame, skipped entirely under reduced motion.
+  // The 3D scroll feel (Dan, 2026-08-11: "There is a 3d feel as u scroll.
+  // That effect is not ported over"). Candy Crush renders a tilted camera
+  // over a 3D world; the CSS translation of that is per-object screen-space
+  // depth: everything on the map carries its document y (data-pop-y) and an
+  // optional drift rate (data-depth), and each scroll frame scales it by
+  // where it sits on screen — small near the top (far from camera), full
+  // size low on screen (near) — while landmarks also drift at their own
+  // rate. No layout reads in the loop (positions are stamped at render),
+  // transform-only writes, one rAF per frame, and nothing moves under
+  // reduced motion.
   useEffect(() => {
     const root = wrapRef.current;
     if (!root || w === 0) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const bands = Array.from(root.querySelectorAll<HTMLElement>("[data-band]"));
+    const pops = Array.from(root.querySelectorAll<HTMLElement>("[data-pop-y]")).map((el) => ({
+      el,
+      y: Number(el.dataset.popY),
+      d: Number(el.dataset.depth ?? 0),
+      // Class-borne transforms (the ateliers' 45° diamond) would be clobbered
+      // by the inline write — carry them through it instead.
+      base: el.dataset.popBase ?? "",
+    }));
     let raf = 0;
     const tick = () => {
       raf = 0;
-      const mid = window.innerHeight / 2;
-      for (const band of bands) {
-        const r = band.getBoundingClientRect();
-        if (r.bottom < -300 || r.top > window.innerHeight + 300) continue;
-        const off = r.top + r.height / 2 - mid;
-        for (const el of Array.from(band.querySelectorAll<HTMLElement>("[data-depth]"))) {
-          el.style.transform = `translate3d(0, ${(off * Number(el.dataset.depth)).toFixed(1)}px, 0)`;
-        }
+      const vh = window.innerHeight;
+      const sy = window.scrollY;
+      const mid = vh / 2;
+      for (const p of pops) {
+        const scrY = p.y - sy;
+        if (scrY < -280 || scrY > vh + 280) continue;
+        // 0 at the top of the viewport → 1 at the bottom, gently clamped.
+        const t = Math.min(Math.max(scrY / vh, -0.15), 1.15);
+        const s = 0.86 + 0.3 * t;
+        const dy = p.d ? ((scrY - mid) * p.d).toFixed(1) : "0";
+        p.el.style.transform = `translate3d(0, ${dy}px, 0) scale(${s.toFixed(3)}) ${p.base}`;
       }
     };
     const onScroll = () => {
@@ -321,6 +338,8 @@ export default function SagaMap() {
                   {STUMPS.map((st, j) => (
                     <span
                       key={`st${j}`}
+                      data-pop-y={Math.round(b.top + (st.y / 100) * b.height)}
+                      data-depth={0.05}
                       className="saga-stump absolute"
                       style={{ left: `${st.x}%`, top: `${st.y}%`, width: st.w, height: st.w * 0.72 }}
                     />
@@ -328,6 +347,7 @@ export default function SagaMap() {
                   {DECOR[u].map((it, j) => (
                     <span
                       key={j}
+                      data-pop-y={Math.round(b.top + (it.y / 100) * b.height)}
                       data-depth={it.d}
                       className="absolute block"
                       style={{ left: `${it.x}%`, top: `${it.y}%`, fontSize: it.s }}
@@ -343,9 +363,9 @@ export default function SagaMap() {
 
             {/* Sky over the FINAL. */}
             <div aria-hidden className="absolute inset-x-0 top-0" style={{ height: 260, background: "linear-gradient(rgba(178,229,240,0.95), rgba(178,229,240,0))" }}>
-              <span className="saga-cloud" style={{ left: "12%", top: 42, width: 90, height: 30 }} />
-              <span className="saga-cloud" style={{ left: "64%", top: 96, width: 120, height: 36 }} />
-              <span className="saga-cloud" style={{ left: "38%", top: 168, width: 70, height: 24 }} />
+              <span className="saga-cloud" data-pop-y={42} data-depth={0.03} style={{ left: "12%", top: 42, width: 90, height: 30 }} />
+              <span className="saga-cloud" data-pop-y={96} data-depth={0.03} style={{ left: "64%", top: 96, width: 120, height: 36 }} />
+              <span className="saga-cloud" data-pop-y={168} data-depth={0.03} style={{ left: "38%", top: 168, width: 70, height: 24 }} />
             </div>
 
             {/* Terrain + road: white rim → cream plateau → rivers + bridges →
@@ -400,8 +420,9 @@ export default function SagaMap() {
                   >
                     <Link
                       href={`/unit/${st.unit}`}
+                      data-pop-y={Math.round(cy)}
                       title={`${meta.label} — ${chapter.scenario} · ${done}/${inUnit.length}`}
-                      className={`flex flex-col items-center transition hover:-translate-y-0.5 ${complete ? "saga-gate-open" : ""}`}
+                      className={`flex flex-col items-center ${complete ? "saga-gate-open" : ""}`}
                     >
                       <span
                         className="flex w-[218px] flex-col items-center rounded-t-[109px] border-[6px] border-b-0 px-5 pb-3 pt-4 text-center"
@@ -432,9 +453,10 @@ export default function SagaMap() {
                   <div key="finale" className={`absolute z-[2] ${hue}`} style={{ left: cx, top: cy, transform: "translate(-50%, -50%)" }}>
                     <Link
                       href="/practice/grammarathon/finale"
+                      data-pop-y={Math.round(cy)}
                       title="GramMarathon Final — 50 questions, all lessons, weighted to your weak spots"
                       aria-label="GramMarathon Final"
-                      className="saga-ring flex rounded-3xl p-[7px] transition hover:-translate-y-0.5"
+                      className="saga-ring flex rounded-3xl p-[7px]"
                     >
                       <span
                         className="saga-node flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-slate-900"
@@ -487,9 +509,11 @@ export default function SagaMap() {
                   <Link
                     ref={sActive ? activeRef : undefined}
                     href={`/unit/${st.unit}#${st.id}`}
+                    data-pop-y={Math.round(cy)}
+                    data-pop-base={kind === "production" ? "rotate(45deg)" : undefined}
                     title={`${st.id} · ${st.topic} (${KIND_LABEL[kind]})`}
                     aria-label={`${st.id} · ${st.topic} (${KIND_LABEL[kind]})`}
-                    className={`saga-ring flex transition hover:-translate-y-0.5 ${ringShape} ${sActive ? "fluo-node-active p-[8px]" : "p-[6px]"} ${
+                    className={`saga-ring flex ${ringShape} ${sActive ? "fluo-node-active p-[8px]" : "p-[6px]"} ${
                       !sDone && !sActive ? "opacity-85" : ""
                     }`}
                   >
