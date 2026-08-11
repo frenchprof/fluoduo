@@ -62,3 +62,6 @@ jobs:
 
       - name: Cohort reset — term marker, board scope, teacher toggle
         run: python3 verify/verify21.py
+
+      - name: Patch 25 (hero rows) — hairline hero, actions grouped
+        run: python3 verify/verify25.py
