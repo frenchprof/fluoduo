@@ -59,3 +59,6 @@ jobs:
 
       - name: Patch 20-21 — DrillShell phase 1 (shell, 4 routes, SioModal, legends)
         run: python3 verify/verify20.py
+
+      - name: Cohort reset — term marker, board scope, teacher toggle
+        run: python3 verify/verify21.py

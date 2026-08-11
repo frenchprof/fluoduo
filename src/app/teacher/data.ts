@@ -11,6 +11,7 @@
  */
 
 import { EXCLUDED_BOARD_UIDS, HIDDEN_ROSTER_UID_PREFIXES, isHiddenRosterName } from "@/lib/accountAliases";
+import { TERM_START_MS, isCurrentTerm } from "@/lib/term";
 
 /**
  * Student-identifying roster maps — fetched at runtime, NEVER bundled.
@@ -90,6 +91,9 @@ export type BoardRow = {
   level: number;
   gems: number;
   streak: number;
+  /** Cohort marker (src/lib/term.ts); absent on rows that predate the
+   *  2026-08-11 reset. */
+  term?: string;
 };
 
 export type Learner = {
@@ -99,6 +103,11 @@ export type Learner = {
   uids: string[];
   /** Excluded from the teacher page entirely (accountAliases hidden lists). */
   hidden?: boolean;
+  /** Belongs to the current cohort (term.ts): board row carries CURRENT_TERM,
+   *  or the account was first seen after the reset. The teacher page shows
+   *  only these by default — prior cohorts stay behind the "all cohorts"
+   *  toggle, and nothing is deleted. */
+  currentTerm?: boolean;
   name: string;
   email: string | null;
   isTeacher: boolean;
@@ -228,6 +237,7 @@ export async function fetchLeaderboard(): Promise<Map<string, BoardRow>> {
       level: num(d.level) ?? 1,
       gems: num(d.gems) ?? 0,
       streak: num(d.streak) ?? 0,
+      term: str(d.term) ?? undefined,
     });
   });
   return out;
@@ -307,6 +317,7 @@ export function buildRoster(events: Ev[], board: Map<string, BoardRow>, meta: Ro
         level: Math.max(t.board?.level ?? 1, l.board?.level ?? 1),
         gems: (t.board?.gems ?? 0) + (l.board?.gems ?? 0),
         streak: Math.max(t.board?.streak ?? 0, l.board?.streak ?? 0),
+        term: canonSide.board?.term ?? t.board?.term ?? l.board?.term,
       };
     }
   }
@@ -321,6 +332,14 @@ export function buildRoster(events: Ev[], board: Map<string, BoardRow>, meta: Ro
     l.hidden =
       isHiddenRosterName(l.name) ||
       l.uids.some((u) => EXCLUDED_BOARD_UIDS.has(u) || HIDDEN_ROSTER_UID_PREFIXES.some((pre) => u.startsWith(pre)));
+    // Cohort reset (Dan, 2026-08-11): current = the board row says so, or the
+    // account's first trace postdates the reset (covers a freshman's first
+    // minutes, before their first leaderboard publish). Teachers are always
+    // "current" so the include-teachers toggle keeps working.
+    l.currentTerm =
+      l.isTeacher ||
+      isCurrentTerm(l.board?.term) ||
+      (!!l.firstSeen && l.firstSeen.getTime() >= TERM_START_MS);
   }
   return merged.sort(
     (a, b) => (b.lastSeen?.getTime() ?? 0) - (a.lastSeen?.getTime() ?? 0),

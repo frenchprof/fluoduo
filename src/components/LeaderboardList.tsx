@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { signInWithGoogle, useAuthUser } from "@/lib/firebase/auth";
 import { levelForXp } from "@/lib/economy";
 import { ALIAS_BOARD_NAMES, ALIAS_CANON_NAMES, EXCLUDED_BOARD_UIDS } from "@/lib/accountAliases";
+import { isCurrentTerm } from "@/lib/term";
 import RankBadge from "@/components/RankBadge";
 
 type BoardRow = {
@@ -23,6 +24,7 @@ type BoardRow = {
   level?: number;
   gems?: number;
   streak?: number;
+  term?: string;
 };
 // NOT `?? r.gems` (bug, to 2026-08-10): gems are SPENT in the Boutique, so a
 // learner who bought a colour dropped down a board that claims to rank XP.
@@ -57,7 +59,13 @@ export default function LeaderboardList() {
         if (!cancelled) {
           let list = snap.docs
             .map((d) => ({ uid: d.id, ...(d.data() as Omit<BoardRow, "uid">) }))
-            .filter((r) => !EXCLUDED_BOARD_UIDS.has(r.uid));
+            .filter((r) => !EXCLUDED_BOARD_UIDS.has(r.uid))
+            // Cohort reset (Dan, 2026-08-11): the board shows the CURRENT
+            // term only. Rows without a term predate the reset; legacy
+            // students' rows get stamped "legacy" on their next sign-in.
+            // Nothing is deleted — prior-term rows stay in Firestore for
+            // the research pipeline (work/active-cohort.mjs).
+            .filter((r) => isCurrentTerm(r.term));
           // One student, two accounts (Dan, 2026-07-16): fold alias rows into
           // the canonical row — XP and gems ADD (both are her effort), streak
           // takes the max. Rows carry no email, so the match is by the known

@@ -47,6 +47,7 @@ import {
 } from "@/lib/economy";
 import { dayKey, previousDay, learnerZone } from "@/lib/dayKey";
 import { buildEvidence } from "@/lib/evidence";
+import { CURRENT_TERM } from "@/lib/term";
 
 export type Progress = {
   doneSios: string[];
@@ -58,6 +59,10 @@ export type Progress = {
   itemSrs: Record<string, ItemSrs>;
   badges: string[]; // earned badge ids
   cosmetics: { owned: string[]; equipped: Record<string, string> };
+  /** Cohort marker (src/lib/term.ts). Stamped once — CURRENT_TERM for
+   *  accounts born after the 2026-08-11 reset, LEGACY_TERM for accounts
+   *  whose remote doc predates the field (progressSync decides). */
+  term?: string;
 };
 
 export type ItemSrs = {
@@ -76,7 +81,7 @@ const STORAGE_KEY = "fluolingo:progress";
 // todayStr() replaced by dayKey() - learner-local zone, 04:00 rollover.
 
 export function defaultProgress(): Progress {
-  return { doneSios: [], gems: 0, xp: 0, streak: 0, lastActiveDay: null, itemSrs: {}, badges: [], cosmetics: { owned: [], equipped: {} } };
+  return { doneSios: [], gems: 0, xp: 0, streak: 0, lastActiveDay: null, itemSrs: {}, badges: [], cosmetics: { owned: [], equipped: {} }, term: CURRENT_TERM };
 }
 
 /** Fill in fields added after a learner's blob was first written, and migrate

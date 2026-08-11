@@ -55,7 +55,12 @@ service cloud.firestore {
         && request.resource.data.gems <= 1000000
         && request.resource.data.streak is int
         && request.resource.data.streak >= 0
-        && request.resource.data.streak <= 100000;
+        && request.resource.data.streak <= 100000
+        // Cohort marker (2026-08-11 reset): optional so legacy merge:true
+        // updates keep passing; when present it must be a short string.
+        && (!('term' in request.resource.data)
+            || (request.resource.data.term is string
+                && request.resource.data.term.size() <= 20));
     }
     function validSession() {
       return request.resource.data.keys().hasOnly(
@@ -214,7 +219,7 @@ service cloud.firestore {
       // user's own row (its excluded-user fallback). Values are what matter.
       allow create: if isOwner(uid) && !isAdmin() && !isExcludedFromLeaderboard()
         && request.resource.data.keys().hasOnly(
-            ['name', 'xp', 'level', 'gems', 'streak', 'updatedAt'])
+            ['name', 'xp', 'level', 'gems', 'streak', 'term', 'updatedAt'])
         && validLeaderboardRow();
       allow update: if isOwner(uid) && !isAdmin() && !isExcludedFromLeaderboard()
         && validLeaderboardRow();
