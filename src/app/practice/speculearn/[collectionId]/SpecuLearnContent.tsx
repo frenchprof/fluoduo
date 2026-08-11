@@ -25,6 +25,7 @@ import { recordItemResult } from "@/lib/progress";
 import { sfx } from "@/games/audio/sfx";
 import { logEvent } from "@/lib/firebase/usage";
 import { BUILDING_EMOJI, SPECULEARN_EXCLUDED_ITEMS } from "@/lib/collections/speculearnReady";
+import { deaccent, normalize } from "@/lib/practice/cloze";
 import { useChoiceKeys, CHOICE_KEYS_HINT } from "@/lib/useChoiceKeys";
 import PHOTO_ITEMS from "@/content/devine-aliments.json";
 
@@ -39,14 +40,19 @@ const MASC = "#0b63c4";
 const FEM = "#e0567f";
 const INK = "var(--cahier-ink)";
 
-/* Accent-tolerant, article-optional matching — as in the original. */
-const strip = (t: string) =>
-  t.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z' ]/g, " ").replace(/\s+/g, " ").trim();
+/* Accent-tolerant, article-optional matching. The transforms come from THE
+   grader (cloze.ts) since the unification (2026-08-11); only the SPEECH
+   policy stays local — leading article optional, containment rather than
+   equality (an ASR transcript wraps the word in a sentence), and a
+   space-collapsed second pass. The l' elision is peeled BEFORE normalize
+   deletes apostrophes, so « l'eau »'s base word stays "eau". */
+const strip = (t: string) => deaccent(normalize(t));
 const baseWord = (w: string) =>
-  strip(w).replace(/^(les?|la|l'|une?|des|du|de la) /, "").replace(/^l'/, "");
+  strip(w.replace(/^l['’]/i, "")).replace(/^(les?|la|une?|des|du|de la) /, "");
 const saidRight = (heard: string, w: string) => {
   const h = strip(heard);
-  return h.includes(baseWord(w)) || h.replace(/ /g, "").includes(baseWord(w).replace(/[' ]/g, ""));
+  const b = baseWord(w);
+  return h.includes(b) || h.replace(/ /g, "").includes(b.replace(/ /g, ""));
 };
 const shuffle = <T,>(a: T[]): T[] => {
   const b = a.slice();

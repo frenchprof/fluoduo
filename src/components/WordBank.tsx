@@ -16,9 +16,11 @@
  */
 
 import { useEffect, useMemo, useState } from "react";
+import { deaccent } from "@/lib/practice/cloze";
 
-const norm = (w: string) =>
-  w.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+// Dedup key only, NOT grading — but it folds accents the same way THE
+// grader does, so a distractor chip never collides with an answer token.
+const norm = (w: string) => deaccent(w.toLowerCase());
 
 function shuffle<T>(a: T[]): T[] {
   const b = [...a];
