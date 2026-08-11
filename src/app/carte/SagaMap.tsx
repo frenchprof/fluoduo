@@ -2,25 +2,32 @@
 
 /**
  * 🗺️ La Carte — the saga-map journey view (Dan, 2026-08-11: "a UI inspired
- * by Candy Crush for my 50 SIOs"). What Candy Crush's 3D scroll map does,
- * translated to FluOlinGo:
+ * by Candy Crush for my 50 SIOs"; same day, four reference screenshots of the
+ * real Candy Crush Saga map set the visual bar). What the reference shows,
+ * rebuilt with CSS/SVG only (no King assets):
+ *
+ *   · TERRAIN, not tinted stripes: a cream plateau winds with the road over
+ *     each world's ground, a dark dotted foreground strip closes each world,
+ *     wooden stumps edge the plateau, a river with a plank bridge crosses
+ *     between chapters, clouds drift over the FINAL's horizon.
+ *   · MACARON STOPS: every stop sits on a golden frill ring; to-come stops
+ *     are pink candy discs (ateliers purple — the reference's "hard level"),
+ *     done stops wear their unit accent + ✓ (the 2026-07-13 contrast rule).
+ *   · THE CURRENT LEVEL is the big blue orb with your avatar chip beside it —
+ *     the map's one loudest thing, still glowing (the 2026-07-08 mechanic).
+ *   · HUD: slim candy-pink top bar — back, ✓ done-counter, 🔥 streak, 💎 gems
+ *     (progress counters are learner feedback — keep; litmus rule).
  *
  *   · ONE continuous vertical path — SIO-001 at the BOTTOM, the 🏁 FINAL at
- *     the top; the page loads centred on your active stop and you flick up
- *     and down with native touch inertia (the window scroll IS the map).
- *   · FIVE themed worlds, one per unité, each wearing its chapter's colours
- *     with drifting landmark décor on two parallax depths (diorama feel).
- *   · MILESTONE GATES — each chapter opens with an arch across the path
- *     carrying its name and done-counter; a completed chapter's arch turns
- *     gold. Arches are scenery you walk through, NEVER barriers — nothing on
- *     this map locks (Dan, 2026-07-01).
- *   · RETURN-TO-CURRENT — scroll away from your active stop and a 📍 button
- *     pops up to snap the view back to it.
+ *     the top; the page loads centred on your active stop (native touch
+ *     inertia: the window scroll IS the map).
+ *   · MILESTONE GATES — each chapter opens with an arch carrying its name and
+ *     done-counter, gold once complete. Arches are scenery you walk through,
+ *     NEVER barriers — nothing on this map locks (Dan, 2026-07-01).
+ *   · RETURN-TO-CURRENT — scroll away and a 📍 button snaps the view back.
  *
- * Same journey data as components/RoadMap (the compact Home overview); this
- * page is the full-screen scenic version. Stops keep RoadMap's language:
- * shape = primary focus, solid = done, glow = you-are-here, fog = chapters
- * beyond the current one (tappable as ever).
+ * Same journey data as components/RoadMap; stops keep RoadMap's language:
+ * shape = primary focus, fog = chapters beyond the current one (tappable).
  */
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -49,8 +56,8 @@ const STOPS: Stop[] = (() => {
   return out;
 })();
 
-const STEP = 112; // vertical px per stop
-const PAD_TOP = 170;
+const STEP = 118; // vertical px per stop
+const PAD_TOP = 240; // sky + FINAL headroom
 const PAD_BOT = 150;
 const MAP_H = PAD_TOP + (STOPS.length - 1) * STEP + PAD_BOT;
 
@@ -63,37 +70,48 @@ const DECOR: Record<number, { e: string; x: number; y: number; s: number; d: num
     { e: "🔤", x: 88, y: 22, s: 36, d: 0.1 },
     { e: "📚", x: 9, y: 44, s: 54, d: 0.22 },
     { e: "✏️", x: 90, y: 58, s: 38, d: 0.12 },
-    { e: "🎒", x: 12, y: 80, s: 42, d: 0.08 },
+    { e: "🎒", x: 12, y: 78, s: 42, d: 0.08 },
   ],
   1: [
     { e: "🪪", x: 88, y: 12, s: 44, d: 0.16 },
     { e: "🎂", x: 8, y: 30, s: 40, d: 0.1 },
-    { e: "👨‍👩‍👧", x: 90, y: 48, s: 48, d: 0.2 },
+    { e: "🎈", x: 86, y: 48, s: 44, d: 0.2 },
     { e: "🐕", x: 10, y: 66, s: 36, d: 0.12 },
-    { e: "⚽", x: 87, y: 84, s: 34, d: 0.08 },
+    { e: "⚽", x: 87, y: 80, s: 34, d: 0.08 },
   ],
   2: [
     { e: "🎉", x: 9, y: 12, s: 46, d: 0.18 },
     { e: "⏰", x: 89, y: 28, s: 38, d: 0.1 },
     { e: "☕", x: 8, y: 48, s: 44, d: 0.2 },
     { e: "🚲", x: 88, y: 64, s: 48, d: 0.14 },
-    { e: "🎶", x: 12, y: 84, s: 34, d: 0.08 },
+    { e: "🎶", x: 12, y: 80, s: 34, d: 0.08 },
   ],
   3: [
     { e: "⛅", x: 10, y: 8, s: 48, d: 0.1 },
     { e: "🗺️", x: 88, y: 24, s: 44, d: 0.18 },
     { e: "⛲", x: 8, y: 46, s: 50, d: 0.22 },
     { e: "🚇", x: 90, y: 62, s: 40, d: 0.12 },
-    { e: "🚌", x: 11, y: 82, s: 42, d: 0.08 },
+    { e: "🚌", x: 11, y: 78, s: 42, d: 0.08 },
   ],
   4: [
-    { e: "🍽️", x: 88, y: 10, s: 44, d: 0.16 },
-    { e: "🥖", x: 8, y: 28, s: 46, d: 0.1 },
+    { e: "🍽️", x: 88, y: 14, s: 44, d: 0.16 },
+    { e: "🥖", x: 8, y: 30, s: 46, d: 0.1 },
     { e: "🧀", x: 90, y: 48, s: 42, d: 0.2 },
-    { e: "🥐", x: 9, y: 66, s: 40, d: 0.12 },
-    { e: "🛒", x: 87, y: 84, s: 38, d: 0.08 },
+    { e: "🥐", x: 9, y: 64, s: 40, d: 0.12 },
+    { e: "🛒", x: 87, y: 80, s: 38, d: 0.08 },
   ],
 };
+
+/** Wooden stumps edging each world's plateau (reference: scattered posts).
+ *  Same fixed layout per band; % coords, w = stump width px. */
+const STUMPS: { x: number; y: number; w: number }[] = [
+  { x: 4, y: 90, w: 34 },
+  { x: 17, y: 94, w: 26 },
+  { x: 72, y: 93, w: 30 },
+  { x: 88, y: 89, w: 38 },
+  { x: 95, y: 40, w: 26 },
+  { x: 2, y: 52, w: 28 },
+];
 
 export default function SagaMap() {
   const wrapRef = useRef<HTMLDivElement | null>(null);
@@ -192,7 +210,7 @@ export default function SagaMap() {
   // FINAL sit on the centreline so the road threads straight through them.
   const geo = useMemo(() => {
     const colW = Math.min(w, 560);
-    const amp = Math.max(64, colW / 2 - 80);
+    const amp = Math.max(64, colW / 2 - 84);
     const y = (i: number) => MAP_H - PAD_BOT - i * STEP;
     const x = (i: number) => (STOPS[i].kind === "sio" ? w / 2 + amp * Math.sin(i * 1.15) : w / 2);
     return { x, y };
@@ -223,18 +241,37 @@ export default function SagaMap() {
     return { top, height: bottom - top };
   };
 
+  /** Rivers cross between chapters, just below each arch (units 1-4); the
+   *  plank bridge sits where the road passes. */
+  const rivers = [1, 2, 3, 4].map((u) => {
+    const gi = u * 11;
+    const y = geo.y(gi) + STEP * 0.68;
+    const bx = w / 2 + (geo.x(gi - 1) - w / 2) * 0.3;
+    return { y, bx };
+  });
+
+  const chipCls =
+    "fluo-mono flex items-center gap-1 rounded-full border-2 border-[#c2497c] bg-white/85 px-2.5 py-1 text-xs font-black text-[#8c2f57]";
+
   return (
-    <div className="min-h-screen" style={{ background: "linear-gradient(#dff1fb, #eef1f8 30%)" }}>
-      <Link
-        href="/"
-        aria-label="Accueil"
-        className="fixed left-3 top-3 z-50 flex h-10 w-10 items-center justify-center rounded-full border-2 border-[color:var(--fluo-ink)] bg-white/90 text-lg font-black text-[color:var(--fluo-ink)] shadow-[0_3px_0_rgba(34,40,80,0.35)] backdrop-blur transition hover:-translate-y-0.5"
+    <div className="min-h-screen" style={{ background: "linear-gradient(#bfe9f2, #dff2e6 30%)" }}>
+      {/* Candy HUD: back + the learner-feedback counters. */}
+      <div
+        className="fixed inset-x-0 top-0 z-50 flex items-center gap-2 border-b-4 border-[#e784ad] px-3 py-2"
+        style={{ background: "linear-gradient(#fbd0e0, #f7b7cf)" }}
       >
-        ←
-      </Link>
-      <span className="fluo-mono fixed right-3 top-3 z-50 rounded-full border-2 border-[color:var(--fluo-ink)] bg-white/90 px-3 py-2 text-xs font-black text-[color:var(--fluo-ink)] shadow-[0_3px_0_rgba(34,40,80,0.35)] backdrop-blur">
-        ✓ {doneTotal}/{SIOS.length}
-      </span>
+        <Link
+          href="/"
+          aria-label="Accueil"
+          className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-[#c2497c] bg-white/85 text-lg font-black text-[#8c2f57] shadow-[0_2px_0_rgba(140,47,87,0.4)] transition hover:-translate-y-0.5"
+        >
+          ←
+        </Link>
+        <span className="flex-1" />
+        <span className={chipCls}>✓ {doneTotal}/{SIOS.length}</span>
+        {progress.streak > 0 && <span className={chipCls}>🔥 {progress.streak}</span>}
+        {progress.gems > 0 && <span className={chipCls}>💎 {progress.gems}</span>}
+      </div>
 
       {pin !== "visible" && activeIdx >= 0 && (
         <button
@@ -256,7 +293,8 @@ export default function SagaMap() {
       <div ref={wrapRef} className="relative mx-auto w-full overflow-hidden" style={{ height: MAP_H }}>
         {w > 0 && (
           <>
-            {/* The five worlds: tinted skies + parallax landmarks (visual only). */}
+            {/* The five worlds: ground tint, dark dotted foreground strip,
+                stumps + parallax landmarks (all visual). */}
             {[0, 1, 2, 3, 4].map((u) => {
               const b = band(u);
               return (
@@ -268,21 +306,25 @@ export default function SagaMap() {
                   style={{
                     top: b.top,
                     height: b.height,
-                    background: `linear-gradient(to top, color-mix(in srgb, var(--fluo-card-tint) 80%, white), color-mix(in srgb, var(--fluo-card-tint) 35%, white))`,
+                    background: `linear-gradient(to top, color-mix(in srgb, var(--fluo-card-tint) 68%, #8fd39b), color-mix(in srgb, var(--fluo-card-tint) 60%, #d7eebc))`,
                   }}
                 >
-                  {/* far hills */}
+                  {/* dark dotted foreground closing the world */}
                   <span
-                    data-depth="0.05"
-                    className="absolute -left-[12%] bottom-[2%] block h-[26%] w-[55%]"
-                    style={{ background: "var(--fluo-card-accent)", opacity: 0.1, borderRadius: "48% 52% 62% 38% / 60% 55% 45% 40%" }}
+                    className="saga-dots absolute inset-x-0 bottom-0 block"
+                    style={{
+                      height: 96,
+                      background: "color-mix(in srgb, var(--fluo-card-accent) 26%, transparent)",
+                      borderRadius: "40% 60% 0 0 / 24px 30px 0 0",
+                    }}
                   />
-                  <span
-                    data-depth="0.07"
-                    className="absolute -right-[14%] bottom-[34%] block h-[22%] w-[50%]"
-                    style={{ background: "var(--fluo-card-accent)", opacity: 0.08, borderRadius: "55% 45% 40% 60% / 45% 60% 40% 55%" }}
-                  />
-                  {/* near landmarks */}
+                  {STUMPS.map((st, j) => (
+                    <span
+                      key={`st${j}`}
+                      className="saga-stump absolute"
+                      style={{ left: `${st.x}%`, top: `${st.y}%`, width: st.w, height: st.w * 0.72 }}
+                    />
+                  ))}
                   {DECOR[u].map((it, j) => (
                     <span
                       key={j}
@@ -299,13 +341,43 @@ export default function SagaMap() {
               );
             })}
 
-            {/* The road, travelled part in the boutique accent. */}
+            {/* Sky over the FINAL. */}
+            <div aria-hidden className="absolute inset-x-0 top-0" style={{ height: 260, background: "linear-gradient(rgba(178,229,240,0.95), rgba(178,229,240,0))" }}>
+              <span className="saga-cloud" style={{ left: "12%", top: 42, width: 90, height: 30 }} />
+              <span className="saga-cloud" style={{ left: "64%", top: 96, width: 120, height: 36 }} />
+              <span className="saga-cloud" style={{ left: "38%", top: 168, width: 70, height: 24 }} />
+            </div>
+
+            {/* Terrain + road: white rim → cream plateau → rivers + bridges →
+                the pink candy trail (travelled part in the boutique accent). */}
             <svg className="absolute inset-0 z-[1]" width={w} height={MAP_H} viewBox={`0 0 ${w} ${MAP_H}`} aria-hidden>
-              <path d={roadPath(STOPS.length)} fill="none" stroke="rgba(34,40,80,0.13)" strokeWidth={20} strokeLinejoin="round" strokeLinecap="round" />
+              <path d={roadPath(STOPS.length)} fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth={224} strokeLinejoin="round" strokeLinecap="round" />
+              <path d={roadPath(STOPS.length)} fill="none" stroke="#f2f8ea" strokeWidth={202} strokeLinejoin="round" strokeLinecap="round" />
+              {rivers.map((r, i) => (
+                <g key={`riv${i}`}>
+                  <path d={`M0,${r.y} L${w},${r.y}`} stroke="#a5d9ea" strokeWidth={54} strokeLinecap="butt" fill="none" />
+                  <path d={`M0,${r.y} L${w},${r.y}`} stroke="#c9ecf6" strokeWidth={22} fill="none" />
+                  <path d={`M0,${r.y - 20} L${w},${r.y - 20}`} stroke="rgba(255,255,255,0.8)" strokeWidth={3} strokeDasharray="14 26" fill="none" />
+                  <g transform={`translate(${r.bx}, ${r.y}) rotate(-7)`}>
+                    <rect x={-60} y={-32} width={120} height={64} rx={10} fill="#b0743a" stroke="#7e4c20" strokeWidth={3} />
+                    <line x1={-56} y1={-11} x2={56} y2={-11} stroke="#8a5426" strokeWidth={2.5} />
+                    <line x1={-56} y1={11} x2={56} y2={11} stroke="#8a5426" strokeWidth={2.5} />
+                    {[
+                      [-64, -46],
+                      [48, -46],
+                      [-64, 26],
+                      [48, 26],
+                    ].map(([px, py], k) => (
+                      <rect key={k} x={px} y={py} width={16} height={22} rx={5} fill="#9c6130" stroke="#7e4c20" strokeWidth={2} />
+                    ))}
+                  </g>
+                </g>
+              ))}
+              <path d={roadPath(STOPS.length)} fill="none" stroke="#f6a8ca" strokeOpacity={0.85} strokeWidth={14} strokeLinejoin="round" strokeLinecap="round" />
               {activeIdx > 0 && (
-                <path d={roadPath(activeIdx + 1)} fill="none" stroke={accent} strokeOpacity={0.5} strokeWidth={20} strokeLinejoin="round" strokeLinecap="round" />
+                <path d={roadPath(activeIdx + 1)} fill="none" stroke={accent} strokeOpacity={0.75} strokeWidth={14} strokeLinejoin="round" strokeLinecap="round" />
               )}
-              <path d={roadPath(STOPS.length)} fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth={2.5} strokeDasharray="7 11" strokeLinejoin="round" />
+              <path d={roadPath(STOPS.length)} fill="none" stroke="rgba(255,255,255,0.95)" strokeWidth={4} strokeDasharray="4 14" strokeLinejoin="round" strokeLinecap="round" />
             </svg>
 
             {STOPS.map((st, i) => {
@@ -362,10 +434,14 @@ export default function SagaMap() {
                       href="/practice/grammarathon/finale"
                       title="GramMarathon Final — 50 questions, all lessons, weighted to your weak spots"
                       aria-label="GramMarathon Final"
-                      className="saga-node flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-slate-900 transition hover:-translate-y-0.5"
-                      style={{ background: "repeating-conic-gradient(#1f2440 0% 25%, #ffffff 0% 50%) 0 0/14px 14px" }}
+                      className="saga-ring flex rounded-3xl p-[7px] transition hover:-translate-y-0.5"
                     >
-                      <span className="grid h-9 w-9 place-items-center rounded-xl bg-yellow-300 text-xl">🏁</span>
+                      <span
+                        className="saga-node flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-slate-900"
+                        style={{ background: "repeating-conic-gradient(#1f2440 0% 25%, #ffffff 0% 50%) 0 0/14px 14px" }}
+                      >
+                        <span className="grid h-9 w-9 place-items-center rounded-xl bg-yellow-300 text-xl">🏁</span>
+                      </span>
                     </Link>
                     <span aria-hidden className="fluo-mono pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 text-[10px] font-black leading-none text-[color:var(--fluo-ink)]">
                       FINAL
@@ -377,16 +453,35 @@ export default function SagaMap() {
               const sDone = isSioDone(st.id, progress);
               const sActive = st.id === activeId;
               const kind = sioKind(st.id);
-              const shape =
-                kind === "production" ? "rotate-45 rounded-lg"
-                : kind === "grammar" ? "rounded-xl"
-                : kind === "phrases" ? "rounded-3xl rounded-bl-[6px]"
+              // Outer = the gold frill ring; inner = the macaron. Shapes stay
+              // RoadMap's focus coding, radii paired so the ring follows.
+              const ringShape =
+                kind === "production" ? "rotate-45 rounded-2xl"
+                : kind === "grammar" ? "rounded-2xl"
+                : kind === "phrases" ? "rounded-[28px] rounded-bl-[10px]"
                 : "rounded-full";
+              const nodeShape =
+                kind === "production" ? "rounded-xl"
+                : kind === "grammar" ? "rounded-xl"
+                : kind === "phrases" ? "rounded-3xl rounded-bl-[7px]"
+                : "rounded-full";
+              // To-come = pink candy (ateliers purple, the reference's "hard"
+              // look); done = unit accent + ✓ (solid beats faded, 2026-07-13).
+              const macaron = sDone
+                ? `radial-gradient(circle at 35% 28%, color-mix(in srgb, var(--fluo-card-accent) 45%, white), var(--fluo-card-accent) 75%)`
+                : kind === "production"
+                  ? "radial-gradient(circle at 35% 28%, #dcbcf4, #a56cd6 78%)"
+                  : "radial-gradient(circle at 35% 28%, #ffd9e7, #f7a4c5 78%)";
               return (
                 <div key={st.id} className={`absolute z-[2] ${hue} ${fogged ? "fluo-fog" : ""}`} style={{ left: cx, top: cy, transform: "translate(-50%, -50%)" }}>
                   {sActive && (
-                    <span aria-hidden className="saga-pin absolute left-1/2 top-0 z-[3] text-2xl" style={{ transform: "translate(-50%, -100%)" }}>
-                      📍
+                    <span
+                      aria-hidden
+                      className="absolute right-full top-1/2 mr-2 -translate-y-1/2"
+                    >
+                      <span className="saga-bob grid h-11 w-11 place-items-center rounded-xl border-[3px] border-[#2a6bd8] bg-white text-2xl shadow-[0_4px_6px_rgba(34,40,80,0.35)]">
+                        🧑‍🎓
+                      </span>
                     </span>
                   )}
                   <Link
@@ -394,20 +489,24 @@ export default function SagaMap() {
                     href={`/unit/${st.unit}#${st.id}`}
                     title={`${st.id} · ${st.topic} (${KIND_LABEL[kind]})`}
                     aria-label={`${st.id} · ${st.topic} (${KIND_LABEL[kind]})`}
-                    className={`saga-node relative flex h-12 w-12 items-center justify-center border-2 text-sm font-black transition hover:-translate-y-0.5 ${shape} ${
-                      sActive ? "fluo-node-active ring-2 ring-[var(--fluo-danger)] ring-offset-2" : sDone ? "" : "opacity-70 border-dashed"
+                    className={`saga-ring flex transition hover:-translate-y-0.5 ${ringShape} ${sActive ? "fluo-node-active p-[8px]" : "p-[6px]"} ${
+                      !sDone && !sActive ? "opacity-85" : ""
                     }`}
-                    style={{
-                      background: sDone
-                        ? `radial-gradient(circle at 35% 28%, color-mix(in srgb, var(--fluo-card-accent) 45%, white), var(--fluo-card-accent) 75%)`
-                        : sActive
-                          ? `radial-gradient(circle at 35% 28%, #eefb9a, var(--fluo-hl) 75%)`
-                          : "radial-gradient(circle at 35% 28%, #ffffff, #eef0f6 80%)",
-                      borderColor: "var(--fluo-card-accent)",
-                      color: sDone ? "#fff" : "var(--fluo-ink)",
-                    }}
                   >
-                    <span className={kind === "production" ? "-rotate-45" : undefined}>{sDone ? "✓" : st.num}</span>
+                    <span
+                      className={`saga-node flex items-center justify-center border-2 font-black ${nodeShape} ${
+                        sActive ? "h-16 w-16 text-lg" : "h-12 w-12 text-sm"
+                      }`}
+                      style={{
+                        background: sActive
+                          ? "radial-gradient(circle at 35% 28%, #7fa8f5, #2b53cb 78%)"
+                          : macaron,
+                        borderColor: sActive ? "#1c3fa5" : "rgba(255,255,255,0.75)",
+                        color: sDone || sActive ? "#fff" : kind === "production" ? "#5b2d86" : "#a34a71",
+                      }}
+                    >
+                      <span className={kind === "production" ? "-rotate-45" : undefined}>{sDone ? "✓" : st.num}</span>
+                    </span>
                   </Link>
                   <span
                     aria-hidden
