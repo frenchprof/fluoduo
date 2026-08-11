@@ -270,10 +270,22 @@ export default function HomeDashboard() {
       </section>
 
       {/* Streak momentum (Dan, 2026-07-08, episode model): counts done-in-order
-          from the start; a skip simply stops the run — never blocks. */}
-      {seqRun >= 2 && seqRun < SIOS.length && (
-        <p className="fluo-mono mb-2 text-xs font-black text-[color:var(--fluo-ink)]">🔗 {seqRun} in a row!</p>
-      )}
+          from the start; a skip simply stops the run — never blocks. Beside it,
+          the door to the full-screen saga view of this same journey. */}
+      <div className="mb-2 flex items-center justify-between gap-2">
+        {seqRun >= 2 && seqRun < SIOS.length ? (
+          <p className="fluo-mono text-xs font-black text-[color:var(--fluo-ink)]">🔗 {seqRun} in a row!</p>
+        ) : (
+          <span />
+        )}
+        <Link
+          href="/carte"
+          title="La Carte — the journey full-screen, level by level"
+          className={`${chip} hover:-translate-y-0.5`}
+        >
+          🗺️ La Carte
+        </Link>
+      </div>
 
       <RoadMap progress={progress} activeId={activeId} accent={accent} />
     </>

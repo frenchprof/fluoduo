@@ -1234,3 +1234,48 @@ h3.cahier-display { font-size: var(--fs-h3); }
 .tier-good-bg   { background: var(--tier-good-soft); border-color: var(--tier-good); }
 .tier-medium-bg { background: var(--tier-medium-soft); border-color: var(--tier-medium); }
 .tier-weak-bg   { background: var(--tier-weak-soft); border-color: var(--tier-weak); }
+
+/* ---------- La Carte — the saga map (/carte) ----------
+   Candy-Crush-Saga-inspired journey view (Dan, 2026-08-11): one continuous
+   vertical path, bottom (SIO-001) to top (the FINAL), through five themed
+   unit worlds. All decoration below is visual (exempt from the litmus test);
+   the only text on the map is what navigates: stop names, chapter names,
+   progress counters. NOTHING LOCKS (Dan, 2026-07-01) — the gates are arches
+   you walk through, never barriers. */
+
+/* Glossy "candy" finish on every stop: a sphere shade at the bottom edge and
+   a light-catch at the top. Applied over the node's own colour/shape. */
+.saga-node {
+  box-shadow:
+    inset 0 -5px 0 rgba(0, 0, 0, 0.16),
+    inset 0 3px 3px rgba(255, 255, 255, 0.55),
+    0 6px 10px rgba(34, 40, 80, 0.28);
+}
+.saga-node:active { box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.16), 0 3px 5px rgba(34, 40, 80, 0.28); }
+
+/* Diorama landmarks drift slower than the path (parallax transform set from
+   scroll, see SagaMap) and bob gently in place. Outer span = parallax,
+   inner span = bob, so the two transforms never fight. */
+@keyframes saga-bob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-9px) rotate(2deg); }
+}
+.saga-bob { display: inline-block; animation: saga-bob 3.4s ease-in-out infinite; }
+
+/* The « you are here » pin riding the active node. */
+@keyframes saga-pin {
+  0%, 100% { transform: translate(-50%, -100%); }
+  50% { transform: translate(-50%, -130%); }
+}
+.saga-pin { animation: saga-pin 1.3s ease-in-out infinite; }
+
+/* A completed chapter's arch shimmers gold. */
+@keyframes saga-gate-shine {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(255, 200, 0, 0.55)); }
+  50% { filter: drop-shadow(0 0 14px rgba(255, 200, 0, 0.9)); }
+}
+.saga-gate-open { animation: saga-gate-shine 2.6s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .saga-bob, .saga-pin, .saga-gate-open { animation: none; }
+}
