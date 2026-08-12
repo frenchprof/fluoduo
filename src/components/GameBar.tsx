@@ -31,7 +31,7 @@ import HelpDot from "@/components/HelpDot";
 
 /** Always-available destinations. Deliberately four, not fifteen. */
 const LINKS: Array<{ href: string; icon: string; label: string }> = [
-  { href: "/activities", icon: "🗂️", label: "Index" },
+  { href: "/activities", icon: "📖", label: "Index" },
   { href: "/moi", icon: "📊", label: "My Progress" },
   { href: "/leaderboard", icon: "🏆", label: "Leaderboard" },
   { href: "/profil", icon: "👤", label: "Profile" },

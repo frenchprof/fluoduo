@@ -45,7 +45,7 @@ export type Family = { key: FamilyKey; name: string; emoji: string; href: string
 export const FAMILIES: Family[] = [
   { key: "goals", name: "FluOlin Goals", emoji: "🎯", href: "/" },
   { key: "review", name: "FluOlin Review", emoji: "🔁", href: "/reviser" },
-  { key: "skills", name: "FluOlin Skills", emoji: "🎧", href: "/conjugaison" },
+  { key: "skills", name: "FluOlin Skills", emoji: "💪", href: "/conjugaison" },
   { key: "svplay", name: "FluOlin SvPlay", emoji: "🎮", href: "/games/vocabularain" },
   { key: "user", name: "FluOlin User", emoji: "👤", href: "/moi" },
 ];
