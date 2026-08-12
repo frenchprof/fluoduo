@@ -5,27 +5,27 @@
  *  from the cahier tokens, no gradients, no shading, no depth. One component
  *  per motif; a region tile composes its motifs.
  *
- *  Every region accent reads through a --region-* custom property, so the
- *  mockup's final palette recolours the set without touching a path. The
- *  fallbacks below are PROVISIONAL (Dan, 2026-08-11: build now, swap later).
+ *  Every region accent reads through a --region-* custom property — defined
+ *  with the cahier tokens in globals.css (provisional values; Design's
+ *  palette swaps in there, one place, no path edits).
  *
  *  Verified at true phone rendering before scaling (chalkboard, 28px @ DPR3):
  *  fine interior detail may soften at DPR1, the object must still read. */
 
 import type { ReactNode } from "react";
 
-const INK = "var(--cahier-ink, #2a2e6e)";
-const PAPER = "var(--cahier-paper, #fbfbf6)";
-const GOLD = "var(--cahier-gold, #c8a24b)";
+const INK = "var(--cahier-ink)";
+const PAPER = "var(--cahier-paper)";
+const GOLD = "var(--cahier-gold)";
 const STROKE = 3;
 
 /** Provisional region accents — one swap point when Design's hex values land. */
 export const REGION_ACCENTS = {
-  village: "var(--region-village, #3e7d5e)",
-  heights: "var(--region-heights, #4a67c9)",
-  valley: "var(--region-valley, #c9679a)",
-  downtown: "var(--region-downtown, #518dbb)",
-  market: "var(--region-market, #c9702e)",
+  village: "var(--region-village)",
+  heights: "var(--region-heights)",
+  valley: "var(--region-valley)",
+  downtown: "var(--region-downtown)",
+  market: "var(--region-market)",
 } as const;
 
 type IconProps = { size?: number; title?: string };
@@ -54,7 +54,7 @@ export function ChalkboardIcon({ size = 96, title = "Chalkboard" }: IconProps) {
       </g>
       <rect x="14" y="70" width="68" height="7" rx="3.5" fill={GOLD} stroke={INK} strokeWidth={STROKE} />
       <rect x="24" y="65.5" width="11" height="4.5" rx="2.25" fill={PAPER} stroke={INK} strokeWidth={STROKE} />
-      <rect x="58" y="64" width="14" height="6" rx="1.5" fill="var(--cahier-t5, #e290b6)" stroke={INK} strokeWidth={STROKE} />
+      <rect x="58" y="64" width="14" height="6" rx="1.5" fill="var(--cahier-t5)" stroke={INK} strokeWidth={STROKE} />
     </Frame>
   );
 }
@@ -78,8 +78,8 @@ export function NameTagIcon({ size = 96, title = "Name tag" }: IconProps) {
 export function AbcBlocksIcon({ size = 96, title = "Letter blocks" }: IconProps) {
   return (
     <Frame size={size} title={title}>
-      <rect x="16" y="34" width="28" height="28" rx="4" fill="var(--cahier-t3, #f0d24e)" stroke={INK} strokeWidth={STROKE} />
-      <rect x="52" y="34" width="28" height="28" rx="4" fill="var(--cahier-t1, #8fd3cd)" stroke={INK} strokeWidth={STROKE} />
+      <rect x="16" y="34" width="28" height="28" rx="4" fill="var(--cahier-t3)" stroke={INK} strokeWidth={STROKE} />
+      <rect x="52" y="34" width="28" height="28" rx="4" fill="var(--cahier-t1)" stroke={INK} strokeWidth={STROKE} />
       <g stroke={INK} strokeWidth={STROKE} strokeLinecap="round" strokeLinejoin="round" fill="none">
         <path d="M25 55 L30 41 L35 55" />
         <path d="M27 50.5 H33" />
@@ -94,9 +94,9 @@ export function AbcBlocksIcon({ size = 96, title = "Letter blocks" }: IconProps)
 export function RainbowIcon({ size = 96, title = "Rainbow" }: IconProps) {
   return (
     <Frame size={size} title={title}>
-      <path d="M18 66 A30 30 0 0 1 78 66 H70 A22 22 0 0 0 26 66 Z" fill="var(--cahier-t5, #e290b6)" stroke={INK} strokeWidth={STROKE} strokeLinejoin="round" />
-      <path d="M26 66 A22 22 0 0 1 70 66 H62 A14 14 0 0 0 34 66 Z" fill="var(--cahier-t3, #f0d24e)" stroke={INK} strokeWidth={STROKE} strokeLinejoin="round" />
-      <path d="M34 66 A14 14 0 0 1 62 66 H54 A6 6 0 0 0 42 66 Z" fill="var(--cahier-t1, #8fd3cd)" stroke={INK} strokeWidth={STROKE} strokeLinejoin="round" />
+      <path d="M18 66 A30 30 0 0 1 78 66 H70 A22 22 0 0 0 26 66 Z" fill="var(--cahier-t5)" stroke={INK} strokeWidth={STROKE} strokeLinejoin="round" />
+      <path d="M26 66 A22 22 0 0 1 70 66 H62 A14 14 0 0 0 34 66 Z" fill="var(--cahier-t3)" stroke={INK} strokeWidth={STROKE} strokeLinejoin="round" />
+      <path d="M34 66 A14 14 0 0 1 62 66 H54 A6 6 0 0 0 42 66 Z" fill="var(--cahier-t1)" stroke={INK} strokeWidth={STROKE} strokeLinejoin="round" />
       <circle cx="19" cy="64" r="7" fill={PAPER} stroke={INK} strokeWidth={STROKE} />
       <circle cx="77" cy="64" r="7" fill={PAPER} stroke={INK} strokeWidth={STROKE} />
     </Frame>
@@ -106,9 +106,9 @@ export function RainbowIcon({ size = 96, title = "Rainbow" }: IconProps) {
 export function AppleIcon({ size = 96, title = "Apple" }: IconProps) {
   return (
     <Frame size={size} title={title}>
-      <circle cx="48" cy="54" r="24" fill="var(--cahier-la, #d11149)" stroke={INK} strokeWidth={STROKE} />
+      <circle cx="48" cy="54" r="24" fill="var(--cahier-la)" stroke={INK} strokeWidth={STROKE} />
       <path d="M48 32 C 48 26, 51 23, 55 20" fill="none" stroke={INK} strokeWidth={STROKE} strokeLinecap="round" />
-      <path d="M50 29 C 55 20, 66 19, 69 23 C 66 30, 55 33, 50 29 Z" fill="var(--cahier-t4, #b6d77f)" stroke={INK} strokeWidth={STROKE} strokeLinejoin="round" />
+      <path d="M50 29 C 55 20, 66 19, 69 23 C 66 30, 55 33, 50 29 Z" fill="var(--cahier-t4)" stroke={INK} strokeWidth={STROKE} strokeLinejoin="round" />
     </Frame>
   );
 }
@@ -136,7 +136,7 @@ export function GlobeIcon({ size = 96, title = "Globe" }: IconProps) {
       <circle cx="48" cy="48" r="30" fill={REGION_ACCENTS.heights} stroke={INK} strokeWidth={STROKE} />
       <ellipse cx="48" cy="48" rx="13" ry="30" fill="none" stroke={INK} strokeWidth={STROKE} />
       <path d="M18 48 H78" fill="none" stroke={INK} strokeWidth={STROKE} />
-      <path d="M28 32 C 34 26, 44 28, 42 36 C 40 42, 30 40, 28 32 Z" fill="var(--cahier-t4, #b6d77f)" stroke={INK} strokeWidth={STROKE} strokeLinejoin="round" />
+      <path d="M28 32 C 34 26, 44 28, 42 36 C 40 42, 30 40, 28 32 Z" fill="var(--cahier-t4)" stroke={INK} strokeWidth={STROKE} strokeLinejoin="round" />
     </Frame>
   );
 }
@@ -147,7 +147,7 @@ export function GradCapIcon({ size = 96, title = "Graduation cap" }: IconProps) 
       <path d="M32 48 v9 c0 5 32 5 32 0 v-9" fill={REGION_ACCENTS.heights} stroke={INK} strokeWidth={STROKE} strokeLinejoin="round" />
       <path d="M48 26 L82 40 L48 54 L14 40 Z" fill={INK} stroke={INK} strokeWidth={STROKE} strokeLinejoin="round" />
       <path d="M48 42 V64" fill="none" stroke={INK} strokeWidth={STROKE} strokeLinecap="round" />
-      <circle cx="48" cy="67" r="4" fill="var(--cahier-t3, #f0d24e)" stroke={INK} strokeWidth={STROKE} />
+      <circle cx="48" cy="67" r="4" fill="var(--cahier-t3)" stroke={INK} strokeWidth={STROKE} />
     </Frame>
   );
 }
@@ -158,7 +158,7 @@ export function BriefcaseIcon({ size = 96, title = "Briefcase" }: IconProps) {
       <path d="M38 38 v-8 a5 5 0 0 1 5 -5 h10 a5 5 0 0 1 5 5 v8" fill="none" stroke={INK} strokeWidth={STROKE} />
       <rect x="18" y="38" width="60" height="36" rx="6" fill={GOLD} stroke={INK} strokeWidth={STROKE} />
       <path d="M18 54 H78" fill="none" stroke={INK} strokeWidth={STROKE} />
-      <rect x="43" y="50" width="10" height="9" rx="2" fill="var(--cahier-t3, #f0d24e)" stroke={INK} strokeWidth={STROKE} />
+      <rect x="43" y="50" width="10" height="9" rx="2" fill="var(--cahier-t3)" stroke={INK} strokeWidth={STROKE} />
     </Frame>
   );
 }
@@ -221,7 +221,7 @@ export function SignpostIcon({ size = 96, title = "Signpost" }: IconProps) {
     <Frame size={size} title={title}>
       <rect x="45" y="16" width="6" height="64" fill={GOLD} stroke={INK} strokeWidth={STROKE} />
       <path d="M26 24 H62 l9 8 l-9 8 H26 Z" fill={REGION_ACCENTS.downtown} stroke={INK} strokeWidth={STROKE} strokeLinejoin="round" />
-      <path d="M70 46 H34 l-9 8 l9 8 h36 Z" fill="var(--cahier-t3, #f0d24e)" stroke={INK} strokeWidth={STROKE} strokeLinejoin="round" />
+      <path d="M70 46 H34 l-9 8 l9 8 h36 Z" fill="var(--cahier-t3)" stroke={INK} strokeWidth={STROKE} strokeLinejoin="round" />
       <path d="M32 32 H54" stroke={PAPER} strokeWidth={STROKE} strokeLinecap="round" />
       <path d="M42 54 H64" stroke={INK} strokeWidth={STROKE} strokeLinecap="round" />
       <path d="M34 82 H62" stroke={INK} strokeWidth={STROKE} strokeLinecap="round" />
@@ -233,9 +233,9 @@ export function BuildingsIcon({ size = 96, title = "Buildings" }: IconProps) {
   return (
     <Frame size={size} title={title}>
       <rect x="18" y="26" width="22" height="56" fill={REGION_ACCENTS.downtown} stroke={INK} strokeWidth={STROKE} />
-      <rect x="44" y="40" width="22" height="42" fill="var(--cahier-t0, #cbb7e6)" stroke={INK} strokeWidth={STROKE} />
+      <rect x="44" y="40" width="22" height="42" fill="var(--cahier-t0)" stroke={INK} strokeWidth={STROKE} />
       <rect x="70" y="52" width="14" height="30" fill={PAPER} stroke={INK} strokeWidth={STROKE} />
-      <g fill="var(--cahier-t3, #f0d24e)">
+      <g fill="var(--cahier-t3)">
         <rect x="23" y="33" width="5.5" height="5.5" />
         <rect x="31" y="33" width="5.5" height="5.5" />
         <rect x="23" y="44" width="5.5" height="5.5" />
@@ -256,7 +256,7 @@ export function BuildingsIcon({ size = 96, title = "Buildings" }: IconProps) {
 export function WeatherIcon({ size = 96, title = "Sun and cloud" }: IconProps) {
   return (
     <Frame size={size} title={title}>
-      <circle cx="38" cy="38" r="13" fill="var(--cahier-t3, #f0d24e)" stroke={INK} strokeWidth={STROKE} />
+      <circle cx="38" cy="38" r="13" fill="var(--cahier-t3)" stroke={INK} strokeWidth={STROKE} />
       <g stroke={INK} strokeWidth={STROKE} strokeLinecap="round">
         <path d="M38 18 V13" />
         <path d="M52.5 23.5 L56 20" />
@@ -310,13 +310,13 @@ export function AwningIcon({ size = 96, title = "Market awning" }: IconProps) {
 export function BasketIcon({ size = 96, title = "Bread basket" }: IconProps) {
   return (
     <Frame size={size} title={title}>
-      <ellipse cx="38" cy="40" rx="15" ry="7.5" transform="rotate(-24 38 40)" fill="var(--cahier-t2, #f3cba0)" stroke={INK} strokeWidth={STROKE} />
+      <ellipse cx="38" cy="40" rx="15" ry="7.5" transform="rotate(-24 38 40)" fill="var(--cahier-t2)" stroke={INK} strokeWidth={STROKE} />
       <g stroke={INK} strokeWidth={STROKE} strokeLinecap="round">
         <path d="M32 41 l4 -3" />
         <path d="M37 38 l4 -3" />
         <path d="M42 35 l4 -3" />
       </g>
-      <circle cx="58" cy="42" r="8.5" fill="var(--cahier-la, #d11149)" stroke={INK} strokeWidth={STROKE} />
+      <circle cx="58" cy="42" r="8.5" fill="var(--cahier-la)" stroke={INK} strokeWidth={STROKE} />
       <circle cx="69" cy="47" r="6.5" fill={REGION_ACCENTS.market} stroke={INK} strokeWidth={STROKE} />
       <path d="M22 52 H74 L68 78 H28 Z" fill={GOLD} stroke={INK} strokeWidth={STROKE} strokeLinejoin="round" />
       <g stroke={INK} strokeWidth={STROKE} strokeLinecap="round">
@@ -332,7 +332,7 @@ export function ReceiptIcon({ size = 96, title = "Receipt" }: IconProps) {
   return (
     <Frame size={size} title={title}>
       <path d="M30 14 H66 V74 l-6 -5 -6 5 -6 -5 -6 5 -6 -5 -6 5 Z" fill={PAPER} stroke={INK} strokeWidth={STROKE} strokeLinejoin="round" />
-      <rect x="34" y="50" width="28" height="9" fill="var(--cahier-t3, #f0d24e)" />
+      <rect x="34" y="50" width="28" height="9" fill="var(--cahier-t3)" />
       <g stroke={INK} strokeWidth={STROKE} strokeLinecap="round">
         <path d="M36 26 H60" />
         <path d="M36 34 H54" />
