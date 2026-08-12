@@ -69,7 +69,7 @@ export function siteTabs(): ShellTab[] {
  */
 export function toolTabs(): ShellTab[] {
   return [
-    { key: "index", label: "Index", emoji: "🗂️", href: "/activities", hue: "#5b8def" },
+    { key: "index", label: "Index", emoji: "📖", href: "/activities", hue: "#5b8def" },
     ...navigableActivities().map((a) => ({
       key: a.key,
       label: a.name,

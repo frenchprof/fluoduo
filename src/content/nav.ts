@@ -21,7 +21,7 @@ export type NavSlot = { key: string; label: string; emoji: string; href: string 
 
 /** Index leads: it belongs to no family and it is the way into all 50 decks. */
 export const BOTTOM_NAV: NavSlot[] = [
-  { key: "index", label: "Index", emoji: "🗂️", href: "/activities" },
+  { key: "index", label: "Index", emoji: "📖", href: "/activities" },
   ...FAMILIES.filter((f) => f.key === "review" || f.key === "skills" || f.key === "svplay").map((f) => ({
     key: f.key,
     // "FluOlin Review" is the family's name; the bar shows the short form,

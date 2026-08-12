@@ -511,6 +511,14 @@ body {
   /* six index-tab pastels (match Dan's reference image) */
   --cahier-t0: #cbb7e6;  --cahier-t1: #8fd3cd;  --cahier-t2: #f3cba0;
   --cahier-t3: #f0d24e;  --cahier-t4: #b6d77f;  --cahier-t5: #e290b6;
+
+  /* Course-map region accents (regionIcons.tsx reads these). PROVISIONAL
+     values, 2026-08-11 — swap for Design's palette here, in one place. */
+  --region-village:  #3e7d5e;
+  --region-heights:  #4a67c9;
+  --region-valley:   #c9679a;
+  --region-downtown: #518dbb;
+  --region-market:   #c9702e;
   --font-display-stack: var(--font-display), system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-hand-stack:    var(--font-hand), "Bradley Hand", "Segoe Print", cursive;
   --font-body-stack:    var(--font-body), system-ui, -apple-system, "Segoe UI", sans-serif;

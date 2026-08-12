@@ -12,11 +12,12 @@ export type SioKind = "vocab" | "grammar" | "phrases" | "production";
 // Content-audited 2026-07-25 (Dan: align the description with what the
 // content truly looks at, THEN identify the focus):
 // 38 (12/12 gapped en/à drills) + 47 (12/12 gapped modal sentences) → grammar;
-// 43 (five adverbs), 44 (shop names), 45A (number words, like 007/018) → vocab;
-// 45 (transactional chunks « Je voudrais… », « Ça fait combien ? ») → phrases —
-// Unité 4 gains its expression stop.
+// 43 (five adverbs), 44 (shop names), 45/45A (number words, like 007/018) → vocab.
+// Re-audited 2026-08-11 against the formulated SIO objectives: the market
+// transaction chunks (« Je voudrais… », « Ça fait combien ? ») now live in 44,
+// so the 45 slot — whichever id holds it — is purely numbers 70–99, vocab.
 const GRAMMAR = new Set([2, 11, 14, 19, 22, 24, 25, 26, 28, 32, 34, 35, 37, 38, 42, 46, 47, 48]);
-const PHRASES = new Set([1, 8, 9, 29, 36, 39, 45]);
+const PHRASES = new Set([1, 8, 9, 29, 36, 39]);
 const PRODUCTION = new Set([10, 20, 30, 40, 49, 50]);
 
 /** SECONDARY focus (Dan, 2026-07-26: "put the secondary focus under the
@@ -26,6 +27,7 @@ const PRODUCTION = new Set([10, 20, 30, 40, 49, 50]);
  *  Sociolinguistic note: 2 (tu/vous) is register work grammaticalized — coded
  *  grammar by machinery, vocab secondary for its judged person-nouns. */
 const SECONDARY: Partial<Record<number, SioKind>> = {
+  1: "grammar",    // s'appeler conjugated across all 8 forms under the formulas
   2: "vocab",      // tu/vous judged over person-nouns (le copain, la dame…)
   19: "phrases",   // avoir states are chunks: j'ai faim, j'ai … ans
   21: "grammar",   // c'est un / ce sont des frames around the object nouns
@@ -42,8 +44,9 @@ const SECONDARY: Partial<Record<number, SioKind>> = {
   38: "vocab",     // transport nouns under the en/à drill
   42: "vocab",     // quantities & containers nouns
   43: "grammar",   // adverb placement behind the frequency word-set
-  44: "grammar",   // à la / au + shop contractions behind the shop names
-  45: "vocab",     // numbers 70–99 merged into the market (prices)
+  44: "phrases",   // the absorbed market dialogue: Je voudrais…, Ça fait
+                   // combien ?, Et avec ceci ? — a bigger second load than
+                   // the à la / au contractions it previously credited
   46: "vocab",     // food nouns under the demonstrative drill
   47: "phrases",   // plan-making chunks: On va… ?, Tu veux venir ?
   48: "phrases",   // same modal deck: suggestion/obligation chunks
@@ -58,9 +61,9 @@ export function sioSecondary(sioId: string): SioKind | null {
 }
 
 export function sioKind(sioId: string): SioKind {
-  // 045A parses to 45 and would inherit au-marché's kind — but it is number
-  // words, vocab like its siblings 007 and 018 (content audit 2026-07-25).
-  if (sioId === "SIO-045A") return "vocab";
+  // SIO-045A parses to 45, which is in no set → vocab, same as a plain
+  // SIO-045 would be — no special case needed since the market chunks
+  // moved into 44 (re-audit 2026-08-11).
   const n = parseInt(sioId.split("-")[1] ?? "", 10);
   if (PRODUCTION.has(n)) return "production";
   if (GRAMMAR.has(n)) return "grammar";

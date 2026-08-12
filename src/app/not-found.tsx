@@ -40,7 +40,7 @@ export default function NotFound() {
           ▶ Home
         </Link>
         <Link href="/activities" className="cahier-btn">
-          🗂️ <span lang="fr">Index</span>
+          📖 <span lang="fr">Index</span>
         </Link>
       </div>
 

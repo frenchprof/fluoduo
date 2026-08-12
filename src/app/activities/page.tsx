@@ -92,7 +92,7 @@ export default function ActivitiesIndexPage() {
             under the heading — vertical space lost). The input flexes into
             whatever the heading leaves free. */}
         <div className="flex flex-nowrap items-center gap-3">
-          <h1 className="cahier-display shrink-0 text-2xl font-black text-[color:var(--cahier-ink)]">🗂️ Index</h1>
+          <h1 className="cahier-display shrink-0 text-2xl font-black text-[color:var(--cahier-ink)]">📖 Index</h1>
           {/* Search at the header's height, high-contrast (Dan, 2026-07-13). */}
           <input
             type="search"
