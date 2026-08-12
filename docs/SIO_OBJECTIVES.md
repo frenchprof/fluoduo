@@ -217,9 +217,10 @@ infinitive, as drilled in the deck's two examples per frame.
 
 **SIO-040 · Itinerary steps with connectors** — The learner will explain step
 by step how to get somewhere, describing at least 4 ordered steps linked with
-*d'abord, puis, ensuite, après, enfin/finalement*, using *il faut* +
-infinitive or *on* + present (no imperative) combined with transport and
-direction vocabulary.
+*d'abord, puis, ensuite, après, enfin/finalement*, giving each step in the
+present tense with an explicit subject, as the model itinerary does (*D'abord,
+tu prends la première rue à droite. Ensuite, tu vas tout droit.* — no
+imperative), combined with transport and direction vocabulary.
 
 ## Unité 4 — Qu'est-ce qu'on mange ce soir ?
 
