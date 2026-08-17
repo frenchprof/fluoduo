@@ -12,7 +12,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import GuideSplash from "@/components/GuideSplash";
 import RankBadge from "@/components/RankBadge";
-import RoadMap from "@/components/RoadMap";
+import HomeMap from "@/components/HomeMap";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
@@ -275,7 +275,7 @@ export default function HomeDashboard() {
         <p className="fluo-mono mb-2 text-xs font-black text-[color:var(--fluo-ink)]">🔗 {seqRun} in a row!</p>
       )}
 
-      <RoadMap progress={progress} activeId={activeId} accent={accent} />
+      <HomeMap progress={progress} activeId={activeId} accent={accent} />
     </>
   );
 }

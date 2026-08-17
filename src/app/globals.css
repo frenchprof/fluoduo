@@ -1253,3 +1253,11 @@ h3.cahier-display { font-size: var(--fs-h3); }
 .tier-good-bg   { background: var(--tier-good-soft); border-color: var(--tier-good); }
 .tier-medium-bg { background: var(--tier-medium-soft); border-color: var(--tier-medium); }
 .tier-weak-bg   { background: var(--tier-weak-soft); border-color: var(--tier-weak); }
+
+/* ---------- Home course map (patch 25, 2026-08-17) ----------
+   Design's 2D reference: region label pills are kraft hexagon-ended tags;
+   the number input inside the map chrome loses the cahier-sheet input skin. */
+.home-map-pill { clip-path: polygon(8% 0, 92% 0, 100% 50%, 92% 100%, 8% 100%, 0 50%); }
+.home-map input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+.home-map input[type="number"]::-webkit-inner-spin-button,
+.home-map input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
