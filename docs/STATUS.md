@@ -46,14 +46,14 @@ wrong about the *what's left*. If they disagree with this file, this file wins.
 | ~~4~~ | ~~Patch 23 — games~~ — **done 17 Aug** on `pm/patch23-games` (verify23, `work/patch23/*.png`): `GameFrame` + GameBar v2 on all six games, 100dvh/no page scroll, boards measured (`useBoardSize`), desktop two-pane record, headers/instructions gone (⋯ → Help), `GameOver` post-mortem → ReVue queue + `CORRIGER MAINTENANT`, CreditsSplash once per browser, galleries → ▶ Jouer + sheet | 14 | merge the branch (after #2), then deploy |
 | ~~5~~ | ~~Patch 24 — Index~~ — **done 17 Aug** on `pm/patch24-index` (verify24, `work/patch24/*.png`): chip rail + unit segments + ten SIO rows, `?activity=&unit=` in the URL, result cells from a device-local activity ledger, xPlain/4Mémoire/WorDrill as row buttons, three hubs → redirects, `?gaps=1` backlog | — | merge the branch (after #4), then deploy |
 | ~~6~~ | ~~Patch 26 — `/moi` + teacher~~ — **done 17 Aug** on `pm/patch26-moi-teacher` (verify26, `work/patch26/*.png`): outcome rows (`src/lib/outcomeRows.ts`), `HeatStrip` on four pages, /moi thin hero + four segments + CAP 5, teacher Class now board + outcome × student matrix, one pool fetch, Compute button gone | — | merge the branch (after #5), then deploy |
-| 7 | Track D — AI / help ladder inside DrillShell (spec + build) | 16 | unblocked |
+| ~~7~~ | ~~Track D — AI / help ladder inside DrillShell (spec + build)~~ — **done 17 Aug** on `pm/track-d-help-ladder` (verify28-trackd, `work/trackd/*.png`, spec `docs/TRACK_D_HELP_LADDER.md`): one state machine (`src/lib/help/ladder.ts`), rule-based rungs per task kind, `?` control + rung dots + WHY in DrillShell, every DrillShell drill wired, evidence written truthfully, hinted/revealed → ReVue queue, `help.rung` log, `/api/feedback` + rule fallback + Correct me / Model answer at the lesson end, 22 eval cases | 16 | merge the branch (after #9/#10), then deploy — **thresholds + provider below need Dan's yes** |
 | 8 | `/teacher` off the public CDN (server-side hardening; PR #6 draft, `cursor/teacher-cdn-exposure-a214` behind main) | 3 | PII chunk leak itself is closed |
 | ~~9~~ | ~~Loose bugs: deck pages that demand sign-in / "No deck specified.", `/sio/[id]`~~ — **done 17 Aug** on `pm/bugs-data-truth` (verify27-bugs): curated study redirect before the gate, `NoDeck` empty state → Index, DeckContent on tokens (19b baseline 904 → 773), `/sio/[id]` → `/?unit=N#SIO`, DEPLOY.md project name, LAF1201 stays | — | merge the branch (after #6), then deploy |
 | ~~10~~ | ~~Data-truth backlog: four "weak" definitions, biased shuffle, session/attempt fields read-not-written, D4 two learners' progress docs not syncing, leaderboard identity~~ — **done 17 Aug**, same branch: `tierFor`/`isWeakSrs` in progress.ts, `src/lib/shuffle.ts`, D6/D7 readers deleted, D9 statuses deleted / D10 evidence block read, D11 merge pure + executed, `boardName()`, D4 `lastSyncedAt` + `sync.error` + STALE on the teacher panel | — | replay-responses-into-ledger (patch 24 note) NOT done — see below |
 | 11 | Ops: make the GitHub ruleset required; `add-claude-github-actions` branch — check workflow conflicts then merge or delete; `claude-review` billing | 1 | |
 | — | December: canonical `FD-` outcome IDs (Track A) | 8 | deliberately deferred |
 
-Near-term total ≈ 44 units. Shipped ≈ 106 of ~150 in-scope.
+Near-term total ≈ 28 units. Shipped ≈ 122 of ~150 in-scope.
 
 ## Branches (17 Aug)
 
@@ -63,6 +63,70 @@ Near-term total ≈ 44 units. Shipped ≈ 106 of ~150 in-scope.
   → delete after deploy.
 - live: `claude/api-necessity-i8fgps` (La Carte), `cursor/teacher-cdn-exposure-a214`,
   `add-claude-github-actions-…`.
+
+## Track D — what was done, what was left, what Dan must confirm (17 Aug, Peers)
+
+Branch `pm/track-d-help-ladder` (on top of `pm/integration`), check =
+`verify/verify28-trackd.py` (165 checks: the machine + generators run in
+node, 66 rows; the 22 eval cases run against the rule grader). Spec =
+`docs/TRACK_D_HELP_LADDER.md`.
+
+- **One machine.** `src/lib/help/ladder.ts`: FRESH → TRY → HINT_1 → HINT_2 →
+  REVEAL / RETRY_AFTER_REVEAL → DONE; pure, clock-free (`step(ladder,
+  event)`). `useHelpLadder` is the React glue: records EVERY attempt through
+  `recordItemResult` with the rung actually shown (`assistance`,
+  `hintsTaken`, `revealed`, so `independent` is true only for first-try
+  no-hint), queues a hinted/revealed item for ReVue when it closes
+  (`queueForReview`, due now), logs `help.rung` per transition (+ the old
+  `hint.tap`/`answer.reveal` with `auto`). The Finale keeps its five-rung
+  ladder (now in `hints.ts`).
+- **"Stuck" — Dan to confirm the numbers** (`LADDER_CONFIG`): typed/cloze
+  climb on every wrong try and after **20 s** idle (hints only — idle never
+  reveals); say after **2** wrong / 30 s; MCQ on every wrong pick, no idle,
+  no cold hint; flashcard test may reveal cold; reveal never before one
+  attempt anywhere else. Every hinted or revealed item is queued for ReVue
+  at interval 0 (a clean retype after a reveal is NOT credited an
+  interval) — confirm that is the intended severity.
+- **Drills changed behaviour** (Dan should try them): iComplete/GramMarathon
+  no longer end on a wrong answer — the tray says "Not yet · Try again", a
+  hint chip appears, the field stays live; the third wrong shows the answer
+  and asks for it to be typed ("Type it"). EtuDice/SpecuLearn/lesson MCQ: a
+  wrong pick is struck and the learner picks again (≥ 3 options); the second
+  wrong reveals. 4Mémoire test: `?` replaces 💡 Révéler. WorDrill: the 🔤
+  peek is the answer rung (recorded), two misses climb by themselves.
+  First try scores; every try is a response record.
+- **The `?` control lives in the shell bar** (with rung dots), the hint
+  chips under the item, WHY at the tray's right — not "top right of the
+  answered question" as AGENTS.md words it; the tray IS where the answered
+  question's verdict lives. Dan to say if WHY should move.
+- **Evidence enum unchanged.** Post-reveal recall is `status met +
+  assistance "answer"`; there is no `evidenceType: "assisted-recall"`
+  (adding one = firestore.rules deploy). Readers derive it.
+- **Row 7 = the lesson end "SIO write"** (`OpenFeedback`): one free
+  sentence on the SIO's can-do; Correct me / Model answer;
+  `functions/api/feedback.js` on **ChaTutor's key** (`ANTHROPIC_API_KEY`,
+  OpenRouter, `anthropic/claude-haiku-4.5`, Mistral fallback,
+  `TUTOR_MODEL` override) — **cost ≈ $0.003 per check**, ~500 tokens; no
+  new env var. 8 s budget then the rule grader (cloze tiers + word diff)
+  answers, same shape. Model answer = the deck's first authored `example`
+  (13/44 decks; the rest get screening only). No XP paid. Dan to confirm the
+  provider/cost and whether ComposeIt / the /tts proofreader should move to
+  this schema (not touched).
+- **ÉcouTexte** is not on the `?` ladder (multi-blank sheet, own
+  per-sentence reveal); a check after a reveal is now recorded as
+  `assistance: answer` and queued. Pretests stay cold. The `dictation` and
+  `ordering` kinds are specified and generated but no drill uses them
+  yet.
+- **Not done:** the LLM path of the eval cases has not been run against a
+  deployed `/api/feedback` (no key here — run
+  `curl -X POST /api/feedback` per case after deploy; `expect` in
+  `evalCases.json` is the pass mark); the SioModal popup forms of
+  iComplete/GramMarathon show hints inline (no shell bar there); no
+  per-error 🔊; the teacher dashboards do not yet chart `help.rung`
+  (`auto` vs asked, rung reached) — the events are flowing.
+- Screenshots from a `REQUIRE_SIGN_IN=false` build (reverted before the
+  last build and commit); harness `work/trackd/serve.py` + `shoot.py`
+  (untracked, no .png committed).
 
 ## Loose bugs + data-truth — what was done, what was left (17 Aug, Peers)
 
