@@ -1,68 +1,93 @@
-# STATUS — the one place that is true (17 Aug 2026)
+# STATUS — the one place that is true (17 Aug 2026, end of day)
 
-Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, SIO session) reads
+Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 **this file first** and updates it before ending a session. `HANDOFF.md`, `TODO.md`,
 `docs/planning/UI_WORK_PLAN_1.md`, `docs/audit/` are HISTORY — useful for the *why*,
 wrong about the *what's left*. If they disagree with this file, this file wins.
+Only ONE agent edits this file at a time; say so in your commit.
 
 ## Where the code is
 
 - `main` on `frenchprof/fluoduo` (origin) — the working repo.
-- Production = `dckg/fluo` (remote `live`), Cloudflare Pages auto-builds its `main`.
-  **Deploy = `git push live main`.** (`docs/DEPLOY.md` says "just merge to main" —
-  that means `live`'s main, not origin's. Fixed in the banner there.)
-- Merged into `main` today (17 Aug): content fixes (below), the SIO objectives doc,
-  PR #19 grading unification (was reported merged on 11 Aug — it was not).
-- Merged 11–12 Aug: patches 1–22 + hero rows of 25, PR #18 Reports tab, PR #20 region
-  icons/tokens/sioKinds re-audit.
+- Production = `dckg/fluo` (remote `live`), Cloudflare Pages project
+  `fluolingo-dot-com` auto-builds its `main`. **Deploy = `git push live main`.**
+- 17 Aug, morning (on `main`, deployed at `3453b1e`): SIO-036/040 softening +
+  `envies-besoins` gap fix; SIO objectives doc; PR #19 grading unification (had
+  never been merged); PRs #18/#20 finally deployed; STATUS.md born.
+- 17 Aug, afternoon (built by the Cowork PM session in seven patch files, applied
+  by Dan with `git am`): the whole remaining UI programme — see the table.
+
+## Programme — done
+
+| Patch | What | Check |
+|---|---|---|
+| 1–22 | data layer, curriculum spine, PII split, bottom bar, Cahier tokens, HELP from the registry, DrillShell, lesson pager, English-first, cohort filter, hero shrink | verify18–22, 25 |
+| 25 | **Home path**: 2D map per Design (region bands, kind-coloured stops, ▶ current, 🚩 class flag, zoom), 2D ⇄ 3D toggle (3D ported from La Carte, ring colours from `sioKind()`), `short` labels + build check, `/unit/N` deep link, A4 print with QR per unit | verify25b (38) |
+| 23 | **Games**: `GameFrame` + GameBar v2 on all six, 100dvh boards, per-game headers/instructions gone, game-over post-mortem, misses → ReVue + `CORRIGER MAINTENANT`, credits once, desktop two-pane, galleries → ▶ Jouer + sheet | verify23 (70) |
+| 24 | **Index**: chip rail + unit segments + 10 SIO rows, URL state, cells = how you did (device ledger), hubs → redirects, `?gaps=1`, row buttons | verify24 (58) |
+| 26 | **/moi + teacher**: outcome rows, `HeatStrip` on 4 pages, thin /moi hero + 4 segments, teacher Class now (16 tiles, stuck detection, 30 s repoll), outcome × student matrix, one pooled fetch, Compute gone | verify26 (61) |
+| bugs | deck gate/redirect, `NoDeck`, DeckContent on tokens, `/sio/[id]` → deep link, DEPLOY.md name, ONE "weak", ONE shuffle, D6/D7/D9/D10/D11, leaderboard identity, D4 sync diagnostic | verify27-bugs (81) |
+| Track D | help-ladder spec + state machine + rule hints + `?`/WHY in every drill, evidence tagged, hinted items → ReVue, open-production feedback (`/api/feedback`, rule fallback), 22 eval cases | verify28-trackd (165) |
+
+Shipped ≈ 147 of ~150 in-scope units.
+
+## What is left
+
+| # | Item | Units | Who |
+|---|---|---|---|
+| 1 | **Apply + deploy the 17 Aug patch series** (0001–0008, in order), then delete the merged branches below | 0.25 | Dan |
+| 2 | Home hero: keep the 11 Aug compact hero, or adopt Design's stat row (level · streak · course · XP · lessons + ⏪ ▶ ⋯ controls, heading back)? Design reverses the hero shrink — **Dan decides**; then ~1 unit | 1 | Dan → agent |
+| 3 | 3D map: swap the placeholder `HomeMap3D` for Dan's own 3D build when ready | — | Dan |
+| 4 | Class flag: `CLASS_FLAG_SIO` in `src/content/chapters.ts` is hand-set (SIO-010) — move weekly or derive from the term table | 0.5 | agent |
+| 5 | Ops: ruleset is active ✓; delete `add-claude-github-actions-…` (unmerged, `main` has its own workflows); `claude-review` billing in the Anthropic console; delete `import-fluoduo` on `dckg/fluo` | 0.5 | Dan |
+| 6 | Track D follow-ups: run the 22 eval cases against the deployed `/api/feedback`; teacher charts for `help.rung`; ÉcouTexte on the `?` ladder | 2 | agent |
+| — | December: canonical `FD-` outcome IDs (Track A) | 8 | deferred |
+
+Closed as non-issues (Dan, 17 Aug): `/teacher` on the CDN — the page is gated to
+Dan's email; Firestore service-account key — being retired.
 
 ## Decisions Dan made on 17 Aug (do not re-open)
 
-1. **Home map = two views, 2D and 3D, user toggles between them.** The 2D reference is
-   Design's "FluOlinGo Home standalone" (course map in a scrollable box, zoom %
-   control, path snakes right-then-down across five soft region bands, 56px round
-   stops, legend vocabulary/grammar/expressions/communication, ▶ media-player
-   "current" stop). Band fills are now tokens `--region-*-band` in `globals.css`.
-   The 3D view is Dan's own build using the icon set / accents / foci / roadside
-   catalog already on `main`. No more path-mechanic reversals.
-2. **SIO-036 / SIO-040**: spec softened to match content (CSV + `sios.json` edited
-   in step). Do NOT run `scripts/gen-sios.mjs` — it is stale against the hand-edited
-   `sios.json` (would drop collectionIds, canDo, topics). Edit both files together
-   or fix the generator first.
-3. `envies-besoins.json` items 09/10: `gap` is `envie` (was `voudrais`).
-4. Region **accent** hexes (`--region-village` … `--region-market`) remain
-   provisional — Design gave band fills, not accents.
-5. Firestore service-account key: Dan says rotated ("it should be"). Not verified
-   from the repo — confirm once in Firebase console → Service accounts, then delete
-   this line.
+1. Home map = two views, 2D and 3D, learner toggles. 2D reference = Design's
+   "FluOlinGo Home standalone". Band fills = `--region-*-band` tokens. 3D = Dan's own
+   build (placeholder ported from La Carte meanwhile). No more path reversals.
+2. SIO-036/040 spec softened to content (description AND competence, CSV + `sios.json`
+   in step). Do NOT run `scripts/gen-sios.mjs` (stale vs hand-edited `sios.json`).
+3. `envies-besoins.json` 09/10 `gap` = `envie`.
+4. Region **accent** hexes stay provisional (Design gave bands, not accents).
+5. Firestore key: being retired — not a task. `/teacher`: gated to Dan's email — closed.
 
-## Backlog — in order
+## Decisions awaiting Dan (all default to what was built)
 
-| # | Item | Units | Notes |
-|---|---|---|---|
-| ~~1~~ | ~~Deploy: `git push live main`; confirm fluolingo.com serves Reports tab + region icons~~ | — | **not done, 17 Aug** — Peers has no push access; Dan runs it |
-| ~~2~~ | ~~Home path, rest of patch 25~~ — **done 17 Aug** on `pm/patch25-home-map` (verify25b, `work/patch25/*.png`): 2D map per Design ref (region bands, kind-coloured stops, ▶ current, zoom %), 2D/3D toggle (`fluo.homeMapView`), `/unit/N` → deep link into Home, `short` labels + `check:short` in the build, print stylesheet with a QR per unit | — | merge the branch, then deploy |
-| ~~3~~ | ~~La Carte branch~~ — **folded into #2, 17 Aug**: `HomeMap3D.tsx` ports the 3D scroll treatment; ring colours from `sioKind()`/`sioSecondary()` via one `KIND_COLOR` palette. Delete `claude/api-necessity-i8fgps` after merge (its `/carte` page and objectives.json were not taken — the SIO objectives doc is already on main) | — | |
-| ~~4~~ | ~~Patch 23 — games~~ — **done 17 Aug** on `pm/patch23-games` (verify23, `work/patch23/*.png`): `GameFrame` + GameBar v2 on all six games, 100dvh/no page scroll, boards measured (`useBoardSize`), desktop two-pane record, headers/instructions gone (⋯ → Help), `GameOver` post-mortem → ReVue queue + `CORRIGER MAINTENANT`, CreditsSplash once per browser, galleries → ▶ Jouer + sheet | 14 | merge the branch (after #2), then deploy |
-| ~~5~~ | ~~Patch 24 — Index~~ — **done 17 Aug** on `pm/patch24-index` (verify24, `work/patch24/*.png`): chip rail + unit segments + ten SIO rows, `?activity=&unit=` in the URL, result cells from a device-local activity ledger, xPlain/4Mémoire/WorDrill as row buttons, three hubs → redirects, `?gaps=1` backlog | — | merge the branch (after #4), then deploy |
-| ~~6~~ | ~~Patch 26 — `/moi` + teacher~~ — **done 17 Aug** on `pm/patch26-moi-teacher` (verify26, `work/patch26/*.png`): outcome rows (`src/lib/outcomeRows.ts`), `HeatStrip` on four pages, /moi thin hero + four segments + CAP 5, teacher Class now board + outcome × student matrix, one pool fetch, Compute button gone | — | merge the branch (after #5), then deploy |
-| ~~7~~ | ~~Track D — AI / help ladder inside DrillShell (spec + build)~~ — **done 17 Aug** on `pm/track-d-help-ladder` (verify28-trackd, `work/trackd/*.png`, spec `docs/TRACK_D_HELP_LADDER.md`): one state machine (`src/lib/help/ladder.ts`), rule-based rungs per task kind, `?` control + rung dots + WHY in DrillShell, every DrillShell drill wired, evidence written truthfully, hinted/revealed → ReVue queue, `help.rung` log, `/api/feedback` + rule fallback + Correct me / Model answer at the lesson end, 22 eval cases | 16 | merge the branch (after #9/#10), then deploy — **thresholds + provider below need Dan's yes** |
-| 8 | `/teacher` off the public CDN (server-side hardening; PR #6 draft, `cursor/teacher-cdn-exposure-a214` behind main) | 3 | PII chunk leak itself is closed |
-| ~~9~~ | ~~Loose bugs: deck pages that demand sign-in / "No deck specified.", `/sio/[id]`~~ — **done 17 Aug** on `pm/bugs-data-truth` (verify27-bugs): curated study redirect before the gate, `NoDeck` empty state → Index, DeckContent on tokens (19b baseline 904 → 773), `/sio/[id]` → `/?unit=N#SIO`, DEPLOY.md project name, LAF1201 stays | — | merge the branch (after #6), then deploy |
-| ~~10~~ | ~~Data-truth backlog: four "weak" definitions, biased shuffle, session/attempt fields read-not-written, D4 two learners' progress docs not syncing, leaderboard identity~~ — **done 17 Aug**, same branch: `tierFor`/`isWeakSrs` in progress.ts, `src/lib/shuffle.ts`, D6/D7 readers deleted, D9 statuses deleted / D10 evidence block read, D11 merge pure + executed, `boardName()`, D4 `lastSyncedAt` + `sync.error` + STALE on the teacher panel | — | replay-responses-into-ledger (patch 24 note) NOT done — see below |
-| 11 | Ops: make the GitHub ruleset required; `add-claude-github-actions` branch — check workflow conflicts then merge or delete; `claude-review` billing | 1 | |
-| — | December: canonical `FD-` outcome IDs (Track A) | 8 | deliberately deferred |
+- Hero: keep vs Design stat row (item 2 above).
+- Games: hearts kept in NumBus/NumBourse/LexicaLater; Match It now behind sign-in.
+- Home: "one unit per screen" = vertical band snap, not sideways paging.
+- /moi: no time-on-task line any more (D6 sessions had no writer); Reviser "N weak" now
+  counts fragile 1-day items too.
+- Teacher: Class now added as first panel, Overview kept; the page reads all 16 logs on open.
+- Track D: stuck thresholds (typed/cloze every wrong + 20 s idle; say 2 wrong / 30 s;
+  MCQ every wrong); drills retry instead of ending on a wrong answer; WHY sits on the
+  tray; feedback runs on ChaTutor's key (≈ $0.003/check).
 
-Near-term total ≈ 28 units. Shipped ≈ 122 of ~150 in-scope.
+## Branches
 
-## Branches (17 Aug)
+- merged/dead → delete: `claude/peers-vd2h6h`, `claude/sio-instructional-objectives-7bjv1a`,
+  `claude/fluoduo-pr9-review-sync-8uoyfx`, `claude/api-necessity-i8fgps` (La Carte, folded in),
+  `cursor/patch-19c-a214`, `cursor/drillshell-20-21-a214`, `cursor/teacher-cdn-exposure-a214`,
+  `ship/patches-1-12`, `fluoduo/data-and-curriculum-fixes`, `add-claude-github-actions-…`,
+  `claude/case-01n37qiwbywj63ebzdabdeht-status-b9muew` (its STATUS edit is superseded).
+- Cowork PM patch series (17 Aug): `pm/*` existed only in the PM's workspace; they arrive
+  as `git am` patches, not branches.
 
-- merged/dead: `claude/peers-vd2h6h`, `claude/sio-instructional-objectives-7bjv1a`,
-  `claude/fluoduo-pr9-review-sync-8uoyfx`, `cursor/patch-19c-a214`,
-  `cursor/drillshell-20-21-a214`, `ship/patches-1-12`, `fluoduo/data-and-curriculum-fixes`
-  → delete after deploy.
-- live: `claude/api-necessity-i8fgps` (La Carte), `cursor/teacher-cdn-exposure-a214`,
-  `add-claude-github-actions-…`.
+## Rules that stay
+
+- Peers builds, `main` is the sole push path; every patch = verify script + screenshot,
+  and CI runs every `verify/*.py` on every push.
+- Dan's litmus test (AGENTS.md). Grammar guard-rails (no imperative outside SIO-008).
+
+---
+
+# Notes per patch (17 Aug) — the detail behind the table
 
 ## Track D — what was done, what was left, what Dan must confirm (17 Aug, Peers)
 
