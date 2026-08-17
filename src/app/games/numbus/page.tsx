@@ -2,35 +2,27 @@
 
 import { useState } from "react";
 import AuthGate from "@/components/AuthGate";
-import BackLink from "@/components/BackLink";
-import HelpDot from "@/components/HelpDot";
+import GameFrame from "@/components/GameFrame";
 import NumBus from "@/games/numbus/NumBus";
 import NumBusSetup from "@/games/numbus/NumBusSetup";
 import type { NumBusConfig } from "@/games/numbus/config";
-import GameBar from "@/components/GameBar";
 
 export default function NumBusClient() {
   const [config, setConfig] = useState<NumBusConfig | null>(null);
 
+  // The setup step wears the same frame as the game (patch 23): one ✕, one
+  // ⋯, no page header — the title lives in the ⋯ sheet, not over the form.
   return (
     <AuthGate what="play">
-      <main
-        className="min-h-screen"
-        style={{ background: "linear-gradient(180deg,#cfe9fb 0%,#eaf6ff 45%,#f7fcff 100%)" }}
-      >
-        <GameBar title="🚌 NumBus" />
-
-        {!config ? (
-          <div className="mx-auto max-w-3xl px-4 py-6">
-            <h1 className="cahier-display cahier-hand mb-4 text-center text-3xl font-normal text-[color:var(--cahier-ink)]">
-              🚌 NumBus
-            </h1>
+      {!config ? (
+        <GameFrame title="🚌 NumBus" exitHref="/" progress={null}>
+          <div className="mx-auto h-full max-w-3xl overflow-y-auto px-4 py-4">
             <NumBusSetup onStart={setConfig} />
           </div>
-        ) : (
-          <NumBus config={config} onQuit={() => setConfig(null)} />
-        )}
-      </main>
+        </GameFrame>
+      ) : (
+        <NumBus config={config} onQuit={() => setConfig(null)} />
+      )}
     </AuthGate>
   );
 }

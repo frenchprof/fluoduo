@@ -1,15 +1,13 @@
 import { notFound } from "next/navigation";
-import BackLink from "@/components/BackLink";
-import HelpDot from "@/components/HelpDot";
 import LetrisGame from "@/games/letris/LetrisGame";
 import AuthGate from "@/components/AuthGate";
 import { getLetrisSet, listLetrisSets } from "@/games/letris/sets";
-import GameBar from "@/components/GameBar";
 
 export function generateStaticParams() {
   return listLetrisSets({ includeExpert: true }).map((s) => ({ setId: s.slug }));
 }
 
+// The game wears its own GameFrame (patch 23); the page adds the sign-in wall.
 export default async function LetrisSetPage({
   params,
 }: {
@@ -21,13 +19,7 @@ export default async function LetrisSetPage({
 
   return (
     <AuthGate what="play">
-      <main
-        className="min-h-screen"
-        style={{ background: "linear-gradient(180deg, #b5e0fb 0%, #e2f4ff 45%, #f4fbff 100%)" }}
-      >
-        <GameBar title={`☁️ ${set.title}`} up="/games/vocabularain" />
-        <LetrisGame set={set} />
-      </main>
+      <LetrisGame set={set} />
     </AuthGate>
   );
 }

@@ -20,7 +20,8 @@ import { speak } from "@/games/letris/speech";
 import { chiptune } from "@/games/audio/chiptune";
 import { sfx } from "@/games/audio/sfx";
 import CreditsSplash from "@/games/CreditsSplash";
-import SoundControl from "@/components/SoundControl";
+import GameFrame from "@/components/GameFrame";
+import GameOver, { type GameMiss } from "@/components/GameOver";
 import { recordItemResult } from "@/lib/progress";
 
 export type LexEntry = { id: string; fr: string; en: string; syllables: string[]; say?: string };
@@ -146,11 +147,17 @@ export default function Lexicalator({
   subtitle,
   entries,
   decoys,
+  deckId,
+  exitHref = "/games/lexicalater",
 }: {
   title: string;
   subtitle?: string;
   entries: LexEntry[];
   decoys: string[];
+  /** The curated deck — "where it goes" on the post-mortem. */
+  deckId?: string;
+  /** Where ✕ leads. */
+  exitHref?: string;
 }) {
   const [level, setLevel] = useState(1);
   const [score, setScore] = useState(0);
@@ -226,6 +233,9 @@ export default function Lexicalator({
   // 2026-07-21: \"when the game dies, there should be feedback about what
   // went wrong\").
   const missTokens = useRef<string[]>([]);
+  // The post-mortem's rows (patch 23): the word being forged, its syllables,
+  // the decoy that was tapped instead.
+  const [misses, setMisses] = useState<GameMiss[]>([]);
   useEffect(() => {
     const move = (e: PointerEvent) => {
       const d = dragRef.current;
@@ -516,6 +526,10 @@ export default function Lexicalator({
     } else {
       // decoy — rattle, lose a life (and remember it for the post-mortem)
       missTokens.current = [...missTokens.current.slice(-4), token];
+      setMisses((m) => [
+        ...m,
+        { itemId: cur.entry.id, deckId, prompt: cur.entry.fr, expected: cur.entry.syllables.join(" · "), given: token },
+      ]);
       sfx.wrong();
       setRattle(token);
       window.setTimeout(() => setRattle(null), 300);
@@ -532,6 +546,7 @@ export default function Lexicalator({
   function reset() {
     setLevel(1); setScore(0); setLives(START_LIVES); setCombo(0);
     setOver(false); setDone([]); setFirstDone(false);
+    missTokens.current = []; setMisses([]);
     // re-deal via the level effect (setLevel(1) won't refire if already 1)
     const shuffled = shuffle(entries.slice()).map((e) => gearEntry(1, e)); // level 1: whole words
     setQuota(Math.min(QUOTA, shuffled.length));
@@ -553,71 +568,75 @@ export default function Lexicalator({
   // Client-only game: the belt shuffles with Math.random, so don't SSR it.
   if (!mounted) return null;
 
+  const grouped: { fr: string; n: number }[] = [];
+  for (const d of done) {
+    const g = grouped.find((x) => x.fr === d.fr);
+    if (g) g.n += 1; else grouped.push({ fr: d.fr, n: 1 });
+  }
+  const tresorChips = grouped.map((g) => (
+    <span
+      key={g.fr}
+      lang="fr"
+      className="inline-flex items-center gap-1 rounded-full border-2 px-2.5 py-1 text-sm font-black"
+      style={{
+        borderColor: "#e0a500",
+        background: "#fff8e1",
+        color: "#9a6600",
+        boxShadow: "0 1px 4px rgba(224,165,0,.4)",
+        animation: "lxland 520ms cubic-bezier(.2,.7,.3,1.25) both",
+      }}
+    >
+      <span aria-hidden>✨</span>
+      {g.fr}
+      {g.n > 1 && <span className="ml-0.5 rounded-full bg-[#e0a500] px-1.5 text-[11px] font-black text-white">×{g.n}</span>}
+    </span>
+  ));
+
+  const help = (
+    <>
+      <p>Drag a chest down — or just tap a key it needs — then fill its syllables in any order to unlock the French word.</p>
+      <p className="mt-2">Level 1 deals whole words; levels 2–3 cut them into syllables; from level {SPELL_LEVEL} it&rsquo;s spelling — 2–4 letter chunks. Six words clear a level.</p>
+      <p className="mt-2">Only <b>decoys</b> — fragments that belong to no word on the lane — cost a life. Every useful key belongs to a visible chest.</p>
+      <p className="mt-2"><b>Hard</b> hides how many syllables each word has.</p>
+      {subtitle && <p className="mt-3 text-xs text-[color:var(--cahier-ink-soft)]">{title} — {subtitle}</p>}
+    </>
+  );
+
   return (
-    <div ref={rootRef} className="mx-auto max-w-3xl px-4 py-4" style={{ color: "#0c4a6e" }}>
+    <GameFrame
+      title="🧰 LexicaLater"
+      exitHref={exitHref}
+      progress={{ done: cleared, total: quota }}
+      hearts={{ left: lives, total: START_LIVES }}
+      score={<>{score} · L{level}{level >= SPELL_LEVEL ? " ✍️" : ""}</>}
+      help={help}
+      menu={[
+        { label: "🎵 Music", active: music, onClick: () => { chiptune.toggle("conveyor"); setMusic(chiptune.playing() === "conveyor"); } },
+        { label: "😤 Hard", active: hard, onClick: () => setHard((h) => !h) },
+      ]}
+      record={<div className="flex flex-wrap gap-2">{tresorChips}</div>}
+      recordTitle="🧰 Your treasure"
+      background="linear-gradient(180deg, var(--region-heights-band) 0%, var(--cahier-paper) 60%)"
+    >
+    <div ref={rootRef} className="mx-auto h-full max-w-3xl overflow-y-auto px-4 py-3" style={{ color: "#0c4a6e" }}>
       <CreditsSplash game="LexicaLater" emoji="🧰" />
       <style>{`
         @keyframes lxscroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
         @keyframes lxrattle{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px) rotate(-4deg)}75%{transform:translateX(4px) rotate(4deg)}}
         @keyframes lxland{0%{transform:translateY(-170px) scale(1.06);opacity:0}14%{opacity:1}80%{transform:translateY(7px) scale(1)}100%{transform:translateY(0) scale(1)}}
         @keyframes lxaim{0%,100%{box-shadow:0 0 0 0 rgba(224,134,0,0)}50%{box-shadow:0 0 0 6px rgba(224,134,0,.45)}}
-        @keyframes lxblink{0%,100%{opacity:1}50%{opacity:.15}}
         @keyframes lxdrop{0%{transform:translateY(-6px);opacity:.35}50%{transform:translateY(7px);opacity:1}100%{transform:translateY(-6px);opacity:.35}}
-        @keyframes lxpointR{0%,100%{transform:translateX(-4px)}50%{transform:translateX(4px)}}
-        @keyframes lxpointL{0%,100%{transform:translateX(4px)}50%{transform:translateX(-4px)}}
         /* The belt IS the game — it must keep scrolling even under the global
            prefers-reduced-motion kill-switch (a .lx-belt class outranks the *
            rule). Decorative motion elsewhere still calms as intended. */
         .lx-belt{animation:lxscroll var(--lx-belt-secs,60s) linear infinite !important}
       `}</style>
 
-      {/* HUD */}
-      <header className="mb-3 flex flex-wrap items-center gap-2">
-        <div className="mr-auto">
-          <h1 className="text-2xl font-black tracking-tight" style={{ color: "#0c4a6e", textShadow: "0 2px 0 #fff" }}>
-            🧰 Lexica<span style={{ color: "#ffc800" }}>Later</span>
-          </h1>
-          <p className="text-xs font-bold" style={{ color: "#075985" }}>{title}{subtitle ? ` — ${subtitle}` : ""}</p>
-          {level >= 2 && entries.some((e) => LIVERY_COLOR_WORDS.some((w) => e.fr.toLowerCase().includes(w))) && (
-            <p className="mt-0.5 text-[11px] font-black" style={{ color: "#b45309" }}>
-              ⚠️ Chest colours don't match the words!
-            </p>
-          )}
-        </div>
-        {/* Status chips: flat white, read-only. Buttons live in the raised
-            yellow cluster below — two shapes so tappable is obvious at a
-            glance (Dan, 2026-07-05: "i cannot tell which are tappable"). */}
-        <span title="Points earned" className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">Score <b style={{ color: "#58cc02" }}>{score}</b></span>
-        <span title={level <= 1 ? "Whole words — pick the entire word for its meaning" : level >= SPELL_LEVEL ? "Orthographe — the word is cut into 2–4 letter chunks, not syllables" : "Syllables — longer words and a faster belt as levels rise"} className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">
-          Level <b style={{ color: "#1cb0f6" }}>{level}</b>{level >= SPELL_LEVEL && <b style={{ color: "#ff9600" }}> · ✍️ spell it!</b>}
-        </span>
-        <span title={`Words unlocked this level — ${quota} clears it`} className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">Words <b style={{ color: "#ff9600" }}>{cleared}/{quota}</b></span>
-        <span title="Lives — a wrong syllable costs one" className="text-lg" style={{ color: "#ff4b4b" }}>{"♥".repeat(Math.max(0, lives))}<span className="opacity-20">{"♥".repeat(Math.max(0, START_LIVES - lives))}</span></span>
-        <span className="flex items-center gap-2 rounded-xl border-2 border-sky-300 bg-sky-100 px-2 py-1">
-          <button type="button" onClick={() => { chiptune.toggle("conveyor"); setMusic(chiptune.playing() === "conveyor"); }}
-            title={music ? "Turn the music off" : "Turn the music on"}
-            className={`rounded-lg border-2 border-b-4 px-2 py-0.5 text-xs font-black transition active:translate-y-0.5 active:border-b-2 ${
-              music ? "border-[#3f9c17] bg-[#58cc02] text-white" : "border-[#e08600] bg-[#ffc800] text-[#5a3a08]"
-            }`}>
-            {music ? "🔊 Music" : "🎵 Music"}
-          </button>
-          {/* Full sound popover — 🗣 voix / 🎵 musique / 🔔 effets + volume —
-              in the game itself, not only the site top bar (Dan, 2026-07-10). */}
-          <SoundControl />
-          <button type="button" onClick={() => setHard((h) => !h)}
-            title="Hard mode — hides how many syllables each word has"
-            className={`rounded-lg border-2 border-b-4 px-2 py-0.5 text-xs font-black transition active:translate-y-0.5 active:border-b-2 ${
-              hard ? "border-rose-700 bg-rose-500 text-white" : "border-[#e08600] bg-[#ffc800] text-[#5a3a08]"
-            }`}>
-            {hard ? "😤 Hard ✓" : "😤 Hard"}
-          </button>
-        </span>
-      </header>
-
-      <p className="mb-2 text-center text-xs font-semibold" style={{ color: "#075985" }}>
-        Drag a chest down — or just tap a key it needs — then fill its syllables in any order to unlock the French word.
-        {hard && <b style={{ color: "#c0392b" }}> Hard: the syllable count is hidden.</b>}
-      </p>
+      {level >= 2 && entries.some((e) => LIVERY_COLOR_WORDS.some((w) => e.fr.toLowerCase().includes(w))) && (
+        <p className="mb-2 text-center text-[11px] font-black" style={{ color: "#b45309" }}>
+          ⚠️ Chest colours don't match the words!
+        </p>
+      )}
 
       {/* Chest lane — the holding area; the picked chest LEAVES it (it has
           moved down into the main area / bay), so it's never in two places. */}
@@ -656,21 +675,15 @@ export default function Lexicalator({
       {/* Assembly bay — the active chest with syllable-sized keyholes */}
       <div className="relative flex min-h-[7rem] items-center justify-center py-5">
         {!active && (
-          <div className="flex flex-col items-center gap-2">
-            {/* animated down-arrows — the "drag it down here" movement */}
-            <div className="flex gap-3" aria-hidden>
-              {[0, 1, 2].map((i) => (
-                <span key={i} className="text-2xl leading-none" style={{ color: "#ff2222", animation: `lxdrop 1s ease-in-out ${i * 0.15}s infinite` }}>⬇</span>
-              ))}
-            </div>
-            {/* big red blinking call-to-action, arrows pointing in from each side */}
-            <div className="flex items-center gap-2" style={{ animation: "lxblink 1.1s ease-in-out infinite" }}>
-              <span className="text-3xl leading-none" style={{ color: "#ff2222", animation: "lxpointR .7s ease-in-out infinite" }} aria-hidden>👉</span>
-              <span className="text-2xl font-black tracking-tight" style={{ color: "#ff2222", textShadow: "0 1px 0 #fff" }}>
-                Drag down a chest to begin
-              </span>
-              <span className="text-3xl leading-none" style={{ color: "#ff2222", animation: "lxpointL .7s ease-in-out infinite" }} aria-hidden>👈</span>
-            </div>
+          // The "drag it down here" movement — arrows only (patch 23): the
+          // blinking red sentence and its two pointing hands were four
+          // simultaneous infinite animations (a WCAG 2.3.1 flash risk) and,
+          // by Dan's litmus test, text the learner can find the answer
+          // without.
+          <div className="flex gap-3" aria-hidden>
+            {[0, 1, 2].map((i) => (
+              <span key={i} className="text-2xl leading-none" style={{ color: "#ff2222", animation: `lxdrop 1s ease-in-out ${i * 0.15}s infinite` }}>⬇</span>
+            ))}
           </div>
         )}
         {active && (
@@ -745,78 +758,38 @@ export default function Lexicalator({
         )}
       </div>
 
-      {/* Votre trésor — the words RELEASED from the chests (no boxes here; the
-          chests stay up in the waiting/main areas — Dan, 2026-07-03). */}
-      <div className="mt-3 flex min-h-[2.5rem] flex-wrap items-center gap-2">
-        <span className="mr-1 text-[0.7rem] font-black uppercase tracking-wider" style={{ color: "#e08600" }}>🧰 Your treasure:</span>
-        {/* Repeats ABSORB into the earlier copy with a ×n count instead of
-            stacking (Dan, 2026-07-21) — key by word so the chip persists and
-            only its counter updates. */}
-        {(() => {
-          const grouped: { fr: string; n: number }[] = [];
-          for (const d of done) {
-            const g = grouped.find((x) => x.fr === d.fr);
-            if (g) g.n += 1; else grouped.push({ fr: d.fr, n: 1 });
-          }
-          return grouped.map((g) => (
-            <span
-              key={g.fr}
-              lang="fr"
-              className="inline-flex items-center gap-1 rounded-full border-2 px-2.5 py-1 text-sm font-black"
-              style={{
-                borderColor: "#e0a500",
-                background: "#fff8e1",
-                color: "#9a6600",
-                boxShadow: "0 1px 4px rgba(224,165,0,.4)",
-                animation: "lxland 520ms cubic-bezier(.2,.7,.3,1.25) both",
-              }}
-            >
-              <span aria-hidden>✨</span>
-              {g.fr}
-              {g.n > 1 && <span className="ml-0.5 rounded-full bg-[#e0a500] px-1.5 text-[11px] font-black text-white">×{g.n}</span>}
-            </span>
-          ));
-        })()}
+      {/* Votre trésor — the words RELEASED from the chests. On a desktop it
+          lives in the frame's record pane; this row is phones only. */}
+      <div className="mt-3 flex min-h-[2.5rem] flex-wrap items-center gap-2 lg:hidden">
+        {tresorChips}
       </div>
 
-      {/* Level-done / out-of-lives: a POPUP in the middle of the screen, not a
-          card below the fold (Dan, 2026-07-09). The level banner dismisses
-          itself via the auto-advance effect; game over keeps its button. */}
-      {(over || levelDone) && (
+      {/* Level-done: a POPUP in the middle of the screen (Dan, 2026-07-09);
+          it dismisses itself via the auto-advance effect. */}
+      {levelDone && !over && (
         <div className="fixed inset-0 z-[70] grid place-items-center bg-black/30 p-4" role="dialog" aria-modal="true">
           <div
             className="w-full max-w-sm rounded-3xl border-4 border-sky-200 bg-white p-5 text-center shadow-2xl"
             style={{ animation: popupNudge ? "lxrattle 300ms" : undefined }}
           >
-            {/* A stray tap on the belt behind this popup lands here instead of
-                nowhere (2026-08-02) — the shake says "I heard that, but play
-                is paused right now" rather than staying silent. */}
-            {levelDone ? (
-              // No OK tap between levels (Dan, 2026-07-08) — the banner shows
-              // while the next level deals itself (see the auto-advance effect).
-              <>
-                <p className="text-2xl font-black" style={{ color: "#ff9600" }}>Level {level} complete!</p>
-                <p className="text-sm font-semibold" style={{ color: "#075985" }}>Score {score} · level {level + 1} incoming…</p>
-              </>
-            ) : (
-              <>
-                <p className="text-lg font-black">Out of lives!</p>
-                <p className="text-sm" style={{ color: "#075985" }}>Level {level} · score {score}</p>
-                {/* The post-mortem (Dan, 2026-07-21): SAY what went wrong.
-                    Lives are only ever lost to decoys, so the answer is
-                    always: these fragments belonged to no word. */}
-                {missTokens.current.length > 0 && (
-                  <p className="mt-2 text-sm" style={{ color: "#9a3412" }}>
-                    Your lives went on <b>decoys</b> — fragments that belong to no word:{" "}
-                    {[...new Set(missTokens.current)].map((t) => `« ${t} »`).join(", ")}. Tip: every useful key belongs to a visible chest!
-                  </p>
-                )}
-                <button type="button" onClick={reset}
-                  className="mt-3 rounded-2xl border-b-4 border-[#1899d6] bg-[#1cb0f6] px-4 py-2 font-black text-white">Play again</button>
-              </>
-            )}
+            <p className="text-2xl font-black" style={{ color: "#ff9600" }}>Level {level} complete!</p>
+            <p className="text-sm font-semibold" style={{ color: "#075985" }}>Score {score} · level {level + 1} incoming…</p>
           </div>
         </div>
+      )}
+
+      {/* Out of lives — the post-mortem (patch 23): each decoy, the word it
+          was forged against, and where that word lives on the path. */}
+      {over && (
+        <GameOver
+          emoji="🧰"
+          title="Out of lives!"
+          score={<>{score} · level {level}</>}
+          won={false}
+          misses={misses}
+          onReplay={reset}
+          exitHref={exitHref}
+        />
       )}
 
       {/* Drag ghost — the chest that follows the pointer while dragging, in
@@ -830,5 +803,6 @@ export default function Lexicalator({
         </div>
       )}
     </div>
+    </GameFrame>
   );
 }

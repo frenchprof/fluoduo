@@ -12,10 +12,12 @@ import { chiptune } from "@/games/audio/chiptune";
 import { sfx } from "@/games/audio/sfx";
 import CreditsSplash from "@/games/CreditsSplash";
 import { isChannelMuted, onChannelMuteChange, setChannelMuted } from "@/games/audio/mute";
-import SoundControl from "@/components/SoundControl";
+import GameFrame from "@/components/GameFrame";
+import GameOver, { type GameMiss } from "@/components/GameOver";
+import { reviewItemByFrench } from "@/lib/reviser";
 import { logEvent } from "@/lib/firebase/usage";
 import { claimDigitKeys } from "@/lib/useChoiceKeys";
-import { blindWidth, configKey, configSummary, dealRound, type Blind, type NumBusConfig, type NumBusMode, type NumBusRound } from "./config";
+import { blindWidth, configKey, dealRound, type Blind, type NumBusConfig, type NumBusMode, type NumBusRound } from "./config";
 
 const ROUNDS_PER_RUN = 10;
 const LIVES = 3;
@@ -378,10 +380,12 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
   const [left, setLeft] = useState(1);
   const leftRef = useRef(1);
   const [typingOpen, setTypingOpen] = useState(false);
-  const [showHelp, setShowHelp] = useState(false);
   const [music, setMusic] = useState(false);
   const [talking, setTalking] = useState(false);
   const [speechPaused, setSpeechPaused] = useState(false);
+  // The run's record — every stop, what was said, what was typed. Feeds the
+  // desktop live pane and, at the terminus, the post-mortem (patch 23).
+  const [log, setLog] = useState<Array<{ words: string; digits: string; suffix?: string; given: string; ok: boolean }>>([]);
 
   const mode = round?.mode ?? "bus";
 
@@ -508,6 +512,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
       setStage("revealed");
       setTyped(round.digits);
       setServed((n) => n + 1);
+      setLog((l) => [...l, { words: round.words, digits: round.digits, suffix: round.suffix, given: answer, ok: won }]);
       void import("@/lib/firebase/responses")
         .then((m) => m.recordResponse(round.words, won, { given: answer || "—", activity: "numbus" }))
         .catch(() => {});
@@ -633,6 +638,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
     setStreak(0);
     setLives(LIVES);
     setServed(0);
+    setLog([]);
     pullIn();
   }, [clearTimers, pullIn]);
 
@@ -689,12 +695,21 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
       : stage === "asking"
         ? "?"
         : "";
-  const pillCls =
-    "rounded-xl border-2 border-b-4 border-white/70 bg-white/85 px-2 py-1 font-bold text-slate-800 shadow-sm transition hover:bg-white active:translate-y-[2px] active:border-b-2 sm:px-2.5";
   const timerHue = left > 0.5 ? "#58cc02" : left > 0.25 ? "#ffc800" : "#e0567f";
 
-  const brandHue = mode === "price" ? "#e65100" : mode === "phone" ? "#546e7a" : "#e0567f";
-  const progressLabel = `${Math.min(served + (stage === "terminus" ? 0 : 1), ROUNDS_PER_RUN)}/${ROUNDS_PER_RUN}`;
+  const gameTitle =
+    mode === "price" ? "🍔 NumBurger" : mode === "phone" ? "📞 NumBureau" : mode === "time" ? "🕑 Timetable" : "🚌 NumBus";
+  // Every wrong stop, as the post-mortem wants it: the spoken words, the digits
+  // that were right, the digits typed. A number the course has a deck row for
+  // (numbers-0-20 … 70-99) carries that item id, so it can be queued for ReVue.
+  const misses: GameMiss[] = log
+    .filter((r) => !r.ok)
+    .map((r) => ({
+      itemId: reviewItemByFrench(r.words)?.id,
+      prompt: r.words,
+      expected: r.digits.replace(/^0+(?=\d)/, "") + (r.suffix ? ` ${r.suffix}` : ""),
+      given: r.given ? r.given : undefined,
+    }));
 
   const priceDisplay =
     round && mode === "price" && typed.length >= 2
@@ -712,8 +727,75 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
 
   const stopLabel = mode === "time" ? "Timetable" : `${config.min}–${config.max}`;
 
+  const help = (
+    <>
+      <ol className="list-inside list-decimal space-y-2">
+        <li>Listen to the French number — it speaks <b>slowly</b>. ⏸ pauses, 🔊 repeats, 🐢 even slower.</li>
+        <li>Type the answer in <b>digits</b> once the bar starts — the clock waits until the speech finishes.</li>
+        <li>A full answer sends itself; ✓ sends a short one.</li>
+        <li>Clear ten rounds. Miss three and it&rsquo;s the terminus.</li>
+      </ol>
+      {/* Keyboard shortcuts only where a keyboard exists (patch 20–21). */}
+      <p className="mt-3 hidden rounded-2xl bg-[color:var(--cahier-paper)] p-3 text-[13px] font-bold text-[color:var(--cahier-ink-soft)] pointer-fine:block">
+        ⏎ submit, ⏎ again for the next stop · Space play/pause · ⇧Space slower · R from the top · Esc settings
+      </p>
+    </>
+  );
+
+  // The desktop live record: every stop so far, newest first.
+  const record = (
+    <ol className="flex flex-col gap-1.5">
+      {[...log].reverse().map((r, i) => (
+        <li
+          key={log.length - i}
+          lang="fr"
+          className={`flex items-baseline gap-2 rounded-lg border-2 px-2 py-1 text-sm ${
+            r.ok
+              ? "border-[color:var(--drill-ok-soft)] bg-[color:var(--drill-ok-bg)]"
+              : "border-[color:var(--drill-bad-soft)] bg-[color:var(--drill-bad-bg)]"
+          }`}
+        >
+          <span aria-hidden>{r.ok ? "✓" : "✗"}</span>
+          <span className="min-w-0 flex-1 truncate font-bold">{r.words}</span>
+          <span className="cahier-mono shrink-0 font-black">{r.digits.replace(/^0+(?=\d)/, "")}{r.suffix ? ` ${r.suffix}` : ""}</span>
+        </li>
+      ))}
+    </ol>
+  );
+
   return (
-    <div data-kbnav-off className="mx-auto flex w-full max-w-3xl flex-col gap-2 px-3 py-3 sm:gap-3 sm:px-4 sm:py-5">
+    <GameFrame
+      title={gameTitle}
+      exitHref="/"
+      onExit={onQuit}
+      progress={{ done: Math.min(served, ROUNDS_PER_RUN), total: ROUNDS_PER_RUN }}
+      hearts={{ left: lives, total: LIVES }}
+      score={score}
+      help={help}
+      menu={[
+        {
+          label: "🎵 Music",
+          active: music,
+          onClick: () => {
+            if (chiptune.playing()) {
+              chiptune.stop();
+              setMusic(false);
+              return;
+            }
+            // The music channel may be muted site-wide, in which case play()
+            // runs silently — asking for music here means wanting to hear it.
+            setChannelMuted("music", false);
+            chiptune.play("numbus");
+            setMusic(true);
+          },
+        },
+        ...(onQuit ? [{ label: "⚙️ Settings", onClick: onQuit }] : []),
+      ]}
+      record={record}
+      recordTitle="🚏 Stops"
+      background="linear-gradient(180deg, var(--region-downtown-band) 0%, var(--cahier-paper) 60%)"
+    >
+    <div data-kbnav-off className="mx-auto flex h-full w-full max-w-3xl flex-col gap-2 overflow-y-auto px-3 py-3 sm:gap-3 sm:px-4">
       <CreditsSplash game="NumBus" emoji="🚌" onDone={() => setCreditsDone(true)} />
       <style>{`
         @keyframes nbflip{0%{transform:rotateX(-88deg);opacity:.25}100%{transform:none;opacity:1}}
@@ -721,66 +803,6 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
         @keyframes nbroad{to{background-position-x:-96px}}
         @keyframes nbring{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.18);opacity:1}}
       `}</style>
-
-      <header className="flex items-center justify-between gap-2">
-        <div className="min-w-0">
-          <h1 className="truncate text-xl font-black tracking-tight text-slate-800 sm:text-3xl" style={{ textShadow: "0 2px 0 #fff" }}>
-            {mode === "price" ? (
-              <>🍔 Num<span style={{ color: brandHue }}>Burger</span></>
-            ) : mode === "phone" ? (
-              <>📞 Num<span style={{ color: brandHue }}>Bureau</span></>
-            ) : mode === "time" ? (
-              <>🕑 Timetable</>
-            ) : (
-              <>🚌 Num<span style={{ color: brandHue }}>Bus</span></>
-            )}
-          </h1>
-          {/* The session recipe can be long — it is reference, not gameplay, so
-              it yields the phone's first screenful. */}
-          <p className="hidden truncate text-sm font-bold text-slate-600 sm:block">{configSummary(config)}</p>
-        </div>
-        <div className="flex shrink-0 flex-wrap items-center justify-end gap-1.5 font-mono text-xs sm:gap-2 sm:text-sm">
-          <span className="rounded-xl border-2 border-white/70 bg-white/85 px-2 py-1 font-bold shadow-sm sm:px-2.5">{progressLabel}</span>
-          <span className="rounded-xl border-2 border-white/70 bg-white/85 px-2 py-1 font-bold shadow-sm sm:px-2.5"><b className="text-[#58cc02]">{score}</b></span>
-          <span className="rounded-xl border-2 border-white/70 bg-white/85 px-2 py-1 shadow-sm sm:px-2.5" title="Lives">
-            {"❤️".repeat(Math.max(0, lives))}
-            <span className="opacity-25">{"🖤".repeat(Math.max(0, LIVES - lives))}</span>
-          </span>
-          <button type="button" onClick={() => setShowHelp(true)} title="How to play" className={pillCls}>?</button>
-          {onQuit && (
-            <button type="button" onClick={onQuit} title="Settings" className={pillCls}>
-              ⚙️
-            </button>
-          )}
-          {/* Music only — never a speaker glyph, which is what made this look
-              like a second mute button next to the floating one. */}
-          <button
-            type="button"
-            title={music ? "Background music on" : "Background music off"}
-            aria-pressed={music}
-            className={`rounded-xl border-2 border-b-4 px-2 py-1 font-bold shadow-sm transition active:translate-y-[2px] active:border-b-2 sm:px-2.5 ${
-              music
-                ? "border-violet-500 bg-violet-500 text-white"
-                : "border-violet-200 bg-white/85 text-violet-300"
-            }`}
-            onClick={() => {
-              if (chiptune.playing()) {
-                chiptune.stop();
-                setMusic(false);
-                return;
-              }
-              // The music channel may be muted site-wide, in which case play()
-              // runs silently — asking for music here means wanting to hear it.
-              setChannelMuted("music", false);
-              chiptune.play("numbus");
-              setMusic(true);
-            }}
-          >
-            🎵
-          </button>
-          <SoundControl />
-        </div>
-      </header>
 
       {mode === "bus" || mode === "time" ? (
         <BusStopScene
@@ -888,10 +910,6 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
         ))}
       </div>
 
-      <p className="hidden text-center text-[11px] font-bold text-slate-500 pointer-fine:block">
-        ⏎ submit, ⏎ again for the next stop · Space play/pause · ⇧Space slower · R from the top · Esc settings
-      </p>
-
       {stage === "revealed" && !correct && (
         <button type="button" onClick={() => setStage("leaving")} className="rounded-2xl border-b-4 border-[#e08600] bg-[#ffc800] py-2 text-base font-black text-slate-900 transition hover:brightness-105 active:translate-y-[2px] active:border-b-0">
           {lives > 0 && served < ROUNDS_PER_RUN ? "Next ▶" : "Terminus ▶"}
@@ -935,58 +953,20 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
       )}
 
       {stage === "terminus" && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4">
-          <div className="w-full max-w-sm rounded-3xl border-4 border-white/80 bg-white p-6 text-center shadow-2xl">
-            <div className="text-5xl" aria-hidden>{lives > 0 ? "🎉" : "🚏"}</div>
-            <h2 className="mt-2 text-2xl font-black text-slate-800">Terminus</h2>
-            <p className="mt-1 text-lg font-bold text-slate-700">
-              <b className="text-[#58cc02]">{score}</b>
-            </p>
-            <div className="mt-5 flex flex-col gap-2">
-              <button type="button" onClick={restart} className="w-full rounded-2xl border-b-4 border-[#46a302] bg-[#58cc02] py-2 text-base font-black text-white transition hover:brightness-105 active:translate-y-[2px] active:border-b-0">
-                Again ▶
-              </button>
-              {onQuit && (
-                <button type="button" onClick={onQuit} className="w-full rounded-2xl border-b-4 border-slate-300 bg-white py-2 text-base font-black text-slate-700 transition hover:bg-slate-50 active:translate-y-[2px] active:border-b-0">
-                  ⚙️ Settings
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showHelp && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4" onClick={() => setShowHelp(false)}>
-          <div className="max-w-sm rounded-3xl border-4 border-white bg-white p-6 text-slate-800 shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <h2 className="mb-3 text-xl font-black">How to play NumBus 🚌</h2>
-            <ol className="list-inside list-decimal space-y-2 text-sm">
-              <li>Listen to the French number — it speaks <b>slowly</b>. ⏸ pauses, 🔊 repeats, 🐢 even slower.</li>
-              <li>Type the answer in <b>digits</b> once the bar starts — the clock waits until the speech finishes.</li>
-              <li>A full answer sends itself; ✓ sends a short one.</li>
-              <li>Clear ten rounds. Miss three and it&rsquo;s the terminus.</li>
-            </ol>
-            <dl className="mt-3 space-y-1 rounded-2xl bg-slate-100 p-3 text-[13px]">
-              {[
-                ["⏎", "submit, then again for the next stop"],
-                ["Space", "play / pause"],
-                ["⇧Space", "slower"],
-                ["R", "from the top"],
-                ["Esc", "settings"],
-              ].map(([k, what]) => (
-                <div key={k} className="flex gap-2">
-                  <dt className="w-16 shrink-0 font-mono font-black">{k}</dt>
-                  <dd className="font-bold text-slate-600">{what}</dd>
-                </div>
-              ))}
-            </dl>
-            <button type="button" onClick={() => setShowHelp(false)} className="mt-4 w-full rounded-2xl border-b-4 border-[#46a302] bg-[#58cc02] py-2 text-sm font-black text-white transition hover:brightness-105 active:translate-y-[2px] active:border-b-0">
-              Got it — play!
-            </button>
-          </div>
-        </div>
+        <GameOver
+          emoji={lives > 0 ? "🎉" : "🚏"}
+          title="Terminus"
+          score={score}
+          won={lives > 0}
+          misses={misses}
+          fallbackSio="SIO-007"
+          onReplay={restart}
+          exitHref="/"
+          onExit={onQuit}
+        />
       )}
     </div>
+    </GameFrame>
   );
 }
 

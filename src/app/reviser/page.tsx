@@ -17,7 +17,7 @@ import AuthGate from "@/components/AuthGate";
 import { speak } from "@/games/letris/speech";
 import { loadProgress, recordItemResult } from "@/lib/progress";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
-import { dueForReview, gapsByDeck, allReviewItems, type ReviewItem, type Gap } from "@/lib/reviser";
+import { dueForReview, gapsByDeck, allReviewItems, reviewFocusFrom, type ReviewItem, type Gap } from "@/lib/reviser";
 import { optionGridClass } from "@/lib/optionGrid";
 
 type Card = { item: ReviewItem; options: string[] };
@@ -62,7 +62,15 @@ export default function ReviserPage() {
     const p = loadProgress();
     const now = Date.now();
     const pool = allReviewItems();
-    setCards(shuffle(dueForReview(p, now)).map((it) => buildCard(it, pool)));
+    // A game's post-mortem (patch 23) arrives with `?items=a,b,c` — those
+    // misses lead the session, in the order they were missed; the rest of
+    // what is due follows, shuffled as before. Read off the window here (not
+    // useSearchParams) so the static export never needs a Suspense boundary.
+    const focus = reviewFocusFrom(window.location.search);
+    const due = dueForReview(p, now);
+    const lead = focus.map((id) => pool.find((it) => it.id === id)).filter((x): x is ReviewItem => !!x);
+    const rest = shuffle(due.filter((it) => !focus.includes(it.id)));
+    setCards([...lead, ...rest].map((it) => buildCard(it, pool)));
     setGaps(gapsByDeck(p, now));
   }, []);
 

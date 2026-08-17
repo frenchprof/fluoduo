@@ -4,6 +4,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { speak } from "@/games/letris/speech";
 import { recordItemResult } from "@/lib/progress";
 import { logEvent } from "@/lib/firebase/usage";
+import GameFrame from "@/components/GameFrame";
+import GameOver, { type GameMiss } from "@/components/GameOver";
+import { drillExitHref } from "@/components/DrillShell";
 
 export type MatchingLeft = {
   id: string;
@@ -69,6 +72,10 @@ export default function MatchingGame({ set }: { set: MatchingSet }) {
   const [audioOn, setAudioOn] = useState(true);
   const [attempts, setAttempts] = useState(0);
   const [correct, setCorrect] = useState(0);
+  // Wrong pairings, for the post-mortem (patch 23); right matches, for the
+  // desktop live record.
+  const [misses, setMisses] = useState<GameMiss[]>([]);
+  const [matched, setMatched] = useState<Array<{ left: string; right: string }>>([]);
 
   const lang = set.language ? `${set.language}-FR` : "fr-FR";
   const total = set.rights.length;
@@ -85,6 +92,8 @@ export default function MatchingGame({ set }: { set: MatchingSet }) {
     setFlash(null);
     setAttempts(0);
     setCorrect(0);
+    setMisses([]);
+    setMatched([]);
     setRights(shuffle(set.rights));
   }, [set.rights]);
 
@@ -108,6 +117,7 @@ export default function MatchingGame({ set }: { set: MatchingSet }) {
       window.setTimeout(() => setFlash(null), 450);
       if (isValid) {
         if (left && audioOn) speak(speakable(buildPairSentence(left, right)), lang);
+        setMatched((m) => [...m, { left: left?.text ?? "", right: right.text }]);
         setCorrect((c) => c + 1);
         setSolvedRightIds((s) => {
           const next = new Set(s);
@@ -116,6 +126,11 @@ export default function MatchingGame({ set }: { set: MatchingSet }) {
         });
         setSelectedLeft(null);
       } else {
+        const wanted = set.rights.find((r) => r.validLefts.includes(leftId));
+        setMisses((m) => [
+          ...m,
+          { itemId: rightId, deckId: set.id, prompt: left?.text ?? leftId, expected: wanted?.text ?? "?", given: right.text },
+        ]);
         setSelectedLeft(null);
       }
     },
@@ -150,90 +165,49 @@ export default function MatchingGame({ set }: { set: MatchingSet }) {
 
   const accuracy = attempts === 0 ? 0 : Math.round((correct / attempts) * 100);
 
+  const exitHref = drillExitHref(set.id);
+  const help = (
+    <>
+      <p>Tap a phrase on the left, then its completion on the right.</p>
+      <p className="mt-2">A wrong pair flashes red and stays open; a right one locks with a ✓ and is spoken.</p>
+    </>
+  );
+  const record = (
+    <ol className="flex flex-col gap-1.5">
+      {[...matched].reverse().map((m, i) => (
+        <li key={matched.length - i} lang="fr" className="rounded-lg border-2 border-[color:var(--drill-ok-soft)] bg-[color:var(--drill-ok-bg)] px-2 py-1 text-sm">
+          <span className="font-bold">{m.left}</span> <span className="text-[color:var(--cahier-ink-soft)]">{m.right}</span>
+        </li>
+      ))}
+    </ol>
+  );
+
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 py-6 text-[color:var(--cahier-ink)]">
-      <header className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="cahier-display text-2xl font-black">{set.title}</h1>
-          {set.subtitle && (
-            <p className="text-sm text-[color:var(--cahier-ink-soft)]">{set.subtitle}</p>
-          )}
-        </div>
-        {/* flex-wrap (bug, to 2026-08-10): on a 390px phone this row ran to
-            x=468, so Restart sat at x=402 — off-screen, and the page has no
-            horizontal scroll, so it could not be reached at all. */}
-        <div className="flex flex-wrap items-center gap-3 text-sm font-mono">
-          <span>
-            Pairs <b className="text-emerald-700">{solvedRightIds.size}</b>/{total}
-          </span>
-          <span>
-            Accuracy <b className="text-amber-700">{accuracy}%</b>
-          </span>
-          <label className="flex items-center gap-2 text-[color:var(--cahier-ink-soft)]">
-            <input
-              type="checkbox"
-              checked={showMeaning}
-              onChange={(e) => setShowMeaning(e.target.checked)}
-              className="h-4 w-4 accent-[#2a2e6e]"
-            />
-            Show English
-          </label>
-          <label className="flex items-center gap-2 text-[color:var(--cahier-ink-soft)]">
-            <input
-              type="checkbox"
-              checked={audioOn}
-              onChange={(e) => setAudioOn(e.target.checked)}
-              className="h-4 w-4 accent-[#2a2e6e]"
-            />
-            Audio
-          </label>
-          <button type="button" onClick={restart} className="cahier-btn cahier-btn-sm">
-            Restart
-          </button>
-        </div>
-      </header>
-
-      <div className="h-1.5 w-full overflow-hidden rounded-full bg-[color:var(--cahier-rule)]">
-        <div
-          className="h-full bg-[color:var(--cahier-hl-edge)] transition-all duration-200"
-          style={{ width: `${(solvedRightIds.size / total) * 100}%` }}
-        />
-      </div>
-
-      {!done && (
-        <div className="mx-auto flex max-w-2xl items-center justify-center gap-3 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white px-4 py-3 text-sm font-semibold">
-          <span className="text-2xl" aria-hidden>
-            👇
-          </span>
-          <span>
-            Tap a{" "}
-            <span className="rounded bg-blue-100 px-2 py-0.5 text-blue-800">
-              verb phrase
-            </span>{" "}
-            on the left, then a{" "}
-            <span className="rounded bg-emerald-100 px-2 py-0.5 text-emerald-800">
-              completion
-            </span>{" "}
-            on the right.
-          </span>
-        </div>
-      )}
-
+    <GameFrame
+      title={`🔗 ${set.title}`}
+      exitHref={exitHref}
+      progress={{ done: solvedRightIds.size, total }}
+      score={<>{accuracy}%</>}
+      help={help}
+      menu={[
+        { label: "🇬🇧 Show English", active: showMeaning, onClick: () => setShowMeaning((v) => !v) },
+        { label: "🔊 Audio", active: audioOn, onClick: () => setAudioOn((v) => !v) },
+        { label: "↻ Restart", onClick: restart },
+      ]}
+      record={record}
+      recordTitle="🔗 Matched"
+    >
+    <div className="mx-auto h-full w-full max-w-5xl overflow-y-auto px-4 py-4 text-[color:var(--cahier-ink)]">
       {done ? (
-        <div className="rounded-2xl border-2 border-emerald-600 bg-white p-10 text-center">
-          <div className="text-6xl">🎉</div>
-          <h2 className="mt-2 text-3xl font-black">All matched!</h2>
-          <p className="mt-2 text-[color:var(--cahier-ink-soft)]">
-            {correct} correct out of {attempts} attempts ({accuracy}%).
-          </p>
-          <button
-            type="button"
-            onClick={restart}
-            className="cahier-btn cahier-btn-primary mt-6"
-          >
-            Play again
-          </button>
-        </div>
+        <GameOver
+          emoji="🎉"
+          title="All matched!"
+          score={<>{correct} / {attempts} · {accuracy}%</>}
+          won
+          misses={misses}
+          onReplay={restart}
+          exitHref={exitHref}
+        />
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {/* LEFT COLUMN */}
@@ -350,5 +324,6 @@ export default function MatchingGame({ set }: { set: MatchingSet }) {
         </div>
       )}
     </div>
+    </GameFrame>
   );
 }

@@ -49,3 +49,42 @@ export function gapsByDeck(p: Progress, now: number): Gap[] {
   }
   return [...m.values()].sort((a, b) => b.weak - a.weak || b.due - a.due);
 }
+
+/* ── Patch 23: the games feed the queue ─────────────────────────────────── */
+
+/** The query key /reviser reads to put a game's misses at the head of the
+ *  session: `/reviser?items=a,b,c`. */
+export const REVIEW_FOCUS_PARAM = "items";
+
+/** Where CORRIGER MAINTENANT sends the learner. */
+export function reviserHref(itemIds: string[]): string {
+  const ids = [...new Set(itemIds)].filter(Boolean);
+  return ids.length ? `/reviser?${REVIEW_FOCUS_PARAM}=${encodeURIComponent(ids.join(","))}` : "/reviser";
+}
+
+/** Parse the focus list off a URL search string (client only). */
+export function reviewFocusFrom(search: string): string[] {
+  try {
+    const raw = new URLSearchParams(search).get(REVIEW_FOCUS_PARAM);
+    return raw ? raw.split(",").filter(Boolean) : [];
+  } catch {
+    return [];
+  }
+}
+
+const norm = (s: string) =>
+  s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
+
+/** A curated item by its exact French — how the number games (which deal
+ *  spoken numbers, not deck items) find the deck row that matches what the
+ *  learner missed. Undefined when the course has no such item. */
+export function reviewItemByFrench(fr: string): ReviewItem | undefined {
+  const want = norm(fr);
+  if (!want) return undefined;
+  return allReviewItems().find((it) => norm(it.fr) === want);
+}
+
+/** A curated item by id. */
+export function reviewItemById(id: string): ReviewItem | undefined {
+  return allReviewItems().find((it) => it.id === id);
+}

@@ -353,6 +353,25 @@ export function recordItemResult(
   return finalize(addXp(p, correct ? XP_CORRECT : XP_WRONG));
 }
 
+/**
+ * Put items into the review queue NOW (patch 23 — the game-over post-mortem's
+ * CORRIGER MAINTENANT). Each item's ladder drops to the "due immediately"
+ * rung, which is exactly what `dueForReview` reads — so the ReVue page shows
+ * them the moment it opens. Deliberately NOT recordItemResult: the game has
+ * already graded and paid the attempt (evidence + XP) when the miss happened;
+ * queueing it again must not write a second wrong answer or a second receipt.
+ * Unknown ids (a spoken number with no curated item) are skipped by the
+ * caller — this writes whatever it is given.
+ */
+export function queueForReview(itemIds: string[]): Progress {
+  const prev = loadProgress();
+  if (itemIds.length === 0) return prev;
+  const now = Date.now();
+  const itemSrs = { ...prev.itemSrs };
+  for (const id of itemIds) itemSrs[id] = { due: now, intervalDays: 0 };
+  return saveProgress({ ...prev, itemSrs });
+}
+
 /** True if the item was never practiced or its interval has elapsed — the Reviser's bias signal. */
 export function isItemDue(itemId: string, p: Progress, now: number): boolean {
   const s = p.itemSrs[itemId];
