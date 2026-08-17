@@ -163,7 +163,7 @@ export default function HomeMap3D({
   const band = (u: number) => {
     const first = STOPS.findIndex((s) => s.unit === u);
     const lastIn = STOPS.map((s) => s.unit).lastIndexOf(u);
-    const bottom = geo.y(first) + STEP * 0.6;
+    const bottom = u === 0 ? MAP_H : geo.y(first) + STEP * 0.6; // U0 runs to the foot of the map
     const top = geo.y(lastIn) - STEP * 0.6;
     return { top, height: bottom - top };
   };
