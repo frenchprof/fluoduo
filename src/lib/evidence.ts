@@ -212,11 +212,19 @@ export function assistanceFromHints(hintsTaken: number): AssistanceLevel {
 export function buildEvidence(
   itemId: string,
   activityId: string | undefined,
-  opts: { hintsTaken?: number; revealed?: boolean; evidenceType?: EvidenceType } = {},
+  opts: {
+    hintsTaken?: number;
+    revealed?: boolean;
+    evidenceType?: EvidenceType;
+    /** The exact rung the help ladder showed (Track D: ladder.ts
+     *  evidenceOf). Wins over the count-derived guess — a single hint may
+     *  be a nudge (category) or a scaffold (first letter). */
+    assistance?: AssistanceLevel;
+  } = {},
 ): EvidenceMeta {
   const assistance: AssistanceLevel = opts.revealed
     ? "answer"
-    : assistanceFromHints(opts.hintsTaken ?? 0);
+    : opts.assistance ?? assistanceFromHints(opts.hintsTaken ?? 0);
   const meta: EvidenceMeta = {
     assistance,
     assistCount: Math.min(20, Math.max(0, opts.hintsTaken ?? 0)),

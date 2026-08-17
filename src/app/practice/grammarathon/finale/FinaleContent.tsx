@@ -26,7 +26,7 @@ import { SIOS } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import { deaccent, gradeAgainst, normalize } from "@/lib/practice/cloze";
 import { isWeakSrs, loadProgress, recordItemResult } from "@/lib/progress";
-import { buildLadder, shownRungs } from "@/lib/help/ladder";
+import { buildLadder, shownRungs } from "@/lib/help/hints";
 import { buildEvidence } from "@/lib/evidence";
 
 const DAILY_N = 50; // Dan, 2026-07-22: 50, not 100

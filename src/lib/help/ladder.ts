@@ -1,100 +1,244 @@
 /**
- * The help ladder — ONE definition, shared by every surface that offers help.
+ * The help ladder — ONE state machine, shared by every drill in DrillShell
+ * (Track D, docs/TRACK_D_HELP_LADDER.md).
  *
- * WHY SHARED: before this, Finale had a 4-rung Socratic clue ladder and
- * per-deck GramMarathon had nothing at all. A learner stuck on the same
- * grammar point got escalating scaffolds in the daily paper and a bare "wrong"
- * in the lesson drill. That asymmetry was backwards — Finale is the summative
- * surface, the lesson drill is where scaffolding belongs most — and it arose
- * exactly the way the gap-sentence bug did: two call sites, two answers, no
- * shared definition. This module is that definition.
+ *   FRESH ──wrong──▶ TRY ──wrong×N / idle / ?──▶ HINT_1 ──▶ HINT_2 ──▶ REVEAL
+ *     │               │                            │           │          │
+ *     └── correct ────┴──────── correct ───────────┴───────────┘          │
+ *                                   ▼                                     ▼
+ *                                 DONE ◀──── correct / wrong / skip ── RETRY_AFTER_REVEAL
  *
- * PRD §8: nudge → guiding question → scaffold → partial reveal → answer.
- * "The answer must ultimately be reachable." Finale's ladder deliberately
- * stopped short of that (Dan, 2026-07-21: "never reveal the answer"); Dan
- * revised it on 2026-08-09 — Finale is practice, so the fifth rung lands.
+ * Three rules the machine enforces so no drill can break them again:
+ *   · REVEAL is never reached automatically before one real attempt, and
+ *     never by idling — only by wrong tries (or the learner's own tap, once
+ *     an attempt is in; flashcard test is the one context that may open it
+ *     cold, because "reveal then check" is how flashcards work).
+ *   · Escalation is learner-initiated (the ? control) OR automatic on
+ *     "stuck": `stuckWrong` wrong tries at the current rung, or
+ *     `stuckIdleMs` idle at it (idle climbs hints only).
+ *   · The evidence written for the answer states the highest rung ACTUALLY
+ *     shown — `independent` is true only for a first-try, no-hint success
+ *     (PRD §7: a revealed answer still counts as practised, never as
+ *     independent mastery).
  *
- * The evidentiary consequence is the point, not a side effect. PRD §7: a
- * revealed answer still counts as encountered and practised, but not as
- * evidence of independent mastery, and it should schedule a later retrieval
- * so independent evidence can still be earned. `assistanceForLevel` is what
- * carries that into the evidence record.
+ * Pure: no React, no clock (every event carries `at`), no `@/` runtime
+ * import — verify28 runs it in node.
  */
 import type { AssistanceLevel } from "@/lib/evidence";
+import type { TaskKind } from "./hints";
 
-export type Rung = {
-  /** What the learner sees. */
-  text: string;
-  /** Which PRD §8 rung this is — drives the evidence tag. */
-  level: AssistanceLevel;
+export type { TaskKind } from "./hints";
+
+export type LadderState =
+  | "FRESH"               // item shown; no attempt, no help
+  | "TRY"                 // ≥ 1 wrong attempt, no help yet
+  | "HINT_1"              // first hint on screen
+  | "HINT_2"              // second hint on screen
+  | "REVEAL"              // the answer is on screen; the task cannot be retried
+  | "RETRY_AFTER_REVEAL"  // the answer is on screen AND the input is open once more
+  | "DONE";               // closed — a correct answer, or a miss the learner moved past
+
+export type LadderConfig = {
+  /** Wrong tries at the current rung before the ladder climbs by itself. */
+  stuckWrong: number;
+  /** Idle ms at the current rung before it climbs by itself — hints only,
+   *  never REVEAL. 0 disables idle escalation. */
+  stuckIdleMs: number;
+  /** May the learner open a HINT before one real attempt? (MCQ: no — its
+   *  first rung IS "not that one", meaningless before a pick.) */
+  helpBeforeAttempt: boolean;
+  /** May the learner open REVEAL before one real attempt? */
+  revealBeforeAttempt: boolean;
+  /** After REVEAL, is the input re-opened for one retry (retype / re-say)? */
+  retryAfterReveal: boolean;
 };
 
-/**
- * Build the ladder for one item.
- *
- * `category` is Finale-only (its bank hand-authors a `cat` label per item);
- * per-deck items have no equivalent, so their ladder is one rung shorter and
- * opens at the lesson rung. That is a content difference, not a behavioural
- * one — both end at a reachable answer.
- */
-export function buildLadder(opts: {
-  answer: string;
-  topic?: string;
-  category?: string;
-}): Rung[] {
-  const a = opts.answer ?? "";
-  const rungs: Rung[] = [];
+/** Thresholds per task context — the "stuck" definitions Dan is asked to
+ *  confirm (STATUS.md, Track D). */
+export const LADDER_CONFIG: Record<TaskKind, LadderConfig> = {
+  mcq:       { stuckWrong: 1, stuckIdleMs: 0,      helpBeforeAttempt: false, revealBeforeAttempt: false, retryAfterReveal: false },
+  cloze:     { stuckWrong: 1, stuckIdleMs: 20_000, helpBeforeAttempt: true,  revealBeforeAttempt: false, retryAfterReveal: true },
+  typed:     { stuckWrong: 1, stuckIdleMs: 20_000, helpBeforeAttempt: true,  revealBeforeAttempt: false, retryAfterReveal: true },
+  dictation: { stuckWrong: 1, stuckIdleMs: 30_000, helpBeforeAttempt: true,  revealBeforeAttempt: false, retryAfterReveal: true },
+  say:       { stuckWrong: 2, stuckIdleMs: 30_000, helpBeforeAttempt: true,  revealBeforeAttempt: false, retryAfterReveal: true },
+  ordering:  { stuckWrong: 1, stuckIdleMs: 20_000, helpBeforeAttempt: true,  revealBeforeAttempt: false, retryAfterReveal: true },
+  flashcard: { stuckWrong: 1, stuckIdleMs: 0,      helpBeforeAttempt: true,  revealBeforeAttempt: true,  retryAfterReveal: false },
+  open:      { stuckWrong: 2, stuckIdleMs: 0,      helpBeforeAttempt: true,  revealBeforeAttempt: false, retryAfterReveal: true },
+};
 
-  // Rung 1 — nudge: name the KIND of thing wanted, never the thing.
-  if (opts.category) rungs.push({ text: `💡 ${opts.category}`, level: "nudge" });
+export type Ladder = {
+  kind: TaskKind;
+  state: LadderState;
+  /** Assistance level of each hint rung available (from hints.ts). Length 0–2. */
+  hintLevels: AssistanceLevel[];
+  hintsTaken: number;
+  /** Wrong attempts, in total and since the last climb. */
+  wrongTries: number;
+  triesAtRung: number;
+  revealed: boolean;
+  /** How many climbs happened WITHOUT the learner asking (stuck). */
+  autoClimbs: number;
+  startedAt: number;
+  lastActionAt: number;
+};
 
-  // Rung 2 — guiding question: point at where it was taught.
-  if (opts.topic) rungs.push({ text: `📘 Leçon : ${opts.topic}`, level: "question" });
+export type LadderEvent =
+  | { type: "attempt"; correct: boolean; at: number }
+  | { type: "help"; at: number }   // the learner tapped ?
+  | { type: "tick"; at: number }   // idle check (from a timer)
+  | { type: "skip"; at: number };  // moved on without a further attempt
 
-  // Rung 3 — scaffold: the first letter narrows the field without giving it.
-  if (a) {
-    rungs.push({
-      text: `🔤 Une réponse possible commence par « ${a[0]?.toUpperCase() ?? ""} »`,
-      level: "scaffold",
-    });
+export type Effect = "none" | "hint" | "reveal" | "done";
+
+export type StepResult = { ladder: Ladder; effect: Effect; auto: boolean };
+
+export function createLadder(kind: TaskKind, hintLevels: AssistanceLevel[], at: number): Ladder {
+  return {
+    kind, state: "FRESH", hintLevels: hintLevels.slice(0, 2),
+    hintsTaken: 0, wrongTries: 0, triesAtRung: 0, revealed: false, autoClimbs: 0,
+    startedAt: at, lastActionAt: at,
+  };
+}
+
+export function configFor(kind: TaskKind): LadderConfig {
+  return LADDER_CONFIG[kind];
+}
+
+/** What the next climb would open: a hint, the answer, or nothing more. */
+export function nextRung(l: Ladder): "hint" | "reveal" | null {
+  if (l.state === "REVEAL" || l.state === "RETRY_AFTER_REVEAL" || l.state === "DONE") return null;
+  return l.hintsTaken < l.hintLevels.length ? "hint" : "reveal";
+}
+
+/** May the learner climb right now? (REVEAL needs one attempt in first.) */
+export function canHelp(l: Ladder): boolean {
+  const n = nextRung(l);
+  if (!n) return false;
+  const cfg = configFor(l.kind);
+  if (n === "reveal") return l.wrongTries >= 1 || cfg.revealBeforeAttempt;
+  return l.wrongTries >= 1 || cfg.helpBeforeAttempt;
+}
+
+/** Label for the ? control — English chrome. */
+export function helpLabel(l: Ladder): string | null {
+  const n = nextRung(l);
+  if (!n) return null;
+  if (n === "reveal") return "Show answer";
+  return l.hintsTaken === 0 ? "Hint" : "Another hint";
+}
+
+function climb(l: Ladder, at: number, auto: boolean): StepResult {
+  const n = nextRung(l);
+  if (!n) return { ladder: l, effect: "none", auto };
+  const base = { ...l, triesAtRung: 0, lastActionAt: at, autoClimbs: l.autoClimbs + (auto ? 1 : 0) };
+  if (n === "hint") {
+    const taken = l.hintsTaken + 1;
+    return { ladder: { ...base, hintsTaken: taken, state: taken === 1 ? "HINT_1" : "HINT_2" }, effect: "hint", auto };
   }
+  const retry = configFor(l.kind).retryAfterReveal;
+  return { ladder: { ...base, revealed: true, state: retry ? "RETRY_AFTER_REVEAL" : "REVEAL" }, effect: "reveal", auto };
+}
 
-  // Rung 4 — partial reveal: shape and length, still requiring retrieval.
-  if (a) {
-    const skel = a[0] + " " + [...a.slice(1)].map(() => "_").join(" ");
-    rungs.push({ text: `✏️ ${skel}  (${a.length} lettres)`, level: "partial" });
+/** The transition function. Pure; returns the new ladder and what to show. */
+export function step(l: Ladder, ev: LadderEvent): StepResult {
+  if (l.state === "DONE") return { ladder: l, effect: "none", auto: false };
+  const cfg = configFor(l.kind);
+  switch (ev.type) {
+    case "attempt": {
+      if (ev.correct) return { ladder: { ...l, state: "DONE", lastActionAt: ev.at }, effect: "done", auto: false };
+      const wrong = { ...l, wrongTries: l.wrongTries + 1, triesAtRung: l.triesAtRung + 1, lastActionAt: ev.at };
+      // After the answer was shown, one attempt closes the item either way.
+      if (l.state === "REVEAL" || l.state === "RETRY_AFTER_REVEAL") {
+        return { ladder: { ...wrong, state: "DONE" }, effect: "done", auto: false };
+      }
+      const moved = wrong.state === "FRESH" ? { ...wrong, state: "TRY" as LadderState } : wrong;
+      // Stuck by tries → climb without being asked. REVEAL is allowed here
+      // because a wrong attempt IS the one real attempt the rule demands.
+      if (moved.triesAtRung >= cfg.stuckWrong) return climb(moved, ev.at, true);
+      return { ladder: moved, effect: "none", auto: false };
+    }
+    case "help": {
+      if (!canHelp(l)) return { ladder: l, effect: "none", auto: false };
+      return climb(l, ev.at, false);
+    }
+    case "tick": {
+      // Idle escalation opens HINTS only, never the answer.
+      if (cfg.stuckIdleMs <= 0) return { ladder: l, effect: "none", auto: false };
+      if (nextRung(l) !== "hint") return { ladder: l, effect: "none", auto: false };
+      if (ev.at - l.lastActionAt < cfg.stuckIdleMs) return { ladder: l, effect: "none", auto: false };
+      return climb(l, ev.at, true);
+    }
+    case "skip":
+      return { ladder: { ...l, state: "DONE", lastActionAt: ev.at }, effect: "done", auto: false };
   }
-
-  // Rung 5 — the answer. Reachable, per PRD §8, and evidentially marked.
-  if (a) rungs.push({ text: `✅ ${a}`, level: "answer" });
-
-  return rungs;
 }
 
-/** How many rungs before the answer — i.e. the last "safe" clue level. */
-export function lastClueLevel(rungs: Rung[]): number {
-  return Math.max(0, rungs.length - 1);
+/** True while the machine would climb on the next tick or wrong try. */
+export function isStuck(l: Ladder, at: number): boolean {
+  const cfg = configFor(l.kind);
+  if (l.state === "DONE" || l.state === "REVEAL" || l.state === "RETRY_AFTER_REVEAL") return false;
+  if (cfg.stuckIdleMs > 0 && nextRung(l) === "hint" && at - l.lastActionAt >= cfg.stuckIdleMs) return true;
+  return l.triesAtRung >= cfg.stuckWrong;
 }
 
-/** The rungs the learner has unlocked so far. */
-export function shownRungs(rungs: Rung[], level: number): Rung[] {
-  return rungs.slice(0, Math.max(0, Math.min(level, rungs.length)));
-}
+/** The evidence block fields for the answer given from this ladder. */
+export type LadderEvidence = {
+  assistance: AssistanceLevel;
+  hintsTaken: number;
+  revealed: boolean;
+  independent: boolean;
+};
 
-/** True once the answer rung has been opened. */
-export function isRevealed(rungs: Rung[], level: number): boolean {
-  return level >= rungs.length && rungs.length > 0;
+const ORDER: AssistanceLevel[] = ["none", "nudge", "question", "scaffold", "partial", "answer"];
+
+/**
+ * The highest assistance ACTUALLY shown. `independent` is true only when
+ * nothing was shown AND this is the first try — a second try after a bare
+ * "wrong" is repaired, not independent, so it is tagged `nudge` (the miss
+ * itself was the nudge).
+ */
+export function evidenceOf(l: Ladder): LadderEvidence {
+  let assistance: AssistanceLevel = "none";
+  if (l.revealed) assistance = "answer";
+  else {
+    for (const lv of l.hintLevels.slice(0, l.hintsTaken)) {
+      if (ORDER.indexOf(lv) > ORDER.indexOf(assistance)) assistance = lv;
+    }
+    if (assistance === "none" && l.wrongTries > 0) assistance = "nudge";
+  }
+  return { assistance, hintsTaken: l.hintsTaken, revealed: l.revealed, independent: assistance === "none" };
 }
 
 /**
- * The assistance tag for an answer given at this clue level.
- *
- * Note it reports the help ACTUALLY TAKEN before answering, not the help
- * available. A learner who solved it cold reads "none" even on a surface that
- * offers five rungs — which is the distinction the mastery model needs.
+ * Spaced-retrieval hook (row 3): after `recordItemResult` has stepped the SRS
+ * ladder, should the item ALSO be dropped to the due-now rung of the ReVue
+ * queue? Yes whenever help was taken — a hinted or revealed success must
+ * earn its interval again, independently, on a later day. A clean
+ * independent success keeps the interval recordItemResult gave it; a miss
+ * is already reset by recordItemResult.
  */
-export function assistanceForLevel(rungs: Rung[], level: number): AssistanceLevel {
-  if (level <= 0) return "none";
-  const idx = Math.min(level, rungs.length) - 1;
-  return rungs[idx]?.level ?? "none";
+export function shouldQueueForReview(l: Ladder): boolean {
+  return l.revealed || l.hintsTaken > 0;
+}
+
+/** The research-log event (docs/TRACK_D_HELP_LADDER.md §4) for one step. */
+export type HelpRungEvent = {
+  surface: string;
+  itemId?: string;
+  kind: TaskKind;
+  from: LadderState;
+  to: LadderState;
+  effect: Effect;
+  auto: boolean;
+  hintsTaken: number;
+  wrongTries: number;
+  msSinceStart: number;
+};
+
+export function rungEvent(surface: string, itemId: string | undefined, before: Ladder, r: StepResult, at: number): HelpRungEvent {
+  return {
+    surface, itemId, kind: before.kind, from: before.state, to: r.ladder.state,
+    effect: r.effect, auto: r.auto, hintsTaken: r.ladder.hintsTaken, wrongTries: r.ladder.wrongTries,
+    msSinceStart: Math.max(0, at - before.startedAt),
+  };
 }

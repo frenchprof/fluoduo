@@ -46,7 +46,7 @@ import {
   XP_CONVERSATION,
 } from "@/lib/economy";
 import { dayKey, previousDay, learnerZone } from "@/lib/dayKey";
-import { buildEvidence } from "@/lib/evidence";
+import { buildEvidence, type AssistanceLevel } from "@/lib/evidence";
 import { CURRENT_TERM } from "@/lib/term";
 
 export type Progress = {
@@ -344,7 +344,7 @@ export function recordItemResult(
   activity?: string,
   /** How the answer was produced (PRD §7). Omit and the record still
    *  stores, just without evidence meaning — adoption is incremental. */
-  ev?: { hintsTaken?: number; revealed?: boolean; latencyMs?: number },
+  ev?: { hintsTaken?: number; revealed?: boolean; latencyMs?: number; assistance?: AssistanceLevel },
 ): Progress {
   const prev = loadProgress();
   const itemSrs = { ...prev.itemSrs, [itemId]: stepItemSrs(prev.itemSrs[itemId], correct, Date.now()) };
@@ -370,6 +370,7 @@ export function recordItemResult(
         evidence: buildEvidence(itemId, activity, {
           hintsTaken: ev?.hintsTaken,
           revealed: ev?.revealed,
+          assistance: ev?.assistance,
         }),
       }),
     )
