@@ -72,6 +72,7 @@ export default function GameFrame({
   recordTitle,
   background,
   boardClassName,
+  onMenuToggle,
   children,
 }: {
   /** The game's name with its emoji — heads the ⋯ sheet, never the board. */
@@ -94,10 +95,15 @@ export default function GameFrame({
   background?: string;
   /** Extra classes for the board element (a game's ink colour, a font). */
   boardClassName?: string;
+  /** Fires when the ⋯ sheet opens/closes — a real-time game pauses its clock. */
+  onMenuToggle?: (open: boolean) => void;
   children: ReactNode;
 }) {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [helpOpen, setHelpOpen] = useState(false);
+  const [menuOpen, setMenuOpenRaw] = useState(false);
+  const [helpOpen, setHelpOpenRaw] = useState(false);
+  // Either sheet up = the game is "away"; the toggle callback sees one bit.
+  const setMenuOpen = (v: boolean) => { setMenuOpenRaw(v); onMenuToggle?.(v || helpOpen); };
+  const setHelpOpen = (v: boolean) => { setHelpOpenRaw(v); onMenuToggle?.(v || menuOpen); };
   const boardRef = useRef<HTMLDivElement | null>(null);
   const [size, setSize] = useState<BoardSize>({ width: 0, height: 0 });
 

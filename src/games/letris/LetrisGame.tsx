@@ -214,6 +214,8 @@ export default function LetrisGame({
   // Every drop, for the desktop live record; the wrong ones feed the
   // post-mortem (patch 23).
   const [drops, setDrops] = useState<Array<{ text: string; want: string; got: string; ok: boolean }>>([]);
+  // true while the ⋯ sheet holds the rain (not the learner's own pause).
+  const [menuAuto, setMenuAuto] = useState(false);
   const onGameEndRef = useRef(onGameEnd);
   onGameEndRef.current = onGameEnd;
   useEffect(() => {
@@ -596,9 +598,19 @@ export default function LetrisGame({
           else { const key = phase === "storm" ? "storm" : "letris"; chiptune.play(key); if (phase === "night") chiptune.setTempoScale(NIGHT_MUSIC_SLOW); setMusic(true); }
         } },
         ...(speech ? [{ label: "🗣️ Voice", active: tts, onClick: () => setTts((v) => !v) }] : []),
-        { label: paused ? "▶ Resume" : "⏸ Pause", onClick: () => setPaused((p) => !p) },
+        // From the sheet, "Pause" means: stay paused after I close this;
+        // "Resume" means: let the rain fall again when I close it.
+        { label: paused && !menuAuto ? "▶ Resume" : "⏸ Pause", onClick: () => {
+          if (paused && !menuAuto) setMenuAuto(true); else { setMenuAuto(false); setPaused(true); }
+        } },
         { label: "↻ Restart", onClick: restart },
       ]}
+      onMenuToggle={(open) => {
+        // The sheet is up → the rain waits; down → it resumes, unless the
+        // learner paused on purpose (before opening it, or from the sheet).
+        if (open) { if (!paused) { setMenuAuto(true); setPaused(true); } }
+        else if (menuAuto) { setMenuAuto(false); setPaused(false); }
+      }}
       record={record}
       recordTitle="🌧️ Drops"
       background="linear-gradient(180deg, var(--region-downtown-band) 0%, var(--cahier-paper) 70%)"

@@ -209,11 +209,14 @@ export default function MatchingGame({ set }: { set: MatchingSet }) {
           exitHref={exitHref}
         />
       ) : (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        // Two columns at every width (patch 23): both lists on one phone
+        // screen, no scroll to find the completion for the phrase you
+        // picked. Rows are compact below sm.
+        <div className="grid grid-cols-2 gap-2 sm:gap-4">
           {/* LEFT COLUMN */}
           <section
             aria-label="Verb phrases"
-            className="rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white p-3"
+            className="rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white p-1.5 sm:p-3"
           >
             <h3 className="mb-2 px-2 text-xs font-bold uppercase tracking-widest text-[color:var(--cahier-le)]">
               Verb phrase
@@ -227,7 +230,7 @@ export default function MatchingGame({ set }: { set: MatchingSet }) {
                     <button
                       type="button"
                       onClick={() => onLeftClick(l.id)}
-                      className={`flex w-full items-center gap-3 rounded-lg border-2 px-3 py-3 text-left transition ${
+                      className={`flex w-full items-center gap-2 rounded-lg border-2 px-2 py-2 text-left transition sm:gap-3 sm:px-3 sm:py-3 ${
                         isSel
                           ? "border-[color:var(--cahier-ink)] bg-[color:var(--cahier-hl)]/40 ring-2 ring-[color:var(--cahier-ink)]"
                           : "border-[color:var(--cahier-rule)] bg-white hover:border-[color:var(--cahier-ink-soft)] hover:bg-[color:var(--cahier-paper-2)]"
@@ -242,16 +245,16 @@ export default function MatchingGame({ set }: { set: MatchingSet }) {
                       }`}
                     >
                       {l.emoji && (
-                        <span className="text-2xl" aria-hidden>
+                        <span className="hidden text-2xl sm:inline" aria-hidden>
                           {l.emoji}
                         </span>
                       )}
                       <span className="flex-1">
-                        <span className="block text-base font-bold sm:text-lg">
+                        <span className="block text-sm font-bold leading-tight sm:text-lg">
                           {l.text}
                         </span>
                         {showMeaning && l.meaning && (
-                          <span className="block text-xs italic text-[color:var(--cahier-ink-soft)]">
+                          <span className="hidden text-xs italic text-[color:var(--cahier-ink-soft)] sm:block">
                             {l.meaning}
                           </span>
                         )}
@@ -266,7 +269,7 @@ export default function MatchingGame({ set }: { set: MatchingSet }) {
           {/* RIGHT COLUMN */}
           <section
             aria-label="Completions"
-            className="rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white p-3"
+            className="rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white p-1.5 sm:p-3"
           >
             <h3 className="mb-2 px-2 text-xs font-bold uppercase tracking-widest text-emerald-700">
               Completion
@@ -281,7 +284,7 @@ export default function MatchingGame({ set }: { set: MatchingSet }) {
                       type="button"
                       onClick={() => onRightClick(r.id)}
                       disabled={solved}
-                      className={`flex w-full items-center gap-3 rounded-lg border-2 px-3 py-3 text-left transition ${
+                      className={`flex w-full items-center gap-2 rounded-lg border-2 px-2 py-2 text-left transition sm:gap-3 sm:px-3 sm:py-3 ${
                         solved
                           ? "border-emerald-300 bg-emerald-50 text-emerald-700 opacity-70"
                           : "border-[color:var(--cahier-rule)] bg-white hover:border-[color:var(--cahier-ink-soft)] hover:bg-[color:var(--cahier-paper-2)]"
@@ -296,16 +299,16 @@ export default function MatchingGame({ set }: { set: MatchingSet }) {
                       }`}
                     >
                       {r.emoji && (
-                        <span className="text-2xl" aria-hidden>
+                        <span className="hidden text-2xl sm:inline" aria-hidden>
                           {r.emoji}
                         </span>
                       )}
                       <span className="flex-1">
-                        <span className="block text-base font-bold sm:text-lg">
+                        <span className="block text-sm font-bold leading-tight sm:text-lg">
                           {r.text}
                         </span>
                         {showMeaning && r.meaning && (
-                          <span className="block text-xs italic text-[color:var(--cahier-ink-soft)]">
+                          <span className="hidden text-xs italic text-[color:var(--cahier-ink-soft)] sm:block">
                             {r.meaning}
                           </span>
                         )}

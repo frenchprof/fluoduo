@@ -42,7 +42,9 @@ export default function CreditsSplash({
   const [show, setShow] = useState<boolean | null>(null);
   const doneRef = useRef(false);
   const onDoneRef = useRef(onDone);
-  onDoneRef.current = onDone;
+  useEffect(() => {
+    onDoneRef.current = onDone;
+  }, [onDone]);
 
   function finish() {
     if (doneRef.current) return;
@@ -53,15 +55,11 @@ export default function CreditsSplash({
   }
 
   useEffect(() => {
-    if (seenBefore()) {
-      // Seen in this browser — no splash, the game starts now.
-      finish();
-      return;
-    }
-    setShow(true);
-    const t = window.setTimeout(finish, 3000);
-    return () => window.clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Decided after mount (localStorage): seen in this browser → no splash,
+    // the game starts now; else show it, and clear it in ~3 s.
+    const t = window.setTimeout(seenBefore() ? finish : () => setShow(true), 0);
+    const t2 = window.setTimeout(finish, 3000);
+    return () => { window.clearTimeout(t); window.clearTimeout(t2); };
   }, []);
 
   if (!show) return null;
