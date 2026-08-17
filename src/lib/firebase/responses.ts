@@ -33,6 +33,7 @@
  */
 import { auth } from "./client";
 import type { EvidenceMeta } from "@/lib/evidence";
+import { noteAttempt } from "@/lib/activityLedger";
 
 export function recordResponse(
   item: string,
@@ -48,6 +49,10 @@ export function recordResponse(
     latencyMs?: number;
   } = {},
 ): void {
+  // The device-local tally the Index paints its cells from (patch 24) —
+  // before the uid check, so a signed-out learner still sees how they did.
+  // Uses the same activityId the evidence record carries.
+  noteAttempt(item, correct, opts.activity ?? (typeof location !== "undefined" ? location.pathname : undefined));
   void (async () => {
     try {
       const uid = auth.currentUser?.uid;
