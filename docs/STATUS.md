@@ -44,7 +44,7 @@ wrong about the *what's left*. If they disagree with this file, this file wins.
 | ~~2~~ | ~~Home path, rest of patch 25~~ — **done 17 Aug** on `pm/patch25-home-map` (verify25b, `work/patch25/*.png`): 2D map per Design ref (region bands, kind-coloured stops, ▶ current, zoom %), 2D/3D toggle (`fluo.homeMapView`), `/unit/N` → deep link into Home, `short` labels + `check:short` in the build, print stylesheet with a QR per unit | — | merge the branch, then deploy |
 | ~~3~~ | ~~La Carte branch~~ — **folded into #2, 17 Aug**: `HomeMap3D.tsx` ports the 3D scroll treatment; ring colours from `sioKind()`/`sioSecondary()` via one `KIND_COLOR` palette. Delete `claude/api-necessity-i8fgps` after merge (its `/carte` page and objectives.json were not taken — the SIO objectives doc is already on main) | — | |
 | ~~4~~ | ~~Patch 23 — games~~ — **done 17 Aug** on `pm/patch23-games` (verify23, `work/patch23/*.png`): `GameFrame` + GameBar v2 on all six games, 100dvh/no page scroll, boards measured (`useBoardSize`), desktop two-pane record, headers/instructions gone (⋯ → Help), `GameOver` post-mortem → ReVue queue + `CORRIGER MAINTENANT`, CreditsSplash once per browser, galleries → ▶ Jouer + sheet | 14 | merge the branch (after #2), then deploy |
-| 5 | Patch 24 — Index: chip rail + unit segments, result cells, hub pages gone | 8 | `/activities` still old matrix |
+| ~~5~~ | ~~Patch 24 — Index~~ — **done 17 Aug** on `pm/patch24-index` (verify24, `work/patch24/*.png`): chip rail + unit segments + ten SIO rows, `?activity=&unit=` in the URL, result cells from a device-local activity ledger, xPlain/4Mémoire/WorDrill as row buttons, three hubs → redirects, `?gaps=1` backlog | — | merge the branch (after #4), then deploy |
 | 6 | Patch 26 — `/moi` + teacher: outcome-grouped hardest items, heat-strip, Class-now, student×outcome matrix | 12 | |
 | 7 | Track D — AI / help ladder inside DrillShell (spec + build) | 16 | unblocked |
 | 8 | `/teacher` off the public CDN (server-side hardening; PR #6 draft, `cursor/teacher-cdn-exposure-a214` behind main) | 3 | PII chunk leak itself is closed |
@@ -53,7 +53,7 @@ wrong about the *what's left*. If they disagree with this file, this file wins.
 | 11 | Ops: make the GitHub ruleset required; `add-claude-github-actions` branch — check workflow conflicts then merge or delete; `claude-review` billing | 1 | |
 | — | December: canonical `FD-` outcome IDs (Track A) | 8 | deliberately deferred |
 
-Near-term total ≈ 64 units. Shipped ≈ 86 of ~150 in-scope.
+Near-term total ≈ 56 units. Shipped ≈ 94 of ~150 in-scope.
 
 ## Branches (17 Aug)
 
@@ -63,6 +63,52 @@ Near-term total ≈ 64 units. Shipped ≈ 86 of ~150 in-scope.
   → delete after deploy.
 - live: `claude/api-necessity-i8fgps` (La Carte), `cursor/teacher-cdn-exposure-a214`,
   `add-claude-github-actions-…`.
+
+## Patch 24 — what was left out or decided on the fly (17 Aug, Peers)
+
+- **Rows are SIOs, not decks.** All 50 SIOs own exactly one curated deck and
+  no curated deck is outside a SIO (checked in verify24), so nothing fell off
+  the Index. Ten rows per unit; the row's stop number is the one on Home and
+  links to `/?unit=N#SIO` (✓ in green once the outcome is marked done).
+- **Chips vs buttons is decided by content, not taste** (`src/lib/indexMatrix.ts`):
+  xPlain, 4Mémoire, WorDrill exist for every deck → per-row buttons; the seven
+  content-gated ones (SpecuLearn, EtuDice, iComplete, GramMarathon, ComposeIt,
+  VocabulaRain, LexicaLater) are the chip rail, in registry (family) order.
+  Pre-Test folds into the SpecuLearn cell (Dan, 2026-08-10). Match It stays
+  off (KIV). Eligibility comes from `deckActivityTabs()` — not re-derived.
+- **The cell's data is a device-local ledger** (`src/lib/activityLedger.ts`,
+  `fluolingo:activityLedger`), written once from `recordResponse()` — the one
+  place every graded answer already passes — keyed activity → SIO →
+  {right, wrong}. NOT synced: two devices, two ledgers; the synced truth is
+  still `users/{uid}/responses`. Replaying responses into the ledger after
+  sign-in is on the data-truth backlog (#10). VocabulaRain, ComposeIt,
+  NumBus/NumBourse tally only what they already record; games that record
+  raw French (no item id) still resolve through the activityId's deck.
+  Tier scale = /moi's (red < 50, amber < 75).
+- **Only three hubs existed to delete** (patch 23 had already turned the four
+  game galleries into ▶ Jouer + sheet): `/practice/flip-it`,
+  `/practice/grammarathon` (ActivityHub) and `/practice/speculearn` (tile
+  gallery). All three are redirect stubs → `/activities?activity=…`; the
+  registry hrefs point straight at the Index (verify19's route check reads
+  the path part). The SpecuLearn gallery's "Why guess first?" NUS paragraph
+  went with it — the registry blurb keeps the claim; Dan to say if the
+  citation should live somewhere (HELP?).
+- `?activity=flip|lesson|wordrill` (from the 4Mémoire / WorDrill flaps)
+  focuses that row button (its hue) and the cell reports that activity; the
+  chip rail shows no selection. `/practice/dice` and `/practice/complete-it`
+  never had index pages and still do not (registry hrefs stay null).
+- `?gaps=1` (GapsView) is reached only by URL — nothing in the learner chrome
+  links it. It counts xPlain as a gap when no lesson is AUTHORED (the deck
+  lesson still renders). Today: 189 gaps across 8 columns.
+- Search stays (word-level, Dan 2026-07-08); a live query spans all units and
+  dims the unit control. "Your decks" (MyDecks) stays at the bottom.
+- Not done: the `?unit=` default is the learner's next SIO's unit (same as
+  ▶ Continue) — a class-flag default was not attempted; no legend for
+  disc / ring / dash (title + aria-label only, per the litmus test); the
+  gaps table scrolls sideways on a phone (it is Dan's desktop view).
+- Screenshots from a `REQUIRE_SIGN_IN=false` build (reverted before the last
+  build and commit); harness `work/patch24/serve.py` + `shoot.py`, committed
+  this time (`work/patch*/` is gitignored — added with `-f`).
 
 ## Patch 25 — what was left out or decided on the fly (17 Aug, Peers)
 
