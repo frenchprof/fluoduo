@@ -105,7 +105,7 @@ function DeckPageInner({ id }: { id: string }) {
     >
       <div className="mx-auto max-w-5xl px-4 py-4">
         {state.kind === "loading" && (
-          <p className="rounded-2xl border-2 border-dashed border-slate-300 bg-white p-10 text-center text-base text-slate-500">
+          <p className="rounded-2xl border-2 border-dashed border-[color:var(--cahier-line)] bg-[var(--cahier-paper-raised)] p-10 text-center text-base text-[color:var(--cahier-ink-soft)]">
             Loading deck…
           </p>
         )}
@@ -113,9 +113,9 @@ function DeckPageInner({ id }: { id: string }) {
         {state.kind === "missing" && <NotFound id={id} />}
 
         {state.kind === "error" && (
-          <div className="rounded-2xl border-2 border-rose-300 bg-rose-50 p-6">
-            <h2 className="text-lg font-black text-rose-700">Couldn’t load this deck</h2>
-            <p className="mt-1 text-sm text-rose-700">{state.message}</p>
+          <div className="rounded-2xl border-2 border-[color:var(--drill-bad)] bg-[var(--drill-bad-bg)] p-6">
+            <h2 className="text-lg font-black text-[color:var(--drill-bad-ink)]">Couldn’t load this deck</h2>
+            <p className="mt-1 text-sm text-[color:var(--drill-bad-ink)]">{state.message}</p>
           </div>
         )}
 
@@ -137,13 +137,13 @@ function DeckPageInner({ id }: { id: string }) {
 
 function NotFound({ id }: { id: string }) {
   return (
-    <div className="rounded-2xl border-2 border-slate-200 bg-white p-10 text-center">
+    <div className="rounded-2xl border-2 border-[color:var(--cahier-line)] bg-[var(--cahier-paper-raised)] p-10 text-center">
       <div className="text-6xl" aria-hidden>
         🤷
       </div>
-      <h2 className="mt-3 text-xl font-black text-slate-900">No deck found</h2>
-      <p className="mt-1 text-sm text-slate-600">
-        We couldn’t find a deck with id <code className="rounded bg-slate-100 px-1.5 py-0.5">{id}</code>. It may have been deleted, or it isn’t shared with you.
+      <h2 className="mt-3 text-xl font-black text-[color:var(--cahier-ink)]">No deck found</h2>
+      <p className="mt-1 text-sm text-[color:var(--cahier-ink-soft)]">
+        We couldn’t find a deck with id <code className="rounded bg-[var(--cahier-hover)] px-1.5 py-0.5">{id}</code>. It may have been deleted, or it isn’t shared with you.
       </p>
       <div className="mt-5 flex justify-center gap-3">
         <Link href="/" className="fluo-btn fluo-btn-ghost">
@@ -182,32 +182,32 @@ function DeckView({
   return (
     <>
       <header className="mb-8">
-        <div className="flex flex-wrap items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500">
-          <span className="rounded-full bg-slate-100 px-2 py-0.5">
+        <div className="flex flex-wrap items-center gap-2 text-xs font-bold uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">
+          <span className="rounded-full bg-[var(--cahier-hover)] px-2 py-0.5">
             {source === "curated" ? "🌟 Curated" : "✍️ Your deck"}
           </span>
           {collection.unit != null && collection.lessonNo != null && (
-            <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700">
+            <span className="rounded-full bg-[var(--tier-good-soft)] px-2 py-0.5 text-[color:var(--tier-good)]">
               Unit {collection.unit} · Lesson {collection.lessonNo}
               {collection.lessonSlug ? ` · ${collection.lessonSlug}` : ""}
             </span>
           )}
-          <span className="rounded-full bg-slate-100 px-2 py-0.5">
+          <span className="rounded-full bg-[var(--cahier-hover)] px-2 py-0.5">
             {collection.visibility === "private"
               ? "🔒 private"
               : collection.visibility === "unlisted"
                 ? "🔗 unlisted"
                 : "🌍 public"}
           </span>
-          <span className="rounded-full bg-slate-100 px-2 py-0.5">
+          <span className="rounded-full bg-[var(--cahier-hover)] px-2 py-0.5">
             {collection.items.length} items
           </span>
         </div>
-        <h1 className="mt-3 text-4xl font-black leading-tight text-slate-900">
+        <h1 className="mt-3 text-4xl font-black leading-tight text-[color:var(--cahier-ink)]">
           {collection.title}
         </h1>
         {collection.subtitle && (
-          <p className="mt-1 text-lg text-slate-600">{collection.subtitle}</p>
+          <p className="mt-1 text-lg text-[color:var(--cahier-ink-soft)]">{collection.subtitle}</p>
         )}
         {collection.tags.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-1.5">
@@ -219,12 +219,12 @@ function DeckView({
           </div>
         )}
         {collection.crossRefs && collection.crossRefs.length > 0 && (
-          <p className="mt-3 text-sm text-slate-500">
+          <p className="mt-3 text-sm text-[color:var(--cahier-ink-soft)]">
             Also revisited in{" "}
             {collection.crossRefs.map((r, i) => (
               <span key={`${r.unit}-${r.lessonNo}`}>
                 {i > 0 && ", "}
-                <span className="font-bold text-slate-700">
+                <span className="font-bold text-[color:var(--cahier-ink)]">
                   Unit {r.unit} · Lesson {r.lessonNo} ({r.lessonSlug})
                 </span>
                 {r.note ? ` — ${r.note}` : ""}
@@ -302,15 +302,15 @@ function ItemsSection({ collection }: { collection: Collection }) {
   return (
     <section>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-xl font-black text-slate-900">All items ✨</h2>
-        <div className="inline-flex overflow-hidden rounded-xl border-2 border-slate-200 bg-white text-sm font-bold">
+        <h2 className="text-xl font-black text-[color:var(--cahier-ink)]">All items ✨</h2>
+        <div className="inline-flex overflow-hidden rounded-xl border-2 border-[color:var(--cahier-line)] bg-[var(--cahier-paper-raised)] text-sm font-bold">
           {(["cards", "list"] as ViewMode[]).map((m) => (
             <button
               key={m}
               type="button"
               onClick={() => setMode(m)}
               className={`px-3 py-1.5 transition ${
-                mode === m ? "bg-slate-900 text-white" : "text-slate-500 hover:text-slate-900"
+                mode === m ? "bg-[var(--cahier-ink)] text-[color:var(--cahier-paper)]" : "text-[color:var(--cahier-ink-soft)] hover:text-[color:var(--cahier-ink)]"
               }`}
             >
               {m === "cards" ? "🎴 Cards" : "📜 List"}
@@ -330,7 +330,7 @@ function ItemsSection({ collection }: { collection: Collection }) {
 function ItemGrid({ items, collection }: { items: Item[]; collection: Collection }) {
   if (items.length === 0) {
     return (
-      <p className="rounded-2xl border-2 border-dashed border-slate-300 bg-white p-10 text-center text-base text-slate-500">
+      <p className="rounded-2xl border-2 border-dashed border-[color:var(--cahier-line)] bg-[var(--cahier-paper-raised)] p-10 text-center text-base text-[color:var(--cahier-ink-soft)]">
         No items in this deck yet.
       </p>
     );
@@ -343,11 +343,11 @@ function ItemGrid({ items, collection }: { items: Item[]; collection: Collection
         const userTags = it.tags.filter((t) => !t.startsWith("col:") && !t.startsWith("role:"));
         return (
           <article key={it.id} data-hue={hue} className={`fluo-card fluo-h-${hue}`}>
-            <div lang="fr" className="text-3xl font-black leading-tight text-slate-900">
+            <div lang="fr" className="text-3xl font-black leading-tight text-[color:var(--cahier-ink)]">
               {it.emoji && <span className="mr-2" aria-hidden>{it.emoji}</span>}
               {fr}
             </div>
-            <div className="text-base text-slate-600">{displayEn(it)}</div>
+            <div className="text-base text-[color:var(--cahier-ink-soft)]">{displayEn(it)}</div>
             {userTags.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-1.5">
                 {userTags.map((t) => (
@@ -372,7 +372,7 @@ function ItemList({ items, collection }: { items: Item[]; collection: Collection
 
   if (items.length === 0) {
     return (
-      <p className="rounded-2xl border-2 border-dashed border-slate-300 bg-white p-10 text-center text-base text-slate-500">
+      <p className="rounded-2xl border-2 border-dashed border-[color:var(--cahier-line)] bg-[var(--cahier-paper-raised)] p-10 text-center text-base text-[color:var(--cahier-ink-soft)]">
         No items in this deck yet.
       </p>
     );
@@ -387,8 +387,8 @@ function ItemList({ items, collection }: { items: Item[]; collection: Collection
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border-2 border-slate-200 bg-white">
-      <div className="flex flex-wrap items-center gap-2 border-b-2 border-slate-100 bg-slate-50 px-4 py-2 text-xs font-bold uppercase tracking-wider text-slate-500">
+    <div className="overflow-hidden rounded-2xl border-2 border-[color:var(--cahier-line)] bg-[var(--cahier-paper-raised)]">
+      <div className="flex flex-wrap items-center gap-2 border-b-2 border-[color:var(--cahier-rule)] bg-[var(--cahier-paper)] px-4 py-2 text-xs font-bold uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">
         <span>Hide column:</span>
         {(["fr", "en", "tags"] as Col[]).map((c) => (
           <button
@@ -397,8 +397,8 @@ function ItemList({ items, collection }: { items: Item[]; collection: Collection
             onClick={() => toggleCol(c)}
             className={`rounded-full border-2 px-3 py-0.5 transition ${
               hidden[c]
-                ? "border-rose-300 bg-rose-50 text-rose-700"
-                : "border-slate-200 bg-white text-slate-700 hover:border-slate-400"
+                ? "border-[color:var(--drill-bad)] bg-[var(--drill-bad-bg)] text-[color:var(--drill-bad-ink)]"
+                : "border-[color:var(--cahier-line)] bg-[var(--cahier-paper-raised)] text-[color:var(--cahier-ink)] hover:border-[color:var(--cahier-line-strong)]"
             }`}
             title={hidden[c] ? `Show ${c} column` : `Hide ${c} column`}
           >
@@ -407,7 +407,7 @@ function ItemList({ items, collection }: { items: Item[]; collection: Collection
             {hidden[c] && " (hidden)"}
           </button>
         ))}
-        <span className="ml-auto text-[10px] font-medium normal-case text-slate-500">
+        <span className="ml-auto text-[10px] font-medium normal-case text-[color:var(--cahier-ink-soft)]">
           Hidden cells reveal individually on click.
         </span>
       </div>
@@ -421,13 +421,13 @@ function ItemList({ items, collection }: { items: Item[]; collection: Collection
             <li
               key={it.id}
               data-hue={hue}
-              className={`fluo-h-${hue} grid items-baseline gap-x-4 gap-y-1 border-b border-slate-100 px-4 py-3 last:border-b-0`}
+              className={`fluo-h-${hue} grid items-baseline gap-x-4 gap-y-1 border-b border-[color:var(--cahier-rule)] px-4 py-3 last:border-b-0`}
               style={{
                 borderLeft: "6px solid var(--fluo-card-accent)",
                 gridTemplateColumns: "32px minmax(120px,1.4fr) minmax(120px,1.4fr) minmax(80px,1fr)",
               }}
             >
-              <span className="text-right text-xs font-bold text-slate-400">
+              <span className="text-right text-xs font-bold text-[color:var(--cahier-ink-faint)]">
                 {i + 1}.
               </span>
               <Cell
@@ -436,7 +436,7 @@ function ItemList({ items, collection }: { items: Item[]; collection: Collection
                 revealed={!!revealed[`${it.id}|fr`]}
                 onReveal={() => revealCell(`${it.id}|fr`)}
               >
-                <span lang="fr" className="text-lg font-bold text-slate-900">
+                <span lang="fr" className="text-lg font-bold text-[color:var(--cahier-ink)]">
                   {it.emoji && <span className="mr-1.5" aria-hidden>{it.emoji}</span>}
                   {fr}
                 </span>
@@ -447,7 +447,7 @@ function ItemList({ items, collection }: { items: Item[]; collection: Collection
                 revealed={!!revealed[`${it.id}|en`]}
                 onReveal={() => revealCell(`${it.id}|en`)}
               >
-                <span className="text-base text-slate-600">{en}</span>
+                <span className="text-base text-[color:var(--cahier-ink-soft)]">{en}</span>
               </Cell>
               <Cell
                 col="tags"
@@ -488,7 +488,7 @@ function Cell({
       type="button"
       onClick={onReveal}
       title={`Reveal ${col}`}
-      className="rounded-md border-2 border-dashed border-slate-300 bg-slate-50 px-3 py-1 text-left text-slate-400 transition hover:border-slate-500 hover:bg-slate-100 hover:text-slate-700"
+      className="rounded-md border-2 border-dashed border-[color:var(--cahier-line)] bg-[var(--cahier-paper)] px-3 py-1 text-left text-[color:var(--cahier-ink-faint)] transition hover:border-[color:var(--cahier-line-strong)] hover:bg-[var(--cahier-hover)] hover:text-[color:var(--cahier-ink)]"
     >
       <span className="text-lg font-bold">•••</span>
     </button>
