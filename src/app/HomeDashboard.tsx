@@ -16,6 +16,7 @@ import GuideSplash from "@/components/GuideSplash";
 import RankBadge from "@/components/RankBadge";
 import HomeMap from "@/components/HomeMap";
 import HomeMap3D from "@/components/HomeMap3D";
+import HomePrintSheet from "@/components/HomePrintSheet";
 import UnitSection from "./UnitSection";
 import { CHAPTERS } from "@/content/chapters";
 import { SIOS, UNIT_META } from "@/content/sios";
@@ -423,6 +424,7 @@ export default function HomeDashboard() {
           )}
         </div>
       )}
+      <HomePrintSheet progress={progress} />
     </>
   );
 }
