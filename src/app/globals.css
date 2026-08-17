@@ -519,6 +519,17 @@ body {
   --region-valley:   #c9679a;
   --region-downtown: #518dbb;
   --region-market:   #c9702e;
+  /* Course-map region BAND fills — from Design's Home standalone (17 Aug 2026):
+     the 2D map paints each region as a soft band using existing Cahier tokens,
+     path snakes right-then-down, unit stops per band. Region names, in order:
+     Welcome Village · Identity Heights · Wants & Wishes Valley · Downtown District
+     · Gourmet Market. Design gave no new accent hexes, so the accents above stay
+     provisional; these band tokens are the values that ARE settled. */
+  --region-village-band:  var(--cahier-accent-soft);
+  --region-heights-band:  var(--cahier-kraft);
+  --region-valley-band:   var(--tier-good-soft);
+  --region-downtown-band: var(--tier-medium-soft);
+  --region-market-band:   var(--tier-weak-soft);
   --font-display-stack: var(--font-display), system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-hand-stack:    var(--font-hand), "Bradley Hand", "Segoe Print", cursive;
   --font-body-stack:    var(--font-body), system-ui, -apple-system, "Segoe UI", sans-serif;

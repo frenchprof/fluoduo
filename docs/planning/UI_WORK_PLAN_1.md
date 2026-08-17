@@ -1,5 +1,7 @@
 # The remaining work — 10 Aug 2026 (rev 3)
 
+> **⚠️ HISTORICAL. Read `docs/STATUS.md` first — it is the only current source of truth (17 Aug 2026). This file is kept for the reasoning behind decisions, not for what is left to do.**
+
 Effort is in **units** — one unit ≈ one focused hour, including build and
 screenshot verification.
 

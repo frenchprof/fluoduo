@@ -16,3 +16,7 @@ Clarified by Dan the same day:
 - Per-question explanations are offered behind a "WHY" button at the top
   right of an answered question — available on demand, never inline by
   default.
+
+# Start here — every session (2026-08-17)
+
+Read `docs/STATUS.md` before anything else and update it before you stop. `HANDOFF.md`, `TODO.md` and `docs/planning/*` are historical.

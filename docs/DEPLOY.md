@@ -11,6 +11,10 @@ the withdrchan URL).
 
 ## How it deploys
 
+> **Which `main`?** Production is `dckg/fluo` (git remote `live`). Working repo is
+> `frenchprof/fluoduo` (`origin`). Merging to origin's `main` does NOT deploy;
+> **`git push live main` does.** See `docs/STATUS.md`.
+
 Cloudflare Pages **auto-builds on every push to `main`** (`npm run build` →
 `next build`, static export to `out/`, plus the `functions/` Pages Functions).
 The site is a static export, so there is no server — only the `functions/api/*`

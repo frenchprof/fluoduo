@@ -1,5 +1,7 @@
 # HANDOFF — FluoLingo (read me first)
 
+> **⚠️ HISTORICAL. Read `docs/STATUS.md` first — it is the only current source of truth (17 Aug 2026). This file is kept for the reasoning behind decisions, not for what is left to do.**
+
 _Updated 28 Jun 2026. Replaces the old data-layer-only handoff (that content is now §7 below)._
 
 This is the **start-here** doc for a fresh Claude Code session. Your persistent **memory**
