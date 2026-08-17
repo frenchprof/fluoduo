@@ -125,7 +125,9 @@ check(hints == 0, "no flap carries a subtitle",
 # ── 6 · every registry href resolves ───────────────────────────────────────
 missing = []
 for href in re.findall(r'href: "(/[^"]*)"', reg):
-    seg = href.strip("/")
+    # Patch 24: deck-scoped activities point into the Index with a query
+    # (`/activities?activity=flip`) — the route is the path part.
+    seg = href.split("?")[0].strip("/")
     if not seg:
         continue
     if not (os.path.isfile(f"src/app/{seg}/page.tsx") or os.path.isdir(f"src/app/{seg}")):

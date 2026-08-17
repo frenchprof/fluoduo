@@ -58,7 +58,10 @@ export type Activity = {
   /** The ONE emoji. */
   emoji: string;
   family: FamilyKey;
-  /** Gallery / index href. `null` = reached only through a deck. */
+  /** Gallery / index href. `null` = reached only through a deck. Since
+   *  patch 24 the deck-scoped activities point INTO the Index with themselves
+   *  preselected (`/activities?activity=…`) — the hubs that listed decks are
+   *  redirects now. */
   href: string | null;
   /** Flap hue, kept from siteTabs so nothing shifts colour. */
   hue: string;
@@ -69,15 +72,15 @@ export type Activity = {
 
 export const ACTIVITIES: Activity[] = [
   // ── 1 · FluOlin Goals — the sequence for one objective ────────────────────
-  { key: "speculearn", name: "SpecuLearn", emoji: "🔮", family: "goals", href: "/practice/speculearn", hue: "#8a5fd4", blurb: "Guess before you're taught. Pre-Tests live here too." },
+  { key: "speculearn", name: "SpecuLearn", emoji: "🔮", family: "goals", href: "/activities?activity=speculearn", hue: "#8a5fd4", blurb: "Guess before you're taught. Pre-Tests live here too." },
   { key: "lesson", name: "xPlain", emoji: "📚", family: "goals", href: null, hue: "#e0567f", blurb: "The lesson: rule, then practice." },
   { key: "dice", name: "EtuDice", emoji: "🎲", family: "goals", href: null, hue: "#e3a700", blurb: "Roll the d12 — it sets your starting card on the lesson ramp." },
-  { key: "flip", name: "4Mémoire", emoji: "🃏", family: "goals", href: "/practice/flip-it", hue: "#2bb6c2", blurb: "Flashcards. English front, flip to French." },
+  { key: "flip", name: "4Mémoire", emoji: "🃏", family: "goals", href: "/activities?activity=flip", hue: "#2bb6c2", blurb: "Flashcards. English front, flip to French." },
   { key: "complete", name: "iComplete", emoji: "✏️", family: "goals", href: null, hue: "#7bbf2e", blurb: "Type the missing word." },
 
   // ── 2 · FluOlin Review — automatic first, then the one you choose ─────────
   { key: "reviser", name: "DéjàRevu", emoji: "🔁", family: "review", href: "/reviser", hue: "#7bbf2e", blurb: "Comes back when you're about to forget it." },
-  { key: "grammarathon", name: "GramMarathon", emoji: "🏃", family: "review", href: "/practice/grammarathon", hue: "#3b6fd4", blurb: "Gap-fill sprint across a whole deck." },
+  { key: "grammarathon", name: "GramMarathon", emoji: "🏃", family: "review", href: "/activities?activity=grammarathon", hue: "#3b6fd4", blurb: "Gap-fill sprint across a whole deck." },
 
   // ── 3 · FluOlin Skills — forms → receptive → productive ───────────────────
   { key: "conjugaison", name: "ConjugaZone", emoji: "🔤", family: "skills", href: "/conjugaison", hue: "#2bb6c2", blurb: "Verb endings until they come without thinking." },
