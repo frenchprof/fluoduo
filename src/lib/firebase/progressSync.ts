@@ -19,7 +19,7 @@ import {
 } from "@/lib/progress";
 import { levelForXp } from "@/lib/economy";
 import { mergeProgress } from "@/lib/progressMerge";
-import { ALIAS_PUBLISH_UIDS } from "@/lib/accountAliases";
+import { boardName } from "@/lib/accountAliases";
 import { CURRENT_TERM, LEGACY_TERM } from "@/lib/term";
 
 const DOC_PATH = ["app", "progress"] as const;
@@ -67,11 +67,9 @@ async function publishLeaderboard(p: Progress): Promise<void> {
   // Aliased accounts publish under their canonical display name, keyed by
   // UID (2026-08-10; was email, Dan 2026-07-16) — the fold still survives a
   // Google rename, and no learner downloads another learner's address to
-  // look up their own.
-  const name =
-    ALIAS_PUBLISH_UIDS[u.uid] ||
-    u.displayName ||
-    (u.email ? u.email.split("@")[0] : "Anonyme");
+  // look up their own. ONE identity function (boardName), shared with the
+  // board's reader; never an email or its local part.
+  const name = boardName(u.uid, u.displayName);
   try {
     // Rank by XP now (the lifetime score); keep gems for continuity and publish
     // the level so the board can show each learner's rank name. `term` scopes

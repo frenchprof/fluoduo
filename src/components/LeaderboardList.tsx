@@ -11,7 +11,7 @@
 import { useEffect, useState } from "react";
 import { signInWithGoogle, useAuthUser } from "@/lib/firebase/auth";
 import { levelForXp } from "@/lib/economy";
-import { ALIAS_BOARD_NAMES, ALIAS_CANON_NAMES, EXCLUDED_BOARD_UIDS } from "@/lib/accountAliases";
+import { ALIAS_BOARD_NAMES, ALIAS_CANON_NAMES, EXCLUDED_BOARD_UIDS, boardName } from "@/lib/accountAliases";
 import { isCurrentTerm } from "@/lib/term";
 import RankBadge from "@/components/RankBadge";
 
@@ -30,7 +30,7 @@ type BoardRow = {
 // learner who bought a colour dropped down a board that claims to rank XP.
 // A purchase cost you position. Absent xp is 0, not leftover currency.
 const rowXp = (r: BoardRow) => r.xp ?? r.totalXP ?? 0;
-const rowName = (r: BoardRow) => r.name ?? r.displayName ?? "Anonymous";
+const rowName = (r: BoardRow) => r.name ?? r.displayName ?? "Anonymous"; // same fallback word as boardName
 
 
 
@@ -130,7 +130,11 @@ export default function LeaderboardList() {
   return (
     <ol className="space-y-1.5">
       {rows.map((r, i) => {
-        const me = r.uid === user.uid;
+        // "you" = my row, OR the canonical row my alias was folded into (an
+        // aliased learner signed in on her second account used to see no
+        // "(you)" at all — her own row had been merged away by name).
+        const mine = boardName(user.uid, user.displayName);
+        const me = r.uid === user.uid || (ALIAS_CANON_NAMES.includes(mine) && rowName(r) === mine);
         return (
           <li
             key={r.uid}
