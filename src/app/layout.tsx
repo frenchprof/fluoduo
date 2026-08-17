@@ -64,8 +64,11 @@ export const metadata: Metadata = {
   // (audit 2026-07-19: every page was just "FluOlinGo"). Client pages set
   // theirs via CahierShell; server pages via metadata/generateMetadata.
   title: { default: "FluOlinGo", template: "%s · FluOlinGo" },
+  // LAF1201 STAYS (decided 2026-08-17, UI_WORK_PLAN_1 loose bugs): it is the
+  // course code students and Google search for; English first, the code
+  // second, no French in the description (English-first chrome rule).
   description:
-    "Gamified French (A1) practice for NUS LAF1201 — vocabulary games, speech drills, spaced revision and an AI tutor.",
+    "French A1 practice for NUS LAF1201 — vocabulary games, speech drills, spaced revision and an AI tutor.",
   // Browsers must NEVER offer to auto-translate this site (Dan, 2026-07-10):
   // rewriting the French into English destroys the learning content. The
   // meta tag is Chrome/Google Translate's opt-out; translate="no" on <html>
