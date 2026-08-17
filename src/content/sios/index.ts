@@ -22,6 +22,9 @@ export type Sio = {
   /** "Unité 0" */
   unitLabel: string;
   topic: string;
+  /** Phone-legible map label, ≤ 14 chars (scripts/check-short-labels.mjs
+   *  fails the build otherwise). The full `topic` stays for titles/lists. */
+  short: string;
   description: string;
   /** Spec flashcard-set id, e.g. "1.05". */
   setId: string;
