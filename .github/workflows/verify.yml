@@ -83,3 +83,6 @@ jobs:
 
       - name: Patch 23 — games: GameFrame, post-mortem → ReVue, credits once, galleries
         run: python3 verify/verify23.py
+
+      - name: Patch 24 — the Index: chip rail, unit segments, result cells, hubs → redirects, ?gaps=1
+        run: python3 verify/verify24.py
