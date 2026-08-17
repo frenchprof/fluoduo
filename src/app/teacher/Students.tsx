@@ -316,7 +316,7 @@ function StudentPanel({ learner, events, cached, onClose }: { learner: Learner; 
               return (
                 <Kpi
                   label="Last sync"
-                  value={<span className={stale ? "text-rose-600" : undefined}>{synced ? fmtWhen(new Date(synced)) : "never"}</span>}
+                  value={<span style={stale ? { color: "var(--tier-weak)" } : undefined}>{synced ? fmtWhen(new Date(synced)) : "never"}</span>}
                   sub={
                     stale
                       ? `STALE — active ${fmtWhen(new Date(trail.lastEventAt))}${errs ? ` · ${errs} sync error${errs === 1 ? "" : "s"}` : ""}`
@@ -329,7 +329,7 @@ function StudentPanel({ learner, events, cached, onClose }: { learner: Learner; 
             })()}
           </div>
           {p?.lastSyncError && (
-            <p className="mt-1 text-xs text-rose-700" title={p.lastSyncErrorAt ? fmtWhen(new Date(p.lastSyncErrorAt)) : undefined}>
+            <p className="mt-1 text-xs" style={{ color: "var(--tier-weak)" }} title={p.lastSyncErrorAt ? fmtWhen(new Date(p.lastSyncErrorAt)) : undefined}>
               Last sync error reported by this learner&rsquo;s device: <code>{p.lastSyncError}</code>
             </p>
           )}
