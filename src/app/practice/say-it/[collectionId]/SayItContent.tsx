@@ -13,6 +13,7 @@ import { practiceItems } from "@/lib/collections/display";
 import { recordItemResult } from "@/lib/progress";
 import { deaccent, normalize } from "@/lib/practice/cloze";
 import type { Collection, Item } from "@/lib/collections/schema";
+import { shuffle } from "@/lib/shuffle";
 
 type Phase = "idle" | "listening" | "result";
 type Grade = "perfect" | "good" | "homophone" | "close" | "miss";
@@ -29,14 +30,6 @@ function frFull(article: string, fr: string): string {
   return article.endsWith("'") ? `${article}${fr}` : `${article} ${fr}`;
 }
 
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
 
 // The private normalize/deaccent (byte-clones of cloze.ts) died in the
 // grading unification (2026-08-11) — the transforms come from THE grader in

@@ -18,6 +18,7 @@ import { speak } from "@/games/letris/speech";
 import { logEvent } from "@/lib/firebase/usage";
 import CahierShell, { type ShellTab } from "@/components/CahierShell";
 import type { Collection, Item } from "@/lib/collections/schema";
+import { shuffle } from "@/lib/shuffle";
 
 // Cold pre-lesson diagnostic — no Practice-activity links on the rail
 // (pre/post boundary, same rule as /pretests/[id]).
@@ -70,14 +71,6 @@ export default function PicturePretestPage({ collectionId }: { collectionId: str
   );
 }
 
-function shuffle<T>(arr: T[]): T[] {
-  const out = [...arr];
-  for (let i = out.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [out[i], out[j]] = [out[j], out[i]];
-  }
-  return out;
-}
 
 /** Build one question per item, alternating direction, with N_CHOICES options. */
 function buildQuestions(items: Item[]): Question[] {

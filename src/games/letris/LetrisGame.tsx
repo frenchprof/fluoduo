@@ -10,6 +10,7 @@ import GameFrame, { useBoardSize } from "@/components/GameFrame";
 import GameOver, { type GameMiss } from "@/components/GameOver";
 import { reviewItemByFrench } from "@/lib/reviser";
 import { logEvent } from "@/lib/firebase/usage";
+import { shuffle } from "@/lib/shuffle";
 
 export type LetrisCategory = {
   key: string;
@@ -98,14 +99,6 @@ const PALETTE = [
   "#b03a5f", // pink
 ];
 
-function shuffle<T>(arr: T[]): T[] {
-  const out = arr.slice();
-  for (let i = out.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [out[i], out[j]] = [out[j], out[i]];
-  }
-  return out;
-}
 
 /** This session's hand: at most MAX_PER_CATEGORY random tiles per category. */
 function sampleTiles(tiles: LetrisTile[]): LetrisTile[] {

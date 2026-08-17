@@ -19,17 +19,10 @@ import { loadProgress, recordItemResult } from "@/lib/progress";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
 import { dueForReview, gapsByDeck, allReviewItems, reviewFocusFrom, type ReviewItem, type Gap } from "@/lib/reviser";
 import { optionGridClass } from "@/lib/optionGrid";
+import { shuffle } from "@/lib/shuffle";
 
 type Card = { item: ReviewItem; options: string[] };
 
-function shuffle<T>(a: T[]): T[] {
-  const o = [...a];
-  for (let i = o.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [o[i], o[j]] = [o[j], o[i]];
-  }
-  return o;
-}
 
 function buildCard(item: ReviewItem, pool: ReviewItem[]): Card {
   const sameDeck = pool.filter((x) => x.deckId === item.deckId && x.en !== item.en);

@@ -3,6 +3,7 @@
  * EN→FR bonus distilled from the 05-mots-interrogatifs.html drchan import.
  */
 import type { NativeLesson } from "./types";
+import { sample } from "@/lib/shuffle";
 
 const ITEMS = [
   { answer: "Je m'appelle Thomas.", en: "My name is Thomas.", question: "Comment tu t'appelles ?", alternates: ["Tu t'appelles comment ?", "Comment t'appelles-tu ?", "Comment est-ce que tu t'appelles ?"], qword: "Comment", rest: "tu t'appelles ?" },
@@ -19,14 +20,6 @@ const ITEMS = [
 ] as const;
 
 const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)];
-const sample = <T,>(a: readonly T[], n: number): T[] => {
-  const o = [...a];
-  for (let i = o.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [o[i], o[j]] = [o[j], o[i]];
-  }
-  return o.slice(0, n);
-};
 
 export const motsInterrogatifsLesson: NativeLesson = {
   slug: "mots-interrogatifs",

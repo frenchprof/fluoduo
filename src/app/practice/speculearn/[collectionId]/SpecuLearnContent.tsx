@@ -28,6 +28,7 @@ import { BUILDING_EMOJI, SPECULEARN_EXCLUDED_ITEMS } from "@/lib/collections/spe
 import { deaccent, normalize } from "@/lib/practice/cloze";
 import { useChoiceKeys, CHOICE_KEYS_HINT } from "@/lib/useChoiceKeys";
 import PHOTO_ITEMS from "@/content/devine-aliments.json";
+import { shuffle } from "@/lib/shuffle";
 
 /** One playable card: the word, its grammar tag (colored), and its visual
  *  (photo for aliments, emoji elsewhere). s = aliments pack number. */
@@ -53,14 +54,6 @@ const saidRight = (heard: string, w: string) => {
   const h = strip(heard);
   const b = baseWord(w);
   return h.includes(b) || h.replace(/ /g, "").includes(b.replace(/ /g, ""));
-};
-const shuffle = <T,>(a: T[]): T[] => {
-  const b = a.slice();
-  for (let i = b.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [b[i], b[j]] = [b[j], b[i]];
-  }
-  return b;
 };
 
 /** Grammar tag + color from the French article (emoji decks have no g/n

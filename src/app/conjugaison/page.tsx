@@ -30,6 +30,7 @@ import { recordItemResult } from "@/lib/progress";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
 import { speak } from "@/games/letris/speech";
 import { sfx } from "@/games/audio/sfx";
+import { shuffle } from "@/lib/shuffle";
 
 // ── Phrases complètes (Dan, 2026-07-21): "what is genuinely missing from
 // ConjugaZone is the possibility to hear the conjugations in simple complete
@@ -61,18 +62,10 @@ const SENTENCE_BANKS: Record<string, string[]> = {
 };
 function drawComplements(v: ConjVerb): string[] {
   const bank = SENTENCE_BANKS[v.id] ?? [];
-  const pool = [...bank].sort(() => Math.random() - 0.5);
+  const pool = shuffle(bank);
   return v.forms.map((f, i) => (f === "—" ? "" : pool[i % pool.length]));
 }
 
-function shuffle<T>(a: T[]): T[] {
-  const b = [...a];
-  for (let i = b.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [b[i], b[j]] = [b[j], b[i]];
-  }
-  return b;
-}
 
 type Cell = { v: ConjVerb; i: number };
 

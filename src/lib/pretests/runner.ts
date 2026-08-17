@@ -14,15 +14,8 @@ import { recordPretestAnswer, stemForItem } from "@/lib/pretestRecord";
 import { logEvent } from "@/lib/firebase/usage";
 import type { PretestItem } from "@/lib/pretests/schema";
 
-export function shuffle<T>(arr: T[]): T[] {
-  const out = [...arr];
-  for (let i = out.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [out[i], out[j]] = [out[j], out[i]];
-  }
-  return out;
-}
 
+export { shuffle } from "@/lib/shuffle";
 /** Speak the FULL sentence, never the lonely answer word. */
 export function ttsTextForItem(item: PretestItem): string {
   if (item.fullSentence && item.fullSentence.trim()) return item.fullSentence;

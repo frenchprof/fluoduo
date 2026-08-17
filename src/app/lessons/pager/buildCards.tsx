@@ -28,6 +28,7 @@ import type { DiceQuestion, NativeLesson } from "@/content/lessons/native/types"
 import { gappedItems } from "@/lib/collections/gramMarathonReady";
 import { gapSentence, gapSentenceEn } from "@/lib/collections/gapSentence";
 import { splitGap } from "@/lib/practice/cloze";
+import { shuffle } from "@/lib/shuffle";
 
 export const RULE_CARDS_MAX = 3;
 
@@ -94,14 +95,6 @@ export type Exercise = {
   gapGrade?: boolean;
 };
 
-export function shuffle<T>(arr: T[]): T[] {
-  const out = [...arr];
-  for (let i = out.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [out[i], out[j]] = [out[j], out[i]];
-  }
-  return out;
-}
 
 /** Up to `n` distinct distractors from `pool`, never equal to `answer`. */
 function distractors(pool: string[], answer: string, n = 3): string[] {

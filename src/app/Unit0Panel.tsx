@@ -29,17 +29,10 @@ import SioModal, { popupActivityTabs } from "./SioModal";
 import { AfterPretest } from "./SioDetail";
 import DialoguePlayer from "./DialoguePlayer";
 import MarkDoneButton from "./sio/[id]/MarkDoneButton";
+import { shuffle } from "@/lib/shuffle";
 
 const UNIT0_SIOS = SIOS.filter((s) => s.unit === 0);
 
-function shuffle<T>(arr: T[]): T[] {
-  const out = [...arr];
-  for (let i = out.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [out[i], out[j]] = [out[j], out[i]];
-  }
-  return out;
-}
 
 export default function Unit0Panel({ openSioId, onSioClosed }: { openSioId?: string | null; onSioClosed?: () => void } = {}) {
   // (The forceOpen prop died with patch 22 — no route pre-opens this popup

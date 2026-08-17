@@ -23,6 +23,7 @@ import CreditsSplash from "@/games/CreditsSplash";
 import GameFrame from "@/components/GameFrame";
 import GameOver, { type GameMiss } from "@/components/GameOver";
 import { recordItemResult } from "@/lib/progress";
+import { shuffle } from "@/lib/shuffle";
 
 export type LexEntry = { id: string; fr: string; en: string; syllables: string[]; say?: string };
 
@@ -95,14 +96,6 @@ const CHEST_TINTS: ChestTint[] = [
   { body: "linear-gradient(180deg,#e9dcff,#a284de)", lid: "linear-gradient(180deg,#7a58b8,#5a3f8c)", edge: "#4b2f7a" }, // violet
 ];
 
-function shuffle<T>(a: T[]): T[] {
-  const o = [...a];
-  for (let i = o.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [o[i], o[j]] = [o[j], o[i]];
-  }
-  return o;
-}
 
 // `filled` is per-slot, not a count: syllables can be dropped in ANY order
 // (Dan, 2026-07-03), so we track which keyholes are done, not how many.

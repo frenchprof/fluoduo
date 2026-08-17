@@ -4,6 +4,7 @@
  * real in-app content following the aimer.tsx template.
  */
 import type { NativeLesson } from "./types";
+import { sample, shuffle } from "@/lib/shuffle";
 
 const SUBJECTS = [
   { disp: "Je", slot: "je" }, { disp: "Tu", slot: "tu" }, { disp: "Il", slot: "il" },
@@ -79,7 +80,7 @@ export const conjugaisonErLesson: NativeLesson = {
       if (Math.random() < 0.6) {
         const v = pick(ER_VERBS);
         const form = v.stem + END[s.slot];
-        const otherEnds = ENDINGS.filter((e) => e !== END[s.slot]).sort(() => Math.random() - 0.5).slice(0, 3);
+        const otherEnds = sample(ENDINGS.filter((e) => e !== END[s.slot]), 3);
         const stemDisp = s.slot === "je" && startsVowel(v.stem) ? `J'${v.stem}` : `${s.disp} ${v.stem}`;
         return {
           meta: `${s.disp} + …`,
@@ -92,7 +93,7 @@ export const conjugaisonErLesson: NativeLesson = {
       }
       const v = pick(IRR_VERBS);
       const form = v.f[s.slot];
-      const others = [...new Set(Object.values(v.f))].filter((x) => x !== form).sort(() => Math.random() - 0.5);
+      const others = shuffle([...new Set(Object.values(v.f))].filter((x) => x !== form));
       return {
         meta: `${s.disp} + …`,
         big: v.inf,

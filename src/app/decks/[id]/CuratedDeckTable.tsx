@@ -50,6 +50,7 @@ import {
   type Part,
   type Row,
 } from "@/app/practice/flip-it/shared";
+import { shuffle as shuffleArr } from "@/lib/shuffle";
 
 /* ─────────────────────────── step labels ─────────────────────────── */
 
@@ -87,14 +88,6 @@ const VIEW_TABS: CahierTab[] = [
   { key: "allcards", label: "▤ All", hue: TAB_HUES[3] },
 ];
 
-function shuffleArr<T>(a: T[]): T[] {
-  const o = [...a];
-  for (let i = o.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [o[i], o[j]] = [o[j], o[i]];
-  }
-  return o;
-}
 const ART_RANK: Record<string, number> = { le: 0, la: 1, "l'": 2, les: 3, "": 9 };
 const REGION_RANK: Record<string, number> = {
   africa: 0, americas: 1, asia: 2, europe: 3, oceania: 4, continents: 5,

@@ -3,6 +3,7 @@
  * the Mémo + the 🎲 dice trainer + EN→FR bonus, as real in-app content.
  */
 import type { NativeLesson } from "./types";
+import { sample } from "@/lib/shuffle";
 
 const SUBJECTS = [
   { disp: "Je", aller: "vais" }, { disp: "Tu", aller: "vas" }, { disp: "Il", aller: "va" },
@@ -59,7 +60,7 @@ export const futurProcheLesson: NativeLesson = {
     newQuestion() {
       const s = pick(SUBJECTS), inf = pick(INFS);
       const neg = Math.random() < 0.4;
-      const others = ALLER.filter((f) => f !== s.aller).sort(() => Math.random() - 0.5).slice(0, 3);
+      const others = sample(ALLER.filter((f) => f !== s.aller), 3);
       return {
         meta: `${s.disp} … (${neg ? "🚫 négatif" : "✅ affirmatif"})`,
         big: inf.fr,

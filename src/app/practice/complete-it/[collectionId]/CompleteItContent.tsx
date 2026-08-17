@@ -24,20 +24,13 @@ import { SIOS } from "@/content/sios";
 import WordBank from "@/components/WordBank";
 import type { Collection, Item } from "@/lib/collections/schema";
 import { gradeAgainst, type Grade } from "@/lib/practice/cloze";
+import { shuffle } from "@/lib/shuffle";
 
 // The private normalize/deaccent/grade trio (a byte-clone of cloze.ts) died
 // in the grading unification (2026-08-11) — THE grader lives in
 // lib/practice/cloze.ts and this drill now also honours item.alt, which the
 // schema had been warning was "not yet wired into other graders".
 
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
 
 function articleOf(deck: Collection, item: Item): string {
   const cols = deck.gameConfig?.letris?.columns ?? [];

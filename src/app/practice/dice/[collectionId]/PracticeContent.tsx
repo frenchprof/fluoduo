@@ -13,6 +13,7 @@ import { logEvent } from "@/lib/firebase/usage";
 import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
 import DrillShell, { drillExitHref } from "@/components/DrillShell";
 import type { PracticeChoice, PracticeItem, PracticeSet } from "@/lib/practice/engine";
+import { shuffle } from "@/lib/shuffle";
 
 const TTS_KEY = "fluolingo.practiceTts.v1";
 
@@ -59,14 +60,6 @@ export default function PracticePage({ collectionId, embedded = false }: { colle
   return <PracticeRunner set={practiceSet} inShell />;
 }
 
-function shuffle<T>(arr: T[]): T[] {
-  const out = [...arr];
-  for (let i = out.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [out[i], out[j]] = [out[j], out[i]];
-  }
-  return out;
-}
 
 function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: boolean }) {
   const [queue, setQueue] = useState<PracticeItem[]>([]);

@@ -17,19 +17,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { deaccent } from "@/lib/practice/cloze";
+import { shuffle } from "@/lib/shuffle";
 
 // Dedup key only, NOT grading — but it folds accents the same way THE
 // grader does, so a distractor chip never collides with an answer token.
 const norm = (w: string) => deaccent(w.toLowerCase());
 
-function shuffle<T>(a: T[]): T[] {
-  const b = [...a];
-  for (let i = b.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [b[i], b[j]] = [b[j], b[i]];
-  }
-  return b;
-}
 
 export default function WordBank({
   answer,
