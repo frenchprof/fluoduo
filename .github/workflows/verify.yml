@@ -77,3 +77,6 @@ jobs:
 
       - name: Patch 25 (hero rows) — hairline hero, actions grouped
         run: python3 verify/verify25.py
+
+      - name: Patch 25b — Home path: 2D/3D map, deep link, short labels, print
+        run: python3 verify/verify25b.py
