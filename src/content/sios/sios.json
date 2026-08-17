@@ -536,7 +536,7 @@
   "skill": "interaction",
   "isProduction": false,
   "canDo": "I can ask for and give simple directions to a place, without using commands.",
-  "competence": "Give directions with c'est + preposition / il faut + infinitive / on + present; use ordinals premier–dixième correctly in ≥4 prompts (≥80%).",
+  "competence": "Give directions with vous + present / c'est + preposition (no imperative), understanding il faut + infinitive / on + present variants; use the ordinals première and deuxième correctly in ≥4 prompts (≥80%).",
   "collectionId": "directions-matching"
  },
  {
@@ -596,7 +596,7 @@
   "skill": "production",
   "isProduction": true,
   "canDo": "I can explain step by step how to get somewhere, linking the steps in order.",
-  "competence": "Describe ≥4 ordered steps using d'abord/puis/ensuite/après/enfin with il faut + inf / on + present and transport + direction vocabulary.",
+  "competence": "Describe ≥4 ordered steps using d'abord/puis/ensuite/après/enfin, each step in the present tense with an explicit subject (no imperative), with transport + direction vocabulary.",
   "collectionId": "atelier-sio-040"
  },
  {
