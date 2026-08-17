@@ -611,7 +611,6 @@ export default function LetrisGame({
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-sky-950/50 p-4" role="dialog" aria-modal="true">
           <div className="max-h-[85vh] w-full max-w-3xl overflow-auto rounded-2xl border-2 border-sky-200 bg-white p-5 shadow-xl">
             <h2 className="text-xl font-black text-sky-700">📋 {set.title}</h2>
-            <p className="mt-1 text-sm font-bold text-sky-900/70">Take note of the items involved:</p>
             <div className="mt-3 grid gap-2" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(11rem, 1fr))" }}>
               {set.categories.map((c) => (
                 <div key={c.key} className="rounded-xl border-2 border-sky-100 p-3">

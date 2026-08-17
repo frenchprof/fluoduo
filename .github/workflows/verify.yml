@@ -80,3 +80,6 @@ jobs:
 
       - name: Patch 25b — Home path: 2D/3D map, deep link, short labels, print
         run: python3 verify/verify25b.py
+
+      - name: Patch 23 — games: GameFrame, post-mortem → ReVue, credits once, galleries
+        run: python3 verify/verify23.py

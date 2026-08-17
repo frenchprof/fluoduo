@@ -23,9 +23,9 @@ export default async function ConveyorPage({
   const collection = CURATED.find((c) => c.id === deckId);
   if (!collection) {
     return (
-      <main className="min-h-screen p-6 text-[#4a3413]" style={{ background: "linear-gradient(180deg,#fff3d6,#ffe9bd)" }}>
-        No deck <code>{deckId}</code>.
-      </main>
+      <GameFrame title="🧰 LexicaLater" exitHref="/games/lexicalater" progress={null}>
+        <p className="p-6 text-[color:var(--cahier-ink-soft)]">No deck <code>{deckId}</code>.</p>
+      </GameFrame>
     );
   }
 
