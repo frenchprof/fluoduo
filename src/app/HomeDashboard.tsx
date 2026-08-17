@@ -4,15 +4,18 @@
  * The Home page body (Dan, 2026-07-05: "a true blue Home page… all of the 50
  * SIOs on a single learning path visually — an overview of where you are in
  * the learning journey"). Hero: Bienvenue with the ▶/🔁 icon buttons, the
- * stat pills and the two progress bars. Below it, the continuous ROAD MAP
- * (components/RoadMap): all 55 stops snaking left→right→left like a real
- * road, sized to the screen.
+ * stat pills and the two progress bars. Below it, the COURSE MAP in two
+ * views the learner toggles (Dan's decision 1, 2026-08-17): 2D
+ * (components/HomeMap — Design's region-band map) and 3D (components/
+ * HomeMap3D — the La Carte saga-map treatment). The choice is remembered
+ * in localStorage under `fluo.homeMapView`.
  */
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import GuideSplash from "@/components/GuideSplash";
 import RankBadge from "@/components/RankBadge";
 import HomeMap from "@/components/HomeMap";
+import HomeMap3D from "@/components/HomeMap3D";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
@@ -51,6 +54,8 @@ const BYLINE_STROKES = [
   "M118,17.5 C119,13.5 126,12 126,18 L126,25",
 ];
 
+const MAP_VIEW_KEY = "fluo.homeMapView";
+
 export default function HomeDashboard() {
   const [progress, setProgress] = useState<Progress>(defaultProgress());
   const [dueCount, setDueCount] = useState(0);
@@ -64,6 +69,8 @@ export default function HomeDashboard() {
   // Quick Guide popup, summoned from the hero button next to the (?) circle
   // (Dan, 2026-07-14: "insert a QuickGuide link where my red arrow points").
   const [qgOpen, setQgOpen] = useState(false);
+  // 2D ⇄ 3D map view, remembered per browser.
+  const [mapView, setMapView] = useState<"2d" | "3d">("2d");
 
   useEffect(() => {
     const refresh = () => {
@@ -73,6 +80,11 @@ export default function HomeDashboard() {
     };
     refresh();
     window.addEventListener("fluolingo:progress-updated", refresh);
+    try {
+      if (window.localStorage.getItem(MAP_VIEW_KEY) === "3d") setMapView("3d");
+    } catch {
+      // storage blocked → 2D
+    }
 
     // The letter-wave + hand-written byline now runs ~3.5 s (compacted from
     // the original 5.5 s when Dan brought it back, 2026-08-11). Play the
@@ -275,7 +287,38 @@ export default function HomeDashboard() {
         <p className="fluo-mono mb-2 text-xs font-black text-[color:var(--fluo-ink)]">🔗 {seqRun} in a row!</p>
       )}
 
-      <HomeMap progress={progress} activeId={activeId} accent={accent} />
+      {/* 2D · 3D — a small segmented control; the map below follows. */}
+      <div className="mb-2 flex items-center justify-end">
+        <div role="group" aria-label="Map view" className="fluo-mono flex overflow-hidden rounded-lg border-2 text-[11px] font-black" style={{ borderColor: "var(--cahier-ink)" }}>
+          {(["2d", "3d"] as const).map((v) => (
+            <button
+              key={v}
+              type="button"
+              aria-pressed={mapView === v}
+              onClick={() => {
+                setMapView(v);
+                try {
+                  window.localStorage.setItem(MAP_VIEW_KEY, v);
+                } catch {
+                  // fine — the choice just does not persist
+                }
+              }}
+              className="px-2.5 py-1 leading-none"
+              style={{
+                background: mapView === v ? "var(--cahier-ink)" : "var(--cahier-paper-raised)",
+                color: mapView === v ? "var(--cahier-paper-raised)" : "var(--cahier-ink)",
+              }}
+            >
+              {v.toUpperCase()}
+            </button>
+          ))}
+        </div>
+      </div>
+      {mapView === "3d" ? (
+        <HomeMap3D progress={progress} activeId={activeId} accent={accent} />
+      ) : (
+        <HomeMap progress={progress} activeId={activeId} accent={accent} />
+      )}
     </>
   );
 }

@@ -53,12 +53,42 @@ export const KIND_COLOR: Record<SioKind, string> = {
 /** The five regions (Design's place names, 17 Aug 2026), one per unit, and
  *  the arena for the final. Band fills are the `--region-*-band` tokens;
  *  the icon is one motif from regionIcons.tsx per region. */
-export const REGIONS: { unit: number; key: string; place: string; icon: (size: number) => ReactNode }[] = [
-  { unit: 0, key: "village", place: "Welcome Village", icon: (s) => <ChalkboardIcon size={s} title="" /> },
-  { unit: 1, key: "heights", place: "Identity Heights", icon: (s) => <IdBadgeIcon size={s} title="" /> },
-  { unit: 2, key: "valley", place: "Wants & Wishes Valley", icon: (s) => <GiftIcon size={s} title="" /> },
-  { unit: 3, key: "downtown", place: "Downtown District", icon: (s) => <SignpostIcon size={s} title="" /> },
-  { unit: 4, key: "market", place: "Gourmet Market", icon: (s) => <BasketIcon size={s} title="" /> },
+export const REGIONS: {
+  unit: number;
+  key: string;
+  place: string;
+  icon: (size: number) => ReactNode;
+}[] = [
+  {
+    unit: 0,
+    key: "village",
+    place: "Welcome Village",
+    icon: (s) => <ChalkboardIcon size={s} title="" />,
+  },
+  {
+    unit: 1,
+    key: "heights",
+    place: "Identity Heights",
+    icon: (s) => <IdBadgeIcon size={s} title="" />,
+  },
+  {
+    unit: 2,
+    key: "valley",
+    place: "Wants & Wishes Valley",
+    icon: (s) => <GiftIcon size={s} title="" />,
+  },
+  {
+    unit: 3,
+    key: "downtown",
+    place: "Downtown District",
+    icon: (s) => <SignpostIcon size={s} title="" />,
+  },
+  {
+    unit: 4,
+    key: "market",
+    place: "Gourmet Market",
+    icon: (s) => <BasketIcon size={s} title="" />,
+  },
 ];
 export const ARENA_PLACE = "GramMarathon Arena";
 
@@ -72,9 +102,34 @@ const BAND_PAD = 8; // breathing room so stops sit inside their band
 const MAP_W = COLS * COL_W;
 
 type Node =
-  | { kind: "sio"; id: string; unit: number; num: number; short: string; topic: string; x: number; y: number; cx: number; cy: number }
-  | { kind: "finale"; unit: number; x: number; y: number; cx: number; cy: number };
-type Band = { unit: number; top: number; height: number; place: string; fill: string; region?: (typeof REGIONS)[number] };
+  | {
+      kind: "sio";
+      id: string;
+      unit: number;
+      num: number;
+      short: string;
+      topic: string;
+      x: number;
+      y: number;
+      cx: number;
+      cy: number;
+    }
+  | {
+      kind: "finale";
+      unit: number;
+      x: number;
+      y: number;
+      cx: number;
+      cy: number;
+    };
+type Band = {
+  unit: number;
+  top: number;
+  height: number;
+  place: string;
+  fill: string;
+  region?: (typeof REGIONS)[number];
+};
 
 /** Static geometry: nodes snake left→right then right→left inside each band,
  *  bands stack with a gap for the label; the arena band holds the 🏁. */
@@ -99,19 +154,43 @@ const GEO: { nodes: Node[]; bands: Band[]; height: number } = (() => {
     const sios = SIOS.filter((s) => s.unit === r.unit);
     const top = y;
     sios.forEach((s, i) => {
-      nodes.push({ kind: "sio", id: s.id, unit: s.unit, num: s.num, short: s.short, topic: s.topic, ...place(i, top) });
+      nodes.push({
+        kind: "sio",
+        id: s.id,
+        unit: s.unit,
+        num: s.num,
+        short: s.short,
+        topic: s.topic,
+        ...place(i, top),
+      });
     });
     const height = Math.ceil(sios.length / COLS) * ROW_H + BAND_PAD * 2;
-    bands.push({ unit: r.unit, top, height, place: r.place, fill: `var(--region-${r.key}-band)`, region: r });
+    bands.push({
+      unit: r.unit,
+      top,
+      height,
+      place: r.place,
+      fill: `var(--region-${r.key}-band)`,
+      region: r,
+    });
     y = top + height + BAND_GAP;
   }
   nodes.push({ kind: "finale", unit: 5, ...place(0, y) });
-  bands.push({ unit: 5, top: y, height: ROW_H + BAND_PAD * 2, place: ARENA_PLACE, fill: "var(--cahier-line)" });
+  bands.push({
+    unit: 5,
+    top: y,
+    height: ROW_H + BAND_PAD * 2,
+    place: ARENA_PLACE,
+    fill: "var(--cahier-line)",
+  });
   return { nodes, bands, height: y + ROW_H + BAND_PAD * 2 };
 })();
 
 const polyline = (from: number, to: number) =>
-  GEO.nodes.slice(from, to + 1).map((n) => `${n.cx.toFixed(1)},${n.cy.toFixed(1)}`).join(" ");
+  GEO.nodes
+    .slice(from, to + 1)
+    .map((n) => `${n.cx.toFixed(1)},${n.cy.toFixed(1)}`)
+    .join(" ");
 
 export default function HomeMap({
   progress,
@@ -162,7 +241,10 @@ export default function HomeMap({
     landed.current = openUnit;
     const band = GEO.bands.find((b) => b.unit === openUnit);
     if (!band) return;
-    box.scrollTo({ top: Math.max(0, (TOP_PAD + band.top - BAND_GAP + 6) * zoom), behavior: "auto" });
+    box.scrollTo({
+      top: Math.max(0, (TOP_PAD + band.top - BAND_GAP + 6) * zoom),
+      behavior: "auto",
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boxW, openUnit]);
 
@@ -170,7 +252,10 @@ export default function HomeMap({
     const box = boxRef.current;
     const band = GEO.bands.find((b) => b.unit === unit);
     if (!box || !band) return;
-    box.scrollTo({ top: Math.max(0, (TOP_PAD + band.top - BAND_GAP + 6) * zoom), behavior: "smooth" });
+    box.scrollTo({
+      top: Math.max(0, (TOP_PAD + band.top - BAND_GAP + 6) * zoom),
+      behavior: "smooth",
+    });
   };
 
   const setZoom = (v: number) => setZoomPct(Math.min(200, Math.max(30, Math.round(v))));
@@ -244,7 +329,14 @@ export default function HomeMap({
                   id={`unit-${b.unit}`}
                   aria-hidden
                   className="absolute left-0 rounded-[20px]"
-                  style={{ top: b.top, width: MAP_W, height: b.height, background: b.fill, scrollSnapAlign: "start", scrollMarginTop: BAND_GAP - 6 }}
+                  style={{
+                    top: b.top,
+                    width: MAP_W,
+                    height: b.height,
+                    background: b.fill,
+                    scrollSnapAlign: "start",
+                    scrollMarginTop: BAND_GAP - 6,
+                  }}
                 />
                 {/* Region label pill — the region icon + Design's place name.
                     Tapping it opens the unit's list under the map. */}
@@ -254,15 +346,29 @@ export default function HomeMap({
                     onClick={() => onOpenUnit?.(b.unit)}
                     title={`${UNIT_META[b.unit].label} — ${CHAPTERS[b.unit].scenario}`}
                     className="home-map-pill absolute left-1/2 z-[1] flex items-center gap-1.5 whitespace-nowrap px-4 py-0.5 text-[13px] font-bold"
-                    style={{ top: b.top, transform: "translate(-50%, calc(-100% - 6px))", background: "var(--cahier-kraft-strong)", color: "var(--cahier-paper-raised)", boxShadow: "var(--shadow-card)" }}
+                    style={{
+                      top: b.top,
+                      transform: "translate(-50%, calc(-100% - 6px))",
+                      background: "var(--cahier-kraft-strong)",
+                      color: "var(--cahier-paper-raised)",
+                      boxShadow: "var(--shadow-card)",
+                    }}
                   >
-                    <span aria-hidden className="grid h-5 w-5 place-items-center rounded-full" style={{ background: "var(--cahier-paper-raised)" }}>{b.region?.icon(16)}</span>
+                    <span aria-hidden className="grid h-5 w-5 place-items-center rounded-full" style={{ background: "var(--cahier-paper-raised)" }}>
+                      {b.region?.icon(16)}
+                    </span>
                     {b.place}
                   </button>
                 ) : (
                   <span
                     className="home-map-pill absolute left-1/2 z-[1] whitespace-nowrap px-4 py-0.5 text-[13px] font-bold"
-                    style={{ top: b.top, transform: "translate(-50%, calc(-100% - 6px))", background: "var(--cahier-kraft-strong)", color: "var(--cahier-paper-raised)", boxShadow: "var(--shadow-card)" }}
+                    style={{
+                      top: b.top,
+                      transform: "translate(-50%, calc(-100% - 6px))",
+                      background: "var(--cahier-kraft-strong)",
+                      color: "var(--cahier-paper-raised)",
+                      boxShadow: "var(--shadow-card)",
+                    }}
                   >
                     {b.place}
                   </span>
@@ -272,9 +378,23 @@ export default function HomeMap({
 
             {/* The road: travelled · paved to the class flag · unpaved. */}
             <svg width={MAP_W} height={GEO.height} className="pointer-events-none absolute left-0 top-0 z-[1]" aria-hidden>
-              {road.unpaved && <polyline points={road.unpaved} fill="none" stroke="var(--cahier-kraft-strong)" strokeOpacity={0.7} strokeWidth={3} strokeDasharray="2 9" strokeLinecap="round" />}
-              {road.paved && <polyline points={road.paved} fill="none" stroke="var(--cahier-kraft-strong)" strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" />}
-              {road.travelled && <polyline points={road.travelled} fill="none" stroke={accent ?? "var(--cahier-accent)"} strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" />}
+              {road.unpaved && (
+                <polyline
+                  points={road.unpaved}
+                  fill="none"
+                  stroke="var(--cahier-kraft-strong)"
+                  strokeOpacity={0.7}
+                  strokeWidth={3}
+                  strokeDasharray="2 9"
+                  strokeLinecap="round"
+                />
+              )}
+              {road.paved && (
+                <polyline points={road.paved} fill="none" stroke="var(--cahier-kraft-strong)" strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" />
+              )}
+              {road.travelled && (
+                <polyline points={road.travelled} fill="none" stroke={accent ?? "var(--cahier-accent)"} strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" />
+              )}
             </svg>
 
             {GEO.nodes.map((n, i) => {
@@ -286,11 +406,19 @@ export default function HomeMap({
                       title="GramMarathon Final — 50 questions, all lessons, weighted to your weak spots"
                       aria-label="GramMarathon Final"
                       className="flex h-14 w-14 items-center justify-center rounded-full border-[3px] text-2xl transition hover:-translate-y-0.5"
-                      style={{ background: "var(--cahier-paper-raised)", borderColor: "var(--cahier-ink)", boxShadow: "var(--shadow-card)" }}
+                      style={{
+                        background: "var(--cahier-paper-raised)",
+                        borderColor: "var(--cahier-ink)",
+                        boxShadow: "var(--shadow-card)",
+                      }}
                     >
                       🏁
                     </Link>
-                    {hasLabels && <span aria-hidden className="mt-1 text-center text-[10px] font-bold leading-tight" style={{ color: "var(--cahier-ink-soft)" }}>Final</span>}
+                    {hasLabels && (
+                      <span aria-hidden className="mt-1 text-center text-[10px] font-bold leading-tight" style={{ color: "var(--cahier-ink-soft)" }}>
+                        Final
+                      </span>
+                    )}
                   </div>
                 );
               }
@@ -316,7 +444,15 @@ export default function HomeMap({
                       boxShadow: "var(--shadow-card)",
                     }}
                   >
-                    {active ? <span aria-hidden className="pl-0.5">▶</span> : done ? "✓" : n.num}
+                    {active ? (
+                      <span aria-hidden className="pl-0.5">
+                        ▶
+                      </span>
+                    ) : done ? (
+                      "✓"
+                    ) : (
+                      n.num
+                    )}
                     {flag && (
                       <span aria-label="The class is here this week" title="The class is here this week" className="absolute -right-2 -top-2 text-base leading-none">
                         🚩
@@ -335,20 +471,22 @@ export default function HomeMap({
         </div>
       </div>
 
-      {/* Legend: colour = kind (primary focus per stop). */}
-      <div className="fluo-mono mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-bold" style={{ color: "var(--cahier-ink-soft)" }}>
-        {(Object.keys(KIND_COLOR) as SioKind[]).map((k) => (
-          <span key={k} className="flex items-center gap-1.5">
-            <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: KIND_COLOR[k] }} />
-            {KIND_LABEL[k]}
-          </span>
-        ))}
-        <span className="flex items-center gap-1"><span aria-hidden>▶</span> you</span>
-        <span className="flex items-center gap-1"><span aria-hidden>🚩</span> class</span>
-        <span className="flex-1" />
+      <KindLegend>
         {/* Zoom, compact: − [nn] + % */}
         <span className="fluo-mono flex shrink-0 items-center gap-1 text-[11px] font-bold text-[color:var(--cahier-ink-faint)]" aria-label="Zoom">
-          <button type="button" aria-label="Zoom out" onClick={() => setZoom(zoomPct - 10)} className="h-6 w-6 rounded-md border" style={{ borderColor: "var(--cahier-line-strong)", background: "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}>−</button>
+          <button
+            type="button"
+            aria-label="Zoom out"
+            onClick={() => setZoom(zoomPct - 10)}
+            className="h-6 w-6 rounded-md border"
+            style={{
+              borderColor: "var(--cahier-line-strong)",
+              background: "var(--cahier-paper-raised)",
+              color: "var(--cahier-ink)",
+            }}
+          >
+            −
+          </button>
           <input
             type="number"
             min={30}
@@ -358,12 +496,51 @@ export default function HomeMap({
             onChange={(e) => setZoom(parseFloat(e.target.value) || 100)}
             aria-label="Zoom percent"
             className="h-6 w-12 rounded-md border px-1 text-center text-[11px]"
-            style={{ borderColor: "var(--cahier-line-strong)", background: "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}
+            style={{
+              borderColor: "var(--cahier-line-strong)",
+              background: "var(--cahier-paper-raised)",
+              color: "var(--cahier-ink)",
+            }}
           />
-          <button type="button" aria-label="Zoom in" onClick={() => setZoom(zoomPct + 10)} className="h-6 w-6 rounded-md border" style={{ borderColor: "var(--cahier-line-strong)", background: "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}>+</button>
+          <button
+            type="button"
+            aria-label="Zoom in"
+            onClick={() => setZoom(zoomPct + 10)}
+            className="h-6 w-6 rounded-md border"
+            style={{
+              borderColor: "var(--cahier-line-strong)",
+              background: "var(--cahier-paper-raised)",
+              color: "var(--cahier-ink)",
+            }}
+          >
+            +
+          </button>
           %
         </span>
-      </div>
+      </KindLegend>
+    </div>
+  );
+}
+
+/** Legend shared by both views: colour = kind (primary focus per stop),
+ *  ▶ you, 🚩 class. `children` sits at the right (the 2D zoom control). */
+export function KindLegend({ children }: { children?: ReactNode }) {
+  return (
+    <div className="fluo-mono mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-bold" style={{ color: "var(--cahier-ink-soft)" }}>
+      {(Object.keys(KIND_COLOR) as SioKind[]).map((k) => (
+        <span key={k} className="flex items-center gap-1.5">
+          <span aria-hidden className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: KIND_COLOR[k] }} />
+          {KIND_LABEL[k]}
+        </span>
+      ))}
+      <span className="flex items-center gap-1">
+        <span aria-hidden>▶</span> you
+      </span>
+      <span className="flex items-center gap-1">
+        <span aria-hidden>🚩</span> class
+      </span>
+      {children && <span className="flex-1" />}
+      {children}
     </div>
   );
 }

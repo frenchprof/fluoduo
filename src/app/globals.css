@@ -1261,3 +1261,15 @@ h3.cahier-display { font-size: var(--fs-h3); }
 .home-map input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 .home-map input[type="number"]::-webkit-inner-spin-button,
 .home-map input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+/* 3D view (ported from La Carte): landmarks bob in place — outer span =
+   parallax transform (set from scroll), inner span = bob, so the two never
+   fight; stops get a glossy candy finish. Off under reduced motion. */
+@keyframes home-map-bob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-7px) rotate(2deg); }
+}
+.home-map-bob { display: inline-block; animation: home-map-bob 3.4s ease-in-out infinite; }
+.home-map3d-node {
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.14), inset 0 3px 3px rgba(255, 255, 255, 0.5), var(--shadow-card);
+}
+@media (prefers-reduced-motion: reduce) { .home-map-bob { animation: none; } }
