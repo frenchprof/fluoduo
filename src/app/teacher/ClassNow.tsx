@@ -21,6 +21,7 @@ import { useMemo } from "react";
 import { SIOS, unitNumbers, siosForUnit } from "@/content/sios";
 import { outcomeForItem } from "@/lib/evidence";
 import { isMiss, outcomeAccuracy, tierToken, tierClass } from "@/lib/outcomeRows";
+import HeatStrip from "@/components/HeatStrip";
 import type { Learner, StudentDetail } from "./data";
 
 /** Three misses in a row on one outcome, this close together, is a stuck learner. */
@@ -184,6 +185,10 @@ export default function ClassNow({
         })}
         {tiles.length === 0 && <p className="col-span-full text-sm" style={{ color: SOFT }}>No learners in this cohort yet.</p>}
       </div>
+
+      {/* ── The class as one heat-strip (the matrix's last column, at a
+          glance), then the outcome × student matrix. ── */}
+      <HeatStrip className="mt-4" values={matrix.cls} label="Class — accuracy by outcome" />
 
       {/* ── The outcome × student matrix. ── */}
       <div className="class-matrix mt-4 overflow-x-auto rounded-xl border-2" style={{ borderColor: LINE, background: PAPER }}>

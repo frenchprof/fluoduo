@@ -60,6 +60,7 @@ export default function MoiContent() {
   const [respState, setRespState] = useState<"loading" | "ready" | "signedout" | "error">("loading");
   const [time, setTime] = useState<{ ms: number; n: number; byAct: [string, number][] } | null>(null);
   const [ledgerAcc, setLedgerAcc] = useState<HeatValues>({});
+  const [ledgerTotals, setLedgerTotals] = useState<{ n: number; missed: number } | null>(null);
 
   // Auth state arrives ASYNCHRONOUSLY — checking auth.currentUser on mount
   // told signed-in users to sign in (Dan, 2026-07-24). useAuthUser waits:
@@ -75,8 +76,10 @@ export default function MoiContent() {
       s.r += t.right; s.w += t.wrong;
     }
     const acc: HeatValues = {};
-    for (const [sio, s] of Object.entries(sum)) if (s.r + s.w > 0) acc[sio] = Math.round((100 * s.r) / (s.r + s.w));
+    let r = 0, w = 0;
+    for (const [sio, s] of Object.entries(sum)) if (s.r + s.w > 0) { acc[sio] = Math.round((100 * s.r) / (s.r + s.w)); r += s.r; w += s.w; }
     setLedgerAcc(acc);
+    setLedgerTotals(r + w > 0 ? { n: r + w, missed: w } : null);
   }, []);
   useEffect(() => {
     if (user === undefined) return; // still resolving — keep "loading"
@@ -152,11 +155,14 @@ export default function MoiContent() {
   const toFix = useMemo(() => rows.filter((r) => r.missed > 0), [rows]);
   const heat = useMemo<HeatValues>(() => (resp ? outcomeAccuracy(resp) : ledgerAcc), [resp, ledgerAcc]);
 
+  // Hero numbers: the answer log when signed in, else the device ledger.
   const totals = useMemo(() => {
-    if (!resp || resp.length === 0) return null;
+    if (!resp || resp.length === 0) {
+      return ledgerTotals ? { ...ledgerTotals, acc: Math.round(100 * (1 - ledgerTotals.missed / ledgerTotals.n)) } : null;
+    }
     const missed = resp.filter((r) => isMiss(r.status)).length;
     return { n: resp.length, missed, acc: Math.round(100 * (1 - missed / resp.length)) };
-  }, [resp]);
+  }, [resp, ledgerTotals]);
 
   const dueNow = p ? Object.values(p.itemSrs).filter((st) => st.due <= Date.now()).length : 0;
   const doneSet = useMemo(() => new Set(p?.doneSios ?? []), [p]);
@@ -165,7 +171,7 @@ export default function MoiContent() {
 
   const donePct = Math.round((100 * p.doneSios.length) / SIOS.length);
   const fmtWhen = (t: number) => (t ? new Date(t).toLocaleDateString("en-SG", { day: "numeric", month: "short" }) : "—");
-  const chip = "fluo-mono inline-flex items-center gap-1 rounded-lg border-2 px-1.5 py-0.5 text-xs font-black";
+  const chip = "fluo-mono inline-flex items-center gap-0.5 rounded-lg border-2 px-1 py-0.5 text-[11px] font-black";
   const chipStyle = { borderColor: INK, background: PAPER, color: INK } as const;
 
   return (
@@ -179,8 +185,7 @@ export default function MoiContent() {
       >
         <div className="flex flex-wrap items-center gap-1">
           <span className={chip} style={chipStyle} title="Outcomes marked done">✓ {p.doneSios.length}/{SIOS.length}</span>
-          {totals && <span className={`${chip} ${tierClass(totals.acc)}`} style={chipStyle} title={`${totals.n} answers recorded`}>🎯 {totals.acc}%</span>}
-          {totals && totals.missed > 0 && <span className={chip} style={chipStyle} title="Answers missed"><span className="tier-weak">✗</span> {totals.missed}</span>}
+          {totals && <span className={`${chip} ${tierClass(totals.acc)}`} style={chipStyle} title={`${totals.n} answers · ${totals.missed} missed`}>🎯 {totals.acc}%</span>}
           {p.streak > 0 && <span className={chip} style={chipStyle} title="Day streak">🔥 {p.streak}</span>}
           {p.xp > 0 && <a href="/leaderboard" className={`${chip} no-underline hover:-translate-y-0.5`} style={chipStyle} title="XP · leaderboard">⭐ {p.xp}</a>}
           {dueNow > 0 && (

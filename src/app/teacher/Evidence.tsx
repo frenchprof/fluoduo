@@ -143,7 +143,7 @@ export default function Evidence({ roster, details, fetched }: { roster: Learner
               ))}
             </div>
           </div>
-          <p className="text-xs text-emerald-800/70">Method: per item per student, attempts ordered chronologically; “first” is the earliest recorded attempt (pre-test or first drill), “later” all subsequent attempts; Final attempts grouped by calendar day. Computed live from the answer logs the page holds; moves with the 30 s repoll.</p>
+          <p className="text-xs text-emerald-800/70">Method: per item per student, attempts ordered chronologically; “first” is the earliest recorded attempt (pre-test or first drill), “later” all subsequent attempts; Final attempts grouped by calendar day. Drawn from the answer logs the page holds; moves with the 30 s repoll.</p>
         </div>
       )}
     </div>

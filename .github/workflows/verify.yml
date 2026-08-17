@@ -86,3 +86,6 @@ jobs:
 
       - name: Patch 24 — the Index: chip rail, unit segments, result cells, hubs → redirects, ?gaps=1
         run: python3 verify/verify24.py
+
+      - name: Patch 26 — /moi outcome rows + heat-strip, teacher Class now + matrix, one pool fetch
+        run: python3 verify/verify26.py
