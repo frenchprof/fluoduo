@@ -43,7 +43,7 @@ wrong about the *what's left*. If they disagree with this file, this file wins.
 | ~~1~~ | ~~Deploy: `git push live main`; confirm fluolingo.com serves Reports tab + region icons~~ | — | **not done, 17 Aug** — Peers has no push access; Dan runs it |
 | ~~2~~ | ~~Home path, rest of patch 25~~ — **done 17 Aug** on `pm/patch25-home-map` (verify25b, `work/patch25/*.png`): 2D map per Design ref (region bands, kind-coloured stops, ▶ current, zoom %), 2D/3D toggle (`fluo.homeMapView`), `/unit/N` → deep link into Home, `short` labels + `check:short` in the build, print stylesheet with a QR per unit | — | merge the branch, then deploy |
 | ~~3~~ | ~~La Carte branch~~ — **folded into #2, 17 Aug**: `HomeMap3D.tsx` ports the 3D scroll treatment; ring colours from `sioKind()`/`sioSecondary()` via one `KIND_COLOR` palette. Delete `claude/api-necessity-i8fgps` after merge (its `/carte` page and objectives.json were not taken — the SIO objectives doc is already on main) | — | |
-| 4 | Patch 23 — games: shared `GameFrame`, boards fill device, game-over post-mortem, misses → ReVue | 14 | not started |
+| ~~4~~ | ~~Patch 23 — games~~ — **done 17 Aug** on `pm/patch23-games` (verify23, `work/patch23/*.png`): `GameFrame` + GameBar v2 on all six games, 100dvh/no page scroll, boards measured (`useBoardSize`), desktop two-pane record, headers/instructions gone (⋯ → Help), `GameOver` post-mortem → ReVue queue + `CORRIGER MAINTENANT`, CreditsSplash once per browser, galleries → ▶ Jouer + sheet | 14 | merge the branch (after #2), then deploy |
 | 5 | Patch 24 — Index: chip rail + unit segments, result cells, hub pages gone | 8 | `/activities` still old matrix |
 | 6 | Patch 26 — `/moi` + teacher: outcome-grouped hardest items, heat-strip, Class-now, student×outcome matrix | 12 | |
 | 7 | Track D — AI / help ladder inside DrillShell (spec + build) | 16 | unblocked |
@@ -53,7 +53,7 @@ wrong about the *what's left*. If they disagree with this file, this file wins.
 | 11 | Ops: make the GitHub ruleset required; `add-claude-github-actions` branch — check workflow conflicts then merge or delete; `claude-review` billing | 1 | |
 | — | December: canonical `FD-` outcome IDs (Track A) | 8 | deliberately deferred |
 
-Near-term total ≈ 78 units. Shipped ≈ 72 of ~150 in-scope.
+Near-term total ≈ 64 units. Shipped ≈ 86 of ~150 in-scope.
 
 ## Branches (17 Aug)
 
@@ -81,6 +81,40 @@ Near-term total ≈ 78 units. Shipped ≈ 72 of ~150 in-scope.
   the app-wide choice from 2026-07-08; Design's legend was English.
 - Legacy `/unit/N` pages still build (five redirect stubs) because the shell's
   Unité flaps, DrillShell's back link and old bookmarks point there.
+
+## Patch 23 — what was left out or decided on the fly (17 Aug, Peers)
+
+- **Hearts stay in the games that had them** (NumBus, NumBourse, LexicaLater):
+  GameBar v2 draws ♥♥♡ when the game keeps lives and nothing otherwise.
+  DrillShell's "no hearts" rule was about *curriculum drills*; the games are
+  arcade play. Dan to confirm or strike.
+- **The queue is `itemSrs`.** `queueForReview(ids)` (progress.ts) drops each
+  miss to the due-now rung — exactly what `dueForReview` reads — the moment
+  the post-mortem mounts; `CORRIGER MAINTENANT` opens `/reviser?items=…` and
+  the reviser page puts those at the head of the session. It does NOT call
+  `recordItemResult` again (the game already graded/paid the attempt).
+- **Number games' misses reach the queue only when the course has the row**:
+  NumBus/NumBourse deal spoken numbers, not deck items; `reviewItemByFrench`
+  matches the words against `numbers-0-20/20-69/70-99`. A number outside
+  those decks is listed on the post-mortem (with "where it goes" → SIO-007)
+  but cannot be queued. VocabulaRain tiles match the same way (by French);
+  Match It queues the mis-chosen completion (the item it graded).
+- ComposeIt has no graded misses (AI feedback) — its GameOver shows the bill
+  / le bilan du prof and « Sans faute ». The scenario reminder line stays on
+  the board (Dan, 2026-07-19) — the one instruction not moved to Help.
+- VocabulaRain's pre-game study table stays (Dan, 2026-07-04) minus its
+  blurb; LexicaLater's blinking red "Drag down a chest" and pointing hands
+  are gone (WCAG flash risk + litmus) — the down-arrows remain.
+- The four game galleries are one card + sheet; the *drill* hubs
+  (`/practice/flip-it`, `/practice/grammarathon` → ActivityHub) were not
+  touched — patch 24's Index work owns those.
+- Screenshots were taken from a build with `REQUIRE_SIGN_IN=false` (the wall
+  is Google-only, no headless path); the flag was reverted before the last
+  build and commit. Harness: `work/patch23/serve.py` + `shoot.py`.
+- Match It now sits behind AuthGate like the other five (it was the only
+  game without the wall).
+- Not done: a per-game *why* button on the post-mortem rows; keyboard `?`
+  for Help; the two-pane record for ComposeIt on tablets < 1024px.
 
 ## Rules that stay
 
