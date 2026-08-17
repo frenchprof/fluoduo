@@ -40,9 +40,9 @@ wrong about the *what's left*. If they disagree with this file, this file wins.
 
 | # | Item | Units | Notes |
 |---|---|---|---|
-| 1 | Deploy: `git push live main`; confirm fluolingo.com serves Reports tab + region icons | 0.25 | do first |
-| 2 | Home path, rest of patch 25: 2D map per Design ref + 2D/3D toggle + `/unit/N` deep link + `short` labels + print stylesheet | ~8 | decision 1 above |
-| 3 | La Carte branch (`claude/api-necessity-i8fgps`, 3 commits) — rebase; ring colours from `sioKind()`/`sioSecondary()`, not hand-coded; then merge or fold into #2 | 2 | |
+| ~~1~~ | ~~Deploy: `git push live main`; confirm fluolingo.com serves Reports tab + region icons~~ | — | **not done, 17 Aug** — Peers has no push access; Dan runs it |
+| ~~2~~ | ~~Home path, rest of patch 25~~ — **done 17 Aug** on `pm/patch25-home-map` (verify25b, `work/patch25/*.png`): 2D map per Design ref (region bands, kind-coloured stops, ▶ current, zoom %), 2D/3D toggle (`fluo.homeMapView`), `/unit/N` → deep link into Home, `short` labels + `check:short` in the build, print stylesheet with a QR per unit | — | merge the branch, then deploy |
+| ~~3~~ | ~~La Carte branch~~ — **folded into #2, 17 Aug**: `HomeMap3D.tsx` ports the 3D scroll treatment; ring colours from `sioKind()`/`sioSecondary()` via one `KIND_COLOR` palette. Delete `claude/api-necessity-i8fgps` after merge (its `/carte` page and objectives.json were not taken — the SIO objectives doc is already on main) | — | |
 | 4 | Patch 23 — games: shared `GameFrame`, boards fill device, game-over post-mortem, misses → ReVue | 14 | not started |
 | 5 | Patch 24 — Index: chip rail + unit segments, result cells, hub pages gone | 8 | `/activities` still old matrix |
 | 6 | Patch 26 — `/moi` + teacher: outcome-grouped hardest items, heat-strip, Class-now, student×outcome matrix | 12 | |
@@ -63,6 +63,24 @@ Near-term total ≈ 78 units. Shipped ≈ 72 of ~150 in-scope.
   → delete after deploy.
 - live: `claude/api-necessity-i8fgps` (La Carte), `cursor/teacher-cdn-exposure-a214`,
   `add-claude-github-actions-…`.
+
+## Patch 25 — what was left out or decided on the fly (17 Aug, Peers)
+
+- "One unit per screen": the 2D map box snaps band-to-band on a **vertical**
+  swipe (scroll-snap) and lands on the current/deep-linked unit; bands are
+  stacked so the road stays one road, as Design drew it — NOT a horizontal
+  pager. Dan to confirm.
+- Class flag 🚩 = `CLASS_FLAG_SIO` in `src/content/chapters.ts` (hand-set,
+  SIO-010) — nothing in progress/cohort exposes a per-week position yet.
+  The road is paved to the flag, dotted beyond; the learner's travelled
+  stretch wears the equipped accent.
+- The hero's ▶ Continue still links `/unit/N#SIO` (untouched per the
+  hero-freeze); it lands via the redirect. Point it at `/?unit=N#SIO` when the
+  hero is next opened.
+- `KIND_LABEL` stays French (vocabulaire/grammaire/…) in the map legend —
+  the app-wide choice from 2026-07-08; Design's legend was English.
+- Legacy `/unit/N` pages still build (five redirect stubs) because the shell's
+  Unité flaps, DrillShell's back link and old bookmarks point there.
 
 ## Rules that stay
 
