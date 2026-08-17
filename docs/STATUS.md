@@ -48,8 +48,8 @@ wrong about the *what's left*. If they disagree with this file, this file wins.
 | ~~6~~ | ~~Patch 26 — `/moi` + teacher~~ — **done 17 Aug** on `pm/patch26-moi-teacher` (verify26, `work/patch26/*.png`): outcome rows (`src/lib/outcomeRows.ts`), `HeatStrip` on four pages, /moi thin hero + four segments + CAP 5, teacher Class now board + outcome × student matrix, one pool fetch, Compute button gone | — | merge the branch (after #5), then deploy |
 | 7 | Track D — AI / help ladder inside DrillShell (spec + build) | 16 | unblocked |
 | 8 | `/teacher` off the public CDN (server-side hardening; PR #6 draft, `cursor/teacher-cdn-exposure-a214` behind main) | 3 | PII chunk leak itself is closed |
-| 9 | Loose bugs: deck pages that demand sign-in / "No deck specified.", `/sio/[id]` | 4 | |
-| 10 | Data-truth backlog: four "weak" definitions, biased shuffle, session/attempt fields read-not-written, D4 two learners' progress docs not syncing, leaderboard identity | ~10 | graders already unified (PR #19) |
+| ~~9~~ | ~~Loose bugs: deck pages that demand sign-in / "No deck specified.", `/sio/[id]`~~ — **done 17 Aug** on `pm/bugs-data-truth` (verify27-bugs): curated study redirect before the gate, `NoDeck` empty state → Index, DeckContent on tokens (19b baseline 904 → 773), `/sio/[id]` → `/?unit=N#SIO`, DEPLOY.md project name, LAF1201 stays | — | merge the branch (after #6), then deploy |
+| ~~10~~ | ~~Data-truth backlog: four "weak" definitions, biased shuffle, session/attempt fields read-not-written, D4 two learners' progress docs not syncing, leaderboard identity~~ — **done 17 Aug**, same branch: `tierFor`/`isWeakSrs` in progress.ts, `src/lib/shuffle.ts`, D6/D7 readers deleted, D9 statuses deleted / D10 evidence block read, D11 merge pure + executed, `boardName()`, D4 `lastSyncedAt` + `sync.error` + STALE on the teacher panel | — | replay-responses-into-ledger (patch 24 note) NOT done — see below |
 | 11 | Ops: make the GitHub ruleset required; `add-claude-github-actions` branch — check workflow conflicts then merge or delete; `claude-review` billing | 1 | |
 | — | December: canonical `FD-` outcome IDs (Track A) | 8 | deliberately deferred |
 
@@ -63,6 +63,80 @@ Near-term total ≈ 44 units. Shipped ≈ 106 of ~150 in-scope.
   → delete after deploy.
 - live: `claude/api-necessity-i8fgps` (La Carte), `cursor/teacher-cdn-exposure-a214`,
   `add-claude-github-actions-…`.
+
+## Loose bugs + data-truth — what was done, what was left (17 Aug, Peers)
+
+Branch `pm/bugs-data-truth` (on top of `pm/integration`), check = `verify/verify27-bugs.py`.
+
+- **Deck gates.** `/decks/[id]/study` for a curated id only ever redirected to
+  `/practice/flip-it/<id>`, but the redirect sat inside `AuthGate` — a
+  signed-out learner was asked to sign in to be sent somewhere that has its
+  own gate. The redirect now runs first. `/decks/[id]` itself is NOT a redirect
+  any more (patch 20–21 made it the 4Mémoire table), so it stays gated.
+- **`No deck specified.`** was on three routes (`/decks/view|study|mcq`
+  without `?id=`) → one `NoDeck` empty state inside the shell, "Open the
+  Index". Not the deck-`[id]` `NotFound` (that one already had doors).
+- **DeckContent.tsx** on cahier + tier + drill-bad tokens; 19b baseline
+  re-run (`--rebaseline`): 904 → 773 stock classes, 542 → 506 raw hex.
+- **`/sio/[id]`** — nothing linked to it except KeyNav's two-digit jump, and
+  Home's popup (SioModal → SioDetail) is the same content, so it is a
+  redirect to `/?unit=N#SIO-0NN` (the fifty static pages still build for old
+  links/QR). KeyNav opens the popup on Home (sets the hash when already
+  there). The "Planned" pre-test label was the same `getPretestForSio` logic
+  the popup uses — if Dan still sees "Planned" where a pre-test exists, it
+  is a `PRETEST_BY_SIO` gap in `content/pretests`, not a page bug.
+- **DEPLOY.md** says `fluolingo-dot-com` (was `fluoguo`); banner kept.
+- **`LAF1201` stays in the meta description** — decision recorded next to
+  the string in `layout.tsx`: it is the course code people search for;
+  English first, no French.
+- **One "weak"** — `progress.ts`: `WEAK_BELOW = 50`, `GOOD_FROM = 75`,
+  `tierFor(pct)`, `isWeakSrs(srs)` (interval ≤ 1 day: just missed, or
+  repaired-but-fragile). Callers: outcomeRows `tierToken/tierClass` (the
+  ledger re-exports them), the teacher's `missColor` (was miss ≥ 50/25 —
+  off by one at 75 %), the Reviser's weak count (was interval === 0 — now
+  counts fragile items too, so the "N weak" chip can read higher), /moi's
+  signed-out SRS rows, the Finale's weighting.
+- **One shuffle** — `src/lib/shuffle.ts` (Fisher–Yates, injectable rand):
+  5 biased `sort(() => Math.random() - 0.5)` sites (conjugaison, three
+  native lessons) and 17 private copies replaced; 24 files import it. The
+  seeded ones (deck MCQ `stableShuffle`, Finale `mulberry32`) untouched.
+- **D6 / D7 = the smaller fix, delete the readers.** `users/{uid}/sessions`
+  had no writer in this repo (the old suite's docs carry a null activityId)
+  and `users/{uid}/attempts` was never written. Teacher panel: time on task
+  is the page-view estimate only; the "Attempts" KPI is now "Answers" =
+  recorded responses; /moi lost its "⏱ N min on task" line (it was empty
+  for anyone post-reset). `firestore.rules` still shapes both collections —
+  harmless, left for the next rules deploy.
+- **D9 delete / D10 round-trip.** `retried`/`mastered` were never written
+  (`recordResponse` stores `met`/`missed` only) → gone from every reader
+  (`isMiss = missed`; the rules enum still lists them, harmless). The
+  evidence block (`outcomeId`, `evidenceType`, `assistance`, `assistCount`,
+  `independent`) was written since 10 Aug and read by nothing → teacher
+  `data.ts` parses it, `outcomeOf(answer)` prefers the stored `outcomeId`
+  over the item join (every fold, ClassNow, the recent-answers table), the
+  teacher's Recent answers gained an "Evidence" column, /moi carries
+  `outcomeId` through. `assistCount` is stored but not shown (nothing asks).
+- **D11.** `mergeProgress` already kept `timeZone` on this branch's parent,
+  but as `local ?? remote` — the zone could belong to the OTHER device's
+  `lastActiveDay`. It is now a pure module (`src/lib/progressMerge.ts`,
+  re-exported by progressSync) that pairs the zone with the winning day, and
+  verify27 runs a 15-row merge table in node (`--experimental-strip-types`).
+- **Leaderboard identity.** `boardName(uid, displayName)` in
+  `accountAliases.ts` = alias → display name → "Anonymous" (the publisher
+  used to fall back to the email's local part). The board marks "(you)" on
+  the folded canonical row for an aliased learner on her second account.
+- **D4 diagnostic (cannot reproduce here).** `progressSync.push` stamps
+  `lastSyncedAt` + the device's `lastSyncError`/`lastSyncErrorAt`/
+  `syncErrorCount` on the progress doc; every pull/push failure is kept in
+  `fluolingo:syncState` and sent as a `sync.error` event (separate
+  collection — a rules denial on the doc still gets out). Teacher student
+  panel "Last sync": red **STALE — active <when>** when the learner's newest
+  event is > 12 h past the doc, plus the error count and last message. In
+  week 1 Dan opens the two learners and reads the KPI.
+- **Not done:** replaying `responses` into the device ledger after sign-in
+  (patch 24's note); a rules edit dropping `sessions`/`attempts`/the two
+  statuses (needs a deploy); the plan's "delete `import-fluoduo` on
+  dckg/fluo" (needs push access — Dan).
 
 ## Patch 26 — what was left out or decided on the fly (17 Aug, Peers)
 
