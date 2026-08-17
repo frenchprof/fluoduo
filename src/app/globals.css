@@ -1288,3 +1288,11 @@ h3.cahier-display { font-size: var(--fs-h3); }
     print-color-adjust: exact;
   }
 }
+
+/* ---------- The Index (patch 24, 2026-08-17) ----------
+   Chip rail scrolls sideways on a phone with no scrollbar; a chip or a
+   segment never wraps. Result cells hold their size so ten rows align. */
+.index-chips { scrollbar-width: none; -ms-overflow-style: none; scroll-snap-type: x proximity; }
+.index-chips::-webkit-scrollbar { display: none; }
+.index-chip { scroll-snap-align: start; }
+.index-cell, .index-btn, .index-stop { flex: 0 0 auto; }
