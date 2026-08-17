@@ -5,8 +5,8 @@
  *   sign-in → pull remote, MERGE with local, save locally, push merged
  *   every local save after that → debounced push (2.5 s)
  * Merge favours the learner: union of done SIOs, max gems/streak, later
- * lastActiveDay, and per-item SRS keeps whichever entry is scheduled further
- * out (the more-learned state).
+ * lastActiveDay (with ITS timeZone — D11), and per-item SRS keeps whichever
+ * entry is scheduled further out (the more-learned state). See progressMerge.ts.
  * Firestore is imported DYNAMICALLY — this module must add zero bytes of
  * Firestore to any page's static graph (same rule as usage.ts).
  */
@@ -18,44 +18,16 @@ import {
   type Progress,
 } from "@/lib/progress";
 import { levelForXp } from "@/lib/economy";
+import { mergeProgress } from "@/lib/progressMerge";
 import { ALIAS_PUBLISH_UIDS } from "@/lib/accountAliases";
 import { CURRENT_TERM, LEGACY_TERM } from "@/lib/term";
 
 const DOC_PATH = ["app", "progress"] as const;
 const PUSH_DEBOUNCE_MS = 2500;
 
-export function mergeProgress(local: Progress, remote: Partial<Progress> | undefined): Progress {
-  if (!remote) return local;
-  const itemSrs = { ...(remote.itemSrs ?? {}) };
-  for (const [id, s] of Object.entries(local.itemSrs)) {
-    const r = itemSrs[id];
-    itemSrs[id] = !r || s.due >= r.due ? s : r;
-  }
-  return {
-    doneSios: [...new Set([...(remote.doneSios ?? []), ...local.doneSios])],
-    // gems are a spendable balance; max favours the learner (a tiny refund on
-    // the rare spend-then-merge is acceptable in beta). xp is monotonic.
-    gems: Math.max(local.gems, remote.gems ?? 0),
-    xp: Math.max(local.xp ?? 0, remote.xp ?? 0),
-    streak: Math.max(local.streak, remote.streak ?? 0),
-    lastActiveDay:
-      [local.lastActiveDay, remote.lastActiveDay ?? null]
-        .filter((d): d is string => !!d)
-        .sort()
-        .pop() ?? null,
-    timeZone: local.timeZone ?? remote.timeZone,
-    itemSrs,
-    badges: [...new Set([...(remote.badges ?? []), ...(local.badges ?? [])])],
-    cosmetics: {
-      owned: [...new Set([...(remote.cosmetics?.owned ?? []), ...(local.cosmetics?.owned ?? [])])],
-      // equipped: the device the learner is on wins, else whatever remote had.
-      equipped: { ...(remote.cosmetics?.equipped ?? {}), ...(local.cosmetics?.equipped ?? {}) },
-    },
-    // Cohort marker: once stamped remotely it never changes. startProgressSync
-    // handles the pre-marker cases (remote doc without the field = legacy).
-    term: remote.term ?? local.term,
-  };
-}
+// The merge itself is pure and lives in @/lib/progressMerge (verify27 runs
+// it in node); re-exported so callers keep this import path.
+export { mergeProgress };
 
 let pushTimer: number | null = null;
 

@@ -69,7 +69,9 @@ check("term: CURRENT_TERM" in progress,
       "defaultProgress does not stamp the term")
 
 sync = strip_comments(read("src/lib/firebase/progressSync.ts"))
-check("term: remote.term ?? local.term" in sync,
+# 2026-08-17: the merge is a pure module now (progressMerge.ts, run by verify27).
+merge = strip_comments(read("src/lib/progressMerge.ts"))
+check("term: remote.term ?? local.term" in merge,
       "mergeProgress's whitelist literal carries the term through sign-in",
       "mergeProgress DROPS the term — it rebuilds Progress from a fixed key list")
 
