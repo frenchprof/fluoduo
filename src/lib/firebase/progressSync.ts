@@ -21,9 +21,46 @@ import { levelForXp } from "@/lib/economy";
 import { mergeProgress } from "@/lib/progressMerge";
 import { boardName } from "@/lib/accountAliases";
 import { CURRENT_TERM, LEGACY_TERM } from "@/lib/term";
+import { logEvent } from "./usage";
 
 const DOC_PATH = ["app", "progress"] as const;
 const PUSH_DEBOUNCE_MS = 2500;
+
+// ── D4 diagnostic (2026-08-17) ──────────────────────────────────────────────
+// Two learners' progress docs stopped syncing and nothing in the app could
+// say why: push() swallowed every error and the doc had no "last good sync"
+// stamp of its own (updatedAt is set by the same write that fails). Now:
+//   · every successful push stamps `lastSyncedAt` on the doc, plus the LAST
+//     failure this device saw (`lastSyncError`, `lastSyncErrorAt`,
+//     `syncErrorCount`) — so a pipe that recovers still tells the story;
+//   · every failure (pull or push) is remembered on the device AND sent as a
+//     `sync.error` event (a separate collection, separate rules — a rules
+//     denial on the progress doc still gets reported).
+// The teacher student panel reads both: "Last sync" turns STALE when the
+// learner's events run more than SYNC_STALE_MS past the doc, and shows the
+// last error and the error count.
+const SYNC_STATE_KEY = "fluolingo:syncState";
+type SyncState = { lastError?: string; lastErrorAt?: number; errorCount?: number };
+function readSyncState(): SyncState {
+  try {
+    return JSON.parse(window.localStorage.getItem(SYNC_STATE_KEY) ?? "{}") as SyncState;
+  } catch {
+    return {};
+  }
+}
+function noteSyncError(phase: "pull" | "push", e: unknown): void {
+  const message = (e instanceof Error ? `${e.name}: ${e.message}` : String(e)).slice(0, 200);
+  try {
+    const s = readSyncState();
+    window.localStorage.setItem(
+      SYNC_STATE_KEY,
+      JSON.stringify({ lastError: `${phase}: ${message}`, lastErrorAt: Date.now(), errorCount: (s.errorCount ?? 0) + 1 }),
+    );
+  } catch {
+    /* storage blocked — the event below still goes out */
+  }
+  void logEvent("sync.error", { phase, message });
+}
 
 // The merge itself is pure and lives in @/lib/progressMerge (verify27 runs
 // it in node); re-exported so callers keep this import path.
@@ -39,9 +76,20 @@ async function push(p: Progress): Promise<void> {
       import("firebase/firestore"),
       import("./db"),
     ]);
-    await setDoc(doc(db, "users", uid, ...DOC_PATH), { ...p, updatedAt: Date.now() });
-  } catch {
-    // offline / rules hiccup — local state is still authoritative on-device
+    const s = readSyncState();
+    const now = Date.now();
+    await setDoc(doc(db, "users", uid, ...DOC_PATH), {
+      ...p,
+      updatedAt: now,
+      lastSyncedAt: now,
+      lastSyncError: s.lastError ?? null,
+      lastSyncErrorAt: s.lastErrorAt ?? null,
+      syncErrorCount: s.errorCount ?? 0,
+    });
+  } catch (e) {
+    // offline / rules hiccup — local state is still authoritative on-device;
+    // remembered + reported so the teacher can see a learner who never lands.
+    noteSyncError("push", e);
   }
   void publishLeaderboard(p);
 }
@@ -123,8 +171,9 @@ export async function startProgressSync(): Promise<void> {
     }
     replaceProgress(merged);
     void push(merged);
-  } catch {
+  } catch (e) {
     // pull failed — keep local, still enable live pushes
+    noteSyncError("pull", e);
   }
   setOnProgressSave(schedulePush);
 }

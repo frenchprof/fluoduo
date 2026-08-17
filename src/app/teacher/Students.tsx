@@ -23,6 +23,11 @@ import { isMiss, outcomeAccuracy, outcomeOf, outcomeRows, UNMAPPED, tierClass } 
 // The analytics-summary CSV moved to the Reports tab (2026-08-11) — card 4,
 // same CLASS_UIDS, same rows. See Reports.tsx.
 
+/** A progress doc older than this against the learner's newest event = not
+ *  syncing (D4). Twelve hours clears a whole evening of study + the 04:00
+ *  day rollover; the 2.5 s push debounce is noise next to it. */
+const SYNC_STALE_MS = 12 * 60 * 60 * 1000;
+
 export default function Students({ events, roster, initialUid, details, fetched }: { events: Ev[]; roster: Learner[]; initialUid?: string | null; details: Map<string, StudentDetail>; fetched: number }) {
   const [sel, setSel] = useState<string | null>(initialUid ?? null);
   useEffect(() => { if (initialUid) setSel(initialUid); }, [initialUid]);
@@ -93,10 +98,14 @@ function StudentPanel({ learner, events, cached, onClose }: { learner: Learner; 
     let supAnswers = 0;
     let supCorrect = 0;
     let tutorMsgs = 0;
+    let syncErrors = 0;
+    let lastEventAt = 0;
     const tutorRecent: { ts: Date | null; text: string }[] = [];
     const days = new Set<string>();
     for (const ev of mine) {
       if (ev.ts) days.add(SG_DAY_KEY.format(ev.ts));
+      if (ev.ts && ev.ts.getTime() > lastEventAt) lastEventAt = ev.ts.getTime();
+      if (ev.type === "sync.error") syncErrors += 1;
       if (ev.type === "page.view" || ev.type === "supplement.open") {
         const path = str(ev.payload.path) ?? str(ev.payload.href);
         if (path) {
@@ -165,6 +174,7 @@ function StudentPanel({ learner, events, cached, onClose }: { learner: Learner; 
       answers, correct, supAnswers, supCorrect, tutorMsgs,
       tutorRecent: tutorRecent.slice(0, 10),
       daysActive: days.size,
+      syncErrors, lastEventAt,
     };
   }, [events, learner.uids]);
 
@@ -294,11 +304,35 @@ function StudentPanel({ learner, events, cached, onClose }: { learner: Learner; 
             <Kpi label="Badges" value={p?.badges?.length ?? 0} />
             <Kpi label="SRS items" value={srsIds.length} sub={`${srsDue} due now`} />
             <Kpi label="Answers" value={detail.responses.length} sub="recorded" />
-            <Kpi
-              label="Last sync"
-              value={p?.updatedAt ? fmtWhen(new Date(p.updatedAt)) : "never"}
-            />
+            {/* D4 diagnostic (2026-08-17): the doc's own "last good sync"
+                stamp vs the learner's newest event. A learner whose events run
+                on while the doc sits still is the not-syncing case Dan saw
+                twice and could not diagnose — it now reads STALE here, with
+                the last error the device reported and how many there were. */}
+            {(() => {
+              const synced = p?.lastSyncedAt ?? p?.updatedAt ?? null;
+              const stale = trail.lastEventAt > 0 && (synced === null || trail.lastEventAt - synced > SYNC_STALE_MS);
+              const errs = (p?.syncErrorCount ?? 0) + trail.syncErrors;
+              return (
+                <Kpi
+                  label="Last sync"
+                  value={<span className={stale ? "text-rose-600" : undefined}>{synced ? fmtWhen(new Date(synced)) : "never"}</span>}
+                  sub={
+                    stale
+                      ? `STALE — active ${fmtWhen(new Date(trail.lastEventAt))}${errs ? ` · ${errs} sync error${errs === 1 ? "" : "s"}` : ""}`
+                      : errs
+                        ? `${errs} sync error${errs === 1 ? "" : "s"}${p?.lastSyncError ? ` · ${p.lastSyncError}` : ""}`
+                        : "in step"
+                  }
+                />
+              );
+            })()}
           </div>
+          {p?.lastSyncError && (
+            <p className="mt-1 text-xs text-rose-700" title={p.lastSyncErrorAt ? fmtWhen(new Date(p.lastSyncErrorAt)) : undefined}>
+              Last sync error reported by this learner&rsquo;s device: <code>{p.lastSyncError}</code>
+            </p>
+          )}
 
           {/* XP audit (Dan, 2026-07-15: "check if XPs awarded correctly e.g.
               for Parker"). Two checks: (1) leaderboard must equal the synced

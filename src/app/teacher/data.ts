@@ -142,6 +142,11 @@ export type StudentDetail = {
     badges?: string[];
     itemSrs?: Record<string, { due?: number; intervalDays?: number }>;
     updatedAt?: number;
+    /** D4 diagnostic (progressSync, 2026-08-17). */
+    lastSyncedAt?: number;
+    lastSyncError?: string | null;
+    lastSyncErrorAt?: number | null;
+    syncErrorCount?: number;
   } | null;
   // `sessions` and `attemptsCount` LEFT this shape on 2026-08-17 (D6 / D7):
   // users/{uid}/sessions had two readers and no writer since the old suite

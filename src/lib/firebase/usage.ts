@@ -38,7 +38,8 @@ export type EventType =
   //   together, a rising reveal rate could hide inside a falling hint rate —
   //   which is precisely the trend PRD §6 Goal 2 asks us to measure.
   | "tts.play" // { surface, kind: "word"|"sentence"|"free", source: "user"|"auto" } — input-seeking; only user-initiated plays are analytic signal
-  | "review.self"; // { surface } — learner opens their own mistakes/DéjàRevu
+  | "review.self" // { surface } — learner opens their own mistakes/DéjàRevu
+  | "sync.error"; // { phase: "pull"|"push", message } — D4 diagnostic (2026-08-17): the progress doc could not be read/written; the teacher panel counts these
 
 export async function logEvent(
   type: EventType,
