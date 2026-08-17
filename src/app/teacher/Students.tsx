@@ -133,12 +133,10 @@ function StudentPanel({ learner, events, cached, onClose }: { learner: Learner; 
     }
     tutorRecent.sort((a, b) => (b.ts?.getTime() ?? 0) - (a.ts?.getTime() ?? 0));
     // ── Time on task, reconstructed ──────────────────────────────────────
-    // WHY: users/{uid}/sessions has two readers and NO writer — nothing in the
-    // codebase has created a session document since the writer was removed, so
-    // every session carries a real durationMs and a null activityId. The total
-    // was true; the per-activity breakdown read "(unlabelled)" for every row on
-    // every learner and could not be repaired by labelling, because there was
-    // nothing there to label (Dan, 2026-08-10). Logged as D6.
+    // WHY: users/{uid}/sessions had two readers and NO writer — nothing in the
+    // codebase created a session document since the old suite's writer went,
+    // so every session carried a null activityId (D6, Dan 2026-08-10). The
+    // readers are gone since 2026-08-17; this estimate is the one time source.
     //
     // page.view events DO carry a path and a timestamp, so dwell is the gap to
     // the learner's NEXT view. Two honest bounds:
@@ -237,20 +235,6 @@ function StudentPanel({ learner, events, cached, onClose }: { learner: Learner; 
     return [...m.values()].sort((a, b) => b.last - a.last);
   }, [detail]);
 
-  const sessStats = useMemo(() => {
-    if (!detail) return null;
-    const byActivity = new Map<string, { n: number; ms: number }>();
-    let totalMs = 0;
-    for (const s of detail.sessions) {
-      const key = normActivity(s.activityId);
-      let a = byActivity.get(key);
-      if (!a) byActivity.set(key, (a = { n: 0, ms: 0 }));
-      a.n += 1;
-      if (s.durationMs !== null) { a.ms += s.durationMs; totalMs += s.durationMs; }
-    }
-    return { totalMs, byActivity: [...byActivity.entries()].sort((a, b) => b[1].ms - a[1].ms) };
-  }, [detail]);
-
   const p = detail?.progress;
   const srs = p?.itemSrs ?? {};
   const srsIds = Object.keys(srs);
@@ -311,7 +295,7 @@ function StudentPanel({ learner, events, cached, onClose }: { learner: Learner; 
             <Kpi label="SIOs done" value={p?.doneSios?.length ?? 0} sub={`of ${SIOS.length}`} />
             <Kpi label="Badges" value={p?.badges?.length ?? 0} />
             <Kpi label="SRS items" value={srsIds.length} sub={`${srsDue} due now`} />
-            <Kpi label="Attempts" value={detail.attemptsCount ?? "—"} sub="audit log" />
+            <Kpi label="Answers" value={detail.responses.length} sub="recorded" />
             <Kpi
               label="Last sync"
               value={p?.updatedAt ? fmtWhen(new Date(p.updatedAt)) : "never"}
@@ -482,34 +466,22 @@ function StudentPanel({ learner, events, cached, onClose }: { learner: Learner; 
             <p className="mt-4 text-sm text-slate-500">No item-level responses recorded for this learner yet.</p>
           )}
 
-          {((sessStats && detail.sessions.length > 0) || trail.dwell.length > 0) && (
+          {trail.dwell.length > 0 && (
             <Section
               id="sp:time"
               title="Time on task"
-              meta={
-                sessStats && detail.sessions.length > 0
-                  ? `${detail.sessions.length} sessions · ${fmtDuration(sessStats.totalMs)}`
-                  : `~${fmtDuration(trail.dwellTotal)} estimated`
-              }
+              meta={`~${fmtDuration(trail.dwellTotal)} estimated`}
             >
-              {/* Session docs stopped being written at some point, so a learner
-                  can have page views and no sessions at all. The estimate still
-                  has something to say about them. */}
+              {/* Page-view dwell is the ONLY time source (D6 closed 2026-08-17:
+                  users/{uid}/sessions had no writer, so its reader is gone). */}
               <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <Kpi label="Sessions" value={detail.sessions.length} />
-                <Kpi label="Total time" value={sessStats && detail.sessions.length > 0 ? fmtDuration(sessStats.totalMs) : "—"} sub={sessStats && detail.sessions.length > 0 ? "measured" : "no session records"} />
                 <Kpi label="Est. from page views" value={fmtDuration(trail.dwellTotal)} sub={`${trail.dwell.length} activities`} />
               </div>
-              {/* The per-activity split comes from page-view dwell, NOT from the
-                  session docs: those carry a real durationMs and a null
-                  activityId, so this table read "(unlabelled)" for every row on
-                  every learner (D6 — session telemetry orphaned, 2026-08-10).
-                  The totals above are still the session docs, which are sound. */}
               {trail.dwell.length > 0 ? (
                 <>
                   <p className="mt-3 text-xs text-slate-500">
                     Estimated from page views — time between one view and the next, ignoring gaps over 30 minutes
-                    (tab left open). Session totals above are measured; this split is an estimate.
+                    (tab left open). An estimate, not a measurement.
                   </p>
                   <TableBox head={["Activity", "Views", "Est. time"]}>
                     {trail.dwell.map(([path, d]) => (

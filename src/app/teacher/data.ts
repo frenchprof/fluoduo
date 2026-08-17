@@ -2,8 +2,8 @@
  * Data layer for the teacher analytics dashboard. Everything here reads
  * Firestore collections the rules already grant admins: `events` (usage
  * telemetry), `leaderboard` (public progress mirror), `feedback` (bug
- * reports), and per-student docs under users/{uid} (progress blob, sessions,
- * responses, attempts). No collection-group queries — those would need a
+ * reports), and per-student docs under users/{uid} (progress blob,
+ * responses). No collection-group queries — those would need a
  * rules redeploy — so class-wide aggregates come from `events`, and the
  * deeper per-student stores are fetched one student at a time on drilldown.
  * Firestore is imported dynamically (usage.ts pattern): the bundle never
@@ -143,13 +143,11 @@ export type StudentDetail = {
     itemSrs?: Record<string, { due?: number; intervalDays?: number }>;
     updatedAt?: number;
   } | null;
-  sessions: {
-    activityId: string | null;
-    durationMs: number | null;
-    startedAt: number | null;
-    xp: number | null;
-    level: number | null;
-  }[];
+  // `sessions` and `attemptsCount` LEFT this shape on 2026-08-17 (D6 / D7):
+  // users/{uid}/sessions had two readers and no writer since the old suite
+  // (every activityId null), users/{uid}/attempts had a reader and never a
+  // writer. Time on task is the page-view dwell estimate; the answer count
+  // is `responses.length`.
   responses: {
     item: string;
     status: string;
@@ -159,7 +157,6 @@ export type StudentDetail = {
     activityId: string | null;
     ts: Date | null;
   }[];
-  attemptsCount: number | null;
 };
 
 export const SG_DAY_KEY = new Intl.DateTimeFormat("en-CA", {
@@ -361,7 +358,7 @@ export function buildRoster(events: Ev[], board: Map<string, BoardRow>, meta: Ro
 
 /** Fetch one person's stores. Aliased students have several uids — every
  *  store is fetched per-uid and combined (XP/gems add, SIOs/badges union,
- *  responses/sessions concatenate). */
+ *  responses concatenate). */
 export async function fetchStudentDetail(uids: string[]): Promise<StudentDetail> {
   const parts = await Promise.all(uids.map(fetchOneStudent));
   if (parts.length === 1) return parts[0];
@@ -377,43 +374,25 @@ export async function fetchStudentDetail(uids: string[]): Promise<StudentDetail>
       itemSrs: Object.assign({}, ...progresses.map((p) => p.itemSrs ?? {})),
       updatedAt: Math.max(...progresses.map((p) => p.updatedAt ?? 0)) || undefined,
     },
-    sessions: parts.flatMap((p) => p.sessions),
     responses: parts.flatMap((p) => p.responses).sort((a, b) => (b.ts?.getTime() ?? 0) - (a.ts?.getTime() ?? 0)),
-    attemptsCount: parts.some((p) => p.attemptsCount !== null)
-      ? parts.reduce((n, p) => n + (p.attemptsCount ?? 0), 0)
-      : null,
   };
 }
 
 async function fetchOneStudent(uid: string): Promise<StudentDetail> {
   if (FIXTURE) return (await import("./fixture")).fixtureDetail(uid);
-  const [{ getDoc, getDocs, getCountFromServer, doc, collection }, { db }] = await Promise.all([
+  const [{ getDoc, getDocs, doc, collection }, { db }] = await Promise.all([
     import("firebase/firestore"),
     import("@/lib/firebase/db"),
   ]);
-  const [progressSnap, sessionsSnap, responsesSnap, attemptsAgg] = await Promise.all([
+  const [progressSnap, responsesSnap] = await Promise.all([
     getDoc(doc(db, "users", uid, "app", "progress")).catch(() => null),
-    getDocs(collection(db, "users", uid, "sessions")).catch(() => null),
     getDocs(collection(db, "users", uid, "responses")).catch(() => null),
-    getCountFromServer(collection(db, "users", uid, "attempts")).catch(() => null),
   ]);
 
   const out: StudentDetail = {
     progress: progressSnap?.exists() ? (progressSnap.data() as StudentDetail["progress"]) : null,
-    sessions: [],
     responses: [],
-    attemptsCount: attemptsAgg ? attemptsAgg.data().count : null,
   };
-  sessionsSnap?.forEach((d) => {
-    const s = d.data() as Record<string, unknown>;
-    out.sessions.push({
-      activityId: str(s.activityId),
-      durationMs: num(s.durationMs),
-      startedAt: num(s.startedAt),
-      xp: num(s.xp),
-      level: num(s.level),
-    });
-  });
   responsesSnap?.forEach((d) => {
     const r = d.data() as Record<string, unknown> & { timestamp?: { toDate?: () => Date } };
     if (typeof r.item !== "string" || typeof r.status !== "string") return;
@@ -428,7 +407,6 @@ async function fetchOneStudent(uid: string): Promise<StudentDetail> {
     });
   });
   out.responses.sort((a, b) => (b.ts?.getTime() ?? 0) - (a.ts?.getTime() ?? 0));
-  out.sessions.sort((a, b) => (b.startedAt ?? 0) - (a.startedAt ?? 0));
   return out;
 }
 

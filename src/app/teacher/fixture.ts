@@ -50,7 +50,7 @@ function profile(i: number) {
 
 export function fixtureDetail(uid: string): StudentDetail {
   const i = FIXTURE_UIDS.indexOf(uid);
-  if (i < 0) return { progress: null, sessions: [], responses: [], attemptsCount: null };
+  if (i < 0) return { progress: null, responses: [] };
   const { r, reach, skill } = profile(i);
   const responses: StudentDetail["responses"] = [];
   const doneSios: string[] = [];
@@ -86,9 +86,7 @@ export function fixtureDetail(uid: string): StudentDetail {
   responses.sort((a, b) => (b.ts?.getTime() ?? 0) - (a.ts?.getTime() ?? 0));
   return {
     progress: { xp: 300 + i * 40, gems: 10 + i, streak: i % 5, lastActiveDay: null, doneSios, badges: [], itemSrs: {}, updatedAt: NOW },
-    sessions: [],
     responses,
-    attemptsCount: responses.length,
   };
 }
 

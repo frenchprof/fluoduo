@@ -10,7 +10,7 @@
  *   📄 Reports     four report cards, each a headline number + CSV export
  *   👣 Attendance  day × page → unique visitors with names
  *   🧑‍🎓 Students    roster → per-learner drilldown (progress economy, SRS,
- *                  sessions/time-on-task, item responses, event trail)
+ *                  time-on-task estimate, item responses, event trail)
  *   🕹️ Activities  games / decks / supplements / flashcard reviews
  *   🧪 Pretests    gap report: per item miss rates + top wrong picks
  *   💬 Feedback    the bug-report inbox

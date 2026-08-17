@@ -58,7 +58,6 @@ export default function MoiContent() {
   const [seg, setSeg] = useState<Seg>("fix");
   const [resp, setResp] = useState<Resp[] | null>(null);
   const [respState, setRespState] = useState<"loading" | "ready" | "signedout" | "error">("loading");
-  const [time, setTime] = useState<{ ms: number; n: number; byAct: [string, number][] } | null>(null);
   const [ledgerAcc, setLedgerAcc] = useState<HeatValues>({});
   const [ledgerTotals, setLedgerTotals] = useState<{ n: number; missed: number } | null>(null);
 
@@ -91,23 +90,8 @@ export default function MoiContent() {
         ]);
         const uid = user?.uid;
         if (!uid) { setRespState("signedout"); return; }
-        const [snap, sessSnap] = await Promise.all([
-          getDocs(collection(db, "users", uid, "responses")),
-          getDocs(collection(db, "users", uid, "sessions")).catch(() => null),
-        ]);
-        if (sessSnap) {
-          let ms = 0, n = 0;
-          const byAct = new Map<string, number>();
-          sessSnap.forEach((sd) => {
-            const x = sd.data() as { durationMs?: number; activityId?: string };
-            if (typeof x.durationMs === "number" && x.durationMs > 0) {
-              ms += x.durationMs; n += 1;
-              const k = String(x.activityId ?? "");
-              if (k) byAct.set(k, (byAct.get(k) ?? 0) + x.durationMs);
-            }
-          });
-          setTime({ ms, n, byAct: [...byAct.entries()].sort((a, b) => b[1] - a[1]) });
-        }
+        // Only `responses` — `sessions` had no writer (D6, closed 2026-08-17).
+        const snap = await getDocs(collection(db, "users", uid, "responses"));
         const rows: Resp[] = [];
         snap.forEach((d) => {
           const x = d.data() as { item?: string; status?: string; activityId?: string; timestamp?: { toMillis?: () => number }; givenAnswer?: unknown };
@@ -278,12 +262,6 @@ export default function MoiContent() {
 
       {seg === "history" && (
         <div className="mt-3">
-          {time && time.n > 0 && (
-            <p className="mb-2 text-xs font-bold" style={{ color: SOFT }}>
-              ⏱ {Math.round(time.ms / 60000)} min on task · {time.n} session{time.n === 1 ? "" : "s"}
-              {time.byAct.length > 0 && <> · {time.byAct.slice(0, 3).map(([k, v]) => `${describeActivity(k).label} ${Math.round(v / 60000)} min`).join(" · ")}</>}
-            </p>
-          )}
           {resp && resp.length > 0 ? (
             <Capped
               items={[...resp].sort((a, b) => b.ts - a.ts)}
