@@ -23,22 +23,12 @@ import { buildLadder, shownRungs } from "@/lib/help/ladder";
 import { SIOS } from "@/content/sios";
 import WordBank from "@/components/WordBank";
 import type { Collection, Item } from "@/lib/collections/schema";
+import { gradeAgainst, type Grade } from "@/lib/practice/cloze";
 
-function normalize(s: string) {
-  return s.toLowerCase().trim().replace(/[-–—]/g, " ").replace(/[.,!?;:'"«»()]/g, "").replace(/\s+/g, " ").trim();
-}
-function deaccent(s: string) {
-  return s.normalize("NFD").replace(/[̀-ͯ]/g, "");
-}
-type Grade = "perfect" | "good" | "wrong";
-function grade(typed: string, answer: string): Grade {
-  const t = normalize(typed);
-  const a = normalize(answer);
-  if (!t) return "wrong";
-  if (t === a) return "perfect";
-  if (deaccent(t) === deaccent(a)) return "good";
-  return "wrong";
-}
+// The private normalize/deaccent/grade trio (a byte-clone of cloze.ts) died
+// in the grading unification (2026-08-11) — THE grader lives in
+// lib/practice/cloze.ts and this drill now also honours item.alt, which the
+// schema had been warning was "not yet wired into other graders".
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -131,7 +121,13 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
 
   function check() {
     if (result !== null || !item) return;
-    const g = grade(value, answer);
+    // item.alt = alternative nouns; compose each with the article exactly
+    // like the main answer, so alts grade on equal footing (nat forms have
+    // no alts — the four forms ARE the answer set).
+    const accepted = natForm
+      ? [answer]
+      : [answer, ...(item.alt ?? []).map((a) => frFull(art, a))];
+    const g = gradeAgainst(value, accepted);
     setResult(g);
     setScore((s) => ({ ok: s.ok + (g !== "wrong" ? 1 : 0), total: s.total + 1 }));
     recordItemResult(item.id, g !== "wrong", undefined, `complete-it:${collectionId}`, {

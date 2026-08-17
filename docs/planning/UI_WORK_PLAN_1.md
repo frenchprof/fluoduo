@@ -230,7 +230,7 @@ Carried from the ledger. None of it is UI; all of it is why the data misleads.
 
 | | task | units |
 |---|---|---|
-| ☐ | 7 independent grading implementations → 1 | 2 |
+| ✅ | 7 independent grading implementations → 1 — `lib/practice/cloze.ts` is THE grader (curly-apostrophe fold, tiers, `gradeAgainst` alternates, accent-strict option); flip-it `judgePart` delegates, Complete It / Say It / Finale / SpecuLearn clones deleted, `verify-grading.py` executes the divergence table in CI | 2 |
 | ☐ | 4 definitions of "weak" → 1 | 1 |
 | ☐ | `sort(() => Math.random() - 0.5)` — a biased shuffle, ~20 sites | 1 |
 | ☐ | D6: `users/{uid}/sessions` — 2 readers, 0 writers, every `activityId` null | 1.5 |

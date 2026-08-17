@@ -11,6 +11,7 @@
 
 import type { Collection, Item } from "@/lib/collections/schema";
 import type { Bucket } from "@/lib/practice/buckets";
+import { gradeAgainst } from "@/lib/practice/cloze";
 
 /* ─────────────────────────── model ─────────────────────────── */
 
@@ -38,32 +39,13 @@ export function rowsOf(collection: Collection, items: Item[]): Row[] {
 
 /* ─────────────────────────── grading ─────────────────────────── */
 
-/** Forgiving compare: drop accents + apostrophes + case + extra spaces. */
-export function norm(s: string): string {
-  return s
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/['’]/g, " ")
-    .toLowerCase()
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-// Case-insensitive since 2026-07-19 (audit): the name always promised it,
-// but the function only forgave accents/apostrophes — so "fatigue" (a real
-// error) passed while "Fatigué" (phone auto-capitalisation) failed. That
-// inverts the forgiveness philosophy (effort counts, errors are never
-// punished — see progress.ts). Trade-off: proper-noun capitals (la France)
-// are no longer enforced here; grading capitals is a separate objective.
-export function normCase(s: string): string {
-  return s
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/['’]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
+// The private normalizers (norm, normCase) died in the grading unification
+// (2026-08-11): they mapped apostrophes to SPACE where every other drill
+// deleted them and had no hyphen or punctuation rule at all — so « l’eau »
+// passed here and failed Complete It, while « leau » and « dix sept » did
+// the reverse, on the same deck rows. judgePart keeps its name and its
+// one-judge-both-surfaces contract; the letters now grade in lib/practice/
+// cloze.ts like everywhere else. (norm was also dead — zero callers.)
 
 export type Part = { key: string; type: "text" | "article"; label?: string; correct: string; alt?: string[] };
 
@@ -85,12 +67,13 @@ export function partsFor(row: Row, isNat: boolean, hasArticles: boolean): Part[]
   return parts;
 }
 
-/** ONE judge for both surfaces: articles match exactly (∅ included),
- *  text parts accent/case-leniently against the answer and its alts. */
+/** ONE judge for both surfaces: articles match exactly (∅ included), text
+ *  parts through THE grader (cloze.ts) against the answer and its alts —
+ *  accent/case/apostrophe/hyphen-lenient, same verdict as every drill. */
 export function judgePart(p: Part, val: string | undefined): boolean {
   return p.type === "article"
     ? val === p.correct
-    : [p.correct, ...(p.alt ?? [])].some((c) => normCase(val ?? "") === normCase(c));
+    : gradeAgainst(val ?? "", [p.correct, ...(p.alt ?? [])]) !== "wrong";
 }
 
 export const ART_LABEL: Record<string, string> = {

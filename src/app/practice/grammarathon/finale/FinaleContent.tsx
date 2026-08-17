@@ -24,7 +24,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { FINALE_BANK, FINALE_SIOS, type FinaleItem } from "@/content/finale";
 import { SIOS } from "@/content/sios";
 import { CURATED } from "@/content/collections";
-import { gradeAnswer } from "@/lib/practice/cloze";
+import { deaccent, gradeAgainst, normalize } from "@/lib/practice/cloze";
 import { loadProgress, recordItemResult } from "@/lib/progress";
 import { buildLadder, shownRungs } from "@/lib/help/ladder";
 import { buildEvidence } from "@/lib/evidence";
@@ -104,9 +104,12 @@ function drawDaily(seedKey: string | number): string[] {
   return ids;
 }
 
-const normA = (s: string) => (s || "").toLowerCase().replace(/[’']/g, "").replace(/-/g, " ").replace(/\s+/g, " ").trim();
-const normD = (s: string) => (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-  .replace(/[’']/g, "").replace(/-/g, " ").replace(/\s+/g, " ").trim();
+// normA/normD died in the grading unification (2026-08-11): the Finale was
+// the one paper grading itself two ways — a strict item was accent- AND
+// punctuation-sensitive, a normal item neither. Both paths now run THE
+// grader (cloze.ts); strictness is exactly the accents option, nothing else
+// (où vs ou stays the tested knowledge; a trailing period is noise on
+// strict items too, as everywhere).
 
 type Verdict = { ok: boolean; others: string[]; expected: string[] };
 
@@ -144,10 +147,11 @@ export default function FinaleContent() {
 
   function grade(q: FinaleItem) {
     const given = (typed[q.id] ?? "").trim();
-    const dd = q.strict ? normA : normD;
-    const ok = given !== "" && (q.strict
-      ? q.a.some((a) => normA(a) === normA(given))
-      : q.a.some((a) => gradeAnswer(given, a) !== "wrong"));
+    const opts = q.strict ? ({ accents: "strict" } as const) : undefined;
+    const ok = given !== "" && gradeAgainst(given, q.a, opts) !== "wrong";
+    // De-duplicate the "other accepted forms" list with the same transform
+    // that grades them (accent-collapsed unless the item is accent-strict).
+    const dd = (s: string) => (q.strict ? normalize(s) : deaccent(normalize(s)));
     const forms: string[] = [];
     for (const x of q.a) if (!forms.some((f) => dd(f) === dd(x))) forms.push(x);
     // First ATTEMPT is what pays and feeds the SRS — honest measurement;

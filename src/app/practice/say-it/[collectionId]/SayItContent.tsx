@@ -11,6 +11,7 @@ import { logEvent } from "@/lib/firebase/usage";
 import DrillShell, { drillExitHref } from "@/components/DrillShell";
 import { practiceItems } from "@/lib/collections/display";
 import { recordItemResult } from "@/lib/progress";
+import { deaccent, normalize } from "@/lib/practice/cloze";
 import type { Collection, Item } from "@/lib/collections/schema";
 
 type Phase = "idle" | "listening" | "result";
@@ -37,20 +38,10 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-function normalize(s: string) {
-  return s
-    .toLowerCase()
-    .trim()
-    // hyphens → space so "dix-sept" matches a spoken "dix sept"
-    .replace(/[-–—]/g, " ")
-    .replace(/[.,!?;:'"«»()]/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function deaccent(s: string) {
-  return s.normalize("NFD").replace(/[̀-ͯ]/g, "");
-}
+// The private normalize/deaccent (byte-clones of cloze.ts) died in the
+// grading unification (2026-08-11) — the transforms come from THE grader in
+// lib/practice/cloze.ts. Only the SPEECH policy below stays local: it sits
+// on top of the shared normalizer, never beside it.
 
 /** SPEECH-only tolerance: French silent endings make "il s'appelle" and
  *  "ils s'appellent" perfect homophones — the recognizer picks a spelling,
