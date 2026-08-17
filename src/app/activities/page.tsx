@@ -26,7 +26,7 @@
  * tally recordResponse writes).
  */
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import CahierShell, { withActive } from "@/components/CahierShell";
 import MyDecks from "@/app/MyDecks";
 import { siteTabs, UNIT_ACCENTS } from "@/components/siteTabs";
@@ -35,20 +35,20 @@ import { SIOS, UNIT_META, type Sio } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import { nextSioId } from "@/lib/continuer";
 import { accuracyFor, LEDGER_EVENT, loadLedger, tierToken, type Ledger } from "@/lib/activityLedger";
-import { cellHref, chipActivities, gapCells, isChipKey, lessonAuthored, rowButtonActivities, siosOfUnit, type ChipKey } from "@/lib/indexMatrix";
+import { cellHref, chipActivities, gapCells, isFocusKey, lessonAuthored, rowButtonActivities, siosOfUnit, type FocusKey } from "@/lib/indexMatrix";
 import { isSioDone, loadProgress, type Progress } from "@/lib/progress";
 import { searchDecks } from "@/lib/search";
 
 const UNITS = [0, 1, 2, 3, 4];
 
-type UrlState = { activity: ChipKey; unit: number; gaps: boolean };
+type UrlState = { activity: FocusKey; unit: number; gaps: boolean };
 
 function readUrl(fallbackUnit: number): UrlState {
   const q = new URLSearchParams(window.location.search);
   const a = q.get("activity");
   const u = q.get("unit");
   return {
-    activity: isChipKey(a) ? a : "speculearn",
+    activity: isFocusKey(a) ? a : "speculearn",
     unit: u !== null && /^[0-4]$/.test(u) ? Number(u) : fallbackUnit,
     gaps: q.get("gaps") === "1",
   };
@@ -62,40 +62,41 @@ function writeUrl(s: UrlState) {
   window.history.replaceState(null, "", `${window.location.pathname}?${q}`);
 }
 
+// The page's external state — URL, progress, ledger — as ONE subscription
+// (useSyncExternalStore: the sanctioned way to read browser state without a
+// set-state-in-effect). The snapshot is a version number that bumps on
+// popstate, a progress save, a ledger write or our own replaceState; the
+// server snapshot is -1, which renders the empty shell until hydration.
+const URL_EVENT = "fluolingo:index-url";
+let version = 0;
+function subscribe(cb: () => void) {
+  const bump = () => { version += 1; cb(); };
+  const evs = ["popstate", "fluolingo:progress-updated", LEDGER_EVENT, URL_EVENT];
+  evs.forEach((e) => window.addEventListener(e, bump));
+  return () => evs.forEach((e) => window.removeEventListener(e, bump));
+}
+
 export default function ActivitiesIndexPage() {
-  const [progress, setProgress] = useState<Progress | null>(null);
-  const [ledger, setLedger] = useState<Ledger>({});
-  const [url, setUrl] = useState<UrlState | null>(null);
+  const tick = useSyncExternalStore(subscribe, () => version, () => -1);
+  const mounted = tick >= 0;
   const [q, setQ] = useState("");
 
   // Progress + ledger + URL, on the client only (static export). The default
   // unit is where the learner is on the path — the same stop Home's
   // ▶ Continue points at — so the Index opens on their ten rows.
-  useEffect(() => {
+  const { progress, ledger, url } = useMemo(() => {
+    if (!mounted) return { progress: null as Progress | null, ledger: {} as Ledger, url: null as UrlState | null };
     const p = loadProgress();
-    setProgress(p);
-    setLedger(loadLedger());
     const next = SIOS.find((s) => s.id === nextSioId(p));
-    const read = () => setUrl(readUrl(next?.unit ?? 0));
-    read();
-    const refresh = () => { setProgress(loadProgress()); setLedger(loadLedger()); };
-    window.addEventListener("popstate", read);
-    window.addEventListener("fluolingo:progress-updated", refresh);
-    window.addEventListener(LEDGER_EVENT, refresh);
-    return () => {
-      window.removeEventListener("popstate", read);
-      window.removeEventListener("fluolingo:progress-updated", refresh);
-      window.removeEventListener(LEDGER_EVENT, refresh);
-    };
-  }, []);
+    return { progress: p, ledger: loadLedger(), url: readUrl(next?.unit ?? 0) };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- tick IS the dependency: it names the external state
+  }, [mounted, tick]);
 
-  const set = useCallback((patch: Partial<UrlState>) => {
-    setUrl((prev) => {
-      const next = { ...(prev ?? { activity: "speculearn" as ChipKey, unit: 0, gaps: false }), ...patch };
-      writeUrl(next);
-      return next;
-    });
-  }, []);
+  const set = (patch: Partial<UrlState>) => {
+    if (!url) return;
+    writeUrl({ ...url, ...patch });
+    window.dispatchEvent(new Event(URL_EVENT));
+  };
 
   const chips = useMemo(() => chipActivities(), []);
   // On a phone the rail scrolls; keep the selected chip in view (a deep link
@@ -165,7 +166,7 @@ export default function ActivitiesIndexPage() {
                     role="tab"
                     aria-selected={on}
                     title={a.blurb}
-                    onClick={() => set({ activity: a.key as ChipKey })}
+                    onClick={() => set({ activity: a.key as FocusKey })}
                     className="index-chip fluo-mono shrink-0 whitespace-nowrap rounded-full border-2 px-3 py-1.5 text-xs font-black leading-none transition"
                     style={{
                       borderColor: on ? a.hue : "var(--cahier-line-strong)",
@@ -261,14 +262,18 @@ export default function ActivitiesIndexPage() {
                     <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
                       {buttons.map((b) => {
                         const h = cellHref(b.key, sio);
+                        // `?activity=flip` (the 4Mémoire flap) focuses a button:
+                        // it wears its hue and the cell reports that activity.
+                        const on = b.key === url.activity;
                         return h ? (
                           <Link
                             key={b.key}
                             href={h}
                             aria-label={`${b.name} — ${sio.topic}`}
+                            aria-current={on ? "true" : undefined}
                             title={b.name}
                             className="index-btn flex h-7 w-7 items-center justify-center rounded-lg border-2 text-sm no-underline transition hover:-translate-y-0.5 sm:h-8 sm:w-8 sm:text-base"
-                            style={{ borderColor: "var(--cahier-line-strong)", background: "var(--cahier-paper-raised)" }}
+                            style={{ borderColor: on ? b.hue : "var(--cahier-line-strong)", background: on ? `color-mix(in srgb, ${b.hue} 22%, var(--cahier-paper-raised))` : "var(--cahier-paper-raised)" }}
                           >
                             <span aria-hidden>{b.emoji}</span>
                           </Link>

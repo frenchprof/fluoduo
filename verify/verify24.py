@@ -79,7 +79,7 @@ for param in ('q.get("activity")', 'q.get("unit")', 'q.get("gaps")'):
     check(param in pcode, f"URL state read: {param}", f"URL state not read: {param}")
 check("history.replaceState" in pcode, "URL state written with replaceState",
       "state is not written back to the URL")
-check('addEventListener("popstate"' in pcode, "Back/Forward re-read the URL",
+check('"popstate"' in pcode and "useSyncExternalStore" in pcode, "Back/Forward re-read the URL",
       "no popstate listener — Back does not move the Index")
 for stale in ("HEAD_TITLES", "HEAD_CHIPS", "cellsFor(", "<details", "minWidth: 560"):
     check(stale not in pcode, f"old matrix artefact gone: {stale}",

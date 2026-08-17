@@ -41,8 +41,17 @@ export function rowButtonActivities(): Activity[] {
   return ROW_BUTTON_KEYS.map((k) => activity(k)).filter((a): a is Activity => !!a);
 }
 
+export type ButtonKey = (typeof ROW_BUTTON_KEYS)[number];
+/** Anything the URL may focus: a chip, or one of the three row buttons
+ *  (`?activity=flip` from the 4Mémoire flap) — the cell then reports that
+ *  activity and its button wears the hue. */
+export type FocusKey = ChipKey | ButtonKey;
+
 export function isChipKey(k: string | null | undefined): k is ChipKey {
   return !!k && (CHIP_KEYS as readonly string[]).includes(k);
+}
+export function isFocusKey(k: string | null | undefined): k is FocusKey {
+  return isChipKey(k) || (!!k && (ROW_BUTTON_KEYS as readonly string[]).includes(k));
 }
 
 /** deckActivityTabs keys differ from registry keys in two places. */
