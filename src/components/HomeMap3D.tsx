@@ -105,15 +105,18 @@ export default function HomeMap3D({
   accent,
   focusUnit,
   onOpenUnit,
+  onOpenSio,
 }: {
   progress: Progress;
   activeId?: string;
   accent?: string;
   focusUnit?: number;
   onOpenUnit?: (unit: number) => void;
+  /** Tapping a stop — the parent opens that SIO (in the unit list under the map). */
+  onOpenSio?: (unit: number, id: string) => void;
 }) {
   const boxRef = useRef<HTMLDivElement | null>(null);
-  const activeRef = useRef<HTMLAnchorElement | null>(null);
+  const activeRef = useRef<HTMLButtonElement | null>(null);
   const [w, setW] = useState(0);
   const [pin, setPin] = useState<"visible" | "above" | "below">("visible");
 
@@ -421,9 +424,10 @@ export default function HomeMap3D({
                           </span>
                         </span>
                       )}
-                      <Link
+                      <button
+                        type="button"
                         ref={active ? activeRef : undefined}
-                        href={`/unit/${st.unit}#${st.id}`}
+                        onClick={() => onOpenSio?.(st.unit, st.id)}
                         data-pop-y={Math.round(cy)}
                         title={`${st.id} · ${st.topic} (${KIND_LABEL[kind]}${second ? ` + ${KIND_LABEL[second]}` : ""})`}
                         aria-label={`${st.id} · ${st.topic} (${KIND_LABEL[kind]})${active ? " — continue here" : ""}`}
@@ -461,7 +465,7 @@ export default function HomeMap3D({
                             🚩
                           </span>
                         )}
-                      </Link>
+                      </button>
                       <span
                         aria-hidden
                         className="pointer-events-none absolute left-1/2 top-full mt-1.5 w-[96px] -translate-x-1/2 truncate text-center text-[10px] font-bold leading-none"

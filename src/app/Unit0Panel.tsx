@@ -41,7 +41,7 @@ function shuffle<T>(arr: T[]): T[] {
   return out;
 }
 
-export default function Unit0Panel() {
+export default function Unit0Panel({ openSioId, onSioClosed }: { openSioId?: string | null; onSioClosed?: () => void } = {}) {
   // (The forceOpen prop died with patch 22 — no route pre-opens this popup
   // any more; the lesson URLs render the full-screen pager instead.)
   const [openId, setOpenId] = useState<string | null>(null);
@@ -56,6 +56,10 @@ export default function Unit0Panel() {
     if (hash && UNIT0_SIOS.some((s) => s.id === hash)) setOpenId(hash);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  // Home's map taps a Unit-0 stop after mount (patch 25).
+  useEffect(() => {
+    if (openSioId && UNIT0_SIOS.some((s) => s.id === openSioId)) setOpenId(openSioId);
+  }, [openSioId]);
 
   // The pink "Unité 0" header + done-counter is rendered by SioHub's collapse
   // header (same as Units 1–4); this panel is just the tile grid — no second
@@ -90,7 +94,10 @@ export default function Unit0Panel() {
       {openSio && (
         <SioModal
           sio={openSio}
-          onClose={() => setOpenId(null)}
+          onClose={() => {
+            setOpenId(null);
+            onSioClosed?.();
+          }}
           deck={openSio.collectionId ? CURATED.find((c) => c.id === openSio.collectionId) : undefined}
           tabs={popupActivityTabs(
             openSio.collectionId ? CURATED.find((c) => c.id === openSio.collectionId) : undefined,

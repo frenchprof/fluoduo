@@ -11,12 +11,14 @@
  * in localStorage under `fluo.homeMapView`.
  */
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import GuideSplash from "@/components/GuideSplash";
 import RankBadge from "@/components/RankBadge";
 import HomeMap from "@/components/HomeMap";
 import HomeMap3D from "@/components/HomeMap3D";
-import { SIOS } from "@/content/sios";
+import UnitSection from "./UnitSection";
+import { CHAPTERS } from "@/content/chapters";
+import { SIOS, UNIT_META } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
 import { equippedAccent, levelForXp, xpMultiplier } from "@/lib/economy";
@@ -71,6 +73,12 @@ export default function HomeDashboard() {
   const [qgOpen, setQgOpen] = useState(false);
   // 2D ⇄ 3D map view, remembered per browser.
   const [mapView, setMapView] = useState<"2d" | "3d">("2d");
+  // The unit whose SIO list is open under the map (patch 25: /unit/N is a
+  // deep link into Home — `/?unit=N#SIO-0XX` lands here, scrolls the map to
+  // that region band and shows the unit's list; a stop tap opens its SIO).
+  const [openUnit, setOpenUnit] = useState<number | null>(null);
+  const [openSioId, setOpenSioId] = useState<string | null>(null);
+  const mapRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const refresh = () => {
@@ -85,6 +93,18 @@ export default function HomeDashboard() {
     } catch {
       // storage blocked → 2D
     }
+    // Deep link: /?unit=N (from the old /unit/N page) and/or #SIO-0XX.
+    const readUrl = () => {
+      const q = new URLSearchParams(window.location.search).get("unit");
+      const hash = window.location.hash.replace("#", "");
+      const sio = SIOS.find((s) => s.id === hash);
+      const u = sio ? sio.unit : q !== null && /^[0-4]$/.test(q) ? Number(q) : null;
+      if (u !== null) setOpenUnit(u);
+      if (sio) setOpenSioId(sio.id);
+    };
+    readUrl();
+    window.addEventListener("hashchange", readUrl);
+    window.addEventListener("popstate", readUrl);
 
     // The letter-wave + hand-written byline now runs ~3.5 s (compacted from
     // the original 5.5 s when Dan brought it back, 2026-08-11). Play the
@@ -103,8 +123,36 @@ export default function HomeDashboard() {
     }
     return () => {
       window.removeEventListener("fluolingo:progress-updated", refresh);
+      window.removeEventListener("hashchange", readUrl);
+      window.removeEventListener("popstate", readUrl);
     };
   }, []);
+
+  // A deep-linked unit brings the MAP to the top of the screen (its box
+  // lands on that region band; the unit's list follows right under it).
+  useEffect(() => {
+    if (openUnit === null || openSioId) return; // a stop tap opens a modal — no scroll needed
+    mapRef.current?.scrollIntoView({ block: "start", behavior: "smooth" });
+  }, [openUnit, openSioId]);
+
+  const openSio = (unit: number, id: string) => {
+    setOpenUnit(unit);
+    setOpenSioId(id);
+    try {
+      window.history.replaceState(null, "", `/?unit=${unit}#${id}`);
+    } catch {
+      // fine — the modal still opens
+    }
+  };
+  const showUnit = (unit: number) => {
+    setOpenSioId(null);
+    setOpenUnit(unit);
+    try {
+      window.history.replaceState(null, "", `/?unit=${unit}`);
+    } catch {
+      // fine
+    }
+  };
 
   // "Continuer" = the first not-done goal AFTER the furthest « done » (Dan,
   // 2026-07-08: a learner who marked a later step done continues from there).
@@ -288,7 +336,7 @@ export default function HomeDashboard() {
       )}
 
       {/* 2D · 3D — a small segmented control; the map below follows. */}
-      <div className="mb-2 flex items-center justify-end">
+      <div ref={mapRef} className="mb-2 flex scroll-mt-3 items-center justify-end">
         <div role="group" aria-label="Map view" className="fluo-mono flex overflow-hidden rounded-lg border-2 text-[11px] font-black" style={{ borderColor: "var(--cahier-ink)" }}>
           {(["2d", "3d"] as const).map((v) => (
             <button
@@ -315,9 +363,65 @@ export default function HomeDashboard() {
         </div>
       </div>
       {mapView === "3d" ? (
-        <HomeMap3D progress={progress} activeId={activeId} accent={accent} />
+        <HomeMap3D progress={progress} activeId={activeId} accent={accent} focusUnit={openUnit ?? undefined} onOpenUnit={showUnit} onOpenSio={openSio} />
       ) : (
-        <HomeMap progress={progress} activeId={activeId} accent={accent} />
+        <HomeMap progress={progress} activeId={activeId} accent={accent} focusUnit={openUnit ?? undefined} onOpenUnit={showUnit} onOpenSio={openSio} />
+      )}
+
+      {/* The unit's SIO list, inline under the map — what the old /unit/N
+          page showed (chapter card + UnitSection + the next-chapter tease).
+          Opens from a region pill, a unit chip, a stop, or the deep link. */}
+      {openUnit !== null && (
+        <div id={`unit-list-${openUnit}`} className={`fluo-h-${openUnit % 6} mt-6 scroll-mt-4`}>
+          <div className="mb-3 flex items-start gap-2 rounded-2xl border-2 px-4 py-3" style={{ borderColor: "var(--fluo-card-accent)", background: "var(--fluo-card-tint)" }}>
+            <div className="min-w-0 flex-1">
+              <p lang="fr" className="fluo-serif text-xl font-black text-[color:var(--fluo-ink)]">
+                {UNIT_META[openUnit]?.emoji} {CHAPTERS[openUnit]?.scenario}
+              </p>
+              <p lang="fr" className="text-sm font-bold text-[color:var(--fluo-ink)]/70">{CHAPTERS[openUnit]?.tagline}</p>
+            </div>
+            <button
+              type="button"
+              aria-label="Close unit"
+              onClick={() => {
+                setOpenUnit(null);
+                setOpenSioId(null);
+                try {
+                  window.history.replaceState(null, "", "/");
+                } catch {
+                  // fine
+                }
+              }}
+              className="fluo-mono rounded-lg border-2 px-2 py-0.5 text-xs font-black text-[color:var(--fluo-ink)]"
+              style={{ borderColor: "var(--fluo-card-accent)", background: "var(--fluo-card)" }}
+            >
+              ✕
+            </button>
+          </div>
+          <UnitSection
+            key={openUnit}
+            unit={openUnit}
+            openSioId={openSioId}
+            onSioClosed={() => {
+              setOpenSioId(null);
+              try {
+                window.history.replaceState(null, "", `/?unit=${openUnit}`);
+              } catch {
+                // fine
+              }
+            }}
+          />
+          {CHAPTERS[openUnit]?.cliffhanger && openUnit < 4 && (
+            <button
+              type="button"
+              onClick={() => showUnit(openUnit + 1)}
+              className="mt-4 block w-full rounded-2xl border-2 border-dashed px-4 py-3 text-left text-sm font-bold text-[color:var(--fluo-ink)] transition hover:-translate-y-0.5"
+              style={{ borderColor: "var(--fluo-card-accent)", background: "var(--fluo-card-tint)" }}
+            >
+              <span lang="fr">👀 {CHAPTERS[openUnit].cliffhanger}</span>
+            </button>
+          )}
+        </div>
       )}
     </>
   );

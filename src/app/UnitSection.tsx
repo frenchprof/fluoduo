@@ -8,8 +8,9 @@
  * however many SIOs fall under that group, NOT a fixed zigzag.
  *
  * Clicking a circle opens the shared SioModal popup (pretest inline, activity
- * flaps). Deep links work: /unit/2#SIO-023 opens that SIO's popup on mount —
- * the home learning path links here that way.
+ * flaps). Deep links work: /#SIO-023 (or the legacy /unit/2#SIO-023, which
+ * redirects) opens that SIO's popup on mount; Home's map passes `openSioId`
+ * for taps after mount (patch 25: the unit page is a deep link into Home).
  *
  * Node states, backed by src/lib/progress.ts: done (self-marked) or active
  * (the single earliest not-done SIO site-wide — shown only when it falls in
@@ -37,7 +38,16 @@ function deckAndPretestFor(sio: Sio) {
   return { deck, pretestHref, pretestId: pretest?.id ?? null };
 }
 
-export default function UnitSection({ unit }: { unit: number }) {
+export default function UnitSection({
+  unit,
+  openSioId,
+  onSioClosed,
+}: {
+  unit: number;
+  /** Home's map: open this SIO's popup (patch 25); `onSioClosed` clears it. */
+  openSioId?: string | null;
+  onSioClosed?: () => void;
+}) {
   // (The forceOpen prop died with patch 22: the /lessons/* URLs render the
   // full-screen pager now, so no route needs the popup pre-opened for it.)
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
@@ -66,6 +76,13 @@ export default function UnitSection({ unit }: { unit: number }) {
     return () => window.removeEventListener("fluolingo:progress-updated", refresh);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unit]);
+
+  // Home's map taps a stop → open that SIO here without a navigation
+  // (patch 25: /unit/N is a deep link into Home now, the map is the page).
+  useEffect(() => {
+    if (unit !== 0 && openSioId && sios.some((s) => s.id === openSioId)) setOpenId(openSioId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openSioId, unit]);
 
   function toggle(key: string) {
     setCollapsed((prev) => {
@@ -104,7 +121,7 @@ export default function UnitSection({ unit }: { unit: number }) {
       </div>
 
       {unit === 0 ? (
-        <Unit0Panel />
+        <Unit0Panel openSioId={openSioId} onSioClosed={onSioClosed} />
       ) : (
         <div className="space-y-5">
           {groups.map((group) => {
@@ -158,7 +175,10 @@ export default function UnitSection({ unit }: { unit: number }) {
         return (
           <SioModal
             sio={openSio}
-            onClose={() => setOpenId(null)}
+            onClose={() => {
+              setOpenId(null);
+              onSioClosed?.();
+            }}
             deck={deck}
             tabs={
               openSio.isProduction

@@ -198,6 +198,7 @@ export default function HomeMap({
   accent,
   focusUnit,
   onOpenUnit,
+  onOpenSio,
 }: {
   progress: Progress;
   activeId?: string;
@@ -207,6 +208,8 @@ export default function HomeMap({
   focusUnit?: number;
   /** Tapping a region pill / unit chip — the parent shows that unit's list. */
   onOpenUnit?: (unit: number) => void;
+  /** Tapping a stop — the parent opens that SIO (in the unit list under the map). */
+  onOpenSio?: (unit: number, id: string) => void;
 }) {
   const boxRef = useRef<HTMLDivElement | null>(null);
   const [boxW, setBoxW] = useState(0);
@@ -430,8 +433,9 @@ export default function HomeMap({
               const flag = n.id === CLASS_FLAG_SIO;
               return (
                 <div key={n.id} className="absolute z-[2] flex flex-col items-center" style={{ left: n.x, top: n.y, width: COL_W }}>
-                  <Link
-                    href={`/unit/${n.unit}#${n.id}`}
+                  <button
+                    type="button"
+                    onClick={() => onOpenSio?.(n.unit, n.id)}
                     title={`${n.id} · ${n.topic} (${KIND_LABEL[kind]})`}
                     aria-label={`${n.id} · ${n.topic} (${KIND_LABEL[kind]})${active ? " — continue here" : ""}`}
                     aria-current={active ? "step" : undefined}
@@ -458,7 +462,7 @@ export default function HomeMap({
                         🚩
                       </span>
                     )}
-                  </Link>
+                  </button>
                   {hasLabels && (
                     <span aria-hidden className="mt-1 max-w-full truncate text-center text-[10px] font-bold leading-tight" style={{ color: "var(--cahier-ink-soft)" }}>
                       {n.short}
