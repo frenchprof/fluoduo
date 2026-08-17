@@ -164,11 +164,14 @@ check("setSelected" in specu and '"Check"' in specu,
 
 # iComplete gains the help ladder it never had (its row's second half): the
 # same buildLadder/shownRungs pair GramMarathon uses, hints recorded as
-# evidence (hintsTaken) like everywhere else.
+# evidence (hintsTaken) like everywhere else. Track D (2026-08-17) replaced
+# that pair with ONE state machine — useHelpLadder + hintsFor — whose hook
+# records hintsTaken/assistance itself (verify28 checks the recording).
 icomplete = strip_comments(read(CONTENTS["iComplete"]))
-check("buildLadder" in icomplete and "shownRungs" in icomplete and "hintsTaken" in icomplete,
+check(("buildLadder" in icomplete and "shownRungs" in icomplete and "hintsTaken" in icomplete)
+      or ("useHelpLadder(" in icomplete and "hintsFor(" in icomplete and "ladder.attempt(" in icomplete),
       "iComplete has the help ladder, and hints are recorded as evidence",
-      "iComplete still has no help ladder (buildLadder/shownRungs/hintsTaken)")
+      "iComplete still has no help ladder (buildLadder/shownRungs/hintsTaken or useHelpLadder/hintsFor)")
 
 # Word-bank tiles below sm: the typed drills keep their <input> for sm-and-up
 # and render tappable chips beneath it — one `value`, either surface.
@@ -196,7 +199,9 @@ check("CahierShell" not in flip and "CahierFrame" not in flip,
 check('"✓ I know it"' in flip and '"↺ To review"' in flip and '"Flip"' in flip,
       "4Mémoire study mode self-marks in the shell footer",
       "FlipItContent's study CTAs (Flip / I know it / To review) are missing")
-check('"Check"' in flip and '"answer.reveal"' in flip,
+# Track D: the reveal moved into the ladder's ? control — the hook logs
+# answer.reveal and records the evidence, so the drill itself need not.
+check('"Check"' in flip and ('"answer.reveal"' in flip or "useHelpLadder(" in flip),
       "4Mémoire test mode commits via Check; reveals are recorded as evidence",
       "FlipItContent's test mode lacks Check or the answer.reveal event")
 check("WordBank" in flip and 'className="sm:hidden"' in flip and "hidden w-full sm:block" in flip,

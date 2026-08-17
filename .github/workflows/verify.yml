@@ -92,3 +92,6 @@ jobs:
 
       - name: Loose bugs + data-truth — deck gates/empty state/tokens, /sio redirect, one weak, one shuffle, D6/D7/D9/D10/D11/D4, board identity
         run: python3 verify/verify27-bugs.py
+
+      - name: Track D — the help ladder in DrillShell (machine + eval cases executed, every drill wired, evidence, ReVue hook, feedback function + fallback)
+        run: python3 verify/verify28-trackd.py
