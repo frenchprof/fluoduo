@@ -87,7 +87,7 @@ const PROFANITY = /\b(fuck|shit|merde|putain|connard|salope|bitch|asshole|con)\b
 // to tell "I am a student" from « je suis étudiant » without a dictionary.
 const ENGLISH = /\b(the|i am|i'm|is|are|and|my|you|have|has|this|that|it's|its|of|to)\b/i;
 const FRENCH_MARK = /\b(je|tu|il|elle|nous|vous|ils|elles|suis|es|est|sommes|êtes|sont|le|la|les|un|une|des|du|de|et|à|au|aux|c'est|il y a|j'ai|ne|pas)\b|[àâçéèêëîïôûùüÿœ]/i;
-const ELISION = /\b(je|le|la|de|ne|que|me|te|se)\s+([aeiouhâàéèêëîïôûù])/i;
+const ELISION = /\b(je|le|la|de|ne|que|me|te|se)\s+([aeiouhâàéèêëîïôûù][^\s.,!?;:]*)/i;
 
 function wordsOf(s: string): string[] {
   return normalize(s).split(" ").filter(Boolean);
@@ -155,10 +155,12 @@ export function ruleFeedback(req: FeedbackRequest): Feedback {
   const overlap = mw.length ? shared / mw.length : 0;
 
   // Elision: « je aime » → « j'aime ».
+  // Only when the model actually elides (j' / l' / d'…) — otherwise « je es »
+  // is a verb slip, not an elision one.
   const el = ELISION.exec(answer);
-  if (el) {
+  if (el && model.toLowerCase().replace(/[’‘]/g, "'").includes(`${el[1][0].toLowerCase()}'`)) {
     const w = el[1].toLowerCase();
-    errors.push({ span: el[0], kind: "elision", fix: `${w[0]}'${el[2]}`, why: `« ${w} » drops its vowel before a vowel sound.` });
+    errors.push({ span: el[0], kind: "elision", fix: `${w[0]}'${el[2]}`, why: `« ${w} » drops its vowel before a vowel sound: « ${w[0]}'${el[2]} ».` });
   }
   // Register: tu-form where the model uses vous (or the reverse).
   const tuA = /\b(tu|t'|ton|ta|tes)\b/i.test(answer), vousM = /\bvous\b/i.test(model);
