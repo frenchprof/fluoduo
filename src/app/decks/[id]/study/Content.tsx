@@ -17,17 +17,9 @@ const DIR_KEY = "fluolingo.studyDir.v1";
 
 function StudyPageInner({ id }: { id: string }) {
   const [collection, setCollection] = useState<Collection | null | undefined>(undefined);
-  const router = useRouter();
 
   useEffect(() => {
     let cancelled = false;
-    // Same redirect as DeckContent.tsx's browser (Dan, 2026-08-02 Decks→Flip
-    // It merge) — curated flashcards are a strict subset of Flip It's Cards
-    // view, which also has notes/SRS/audio this runner never had.
-    if (CURATED.some((c) => c.id === id)) {
-      router.replace(`/practice/flip-it/${id}`);
-      return;
-    }
     (async () => {
       try {
         const col = await getCollection(id);
@@ -39,7 +31,7 @@ function StudyPageInner({ id }: { id: string }) {
     return () => {
       cancelled = true;
     };
-  }, [id, router]);
+  }, [id]);
 
   return (
     <CahierShell tabs={withActive(deckTabs(id), "study")} active="study">
@@ -202,7 +194,21 @@ function ProgressBar({ i, total }: { i: number; total: number }) {
 // Sign-in wall (Dan, 2026-07-13: close ALL anonymous gaps — these deck pages
 // predate the wall). Gated HERE so every route that renders this content
 // (static /decks/[id]/… and query-param /decks/…?id=) is covered at once.
+/** Curated ids only ever redirected (Dan, 2026-08-02 Decks→Flip It merge:
+ *  curated flashcards are a strict subset of 4Mémoire's Cards view). That
+ *  redirect used to sit INSIDE the AuthGate, so a signed-out learner was
+ *  asked to sign in to reach a page whose only job was to send them on —
+ *  and the drill it lands on has its own gate. Redirect first, gate after. */
+function CuratedRedirect({ id }: { id: string }) {
+  const router = useRouter();
+  useEffect(() => {
+    router.replace(`/practice/flip-it/${id}`);
+  }, [id, router]);
+  return <main className="p-6 text-[color:var(--fluo-ink-soft)]">Redirecting…</main>;
+}
+
 export default function StudyPage({ id }: { id: string }) {
+  if (CURATED.some((c) => c.id === id)) return <CuratedRedirect id={id} />;
   return (
     <AuthGate what="study the cards">
       <StudyPageInner id={id} />
