@@ -45,7 +45,7 @@ wrong about the *what's left*. If they disagree with this file, this file wins.
 | ~~3~~ | ~~La Carte branch~~ — **folded into #2, 17 Aug**: `HomeMap3D.tsx` ports the 3D scroll treatment; ring colours from `sioKind()`/`sioSecondary()` via one `KIND_COLOR` palette. Delete `claude/api-necessity-i8fgps` after merge (its `/carte` page and objectives.json were not taken — the SIO objectives doc is already on main) | — | |
 | ~~4~~ | ~~Patch 23 — games~~ — **done 17 Aug** on `pm/patch23-games` (verify23, `work/patch23/*.png`): `GameFrame` + GameBar v2 on all six games, 100dvh/no page scroll, boards measured (`useBoardSize`), desktop two-pane record, headers/instructions gone (⋯ → Help), `GameOver` post-mortem → ReVue queue + `CORRIGER MAINTENANT`, CreditsSplash once per browser, galleries → ▶ Jouer + sheet | 14 | merge the branch (after #2), then deploy |
 | ~~5~~ | ~~Patch 24 — Index~~ — **done 17 Aug** on `pm/patch24-index` (verify24, `work/patch24/*.png`): chip rail + unit segments + ten SIO rows, `?activity=&unit=` in the URL, result cells from a device-local activity ledger, xPlain/4Mémoire/WorDrill as row buttons, three hubs → redirects, `?gaps=1` backlog | — | merge the branch (after #4), then deploy |
-| 6 | Patch 26 — `/moi` + teacher: outcome-grouped hardest items, heat-strip, Class-now, student×outcome matrix | 12 | |
+| ~~6~~ | ~~Patch 26 — `/moi` + teacher~~ — **done 17 Aug** on `pm/patch26-moi-teacher` (verify26, `work/patch26/*.png`): outcome rows (`src/lib/outcomeRows.ts`), `HeatStrip` on four pages, /moi thin hero + four segments + CAP 5, teacher Class now board + outcome × student matrix, one pool fetch, Compute button gone | — | merge the branch (after #5), then deploy |
 | 7 | Track D — AI / help ladder inside DrillShell (spec + build) | 16 | unblocked |
 | 8 | `/teacher` off the public CDN (server-side hardening; PR #6 draft, `cursor/teacher-cdn-exposure-a214` behind main) | 3 | PII chunk leak itself is closed |
 | 9 | Loose bugs: deck pages that demand sign-in / "No deck specified.", `/sio/[id]` | 4 | |
@@ -53,7 +53,7 @@ wrong about the *what's left*. If they disagree with this file, this file wins.
 | 11 | Ops: make the GitHub ruleset required; `add-claude-github-actions` branch — check workflow conflicts then merge or delete; `claude-review` billing | 1 | |
 | — | December: canonical `FD-` outcome IDs (Track A) | 8 | deliberately deferred |
 
-Near-term total ≈ 56 units. Shipped ≈ 94 of ~150 in-scope.
+Near-term total ≈ 44 units. Shipped ≈ 106 of ~150 in-scope.
 
 ## Branches (17 Aug)
 
@@ -63,6 +63,67 @@ Near-term total ≈ 56 units. Shipped ≈ 94 of ~150 in-scope.
   → delete after deploy.
 - live: `claude/api-necessity-i8fgps` (La Carte), `cursor/teacher-cdn-exposure-a214`,
   `add-claude-github-actions-…`.
+
+## Patch 26 — what was left out or decided on the fly (17 Aug, Peers)
+
+- **Outcome rows are one fold, three readers.** `src/lib/outcomeRows.ts`
+  (learner-safe: spine + content only) turns any `{item, status}` list into
+  outcome rows — `outcomeForItem` → SIO, items nested, `weakItems` = items
+  missed ≥ 50 %, order `missed × weakItems`, the unresolvable rest in ONE
+  "Not yet mapped" bucket pinned last. /moi's Fix segment, the teacher
+  student panel's "Hardest outcomes" (was "Hardest items", flat) and the
+  matrix all read it. `retried` counts as a miss (first try failed).
+- **The heat-strip is on four pages**: /moi (under the hero, cells → the
+  Index row `/activities?unit=N#SIO`), the teacher student panel (top of
+  the modal), the teacher **Class now** board (the class column as one
+  strip, above the matrix), and the **Index** (compact `size="sm"` under the
+  unit control, from the device ledger summed across activities; a tap
+  moves to that outcome's row). NOT Home — the hero is frozen (patch 25) and
+  the map already is the syllabus picture. Index rows now carry
+  `id={sio.id}` so `#SIO-0NN` lands (an effect scrolls after hydration).
+- **/moi**: hero = chips (✓ done, 🎯 accuracy, 🔥, ⭐, 🔁 due) + two 3 px
+  hairlines (Course, Accuracy), 90 px at 390 (Home's is ~99). Six tabs →
+  four segments **Fix · Exercises · History · Journey**: "Where I lose marks"
+  → Exercises; "My hardest items" → Fix (outcome rows); "Strong vs weak" →
+  the heat-strip (it IS that list, without the words) and, signed out, the
+  Fix rows drawn from `itemSrs` (interval ≤ 1 day = weak — the old rule);
+  "My tips" → gone (the top Fix row IS the tip; the 🔁 due count is a hero
+  chip); "Journey" keeps the six fun numbers + the marathon CTA. Every list
+  is `Capped` at 5 with "+N more". `void rows;` and the `Math.random()` key
+  died with the rewrite. Stock palette count fell 904 → ~826.
+- **Teacher**: new first/default panel **🟢 Class now** — 16 tiles (2-up on
+  a phone, 4×4 from sm), worst-first (`tileRank`: stuck, then lowest last-10
+  accuracy, then no data, absent last), name · live/today/absent dot · last
+  five ✓✗ (tooltip = outcome) · the last outcome's short · a last-10
+  hairline. **Stuck = 3 consecutive misses on ONE outcome inside 20 min**
+  (red tile, ⚠). Under it the class heat-strip and the **outcome × student
+  matrix** (50 rows grouped by unit, a column per learner, `Class` last;
+  cell = tier of that learner's accuracy on that outcome; a click on a name
+  opens the student). Overview stays (its KPIs / day drill-down were asked
+  for) — Class now is added, not swapped in.
+- **One fetch**: `fetchClassDetails(roster)` — pool of 4, tiles land as
+  each learner arrives — feeds Class now, the matrix, Evidence, the
+  analytics CSV and the student modal (`cached ?? fetched`). **The `Compute`
+  button is gone**: Evidence is a `useMemo` over the shared map. **Repoll
+  every 30 s** = `fetchResponsesSince(uids, lastPoll)` — a single-field
+  `timestamp >` range per uid (no composite index), prepended into the map;
+  paused while the tab is hidden. Cost: 16 full response reads on open
+  (was 0 until someone pressed Compute), then only deltas.
+- **Screenshots of the teacher page use a fixture.** It cannot render
+  without live Firestore + an admin sign-in, so `src/app/teacher/fixture.ts`
+  fabricates sixteen `Élève Un…Seize` (deterministic PRNG, real item ids,
+  two "live", one stuck) behind `NEXT_PUBLIC_TEACHER_FIXTURE=1` — inlined at
+  build, dynamic-imported, `canView` opens for it. A clean build still emits
+  the fixture as one orphan chunk no page references (Turbopack does not
+  drop the dead dynamic import); verify26 checks that, verify18b stays
+  green. **Never set the flag for a deploy.** /moi shots are the signed-out
+  device view (progress + ledger seeded) — the Fix rows there come from
+  `itemSrs`; the answer-log rows look the same with ✗ counts.
+- Not done: the /moi ▶ on an outcome row goes to the Index row, not
+  straight into a drill (Dan to say if it should open 4Mémoire); "Not yet
+  mapped" has no practise link (nothing to link); the matrix has no
+  per-cell click-through (title only); Class now's presence dot reads
+  events + answers, not a heartbeat — "live" = anything inside 5 min.
 
 ## Patch 24 — what was left out or decided on the fly (17 Aug, Peers)
 
