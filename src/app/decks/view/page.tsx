@@ -10,11 +10,12 @@
  */
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import NoDeck from "../NoDeck";
 import DeckContent from "../[id]/DeckContent";
 
 function ViewInner() {
   const id = useSearchParams().get("id") ?? "";
-  if (!id) return <main className="p-6 text-[color:var(--fluo-ink)]">No deck specified.</main>;
+  if (!id) return <NoDeck />;
   return <DeckContent id={id} />;
 }
 
