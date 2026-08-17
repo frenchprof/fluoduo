@@ -23,10 +23,10 @@ import { CURATED } from "@/content/collections";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { gradeGap, splitGap, type Grade } from "@/lib/practice/cloze";
-import { recordItemResult } from "@/lib/progress";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
 import { gapSentence, isPlayableGap } from "@/lib/collections/gapSentence";
-import { buildLadder, shownRungs } from "@/lib/help/ladder";
+import { hintsFor } from "@/lib/help/hints";
+import { useHelpLadder } from "@/lib/help/useHelpLadder";
 import { SIOS } from "@/content/sios";
 import WordBank from "@/components/WordBank";
 
@@ -41,11 +41,9 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
   const [value, setValue] = useState("");
   const [result, setResult] = useState<Grade | null>(null);
   const [score, setScore] = useState({ ok: 0, total: 0 });
-  // Help ladder (PRD §8). Per-deck GramMarathon had none at all — a learner
-  // stuck here got a bare "wrong", while the same grammar point in Finale
-  // offered four escalating clues. That asymmetry was backwards: Finale is the
-  // summative surface; the lesson drill is where scaffolding belongs most.
-  const [clue, setClue] = useState(0);
+  // A wrong try that is NOT final (Track D): "not yet", maybe a hint, and
+  // the input stays live.
+  const [retry, setRetry] = useState(false);
   const sioTopic = useMemo(
     () => SIOS.find((s) => s.collectionId === collectionId)?.topic,
     [collectionId],
@@ -65,72 +63,68 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
     else nextRef.current?.focus(); // keep the type→Enter→Enter rhythm — no mouse needed
   }, [i, result]);
 
-  if (!deck) return <main className="p-6">No deck <code>{collectionId}</code>.</main>;
-  if (order === null) return null;
-
-  const total = order.length;
-  const done = i >= total;
-  const item = done ? null : deck.items[order[i]];
+  // Item selection + the ladder's hooks come BEFORE the early returns.
+  const total = order?.length ?? 0;
+  const done = order === null || i >= total;
+  const item = done || !deck ? null : deck.items[order![i]];
   const gap = item?.gap ?? "";
   const { before, after } = item ? splitGap(gapSentence(item), gap) : { before: "", after: "" };
   const isRight = result === "perfect" || result === "good";
 
-  /** Rungs for the current item. No `category` — per-deck items carry no
-   *  hand-authored label, so this ladder opens at the lesson rung and runs one
-   *  shorter than Finale's. Same shape, same ending: a reachable answer. */
-  function ladderForItem() {
-    return buildLadder({ answer: gap, topic: sioTopic });
-  }
+  // The help ladder (Track D): cloze rungs from the item (lemma as the
+  // nudge, first letter, skeleton), ONE ? control in the shell bar.
+  const hints = useMemo(
+    () => hintsFor("cloze", { answer: gap, pos: item?.lemma ? `← ${item.lemma}` : undefined, topic: sioTopic, example: item?.example }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [gap, item?.id],
+  );
+  const ladder = useHelpLadder({
+    kind: "cloze",
+    itemKey: item?.id ?? null,
+    itemId: item?.id,
+    surface: "grammarathon",
+    hints,
+    reveal: gap,
+    enabled: !done && !!item,
+  });
+
+  if (!deck) return <main className="p-6">No deck <code>{collectionId}</code>.</main>;
+  if (order === null) return null;
 
   function check() {
-    if (result !== null || !item) return;
+    if (result !== null || retry || !item) return;
     const g = gradeGap(value, gap);
-    setResult(g);
-    setScore((s) => ({ ok: s.ok + (g !== "wrong" ? 1 : 0), total: s.total + 1 }));
-    recordItemResult(item.id, g !== "wrong", undefined, `grammarathon:${collectionId}`, {
-      hintsTaken: clue,
-    });
-    if (g !== "wrong") sfx.correct(); else sfx.wrong();
-    if (g !== "wrong") speak(gapSentence(item), "fr-FR");
+    const ok = g !== "wrong";
+    if (ladder.ladder.wrongTries === 0 && !ladder.revealed) {
+      setScore((s) => ({ ok: s.ok + (ok ? 1 : 0), total: s.total + 1 }));
+    }
+    const r = ladder.attempt(ok, { given: value, activity: `grammarathon:${collectionId}` });
+    if (ok) sfx.correct(); else sfx.wrong();
+    if (r.effect === "done") {
+      setResult(g);
+      if (ok) speak(gapSentence(item), "fr-FR");
+    } else {
+      setRetry(true);
+    }
   }
 
   function next() {
-    setClue(0);
     if (i + 1 >= total) sfx.stage(); // run complete — the done card is about to show
     setResult(null);
+    setRetry(false);
     setValue("");
     setI((n) => n + 1);
+  }
+  function tryAgain() {
+    setRetry(false);
+    if (ladder.revealed) setValue("");
+    inputRef.current?.focus();
   }
 
   function restart() {
     setOrder(shuffle(deck!.items.map((it, idx) => (isPlayableGap(it) ? idx : -1)).filter((x) => x >= 0)));
-    setI(0); setValue(""); setResult(null); setScore({ ok: 0, total: 0 }); setClue(0);
+    setI(0); setValue(""); setResult(null); setRetry(false); setScore({ ok: 0, total: 0 });
   }
-
-  function takeHint() {
-    if (!item) return;
-    const rungs = ladderForItem();
-    const n = Math.min(rungs.length, clue + 1);
-    setClue(n);
-    const rung = rungs[n - 1]?.level ?? "nudge";
-    void import("@/lib/firebase/usage")
-      .then((m) =>
-        m.logEvent(rung === "answer" ? "answer.reveal" : "hint.tap", {
-          surface: "grammarathon",
-          itemId: item.id,
-          deck: collectionId,
-          rung,
-          level: n,
-        }),
-      )
-      .catch(() => {});
-  }
-  const hintLabel =
-    clue === 0
-      ? "💡 a hint"
-      : clue >= ladderForItem().length - 1
-        ? "✅ show the answer"
-        : "💡 another hint";
 
   const sentence = item ? (
     <p lang="fr" className="mt-1 text-xl font-black text-[color:var(--fluo-ink)]">
@@ -142,15 +136,19 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
     </p>
   ) : null;
 
-  const rungsShown = clue > 0 && item ? (
+  // The popup form draws the rungs itself; the shell draws them on the page.
+  const rungsShown = ladder.shown.length > 0 && item ? (
     <div className="mt-3 space-y-1">
-      {shownRungs(ladderForItem(), clue).map((r, k) => (
-        <p key={k} lang="fr" className="rounded-lg bg-amber-50 px-2 py-1 text-sm text-amber-900">
+      {ladder.shown.map((r, k) => (
+        <p key={k} lang="fr" className="rounded-lg bg-[color:var(--cahier-hl)]/30 px-2 py-1 text-sm text-[color:var(--cahier-ink)]">
           {r.text}
         </p>
       ))}
     </div>
   ) : null;
+  const why = item?.example ? (
+    <p lang="fr"><span className="font-bold">{item.example}</span>{item.exampleEn && <span className="ml-2 opacity-70">— {item.exampleEn}</span>}</p>
+  ) : undefined;
 
   // Word-bank distractors: the deck's OTHER gaps — the grammar words the
   // learner is actually choosing between (du / de la / des / d'…).
@@ -189,17 +187,21 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
         cta={
           done
             ? { label: "↻ Again", onClick: restart }
-            : result === null
+            : result === null && !retry
               ? { label: "Check", onClick: check, disabled: !value.trim() }
               : null
         }
-        secondary={
-          !done && result === null && item && clue < ladderForItem().length
-            ? { label: hintLabel, onClick: takeHint }
-            : null
-        }
+        help={done ? null : ladder.help}
         feedback={
-          result === null || !item
+          retry && item
+            ? {
+                kind: "wrong",
+                body: ladder.revealed
+                  ? <><span lang="fr">→ {gap}</span><button type="button" onClick={() => speak(gapSentence(item), "fr-FR")} className="ml-2 text-base opacity-70 hover:opacity-100" title="Hear it">🔊</button></>
+                  : "Not yet",
+                cta: { label: ladder.revealed ? "Type it" : "Try again", onClick: tryAgain },
+              }
+            : result === null || !item
             ? null
             : {
                 kind: isRight ? "correct" : "wrong",
@@ -208,9 +210,9 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
                     {isRight ? (result === "good" ? "Bien ! (accent differs)" : "Parfait !") : null}
                     {result !== "perfect" && <span lang="fr" className="ml-1">→ {gap}</span>}
                     <button type="button" onClick={() => speak(gapSentence(item), "fr-FR")} className="ml-2 text-base opacity-70 hover:opacity-100" title="Hear it">🔊</button>
-                    {item.example && <span lang="fr" className="ml-2 font-medium italic opacity-80">{item.example}</span>}
                   </>
                 ),
+                why,
                 cta: { label: i + 1 >= total ? "Finish" : "Continue", onClick: next },
               }
         }
@@ -225,7 +227,6 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
           <div>
             {sentence}
             <p className="mt-1 text-sm text-[color:var(--fluo-ink-soft)]">{item.en}</p>
-            {rungsShown}
             <div className="mt-5">{answerInput}</div>
           </div>
         ) : null}
@@ -249,18 +250,20 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
             <p className="mt-1 text-sm text-[color:var(--fluo-ink-soft)]">{item.en}</p>
             {rungsShown}
 
-            <form onSubmit={(e) => { e.preventDefault(); result === null ? check() : next(); }} className="mt-4">
+            <form onSubmit={(e) => { e.preventDefault(); retry ? tryAgain() : result === null ? check() : next(); }} className="mt-4">
               {answerInput}
               {result === null ? (
                 <>
-                  <button type="submit" className="fluo-btn mt-3 w-full">Check</button>
-                  {clue < ladderForItem().length && (
+                  {retry && <p className="mt-2 text-sm font-bold text-[color:var(--drill-bad-ink)]">✗ Not yet</p>}
+                  <button type="submit" className="fluo-btn mt-3 w-full">{retry ? "Try again" : "Check"}</button>
+                  {ladder.help?.label && (
                     <button
                       type="button"
-                      onClick={takeHint}
-                      className="mt-2 w-full rounded-full border-2 border-amber-300 bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-800"
+                      onClick={ladder.climb}
+                      disabled={ladder.help.disabled}
+                      className="mt-2 w-full rounded-full border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-1.5 text-xs font-bold text-[color:var(--cahier-ink)] disabled:opacity-40"
                     >
-                      {hintLabel}
+                      ? {ladder.help.label}
                     </button>
                   )}
                 </>

@@ -8,6 +8,8 @@ import { bareWord } from "@/lib/collections/display";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { recordItemResult } from "@/lib/progress";
+import { hintsFor } from "@/lib/help/hints";
+import { useHelpLadder } from "@/lib/help/useHelpLadder";
 import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import { logEvent } from "@/lib/firebase/usage";
 import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
@@ -76,6 +78,10 @@ function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: 
   // is retired (patch 22 took only the LESSON out of the popup).
   const [selected, setSelected] = useState<PracticeChoice | null>(null);
   const [ttsOn, setTtsOn] = useState(true);
+  // Track D: a wrong pick that is NOT final — the pick is struck, the
+  // learner picks again (≥ 3 options). `struck` = keys out of play.
+  const [retry, setRetry] = useState(false);
+  const [struck, setStruck] = useState<string[]>([]);
 
   // Shuffle on mount (client-side only — avoids SSR hydration mismatch).
   useEffect(() => {
@@ -119,6 +125,27 @@ function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: 
     [item],
   );
 
+  // The help ladder (Track D). MCQ has no cold hint: the first rung is the
+  // struck wrong pick; with ≥ 4 options a second strikes down to two.
+  const hints = useMemo(
+    () => (item ? hintsFor("mcq", { answer: item.correctLabel, options: choices.map((c) => c.label) }) : []),
+    [item, choices],
+  );
+  const ladder = useHelpLadder({
+    kind: "mcq",
+    itemKey: item ? `${item.id}:${step}` : null,
+    itemId: item?.id,
+    surface: "dice",
+    hints,
+    reveal: item?.correctLabel ?? "",
+    enabled: inShell && !done && !!item,
+  });
+  const eliminatedKeys = useMemo(
+    () => choices.filter((c) => ladder.eliminated.includes(c.label) && item && c.key !== item.correctColKey).map((c) => c.key),
+    [choices, ladder.eliminated, item],
+  );
+  const outOfPlay = useMemo(() => [...new Set([...struck, ...eliminatedKeys])], [struck, eliminatedKeys]);
+
   useEffect(() => {
     if (submitted?.correct && ttsOn && item) {
       speak(item.ttsText, "fr-FR");
@@ -155,19 +182,35 @@ function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: 
     if (submitted || !item) return;
     const correct = choice.key === item.correctColKey;
     if (correct) sfx.correct(); else sfx.wrong();
-    setSubmitted({ picked: choice.key, correct });
     if (!(item.id in firstResults)) {
       setFirstResults({ ...firstResults, [item.id]: correct });
     }
-    // Every attempt writes spacing state: a first-try miss resets the ladder,
-    // a correct review-round repair steps back to the 1-day rung.
-    recordItemResult(item.id, correct, undefined, `dice:${set.collectionId}`);
+    if (!inShell) {
+      // The popup keeps its one-shot grammar (no ladder there).
+      recordItemResult(item.id, correct, undefined, `dice:${set.collectionId}`);
+      setSubmitted({ picked: choice.key, correct });
+      return;
+    }
+    // Every attempt writes spacing state + evidence (via the ladder): a
+    // first-try miss resets the SRS ladder, a correct repair steps back to
+    // the 1-day rung — and a hinted item is queued for ReVue when it closes.
+    const r = ladder.attempt(correct, { given: choice.label, activity: `dice:${set.collectionId}` });
+    if (r.effect === "done" || r.effect === "reveal") {
+      setSubmitted({ picked: choice.key, correct });
+    } else {
+      setStruck((k) => [...k, choice.key]);
+      setSelected(null);
+      setRetry(true);
+    }
   }
 
   function next() {
     if (!submitted || !item) return;
+    ladder.skip();
     setSubmitted(null);
     setSelected(null);
+    setRetry(false);
+    setStruck([]);
     if (step === queue.length - 1 && willReview) {
       setQueue([...queue, ...shuffle(missedSoFar)]);
       setReviewRound(true);
@@ -184,6 +227,8 @@ function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: 
     setReviewRound(false);
     setSubmitted(null);
     setSelected(null);
+    setRetry(false);
+    setStruck([]);
   }
 
   if (queue.length === 0) {
@@ -203,12 +248,15 @@ function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: 
         cta={
           done
             ? { label: "🎲 Roll again", onClick: restart }
-            : !submitted
+            : !submitted && !retry
               ? { label: "Check", onClick: () => { if (selected) commit(selected); }, disabled: !selected }
               : null
         }
+        help={done ? null : ladder.help}
         feedback={
-          !done && submitted
+          !done && retry && !submitted
+            ? { kind: "wrong", body: "Not yet", cta: { label: "Pick again", onClick: () => setRetry(false) } }
+            : !done && submitted
             ? {
                 kind: submitted.correct ? "correct" : "wrong",
                 body: (
@@ -228,6 +276,7 @@ function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: 
             choices={choices}
             submitted={submitted}
             selected={selected}
+            struck={outOfPlay}
             onPick={pick}
             onNext={next}
             onSpeak={() => ttsOn && item && speak(item.ttsText, "fr-FR")}
@@ -330,6 +379,7 @@ function ItemCard({
   choices,
   submitted,
   selected = null,
+  struck = [],
   onPick,
   onNext,
   onSpeak,
@@ -345,6 +395,9 @@ function ItemCard({
   submitted: Verdict | null;
   /** Shell mode only: the picked-but-not-committed option. */
   selected?: PracticeChoice | null;
+  /** Shell mode only: option keys the ladder has struck out (wrong picks,
+   *  eliminated distractors). Disabled and dimmed. */
+  struck?: string[];
   onPick: (c: PracticeChoice) => void;
   onNext: () => void;
   onSpeak: () => void;
@@ -394,9 +447,12 @@ function ItemCard({
         {choices.map((c, i) => {
           const isPicked = submitted?.picked === c.key;
           const isAnswer = c.key === item.correctColKey;
+          const isStruck = !submitted && struck.includes(c.key);
           let cls =
             "border-slate-200 bg-white text-slate-900 hover:border-slate-400";
-          if (submitted) {
+          if (isStruck) {
+            cls = "border-slate-200 bg-white text-slate-300 line-through";
+          } else if (submitted) {
             if (isAnswer)
               cls = "border-emerald-500 bg-emerald-50 text-emerald-900";
             else if (isPicked)
@@ -410,7 +466,7 @@ function ItemCard({
               key={c.key}
               type="button"
               onClick={() => onPick(c)}
-              disabled={!!submitted}
+              disabled={!!submitted || isStruck}
               lang="fr"
               className={`rounded-xl border-2 px-4 py-3 text-center text-lg font-extrabold transition ${cls}`}
             >

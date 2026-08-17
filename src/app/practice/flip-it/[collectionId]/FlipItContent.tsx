@@ -33,8 +33,9 @@ import { speak } from "@/games/letris/speech";
 import type { Collection } from "@/lib/collections/schema";
 import { practiceItems } from "@/lib/collections/display";
 import { loadBuckets, setBucket, type Bucket } from "@/lib/practice/buckets";
-import { recordItemResult } from "@/lib/progress";
 import { logEvent } from "@/lib/firebase/usage";
+import { hintsFor } from "@/lib/help/hints";
+import { useHelpLadder } from "@/lib/help/useHelpLadder";
 import DrillShell, { drillExitHref } from "@/components/DrillShell";
 import WordBank from "@/components/WordBank";
 import {
@@ -96,9 +97,32 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
   const parts = useMemo(() => partsFor(row, isNat, hasArt), [row, isNat, hasArt]);
   const allRight = parts.every((p) => judgePart(p, vals[p.key]));
   const nReviewed = rows.filter((r) => buckets[r.item.id] === "reviewed").length;
+  // Track D: a wrong check that is NOT final — a hint opened, type again.
+  const [retry, setRetry] = useState(false);
+
+  // The help ladder — test mode only (study self-marks). Flashcard rules:
+  // the answer may be opened cold (that is what a flashcard is for), a
+  // reveal is not retyped, and no idle timer.
+  const hints = useMemo(
+    () => hintsFor("flashcard", {
+      answer: row.fr, alternates: row.item.alt, article: row.art,
+      gender: row.item.gender, pos: row.item.pos, example: row.item.nat ? undefined : row.item.example,
+    }),
+    [row],
+  );
+  const ladder = useHelpLadder({
+    kind: "flashcard",
+    itemKey: `${row.item.id}:${test ? "t" : "s"}`,
+    itemId: row.item.id,
+    surface: "flip-it",
+    hints,
+    reveal: row.full,
+    enabled: test && !done,
+  });
 
   function advance() {
-    setFlipped(false); setVals({}); setPhase("idle");
+    ladder.skip();
+    setFlipped(false); setVals({}); setPhase("idle"); setRetry(false);
     setI((x) => x + 1);
   }
   function markAndNext(b: Bucket) {
@@ -107,22 +131,31 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
     advance();
   }
   function check() {
-    setPhase("checked");
-    recordItemResult(row.item.id, allRight);
+    const first = ladder.ladder.wrongTries === 0 && !ladder.revealed;
+    // Recorded through the ladder (assistance = the rungs actually shown);
+    // the older flashcard.review event stays for the dashboards.
+    const r = ladder.attempt(allRight, {
+      given: parts.map((p) => vals[p.key] ?? "").join(" ").trim(),
+      activity: `flip-it:${collection.id}`,
+    });
     void logEvent("flashcard.review", { itemId: row.item.id, rating: allRight ? "good" : "again" });
-    if (allRight) setBuckets(setBucket(collection.id, row.item.id, "reviewed"));
-    setRun((s) => (allRight ? { ...s, right: s.right + 1 } : { ...s, wrong: s.wrong + 1 }));
+    if (allRight && !ladder.revealed) setBuckets(setBucket(collection.id, row.item.id, "reviewed"));
+    if (first) setRun((s) => (allRight ? { ...s, right: s.right + 1 } : { ...s, wrong: s.wrong + 1 }));
+    if (r.effect === "done") setPhase("checked");
+    else if (r.effect === "reveal") setPhase("revealed");
+    else setRetry(true);
   }
-  function reveal() {
-    setPhase("revealed");
-    void logEvent("answer.reveal", { surface: "flip-it", itemId: row.item.id, deck: collection.id });
-  }
+  // The ? control: the answer opened by the ladder's last rung (the older
+  // 💡 Révéler) shows the card graded-as-revealed.
+  const help = ladder.help
+    ? { ...ladder.help, onClimb: () => { if (ladder.climb().effect === "reveal") { setRetry(false); setPhase("revealed"); } } }
+    : null;
   function restart() {
-    setI(0); setFlipped(false); setVals({}); setPhase("idle");
+    setI(0); setFlipped(false); setVals({}); setPhase("idle"); setRetry(false);
     setRun({ su: 0, revoir: 0, right: 0, wrong: 0 });
   }
   function switchMode(t: boolean) {
-    setTest(t); setFlipped(false); setVals({}); setPhase("idle");
+    setTest(t); setFlipped(false); setVals({}); setPhase("idle"); setRetry(false);
   }
 
   // Nothing typed yet → Vérifier stays down. The article select is not
@@ -139,7 +172,7 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
         done
           ? { label: "🃏 Again", onClick: restart }
           : test
-            ? phase === "idle"
+            ? phase === "idle" && !retry
               ? { label: "Check", onClick: check, disabled: nothingTyped }
               : null
             : flipped
@@ -149,11 +182,14 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
       secondary={
         done ? null
           : test
-            ? phase === "idle" ? { label: "💡 Reveal", onClick: reveal } : null
+            ? null
             : flipped ? { label: "↺ To review", onClick: () => markAndNext("toReview") } : null
       }
+      help={!done && test ? help : null}
       feedback={
-        !done && test && phase !== "idle"
+        !done && test && retry && phase === "idle"
+          ? { kind: "wrong", body: "Not yet", cta: { label: "Try again", onClick: () => setRetry(false) } }
+          : !done && test && phase !== "idle"
           ? {
               kind: phase === "checked" && allRight ? "correct" : "wrong",
               body: row.item.nat ? undefined : (
@@ -162,6 +198,9 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
                   <span lang="fr" className="font-extrabold">{row.full}</span>
                 </>
               ),
+              why: row.item.example && !row.item.nat ? (
+                <p lang="fr"><span className="font-bold">{row.item.example}</span>{row.item.exampleEn && <span className="ml-2 opacity-70">— {row.item.exampleEn}</span>}</p>
+              ) : undefined,
               cta: { label: isLast ? "🏁 Recap" : "Continue", onClick: advance },
             }
           : null

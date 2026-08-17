@@ -13,8 +13,9 @@
  * and the SIO write that finally makes the Home path react.
  */
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import DrillShell, { drillExitHref, type DrillFeedback } from "@/components/DrillShell";
+import OpenFeedback from "@/components/OpenFeedback";
 import SpeakZone from "@/components/SpeakZone";
 import WordBank from "@/components/WordBank";
 import { CURATED } from "@/content/collections";
@@ -24,8 +25,10 @@ import { getNativeLesson } from "@/content/lessons/native";
 import { memoForDeck } from "@/content/memos";
 import { buildCards, DIE_SIDES, ROLL_ENTRY, rollLabel, type Exercise } from "./buildCards";
 import { gradeAnswer, gradeGap, type Grade } from "@/lib/practice/cloze";
-import { loadProgress, markSioDone, recordItemResult } from "@/lib/progress";
+import { loadProgress, markSioDone } from "@/lib/progress";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
+import { hintsFor, revealText } from "@/lib/help/hints";
+import { useHelpLadder } from "@/lib/help/useHelpLadder";
 import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import { optionGridClass } from "@/lib/optionGrid";
 import { sfx } from "@/games/audio/sfx";
@@ -60,6 +63,10 @@ export default function LessonPager({
   const [selected, setSelected] = useState<string | null>(null);
   const [value, setValue] = useState("");
   const [result, setResult] = useState<Grade | null>(null);
+  // Track D: a wrong try that is NOT final — a hint (or the answer) opened,
+  // the input stays live; MCQ strikes the wrong pick.
+  const [retry, setRetry] = useState(false);
+  const [struck, setStruck] = useState<string[]>([]);
   // First-attempt score only; requeued repeats never touch it.
   const [score, setScore] = useState({ ok: 0, total: 0 });
   const [misses, setMisses] = useState<Exercise[]>([]);
@@ -145,8 +152,32 @@ export default function LessonPager({
   // ── commit + advance ─────────────────────────────────────────────────────
   const given = ex?.kind === "mcq" ? selected ?? "" : value;
 
+  // The help ladder (Track D): mcq → struck picks; gap → cloze rungs;
+  // build/translate → typed rungs (first letter / skeleton). Every graded
+  // answer is recorded through it with the assistance actually shown.
+  const ladderKind = ex?.kind === "mcq" ? "mcq" : ex?.kind === "gap" ? "cloze" : ex?.tiles ? "ordering" : "typed";
+  const hints = useMemo(
+    () => (ex ? hintsFor(ladderKind, { answer: ex.answer, alternates: ex.alternates, options: ex.options, example: ex.say !== ex.answer ? ex.say : undefined }) : []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [ex?.itemId, ex?.answer, ex?.kind, i],
+  );
+  const ladder = useHelpLadder({
+    kind: ladderKind,
+    itemKey: ex ? `${i}:${ex.itemId}` : null,
+    itemId: ex?.itemId,
+    surface: "lesson",
+    hints,
+    reveal: ex ? revealText({ answer: ex.answer, alternates: ex.alternates }) : "",
+    enabled: card === "ex" && !!ex && !end,
+  });
+  const struckAll = useMemo(() => {
+    const out = new Set(struck);
+    for (const o of ladder.eliminated) if (o !== ex?.answer) out.add(o);
+    return [...out];
+  }, [struck, ladder.eliminated, ex?.answer]);
+
   const commit = () => {
-    if (!ex || result !== null || !given.trim()) return;
+    if (!ex || result !== null || retry || !given.trim()) return;
     let g: Grade;
     if (ex.kind === "mcq") {
       g = given === ex.answer || ex.alternates?.includes(given) ? "perfect" : "wrong";
@@ -156,7 +187,8 @@ export default function LessonPager({
       g = grades.includes("perfect") ? "perfect" : grades.includes("good") ? "good" : "wrong";
     }
     const ok = g !== "wrong";
-    if (!current!.requeued) {
+    const first = ladder.ladder.wrongTries === 0 && !ladder.revealed;
+    if (!current!.requeued && first) {
       setScore((s) => ({ ok: s.ok + (ok ? 1 : 0), total: s.total + 1 }));
       if (!ok) {
         setMisses((m) => [...m, ex]);
@@ -164,21 +196,34 @@ export default function LessonPager({
         setQueue((q) => (q ? [...q, { ex, requeued: true }] : q));
       }
     }
-    recordItemResult(ex.itemId, ok, given, ex.activity, { latencyMs: Date.now() - cardStartRef.current });
+    const r = ladder.attempt(ok, { given, activity: ex.activity, latencyMs: Date.now() - cardStartRef.current });
     if (ok) sfx.correct(); else sfx.wrong();
-    speak(ex.say ?? ex.answer, "fr-FR");
-    setResult(g);
+    if (r.effect === "done" || (r.effect === "reveal" && ex.kind === "mcq")) {
+      speak(ex.say ?? ex.answer, "fr-FR");
+      setResult(g);
+    } else {
+      if (ex.kind === "mcq" && selected) setStruck((k) => [...k, selected]);
+      setSelected(null);
+      setRetry(true);
+    }
   };
 
   const next = () => {
+    ladder.skip();
     const n = i + 1;
     const total = exStart + (queue?.length ?? 0);
     if (n >= total) sfx.stage(); // run complete — the end card is about to show
     setSelected(null);
     setValue("");
     setResult(null);
+    setRetry(false);
+    setStruck([]);
     setI(n);
     cardStartRef.current = Date.now();
+  };
+  const tryAgain = () => {
+    setRetry(false);
+    if (ladder.revealed && ex?.kind !== "mcq") setValue("");
   };
 
   // The SIO write — the reason the Home path finally reacts. Once per run.
@@ -212,12 +257,18 @@ export default function LessonPager({
         ? rolled
           ? { label: "Continue", onClick: next }
           : { label: "🎲 Roll", onClick: roll, disabled: rolling }
-        : result === null
+        : result === null && !retry
           ? { label: "Check", onClick: commit, disabled: !given.trim() }
           : null;
 
   const feedback: DrillFeedback | null =
-    card === "ex" && result !== null && ex
+    card === "ex" && retry && ex
+      ? {
+          kind: "wrong",
+          body: ladder.revealed ? <b lang="fr">{ex.answer}</b> : "Not yet",
+          cta: { label: ladder.revealed ? "Type it" : ex.kind === "mcq" ? "Pick again" : "Try again", onClick: tryAgain },
+        }
+      : card === "ex" && result !== null && ex
       ? {
           kind: result === "wrong" ? "wrong" : "correct",
           body: (
@@ -228,6 +279,7 @@ export default function LessonPager({
               {ex.en && <span className="text-xs italic opacity-80">{ex.en}</span>}
             </span>
           ),
+          why: ex.en && ex.big ? <p><b lang="fr">{ex.say ?? ex.answer}</b><span className="ml-2 opacity-70">— {ex.en}</span></p> : undefined,
           cta: { label: isLast ? "Finish" : "Continue", onClick: next },
         }
       : null;
@@ -243,6 +295,7 @@ export default function LessonPager({
       right={<>✓ {score.ok}</>}
       cta={cta}
       feedback={feedback}
+      help={card === "ex" && !end ? ladder.help : null}
     >
       {!ready ? null : card === "rule" ? (
         <div className="pt-2"><SpeakZone>{rules[i]}</SpeakZone></div>
@@ -268,8 +321,8 @@ export default function LessonPager({
           )}
         </div>
       ) : card === "ex" && ex ? (
-        <ExerciseCard ex={ex} selected={selected} value={value} result={result}
-          onSelect={(c) => result === null && setSelected(c)} onType={setValue} />
+        <ExerciseCard ex={ex} selected={selected} value={value} result={result} struck={struckAll}
+          onSelect={(c) => result === null && !struckAll.includes(c) && setSelected(c)} onType={setValue} />
       ) : (
         <div className="flex flex-col items-center gap-4 pt-6 text-center">
           <span className="text-6xl" aria-hidden>{pct === 100 ? "🏆" : pct >= 75 ? "🎉" : pct >= 50 ? "💪" : "📖"}</span>
@@ -288,6 +341,19 @@ export default function LessonPager({
               ))}
             </div>
           )}
+          {/* Track D row 7 — the SIO write: one free sentence on today's
+              can-do, corrected by /api/feedback (rules when offline). The
+              model answer is the deck's first authored example. */}
+          {sio && deck && (
+            <OpenFeedback
+              task="lesson-write"
+              prompt={`In French: ${sio.canDo.replace(/^I can\s+/i, "")}`}
+              modelAnswer={deck.items.find((it) => it.example)?.example}
+              outcomeId={sio.id}
+              activity={`lesson-write:${deck.id}`}
+              itemId={`${sio.id}:write`}
+            />
+          )}
           <div className="mt-2 flex flex-wrap justify-center gap-3">
             <Link href={exitHref} className="fluo-btn fluo-btn-lg">Continue</Link>
             <button type="button" onClick={build} className="fluo-btn fluo-btn-ghost">↻ Try again</button>
@@ -305,6 +371,7 @@ function ExerciseCard({
   selected,
   value,
   result,
+  struck = [],
   onSelect,
   onType,
 }: {
@@ -312,6 +379,8 @@ function ExerciseCard({
   selected: string | null;
   value: string;
   result: Grade | null;
+  /** MCQ options the ladder struck out (wrong picks). */
+  struck?: string[];
   onSelect: (c: string) => void;
   onType: (v: string) => void;
 }) {
@@ -356,7 +425,10 @@ function ExerciseCard({
           {ex.options.map((c, n) => {
             const isPicked = (answered ? shown : selected) === c;
             const isAnswer = c === ex.answer;
-            const cls = !answered
+            const isStruck = !answered && struck.includes(c);
+            const cls = isStruck
+              ? "border-[color:var(--cahier-rule)] bg-white text-[color:var(--cahier-ink)]/30 line-through"
+              : !answered
               ? isPicked
                 ? "border-[color:var(--cahier-ink)] bg-[color:var(--cahier-ink)] text-white"
                 : "border-[color:var(--cahier-rule)] bg-white text-[color:var(--cahier-ink)] hover:border-[color:var(--cahier-ink)]"
@@ -372,6 +444,7 @@ function ExerciseCard({
                 lang="fr"
                 // Answered → options stay tappable purely for their sound.
                 onClick={() => (answered ? speak(c, "fr-FR") : onSelect(c))}
+                disabled={isStruck}
                 className={`rounded-xl border-2 px-4 py-3 text-center text-base font-bold transition ${cls}`}
               >
                 {!answered && (

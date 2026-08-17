@@ -17,9 +17,9 @@ import { CURATED } from "@/content/collections";
 import { bareWord, practiceItems } from "@/lib/collections/display";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
-import { recordItemResult } from "@/lib/progress";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
-import { buildLadder, shownRungs } from "@/lib/help/ladder";
+import { hintsFor, revealText } from "@/lib/help/hints";
+import { useHelpLadder } from "@/lib/help/useHelpLadder";
 import { SIOS } from "@/content/sios";
 import WordBank from "@/components/WordBank";
 import type { Collection, Item } from "@/lib/collections/schema";
@@ -59,10 +59,9 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
   const [value, setValue] = useState("");
   const [result, setResult] = useState<Grade | null>(null);
   const [score, setScore] = useState({ ok: 0, total: 0 });
-  // Help ladder (PRD §8) — iComplete never had one: a learner stuck on a
-  // spelling got a bare "wrong" while GramMarathon offered escalating clues
-  // for the same kind of typed answer (patch 20–21 row).
-  const [clue, setClue] = useState(0);
+  // A wrong try that is NOT final: the tray says "not yet", the ladder may
+  // have opened a hint, and the input stays live for another go (Track D).
+  const [retry, setRetry] = useState(false);
   const sioTopic = useMemo(
     () => SIOS.find((s) => s.collectionId === collectionId)?.topic,
     [collectionId],
@@ -90,15 +89,12 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
     else nextRef.current?.focus(); // keep the type→Enter→Enter rhythm — no mouse needed
   }, [i, result]);
 
-  if (!deck) {
-    return <main className="p-6">No deck <code>{collectionId}</code>.</main>;
-  }
-  if (order === null) return null;
-
-  const total = order.length;
-  const done = i >= total;
-  const entry = done ? null : order[i];
-  const item = entry != null ? deck.items[entry.itemIdx] : null;
+  // Item selection + the help ladder's hooks come BEFORE the early returns
+  // (hooks must run in the same order every render).
+  const total = order?.length ?? 0;
+  const done = order === null || i >= total;
+  const entry = done ? null : order![i];
+  const item = deck && entry != null ? deck.items[entry.itemIdx] : null;
   const natForm = entry?.natForm;
 
   function getAnswer(): string {
@@ -112,8 +108,39 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
   const isRight = result === "perfect" || result === "good";
   const art = (!natForm && item) ? articleOf(deck!, item) : "";
 
+  // The help ladder (Track D): rule-based rungs from the item, ONE ? control
+  // in the shell bar, evidence + ReVue queue handled by the hook.
+  const hints = useMemo(
+    () => hintsFor("typed", {
+      answer,
+      alternates: natForm ? [] : (item?.alt ?? []).map((a) => frFull(art, a)),
+      article: art,
+      pos: item?.pos,
+      gender: item?.gender,
+      category: deck?.title,
+      topic: sioTopic,
+      example: natForm ? undefined : item?.example,
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [answer, item?.id, natForm],
+  );
+  const ladder = useHelpLadder({
+    kind: "typed",
+    itemKey: item ? `${item.id}:${natForm ?? ""}` : null,
+    itemId: item?.id,
+    surface: "complete-it",
+    hints,
+    reveal: revealText({ answer, alternates: natForm ? [] : (item?.alt ?? []).map((a) => frFull(art, a)) }),
+    enabled: !done && !!item,
+  });
+
+  if (!deck) {
+    return <main className="p-6">No deck <code>{collectionId}</code>.</main>;
+  }
+  if (order === null) return null;
+
   function check() {
-    if (result !== null || !item) return;
+    if (result !== null || retry || !item) return;
     // item.alt = alternative nouns; compose each with the article exactly
     // like the main answer, so alts grade on equal footing (nat forms have
     // no alts — the four forms ARE the answer set).
@@ -121,49 +148,37 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
       ? [answer]
       : [answer, ...(item.alt ?? []).map((a) => frFull(art, a))];
     const g = gradeAgainst(value, accepted);
-    setResult(g);
-    setScore((s) => ({ ok: s.ok + (g !== "wrong" ? 1 : 0), total: s.total + 1 }));
-    recordItemResult(item.id, g !== "wrong", undefined, `complete-it:${collectionId}`, {
-      hintsTaken: clue,
-    });
-    if (g !== "wrong") sfx.correct(); else sfx.wrong();
-    if (g !== "wrong") speak(answer, "fr-FR");
+    const ok = g !== "wrong";
+    // First try counts for the score; every try is recorded (with the
+    // ladder's evidence) and steps the ladder — a wrong one may open a hint
+    // or, when stuck, the answer.
+    if (ladder.ladder.wrongTries === 0 && !ladder.revealed) {
+      setScore((s) => ({ ok: s.ok + (ok ? 1 : 0), total: s.total + 1 }));
+    }
+    const r = ladder.attempt(ok, { given: value, activity: `complete-it:${collectionId}` });
+    if (ok) sfx.correct(); else sfx.wrong();
+    if (r.effect === "done") {
+      setResult(g);
+      if (ok) speak(answer, "fr-FR");
+    } else {
+      // "hint" / "reveal" / none: not final — another go, with what opened.
+      setRetry(true);
+    }
   }
   function next() {
-    setClue(0);
     if (i + 1 >= total) sfx.stage(); // run complete — the done card is about to show
     setResult(null);
+    setRetry(false);
     setValue("");
     setI((n) => n + 1);
   }
-
-  function ladderForItem() {
-    return buildLadder({ answer, topic: sioTopic });
+  /** Dismiss the "not yet" tray; after a reveal the field is cleared so the
+   *  answer is TYPED, not left standing. */
+  function tryAgain() {
+    setRetry(false);
+    if (ladder.revealed) setValue("");
+    inputRef.current?.focus();
   }
-  function takeHint() {
-    if (!item) return;
-    const rungs = ladderForItem();
-    const n = Math.min(rungs.length, clue + 1);
-    setClue(n);
-    const rung = rungs[n - 1]?.level ?? "nudge";
-    void import("@/lib/firebase/usage")
-      .then((m) =>
-        m.logEvent(rung === "answer" ? "answer.reveal" : "hint.tap", {
-          surface: "complete-it",
-          itemId: item.id,
-          deck: collectionId,
-          rung,
-          level: n,
-        }),
-      )
-      .catch(() => {});
-  }
-  const hintLabel =
-    clue === 0
-      ? "💡 a hint"
-      : clue >= ladderForItem().length - 1
-        ? "✅ show the answer"
-        : "💡 another hint";
 
   function restart() {
     const entries: QEntry[] = [];
@@ -172,7 +187,7 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
       else entries.push({ itemIdx: idx });
     });
     setOrder(shuffle(entries));
-    setI(0); setValue(""); setResult(null); setScore({ ok: 0, total: 0 });
+    setI(0); setValue(""); setResult(null); setRetry(false); setScore({ ok: 0, total: 0 });
   }
 
   const prompt = item ? (
@@ -193,15 +208,23 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
     )
   ) : null;
 
-  const rungsShown = clue > 0 && item ? (
+  // The popup form draws the rungs itself (no shell there); the shell draws
+  // them from `help.shown` on the full page.
+  const rungsShown = ladder.shown.length > 0 && item ? (
     <div className="mt-3 space-y-1">
-      {shownRungs(ladderForItem(), clue).map((r, k) => (
-        <p key={k} lang="fr" className="rounded-lg bg-amber-50 px-2 py-1 text-sm text-amber-900">
+      {ladder.shown.map((r, k) => (
+        <p key={k} lang="fr" className="rounded-lg bg-[color:var(--cahier-hl)]/30 px-2 py-1 text-sm text-[color:var(--cahier-ink)]">
           {r.text}
         </p>
       ))}
     </div>
   ) : null;
+  const why = item?.example && !natForm ? (
+    <p lang="fr">
+      <span className="font-bold">{item.example}</span>
+      {item.exampleEn && <span className="ml-2 opacity-70">— {item.exampleEn}</span>}
+    </p>
+  ) : undefined;
 
   // Word-bank distractors: a nationality question draws the same item's
   // other three forms (chinois/chinoise/chinoises — the exact confusions
@@ -247,18 +270,22 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
           <div className="rounded-2xl border-2 bg-[var(--fluo-card)] p-4" style={{ borderColor: "var(--fluo-line)" }}>
             {prompt}
             {rungsShown}
-            <form onSubmit={(e) => { e.preventDefault(); result === null ? check() : next(); }} className="mt-4">
+            <form onSubmit={(e) => { e.preventDefault(); retry ? tryAgain() : result === null ? check() : next(); }} className="mt-4">
               {answerInput}
               {result === null ? (
                 <>
-                  <button type="submit" className="fluo-btn mt-3 w-full">Check</button>
-                  {clue < ladderForItem().length && (
+                  {retry && (
+                    <p className="mt-2 text-sm font-bold text-[color:var(--drill-bad-ink)]">✗ Not yet</p>
+                  )}
+                  <button type="submit" className="fluo-btn mt-3 w-full">{retry ? "Try again" : "Check"}</button>
+                  {ladder.help?.label && (
                     <button
                       type="button"
-                      onClick={takeHint}
-                      className="mt-2 w-full rounded-full border-2 border-amber-300 bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-800"
+                      onClick={ladder.climb}
+                      disabled={ladder.help.disabled}
+                      className="mt-2 w-full rounded-full border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-1.5 text-xs font-bold text-[color:var(--cahier-ink)] disabled:opacity-40"
                     >
-                      {hintLabel}
+                      ? {ladder.help.label}
                     </button>
                   )}
                 </>
@@ -292,17 +319,21 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
       cta={
         done
           ? { label: "↻ Again", onClick: restart }
-          : result === null
+          : result === null && !retry
             ? { label: "Check", onClick: check, disabled: !value.trim() }
             : null
       }
-      secondary={
-        !done && result === null && item && clue < ladderForItem().length
-          ? { label: hintLabel, onClick: takeHint }
-          : null
-      }
+      help={done ? null : ladder.help}
       feedback={
-        result === null
+        retry
+          ? {
+              kind: "wrong",
+              body: ladder.revealed
+                ? <><span lang="fr">→ {answer}</span><button type="button" onClick={() => speak(answer, "fr-FR")} className="ml-2 text-base opacity-70 hover:opacity-100" title="Hear it">🔊</button></>
+                : "Not yet",
+              cta: { label: ladder.revealed ? "Type it" : "Try again", onClick: tryAgain },
+            }
+          : result === null
           ? null
           : {
               kind: isRight ? "correct" : "wrong",
@@ -311,11 +342,9 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
                   {isRight ? (result === "good" ? "Bien ! (accent differs)" : "Parfait !") : null}
                   {result !== "perfect" && <span lang="fr" className="ml-1">→ {answer}</span>}
                   <button type="button" onClick={() => speak(answer, "fr-FR")} className="ml-2 text-base opacity-70 hover:opacity-100" title="Hear it">🔊</button>
-                  {item?.example && !natForm && (
-                    <span lang="fr" className="ml-2 font-medium italic opacity-80">{item.example}</span>
-                  )}
                 </>
               ),
+              why,
               cta: { label: i + 1 >= total ? "Finish" : "Continue", onClick: next },
             }
       }
@@ -329,7 +358,6 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
       ) : item ? (
         <div>
           {prompt}
-          {rungsShown}
           <div className="mt-5">{answerInput}</div>
         </div>
       ) : null}

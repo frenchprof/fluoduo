@@ -21,7 +21,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import DrillShell, { drillExitHref } from "@/components/DrillShell";
 import { CURATED } from "@/content/collections";
 import { speak } from "@/games/letris/speech";
-import { recordItemResult } from "@/lib/progress";
+import { hintsFor } from "@/lib/help/hints";
+import { useHelpLadder } from "@/lib/help/useHelpLadder";
 import { sfx } from "@/games/audio/sfx";
 import { logEvent } from "@/lib/firebase/usage";
 import { BUILDING_EMOJI, SPECULEARN_EXCLUDED_ITEMS } from "@/lib/collections/speculearnReady";
@@ -143,6 +144,9 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
   const [listening, setListening] = useState(false);
   const [opts, setOpts] = useState<DevItem[]>([]);
   const [verdictGood, setVerdictGood] = useState<boolean | null>(null);
+  // Track D: a wrong pick/say that is NOT final — struck option, pick again.
+  const [retry, setRetry] = useState(false);
+  const [struck, setStruck] = useState<DevItem[]>([]);
   const recRef = useRef<RecLike | null>(null);
   const retryRef = useRef<DevItem[] | null>(null);
 
@@ -160,6 +164,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
   const prepare = (q: Trial[], i: number) => {
     const t = q[i];
     setPicked(null); setSelected(null); setHeard(""); setVerdictGood(null); setLocked(false);
+    setRetry(false); setStruck([]);
     if (t.dir === "wi" || t.dir === "iw") setOpts(shuffle([t.it, ...distractors(t.it)]));
     else setOpts([]);
     if (t.dir === "say-t") speak(t.it.w, "fr-FR");
@@ -187,19 +192,52 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ITEMS]);
 
-  /** One graded outcome — XP/streak/SRS + the teacher evidence trail. */
+  const t = queue[idx];
+  // The help ladder (Track D). Picks: the struck wrong pick is the hint;
+  // says: first letters, then the skeleton, then the word.
+  const isSay = !!t && (t.dir === "say-t" || t.dir === "say-s");
+  const hints = useMemo(
+    () => (t ? hintsFor(isSay ? "say" : "mcq", { answer: t.it.w, options: opts.map((o) => o.w) }) : []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [t?.it.w, isSay, opts],
+  );
+  const ladder = useHelpLadder({
+    kind: isSay ? "say" : "mcq",
+    itemKey: t ? `${idx}:${t.it.w}` : null,
+    itemId: t ? `devine:${baseWord(t.it.w)}` : undefined,
+    surface: "speculearn",
+    hints,
+    reveal: t?.it.w ?? "",
+    enabled: screen === "quiz" && !!t,
+  });
+  const struckSet = useMemo(() => {
+    const out = new Set(struck.map((o) => o.w));
+    for (const w of ladder.eliminated) if (w !== t?.it.w) out.add(w);
+    return out;
+  }, [struck, ladder.eliminated, t?.it.w]);
+
+  /** One graded outcome — XP/streak/SRS + the teacher evidence trail (via
+   *  the ladder, which stamps the assistance actually shown). */
   const grade = (it: DevItem, good: boolean, given?: string) => {
     // The devine: prefix predates the SpecuLearn rename — kept so every
     // learner's SRS history for these words survives (ids are invisible).
-    recordItemResult(`devine:${baseWord(it.w)}`, good, given);
-    if (good) { setScore((s) => s + 1); sfx.correct(); } else { setWrong((w) => [...w, it]); sfx.wrong(); }
-    setVerdictGood(good);
-    setLocked(true);
-    speak(it.w, "fr-FR");
+    const first = ladder.ladder.wrongTries === 0 && !ladder.revealed;
+    const r = ladder.attempt(good, { given, activity: `speculearn:${collectionId}` });
+    if (good) { if (first) setScore((s) => s + 1); sfx.correct(); } else { if (first) setWrong((w) => [...w, it]); sfx.wrong(); }
+    if (r.effect === "done" || r.effect === "reveal") {
+      setVerdictGood(good);
+      setLocked(true);
+      speak(it.w, "fr-FR");
+    } else {
+      // Not final: strike the pick (mcq) / keep the mic open (say), retry.
+      if (selected) setStruck((k) => [...k, selected]);
+      setSelected(null);
+      setRetry(true);
+    }
   };
 
   const pick = (o: DevItem) => {
-    if (locked) return;
+    if (locked || struckSet.has(o.w)) return;
     setSelected(o);
   };
 
@@ -233,6 +271,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
 
   const next = () => {
     if (!locked) return;
+    ladder.skip();
     if (idx + 1 >= queue.length) {
       void logEvent("game.end", { game: "speculearn", collectionId, score });
       setScreen("end");
@@ -248,7 +287,6 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
     if (!retryWrong) retryRef.current = null;
   };
 
-  const t = queue[idx];
   useChoiceKeys({
     count: opts.length,
     enabled: screen === "quiz" && !!t,
@@ -268,17 +306,24 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
       cta={
         screen === "end"
           ? { label: "↻ Play again", onClick: () => again(false) }
-          : t && (t.dir === "wi" || t.dir === "iw") && !locked
+          : t && (t.dir === "wi" || t.dir === "iw") && !locked && !retry
             ? { label: "Check", onClick: () => commit(t.it), disabled: !selected }
             : null
       }
+      help={screen === "quiz" ? ladder.help : null}
       secondary={
         screen === "end" && wrong.length > 0
           ? { label: `🔁 Redo my mistakes (${[...new Set(wrong)].length})`, onClick: () => again(true) }
           : null
       }
       feedback={
-        screen === "quiz" && t && locked
+        screen === "quiz" && t && retry && !locked
+          ? {
+              kind: "wrong",
+              body: ladder.revealed ? <span lang="fr">→ {t.it.w}</span> : "Not yet",
+              cta: { label: isSay ? (ladder.revealed ? "Say it" : "Try again") : "Pick again", onClick: () => setRetry(false) },
+            }
+          : screen === "quiz" && t && locked
           ? {
               kind: verdictGood ? "correct" : "wrong",
               body: (
@@ -342,8 +387,11 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
                         key={o.w}
                         type="button"
                         onClick={() => pick(o)}
+                        disabled={struckSet.has(o.w)}
                         className={`relative overflow-hidden rounded-xl border-2 transition ${
-                          locked
+                          !locked && struckSet.has(o.w)
+                            ? "border-slate-200 opacity-30 grayscale"
+                            : locked
                             ? o === t.it
                               ? "border-emerald-600 ring-2 ring-emerald-400"
                               : o === picked
@@ -370,8 +418,11 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
                         key={o.w}
                         type="button"
                         onClick={() => pick(o)}
+                        disabled={struckSet.has(o.w)}
                         className={`rounded-xl border-2 px-3 py-2.5 text-base font-bold transition ${
-                          locked
+                          !locked && struckSet.has(o.w)
+                            ? "border-slate-200 text-slate-300 line-through"
+                            : locked
                             ? o === t.it
                               ? "border-emerald-600 bg-emerald-50 text-emerald-900"
                               : o === picked

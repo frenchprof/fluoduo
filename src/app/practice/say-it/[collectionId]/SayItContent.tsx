@@ -2,7 +2,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { CURATED } from "@/content/collections";
 import { sfx } from "@/games/audio/sfx";
@@ -11,6 +11,8 @@ import { logEvent } from "@/lib/firebase/usage";
 import DrillShell, { drillExitHref } from "@/components/DrillShell";
 import { practiceItems } from "@/lib/collections/display";
 import { recordItemResult } from "@/lib/progress";
+import { hintsFor } from "@/lib/help/hints";
+import { useHelpLadder, type HelpLadderApi } from "@/lib/help/useHelpLadder";
 import { deaccent, normalize } from "@/lib/practice/cloze";
 import type { Collection, Item } from "@/lib/collections/schema";
 import { shuffle } from "@/lib/shuffle";
@@ -138,6 +140,24 @@ export default function SayItContent({
   const cardRef = useRef<Item | null>(null);
   cardRef.current = card;
 
+  // The help ladder (Track D) — standalone (shell) runs only. Rungs: how
+  // the word starts, its skeleton, then the written form (the older 🔤
+  // peek, now recorded as the answer rung). Two misses climb by themselves.
+  const expectedFr = card && deck ? frFull(articleOf(deck, card), card.fr) : card?.fr ?? "";
+  const hints = useMemo(() => hintsFor("say", { answer: expectedFr }), [expectedFr]);
+  const ladder = useHelpLadder({
+    kind: "say",
+    itemKey: card?.id ?? null,
+    itemId: card?.id,
+    surface: "say-it",
+    hints,
+    reveal: expectedFr,
+    enabled: !embedded && !finished && !!card,
+  });
+  const ladderRef = useRef<HelpLadderApi>(ladder);
+  ladderRef.current = ladder;
+  const peek = embedded ? revealed : ladder.revealed;
+
   useEffect(() => {
     const win = window as any;
     setSupported(!!(win.SpeechRecognition || win.webkitSpeechRecognition));
@@ -177,6 +197,7 @@ export default function SayItContent({
   // comes off the queue, or — when the queue is empty — the run ends.
   const next = useCallback(() => {
     resetTurn();
+    ladderRef.current.skip();
     if (card) setTrail((t) => [...t, { it: card, skipped: false }]);
     if (queue.length > 0) {
       setCard(queue[0]);
@@ -275,11 +296,18 @@ export default function SayItContent({
         // Jingle first, independent of any TTS — short enough not to clash.
         if (ok) sfx.correct(); else sfx.wrong();
         setResult({ grade: g, recognized: t });
-        setScore((s) => ({ ok: s.ok + (ok ? 1 : 0), total: s.total + 1 }));
         // Feed the Reviser: a miss (or a partial "close") resurfaces the word;
         // a clean say advances its spacing ladder. Say It items are curated deck
-        // items, so their ids line up with the Reviser's review queue.
-        if (c.id) recordItemResult(c.id, ok, t, `say-it:${collectionId}`);
+        // items, so their ids line up with the Reviser's review queue. The
+        // ladder records it (with the help actually shown) and, when help
+        // was taken, queues it for ReVue. First try only scores.
+        const L = ladderRef.current;
+        const first = L.ladder.wrongTries === 0 && !L.revealed;
+        if (first || embedded) setScore((s) => ({ ok: s.ok + (ok ? 1 : 0), total: s.total + 1 }));
+        if (c.id) {
+          if (embedded) recordItemResult(c.id, ok, t, `say-it:${collectionId}`);
+          else L.attempt(ok, { given: t, activity: `say-it:${collectionId}` });
+        }
         return t;
       });
     };
@@ -290,8 +318,12 @@ export default function SayItContent({
         setPhase("result");
         sfx.wrong();
         setResult({ grade: "miss", recognized: "(rien entendu)" });
-        setScore((s) => ({ ...s, total: s.total + 1 }));
-        if (c.id) recordItemResult(c.id, false, "(rien entendu)", `say-it:${collectionId}`);
+        const L = ladderRef.current;
+        if (L.ladder.wrongTries === 0 || embedded) setScore((s) => ({ ...s, total: s.total + 1 }));
+        if (c.id) {
+          if (embedded) recordItemResult(c.id, false, "(rien entendu)", `say-it:${collectionId}`);
+          else L.attempt(false, { given: "(rien entendu)", activity: `say-it:${collectionId}` });
+        }
       } else if (e.error === "not-allowed") {
         setPhase("idle");
         alert("Please allow microphone access in your browser.");
@@ -327,7 +359,7 @@ export default function SayItContent({
       if (e.key === "Enter" && p === "result" && embedded) next();
       if (p === "listening") return; // no side actions while the mic is open
       if (k === "r") listenModel();
-      if (k === "v") setRevealed((r) => !r);
+      if (k === "v") { if (embedded) setRevealed((r) => !r); else ladderRef.current.climb(); }
       if (k === "s") skip();
       if (k === "b") back();
       if (k === "e") endNow();
@@ -357,6 +389,7 @@ export default function SayItContent({
           </>
         }
         cta={finished ? { label: "🔁 Restart", onClick: restart } : null}
+        help={finished ? null : ladder.help}
         feedback={
           !finished && phase === "result" && result && ui && card
             ? {
@@ -458,7 +491,7 @@ export default function SayItContent({
               {card.note && (
                 <p className="mt-1 text-sm text-[color:var(--cahier-ink-soft)]">{card.note}</p>
               )}
-              {revealed && phase !== "result" && (
+              {embedded && peek && phase !== "result" && (
                 <p lang="fr" className="cahier-hl mx-auto mt-2 inline-block rounded-sm px-2 fluo-serif text-xl font-black text-[color:var(--cahier-ink)]">
                   {frFull(articleOf(deck, card), card.fr)}
                 </p>
@@ -500,14 +533,15 @@ export default function SayItContent({
                   {phase === "idle" && (
                     <button
                       type="button"
-                      onClick={() => setRevealed((r) => !r)}
-                      className={`flex h-12 w-12 items-center justify-center rounded-full border-2 text-xl shadow-md transition-all active:scale-95 ${
-                        revealed
+                      onClick={() => (embedded ? setRevealed((r) => !r) : ladder.climb())}
+                      disabled={!embedded && ladder.help?.disabled}
+                      className={`flex h-12 w-12 items-center justify-center rounded-full border-2 text-xl shadow-md transition-all active:scale-95 disabled:opacity-40 ${
+                        peek
                           ? "border-[color:var(--cahier-ink)] bg-[color:var(--cahier-hl,#eaff00)]"
                           : "border-[color:var(--cahier-ink)]/25 bg-white hover:border-[color:var(--cahier-ink)]"
                       }`}
-                      aria-label="Show the word"
-                      title="Show (V)"
+                      aria-label={embedded ? "Show the word" : ladder.help?.label ?? "Show the word"}
+                      title={embedded ? "Show (V)" : `${ladder.help?.label ?? "Show"} (V)`}
                     >
                       🔤
                     </button>

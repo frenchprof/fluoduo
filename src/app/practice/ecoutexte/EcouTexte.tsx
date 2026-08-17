@@ -26,7 +26,7 @@ import { fingerprint, generateUnheard } from "@/lib/textgen/engine";
 import { clearHeard, loadHeard, saveHeard } from "@/lib/textgen/heard";
 import { MAX_SENTENCES, type MiniText, type UnitTextGen } from "@/lib/textgen/types";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
-import { recordItemResult } from "@/lib/progress";
+import { queueForReview, recordItemResult } from "@/lib/progress";
 
 const SLOW_RATE = 0.6;
 /** A beat between sentences long enough to hear the sentence boundary. */
@@ -182,13 +182,22 @@ export default function EcouTexte({
     if (!text) return;
     const expect = words(text.sentences[i].fr);
     const activity = `ecoutexte:unite-${gen.unit}`;
+    // Track D: a sentence marked AFTER it was revealed is copied, not
+    // heard — the evidence says so (assistance "answer", not independent)
+    // and each word goes to the ReVue queue for an unaided retrieval later.
+    // (ÉcouTexte keeps its own per-sentence reveal: it is a multi-blank
+    // sheet, not a one-item drill, so the ladder's ? control does not fit.)
+    const wasRevealed = !!revealed[i];
+    const queued: string[] = [];
     const row = (marks[i] ?? []).map((v, l) => {
       const typed = written[i]?.[l]?.trim();
       if (!typed) return v;
       const g = gradeAnswer(written[i][l], expect[l].core);
-      recordItemResult(expect[l].core, g !== "wrong", written[i][l], activity);
+      recordItemResult(expect[l].core, g !== "wrong", written[i][l], activity, wasRevealed ? { revealed: true } : undefined);
+      if (wasRevealed) queued.push(expect[l].core);
       return g;
     });
+    if (queued.length) queueForReview(queued);
     setMarks((m) => m.map((r, k) => (k === i ? row : r)));
   }
 
