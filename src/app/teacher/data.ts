@@ -11,6 +11,16 @@
  */
 
 import { EXCLUDED_BOARD_UIDS, HIDDEN_ROSTER_UID_PREFIXES, isHiddenRosterName } from "@/lib/accountAliases";
+
+/**
+ * Screenshot/check fixture (patch 26). The teacher page cannot render without
+ * live Firestore and an admin sign-in, so a build with
+ * NEXT_PUBLIC_TEACHER_FIXTURE=1 swaps every fetch below for fixture.ts's
+ * synthetic sixteen. The constant is inlined at build time: in a normal
+ * build it is `false`, the branches are dead and fixture.ts is never
+ * bundled. Never set it for a deploy.
+ */
+export const FIXTURE = process.env.NEXT_PUBLIC_TEACHER_FIXTURE === "1";
 import { TERM_START_MS, isCurrentTerm } from "@/lib/term";
 
 /**
@@ -39,6 +49,7 @@ export const EMPTY_ROSTER_META: RosterMeta = { aliasEmails: {}, rosterNames: {},
 /** null = the doc does not exist yet (seed script never ran). Throws on
  *  permission-denied and network failures like every other fetch here. */
 export async function fetchRosterMeta(): Promise<RosterMeta | null> {
+  if (FIXTURE) return (await import("./fixture")).fixtureRosterMeta();
   const [{ getDoc, doc }, { db }] = await Promise.all([
     import("firebase/firestore"),
     import("@/lib/firebase/db"),
@@ -188,6 +199,7 @@ export function num(v: unknown): number | null {
 export const EVENT_FETCH_CAP = 50_000;
 
 export async function fetchAllEvents(): Promise<Ev[]> {
+  if (FIXTURE) return (await import("./fixture")).fixtureEvents();
   const [{ getDocs, collection, limit, orderBy, query }, { db }] = await Promise.all([
     import("firebase/firestore"),
     import("@/lib/firebase/db"),
@@ -223,6 +235,7 @@ export async function fetchAllEvents(): Promise<Ev[]> {
 }
 
 export async function fetchLeaderboard(): Promise<Map<string, BoardRow>> {
+  if (FIXTURE) return (await import("./fixture")).fixtureBoard();
   const [{ getDocs, collection }, { db }] = await Promise.all([
     import("firebase/firestore"),
     import("@/lib/firebase/db"),
@@ -373,6 +386,7 @@ export async function fetchStudentDetail(uids: string[]): Promise<StudentDetail>
 }
 
 async function fetchOneStudent(uid: string): Promise<StudentDetail> {
+  if (FIXTURE) return (await import("./fixture")).fixtureDetail(uid);
   const [{ getDoc, getDocs, getCountFromServer, doc, collection }, { db }] = await Promise.all([
     import("firebase/firestore"),
     import("@/lib/firebase/db"),
@@ -415,5 +429,73 @@ async function fetchOneStudent(uid: string): Promise<StudentDetail> {
   });
   out.responses.sort((a, b) => (b.ts?.getTime() ?? 0) - (a.ts?.getTime() ?? 0));
   out.sessions.sort((a, b) => (b.startedAt ?? 0) - (a.startedAt ?? 0));
+  return out;
+}
+
+/**
+ * The whole class, ONCE (patch 26). Every panel that needs answer logs —
+ * Class now, the outcome × student matrix, Evidence, the analytics CSV, the
+ * per-student drilldown — used to fetch its own copies (Evidence behind a
+ * `Compute` button, sixteen sequential round-trips). This fetches each
+ * learner once through a small pool and hands the map to all of them.
+ * `onEach` lets the page render tiles as they land rather than after the
+ * last one.
+ */
+export const POOL_SIZE = 4;
+
+export async function fetchClassDetails(
+  learners: Learner[],
+  onEach?: (uid: string, d: StudentDetail) => void,
+): Promise<Map<string, StudentDetail>> {
+  const out = new Map<string, StudentDetail>();
+  const queue = [...learners];
+  const worker = async () => {
+    for (let l = queue.shift(); l; l = queue.shift()) {
+      try {
+        const d = await fetchStudentDetail(l.uids);
+        out.set(l.uid, d);
+        onEach?.(l.uid, d);
+      } catch {
+        /* an unreadable learner is a hole in the map, not a dead page */
+      }
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(POOL_SIZE, learners.length) }, worker));
+  return out;
+}
+
+/**
+ * The repoll (Class now, every 30 s): only answers newer than `sinceMs`, per
+ * uid — a single-field range on `timestamp`, no composite index. Returned in
+ * StudentDetail's response shape so the caller can prepend them.
+ */
+export async function fetchResponsesSince(uids: string[], sinceMs: number): Promise<Map<string, StudentDetail["responses"]>> {
+  const out = new Map<string, StudentDetail["responses"]>();
+  if (FIXTURE) {
+    // The fixture "class" answers a little every poll, so the board moves.
+    const { fixtureDetail } = await import("./fixture");
+    for (const u of uids) {
+      const fresh = fixtureDetail(u).responses.filter((r) => (r.ts?.getTime() ?? 0) > sinceMs);
+      if (fresh.length) out.set(u, fresh);
+    }
+    return out;
+  }
+  const [{ getDocs, collection, query, where, Timestamp }, { db }] = await Promise.all([
+    import("firebase/firestore"),
+    import("@/lib/firebase/db"),
+  ]);
+  await Promise.all(uids.map(async (uid) => {
+    const snap = await getDocs(query(collection(db, "users", uid, "responses"), where("timestamp", ">", Timestamp.fromMillis(sinceMs)))).catch(() => null);
+    const rows: StudentDetail["responses"] = [];
+    snap?.forEach((d) => {
+      const r = d.data() as Record<string, unknown> & { timestamp?: { toDate?: () => Date } };
+      if (typeof r.item !== "string" || typeof r.status !== "string") return;
+      rows.push({
+        item: r.item, status: r.status, xp: num(r.xp) ?? 0, latencyMs: num(r.latencyMs),
+        givenAnswer: str(r.givenAnswer), activityId: str(r.activityId), ts: r.timestamp?.toDate?.() ?? null,
+      });
+    });
+    if (rows.length) out.set(uid, rows.sort((a, b) => (b.ts?.getTime() ?? 0) - (a.ts?.getTime() ?? 0)));
+  }));
   return out;
 }

@@ -6,7 +6,6 @@
  *  event trail (pages, games, pretest accuracy). The deep stores live under
  *  users/{uid}/… and are fetched per student on drilldown. */
 
-import { CURATED } from "@/content/collections";
 import { SIOS } from "@/content/sios";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -18,20 +17,21 @@ import { Kpi, TableBox, Section, SectionGroup } from "./ui";
 import Evidence from "./Evidence";
 import { outcomeForItem } from "@/lib/evidence";
 import { describeActivity, describePath, hrefForActivity, normalizePath, titleFor } from "@/lib/labels";
-import { describeItem } from "@/lib/labels";
 import { describeGame } from "@/lib/labels";
+import HeatStrip from "@/components/HeatStrip";
+import { outcomeAccuracy, outcomeRows, UNMAPPED, tierClass } from "@/lib/outcomeRows";
 
 // The analytics-summary CSV moved to the Reports tab (2026-08-11) — card 4,
 // same CLASS_UIDS, same rows. See Reports.tsx.
 
-export default function Students({ events, roster, initialUid }: { events: Ev[]; roster: Learner[]; initialUid?: string | null }) {
+export default function Students({ events, roster, initialUid, details, fetched }: { events: Ev[]; roster: Learner[]; initialUid?: string | null; details: Map<string, StudentDetail>; fetched: number }) {
   const [sel, setSel] = useState<string | null>(initialUid ?? null);
   useEffect(() => { if (initialUid) setSel(initialUid); }, [initialUid]);
   const selected = roster.find((l) => l.uid === sel) ?? null;
   return (
     <SectionGroup>
       <Section id="stu:evidence" title="📈 Learning evidence — within-student gains">
-        <Evidence roster={roster} />
+        <Evidence roster={roster} details={details} fetched={fetched} />
       </Section>
       <Section id="stu:roster" title="Roster" meta={`${roster.length} learners · click one for the full picture`} defaultOpen>
       <TableBox head={["Learner", "Last seen", "Days active", "Page views", "Games", "Pretest answers", "XP", "Streak"]}>
@@ -60,16 +60,20 @@ export default function Students({ events, roster, initialUid }: { events: Ev[];
         )}
       </TableBox>
       </Section>
-      {selected && <StudentPanel key={selected.uid} learner={selected} events={events} onClose={() => setSel(null)} />}
+      {selected && <StudentPanel key={selected.uid} learner={selected} events={events} cached={details.get(selected.uid) ?? null} onClose={() => setSel(null)} />}
     </SectionGroup>
   );
 }
 
-function StudentPanel({ learner, events, onClose }: { learner: Learner; events: Ev[]; onClose: () => void }) {
-  const [detail, setDetail] = useState<StudentDetail | null>(null);
+function StudentPanel({ learner, events, cached, onClose }: { learner: Learner; events: Ev[]; cached: StudentDetail | null; onClose: () => void }) {
+  // The page's pool already fetched this learner (patch 26) — use it; the
+  // fetch below is only for a learner the pool has not reached yet.
+  const [fetchedDetail, setDetail] = useState<StudentDetail | null>(null);
+  const detail = cached ?? fetchedDetail;
   const [error, setError] = useState(false);
 
   useEffect(() => {
+    if (cached) return;
     let cancelled = false;
     fetchStudentDetail(learner.uids).then(
       (d) => { if (!cancelled) setDetail(d); },
@@ -77,7 +81,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
     );
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- key={uid} remounts the panel per learner
-  }, [learner.uid]);
+  }, [learner.uid, !!cached]);
 
   const trail = useMemo(() => {
     const mine = events.filter((e) => learner.uids.includes(e.uid));
@@ -184,9 +188,10 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
       total, byStatus,
       accuracy: total > 0 ? Math.round((good / total) * 100) : null,
       avgLatency: latencyN > 0 ? Math.round(latencySum / latencyN) : null,
-      hardest: [...misses.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8),
     };
   }, [detail]);
+
+  const hardestRows = useMemo(() => (detail ? outcomeRows(detail.responses).filter((r) => r.missed > 0) : []), [detail]);
 
   // ── Exercise identity (2026-07-20, Dan: "merge some info — I cannot see
   // the results of the individual exercises anymore") ─────────────────────
@@ -203,17 +208,8 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
   // links at wherever there can be links — I am very lost"). A normalized
   // activity key IS a destination: paths link to themselves, prefix keys map
   // to their activity's home page.
-  // Hardest ITEMS need their own resolver: an item id names the exercise
-  // that owns it (Dan, 2026-07-22: "click on the lines to access the
-  // questions in question — pllllease").
-  const itemHref = (item: string): string | null => {
-    if (item.startsWith("finale:")) return "/practice/grammarathon/finale";
-    if (item.startsWith("conj-")) return "/conjugaison";
-    if (item.startsWith("letris:") || item.startsWith("vocabularain:")) return "/games/vocabularain";
-    if (item.startsWith("devine:") || item.startsWith("speculearn:")) return "/practice/speculearn";
-    const c = CURATED.find((x) => x.items?.some((it: { id?: string }) => it.id === item));
-    return c ? `/decks/${c.id}` : null;
-  };
+  // Hardest ITEMS used to need their own resolver here; since patch 26 the
+  // hardest table is outcome rows, and an outcome links to its Index row.
   const hrefFor = (key: string): string | null => hrefForActivity(key);
   const ExLink = ({ k, label }: { k: string; label: string }) => {
     const href = hrefFor(k);
@@ -305,6 +301,9 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
 
       {detail && (
         <>
+          {/* The syllabus heat-strip (patch 26): this learner's accuracy on
+              every outcome, one glance. The same component /moi shows them. */}
+          <HeatStrip className="mt-3" values={outcomeAccuracy(detail.responses)} done={new Set(p?.doneSios ?? [])} label={`${learner.name} — accuracy by outcome`} />
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
             <Kpi label="XP" value={p?.xp ?? learner.board?.xp ?? 0} />
             <Kpi label="Gems" value={p?.gems ?? learner.board?.gems ?? 0} />
@@ -405,13 +404,26 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
                 />
               </div>
               </Section>
-              {respStats.hardest.length > 0 && (
-                <Section id="sp:hardest" title="Hardest items" meta={`${respStats.hardest.length} items · ${respStats.hardest[0][1]} misses at worst`}>
-                  <TableBox head={["Item", "Misses"]}>
-                    {respStats.hardest.map(([item, n]) => (
-                      <tr key={item} className="border-t border-slate-100">
-                        <td className="px-3 py-2 font-bold text-slate-900" lang="fr">{(() => { const h = itemHref(item); return h ? <a href={h} target="_blank" rel="noreferrer" title={item} className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{describeItem(item).label}</a> : describeItem(item).label; })()}</td>
-                        <td className="px-3 py-2 text-right font-black text-rose-600">{n}</td>
+              {/* Outcome rows, items nested (patch 26) — the same fold /moi
+                  shows the learner, so teacher and student read one picture:
+                  which OUTCOME bleeds, then which words inside it. */}
+              {hardestRows.length > 0 && (
+                <Section id="sp:hardest" title="Hardest outcomes" meta={`${hardestRows.length} outcomes · ${hardestRows[0].missed} misses at worst`}>
+                  <TableBox head={["Outcome", "Score", "Weak / seen", "Misses", "Items"]}>
+                    {hardestRows.map((r) => (
+                      <tr key={r.sio} className="border-t border-slate-100">
+                        <td className="px-3 py-2 font-bold text-slate-900" title={r.sio === UNMAPPED ? "Answers whose item is in no outcome" : `${r.sio} · ${r.topic}`}>
+                          {r.sio === UNMAPPED ? <span className="text-slate-500">Not yet mapped</span> : <a href={`/activities?unit=${r.unit}#${r.sio}`} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900"><span className="fluo-mono text-xs text-slate-500">U{r.unit}·{r.num}</span> {r.short}</a>}
+                        </td>
+                        <td className={`px-3 py-2 text-right font-black ${tierClass(r.pct)}`}>{r.pct}%</td>
+                        <td className="px-3 py-2 text-right text-slate-700">{r.weakItems} / {r.itemsSeen}</td>
+                        <td className="px-3 py-2 text-right font-black text-rose-600">{r.missed}</td>
+                        <td className="px-3 py-2 text-slate-700" lang="fr">
+                          {r.items.slice(0, 6).map((it) => (
+                            <span key={it.item} className="mr-2 inline-block whitespace-nowrap" title={`${it.item} · ${it.missed} of ${it.n} missed`}>{it.label} <b className="text-rose-600">✗{it.missed}</b></span>
+                          ))}
+                          {r.items.length > 6 && <span className="text-xs text-slate-500">+{r.items.length - 6}</span>}
+                        </td>
                       </tr>
                     ))}
                   </TableBox>

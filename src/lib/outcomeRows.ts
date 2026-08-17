@@ -19,7 +19,7 @@ import { outcomeForItem } from "@/lib/evidence";
 import { deckForItem } from "@/lib/curriculum";
 
 /** The minimum a recorded answer needs to carry to be folded. */
-export type Answer = { item: string; status: string; ts?: number };
+export type Answer = { item: string; status: string };
 
 export type ItemRow = { item: string; label: string; n: number; missed: number };
 

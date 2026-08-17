@@ -140,7 +140,15 @@ export default function MoiContent() {
   }, [resp]);
 
   // Outcome rows — the audit's cure for the flat "hardest items" grid.
-  const rows = useMemo(() => (resp ? outcomeRows(resp) : []), [resp]);
+  // Signed in: the answer log. Signed out: this device's SRS state, an item
+  // still on a one-day interval reading as "weak" (the old Strong-vs-weak
+  // rule) — the same rows, so the page is never empty on a phone.
+  const srsAnswers = useMemo(
+    () => (p ? Object.entries(p.itemSrs).map(([item, st]) => ({ item, status: st.intervalDays <= 1 ? "missed" : "met" })) : []),
+    [p],
+  );
+  const fromSrs = !resp;
+  const rows = useMemo(() => outcomeRows(resp ?? srsAnswers), [resp, srsAnswers]);
   const toFix = useMemo(() => rows.filter((r) => r.missed > 0), [rows]);
   const heat = useMemo<HeatValues>(() => (resp ? outcomeAccuracy(resp) : ledgerAcc), [resp, ledgerAcc]);
 
@@ -204,11 +212,11 @@ export default function MoiContent() {
       <HeatStrip className="mt-3" values={heat} done={doneSet} hrefFor={indexHref} label="Syllabus, by outcome — your accuracy" />
 
       {/* ── Four segments (were six tabs). ── */}
-      <div role="group" aria-label="View" className="moi-segments fluo-mono mt-3 grid grid-cols-4 overflow-hidden rounded-xl border-2 text-xs font-black" style={{ borderColor: INK }}>
+      <div role="group" aria-label="View" className="moi-segments fluo-mono mt-3 grid grid-cols-4 overflow-hidden rounded-xl border-2 text-[11px] font-black tracking-tight" style={{ borderColor: INK }}>
         {SEGMENTS.map((s) => {
           const on = s.key === seg;
           return (
-            <button key={s.key} type="button" aria-pressed={on} onClick={() => setSeg(s.key)} className="py-2 leading-none"
+            <button key={s.key} type="button" aria-pressed={on} onClick={() => setSeg(s.key)} className="truncate px-0.5 py-2 leading-none"
               style={{ background: on ? INK : PAPER, color: on ? PAPER : INK }}>
               {s.label}
             </button>
@@ -218,21 +226,21 @@ export default function MoiContent() {
 
       {respState === "signedout" && seg !== "journey" && (
         <p className="mt-3 rounded-xl border-2 px-3 py-2 text-sm font-bold" style={{ borderColor: "var(--tier-medium)", background: "var(--tier-medium-soft)", color: INK }}>
-          🔑 Sign in to see your full answer history — this device's practice only, for now.
+          🔑 Sign in to see your full answer history — this device&rsquo;s practice only, for now.
         </p>
       )}
       {respState === "error" && (
         <p className="mt-3 rounded-xl border-2 px-3 py-2 text-sm font-bold" style={{ borderColor: "var(--tier-weak)", background: "var(--tier-weak-soft)", color: INK }}>
-          Couldn't load your answer history just now — the device view below still works.
+          Couldn&rsquo;t load your answer history just now — the device view below still works.
         </p>
       )}
 
       {seg === "fix" && (
         <div className="mt-3">
           {toFix.length > 0 ? (
-            <Capped items={toFix} render={(r) => <OutcomeCard key={r.sio} row={r} />} />
+            <Capped items={toFix} render={(r) => <OutcomeCard key={r.sio} row={r} weakWord={fromSrs ? "weak" : "missed"} />} />
           ) : (
-            <p className="text-sm" style={{ color: SOFT }}>{respState === "ready" ? "Nothing to fix — no misses on record." : "Sign in to see what to fix."}</p>
+            <p className="text-sm" style={{ color: SOFT }}>{respState === "ready" ? "Nothing to fix — no misses on record." : "Nothing weak on this device yet — practise anywhere and it shows here."}</p>
           )}
         </div>
       )}
@@ -349,7 +357,7 @@ function Capped<T>({ items, render, wrap }: { items: T[]; render: (t: T, i: numb
  * Index row, then the missed items as chips (CAP shown, rest behind +N).
  * The unmapped bucket is the same card, collapsed, pinned last by the sort.
  */
-function OutcomeCard({ row }: { row: OutcomeRow }) {
+function OutcomeCard({ row, weakWord }: { row: OutcomeRow; weakWord: "missed" | "weak" }) {
   const [more, setMore] = useState(false);
   const unmapped = row.sio === UNMAPPED;
   const [open, setOpen] = useState(!unmapped);
@@ -376,13 +384,13 @@ function OutcomeCard({ row }: { row: OutcomeRow }) {
         <span className="h-[3px] flex-1 overflow-hidden rounded-full" style={{ background: "var(--cahier-line)" }} role="progressbar" aria-label="Items weak" aria-valuenow={row.weakItems} aria-valuemin={0} aria-valuemax={row.itemsSeen}>
           <span className="block h-full rounded-full" style={{ width: `${row.itemsSeen ? Math.max((100 * row.weakItems) / row.itemsSeen, 1) : 0}%`, background: tone }} />
         </span>
-        <span className="fluo-mono shrink-0 text-[10px] font-bold" style={{ color: SOFT }}>{row.weakItems}/{row.itemsSeen} weak · <span className="tier-weak">✗ {row.missed}</span></span>
+        <span className="fluo-mono shrink-0 text-[10px] font-bold" style={{ color: SOFT }}>{row.weakItems}/{row.itemsSeen} weak{weakWord === "missed" && <> · <span className="tier-weak">✗ {row.missed}</span></>}</span>
       </div>
       {open && row.items.length > 0 && (
         <div className="mt-1.5 flex flex-wrap gap-1">
           {items.map((it) => (
-            <span key={it.item} className="rounded-md border px-1.5 py-0.5 text-xs font-bold" lang="fr" title={`${it.item} · ${it.missed} of ${it.n} missed`} style={{ borderColor: tierToken(Math.round((100 * (it.n - it.missed)) / it.n)), color: INK }}>
-              {it.label} <span className="tier-weak">✗{it.missed}</span>
+            <span key={it.item} className="rounded-md border px-1.5 py-0.5 text-xs font-bold" lang="fr" title={`${it.item} · ${it.missed} of ${it.n} ${weakWord}`} style={{ borderColor: tierToken(Math.round((100 * (it.n - it.missed)) / it.n)), color: INK }}>
+              {it.label}{weakWord === "missed" && <> <span className="tier-weak">✗{it.missed}</span></>}
             </span>
           ))}
           {rest > 0 && (

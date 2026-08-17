@@ -6,7 +6,7 @@
  *  Students tab's accordion — same UIDs, same rows. */
 
 import { useMemo, useState } from "react";
-import { type Ev, type Learner, fetchStudentDetail, fmtWhen, str, SG_DAY_KEY, SG_DAY_LABEL } from "./data";
+import { type Ev, type Learner, type StudentDetail, fetchStudentDetail, fmtWhen, str, SG_DAY_KEY, SG_DAY_LABEL } from "./data";
 import { pretestTitle } from "./Pretests";
 
 /** A student must have shown up on this many separate days to leave card 1. */
@@ -46,7 +46,7 @@ const CLASS_UIDS: string[][] = [
   ["kQVWo2UmsoZrFhQvThBWeRS1nN03"],
 ];
 
-export default function Reports({ events, roster, includeTeachers = false }: { events: Ev[]; roster: Learner[]; includeTeachers?: boolean }) {
+export default function Reports({ events, roster, includeTeachers = false, details }: { events: Ev[]; roster: Learner[]; includeTeachers?: boolean; details?: Map<string, StudentDetail> }) {
   const model = useMemo(() => {
     const students = roster.filter((l) => includeTeachers || !l.isTeacher);
     const uids = new Set(students.flatMap((s) => s.uids));
@@ -134,7 +134,9 @@ export default function Reports({ events, roster, includeTeachers = false }: { e
       const lines = ["Name,Email,UID(s),XP,Streak,SIOs done,Answers,Accuracy %,Last seen,Days active"];
       for (const uids of CLASS_UIDS) {
         const l = model.students.find((r) => r.uids.some((u) => uids.includes(u))) ?? null;
-        const d = await fetchStudentDetail(uids);
+        // The page's pool already holds this learner (patch 26); fetch only
+        // for a uid list the roster does not know.
+        const d = (l && details?.get(l.uid)) || (await fetchStudentDetail(uids));
         const n = d.responses.length;
         const missed = d.responses.filter((r) => r.status === "missed").length;
         lines.push([
