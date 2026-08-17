@@ -112,10 +112,6 @@ export function accuracyFor(l: Ledger, activityKey: string, sio: string): number
 }
 
 /** The tier token for an accuracy — the same scale as /moi and the teacher
- *  page (red under 50, amber under 75, otherwise good). */
-export function tierToken(pct: number | null): string {
-  if (pct == null) return "var(--cahier-line-strong)";
-  if (pct < 50) return "var(--tier-weak)";
-  if (pct < 75) return "var(--tier-medium)";
-  return "var(--tier-good)";
-}
+ *  page. ONE definition (progress.ts `tierFor`, mapped to a token in
+ *  outcomeRows.ts); re-exported so the Index's import path still works. */
+export { tierToken } from "@/lib/outcomeRows";

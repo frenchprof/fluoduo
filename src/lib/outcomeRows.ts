@@ -17,6 +17,7 @@ import { SIOS } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import { outcomeForItem } from "@/lib/evidence";
 import { deckForItem } from "@/lib/curriculum";
+import { tierFor } from "@/lib/progress";
 
 /** The minimum a recorded answer needs to carry to be folded. */
 export type Answer = { item: string; status: string };
@@ -124,19 +125,16 @@ export function outcomeAccuracy(answers: Answer[]): Record<string, number> {
 }
 
 /** The tier token for an accuracy — ONE scale for /moi, the Index and the
- *  teacher page (red under 50, amber under 75, otherwise good; neutral when
- *  nothing was answered). Same thresholds as activityLedger.tierToken. */
+ *  teacher page (weak under 50, medium under 75, otherwise good; neutral
+ *  when nothing was answered). The thresholds live in progress.ts
+ *  (`tierFor`) — this only maps the tier to its CSS token. */
 export function tierToken(pct: number | null | undefined): string {
-  if (pct == null) return "var(--cahier-line-strong)";
-  if (pct < 50) return "var(--tier-weak)";
-  if (pct < 75) return "var(--tier-medium)";
-  return "var(--tier-good)";
+  const t = tierFor(pct);
+  return t ? `var(--tier-${t})` : "var(--cahier-line-strong)";
 }
 
 /** Text-tone twin of tierToken (the number beside the bar). */
 export function tierClass(pct: number | null | undefined): string {
-  if (pct == null) return "";
-  if (pct < 50) return "tier-weak";
-  if (pct < 75) return "tier-medium";
-  return "tier-good";
+  const t = tierFor(pct);
+  return t ? `tier-${t}` : "";
 }

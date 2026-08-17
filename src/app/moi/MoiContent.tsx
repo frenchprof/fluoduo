@@ -20,7 +20,7 @@
  */
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { SIOS } from "@/content/sios";
-import { loadProgress, type Progress } from "@/lib/progress";
+import { isWeakSrs, loadProgress, type Progress } from "@/lib/progress";
 import { SortableTable } from "@/lib/sortTable";
 import { useAuthUser } from "@/lib/firebase/auth";
 import { describeActivity, hrefForActivity, describeItem } from "@/lib/labels";
@@ -147,7 +147,7 @@ export default function MoiContent() {
   // still on a one-day interval reading as "weak" (the old Strong-vs-weak
   // rule) — the same rows, so the page is never empty on a phone.
   const srsAnswers = useMemo(
-    () => (p ? Object.entries(p.itemSrs).map(([item, st]) => ({ item, status: st.intervalDays <= 1 ? "missed" : "met" })) : []),
+    () => (p ? Object.entries(p.itemSrs).map(([item, st]) => ({ item, status: isWeakSrs(st) ? "missed" : "met" })) : []),
     [p],
   );
   const fromSrs = !resp;

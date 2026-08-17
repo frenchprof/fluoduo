@@ -70,6 +70,30 @@ export type ItemSrs = {
   intervalDays: number;
 };
 
+// ── THE ONE DEFINITION OF "WEAK" (data-truth backlog, 2026-08-17) ──────────
+// Four rules used to coexist: the tier scale (accuracy < 50 red, < 75 amber)
+// in outcomeRows.ts AND again in activityLedger.ts; the teacher's missColor
+// (miss rate >= 50 red, >= 25 amber — the same idea, off by one at 75); the
+// Reviser's "weak" (SRS interval reset to 0 by a miss); /moi's and the
+// Finale's "weak" (interval <= 1 day). Every site now calls these two.
+/** Accuracy below this is WEAK (red). */
+export const WEAK_BELOW = 50;
+/** Accuracy from this up is GOOD (green); between = MEDIUM (amber). */
+export const GOOD_FROM = 75;
+export type Tier = "weak" | "medium" | "good";
+/** The tier of a 0..100 accuracy; null when nothing was answered. */
+export function tierFor(pct: number | null | undefined): Tier | null {
+  if (pct == null || Number.isNaN(pct)) return null;
+  if (pct < WEAK_BELOW) return "weak";
+  if (pct < GOOD_FROM) return "medium";
+  return "good";
+}
+/** An SRS item is WEAK while its interval is at most one day: just missed
+ *  (0, the ladder reset) or repaired-but-fragile (1, the first rung back). */
+export function isWeakSrs(s: ItemSrs | undefined | null): boolean {
+  return !!s && s.intervalDays <= 1;
+}
+
 // Correctness-weighted XP: completing a SIO always earns the base; on top of
 // that a mastery bonus scales with how many of the SIO's practice items the
 // learner has actually gotten right (their itemSrs state). Someone who drilled

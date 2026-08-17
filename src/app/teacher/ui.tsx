@@ -3,6 +3,7 @@
 /** Tiny shared pieces for the teacher dashboard panels. */
 
 import { SortableTable } from "@/lib/sortTable";
+import { tierFor } from "@/lib/progress";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
 export function Kpi({ label, value, sub }: { label: string; value: ReactNode; sub?: string }) {
@@ -166,7 +167,10 @@ export function useSortedSections<T>(items: T[], options: SortOption<T>[]) {
   return { sorted, bar };
 }
 
-/** Miss/failure rates read red→amber→green everywhere on the dashboard. */
+/** Miss/failure rates read red→amber→green everywhere on the dashboard —
+ *  on THE tier scale (progress.ts `tierFor`, applied to 100 − miss rate), so
+ *  a 30 % miss rate is amber here exactly as 70 % accuracy is on /moi. */
 export function missColor(pct: number): string {
-  return pct >= 50 ? "text-rose-600" : pct >= 25 ? "text-amber-600" : "text-emerald-700";
+  const t = tierFor(100 - pct);
+  return t === "weak" ? "text-rose-600" : t === "medium" ? "text-amber-600" : "text-emerald-700";
 }

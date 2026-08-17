@@ -146,8 +146,11 @@ writers = [f for f in ("src/lib/progress.ts", "src/app/activities/page.tsx") if 
 check(not writers, "one writer (recordResponse)", f"extra ledger writers: {writers}")
 check("normalizePath(" in lcode, "ledger normalises renamed routes (letris → vocabularain…)",
       "ledger does not normalise activityIds")
-check("pct < 50" in lcode and "pct < 75" in lcode, "tier thresholds 50 / 75",
-      "ledger tier thresholds differ from /moi's")
+# 2026-08-17: the ledger re-exports outcomeRows.tierToken, whose thresholds are
+# progress.ts's tierFor (50 / 75) — one definition, no private numbers here.
+check('export { tierToken } from "@/lib/outcomeRows"' in lcode and "pct < 50" not in lcode,
+      "tier thresholds 50 / 75 — the ledger re-exports the one tierToken",
+      "ledger carries its own tier thresholds")
 check('"fluolingo:activityLedger"' in lcode, "ledger key namespaced", "ledger key not namespaced")
 
 # ── 5 · hubs → redirects ─────────────────────────────────────────────────

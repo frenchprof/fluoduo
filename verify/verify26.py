@@ -87,7 +87,13 @@ check('export const UNMAPPED' in r and "if (a.sio === UNMAPPED) return 1" in r,
       "the unmapped bucket is pinned last", "no UNMAPPED bucket pinned last")
 check("b.missed * b.weakItems - a.missed * a.weakItems" in r,
       "rows ordered by missed × weakItems (the audit's rule)", "row order is not missed × weakItems")
-check("pct < 50" in r and "pct < 75" in r, "tier scale 50 / 75 (matches the ledger)", "tier thresholds drift from 50 / 75")
+# 2026-08-17 (data-truth backlog): the thresholds moved to progress.ts
+# (`tierFor`, WEAK_BELOW 50 / GOOD_FROM 75) — outcomeRows maps the tier to a
+# token and must not carry its own numbers.
+prog = strip_comments(read("src/lib/progress.ts"))
+check("tierFor(" in r and 'from "@/lib/progress"' in r and "pct < 50" not in r
+      and "WEAK_BELOW = 50" in prog and "GOOD_FROM = 75" in prog,
+      "tier scale 50 / 75 — ONE definition (progress.ts tierFor)", "tier thresholds drift from progress.ts tierFor (50 / 75)")
 check("export function outcomeAccuracy" in r, "outcomeAccuracy feeds the heat-strip", "no outcomeAccuracy export")
 for bad in ("app/teacher", "accountAliases", "rosterPrivate", "./data"):
     check(bad not in r, f"outcomeRows imports nothing from {bad}", f"outcomeRows imports {bad} — learner path contaminated")

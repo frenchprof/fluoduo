@@ -25,7 +25,7 @@ import { FINALE_BANK, FINALE_SIOS, type FinaleItem } from "@/content/finale";
 import { SIOS } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import { deaccent, gradeAgainst, normalize } from "@/lib/practice/cloze";
-import { loadProgress, recordItemResult } from "@/lib/progress";
+import { isWeakSrs, loadProgress, recordItemResult } from "@/lib/progress";
 import { buildLadder, shownRungs } from "@/lib/help/ladder";
 import { buildEvidence } from "@/lib/evidence";
 
@@ -57,7 +57,7 @@ function sioWeakness(): Record<string, number> {
       const st = p.itemSrs[id];
       if (!st) continue;
       tracked += 1;
-      if (st.due <= now || st.intervalDays <= 1) bad += 1;
+      if (st.due <= now || isWeakSrs(st)) bad += 1;
     }
     w[sio] = 1 + 4 * (tracked > 0 ? bad / tracked : 0.5);
   }
