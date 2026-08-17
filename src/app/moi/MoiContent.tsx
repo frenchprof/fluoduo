@@ -29,7 +29,7 @@ import { UNMAPPED, outcomeRows, outcomeAccuracy, isMiss, tierToken, tierClass, t
 import { UNIT_ACCENTS } from "@/components/siteTabs";
 import HeatStrip, { type HeatValues } from "@/components/HeatStrip";
 
-type Resp = { item: string; status: string; activityId: string; ts: number; given?: string };
+type Resp = { item: string; status: string; activityId: string; ts: number; given?: string; outcomeId?: string | null };
 
 /** Every list on this page shows this many, then "+N more". */
 const CAP = 5;
@@ -94,13 +94,14 @@ export default function MoiContent() {
         const snap = await getDocs(collection(db, "users", uid, "responses"));
         const rows: Resp[] = [];
         snap.forEach((d) => {
-          const x = d.data() as { item?: string; status?: string; activityId?: string; timestamp?: { toMillis?: () => number }; givenAnswer?: unknown };
+          const x = d.data() as { item?: string; status?: string; activityId?: string; timestamp?: { toMillis?: () => number }; givenAnswer?: unknown; outcomeId?: unknown };
           rows.push({
             item: String(x.item ?? ""),
             status: String(x.status ?? ""),
             activityId: String(x.activityId ?? ""),
             ts: x.timestamp?.toMillis?.() ?? 0,
             given: typeof x.givenAnswer === "string" ? x.givenAnswer : undefined,
+            outcomeId: typeof x.outcomeId === "string" ? x.outcomeId : null, // the writer's outcome (D10 round-trip)
           });
         });
         setResp(rows);

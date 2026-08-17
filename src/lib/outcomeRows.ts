@@ -19,8 +19,25 @@ import { outcomeForItem } from "@/lib/evidence";
 import { deckForItem } from "@/lib/curriculum";
 import { tierFor } from "@/lib/progress";
 
-/** The minimum a recorded answer needs to carry to be folded. */
-export type Answer = { item: string; status: string };
+/** The minimum a recorded answer needs to carry to be folded — plus the
+ *  evidence block responses.ts has written since 2026-08-10 (D10: it was
+ *  written and never read; readers pass it through since 2026-08-17). */
+export type Answer = {
+  item: string;
+  status: string;
+  /** The outcome the writer recorded (PRD §7). Preferred over the join. */
+  outcomeId?: string | null;
+  evidenceType?: string | null;
+  assistance?: string | null;
+  independent?: boolean | null;
+};
+
+/** The outcome an answer bears on: what the writer STORED first (evidence
+ *  block), the item → outcome join table second (older rows, and games that
+ *  record raw French). ONE resolver for every reader. */
+export function outcomeOf(a: Pick<Answer, "item" | "outcomeId">): string | undefined {
+  return (a.outcomeId && SIO_BY_ID.has(a.outcomeId) ? a.outcomeId : undefined) ?? outcomeForItem(a.item);
+}
 
 export type ItemRow = { item: string; label: string; n: number; missed: number };
 
@@ -49,9 +66,11 @@ export const UNMAPPED = "unmapped";
 
 const SIO_BY_ID = new Map(SIOS.map((s) => [s.id, s] as const));
 
-/** A miss is a miss: `missed` and `retried` both mean the first try failed. */
+/** A miss is a miss. The writer (responses.ts) records exactly two statuses,
+ *  `met` and `missed`; `retried` / `mastered` were read here and on the
+ *  teacher page but never written by anything (D9) — gone since 2026-08-17. */
 export function isMiss(status: string): boolean {
-  return status === "missed" || status === "retried";
+  return status === "missed";
 }
 
 /** French of a deck item, without its outcome prefix (chips live INSIDE their
@@ -78,7 +97,7 @@ export function outcomeRows(answers: Answer[]): OutcomeRow[] {
   const acc = new Map<string, { n: number; missed: number; items: Map<string, { n: number; missed: number }> }>();
   for (const a of answers) {
     if (!a.item) continue;
-    const sio = outcomeForItem(a.item) ?? UNMAPPED;
+    const sio = outcomeOf(a) ?? UNMAPPED;
     let g = acc.get(sio);
     if (!g) acc.set(sio, (g = { n: 0, missed: 0, items: new Map() }));
     let it = g.items.get(a.item);

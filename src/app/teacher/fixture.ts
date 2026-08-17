@@ -69,6 +69,7 @@ export function fixtureDetail(uid: string): StudentDetail {
       item: it.id, status: ok ? "met" : "missed", xp: ok ? 10 : 0, latencyMs: 2000 + Math.floor(r() * 6000),
       givenAnswer: ok ? null : "…", activityId: `/practice/flip-it/${SIOS[idx].collectionId}`,
       ts: new Date(NOW - ago),
+      outcomeId: it.sio, evidenceType: "recognition", assistance: "none", independent: true,
     });
   }
   // Two learners are "live": a burst in the last ten minutes, one of them a
@@ -80,6 +81,7 @@ export function fixtureDetail(uid: string): StudentDetail {
         item: it.id, status: i === 3 && k >= 3 ? "missed" : k % 2 ? "missed" : "met", xp: 0, latencyMs: 3000,
         givenAnswer: null, activityId: `/practice/flip-it/${SIOS[SIOS.findIndex((s) => s.id === it.sio)].collectionId}`,
         ts: new Date(NOW - (6 - k) * 60_000),
+        outcomeId: it.sio, evidenceType: "recognition", assistance: "none", independent: true,
       });
     }
   }

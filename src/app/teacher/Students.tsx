@@ -15,11 +15,10 @@ import {
 import { XP_CORRECT, XP_WRONG, XP_SIO_BASE, XP_CONVERSATION } from "@/lib/economy";
 import { Kpi, TableBox, Section, SectionGroup } from "./ui";
 import Evidence from "./Evidence";
-import { outcomeForItem } from "@/lib/evidence";
 import { describeActivity, describePath, hrefForActivity, normalizePath, titleFor } from "@/lib/labels";
 import { describeGame } from "@/lib/labels";
 import HeatStrip from "@/components/HeatStrip";
-import { outcomeAccuracy, outcomeRows, UNMAPPED, tierClass } from "@/lib/outcomeRows";
+import { isMiss, outcomeAccuracy, outcomeOf, outcomeRows, UNMAPPED, tierClass } from "@/lib/outcomeRows";
 
 // The analytics-summary CSV moved to the Reports tab (2026-08-11) — card 4,
 // same CLASS_UIDS, same rows. See Reports.tsx.
@@ -177,11 +176,11 @@ function StudentPanel({ learner, events, cached, onClose }: { learner: Learner; 
     let latencyN = 0;
     for (const r of detail.responses) {
       byStatus.set(r.status, (byStatus.get(r.status) ?? 0) + 1);
-      if (r.status === "missed" || r.status === "retried") misses.set(r.item, (misses.get(r.item) ?? 0) + 1);
+      if (isMiss(r.status)) misses.set(r.item, (misses.get(r.item) ?? 0) + 1);
       if (r.latencyMs !== null) { latencySum += r.latencyMs; latencyN += 1; }
     }
     const total = detail.responses.length;
-    const good = (byStatus.get("met") ?? 0) + (byStatus.get("mastered") ?? 0);
+    const good = byStatus.get("met") ?? 0;
     return {
       total, byStatus,
       accuracy: total > 0 ? Math.round((good / total) * 100) : null,
@@ -219,16 +218,15 @@ function StudentPanel({ learner, events, cached, onClose }: { learner: Learner; 
   // ── Results by exercise: EVERY response, grouped (not just the last 15) ──
   const byExercise = useMemo(() => {
     if (!detail) return null;
-    type G = { key: string; label: string; n: number; ok: number; missed: number; retried: number; last: number };
+    type G = { key: string; label: string; n: number; ok: number; missed: number; last: number };
     const m = new Map<string, G>();
     for (const r of detail.responses) {
       const key = normActivity(r.activityId);
       let g = m.get(key);
-      if (!g) m.set(key, (g = { key, label: labelActivity(key), n: 0, ok: 0, missed: 0, retried: 0, last: 0 }));
+      if (!g) m.set(key, (g = { key, label: labelActivity(key), n: 0, ok: 0, missed: 0, last: 0 }));
       g.n += 1;
-      if (r.status === "met" || r.status === "mastered") g.ok += 1;
-      else if (r.status === "retried") g.retried += 1;
-      else g.missed += 1;
+      if (isMiss(r.status)) g.missed += 1;
+      else g.ok += 1;
       const t = r.ts?.getTime() ?? 0;
       if (t > g.last) g.last = t;
     }
@@ -327,7 +325,7 @@ function StudentPanel({ learner, events, cached, onClose }: { learner: Learner; 
               // hardcoded phantom 60/20s (Dan, 2026-07-17: "still red for
               // some").
               if (r.xp === 0 || r.activityId?.startsWith("letris:") || r.activityId?.startsWith("mcq:")) { unpaid++; continue; }
-              const good = r.status === "met" || r.status === "mastered";
+              const good = !isMiss(r.status);
               const old = (r.ts?.getTime() ?? 0) < RETUNE; // undated → old rate (strict floor)
               if (good) { if (old) okOld++; else okNew++; }
               else { if (old) koOld++; else koNew++; }
@@ -374,13 +372,13 @@ function StudentPanel({ learner, events, cached, onClose }: { learner: Learner; 
               >
               <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
                 <Kpi label="Responses" value={respStats.total} />
-                <Kpi label="Accuracy" value={respStats.accuracy !== null ? `${respStats.accuracy}%` : "—"} sub="met + mastered" />
+                <Kpi label="Accuracy" value={respStats.accuracy !== null ? `${respStats.accuracy}%` : "—"} sub="met / all" />
                 <Kpi label="Avg response time" value={respStats.avgLatency !== null ? `${(respStats.avgLatency / 1000).toFixed(1)} s` : "—"} />
                 <Kpi
                   label="Status split"
                   value={
                     <span className="text-sm font-bold">
-                      {["mastered", "met", "retried", "missed"]
+                      {["met", "missed"]
                         .map((s) => `${s} ${respStats.byStatus.get(s) ?? 0}`)
                         .join(" · ")}
                     </span>
@@ -414,21 +412,20 @@ function StudentPanel({ learner, events, cached, onClose }: { learner: Learner; 
                 </Section>
               )}
               <Section id="sp:byexercise" title="Results by exercise" meta={`${(byExercise ?? []).length} exercises`}>
-              <TableBox head={["Exercise", "Answers", "✓ ok", "✗ missed", "retried", "Last done"]}>
+              <TableBox head={["Exercise", "Answers", "✓ ok", "✗ missed", "Last done"]}>
                 {(byExercise ?? []).map((g, i) => (
                   <tr key={i} className="border-t border-slate-100">
                     <td className="px-3 py-2 font-bold text-slate-900"><ExLink k={g.key} label={g.label} /></td>
                     <td className="px-3 py-2 text-right text-slate-700">{g.n}</td>
                     <td className="px-3 py-2 text-right font-bold text-emerald-700">{g.ok}</td>
                     <td className="px-3 py-2 text-right font-bold text-rose-600">{g.missed}</td>
-                    <td className="px-3 py-2 text-right text-amber-600">{g.retried}</td>
                     <td className="px-3 py-2 text-slate-700 whitespace-nowrap">{g.last ? fmtWhen(new Date(g.last)) : "—"}</td>
                   </tr>
                 ))}
               </TableBox>
               </Section>
               <Section id="sp:recent" title="Recent answers" meta={`last ${Math.min(15, detail.responses.length)} of ${detail.responses.length}`}>
-              <TableBox head={["When", "Item", "Lesson", "Status", "Given answer", "Activity", "Time"]}>
+              <TableBox head={["When", "Item", "Lesson", "Status", "Given answer", "Activity", "Evidence", "Time"]}>
                 {detail.responses.slice(0, 15).map((r, i) => (
                   <tr key={i} className="border-t border-slate-100">
                     <td className="px-3 py-2 text-slate-700 whitespace-nowrap">{fmtWhen(r.ts)}</td>
@@ -442,17 +439,24 @@ function StudentPanel({ learner, events, cached, onClose }: { learner: Learner; 
                         is append-only. */}
                     <td className="px-3 py-2 text-slate-600 whitespace-nowrap">
                       {(() => {
-                        const sio = outcomeForItem(r.item);
+                        // What the writer stored first (evidence block), the join second.
+                        const sio = outcomeOf(r);
                         if (!sio) return <span className="text-slate-400">-</span>;
                         const topic = SIOS.find((s) => s.id === sio)?.topic;
                         return <span title={topic ?? sio}>{sio}{topic ? ` \u00b7 ${topic.slice(0, 28)}` : ""}</span>;
                       })()}
                     </td>
-                    <td className={`px-3 py-2 font-bold ${r.status === "missed" ? "text-rose-600" : r.status === "retried" ? "text-amber-600" : "text-emerald-700"}`}>
+                    <td className={`px-3 py-2 font-bold ${isMiss(r.status) ? "text-rose-600" : "text-emerald-700"}`}>
                       {r.status}
                     </td>
                     <td className="px-3 py-2 text-slate-700" lang="fr">{r.givenAnswer ?? "—"}</td>
                     <td className="px-3 py-2 text-slate-700">{r.activityId ? <ExLink k={normActivity(r.activityId)} label={labelActivity(normActivity(r.activityId))} /> : "—"}</td>
+                    {/* The evidence block (PRD §7): kind of performance and how
+                        much help was taken. Absent on rows older than 10 Aug =
+                        "not recorded", never "none". */}
+                    <td className="px-3 py-2 text-slate-600 whitespace-nowrap" title={r.independent === false ? "assisted — does not count as independent mastery" : undefined}>
+                      {r.evidenceType ? `${r.evidenceType}${r.assistance && r.assistance !== "none" ? ` · 🪜 ${r.assistance}` : ""}` : "—"}
+                    </td>
                     <td className="px-3 py-2 text-right text-slate-700">
                       {r.latencyMs !== null ? `${(r.latencyMs / 1000).toFixed(1)} s` : "—"}
                     </td>

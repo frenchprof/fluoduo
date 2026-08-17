@@ -12,15 +12,14 @@
  *
  * Under it, the outcome × student matrix that did not exist: fifty SIOs as
  * rows, the class as columns, each cell the learner's accuracy tier on that
- * outcome (outcomeForItem over the answers the page already fetched — one
+ * outcome (outcomeOf over the answers the page already fetched — one
  * useMemo, no fetch of its own). The last column is the class: sixteen
  * heat-strips summed. A vertical red stripe = the whole class failed that
  * outcome, which no table of pages could show.
  */
 import { useMemo } from "react";
 import { SIOS, unitNumbers, siosForUnit } from "@/content/sios";
-import { outcomeForItem } from "@/lib/evidence";
-import { isMiss, outcomeAccuracy, tierToken, tierClass } from "@/lib/outcomeRows";
+import { isMiss, outcomeAccuracy, outcomeOf, tierToken, tierClass } from "@/lib/outcomeRows";
 import HeatStrip from "@/components/HeatStrip";
 import type { Learner, StudentDetail } from "./data";
 
@@ -54,19 +53,19 @@ export function tileFor(l: Learner, d: StudentDetail | undefined, now: number, t
   const lastSeen = Math.max(l.lastSeen?.getTime() ?? 0, lastAns);
   const presence: Tile["presence"] =
     now - lastSeen < LIVE_MS ? "live" : lastSeen && todayKey(lastSeen) === todayKey(now) ? "today" : "absent";
-  const last5 = recent.slice(0, 5).map((r) => ({ ok: !isMiss(r.status), sio: outcomeForItem(r.item) }));
+  const last5 = recent.slice(0, 5).map((r) => ({ ok: !isMiss(r.status), sio: outcomeOf(r) }));
   const ten = recent.slice(0, 10);
   const acc10 = ten.length ? Math.round((100 * ten.filter((r) => !isMiss(r.status)).length) / ten.length) : null;
   // Stuck: walk newest → older while the run is misses on one outcome inside the window.
   let stuckOn: string | undefined;
   if (recent.length >= STUCK_RUN) {
     const head = recent[0];
-    const sio = outcomeForItem(head.item);
+    const sio = outcomeOf(head);
     const t0 = head.ts?.getTime() ?? 0;
     if (sio && isMiss(head.status) && now - t0 < STUCK_WINDOW_MS) {
       let run = 0;
       for (const r of recent) {
-        if (!isMiss(r.status) || outcomeForItem(r.item) !== sio || t0 - (r.ts?.getTime() ?? 0) > STUCK_WINDOW_MS) break;
+        if (!isMiss(r.status) || outcomeOf(r) !== sio || t0 - (r.ts?.getTime() ?? 0) > STUCK_WINDOW_MS) break;
         run += 1;
       }
       if (run >= STUCK_RUN) stuckOn = sio;
@@ -119,7 +118,7 @@ export default function ClassNow({
       if (!d) continue;
       per.set(l.uid, outcomeAccuracy(d.responses));
       for (const r of d.responses) {
-        const sio = outcomeForItem(r.item);
+        const sio = outcomeOf(r);
         if (!sio) continue;
         const a = (classAgg[sio] ??= { n: 0, ok: 0 });
         a.n += 1;

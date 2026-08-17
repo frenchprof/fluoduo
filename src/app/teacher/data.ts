@@ -156,6 +156,11 @@ export type StudentDetail = {
     givenAnswer: string | null;
     activityId: string | null;
     ts: Date | null;
+    /** Evidence block (responses.ts, 2026-08-10) — read since 2026-08-17. */
+    outcomeId: string | null;
+    evidenceType: string | null;
+    assistance: string | null;
+    independent: boolean | null;
   }[];
 };
 
@@ -404,6 +409,10 @@ async function fetchOneStudent(uid: string): Promise<StudentDetail> {
       givenAnswer: str(r.givenAnswer),
       activityId: str(r.activityId),
       ts: r.timestamp?.toDate?.() ?? null,
+      outcomeId: str(r.outcomeId),
+      evidenceType: str(r.evidenceType),
+      assistance: str(r.assistance),
+      independent: typeof r.independent === "boolean" ? r.independent : null,
     });
   });
   out.responses.sort((a, b) => (b.ts?.getTime() ?? 0) - (a.ts?.getTime() ?? 0));
@@ -471,6 +480,8 @@ export async function fetchResponsesSince(uids: string[], sinceMs: number): Prom
       rows.push({
         item: r.item, status: r.status, xp: num(r.xp) ?? 0, latencyMs: num(r.latencyMs),
         givenAnswer: str(r.givenAnswer), activityId: str(r.activityId), ts: r.timestamp?.toDate?.() ?? null,
+        outcomeId: str(r.outcomeId), evidenceType: str(r.evidenceType), assistance: str(r.assistance),
+        independent: typeof r.independent === "boolean" ? r.independent : null,
       });
     });
     if (rows.length) out.set(uid, rows.sort((a, b) => (b.ts?.getTime() ?? 0) - (a.ts?.getTime() ?? 0)));
