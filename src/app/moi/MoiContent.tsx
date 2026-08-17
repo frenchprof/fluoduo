@@ -1,90 +1,83 @@
 "use client";
 /**
- * 📊 /moi v2 — « My Progress » (Dan, 2026-07-24: students want the REAL
- * analytics of their own learning — "gems and streaks won't gain them real
- * points at the exam, but what they got wrong, where, how often, personalised
- * tips — these will"). Reads the learner's OWN responses subcollection
- * (users/{uid}/responses — the same records the teacher page aggregates),
- * plus local SRS state. Signed-out learners still get the local view.
+ * 📊 /moi — « My Progress » (Dan, 2026-07-24: students want the REAL
+ * analytics of their own learning — "what they got wrong, where, how often").
+ * Reads the learner's OWN responses subcollection (users/{uid}/responses —
+ * the same records the teacher page aggregates) plus local state. Signed-out
+ * learners still get the device view (progress + activity ledger).
+ *
+ * Patch 26 (2026-08-17), per the audit:
+ *   · a THIN stat-strip hero (DrillShell-header standard, like Home's) —
+ *     chips + hairlines, never a page-dominating card;
+ *   · the syllabus heat-strip under it — fifty outcomes, colour = tier;
+ *   · six tabs → four segments: Fix · Exercises · History · Journey;
+ *   · "Hardest items" is outcome rows with items nested (outcomeForItem —
+ *     patch 12's spine, which this page never called), colour = accuracy
+ *     tier, unmapped ids in one bucket pinned last;
+ *   · every list capped at 5 with "+N more".
  * All metalanguage in English (Dan, 2026-07-23); French only where it IS the
- * content. Colourful ST2FR26-style tabs.
+ * content. Tokens only — no hex, no stock palette (verify19b's ratchet).
  */
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { SIOS } from "@/content/sios";
-import { CURATED } from "@/content/collections";
 import { loadProgress, type Progress } from "@/lib/progress";
 import { SortableTable } from "@/lib/sortTable";
 import { useAuthUser } from "@/lib/firebase/auth";
-import { describeActivity } from "@/lib/labels";
-import { hrefForActivity } from "@/lib/labels";
-import { describeItem } from "@/lib/labels";
-
-/**
- * Card colour now MEANS something.
- *
- * `HUES[i % HUES.length]` gave every card a border colour from its position in
- * a list — the strongest signal on the card, encoding nothing, six hues cycling
- * through sixty rows. That is why "Hardest items" read as broken rather than as
- * information (audit, 2026-08-10).
- *
- * Red at 50% missed, amber at 25%, otherwise the calm tier. The same scale the
- * teacher dashboard uses, so a learner and their teacher read the same red.
- */
-function tierFor(missPct: number | null | undefined): string {
-  if (missPct == null) return "var(--cahier-line-strong)";
-  if (missPct >= 50) return "var(--tier-weak)";
-  if (missPct >= 25) return "var(--tier-medium)";
-  return "var(--tier-good)";
-}
+import { describeActivity, hrefForActivity, describeItem } from "@/lib/labels";
+import { loadLedger } from "@/lib/activityLedger";
+import { UNMAPPED, outcomeRows, outcomeAccuracy, isMiss, tierToken, tierClass, type OutcomeRow } from "@/lib/outcomeRows";
+import { UNIT_ACCENTS } from "@/components/siteTabs";
+import HeatStrip, { type HeatValues } from "@/components/HeatStrip";
 
 type Resp = { item: string; status: string; activityId: string; ts: number; given?: string };
 
-// ── activity naming (a friendly local cousin of the teacher's normalizer) ──
-/** Deck ids are historical (lieux-letris, weather-letris) and leak into the UI.
- *  Never rename the id — it is embedded in activityId strings across every
- *  stored response. Resolve to the deck's own title for display instead. */
-function deckTitle(id: string | undefined): string {
-  if (!id) return "";
-  return CURATED.find((c) => c.id === id)?.title ?? id;
-}
+/** Every list on this page shows this many, then "+N more". */
+const CAP = 5;
 
-function labelActivity(id: string): string {
-  // Was a second, subtly different copy of the teacher page's table — it said
-  // "Compose It" where the teacher said "Composer", and knew nothing about
-  // SIOs. One definition now (@/lib/labels), so a learner and their teacher
-  // read the same name for the same exercise.
-  return describeActivity(id).label;
-}
-
-function itemDeck(item: string): { label: string; href: string } | null {
-  if (item.startsWith("finale:")) return { label: "GramMarathon Final", href: "/practice/grammarathon/finale" };
-  if (item.startsWith("conj-")) return { label: "ConjugaZone", href: "/conjugaison" };
-  const c = CURATED.find((x) => x.items?.some((it: { id?: string }) => it.id === item));
-  return c ? { label: c.id, href: `/practice/flip-it/${c.id}` } : null;
-}
-
-const TABS = [
-  { key: "erreurs", label: "📉 Where I lose marks" },
-  { key: "items", label: "🎯 My hardest items" },
-  { key: "histoire", label: "🕐 My history" },
-  { key: "forces", label: "💪 Strong vs weak" },
-  { key: "conseils", label: "💡 My tips" },
-  { key: "parcours", label: "🏆 Journey" },
+const SEGMENTS = [
+  { key: "fix", label: "Fix" },
+  { key: "exercises", label: "Exercises" },
+  { key: "history", label: "History" },
+  { key: "journey", label: "Journey" },
 ] as const;
-type TabKey = (typeof TABS)[number]["key"];
+type Seg = (typeof SEGMENTS)[number]["key"];
+
+/** The Index row for an outcome — one place, every activity for it. */
+const indexHref = (sio: string) => {
+  const s = SIOS.find((x) => x.id === sio);
+  return s ? `/activities?unit=${s.unit}#${s.id}` : "/activities";
+};
+
+const INK = "var(--cahier-ink)";
+const SOFT = "var(--cahier-ink-soft)";
+const LINE = "var(--cahier-line-strong)";
+const PAPER = "var(--cahier-paper-raised)";
 
 export default function MoiContent() {
   const [p, setP] = useState<Progress | null>(null);
-  const [tab, setTab] = useState<TabKey>("erreurs");
+  const [seg, setSeg] = useState<Seg>("fix");
   const [resp, setResp] = useState<Resp[] | null>(null);
   const [respState, setRespState] = useState<"loading" | "ready" | "signedout" | "error">("loading");
   const [time, setTime] = useState<{ ms: number; n: number; byAct: [string, number][] } | null>(null);
+  const [ledgerAcc, setLedgerAcc] = useState<HeatValues>({});
 
   // Auth state arrives ASYNCHRONOUSLY — checking auth.currentUser on mount
   // told signed-in users to sign in (Dan, 2026-07-24). useAuthUser waits:
   // undefined = still resolving, null = truly signed out.
   const user = useAuthUser();
-  useEffect(() => { setP(loadProgress()); }, []);
+  useEffect(() => {
+    setP(loadProgress());
+    // Device ledger → per-outcome accuracy, for the signed-out heat-strip.
+    const l = loadLedger();
+    const sum: Record<string, { r: number; w: number }> = {};
+    for (const bySio of Object.values(l)) for (const [sio, t] of Object.entries(bySio)) {
+      const s = (sum[sio] ??= { r: 0, w: 0 });
+      s.r += t.right; s.w += t.wrong;
+    }
+    const acc: HeatValues = {};
+    for (const [sio, s] of Object.entries(sum)) if (s.r + s.w > 0) acc[sio] = Math.round((100 * s.r) / (s.r + s.w));
+    setLedgerAcc(acc);
+  }, []);
   useEffect(() => {
     if (user === undefined) return; // still resolving — keep "loading"
     void (async () => {
@@ -114,13 +107,13 @@ export default function MoiContent() {
         }
         const rows: Resp[] = [];
         snap.forEach((d) => {
-          const x = d.data() as { item?: string; status?: string; activityId?: string; timestamp?: { toMillis?: () => number } };
+          const x = d.data() as { item?: string; status?: string; activityId?: string; timestamp?: { toMillis?: () => number }; givenAnswer?: unknown };
           rows.push({
             item: String(x.item ?? ""),
             status: String(x.status ?? ""),
             activityId: String(x.activityId ?? ""),
             ts: x.timestamp?.toMillis?.() ?? 0,
-            given: typeof (x as { givenAnswer?: unknown }).givenAnswer === "string" ? (x as { givenAnswer?: string }).givenAnswer : undefined,
+            given: typeof x.givenAnswer === "string" ? x.givenAnswer : undefined,
           });
         });
         setResp(rows);
@@ -138,292 +131,267 @@ export default function MoiContent() {
     for (const r of resp) {
       const key = r.activityId || "unknown";
       let g = m.get(key);
-      if (!g) m.set(key, (g = { key, label: labelActivity(key), href: hrefForActivity(key), n: 0, ok: 0, missed: 0, last: 0 }));
+      if (!g) m.set(key, (g = { key, label: describeActivity(key).label, href: hrefForActivity(key), n: 0, ok: 0, missed: 0, last: 0 }));
       g.n += 1;
-      if (r.status === "missed") g.missed += 1; else g.ok += 1;
+      if (isMiss(r.status)) g.missed += 1; else g.ok += 1;
       if (r.ts > g.last) g.last = r.ts;
     }
-    // ranked by error rate, most bleeding first — ALL of them (Dan,
-    // 2026-07-24: "they deserve to see ALL, not some arbitrary top X").
     return [...m.values()].sort((a, b) => b.missed / b.n - a.missed / a.n);
   }, [resp]);
 
-  const hardest = useMemo(() => {
-    if (!resp) return [];
-    const m = new Map<string, number>();
-    for (const r of resp) if (r.status === "missed" && r.item) m.set(r.item, (m.get(r.item) ?? 0) + 1);
-    return [...m.entries()].sort((a, b) => b[1] - a[1]); // every missed item, complete
-  }, [resp]);
+  // Outcome rows — the audit's cure for the flat "hardest items" grid.
+  const rows = useMemo(() => (resp ? outcomeRows(resp) : []), [resp]);
+  const toFix = useMemo(() => rows.filter((r) => r.missed > 0), [rows]);
+  const heat = useMemo<HeatValues>(() => (resp ? outcomeAccuracy(resp) : ledgerAcc), [resp, ledgerAcc]);
 
   const totals = useMemo(() => {
     if (!resp || resp.length === 0) return null;
-    const missed = resp.filter((r) => r.status === "missed").length;
+    const missed = resp.filter((r) => isMiss(r.status)).length;
     return { n: resp.length, missed, acc: Math.round(100 * (1 - missed / resp.length)) };
   }, [resp]);
 
-  // per-SIO strength from local SRS (works signed-out too)
-  const sioStats = useMemo(() => {
-    if (!p) return [];
-    // SOLID = the item has EARNED a multi-day interval (answered correctly
-    // enough to be trusted for days). Due-for-refresh is NOT weakness — with
-    // the old due-based test, any practice gap showed 0% everywhere (Dan,
-    // 2026-07-24). Due-ness lives in the review count, where it belongs.
-    return (SIOS as { id: string; topic: string; unit: number; collectionId: string }[]).map((s) => {
-      const c = CURATED.find((x) => x.id === s.collectionId);
-      const ids = [...((c?.items ?? []).map((it: { id?: string }) => it.id).filter(Boolean) as string[])];
-      let tracked = 0, bad = 0;
-      for (const id of ids) {
-        const st = p.itemSrs[id];
-        if (!st) continue;
-        tracked += 1;
-        if (st.intervalDays <= 1) bad += 1;
-      }
-      for (const [id, st] of Object.entries(p.itemSrs)) {
-        if (!id.startsWith(`finale:${s.id}:`)) continue;
-        tracked += 1;
-        if (st.intervalDays <= 1) bad += 1;
-      }
-      return { ...s, tracked, bad };
-    });
-  }, [p]);
-  const touched = sioStats.filter((s) => s.tracked > 0);
-  const ranked = [...touched].sort((a, b) => b.bad / b.tracked - a.bad / a.tracked); // ALL touched lessons, weakest first
-  const weak = ranked.filter((s) => s.bad > 0);
   const dueNow = p ? Object.values(p.itemSrs).filter((st) => st.due <= Date.now()).length : 0;
+  const doneSet = useMemo(() => new Set(p?.doneSios ?? []), [p]);
 
-  if (!p) return <p className="px-1 py-6 text-sm text-slate-500">Loading your progress…</p>;
+  if (!p) return <p className="px-1 py-6 text-sm" style={{ color: SOFT }}>Loading your progress…</p>;
 
+  const donePct = Math.round((100 * p.doneSios.length) / SIOS.length);
   const fmtWhen = (t: number) => (t ? new Date(t).toLocaleDateString("en-SG", { day: "numeric", month: "short" }) : "—");
-  const Pct = ({ ok, n }: { ok: number; n: number }) => {
-    const pct = Math.round((100 * ok) / n);
-    const tone = pct >= 75 ? "text-emerald-700" : pct >= 50 ? "text-amber-700" : "text-rose-600";
-    return <b className={tone}>{pct}%</b>;
-  };
+  const chip = "fluo-mono inline-flex items-center gap-1 rounded-lg border-2 px-1.5 py-0.5 text-xs font-black";
+  const chipStyle = { borderColor: INK, background: PAPER, color: INK } as const;
 
   return (
     <div className="pb-10">
-      <p className="text-sm text-slate-600">
-        This is <b>your own</b> learning data — the same records your teacher sees, shown to their owner. It updates with every answer.
-      </p>
+      {/* ── The stat-strip hero: thin, information-only (DrillShell standard;
+          verify25's rules) — chips, then two 3px hairlines. ── */}
+      <section
+        aria-label="Your progress"
+        className="moi-hero rounded-2xl border-2 p-2.5 shadow-[4px_4px_0_var(--fluo-hl)]"
+        style={{ borderColor: INK, background: PAPER }}
+      >
+        <div className="flex flex-wrap items-center gap-1">
+          <span className={chip} style={chipStyle} title="Outcomes marked done">✓ {p.doneSios.length}/{SIOS.length}</span>
+          {totals && <span className={`${chip} ${tierClass(totals.acc)}`} style={chipStyle} title={`${totals.n} answers recorded`}>🎯 {totals.acc}%</span>}
+          {totals && totals.missed > 0 && <span className={chip} style={chipStyle} title="Answers missed"><span className="tier-weak">✗</span> {totals.missed}</span>}
+          {p.streak > 0 && <span className={chip} style={chipStyle} title="Day streak">🔥 {p.streak}</span>}
+          {p.xp > 0 && <a href="/leaderboard" className={`${chip} no-underline hover:-translate-y-0.5`} style={chipStyle} title="XP · leaderboard">⭐ {p.xp}</a>}
+          {dueNow > 0 && (
+            <a href="/reviser" className={`${chip} ml-auto no-underline hover:-translate-y-0.5`} style={{ ...chipStyle, background: INK, color: PAPER }} title="DéjàRevu — due for review now">
+              🔁 {dueNow}
+            </a>
+          )}
+        </div>
+        <div className="mt-2 space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="fluo-mono w-14 shrink-0 text-[10px] font-bold" style={{ color: INK }}>Course</span>
+            <span className="h-[3px] flex-1 overflow-hidden rounded-full" style={{ background: "var(--cahier-line)" }} role="progressbar" aria-valuenow={donePct} aria-valuemin={0} aria-valuemax={100}>
+              <span className="block h-full rounded-full" style={{ width: `${Math.max(donePct, 1)}%`, background: "var(--cahier-accent)" }} />
+            </span>
+            <span className="fluo-mono w-8 shrink-0 text-right text-[10px] font-bold" style={{ color: INK }}>{donePct}%</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="fluo-mono w-14 shrink-0 text-[10px] font-bold" style={{ color: INK }}>Accuracy</span>
+            <span className="h-[3px] flex-1 overflow-hidden rounded-full" style={{ background: "var(--cahier-line)" }} role="progressbar" aria-valuenow={totals?.acc ?? 0} aria-valuemin={0} aria-valuemax={100}>
+              <span className="block h-full rounded-full" style={{ width: `${Math.max(totals?.acc ?? 0, 1)}%`, background: tierToken(totals?.acc ?? null) }} />
+            </span>
+            <span className={`fluo-mono w-8 shrink-0 text-right text-[10px] font-bold ${tierClass(totals?.acc)}`} style={totals ? undefined : { color: INK }}>{totals ? `${totals.acc}%` : "—"}</span>
+          </div>
+        </div>
+      </section>
 
-      <div className="mt-3 flex flex-wrap gap-2">
-        {TABS.map((t, i) => (
-          <button key={t.key} type="button" onClick={() => setTab(t.key)}
-            className={`rounded-full border-2 px-3.5 py-1 text-sm font-black transition ${tab === t.key ? "text-white shadow-[2px_2px_0_rgba(0,0,0,0.2)]" : "bg-white text-slate-700 hover:-translate-y-0.5"}`}
-            style={{ borderColor: tab === t.key ? "var(--cahier-accent)" : "var(--cahier-line-strong)", background: tab === t.key ? "var(--cahier-accent)" : undefined }}>
-            {t.label}
-          </button>
-        ))}
+      {/* ── The syllabus heat-strip: fifty outcomes, colour = tier. A tap
+          opens that outcome's Index row. ── */}
+      <HeatStrip className="mt-3" values={heat} done={doneSet} hrefFor={indexHref} label="Syllabus, by outcome — your accuracy" />
+
+      {/* ── Four segments (were six tabs). ── */}
+      <div role="group" aria-label="View" className="moi-segments fluo-mono mt-3 grid grid-cols-4 overflow-hidden rounded-xl border-2 text-xs font-black" style={{ borderColor: INK }}>
+        {SEGMENTS.map((s) => {
+          const on = s.key === seg;
+          return (
+            <button key={s.key} type="button" aria-pressed={on} onClick={() => setSeg(s.key)} className="py-2 leading-none"
+              style={{ background: on ? INK : PAPER, color: on ? PAPER : INK }}>
+              {s.label}
+            </button>
+          );
+        })}
       </div>
 
-      {respState === "signedout" && tab !== "forces" && tab !== "parcours" && (
-        <p className="mt-4 rounded-xl border-2 border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900">
-          🔑 Sign in to see your full answer history — right now only this device's practice state is available.
+      {respState === "signedout" && seg !== "journey" && (
+        <p className="mt-3 rounded-xl border-2 px-3 py-2 text-sm font-bold" style={{ borderColor: "var(--tier-medium)", background: "var(--tier-medium-soft)", color: INK }}>
+          🔑 Sign in to see your full answer history — this device's practice only, for now.
         </p>
       )}
       {respState === "error" && (
-        <p className="mt-4 rounded-xl border-2 border-rose-300 bg-rose-50 px-3 py-2 text-sm text-rose-800">
-          Couldn't load your answer history just now — the local view below still works. Try again in a moment.
+        <p className="mt-3 rounded-xl border-2 px-3 py-2 text-sm font-bold" style={{ borderColor: "var(--tier-weak)", background: "var(--tier-weak-soft)", color: INK }}>
+          Couldn't load your answer history just now — the device view below still works.
         </p>
       )}
 
-      {tab === "erreurs" && (
-        <div className="mt-4">
-          {totals && (
-            <div className="mb-3 flex flex-wrap gap-3">
-              {[
-                { e: "🧾", k: "Answers recorded", v: totals.n },
-                { e: "🎯", k: "Overall accuracy", v: `${totals.acc}%` },
-                { e: "❌", k: "Total misses", v: totals.missed },
-              ].map((c, i) => (
-                <div key={c.k} className="flex-1 rounded-2xl border-2 bg-white p-3 text-center shadow-[2px_2px_0_rgba(0,0,0,0.10)]" style={{ borderColor: "var(--cahier-line-strong)", minWidth: 110 }}>
-                  <div className="text-xl">{c.e}</div>
-                  <div className="text-lg font-black text-slate-900">{c.v}</div>
-                  <div className="text-[11px] font-bold text-slate-500">{c.k}</div>
-                </div>
-              ))}
-            </div>
+      {seg === "fix" && (
+        <div className="mt-3">
+          {toFix.length > 0 ? (
+            <Capped items={toFix} render={(r) => <OutcomeCard key={r.sio} row={r} />} />
+          ) : (
+            <p className="text-sm" style={{ color: SOFT }}>{respState === "ready" ? "Nothing to fix — no misses on record." : "Sign in to see what to fix."}</p>
           )}
+        </div>
+      )}
+
+      {seg === "exercises" && (
+        <div className="mt-3">
           {byExercise.length > 0 ? (
-            <>
-              <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Ranked: where you miss most, first — start at the top</p>
-              <div className="mt-1">
-                <SortableTable
-                  head={["Exercise", "✓", "✗", "Score", "Last"]}
-                  headAlign={(h, i) => (i === 0 ? "text-left" : "text-right")}
-                  rows={byExercise.map((g) => (
-                    <tr key={g.key} className="border-t border-slate-100">
-                      <td className="px-2 py-1.5 font-bold">{g.href ? <a href={g.href} className="text-blue-700 underline underline-offset-2 hover:text-blue-900">{g.label}</a> : g.label}</td>
-                      <td className="px-2 py-1.5 text-right text-emerald-700">{g.ok}</td>
-                      <td className="px-2 py-1.5 text-right text-rose-600">{g.missed}</td>
-                      <td className="px-2 py-1.5 text-right"><Pct ok={g.ok} n={g.n} /></td>
-                      <td className="px-2 py-1.5 text-right text-slate-400">{fmtWhen(g.last)}</td>
-                    </tr>
-                  ))}
-                />
-              </div>
-            </>
+            <Capped
+              items={byExercise}
+              wrap={(kids) => (
+                <div className="overflow-x-auto rounded-xl border-2" style={{ borderColor: LINE, background: PAPER }}>
+                  <SortableTable head={["Exercise", "✓", "✗", "Score", "Last"]} headAlign={(h, i) => (i === 0 ? "text-left" : "text-right")} rows={kids} />
+                </div>
+              )}
+              render={(g) => (
+                <tr key={g.key} className="border-t" style={{ borderColor: "var(--cahier-line)" }}>
+                  <td className="px-2 py-1.5 font-bold">{g.href ? <a href={g.href} className="underline underline-offset-2" style={{ color: "var(--cahier-accent)" }}>{g.label}</a> : g.label}</td>
+                  <td className="px-2 py-1.5 text-right tier-good">{g.ok}</td>
+                  <td className="px-2 py-1.5 text-right tier-weak">{g.missed}</td>
+                  <td className={`px-2 py-1.5 text-right font-black ${tierClass(Math.round((100 * g.ok) / g.n))}`}>{Math.round((100 * g.ok) / g.n)}%</td>
+                  <td className="px-2 py-1.5 text-right" style={{ color: SOFT }}>{fmtWhen(g.last)}</td>
+                </tr>
+              )}
+            />
           ) : respState === "ready" ? (
-            <p className="text-sm text-slate-500">No recorded answers yet — practise anywhere and your picture appears here.</p>
+            <p className="text-sm" style={{ color: SOFT }}>No recorded answers yet — practise anywhere and your picture appears here.</p>
           ) : null}
         </div>
       )}
 
-      {tab === "items" && (
-        <div className="mt-4">
-          {hardest.length > 0 ? (
-            <>
-              <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Your personal top misses — each links to the place to fix it</p>
-              <div className="mt-1.5 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                {hardest.map(([item, n], i) => {
-                  const d = itemDeck(item);
-                  return (
-                    <div key={item} className="flex items-center justify-between rounded-xl border-2 bg-white px-3 py-2 text-sm shadow-[2px_2px_0_rgba(0,0,0,0.08)]" style={{ borderColor: tierFor(hardest[0] ? Math.round((100 * n) / Number(hardest[0][1])) : null) }}>
-                      <span className="font-bold text-slate-800" lang="fr" title={item}>{describeItem(item).label}</span>
-                      <span className="ml-2 shrink-0 text-xs">
-                        <b className="text-rose-600">✗ {n}</b>
-                        {d && <> · <a href={d.href} className="font-bold text-blue-700 underline underline-offset-2">practise</a></>}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            </>
-          ) : (
-            <p className="text-sm text-slate-500">{respState === "ready" ? "No repeated misses — impressive!" : "Sign in to see your hardest items."}</p>
+      {seg === "history" && (
+        <div className="mt-3">
+          {time && time.n > 0 && (
+            <p className="mb-2 text-xs font-bold" style={{ color: SOFT }}>
+              ⏱ {Math.round(time.ms / 60000)} min on task · {time.n} session{time.n === 1 ? "" : "s"}
+              {time.byAct.length > 0 && <> · {time.byAct.slice(0, 3).map(([k, v]) => `${describeActivity(k).label} ${Math.round(v / 60000)} min`).join(" · ")}</>}
+            </p>
           )}
-        </div>
-      )}
-
-      {tab === "histoire" && (
-        <div className="mt-4">
-          {resp && resp.length > 0 ? (() => {
-            const ordered = [...resp].sort((a, b) => b.ts - a.ts); // ALL of it, newest first
-            const dayOf = (t: number) => new Date(t).toLocaleDateString("en-SG", { weekday: "short", day: "numeric", month: "short" });
-            const rows: React.ReactNode[] = [];
-            let lastDay = "";
-            for (const r of ordered) {
-              const d = r.ts ? dayOf(r.ts) : "…";
-              if (d !== lastDay) {
-                lastDay = d;
-                rows.push(<tr key={"d" + d + rows.length}><td colSpan={4} className="bg-slate-50 px-2 py-1 text-xs font-black uppercase tracking-wide text-slate-500">{d}</td></tr>);
-              }
-              rows.push(
-                <tr key={r.ts + r.item + rows.length} className="border-t border-slate-100">
-                  <td className="px-2 py-1 text-xs text-slate-400">{r.ts ? new Date(r.ts).toLocaleTimeString("en-SG", { hour: "2-digit", minute: "2-digit" }) : "—"}</td>
-                  <td className="px-2 py-1 font-bold text-slate-800" lang="fr" title={r.item}>{describeItem(r.item).label}{r.given && <span className="font-normal text-slate-500"> · «{r.given}»</span>}</td>
-                  <td className="px-2 py-1 text-center">{r.status === "missed" ? <span className="text-rose-600">✗</span> : <span className="text-emerald-700">✓</span>}</td>
-                  <td className="px-2 py-1 text-xs"><a href={hrefForActivity(r.activityId) ?? undefined} title={r.activityId} className={hrefForActivity(r.activityId) ? "font-bold text-blue-700 underline underline-offset-2" : "font-bold text-slate-700"}>{labelActivity(r.activityId)}</a></td>
-                </tr>,
-              );
-            }
-            const flat = ordered.map((r, i) => (
-              <tr key={`${r.ts}-${r.item}-${i}`} className="border-t border-slate-100">
-                <td className="px-2 py-1 text-xs text-slate-400">{r.ts ? new Date(r.ts).toLocaleString("en-SG", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "—"}</td>
-                <td className="px-2 py-1 font-bold text-slate-800" lang="fr" title={r.item}>{describeItem(r.item).label}{r.given && <span className="font-normal text-slate-500"> · «{r.given}»</span>}</td>
-                <td className="px-2 py-1 text-center">{r.status === "missed" ? <span className="text-rose-600">✗</span> : <span className="text-emerald-700">✓</span>}</td>
-                <td className="px-2 py-1 text-xs"><a href={hrefForActivity(r.activityId) ?? undefined} title={r.activityId} className={hrefForActivity(r.activityId) ? "font-bold text-blue-700 underline underline-offset-2" : "font-bold text-slate-700"}>{labelActivity(r.activityId)}</a></td>
-              </tr>
-            ));
-            void rows;
-            return (
-              <>
-                {time && time.n > 0 && (
-                  <div className="mb-3 rounded-2xl border-2 border-slate-200 bg-white p-3 text-sm">
-                    <p className="font-black text-slate-800">⏱ {Math.round(time.ms / 60000)} min on task · {time.n} session{time.n === 1 ? "" : "s"}</p>
-                    {time.byAct.length > 0 && (
-                      <p className="mt-1 text-xs text-slate-500">
-                        Where your time went: {time.byAct.slice(0, 6).map(([k, v]) => `${labelActivity(k)} ${Math.round(v / 60000)} min`).join(" · ")}
-                      </p>
-                    )}
-                  </div>
-                )}
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Your complete answer history — sortable by every column</p>
-                <div className="mt-1">
-                  <SortableTable head={["When", "Item", "✓/✗", "Activity"]} headAlign={(h, i) => (i === 2 ? "text-center" : "text-left")} rows={flat} />
+          {resp && resp.length > 0 ? (
+            <Capped
+              items={[...resp].sort((a, b) => b.ts - a.ts)}
+              wrap={(kids) => (
+                <div className="overflow-x-auto rounded-xl border-2" style={{ borderColor: LINE, background: PAPER }}>
+                  <SortableTable head={["When", "Item", "✓/✗", "Activity"]} headAlign={(h, i) => (i === 2 ? "text-center" : "text-left")} rows={kids} />
                 </div>
-              </>
-            );
-          })() : (
-            <p className="text-sm text-slate-500">{respState === "ready" ? "No recorded answers yet — practise anywhere and your history appears here." : "Sign in to see your answer history."}</p>
-          )}
-        </div>
-      )}
-
-      {tab === "forces" && (
-        <div className="mt-4">
-          {touched.length === 0 ? (
-            <p className="text-sm text-slate-500">Practise a little — your strengths and weaknesses will appear here!</p>
+              )}
+              render={(r, i) => (
+                <tr key={`${r.ts}-${r.item}-${i}`} className="border-t" style={{ borderColor: "var(--cahier-line)" }}>
+                  <td className="px-2 py-1 text-xs whitespace-nowrap" style={{ color: SOFT }}>{r.ts ? new Date(r.ts).toLocaleString("en-SG", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "—"}</td>
+                  <td className="px-2 py-1 font-bold" lang="fr" title={r.item}>{describeItem(r.item).label}{r.given && <span className="font-normal" style={{ color: SOFT }}> · «{r.given}»</span>}</td>
+                  <td className="px-2 py-1 text-center">{isMiss(r.status) ? <span className="tier-weak">✗</span> : <span className="tier-good">✓</span>}</td>
+                  <td className="px-2 py-1 text-xs">
+                    {hrefForActivity(r.activityId)
+                      ? <a href={hrefForActivity(r.activityId) ?? undefined} title={r.activityId} className="font-bold underline underline-offset-2" style={{ color: "var(--cahier-accent)" }}>{describeActivity(r.activityId).label}</a>
+                      : <span className="font-bold" title={r.activityId}>{describeActivity(r.activityId).label}</span>}
+                  </td>
+                </tr>
+              )}
+            />
           ) : (
-            <>
-              <h3 className="text-sm font-black uppercase tracking-wide text-slate-500">All your lessons, weakest first — every one you've touched</h3>
-              <div className="mt-1.5 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                {ranked.map((s) => {
-                  const solid = s.tracked - s.bad;
-                  const pct = Math.round((100 * solid) / s.tracked);
-                  const tone = pct >= 75
-                    ? "border-emerald-400 bg-emerald-50 text-emerald-800"
-                    : pct >= 50
-                      ? "border-amber-300 bg-amber-50 text-amber-800"
-                      : "border-rose-300 bg-rose-50 text-rose-700";
-                  return (
-                    <a key={s.id} href={`/practice/flip-it/${s.collectionId}`} className={`block rounded-xl border-2 px-3 py-2 text-sm font-bold shadow-[2px_2px_0_rgba(0,0,0,0.10)] transition hover:-translate-y-0.5 ${tone}`}>
-                      <span className="text-xs text-slate-400">{s.id} · U{s.unit}</span><br />{s.topic}<br />
-                      <span className="text-xs font-normal">{solid}/{s.tracked} solid ({pct}%){pct < 75 ? " → practise?" : " ✓"}</span>
-                    </a>
-                  );
-                })}
-              </div>
-              <a href="/practice/grammarathon/finale" className="mt-4 block rounded-2xl border-[3px] border-slate-900 bg-yellow-100 px-4 py-3 text-center font-black text-slate-900 shadow-[3px_3px_0_#1f2440] transition hover:-translate-y-0.5">
-                🏁 Start a marathon — it targets your weak spots automatically
-              </a>
-            </>
+            <p className="text-sm" style={{ color: SOFT }}>{respState === "ready" ? "No recorded answers yet — practise anywhere and your history appears here." : "Sign in to see your answer history."}</p>
           )}
         </div>
       )}
 
-      {tab === "conseils" && (
-        <div className="mt-4 space-y-2">
-          {byExercise[0] && byExercise[0].missed / byExercise[0].n > 0.3 && (
-            <p className="rounded-xl border-2 border-rose-200 bg-rose-50 px-3 py-2 text-sm text-slate-800">
-              📉 Your biggest mark-loser right now: <b>{byExercise[0].label}</b> ({Math.round((100 * byExercise[0].ok) / byExercise[0].n)}% correct){byExercise[0].href && <> — <a href={byExercise[0].href} className="font-bold text-blue-700 underline underline-offset-2">go fix it</a></>}.
-            </p>
-          )}
-          {weak[0] && (
-            <p className="rounded-xl border-2 border-rose-200 bg-rose-50 px-3 py-2 text-sm text-slate-800">
-              🎯 Weakest lesson: <b lang="fr">{weak[0].topic}</b> — <a href={`/practice/flip-it/${weak[0].collectionId}`} className="font-bold text-blue-700 underline underline-offset-2">start here</a>.
-            </p>
-          )}
-          <p className="rounded-xl border-2 border-amber-200 bg-amber-50 px-3 py-2 text-sm text-slate-800">
-            📬 {dueNow} {dueNow === 1 ? "item is" : "items are"} due for review — <a href="/reviser" className="font-bold text-blue-700 underline underline-offset-2">DéjàRevu</a> brings back exactly what you got wrong, at the right moment.
-          </p>
-          <p className="rounded-xl border-2 border-sky-200 bg-sky-50 px-3 py-2 text-sm text-slate-800">
-            🏁 One 50-question marathon a day until the test: every draw is different, and it knows your weak spots better than you do.
-          </p>
-        </div>
-      )}
-
-      {tab === "parcours" && (
-        <div className="mt-4">
-          <p className="mb-2 text-xs text-slate-500">The fun numbers — they keep you coming back, but the tabs to the left are what earn marks.</p>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+      {seg === "journey" && (
+        <div className="mt-3">
+          <div className="grid grid-cols-3 gap-2">
             {[
               { e: "⭐", k: "XP", v: p.xp },
-              { e: "🔥", k: "Streak", v: `${p.streak} ${p.streak === 1 ? "day" : "days"}` },
+              { e: "🔥", k: "Streak", v: `${p.streak}d` },
               { e: "💎", k: "Gems", v: p.gems },
-              { e: "🎯", k: "Lessons done", v: `${p.doneSios.length} / ${SIOS.length}` },
+              { e: "🎯", k: "Done", v: `${p.doneSios.length}/${SIOS.length}` },
               { e: "🎖️", k: "Badges", v: p.badges.length },
-              { e: "🧠", k: "Words tracked", v: Object.keys(p.itemSrs).length },
-            ].map((c, i) => (
-              <div key={c.k} className="rounded-2xl border-2 bg-white p-3 text-center shadow-[2px_2px_0_rgba(0,0,0,0.10)]" style={{ borderColor: "var(--cahier-line-strong)" }}>
-                <div className="text-2xl">{c.e}</div>
-                <div className="text-xl font-black text-slate-900">{c.v}</div>
-                <div className="text-xs font-bold text-slate-500">{c.k}</div>
+              { e: "🧠", k: "Words", v: Object.keys(p.itemSrs).length },
+            ].map((c) => (
+              <div key={c.k} className="rounded-xl border-2 p-2 text-center" style={{ borderColor: LINE, background: PAPER }}>
+                <div className="text-lg leading-none">{c.e}</div>
+                <div className="fluo-mono mt-1 text-base font-black leading-none" style={{ color: INK }}>{c.v}</div>
+                <div className="mt-0.5 text-[10px] font-bold" style={{ color: SOFT }}>{c.k}</div>
               </div>
             ))}
           </div>
+          <a href="/practice/grammarathon/finale" className="mt-3 block rounded-xl border-2 px-3 py-2 text-center text-sm font-black no-underline shadow-[3px_3px_0_var(--cahier-ink)] transition hover:-translate-y-0.5" style={{ borderColor: INK, background: "var(--fluo-hl)", color: INK }}>
+            🏁 Marathon — 50 questions, aimed at your weak spots
+          </a>
         </div>
       )}
     </div>
+  );
+}
+
+/** A list capped at CAP with one "+N more" — the rule for every list here. */
+function Capped<T>({ items, render, wrap }: { items: T[]; render: (t: T, i: number) => ReactNode; wrap?: (kids: ReactNode[]) => ReactNode }) {
+  const [all, setAll] = useState(false);
+  const shown = all ? items : items.slice(0, CAP);
+  const kids = shown.map(render);
+  const rest = items.length - CAP;
+  return (
+    <>
+      {wrap ? wrap(kids) : <div className="space-y-2">{kids}</div>}
+      {rest > 0 && (
+        <button type="button" onClick={() => setAll((v) => !v)} className="moi-more fluo-mono mt-2 rounded-lg border-2 px-2.5 py-1 text-xs font-black" style={{ borderColor: LINE, background: PAPER, color: INK }}>
+          {all ? "Show less" : `+${rest} more`}
+        </button>
+      )}
+    </>
+  );
+}
+
+/**
+ * One outcome row: header (SIO · topic · unit), a bar of weak items over
+ * items seen tinted by the outcome's tier, the miss count, Practise → the
+ * Index row, then the missed items as chips (CAP shown, rest behind +N).
+ * The unmapped bucket is the same card, collapsed, pinned last by the sort.
+ */
+function OutcomeCard({ row }: { row: OutcomeRow }) {
+  const [more, setMore] = useState(false);
+  const unmapped = row.sio === UNMAPPED;
+  const [open, setOpen] = useState(!unmapped);
+  const tone = tierToken(row.pct);
+  const items = more ? row.items : row.items.slice(0, CAP);
+  const rest = row.items.length - CAP;
+  return (
+    <article className="moi-outcome rounded-xl border-2 p-2.5" style={{ borderColor: tone, background: PAPER }}>
+      <div className="flex items-center gap-2">
+        {!unmapped ? (
+          <span className="fluo-mono flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[0.7rem] font-black" style={{ background: UNIT_ACCENTS[row.unit], color: PAPER }} title={`Unité ${row.unit}`}>{row.num}</span>
+        ) : (
+          <button type="button" onClick={() => setOpen((v) => !v)} aria-expanded={open} className="fluo-mono flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[0.7rem] font-black" style={{ background: LINE, color: INK }}>{open ? "▾" : "▸"}</button>
+        )}
+        <span className="min-w-0 flex-1 truncate text-sm font-black" style={{ color: INK }} lang={unmapped ? undefined : "fr"} title={unmapped ? "Answers whose item is in no outcome (raw French from a game, retired ids)" : `${row.sio} · ${row.topic}`}>
+          {unmapped ? "Not yet mapped" : row.topic}
+        </span>
+        <span className={`fluo-mono shrink-0 text-xs font-black ${tierClass(row.pct)}`}>{row.pct}%</span>
+        {!unmapped && (
+          <a href={indexHref(row.sio)} className="shrink-0 rounded-lg border-2 px-2 py-0.5 text-xs font-black no-underline transition hover:-translate-y-0.5" style={{ borderColor: INK, background: INK, color: PAPER }} title={`Practise ${row.sio}`}>▶</a>
+        )}
+      </div>
+      <div className="mt-1.5 flex items-center gap-2">
+        <span className="h-[3px] flex-1 overflow-hidden rounded-full" style={{ background: "var(--cahier-line)" }} role="progressbar" aria-label="Items weak" aria-valuenow={row.weakItems} aria-valuemin={0} aria-valuemax={row.itemsSeen}>
+          <span className="block h-full rounded-full" style={{ width: `${row.itemsSeen ? Math.max((100 * row.weakItems) / row.itemsSeen, 1) : 0}%`, background: tone }} />
+        </span>
+        <span className="fluo-mono shrink-0 text-[10px] font-bold" style={{ color: SOFT }}>{row.weakItems}/{row.itemsSeen} weak · <span className="tier-weak">✗ {row.missed}</span></span>
+      </div>
+      {open && row.items.length > 0 && (
+        <div className="mt-1.5 flex flex-wrap gap-1">
+          {items.map((it) => (
+            <span key={it.item} className="rounded-md border px-1.5 py-0.5 text-xs font-bold" lang="fr" title={`${it.item} · ${it.missed} of ${it.n} missed`} style={{ borderColor: tierToken(Math.round((100 * (it.n - it.missed)) / it.n)), color: INK }}>
+              {it.label} <span className="tier-weak">✗{it.missed}</span>
+            </span>
+          ))}
+          {rest > 0 && (
+            <button type="button" onClick={() => setMore((v) => !v)} className="fluo-mono rounded-md border px-1.5 py-0.5 text-xs font-black" style={{ borderColor: LINE, color: INK }}>
+              {more ? "less" : `+${rest} ▾`}
+            </button>
+          )}
+        </div>
+      )}
+    </article>
   );
 }

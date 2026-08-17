@@ -35,6 +35,7 @@ import { SIOS, UNIT_META, type Sio } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import { nextSioId } from "@/lib/continuer";
 import { accuracyFor, LEDGER_EVENT, loadLedger, tierToken, type Ledger } from "@/lib/activityLedger";
+import HeatStrip, { type HeatValues } from "@/components/HeatStrip";
 import { cellHref, chipActivities, gapCells, isFocusKey, lessonAuthored, rowButtonActivities, siosOfUnit, type FocusKey } from "@/lib/indexMatrix";
 import { isSioDone, loadProgress, type Progress } from "@/lib/progress";
 import { searchDecks } from "@/lib/search";
@@ -112,6 +113,28 @@ export default function ActivitiesIndexPage() {
     }
   }, [url?.activity]);
   const buttons = useMemo(() => rowButtonActivities(), []);
+
+  // The syllabus heat-strip (patch 26): fifty outcomes, every activity's
+  // tallies summed per outcome — the whole course at a glance while the
+  // rows below show one unit of one activity. Same ledger, same tiers.
+  const heat = useMemo<HeatValues>(() => {
+    const sum: Record<string, { r: number; w: number }> = {};
+    for (const bySio of Object.values(ledger)) for (const [sio, t] of Object.entries(bySio)) {
+      const s = (sum[sio] ??= { r: 0, w: 0 });
+      s.r += t.right; s.w += t.wrong;
+    }
+    const out: HeatValues = {};
+    for (const [sio, s] of Object.entries(sum)) if (s.r + s.w > 0) out[sio] = Math.round((100 * s.r) / (s.r + s.w));
+    return out;
+  }, [ledger]);
+  // `#SIO-0NN` (from /moi's outcome rows and the heat-strip) lands on that
+  // row once the client has rendered it — the browser's own hash scroll
+  // fires before the rows exist.
+  useEffect(() => {
+    const id = window.location.hash.slice(1);
+    if (!/^SIO-\d{3}$/.test(id)) return;
+    document.getElementById(id)?.scrollIntoView({ block: "center" });
+  }, [url?.unit, mounted]);
 
   // Word-level search (Dan, 2026-07-08) — « bruine » finds the weather
   // outcome. A live query overrides the unit: hits from every unit, in
@@ -209,6 +232,22 @@ export default function ActivitiesIndexPage() {
               })}
             </div>
 
+            <HeatStrip
+              className="mt-2"
+              size="sm"
+              values={heat}
+              done={new Set(progress?.doneSios ?? [])}
+              label="Syllabus, by outcome — this device's accuracy"
+              onPick={(sio) => {
+                const s = SIOS.find((x) => x.id === sio);
+                if (!s) return;
+                setQ("");
+                set({ unit: s.unit });
+                window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}#${sio}`);
+                requestAnimationFrame(() => document.getElementById(sio)?.scrollIntoView({ block: "center" }));
+              }}
+            />
+
             {hits && hits.sios.length === 0 && (
               <p className="mt-4 text-sm font-bold text-[color:var(--cahier-ink-soft)]">No results for « {q} »</p>
             )}
@@ -223,7 +262,7 @@ export default function ActivitiesIndexPage() {
                 const hit = hits && sio.collectionId ? hits.map.get(sio.collectionId) : undefined;
                 const label = sio.short;
                 return (
-                  <li key={sio.id} className="index-row flex items-center gap-1.5 px-1.5 py-1.5 sm:gap-2 sm:px-2" style={{ borderColor: "var(--cahier-line)" }}>
+                  <li key={sio.id} id={sio.id} className="index-row flex scroll-mt-20 items-center gap-1.5 px-1.5 py-1.5 sm:gap-2 sm:px-2" style={{ borderColor: "var(--cahier-line)" }}>
                     {/* The stop — the number the learner tapped on Home; ✓ once
                         the outcome is marked done. Links back to that stop. */}
                     <Link
