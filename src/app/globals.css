@@ -1261,21 +1261,32 @@ h3.cahier-display { font-size: var(--fs-h3); }
 .home-map input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 .home-map input[type="number"]::-webkit-inner-spin-button,
 .home-map input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-/* 3D view (patch 25c: a real CSS-3D perspective scene): the stage is
-   `overflow: clip` (not hidden) so focus can never scroll it internally —
-   the world only ever moves through its own transform; the avatar chip
-   bobs; stops get a glossy candy finish. Off under reduced motion. */
+/* 3D view (ported from Dan's Figma Make, 19 Aug 2026 — a first-person
+   camera on the road): the stage is `overflow: clip` (not hidden) so focus
+   can never scroll it internally — the camera only moves through the box's
+   own scroll; the avatar chip bobs over the current stop, its disc pulses
+   and wears a pulsing gold ring. All off under reduced motion. */
 .home-map3d-stage { overflow: clip; }
 .home-map3d-box { scrollbar-width: thin; overscroll-behavior: contain; }
 @keyframes home-map-bob {
   0%, 100% { transform: translateY(0) rotate(-2deg); }
   50% { transform: translateY(-7px) rotate(2deg); }
 }
-.home-map-bob { display: inline-block; animation: home-map-bob 3.4s ease-in-out infinite; }
-.home-map3d-node {
-  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.14), inset 0 3px 3px rgba(255, 255, 255, 0.5), var(--shadow-card);
+.home-map-bob { display: inline-block; animation: home-map-bob 1.8s ease-in-out infinite; }
+@keyframes home-map3d-pulse {
+  0%, 100% { scale: 1; }
+  50% { scale: 1.08; }
 }
-@media (prefers-reduced-motion: reduce) { .home-map-bob { animation: none; } }
+.home-map3d-pulse { animation: home-map3d-pulse 2s ease-in-out infinite; }
+@keyframes home-map3d-ring {
+  0%, 100% { opacity: 0.65; scale: 0.97; }
+  50% { opacity: 1; scale: 1.07; }
+}
+.home-map3d-ring { animation: home-map3d-ring 1.6s ease-in-out infinite; }
+.home-map3d-node:focus-visible { outline: 3px solid var(--cahier-gold); outline-offset: 2px; border-radius: 50%; }
+@media (prefers-reduced-motion: reduce) {
+  .home-map-bob, .home-map3d-pulse, .home-map3d-ring { animation: none; }
+}
 
 /* Print (patch 25): Home prints the course map on ONE A4 portrait page —
    HomePrintSheet portals into <body>; every other body child is hidden. */
