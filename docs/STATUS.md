@@ -23,6 +23,7 @@ Only ONE agent edits this file at a time; say so in your commit.
 |---|---|---|
 | 1–22 | data layer, curriculum spine, PII split, bottom bar, Cahier tokens, HELP from the registry, DrillShell, lesson pager, English-first, cohort filter, hero shrink | verify18–22, 25 |
 | 25 | **Home path**: 2D map per Design (region bands, kind-coloured stops, ▶ current, 🚩 class flag, zoom), 2D ⇄ 3D toggle (3D ported from La Carte, ring colours from `sioKind()`), `short` labels + build check, `/unit/N` deep link, A4 print with QR per unit | verify25b (38) |
+| 25c | **Home map 3D view is 3D** (19 Aug): CSS-3D perspective ground plane + road + upright posts, camera on the current stop, 📍 recentre | verify25c (34) |
 | 23 | **Games**: `GameFrame` + GameBar v2 on all six, 100dvh boards, per-game headers/instructions gone, game-over post-mortem, misses → ReVue + `CORRIGER MAINTENANT`, credits once, desktop two-pane, galleries → ▶ Jouer + sheet | verify23 (70) |
 | 24 | **Index**: chip rail + unit segments + 10 SIO rows, URL state, cells = how you did (device ledger), hubs → redirects, `?gaps=1`, row buttons | verify24 (58) |
 | 26 | **/moi + teacher**: outcome rows, `HeatStrip` on 4 pages, thin /moi hero + 4 segments, teacher Class now (16 tiles, stuck detection, 30 s repoll), outcome × student matrix, one pooled fetch, Compute gone | verify26 (61) |
@@ -37,7 +38,7 @@ Shipped ≈ 147 of ~150 in-scope units.
 |---|---|---|---|
 | 1 | **Apply + deploy the 17 Aug patch series** (0001–0008, in order), then delete the merged branches below | 0.25 | Dan |
 | 2 | Home hero: keep the 11 Aug compact hero, or adopt Design's stat row (level · streak · course · XP · lessons + ⏪ ▶ ⋯ controls, heading back)? Design reverses the hero shrink — **Dan decides**; then ~1 unit | 1 | Dan → agent |
-| 3 | 3D map: swap the placeholder `HomeMap3D` for Dan's own 3D build when ready | — | Dan |
+| 3 | ~~3D map: swap the placeholder `HomeMap3D` for a real 3D build~~ **done 19 Aug** (patch 25c, `pm/home-map-3d`): CSS-3D perspective scene — tilted ground plane, region ground patches, SVG road on the plane, upright signposts + region landmarks; camera travels by wheel / touch / keys / scrollbar (native scroll → one transform), opens on the current stop, 📍 recentres, reduced motion = no glide. Tunables at the top of `HomeMap3D.tsx`: `TILT` (55°), `STEP`, `FOCUS`, road swing `amp`. verify25c (34) | — | done |
 | 4 | Class flag: `CLASS_FLAG_SIO` in `src/content/chapters.ts` is hand-set (SIO-010) — move weekly or derive from the term table | 0.5 | agent |
 | 5 | Ops: ruleset is active ✓; delete `add-claude-github-actions-…` (unmerged, `main` has its own workflows); `claude-review` billing in the Anthropic console; delete `import-fluoduo` on `dckg/fluo` | 0.5 | Dan |
 | 6 | Track D follow-ups: run the 22 eval cases against the deployed `/api/feedback`; teacher charts for `help.rung`; ÉcouTexte on the `?` ladder | 2 | agent |
