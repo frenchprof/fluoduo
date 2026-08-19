@@ -23,7 +23,7 @@ Only ONE agent edits this file at a time; say so in your commit.
 |---|---|---|
 | 1–22 | data layer, curriculum spine, PII split, bottom bar, Cahier tokens, HELP from the registry, DrillShell, lesson pager, English-first, cohort filter, hero shrink | verify18–22, 25 |
 | 25 | **Home path**: 2D map per Design (region bands, kind-coloured stops, ▶ current, 🚩 class flag, zoom), 2D ⇄ 3D toggle (3D ported from La Carte, ring colours from `sioKind()`), `short` labels + build check, `/unit/N` deep link, A4 print with QR per unit | verify25b (38) |
-| 25c | **Home map 3D view is 3D** (19 Aug): CSS-3D perspective ground plane + road + upright posts, camera on the current stop, 📍 recentre | verify25c (34) |
+| 25c/25d | **Home map 3D view = Dan's Figma Make** (ported 19 Aug, `pm/home-map-figma-3d`): first-person camera on the snaking road, depth-scaled stops, world gate signs, Peers' roadside props, trees, clock-driven sky, 🏁 arch; 📍 recentre | verify25c (61) |
 | 23 | **Games**: `GameFrame` + GameBar v2 on all six, 100dvh boards, per-game headers/instructions gone, game-over post-mortem, misses → ReVue + `CORRIGER MAINTENANT`, credits once, desktop two-pane, galleries → ▶ Jouer + sheet | verify23 (70) |
 | 24 | **Index**: chip rail + unit segments + 10 SIO rows, URL state, cells = how you did (device ledger), hubs → redirects, `?gaps=1`, row buttons | verify24 (58) |
 | 26 | **/moi + teacher**: outcome rows, `HeatStrip` on 4 pages, thin /moi hero + 4 segments, teacher Class now (16 tiles, stuck detection, 30 s repoll), outcome × student matrix, one pooled fetch, Compute gone | verify26 (61) |
@@ -38,7 +38,7 @@ Shipped ≈ 147 of ~150 in-scope units.
 |---|---|---|---|
 | 1 | **Apply + deploy the 17 Aug patch series** (0001–0008, in order), then delete the merged branches below | 0.25 | Dan |
 | 2 | Home hero: keep the 11 Aug compact hero, or adopt Design's stat row (level · streak · course · XP · lessons + ⏪ ▶ ⋯ controls, heading back)? Design reverses the hero shrink — **Dan decides**; then ~1 unit | 1 | Dan → agent |
-| 3 | ~~3D map: swap the placeholder `HomeMap3D` for a real 3D build~~ **done 19 Aug** (patch 25c, `pm/home-map-3d`): CSS-3D perspective scene — tilted ground plane, region ground patches, SVG road on the plane, upright signposts + region landmarks; camera travels by wheel / touch / keys / scrollbar (native scroll → one transform), opens on the current stop, 📍 recentres, reduced motion = no glide. Tunables at the top of `HomeMap3D.tsx`: `TILT` (55°), `STEP`, `FOCUS`, road swing `amp`. verify25c (34) | — | done |
+| 3 | ~~3D map: swap the placeholder `HomeMap3D` for a real 3D build~~ **ported from Dan's Figma Make 19 Aug** (`pm/home-map-figma-3d`, replaces the CSS-perspective attempt of the same afternoon — Dan: "the 3D map is not yet 3D"). The Make's engine is intact in `src/lib/map3d/` (`projection.ts`: `pathXAt` / `cameraForward` / `project()`, HORIZON_Y 0.30 · CAMERA_Y 0.80 · FOCAL 3.8 · MAX_AHEAD 38; `sky.ts`: 8 clock keyframes, sun/moon arc, clouds, stars; `scene.ts`: Peers' ROADSIDE_ITEMS + seeded trees). **What differs from the Make and why:** stops from SIOS + `progress` (no mock, no stars / type badges / modal — a tap opens the SIO under the map; nothing dims); the Make's "Café de Paris / Le Campus…" are the repo's regions (HomeMap `REGIONS` + regionIcons on each world's gate sign, tap = open the unit; accent `--region-*`, ground `--region-*-band`); road keeps the 2D semantics (paved to 🚩, dotted beyond, travelled in the accent); classmates DROPPED (no safe per-learner stop source; leaderboard = name + XP only); colours are tokens (no hex — the ratchet did not move; sky keyframes are numeric RGB in `sky.ts`, see its header); Cahier body stack, not Nunito; camera = the box's native scroll (wheel / touch / keys / scrollbar) → one rAF → `camZ`; `?hour=N` pins the sky for screenshots. Knobs: `SCROLL_PER_STOP`, `CAM_MIN/MAX` (HomeMap3D.tsx), the projection constants + `WX` snake, `SKY_KF`, `MAX_BEHIND` (4 — lower it for less clutter behind the camera). Known: on a 390 phone the nearest stops stack vertically (the Make does too); the current stop is forced on top. verify25c (61) | — | done |
 | 4 | Class flag: `CLASS_FLAG_SIO` in `src/content/chapters.ts` is hand-set (SIO-010) — move weekly or derive from the term table | 0.5 | agent |
 | 5 | Ops: ruleset is active ✓; delete `add-claude-github-actions-…` (unmerged, `main` has its own workflows); `claude-review` billing in the Anthropic console; delete `import-fluoduo` on `dckg/fluo` | 0.5 | Dan |
 | 6 | Track D follow-ups: run the 22 eval cases against the deployed `/api/feedback`; teacher charts for `help.rung`; ÉcouTexte on the `?` ladder | 2 | agent |
@@ -51,7 +51,8 @@ Dan's email; Firestore service-account key — being retired.
 
 1. Home map = two views, 2D and 3D, learner toggles. 2D reference = Design's
    "FluOlinGo Home standalone". Band fills = `--region-*-band` tokens. 3D = Dan's own
-   build (placeholder ported from La Carte meanwhile). No more path reversals.
+   build — his Figma Make "3D Scroll Map Interface", ported 19 Aug (row 3 below).
+   No more path reversals.
 2. SIO-036/040 spec softened to content (description AND competence, CSV + `sios.json`
    in step). Do NOT run `scripts/gen-sios.mjs` (stale vs hand-edited `sios.json`).
 3. `envies-besoins.json` 09/10 `gap` = `envie`.
