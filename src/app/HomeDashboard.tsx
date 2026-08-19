@@ -173,38 +173,35 @@ export default function HomeDashboard() {
   const lvl = levelForXp(progress.xp);
   const mult = xpMultiplier(progress.streak);
   const accent = equippedAccent(progress);
-  const xpPct = Math.round((lvl.into / lvl.span) * 100);
 
-  const chip = "fluo-mono flex items-center gap-1 rounded-full border-2 border-[color:var(--fluo-ink)] bg-white/75 px-2 py-0.5 text-xs font-bold text-[color:var(--fluo-ink)]";
+  const cell = "flex flex-col items-center justify-end gap-0.5 rounded-xl border-2 border-[color:var(--fluo-ink)] bg-white/75 px-2.5 py-1";
+  const cellLabel = "fluo-mono text-[9px] font-bold uppercase tracking-wide text-[color:var(--fluo-ink-soft)]";
+  const cellValue = "text-sm font-black leading-none text-[color:var(--fluo-ink)]";
 
 
   return (
     <>
-      {/* The hero, shrunk 303px -> ~99px (patch 25; Dan, 2026-08-11: the
-          DrillShell header bar is the reference — thin, static,
-          information-only, never a page-dominating hero). What went: the
-          "Bienvenue sur FluOlinGo" heading (the shell's wordmark two
-          centimetres above it already says so) and the two bordered bars.
-          What stays: every progress counter (learner feedback), HELP!,
-          and the two actions — grouped IN the card they describe,
-          side by side (the button-grouping rule).
-          The brand animation came BACK the same day (Dan: "i would rather
-          you reduce the size ... than remove it; the ink blob must come
-          back") — compacted: one line instead of heading + byline block,
-          text-lg instead of text-2xl, the byline at 16px tall beside the
-          word, the whole show ~3.5 s instead of 5.5 s. French on purpose:
-          the hero is the one place the chrome's English gives way. */}
+      {/* The hero as Design's report card (Dan, 2026-08-19: adopt the stat
+          row — "without progress bar … like a report card"; reverses the
+          11 Aug hairline hero, STATUS row 2). Five figures — Level ·
+          Streak · Course · XP · Lessons — and the ⏪ ▶ ⋯ controls, all
+          inside the card (button-grouping rule). The heading is BACK as a
+          real h1: the brand animation IS the heading. What went: the two
+          hairline progress bars (the map right below is the course
+          picture) and the gems chip (the shop shows it). Zeroes stay
+          hidden (Dan, 2026-07-20) so a new learner's card is not a row of
+          0s. Lessons = SIOs written done — the lesson pager's end writes
+          the SIO, so the two are one count shown two ways (n vs %).
+          French stays only in the brand: the chrome is English-first. */}
       <section
-        aria-label="Your progress"
+        aria-label="Your report card"
         className="mb-7 rounded-2xl border-2 border-[color:var(--fluo-ink)] p-3 shadow-[5px_5px_0_var(--fluo-hl)]"
         style={{ background: "linear-gradient(120deg, #fbe3ec 0%, #def3f5 45%, #ecf7cf 100%)" }}
       >
-        {/* Decorative brand line — NOT a heading (the h1 died with patch 25;
-            the shell wordmark still brands the page for structure). The word
-            does the Kallang Wave, the ink blob sweeps F→o, then « par Dr
-            Chan » writes itself, smaller than before, on the same line. */}
-        <div className="mb-1.5 flex items-center gap-2">
-          <span className="fluo-serif text-lg font-black leading-none text-[color:var(--fluo-ink)]">
+        {/* The heading, back (Design's ref) — same Kallang Wave + ink blob
+            + hand-written byline, one size up from the shrunk hero. */}
+        <h1 className="mb-2 flex items-center gap-2">
+          <span className="fluo-serif text-xl font-black leading-none text-[color:var(--fluo-ink)]">
             <span
               className={`fluo-brand${heroPlay ? " is-play" : ""}${inkDone ? " is-inked" : ""}`}
               aria-label="FluOlinGo"
@@ -240,94 +237,81 @@ export default function HomeDashboard() {
               ))}
             </g>
           </svg>
-        </div>
-        <div className="flex flex-wrap items-center gap-1">
-          <Link href="/profil" className={`${chip} hover:-translate-y-0.5 !px-1.5`} title={`Your level — N${lvl.level} · ${lvl.name}`}>
-            🎚️ <RankBadge level={lvl.level} name={lvl.name} compact className="text-xs" />
-          </Link>
-          <span className={chip}>✓ {doneTotal}/{SIOS.length}</span>
-          {/* Progressive disclosure (Dan, 2026-07-20: "hide the zeroes until
-              they are no longer zero"). */}
-          {progress.streak > 0 && (
-            <span className={chip} title={mult > 1 ? `Streak active: XP ×${mult}` : "Day streak"}>
-              🔥 {progress.streak}{mult > 1 && <b className="text-[color:var(--fluo-danger)]"> ×{mult}</b>}
-            </span>
-          )}
-          {progress.xp > 0 && (
-            <Link href="/leaderboard" className={`${chip} hover:-translate-y-0.5`} title="Leaderboard · your rank">⭐ {progress.xp}</Link>
-          )}
-          {progress.gems > 0 && (
-            <Link href="/profil" className={`${chip} hover:-translate-y-0.5`} title="Shop">💎 {progress.gems}</Link>
-          )}
-          <button
-            type="button"
-            onClick={() => setQgOpen(true)}
-            className="rounded-lg border-2 px-1.5 py-0.5 text-xs font-black shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
-            style={{ background: "var(--fluo-ink)", borderColor: "var(--fluo-ink)", color: "#d4f24c" }}
-          >
-            HELP!
-          </button>
-        </div>
-        {qgOpen && <GuideSplash onClose={() => setQgOpen(false)} />}
+        </h1>
 
-        {/* Hairline progress, DrillShell-style: 3px tracks, labels inline —
-            information, not furniture. The two actions sit BESIDE the bars
-            they act on (▶ continues the course the Cours line measures,
-            🔁 reviews it), paired side by side — the button-grouping rule. */}
-        <div className="mt-2 flex items-center gap-2.5">
-          <div className="min-w-0 flex-1 space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="fluo-mono w-12 shrink-0 text-[10px] font-bold text-[color:var(--fluo-ink)]">Course</span>
-              <span
-                className="h-[3px] flex-1 overflow-hidden rounded-full bg-[color:var(--fluo-ink)]/15"
-                role="progressbar"
-                aria-valuenow={pct}
-                aria-valuemin={0}
-                aria-valuemax={100}
-              >
-                <span className="block h-full rounded-full transition-all duration-500" style={{ width: `${Math.max(pct, 1)}%`, background: accent }} />
+        {/* The report card: figures, not bars. */}
+        <div className="flex flex-wrap items-end justify-between gap-x-3 gap-y-2">
+          <div className="flex flex-wrap items-stretch gap-1.5">
+            <Link href="/profil" className={`${cell} transition hover:-translate-y-0.5`} title={`Your level — N${lvl.level} · ${lvl.name}`}>
+              <span className={cellValue}>
+                <RankBadge level={lvl.level} name={lvl.name} compact className="text-sm" />
               </span>
-              <span className="fluo-mono w-8 shrink-0 text-right text-[10px] font-bold text-[color:var(--fluo-ink)]">{pct}%</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="fluo-mono w-12 shrink-0 text-[10px] font-bold text-[color:var(--fluo-ink)]">N{lvl.level}</span>
-              <span
-                className="h-[3px] flex-1 overflow-hidden rounded-full bg-[color:var(--fluo-ink)]/15"
-                role="progressbar"
-                aria-valuenow={lvl.into}
-                aria-valuemin={0}
-                aria-valuemax={lvl.span}
-              >
-                <span className="block h-full rounded-full transition-all duration-500" style={{ width: `${Math.max(xpPct, 1)}%`, background: accent }} />
+              <span className={cellLabel}>Level</span>
+            </Link>
+            {progress.streak > 0 && (
+              <span className={cell} title={mult > 1 ? `Streak active: XP ×${mult}` : "Day streak"}>
+                <span className={cellValue}>
+                  🔥 {progress.streak}
+                  {mult > 1 && <b className="text-[color:var(--fluo-danger)]"> ×{mult}</b>}
+                </span>
+                <span className={cellLabel}>Streak</span>
               </span>
-              <span className="fluo-mono w-12 shrink-0 text-right text-[10px] font-bold text-[color:var(--fluo-ink)]">{lvl.into}/{lvl.span}</span>
-            </div>
+            )}
+            <span className={cell}>
+              <span className={cellValue}>{pct}%</span>
+              <span className={cellLabel}>Course</span>
+            </span>
+            {progress.xp > 0 && (
+              <Link href="/leaderboard" className={`${cell} transition hover:-translate-y-0.5`} title="Leaderboard · your rank">
+                <span className={cellValue}>⭐ {progress.xp}</span>
+                <span className={cellLabel}>XP</span>
+              </Link>
+            )}
+            <span className={cell}>
+              <span className={cellValue}>{doneTotal}/{SIOS.length}</span>
+              <span className={cellLabel}>Lessons</span>
+            </span>
           </div>
+
+          {/* ⏪ ▶ ⋯ — the media-player controls from Design's ref: rewind
+              over what slipped (DéjàRevu), play on (Continue), and the ⋯
+              door to HELP! (the Quick Guide — same splash as ever). */}
           <div className="flex shrink-0 items-center gap-1.5">
+            <Link
+              href="/reviser"
+              aria-label="DéjàRevu"
+              title="DéjàRevu — go back over your words to review"
+              className="relative flex h-8 w-9 items-center justify-center rounded-lg border-2 border-[color:var(--fluo-ink)] bg-white/80 text-sm text-[color:var(--fluo-ink)] shadow-[2px_2px_0_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5"
+            >
+              <span aria-hidden>⏪</span>
+              {dueCount > 0 && (
+                <span className="absolute -right-2 -top-2 rounded-full bg-[var(--fluo-danger)] px-1.5 text-[10px] font-bold text-white">{dueCount}</span>
+              )}
+            </Link>
             {activeSio && (
               <Link
                 href={`/unit/${activeSio.unit}#${activeSio.id}`}
                 aria-label="Continue"
                 title={`Continue — « ${activeSio.topic} », the next objective after your latest 'done'.`}
-                className="flex h-7 w-8 items-center justify-center rounded-lg border-2 text-sm text-white shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
+                className="flex h-8 w-9 items-center justify-center rounded-lg border-2 text-sm text-white shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
                 style={{ background: accent, borderColor: accent }}
               >
                 <span aria-hidden>▶</span>
               </Link>
             )}
-            <Link
-              href="/reviser"
-              aria-label="DéjàRevu"
-              title="DéjàRevu — your words to review"
-              className="relative flex h-7 w-8 items-center justify-center rounded-lg border-2 border-[color:var(--fluo-ink)] bg-white/80 text-sm text-[color:var(--fluo-ink)] shadow-[2px_2px_0_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5"
+            <button
+              type="button"
+              onClick={() => setQgOpen(true)}
+              aria-label="Help and more"
+              title="HELP! — the quick guide"
+              className="flex h-8 w-9 items-center justify-center rounded-lg border-2 text-sm font-black shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
+              style={{ background: "var(--fluo-ink)", borderColor: "var(--fluo-ink)", color: "#d4f24c" }}
             >
-              <span aria-hidden>🔁</span>
-              {dueCount > 0 && (
-                <span className="absolute -right-2 -top-2 rounded-full bg-[var(--fluo-danger)] px-1.5 text-[10px] font-bold text-white">{dueCount}</span>
-              )}
-            </Link>
+              <span aria-hidden>⋯</span>
+            </button>
           </div>
         </div>
+        {qgOpen && <GuideSplash onClose={() => setQgOpen(false)} />}
       </section>
 
       {/* Streak momentum (Dan, 2026-07-08, episode model): counts done-in-order

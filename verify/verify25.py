@@ -66,12 +66,12 @@ check("fluo-brand-letter" in home and "fluo-byline" in home and "BYLINE_STROKES"
 check("heroPlayed" in home,
       "the once-per-session gate survives (full show once, finished look after)",
       "the once-per-session gate is gone — the show would replay every visit")
-check("fluo-serif text-lg" in home,
-      "the brand line is text-lg — smaller than the old text-2xl heading",
-      "the brand line is not compact (expected fluo-serif text-lg)")
+check("<h1" in home and "fluo-serif text-xl" in home,
+      "the heading is back as a real h1 (Design's report card, Dan 2026-08-19) at text-xl",
+      "the heading is missing or the wrong size (expected an h1 with fluo-serif text-xl)")
 check("text-2xl" not in home,
       "no text-2xl heading crept back into the hero",
-      "a text-2xl heading is back — the shrink is undone")
+      "a text-2xl heading is back — that size was retired with the 303px hero")
 
 css = read("src/app/globals.css")
 check("fluo-brand-hl 1s" in css and "0.95s forwards" in css,
@@ -81,21 +81,25 @@ check("2.0 + i * 0.08" in home,
       "the byline strokes start at 2.0s with 0.08s stagger (~3.5s total)",
       "the byline strokes still run the original 2.8s + 0.17s pacing")
 
-# 2 · hairlines with real roles
-check(home.count("h-[3px]") == 2,
-      "both progress lines are 3px hairlines",
-      "the hero bars are not hairlines (expected exactly two h-[3px] tracks)")
-check(home.count('role="progressbar"') == 2,
-      "both hairlines carry a real progressbar role",
-      "the hero hairlines lack progressbar roles")
+# 2 · the report card: figures, not bars (Dan, 2026-08-19 — Design's stat
+#     row replaces the 11 Aug hairlines; "without progress bar … like a
+#     report card")
+check(home.count("h-[3px]") == 0 and home.count('role="progressbar"') == 0,
+      "no progress bars in the hero — the report card shows figures",
+      "a progress bar is back in the hero (Dan, 2026-08-19: report card, no bars)")
+for label in ("Level", "Streak", "Course", "XP", "Lessons"):
+    check(f">{label}</span>" in home,
+          f"the {label} figure is on the card",
+          f"the {label} figure is missing from the report card")
 
 # 3 · actions grouped in the card, side by side
 sec_start = home.find("<section")
 sec_end = home.find("</section>", sec_start)
 hero = home[sec_start:sec_end]
-check('aria-label="Continue"' in hero and 'aria-label="DéjàRevu"' in hero,
-      "Continue and DéjàRevu live inside the hero card they act on",
-      "the hero's actions float outside the card (button-grouping rule)")
+check('aria-label="Continue"' in hero and 'aria-label="DéjàRevu"' in hero
+      and 'aria-label="Help and more"' in hero,
+      "the ⏪ ▶ ⋯ controls live inside the hero card they act on",
+      "a hero control is missing or floats outside the card (button-grouping rule)")
 cont = hero.find('aria-label="Continue"')
 revu = hero.find('aria-label="DéjàRevu"')
 check(cont >= 0 and revu >= 0 and "</div>" not in "" and abs(revu - cont) < 1400,
@@ -107,10 +111,10 @@ for marker, what in (
     ("doneTotal}/{SIOS.length", "the done-count chip"),
     ("progress.streak", "the streak chip"),
     ("progress.xp", "the XP chip"),
-    ("progress.gems", "the gems chip"),
     ("{pct}%", "the course-completion percentage"),
-    ("lvl.into}/{lvl.span", "the level XP counter"),
 ):
+# (gems and the level XP counter left the hero with the stat row —
+#  Dan, 2026-08-19: the shop shows gems, the profil shows the level bar.)
     check(marker in home,
           f"{what} survives the shrink",
           f"{what} was lost in the shrink — progress counters are learner feedback")
