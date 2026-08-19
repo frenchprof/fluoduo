@@ -12,7 +12,7 @@
  */
 import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import GuideSplash from "@/components/GuideSplash";
+import MenuSplash from "@/components/MenuSplash";
 import HomeMap from "@/components/HomeMap";
 import HomeMap3D from "@/components/HomeMap3D";
 import HomePrintSheet from "@/components/HomePrintSheet";
@@ -328,15 +328,16 @@ export default function HomeDashboard() {
             <button
               type="button"
               onClick={() => setQgOpen(true)}
-              aria-label="Help"
+              aria-label="Menu"
               className="flex h-9 w-9 items-center justify-center rounded-full border-2 text-xs font-black shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
               style={{ background: "var(--fluo-ink)", borderColor: "var(--fluo-ink)", color: "var(--cahier-hl)" }}
+              title="Menu — every activity, one tap away"
             >
-              ?
+              <span aria-hidden>▦</span>
             </button>
           </div>
         </div>
-        {qgOpen && <GuideSplash onClose={() => setQgOpen(false)} />}
+        {qgOpen && <MenuSplash onClose={() => setQgOpen(false)} />}
       </section>
 
       {/* Streak momentum (Dan, 2026-07-08, episode model): counts done-in-order

@@ -18,7 +18,7 @@ import Link from "next/link";
  *  every half-width laptop window with NO navigation but the burger.
  *  Keep in sync with the media query in globals.css. */
 const RAIL_MIN_PX = 900;
-import GuideSplash from "@/components/GuideSplash";
+import MenuSplash from "@/components/MenuSplash";
 import type { CSSProperties, MouseEvent as ReactMouseEvent, ReactNode } from "react";
 
 const PAGE_WIDTH_KEY = "fluolingo:pageWidth";
@@ -361,7 +361,7 @@ export default function CahierShell({
                         className="cahier-tab cahier-tab--sm !rounded-md text-left font-black"
                         style={{ background: "var(--cahier-ink)", borderColor: "var(--cahier-ink)", color: "#d4f24c" }}
                       >
-                        <span aria-hidden>❓</span> HELP!
+                        <span aria-hidden>▦</span> MENU
                       </button>
                       {tools.map((t, i) => (
                         <TabFlap
@@ -433,7 +433,7 @@ export default function CahierShell({
         )}
         {searchOpen && <SearchOverlay onClose={() => setSearchOpen(false)} />}
         {rankingOpen && <RankingOverlay onClose={() => setRankingOpen(false)} />}
-        {quickGuideOpen && <GuideSplash onClose={() => setQuickGuideOpen(false)} />}
+        {quickGuideOpen && <MenuSplash onClose={() => setQuickGuideOpen(false)} />}
         <nav className="cahier-tabs" aria-label="Pages">
           {/* TOP tier: Unités only (Dan, 2026-07-15) — Home's doors are the
               top-left FluOlinGo link and the 🏠 icon. */}
@@ -457,7 +457,7 @@ export default function CahierShell({
             className="cahier-tab cahier-tab--xs font-black"
             style={{ background: "var(--cahier-ink)", borderColor: "var(--cahier-ink)", color: "#d4f24c" }}
           >
-            <span aria-hidden>❓</span> HELP!
+            <span aria-hidden>▦</span> MENU
           </button>
           {tools.map((t, i) => (
             <TabFlap key={t.key} tab={t} hue={hueOf(t, i)} active={active === t.key} className="cahier-tab cahier-tab--xs" />

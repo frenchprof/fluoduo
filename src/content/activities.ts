@@ -37,13 +37,25 @@
  *             the other 49 links were 404s)
  */
 
-export type FamilyKey = "goals" | "review" | "skills" | "svplay" | "user";
+export type FamilyKey = "goals" | "practice" | "review" | "skills" | "svplay" | "user";
 
 export type Family = { key: FamilyKey; name: string; emoji: string; href: string };
 
-/** The five families, in Dan's order. This IS the navigation. */
+/**
+ * The six families, in Dan's order (2026-08-19). What changed from the five:
+ *
+ *   · GOALS is no longer the five pre-lesson activities — it is the fifty
+ *     objectives themselves, by unit and then by goal. It is what a learner
+ *     opens to ask "what am I supposed to be able to do?", so it leads.
+ *   · The five activities that used to sit under Goals (guess → lesson →
+ *     dice → cards → produce) are now PRACTICE. Same five, same order, a
+ *     name that says what you do with them.
+ *
+ * Order is Dan's 2a–2f: Goals · Practice · Review · Skills · SvPlay · User.
+ */
 export const FAMILIES: Family[] = [
   { key: "goals", name: "FluOlin Goals", emoji: "🎯", href: "/" },
+  { key: "practice", name: "FluOlin Practice", emoji: "✏️", href: "/activities" },
   { key: "review", name: "FluOlin Review", emoji: "🔁", href: "/reviser" },
   { key: "skills", name: "FluOlin Skills", emoji: "💪", href: "/conjugaison" },
   { key: "svplay", name: "FluOlin SvPlay", emoji: "🎮", href: "/games/vocabularain" },
@@ -72,11 +84,11 @@ export type Activity = {
 
 export const ACTIVITIES: Activity[] = [
   // ── 1 · FluOlin Goals — the sequence for one objective ────────────────────
-  { key: "speculearn", name: "SpecuLearn", emoji: "🔮", family: "goals", href: "/activities?activity=speculearn", hue: "#8a5fd4", blurb: "Guess before you're taught. Pre-Tests live here too." },
-  { key: "lesson", name: "xPlain", emoji: "📚", family: "goals", href: null, hue: "#e0567f", blurb: "The lesson: rule, then practice." },
-  { key: "dice", name: "EtuDice", emoji: "🎲", family: "goals", href: null, hue: "#e3a700", blurb: "Roll the d12 — it sets your starting card on the lesson ramp." },
-  { key: "flip", name: "4Mémoire", emoji: "🃏", family: "goals", href: "/activities?activity=flip", hue: "#2bb6c2", blurb: "Flashcards. English front, flip to French." },
-  { key: "complete", name: "iComplete", emoji: "✏️", family: "goals", href: null, hue: "#7bbf2e", blurb: "Type the missing word." },
+  { key: "speculearn", name: "SpecuLearn", emoji: "🔮", family: "practice", href: "/activities?activity=speculearn", hue: "#8a5fd4", blurb: "Guess before you're taught. Pre-Tests live here too." },
+  { key: "lesson", name: "xPlain", emoji: "📚", family: "practice", href: null, hue: "#e0567f", blurb: "The lesson: rule, then practice." },
+  { key: "dice", name: "EtuDice", emoji: "🎲", family: "practice", href: null, hue: "#e3a700", blurb: "Roll the d12 — it sets your starting card on the lesson ramp." },
+  { key: "flip", name: "4Mémoire", emoji: "🃏", family: "practice", href: "/activities?activity=flip", hue: "#2bb6c2", blurb: "Flashcards. English front, flip to French." },
+  { key: "complete", name: "iComplete", emoji: "✏️", family: "practice", href: null, hue: "#7bbf2e", blurb: "Type the missing word." },
 
   // ── 2 · FluOlin Review — automatic first, then the one you choose ─────────
   { key: "reviser", name: "DéjàRevu", emoji: "🔁", family: "review", href: "/reviser", hue: "#7bbf2e", blurb: "Comes back when you're about to forget it." },
@@ -116,7 +128,7 @@ export function activity(key: string): Activity | undefined {
 /** Only the ones with a gallery/index page, in family order — this is the
  *  flap rail and the HELP grid, and now they cannot disagree. */
 export function navigableActivities(): Activity[] {
-  const order: FamilyKey[] = ["goals", "review", "skills", "svplay", "user"];
+  const order: FamilyKey[] = ["goals", "practice", "review", "skills", "svplay", "user"];
   return ACTIVITIES.filter((a) => a.href !== null).sort(
     (a, b) => order.indexOf(a.family) - order.indexOf(b.family),
   );

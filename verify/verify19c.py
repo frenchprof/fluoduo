@@ -69,14 +69,24 @@ check("truncate" not in guide_code,
       "no HELP tile can truncate its name",
       "GuideBody still uses `truncate` — names can be cut to 'GramMara…' again")
 
-# Registry sanity for the grouping this panel now trusts: every family has
-# at least one activity, so no HELP group can render empty.
+# Registry sanity: every family that groups ACTIVITIES has at least one, so no
+# grouped surface can render an empty shelf.
+#
+# GOALS is the documented exception since 19 Aug: its children are the fifty
+# objectives (by unit, then goal), not activities — the five that used to sit
+# under it are now PRACTICE. It carries no `family: "goals"` row on purpose,
+# and the Menu grid iterates ACTIVITIES directly, so nothing renders empty.
+OBJECTIVE_FAMILIES = {"goals"}
 fams = set(re.findall(r'\{ key: "([a-z]+)", name: "FluOlin', reg))
 fam_of = re.findall(r'family: "([a-z]+)"', reg)
-empty = sorted(fams - set(fam_of))
+empty = sorted(fams - set(fam_of) - OBJECTIVE_FAMILIES)
 check(fams and not empty,
-      f"every family has activities ({len(fams)} families, {len(fam_of)} rows)",
-      f"families with no activities would render empty HELP groups: {empty}")
+      f"every activity family has activities ({len(fams)} families, {len(fam_of)} rows, "
+      f"{len(OBJECTIVE_FAMILIES)} objective-family exempt)",
+      f"families with no activities would render empty groups: {empty}")
+check("practice" in set(fam_of),
+      "the five pre-lesson activities live under PRACTICE (19 Aug regrouping)",
+      "no activity is in the practice family — the 19 Aug regrouping is undone")
 
 # ── 2 · the crumb prop is gone ─────────────────────────────────────────────
 shell_code = strip_comments(read("src/components/CahierShell.tsx"))
