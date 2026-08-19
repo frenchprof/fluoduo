@@ -28,6 +28,7 @@ Only ONE agent edits this file at a time; say so in your commit.
 | 24 | **Index**: chip rail + unit segments + 10 SIO rows, URL state, cells = how you did (device ledger), hubs → redirects, `?gaps=1`, row buttons | verify24 (58) |
 | 26 | **/moi + teacher**: outcome rows, `HeatStrip` on 4 pages, thin /moi hero + 4 segments, teacher Class now (16 tiles, stuck detection, 30 s repoll), outcome × student matrix, one pooled fetch, Compute gone | verify26 (61) |
 | bugs | deck gate/redirect, `NoDeck`, DeckContent on tokens, `/sio/[id]` → deep link, DEPLOY.md name, ONE "weak", ONE shuffle, D6/D7/D9/D10/D11, leaderboard identity, D4 sync diagnostic | verify27-bugs (81) |
+| hero | **Home hero = a horizontal report card** (19 Aug): the two hairline bars gone ("no status bar"), chip rail gone, « Bienvenue sur FluOlinGo » heading back, counters now one row of value-over-label marks — level · streak · course · XP · lessons, + gems once earned; actions round, dropping below the marks on a phone | verify25 (19) |
 | Track D | help-ladder spec + state machine + rule hints + `?`/WHY in every drill, evidence tagged, hinted items → ReVue, open-production feedback (`/api/feedback`, rule fallback), 22 eval cases | verify28-trackd (165) |
 
 Shipped ≈ 147 of ~150 in-scope units.
@@ -37,7 +38,7 @@ Shipped ≈ 147 of ~150 in-scope units.
 | # | Item | Units | Who |
 |---|---|---|---|
 | 1 | **Apply + deploy the 17 Aug patch series** (0001–0008, in order), then delete the merged branches below | 0.25 | Dan |
-| 2 | Home hero: keep the 11 Aug compact hero, or adopt Design's stat row (level · streak · course · XP · lessons + ⏪ ▶ ⋯ controls, heading back)? Design reverses the hero shrink — **Dan decides**; then ~1 unit | 1 | Dan → agent |
+| 2 | ~~Home hero: keep the 11 Aug compact hero, or adopt Design's stat row?~~ **Dan chose the report card, 19 Aug** — built, verify25 rewritten to the new decision, screenshots in `work/hero-report-card/` | — | done |
 | 3 | ~~3D map: swap the placeholder `HomeMap3D` for a real 3D build~~ **ported from Dan's Figma Make 19 Aug** (`pm/home-map-figma-3d`, replaces the CSS-perspective attempt of the same afternoon — Dan: "the 3D map is not yet 3D"). The Make's engine is intact in `src/lib/map3d/` (`projection.ts`: `pathXAt` / `cameraForward` / `project()`, HORIZON_Y 0.30 · CAMERA_Y 0.80 · FOCAL 3.8 · MAX_AHEAD 38; `sky.ts`: 8 clock keyframes, sun/moon arc, clouds, stars; `scene.ts`: Peers' ROADSIDE_ITEMS + seeded trees). **What differs from the Make and why:** stops from SIOS + `progress` (no mock, no stars / type badges / modal — a tap opens the SIO under the map; nothing dims); the Make's "Café de Paris / Le Campus…" are the repo's regions (HomeMap `REGIONS` + regionIcons on each world's gate sign, tap = open the unit; accent `--region-*`, ground `--region-*-band`); road keeps the 2D semantics (paved to 🚩, dotted beyond, travelled in the accent); classmates DROPPED (no safe per-learner stop source; leaderboard = name + XP only); colours are tokens (no hex — the ratchet did not move; sky keyframes are numeric RGB in `sky.ts`, see its header); Cahier body stack, not Nunito; camera = the box's native scroll (wheel / touch / keys / scrollbar) → one rAF → `camZ`; `?hour=N` pins the sky for screenshots. Knobs: `SCROLL_PER_STOP`, `CAM_MIN/MAX` (HomeMap3D.tsx), the projection constants + `WX` snake, `SKY_KF`, `MAX_BEHIND` (4 — lower it for less clutter behind the camera). Known: on a 390 phone the nearest stops stack vertically (the Make does too); the current stop is forced on top. verify25c (61) | — | done |
 | 4 | Class flag: `CLASS_FLAG_SIO` in `src/content/chapters.ts` is hand-set (SIO-010) — move weekly or derive from the term table | 0.5 | agent |
 | 5 | Ops: ruleset is active ✓; delete `add-claude-github-actions-…` (unmerged, `main` has its own workflows); `claude-review` billing in the Anthropic console; delete `import-fluoduo` on `dckg/fluo` | 0.5 | Dan |
@@ -59,9 +60,21 @@ Dan's email; Firestore service-account key — being retired.
 4. Region **accent** hexes stay provisional (Design gave bands, not accents).
 5. Firestore key: being retired — not a task. `/teacher`: gated to Dan's email — closed.
 
+## Decision Dan made on 19 Aug (do not re-open)
+
+6. **Home hero = a horizontal report card.** Dan, shown Design's "FluOlinGo Home
+   standalone" twice: *"the dashboard that wouldn't have a status bar, that is
+   minimalist and that is a bit like a report card but horizontally."* This
+   REVERSES the 11 Aug hero shrink — deliberately. Do not re-shrink it, do not
+   put the hairline bars back: `verify25` now asserts the reversal (no
+   `h-[3px]`, no `role="progressbar"`, the h1 greets again), so a re-shrink
+   fails CI. Marks are numbers with a label under each; emoji left the values
+   so six marks fit a 390px phone; XP shows `420/1k` with the exact figure in
+   the tooltip; gems join the row only once earned (the 20 Jul zero rule holds
+   for currencies, not for the five academic marks).
+
 ## Decisions awaiting Dan (all default to what was built)
 
-- Hero: keep vs Design stat row (item 2 above).
 - Games: hearts kept in NumBus/NumBourse/LexicaLater; Match It now behind sign-in.
 - Home: "one unit per screen" = vertical band snap, not sideways paging.
 - /moi: no time-on-task line any more (D6 sessions had no writer); Reviser "N weak" now

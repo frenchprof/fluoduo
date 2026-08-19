@@ -10,22 +10,34 @@ offender: the Home hero at 303px. It is now a ~99px card (measured at
 
 Amended the same day: Dan brought the brand animation BACK, compact ("i
 would rather you reduce the size of par Daniel Chan than remove it; the
-ink blob must come back even if you make it smaller"). So the heading
-prose ("Bienvenue sur") stays dead, but the animated FluOlinGo + a
-smaller « par Dr Chan » live on one line in the card, the whole show
-~3.5 s (was 5.5 s), once per browser session.
+ink blob must come back even if you make it smaller"): the animated
+FluOlinGo + a smaller « par Dr Chan », the whole show ~3.5 s (was 5.5 s),
+once per browser session.
+
+REVERSED 2026-08-19 by Dan, from Design's "FluOlinGo Home standalone"
+reference shown twice: "the dashboard that wouldn't have a status bar,
+that is minimalist and that is a bit like a report card but
+horizontally". So the two hairline bars are GONE (no status bar), the
+chip rail is gone, the « Bienvenue sur FluOlinGo » heading is BACK, and
+the counters are now one horizontal strip of marks — value over label,
+hairline dividers between — read across like a report card.
+The shrink assertions below are inverted accordingly; the brand
+animation, the grouping rule and the counter census are unchanged,
+because none of those was what Dan reversed.
 
 What this asserts (the height itself is a screenshot's job):
 
-  1  The hero heading prose is gone ("Bienvenue sur" — the shell's
-     wordmark already brands the page), but the compact brand animation
-     is present: wave letters, ink blob, byline strokes, the
+  1  The heading greets again ("Bienvenue sur"), and the brand animation
+     is intact: wave letters, ink blob, byline strokes, the
      once-per-session gate, and the compressed timings.
-  2  The bars are hairlines with real progressbar roles, not bordered
-     furniture.
-  3  The actions (Continue, DéjàRevu) live INSIDE the hero card, paired
-     side by side — the button-grouping rule.
-  4  Every progress counter survives (litmus: learner feedback stays).
+  2  There is NO status bar — no progress-bar tracks, no progressbar
+     roles anywhere in the hero.
+  3  The marks are a horizontal row: a <dl> of value-over-label cells,
+     each labelled, all sharing one line (the list itself never wraps —
+     on a phone the actions drop below it instead).
+  4  The actions (Continue, DéjàRevu, Help) live INSIDE the hero card,
+     grouped — the button-grouping rule.
+  5  Every progress counter survives (litmus: learner feedback stays).
 
 Run from the repo root:  python3 verify/verify25.py
 """
@@ -56,22 +68,19 @@ if not os.path.isfile("package.json"):
 home = strip_comments(read("src/app/HomeDashboard.tsx"))
 check(bool(home), "HomeDashboard exists", "src/app/HomeDashboard.tsx missing")
 
-# 1 · heading prose gone, compact animation present
-check("Bienvenue sur" not in home,
-      "the hero heading prose is gone (the shell wordmark already brands the page)",
-      "the hero still greets — 'Bienvenue sur' is back")
+# 1 · the heading greets again, brand animation intact
+check("Bienvenue sur" in home,
+      "the hero greets again — 'Bienvenue sur FluOlinGo' is back (19 Aug reversal)",
+      "the hero heading prose is missing — the 19 Aug reversal is undone")
 check("fluo-brand-letter" in home and "fluo-byline" in home and "BYLINE_STROKES" in home,
       "the compact brand animation is back: wave letters, ink blob, byline",
       "the brand animation is missing a piece (letters / ink / byline)")
 check("heroPlayed" in home,
       "the once-per-session gate survives (full show once, finished look after)",
       "the once-per-session gate is gone — the show would replay every visit")
-check("fluo-serif text-lg" in home,
-      "the brand line is text-lg — smaller than the old text-2xl heading",
-      "the brand line is not compact (expected fluo-serif text-lg)")
-check("text-2xl" not in home,
-      "no text-2xl heading crept back into the hero",
-      "a text-2xl heading is back — the shrink is undone")
+check("<h1" in home and "text-2xl" in home,
+      "the greeting is a real h1 at text-2xl — the page has its heading back",
+      "the greeting is not an h1 at text-2xl (the 19 Aug reversal is half-applied)")
 
 css = read("src/app/globals.css")
 check("fluo-brand-hl 1s" in css and "0.95s forwards" in css,
@@ -81,13 +90,23 @@ check("2.0 + i * 0.08" in home,
       "the byline strokes start at 2.0s with 0.08s stagger (~3.5s total)",
       "the byline strokes still run the original 2.8s + 0.17s pacing")
 
-# 2 · hairlines with real roles
-check(home.count("h-[3px]") == 2,
-      "both progress lines are 3px hairlines",
-      "the hero bars are not hairlines (expected exactly two h-[3px] tracks)")
-check(home.count('role="progressbar"') == 2,
-      "both hairlines carry a real progressbar role",
-      "the hero hairlines lack progressbar roles")
+# 2 · no status bar (Dan, 19 Aug: "wouldn't have status bar")
+check(home.count("h-[3px]") == 0,
+      "no hairline tracks remain — the status bar is gone",
+      "a hairline progress track is still in the hero — Dan asked for no status bar")
+check(home.count('role="progressbar"') == 0,
+      "no progressbar roles remain in the hero",
+      "a progressbar role is still in the hero — the status bar is not gone")
+
+# 2b · the marks are a horizontal report-card row
+check("<dl" in home and "<dt" in home and "<dd" in home,
+      "the marks are a description list — each figure carries its label",
+      "the marks are not a <dl> of value/label pairs")
+dl_open = home.find("<dl")
+dl_cls = home[dl_open:home.find(">", dl_open)] if dl_open >= 0 else ""
+check("MARKS" in home and "flex-wrap" not in dl_cls and "flex-1" in home,
+      "every mark shares one row — the marks list never wraps",
+      "the row of marks can wrap — a report card's row stays a row")
 
 # 3 · actions grouped in the card, side by side
 sec_start = home.find("<section")
@@ -104,16 +123,16 @@ check(cont >= 0 and revu >= 0 and "</div>" not in "" and abs(revu - cont) < 1400
 
 # 4 · every counter survives
 for marker, what in (
-    ("doneTotal}/{SIOS.length", "the done-count chip"),
-    ("progress.streak", "the streak chip"),
-    ("progress.xp", "the XP chip"),
-    ("progress.gems", "the gems chip"),
-    ("{pct}%", "the course-completion percentage"),
-    ("lvl.into}/{lvl.span", "the level XP counter"),
+    ("doneTotal}/${SIOS.length", "the done count"),
+    ("progress.streak", "the streak"),
+    ("progress.xp", "the XP total"),
+    ("progress.gems", "the gems counter"),
+    ("${pct}%", "the course-completion percentage"),
+    ("lvl.into}/${lvl.span", "the level XP counter"),
 ):
     check(marker in home,
-          f"{what} survives the shrink",
-          f"{what} was lost in the shrink — progress counters are learner feedback")
+          f"{what} survives the restyle",
+          f"{what} was lost in the restyle — progress counters are learner feedback")
 
 print("\npatch 25 check (hero rows)\n" + "-" * 66)
 for x in OK:   print("  ok    " + x)
