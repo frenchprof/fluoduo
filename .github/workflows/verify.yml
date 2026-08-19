@@ -78,16 +78,16 @@ jobs:
       - name: Patch 25 (hero rows) — hairline hero, actions grouped
         run: python3 verify/verify25.py
 
-      - name: Patch 25b — Home path: 2D/3D map, deep link, short labels, print
+      - name: "Patch 25b — Home path: 2D/3D map, deep link, short labels, print"
         run: python3 verify/verify25b.py
 
       - name: Patch 25c — Home map 3D view is a real perspective scene
         run: python3 verify/verify25c.py
 
-      - name: Patch 23 — games: GameFrame, post-mortem → ReVue, credits once, galleries
+      - name: "Patch 23 — games: GameFrame, post-mortem → ReVue, credits once, galleries"
         run: python3 verify/verify23.py
 
-      - name: Patch 24 — the Index: chip rail, unit segments, result cells, hubs → redirects, ?gaps=1
+      - name: "Patch 24 — the Index: chip rail, unit segments, result cells, hubs → redirects, ?gaps=1"
         run: python3 verify/verify24.py
 
       - name: Patch 26 — /moi outcome rows + heat-strip, teacher Class now + matrix, one pool fetch
