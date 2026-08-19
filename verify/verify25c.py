@@ -1,34 +1,41 @@
 #!/usr/bin/env python3
 """
-Patch 25c — the Home map's 3D view is really 3D (2026-08-19).
+Patch 25c/25d — the Home map's 3D view is Dan's Figma Make (2026-08-19).
 
-Dan, on production (17 Aug build): "the 3D map is not yet 3D!" — the ported
-La Carte view was a vertical saga map with a scroll-driven scale trick.
-HomeMap3D is now a TRUE perspective scene in CSS 3D (no WebGL, no
-dependency): a ground plane under `perspective`, tilted with `rotateX`,
-`preserve-3d` down to the posts; the region bands are ground patches; the
-road is an SVG path lying on the plane; every stop / landmark is an upright
-billboard counter-rotated (`rotateX(-TILT)`) so it faces the camera; the
-camera travels along the road from the box's native scroll through ONE
-transform on the world (one rAF, transform-only, `will-change`).
+Dan, on production (17 Aug build): "the 3D map is not yet 3D!" — and on the
+CSS-perspective attempt of 19 Aug: still not. His Figma Make "3D Scroll Map
+Interface" is THE reference and is now ported: a FIRST-PERSON CAMERA on a
+snaking road (pure maths in src/lib/map3d/projection.ts — pathXAt,
+cameraForward, project()), 50 stops as depth-scaled billboards, five worlds
+(= the repo's regions), Peers' roadside catalogue (scene.ts), procedurally
+placed trees, a sky driven by the learner's real local clock (sky.ts), the
+🏁 GramMarathon arch as the FINAL. The camera travels from the box's native
+scroll through one rAF.
 
 What this asserts (static, over source):
 
-  1  The scene's ingredients: perspective, rotateX(TILT) on the ground,
-     rotateX(-TILT) on the posts, preserve-3d, a perspective-origin that
-     places the horizon, will-change on the moving world only.
-  2  Region bands still paint from the `--region-*-band` tokens; the arena
-     sits at the far end; the road is an SVG path with the paved / dotted
-     split at CLASS_FLAG_SIO and the travelled stretch in the accent.
-  3  Semantics kept: KIND_COLOR[sioKind()], sioSecondary() dot, done ✓ /
-     current ▶ / to-come dashed, 🚩, `short` labels, onOpenSio, onOpenUnit,
-     the 🏁 FINAL link, region icons from HomeMap's REGIONS.
-  4  Camera: opens on the current stop / deep-linked unit, clamped
-     (scroll box, no free-flying), 📍 recentres, reduced motion respected
-     (no glide, no bob), keyboard focus travels to the post.
-  5  Tokens only — no hex; no per-element scale hack (the old data-pop-y).
-  6  The 2D ⇄ 3D toggle in HomeDashboard is intact.
-  7  ≤ 70 billboards: 50 stops + FINAL + 5 landmarks + ≤ 10 props + arena.
+  1  The engine: projection.ts exports the Make's constants and functions
+     (HORIZON_Y, CAMERA_Y, FOCAL, MAX_AHEAD, WX, pathXAt, cameraForward,
+     project) and is pure (no React); HomeMap3D projects every stop with it.
+  2  The scene: 50 stops from SIOS (not a mock list), world gate signs from
+     HomeMap's REGIONS with the regionIcons icons and --region-* tokens,
+     the ground from --region-*-band, ROADSIDE_ITEMS + NATURE_ITEMS from
+     scene.ts (the Make's catalogue, labels intact), the arch + finishing
+     line (ARENA_PLACE).
+  3  Semantics: KIND_COLOR[sioKind()], sioSecondary() dot, done ✓ / current
+     ▶ / to-come dashed, 🚩 on CLASS_FLAG_SIO, `short` labels, onOpenSio,
+     onOpenUnit, 🏁 FINAL link, the avatar over the current stop; the road
+     paved → dotted at the class flag, travelled stretch in the accent.
+  4  Sky: getSkyColors over SKY_KF keyframes, sun/moon, clouds, stars, the
+     real clock once a minute, `?hour=` for the shoot; keyframes are numeric
+     RGB, not hex (see sky.ts header).
+  5  Camera: native scroll box, one rAF → camZ, opens on the current stop /
+     deep-linked unit, 📍 recentres, reduced motion respected (no glide;
+     bob / pulse / ring off in globals.css), keyboard focus travels.
+  6  Tokens only — no hex in HomeMap3D.tsx or src/lib/map3d/*; no Nunito /
+     Google Fonts import; KIND_COLOR defined once (HomeMap.tsx).
+  7  The 2D ⇄ 3D toggle in HomeDashboard is intact.
+  8  No classmate names / emails in the 3D view.
 
 Run from the repo root:  python3 verify/verify25c.py
 """
@@ -60,63 +67,88 @@ raw = read("src/components/HomeMap3D.tsx")
 m3 = strip_comments(raw)
 home = strip_comments(read("src/app/HomeDashboard.tsx"))
 css = read("src/app/globals.css")
+proj_raw = read("src/lib/map3d/projection.ts")
+proj = strip_comments(proj_raw)
+sky_raw = read("src/lib/map3d/sky.ts")
+sky = strip_comments(sky_raw)
+scene_raw = read("src/lib/map3d/scene.ts")
+scene = strip_comments(scene_raw)
 
 check(bool(raw), "HomeMap3D.tsx exists", "src/components/HomeMap3D.tsx missing")
+check(bool(proj_raw) and bool(sky_raw) and bool(scene_raw), "src/lib/map3d/{projection,sky,scene}.ts exist", "src/lib/map3d/* missing")
 
-# 1 · the 3D scene
-check("perspective:" in m3 or "perspective =" in m3 or "PERSPECTIVE" in m3, "a perspective is set on the stage", "no `perspective` in HomeMap3D")
-check("perspectiveOrigin" in m3, "perspective-origin places the horizon (eye height)", "no perspectiveOrigin")
-check(re.search(r"const TILT = \d+", m3) is not None, "TILT (deg) is one named constant", "no TILT constant")
-check("rotateX(${TILT}deg)" in m3, "the ground plane is rotateX(TILT)", "ground plane is not tilted with rotateX(TILT)")
-check("rotateX(${-TILT}deg)" in m3, "posts counter-rotate rotateX(-TILT) — upright billboards", "posts do not counter-rotate")
-check(m3.count('transformStyle: "preserve-3d"') >= 3, "preserve-3d on ground, world and every post anchor", "preserve-3d missing on the 3D chain")
-check("will-change-transform" in m3 or "willChange" in m3, "will-change on the moving world", "no will-change on the world")
-check(m3.count("will-change-transform") + m3.count("willChange") == 1, "will-change on ONE element only", "will-change sprinkled on more than one element")
-check("translate3d(0, ${" in m3 and "requestAnimationFrame" in m3, "one rAF writes one translate3d on the world", "camera is not a single rAF transform")
-check("data-pop-y" not in m3 and "scale(" not in m3, "no per-element scale hack — perspective does the sizing", "the old data-pop-y / scale() trick is still there")
+# 1 · the engine
+for name in ("HORIZON_Y", "CAMERA_Y", "FOCAL", "MAX_AHEAD", "MAX_BEHIND", "WX"):
+    check(re.search(rf"export const {name}\b", proj) is not None, f"projection.ts exports {name}", f"projection.ts lacks {name}")
+for fn in ("pathXAt", "cameraForward", "project"):
+    check(f"export function {fn}(" in proj, f"projection.ts exports {fn}()", f"projection.ts lacks {fn}()")
+check("react" not in proj.lower() and "react" not in sky.lower() and "react" not in scene.lower(), "src/lib/map3d/* is pure (no React)", "src/lib/map3d/* imports React")
+check("const csx = relX * rx + relZ * rz" in proj and "const csz = relX * fx + relZ * fz" in proj, "project(): world → camera space with a rotating camera", "project() does not rotate the camera with the road")
+check("FOCAL / (FOCAL + csz)" in proj, "project(): depth scale = FOCAL / (FOCAL + depth)", "project() has no depth scale")
+check('from "@/lib/map3d/projection"' in m3 and "project(" in m3 and "getWorldX(" in m3 and "pathXAt(" in m3, "HomeMap3D projects through the engine", "HomeMap3D does not use src/lib/map3d/projection")
+check("SIOS.map((s, i) => {" in m3 and "project(getWorldX(i + 1), i - camZ, camZ, vw, vh)" in m3, "every SIO stop is projected (stop N at z = N − 1)", "stops are not projected per SIO")
 
-# 2 · ground patches, arena, road
-check("--region-${r.key}-band" in m3 or "-band)" in m3, "region bands paint from --region-*-band tokens", "bands not from --region-*-band tokens")
-check("ARENA_PLACE" in m3 and "REGIONS" in m3, "arena + REGIONS come from HomeMap (one source)", "ARENA_PLACE / REGIONS not imported from HomeMap")
-check("<svg" in m3 and "roadPath(" in m3 and "<path" in m3, "the road is an SVG path lying on the plane", "no SVG road path")
-check("strokeDasharray" in m3 and "pavedTo" in m3 and "travelledTo" in m3, "road: travelled · paved · dotted beyond the class flag", "road segments not split")
-check("CLASS_FLAG_SIO" in m3 and "🚩" in m3, "class flag 🚩 on its stop", "no class flag")
-check("accent ??" in m3, "the travelled stretch wears the equipped accent", "accent not applied to the travelled road")
+# 2 · the scene
+check('from "@/content/sios"' in m3 and "SIOS" in m3 and "code: 'SIO-" not in m3 and "CURRENT_LEVEL" not in m3, "stops come from SIOS — the Make's mock STOPS / CURRENT_LEVEL are gone", "the Make's mock stop list is still in HomeMap3D")
+check("REGIONS" in m3 and "r.icon(" in m3 and "r.place" in m3, "world gate signs = HomeMap's REGIONS (place + regionIcons icon)", "gates do not use REGIONS / region icons")
+check("Café de Paris" not in m3 and "Le Campus" not in m3 and "WORLDS" not in m3, "the Make's world titles are replaced by the repo's regions", "the Make's WORLDS titles survive")
+check("`var(--region-${region.key})`" in m3 and "`var(--region-${region.key}-band)`" in m3, "world accent = --region-*, ground = --region-*-band", "world accent / ground not from the region tokens")
+check("ROADSIDE_ITEMS" in m3 and "NATURE_ITEMS" in m3 and 'from "@/lib/map3d/scene"' in m3, "roadside props + nature come from scene.ts", "ROADSIDE_ITEMS / NATURE_ITEMS not wired")
+for lbl in ("un crayon", "Je m'appelle…", "une baguette", "tout droit", "le marché"):
+    check(lbl in scene_raw, f"roadside catalogue keeps « {lbl} »", f"roadside catalogue lost « {lbl} »")
+check("export function placeNature(" in scene and "sRand(" in scene, "trees are placed procedurally (seeded)", "no procedural nature placement")
+check("ARENA_PLACE" in m3 and "FINISH_Z" in m3 and "ARCH_Z" in m3, "the arch + finishing line (ARENA_PLACE) close the road", "no arch / finishing line")
+check("BuildingSprite" in m3 and "PropSprite" in m3 and "NatureSprite" in m3, "building / prop / nature sprites", "sprites missing")
 
 # 3 · semantics
 check("sioKind(" in m3 and "sioSecondary(" in m3 and "KIND_COLOR[" in m3, "ring = KIND_COLOR[sioKind()], dot = sioSecondary()", "kind colours not from sioKind()/sioSecondary()")
 check("isSioDone(" in m3 and '"✓"' in m3 and "▶" in m3 and '"dashed"' in m3, "done ✓ · current ▶ · to-come dashed", "stop states missing")
 check("st.short" in m3, "stops labelled with `short`", "labels not `short`")
-check("onOpenSio?.(" in m3 and "onOpenUnit?.(" in m3, "stops open their SIO, landmarks open their unit", "onOpenSio/onOpenUnit not wired")
+check("onOpenSio?.(" in m3 and "onOpenUnit?.(" in m3, "stops open their SIO, gate signs open their unit", "onOpenSio/onOpenUnit not wired")
 check('href="/practice/grammarathon/finale"' in m3 and "🏁" in m3, "🏁 FINAL links to the GramMarathon final", "no FINAL link")
-check("r.icon(" in m3, "landmarks use the regionIcons.tsx icons (via REGIONS)", "landmarks do not use the region icons")
-check("🧑‍🎓" in m3, "the avatar chip rides with the current stop", "no avatar chip")
+check("CLASS_FLAG_SIO" in m3 and "🚩" in m3, "class flag 🚩 on its stop", "no class flag")
+check("🧑‍🎓" in m3 and "home-map-bob" in m3, "the avatar bobs over the current stop", "no avatar")
+check("pavedTo" in m3 and "travelledTo" in m3 and "strokeDasharray" in m3 and "accent ??" in m3, "road: paved → dotted at the class flag, travelled stretch in the accent", "road semantics missing")
+check("zIndex: active ? 950" in m3, "the current stop always paints on top", "the current stop can be hidden behind nearer props")
 
-# 4 · camera
-check("scrollFor(" in m3 and "landed" in m3 and "focusUnit" in m3, "opens on the current stop / deep-linked unit", "no landing logic")
-check("maxScroll" in m3 and "overflow-y-auto" in m3, "travel is clamped by the scroll box (no free-flying)", "travel not clamped")
+# 4 · sky
+check("export const SKY_KF" in sky and "export function getSkyColors(" in sky and "export function sunPosition(" in sky, "sky.ts: keyframes, getSkyColors(), sunPosition()", "sky.ts incomplete")
+check("CLOUDS" in sky and "STARS" in sky, "clouds + stars", "no clouds / stars")
+check("clockHour(" in m3 and "60_000" in m3 and 'get("hour")' in sky, "the real clock drives the sky once a minute; ?hour= pins it", "sky not on the clock / no ?hour=")
+check("getSkyColors(hour)" in m3 and "m3dSky" in m3, "the sky gradient is painted from getSkyColors()", "sky gradient not from getSkyColors()")
+
+# 5 · camera
+check("overflow-y-auto" in m3 and "MAX_SCROLL" in m3 and "SCROLL_PER_STOP" in m3, "the box is a native scroll box, clamped to the road", "camera is not the box's scroll")
+check("requestAnimationFrame" in m3 and "setCamZ(" in m3 and m3.count("requestAnimationFrame(tick)") == 1, "one rAF turns scrollTop into camZ", "camera rAF missing / duplicated")
+check("landed" in m3 and "focusUnit" in m3 and "scrollForCam(" in m3, "opens on the current stop / deep-linked unit", "no landing logic")
 check("📍" in m3 and "recentre" in m3, "📍 recentres on the current stop", "no 📍 recentre")
-check("prefers-reduced-motion" in m3, "reduced motion: recentre jumps instead of gliding", "reduced motion ignored")
-check(".home-map-bob { animation: none; }" in css and "prefers-reduced-motion" in css, "reduced motion: no bob (globals.css)", "bob not disabled under reduced motion")
-check("onFocusCapture" in m3 and "data-scroll" in m3, "keyboard focus travels the camera to the post", "focus does not travel")
-check(".home-map3d-stage { overflow: clip; }" in css, "the stage is overflow: clip (focus cannot scroll it internally)", "stage not overflow: clip")
+check("prefers-reduced-motion" in m3 and '"smooth" : "auto"' in m3, "reduced motion: recentre jumps instead of gliding", "reduced motion ignored")
+check(".home-map-bob, .home-map3d-pulse, .home-map3d-ring { animation: none; }" in css, "reduced motion: no bob / pulse / ring (globals.css)", "bob/pulse/ring not disabled under reduced motion")
+check("onFocusCapture" in m3 and "data-cam" in m3, "keyboard focus travels the camera to the stop", "focus does not travel")
+check(".home-map3d-stage { overflow: clip; }" in css, "the stage is overflow: clip", "stage not overflow: clip")
+check('aria-label="Course map, 3D' in m3 and "aria-current" in m3, "aria: the box is labelled, the current stop is aria-current", "aria labels missing")
 
-# 5 · tokens only
+# 6 · tokens only
 HEX = re.compile(r"#[0-9a-fA-F]{3,8}\b")
-n = len(HEX.findall(m3))
-check(n == 0, "HomeMap3D: no hand-coded hex (tokens only)", f"HomeMap3D: {n} hex literal(s)")
+for name, src in (("HomeMap3D.tsx", m3), ("projection.ts", proj), ("sky.ts", sky), ("scene.ts", scene)):
+    n = len(HEX.findall(src))
+    check(n == 0, f"{name}: no hand-coded hex (tokens / numeric RGB only)", f"{name}: {n} hex literal(s)")
+check("Nunito" not in m3 and "fonts.googleapis" not in m3 and "--font-body-stack" in m3, "type = the Cahier body stack (no Nunito / Google Fonts)", "Nunito / Google Fonts crept in")
+check("export const KIND_COLOR" not in m3, "KIND_COLOR defined once (HomeMap.tsx)", "KIND_COLOR redefined in HomeMap3D")
+check("var(--cahier-gold)" in m3, "the current stop's ring is --cahier-gold", "gold ring not from the token")
 
-# 6 · toggle intact
+# 7 · toggle intact
 check("<HomeMap3D " in home and "<HomeMap " in home and '"fluo.homeMapView"' in home and "aria-pressed" in home,
       "HomeDashboard's 2D ⇄ 3D toggle is intact", "the 2D/3D toggle in HomeDashboard broke")
 
-# 7 · billboard budget
-sios = json.load(open("src/content/sios/sios.json", encoding="utf-8"))
-props = len(re.findall(r'\{ e: "', m3))
-budget = len(sios) + 1 + 5 + props + 1
-check(props <= 10 and budget <= 70, f"billboard budget: {budget} (≤ 70)", f"too many billboards: {budget}")
+# 8 · no classmates / emails
+check("ALL_CLASSMATES" not in raw and "@" not in re.sub(r'from "@/|import\("@/|"@/', "", raw), "no classmate names / emails in the 3D view", "classmate names or an email address in HomeMap3D")
 
-print("\npatch 25c check (Home map 3D view: a real perspective scene)\n" + "-" * 66)
+# 50 stops
+sios = json.load(open("src/content/sios/sios.json", encoding="utf-8"))
+check(len(sios) == 50 and "N_STOPS = 50" in proj, "50 stops, and the engine knows it", "stop count drifted")
+
+print("\npatch 25c/25d check (Home map 3D view: Dan's Figma Make, ported)\n" + "-" * 66)
 for x in OK:   print("  ok    " + x)
 for x in FAIL: print("  FAIL  " + x)
 print("-" * 66)
