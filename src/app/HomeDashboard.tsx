@@ -7,7 +7,7 @@
  * stat pills and the two progress bars. Below it, the COURSE MAP in two
  * views the learner toggles (Dan's decision 1, 2026-08-17): 2D
  * (components/HomeMap — Design's region-band map) and 3D (components/
- * HomeMap3D — the La Carte saga-map treatment). The choice is remembered
+ * HomeMap3D — a CSS-3D perspective road scene). The choice is remembered
  * in localStorage under `fluo.homeMapView`.
  */
 import Link from "next/link";

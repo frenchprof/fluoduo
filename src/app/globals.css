@@ -1261,9 +1261,12 @@ h3.cahier-display { font-size: var(--fs-h3); }
 .home-map input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 .home-map input[type="number"]::-webkit-inner-spin-button,
 .home-map input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-/* 3D view (ported from La Carte): landmarks bob in place — outer span =
-   parallax transform (set from scroll), inner span = bob, so the two never
-   fight; stops get a glossy candy finish. Off under reduced motion. */
+/* 3D view (patch 25c: a real CSS-3D perspective scene): the stage is
+   `overflow: clip` (not hidden) so focus can never scroll it internally —
+   the world only ever moves through its own transform; the avatar chip
+   bobs; stops get a glossy candy finish. Off under reduced motion. */
+.home-map3d-stage { overflow: clip; }
+.home-map3d-box { scrollbar-width: thin; overscroll-behavior: contain; }
 @keyframes home-map-bob {
   0%, 100% { transform: translateY(0) rotate(-2deg); }
   50% { transform: translateY(-7px) rotate(2deg); }

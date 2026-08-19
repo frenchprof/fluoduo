@@ -1,32 +1,39 @@
 "use client";
 
 /**
- * The Home course map, 3D view (patch 25; Dan's decision 1, 2026-08-17: two
- * views, the learner toggles). Ported from the La Carte branch
- * (`claude/api-necessity-i8fgps`, src/app/carte/SagaMap.tsx — Dan's
- * "Candy-Crush saga map" with "the 3D scroll feel"), folded into Home
- * instead of living at /carte:
+ * The Home course map, 3D view (patch 25c, 2026-08-19 — Dan on production:
+ * "the 3D map is not yet 3D!"). The La Carte scroll-scale trick is gone;
+ * this is a TRUE perspective scene, CSS 3D only (no WebGL, no dependency):
  *
- *   · ONE winding vertical road — SIO-001 at the bottom, the 🏁 FINAL at
- *     the top — through the five region bands (same `--region-*-band`
- *     fills and place names as the 2D view), landmarks bobbing at the
- *     roadside;
- *   · the 3D feel: every stop and landmark carries its map y and scales
- *     with where it sits in the box — small near the top (far), full size
- *     low (near) — landmarks drift at their own depth rate. Transform-only
- *     writes in one rAF per frame; nothing moves under reduced motion.
- *   · the map lives in the same scroll box as the 2D view (box scroll, not
- *     window scroll, drives the depth), opens centred on your current stop,
- *     and a 📍 button brings you back when you scroll away.
+ *   · a GROUND PLANE (`perspective` on the stage, the plane `rotateX(TILT)`,
+ *     `preserve-3d` down to every post) that recedes to a horizon in the top
+ *     third of the box. The five region bands are ground patches on it
+ *     (`--region-*-band` tokens, a soft edge each) — SIO-001 nearest the
+ *     camera at the bottom, the GramMarathon Arena and the 🏁 FINAL far away;
+ *   · a WINDING ROAD, an SVG path lying ON the plane: kraft asphalt with a
+ *     dashed centre line, paved up to the class flag 🚩 (CLASS_FLAG_SIO) and
+ *     a dotted track beyond; the learner's travelled stretch wears the
+ *     equipped accent (same semantics as the 2D view);
+ *   · STOPS as upright signposts: each is positioned on the plane at its
+ *     road point and counter-rotated (`rotateX(-TILT)`) so it stands up and
+ *     faces the camera; nearer posts are simply bigger — perspective, no
+ *     per-element scale. Ring = KIND_COLOR[sioKind()], the small dot at the
+ *     foot = sioSecondary(); done = filled + ✓; current = the bigger ▶ orb
+ *     with the avatar chip; to-come = paper fill, dashed ring. A shadow
+ *     ellipse on the ground under every post makes it read as standing;
+ *   · REGION LANDMARKS stand up too — one regionIcons.tsx icon per band on
+ *     a kraft place-name pill (tap = open the unit) — plus two roadside props;
+ *   · CAMERA TRAVEL: the box is a native scroll box (wheel, touch, keys,
+ *     scrollbar); one rAF turns scrollTop into ONE transform on the world
+ *     (`will-change: transform`) that slides the plane under the camera —
+ *     nearer stops grow, farther ones shrink. Opens on the current stop (or
+ *     the deep-linked unit), clamped to the two ends; 📍 recentres. Under
+ *     reduced motion the recentre is a jump, not a glide, and nothing bobs.
  *
- * Ring colours come from `sioKind()` (primary, the thick ring) and
- * `sioSecondary()` (the small dot at the ring's foot) through the shared
- * KIND_COLOR palette in HomeMap.tsx — NOT hand-coded, unlike the branch
- * (STATUS backlog item 3). Done = filled + ✓; current = the big ▶ orb with
- * the avatar chip; to-come = paper fill, dashed ring. Nothing locks.
+ * Tokens only — no hex; verify25c asserts the scene's ingredients.
  */
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { SIOS, UNIT_META } from "@/content/sios";
 import { CHAPTERS, CLASS_FLAG_SIO } from "@/content/chapters";
 import { sioKind, sioSecondary, KIND_LABEL } from "@/content/sioKinds";
@@ -44,7 +51,7 @@ type Stop =
     }
   | { kind: "finale"; unit: number };
 
-/** Bottom-up: units 0..4 then the FINAL crowns it. */
+/** Near → far: units 0..4 then the FINAL at the far end. */
 const STOPS: Stop[] = (() => {
   const out: Stop[] = SIOS.map((s) => ({
     kind: "sio",
@@ -58,46 +65,92 @@ const STOPS: Stop[] = (() => {
   return out;
 })();
 
-const STEP = 104; // vertical px per stop
-const PAD_TOP = 150;
-const PAD_BOT = 270; // enough that the first stop can sit centred in the box
-const MAP_H = PAD_TOP + (STOPS.length - 1) * STEP + PAD_BOT;
-const BOX_H = 520;
+/* Scene constants (world px = px on the ground plane at scale 1, i.e. at
+   the near edge). Tune TILT for a steeper/flatter camera; the horizon lands
+   at perspective-origin − PERSPECTIVE·cot(TILT) from the top of the box. */
+const TILT = 55; // deg — the ground plane's rotateX
+const PERSPECTIVE = 900; // px
+const STEP = 220; // world px between stops along the road
+const FOCUS = 520; // world px from the near edge to the stop the camera "is on"
+const FAR_PAD = 420; // ground beyond the FINAL (arena)
+const NEAR_PAD = 900; // ground in front of SIO-001 (never behind the eye)
+const GROUND_BELOW = 40; // the near edge sits this far under the box's bottom
+const POST_W = 120; // billboard width, stops
+const LAND_W = 200; // billboard width, landmarks
 
-/** Roadside landmarks per region — decorative (litmus-exempt). x/y in % of
- *  the band, s = font px, d = parallax depth (bigger = nearer = drifts more). */
-const DECOR: Record<number, { e: string; x: number; y: number; s: number; d: number }[]> = {
+/** Roadside props per region — decorative (litmus-exempt): the emoji, which
+ *  side of the road (−1 left / +1 right), how far along the band (0..1). */
+const PROPS: Record<number, { e: string; side: -1 | 1; at: number; s: number }[]> = {
   0: [
-    { e: "👋", x: 6, y: 12, s: 34, d: 0.18 },
-    { e: "🔤", x: 86, y: 30, s: 28, d: 0.1 },
-    { e: "📚", x: 8, y: 58, s: 38, d: 0.22 },
-    { e: "🎒", x: 88, y: 80, s: 30, d: 0.08 },
+    { e: "📚", side: 1, at: 0.25, s: 30 },
+    { e: "🎒", side: -1, at: 0.7, s: 26 },
   ],
   1: [
-    { e: "🪪", x: 86, y: 12, s: 32, d: 0.16 },
-    { e: "🎂", x: 6, y: 34, s: 30, d: 0.1 },
-    { e: "🌍", x: 88, y: 60, s: 34, d: 0.2 },
-    { e: "🐕", x: 8, y: 82, s: 28, d: 0.12 },
+    { e: "🎂", side: -1, at: 0.3, s: 28 },
+    { e: "🐕", side: 1, at: 0.75, s: 26 },
   ],
   2: [
-    { e: "🎉", x: 8, y: 10, s: 34, d: 0.18 },
-    { e: "⏰", x: 88, y: 32, s: 28, d: 0.1 },
-    { e: "☕", x: 6, y: 58, s: 32, d: 0.2 },
-    { e: "🎶", x: 88, y: 82, s: 26, d: 0.08 },
+    { e: "☕", side: 1, at: 0.3, s: 28 },
+    { e: "🎶", side: -1, at: 0.7, s: 26 },
   ],
   3: [
-    { e: "⛅", x: 8, y: 8, s: 36, d: 0.1 },
-    { e: "🗺️", x: 88, y: 30, s: 32, d: 0.18 },
-    { e: "⛲", x: 6, y: 58, s: 36, d: 0.22 },
-    { e: "🚌", x: 88, y: 82, s: 30, d: 0.08 },
+    { e: "⛲", side: -1, at: 0.3, s: 30 },
+    { e: "🚌", side: 1, at: 0.7, s: 28 },
   ],
   4: [
-    { e: "🍽️", x: 86, y: 12, s: 32, d: 0.16 },
-    { e: "🥖", x: 6, y: 34, s: 34, d: 0.1 },
-    { e: "🧀", x: 88, y: 60, s: 30, d: 0.2 },
-    { e: "🛒", x: 8, y: 82, s: 28, d: 0.08 },
+    { e: "🥖", side: 1, at: 0.3, s: 30 },
+    { e: "🧀", side: -1, at: 0.7, s: 26 },
   ],
 };
+
+/** A billboard: a zero-size anchor ON the plane at (x, y), a flat shadow
+ *  ellipse, and the post itself counter-rotated to stand upright and face the
+ *  camera. Perspective does the sizing — no per-element scale. */
+function Post({
+  x,
+  y,
+  width,
+  shadow = 56,
+  children,
+}: {
+  x: number;
+  y: number;
+  width: number;
+  shadow?: number;
+  children: ReactNode;
+}) {
+  // The anchor IS the shadow ellipse (a real box — Chromium does not paint
+  // a 3D-transformed subtree's out-of-box overflow), centred on (x, y);
+  // the post's foot stands on the ellipse's middle.
+  return (
+    <div
+      className="absolute rounded-[50%]"
+      style={{
+        left: x - shadow / 2,
+        top: y - shadow / 5,
+        width: shadow,
+        height: shadow / 2.5,
+        background: "color-mix(in oklch, var(--cahier-ink) 18%, transparent)",
+        transformStyle: "preserve-3d",
+      }}
+    >
+      <div
+        className="absolute flex flex-col items-center"
+        style={{
+          left: "50%",
+          marginLeft: -width / 2,
+          bottom: shadow / 5,
+          width,
+          transformOrigin: "50% 100%",
+          transform: `rotateX(${-TILT}deg)`,
+          backfaceVisibility: "hidden",
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
 
 export default function HomeMap3D({
   progress,
@@ -116,28 +169,44 @@ export default function HomeMap3D({
   onOpenSio?: (unit: number, id: string) => void;
 }) {
   const boxRef = useRef<HTMLDivElement | null>(null);
-  const activeRef = useRef<HTMLButtonElement | null>(null);
-  const [w, setW] = useState(0);
-  const [pin, setPin] = useState<"visible" | "above" | "below">("visible");
+  const worldRef = useRef<HTMLDivElement | null>(null);
+  const [size, setSize] = useState({ w: 0, h: 0 });
+  const [pin, setPin] = useState<"visible" | "ahead" | "behind">("visible");
+  const { w, h } = size;
 
   useEffect(() => {
     const el = boxRef.current;
     if (!el) return;
-    const measure = () => setW(el.clientWidth);
+    const measure = () => setSize({ w: el.clientWidth, h: el.clientHeight });
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
 
-  // Geometry: y walks bottom → top; x winds around the centre; the FINAL
-  // sits on the centreline.
+  // World geometry. y runs FAR (0) → NEAR (L); the plane is three boxes wide
+  // so the ground fills the view at every depth; x winds around its centre.
+  const last = STOPS.length - 1;
   const geo = useMemo(() => {
-    const amp = Math.max(56, Math.min(w, 560) / 2 - 80);
-    const y = (i: number) => MAP_H - PAD_BOT - i * STEP;
-    const x = (i: number) => (STOPS[i].kind === "sio" ? w / 2 + amp * Math.sin(i * 1.15) : w / 2);
-    return { x, y };
-  }, [w]);
+    const pw = Math.max(w * 3, 900);
+    const cx = pw / 2;
+    const amp = Math.min(200, Math.max(84, w * 0.3));
+    const yFirst = FAR_PAD + last * STEP; // SIO-001 (nearest)
+    const L = yFirst + NEAR_PAD;
+    const y = (i: number) => yFirst - i * STEP;
+    const x = (i: number) => (STOPS[i].kind === "sio" ? cx + amp * Math.sin(i * 1.05) : cx);
+    /** Band u on the ground: from just past its last stop to just before its first. */
+    const band = (u: number) => {
+      const first = STOPS.findIndex((s) => s.unit === u);
+      const lastIn = STOPS.map((s) => s.unit).lastIndexOf(u);
+      const top = u === 5 ? 0 : y(lastIn) - STEP * 0.5;
+      const bottom = u === 0 ? L : y(first) + STEP * 0.5;
+      return { top, height: bottom - top, first, lastIn };
+    };
+    /** scrollTop that puts stop i on the focus mark. */
+    const scrollFor = (i: number) => yFirst - y(i);
+    return { pw, cx, amp, yFirst, L, y, x, band, scrollFor, maxScroll: yFirst - y(last) };
+  }, [w, last]);
 
   const roadPath = (from: number, to: number) => {
     let d = "";
@@ -155,79 +224,30 @@ export default function HomeMap3D({
 
   const activeIdx = STOPS.findIndex((s) => s.kind === "sio" && s.id === activeId);
   const flagIdx = STOPS.findIndex((s) => s.kind === "sio" && s.id === CLASS_FLAG_SIO);
-  const last = STOPS.length - 1;
   const travelledTo = activeIdx >= 0 ? activeIdx : last;
   const pavedTo = Math.max(travelledTo, flagIdx);
 
-  /** Region band u: from just under its first stop up to just above its last. */
-  const band = (u: number) => {
-    const first = STOPS.findIndex((s) => s.unit === u);
-    const lastIn = STOPS.map((s) => s.unit).lastIndexOf(u);
-    const bottom = u === 0 ? MAP_H : geo.y(first) + STEP * 0.6; // U0 runs to the foot of the map
-    const top = geo.y(lastIn) - STEP * 0.6;
-    return { top, height: bottom - top };
-  };
-
-  // Land once the box is measured: on the deep-linked unit's band, else
-  // centred on your current stop.
-  const landed = useRef<string | null>(null);
+  // The camera: scrollTop → one transform on the world. The near edge of the
+  // ground shows world y = yFirst + FOCUS − scrollTop, so the world slides
+  // by (L − yFirst − FOCUS + scrollTop). One rAF, transform-only; the 📍
+  // state flips only when the current stop leaves the view.
+  const pinRef = useRef(pin);
   useEffect(() => {
     const box = boxRef.current;
-    if (!box || w === 0) return;
-    const key = `${focusUnit ?? "active"}:${activeId ?? ""}`;
-    if (landed.current === key) return;
-    landed.current = key;
-    if (focusUnit !== undefined) {
-      const b = band(focusUnit);
-      box.scrollTo({ top: Math.max(0, b.top + b.height - BOX_H + 30) });
-    } else if (activeIdx >= 0) {
-      box.scrollTo({ top: Math.max(0, geo.y(activeIdx) - BOX_H / 2) });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [w, focusUnit, activeId]);
-
-  // 📍 appears whenever the current stop leaves the box — and knows the way back.
-  useEffect(() => {
-    const el = activeRef.current;
-    const box = boxRef.current;
-    if (!el || !box) return;
-    const io = new IntersectionObserver(
-      ([en]) => {
-        if (en.isIntersecting) setPin("visible");
-        else setPin(en.boundingClientRect.top < box.getBoundingClientRect().top ? "above" : "below");
-      },
-      { root: box, rootMargin: "-30px 0px -30px 0px" },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, [activeId, w]);
-
-  // The 3D scroll feel (La Carte): per-object screen-space depth. Each
-  // [data-pop-y] element scales by where it sits in the box — far at the
-  // top, near at the bottom — landmarks also drift by their depth rate.
-  useEffect(() => {
-    const box = boxRef.current;
-    if (!box || w === 0) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const pops = Array.from(box.querySelectorAll<HTMLElement>("[data-pop-y]")).map((el) => ({
-      el,
-      y: Number(el.dataset.popY),
-      d: Number(el.dataset.depth ?? 0),
-      base: el.dataset.popBase ?? "",
-    }));
+    const world = worldRef.current;
+    if (!box || !world || w === 0) return;
     let raf = 0;
     const tick = () => {
       raf = 0;
-      const vh = box.clientHeight;
-      const sy = box.scrollTop;
-      const mid = vh / 2;
-      for (const p of pops) {
-        const scrY = p.y - sy;
-        if (scrY < -240 || scrY > vh + 240) continue;
-        const t = Math.min(Math.max(scrY / vh, -0.15), 1.15);
-        const s = 0.84 + 0.32 * t;
-        const dy = p.d ? ((scrY - mid) * p.d).toFixed(1) : "0";
-        p.el.style.transform = `${p.base} translate3d(0, ${dy}px, 0) scale(${s.toFixed(3)})`;
+      const s = box.scrollTop;
+      world.style.transform = `translate3d(0, ${(geo.L - geo.yFirst - FOCUS + s).toFixed(1)}px, 0)`;
+      if (activeIdx >= 0) {
+        const d = FOCUS + geo.scrollFor(activeIdx) - s; // ground distance of the current stop
+        const next: typeof pin = d < 40 ? "behind" : d > 1900 ? "ahead" : "visible";
+        if (next !== pinRef.current) {
+          pinRef.current = next;
+          setPin(next);
+        }
       }
     };
     const onScroll = () => {
@@ -235,249 +255,326 @@ export default function HomeMap3D({
     };
     onScroll();
     box.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
     return () => {
       box.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [w, progress, activeId]);
+  }, [w, h, geo, activeIdx]);
+
+  // Land once measured: on the deep-linked unit's first stop, else on the
+  // current stop (SIO-001 when nothing is current).
+  const landed = useRef<string | null>(null);
+  useEffect(() => {
+    const box = boxRef.current;
+    if (!box || w === 0) return;
+    const key = `${focusUnit ?? "active"}:${activeId ?? ""}`;
+    if (landed.current === key) return;
+    landed.current = key;
+    const i = focusUnit !== undefined ? geo.band(focusUnit).first : Math.max(0, activeIdx);
+    box.scrollTo({ top: geo.scrollFor(i), behavior: "auto" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [w, focusUnit, activeId]);
+
+  const recentre = () => {
+    const box = boxRef.current;
+    if (!box || activeIdx < 0) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    box.scrollTo({ top: geo.scrollFor(activeIdx), behavior: reduce ? "auto" : "smooth" });
+  };
+
+  const stageStyle = {
+    perspective: PERSPECTIVE,
+    // Eye height: the horizon lands ~1/3 down the box (see TILT above).
+    perspectiveOrigin: `50% ${Math.round(h * 0.22 + PERSPECTIVE / Math.tan((TILT * Math.PI) / 180))}px`,
+  };
 
   return (
     <div className="home-map home-map-3d">
       <div className="relative">
         <div
           ref={boxRef}
-          className="relative overflow-auto rounded-2xl border"
+          tabIndex={0}
+          aria-label="Course map, 3D — scroll to travel the road"
+          className="home-map3d-box relative h-[520px] overflow-y-auto overflow-x-hidden rounded-2xl border md:h-[640px]"
           style={{
-            height: BOX_H,
             maxHeight: "68vh",
             borderColor: "var(--cahier-line-strong)",
             background: "var(--cahier-paper-raised)",
             boxShadow: "var(--shadow-card)",
           }}
         >
-          <div className="relative w-full" style={{ height: MAP_H }}>
-            {w > 0 && (
-              <>
-                {/* Region bands (bottom = U0) with their label pills and landmarks. */}
-                {REGIONS.map((r) => {
-                  const b = band(r.unit);
-                  const inUnit = SIOS.filter((s) => s.unit === r.unit);
-                  const done = inUnit.filter((s) => isSioDone(s.id, progress)).length;
-                  return (
+          {/* Spacer = the road's length; the stage sticks and the world slides. */}
+          <div style={{ height: h + geo.maxScroll }}>
+            <div className="home-map3d-stage sticky top-0 w-full" style={{ height: h, ...stageStyle }}>
+              {w > 0 && h > 0 && (
+                <>
+                  {/* Sky: paper, hazing into the horizon. */}
+                  <div
+                    aria-hidden
+                    className="absolute inset-x-0 top-0"
+                    style={{
+                      height: h,
+                      background: "linear-gradient(var(--cahier-accent-soft), var(--cahier-paper) 40%, var(--cahier-paper-raised))",
+                    }}
+                  />
+                  {/* The ground plane, tilted away; origin = its near edge. */}
+                  <div
+                    aria-hidden={false}
+                    className="home-map3d-ground absolute"
+                    style={{
+                      left: "50%",
+                      bottom: -GROUND_BELOW,
+                      width: geo.pw,
+                      height: 20000,
+                      marginLeft: -geo.pw / 2,
+                      background: "var(--cahier-paper)",
+                      transformOrigin: "50% 100%",
+                      transform: `rotateX(${TILT}deg)`,
+                      transformStyle: "preserve-3d",
+                    }}
+                  >
                     <div
-                      key={`band${r.unit}`}
-                      className="absolute inset-x-0"
+                      ref={worldRef}
+                      className="home-map3d-world absolute left-0 will-change-transform"
+                      onFocusCapture={(e) => {
+                        // Keyboard focus on a post: the browser cannot scroll a
+                        // 3D-transformed post into view, so travel to it ourselves.
+                        const t = (e.target as HTMLElement).closest<HTMLElement>("[data-scroll]");
+                        if (t && boxRef.current) boxRef.current.scrollTo({ top: Number(t.dataset.scroll), behavior: "auto" });
+                      }}
                       style={{
-                        top: b.top,
-                        height: b.height,
-                        background: `var(--region-${r.key}-band)`,
+                        bottom: 0, // world y = L sits on the ground's near edge
+                        width: geo.pw,
+                        height: geo.L,
+                        transformStyle: "preserve-3d",
+                        // Field furrows: a faint cross-line every 60 world px —
+                        // straight on the plane, converging on screen.
+                        backgroundImage: "repeating-linear-gradient(to bottom, var(--cahier-line-strong) 0 1px, transparent 1px 60px)",
                       }}
                     >
-                      <button
-                        type="button"
-                        onClick={() => onOpenUnit?.(r.unit)}
-                        title={`${UNIT_META[r.unit].label} — ${CHAPTERS[r.unit].scenario} · ${done}/${inUnit.length}`}
-                        className="home-map-pill absolute left-1/2 top-2 z-[3] flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap px-4 py-0.5 text-[13px] font-bold"
-                        style={{
-                          background: "var(--cahier-kraft-strong)",
-                          color: "var(--cahier-paper-raised)",
-                          boxShadow: "var(--shadow-card)",
-                        }}
-                      >
-                        <span aria-hidden className="grid h-5 w-5 place-items-center rounded-full" style={{ background: "var(--cahier-paper-raised)" }}>
-                          {r.icon(16)}
-                        </span>
-                        {r.place} · {done}/{inUnit.length}
-                      </button>
-                      {DECOR[r.unit].map((it, j) => (
+                      {/* Region bands as ground patches (far → near). */}
+                      {[{ unit: 5, key: "arena" }, ...[...REGIONS].reverse()].map((r) => {
+                        const b = geo.band(r.unit);
+                        return (
+                          <div
+                            key={`band${r.unit}`}
+                            aria-hidden
+                            className="absolute inset-x-0"
+                            style={{
+                              top: b.top,
+                              height: b.height,
+                              background: r.unit === 5 ? "var(--cahier-line)" : `var(--region-${r.key}-band)`,
+                              borderTop: r.unit === 5 ? undefined : "3px solid var(--cahier-line-strong)",
+                              opacity: 0.92,
+                            }}
+                          />
+                        );
+                      })}
+
+                      {/* The road, ON the plane: shoulder · asphalt · centre line;
+                          paved to the class flag, a dotted track beyond; the
+                          travelled stretch in the equipped accent. */}
+                      <svg className="absolute left-0 top-0" width={geo.pw} height={geo.L} viewBox={`0 0 ${geo.pw} ${geo.L}`} aria-hidden>
+                        <path d={roadPath(0, pavedTo)} fill="none" stroke="var(--cahier-paper-raised)" strokeWidth={112} strokeLinejoin="round" strokeLinecap="round" />
+                        <path d={roadPath(0, pavedTo)} fill="none" stroke="var(--cahier-kraft-strong)" strokeWidth={92} strokeLinejoin="round" strokeLinecap="round" />
+                        {pavedTo > travelledTo && (
+                          <path
+                            d={roadPath(travelledTo, pavedTo)}
+                            fill="none"
+                            stroke="var(--cahier-paper-raised)"
+                            strokeWidth={5}
+                            strokeDasharray="26 22"
+                            strokeLinecap="round"
+                          />
+                        )}
+                        {travelledTo > 0 && (
+                          <path d={roadPath(0, travelledTo)} fill="none" stroke={accent ?? "var(--cahier-accent)"} strokeWidth={12} strokeLinecap="round" />
+                        )}
+                        {pavedTo < last && (
+                          <>
+                            <path d={roadPath(pavedTo, last)} fill="none" stroke="var(--cahier-paper-raised)" strokeOpacity={0.7} strokeWidth={70} strokeLinejoin="round" strokeLinecap="round" />
+                            <path
+                              d={roadPath(pavedTo, last)}
+                              fill="none"
+                              stroke="var(--cahier-kraft-strong)"
+                              strokeOpacity={0.8}
+                              strokeWidth={16}
+                              strokeDasharray="4 34"
+                              strokeLinecap="round"
+                            />
+                          </>
+                        )}
+                      </svg>
+
+                      {/* Landmarks + props: one upright region icon per band, at the
+                          roadside opposite the road's swing, and two small props. */}
+                      {REGIONS.map((r) => {
+                        const b = geo.band(r.unit);
+                        const mid = Math.round((b.first + b.lastIn) / 2);
+                        const off = geo.x(mid) - geo.cx;
+                        const side = off >= 0 ? -1 : 1;
+                        const inUnit = SIOS.filter((s) => s.unit === r.unit);
+                        const done = inUnit.filter((s) => isSioDone(s.id, progress)).length;
+                        return (
+                          <div key={`land${r.unit}`} className="contents">
+                            <Post x={geo.cx + side * (geo.amp + 60)} y={geo.y(mid) + STEP * 0.4} width={LAND_W} shadow={200}>
+                              <button
+                                type="button"
+                                onClick={() => onOpenUnit?.(r.unit)}
+                                title={`${UNIT_META[r.unit].label} — ${CHAPTERS[r.unit].scenario} · ${done}/${inUnit.length}`}
+                                className="flex flex-col items-center"
+                              >
+                                <span aria-hidden className="block">
+                                  {r.icon(96)}
+                                </span>
+                                <span
+                                  className="home-map-pill -mt-1 flex items-center gap-1 whitespace-nowrap px-4 py-1 text-[13px] font-bold"
+                                  style={{
+                                    background: "var(--cahier-kraft-strong)",
+                                    color: "var(--cahier-paper-raised)",
+                                    boxShadow: "var(--shadow-card)",
+                                  }}
+                                >
+                                  {r.place} · {done}/{inUnit.length}
+                                </span>
+                              </button>
+                            </Post>
+                            {PROPS[r.unit].map((p, j) => {
+                              const i = Math.round(b.first + (b.lastIn - b.first) * p.at);
+                              return (
+                                <Post key={j} x={geo.cx + p.side * (geo.amp + 40 + j * 70)} y={geo.y(i) - STEP * 0.5} width={60} shadow={30}>
+                                  <span aria-hidden className="block leading-none" style={{ fontSize: p.s }}>
+                                    {p.e}
+                                  </span>
+                                </Post>
+                              );
+                            })}
+                          </div>
+                        );
+                      })}
+
+                      {/* Arena sign at the far end. */}
+                      <Post x={geo.cx} y={geo.y(last) - STEP * 0.9} width={LAND_W} shadow={200}>
                         <span
-                          key={j}
-                          aria-hidden
-                          data-pop-y={Math.round(b.top + (it.y / 100) * b.height)}
-                          data-depth={it.d}
-                          className="absolute block"
+                          className="home-map-pill whitespace-nowrap px-4 py-1 text-[13px] font-bold"
                           style={{
-                            left: `${it.x}%`,
-                            top: `${it.y}%`,
-                            fontSize: it.s,
-                          }}
-                        >
-                          <span className="home-map-bob" style={{ animationDelay: `${(j * 0.7) % 3}s` }}>
-                            {it.e}
-                          </span>
-                        </span>
-                      ))}
-                    </div>
-                  );
-                })}
-                {/* Arena at the top. */}
-                <span
-                  className="home-map-pill absolute left-1/2 z-[3] -translate-x-1/2 whitespace-nowrap px-4 py-0.5 text-[13px] font-bold"
-                  style={{
-                    top: geo.y(last) - 92,
-                    background: "var(--cahier-kraft-strong)",
-                    color: "var(--cahier-paper-raised)",
-                    boxShadow: "var(--shadow-card)",
-                  }}
-                >
-                  {ARENA_PLACE}
-                </span>
-
-                {/* Road: a pale plateau, then travelled · paved · unpaved. */}
-                <svg className="absolute inset-0 z-[1]" width={w} height={MAP_H} viewBox={`0 0 ${w} ${MAP_H}`} aria-hidden>
-                  <path
-                    d={roadPath(0, last)}
-                    fill="none"
-                    stroke="var(--cahier-paper-raised)"
-                    strokeOpacity={0.9}
-                    strokeWidth={150}
-                    strokeLinejoin="round"
-                    strokeLinecap="round"
-                  />
-                  {pavedTo < last && (
-                    <path
-                      d={roadPath(pavedTo, last)}
-                      fill="none"
-                      stroke="var(--cahier-kraft-strong)"
-                      strokeOpacity={0.7}
-                      strokeWidth={4}
-                      strokeDasharray="2 10"
-                      strokeLinecap="round"
-                    />
-                  )}
-                  {pavedTo > travelledTo && (
-                    <path d={roadPath(travelledTo, pavedTo)} fill="none" stroke="var(--cahier-kraft-strong)" strokeWidth={10} strokeLinecap="round" />
-                  )}
-                  {travelledTo > 0 && (
-                    <path d={roadPath(0, travelledTo)} fill="none" stroke={accent ?? "var(--cahier-accent)"} strokeOpacity={0.8} strokeWidth={10} strokeLinecap="round" />
-                  )}
-                </svg>
-
-                {STOPS.map((st, i) => {
-                  const cx = geo.x(i);
-                  const cy = geo.y(i);
-                  if (st.kind === "finale") {
-                    return (
-                      <div
-                        key="finale"
-                        className="absolute z-[2]"
-                        style={{
-                          left: cx,
-                          top: cy,
-                          transform: "translate(-50%, -50%)",
-                        }}
-                      >
-                        <Link
-                          href="/practice/grammarathon/finale"
-                          data-pop-y={Math.round(cy)}
-                          title="GramMarathon Final — 50 questions, all lessons, weighted to your weak spots"
-                          aria-label="GramMarathon Final"
-                          className="flex h-16 w-16 items-center justify-center rounded-full border-[3px] text-2xl"
-                          style={{
-                            background: "var(--cahier-paper-raised)",
-                            borderColor: "var(--cahier-ink)",
+                            background: "var(--cahier-kraft-strong)",
+                            color: "var(--cahier-paper-raised)",
                             boxShadow: "var(--shadow-card)",
                           }}
                         >
-                          🏁
-                        </Link>
-                        <span
-                          aria-hidden
-                          className="pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 text-[10px] font-bold"
-                          style={{ color: "var(--cahier-ink-soft)" }}
-                        >
-                          Final
+                          {ARENA_PLACE}
                         </span>
-                      </div>
-                    );
-                  }
-                  const done = isSioDone(st.id, progress);
-                  const active = st.id === activeId;
-                  const kind = sioKind(st.id);
-                  const second = sioSecondary(st.id);
-                  const colour = KIND_COLOR[kind];
-                  const ahead = i > travelledTo;
-                  const flag = st.id === CLASS_FLAG_SIO;
-                  return (
-                    <div
-                      key={st.id}
-                      className="absolute z-[2]"
-                      style={{
-                        left: cx,
-                        top: cy,
-                        transform: "translate(-50%, -50%)",
-                      }}
-                    >
-                      {active && (
-                        <span aria-hidden className="absolute right-full top-1/2 mr-2 -translate-y-1/2">
-                          <span
-                            className="home-map-bob grid h-9 w-9 place-items-center rounded-xl border-2 text-xl"
-                            style={{
-                              borderColor: colour,
-                              background: "var(--cahier-paper-raised)",
-                              boxShadow: "var(--shadow-card)",
-                            }}
-                          >
-                            🧑‍🎓
-                          </span>
-                        </span>
-                      )}
-                      <button
-                        type="button"
-                        ref={active ? activeRef : undefined}
-                        onClick={() => onOpenSio?.(st.unit, st.id)}
-                        data-pop-y={Math.round(cy)}
-                        title={`${st.id} · ${st.topic} (${KIND_LABEL[kind]}${second ? ` + ${KIND_LABEL[second]}` : ""})`}
-                        aria-label={`${st.id} · ${st.topic} (${KIND_LABEL[kind]})${active ? " — continue here" : ""}`}
-                        aria-current={active ? "step" : undefined}
-                        className={`home-map3d-node relative flex items-center justify-center rounded-full border-[4px] font-black ${active ? "fluo-node-active h-16 w-16 text-xl" : "h-12 w-12 text-sm"}`}
-                        style={{
-                          borderColor: colour,
-                          borderStyle: ahead && !active ? "dashed" : "solid",
-                          background: done || active ? colour : "var(--cahier-paper-raised)",
-                          color: done || active ? "var(--cahier-paper-raised)" : "var(--cahier-ink-faint)",
-                        }}
-                      >
-                        {active ? (
-                          <span aria-hidden className="pl-0.5">
-                            ▶
-                          </span>
-                        ) : done ? (
-                          "✓"
-                        ) : (
-                          st.num
-                        )}
-                        {second && (
-                          // Secondary focus (sioSecondary): a small dot at the ring's foot.
-                          <span
-                            aria-hidden
-                            className="absolute -bottom-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rounded-full border-2"
-                            style={{
-                              background: KIND_COLOR[second],
-                              borderColor: "var(--cahier-paper-raised)",
-                            }}
-                          />
-                        )}
-                        {flag && (
-                          <span aria-label="The class is here this week" title="The class is here this week" className="absolute -right-2 -top-2 text-base leading-none">
-                            🚩
-                          </span>
-                        )}
-                      </button>
-                      <span
-                        aria-hidden
-                        className="pointer-events-none absolute left-1/2 top-full mt-1.5 w-[96px] -translate-x-1/2 truncate text-center text-[10px] font-bold leading-none"
-                        style={{ color: "var(--cahier-ink-soft)" }}
-                      >
-                        {st.short}
-                      </span>
+                      </Post>
+
+                      {/* Stops as signposts, far → near so nearer posts paint last. */}
+                      {STOPS.map((st, i) => {
+                        const px = geo.x(i);
+                        const py = geo.y(i);
+                        if (st.kind === "finale") {
+                          return (
+                            <Post key="finale" x={px} y={py} width={POST_W} shadow={120}>
+                              <Link
+                                href="/practice/grammarathon/finale"
+                                title="GramMarathon Final — 50 questions, all lessons, weighted to your weak spots"
+                                aria-label="GramMarathon Final"
+                                className="home-map3d-node flex h-[72px] w-[72px] items-center justify-center rounded-full border-[4px] text-3xl"
+                                style={{
+                                  background: "var(--cahier-paper-raised)",
+                                  borderColor: "var(--cahier-ink)",
+                                }}
+                              >
+                                🏁
+                              </Link>
+                              <span aria-hidden className="mt-1 rounded px-1 text-[13px] font-bold leading-tight" style={{ color: "var(--cahier-ink)", background: "var(--cahier-paper-raised)" }}>
+                                Final
+                              </span>
+                            </Post>
+                          );
+                        }
+                        const done = isSioDone(st.id, progress);
+                        const active = st.id === activeId;
+                        const kind = sioKind(st.id);
+                        const second = sioSecondary(st.id);
+                        const colour = KIND_COLOR[kind];
+                        const ahead = i > travelledTo;
+                        const flag = st.id === CLASS_FLAG_SIO;
+                        return (
+                          <Post key={st.id} x={px} y={py} width={POST_W} shadow={active ? 150 : 120}>
+                            {/* Above the ring, in flow (a 3D-transformed post does not
+                                paint absolutely-positioned overflow in Chromium): the
+                                avatar chip on the current stop, the class flag 🚩. */}
+                            {active && (
+                              <span
+                                aria-hidden
+                                className="home-map-bob mb-1 grid h-10 w-10 place-items-center rounded-xl border-2 text-2xl"
+                                style={{
+                                  borderColor: colour,
+                                  background: "var(--cahier-paper-raised)",
+                                  boxShadow: "var(--shadow-card)",
+                                }}
+                              >
+                                🧑‍🎓
+                              </span>
+                            )}
+                            {flag && (
+                              <span aria-label="The class is here this week" title="The class is here this week" className="-mb-1 text-2xl leading-none">
+                                🚩
+                              </span>
+                            )}
+                            <div className="relative">
+                              <button
+                                type="button"
+                                data-scroll={geo.scrollFor(i)}
+                                onClick={() => onOpenSio?.(st.unit, st.id)}
+                                title={`${st.id} · ${st.topic} (${KIND_LABEL[kind]}${second ? ` + ${KIND_LABEL[second]}` : ""})`}
+                                aria-label={`${st.id} · ${st.topic} (${KIND_LABEL[kind]})${active ? " — continue here" : ""}`}
+                                aria-current={active ? "step" : undefined}
+                                className={`home-map3d-node relative flex items-center justify-center rounded-full border-[5px] font-black ${active ? "fluo-node-active h-20 w-20 text-3xl" : "h-14 w-14 text-lg"}`}
+                                style={{
+                                  borderColor: colour,
+                                  borderStyle: ahead && !active ? "dashed" : "solid",
+                                  background: done || active ? colour : "var(--cahier-paper-raised)",
+                                  color: done || active ? "var(--cahier-paper-raised)" : "var(--cahier-ink-faint)",
+                                }}
+                              >
+                                {active ? (
+                                  <span aria-hidden className="pl-0.5">
+                                    ▶
+                                  </span>
+                                ) : done ? (
+                                  "✓"
+                                ) : (
+                                  st.num
+                                )}
+                                {second && (
+                                  // Secondary focus (sioSecondary): a small dot at the ring's foot.
+                                  <span
+                                    aria-hidden
+                                    className="absolute bottom-0 left-1/2 h-4 w-4 -translate-x-1/2 rounded-full border-2"
+                                    style={{
+                                      background: KIND_COLOR[second],
+                                      borderColor: "var(--cahier-paper-raised)",
+                                    }}
+                                  />
+                                )}
+                              </button>
+                            </div>
+                            <span
+                              aria-hidden
+                              className="pointer-events-none mt-2 max-w-full truncate rounded px-1.5 text-[13px] font-bold leading-tight"
+                              style={{ color: "var(--cahier-ink)", background: "var(--cahier-paper-raised)", boxShadow: "var(--shadow-card)" }}
+                            >
+                              {st.short}
+                            </span>
+                          </Post>
+                        );
+                      })}
                     </div>
-                  );
-                })}
-              </>
-            )}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
 
@@ -485,20 +582,15 @@ export default function HomeMap3D({
           <button
             type="button"
             aria-label="Back to your stop"
-            onClick={() =>
-              activeRef.current?.scrollIntoView({
-                behavior: "smooth",
-                block: "center",
-              })
-            }
-            className="absolute bottom-3 right-3 z-[4] flex flex-col items-center rounded-full border-2 px-2.5 py-1.5 leading-none shadow-[var(--shadow-card)] transition hover:-translate-y-0.5"
+            onClick={recentre}
+            className="absolute right-3 top-3 z-[4] flex flex-col items-center rounded-full border-2 px-2.5 py-1.5 leading-none shadow-[var(--shadow-card)] transition hover:-translate-y-0.5"
             style={{
               borderColor: "var(--cahier-ink)",
               background: "var(--fluo-hl)",
             }}
           >
             <span aria-hidden className="text-[10px] font-black" style={{ color: "var(--cahier-ink)" }}>
-              {pin === "above" ? "▲" : "▼"}
+              {pin === "ahead" ? "▲" : "▼"}
             </span>
             <span aria-hidden className="text-lg">
               📍
