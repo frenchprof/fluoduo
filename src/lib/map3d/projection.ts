@@ -12,11 +12,17 @@
  * eye line and slide off the bottom.
  */
 
-export const HORIZON_Y = 0.3; // horizon, as a fraction of the box height
-export const CAMERA_Y = 0.8; // the eye line (where relZ = 0 lands)
-export const FOCAL = 3.8; // focal length in stop units — bigger = flatter perspective
-export const MAX_AHEAD = 38; // draw distance ahead (stops)
-export const MAX_BEHIND = 4; // draw distance behind (stops)
+export const HORIZON_Y = 0.26; // horizon, as a fraction of the box height
+export const CAMERA_Y = 0.86; // the eye line (where relZ = 0 lands)
+// Dan, 2026-08-19: "scale up — not all 50 stops crammed together; greater
+// distance, more horizon". The Make's flat lens (FOCAL 3.8) with a 38-stop
+// draw distance projected most of the course into one band. A shorter focal
+// spreads the near stops apart and sinks the far ones fast, and a 14-stop
+// draw distance leaves the rest genuinely beyond the horizon — you travel
+// to reveal them.
+export const FOCAL = 1.8; // focal length in stop units — bigger = flatter perspective
+export const MAX_AHEAD = 7; // draw distance ahead (stops)
+export const MAX_BEHIND = 2; // draw distance behind (stops)
 export const LOOK_AHEAD = 1.5; // heading = the road this far ahead
 
 /** Road snake: world X per stop, repeating every ten stops (one unit). */

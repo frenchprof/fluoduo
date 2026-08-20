@@ -56,7 +56,11 @@ import { ROADSIDE_ITEMS, NATURE_ITEMS, type RBuild, type RProp, type NatureType 
 
 /* ── Camera travel ─────────────────────────────────────────────────────────
    scrollTop → camZ: the box's scroll height is the road's length. */
-const SCROLL_PER_STOP = 130; // px of scroll per stop
+const SCROLL_PER_STOP = 170;
+// The stronger lens (FOCAL 1.8) made the STOPS breathe; the roadside set was
+// sized for the old flat lens and read huge against them — damp it as one
+// knob (Dan, 2026-08-19: the props must dress the road, not crowd it).
+const PROP_DAMP = 0.72; // px of scroll per stop — slower travel, more road per swipe (Dan, 2026-08-19: greater distance)
 const CAM_MIN = -1.5; // before SIO-001, the Welcome Village gate in view
 const CAM_MAX = 54.5; // the finishing line
 const ARCH_Z = 51; // the 🏁 GramMarathon arch
@@ -562,8 +566,9 @@ export default function HomeMap3D({
 
                   {/* Trees & bushes */}
                   {NATURE_ITEMS.map((item) => {
-                    const p = placeAt(item.z, item.side, item.lat);
-                    if (!p) return null;
+                    const p0 = placeAt(item.z, item.side, item.lat);
+                    if (!p0) return null;
+                    const p = { ...p0, scale: p0.scale * PROP_DAMP };
                     const cW = Math.round(item.size * p.scale * (item.type === "bush" ? 1.6 : 1));
                     const fullH = Math.round(item.size * p.scale * (item.type === "pine" ? 1.75 : item.type === "bush" ? 0.65 : 1.25));
                     return (
@@ -575,8 +580,9 @@ export default function HomeMap3D({
 
                   {/* Roadside props & buildings (Peers' catalogue; the labels teach) */}
                   {ROADSIDE_ITEMS.map((item) => {
-                    const p = placeAt(item.z, item.side, item.lat);
-                    if (!p) return null;
+                    const p0 = placeAt(item.z, item.side, item.lat);
+                    if (!p0) return null;
+                    const p = { ...p0, scale: p0.scale * PROP_DAMP };
                     const approxH =
                       item.kind === "B" ? Math.round(item.h * p.scale + item.w * 0.16 * p.scale + 6 * p.scale * p.scaleY + 4) : Math.round(item.size * p.scale * 1.05 + 6);
                     const frontW = item.kind === "B" ? Math.round(item.w * p.scale) : Math.round(item.size * p.scale * 0.9);
@@ -733,7 +739,7 @@ export default function HomeMap3D({
                             />
                           )}
                         </button>
-                        {nodeH > 24 && (
+                        {nodeH > 34 && ( // names only near the camera — the far field stays air (Dan, 2026-08-19)
                           <span
                             aria-hidden
                             className="pointer-events-none mt-0.5 whitespace-nowrap rounded px-1 font-bold leading-tight"
