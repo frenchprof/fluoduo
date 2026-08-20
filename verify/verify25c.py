@@ -84,7 +84,13 @@ for fn in ("pathXAt", "cameraForward", "project"):
     check(f"export function {fn}(" in proj, f"projection.ts exports {fn}()", f"projection.ts lacks {fn}()")
 check("react" not in proj.lower() and "react" not in sky.lower() and "react" not in scene.lower(), "src/lib/map3d/* is pure (no React)", "src/lib/map3d/* imports React")
 check("const csx = relX * rx + relZ * rz" in proj and "const csz = relX * fx + relZ * fz" in proj, "project(): world → camera space with a rotating camera", "project() does not rotate the camera with the road")
-check("FOCAL / (FOCAL + csz)" in proj, "project(): depth scale = FOCAL / (FOCAL + depth)", "project() has no depth scale")
+# High-oblique camera (Dan, 2026-08-20, Candy Crush reference): row position
+# and disc size are DECOUPLED — rows spread linearly over the view depth,
+# sizes fall off on their own gentle curve with a floor.
+check("Math.sin(" in proj and "csz / MAX_AHEAD" in proj, "project(): rows ride the curved world — sine over the view depth, hidden beyond it", "project() rows are not the curved-world sine profile")
+check("SIZE_FALLOFF" in proj and "MIN_SCALE" in proj,
+      "project(): disc size has its own gentle falloff with a floor",
+      "project() size is not decoupled from row position (SIZE_FALLOFF/MIN_SCALE)")
 check('from "@/lib/map3d/projection"' in m3 and "project(" in m3 and "getWorldX(" in m3 and "pathXAt(" in m3, "HomeMap3D projects through the engine", "HomeMap3D does not use src/lib/map3d/projection")
 check("SIOS.map((s, i) => {" in m3 and "project(getWorldX(i + 1), i - camZ, camZ, vw, vh)" in m3, "every SIO stop is projected (stop N at z = N − 1)", "stops are not projected per SIO")
 

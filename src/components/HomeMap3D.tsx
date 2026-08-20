@@ -50,7 +50,7 @@ import { CHAPTERS, CLASS_FLAG_SIO } from "@/content/chapters";
 import { sioKind, sioSecondary, KIND_LABEL } from "@/content/sioKinds";
 import { isSioDone, type Progress } from "@/lib/progress";
 import { KIND_COLOR, REGIONS, ARENA_PLACE, KindLegend } from "@/components/HomeMap";
-import { HORIZON_Y, MAX_AHEAD, getWorldX, pathXAt, cameraForward, project, zOrder, type Projected } from "@/lib/map3d/projection";
+import { HORIZON_Y, SKYLINE_Y, MAX_AHEAD, getWorldX, pathXAt, cameraForward, project, zOrder, type Projected } from "@/lib/map3d/projection";
 import { getSkyColors, sunPosition, clockHour, CLOUDS, STARS } from "@/lib/map3d/sky";
 import { ROADSIDE_ITEMS, NATURE_ITEMS, type RBuild, type RProp, type NatureType } from "@/lib/map3d/scene";
 
@@ -88,15 +88,21 @@ function PerspectiveBg({
   camZ: number;
   hour: number;
 }) {
-  const horizY = vh * HORIZON_Y;
+  const horizY = vh * HORIZON_Y; // the crest — the ground's rounded shoulder
+  const skyY = vh * SKYLINE_Y; // the true sky line, far beyond the crest
+  const crestBulge = vh * 0.05; // how far the shoulder rises at its middle
   // The ground tilts a touch against the bend, like a banked road.
   const { fx } = cameraForward(camZ);
   const vpX = vw * (0.5 - fx * 0.12);
   const sky = getSkyColors(hour);
   const sun = sunPosition(hour);
   const sunX = vw * sun.x;
-  const sunY = horizY * sun.y;
+  const sunY = skyY * sun.y;
   const sunR = Math.max(8, vw * 0.024);
+  // The crest as a path: an arc bulging up at the centre (leaning with the
+  // bend), the ground filling from it to the bottom — the reference's hill
+  // shoulder that upcoming stops appear from behind.
+  const crest = `M 0 ${horizY + crestBulge} Q ${vpX} ${horizY - crestBulge} ${vw} ${horizY + crestBulge} L ${vw} ${vh} L 0 ${vh} Z`;
   return (
     <svg width={vw} height={vh} className="absolute inset-0" style={{ zIndex: 0, pointerEvents: "none" }} aria-hidden>
       <defs>
@@ -118,10 +124,13 @@ function PerspectiveBg({
           <stop offset="100%" stopColor={ground} />
         </radialGradient>
       </defs>
-      {/* Sky */}
-      <rect x={0} y={0} width={vw} height={horizY + 1} fill="url(#m3dSky)" />
+      {/* Sky — down to the true sky line */}
+      <rect x={0} y={0} width={vw} height={skyY + 1} fill="url(#m3dSky)" />
+      {/* The distant vista — the land beyond the crest, hazy with distance */}
+      <rect x={0} y={skyY} width={vw} height={horizY + crestBulge - skyY} fill={ground} opacity={0.45} />
+      <rect x={0} y={skyY} width={vw} height={horizY + crestBulge - skyY} fill={sky.hor} opacity={0.5} />
       {/* Stars */}
-      {sky.night > 0 && STARS.map((st, i) => <circle key={i} cx={vw * st.x} cy={horizY * st.y} r={st.r} fill="white" opacity={0.85 * sky.night} />)}
+      {sky.night > 0 && STARS.map((st, i) => <circle key={i} cx={vw * st.x} cy={skyY * st.y} r={st.r} fill="white" opacity={0.85 * sky.night} />)}
       {/* Sun / moon */}
       <ellipse cx={sunX} cy={sunY} rx={sunR * 2.8} ry={sunR * 2.8} fill="url(#m3dSunGlow)" />
       {sky.isDay ? (
@@ -135,18 +144,19 @@ function PerspectiveBg({
       {/* Clouds */}
       {CLOUDS.map((c, i) => (
         <g key={i} opacity={sky.isDay ? 0.78 : 0.28}>
-          <ellipse cx={vw * c.cx - sunR * 0.5} cy={horizY * c.cy} rx={vw * c.rx} ry={horizY * c.ry} fill="rgba(255,255,255,0.9)" />
-          <ellipse cx={vw * c.cx - vw * c.rx * 0.25} cy={horizY * c.cy - horizY * c.ry * 0.55} rx={vw * c.rx * 0.5} ry={horizY * c.ry * 0.65} fill="rgba(255,255,255,0.85)" />
-          <ellipse cx={vw * c.cx + vw * c.rx * 0.2} cy={horizY * c.cy - horizY * c.ry * 0.45} rx={vw * c.rx * 0.38} ry={horizY * c.ry * 0.55} fill="rgba(255,255,255,0.8)" />
+          <ellipse cx={vw * c.cx - sunR * 0.5} cy={skyY * c.cy} rx={vw * c.rx} ry={skyY * c.ry} fill="rgba(255,255,255,0.9)" />
+          <ellipse cx={vw * c.cx - vw * c.rx * 0.25} cy={skyY * c.cy - skyY * c.ry * 0.55} rx={vw * c.rx * 0.5} ry={skyY * c.ry * 0.65} fill="rgba(255,255,255,0.85)" />
+          <ellipse cx={vw * c.cx + vw * c.rx * 0.2} cy={skyY * c.cy - skyY * c.ry * 0.45} rx={vw * c.rx * 0.38} ry={skyY * c.ry * 0.55} fill="rgba(255,255,255,0.8)" />
         </g>
       ))}
-      {/* Ground: the region's band colour, paler towards the vanishing point */}
-      <rect x={0} y={horizY} width={vw} height={vh - horizY} fill={ground} />
-      <rect x={0} y={horizY} width={vw} height={vh - horizY} fill="url(#m3dGround)" opacity={0.4} />
+      {/* Ground: from the ROUNDED CREST down — the region's band colour,
+          paler towards the shoulder */}
+      <path d={crest} fill={ground} />
+      <path d={crest} fill="url(#m3dGround)" opacity={0.4} />
       {/* World-accent wash */}
-      <rect x={0} y={horizY} width={vw} height={vh - horizY} fill={fluo} opacity={0.16} />
+      <path d={crest} fill={fluo} opacity={0.16} />
       {/* Night falls on the ground too */}
-      {sky.night > 0 && <rect x={0} y={horizY} width={vw} height={vh - horizY} fill={sky.top} opacity={0.42 * sky.night} />}
+      {sky.night > 0 && <path d={crest} fill={sky.top} opacity={0.42 * sky.night} />}
       {/* Horizon line in the world's accent */}
       <line x1={0} y1={horizY} x2={vw} y2={horizY} stroke={fluo} strokeWidth="2.5" />
       {/* Haze */}
@@ -308,7 +318,7 @@ function PropSprite({ item, scale, scaleY }: { item: RProp; scale: number; scale
       <span className="block" style={{ fontSize: fs, lineHeight: 1, filter: `drop-shadow(0 ${Math.max(2, fs * 0.07)}px ${Math.max(3, fs * 0.13)}px rgba(0,0,0,0.42))` }}>
         {item.emoji}
       </span>
-      {item.label && scale > 0.27 && (
+      {item.label && scale > 0.8 && ( // curved world: only the very nearest props teach; stop labels own the field
         <div
           lang="fr"
           className="whitespace-nowrap text-center font-extrabold"
@@ -414,7 +424,11 @@ export default function HomeMap3D({
   const flagIdx = SIOS.findIndex((s) => s.id === CLASS_FLAG_SIO);
   const travelledTo = activeIdx >= 0 ? activeIdx : SIOS.length;
   const pavedTo = Math.max(travelledTo, flagIdx);
-  const homeZ = Math.max(0, activeIdx);
+  // Land ~one stop short of the current one: under the curved-world camera
+  // the eye line sits below the box (CAMERA_Y > 1), so a stop AT camZ is off
+  // screen — backing off ~0.95 puts the current stop big and fully visible in
+  // the lower third (Dan, 2026-08-20 camera).
+  const homeZ = Math.max(0, activeIdx) - 0.8;
 
   // The camera — starts ON the current stop (no landing flash).
   const [camZ, setCamZ] = useState(homeZ);
@@ -539,7 +553,12 @@ export default function HomeMap3D({
     return rel > 0 && rel < MAX_AHEAD ? project(pathXAt(49.99), rel, camZ, vw, vh) : null;
   })();
 
-  const placeAt = (z: number, side: 1 | -1, lat: number): Projected | null => (vw === 0 ? null : project(pathXAt(z) + side * lat, z - camZ, camZ, vw, vh));
+  // LAT_SPREAD (Dan, 2026-08-20, high-oblique camera): the scene's lateral
+  // offsets were authored for the narrow first-person lens — under the big
+  // near-constant discs they parked props ON the stops. Spread the roadside
+  // sideways as one knob.
+  const LAT_SPREAD = 1.9;
+  const placeAt = (z: number, side: 1 | -1, lat: number): Projected | null => (vw === 0 ? null : project(pathXAt(z) + side * lat * LAT_SPREAD, z - camZ, camZ, vw, vh));
 
   return (
     <div className="home-map home-map-3d" style={{ fontFamily: "var(--font-body-stack)" }}>

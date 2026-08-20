@@ -12,17 +12,22 @@
  * eye line and slide off the bottom.
  */
 
-export const HORIZON_Y = 0.26; // horizon, as a fraction of the box height
-export const CAMERA_Y = 0.86; // the eye line (where relZ = 0 lands)
-// Dan, 2026-08-19: "scale up — not all 50 stops crammed together; greater
-// distance, more horizon". The Make's flat lens (FOCAL 3.8) with a 38-stop
-// draw distance projected most of the course into one band. A shorter focal
-// spreads the near stops apart and sinks the far ones fast, and a 14-stop
-// draw distance leaves the rest genuinely beyond the horizon — you travel
-// to reveal them.
-export const FOCAL = 1.8; // focal length in stop units — bigger = flatter perspective
-export const MAX_AHEAD = 7; // draw distance ahead (stops)
-export const MAX_BEHIND = 2; // draw distance behind (stops)
+// Dan, 2026-08-20, with the Candy Crush map as the reference: the view is a
+// HIGH OBLIQUE — a camera well above the road looking down-forward, so the
+// ground fills the frame, only a handful of big stops are on screen with fat
+// gaps between them, and size barely shrinks with distance. That is not a
+// pinhole eye-on-the-road (the Make's model, however tuned) — position and
+// size are DECOUPLED here: the row position saturates with depth (FOCAL),
+// while the disc size falls off on its own, much gentler curve
+// (SIZE_FALLOFF, floored at MIN_SCALE).
+export const HORIZON_Y = 0.46; // the road's CREST — stops vanish behind this rounded shoulder
+export const SKYLINE_Y = 0.2; // the true sky line, far above the crest — the distant vista lives between
+export const CAMERA_Y = 1.04; // the eye line sits just below the box's bottom
+export const FOCAL = 6.2; // view depth, in stop units — rows spread linearly across it
+export const MAX_AHEAD = 4; // draw distance ahead (stops) — pop over the crest close-in
+export const MAX_BEHIND = 1.5; // draw distance behind (stops)
+export const SIZE_FALLOFF = 0.12; // per-stop size decay — Candy-Crush gentle
+export const MIN_SCALE = 0.45; // a far stop is still nearly half a near one
 export const LOOK_AHEAD = 1.5; // heading = the road this far ahead
 
 /** Road snake: world X per stop, repeating every ten stops (one unit). */
@@ -85,24 +90,33 @@ export function project(worldX: number, relZ: number, camZ: number, vw: number, 
   const camY = vh * CAMERA_Y;
 
   if (csz >= 0) {
-    const t = csz / (csz + FOCAL);
-    if (t > 0.97) return null;
-    const sc = Math.max(0.08, FOCAL / (FOCAL + csz));
-    const scaleY = Math.max(0.12, 1 - t * 0.88);
+    // CURVED WORLD (Dan, 2026-08-20): the road runs over a rounded surface.
+    // Row position follows a sine of the angular distance — a stop pops over
+    // the horizon at MAX_AHEAD (everything further is hidden behind the
+    // curve), crawls while it is far, then sweeps fast down the screen as it
+    // comes underfoot. sin' = cos: widest steps at the bottom, asymptotic at
+    // the horizon.
+    const a = Math.min(1, csz / MAX_AHEAD);
+    const t = 0.97 * Math.sin((a * Math.PI) / 2);
+    // Disc size: its own gentle falloff — a far stop is still a disc.
+    const sc = Math.max(MIN_SCALE, 1 / (1 + csz * SIZE_FALLOFF));
+    // The reference's stops stay ROUND at every distance — the hiding is the
+    // crest's job, not a squish. Only a whisper of foreshortening.
+    const scaleY = Math.max(0.85, 1 - t * 0.15);
     const px = vw * 0.5 + csx * vw * 0.4 * sc;
     const py = camY - (camY - horizY) * t;
     if (!isFinite(px) || !isFinite(py)) return null;
-    return { px, py, scale: sc, scaleY, size: Math.max(14, Math.round(72 * sc)), t, behind: false };
+    return { px, py, scale: sc, scaleY, size: Math.max(26, Math.round(vh * 0.165 * sc)), t, behind: false };
   }
   const d = -csz;
-  const t = d / (d + FOCAL * 0.75);
+  const t = d / (d + FOCAL * 0.4);
   if (t > 0.97) return null;
-  const sc = Math.max(0.1, (1 - t * 0.78) * 0.86);
-  const scaleY = Math.max(0.12, 1 - t * 0.88);
+  const sc = Math.max(MIN_SCALE, (1 - t * 0.3));
+  const scaleY = Math.max(0.7, 1 - t * 0.2);
   const px = vw * 0.5 + csx * vw * 0.4 * sc;
   const py = camY + (vh * 1.05 - camY) * t;
   if (!isFinite(px) || !isFinite(py)) return null;
-  return { px, py, scale: sc, scaleY, size: Math.max(12, Math.round(64 * sc)), t, behind: true };
+  return { px, py, scale: sc, scaleY, size: Math.max(22, Math.round(vh * 0.14 * sc)), t, behind: true };
 }
 
 /** Paint order: far things first. */
