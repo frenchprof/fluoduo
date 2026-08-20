@@ -50,17 +50,18 @@ import { CHAPTERS, CLASS_FLAG_SIO } from "@/content/chapters";
 import { sioKind, sioSecondary, KIND_LABEL } from "@/content/sioKinds";
 import { isSioDone, type Progress } from "@/lib/progress";
 import { KIND_COLOR, REGIONS, ARENA_PLACE, KindLegend } from "@/components/HomeMap";
-import { HORIZON_Y, MAX_AHEAD, getWorldX, pathXAt, cameraForward, project, zOrder, type Projected } from "@/lib/map3d/projection";
+import { HORIZON_Y, SKYLINE_Y, MAX_AHEAD, FULL_AHEAD, N_STOPS, getWorldX, pathXAt, cameraForward, project, zOrder, type Projected } from "@/lib/map3d/projection";
 import { getSkyColors, sunPosition, clockHour, CLOUDS, STARS } from "@/lib/map3d/sky";
 import { ROADSIDE_ITEMS, NATURE_ITEMS, type RBuild, type RProp, type NatureType } from "@/lib/map3d/scene";
 
 /* ── Camera travel ─────────────────────────────────────────────────────────
    scrollTop → camZ: the box's scroll height is the road's length. */
 const SCROLL_PER_STOP = 170;
-// The stronger lens (FOCAL 1.8) made the STOPS breathe; the roadside set was
-// sized for the old flat lens and read huge against them — damp it as one
-// knob (Dan, 2026-08-19: the props must dress the road, not crowd it).
-const PROP_DAMP = 0.72; // px of scroll per stop — slower travel, more road per swipe (Dan, 2026-08-19: greater distance)
+// One knob over the roadside set's size against the stops. Dan, 2026-08-20
+// (mini-planet round): "there are big enough things on both sides that
+// occupy the screen" — full size, no damping; LAT_SPREAD keeps them off the
+// road itself.
+const PROP_DAMP = 1.0;
 const CAM_MIN = -1.5; // before SIO-001, the Welcome Village gate in view
 const CAM_MAX = 54.5; // the finishing line
 const ARCH_Z = 51; // the 🏁 GramMarathon arch
@@ -72,10 +73,33 @@ const INK = "var(--cahier-ink)";
 const PAPER = "var(--cahier-paper-raised)";
 const SHADOW = "rgba(0,0,0,0.13)";
 
+/** The mini-planet rise (projection.ts `reveal`): a thing coming over the
+ *  horizon shows only its TOP `reveal` fraction — the rest is still behind
+ *  the curve. Clip the bottom; leave the sides and top open so a flag or
+ *  label riding above the billboard peeks over first, the way a mast shows
+ *  before the ship. */
+const clipRise = (reveal: number): CSSProperties =>
+  reveal < 1 ? { clipPath: `inset(-200% -100% ${((1 - reveal) * 100).toFixed(1)}% -100%)` } : {};
+
 /* ── Sky + ground (SVG) ─────────────────────────────────────────────────── */
+/** The far land's dressing (Dan's capture, round 7: the space beyond the
+ *  edge is a populated distant scene, not a haze band). Fixed spots on the
+ *  far terrace, riding a slow parallax; drawn twice for the wrap. */
+const FAR_PROPS = [
+  { x: 0.06, dy: 0.82, e: "🌳" },
+  { x: 0.18, dy: 0.55, e: "🏡" },
+  { x: 0.3, dy: 0.9, e: "🌲" },
+  { x: 0.44, dy: 0.6, e: "⛲" },
+  { x: 0.58, dy: 0.85, e: "🌳" },
+  { x: 0.72, dy: 0.5, e: "🌾" },
+  { x: 0.86, dy: 0.78, e: "🌲" },
+  { x: 0.96, dy: 0.6, e: "🌳" },
+];
+
 function PerspectiveBg({
   fluo,
   ground,
+  beyond,
   vw,
   vh,
   camZ,
@@ -83,20 +107,60 @@ function PerspectiveBg({
 }: {
   fluo: string;
   ground: string;
+  /** The NEXT region's band — the land visible beyond the terrace edge. */
+  beyond: string;
   vw: number;
   vh: number;
   camZ: number;
   hour: number;
 }) {
-  const horizY = vh * HORIZON_Y;
+  const horizY = vh * HORIZON_Y; // the crest — the ground's rounded shoulder
+  const skyY = vh * SKYLINE_Y; // the true sky line, far beyond the crest
+  const crestBulge = vh * 0.05; // how far the shoulder rises at its middle
   // The ground tilts a touch against the bend, like a banked road.
   const { fx } = cameraForward(camZ);
   const vpX = vw * (0.5 - fx * 0.12);
   const sky = getSkyColors(hour);
   const sun = sunPosition(hour);
   const sunX = vw * sun.x;
-  const sunY = horizY * sun.y;
+  const sunY = skyY * sun.y;
   const sunR = Math.max(8, vw * 0.024);
+  // The plateau's EDGE (Dan's capture, round 7): the old smooth arc becomes
+  // a sampled, gently SCALLOPED terrace lip — an organic edge the road runs
+  // over, with a light rim on top and the next land beyond it.
+  const arc: [number, number][] = [];
+  for (let i = 0; i <= 24; i++) {
+    const t = i / 24;
+    const yA = (1 - t) * (1 - t) * (horizY + crestBulge) + 2 * t * (1 - t) * (horizY - crestBulge) + t * t * (horizY + crestBulge);
+    arc.push([vw * t, yA + Math.abs(Math.sin(t * Math.PI * 9)) * vh * 0.009]);
+  }
+  const arcD = `M ${arc.map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join(" L ")}`;
+  const crest = `${arcD} L ${vw} ${vh} L 0 ${vh} Z`;
+  // The distant land drifts slowly against the travel — cheap parallax,
+  // wrapped by drawing everything twice.
+  const par = -((camZ * 12) % vw);
+  // THE BEATEN PATH (Dan, 2026-08-20, his Candy Crush capture): the road is
+  // a broad VALLEY FLOOR sunken below the banks — paler than the ground,
+  // with a dark lip where the banks drop into it; the black stop-to-stop
+  // trail (PathSVG) snakes inside it. Built by sampling the road's screen
+  // line from the camera's feet to the crest; width narrows with depth a
+  // touch faster than the discs so the far end pinches like the reference.
+  const floorFill = `color-mix(in oklch, ${ground} 26%, ${PAPER})`;
+  const lPts: string[] = [];
+  const rPts: string[] = [];
+  for (let rel = 0; rel <= FULL_AHEAD + 0.001; rel += 0.125) {
+    const p = project(pathXAt(camZ + rel), rel, camZ, vw, vh);
+    if (!p) continue;
+    // Bead-swell (Dan's capture, round 7): the path widens softly around
+    // each station's pad, like beads on a string.
+    const zAbs = Math.max(0, Math.min(N_STOPS - 1, camZ + rel));
+    const dStop = Math.abs(zAbs - Math.round(zAbs));
+    const swell = 1 + 0.2 * Math.exp(-(dStop * dStop) / 0.045);
+    const hw = Math.max(vw * 0.11, vw * 0.34 * Math.pow(p.scale, 1.6)) * swell;
+    lPts.push(`${(p.px - hw).toFixed(1)} ${p.py.toFixed(1)}`);
+    rPts.unshift(`${(p.px + hw).toFixed(1)} ${p.py.toFixed(1)}`);
+  }
+  const corridor = lPts.length > 1 ? `M ${lPts[0]} L ${lPts.slice(1).join(" L ")} L ${rPts.join(" L ")} Z` : "";
   return (
     <svg width={vw} height={vh} className="absolute inset-0" style={{ zIndex: 0, pointerEvents: "none" }} aria-hidden>
       <defs>
@@ -118,10 +182,29 @@ function PerspectiveBg({
           <stop offset="100%" stopColor={ground} />
         </radialGradient>
       </defs>
-      {/* Sky */}
-      <rect x={0} y={0} width={vw} height={horizY + 1} fill="url(#m3dSky)" />
+      {/* Sky — down to the true sky line */}
+      <rect x={0} y={0} width={vw} height={skyY + 1} fill="url(#m3dSky)" />
+      {/* The land BEYOND the edge — the NEXT region's ground, hazy with
+          distance, wearing its own far-off dressing on a slow parallax */}
+      <rect x={0} y={skyY} width={vw} height={horizY + crestBulge + vh * 0.012 - skyY} fill={beyond} opacity={0.8} />
+      <rect x={0} y={skyY} width={vw} height={horizY + crestBulge + vh * 0.012 - skyY} fill={sky.hor} opacity={0.35} />
+      {FAR_PROPS.map((p, i) =>
+        [0, vw].map((wrap) => (
+          <text
+            key={`fp${i}-${wrap}`}
+            x={p.x * vw + par + wrap}
+            y={skyY + (horizY - crestBulge - skyY) * p.dy}
+            fontSize={9 + p.dy * 13}
+            opacity={0.85 * (1 - 0.45 * sky.night)}
+          >
+            {p.e}
+          </text>
+        )),
+      )}
+      {/* water pooled at the terrace's foot */}
+      <path d={arcD} fill="none" stroke={sky.mid} strokeOpacity={0.4} strokeWidth={Math.max(8, vh * 0.022)} />
       {/* Stars */}
-      {sky.night > 0 && STARS.map((st, i) => <circle key={i} cx={vw * st.x} cy={horizY * st.y} r={st.r} fill="white" opacity={0.85 * sky.night} />)}
+      {sky.night > 0 && STARS.map((st, i) => <circle key={i} cx={vw * st.x} cy={skyY * st.y} r={st.r} fill="white" opacity={0.85 * sky.night} />)}
       {/* Sun / moon */}
       <ellipse cx={sunX} cy={sunY} rx={sunR * 2.8} ry={sunR * 2.8} fill="url(#m3dSunGlow)" />
       {sky.isDay ? (
@@ -135,20 +218,36 @@ function PerspectiveBg({
       {/* Clouds */}
       {CLOUDS.map((c, i) => (
         <g key={i} opacity={sky.isDay ? 0.78 : 0.28}>
-          <ellipse cx={vw * c.cx - sunR * 0.5} cy={horizY * c.cy} rx={vw * c.rx} ry={horizY * c.ry} fill="rgba(255,255,255,0.9)" />
-          <ellipse cx={vw * c.cx - vw * c.rx * 0.25} cy={horizY * c.cy - horizY * c.ry * 0.55} rx={vw * c.rx * 0.5} ry={horizY * c.ry * 0.65} fill="rgba(255,255,255,0.85)" />
-          <ellipse cx={vw * c.cx + vw * c.rx * 0.2} cy={horizY * c.cy - horizY * c.ry * 0.45} rx={vw * c.rx * 0.38} ry={horizY * c.ry * 0.55} fill="rgba(255,255,255,0.8)" />
+          <ellipse cx={vw * c.cx - sunR * 0.5} cy={skyY * c.cy} rx={vw * c.rx} ry={skyY * c.ry} fill="rgba(255,255,255,0.9)" />
+          <ellipse cx={vw * c.cx - vw * c.rx * 0.25} cy={skyY * c.cy - skyY * c.ry * 0.55} rx={vw * c.rx * 0.5} ry={skyY * c.ry * 0.65} fill="rgba(255,255,255,0.85)" />
+          <ellipse cx={vw * c.cx + vw * c.rx * 0.2} cy={skyY * c.cy - skyY * c.ry * 0.45} rx={vw * c.rx * 0.38} ry={skyY * c.ry * 0.55} fill="rgba(255,255,255,0.8)" />
         </g>
       ))}
-      {/* Ground: the region's band colour, paler towards the vanishing point */}
-      <rect x={0} y={horizY} width={vw} height={vh - horizY} fill={ground} />
-      <rect x={0} y={horizY} width={vw} height={vh - horizY} fill="url(#m3dGround)" opacity={0.4} />
-      {/* World-accent wash */}
-      <rect x={0} y={horizY} width={vw} height={vh - horizY} fill={fluo} opacity={0.16} />
+      {/* Ground: from the ROUNDED CREST down — the region's band colour,
+          paler towards the shoulder */}
+      <path d={crest} fill={ground} />
+      <path d={crest} fill="url(#m3dGround)" opacity={0.4} />
+      {/* World-accent wash — the BANKS wear the region's colour strongly, so
+          the pale floor below reads as cut into them (the wash is painted
+          before the corridor and never reaches it). 0.42: Dan, round 7 —
+          the capture's banks are saturated against the pale path. */}
+      <path d={crest} fill={fluo} opacity={0.42} />
+      {/* The sunken beaten path: pale floor, then a wide soft stroke that
+          darkens both the floor's edge and the bank's lip (recessed), then a
+          crisp line where the bank breaks off. */}
+      {corridor && (
+        <>
+          <path d={corridor} fill={floorFill} />
+          <path d={corridor} fill="none" stroke="rgba(0,0,0,0.2)" strokeWidth={12} strokeLinejoin="round" />
+          <path d={corridor} fill="none" stroke="rgba(0,0,0,0.32)" strokeWidth={2.5} strokeLinejoin="round" />
+        </>
+      )}
       {/* Night falls on the ground too */}
-      {sky.night > 0 && <rect x={0} y={horizY} width={vw} height={vh - horizY} fill={sky.top} opacity={0.42 * sky.night} />}
-      {/* Horizon line in the world's accent */}
-      <line x1={0} y1={horizY} x2={vw} y2={horizY} stroke={fluo} strokeWidth="2.5" />
+      {sky.night > 0 && <path d={crest} fill={sky.top} opacity={0.42 * sky.night} />}
+      {/* The terrace lip: a light rim along the edge, a soft shadow under it
+          — the drawn cliff-edge that explains what the rise hides behind */}
+      <path d={arcD} fill="none" stroke={`color-mix(in oklch, ${ground} 30%, white)`} strokeWidth={4} strokeOpacity={0.9} />
+      <path d={arcD} fill="none" stroke="rgba(0,0,0,0.16)" strokeWidth={1.5} transform="translate(0 4)" />
       {/* Haze */}
       <rect x={0} y={horizY - 24} width={vw} height={48} fill="url(#m3dFog)" />
     </svg>
@@ -308,7 +407,7 @@ function PropSprite({ item, scale, scaleY }: { item: RProp; scale: number; scale
       <span className="block" style={{ fontSize: fs, lineHeight: 1, filter: `drop-shadow(0 ${Math.max(2, fs * 0.07)}px ${Math.max(3, fs * 0.13)}px rgba(0,0,0,0.42))` }}>
         {item.emoji}
       </span>
-      {item.label && scale > 0.27 && (
+      {item.label && scale > 0.8 && ( // curved world: only the very nearest props teach; stop labels own the field
         <div
           lang="fr"
           className="whitespace-nowrap text-center font-extrabold"
@@ -414,7 +513,11 @@ export default function HomeMap3D({
   const flagIdx = SIOS.findIndex((s) => s.id === CLASS_FLAG_SIO);
   const travelledTo = activeIdx >= 0 ? activeIdx : SIOS.length;
   const pavedTo = Math.max(travelledTo, flagIdx);
-  const homeZ = Math.max(0, activeIdx);
+  // Land ~one stop short of the current one: under the curved-world camera
+  // the eye line sits below the box (CAMERA_Y > 1), so a stop AT camZ is off
+  // screen — backing off ~0.95 puts the current stop big and fully visible in
+  // the lower third (Dan, 2026-08-20 camera).
+  const homeZ = Math.max(0, activeIdx) - 0.8;
 
   // The camera — starts ON the current stop (no landing flash).
   const [camZ, setCamZ] = useState(homeZ);
@@ -495,11 +598,13 @@ export default function HomeMap3D({
   };
   const recentre = () => travelTo(homeZ);
 
-  // The world the camera is in → accent + ground.
+  // The world the camera is in → accent + ground; the land visible beyond
+  // the terrace edge is the NEXT world's ground (the last world sees itself).
   const worldIdx = Math.min(4, Math.max(0, Math.floor(camZ / 10)));
   const region = REGIONS[worldIdx];
   const fluo = `var(--region-${region.key})`;
   const ground = `var(--region-${region.key}-band)`;
+  const beyond = `var(--region-${REGIONS[Math.min(4, worldIdx + 1)].key}-band)`;
 
   // Project the stops; the road runs between consecutive visible ones.
   const projected = useMemo(() => {
@@ -519,15 +624,34 @@ export default function HomeMap3D({
   segments.sort((a, b) => a.sc - b.sc);
   const visibleStops = projected.filter((p): p is NonNullable<typeof p> => p !== null).sort((a, b) => b.t - a.t);
 
+  // LAT_SPREAD (Dan, 2026-08-20, high-oblique camera): the scene's lateral
+  // offsets were authored for the narrow first-person lens — under the big
+  // near-constant discs they parked props ON the stops. Spread the roadside
+  // sideways as one knob. Round 6 (Dan: "the items at the side should stay
+  // clear from the roads ... framing that stretch of road"): whatever the
+  // authored offset, a prop never comes nearer than the beaten path's edge
+  // plus a verge — the corridor's world half-width is read back from the
+  // same numbers PerspectiveBg draws it with.
+  const LAT_SPREAD = 1.9;
+  const VERGE = 0.55; // world units of clear ground between road edge and prop (covers the bead-swell)
+  const placeAt = (z: number, side: 1 | -1, lat: number): Projected | null => {
+    if (vw === 0) return null;
+    const centre = project(pathXAt(z), z - camZ, camZ, vw, vh);
+    if (!centre) return null;
+    const hwWorld = Math.max(vw * 0.11, vw * 0.34 * Math.pow(centre.scale, 1.6)) / (vw * 0.4 * centre.scale);
+    const off = Math.max(lat * LAT_SPREAD, hwWorld + VERGE);
+    return project(pathXAt(z) + side * off, z - camZ, camZ, vw, vh);
+  };
+
   // World gate signs (one per region, just before its first stop) + the arch + the line.
   // World gate signs stand at the verge just before each world's first stop,
   // on the side the road bends away from (so they stay in view), never
-  // behind the camera.
+  // behind the camera. They obey the same stay-clear rule as the props.
   const gates = vw === 0 ? [] : REGIONS.map((r) => {
     const z = r.unit * 10 - 0.6;
     if (z - camZ < -0.2) return null;
-    const side = pathXAt(z + 1.5) - pathXAt(z) > 0 ? -1 : 1;
-    const p = project(pathXAt(z) + side * 0.42, z - camZ, camZ, vw, vh);
+    const side: 1 | -1 = pathXAt(z + 1.5) - pathXAt(z) > 0 ? -1 : 1;
+    const p = placeAt(z, side, 0.25);
     return p ? { r, ...p } : null;
   });
   const archP = vw === 0 ? null : (() => {
@@ -539,8 +663,6 @@ export default function HomeMap3D({
     return rel > 0 && rel < MAX_AHEAD ? project(pathXAt(49.99), rel, camZ, vw, vh) : null;
   })();
 
-  const placeAt = (z: number, side: 1 | -1, lat: number): Projected | null => (vw === 0 ? null : project(pathXAt(z) + side * lat, z - camZ, camZ, vw, vh));
-
   return (
     <div className="home-map home-map-3d" style={{ fontFamily: "var(--font-body-stack)" }}>
       <div className="relative">
@@ -549,7 +671,9 @@ export default function HomeMap3D({
           tabIndex={0}
           aria-label="Course map, 3D — scroll to travel the road"
           className="home-map3d-box relative h-[520px] overflow-y-auto overflow-x-hidden rounded-2xl border md:h-[640px]"
-          style={{ maxHeight: "68vh", borderColor: "var(--cahier-line-strong)", background: PAPER, boxShadow: "var(--shadow-card)" }}
+          // touchAction pan-y: travel is the ONLY gesture — no pinch zoom in the
+          // 3D view (Dan, 2026-08-20: "zooming in or out should not be allowed")
+          style={{ maxHeight: "68vh", borderColor: "var(--cahier-line-strong)", background: PAPER, boxShadow: "var(--shadow-card)", touchAction: "pan-y" }}
           onFocusCapture={(e) => {
             // Keyboard focus on a stop travels the camera to it.
             const t = (e.target as HTMLElement).closest<HTMLElement>("[data-cam]");
@@ -561,7 +685,7 @@ export default function HomeMap3D({
             <div className="home-map3d-stage sticky top-0 w-full" style={{ height: vh }}>
               {vw > 0 && vh > 0 && (
                 <>
-                  <PerspectiveBg fluo={fluo} ground={ground} vw={vw} vh={vh} camZ={camZ} hour={hour} />
+                  <PerspectiveBg fluo={fluo} ground={ground} beyond={beyond} vw={vw} vh={vh} camZ={camZ} hour={hour} />
                   <PathSVG segments={segments} vw={vw} vh={vh} travelledTo={travelledTo} pavedTo={pavedTo} accent={accent ?? "var(--cahier-accent)"} />
 
                   {/* Trees & bushes */}
@@ -572,7 +696,7 @@ export default function HomeMap3D({
                     const cW = Math.round(item.size * p.scale * (item.type === "bush" ? 1.6 : 1));
                     const fullH = Math.round(item.size * p.scale * (item.type === "pine" ? 1.75 : item.type === "bush" ? 0.65 : 1.25));
                     return (
-                      <div key={item.id} aria-hidden className="absolute" style={{ left: p.px - cW / 2, top: p.py - fullH, zIndex: zOrder(p.scale) - 2 }}>
+                      <div key={item.id} aria-hidden className="absolute" style={{ left: p.px - cW / 2, top: p.py - fullH * p.reveal, zIndex: zOrder(p.scale) - 2, ...clipRise(p.reveal) }}>
                         <NatureSprite type={item.type} size={item.size} scale={p.scale} scaleY={p.scaleY} />
                       </div>
                     );
@@ -587,7 +711,7 @@ export default function HomeMap3D({
                       item.kind === "B" ? Math.round(item.h * p.scale + item.w * 0.16 * p.scale + 6 * p.scale * p.scaleY + 4) : Math.round(item.size * p.scale * 1.05 + 6);
                     const frontW = item.kind === "B" ? Math.round(item.w * p.scale) : Math.round(item.size * p.scale * 0.9);
                     return (
-                      <div key={item.id} aria-hidden className="absolute" style={{ left: p.px - frontW / 2, top: p.py - approxH, zIndex: zOrder(p.scale) - 1 }}>
+                      <div key={item.id} aria-hidden className="absolute" style={{ left: p.px - frontW / 2, top: p.py - approxH * p.reveal, zIndex: zOrder(p.scale) - 1, ...clipRise(p.reveal) }}>
                         {item.kind === "B" ? <BuildingSprite item={item} scale={p.scale} scaleY={p.scaleY} /> : <PropSprite item={item} scale={p.scale} scaleY={p.scaleY} />}
                       </div>
                     );
@@ -596,12 +720,12 @@ export default function HomeMap3D({
                   {/* World gate signs: the region icon over a place-name pill (tap = open the unit) */}
                   {gates.map((g) => {
                     if (!g) return null;
-                    const { r, px, py, scale } = g;
+                    const { r, px, py, scale, reveal } = g;
                     const icon = Math.max(18, Math.round(96 * scale));
                     const inUnit = SIOS.filter((s) => s.unit === r.unit);
                     const done = inUnit.filter((s) => isSioDone(s.id, progress)).length;
                     return (
-                      <div key={`gate${r.unit}`} className="absolute flex flex-col items-center" style={{ left: px, top: py, transform: "translate(-50%, -100%)", zIndex: zOrder(scale) + 1 }}>
+                      <div key={`gate${r.unit}`} className="absolute flex flex-col items-center" style={{ left: px, top: py, transform: `translate(-50%, -${(reveal * 100).toFixed(1)}%)`, zIndex: zOrder(scale) + 1, ...clipRise(reveal) }}>
                         <button
                           type="button"
                           onClick={() => onOpenUnit?.(r.unit)}
@@ -634,7 +758,7 @@ export default function HomeMap3D({
                   })}
 
                   {/* Stops, far → near */}
-                  {visibleStops.map(({ i, st, px, py, scale, scaleY, size: sz }) => {
+                  {visibleStops.map(({ i, st, px, py, scale, scaleY, size: sz, reveal }) => {
                     const done = isSioDone(st.id, progress);
                     const active = st.id === activeId;
                     const kind = sioKind(st.id);
@@ -644,7 +768,9 @@ export default function HomeMap3D({
                     const flag = st.id === CLASS_FLAG_SIO;
                     const nodeH = Math.round(sz * scaleY);
                     const depthH = Math.max(2, Math.round(sz * 0.18 * scaleY));
-                    const baseW = Math.round(sz * 1.14);
+                    // The pad is a circular SPOT ON THE ROAD, wider than the
+                    // ball riding it (Dan's capture, 2026-08-20 round 4).
+                    const baseW = Math.round(sz * 1.42);
                     const baseH = Math.round(baseW * scaleY * 0.38);
                     const totalH = nodeH + depthH;
                     const rim = ahead && !active ? `color-mix(in oklch, ${colour} 45%, var(--cahier-kraft-strong))` : `color-mix(in oklch, ${colour} 78%, black)`;
@@ -654,8 +780,10 @@ export default function HomeMap3D({
                       <div
                         key={st.id}
                         className="absolute flex flex-col items-center"
-                        // the current stop always paints on top — it is the thing to find
-                        style={{ left: px - baseW / 2, top: py - totalH / 2, width: baseW, zIndex: active ? 950 : zOrder(scale) }}
+                        // the current stop always paints on top — it is the thing to find.
+                        // Rising over the planet's shoulder the disc's foot stays pinned to
+                        // the horizon (reveal < 1); standing, it is centred on its road point.
+                        style={{ left: px - baseW / 2, top: py - totalH * reveal * (1 - reveal / 2), width: baseW, zIndex: active ? 950 : zOrder(scale), ...clipRise(reveal) }}
                       >
                         {/* 🧑‍🎓 bobs over the current stop; 🚩 marks the class stop */}
                         {active && (
@@ -693,13 +821,14 @@ export default function HomeMap3D({
                               }}
                             />
                           )}
-                          {/* kraft base disc */}
+                          {/* the road pad — a darker circular spot of the path's own
+                              ground, not a kraft plinth (Dan's capture, round 4) */}
                           <span
                             aria-hidden
                             className="absolute inset-x-0 bottom-0 rounded-[50%]"
                             style={{
                               height: Math.max(4, baseH + depthH * 0.7),
-                              background: "radial-gradient(ellipse at 50% 30%, var(--cahier-kraft) 0%, var(--cahier-kraft-strong) 60%, color-mix(in oklch, var(--cahier-kraft-strong) 70%, black) 100%)",
+                              background: `radial-gradient(ellipse at 50% 35%, color-mix(in oklch, ${ground} 72%, black) 0%, color-mix(in oklch, ${ground} 55%, black) 78%, color-mix(in oklch, ${ground} 40%, black) 100%)`,
                               boxShadow: `0 ${depthH * 0.5}px ${depthH * 1.5}px rgba(0,0,0,0.22)`,
                             }}
                           />
@@ -739,7 +868,7 @@ export default function HomeMap3D({
                             />
                           )}
                         </button>
-                        {nodeH > 34 && ( // names only near the camera — the far field stays air (Dan, 2026-08-19)
+                        {nodeH > 48 && reveal === 1 && ( // names only for the two or three nearest — the round-5 chain is dense, and labels mid-chain shingled over the next disc
                           <span
                             aria-hidden
                             className="pointer-events-none mt-0.5 whitespace-nowrap rounded px-1 font-bold leading-tight"
@@ -758,7 +887,7 @@ export default function HomeMap3D({
                     const bh = Math.round(52 * archP.scale);
                     const ph = Math.round(160 * archP.scale);
                     const pw = Math.max(4, Math.round(14 * archP.scale));
-                    const pillar: CSSProperties = { position: "absolute", top: archP.py - ph, width: pw, height: ph, background: "linear-gradient(to right, var(--cahier-la), color-mix(in oklch, var(--cahier-la) 70%, white), var(--cahier-la))", borderRadius: Math.round(3 * archP.scale), pointerEvents: "none" };
+                    const pillar: CSSProperties = { position: "absolute", top: archP.py - ph * archP.reveal, width: pw, height: ph, background: "linear-gradient(to right, var(--cahier-la), color-mix(in oklch, var(--cahier-la) 70%, white), var(--cahier-la))", borderRadius: Math.round(3 * archP.scale), pointerEvents: "none", ...clipRise(archP.reveal) };
                     return (
                       <>
                         <div aria-hidden style={{ ...pillar, left: archP.px - bw * 0.52 - pw / 2, zIndex: zOrder(archP.scale) + 5 }} />
@@ -771,7 +900,8 @@ export default function HomeMap3D({
                           style={{
                             zIndex: zOrder(archP.scale) + 6,
                             left: archP.px - bw / 2,
-                            top: archP.py - Math.round(140 * archP.scale),
+                            top: archP.py - Math.round(140 * archP.scale) * archP.reveal,
+                            ...clipRise(archP.reveal),
                             width: bw,
                             height: bh,
                             background: "linear-gradient(135deg, var(--cahier-la) 0%, color-mix(in oklch, var(--cahier-la) 75%, white) 50%, var(--cahier-la) 100%)",
@@ -797,7 +927,8 @@ export default function HomeMap3D({
                       style={{
                         zIndex: zOrder(finP.scale) + 6,
                         left: finP.px - Math.round(vw * 0.52 * finP.scale) / 2,
-                        top: finP.py - Math.round(46 * finP.scale),
+                        top: finP.py - Math.round(46 * finP.scale) * finP.reveal,
+                        ...clipRise(finP.reveal),
                         width: Math.round(vw * 0.52 * finP.scale),
                         height: Math.round(40 * finP.scale),
                         background: `repeating-linear-gradient(90deg, white 0px, white 10%, ${INK} 10%, ${INK} 20%)`,

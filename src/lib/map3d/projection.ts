@@ -12,17 +12,27 @@
  * eye line and slide off the bottom.
  */
 
-export const HORIZON_Y = 0.26; // horizon, as a fraction of the box height
-export const CAMERA_Y = 0.86; // the eye line (where relZ = 0 lands)
-// Dan, 2026-08-19: "scale up — not all 50 stops crammed together; greater
-// distance, more horizon". The Make's flat lens (FOCAL 3.8) with a 38-stop
-// draw distance projected most of the course into one band. A shorter focal
-// spreads the near stops apart and sinks the far ones fast, and a 14-stop
-// draw distance leaves the rest genuinely beyond the horizon — you travel
-// to reveal them.
-export const FOCAL = 1.8; // focal length in stop units — bigger = flatter perspective
-export const MAX_AHEAD = 7; // draw distance ahead (stops)
-export const MAX_BEHIND = 2; // draw distance behind (stops)
+// Dan, 2026-08-20, with the Candy Crush map as the reference: the view is a
+// HIGH OBLIQUE — a camera well above the road looking down-forward, so the
+// ground fills the frame, only a handful of big stops are on screen with fat
+// gaps between them, and size barely shrinks with distance. That is not a
+// pinhole eye-on-the-road (the Make's model, however tuned) — position and
+// size are DECOUPLED here: the row position saturates with depth (FOCAL),
+// while the disc size falls off on its own, much gentler curve
+// (SIZE_FALLOFF, floored at MIN_SCALE).
+export const HORIZON_Y = 0.46; // the road's CREST — stops vanish behind this rounded shoulder
+export const SKYLINE_Y = 0.2; // the true sky line, far above the crest — the distant vista lives between
+export const CAMERA_Y = 1.04; // the eye line sits just below the box's bottom
+export const FOCAL = 6.2; // view depth, in stop units — rows spread linearly across it
+// Dan's capture, round 5: the path is FULL of stations — five or six in the
+// chain at once, nearly touching, each farther ball tucked behind the nearer
+// one, sizes falling to about half by the far end. The rise over the curve
+// is only the chain's very tail.
+export const FULL_AHEAD = 6; // fully risen this close — nearer than this, a thing stands whole on the ground
+export const MAX_AHEAD = 7.5; // beyond this, still wholly below the planet's shoulder
+export const MAX_BEHIND = 1.5; // draw distance behind (stops)
+export const SIZE_FALLOFF = 0.17; // per-stop size decay — halves across the visible chain
+export const MIN_SCALE = 0.42; // a far stop is still nearly half a near one
 export const LOOK_AHEAD = 1.5; // heading = the road this far ahead
 
 /** Road snake: world X per stop, repeating every ten stops (one unit). */
@@ -60,6 +70,11 @@ export type Projected = {
   size: number;
   /** 0 at the camera → 1 at the horizon (or the bottom edge, behind). */
   t: number;
+  /** MINI-PLANET rise: how much of the thing has come up over the horizon.
+   *  1 = standing whole on the ground (csz ≤ FULL_AHEAD); 0 = still wholly
+   *  behind the curve (csz = MAX_AHEAD). The renderer shows the TOP
+   *  `reveal` fraction, its foot pinned to the horizon line. */
+  reveal: number;
   behind: boolean;
 };
 
@@ -85,24 +100,43 @@ export function project(worldX: number, relZ: number, camZ: number, vw: number, 
   const camY = vh * CAMERA_Y;
 
   if (csz >= 0) {
-    const t = csz / (csz + FOCAL);
-    if (t > 0.97) return null;
-    const sc = Math.max(0.08, FOCAL / (FOCAL + csz));
-    const scaleY = Math.max(0.12, 1 - t * 0.88);
+    // MINI-PLANET (Dan, 2026-08-20, round 3: "you are flying forward over
+    // the rounded surface of a mini-planet earth"). The road runs over the
+    // curve; row position follows a sine of the angular distance — crawls at
+    // the horizon, sweeps fast underfoot (sin' = cos).
+    const a = Math.min(1, csz / FULL_AHEAD);
+    const t = 0.97 * Math.sin((a * Math.PI) / 2);
+    // The rise: between MAX_AHEAD and FULL_AHEAD a thing is climbing over
+    // the shoulder — first its very tip AT the horizon line, then more of it
+    // as the world rolls under the camera, until it stands whole and starts
+    // down the screen. The renderer clips the hidden lower part.
+    const reveal = csz <= FULL_AHEAD ? 1 : Math.max(0, 1 - (csz - FULL_AHEAD) / (MAX_AHEAD - FULL_AHEAD));
+    // Disc size: its own gentle falloff — a far stop is still a disc.
+    const sc = Math.max(MIN_SCALE, 1 / (1 + csz * SIZE_FALLOFF));
+    // Round 8 (Dan, 2026-08-20: "the number stops are appearing as
+    // vertically front-facing stops, but that is not the case" in the
+    // capture): a station is an oblate button LYING ON THE ROAD, seen from
+    // above — constant foreshortening across the chain, the rim below the
+    // face supplies the thickness.
+    const scaleY = 0.72;
     const px = vw * 0.5 + csx * vw * 0.4 * sc;
     const py = camY - (camY - horizY) * t;
     if (!isFinite(px) || !isFinite(py)) return null;
-    return { px, py, scale: sc, scaleY, size: Math.max(14, Math.round(72 * sc)), t, behind: false };
+    // Dan, 2026-08-20 (his capture, round 4): "the numbered stations are
+    // small enough to be contained within a single circular spot on the
+    // road" — the road is ~2.5 stops wide, the stop rides IN it, never over
+    // its banks.
+    return { px, py, scale: sc, scaleY, size: Math.max(22, Math.round(vh * 0.15 * sc)), t, reveal, behind: false };
   }
   const d = -csz;
-  const t = d / (d + FOCAL * 0.75);
+  const t = d / (d + FOCAL * 0.4);
   if (t > 0.97) return null;
-  const sc = Math.max(0.1, (1 - t * 0.78) * 0.86);
-  const scaleY = Math.max(0.12, 1 - t * 0.88);
+  const sc = Math.max(MIN_SCALE, (1 - t * 0.3));
+  const scaleY = 0.72;
   const px = vw * 0.5 + csx * vw * 0.4 * sc;
   const py = camY + (vh * 1.05 - camY) * t;
   if (!isFinite(px) || !isFinite(py)) return null;
-  return { px, py, scale: sc, scaleY, size: Math.max(12, Math.round(64 * sc)), t, behind: true };
+  return { px, py, scale: sc, scaleY, size: Math.max(20, Math.round(vh * 0.11 * sc)), t, reveal: 1, behind: true };
 }
 
 /** Paint order: far things first. */
