@@ -113,9 +113,12 @@ export function project(worldX: number, relZ: number, camZ: number, vw: number, 
     const reveal = csz <= FULL_AHEAD ? 1 : Math.max(0, 1 - (csz - FULL_AHEAD) / (MAX_AHEAD - FULL_AHEAD));
     // Disc size: its own gentle falloff — a far stop is still a disc.
     const sc = Math.max(MIN_SCALE, 1 / (1 + csz * SIZE_FALLOFF));
-    // The reference's stops stay ROUND at every distance — the hiding is the
-    // planet's job, not a squish. Only a whisper of foreshortening.
-    const scaleY = Math.max(0.85, 1 - t * 0.15);
+    // Round 8 (Dan, 2026-08-20: "the number stops are appearing as
+    // vertically front-facing stops, but that is not the case" in the
+    // capture): a station is an oblate button LYING ON THE ROAD, seen from
+    // above — constant foreshortening across the chain, the rim below the
+    // face supplies the thickness.
+    const scaleY = 0.72;
     const px = vw * 0.5 + csx * vw * 0.4 * sc;
     const py = camY - (camY - horizY) * t;
     if (!isFinite(px) || !isFinite(py)) return null;
@@ -129,7 +132,7 @@ export function project(worldX: number, relZ: number, camZ: number, vw: number, 
   const t = d / (d + FOCAL * 0.4);
   if (t > 0.97) return null;
   const sc = Math.max(MIN_SCALE, (1 - t * 0.3));
-  const scaleY = Math.max(0.7, 1 - t * 0.2);
+  const scaleY = 0.72;
   const px = vw * 0.5 + csx * vw * 0.4 * sc;
   const py = camY + (vh * 1.05 - camY) * t;
   if (!isFinite(px) || !isFinite(py)) return null;
