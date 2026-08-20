@@ -29,6 +29,7 @@ Only ONE agent edits this file at a time; say so in your commit.
 | 26 | **/moi + teacher**: outcome rows, `HeatStrip` on 4 pages, thin /moi hero + 4 segments, teacher Class now (16 tiles, stuck detection, 30 s repoll), outcome × student matrix, one pooled fetch, Compute gone | verify26 (61) |
 | bugs | deck gate/redirect, `NoDeck`, DeckContent on tokens, `/sio/[id]` → deep link, DEPLOY.md name, ONE "weak", ONE shuffle, D6/D7/D9/D10/D11, leaderboard identity, D4 sync diagnostic | verify27-bugs (81) |
 | hero | **Home hero = a horizontal report card** (19 Aug): the two hairline bars gone ("no status bar"), chip rail gone, « Bienvenue sur FluOlinGo » heading back, counters now one row of value-over-label marks — level · streak · course · XP · lessons, + gems once earned; actions round, dropping below the marks on a phone | verify25 (19) |
+| menu/nav | **HELP popup → Menu** (20 tiles, 4×5 phone / 5×4 tablet, no prose — /guide keeps the long form); registry regrouped to **six** families in Dan's 19 Aug order **Goals · Practice · Play · Review · Skills · User** — Goals now means the 50 objectives, the five pre-lesson activities became Practice | verify19c (10) |
 | Track D | help-ladder spec + state machine + rule hints + `?`/WHY in every drill, evidence tagged, hinted items → ReVue, open-production feedback (`/api/feedback`, rule fallback), 22 eval cases | verify28-trackd (165) |
 
 Shipped ≈ 147 of ~150 in-scope units.
@@ -61,6 +62,18 @@ Dan's email; Firestore service-account key — being retired.
 5. Firestore key: being retired — not a task. `/teacher`: gated to Dan's email — closed.
 
 ## Decision Dan made on 19 Aug (do not re-open)
+
+7. **Menu, not HELP.** The popup is a grid of the twenty activities and nothing
+   else. **Six families**, order `Goals · Practice · SvPlay · Review · Skills ·
+   User` (Dan: "2a → 2b → 2e → 2c → 2d → 2f", and "Pre-Lesson = Goals").
+   GOALS = the fifty objectives by unit then goal; the five that used to sit
+   under it (SpecuLearn, xPlain, EtuDice, 4Mémoire, iComplete) are PRACTICE.
+   `activitiesInFamilyOrder()` is the single reader — do not hand-keep a
+   second list.
+   STILL OPEN: the **side rail** itself. Dan asked for the six groups "at the
+   side" with their activities under them; the app has only a top flap rail
+   and a 4-slot bottom bar today, and which of those the side rail replaces
+   was not settled. Nothing built yet.
 
 6. **Home hero = a horizontal report card.** Dan, shown Design's "FluOlinGo Home
    standalone" twice: *"the dashboard that wouldn't have a status bar, that is
