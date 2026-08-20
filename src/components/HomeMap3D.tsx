@@ -50,7 +50,7 @@ import { CHAPTERS, CLASS_FLAG_SIO } from "@/content/chapters";
 import { sioKind, sioSecondary, KIND_LABEL } from "@/content/sioKinds";
 import { isSioDone, type Progress } from "@/lib/progress";
 import { KIND_COLOR, REGIONS, ARENA_PLACE, KindLegend } from "@/components/HomeMap";
-import { HORIZON_Y, SKYLINE_Y, MAX_AHEAD, FULL_AHEAD, getWorldX, pathXAt, cameraForward, project, zOrder, type Projected } from "@/lib/map3d/projection";
+import { HORIZON_Y, SKYLINE_Y, MAX_AHEAD, FULL_AHEAD, N_STOPS, getWorldX, pathXAt, cameraForward, project, zOrder, type Projected } from "@/lib/map3d/projection";
 import { getSkyColors, sunPosition, clockHour, CLOUDS, STARS } from "@/lib/map3d/sky";
 import { ROADSIDE_ITEMS, NATURE_ITEMS, type RBuild, type RProp, type NatureType } from "@/lib/map3d/scene";
 
@@ -82,9 +82,24 @@ const clipRise = (reveal: number): CSSProperties =>
   reveal < 1 ? { clipPath: `inset(-200% -100% ${((1 - reveal) * 100).toFixed(1)}% -100%)` } : {};
 
 /* ── Sky + ground (SVG) ─────────────────────────────────────────────────── */
+/** The far land's dressing (Dan's capture, round 7: the space beyond the
+ *  edge is a populated distant scene, not a haze band). Fixed spots on the
+ *  far terrace, riding a slow parallax; drawn twice for the wrap. */
+const FAR_PROPS = [
+  { x: 0.06, dy: 0.82, e: "🌳" },
+  { x: 0.18, dy: 0.55, e: "🏡" },
+  { x: 0.3, dy: 0.9, e: "🌲" },
+  { x: 0.44, dy: 0.6, e: "⛲" },
+  { x: 0.58, dy: 0.85, e: "🌳" },
+  { x: 0.72, dy: 0.5, e: "🌾" },
+  { x: 0.86, dy: 0.78, e: "🌲" },
+  { x: 0.96, dy: 0.6, e: "🌳" },
+];
+
 function PerspectiveBg({
   fluo,
   ground,
+  beyond,
   vw,
   vh,
   camZ,
@@ -92,6 +107,8 @@ function PerspectiveBg({
 }: {
   fluo: string;
   ground: string;
+  /** The NEXT region's band — the land visible beyond the terrace edge. */
+  beyond: string;
   vw: number;
   vh: number;
   camZ: number;
@@ -108,10 +125,20 @@ function PerspectiveBg({
   const sunX = vw * sun.x;
   const sunY = skyY * sun.y;
   const sunR = Math.max(8, vw * 0.024);
-  // The crest as a path: an arc bulging up at the centre (leaning with the
-  // bend), the ground filling from it to the bottom — the reference's hill
-  // shoulder that upcoming stops appear from behind.
-  const crest = `M 0 ${horizY + crestBulge} Q ${vpX} ${horizY - crestBulge} ${vw} ${horizY + crestBulge} L ${vw} ${vh} L 0 ${vh} Z`;
+  // The plateau's EDGE (Dan's capture, round 7): the old smooth arc becomes
+  // a sampled, gently SCALLOPED terrace lip — an organic edge the road runs
+  // over, with a light rim on top and the next land beyond it.
+  const arc: [number, number][] = [];
+  for (let i = 0; i <= 24; i++) {
+    const t = i / 24;
+    const yA = (1 - t) * (1 - t) * (horizY + crestBulge) + 2 * t * (1 - t) * (horizY - crestBulge) + t * t * (horizY + crestBulge);
+    arc.push([vw * t, yA + Math.abs(Math.sin(t * Math.PI * 9)) * vh * 0.009]);
+  }
+  const arcD = `M ${arc.map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join(" L ")}`;
+  const crest = `${arcD} L ${vw} ${vh} L 0 ${vh} Z`;
+  // The distant land drifts slowly against the travel — cheap parallax,
+  // wrapped by drawing everything twice.
+  const par = -((camZ * 12) % vw);
   // THE BEATEN PATH (Dan, 2026-08-20, his Candy Crush capture): the road is
   // a broad VALLEY FLOOR sunken below the banks — paler than the ground,
   // with a dark lip where the banks drop into it; the black stop-to-stop
@@ -121,10 +148,15 @@ function PerspectiveBg({
   const floorFill = `color-mix(in oklch, ${ground} 26%, ${PAPER})`;
   const lPts: string[] = [];
   const rPts: string[] = [];
-  for (let rel = 0; rel <= FULL_AHEAD + 0.001; rel += 0.25) {
+  for (let rel = 0; rel <= FULL_AHEAD + 0.001; rel += 0.125) {
     const p = project(pathXAt(camZ + rel), rel, camZ, vw, vh);
     if (!p) continue;
-    const hw = Math.max(vw * 0.11, vw * 0.34 * Math.pow(p.scale, 1.6));
+    // Bead-swell (Dan's capture, round 7): the path widens softly around
+    // each station's pad, like beads on a string.
+    const zAbs = Math.max(0, Math.min(N_STOPS - 1, camZ + rel));
+    const dStop = Math.abs(zAbs - Math.round(zAbs));
+    const swell = 1 + 0.2 * Math.exp(-(dStop * dStop) / 0.045);
+    const hw = Math.max(vw * 0.11, vw * 0.34 * Math.pow(p.scale, 1.6)) * swell;
     lPts.push(`${(p.px - hw).toFixed(1)} ${p.py.toFixed(1)}`);
     rPts.unshift(`${(p.px + hw).toFixed(1)} ${p.py.toFixed(1)}`);
   }
@@ -152,9 +184,25 @@ function PerspectiveBg({
       </defs>
       {/* Sky — down to the true sky line */}
       <rect x={0} y={0} width={vw} height={skyY + 1} fill="url(#m3dSky)" />
-      {/* The distant vista — the land beyond the crest, hazy with distance */}
-      <rect x={0} y={skyY} width={vw} height={horizY + crestBulge - skyY} fill={ground} opacity={0.45} />
-      <rect x={0} y={skyY} width={vw} height={horizY + crestBulge - skyY} fill={sky.hor} opacity={0.5} />
+      {/* The land BEYOND the edge — the NEXT region's ground, hazy with
+          distance, wearing its own far-off dressing on a slow parallax */}
+      <rect x={0} y={skyY} width={vw} height={horizY + crestBulge + vh * 0.012 - skyY} fill={beyond} opacity={0.8} />
+      <rect x={0} y={skyY} width={vw} height={horizY + crestBulge + vh * 0.012 - skyY} fill={sky.hor} opacity={0.35} />
+      {FAR_PROPS.map((p, i) =>
+        [0, vw].map((wrap) => (
+          <text
+            key={`fp${i}-${wrap}`}
+            x={p.x * vw + par + wrap}
+            y={skyY + (horizY - crestBulge - skyY) * p.dy}
+            fontSize={9 + p.dy * 13}
+            opacity={0.85 * (1 - 0.45 * sky.night)}
+          >
+            {p.e}
+          </text>
+        )),
+      )}
+      {/* water pooled at the terrace's foot */}
+      <path d={arcD} fill="none" stroke={sky.mid} strokeOpacity={0.4} strokeWidth={Math.max(8, vh * 0.022)} />
       {/* Stars */}
       {sky.night > 0 && STARS.map((st, i) => <circle key={i} cx={vw * st.x} cy={skyY * st.y} r={st.r} fill="white" opacity={0.85 * sky.night} />)}
       {/* Sun / moon */}
@@ -181,8 +229,9 @@ function PerspectiveBg({
       <path d={crest} fill="url(#m3dGround)" opacity={0.4} />
       {/* World-accent wash — the BANKS wear the region's colour strongly, so
           the pale floor below reads as cut into them (the wash is painted
-          before the corridor and never reaches it). */}
-      <path d={crest} fill={fluo} opacity={0.3} />
+          before the corridor and never reaches it). 0.42: Dan, round 7 —
+          the capture's banks are saturated against the pale path. */}
+      <path d={crest} fill={fluo} opacity={0.42} />
       {/* The sunken beaten path: pale floor, then a wide soft stroke that
           darkens both the floor's edge and the bank's lip (recessed), then a
           crisp line where the bank breaks off. */}
@@ -195,8 +244,10 @@ function PerspectiveBg({
       )}
       {/* Night falls on the ground too */}
       {sky.night > 0 && <path d={crest} fill={sky.top} opacity={0.42 * sky.night} />}
-      {/* Horizon line in the world's accent */}
-      <line x1={0} y1={horizY} x2={vw} y2={horizY} stroke={fluo} strokeWidth="2.5" />
+      {/* The terrace lip: a light rim along the edge, a soft shadow under it
+          — the drawn cliff-edge that explains what the rise hides behind */}
+      <path d={arcD} fill="none" stroke={`color-mix(in oklch, ${ground} 30%, white)`} strokeWidth={4} strokeOpacity={0.9} />
+      <path d={arcD} fill="none" stroke="rgba(0,0,0,0.16)" strokeWidth={1.5} transform="translate(0 4)" />
       {/* Haze */}
       <rect x={0} y={horizY - 24} width={vw} height={48} fill="url(#m3dFog)" />
     </svg>
@@ -547,11 +598,13 @@ export default function HomeMap3D({
   };
   const recentre = () => travelTo(homeZ);
 
-  // The world the camera is in → accent + ground.
+  // The world the camera is in → accent + ground; the land visible beyond
+  // the terrace edge is the NEXT world's ground (the last world sees itself).
   const worldIdx = Math.min(4, Math.max(0, Math.floor(camZ / 10)));
   const region = REGIONS[worldIdx];
   const fluo = `var(--region-${region.key})`;
   const ground = `var(--region-${region.key}-band)`;
+  const beyond = `var(--region-${REGIONS[Math.min(4, worldIdx + 1)].key}-band)`;
 
   // Project the stops; the road runs between consecutive visible ones.
   const projected = useMemo(() => {
@@ -580,7 +633,7 @@ export default function HomeMap3D({
   // plus a verge — the corridor's world half-width is read back from the
   // same numbers PerspectiveBg draws it with.
   const LAT_SPREAD = 1.9;
-  const VERGE = 0.45; // world units of clear ground between road edge and prop
+  const VERGE = 0.55; // world units of clear ground between road edge and prop (covers the bead-swell)
   const placeAt = (z: number, side: 1 | -1, lat: number): Projected | null => {
     if (vw === 0) return null;
     const centre = project(pathXAt(z), z - camZ, camZ, vw, vh);
@@ -632,7 +685,7 @@ export default function HomeMap3D({
             <div className="home-map3d-stage sticky top-0 w-full" style={{ height: vh }}>
               {vw > 0 && vh > 0 && (
                 <>
-                  <PerspectiveBg fluo={fluo} ground={ground} vw={vw} vh={vh} camZ={camZ} hour={hour} />
+                  <PerspectiveBg fluo={fluo} ground={ground} beyond={beyond} vw={vw} vh={vh} camZ={camZ} hour={hour} />
                   <PathSVG segments={segments} vw={vw} vh={vh} travelledTo={travelledTo} pavedTo={pavedTo} accent={accent ?? "var(--cahier-accent)"} />
 
                   {/* Trees & bushes */}
