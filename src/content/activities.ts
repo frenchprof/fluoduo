@@ -51,14 +51,20 @@ export type Family = { key: FamilyKey; name: string; emoji: string; href: string
  *     dice → cards → produce) are now PRACTICE. Same five, same order, a
  *     name that says what you do with them.
  *
- * Order is Dan's 2a–2f: Goals · Practice · Review · Skills · SvPlay · User.
+ * Order is Dan's, 19 Aug — 2a → 2b → 2e → 2c → 2d → 2f, with Pre-Lesson and
+ * Goals confirmed as the same tab:
+ *
+ *   Goals · Practice · SvPlay · Review · Skills · User
+ *
+ * Play sits third, straight after the practice you have just done; the two
+ * heavier families (Review, Skills) follow it.
  */
 export const FAMILIES: Family[] = [
   { key: "goals", name: "FluOlin Goals", emoji: "🎯", href: "/" },
   { key: "practice", name: "FluOlin Practice", emoji: "✏️", href: "/activities" },
+  { key: "svplay", name: "FluOlin SvPlay", emoji: "🎮", href: "/games/vocabularain" },
   { key: "review", name: "FluOlin Review", emoji: "🔁", href: "/reviser" },
   { key: "skills", name: "FluOlin Skills", emoji: "💪", href: "/conjugaison" },
-  { key: "svplay", name: "FluOlin SvPlay", emoji: "🎮", href: "/games/vocabularain" },
   { key: "user", name: "FluOlin User", emoji: "👤", href: "/moi" },
 ];
 
@@ -114,6 +120,12 @@ export const ACTIVITIES: Activity[] = [
   { key: "profil", name: "Profile", emoji: "👤", family: "user", href: "/profil", hue: "#8a5fd4", blurb: "Streak, XP, badges, colours." },
 ];
 
+/** Every activity, in FAMILIES order then authored order — what the Menu grid
+ *  and any grouped rail should iterate, so none of them can drift apart. */
+export function activitiesInFamilyOrder(): Activity[] {
+  return FAMILIES.flatMap((f) => ACTIVITIES.filter((a) => a.family === f.key));
+}
+
 /** Everything in one family, in its authored order. */
 export function activitiesIn(family: FamilyKey): Activity[] {
   return ACTIVITIES.filter((a) => a.family === family);
@@ -128,7 +140,7 @@ export function activity(key: string): Activity | undefined {
 /** Only the ones with a gallery/index page, in family order — this is the
  *  flap rail and the HELP grid, and now they cannot disagree. */
 export function navigableActivities(): Activity[] {
-  const order: FamilyKey[] = ["goals", "practice", "review", "skills", "svplay", "user"];
+  const order: FamilyKey[] = ["goals", "practice", "svplay", "review", "skills", "user"];
   return ACTIVITIES.filter((a) => a.href !== null).sort(
     (a, b) => order.indexOf(a.family) - order.indexOf(b.family),
   );

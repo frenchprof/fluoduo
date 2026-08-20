@@ -11,6 +11,9 @@
  * the answer). The long-form guide still exists at /guide for anyone who
  * wants it.
  *
+ * Tiles run in FAMILIES order — Goals, Practice, Play, Review, Skills, User —
+ * so the grid reads in the same order as the rail.
+ *
  * Exactly twenty tiles, because the registry holds exactly twenty activities
  * — four across by five down on a phone, five across by four down from sm.
  * No group headings: a tile carries its own emoji, name and family colour,
@@ -22,7 +25,7 @@
  * of its twenty would be the thing a learner notices.
  */
 import Link from "next/link";
-import { ACTIVITIES, FAMILIES } from "@/content/activities";
+import { activitiesInFamilyOrder, FAMILIES } from "@/content/activities";
 
 export default function MenuSplash({ onClose }: { onClose: () => void }) {
   const close = () => {
@@ -56,7 +59,7 @@ export default function MenuSplash({ onClose }: { onClose: () => void }) {
         </div>
 
         <ul className="grid grid-cols-4 gap-2 sm:grid-cols-5">
-          {ACTIVITIES.map((a) => {
+          {activitiesInFamilyOrder().map((a) => {
             const family = FAMILIES.find((f) => f.key === a.family);
             return (
               <li key={a.key}>
