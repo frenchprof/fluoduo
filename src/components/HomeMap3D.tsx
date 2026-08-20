@@ -57,10 +57,11 @@ import { ROADSIDE_ITEMS, NATURE_ITEMS, type RBuild, type RProp, type NatureType 
 /* ── Camera travel ─────────────────────────────────────────────────────────
    scrollTop → camZ: the box's scroll height is the road's length. */
 const SCROLL_PER_STOP = 170;
-// The stronger lens (FOCAL 1.8) made the STOPS breathe; the roadside set was
-// sized for the old flat lens and read huge against them — damp it as one
-// knob (Dan, 2026-08-19: the props must dress the road, not crowd it).
-const PROP_DAMP = 0.72; // px of scroll per stop — slower travel, more road per swipe (Dan, 2026-08-19: greater distance)
+// One knob over the roadside set's size against the stops. Dan, 2026-08-20
+// (mini-planet round): "there are big enough things on both sides that
+// occupy the screen" — full size, no damping; LAT_SPREAD keeps them off the
+// road itself.
+const PROP_DAMP = 1.0;
 const CAM_MIN = -1.5; // before SIO-001, the Welcome Village gate in view
 const CAM_MAX = 54.5; // the finishing line
 const ARCH_Z = 51; // the 🏁 GramMarathon arch
@@ -71,6 +72,14 @@ const MAX_SCROLL = scrollForCam(CAM_MAX);
 const INK = "var(--cahier-ink)";
 const PAPER = "var(--cahier-paper-raised)";
 const SHADOW = "rgba(0,0,0,0.13)";
+
+/** The mini-planet rise (projection.ts `reveal`): a thing coming over the
+ *  horizon shows only its TOP `reveal` fraction — the rest is still behind
+ *  the curve. Clip the bottom; leave the sides and top open so a flag or
+ *  label riding above the billboard peeks over first, the way a mast shows
+ *  before the ship. */
+const clipRise = (reveal: number): CSSProperties =>
+  reveal < 1 ? { clipPath: `inset(-200% -100% ${((1 - reveal) * 100).toFixed(1)}% -100%)` } : {};
 
 /* ── Sky + ground (SVG) ─────────────────────────────────────────────────── */
 function PerspectiveBg({
@@ -568,7 +577,9 @@ export default function HomeMap3D({
           tabIndex={0}
           aria-label="Course map, 3D — scroll to travel the road"
           className="home-map3d-box relative h-[520px] overflow-y-auto overflow-x-hidden rounded-2xl border md:h-[640px]"
-          style={{ maxHeight: "68vh", borderColor: "var(--cahier-line-strong)", background: PAPER, boxShadow: "var(--shadow-card)" }}
+          // touchAction pan-y: travel is the ONLY gesture — no pinch zoom in the
+          // 3D view (Dan, 2026-08-20: "zooming in or out should not be allowed")
+          style={{ maxHeight: "68vh", borderColor: "var(--cahier-line-strong)", background: PAPER, boxShadow: "var(--shadow-card)", touchAction: "pan-y" }}
           onFocusCapture={(e) => {
             // Keyboard focus on a stop travels the camera to it.
             const t = (e.target as HTMLElement).closest<HTMLElement>("[data-cam]");
@@ -591,7 +602,7 @@ export default function HomeMap3D({
                     const cW = Math.round(item.size * p.scale * (item.type === "bush" ? 1.6 : 1));
                     const fullH = Math.round(item.size * p.scale * (item.type === "pine" ? 1.75 : item.type === "bush" ? 0.65 : 1.25));
                     return (
-                      <div key={item.id} aria-hidden className="absolute" style={{ left: p.px - cW / 2, top: p.py - fullH, zIndex: zOrder(p.scale) - 2 }}>
+                      <div key={item.id} aria-hidden className="absolute" style={{ left: p.px - cW / 2, top: p.py - fullH * p.reveal, zIndex: zOrder(p.scale) - 2, ...clipRise(p.reveal) }}>
                         <NatureSprite type={item.type} size={item.size} scale={p.scale} scaleY={p.scaleY} />
                       </div>
                     );
@@ -606,7 +617,7 @@ export default function HomeMap3D({
                       item.kind === "B" ? Math.round(item.h * p.scale + item.w * 0.16 * p.scale + 6 * p.scale * p.scaleY + 4) : Math.round(item.size * p.scale * 1.05 + 6);
                     const frontW = item.kind === "B" ? Math.round(item.w * p.scale) : Math.round(item.size * p.scale * 0.9);
                     return (
-                      <div key={item.id} aria-hidden className="absolute" style={{ left: p.px - frontW / 2, top: p.py - approxH, zIndex: zOrder(p.scale) - 1 }}>
+                      <div key={item.id} aria-hidden className="absolute" style={{ left: p.px - frontW / 2, top: p.py - approxH * p.reveal, zIndex: zOrder(p.scale) - 1, ...clipRise(p.reveal) }}>
                         {item.kind === "B" ? <BuildingSprite item={item} scale={p.scale} scaleY={p.scaleY} /> : <PropSprite item={item} scale={p.scale} scaleY={p.scaleY} />}
                       </div>
                     );
@@ -615,12 +626,12 @@ export default function HomeMap3D({
                   {/* World gate signs: the region icon over a place-name pill (tap = open the unit) */}
                   {gates.map((g) => {
                     if (!g) return null;
-                    const { r, px, py, scale } = g;
+                    const { r, px, py, scale, reveal } = g;
                     const icon = Math.max(18, Math.round(96 * scale));
                     const inUnit = SIOS.filter((s) => s.unit === r.unit);
                     const done = inUnit.filter((s) => isSioDone(s.id, progress)).length;
                     return (
-                      <div key={`gate${r.unit}`} className="absolute flex flex-col items-center" style={{ left: px, top: py, transform: "translate(-50%, -100%)", zIndex: zOrder(scale) + 1 }}>
+                      <div key={`gate${r.unit}`} className="absolute flex flex-col items-center" style={{ left: px, top: py, transform: `translate(-50%, -${(reveal * 100).toFixed(1)}%)`, zIndex: zOrder(scale) + 1, ...clipRise(reveal) }}>
                         <button
                           type="button"
                           onClick={() => onOpenUnit?.(r.unit)}
@@ -653,7 +664,7 @@ export default function HomeMap3D({
                   })}
 
                   {/* Stops, far → near */}
-                  {visibleStops.map(({ i, st, px, py, scale, scaleY, size: sz }) => {
+                  {visibleStops.map(({ i, st, px, py, scale, scaleY, size: sz, reveal }) => {
                     const done = isSioDone(st.id, progress);
                     const active = st.id === activeId;
                     const kind = sioKind(st.id);
@@ -673,8 +684,10 @@ export default function HomeMap3D({
                       <div
                         key={st.id}
                         className="absolute flex flex-col items-center"
-                        // the current stop always paints on top — it is the thing to find
-                        style={{ left: px - baseW / 2, top: py - totalH / 2, width: baseW, zIndex: active ? 950 : zOrder(scale) }}
+                        // the current stop always paints on top — it is the thing to find.
+                        // Rising over the planet's shoulder the disc's foot stays pinned to
+                        // the horizon (reveal < 1); standing, it is centred on its road point.
+                        style={{ left: px - baseW / 2, top: py - totalH * reveal * (1 - reveal / 2), width: baseW, zIndex: active ? 950 : zOrder(scale), ...clipRise(reveal) }}
                       >
                         {/* 🧑‍🎓 bobs over the current stop; 🚩 marks the class stop */}
                         {active && (
@@ -758,7 +771,7 @@ export default function HomeMap3D({
                             />
                           )}
                         </button>
-                        {nodeH > 34 && ( // names only near the camera — the far field stays air (Dan, 2026-08-19)
+                        {nodeH > 34 && reveal === 1 && ( // names only near the camera, and never while still rising — the label would stretch the container and break the rise clip
                           <span
                             aria-hidden
                             className="pointer-events-none mt-0.5 whitespace-nowrap rounded px-1 font-bold leading-tight"
@@ -777,7 +790,7 @@ export default function HomeMap3D({
                     const bh = Math.round(52 * archP.scale);
                     const ph = Math.round(160 * archP.scale);
                     const pw = Math.max(4, Math.round(14 * archP.scale));
-                    const pillar: CSSProperties = { position: "absolute", top: archP.py - ph, width: pw, height: ph, background: "linear-gradient(to right, var(--cahier-la), color-mix(in oklch, var(--cahier-la) 70%, white), var(--cahier-la))", borderRadius: Math.round(3 * archP.scale), pointerEvents: "none" };
+                    const pillar: CSSProperties = { position: "absolute", top: archP.py - ph * archP.reveal, width: pw, height: ph, background: "linear-gradient(to right, var(--cahier-la), color-mix(in oklch, var(--cahier-la) 70%, white), var(--cahier-la))", borderRadius: Math.round(3 * archP.scale), pointerEvents: "none", ...clipRise(archP.reveal) };
                     return (
                       <>
                         <div aria-hidden style={{ ...pillar, left: archP.px - bw * 0.52 - pw / 2, zIndex: zOrder(archP.scale) + 5 }} />
@@ -790,7 +803,8 @@ export default function HomeMap3D({
                           style={{
                             zIndex: zOrder(archP.scale) + 6,
                             left: archP.px - bw / 2,
-                            top: archP.py - Math.round(140 * archP.scale),
+                            top: archP.py - Math.round(140 * archP.scale) * archP.reveal,
+                            ...clipRise(archP.reveal),
                             width: bw,
                             height: bh,
                             background: "linear-gradient(135deg, var(--cahier-la) 0%, color-mix(in oklch, var(--cahier-la) 75%, white) 50%, var(--cahier-la) 100%)",
@@ -816,7 +830,8 @@ export default function HomeMap3D({
                       style={{
                         zIndex: zOrder(finP.scale) + 6,
                         left: finP.px - Math.round(vw * 0.52 * finP.scale) / 2,
-                        top: finP.py - Math.round(46 * finP.scale),
+                        top: finP.py - Math.round(46 * finP.scale) * finP.reveal,
+                        ...clipRise(finP.reveal),
                         width: Math.round(vw * 0.52 * finP.scale),
                         height: Math.round(40 * finP.scale),
                         background: `repeating-linear-gradient(90deg, white 0px, white 10%, ${INK} 10%, ${INK} 20%)`,

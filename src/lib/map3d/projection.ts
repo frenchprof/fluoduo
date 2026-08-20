@@ -24,7 +24,8 @@ export const HORIZON_Y = 0.46; // the road's CREST — stops vanish behind this 
 export const SKYLINE_Y = 0.2; // the true sky line, far above the crest — the distant vista lives between
 export const CAMERA_Y = 1.04; // the eye line sits just below the box's bottom
 export const FOCAL = 6.2; // view depth, in stop units — rows spread linearly across it
-export const MAX_AHEAD = 4; // draw distance ahead (stops) — pop over the crest close-in
+export const FULL_AHEAD = 4; // fully risen this close — nearer than this, a thing stands whole on the ground
+export const MAX_AHEAD = 5.5; // beyond this, still wholly below the planet's shoulder
 export const MAX_BEHIND = 1.5; // draw distance behind (stops)
 export const SIZE_FALLOFF = 0.12; // per-stop size decay — Candy-Crush gentle
 export const MIN_SCALE = 0.45; // a far stop is still nearly half a near one
@@ -65,6 +66,11 @@ export type Projected = {
   size: number;
   /** 0 at the camera → 1 at the horizon (or the bottom edge, behind). */
   t: number;
+  /** MINI-PLANET rise: how much of the thing has come up over the horizon.
+   *  1 = standing whole on the ground (csz ≤ FULL_AHEAD); 0 = still wholly
+   *  behind the curve (csz = MAX_AHEAD). The renderer shows the TOP
+   *  `reveal` fraction, its foot pinned to the horizon line. */
+  reveal: number;
   behind: boolean;
 };
 
@@ -90,23 +96,26 @@ export function project(worldX: number, relZ: number, camZ: number, vw: number, 
   const camY = vh * CAMERA_Y;
 
   if (csz >= 0) {
-    // CURVED WORLD (Dan, 2026-08-20): the road runs over a rounded surface.
-    // Row position follows a sine of the angular distance — a stop pops over
-    // the horizon at MAX_AHEAD (everything further is hidden behind the
-    // curve), crawls while it is far, then sweeps fast down the screen as it
-    // comes underfoot. sin' = cos: widest steps at the bottom, asymptotic at
-    // the horizon.
-    const a = Math.min(1, csz / MAX_AHEAD);
+    // MINI-PLANET (Dan, 2026-08-20, round 3: "you are flying forward over
+    // the rounded surface of a mini-planet earth"). The road runs over the
+    // curve; row position follows a sine of the angular distance — crawls at
+    // the horizon, sweeps fast underfoot (sin' = cos).
+    const a = Math.min(1, csz / FULL_AHEAD);
     const t = 0.97 * Math.sin((a * Math.PI) / 2);
+    // The rise: between MAX_AHEAD and FULL_AHEAD a thing is climbing over
+    // the shoulder — first its very tip AT the horizon line, then more of it
+    // as the world rolls under the camera, until it stands whole and starts
+    // down the screen. The renderer clips the hidden lower part.
+    const reveal = csz <= FULL_AHEAD ? 1 : Math.max(0, 1 - (csz - FULL_AHEAD) / (MAX_AHEAD - FULL_AHEAD));
     // Disc size: its own gentle falloff — a far stop is still a disc.
     const sc = Math.max(MIN_SCALE, 1 / (1 + csz * SIZE_FALLOFF));
     // The reference's stops stay ROUND at every distance — the hiding is the
-    // crest's job, not a squish. Only a whisper of foreshortening.
+    // planet's job, not a squish. Only a whisper of foreshortening.
     const scaleY = Math.max(0.85, 1 - t * 0.15);
     const px = vw * 0.5 + csx * vw * 0.4 * sc;
     const py = camY - (camY - horizY) * t;
     if (!isFinite(px) || !isFinite(py)) return null;
-    return { px, py, scale: sc, scaleY, size: Math.max(26, Math.round(vh * 0.165 * sc)), t, behind: false };
+    return { px, py, scale: sc, scaleY, size: Math.max(26, Math.round(vh * 0.165 * sc)), t, reveal, behind: false };
   }
   const d = -csz;
   const t = d / (d + FOCAL * 0.4);
@@ -116,7 +125,7 @@ export function project(worldX: number, relZ: number, camZ: number, vw: number, 
   const px = vw * 0.5 + csx * vw * 0.4 * sc;
   const py = camY + (vh * 1.05 - camY) * t;
   if (!isFinite(px) || !isFinite(py)) return null;
-  return { px, py, scale: sc, scaleY, size: Math.max(22, Math.round(vh * 0.14 * sc)), t, behind: true };
+  return { px, py, scale: sc, scaleY, size: Math.max(22, Math.round(vh * 0.14 * sc)), t, reveal: 1, behind: true };
 }
 
 /** Paint order: far things first. */

@@ -84,10 +84,13 @@ for fn in ("pathXAt", "cameraForward", "project"):
     check(f"export function {fn}(" in proj, f"projection.ts exports {fn}()", f"projection.ts lacks {fn}()")
 check("react" not in proj.lower() and "react" not in sky.lower() and "react" not in scene.lower(), "src/lib/map3d/* is pure (no React)", "src/lib/map3d/* imports React")
 check("const csx = relX * rx + relZ * rz" in proj and "const csz = relX * fx + relZ * fz" in proj, "project(): world → camera space with a rotating camera", "project() does not rotate the camera with the road")
-# High-oblique camera (Dan, 2026-08-20, Candy Crush reference): row position
-# and disc size are DECOUPLED — rows spread linearly over the view depth,
-# sizes fall off on their own gentle curve with a floor.
-check("Math.sin(" in proj and "csz / MAX_AHEAD" in proj, "project(): rows ride the curved world — sine over the view depth, hidden beyond it", "project() rows are not the curved-world sine profile")
+# Mini-planet camera (Dan, 2026-08-20, Candy Crush reference): row position
+# and disc size are DECOUPLED — rows ride a sine over the near depth, sizes
+# fall off on their own gentle curve with a floor — and a thing beyond
+# FULL_AHEAD RISES tip-first over the horizon (`reveal`), never pops.
+check("Math.sin(" in proj and "csz / FULL_AHEAD" in proj, "project(): rows ride the curved world — sine over the near depth", "project() rows are not the curved-world sine profile")
+check("reveal" in proj and "MAX_AHEAD - FULL_AHEAD" in proj, "project(): things rise tip-first over the horizon (reveal)", "project() has no mini-planet rise (reveal)")
+check("clipRise" in m3 and "reveal" in m3, "HomeMap3D clips the below-horizon part of a rising billboard", "HomeMap3D does not render the mini-planet rise")
 check("SIZE_FALLOFF" in proj and "MIN_SCALE" in proj,
       "project(): disc size has its own gentle falloff with a floor",
       "project() size is not decoupled from row position (SIZE_FALLOFF/MIN_SCALE)")
