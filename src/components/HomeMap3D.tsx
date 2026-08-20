@@ -50,7 +50,7 @@ import { CHAPTERS, CLASS_FLAG_SIO } from "@/content/chapters";
 import { sioKind, sioSecondary, KIND_LABEL } from "@/content/sioKinds";
 import { isSioDone, type Progress } from "@/lib/progress";
 import { KIND_COLOR, REGIONS, ARENA_PLACE, KindLegend } from "@/components/HomeMap";
-import { HORIZON_Y, SKYLINE_Y, MAX_AHEAD, getWorldX, pathXAt, cameraForward, project, zOrder, type Projected } from "@/lib/map3d/projection";
+import { HORIZON_Y, SKYLINE_Y, MAX_AHEAD, FULL_AHEAD, getWorldX, pathXAt, cameraForward, project, zOrder, type Projected } from "@/lib/map3d/projection";
 import { getSkyColors, sunPosition, clockHour, CLOUDS, STARS } from "@/lib/map3d/sky";
 import { ROADSIDE_ITEMS, NATURE_ITEMS, type RBuild, type RProp, type NatureType } from "@/lib/map3d/scene";
 
@@ -112,6 +112,23 @@ function PerspectiveBg({
   // bend), the ground filling from it to the bottom — the reference's hill
   // shoulder that upcoming stops appear from behind.
   const crest = `M 0 ${horizY + crestBulge} Q ${vpX} ${horizY - crestBulge} ${vw} ${horizY + crestBulge} L ${vw} ${vh} L 0 ${vh} Z`;
+  // THE BEATEN PATH (Dan, 2026-08-20, his Candy Crush capture): the road is
+  // a broad VALLEY FLOOR sunken below the banks — paler than the ground,
+  // with a dark lip where the banks drop into it; the black stop-to-stop
+  // trail (PathSVG) snakes inside it. Built by sampling the road's screen
+  // line from the camera's feet to the crest; width narrows with depth a
+  // touch faster than the discs so the far end pinches like the reference.
+  const floorFill = `color-mix(in oklch, ${ground} 26%, ${PAPER})`;
+  const lPts: string[] = [];
+  const rPts: string[] = [];
+  for (let rel = 0; rel <= FULL_AHEAD + 0.001; rel += 0.25) {
+    const p = project(pathXAt(camZ + rel), rel, camZ, vw, vh);
+    if (!p) continue;
+    const hw = Math.max(vw * 0.08, vw * 0.3 * Math.pow(p.scale, 1.6));
+    lPts.push(`${(p.px - hw).toFixed(1)} ${p.py.toFixed(1)}`);
+    rPts.unshift(`${(p.px + hw).toFixed(1)} ${p.py.toFixed(1)}`);
+  }
+  const corridor = lPts.length > 1 ? `M ${lPts[0]} L ${lPts.slice(1).join(" L ")} L ${rPts.join(" L ")} Z` : "";
   return (
     <svg width={vw} height={vh} className="absolute inset-0" style={{ zIndex: 0, pointerEvents: "none" }} aria-hidden>
       <defs>
@@ -162,8 +179,20 @@ function PerspectiveBg({
           paler towards the shoulder */}
       <path d={crest} fill={ground} />
       <path d={crest} fill="url(#m3dGround)" opacity={0.4} />
-      {/* World-accent wash */}
-      <path d={crest} fill={fluo} opacity={0.16} />
+      {/* World-accent wash — the BANKS wear the region's colour strongly, so
+          the pale floor below reads as cut into them (the wash is painted
+          before the corridor and never reaches it). */}
+      <path d={crest} fill={fluo} opacity={0.3} />
+      {/* The sunken beaten path: pale floor, then a wide soft stroke that
+          darkens both the floor's edge and the bank's lip (recessed), then a
+          crisp line where the bank breaks off. */}
+      {corridor && (
+        <>
+          <path d={corridor} fill={floorFill} />
+          <path d={corridor} fill="none" stroke="rgba(0,0,0,0.2)" strokeWidth={12} strokeLinejoin="round" />
+          <path d={corridor} fill="none" stroke="rgba(0,0,0,0.32)" strokeWidth={2.5} strokeLinejoin="round" />
+        </>
+      )}
       {/* Night falls on the ground too */}
       {sky.night > 0 && <path d={crest} fill={sky.top} opacity={0.42 * sky.night} />}
       {/* Horizon line in the world's accent */}
