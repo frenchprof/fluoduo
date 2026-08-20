@@ -124,7 +124,7 @@ function PerspectiveBg({
   for (let rel = 0; rel <= FULL_AHEAD + 0.001; rel += 0.25) {
     const p = project(pathXAt(camZ + rel), rel, camZ, vw, vh);
     if (!p) continue;
-    const hw = Math.max(vw * 0.08, vw * 0.3 * Math.pow(p.scale, 1.6));
+    const hw = Math.max(vw * 0.11, vw * 0.34 * Math.pow(p.scale, 1.6));
     lPts.push(`${(p.px - hw).toFixed(1)} ${p.py.toFixed(1)}`);
     rPts.unshift(`${(p.px + hw).toFixed(1)} ${p.py.toFixed(1)}`);
   }
@@ -703,7 +703,9 @@ export default function HomeMap3D({
                     const flag = st.id === CLASS_FLAG_SIO;
                     const nodeH = Math.round(sz * scaleY);
                     const depthH = Math.max(2, Math.round(sz * 0.18 * scaleY));
-                    const baseW = Math.round(sz * 1.14);
+                    // The pad is a circular SPOT ON THE ROAD, wider than the
+                    // ball riding it (Dan's capture, 2026-08-20 round 4).
+                    const baseW = Math.round(sz * 1.42);
                     const baseH = Math.round(baseW * scaleY * 0.38);
                     const totalH = nodeH + depthH;
                     const rim = ahead && !active ? `color-mix(in oklch, ${colour} 45%, var(--cahier-kraft-strong))` : `color-mix(in oklch, ${colour} 78%, black)`;
@@ -754,13 +756,14 @@ export default function HomeMap3D({
                               }}
                             />
                           )}
-                          {/* kraft base disc */}
+                          {/* the road pad — a darker circular spot of the path's own
+                              ground, not a kraft plinth (Dan's capture, round 4) */}
                           <span
                             aria-hidden
                             className="absolute inset-x-0 bottom-0 rounded-[50%]"
                             style={{
                               height: Math.max(4, baseH + depthH * 0.7),
-                              background: "radial-gradient(ellipse at 50% 30%, var(--cahier-kraft) 0%, var(--cahier-kraft-strong) 60%, color-mix(in oklch, var(--cahier-kraft-strong) 70%, black) 100%)",
+                              background: `radial-gradient(ellipse at 50% 35%, color-mix(in oklch, ${ground} 72%, black) 0%, color-mix(in oklch, ${ground} 55%, black) 78%, color-mix(in oklch, ${ground} 40%, black) 100%)`,
                               boxShadow: `0 ${depthH * 0.5}px ${depthH * 1.5}px rgba(0,0,0,0.22)`,
                             }}
                           />

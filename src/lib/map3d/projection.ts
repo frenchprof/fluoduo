@@ -115,7 +115,11 @@ export function project(worldX: number, relZ: number, camZ: number, vw: number, 
     const px = vw * 0.5 + csx * vw * 0.4 * sc;
     const py = camY - (camY - horizY) * t;
     if (!isFinite(px) || !isFinite(py)) return null;
-    return { px, py, scale: sc, scaleY, size: Math.max(26, Math.round(vh * 0.165 * sc)), t, reveal, behind: false };
+    // Dan, 2026-08-20 (his capture, round 4): "the numbered stations are
+    // small enough to be contained within a single circular spot on the
+    // road" — the road is ~2.5 stops wide, the stop rides IN it, never over
+    // its banks.
+    return { px, py, scale: sc, scaleY, size: Math.max(22, Math.round(vh * 0.12 * sc)), t, reveal, behind: false };
   }
   const d = -csz;
   const t = d / (d + FOCAL * 0.4);
@@ -125,7 +129,7 @@ export function project(worldX: number, relZ: number, camZ: number, vw: number, 
   const px = vw * 0.5 + csx * vw * 0.4 * sc;
   const py = camY + (vh * 1.05 - camY) * t;
   if (!isFinite(px) || !isFinite(py)) return null;
-  return { px, py, scale: sc, scaleY, size: Math.max(22, Math.round(vh * 0.14 * sc)), t, reveal: 1, behind: true };
+  return { px, py, scale: sc, scaleY, size: Math.max(20, Math.round(vh * 0.11 * sc)), t, reveal: 1, behind: true };
 }
 
 /** Paint order: far things first. */
