@@ -123,6 +123,12 @@ const COLOR_LIVERIES: Record<string, ChestTint> = {
   blanc:  { body: "linear-gradient(180deg,#ffffff,#e8e8e8)", lid: "linear-gradient(180deg,#cfcfcf,#b0b0b0)", edge: "#8f8f8f" },
   gris:   { body: "linear-gradient(180deg,#e0e0e0,#9e9e9e)", lid: "linear-gradient(180deg,#7d7d7d,#5f5f5f)", edge: "#4a4a4a" },
   marron: { body: "linear-gradient(180deg,#e0c3a3,#8d5a2b)", lid: "linear-gradient(180deg,#6e4521,#523318)", edge: "#402713" },
+  // Missing until now (2026-08-02 bug report): colors.json's 12th color had
+  // no livery entry, so a "beige" chest fell through to the arbitrary
+  // CHEST_TINTS rotation even at levels 0-1, where every color word is
+  // supposed to get its own truthful livery — a beige chest could render as
+  // any of the 5 rotating tints, including green.
+  beige:  { body: "linear-gradient(180deg,#f0e6d2,#d4c19c)", lid: "linear-gradient(180deg,#b8a274,#8f7a52)", edge: "#6b5a3a" },
 };
 const LIVERY_COLOR_WORDS = Object.keys(COLOR_LIVERIES);
 /** Livery for a chest: its word's own colour at levels 0–1 on colour decks;
@@ -430,7 +436,15 @@ export default function Lexicalator({
       // three letters of the bare word, or same English gloss. A fragment of
       // another country now rattles (fairness rule) instead of secretly
       // transmuting the chest.
-      const bare = (e: { fr: string }) => e.fr.toLowerCase().replace(/^(le |la |les |l'|un |une |des )/, '');
+      // fr now carries the full prefixed phrase (2026-08-02), so family
+      // matching must strip ALL known prefixes — not just articles — to
+      // still compare the underlying word (nageur/nageuse must match through
+      // "il est "/"elle est ", not just through "un "/"une ").
+      const bare = (e: { fr: string }) =>
+        e.fr.toLowerCase().replace(
+          /^(ils sont |elles sont |ils ont |elles ont |il est |elle est |à la |à l’|à l'|de la |de l’|de l'|le |la |les |l’|l'|un |une |des |au |aux |en |à |du |ce |cet |cette |ces |mon |ma |mes |ton |ta |tes |son |sa |ses |notre |nos |votre |vos |leur |leurs )/,
+          '',
+        );
       const sameFamily = (e: { fr: string; en?: string }) =>
         bare(e).slice(0, 3) === bare(entry).slice(0, 3) ||
         (!!e.en && !!entry.en && e.en.toLowerCase() === entry.en.toLowerCase());
@@ -756,6 +770,36 @@ export default function Lexicalator({
       <div className="mt-3 flex min-h-[2.5rem] flex-wrap items-center gap-2 lg:hidden">
         {tresorChips}
       </div>
+
+      {/* Vos erreurs — the wrong fragments (decoys) tapped so far, live below
+          the trésor (Dan, 2026-08-02, ported 2026-08-20: show what went wrong
+          as it happens, not only in the game-over post-mortem). Same grouped-
+          chip treatment as the trésor, in the drill-bad palette so it reads
+          as "mistake", not "win". Sourced from the same `misses` rows the
+          post-mortem shows — one record, two surfaces. */}
+      {misses.length > 0 && !over && (
+        <div className="mt-2 flex min-h-[2.5rem] flex-wrap items-center gap-2">
+          <span className="mr-1 text-[0.7rem] font-black uppercase tracking-wider" style={{ color: "var(--drill-bad)" }}>❌ Vos erreurs :</span>
+          {(() => {
+            const grouped: { token: string; n: number }[] = [];
+            for (const t of misses.map((mi) => mi.given).filter((g): g is string => !!g)) {
+              const g = grouped.find((x) => x.token === t);
+              if (g) g.n += 1; else grouped.push({ token: t, n: 1 });
+            }
+            return grouped.map((g) => (
+              <span
+                key={g.token}
+                lang="fr"
+                className="inline-flex items-center gap-1 rounded-full border-2 px-2.5 py-1 text-sm font-black"
+                style={{ borderColor: "var(--drill-bad-soft)", background: "var(--drill-bad-bg)", color: "var(--drill-bad)" }}
+              >
+                {g.token}
+                {g.n > 1 && <span className="ml-0.5 rounded-full px-1.5 text-[11px] font-black text-white" style={{ background: "var(--drill-bad)" }}>×{g.n}</span>}
+              </span>
+            ));
+          })()}
+        </div>
+      )}
 
       {/* Level-done: a POPUP in the middle of the screen (Dan, 2026-07-09);
           it dismisses itself via the auto-advance effect. */}
