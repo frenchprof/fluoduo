@@ -571,15 +571,34 @@ export default function HomeMap3D({
   segments.sort((a, b) => a.sc - b.sc);
   const visibleStops = projected.filter((p): p is NonNullable<typeof p> => p !== null).sort((a, b) => b.t - a.t);
 
+  // LAT_SPREAD (Dan, 2026-08-20, high-oblique camera): the scene's lateral
+  // offsets were authored for the narrow first-person lens — under the big
+  // near-constant discs they parked props ON the stops. Spread the roadside
+  // sideways as one knob. Round 6 (Dan: "the items at the side should stay
+  // clear from the roads ... framing that stretch of road"): whatever the
+  // authored offset, a prop never comes nearer than the beaten path's edge
+  // plus a verge — the corridor's world half-width is read back from the
+  // same numbers PerspectiveBg draws it with.
+  const LAT_SPREAD = 1.9;
+  const VERGE = 0.45; // world units of clear ground between road edge and prop
+  const placeAt = (z: number, side: 1 | -1, lat: number): Projected | null => {
+    if (vw === 0) return null;
+    const centre = project(pathXAt(z), z - camZ, camZ, vw, vh);
+    if (!centre) return null;
+    const hwWorld = Math.max(vw * 0.11, vw * 0.34 * Math.pow(centre.scale, 1.6)) / (vw * 0.4 * centre.scale);
+    const off = Math.max(lat * LAT_SPREAD, hwWorld + VERGE);
+    return project(pathXAt(z) + side * off, z - camZ, camZ, vw, vh);
+  };
+
   // World gate signs (one per region, just before its first stop) + the arch + the line.
   // World gate signs stand at the verge just before each world's first stop,
   // on the side the road bends away from (so they stay in view), never
-  // behind the camera.
+  // behind the camera. They obey the same stay-clear rule as the props.
   const gates = vw === 0 ? [] : REGIONS.map((r) => {
     const z = r.unit * 10 - 0.6;
     if (z - camZ < -0.2) return null;
-    const side = pathXAt(z + 1.5) - pathXAt(z) > 0 ? -1 : 1;
-    const p = project(pathXAt(z) + side * 0.42, z - camZ, camZ, vw, vh);
+    const side: 1 | -1 = pathXAt(z + 1.5) - pathXAt(z) > 0 ? -1 : 1;
+    const p = placeAt(z, side, 0.25);
     return p ? { r, ...p } : null;
   });
   const archP = vw === 0 ? null : (() => {
@@ -590,13 +609,6 @@ export default function HomeMap3D({
     const rel = FINISH_Z - camZ;
     return rel > 0 && rel < MAX_AHEAD ? project(pathXAt(49.99), rel, camZ, vw, vh) : null;
   })();
-
-  // LAT_SPREAD (Dan, 2026-08-20, high-oblique camera): the scene's lateral
-  // offsets were authored for the narrow first-person lens — under the big
-  // near-constant discs they parked props ON the stops. Spread the roadside
-  // sideways as one knob.
-  const LAT_SPREAD = 1.9;
-  const placeAt = (z: number, side: 1 | -1, lat: number): Projected | null => (vw === 0 ? null : project(pathXAt(z) + side * lat * LAT_SPREAD, z - camZ, camZ, vw, vh));
 
   return (
     <div className="home-map home-map-3d" style={{ fontFamily: "var(--font-body-stack)" }}>
