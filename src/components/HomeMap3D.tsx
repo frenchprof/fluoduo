@@ -803,7 +803,7 @@ export default function HomeMap3D({
                             />
                           )}
                         </button>
-                        {nodeH > 34 && reveal === 1 && ( // names only near the camera, and never while still rising — the label would stretch the container and break the rise clip
+                        {nodeH > 48 && reveal === 1 && ( // names only for the two or three nearest — the round-5 chain is dense, and labels mid-chain shingled over the next disc
                           <span
                             aria-hidden
                             className="pointer-events-none mt-0.5 whitespace-nowrap rounded px-1 font-bold leading-tight"

@@ -24,11 +24,15 @@ export const HORIZON_Y = 0.46; // the road's CREST — stops vanish behind this 
 export const SKYLINE_Y = 0.2; // the true sky line, far above the crest — the distant vista lives between
 export const CAMERA_Y = 1.04; // the eye line sits just below the box's bottom
 export const FOCAL = 6.2; // view depth, in stop units — rows spread linearly across it
-export const FULL_AHEAD = 4; // fully risen this close — nearer than this, a thing stands whole on the ground
-export const MAX_AHEAD = 5.5; // beyond this, still wholly below the planet's shoulder
+// Dan's capture, round 5: the path is FULL of stations — five or six in the
+// chain at once, nearly touching, each farther ball tucked behind the nearer
+// one, sizes falling to about half by the far end. The rise over the curve
+// is only the chain's very tail.
+export const FULL_AHEAD = 6; // fully risen this close — nearer than this, a thing stands whole on the ground
+export const MAX_AHEAD = 7.5; // beyond this, still wholly below the planet's shoulder
 export const MAX_BEHIND = 1.5; // draw distance behind (stops)
-export const SIZE_FALLOFF = 0.12; // per-stop size decay — Candy-Crush gentle
-export const MIN_SCALE = 0.45; // a far stop is still nearly half a near one
+export const SIZE_FALLOFF = 0.17; // per-stop size decay — halves across the visible chain
+export const MIN_SCALE = 0.42; // a far stop is still nearly half a near one
 export const LOOK_AHEAD = 1.5; // heading = the road this far ahead
 
 /** Road snake: world X per stop, repeating every ten stops (one unit). */
@@ -119,7 +123,7 @@ export function project(worldX: number, relZ: number, camZ: number, vw: number, 
     // small enough to be contained within a single circular spot on the
     // road" — the road is ~2.5 stops wide, the stop rides IN it, never over
     // its banks.
-    return { px, py, scale: sc, scaleY, size: Math.max(22, Math.round(vh * 0.12 * sc)), t, reveal, behind: false };
+    return { px, py, scale: sc, scaleY, size: Math.max(22, Math.round(vh * 0.15 * sc)), t, reveal, behind: false };
   }
   const d = -csz;
   const t = d / (d + FOCAL * 0.4);
