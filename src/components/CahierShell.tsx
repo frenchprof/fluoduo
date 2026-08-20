@@ -19,6 +19,7 @@ import Link from "next/link";
  *  Keep in sync with the media query in globals.css. */
 const RAIL_MIN_PX = 900;
 import MenuSplash from "@/components/MenuSplash";
+import RailGroups from "@/components/RailGroups";
 import type { CSSProperties, MouseEvent as ReactMouseEvent, ReactNode } from "react";
 
 const PAGE_WIDTH_KEY = "fluolingo:pageWidth";
@@ -437,19 +438,12 @@ export default function CahierShell({
         <nav className="cahier-tabs" aria-label="Pages">
           {/* TOP tier: Unités only (Dan, 2026-07-15) — Home's doors are the
               top-left FluOlinGo link and the 🏠 icon. */}
-          {site.map((t, i) => (
-            <TabFlap
-              key={t.key}
-              tab={t}
-              hue={hueOf(t, i)}
-              active={isActiveFlap(t)}
-              className={`cahier-tab ${context.length > 0 ? "cahier-tab--back1" : ""}`}
-            />
-          ))}
-          {/* LOWER tier (Dan, 2026-07-15: everything non-Unité, thin so ALL
-              of them fit): QuickGuide keeps its inverted colors, then Index,
-              WorDrill, SpecuLearn and the tools. */}
-          <span aria-hidden className="h-3" />
+          {/* THE RAIL, grouped (Dan, 19 Aug: "at the side there should be
+              only 5 tabs … and under them the individual tabs under them").
+              MENU first, then the six families, each opening to its own
+              children. The five Unité flaps are no longer a tier of their
+              own — they are Goals' children, because a unit IS ten goals.
+              RailGroups owns the open/shut state. */}
           <button
             key="quickguide"
             type="button"
@@ -459,9 +453,9 @@ export default function CahierShell({
           >
             <span aria-hidden>▦</span> MENU
           </button>
-          {tools.map((t, i) => (
-            <TabFlap key={t.key} tab={t} hue={hueOf(t, i)} active={active === t.key} className="cahier-tab cahier-tab--xs" />
-          ))}
+          <span aria-hidden className="h-2" />
+          <RailGroups activeKey={active} />
+
           {context.length > 0 && <span aria-hidden className="h-3" />}
           {context.map((t, i) => (
             <TabFlap key={t.key} tab={t} hue={hueOf(t, i)} active={active === t.key} className="cahier-tab cahier-tab--sm" />

@@ -30,6 +30,7 @@ Only ONE agent edits this file at a time; say so in your commit.
 | bugs | deck gate/redirect, `NoDeck`, DeckContent on tokens, `/sio/[id]` → deep link, DEPLOY.md name, ONE "weak", ONE shuffle, D6/D7/D9/D10/D11, leaderboard identity, D4 sync diagnostic | verify27-bugs (81) |
 | hero | **Home hero = a horizontal report card** (19 Aug): the two hairline bars gone ("no status bar"), chip rail gone, « Bienvenue sur FluOlinGo » heading back, counters now one row of value-over-label marks — level · streak · course · XP · lessons, + gems once earned; actions round, dropping below the marks on a phone | verify25 (19) |
 | menu/nav | **HELP popup → Menu** (20 tiles, 4×5 phone / 5×4 tablet, no prose — /guide keeps the long form); registry regrouped to **six** families in Dan's 19 Aug order **Goals · Practice · Play · Review · Skills · User** — Goals now means the 50 objectives, the five pre-lesson activities became Practice | verify19c (10) |
+| rail | **Side rail grouped**: six family flaps (Goals · Practice · SvPlay · Review · Skills · User), children under each, Unités under Goals | verify29-rail (22) |
 | Track D | help-ladder spec + state machine + rule hints + `?`/WHY in every drill, evidence tagged, hinted items → ReVue, open-production feedback (`/api/feedback`, rule fallback), 22 eval cases | verify28-trackd (165) |
 
 Shipped ≈ 147 of ~150 in-scope units.
@@ -70,10 +71,15 @@ Dan's email; Firestore service-account key — being retired.
    under it (SpecuLearn, xPlain, EtuDice, 4Mémoire, iComplete) are PRACTICE.
    `activitiesInFamilyOrder()` is the single reader — do not hand-keep a
    second list.
-   STILL OPEN: the **side rail** itself. Dan asked for the six groups "at the
-   side" with their activities under them; the app has only a top flap rail
-   and a 4-slot bottom bar today, and which of those the side rail replaces
-   was not settled. Nothing built yet.
+   **Side rail DONE** (same day): `RailGroups.tsx` replaces the rail's flat
+   22-flap column with the six family flaps, each opening to its children.
+   The Unités are Goals' children now, not a tier — a unit IS ten goals.
+   Open state is per family in sessionStorage, read through
+   `useSyncExternalStore` (patch 24's answer to the set-state-in-effect
+   rule); the family owning the current page opens by default.
+   verify29-rail (22), wired into CI after verify28.
+   LEFT: the phone **☰ dropdown** still lists the activities flat — it was
+   not in Dan's ask, but it is now the one surface disagreeing with the rail.
 
 6. **Home hero = a horizontal report card.** Dan, shown Design's "FluOlinGo Home
    standalone" twice: *"the dashboard that wouldn't have a status bar, that is

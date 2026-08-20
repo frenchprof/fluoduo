@@ -98,3 +98,6 @@ jobs:
 
       - name: Track D — the help ladder in DrillShell (machine + eval cases executed, every drill wired, evidence, ReVue hook, feedback function + fallback)
         run: python3 verify/verify28-trackd.py
+
+      - name: "Rail + Menu — six families, twenty tiles (19 Aug)"
+        run: python3 verify/verify29-rail.py
