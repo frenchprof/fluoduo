@@ -281,7 +281,10 @@ export default function CahierShell({
           {!nested && edgeGrip}
 
           <div className="sticky top-0 z-10 border-b-2 border-[color:var(--cahier-ink)]/15 bg-[color:var(--cahier-paper)]/90 backdrop-blur">
-            <div className={`flex items-center justify-between gap-2 py-3 pr-3 sm:pr-5 ${nested ? "pl-5 sm:pl-7" : "pl-9 sm:pl-16"}`}>
+            {/* py-2 + tighter left inset (Dan, 2026-08-21): the wordmark hugs
+                the page's top-left corner — just clear of the spiral binding
+                (38px), no further. */}
+            <div className={`flex items-center justify-between gap-2 py-2 pr-3 sm:pr-5 ${nested ? "pl-5 sm:pl-7" : "pl-9 sm:pl-11"}`}>
               {/* The wordmark is ALWAYS a door home (Dan, 2026-07-25) — on
                   the home page it simply arrives where you already are. */}
               <Link href="/" className="cahier-display text-lg font-black text-[color:var(--cahier-ink)]">

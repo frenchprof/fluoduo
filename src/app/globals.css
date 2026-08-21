@@ -722,7 +722,9 @@ body {
 .cahier-desk {
   min-height: 100vh;
   background: var(--cahier-desk);
-  padding: 18px 0 64px;
+  /* 18px → 8px (Dan, 2026-08-21): the wordmark "can afford to go closer to
+     the corner of the page" — the desk shows just a sliver above the card. */
+  padding: 8px 0 64px;
 }
 /* Flip It's own world: the same exercise book, but on ITS warm wooden desk —
  * a full interface like the rain/conveyor games, not a site page. */

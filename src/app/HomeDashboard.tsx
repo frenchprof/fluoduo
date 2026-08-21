@@ -15,7 +15,7 @@ import MenuSplash from "@/components/MenuSplash";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
-import { equippedAccent, levelForXp, xpMultiplier } from "@/lib/economy";
+import { equippedAccent, xpMultiplier } from "@/lib/economy";
 import { dueForReview } from "@/lib/reviser";
 
 /** « par Dr Chan » as pen strokes, in writing order (stem before bowl, the
@@ -116,18 +116,19 @@ export default function HomeDashboard() {
     else break;
   }
 
-  // Economy view: level from lifetime XP, the fire multiplier, and the accent
-  // colour the learner has equipped (drives the hero CTA + bars).
-  const lvl = levelForXp(progress.xp);
+  // The fire multiplier and the accent colour the learner has equipped
+  // (drives the hero CTA).
   const mult = xpMultiplier(progress.streak);
   const accent = equippedAccent(progress);
 
-  // The report card's row of marks, left to right. Order is the learner's
-  // own reading order: who am I, am I turning up, how far through, what have
-  // I earned, how much is done. Values only — the label under each figure is
-  // what makes it readable, so it is not decoration.
+  // TWO marks only (Dan, 2026-08-21, decluttering — everything else can be
+  // derived and lives on /moi and /profil):
+  //   course — the page's subject; ONE form, the fraction (it matches the
+  //            50-stop map; the % is one hover away in the tooltip)
+  //   streak — the only mark with a deadline, and the ×XP multiplier must
+  //            stay visible or the bonus stops motivating
   const MARKS: { label: string; value: ReactNode; title: string }[] = [
-    { label: "level", value: `N${lvl.level}`, title: `Your level — N${lvl.level} · ${lvl.name}` },
+    { label: "course", value: `${doneTotal}/${SIOS.length}`, title: `${pct}% of the course — ${doneTotal} of ${SIOS.length} objectives done` },
     {
       label: "streak",
       value: (
@@ -138,20 +139,7 @@ export default function HomeDashboard() {
       ),
       title: mult > 1 ? `Day streak — XP ×${mult}` : "Day streak",
     },
-    { label: "course", value: `${pct}%`, title: `${doneTotal} of ${SIOS.length} objectives done` },
-    // 1000 → "1k": the mark has to survive a 390px phone, and the exact
-    // figure is one tap away in the tooltip.
-    { label: "XP", value: `${lvl.into}/${lvl.span >= 1000 ? `${Math.round(lvl.span / 100) / 10}k` : lvl.span}`, title: `${progress.xp} XP in total — ${lvl.span - lvl.into} to N${lvl.level + 1}` },
-    { label: "lessons", value: `${doneTotal}/${SIOS.length}`, title: "Objectives you have marked done" },
   ];
-  // Gems are a shop currency, not a mark, so they join the row only once
-  // earned — the five academic marks are always present (a report card with
-  // missing columns reads as broken), but 💎 0 on day one read as a reproach
-  // (Dan, 2026-07-20). Kept on the card rather than dropped: it is still a
-  // progress counter, and Home is where the learner sees it.
-  if (progress.gems > 0) {
-    MARKS.push({ label: "gems", value: `${progress.gems}`, title: "Gems — spend them in the shop" });
-  }
 
 
   return (
