@@ -4,7 +4,7 @@ Patch 25, the rest — the Home path (2026-08-17).
 
 Dan's decision 1 (STATUS.md, 17 Aug): the Home map has TWO views, 2D and
 3D, the learner toggles. 2D = Design's "FluOlinGo Home standalone" (region
-bands, kind-coloured 56px stops, ▶ current, zoom %); 3D = the La Carte
+bands, kind-coloured 56px stops, ▶ current, zoom %); 3D = the The Map
 treatment folded into Home. Plus the plan rows: `short` labels + build
 check, class flag + paved/unpaved road (fog deleted), /unit/N a deep link
 into Home, print stylesheet with a QR per unit.
@@ -52,8 +52,8 @@ if not os.path.isfile("package.json"):
 
 home = strip_comments(read("src/app/HomeDashboard.tsx"))
 # The map moved to its own page (Dan, 2026-08-21: finger-scroll on Home kept
-# catching the map) — the block the pins below inspect lives in CarteBody.
-carte = strip_comments(read("src/app/carte/CarteBody.tsx"))
+# catching the map) — the block the pins below inspect lives in MapBody.
+carte = strip_comments(read("src/app/map/MapBody.tsx"))
 map2d = read("src/components/HomeMap.tsx")
 map3d = read("src/components/HomeMap3D.tsx")
 m2 = strip_comments(map2d)
@@ -64,13 +64,13 @@ css = read("src/app/globals.css")
 check(bool(map2d), "HomeMap.tsx (2D) exists", "src/components/HomeMap.tsx missing")
 check(bool(map3d), "HomeMap3D.tsx (3D) exists", "src/components/HomeMap3D.tsx missing")
 check("<HomeMap " in carte and "<HomeMap3D " in carte,
-      "La Carte renders both views", "CarteBody does not render both HomeMap and HomeMap3D")
+      "The Map renders both views", "MapBody does not render both HomeMap and HomeMap3D")
 check('"fluo.homeMapView"' in carte, "the 2D/3D choice is remembered under fluo.homeMapView",
-      "the toggle key fluo.homeMapView is missing from CarteBody")
+      "the toggle key fluo.homeMapView is missing from MapBody")
 check('"2d"' in carte and '"3d"' in carte and "aria-pressed" in carte,
       "a 2D · 3D segmented control (aria-pressed) drives the view",
       "no 2D/3D segmented control found")
-check('href="/carte"' in home, "Home links to La Carte with one card", "Home has no card linking to /carte")
+check('href="/map"' in home, "Home links to The Map with one card", "Home has no card linking to /map")
 check(not os.path.isfile("src/components/RoadMap.tsx") and "RoadMap" not in home,
       "RoadMap.tsx is gone and nothing in HomeDashboard renders it",
       "RoadMap is still around / rendered")
@@ -123,12 +123,12 @@ unit_page = strip_comments(read("src/app/unit/[unit]/page.tsx"))
 redirect = read("src/app/unit/[unit]/UnitRedirect.tsx")
 check("UnitSection" not in unit_page and "UnitRedirect" in unit_page,
       "/unit/N no longer renders UnitSection — it is a deep link", "/unit/N still renders the unit page")
-check("/carte?unit=" in redirect and "location.replace" in redirect,
-      "UnitRedirect sends /unit/N(#SIO) to /carte?unit=N(#SIO)", "UnitRedirect does not redirect to /carte?unit=N")
+check("/map?unit=" in redirect and "location.replace" in redirect,
+      "UnitRedirect sends /unit/N(#SIO) to /map?unit=N(#SIO)", "UnitRedirect does not redirect to /map?unit=N")
 check('get("unit")' in carte and "hashchange" in carte and "<UnitSection" in carte,
-      "La Carte reads ?unit= and #SIO, and hosts UnitSection inline", "CarteBody does not read the deep link / host UnitSection")
-check('get("unit")' in home and "/carte" in home,
-      "Home forwards old /?unit= deep links to /carte (printed QR codes survive)", "Home no longer forwards /?unit= to /carte")
+      "The Map reads ?unit= and #SIO, and hosts UnitSection inline", "MapBody does not read the deep link / host UnitSection")
+check('get("unit")' in home and "/map" in home,
+      "Home forwards old /?unit= deep links to /map (printed QR codes survive)", "Home no longer forwards /?unit= to /map")
 check("onOpenSio" in m2 and "onOpenSio" in m3, "stops open their SIO in place (onOpenSio) in both views", "stops still navigate away")
 
 # 7 · print
@@ -138,7 +138,7 @@ sheet = read("src/components/HomePrintSheet.tsx")
 check("qrEncode" in sheet and "/?unit=" in sheet, "the print sheet draws a QR per unit", "print sheet lacks per-unit QRs")
 check(os.path.isfile("src/lib/qr.ts") and "export function qrEncode" in read("src/lib/qr.ts"),
       "in-repo QR encoder (src/lib/qr.ts), no dependency", "src/lib/qr.ts missing")
-check("HomePrintSheet" in carte, "La Carte mounts the print sheet", "CarteBody does not mount HomePrintSheet")
+check("HomePrintSheet" in carte, "The Map mounts the print sheet", "MapBody does not mount HomePrintSheet")
 
 print("\npatch 25b check (Home path: two views, deep link, short labels, print)\n" + "-" * 66)
 for x in OK:   print("  ok    " + x)

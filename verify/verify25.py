@@ -40,7 +40,7 @@ What this asserts (the height itself is a screenshot's job):
      else in the app, and the 🔁 pointed at the page the Review tab
      already opens. Continue is a WORD in a full-width button under the
      card (Dan's Home mock), and › is the single "this leaves the page"
-     mark, shared with the La Carte row. ▦ Menu stays in the card.
+     mark, shared with the Map postcard. ▦ Menu sits in the greeting.
   5  Every progress counter survives (litmus: learner feedback stays).
 
 Run from the repo root:  python3 verify/verify25.py
@@ -122,8 +122,12 @@ check("MARKS" in home and "flex-wrap" not in dl_cls and "flex-1" in home,
 sec_start = home.find("<section")
 sec_end = home.find("</section>", sec_start)
 hero = home[sec_start:sec_end]
+# Scoped to HomeDashboard on purpose. The Map postcard below the hero still
+# draws its CURRENT-STOP pin as ▶ (HomeMap, patch 25: "▶ current") — a map
+# pin, not a control, and Dan's own 17 Aug spec. Flagged, not silently
+# changed: whether the pin becomes 📍 is his call, not this rule's.
 check("▶" not in home,
-      "no ▶ on Home — the triangle belongs to sound",
+      "no ▶ control in HomeDashboard — the triangle belongs to sound",
       "a ▶ is back on Home; it reads as 'a voice will speak', not 'go'")
 check("🔁" not in hero,
       "no 🔁 in the hero — the Review tab carries that destination",
@@ -136,21 +140,24 @@ check(cont > sec_end,
       "Continue is the full-width button under the card, as in Dan's Home mock",
       "Continue is back inside the marks row")
 check(home.count("›") >= 2,
-      "› is the one 'this leaves the page' mark — Continue and La Carte share it",
+      "› is the one 'this leaves the page' mark — Continue and the Map share it",
       "the chevron is missing; navigation has no consistent mark")
 
-# 4 · every counter survives
+# 4 · the TWO essential marks (Dan, 2026-08-21, decluttering: "we only need
+# the essential ones — since all the rest can be derived"): course progress
+# in ONE form (the fraction; the % lives in the tooltip) and the streak with
+# its visible ×XP multiplier. Level/XP/gems left the hero for /moi + /profil.
 for marker, what in (
-    ("doneTotal}/${SIOS.length", "the done count"),
+    ("doneTotal}/${SIOS.length", "the course mark (fraction form)"),
     ("progress.streak", "the streak"),
-    ("progress.xp", "the XP total"),
-    ("progress.gems", "the gems counter"),
-    ("${pct}%", "the course-completion percentage"),
-    ("lvl.into}/${lvl.span", "the level XP counter"),
+    ("mult > 1", "the visible ×XP multiplier on the streak"),
 ):
     check(marker in home,
           f"{what} survives the restyle",
-          f"{what} was lost in the restyle — progress counters are learner feedback")
+          f"{what} was lost — the two essential marks are the hero's floor")
+check("progress.xp" not in home and "progress.gems" not in home and "lvl.into" not in home,
+      "level / XP / gems left the hero (derived marks live on /moi, /profil)",
+      "a derived mark crept back into the hero row")
 
 print("\npatch 25 check (hero rows)\n" + "-" * 66)
 for x in OK:   print("  ok    " + x)

@@ -21,6 +21,17 @@ Only ONE agent edits this file at a time; say so in your commit.
   506 → 508 with Dan's OK, nationalities withdraws from LexicaLater);
   then the 3D-camera rework (row 25e) merged and the lot deployed to live
   on Dan's word ("deploy").
+- 20–21 Aug (Peers, Dan's verdict rounds on the live camera): PR #26 —
+  rounds 9–10 (road owns the frame · flat solid-colour buttons, dashed ring
+  retired · gentle-S snake · tall grounded flanks · giant trees) — and
+  PR #27 — round 11 (**the map moves to /carte**: finger-scroll fought the
+  Home page; Home links there with one card, all old `/?unit=N#SIO` deep
+  links + printed QRs forward; hover titles on all roadside; passed things
+  exit through the frame; 2D zoom = number + milestone dropdown; side rail
+  = one-flap accordion). Both merged on green and deployed by Dan.
+  Ops PRs #28 (checkout/setup-node v5 — Node 24) and #29 (pages-preview
+  guarded to frenchprof/fluoduo — it 404'd on dckg where Pages is off).
+  Still red everywhere: claude-review (ANTHROPIC_API_KEY/billing — Dan).
 
 ## Programme — done
 

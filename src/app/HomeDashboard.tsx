@@ -3,20 +3,22 @@
 /**
  * The Home page body (Dan, 2026-07-05: "a true blue Home page… all of the 50
  * SIOs on a single learning path visually — an overview of where you are in
- * the learning journey"). Hero: Bienvenue, the row of marks and the ▦ Menu
- * button; « Continue › » is the worded CTA under the card (2026-08-21 — the
- * round ▶ and 🔁 went, see the block above it). The COURSE MAP moved to its own
- * page, /carte (Dan, 2026-08-21: a finger scrolling the page kept catching
+ * the learning journey"). Hero: Bienvenue, two marks and the ▦ Menu button;
+ * « Continue › » is the worded CTA under the card and the Map postcard sits
+ * below it (2026-08-21 — the round ▶ and 🔁 went with the one-glyph-one-job
+ * rule). The COURSE MAP moved to its own
+ * page, /map (Dan, 2026-08-21: a finger scrolling the page kept catching
  * the map instead) — Home links there with one card, and forwards the old
  * `/?unit=N#SIO-0XX` deep links so printed QR codes and bookmarks survive.
  */
 import Link from "next/link";
 import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import MenuSplash from "@/components/MenuSplash";
+import HomeMap from "@/components/HomeMap";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
-import { equippedAccent, levelForXp, xpMultiplier } from "@/lib/economy";
+import { equippedAccent, xpMultiplier } from "@/lib/economy";
 
 /** « par Dr Chan » as pen strokes, in writing order (stem before bowl, the
  *  way a hand actually writes print letters). Baseline y=25, x-height 13,
@@ -71,13 +73,13 @@ export default function HomeDashboard() {
     };
     refresh();
     window.addEventListener("fluolingo:progress-updated", refresh);
-    // The map lives at /carte now — forward its old deep links (`/?unit=N`
+    // The map lives at /map now — forward its old deep links (`/?unit=N`
     // and/or `#SIO-0XX`) so printed QR codes and bookmarks keep working.
     const q = new URLSearchParams(window.location.search).get("unit");
     const hash = window.location.hash.replace("#", "");
     const isSio = SIOS.some((s) => s.id === hash);
     if (isSio || (q !== null && /^[0-4]$/.test(q))) {
-      window.location.replace(`/carte${window.location.search}${window.location.hash}`);
+      window.location.replace(`/map${window.location.search}${window.location.hash}`);
       return;
     }
 
@@ -114,18 +116,19 @@ export default function HomeDashboard() {
     else break;
   }
 
-  // Economy view: level from lifetime XP, the fire multiplier, and the accent
-  // colour the learner has equipped (drives the hero CTA + bars).
-  const lvl = levelForXp(progress.xp);
+  // The fire multiplier and the accent colour the learner has equipped
+  // (drives the hero CTA).
   const mult = xpMultiplier(progress.streak);
   const accent = equippedAccent(progress);
 
-  // The report card's row of marks, left to right. Order is the learner's
-  // own reading order: who am I, am I turning up, how far through, what have
-  // I earned, how much is done. Values only — the label under each figure is
-  // what makes it readable, so it is not decoration.
+  // TWO marks only (Dan, 2026-08-21, decluttering — everything else can be
+  // derived and lives on /moi and /profil):
+  //   course — the page's subject; ONE form, the fraction (it matches the
+  //            50-stop map; the % is one hover away in the tooltip)
+  //   streak — the only mark with a deadline, and the ×XP multiplier must
+  //            stay visible or the bonus stops motivating
   const MARKS: { label: string; value: ReactNode; title: string }[] = [
-    { label: "level", value: `N${lvl.level}`, title: `Your level — N${lvl.level} · ${lvl.name}` },
+    { label: "course", value: `${doneTotal}/${SIOS.length}`, title: `${pct}% of the course — ${doneTotal} of ${SIOS.length} objectives done` },
     {
       label: "streak",
       value: (
@@ -136,20 +139,7 @@ export default function HomeDashboard() {
       ),
       title: mult > 1 ? `Day streak — XP ×${mult}` : "Day streak",
     },
-    { label: "course", value: `${pct}%`, title: `${doneTotal} of ${SIOS.length} objectives done` },
-    // 1000 → "1k": the mark has to survive a 390px phone, and the exact
-    // figure is one tap away in the tooltip.
-    { label: "XP", value: `${lvl.into}/${lvl.span >= 1000 ? `${Math.round(lvl.span / 100) / 10}k` : lvl.span}`, title: `${progress.xp} XP in total — ${lvl.span - lvl.into} to N${lvl.level + 1}` },
-    { label: "lessons", value: `${doneTotal}/${SIOS.length}`, title: "Objectives you have marked done" },
   ];
-  // Gems are a shop currency, not a mark, so they join the row only once
-  // earned — the five academic marks are always present (a report card with
-  // missing columns reads as broken), but 💎 0 on day one read as a reproach
-  // (Dan, 2026-07-20). Kept on the card rather than dropped: it is still a
-  // progress counter, and Home is where the learner sees it.
-  if (progress.gems > 0) {
-    MARKS.push({ label: "gems", value: `${progress.gems}`, title: "Gems — spend them in the shop" });
-  }
 
 
   return (
@@ -293,21 +283,29 @@ export default function HomeDashboard() {
         <p className="fluo-mono mb-2 text-xs font-black text-[color:var(--fluo-ink)]">🔗 {seqRun} in a row!</p>
       )}
 
-      {/* 🗺️ La Carte — the map lives on its own page now (Dan, 2026-08-21:
-          a finger scrolling Home kept catching the map instead of the page).
-          One big card leads there. */}
-      <Link
-        href="/carte"
-        className="mt-2 flex items-center gap-3 rounded-2xl border-2 px-4 py-4 transition hover:-translate-y-0.5"
+      {/* 🗺️ The Map as a POSTCARD (Dan, 2026-08-21): a read-only snapshot
+          of the learner's stretch of the course — the course mark, drawn.
+          Inert on purpose (pointer-events off): a finger can't catch it, a
+          tap anywhere is the door to the real map on /map. */}
+      {/* The snapshot contains the map's own links, so the door to /map is
+          a STRETCHED sibling link over the top — an <a> may not contain an
+          <a>. `inert` keeps the frozen map's controls out of the tab order
+          and the a11y tree. */}
+      <div
+        className="relative mt-2 overflow-hidden rounded-2xl border-2 transition hover:-translate-y-0.5"
         style={{ borderColor: "var(--cahier-ink)", background: "var(--cahier-paper-raised)", boxShadow: "var(--shadow-card)" }}
       >
-        <span aria-hidden className="text-3xl">🗺️</span>
-        <span className="min-w-0 flex-1">
-          <span lang="fr" className="fluo-serif block text-lg font-black leading-tight text-[color:var(--fluo-ink)]">La Carte</span>
-          <span className="block text-xs font-bold text-[color:var(--fluo-ink)]/70">2D · 3D</span>
+        <div inert aria-hidden className="pointer-events-none select-none">
+          <HomeMap progress={progress} activeId={activeId} accent={accent} postcard />
+        </div>
+        <span className="flex items-center gap-2 border-t-2 px-4 py-2.5" style={{ borderColor: "var(--cahier-ink)" }}>
+          <span aria-hidden className="text-xl">🗺️</span>
+          <span lang="fr" className="fluo-serif min-w-0 flex-1 text-lg font-black leading-tight text-[color:var(--fluo-ink)]">The Map</span>
+          <span className="fluo-mono text-xs font-black text-[color:var(--fluo-ink)]/70">2D · 3D</span>
+          <span aria-hidden className="fluo-mono text-xl font-black text-[color:var(--fluo-ink)]">›</span>
         </span>
-        <span aria-hidden className="fluo-mono text-xl font-black text-[color:var(--fluo-ink)]">›</span>
-      </Link>
+        <Link href="/map" aria-label="The Map — open the course map" className="absolute inset-0 z-10" />
+      </div>
     </>
   );
 }
