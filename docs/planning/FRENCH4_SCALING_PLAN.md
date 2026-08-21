@@ -440,7 +440,7 @@ rather than assuming it: see open question 7.
 |---|---|---|---|
 | 0 | Dan settles §3.1 / §3.3; sends cahier, guide, and manuel Units 5–7 | — | Dan |
 | 1 | Phase 1 plumbing + `verify30-course.py`; French 1 byte-identical | §3 decisions only | 2 d |
-| 2 | Chapters, regions, colours, per-unit group structure | 0 | 0.5 d |
+| 2 | **Naming layer** — regions, icons, colours, chapters, roadside props, and the 50-stop geometry constants (§11) | 0 | 1.5 d |
 | 3 | Skeleton — 40 SIOs navigable end to end, empty decks | 1, 2 | 1 d |
 | 4 | ConjugaZone tenses (§7.1) | 1 | 1 d |
 | 5 | NumBus → minimal-pair discriminator (§7.2) | 1 | 0.5 d |
@@ -470,7 +470,9 @@ the map.
 5. **DELF preparation — build it or skip it?** (§7.4 — a new surface, ~3–4 d,
    genuinely valuable, definitely scope creep. Your call, not mine.)
 6. **The four chapter scenarios, region names and colours.** (§5)
-7. **Confirm the A2 `short` labels and section placements** in
+7. **Do `brief` stops count 1/40 like any other?** (§12.5 — recommend yes,
+   no asterisk.)
+8. **Confirm the A2 `short` labels and section placements** in
    `ATELIER_A2_SIOs_v1.csv` — 40 drafts inside the 14-character gate, and the
    handful of thematic-fit placements flagged in §2.3.
 
@@ -485,3 +487,232 @@ shows the map card as "La Carte · Unité 3 · Identity Heights" — `main` has
 since renamed it to The Map, so that build predates commit 56aef90, but the
 Unité 3 / Identity Heights pairing looks off either way (Identity Heights is
 Unité 1's region; Unité 3 is Downtown District). Worth a glance at live.__
+
+---
+
+## 11. The naming layer — everything the map calls things
+
+Dan, 21 Aug: *"those labels of course need to adapt to the new topics. This
+includes the maps and its references within the map."* Agreed, and it is a
+bigger surface than the 40 `short` labels. This section is the complete
+inventory, with a concrete proposal for each so it can be red-penned rather
+than specified from scratch.
+
+### 11.1 What is named, and where it lives
+
+| # | Thing | File | Count for A2 |
+|---|---|---|---|
+| 1 | `short` map label per stop | `sios.json` | 40 — ✔ drafted (§5) |
+| 2 | Region **place name** | `HomeMap.tsx` `REGIONS` | 4 |
+| 3 | Region **token key** (`village`, `heights`…) | `HomeMap.tsx` + `globals.css` | 4 |
+| 4 | Region **icon** (one SVG motif each) | `regionIcons.tsx` | 4 new |
+| 5 | Region **accent** + **band** colour | `globals.css:517-532` | 4 accents (bands can be reused — §11.4) |
+| 6 | Chapter **scenario · tagline · cliffhanger** | `chapters.ts` `CHAPTERS` | 4 |
+| 7 | Unit **label · subtitle · emoji** | `sios/index.ts` `UNIT_META` | 4 |
+| 8 | **Roadside props & buildings** (3D), each with a French teaching label or shop sign | `map3d/scene.ts` `ROADSIDE_ITEMS` | ~24 |
+| 9 | **Gate signs** on each world (3D) | `HomeMap3D.tsx` — reads `REGIONS` + `regionIcons` | falls out of 2–4 |
+| 10 | Finish-zone props + `ARENA_PLACE` | `scene.ts`, `HomeMap.tsx:93` | 1 set — see §11.5 |
+| 11 | Print sheet region headers | `HomePrintSheet.tsx` | falls out of 2 |
+
+Items 9 and 11 need no separate authoring — they read 2–4. Items 2–8 and 10 do.
+
+### 11.2 Proposed regions
+
+A1's naming pattern is `[Quality] + [Landform/Settlement]`, in English (the
+map's chrome follows the English rule; chapter scenarios stay French, as
+content). Keeping that:
+
+| Unit | Book title | Proposed place | key | Icon motif | Covers |
+|---|---|---|---|---|---|
+| 5 | *Ensemble, c'est mieux !* | **Departure Docks** | `docks` | suitcase + tag | travel, leaving, deciding, justifying, challenge |
+| 6 | *C'est trop beau !* | **Gallery Gardens** | `gallery` | easel / palette-and-leaf | the five senses, nature, art, appreciation, emotion |
+| 7 | *Comme disait mon grand-père…* | **Memory Lane** | `memory` | framed photo | fashion & change, family, keepsakes, past narrative |
+| 8 | *Si vous voulez bien…* | **Renovation Quarter** | `quarter` | house + scaffold | services, home improvement, housing, admin, complaints |
+
+**Memory Lane** is the strongest of the four — it is idiomatic English *and*
+literally a road, which the map metaphor already is. **Departure Docks**
+carries units 51–55 well and the fitness/challenge half (056–057) less so;
+the alternative is *World-Tour Wharf*, which leans on the unit's Projet
+culturel instead. **Gallery Gardens** was chosen over *Sensory Gardens*
+because half the unit is art and culture, not only the senses.
+
+### 11.3 Proposed chapters (`CHAPTERS`)
+
+Following A1's shape — French scenario name, French tagline, a cliffhanger
+teasing the next chapter, none on the finale. The book's own unit titles are
+the scenario names; they are better than anything I would invent.
+
+| Unit | scenario | tagline | cliffhanger |
+|---|---|---|---|
+| 5 | Ensemble, c'est mieux ! | Partir, et partir ensemble | La suite : ouvrez les yeux, les oreilles, le nez… 👀 |
+| 6 | C'est trop beau ! | Les sens, l'art, les émotions | La suite : et si on parlait de famille ? 📷 |
+| 7 | Comme disait mon grand-père… | Histoires et souvenirs de famille | La suite : il est temps de rentrer à la maison… 🏠 |
+| 8 | Si vous voulez bien… | Rendre service, et refaire le quartier | *(none — finale)* |
+
+### 11.4 Colours: A2 can reuse A1's band tokens
+
+`globals.css:517-532` defines five `--region-*` accents and five
+`--region-*-band` fills, the bands mapped onto existing semantic tokens
+(`--cahier-accent-soft`, `--cahier-kraft`, `--tier-good-soft`,
+`--tier-medium-soft`, `--tier-weak-soft`).
+
+**The two courses never render on the same map**, so A2 may reuse the same
+five band fills without any visual collision — only four new `--region-*`
+accents are needed, and those stay provisional exactly as A1's are
+(STATUS decision 4: "Region accent hexes stay provisional — Design gave
+bands, not accents"). That halves this item.
+
+### 11.5 Roadside props — the part that is real authoring
+
+~24 items, ~6 per region, each with a French label or shop sign that teaches
+(Dan's litmus test keeps these: they are content, not decoration). Draft:
+
+**Departure Docks (U5)** — 🛫 « le départ » · 🧳 « faire sa valise » ·
+🧭 « le tour du monde » · *travel agency* « l'agence de voyage » ·
+🥾 « se lancer un défi » · 📣 « Allez ! Courage ! »
+
+**Gallery Gardens (U6)** — 👃 « sentir les fleurs » · *gallery*
+« la galerie d'art » · 🗿 « une sculpture » · 🎭 « les émotions » ·
+🎙️ « un balado » · 🌿 « la nature »
+
+**Memory Lane (U7)** — 👗 « la mode » · *family house* « la maison de
+famille » · 🌳 « l'arbre généalogique » · 📷 « les souvenirs » ·
+⌚ « un objet précieux » · ☎️ « prendre des nouvelles »
+
+**Renovation Quarter (U8)** — *town hall* « la mairie · les démarches » ·
+🧰 « bricoler » · 🎨 « rénover » · *apartment block* « le logement » ·
+🔑 « emménager » · 📣 « Ce n'est pas normal ! »
+
+### 11.6 The geometry is hardcoded to a 50-stop road
+
+Authoring the names is not enough — the map's coordinates assume A1's length.
+All of these are Phase 1, and none is hard:
+
+| Where | Assumption | Fix |
+|---|---|---|
+| `projection.ts:50` | `N_STOPS = 50` | per-course stop count |
+| `projection.ts:52` | `getWorldX(id) = WX[(id-1) % 10]` | works by luck for 51–90 (`(51-1)%10 = 0`); make it position-within-course, not global `num` |
+| `HomeMap3D.tsx:606,610` | `Math.min(4, …)` — 4 = last region index | `REGIONS.length - 1`, scoped to the course |
+| `scene.ts:placeNature(until = 49.6)` | 50-stop road | per-course length |
+| `ROADSIDE_ITEMS` | `z` is the **absolute** stop index 0–53 | per-course arrays with `z` relative to the course |
+| `scene.ts` finish zone | z 51.3–53.2 | rides on the per-course length |
+| `HomeMap.tsx:178,305` | `unit: 5` is the arena sentinel | risk 8 — the arena is not a unit |
+
+`ARENA_PLACE` ("GramMarathon Arena") is the activity's name rather than a
+place in either course, so it stays shared — but **each course needs its own
+Finale bank and its own finish zone**, which is why the sentinel has to move.
+
+### 11.7 Revised estimate for this layer
+
+Previously costed at 0.5 d as "chapters, regions, colours". With the roadside
+props, the four icons and the geometry parameterisation it is **~1.5 days**,
+of which about a day is authoring that wants Dan's red pen rather than an
+agent's judgement.
+
+---
+
+## 12. SIOs that can't be goals — and content that isn't a SIO
+
+Dan, 21 Aug: *"the purpose of the 40 SIOs is really about breaking down the
+objectives to bite sized ones. So given that there are now SIOs that cannot be
+represented in goals, what do you suggest."*
+
+There are **two** mismatches, and they point in opposite directions. Naming
+them separately is most of the answer.
+
+### 12.1 What A1 already does, and why it stops working at A2
+
+A1 has 6 production SIOs. Every one of them has a model mini-dialogue in
+`content/ateliers.ts`, and `atelierDecks.ts` turns **the dialogue's lines into
+the deck** — *"the dialogue lines ARE the cards, so students can drill the
+model line-by-line before performing it in class."* Verified: the set of
+production SIOs and the set of SIOs with a model dialogue are identical.
+
+That is a real answer to "how does a performance become a goal", and it works
+because all six A1 ateliers are **scripted, single-performer or two-hander
+exchanges**: a first meeting, a country presentation, an email, an itinerary,
+a review, a restaurant scene. You can write the model down.
+
+A2 breaks that assumption. Of its 12 production SIOs, six are still scripted
+exchanges — but six are **Projets culturels and Missions**: group work, over
+multiple sessions, with an unpredictable outcome and an artefact at the end
+(design a virtual world tour · record a soundscape · negotiate a three-day
+programme · gather a family recipe · invent a family secret · propose a
+building renovation). There is no model to write down. That is the *point* of
+them.
+
+### 12.2 Suggestion: one more goal shape, not one more SIO kind
+
+Add a field orthogonal to `sioKind` — kind says *what content*, shape says
+*how the goal is worked*:
+
+| `goalShape` | Count | What the stop opens | Assessment |
+|---|---|---|---|
+| **`drill`** | 28 | the existing five-step Practice sequence over a deck | items, SRS, pretest |
+| **`model`** | 6 | the model dialogue/text, its lines as cards, then ComposeIt rehearsal | rubric via `/api/feedback` |
+| **`brief`** | 6 | **a brief** — what the task is, the language it draws on (links to its 3–4 feeder SIOs), a worked example, and a self-mark | done / not done |
+
+The A2 split falls out cleanly:
+
+- **`model` (6)** — 053 Deciding to leave · 067 Buying an artwork ·
+  068 Advice email · 078 Telling a story · 088 Complaining ·
+  089 Recommending accommodation. All six are the unit **Ateliers
+  d'expression** plus U5's Situation-1 task. Same treatment as A1's six.
+- **`brief` (6)** — 060 Virtual world tour · 069 Soundscape podcast ·
+  070 Well-being mission · 079 Family recipe · 080 Family secrets ·
+  090 Renovation mission. All six are **Projets culturels and Missions**.
+
+**Retrofit check: all 6 of A1's production SIOs are `model`, and A1 has zero
+`brief` stops.** That is not a coincidence — it is why this friction appears
+now and not before. A2 introduces a goal shape the course never had. The field
+is additive; A1's data is unchanged.
+
+### 12.3 Why `brief` is honest rather than a cop-out
+
+`docs/ARCHITECTURE.md` §1 already draws this line: FluOlinGo *"deliberately
+implements the Blueprint's strands 3–4 (fluency development + language-focused
+learning) and delegates strands 1–2 (meaning-focused input/output) to the
+classroom… the classroom owns interaction and production."*
+
+The Missions are the classroom's by design. The failure mode to avoid is not
+"the app doesn't run the Mission" — it is **the Mission having no stop on the
+map**, which would silently drop 6 of 40 objectives, break the `x/40` counters,
+and make the spine stop being a decomposition of the syllabus. A brief keeps
+the stop, keeps the count, prepares the learner, records that it happened, and
+does not pretend to grade group work a webpage never saw.
+
+Most of the machinery exists: `isProduction` already means "rubric, not MCQ
+battery", `MarkDoneButton` already self-marks, and `SIO_CHAINS` already
+expresses "this stop belongs with those stops" — which is exactly the
+"language it draws on" link a brief needs.
+
+### 12.4 The mirror problem: content that is *not* a SIO
+
+The book drills two strands the 40 SIOs do not cover (§2.4): **8 phonetics
+objectives** and **4 conjugaison paradigms**. These are the opposite mismatch —
+drillable material with no goal.
+
+**Do not invent SIOs for them.** A1 already answers this: ConjugaZone is a
+cross-course *Skills* activity that hangs off the course rather than the
+spine, and `curriculum.ts` gives it the `UNIT_ALL` journey bucket precisely so
+it isn't forced to pretend a position. Phonetics gets the same treatment — a
+Skills-family activity (the repurposed NumBus shell, §7.2), with its item sets
+tagged by unit so a learner on Unité 7 gets *la liaison* rather than [t]/[d].
+
+### 12.5 The resulting shape
+
+- **The spine stays exactly 40 goals.** Nothing invented, nothing dropped.
+- **28 drill · 6 model · 6 brief** — three ways a goal can be worked, one of
+  which is new.
+- **Two Skills strands** carry the phonetics and conjugaison the spine can't.
+
+Cost: `goalShape` on the `Sio` type, a `brief` renderer in `SioDetail`
+(the smallest of the three — it is prose, links and a button), and the six
+briefs authored from the book's Mission pages. **~1 day**, plus the model
+dialogues, which are content either way.
+
+**One question back to Dan:** should a `brief` stop count toward course
+completion on the same footing as a drilled one — 1/40 either way — or should
+the map show it differently (it is the only stop the site cannot verify)? My
+recommendation is **same footing, no asterisk**: the Missions are the most
+motivating work in the unit, and discounting them would say the opposite.

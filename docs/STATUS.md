@@ -51,7 +51,14 @@ Only ONE agent edits this file at a time; say so in your commit.
   shell) and DELF preparation (no equivalent surface). **Blocker found:**
   `HomeMap.tsx:178` already uses `unit: 5` as the arena sentinel and line 305
   branches on `b.unit < 5` — that collides with A2's Unité 5 and must be
-  fixed in Phase 1.
+  fixed in Phase 1. Third pass (Dan's two asks): §11 = the map's whole naming
+  layer (4 regions + icons + accents, chapters, ~24 roadside props, and the
+  50-stop geometry constants in projection.ts/scene.ts — 1.5 d, was costed
+  0.5); §12 = the answer to "SIOs that cannot be represented in goals" — a
+  `goalShape` field orthogonal to `sioKind`: 28 drill · 6 model · 6 brief.
+  A1's six production SIOs are all `model` (its dialogue lines ARE the deck)
+  and it has zero `brief` stops, which is why A2's Missions/Projets are the
+  first thing that doesn't fit.
 
 ## Programme — done
 
