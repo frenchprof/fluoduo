@@ -719,10 +719,21 @@ body {
 
 /* Desk → page → side tab-rail layout. The notebook page rests on a grey desk;
  * the index tabs poke off the page's right edge into the reserved grey space. */
+/* The Map's dedicated interface (Dan, 2026-08-21): with the notebook
+ * chrome gone, the map earns the viewport — override the embedded heights
+ * (they are inline styles, hence the !important). */
+.map-full .home-map3d-box,
+.map-full .home-map-box {
+  height: min(80vh, 960px) !important;
+  max-height: none !important;
+}
+
 .cahier-desk {
   min-height: 100vh;
   background: var(--cahier-desk);
-  padding: 18px 0 64px;
+  /* 18px → 8px (Dan, 2026-08-21): the wordmark "can afford to go closer to
+     the corner of the page" — the desk shows just a sliver above the card. */
+  padding: 8px 0 64px;
 }
 /* Flip It's own world: the same exercise book, but on ITS warm wooden desk —
  * a full interface like the rain/conveyor games, not a site page. */

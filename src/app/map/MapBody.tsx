@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * La Carte — the course map on ITS OWN PAGE (Dan, 2026-08-21: "avoid having
+ * The Map — the course map on ITS OWN PAGE (Dan, 2026-08-21: "avoid having
  * that map within the same page as the navigational controls and menu items,
  * because as we scroll down with the finger, it will inadvertently cause the
  * finger to scroll on the map instead of the page").
@@ -11,7 +11,7 @@
  * unit's SIO list that opens under the map, and the A4 print sheet. Home
  * keeps the hero and links here with one card.
  *
- * Deep links: `/carte?unit=N` and/or `#SIO-0XX` — same grammar the Home page
+ * Deep links: `/map?unit=N` and/or `#SIO-0XX` — same grammar the Home page
  * used (`/?unit=N` still works: Home forwards it here, so the printed QR
  * codes and old bookmarks survive).
  */
@@ -28,7 +28,7 @@ import { equippedAccent } from "@/lib/economy";
 
 const MAP_VIEW_KEY = "fluo.homeMapView";
 
-export default function CarteBody() {
+export default function MapBody() {
   const [progress, setProgress] = useState<Progress>(defaultProgress());
   const [mapView, setMapView] = useState<"2d" | "3d">("2d");
   const [openUnit, setOpenUnit] = useState<number | null>(null);
@@ -73,7 +73,7 @@ export default function CarteBody() {
     setOpenUnit(unit);
     setOpenSioId(id);
     try {
-      window.history.replaceState(null, "", `/carte?unit=${unit}#${id}`);
+      window.history.replaceState(null, "", `/map?unit=${unit}#${id}`);
     } catch {
       // fine — the modal still opens
     }
@@ -82,7 +82,7 @@ export default function CarteBody() {
     setOpenSioId(null);
     setOpenUnit(unit);
     try {
-      window.history.replaceState(null, "", `/carte?unit=${unit}`);
+      window.history.replaceState(null, "", `/map?unit=${unit}`);
     } catch {
       // fine
     }
@@ -144,7 +144,7 @@ export default function CarteBody() {
                 setOpenUnit(null);
                 setOpenSioId(null);
                 try {
-                  window.history.replaceState(null, "", "/carte");
+                  window.history.replaceState(null, "", "/map");
                 } catch {
                   // fine
                 }
@@ -162,7 +162,7 @@ export default function CarteBody() {
             onSioClosed={() => {
               setOpenSioId(null);
               try {
-                window.history.replaceState(null, "", `/carte?unit=${openUnit}`);
+                window.history.replaceState(null, "", `/map?unit=${openUnit}`);
               } catch {
                 // fine
               }

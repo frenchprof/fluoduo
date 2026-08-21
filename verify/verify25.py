@@ -121,18 +121,21 @@ check(cont >= 0 and revu >= 0 and "</div>" not in "" and abs(revu - cont) < 1400
       "the two actions are paired, not scattered",
       "the two actions are far apart in the card")
 
-# 4 · every counter survives
+# 4 · the TWO essential marks (Dan, 2026-08-21, decluttering: "we only need
+# the essential ones — since all the rest can be derived"): course progress
+# in ONE form (the fraction; the % lives in the tooltip) and the streak with
+# its visible ×XP multiplier. Level/XP/gems left the hero for /moi + /profil.
 for marker, what in (
-    ("doneTotal}/${SIOS.length", "the done count"),
+    ("doneTotal}/${SIOS.length", "the course mark (fraction form)"),
     ("progress.streak", "the streak"),
-    ("progress.xp", "the XP total"),
-    ("progress.gems", "the gems counter"),
-    ("${pct}%", "the course-completion percentage"),
-    ("lvl.into}/${lvl.span", "the level XP counter"),
+    ("mult > 1", "the visible ×XP multiplier on the streak"),
 ):
     check(marker in home,
           f"{what} survives the restyle",
-          f"{what} was lost in the restyle — progress counters are learner feedback")
+          f"{what} was lost — the two essential marks are the hero's floor")
+check("progress.xp" not in home and "progress.gems" not in home and "lvl.into" not in home,
+      "level / XP / gems left the hero (derived marks live on /moi, /profil)",
+      "a derived mark crept back into the hero row")
 
 print("\npatch 25 check (hero rows)\n" + "-" * 66)
 for x in OK:   print("  ok    " + x)
