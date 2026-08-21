@@ -63,6 +63,14 @@ Only ONE agent edits this file at a time; say so in your commit.
   that: XP pays base + a mastery bonus scaled by the SIO's own items, which a
   brief has none of, so a Mission would be worth half a vocab stop forever;
   the plan recommends scaling it by the brief's feeder SIOs instead (§12.6).
+  §2.5 corrects the pass before it, on Dan's catch: the Mémo is NOT the whole
+  deck source. 16 of 40 SIOs carry a phrases load but the Mémo has only 8
+  Communication boxes — the rest (« Mieux vaut… », « Je souhaite… ») are
+  harvested from the Situation pages' Résumons/Aide-à-la-lecture steps.
+  SIO-087 would have shipped an empty deck. Rule proposed to bound it: lift a
+  frame only where the book itself re-elicits it. Phrases layer roughly
+  doubles. Exposes a guard-rail question — A2's texts run ahead of A2's
+  grammar sequence (imparfait in U5, futur simple in U8).
 
 ## Programme — done
 

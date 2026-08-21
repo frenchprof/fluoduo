@@ -149,7 +149,8 @@ défi*, ~8 items each), two Communication chunk lists (*Encourager quelqu'un*,
 two phonetics boxes, and four ready-made production activities. That is
 ~48 vocab items + ~12 chunks + 3 lessons per unit, **transcribed rather than
 invented**. A1's decks had to be reverse-engineered from the syllabus; A2's
-are handed over.
+are handed over. (**Amended by §2.5** — this holds for the Lexique lists, but
+the Mémo is *not* the whole source for the chunk load.)
 
 **The cahier supplies the assessment layer, in shapes the app already has.**
 Each unit runs 12 pages on one pattern — 3 Situations × 2pp, *J'agis*,
@@ -176,6 +177,76 @@ cover them:
 Neither is a defect in the annex — A1 handles conjugation the same way, as a
 cross-course Skills activity outside the spine. But phonetics has no home at
 all today. See §7.2 and open question 4.
+
+### 2.5 Correction: the Mémo is not the whole deck source
+
+§2.4 said the content layer is "transcribed rather than invented". That is true
+of the Lexique lists and **false of roughly half the chunk load** — Dan caught
+it, 21 Aug: *"do the lessons include phrases that are picked up from the
+lesson, e.g. in Situation 3 of Unit 5, students learn 'Mieux vaut…'"*
+
+He is right, and the arithmetic shows the size of it:
+
+| | Count |
+|---|---|
+| A2 SIOs carrying a `phrases` load (primary or secondary, per the annex) | **16 of 40** |
+| Communication boxes in the Mémo pages (2 per unit) | **8** |
+| **Chunk content with no Mémo box at all** | **at least 8 SIOs** |
+
+The missing half lives on the **Situation pages**, in three forms the Mémo
+never repeats:
+
+1. **Harvested frames.** Each unit's Situation 3 closes with a *Résumons /
+   On coopère en classe* step that lifts sentence frames straight out of the
+   document and asks the learner to reuse them. U5 p.79, verbatim: *« Il
+   explique les obligations : **Nous devons…** · Il en décrit les possibilités :
+   **C'est possible…** · Il nous donne des conseils : **Mieux vaut…** · Il nous
+   raconte son enfance : **J'alternais…** »* — then *« Écrivons nos propres
+   idées… Mieux vaut travailler en groupes. »* U8 p.121 does the same with
+   *« Si tu veux atteindre le niveau A2, tu devras… · Si nous étions à ta
+   place, nous… »*. **None of these four is in the U5 Mémo.**
+2. **« Aide à la lecture » glosses.** The book's own explanations of the
+   expressions it knows are hard: *on bosse = on travaille · se détendre = se
+   reposer · consacrer du temps à · alterner*. One box per Situation-3 page.
+3. **Task-embedded frames.** U8 Situation 3: *« À quelle administration
+   s'adresser ? Je souhaite renouveler un visa / ouvrir un compte / rédiger un
+   testament. »*
+
+**SIO-087 is the proof case.** The annex gives it vocab + phrases; the Mémo has
+no *démarches administratives* Communication box; its entire content is that
+Situation-3 page. Built from the Mémo alone, **SIO-087 would ship with an
+empty deck.**
+
+#### The rule I suggest, so this stays bounded
+
+Harvesting from running text is judgement, not transcription, and without a
+rule it balloons. The book supplies an objective test:
+
+> **Lift a frame onto a card only where the book itself asks the learner to
+> reuse it** — the *Résumons* step, the *Appliquez* step, and the *Exemple:*
+> lines all mark reusable frames explicitly. Anything that appears only inside
+> a reading text and is never re-elicited stays reading, not a card.
+
+That keeps *Mieux vaut + inf* and *Je souhaite + inf* (both re-elicited) and
+drops incidental text vocabulary. **Revised phrases layer: ~50 Mémo chunks +
+~40–60 harvested frames — roughly double what §2.4 costed**, and the
+authoring is per-Situation reading rather than per-Mémo copying. Deck source
+for every SIO is therefore *Mémo box + its Situation pages*, not the Mémo
+alone.
+
+#### And a guard-rail question this exposes
+
+*« J'alternais… »* is **imparfait, taught incidentally in Unit 5** — while the
+imparfait SIO is 072, in Unit 7. *« tu devras »* is futur simple, in Unit 8,
+with no SIO anywhere. A1 held a strict line on this (`ateliers.ts`: *"Grammar
+guard-rails: present + futur proche only, no passé composé"*). A2's own texts
+run ahead of its own grammar sequence.
+
+Two honest options: **hold the guard-rail** and paraphrase the frame into
+taught grammar (loses the book's wording), or **accept the frames as
+unanalysed chunks** — learn *« Mieux vaut travailler en groupes »* whole, the
+way the book plainly intends, and let SIO-072 explain the machinery later. See
+open question 8.
 
 ---
 
@@ -470,7 +541,11 @@ the map.
 5. **DELF preparation — build it or skip it?** (§7.4 — a new surface, ~3–4 d,
    genuinely valuable, definitely scope creep. Your call, not mine.)
 6. **The four chapter scenarios, region names and colours.** (§5)
-7. **Confirm the A2 `short` labels and section placements** in
+7. **Grammar guard-rail on harvested frames** (§2.5): paraphrase *«&nbsp;Mieux
+   vaut… &nbsp;»* / *«&nbsp;J'alternais…&nbsp;»* into taught grammar, or teach them
+   whole as unanalysed chunks and let the later SIO explain the machinery?
+   Recommend whole — it is plainly what the book intends.
+8. **Confirm the A2 `short` labels and section placements** in
    `ATELIER_A2_SIOs_v1.csv` — 40 drafts inside the 14-character gate, and the
    handful of thematic-fit placements flagged in §2.3.
 
