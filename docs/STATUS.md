@@ -40,6 +40,18 @@ Only ONE agent edits this file at a time; say so in your commit.
   annex numbers A2 as **SIO-051–090, units 5–8**, so nothing collides with
   French 1 — `course` can be DERIVED from the unit, and no learner data
   migrates. Plumbing ≈2 d, then content. Open decisions in its §10.
+  Updated the same day against the full materials (manuel U5–8, cahier U5–8,
+  guide inventories): all four A2 units share ONE shape (3 Situations · Lab'
+  Langue · 2 Ateliers · Mission), so all 40 SIOs are now placed into their
+  book section in the CSV — that IS `UNIT_SITUATIONS`. The Mémo pages are
+  deck-shaped verbatim and the cahier's Bilan linguistique is already
+  `finale.ts`'s shape, so list content roughly halves vs a naive scaling
+  while authored listening text doubles. Two gaps the annex does not cover:
+  a phonetics strand (8 objectives, no SIO, no engine — NumBus is the donor
+  shell) and DELF preparation (no equivalent surface). **Blocker found:**
+  `HomeMap.tsx:178` already uses `unit: 5` as the arena sentinel and line 305
+  branches on `b.unit < 5` — that collides with A2's Unité 5 and must be
+  fixed in Phase 1.
 
 ## Programme — done
 

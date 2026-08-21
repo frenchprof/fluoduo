@@ -3,9 +3,10 @@
 _Written 21 Aug 2026, against Dan's 40-SIO annex + the Unité 8 manuel pages.
 Nothing here is built yet. The decisions in §3 gate everything else._
 
-**Sources read:** `docs/handoff/ATELIER_A2_SIOs_v1.csv` (the 40 SIOs, extracted
-from Dan's annex — see §5), `L'atelier A2 — Manuel`, Unité 8 (pp. 115–127, 14
-pages). Cahier + guide pédagogique still to come.
+**Sources read (all now in hand):** Dan's 40-SIO annex → extracted to
+`docs/handoff/ATELIER_A2_SIOs_v1.csv` (§5) · `L'atelier A2 — Manuel`, Units
+5–8 complete (56 pages) · `Cahier d'activités`, Units 5–8 (46 pages) ·
+`Guide pédagogique`, unit inventories for Units 5–8 (pp. 160/188/216/244).
 
 ---
 
@@ -89,10 +90,20 @@ Situation 3). Unité 8 is:
 > **2 Ateliers** (Exprimer son mécontentement p.124 · Recommander un
 > logement p.125) · **Mémo + Mission** (Rénover ce bâtiment p.127)
 
-That maps onto the SIO numbering almost exactly — 88 and 89 are the two
-Ateliers, 90 is the Mission — but it means `UNIT_SITUATIONS` can no longer
-carry a hardcoded "three groups, atelier merged into the third". It becomes
-per-unit group data. Small change, but it must be made deliberately.
+**Verified identical across all four units** (guide pédagogique
+pp. 160/188/216/244 + the four unit-opener contents pages): every A2 unit is
+3 Situations · Lab' Langue & Culture · 2 Ateliers d'expression · Mission,
+plus Stratégies, S'exercer and a two-page Mémo. So `UNIT_SITUATIONS` can no
+longer carry a hardcoded "three groups, atelier merged into the third" — it
+becomes per-unit group data, and **all 40 SIOs are now assigned to their
+section** in the intake CSV (§5).
+
+The mapping is not perfectly uniform, and the CSV records it honestly: U6 and
+U7 spend a SIO on both the Projet culturel *and* the Mission (69/70, 79/80),
+U5's 060 is the Projet culturel with the Mission folded in, and U8's 090 is
+the Mission with the Lab' (*Jouer un huis clos*) folded in. A handful of SIOs
+are placed by best thematic fit rather than by an explicit box — exactly the
+situation `sios/index.ts` already documents for A1, and flagged the same way.
 
 **(b) Production load is 2.5× A1's.** Counting the annex's primary focus:
 
@@ -125,6 +136,46 @@ Consequences:
   listening content must be *parallel texts we author*, TTS'd through the
   existing `/api/tts` + `generate-tts-bank.mjs` path — the same thing
   `textgen/` already does. Budget it as authoring, not as asset copying.
+
+### 2.4 The Mémo and the cahier hand us the content layer
+
+This is the biggest change to the costing, and it is good news.
+
+**The manuel's two-page Mémo closing each unit is deck-shaped already.** For
+Unité 5 it is, verbatim: six named Lexique lists (*Le voyage* · *Partir en
+voyage* · *Des qualités* · *Des défauts* · *La forme physique* · *Se lancer un
+défi*, ~8 items each), two Communication chunk lists (*Encourager quelqu'un*,
+7 chunks; *Insister pour inviter*, 5), three grammar boxes with rule + examples,
+two phonetics boxes, and four ready-made production activities. That is
+~48 vocab items + ~12 chunks + 3 lessons per unit, **transcribed rather than
+invented**. A1's decks had to be reverse-engineered from the syllabus; A2's
+are handed over.
+
+**The cahier supplies the assessment layer, in shapes the app already has.**
+Each unit runs 12 pages on one pattern — 3 Situations × 2pp, *J'agis*,
+*J'apprends* (stratégies), then:
+
+| Cahier section | Maps onto | Notes |
+|---|---|---|
+| **Bilan linguistique** (2pp, GRAMMAIRE + LEXIQUE) | `finale.ts` bank + GramMarathon | Gap-fill, word-order and choose-the-verb items — the exact "one gap, one word" shape `finale.ts` already enforces |
+| **Préparation au DELF** (2pp, CO/CE/PE/PO) | *nothing yet* | See §7.4 — a real opportunity and a real decision |
+| Phonetics exercises | the missing engine (§7.2) | Literally *"Écoutez. Vous entendez [s], [z] ou les deux ?"* and *"dites si la prononciation est identique (=) ou différente"* — binary/ternary discrimination items, ready to import |
+| Situation exercises | pretests, iComplete, GramMarathon | Standard drill shapes |
+
+**But two strands in the book have no SIO at all**, and the annex does not
+cover them:
+
+- **Phonétique — 8 objectives across the four units** (U5 enchaînement
+  consonantique · [ʃ]/[ʒ] · intonation; U6 [s]/[z] · [ə]/[e]/[a]; U7 la
+  liaison · [i]/[e]/[ɛ]; U8 [t]/[d] · [p]/[b]/[f]/[v]). Drilled in every unit,
+  drilled again in the cahier, and invisible to the 40-SIO spine.
+- **Conjugaison — one paradigm per unit** (*se battre* · *s'asseoir* · the
+  participe passé of *connaître/grandir/offrir* · *rendre*), on top of the
+  tense load in §7.1.
+
+Neither is a defect in the annex — A1 handles conjugation the same way, as a
+cross-course Skills activity outside the spine. But phonetics has no home at
+all today. See §7.2 and open question 4.
 
 ---
 
@@ -221,32 +272,34 @@ crosses a course boundary · every A2 SIO has a unique id and a `short` ≤ 14.
 
 ---
 
-## 5. Phase 0 — intake status
+## 5. Phase 0 — intake status: **complete**
 
-**Done.** The annex is extracted to **`docs/handoff/ATELIER_A2_SIOs_v1.csv`**,
-in the shape `scripts/gen-sios.mjs` already consumes: 40 rows, unit · id ·
-topic · **proposed `short` label (all ≤ 14 chars, the build gate)** · primary
-focus · secondary focus · Can-Do.
+Everything the plan asked for has arrived. The annex is extracted to
+**`docs/handoff/ATELIER_A2_SIOs_v1.csv`** — 40 rows in the shape
+`scripts/gen-sios.mjs` already consumes:
 
-**Still empty in that CSV, and needed before Phase 3:**
-
-| Column | Where it comes from |
+| Column | Status |
 |---|---|
-| `SIO Description` | the unit's language inventory / *Mémo* pages |
-| `CEFR Mode` | Spoken Interaction / Written Production / … per SIO |
-| `Linguistic competence (measurable)` | the assessable criteria — what the drills score against |
-| `Flashcard Set` | the `5.01`–`8.10` set ids |
-| `Collection id` | assigned as each deck is authored |
-| `Book section` | Situation 1/2/3 · Lab' Langue · Atelier 1/2 · Mission — drives `UNIT_SITUATIONS` |
+| Unit · SIO # · Topic · Can-Do | ✔ from the annex |
+| **Short (≤14)** | ✔ 40 drafted, all inside the `check:short` build gate |
+| Primary / Secondary focus | ✔ from the annex — this is `sioKinds.ts`'s data |
+| **Flashcard Set** (`5.01`–`8.10`) | ✔ assigned |
+| **Book section** | ✔ all 40 placed — Situation 1/2/3 · Lab' Langue · Atelier 1/2 · Mission. **This is `UNIT_SITUATIONS`.** |
+| **SIO Description** | ✔ seeded with the book's own Lexique/Grammaire box names (the Mémo pages) |
+| CEFR Mode | ✗ still to assign per SIO |
+| Linguistic competence (measurable) | ✗ the assessable criteria — the one genuinely authored column left |
+| Collection id | ✗ assigned as each deck is authored |
 
-**Still needed as materials:** the cahier + guide pédagogique (in flight), and
-the manuel pages for **Units 5, 6 and 7** — only Unité 8 arrived.
+**Two columns left, and only one of them is real work:** `CEFR Mode` is
+mechanical (the book's skill labels), `Linguistic competence` is the
+measurable criteria the drills score against — the same column that took the
+most red-pen on A1.
 
-**Still needed as decisions, not documents** (these are the flavour layer and
-they are Dan's):
+**Still needed as decisions, not documents** (the flavour layer — Dan's):
 - four chapter scenarios, taglines and cliffhangers (`chapters.ts`). The book
-  titles are the obvious seed: U5 *Ensemble, c'est mieux !* · U6 *C'est trop
-  beau !* · U7 *Comme disait mon grand-père…* · U8 *Si vous voulez bien…*
+  titles are the seed and they are good ones: U5 *Ensemble, c'est mieux !* ·
+  U6 *C'est trop beau !* · U7 *Comme disait mon grand-père…* · U8 *Si vous
+  voulez bien…*
 - four region names, icons, accent + band colours for the map. A1's are
   Welcome Village / Identity Heights / Wants & Wishes Valley / Downtown
   District / Marché.
@@ -255,17 +308,27 @@ they are Dan's):
 
 ## 6. Phases 2–3 — the content build-out
 
-A1's actual volume as the yardstick:
+A1's volume was the only yardstick before the books arrived. Now the A2
+figures come from the Mémo and cahier pages themselves (§2.4), which changes
+the shape of the estimate — **fewer deck items than a naive scaling suggests,
+more authored text**:
 
-| Asset | French 1 | Per unit | French 4 projection (4 units, 40 SIOs) |
-|---|---|---|---|
-| SIOs | 50 | 10 | 40 ✔ authored |
-| Curated decks | 45 | ~9 | ~36 |
-| Deck items | 772 | ~155 | ~620 |
-| Native lessons | 27 | ~5 | ~22 |
-| Pretests | 35 | ~7 | ~28 |
-| Finale items | ~160 | ~32 | ~130 |
-| ÉcouTexte texts | 2 units' worth | — | **4 units' worth, all newly authored** (§2.3c) |
+| Asset | French 1 (actual) | French 4 (from the books) |
+|---|---|---|
+| SIOs | 50 | 40 ✔ authored, sectioned |
+| Lexique items | 772 across 45 decks | **~200** — 6 named lists/unit × ~8 items, transcribed from the Mémo |
+| Communication chunks | folded into decks | **~50** — 2–3 lists/unit, verbatim |
+| Grammar lessons | 27 | **12** — 3 boxes/unit, rule + examples given |
+| Phonetics items | none | **~8 sets** — cahier discrimination exercises, ready to import (§7.2) |
+| Pretests | 35 | ~28 |
+| Finale / Bilan items | ~160 | **~130** — the cahier's Bilan linguistique is already this shape |
+| **ÉcouTexte / listening** | 2 units' worth | **4 units, all newly authored** — the coursebook audio cannot ship (§2.3c) |
+
+The headline: **the list-shaped content roughly halves** (the book curates a
+tighter A2 core than A1's closed inventories), while the **authored-text
+content roughly doubles**. Net effort lands close to A1's, redistributed from
+transcription toward writing — and the writing is the part that needs Dan's
+eye, not an agent's.
 
 **Phase 2 — skeleton (~1 day/unit).** Land the 40 SIOs, chapters, regions,
 group structure. Immediately: the map draws French 4, the Index lists 40 rows,
@@ -299,9 +362,13 @@ screen is unchanged. **~1 day + the paradigm data.**
 - **NumBus / NumBourse** have no A2 job as number games — but **the NumBus
   shell is exactly the missing phonetics engine.** "Type the number you hear"
   → "tap the sound you hear": same audio-prompt/timed-response loop, new item
-  type, serving the [t]/[d]-style discrimination sections that appear in every
-  A2 Situation. Recommend repurposing rather than adding a 21st activity, and
-  keeping the number decks for French 1.
+  type. This is no longer a guess from one page: the strand runs **8
+  objectives across all four units** (§2.4), and the cahier already writes the
+  items in a form the shell can eat — *"Écoutez. Vous entendez [s], [z] ou les
+  deux ?"* is a three-way tap; *"dites si la prononciation est identique (=)
+  ou différente"* is a two-way tap. Recommend repurposing rather than adding a
+  21st activity, and keeping the number decks for French 1. **~0.5 day**, and
+  it closes the only content strand the site currently cannot represent.
 - **ÉcouTexte, ComposeIt, ChaTutor, WorDrill** carry much more weight (§2.3c).
 - **VocabulaRain / LexicaLater** still earn their place — derivational
   morphology (`-ment` / `-amment` / `-emment`, SIO-066) is *more* suited to
@@ -316,6 +383,21 @@ screen is unchanged. **~1 day + the paradigm data.**
 30% production (§2.3b) means `/api/feedback` and ComposeIt become the primary
 assessment path rather than a Track D extra. Already built and evaluated; the
 open question is cost per cohort (§8.4), not capability.
+
+---
+
+### 7.4 The DELF preparation pages have no equivalent — opportunity or scope creep?
+
+Every cahier unit closes with a two-page **Préparation au DELF** (compréhension
+de l'oral · compréhension des écrits · production écrite · production orale,
+scored out of 25). FluOlinGo has no timed, multi-skill mock-exam surface — the
+closest thing is the GramMarathon Finale, which is single-skill gap-fill.
+
+Four units of DELF A2 practice is a genuinely valuable thing to own, and most
+of the pieces exist (ÉcouTexte for CO, the reading drills for CE, ComposeIt +
+`/api/feedback` for PE, WorDrill/SpeakZone for PO). But it is a **new surface**,
+not a scaling job — perhaps 3–4 days on top of everything above. Flagging it
+rather than assuming it: see open question 7.
 
 ---
 
@@ -338,10 +420,17 @@ open question is cost per cohort (§8.4), not capability.
 7. **The 3D map is tuned to a 5-region, 50-stop road.** `FULL_AHEAD` /
    `MAX_AHEAD` / `SIZE_FALLOFF` came out of eleven verdict rounds. A 4-region,
    40-stop road needs a look, not a rebuild.
-8. **Only Unité 8 of the manuel is in hand.** §2.3's structural findings are
-   generalised from one unit. If Units 5–7 differ in shape (e.g. one Atelier,
-   or no Lab'), `UNIT_SITUATIONS` absorbs it — but the per-unit group data
-   must be checked against each unit, not assumed.
+8. **`unit: 5` is already taken.** `HomeMap.tsx:178-183` pushes the
+   GramMarathon Arena band as `unit: 5`, and line 305 branches on
+   `b.unit < 5 ? …unit… : ARENA_PLACE`. With A2 on units 5–8 the map would
+   render Unité 5 as the finale arena and Units 6–8 as arenas too. **Fix in
+   Phase 1** — the arena is not a unit: give the band a `kind` flag, or
+   `UNIT_APP` (99), which `curriculum.ts` already reserves for exactly this.
+   Each course then gets its own Finale. Caught by reading, not by a test;
+   `verify30-course.py` should assert it.
+9. **The phonetics and conjugaison strands have no SIOs** (§2.4). If they are
+   in scope for the site, they need a home that is not the SIO spine — the
+   same shape ConjugaZone already has (a cross-course Skills activity).
 
 ---
 
@@ -373,12 +462,26 @@ the map.
 3. **Does a French 4 learner ever see French 1?** Remedial back-links to an A1
    outcome are genuinely useful and nearly free once both are in one app — but
    they cut against the "never see the other course" default.
-4. **Repurpose NumBus as the phonetics discriminator** (§7.2), or leave the
-   sound-discrimination sections to the classroom?
-5. **The four chapter scenarios, region names and colours.** (§5)
-6. **Confirm the A2 `short` labels** in `ATELIER_A2_SIOs_v1.csv` — 40 drafts,
-   all within the 14-character gate.
+4. **Phonetics: in scope or classroom-only?** The book drills 8 phonetic
+   objectives across the four units and the cahier hands us the items (§2.4),
+   but none of them has a SIO. If in scope, recommend repurposing the NumBus
+   shell as a discriminator (§7.2, ~0.5 d) and hanging the strand off the
+   units the way ConjugaZone hangs off the course.
+5. **DELF preparation — build it or skip it?** (§7.4 — a new surface, ~3–4 d,
+   genuinely valuable, definitely scope creep. Your call, not mine.)
+6. **The four chapter scenarios, region names and colours.** (§5)
+7. **Confirm the A2 `short` labels and section placements** in
+   `ATELIER_A2_SIOs_v1.csv` — 40 drafts inside the 14-character gate, and the
+   handful of thematic-fit placements flagged in §2.3.
 
-_Answered already by the materials, previously open: the id scheme (§3.2,
-SIO-051–090 / units 5–8) · whether French 4 has an orientation unit (no — it
-opens at Unité 5) · whether a new `text` SIO kind is needed (no, §7.2)._
+_Answered by the materials, previously open: the id scheme (§3.2, SIO-051–090
+/ units 5–8) · whether French 4 has an orientation unit (no — it opens at
+Unité 5) · whether a new `text` SIO kind is needed (no, §7.2) · whether the
+four units share one shape (yes, verified — §2.3)._
+
+_Found while reading, not asked: `unit: 5` is already the map's arena
+sentinel and collides with A2's Unité 5 (risk 8). And the screenshot you sent
+shows the map card as "La Carte · Unité 3 · Identity Heights" — `main` has
+since renamed it to The Map, so that build predates commit 56aef90, but the
+Unité 3 / Identity Heights pairing looks off either way (Identity Heights is
+Unité 1's region; Unité 3 is Downtown District). Worth a glance at live.__
