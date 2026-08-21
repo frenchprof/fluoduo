@@ -111,7 +111,9 @@ check("BuildingSprite" in m3 and "PropSprite" in m3 and "NatureSprite" in m3, "b
 
 # 3 · semantics
 check("sioKind(" in m3 and "sioSecondary(" in m3 and "KIND_COLOR[" in m3, "ring = KIND_COLOR[sioKind()], dot = sioSecondary()", "kind colours not from sioKind()/sioSecondary()")
-check("isSioDone(" in m3 and '"✓"' in m3 and "▶" in m3 and '"dashed"' in m3, "done ✓ · current ▶ · to-come dashed", "stop states missing")
+# Round 9 (Dan): solid coloured buttons, the capture's register — the state
+# signal moved from a dashed ring to a lightened face on the to-come stops.
+check("isSioDone(" in m3 and '"✓"' in m3 and "▶" in m3 and f"55%, {'${PAPER}'}" in m3, "done ✓ · current ▶ · to-come the same colour lightened", "stop states missing")
 check("st.short" in m3, "stops labelled with `short`", "labels not `short`")
 check("onOpenSio?.(" in m3 and "onOpenUnit?.(" in m3, "stops open their SIO, gate signs open their unit", "onOpenSio/onOpenUnit not wired")
 check('href="/practice/grammarathon/finale"' in m3 and "🏁" in m3, "🏁 FINAL links to the GramMarathon final", "no FINAL link")

@@ -58,10 +58,11 @@ import { ROADSIDE_ITEMS, NATURE_ITEMS, type RBuild, type RProp, type NatureType 
    scrollTop → camZ: the box's scroll height is the road's length. */
 const SCROLL_PER_STOP = 170;
 // One knob over the roadside set's size against the stops. Dan, 2026-08-20
-// (mini-planet round): "there are big enough things on both sides that
-// occupy the screen" — full size, no damping; LAT_SPREAD keeps them off the
-// road itself.
-const PROP_DAMP = 1.0;
+// round 9: "the items on the left and right should be much taller, occupying
+// more of the screen" — the flanks are GROUNDED side elevations that tower
+// over the flattened road, not an aerial view; the verge clamp keeps their
+// feet off the road however wide they grow.
+const PROP_DAMP = 1.7;
 const CAM_MIN = -1.5; // before SIO-001, the Welcome Village gate in view
 const CAM_MAX = 54.5; // the finishing line
 const ARCH_Z = 51; // the 🏁 GramMarathon arch
@@ -407,11 +408,11 @@ function PropSprite({ item, scale, scaleY }: { item: RProp; scale: number; scale
       <span className="block" style={{ fontSize: fs, lineHeight: 1, filter: `drop-shadow(0 ${Math.max(2, fs * 0.07)}px ${Math.max(3, fs * 0.13)}px rgba(0,0,0,0.42))` }}>
         {item.emoji}
       </span>
-      {item.label && scale > 0.8 && ( // curved world: only the very nearest props teach; stop labels own the field
+      {item.label && scale > 1.3 && ( // round 9: props are 1.7× — only the truly nearest teach, and the tag stays a tag, never a banner
         <div
           lang="fr"
           className="whitespace-nowrap text-center font-extrabold"
-          style={{ marginTop: 2, fontSize: Math.max(6, Math.round(fs * 0.23)), color: INK, background: "rgba(255,255,255,0.88)", padding: "1px 5px", borderRadius: 3, boxShadow: "0 1px 4px rgba(0,0,0,0.12)" }}
+          style={{ marginTop: 2, fontSize: Math.max(6, Math.min(15, Math.round(fs * 0.14))), color: INK, background: "rgba(255,255,255,0.88)", padding: "1px 5px", borderRadius: 3, boxShadow: "0 1px 4px rgba(0,0,0,0.12)" }}
         >
           {item.label}
         </div>
@@ -428,11 +429,13 @@ const PINE_DARK = "color-mix(in oklch, var(--tier-good) 55%, black)";
 const PINE_MID = "color-mix(in oklch, var(--tier-good) 80%, black)";
 const TRUNK = "linear-gradient(to bottom, var(--cahier-kraft-strong), color-mix(in oklch, var(--cahier-kraft-strong) 60%, black))";
 
-function NatureSprite({ type, size, scale, scaleY }: { type: NatureType; size: number; scale: number; scaleY: number }) {
+function NatureSprite({ type, size, scale, scaleY, tall }: { type: NatureType; size: number; scale: number; scaleY: number; tall?: boolean }) {
   const cW = Math.round(size * scale);
-  const cH = Math.round(size * (type === "pine" ? 1.35 : type === "bush" ? 0.55 : 0.88) * scale);
-  const tW = Math.max(2, Math.round(size * 0.17 * scale));
-  const tH = Math.max(1, Math.round(size * 0.3 * scale));
+  const cH = Math.round(size * (type === "pine" ? 1.35 : type === "bush" ? 0.55 : tall ? 0.98 : 0.88) * scale);
+  // Round 10 (Dan): a GIANT holds its crown high on a long trunk — near the
+  // camera the crown brushes the top of the frame.
+  const tW = Math.max(2, Math.round(size * (tall ? 0.13 : 0.17) * scale));
+  const tH = Math.max(1, Math.round(size * (tall ? 0.85 : 0.3) * scale));
   const brd = Math.max(0.8, scale * 1.8);
   if (cW < 4) return null;
   const dark = type === "pine" ? PINE_DARK : LEAF_DARK;
@@ -517,7 +520,7 @@ export default function HomeMap3D({
   // the eye line sits below the box (CAMERA_Y > 1), so a stop AT camZ is off
   // screen — backing off ~0.95 puts the current stop big and fully visible in
   // the lower third (Dan, 2026-08-20 camera).
-  const homeZ = Math.max(0, activeIdx) - 0.8;
+  const homeZ = Math.max(0, activeIdx) - 1.0;
 
   // The camera — starts ON the current stop (no landing flash).
   const [camZ, setCamZ] = useState(homeZ);
@@ -633,7 +636,7 @@ export default function HomeMap3D({
   // plus a verge — the corridor's world half-width is read back from the
   // same numbers PerspectiveBg draws it with.
   const LAT_SPREAD = 1.9;
-  const VERGE = 0.55; // world units of clear ground between road edge and prop (covers the bead-swell)
+  const VERGE = 0.75; // world units of clear ground between road edge and prop (covers the bead-swell and the round-9 taller, wider flanks)
   const placeAt = (z: number, side: 1 | -1, lat: number): Projected | null => {
     if (vw === 0) return null;
     const centre = project(pathXAt(z), z - camZ, camZ, vw, vh);
@@ -694,10 +697,10 @@ export default function HomeMap3D({
                     if (!p0) return null;
                     const p = { ...p0, scale: p0.scale * PROP_DAMP };
                     const cW = Math.round(item.size * p.scale * (item.type === "bush" ? 1.6 : 1));
-                    const fullH = Math.round(item.size * p.scale * (item.type === "pine" ? 1.75 : item.type === "bush" ? 0.65 : 1.25));
+                    const fullH = Math.round(item.size * p.scale * (item.giant ? 1.9 : item.type === "pine" ? 1.75 : item.type === "bush" ? 0.65 : 1.25));
                     return (
                       <div key={item.id} aria-hidden className="absolute" style={{ left: p.px - cW / 2, top: p.py - fullH * p.reveal, zIndex: zOrder(p.scale) - 2, ...clipRise(p.reveal) }}>
-                        <NatureSprite type={item.type} size={item.size} scale={p.scale} scaleY={p.scaleY} />
+                        <NatureSprite type={item.type} size={item.size} scale={p.scale} scaleY={p.scaleY} tall={item.giant} />
                       </div>
                     );
                   })}
@@ -767,14 +770,21 @@ export default function HomeMap3D({
                     const ahead = i > travelledTo;
                     const flag = st.id === CLASS_FLAG_SIO;
                     const nodeH = Math.round(sz * scaleY);
-                    const depthH = Math.max(2, Math.round(sz * 0.18 * scaleY));
+                    // Round 9 (Dan): a fat skirt under the face — the button's
+                    // visible height off the ground, what makes it read as
+                    // LYING on the road rather than a coin on edge.
+                    const depthH = Math.max(3, Math.round(sz * 0.3 * scaleY));
                     // The pad is a circular SPOT ON THE ROAD, wider than the
                     // ball riding it (Dan's capture, 2026-08-20 round 4).
                     const baseW = Math.round(sz * 1.42);
                     const baseH = Math.round(baseW * scaleY * 0.38);
                     const totalH = nodeH + depthH;
-                    const rim = ahead && !active ? `color-mix(in oklch, ${colour} 45%, var(--cahier-kraft-strong))` : `color-mix(in oklch, ${colour} 78%, black)`;
-                    const face = done || active ? colour : PAPER;
+                    // Round 9 (Dan, "the stations' look"): SOLID coloured
+                    // buttons, the capture's register — done/current wear the
+                    // kind colour full, upcoming the same colour lightened;
+                    // the skirt is always that colour's dark side.
+                    const rim = `color-mix(in oklch, ${colour} 62%, black)`;
+                    const face = done || active ? colour : `color-mix(in oklch, ${colour} 55%, ${PAPER})`;
                     const ring = Math.max(1.5, Math.round(sz * 0.05));
                     return (
                       <div
@@ -847,14 +857,14 @@ export default function HomeMap3D({
                               right: (baseW - sz) / 2,
                               height: nodeH,
                               background: face,
-                              border: `${ring}px ${ahead && !active ? "dashed" : "solid"} ${ahead && !active ? colour : "transparent"}`,
+                              border: `${ring}px solid ${rim}`,
                               boxShadow: `inset 0 -${Math.max(1, nodeH * 0.08)}px ${nodeH * 0.15}px rgba(0,0,0,0.22)`,
                             }}
                           >
                             <span aria-hidden className="pointer-events-none absolute rounded-[50%]" style={{ top: "10%", left: "14%", width: "40%", height: "30%", background: "rgba(255,255,255,0.52)", filter: "blur(1px)" }} />
                             <span
                               className="relative font-black leading-none"
-                              style={{ fontSize: Math.max(7, sz * (active ? 0.34 : 0.28)), color: done || active ? PAPER : "var(--cahier-ink-faint)", textShadow: done || active ? "0 1px 2px rgba(0,0,0,0.35)" : "0 1px 3px rgba(255,255,255,0.7)", paddingLeft: active ? "0.1em" : 0 }}
+                              style={{ fontSize: Math.max(7, sz * (active ? 0.34 : 0.3)), color: PAPER, textShadow: "0 1px 2px rgba(0,0,0,0.4)", paddingLeft: active ? "0.1em" : 0 }}
                             >
                               {active ? "▶" : done ? "✓" : st.num}
                             </span>
