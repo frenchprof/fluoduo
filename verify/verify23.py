@@ -21,7 +21,7 @@ What this asserts (static, over source):
   3  No game file prints an <h1> or a <header>; the strings that were the
      old headers / instruction paragraphs are gone.
   4  GameOver: CORRIGER MAINTENANT is the primary, queueForReview is called,
-     reviserHref opens ReVue, "where it goes" is the map deep link (/carte).
+     reviserHref opens ReVue, "where it goes" is the map deep link (/map).
   5  The queue API is real: progress.ts queueForReview writes itemSrs;
      reviser.ts exports reviserHref / REVIEW_FOCUS_PARAM; /reviser reads the
      focus list off the URL.
@@ -139,7 +139,7 @@ check("CORRIGER MAINTENANT" in ov and "cahier-btn-primary" in ov.split("CORRIGER
       "CORRIGER MAINTENANT is the primary button", "CORRIGER MAINTENANT is missing or not primary")
 check("queueForReview(" in ov, "GameOver queues the misses via queueForReview", "GameOver does not call queueForReview")
 check("reviserHref(" in ov, "GameOver opens ReVue via reviserHref", "GameOver does not open /reviser")
-check("/carte?unit=${sio.unit}#${sio.id}" in over, "'where it goes' is the map deep link /carte?unit=N#SIO-xxx",
+check("/map?unit=${sio.unit}#${sio.id}" in over, "'where it goes' is the map deep link /map?unit=N#SIO-xxx",
       "GameOver's 'where it goes' is not the Home deep link")
 check("given" in ov and "expected" in ov and "prompt" in ov,
       "a miss has item · what you did instead · what was expected", "GameMiss lacks prompt/given/expected")

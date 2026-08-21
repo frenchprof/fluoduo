@@ -213,7 +213,7 @@ export default function HomeMap({
   onOpenSio?: (unit: number, id: string) => void;
   /** POSTCARD mode (Dan, 2026-08-21): a bare, read-only snapshot for Home —
    *  no unit chips, no legend, no zoom, a short box landed on the learner's
-   *  current band. The parent wraps it in a link to /carte and turns
+   *  current band. The parent wraps it in a link to /map and turns
    *  pointer events off. */
   postcard?: boolean;
 }) {

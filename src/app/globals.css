@@ -719,11 +719,11 @@ body {
 
 /* Desk → page → side tab-rail layout. The notebook page rests on a grey desk;
  * the index tabs poke off the page's right edge into the reserved grey space. */
-/* La Carte's dedicated interface (Dan, 2026-08-21): with the notebook
+/* The Map's dedicated interface (Dan, 2026-08-21): with the notebook
  * chrome gone, the map earns the viewport — override the embedded heights
  * (they are inline styles, hence the !important). */
-.carte-full .home-map3d-box,
-.carte-full .home-map-box {
+.map-full .home-map3d-box,
+.map-full .home-map-box {
   height: min(80vh, 960px) !important;
   max-height: none !important;
 }

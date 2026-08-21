@@ -5,7 +5,7 @@
  * SIOs on a single learning path visually — an overview of where you are in
  * the learning journey"). Hero: Bienvenue with the ▶/🔁 icon buttons, the
  * stat pills and the two progress bars. The COURSE MAP moved to its own
- * page, /carte (Dan, 2026-08-21: a finger scrolling the page kept catching
+ * page, /map (Dan, 2026-08-21: a finger scrolling the page kept catching
  * the map instead) — Home links there with one card, and forwards the old
  * `/?unit=N#SIO-0XX` deep links so printed QR codes and bookmarks survive.
  */
@@ -74,13 +74,13 @@ export default function HomeDashboard() {
     };
     refresh();
     window.addEventListener("fluolingo:progress-updated", refresh);
-    // The map lives at /carte now — forward its old deep links (`/?unit=N`
+    // The map lives at /map now — forward its old deep links (`/?unit=N`
     // and/or `#SIO-0XX`) so printed QR codes and bookmarks keep working.
     const q = new URLSearchParams(window.location.search).get("unit");
     const hash = window.location.hash.replace("#", "");
     const isSio = SIOS.some((s) => s.id === hash);
     if (isSio || (q !== null && /^[0-4]$/.test(q))) {
-      window.location.replace(`/carte${window.location.search}${window.location.hash}`);
+      window.location.replace(`/map${window.location.search}${window.location.hash}`);
       return;
     }
 
@@ -287,11 +287,11 @@ export default function HomeDashboard() {
         <p className="fluo-mono mb-2 text-xs font-black text-[color:var(--fluo-ink)]">🔗 {seqRun} in a row!</p>
       )}
 
-      {/* 🗺️ La Carte as a POSTCARD (Dan, 2026-08-21): a read-only snapshot
+      {/* 🗺️ The Map as a POSTCARD (Dan, 2026-08-21): a read-only snapshot
           of the learner's stretch of the course — the course mark, drawn.
           Inert on purpose (pointer-events off): a finger can't catch it, a
-          tap anywhere is the door to the real map on /carte. */}
-      {/* The snapshot contains the map's own links, so the door to /carte is
+          tap anywhere is the door to the real map on /map. */}
+      {/* The snapshot contains the map's own links, so the door to /map is
           a STRETCHED sibling link over the top — an <a> may not contain an
           <a>. `inert` keeps the frozen map's controls out of the tab order
           and the a11y tree. */}
@@ -304,11 +304,11 @@ export default function HomeDashboard() {
         </div>
         <span className="flex items-center gap-2 border-t-2 px-4 py-2.5" style={{ borderColor: "var(--cahier-ink)" }}>
           <span aria-hidden className="text-xl">🗺️</span>
-          <span lang="fr" className="fluo-serif min-w-0 flex-1 text-lg font-black leading-tight text-[color:var(--fluo-ink)]">La Carte</span>
+          <span lang="fr" className="fluo-serif min-w-0 flex-1 text-lg font-black leading-tight text-[color:var(--fluo-ink)]">The Map</span>
           <span className="fluo-mono text-xs font-black text-[color:var(--fluo-ink)]/70">2D · 3D</span>
           <span aria-hidden className="fluo-mono text-lg font-black text-[color:var(--fluo-ink)]">▶</span>
         </span>
-        <Link href="/carte" aria-label="La Carte — open the course map" className="absolute inset-0 z-10" />
+        <Link href="/map" aria-label="The Map — open the course map" className="absolute inset-0 z-10" />
       </div>
     </>
   );
