@@ -12,6 +12,7 @@
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import MenuSplash from "@/components/MenuSplash";
+import HomeMap from "@/components/HomeMap";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
@@ -236,16 +237,19 @@ export default function HomeDashboard() {
             ))}
           </dl>
 
-          {/* The two actions, round like the Design ref, still grouped in the
-              card they describe. HELP! keeps its ink-on-fluo look. */}
-          <div className="flex w-full shrink-0 items-center justify-end gap-1.5 sm:w-auto sm:border-l sm:pl-2.5" style={{ borderColor: "var(--cahier-line)" }}>
+          {/* The three actions as ONE FAMILY (Dan, 2026-08-21: "greater
+              cohesiveness — they don't look like they belong together now"):
+              identical geometry, the same ink border and paper shadow on all
+              three — only the FILL carries hierarchy (▶ accent · 🔁 paper ·
+              ▦ ink), the way the topbar's icon strip is one set. */}
+          <div className="flex w-full shrink-0 items-center justify-end gap-2 sm:w-auto sm:border-l sm:pl-2.5" style={{ borderColor: "var(--cahier-line)" }}>
             {activeSio && (
               <Link
                 href={`/unit/${activeSio.unit}#${activeSio.id}`}
                 aria-label="Continue"
                 title={`Continue — « ${activeSio.topic} », the next objective after your latest 'done'.`}
-                className="flex h-9 w-9 items-center justify-center rounded-full border-2 text-sm text-white shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
-                style={{ background: accent, borderColor: accent }}
+                className="flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm text-white shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
+                style={{ background: accent, borderColor: "var(--fluo-ink)" }}
               >
                 <span aria-hidden>▶</span>
               </Link>
@@ -254,7 +258,7 @@ export default function HomeDashboard() {
               href="/reviser"
               aria-label="DéjàRevu"
               title="DéjàRevu — your words to review"
-              className="relative flex h-9 w-9 items-center justify-center rounded-full border-2 text-sm shadow-[2px_2px_0_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5"
+              className="relative flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
               style={{ borderColor: "var(--fluo-ink)", background: "var(--cahier-paper)", color: "var(--fluo-ink)" }}
             >
               <span aria-hidden>🔁</span>
@@ -266,7 +270,7 @@ export default function HomeDashboard() {
               type="button"
               onClick={() => setQgOpen(true)}
               aria-label="Menu"
-              className="flex h-9 w-9 items-center justify-center rounded-full border-2 text-xs font-black shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
+              className="flex h-10 w-10 items-center justify-center rounded-full border-2 text-xs font-black shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
               style={{ background: "var(--fluo-ink)", borderColor: "var(--fluo-ink)", color: "var(--cahier-hl)" }}
               title="Menu — every activity, one tap away"
             >
@@ -283,21 +287,29 @@ export default function HomeDashboard() {
         <p className="fluo-mono mb-2 text-xs font-black text-[color:var(--fluo-ink)]">🔗 {seqRun} in a row!</p>
       )}
 
-      {/* 🗺️ La Carte — the map lives on its own page now (Dan, 2026-08-21:
-          a finger scrolling Home kept catching the map instead of the page).
-          One big card leads there. */}
-      <Link
-        href="/carte"
-        className="mt-2 flex items-center gap-3 rounded-2xl border-2 px-4 py-4 transition hover:-translate-y-0.5"
+      {/* 🗺️ La Carte as a POSTCARD (Dan, 2026-08-21): a read-only snapshot
+          of the learner's stretch of the course — the course mark, drawn.
+          Inert on purpose (pointer-events off): a finger can't catch it, a
+          tap anywhere is the door to the real map on /carte. */}
+      {/* The snapshot contains the map's own links, so the door to /carte is
+          a STRETCHED sibling link over the top — an <a> may not contain an
+          <a>. `inert` keeps the frozen map's controls out of the tab order
+          and the a11y tree. */}
+      <div
+        className="relative mt-2 overflow-hidden rounded-2xl border-2 transition hover:-translate-y-0.5"
         style={{ borderColor: "var(--cahier-ink)", background: "var(--cahier-paper-raised)", boxShadow: "var(--shadow-card)" }}
       >
-        <span aria-hidden className="text-3xl">🗺️</span>
-        <span className="min-w-0 flex-1">
-          <span lang="fr" className="fluo-serif block text-lg font-black leading-tight text-[color:var(--fluo-ink)]">La Carte</span>
-          <span className="block text-xs font-bold text-[color:var(--fluo-ink)]/70">2D · 3D</span>
+        <div inert aria-hidden className="pointer-events-none select-none">
+          <HomeMap progress={progress} activeId={activeId} accent={accent} postcard />
+        </div>
+        <span className="flex items-center gap-2 border-t-2 px-4 py-2.5" style={{ borderColor: "var(--cahier-ink)" }}>
+          <span aria-hidden className="text-xl">🗺️</span>
+          <span lang="fr" className="fluo-serif min-w-0 flex-1 text-lg font-black leading-tight text-[color:var(--fluo-ink)]">La Carte</span>
+          <span className="fluo-mono text-xs font-black text-[color:var(--fluo-ink)]/70">2D · 3D</span>
+          <span aria-hidden className="fluo-mono text-lg font-black text-[color:var(--fluo-ink)]">▶</span>
         </span>
-        <span aria-hidden className="fluo-mono text-lg font-black text-[color:var(--fluo-ink)]">▶</span>
-      </Link>
+        <Link href="/carte" aria-label="La Carte — open the course map" className="absolute inset-0 z-10" />
+      </div>
     </>
   );
 }

@@ -199,6 +199,7 @@ export default function HomeMap({
   focusUnit,
   onOpenUnit,
   onOpenSio,
+  postcard,
 }: {
   progress: Progress;
   activeId?: string;
@@ -210,6 +211,11 @@ export default function HomeMap({
   onOpenUnit?: (unit: number) => void;
   /** Tapping a stop — the parent opens that SIO (in the unit list under the map). */
   onOpenSio?: (unit: number, id: string) => void;
+  /** POSTCARD mode (Dan, 2026-08-21): a bare, read-only snapshot for Home —
+   *  no unit chips, no legend, no zoom, a short box landed on the learner's
+   *  current band. The parent wraps it in a link to /carte and turns
+   *  pointer events off. */
+  postcard?: boolean;
 }) {
   const boxRef = useRef<HTMLDivElement | null>(null);
   const [boxW, setBoxW] = useState(0);
@@ -282,7 +288,7 @@ export default function HomeMap({
   return (
     <div className="home-map">
       {/* Unit chips: one tap = that band on screen. */}
-      <div className="mb-2 flex items-center gap-1.5 overflow-x-auto pb-1">
+      {!postcard && <div className="mb-2 flex items-center gap-1.5 overflow-x-auto pb-1">
         {GEO.bands.map((b) => {
           const isOpen = b.unit === openUnit;
           const inUnit = b.unit < 5 ? SIOS.filter((s) => s.unit === b.unit) : [];
@@ -308,7 +314,7 @@ export default function HomeMap({
             </button>
           );
         })}
-      </div>
+      </div>}
 
       {/* The map box — Design's bordered scroll box. Vertical swipes snap
           band to band; the zoom scales the whole sheet. */}
@@ -316,8 +322,8 @@ export default function HomeMap({
         ref={boxRef}
         className="home-map-box overflow-auto rounded-2xl border"
         style={{
-          height: 520,
-          maxHeight: "68vh",
+          height: postcard ? 280 : 520,
+          maxHeight: postcard ? undefined : "68vh",
           borderColor: "var(--cahier-line-strong)",
           background: "var(--cahier-paper-raised)",
           boxShadow: "var(--shadow-card)",
@@ -403,7 +409,7 @@ export default function HomeMap({
             {GEO.nodes.map((n, i) => {
               if (n.kind === "finale") {
                 return (
-                  <div key="finale" className="absolute z-[2] flex flex-col items-center" style={{ left: n.x, top: n.y, width: COL_W }}>
+                  <div key="finale" className="absolute z-[2] flex flex-col items-center" style={{ left: Math.round(n.x), top: Math.round(n.y), width: COL_W }}>
                     <Link
                       href="/practice/grammarathon/finale"
                       title="GramMarathon Final — 50 questions, all lessons, weighted to your weak spots"
@@ -432,7 +438,7 @@ export default function HomeMap({
               const colour = KIND_COLOR[kind];
               const flag = n.id === CLASS_FLAG_SIO;
               return (
-                <div key={n.id} className="absolute z-[2] flex flex-col items-center" style={{ left: n.x, top: n.y, width: COL_W }}>
+                <div key={n.id} className="absolute z-[2] flex flex-col items-center" style={{ left: Math.round(n.x), top: Math.round(n.y), width: COL_W }}>
                   <button
                     type="button"
                     onClick={() => onOpenSio?.(n.unit, n.id)}
@@ -475,7 +481,7 @@ export default function HomeMap({
         </div>
       </div>
 
-      <KindLegend>
+      {!postcard && <KindLegend>
         {/* Zoom, compact: − [nn] + % */}
         <span className="fluo-mono flex shrink-0 items-center gap-1 text-[11px] font-bold text-[color:var(--cahier-ink-faint)]" aria-label="Zoom">
           <button
@@ -531,7 +537,7 @@ export default function HomeMap({
           </button>
           %
         </span>
-      </KindLegend>
+      </KindLegend>}
     </div>
   );
 }
