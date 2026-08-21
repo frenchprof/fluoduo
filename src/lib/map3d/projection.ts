@@ -20,9 +20,12 @@
 // size are DECOUPLED here: the row position saturates with depth (FOCAL),
 // while the disc size falls off on its own, much gentler curve
 // (SIZE_FALLOFF, floored at MIN_SCALE).
-export const HORIZON_Y = 0.46; // the road's CREST — stops vanish behind this rounded shoulder
-export const SKYLINE_Y = 0.2; // the true sky line, far above the crest — the distant vista lives between
-export const CAMERA_Y = 1.04; // the eye line sits just below the box's bottom
+// Round 9 (Dan): the road owns the frame — the plateau fills two thirds of
+// the screen, the vista band and sky squeeze above it; the current station
+// sits fully visible near the bottom edge, never cut.
+export const HORIZON_Y = 0.34; // the road's CREST — stops vanish behind this rounded shoulder
+export const SKYLINE_Y = 0.14; // the true sky line, far above the crest — the distant vista lives between
+export const CAMERA_Y = 0.97; // the eye line sits just above the box's bottom
 export const FOCAL = 6.2; // view depth, in stop units — rows spread linearly across it
 // Dan's capture, round 5: the path is FULL of stations — five or six in the
 // chain at once, nearly touching, each farther ball tucked behind the nearer
@@ -35,8 +38,11 @@ export const SIZE_FALLOFF = 0.17; // per-stop size decay — halves across the v
 export const MIN_SCALE = 0.42; // a far stop is still nearly half a near one
 export const LOOK_AHEAD = 1.5; // heading = the road this far ahead
 
-/** Road snake: world X per stop, repeating every ten stops (one unit). */
-export const WX = [-0.04, 0.48, 0.8, 0.54, 0.06, -0.54, -0.8, -0.48, -0.04, 0.36];
+/** Road snake: world X per stop, repeating every ten stops (one unit).
+ *  Round 9 (Dan): a GENTLE S up the middle of the frame — the old amplitude
+ *  swung the road hard across the screen; the capture's path barely leaves
+ *  the centre. Same shape, a bit over half the swing. */
+export const WX = [-0.02, 0.26, 0.44, 0.3, 0.03, -0.3, -0.44, -0.26, -0.02, 0.2];
 export const N_STOPS = 50;
 
 export const getWorldX = (id: number) => WX[(id - 1) % WX.length];
@@ -113,12 +119,11 @@ export function project(worldX: number, relZ: number, camZ: number, vw: number, 
     const reveal = csz <= FULL_AHEAD ? 1 : Math.max(0, 1 - (csz - FULL_AHEAD) / (MAX_AHEAD - FULL_AHEAD));
     // Disc size: its own gentle falloff — a far stop is still a disc.
     const sc = Math.max(MIN_SCALE, 1 / (1 + csz * SIZE_FALLOFF));
-    // Round 8 (Dan, 2026-08-20: "the number stops are appearing as
-    // vertically front-facing stops, but that is not the case" in the
-    // capture): a station is an oblate button LYING ON THE ROAD, seen from
-    // above — constant foreshortening across the chain, the rim below the
-    // face supplies the thickness.
-    const scaleY = 0.72;
+    // Rounds 8–9 (Dan: the stops "should be flat on the ground", not coins
+    // on edge): a station is an oblate button LYING ON THE ROAD, seen from
+    // above — constant strong foreshortening across the chain, the thick rim
+    // below the face supplies the button's height off the ground.
+    const scaleY = 0.58;
     const px = vw * 0.5 + csx * vw * 0.4 * sc;
     const py = camY - (camY - horizY) * t;
     if (!isFinite(px) || !isFinite(py)) return null;
@@ -132,7 +137,7 @@ export function project(worldX: number, relZ: number, camZ: number, vw: number, 
   const t = d / (d + FOCAL * 0.4);
   if (t > 0.97) return null;
   const sc = Math.max(MIN_SCALE, (1 - t * 0.3));
-  const scaleY = 0.72;
+  const scaleY = 0.58;
   const px = vw * 0.5 + csx * vw * 0.4 * sc;
   const py = camY + (vh * 1.05 - camY) * t;
   if (!isFinite(px) || !isFinite(py)) return null;
