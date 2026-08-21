@@ -35,12 +35,12 @@ What this asserts (the height itself is a screenshot's job):
   3  The marks are a horizontal row: a <dl> of value-over-label cells,
      each labelled, all sharing one line (the list itself never wraps —
      on a phone the actions drop below it instead).
-  4  One glyph, one job (2026-08-21). No ▶ anywhere on Home and no 🔁 in
-     the hero: the triangle means "a voice is about to speak" everywhere
-     else in the app, and the 🔁 pointed at the page the Review tab
-     already opens. Continue is a WORD in a full-width button under the
-     card (Dan's Home mock), and › is the single "this leaves the page"
-     mark, shared with the Map postcard. ▦ Menu sits in the greeting.
+  4  One glyph, one job (2026-08-21). No ▶ anywhere in HomeDashboard and
+     no 🔁: the triangle means "a voice is about to speak" everywhere else
+     in the app. The three round actions — › Continue · 🔖 Review · ▦ Menu
+     — share ONE five-cell row with the two marks (Dan: the big CTA "was
+     occupying so much space"), and › is the single "this leaves the page"
+     mark, shared with the Map postcard.
   5  Every progress counter survives (litmus: learner feedback stays).
 
 Run from the repo root:  python3 verify/verify25.py
@@ -132,13 +132,23 @@ check("▶" not in home,
 check("🔁" not in hero,
       "no 🔁 in the hero — the Review tab carries that destination",
       "the hero's 🔁 is back, duplicating the Review tab and ÉcouTexte's 'again'")
-check('aria-label="Continue"' in home and ">\n          Continue" in home,
-      "Continue is a WORD, not a glyph",
-      "Continue lost its label — a navigation control has to say where it goes")
 cont = home.find('aria-label="Continue"')
-check(cont > sec_end,
-      "Continue is the full-width button under the card, as in Dan's Home mock",
-      "Continue is back inside the marks row")
+check(cont >= 0 and cont < sec_end,
+      "Continue is a round button in the hero row, beside the marks",
+      "Continue left the hero row")
+# Dan, 2026-08-21: "I am not fond of having a huge CONTINUER button occupying
+# so much space… reduce it back to the round button alongside the two stats in
+# the same row." The full-width CTA that briefly stood under the card is a
+# CI failure now, not a matter of taste.
+check("fluo-btn-lg" not in home and 'className="fluo-btn' not in home,
+      "no full-width CTA under the card — the action is round, in the row",
+      "a full-width Continue bar is back under the hero (Dan: do not)")
+check("flex-[2]" in home and "flex-[3]" in home,
+      "ONE row of five equal cells — two marks + three actions",
+      "the marks and the actions no longer share one five-cell row")
+check('aria-label="Continue"' in home and 'aria-label="Menu"' in home and 'aria-label={dueCount > 0 ? `DéjàRevu' in home,
+      "each round action still SAYS what it is (aria-label + title), glyph aside",
+      "a round action lost its name — an icon button must carry its word")
 check(home.count("›") >= 2,
       "› is the one 'this leaves the page' mark — Continue and the Map share it",
       "the chevron is missing; navigation has no consistent mark")

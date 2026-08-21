@@ -3,22 +3,23 @@
 /**
  * The Home page body (Dan, 2026-07-05: "a true blue Home page… all of the 50
  * SIOs on a single learning path visually — an overview of where you are in
- * the learning journey"). Hero: Bienvenue, two marks and the ▦ Menu button;
- * « Continue › » is the worded CTA under the card and the Map postcard sits
- * below it (2026-08-21 — the round ▶ and 🔁 went with the one-glyph-one-job
- * rule). The COURSE MAP moved to its own
+ * the learning journey"). Hero: Bienvenue over ONE row of five equal cells —
+ * two marks then three round actions (› Continue · 🔖 Review · ▦ Menu), the
+ * three that depend on who you are; the Map postcard sits below. Continue
+ * wears › and never ▶ (2026-08-21, one glyph one job). The COURSE MAP moved to its own
  * page, /map (Dan, 2026-08-21: a finger scrolling the page kept catching
  * the map instead) — Home links there with one card, and forwards the old
  * `/?unit=N#SIO-0XX` deep links so printed QR codes and bookmarks survive.
  */
 import Link from "next/link";
-import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import MenuSplash from "@/components/MenuSplash";
 import HomeMap from "@/components/HomeMap";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
 import { equippedAccent, xpMultiplier } from "@/lib/economy";
+import { dueForReview } from "@/lib/reviser";
 
 /** « par Dr Chan » as pen strokes, in writing order (stem before bowl, the
  *  way a hand actually writes print letters). Baseline y=25, x-height 13,
@@ -65,11 +66,14 @@ export default function HomeDashboard() {
   // Quick Guide popup, summoned from the hero button next to the (?) circle
   // (Dan, 2026-07-14: "insert a QuickGuide link where my red arrow points").
   const [qgOpen, setQgOpen] = useState(false);
+  // The Review button's count — the one destination on Home with a deadline.
+  const [dueCount, setDueCount] = useState(0);
 
   useEffect(() => {
     const refresh = () => {
       const p = loadProgress();
       setProgress(p);
+      setDueCount(dueForReview(p, Date.now()).length);
     };
     refresh();
     window.addEventListener("fluolingo:progress-updated", refresh);
@@ -169,10 +173,9 @@ export default function HomeDashboard() {
         {/* Heading — the h1 is back. The word does the Kallang Wave, the ink
             blob sweeps F→o, then « par Dr Chan » writes itself beneath. */}
         <div
-          className="flex items-start justify-between gap-2 px-4 pb-3 pt-3.5"
+          className="px-4 pb-3 pt-3.5"
           style={{ background: "linear-gradient(120deg, var(--cahier-accent-soft) 0%, var(--cahier-paper-2) 45%, var(--cahier-hl) 100%)" }}
         >
-          <div className="min-w-0">
           <h1 className="fluo-serif text-2xl font-black leading-none text-[color:var(--fluo-ink)]">
             <span className="whitespace-nowrap">Bienvenue sur</span>{" "}
             <span
@@ -210,32 +213,22 @@ export default function HomeDashboard() {
               ))}
             </g>
           </svg>
-          </div>
 
-          {/* ▦ Menu — the ONE action left in the card (2026-08-21). It sits in
-              the greeting's dead space rather than owning a row of its own:
-              the round ▶ and 🔁 that used to flank it are gone. */}
-          <button
-            type="button"
-            onClick={() => setQgOpen(true)}
-            aria-label="Menu"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 text-xs font-black shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
-            style={{ background: "var(--fluo-ink)", borderColor: "var(--fluo-ink)", color: "var(--cahier-hl)" }}
-            title="Menu — every activity, one tap away"
-          >
-            <span aria-hidden>▦</span>
-          </button>
         </div>
 
-        {/* The row of marks — marks ONLY since 2026-08-21: the three round
-            actions that shared this strip are gone (▶ and 🔁 to the rule that
-            transport glyphs mean sound, ▦ up into the greeting), so the row
-            is what its name says. A report card's row stays a row. */}
+        {/* ONE row, FIVE equal cells (Dan, 2026-08-21: "since there were 5
+            stats, and now 2 stats + 3 buttons, can't they all occupy the same
+            horizontal space?"). Two marks, then the three actions that depend
+            on WHO YOU ARE and how far you have got — Continue knows your next
+            objective, Review carries your due count, Menu opens all twenty
+            activities. Everything that is the same for every learner lives in
+            the bottom bar instead. `flex-[2]` / `flex-[3]` split the row into
+            fifths, so a mark cell and a button cell are the same width. */}
         <div
           className="flex items-stretch border-t-2 px-3 py-2"
           style={{ borderColor: "var(--fluo-ink)", background: "var(--cahier-paper-raised)" }}
         >
-          <dl className="flex min-w-0 flex-1 items-stretch">
+          <dl className="flex min-w-0 flex-[2] items-stretch">
             {MARKS.map((m, i) => (
               <div
                 key={m.label}
@@ -254,28 +247,53 @@ export default function HomeDashboard() {
             ))}
           </dl>
 
+          {/* One family: identical geometry and ink border on all three (Dan,
+              2026-08-21) — only the FILL carries hierarchy. Continue wears ›,
+              never ▶: the triangle means a voice is about to speak. */}
+          <div className="flex min-w-0 flex-[3] items-stretch">
+            {activeSio && (
+              <div className="flex min-w-0 flex-1 items-center justify-center border-l px-0.5" style={{ borderColor: "var(--cahier-line)" }}>
+                <Link
+                  href={`/unit/${activeSio.unit}#${activeSio.id}`}
+                  aria-label="Continue"
+                  title={`Continue — « ${activeSio.topic} », the next objective after your latest 'done'.`}
+                  className="fluo-mono flex h-9 w-9 items-center justify-center rounded-full border-2 pb-0.5 text-lg font-black leading-none text-white shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
+                  style={{ background: accent, borderColor: "var(--fluo-ink)" }}
+                >
+                  <span aria-hidden>›</span>
+                </Link>
+              </div>
+            )}
+            <div className="flex min-w-0 flex-1 items-center justify-center border-l px-0.5" style={{ borderColor: "var(--cahier-line)" }}>
+              <Link
+                href="/reviser"
+                aria-label={dueCount > 0 ? `DéjàRevu — ${dueCount} due` : "DéjàRevu"}
+                title="DéjàRevu — your words to review"
+                className="relative flex h-9 w-9 items-center justify-center rounded-full border-2 text-sm shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
+                style={{ borderColor: "var(--fluo-ink)", background: "var(--cahier-paper)", color: "var(--fluo-ink)" }}
+              >
+                <span aria-hidden>🔖</span>
+                {dueCount > 0 && (
+                  <span className="absolute -right-2 -top-2 rounded-full bg-[var(--fluo-danger)] px-1.5 text-[10px] font-bold text-white">{dueCount}</span>
+                )}
+              </Link>
+            </div>
+            <div className="flex min-w-0 flex-1 items-center justify-center border-l px-0.5" style={{ borderColor: "var(--cahier-line)" }}>
+              <button
+                type="button"
+                onClick={() => setQgOpen(true)}
+                aria-label="Menu"
+                className="flex h-9 w-9 items-center justify-center rounded-full border-2 text-xs font-black shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
+                style={{ background: "var(--fluo-ink)", borderColor: "var(--fluo-ink)", color: "var(--cahier-hl)" }}
+                title="Menu — every activity, one tap away"
+              >
+                <span aria-hidden>▦</span>
+              </button>
+            </div>
+          </div>
         </div>
         {qgOpen && <MenuSplash onClose={() => setQgOpen(false)} />}
       </section>
-
-      {/* CONTINUE — the one thing Home is for, as a word (2026-08-21). It says
-          where it goes, and the chevron is the app's single "this leaves the
-          page" mark: never ▶, which belongs to sound. */}
-      {activeSio && (
-        <Link
-          href={`/unit/${activeSio.unit}#${activeSio.id}`}
-          aria-label="Continue"
-          title={`Continue — « ${activeSio.topic} », the next objective after your latest 'done'.`}
-          className="fluo-btn fluo-btn-lg -mt-4 mb-3 w-full font-black"
-          /* The button is the house "Start" chartreuse; the learner's bought
-             accent stays visible as its ledge, so a cosmetic still shows on
-             Home. Setting the token (not box-shadow) keeps :active working. */
-          style={{ "--fluo-primary-shadow": accent } as CSSProperties}
-        >
-          Continue
-          <span aria-hidden className="fluo-mono text-xl leading-none">›</span>
-        </Link>
-      )}
 
       {/* Streak momentum (Dan, 2026-07-08, episode model): counts done-in-order
           from the start; a skip simply stops the run — never blocks. */}
