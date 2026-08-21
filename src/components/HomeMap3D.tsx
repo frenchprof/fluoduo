@@ -881,9 +881,13 @@ export default function HomeMap3D({
                             <span aria-hidden className="pointer-events-none absolute rounded-[50%]" style={{ top: "10%", left: "14%", width: "40%", height: "30%", background: "rgba(255,255,255,0.52)", filter: "blur(1px)" }} />
                             <span
                               className="relative font-black leading-none"
-                              style={{ fontSize: Math.max(7, sz * (active ? 0.34 : 0.3)), color: PAPER, textShadow: "0 1px 2px rgba(0,0,0,0.4)", paddingLeft: active ? "0.1em" : 0 }}
+                              style={{ fontSize: Math.max(7, sz * (active ? 0.34 : 0.3)), color: PAPER, textShadow: "0 1px 2px rgba(0,0,0,0.4)" }}
                             >
-                              {active ? "▶" : done ? "✓" : st.num}
+                              {/* The 🧑‍🎓 above already says "you are here", so the
+                                  stop shows its number (2026-08-21). It used to
+                                  carry a ▶ as well — one stop, two marks for the
+                                  same thing, and the triangle belongs to sound. */}
+                              {done ? "✓" : st.num}
                             </span>
                           </span>
                           {second && nodeH > 10 && (

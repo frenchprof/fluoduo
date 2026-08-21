@@ -10,8 +10,10 @@
  *   · the path snakes right → down across five soft REGION BANDS — one band
  *     per unit — each with a kraft label pill (region icon + place name);
  *     then the GramMarathon Arena band for the 🏁 final;
- *   · 56 px round stops, 3 px border coloured by KIND; the CURRENT stop is a
- *     filled ▶ media-player button; done stops are filled with ✓; the stop
+ *   · 56 px round stops, 3 px border coloured by KIND; the CURRENT stop is
+ *     filled and wears a bobbing 🧑‍🎓, the same mark the 3D view uses (it was
+ *     a ▶ until 2026-08-21 — the triangle belongs to sound); done stops are
+ *     filled with ✓; the stop
  *     names sit under the stops and hide when the map is zoomed out
  *     (< 0.7), a dotted kraft polyline is the road, a legend row closes.
  *
@@ -454,14 +456,18 @@ export default function HomeMap({
                       boxShadow: "var(--shadow-card)",
                     }}
                   >
-                    {active ? (
-                      <span aria-hidden className="pl-0.5">
-                        ▶
+                    {done ? "✓" : n.num}
+                    {/* 🧑‍🎓 bobs over the current stop — the SAME mark the 3D
+                        view uses (HomeMap3D). It was a ▶ here until
+                        2026-08-21: two views of one map disagreed about "you
+                        are here", and this file called it "a filled ▶
+                        media-player button" — which is what ▶ means
+                        everywhere else in the app. The filled circle already
+                        says which stop is current; the avatar says it is you. */}
+                    {active && (
+                      <span aria-hidden className="home-map-bob absolute -top-5 left-1/2 -translate-x-1/2 text-base leading-none" style={{ filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.2))" }}>
+                        🧑‍🎓
                       </span>
-                    ) : done ? (
-                      "✓"
-                    ) : (
-                      n.num
                     )}
                     {flag && (
                       <span aria-label="The class is here this week" title="The class is here this week" className="absolute -right-2 -top-2 text-base leading-none">
@@ -543,7 +549,7 @@ export default function HomeMap({
 }
 
 /** Legend shared by both views: colour = kind (primary focus per stop),
- *  ▶ you, 🚩 class. `children` sits at the right (the 2D zoom control). */
+ *  🧑‍🎓 you, 🚩 class. `children` sits at the right (the 2D zoom control). */
 export function KindLegend({ children }: { children?: ReactNode }) {
   return (
     <div className="fluo-mono mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-bold" style={{ color: "var(--cahier-ink-soft)" }}>
@@ -554,7 +560,7 @@ export function KindLegend({ children }: { children?: ReactNode }) {
         </span>
       ))}
       <span className="flex items-center gap-1">
-        <span aria-hidden>▶</span> you
+        <span aria-hidden>🧑‍🎓</span> you
       </span>
       <span className="flex items-center gap-1">
         <span aria-hidden>🚩</span> class
