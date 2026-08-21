@@ -71,6 +71,14 @@ Only ONE agent edits this file at a time; say so in your commit.
   frame only where the book itself re-elicits it. Phrases layer roughly
   doubles. Exposes a guard-rail question — A2's texts run ahead of A2's
   grammar sequence (imparfait in U5, futur simple in U8).
+  §2.6 = the enrichment pass Dan asked for, over all 56 manuel + 46 cahier
+  pages: nothing deleted, five columns ADDED to the CSV (lexique sets,
+  chunks & frames incl. harvested ones, box on page, phonetics, manuel pp.) —
+  39 of 40 SIOs now carry chunk content. Found a THIRD unnamed strand: word
+  relations, one box per unit (préfixe · synonymes · antonymes ·
+  abréviations), in no inventory and no SIO, and the best LexicaLater
+  material in the course. Corrected my own §2.5 example — SIO-087 does have a
+  Mémo Lexique box; SIO-056 is the real proof case (Dan's own example).
 
 ## Programme — done
 

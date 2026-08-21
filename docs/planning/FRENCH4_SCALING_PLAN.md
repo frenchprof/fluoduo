@@ -190,8 +190,9 @@ He is right, and the arithmetic shows the size of it:
 | | Count |
 |---|---|
 | A2 SIOs carrying a `phrases` load (primary or secondary, per the annex) | **16 of 40** |
-| Communication boxes in the Mémo pages (2 per unit) | **8** |
-| **Chunk content with no Mémo box at all** | **at least 8 SIOs** |
+| Chunk boxes in the Mémo pages (U5 2 · U6 3 · U7 3 · U8 2) | **10** |
+| SIOs whose chunk load is **Situation-page-only** | **7** — 053, 056, 064, 074, 082, 084, 087 |
+| …of those, with no box of any kind to fall back on | **4** — 053, 056, 064, 087 |
 
 The missing half lives on the **Situation pages**, in three forms the Mémo
 never repeats:
@@ -212,10 +213,18 @@ never repeats:
    s'adresser ? Je souhaite renouveler un visa / ouvrir un compte / rédiger un
    testament. »*
 
-**SIO-087 is the proof case.** The annex gives it vocab + phrases; the Mémo has
-no *démarches administratives* Communication box; its entire content is that
-Situation-3 page. Built from the Mémo alone, **SIO-087 would ship with an
-empty deck.**
+**SIO-056 is the proof case** — Dan's own example. The annex gives it vocab +
+phrases. The Mémo gives it two Lexique sets (*La forme physique*, *Se lancer un
+défi*) and **no chunk box at all**. Its entire chunk load — *Mieux vaut… ·
+Nous devons… · C'est possible… · J'alternais…*, plus the five *Aide à la
+lecture* glosses — exists only on p.79.
+
+*(Correction to an earlier draft of this section, which used SIO-087 and
+claimed it would ship an empty deck. That was wrong: the U8 Mémo does carry a
+*Faire des démarches administratives* Lexique box (p.126). What 087 lacks is a
+**chunk** box — its « Je souhaite renouveler un visa… » frames are
+Situation-page-only. The section's claim holds; that particular example did
+not.)*
 
 #### The rule I suggest, so this stays bounded
 
@@ -247,6 +256,68 @@ taught grammar (loses the book's wording), or **accept the frames as
 unanalysed chunks** — learn *« Mieux vaut travailler en groupes »* whole, the
 way the book plainly intends, and let SIO-072 explain the machinery later. See
 open question 8.
+
+### 2.6 The enrichment pass — done, and what it turned up
+
+Dan, 21 Aug: *"let's relook at the 40 SIOs to include such things. Without
+deleting what we have already listed out (unless it is totally NOT what is in
+the textbook nor workbook nor guidebook)."*
+
+Done, across all 56 manuel pages, the 46 cahier pages and the four guide unit
+inventories. **Nothing was deleted** — all 40 SIOs keep their id, topic,
+can-do, focus, section and goal shape exactly as they were. Five columns were
+*added* to `ATELIER_A2_SIOs_v1.csv`:
+
+| New column | Filled for |
+|---|---|
+| `Lexique sets (books)` — the book's own named word-sets | 17 SIOs |
+| `Chunks & frames (books)` — Mémo chunk boxes **+ harvested frames + glosses** | **39 of 40** |
+| `Box on page` — the grammar or word-relations box that sits with it | 17 |
+| `Phonetics on page` | 9 |
+| `Manuel pp.` — the evidence, so any placement can be checked | all 40 |
+
+Every entry is quoted from the books. Where language came off a Situation page
+rather than the Mémo it is tagged `HARVESTED` or `GLOSSES` with its page, so
+the two sources stay distinguishable when decks get authored.
+
+#### A third strand nobody had named: word relations
+
+The box sweep across all four units found **12 grammar boxes — exactly the
+guide's Grammaire column — and four more that are in no inventory at all**:
+
+| Unit | Box | Content |
+|---|---|---|
+| 5 | **Le préfixe** (p.75) | contraires in dés- / in- / im- / mal- / ir- — *désorganisé, impatient, malhonnête, irresponsable, impoli, imprudent* |
+| 6 | **Les synonymes** (p.89) | *un animal = une bête*; find synonyms of *utiliser · les renseignements · une forêt* |
+| 7 | **Les antonymes** (p.103) | *long ≠ court, vieille ≠ jeune*; antonyms of *futur · moderne · déçu* |
+| 8 | **Les abréviations** (p.117) | *Tél. · h · CV · av. · Ex. · min · s* |
+
+One per unit, absent from the 40 SIOs *and* from the guide's Grammaire column
+— the same shape as the phonetics gap in §2.4. **It is also the best
+LexicaLater material in the whole course**: derivational morphology is exactly
+what that game does, and A1 never had any.
+
+#### The three cross-cutting strands, counted
+
+| Strand | Items | Has a SIO? | Where it should live |
+|---|---|---|---|
+| Phonétique | **9** (8 in the guide + *Intonation : les questions*, U5 Mémo) | no | Skills activity (§7.2), items now attached per-SIO in the CSV |
+| Word relations | **4** | no | Skills activity — LexicaLater |
+| Conjugaison | **4** (se battre · s'asseoir · participes passés offrir/connaître/grandir · rendre) | no | ConjugaZone, as A1 already does |
+
+All 17 are now **attached to the SIO whose page they sit on**, so each is
+reachable from the map, while the strand itself drills across units — the same
+double life a ConjugaZone verb already has (it belongs to a lesson *and* the
+trainer sweeps them all). That answers "include such things" without inventing
+a single SIO.
+
+#### One thing to watch
+
+Grammar keeps arriving ahead of its own SIO — *« Ils se sont battus »* (passé
+composé, U5) · *« J'alternais »* (imparfait, U5) · imperative advice frames
+(U6) · *« tu devras »* (futur simple, U8, no SIO anywhere). This is the
+guard-rail question in open question 7, and the enrichment pass makes it
+sharper: it is not one stray frame, it is a pattern across all four units.
 
 ---
 
@@ -545,7 +616,11 @@ the map.
    vaut… &nbsp;»* / *«&nbsp;J'alternais…&nbsp;»* into taught grammar, or teach them
    whole as unanalysed chunks and let the later SIO explain the machinery?
    Recommend whole — it is plainly what the book intends.
-8. **Confirm the A2 `short` labels and section placements** in
+8. **Word relations — same call as phonetics?** Four boxes, one per unit
+   (§2.6), in no inventory and no SIO. Recommend a LexicaLater strand: it is
+   derivational morphology, which is exactly what that game does, and A1 had
+   none of it.
+9. **Confirm the A2 `short` labels and section placements** in
    `ATELIER_A2_SIOs_v1.csv` — 40 drafts inside the 14-character gate, and the
    handful of thematic-fit placements flagged in §2.3.
 
