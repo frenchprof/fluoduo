@@ -82,22 +82,33 @@ export function sRand(seed: number) {
 }
 
 export type NatureType = "round" | "pine" | "bush";
-export type NatureItem = { id: string; z: number; side: 1 | -1; lat: number; type: NatureType; size: number };
+export type NatureItem = { id: string; z: number; side: 1 | -1; lat: number; type: NatureType; size: number; giant?: boolean };
 
 /** Trees and bushes along both verges, skipping where a prop stands. */
 export function placeNature(items: RItem[] = ROADSIDE_ITEMS, until = 49.6): NatureItem[] {
   const out: NatureItem[] = [];
   let i = 0;
   let z = 0.1;
+  let lastGiant = -9;
   while (z < until) {
     for (const side of [1, -1] as const) {
       const blocked = items.some((r) => r.side === side && Math.abs(r.z - z) < 0.85);
       if (!blocked && sRand(i * 3 + (side === 1 ? 0 : 17)) > 0.18) {
         const tr = sRand(i * 7 + (side === 1 ? 0 : 5));
-        const type: NatureType = tr < 0.42 ? "round" : tr < 0.7 ? "pine" : "bush";
-        const lat = 0.18 + sRand(i * 5 + (side === 1 ? 0 : 9)) * 0.18; // 0.18 – 0.36
-        const size = 36 + Math.round(sRand(i * 11 + (side === 1 ? 0 : 3)) * 24); // 36 – 60 px
-        out.push({ id: `n${i}${side}`, z, side, lat, type, size });
+        // GIANTS (Dan, 2026-08-20 round 10: "occasionally some items need to
+        // be as tall as to reach nearly the top of the frame, trees are the
+        // best items to do so"): now and then a verge slot grows a towering
+        // pine — near the camera its crown brushes the frame's top. Seeded,
+        // with a backstop so no stretch of road goes more than ~3 stops
+        // without one.
+        const giant = sRand(i * 17 + (side === 1 ? 0 : 7)) < 0.12 || z - lastGiant > 3.2;
+        if (giant) lastGiant = z;
+        const type: NatureType = giant ? "round" : tr < 0.42 ? "round" : tr < 0.7 ? "pine" : "bush";
+        const lat = (giant ? 0.3 : 0.18) + sRand(i * 5 + (side === 1 ? 0 : 9)) * 0.18; // 0.18 – 0.36 (giants set back)
+        const size = giant
+          ? 96 + Math.round(sRand(i * 11 + (side === 1 ? 0 : 3)) * 24) // 96 – 120 px, high crown on a long trunk
+          : 36 + Math.round(sRand(i * 11 + (side === 1 ? 0 : 3)) * 24); // 36 – 60 px
+        out.push({ id: `n${i}${side}`, z, side, lat, type, size, ...(giant ? { giant: true } : {}) });
       }
     }
     z += 0.48 + sRand(i * 13) * 0.42; // gap 0.48 – 0.90 stops

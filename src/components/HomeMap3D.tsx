@@ -429,11 +429,13 @@ const PINE_DARK = "color-mix(in oklch, var(--tier-good) 55%, black)";
 const PINE_MID = "color-mix(in oklch, var(--tier-good) 80%, black)";
 const TRUNK = "linear-gradient(to bottom, var(--cahier-kraft-strong), color-mix(in oklch, var(--cahier-kraft-strong) 60%, black))";
 
-function NatureSprite({ type, size, scale, scaleY }: { type: NatureType; size: number; scale: number; scaleY: number }) {
+function NatureSprite({ type, size, scale, scaleY, tall }: { type: NatureType; size: number; scale: number; scaleY: number; tall?: boolean }) {
   const cW = Math.round(size * scale);
-  const cH = Math.round(size * (type === "pine" ? 1.35 : type === "bush" ? 0.55 : 0.88) * scale);
-  const tW = Math.max(2, Math.round(size * 0.17 * scale));
-  const tH = Math.max(1, Math.round(size * 0.3 * scale));
+  const cH = Math.round(size * (type === "pine" ? 1.35 : type === "bush" ? 0.55 : tall ? 0.98 : 0.88) * scale);
+  // Round 10 (Dan): a GIANT holds its crown high on a long trunk — near the
+  // camera the crown brushes the top of the frame.
+  const tW = Math.max(2, Math.round(size * (tall ? 0.13 : 0.17) * scale));
+  const tH = Math.max(1, Math.round(size * (tall ? 0.85 : 0.3) * scale));
   const brd = Math.max(0.8, scale * 1.8);
   if (cW < 4) return null;
   const dark = type === "pine" ? PINE_DARK : LEAF_DARK;
@@ -695,10 +697,10 @@ export default function HomeMap3D({
                     if (!p0) return null;
                     const p = { ...p0, scale: p0.scale * PROP_DAMP };
                     const cW = Math.round(item.size * p.scale * (item.type === "bush" ? 1.6 : 1));
-                    const fullH = Math.round(item.size * p.scale * (item.type === "pine" ? 1.75 : item.type === "bush" ? 0.65 : 1.25));
+                    const fullH = Math.round(item.size * p.scale * (item.giant ? 1.9 : item.type === "pine" ? 1.75 : item.type === "bush" ? 0.65 : 1.25));
                     return (
                       <div key={item.id} aria-hidden className="absolute" style={{ left: p.px - cW / 2, top: p.py - fullH * p.reveal, zIndex: zOrder(p.scale) - 2, ...clipRise(p.reveal) }}>
-                        <NatureSprite type={item.type} size={item.size} scale={p.scale} scaleY={p.scaleY} />
+                        <NatureSprite type={item.type} size={item.size} scale={p.scale} scaleY={p.scaleY} tall={item.giant} />
                       </div>
                     );
                   })}
