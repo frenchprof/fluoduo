@@ -92,15 +92,16 @@ export default function KeyNav() {
           const num = parseInt(buf.current, 10);
           clear();
           const sio = SIOS.find((s) => s.num === num);
-          // The outcome lives on Home now (/sio/[id] is only a redirect):
-          // `/?unit=N#SIO-0NN` opens its popup. Already on Home → set the
-          // hash so Home's hashchange listener opens it without a reload.
+          // The outcome lives on La Carte now (/sio/[id] is only a
+          // redirect): `/carte?unit=N#SIO-0NN` opens its popup. Already on
+          // the map → set the hash so its hashchange listener opens it
+          // without a reload.
           if (sio) {
-            if (window.location.pathname === "/") {
-              window.history.replaceState(null, "", `/?unit=${sio.unit}`);
+            if (window.location.pathname === "/carte") {
+              window.history.replaceState(null, "", `/carte?unit=${sio.unit}`);
               window.location.hash = sio.id;
             } else {
-              router.push(`/?unit=${sio.unit}#${sio.id}`);
+              router.push(`/carte?unit=${sio.unit}#${sio.id}`);
             }
           }
         } else {

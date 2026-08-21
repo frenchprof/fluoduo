@@ -16,10 +16,10 @@
  * Index is Practice's own door, so it is the Practice flap itself rather than
  * a twenty-third orphan.
  *
- * Open state: the family owning the current page is open, everything else is
- * shut, and the learner's own toggling is remembered per family for the
- * session. One family open at a time was tempting, but a learner comparing
- * Review with Skills would have to keep re-opening one of them.
+ * Open state: ONE family open at a time (Dan, 2026-08-21: "only allow one to
+ * expand at any time, otherwise it looks too overwhelming") — opening a flap
+ * closes the others; the choice is remembered for the session. The family
+ * owning the current page opens by default.
  */
 import { useSyncExternalStore } from "react";
 import Link from "next/link";
@@ -88,7 +88,15 @@ export default function RailGroups({ activeKey }: { activeKey?: string }) {
     ? { ...stored, [owning]: stored[owning] ?? true }
     : stored;
 
-  const toggle = (k: string) => writeOpen({ ...open, [k]: !open[k] });
+  // Accordion: opening a flap closes every other one (Dan, 2026-08-21).
+  // Every family is written explicitly so the owning family's default-open
+  // (`?? true` above) cannot resurrect it beside the learner's choice.
+  const toggle = (k: string) => {
+    const next: Record<string, boolean> = {};
+    FAMILIES.forEach((f) => { next[f.key] = false; });
+    next[k] = !open[k];
+    writeOpen(next);
+  };
 
   return (
     <>

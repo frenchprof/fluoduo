@@ -66,6 +66,8 @@ if not os.path.isfile("package.json"):
 raw = read("src/components/HomeMap3D.tsx")
 m3 = strip_comments(raw)
 home = strip_comments(read("src/app/HomeDashboard.tsx"))
+# The map block moved to its own page /carte (Dan, 2026-08-21).
+carte = strip_comments(read("src/app/carte/CarteBody.tsx"))
 css = read("src/app/globals.css")
 proj_raw = read("src/lib/map3d/projection.ts")
 proj = strip_comments(proj_raw)
@@ -149,8 +151,8 @@ check("export const KIND_COLOR" not in m3, "KIND_COLOR defined once (HomeMap.tsx
 check("var(--cahier-gold)" in m3, "the current stop's ring is --cahier-gold", "gold ring not from the token")
 
 # 7 · toggle intact
-check("<HomeMap3D " in home and "<HomeMap " in home and '"fluo.homeMapView"' in home and "aria-pressed" in home,
-      "HomeDashboard's 2D ⇄ 3D toggle is intact", "the 2D/3D toggle in HomeDashboard broke")
+check("<HomeMap3D " in carte and "<HomeMap " in carte and '"fluo.homeMapView"' in carte and "aria-pressed" in carte,
+      "La Carte's 2D ⇄ 3D toggle is intact", "the 2D/3D toggle in CarteBody broke")
 
 # 8 · no classmates / emails
 check("ALL_CLASSMATES" not in raw and "@" not in re.sub(r'from "@/|import\("@/|"@/', "", raw), "no classmate names / emails in the 3D view", "classmate names or an email address in HomeMap3D")

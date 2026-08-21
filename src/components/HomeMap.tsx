@@ -491,14 +491,17 @@ export default function HomeMap({
           >
             −
           </button>
+          {/* One field, two ways in (Dan, 2026-08-21, re-asked): type any
+              number, or drop the field down to the milestone levels. */}
           <input
             type="number"
             min={30}
             max={200}
             step={5}
+            list="fluo-zoom-milestones"
             value={zoomPct}
             onChange={(e) => setZoom(parseFloat(e.target.value) || 100)}
-            aria-label="Zoom percent"
+            aria-label="Zoom percent — type a value or pick a milestone"
             className="h-6 w-12 rounded-md border px-1 text-center text-[11px]"
             style={{
               borderColor: "var(--cahier-line-strong)",
@@ -506,6 +509,13 @@ export default function HomeMap({
               color: "var(--cahier-ink)",
             }}
           />
+          <datalist id="fluo-zoom-milestones">
+            <option value="50" label="50 — whole course" />
+            <option value="75" label="75 — two regions" />
+            <option value="100" label="100 — one region" />
+            <option value="150" label="150 — a few stops" />
+            <option value="200" label="200 — stop by stop" />
+          </datalist>
           <button
             type="button"
             aria-label="Zoom in"

@@ -50,7 +50,7 @@ export default function HomePrintSheet({ progress }: { progress: Progress }) {
         return (
           <div key={r.unit} className="mt-2 flex items-start gap-3 rounded-xl px-2 py-1.5" style={{ background: `var(--region-${r.key}-band)`, breakInside: "avoid" }}>
             <div className="flex w-[82px] shrink-0 flex-col items-center">
-              <Qr text={`${origin}/?unit=${r.unit}`} size={78} />
+              <Qr text={`${origin}/carte?unit=${r.unit}`} size={78} />
               <span className="fluo-mono mt-0.5 text-[8px] font-bold">{UNIT_META[r.unit].label} · {done}/{sios.length}</span>
             </div>
             <div className="min-w-0 flex-1">
