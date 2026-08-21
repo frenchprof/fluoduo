@@ -33,6 +33,21 @@ a{color:#2d54a0}a:hover{color:#123780}
 .hint i.on{background:#312620}
 .topbar{height:56px;display:flex;align-items:center;gap:11px;padding:0 14px;
   border-bottom:2px solid #e3ddd1;background:#fefbf7;flex-shrink:0}
+/* The real sticky top bar — wordmark + the six-icon strip. Dan, 2026-08-21:
+   "the top most row of icons still exist, and must not go hiding into the
+   overspill off the screen." Every screen wears it. */
+.sitebar{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:7px 12px 7px 36px;border-bottom:2px solid rgba(49,38,32,.15);
+  background:rgba(250,246,238,.92);flex-shrink:0}
+.sitemark{font-size:17px;font-weight:900;letter-spacing:-.02em;min-width:0;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.sitemark i{font-style:normal;background:#d4f24c;padding:0 3px;border-radius:3px}
+.siteicons{display:flex;align-items:center;gap:2px;flex-shrink:0;max-width:100%;flex-wrap:wrap;
+  justify-content:flex-end}
+.siteicons b{display:flex;align-items:center;justify-content:center;width:29px;height:27px;
+  border:1.5px solid #312620;border-radius:8px;background:#faf6ee;box-shadow:0 2px 0 0 #312620;
+  font-size:13px;font-weight:400;flex-shrink:0}
+.siteicons b:last-child{margin-right:18px}
 .bottombar{height:64px;display:flex;align-items:stretch;background:#fefbf7;
   border-top:2px solid #cabfaf;flex-shrink:0;margin-top:auto}
 .slot{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
@@ -112,3 +127,12 @@ def bottombar(active="index"):
     return ('<div class="bottombar">' + "".join(
         f'<div class="slot{" on" if k==active else ""}"><span class="ic">{ic}</span>'
         f'<span class="lb">{lb}</span></div>' for k,ic,lb in items) + '</div>')
+
+
+def sitebar(back=True):
+    """The real top bar: the wordmark door home, then the six-icon strip."""
+    icons = ["\U0001F50D", "\U0001F3C6", "\U0001F50A", "⌛", "\u23FB", "☰"]
+    return ('<div class="sitebar">'
+            f'<span class="sitemark">{"← " if back else ""}<i>FluOlinGo</i></span>'
+            '<span class="siteicons">' + "".join(f"<b>{i}</b>" for i in icons) + '</span>'
+            '</div>')

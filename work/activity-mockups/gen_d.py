@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """The three User activities."""
 import io
-from base import page, bottombar
+from base import sitebar, page, bottombar
 
 F = {}
 
@@ -27,6 +27,7 @@ F["MyProgress.dc.html"] = page("""
 .oitem{display:flex;gap:9px;padding:7px 11px 7px 30px;border-top:1px solid #f0ece2;font-size:12.5px}
 """, f"""
 <div class="screen">
+  {sitebar()}
   <div class="topbar"><span style="font-weight:900;font-size:17px">\U0001F4CA My Progress</span></div>
   <div class="strip">
     <div class="m"><div class="v" style="color:#b71c0e">N4</div><div class="l">level</div></div>
@@ -86,6 +87,7 @@ F["Leaderboard.dc.html"] = page("""
 .rk{border-radius:999px;padding:1px 8px;font-size:10.5px;font-weight:800;white-space:nowrap}
 """, f"""
 <div class="screen">
+  {sitebar()}
   <div class="topbar"><span style="font-weight:900;font-size:17px">\U0001F3C6 Leaderboard</span></div>
   <div class="body ruled">
     <div class="tabs"><div class="on">This week</div><div>All term</div></div>
@@ -160,6 +162,7 @@ F["Profile.dc.html"] = page("""
 .sw.on{border:2px solid #312620;box-shadow:0 2px 0 0 #312620}
 """, f"""
 <div class="screen">
+  {sitebar()}
   <div class="topbar"><span class="hand" style="font-size:22px;flex:1">\U0001F396️ Your Profile</span>
   </div>
   <div class="body ruled" style="gap:12px;padding:14px">

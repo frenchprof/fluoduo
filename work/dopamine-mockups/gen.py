@@ -39,6 +39,18 @@ a{color:#2d54a0}a:hover{color:#123780}
 .sub{font-size:13px;line-height:1.45;color:#655c55}
 .chip{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:4px 11px;
   font-size:12px;font-weight:700;border:1.5px solid #e3ddd1;background:#fff}
+.sitebar{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:7px 12px 7px 36px;border-bottom:2px solid rgba(49,38,32,.15);
+  background:rgba(250,246,238,.92);flex-shrink:0}
+.sitemark{font-size:17px;font-weight:900;letter-spacing:-.02em;min-width:0;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.sitemark i{font-style:normal;background:#d4f24c;padding:0 3px;border-radius:3px}
+.siteicons{display:flex;align-items:center;gap:2px;flex-shrink:0;max-width:100%;flex-wrap:wrap;
+  justify-content:flex-end}
+.siteicons b{display:flex;align-items:center;justify-content:center;width:29px;height:27px;
+  border:1.5px solid #312620;border-radius:8px;background:#faf6ee;box-shadow:0 2px 0 0 #312620;
+  font-size:13px;font-weight:400;flex-shrink:0}
+.siteicons b:last-child{margin-right:18px}
 .marks{display:flex;background:#fefbf7;border-top:2px solid #312620}
 .marks>div{flex:1;padding:8px 2px;text-align:center;border-left:1px solid #e3ddd1;min-width:0}
 .marks>div:first-child{border-left:0}
@@ -76,6 +88,14 @@ def bottombar(active="index"):
     out.append('</div>')
     return "".join(out)
 
+def sitebar(back=False):
+    """The real top bar — Dan, 21 Aug: the icon row must always be there."""
+    icons = ["\U0001F50D", "\U0001F3C6", "\U0001F50A", "⌛", "\u23FB", "☰"]
+    return ('<div class="sitebar">'
+            f'<span class="sitemark">{"← " if back else ""}<i>FluOlinGo</i></span>'
+            '<span class="siteicons">' + "".join(f"<b>{i}</b>" for i in icons) + '</span>'
+            '</div>')
+
 def hero_head():
     """The real Home hero: gradient band, greeting, byline."""
     return ('<div style="padding:13px 15px 11px;background:linear-gradient(120deg,#dae5f9 0%,'
@@ -99,6 +119,7 @@ FILES["Install.dc.html"] = page("Install", """
   box-shadow:0 2px 0 0 #312620;overflow:hidden}
 """, f"""
 <div class="screen">
+  {sitebar(back=False)}
   {hero_head()}
   <div class="marks">
     <div><div class="mv mono">19/50</div><div class="ml">course</div></div>
@@ -144,6 +165,7 @@ FILES["Main.dc.html"] = page("Objectif du jour", """
   justify-content:center}
 """, f"""
 <div class="screen">
+  {sitebar(back=False)}
   {hero_head()}
   <div class="marks">
     <div><div class="mv mono">19/50</div><div class="ml">course</div></div>
@@ -206,6 +228,7 @@ FILES["Celebrations.dc.html"] = page("Celebrations", """
 .dot{width:9px;height:9px;border-radius:999px;flex-shrink:0}
 """, f"""
 <div class="screen">
+  {sitebar(back=True)}
   <div class="topbar"><span style="font-weight:900;font-size:17px">Unité 3</span></div>
   <div class="body ruled"></div>
   {bottombar()}
@@ -315,6 +338,7 @@ FILES["Streak.dc.html"] = page("Streak", """
 .day.on .d{color:#b80071}
 """, f"""
 <div class="screen">
+  {sitebar(back=True)}
   <div class="topbar"><span style="font-weight:900;font-size:17px">Your streak</span></div>
   <div class="body ruled">
     <div class="card" style="display:flex;gap:14px;align-items:center;border-color:#d42a8f;
@@ -364,6 +388,7 @@ FILES["HeroMarks.dc.html"] = page("Hero marks", """
 .lsw{width:13px;height:13px;border-radius:3px;border:1px solid rgba(49,38,32,.3);flex-shrink:0}
 """, f"""
 <div class="screen">
+  {sitebar(back=False)}
   {hero_head()}
   <div class="marks">
     <div><div class="mv mono" style="color:#1e7729">19/50</div><div class="ml">course</div></div>
@@ -508,6 +533,7 @@ FILES["Leaderboard.dc.html"] = page("Leaderboard", """
 .xp{font-size:13.5px;font-weight:900;font-variant-numeric:tabular-nums}
 """, f"""
 <div class="screen">
+  {sitebar(back=True)}
   <div class="topbar"><span style="font-weight:900;font-size:17px">\U0001F3C6 Leaderboard</span></div>
   <div class="body ruled">
     <div class="tabs"><div class="on">This week</div><div>All term</div></div>
@@ -553,6 +579,7 @@ FILES["Boutique.dc.html"] = page("Boutique", """
   padding:13px;display:flex;gap:12px;align-items:center;box-shadow:0 2px 0 0 #c8a24b}
 """, f"""
 <div class="screen">
+  {sitebar(back=True)}
   <div class="topbar">
     <span style="font-weight:900;font-size:17px;flex:1">Shop</span>
     <span class="chip" style="border-color:#0059c4;color:#0059c4">\U0001F48E 85</span>

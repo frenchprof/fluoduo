@@ -104,3 +104,6 @@ jobs:
 
       - name: "Dopamine accents — seven roles pinned, contrast recomputed, Cahier ground and regions untouched (21 Aug)"
         run: python3 verify/verify30-dopamine.py
+
+      - name: "Top bar — the icon row never overflows off the screen (21 Aug)"
+        run: python3 verify/verify31-topbar.py

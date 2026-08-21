@@ -287,10 +287,33 @@ export default function CahierShell({
             <div className={`flex items-center justify-between gap-2 py-2 pr-3 sm:pr-5 ${nested ? "pl-5 sm:pl-7" : "pl-9 sm:pl-11"}`}>
               {/* The wordmark is ALWAYS a door home (Dan, 2026-07-25) — on
                   the home page it simply arrives where you already are. */}
-              <Link href="/" className="cahier-display text-lg font-black text-[color:var(--cahier-ink)]">
+              {/* THE RULE OF THIS BAR (Dan, 2026-08-21: "the top most row of
+                  icons still exist, and must not go hiding into the overspill
+                  off the screen"): every icon in .cahier-topbar is a
+                  destination, the strip is shrink-0, and nothing may push it
+                  past the right edge. So the bar has a yield order, widest
+                  concession first:
+
+                    1. `topRight` — page-supplied, variable width, and the one
+                       thing that broke the budget. It now has its OWN
+                       shrinkable slot below (min-w-0 + truncate), OUTSIDE the
+                       icon strip, so a long score readout ellipsizes instead
+                       of shoving ☰ off the screen.
+                    2. the wordmark — a door home the ← already signals, so it
+                       truncates legibly.
+                    3. the icons — never. They are the invariant.
+
+                  Measured on /reviser before this: at 320px the score readout
+                  and ☰ were both off-screen; at 360 and 390 one added chip was
+                  enough to lose ☰. verify31 pins the structure. */}
+              <Link href="/" className="cahier-display min-w-0 shrink truncate text-lg font-black text-[color:var(--cahier-ink)]">
                 {active !== "home" && <>← </>}<span className="cahier-hl">FluOlinGo</span>
               </Link>
-              <div className="cahier-topbar flex shrink-0 items-center gap-1 sm:gap-2">
+              {/* Yield slot 1 — shrinks and truncates before anything else. */}
+              {topRight && (
+                <div className="cahier-topslot min-w-0 flex-shrink truncate text-right">{topRight}</div>
+              )}
+              <div className="cahier-topbar flex max-w-full shrink-0 flex-wrap items-center justify-end gap-1 sm:flex-nowrap sm:gap-2">
                 {/* Icon strip, macOS-menu-bar style (Dan, 2026-07-08): 🔍 opens
                     the floating search, 🏆 floats the ranking, 🏠 goes home —
                     icons only, no words. */}
@@ -328,7 +351,6 @@ export default function CahierShell({
                 <Link href="/moi" aria-label="My learning history" title="My learning history" className="cahier-btn cahier-btn-sm">
                   ⌛
                 </Link>
-                {topRight}
                 <AccountButton />
                 {/* Half-a-button inward on mobile (Dan, 2026-07-25: the corner made ☰
                     unreachable on some phones); flush again from sm up. */}

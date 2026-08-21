@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Menu + the five Practice activities."""
 import io
-from base import page, drillbar, bottombar
+from base import sitebar, page, drillbar, bottombar
 
 F = {}
 
@@ -25,7 +25,7 @@ tiles = "".join(
   f'<span class="n">{n}</span></div>' for e,n,c in ACTS)
 
 F["Main.dc.html"] = page("""
-.wrap{position:absolute;inset:14px;background:#fdfaf2;border:2px solid #312620;border-radius:18px;
+.wrap{position:absolute;inset:52px 14px 14px;background:#fdfaf2;border:2px solid #312620;border-radius:18px;
   padding:18px 14px;display:flex;flex-direction:column;gap:14px;box-shadow:0 6px 0 0 rgba(49,38,32,.18)}
 .head{display:flex;align-items:center;gap:10px}
 .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;flex:1;min-height:0}
@@ -37,6 +37,7 @@ F["Main.dc.html"] = page("""
   align-items:center;justify-content:center;font-size:17px;font-weight:900;flex-shrink:0}
 """, f"""
 <div class="screen ruled">
+  {sitebar(back=False)}
   <div class="wrap">
     <div class="head">
       <div style="flex:1;font-size:27px;font-weight:900;letter-spacing:-.03em">Menu</div>

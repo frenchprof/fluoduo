@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Review (2) + Skills (6)."""
 import io
-from base import page, drillbar, bottombar
+from base import sitebar, page, drillbar, bottombar
 
 F = {}
 
@@ -15,6 +15,7 @@ F["DejaRevu.dc.html"] = page("""
   color:#655c55;margin-top:2px}
 """, f"""
 <div class="screen">
+  {sitebar()}
   {drillbar(30, 0, 3, "3/10")}
   <div class="body ruled">
     <div class="due">
@@ -182,6 +183,7 @@ F["WorDrill.dc.html"] = page("""
 .g.on{background:#d5f7ca;border-color:#1e7729;color:#1e7729;border-width:2px}
 """, f"""
 <div class="screen">
+  {sitebar()}
   {drillbar(62, 0, 3, "16/26")}
   <div class="body">
     <div class="eyebrow">Say it out loud</div>
@@ -215,6 +217,7 @@ F["VoixLa.dc.html"] = page("""
   background:#fefbf7;border:2px solid #312620;transform:translateX(-50%);box-shadow:0 2px 0 0 #312620}
 """, f"""
 <div class="screen">
+  {sitebar()}
   <div class="topbar"><span style="font-weight:900;font-size:17px;flex:1">\U0001F50A VoixLà</span>
     <span class="chip">Le Studio</span></div>
   <div class="body ruled">
@@ -295,6 +298,7 @@ F["ChaTutor.dc.html"] = page("""
   font-size:11.5px;font-weight:700;flex-shrink:0;background:#ece2fa}
 """, f"""
 <div class="screen">
+  {sitebar()}
   <div class="topbar"><span style="font-size:22px">\U0001F916</span>
     <span style="font-weight:900;font-size:17px;flex:1" lang="fr">Le Tuteur</span></div>
   <div class="body ruled" style="gap:10px">

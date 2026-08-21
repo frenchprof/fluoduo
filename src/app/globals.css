@@ -905,7 +905,22 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 /* Mobile top bar (Dan, 2026-07-26): the icon row was pushing ☰ off the
    edge — thinner buttons below sm, scoped to the bar only. */
 @media (max-width: 639px) {
-  .cahier-topbar .cahier-btn { padding-left: 0.42rem; padding-right: 0.42rem; }
+  .cahier-topbar .cahier-btn { padding-left: 0.3rem; padding-right: 0.3rem; }
+  /* Every icon in this strip is a destination, and the strip is shrink-0, so
+     anything that does not fit goes off the screen rather than wrapping — it
+     is the one row on the site that must never overflow (Dan, 2026-08-21).
+     Measured before this rule: the bar needed 389px, so at 360 the ☰ sat 28px
+     past the edge and at 320 both ☰ and the account button were gone. Tighter
+     gap + padding buys 33px; the wordmark's truncate absorbs the rest. */
+  .cahier-topbar { gap: 0.125rem; }
+  /* Last line of defence. The strip drops shrink-0 and wraps below sm, so if
+     a future feature adds an icon that does not fit, the row gets TALLER —
+     it never pushes anything past the right edge. A second line is a visible
+     compromise; an unreachable ☰ is a broken one. */
+  .cahier-topbar > * { flex-shrink: 0; }
+  /* The page-supplied slot yields before the icons do — it may shrink to
+     nothing, but an icon may never leave the screen. */
+  .cahier-topslot { font-size: 0.78rem; }
 }
 
 /* Tappable choice card — a multiple-choice option is a BUTTON, not a static
