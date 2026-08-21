@@ -105,8 +105,8 @@ check("window.location.replace(href)" in CODE.get("src/app/sio/[id]/SioRedirect.
 linkers = [f for f in SRC if not f.startswith("src/app/sio/") and re.search(r"[\"'`]/sio/", CODE[f])]
 check(not linkers, "nothing outside src/app/sio links to /sio/…", f"still linking to /sio/: {linkers}")
 kn = CODE["src/components/KeyNav.tsx"]
-check("`/?unit=${sio.unit}#${sio.id}`" in kn and "window.location.hash = sio.id" in kn,
-      "KeyNav two-digit jump opens the outcome on Home", "KeyNav does not deep-link into Home")
+check("`/carte?unit=${sio.unit}#${sio.id}`" in kn and "window.location.hash = sio.id" in kn,
+      "KeyNav two-digit jump opens the outcome on La Carte", "KeyNav does not deep-link into /carte")
 
 # ── 5 · DEPLOY.md ─────────────────────────────────────────────────────────
 dep = read("docs/DEPLOY.md")

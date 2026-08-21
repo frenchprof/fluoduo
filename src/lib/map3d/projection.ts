@@ -33,7 +33,11 @@ export const FOCAL = 6.2; // view depth, in stop units — rows spread linearly 
 // is only the chain's very tail.
 export const FULL_AHEAD = 6; // fully risen this close — nearer than this, a thing stands whole on the ground
 export const MAX_AHEAD = 7.5; // beyond this, still wholly below the planet's shoulder
-export const MAX_BEHIND = 1.5; // draw distance behind (stops)
+// Round 11 (Dan): a passed thing must "only disappear if it goes off the
+// frame rather than in the middle of nowhere" — deep behind-range, and the
+// behind rows dive well below the box so even a giant tree's crown has left
+// the frame before the cull.
+export const MAX_BEHIND = 4; // draw distance behind (stops)
 export const SIZE_FALLOFF = 0.17; // per-stop size decay — halves across the visible chain
 export const MIN_SCALE = 0.42; // a far stop is still nearly half a near one
 export const LOOK_AHEAD = 1.5; // heading = the road this far ahead
@@ -139,7 +143,7 @@ export function project(worldX: number, relZ: number, camZ: number, vw: number, 
   const sc = Math.max(MIN_SCALE, (1 - t * 0.3));
   const scaleY = 0.58;
   const px = vw * 0.5 + csx * vw * 0.4 * sc;
-  const py = camY + (vh * 1.05 - camY) * t;
+  const py = camY + (vh * 1.9 - camY) * t;
   if (!isFinite(px) || !isFinite(py)) return null;
   return { px, py, scale: sc, scaleY, size: Math.max(20, Math.round(vh * 0.11 * sc)), t, reveal: 1, behind: true };
 }

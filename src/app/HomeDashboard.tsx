@@ -4,21 +4,15 @@
  * The Home page body (Dan, 2026-07-05: "a true blue Home page… all of the 50
  * SIOs on a single learning path visually — an overview of where you are in
  * the learning journey"). Hero: Bienvenue with the ▶/🔁 icon buttons, the
- * stat pills and the two progress bars. Below it, the COURSE MAP in two
- * views the learner toggles (Dan's decision 1, 2026-08-17): 2D
- * (components/HomeMap — Design's region-band map) and 3D (components/
- * HomeMap3D — a CSS-3D perspective road scene). The choice is remembered
- * in localStorage under `fluo.homeMapView`.
+ * stat pills and the two progress bars. The COURSE MAP moved to its own
+ * page, /carte (Dan, 2026-08-21: a finger scrolling the page kept catching
+ * the map instead) — Home links there with one card, and forwards the old
+ * `/?unit=N#SIO-0XX` deep links so printed QR codes and bookmarks survive.
  */
 import Link from "next/link";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import MenuSplash from "@/components/MenuSplash";
-import HomeMap from "@/components/HomeMap";
-import HomeMap3D from "@/components/HomeMap3D";
-import HomePrintSheet from "@/components/HomePrintSheet";
-import UnitSection from "./UnitSection";
-import { CHAPTERS } from "@/content/chapters";
-import { SIOS, UNIT_META } from "@/content/sios";
+import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
 import { equippedAccent, levelForXp, xpMultiplier } from "@/lib/economy";
@@ -56,7 +50,6 @@ const BYLINE_STROKES = [
   "M118,17.5 C119,13.5 126,12 126,18 L126,25",
 ];
 
-const MAP_VIEW_KEY = "fluo.homeMapView";
 
 export default function HomeDashboard() {
   const [progress, setProgress] = useState<Progress>(defaultProgress());
@@ -71,14 +64,6 @@ export default function HomeDashboard() {
   // Quick Guide popup, summoned from the hero button next to the (?) circle
   // (Dan, 2026-07-14: "insert a QuickGuide link where my red arrow points").
   const [qgOpen, setQgOpen] = useState(false);
-  // 2D ⇄ 3D map view, remembered per browser.
-  const [mapView, setMapView] = useState<"2d" | "3d">("2d");
-  // The unit whose SIO list is open under the map (patch 25: /unit/N is a
-  // deep link into Home — `/?unit=N#SIO-0XX` lands here, scrolls the map to
-  // that region band and shows the unit's list; a stop tap opens its SIO).
-  const [openUnit, setOpenUnit] = useState<number | null>(null);
-  const [openSioId, setOpenSioId] = useState<string | null>(null);
-  const mapRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const refresh = () => {
@@ -88,23 +73,15 @@ export default function HomeDashboard() {
     };
     refresh();
     window.addEventListener("fluolingo:progress-updated", refresh);
-    try {
-      if (window.localStorage.getItem(MAP_VIEW_KEY) === "3d") setMapView("3d");
-    } catch {
-      // storage blocked → 2D
+    // The map lives at /carte now — forward its old deep links (`/?unit=N`
+    // and/or `#SIO-0XX`) so printed QR codes and bookmarks keep working.
+    const q = new URLSearchParams(window.location.search).get("unit");
+    const hash = window.location.hash.replace("#", "");
+    const isSio = SIOS.some((s) => s.id === hash);
+    if (isSio || (q !== null && /^[0-4]$/.test(q))) {
+      window.location.replace(`/carte${window.location.search}${window.location.hash}`);
+      return;
     }
-    // Deep link: /?unit=N (from the old /unit/N page) and/or #SIO-0XX.
-    const readUrl = () => {
-      const q = new URLSearchParams(window.location.search).get("unit");
-      const hash = window.location.hash.replace("#", "");
-      const sio = SIOS.find((s) => s.id === hash);
-      const u = sio ? sio.unit : q !== null && /^[0-4]$/.test(q) ? Number(q) : null;
-      if (u !== null) setOpenUnit(u);
-      if (sio) setOpenSioId(sio.id);
-    };
-    readUrl();
-    window.addEventListener("hashchange", readUrl);
-    window.addEventListener("popstate", readUrl);
 
     // The letter-wave + hand-written byline now runs ~3.5 s (compacted from
     // the original 5.5 s when Dan brought it back, 2026-08-11). Play the
@@ -123,36 +100,8 @@ export default function HomeDashboard() {
     }
     return () => {
       window.removeEventListener("fluolingo:progress-updated", refresh);
-      window.removeEventListener("hashchange", readUrl);
-      window.removeEventListener("popstate", readUrl);
     };
   }, []);
-
-  // A deep-linked unit brings the MAP to the top of the screen (its box
-  // lands on that region band; the unit's list follows right under it).
-  useEffect(() => {
-    if (openUnit === null || openSioId) return; // a stop tap opens a modal — no scroll needed
-    mapRef.current?.scrollIntoView({ block: "start", behavior: "smooth" });
-  }, [openUnit, openSioId]);
-
-  const openSio = (unit: number, id: string) => {
-    setOpenUnit(unit);
-    setOpenSioId(id);
-    try {
-      window.history.replaceState(null, "", `/?unit=${unit}#${id}`);
-    } catch {
-      // fine — the modal still opens
-    }
-  };
-  const showUnit = (unit: number) => {
-    setOpenSioId(null);
-    setOpenUnit(unit);
-    try {
-      window.history.replaceState(null, "", `/?unit=${unit}`);
-    } catch {
-      // fine
-    }
-  };
 
   // "Continuer" = the first not-done goal AFTER the furthest « done » (Dan,
   // 2026-07-08: a learner who marked a later step done continues from there).
@@ -346,95 +295,21 @@ export default function HomeDashboard() {
         <p className="fluo-mono mb-2 text-xs font-black text-[color:var(--fluo-ink)]">🔗 {seqRun} in a row!</p>
       )}
 
-      {/* 2D · 3D — a small segmented control; the map below follows. */}
-      <div ref={mapRef} className="mb-2 flex scroll-mt-3 items-center justify-end">
-        <div role="group" aria-label="Map view" className="fluo-mono flex overflow-hidden rounded-lg border-2 text-[11px] font-black" style={{ borderColor: "var(--cahier-ink)" }}>
-          {(["2d", "3d"] as const).map((v) => (
-            <button
-              key={v}
-              type="button"
-              aria-pressed={mapView === v}
-              onClick={() => {
-                setMapView(v);
-                try {
-                  window.localStorage.setItem(MAP_VIEW_KEY, v);
-                } catch {
-                  // fine — the choice just does not persist
-                }
-              }}
-              className="px-2.5 py-1 leading-none"
-              style={{
-                background: mapView === v ? "var(--cahier-ink)" : "var(--cahier-paper-raised)",
-                color: mapView === v ? "var(--cahier-paper-raised)" : "var(--cahier-ink)",
-              }}
-            >
-              {v.toUpperCase()}
-            </button>
-          ))}
-        </div>
-      </div>
-      {mapView === "3d" ? (
-        <HomeMap3D progress={progress} activeId={activeId} accent={accent} focusUnit={openUnit ?? undefined} onOpenUnit={showUnit} onOpenSio={openSio} />
-      ) : (
-        <HomeMap progress={progress} activeId={activeId} accent={accent} focusUnit={openUnit ?? undefined} onOpenUnit={showUnit} onOpenSio={openSio} />
-      )}
-
-      {/* The unit's SIO list, inline under the map — what the old /unit/N
-          page showed (chapter card + UnitSection + the next-chapter tease).
-          Opens from a region pill, a unit chip, a stop, or the deep link. */}
-      {openUnit !== null && (
-        <div id={`unit-list-${openUnit}`} className={`fluo-h-${openUnit % 6} mt-6 scroll-mt-4`}>
-          <div className="mb-3 flex items-start gap-2 rounded-2xl border-2 px-4 py-3" style={{ borderColor: "var(--fluo-card-accent)", background: "var(--fluo-card-tint)" }}>
-            <div className="min-w-0 flex-1">
-              <p lang="fr" className="fluo-serif text-xl font-black text-[color:var(--fluo-ink)]">
-                {UNIT_META[openUnit]?.emoji} {CHAPTERS[openUnit]?.scenario}
-              </p>
-              <p lang="fr" className="text-sm font-bold text-[color:var(--fluo-ink)]/70">{CHAPTERS[openUnit]?.tagline}</p>
-            </div>
-            <button
-              type="button"
-              aria-label="Close unit"
-              onClick={() => {
-                setOpenUnit(null);
-                setOpenSioId(null);
-                try {
-                  window.history.replaceState(null, "", "/");
-                } catch {
-                  // fine
-                }
-              }}
-              className="fluo-mono rounded-lg border-2 px-2 py-0.5 text-xs font-black text-[color:var(--fluo-ink)]"
-              style={{ borderColor: "var(--fluo-card-accent)", background: "var(--fluo-card)" }}
-            >
-              ✕
-            </button>
-          </div>
-          <UnitSection
-            key={openUnit}
-            unit={openUnit}
-            openSioId={openSioId}
-            onSioClosed={() => {
-              setOpenSioId(null);
-              try {
-                window.history.replaceState(null, "", `/?unit=${openUnit}`);
-              } catch {
-                // fine
-              }
-            }}
-          />
-          {CHAPTERS[openUnit]?.cliffhanger && openUnit < 4 && (
-            <button
-              type="button"
-              onClick={() => showUnit(openUnit + 1)}
-              className="mt-4 block w-full rounded-2xl border-2 border-dashed px-4 py-3 text-left text-sm font-bold text-[color:var(--fluo-ink)] transition hover:-translate-y-0.5"
-              style={{ borderColor: "var(--fluo-card-accent)", background: "var(--fluo-card-tint)" }}
-            >
-              <span lang="fr">👀 {CHAPTERS[openUnit].cliffhanger}</span>
-            </button>
-          )}
-        </div>
-      )}
-      <HomePrintSheet progress={progress} />
+      {/* 🗺️ La Carte — the map lives on its own page now (Dan, 2026-08-21:
+          a finger scrolling Home kept catching the map instead of the page).
+          One big card leads there. */}
+      <Link
+        href="/carte"
+        className="mt-2 flex items-center gap-3 rounded-2xl border-2 px-4 py-4 transition hover:-translate-y-0.5"
+        style={{ borderColor: "var(--cahier-ink)", background: "var(--cahier-paper-raised)", boxShadow: "var(--shadow-card)" }}
+      >
+        <span aria-hidden className="text-3xl">🗺️</span>
+        <span className="min-w-0 flex-1">
+          <span lang="fr" className="fluo-serif block text-lg font-black leading-tight text-[color:var(--fluo-ink)]">La Carte</span>
+          <span className="block text-xs font-bold text-[color:var(--fluo-ink)]/70">2D · 3D</span>
+        </span>
+        <span aria-hidden className="fluo-mono text-lg font-black text-[color:var(--fluo-ink)]">▶</span>
+      </Link>
     </>
   );
 }

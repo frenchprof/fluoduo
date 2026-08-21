@@ -699,7 +699,17 @@ export default function HomeMap3D({
                     const cW = Math.round(item.size * p.scale * (item.type === "bush" ? 1.6 : 1));
                     const fullH = Math.round(item.size * p.scale * (item.giant ? 1.9 : item.type === "pine" ? 1.75 : item.type === "bush" ? 0.65 : 1.25));
                     return (
-                      <div key={item.id} aria-hidden className="absolute" style={{ left: p.px - cW / 2, top: p.py - fullH * p.reveal, zIndex: zOrder(p.scale) - 2, ...clipRise(p.reveal) }}>
+                      // The title teaches on hover (Dan, round 11: the
+                      // mouseover description labels) — children keep
+                      // pointer-events off, so the wrapper catches the hover.
+                      <div
+                        key={item.id}
+                        aria-hidden
+                        className="absolute"
+                        lang="fr"
+                        title={item.giant ? "un grand arbre" : item.type === "pine" ? "un sapin" : item.type === "bush" ? "un buisson" : "un arbre"}
+                        style={{ left: p.px - cW / 2, top: p.py - fullH * p.reveal, zIndex: zOrder(p.scale) - 2, ...clipRise(p.reveal) }}
+                      >
                         <NatureSprite type={item.type} size={item.size} scale={p.scale} scaleY={p.scaleY} tall={item.giant} />
                       </div>
                     );
@@ -714,7 +724,14 @@ export default function HomeMap3D({
                       item.kind === "B" ? Math.round(item.h * p.scale + item.w * 0.16 * p.scale + 6 * p.scale * p.scaleY + 4) : Math.round(item.size * p.scale * 1.05 + 6);
                     const frontW = item.kind === "B" ? Math.round(item.w * p.scale) : Math.round(item.size * p.scale * 0.9);
                     return (
-                      <div key={item.id} aria-hidden className="absolute" style={{ left: p.px - frontW / 2, top: p.py - approxH * p.reveal, zIndex: zOrder(p.scale) - 1, ...clipRise(p.reveal) }}>
+                      <div
+                        key={item.id}
+                        aria-hidden
+                        className="absolute"
+                        lang="fr"
+                        title={item.kind === "B" ? item.sign ?? undefined : item.label ?? undefined}
+                        style={{ left: p.px - frontW / 2, top: p.py - approxH * p.reveal, zIndex: zOrder(p.scale) - 1, ...clipRise(p.reveal) }}
+                      >
                         {item.kind === "B" ? <BuildingSprite item={item} scale={p.scale} scaleY={p.scaleY} /> : <PropSprite item={item} scale={p.scale} scaleY={p.scaleY} />}
                       </div>
                     );
