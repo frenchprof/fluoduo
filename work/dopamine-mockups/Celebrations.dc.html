@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800;900&family=Patrick+Hand&display=swap">
+  <style>
+*{box-sizing:border-box}
+body{margin:0;width:390px;height:844px;overflow:hidden;
+  font-family:'Work Sans',system-ui,-apple-system,sans-serif;color:#312620;background:#e3ddd4;
+  -webkit-font-smoothing:antialiased}
+a{color:#2d54a0}a:hover{color:#123780}
+.screen{width:390px;height:844px;display:flex;flex-direction:column;background:#faf6ee;
+  position:relative;overflow:hidden}
+.body{flex:1;min-height:0;overflow:hidden;padding:14px;display:flex;flex-direction:column;gap:12px}
+.ruled{background-image:repeating-linear-gradient(to bottom,transparent 0 27px,#e3ddd1 27px 28px);
+  background-position:0 6px}
+.card{background:#fefbf7;border:2px solid #312620;border-radius:14px;box-shadow:0 2px 0 0 #312620;
+  padding:14px}
+.soft{background:#fefbf7;border:1.5px solid #e3ddd1;border-radius:12px;padding:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;
+  font-weight:600;font-size:15px;border:1.5px solid #312620;border-radius:10px;padding:10px 18px;
+  background:#faf6ee;color:#312620;box-shadow:0 2px 0 0 #312620}
+.btn-accent{background:#d4f24c;border-color:#a6c130;box-shadow:0 2px 0 0 #a6c130}
+.btn-dark{background:#312620;color:#d4f24c;box-shadow:0 2px 0 0 #191c50}
+.topbar{height:56px;display:flex;align-items:center;gap:12px;padding:0 14px;
+  border-bottom:2px solid #e3ddd1;background:#fefbf7;flex-shrink:0}
+.bottombar{height:64px;display:flex;align-items:stretch;background:#fefbf7;
+  border-top:2px solid #cabfaf;flex-shrink:0;margin-top:auto}
+.slot{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  color:#655c55}
+.slot .ic{font-size:22px;line-height:1}
+.slot .lb{font-size:10px;font-weight:800}
+.slot.on{color:#2d54a0}
+.hand{font-family:'Patrick Hand',cursive;font-weight:400}
+.mono{font-variant-numeric:tabular-nums}
+.eyebrow{font-size:10px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:#655c55}
+.h2{font-size:19px;font-weight:800;letter-spacing:-.01em;line-height:1.15}
+.sub{font-size:13px;line-height:1.45;color:#655c55}
+.chip{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:4px 11px;
+  font-size:12px;font-weight:700;border:1.5px solid #e3ddd1;background:#fff}
+.marks{display:flex;background:#fefbf7;border-top:2px solid #312620}
+.marks>div{flex:1;padding:8px 2px;text-align:center;border-left:1px solid #e3ddd1;min-width:0}
+.marks>div:first-child{border-left:0}
+.mv{font-size:15px;font-weight:900;line-height:1.05}
+.ml{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#655c55;
+  margin-top:2px}
+
+.scrim{position:absolute;inset:0;background:rgba(49,38,32,.34)}
+.conf{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.conf i{position:absolute;width:9px;height:13px;border-radius:2px;opacity:.95;
+  animation:fall 2.6s linear infinite}
+@keyframes fall{0%{transform:translateY(-14px) rotate(0)}100%{transform:translateY(620px) rotate(400deg)}}
+@media (prefers-reduced-motion:reduce){.conf i{animation:none}}
+.big{position:absolute;left:22px;right:22px;top:212px;background:#fefbf7;border:2px solid #312620;
+  border-radius:18px;box-shadow:0 4px 0 0 #312620;padding:22px 20px;text-align:center;
+  display:flex;flex-direction:column;gap:9px;align-items:center}
+.tier{display:flex;align-items:center;gap:10px;border:1.5px solid #e3ddd1;border-radius:11px;
+  background:#fefbf7;padding:9px 11px}
+.dot{width:9px;height:9px;border-radius:999px;flex-shrink:0}
+</style>
+</helmet>
+
+<div class="screen">
+  <div class="topbar"><span style="font-weight:900;font-size:17px">Unité 3</span></div>
+  <div class="body ruled"></div>
+  <div class="bottombar"><div class="slot on"><span class="ic">📖</span><span class="lb">Index</span></div><div class="slot"><span class="ic">🎮</span><span class="lb">SvPlay</span></div><div class="slot"><span class="ic">🔁</span><span class="lb">Review</span></div><div class="slot"><span class="ic">💪</span><span class="lb">Skills</span></div></div>
+  <div class="scrim"></div>
+  <div class="conf"><i style="left:38px;top:92px;background:#f8c20d;animation-delay:0s;transform:rotate(18deg)"></i><i style="left:96px;top:58px;background:#7be650;animation-delay:0.35s;transform:rotate(-24deg)"></i><i style="left:150px;top:104px;background:#d42a8f;animation-delay:0.15s;transform:rotate(40deg)"></i><i style="left:212px;top:66px;background:#00c5c9;animation-delay:0.5s;transform:rotate(-12deg)"></i><i style="left:268px;top:110px;background:#f76143;animation-delay:0.25s;transform:rotate(30deg)"></i><i style="left:322px;top:74px;background:#f8c20d;animation-delay:0.45s;transform:rotate(-38deg)"></i><i style="left:66px;top:140px;background:#0075e3;animation-delay:0.6s;transform:rotate(22deg)"></i><i style="left:190px;top:148px;background:#7be650;animation-delay:0.7s;transform:rotate(-30deg)"></i><i style="left:300px;top:152px;background:#d42a8f;animation-delay:0.55s;transform:rotate(14deg)"></i><i style="left:128px;top:186px;background:#f8c20d;animation-delay:0.8s;transform:rotate(-20deg)"></i><i style="left:248px;top:192px;background:#00c5c9;animation-delay:0.9s;transform:rotate(34deg)"></i></div>
+  <div class="big">
+    <div style="font-size:44px;line-height:1">🏔️</div>
+    <div style="font-size:23px;font-weight:900;letter-spacing:-.02em;color:#b71c0e">
+      Unit 3 complete!</div>
+    <div class="sub">Ten objectives, all of them done. Identity Heights is yours.</div>
+    <div style="display:flex;gap:8px;margin-top:3px">
+      <span class="chip" style="border-color:#8b5700;color:#8b5700">⭐ +1 200 XP</span>
+      <span class="chip" style="border-color:#0059c4;color:#0059c4">💎 +20</span>
+    </div>
+    <div class="btn btn-accent" style="width:100%;margin-top:5px">Continue</div>
+  </div>
+  <div style="position:absolute;left:22px;right:22px;bottom:84px;display:flex;flex-direction:column;
+    gap:7px">
+    <div class="eyebrow" style="color:#fefbf7">The celebration ladder</div>
+    <div class="tier"><span class="dot" style="background:#00c5c9"></span>
+      <span style="font-size:12.5px;font-weight:700;flex:1">Word mastered</span>
+      <span style="font-size:11px;color:#655c55">chime</span></div>
+    <div class="tier"><span class="dot" style="background:#d42a8f"></span>
+      <span style="font-size:12.5px;font-weight:700;flex:1">Streak · ×1.5 tier</span>
+      <span style="font-size:11px;color:#655c55">flame + sound</span></div>
+    <div class="tier"><span class="dot" style="background:#7be650"></span>
+      <span style="font-size:12.5px;font-weight:700;flex:1">Daily goal hit</span>
+      <span style="font-size:11px;color:#655c55">short confetti</span></div>
+    <div class="tier" style="border-color:#312620;box-shadow:0 2px 0 0 #312620">
+      <span class="dot" style="background:#f76143"></span>
+      <span style="font-size:12.5px;font-weight:800;flex:1">Unit finished</span>
+      <span style="font-size:11px;font-weight:700">full fanfare</span></div>
+  </div>
+</div>
+
+</x-dc>
+</body>
+</html>
