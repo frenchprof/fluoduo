@@ -3,7 +3,7 @@
 /**
  * The Home page body (Dan, 2026-07-05: "a true blue Home page… all of the 50
  * SIOs on a single learning path visually — an overview of where you are in
- * the learning journey"). Hero: Bienvenue with the ▶/🔁 icon buttons, the
+ * the learning journey"). Hero: Bienvenue with the ▦ Menu button, the
  * stat pills and the two progress bars. The COURSE MAP moved to its own
  * page, /carte (Dan, 2026-08-21: a finger scrolling the page kept catching
  * the map instead) — Home links there with one card, and forwards the old
@@ -16,7 +16,6 @@ import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
 import { equippedAccent, levelForXp, xpMultiplier } from "@/lib/economy";
-import { dueForReview } from "@/lib/reviser";
 
 /** « par Dr Chan » as pen strokes, in writing order (stem before bowl, the
  *  way a hand actually writes print letters). Baseline y=25, x-height 13,
@@ -53,7 +52,6 @@ const BYLINE_STROKES = [
 
 export default function HomeDashboard() {
   const [progress, setProgress] = useState<Progress>(defaultProgress());
-  const [dueCount, setDueCount] = useState(0);
   // Armed on mount: nothing pops up by default (Dan, 2026-07-14), so the
   // FluOlinGo brand animation plays on a clear stage right away.
   const [heroPlay, setHeroPlay] = useState(false);
@@ -69,7 +67,6 @@ export default function HomeDashboard() {
     const refresh = () => {
       const p = loadProgress();
       setProgress(p);
-      setDueCount(dueForReview(p, Date.now()).length);
     };
     refresh();
     window.addEventListener("fluolingo:progress-updated", refresh);
@@ -248,32 +245,13 @@ export default function HomeDashboard() {
             ))}
           </dl>
 
-          {/* The two actions, round like the Design ref, still grouped in the
-              card they describe. HELP! keeps its ink-on-fluo look. */}
+          {/* ONE action left in the card (2026-08-21). The round ▶ and 🔁 went:
+              ▶ meant "continue the course" here and "a voice is about to
+              speak" in every drill, and the 🔁 pointed at /reviser — which is
+              exactly where the bottom bar's Review tab already goes. Continue
+              is now the worded button below the card; DéjàRevu is the tab,
+              which took the due-count badge with it. */}
           <div className="flex w-full shrink-0 items-center justify-end gap-1.5 sm:w-auto sm:border-l sm:pl-2.5" style={{ borderColor: "var(--cahier-line)" }}>
-            {activeSio && (
-              <Link
-                href={`/unit/${activeSio.unit}#${activeSio.id}`}
-                aria-label="Continue"
-                title={`Continue — « ${activeSio.topic} », the next objective after your latest 'done'.`}
-                className="flex h-9 w-9 items-center justify-center rounded-full border-2 text-sm text-white shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
-                style={{ background: accent, borderColor: accent }}
-              >
-                <span aria-hidden>▶</span>
-              </Link>
-            )}
-            <Link
-              href="/reviser"
-              aria-label="DéjàRevu"
-              title="DéjàRevu — your words to review"
-              className="relative flex h-9 w-9 items-center justify-center rounded-full border-2 text-sm shadow-[2px_2px_0_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5"
-              style={{ borderColor: "var(--fluo-ink)", background: "var(--cahier-paper)", color: "var(--fluo-ink)" }}
-            >
-              <span aria-hidden>🔁</span>
-              {dueCount > 0 && (
-                <span className="absolute -right-2 -top-2 rounded-full bg-[var(--fluo-danger)] px-1.5 text-[10px] font-bold text-white">{dueCount}</span>
-              )}
-            </Link>
             <button
               type="button"
               onClick={() => setQgOpen(true)}
@@ -288,6 +266,22 @@ export default function HomeDashboard() {
         </div>
         {qgOpen && <MenuSplash onClose={() => setQgOpen(false)} />}
       </section>
+
+      {/* CONTINUE — the one thing Home is for, as a word (2026-08-21). It says
+          where it goes, and the chevron is the app's single "this leaves the
+          page" mark: never ▶, which belongs to sound. */}
+      {activeSio && (
+        <Link
+          href={`/unit/${activeSio.unit}#${activeSio.id}`}
+          aria-label="Continue"
+          title={`Continue — « ${activeSio.topic} », the next objective after your latest 'done'.`}
+          className="-mt-4 mb-3 flex items-center justify-center gap-2 rounded-2xl border-2 px-4 py-3.5 text-lg font-black text-white shadow-[3px_3px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
+          style={{ background: accent, borderColor: accent }}
+        >
+          Continue
+          <span aria-hidden className="fluo-mono text-xl leading-none">›</span>
+        </Link>
+      )}
 
       {/* Streak momentum (Dan, 2026-07-08, episode model): counts done-in-order
           from the start; a skip simply stops the run — never blocks. */}
@@ -308,7 +302,7 @@ export default function HomeDashboard() {
           <span lang="fr" className="fluo-serif block text-lg font-black leading-tight text-[color:var(--fluo-ink)]">La Carte</span>
           <span className="block text-xs font-bold text-[color:var(--fluo-ink)]/70">2D · 3D</span>
         </span>
-        <span aria-hidden className="fluo-mono text-lg font-black text-[color:var(--fluo-ink)]">▶</span>
+        <span aria-hidden className="fluo-mono text-xl font-black text-[color:var(--fluo-ink)]">›</span>
       </Link>
     </>
   );

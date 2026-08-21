@@ -150,7 +150,7 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
       score={lines.length > 0 ? <>{lines.length} ✎</> : undefined}
       help={help}
       menu={[
-        { label: "🔁 New scenario", onClick: reset },
+        { label: "New scenario", onClick: reset },
         { label: "🧹 Clear", onClick: clearOnly },
       ]}
       record={record}

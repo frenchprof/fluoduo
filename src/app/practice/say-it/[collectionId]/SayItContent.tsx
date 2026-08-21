@@ -388,7 +388,7 @@ export default function SayItContent({
             {score.total > 0 && ` (${Math.round((score.ok / score.total) * 100)}%)`}
           </>
         }
-        cta={finished ? { label: "🔁 Restart", onClick: restart } : null}
+        cta={finished ? { label: "Restart", onClick: restart } : null}
         help={finished ? null : ladder.help}
         feedback={
           !finished && phase === "result" && result && ui && card
@@ -470,8 +470,8 @@ export default function SayItContent({
               {score.total > 0 && <> · ✓ {score.ok} ({Math.round((score.ok / score.total) * 100)}%)</>}.
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-2">
-              {embedded && <button type="button" onClick={restart} className="fluo-btn fluo-btn-sm">🔁 Restart</button>}
-              <Link href="/reviser" className="fluo-btn fluo-btn-sm fluo-btn-ghost">🔁 DéjàRevu</Link>
+              {embedded && <button type="button" onClick={restart} className="fluo-btn fluo-btn-sm">Restart</button>}
+              <Link href="/reviser" className="fluo-btn fluo-btn-sm fluo-btn-ghost">DéjàRevu ›</Link>
               {embedded && <Link href="/" className="fluo-btn fluo-btn-sm fluo-btn-ghost">← Back to the path</Link>}
             </div>
           </div>
@@ -607,7 +607,7 @@ export default function SayItContent({
               className="fluo-btn fluo-btn-sm fluo-btn-ghost disabled:opacity-40"
               title="Back (B)"
             >
-              ⏮ Back
+              Back
             </button>
             <button
               type="button"
@@ -616,10 +616,10 @@ export default function SayItContent({
               className="fluo-btn fluo-btn-sm fluo-btn-ghost disabled:opacity-40"
               title="Defer this word to the end (S)"
             >
-              ⤼ Skip
+              Skip
             </button>
             <button type="button" onClick={endNow} className="fluo-btn fluo-btn-sm fluo-btn-ghost" title="End here (E)">
-              ⏹ End here
+              End here
             </button>
           </div>
         )}
