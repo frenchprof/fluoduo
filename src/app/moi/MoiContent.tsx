@@ -175,7 +175,7 @@ export default function MoiContent() {
           {p.xp > 0 && <a href="/leaderboard" className={`${chip} no-underline hover:-translate-y-0.5`} style={chipStyle} title="XP · leaderboard">⭐ {p.xp}</a>}
           {dueNow > 0 && (
             <a href="/reviser" className={`${chip} ml-auto no-underline hover:-translate-y-0.5`} style={{ ...chipStyle, background: INK, color: PAPER }} title="DéjàRevu — due for review now">
-              👀 {dueNow}
+              🔖 {dueNow}
             </a>
           )}
         </div>

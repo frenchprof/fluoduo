@@ -63,10 +63,11 @@ export const FAMILIES: Family[] = [
   { key: "goals", name: "FluOlin Goals", emoji: "🎯", href: "/" },
   { key: "practice", name: "FluOlin Practice", emoji: "✏️", href: "/activities" },
   { key: "svplay", name: "FluOlin SvPlay", emoji: "🎮", href: "/games/vocabularain" },
-  // 👀 not 🔁 (2026-08-21): the transport glyphs belong to sound. ÉcouTexte's
+  // 🔖 not 🔁 (2026-08-21): the transport glyphs belong to sound. ÉcouTexte's
   // "🔁 Listen again" has to keep meaning "again", so the Review family — a
-  // DESTINATION — cannot wear the same mark. 👀 reads as « déjà vu ».
-  { key: "review", name: "FluOlin Review", emoji: "👀", href: "/reviser" },
+  // DESTINATION — cannot wear the same mark. 🔖 = put it aside, come
+  // back to it (Dan chose it over 👀, 2026-08-21).
+  { key: "review", name: "FluOlin Review", emoji: "🔖", href: "/reviser" },
   { key: "skills", name: "FluOlin Skills", emoji: "💪", href: "/conjugaison" },
   { key: "user", name: "FluOlin User", emoji: "👤", href: "/moi" },
 ];
@@ -100,7 +101,7 @@ export const ACTIVITIES: Activity[] = [
   { key: "complete", name: "iComplete", emoji: "✏️", family: "practice", href: null, hue: "#7bbf2e", blurb: "Type the missing word." },
 
   // ── 2 · FluOlin Review — automatic first, then the one you choose ─────────
-  { key: "reviser", name: "DéjàRevu", emoji: "👀", family: "review", href: "/reviser", hue: "#7bbf2e", blurb: "Comes back when you're about to forget it." },
+  { key: "reviser", name: "DéjàRevu", emoji: "🔖", family: "review", href: "/reviser", hue: "#7bbf2e", blurb: "Comes back when you're about to forget it." },
   { key: "grammarathon", name: "GramMarathon", emoji: "🏃", family: "review", href: "/activities?activity=grammarathon", hue: "#3b6fd4", blurb: "Gap-fill sprint across a whole deck." },
 
   // ── 3 · FluOlin Skills — forms → receptive → productive ───────────────────
