@@ -3,14 +3,15 @@
 /**
  * The Home page body (Dan, 2026-07-05: "a true blue Home page… all of the 50
  * SIOs on a single learning path visually — an overview of where you are in
- * the learning journey"). Hero: Bienvenue with the ▦ Menu button, the
- * stat pills and the two progress bars. The COURSE MAP moved to its own
+ * the learning journey"). Hero: Bienvenue, the row of marks and the ▦ Menu
+ * button; « Continue › » is the worded CTA under the card (2026-08-21 — the
+ * round ▶ and 🔁 went, see the block above it). The COURSE MAP moved to its own
  * page, /carte (Dan, 2026-08-21: a finger scrolling the page kept catching
  * the map instead) — Home links there with one card, and forwards the old
  * `/?unit=N#SIO-0XX` deep links so printed QR codes and bookmarks survive.
  */
 import Link from "next/link";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import MenuSplash from "@/components/MenuSplash";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
@@ -178,9 +179,10 @@ export default function HomeDashboard() {
         {/* Heading — the h1 is back. The word does the Kallang Wave, the ink
             blob sweeps F→o, then « par Dr Chan » writes itself beneath. */}
         <div
-          className="px-4 pb-3 pt-3.5"
+          className="flex items-start justify-between gap-2 px-4 pb-3 pt-3.5"
           style={{ background: "linear-gradient(120deg, var(--cahier-accent-soft) 0%, var(--cahier-paper-2) 45%, var(--cahier-hl) 100%)" }}
         >
+          <div className="min-w-0">
           <h1 className="fluo-serif text-2xl font-black leading-none text-[color:var(--fluo-ink)]">
             <span className="whitespace-nowrap">Bienvenue sur</span>{" "}
             <span
@@ -218,15 +220,32 @@ export default function HomeDashboard() {
               ))}
             </g>
           </svg>
+          </div>
+
+          {/* ▦ Menu — the ONE action left in the card (2026-08-21). It sits in
+              the greeting's dead space rather than owning a row of its own:
+              the round ▶ and 🔁 that used to flank it are gone. */}
+          <button
+            type="button"
+            onClick={() => setQgOpen(true)}
+            aria-label="Menu"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 text-xs font-black shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
+            style={{ background: "var(--fluo-ink)", borderColor: "var(--fluo-ink)", color: "var(--cahier-hl)" }}
+            title="Menu — every activity, one tap away"
+          >
+            <span aria-hidden>▦</span>
+          </button>
         </div>
 
-        {/* The row of marks. Scrolls sideways on a narrow phone rather than
-            wrapping — a report card's row stays a row. */}
+        {/* The row of marks — marks ONLY since 2026-08-21: the three round
+            actions that shared this strip are gone (▶ and 🔁 to the rule that
+            transport glyphs mean sound, ▦ up into the greeting), so the row
+            is what its name says. A report card's row stays a row. */}
         <div
-          className="flex flex-wrap items-stretch gap-y-1.5 border-t-2 px-3 py-2"
+          className="flex items-stretch border-t-2 px-3 py-2"
           style={{ borderColor: "var(--fluo-ink)", background: "var(--cahier-paper-raised)" }}
         >
-          <dl className="flex w-full min-w-0 items-stretch sm:w-auto sm:flex-1">
+          <dl className="flex min-w-0 flex-1 items-stretch">
             {MARKS.map((m, i) => (
               <div
                 key={m.label}
@@ -245,24 +264,6 @@ export default function HomeDashboard() {
             ))}
           </dl>
 
-          {/* ONE action left in the card (2026-08-21). The round ▶ and 🔁 went:
-              ▶ meant "continue the course" here and "a voice is about to
-              speak" in every drill, and the 🔁 pointed at /reviser — which is
-              exactly where the bottom bar's Review tab already goes. Continue
-              is now the worded button below the card; DéjàRevu is the tab,
-              which took the due-count badge with it. */}
-          <div className="flex w-full shrink-0 items-center justify-end gap-1.5 sm:w-auto sm:border-l sm:pl-2.5" style={{ borderColor: "var(--cahier-line)" }}>
-            <button
-              type="button"
-              onClick={() => setQgOpen(true)}
-              aria-label="Menu"
-              className="flex h-9 w-9 items-center justify-center rounded-full border-2 text-xs font-black shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
-              style={{ background: "var(--fluo-ink)", borderColor: "var(--fluo-ink)", color: "var(--cahier-hl)" }}
-              title="Menu — every activity, one tap away"
-            >
-              <span aria-hidden>▦</span>
-            </button>
-          </div>
         </div>
         {qgOpen && <MenuSplash onClose={() => setQgOpen(false)} />}
       </section>
@@ -275,8 +276,11 @@ export default function HomeDashboard() {
           href={`/unit/${activeSio.unit}#${activeSio.id}`}
           aria-label="Continue"
           title={`Continue — « ${activeSio.topic} », the next objective after your latest 'done'.`}
-          className="-mt-4 mb-3 flex items-center justify-center gap-2 rounded-2xl border-2 px-4 py-3.5 text-lg font-black text-white shadow-[3px_3px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
-          style={{ background: accent, borderColor: accent }}
+          className="fluo-btn fluo-btn-lg -mt-4 mb-3 w-full font-black"
+          /* The button is the house "Start" chartreuse; the learner's bought
+             accent stays visible as its ledge, so a cosmetic still shows on
+             Home. Setting the token (not box-shadow) keeps :active working. */
+          style={{ "--fluo-primary-shadow": accent } as CSSProperties}
         >
           Continue
           <span aria-hidden className="fluo-mono text-xl leading-none">›</span>
