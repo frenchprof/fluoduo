@@ -46,11 +46,11 @@ export const quandLesson: NativeLesson = {
         Quelle heure est-il ? — <em lang="fr">Il est…</em>
       </h2>
       <ul className="mt-2 space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
-        <li><b className="text-[color:var(--cahier-la)]">Il est vingt heures quinze.</b> — 20:15</li>
-        <li><b className="text-[color:var(--cahier-la)]">Il est huit heures.</b> — 08:00</li>
-        <li><b className="text-[color:var(--cahier-la)]">Il est une heure cinq.</b> — 01:05 (<i lang="fr">une heure</i> stays singular)</li>
-        <li><b className="text-[color:var(--cahier-la)]">Il est dix heures vingt et une.</b> — 10:21</li>
-        <li><b className="text-[color:var(--cahier-la)]">Il est zéro heure trente.</b> — 00:30</li>
+        <li><b className="text-[color:var(--gram-neutral)]">Il est vingt heures quinze.</b> — 20:15</li>
+        <li><b className="text-[color:var(--gram-neutral)]">Il est huit heures.</b> — 08:00</li>
+        <li><b className="text-[color:var(--gram-neutral)]">Il est une heure cinq.</b> — 01:05 (<i lang="fr">une heure</i> stays singular)</li>
+        <li><b className="text-[color:var(--gram-neutral)]">Il est dix heures vingt et une.</b> — 10:21</li>
+        <li><b className="text-[color:var(--gram-neutral)]">Il est zéro heure trente.</b> — 00:30</li>
       </ul>
       <p className="mt-3 flex flex-wrap gap-1.5 text-[13px] font-bold text-[color:var(--cahier-ink)]">
         {["le matin", "l'après-midi", "le soir", "la nuit"].map((s) => (

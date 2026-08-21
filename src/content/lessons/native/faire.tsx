@@ -36,10 +36,10 @@ export const faireLesson: NativeLesson = {
         Faire <em>du / de la / de l&rsquo; / des</em>
       </h2>
       <ul className="space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
-        <li><b className="text-lg text-[color:var(--cahier-la)]">du</b> + masculin — <i lang="fr">Je fais du sport.</i></li>
-        <li><b className="text-lg text-[color:var(--cahier-la)]">de la</b> + féminin — <i lang="fr">Elle fait de la danse.</i></li>
-        <li><b className="text-lg text-[color:var(--cahier-la)]">de l&rsquo;</b> + voyelle — <i lang="fr">Nous faisons de l&rsquo;escalade.</i></li>
-        <li><b className="text-lg text-[color:var(--cahier-la)]">des</b> + pluriel — <i lang="fr">Ils font des arts martiaux.</i></li>
+        <li><b className="text-lg text-[color:var(--gram-masc)]">du</b> + masculin — <i lang="fr">Je fais du sport.</i></li>
+        <li><b className="text-lg text-[color:var(--gram-fem)]">de la</b> + féminin — <i lang="fr">Elle fait de la danse.</i></li>
+        <li><b className="text-lg text-[color:var(--gram-neutral)]">de l&rsquo;</b> + voyelle — <i lang="fr">Nous faisons de l&rsquo;escalade.</i></li>
+        <li><b className="text-lg text-[color:var(--gram-neutral)]">des</b> + pluriel — <i lang="fr">Ils font des arts martiaux.</i></li>
       </ul>
       <p className="mt-2 text-sm text-[color:var(--cahier-ink)]" lang="fr">
         je fais · tu fais · il/elle fait · nous faisons · vous <b>faites</b> · ils/elles <b>font</b>

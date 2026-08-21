@@ -64,10 +64,10 @@ export const allerLesson: NativeLesson = {
         je vais · tu vas · il/elle va · nous allons · vous allez · ils/elles vont
       </p>
       <ul className="mt-2 space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
-        <li>à + le → <b className="text-lg text-[color:var(--cahier-la)]">au</b> — <i lang="fr">Je vais au cinéma.</i></li>
-        <li>à + la → <b className="text-lg text-[color:var(--cahier-la)]">à la</b> — <i lang="fr">Elle va à la piscine.</i></li>
-        <li>à + l&rsquo; → <b className="text-lg text-[color:var(--cahier-la)]">à l&rsquo;</b> — <i lang="fr">Il va à l&rsquo;école.</i></li>
-        <li>à + les → <b className="text-lg text-[color:var(--cahier-la)]">aux</b> — <i lang="fr">Nous allons aux magasins.</i></li>
+        <li>à + le → <b className="text-lg text-[color:var(--gram-masc)]">au</b> — <i lang="fr">Je vais au cinéma.</i></li>
+        <li>à + la → <b className="text-lg text-[color:var(--gram-fem)]">à la</b> — <i lang="fr">Elle va à la piscine.</i></li>
+        <li>à + l&rsquo; → <b className="text-lg text-[color:var(--gram-neutral)]">à l&rsquo;</b> — <i lang="fr">Il va à l&rsquo;école.</i></li>
+        <li>à + les → <b className="text-lg text-[color:var(--gram-neutral)]">aux</b> — <i lang="fr">Nous allons aux magasins.</i></li>
       </ul>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
         ⚠️ <b>The contraction is obligatory</b> — never <i lang="fr">*à le</i> / <i lang="fr">*à les</i>, and no <i lang="fr">*al</i> form: <span lang="fr">à l&rsquo;école stays <b>à l&rsquo;</b></span>.

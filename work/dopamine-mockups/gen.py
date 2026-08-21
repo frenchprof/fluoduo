@@ -101,11 +101,8 @@ FILES["Install.dc.html"] = page("Install", """
 <div class="screen">
   {hero_head()}
   <div class="marks">
-    <div><div class="mv">N4</div><div class="ml">level</div></div>
-    <div><div class="mv">12</div><div class="ml">streak</div></div>
-    <div><div class="mv">38%</div><div class="ml">course</div></div>
-    <div><div class="mv mono">420/1k</div><div class="ml">XP</div></div>
-    <div><div class="mv mono">19/50</div><div class="ml">lessons</div></div>
+    <div><div class="mv mono">19/50</div><div class="ml">course</div></div>
+    <div><div class="mv">12<b style="color:#bc4945">×2</b></div><div class="ml">streak</div></div>
   </div>
   <div class="body ruled"></div>
   {bottombar()}
@@ -149,11 +146,8 @@ FILES["Main.dc.html"] = page("Objectif du jour", """
 <div class="screen">
   {hero_head()}
   <div class="marks">
-    <div><div class="mv">N4</div><div class="ml">level</div></div>
-    <div><div class="mv">12</div><div class="ml">streak</div></div>
-    <div><div class="mv">38%</div><div class="ml">course</div></div>
-    <div><div class="mv mono">420/1k</div><div class="ml">XP</div></div>
-    <div><div class="mv mono">19/50</div><div class="ml">lessons</div></div>
+    <div><div class="mv mono">19/50</div><div class="ml">course</div></div>
+    <div><div class="mv">12<b style="color:#bc4945">×2</b></div><div class="ml">streak</div></div>
   </div>
   <div class="body ruled">
     <div class="card" style="display:flex;gap:15px;align-items:center;padding:16px">
@@ -178,7 +172,7 @@ FILES["Main.dc.html"] = page("Objectif du jour", """
     <div class="soft" style="display:flex;gap:11px;align-items:center">
       <span style="font-size:20px">\U0001F5FA️</span>
       <div style="min-width:0;flex:1">
-        <div style="font-size:15px;font-weight:800">La Carte</div>
+        <div style="font-size:15px;font-weight:800">The Map</div>
         <div class="sub" style="font-size:12px">Unité 3 · Identity Heights</div>
       </div>
       <span style="font-weight:900;color:#655c55">›</span>
@@ -372,31 +366,22 @@ FILES["HeroMarks.dc.html"] = page("Hero marks", """
 <div class="screen">
   {hero_head()}
   <div class="marks">
-    <div><div class="mv" style="color:#b71c0e">N4</div><div class="ml">level</div></div>
+    <div><div class="mv mono" style="color:#1e7729">19/50</div><div class="ml">course</div></div>
     <div><div class="mv" style="color:#b80071">12<span style="font-size:11px">×2</span></div>
       <div class="ml">streak</div></div>
-    <div><div class="mv" style="color:#1e7729">38%</div><div class="ml">course</div></div>
-    <div><div class="mv mono" style="color:#8b5700">420/1k</div><div class="ml">XP</div></div>
-    <div><div class="mv mono">19/50</div><div class="ml">lessons</div></div>
   </div>
   <div class="body ruled">
     <div class="soft">
       <div class="eyebrow">One colour per role</div>
       <div class="legend" style="margin-top:9px">
-        <div class="lrow"><span class="lsw" style="background:#f76143"></span>
-          <b style="flex:1">level</b><span style="color:#655c55">reward · #f76143</span></div>
-        <div class="lrow"><span class="lsw" style="background:#d42a8f"></span>
-          <b style="flex:1">streak</b><span style="color:#655c55">streak · #d42a8f</span></div>
         <div class="lrow"><span class="lsw" style="background:#7be650"></span>
-          <b style="flex:1">course</b><span style="color:#655c55">progress · #7be650</span></div>
-        <div class="lrow"><span class="lsw" style="background:#f8c20d"></span>
-          <b style="flex:1">XP</b><span style="color:#655c55">energy · #f8c20d</span></div>
-        <div class="lrow"><span class="lsw" style="background:#655c55"></span>
-          <b style="flex:1">lessons</b><span style="color:#655c55">neutral — not a reward</span></div>
+          <b style="flex:1">course</b><span style="color:#655c55">progress · #1e7729 · 5.26:1</span></div>
+        <div class="lrow"><span class="lsw" style="background:#d42a8f"></span>
+          <b style="flex:1">streak</b><span style="color:#655c55">streak · #b80071 · 5.96:1</span></div>
       </div>
       <div class="sub" style="margin-top:11px;padding-top:10px;border-top:1px solid #e3ddd1">
-        Every hue clears 5.2:1 on paper. The fifth mark stays ink on purpose:
-        if everything is coloured, nothing is.</div>
+        Two marks since round 12 — the rest derive, and moved to /moi and /profil.
+        The multiplier stops borrowing <b>--fluo-danger</b>, the error token.</div>
     </div>
     <div class="soft" style="display:flex;gap:11px;align-items:center">
       <span style="font-size:20px">\U0001F501</span>

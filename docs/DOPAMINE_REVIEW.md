@@ -80,6 +80,12 @@ answers, or one SIO touched), chosen to be reachable in about four minutes.
 - After it is hit, the ring says *"Objectif atteint — continue si tu veux"*.
   Never a wall, never a nag. Extra work still earns.
 
+**Round 12 reached the same conclusion independently.** The 21 Aug hero
+decluttering kept the streak, of five marks, specifically because *"a bonus the
+learner can't see is a bonus that doesn't motivate"* — the reasoning in §4
+below. The multiplier is now one of only two things on the hero, which makes
+colouring it cheaper and more pointed than when this was written.
+
 ### 3 · The streak is never celebrated and never defended
 
 The streak is the strongest hook already in the data, and it is treated as a
@@ -236,7 +242,7 @@ the subject.
 | 3 | **Six new `fluolingo:reward` events** + varied celebration sizes | 1 d | The pipeline already exists; it fires on two of eight moments |
 | 4 | **Floating +XP, and the multiplier shown paying out** | 1 d | Makes the streak's value visible for the first time |
 | 5 | **Streak: celebrate advances, colour it, one free freeze per fortnight** | 1 d | The strongest hook in the data, currently silent |
-| 6 | **Colour the reward cues** (COLOR_REVIEW §11 items 1–3) | 0.5 d | Amplifies everything above |
+| 6 | **Colour the reward cues.** Round 12 cut the hero to two marks, so this is now course → `--dopa-win` and streak → `--dopa-streak` (it borrows `--fluo-danger`, the error token, today). Level and XP take their roles on /moi and /profil. | 0.25 d | Amplifies everything above — and a smaller diff than when this was written |
 | 7 | **Variable reward** — daily first-answer bonus, gilded cards | 1 d | The one mechanic with no representation at all |
 | 8 | **Session receipt on every surface** | 1 d | Answers "was that worth it" |
 | 9 | **Weekly leaderboard + neighbours view** | 1 d | Re-opens a race that closes by week three |
@@ -245,7 +251,13 @@ the subject.
 Items 1–5 are the ones that change behaviour; roughly a week. Everything after
 that compounds them.
 
-**Nothing here is built.** These are proposals, and several — the daily goal,
+**Status, 21 Aug.** The ethics constraints below were adopted as binding.
+Approved and not yet built: the manifest (1), reward-event wiring (3),
+floating +XP (4), session receipts (8), the weekly leaderboard (9). Item 6's
+palette is applied as tokens; the two hero swaps are not. Items 2, 5, 7 and 10
+still need the pedagogical calls named below.
+
+**Nothing in this list is built yet.** These are proposals, and several — the daily goal,
 variable reward, notifications — are pedagogical decisions about a real course
 with real students, not just design choices. They need Dan's call before any of
 them becomes code.

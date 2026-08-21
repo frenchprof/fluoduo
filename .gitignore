@@ -40,3 +40,11 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 patch*/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Seeded design-canvas outputs — regenerate with seed-canvas.mjs from the
+# .dc.html artboards + canvas.json, which are the source of truth.
+work/*/fluolingo-*-mockups.html

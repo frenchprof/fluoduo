@@ -5,9 +5,24 @@ coral, electric blue, magenta, acid lime — spent on joy, motivation and repeat
 engagement, under a 60-30-10 discipline, with reward cues and semantic grammar
 mapping colour-coded.
 
-Scope: all 50 routes, `src/app/globals.css` (1315 lines, 149 distinct colour
-values), every component, game and native lesson. Every number below was
-measured, not estimated — the script is in the appendix.
+Scope: all 50 routes, `src/app/globals.css`, every component, game and native
+lesson. Every number below was measured, not estimated.
+
+**Derivation, re-run 21 Aug after audit.** The whole grid was recomputed from a
+implementation first validated against the CSS Color 4 reference vectors
+(oklch → `#ff0000`, `#00ff00`, `#0000ff`, white, black, mid-grey — all exact)
+and four published WCAG pairs (21.00, 4.54, 8.59, 7.00 — all exact). The figures
+below are that re-derivation, and `verify/verify30-dopamine.py` recomputes them
+from the stylesheet on every CI run rather than trusting this table.
+
+**One trap worth knowing about, because it caught the audit.** `--cahier-ink` is
+declared **twice**: `#2a2e6e` (a blue-violet pen ink) at line 489, and
+`oklch(28% 0.02 55)` = `#312620` in the 10 Aug override block at line 1208. The
+later one is a bare `:root` and last in the file, so **`#312620` is what
+renders** — its own comment says *"warm near-black, not violet"*. Measuring a
+label against the superseded `#2a2e6e` understates every ink-on-fill ratio by
+about 1.5 points (joy reads 7.44 instead of 8.91, win 7.72 instead of 9.24).
+Anyone reading this stylesheet top-down gets the wrong ink. See Finding H.
 
 ---
 
@@ -185,6 +200,14 @@ for gender anywhere in the 27 native lessons.** In practice:
 - `--cahier-la` has become a generic "grammar highlight red" *and* the
   wrong-answer strike-through *and* decorative pillars in the 3D map.
 
+**The scale, counted properly (21 Aug):** `--cahier-la` had **98 uses** across
+18 native lessons and `memos.tsx`. Of those, **13 were about gender at all** —
+7 masculine, 6 feminine. The other **85 were generic red**, borrowing the
+feminine token for emphasis that had nothing to do with gender: conjugation
+tables, question words, negation, clock times, modal verbs. (An earlier draft
+of this review said "27 lessons"; that came from a truncated listing and
+understated it.)
+
 The consequence, in the lessons themselves:
 
 ```tsx
@@ -204,6 +227,26 @@ one place where colour would do real pedagogical work rather than decorate.
 **Gender is the highest-value semantic mapping available and it is currently
 being actively mis-taught by colour.** Fixing it is a find-and-replace across
 27 files, and it is free — the tokens already exist and already pass.
+
+## 7b · Finding H — a token that means two different things
+
+`--cahier-ink` resolves to `#312620`, but the value a reader meets first,
+700 lines earlier, is `#2a2e6e`. Same for `--cahier-paper`, `--cahier-paper-2`,
+`--cahier-ink-soft`, `--cahier-rule` and `--cahier-desk`, and for eleven
+`--fluo-*` tokens: all are declared once with a real value and again in the
+10 Aug override block. That block is correct and deliberate — collapsing three
+palettes into one without editing 777 component sites was the right call — but
+it leaves every structural token with a decoy definition above it.
+
+The cost is not visual, it is analytical: anything that reads this stylesheet
+without applying the cascade in order — a person, a script, a design tool, an
+audit — gets a plausible wrong answer with no error. It already produced two
+wrong figures in the 21 Aug audit of this document.
+
+**Fix:** move the override block's values up to the original declarations and
+delete the duplicates, so each token is declared exactly once. This is a pure
+refactor with no rendered change, and `verify30` now pins `--cahier-ink` to
+`#312620` so the collapse can be verified rather than eyeballed.
 
 ## 8 · Finding G — two smaller defects
 
@@ -338,28 +381,25 @@ glyph or a `title`, because the tier is currently carried by colour alone.
 
 ## 11 · What to do, in order
 
-Ranked by impact ÷ effort. Nothing here is started — this document is the review.
+**Status, 21 Aug 2026.** The seven-role palette was approved as tokens with
+three guardrails — the Cahier ground untouchable, the regions left as their own
+system, and a verify pin holding the values. Items 1–4 and 6 below are applied;
+`verify/verify30-dopamine.py` (33 checks) recomputes every ratio from the
+stylesheet and enforces the guardrails.
 
-| # | Change | Files | Why |
-|---|---|---|---|
-| 1 | **Colour the Home hero marks.** streak → `--dopa-streak`, XP → `--dopa-joy`, course% → `--dopa-win`, level → `--dopa-reward`; `RewardToast` gets the reward fill | 2 | The brief's core ask. Biggest visible change on the site for the least code. |
-| 2 | **Fix the focus indicator.** `.home-map3d-node:focus-visible` uses gold at 2.24:1 | 1 | Accessibility defect, one line. |
-| 3 | **Fix white-on-teal, 2.45:1.** `.fluo-btn-secondary`, `.fluo-rank-5` | 1 | Accessibility defect, two lines. |
-| 4 | **Claim the gender mapping.** `le`→blue, `la`→red across 27 lessons; stop using `--cahier-la` as generic red | ~10 | Free pedagogical win; tokens already exist and already pass. |
-| 5 | **Rebuild the tier scale** on win/joy/miss; add a glyph to `HeatStrip` and Index cells | 3 | Fixes a deutan separation of 0.097 on four pages. |
-| 6 | **Lift form-input borders** to ≥3:1 (`--cahier-line` is 1.25:1) | 1 | WCAG 1.4.11, one token. |
-| 7 | **Body background + delete the dark block** | 2 | Removes the cold seam and the dark-mode trap. |
-| 8 | **Tokenise the games' palette** onto the seven roles; lower the ratchet as you go | ~15 | Retires most of the 508 raw hexes and unifies the two palettes. |
-| 9 | **Demote the rotating hues** to tinted neutrals | ~8 | Gives the 10% somewhere to land. |
-
-Items 1–7 are roughly a day. Item 8 is the long tail and is exactly what
-`verify19b.py --rebaseline` exists to track.
-
-**Decisions needed from Dan before item 1:** the palette in §9 is a proposal, not
-an adopted decision — Decision 4 (region accents provisional) and the Cahier
-identity both bear on it. Nothing should be applied until it is chosen.
-
----
+| # | Change | Status |
+|---|---|---|
+| 1 | **The seven roles as `--dopa-*` tokens**, additive, nothing structural redefined | ✅ applied |
+| 2 | **Focus indicator** — the 3D map node's ring was gold at 2.24:1; now `--dopa-focus` at 4.19:1 | ✅ applied |
+| 3 | **White-on-teal at 2.45:1** — `.fluo-btn-secondary` and `.fluo-rank-5` now take the teal's own ink | ✅ applied |
+| 4 | **Form-input borders** — were `--cahier-line` at 1.25:1, now `--cahier-ink-soft` at 6.11:1 | ✅ applied |
+| 5 | **Colour the reward cues.** Round 12 cut the hero to **two** marks — course and streak — so this is now two token swaps, not five. The multiplier stops borrowing `--fluo-danger`. Level and XP moved to `/moi` and `/profil` and take their roles there. | approved, not built |
+| 6 | **Gender mapping** — `--gram-masc` / `--gram-fem` / `--gram-neutral` across all 98 sites: 7 masculine, 6 feminine, 85 that were never gender and no longer borrow a gender colour | ✅ applied |
+| 7 | **Rebuild the tier scale** on win/joy/miss; add a glyph to `HeatStrip` and Index cells (deutan separation 0.097 → 0.236) | approved in principle |
+| 8 | **Collapse the shadowed tokens** (Finding H) — one declaration each, pure refactor | proposed |
+| 9 | **Body background + delete the vestigial dark block** | proposed |
+| 10 | **Tokenise the games' palette** onto the seven roles; lower the ratchet as it falls | proposed |
+| 11 | **Demote the rotating hues** to tinted neutrals | proposed |
 
 ## Appendix — method
 

@@ -101,3 +101,6 @@ jobs:
 
       - name: "Rail + Menu — six families, twenty tiles (19 Aug)"
         run: python3 verify/verify29-rail.py
+
+      - name: "Dopamine accents — seven roles pinned, contrast recomputed, Cahier ground and regions untouched (21 Aug)"
+        run: python3 verify/verify30-dopamine.py

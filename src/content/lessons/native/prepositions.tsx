@@ -21,11 +21,11 @@ export const prepositionsLesson: NativeLesson = {
       <div className="mb-3 grid gap-2 sm:grid-cols-2" lang="fr">
         <div className="rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white p-3">
           <p className="text-xs font-black uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">📍 at / to <span className="normal-case">(je suis / je vais…)</span></p>
-          <p className="mt-1 text-lg font-black text-[color:var(--cahier-la)]">à · en · au · aux</p>
+          <p className="mt-1 text-lg font-black text-[color:var(--gram-neutral)]">à · en · au · aux</p>
         </div>
         <div className="rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white p-3">
           <p className="text-xs font-black uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">↩️ of / from <span className="normal-case">(je viens…)</span></p>
-          <p className="mt-1 text-lg font-black text-[color:var(--cahier-la)]">de · d&rsquo; · du · des</p>
+          <p className="mt-1 text-lg font-black text-[color:var(--gram-neutral)]">de · d&rsquo; · du · des</p>
         </div>
       </div>
       <p className="mb-2 text-sm text-[color:var(--cahier-ink-soft)]">Which form, by the place — one from each set:</p>
@@ -38,11 +38,11 @@ export const prepositionsLesson: NativeLesson = {
           </tr>
         </thead>
         <tbody lang="fr">
-          <tr><td className="p-1">ville — Paris</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">à Paris</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">de Paris</td></tr>
-          <tr><td className="p-1">fém. — France</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">en France</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">de France</td></tr>
-          <tr><td className="p-1">masc. — Japon</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">au Japon</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">du Japon</td></tr>
-          <tr><td className="p-1">pluriel — États-Unis</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">aux États-Unis</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">des États-Unis</td></tr>
-          <tr><td className="p-1">voyelle — Inde</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">en Inde</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">d&rsquo;Inde</td></tr>
+          <tr><td className="p-1">ville — Paris</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">à Paris</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">de Paris</td></tr>
+          <tr><td className="p-1">fém. — France</td><td className="p-1 font-bold text-[color:var(--gram-fem)]">en France</td><td className="p-1 font-bold text-[color:var(--gram-fem)]">de France</td></tr>
+          <tr><td className="p-1">masc. — Japon</td><td className="p-1 font-bold text-[color:var(--gram-masc)]">au Japon</td><td className="p-1 font-bold text-[color:var(--gram-masc)]">du Japon</td></tr>
+          <tr><td className="p-1">pluriel — États-Unis</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">aux États-Unis</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">des États-Unis</td></tr>
+          <tr><td className="p-1">voyelle — Inde</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">en Inde</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">d&rsquo;Inde</td></tr>
         </tbody>
       </table>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">

@@ -1,27 +1,159 @@
 {
   "artboards": [
-    { "file": "Install.dc.html",      "title": "1 · Une porte d'entrée",   "x": 0,    "y": 0,    "w": 390, "h": 844 },
-    { "file": "Main.dc.html",         "title": "2 · Objectif du jour",     "x": 470,  "y": 0,    "w": 390, "h": 844 },
-    { "file": "Celebrations.dc.html", "title": "3 · L'échelle des fêtes",  "x": 940,  "y": 0,    "w": 390, "h": 844 },
-    { "file": "XpFloat.dc.html",      "title": "4 · L'XP qui se voit",     "x": 1410, "y": 0,    "w": 390, "h": 844 },
-    { "file": "Streak.dc.html",       "title": "5 · La série",             "x": 1880, "y": 0,    "w": 390, "h": 844 },
-    { "file": "HeroMarks.dc.html",    "title": "6 · Les marques colorées",  "x": 0,    "y": 1140, "w": 390, "h": 844 },
-    { "file": "Variable.dc.html",     "title": "7 · La récompense variable","x": 470,  "y": 1140, "w": 390, "h": 844 },
-    { "file": "Receipt.dc.html",      "title": "8 · Le reçu de session",   "x": 940,  "y": 1140, "w": 390, "h": 844 },
-    { "file": "Leaderboard.dc.html",  "title": "9 · Le classement hebdo",  "x": 1410, "y": 1140, "w": 390, "h": 844 },
-    { "file": "Boutique.dc.html",     "title": "10 · La boutique élargie", "x": 1880, "y": 1140, "w": 390, "h": 844 }
+    {
+      "file": "Install.dc.html",
+      "title": "1 · Une porte d'entrée",
+      "x": 0,
+      "y": 0,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Main.dc.html",
+      "title": "2 · Objectif du jour",
+      "x": 470,
+      "y": 0,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Celebrations.dc.html",
+      "title": "3 · L'échelle des fêtes",
+      "x": 940,
+      "y": 0,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "XpFloat.dc.html",
+      "title": "4 · L'XP qui se voit",
+      "x": 1410,
+      "y": 0,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Streak.dc.html",
+      "title": "5 · La série",
+      "x": 1880,
+      "y": 0,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "HeroMarks.dc.html",
+      "title": "6 · Les marques colorées",
+      "x": 0,
+      "y": 1140,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Variable.dc.html",
+      "title": "7 · La récompense variable",
+      "x": 470,
+      "y": 1140,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Receipt.dc.html",
+      "title": "8 · Le reçu de session",
+      "x": 940,
+      "y": 1140,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Leaderboard.dc.html",
+      "title": "9 · Le classement hebdo",
+      "x": 1410,
+      "y": 1140,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Boutique.dc.html",
+      "title": "10 · La boutique élargie",
+      "x": 1880,
+      "y": 1140,
+      "w": 390,
+      "h": 844
+    }
   ],
   "annotations": [
-    { "id": "n1",  "x": 0,    "y": -170, "w": 390, "text": "1 · There is currently no way back in — no manifest, no service worker, no notification anywhere in src/ or functions/.\nAn install sheet, shown once after the third visit. Never on first open, when nobody has a reason to say yes." },
-    { "id": "n2",  "x": 470,  "y": -170, "w": 390, "text": "2 · The app has no concept of \"today\", so nothing can ever be finished.\nOne target, reachable in about four minutes. The ring fills, then says continue if you want — never a wall." },
-    { "id": "n3",  "x": 940,  "y": -170, "w": 390, "text": "3 · fluolingo:reward already does confetti and fanfare, and fires on 2 of 8 tracked moments.\nSix more events — and vary the size, or the fanfare stops meaning anything." },
-    { "id": "n4",  "x": 1410, "y": -170, "w": 390, "text": "4 · XP is awarded on every right answer and shown nowhere at the time.\nA float that rises and fades, with the multiplier visibly doing the arithmetic: 40 x 1,5 = 60." },
-    { "id": "n5",  "x": 1880, "y": -170, "w": 390, "text": "5 · bumpStreakToday increments silently; crossing to x1,5 shows nothing at all.\nCelebrate the tier, colour the flame, and hand out one free freeze a fortnight — exam weeks happen." },
-    { "id": "n6",  "x": 0,    "y": 970,  "w": 390, "text": "6 · Today all five hero marks render in body-text ink.\nFour take a role colour, all clearing 5,2:1 on paper. The fifth stays ink on purpose." },
-    { "id": "n7",  "x": 470,  "y": 970,  "w": 390, "text": "7 · Every reward in the economy is fixed-rate: 60 correct, 20 wrong, always.\nA daily first-answer multiplier and a gilded card add variance without ever lowering the floor." },
-    { "id": "n8",  "x": 940,  "y": 970,  "w": 390, "text": "8 · Games and lesson runs end with a summary; most drill surfaces just stop.\nThe same receipt everywhere: what you earned, what improved, one thing to fix." },
-    { "id": "n9",  "x": 1410, "y": 970,  "w": 390, "text": "9 · The board is cohort-scoped correctly but cumulative, so the order is settled by week three.\nA weekly reset puts everyone back in a race, and neighbours beat a top-50 list." },
-    { "id": "n10", "x": 1880, "y": 970,  "w": 390, "text": "10 · The locker holds five accent colours — 150 gems total, then the currency stops meaning anything.\nCovers, tab sets, desks, and one rotating item that leaves on Sunday." }
+    {
+      "id": "n1",
+      "x": 0,
+      "y": -170,
+      "w": 390,
+      "text": "1 · There is currently no way back in — no manifest, no service worker, no notification anywhere in src/ or functions/.\nAn install sheet, shown once after the third visit. Never on first open, when nobody has a reason to say yes."
+    },
+    {
+      "id": "n2",
+      "x": 470,
+      "y": -170,
+      "w": 390,
+      "text": "2 · The app has no concept of \"today\", so nothing can ever be finished.\nOne target, reachable in about four minutes. The ring fills, then says continue if you want — never a wall."
+    },
+    {
+      "id": "n3",
+      "x": 940,
+      "y": -170,
+      "w": 390,
+      "text": "3 · fluolingo:reward already does confetti and fanfare, and fires on 2 of 8 tracked moments.\nSix more events — and vary the size, or the fanfare stops meaning anything."
+    },
+    {
+      "id": "n4",
+      "x": 1410,
+      "y": -170,
+      "w": 390,
+      "text": "4 · XP is awarded on every right answer and shown nowhere at the time.\nA float that rises and fades, with the multiplier visibly doing the arithmetic: 40 x 1,5 = 60."
+    },
+    {
+      "id": "n5",
+      "x": 1880,
+      "y": -170,
+      "w": 390,
+      "text": "5 · bumpStreakToday increments silently; crossing to x1,5 shows nothing at all.\nCelebrate the tier, colour the flame, and hand out one free freeze a fortnight — exam weeks happen."
+    },
+    {
+      "id": "n6",
+      "x": 0,
+      "y": 970,
+      "w": 390,
+      "text": "6 · Round 12 cut the hero to two marks — course and streak — and the one coloured thing on it is the multiplier, painted --fluo-danger, the error token.\nTwo tokens: course takes win, streak takes streak. Level and XP moved to /moi and /profil and take their roles there."
+    },
+    {
+      "id": "n7",
+      "x": 470,
+      "y": 970,
+      "w": 390,
+      "text": "7 · Every reward in the economy is fixed-rate: 60 correct, 20 wrong, always.\nA daily first-answer multiplier and a gilded card add variance without ever lowering the floor."
+    },
+    {
+      "id": "n8",
+      "x": 940,
+      "y": 970,
+      "w": 390,
+      "text": "8 · Games and lesson runs end with a summary; most drill surfaces just stop.\nThe same receipt everywhere: what you earned, what improved, one thing to fix."
+    },
+    {
+      "id": "n9",
+      "x": 1410,
+      "y": 970,
+      "w": 390,
+      "text": "9 · The board is cohort-scoped correctly but cumulative, so the order is settled by week three.\nA weekly reset puts everyone back in a race, and neighbours beat a top-50 list."
+    },
+    {
+      "id": "n10",
+      "x": 1880,
+      "y": 970,
+      "w": 390,
+      "text": "10 · The locker holds five accent colours — 150 gems total, then the currency stops meaning anything.\nCovers, tab sets, desks, and one rotating item that leaves on Sunday."
+    }
   ],
-  "launch": { "view": "canvas" }
+  "launch": {
+    "view": "canvas"
+  }
 }

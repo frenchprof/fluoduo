@@ -41,19 +41,19 @@ export const avoirEtatsLesson: NativeLesson = {
       </h2>
       <ul className="space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
         <li>
-          <b className="text-[color:var(--cahier-la)]">AVOIR</b> + noun —{" "}
+          <b className="text-[color:var(--gram-neutral)]">AVOIR</b> + noun —{" "}
           <i lang="fr">J&rsquo;ai faim. · Ils ont soif. · Elle a froid.</i>
         </li>
         <li>
-          <b className="text-[color:var(--cahier-la)]">AVOIR</b> + age —{" "}
+          <b className="text-[color:var(--gram-neutral)]">AVOIR</b> + age —{" "}
           <i lang="fr">J&rsquo;ai 19 ans.</i>
         </li>
         <li>
-          <b className="text-[color:var(--cahier-la)]">ÊTRE</b> + adjective (it agrees!) —{" "}
+          <b className="text-[color:var(--gram-neutral)]">ÊTRE</b> + adjective (it agrees!) —{" "}
           <i lang="fr">Il est fatigué. · Ils sont fatigués.</i>
         </li>
         <li>
-          <b className="text-[color:var(--cahier-la)]">avoir envie / besoin de</b> —{" "}
+          <b className="text-[color:var(--gram-neutral)]">avoir envie / besoin de</b> —{" "}
           <i lang="fr">J&rsquo;ai envie de dormir. · J&rsquo;ai besoin d&rsquo;un café.</i>
         </li>
       </ul>

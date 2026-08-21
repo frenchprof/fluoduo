@@ -84,9 +84,9 @@ export const questionsOuiNonLesson: NativeLesson = {
         Questions oui / non
       </h2>
       <ul className="space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
-        <li><b className="text-[color:var(--cahier-la)]">Intonation ↗</b> — <i lang="fr">Tu es français <b>?</b></i></li>
-        <li><b className="text-[color:var(--cahier-la)]">Est-ce que</b> + phrase — <i lang="fr"><b>Est-ce que</b> tu es français ?</i> (+ voyelle → <i lang="fr"><b>Est-ce qu&rsquo;</b>il parle anglais ?</i>)</li>
-        <li><b className="text-[color:var(--cahier-la)]">n&rsquo;est-ce pas ?</b> — <i lang="fr">Tu es français, <b>n&rsquo;est-ce pas ?</b></i></li>
+        <li><b className="text-[color:var(--gram-neutral)]">Intonation ↗</b> — <i lang="fr">Tu es français <b>?</b></i></li>
+        <li><b className="text-[color:var(--gram-neutral)]">Est-ce que</b> + phrase — <i lang="fr"><b>Est-ce que</b> tu es français ?</i> (+ voyelle → <i lang="fr"><b>Est-ce qu&rsquo;</b>il parle anglais ?</i>)</li>
+        <li><b className="text-[color:var(--gram-neutral)]">n&rsquo;est-ce pas ?</b> — <i lang="fr">Tu es français, <b>n&rsquo;est-ce pas ?</b></i></li>
       </ul>
       <p className="mt-2 text-sm text-[color:var(--cahier-ink)]" lang="fr">
         <b>Oui</b> — <i>Tu es français ? — Oui.</i> · <b>Non</b> — <i>Tu es anglais ? — Non.</i>

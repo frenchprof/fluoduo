@@ -1324,3 +1324,102 @@ h3.cahier-display { font-size: var(--fs-h3); }
 .index-chips::-webkit-scrollbar { display: none; }
 .index-chip { scroll-snap-align: start; }
 .index-cell, .index-btn, .index-stop { flex: 0 0 auto; }
+
+/* ── Dopamine accents — the 10%, approved 21 Aug 2026 ──────────────────────
+   Seven roles, one meaning each. ADDITIVE ONLY, and bound by the guardrails
+   the approval carried:
+
+     · The Cahier ground is untouchable. Nothing here redefines --cahier-paper,
+       --cahier-ink or any structural token; the 60/30 stays exactly as it is.
+     · The regions stay a separate system. --region-* is NOT folded in here —
+       it answers to Design, and Decision 4 still has its accents provisional.
+     · A verify pin holds the values (verify/verify30-dopamine.py), so a drift
+       in any of the 28 is a CI failure rather than a slow repaint.
+
+   Contrast, measured against --cahier-paper (#faf6ee) and --cahier-ink
+   (#312620, the value the 10 Aug override block resolves to — NOT the
+   superseded #2a2e6e declared earlier in this file):
+   every label ≥ 4.5:1, every -ink on paper ≥ 5.2:1, every -ink on its own
+   -wash ≥ 4.8:1. The four light fills sit under 3:1 against paper on their
+   own and MUST keep the 2px ink hairline that carries their boundary —
+   fill supplies energy, ink supplies contrast. */
+:root {
+  --dopa-joy:         oklch(84% 0.17 88);    /* #f8c20d · key actions */
+  --dopa-joy-ink:     oklch(50% 0.13 78);    /* #8b5700 · 5.66:1 */
+  --dopa-joy-wash:    oklch(95% 0.06 88);    /* #ffedc1 */
+  --dopa-joy-on:      var(--cahier-ink);     /* 8.91:1 */
+
+  --dopa-win:         oklch(83% 0.21 138);   /* #7be650 · correct, growth */
+  --dopa-win-ink:     oklch(50% 0.14 145);   /* #1e7729 · 5.26:1 */
+  --dopa-win-wash:    oklch(94% 0.07 138);   /* #d5f7ca */
+  --dopa-win-on:      var(--cahier-ink);     /* 9.24:1 */
+
+  --dopa-flow:        oklch(74% 0.14 197);   /* #00c5c9 · focus states */
+  --dopa-flow-ink:    oklch(48% 0.12 200);   /* #007078 · 5.43:1 */
+  --dopa-flow-wash:   oklch(94% 0.05 197);   /* #c5f6f7 */
+  --dopa-flow-on:     var(--cahier-ink);     /* 6.85:1 */
+
+  --dopa-reward:      oklch(68% 0.19 33);    /* #f76143 · level-up */
+  --dopa-reward-ink:  oklch(50% 0.19 30);    /* #b71c0e · 6.15:1 */
+  --dopa-reward-wash: oklch(93% 0.06 33);    /* #ffdacf */
+  --dopa-reward-on:   var(--cahier-ink);     /* 4.69:1 */
+
+  --dopa-focus:       oklch(57% 0.19 254);   /* #0075e3 · primary action */
+  --dopa-focus-ink:   oklch(48% 0.19 254);   /* #0059c4 · 6.07:1 */
+  --dopa-focus-wash:  oklch(93% 0.05 254);   /* #d2eaff */
+  --dopa-focus-on:    #fff;                  /* 4.51:1 */
+
+  --dopa-streak:      oklch(59% 0.22 350);   /* #d42a8f · streaks, big wins */
+  --dopa-streak-ink:  oklch(50% 0.23 352);   /* #b80071 · 5.96:1 */
+  --dopa-streak-wash: oklch(93% 0.07 350);   /* #ffd5ee */
+  --dopa-streak-on:   #fff;                  /* 4.64:1 */
+
+  --dopa-miss:        oklch(59% 0.20 27);    /* #db3834 · wrong answers */
+  --dopa-miss-ink:    oklch(50% 0.20 27);    /* #bb0916 · 6.20:1 */
+  --dopa-miss-wash:   oklch(93% 0.06 27);    /* #ffd9d2 */
+  --dopa-miss-on:     #fff;                  /* 4.54:1 */
+}
+
+/* ── Accessibility fixes, approved 21 Aug 2026 ─────────────────────────────
+   Three measured failures, three one-line corrections. */
+
+/* 1 · The 3D map node's focus ring was --cahier-gold at 2.24:1 against paper
+       — a focus indicator that fails WCAG 2.2 1.4.11 (needs 3:1). The focus
+       role clears it at 4.19:1. */
+.home-map3d-node:focus-visible { outline-color: var(--dopa-focus); }
+
+/* 2 · White on --fluo-secondary measured 2.45:1. Both sites take the teal's
+       own ink instead, on its wash — 4.98:1. */
+.fluo-btn-secondary { background: var(--dopa-flow); color: var(--cahier-ink); }
+.fluo-rank-5 { background: var(--dopa-flow-wash); color: var(--dopa-flow-ink);
+  box-shadow: inset 0 0 0 1.5px var(--dopa-flow-ink); }
+
+/* 3 · --cahier-line paints every form-input border at 1.25:1, well under the
+       3:1 a control boundary needs. Inputs (and only inputs) take the
+       stronger ruling; the decorative ruled lines keep the faint one. */
+.cahier-sheet input:not([type="checkbox"]):not([type="radio"]),
+.cahier-sheet select,
+.cahier-sheet textarea,
+.cahier-page input:not([type="checkbox"]):not([type="radio"]),
+.cahier-page select,
+.cahier-page textarea { border-color: var(--cahier-ink-soft); }
+
+/* ── Grammatical gender, finally mapped (approved 21 Aug 2026) ─────────────
+   --cahier-le and --cahier-la were defined as the masculine/feminine pair on
+   the day the Cahier landed, and used for neither: all 27 native lessons
+   painted both genders --cahier-la, so the colour taught nothing — and where
+   it marked a masculine form it taught the opposite.
+
+   These three name the intent at the point of use, which is the part that was
+   actually missing. The hues are unchanged and were always the right pair:
+   4.82:1 and 5.03:1 on paper, and 0.89 minimum separation under deuteranopia
+   — the safest pair in the whole system.
+
+   --gram-neutral is the one that matters most for hygiene: a form that is not
+   gendered (a plural, a vowel elision, a verb ending, a construction) must
+   NOT borrow a gender colour. It gets weight, not hue. */
+:root {
+  --gram-masc:    var(--cahier-le);   /* #2d5bff · le, du, au, un   */
+  --gram-fem:     var(--cahier-la);   /* #d11149 · la, de la, une   */
+  --gram-neutral: var(--cahier-ink);  /* not a gender — never a hue */
+}

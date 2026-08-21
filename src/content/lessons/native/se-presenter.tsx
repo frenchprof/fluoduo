@@ -88,9 +88,9 @@ export const sePresenterLesson: NativeLesson = {
           {CONJ_ROWS.map(([p, ap, et, av]) => (
             <tr key={p} className="border-b border-[color:var(--cahier-rule)]/50">
               <td className="p-1 font-bold">{p}</td>
-              <td className="p-1 text-[color:var(--cahier-la)]">{ap}</td>
-              <td className="p-1 text-[color:var(--cahier-la)]">{et}</td>
-              <td className="p-1 text-[color:var(--cahier-la)]">{av}</td>
+              <td className="p-1 text-[color:var(--gram-neutral)]">{ap}</td>
+              <td className="p-1 text-[color:var(--gram-neutral)]">{et}</td>
+              <td className="p-1 text-[color:var(--gram-neutral)]">{av}</td>
             </tr>
           ))}
         </tbody>
