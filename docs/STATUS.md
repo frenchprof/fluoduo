@@ -62,6 +62,7 @@ Shipped ≈ 147 of ~150 in-scope units.
 | 4 | Class flag: `CLASS_FLAG_SIO` in `src/content/chapters.ts` is hand-set (SIO-010) — move weekly or derive from the term table | 0.5 | agent |
 | 5 | Ops: ruleset is active ✓; delete `add-claude-github-actions-…` (unmerged, `main` has its own workflows); `claude-review` billing in the Anthropic console; delete `import-fluoduo` on `dckg/fluo` | 0.5 | Dan |
 | 6 | Track D follow-ups: run the 22 eval cases against the deployed `/api/feedback`; teacher charts for `help.rung`; ÉcouTexte on the `?` ladder | 2 | agent |
+| 7 | **Colour review — `docs/COLOR_REVIEW.md` (21 Aug, agent).** Whole site measured against the dopamine brief. Verdict: the 60/30 ground is right, the 10% is the problem — reward cues (Home hero marks, RewardToast) render in body-text ink; 11 accent families compete; the games' bright palette is 508 raw hexes, ungoverned. Hard defects found: a focus indicator at 2.24:1, white-on-teal at 2.45:1, form borders at 1.25:1, the tier scale colliding at 0.097 deutan separation, and the `le`/`la` gender tokens used for neither gender in all 27 lessons. A seven-role palette is proposed and fully contrast-checked. **Nothing applied — the palette needs Dan's decision first**; the 9-item ranked fix list is §11. Review adds no code, so the 19b ratchet is unmoved. | 1 | **Dan to decide, then agent** |
 | — | December: canonical `FD-` outcome IDs (Track A) | 8 | deferred |
 
 Closed as non-issues (Dan, 17 Aug): `/teacher` on the CDN — the page is gated to
