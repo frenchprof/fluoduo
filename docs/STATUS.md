@@ -32,6 +32,14 @@ Only ONE agent edits this file at a time; say so in your commit.
   Ops PRs #28 (checkout/setup-node v5 — Node 24) and #29 (pages-preview
   guarded to frenchprof/fluoduo — it 404'd on dckg where Pages is off).
   Still red everywhere: claude-review (ANTHROPIC_API_KEY/billing — Dan).
+- 21 Aug (Claude Code, branch `claude/french-4-sios-scaling-u39gjr`): **French 4
+  scaling plan** — `docs/planning/FRENCH4_SCALING_PLAN.md`, written against
+  Dan's 40-SIO annex + the Unité 8 manuel pages. No code touched. The 40 A2
+  SIOs are extracted to `docs/handoff/ATELIER_A2_SIOs_v1.csv` (the shape
+  `gen-sios.mjs` eats), with proposed ≤14-char `short` labels. Headline: the
+  annex numbers A2 as **SIO-051–090, units 5–8**, so nothing collides with
+  French 1 — `course` can be DERIVED from the unit, and no learner data
+  migrates. Plumbing ≈2 d, then content. Open decisions in its §10.
 
 ## Programme — done
 
@@ -61,6 +69,7 @@ Shipped ≈ 147 of ~150 in-scope units.
 | 3 | ~~3D map: swap the placeholder `HomeMap3D` for a real 3D build~~ **ported from Dan's Figma Make 19 Aug** (`pm/home-map-figma-3d`, replaces the CSS-perspective attempt of the same afternoon — Dan: "the 3D map is not yet 3D"). The Make's engine is intact in `src/lib/map3d/` (`projection.ts`: `pathXAt` / `cameraForward` / `project()`, HORIZON_Y 0.30 · CAMERA_Y 0.80 · FOCAL 3.8 · MAX_AHEAD 38; `sky.ts`: 8 clock keyframes, sun/moon arc, clouds, stars; `scene.ts`: Peers' ROADSIDE_ITEMS + seeded trees). **What differs from the Make and why:** stops from SIOS + `progress` (no mock, no stars / type badges / modal — a tap opens the SIO under the map; nothing dims); the Make's "Café de Paris / Le Campus…" are the repo's regions (HomeMap `REGIONS` + regionIcons on each world's gate sign, tap = open the unit; accent `--region-*`, ground `--region-*-band`); road keeps the 2D semantics (paved to 🚩, dotted beyond, travelled in the accent); classmates DROPPED (no safe per-learner stop source; leaderboard = name + XP only); colours are tokens (no hex — the ratchet did not move; sky keyframes are numeric RGB in `sky.ts`, see its header); Cahier body stack, not Nunito; camera = the box's native scroll (wheel / touch / keys / scrollbar) → one rAF → `camZ`; `?hour=N` pins the sky for screenshots. Knobs: `SCROLL_PER_STOP`, `CAM_MIN/MAX` (HomeMap3D.tsx), the projection constants + `WX` snake, `SKY_KF`, `MAX_BEHIND` (4 — lower it for less clutter behind the camera). Known: on a 390 phone the nearest stops stack vertically (the Make does too); the current stop is forced on top. verify25c (61) | — | done |
 | 4 | Class flag: `CLASS_FLAG_SIO` in `src/content/chapters.ts` is hand-set (SIO-010) — move weekly or derive from the term table | 0.5 | agent |
 | 5 | Ops: ruleset is active ✓; delete `add-claude-github-actions-…` (unmerged, `main` has its own workflows); `claude-review` billing in the Anthropic console; delete `import-fluoduo` on `dckg/fluo` | 0.5 | Dan |
+| 6b | **French 4 (L'atelier A2, units 5–8, SIO-051–090)** — plan written, not started. Blocked on Dan's §10 answers + cahier/guide + manuel units 5–7. See `docs/planning/FRENCH4_SCALING_PLAN.md` | 2 + content | agent |
 | 6 | Track D follow-ups: run the 22 eval cases against the deployed `/api/feedback`; teacher charts for `help.rung`; ÉcouTexte on the `?` ladder | 2 | agent |
 | — | December: canonical `FD-` outcome IDs (Track A) | 8 | deferred |
 
