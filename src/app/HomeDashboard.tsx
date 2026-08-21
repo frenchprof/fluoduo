@@ -128,14 +128,15 @@ export default function HomeDashboard() {
   //            50-stop map; the % is one hover away in the tooltip)
   //   streak — the only mark with a deadline, and the ×XP multiplier must
   //            stay visible or the bonus stops motivating
-  const MARKS: { label: string; value: ReactNode; title: string }[] = [
-    { label: "course", value: `${doneTotal}/${SIOS.length}`, title: `${pct}% of the course — ${doneTotal} of ${SIOS.length} objectives done` },
+  const MARKS: { label: string; value: ReactNode; title: string; role?: "win" | "streak" }[] = [
+    { label: "course", role: "win", value: `${doneTotal}/${SIOS.length}`, title: `${pct}% of the course — ${doneTotal} of ${SIOS.length} objectives done` },
     {
       label: "streak",
+      role: "streak" as const,
       value: (
         <>
           {progress.streak}
-          {mult > 1 && <b className="text-[color:var(--fluo-danger)]">×{mult}</b>}
+          {mult > 1 && <b className="text-[color:var(--dopa-streak-ink)]">×{mult}</b>}
         </>
       ),
       title: mult > 1 ? `Day streak — XP ×${mult}` : "Day streak",
@@ -227,7 +228,14 @@ export default function HomeDashboard() {
                 title={m.title}
               >
                 <dt className="sr-only">{m.label}</dt>
-                <dd className="fluo-mono truncate max-w-full text-[11px] font-black leading-tight tracking-tight text-[color:var(--fluo-ink)] sm:text-sm sm:tracking-normal">
+                {/* Colour the two marks that survived round 12 (COLOR_REVIEW
+                    §11.5): course takes the growth role, the streak takes its
+                    own. Both -ink variants clear 5.2:1 on paper. The labels
+                    stay ink — if everything is coloured, nothing is. */}
+                <dd
+                  className="fluo-mono truncate max-w-full text-[11px] font-black leading-tight tracking-tight sm:text-sm sm:tracking-normal"
+                  style={{ color: m.role ? `var(--dopa-${m.role}-ink)` : "var(--fluo-ink)" }}
+                >
                   {m.value}
                 </dd>
                 <span aria-hidden className="fluo-mono mt-0.5 truncate max-w-full text-[9px] font-bold uppercase tracking-wide text-[color:var(--cahier-ink-soft)] sm:text-[10px]">
@@ -262,8 +270,16 @@ export default function HomeDashboard() {
               style={{ borderColor: "var(--fluo-ink)", background: "var(--cahier-paper)", color: "var(--fluo-ink)" }}
             >
               <span aria-hidden>🔁</span>
+              {/* Words waiting to be reviewed are WORK, not failure. In
+                  --fluo-danger this read as an error badge; it takes the
+                  primary-action role instead (white on it, 4.51:1). */}
               {dueCount > 0 && (
-                <span className="absolute -right-2 -top-2 rounded-full bg-[var(--fluo-danger)] px-1.5 text-[10px] font-bold text-white">{dueCount}</span>
+                <span
+                  className="absolute -right-2 -top-2 rounded-full px-1.5 text-[10px] font-bold text-white"
+                  style={{ background: "var(--dopa-focus)" }}
+                >
+                  {dueCount}
+                </span>
               )}
             </Link>
             <button

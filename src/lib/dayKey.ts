@@ -85,3 +85,28 @@ export function previousDay(key: string): string {
 export function isConsecutive(key: string | null, today: string): boolean {
   return !!key && key === previousDay(today);
 }
+
+/**
+ * The learner-facing WEEK key for an instant, as "YYYY-Www" (ISO week).
+ * Built on dayKey, so it inherits the 04:00 rollover and the learner's zone:
+ * a Monday-01:30 session belongs to the week that just ended, exactly as it
+ * belongs to Sunday.
+ *
+ * Weeks start MONDAY. The weekly leaderboard resets on this key, so it has to
+ * be derived the same way everywhere — a board that disagrees with a learner's
+ * own "this week" is worse than no board.
+ */
+export function weekKey(d: Date = new Date(), tz: string = learnerZone()): string {
+  const [y, m, day] = dayKey(d, tz).split("-").map(Number);
+  // ISO-8601 week number, computed on the key's own calendar date (never on a
+  // millisecond offset — same DST reasoning as previousDay).
+  const t = new Date(Date.UTC(y, m - 1, day));
+  const dow = (t.getUTCDay() + 6) % 7; // Monday = 0
+  t.setUTCDate(t.getUTCDate() - dow + 3); // the Thursday of this ISO week
+  const isoYear = t.getUTCFullYear();
+  const firstThu = new Date(Date.UTC(isoYear, 0, 4));
+  const firstDow = (firstThu.getUTCDay() + 6) % 7;
+  firstThu.setUTCDate(firstThu.getUTCDate() - firstDow + 3);
+  const week = 1 + Math.round((t.getTime() - firstThu.getTime()) / (7 * 86_400_000));
+  return `${isoYear}-W${String(week).padStart(2, "0")}`;
+}

@@ -107,3 +107,6 @@ jobs:
 
       - name: "Top bar — the icon row never overflows off the screen (21 Aug)"
         run: python3 verify/verify31-topbar.py
+
+      - name: "Retention build — manifest, eight reward moments, +XP, receipts, weekly board, ethics (21 Aug)"
+        run: python3 verify/verify32-retention.py

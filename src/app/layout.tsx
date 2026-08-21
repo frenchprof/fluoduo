@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Work_Sans, Patrick_Hand, Roboto } from "next/font/google";
 import "./globals.css";
 import BetaNotice from "@/components/BetaNotice";
@@ -8,6 +8,8 @@ import PageViewTracker from "@/components/PageViewTracker";
 import KeyNav from "@/components/KeyNav";
 import AccentBar from "@/components/AccentBar";
 import RewardToast from "@/components/RewardToast";
+import XpFloat from "@/components/XpFloat";
+import InstallPrompt from "@/components/InstallPrompt";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -74,6 +76,16 @@ export const metadata: Metadata = {
   // meta tag is Chrome/Google Translate's opt-out; translate="no" on <html>
   // (below) is the standards-based signal other engines honour.
   other: { google: "notranslate" },
+  // iOS ignores the manifest's icons — it wants its own link tag (Apple has
+  // never implemented `purpose: maskable` either, hence the separate art).
+  appleWebApp: { capable: true, title: "FluOlinGo", statusBarStyle: "default" },
+  icons: { apple: "/icons/apple-touch-icon.png" },
+};
+
+/** The OS chrome takes the ink, so an installed window frames the paper
+ *  rather than sitting in a white box. */
+export const viewport: Viewport = {
+  themeColor: "#312620",
 };
 
 export default function RootLayout({
@@ -108,6 +120,8 @@ export default function RootLayout({
         <KeyNav />
         <AccentBar />
         <RewardToast />
+        <XpFloat />
+        <InstallPrompt />
       </body>
     </html>
   );

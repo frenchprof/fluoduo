@@ -56,6 +56,18 @@ service cloud.firestore {
         && request.resource.data.streak is int
         && request.resource.data.streak >= 0
         && request.resource.data.streak <= 100000
+        // Weekly race (2026-08-21): optional for the same reason as `term` —
+        // a legacy laf1201 row updated with merge:true has neither field, and
+        // a denied write makes the client delete the learner's own row. When
+        // present, weekXp is bounded like xp and weekKey is a short key.
+        && (!('weekXp' in request.resource.data)
+            || (request.resource.data.weekXp is int
+                && request.resource.data.weekXp >= 0
+                && request.resource.data.weekXp <= 10000000))
+        && (!('weekKey' in request.resource.data)
+            || request.resource.data.weekKey == null
+            || (request.resource.data.weekKey is string
+                && request.resource.data.weekKey.size() <= 10))
         // Cohort marker (2026-08-11 reset): optional so legacy merge:true
         // updates keep passing; when present it must be a short string.
         && (!('term' in request.resource.data)
@@ -219,7 +231,7 @@ service cloud.firestore {
       // user's own row (its excluded-user fallback). Values are what matter.
       allow create: if isOwner(uid) && !isAdmin() && !isExcludedFromLeaderboard()
         && request.resource.data.keys().hasOnly(
-            ['name', 'xp', 'level', 'gems', 'streak', 'term', 'updatedAt'])
+            ['name', 'xp', 'level', 'gems', 'streak', 'weekXp', 'weekKey', 'term', 'updatedAt'])
         && validLeaderboardRow();
       allow update: if isOwner(uid) && !isAdmin() && !isExcludedFromLeaderboard()
         && validLeaderboardRow();
