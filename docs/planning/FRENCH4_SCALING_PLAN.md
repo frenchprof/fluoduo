@@ -470,16 +470,15 @@ the map.
 5. **DELF preparation — build it or skip it?** (§7.4 — a new surface, ~3–4 d,
    genuinely valuable, definitely scope creep. Your call, not mine.)
 6. **The four chapter scenarios, region names and colours.** (§5)
-7. **Do `brief` stops count 1/40 like any other?** (§12.5 — recommend yes,
-   no asterisk.)
-8. **Confirm the A2 `short` labels and section placements** in
+7. **Confirm the A2 `short` labels and section placements** in
    `ATELIER_A2_SIOs_v1.csv` — 40 drafts inside the 14-character gate, and the
    handful of thematic-fit placements flagged in §2.3.
 
 _Answered by the materials, previously open: the id scheme (§3.2, SIO-051–090
 / units 5–8) · whether French 4 has an orientation unit (no — it opens at
 Unité 5) · whether a new `text` SIO kind is needed (no, §7.2) · whether the
-four units share one shape (yes, verified — §2.3)._
+four units share one shape (yes, verified — §2.3) · whether a `brief` stop
+counts toward completion (yes, 1/40, no asterisk — Dan, 21 Aug, §12.6)._
 
 _Found while reading, not asked: `unit: 5` is already the map's arena
 sentinel and collides with A2's Unité 5 (risk 8). And the screenshot you sent
@@ -711,8 +710,37 @@ Cost: `goalShape` on the `Sio` type, a `brief` renderer in `SioDetail`
 briefs authored from the book's Mission pages. **~1 day**, plus the model
 dialogues, which are content either way.
 
-**One question back to Dan:** should a `brief` stop count toward course
-completion on the same footing as a drilled one — 1/40 either way — or should
-the map show it differently (it is the only stop the site cannot verify)? My
-recommendation is **same footing, no asterisk**: the Missions are the most
-motivating work in the unit, and discounting them would say the opposite.
+### 12.6 Decided (Dan, 21 Aug): a `brief` counts 1/40
+
+**A `brief` stop counts toward course completion on the same footing as any
+drilled one — 1/40, no asterisk, no different treatment on the map.** The
+Missions are the most motivating work in the unit; discounting them would say
+the opposite. Do not re-open.
+
+Three places must honour that, and one of them is not free:
+
+1. **The Index matrix.** Its cells are "how you did" from the device ledger. A
+   brief has no items, so the cell must read *done* rather than *no data* —
+   otherwise six stops per course render as gaps in a completion view that just
+   said they count. (`HeatStrip` and `outcomeRows` are already safe:
+   `tierFor(null)` returns null → neutral, not weak.)
+2. **The teacher's outcome × student matrix.** Same: a brief column shows
+   done / not done, never an accuracy.
+3. **XP — the one that needs a call.** `economy.ts` pays `XP_SIO_BASE` (300)
+   for completing a SIO, plus up to `XP_SIO_MASTERY` (300) *scaled by how many
+   of that SIO's practice items the learner has got right*. A brief has no
+   items, so it can never earn the second 300: a Mission would be worth **half**
+   a vocabulary stop, permanently. That contradicts the decision above.
+
+   Options: (a) base only — rejected, that is the contradiction; (b) pay the
+   full 600 on self-mark — the cheapest and least verifiable XP in the course,
+   and farmable; (c) **scale the mastery bonus by the brief's feeder SIOs
+   instead of its own items.** A brief already links the 3–4 SIOs whose
+   language it draws on (§12.2), so the mastery signal exists — it just lives
+   next door. **Recommend (c):** same formula, same ceiling, sourced from where
+   the evidence actually is, and it rewards exactly the preparation the Mission
+   depends on.
+
+   This is a follow-up to the decision, not a re-opening of it: (c) needs a nod,
+   and if none comes it should ship as (c) rather than silently as (a).
+

@@ -58,7 +58,11 @@ Only ONE agent edits this file at a time; say so in your commit.
   `goalShape` field orthogonal to `sioKind`: 28 drill · 6 model · 6 brief.
   A1's six production SIOs are all `model` (its dialogue lines ARE the deck)
   and it has zero `brief` stops, which is why A2's Missions/Projets are the
-  first thing that doesn't fit.
+  first thing that doesn't fit. **Dan decided (21 Aug): a `brief` counts 1/40
+  like any other stop, no asterisk — do not re-open.** Follow-up left open by
+  that: XP pays base + a mastery bonus scaled by the SIO's own items, which a
+  brief has none of, so a Mission would be worth half a vocab stop forever;
+  the plan recommends scaling it by the brief's feeder SIOs instead (§12.6).
 
 ## Programme — done
 
