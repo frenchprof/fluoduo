@@ -63,7 +63,11 @@ export const FAMILIES: Family[] = [
   { key: "goals", name: "FluOlin Goals", emoji: "🎯", href: "/" },
   { key: "practice", name: "FluOlin Practice", emoji: "✏️", href: "/activities" },
   { key: "svplay", name: "FluOlin SvPlay", emoji: "🎮", href: "/games/vocabularain" },
-  { key: "review", name: "FluOlin Review", emoji: "🔁", href: "/reviser" },
+  // 🔖 not 🔁 (2026-08-21): the transport glyphs belong to sound. ÉcouTexte's
+  // "🔁 Listen again" has to keep meaning "again", so the Review family — a
+  // DESTINATION — cannot wear the same mark. 🔖 = put it aside, come
+  // back to it (Dan chose it over 👀, 2026-08-21).
+  { key: "review", name: "FluOlin Review", emoji: "🔖", href: "/reviser" },
   { key: "skills", name: "FluOlin Skills", emoji: "💪", href: "/conjugaison" },
   { key: "user", name: "FluOlin User", emoji: "👤", href: "/moi" },
 ];
@@ -97,7 +101,7 @@ export const ACTIVITIES: Activity[] = [
   { key: "complete", name: "iComplete", emoji: "✏️", family: "practice", href: null, hue: "#7bbf2e", blurb: "Type the missing word." },
 
   // ── 2 · FluOlin Review — automatic first, then the one you choose ─────────
-  { key: "reviser", name: "DéjàRevu", emoji: "🔁", family: "review", href: "/reviser", hue: "#7bbf2e", blurb: "Comes back when you're about to forget it." },
+  { key: "reviser", name: "DéjàRevu", emoji: "🔖", family: "review", href: "/reviser", hue: "#7bbf2e", blurb: "Comes back when you're about to forget it." },
   { key: "grammarathon", name: "GramMarathon", emoji: "🏃", family: "review", href: "/activities?activity=grammarathon", hue: "#3b6fd4", blurb: "Gap-fill sprint across a whole deck." },
 
   // ── 3 · FluOlin Skills — forms → receptive → productive ───────────────────
@@ -146,6 +150,9 @@ export function navigableActivities(): Activity[] {
   );
 }
 
+/** Pages whose own design already assigns colour, so the shell must not. */
+const SELF_COLOURED = new Set(["moi", "profil"]);
+
 /** Site keys that are not activities but still belong somewhere. */
 const SITE_FAMILY: Record<string, FamilyKey> = {
   home: "goals", activities: "goals", index: "goals", guide: "goals", quickguide: "goals",
@@ -168,6 +175,13 @@ const SITE_FAMILY: Record<string, FamilyKey> = {
  */
 export function familyOf(activeKey: string | undefined): FamilyKey | null {
   if (!activeKey) return null;
+  // Pages that already own a complete colour scheme are left alone (Dan,
+  // 2026-08-21: "can we maintain the current look of the profile page").
+  // /moi and /profil are the one learner model, and its five rows already
+  // carry a hue each — a family band over the top would be a second, louder
+  // system arguing with the first. Returning null means the shell adds no
+  // class at all, so those pages render exactly as they did.
+  if (SELF_COLOURED.has(activeKey)) return null;
   const a = activity(activeKey);
   if (a) return a.family;
   if (SITE_FAMILY[activeKey]) return SITE_FAMILY[activeKey];

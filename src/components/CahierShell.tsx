@@ -174,6 +174,10 @@ export default function CahierShell({
   const deckUnit = deckId ? CURATED.find((c) => c.id === deckId)?.unit : undefined;
   const unitKey = deckUnit === undefined ? undefined : `unit-${deckUnit}`;
   const isActiveFlap = (t: ShellTab) => active === t.key || t.key === unitKey;
+  // null for a page that colours itself — then NO fam- class is added, the
+  // header falls back to plain paper and the spine rule does not match, so
+  // the page renders exactly as it did before this system existed.
+  const famKey = familyOf(active);
 
   // Per-page browser-tab title (audit 2026-07-19: every page announced
   // itself as just "FluOlinGo" — tabs, history, bookmarks and screen-reader
@@ -280,7 +284,7 @@ export default function CahierShell({
              `active` key into one of the six, so a route does not have to
              declare a hue — and the whole site stops being one undivided
              field of paper. Unknown keys stay uncoloured on purpose. */
-          className={`cahier-page fam-${familyOf(active) ?? "none"} ${nested ? "min-h-[calc(100vh-18px)]" : "min-h-screen"}`}
+          className={`cahier-page ${famKey ? `fam-${famKey}` : ""} ${nested ? "min-h-[calc(100vh-18px)]" : "min-h-screen"}`}
         >
           {!nested && <div className="cahier-binding" aria-hidden />}
           {!nested && edgeGrip}

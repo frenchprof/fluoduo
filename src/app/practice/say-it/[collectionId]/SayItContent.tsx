@@ -9,11 +9,14 @@ import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { logEvent } from "@/lib/firebase/usage";
 import DrillShell, { drillExitHref } from "@/components/DrillShell";
+import SessionMap, { type Mark } from "@/components/SessionMap";
+import SpeechMeter from "@/components/SpeechMeter";
 import { practiceItems } from "@/lib/collections/display";
 import { recordItemResult } from "@/lib/progress";
 import { hintsFor } from "@/lib/help/hints";
 import { useHelpLadder, type HelpLadderApi } from "@/lib/help/useHelpLadder";
 import { deaccent, normalize } from "@/lib/practice/cloze";
+import { reviserHref } from "@/lib/reviser";
 import type { Collection, Item } from "@/lib/collections/schema";
 import { shuffle } from "@/lib/shuffle";
 
@@ -89,18 +92,38 @@ const GRADE_UI: Record<Grade, { icon: string; label: string; cls: string }> = {
   miss: { icon: "❌", label: "Not quite…", cls: "text-rose-700 bg-rose-50 border-rose-300" },
 };
 
+/** perfect/good/homophone all mean "said it" — the session map is not the
+ *  place to re-litigate an accent. */
+function markFor(g: Grade): Mark {
+  if (g === "perfect" || g === "good" || g === "homophone") return "ok";
+  return g === "close" ? "shaky" : "bad";
+}
+
 export default function SayItContent({
   collectionId,
   embedded = false,
   deckOverride,
+  variant = "default",
+  onExit,
 }: {
   collectionId: string;
   embedded?: boolean;
   /** A synthetic deck (the Marathon oral compiles every deck into one) —
    *  items arrive with articles already baked into fr. */
   deckOverride?: Collection;
+  /** "wordrill" = the patch-31 layout: EN/FR prompt switch, session map, live
+   *  meter, the help ladder on 🔤. It is a variant, NOT a new value of
+   *  `embedded` — SioModal is embedded too and must keep the popup look. */
+  variant?: "default" | "wordrill";
+  /** WorDrill's ✕ returns to its scope picker rather than leaving the page. */
+  onExit?: () => void;
 }) {
   const deck = deckOverride ?? CURATED.find((c) => c.id === collectionId);
+  const isWorDrill = variant === "wordrill";
+  // The ladder is the recording path too (it queues hinted items for ReVue),
+  // so WorDrill joins the standalone page in using it. SioModal's popup keeps
+  // the old direct-record path — it has no shell bar to hang rungs off.
+  const ladderOn = !embedded || isWorDrill;
 
   // A run is a working queue, NOT an endless carousel (Dan, 2026-07-03: "there
   // should be a natural end rather than looping continuously"). `card` is on
@@ -114,6 +137,13 @@ export default function SayItContent({
   const [queue, setQueue] = useState<Item[]>([]);
   const [trail, setTrail] = useState<{ it: Item; skipped: boolean }[]>([]);
   const [finished, setFinished] = useState(false);
+  // Every graded word, in the order it was answered — the session map reads
+  // the marks, the done screen reads the misses. Skips are not in here: a
+  // deferred word was never answered, so it has no outcome to show.
+  const [log, setLog] = useState<{ it: Item; mark: Mark }[]>([]);
+  // Which language the PROMPT shows. The mic always grades French — EN is
+  // recall, FR is read-aloud, same word, same grader (hence the FR badge).
+  const [promptLang, setPromptLang] = useState<"en" | "fr">("en");
 
   // Shuffle on mount only — shuffling during render breaks SSR hydration
   // (the AGENTS/handoff "no Math.random() during render" rule).
@@ -123,6 +153,7 @@ export default function SayItContent({
     setCard(list[0] ?? null);
     setQueue(list.slice(1));
     setTrail([]);
+    setLog([]);
     setFinished(false);
   }, [deck]);
 
@@ -152,11 +183,11 @@ export default function SayItContent({
     surface: "say-it",
     hints,
     reveal: expectedFr,
-    enabled: !embedded && !finished && !!card,
+    enabled: ladderOn && !finished && !!card,
   });
   const ladderRef = useRef<HelpLadderApi>(ladder);
   ladderRef.current = ladder;
-  const peek = embedded ? revealed : ladder.revealed;
+  const peek = ladderOn ? ladder.revealed : revealed;
 
   useEffect(() => {
     const win = window as any;
@@ -254,6 +285,7 @@ export default function SayItContent({
     setQueue(list.slice(1));
     setTrail([]);
     setScore({ ok: 0, total: 0 });
+    setLog([]);
     setFinished(false);
     setPhase("idle");
     setRevealed(false);
@@ -303,9 +335,10 @@ export default function SayItContent({
         // was taken, queues it for ReVue. First try only scores.
         const L = ladderRef.current;
         const first = L.ladder.wrongTries === 0 && !L.revealed;
-        if (first || embedded) setScore((s) => ({ ok: s.ok + (ok ? 1 : 0), total: s.total + 1 }));
+        if (first || !ladderOn) setScore((s) => ({ ok: s.ok + (ok ? 1 : 0), total: s.total + 1 }));
+        if (first || !ladderOn) setLog((l) => [...l, { it: c, mark: markFor(g) }]);
         if (c.id) {
-          if (embedded) recordItemResult(c.id, ok, t, `say-it:${collectionId}`);
+          if (!ladderOn) recordItemResult(c.id, ok, t, `say-it:${collectionId}`);
           else L.attempt(ok, { given: t, activity: `say-it:${collectionId}` });
         }
         return t;
@@ -319,9 +352,11 @@ export default function SayItContent({
         sfx.wrong();
         setResult({ grade: "miss", recognized: "(rien entendu)" });
         const L = ladderRef.current;
-        if (L.ladder.wrongTries === 0 || embedded) setScore((s) => ({ ...s, total: s.total + 1 }));
+        const firstTry = L.ladder.wrongTries === 0 || !ladderOn;
+        if (firstTry) setScore((s) => ({ ...s, total: s.total + 1 }));
+        if (firstTry) setLog((l) => [...l, { it: c, mark: "bad" }]);
         if (c.id) {
-          if (embedded) recordItemResult(c.id, false, "(rien entendu)", `say-it:${collectionId}`);
+          if (!ladderOn) recordItemResult(c.id, false, "(rien entendu)", `say-it:${collectionId}`);
           else L.attempt(false, { given: "(rien entendu)", activity: `say-it:${collectionId}` });
         }
       } else if (e.error === "not-allowed") {
@@ -359,7 +394,7 @@ export default function SayItContent({
       if (e.key === "Enter" && p === "result" && embedded) next();
       if (p === "listening") return; // no side actions while the mic is open
       if (k === "r") listenModel();
-      if (k === "v") { if (embedded) setRevealed((r) => !r); else ladderRef.current.climb(); }
+      if (k === "v") { if (ladderOn) ladderRef.current.climb(); else setRevealed((r) => !r); }
       if (k === "s") skip();
       if (k === "b") back();
       if (k === "e") endNow();
@@ -388,7 +423,7 @@ export default function SayItContent({
             {score.total > 0 && ` (${Math.round((score.ok / score.total) * 100)}%)`}
           </>
         }
-        cta={finished ? { label: "🔁 Restart", onClick: restart } : null}
+        cta={finished ? { label: "Restart", onClick: restart } : null}
         help={finished ? null : ladder.help}
         feedback={
           !finished && phase === "result" && result && ui && card
@@ -442,6 +477,248 @@ export default function SayItContent({
     );
   }
 
+  /* ── WorDrill (patch 31) ────────────────────────────────────────────────
+     One cahier sheet inside the site chrome (Dan: "chrome: keep it, drill
+     sits inside"), so this draws its own bar rather than moving to
+     DrillShell, which is h-dvh and would take the whole viewport.
+     The controls say what the old prose said: no kicker, no "Tap to speak",
+     no keyboard legend — the mic, the switch and the rungs carry it. */
+  if (isWorDrill) {
+    const marks = log.map((l) => l.mark);
+    const missedIds = log.filter((l) => l.mark !== "ok").map((l) => l.it.id).filter(Boolean);
+    const frOf = (it: Item) => frFull(articleOf(deck, it), it.fr);
+
+    const langBtn = (v: "en" | "fr") => (
+      <button
+        type="button"
+        onClick={() => setPromptLang(v)}
+        aria-pressed={promptLang === v}
+        className={`px-3 py-1 text-[0.7rem] font-black transition ${
+          promptLang === v
+            ? "bg-[color:var(--cahier-ink)] text-[color:var(--cahier-hl)]"
+            : "bg-white text-[color:var(--cahier-ink-soft)]"
+        }`}
+      >
+        {v.toUpperCase()}
+      </button>
+    );
+
+    return (
+      <div className="mx-auto max-w-2xl px-4 pb-6 pt-2">
+        <div className="cahier-page overflow-hidden rounded-2xl border-2 border-[color:var(--cahier-ink)]/12 shadow-md">
+          {/* bar: exit · what the prompt shows · what you have said */}
+          <div className="flex h-14 items-center gap-3 border-b-2 border-[color:var(--cahier-ink)]/12 px-4">
+            <button
+              type="button"
+              onClick={onExit}
+              aria-label="Back to the scopes"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xl font-black text-[color:var(--cahier-ink)]/45 transition hover:bg-[color:var(--cahier-ink)]/10 hover:text-[color:var(--cahier-ink)]"
+            >
+              ✕
+            </button>
+            {!finished && (
+              <div className="inline-flex shrink-0 overflow-hidden rounded-full border-[1.5px] border-[color:var(--cahier-ink)]">
+                {langBtn("en")}
+                {langBtn("fr")}
+              </div>
+            )}
+            <span className="flex-1" />
+            <span className="fluo-mono shrink-0 text-sm font-bold text-[color:var(--tier-good)]">
+              ✓ {score.ok}
+              <span className="font-normal text-[color:var(--cahier-ink-soft)]">/{score.total}</span>
+            </span>
+          </div>
+
+          <div className="cahier-foolscap px-4 pb-5 pt-6 sm:px-6">
+            {finished ? (
+              /* ── the run, read back ──────────────────────────────────── */
+              <div className="text-center">
+                <p className="text-5xl font-black leading-none tracking-tight text-[color:var(--cahier-ink)]">
+                  {score.ok}
+                  <span className="text-2xl text-[color:var(--cahier-ink-soft)]">/{score.total}</span>
+                </p>
+                {log.length > 0 && (
+                  <SessionMap marks={marks} total={log.length} size={11} className="mx-auto mt-5 max-w-[290px]" />
+                )}
+                {log.some((l) => l.mark !== "ok") && (
+                  <div className="mt-5 overflow-hidden rounded-xl border-[1.5px] border-[color:var(--cahier-ink)]/16 bg-white text-left">
+                    {log
+                      .filter((l) => l.mark !== "ok")
+                      .map((l, i) => (
+                        <div
+                          key={`${l.it.id}-${i}`}
+                          className="flex items-center gap-2.5 border-b border-[color:var(--cahier-line)] px-3 py-2 last:border-b-0"
+                        >
+                          <span
+                            className="block h-[7px] w-[7px] shrink-0 rounded-full"
+                            style={{ background: l.mark === "bad" ? "var(--tier-weak)" : "var(--tier-medium)" }}
+                          />
+                          <span lang="fr" className="min-w-0 flex-1 truncate text-sm font-black">{frOf(l.it)}</span>
+                          <span className="shrink-0 text-xs text-[color:var(--cahier-ink-soft)]">{l.it.en}</span>
+                          <button
+                            type="button"
+                            onClick={() => speak(frOf(l.it), "fr-FR")}
+                            aria-label={`Listen to ${frOf(l.it)}`}
+                            className="shrink-0 text-base opacity-70 transition hover:opacity-100"
+                          >
+                            🔊
+                          </button>
+                        </div>
+                      ))}
+                  </div>
+                )}
+                <div className="mt-5 flex flex-wrap justify-center gap-2">
+                  <button type="button" onClick={restart} className="cahier-btn cahier-btn-accent cahier-btn-sm">Restart</button>
+                  {missedIds.length > 0 && (
+                    <Link href={reviserHref(missedIds)} className="cahier-btn cahier-btn-sm">
+                      Les {missedIds.length} ratés ›
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ) : card ? (
+              /* ── one word ─────────────────────────────────────────────── */
+              <div className="flex flex-col items-center">
+                {card.emoji && <span className="block text-4xl leading-none">{card.emoji}</span>}
+                <p
+                  lang={promptLang}
+                  className="mt-2.5 text-center text-[1.6rem] font-black leading-tight tracking-tight sm:text-[1.9rem]"
+                >
+                  {promptLang === "en" ? card.en : frOf(card)}
+                </p>
+                {ladder.help && ladder.help.shown.length > 0 && (
+                  <p
+                    lang="fr"
+                    className="cahier-hl mt-3 inline-block rounded-sm px-1.5 fluo-mono text-lg font-black"
+                    style={{ mixBlendMode: "multiply" }}
+                  >
+                    {ladder.help.shown[ladder.help.shown.length - 1].text}
+                  </p>
+                )}
+
+                {/* 🔊 · mic · 🔤 — the mic always grades French, whatever the
+                    prompt shows, which is what the FR badge is for. */}
+                <div className="mt-6 flex items-center gap-[18px]">
+                  <button
+                    type="button"
+                    onClick={listenModel}
+                    disabled={phase === "listening"}
+                    aria-label="Listen"
+                    title="Listen (R)"
+                    className="cahier-btn flex h-11 w-11 items-center justify-center !rounded-full !p-0 text-lg disabled:opacity-40 sm:h-[38px] sm:w-[38px] sm:text-base"
+                  >
+                    🔊
+                  </button>
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={phase === "listening" ? stopRec : startListening}
+                      aria-label={phase === "listening" ? "Stop" : "Start speaking"}
+                      className={`flex h-[76px] w-[76px] items-center justify-center rounded-full text-2xl shadow-lg transition active:scale-95 ${
+                        phase === "listening"
+                          ? "bg-[color:var(--drill-bad-mid)] text-white ring-4 ring-[color:var(--drill-bad-soft)]"
+                          : "bg-[color:var(--cahier-hl)] text-[color:var(--cahier-ink)] hover:brightness-95"
+                      }`}
+                    >
+                      {phase === "listening" ? "⏹" : "🎤"}
+                    </button>
+                    <span
+                      lang="fr"
+                      aria-hidden
+                      className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 rounded-full bg-[color:var(--cahier-ink)] px-1.5 text-[0.52rem] font-black tracking-[0.1em] text-[color:var(--cahier-hl)]"
+                    >
+                      FR
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => ladder.climb()}
+                    disabled={!ladder.help?.label || ladder.help?.disabled}
+                    aria-label={ladder.help?.label ?? "Show the word"}
+                    title={`${ladder.help?.label ?? "Show"} (V)`}
+                    className={`cahier-btn flex h-11 w-11 flex-col items-center justify-center gap-[2px] !rounded-full !p-0 disabled:opacity-40 sm:h-[38px] sm:w-[38px] ${
+                      peek ? "!bg-[color:var(--cahier-hl)]" : ""
+                    }`}
+                  >
+                    <span className="text-base leading-none sm:text-sm" aria-hidden>🔤</span>
+                    {ladder.help && (
+                      <span className="flex gap-[2px]" aria-hidden>
+                        {Array.from({ length: ladder.help.hintsAvail + 1 }, (_, k) => {
+                          const isReveal = k === ladder.help!.hintsAvail;
+                          const on = isReveal ? ladder.help!.revealed : k < ladder.help!.hintsTaken;
+                          return (
+                            <span
+                              key={k}
+                              className="block h-[3px] w-[3px] rounded-full"
+                              style={{
+                                background: on
+                                  ? isReveal ? "var(--tier-weak)" : "var(--cahier-ink)"
+                                  : "rgba(42,46,110,.25)",
+                              }}
+                            />
+                          );
+                        })}
+                      </span>
+                    )}
+                  </button>
+                </div>
+
+                <SpeechMeter active={phase === "listening"} className="mt-3.5" />
+
+                {/* The recognizer's own words — the one signal that proves it
+                    heard something. The meter says "sound"; this says "words". */}
+                <p
+                  lang="fr"
+                  aria-live="polite"
+                  className="mt-1 h-5 text-center text-sm font-medium italic text-[color:var(--cahier-ink-soft)]"
+                >
+                  {phase === "listening" && transcript ? `« ${transcript} »` : ""}
+                </p>
+
+                {log.length > 0 && (
+                  <SessionMap marks={marks} total={cards.length} className="mt-4 max-w-[280px]" />
+                )}
+
+                {/* Back stays (Dan, 2026-07-16) — the design dropped it, but a
+                    skipped word you cannot return to is the bug that put it
+                    here. Content-sized, not full-width bars. */}
+                <div className="mt-5 flex flex-wrap justify-center gap-2 border-t-2 border-[color:var(--cahier-ink)]/12 pt-4">
+                  <button type="button" onClick={back} disabled={trail.length === 0} className="cahier-btn cahier-btn-sm disabled:opacity-40" title="Back (B)">Back</button>
+                  <button type="button" onClick={skip} disabled={queue.length === 0} className="cahier-btn cahier-btn-sm disabled:opacity-40" title="Defer this word to the end (S)">Skip</button>
+                  <button type="button" onClick={endNow} className="cahier-btn cahier-btn-sm" title="End here (E)">End here</button>
+                </div>
+
+                {phase === "result" && result && ui && (
+                  <div
+                    className={`-mx-4 mt-4 w-[calc(100%+2rem)] border-t-2 px-4 py-3 sm:-mx-6 sm:w-[calc(100%+3rem)] sm:px-6 ${
+                      isCorrect
+                        ? "border-[color:var(--drill-ok-soft)] bg-[color:var(--drill-ok-bg)]"
+                        : "border-[color:var(--drill-bad-soft)] bg-[color:var(--drill-bad-bg)]"
+                    }`}
+                  >
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                      <p
+                        className={`min-w-0 flex-1 text-sm font-black ${
+                          isCorrect ? "text-[color:var(--drill-ok-ink)]" : "text-[color:var(--drill-bad-ink)]"
+                        }`}
+                      >
+                        {ui.icon} {ui.label}
+                        <span lang="fr" className="ml-1.5 font-extrabold">&ldquo;{result.recognized || "—"}&rdquo;</span>
+                        <span className="ml-1.5">→ <span lang="fr">{frOf(card)}</span></span>
+                        <button type="button" onClick={listenModel} className="ml-1.5 align-middle text-base opacity-70 hover:opacity-100" aria-label="Listen" title="Listen (R)">🔊</button>
+                      </p>
+                      <button type="button" onClick={next} className="cahier-btn cahier-btn-primary cahier-btn-sm shrink-0">Continue</button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return wrap(
       <div className="mx-auto max-w-2xl px-4 py-4">
         <div className="mb-4 text-center">
@@ -470,8 +747,8 @@ export default function SayItContent({
               {score.total > 0 && <> · ✓ {score.ok} ({Math.round((score.ok / score.total) * 100)}%)</>}.
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-2">
-              {embedded && <button type="button" onClick={restart} className="fluo-btn fluo-btn-sm">🔁 Restart</button>}
-              <Link href="/reviser" className="fluo-btn fluo-btn-sm fluo-btn-ghost">🔁 DéjàRevu</Link>
+              {embedded && <button type="button" onClick={restart} className="fluo-btn fluo-btn-sm">Restart</button>}
+              <Link href="/reviser" className="fluo-btn fluo-btn-sm fluo-btn-ghost">DéjàRevu ›</Link>
               {embedded && <Link href="/" className="fluo-btn fluo-btn-sm fluo-btn-ghost">← Back to the path</Link>}
             </div>
           </div>
@@ -607,7 +884,7 @@ export default function SayItContent({
               className="fluo-btn fluo-btn-sm fluo-btn-ghost disabled:opacity-40"
               title="Back (B)"
             >
-              ⏮ Back
+              Back
             </button>
             <button
               type="button"
@@ -616,10 +893,10 @@ export default function SayItContent({
               className="fluo-btn fluo-btn-sm fluo-btn-ghost disabled:opacity-40"
               title="Defer this word to the end (S)"
             >
-              ⤼ Skip
+              Skip
             </button>
             <button type="button" onClick={endNow} className="fluo-btn fluo-btn-sm fluo-btn-ghost" title="End here (E)">
-              ⏹ End here
+              End here
             </button>
           </div>
         )}

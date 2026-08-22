@@ -25,11 +25,14 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { BOTTOM_NAV } from "@/content/nav";
 import { readUiPrefs } from "@/lib/uiPrefs";
+import { loadProgress } from "@/lib/progress";
+import { dueForReview } from "@/lib/reviser";
 
 export default function BottomBar() {
   const pathname = usePathname();
   const [held, setHeld] = useState<string | null>(null);
   const [labels, setLabels] = useState(false);
+  const [due, setDue] = useState(0);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const nav = useRef<HTMLElement | null>(null);
 
@@ -69,6 +72,16 @@ export default function BottomBar() {
     return () => window.removeEventListener("fluolingo:uiprefs", sync);
   }, []);
 
+  // The due count used to ride Home's round 🔁 button. That button went
+  // (2026-08-21), and the count came here rather than being lost — this tab
+  // is the same destination the hero button had.
+  useEffect(() => {
+    const sync = () => setDue(dueForReview(loadProgress(), Date.now()).length);
+    sync();
+    window.addEventListener("fluolingo:progress-updated", sync);
+    return () => window.removeEventListener("fluolingo:progress-updated", sync);
+  }, []);
+
   const press = useCallback((key: string) => {
     if (timer.current) clearTimeout(timer.current);
     timer.current = setTimeout(() => setHeld(key), 260);
@@ -91,7 +104,7 @@ export default function BottomBar() {
           <Link
             key={slot.key}
             href={slot.href}
-            aria-label={slot.label}
+            aria-label={slot.key === "review" && due > 0 ? `${slot.label} — ${due} due` : slot.label}
             aria-current={active ? "page" : undefined}
             data-active={active}
             className="cahier-bottombar-slot"
@@ -104,7 +117,14 @@ export default function BottomBar() {
             {held === slot.key && !labels && (
               <span aria-hidden className="cahier-bottombar-tip">{slot.label}</span>
             )}
-            <span aria-hidden className="cahier-bottombar-icon">{slot.emoji}</span>
+            <span aria-hidden className="relative inline-flex cahier-bottombar-icon">
+              {slot.emoji}
+              {slot.key === "review" && due > 0 && (
+                <span className="absolute -right-3 -top-1 rounded-full bg-[var(--fluo-danger)] px-1.5 text-[10px] font-bold leading-[1.4] text-white">
+                  {due}
+                </span>
+              )}
+            </span>
             {/* Rendered but visually hidden when labels are off, so the row's
                 height never changes when someone toggles them on. */}
             <span aria-hidden className={showLabel && labels ? "cahier-bottombar-label" : "sr-only"}>

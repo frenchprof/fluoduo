@@ -48,3 +48,6 @@ __pycache__/
 # Seeded design-canvas outputs — regenerate with seed-canvas.mjs from the
 # .dc.html artboards + canvas.json, which are the source of truth.
 work/*/fluolingo-*-mockups.html
+# Screenshot output from the work/ harnesses — regenerate, never commit
+# (work/patch*/ is already covered by the patch*/ rule above)
+work/**/*.png

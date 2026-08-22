@@ -3,8 +3,10 @@
 /**
  * The Home page body (Dan, 2026-07-05: "a true blue Home page… all of the 50
  * SIOs on a single learning path visually — an overview of where you are in
- * the learning journey"). Hero: Bienvenue with the ▶/🔁 icon buttons, the
- * stat pills and the two progress bars. The COURSE MAP moved to its own
+ * the learning journey"). Hero: Bienvenue over ONE row of five equal cells —
+ * two marks then three round actions (› Continue · 🔖 Review · ▦ Menu), the
+ * three that depend on who you are; the Map postcard sits below. Continue
+ * wears › and never ▶ (2026-08-21, one glyph one job). The COURSE MAP moved to its own
  * page, /map (Dan, 2026-08-21: a finger scrolling the page kept catching
  * the map instead) — Home links there with one card, and forwards the old
  * `/?unit=N#SIO-0XX` deep links so printed QR codes and bookmarks survive.
@@ -54,7 +56,6 @@ const BYLINE_STROKES = [
 
 export default function HomeDashboard() {
   const [progress, setProgress] = useState<Progress>(defaultProgress());
-  const [dueCount, setDueCount] = useState(0);
   // Armed on mount: nothing pops up by default (Dan, 2026-07-14), so the
   // FluOlinGo brand animation plays on a clear stage right away.
   const [heroPlay, setHeroPlay] = useState(false);
@@ -65,6 +66,8 @@ export default function HomeDashboard() {
   // Quick Guide popup, summoned from the hero button next to the (?) circle
   // (Dan, 2026-07-14: "insert a QuickGuide link where my red arrow points").
   const [qgOpen, setQgOpen] = useState(false);
+  // The Review button's count — the one destination on Home with a deadline.
+  const [dueCount, setDueCount] = useState(0);
 
   useEffect(() => {
     const refresh = () => {
@@ -211,15 +214,22 @@ export default function HomeDashboard() {
               ))}
             </g>
           </svg>
+
         </div>
 
-        {/* The row of marks. Scrolls sideways on a narrow phone rather than
-            wrapping — a report card's row stays a row. */}
+        {/* ONE row, FIVE equal cells (Dan, 2026-08-21: "since there were 5
+            stats, and now 2 stats + 3 buttons, can't they all occupy the same
+            horizontal space?"). Two marks, then the three actions that depend
+            on WHO YOU ARE and how far you have got — Continue knows your next
+            objective, Review carries your due count, Menu opens all twenty
+            activities. Everything that is the same for every learner lives in
+            the bottom bar instead. `flex-[2]` / `flex-[3]` split the row into
+            fifths, so a mark cell and a button cell are the same width. */}
         <div
-          className="flex flex-wrap items-stretch gap-y-1.5 border-t-2 px-3 py-2"
+          className="flex items-stretch border-t-2 px-3 py-2"
           style={{ borderColor: "var(--fluo-ink)", background: "var(--cahier-paper-raised)" }}
         >
-          <dl className="flex w-full min-w-0 items-stretch sm:w-auto sm:flex-1">
+          <dl className="flex min-w-0 flex-[2] items-stretch">
             {MARKS.map((m, i) => (
               <div
                 key={m.label}
@@ -245,53 +255,57 @@ export default function HomeDashboard() {
             ))}
           </dl>
 
-          {/* The three actions as ONE FAMILY (Dan, 2026-08-21: "greater
-              cohesiveness — they don't look like they belong together now"):
-              identical geometry, the same ink border and paper shadow on all
-              three — only the FILL carries hierarchy (▶ accent · 🔁 paper ·
-              ▦ ink), the way the topbar's icon strip is one set. */}
-          <div className="flex w-full shrink-0 items-center justify-end gap-2 sm:w-auto sm:border-l sm:pl-2.5" style={{ borderColor: "var(--cahier-line)" }}>
+          {/* One family: identical geometry and ink border on all three (Dan,
+              2026-08-21) — only the FILL carries hierarchy. Continue wears ›,
+              never ▶: the triangle means a voice is about to speak. */}
+          <div className="flex min-w-0 flex-[3] items-stretch">
             {activeSio && (
-              <Link
-                href={`/unit/${activeSio.unit}#${activeSio.id}`}
-                aria-label="Continue"
-                title={`Continue — « ${activeSio.topic} », the next objective after your latest 'done'.`}
-                className="flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm text-white shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
-                style={{ background: accent, borderColor: "var(--fluo-ink)" }}
-              >
-                <span aria-hidden>▶</span>
-              </Link>
-            )}
-            <Link
-              href="/reviser"
-              aria-label="DéjàRevu"
-              title="DéjàRevu — your words to review"
-              className="relative flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
-              style={{ borderColor: "var(--fluo-ink)", background: "var(--cahier-paper)", color: "var(--fluo-ink)" }}
-            >
-              <span aria-hidden>🔁</span>
-              {/* Words waiting to be reviewed are WORK, not failure. In
-                  --fluo-danger this read as an error badge; it takes the
-                  primary-action role instead (white on it, 4.51:1). */}
-              {dueCount > 0 && (
-                <span
-                  className="absolute -right-2 -top-2 rounded-full px-1.5 text-[10px] font-bold text-white"
-                  style={{ background: "var(--dopa-focus)" }}
+              <div className="flex min-w-0 flex-1 items-center justify-center border-l px-0.5" style={{ borderColor: "var(--cahier-line)" }}>
+                <Link
+                  href={`/unit/${activeSio.unit}#${activeSio.id}`}
+                  aria-label="Continue"
+                  title={`Continue — « ${activeSio.topic} », the next objective after your latest 'done'.`}
+                  className="fluo-mono flex h-9 w-9 items-center justify-center rounded-full border-2 pb-0.5 text-lg font-black leading-none text-white shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
+                  style={{ background: accent, borderColor: "var(--fluo-ink)" }}
                 >
-                  {dueCount}
-                </span>
-              )}
-            </Link>
-            <button
-              type="button"
-              onClick={() => setQgOpen(true)}
-              aria-label="Menu"
-              className="flex h-10 w-10 items-center justify-center rounded-full border-2 text-xs font-black shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
-              style={{ background: "var(--fluo-ink)", borderColor: "var(--fluo-ink)", color: "var(--cahier-hl)" }}
-              title="Menu — every activity, one tap away"
-            >
-              <span aria-hidden>▦</span>
-            </button>
+                  <span aria-hidden>›</span>
+                </Link>
+              </div>
+            )}
+            <div className="flex min-w-0 flex-1 items-center justify-center border-l px-0.5" style={{ borderColor: "var(--cahier-line)" }}>
+              <Link
+                href="/reviser"
+                aria-label={dueCount > 0 ? `DéjàRevu — ${dueCount} due` : "DéjàRevu"}
+                title="DéjàRevu — your words to review"
+                className="relative flex h-9 w-9 items-center justify-center rounded-full border-2 text-sm shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
+                style={{ borderColor: "var(--fluo-ink)", background: "var(--cahier-paper)", color: "var(--fluo-ink)" }}
+              >
+                <span aria-hidden>🔖</span>
+                {/* Words waiting to be reviewed are WORK, not failure. In
+                    --fluo-danger this read as an error badge; it takes the
+                    primary-action role instead (white on it, 4.51:1). */}
+                {dueCount > 0 && (
+                  <span
+                    className="absolute -right-2 -top-2 rounded-full px-1.5 text-[10px] font-bold text-white"
+                    style={{ background: "var(--dopa-focus)" }}
+                  >
+                    {dueCount}
+                  </span>
+                )}
+              </Link>
+            </div>
+            <div className="flex min-w-0 flex-1 items-center justify-center border-l px-0.5" style={{ borderColor: "var(--cahier-line)" }}>
+              <button
+                type="button"
+                onClick={() => setQgOpen(true)}
+                aria-label="Menu"
+                className="flex h-9 w-9 items-center justify-center rounded-full border-2 text-xs font-black shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
+                style={{ background: "var(--fluo-ink)", borderColor: "var(--fluo-ink)", color: "var(--cahier-hl)" }}
+                title="Menu — every activity, one tap away"
+              >
+                <span aria-hidden>▦</span>
+              </button>
+            </div>
           </div>
         </div>
         {qgOpen && <MenuSplash onClose={() => setQgOpen(false)} />}
@@ -322,7 +336,7 @@ export default function HomeDashboard() {
           <span aria-hidden className="text-xl">🗺️</span>
           <span lang="fr" className="fluo-serif min-w-0 flex-1 text-lg font-black leading-tight text-[color:var(--fluo-ink)]">The Map</span>
           <span className="fluo-mono text-xs font-black text-[color:var(--fluo-ink)]/70">2D · 3D</span>
-          <span aria-hidden className="fluo-mono text-lg font-black text-[color:var(--fluo-ink)]">▶</span>
+          <span aria-hidden className="fluo-mono text-xl font-black text-[color:var(--fluo-ink)]">›</span>
         </span>
         <Link href="/map" aria-label="The Map — open the course map" className="absolute inset-0 z-10" />
       </div>

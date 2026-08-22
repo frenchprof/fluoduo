@@ -200,7 +200,7 @@ export default function ConjugaisonPage() {
                 className="fluo-btn fluo-btn-sm fluo-btn-ghost"
                 title="Stop and see the table"
               >
-                ⏹ See the table
+                See the table
               </button>
             </div>
           </div>

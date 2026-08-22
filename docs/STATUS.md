@@ -1,4 +1,4 @@
-# STATUS — the one place that is true (17 Aug 2026, end of day)
+# STATUS — the one place that is true (22 Aug 2026)
 
 Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 **this file first** and updates it before ending a session. `HANDOFF.md`, `TODO.md`,
@@ -45,12 +45,17 @@ Only ONE agent edits this file at a time; say so in your commit.
 | 24 | **Index**: chip rail + unit segments + 10 SIO rows, URL state, cells = how you did (device ledger), hubs → redirects, `?gaps=1`, row buttons | verify24 (58) |
 | 26 | **/moi + teacher**: outcome rows, `HeatStrip` on 4 pages, thin /moi hero + 4 segments, teacher Class now (16 tiles, stuck detection, 30 s repoll), outcome × student matrix, one pooled fetch, Compute gone | verify26 (61) |
 | bugs | deck gate/redirect, `NoDeck`, DeckContent on tokens, `/sio/[id]` → deep link, DEPLOY.md name, ONE "weak", ONE shuffle, D6/D7/D9/D10/D11, leaderboard identity, D4 sync diagnostic | verify27-bugs (81) |
-| hero | **Home hero = a horizontal report card** (19 Aug): the two hairline bars gone ("no status bar"), chip rail gone, « Bienvenue sur FluOlinGo » heading back, counters now one row of value-over-label marks — level · streak · course · XP · lessons, + gems once earned; actions round, dropping below the marks on a phone | verify25 (19) |
+| hero | **Home hero = a horizontal report card** (19 Aug): the two hairline bars gone ("no status bar"), chip rail gone, « Bienvenue sur FluOlinGo » heading back, counters now one row of value-over-label marks — level · streak · course · XP · lessons, + gems once earned; actions round, dropping below the marks on a phone (superseded by the glyph row, 21 Aug) | verify25 (22) |
 | menu/nav | **HELP popup → Menu** (20 tiles, 4×5 phone / 5×4 tablet, no prose — /guide keeps the long form); registry regrouped to **six** families in Dan's 19 Aug order **Goals · Practice · Play · Review · Skills · User** — Goals now means the 50 objectives, the five pre-lesson activities became Practice | verify19c (10) |
 | rail | **Side rail grouped**: six family flaps (Goals · Practice · SvPlay · Review · Skills · User), children under each, Unités under Goals | verify29-rail (22) |
 | Track D | help-ladder spec + state machine + rule hints + `?`/WHY in every drill, evidence tagged, hinted items → ReVue, open-production feedback (`/api/feedback`, rule fallback), 22 eval cases | verify28-trackd (165) |
+| 30 | **The profile is ONE learner model** (22 Aug, from Dan's Claude Design handoff): /moi and /profil are the same page — pinned goal → one next action → five collapsible rows `RE-DRILLS · SKILLS · FRILLS (showcase) · ILLS (problems noted) · THRILLS (rewards)`. The economy is the last row; the bottom bar became the five families | verify30-profile (26) |
+| glyphs | **One glyph, one job** (21 Aug): ▶ ⏸ ⏹ 🔁 🐌 mean SOUND and nothing else; leaving a page is a word + ›. Home's round ▶/🔁 gone (▶ also said "continue the course"; 🔁 pointed at /reviser, which the Review tab already did) → « Continue › » is a full-width `.fluo-btn` under the card, La Carte's ▶ → ›, the due badge moved to the Review tab, ▦ Menu moved into the greeting. Say It had TWO ⏹ on screen at once (mic vs end-session) and WorDrill's "Done!" had THREE 🔁 → session controls are words: Back · Skip · End here · Restart · DéjàRevu ›. Review's mark 🔁 → **🔖** (Dan's pick over 👀, which the Carte cliffhanger and « Regardez ! » already use) — one registry edit carries tab + Menu tile + rail flap. Same sweep through SpecuLearn, Compose, ConjugaZone; NumBus 🐢 → 🐌 and ▶️ → ▶. The MAP's current-stop pin ▶ → **🧑‍🎓** in both views (the 3D already bobbed one; it also stamped a ▶ inside the stop — dropped), legend now « 🧑‍🎓 you ». ONE named exception: **▶ Jouer** on the four game galleries stays — play-a-game is the literal sense, it always carries its label, and it never shares a screen with a player. Verified against the BUILT app at 390px, not the diff | verify25 (22) |
 
-Shipped ≈ 147 of ~150 in-scope units.
+| 31 | **WorDrill redesigned** (22 Aug, from Dan's Claude Design handoff): content-sized scope chips with itemSrs-derived dots, EN/FR prompt switch, session map, a mic-reading level meter, the help ladder on 🔤, a done screen that hands its misses to the Reviser. The handoff's **sprint clock was assessed and dropped on Dan's word**; ConjugaZone (1d) is a separate patch | verify31-wordrill (30) |
+| 32 | **ÉcouTexte redesigned** (22 Aug, from Dan's Claude Design handoff — two directions drawn, Dan: "merge"): the SHEET is the spine (every sentence on screen and typeable) and the sentence you are on is ELEVATED, not exclusive — a card with larger type, its own 🔊, a verdict, and Check / Show the sentence; tapping any row moves the focus. Player under the header: **five controls, one row, no words on them** — ⏯ (one transport button; Dan: "WHY THE HELL DO I NEED AN ADDITIONAL PAUSE BUTTON"), 🐇🐌 speed, ♀♂ voice (active half in ink, other faded), a blanks button that alternates ▬ ▬ ▬ / ▬▬▬▬ and drives the real blanks (solid when sized to each word, dotted when equal), and Length as a number picker. Clarity moved OUT of the buttons: captions, a hint line naming whatever you hover/focus, title+aria-label on every control. **A fully-right sentence confirms itself; a wrong one stays silent** until the learner asks. Topic is a dropdown grouped by unit, one entry per SITUATION, wired to the generators' scenario ids (`FreshOpts.scenarioId`) so "Directions" really gives an itinerary — units 1–2 listed but DISABLED, no generator written yet. **Two glyphs sit outside the 21 Aug registry on purpose (⏯, 🐇) — the handoff overrides it here.** Verified against the BUILT app at 390px | build + eslint clean |
+
+Shipped ≈ 149 of ~150 in-scope units.
 
 ## What is left
 
@@ -117,6 +122,7 @@ Dan's email; Firestore service-account key — being retired.
 
 ## Decisions awaiting Dan (all default to what was built)
 
+- Profile (22 Aug): what consumes an ILLS note — the queue, the teacher, or cut it.
 - Games: hearts kept in NumBus/NumBourse/LexicaLater; Match It now behind sign-in.
 - Home: "one unit per screen" = vertical band snap, not sideways paging.
 - /moi: no time-on-task line any more (D6 sessions had no writer); Reviser "N weak" now
@@ -141,6 +147,159 @@ Dan's email; Firestore service-account key — being retired.
 - Peers builds, `main` is the sole push path; every patch = verify script + screenshot,
   and CI runs every `verify/*.py` on every push.
 - Dan's litmus test (AGENTS.md). Grammar guard-rails (no imperative outside SIO-008).
+
+---
+
+## Patch 31 — WorDrill redesigned (22 Aug, from Dan's design handoff)
+
+Branch `claude/wordrill-redesign`, check = `verify/verify31-wordrill.py` (30).
+Whole suite green: 21 scripts, 0 failures. Build + typecheck clean.
+
+- **The sprint clock was assessed, not built** — Dan asked for the assessment
+  first and then said "ignore sprint". Two reasons it did not survive review:
+  it reversed his own 2026-07-03 decision that a run is a working queue with a
+  natural end ("there should be a natural end rather than looping
+  continuously"), and its core interaction was never prototyped — `SayItContent`
+  opens a fresh `SpeechRecognition` per word (`continuous = false`), so a
+  60-second sprint means ~20 recognizer restarts and the restart latency could
+  eat a large share of the clock. The design's own answer to that was
+  always-listening continuous mode, which the design chat confirms was never
+  built. **If the sprint comes back, prototype continuous recognition first.**
+  Everything the clock implied went with it: the duration dropdown, the ring
+  round the mic, the countdown, "en 60 secondes", "Encore 60 s".
+- **The drill did NOT move to DrillShell.** Artboard 1b draws its own ✕, score
+  and footer inside the cahier sheet — a second copy of DrillShell's bar, which
+  is exactly the duplication that shell exists to prevent. But DrillShell is
+  `h-dvh` and Dan asked to keep the site chrome with the drill inside it, so
+  the two cannot both hold as drawn. WorDrill stays in `CahierShell` and draws
+  its own bar; the honest fix is a non-fullscreen DrillShell variant, which is
+  a shell change and belongs to its own patch. **Left open.**
+- **`variant="wordrill"`, not a new meaning for `embedded`.** SioModal's popup
+  is embedded too and must keep the popup look; overloading the flag would have
+  restyled a surface nobody reviewed.
+- **WorDrill is on the help ladder now.** It was gated `enabled: !embedded`, so
+  the drill Dan uses most had no rungs and recorded through `recordItemResult`
+  directly. It now takes the `useHelpLadder` path like the standalone page,
+  which means hinted and revealed words finally reach ReVue from here. 🔤
+  carries the three rungs (hint · skeleton · answer) rather than a separate `?`
+  — note this makes WorDrill the one drill whose ladder is not in the shell
+  bar. Dan to say whether the others should follow or WorDrill should conform.
+- **The meter reads the microphone.** The design drew CSS keyframes: bars that
+  wiggle on a timer whenever the recognizer is open, identically whether the
+  learner is speaking or silent — and it dropped the interim transcript, the
+  one real proof the recognizer heard words. Both were reversed:
+  `SpeechMeter.tsx` opens a parallel `getUserMedia` stream and draws a rolling
+  RMS history (flat means flat, and it says nothing at all if the stream is
+  refused), and the transcript stays. Sampled at ~30fps, stream released the
+  moment the turn ends.
+- **Back survives.** The design's footer was Skip + End here only. `back()`
+  exists because Dan asked for it (2026-07-16, "the back button is not active
+  when I skip questions") and carries real retrace logic for skipped cards.
+- **The chip dots are derived, not invented.** The design drew them as "the
+  last words you were asked there", which nothing stores — the activity ledger
+  keeps `{right, wrong}` tallies, not sequences. `itemSrs` carries it
+  implicitly: an answer sets `due = now + intervalDays`, so `due - intervalDays`
+  is when the word was last answered and `intervalDays` is how it went. Same
+  "one definition of weak" the Reviser and /moi read, so the dots cannot drift.
+- **The session map is capped at 40.** The design drew 30 dots for a 30-word
+  run; WorDrill's widest scope is 612, where 612 dots is a wall. The window
+  slides so the newest mark is always the last filled dot.
+- **WHY is off the WorDrill tray** — Dan's call. He was offered pronunciation,
+  grading tolerance (the only one buildable today: `silentEq` already knows why
+  a homophone passed) and gender, and chose to drop it. Note this is a
+  deliberate exception to AGENTS.md's litmus clause, which mandates a WHY
+  affordance on answered questions; the other drills keep theirs.
+- **Verb squares are not built.** The design marked verbs as squares in the
+  session map via `i % 4 === 1` — decorative fiction. WorDrill pools deck items
+  and there is no reliable join from a pooled item to the conjugaison `VERBS`
+  inventory, so the map is dots only.
+- **Not done / found on the way:**
+  - ConjugaZone (artboard 1d) — a separate page and its own patch. The
+    handoff's `verbs.js` (the newer copy in Dan's zip, which assigns `être` to
+    Unit 0 and `lire`/`écrire` to Unit 2, leaving `incomplete: 2`) is NOT in
+    the repo yet.
+  - **`.cahier-mono` is undefined.** It is used in ~10 components
+    (ProfileContent ×25, DrillShell, GameBar, HeatStrip, HomeMap, MenuSplash…)
+    and appears in no stylesheet, so every one of them silently falls back to
+    the body font where a typewriter face was intended. `.fluo-mono` is the
+    real class. Pre-existing and unrelated to this patch — left alone because
+    fixing it changes the look of eight screens nobody asked me to touch.
+  - SioModal's Say It popup still carries the "Say in French:" kicker, "Tap to
+    speak" and the keyboard legend — all litmus-test casualties on the WorDrill
+    side. That surface was not in the handoff; verify31 scopes its prose checks
+    to the WorDrill branch rather than pretending the popup was cleaned.
+  - No screenshots: the mic path needs a real device and a signed-in build.
+
+---
+
+## Patch 30 — the profile as one learner model (22 Aug, from Dan's design handoff)
+
+Branch `claude/profile-learner-model`, check = `verify/verify30-profile.py` (26),
+harness `work/profile/shoot.mjs` (ad-hoc, playwright not added to the lockfile;
+`.png` not committed). Whole suite green: 20 scripts, 0 failures.
+
+- **ONE page, TWO routes.** `src/components/ProfileContent.tsx` renders at both
+  `/moi` and `/profil` — Dan's call over a redirect, so the account chip,
+  printed handouts and old bookmarks all land rather than hop. `MoiContent.tsx`
+  is deleted; the old economy page is gone.
+- **The shape.** Always visible: the pinned goal and the ONE next action —
+  the two things you act on. Everything else is the record, collapsed, one
+  section open at a time, each row stating its own value on the right so the
+  page reads shut.
+- **What Dan removed, and why** (all 22 Aug, in his words where they were his):
+  CEFR self-placement ("how likely is it one gets to be A2 when in A1" — it was
+  flattery, and the four-skill framing duplicated the weak list at a coarser
+  grain); the weekly commitment `2/3` (unlabelled, therefore unreadable);
+  N-levels ("we don't need levels lah" — `levelForXp` still names leaderboard
+  rows, it is off the profile); the `→ SHOP` chip (redundant); the progress
+  bars ("AND WHY ARE THE SPACE-OCCUPYING PROGRESS BARS BACK AGAIN??"); the
+  `DUE · WEAK` tags on re-drill tiles ("all we need the SIO number, title
+  word(s) and colored % (NOTHING ELSE!)"); full-width buttons.
+- **Two lists became one.** "Due for review" and "What is shaky" showed the
+  same outcome twice. `redrills()` is one queue carrying both reasons —
+  WEAK is accuracy under the tier floor, DUE is the SRS interval elapsed —
+  and they genuinely differ (SIO-019 at 77% is due; SIO-043 at 48% is not).
+- **The learner model is derived, not invented** (`src/lib/learnerModel.ts`,
+  learner-safe): coverage counts the spine's own `skill` field, so it is the
+  same per-outcome accuracy regrouped, not a second taxonomy; the next action
+  is a TEMPLATE filled from the SIO's `short` + `skill` (Dan: "template from
+  SIO data — no AI"), four phrasings covering all fifty; the goal stores only
+  `{ sio, by }` on `Progress`, because the fifty ARE the catalogue and the one
+  thing it cannot hold is which you are aiming at and by when.
+- **Full history is its own page** (`/moi/historique`, Dan asked for it during
+  the build): the answer log and the per-exercise fold, uncapped — the profile
+  caps at a screenful, completeness is the history page's whole point. Reached
+  from the footer beside DETAILS and EXPORT (EXPORT writes the outcome table as
+  a CSV, client-side, no endpoint).
+- **Bottom bar = the five families minus User** (`🎯 ✏️ 🎮 🔖 💪`, FAMILIES
+  order). This REVERSES the four-slot decision of 10 Aug recorded in nav.ts;
+  Dan asked for it explicitly and confirmed it here. Index lost its slot
+  ("Goals and Index to merge later on as one") but not its destination —
+  Practice points at `/activities`, which is the Index. verify19 was rewritten
+  to the new decision and now asserts the bar hand-keeps NO labels at all.
+- **Typography gotcha worth knowing.** `.cahier-page p { font-size: var(--fs-body) }`
+  is an element selector and outranks every Tailwind size utility, so a `<p>`
+  cannot be small. Mono labels are `<span className="block">`; only real prose
+  stays a `<p>`, where body size is what it should have been anyway. The header
+  name takes `--fs-h2` from the scale rather than the h1 default.
+- **Superseded checks, rewritten not deleted:** verify26 §3 (the patch-26 hero
+  and segments are asserted GONE, its outcome fold and heat-strip still
+  asserted present), verify27 (two file references moved to the new modules),
+  verify19 §3 (the bar).
+- **Dan still has to decide:** what consumes an ILLS note. It stores and reads
+  (`src/lib/blockers.ts`, device-local, three a week) and NOTHING acts on it —
+  which makes it a diary, and Dan named the two ways it earns its place:
+  push its SIO into the queue regardless of schedule, or land on the teacher's
+  dashboard before class. Until one is chosen the row is honest but inert.
+- **Also not done:** FRILLS is honestly empty — nothing in the app stores
+  recordings or drafts yet, so the three slots name what they will hold rather
+  than invent a count. The `‹ PROFILE` link and the ⌛ top-bar icon both point
+  at /moi, so on the profile ⌛ is still a door to itself (noted in the design
+  chat, not fixed here).
+- **Pre-existing, unrelated, observed while shooting:** `.cahier-bottombar`
+  declares `display:flex` at class specificity, which beats `sm:hidden` in the
+  cascade — the phone bar is visible at desktop widths too. Untouched by this
+  patch (BottomBar.tsx and globals.css are unchanged); worth a look on its own.
 
 ---
 

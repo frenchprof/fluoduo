@@ -3,7 +3,7 @@
 /**
  * NumBus — one game: hear French numbers, type digits before time runs out.
  * Setup picks bus range (0–99), optional times, prices, and phones (FR/SG).
- * Speech is slow by default; ⏸ pause and 🔊/🐢 repeat are always available.
+ * Speech is slow by default; ⏸ pause and 🔊/🐌 repeat are always available.
  */
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
@@ -461,7 +461,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
     after(speechMs(text, rate) + GRACE_MS, open);
   }, [after]);
 
-  /** Replay without freezing an open countdown — for 🔊/🐢/⏸ mid-round. */
+  /** Replay without freezing an open countdown — for 🔊/🐌/⏸ mid-round. */
   const repeatSay = useCallback((text: string, rate = DEFAULT_RATE) => {
     setTalking(true);
     setSpeechPaused(false);
@@ -730,7 +730,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
   const help = (
     <>
       <ol className="list-inside list-decimal space-y-2">
-        <li>Listen to the French number — it speaks <b>slowly</b>. ⏸ pauses, 🔊 repeats, 🐢 even slower.</li>
+        <li>Listen to the French number — it speaks <b>slowly</b>. ⏸ pauses, 🔊 repeats, 🐌 even slower.</li>
         <li>Type the answer in <b>digits</b> once the bar starts — the clock waits until the speech finishes.</li>
         <li>A full answer sends itself; ✓ sends a short one.</li>
         <li>Clear ten rounds. Miss three and it&rsquo;s the terminus.</li>
@@ -879,7 +879,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           title={speechPaused ? "Resume" : "Pause"}
           className="rounded-2xl border-2 border-b-4 border-violet-300 bg-violet-100 py-2.5 text-xl font-black text-violet-800 sm:py-3 transition hover:bg-violet-50 active:translate-y-[2px] active:border-b-2 disabled:opacity-40"
         >
-          {speechPaused ? "▶️" : "⏸"}
+          {speechPaused ? "▶" : "⏸"}
         </button>
         <button
           type="button"
@@ -888,7 +888,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           title="Repeat slowly"
           className="rounded-2xl border-2 border-b-4 border-amber-300 bg-amber-100 py-2.5 text-xl font-black text-amber-900 sm:py-3 transition hover:bg-amber-50 active:translate-y-[2px] active:border-b-2 disabled:opacity-40"
         >
-          🐢
+          🐌
         </button>
       </div>
 

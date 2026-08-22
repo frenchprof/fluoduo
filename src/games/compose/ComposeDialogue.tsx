@@ -340,7 +340,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
       score={messages.filter((m) => m.who === "me").length > 0 ? <>{messages.filter((m) => m.who === "me").length} ✎</> : undefined}
       help={help}
       menu={[
-        { label: "🔁 Restart", onClick: start },
+        { label: "Restart", onClick: start },
         { label: "▶️ Listen to the dialogue", onClick: playAll },
       ]}
       record={record}
@@ -393,7 +393,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
             onClick={() => { setUnavailable(false); start(); }}
             className="mt-4 rounded-xl border-2 border-[color:var(--dlg-strong)] bg-white px-4 py-2 font-black text-[color:var(--dlg-deep)] transition hover:bg-[var(--dlg-persona-bg)]"
           >
-            🔁 Retry
+            Retry
           </button>
         </div>
       ) : done ? (

@@ -23,7 +23,7 @@ What this asserts (static, over source):
      scene.ts (the Make's catalogue, labels intact), the arch + finishing
      line (ARENA_PLACE).
   3  Semantics: KIND_COLOR[sioKind()], sioSecondary() dot, done ✓ / current
-     ▶ / to-come dashed, 🚩 on CLASS_FLAG_SIO, `short` labels, onOpenSio,
+     🧑‍🎓 / to-come dashed, 🚩 on CLASS_FLAG_SIO, `short` labels, onOpenSio,
      onOpenUnit, 🏁 FINAL link, the avatar over the current stop; the road
      paved → dotted at the class flag, travelled stretch in the accent.
   4  Sky: getSkyColors over SKY_KF keyframes, sun/moon, clouds, stars, the
@@ -115,7 +115,13 @@ check("BuildingSprite" in m3 and "PropSprite" in m3 and "NatureSprite" in m3, "b
 check("sioKind(" in m3 and "sioSecondary(" in m3 and "KIND_COLOR[" in m3, "ring = KIND_COLOR[sioKind()], dot = sioSecondary()", "kind colours not from sioKind()/sioSecondary()")
 # Round 9 (Dan): solid coloured buttons, the capture's register — the state
 # signal moved from a dashed ring to a lightened face on the to-come stops.
-check("isSioDone(" in m3 and '"✓"' in m3 and "▶" in m3 and f"55%, {'${PAPER}'}" in m3, "done ✓ · current ▶ · to-come the same colour lightened", "stop states missing")
+# 2026-08-21: the current stop's inner ▶ is gone — the 🧑‍🎓 bobbing over it
+# already says "you are here", and the triangle now means sound everywhere.
+check("isSioDone(" in m3 and '"✓"' in m3 and "🧑‍🎓" in m3 and "home-map-bob" in m3 and f"55%, {'${PAPER}'}" in m3,
+      "done ✓ · current = the bobbing 🧑‍🎓 · to-come the same colour lightened", "stop states missing")
+check('{active ? "▶"' not in m3,
+      "the current stop no longer doubles its mark with a ▶ inside",
+      "the stop carries a ▶ as well as the 🧑‍🎓 — one thing, two marks")
 check("st.short" in m3, "stops labelled with `short`", "labels not `short`")
 check("onOpenSio?.(" in m3 and "onOpenUnit?.(" in m3, "stops open their SIO, gate signs open their unit", "onOpenSio/onOpenUnit not wired")
 check('href="/practice/grammarathon/finale"' in m3 and "🏁" in m3, "🏁 FINAL links to the GramMarathon final", "no FINAL link")

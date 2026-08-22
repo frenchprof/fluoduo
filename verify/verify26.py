@@ -65,7 +65,10 @@ if not os.path.isfile("package.json"):
 F = {
     "rows": "src/lib/outcomeRows.ts",
     "strip": "src/components/HeatStrip.tsx",
-    "moi": "src/app/moi/MoiContent.tsx",
+    # Was src/app/moi/MoiContent.tsx. The 2026-08-22 profile merge replaced it
+    # with ONE component serving both /moi and /profil; patch 26's outcome-row
+    # fold and heat-strip survive inside it, and are still checked below.
+    "moi": "src/components/ProfileContent.tsx",
     "index": "src/app/activities/page.tsx",
     "now": "src/app/teacher/ClassNow.tsx",
     "page": "src/app/teacher/page.tsx",
@@ -109,24 +112,30 @@ mounts = [k for k in ("moi", "students", "now", "index") if "<HeatStrip" in code
 check(len(mounts) == 4, f"heat-strip mounted on four pages: {', '.join(F[k] for k in mounts)}",
       f"heat-strip mounted on {len(mounts)} pages: {mounts}")
 
-# ── 3 · /moi ─────────────────────────────────────────────────────────────
+# ── 3 · the profile page ─────────────────────────────────────────────────
+# SUPERSEDED IN PART (2026-08-22). Patch 26 built /moi as a thin stat-strip
+# hero + four segments (Fix · Exercises · History · Journey), every list capped
+# at five. Dan's profile design replaced that whole surface: the hero became a
+# course header, the segments became five collapsible rows, and the two tables
+# moved to /moi/historique where completeness beats a cap. What patch 26
+# CONTRIBUTED and what therefore still has to hold is the outcome fold and the
+# heat-strip — those are checked here; the new page's own shape is verify30.
 m = code["moi"]
-check('className="moi-hero' in m and 'aria-label="Your progress"' in m, "/moi has the stat-strip hero", "no .moi-hero section")
-hero = m[m.find('className="moi-hero'):m.find("</section>")]
-n_bar, n_role = hero.count("h-[3px]"), hero.count('role="progressbar"')
-check(n_bar == 2 and n_role == 2, "hero: two 3px hairlines with progressbar roles",
-      f"hero hairlines: {n_bar} h-[3px] / {n_role} progressbar")
-check("text-2xl" not in hero and "<h1" not in hero and "<h2" not in hero, "no heading prose in the hero", "the hero grew a heading")
-check(len(re.findall(r'\{ key: "\w+", label: "[^"]+" \}', m[m.find("const SEGMENTS"):m.find("] as const")])) == 4,
-      "four segments", "SEGMENTS is not four entries")
-check("const TABS" not in m and "Where I lose marks" not in m, "the six-tab list is gone", "the old six tabs are still there")
-check('aria-pressed={on}' in m and "moi-segments" in m, "segments are a pressed-button group", "segments lack aria-pressed")
-check("const CAP = 5;" in m and "function Capped" in m and m.count("<Capped") >= 3,
-      "every list goes through Capped (CAP = 5)", "lists are not capped at 5")
-check("outcomeRows(" in m and "function OutcomeCard" in m and "<OutcomeCard" in m,
-      "hardest items are outcome rows with items nested", "/moi does not render outcome rows")
-check("HUES" not in m, "no rotating hue on /moi", "HUES is back on /moi")
-check("hrefFor={indexHref}" in m, "/moi's strip cells open the Index row", "the /moi strip does not link to the Index")
+check("moi-hero" not in m and 'role="progressbar"' not in m,
+      "the patch-26 stat-strip hero is gone (superseded 2026-08-22)",
+      "the .moi-hero hairlines came back — the profile design removed them")
+check("const SEGMENTS" not in m and "Where I lose marks" not in m,
+      "the segment control is gone (five collapsible rows now)",
+      "the old segment control is still there")
+check("outcomeAccuracy(" in m, "the profile folds answers through outcomeAccuracy",
+      "the profile no longer folds answers into outcomes")
+check("HUES" not in m, "no rotating hue on the profile", "HUES is back on the profile")
+check("hrefFor={indexHref}" in m, "the strip's cells open the Index row", "the strip does not link to the Index")
+# The capped lists moved rather than vanished — the full log is its own page.
+hist = read("src/app/moi/historique/HistoryContent.tsx")
+check("SortableTable" in hist and "EVERY ANSWER" in hist,
+      "the answer log lives on /moi/historique, uncapped",
+      "the full answer history has no home since the segments went")
 
 # ── 4 · Index ────────────────────────────────────────────────────────────
 ix = code["index"]

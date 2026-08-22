@@ -35,8 +35,12 @@ What this asserts (the height itself is a screenshot's job):
   3  The marks are a horizontal row: a <dl> of value-over-label cells,
      each labelled, all sharing one line (the list itself never wraps —
      on a phone the actions drop below it instead).
-  4  The actions (Continue, DéjàRevu, Help) live INSIDE the hero card,
-     grouped — the button-grouping rule.
+  4  One glyph, one job (2026-08-21). No ▶ anywhere in HomeDashboard and
+     no 🔁: the triangle means "a voice is about to speak" everywhere else
+     in the app. The three round actions — › Continue · 🔖 Review · ▦ Menu
+     — share ONE five-cell row with the two marks (Dan: the big CTA "was
+     occupying so much space"), and › is the single "this leaves the page"
+     mark, shared with the Map postcard.
   5  Every progress counter survives (litmus: learner feedback stays).
 
 Run from the repo root:  python3 verify/verify25.py
@@ -108,18 +112,46 @@ check("MARKS" in home and "flex-wrap" not in dl_cls and "flex-1" in home,
       "every mark shares one row — the marks list never wraps",
       "the row of marks can wrap — a report card's row stays a row")
 
-# 3 · actions grouped in the card, side by side
+# 3 · one glyph, one job (2026-08-21)
+#
+# The round ▶ and 🔁 that used to sit in the card are gone. ▶ said "continue
+# the course" on Home and "a voice is about to speak" in every drill; 🔁 said
+# "go to /reviser" here and "listen again" in ÉcouTexte — and the bottom bar's
+# Review tab was already the same link to the same page. Transport glyphs now
+# mean sound and nothing else; leaving a page is a word plus ›.
 sec_start = home.find("<section")
 sec_end = home.find("</section>", sec_start)
 hero = home[sec_start:sec_end]
-check('aria-label="Continue"' in hero and 'aria-label="DéjàRevu"' in hero,
-      "Continue and DéjàRevu live inside the hero card they act on",
-      "the hero's actions float outside the card (button-grouping rule)")
-cont = hero.find('aria-label="Continue"')
-revu = hero.find('aria-label="DéjàRevu"')
-check(cont >= 0 and revu >= 0 and "</div>" not in "" and abs(revu - cont) < 1400,
-      "the two actions are paired, not scattered",
-      "the two actions are far apart in the card")
+# Scoped to HomeDashboard on purpose. The Map postcard below the hero still
+# draws its CURRENT-STOP pin as ▶ (HomeMap, patch 25: "▶ current") — a map
+# pin, not a control, and Dan's own 17 Aug spec. Flagged, not silently
+# changed: whether the pin becomes 📍 is his call, not this rule's.
+check("▶" not in home,
+      "no ▶ control in HomeDashboard — the triangle belongs to sound",
+      "a ▶ is back on Home; it reads as 'a voice will speak', not 'go'")
+check("🔁" not in hero,
+      "no 🔁 in the hero — the Review tab carries that destination",
+      "the hero's 🔁 is back, duplicating the Review tab and ÉcouTexte's 'again'")
+cont = home.find('aria-label="Continue"')
+check(cont >= 0 and cont < sec_end,
+      "Continue is a round button in the hero row, beside the marks",
+      "Continue left the hero row")
+# Dan, 2026-08-21: "I am not fond of having a huge CONTINUER button occupying
+# so much space… reduce it back to the round button alongside the two stats in
+# the same row." The full-width CTA that briefly stood under the card is a
+# CI failure now, not a matter of taste.
+check("fluo-btn-lg" not in home and 'className="fluo-btn' not in home,
+      "no full-width CTA under the card — the action is round, in the row",
+      "a full-width Continue bar is back under the hero (Dan: do not)")
+check("flex-[2]" in home and "flex-[3]" in home,
+      "ONE row of five equal cells — two marks + three actions",
+      "the marks and the actions no longer share one five-cell row")
+check('aria-label="Continue"' in home and 'aria-label="Menu"' in home and 'aria-label={dueCount > 0 ? `DéjàRevu' in home,
+      "each round action still SAYS what it is (aria-label + title), glyph aside",
+      "a round action lost its name — an icon button must carry its word")
+check(home.count("›") >= 2,
+      "› is the one 'this leaves the page' mark — Continue and the Map share it",
+      "the chevron is missing; navigation has no consistent mark")
 
 # 4 · the TWO essential marks (Dan, 2026-08-21, decluttering: "we only need
 # the essential ones — since all the rest can be derived"): course progress

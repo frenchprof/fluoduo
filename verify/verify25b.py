@@ -4,7 +4,7 @@ Patch 25, the rest — the Home path (2026-08-17).
 
 Dan's decision 1 (STATUS.md, 17 Aug): the Home map has TWO views, 2D and
 3D, the learner toggles. 2D = Design's "FluOlinGo Home standalone" (region
-bands, kind-coloured 56px stops, ▶ current, zoom %); 3D = the The Map
+bands, kind-coloured 56px stops, 🧑‍🎓 current, zoom %); 3D = the The Map
 treatment folded into Home. Plus the plan rows: `short` labels + build
 check, class flag + paved/unpaved road (fog deleted), /unit/N a deep link
 into Home, print stylesheet with a QR per unit.

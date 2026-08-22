@@ -313,7 +313,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
       help={screen === "quiz" ? ladder.help : null}
       secondary={
         screen === "end" && wrong.length > 0
-          ? { label: `🔁 Redo my mistakes (${[...new Set(wrong)].length})`, onClick: () => again(true) }
+          ? { label: `Redo my mistakes (${[...new Set(wrong)].length})`, onClick: () => again(true) }
           : null
       }
       feedback={

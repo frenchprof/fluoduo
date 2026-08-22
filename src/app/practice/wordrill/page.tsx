@@ -8,20 +8,30 @@
  * prefixes baked into fr (the synthetic deck has no letris columns to derive
  * them from) and duplicates removed. Item ids are preserved so every say
  * feeds the Reviser and XP exactly like the per-deck pages.
+ *
+ * The picker is content-sized (patch 31, from Dan's design handoff — "DO WE
+ * REALLY NEED SUCH MASSIVE BUTTONS ACROSS THE WIDTH???"): scopes are chips in
+ * a wrapping row, not full-width bars in a grid. Each chip carries the last
+ * words you were asked in that scope as coloured dots — see recentMarks().
  */
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import CahierShell from "@/components/CahierShell";
 import { siteTabs, tabsWithActive, UNIT_ACCENTS } from "@/components/siteTabs";
 import SayItContent from "@/app/practice/say-it/[collectionId]/SayItContent";
 import { CURATED } from "@/content/collections";
 import { UNIT_META } from "@/content/sios";
 import { practiceItems } from "@/lib/collections/display";
+import { loadProgress, type ItemSrs } from "@/lib/progress";
 import type { Collection, Item } from "@/lib/collections/schema";
 
 // Letters aren't sayable words — the recognizer can't grade "bé" — so the
 // alphabet deck sits this one out.
 const EXCLUDED = new Set(["alphabet"]);
 const UNITS = [0, 1, 2, 3, 4];
+
+/** How many past words a scope chip reports. Eight fits the chip at 390px. */
+const CHIP_DOTS = 8;
+const DAY = 86_400_000;
 
 function articleOf(deck: Collection, item: Item): string {
   const cols = deck.gameConfig?.letris?.columns ?? [];
@@ -30,6 +40,40 @@ function articleOf(deck: Collection, item: Item): string {
   const raw = cols.find((c) => c.key === tag.slice(4))?.prefix ?? "";
   return raw ? (raw.charAt(0).toLowerCase() + raw.slice(1)).trim() : "";
 }
+
+/**
+ * The last words you were asked in a scope, newest first.
+ *
+ * The design drew these dots as session history, which nothing stores — the
+ * activity ledger keeps {right, wrong} TALLIES per activity × outcome, not a
+ * sequence. `itemSrs` does carry it, implicitly: an answer sets
+ * `due = now + intervalDays`, so `due - intervalDays` is when the word was
+ * last answered, and `intervalDays` is how it went (0 = missed and reset,
+ * 1 = repaired but fragile, more = holding). That is the same "one definition
+ * of weak" the Reviser and /moi read (progress.ts isWeakSrs), so the dots
+ * cannot drift from the rest of the app.
+ *
+ * Words never asked have no srs entry and no dot — an empty chip is a scope
+ * you have not started, which is the honest thing for it to say.
+ */
+function recentMarks(items: Item[], srs: Record<string, ItemSrs>): ("ok" | "shaky" | "bad")[] {
+  const seen: { at: number; interval: number }[] = [];
+  for (const it of items) {
+    const s = it.id ? srs[it.id] : undefined;
+    if (!s) continue;
+    seen.push({ at: s.due - s.intervalDays * DAY, interval: s.intervalDays });
+  }
+  return seen
+    .sort((a, b) => b.at - a.at)
+    .slice(0, CHIP_DOTS)
+    .map((s) => (s.interval === 0 ? "bad" : s.interval <= 1 ? "shaky" : "ok"));
+}
+
+const MARK_COLOR: Record<"ok" | "shaky" | "bad", string> = {
+  ok: "var(--tier-good)",
+  shaky: "var(--tier-medium)",
+  bad: "var(--tier-weak)",
+};
 
 function buildDrillDeck(unit: number | "all"): Collection {
   const seen = new Set<string>();
@@ -66,6 +110,17 @@ function buildDrillDeck(unit: number | "all"): Collection {
   } as Collection;
 }
 
+// itemSrs is localStorage, so it is read through a subscription rather than
+// an effect (useSyncExternalStore — patch 24's answer to the
+// set-state-in-effect rule). The server snapshot is -1: chips render without
+// dots until hydration, which is also the truth for a first-time visitor.
+let version = 0;
+function subscribeProgress(cb: () => void) {
+  const bump = () => { version += 1; cb(); };
+  window.addEventListener("fluolingo:progress-updated", bump);
+  return () => window.removeEventListener("fluolingo:progress-updated", bump);
+}
+
 export default function WorDrillPage() {
   // ONE stable deck object per scope — SayItContent reshuffles whenever its
   // deck identity changes, so these must not be rebuilt per render.
@@ -80,23 +135,53 @@ export default function WorDrillPage() {
   const [scope, setScope] = useState<number | "all" | null>(null);
   const deck = scope === null ? null : decks.get(scope)!;
 
+  const tick = useSyncExternalStore(subscribeProgress, () => version, () => -1);
+  const mounted = tick >= 0;
+
+  const marks = useMemo(() => {
+    const m = new Map<number | "all", ("ok" | "shaky" | "bad")[]>();
+    if (!mounted) return m;
+    const srs: Record<string, ItemSrs> = loadProgress().itemSrs;
+    for (const [k, d] of decks) m.set(k, recentMarks(d.items, srs));
+    return m;
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- tick IS the dependency: it names the external state
+  }, [decks, mounted, tick]);
+
+  const chipDots = (key: number | "all") => {
+    const list = marks.get(key) ?? [];
+    if (list.length === 0) return null;
+    return (
+      <span className="flex shrink-0 items-center gap-[2px]" aria-hidden>
+        {list.map((m, i) => (
+          <span
+            key={i}
+            className="block h-1 w-1 rounded-full"
+            style={{ background: MARK_COLOR[m] }}
+          />
+        ))}
+      </span>
+    );
+  };
+
   return (
     <CahierShell tabs={tabsWithActive(siteTabs(), "wordrill")} active="wordrill">
       {deck === null ? (
         // Landing: pick the scope. Tout first, then the five units, each
-        // wearing its accent and word count.
-        <div className="mx-auto max-w-2xl px-4 pb-6 pt-2">
+        // wearing its accent, its recent marks and its word count — all three
+        // sized to their content so the row wraps instead of striping the page.
+        <div className="cahier-foolscap mx-auto max-w-2xl px-4 pb-6 pt-2">
           <h1 className="cahier-display cahier-hand text-3xl font-normal text-[color:var(--cahier-ink)]">🎙️ WorDrill</h1>
-          <p className="mb-4 mt-1 text-sm text-[color:var(--cahier-ink-soft)]">Continuous oral practice — pick your ground.</p>
-          <button
-            type="button"
-            onClick={() => setScope("all")}
-            className="mb-3 flex w-full items-center justify-between rounded-xl border-2 border-[color:var(--cahier-ink)] bg-[color:var(--cahier-hl,#eaff00)] px-4 py-3 text-left font-black text-[color:var(--cahier-ink)] shadow-[3px_3px_0_var(--cahier-ink)] transition hover:-translate-y-0.5"
-          >
-            <span>🌍 Unités 0–4</span>
-            <span className="fluo-mono text-sm">{decks.get("all")!.items.length} words</span>
-          </button>
-          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+          <p className="mb-4 mt-1 text-sm text-[color:var(--cahier-ink-soft)]">Say the French out loud — pick your ground.</p>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setScope("all")}
+              className="cahier-btn cahier-btn-accent flex items-center gap-2"
+            >
+              <span className="whitespace-nowrap font-black">🌍 Tout</span>
+              {chipDots("all")}
+              <span className="fluo-mono shrink-0 text-xs font-bold">{decks.get("all")!.items.length}</span>
+            </button>
             {UNITS.map((u) => {
               const meta = UNIT_META[u] ?? { label: `Unité ${u}`, subtitle: "", emoji: "📚" };
               const n = decks.get(u)!.items.length;
@@ -105,32 +190,29 @@ export default function WorDrillPage() {
                   key={u}
                   type="button"
                   onClick={() => setScope(u)}
-                  className="flex items-center justify-between rounded-xl border-2 bg-white px-4 py-3 text-left font-black text-[color:var(--cahier-ink)] shadow-[3px_3px_0_rgba(0,0,0,0.15)] transition hover:-translate-y-0.5"
-                  style={{ borderColor: UNIT_ACCENTS[u] }}
+                  title={meta.subtitle}
+                  className="cahier-btn flex items-center gap-2 bg-white"
+                  style={{ borderColor: UNIT_ACCENTS[u], boxShadow: `0 2px 0 0 ${UNIT_ACCENTS[u]}` }}
                 >
-                  <span>
+                  <span className="whitespace-nowrap font-black">
                     {meta.emoji} {meta.label}
-                    {meta.subtitle && <span lang="fr" className="ml-1.5 hidden text-sm font-bold text-[color:var(--cahier-ink-soft)] sm:inline">{meta.subtitle}</span>}
                   </span>
-                  <span className="fluo-mono shrink-0 pl-2 text-sm" style={{ color: UNIT_ACCENTS[u] }}>{n} words</span>
+                  {chipDots(u)}
+                  <span className="fluo-mono shrink-0 text-xs font-bold" style={{ color: UNIT_ACCENTS[u] }}>{n}</span>
                 </button>
               );
             })}
           </div>
         </div>
       ) : (
-        <>
-          <div className="mx-auto flex max-w-2xl items-center gap-3 px-4 pt-4">
-            <button type="button" onClick={() => setScope(null)} className="fluo-btn fluo-btn-sm fluo-btn-ghost">
-              ← Units
-            </button>
-            <h1 className="cahier-display text-xl font-black text-[color:var(--cahier-ink)]">
-              🎙️ {deck.title} <span className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">· {deck.items.length} words</span>
-            </h1>
-          </div>
-          {/* key: switching scope must reset the run, not resume the old one */}
-          <SayItContent key={deck.id} collectionId={deck.id} deckOverride={deck} embedded />
-        </>
+        <SayItContent
+          key={deck.id}
+          collectionId={deck.id}
+          deckOverride={deck}
+          embedded
+          variant="wordrill"
+          onExit={() => setScope(null)}
+        />
       )}
     </CahierShell>
   );
