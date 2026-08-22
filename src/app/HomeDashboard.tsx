@@ -3,8 +3,9 @@
 /**
  * The Home page body (Dan, 2026-07-05: "a true blue Home page… all of the 50
  * SIOs on a single learning path visually — an overview of where you are in
- * the learning journey"). Hero: Bienvenue, two marks and the ▦ Menu button;
- * « Continue › » is the worded CTA under the card and the Map postcard sits
+ * the learning journey"). Hero: Bienvenue over ONE strip that unifies the
+ * two marks with the three worded actions — Rewind · Play · Menu (Dan,
+ * 2026-08-22); the Map postcard, matted and inert, sits
  * below it (2026-08-21 — the round ▶ and 🔁 went with the one-glyph-one-job
  * rule). The COURSE MAP moved to its own
  * page, /map (Dan, 2026-08-21: a finger scrolling the page kept catching
@@ -12,7 +13,7 @@
  * `/?unit=N#SIO-0XX` deep links so printed QR codes and bookmarks survive.
  */
 import Link from "next/link";
-import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import MenuSplash from "@/components/MenuSplash";
 import HomeMap from "@/components/HomeMap";
 import { SIOS } from "@/content/sios";
@@ -212,30 +213,22 @@ export default function HomeDashboard() {
           </svg>
           </div>
 
-          {/* ▦ Menu — the ONE action left in the card (2026-08-21). It sits in
-              the greeting's dead space rather than owning a row of its own:
-              the round ▶ and 🔁 that used to flank it are gone. */}
-          <button
-            type="button"
-            onClick={() => setQgOpen(true)}
-            aria-label="Menu"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 text-xs font-black shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
-            style={{ background: "var(--fluo-ink)", borderColor: "var(--fluo-ink)", color: "var(--cahier-hl)" }}
-            title="Menu — every activity, one tap away"
-          >
-            <span aria-hidden>▦</span>
-          </button>
         </div>
 
-        {/* The row of marks — marks ONLY since 2026-08-21: the three round
-            actions that shared this strip are gone (▶ and 🔁 to the rule that
-            transport glyphs mean sound, ▦ up into the greeting), so the row
-            is what its name says. A report card's row stays a row. */}
+        {/* ONE strip: the two marks AND the three actions (Dan, 2026-08-22:
+            "the two stats and three buttons in a more unified manner"). The
+            full-width « Continue › » below the card is gone — its job moved
+            into « Play » here — and ▦ left the greeting for the same strip.
+            The three actions are WORDS (the glyph rule stands: ▶/🔁 belong
+            to sound):
+              Rewind — repeat your errors (/reviser)
+              Play   — the current stop on the study path (the old Continue)
+              Menu   — every other activity, one tap away */}
         <div
-          className="flex items-stretch border-t-2 px-3 py-2"
+          className="flex flex-wrap items-stretch gap-x-2 gap-y-1.5 border-t-2 px-3 py-2"
           style={{ borderColor: "var(--fluo-ink)", background: "var(--cahier-paper-raised)" }}
         >
-          <dl className="flex min-w-0 flex-1 items-stretch">
+          <dl className="flex min-w-0 flex-1 basis-40 items-stretch">
             {MARKS.map((m, i) => (
               <div
                 key={m.label}
@@ -254,28 +247,42 @@ export default function HomeDashboard() {
             ))}
           </dl>
 
+          {/* The trio share one border, one height, one type size — a single
+              family (round 12's cohesion rule), told apart by fill alone. */}
+          <div className="flex shrink-0 items-center gap-1.5" role="group" aria-label="Actions">
+            <Link
+              href="/reviser"
+              title="Rewind — repeat the words you missed"
+              className="fluo-mono flex h-9 items-center rounded-lg border-2 px-2.5 text-[11px] font-black shadow-[2px_2px_0_rgba(0,0,0,0.15)] transition hover:-translate-y-0.5 sm:px-3 sm:text-xs"
+              style={{ borderColor: "var(--fluo-ink)", background: "var(--cahier-paper)", color: "var(--fluo-ink)" }}
+            >
+              Rewind
+            </Link>
+            {activeSio && (
+              <Link
+                href={`/unit/${activeSio.unit}#${activeSio.id}`}
+                title={`Play — « ${activeSio.topic} », your stop on the study path`}
+                className="fluo-mono flex h-9 items-center rounded-lg border-2 px-2.5 text-[11px] font-black transition hover:-translate-y-0.5 sm:px-3 sm:text-xs"
+                /* Primary of the family: the house chartreuse, the learner's
+                   bought accent as its ledge so a cosmetic shows on Home. */
+                style={{ borderColor: "var(--fluo-ink)", background: "var(--cahier-hl)", color: "var(--fluo-ink)", boxShadow: `2px 2px 0 ${accent}` }}
+              >
+                Play
+              </Link>
+            )}
+            <button
+              type="button"
+              onClick={() => setQgOpen(true)}
+              title="Menu — every activity, one tap away"
+              className="fluo-mono flex h-9 items-center rounded-lg border-2 px-2.5 text-[11px] font-black shadow-[2px_2px_0_rgba(0,0,0,0.15)] transition hover:-translate-y-0.5 sm:px-3 sm:text-xs"
+              style={{ borderColor: "var(--fluo-ink)", background: "var(--fluo-ink)", color: "var(--cahier-hl)" }}
+            >
+              Menu
+            </button>
+          </div>
         </div>
         {qgOpen && <MenuSplash onClose={() => setQgOpen(false)} />}
       </section>
-
-      {/* CONTINUE — the one thing Home is for, as a word (2026-08-21). It says
-          where it goes, and the chevron is the app's single "this leaves the
-          page" mark: never ▶, which belongs to sound. */}
-      {activeSio && (
-        <Link
-          href={`/unit/${activeSio.unit}#${activeSio.id}`}
-          aria-label="Continue"
-          title={`Continue — « ${activeSio.topic} », the next objective after your latest 'done'.`}
-          className="fluo-btn fluo-btn-lg -mt-4 mb-3 w-full font-black"
-          /* The button is the house "Start" chartreuse; the learner's bought
-             accent stays visible as its ledge, so a cosmetic still shows on
-             Home. Setting the token (not box-shadow) keeps :active working. */
-          style={{ "--fluo-primary-shadow": accent } as CSSProperties}
-        >
-          Continue
-          <span aria-hidden className="fluo-mono text-xl leading-none">›</span>
-        </Link>
-      )}
 
       {/* Streak momentum (Dan, 2026-07-08, episode model): counts done-in-order
           from the start; a skip simply stops the run — never blocks. */}
@@ -295,8 +302,19 @@ export default function HomeDashboard() {
         className="relative mt-2 overflow-hidden rounded-2xl border-2 transition hover:-translate-y-0.5"
         style={{ borderColor: "var(--cahier-ink)", background: "var(--cahier-paper-raised)", boxShadow: "var(--shadow-card)" }}
       >
-        <div inert aria-hidden className="pointer-events-none select-none">
-          <HomeMap progress={progress} activeId={activeId} accent={accent} postcard />
+        {/* One more layer between the page and the picture (Dan, 2026-08-22):
+            the snapshot sits in a recessed mat, so it reads as a mounted
+            photo — a surface you scroll PAST, never a control. The mat plus
+            `inert` + pointer-events-none below mean no gesture over it can
+            ever catch: a finger going down the page glides over. */}
+        <div className="p-2 pb-0" aria-hidden>
+          <div
+            inert
+            className="pointer-events-none select-none overflow-hidden rounded-xl"
+            style={{ boxShadow: "inset 0 2px 8px rgba(0,0,0,0.18), inset 0 0 0 1.5px var(--cahier-line)" }}
+          >
+            <HomeMap progress={progress} activeId={activeId} accent={accent} postcard />
+          </div>
         </div>
         <span className="flex items-center gap-2 border-t-2 px-4 py-2.5" style={{ borderColor: "var(--cahier-ink)" }}>
           <span aria-hidden className="text-xl">🗺️</span>

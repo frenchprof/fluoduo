@@ -112,35 +112,38 @@ check("MARKS" in home and "flex-wrap" not in dl_cls and "flex-1" in home,
       "every mark shares one row — the marks list never wraps",
       "the row of marks can wrap — a report card's row stays a row")
 
-# 3 · one glyph, one job (2026-08-21)
-#
-# The round ▶ and 🔁 that used to sit in the card are gone. ▶ said "continue
-# the course" on Home and "a voice is about to speak" in every drill; 🔁 said
-# "go to /reviser" here and "listen again" in ÉcouTexte — and the bottom bar's
-# Review tab was already the same link to the same page. Transport glyphs now
-# mean sound and nothing else; leaving a page is a word plus ›.
+# 3 · one glyph, one job (2026-08-21) + the unified strip (Dan, 2026-08-22:
+# "the two stats and three buttons in a more unified manner ... Rewind
+# (Repeat errors), Play (stop on study path), Menu (to another activity)"
+# and "Remove the bulky Continue button that occupies entire width above the
+# map"). The three actions are WORDS, so the glyph rule stands untouched:
+# transport glyphs mean sound and nothing else.
 sec_start = home.find("<section")
 sec_end = home.find("</section>", sec_start)
 hero = home[sec_start:sec_end]
-# Scoped to HomeDashboard on purpose. The Map postcard below the hero still
-# draws its CURRENT-STOP pin as ▶ (HomeMap, patch 25: "▶ current") — a map
-# pin, not a control, and Dan's own 17 Aug spec. Flagged, not silently
-# changed: whether the pin becomes 📍 is his call, not this rule's.
+# Scoped to HomeDashboard on purpose. The Map postcard below the hero draws
+# its CURRENT-STOP pin from HomeMap — a map pin, not a control.
 check("▶" not in home,
       "no ▶ control in HomeDashboard — the triangle belongs to sound",
       "a ▶ is back on Home; it reads as 'a voice will speak', not 'go'")
 check("🔁" not in hero,
       "no 🔁 in the hero — the Review tab carries that destination",
       "the hero's 🔁 is back, duplicating the Review tab and ÉcouTexte's 'again'")
-check('aria-label="Continue"' in home and ">\n          Continue" in home,
-      "Continue is a WORD, not a glyph",
-      "Continue lost its label — a navigation control has to say where it goes")
-cont = home.find('aria-label="Continue"')
-check(cont > sec_end,
-      "Continue is the full-width button under the card, as in Dan's Home mock",
-      "Continue is back inside the marks row")
-check(home.count("›") >= 2,
-      "› is the one 'this leaves the page' mark — Continue and the Map share it",
+for word, where in ((">\n              Rewind", "/reviser"), (">\n                Play", "the current stop"), (">\n              Menu", "the Menu splash")):
+    check(word in hero,
+          f"« {word.strip()} » is a WORD button in the hero strip (→ {where})",
+          f"« {word.strip()} » left the unified strip — Dan's 22 Aug trio is broken")
+check('href="/reviser"' in hero,
+      "Rewind points at /reviser — repeat your errors",
+      "Rewind lost its /reviser destination")
+check("activeSio.unit}#${activeSio.id}" in hero,
+      "Play continues the course at the current stop (old Continue's job)",
+      "Play no longer opens the current stop")
+check('aria-label="Continue"' not in home and "fluo-btn-lg" not in home,
+      "the full-width Continue below the card is gone (Dan, 2026-08-22)",
+      "the bulky Continue button is back above the map")
+check(home.count("›") >= 1,
+      "› stays the one 'this leaves the page' mark (the Map card)",
       "the chevron is missing; navigation has no consistent mark")
 
 # 4 · the TWO essential marks (Dan, 2026-08-21, decluttering: "we only need

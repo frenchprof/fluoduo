@@ -34,6 +34,13 @@ export default function MapBody() {
   const [openUnit, setOpenUnit] = useState<number | null>(null);
   const [openSioId, setOpenSioId] = useState<string | null>(null);
   const mapRef = useRef<HTMLDivElement | null>(null);
+  // The map behind one more layer (Dan, 2026-08-22: "embedded in one more
+  // layer to prevent scrolling on it accidentally when going down the page").
+  // Until the learner taps the sheet, the map is a picture: pointer-events
+  // off underneath, so a finger (or wheel) travelling down the page glides
+  // over — the 3D camera and the 2D zoom can only catch AFTER the tap says
+  // "I mean the map". Same contract as an embedded street map.
+  const [engaged, setEngaged] = useState(false);
 
   useEffect(() => {
     const refresh = () => setProgress(loadProgress());
@@ -120,11 +127,35 @@ export default function MapBody() {
           ))}
         </div>
       </div>
-      {mapView === "3d" ? (
-        <HomeMap3D progress={progress} activeId={activeId} accent={accent} focusUnit={openUnit ?? undefined} onOpenUnit={showUnit} onOpenSio={openSio} />
-      ) : (
-        <HomeMap progress={progress} activeId={activeId} accent={accent} focusUnit={openUnit ?? undefined} onOpenUnit={showUnit} onOpenSio={openSio} />
-      )}
+      <div className="relative">
+        <div className={engaged ? undefined : "pointer-events-none select-none"} {...(engaged ? {} : { inert: true })}>
+          {mapView === "3d" ? (
+            <HomeMap3D progress={progress} activeId={activeId} accent={accent} focusUnit={openUnit ?? undefined} onOpenUnit={showUnit} onOpenSio={openSio} />
+          ) : (
+            <HomeMap progress={progress} activeId={activeId} accent={accent} focusUnit={openUnit ?? undefined} onOpenUnit={showUnit} onOpenSio={openSio} />
+          )}
+        </div>
+        {!engaged && (
+          <button
+            type="button"
+            onClick={() => setEngaged(true)}
+            className="absolute inset-0 z-10 flex cursor-pointer items-end justify-center rounded-2xl pb-4"
+            aria-label="Tap to use the map"
+            /* Transparent glass over the picture: it eats the tap that means
+               "wake the map" and nothing else — wheel and touch-drag on it
+               scroll the PAGE, because the glass itself has nothing to
+               scroll. */
+            style={{ background: "transparent", touchAction: "pan-y" }}
+          >
+            <span
+              className="fluo-mono pointer-events-none rounded-full border-2 px-3 py-1.5 text-[11px] font-black shadow-[2px_2px_0_rgba(0,0,0,0.18)]"
+              style={{ borderColor: "var(--cahier-ink)", background: "var(--cahier-paper)", color: "var(--cahier-ink)" }}
+            >
+              Tap to use the map
+            </span>
+          </button>
+        )}
+      </div>
 
       {/* The unit's SIO list, inline under the map — opens from a region
           pill, a stop, or the deep link. */}

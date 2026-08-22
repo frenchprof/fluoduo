@@ -39,8 +39,6 @@ import { getLetrisSet } from "@/games/letris/sets";
 import { composeBankForDeck } from "@/games/compose/banks";
 import FirstTour from "@/components/FirstTour";
 import AccountButton from "@/components/AccountButton";
-import SearchOverlay from "@/components/SearchOverlay";
-import RankingOverlay from "@/components/RankingOverlay";
 import SoundControl from "@/components/SoundControl";
 import { isPlayableGap } from "@/lib/collections/gapSentence";
 import { activity } from "@/content/activities";
@@ -155,8 +153,6 @@ export default function CahierShell({
     document.addEventListener("pointerdown", close, true);
     return () => document.removeEventListener("pointerdown", close, true);
   }, [menuOpen]);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [rankingOpen, setRankingOpen] = useState(false);
   // The Quick Guide no longer pops up by default (Dan, 2026-07-14) — it
   // opens from the inverted QuickGuide button right after the ❓ flap.
   const [quickGuideOpen, setQuickGuideOpen] = useState(false);
@@ -291,27 +287,10 @@ export default function CahierShell({
                 {active !== "home" && <>← </>}<span className="cahier-hl">FluOlinGo</span>
               </Link>
               <div className="cahier-topbar flex shrink-0 items-center gap-1 sm:gap-2">
-                {/* Icon strip, macOS-menu-bar style (Dan, 2026-07-08): 🔍 opens
-                    the floating search, 🏆 floats the ranking, 🏠 goes home —
-                    icons only, no words. */}
-                <button
-                  type="button"
-                  aria-label="Search a word"
-                  title="Search a word"
-                  onClick={() => setSearchOpen(true)}
-                  className="cahier-btn cahier-btn-sm"
-                >
-                  🔍
-                </button>
-                <button
-                  type="button"
-                  aria-label="Leaderboard"
-                  title="Leaderboard"
-                  onClick={() => setRankingOpen(true)}
-                  className="cahier-btn cahier-btn-sm"
-                >
-                  🏆
-                </button>
+                {/* Icon strip, macOS-menu-bar style (Dan, 2026-07-08) — icons
+                    only, no words. 🔍 and 🏆 left the bar (Dan, 2026-08-22):
+                    word search lives in the Index's own box, the ranking on
+                    /leaderboard. */}
                 <SoundControl />
                 {/* 🏠 yields below sm — the ← FluOlinGo link is the home
                     door there, and it was pushing the ☰ off a phone screen
@@ -435,8 +414,6 @@ export default function CahierShell({
             <span aria-hidden>⤢</span>
           </button>
         )}
-        {searchOpen && <SearchOverlay onClose={() => setSearchOpen(false)} />}
-        {rankingOpen && <RankingOverlay onClose={() => setRankingOpen(false)} />}
         {quickGuideOpen && <MenuSplash onClose={() => setQuickGuideOpen(false)} />}
         <nav className="cahier-tabs" aria-label="Pages">
           {/* TOP tier: Unités only (Dan, 2026-07-15) — Home's doors are the
