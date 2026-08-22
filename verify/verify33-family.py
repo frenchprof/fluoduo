@@ -102,9 +102,27 @@ ok('background: "var(--fam-ink)", color: "var(--cahier-paper)"' in band,
 ok(re.search(r"\.fam-none\s*\{", css) is not None,
    "a colourless family exists — a stack where every row is coloured has no hierarchy",
    "fam-none is gone; nothing can be deliberately neutral")
-users = [p for p in ["src/app/reviser/page.tsx"] if "SectionBand" in open(p, encoding="utf-8").read()]
-ok(bool(users), f"the band is in use ({len(users)} surface)",
-   "nothing uses SectionBand — it would be dead code")
+users = [p for p in ["src/app/reviser/page.tsx", "src/components/LeaderboardList.tsx"]
+         if os.path.isfile(p) and "SectionBand" in open(p, encoding="utf-8").read()]
+ok(len(users) >= 2, f"the band is in use ({len(users)} surfaces)",
+   "SectionBand has fallen out of use — it would be dead code")
+
+# ── every page wears its family, from one place ───────────────────────────
+shell = open("src/components/CahierShell.tsx", encoding="utf-8").read()
+ok("familyOf(active)" in shell,
+   "the shell derives each page's family from its own active key",
+   "the shell no longer colours pages — 50 routes go back to undivided paper")
+ok('var(--fam-wash' in shell,
+   "the sticky header takes the family's field",
+   "the header lost its family band")
+acts = open("src/content/activities.ts", encoding="utf-8").read()
+ok("export function familyOf" in acts,
+   "familyOf() is the single mapping from page to family",
+   "familyOf() is gone — pages would each have to declare a hue")
+css_all = open("src/app/globals.css", encoding="utf-8").read()
+ok("--fam-ink, transparent" in css_all,
+   "an unmapped page stays uncoloured rather than borrowing a family",
+   "an unmapped page would inherit somebody else's colour")
 
 print("\n".join("  ok    " + m for m in PASS))
 if FAIL: print("\n".join("  FAIL  " + m for m in FAIL))

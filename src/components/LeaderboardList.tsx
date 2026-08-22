@@ -15,6 +15,7 @@ import { ALIAS_BOARD_NAMES, ALIAS_CANON_NAMES, EXCLUDED_BOARD_UIDS, boardName } 
 import { isCurrentTerm } from "@/lib/term";
 import { weekKey } from "@/lib/dayKey";
 import RankBadge from "@/components/RankBadge";
+import SectionBand from "@/components/SectionBand";
 
 type BoardRow = {
   uid: string;
@@ -211,28 +212,30 @@ export default function LeaderboardList() {
         ))}
       </div>
 
+      {/* Two colour-coded zones, not two headings (SectionBand): the board
+          reads as "you" and "everyone", and you can find yourself without
+          reading a word. */}
       {view === "week" && myIndex >= 0 && (
-        <div className="rounded-xl border-[1.5px] border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-raised)] p-3">
-          <p className="text-[10px] font-extrabold uppercase tracking-[0.11em] text-[color:var(--cahier-ink-soft)]">
-            Around you
-          </p>
-          <ol className="mt-2 space-y-1.5">
-            {neighbours.map((r) => row(r, inPlay.indexOf(r)))}
-          </ol>
+        <SectionBand
+          family="user"
+          label="AROUND YOU"
+          pill={ahead > 0 ? `${ahead.toLocaleString()} XP to go` : "top of your group"}
+        >
+          <ol className="space-y-1.5">{neighbours.map((r) => row(r, inPlay.indexOf(r)))}</ol>
           {ahead > 0 && (
             <p className="mt-2 text-[12px] text-[color:var(--cahier-ink-soft)]">
-              {ahead.toLocaleString()} XP to {medal(myIndex - 1)}.
+              That is about {Math.max(1, Math.round(ahead / 180))} exercise
+              {Math.round(ahead / 180) === 1 ? "" : "s"}.
             </p>
           )}
-        </div>
+        </SectionBand>
       )}
 
-      <div>
-        {view === "week" && (
-          <p className="mb-2 text-[10px] font-extrabold uppercase tracking-[0.11em] text-[color:var(--cahier-ink-soft)]">
-            Leading
-          </p>
-        )}
+      <SectionBand
+        family={view === "week" ? "svplay" : "none"}
+        label={view === "week" ? "LEADING THIS WEEK" : "ALL TERM"}
+        pill={inPlay.length ? `${inPlay.length}` : undefined}
+      >
         {inPlay.length === 0 ? (
           <p className="text-sm text-[color:var(--cahier-ink-soft)]">
             Nobody has practised yet this week — first one on the board sets the pace.
@@ -240,7 +243,7 @@ export default function LeaderboardList() {
         ) : (
           <ol className="space-y-1.5">{inPlay.slice(0, 50).map((r, i) => row(r, i))}</ol>
         )}
-      </div>
+      </SectionBand>
 
       {view === "week" && (
         <p className="text-center text-[11px] text-[color:var(--cahier-ink-faint)]">

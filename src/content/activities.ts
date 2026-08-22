@@ -145,3 +145,33 @@ export function navigableActivities(): Activity[] {
     (a, b) => order.indexOf(a.family) - order.indexOf(b.family),
   );
 }
+
+/** Site keys that are not activities but still belong somewhere. */
+const SITE_FAMILY: Record<string, FamilyKey> = {
+  home: "goals", activities: "goals", index: "goals", guide: "goals", quickguide: "goals",
+  map: "goals", carte: "goals", unit: "goals", sio: "goals", lessons: "goals", decks: "goals",
+  pretests: "practice", practice: "practice",
+  games: "svplay",
+  reviser: "review",
+  moi: "user", leaderboard: "user", profil: "user", reglages: "user", teacher: "user",
+  conjugaison: "skills", tts: "skills", tutor: "skills", wordrill: "skills",
+  ecoutexte: "skills", compose: "skills",
+};
+
+/**
+ * The family a page belongs to — the input to its colour.
+ *
+ * Every page already knows its `active` key; this turns that into one of the
+ * six families so the shell can paint it without 50 pages each declaring a
+ * hue. Unknown keys return null and the page stays uncoloured, which is the
+ * right default: a page with no home should not borrow one.
+ */
+export function familyOf(activeKey: string | undefined): FamilyKey | null {
+  if (!activeKey) return null;
+  const a = activity(activeKey);
+  if (a) return a.family;
+  if (SITE_FAMILY[activeKey]) return SITE_FAMILY[activeKey];
+  // deck/unit sub-pages arrive as "unit-3", "deck-aliments", …
+  const stem = activeKey.split("-")[0];
+  return SITE_FAMILY[stem] ?? null;
+}

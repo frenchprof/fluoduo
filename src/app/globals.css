@@ -1272,6 +1272,10 @@ h3.cahier-display { font-size: var(--fs-h3); }
   background-position: 0 0;
 }
 .cahier-page { background-color: var(--cahier-paper); }
+/* The family spine — a 6px edge down the page's left gutter, just inside the
+   binding. It is the page's "where am I", and it is the cheapest possible
+   version: one border, no layout, no per-page markup. */
+.cahier-page[class*="fam-"] { border-left: 6px solid var(--fam-ink, transparent); }
 
 /* Accuracy tiers, finally doing the job the rotating hue was pretending to do.
    Deliberately distinct from --cahier-accent so "this is a link" never reads

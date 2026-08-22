@@ -43,7 +43,7 @@ import SearchOverlay from "@/components/SearchOverlay";
 import RankingOverlay from "@/components/RankingOverlay";
 import SoundControl from "@/components/SoundControl";
 import { isPlayableGap } from "@/lib/collections/gapSentence";
-import { activity } from "@/content/activities";
+import { activity, familyOf } from "@/content/activities";
 import { toPracticeSet } from "@/lib/practice/engine";
 import BottomBar from "@/components/BottomBar";
 
@@ -275,12 +275,23 @@ export default function CahierShell({
   const page = (
         <main
           ref={(el) => { if (!nested) outerRef.current = el; }}
-          className={`cahier-page ${nested ? "min-h-[calc(100vh-18px)]" : "min-h-screen"}`}
+          /* EVERY page wears its family's colour, from one place (Dan,
+             2026-08-21: "I WANT COLOR"). familyOf() turns the page's own
+             `active` key into one of the six, so a route does not have to
+             declare a hue — and the whole site stops being one undivided
+             field of paper. Unknown keys stay uncoloured on purpose. */
+          className={`cahier-page fam-${familyOf(active) ?? "none"} ${nested ? "min-h-[calc(100vh-18px)]" : "min-h-screen"}`}
         >
           {!nested && <div className="cahier-binding" aria-hidden />}
           {!nested && edgeGrip}
 
-          <div className="sticky top-0 z-10 border-b-2 border-[color:var(--cahier-ink)]/15 bg-[color:var(--cahier-paper)]/90 backdrop-blur">
+          {/* The family band: the header field is the family's wash and the
+              page carries its spine. Both are tokens, so switching family
+              switches the page and nothing else moves. */}
+          <div
+            className="sticky top-0 z-10 border-b-2 border-[color:var(--cahier-ink)]/15 backdrop-blur"
+            style={{ background: "var(--fam-wash, var(--cahier-paper))" }}
+          >
             {/* py-2 + tighter left inset (Dan, 2026-08-21): the wordmark hugs
                 the page's top-left corner — just clear of the spiral binding
                 (38px), no further. */}
