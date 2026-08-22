@@ -52,6 +52,8 @@ Only ONE agent edits this file at a time; say so in your commit.
 | 30 | **The profile is ONE learner model** (22 Aug, from Dan's Claude Design handoff): /moi and /profil are the same page — pinned goal → one next action → five collapsible rows `RE-DRILLS · SKILLS · FRILLS (showcase) · ILLS (problems noted) · THRILLS (rewards)`. The economy is the last row; the bottom bar became the five families | verify30-profile (26) |
 | glyphs | **One glyph, one job** (21 Aug): ▶ ⏸ ⏹ 🔁 🐌 mean SOUND and nothing else; leaving a page is a word + ›. Home's round ▶/🔁 gone (▶ also said "continue the course"; 🔁 pointed at /reviser, which the Review tab already did) → « Continue › » is a full-width `.fluo-btn` under the card, La Carte's ▶ → ›, the due badge moved to the Review tab, ▦ Menu moved into the greeting. Say It had TWO ⏹ on screen at once (mic vs end-session) and WorDrill's "Done!" had THREE 🔁 → session controls are words: Back · Skip · End here · Restart · DéjàRevu ›. Review's mark 🔁 → **🔖** (Dan's pick over 👀, which the Carte cliffhanger and « Regardez ! » already use) — one registry edit carries tab + Menu tile + rail flap. Same sweep through SpecuLearn, Compose, ConjugaZone; NumBus 🐢 → 🐌 and ▶️ → ▶. The MAP's current-stop pin ▶ → **🧑‍🎓** in both views (the 3D already bobbed one; it also stamped a ▶ inside the stop — dropped), legend now « 🧑‍🎓 you ». ONE named exception: **▶ Jouer** on the four game galleries stays — play-a-game is the literal sense, it always carries its label, and it never shares a screen with a player. Verified against the BUILT app at 390px, not the diff | verify25 (22) |
 
+| 31 | **WorDrill redesigned** (22 Aug, from Dan's Claude Design handoff): content-sized scope chips with itemSrs-derived dots, EN/FR prompt switch, session map, a mic-reading level meter, the help ladder on 🔤, a done screen that hands its misses to the Reviser. The handoff's **sprint clock was assessed and dropped on Dan's word**; ConjugaZone (1d) is a separate patch | verify31-wordrill (30) |
+
 Shipped ≈ 147 of ~150 in-scope units.
 
 ## What is left
@@ -138,6 +140,88 @@ Dan's email; Firestore service-account key — being retired.
 - Peers builds, `main` is the sole push path; every patch = verify script + screenshot,
   and CI runs every `verify/*.py` on every push.
 - Dan's litmus test (AGENTS.md). Grammar guard-rails (no imperative outside SIO-008).
+
+---
+
+## Patch 31 — WorDrill redesigned (22 Aug, from Dan's design handoff)
+
+Branch `claude/wordrill-redesign`, check = `verify/verify31-wordrill.py` (30).
+Whole suite green: 21 scripts, 0 failures. Build + typecheck clean.
+
+- **The sprint clock was assessed, not built** — Dan asked for the assessment
+  first and then said "ignore sprint". Two reasons it did not survive review:
+  it reversed his own 2026-07-03 decision that a run is a working queue with a
+  natural end ("there should be a natural end rather than looping
+  continuously"), and its core interaction was never prototyped — `SayItContent`
+  opens a fresh `SpeechRecognition` per word (`continuous = false`), so a
+  60-second sprint means ~20 recognizer restarts and the restart latency could
+  eat a large share of the clock. The design's own answer to that was
+  always-listening continuous mode, which the design chat confirms was never
+  built. **If the sprint comes back, prototype continuous recognition first.**
+  Everything the clock implied went with it: the duration dropdown, the ring
+  round the mic, the countdown, "en 60 secondes", "Encore 60 s".
+- **The drill did NOT move to DrillShell.** Artboard 1b draws its own ✕, score
+  and footer inside the cahier sheet — a second copy of DrillShell's bar, which
+  is exactly the duplication that shell exists to prevent. But DrillShell is
+  `h-dvh` and Dan asked to keep the site chrome with the drill inside it, so
+  the two cannot both hold as drawn. WorDrill stays in `CahierShell` and draws
+  its own bar; the honest fix is a non-fullscreen DrillShell variant, which is
+  a shell change and belongs to its own patch. **Left open.**
+- **`variant="wordrill"`, not a new meaning for `embedded`.** SioModal's popup
+  is embedded too and must keep the popup look; overloading the flag would have
+  restyled a surface nobody reviewed.
+- **WorDrill is on the help ladder now.** It was gated `enabled: !embedded`, so
+  the drill Dan uses most had no rungs and recorded through `recordItemResult`
+  directly. It now takes the `useHelpLadder` path like the standalone page,
+  which means hinted and revealed words finally reach ReVue from here. 🔤
+  carries the three rungs (hint · skeleton · answer) rather than a separate `?`
+  — note this makes WorDrill the one drill whose ladder is not in the shell
+  bar. Dan to say whether the others should follow or WorDrill should conform.
+- **The meter reads the microphone.** The design drew CSS keyframes: bars that
+  wiggle on a timer whenever the recognizer is open, identically whether the
+  learner is speaking or silent — and it dropped the interim transcript, the
+  one real proof the recognizer heard words. Both were reversed:
+  `SpeechMeter.tsx` opens a parallel `getUserMedia` stream and draws a rolling
+  RMS history (flat means flat, and it says nothing at all if the stream is
+  refused), and the transcript stays. Sampled at ~30fps, stream released the
+  moment the turn ends.
+- **Back survives.** The design's footer was Skip + End here only. `back()`
+  exists because Dan asked for it (2026-07-16, "the back button is not active
+  when I skip questions") and carries real retrace logic for skipped cards.
+- **The chip dots are derived, not invented.** The design drew them as "the
+  last words you were asked there", which nothing stores — the activity ledger
+  keeps `{right, wrong}` tallies, not sequences. `itemSrs` carries it
+  implicitly: an answer sets `due = now + intervalDays`, so `due - intervalDays`
+  is when the word was last answered and `intervalDays` is how it went. Same
+  "one definition of weak" the Reviser and /moi read, so the dots cannot drift.
+- **The session map is capped at 40.** The design drew 30 dots for a 30-word
+  run; WorDrill's widest scope is 612, where 612 dots is a wall. The window
+  slides so the newest mark is always the last filled dot.
+- **WHY is off the WorDrill tray** — Dan's call. He was offered pronunciation,
+  grading tolerance (the only one buildable today: `silentEq` already knows why
+  a homophone passed) and gender, and chose to drop it. Note this is a
+  deliberate exception to AGENTS.md's litmus clause, which mandates a WHY
+  affordance on answered questions; the other drills keep theirs.
+- **Verb squares are not built.** The design marked verbs as squares in the
+  session map via `i % 4 === 1` — decorative fiction. WorDrill pools deck items
+  and there is no reliable join from a pooled item to the conjugaison `VERBS`
+  inventory, so the map is dots only.
+- **Not done / found on the way:**
+  - ConjugaZone (artboard 1d) — a separate page and its own patch. The
+    handoff's `verbs.js` (the newer copy in Dan's zip, which assigns `être` to
+    Unit 0 and `lire`/`écrire` to Unit 2, leaving `incomplete: 2`) is NOT in
+    the repo yet.
+  - **`.cahier-mono` is undefined.** It is used in ~10 components
+    (ProfileContent ×25, DrillShell, GameBar, HeatStrip, HomeMap, MenuSplash…)
+    and appears in no stylesheet, so every one of them silently falls back to
+    the body font where a typewriter face was intended. `.fluo-mono` is the
+    real class. Pre-existing and unrelated to this patch — left alone because
+    fixing it changes the look of eight screens nobody asked me to touch.
+  - SioModal's Say It popup still carries the "Say in French:" kicker, "Tap to
+    speak" and the keyboard legend — all litmus-test casualties on the WorDrill
+    side. That surface was not in the handoff; verify31 scopes its prose checks
+    to the WorDrill branch rather than pretending the popup was cleaned.
+  - No screenshots: the mic path needs a real device and a signed-in build.
 
 ---
 
