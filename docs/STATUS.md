@@ -33,6 +33,19 @@ Only ONE agent edits this file at a time; say so in your commit.
   guarded to frenchprof/fluoduo — it 404'd on dckg where Pages is off).
   Still red everywhere: claude-review (ANTHROPIC_API_KEY/billing — Dan).
 
+- **22 Aug (this session): the colour + retention programme is MERGED TO `main`
+  and awaiting deploy.** `main` = `2a729fb`. Contains: the seven `--dopa-*`
+  roles + three accessibility fixes; the `--gram-*` gender mapping (98 sites,
+  7 masc / 6 fem / 85 that were never gender); the top-bar overflow fix (at
+  320px only 4 of 6 icons were reachable); the retention build (PWA manifest +
+  install prompt, eight reward moments on a size ladder, floating +XP, session
+  receipts, weekly leaderboard); and the `--fam-*` family axis, which colours
+  all 50 routes from `CahierShell` alone. **`/moi` and `/profil` are exempt by
+  design** — they carry their own five-row colour scheme and `familyOf()`
+  returns null for them, so they render exactly as Dan's handoff left them.
+  Five new verify suites in CI (31 topbar · 32 retention · 33 family · 34
+  dopamine, plus main's 30 profile). **NOT YET DEPLOYED — see below.**
+
 ## Programme — done
 
 | Patch | What | Check |
@@ -56,6 +69,23 @@ Only ONE agent edits this file at a time; say so in your commit.
 | 32 | **ÉcouTexte redesigned** (22 Aug, from Dan's Claude Design handoff — two directions drawn, Dan: "merge"): the SHEET is the spine (every sentence on screen and typeable) and the sentence you are on is ELEVATED, not exclusive — a card with larger type, its own 🔊, a verdict, and Check / Show the sentence; tapping any row moves the focus. Player under the header: **five controls, one row, no words on them** — ⏯ (one transport button; Dan: "WHY THE HELL DO I NEED AN ADDITIONAL PAUSE BUTTON"), 🐇🐌 speed, ♀♂ voice (active half in ink, other faded), a blanks button that alternates ▬ ▬ ▬ / ▬▬▬▬ and drives the real blanks (solid when sized to each word, dotted when equal), and Length as a number picker. Clarity moved OUT of the buttons: captions, a hint line naming whatever you hover/focus, title+aria-label on every control. **A fully-right sentence confirms itself; a wrong one stays silent** until the learner asks. Topic is a dropdown grouped by unit, one entry per SITUATION, wired to the generators' scenario ids (`FreshOpts.scenarioId`) so "Directions" really gives an itinerary — units 1–2 listed but DISABLED, no generator written yet. **Two glyphs sit outside the 21 Aug registry on purpose (⏯, 🐇) — the handoff overrides it here.** Verified against the BUILT app at 390px | build + eslint clean |
 
 Shipped ≈ 149 of ~150 in-scope units.
+
+## Deploy — the one command left
+
+`main` on `frenchprof/fluoduo` is at `2a729fb`, built and green. Production is
+a DIFFERENT repo (`dckg/fluo`, remote `live`), which this session cannot reach:
+cross-owner repos cannot be added to a session that already has `frenchprof`
+sources. So the last step is Dan's, from a checkout with the `live` remote:
+
+```sh
+git fetch origin && git checkout main && git pull origin main
+git push live main          # Cloudflare Pages (fluolingo-dot-com) builds it
+```
+
+Validated before the merge: `next build` succeeds · `tsc` clean · eslint 115
+errors in 51 files (DOWN from the 118/52 baseline — main's own work removed
+three) · verify19b 11/11 · 29 22/22 · 30-profile 26/26 · 31 13/13 · 32 39/39 ·
+33 34/34 · 34 33/33.
 
 ## What is left
 
