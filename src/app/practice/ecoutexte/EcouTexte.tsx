@@ -5,16 +5,40 @@
  * scaffold them in their listening… they should be allowed to replay, pause,
  * and reveal the entire sentences").
  *
- * Audio comes first: the text is generated hidden, one blank per letter, and
+ * Audio comes first: the text is generated hidden, one blank per word, and
  * the learner listens as many times as they want before revealing anything.
  * The blanks are TYPEABLE (Dan, 2026-07-28) — a word-shaped box per word, so
  * listening can be answered in writing and marked, rather than only revealed.
- * Reading the sentence stays the reward, one 👁 away.
  *
  * The generator never repeats a sentence: every sentence played is logged
  * (lib/textgen/heard) and the next draw rejects any text that would replay
  * one. When a unit's combinations are genuinely spent the page says so and
  * offers to clear the log rather than quietly repeating.
+ *
+ * ── The 22 Aug redesign (Dan's Claude Design handoff, direction 1c) ────────
+ * Two directions were drawn — a dictation sheet with every sentence in view,
+ * and a one-sentence-at-a-time card — and Dan asked for them merged. So the
+ * SHEET is the spine: every sentence stays on screen and stays typeable. The
+ * sentence you are on is ELEVATED, not exclusive — it opens into a card with
+ * larger type, its own 🔊, a verdict, and the two decisions about it. Tapping
+ * any row moves the focus; nothing is ever locked away.
+ *
+ * What else the handoff settled, in Dan's words:
+ *   · ONE transport button. "WHY THE HELL DO I NEED AN ADDITIONAL PAUSE
+ *     BUTTON" — ⏯ plays, pauses and resumes, at a fixed width so it never
+ *     changes shape. This and 🐇 are the two glyphs outside the 21 Aug
+ *     registry; the handoff overrides it here on purpose.
+ *   · NO WORDS IN THE CONTROLS. Clarity moved outside the buttons: a caption
+ *     over the ones that need one, a hint line that names whatever you hover
+ *     or focus, and title/aria-label on every control.
+ *   · Speed is one 🐇🐌 button and voice is one ♀♂ button — the active half
+ *     in full ink, the other faded. Same pattern, twice.
+ *   · The blanks button alternates ▬ ▬ ▬ (a blank per word, sized to it) and
+ *     ▬▬▬▬ (all the same), and the real blanks follow it: solid when sized,
+ *     dotted when equal.
+ *   · Length is a plain number picker, not five buttons.
+ *   · A sentence that is fully right CONFIRMS ITSELF; a wrong one stays
+ *     silent until the learner asks (Check / Show the sentence).
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -48,15 +72,25 @@ function words(fr: string): Word[] {
   });
 }
 
+/** Wide enough for the word, or all the same — the blanks button's two states. */
+function boxWidth(core: string, sized: boolean, big: boolean): string {
+  if (!sized) return big ? "7.5rem" : "6.5rem";
+  const em = core.length * (big ? 0.78 : 0.72) + (big ? 1.2 : 0.9);
+  return `${Math.max(big ? 3.2 : 2.6, em)}rem`;
+}
+
 export default function EcouTexte({
   gen,
   accent,
+  scenarioId,
   header,
   shell = false,
 }: {
   gen: UnitTextGen;
   accent: string;
-  /** The page's unit picker, rendered inside the shell body (shell mode). */
+  /** Which of the unit's scenarios the topic picker chose; undefined draws any. */
+  scenarioId?: string;
+  /** The page's topic picker, rendered inside the shell body (shell mode). */
   header?: ReactNode;
   /** Full-screen DrillShell chrome (patch 20–21). */
   shell?: boolean;
@@ -74,6 +108,14 @@ export default function EcouTexte({
    *  learner hears more than one speaker across sessions. */
   const [voice, setVoice] = useState<"f" | "m">("f");
   const gender = voice === "m" ? ("m" as const) : undefined;
+  /** 🐇🐌 — a standing choice now, not a second "listen slowly" button. */
+  const [slow, setSlow] = useState(false);
+  /** The blanks button: a box per word sized to it, or all the same. */
+  const [sized, setSized] = useState(true);
+  /** Which sentence is open. The others stay on screen and stay typeable. */
+  const [at, setAt] = useState(0);
+  /** What the hint line says — whatever control the pointer or focus is on. */
+  const [hint, setHint] = useState("");
   /** What the learner has written, and how it was marked — per sentence, per word. */
   const [written, setWritten] = useState<string[][]>([]);
   const [marks, setMarks] = useState<(Grade | null)[][]>([]);
@@ -96,17 +138,18 @@ export default function EcouTexte({
       stopRef.current?.();
       setPlaying(false);
       setPaused(false);
-      const { text: next, fresh } = generateUnheard(gen, { sentences: n, heard: heard() });
+      const { text: next, fresh } = generateUnheard(gen, { sentences: n, heard: heard(), scenarioId });
       setText(next);
       setExhausted(!fresh);
       setRevealed(next.sentences.map(() => false));
       setWritten(next.sentences.map((s) => words(s.fr).map(() => "")));
       setMarks(next.sentences.map((s) => words(s.fr).map(() => null)));
       setShowEn(false);
+      setAt(0);
       loggedRef.current = false;
       return next;
     },
-    [gen, heard],
+    [gen, heard, scenarioId],
   );
 
   useEffect(() => () => stopRef.current?.(), []);
@@ -120,9 +163,9 @@ export default function EcouTexte({
     saveHeard(gen.unit, set);
   }
 
-  /** `who` is passed explicitly when switching voice mid-text: the state set in
-   *  the same handler is not visible to this closure yet. */
-  function playAll(slow: boolean, who: "f" | "m" = voice) {
+  /** `who` and `rate` are passed explicitly when a control changes them in the
+   *  same handler: the state set there is not visible to this closure yet. */
+  function playAll(who: "f" | "m" = voice, isSlow = slow) {
     // First tap draws as well as plays — one button, no empty state to explain.
     const t = text ?? draw(count);
     logHeard(t);
@@ -132,26 +175,31 @@ export default function EcouTexte({
     stopRef.current = speakSequence(
       t.sentences.map((s) => ({ text: s.fr, gender: who === "m" ? ("m" as const) : undefined })),
       "fr-FR",
-      { rate: slow ? SLOW_RATE : undefined, gapMs: GAP_MS, onDone: () => setPlaying(false) },
+      { rate: isSlow ? SLOW_RATE : undefined, gapMs: GAP_MS, onDone: () => setPlaying(false) },
     );
   }
 
-  function playOne(fr: string, slow = false) {
+  /** ⏯ — one button for the whole transport. Dan, 22 Aug: no second button. */
+  function toggleListen() {
+    if (playing && !paused) {
+      pauseSpeech();
+      setPaused(true);
+      return;
+    }
+    if (playing && paused) {
+      resumeSpeech();
+      setPaused(false);
+      return;
+    }
+    playAll();
+  }
+
+  function playOne(fr: string) {
     if (text) logHeard(text);
     stopRef.current?.();
     setPlaying(false);
     setPaused(false);
     speak(fr, "fr-FR", { rate: slow ? SLOW_RATE : undefined, analytic: "sentence", gender });
-  }
-
-  function togglePause() {
-    if (paused) {
-      resumeSpeech();
-      setPaused(false);
-    } else {
-      pauseSpeech();
-      setPaused(true);
-    }
   }
 
   // Revealing spends the text too: read once is met once, and meeting it
@@ -167,18 +215,15 @@ export default function EcouTexte({
     setRevealed((r) => r.map(() => true));
   }
 
-  /** Writing an answer spends the text as surely as hearing or reading it. */
-  function write(i: number, j: number, value: string) {
-    if (text) logHeard(text);
-    setWritten((w) => w.map((row, k) => (k === i ? row.map((v, l) => (l === j ? value : v)) : row)));
-    setMarks((m) => m.map((row, k) => (k === i ? row.map((v, l) => (l === j ? null : v)) : row)));
-  }
-
-  /** Mark one sentence word by word. An unwritten box stays unmarked rather
-   *  than counting as wrong — a blank left alone is not an attempt. Every
-   *  graded word also feeds the evidence trail, tagged per-unit so it's
-   *  distinguishable from every other embedded activity. */
-  function check(i: number) {
+  /**
+   * Mark one sentence word by word, against the row passed in — the auto-check
+   * grades the keystroke that has not reached state yet, so the row is an
+   * argument rather than read back from `written`. An unwritten box stays
+   * unmarked rather than counting as wrong: a blank left alone is not an
+   * attempt. Every graded word also feeds the evidence trail, tagged per-unit
+   * so it's distinguishable from every other embedded activity.
+   */
+  function markWith(i: number, row: string[]) {
     if (!text) return;
     const expect = words(text.sentences[i].fr);
     const activity = `ecoutexte:unite-${gen.unit}`;
@@ -189,16 +234,38 @@ export default function EcouTexte({
     // sheet, not a one-item drill, so the ladder's ? control does not fit.)
     const wasRevealed = !!revealed[i];
     const queued: string[] = [];
-    const row = (marks[i] ?? []).map((v, l) => {
-      const typed = written[i]?.[l]?.trim();
+    const graded = (marks[i] ?? []).map((v, l) => {
+      const typed = row[l]?.trim();
       if (!typed) return v;
-      const g = gradeAnswer(written[i][l], expect[l].core);
-      recordItemResult(expect[l].core, g !== "wrong", written[i][l], activity, wasRevealed ? { revealed: true } : undefined);
+      const g = gradeAnswer(row[l], expect[l].core);
+      recordItemResult(expect[l].core, g !== "wrong", row[l], activity, wasRevealed ? { revealed: true } : undefined);
       if (wasRevealed) queued.push(expect[l].core);
       return g;
     });
     if (queued.length) queueForReview(queued);
-    setMarks((m) => m.map((r, k) => (k === i ? row : r)));
+    setMarks((m) => m.map((r, k) => (k === i ? graded : r)));
+  }
+
+  function check(i: number) {
+    markWith(i, written[i] ?? []);
+  }
+
+  /** Writing an answer spends the text as surely as hearing or reading it.
+   *
+   *  Dan, 22 Aug: "auto-checks as you finish, meaning if it is correct, it
+   *  immediately tells you so, but if it is wrong, then it doesn't respond and
+   *  waits for learner to click check/reveal/hint". So the moment every box in
+   *  a sentence has something in it we grade it silently; all-right marks
+   *  itself and the row turns green, anything wrong says nothing at all. */
+  function write(i: number, j: number, value: string) {
+    if (text) logHeard(text);
+    const row = (written[i] ?? []).map((v, l) => (l === j ? value : v));
+    setWritten((w) => w.map((r, k) => (k === i ? row : r)));
+    setMarks((m) => m.map((r, k) => (k === i ? r.map((v, l) => (l === j ? null : v)) : r)));
+    if (!text) return;
+    const expect = words(text.sentences[i].fr);
+    const full = expect.every((_, l) => (row[l] ?? "").trim().length > 0);
+    if (full && expect.every((w, l) => gradeAnswer(row[l], w.core) !== "wrong")) markWith(i, row);
   }
 
   function resetHeard() {
@@ -207,164 +274,304 @@ export default function EcouTexte({
     draw(count);
   }
 
+  const sentences = text?.sentences ?? [];
+  /** Done = the sentence is right, or the learner asked to see it. Listening
+   *  alone is not progress; the scaffold's point is what you do with it. */
+  const solvedAt = (i: number) => {
+    if (revealed[i]) return true;
+    const row = marks[i] ?? [];
+    return row.length > 0 && row.every((m) => m !== null && m !== "wrong");
+  };
+  const worked = sentences.filter((_, i) => solvedAt(i)).length;
   const allRevealed = revealed.length > 0 && revealed.every(Boolean);
-  // A sentence is "worked" once it is revealed or carries any mark — that is
-  // what the shell's progress bar counts. Listening alone is not progress;
-  // the scaffold's point is what the learner does with what they heard.
-  const worked = (text?.sentences ?? []).filter(
-    (_, i) => revealed[i] || (marks[i] ?? []).some((m) => m !== null),
-  ).length;
+  const last = at >= sentences.length - 1;
+
+  const hintLine =
+    hint || (playing && !paused ? "Playing — press ⏯ to pause." : "⏯ play · 🐇🐌 speed · ♀♂ who reads");
+
+  /** Hover/focus copy for a control, so the buttons themselves stay wordless. */
+  const hints = {
+    play: () => (playing && !paused ? "Pause" : playing ? "Carry on from where it stopped" : "Listen to the whole text"),
+    speed: () => (slow ? "Reading at half speed — tap for normal" : "Reading at normal speed — tap for half"),
+    voice: () => (voice === "f" ? "A woman is reading — tap for a man" : "A man is reading — tap for a woman"),
+    blanks: () =>
+      sized ? "Each blank is as long as its word — tap for equal blanks" : "All blanks are the same length — tap to size them to each word",
+  };
+  const say = (k: keyof typeof hints) => ({
+    onMouseEnter: () => setHint(hints[k]()),
+    onMouseLeave: () => setHint(""),
+    onFocus: () => setHint(hints[k]()),
+    onBlur: () => setHint(""),
+  });
+
+  const ctrl =
+    "flex h-11 shrink-0 items-center justify-center gap-0.5 rounded-xl border-2 transition hover:brightness-[0.97]";
+  const ctrlStyle = { borderColor: "var(--cahier-ink)", background: "var(--cahier-paper-raised)" };
 
   const body = (
     <div className="space-y-3">
-      {header}
-      {/* How many sentences. */}
-      <div className="flex flex-wrap items-center gap-1.5">
-        {LENGTHS.map((n) => (
-          <button
-            key={n}
-            type="button"
-            onClick={() => {
-              setCount(n);
-              draw(n);
-            }}
-            className={`fluo-btn fluo-btn-sm ${count === n ? "" : "fluo-btn-ghost"}`}
-            style={count === n ? { background: accent, color: "#fff", boxShadow: `0 4px 0 0 ${accent}99` } : undefined}
-            aria-pressed={count === n}
-          >
-            {n}
-          </button>
-        ))}
-        {!shell && (
-          <button type="button" onClick={() => draw(count)} className="fluo-btn fluo-btn-sm fluo-btn-secondary ml-auto">
-            🎲 Another
-          </button>
-        )}
+      {/* The wordmark block — Dan, 22 Aug: "something like this at the top left". */}
+      <div className="flex items-center gap-2.5">
+        <span
+          aria-hidden
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-lg"
+          style={{ background: `linear-gradient(${accent}, color-mix(in oklab, ${accent} 78%, #000))`, boxShadow: `0 1px 2px ${accent}55` }}
+        >
+          🎧
+        </span>
+        <span className="flex min-w-0 flex-col">
+          <span className="cahier-hand text-2xl leading-none" style={{ color: accent }}>
+            ÉcouTexte
+          </span>
+          <span className="text-xs text-[color:var(--cahier-ink-soft)]">Listen, then write what you hear</span>
+        </span>
       </div>
 
-      {/* Playback. */}
+      {header}
+
+      {/* The player: five controls, one row, no words on them. */}
       <div
-        className="flex flex-wrap items-center gap-2 rounded-2xl border-2 px-3 py-3"
-        style={{ borderColor: accent, background: "var(--fluo-card-tint)" }}
+        className="space-y-2.5 rounded-2xl border-2 p-3"
+        style={{ borderColor: "var(--cahier-rule)", background: "var(--cahier-paper-raised)" }}
       >
-        <button type="button" onClick={() => playAll(false)} className="fluo-btn">
-          {playing ? "🔁 Listen again" : "🎧 Listen"}
-        </button>
-        <button type="button" onClick={() => playAll(true)} title="Listen slowly" className="fluo-btn fluo-btn-sm">
-          🐌
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            const next = voice === "f" ? "m" : "f";
-            setVoice(next);
-            // Switching while it reads restarts in the new voice — the button
-            // demonstrates itself instead of describing itself.
-            if (playing) playAll(false, next);
-          }}
-          title={voice === "m" ? "Male voice — tap for the female voice" : "Female voice — tap for the male voice"}
-          aria-label={voice === "m" ? "Male voice" : "Female voice"}
-          className="fluo-btn fluo-btn-sm"
-        >
-          {voice === "m" ? "👨" : "👩"}
-        </button>
-        <button
-          type="button"
-          onClick={togglePause}
-          disabled={!playing}
-          title={paused ? "Resume" : "Pause"}
-          className="fluo-btn fluo-btn-sm"
-        >
-          {paused ? "▶" : "⏸"}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={toggleListen}
+            {...say("play")}
+            title={playing && !paused ? "Pause" : "Listen"}
+            aria-label={playing && !paused ? "Pause" : "Listen"}
+            className={`${ctrl} w-16 text-2xl`}
+            style={{ borderColor: "var(--cahier-hl-edge)", background: "var(--cahier-hl)", boxShadow: "0 3px 0 0 var(--cahier-hl-edge)" }}
+          >
+            ⏯
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              const next = !slow;
+              setSlow(next);
+              setHint(next ? "Reading at half speed — tap for normal" : "Reading at normal speed — tap for half");
+              if (playing) playAll(voice, next);
+            }}
+            {...say("speed")}
+            title={slow ? "Half speed — tap for normal speed" : "Normal speed — tap for half speed"}
+            aria-label={slow ? "Half speed" : "Normal speed"}
+            className={`${ctrl} w-16`}
+            style={ctrlStyle}
+          >
+            <span className="text-lg" style={{ opacity: slow ? 0.3 : 1 }} aria-hidden>🐇</span>
+            <span className="text-lg" style={{ opacity: slow ? 1 : 0.3 }} aria-hidden>🐌</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              const next = voice === "f" ? "m" : "f";
+              setVoice(next);
+              setHint(next === "f" ? "A woman is reading — tap for a man" : "A man is reading — tap for a woman");
+              // Switching while it reads restarts in the new voice — the button
+              // demonstrates itself instead of describing itself.
+              if (playing) playAll(next, slow);
+            }}
+            {...say("voice")}
+            title={voice === "m" ? "Male voice — tap for the female voice" : "Female voice — tap for the male voice"}
+            aria-label={voice === "m" ? "Male voice" : "Female voice"}
+            className={`${ctrl} w-14`}
+            style={ctrlStyle}
+          >
+            <span className="text-lg font-bold" style={{ color: voice === "f" ? "var(--cahier-ink)" : "var(--cahier-rule)" }} aria-hidden>♀</span>
+            <span className="text-lg font-bold" style={{ color: voice === "m" ? "var(--cahier-ink)" : "var(--cahier-rule)" }} aria-hidden>♂</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setSized((v) => !v);
+              setHint(!sized ? "Each blank is as long as its word — tap for equal blanks" : "All blanks are the same length — tap to size them to each word");
+            }}
+            {...say("blanks")}
+            aria-pressed={sized}
+            title={sized ? "Blanks sized to each word — tap for equal blanks" : "Equal blanks — tap to size them to each word"}
+            aria-label={sized ? "Blanks sized to each word" : "Equal blanks"}
+            className={`${ctrl} w-14`}
+            style={{ ...ctrlStyle, background: sized ? "var(--cahier-hl)" : "var(--cahier-paper-raised)" }}
+          >
+            {/* Three short bars, or one long one — the button draws the difference. */}
+            <span className="flex items-center" style={{ gap: sized ? 3 : 0 }} aria-hidden>
+              <span className="block border-t-[3px] border-[color:var(--cahier-ink)]" style={{ width: sized ? 10 : 34 }} />
+              <span className="block border-t-[3px] border-[color:var(--cahier-ink)]" style={{ width: sized ? 10 : 0 }} />
+              <span className="block border-t-[3px] border-[color:var(--cahier-ink)]" style={{ width: sized ? 10 : 0 }} />
+            </span>
+          </button>
+          <label className="ml-auto flex shrink-0 flex-col gap-0.5">
+            <span className="text-[9.5px] font-extrabold uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">Length</span>
+            <select
+              value={count}
+              onChange={(e) => {
+                const n = Number(e.target.value);
+                setCount(n);
+                draw(n);
+              }}
+              aria-label="How many sentences"
+              className="h-10 w-14 rounded-xl border-2 px-1.5 text-sm font-bold"
+              style={ctrlStyle}
+            >
+              {LENGTHS.map((n) => (
+                <option key={n} value={n}>{n}</option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <p className="min-h-[1.05rem] text-xs leading-snug text-[color:var(--cahier-ink-soft)]" aria-live="polite">
+          {hintLine}
+        </p>
+      </div>
+
+      {/* The sheet. Every sentence stays here and stays typeable; the one you
+          are on opens up. */}
+      {sentences.length === 0 ? (
+        <div className="flex flex-col items-center gap-2.5 px-4 py-11 text-center">
+          <span className="text-3xl" aria-hidden>🎧</span>
+          <p className="fluo-serif text-xl font-bold">Listen, then write what you hear.</p>
+          <p className="max-w-[34ch] text-sm leading-relaxed text-[color:var(--cahier-ink-soft)]">
+            Choose how many sentences above, then press Start. Replay as often as you like.
+          </p>
+        </div>
+      ) : (
+        <ol className="space-y-2">
+          {sentences.map((s, i) => {
+            const ws = words(s.fr);
+            const row = marks[i] ?? [];
+            const solved = solvedAt(i) && !revealed[i];
+            const shown = !!revealed[i] || solved;
+            const attempted = row.some((m) => m !== null);
+            const open = i === at;
+
+            const blanks = (
+              <Blanks
+                words={ws}
+                written={written[i] ?? []}
+                marks={row}
+                sized={sized}
+                big={open}
+                onWrite={(j, v) => write(i, j, v)}
+                onCheck={() => check(i)}
+              />
+            );
+
+            if (open) {
+              return (
+                <li
+                  key={i}
+                  onClick={() => setAt(i)}
+                  className="rounded-2xl border-2 p-3.5"
+                  style={{
+                    borderColor: solved ? "var(--drill-ok)" : "var(--cahier-ink)",
+                    background: solved ? "var(--drill-ok-bg)" : "var(--cahier-paper-raised)",
+                  }}
+                >
+                  <div className="mb-2.5 flex items-center gap-2">
+                    <span className="text-[9.5px] font-extrabold uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">
+                      Sentence {i + 1} of {sentences.length}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => playOne(s.fr)}
+                      className="cahier-btn cahier-btn-sm ml-auto shrink-0"
+                      title="Listen to this sentence"
+                    >
+                      <span aria-hidden>🔊</span>This sentence
+                    </button>
+                  </div>
+                  {shown ? (
+                    <p lang="fr" className="fluo-serif text-[1.4rem] font-bold leading-snug text-[color:var(--cahier-ink)]">
+                      {s.fr}
+                    </p>
+                  ) : (
+                    blanks
+                  )}
+                  {showEn && <p className="mt-2.5 text-sm text-[color:var(--cahier-ink-soft)]">{s.en}</p>}
+                  {solved && (
+                    <p className="mt-3 flex items-center gap-1.5 text-sm font-bold text-[color:var(--drill-ok-ink)]">
+                      <span aria-hidden>✓</span>That&rsquo;s it — you heard it right.
+                    </p>
+                  )}
+                  {!shown && attempted && (
+                    <p className="mt-3 flex items-center gap-1.5 text-sm font-bold text-[color:var(--drill-bad-ink)]">
+                      <span aria-hidden>✗</span>The words marked in red need another look.
+                    </p>
+                  )}
+                  {!shown && (
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
+                      <button type="button" onClick={() => check(i)} className="cahier-btn cahier-btn-sm">
+                        Check
+                      </button>
+                      <button type="button" onClick={() => reveal(i)} className="cahier-btn cahier-btn-sm opacity-70">
+                        Show the sentence
+                      </button>
+                    </div>
+                  )}
+                </li>
+              );
+            }
+
+            return (
+              <li
+                key={i}
+                onClick={() => setAt(i)}
+                className="flex cursor-pointer gap-2.5 rounded-xl border-b-2 px-1 py-3"
+                style={{
+                  borderColor: "var(--cahier-rule)",
+                  background: solved ? "var(--drill-ok-bg)" : "transparent",
+                }}
+              >
+                <div className="flex w-8 shrink-0 flex-col items-center gap-2">
+                  <span
+                    className="flex h-6 w-6 items-center justify-center rounded-full border-2 text-xs font-extrabold"
+                    style={{
+                      borderColor: solved ? "var(--drill-ok)" : "var(--cahier-rule)",
+                      background: solved ? "var(--drill-ok)" : "transparent",
+                      color: solved ? "#fff" : "var(--cahier-ink-soft)",
+                    }}
+                  >
+                    {solved ? "✓" : revealed[i] ? "👁" : i + 1}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => playOne(s.fr)}
+                    title="Listen to this sentence"
+                    className="text-base text-[color:var(--cahier-ink-soft)] transition hover:brightness-95"
+                  >
+                    🔊
+                  </button>
+                </div>
+                <div className="min-w-0 flex-1">
+                  {shown ? (
+                    <p lang="fr" className="fluo-serif text-base font-bold text-[color:var(--cahier-ink)]">
+                      {s.fr}
+                    </p>
+                  ) : (
+                    blanks
+                  )}
+                  {shown && showEn && (
+                    <p className="mt-0.5 text-xs text-[color:var(--cahier-ink-soft)]">{s.en}</p>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      )}
+
+      {sentences.length > 0 && (
         <button
           type="button"
           onClick={revealAll}
-          disabled={!text || allRevealed}
-          className="fluo-btn fluo-btn-sm fluo-btn-ghost ml-auto"
+          disabled={allRevealed}
+          className="cahier-btn cahier-btn-sm w-full justify-center opacity-70 disabled:opacity-30"
         >
-          👁 Reveal all
+          Show all
         </button>
-        <button
-          type="button"
-          onClick={() => setShowEn((v) => !v)}
-          aria-pressed={showEn}
-          className={`fluo-btn fluo-btn-sm ${showEn ? "fluo-btn-correct" : "fluo-btn-ghost"}`}
-        >
-          🇬🇧
-        </button>
-      </div>
-
-      {/* The text. Each row plays its own sentence, takes what you write into
-          its blanks, and the eye opens it. */}
-      <ol className="space-y-2">
-        {(text?.sentences ?? []).map((s, i) => (
-          <li
-            key={i}
-            className="rounded-2xl border-2 px-3 py-2"
-            style={{ borderColor: "var(--fluo-card-accent)", background: "var(--fluo-card)" }}
-          >
-            <div className="flex items-start gap-1.5">
-              <button
-                type="button"
-                onClick={() => playOne(s.fr)}
-                title="Listen to this sentence"
-                className="shrink-0 self-center text-base transition hover:brightness-95"
-              >
-                🔊
-              </button>
-              <div className="min-w-0 flex-1">
-                {revealed[i] ? (
-                  <span lang="fr" className="fluo-serif text-base font-bold text-[color:var(--fluo-ink)]">
-                    {s.fr}
-                  </span>
-                ) : (
-                  <Blanks
-                    words={words(s.fr)}
-                    written={written[i] ?? []}
-                    marks={marks[i] ?? []}
-                    onWrite={(j, v) => write(i, j, v)}
-                    onCheck={() => check(i)}
-                  />
-                )}
-                {revealed[i] && showEn && (
-                  <span className="mt-0.5 block text-xs text-[color:var(--fluo-ink-soft)]">{s.en}</span>
-                )}
-              </div>
-              <button
-                type="button"
-                onClick={() => playOne(s.fr, true)}
-                title="Listen slowly"
-                className="self-center rounded-full border-2 px-1.5 py-0.5 text-sm transition hover:bg-white/60"
-                style={{ borderColor: "var(--fluo-card-accent)" }}
-              >
-                🐌
-              </button>
-              {!revealed[i] && (
-                <button
-                  type="button"
-                  onClick={() => check(i)}
-                  title="Check what I wrote"
-                  className="self-center rounded-full border-2 px-1.5 py-0.5 text-sm transition hover:bg-white/60"
-                  style={{ borderColor: "var(--fluo-card-accent)" }}
-                >
-                  ✓
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={() => reveal(i)}
-                disabled={revealed[i]}
-                title="Reveal this sentence"
-                className="self-center rounded-full border-2 px-1.5 py-0.5 text-sm transition hover:bg-white/60 disabled:opacity-30"
-                style={{ borderColor: "var(--fluo-card-accent)" }}
-              >
-                👁
-              </button>
-            </div>
-          </li>
-        ))}
-      </ol>
+      )}
 
       {exhausted && (
         <button
@@ -381,18 +588,24 @@ export default function EcouTexte({
 
   if (!shell) return body;
 
-  // Full page = DrillShell (patch 20–21). The CTA is the draw — the natural
-  // forward action; a body Enter that marked a sentence preventDefaults and
-  // the shell stands down, so typing can never draw a new text by accident.
+  // Full page = DrillShell (patch 20–21). One primary: move to the next
+  // sentence, and at the end draw a new text. A body Enter that marked a
+  // sentence preventDefaults and the shell stands down, so typing can never
+  // advance by accident.
   return (
     <DrillShell
       exitHref="/activities"
-      progress={text ? { done: worked, total: text.sentences.length } : null}
-      right={text ? <>{worked}/{text.sentences.length}</> : undefined}
+      progress={text ? { done: worked, total: sentences.length } : null}
+      right={text ? <>{worked}/{sentences.length}</> : undefined}
+      secondary={
+        text ? { label: "🇬🇧 English", onClick: () => setShowEn((v) => !v) } : null
+      }
       cta={
-        text
-          ? { label: "🎲 Another text", onClick: () => draw(count) }
-          : { label: "🎧 Listen", onClick: () => playAll(false) }
+        !text
+          ? { label: "Start", onClick: () => playAll() }
+          : last
+            ? { label: "New text", onClick: () => draw(count) }
+            : { label: "Next sentence", onClick: () => setAt((k) => k + 1) }
       }
     >
       {body}
@@ -400,15 +613,15 @@ export default function EcouTexte({
   );
 }
 
-const MARK_STYLE: Record<Grade, string> = {
-  perfect: "border-emerald-500 bg-emerald-50 text-emerald-800",
-  good: "border-amber-500 bg-amber-50 text-amber-800",
-  wrong: "border-rose-500 bg-rose-50 text-rose-800",
+const MARK_STYLE: Record<Grade, { border: string; bg: string; fg: string }> = {
+  perfect: { border: "var(--drill-ok)", bg: "var(--drill-ok-bg)", fg: "var(--drill-ok-ink)" },
+  good: { border: "var(--fluo-warn)", bg: "#fffbeb", fg: "#92400e" },
+  wrong: { border: "var(--drill-bad)", bg: "var(--drill-bad-bg)", fg: "var(--drill-bad-ink)" },
 };
 
 /**
- * One box per word, as wide as the word is long — the same scaffold the ▁▁▁
- * mask drew, only writable. Filling a box jumps to the next, as does a space,
+ * One box per word — as wide as the word is long, or all the same width when
+ * the blanks button says so. Filling a box jumps to the next, as does a space,
  * so a whole sentence can be written without reaching for the mouse; ⏎ marks
  * it. A box marked wrong prints the word underneath, because being told what
  * you missed is the point of asking.
@@ -417,24 +630,29 @@ function Blanks({
   words: ws,
   written,
   marks,
+  sized,
+  big,
   onWrite,
   onCheck,
 }: {
   words: Word[];
   written: string[];
   marks: (Grade | null)[];
+  sized: boolean;
+  big: boolean;
   onWrite: (j: number, value: string) => void;
   onCheck: () => void;
 }) {
   const refs = useRef<(HTMLInputElement | null)[]>([]);
 
   return (
-    <div className="flex flex-wrap items-end gap-x-1 gap-y-1.5" lang="fr">
+    <div className={`flex flex-wrap items-end ${big ? "gap-x-1.5 gap-y-2.5" : "gap-x-1 gap-y-1.5"}`} lang="fr">
       {ws.map((w, j) => {
         const mark = marks[j] ?? null;
+        const m = mark ? MARK_STYLE[mark] : null;
         return (
           <span key={j} className="inline-flex items-end">
-            {w.pre && <span className="fluo-serif text-base font-bold">{w.pre}</span>}
+            {w.pre && <span className={`fluo-serif font-bold ${big ? "text-[1.3rem]" : "text-base"}`}>{w.pre}</span>}
             <span className="inline-flex flex-col items-center">
               <input
                 ref={(el) => {
@@ -462,17 +680,22 @@ function Blanks({
                 maxLength={w.core.length + 3}
                 autoComplete="off"
                 spellCheck={false}
-                aria-label={`Mot ${j + 1}, ${w.core.length} lettres`}
-                className={`fluo-serif rounded-lg border-2 border-dashed px-1 py-0.5 text-center text-base font-bold outline-none transition focus:border-solid ${
-                  mark ? `border-solid ${MARK_STYLE[mark]}` : "border-[color:var(--fluo-card-accent)] bg-white/70"
-                }`}
-                style={{ width: `${Math.max(2, w.core.length * 0.72 + 0.9)}rem` }}
+                aria-label={`Word ${j + 1}, ${w.core.length} letters`}
+                className={`fluo-serif rounded-lg border-2 px-1 py-0.5 text-center font-bold outline-none transition ${
+                  big ? "text-[1.3rem]" : "text-base"
+                } ${sized ? "border-solid" : "border-dotted"}`}
+                style={{
+                  width: boxWidth(w.core, sized, big),
+                  borderColor: m ? m.border : "var(--cahier-rule)",
+                  background: m ? m.bg : "rgba(255,255,255,.7)",
+                  color: m ? m.fg : "var(--cahier-ink)",
+                }}
               />
               {mark === "wrong" && (
-                <span className="mt-0.5 text-[11px] font-bold text-rose-700">{w.core}</span>
+                <span className="mt-0.5 text-[11px] font-bold text-[color:var(--drill-bad-ink)]">{w.core}</span>
               )}
             </span>
-            {w.post && <span className="fluo-serif text-base font-bold">{w.post}</span>}
+            {w.post && <span className={`fluo-serif font-bold ${big ? "text-[1.3rem]" : "text-base"}`}>{w.post}</span>}
           </span>
         );
       })}
