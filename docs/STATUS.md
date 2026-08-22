@@ -1,4 +1,4 @@
-# STATUS — the one place that is true (21 Aug 2026)
+# STATUS — the one place that is true (22 Aug 2026)
 
 Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 **this file first** and updates it before ending a session. `HANDOFF.md`, `TODO.md`,
@@ -49,6 +49,7 @@ Only ONE agent edits this file at a time; say so in your commit.
 | menu/nav | **HELP popup → Menu** (20 tiles, 4×5 phone / 5×4 tablet, no prose — /guide keeps the long form); registry regrouped to **six** families in Dan's 19 Aug order **Goals · Practice · Play · Review · Skills · User** — Goals now means the 50 objectives, the five pre-lesson activities became Practice | verify19c (10) |
 | rail | **Side rail grouped**: six family flaps (Goals · Practice · SvPlay · Review · Skills · User), children under each, Unités under Goals | verify29-rail (22) |
 | Track D | help-ladder spec + state machine + rule hints + `?`/WHY in every drill, evidence tagged, hinted items → ReVue, open-production feedback (`/api/feedback`, rule fallback), 22 eval cases | verify28-trackd (165) |
+| 30 | **The profile is ONE learner model** (22 Aug, from Dan's Claude Design handoff): /moi and /profil are the same page — pinned goal → one next action → five collapsible rows `RE-DRILLS · SKILLS · FRILLS (showcase) · ILLS (problems noted) · THRILLS (rewards)`. The economy is the last row; the bottom bar became the five families | verify30-profile (26) |
 | glyphs | **One glyph, one job** (21 Aug): ▶ ⏸ ⏹ 🔁 🐌 mean SOUND and nothing else; leaving a page is a word + ›. Home's round ▶/🔁 gone (▶ also said "continue the course"; 🔁 pointed at /reviser, which the Review tab already did) → « Continue › » is a full-width `.fluo-btn` under the card, La Carte's ▶ → ›, the due badge moved to the Review tab, ▦ Menu moved into the greeting. Say It had TWO ⏹ on screen at once (mic vs end-session) and WorDrill's "Done!" had THREE 🔁 → session controls are words: Back · Skip · End here · Restart · DéjàRevu ›. Review's mark 🔁 → **🔖** (Dan's pick over 👀, which the Carte cliffhanger and « Regardez ! » already use) — one registry edit carries tab + Menu tile + rail flap. Same sweep through SpecuLearn, Compose, ConjugaZone; NumBus 🐢 → 🐌 and ▶️ → ▶. The MAP's current-stop pin ▶ → **🧑‍🎓** in both views (the 3D already bobbed one; it also stamped a ▶ inside the stop — dropped), legend now « 🧑‍🎓 you ». ONE named exception: **▶ Jouer** on the four game galleries stays — play-a-game is the literal sense, it always carries its label, and it never shares a screen with a player. Verified against the BUILT app at 390px, not the diff | verify25 (22) |
 
 Shipped ≈ 147 of ~150 in-scope units.
@@ -112,6 +113,7 @@ Dan's email; Firestore service-account key — being retired.
 
 ## Decisions awaiting Dan (all default to what was built)
 
+- Profile (22 Aug): what consumes an ILLS note — the queue, the teacher, or cut it.
 - Games: hearts kept in NumBus/NumBourse/LexicaLater; Match It now behind sign-in.
 - Home: "one unit per screen" = vertical band snap, not sideways paging.
 - /moi: no time-on-task line any more (D6 sessions had no writer); Reviser "N weak" now
@@ -136,6 +138,77 @@ Dan's email; Firestore service-account key — being retired.
 - Peers builds, `main` is the sole push path; every patch = verify script + screenshot,
   and CI runs every `verify/*.py` on every push.
 - Dan's litmus test (AGENTS.md). Grammar guard-rails (no imperative outside SIO-008).
+
+---
+
+## Patch 30 — the profile as one learner model (22 Aug, from Dan's design handoff)
+
+Branch `claude/profile-learner-model`, check = `verify/verify30-profile.py` (26),
+harness `work/profile/shoot.mjs` (ad-hoc, playwright not added to the lockfile;
+`.png` not committed). Whole suite green: 20 scripts, 0 failures.
+
+- **ONE page, TWO routes.** `src/components/ProfileContent.tsx` renders at both
+  `/moi` and `/profil` — Dan's call over a redirect, so the account chip,
+  printed handouts and old bookmarks all land rather than hop. `MoiContent.tsx`
+  is deleted; the old economy page is gone.
+- **The shape.** Always visible: the pinned goal and the ONE next action —
+  the two things you act on. Everything else is the record, collapsed, one
+  section open at a time, each row stating its own value on the right so the
+  page reads shut.
+- **What Dan removed, and why** (all 22 Aug, in his words where they were his):
+  CEFR self-placement ("how likely is it one gets to be A2 when in A1" — it was
+  flattery, and the four-skill framing duplicated the weak list at a coarser
+  grain); the weekly commitment `2/3` (unlabelled, therefore unreadable);
+  N-levels ("we don't need levels lah" — `levelForXp` still names leaderboard
+  rows, it is off the profile); the `→ SHOP` chip (redundant); the progress
+  bars ("AND WHY ARE THE SPACE-OCCUPYING PROGRESS BARS BACK AGAIN??"); the
+  `DUE · WEAK` tags on re-drill tiles ("all we need the SIO number, title
+  word(s) and colored % (NOTHING ELSE!)"); full-width buttons.
+- **Two lists became one.** "Due for review" and "What is shaky" showed the
+  same outcome twice. `redrills()` is one queue carrying both reasons —
+  WEAK is accuracy under the tier floor, DUE is the SRS interval elapsed —
+  and they genuinely differ (SIO-019 at 77% is due; SIO-043 at 48% is not).
+- **The learner model is derived, not invented** (`src/lib/learnerModel.ts`,
+  learner-safe): coverage counts the spine's own `skill` field, so it is the
+  same per-outcome accuracy regrouped, not a second taxonomy; the next action
+  is a TEMPLATE filled from the SIO's `short` + `skill` (Dan: "template from
+  SIO data — no AI"), four phrasings covering all fifty; the goal stores only
+  `{ sio, by }` on `Progress`, because the fifty ARE the catalogue and the one
+  thing it cannot hold is which you are aiming at and by when.
+- **Full history is its own page** (`/moi/historique`, Dan asked for it during
+  the build): the answer log and the per-exercise fold, uncapped — the profile
+  caps at a screenful, completeness is the history page's whole point. Reached
+  from the footer beside DETAILS and EXPORT (EXPORT writes the outcome table as
+  a CSV, client-side, no endpoint).
+- **Bottom bar = the five families minus User** (`🎯 ✏️ 🎮 🔖 💪`, FAMILIES
+  order). This REVERSES the four-slot decision of 10 Aug recorded in nav.ts;
+  Dan asked for it explicitly and confirmed it here. Index lost its slot
+  ("Goals and Index to merge later on as one") but not its destination —
+  Practice points at `/activities`, which is the Index. verify19 was rewritten
+  to the new decision and now asserts the bar hand-keeps NO labels at all.
+- **Typography gotcha worth knowing.** `.cahier-page p { font-size: var(--fs-body) }`
+  is an element selector and outranks every Tailwind size utility, so a `<p>`
+  cannot be small. Mono labels are `<span className="block">`; only real prose
+  stays a `<p>`, where body size is what it should have been anyway. The header
+  name takes `--fs-h2` from the scale rather than the h1 default.
+- **Superseded checks, rewritten not deleted:** verify26 §3 (the patch-26 hero
+  and segments are asserted GONE, its outcome fold and heat-strip still
+  asserted present), verify27 (two file references moved to the new modules),
+  verify19 §3 (the bar).
+- **Dan still has to decide:** what consumes an ILLS note. It stores and reads
+  (`src/lib/blockers.ts`, device-local, three a week) and NOTHING acts on it —
+  which makes it a diary, and Dan named the two ways it earns its place:
+  push its SIO into the queue regardless of schedule, or land on the teacher's
+  dashboard before class. Until one is chosen the row is honest but inert.
+- **Also not done:** FRILLS is honestly empty — nothing in the app stores
+  recordings or drafts yet, so the three slots name what they will hold rather
+  than invent a count. The `‹ PROFILE` link and the ⌛ top-bar icon both point
+  at /moi, so on the profile ⌛ is still a door to itself (noted in the design
+  chat, not fixed here).
+- **Pre-existing, unrelated, observed while shooting:** `.cahier-bottombar`
+  declares `display:flex` at class specificity, which beats `sm:hidden` in the
+  cascade — the phone bar is visible at desktop widths too. Untouched by this
+  patch (BottomBar.tsx and globals.css are unchanged); worth a look on its own.
 
 ---
 

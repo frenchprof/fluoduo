@@ -135,7 +135,12 @@ for f, needle in (
     ("src/lib/activityLedger.ts", 'export { tierToken } from "@/lib/outcomeRows"'),
     ("src/app/teacher/ui.tsx", "tierFor(100 - pct)"),
     ("src/lib/reviser.ts", "isWeakSrs("),
-    ("src/app/moi/MoiContent.tsx", "isWeakSrs("),
+    # Was src/app/moi/MoiContent.tsx, which read isWeakSrs for its signed-out
+    # Fix rows. The 2026-08-22 merge replaced that page; the profile's re-drill
+    # queue separates the two reasons an outcome is waiting — WEAK is accuracy
+    # under the tier floor (tierFor), DUE is the SRS interval elapsed — so it
+    # calls the accuracy half of the one definition here.
+    ("src/lib/learnerModel.ts", "tierFor("),
     ("src/app/practice/grammarathon/finale/FinaleContent.tsx", "isWeakSrs("),
 ):
     check(needle in CODE[f], f"{os.path.basename(f)} calls the one definition", f"{f} does not call {needle}")
@@ -179,7 +184,11 @@ for fld in ("outcomeId", "evidenceType", "assistance", "assistCount", "independe
 check("outcomeOf(r)" in CODE["src/app/teacher/Students.tsx"] and "outcomeOf(" in CODE["src/app/teacher/ClassNow.tsx"],
       "teacher readers resolve outcomes through outcomeOf", "teacher readers bypass outcomeOf")
 check('"Evidence"' in CODE["src/app/teacher/Students.tsx"], "teacher Recent answers has an Evidence column", "no Evidence column")
-check("outcomeId" in CODE["src/app/moi/MoiContent.tsx"], "/moi carries outcomeId through", "/moi drops outcomeId")
+# D10's round-trip: the writer's stored outcomeId must survive the read, so the
+# fold prefers it over the item→outcome join. The profile replaced MoiContent
+# (2026-08-22) and carries it the same way.
+check("outcomeId" in CODE["src/components/ProfileContent.tsx"],
+      "the profile carries outcomeId through", "the profile drops outcomeId")
 
 # ── 12 · D11 — executed ──────────────────────────────────────────────────
 pm = CODE.get("src/lib/progressMerge.ts", "")

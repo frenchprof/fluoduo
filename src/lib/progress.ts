@@ -63,6 +63,11 @@ export type Progress = {
    *  accounts born after the 2026-08-11 reset, LEGACY_TERM for accounts
    *  whose remote doc predates the field (progressSync decides). */
   term?: string;
+  /** The pinned goal (Design handoff, 2026-08-22): WHICH of the fifty you are
+   *  aiming at and BY WHEN. Deliberately not a copy of the can-do sentence —
+   *  the spine is the source of truth for what the outcome says; this stores
+   *  only the commitment the spine cannot hold. Absent until one is set. */
+  goal?: { sio: string; by: string | null };
 };
 
 export type ItemSrs = {
@@ -195,6 +200,13 @@ export function clearLocalLearnerData(): void {
     kill.forEach((k) => ls.removeItem(k));
     window.dispatchEvent(new CustomEvent("fluolingo:progress-updated"));
   } catch {}
+}
+
+/** Pin (or re-pin) the goal — which outcome, by when. Passing null clears it.
+ *  Persisted like any other progress field, so it syncs with the blob. */
+export function setGoal(sio: string | null, by: string | null): Progress {
+  const p = loadProgress();
+  return saveProgress({ ...p, goal: sio ? { sio, by } : undefined });
 }
 
 /** Add XP for one action, scaled by today's fire multiplier. */

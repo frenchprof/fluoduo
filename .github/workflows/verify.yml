@@ -101,3 +101,6 @@ jobs:
 
       - name: "Rail + Menu — six families, twenty tiles (19 Aug)"
         run: python3 verify/verify29-rail.py
+
+      - name: "Profile — one learner model at /moi + /profil (goal, next action, five rows, five-slot bar)"
+        run: python3 verify/verify30-profile.py
