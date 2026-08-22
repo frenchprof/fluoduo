@@ -40,3 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 patch*/
+
+# Screenshot output from the work/ harnesses — regenerate, never commit
+# (work/patch*/ is already covered by the patch*/ rule above)
+work/**/*.png
