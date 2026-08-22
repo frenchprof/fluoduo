@@ -110,3 +110,6 @@ jobs:
 
       - name: "Retention build — manifest, eight reward moments, +XP, receipts, weekly board, ethics (21 Aug)"
         run: python3 verify/verify32-retention.py
+
+      - name: "Family identity — the second colour axis, contrast recomputed (21 Aug)"
+        run: python3 verify/verify33-family.py

@@ -1438,3 +1438,53 @@ h3.cahier-display { font-size: var(--fs-h3); }
   --gram-fem:     var(--cahier-la);   /* #d11149 · la, de la, une   */
   --gram-neutral: var(--cahier-ink);  /* not a gender — never a hue */
 }
+
+/* ── Family identity — the SECOND colour axis (21 Aug 2026) ────────────────
+   The --dopa-* roles say what a thing MEANS (a win, a miss, a streak). These
+   say WHERE YOU ARE. Six families, one stable hue each, and the hue is
+   assigned by identity — never by position in a list.
+
+   That distinction is the correction to COLOR_REVIEW Finding B. That review
+   said to demote the rotating hues, and it was half wrong: rotation by
+   list index encodes nothing and deserved demoting, but the same hues used
+   as a FIXED per-section identity are the most legible thing on the page —
+   they tell a learner which world they are in before they read a word.
+   `ProfileContent` on pm/profile-learner-model proves it; this is that
+   pattern lifted out of one file and made a system.
+
+   THE RECIPE — four intensities of one hue, and each has a job:
+
+     spine   7px, --fam-X-ink        the section's identity marker
+     band    --fam-X-wash + ink      the header field
+     pill    --fam-X-ink + paper     the status figure
+     body    6% of --fam-X           the field the content sits on
+
+   The full-saturation --fam-X is DECORATION ONLY (a dot, an emoji chip). It
+   measures 1.8-3.7:1 against its own band, so it can never be the spine, a
+   pill fill, or anything else carrying meaning — which is exactly the defect
+   the reference had: its pills were paper-on-full-hue at 1.99-4.17:1.
+
+   Measured, all six, against --cahier-paper (NOT pure white — the pill's
+   label is paper, and deriving against white overstated it by ~0.3):
+   spine >=3.94 on its band and >=4.55 on paper · band label >=11.80 ·
+   pill label >=4.55. verify33 recomputes them from this file. */
+:root {
+  --fam-goals: #e3a700;  --fam-goals-ink: #9c6300;  --fam-goals-wash: #feeac7;
+  --fam-practice: #7bbf2e;  --fam-practice-ink: #3f7f00;  --fam-practice-wash: #def6cd;
+  --fam-svplay: #e0567f;  --fam-svplay-ink: #c63d69;  --fam-svplay-wash: #ffdee8;
+  --fam-review: #2bb6c2;  --fam-review-ink: #007c88;  --fam-review-wash: #d2f4f8;
+  --fam-skills: #8a5fd4;  --fam-skills-ink: #8459cd;  --fam-skills-wash: #f1e6ff;
+  --fam-user: #e8852e;  --fam-user-ink: #b35500;  --fam-user-wash: #ffe5ce;
+}
+
+/* One class per family sets the trio; SectionBand reads only the trio, so a
+   band never hard-codes a hue and a new family is three tokens plus a line. */
+.fam-goals    { --fam: var(--fam-goals);    --fam-ink: var(--fam-goals-ink);    --fam-wash: var(--fam-goals-wash); }
+.fam-practice { --fam: var(--fam-practice); --fam-ink: var(--fam-practice-ink); --fam-wash: var(--fam-practice-wash); }
+.fam-svplay   { --fam: var(--fam-svplay);   --fam-ink: var(--fam-svplay-ink);   --fam-wash: var(--fam-svplay-wash); }
+.fam-review   { --fam: var(--fam-review);   --fam-ink: var(--fam-review-ink);   --fam-wash: var(--fam-review-wash); }
+.fam-skills   { --fam: var(--fam-skills);   --fam-ink: var(--fam-skills-ink);   --fam-wash: var(--fam-skills-wash); }
+.fam-user     { --fam: var(--fam-user);     --fam-ink: var(--fam-user-ink);     --fam-wash: var(--fam-user-wash); }
+/* The colourless one. A stack where every row is coloured has no hierarchy —
+   the reference makes THRILLS neutral on purpose, and so does this. */
+.fam-none     { --fam: var(--cahier-line-strong); --fam-ink: var(--cahier-ink-soft); --fam-wash: var(--cahier-paper-2); }

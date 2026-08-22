@@ -104,8 +104,38 @@ Every one of these is decorative rotation — colour that encodes nothing. The
 not by meaning. Under the brief's Semantic Mapping rule, an accent should mean
 something; here, having eleven means none of them can.
 
-**Recommendation:** demote all rotating hues to a single tinted-neutral treatment
-and reserve saturated colour exclusively for the seven roles in §7.
+**Correction, 21 Aug — this recommendation was half wrong.** The original text
+said to demote *all* rotating hues to a tinted neutral and reserve saturated
+colour for the seven roles. Dan pointed at `ProfileContent` (on
+`pm/profile-learner-model`), which uses the very `.fluo-h-*` hues this section
+condemns — and it is the most legible page in the codebase:
+
+> *"this almost sets the dopamine colour gold standard for the rest of the
+> website. Nowhere is there the same kind of surprising colour schemes."*
+
+He is right, and measurement backs it: the core learning surfaces render
+**2.5–3.0% saturated pixels** (`/reviser` 2.5, `/leaderboard` 2.7,
+`/conjugaison` 3.0) — effectively monochrome paper.
+
+What that page does differently is not the hue, it is the **assignment**. Its
+hues are fixed per section, not rotated by list index. So the rule is narrower
+than the one first written here:
+
+> A hue may never be assigned by **position in a list** — that encodes nothing.
+> A hue assigned by **stable identity** is the most legible thing on a page: it
+> tells a learner which world they are in before they read a word.
+
+That makes colour a **two-axis** system, and only one axis existed:
+
+| axis | answers | tokens |
+|---|---|---|
+| **role** | what does this *mean*? (a win, a miss, a streak) | `--dopa-*` |
+| **family** | *where am I*? (Goals, Practice, SvPlay, Review, Skills, User) | `--fam-*` |
+
+**Recommendation, revised:** keep the rotations that encode identity, retire
+only the ones keyed to an index (the six card hues assigned `i % 6`, the
+activity hues that repeat across three families). Both axes are now built —
+see §12.
 
 ## 4 · Finding C — two palettes, one site
 
@@ -362,6 +392,32 @@ Safe in all three — but `HeatStrip` and the Index cells should still gain a
 glyph or a `title`, because the tier is currently carried by colour alone.
 
 ---
+
+## 9b · The family axis, and the defect it inherited
+
+`SectionBand.tsx` generalises the pattern: four intensities of one hue, each
+with a job.
+
+| part | token | job | measured |
+|---|---|---|---|
+| spine, 7px | `--fam-X-ink` | the section's identity marker | ≥3.94:1 on its band, ≥4.55:1 on paper |
+| band | `--fam-X-wash` | the header field, near-black label | ≥11.80:1 |
+| pill | `--fam-X-ink` | the status figure, paper label | ≥4.55:1 |
+| body | 6% of `--fam-X` | the field content sits on | — |
+
+**The reference had one real defect, and it is in its most prominent element.**
+It filled the spine and the pill with the *full* hue and put paper text on
+them: **1.99:1 on gold, 2.27:1 on teal, 2.49 orange, 2.09 green** — failing on
+all six. The screenshot's "50 SIOS" pill is white on teal, the same defect
+class as the `.fluo-btn-secondary` fix in §11.3.
+
+Both now take `--fam-X-ink`, which keeps the identity and clears the
+thresholds. The full-saturation hue survives as **decoration only** — a dot, an
+emoji chip — and `verify33` asserts it stays that way.
+
+One further borrowing from the reference worth keeping: **one family is
+deliberately colourless** (`fam-none`). A stack where every row is coloured has
+no hierarchy.
 
 ## 10 · Measured contrast grid — proposed palette
 
