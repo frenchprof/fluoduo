@@ -43,6 +43,14 @@ Only ONE agent edits this file at a time; say so in your commit.
   Systemic finding: nearly every mockup re-adds inline explainer text and
   French UI chrome. Gallery + per-surface verdicts: Claude artifact
   "Redesign Verdicts" (Peers session). NOTHING from the review is live.
+  Round 2 on Dan's "not accurately paired": the launcher/Index, empty-state
+  and sign-in-gate captures were replaced with driven in-activity states
+  (real drills, mid-game boards, active reviser queue, GameOver, DrillShell
+  tray, Menu popup); leaderboard is marked "behind sign-in, judged from
+  code". Verdicts re-checked against the true pairs — counts unchanged.
+  Also from Dan, 22 Aug: **he cannot read the Index** ("I really don't
+  understand how to read it") — the U0–U4 cell grid and the per-row big
+  circles carry no key. Open design item, not yet assigned.
 
 ## Programme — done
 
