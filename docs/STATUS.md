@@ -70,17 +70,28 @@ Only ONE agent edits this file at a time; say so in your commit.
 
 Shipped ≈ 149 of ~150 in-scope units.
 
-## Deploy — the one command left
+## Deploy
 
-`main` on `frenchprof/fluoduo` is at `2a729fb`, built and green. Production is
-a DIFFERENT repo (`dckg/fluo`, remote `live`), which this session cannot reach:
-cross-owner repos cannot be added to a session that already has `frenchprof`
-sources. So the last step is Dan's, from a checkout with the `live` remote:
+**Deployed 22 Aug: `dckg/fluo` main `ccf5271..1a29278`.** Cloudflare Pages
+(`fluolingo-dot-com` → fluolingo.com) builds on that push.
+
+The deploy is Dan's step, not an agent's: production is a DIFFERENT repo, and a
+Claude Code session that already has `frenchprof` sources cannot add
+`dckg/fluo` (cross-owner adds are refused). A session also cannot reach
+fluolingo.com to verify — the network policy answers 403 to CONNECT — so
+confirmation is the Cloudflare dashboard.
 
 ```sh
-git fetch origin && git checkout main && git pull origin main
-git push live main          # Cloudflare Pages (fluolingo-dot-com) builds it
+git checkout main && git pull origin main
+git push live main
 ```
+
+**NEVER put a trailing `#` comment on that second line.** Interactive zsh does
+not treat `#` as a comment (`interactive_comments` is off by default), so a
+pasted `git push live main   # Cloudflare builds it` sends `#`, `Cloudflare`,
+`Pages`… as refspecs and fails with `error: src refspec # does not match any`.
+It cost one confusing failure on 22 Aug. Keep the command bare; put the
+explanation on its own line.
 
 Validated before the merge: `next build` succeeds · `tsc` clean · eslint 115
 errors in 51 files (DOWN from the 118/52 baseline — main's own work removed
