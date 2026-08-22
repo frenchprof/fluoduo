@@ -1,4 +1,4 @@
-# STATUS — the one place that is true (21 Aug 2026)
+# STATUS — the one place that is true (22 Aug 2026)
 
 Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 **this file first** and updates it before ending a session. `HANDOFF.md`, `TODO.md`,
@@ -32,6 +32,17 @@ Only ONE agent edits this file at a time; say so in your commit.
   Ops PRs #28 (checkout/setup-node v5 — Node 24) and #29 (pages-preview
   guarded to frenchprof/fluoduo — it 404'd on dckg where Pages is off).
   Still red everywhere: claude-review (ANTHROPIC_API_KEY/billing — Dan).
+- 21–22 Aug (Peers, on Dan's ask): **old-vs-new comparison of the colour
+  review's 31 artboards** before any live change. All 31 mockups rendered,
+  the matching live routes screenshotted from `main` (seeded progress;
+  `REQUIRE_SIGN_IN` flipped locally for the shoot and reverted, as patch 23
+  did), five reviewers judged each pair against the decided rules (litmus,
+  two-mark hero, no variable rewards, soft daily goal, streak spec).
+  Verdict: **0 ship-as-is · 17 ship-with-changes · 12 skip · 2 dead**
+  (Hero-marks = the 19 Aug decision re-broken; Variable = Dan's "none").
+  Systemic finding: nearly every mockup re-adds inline explainer text and
+  French UI chrome. Gallery + per-surface verdicts: Claude artifact
+  "Redesign Verdicts" (Peers session). NOTHING from the review is live.
 
 ## Programme — done
 
