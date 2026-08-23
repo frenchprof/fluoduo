@@ -88,8 +88,10 @@ check("term: p.term ?? CURRENT_TERM" in sync,
       "publishLeaderboard writes the term onto the row",
       "publishLeaderboard does not write a term")
 rules = read("firestore.rules")
+# The allowlist grew weekXp/weekKey with the weekly board (retention,
+# 2026-08-22) — the pin follows the schema; 'term' is what this suite guards.
 check("'term'" in rules and re.search(
-        r"hasOnly\(\s*\['name',\s*'xp',\s*'level',\s*'gems',\s*'streak',\s*'term',\s*'updatedAt'\]", rules),
+        r"hasOnly\(\s*\['name',\s*'xp',\s*'level',\s*'gems',\s*'streak',\s*'weekXp',\s*'weekKey',\s*'term',\s*'updatedAt'\]", rules),
       "the leaderboard create allowlist includes 'term'",
       "firestore.rules create allowlist lacks 'term' — new students' first "
       "publish would be denied and their row deleted by the client fallback")
