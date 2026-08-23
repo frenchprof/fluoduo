@@ -26,6 +26,7 @@
     {
       "id": "tu-vous-01",
       "fr": "un copain",
+      "syllables": ["un", "co", "pain"],
       "en": "a buddy",
       "emoji": "🧑",
       "tags": ["col:tu"]
@@ -33,6 +34,7 @@
     {
       "id": "tu-vous-02",
       "fr": "ta petite sœur",
+      "syllables": ["ta", "pe", "tite", "sœur"],
       "en": "your little sister",
       "emoji": "👧",
       "tags": ["col:tu"]
@@ -40,6 +42,7 @@
     {
       "id": "tu-vous-03",
       "fr": "un enfant",
+      "syllables": ["un", "en", "fant"],
       "en": "a child",
       "emoji": "🧒",
       "tags": ["col:tu"]
@@ -47,6 +50,7 @@
     {
       "id": "tu-vous-04",
       "fr": "ton meilleur ami",
+      "syllables": ["ton", "meil", "leur", "a", "mi"],
       "en": "your best friend",
       "emoji": "🤝",
       "tags": ["col:tu"]
@@ -54,6 +58,7 @@
     {
       "id": "tu-vous-05",
       "fr": "le professeur",
+      "syllables": ["le", "pro", "fes", "seur"],
       "en": "the teacher",
       "emoji": "👨‍🏫",
       "tags": ["col:vous_poli"]
@@ -61,6 +66,7 @@
     {
       "id": "tu-vous-06",
       "fr": "une vendeuse",
+      "syllables": ["une", "ven", "deuse"],
       "en": "a saleswoman",
       "emoji": "🛍️",
       "tags": ["col:vous_poli"]
@@ -68,6 +74,7 @@
     {
       "id": "tu-vous-07",
       "fr": "le directeur",
+      "syllables": ["le", "di", "rec", "teur"],
       "en": "the headmaster",
       "emoji": "💼",
       "tags": ["col:vous_poli"]
@@ -75,6 +82,7 @@
     {
       "id": "tu-vous-08",
       "fr": "une personne âgée",
+      "syllables": ["une", "per", "sonne", "â", "gée"],
       "en": "an elderly person",
       "emoji": "👵",
       "tags": ["col:vous_poli"]
@@ -82,6 +90,7 @@
     {
       "id": "tu-vous-09",
       "fr": "deux copains",
+      "syllables": ["deux", "co", "pains"],
       "en": "two buddies",
       "emoji": "👬",
       "tags": ["col:vous_pl"]
@@ -89,6 +98,7 @@
     {
       "id": "tu-vous-10",
       "fr": "tes parents",
+      "syllables": ["tes", "pa", "rents"],
       "en": "your parents",
       "emoji": "👪",
       "tags": ["col:vous_pl"]
@@ -96,6 +106,7 @@
     {
       "id": "tu-vous-11",
       "fr": "les voisins",
+      "syllables": ["les", "voi", "sins"],
       "en": "the neighbours",
       "emoji": "🏘️",
       "tags": ["col:vous_pl"]
@@ -103,6 +114,7 @@
     {
       "id": "tu-vous-12",
       "fr": "Monsieur et Madame Martin",
+      "syllables": ["Mon", "sieur", "et", "Ma", "dame", "Mar", "tin"],
       "en": "Mr and Mrs Martin",
       "emoji": "🧑‍🤝‍🧑",
       "tags": ["col:vous_pl"]

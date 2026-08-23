@@ -10,13 +10,39 @@
  "lessonSlug": "partitives",
  "tags": [],
  "seq": 402,
+ "gameConfig": {
+  "letris": {
+   "columns": [
+    {
+     "key": "du",
+     "label": "DU",
+     "prefix": ""
+    },
+    {
+     "key": "de_la",
+     "label": "DE LA",
+     "prefix": ""
+    },
+    {
+     "key": "de_l",
+     "label": "DE L'",
+     "prefix": ""
+    },
+    {
+     "key": "des",
+     "label": "DES",
+     "prefix": ""
+    }
+   ]
+  }
+ },
  "items": [
   {
    "id": "partitifs-01",
    "fr": "Je mange du pain.",
    "en": "I eat bread.",
    "example": "J'aime le pain.",
-   "tags": [],
+   "tags": ["col:du"],
    "gap": "du"
   },
   {
@@ -24,7 +50,7 @@
    "fr": "Je mange de la viande.",
    "en": "I eat meat.",
    "example": "J'aime la viande.",
-   "tags": [],
+   "tags": ["col:de_la"],
    "gap": "de la"
   },
   {
@@ -32,7 +58,7 @@
    "fr": "Je bois de l'eau gazeuse.",
    "en": "I drink sparkling water.",
    "example": "J'aime l'eau gazeuse.",
-   "tags": [],
+   "tags": ["col:de_l"],
    "gap": "de l'"
   },
   {
@@ -40,7 +66,7 @@
    "fr": "Je mange des pâtes.",
    "en": "I eat pasta.",
    "example": "J'aime les pâtes.",
-   "tags": [],
+   "tags": ["col:des"],
    "gap": "des"
   },
   {
@@ -48,7 +74,7 @@
    "fr": "Je bois du café.",
    "en": "I drink coffee.",
    "example": "J'aime le café.",
-   "tags": [],
+   "tags": ["col:du"],
    "gap": "du"
   },
   {
@@ -56,7 +82,7 @@
    "fr": "Je mange de la confiture.",
    "en": "I eat jam.",
    "example": "J'aime la confiture.",
-   "tags": [],
+   "tags": ["col:de_la"],
    "gap": "de la"
   },
   {
@@ -64,7 +90,7 @@
    "fr": "Je mange du fromage.",
    "en": "I eat cheese.",
    "example": "J'aime le fromage.",
-   "tags": [],
+   "tags": ["col:du"],
    "gap": "du"
   },
   {
@@ -72,7 +98,7 @@
    "fr": "Je mange des fraises.",
    "en": "I eat strawberries.",
    "example": "J'aime les fraises.",
-   "tags": [],
+   "tags": ["col:des"],
    "gap": "des"
   },
   {

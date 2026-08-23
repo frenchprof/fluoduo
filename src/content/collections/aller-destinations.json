@@ -237,6 +237,86 @@
       "tags": [
         "col:aux"
       ]
+    },
+    {
+      "id": "aller-destinations-16",
+      "fr": "Je vais au cinéma.",
+      "en": "I'm going to the cinema.",
+      "example": "Je vais à la piscine.",
+      "tags": [],
+      "gap": "au"
+    },
+    {
+      "id": "aller-destinations-17",
+      "fr": "Tu vas à la piscine.",
+      "en": "You're going to the swimming pool.",
+      "example": "Tu vas au parc.",
+      "tags": [],
+      "gap": "à la"
+    },
+    {
+      "id": "aller-destinations-18",
+      "fr": "Il va à l'école.",
+      "en": "He's going to school.",
+      "example": "Il va à la gare.",
+      "tags": [],
+      "gap": "à l'"
+    },
+    {
+      "id": "aller-destinations-19",
+      "fr": "Nous allons aux magasins.",
+      "en": "We're going to the shops.",
+      "example": "Nous allons au marché.",
+      "tags": [],
+      "gap": "aux"
+    },
+    {
+      "id": "aller-destinations-20",
+      "fr": "Elle va à la plage.",
+      "en": "She's going to the beach.",
+      "example": "Elle va à l'université.",
+      "tags": [],
+      "gap": "à la"
+    },
+    {
+      "id": "aller-destinations-21",
+      "fr": "Vous allez au restaurant.",
+      "en": "You're going to the restaurant.",
+      "example": "Vous allez aux toilettes.",
+      "tags": [],
+      "gap": "au"
+    },
+    {
+      "id": "aller-destinations-22",
+      "fr": "Ils vont à l'hôpital.",
+      "en": "They're going to the hospital.",
+      "example": "Ils vont aux urgences.",
+      "tags": [],
+      "gap": "à l'"
+    },
+    {
+      "id": "aller-destinations-23",
+      "fr": "Je vais à la gare.",
+      "en": "I'm going to the train station.",
+      "example": "Je vais à l'aéroport.",
+      "tags": [],
+      "gap": "à la"
+    },
+    {
+      "id": "aller-destinations-24",
+      "fr": "On va au parc.",
+      "en": "We're going to the park.",
+      "example": "On va à la banque.",
+      "tags": [],
+      "gap": "au"
+    },
+    {
+      "id": "aller-destinations-25",
+      "fr": "Tu vas aux toilettes ?",
+      "en": "Are you going to the toilet?",
+      "example": "Tu vas à l'école ?",
+      "tags": [],
+      "gap": "aux"
     }
   ]
 }

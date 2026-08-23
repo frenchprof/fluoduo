@@ -80,6 +80,19 @@ Only ONE agent edits this file at a time; say so in your commit.
   allowlist pin predated weekXp/weekKey). NOT yet deployed — Dan's
   `git push live main`.
 
+- 23 Aug (content session): **six missing xPlain/Memo lessons authored** from
+  the content audit's gap list — `tu-vous`, `salutations` (U0), `professions`,
+  `nationalities` (U1), `meteo` (U3, weather-letris deck), `aliments` (U4) —
+  each a NativeLesson (Mémo + dice generator + 10 EN→FR bonus) registered in
+  `LESSONS` + `LESSONS_BY_SIO` (SIO-002/009/012/016/031/041). Checked against
+  Dan's uploaded Atelier unit PDFs: tu/vous question order follows piste 4
+  (« Vous vous appelez comment ? »), the nationality memo mirrors the U1
+  « accord » box (+e / +s / -ien→-ienne), the partitive meal sentence is the
+  book's own (« Le midi, je mange de la viande et je bois de l'eau »). NOT in
+  the deck and therefore left out (flag for Dan): the book's « C'est nuageux /
+  ensoleillé » fourth weather frame, and « canadien » (the U1 table's -ien
+  example — the deck's tunisien stands in). tsc, eslint and all 25 verify
+  suites green.
 - **22 Aug (this session): the colour + retention programme is MERGED TO `main`
   and awaiting deploy.** `main` = `2a729fb`. Contains: the seven `--dopa-*`
   roles + three accessibility fixes; the `--gram-*` gender mapping (98 sites,
@@ -93,7 +106,46 @@ Only ONE agent edits this file at a time; say so in your commit.
   Five new verify suites in CI (31 topbar · 32 retention · 33 family · 34
   dopamine, plus main's 30 profile). **NOT YET DEPLOYED — see below.**
 
+- **23 Aug (content agent): GramMarathon gap items authored for nine decks
+  that had zero** (from the content-audit GAPS.md high-value list):
+  possessives +10 · aller-destinations +10 · quand-time +10 · avoir-etats +10
+  · demonstratifs +10 · professions +12 · weather-letris +12 · frequence +8 ·
+  question-words +9 (= 91 new items, JSON-only, appended — no existing item
+  touched; each new item is a full `fr` sentence + `en` gloss + `gap`, pattern
+  A like partitifs). All pass `isPlayableGap` with a unique word-boundary
+  occurrence; every deck now clears MIN_GAPPED, so the 🏃 flap appears.
+  Sentences were checked against Dan's uploaded Atelier unit PDFs (per-unit
+  teacher guides) — patterns confirmed verbatim (e.g. « Tu vas au cinéma »,
+  « le lundi à 18 h », « Il fait 16 degrés », « Qu'est-ce que tu fais ? »,
+  « Cette orange est délicieuse »). Flag for Dan: weather items keep the
+  deck's il-y-a column for « du soleil »/« du vent » (Atelier agrees; « il
+  fait du soleil » colloquialism rejected as wrong by the drill);
+  question-words-14 answers in euros (money formally lands in U4);
+  frequence keeps « parfois » (Atelier bilan uses it too, lessons use
+  « quelquefois »). verify23/24 green, tsc clean. NOT deployed.
+
 ## Programme — done
+
+- **23 Aug (Peers, the content-gap wave + visual unity): eight authoring
+  agents filled the audit's gaps, each self-checked against Dan's uploaded
+  A1U0–A1U4 Atelier PDFs.** New: ÉcouTexte generators for units 0/1/2
+  (9 scenarios, registered; picker's "coming soon" gone); 6 xPlain lessons
+  (tu-vous, salutations, nationalities, professions, meteo, aliments);
+  91 GramMarathon gaps across 9 decks; 91 LexicaLater syllabifications
+  across 6 decks; 8 VocabulaRain sets (days, alphabet, numbers ×3,
+  languages, nationalities, aimer-activites); letris/EtuDice columns on 8
+  decks; 2 wiring fixes (marche bank → commerces; modaux slug aliases).
+  check-textgen now harvests `nat` forms and carries units 0–2; its unit-4
+  « jus, thé » red is the missing ★ boissons deck (Dan's placement). ALL
+  judgment calls in docs/CONTENT_FLAGS_2026-08-23.md for Dan's book check.
+  **Visual unity (Dan's picks)**: heading band VARIANT A — every family
+  page opens with the profile-style band (PageBand via CahierShell: name in
+  **Dan's own FluOlinGo Hand OTF** (src/fonts, next/font/local), one number
+  right on the hl chip); duplicate h1s stripped from reviser/tts/tutor/
+  leaderboard; **/map back inside the cahier** (the tap-glass killed the
+  scroll conflict that justified its bare interface — 21 Aug ruling
+  superseded by Dan's 23 Aug "cahier set to the left" rule). Awaiting
+  Dan's word (PR #32).
 
 | Patch | What | Check |
 |---|---|---|

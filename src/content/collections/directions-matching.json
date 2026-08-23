@@ -14,6 +14,7 @@
     {
       "id": "directions-matching-L-sortez",
       "fr": "Vous sortez",
+      "syllables": ["Vous", "sor", "tez"],
       "en": "You exit / leave",
       "emoji": "🚪",
       "tags": [
@@ -23,6 +24,7 @@
     {
       "id": "directions-matching-L-allez",
       "fr": "Vous allez",
+      "syllables": ["Vous", "al", "lez"],
       "en": "You go",
       "emoji": "🚶",
       "tags": [
@@ -32,6 +34,7 @@
     {
       "id": "directions-matching-L-continuez",
       "fr": "Vous continuez",
+      "syllables": ["Vous", "con", "ti", "nuez"],
       "en": "You continue",
       "emoji": "➡️",
       "tags": [
@@ -41,6 +44,7 @@
     {
       "id": "directions-matching-L-au_bout",
       "fr": "Au bout de",
+      "syllables": ["Au", "bout", "de"],
       "en": "At the end of",
       "emoji": "🏁",
       "tags": [
@@ -50,6 +54,7 @@
     {
       "id": "directions-matching-L-tournez",
       "fr": "Vous tournez",
+      "syllables": ["Vous", "tour", "nez"],
       "en": "You turn",
       "emoji": "↪️",
       "tags": [
@@ -59,6 +64,7 @@
     {
       "id": "directions-matching-L-prenez",
       "fr": "Vous prenez",
+      "syllables": ["Vous", "pre", "nez"],
       "en": "You take",
       "emoji": "👉",
       "tags": [
@@ -68,6 +74,7 @@
     {
       "id": "directions-matching-L-traversez",
       "fr": "Vous traversez",
+      "syllables": ["Vous", "tra", "ver", "sez"],
       "en": "You cross",
       "emoji": "🚸",
       "tags": [
@@ -77,6 +84,7 @@
     {
       "id": "directions-matching-L-etes",
       "fr": "Vous êtes",
+      "syllables": ["Vous", "êtes"],
       "en": "You are",
       "emoji": "📍",
       "tags": [
@@ -86,6 +94,7 @@
     {
       "id": "directions-matching-R-du_parc",
       "fr": "du parc",
+      "syllables": ["du", "parc"],
       "en": "from the park",
       "emoji": "🌳",
       "tags": [
@@ -95,6 +104,7 @@
     {
       "id": "directions-matching-R-de_la_station",
       "fr": "de la station de métro",
+      "syllables": ["de", "la", "sta", "tion", "de", "mé", "tro"],
       "en": "from the metro station",
       "emoji": "🚇",
       "tags": [
@@ -104,6 +114,7 @@
     {
       "id": "directions-matching-R-tout_droit",
       "fr": "tout droit",
+      "syllables": ["tout", "droit"],
       "en": "straight ahead",
       "emoji": "⬆️",
       "tags": [
@@ -113,6 +124,7 @@
     {
       "id": "directions-matching-R-jusqu_carre",
       "fr": "jusqu'au carrefour",
+      "syllables": ["jus", "qu'au", "car", "re", "four"],
       "en": "as far as the intersection",
       "emoji": "🚦",
       "tags": [
@@ -122,6 +134,7 @@
     {
       "id": "directions-matching-R-la_rue",
       "fr": "la rue",
+      "syllables": ["la", "rue"],
       "en": "the street",
       "emoji": "🏘️",
       "tags": [
@@ -131,6 +144,7 @@
     {
       "id": "directions-matching-R-a_gauche",
       "fr": "à gauche",
+      "syllables": ["à", "gauche"],
       "en": "to the left",
       "emoji": "⬅️",
       "tags": [
@@ -140,6 +154,7 @@
     {
       "id": "directions-matching-R-a_droite",
       "fr": "à droite",
+      "syllables": ["à", "droite"],
       "en": "to the right",
       "emoji": "➡️",
       "tags": [
@@ -167,6 +182,7 @@
     {
       "id": "directions-matching-R-passage",
       "fr": "le passage piéton",
+      "syllables": ["le", "pas", "sage", "pié", "ton"],
       "en": "the crosswalk",
       "emoji": "🚶",
       "tags": [
@@ -176,6 +192,7 @@
     {
       "id": "directions-matching-R-pont",
       "fr": "le pont",
+      "syllables": ["le", "pont"],
       "en": "the bridge",
       "emoji": "🌉",
       "tags": [
@@ -185,6 +202,7 @@
     {
       "id": "directions-matching-R-place",
       "fr": "la place",
+      "syllables": ["la", "place"],
       "en": "the square / plaza",
       "emoji": "🏛️",
       "tags": [
@@ -194,6 +212,7 @@
     {
       "id": "directions-matching-R-arrive",
       "fr": "arrivé(e)",
+      "syllables": ["ar", "ri", "vé"],
       "en": "arrived",
       "emoji": "🎯",
       "tags": [
@@ -293,6 +312,7 @@
     {
       "id": "directions-matching-conn-dabord",
       "fr": "d'abord",
+      "syllables": ["d'a", "bord"],
       "en": "first (of all)",
       "emoji": "1️⃣",
       "example": "D'abord, vous sortez de la station.",
@@ -302,6 +322,7 @@
     {
       "id": "directions-matching-conn-puis",
       "fr": "puis",
+      "syllables": ["puis"],
       "en": "then",
       "emoji": "2️⃣",
       "example": "Puis, vous continuez tout droit.",
@@ -311,6 +332,7 @@
     {
       "id": "directions-matching-conn-ensuite",
       "fr": "ensuite",
+      "syllables": ["en", "suite"],
       "en": "next / afterwards",
       "emoji": "3️⃣",
       "example": "Ensuite, vous tournez à gauche.",
@@ -320,6 +342,7 @@
     {
       "id": "directions-matching-conn-enfin",
       "fr": "enfin",
+      "syllables": ["en", "fin"],
       "en": "finally",
       "emoji": "🏁",
       "example": "Enfin, vous traversez la place.",

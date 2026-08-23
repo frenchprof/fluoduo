@@ -76,6 +76,7 @@
     {
       "id": "vouloir-inviter-10",
       "fr": "Plutôt dimanche ?",
+      "syllables": ["Plu", "tôt", "di", "man", "che?"],
       "en": "Rather Sunday? (counter-propose)",
       "gap": "Plutôt",
       "tags": []
@@ -91,6 +92,7 @@
     {
       "id": "vouloir-inviter-12",
       "fr": "Avec plaisir !",
+      "syllables": ["A", "vec", "plai", "sir!"],
       "en": "With pleasure!",
       "gap": "plaisir",
       "tags": []
@@ -98,6 +100,7 @@
     {
       "id": "vouloir-inviter-13",
       "fr": "D'accord !",
+      "syllables": ["D'ac", "cord!"],
       "en": "Okay! / Agreed!",
       "gap": "D'accord",
       "tags": []

@@ -135,6 +135,69 @@
     "fran",
     "çais?"
    ]
+  },
+  {
+   "id": "question-words-11",
+   "fr": "Tu habites où ? — À Paris.",
+   "en": "Where do you live? — In Paris.",
+   "tags": [],
+   "gap": "où"
+  },
+  {
+   "id": "question-words-12",
+   "fr": "C'est qui ? — C'est mon frère.",
+   "en": "Who is it? — It's my brother.",
+   "tags": [],
+   "gap": "qui"
+  },
+  {
+   "id": "question-words-13",
+   "fr": "Tu t'appelles comment ? — Léo.",
+   "en": "What's your name? — Léo.",
+   "tags": [],
+   "gap": "comment"
+  },
+  {
+   "id": "question-words-14",
+   "fr": "C'est combien ? — Trois euros.",
+   "en": "How much is it? — Three euros.",
+   "tags": [],
+   "gap": "combien"
+  },
+  {
+   "id": "question-words-15",
+   "fr": "Tu manges quoi ? — Une pomme.",
+   "en": "What are you eating? — An apple.",
+   "tags": [],
+   "gap": "quoi"
+  },
+  {
+   "id": "question-words-16",
+   "fr": "Tu vas au cinéma quand ? — Samedi.",
+   "en": "When are you going to the cinema? — Saturday.",
+   "tags": [],
+   "gap": "quand"
+  },
+  {
+   "id": "question-words-17",
+   "fr": "Pourquoi tu étudies le français ? — Parce que j'aime la France.",
+   "en": "Why do you study French? — Because I love France.",
+   "tags": [],
+   "gap": "Pourquoi"
+  },
+  {
+   "id": "question-words-18",
+   "fr": "Est-ce que tu es libre samedi ? — Oui !",
+   "en": "Are you free on Saturday? — Yes!",
+   "tags": [],
+   "gap": "Est-ce que"
+  },
+  {
+   "id": "question-words-19",
+   "fr": "Qu'est-ce que tu fais ? — Du sport.",
+   "en": "What are you doing? — Sport.",
+   "tags": [],
+   "gap": "Qu'est-ce que"
   }
  ]
 }

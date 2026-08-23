@@ -18,7 +18,7 @@
     "les sports"
    ],
    "en": "sports",
-   "tags": [],
+   "tags": ["col:le"],
    "syllables": [
     "le",
     "sport"
@@ -31,7 +31,7 @@
    "id": "aimer-activites-02",
    "fr": "la musique",
    "en": "music",
-   "tags": [],
+   "tags": ["col:la"],
    "syllables": [
     "la",
     "mu",
@@ -45,7 +45,7 @@
    "id": "aimer-activites-03",
    "fr": "le cinéma",
    "en": "cinema",
-   "tags": [],
+   "tags": ["col:le"],
    "syllables": [
     "le",
     "ci",
@@ -60,7 +60,7 @@
    "id": "aimer-activites-04",
    "fr": "la lecture",
    "en": "reading",
-   "tags": [],
+   "tags": ["col:la"],
    "syllables": [
     "la",
     "lec",
@@ -74,7 +74,7 @@
    "id": "aimer-activites-05",
    "fr": "les jeux vidéo",
    "en": "video games",
-   "tags": [],
+   "tags": ["col:les"],
    "syllables": [
     "les",
     "jeux",
@@ -90,7 +90,7 @@
    "id": "aimer-activites-06",
    "fr": "la danse",
    "en": "dance",
-   "tags": [],
+   "tags": ["col:la"],
    "syllables": [
     "la",
     "danse"
@@ -103,7 +103,7 @@
    "id": "aimer-activites-07",
    "fr": "voyager",
    "en": "to travel",
-   "tags": [],
+   "tags": ["col:verbe"],
    "syllables": [
     "vo",
     "ya",
@@ -114,7 +114,7 @@
    "id": "aimer-activites-08",
    "fr": "cuisiner",
    "en": "to cook",
-   "tags": [],
+   "tags": ["col:verbe"],
    "syllables": [
     "cui",
     "si",
@@ -125,7 +125,7 @@
    "id": "aimer-activites-09",
    "fr": "dessiner",
    "en": "to draw",
-   "tags": [],
+   "tags": ["col:verbe"],
    "syllables": [
     "des",
     "si",
@@ -136,7 +136,7 @@
    "id": "aimer-activites-10",
    "fr": "chanter",
    "en": "to sing",
-   "tags": [],
+   "tags": ["col:verbe"],
    "syllables": [
     "chan",
     "ter"
@@ -152,7 +152,7 @@
    ],
    "example": "J'aime danser.",
    "exampleEn": "I like dancing.",
-   "tags": []
+   "tags": ["col:verbe"]
   },
   {
    "id": "aimer-activites-12",
@@ -163,7 +163,7 @@
    ],
    "example": "J'aime lire.",
    "exampleEn": "I like reading.",
-   "tags": []
+   "tags": ["col:verbe"]
   },
   {
    "id": "aimer-activites-13",
@@ -175,7 +175,7 @@
    ],
    "example": "Je n'aime pas courir.",
    "exampleEn": "I don't like running.",
-   "tags": []
+   "tags": ["col:verbe"]
   },
   {
    "id": "aimer-activites-14",
@@ -187,7 +187,7 @@
    ],
    "example": "J'aime nager.",
    "exampleEn": "I like swimming.",
-   "tags": []
+   "tags": ["col:verbe"]
   },
   {
    "id": "aimer-activites-15",
@@ -200,7 +200,7 @@
    ],
    "example": "J'aime écouter de la musique.",
    "exampleEn": "I like listening to music.",
-   "tags": []
+   "tags": ["col:verbe"]
   },
   {
    "id": "aimer-activites-16",
@@ -213,7 +213,7 @@
    ],
    "example": "J'aime regarder la télé.",
    "exampleEn": "I like watching TV.",
-   "tags": []
+   "tags": ["col:verbe"]
   },
   {
    "id": "aimer-activites-17",
@@ -225,7 +225,7 @@
    ],
    "example": "J'adore sortir avec mes amis.",
    "exampleEn": "I love going out with my friends.",
-   "tags": []
+   "tags": ["col:verbe"]
   },
   {
    "id": "aimer-activites-18",
@@ -255,6 +255,34 @@
   }
  ],
  "gameConfig": {
+  "letris": {
+   "columns": [
+    {
+     "key": "le",
+     "label": "LE",
+     "prefix": "",
+     "choiceLabel": "le + noun"
+    },
+    {
+     "key": "la",
+     "label": "LA",
+     "prefix": "",
+     "choiceLabel": "la + noun"
+    },
+    {
+     "key": "les",
+     "label": "LES",
+     "prefix": "",
+     "choiceLabel": "les + noun"
+    },
+    {
+     "key": "verbe",
+     "label": "VERBE (infinitif)",
+     "prefix": "",
+     "choiceLabel": "a verb — infinitive"
+    }
+   ]
+  },
   "lexicalator": {
    "decoys": [
     "zique",

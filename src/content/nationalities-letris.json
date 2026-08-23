@@ -1,0 +1,169 @@
+{
+ "id": "nationalities-letris",
+ "title": "Quelle nationalité ?",
+ "subtitle": "Il est / elle est …",
+ "language": "fr",
+ "categories": [
+  {
+   "key": "il",
+   "label": "Il est ___",
+   "prefix": "il est "
+  },
+  {
+   "key": "elle",
+   "label": "Elle est ___",
+   "prefix": "elle est "
+  },
+  {
+   "key": "both",
+   "label": "Both OK",
+   "prefix": "il est "
+  }
+ ],
+ "tiles": [
+  {
+   "text": "FRANÇAIS",
+   "displayName": "français",
+   "category": "il",
+   "meaning": "French (m)"
+  },
+  {
+   "text": "FRANÇAISE",
+   "displayName": "française",
+   "category": "elle",
+   "meaning": "French (f)"
+  },
+  {
+   "text": "CHINOIS",
+   "displayName": "chinois",
+   "category": "il",
+   "meaning": "Chinese (m)"
+  },
+  {
+   "text": "CHINOISE",
+   "displayName": "chinoise",
+   "category": "elle",
+   "meaning": "Chinese (f)"
+  },
+  {
+   "text": "INDONÉSIEN",
+   "displayName": "indonésien",
+   "category": "il",
+   "meaning": "Indonesian (m)"
+  },
+  {
+   "text": "INDONÉSIENNE",
+   "displayName": "indonésienne",
+   "category": "elle",
+   "meaning": "Indonesian (f)"
+  },
+  {
+   "text": "CORÉEN",
+   "displayName": "coréen",
+   "category": "il",
+   "meaning": "Korean (m)"
+  },
+  {
+   "text": "CORÉENNE",
+   "displayName": "coréenne",
+   "category": "elle",
+   "meaning": "Korean (f)"
+  },
+  {
+   "text": "AMÉRICAIN",
+   "displayName": "américain",
+   "category": "il",
+   "meaning": "American (m)"
+  },
+  {
+   "text": "AMÉRICAINE",
+   "displayName": "américaine",
+   "category": "elle",
+   "meaning": "American (f)"
+  },
+  {
+   "text": "ALLEMAND",
+   "displayName": "allemand",
+   "category": "il",
+   "meaning": "German (m)"
+  },
+  {
+   "text": "ALLEMANDE",
+   "displayName": "allemande",
+   "category": "elle",
+   "meaning": "German (f)"
+  },
+  {
+   "text": "ANGLAIS",
+   "displayName": "anglais",
+   "category": "il",
+   "meaning": "English (m)"
+  },
+  {
+   "text": "ANGLAISE",
+   "displayName": "anglaise",
+   "category": "elle",
+   "meaning": "English (f)"
+  },
+  {
+   "text": "MAROCAIN",
+   "displayName": "marocain",
+   "category": "il",
+   "meaning": "Moroccan (m)"
+  },
+  {
+   "text": "MAROCAINE",
+   "displayName": "marocaine",
+   "category": "elle",
+   "meaning": "Moroccan (f)"
+  },
+  {
+   "text": "TURC",
+   "displayName": "turc",
+   "category": "il",
+   "meaning": "Turkish (m)"
+  },
+  {
+   "text": "TURQUE",
+   "displayName": "turque",
+   "category": "elle",
+   "meaning": "Turkish (f)"
+  },
+  {
+   "text": "GREC",
+   "displayName": "grec",
+   "category": "il",
+   "meaning": "Greek (m)"
+  },
+  {
+   "text": "GRECQUE",
+   "displayName": "grecque",
+   "category": "elle",
+   "meaning": "Greek (f)"
+  },
+  {
+   "text": "RUSSE",
+   "displayName": "russe",
+   "category": "both",
+   "meaning": "Russian (m/f)"
+  },
+  {
+   "text": "SUISSE",
+   "displayName": "suisse",
+   "category": "both",
+   "meaning": "Swiss (m/f)"
+  },
+  {
+   "text": "BELGE",
+   "displayName": "belge",
+   "category": "both",
+   "meaning": "Belgian (m/f)"
+  },
+  {
+   "text": "BRITANNIQUE",
+   "displayName": "britannique",
+   "category": "both",
+   "meaning": "British (m/f)"
+  }
+ ]
+}

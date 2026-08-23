@@ -66,6 +66,62 @@
     "ja",
     "mais"
    ]
+  },
+  {
+   "id": "frequence-06",
+   "fr": "Il boit toujours du café le matin.",
+   "en": "He always drinks coffee in the morning.",
+   "tags": [],
+   "gap": "toujours"
+  },
+  {
+   "id": "frequence-07",
+   "fr": "Nous mangeons souvent des pâtes.",
+   "en": "We often eat pasta.",
+   "tags": [],
+   "gap": "souvent"
+  },
+  {
+   "id": "frequence-08",
+   "fr": "Je mange parfois du poisson.",
+   "en": "I sometimes eat fish.",
+   "tags": [],
+   "gap": "parfois"
+  },
+  {
+   "id": "frequence-09",
+   "fr": "Elle boit rarement du café.",
+   "en": "She rarely drinks coffee.",
+   "tags": [],
+   "gap": "rarement"
+  },
+  {
+   "id": "frequence-10",
+   "fr": "Je ne mange jamais de viande.",
+   "en": "I never eat meat.",
+   "tags": [],
+   "gap": "jamais"
+  },
+  {
+   "id": "frequence-11",
+   "fr": "Tu manges souvent des fraises ?",
+   "en": "Do you often eat strawberries?",
+   "tags": [],
+   "gap": "souvent"
+  },
+  {
+   "id": "frequence-12",
+   "fr": "Ils mangent parfois des sushis.",
+   "en": "They sometimes eat sushi.",
+   "tags": [],
+   "gap": "parfois"
+  },
+  {
+   "id": "frequence-13",
+   "fr": "Il ne boit jamais de lait.",
+   "en": "He never drinks milk.",
+   "tags": [],
+   "gap": "jamais"
   }
  ],
  "gameConfig": {

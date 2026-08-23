@@ -1,9 +1,15 @@
 /**
  * Registry of lessons converted to NATIVE in-app content (CahierShell + Mémo +
- * DiceTrainer) — Dan, 2026-07-03. Every lesson (all 21 grammar lessons + the three Révision mixes) is native.
+ * DiceTrainer) — Dan, 2026-07-03. Every lesson (all grammar lessons + the three Révision mixes) is native.
  */
 import type { NativeLesson } from "./types";
 import { aimerLesson } from "./aimer";
+import { tuVousLesson } from "./tu-vous";
+import { salutationsLesson } from "./salutations";
+import { professionsLesson } from "./professions";
+import { nationalitiesLesson } from "./nationalities";
+import { meteoLesson } from "./meteo";
+import { alimentsLesson } from "./aliments";
 import { sePresenterLesson } from "./se-presenter";
 import { negationLesson } from "./negation";
 import { conjugaisonU1Lesson } from "./conjugaison-u1";
@@ -29,6 +35,12 @@ import { demonstratifsLesson } from "./demonstratifs";
 import { revisionU1Lesson, revisionU3U4Lesson, revisionU4Lesson } from "./revisions";
 
 export const NATIVE_LESSONS: Record<string, NativeLesson> = {
+  "tu-vous": tuVousLesson,
+  salutations: salutationsLesson,
+  professions: professionsLesson,
+  nationalities: nationalitiesLesson,
+  meteo: meteoLesson,
+  aliments: alimentsLesson,
   "se-presenter": sePresenterLesson,
   negation: negationLesson,
   "conjugaison-u1": conjugaisonU1Lesson,

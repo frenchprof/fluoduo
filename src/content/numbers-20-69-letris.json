@@ -1,0 +1,115 @@
+{
+ "id": "numbers-20-69-letris",
+ "title": "Avec « et », avec « - » ou tout rond ?",
+ "subtitle": "see the figure, know how the French word is built",
+ "language": "fr",
+ "categories": [
+  {
+   "key": "rond",
+   "label": "TOUT ROND",
+   "prefix": ""
+  },
+  {
+   "key": "et_un",
+   "label": "AVEC « ET »",
+   "prefix": ""
+  },
+  {
+   "key": "trait",
+   "label": "AVEC « - »",
+   "prefix": ""
+  }
+ ],
+ "tiles": [
+  {
+   "text": "20",
+   "displayName": "vingt",
+   "category": "rond",
+   "meaning": "20"
+  },
+  {
+   "text": "30",
+   "displayName": "trente",
+   "category": "rond",
+   "meaning": "30"
+  },
+  {
+   "text": "40",
+   "displayName": "quarante",
+   "category": "rond",
+   "meaning": "40"
+  },
+  {
+   "text": "50",
+   "displayName": "cinquante",
+   "category": "rond",
+   "meaning": "50"
+  },
+  {
+   "text": "60",
+   "displayName": "soixante",
+   "category": "rond",
+   "meaning": "60"
+  },
+  {
+   "text": "21",
+   "displayName": "vingt et un",
+   "category": "et_un",
+   "meaning": "21"
+  },
+  {
+   "text": "31",
+   "displayName": "trente et un",
+   "category": "et_un",
+   "meaning": "31"
+  },
+  {
+   "text": "41",
+   "displayName": "quarante et un",
+   "category": "et_un",
+   "meaning": "41"
+  },
+  {
+   "text": "51",
+   "displayName": "cinquante et un",
+   "category": "et_un",
+   "meaning": "51"
+  },
+  {
+   "text": "61",
+   "displayName": "soixante et un",
+   "category": "et_un",
+   "meaning": "61"
+  },
+  {
+   "text": "22",
+   "displayName": "vingt-deux",
+   "category": "trait",
+   "meaning": "22"
+  },
+  {
+   "text": "35",
+   "displayName": "trente-cinq",
+   "category": "trait",
+   "meaning": "35"
+  },
+  {
+   "text": "47",
+   "displayName": "quarante-sept",
+   "category": "trait",
+   "meaning": "47"
+  },
+  {
+   "text": "58",
+   "displayName": "cinquante-huit",
+   "category": "trait",
+   "meaning": "58"
+  },
+  {
+   "text": "69",
+   "displayName": "soixante-neuf",
+   "category": "trait",
+   "meaning": "69"
+  }
+ ]
+}
