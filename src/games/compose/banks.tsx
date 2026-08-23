@@ -326,7 +326,9 @@ const MARCHE_BANK: ComposeBank = {
   title: "Chez les commerçants",
   emoji: "🧺",
   unit: 4,
-  deckId: "au-marche",
+  // au-marche merged into commerces (content-gap audit, 2026-08-23) — the
+  // bank pointed at the retired id and never showed on any rail.
+  deckId: "commerces",
   mode: "dialogue",
   scene: { opening: "Bonjour ! Vous désirez ?", emoji: "🧑‍🌾", voice: "m", aiOnly: true, theme: THEME_MARCHE, contextEn: "You're shopping at the market stall — ask for quantities and prices, then pay." },
   categories: withPalette([

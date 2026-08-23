@@ -6,274 +6,328 @@
   "owner": "curated",
   "visibility": "public",
   "unit": 4,
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        {
+          "key": "band70",
+          "label": "70 – 79",
+          "prefix": "",
+          "choiceLabel": "70s — soixante-dix…"
+        },
+        {
+          "key": "band80",
+          "label": "80 – 89",
+          "prefix": "",
+          "choiceLabel": "80s — quatre-vingts…"
+        },
+        {
+          "key": "band90",
+          "label": "90 – 99",
+          "prefix": "",
+          "choiceLabel": "90s — quatre-vingt-dix…"
+        }
+      ]
+    }
+  },
   "items": [
     {
       "id": "num-70",
       "fr": "soixante-dix",
+      "syllables": ["soi", "xante", "-dix"],
       "en": "70",
       "tags": [
-        "col:num"
+        "col:band70"
       ],
       "gap": "soixante-dix"
     },
     {
       "id": "num-71",
       "fr": "soixante et onze",
+      "syllables": ["soi", "xante", "et", "onze"],
       "en": "71",
       "tags": [
-        "col:num"
+        "col:band70"
       ],
       "gap": "soixante et onze"
     },
     {
       "id": "num-72",
       "fr": "soixante-douze",
+      "syllables": ["soi", "xante", "-douze"],
       "en": "72",
       "tags": [
-        "col:num"
+        "col:band70"
       ],
       "gap": "soixante-douze"
     },
     {
       "id": "num-73",
       "fr": "soixante-treize",
+      "syllables": ["soi", "xante", "-treize"],
       "en": "73",
       "tags": [
-        "col:num"
+        "col:band70"
       ],
       "gap": "soixante-treize"
     },
     {
       "id": "num-74",
       "fr": "soixante-quatorze",
+      "syllables": ["soi", "xante", "-qua", "torze"],
       "en": "74",
       "tags": [
-        "col:num"
+        "col:band70"
       ],
       "gap": "soixante-quatorze"
     },
     {
       "id": "num-75",
       "fr": "soixante-quinze",
+      "syllables": ["soi", "xante", "-quinze"],
       "en": "75",
       "tags": [
-        "col:num"
+        "col:band70"
       ],
       "gap": "soixante-quinze"
     },
     {
       "id": "num-76",
       "fr": "soixante-seize",
+      "syllables": ["soi", "xante", "-seize"],
       "en": "76",
       "tags": [
-        "col:num"
+        "col:band70"
       ],
       "gap": "soixante-seize"
     },
     {
       "id": "num-77",
       "fr": "soixante-dix-sept",
+      "syllables": ["soi", "xante", "-dix", "-sept"],
       "en": "77",
       "tags": [
-        "col:num"
+        "col:band70"
       ],
       "gap": "soixante-dix-sept"
     },
     {
       "id": "num-78",
       "fr": "soixante-dix-huit",
+      "syllables": ["soi", "xante", "-dix", "-huit"],
       "en": "78",
       "tags": [
-        "col:num"
+        "col:band70"
       ],
       "gap": "soixante-dix-huit"
     },
     {
       "id": "num-79",
       "fr": "soixante-dix-neuf",
+      "syllables": ["soi", "xante", "-dix", "-neuf"],
       "en": "79",
       "tags": [
-        "col:num"
+        "col:band70"
       ],
       "gap": "soixante-dix-neuf"
     },
     {
       "id": "num-80",
       "fr": "quatre-vingts",
+      "syllables": ["qua", "tre", "-vingts"],
       "en": "80",
       "tags": [
-        "col:num"
+        "col:band80"
       ],
       "gap": "quatre-vingts"
     },
     {
       "id": "num-81",
       "fr": "quatre-vingt-un",
+      "syllables": ["qua", "tre", "-vingt", "-un"],
       "en": "81",
       "tags": [
-        "col:num"
+        "col:band80"
       ],
       "gap": "quatre-vingt-un"
     },
     {
       "id": "num-82",
       "fr": "quatre-vingt-deux",
+      "syllables": ["qua", "tre", "-vingt", "-deux"],
       "en": "82",
       "tags": [
-        "col:num"
+        "col:band80"
       ],
       "gap": "quatre-vingt-deux"
     },
     {
       "id": "num-83",
       "fr": "quatre-vingt-trois",
+      "syllables": ["qua", "tre", "-vingt", "-trois"],
       "en": "83",
       "tags": [
-        "col:num"
+        "col:band80"
       ],
       "gap": "quatre-vingt-trois"
     },
     {
       "id": "num-84",
       "fr": "quatre-vingt-quatre",
+      "syllables": ["qua", "tre", "-vingt", "-qua", "tre"],
       "en": "84",
       "tags": [
-        "col:num"
+        "col:band80"
       ],
       "gap": "quatre-vingt-quatre"
     },
     {
       "id": "num-85",
       "fr": "quatre-vingt-cinq",
+      "syllables": ["qua", "tre", "-vingt", "-cinq"],
       "en": "85",
       "tags": [
-        "col:num"
+        "col:band80"
       ],
       "gap": "quatre-vingt-cinq"
     },
     {
       "id": "num-86",
       "fr": "quatre-vingt-six",
+      "syllables": ["qua", "tre", "-vingt", "-six"],
       "en": "86",
       "tags": [
-        "col:num"
+        "col:band80"
       ],
       "gap": "quatre-vingt-six"
     },
     {
       "id": "num-87",
       "fr": "quatre-vingt-sept",
+      "syllables": ["qua", "tre", "-vingt", "-sept"],
       "en": "87",
       "tags": [
-        "col:num"
+        "col:band80"
       ],
       "gap": "quatre-vingt-sept"
     },
     {
       "id": "num-88",
       "fr": "quatre-vingt-huit",
+      "syllables": ["qua", "tre", "-vingt", "-huit"],
       "en": "88",
       "tags": [
-        "col:num"
+        "col:band80"
       ],
       "gap": "quatre-vingt-huit"
     },
     {
       "id": "num-89",
       "fr": "quatre-vingt-neuf",
+      "syllables": ["qua", "tre", "-vingt", "-neuf"],
       "en": "89",
       "tags": [
-        "col:num"
+        "col:band80"
       ],
       "gap": "quatre-vingt-neuf"
     },
     {
       "id": "num-90",
       "fr": "quatre-vingt-dix",
+      "syllables": ["qua", "tre", "-vingt", "-dix"],
       "en": "90",
       "tags": [
-        "col:num"
+        "col:band90"
       ],
       "gap": "quatre-vingt-dix"
     },
     {
       "id": "num-91",
       "fr": "quatre-vingt-onze",
+      "syllables": ["qua", "tre", "-vingt", "-onze"],
       "en": "91",
       "tags": [
-        "col:num"
+        "col:band90"
       ],
       "gap": "quatre-vingt-onze"
     },
     {
       "id": "num-92",
       "fr": "quatre-vingt-douze",
+      "syllables": ["qua", "tre", "-vingt", "-douze"],
       "en": "92",
       "tags": [
-        "col:num"
+        "col:band90"
       ],
       "gap": "quatre-vingt-douze"
     },
     {
       "id": "num-93",
       "fr": "quatre-vingt-treize",
+      "syllables": ["qua", "tre", "-vingt", "-treize"],
       "en": "93",
       "tags": [
-        "col:num"
+        "col:band90"
       ],
       "gap": "quatre-vingt-treize"
     },
     {
       "id": "num-94",
       "fr": "quatre-vingt-quatorze",
+      "syllables": ["qua", "tre", "-vingt", "-qua", "torze"],
       "en": "94",
       "tags": [
-        "col:num"
+        "col:band90"
       ],
       "gap": "quatre-vingt-quatorze"
     },
     {
       "id": "num-95",
       "fr": "quatre-vingt-quinze",
+      "syllables": ["qua", "tre", "-vingt", "-quinze"],
       "en": "95",
       "tags": [
-        "col:num"
+        "col:band90"
       ],
       "gap": "quatre-vingt-quinze"
     },
     {
       "id": "num-96",
       "fr": "quatre-vingt-seize",
+      "syllables": ["qua", "tre", "-vingt", "-seize"],
       "en": "96",
       "tags": [
-        "col:num"
+        "col:band90"
       ],
       "gap": "quatre-vingt-seize"
     },
     {
       "id": "num-97",
       "fr": "quatre-vingt-dix-sept",
+      "syllables": ["qua", "tre", "-vingt", "-dix", "-sept"],
       "en": "97",
       "tags": [
-        "col:num"
+        "col:band90"
       ],
       "gap": "quatre-vingt-dix-sept"
     },
     {
       "id": "num-98",
       "fr": "quatre-vingt-dix-huit",
+      "syllables": ["qua", "tre", "-vingt", "-dix", "-huit"],
       "en": "98",
       "tags": [
-        "col:num"
+        "col:band90"
       ],
       "gap": "quatre-vingt-dix-huit"
     },
     {
       "id": "num-99",
       "fr": "quatre-vingt-dix-neuf",
+      "syllables": ["qua", "tre", "-vingt", "-dix", "-neuf"],
       "en": "99",
       "tags": [
-        "col:num"
+        "col:band90"
       ],
       "gap": "quatre-vingt-dix-neuf"
     }

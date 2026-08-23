@@ -44,6 +44,7 @@ import { isPlayableGap } from "@/lib/collections/gapSentence";
 import { activity, familyOf } from "@/content/activities";
 import { toPracticeSet } from "@/lib/practice/engine";
 import BottomBar from "@/components/BottomBar";
+import PageBand from "@/components/PageBand";
 
 /** Dice Practice is an MCQ over the deck's letris columns — no columns, no game. */
 export function hasDicePractice(collectionId: string): boolean {
@@ -127,6 +128,7 @@ export default function CahierShell({
   tabs = [],
   active,
   topRight,
+  band,
   children,
 }: {
   /** Page-context flaps (a deck's activities, Teacher, …). The two site
@@ -136,6 +138,9 @@ export default function CahierShell({
   tabs?: ShellTab[];
   active: string;
   topRight?: ReactNode; // extra top-bar content (e.g. a live score)
+  /** The heading band's data slots (sub-line + the one number), or `false`
+   *  to suppress the band on a page that draws its own heading. */
+  band?: { title?: ReactNode; sub?: ReactNode; stat?: ReactNode } | false;
   children: ReactNode;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -410,6 +415,14 @@ export default function CahierShell({
               </div>
             </div>
           </div>
+
+          {/* The page's heading band (Dan, 2026-08-23, variant A): every
+              family page opens with the same structure the profile page
+              established — name on the family's ink, one number right.
+              Home keeps its hero instead; /moi and /profil have no famKey. */}
+          {famKey && active !== "home" && band !== false && (band?.title ?? pageLabel) && (
+            <PageBand title={band?.title ?? pageLabel} sub={band?.sub} stat={band?.stat} className={nested ? "pl-5 sm:pl-7" : "pl-12 sm:pl-16"} />
+          )}
 
           {/* Ruled paper behind the content well — horizontals only, no vertical
               margin line (Dan, 2026-08-10). Opt-in class rather than a body

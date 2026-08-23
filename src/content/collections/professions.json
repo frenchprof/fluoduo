@@ -310,6 +310,102 @@
       "tags": [
         "col:elle"
       ]
+    },
+    {
+      "id": "professions-22",
+      "fr": "Il est chanteur.",
+      "en": "He is a singer.",
+      "example": "Elle est chanteuse.",
+      "tags": [],
+      "gap": "chanteur"
+    },
+    {
+      "id": "professions-23",
+      "fr": "Elle est chanteuse.",
+      "en": "She is a singer.",
+      "example": "Il est chanteur.",
+      "tags": [],
+      "gap": "chanteuse"
+    },
+    {
+      "id": "professions-24",
+      "fr": "Il est acteur.",
+      "en": "He is an actor.",
+      "example": "Elle est actrice.",
+      "tags": [],
+      "gap": "acteur"
+    },
+    {
+      "id": "professions-25",
+      "fr": "Elle est actrice.",
+      "en": "She is an actress.",
+      "example": "Il est acteur.",
+      "tags": [],
+      "gap": "actrice"
+    },
+    {
+      "id": "professions-26",
+      "fr": "Il est serveur.",
+      "en": "He is a waiter.",
+      "example": "Elle est serveuse.",
+      "tags": [],
+      "gap": "serveur"
+    },
+    {
+      "id": "professions-27",
+      "fr": "Elle est serveuse.",
+      "en": "She is a waitress.",
+      "example": "Il est serveur.",
+      "tags": [],
+      "gap": "serveuse"
+    },
+    {
+      "id": "professions-28",
+      "fr": "Il est musicien.",
+      "en": "He is a musician.",
+      "example": "Elle est musicienne.",
+      "tags": [],
+      "gap": "musicien"
+    },
+    {
+      "id": "professions-29",
+      "fr": "Elle est musicienne.",
+      "en": "She is a musician.",
+      "example": "Il est musicien.",
+      "tags": [],
+      "gap": "musicienne"
+    },
+    {
+      "id": "professions-30",
+      "fr": "Elle est médecin.",
+      "en": "She is a doctor.",
+      "example": "Il est médecin.",
+      "tags": [],
+      "gap": "médecin"
+    },
+    {
+      "id": "professions-31",
+      "fr": "Il est journaliste.",
+      "en": "He is a journalist.",
+      "example": "Elle est journaliste.",
+      "tags": [],
+      "gap": "journaliste"
+    },
+    {
+      "id": "professions-32",
+      "fr": "Elle est étudiante.",
+      "en": "She is a student.",
+      "example": "Il est étudiant.",
+      "tags": [],
+      "gap": "étudiante"
+    },
+    {
+      "id": "professions-33",
+      "fr": "Il est étudiant.",
+      "en": "He is a student.",
+      "example": "Elle est étudiante.",
+      "tags": [],
+      "gap": "étudiant"
     }
   ]
 }

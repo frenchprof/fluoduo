@@ -290,6 +290,86 @@
       "tags": [
         "col:mes"
       ]
+    },
+    {
+      "id": "possessives-22",
+      "fr": "Voici mon père.",
+      "en": "Here's my father.",
+      "example": "Voici ma mère.",
+      "tags": [],
+      "gap": "mon"
+    },
+    {
+      "id": "possessives-23",
+      "fr": "Voici ma sœur.",
+      "en": "Here's my sister.",
+      "example": "Voici mon frère.",
+      "tags": [],
+      "gap": "ma"
+    },
+    {
+      "id": "possessives-24",
+      "fr": "Où sont mes clés ?",
+      "en": "Where are my keys?",
+      "example": "Où est mon stylo ?",
+      "tags": [],
+      "gap": "mes"
+    },
+    {
+      "id": "possessives-25",
+      "fr": "C'est ma maison.",
+      "en": "It's my house.",
+      "example": "C'est mon livre.",
+      "tags": [],
+      "gap": "ma"
+    },
+    {
+      "id": "possessives-26",
+      "fr": "C'est mon téléphone.",
+      "en": "It's my phone.",
+      "example": "C'est ma maison.",
+      "tags": [],
+      "gap": "mon"
+    },
+    {
+      "id": "possessives-27",
+      "fr": "J'adore ma famille.",
+      "en": "I love my family.",
+      "example": "J'adore mes parents.",
+      "tags": [],
+      "gap": "ma"
+    },
+    {
+      "id": "possessives-28",
+      "fr": "Voici mes amis.",
+      "en": "Here are my friends.",
+      "example": "Voici mon cousin.",
+      "tags": [],
+      "gap": "mes"
+    },
+    {
+      "id": "possessives-29",
+      "fr": "Tu as mon stylo ?",
+      "en": "Do you have my pen?",
+      "example": "Tu as mes clés ?",
+      "tags": [],
+      "gap": "mon"
+    },
+    {
+      "id": "possessives-30",
+      "fr": "J'aime ma cousine.",
+      "en": "I like my cousin (f).",
+      "example": "J'aime mon oncle.",
+      "tags": [],
+      "gap": "ma"
+    },
+    {
+      "id": "possessives-31",
+      "fr": "Ce sont mes grands-parents.",
+      "en": "These are my grandparents.",
+      "example": "C'est mon grand-père.",
+      "tags": [],
+      "gap": "mes"
     }
   ]
 }

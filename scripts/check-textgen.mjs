@@ -28,6 +28,9 @@ const SOURCES = [
   "src/lib/textgen/types.ts",
   "src/lib/textgen/french.ts",
   "src/lib/textgen/engine.ts",
+  "src/content/textgen/unit0.ts",
+  "src/content/textgen/unit1.ts",
+  "src/content/textgen/unit2.ts",
   "src/content/textgen/unit3.ts",
   "src/content/textgen/unit4.ts",
   "src/content/textgen/index.ts",
@@ -64,6 +67,7 @@ const FUNCTION_WORDS = `
   mon ma mes ton ta tes son sa ses notre nos votre vos leur leurs
   qui que qu quoi où quand comment pourquoi combien est-ce
   et ou mais aussi alors donc si comme très beaucoup peu trop assez plus
+  ans parle
   ne pas jamais rien plus non oui voilà voici
   suis es est sommes êtes sont ai as a avons avez ont
   vais vas va allons allez vont aller
@@ -114,6 +118,9 @@ function buildAllowed(maxUnit) {
     for (const text of [deck.title, deck.subtitle]) if (text) words(text).forEach((w) => allowed.add(w));
     for (const item of deck.items ?? []) {
       for (const text of [item.fr, item.example]) if (text) words(text).forEach((w) => allowed.add(w));
+      // Structured gender/number forms (nationalities' nat.ms/fs/mp/fp) ARE
+      // the deck's taught words — the fr field carries only the country.
+      if (item.nat) for (const v of Object.values(item.nat)) words(String(v)).forEach((w) => allowed.add(w));
     }
   }
 

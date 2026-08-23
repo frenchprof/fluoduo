@@ -10,6 +10,36 @@
   "lessonSlug": "alphabet",
   "tags": [],
   "seq": 3,
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        {
+          "key": "ah",
+          "label": "A",
+          "prefix": "",
+          "choiceLabel": "rhymes with A — ka, ache…"
+        },
+        {
+          "key": "ay",
+          "label": "É",
+          "prefix": "",
+          "choiceLabel": "rhymes with É — bé, cé, dé…"
+        },
+        {
+          "key": "air",
+          "label": "È",
+          "prefix": "",
+          "choiceLabel": "rhymes with È — èf, èl, èm…"
+        },
+        {
+          "key": "i",
+          "label": "I",
+          "prefix": "",
+          "choiceLabel": "rhymes with I — ji, iks…"
+        }
+      ]
+    }
+  },
   "items": [
     { "id": "alphabet-a", "fr": "A", "en": "ah", "tags": ["col:ah"] },
     { "id": "alphabet-b", "fr": "B", "en": "bé", "tags": ["col:ay"] },

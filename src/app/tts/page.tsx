@@ -245,10 +245,7 @@ function TtsPageInner() {
   return (
     <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="tts">
       <div className="mx-auto max-w-2xl px-3 pb-5 pt-2">
-        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
-          🔊 VoixLà <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· Text-to-Speech</span>
-        </h1>
-
+        {/* The h1 moved into the shell's heading band (variant A, 2026-08-23). */}
         {/* Same warm panel as the Tutor (Dan, 2026-07-13: "adopt similar
             colors for Studio TTS just like the Tutor"). */}
         <div

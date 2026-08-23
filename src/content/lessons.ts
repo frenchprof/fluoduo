@@ -8,6 +8,8 @@
 export type Lesson = { slug: string; title: string; unit: number };
 
 export const LESSONS: Record<string, Lesson> = {
+  "tu-vous":           { slug: "tu-vous",           title: "Tu ou vous ?",                 unit: 0 },
+  "salutations":       { slug: "salutations",       title: "Les salutations",              unit: 0 },
   "se-presenter":      { slug: "se-presenter",      title: "Se présenter",                 unit: 1 },
   "negation":          { slug: "negation",          title: "La négation",                  unit: 1 },
   "conjugaison-u1":    { slug: "conjugaison-u1",    title: "Conjugaison (Unité 1)",        unit: 1 },
@@ -15,6 +17,8 @@ export const LESSONS: Record<string, Lesson> = {
   "questions-oui-non": { slug: "questions-oui-non", title: "Questions : oui ou non",       unit: 1 },
   "mots-interrogatifs":{ slug: "mots-interrogatifs",title: "Les mots interrogatifs",       unit: 1 },
   "articles-pays":     { slug: "articles-pays",     title: "Les articles des pays",        unit: 1 },
+  "professions":       { slug: "professions",       title: "Les professions",              unit: 1 },
+  "nationalities":     { slug: "nationalities",     title: "Les nationalités",             unit: 1 },
   "revision-u1":       { slug: "revision-u1",       title: "Révision — Unité 1",           unit: 1 },
   "aimer":             { slug: "aimer",             title: "Aimer + le / la / les",        unit: 2 },
   "faire":             { slug: "faire",             title: "Faire + du / de la",           unit: 2 },
@@ -25,9 +29,11 @@ export const LESSONS: Record<string, Lesson> = {
   "conjugaison-er":    { slug: "conjugaison-er",    title: "Conjugaison : -er, faire, aller", unit: 2 },
   "modaux":            { slug: "modaux",            title: "Modaux : vouloir, pouvoir",    unit: 2 },
   "rendezvous":        { slug: "rendezvous",        title: "Proposer, accepter, refuser", unit: 2 },
+  "meteo":             { slug: "meteo",             title: "La météo",                     unit: 3 },
   "prepositions":      { slug: "prepositions",      title: "Prépositions : pays & villes",  unit: 3 },
   "prepositions-lieux":{ slug: "prepositions-lieux",title: "Prépositions : en ville",       unit: 3 },
   "revision-u3u4":     { slug: "revision-u3u4",     title: "Révision — Unités 3 & 4",      unit: 3 },
+  "aliments":          { slug: "aliments",          title: "Les repas & les aliments",     unit: 4 },
   "partitifs":         { slug: "partitifs",         title: "Les articles partitifs",       unit: 4 },
   "manger-boire":      { slug: "manger-boire",      title: "Manger & boire",               unit: 4 },
   "futur-proche":      { slug: "futur-proche",      title: "Le futur proche",              unit: 4 },
@@ -44,6 +50,10 @@ export const LESSONS: Record<string, Lesson> = {
  */
 export const LESSONS_BY_SIO: Record<string, string[]> = {
   "SIO-001": ["se-presenter", "conjugaison-u1"], // s'appeler: taught in L01 + L03
+  "SIO-002": ["tu-vous"],
+  "SIO-009": ["salutations"],
+  "SIO-012": ["professions"],
+  "SIO-016": ["nationalities"],
   "SIO-014": ["se-presenter", "negation", "conjugaison-u1"],
   // avoir-etats FIRST: the SIO's grammar is avoir-vs-être states + age, not
   // the paradigm tables (Dan, 2026-07-08: "the avoir SIO doesn't match").
@@ -59,8 +69,10 @@ export const LESSONS_BY_SIO: Record<string, string[]> = {
   "SIO-037": ["modaux"],
   "SIO-047": ["futur-proche", "modaux"],
   "SIO-048": ["modaux"],
+  "SIO-031": ["meteo"],
   "SIO-032": ["prepositions"],
   "SIO-033": ["prepositions-lieux"],
+  "SIO-041": ["aliments"],
   "SIO-042": ["partitifs", "manger-boire"],
   "SIO-043": ["frequence"],
   "SIO-046": ["demonstratifs"],

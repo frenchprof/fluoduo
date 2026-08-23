@@ -98,12 +98,11 @@ export default function ReviserPage() {
       tabs={TABS}
       active="reviser"
       topRight={total > 0 && !done ? <span className="fluo-mono text-sm font-bold">{i}/{total} · ✓ {score}</span> : null}
+      /* The heading band carries the name and the ONE number; the old h1 +
+         explainer paragraph fell to the litmus rule (2026-08-23, variant A). */
+      band={{ stat: total > 0 && !done ? `${cards.length} due` : null }}
     >
       <div className="mx-auto max-w-xl px-4 pb-6 pt-2">
-        <h1 className="fluo-serif text-2xl font-black text-[color:var(--fluo-ink)]">🔖 DéjàRevu <span className="text-lg font-bold text-[color:var(--fluo-ink-soft)]">· Review</span></h1>
-        <p className="mt-1 mb-5 text-sm text-[color:var(--fluo-ink-soft)]">
-          Words you&rsquo;ve practised that are due again. Answering here reschedules them.{cards.length > PAGE ? ` ${cards.length} due — in pages of ${PAGE}.` : ""}
-        </p>
 
         {total === 0 ? (
           <div className="rounded-2xl border-2 p-5 text-center" style={{ borderColor: "var(--fluo-line)" }}>

@@ -23,6 +23,14 @@ import transportLetris from "@/content/transport-letris.json";
 import partitifsLetris from "@/content/partitifs-letris.json";
 import modauxLetris from "@/content/modaux-letris.json";
 import questionWordsLetris from "@/content/question-words-letris.json";
+import daysLetris from "@/content/days-letris.json";
+import alphabetLetris from "@/content/alphabet-letris.json";
+import numbers020Letris from "@/content/numbers-0-20-letris.json";
+import numbers2069Letris from "@/content/numbers-20-69-letris.json";
+import numbers7099Letris from "@/content/numbers-70-99-letris.json";
+import languagesLetris from "@/content/languages-letris.json";
+import nationalitiesLetris from "@/content/nationalities-letris.json";
+import aimerActivitesLetris from "@/content/aimer-activites-letris.json";
 import type { LetrisSet } from "./LetrisGame";
 
 export type LetrisSetMeta = {
@@ -64,6 +72,21 @@ const REGISTRY: Record<string, LetrisSet> = {
   partitifs: partitifsLetris as LetrisSet,
   modaux: modauxLetris as LetrisSet,
   "question-words": questionWordsLetris as LetrisSet,
+  // Content-gap wave (2026-08-23): rain sets for the decks that had none,
+  // keyed by deck id so the rails' `collectionId.replace("-letris", "")`
+  // lands here. Category axes come from the syllabus: U0 jours + moments,
+  // U0 alphabet pour épeler (rhyme families), U0/U1 nombres 1–10 vs 11–69
+  // (« vingt et un » vs « vingt-deux »), U4 nombres (3) de 70 à 100,
+  // U1 accord des adjectifs de nationalité, U1/U2 l'élision (le/l'),
+  // U2 aimer + article défini vs aimer + infinitif.
+  days: daysLetris as LetrisSet,
+  alphabet: alphabetLetris as LetrisSet,
+  "numbers-0-20": numbers020Letris as LetrisSet,
+  "numbers-20-69": numbers2069Letris as LetrisSet,
+  "numbers-70-99": numbers7099Letris as LetrisSet,
+  languages: languagesLetris as LetrisSet,
+  nationalities: nationalitiesLetris as LetrisSet,
+  "aimer-activites": aimerActivitesLetris as LetrisSet,
 };
 
 const META: Record<string, { emoji: string }> = {
@@ -92,14 +115,32 @@ const META: Record<string, { emoji: string }> = {
   partitifs: { emoji: "🥖" },
   modaux: { emoji: "🚦" },
   "question-words": { emoji: "🗨️" },
+  days: { emoji: "📅" },
+  alphabet: { emoji: "🔤" },
+  "numbers-0-20": { emoji: "🔢" },
+  "numbers-20-69": { emoji: "🧮" },
+  "numbers-70-99": { emoji: "💯" },
+  languages: { emoji: "🗣️" },
+  nationalities: { emoji: "🪪" },
+  "aimer-activites": { emoji: "❤️" },
 };
 
 // Out-of-syllabus pools — reachable by slug, but hidden from the default lesson
 // list; surfaced only once an Expert-mode toggle is wired up.
 const EXPERT_ONLY = new Set<string>(["countries-expert"]);
 
+// Deck-id → set-slug aliases: the modaux set serves BOTH modaux decks, but
+// the rails derive the slug from the deck id (`collectionId.replace("-letris",
+// "")`), which matched no registry key — the set was reachable from the rain
+// gallery and from neither deck (content-gap audit, 2026-08-23). One shared
+// entry in the gallery, two doors from the rails.
+const DECK_SLUG_ALIASES: Record<string, string> = {
+  "modaux-plans": "modaux",
+  "modaux-avis": "modaux",
+};
+
 export function getLetrisSet(slug: string): LetrisSet | null {
-  return REGISTRY[slug] ?? null;
+  return REGISTRY[slug] ?? REGISTRY[DECK_SLUG_ALIASES[slug] ?? ""] ?? null;
 }
 
 export function listLetrisSets({ includeExpert = false } = {}): LetrisSetMeta[] {

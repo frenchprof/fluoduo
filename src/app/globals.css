@@ -532,6 +532,7 @@ body {
   --region-market-band:   var(--tier-weak-soft);
   --font-display-stack: var(--font-display), system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-hand-stack:    var(--font-hand), "Bradley Hand", "Segoe Print", cursive;
+  --font-fluohand-stack: var(--font-fluohand), var(--font-hand), "Bradley Hand", "Segoe Print", cursive;
   --font-body-stack:    var(--font-body), system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
@@ -539,6 +540,8 @@ body {
 .cahier-body    { font-family: var(--font-body-stack); }
 /* Expressive display face. Apply DELIBERATELY to major page titles only. */
 .cahier-hand    { font-family: var(--font-hand-stack); font-weight: 400; letter-spacing: 0; }
+/* The heading bands’ face — Dan’s own FluOlinGo Hand OTF (2026-08-23). */
+.fluo-band-hand { font-family: var(--font-fluohand-stack); font-weight: 400; letter-spacing: 0; }
 .cahier-hl {
   background-color: var(--cahier-hl);
   mix-blend-mode: multiply;

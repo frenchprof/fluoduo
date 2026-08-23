@@ -37,20 +37,30 @@ import EcouTexte from "./EcouTexte";
 
 /** One entry per situation. `scenario` empty = no generator written yet. */
 const TOPICS: { unit: number; topics: { scenario: string; label: string }[] }[] = [
+  // Units 0-2 generators authored 2026-08-23 (content-gap wave, checked
+  // against the Atelier unit PDFs) — the "coming soon" placeholders are gone.
+  {
+    unit: 0,
+    topics: [
+      { scenario: "la-rencontre", label: "Meeting someone" },
+      { scenario: "le-premier-cours", label: "First class" },
+      { scenario: "qui-est-ce", label: "Who is it?" },
+    ],
+  },
   {
     unit: 1,
     topics: [
-      { scenario: "", label: "Introductions" },
-      { scenario: "", label: "Nationality" },
-      { scenario: "", label: "Asking questions" },
+      { scenario: "cest-qui", label: "Who is that?" },
+      { scenario: "le-camarade", label: "A classmate" },
+      { scenario: "ma-presentation", label: "Introducing yourself" },
     ],
   },
   {
     unit: 2,
     topics: [
-      { scenario: "", label: "Objects" },
-      { scenario: "", label: "What you like" },
-      { scenario: "", label: "Going out" },
+      { scenario: "mes-loisirs", label: "What you like" },
+      { scenario: "le-week-end", label: "The weekend" },
+      { scenario: "l-invitation", label: "Inviting a friend" },
     ],
   },
   {
