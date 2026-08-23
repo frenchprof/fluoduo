@@ -98,8 +98,18 @@ const META: Record<string, { emoji: string }> = {
 // list; surfaced only once an Expert-mode toggle is wired up.
 const EXPERT_ONLY = new Set<string>(["countries-expert"]);
 
+// Deck-id → set-slug aliases: the modaux set serves BOTH modaux decks, but
+// the rails derive the slug from the deck id (`collectionId.replace("-letris",
+// "")`), which matched no registry key — the set was reachable from the rain
+// gallery and from neither deck (content-gap audit, 2026-08-23). One shared
+// entry in the gallery, two doors from the rails.
+const DECK_SLUG_ALIASES: Record<string, string> = {
+  "modaux-plans": "modaux",
+  "modaux-avis": "modaux",
+};
+
 export function getLetrisSet(slug: string): LetrisSet | null {
-  return REGISTRY[slug] ?? null;
+  return REGISTRY[slug] ?? REGISTRY[DECK_SLUG_ALIASES[slug] ?? ""] ?? null;
 }
 
 export function listLetrisSets({ includeExpert = false } = {}): LetrisSetMeta[] {
