@@ -44,6 +44,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import DrillShell from "@/components/DrillShell";
+import PageBand from "@/components/PageBand";
 import { pauseSpeech, resumeSpeech, speak, speakSequence } from "@/games/letris/speech";
 import { gradeAnswer, type Grade } from "@/lib/practice/cloze";
 import { fingerprint, generateUnheard } from "@/lib/textgen/engine";
@@ -310,21 +311,13 @@ export default function EcouTexte({
 
   const body = (
     <div className="space-y-3">
-      {/* The wordmark block — Dan, 22 Aug: "something like this at the top left". */}
-      <div className="flex items-center gap-2.5">
-        <span
-          aria-hidden
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-lg"
-          style={{ background: `linear-gradient(${accent}, color-mix(in oklab, ${accent} 78%, #000))`, boxShadow: `0 1px 2px ${accent}55` }}
-        >
-          🎧
-        </span>
-        <span className="flex min-w-0 flex-col">
-          <span className="cahier-hand text-2xl leading-none" style={{ color: accent }}>
-            ÉcouTexte
-          </span>
-          <span className="text-xs text-[color:var(--cahier-ink-soft)]">Listen, then write what you hear</span>
-        </span>
+      {/* The SAME heading band as every page (Dan, 2026-08-23: "why doesn't
+          ÉcouTexte have the same look as the other activities") — the 22 Aug
+          ad-hoc wordmark block predated the band system by a day. fam-skills
+          supplies the family ink DrillShell pages don't inherit; the tagline
+          fell to the litmus rule (the empty state says the same thing). */}
+      <div className="fam-skills -mx-1 overflow-hidden rounded-2xl">
+        <PageBand title="ÉcouTexte" className="pl-4" />
       </div>
 
       {header}
