@@ -124,6 +124,17 @@ Only ONE agent edits this file at a time; say so in your commit.
   frequence keeps « parfois » (Atelier bilan uses it too, lessons use
   « quelquefois »). verify23/24 green, tsc clean. NOT deployed.
 
+- 23 Aug (content agent, finishing pass on the wave): the two letris/EtuDice
+  decks the wave skipped for concurrent edits are DONE — `numbers-70-99`
+  (bands 70–79/80–89/90–99, all 30 `col:num` tags retagged, parked scratchpad
+  spec executed) and `question-words` (`gameConfig.letris` on the Atelier U0
+  « Suivez le guide ! » axis — the book sections its intro BY question word —
+  columns WHAT/WHO · WHERE/WHEN · HOW/WHY · HOW MANY, 8 items tagged;
+  est-ce que + the inversion sentence have no wh-category, left untagged;
+  the 9 new gap items untouched). Also removed partitifs.json's 6 dead
+  `syllables` arrays (q01–q06 — the flagged pre-existing bug; fr kept).
+  verify23/24 green, tsc clean, CONTENT_FLAGS updated. NOT deployed.
+
 ## Programme — done
 
 - **23 Aug (Peers, the content-gap wave + visual unity): eight authoring

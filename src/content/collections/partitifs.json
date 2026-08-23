@@ -175,13 +175,7 @@
    "tags": [
     "quantite"
    ],
-   "gap": "de",
-   "syllables": [
-    "beau",
-    "coup",
-    "de",
-    "pain"
-   ]
+   "gap": "de"
   },
   {
    "id": "partitifs-q02",
@@ -193,14 +187,7 @@
    "tags": [
     "quantite"
    ],
-   "gap": "d'",
-   "syllables": [
-    "beau",
-    "coup",
-    "d'a",
-    "bri",
-    "cots"
-   ]
+   "gap": "d'"
   },
   {
    "id": "partitifs-q03",
@@ -212,13 +199,7 @@
    "tags": [
     "quantite"
    ],
-   "gap": "de",
-   "syllables": [
-    "as",
-    "sez",
-    "de",
-    "sel"
-   ]
+   "gap": "de"
   },
   {
    "id": "partitifs-q04",
@@ -230,12 +211,7 @@
    "tags": [
     "quantite"
    ],
-   "gap": "de",
-   "syllables": [
-    "trop",
-    "de",
-    "sucre"
-   ]
+   "gap": "de"
   },
   {
    "id": "partitifs-q05",
@@ -247,13 +223,7 @@
    "tags": [
     "quantite"
    ],
-   "gap": "de",
-   "syllables": [
-    "un",
-    "peu",
-    "de",
-    "lait"
-   ]
+   "gap": "de"
   },
   {
    "id": "partitifs-q06",
@@ -265,14 +235,7 @@
    "tags": [
     "quantite"
    ],
-   "gap": "de",
-   "syllables": [
-    "un",
-    "ki",
-    "lo",
-    "de",
-    "pommes"
-   ]
+   "gap": "de"
   }
  ]
 }

@@ -11,6 +11,34 @@
  "tags": [],
  "seq": 335,
  "gameConfig": {
+  "letris": {
+   "columns": [
+    {
+     "key": "what_who",
+     "label": "WHAT / WHO",
+     "prefix": "",
+     "choiceLabel": "asks about a thing or a person"
+    },
+    {
+     "key": "where_when",
+     "label": "WHERE / WHEN",
+     "prefix": "",
+     "choiceLabel": "asks about a place or a time"
+    },
+    {
+     "key": "how_why",
+     "label": "HOW / WHY",
+     "prefix": "",
+     "choiceLabel": "asks about a manner or a reason"
+    },
+    {
+     "key": "quantity",
+     "label": "HOW MANY / MUCH",
+     "prefix": "",
+     "choiceLabel": "asks about a quantity"
+    }
+   ]
+  },
   "lexicalator": {
    "decoys": [
     "quant",
@@ -36,7 +64,7 @@
    "syllables": [
     "où"
    ],
-   "tags": []
+   "tags": ["col:where_when"]
   },
   {
    "id": "question-words-02",
@@ -45,7 +73,7 @@
    "syllables": [
     "quand"
    ],
-   "tags": []
+   "tags": ["col:where_when"]
   },
   {
    "id": "question-words-03",
@@ -55,7 +83,7 @@
     "com",
     "bien"
    ],
-   "tags": []
+   "tags": ["col:quantity"]
   },
   {
    "id": "question-words-04",
@@ -65,7 +93,7 @@
     "com",
     "ment"
    ],
-   "tags": []
+   "tags": ["col:how_why"]
   },
   {
    "id": "question-words-05",
@@ -74,7 +102,7 @@
    "syllables": [
     "quoi"
    ],
-   "tags": []
+   "tags": ["col:what_who"]
   },
   {
    "id": "question-words-06",
@@ -83,7 +111,7 @@
    "syllables": [
     "qui"
    ],
-   "tags": []
+   "tags": ["col:what_who"]
   },
   {
    "id": "question-words-07",
@@ -93,7 +121,7 @@
     "pour",
     "quoi"
    ],
-   "tags": []
+   "tags": ["col:how_why"]
   },
   {
    "id": "question-words-08",
@@ -114,7 +142,7 @@
    "en": "what …? (keeps statement order)",
    "example": "Qu'est-ce que tu manges ?",
    "exampleEn": "What are you eating?",
-   "tags": [],
+   "tags": ["col:what_who"],
    "syllables": [
     "qu'est-",
     "ce",

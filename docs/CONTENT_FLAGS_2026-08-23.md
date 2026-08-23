@@ -35,7 +35,7 @@ Nothing here blocks; strike anything wrong and it comes out.
 ## LexicaLater syllables (6 decks, 91 items)
 - Left at zero BY RULE (full-sentence decks): sappeler, etre-etudiant, parce-que, negation-pas, pouvoir, envies-besoins, modaux-plans/avis, partitifs — sayable if you want them playable (faire-activites precedent).
 - Flagged for permanent exclusion: alphabet (single letters), stress-pronouns (monosyllables), nationalities (withdrawn 20 Aug, stays out).
-- PRE-EXISTING BUG: partitifs.json has 6 committed `syllables` arrays that don't reassemble to their sentences (dead weight) — remove them or shorten those items' fr.
+- PRE-EXISTING BUG: partitifs.json had 6 committed `syllables` arrays that don't reassemble to their sentences (dead weight) — REMOVED 23 Aug (partitifs-q01…q06 keep their fr).
 - Unsure splits: con-ti-nuez, As-so-ciez!, pié-ton, A-vec.
 
 ## VocabulaRain sets (8 new)
@@ -48,7 +48,7 @@ Nothing here blocks; strike anything wrong and it comes out.
 - transport uses à/en (the plan's le/la/l' row fits zero items in this deck).
 - aimer-activites adds a VERBE (infinitif) column beyond the plan's noun articles — bless or veto.
 - alphabet: E, O, Q, U fall outside the four rhyme columns (1–2-letter groups) — the engine excludes them; your call.
-- SKIPPED for concurrent edits, ready to re-run: question-words, numbers-70-99 (spec parked in the agent's scratchpad script).
+- ~~SKIPPED for concurrent edits~~ DONE 23 Aug: numbers-70-99 (bands 70s/80s/90s, all 30 retagged from col:num) and question-words (meaning axis from the Atelier U0 « Suivez le guide ! » sections — WHAT/WHO · WHERE/WHEN · HOW/WHY · HOW MANY; est-ce que and the inversion sentence carry no wh-category, left untagged — your call if they should).
 
 ## Known reds that are DECISIONS, not bugs
 - `scripts/check-textgen.mjs` still fails unit 4 on « jus, thé » — the generator uses drinks no deck teaches; the real fix is the ★ boissons deck the audit found missing (needs your placement).

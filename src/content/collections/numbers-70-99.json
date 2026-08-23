@@ -6,6 +6,30 @@
   "owner": "curated",
   "visibility": "public",
   "unit": 4,
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        {
+          "key": "band70",
+          "label": "70 – 79",
+          "prefix": "",
+          "choiceLabel": "70s — soixante-dix…"
+        },
+        {
+          "key": "band80",
+          "label": "80 – 89",
+          "prefix": "",
+          "choiceLabel": "80s — quatre-vingts…"
+        },
+        {
+          "key": "band90",
+          "label": "90 – 99",
+          "prefix": "",
+          "choiceLabel": "90s — quatre-vingt-dix…"
+        }
+      ]
+    }
+  },
   "items": [
     {
       "id": "num-70",
@@ -13,7 +37,7 @@
       "syllables": ["soi", "xante", "-dix"],
       "en": "70",
       "tags": [
-        "col:num"
+        "col:band70"
       ],
       "gap": "soixante-dix"
     },
@@ -23,7 +47,7 @@
       "syllables": ["soi", "xante", "et", "onze"],
       "en": "71",
       "tags": [
-        "col:num"
+        "col:band70"
       ],
       "gap": "soixante et onze"
     },
@@ -33,7 +57,7 @@
       "syllables": ["soi", "xante", "-douze"],
       "en": "72",
       "tags": [
-        "col:num"
+        "col:band70"
       ],
       "gap": "soixante-douze"
     },
@@ -43,7 +67,7 @@
       "syllables": ["soi", "xante", "-treize"],
       "en": "73",
       "tags": [
-        "col:num"
+        "col:band70"
       ],
       "gap": "soixante-treize"
     },
@@ -53,7 +77,7 @@
       "syllables": ["soi", "xante", "-qua", "torze"],
       "en": "74",
       "tags": [
-        "col:num"
+        "col:band70"
       ],
       "gap": "soixante-quatorze"
     },
@@ -63,7 +87,7 @@
       "syllables": ["soi", "xante", "-quinze"],
       "en": "75",
       "tags": [
-        "col:num"
+        "col:band70"
       ],
       "gap": "soixante-quinze"
     },
@@ -73,7 +97,7 @@
       "syllables": ["soi", "xante", "-seize"],
       "en": "76",
       "tags": [
-        "col:num"
+        "col:band70"
       ],
       "gap": "soixante-seize"
     },
@@ -83,7 +107,7 @@
       "syllables": ["soi", "xante", "-dix", "-sept"],
       "en": "77",
       "tags": [
-        "col:num"
+        "col:band70"
       ],
       "gap": "soixante-dix-sept"
     },
@@ -93,7 +117,7 @@
       "syllables": ["soi", "xante", "-dix", "-huit"],
       "en": "78",
       "tags": [
-        "col:num"
+        "col:band70"
       ],
       "gap": "soixante-dix-huit"
     },
@@ -103,7 +127,7 @@
       "syllables": ["soi", "xante", "-dix", "-neuf"],
       "en": "79",
       "tags": [
-        "col:num"
+        "col:band70"
       ],
       "gap": "soixante-dix-neuf"
     },
@@ -113,7 +137,7 @@
       "syllables": ["qua", "tre", "-vingts"],
       "en": "80",
       "tags": [
-        "col:num"
+        "col:band80"
       ],
       "gap": "quatre-vingts"
     },
@@ -123,7 +147,7 @@
       "syllables": ["qua", "tre", "-vingt", "-un"],
       "en": "81",
       "tags": [
-        "col:num"
+        "col:band80"
       ],
       "gap": "quatre-vingt-un"
     },
@@ -133,7 +157,7 @@
       "syllables": ["qua", "tre", "-vingt", "-deux"],
       "en": "82",
       "tags": [
-        "col:num"
+        "col:band80"
       ],
       "gap": "quatre-vingt-deux"
     },
@@ -143,7 +167,7 @@
       "syllables": ["qua", "tre", "-vingt", "-trois"],
       "en": "83",
       "tags": [
-        "col:num"
+        "col:band80"
       ],
       "gap": "quatre-vingt-trois"
     },
@@ -153,7 +177,7 @@
       "syllables": ["qua", "tre", "-vingt", "-qua", "tre"],
       "en": "84",
       "tags": [
-        "col:num"
+        "col:band80"
       ],
       "gap": "quatre-vingt-quatre"
     },
@@ -163,7 +187,7 @@
       "syllables": ["qua", "tre", "-vingt", "-cinq"],
       "en": "85",
       "tags": [
-        "col:num"
+        "col:band80"
       ],
       "gap": "quatre-vingt-cinq"
     },
@@ -173,7 +197,7 @@
       "syllables": ["qua", "tre", "-vingt", "-six"],
       "en": "86",
       "tags": [
-        "col:num"
+        "col:band80"
       ],
       "gap": "quatre-vingt-six"
     },
@@ -183,7 +207,7 @@
       "syllables": ["qua", "tre", "-vingt", "-sept"],
       "en": "87",
       "tags": [
-        "col:num"
+        "col:band80"
       ],
       "gap": "quatre-vingt-sept"
     },
@@ -193,7 +217,7 @@
       "syllables": ["qua", "tre", "-vingt", "-huit"],
       "en": "88",
       "tags": [
-        "col:num"
+        "col:band80"
       ],
       "gap": "quatre-vingt-huit"
     },
@@ -203,7 +227,7 @@
       "syllables": ["qua", "tre", "-vingt", "-neuf"],
       "en": "89",
       "tags": [
-        "col:num"
+        "col:band80"
       ],
       "gap": "quatre-vingt-neuf"
     },
@@ -213,7 +237,7 @@
       "syllables": ["qua", "tre", "-vingt", "-dix"],
       "en": "90",
       "tags": [
-        "col:num"
+        "col:band90"
       ],
       "gap": "quatre-vingt-dix"
     },
@@ -223,7 +247,7 @@
       "syllables": ["qua", "tre", "-vingt", "-onze"],
       "en": "91",
       "tags": [
-        "col:num"
+        "col:band90"
       ],
       "gap": "quatre-vingt-onze"
     },
@@ -233,7 +257,7 @@
       "syllables": ["qua", "tre", "-vingt", "-douze"],
       "en": "92",
       "tags": [
-        "col:num"
+        "col:band90"
       ],
       "gap": "quatre-vingt-douze"
     },
@@ -243,7 +267,7 @@
       "syllables": ["qua", "tre", "-vingt", "-treize"],
       "en": "93",
       "tags": [
-        "col:num"
+        "col:band90"
       ],
       "gap": "quatre-vingt-treize"
     },
@@ -253,7 +277,7 @@
       "syllables": ["qua", "tre", "-vingt", "-qua", "torze"],
       "en": "94",
       "tags": [
-        "col:num"
+        "col:band90"
       ],
       "gap": "quatre-vingt-quatorze"
     },
@@ -263,7 +287,7 @@
       "syllables": ["qua", "tre", "-vingt", "-quinze"],
       "en": "95",
       "tags": [
-        "col:num"
+        "col:band90"
       ],
       "gap": "quatre-vingt-quinze"
     },
@@ -273,7 +297,7 @@
       "syllables": ["qua", "tre", "-vingt", "-seize"],
       "en": "96",
       "tags": [
-        "col:num"
+        "col:band90"
       ],
       "gap": "quatre-vingt-seize"
     },
@@ -283,7 +307,7 @@
       "syllables": ["qua", "tre", "-vingt", "-dix", "-sept"],
       "en": "97",
       "tags": [
-        "col:num"
+        "col:band90"
       ],
       "gap": "quatre-vingt-dix-sept"
     },
@@ -293,7 +317,7 @@
       "syllables": ["qua", "tre", "-vingt", "-dix", "-huit"],
       "en": "98",
       "tags": [
-        "col:num"
+        "col:band90"
       ],
       "gap": "quatre-vingt-dix-huit"
     },
@@ -303,7 +327,7 @@
       "syllables": ["qua", "tre", "-vingt", "-dix", "-neuf"],
       "en": "99",
       "tags": [
-        "col:num"
+        "col:band90"
       ],
       "gap": "quatre-vingt-dix-neuf"
     }
