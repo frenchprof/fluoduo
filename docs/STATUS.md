@@ -51,6 +51,27 @@ Only ONE agent edits this file at a time; say so in your commit.
   Also from Dan, 22 Aug: **he cannot read the Index** ("I really don't
   understand how to read it") — the U0–U4 cell grid and the per-row big
   circles carry no key. Open design item, not yet assigned.
+- 22 Aug (Dan's votes on the 31 numbered surfaces + round 13, Peers):
+  **Approved** 2 SpecuLearn · 3 xPlain (**rename xPlain → "Memo"
+  everywhere**) · 5 4Mémoire (English chrome only) · 6 iComplete ·
+  7 ConjugaZone · 9 WorDrill · 10 VoixLà · 11 ComposeIt · 12 ChaTutor ·
+  13 NumBus · 14 NumBourse · 17 DéjàRevu · 18 GramMarathon · 19 My
+  Progress · 21 Leaderboard WEEKLY variant · 23 Install prompt · 24 Home
+  retention direction (subordinate to the round-13 hero below) ·
+  25 Celebrations · 26 XP float · 27 Streak page (to the approved streak
+  spec) · 28 Session receipt · 30 Boutique. **Rejected** 1 Menu ·
+  4 EtuDice · 8 ÉcouTexte · 15 VocabulaRain · 16 LexicaLater · 20 straight
+  Leaderboard · 22 Profile (29/31 already dead). Every build carries the
+  gallery's required-changes list; interfaces English except the set
+  French surfaces. Relayed to the colour-review session (its build queue).
+  **Round 13 (PR #31, Peers)**: hero = ONE strip of the two marks + worded
+  Rewind (/reviser) · Play (current stop; the old Continue) · Menu; the
+  full-width Continue gone; 🔍/🏆 off the top bar (search = Index's box,
+  ranking = /leaderboard); Home postcard in a recessed mat; /map behind a
+  "Tap to use the map" glass; 3D `MAX_BEHIND` 4 → 8 + gates/arch/finish on
+  the same behind curve — everything now leaves through the bottom edge
+  like the stops (Dan's round-13 note). verify25 §3 rewritten to this
+  decision. Awaiting Dan's word to merge.
 
 ## Programme — done
 
