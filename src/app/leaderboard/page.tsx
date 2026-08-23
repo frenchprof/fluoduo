@@ -14,8 +14,9 @@ export default function LeaderboardPage() {
   return (
     <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="leaderboard">
       <div className="mx-auto max-w-xl px-3 py-5">
-        <h1 className="cahier-display cahier-hand text-3xl font-normal text-[color:var(--cahier-ink)]">🏆 Leaderboard</h1>
-        <p className="mt-1 mb-4 text-sm text-[color:var(--cahier-ink-soft)]">⭐ XP wins the ranking; 🔥 is the streak.</p>
+        {/* The h1 + legend moved into the shell's heading band (variant A,
+            2026-08-23) — the legend line fell to the litmus rule (⭐/🔥 sit
+            beside their own columns on the board). */}
         <LeaderboardList />
       </div>
     </CahierShell>

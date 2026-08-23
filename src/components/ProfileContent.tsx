@@ -180,7 +180,7 @@ export default function ProfileContent() {
           {/* Sized from the scale, not invented: the header is a compact strip
               that also carries the outcome count, so it takes --fs-h2 rather
               than the h1 default (globals.css `h1.cahier-display`). */}
-          <h1 className="cahier-display cahier-hand truncate font-normal leading-none text-white" style={{ fontSize: "var(--fs-h2)" }}>
+          <h1 className="fluo-band-hand truncate font-normal leading-none text-white" style={{ fontSize: "var(--fs-h2)" }}>
             {user?.displayName ?? "Moi"}
           </h1>
           {/* A label, not prose — `.cahier-page p` would force it to body size. */}
