@@ -160,7 +160,12 @@ Only ONE agent edits this file at a time; say so in your commit.
   3c9bcb2 → 3c58e35, 23 Aug.** Still open for Dan: strike-outs in
   docs/CONTENT_FLAGS_2026-08-23.md; the ★ boissons deck placement;
   SpecuLearn's 38 guessability calls; the Index legibility fix (not yet
-  built); claude-review fix-or-delete.
+  built); claude-review fix-or-delete. **Existing content audited against
+  the Atelier PDFs** (all 63 pages): 38 findings in
+  docs/SYLLABUS_AUDIT_2026-08-23.md — headline gaps: U2 « ne… plus »
+  taught nowhere; SIO-030's well-wishes are a phantom; U3 nuages family
+  undrillable; U4 boissons hole confirmed; two U1-labelled lessons
+  front-run the book (est-ce que is U3). Fix wave awaits Dan's word.
 
 | Patch | What | Check |
 |---|---|---|
