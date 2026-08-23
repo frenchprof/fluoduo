@@ -71,7 +71,14 @@ Only ONE agent edits this file at a time; say so in your commit.
   "Tap to use the map" glass; 3D `MAX_BEHIND` 4 → 8 + gates/arch/finish on
   the same behind curve — everything now leaves through the bottom edge
   like the stops (Dan's round-13 note). verify25 §3 rewritten to this
-  decision. Awaiting Dan's word to merge.
+  decision. **MERGED to main (ff66caf) on Dan's word, 23 Aug** — the merge
+  rode over the colour programme's landing: the hero conflict resolved to
+  BOTH instructions (21 Aug five-equal-cells geometry × 22 Aug words —
+  Rewind › with the due badge · Play › · Menu), and two main-side CI reds
+  were fixed en route (progressMerge's @/ alias broke its runs-in-node
+  contract → ./dayKey.ts + allowImportingTsExtensions; verify21's
+  allowlist pin predated weekXp/weekKey). NOT yet deployed — Dan's
+  `git push live main`.
 
 - **22 Aug (this session): the colour + retention programme is MERGED TO `main`
   and awaiting deploy.** `main` = `2a729fb`. Contains: the seven `--dopa-*`
