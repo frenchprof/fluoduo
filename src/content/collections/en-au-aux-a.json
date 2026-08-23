@@ -310,6 +310,34 @@
       "example": "Elle habite en Inde.",
       "gap": "en",
       "exampleEn": "She lives in India."
+    },
+    {
+      "id": "en-au-aux-a-18",
+      "fr": "Je viens de France.",
+      "en": "I come from France. (venir + de, f. country)",
+      "tags": [],
+      "gap": "de"
+    },
+    {
+      "id": "en-au-aux-a-19",
+      "fr": "Je viens du Maroc.",
+      "en": "I come from Morocco. (venir + du, m. country)",
+      "tags": [],
+      "gap": "du"
+    },
+    {
+      "id": "en-au-aux-a-20",
+      "fr": "Elle vient des États-Unis.",
+      "en": "She comes from the United States. (venir + des, pl. country)",
+      "tags": [],
+      "gap": "des"
+    },
+    {
+      "id": "en-au-aux-a-21",
+      "fr": "Je viens d'Argentine.",
+      "en": "I come from Argentina. (venir + d', vowel)",
+      "tags": [],
+      "gap": "d'"
     }
   ]
 }

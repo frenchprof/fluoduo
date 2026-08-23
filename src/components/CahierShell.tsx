@@ -36,7 +36,7 @@ import { SIOS } from "@/content/sios";
 import { getPretestForSio } from "@/content/pretests";
 import { UNIT0_QUESTIONS } from "@/content/sios/unit0-questions";
 import { getLetrisSet } from "@/games/letris/sets";
-import { composeBankForDeck } from "@/games/compose/banks";
+import { composeBanksForDeck } from "@/games/compose/banks";
 import FirstTour from "@/components/FirstTour";
 import AccountButton from "@/components/AccountButton";
 import SoundControl from "@/components/SoundControl";
@@ -553,7 +553,7 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
   const lessons = lessonsForDeck(collectionId);
   const pretestHref = pretestHrefForDeck(collectionId);
   const rainSet = getLetrisSet(collectionId.replace("-letris", ""));
-  const composeBank = composeBankForDeck(collectionId);
+  const composeBanks = composeBanksForDeck(collectionId);
   const curatedDeck = CURATED.find((c) => c.id === collectionId);
   return [
     ...(pretestHref
@@ -606,9 +606,15 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     ...(curatedDeck && hasMatching(curatedDeck)
       ? [{ key: "matching", label: "Match It", emoji: "🔗", href: `/games/matching/${collectionId}` } as ShellTab]
       : []),
-    ...(composeBank
-      ? [registryTab("compose", `/games/compose/${composeBank.id}`)]
-      : []),
+    // One flap per compose bank on the deck. The first wears the registry
+    // chrome ("ComposeIt"); any further bank flies its own title + emoji so
+    // two doors never read as one (atelier-sio-040 carries the itinerary AND
+    // « L'e-carte postale » — Dan, 2026-08-23). The Index's compose cell
+    // keeps pointing at the first (key "compose" is what cellHref finds).
+    ...composeBanks.map((bank, i) => {
+      const tab = registryTab("compose", `/games/compose/${bank.id}`);
+      return i === 0 ? tab : { ...tab, key: `compose-${bank.id}`, label: bank.title, emoji: bank.emoji };
+    }),
     // Resurrected as a NAMED activity (Dan, 2026-07-22) — the per-deck typed
     // sprint, distinct from the Final's authored bank. Only for decks whose
     // items carry gaps, so the marathon is never empty.

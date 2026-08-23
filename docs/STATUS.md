@@ -135,6 +135,55 @@ Only ONE agent edits this file at a time; say so in your commit.
   `syllables` arrays (q01–q06 — the flagged pre-existing bug; fr kept).
   verify23/24 green, tsc clean, CONTENT_FLAGS updated. NOT deployed.
 
+- 23 Aug (content agent, syllabus-audit fix wave — **under Dan's SIO freeze:
+  the 50 SIOs' structure, ids, units and relative positions are UNTOUCHED**
+  (`src/content/sios` read-only — course map, deep links and printed QRs
+  depend on them); every fix landed INSIDE existing decks/lessons/ateliers):
+  six audit findings fixed in place, each verified against the uploaded
+  Atelier unit PDFs — (2.1) **ne… plus**: 6 items negpas-15–20 + a third
+  « ne … plus » letris column in `negation-pas` (« Le stylo n'est plus sur
+  la table » is U2 p. 67 verbatim), plus row added to the negation lesson
+  memo; (2.2) **well-wishes**: 3 lines in the SIO-030 atelier email
+  (bon anniversaire · bonne chance · bon voyage — bonne année/bonne fête
+  don't fit the email's narrative, so they live in the deck + palette),
+  all 5 formulas as `vouloir-inviter` 15–19 (gap = Bon/Bonne, the agreement
+  point), EMAIL_BANK Souhaits palette completed; (3.2) **nuages family**:
+  des nuages (il-y-a) + nuageux/ensoleillé under a NEW fourth C'EST letris
+  column in `weather-letris` (45–47), meteo memo carries the fourth frame
+  (closes the 23-Aug « fourth frame » flag; the dice keeps its 3 verb
+  frames); (1.4) `questions-oui-non` + `mots-interrogatifs` unit labels
+  1 → 3 in `lessons.ts` (est-ce que is U3; SIO-035 mapping was already
+  right, nothing else keys off the labels); (3.3) **venir**: sentence cards
+  en-au-aux-a-18–21 = the book's Au tableau rows (de/du/des/d' — the U3 PDF
+  p. 97 DOES teach venir, so no Dan bounce needed); (3.5) **il faut out of
+  textgen/unit3** — the U3 PDF's directions never use falloir; the three
+  variants now read « vous prenez la … rue » / « vous tournez … au
+  carrefour » (piste 66 + directions-matching verbatim) / « on peut
+  prendre … » (SIO-040 atelier frame — no imperative, guard-rail intact).
+  Flag for Dan: the negation lesson stays labelled unit 1 while its memo
+  now also shows ne…plus (négation (2) is U2 — the deck that drills plus
+  IS unit 2). ALL 25 verify suites green, check-textgen units 0–4 green,
+  tsc clean, all four edited JSONs valid. Audit doc rows marked
+  « FIXED 23 Aug (in place) ». NOT deployed.
+- 23 Aug (content agent, audit row 3.1 — **e-carte postale, Dan's decision:
+  "add a washed down version to the email and present the full activity in
+  040"**, SIOs untouched): (a) EMAIL_BANK (SIO-030's rail) gains a holiday-note
+  flavour — « Où je suis » + « Raconter » palettes (Je suis à Paris/Nice/
+  Singapour · J'aime / je fais du sport / je vais à la plage / C'est super, all
+  U0–U2) and a fifth rotating occasion (« un petit bonjour de voyage » 🏖️ with
+  its own task line); NO weather there (U3). (b) NEW production bank
+  **POSTCARD_BANK « L'e-carte postale »** (id `e-carte-postale`, 🏖️, solo +
+  aiCheck) on SIO-040's rail, structured per the guide's atelier spread (U3
+  PDF p. 20 / p. 111): opening → where (je suis/on est à…) → weather (the
+  weather-letris family incl. the new nuageux/ensoleillé/des nuages) → doing
+  (je visite · on peut visiter · on prend le métro) → closing (Bises ·
+  À bientôt). Mechanism: `composeBankForDeck` → **`composeBanksForDeck`**
+  (banks.tsx) and deckActivityTabs (CahierShell) now maps EVERY bank on a
+  deck — first flap keeps the registry ComposeIt chrome (and the Index's
+  compose cell), later banks fly their own title+emoji with unique keys.
+  tsc clean, verify23/24/28-trackd green, eslint clean on touched files.
+  Audit row 3.1 marked RESOLVED. NOT deployed.
+
 ## Programme — done
 
 - **23 Aug (Peers, the content-gap wave + visual unity): eight authoring

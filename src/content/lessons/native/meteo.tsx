@@ -3,7 +3,9 @@
  * U3 #1 row and the Atelier U3 Situation 1 « Parler de la météo » (Il fait
  * beau / entre 13 et 15 degrés · Il y a du vent · Il pleut, il neige):
  * Mémo + 🎲 dice trainer + EN→FR bonus. Words are the weather-letris deck's
- * own items; the three frames are its letris columns.
+ * own items; the four frames are its letris columns (the « C'est … » frame —
+ * c'est nuageux / ensoleillé, book pp. 94/107 — is memo-only, the dice keeps
+ * the three verb frames).
  */
 import type { NativeLesson } from "./types";
 
@@ -49,6 +51,7 @@ export const meteoLesson: NativeLesson = {
         <li><b className="text-[color:var(--gram-neutral)]">Il fait</b> + adjective — <i lang="fr">Il fait beau, il fait froid, il fait 16 degrés.</i></li>
         <li><b className="text-[color:var(--gram-neutral)]">Il y a</b> + <b className="text-[color:var(--gram-masc)]">du</b> / <b className="text-[color:var(--gram-fem)]">de la</b> / <b className="text-[color:var(--gram-neutral)]">des</b> + noun — <i lang="fr">Il y a du vent, de la pluie, des orages.</i></li>
         <li><b className="text-[color:var(--gram-neutral)]">Il</b> + verb — <i lang="fr">Il pleut. Il neige. Il gèle.</i></li>
+        <li><b className="text-[color:var(--gram-neutral)]">C&rsquo;est</b> + adjective — <i lang="fr">C&rsquo;est nuageux. C&rsquo;est ensoleillé.</i></li>
       </ul>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
         ⚠️ &ldquo;It is hot&rdquo; → <span lang="fr">Il <b>fait</b> chaud</span> — never{" "}
