@@ -55,7 +55,7 @@ function Warn({ children }: { children: ReactNode }) {
 }
 
 const B = ({ children }: { children: ReactNode }) => (
-  <b lang="fr" className="text-[color:var(--cahier-la)]">{children}</b>
+  <b lang="fr" className="text-[color:var(--gram-neutral)]">{children}</b>
 );
 
 const Lines = ({ children }: { children: ReactNode }) => (
@@ -144,7 +144,7 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
         <li><B>une</B> <span lang="fr">table</span> — feminine</li>
         <li><B>des</B> <span lang="fr">livres</span>, <B>des</B> <span lang="fr">tables</span> — any plural</li>
       </Lines>
-      <Warn>After a negative: <span lang="fr">pas <b className="text-[color:var(--cahier-la)]">de</b> livres</span>.</Warn>
+      <Warn>After a negative: <span lang="fr">pas <b className="text-[color:var(--gram-neutral)]">de</b> livres</span>.</Warn>
     </Card>
   ),
 
@@ -184,9 +184,9 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
   "negation-pas": (
     <Card title="Pas de ou pas le ?">
       <Lines>
-        <li><B>ne … pas de</B> — <span lang="fr">Je fais <b className="text-[color:var(--cahier-la)]">du</b> tennis. → Je ne fais pas <b className="text-[color:var(--cahier-la)]">de</b> tennis.</span></li>
-        <li><B>ne … pas de</B> — <span lang="fr">Il y a <b className="text-[color:var(--cahier-la)]">du</b> café. → Il n'y a pas <b className="text-[color:var(--cahier-la)]">de</b> café.</span></li>
-        <li><span lang="fr">❤️ aimer · adorer · détester</span> keep <B>le / la / les</B> — <span lang="fr">J'aime <b className="text-[color:var(--cahier-la)]">le</b> tennis. → Je n'aime pas <b className="text-[color:var(--cahier-la)]">le</b> tennis.</span></li>
+        <li><B>ne … pas de</B> — <span lang="fr">Je fais <b className="text-[color:var(--gram-neutral)]">du</b> tennis. → Je ne fais pas <b className="text-[color:var(--gram-neutral)]">de</b> tennis.</span></li>
+        <li><B>ne … pas de</B> — <span lang="fr">Il y a <b className="text-[color:var(--gram-neutral)]">du</b> café. → Il n'y a pas <b className="text-[color:var(--gram-neutral)]">de</b> café.</span></li>
+        <li><span lang="fr">❤️ aimer · adorer · détester</span> keep <B>le / la / les</B> — <span lang="fr">J'aime <b className="text-[color:var(--gram-neutral)]">le</b> tennis. → Je n'aime pas <b className="text-[color:var(--gram-neutral)]">le</b> tennis.</span></li>
       </Lines>
       <Warn><span lang="fr">de</span> + vowel → <span lang="fr">d'</span> : <span lang="fr">pas d'eau</span>.</Warn>
     </Card>
@@ -378,7 +378,7 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
     <Card title="20 à 69 — cinq dizaines">
       <PillRow items={["vingt", "trente", "quarante", "cinquante", "soixante"]} />
       <Lines>
-        <li>+1 → <B>et un</B> — <span lang="fr">vingt <b className="text-[color:var(--cahier-la)]">et un</b>, trente <b className="text-[color:var(--cahier-la)]">et un</b>, soixante <b className="text-[color:var(--cahier-la)]">et un</b></span></li>
+        <li>+1 → <B>et un</B> — <span lang="fr">vingt <b className="text-[color:var(--gram-neutral)]">et un</b>, trente <b className="text-[color:var(--gram-neutral)]">et un</b>, soixante <b className="text-[color:var(--gram-neutral)]">et un</b></span></li>
         <li>the rest → hyphen — <span lang="fr">vingt<B>-</B>deux, quarante<B>-</B>sept, soixante<B>-</B>neuf</span></li>
       </Lines>
     </Card>
@@ -390,10 +390,10 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
     <Card title="70 à 99 — le système change !">
       <PillRow items={["soixante-dix", "quatre-vingts", "quatre-vingt-dix"]} />
       <Lines>
-        <li>70–79 = <B>soixante + 10…19</B> — <span lang="fr">soixante-<b className="text-[color:var(--cahier-la)]">douze</b> (72), soixante-<b className="text-[color:var(--cahier-la)]">dix-neuf</b> (79)</span></li>
-        <li>71 garde le <B>et</B> — <span lang="fr">soixante <b className="text-[color:var(--cahier-la)]">et onze</b></span> · mais 81, 91 : <span lang="fr">quatre-vingt-un, quatre-vingt-onze</span> — <B>sans et !</B></li>
-        <li>80 = 4 × 20 → <span lang="fr">quatre-vingt<b className="text-[color:var(--cahier-la)]">s</b></span> avec un <B>-s</B>… qui <B>disparaît</B> devant un nombre : <span lang="fr">quatre-vingt-cinq (85)</span></li>
-        <li>90–99 = <B>quatre-vingt + 10…19</B> — <span lang="fr">quatre-vingt-<b className="text-[color:var(--cahier-la)]">quinze</b> (95), quatre-vingt-<b className="text-[color:var(--cahier-la)]">dix-neuf</b> (99)</span></li>
+        <li>70–79 = <B>soixante + 10…19</B> — <span lang="fr">soixante-<b className="text-[color:var(--gram-neutral)]">douze</b> (72), soixante-<b className="text-[color:var(--gram-neutral)]">dix-neuf</b> (79)</span></li>
+        <li>71 garde le <B>et</B> — <span lang="fr">soixante <b className="text-[color:var(--gram-neutral)]">et onze</b></span> · mais 81, 91 : <span lang="fr">quatre-vingt-un, quatre-vingt-onze</span> — <B>sans et !</B></li>
+        <li>80 = 4 × 20 → <span lang="fr">quatre-vingt<b className="text-[color:var(--gram-neutral)]">s</b></span> avec un <B>-s</B>… qui <B>disparaît</B> devant un nombre : <span lang="fr">quatre-vingt-cinq (85)</span></li>
+        <li>90–99 = <B>quatre-vingt + 10…19</B> — <span lang="fr">quatre-vingt-<b className="text-[color:var(--gram-neutral)]">quinze</b> (95), quatre-vingt-<b className="text-[color:var(--gram-neutral)]">dix-neuf</b> (99)</span></li>
         <li>Au marché : <span lang="fr">« Ça fait quatre-vingt-cinq euros. » (85 €)</span></li>
       </Lines>
     </Card>

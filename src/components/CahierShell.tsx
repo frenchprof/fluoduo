@@ -41,7 +41,7 @@ import FirstTour from "@/components/FirstTour";
 import AccountButton from "@/components/AccountButton";
 import SoundControl from "@/components/SoundControl";
 import { isPlayableGap } from "@/lib/collections/gapSentence";
-import { activity } from "@/content/activities";
+import { activity, familyOf } from "@/content/activities";
 import { toPracticeSet } from "@/lib/practice/engine";
 import BottomBar from "@/components/BottomBar";
 
@@ -170,6 +170,10 @@ export default function CahierShell({
   const deckUnit = deckId ? CURATED.find((c) => c.id === deckId)?.unit : undefined;
   const unitKey = deckUnit === undefined ? undefined : `unit-${deckUnit}`;
   const isActiveFlap = (t: ShellTab) => active === t.key || t.key === unitKey;
+  // null for a page that colours itself — then NO fam- class is added, the
+  // header falls back to plain paper and the spine rule does not match, so
+  // the page renders exactly as it did before this system existed.
+  const famKey = familyOf(active);
 
   // Per-page browser-tab title (audit 2026-07-19: every page announced
   // itself as just "FluOlinGo" — tabs, history, bookmarks and screen-reader
@@ -271,22 +275,56 @@ export default function CahierShell({
   const page = (
         <main
           ref={(el) => { if (!nested) outerRef.current = el; }}
-          className={`cahier-page ${nested ? "min-h-[calc(100vh-18px)]" : "min-h-screen"}`}
+          /* EVERY page wears its family's colour, from one place (Dan,
+             2026-08-21: "I WANT COLOR"). familyOf() turns the page's own
+             `active` key into one of the six, so a route does not have to
+             declare a hue — and the whole site stops being one undivided
+             field of paper. Unknown keys stay uncoloured on purpose. */
+          className={`cahier-page ${famKey ? `fam-${famKey}` : ""} ${nested ? "min-h-[calc(100vh-18px)]" : "min-h-screen"}`}
         >
           {!nested && <div className="cahier-binding" aria-hidden />}
           {!nested && edgeGrip}
 
-          <div className="sticky top-0 z-10 border-b-2 border-[color:var(--cahier-ink)]/15 bg-[color:var(--cahier-paper)]/90 backdrop-blur">
+          {/* The family band: the header field is the family's wash and the
+              page carries its spine. Both are tokens, so switching family
+              switches the page and nothing else moves. */}
+          <div
+            className="sticky top-0 z-10 border-b-2 border-[color:var(--cahier-ink)]/15 backdrop-blur"
+            style={{ background: "var(--fam-wash, var(--cahier-paper))" }}
+          >
             {/* py-2 + tighter left inset (Dan, 2026-08-21): the wordmark hugs
                 the page's top-left corner — just clear of the spiral binding
                 (38px), no further. */}
             <div className={`flex items-center justify-between gap-2 py-2 pr-3 sm:pr-5 ${nested ? "pl-5 sm:pl-7" : "pl-9 sm:pl-11"}`}>
               {/* The wordmark is ALWAYS a door home (Dan, 2026-07-25) — on
                   the home page it simply arrives where you already are. */}
-              <Link href="/" className="cahier-display text-lg font-black text-[color:var(--cahier-ink)]">
+              {/* THE RULE OF THIS BAR (Dan, 2026-08-21: "the top most row of
+                  icons still exist, and must not go hiding into the overspill
+                  off the screen"): every icon in .cahier-topbar is a
+                  destination, the strip is shrink-0, and nothing may push it
+                  past the right edge. So the bar has a yield order, widest
+                  concession first:
+
+                    1. `topRight` — page-supplied, variable width, and the one
+                       thing that broke the budget. It now has its OWN
+                       shrinkable slot below (min-w-0 + truncate), OUTSIDE the
+                       icon strip, so a long score readout ellipsizes instead
+                       of shoving ☰ off the screen.
+                    2. the wordmark — a door home the ← already signals, so it
+                       truncates legibly.
+                    3. the icons — never. They are the invariant.
+
+                  Measured on /reviser before this: at 320px the score readout
+                  and ☰ were both off-screen; at 360 and 390 one added chip was
+                  enough to lose ☰. verify31 pins the structure. */}
+              <Link href="/" className="cahier-display min-w-0 shrink truncate text-lg font-black text-[color:var(--cahier-ink)]">
                 {active !== "home" && <>← </>}<span className="cahier-hl">FluOlinGo</span>
               </Link>
-              <div className="cahier-topbar flex shrink-0 items-center gap-1 sm:gap-2">
+              {/* Yield slot 1 — shrinks and truncates before anything else. */}
+              {topRight && (
+                <div className="cahier-topslot min-w-0 flex-shrink truncate text-right">{topRight}</div>
+              )}
+              <div className="cahier-topbar flex max-w-full shrink-0 flex-wrap items-center justify-end gap-1 sm:flex-nowrap sm:gap-2">
                 {/* Icon strip, macOS-menu-bar style (Dan, 2026-07-08) — icons
                     only, no words. 🔍 and 🏆 left the bar (Dan, 2026-08-22):
                     word search lives in the Index's own box, the ranking on
@@ -307,7 +345,6 @@ export default function CahierShell({
                 <Link href="/moi" aria-label="My learning history" title="My learning history" className="cahier-btn cahier-btn-sm">
                   ⌛
                 </Link>
-                {topRight}
                 <AccountButton />
                 {/* Half-a-button inward on mobile (Dan, 2026-07-25: the corner made ☰
                     unreachable on some phones); flush again from sm up. */}

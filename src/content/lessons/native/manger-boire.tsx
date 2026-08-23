@@ -58,8 +58,8 @@ export const mangerBoireLesson: NativeLesson = {
         <thead>
           <tr className="text-left">
             <th className="p-1" />
-            <th className="p-1 text-[color:var(--cahier-la)]">manger</th>
-            <th className="p-1 text-[color:var(--cahier-la)]">boire</th>
+            <th className="p-1 text-[color:var(--gram-neutral)]">manger</th>
+            <th className="p-1 text-[color:var(--gram-neutral)]">boire</th>
           </tr>
         </thead>
         <tbody>

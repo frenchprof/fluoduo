@@ -123,7 +123,13 @@ async function publishLeaderboard(p: Progress): Promise<void> {
     // the level so the board can show each learner's rank name. `term` scopes
     // the board to the current cohort (term.ts) — the create rule's allowlist
     // in firestore.rules MUST include it (deployed 2026-08-11).
-    await setDoc(ref, { name, xp: p.xp, level: levelForXp(p.xp).level, gems: p.gems, streak: p.streak, term: p.term ?? CURRENT_TERM, updatedAt: Date.now() }, { merge: true });
+    await setDoc(ref, { name, xp: p.xp, level: levelForXp(p.xp).level, gems: p.gems, streak: p.streak,
+      // The weekly race (DOPAMINE_REVIEW §9). Published alongside the
+      // lifetime figure, never instead of it — the board keeps both views,
+      // and `weekKey` is what lets a reader tell a live total from a stale
+      // one without trusting the writer's clock.
+      weekXp: p.weekXp ?? 0, weekKey: p.weekKey ?? null,
+      term: p.term ?? CURRENT_TERM, updatedAt: Date.now() }, { merge: true });
   } catch {
     // Write denied → excluded (admin / opt-out). Remove any stale entry.
     try { await deleteDoc(ref); } catch {}

@@ -45,15 +45,22 @@ import {
   XP_SIO_MASTERY,
   XP_CONVERSATION,
 } from "@/lib/economy";
-import { dayKey, previousDay, learnerZone } from "@/lib/dayKey";
+import { dayKey, previousDay, learnerZone, weekKey } from "@/lib/dayKey";
 import { buildEvidence, type AssistanceLevel } from "@/lib/evidence";
 import { CURRENT_TERM } from "@/lib/term";
+import { SIOS } from "@/content/sios";
 
 export type Progress = {
   doneSios: string[];
   gems: number; // SPENDABLE balance (paid by badges, spent on cosmetics)
   xp: number; // lifetime score (drives levels + leaderboard); never spent
   streak: number;
+  /** XP earned inside the current ISO week, for the weekly board. Resets when
+   *  `weekKey` moves on — a cumulative board is decided by week three, and
+   *  everyone deserves a live race (DOPAMINE_REVIEW §9). */
+  weekXp: number;
+  /** The ISO week `weekXp` belongs to ("YYYY-Www"), learner-local. */
+  weekKey: string | null;
   lastActiveDay: string | null; // "YYYY-MM-DD", learner-local, 04:00 rollover
   timeZone?: string; // IANA zone lastActiveDay was computed in
   itemSrs: Record<string, ItemSrs>;
@@ -63,7 +70,27 @@ export type Progress = {
    *  accounts born after the 2026-08-11 reset, LEGACY_TERM for accounts
    *  whose remote doc predates the field (progressSync decides). */
   term?: string;
+  /** The pinned goal (Design handoff, 2026-08-22): WHICH of the fifty you are
+   *  aiming at and BY WHEN. Deliberately not a copy of the can-do sentence —
+   *  the spine is the source of truth for what the outcome says; this stores
+   *  only the commitment the spine cannot hold. Absent until one is set. */
+  goal?: { sio: string; by: string | null };
 };
+
+/** What rides on `fluolingo:reward`. `size` drives how loud the celebration
+ *  is — see RewardToast. */
+export type RewardDetail =
+  | { type: "level"; size: RewardSize; level: number }
+  | { type: "badge"; size: RewardSize; id: string }
+  | { type: "streak"; size: RewardSize; streak: number; mult: number }
+  | { type: "multiplier"; size: RewardSize; mult: number; streak: number }
+  | { type: "sio"; size: RewardSize; id: string }
+  | { type: "unit"; size: RewardSize; unit: number; count: number }
+  | { type: "mastery"; size: RewardSize; count: number }
+  | { type: "perfect"; size: RewardSize; count: number };
+
+/** chime = a tick of acknowledgement · full = the fanfare, once a unit. */
+export type RewardSize = "chime" | "small" | "big" | "full";
 
 export type ItemSrs = {
   due: number; // epoch ms when the item should resurface
@@ -105,7 +132,7 @@ const STORAGE_KEY = "fluolingo:progress";
 // todayStr() replaced by dayKey() - learner-local zone, 04:00 rollover.
 
 export function defaultProgress(): Progress {
-  return { doneSios: [], gems: 0, xp: 0, streak: 0, lastActiveDay: null, itemSrs: {}, badges: [], cosmetics: { owned: [], equipped: {} }, term: CURRENT_TERM };
+  return { doneSios: [], gems: 0, xp: 0, streak: 0, weekXp: 0, weekKey: null, lastActiveDay: null, itemSrs: {}, badges: [], cosmetics: { owned: [], equipped: {} }, term: CURRENT_TERM };
 }
 
 /** Fill in fields added after a learner's blob was first written, and migrate
@@ -197,16 +224,41 @@ export function clearLocalLearnerData(): void {
   } catch {}
 }
 
-/** Add XP for one action, scaled by today's fire multiplier. */
+/** Pin (or re-pin) the goal — which outcome, by when. Passing null clears it.
+ *  Persisted like any other progress field, so it syncs with the blob. */
+export function setGoal(sio: string | null, by: string | null): Progress {
+  const p = loadProgress();
+  return saveProgress({ ...p, goal: sio ? { sio, by } : undefined });
+}
+
+/** Add XP for one action, scaled by today's fire multiplier.
+ *
+ *  Also fills the weekly bucket (rolling it over when the ISO week turns) and
+ *  announces the award on `fluolingo:xp`, so the floating +XP can show the
+ *  multiplier actually paying out. Before this, XP was earned on every right
+ *  answer and shown nowhere at the time — the whole reason a streak is worth
+ *  having was invisible (DOPAMINE_REVIEW §4). */
 function addXp(p: Progress, base: number): Progress {
-  return { ...p, xp: p.xp + Math.round(base * xpMultiplier(p.streak)) };
+  const mult = xpMultiplier(p.streak);
+  const paid = Math.round(base * mult);
+  const wk = weekKey();
+  const rolled = p.weekKey === wk ? (p.weekXp ?? 0) : 0;
+  try {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("fluolingo:xp", { detail: { base, mult, paid } }));
+    }
+  } catch {
+    /* the float is decoration; never let it break an award */
+  }
+  return { ...p, xp: p.xp + paid, weekXp: rolled + paid, weekKey: wk };
 }
 
 /** Award any newly-earned badges (crediting their gem bounty), then persist.
  *  Emits a `fluolingo:reward` event per new badge and on a level-up so any
  *  mounted HUD can celebrate. Every earning path ends here. */
 function finalize(p: Progress): Progress {
-  const beforeXp = loadProgress().xp; // persisted state, pre-save
+  const before = loadProgress(); // persisted state, pre-save
+  const beforeXp = before.xp;
   const ctx = badgeContext(p);
   let gems = p.gems;
   const badges = [...p.badges];
@@ -219,14 +271,52 @@ function finalize(p: Progress): Progress {
     }
   }
   const saved = saveProgress({ ...p, gems, badges });
+  // Every earning path funnels through here, so every celebration is decided
+  // here too — by diffing the persisted state against the saved one. Before
+  // this, `fluolingo:reward` fired on 2 of the 8 moments the app already
+  // tracked: a level-up and a badge. Crossing into a x1.5 multiplier — the
+  // single biggest improvement a learner can earn — showed nothing at all
+  // (DOPAMINE_REVIEW §5).
+  //
+  // `size` is what stops this becoming noise. If every moment gets confetti,
+  // none of them mean anything, so the ladder runs chime -> small -> big ->
+  // full and only a finished unit gets the fanfare.
   try {
     if (typeof window !== "undefined") {
+      const fire = (detail: RewardDetail) =>
+        window.dispatchEvent(new CustomEvent("fluolingo:reward", { detail }));
+
       if (levelForXp(saved.xp).level > levelForXp(beforeXp).level) {
-        window.dispatchEvent(new CustomEvent("fluolingo:reward", { detail: { type: "level", level: levelForXp(saved.xp).level } }));
+        fire({ type: "level", size: "big", level: levelForXp(saved.xp).level });
       }
-      for (const id of fresh) {
-        window.dispatchEvent(new CustomEvent("fluolingo:reward", { detail: { type: "badge", id } }));
+      for (const id of fresh) fire({ type: "badge", size: "big", id });
+
+      // The streak, and the multiplier tier it may have just unlocked.
+      if (saved.streak > before.streak) {
+        const was = xpMultiplier(before.streak);
+        const now = xpMultiplier(saved.streak);
+        fire({ type: "streak", size: "small", streak: saved.streak, mult: now });
+        if (now > was) fire({ type: "multiplier", size: "big", mult: now, streak: saved.streak });
       }
+
+      // A finished objective — and, if it was the last of its unit, the unit.
+      const freshSio = saved.doneSios.find((id) => !before.doneSios.includes(id));
+      if (freshSio) {
+        fire({ type: "sio", size: "small", id: freshSio });
+        const unit = SIOS.find((s) => s.id === freshSio)?.unit;
+        if (unit != null) {
+          const inUnit = SIOS.filter((s) => s.unit === unit);
+          if (inUnit.length > 0 && inUnit.every((s) => saved.doneSios.includes(s.id))) {
+            fire({ type: "unit", size: "full", unit, count: inUnit.length });
+          }
+        }
+      }
+
+      // A word that has just climbed onto the spacing ladder for the first time.
+      const mastered = (q: Progress) =>
+        Object.values(q.itemSrs).filter((s) => s.intervalDays > 0).length;
+      const gained = mastered(saved) - mastered(before);
+      if (gained > 0) fire({ type: "mastery", size: "chime", count: gained });
     }
   } catch {
     /* celebration is best-effort */

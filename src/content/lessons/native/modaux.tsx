@@ -56,16 +56,16 @@ export const modauxLesson: NativeLesson = {
           </tr>
         </thead>
         <tbody lang="fr">
-          <tr><td className="p-1">je</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">veux</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">peux</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">dois</td></tr>
-          <tr><td className="p-1">tu</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">veux</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">peux</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">dois</td></tr>
-          <tr><td className="p-1">il / elle / on</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">veut</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">peut</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">doit</td></tr>
-          <tr><td className="p-1">nous</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">voulons</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">pouvons</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">devons</td></tr>
-          <tr><td className="p-1">vous</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">voulez</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">pouvez</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">devez</td></tr>
-          <tr><td className="p-1">ils / elles</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">veulent</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">peuvent</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">doivent</td></tr>
+          <tr><td className="p-1">je</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">veux</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">peux</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">dois</td></tr>
+          <tr><td className="p-1">tu</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">veux</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">peux</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">dois</td></tr>
+          <tr><td className="p-1">il / elle / on</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">veut</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">peut</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">doit</td></tr>
+          <tr><td className="p-1">nous</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">voulons</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">pouvons</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">devons</td></tr>
+          <tr><td className="p-1">vous</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">voulez</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">pouvez</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">devez</td></tr>
+          <tr><td className="p-1">ils / elles</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">veulent</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">peuvent</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">doivent</td></tr>
         </tbody>
       </table>
       <p className="mt-2 text-[14px] text-[color:var(--cahier-ink)]">
-        <b lang="fr" className="text-[color:var(--cahier-la)]">il faut</b> + infinitive — impersonal obligation, one form only:{" "}
+        <b lang="fr" className="text-[color:var(--gram-neutral)]">il faut</b> + infinitive — impersonal obligation, one form only:{" "}
         <i lang="fr">Il faut venir à 8 heures.</i>
       </p>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">

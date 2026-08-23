@@ -47,7 +47,7 @@ export const conjugaisonErLesson: NativeLesson = {
       </h2>
       <p className="text-sm text-[color:var(--cahier-ink)]">
         <b>Stem + ending</b> (<i lang="fr">parler → parl-</i>):{" "}
-        <span lang="fr" className="font-bold">je parl<b className="text-[color:var(--cahier-la)]">e</b> · tu parl<b className="text-[color:var(--cahier-la)]">es</b> · il parl<b className="text-[color:var(--cahier-la)]">e</b> · nous parl<b className="text-[color:var(--cahier-la)]">ons</b> · vous parl<b className="text-[color:var(--cahier-la)]">ez</b> · ils parl<b className="text-[color:var(--cahier-la)]">ent</b></span>
+        <span lang="fr" className="font-bold">je parl<b className="text-[color:var(--gram-neutral)]">e</b> · tu parl<b className="text-[color:var(--gram-neutral)]">es</b> · il parl<b className="text-[color:var(--gram-neutral)]">e</b> · nous parl<b className="text-[color:var(--gram-neutral)]">ons</b> · vous parl<b className="text-[color:var(--gram-neutral)]">ez</b> · ils parl<b className="text-[color:var(--gram-neutral)]">ent</b></span>
       </p>
       <table className="mt-2 w-full border-collapse text-sm text-[color:var(--cahier-ink)]">
         <thead>

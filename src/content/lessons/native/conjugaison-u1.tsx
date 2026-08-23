@@ -69,9 +69,9 @@ export const conjugaisonU1Lesson: NativeLesson = {
           {SLOTS.map((sl) => (
             <tr key={sl} className="border-b border-[color:var(--cahier-rule)]/50">
               <td className="p-1 font-bold">{SUBJ_LABELS[sl]}</td>
-              <td className="p-1 text-[color:var(--cahier-la)]">{CONJ["s'appeler"].aff[sl]}</td>
-              <td className="p-1 text-[color:var(--cahier-la)]">{CONJ["être"].aff[sl]}</td>
-              <td className="p-1 text-[color:var(--cahier-la)]">{CONJ["avoir"].aff[sl]}</td>
+              <td className="p-1 text-[color:var(--gram-neutral)]">{CONJ["s'appeler"].aff[sl]}</td>
+              <td className="p-1 text-[color:var(--gram-neutral)]">{CONJ["être"].aff[sl]}</td>
+              <td className="p-1 text-[color:var(--gram-neutral)]">{CONJ["avoir"].aff[sl]}</td>
             </tr>
           ))}
         </tbody>

@@ -58,19 +58,19 @@ export const rendezvousLesson: NativeLesson = {
       <table className="w-full border-collapse text-[15px] text-[color:var(--cahier-ink)]">
         <tbody>
           <tr>
-            <td className="p-1 align-top font-bold text-[color:var(--cahier-la)]">① proposer</td>
+            <td className="p-1 align-top font-bold text-[color:var(--gram-neutral)]">① proposer</td>
             <td className="p-1" lang="fr"><i>On se retrouve samedi soir ? · Tu es libre… ? · On peut se voir… ?</i></td>
           </tr>
           <tr>
-            <td className="p-1 align-top font-bold text-[color:var(--cahier-la)]">② refuser</td>
+            <td className="p-1 align-top font-bold text-[color:var(--gram-neutral)]">② refuser</td>
             <td className="p-1" lang="fr"><i>Désolé, je suis occupé. · Non, je ne suis pas libre. · Ce n&rsquo;est pas possible.</i></td>
           </tr>
           <tr>
-            <td className="p-1 align-top font-bold text-[color:var(--cahier-la)]">③ négocier</td>
+            <td className="p-1 align-top font-bold text-[color:var(--gram-neutral)]">③ négocier</td>
             <td className="p-1" lang="fr"><i>Et dimanche alors ? · Plutôt samedi matin ? · On peut se retrouver plus tard ?</i></td>
           </tr>
           <tr>
-            <td className="p-1 align-top font-bold text-[color:var(--cahier-la)]">④ accepter</td>
+            <td className="p-1 align-top font-bold text-[color:var(--gram-neutral)]">④ accepter</td>
             <td className="p-1" lang="fr"><i>Oui, avec plaisir ! · D&rsquo;accord ! · Ça me convient. · C&rsquo;est une bonne idée !</i></td>
           </tr>
         </tbody>

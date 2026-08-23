@@ -3,11 +3,12 @@
 /**
  * The Home page body (Dan, 2026-07-05: "a true blue Home page… all of the 50
  * SIOs on a single learning path visually — an overview of where you are in
- * the learning journey"). Hero: Bienvenue over ONE strip that unifies the
- * two marks with the three worded actions — Rewind · Play · Menu (Dan,
- * 2026-08-22); the Map postcard, matted and inert, sits
- * below it (2026-08-21 — the round ▶ and 🔁 went with the one-glyph-one-job
- * rule). The COURSE MAP moved to its own
+ * the learning journey"). Hero: Bienvenue over ONE row of five equal cells
+ * (Dan, 2026-08-21: "can't they all occupy the same horizontal space?") —
+ * two marks then the three actions, which are WORDS since 2026-08-22:
+ * Rewind (repeat errors) · Play (your stop on the study path) · Menu. The
+ * glyph rule stands (▶/🔁 belong to sound; leaving a page is a word + ›).
+ * The Map postcard, matted and inert, sits below. The COURSE MAP moved to its own
  * page, /map (Dan, 2026-08-21: a finger scrolling the page kept catching
  * the map instead) — Home links there with one card, and forwards the old
  * `/?unit=N#SIO-0XX` deep links so printed QR codes and bookmarks survive.
@@ -20,6 +21,7 @@ import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
 import { equippedAccent, xpMultiplier } from "@/lib/economy";
+import { dueForReview } from "@/lib/reviser";
 
 /** « par Dr Chan » as pen strokes, in writing order (stem before bowl, the
  *  way a hand actually writes print letters). Baseline y=25, x-height 13,
@@ -66,11 +68,14 @@ export default function HomeDashboard() {
   // Quick Guide popup, summoned from the hero button next to the (?) circle
   // (Dan, 2026-07-14: "insert a QuickGuide link where my red arrow points").
   const [qgOpen, setQgOpen] = useState(false);
+  // The Review button's count — the one destination on Home with a deadline.
+  const [dueCount, setDueCount] = useState(0);
 
   useEffect(() => {
     const refresh = () => {
       const p = loadProgress();
       setProgress(p);
+      setDueCount(dueForReview(p, Date.now()).length);
     };
     refresh();
     window.addEventListener("fluolingo:progress-updated", refresh);
@@ -128,14 +133,15 @@ export default function HomeDashboard() {
   //            50-stop map; the % is one hover away in the tooltip)
   //   streak — the only mark with a deadline, and the ×XP multiplier must
   //            stay visible or the bonus stops motivating
-  const MARKS: { label: string; value: ReactNode; title: string }[] = [
-    { label: "course", value: `${doneTotal}/${SIOS.length}`, title: `${pct}% of the course — ${doneTotal} of ${SIOS.length} objectives done` },
+  const MARKS: { label: string; value: ReactNode; title: string; role?: "win" | "streak" }[] = [
+    { label: "course", role: "win", value: `${doneTotal}/${SIOS.length}`, title: `${pct}% of the course — ${doneTotal} of ${SIOS.length} objectives done` },
     {
       label: "streak",
+      role: "streak" as const,
       value: (
         <>
           {progress.streak}
-          {mult > 1 && <b className="text-[color:var(--fluo-danger)]">×{mult}</b>}
+          {mult > 1 && <b className="text-[color:var(--dopa-streak-ink)]">×{mult}</b>}
         </>
       ),
       title: mult > 1 ? `Day streak — XP ×${mult}` : "Day streak",
@@ -170,10 +176,9 @@ export default function HomeDashboard() {
         {/* Heading — the h1 is back. The word does the Kallang Wave, the ink
             blob sweeps F→o, then « par Dr Chan » writes itself beneath. */}
         <div
-          className="flex items-start justify-between gap-2 px-4 pb-3 pt-3.5"
+          className="px-4 pb-3 pt-3.5"
           style={{ background: "linear-gradient(120deg, var(--cahier-accent-soft) 0%, var(--cahier-paper-2) 45%, var(--cahier-hl) 100%)" }}
         >
-          <div className="min-w-0">
           <h1 className="fluo-serif text-2xl font-black leading-none text-[color:var(--fluo-ink)]">
             <span className="whitespace-nowrap">Bienvenue sur</span>{" "}
             <span
@@ -211,24 +216,23 @@ export default function HomeDashboard() {
               ))}
             </g>
           </svg>
-          </div>
 
         </div>
 
-        {/* ONE strip: the two marks AND the three actions (Dan, 2026-08-22:
-            "the two stats and three buttons in a more unified manner"). The
-            full-width « Continue › » below the card is gone — its job moved
-            into « Play » here — and ▦ left the greeting for the same strip.
-            The three actions are WORDS (the glyph rule stands: ▶/🔁 belong
-            to sound):
-              Rewind — repeat your errors (/reviser)
-              Play   — the current stop on the study path (the old Continue)
-              Menu   — every other activity, one tap away */}
+        {/* ONE row, FIVE equal cells (Dan, 2026-08-21: "can't they all
+            occupy the same horizontal space?"; 2026-08-22: "the two stats
+            and three buttons in a more unified manner"). Two marks, then the
+            three actions AS WORDS (Dan's 22 Aug names):
+              Rewind › — repeat your errors (/reviser; carries the due count)
+              Play ›   — the current stop on the study path (old Continue)
+              Menu     — every activity, one tap away (a popup, so no ›)
+            `flex-[2]` / `flex-[3]` split the row into fifths, so a mark cell
+            and a button cell are the same width. */}
         <div
           className="flex flex-wrap items-stretch gap-x-2 gap-y-1.5 border-t-2 px-3 py-2"
           style={{ borderColor: "var(--fluo-ink)", background: "var(--cahier-paper-raised)" }}
         >
-          <dl className="flex min-w-0 flex-1 basis-40 items-stretch">
+          <dl className="flex min-w-0 flex-[2] items-stretch">
             {MARKS.map((m, i) => (
               <div
                 key={m.label}
@@ -237,7 +241,14 @@ export default function HomeDashboard() {
                 title={m.title}
               >
                 <dt className="sr-only">{m.label}</dt>
-                <dd className="fluo-mono truncate max-w-full text-[11px] font-black leading-tight tracking-tight text-[color:var(--fluo-ink)] sm:text-sm sm:tracking-normal">
+                {/* Colour the two marks that survived round 12 (COLOR_REVIEW
+                    §11.5): course takes the growth role, the streak takes its
+                    own. Both -ink variants clear 5.2:1 on paper. The labels
+                    stay ink — if everything is coloured, nothing is. */}
+                <dd
+                  className="fluo-mono truncate max-w-full text-[11px] font-black leading-tight tracking-tight sm:text-sm sm:tracking-normal"
+                  style={{ color: m.role ? `var(--dopa-${m.role}-ink)` : "var(--fluo-ink)" }}
+                >
                   {m.value}
                 </dd>
                 <span aria-hidden className="fluo-mono mt-0.5 truncate max-w-full text-[9px] font-bold uppercase tracking-wide text-[color:var(--cahier-ink-soft)] sm:text-[10px]">
@@ -247,38 +258,56 @@ export default function HomeDashboard() {
             ))}
           </dl>
 
-          {/* The trio share one border, one height, one type size — a single
-              family (round 12's cohesion rule), told apart by fill alone. */}
-          <div className="flex shrink-0 items-center gap-1.5" role="group" aria-label="Actions">
-            <Link
-              href="/reviser"
-              title="Rewind — repeat the words you missed"
-              className="fluo-mono flex h-9 items-center rounded-lg border-2 px-2.5 text-[11px] font-black shadow-[2px_2px_0_rgba(0,0,0,0.15)] transition hover:-translate-y-0.5 sm:px-3 sm:text-xs"
-              style={{ borderColor: "var(--fluo-ink)", background: "var(--cahier-paper)", color: "var(--fluo-ink)" }}
-            >
-              Rewind
-            </Link>
-            {activeSio && (
+          {/* One family: identical geometry and ink border on all three —
+              only the FILL carries hierarchy. Words per Dan's 22 Aug names;
+              Rewind and Play leave the page so they wear ›, Menu is a popup
+              so it does not. */}
+          <div className="flex min-w-0 flex-[3] items-stretch">
+            <div className="flex min-w-0 flex-1 items-center justify-center border-l px-0.5" style={{ borderColor: "var(--cahier-line)" }}>
               <Link
-                href={`/unit/${activeSio.unit}#${activeSio.id}`}
-                title={`Play — « ${activeSio.topic} », your stop on the study path`}
-                className="fluo-mono flex h-9 items-center rounded-lg border-2 px-2.5 text-[11px] font-black transition hover:-translate-y-0.5 sm:px-3 sm:text-xs"
-                /* Primary of the family: the house chartreuse, the learner's
-                   bought accent as its ledge so a cosmetic shows on Home. */
-                style={{ borderColor: "var(--fluo-ink)", background: "var(--cahier-hl)", color: "var(--fluo-ink)", boxShadow: `2px 2px 0 ${accent}` }}
+                href="/reviser"
+                title="Rewind — repeat the words you missed"
+                className="fluo-mono relative flex h-9 w-full max-w-24 items-center justify-center gap-0.5 rounded-full border-2 text-[10px] font-black shadow-[2px_2px_0_rgba(0,0,0,0.15)] transition hover:-translate-y-0.5 sm:text-[11px]"
+                style={{ borderColor: "var(--fluo-ink)", background: "var(--cahier-paper)", color: "var(--fluo-ink)" }}
               >
-                Play
+                Rewind<span aria-hidden>›</span>
+                {/* Words waiting to be reviewed are WORK, not failure — the
+                    badge wears the primary-action role, never danger. */}
+                {dueCount > 0 && (
+                  <span
+                    className="absolute -right-1.5 -top-2 rounded-full px-1.5 text-[10px] font-bold text-white"
+                    style={{ background: "var(--dopa-focus)" }}
+                  >
+                    {dueCount}
+                  </span>
+                )}
               </Link>
+            </div>
+            {activeSio && (
+              <div className="flex min-w-0 flex-1 items-center justify-center border-l px-0.5" style={{ borderColor: "var(--cahier-line)" }}>
+                <Link
+                  href={`/unit/${activeSio.unit}#${activeSio.id}`}
+                  title={`Play — « ${activeSio.topic} », your stop on the study path`}
+                  className="fluo-mono flex h-9 w-full max-w-24 items-center justify-center gap-0.5 rounded-full border-2 text-[10px] font-black transition hover:-translate-y-0.5 sm:text-[11px]"
+                  /* Primary of the family: the house chartreuse; the bought
+                     accent is its ledge, so a cosmetic still shows on Home. */
+                  style={{ borderColor: "var(--fluo-ink)", background: "var(--cahier-hl)", color: "var(--fluo-ink)", boxShadow: `2px 2px 0 ${accent}` }}
+                >
+                  Play<span aria-hidden>›</span>
+                </Link>
+              </div>
             )}
-            <button
-              type="button"
-              onClick={() => setQgOpen(true)}
-              title="Menu — every activity, one tap away"
-              className="fluo-mono flex h-9 items-center rounded-lg border-2 px-2.5 text-[11px] font-black shadow-[2px_2px_0_rgba(0,0,0,0.15)] transition hover:-translate-y-0.5 sm:px-3 sm:text-xs"
-              style={{ borderColor: "var(--fluo-ink)", background: "var(--fluo-ink)", color: "var(--cahier-hl)" }}
-            >
-              Menu
-            </button>
+            <div className="flex min-w-0 flex-1 items-center justify-center border-l px-0.5" style={{ borderColor: "var(--cahier-line)" }}>
+              <button
+                type="button"
+                onClick={() => setQgOpen(true)}
+                title="Menu — every activity, one tap away"
+                className="fluo-mono flex h-9 w-full max-w-24 items-center justify-center rounded-full border-2 text-[10px] font-black shadow-[2px_2px_0_rgba(0,0,0,0.15)] transition hover:-translate-y-0.5 sm:text-[11px]"
+                style={{ background: "var(--fluo-ink)", borderColor: "var(--fluo-ink)", color: "var(--cahier-hl)" }}
+              >
+                Menu
+              </button>
+            </div>
           </div>
         </div>
         {qgOpen && <MenuSplash onClose={() => setQgOpen(false)} />}

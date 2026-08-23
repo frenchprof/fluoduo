@@ -13,6 +13,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import CahierShell from "@/components/CahierShell";
+import SectionBand from "@/components/SectionBand";
 import AuthGate from "@/components/AuthGate";
 import { speak } from "@/games/letris/speech";
 import { loadProgress, recordItemResult } from "@/lib/progress";
@@ -179,9 +180,11 @@ export default function ReviserPage() {
 
 function GapPanel({ gaps }: { gaps: Gap[] }) {
   if (gaps.length === 0) return null;
+  // A colour-coded band, not a bare heading (SectionBand.tsx): this page
+  // measured 2.5% saturated — the flattest core surface on the site — and a
+  // learner arriving here could not tell at a glance which world they were in.
   return (
-    <div>
-      <h2 className="fluo-label mb-2 text-[color:var(--fluo-ink-soft)]">Where your gaps are</h2>
+    <SectionBand family="review" label="WHERE YOUR GAPS ARE" pill={`${gaps.length} deck${gaps.length === 1 ? "" : "s"}`}>
       <div className="space-y-1.5">
         {gaps.map((g) => (
           <Link
@@ -192,13 +195,13 @@ function GapPanel({ gaps }: { gaps: Gap[] }) {
           >
             <span lang="fr" className="text-sm font-bold text-[color:var(--fluo-ink)]">{g.deckTitle}</span>
             <span className="flex items-center gap-2 text-xs font-bold">
-              {g.weak > 0 && <span className="rounded-full bg-[#c0392b] px-2 py-0.5 text-white">{g.weak} weak</span>}
-              {g.due > 0 && <span className="rounded-full bg-[#e0a100] px-2 py-0.5 text-white">{g.due} due</span>}
+              {g.weak > 0 && <span className="rounded-full px-2 py-0.5 text-white" style={{ background: "var(--dopa-miss)" }}>{g.weak} weak</span>}
+              {g.due > 0 && <span className="rounded-full px-2 py-0.5 text-white" style={{ background: "var(--dopa-focus)" }}>{g.due} due</span>}
               <span className="text-[color:var(--fluo-ink-soft)]">{g.seen} seen</span>
             </span>
           </Link>
         ))}
       </div>
-    </div>
+    </SectionBand>
   );
 }

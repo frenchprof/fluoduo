@@ -37,8 +37,8 @@ export const negationLesson: NativeLesson = {
         La négation : <em>ne … pas</em>
       </h2>
       <ul className="space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
-        <li><b className="text-[color:var(--cahier-la)]">ne</b> + verbe + <b className="text-[color:var(--cahier-la)]">pas</b> — <i lang="fr">Je <b>ne</b> suis <b>pas</b> français.</i></li>
-        <li><b className="text-[color:var(--cahier-la)]">n&rsquo;</b> + voyelle — <i lang="fr">Je <b>n&rsquo;</b>ai <b>pas</b> quinze ans.</i></li>
+        <li><b className="text-[color:var(--gram-neutral)]">ne</b> + verbe + <b className="text-[color:var(--gram-neutral)]">pas</b> — <i lang="fr">Je <b>ne</b> suis <b>pas</b> français.</i></li>
+        <li><b className="text-[color:var(--gram-neutral)]">n&rsquo;</b> + voyelle — <i lang="fr">Je <b>n&rsquo;</b>ai <b>pas</b> quinze ans.</i></li>
         <li>Verbe réfléchi : <i>ne</i> avant <i>me/te/se</i> — <i lang="fr">Je <b>ne</b> m&rsquo;appelle <b>pas</b> Marie.</i></li>
         <li><i lang="fr">Il y a</i> → <i lang="fr">Il <b>n&rsquo;</b>y a <b>pas</b></i> — <i lang="fr">Il n&rsquo;y a pas de chat.</i></li>
       </ul>

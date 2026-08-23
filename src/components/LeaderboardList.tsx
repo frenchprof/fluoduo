@@ -13,7 +13,9 @@ import { signInWithGoogle, useAuthUser } from "@/lib/firebase/auth";
 import { levelForXp } from "@/lib/economy";
 import { ALIAS_BOARD_NAMES, ALIAS_CANON_NAMES, EXCLUDED_BOARD_UIDS, boardName } from "@/lib/accountAliases";
 import { isCurrentTerm } from "@/lib/term";
+import { weekKey } from "@/lib/dayKey";
 import RankBadge from "@/components/RankBadge";
+import SectionBand from "@/components/SectionBand";
 
 type BoardRow = {
   uid: string;
@@ -24,12 +26,21 @@ type BoardRow = {
   level?: number;
   gems?: number;
   streak?: number;
+  /** The weekly race (2026-08-21). Absent on legacy rows and on anyone who
+   *  has not practised since the field shipped — treated as 0, never as a
+   *  reason to drop the row. */
+  weekXp?: number;
+  weekKey?: string | null;
   term?: string;
 };
 // NOT `?? r.gems` (bug, to 2026-08-10): gems are SPENT in the Boutique, so a
 // learner who bought a colour dropped down a board that claims to rank XP.
 // A purchase cost you position. Absent xp is 0, not leftover currency.
 const rowXp = (r: BoardRow) => r.xp ?? r.totalXP ?? 0;
+/** This week's figure — and ONLY this week's. A stored total from a week that
+ *  has rolled over is stale by definition, so it reads as zero rather than
+ *  letting last week's effort win a race it is not in. */
+const rowWeekXp = (r: BoardRow, wk: string) => (r.weekKey === wk ? (r.weekXp ?? 0) : 0);
 const rowName = (r: BoardRow) => r.name ?? r.displayName ?? "Anonymous"; // same fallback word as boardName
 
 
@@ -38,6 +49,11 @@ export default function LeaderboardList() {
   const user = useAuthUser();
   const [rows, setRows] = useState<BoardRow[] | null>(null);
   const [failed, setFailed] = useState(false);
+  // "This week" leads. A cumulative board is decided by week three and only the
+  // top few have anything left to play for; a weekly reset puts everyone back
+  // in a live race (DOPAMINE_REVIEW §9). The all-term view stays one tap away —
+  // nobody loses the standing they built.
+  const [view, setView] = useState<"week" | "term">("week");
 
   useEffect(() => {
     if (!user) {
@@ -99,8 +115,9 @@ export default function LeaderboardList() {
             }
             list = list.filter((r) => !rest.includes(r));
           }
-          list.sort((a, b) => rowXp(b) - rowXp(a));
-          setRows(list.slice(0, 50));
+          // Sorted per view below, not here — the weekly board ranks by a
+          // different field and must not inherit the all-term order.
+          setRows(list);
         }
       } catch {
         if (!cancelled) setFailed(true);
@@ -127,43 +144,112 @@ export default function LeaderboardList() {
   if (rows === null) return <p className="text-sm text-[color:var(--cahier-ink-soft)]">Loading…</p>;
   if (rows.length === 0) return <p className="text-sm text-[color:var(--cahier-ink-soft)]">Nobody yet — be the first 💎!</p>;
 
+  const wk = weekKey();
+  const mine = boardName(user.uid, user.displayName);
+  const isMe = (r: BoardRow) =>
+    r.uid === user.uid || (ALIAS_CANON_NAMES.includes(mine) && rowName(r) === mine);
+
+  const score = (r: BoardRow) => (view === "week" ? rowWeekXp(r, wk) : rowXp(r));
+  const ranked = [...rows].sort((a, b) => score(b) - score(a));
+  // On the weekly board, someone who has not practised this week is not in the
+  // race — showing them at 0 would pad the table with people who never entered.
+  const inPlay = view === "week" ? ranked.filter((r) => score(r) > 0) : ranked;
+  const myIndex = inPlay.findIndex(isMe);
+
+  // "Around you" beats a top-50 list: position relative to the person just
+  // ahead is a target you can act on; position 34 of 50 is not.
+  const neighbours =
+    myIndex >= 0
+      ? inPlay.slice(Math.max(0, myIndex - 1), Math.min(inPlay.length, myIndex + 2))
+      : [];
+  const ahead = myIndex > 0 ? score(inPlay[myIndex - 1]) - score(inPlay[myIndex]) : 0;
+
+  const row = (r: BoardRow, index: number) => {
+    const me = isMe(r);
+    return (
+      <li
+        key={`${view}-${r.uid}`}
+        className={`flex items-center gap-1.5 rounded-xl border-2 px-2.5 py-2 sm:gap-2 ${
+          me ? "border-[color:var(--cahier-ink)] bg-[color:var(--cahier-hl)]/40" : "border-[color:var(--cahier-rule)] bg-white"
+        }`}
+      >
+        <span className="w-7 shrink-0 text-center text-base font-black">{medal(index)}</span>
+        <span className="min-w-0 flex-1 truncate text-sm font-bold text-[color:var(--cahier-ink)]">
+          {rowName(r)}{me && " (you)"}
+        </span>
+        <RankBadge level={r.level ?? levelForXp(rowXp(r)).level} name={levelForXp(rowXp(r)).name} />
+        <span className="fluo-mono w-16 shrink-0 text-right text-sm font-black tabular-nums text-[color:var(--cahier-ink)]">
+          {score(r).toLocaleString()}
+        </span>
+      </li>
+    );
+  };
+
   return (
-    <ol className="space-y-1.5">
-      {rows.map((r, i) => {
-        // "you" = my row, OR the canonical row my alias was folded into (an
-        // aliased learner signed in on her second account used to see no
-        // "(you)" at all — her own row had been merged away by name).
-        const mine = boardName(user.uid, user.displayName);
-        const me = r.uid === user.uid || (ALIAS_CANON_NAMES.includes(mine) && rowName(r) === mine);
-        return (
-          <li
-            key={r.uid}
-            className={`flex items-center gap-1.5 rounded-xl border-2 px-2.5 py-2 sm:gap-2 ${
-              me ? "border-[color:var(--cahier-ink)] bg-[color:var(--cahier-hl,#eaff00)]/40" : "border-[color:var(--cahier-rule)] bg-white"
-            }`}
+    <div className="flex flex-col gap-4">
+      <div
+        role="tablist"
+        aria-label="Leaderboard period"
+        className="flex overflow-hidden rounded-full border-[1.5px] bg-white"
+        style={{ borderColor: "var(--cahier-ink)" }}
+      >
+        {(["week", "term"] as const).map((v) => (
+          <button
+            key={v}
+            type="button"
+            role="tab"
+            aria-selected={view === v}
+            onClick={() => setView(v)}
+            className="flex-1 py-2 text-[13px] font-extrabold transition"
+            style={
+              view === v
+                ? { background: "var(--cahier-ink)", color: "var(--cahier-hl)" }
+                : { color: "var(--cahier-ink-soft)" }
+            }
           >
-            <span className="w-7 shrink-0 text-center text-base font-black">{medal(i)}</span>
-            <span className="min-w-0 flex-1 truncate text-sm font-bold text-[color:var(--cahier-ink)]">
-              {rowName(r)}{me && " (you)"}
-            </span>
-            {/* Digit-only rank in its tier colours (Dan, 2026-07-08: names
-                were invisible on mobile) — full name in the tooltip; a fixed
-                narrow column keeps every badge vertically aligned. Level is
-                ALWAYS derived from XP: docs written before the ×20 retune
-                carry stale `level` fields from the old cheap curve. */}
-            <span className="w-8 shrink-0 text-center">
-              <RankBadge
-                level={levelForXp(rowXp(r)).level}
-                name={levelForXp(rowXp(r)).name}
-                className="text-xs"
-                compact
-              />
-            </span>
-            <span className="fluo-mono w-[4.5rem] shrink-0 text-right text-sm font-black text-[color:var(--cahier-ink)]">⭐{rowXp(r)}</span>
-            <span className="fluo-mono w-10 shrink-0 text-right text-sm font-bold text-[color:var(--cahier-ink-soft)]">🔥{r.streak ?? 0}</span>
-          </li>
-        );
-      })}
-    </ol>
+            {v === "week" ? "This week" : "All term"}
+          </button>
+        ))}
+      </div>
+
+      {/* Two colour-coded zones, not two headings (SectionBand): the board
+          reads as "you" and "everyone", and you can find yourself without
+          reading a word. */}
+      {view === "week" && myIndex >= 0 && (
+        <SectionBand
+          family="user"
+          label="AROUND YOU"
+          pill={ahead > 0 ? `${ahead.toLocaleString()} XP to go` : "top of your group"}
+        >
+          <ol className="space-y-1.5">{neighbours.map((r) => row(r, inPlay.indexOf(r)))}</ol>
+          {ahead > 0 && (
+            <p className="mt-2 text-[12px] text-[color:var(--cahier-ink-soft)]">
+              That is about {Math.max(1, Math.round(ahead / 180))} exercise
+              {Math.round(ahead / 180) === 1 ? "" : "s"}.
+            </p>
+          )}
+        </SectionBand>
+      )}
+
+      <SectionBand
+        family={view === "week" ? "svplay" : "none"}
+        label={view === "week" ? "LEADING THIS WEEK" : "ALL TERM"}
+        pill={inPlay.length ? `${inPlay.length}` : undefined}
+      >
+        {inPlay.length === 0 ? (
+          <p className="text-sm text-[color:var(--cahier-ink-soft)]">
+            Nobody has practised yet this week — first one on the board sets the pace.
+          </p>
+        ) : (
+          <ol className="space-y-1.5">{inPlay.slice(0, 50).map((r, i) => row(r, i))}</ol>
+        )}
+      </SectionBand>
+
+      {view === "week" && (
+        <p className="text-center text-[11px] text-[color:var(--cahier-ink-faint)]">
+          Resets Monday. Nobody drops — everyone starts level.
+        </p>
+      )}
+    </div>
   );
 }

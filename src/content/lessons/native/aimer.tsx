@@ -47,10 +47,10 @@ export const aimerLesson: NativeLesson = {
         With verbs of preference you talk about the thing <b>in general</b> — so the article is <b>definite</b>:
       </p>
       <ul className="mt-2 space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
-        <li><b className="text-lg text-[color:var(--cahier-la)]">le</b> + masculin — <i lang="fr">J&rsquo;aime le sport.</i></li>
-        <li><b className="text-lg text-[color:var(--cahier-la)]">la</b> + féminin — <i lang="fr">J&rsquo;adore la musique.</i></li>
-        <li><b className="text-lg text-[color:var(--cahier-la)]">l&rsquo;</b> + voyelle — <i lang="fr">J&rsquo;aime l&rsquo;art.</i></li>
-        <li><b className="text-lg text-[color:var(--cahier-la)]">les</b> + pluriel — <i lang="fr">Je déteste les films d&rsquo;horreur.</i></li>
+        <li><b className="text-lg text-[color:var(--gram-masc)]">le</b> + masculin — <i lang="fr">J&rsquo;aime le sport.</i></li>
+        <li><b className="text-lg text-[color:var(--gram-fem)]">la</b> + féminin — <i lang="fr">J&rsquo;adore la musique.</i></li>
+        <li><b className="text-lg text-[color:var(--gram-neutral)]">l&rsquo;</b> + voyelle — <i lang="fr">J&rsquo;aime l&rsquo;art.</i></li>
+        <li><b className="text-lg text-[color:var(--gram-neutral)]">les</b> + pluriel — <i lang="fr">Je déteste les films d&rsquo;horreur.</i></li>
       </ul>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
         ⚠️ <b>Even in the negative the article stays le / la / les</b> (it does <u>not</u> become <i>de</i> — that&rsquo;s the partitive):{" "}

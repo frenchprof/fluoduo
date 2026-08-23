@@ -30,3 +30,16 @@ export const TERM_START_MS = Date.UTC(2026, 7, 11); // 11 Aug 2026
 export function isCurrentTerm(term: string | null | undefined): boolean {
   return term === CURRENT_TERM;
 }
+
+// ── Course identity (the profile header's second line) ──────────────────────
+// The code people search for (it is already the meta description's reason for
+// existing, layout.tsx) and the level the fifty outcomes are written to.
+export const COURSE_CODE = "LAF1201";
+export const COURSE_LEVEL = "A1";
+
+/** Teaching week, counted from the term start — 1 in the first week, never 0.
+ *  The profile header states the week rather than a date because a course
+ *  runs on weeks, and "week 6" is the unit a learner plans against. */
+export function courseWeek(now: number): number {
+  return Math.max(1, Math.floor((now - TERM_START_MS) / (7 * 86_400_000)) + 1);
+}

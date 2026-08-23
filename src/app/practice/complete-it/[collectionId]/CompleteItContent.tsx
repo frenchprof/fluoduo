@@ -13,6 +13,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import DrillShell, { drillExitHref } from "@/components/DrillShell";
+import SessionReceipt, { useRunXp } from "@/components/SessionReceipt";
+import { loadProgress } from "@/lib/progress";
 import { CURATED } from "@/content/collections";
 import { bareWord, practiceItems } from "@/lib/collections/display";
 import { sfx } from "@/games/audio/sfx";
@@ -59,6 +61,7 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
   const [value, setValue] = useState("");
   const [result, setResult] = useState<Grade | null>(null);
   const [score, setScore] = useState({ ok: 0, total: 0 });
+  const runXp = useRunXp();
   // A wrong try that is NOT final: the tray says "not yet", the ladder may
   // have opened a hint, and the input stays live for another go (Track D).
   const [retry, setRetry] = useState(false);
@@ -350,11 +353,21 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
       }
     >
       {done ? (
-        <div className="text-center">
-          <p className="text-4xl" aria-hidden>🎉</p>
-          <p className="mt-2 text-2xl font-black text-[color:var(--cahier-ink)]">✓ {score.ok}/{total}</p>
-          <p lang="fr" className="mt-1 text-sm font-bold text-[color:var(--cahier-ink)]/60">{deck.title}</p>
-        </div>
+        // The run ends with a receipt, not a score (DOPAMINE_REVIEW §8): what
+        // you earned, whether the multiplier paid, and — when there were
+        // misses — the door straight to correcting them.
+        <SessionReceipt
+          xp={runXp.xp}
+          mult={runXp.mult}
+          right={score.ok}
+          total={total}
+          streak={loadProgress().streak}
+          strength={score.ok === total ? <span lang="fr">{deck.title}</span> : undefined}
+          weakness={score.ok < total ? `${total - score.ok} to see again` : undefined}
+          fixHref={score.ok < total ? "/reviser" : undefined}
+          onAgain={restart}
+          homeHref={drillExitHref(collectionId)}
+        />
       ) : item ? (
         <div>
           {prompt}

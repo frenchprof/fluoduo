@@ -35,12 +35,12 @@ What this asserts (the height itself is a screenshot's job):
   3  The marks are a horizontal row: a <dl> of value-over-label cells,
      each labelled, all sharing one line (the list itself never wraps —
      on a phone the actions drop below it instead).
-  4  One glyph, one job (2026-08-21). No ▶ anywhere on Home and no 🔁 in
-     the hero: the triangle means "a voice is about to speak" everywhere
-     else in the app, and the 🔁 pointed at the page the Review tab
-     already opens. Continue is a WORD in a full-width button under the
-     card (Dan's Home mock), and › is the single "this leaves the page"
-     mark, shared with the Map postcard. ▦ Menu sits in the greeting.
+  4  One glyph, one job (2026-08-21). No ▶ anywhere in HomeDashboard and
+     no 🔁: the triangle means "a voice is about to speak" everywhere else
+     in the app. The three round actions — › Continue · 🔖 Review · ▦ Menu
+     — share ONE five-cell row with the two marks (Dan: the big CTA "was
+     occupying so much space"), and › is the single "this leaves the page"
+     mark, shared with the Map postcard.
   5  Every progress counter survives (litmus: learner feedback stays).
 
 Run from the repo root:  python3 verify/verify25.py
@@ -129,21 +129,34 @@ check("▶" not in home,
 check("🔁" not in hero,
       "no 🔁 in the hero — the Review tab carries that destination",
       "the hero's 🔁 is back, duplicating the Review tab and ÉcouTexte's 'again'")
-for word, where in ((">\n              Rewind", "/reviser"), (">\n                Play", "the current stop"), (">\n              Menu", "the Menu splash")):
+# Dan, 2026-08-22 (round 13, superseding the 21 Aug round buttons): the three
+# actions are WORDS — Rewind (repeat errors), Play (the stop on the study
+# path), Menu — sharing the five-cell row with the two marks.
+for word, where in (('title="Rewind — ', "/reviser"), ('title={`Play — ', "the current stop"), ('title="Menu — ', "the Menu splash")):
     check(word in hero,
-          f"« {word.strip()} » is a WORD button in the hero strip (→ {where})",
-          f"« {word.strip()} » left the unified strip — Dan's 22 Aug trio is broken")
+          f"the {where} action is a WORD button in the hero row",
+          f"a worded action left the unified row — Dan's 22 Aug trio is broken")
 check('href="/reviser"' in hero,
       "Rewind points at /reviser — repeat your errors",
       "Rewind lost its /reviser destination")
 check("activeSio.unit}#${activeSio.id}" in hero,
       "Play continues the course at the current stop (old Continue's job)",
       "Play no longer opens the current stop")
-check('aria-label="Continue"' not in home and "fluo-btn-lg" not in home,
-      "the full-width Continue below the card is gone (Dan, 2026-08-22)",
-      "the bulky Continue button is back above the map")
-check(home.count("›") >= 1,
-      "› stays the one 'this leaves the page' mark (the Map card)",
+check("dueCount > 0 &&" in hero,
+      "Rewind carries the due count — the one deadline on Home",
+      "the due badge left Rewind; the deadline is invisible again")
+# Dan, 2026-08-21: "I am not fond of having a huge CONTINUER button occupying
+# so much space" — and 22 Aug: "Remove the bulky Continue button that
+# occupies entire width above the map." A full-width CTA is a CI failure
+# now, not a matter of taste.
+check("fluo-btn-lg" not in home and 'className="fluo-btn' not in home,
+      "no full-width CTA under the card — the actions live in the row",
+      "a full-width button is back under the hero (Dan, twice: do not)")
+check("flex-[2]" in home and "flex-[3]" in home,
+      "ONE row of five equal cells — two marks + three actions",
+      "the marks and the actions no longer share one five-cell row")
+check(home.count("›") >= 3,
+      "› marks every 'this leaves the page' word — Rewind, Play, the Map card",
       "the chevron is missing; navigation has no consistent mark")
 
 # 4 · the TWO essential marks (Dan, 2026-08-21, decluttering: "we only need

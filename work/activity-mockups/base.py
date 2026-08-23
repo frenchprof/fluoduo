@@ -1,0 +1,138 @@
+# -*- coding: utf-8 -*-
+FONTS = ('<link rel="stylesheet" href="https://fonts.googleapis.com/css2?'
+         'family=Work+Sans:wght@400;500;600;700;800;900&family=Patrick+Hand&display=swap">')
+
+BASE = """
+*{box-sizing:border-box}
+body{margin:0;width:390px;height:844px;overflow:hidden;
+  font-family:'Work Sans',system-ui,-apple-system,sans-serif;color:#312620;background:#e3ddd4;
+  -webkit-font-smoothing:antialiased}
+a{color:#2d54a0}a:hover{color:#123780}
+.screen{width:390px;height:844px;display:flex;flex-direction:column;background:#faf6ee;
+  position:relative;overflow:hidden}
+.body{flex:1;min-height:0;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:13px}
+.ruled{background-image:repeating-linear-gradient(to bottom,transparent 0 27px,#e3ddd1 27px 28px);
+  background-position:0 8px}
+.card{background:#fefbf7;border:2px solid #312620;border-radius:14px;box-shadow:0 2px 0 0 #312620;
+  padding:14px}
+.soft{background:#fefbf7;border:1.5px solid #e3ddd1;border-radius:12px;padding:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;
+  font-weight:600;font-size:15px;border:1.5px solid #312620;border-radius:10px;padding:10px 18px;
+  background:#faf6ee;color:#312620;box-shadow:0 2px 0 0 #312620}
+.btn-accent{background:#d4f24c;border-color:#a6c130;box-shadow:0 2px 0 0 #a6c130}
+.btn-dark{background:#312620;color:#d4f24c;box-shadow:0 2px 0 0 #191c50}
+/* the real 56px DrillShell bar: ✕ · progress · ? hint dots */
+.drillbar{height:56px;display:flex;align-items:center;gap:12px;padding:0 14px;flex-shrink:0;
+  border-bottom:2px solid rgba(49,38,32,.1);background:#faf6ee}
+.pbar{flex:1;height:14px;border-radius:999px;background:rgba(49,38,32,.1);overflow:hidden}
+.pbar i{display:block;height:100%;border-radius:999px;background:#10b981}
+.hint{display:flex;align-items:center;gap:6px;color:rgba(49,38,32,.7)}
+.hint b{font-size:18px;font-weight:900}
+.hint span{display:flex;gap:3px}
+.hint i{width:6px;height:6px;border-radius:999px;background:rgba(49,38,32,.25);display:block}
+.hint i.on{background:#312620}
+.topbar{height:56px;display:flex;align-items:center;gap:11px;padding:0 14px;
+  border-bottom:2px solid #e3ddd1;background:#fefbf7;flex-shrink:0}
+/* The real sticky top bar — wordmark + the six-icon strip. Dan, 2026-08-21:
+   "the top most row of icons still exist, and must not go hiding into the
+   overspill off the screen." Every screen wears it. */
+.sitebar{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:7px 12px 7px 36px;border-bottom:2px solid rgba(49,38,32,.15);
+  background:rgba(250,246,238,.92);flex-shrink:0}
+.sitemark{font-size:17px;font-weight:900;letter-spacing:-.02em;min-width:0;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.sitemark i{font-style:normal;background:#d4f24c;padding:0 3px;border-radius:3px}
+.siteicons{display:flex;align-items:center;gap:2px;flex-shrink:0;max-width:100%;flex-wrap:wrap;
+  justify-content:flex-end}
+.siteicons b{display:flex;align-items:center;justify-content:center;width:29px;height:27px;
+  border:1.5px solid #312620;border-radius:8px;background:#faf6ee;box-shadow:0 2px 0 0 #312620;
+  font-size:13px;font-weight:400;flex-shrink:0}
+.siteicons b:last-child{margin-right:18px}
+.bottombar{height:64px;display:flex;align-items:stretch;background:#fefbf7;
+  border-top:2px solid #cabfaf;flex-shrink:0;margin-top:auto}
+.slot{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  color:#655c55}
+.slot .ic{font-size:22px;line-height:1}
+.slot .lb{font-size:10px;font-weight:800}
+.slot.on{color:#2d54a0}
+.hand{font-family:'Patrick Hand',cursive;font-weight:400}
+.mono{font-variant-numeric:tabular-nums}
+.eyebrow{font-size:10px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:#655c55}
+.h2{font-size:19px;font-weight:800;letter-spacing:-.01em;line-height:1.15}
+.sub{font-size:13px;line-height:1.45;color:#655c55}
+.chip{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:4px 11px;
+  font-size:12px;font-weight:700;border:1.5px solid #e3ddd1;background:#fff}
+.opt{display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:12px;
+  border:2px solid rgba(42,46,110,.22);background:#fff;font-weight:600;font-size:15px;
+  box-shadow:0 2px 0 0 rgba(42,46,110,.18);padding:10px 12px;text-align:center}
+.opt.ok{border-color:#1e7729;background:#d5f7ca;box-shadow:0 2px 0 0 #1e7729}
+.opt.no{border-color:#bb0916;background:#ffd9d2;box-shadow:0 2px 0 0 #bb0916}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tray{position:absolute;left:0;right:0;bottom:0;padding:15px 16px 20px;display:flex;
+  align-items:center;gap:12px}
+.tray.good{background:#d5f7ca;border-top:2px solid #1e7729}
+.tray.bad{background:#ffd9d2;border-top:2px solid #bb0916}
+/* word-bank tiles (WordBank.tsx — used below sm by iComplete/Gram/Conjuga/4Mémoire) */
+.bank{display:flex;flex-wrap:wrap;gap:7px}
+.tile{border:1.5px solid #312620;border-radius:9px;background:#fefbf7;padding:8px 12px;
+  font-size:14px;font-weight:600;box-shadow:0 2px 0 0 #312620;min-height:44px;display:flex;
+  align-items:center}
+/* the floating +XP the review proposes */
+.xpf{position:absolute;display:flex;flex-direction:column;align-items:center;gap:2px;
+  animation:rise 2.4s ease-out infinite}
+@keyframes rise{0%{transform:translateY(16px);opacity:0}18%{opacity:1}70%{opacity:1}
+  100%{transform:translateY(-52px);opacity:0}}
+@media (prefers-reduced-motion:reduce){.xpf{animation:none}}
+.xpf b{font-size:25px;font-weight:900;color:#8b5700;letter-spacing:-.02em;text-shadow:0 1px 0 #fefbf7}
+.xpf s{text-decoration:none;font-size:11px;font-weight:800;color:#b80071;background:#ffd5ee;
+  border:1.5px solid #b80071;border-radius:999px;padding:1px 8px}
+/* game livery — the four SvPlay titles run their own worlds, as they do today */
+.game{width:390px;height:844px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.gamebar{height:56px;display:flex;align-items:center;gap:11px;padding:0 13px;flex-shrink:0;
+  backdrop-filter:blur(4px)}
+.hud{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:4px 10px;
+  font-size:12px;font-weight:800;font-variant-numeric:tabular-nums}
+"""
+
+def page(extra_css, body):
+    return f"""<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  {FONTS}
+  <style>{BASE}{extra_css}</style>
+</helmet>
+{body}
+</x-dc>
+</body>
+</html>
+"""
+
+def drillbar(pct, hints_on=0, hints=3, right=""):
+    dots = "".join(f'<i class="{"on" if k<hints_on else ""}"></i>' for k in range(hints))
+    r = f'<div class="mono" style="font-size:14px;font-weight:700;color:rgba(49,38,32,.7)">{right}</div>' if right else ""
+    return (f'<div class="drillbar"><span style="font-size:19px;font-weight:900;'
+            f'color:rgba(49,38,32,.5)">✕</span>'
+            f'<div class="pbar"><i style="width:{pct}%"></i></div>'
+            f'<div class="hint"><b>?</b><span>{dots}</span></div>{r}</div>')
+
+def bottombar(active="index"):
+    items = [("index","\U0001F4D6","Index"),("svplay","\U0001F3AE","SvPlay"),
+             ("review","\U0001F501","Review"),("skills","\U0001F4AA","Skills")]
+    return ('<div class="bottombar">' + "".join(
+        f'<div class="slot{" on" if k==active else ""}"><span class="ic">{ic}</span>'
+        f'<span class="lb">{lb}</span></div>' for k,ic,lb in items) + '</div>')
+
+
+def sitebar(back=True):
+    """The real top bar: the wordmark door home, then the six-icon strip."""
+    icons = ["\U0001F50D", "\U0001F3C6", "\U0001F50A", "⌛", "\u23FB", "☰"]
+    return ('<div class="sitebar">'
+            f'<span class="sitemark">{"← " if back else ""}<i>FluOlinGo</i></span>'
+            '<span class="siteicons">' + "".join(f"<b>{i}</b>" for i in icons) + '</span>'
+            '</div>')

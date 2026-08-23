@@ -48,9 +48,9 @@ export const aimerInfinitifLesson: NativeLesson = {
         <span lang="fr">[sujet] + [aimer / adorer / détester conjugué] + <b>infinitif</b></span>
       </p>
       <ul className="mt-2 space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
-        <li><b className="text-[color:var(--cahier-la)]">aimer + infinitif</b> — <i lang="fr">J&rsquo;aime danser.</i></li>
-        <li><b className="text-[color:var(--cahier-la)]">aimer + nom</b> — <i lang="fr">J&rsquo;aime la danse.</i></li>
-        <li><b className="text-[color:var(--cahier-la)]">aimer + faire de + nom</b> — <i lang="fr">J&rsquo;aime faire de la danse.</i></li>
+        <li><b className="text-[color:var(--gram-neutral)]">aimer + infinitif</b> — <i lang="fr">J&rsquo;aime danser.</i></li>
+        <li><b className="text-[color:var(--gram-neutral)]">aimer + nom</b> — <i lang="fr">J&rsquo;aime la danse.</i></li>
+        <li><b className="text-[color:var(--gram-neutral)]">aimer + faire de + nom</b> — <i lang="fr">J&rsquo;aime faire de la danse.</i></li>
       </ul>
       <p className="mt-2 text-sm text-[color:var(--cahier-ink)]" lang="fr">
         j&rsquo;aime · tu aimes · il/elle aime · nous aimons · vous aimez · ils/elles aiment — négatif : je <b>n&rsquo;</b>aime <b>pas</b>

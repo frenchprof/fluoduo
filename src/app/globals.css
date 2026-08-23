@@ -905,7 +905,22 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 /* Mobile top bar (Dan, 2026-07-26): the icon row was pushing ☰ off the
    edge — thinner buttons below sm, scoped to the bar only. */
 @media (max-width: 639px) {
-  .cahier-topbar .cahier-btn { padding-left: 0.42rem; padding-right: 0.42rem; }
+  .cahier-topbar .cahier-btn { padding-left: 0.3rem; padding-right: 0.3rem; }
+  /* Every icon in this strip is a destination, and the strip is shrink-0, so
+     anything that does not fit goes off the screen rather than wrapping — it
+     is the one row on the site that must never overflow (Dan, 2026-08-21).
+     Measured before this rule: the bar needed 389px, so at 360 the ☰ sat 28px
+     past the edge and at 320 both ☰ and the account button were gone. Tighter
+     gap + padding buys 33px; the wordmark's truncate absorbs the rest. */
+  .cahier-topbar { gap: 0.125rem; }
+  /* Last line of defence. The strip drops shrink-0 and wraps below sm, so if
+     a future feature adds an icon that does not fit, the row gets TALLER —
+     it never pushes anything past the right edge. A second line is a visible
+     compromise; an unreachable ☰ is a broken one. */
+  .cahier-topbar > * { flex-shrink: 0; }
+  /* The page-supplied slot yields before the icons do — it may shrink to
+     nothing, but an icon may never leave the screen. */
+  .cahier-topslot { font-size: 0.78rem; }
 }
 
 /* Tappable choice card — a multiple-choice option is a BUTTON, not a static
@@ -1257,6 +1272,10 @@ h3.cahier-display { font-size: var(--fs-h3); }
   background-position: 0 0;
 }
 .cahier-page { background-color: var(--cahier-paper); }
+/* The family spine — a 6px edge down the page's left gutter, just inside the
+   binding. It is the page's "where am I", and it is the cheapest possible
+   version: one border, no layout, no per-page markup. */
+.cahier-page[class*="fam-"] { border-left: 6px solid var(--fam-ink, transparent); }
 
 /* Accuracy tiers, finally doing the job the rotating hue was pretending to do.
    Deliberately distinct from --cahier-accent so "this is a link" never reads
@@ -1324,3 +1343,152 @@ h3.cahier-display { font-size: var(--fs-h3); }
 .index-chips::-webkit-scrollbar { display: none; }
 .index-chip { scroll-snap-align: start; }
 .index-cell, .index-btn, .index-stop { flex: 0 0 auto; }
+
+/* ── Dopamine accents — the 10%, approved 21 Aug 2026 ──────────────────────
+   Seven roles, one meaning each. ADDITIVE ONLY, and bound by the guardrails
+   the approval carried:
+
+     · The Cahier ground is untouchable. Nothing here redefines --cahier-paper,
+       --cahier-ink or any structural token; the 60/30 stays exactly as it is.
+     · The regions stay a separate system. --region-* is NOT folded in here —
+       it answers to Design, and Decision 4 still has its accents provisional.
+     · A verify pin holds the values (verify/verify30-dopamine.py), so a drift
+       in any of the 28 is a CI failure rather than a slow repaint.
+
+   Contrast, measured against --cahier-paper (#faf6ee) and --cahier-ink
+   (#312620, the value the 10 Aug override block resolves to — NOT the
+   superseded #2a2e6e declared earlier in this file):
+   every label ≥ 4.5:1, every -ink on paper ≥ 5.2:1, every -ink on its own
+   -wash ≥ 4.8:1. The four light fills sit under 3:1 against paper on their
+   own and MUST keep the 2px ink hairline that carries their boundary —
+   fill supplies energy, ink supplies contrast. */
+:root {
+  --dopa-joy:         oklch(84% 0.17 88);    /* #f8c20d · key actions */
+  --dopa-joy-ink:     oklch(50% 0.13 78);    /* #8b5700 · 5.66:1 */
+  --dopa-joy-wash:    oklch(95% 0.06 88);    /* #ffedc1 */
+  --dopa-joy-on:      var(--cahier-ink);     /* 8.91:1 */
+
+  --dopa-win:         oklch(83% 0.21 138);   /* #7be650 · correct, growth */
+  --dopa-win-ink:     oklch(50% 0.14 145);   /* #1e7729 · 5.26:1 */
+  --dopa-win-wash:    oklch(94% 0.07 138);   /* #d5f7ca */
+  --dopa-win-on:      var(--cahier-ink);     /* 9.24:1 */
+
+  --dopa-flow:        oklch(74% 0.14 197);   /* #00c5c9 · focus states */
+  --dopa-flow-ink:    oklch(48% 0.12 200);   /* #007078 · 5.43:1 */
+  --dopa-flow-wash:   oklch(94% 0.05 197);   /* #c5f6f7 */
+  --dopa-flow-on:     var(--cahier-ink);     /* 6.85:1 */
+
+  --dopa-reward:      oklch(68% 0.19 33);    /* #f76143 · level-up */
+  --dopa-reward-ink:  oklch(50% 0.19 30);    /* #b71c0e · 6.15:1 */
+  --dopa-reward-wash: oklch(93% 0.06 33);    /* #ffdacf */
+  --dopa-reward-on:   var(--cahier-ink);     /* 4.69:1 */
+
+  --dopa-focus:       oklch(57% 0.19 254);   /* #0075e3 · primary action */
+  --dopa-focus-ink:   oklch(48% 0.19 254);   /* #0059c4 · 6.07:1 */
+  --dopa-focus-wash:  oklch(93% 0.05 254);   /* #d2eaff */
+  --dopa-focus-on:    #fff;                  /* 4.51:1 */
+
+  --dopa-streak:      oklch(59% 0.22 350);   /* #d42a8f · streaks, big wins */
+  --dopa-streak-ink:  oklch(50% 0.23 352);   /* #b80071 · 5.96:1 */
+  --dopa-streak-wash: oklch(93% 0.07 350);   /* #ffd5ee */
+  --dopa-streak-on:   #fff;                  /* 4.64:1 */
+
+  --dopa-miss:        oklch(59% 0.20 27);    /* #db3834 · wrong answers */
+  --dopa-miss-ink:    oklch(50% 0.20 27);    /* #bb0916 · 6.20:1 */
+  --dopa-miss-wash:   oklch(93% 0.06 27);    /* #ffd9d2 */
+  --dopa-miss-on:     #fff;                  /* 4.54:1 */
+}
+
+/* ── Accessibility fixes, approved 21 Aug 2026 ─────────────────────────────
+   Three measured failures, three one-line corrections. */
+
+/* 1 · The 3D map node's focus ring was --cahier-gold at 2.24:1 against paper
+       — a focus indicator that fails WCAG 2.2 1.4.11 (needs 3:1). The focus
+       role clears it at 4.19:1. */
+.home-map3d-node:focus-visible { outline-color: var(--dopa-focus); }
+
+/* 2 · White on --fluo-secondary measured 2.45:1. Both sites take the teal's
+       own ink instead, on its wash — 4.98:1. */
+.fluo-btn-secondary { background: var(--dopa-flow); color: var(--cahier-ink); }
+.fluo-rank-5 { background: var(--dopa-flow-wash); color: var(--dopa-flow-ink);
+  box-shadow: inset 0 0 0 1.5px var(--dopa-flow-ink); }
+
+/* 3 · --cahier-line paints every form-input border at 1.25:1, well under the
+       3:1 a control boundary needs. Inputs (and only inputs) take the
+       stronger ruling; the decorative ruled lines keep the faint one. */
+.cahier-sheet input:not([type="checkbox"]):not([type="radio"]),
+.cahier-sheet select,
+.cahier-sheet textarea,
+.cahier-page input:not([type="checkbox"]):not([type="radio"]),
+.cahier-page select,
+.cahier-page textarea { border-color: var(--cahier-ink-soft); }
+
+/* ── Grammatical gender, finally mapped (approved 21 Aug 2026) ─────────────
+   --cahier-le and --cahier-la were defined as the masculine/feminine pair on
+   the day the Cahier landed, and used for neither: all 27 native lessons
+   painted both genders --cahier-la, so the colour taught nothing — and where
+   it marked a masculine form it taught the opposite.
+
+   These three name the intent at the point of use, which is the part that was
+   actually missing. The hues are unchanged and were always the right pair:
+   4.82:1 and 5.03:1 on paper, and 0.89 minimum separation under deuteranopia
+   — the safest pair in the whole system.
+
+   --gram-neutral is the one that matters most for hygiene: a form that is not
+   gendered (a plural, a vowel elision, a verb ending, a construction) must
+   NOT borrow a gender colour. It gets weight, not hue. */
+:root {
+  --gram-masc:    var(--cahier-le);   /* #2d5bff · le, du, au, un   */
+  --gram-fem:     var(--cahier-la);   /* #d11149 · la, de la, une   */
+  --gram-neutral: var(--cahier-ink);  /* not a gender — never a hue */
+}
+
+/* ── Family identity — the SECOND colour axis (21 Aug 2026) ────────────────
+   The --dopa-* roles say what a thing MEANS (a win, a miss, a streak). These
+   say WHERE YOU ARE. Six families, one stable hue each, and the hue is
+   assigned by identity — never by position in a list.
+
+   That distinction is the correction to COLOR_REVIEW Finding B. That review
+   said to demote the rotating hues, and it was half wrong: rotation by
+   list index encodes nothing and deserved demoting, but the same hues used
+   as a FIXED per-section identity are the most legible thing on the page —
+   they tell a learner which world they are in before they read a word.
+   `ProfileContent` on pm/profile-learner-model proves it; this is that
+   pattern lifted out of one file and made a system.
+
+   THE RECIPE — four intensities of one hue, and each has a job:
+
+     spine   7px, --fam-X-ink        the section's identity marker
+     band    --fam-X-wash + ink      the header field
+     pill    --fam-X-ink + paper     the status figure
+     body    6% of --fam-X           the field the content sits on
+
+   The full-saturation --fam-X is DECORATION ONLY (a dot, an emoji chip). It
+   measures 1.8-3.7:1 against its own band, so it can never be the spine, a
+   pill fill, or anything else carrying meaning — which is exactly the defect
+   the reference had: its pills were paper-on-full-hue at 1.99-4.17:1.
+
+   Measured, all six, against --cahier-paper (NOT pure white — the pill's
+   label is paper, and deriving against white overstated it by ~0.3):
+   spine >=3.94 on its band and >=4.55 on paper · band label >=11.80 ·
+   pill label >=4.55. verify33 recomputes them from this file. */
+:root {
+  --fam-goals: #e3a700;  --fam-goals-ink: #9c6300;  --fam-goals-wash: #feeac7;
+  --fam-practice: #7bbf2e;  --fam-practice-ink: #3f7f00;  --fam-practice-wash: #def6cd;
+  --fam-svplay: #e0567f;  --fam-svplay-ink: #c63d69;  --fam-svplay-wash: #ffdee8;
+  --fam-review: #2bb6c2;  --fam-review-ink: #007c88;  --fam-review-wash: #d2f4f8;
+  --fam-skills: #8a5fd4;  --fam-skills-ink: #8459cd;  --fam-skills-wash: #f1e6ff;
+  --fam-user: #e8852e;  --fam-user-ink: #b35500;  --fam-user-wash: #ffe5ce;
+}
+
+/* One class per family sets the trio; SectionBand reads only the trio, so a
+   band never hard-codes a hue and a new family is three tokens plus a line. */
+.fam-goals    { --fam: var(--fam-goals);    --fam-ink: var(--fam-goals-ink);    --fam-wash: var(--fam-goals-wash); }
+.fam-practice { --fam: var(--fam-practice); --fam-ink: var(--fam-practice-ink); --fam-wash: var(--fam-practice-wash); }
+.fam-svplay   { --fam: var(--fam-svplay);   --fam-ink: var(--fam-svplay-ink);   --fam-wash: var(--fam-svplay-wash); }
+.fam-review   { --fam: var(--fam-review);   --fam-ink: var(--fam-review-ink);   --fam-wash: var(--fam-review-wash); }
+.fam-skills   { --fam: var(--fam-skills);   --fam-ink: var(--fam-skills-ink);   --fam-wash: var(--fam-skills-wash); }
+.fam-user     { --fam: var(--fam-user);     --fam-ink: var(--fam-user-ink);     --fam-wash: var(--fam-user-wash); }
+/* The colourless one. A stack where every row is coloured has no hierarchy —
+   the reference makes THRILLS neutral on purpose, and so does this. */
+.fam-none     { --fam: var(--cahier-line-strong); --fam-ink: var(--cahier-ink-soft); --fam-wash: var(--cahier-paper-2); }

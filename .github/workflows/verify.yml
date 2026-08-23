@@ -101,3 +101,18 @@ jobs:
 
       - name: "Rail + Menu — six families, twenty tiles (19 Aug)"
         run: python3 verify/verify29-rail.py
+
+      - name: "Profile — one learner model at /moi + /profil (goal, next action, five rows, five-slot bar)"
+        run: python3 verify/verify30-profile.py
+
+      - name: "Dopamine accents — seven roles pinned, contrast recomputed, Cahier ground and regions untouched (21 Aug)"
+        run: python3 verify/verify34-dopamine.py
+
+      - name: "Top bar — the icon row never overflows off the screen (21 Aug)"
+        run: python3 verify/verify31-topbar.py
+
+      - name: "Retention build — manifest, eight reward moments, +XP, receipts, weekly board, ethics (21 Aug)"
+        run: python3 verify/verify32-retention.py
+
+      - name: "Family identity — the second colour axis, contrast recomputed (21 Aug)"
+        run: python3 verify/verify33-family.py

@@ -40,7 +40,7 @@ export const futurProcheLesson: NativeLesson = {
           {MEMO_ROWS.map(([p, f]) => (
             <tr key={p} className="border-t border-[color:var(--cahier-rule)] first:border-t-0">
               <td className="p-1">{p}</td>
-              <td className="p-1 font-bold text-[color:var(--cahier-la)]">{f}</td>
+              <td className="p-1 font-bold text-[color:var(--gram-neutral)]">{f}</td>
               <td className="p-1 italic">+ infinitif</td>
             </tr>
           ))}

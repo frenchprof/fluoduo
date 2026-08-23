@@ -16,7 +16,17 @@
  * zone said Singapore, and the next rollover check ran a day off). Now the
  * zone comes from whichever side supplied the winning lastActiveDay.
  */
+import { weekKey } from "./dayKey.ts";
 import type { Progress } from "@/lib/progress";
+
+/** Reconcile the weekly XP bucket across two devices. */
+function mergeWeek(local: Progress, remote: Partial<Progress>): { weekXp: number; weekKey: string | null } {
+  const now = weekKey();
+  const lw = local.weekKey === now ? (local.weekXp ?? 0) : 0;
+  const rw = remote.weekKey === now ? (remote.weekXp ?? 0) : 0;
+  const best = Math.max(lw, rw);
+  return best > 0 ? { weekXp: best, weekKey: now } : { weekXp: 0, weekKey: now };
+}
 
 export function mergeProgress(local: Progress, remote: Partial<Progress> | undefined): Progress {
   if (!remote) return local;
@@ -41,6 +51,12 @@ export function mergeProgress(local: Progress, remote: Partial<Progress> | undef
     gems: Math.max(local.gems, remote.gems ?? 0),
     xp: Math.max(local.xp ?? 0, remote.xp ?? 0),
     streak: Math.max(local.streak, remote.streak ?? 0),
+    // The weekly bucket only merges within the SAME week — two devices in the
+    // same week take the larger figure (same "favours the learner" rule as
+    // gems), a stale week is dropped rather than carried into a new one, and
+    // a bucket from a week neither side is in any more is simply gone. A
+    // weekly board that inherits last week's total is not a weekly board.
+    ...mergeWeek(local, remote),
     lastActiveDay,
     timeZone,
     itemSrs,
