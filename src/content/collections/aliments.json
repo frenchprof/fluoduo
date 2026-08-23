@@ -319,6 +319,30 @@
     "gnons"
    ],
    "tags": ["col:legumes"]
+  },
+  {
+   "id": "aliments-27",
+   "fr": "du thé",
+   "en": "tea",
+   "emoji": "🍵",
+   "syllables": [
+    "du",
+    "thé"
+   ],
+   "tags": ["col:boissons"]
+  },
+  {
+   "id": "aliments-28",
+   "fr": "du jus d'orange",
+   "en": "orange juice",
+   "emoji": "🧃",
+   "syllables": [
+    "du",
+    "jus",
+    "d'o",
+    "range"
+   ],
+   "tags": ["col:boissons"]
   }
  ],
  "gameConfig": {
