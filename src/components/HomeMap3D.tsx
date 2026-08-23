@@ -648,23 +648,19 @@ export default function HomeMap3D({
 
   // World gate signs (one per region, just before its first stop) + the arch + the line.
   // World gate signs stand at the verge just before each world's first stop,
-  // on the side the road bends away from (so they stay in view), never
-  // behind the camera. They obey the same stay-clear rule as the props.
+  // on the side the road bends away from (so they stay in view). They obey
+  // the same stay-clear rule as the props — and, round 13 (Dan, 2026-08-22),
+  // the same EXIT rule as the stops: a passed gate/arch/line rides the
+  // behind curve off the bottom edge; project()'s own MAX_BEHIND is the only
+  // cull. The old −0.2 / −1 / 0 gates popped them out mid-frame.
   const gates = vw === 0 ? [] : REGIONS.map((r) => {
     const z = r.unit * 10 - 0.6;
-    if (z - camZ < -0.2) return null;
     const side: 1 | -1 = pathXAt(z + 1.5) - pathXAt(z) > 0 ? -1 : 1;
     const p = placeAt(z, side, 0.25);
     return p ? { r, ...p } : null;
   });
-  const archP = vw === 0 ? null : (() => {
-    const rel = ARCH_Z - camZ;
-    return rel > -1 && rel < MAX_AHEAD ? project(pathXAt(49.99), rel, camZ, vw, vh) : null;
-  })();
-  const finP = vw === 0 ? null : (() => {
-    const rel = FINISH_Z - camZ;
-    return rel > 0 && rel < MAX_AHEAD ? project(pathXAt(49.99), rel, camZ, vw, vh) : null;
-  })();
+  const archP = vw === 0 ? null : project(pathXAt(49.99), ARCH_Z - camZ, camZ, vw, vh);
+  const finP = vw === 0 ? null : project(pathXAt(49.99), FINISH_Z - camZ, camZ, vw, vh);
 
   return (
     <div className="home-map home-map-3d" style={{ fontFamily: "var(--font-body-stack)" }}>

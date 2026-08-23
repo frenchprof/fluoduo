@@ -16,7 +16,7 @@
  * zone said Singapore, and the next rollover check ran a day off). Now the
  * zone comes from whichever side supplied the winning lastActiveDay.
  */
-import { weekKey } from "@/lib/dayKey";
+import { weekKey } from "./dayKey.ts";
 import type { Progress } from "@/lib/progress";
 
 /** Reconcile the weekly XP bucket across two devices. */

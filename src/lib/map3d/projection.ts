@@ -37,7 +37,13 @@ export const MAX_AHEAD = 7.5; // beyond this, still wholly below the planet's sh
 // frame rather than in the middle of nowhere" — deep behind-range, and the
 // behind rows dive well below the box so even a giant tree's crown has left
 // the frame before the cull.
-export const MAX_BEHIND = 4; // draw distance behind (stops)
+// Round 13 (Dan, 2026-08-22: "just as those numbered stops appear on screen
+// until they have past the bottom edge, so must everything else"): 4 was
+// enough for a stop disc but not for a giant tree — the behind curve
+// saturates (t = d/(d+2.48)), so a ~300px crown only clears the bottom edge
+// around d ≈ 5.5–7. Eight puts every sprite's top past the frame before the
+// cull, on both box heights.
+export const MAX_BEHIND = 8; // draw distance behind (stops)
 export const SIZE_FALLOFF = 0.17; // per-stop size decay — halves across the visible chain
 export const MIN_SCALE = 0.42; // a far stop is still nearly half a near one
 export const LOOK_AHEAD = 1.5; // heading = the road this far ahead

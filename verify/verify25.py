@@ -112,45 +112,51 @@ check("MARKS" in home and "flex-wrap" not in dl_cls and "flex-1" in home,
       "every mark shares one row — the marks list never wraps",
       "the row of marks can wrap — a report card's row stays a row")
 
-# 3 · one glyph, one job (2026-08-21)
-#
-# The round ▶ and 🔁 that used to sit in the card are gone. ▶ said "continue
-# the course" on Home and "a voice is about to speak" in every drill; 🔁 said
-# "go to /reviser" here and "listen again" in ÉcouTexte — and the bottom bar's
-# Review tab was already the same link to the same page. Transport glyphs now
-# mean sound and nothing else; leaving a page is a word plus ›.
+# 3 · one glyph, one job (2026-08-21) + the unified strip (Dan, 2026-08-22:
+# "the two stats and three buttons in a more unified manner ... Rewind
+# (Repeat errors), Play (stop on study path), Menu (to another activity)"
+# and "Remove the bulky Continue button that occupies entire width above the
+# map"). The three actions are WORDS, so the glyph rule stands untouched:
+# transport glyphs mean sound and nothing else.
 sec_start = home.find("<section")
 sec_end = home.find("</section>", sec_start)
 hero = home[sec_start:sec_end]
-# Scoped to HomeDashboard on purpose. The Map postcard below the hero still
-# draws its CURRENT-STOP pin as ▶ (HomeMap, patch 25: "▶ current") — a map
-# pin, not a control, and Dan's own 17 Aug spec. Flagged, not silently
-# changed: whether the pin becomes 📍 is his call, not this rule's.
+# Scoped to HomeDashboard on purpose. The Map postcard below the hero draws
+# its CURRENT-STOP pin from HomeMap — a map pin, not a control.
 check("▶" not in home,
       "no ▶ control in HomeDashboard — the triangle belongs to sound",
       "a ▶ is back on Home; it reads as 'a voice will speak', not 'go'")
 check("🔁" not in hero,
       "no 🔁 in the hero — the Review tab carries that destination",
       "the hero's 🔁 is back, duplicating the Review tab and ÉcouTexte's 'again'")
-cont = home.find('aria-label="Continue"')
-check(cont >= 0 and cont < sec_end,
-      "Continue is a round button in the hero row, beside the marks",
-      "Continue left the hero row")
+# Dan, 2026-08-22 (round 13, superseding the 21 Aug round buttons): the three
+# actions are WORDS — Rewind (repeat errors), Play (the stop on the study
+# path), Menu — sharing the five-cell row with the two marks.
+for word, where in (('title="Rewind — ', "/reviser"), ('title={`Play — ', "the current stop"), ('title="Menu — ', "the Menu splash")):
+    check(word in hero,
+          f"the {where} action is a WORD button in the hero row",
+          f"a worded action left the unified row — Dan's 22 Aug trio is broken")
+check('href="/reviser"' in hero,
+      "Rewind points at /reviser — repeat your errors",
+      "Rewind lost its /reviser destination")
+check("activeSio.unit}#${activeSio.id}" in hero,
+      "Play continues the course at the current stop (old Continue's job)",
+      "Play no longer opens the current stop")
+check("dueCount > 0 &&" in hero,
+      "Rewind carries the due count — the one deadline on Home",
+      "the due badge left Rewind; the deadline is invisible again")
 # Dan, 2026-08-21: "I am not fond of having a huge CONTINUER button occupying
-# so much space… reduce it back to the round button alongside the two stats in
-# the same row." The full-width CTA that briefly stood under the card is a
-# CI failure now, not a matter of taste.
+# so much space" — and 22 Aug: "Remove the bulky Continue button that
+# occupies entire width above the map." A full-width CTA is a CI failure
+# now, not a matter of taste.
 check("fluo-btn-lg" not in home and 'className="fluo-btn' not in home,
-      "no full-width CTA under the card — the action is round, in the row",
-      "a full-width Continue bar is back under the hero (Dan: do not)")
+      "no full-width CTA under the card — the actions live in the row",
+      "a full-width button is back under the hero (Dan, twice: do not)")
 check("flex-[2]" in home and "flex-[3]" in home,
       "ONE row of five equal cells — two marks + three actions",
       "the marks and the actions no longer share one five-cell row")
-check('aria-label="Continue"' in home and 'aria-label="Menu"' in home and 'aria-label={dueCount > 0 ? `DéjàRevu' in home,
-      "each round action still SAYS what it is (aria-label + title), glyph aside",
-      "a round action lost its name — an icon button must carry its word")
-check(home.count("›") >= 2,
-      "› is the one 'this leaves the page' mark — Continue and the Map share it",
+check(home.count("›") >= 3,
+      "› marks every 'this leaves the page' word — Rewind, Play, the Map card",
       "the chevron is missing; navigation has no consistent mark")
 
 # 4 · the TWO essential marks (Dan, 2026-08-21, decluttering: "we only need

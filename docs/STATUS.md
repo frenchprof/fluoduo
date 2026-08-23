@@ -32,6 +32,46 @@ Only ONE agent edits this file at a time; say so in your commit.
   Ops PRs #28 (checkout/setup-node v5 — Node 24) and #29 (pages-preview
   guarded to frenchprof/fluoduo — it 404'd on dckg where Pages is off).
   Still red everywhere: claude-review (ANTHROPIC_API_KEY/billing — Dan).
+- 21–22 Aug (Peers, on Dan's ask): **old-vs-new comparison of the colour
+  review's 31 artboards** before any live change. All 31 mockups rendered,
+  the matching live routes screenshotted from `main` (seeded progress;
+  `REQUIRE_SIGN_IN` flipped locally for the shoot and reverted, as patch 23
+  did), five reviewers judged each pair against the decided rules (litmus,
+  two-mark hero, no variable rewards, soft daily goal, streak spec).
+  Verdict: **0 ship-as-is · 17 ship-with-changes · 12 skip · 2 dead**
+  (Hero-marks = the 19 Aug decision re-broken; Variable = Dan's "none").
+  Systemic finding: nearly every mockup re-adds inline explainer text and
+  French UI chrome. Gallery + per-surface verdicts: Claude artifact
+  "Redesign Verdicts" (Peers session). NOTHING from the review is live.
+  Round 2 on Dan's "not accurately paired": the launcher/Index, empty-state
+  and sign-in-gate captures were replaced with driven in-activity states
+  (real drills, mid-game boards, active reviser queue, GameOver, DrillShell
+  tray, Menu popup); leaderboard is marked "behind sign-in, judged from
+  code". Verdicts re-checked against the true pairs — counts unchanged.
+  Also from Dan, 22 Aug: **he cannot read the Index** ("I really don't
+  understand how to read it") — the U0–U4 cell grid and the per-row big
+  circles carry no key. Open design item, not yet assigned.
+- 22 Aug (Dan's votes on the 31 numbered surfaces + round 13, Peers):
+  **Approved** 2 SpecuLearn · 3 xPlain (**rename xPlain → "Memo"
+  everywhere**) · 5 4Mémoire (English chrome only) · 6 iComplete ·
+  7 ConjugaZone · 9 WorDrill · 10 VoixLà · 11 ComposeIt · 12 ChaTutor ·
+  13 NumBus · 14 NumBourse · 17 DéjàRevu · 18 GramMarathon · 19 My
+  Progress · 21 Leaderboard WEEKLY variant · 23 Install prompt · 24 Home
+  retention direction (subordinate to the round-13 hero below) ·
+  25 Celebrations · 26 XP float · 27 Streak page (to the approved streak
+  spec) · 28 Session receipt · 30 Boutique. **Rejected** 1 Menu ·
+  4 EtuDice · 8 ÉcouTexte · 15 VocabulaRain · 16 LexicaLater · 20 straight
+  Leaderboard · 22 Profile (29/31 already dead). Every build carries the
+  gallery's required-changes list; interfaces English except the set
+  French surfaces. Relayed to the colour-review session (its build queue).
+  **Round 13 (PR #31, Peers)**: hero = ONE strip of the two marks + worded
+  Rewind (/reviser) · Play (current stop; the old Continue) · Menu; the
+  full-width Continue gone; 🔍/🏆 off the top bar (search = Index's box,
+  ranking = /leaderboard); Home postcard in a recessed mat; /map behind a
+  "Tap to use the map" glass; 3D `MAX_BEHIND` 4 → 8 + gates/arch/finish on
+  the same behind curve — everything now leaves through the bottom edge
+  like the stops (Dan's round-13 note). verify25 §3 rewritten to this
+  decision. Awaiting Dan's word to merge.
 
 - **22 Aug (this session): the colour + retention programme is MERGED TO `main`
   and awaiting deploy.** `main` = `2a729fb`. Contains: the seven `--dopa-*`
