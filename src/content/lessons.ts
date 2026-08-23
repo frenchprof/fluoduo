@@ -11,7 +11,10 @@ export const LESSONS: Record<string, Lesson> = {
   "tu-vous":           { slug: "tu-vous",           title: "Tu ou vous ?",                 unit: 0 },
   "salutations":       { slug: "salutations",       title: "Les salutations",              unit: 0 },
   "se-presenter":      { slug: "se-presenter",      title: "Se présenter",                 unit: 1 },
-  "negation":          { slug: "negation",          title: "La négation",                  unit: 1 },
+  // Unit 2 since 2026-08-23 (Dan): the lesson now teaches négation (2)
+  // « ne… plus » alongside pas — U2 material in the book; it also joins
+  // SIO-028's rail below (Dan: "insert it somewhere as an addition").
+  "negation":          { slug: "negation",          title: "La négation",                  unit: 2 },
   "conjugaison-u1":    { slug: "conjugaison-u1",    title: "Conjugaison (Unité 1)",        unit: 1 },
   "avoir-etats":       { slug: "avoir-etats",       title: "Avoir ou être ? — les états",  unit: 1 },
   // Unit 3, not 1: the book teaches est-ce que / qu'est-ce que in U3 (questions (2),
@@ -58,6 +61,7 @@ export const LESSONS_BY_SIO: Record<string, string[]> = {
   "SIO-012": ["professions"],
   "SIO-016": ["nationalities"],
   "SIO-014": ["se-presenter", "negation", "conjugaison-u1"],
+  "SIO-028": ["negation"],
   // avoir-etats FIRST: the SIO's grammar is avoir-vs-être states + age, not
   // the paradigm tables (Dan, 2026-07-08: "the avoir SIO doesn't match").
   "SIO-019": ["avoir-etats", "conjugaison-u1"],

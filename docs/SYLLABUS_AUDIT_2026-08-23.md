@@ -90,7 +90,7 @@ Ateliers: **exprimer un besoin, une envie** · **écrire une e-carte postale**.
 
 | # | Sev | Finding | Where | PDF | Fix |
 |---|---|---|---|---|---|
-| 3.1 | **gap (med)** | Atelier « **Écrire une e-carte postale** » — no app counterpart anywhere (grep « carte postale » = 0). The app's U3 production atelier (SIO-040) is the itinerary, which the book covers as *Situation 3*, not an atelier; the postcard's element checklist (date, timbre, destinataire, code postal, pays, signature) is untaught | `ateliers.ts`, `sios.json` SIO-040 | U3 p. 1 (92), p. 20 (111) | Either add an e-carte atelier or record the swap as a decision |
+| 3.1 | **gap (med)** | Atelier « **Écrire une e-carte postale** » — no app counterpart anywhere (grep « carte postale » = 0). The app's U3 production atelier (SIO-040) is the itinerary, which the book covers as *Situation 3*, not an atelier; the postcard's element checklist (date, timbre, destinataire, code postal, pays, signature) is untaught | `ateliers.ts`, `sios.json` SIO-040 | U3 p. 1 (92), p. 20 (111) | **RESOLVED 23 Aug** — washed-down postcard in SIO-030's email bank; full « L'e-carte postale » bank presented at stop 40 (Dan's decision; SIOs untouched). The paper-only element checklist (timbre, code postal…) stays out — it's the e-carte |
 | 3.2 | **gap (med)** | « **nuageux / ensoleillé / des nuages** » — the book teaches all three (corrigés « ensoleillé », « Dimanche, c'est nuageux », « En Chine, c'est nuageux ») but `weather-letris` has **zero** items for them — while the weather memo's pill row plays « Il y a des nuages » and SIO-031's description promises « il y a … des nuages ». Memo + SIO reference an undrillable item (extends the 23-Aug « fourth frame » flag) | `collections/weather-letris.json`; `memos.tsx` ~line 301; `sios.json` SIO-031 | U3 p. 3 (94), p. 14 (107) | **FIXED 23 Aug (in place)** — des nuages under il-y-a, nuageux + ensoleillé under a new C'EST letris column (weather-letris-45–47); the meteo lesson memo carries the fourth frame |
 | 3.3 | gap (low) | **venir de/du/des** — the book's Au tableau pairs *venir de* with *habiter à* per country type; `en-au-aux-a`'s 17 examples are 100 % **aller** (checked all items), yet SIO-032's description claims « en/au/aux/à with être, aller, **venir** » | `collections/en-au-aux-a.json` | U3 p. 6 (97) | **FIXED 23 Aug (in place)** — venir sentence cards en-au-aux-a-18–21 (de/du/des/d', the Au tableau rows verbatim incl. SIO-032's own « Elle vient des États-Unis ») |
 | 3.4 | gap (low) | Ordinals: book drills up to **6ᵉ** rue (encadré « Les nombres ordinaux », corrigé uses 3ᵉ/6ᵉ); app has première/deuxième only (deliberate per textgen comment — but the deck could carry troisième) | `collections/directions-matching.json`, `textgen/unit3.ts` ORDINALS | U3 p. 12 (104) | Add troisième (+ card) so the corrigé forms are coverable |
@@ -167,7 +167,8 @@ remains the one structural hole.
 4. **des nuages / nuageux / ensoleillé (U3)** — the memo and SIO already reference
    them; the deck can't evidence them. (3.2) — **FIXED 23 Aug (in place)**
 5. **E-carte postale atelier (U3)** — book atelier with no app counterpart; decide
-   build-or-drop. (3.1)
+   build-or-drop. (3.1) — **RESOLVED 23 Aug** (washed-down flavour in SIO-030's email
+   bank; full bank at stop 40; SIOs untouched)
 6. **venir de/du/des examples (U3)** — SIO-032 promises venir; deck is aller-only. (3.3)
    — **FIXED 23 Aug (in place)**
 7. **Remplir un formulaire (U1)** — book atelier with no coverage at all. (1.1)

@@ -165,6 +165,24 @@ Only ONE agent edits this file at a time; say so in your commit.
   IS unit 2). ALL 25 verify suites green, check-textgen units 0–4 green,
   tsc clean, all four edited JSONs valid. Audit doc rows marked
   « FIXED 23 Aug (in place) ». NOT deployed.
+- 23 Aug (content agent, audit row 3.1 — **e-carte postale, Dan's decision:
+  "add a washed down version to the email and present the full activity in
+  040"**, SIOs untouched): (a) EMAIL_BANK (SIO-030's rail) gains a holiday-note
+  flavour — « Où je suis » + « Raconter » palettes (Je suis à Paris/Nice/
+  Singapour · J'aime / je fais du sport / je vais à la plage / C'est super, all
+  U0–U2) and a fifth rotating occasion (« un petit bonjour de voyage » 🏖️ with
+  its own task line); NO weather there (U3). (b) NEW production bank
+  **POSTCARD_BANK « L'e-carte postale »** (id `e-carte-postale`, 🏖️, solo +
+  aiCheck) on SIO-040's rail, structured per the guide's atelier spread (U3
+  PDF p. 20 / p. 111): opening → where (je suis/on est à…) → weather (the
+  weather-letris family incl. the new nuageux/ensoleillé/des nuages) → doing
+  (je visite · on peut visiter · on prend le métro) → closing (Bises ·
+  À bientôt). Mechanism: `composeBankForDeck` → **`composeBanksForDeck`**
+  (banks.tsx) and deckActivityTabs (CahierShell) now maps EVERY bank on a
+  deck — first flap keeps the registry ComposeIt chrome (and the Index's
+  compose cell), later banks fly their own title+emoji with unique keys.
+  tsc clean, verify23/24/28-trackd green, eslint clean on touched files.
+  Audit row 3.1 marked RESOLVED. NOT deployed.
 
 ## Programme — done
 

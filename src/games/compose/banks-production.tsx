@@ -15,8 +15,11 @@
  * Goal 2 measures "success on free-production tasks", so the outcomes that most
  * demand production had the least production evidence in the product.
  *
- * Six banks close that. Four solo (written production, aiCheck on), two
- * dialogue (interactive production). Vocabulary is drawn only from decks the
+ * Six banks closed that — four solo (written production, aiCheck on), two
+ * dialogue (interactive production). A seventh, « L'e-carte postale », joined
+ * on 2026-08-23: the book's U3 written atelier had no app counterpart
+ * (syllabus audit row 3.1), and Dan's decision presents it at stop 40 beside
+ * the itinerary, SIOs untouched. Vocabulary is drawn only from decks the
  * learner has already met at that point in the sequence, so composing is a
  * retrieval task rather than a reading-comprehension one.
  *
@@ -122,6 +125,16 @@ const OCCASIONS = [
   { en: "a classmate's exam tomorrow", fr: "l'examen d'un camarade", emoji: "📝" },
   { en: "a friend who is ill", fr: "un ami malade", emoji: "🤒" },
   { en: "a friend moving to a new flat", fr: "un déménagement", emoji: "📦" },
+  // Washed-down e-carte flavour (Dan, 2026-08-23): the same short email can
+  // read as a mini holiday note — where you are + what you enjoy, with the
+  // Unité-2 chips below. NO weather here (Unité 3): the FULL « L'e-carte
+  // postale » atelier is POSTCARD_BANK, presented at stop 40.
+  {
+    en: "a friend back home — a quick hello from your trip",
+    fr: "un petit bonjour de voyage",
+    emoji: "🏖️",
+    task: "Open it, say where you are and what you enjoy there, and sign off.",
+  },
 ] as const;
 
 export const EMAIL_BANK: ComposeBank = {
@@ -136,6 +149,8 @@ export const EMAIL_BANK: ComposeBank = {
     { label: "Commencer", phrases: ["Salut", "Cher", "Chère", "Bonjour"] },
     { label: "Connecteurs", phrases: ["d'abord", "et puis", "aussi", "mais", "alors", "enfin"] },
     { label: "Souhaits", phrases: ["Bon anniversaire", "Bonne chance", "Bon voyage", "Bonne année", "Bonne fête", "Bon courage", "Bon rétablissement", "Félicitations"] },
+    { label: "Où je suis", phrases: ["Je suis à", "Paris", "Nice", "Singapour"] },
+    { label: "Raconter", phrases: ["J'aime", "je fais du sport", "je vais à la plage", "C'est super"] },
     { label: "Proposer", phrases: ["On peut", "Tu veux", "si tu veux", "ce week-end"] },
     { label: "Finir", phrases: ["À bientôt", "Bises", "Amitiés", "Écris-moi"] },
   ]),
@@ -143,7 +158,7 @@ export const EMAIL_BANK: ComposeBank = {
     const o = pick(OCCASIONS, Math.floor(Date.now() / 60000));
     return {
       headline: `${o.emoji} ${o.fr}`,
-      instructionEn: `Write a short friendly message for ${o.en}. Open it, use at least two connectors, add your good wishes, and sign off.`,
+      instructionEn: `Write a short friendly message for ${o.en}. ${"task" in o ? o.task : "Open it, use at least two connectors, add your good wishes, and sign off."}`,
       openingFr: "Écris-lui un petit message — quelques phrases suffisent.",
     };
   },
@@ -184,6 +199,52 @@ export const ITINERARY_BANK: ComposeBank = {
       headline: `${j.emoji} ${j.fr}`,
       instructionEn: `Explain your journey ${j.en}, step by step. Use at least three ordering connectors and say how you travel.`,
       openingFr: `Comment tu fais pour aller ${j.fr} ? Raconte-moi étape par étape.`,
+    };
+  },
+};
+
+// ---------------------------------------------------------------------------
+// SIO-040 · Unité 3 · « L'e-carte postale » — the book's U3 written atelier
+//
+// The guide closes Unité 3 with a written e-postcard (A1U3 livre p. 55, guide
+// p. 111): opening formula → where you are → the weather → what you're doing →
+// closing formula. Model card: « Cher Majed, Maintenant, je suis à Nairobi.
+// C'est nuageux mais il fait chaud. […] À bientôt, Taher ». The syllabus audit
+// (row 3.1) found no app counterpart; Dan's decision (2026-08-23): present the
+// full atelier at stop 40 next to the itinerary, SIOs untouched — so this bank
+// shares deckId atelier-sio-040 and deckActivityTabs gives each bank on a deck
+// its own flap. The paper checklist (timbre, code postal…) is print-only and
+// stays out: this is the E-carte. Weather chips are the weather-letris family,
+// incl. the nuageux/ensoleillé items added 2026-08-23.
+// ---------------------------------------------------------------------------
+const TRIPS = [
+  { en: "in Paris", fr: "à Paris", emoji: "🗼" },
+  { en: "in the Philippines", fr: "aux Philippines", emoji: "🏝️" },
+  { en: "in Canada", fr: "au Canada", emoji: "🇨🇦" },
+  { en: "in Japan", fr: "au Japon", emoji: "🗾" },
+] as const;
+
+export const POSTCARD_BANK: ComposeBank = {
+  id: "e-carte-postale",
+  title: "L'e-carte postale",
+  emoji: "🏖️",
+  unit: 3,
+  deckId: "atelier-sio-040",
+  mode: "solo",
+  aiCheck: true,
+  categories: withPalette([
+    { label: "Commencer", phrases: ["Salut", "Cher", "Chère", "Bonjour"] },
+    { label: "Où je suis", phrases: ["Je suis", "On est", "à Paris", "aux Philippines", "au Canada", "au Japon"] },
+    { label: "La météo", phrases: ["Il fait beau", "Il fait chaud", "C'est ensoleillé", "C'est nuageux", "Il y a des nuages", "Il pleut", "mais"] },
+    { label: "Activités", phrases: ["je visite", "on peut visiter", "je vais à la plage", "on prend le métro", "le musée", "C'est magnifique"] },
+    { label: "Finir", phrases: ["À bientôt", "Bises", "Écris-moi", "Au revoir"] },
+  ]),
+  newScenario() {
+    const t = pick(TRIPS, Math.floor(Date.now() / 60000));
+    return {
+      headline: `${t.emoji} ${t.fr}`,
+      instructionEn: `You are ${t.en}. Write your e-postcard to a friend: open it, say where you are, give the weather, tell what you are doing, and sign off.`,
+      openingFr: `Alors, c'est comment ${t.fr} ? Quel temps fait-il ? Qu'est-ce que tu fais ?`,
     };
   },
 };
@@ -259,13 +320,17 @@ export const RESTAURANT_SCENE_BANK: ComposeBank = {
   },
 };
 
-/** The six production banks, in curriculum order. Register these in banks.tsx's
- *  BANKS array so getComposeBank() and the SIO activity rail can find them. */
+/** The production banks, in curriculum order. Register these in banks.tsx's
+ *  BANKS array so getComposeBank() and the SIO activity rail can find them.
+ *  ORDER MATTERS on a shared deck: the FIRST bank with a deckId is the rail's
+ *  registry-chrome ComposeIt flap and the Index's compose cell — the itinerary
+ *  keeps that slot on atelier-sio-040; the e-carte rides behind it. */
 export const PRODUCTION_BANKS: ComposeBank[] = [
   FIRST_MEETING_BANK,
   PRESENT_COUNTRY_BANK,
   EMAIL_BANK,
   ITINERARY_BANK,
+  POSTCARD_BANK,
   REVIEW_BANK,
   RESTAURANT_SCENE_BANK,
 ];
