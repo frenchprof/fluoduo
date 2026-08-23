@@ -155,8 +155,12 @@ Only ONE agent edits this file at a time; say so in your commit.
   right on the hl chip); duplicate h1s stripped from reviser/tts/tutor/
   leaderboard; **/map back inside the cahier** (the tap-glass killed the
   scroll conflict that justified its bare interface — 21 Aug ruling
-  superseded by Dan's 23 Aug "cahier set to the left" rule). Awaiting
-  Dan's word (PR #32).
+  superseded by Dan's 23 Aug "cahier set to the left" rule). **PR #32
+  MERGED (3c58e35) on Dan's word and DEPLOYED — Dan pushed live/main
+  3c9bcb2 → 3c58e35, 23 Aug.** Still open for Dan: strike-outs in
+  docs/CONTENT_FLAGS_2026-08-23.md; the ★ boissons deck placement;
+  SpecuLearn's 38 guessability calls; the Index legibility fix (not yet
+  built); claude-review fix-or-delete.
 
 | Patch | What | Check |
 |---|---|---|
