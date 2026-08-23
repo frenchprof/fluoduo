@@ -14,8 +14,11 @@ export const LESSONS: Record<string, Lesson> = {
   "negation":          { slug: "negation",          title: "La négation",                  unit: 1 },
   "conjugaison-u1":    { slug: "conjugaison-u1",    title: "Conjugaison (Unité 1)",        unit: 1 },
   "avoir-etats":       { slug: "avoir-etats",       title: "Avoir ou être ? — les états",  unit: 1 },
-  "questions-oui-non": { slug: "questions-oui-non", title: "Questions : oui ou non",       unit: 1 },
-  "mots-interrogatifs":{ slug: "mots-interrogatifs",title: "Les mots interrogatifs",       unit: 1 },
+  // Unit 3, not 1: the book teaches est-ce que / qu'est-ce que in U3 (questions (2),
+  // book p. 92) — U1's questions are quel + intonation. SIO mapping (SIO-035, u3)
+  // was already right; only these gallery labels front-ran the book (audit 1.4).
+  "questions-oui-non": { slug: "questions-oui-non", title: "Questions : oui ou non",       unit: 3 },
+  "mots-interrogatifs":{ slug: "mots-interrogatifs",title: "Les mots interrogatifs",       unit: 3 },
   "articles-pays":     { slug: "articles-pays",     title: "Les articles des pays",        unit: 1 },
   "professions":       { slug: "professions",       title: "Les professions",              unit: 1 },
   "nationalities":     { slug: "nationalities",     title: "Les nationalités",             unit: 1 },

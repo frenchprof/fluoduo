@@ -514,6 +514,48 @@
    "en": "It often rains in spring.",
    "tags": [],
    "gap": "Il pleut"
+  },
+  {
+   "id": "weather-letris-45-des-nuages",
+   "fr": "des nuages",
+   "en": "There are clouds.",
+   "emoji": "☁️",
+   "tags": [
+    "col:il_y_a"
+   ],
+   "syllables": [
+    "des",
+    "nua",
+    "ges"
+   ]
+  },
+  {
+   "id": "weather-letris-46-nuageux",
+   "fr": "nuageux",
+   "en": "It is cloudy.",
+   "emoji": "🌥️",
+   "tags": [
+    "col:c_est"
+   ],
+   "syllables": [
+    "nua",
+    "geux"
+   ]
+  },
+  {
+   "id": "weather-letris-47-ensoleille",
+   "fr": "ensoleillé",
+   "en": "It is sunny.",
+   "emoji": "☀️",
+   "tags": [
+    "col:c_est"
+   ],
+   "syllables": [
+    "en",
+    "so",
+    "leil",
+    "lé"
+   ]
   }
  ],
  "gameConfig": {
@@ -533,6 +575,11 @@
      "key": "il",
      "label": "IL",
      "prefix": "Il "
+    },
+    {
+     "key": "c_est",
+     "label": "C'EST",
+     "prefix": "C'est "
     }
    ]
   }

@@ -135,7 +135,7 @@ export const EMAIL_BANK: ComposeBank = {
   categories: withPalette([
     { label: "Commencer", phrases: ["Salut", "Cher", "Chère", "Bonjour"] },
     { label: "Connecteurs", phrases: ["d'abord", "et puis", "aussi", "mais", "alors", "enfin"] },
-    { label: "Souhaits", phrases: ["Bon anniversaire", "Bonne chance", "Bon courage", "Bon rétablissement", "Félicitations"] },
+    { label: "Souhaits", phrases: ["Bon anniversaire", "Bonne chance", "Bon voyage", "Bonne année", "Bonne fête", "Bon courage", "Bon rétablissement", "Félicitations"] },
     { label: "Proposer", phrases: ["On peut", "Tu veux", "si tu veux", "ce week-end"] },
     { label: "Finir", phrases: ["À bientôt", "Bises", "Amitiés", "Écris-moi"] },
   ]),

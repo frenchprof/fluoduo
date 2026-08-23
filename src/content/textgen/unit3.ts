@@ -1,8 +1,10 @@
 /**
  * Unité 3 — « En ville ». Three scenarios, all built from what a learner has
  * after SIO-031…040 (and everything before): places in town with à + article,
- * spatial prepositions with de + article, il faut / on peut + infinitive,
- * transport with the pronoun y, en/au/aux/à + country, weather, and the
+ * spatial prepositions with de + article, on peut + infinitive, the book's
+ * vous-present directions (vous prenez / vous tournez — piste 66; falloir is
+ * U4, so no « il faut » here), transport with the pronoun y,
+ * en/au/aux/à + country, weather, and the
  * itinerary connectors d'abord / ensuite / enfin.
  *
  * Cohesion here is the unit's own grammar doing double duty: the connectors
@@ -122,7 +124,7 @@ const METEO = [
 /** Countries and cities with their fixed preposition (deck: en-au-aux-a). */
 /** `proche` = reachable overland from France, so the text can offer a train
  *  or a bus. Everything else only ever gets a plane or a boat — the bound
- *  draw is what keeps « il faut prendre le bus » out of a trip to China. */
+ *  draw is what keeps « on peut prendre le bus » out of a trip to China. */
 const DESTINATIONS: (Destination & { proche?: boolean })[] = [
   { fr: "France", en: "France", prep: "en ", enPrep: "to ", proche: true },
   { fr: "Italie", en: "Italy", prep: "en ", enPrep: "to ", proche: true },
@@ -206,16 +208,16 @@ const ITINERAIRE = scenario(
     (c, p, r) =>
       pick(r, [
         {
-          fr: `${first(p)}il faut prendre la ${c.ord.fr} rue ${c.side.fr}.`,
-          en: `${firstEn(p)}you have to take the ${c.ord.en} street on the ${c.side.en}.`,
+          fr: `${first(p)}vous prenez la ${c.ord.fr} rue ${c.side.fr}.`,
+          en: `${firstEn(p)}you take the ${c.ord.en} street on the ${c.side.en}.`,
         },
         {
           fr: `${first(p)}on prend la ${c.ord.fr} rue ${c.side.fr}.`,
           en: `${firstEn(p)}you take the ${c.ord.en} street on the ${c.side.en}.`,
         },
         {
-          fr: `${first(p)}il faut tourner ${c.side.fr} au carrefour.`,
-          en: `${firstEn(p)}you have to turn ${c.side.en} at the intersection.`,
+          fr: `${first(p)}vous tournez ${c.side.fr} au carrefour.`,
+          en: `${firstEn(p)}you turn ${c.side.en} at the intersection.`,
         },
         {
           fr: `${first(p)}on tourne ${c.side.fr} ${aLe(c.landmark)}${c.landmark.fr}.`,
@@ -359,7 +361,7 @@ const LE_VOYAGE = scenario(
       pick(r, [
         { fr: `${then_(p)}j'y vais ${c.transport.fr}.`, en: `${thenEn(p)}I'm going there ${c.transport.en}.` },
         { fr: `${then_(p)}on y va ${c.transport.fr}.`, en: `${thenEn(p)}we're going there ${c.transport.en}.` },
-        { fr: `${then_(p)}il faut ${c.transport.prendre}.`, en: `${thenEn(p)}you have to ${c.transport.prendreEn}.` },
+        { fr: `${then_(p)}on peut ${c.transport.prendre}.`, en: `${thenEn(p)}you can ${c.transport.prendreEn}.` },
       ]),
     (c, _p, r) =>
       pick(r, [
