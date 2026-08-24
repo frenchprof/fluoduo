@@ -93,6 +93,17 @@ Only ONE agent edits this file at a time; say so in your commit.
   ensoleillé » fourth weather frame, and « canadien » (the U1 table's -ien
   example — the deck's tunisien stands in). tsc, eslint and all 25 verify
   suites green.
+- 24 Aug: **approved surface #3 executed — the activity "xPlain" is renamed
+  "Memo" throughout the site** (Dan's 22 Aug vote). Display rename only: the
+  registry name in `src/content/activities.ts` (`key: "lesson"`) is now
+  `"Memo"`, which propagates to the Menu tile, rail flap, popup flaps, Index
+  pill and every other surface that reads the registry; the key, routes and
+  identifiers are untouched. Comments describing the learner-visible name
+  updated (CahierShell, RailGroups, MenuSplash, activities page, indexMatrix);
+  verify pins updated with dated comments (verify19, verify24, verify29-rail);
+  About page's "Mémo" normalised to "Memo" (English chrome). No ÉcouTexte
+  "Memo" topic exists — no collision. `out/` static export still says xPlain
+  until the next build/deploy. tsc + all verify suites green.
 - **22 Aug (this session): the colour + retention programme is MERGED TO `main`
   and awaiting deploy.** `main` = `2a729fb`. Contains: the seven `--dopa-*`
   roles + three accessibility fixes; the `--gram-*` gender mapping (98 sites,
