@@ -5,6 +5,9 @@ each self-checked against the uploaded A1U0–A1U4 unit PDFs). These are the
 places an agent was extrapolating beyond the book or made a judgment call.
 Nothing here blocks; strike anything wrong and it comes out.
 
+**Dan ruled on the open items 24 Aug** — see RULED / CLOSED below. Anything
+still unmarked is blessed as built.
+
 ## ÉcouTexte unit 0 (`textgen/unit0.ts`)
 - « Il y a X étudiants » — SIO-007-backed; the book counts aloud instead.
 - « Ça va, merci ! » as the ANSWER form — question is on a card, answer is extrapolated.
@@ -23,12 +26,16 @@ Nothing here blocks; strike anything wrong and it comes out.
 
 ## GramMarathon gaps (9 decks, 91 items)
 - weather: only « Il y a » accepted for du soleil/du vent (deck column + Atelier corrigé); colloquial « Il fait du soleil » marks wrong.
+  **RULED 24 Aug — keep it strict.** The corrigé is the standard they are examined on. No change; flag closed.
 - frequence keeps « parfois » (deck + Atelier bilan) though lessons teach « quelquefois ».
+  **RULED 24 Aug — present both together as equivalent.** The drill accepts either, and the lesson shows them side by side as equivalents rather than teaching one and marking the other. TO BUILD.
 - question-words-14 answers in euros; money formally lands in U4.
 - possessives limited to mon/ma/mes (deck scope); Atelier's table extends to ton/son/votre.
+  **RULED 24 Aug — re-gear the columns.** The real finding is not deck-vs-book but deck-vs-SIO: `possessives.json` is « Mon, ma ou mes ? » with three first-person columns (`col:mon`/`col:ma`/`col:mes`, 31 items), while **SIO-022's own competence** asks for "mon/ma/mes … son/sa/ses, + notre/votre/leur … by the noun's gender/number". The grammatical decision is gender/number, not person, so the three columns become **masculine / feminine / plural** and items span mon/ton/son/notre/votre/leur. Three columns kept (nine would break the letris board), full paradigm covered, competence line satisfied. SIO text untouched — the freeze holds. TO BUILD.
 
 ## xPlain lessons (6 new)
-- Weather lesson omits the book's fourth frame « C'est nuageux / ensoleillé » — the deck has no column for it.
+- ~~Weather lesson omits the book's fourth frame « C'est nuageux / ensoleillé » — the deck has no column for it.~~
+  **CLOSED — already fixed 23 Aug** (syllabus fix 3.2): `des nuages` / `nuageux` / `ensoleillé` are weather-letris items 45–47 under a new fourth C'EST column, and the meteo memo carries the frame.
 - Nationalities: -ien exemplar is *tunisien* (book uses *canadien*; Canada isn't in the deck).
 - Salutations keeps the deck's extra greetings (Coucou, À demain, Bonne journée…) beyond the book's four.
 
@@ -51,6 +58,9 @@ Nothing here blocks; strike anything wrong and it comes out.
 - ~~SKIPPED for concurrent edits~~ DONE 23 Aug: numbers-70-99 (bands 70s/80s/90s, all 30 retagged from col:num) and question-words (meaning axis from the Atelier U0 « Suivez le guide ! » sections — WHAT/WHO · WHERE/WHEN · HOW/WHY · HOW MANY; est-ce que and the inversion sentence carry no wh-category, left untagged — your call if they should).
 
 ## Known reds that are DECISIONS, not bugs
-- `scripts/check-textgen.mjs` still fails unit 4 on « jus, thé » — the generator uses drinks no deck teaches; the real fix is the ★ boissons deck the audit found missing (needs your placement).
+- ~~`scripts/check-textgen.mjs` still fails unit 4 on « jus, thé » — the generator uses drinks no deck teaches; the real fix is the ★ boissons deck the audit found missing (needs your placement).~~
+  **CLOSED — already resolved 23 Aug.** No separate deck was needed: `du thé`, `du jus d'orange` and `de l'eau` went into `aliments.json` as a `col:boissons` column. Re-run 24 Aug: check-textgen is green on all five units.
 - SpecuLearn's 38 unserved decks each need your guessability call + emoji work before authoring.
+  **RULED 24 Aug.** Recount: **15 served, 29 unserved** (≥6 emoji = served). Of the 29, twenty-one are grammar/function decks that cannot be drawn — `aimer-activites`(?), `aller-destinations`(?), `alphabet`, `avoir-etats`, `en-au-aux-a`, `envies-besoins`, `etre-etudiant`, `faire-activites`(?), `frequence`, `modaux-avis`, `modaux-plans`, `numbers-0-20`, `numbers-20-69`, `numbers-70-99`, `parce-que`, `possessives`, `pouvoir`, `quand-time`, `question-words`, `sappeler`, `stress-pronouns`, `vouloir-inviter` — **permanently excluded**, same treatment as the LexicaLater exclusion list. Emoji authoring is approved for the concrete-noun decks: **colors, core-nouns, days, matieres, objets-articles, professions, transport** (the three marked (?) are borderline verb-phrase decks — author only if they read cleanly as pictures). TO BUILD.
 - Pre-Tests missing on 6 production-atelier SIOs — looks by-design (in-class); confirm.
+  **RULED 24 Aug — confirmed by design.** Production ateliers are assessed in class; they get no pre-test. Flag closed.

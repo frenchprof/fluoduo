@@ -184,6 +184,40 @@ Only ONE agent edits this file at a time; say so in your commit.
   tsc clean, verify23/24/28-trackd green, eslint clean on touched files.
   Audit row 3.1 marked RESOLVED. NOT deployed.
 
+- **24 Aug (Cursor session, STATUS holder for this edit): reconciliation + Dan's
+  rulings on the content flags.** No code changed. Three corrections to this file:
+  (a) the "NOT deployed" tails above are STALE — `main`, `origin/main` and
+  `live/main` are all **`919a1c2`** (PR #33), so everything through the syllabus
+  fix wave and the e-carte postale IS deployed; (b) the Deploy section below still
+  cited 22 Aug / `1a29278` — corrected; (c) two CONTENT_FLAGS reds were already
+  closed by the 23 Aug fixes and had not been struck (boissons folded into
+  `aliments.json` as `col:boissons`, so `check-textgen` is green on all five units;
+  the weather fourth frame shipped as items 45–47).
+  Independently re-verified this session: **all 25 verify suites exit 0**, `tsc`
+  clean on `src` (the errors a local run shows come from 16 gitignored `patch*/`
+  scratch dirs, not the tree), eslint **115 errors / 20 warnings** — matching this
+  file's own figure.
+  **Dan's five rulings, 24 Aug** (detail + reasoning in
+  `docs/CONTENT_FLAGS_2026-08-23.md`):
+  1. « Il fait du soleil » stays WRONG — the Atelier corrigé is the examined
+     standard. No change.
+  2. `frequence`: « parfois » and « quelquefois » are **presented together as
+     equivalent** — the drill accepts either, the lesson shows them side by side.
+     TO BUILD.
+  3. `possessives` (SIO-022): the gap is deck-vs-**SIO**, not deck-vs-book — the
+     deck drills three first-person columns while SIO-022's competence asks for
+     the full paradigm by gender/number. Columns re-gear to **masculine /
+     feminine / plural**, items span mon/ton/son/notre/votre/leur. Three columns
+     kept; SIO text untouched (freeze holds). TO BUILD.
+  4. SpecuLearn: real count is **15 served / 29 unserved**, not 38. The 21
+     grammar/function decks are **permanently excluded** (undrawable); emoji
+     authoring approved for colors, core-nouns, days, matieres, objets-articles,
+     professions, transport. TO BUILD.
+  5. Pre-tests absent on the 6 production ateliers: **by design**, assessed in
+     class. Flag closed.
+  Still unassigned and the one user-facing failure on the board: **Dan cannot read
+  the Index** (22 Aug) — the U0–U4 cell grid and the per-row circles carry no key.
+
 ## Programme — done
 
 - **23 Aug (Peers, the content-gap wave + visual unity): eight authoring
@@ -240,8 +274,11 @@ Shipped ≈ 149 of ~150 in-scope units.
 
 ## Deploy
 
-**Deployed 22 Aug: `dckg/fluo` main `ccf5271..1a29278`.** Cloudflare Pages
-(`fluolingo-dot-com` → fluolingo.com) builds on that push.
+**Deployed 23 Aug: `dckg/fluo` main is `919a1c2` (PR #33)** — the same commit as
+`origin/main` and the local tree, confirmed 24 Aug. There is no deploy debt.
+Cloudflare Pages (`fluolingo-dot-com` → fluolingo.com) builds on that push.
+(Earlier revisions of this section stopped at 22 Aug / `1a29278`; PRs #32 and #33
+landed and were pushed after it was written.)
 
 The deploy is Dan's step, not an agent's: production is a DIFFERENT repo, and a
 Claude Code session that already has `frenchprof` sources cannot add
