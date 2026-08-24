@@ -290,6 +290,31 @@ Only ONE agent edits this file at a time; say so in your commit.
   Still TO BUILD from the 24 Aug rulings: the parfois/quelquefois equivalence
   and the SpecuLearn emoji for the seven concrete-noun decks.
 
+- **24 Aug (Cursor session, sole STATUS holder for this edit): the old site vs this
+  app, committed.** Docs only — no source touched. Two new documents:
+  `docs/REGRESSIONS_VS_WITHDRCHAN.md` (the comparison, merging an evidence-based
+  audit with a second agent's learner-experience analysis and correcting the
+  latter's four factual errors) and `docs/OLD_SITE_AUDIT.md` (the evidence base —
+  all 18 modules of `french.withdrchan.com` read off the shipped HTML; it lived in
+  the gitignored `patch-shots/` and would have been lost).
+  **Headline: the app got structurally stronger and pedagogically thinner.** The
+  gains are architecture — sequencing, spaced repetition, tracking, speaking and
+  listening, scale, navigation between stops, no roster in the client bundle, and
+  a far better answer to a wrong answer (`feedback.ts` classifies nine kinds of
+  error and scores an accent-only answer *partial*, against the original's one
+  flat line in 14 of 18 modules). The losses are explanation and agency — the why
+  behind the form, the concrete "you will be able to say…" promise, the unscored
+  self-check, the first-person French controls (`Je vérifie`, `J'écoute` — swept
+  by `12bd816`'s english-first chrome), and an Index whose marks Dan cannot read.
+  **The open decision: whether difficulty and question-aim become choosable
+  again** — framed in the doc not as "restore the tiers" but as "they were
+  abandoned twice already, by modules 17 and 18, before FluOlinGo existed; decide
+  deliberately this time." Figures re-measured this session: 50 SIOs · 44 decks ·
+  883 deck items · 31 native lesson files (32 registered) · 30 of 31 carry a bonus
+  bank · 35 pretests · 20 activities · **24 of the 50 SIOs have no authored
+  lesson** (my brief said ~19). Verification unchanged as expected for a docs-only
+  change: all 26 `verify/verify*.py` green, `tsc` clean on `src`.
+
 ## Programme — done
 
 - **23 Aug (Peers, the content-gap wave + visual unity): eight authoring
