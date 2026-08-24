@@ -176,6 +176,19 @@ vetoed.** The sheet's position is that these six words cannot be pictured
 honestly; the branch's position is that a drawn image sidesteps the emoji
 inventory's limits. Both cannot stand.
 
+**VETOED 24 Aug.** Dan reviewed the six actual renders: agrafeuse and gomme
+hold up on their own merit, passeport and portefeuille hold up with wobbles,
+but trousse and mouchoirs fail outright — and are confusable with each
+other besides. Ruling: *"Veto all six, restore your original bans, ship at
+14."* On the mechanism itself (keep the TypeScript lookup, or move image
+paths into deck JSON?): *"Leave it in TypeScript — it's a short list, don't
+over-engineer."* `SPECULEARN_ITEM_IMAGES` in `speculearnReady.ts` stays as
+an empty lookup for future short-list exceptions; the six SVGs are removed
+from `public/objets-articles/` (recoverable from git history, `4158e2f`,
+if ever revisited) and the six ids are back in `SPECULEARN_EXCLUDED_ITEMS`.
+objets-articles ships at 14/20, matching the sheet exactly. Total across
+the three decks: **34 playable / 10 banned**, as the sheet always said.
+
 ## Why the SVG paths live in code
 
 `src/lib/collections/schema.ts` gives `Item` an `emoji` field and **no image

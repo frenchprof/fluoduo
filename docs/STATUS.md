@@ -1062,3 +1062,34 @@ itself, not the bar), then called Playwright's own `.click()` — which
 performs its own actionability hit-test and fails if another element would
 receive the event — and confirmed the tour actually advanced to the "Start
 here" card afterward. All four checks passed; script + full JSON output description above.
+
+## 24 Aug — SpecuLearn objets-articles veto applied; boissons attribution restored
+
+Two cleanups against the `eff47dd` merge, not new build work:
+
+- **SpecuLearn objets-articles: the six-item reversal is vetoed.** The 24
+  Aug build (`4158e2f`) had drawn purpose-made SVGs for gomme, agrafeuse,
+  portefeuille, trousse, mouchoirs, passeport instead of honouring
+  `SPECULEARN_ITEMS.md`'s bans on those six as unpicturable. Dan reviewed
+  the actual renders (via a parallel Cursor session) and ruled: *"Veto all
+  six, restore your original bans, ship at 14."* All six are back in
+  `SPECULEARN_EXCLUDED_ITEMS`; the six SVGs are deleted from
+  `public/objets-articles/` (recoverable at `4158e2f` if ever revisited);
+  `SPECULEARN_ITEM_IMAGES` stays as the mechanism, now empty — Dan, on
+  whether to migrate it into deck JSON instead: *"Leave it in TypeScript,
+  it's a short list, don't over-engineer."* objets-articles is back to
+  14/20 playable; colors and transport untouched. Totals across the three
+  decks: 34 playable / 10 banned, matching `SPECULEARN_ITEMS.md` exactly.
+  See its appendix for the full ruling and the doc updated in place.
+- **Boissons attribution restored.** Resolving the `eff47dd` merge conflict
+  in `docs/CONTENT_FLAGS_2026-08-23.md`'s boissons-closure bullet had
+  picked the more detailed side and silently dropped the quoted
+  `(Dan: "add the missing boisson part")` from the earlier wording — a
+  defect in that merge, not a content decision. Restored alongside the
+  detailed wording; nothing else in that bullet changed.
+
+A third agent's local reset discarded an unpushed commit (`4a69dbf`) that
+had made the same two fixes independently before this one landed — it was
+never reachable from this checkout's object database, so nothing was
+recovered from it; both fixes were simply redone here from the same source
+material and pushed straight to `origin` to close the window for a repeat.

@@ -77,6 +77,20 @@ export const SPECULEARN_EXCLUDED_ITEMS = new Set([
   // amendment 1, 2026-08-24: "we cannot have verb phrases alongside
   // prepositional phrases"). Category purity check: every remaining
   // transport item carries tags col:en or col:a — no exceptions.
+
+  // --- objets-articles (SPECULEARN_ITEMS.md, 2026-08-24 — Dan's veto) ---
+  // The 24 Aug build drew purpose-made SVGs for these six instead of
+  // honouring the sheet's bans (see SPECULEARN_ITEM_IMAGES below and
+  // SPECULEARN_ITEMS.md's appendix). Dan reviewed the actual renders and
+  // ruled: "Veto all six, restore your original bans, ship at 14." Two
+  // (trousse, mouchoirs) also read as confusable with each other.
+  "objets-articles-07", // passeport — no passport emoji; 🛂 is passport
+  //   *control*, and next to carte d'identité either answer is defensible
+  "objets-articles-09", // trousse — no pencil-case emoji; 👝 is a bag
+  "objets-articles-11", // gomme — Unicode has no eraser emoji
+  "objets-articles-12", // portefeuille — 👛 is a coin purse (porte-monnaie)
+  "objets-articles-17", // mouchoirs — 🧻 reads toilet roll, 🤧 the sneeze
+  "objets-articles-19", // agrafeuse — 📎 is a paperclip, a different object
 ]);
 
 /* Category-purity note (Dan, 2026-08-24 amendment 1): each deck's playable
@@ -89,33 +103,24 @@ export const SPECULEARN_EXCLUDED_ITEMS = new Set([
  *                        only the image-twin reason.
  *   objets-articles     → bare noun + col:un/col:une/col:des tag (the
  *                        indefinite article is rendered by withArticle() in
- *                        SpecuLearnContent.tsx). No exclusions needed here:
- *                        the six items with no honest emoji (below) get a
- *                        purpose-made SVG instead, so all 20 stay the same
- *                        category and all 20 play.
+ *                        SpecuLearnContent.tsx). 14/20 play — the six with
+ *                        no honest emoji are excluded above, per Dan's
+ *                        sheet and veto, not drawn around.
  */
 
-/** Per-item image overrides (Dan, 2026-08-24 amendment 3: "don't force
- *  interpretations on emojis"). These six objets-articles items failed the
- *  honest-emoji test in SPECULEARN_ITEMS.md — no Unicode glyph depicts them
- *  without picturing a different object (gomme/agrafeuse/portefeuille/
- *  trousse/mouchoirs) or colliding with a deckmate (passeport vs 🪪 carte
- *  d'identité) — so each gets a small purpose-made flat SVG instead of a
- *  forced emoji. Mirrors the aliments photo-bank mechanism (an `img` path
- *  wins over `emoji` in SpecuLearnContent's Visual component) but keyed by
- *  item id rather than a whole separate deck, since the other 14
- *  objets-articles items already have an honest emoji and mixing the two
- *  per item is the smaller change (no new Item-schema field, just this
- *  lookup consulted from buildItems()). */
-export const SPECULEARN_ITEM_IMAGES: Record<string, string> = {
-  "objets-articles-07": "/objets-articles/passeport.svg", // passeport — visually
-  //   distinct booklet (dark cover + gold emblem) vs -08's flat 🪪 card
-  "objets-articles-09": "/objets-articles/trousse.svg", // trousse — zip pouch, not the 👝 clutch bag
-  "objets-articles-11": "/objets-articles/gomme.svg", // gomme — no eraser emoji exists
-  "objets-articles-12": "/objets-articles/portefeuille.svg", // portefeuille — bifold wallet, not the 👛 coin purse
-  "objets-articles-17": "/objets-articles/mouchoirs.svg", // mouchoirs — tissue pack, not the 🧻 toilet roll
-  "objets-articles-19": "/objets-articles/agrafeuse.svg", // agrafeuse — not the 📎 paperclip
-};
+/** Per-item image overrides — the mechanism stays (Dan, 2026-08-24: "leave
+ *  it in TypeScript, it's a short list, don't over-engineer"), currently
+ *  empty. A 24 Aug build populated this with six purpose-drawn SVGs for the
+ *  objets-articles items excluded above, sidestepping the emoji-inventory
+ *  limit the sheet in SPECULEARN_ITEMS.md flagged; Dan reviewed the actual
+ *  renders and vetoed all six ("restore your original bans, ship at 14") —
+ *  two (trousse, mouchoirs) also read as confusable with each other. The
+ *  SVGs are gone from `public/objets-articles/`; recoverable from git
+ *  history (commit `4158e2f`) if ever revisited. Mirrors the aliments
+ *  photo-bank mechanism (an `img` path wins over `emoji` in
+ *  SpecuLearnContent's Visual component) but keyed by item id rather than a
+ *  whole separate deck, for exactly this kind of small per-item exception. */
+export const SPECULEARN_ITEM_IMAGES: Record<string, string> = {};
 
 /** Per-deck SpecuLearn prompt frame (Dan, 2026-08-24 amendment 2). The
  *  transport en/à items are answers to a specific question, not free-
