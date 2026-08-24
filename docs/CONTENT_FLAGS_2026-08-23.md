@@ -51,6 +51,6 @@ Nothing here blocks; strike anything wrong and it comes out.
 - ~~SKIPPED for concurrent edits~~ DONE 23 Aug: numbers-70-99 (bands 70s/80s/90s, all 30 retagged from col:num) and question-words (meaning axis from the Atelier U0 « Suivez le guide ! » sections — WHAT/WHO · WHERE/WHEN · HOW/WHY · HOW MANY; est-ce que and the inversion sentence carry no wh-category, left untagged — your call if they should).
 
 ## Known reds that are DECISIONS, not bugs
-- `scripts/check-textgen.mjs` still fails unit 4 on « jus, thé » — the generator uses drinks no deck teaches; the real fix is the ★ boissons deck the audit found missing (needs your placement).
+- ~~check-textgen's unit-4 « jus, thé » red~~ CLOSED 23 Aug: du thé + du jus d'orange joined the aliments deck's BOISSONS group (Dan: "add the missing boisson part") — check-textgen green on all five units.
 - SpecuLearn's 38 unserved decks each need your guessability call + emoji work before authoring.
 - Pre-Tests missing on 6 production-atelier SIOs — looks by-design (in-class); confirm.

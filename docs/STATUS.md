@@ -214,7 +214,7 @@ Only ONE agent edits this file at a time; say so in your commit.
   docs/SYLLABUS_AUDIT_2026-08-23.md — headline gaps: U2 « ne… plus »
   taught nowhere; SIO-030's well-wishes are a phantom; U3 nuages family
   undrillable; U4 boissons hole confirmed; two U1-labelled lessons
-  front-run the book (est-ce que is U3). Fix wave awaits Dan's word.
+  front-run the book (est-ce que is U3). Fix wave MERGED (PR #33, 919a1c2) and **DEPLOYED — Dan's live push confirmed 23 Aug** (live/main = origin/main = 919a1c2): six in-place syllabus repairs (SIOs frozen), boissons closure, the e-carte postale at stop 40 + washed-down email flavour, negation lesson → unit 2 on SIO-028's rail.
 
 | Patch | What | Check |
 |---|---|---|
