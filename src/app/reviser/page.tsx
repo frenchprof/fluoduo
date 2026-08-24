@@ -92,8 +92,10 @@ export default function ReviserPage() {
     setI((n) => n + 1);
   }
 
+  // Chrome OUTSIDE the gate (2026-08-24): signed out this page used to be a
+  // bare full-screen lock — no band, no bottom bar, no way to know where you
+  // were. The gate now renders inside the page's normal chrome.
   return (
-    <AuthGate what="review">
     <CahierShell
       tabs={TABS}
       active="reviser"
@@ -102,6 +104,7 @@ export default function ReviserPage() {
          explainer paragraph fell to the litmus rule (2026-08-23, variant A). */
       band={{ stat: total > 0 && !done ? `${cards.length} due` : null }}
     >
+      <AuthGate what="review">
       <div className="mx-auto max-w-xl px-4 pb-6 pt-2">
 
         {total === 0 ? (
@@ -172,8 +175,8 @@ export default function ReviserPage() {
           </div>
         )}
       </div>
+      </AuthGate>
     </CahierShell>
-    </AuthGate>
   );
 }
 

@@ -12,9 +12,8 @@
  * the roll settles. The run ENDS: 🎉 + XP/accuracy/time + the missed items,
  * and the SIO write that finally makes the Home path react.
  */
-import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import DrillShell, { drillExitHref, type DrillFeedback } from "@/components/DrillShell";
+import DrillShell, { drillExitHref, type DrillFeedback, type DrillFinish } from "@/components/DrillShell";
 import OpenFeedback from "@/components/OpenFeedback";
 import SpeakZone from "@/components/SpeakZone";
 import WordBank from "@/components/WordBank";
@@ -288,6 +287,11 @@ export default function LessonPager({
   const secs = Math.floor(((endedAtRef.current - startRef.current) % 60000) / 1000);
   const pct = Math.round(accuracy * 100);
 
+  // The finished run's footer (the approved flow, 2026-08-24): ONE primary
+  // « Next › » once the SIO write has landed; ↻ Try again is the quiet
+  // "Repeat". null while running — the base cta/feedback own the footer.
+  const finish: DrillFinish | null = end ? { repeat: build } : null;
+
   return (
     <DrillShell
       exitHref={exitHref}
@@ -296,6 +300,9 @@ export default function LessonPager({
       cta={cta}
       feedback={feedback}
       help={card === "ex" && !end ? ladder.help : null}
+      activity="lesson"
+      deck={collectionId}
+      finish={finish}
     >
       {!ready ? null : card === "rule" ? (
         <div className="pt-2"><SpeakZone>{rules[i]}</SpeakZone></div>
@@ -354,10 +361,6 @@ export default function LessonPager({
               itemId={`${sio.id}:write`}
             />
           )}
-          <div className="mt-2 flex flex-wrap justify-center gap-3">
-            <Link href={exitHref} className="fluo-btn fluo-btn-lg">Continue</Link>
-            <button type="button" onClick={build} className="fluo-btn fluo-btn-ghost">↻ Try again</button>
-          </div>
         </div>
       )}
     </DrillShell>

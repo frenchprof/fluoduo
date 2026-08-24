@@ -26,11 +26,13 @@
  * Tokens only.
  */
 
-import { useEffect, useMemo, useRef, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SIOS } from "@/content/sios";
+import { NextChip } from "@/components/DrillShell";
 import { sioForDeck, sioForItem } from "@/lib/curriculum";
+import { nextStep, type NextStep } from "@/lib/nextStep";
 import { queueForReview } from "@/lib/progress";
 import { reviserHref } from "@/lib/reviser";
 
@@ -75,6 +77,7 @@ export default function GameOver({
   won,
   misses,
   fallbackSio,
+  deckId,
   onReplay,
   exitHref,
   onExit,
@@ -89,6 +92,8 @@ export default function GameOver({
   misses: GameMiss[];
   /** Where a deck-less game's misses go on the path (NumBus/NumBourse → SIO-007). */
   fallbackSio?: string;
+  /** The deck the game ran on — anchors « Next › » on that stop's chain. */
+  deckId?: string;
   onReplay: () => void;
   exitHref: string;
   onExit?: () => void;
@@ -98,6 +103,14 @@ export default function GameOver({
   const router = useRouter();
   const rows = useMemo(() => dedupe(misses), [misses]);
   const queueable = useMemo(() => [...new Set(misses.map((m) => m.itemId).filter((x): x is string => !!x))], [misses]);
+
+  // « Next › » — the next undone step on this stop's practice chain
+  // (approved flow, 2026-08-24). Resolved after mount: the ledger and
+  // progress live in localStorage.
+  const [next, setNext] = useState<NextStep | null>(null);
+  useEffect(() => {
+    setNext(nextStep(undefined, { collectionId: deckId, sioId: fallbackSio }));
+  }, [deckId, fallbackSio]);
 
   // Push every miss into the queue once per game-over, not once per render.
   const queued = useRef(false);
@@ -172,19 +185,34 @@ export default function GameOver({
           className="flex shrink-0 flex-col gap-2 border-t-2 border-[color:var(--cahier-ink)]/10 px-5 py-3"
           style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom, 0px))" }}
         >
+          {/* Misses first, then onward (the approved flow, 2026-08-24): with
+              misses queued, correcting them IS the next step — CORRIGER
+              MAINTENANT keeps the primary and « Next › » waits below it.
+              Only a clean run promotes « Next › » to the one primary. */}
           {queueable.length > 0 && (
             <button type="button" onClick={correct} className="cahier-btn cahier-btn-primary w-full justify-center font-black">
               CORRIGER MAINTENANT{queueable.length > 1 ? ` · ${queueable.length}` : ""}
             </button>
           )}
-          <div className="grid grid-cols-2 gap-2">
-            <button type="button" onClick={onReplay} className={`cahier-btn justify-center ${queueable.length === 0 ? "cahier-btn-primary" : ""}`}>
+          <div className="flex min-w-0 items-center gap-2.5">
+            {next && <NextChip step={next} />}
+            <button
+              type="button"
+              onClick={() => router.push(next?.href ?? "/")}
+              className={`cahier-btn ml-auto shrink-0 justify-center font-black ${queueable.length === 0 ? "cahier-btn-primary" : ""}`}
+            >
+              Next ›
+            </button>
+          </div>
+          <div className="text-center text-[13px] font-bold text-[color:var(--cahier-ink)]/55">
+            <button type="button" onClick={onReplay} className="underline decoration-dotted">
               ▶ Play again
             </button>
+            <span className="mx-2 opacity-60" aria-hidden>·</span>
             {onExit ? (
-              <button type="button" onClick={onExit} className="cahier-btn justify-center">← Back</button>
+              <button type="button" onClick={onExit} className="underline decoration-dotted">← Back</button>
             ) : (
-              <Link href={exitHref} className="cahier-btn justify-center no-underline">← Back</Link>
+              <Link href={exitHref} className="underline decoration-dotted">← Back</Link>
             )}
           </div>
         </div>

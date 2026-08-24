@@ -855,3 +855,52 @@ Branch `pm/bugs-data-truth` (on top of `pm/integration`), check = `verify/verify
 
 - Peers builds, `main` is the sole push path; every patch = verify script + screenshot.
 - Dan's litmus test (AGENTS.md). Grammar guard-rails (no imperative outside SIO-008).
+
+## Patch — the approved guidance flow, part 2: the notebook + one Next › (24 Aug)
+
+Finished a prior agent's partial edits (killed mid-task; `src/lib/nextStep.ts`,
+`DrillShell.tsx`, `GameOver.tsx`, `verify20.py` already carried its work) —
+did not start over, closed the two gaps it left open:
+
+- **DrillShell now lives inside the cahier notebook** — `cahier-foolscap` +
+  spiral binding + a `PageBand` on top (family colour via `fam-<key>`, the
+  drill's own progress figure moved into the band's ONE chip so it is never
+  printed twice), phone bottom bar kept, 100dvh/fixed-footer intact. This part
+  was already done. Games (`GameFrame`) untouched, as scoped.
+- **`nextStep.ts`** (114 lines, already complete) resolves the next undone
+  step of a stop's practice chain — Pre-Test/SpecuLearn → Memo → EtuDice →
+  4Mémoire → iComplete, in `activities.ts` registry order, "undone" read off
+  `activityLedger.accuracyFor` — or the next stop's first step via
+  `continuer.nextSioId` when the chain is clear. Anchors on `sioId` →
+  `collectionId`'s SIO → (deckless surfaces: ConjugaZone, a spoken-number
+  game) the learner's current stop on the path. Verified correct as written;
+  no logic changes needed.
+- **Finished the two callers that still had no `activity`/`deck`/`finish`
+  wiring**, so the band and the single « Next › » actually appear where Dan
+  approved them:
+  - `src/app/lessons/pager/LessonPager.tsx` — `activity="lesson"`,
+    `deck={collectionId}`, and `finish={{ repeat: build }}` on the end card;
+    dropped its own Continue/↻ Try again buttons now that the shell's finish
+    row owns that footer.
+  - `src/app/conjugaison/page.tsx` — `activity="conjugaison"` (deckless —
+    verb picker, not one SIO), `finish={{ repeat: restart }}` once the run
+    reaches the reward table (the table screen IS the finish screen here);
+    `↻ Again` retired in favour of the shell's Repeat.
+- GameOver.tsx was already complete: misses-first ordering (CORRIGER
+  MAINTENANT stays primary with misses queued), « Next › » promoted to
+  primary only on a clean run («✓ Sans faute»). Confirmed live in the
+  GameOver screenshot below (3 misses → CORRIGER MAINTENANT primary, Next ›
+  secondary).
+
+**Checks**: `npx tsc --noEmit` clean; all 25 `verify/*.py` suites green (incl.
+`verify20.py`, `verify23.py`, `verify28-trackd.py` — none needed a fix, none
+pinned stale chrome). Dev server on :3777; `REQUIRE_SIGN_IN` flipped to
+`false` for screenshots, restored to `true` before finishing (no net diff on
+`authConfig.ts`).
+
+**Screenshots** (`scratchpad/flow-build/`):
+`01-conjugaison-notebook.png` (ConjugaZone drilling inside the notebook,
+purple band, `0/18` chip), `02-drill-finish-next.png` (ConjugaZone's finished
+table: ✓ chip → `1 🔮 SpecuLearn` → primary Next ›, Repeat/Back quiet),
+`03-gameover-next.png` (NumBus GameOver, 3 misses: CORRIGER MAINTENANT
+primary, `7 🔮 SpecuLearn` chip + secondary Next ›).

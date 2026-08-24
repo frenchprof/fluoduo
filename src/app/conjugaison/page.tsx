@@ -22,7 +22,10 @@
  */
 import { useEffect, useMemo, useState } from "react";
 import AuthGate from "@/components/AuthGate";
-import DrillShell from "@/components/DrillShell";
+import CahierShell from "@/components/CahierShell";
+import { useAuthUser } from "@/lib/firebase/auth";
+import { REQUIRE_SIGN_IN } from "@/lib/authConfig";
+import DrillShell, { type DrillFinish } from "@/components/DrillShell";
 import WordBank from "@/components/WordBank";
 import { CONJ_GROUPS, PERSONS, VERBS, conjSpoken, type ConjVerb } from "@/content/conjugaison";
 import { gradeAnswer } from "@/lib/practice/cloze";
@@ -71,6 +74,7 @@ type Cell = { v: ConjVerb; i: number };
 
 export default function ConjugaisonPage() {
   useActivityPlay("conjugaison");
+  const user = useAuthUser(); // undefined = resolving, null = signed out
   const [picked, setPicked] = useState<string[]>(["etre", "avoir", "aller"]);
   // Lesson pages deep-link their verbs: /conjugaison?v=vouloir,pouvoir
   useEffect(() => {
@@ -140,17 +144,36 @@ export default function ConjugaisonPage() {
 
   const drilling = screen === "drill" && !!cell;
 
+  // The table screen IS the finish screen (the approved flow, 2026-08-24):
+  // ONE primary « Next › » onward, ↻ Again the quiet "Repeat". ConjugaZone
+  // is deckless (a verb picker, not one SIO) — nextStep anchors it on the
+  // learner's current stop on the path, same as any other deckless surface.
+  const finish: DrillFinish | null = screen === "table" ? { repeat: restart } : null;
+
+  // Signed out, the gate keeps the page's NORMAL chrome (band + bottom bar)
+  // instead of DrillShell's bare ✕-and-lock (2026-08-24; the 22 Aug flow
+  // walk: 💪 landed a newcomer on a lock with no heading and no way back
+  // but ✕). DrillShell itself is untouched — the swap happens here at the
+  // door. Once auth resolves signed-in, the drill renders as before.
+  if (REQUIRE_SIGN_IN && !user) {
+    return (
+      <CahierShell active="conjugaison">
+        <AuthGate what="practise">{null}</AuthGate>
+      </CahierShell>
+    );
+  }
+
   return (
     <DrillShell
       exitHref="/activities"
       progress={drilling && queue ? { done: k, total: queue.length } : null}
       right={<>✓ {score.ok}</>}
+      activity="conjugaison"
+      finish={finish}
       cta={
-        screen === "table"
-          ? { label: "↻ Again", onClick: restart }
-          : drilling && result === null
-            ? { label: "Check", onClick: check, disabled: !value.trim() }
-            : null
+        drilling && result === null
+          ? { label: "Check", onClick: check, disabled: !value.trim() }
+          : null
       }
       feedback={
         drilling && result !== null
