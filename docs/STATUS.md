@@ -206,9 +206,8 @@ Only ONE agent edits this file at a time; say so in your commit.
      TO BUILD.
   3. `possessives` (SIO-022): the gap is deck-vs-**SIO**, not deck-vs-book — the
      deck drills three first-person columns while SIO-022's competence asks for
-     the full paradigm by gender/number. Columns re-gear to **masculine /
-     feminine / plural**, items span mon/ton/son/notre/votre/leur. Three columns
-     kept; SIO text untouched (freeze holds). TO BUILD.
+     the full paradigm by gender/number. **BUILT the same day — see the 24 Aug
+     possessives entry below.** SIO text untouched (freeze holds).
   4. SpecuLearn: real count is **15 served / 29 unserved**, not 38. The 21
      grammar/function decks are **permanently excluded** (undrawable); emoji
      authoring approved for colors, core-nouns, days, matieres, objets-articles,
@@ -217,6 +216,39 @@ Only ONE agent edits this file at a time; say so in your commit.
      class. Flag closed.
   Still unassigned and the one user-facing failure on the board: **Dan cannot read
   the Index** (22 Aug) — the U0–U4 cell grid and the per-row circles carry no key.
+
+- **24 Aug: possessives drill the whole paradigm (SIO-022).** Dan said GO with all
+  six persons. **This supersedes ruling 3 in the entry above and the wording
+  committed in `ca761e9`, both of which said "re-gear the letris columns to
+  masculine/feminine/plural". That route was wrong** — `prefix` lives on the
+  letris *column*, never on the item, and seven consumers build their phrase from
+  `column.prefix + item.fr`, so the person would have had to move into `item.fr`
+  and put « ton stylo » on the tile face. Answer on the front of the question.
+  Rejected; **do not re-propose**. The letris board is untouched (three columns,
+  MON/MA/MES, prefixes intact).
+  What shipped instead follows the `nationalities` pattern already in the repo
+  (`item.nat` + `NAT_SUBJECT`): each of the 21 `col:`-tagged nouns expands into
+  six Complete It questions, the prompt gives the English cue (« your (sg) ·
+  pen ») and the learner produces « ton stylo ». **136 questions, up from 31.**
+  Two defects closed at once — the paradigm was 1st-person-only, AND the prompt
+  used to *print* the possessive (« mon book » → type « mon livre »), so nothing
+  was selected. That giveaway is gone; the two behaviours are not both live.
+  The forms are derived rather than stored (possessives are regular; the noun's
+  agreement class is already declared by its `col:` tag), so **no schema field was
+  added** — the opt-in is the deck's own column declaration, and
+  `verify/verify35-possessives.py` (39 assertions) is the tripwire that fails if a
+  rename ever switches the expansion off. It is wired into `verify.yml`, per that
+  file's own rule that a check CI never runs is not a check. The "(m)"/"(f)" gloss
+  is stripped from the cue — that marker IS the answer — and the gender is offered
+  on the ? ladder instead, per the litmus test (help on demand, never inline).
+  Verified: **26 verify suites green** (the 25 that existed plus this one),
+  `check-textgen` green on all five units, `tsc` clean on `src`, eslint **still
+  115 errors / 19 warnings** (errors unchanged; one warning fewer, a dead `isNat`
+  went with the de-duplication).
+  Noticed in passing, NOT fixed: `verify/verify31-wordrill.py` exists but no CI
+  step runs it — the same gap the Reports check once had.
+  Still TO BUILD from the 24 Aug rulings: the parfois/quelquefois equivalence
+  and the SpecuLearn emoji for the seven concrete-noun decks.
 
 ## Programme — done
 
