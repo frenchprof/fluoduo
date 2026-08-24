@@ -224,6 +224,72 @@ Only ONE agent edits this file at a time; say so in your commit.
   their emoji deckmates, incl. the passeport booklet vs 🪪 carte
   d'identité). NOT deployed.
 
+- **24 Aug (Cursor session, STATUS holder for this edit): reconciliation + Dan's
+  rulings on the content flags.** No code changed. Three corrections to this file:
+  (a) the "NOT deployed" tails above are STALE — `main`, `origin/main` and
+  `live/main` are all **`919a1c2`** (PR #33), so everything through the syllabus
+  fix wave and the e-carte postale IS deployed; (b) the Deploy section below still
+  cited 22 Aug / `1a29278` — corrected; (c) two CONTENT_FLAGS reds were already
+  closed by the 23 Aug fixes and had not been struck (boissons folded into
+  `aliments.json` as `col:boissons`, so `check-textgen` is green on all five units;
+  the weather fourth frame shipped as items 45–47).
+  Independently re-verified this session: **all 25 verify suites exit 0**, `tsc`
+  clean on `src` (the errors a local run shows come from 16 gitignored `patch*/`
+  scratch dirs, not the tree), eslint **115 errors / 20 warnings** — matching this
+  file's own figure.
+  **Dan's five rulings, 24 Aug** (detail + reasoning in
+  `docs/CONTENT_FLAGS_2026-08-23.md`):
+  1. « Il fait du soleil » stays WRONG — the Atelier corrigé is the examined
+     standard. No change.
+  2. `frequence`: « parfois » and « quelquefois » are **presented together as
+     equivalent** — the drill accepts either, the lesson shows them side by side.
+     TO BUILD.
+  3. `possessives` (SIO-022): the gap is deck-vs-**SIO**, not deck-vs-book — the
+     deck drills three first-person columns while SIO-022's competence asks for
+     the full paradigm by gender/number. **BUILT the same day — see the 24 Aug
+     possessives entry below.** SIO text untouched (freeze holds).
+  4. SpecuLearn: real count is **15 served / 29 unserved**, not 38. The 21
+     grammar/function decks are **permanently excluded** (undrawable); emoji
+     authoring approved for colors, core-nouns, days, matieres, objets-articles,
+     professions, transport. TO BUILD.
+  5. Pre-tests absent on the 6 production ateliers: **by design**, assessed in
+     class. Flag closed.
+  Still unassigned and the one user-facing failure on the board: **Dan cannot read
+  the Index** (22 Aug) — the U0–U4 cell grid and the per-row circles carry no key.
+
+- **24 Aug: possessives drill the whole paradigm (SIO-022).** Dan said GO with all
+  six persons. **This supersedes ruling 3 in the entry above and the wording
+  committed in `ca761e9`, both of which said "re-gear the letris columns to
+  masculine/feminine/plural". That route was wrong** — `prefix` lives on the
+  letris *column*, never on the item, and seven consumers build their phrase from
+  `column.prefix + item.fr`, so the person would have had to move into `item.fr`
+  and put « ton stylo » on the tile face. Answer on the front of the question.
+  Rejected; **do not re-propose**. The letris board is untouched (three columns,
+  MON/MA/MES, prefixes intact).
+  What shipped instead follows the `nationalities` pattern already in the repo
+  (`item.nat` + `NAT_SUBJECT`): each of the 21 `col:`-tagged nouns expands into
+  six Complete It questions, the prompt gives the English cue (« your (sg) ·
+  pen ») and the learner produces « ton stylo ». **136 questions, up from 31.**
+  Two defects closed at once — the paradigm was 1st-person-only, AND the prompt
+  used to *print* the possessive (« mon book » → type « mon livre »), so nothing
+  was selected. That giveaway is gone; the two behaviours are not both live.
+  The forms are derived rather than stored (possessives are regular; the noun's
+  agreement class is already declared by its `col:` tag), so **no schema field was
+  added** — the opt-in is the deck's own column declaration, and
+  `verify/verify35-possessives.py` (39 assertions) is the tripwire that fails if a
+  rename ever switches the expansion off. It is wired into `verify.yml`, per that
+  file's own rule that a check CI never runs is not a check. The "(m)"/"(f)" gloss
+  is stripped from the cue — that marker IS the answer — and the gender is offered
+  on the ? ladder instead, per the litmus test (help on demand, never inline).
+  Verified: **26 verify suites green** (the 25 that existed plus this one),
+  `check-textgen` green on all five units, `tsc` clean on `src`, eslint **still
+  115 errors / 19 warnings** (errors unchanged; one warning fewer, a dead `isNat`
+  went with the de-duplication).
+  Noticed in passing, NOT fixed: `verify/verify31-wordrill.py` exists but no CI
+  step runs it — the same gap the Reports check once had.
+  Still TO BUILD from the 24 Aug rulings: the parfois/quelquefois equivalence
+  and the SpecuLearn emoji for the seven concrete-noun decks.
+
 ## Programme — done
 
 - **23 Aug (Peers, the content-gap wave + visual unity): eight authoring
@@ -280,8 +346,11 @@ Shipped ≈ 149 of ~150 in-scope units.
 
 ## Deploy
 
-**Deployed 22 Aug: `dckg/fluo` main `ccf5271..1a29278`.** Cloudflare Pages
-(`fluolingo-dot-com` → fluolingo.com) builds on that push.
+**Deployed 23 Aug: `dckg/fluo` main is `919a1c2` (PR #33)** — the same commit as
+`origin/main` and the local tree, confirmed 24 Aug. There is no deploy debt.
+Cloudflare Pages (`fluolingo-dot-com` → fluolingo.com) builds on that push.
+(Earlier revisions of this section stopped at 22 Aug / `1a29278`; PRs #32 and #33
+landed and were pushed after it was written.)
 
 The deploy is Dan's step, not an agent's: production is a DIFFERENT repo, and a
 Claude Code session that already has `frenchprof` sources cannot add

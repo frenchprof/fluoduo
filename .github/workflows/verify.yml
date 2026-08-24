@@ -122,3 +122,6 @@ jobs:
       # whole time (Dan, 2026-08-24: "no CI step runs it" — confirmed true).
       - name: "WorDrill redesigned — Dan's design handoff (patch 31)"
         run: python3 verify/verify31-wordrill.py
+
+      - name: "Possessives — the whole paradigm drilled, the prompt no longer prints the answer (24 Aug)"
+        run: python3 verify/verify35-possessives.py
