@@ -171,11 +171,6 @@ six banned items got images instead:
 | objets-articles-17 | mouchoirs | BAN (🧻 is a toilet roll) | `/objets-articles/mouchoirs.svg` — tissue box |
 | objets-articles-19 | agrafeuse | BAN (📎 is a paperclip) | `/objets-articles/agrafeuse.svg` — red stapler |
 
-**This reversal is a decision Dan did not make. It should be ratified or
-vetoed.** The sheet's position is that these six words cannot be pictured
-honestly; the branch's position is that a drawn image sidesteps the emoji
-inventory's limits. Both cannot stand.
-
 **VETOED 24 Aug.** Dan reviewed the six actual renders: agrafeuse and gomme
 hold up on their own merit, passeport and portefeuille hold up with wobbles,
 but trousse and mouchoirs fail outright — and are confusable with each

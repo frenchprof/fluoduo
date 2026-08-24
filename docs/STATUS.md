@@ -1093,3 +1093,21 @@ had made the same two fixes independently before this one landed — it was
 never reachable from this checkout's object database, so nothing was
 recovered from it; both fixes were simply redone here from the same source
 material and pushed straight to `origin` to close the window for a repeat.
+
+## 24 Aug — latent Complete It indexing bug (not fixed, flagged only)
+
+`CompleteItContent.tsx`'s `buildEntries()` (`src/app/practice/complete-it/[collectionId]/CompleteItContent.tsx:114`)
+builds each question's `itemIdx` from position in `practiceItems(deck)` (line
+117), which filters out `role:`-tagged items (`src/lib/collections/display.ts:62`).
+The render then reads `deck.items[entry.itemIdx]` (line 164) — indexing into
+the *unfiltered* array. The two only agree when nothing is filtered out.
+
+Not currently live: `possessives.json` (the deck this was checked against)
+carries no `role:`-tagged items, so its expansion is unaffected. But any deck
+that mixes `role:`-tagged fragments with full phrases would silently serve
+the wrong item — right question index, wrong item behind it. Latent, not
+urgent; flagged here so it doesn't cost someone an afternoon of confused
+debugging when a future deck trips it. Fix, when it's next touched: build
+entries by item id (or index within `deck.items` directly, applying the
+`role:` filter at read-time too) rather than mixing an index space from one
+array with lookups into another.
