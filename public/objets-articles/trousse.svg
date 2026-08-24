@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="une trousse">
+  <path d="M26 70 Q26 56 42 56 L118 56 Q134 56 134 70 L134 104 Q134 118 118 118 L42 118 Q26 118 26 104 Z" fill="#3d8bfd" stroke="#2b2b2b" stroke-width="5"/>
+  <line x1="34" y1="60" x2="126" y2="60" stroke="#2b2b2b" stroke-width="3" stroke-dasharray="2 4"/>
+  <rect x="72" y="52" width="16" height="10" rx="3" fill="#ffd54a" stroke="#2b2b2b" stroke-width="3"/>
+</svg>

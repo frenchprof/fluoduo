@@ -25,7 +25,12 @@ import { hintsFor } from "@/lib/help/hints";
 import { useHelpLadder } from "@/lib/help/useHelpLadder";
 import { sfx } from "@/games/audio/sfx";
 import { logEvent } from "@/lib/firebase/usage";
-import { BUILDING_EMOJI, SPECULEARN_EXCLUDED_ITEMS } from "@/lib/collections/speculearnReady";
+import {
+  BUILDING_EMOJI,
+  SPECULEARN_EXCLUDED_ITEMS,
+  SPECULEARN_ITEM_IMAGES,
+  SPECULEARN_PROMPT_FRAME,
+} from "@/lib/collections/speculearnReady";
 import { deaccent, normalize } from "@/lib/practice/cloze";
 import { useChoiceKeys, CHOICE_KEYS_HINT } from "@/lib/useChoiceKeys";
 import PHOTO_ITEMS from "@/content/devine-aliments.json";
@@ -93,10 +98,19 @@ function buildItems(collectionId: string): { items: DevItem[]; subtitle: string 
   }
   const deck = CURATED.find((c) => c.id === collectionId);
   const items = (deck?.items ?? [])
-    .filter((it) => it.fr && it.emoji && !BUILDING_EMOJI.has(it.emoji) && !SPECULEARN_EXCLUDED_ITEMS.has(it.id))
+    .filter(
+      (it) =>
+        it.fr &&
+        !SPECULEARN_EXCLUDED_ITEMS.has(it.id) &&
+        // A visual comes from EITHER the item's emoji (banned when it's a
+        // building look-alike, see BUILDING_EMOJI) OR a purpose-made SVG
+        // keyed by item id (SPECULEARN_ITEM_IMAGES) — never neither.
+        ((it.emoji && !BUILDING_EMOJI.has(it.emoji)) || SPECULEARN_ITEM_IMAGES[it.id]),
+    )
     .map((it) => {
       const w = withArticle(it.fr, it.tags);
-      return { w, ...tagFromArticle(w), emoji: it.emoji as string };
+      const img = SPECULEARN_ITEM_IMAGES[it.id];
+      return { w, ...tagFromArticle(w), emoji: img ? undefined : (it.emoji as string), img };
     });
   return { items, subtitle: deck?.title ?? collectionId };
 }
@@ -347,6 +361,11 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
               🔮 {subtitle}
             </p>
             <p className="mt-1 hidden text-center text-[10px] font-bold text-[color:var(--cahier-ink-soft)] sm:block">{CHOICE_KEYS_HINT}</p>
+            {SPECULEARN_PROMPT_FRAME[collectionId] && (
+              <p className="mt-2 text-center text-base font-black text-[color:var(--cahier-ink)]" lang="fr">
+                « {SPECULEARN_PROMPT_FRAME[collectionId]} »
+              </p>
+            )}
 
             <div className={`${card} mt-3 text-center`}>
               {(t.dir === "say-t" || t.dir === "say-s") ? (

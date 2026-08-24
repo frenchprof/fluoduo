@@ -194,6 +194,35 @@ Only ONE agent edits this file at a time; say so in your commit.
   compose cell), later banks fly their own title+emoji with unique keys.
   tsc clean, verify23/24/28-trackd green, eslint clean on touched files.
   Audit row 3.1 marked RESOLVED. NOT deployed.
+- 24 Aug (content agent): **SpecuLearn opened for colors, transport,
+  objets-articles** per Dan's approved item sheet (SPECULEARN_ITEMS.md) +
+  his three same-day amendments. Playable: colors 11/12 (colors-12 le beige
+  dropped — no swatch exists) · transport 9/12 (the three `prendre le/la/l'…`
+  verb phrases excluded — image-twins AND the only way to keep the deck one
+  grammatical category, en/à prepositional phrases only) · objets-articles
+  20/20 (all playable: the six items with no honest emoji — gomme,
+  agrafeuse, portefeuille, trousse, mouchoirs, passeport — got purpose-made
+  flat SVGs under `public/objets-articles/` instead of a forced emoji stand-
+  in, so nothing needed banning). New `SPECULEARN_ITEM_IMAGES` (id → SVG
+  path) in speculearnReady.ts lets a deck MIX emoji and per-item images —
+  chosen over an aliments-style whole-deck photo bank because it changes
+  less (the DevItem type already carried an optional `img` alongside
+  `emoji`; only buildItems()'s filter/map needed touching) and the other 14
+  objets items already had an honest emoji. New `SPECULEARN_PROMPT_FRAME`
+  (deckId → question, transport: "Tu y vas comment ?") renders lang="fr"
+  above the options — the en/à answers are responses to that question, not
+  free-floating nouns. Category-purity comment + exclusion reasons live
+  next to `SPECULEARN_EXCLUDED_ITEMS`. Emoji added to colors.json (11),
+  transport.json (9), objets-articles.json (14) — only where PLAY, never on
+  colors-12 or the three prendre-* items. tsc clean, all verify suites
+  green (verify-grading, verify-reports, verify18–34), check:short/
+  check:textgen green. Screenshots (390×844, port 3777, REQUIRE_SIGN_IN
+  already false from a concurrent session — not touched): colors shows
+  swatches with beige absent; transport shows the « Tu y vas comment ? »
+  frame; objets-articles rounds show the SVGs (agrafeuse/trousse/gomme/
+  passeport/mouchoirs/portefeuille all observed rendering distinctly from
+  their emoji deckmates, incl. the passeport booklet vs 🪪 carte
+  d'identité). NOT deployed.
 
 ## Programme — done
 

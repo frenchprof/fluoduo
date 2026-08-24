@@ -52,6 +52,7 @@
    "id": "objets-articles-01",
    "fr": "sac",
    "en": "bag",
+   "emoji": "🎒",
    "syllables": [
     "sac"
    ],
@@ -66,6 +67,7 @@
    "id": "objets-articles-02",
    "fr": "livre",
    "en": "book",
+   "emoji": "📖",
    "syllables": [
     "livre"
    ],
@@ -80,6 +82,7 @@
    "id": "objets-articles-03",
    "fr": "cahier",
    "en": "exercise book",
+   "emoji": "📓",
    "syllables": [
     "ca",
     "hier"
@@ -95,6 +98,7 @@
    "id": "objets-articles-04",
    "fr": "téléphone",
    "en": "phone",
+   "emoji": "📱",
    "syllables": [
     "té",
     "lé",
@@ -111,6 +115,7 @@
    "id": "objets-articles-05",
    "fr": "stylo",
    "en": "pen",
+   "emoji": "🖊️",
    "syllables": [
     "sty",
     "lo"
@@ -126,6 +131,7 @@
    "id": "objets-articles-06",
    "fr": "crayon",
    "en": "pencil",
+   "emoji": "✏️",
    "syllables": [
     "cra",
     "yon"
@@ -156,6 +162,7 @@
    "id": "objets-articles-08",
    "fr": "carte d'identité",
    "en": "ID card",
+   "emoji": "🪪",
    "syllables": [
     "carte",
     "d'i",
@@ -188,6 +195,7 @@
    "id": "objets-articles-10",
    "fr": "ciseaux",
    "en": "scissors",
+   "emoji": "✂️",
    "syllables": [
     "ci",
     "seaux"
@@ -232,6 +240,7 @@
    "id": "objets-articles-13",
    "fr": "lunettes",
    "en": "glasses",
+   "emoji": "👓",
    "syllables": [
     "lu",
     "nettes"
@@ -247,6 +256,7 @@
    "id": "objets-articles-14",
    "fr": "clé",
    "en": "key",
+   "emoji": "🔑",
    "syllables": [
     "clé"
    ],
@@ -261,6 +271,7 @@
    "id": "objets-articles-15",
    "fr": "règle",
    "en": "ruler",
+   "emoji": "📏",
    "syllables": [
     "règle"
    ],
@@ -275,6 +286,7 @@
    "id": "objets-articles-16",
    "fr": "écouteurs",
    "en": "headphones",
+   "emoji": "🎧",
    "syllables": [
     "é",
     "cou",
@@ -306,6 +318,7 @@
    "id": "objets-articles-18",
    "fr": "ordinateur",
    "en": "computer",
+   "emoji": "💻",
    "syllables": [
     "or",
     "di",
@@ -339,6 +352,7 @@
    "id": "objets-articles-20",
    "fr": "souris",
    "en": "mouse",
+   "emoji": "🖱️",
    "syllables": [
     "sou",
     "ris"
