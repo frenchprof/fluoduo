@@ -1495,3 +1495,57 @@ h3.cahier-display { font-size: var(--fs-h3); }
 /* The colourless one. A stack where every row is coloured has no hierarchy —
    the reference makes THRILLS neutral on purpose, and so does this. */
 .fam-none     { --fam: var(--cahier-line-strong); --fam-ink: var(--cahier-ink-soft); --fam-wash: var(--cahier-paper-2); }
+
+/* ── The SIO sheet's numbered path (approved guidance flow, 2026-08-24) ────
+   The practice chain as steps, not equal flaps: done = ✓ + muted, the next
+   undone step accented in the PRACTICE family's colour (the chain IS the
+   FluOlin Practice sequence, whatever page the sheet opens over). Matches
+   flow-mocks/stop-sheet.html. */
+.sio-path { display: flex; flex-direction: column; gap: 8px; margin: 2px 0 14px; padding: 0; list-style: none; }
+.sio-path li { display: contents; }
+.sio-step {
+  display: flex; width: 100%; align-items: center; gap: 11px; text-align: left;
+  background: #fff; border: 2px solid rgba(42, 46, 110, 0.18);
+  border-radius: 13px; padding: 9px 13px;
+  box-shadow: 0 2px 0 rgba(42, 46, 110, 0.14);
+  text-decoration: none; cursor: pointer;
+}
+.sio-step-num {
+  width: 27px; height: 27px; flex: 0 0 auto; border-radius: 50%;
+  border: 2px solid var(--fam-practice-ink); color: var(--fam-practice-ink);
+  background: #fff; display: flex; align-items: center; justify-content: center;
+  font-family: var(--fluo-mono); font-weight: 800; font-size: 14px;
+}
+.sio-step-emoji { font-size: 19px; line-height: 1; }
+.sio-step-name { font-weight: 700; font-size: 15px; color: var(--fluo-ink, var(--cahier-ink)); }
+.sio-step-end { margin-left: auto; font-weight: 900; font-size: 17px; color: var(--fam-practice-ink); }
+.sio-step.is-done { opacity: 0.55; background: #f4f5ee; box-shadow: none; }
+.sio-step.is-done .sio-step-num { background: var(--fam-practice-ink); color: #fff; }
+.sio-step.is-here {
+  background: var(--fam-practice-wash);
+  border: 2.5px solid var(--fam-practice-ink);
+  box-shadow: 0 3px 0 var(--fam-practice-ink);
+}
+.sio-step.is-here .sio-step-num { background: var(--fam-practice-ink); color: #fff; }
+.sio-step.is-here .sio-step-name { font-weight: 800; }
+.sio-step.is-here .sio-step-end { font-size: 21px; line-height: 1; }
+
+/* ── Play's first-visit halo (approved guidance flow, 2026-08-24) ──────────
+   A chartreuse pulse ring on the ONE true "start here" button — only while
+   doneTotal === 0 (HomeDashboard adds the class), so it dies with the first
+   completed goal. Decorative, so it survives the litmus rule; the ring is a
+   ::after so the pill's own inline ledge shadow keeps working. */
+.fluo-play-halo { position: relative; }
+.fluo-play-halo::after {
+  content: ""; position: absolute; inset: -3px; border-radius: 9999px;
+  pointer-events: none;
+  animation: fluo-play-halo 2.2s ease-out infinite;
+}
+@keyframes fluo-play-halo {
+  0%   { box-shadow: 0 0 0 4px rgba(212, 242, 76, 0.85), 0 0 18px 6px rgba(199, 236, 47, 0.5); }
+  70%  { box-shadow: 0 0 0 13px rgba(212, 242, 76, 0), 0 0 26px 10px rgba(199, 236, 47, 0); }
+  100% { box-shadow: 0 0 0 13px rgba(212, 242, 76, 0), 0 0 26px 10px rgba(199, 236, 47, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fluo-play-halo::after { animation: none; box-shadow: 0 0 0 4px rgba(212, 242, 76, 0.6); }
+}

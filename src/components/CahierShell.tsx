@@ -592,8 +592,12 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     ...(curatedDeck && toPracticeSet(curatedDeck)
       ? [registryTab("dice", `/practice/dice/${collectionId}`)]
       : []),
-    registryTab("complete", `/practice/complete-it/${collectionId}`),
+    // 4Mémoire BEFORE iComplete (2026-08-24, approved guidance flow): the
+    // authored family order in activities.ts is dice → flip → complete, and
+    // the SIO sheet's numbered path renders this list's order — the two
+    // surfaces may not disagree (the 22 Aug flow walk caught them doing so).
     registryTab("flip", `/practice/flip-it/${collectionId}`),
+    registryTab("complete", `/practice/complete-it/${collectionId}`),
     ...(rainSet
       ? [registryTab("vocabularain", `/games/vocabularain/${collectionId.replace("-letris", "")}`)]
       : []),

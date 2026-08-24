@@ -904,3 +904,92 @@ purple band, `0/18` chip), `02-drill-finish-next.png` (ConjugaZone's finished
 table: ✓ chip → `1 🔮 SpecuLearn` → primary Next ›, Repeat/Back quiet),
 `03-gameover-next.png` (NumBus GameOver, 3 misses: CORRIGER MAINTENANT
 primary, `7 🔮 SpecuLearn` chip + secondary Next ›).
+
+## Patch — the approved guidance flow, part 1: the numbered path + the tour fix (24 Aug)
+
+Finished a prior agent's partial edits (killed mid-task by a server error;
+`SioModal.tsx`, `FirstTour.tsx`, `HomeDashboard.tsx`, `AuthGate.tsx`,
+`CahierShell.tsx`'s `deckActivityTabs` order, and the `globals.css` rules were
+already written). `git diff` first, confirmed every requirement was already
+coded correctly — nothing needed rewriting, only proving and checking.
+`UnitSection.tsx` needed no change: it just passes `popupActivityTabs()`'s
+list straight to `SioModal`, which already does the numbering.
+
+- **The SIO sheet's practice chain renders as a numbered vertical path**
+  (`SioModal.tsx`'s `CHAIN_KEYS`): Pre-Test → SpecuLearn → Memo → EtuDice →
+  4Mémoire → iComplete, filtered to whichever of those six exist for the
+  open SIO's deck (confirmed on SIO-001, which has no SpecuLearn/EtuDice —
+  the path renders 4 steps, not 6, with no gap). Number chip + emoji + name;
+  done reads `activityLedger.accuracyFor()` off the device ledger (pretest
+  folds into the speculearn key, matching how the ledger itself already
+  folds it); done = ✓ + 55%-opacity muted, the first undone step gets the
+  practice family's wash/ink + a `›`. No prose added — every string is an
+  existing registry label or a single glyph.
+- **FirstTour rebuilt to 3 steps** ending ON Play, replacing the stale
+  4-step tour (❓ HELP, ❓ Guide, a desktop drag step, "Pre-Test first, then
+  the cards" — none of it still true). Step 2 spotlights the bottom bar;
+  its Next button sits **above** `--bottombar-floor`, and the whole overlay
+  now portals to `document.body` at `z-[100]` (was `z-[80]` inside the page
+  tree while the bar sits at `z-90` — the exact bug the flow walk
+  reproduced, "Skills tab eats the Next tap"). Step 3 ("Start here") is a
+  finish card whose one button IS Play, computed the same way the hero pill
+  computes it (`nextSioId(loadProgress())`) — the tour finally hands off to
+  the thing it's teaching instead of ending on itself. The unit tour's
+  "Pre-Test first, then the cards, then the Lesson" line (which contradicted
+  the path's authored order) is gone too.
+- **`deckActivityTabs`**: 4Mémoire now precedes iComplete, matching
+  `activities.ts`'s authored family order — the SIO popup's flap order and
+  the numbered path can no longer disagree (flow-walk finding: they did).
+- **Play's first-visit halo**: `fluo-play-halo` class added to the hero
+  Play pill only while `doneTotal === 0`; a `::after` pulse ring (CSS
+  `@keyframes`, `prefers-reduced-motion` respected — falls back to a static
+  ring, no animation). Dies with the first completed goal.
+- **AuthGate "Back to the path"**: was a hard `href="/"`, dropping a learner
+  who unlocked from a stop's sheet onto Home instead of back at the sheet.
+  Now `history.back()` when there's history to go back to, `/` fallback
+  otherwise. "Locked routes keep their page chrome where feasible without
+  touching DrillShell" — checked, not built further: routes that already
+  nest `AuthGate` inside their own `CahierShell` (e.g. `decks/[id]/study`)
+  already keep chrome regardless of sign-in state; the routes that don't
+  (pretest/practice/lesson/game pages) are the "full-screen in DrillShell"
+  pattern, where chrome is DrillShell's to add — out of this session's file
+  scope by the task's own boundary, and now that part 2 has DrillShell
+  rendering inside the cahier notebook (see the section above), those
+  routes will get real chrome once `AuthGate` moves inside that wrapper
+  rather than around it. Left for whoever owns that file next.
+
+**A real bug found and fixed along the way, not in any file this session
+owns**: the Turbopack dev server (`next dev`, no flag — Next 16.2.7) silently
+dropped every CSS rule in `globals.css` from `.sio-path` to EOF (the numbered
+path, the halo, all of it) on every request, reproducibly, even after
+deleting `.next` and a from-scratch restart — while `next dev --webpack` and
+a direct `postcss([require("@tailwindcss/postcss")()])` run on the same file
+both include the rules correctly (verified: `getComputedStyle` showed
+`border-radius: 0px` under Turbopack, `13px` under webpack, byte-identical
+source). Not a source bug — confirmed by loading the file standalone through
+`lightningcss` and through the real `@tailwindcss/postcss` plugin, both
+kept every rule. Screenshots below are shot on `next dev --webpack -p 3777`
+for this reason; the dev-only Turbopack truncation should be flagged to
+whoever next hits inexplicably-missing styles at the tail of `globals.css`
+on the default dev server.
+
+**Checks**: `npx tsc --noEmit` clean; all 25 `verify/*.py` suites green.
+Dev server on :3777 (`--webpack`, see above); `REQUIRE_SIGN_IN` flipped to
+`false` for screenshots — restored to `true` (found already restored by
+part 2's concurrent session; confirmed via `git diff` showing no net change
+before finishing).
+
+**Screenshots + the tap-proof** (`scratchpad/flow-build/`):
+`04-sio-path-full-chain.png` (SIO-041, ledger seeded so steps 1–3 read done
+✓ and step 4 EtuDice is next-undone accented — the full 6-step order visible
+at once), `02-sio-path.png` (SIO-001 cold, 4 of 6 steps — proves the filter),
+`01-home-halo.png` / `06-halo-zoom.png` (Play's ring, forced to a mid-cycle
+frame for the zoom since the animation fades most of each 2.2s loop),
+`03a`/`03b`/`03c-tour-step*.png` (the 3-step tour). The click proof is not
+just visual placement: a Playwright script measured the Next button's box
+against `nav.cahier-bottombar`'s box (button bottom 741.8px, bar top 786px —
+clear), ran `elementFromPoint` at the button's centre (returned the button
+itself, not the bar), then called Playwright's own `.click()` — which
+performs its own actionability hit-test and fails if another element would
+receive the event — and confirmed the tour actually advanced to the "Start
+here" card afterward. All four checks passed; script + full JSON output description above.

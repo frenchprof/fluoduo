@@ -73,7 +73,21 @@ export default function AuthGate({
           {busy ? "Signing in…" : "Continue with Google"}
         </button>
         {error && <p className="mt-2 text-xs font-bold text-rose-600">Sign-in didn&rsquo;t complete — please try again.</p>}
-        {!compact && <a href="/" className="mt-3 inline-block text-xs font-bold text-[color:var(--fluo-ink-soft)] hover:underline">← Back to the path</a>}
+        {/* Back = where you CAME FROM (2026-08-24): the hard "/" href dropped
+            a learner who arrived from a stop's sheet onto Home instead of
+            back at the sheet. history.back() when there is history; / else. */}
+        {!compact && (
+          <button
+            type="button"
+            onClick={() => {
+              if (window.history.length > 1) window.history.back();
+              else window.location.assign("/");
+            }}
+            className="mt-3 inline-block text-xs font-bold text-[color:var(--fluo-ink-soft)] hover:underline"
+          >
+            ← Back to the path
+          </button>
+        )}
       </div>
     </div>
   );

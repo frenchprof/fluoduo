@@ -23,6 +23,7 @@ import type { Sio } from "@/content/sios";
 import type { Collection } from "@/lib/collections/schema";
 import { deckActivityTabs } from "@/components/CahierShell";
 import AuthGate from "@/components/AuthGate";
+import { accuracyFor, activityKeyFor, loadLedger, LEDGER_EVENT, type Ledger } from "@/lib/activityLedger";
 
 // Level-2 activities float INSIDE this popup (Dan, 2026-07-05: "can i ask for
 // level 2 to be all floating like the SIOs pretest") — the unit page stays
@@ -36,6 +37,26 @@ const GramMarathonContent = dynamic(() => import("@/app/practice/grammarathon/[c
  *  "lesson" left this set with patch 22 — the lesson is the full-screen card
  *  pager now, so its flap navigates like any non-embeddable activity. */
 const EMBEDDABLE = new Set(["say", "complete", "dice", "grammarathon"]);
+
+/**
+ * THE NUMBERED PATH (Dan-approved guidance flow, 2026-08-24). The practice
+ * chain — the activities.ts "sequence you actually do for one objective",
+ * Pre-Test leading — renders in the popup body as numbered steps instead of
+ * equal-weight flaps: done steps ✓ and muted, the next undone step accented
+ * in the practice family's colour. The 22 Aug flow walk found the popup
+ * carried exactly ONE ordering cue ("try it first") and named neither
+ * SpecuLearn nor EtuDice; the path is the authored order made visible.
+ * Everything not in the chain (games, review, skills extras) stays a flap.
+ */
+const CHAIN_KEYS = ["pretest", "speculearn", "lesson", "dice", "flip", "complete"] as const;
+
+/** Step done-ness reads the device ledger exactly as the Index's cells do:
+ *  attempted = accuracyFor() non-null, keyed by the same route→registry
+ *  mapping (activityKeyFor). The inline Pre-Test has no href; the ledger
+ *  itself folds pretests into the speculearn row, so that is its key. */
+function ledgerKeyFor(t: PopupTab): string | undefined {
+  return activityKeyFor(t.href) ?? (t.key === "pretest" ? "speculearn" : t.key);
+}
 
 export type PopupTab = { key: string; label: string; emoji: string; href?: string; active?: boolean; hint?: string };
 
@@ -140,6 +161,26 @@ export default function SioModal({
   const hueOf = (i: number) => TAB_HUES[i % TAB_HUES.length];
   const closeRef = useRef<HTMLButtonElement>(null);
   const [view, setView] = useState("main");
+  // This device's tally — refreshed live so a step earns its ✓ while the
+  // popup is still open (the inline pretest grades right here).
+  const [ledger, setLedger] = useState<Ledger>(() => loadLedger());
+  useEffect(() => {
+    const refresh = () => setLedger(loadLedger());
+    window.addEventListener(LEDGER_EVENT, refresh);
+    return () => window.removeEventListener(LEDGER_EVENT, refresh);
+  }, []);
+
+  // Split the one flap list: the practice chain becomes the numbered path,
+  // in CHAIN_KEYS order; the rest stay flaps.
+  const chain = CHAIN_KEYS.map((k) => (tabs ?? []).find((t) => t.key === k)).filter(
+    (t): t is PopupTab => !!t,
+  );
+  const flaps = (tabs ?? []).filter((t) => !CHAIN_KEYS.includes(t.key as (typeof CHAIN_KEYS)[number]));
+  const stepDone = (t: PopupTab) => {
+    const k = ledgerKeyFor(t);
+    return !!k && accuracyFor(ledger, k, sio.id) !== null;
+  };
+  const nextKey = chain.find((t) => !stepDone(t))?.key;
 
   const embeds: Record<string, ReactNode> = deck
     ? {
@@ -208,10 +249,58 @@ export default function SioModal({
               </button>
             </div>
           </div>
-          {/* narrow screens: the flaps as a row under the header */}
-          {tabs && tabs.length > 0 && (
+          {/* The numbered path — the practice chain in authored order. */}
+          {chain.length > 0 && (
+            <ol className="sio-path" aria-label="Practice path">
+              {chain.map((t, i) => {
+                const done = stepDone(t);
+                const here = t.key === nextKey;
+                const cls = `sio-step${done ? " is-done" : ""}${here ? " is-here" : ""}`;
+                const body = (
+                  <>
+                    <span className="sio-step-num" aria-hidden>{i + 1}</span>
+                    <span className="sio-step-emoji" aria-hidden>{t.emoji}</span>
+                    <span className="sio-step-name">{t.label}</span>
+                    {done ? (
+                      <span className="sio-step-end">✓</span>
+                    ) : here ? (
+                      <span className="sio-step-end" aria-hidden>›</span>
+                    ) : null}
+                  </>
+                );
+                // Same routing contract as the flaps: embeddables switch the
+                // popup body in place; the inline Pre-Test returns to it; the
+                // rest navigate out.
+                if (deck && EMBEDDABLE.has(t.key) && embeds[t.key]) {
+                  return (
+                    <li key={t.key}>
+                      <button type="button" className={cls} onClick={() => setView(t.key)}>{body}</button>
+                    </li>
+                  );
+                }
+                if (t.key === "pretest" && !t.href) {
+                  return (
+                    <li key={t.key}>
+                      <button type="button" className={cls} onClick={() => setView("main")}>{body}</button>
+                    </li>
+                  );
+                }
+                return (
+                  <li key={t.key}>
+                    {t.href ? (
+                      <Link href={t.href} className={cls}>{body}</Link>
+                    ) : (
+                      <span className={cls}>{body}</span>
+                    )}
+                  </li>
+                );
+              })}
+            </ol>
+          )}
+          {/* narrow screens: the remaining flaps as a row under the path */}
+          {flaps.length > 0 && (
             <div className="mb-3 flex flex-wrap gap-1.5 sm:hidden">
-              {tabs.map((t, i) => (
+              {flaps.map((t, i) => (
                 <Flap key={t.key} tab={t} hue={hueOf(i)} className="!rounded-md !px-2 !py-1 text-xs" {...flapProps(t)} />
               ))}
             </div>
@@ -221,10 +310,11 @@ export default function SioModal({
           )}
         </div>
         </div>
-        {/* wide screens: flaps poke off the popup's right edge, home-page style */}
-        {tabs && tabs.length > 0 && (
+        {/* wide screens: the non-chain flaps poke off the popup's right edge,
+            home-page style — the chain itself lives in the body's path */}
+        {flaps.length > 0 && (
           <nav className="mt-14 hidden shrink-0 flex-col gap-2 sm:flex" aria-label="Practice activities">
-            {tabs.map((t, i) => (
+            {flaps.map((t, i) => (
               <Flap key={t.key} tab={t} hue={hueOf(i)} {...flapProps(t)} />
             ))}
           </nav>
