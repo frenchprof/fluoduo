@@ -116,3 +116,6 @@ jobs:
 
       - name: "Family identity — the second colour axis, contrast recomputed (21 Aug)"
         run: python3 verify/verify33-family.py
+
+      - name: "Possessives — the whole paradigm drilled, the prompt no longer prints the answer (24 Aug)"
+        run: python3 verify/verify35-possessives.py
