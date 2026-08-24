@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="une agrafeuse">
-  <rect x="20" y="96" width="120" height="14" rx="4" fill="#495564" stroke="#2b2b2b" stroke-width="4"/>
-  <path d="M28 96 L28 70 Q28 60 40 58 L128 46 Q140 44 140 56 L140 96 Z" fill="#e6484f" stroke="#2b2b2b" stroke-width="5" stroke-linejoin="round"/>
-  <circle cx="132" cy="58" r="6" fill="#2b2b2b"/>
-  <path d="M40 62 L120 52" stroke="#ffffff" stroke-width="4" opacity="0.35" stroke-linecap="round"/>
-</svg>
