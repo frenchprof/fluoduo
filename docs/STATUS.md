@@ -93,6 +93,17 @@ Only ONE agent edits this file at a time; say so in your commit.
   ensoleillé » fourth weather frame, and « canadien » (the U1 table's -ien
   example — the deck's tunisien stands in). tsc, eslint and all 25 verify
   suites green.
+- 24 Aug: **approved surface #3 executed — the activity "xPlain" is renamed
+  "Memo" throughout the site** (Dan's 22 Aug vote). Display rename only: the
+  registry name in `src/content/activities.ts` (`key: "lesson"`) is now
+  `"Memo"`, which propagates to the Menu tile, rail flap, popup flaps, Index
+  pill and every other surface that reads the registry; the key, routes and
+  identifiers are untouched. Comments describing the learner-visible name
+  updated (CahierShell, RailGroups, MenuSplash, activities page, indexMatrix);
+  verify pins updated with dated comments (verify19, verify24, verify29-rail);
+  About page's "Mémo" normalised to "Memo" (English chrome). No ÉcouTexte
+  "Memo" topic exists — no collision. `out/` static export still says xPlain
+  until the next build/deploy. tsc + all verify suites green.
 - **22 Aug (this session): the colour + retention programme is MERGED TO `main`
   and awaiting deploy.** `main` = `2a729fb`. Contains: the seven `--dopa-*`
   roles + three accessibility fixes; the `--gram-*` gender mapping (98 sites,
@@ -183,6 +194,101 @@ Only ONE agent edits this file at a time; say so in your commit.
   compose cell), later banks fly their own title+emoji with unique keys.
   tsc clean, verify23/24/28-trackd green, eslint clean on touched files.
   Audit row 3.1 marked RESOLVED. NOT deployed.
+- 24 Aug (content agent): **SpecuLearn opened for colors, transport,
+  objets-articles** per Dan's approved item sheet (SPECULEARN_ITEMS.md) +
+  his three same-day amendments. Playable: colors 11/12 (colors-12 le beige
+  dropped — no swatch exists) · transport 9/12 (the three `prendre le/la/l'…`
+  verb phrases excluded — image-twins AND the only way to keep the deck one
+  grammatical category, en/à prepositional phrases only) · objets-articles
+  20/20 (all playable: the six items with no honest emoji — gomme,
+  agrafeuse, portefeuille, trousse, mouchoirs, passeport — got purpose-made
+  flat SVGs under `public/objets-articles/` instead of a forced emoji stand-
+  in, so nothing needed banning). New `SPECULEARN_ITEM_IMAGES` (id → SVG
+  path) in speculearnReady.ts lets a deck MIX emoji and per-item images —
+  chosen over an aliments-style whole-deck photo bank because it changes
+  less (the DevItem type already carried an optional `img` alongside
+  `emoji`; only buildItems()'s filter/map needed touching) and the other 14
+  objets items already had an honest emoji. New `SPECULEARN_PROMPT_FRAME`
+  (deckId → question, transport: "Tu y vas comment ?") renders lang="fr"
+  above the options — the en/à answers are responses to that question, not
+  free-floating nouns. Category-purity comment + exclusion reasons live
+  next to `SPECULEARN_EXCLUDED_ITEMS`. Emoji added to colors.json (11),
+  transport.json (9), objets-articles.json (14) — only where PLAY, never on
+  colors-12 or the three prendre-* items. tsc clean, all verify suites
+  green (verify-grading, verify-reports, verify18–34), check:short/
+  check:textgen green. Screenshots (390×844, port 3777, REQUIRE_SIGN_IN
+  already false from a concurrent session — not touched): colors shows
+  swatches with beige absent; transport shows the « Tu y vas comment ? »
+  frame; objets-articles rounds show the SVGs (agrafeuse/trousse/gomme/
+  passeport/mouchoirs/portefeuille all observed rendering distinctly from
+  their emoji deckmates, incl. the passeport booklet vs 🪪 carte
+  d'identité). NOT deployed.
+
+- **24 Aug (Cursor session, STATUS holder for this edit): reconciliation + Dan's
+  rulings on the content flags.** No code changed. Three corrections to this file:
+  (a) the "NOT deployed" tails above are STALE — `main`, `origin/main` and
+  `live/main` are all **`919a1c2`** (PR #33), so everything through the syllabus
+  fix wave and the e-carte postale IS deployed; (b) the Deploy section below still
+  cited 22 Aug / `1a29278` — corrected; (c) two CONTENT_FLAGS reds were already
+  closed by the 23 Aug fixes and had not been struck (boissons folded into
+  `aliments.json` as `col:boissons`, so `check-textgen` is green on all five units;
+  the weather fourth frame shipped as items 45–47).
+  Independently re-verified this session: **all 25 verify suites exit 0**, `tsc`
+  clean on `src` (the errors a local run shows come from 16 gitignored `patch*/`
+  scratch dirs, not the tree), eslint **115 errors / 20 warnings** — matching this
+  file's own figure.
+  **Dan's five rulings, 24 Aug** (detail + reasoning in
+  `docs/CONTENT_FLAGS_2026-08-23.md`):
+  1. « Il fait du soleil » stays WRONG — the Atelier corrigé is the examined
+     standard. No change.
+  2. `frequence`: « parfois » and « quelquefois » are **presented together as
+     equivalent** — the drill accepts either, the lesson shows them side by side.
+     TO BUILD.
+  3. `possessives` (SIO-022): the gap is deck-vs-**SIO**, not deck-vs-book — the
+     deck drills three first-person columns while SIO-022's competence asks for
+     the full paradigm by gender/number. **BUILT the same day — see the 24 Aug
+     possessives entry below.** SIO text untouched (freeze holds).
+  4. SpecuLearn: real count is **15 served / 29 unserved**, not 38. The 21
+     grammar/function decks are **permanently excluded** (undrawable); emoji
+     authoring approved for colors, core-nouns, days, matieres, objets-articles,
+     professions, transport. TO BUILD.
+  5. Pre-tests absent on the 6 production ateliers: **by design**, assessed in
+     class. Flag closed.
+  Still unassigned and the one user-facing failure on the board: **Dan cannot read
+  the Index** (22 Aug) — the U0–U4 cell grid and the per-row circles carry no key.
+
+- **24 Aug: possessives drill the whole paradigm (SIO-022).** Dan said GO with all
+  six persons. **This supersedes ruling 3 in the entry above and the wording
+  committed in `ca761e9`, both of which said "re-gear the letris columns to
+  masculine/feminine/plural". That route was wrong** — `prefix` lives on the
+  letris *column*, never on the item, and seven consumers build their phrase from
+  `column.prefix + item.fr`, so the person would have had to move into `item.fr`
+  and put « ton stylo » on the tile face. Answer on the front of the question.
+  Rejected; **do not re-propose**. The letris board is untouched (three columns,
+  MON/MA/MES, prefixes intact).
+  What shipped instead follows the `nationalities` pattern already in the repo
+  (`item.nat` + `NAT_SUBJECT`): each of the 21 `col:`-tagged nouns expands into
+  six Complete It questions, the prompt gives the English cue (« your (sg) ·
+  pen ») and the learner produces « ton stylo ». **136 questions, up from 31.**
+  Two defects closed at once — the paradigm was 1st-person-only, AND the prompt
+  used to *print* the possessive (« mon book » → type « mon livre »), so nothing
+  was selected. That giveaway is gone; the two behaviours are not both live.
+  The forms are derived rather than stored (possessives are regular; the noun's
+  agreement class is already declared by its `col:` tag), so **no schema field was
+  added** — the opt-in is the deck's own column declaration, and
+  `verify/verify35-possessives.py` (39 assertions) is the tripwire that fails if a
+  rename ever switches the expansion off. It is wired into `verify.yml`, per that
+  file's own rule that a check CI never runs is not a check. The "(m)"/"(f)" gloss
+  is stripped from the cue — that marker IS the answer — and the gender is offered
+  on the ? ladder instead, per the litmus test (help on demand, never inline).
+  Verified: **26 verify suites green** (the 25 that existed plus this one),
+  `check-textgen` green on all five units, `tsc` clean on `src`, eslint **still
+  115 errors / 19 warnings** (errors unchanged; one warning fewer, a dead `isNat`
+  went with the de-duplication).
+  Noticed in passing, NOT fixed: `verify/verify31-wordrill.py` exists but no CI
+  step runs it — the same gap the Reports check once had.
+  Still TO BUILD from the 24 Aug rulings: the parfois/quelquefois equivalence
+  and the SpecuLearn emoji for the seven concrete-noun decks.
 
 ## Programme — done
 
@@ -240,8 +346,11 @@ Shipped ≈ 149 of ~150 in-scope units.
 
 ## Deploy
 
-**Deployed 22 Aug: `dckg/fluo` main `ccf5271..1a29278`.** Cloudflare Pages
-(`fluolingo-dot-com` → fluolingo.com) builds on that push.
+**Deployed 23 Aug: `dckg/fluo` main is `919a1c2` (PR #33)** — the same commit as
+`origin/main` and the local tree, confirmed 24 Aug. There is no deploy debt.
+Cloudflare Pages (`fluolingo-dot-com` → fluolingo.com) builds on that push.
+(Earlier revisions of this section stopped at 22 Aug / `1a29278`; PRs #32 and #33
+landed and were pushed after it was written.)
 
 The deploy is Dan's step, not an agent's: production is a DIFFERENT repo, and a
 Claude Code session that already has `frenchprof` sources cannot add
@@ -815,3 +924,141 @@ Branch `pm/bugs-data-truth` (on top of `pm/integration`), check = `verify/verify
 
 - Peers builds, `main` is the sole push path; every patch = verify script + screenshot.
 - Dan's litmus test (AGENTS.md). Grammar guard-rails (no imperative outside SIO-008).
+
+## Patch — the approved guidance flow, part 2: the notebook + one Next › (24 Aug)
+
+Finished a prior agent's partial edits (killed mid-task; `src/lib/nextStep.ts`,
+`DrillShell.tsx`, `GameOver.tsx`, `verify20.py` already carried its work) —
+did not start over, closed the two gaps it left open:
+
+- **DrillShell now lives inside the cahier notebook** — `cahier-foolscap` +
+  spiral binding + a `PageBand` on top (family colour via `fam-<key>`, the
+  drill's own progress figure moved into the band's ONE chip so it is never
+  printed twice), phone bottom bar kept, 100dvh/fixed-footer intact. This part
+  was already done. Games (`GameFrame`) untouched, as scoped.
+- **`nextStep.ts`** (114 lines, already complete) resolves the next undone
+  step of a stop's practice chain — Pre-Test/SpecuLearn → Memo → EtuDice →
+  4Mémoire → iComplete, in `activities.ts` registry order, "undone" read off
+  `activityLedger.accuracyFor` — or the next stop's first step via
+  `continuer.nextSioId` when the chain is clear. Anchors on `sioId` →
+  `collectionId`'s SIO → (deckless surfaces: ConjugaZone, a spoken-number
+  game) the learner's current stop on the path. Verified correct as written;
+  no logic changes needed.
+- **Finished the two callers that still had no `activity`/`deck`/`finish`
+  wiring**, so the band and the single « Next › » actually appear where Dan
+  approved them:
+  - `src/app/lessons/pager/LessonPager.tsx` — `activity="lesson"`,
+    `deck={collectionId}`, and `finish={{ repeat: build }}` on the end card;
+    dropped its own Continue/↻ Try again buttons now that the shell's finish
+    row owns that footer.
+  - `src/app/conjugaison/page.tsx` — `activity="conjugaison"` (deckless —
+    verb picker, not one SIO), `finish={{ repeat: restart }}` once the run
+    reaches the reward table (the table screen IS the finish screen here);
+    `↻ Again` retired in favour of the shell's Repeat.
+- GameOver.tsx was already complete: misses-first ordering (CORRIGER
+  MAINTENANT stays primary with misses queued), « Next › » promoted to
+  primary only on a clean run («✓ Sans faute»). Confirmed live in the
+  GameOver screenshot below (3 misses → CORRIGER MAINTENANT primary, Next ›
+  secondary).
+
+**Checks**: `npx tsc --noEmit` clean; all 25 `verify/*.py` suites green (incl.
+`verify20.py`, `verify23.py`, `verify28-trackd.py` — none needed a fix, none
+pinned stale chrome). Dev server on :3777; `REQUIRE_SIGN_IN` flipped to
+`false` for screenshots, restored to `true` before finishing (no net diff on
+`authConfig.ts`).
+
+**Screenshots** (`scratchpad/flow-build/`):
+`01-conjugaison-notebook.png` (ConjugaZone drilling inside the notebook,
+purple band, `0/18` chip), `02-drill-finish-next.png` (ConjugaZone's finished
+table: ✓ chip → `1 🔮 SpecuLearn` → primary Next ›, Repeat/Back quiet),
+`03-gameover-next.png` (NumBus GameOver, 3 misses: CORRIGER MAINTENANT
+primary, `7 🔮 SpecuLearn` chip + secondary Next ›).
+
+## Patch — the approved guidance flow, part 1: the numbered path + the tour fix (24 Aug)
+
+Finished a prior agent's partial edits (killed mid-task by a server error;
+`SioModal.tsx`, `FirstTour.tsx`, `HomeDashboard.tsx`, `AuthGate.tsx`,
+`CahierShell.tsx`'s `deckActivityTabs` order, and the `globals.css` rules were
+already written). `git diff` first, confirmed every requirement was already
+coded correctly — nothing needed rewriting, only proving and checking.
+`UnitSection.tsx` needed no change: it just passes `popupActivityTabs()`'s
+list straight to `SioModal`, which already does the numbering.
+
+- **The SIO sheet's practice chain renders as a numbered vertical path**
+  (`SioModal.tsx`'s `CHAIN_KEYS`): Pre-Test → SpecuLearn → Memo → EtuDice →
+  4Mémoire → iComplete, filtered to whichever of those six exist for the
+  open SIO's deck (confirmed on SIO-001, which has no SpecuLearn/EtuDice —
+  the path renders 4 steps, not 6, with no gap). Number chip + emoji + name;
+  done reads `activityLedger.accuracyFor()` off the device ledger (pretest
+  folds into the speculearn key, matching how the ledger itself already
+  folds it); done = ✓ + 55%-opacity muted, the first undone step gets the
+  practice family's wash/ink + a `›`. No prose added — every string is an
+  existing registry label or a single glyph.
+- **FirstTour rebuilt to 3 steps** ending ON Play, replacing the stale
+  4-step tour (❓ HELP, ❓ Guide, a desktop drag step, "Pre-Test first, then
+  the cards" — none of it still true). Step 2 spotlights the bottom bar;
+  its Next button sits **above** `--bottombar-floor`, and the whole overlay
+  now portals to `document.body` at `z-[100]` (was `z-[80]` inside the page
+  tree while the bar sits at `z-90` — the exact bug the flow walk
+  reproduced, "Skills tab eats the Next tap"). Step 3 ("Start here") is a
+  finish card whose one button IS Play, computed the same way the hero pill
+  computes it (`nextSioId(loadProgress())`) — the tour finally hands off to
+  the thing it's teaching instead of ending on itself. The unit tour's
+  "Pre-Test first, then the cards, then the Lesson" line (which contradicted
+  the path's authored order) is gone too.
+- **`deckActivityTabs`**: 4Mémoire now precedes iComplete, matching
+  `activities.ts`'s authored family order — the SIO popup's flap order and
+  the numbered path can no longer disagree (flow-walk finding: they did).
+- **Play's first-visit halo**: `fluo-play-halo` class added to the hero
+  Play pill only while `doneTotal === 0`; a `::after` pulse ring (CSS
+  `@keyframes`, `prefers-reduced-motion` respected — falls back to a static
+  ring, no animation). Dies with the first completed goal.
+- **AuthGate "Back to the path"**: was a hard `href="/"`, dropping a learner
+  who unlocked from a stop's sheet onto Home instead of back at the sheet.
+  Now `history.back()` when there's history to go back to, `/` fallback
+  otherwise. "Locked routes keep their page chrome where feasible without
+  touching DrillShell" — checked, not built further: routes that already
+  nest `AuthGate` inside their own `CahierShell` (e.g. `decks/[id]/study`)
+  already keep chrome regardless of sign-in state; the routes that don't
+  (pretest/practice/lesson/game pages) are the "full-screen in DrillShell"
+  pattern, where chrome is DrillShell's to add — out of this session's file
+  scope by the task's own boundary, and now that part 2 has DrillShell
+  rendering inside the cahier notebook (see the section above), those
+  routes will get real chrome once `AuthGate` moves inside that wrapper
+  rather than around it. Left for whoever owns that file next.
+
+**A real bug found and fixed along the way, not in any file this session
+owns**: the Turbopack dev server (`next dev`, no flag — Next 16.2.7) silently
+dropped every CSS rule in `globals.css` from `.sio-path` to EOF (the numbered
+path, the halo, all of it) on every request, reproducibly, even after
+deleting `.next` and a from-scratch restart — while `next dev --webpack` and
+a direct `postcss([require("@tailwindcss/postcss")()])` run on the same file
+both include the rules correctly (verified: `getComputedStyle` showed
+`border-radius: 0px` under Turbopack, `13px` under webpack, byte-identical
+source). Not a source bug — confirmed by loading the file standalone through
+`lightningcss` and through the real `@tailwindcss/postcss` plugin, both
+kept every rule. Screenshots below are shot on `next dev --webpack -p 3777`
+for this reason; the dev-only Turbopack truncation should be flagged to
+whoever next hits inexplicably-missing styles at the tail of `globals.css`
+on the default dev server.
+
+**Checks**: `npx tsc --noEmit` clean; all 25 `verify/*.py` suites green.
+Dev server on :3777 (`--webpack`, see above); `REQUIRE_SIGN_IN` flipped to
+`false` for screenshots — restored to `true` (found already restored by
+part 2's concurrent session; confirmed via `git diff` showing no net change
+before finishing).
+
+**Screenshots + the tap-proof** (`scratchpad/flow-build/`):
+`04-sio-path-full-chain.png` (SIO-041, ledger seeded so steps 1–3 read done
+✓ and step 4 EtuDice is next-undone accented — the full 6-step order visible
+at once), `02-sio-path.png` (SIO-001 cold, 4 of 6 steps — proves the filter),
+`01-home-halo.png` / `06-halo-zoom.png` (Play's ring, forced to a mid-cycle
+frame for the zoom since the animation fades most of each 2.2s loop),
+`03a`/`03b`/`03c-tour-step*.png` (the 3-step tour). The click proof is not
+just visual placement: a Playwright script measured the Next button's box
+against `nav.cahier-bottombar`'s box (button bottom 741.8px, bar top 786px —
+clear), ran `elementFromPoint` at the button's centre (returned the button
+itself, not the bar), then called Playwright's own `.click()` — which
+performs its own actionability hit-test and fails if another element would
+receive the event — and confirmed the tour actually advanced to the "Start
+here" card afterward. All four checks passed; script + full JSON output description above.

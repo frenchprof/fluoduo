@@ -52,7 +52,9 @@ check(not dupe_names, "no activity name is used twice",
 
 # The old spellings must be gone from every surface that renders a flap.
 STALE = {
-    '"Lesson"': "xPlain", '"Flip It"': "4Mémoire",
+    # Dan, 2026-08-23: rename xPlain → Memo, approved surface #3 — the
+    # registry name for key "lesson" is now "Memo".
+    '"Lesson"': "Memo", '"Flip It"': "4Mémoire",
     '"Compose It"': "ComposeIt", '"Say It"': "WorDrill",
 }
 for lit, should in STALE.items():

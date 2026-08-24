@@ -5,6 +5,9 @@
  * For article decks (countries): graded against the full "article + noun" phrase.
  * For nationality decks: each country expands into 4 sub-questions (il est / elle
  * est / ils sont / elles sont) so all adjective forms are drilled.
+ * For the possessives deck: each noun expands into 6 sub-questions (my / your /
+ * his-her / our / your-pl / their) so the whole paradigm is drilled, not just
+ * the 1st person — see the POSS_* block below for why.
  *
  * Reached via its /practice/complete-it route and SioModal's "complete"
  * embed key. (Its old third door — DicedPractice's ★★ Intermédiaire level on
@@ -50,7 +53,78 @@ const NAT_FORMS = ["ms", "fs", "mp", "fp"] as const;
 type NatForm = typeof NAT_FORMS[number];
 const NAT_SUBJECT: Record<NatForm, string> = { ms: "il est", fs: "elle est", mp: "ils sont", fp: "elles sont" };
 
-type QEntry = { itemIdx: number; natForm?: NatForm };
+/* ── Possessives, SIO-022 (Dan's ruling, 24 Aug) ────────────────────────────
+ * SIO-022 asks the learner to "select the correct possessive (mon/ma/mes …
+ * son/sa/ses, + notre/votre/leur) by the noun's gender/number". The deck only
+ * ever showed the 1st person, and this drill used to PRINT it in the prompt
+ * ("mon book" → type "mon livre"), so nothing was selected at all. Each noun
+ * now expands across the six persons, exactly as a nationality expands across
+ * its four agreement forms.
+ *
+ * Unlike `nat`, the forms are DERIVED rather than stored: nationality
+ * adjectives are irregular, possessives are not, and the noun's agreement
+ * class is already declared by its `col:mon|ma|mes` Letris tag. The Letris
+ * board itself is untouched. */
+const POSS_PERSONS = ["je", "tu", "il", "nous", "vous", "ils"] as const;
+type PossPerson = typeof POSS_PERSONS[number];
+/** The cue shown in the prompt. English, because the French IS the answer. */
+const POSS_CUE: Record<PossPerson, string> = {
+  je: "my", tu: "your (sg)", il: "his / her", nous: "our", vous: "your (pl)", ils: "their",
+};
+type PossAgreement = "m" | "f" | "p";
+const POSS_FORM: Record<PossPerson, Record<PossAgreement, string>> = {
+  je:   { m: "mon",   f: "ma",    p: "mes" },
+  tu:   { m: "ton",   f: "ta",    p: "tes" },
+  il:   { m: "son",   f: "sa",    p: "ses" },
+  nous: { m: "notre", f: "notre", p: "nos" },
+  vous: { m: "votre", f: "votre", p: "vos" },
+  ils:  { m: "leur",  f: "leur",  p: "leurs" },
+};
+const POSS_COL_AGREEMENT: Record<string, PossAgreement> = { mon: "m", ma: "f", mes: "p" };
+
+/** A deck whose Letris columns are exactly mon/ma/mes has already declared
+ *  that its items are classified by possessive agreement — that existing
+ *  declaration is the opt-in, so no schema field was added.
+ *  verify/verify35-possessives.py asserts the expansion stays switched on for
+ *  the possessives deck, so a later column rename cannot silently restore
+ *  the giveaway. */
+function isPossessiveDeck(deck: Collection): boolean {
+  const keys = (deck.gameConfig?.letris?.columns ?? []).map((c) => c.key);
+  return keys.length === 3 && Object.keys(POSS_COL_AGREEMENT).every((k) => keys.includes(k));
+}
+function possAgreementOf(item: Item): PossAgreement | null {
+  const tag = item.tags?.find((t) => t.startsWith("col:"));
+  return tag ? POSS_COL_AGREEMENT[tag.slice(4)] ?? null : null;
+}
+/** ma/ta/sa become mon/ton/son before a vowel ("mon amie"). No noun in the
+ *  deck needs this today; it keeps a later addition from teaching "ma école".
+ *  h-initial feminines are deliberately NOT matched — h muet elides but h
+ *  aspiré does not, and telling them apart needs a per-item call. */
+const POSS_ELIDES = /^[aeiouâàéèêëîïôöûùü]/i;
+function possWord(person: PossPerson, agreement: PossAgreement, noun: string): string {
+  if (agreement === "f" && POSS_ELIDES.test(noun)) return POSS_FORM[person].m;
+  return POSS_FORM[person][agreement];
+}
+
+type QEntry = { itemIdx: number; natForm?: NatForm; possPerson?: PossPerson };
+
+/** One question list for the run. Nationality items expand ×4, possessive
+ *  nouns ×6, everything else stays 1:1. Shared by the initial build and
+ *  `restart` so the two can never drift apart. */
+function buildEntries(deck: Collection): QEntry[] {
+  const poss = isPossessiveDeck(deck);
+  const entries: QEntry[] = [];
+  practiceItems(deck).forEach((item, idx) => {
+    if (item.nat) {
+      NAT_FORMS.forEach((form) => entries.push({ itemIdx: idx, natForm: form }));
+    } else if (poss && possAgreementOf(item)) {
+      POSS_PERSONS.forEach((person) => entries.push({ itemIdx: idx, possPerson: person }));
+    } else {
+      entries.push({ itemIdx: idx });
+    }
+  });
+  return entries;
+}
 
 export default function CompleteItContent({ collectionId, embedded = false }: { collectionId: string; embedded?: boolean }) {
   useActivityPlay("complete-it", collectionId);
@@ -72,19 +146,9 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
   const inputRef = useRef<HTMLInputElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
 
-  const isNat = deck ? deck.items.some((it) => it.nat) : false;
-
   useEffect(() => {
     if (!deck) return;
-    const entries: QEntry[] = [];
-    practiceItems(deck).forEach((item, idx) => {
-      if (item.nat) {
-        NAT_FORMS.forEach((form) => entries.push({ itemIdx: idx, natForm: form }));
-      } else {
-        entries.push({ itemIdx: idx });
-      }
-    });
-    setOrder(shuffle(entries));
+    setOrder(shuffle(buildEntries(deck)));
   }, [deck]);
 
   useEffect(() => {
@@ -99,41 +163,52 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
   const entry = done ? null : order![i];
   const item = deck && entry != null ? deck.items[entry.itemIdx] : null;
   const natForm = entry?.natForm;
+  const possPerson = entry?.possPerson;
+  const possAg = possPerson && item ? possAgreementOf(item) : null;
+  /** A nationality or possessive question has no article to show and no
+   *  alternates — the inflected form IS the whole answer set. */
+  const inflected = !!natForm || !!possPerson;
 
   function getAnswer(): string {
     if (!item) return "";
     if (natForm && item.nat) return item.nat[natForm];
+    if (possPerson && possAg) return `${possWord(possPerson, possAg, item.fr)} ${item.fr}`;
     const art = articleOf(deck!, item);
     return frFull(art, item.fr);
   }
 
   const answer = getAnswer();
   const isRight = result === "perfect" || result === "good";
-  const art = (!natForm && item) ? articleOf(deck!, item) : "";
+  // Blank for possessive questions too: printing the article here is what
+  // used to hand the learner "mon" before they had chosen it.
+  const art = (!inflected && item) ? articleOf(deck!, item) : "";
 
   // The help ladder (Track D): rule-based rungs from the item, ONE ? control
   // in the shell bar, evidence + ReVue queue handled by the hook.
   const hints = useMemo(
     () => hintsFor("typed", {
       answer,
-      alternates: natForm ? [] : (item?.alt ?? []).map((a) => frFull(art, a)),
+      alternates: inflected ? [] : (item?.alt ?? []).map((a) => frFull(art, a)),
       article: art,
+      // On a possessive question the noun's gender IS the rule being tested,
+      // so it is the hint worth having — behind the ? button, never inline.
+      // Plurals fall through: gender does not pick mes/tes/ses.
+      gender: possAg === "m" || possAg === "f" ? possAg : item?.gender,
       pos: item?.pos,
-      gender: item?.gender,
       category: deck?.title,
       topic: sioTopic,
-      example: natForm ? undefined : item?.example,
+      example: inflected ? undefined : item?.example,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [answer, item?.id, natForm],
+    [answer, item?.id, natForm, possPerson],
   );
   const ladder = useHelpLadder({
     kind: "typed",
-    itemKey: item ? `${item.id}:${natForm ?? ""}` : null,
+    itemKey: item ? `${item.id}:${natForm ?? possPerson ?? ""}` : null,
     itemId: item?.id,
     surface: "complete-it",
     hints,
-    reveal: revealText({ answer, alternates: natForm ? [] : (item?.alt ?? []).map((a) => frFull(art, a)) }),
+    reveal: revealText({ answer, alternates: inflected ? [] : (item?.alt ?? []).map((a) => frFull(art, a)) }),
     enabled: !done && !!item,
   });
 
@@ -145,9 +220,9 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
   function check() {
     if (result !== null || retry || !item) return;
     // item.alt = alternative nouns; compose each with the article exactly
-    // like the main answer, so alts grade on equal footing (nat forms have
-    // no alts — the four forms ARE the answer set).
-    const accepted = natForm
+    // like the main answer, so alts grade on equal footing (an inflected
+    // question has no alts — the one agreeing form IS the answer set).
+    const accepted = inflected
       ? [answer]
       : [answer, ...(item.alt ?? []).map((a) => frFull(art, a))];
     const g = gradeAgainst(value, accepted);
@@ -184,12 +259,7 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
   }
 
   function restart() {
-    const entries: QEntry[] = [];
-    practiceItems(deck!).forEach((it, idx) => {
-      if (it.nat) NAT_FORMS.forEach((form) => entries.push({ itemIdx: idx, natForm: form }));
-      else entries.push({ itemIdx: idx });
-    });
-    setOrder(shuffle(entries));
+    setOrder(shuffle(buildEntries(deck!)));
     setI(0); setValue(""); setResult(null); setRetry(false); setScore({ ok: 0, total: 0 });
   }
 
@@ -201,6 +271,17 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
           {item.emoji && <span className="mr-1">{item.emoji}</span>}
           <span className="text-[color:var(--cahier-ink-soft)] font-medium">{NAT_SUBJECT[natForm]} </span>
           <span>{item.en}</span>
+        </p>
+      </>
+    ) : possPerson ? (
+      <>
+        <p className="text-[0.7rem] font-bold uppercase tracking-wider text-[color:var(--fluo-ink-soft)]">Write the possessive + the noun</p>
+        <p className="mt-1 text-xl font-black text-[color:var(--fluo-ink)]">
+          {item.emoji && <span className="mr-1">{item.emoji}</span>}
+          <span className="text-[color:var(--cahier-ink-soft)] font-medium">{POSS_CUE[possPerson]} </span>
+          {/* bareWord strips the "(m)"/"(f)"/"(pl)" gloss — that marker is the
+              answer to the question being asked. */}
+          <span>{bareWord(item.en)}</span>
         </p>
       </>
     ) : (
@@ -222,7 +303,7 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
       ))}
     </div>
   ) : null;
-  const why = item?.example && !natForm ? (
+  const why = item?.example && !inflected ? (
     <p lang="fr">
       <span className="font-bold">{item.example}</span>
       {item.exampleEn && <span className="ml-2 opacity-70">— {item.exampleEn}</span>}
@@ -231,13 +312,17 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
 
   // Word-bank distractors: a nationality question draws the same item's
   // other three forms (chinois/chinoise/chinoises — the exact confusions
-  // being drilled); everything else draws other items' full answers.
+  // being drilled), a possessive question the same noun under the other five
+  // persons (mon/ton/son/notre/votre/leur livre — likewise the real
+  // confusions); everything else draws other items' full answers.
   const bankPool =
     item && natForm && item.nat
       ? NAT_FORMS.filter((f) => f !== natForm).map((f) => item.nat![f])
-      : item
-        ? practiceItems(deck).filter((it) => it.id !== item.id).map((it) => frFull(articleOf(deck!, it), it.fr))
-        : [];
+      : item && possPerson && possAg
+        ? POSS_PERSONS.filter((p) => p !== possPerson).map((p) => `${possWord(p, possAg, item.fr)} ${item.fr}`)
+        : item
+          ? practiceItems(deck).filter((it) => it.id !== item.id).map((it) => frFull(articleOf(deck!, it), it.fr))
+          : [];
 
   // Typing above sm; word-bank tiles below it (patch 20–21) — one `value`,
   // so grading/XP/evidence never know which surface produced the string.
@@ -299,7 +384,7 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
                     {result !== "perfect" && <span lang="fr" className="text-[color:var(--fluo-ink)]">→ {answer}</span>}
                     <button type="button" onClick={() => speak(answer, "fr-FR")} className="ml-auto text-base opacity-70 hover:opacity-100" title="Hear it">🔊</button>
                   </div>
-                  {item.example && !natForm && (
+                  {item.example && !inflected && (
                     <p lang="fr" className="mt-2 text-sm italic text-[color:var(--fluo-ink-soft)]">{item.example}</p>
                   )}
                   <button ref={nextRef} type="submit" className="fluo-btn mt-3 w-full">{i + 1 >= total ? "Finish" : "Next →"}</button>

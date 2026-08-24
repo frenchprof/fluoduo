@@ -536,7 +536,8 @@ function trackSupplementOpen(
  * One name, one emoji, one hue per activity — from `src/content/activities.ts`.
  *
  * The deck flaps used to spell things their own way: "Lesson" here and
- * "xPlain" in the rail, "Flip It" here and "4Mémoire" there, "Compose It" here
+ * "xPlain" in the rail (renamed "Memo" 2026-08-23), "Flip It" here and
+ * "4Mémoire" there, "Compose It" here
  * and "ComposeIt" there. Same activity, two names, two surfaces. Now a rename
  * happens in the registry or it does not happen.
  *
@@ -581,7 +582,7 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     registryTab("lesson", lessons.length > 0 ? `/lessons/${lessons[0].slug}` : `/lessons/deck/${collectionId}`),
     // EtuDice and iComplete, back after the 2026-07-19 unification orphaned
     // them. Placed here so the row reads as FluOlin Goals' own sequence:
-    // xPlain -> EtuDice -> 4Memoire -> iComplete.
+    // Memo -> EtuDice -> 4Memoire -> iComplete.
     //
     // EtuDice is gated exactly like VocabulaRain and GramMarathon: only the 21
     // of 44 decks with >=2 letris columns can build a practice set, and on the
@@ -591,8 +592,12 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     ...(curatedDeck && toPracticeSet(curatedDeck)
       ? [registryTab("dice", `/practice/dice/${collectionId}`)]
       : []),
-    registryTab("complete", `/practice/complete-it/${collectionId}`),
+    // 4Mémoire BEFORE iComplete (2026-08-24, approved guidance flow): the
+    // authored family order in activities.ts is dice → flip → complete, and
+    // the SIO sheet's numbered path renders this list's order — the two
+    // surfaces may not disagree (the 22 Aug flow walk caught them doing so).
     registryTab("flip", `/practice/flip-it/${collectionId}`),
+    registryTab("complete", `/practice/complete-it/${collectionId}`),
     ...(rainSet
       ? [registryTab("vocabularain", `/games/vocabularain/${collectionId.replace("-letris", "")}`)]
       : []),

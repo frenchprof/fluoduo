@@ -239,10 +239,19 @@ check("e.defaultPrevented" in shell_code,
 # three-mode study table (shown/hidden/typing columns — a fourth interaction
 # grammar nobody else used) is gone; evidence ids (conj-<verb>-<person>) and
 # the phrases-complètes banks survive.
+#
+# 2026-08-24 (approved guidance flow): the pin loosened from "CahierShell not
+# in the file" — the SIGNED-OUT gate now renders inside the page's normal
+# chrome (band + bottom bar) instead of DrillShell's bare ✕-and-lock, so
+# CahierShell may appear, but ONLY on the REQUIRE_SIGN_IN branch. The drill
+# itself still runs in DrillShell.
 conj = strip_comments(read("src/app/conjugaison/page.tsx"))
-check("DrillShell" in conj and "CahierShell" not in conj,
+check("DrillShell" in conj,
       "ConjugaZone runs in DrillShell",
-      "ConjugaZone is not on DrillShell / still wraps CahierShell")
+      "ConjugaZone is not on DrillShell")
+check("<CahierShell" not in conj or "REQUIRE_SIGN_IN && !user" in conj,
+      "CahierShell appears only as the signed-out gate's chrome",
+      "ConjugaZone wraps CahierShell outside the signed-out gate")
 check("RewardTable" in conj and "🙈" not in conj and "peeked" not in conj,
       "the conjugation table is the reward screen; the column modes are gone",
       "ConjugaZone still carries the shown/hidden/typing column modes")

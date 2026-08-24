@@ -8,7 +8,7 @@
  * cell for it, plus the three activities every outcome has as buttons.
  *
  * WHICH ACTIVITIES ARE CHIPS and which are BUTTONS is decided by content,
- * not taste: xPlain, 4Mémoire and WorDrill exist for every deck (the lesson
+ * not taste: Memo, 4Mémoire and WorDrill exist for every deck (the lesson
  * falls back to the deck lesson; flashcards and Say It read the items
  * directly), so a column of 50 identical emoji told the learner nothing —
  * they are per-row buttons. The chip activities are the ones gated on
@@ -68,7 +68,7 @@ export function cellHref(activityKey: string, sio: Sio): string | null {
   return own;
 }
 
-/** For the authoring backlog: xPlain counts as a gap when no lesson is
+/** For the authoring backlog: Memo counts as a gap when no lesson is
  *  AUTHORED for the deck (the generic deck lesson still renders). */
 export function lessonAuthored(sio: Sio): boolean {
   return !!sio.collectionId && lessonsForDeck(sio.collectionId).length > 0;

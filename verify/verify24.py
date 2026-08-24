@@ -6,7 +6,8 @@ The plan rows (UI_WORK_PLAN_1.md → PATCH 24): activity chip rail + unit
 segmented control + ten rows (one per SIO of the selected unit), state in
 the URL; the matrix cell says how you did (tier colour / ring / dash), not
 whether the link works; the activity hub pages are redirects into the Index
-with the activity preselected; `?gaps=1` is the authoring backlog; xPlain /
+with the activity preselected; `?gaps=1` is the authoring backlog; Memo
+(named xPlain until Dan's 2026-08-23 rename, approved surface #3) /
 4Mémoire / WorDrill are per-row buttons, not columns.
 
 What this asserts (static, over source):
@@ -98,7 +99,8 @@ btns = re.search(r"ROW_BUTTON_KEYS = \[([^\]]*)\]", mcode)
 chip_keys = re.findall(r'"([a-z]+)"', chips.group(1)) if chips else []
 btn_keys = re.findall(r'"([a-z]+)"', btns.group(1)) if btns else []
 check(set(btn_keys) == {"lesson", "flip", "wordrill"},
-      "row buttons are xPlain · 4Mémoire · WorDrill", f"row buttons are {btn_keys}")
+      # Dan, 2026-08-23: rename xPlain → Memo, approved surface #3.
+      "row buttons are Memo · 4Mémoire · WorDrill", f"row buttons are {btn_keys}")
 check(not set(chip_keys) & set(btn_keys), "no activity is both a chip and a button",
       f"overlap: {set(chip_keys) & set(btn_keys)}")
 reg_keys = set(re.findall(r'\{ key: "([a-z]+)", name:', reg))

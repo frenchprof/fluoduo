@@ -43,7 +43,9 @@ const COMMITMENTS: { emoji: string; title: string; hue: number; body: React.Reac
     hue: 1,
     body: (
       <>
-        Reading about French is the weakest way to learn it, so reading is rationed (the Mémo is one card, never a
+        {/* "Memo", not "Mémo" — matches the activity's registry name (Dan,
+            2026-08-23 rename, approved surface #3; chrome is English). */}
+        Reading about French is the weakest way to learn it, so reading is rationed (the Memo is one card, never a
         chapter) and everything else makes you <b>produce</b>: pick, type, build the whole sentence, speak it, compose a
         dialogue where the waiter actually reacts to what you order. The activity ladder climbs from recognising to
         constructing to interacting.

@@ -31,7 +31,8 @@
  * MERGERS Dan settled on 2026-08-10:
  *   Pre-Test  folds into SpecuLearn   (same job, two engines)
  *   Dictée    IS ÉcouTexte            (never a separate activity)
- *   EtuDice   is the dice difficulty roll, and it lives inside xPlain
+ *   EtuDice   is the dice difficulty roll, and it lives inside Memo (the
+ *             lesson activity — named xPlain until 2026-08-23)
  *   ComposeIt covers RolePlayer AND WritInstructor
  *   Match It  KIV — off navigation entirely (only 1 of 50 decks has pairs;
  *             the other 49 links were 404s)
@@ -95,7 +96,9 @@ export type Activity = {
 export const ACTIVITIES: Activity[] = [
   // ── 1 · FluOlin Goals — the sequence for one objective ────────────────────
   { key: "speculearn", name: "SpecuLearn", emoji: "🔮", family: "practice", href: "/activities?activity=speculearn", hue: "#8a5fd4", blurb: "Guess before you're taught. Pre-Tests live here too." },
-  { key: "lesson", name: "xPlain", emoji: "📚", family: "practice", href: null, hue: "#e0567f", blurb: "The lesson: rule, then practice." },
+  // Dan, 2026-08-23: renamed xPlain → Memo (approved surface #3). Key stays
+  // "lesson" — display rename only.
+  { key: "lesson", name: "Memo", emoji: "📚", family: "practice", href: null, hue: "#e0567f", blurb: "The lesson: rule, then practice." },
   { key: "dice", name: "EtuDice", emoji: "🎲", family: "practice", href: null, hue: "#e3a700", blurb: "Roll the d12 — it sets your starting card on the lesson ramp." },
   { key: "flip", name: "4Mémoire", emoji: "🃏", family: "practice", href: "/activities?activity=flip", hue: "#2bb6c2", blurb: "Flashcards. English front, flip to French." },
   { key: "complete", name: "iComplete", emoji: "✏️", family: "practice", href: null, hue: "#7bbf2e", blurb: "Type the missing word." },

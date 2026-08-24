@@ -288,7 +288,10 @@ export default function HomeDashboard() {
                 <Link
                   href={`/unit/${activeSio.unit}#${activeSio.id}`}
                   title={`Play — « ${activeSio.topic} », your stop on the study path`}
-                  className="fluo-mono flex h-9 w-full max-w-24 items-center justify-center gap-0.5 rounded-full border-2 text-[10px] font-black transition hover:-translate-y-0.5 sm:text-[11px]"
+                  /* First-visit halo (approved flow, 2026-08-24): a chartreuse
+                     pulse only while NOTHING is done — the one wordless
+                     "start here" — gone with the first completed goal. */
+                  className={`fluo-mono flex h-9 w-full max-w-24 items-center justify-center gap-0.5 rounded-full border-2 text-[10px] font-black transition hover:-translate-y-0.5 sm:text-[11px]${doneTotal === 0 ? " fluo-play-halo" : ""}`}
                   /* Primary of the family: the house chartreuse; the bought
                      accent is its ledge, so a cosmetic still shows on Home. */
                   style={{ borderColor: "var(--fluo-ink)", background: "var(--cahier-hl)", color: "var(--fluo-ink)", boxShadow: `2px 2px 0 ${accent}` }}

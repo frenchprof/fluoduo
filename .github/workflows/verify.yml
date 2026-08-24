@@ -116,3 +116,12 @@ jobs:
 
       - name: "Family identity — the second colour axis, contrast recomputed (21 Aug)"
         run: python3 verify/verify33-family.py
+
+      # A numbering collision with verify31-topbar.py left this suite out of
+      # the workflow since patch 31 shipped — it has been passing unwired the
+      # whole time (Dan, 2026-08-24: "no CI step runs it" — confirmed true).
+      - name: "WorDrill redesigned — Dan's design handoff (patch 31)"
+        run: python3 verify/verify31-wordrill.py
+
+      - name: "Possessives — the whole paradigm drilled, the prompt no longer prints the answer (24 Aug)"
+        run: python3 verify/verify35-possessives.py

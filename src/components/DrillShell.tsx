@@ -36,10 +36,15 @@
  * Dan's litmus rule keeps.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { SIOS } from "@/content/sios";
+import { activity as activityInfo, familyOf } from "@/content/activities";
+import { nextStep, type NextStep } from "@/lib/nextStep";
+import PageBand from "@/components/PageBand";
+import BottomBar from "@/components/BottomBar";
 
 export type DrillCta = {
   label: string;
@@ -86,6 +91,37 @@ export function drillExitHref(collectionId: string): string {
   return sio ? `/unit/${sio.unit}` : "/activities";
 }
 
+/** A finished run's footer (the approved flow, 2026-08-24): ONE primary
+ *  « Next › » pulling to the next step in the stop's practice chain; the old
+ *  end-screen buttons become the quiet row underneath. */
+export type DrillFinish = {
+  /** Run the same drill again — the quiet "Repeat". */
+  repeat?: () => void;
+  /** One extra quiet option a drill earns (SpecuLearn's redo-my-mistakes). */
+  also?: DrillCta;
+};
+
+/** The « Next › » destination chip: stop number + activity emoji + name.
+ *  Shared by DrillShell's finish row and GameOver's post-mortem. */
+export function NextChip({ step }: { step: NextStep }) {
+  const fam = familyOf(step.key);
+  return (
+    <span
+      className={`${fam ? `fam-${fam}` : "fam-none"} inline-flex min-w-0 items-center gap-1.5 rounded-xl border-2 border-[color:var(--drill-ok-ink)]/35 bg-white px-2.5 py-1.5 text-sm font-bold text-[color:var(--cahier-ink)]`}
+    >
+      <span
+        className="fluo-mono flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-black text-white"
+        style={{ background: "var(--fam-ink, var(--cahier-ink))" }}
+        aria-hidden
+      >
+        {step.sio.num}
+      </span>
+      <span aria-hidden>{step.emoji}</span>
+      <span className="truncate">{step.name}</span>
+    </span>
+  );
+}
+
 export default function DrillShell({
   exitHref,
   progress,
@@ -94,6 +130,9 @@ export default function DrillShell({
   secondary,
   feedback,
   help,
+  activity,
+  deck,
+  finish,
   children,
 }: {
   /** The ✕. Always present — a drill you cannot leave is a trap. */
@@ -111,8 +150,28 @@ export default function DrillShell({
   feedback?: DrillFeedback | null;
   /** The help ladder control + hint chips (Track D). null = no ladder here. */
   help?: DrillHelp | null;
+  /** Registry key of the activity in the shell (2026-08-24, the approved
+   *  flow): names the notebook band, colours it by family, and anchors the
+   *  finish row's « Next › » chain resolution. */
+  activity?: string;
+  /** The deck driving the drill — the « Next › » chain's stop anchor. */
+  deck?: string;
+  /** Set on the finished/summary screen: replaces the base CTA row with the
+   *  ONE primary « Next › » + the quiet Repeat / Back row. */
+  finish?: DrillFinish | null;
   children: ReactNode;
 }) {
+  const router = useRouter();
+  const act = activity ? activityInfo(activity) : undefined;
+  const famKey = activity ? familyOf(activity) : null;
+  // Resolved only when the finish row is up — ledger + progress are the
+  // device's own localStorage, so this never runs during prerender (a finish
+  // screen is always reached by interaction).
+  const next = useMemo(
+    () => (finish ? nextStep(activity, { collectionId: deck }) : null),
+    [finish, activity, deck],
+  );
+  const goNext = () => router.push(next?.href ?? "/");
   // WHY is closed whenever a new verdict lands — an explanation is asked
   // for, never carried over from the last question. (State adjusted during
   // render on the prop change, not in an effect.)
@@ -124,7 +183,7 @@ export default function DrillShell({
   // ONE key binding for every drill: Enter fires the visible CTA anywhere;
   // Space fires it too, except while typing in a field (a typed space is a
   // space). The tray's CTA wins while the tray is up.
-  const liveCta = feedback ? feedback.cta : cta;
+  const liveCta = feedback ? feedback.cta : finish ? { label: "Next ›", onClick: goNext } : cta;
   const liveRef = useRef(liveCta);
   liveRef.current = liveCta;
   useEffect(() => {
@@ -162,9 +221,24 @@ export default function DrillShell({
     : 0;
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden bg-[color:var(--cahier-paper)]">
+    <div className={`${famKey ? `fam-${famKey}` : "fam-none"} flex h-dvh flex-col overflow-hidden bg-[color:var(--cahier-paper)]`}>
+      {/* ── the notebook (2026-08-24, approved flow): drills live INSIDE the
+          cahier — the family heading band on top (name from the registry,
+          the drill's i/total as the band's ONE chip so the figure is never
+          printed twice), spiral binding down the left, ruled paper behind,
+          the phone bottom bar kept. The drill's inner layout is untouched. */}
+      {act && (
+        <PageBand
+          title={act.name}
+          stat={progress ? `${progress.done}/${progress.total}` : undefined}
+          className="shrink-0 pl-12 sm:pl-14"
+        />
+      )}
+      <div className="cahier-foolscap relative flex min-h-0 flex-1 flex-col">
+        <div className="cahier-binding" aria-hidden />
+        <div className="flex min-h-0 flex-1 flex-col pl-[38px]">
       {/* ── the 56px bar ─────────────────────────────────────────────── */}
-      <div className="flex h-14 shrink-0 items-center gap-3 border-b-2 border-[color:var(--cahier-ink)]/10 px-3 sm:px-5">
+      <div className="flex h-14 shrink-0 items-center gap-3 border-b-2 border-[color:var(--cahier-ink)]/10 bg-white/45 px-3 sm:px-5">
         <Link
           href={exitHref}
           aria-label="Exit"
@@ -244,8 +318,58 @@ export default function DrillShell({
         </div>
       </div>
 
-      {/* ── footer: base CTA row, with the tray OVERLAYING it ────────── */}
-      <div className="relative shrink-0 border-t-2 border-[color:var(--cahier-ink)]/10">
+      {/* ── footer: base CTA row, with the tray OVERLAYING it. On a finished
+          run the row is the ONE primary « Next › » (destination chip beside
+          it) and the old buttons become the quiet row (2026-08-24). */}
+      <div
+        className={`relative shrink-0 border-t-2 ${
+          finish
+            ? "border-[color:var(--drill-ok-soft)] bg-[color:var(--drill-ok-bg)]"
+            : "border-[color:var(--cahier-ink)]/10"
+        }`}
+      >
+        {finish ? (
+          <div className="mx-auto w-full max-w-[600px] px-4 py-3">
+            <div className="flex min-w-0 items-center gap-2.5">
+              <span className="shrink-0 text-lg font-black text-[color:var(--drill-ok-ink)]" aria-hidden>✓</span>
+              {next && <NextChip step={next} />}
+              <button
+                type="button"
+                onClick={goNext}
+                className="cahier-btn cahier-btn-primary ml-auto shrink-0 justify-center font-black"
+              >
+                Next ›
+              </button>
+            </div>
+            <div className="mt-2 text-center text-[13px] font-bold text-[color:var(--cahier-ink)]/55">
+              {finish.repeat && (
+                <>
+                  <button type="button" onClick={finish.repeat} className="underline decoration-dotted">
+                    Repeat
+                  </button>
+                  <span className="mx-2 opacity-60" aria-hidden>·</span>
+                </>
+              )}
+              {finish.also && (
+                <>
+                  <button
+                    type="button"
+                    onClick={finish.also.onClick}
+                    disabled={finish.also.disabled}
+                    className="underline decoration-dotted disabled:opacity-40"
+                  >
+                    {finish.also.label}
+                  </button>
+                  <span className="mx-2 opacity-60" aria-hidden>·</span>
+                </>
+              )}
+              <Link href={exitHref} className="underline decoration-dotted">
+                Back to the map
+              </Link>
+            </div>
+          </div>
+        ) : (
+        <>
         <div className="mx-auto grid w-full max-w-[600px] grid-cols-5 gap-2 px-4 py-3">
           {secondary && !feedback && (
             <button
@@ -312,7 +436,19 @@ export default function DrillShell({
             </div>
           </div>
         )}
+        </>
+        )}
       </div>
+        </div>
+      </div>
+      {/* The phone bar is fixed — hold its height open so the footer (and
+          the tray) always clear it. Matches .cahier-bottombar's slot. */}
+      <div
+        aria-hidden
+        className="shrink-0 sm:hidden"
+        style={{ height: "calc(58px + env(safe-area-inset-bottom, 0px))" }}
+      />
+      <BottomBar />
     </div>
   );
 }

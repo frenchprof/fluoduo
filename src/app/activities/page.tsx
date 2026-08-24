@@ -13,7 +13,7 @@
  * row's cell says HOW YOU DID on that activity for that outcome: a disc in
  * the accuracy tier colour with the number, a hollow ring when you have not
  * tried it, a dash when there is nothing to try. The three activities every
- * outcome has (xPlain · 4Mémoire · WorDrill) are buttons on the row, not
+ * outcome has (Memo · 4Mémoire · WorDrill) are buttons on the row, not
  * columns. State lives in the URL (`?activity=…&unit=N`) so a chip, a flap
  * or a bookmark all land on the same screen; the four activity hubs that
  * used to list decks now redirect here with their activity preselected.
@@ -384,7 +384,7 @@ function ResultCell({ activityName, sio, href, pct }: { activityName: string; si
 
 /**
  * `?gaps=1` — Dan's authoring backlog. All fifty outcomes × the seven chip
- * activities + xPlain-authored, a mark where nothing exists, a count per
+ * activities + Memo-authored, a mark where nothing exists, a count per
  * column. Not linked from anywhere a learner goes.
  */
 function GapsView({ onClose }: { onClose: () => void }) {
