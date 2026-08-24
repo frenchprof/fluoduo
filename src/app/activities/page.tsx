@@ -163,6 +163,7 @@ export default function ActivitiesIndexPage() {
         {/* ONE row on every width (Dan, 2026-07-20): heading + search. */}
         <div className="flex flex-nowrap items-center gap-3">
           <h1 className="cahier-display shrink-0 text-2xl font-black text-[color:var(--cahier-ink)]">📖 Index</h1>
+          <IndexKey />
           <input
             type="search"
             value={q}
@@ -343,6 +344,69 @@ export default function ActivitiesIndexPage() {
         </section>
       </div>
     </CahierShell>
+  );
+}
+
+/**
+ * The « ? » beside the Index heading (Dan, 22 Aug: "I really don't
+ * understand how to read it" — the U0–U4 cell grid and the per-row circles
+ * carry no key). Same on-demand pattern as StatsHelp: colour and shape are
+ * the whole message on the rows below (litmus: decorative elements are
+ * exempt, the tooltip is the label) — but nothing on the page itself
+ * decodes them, so a first-time reader has no way in. Tap → a small
+ * popover naming what each mark means; closed by default, never inline.
+ */
+function IndexKey() {
+  const [open, setOpen] = useState(false);
+  return (
+    <span className="relative inline-flex shrink-0">
+      <button
+        type="button"
+        aria-label="How to read this page"
+        aria-expanded={open}
+        title="How to read this page"
+        onClick={() => setOpen((o) => !o)}
+        className="fluo-mono flex h-7 w-7 items-center justify-center rounded-full border-2 text-xs font-black transition"
+        style={{ borderColor: "var(--cahier-line-strong)", color: "var(--cahier-ink)", background: "var(--cahier-paper-raised)" }}
+      >
+        ?
+      </button>
+      {open && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} aria-hidden />
+          {/* fixed + viewport-centred, not anchored to the button: the
+              button sits mid-row, and a button-relative popover this wide
+              runs off the right edge of a phone screen. */}
+          <div
+            className="index-key-pop fixed left-1/2 top-16 z-50 w-72 max-w-[88vw] -translate-x-1/2 rounded-2xl border-2 p-3 text-left shadow-xl"
+            style={{ borderColor: "var(--cahier-ink)", background: "var(--cahier-paper-raised)" }}
+          >
+            <ul className="space-y-1.5 text-xs font-bold" style={{ color: "var(--cahier-ink)" }}>
+              <li className="flex items-start gap-2">
+                <span aria-hidden className="fluo-mono flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[0.6rem]" style={{ background: "var(--tier-good)", color: "var(--cahier-paper-raised)" }}>✓</span>
+                the stop's number — tap it to go there. Turns green ✓ once you've marked that stop done.
+              </li>
+              <li className="flex items-start gap-2">
+                <span aria-hidden className="fluo-mono flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-[3px] text-[0.6rem]" style={{ borderColor: "var(--tier-good)", background: "var(--tier-good)", color: "var(--cahier-paper-raised)" }}>62</span>
+                your accuracy, once you've tried this activity — red → amber → green as it climbs.
+              </li>
+              <li className="flex items-start gap-2">
+                <span aria-hidden className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-[3px]" style={{ borderColor: "var(--cahier-ink)" }} />
+                there to try, just not tried yet.
+              </li>
+              <li className="flex items-start gap-2">
+                <span aria-hidden className="flex h-5 w-5 shrink-0 items-center justify-center" style={{ color: "var(--cahier-ink-faint)" }}>—</span>
+                nothing authored here yet.
+              </li>
+              <li className="flex items-start gap-2">
+                <span aria-hidden>📚🃏🎙️</span>
+                quick links: Memo · 4Mémoire · WorDrill for that stop.
+              </li>
+            </ul>
+          </div>
+        </>
+      )}
+    </span>
   );
 }
 

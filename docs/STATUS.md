@@ -1167,3 +1167,36 @@ before starting a doc edit here or in `CONTENT_FLAGS_2026-08-23.md`, check
 whether another session's work is already in flight (an open PR, a stash,
 a running agent) before writing a competing version, the same way the
 stood-down session did on its second pass today.
+
+## 24 Aug — the Index gets a key ("I really don't understand how to read it")
+
+The one open, unassigned item flagged 22 Aug: the U0–U4 unit grid and the
+per-row circles carried no legend — colour and shape were the whole
+message (litmus: decorative elements exempt, the tooltip is the label),
+but nothing on the page itself decoded them for a first-time reader, and a
+tooltip never shows on a phone. Not a case the litmus test's "redundant
+text" rule covers — removing the decoder for a colour-coded grid would
+leave the user unable to read the page at all, which is the test's own
+bar for what stays.
+
+**Built:** a `?` button next to the "📖 Index" heading (`IndexKey` in
+`src/app/activities/page.tsx`), same on-demand pattern as `StatsHelp.tsx`
+(closed by default, `aria-expanded`, dismiss on outside tap) — not inline
+text. Opens a small popover naming exactly four things: the stop circle
+(number → tap to go there, green ✓ once done), the tried cell (tier-toned
+disc + your accuracy), the open cell (hollow ring — there, not tried), the
+dash (nothing authored), and the three row-button quick links. Positioned
+`fixed` + viewport-centred rather than anchored to the button — the
+button sits mid-header-row, and a button-relative popover that wide ran
+off the right edge of a phone screen in testing; fixed to centre before
+shipping.
+
+Guarded by nine new assertions in `verify/verify24.py` (component exists
+and is rendered, starts closed, carries `aria-expanded`/`aria-label`,
+names all four states in its own text) — 58 → 67 assertions in that file.
+Screenshots taken on a 390px viewport (closed header row, open popover)
+and sent to Dan directly — not checked in; `scratchpad/` is working-only.
+
+Verified: `tsc` clean, all 26 verify suites green (867 total assertions),
+`npm run build` clean. `REQUIRE_SIGN_IN` flipped to `false` for the dev
+screenshots, confirmed restored to `true` before this commit.

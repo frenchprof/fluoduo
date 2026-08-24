@@ -32,6 +32,10 @@ What this asserts (static, over source):
      not linked from the learner chrome.
   7  No hex literal in the new files (tokens only, verify19b's rule).
   8  CI runs this file after verify23.
+  9  The « ? » key (24 Aug, Dan 22 Aug: "I really don't understand how to
+     read it"): an on-demand popover next to the heading, closed by
+     default, naming what the stop circle, the tried/open/none cell states
+     and the row buttons mean — not inline text.
 
 Run from the repo root:  python3 verify/verify24.py
 """
@@ -195,6 +199,18 @@ wf = read(".github/workflows/verify.yml")
 check("verify/verify24.py" in wf, "CI runs verify24", "verify24 is not wired into verify.yml")
 check(wf.find("verify23.py") < wf.find("verify24.py"), "verify24 runs after verify23",
       "verify24 is wired before verify23")
+
+# ── 9 · the « ? » key (24 Aug) ───────────────────────────────────────────
+check("function IndexKey" in pcode, "IndexKey component exists", "no IndexKey component")
+check("<IndexKey />" in pcode or "<IndexKey/>" in pcode, "IndexKey rendered on the page",
+      "IndexKey defined but never rendered")
+check('useState(false)' in pcode.split("function IndexKey")[-1].split("function")[0],
+      "the key starts closed (on demand, not inline)", "the key does not start closed")
+key_body = pcode.split("function IndexKey")[-1].split("function ResultCell")[0] if "function IndexKey" in pcode else ""
+for must in ("aria-expanded", "aria-label"):
+    check(must in key_body, f"key toggle carries {must}", f"key toggle missing {must}")
+for glyph in ("your accuracy", "tried yet", "authored here yet", "stop's number"):
+    check(glyph in key_body, f"key explains: {glyph!r}", f"key does not explain: {glyph!r}")
 
 print("\npatch 24 check\n" + "-" * 66)
 for x in OK:   print("  ok    " + x)
