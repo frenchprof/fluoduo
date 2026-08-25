@@ -247,7 +247,7 @@ function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: 
         right={<>✓ {score}/{uniqueTotal}{inReview ? " · review" : ""}</>}
         cta={
           done
-            ? { label: "🎲 Roll again", onClick: restart }
+            ? { label: "Sort again", onClick: restart }
             : !submitted && !retry
               ? { label: "Check", onClick: () => { if (selected) commit(selected); }, disabled: !selected }
               : null
@@ -539,25 +539,25 @@ function Recap({
     <article className={inShell ? undefined : "fluo-card fluo-h-5"} data-hue={inShell ? undefined : 5}>
       <div className="text-center">
         <div className="text-6xl" aria-hidden>
-          {pct === 100 ? "🏆" : pct >= 75 ? "🎉" : pct >= 50 ? "💪" : "🎲"}
+          {pct === 100 ? "🏆" : pct >= 75 ? "🎉" : pct >= 50 ? "💪" : "🗂️"}
         </div>
         <h2 className="mt-2 text-2xl font-black text-slate-900">
           {score} / {total} correct
         </h2>
         <p className="text-slate-600">
           {pct === 100
-            ? "Parfait. Roll again to stay sharp."
+            ? "Parfait. Go again to stay sharp."
             : pct >= 75
               ? "Strong round — one more pass on the tricky ones."
               : pct >= 50
-                ? "Getting there. Roll again."
-                : "Keep rolling — repetition is the game."}
+                ? "Getting there. Go again."
+                : "Keep going — repetition is the game."}
         </p>
       </div>
       {!inShell && (
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <button type="button" onClick={onRestart} className="fluo-btn fluo-btn-lg">
-            🎲 Roll again
+            Sort again
           </button>
           <Link href="/" className="fluo-btn fluo-btn-ghost">
             ← Back to lessons

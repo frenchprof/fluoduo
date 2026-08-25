@@ -1133,8 +1133,29 @@ Verified: verify19/20/22/28/29 green (23/57/28/165/22), `tsc --noEmit`
 clean, `npm run build` clean. In `out/`, the only surviving "EtuDice" is the
 pager's own roll card — which is correct.
 
-**Open, for Dan.** The d12 still shortens the run instead of varying it.
-Two ways to keep it to the stated intent: delete the roll (three constants
-plus the roll card in `LessonPager`; run length stops being random), or turn
-it into a re-roll — same card, press it, `newQuestion()` hands you another
-instance. Not built either way; it is student-visible and needs Dan's word.
+**The entry die is deleted.** Dan, same day: *"drop the shortcuts, learning
+should not allow that."* `DIE_SIDES`, `ROLL_ENTRY` and `rollLabel` are gone
+from `buildCards.tsx`; the roll card, its state (`face` / `rolled` /
+`rolling` / `rollTimerRef`) and the `"roll"` branch are gone from
+`LessonPager.tsx`; `exStart` is now `rules.length` and the denominator
+`rules.length + ramp` (it used to carry a `+ 1` for the roll card). Every
+learner walks all twelve cards — 4 MCQ → 4 gap → 3 build → 1 translate — in
+order. The Sorting drill's leftover dice language went with it: its restart
+button was "🎲 Roll again" (now "Sort again"), its end copy said "Roll
+again" / "Keep rolling", and its low-score emoji was 🎲.
+
+`verify22.py` now asserts the absence rather than the mechanism: no
+`ROLL_ENTRY`, no `DIE_SIDES`, no `q.slice(` in the pager, no `"roll"` card.
+That last one is the real pin — the failure mode to prevent is not the die
+coming back by name, it is anything trimming the ramp before a learner walks
+it.
+
+Verified: verify19/20/22/28/29 green (23/57/30/165/22), `tsc --noEmit`
+clean, clean `npm run build` clean, and a from-scratch `out/` contains no
+"EtuDice", "🎲 Roll" or "roll for your start" anywhere.
+
+**Not verified in a browser.** The pager sits behind `REQUIRE_SIGN_IN`, and
+flipping that flag locally (the patch-23 precedent) was blocked by this
+session's permission classifier, so the walk-through was static only: the
+card sequence and denominator were re-read and reasoned through, not
+observed. Worth one manual pass on a signed-in run before this is deployed.

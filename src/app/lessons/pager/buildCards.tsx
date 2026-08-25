@@ -42,29 +42,14 @@ export const RAMP: ExerciseKind[] = [
   "translate",
 ];
 
-/** EtuDice is a d12 matching the 12-card ramp (Dan, 2026-08-11: "change
- *  EtuDice to a 12-sided die — each face maps to a specific starting card").
- *  Face N starts you at card N: a 1 walks the whole ramp, a 12 is the lone
- *  translation card. */
-export const DIE_SIDES = 12;
-
-/** Die face (1-12) → the ramp index you start at. */
-export const ROLL_ENTRY: Record<number, number> = Object.fromEntries(
-  Array.from({ length: DIE_SIDES }, (_, k) => [k + 1, k]),
-);
-
-const KIND_LABEL: Record<ExerciseKind, string> = {
-  mcq: "MCQ",
-  gap: "gap-fill",
-  build: "sentence building",
-  translate: "translation",
-};
-
-/** One line naming where the settled die drops you. */
-export function rollLabel(entry: number): string {
-  if (entry === 0) return "card 1 — the full ramp";
-  return `start at card ${entry + 1} of ${RAMP.length} — ${KIND_LABEL[RAMP[entry]]}`;
-}
+/* NO ENTRY DIE (Dan, 2026-08-25: "drop the shortcuts, learning should not
+ * allow that"). DIE_SIDES / ROLL_ENTRY / rollLabel are gone. A d12 used to
+ * open the ramp and its face was a START INDEX — the pager did
+ * `queue.slice(entry)`, so a 1 walked all twelve cards and a 12 left only the
+ * translation. That made the die a run-length dial, and since the ramp runs
+ * easy → hard a high roll bought less work at the hard end. Every learner now
+ * walks the whole ramp. (The die Dan means — a different variation of the
+ * same structure — is DiceConfig.newQuestion(), called per card below.) */
 
 export type Exercise = {
   kind: ExerciseKind;
