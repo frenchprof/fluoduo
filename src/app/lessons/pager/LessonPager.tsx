@@ -6,11 +6,19 @@
  * before the first answer, two identical difficulty pickers, three 🎲 roll
  * buttons, a drill that never ended).
  *
- * Card order: rule cards (the Mémo, split — 3 max) → the EtuDice roll (sets
- * where you start on the ramp) → the exercise ramp (buildCards.tsx). Wrong
- * answers re-queue ONCE at the end; the progress denominator is locked when
- * the roll settles. The run ENDS: 🎉 + XP/accuracy/time + the missed items,
- * and the SIO write that finally makes the Home path react.
+ * Card order: rule cards (the Mémo, split — 3 max) → the exercise ramp
+ * (buildCards.tsx). Wrong answers re-queue ONCE at the end. The run ENDS:
+ * 🎉 + XP/accuracy/time + the missed items, and the SIO write that finally
+ * makes the Home path react.
+ *
+ * NO ROLL (Dan, 2026-08-25: "drop the shortcuts, learning should not allow
+ * that"). A d12 used to open the ramp and its face SLICED the queue —
+ * `q.slice(entry)` — so a 1 walked all twelve cards and a 12 left you the
+ * lone translation. That was a run-length dial dressed as a die: a high roll
+ * was less work, and because the ramp runs easy → hard it was less work at
+ * the hard end. Everyone now walks the whole ramp. The die as Dan means it —
+ * a different variation of the same structure — is DiceConfig.newQuestion(),
+ * which the ramp already calls per card.
  */
 import { useEffect, useMemo, useRef, useState } from "react";
 import DrillShell, { drillExitHref, type DrillFeedback, type DrillFinish } from "@/components/DrillShell";
@@ -22,7 +30,7 @@ import { SIOS } from "@/content/sios";
 import { lessonsForDeck } from "@/content/lessons";
 import { getNativeLesson } from "@/content/lessons/native";
 import { memoForDeck } from "@/content/memos";
-import { buildCards, DIE_SIDES, ROLL_ENTRY, rollLabel, type Exercise } from "./buildCards";
+import { buildCards, type Exercise } from "./buildCards";
 import { gradeAnswer, gradeGap, type Grade } from "@/lib/practice/cloze";
 import { loadProgress, markSioDone } from "@/lib/progress";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
@@ -54,10 +62,6 @@ export default function LessonPager({
   const [rules, setRules] = useState<React.ReactNode[]>([]);
   const [queue, setQueue] = useState<QueuedEx[] | null>(null);
   const [i, setI] = useState(0);
-  // The roll: null until the die settles; the face then names the ramp entry.
-  const [face, setFace] = useState<number | null>(null);
-  const [rolled, setRolled] = useState(false);
-  const [rolling, setRolling] = useState(false);
   // Answer state for the current card.
   const [selected, setSelected] = useState<string | null>(null);
   const [value, setValue] = useState("");
@@ -75,7 +79,6 @@ export default function LessonPager({
   const cardStartRef = useRef(0);
   const xpAtStartRef = useRef(0);
   const endWroteRef = useRef(false);
-  const rollTimerRef = useRef<number | null>(null);
   const endedAtRef = useRef(0);
 
   // Shuffling (and the generators' Math.random) live here, never in render —
@@ -90,9 +93,6 @@ export default function LessonPager({
     setRules(r);
     setQueue(exercises.map((ex) => ({ ex, requeued: false })));
     setI(0);
-    setFace(null);
-    setRolled(false);
-    setRolling(false);
     setSelected(null);
     setValue("");
     setResult(null);
@@ -105,48 +105,26 @@ export default function LessonPager({
     endWroteRef.current = false;
   };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => { build(); return () => { if (rollTimerRef.current) window.clearInterval(rollTimerRef.current); }; }, [collectionId, lessonSlug]);
+  useEffect(() => { build(); }, [collectionId, lessonSlug]);
 
   // ── where are we ──────────────────────────────────────────────────────────
   const ready = queue !== null;
-  const rollAt = rules.length;
-  const exStart = rules.length + 1;
-  const card: "rule" | "roll" | "ex" | "end" = !ready
+  const exStart = rules.length;
+  const card: "rule" | "ex" | "end" = !ready
     ? "rule"
     : i < rules.length
       ? "rule"
-      : i === rollAt
-        ? "roll"
-        : i - exStart < (queue?.length ?? 0)
-          ? "ex"
-          : "end";
+      : i - exStart < (queue?.length ?? 0)
+        ? "ex"
+        : "end";
   const current = card === "ex" ? queue![i - exStart] : null;
   const ex = current?.ex ?? null;
 
-  // Denominator: rule cards + the roll + the ramp as trimmed by the roll.
-  // Locked when the die settles; requeued repeats never grow it.
-  const denom = rules.length + 1 + (queue?.filter((q) => !q.requeued).length ?? 0);
+  // Denominator: the rule cards plus the whole ramp — no longer trimmed by
+  // anything. Requeued repeats never grow it.
+  const denom = rules.length + (queue?.filter((q) => !q.requeued).length ?? 0);
   const done = Math.min(i, denom);
   const end = ready && card === "end";
-
-  // ── the roll ─────────────────────────────────────────────────────────────
-  const roll = () => {
-    if (rolling || rolled || !queue) return;
-    setRolling(true);
-    let spins = 0;
-    rollTimerRef.current = window.setInterval(() => {
-      const f = 1 + Math.floor(Math.random() * DIE_SIDES);
-      setFace(f);
-      if (++spins >= 9) {
-        window.clearInterval(rollTimerRef.current!);
-        rollTimerRef.current = null;
-        const entry = ROLL_ENTRY[f];
-        setQueue((q) => (q ? q.slice(entry) : q));
-        setRolled(true);
-        setRolling(false);
-      }
-    }, 90);
-  };
 
   // ── commit + advance ─────────────────────────────────────────────────────
   const given = ex?.kind === "mcq" ? selected ?? "" : value;
@@ -252,13 +230,9 @@ export default function LessonPager({
     ? null
     : card === "rule"
       ? { label: "Continue", onClick: next }
-      : card === "roll"
-        ? rolled
-          ? { label: "Continue", onClick: next }
-          : { label: "🎲 Roll", onClick: roll, disabled: rolling }
-        : result === null && !retry
-          ? { label: "Check", onClick: commit, disabled: !given.trim() }
-          : null;
+      : result === null && !retry
+        ? { label: "Check", onClick: commit, disabled: !given.trim() }
+        : null;
 
   const feedback: DrillFeedback | null =
     card === "ex" && retry && ex
@@ -306,27 +280,6 @@ export default function LessonPager({
     >
       {!ready ? null : card === "rule" ? (
         <div className="pt-2"><SpeakZone>{rules[i]}</SpeakZone></div>
-      ) : card === "roll" ? (
-        <div className="flex flex-col items-center gap-4 pt-6 text-center">
-          <p className="text-xs font-bold uppercase tracking-wider text-[color:var(--cahier-ink)]/60">
-            EtuDice — roll for your start
-          </p>
-          {/* A d12 has no unicode face — the die is a rotated square (the
-              d12's diamond silhouette) with the face number upright inside. */}
-          {face ? (
-            <span
-              className={`flex h-24 w-24 rotate-45 items-center justify-center rounded-2xl border-4 border-[color:var(--cahier-ink)] bg-white shadow-[4px_4px_0_var(--cahier-hl,#ffe000)] ${rolling ? "animate-bounce" : ""}`}
-              aria-hidden
-            >
-              <span className="-rotate-45 text-5xl font-black leading-none text-[color:var(--cahier-ink)]">{face}</span>
-            </span>
-          ) : (
-            <span className="text-8xl leading-none" aria-hidden>🎲</span>
-          )}
-          {rolled && face && (
-            <p className="mt-2 text-sm font-bold text-[color:var(--cahier-ink)]">{rollLabel(ROLL_ENTRY[face])}</p>
-          )}
-        </div>
       ) : card === "ex" && ex ? (
         <ExerciseCard ex={ex} selected={selected} value={value} result={result} struck={struckAll}
           onSelect={(c) => result === null && !struckAll.includes(c) && setSelected(c)} onType={setValue} />

@@ -6,7 +6,7 @@ The audit called the lesson "the worst page in the app": 44 tappable controls
 before the first answer, the difficulty picker rendered twice with identical
 labels, three 🎲 roll buttons, a drill that never ended, no progress bar, no
 completion screen. The pager replaces all of it: min(3, memoCards) rule cards
-→ the EtuDice roll (sets where you start) → a fixed 12-card ramp
+→ a fixed 12-card ramp
 (4 MCQ → 4 gap → 3 build → 1 translate) → an end card with XP/accuracy/time
 and the SIO write that finally makes the Home path react.
 
@@ -17,7 +17,10 @@ What this asserts:
   2  The pager exists and is the DrillShell mold: shell import, exit href,
      select-then-commit (no onNext double-Enter), once-ending run.
   3  buildCards: 3 rule cards max, the 12-card ramp with the 4/4/3/1 split,
-     the roll→entry map, wrong answers re-queue once.
+     wrong answers re-queue once.
+     2026-08-25: the entry die is GONE (Dan: "drop the shortcuts, learning
+     should not allow that") — its face sliced the queue, so a high roll
+     meant fewer cards. Asserted below as an absence.
   4  The end card writes the SIO (markSioDone with accuracy) and progress.ts
      announces every save — the "path never reacts" fix.
   5  The lesson routes render the pager; SioModal no longer embeds a lesson.
@@ -99,12 +102,20 @@ check(len(kinds) == 12 and kinds.count("mcq") == 4 and kinds.count("gap") == 4
       and kinds.count("build") == 3 and kinds.count("translate") == 1,
       "the ramp is 12 cards: 4 MCQ → 4 gap → 3 build → 1 translate",
       f"the ramp is wrong: {kinds}")
-check("ROLL_ENTRY" in cards and "ROLL_ENTRY" in pager,
-      "the EtuDice roll maps a die face to a ramp entry point",
-      "the roll→entry map is missing")
-check("DIE_SIDES = 12" in cards and "DIE_SIDES" in pager,
-      "the die is a d12 — one face per ramp card (face N starts at card N)",
-      "the die is not the 12-sided ramp die")
+# The entry die is gone and must stay gone: no face→start map, no d12, and
+# above all nothing that trims the ramp before the learner walks it.
+check("ROLL_ENTRY" not in cards and "ROLL_ENTRY" not in pager,
+      "no die face maps to a ramp entry point — the shortcut map is gone",
+      "ROLL_ENTRY is back: a die face can skip cards again")
+check("DIE_SIDES" not in cards and "DIE_SIDES" not in pager,
+      "the entry d12 is gone from both the builder and the pager",
+      "DIE_SIDES is back — the ramp has an entry die again")
+check(".slice(entry)" not in pager and "q.slice(" not in pager,
+      "the pager never slices its queue — every learner walks the whole ramp",
+      "the pager slices its queue: the ramp can be shortened before it starts")
+check('"roll"' not in pager,
+      "the pager has no roll card",
+      "a roll card survives in the pager")
 check("requeued" in pager,
       "wrong answers re-queue (once — requeued repeats never re-queue again)",
       "no re-queue mechanism in the pager")

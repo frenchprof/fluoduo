@@ -43,7 +43,7 @@ function childrenOf(f: FamilyKey): Child[] {
       hue: UNIT_ACCENTS[u],
     }));
   }
-  // Same fallback as the Menu: Memo, EtuDice and iComplete have no page of
+  // Same fallback as the Menu: Memo, Sorting and iComplete have no page of
   // their own (they live inside a deck), so they land on the Index with that
   // activity preselected. Dan listed all five under Practice; a rail showing
   // two of them would be the drift this rail exists to end.
