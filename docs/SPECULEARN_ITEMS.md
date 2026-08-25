@@ -152,12 +152,13 @@ commit `4158e2f` on `origin/claude/peers-vd2h6h` compares to it.
 One addition not in the sheet: a new per-deck `SPECULEARN_PROMPT_FRAME` map
 renders « Tu y vas comment ? » above the options on the transport deck only.
 
-## objets-articles — the six bans were reversed
+## objets-articles — the six bans were reversed, then vetoed back (see below)
 
-The sheet bans six items as unpicturable or ambiguous. The branch **did not add
-any of the six to `SPECULEARN_EXCLUDED_ITEMS`.** Instead it commissioned a
-purpose-drawn flat SVG for each, so the deck plays **20 of 20** rather than the
-sheet's 14.
+The sheet bans six items as unpicturable or ambiguous. Commit `4158e2f` **did
+not add any of the six to `SPECULEARN_EXCLUDED_ITEMS`.** Instead it
+commissioned a purpose-drawn flat SVG for each, so the deck briefly played
+**20 of 20** rather than the sheet's 14 — reversed by the veto below; as
+shipped, it plays 14.
 
 The 14 PLAY emoji from the table were written into the deck JSON unchanged. The
 six banned items got images instead:
@@ -171,17 +172,30 @@ six banned items got images instead:
 | objets-articles-17 | mouchoirs | BAN (🧻 is a toilet roll) | `/objets-articles/mouchoirs.svg` — tissue box |
 | objets-articles-19 | agrafeuse | BAN (📎 is a paperclip) | `/objets-articles/agrafeuse.svg` — red stapler |
 
-**This reversal is a decision Dan did not make. It should be ratified or
-vetoed.** The sheet's position is that these six words cannot be pictured
-honestly; the branch's position is that a drawn image sidesteps the emoji
-inventory's limits. Both cannot stand.
+**VETOED 24 Aug.** Dan reviewed the six actual renders — findings kept for
+the record:
 
-**VETOED 24 Aug.** Dan reviewed the six actual renders: agrafeuse and gomme
-hold up on their own merit, passeport and portefeuille hold up with wobbles,
-but trousse and mouchoirs fail outright — and are confusable with each
-other besides. Ruling: *"Veto all six, restore your original bans, ship at
-14."* On the mechanism itself (keep the TypeScript lookup, or move image
-paths into deck JSON?): *"Leave it in TypeScript — it's a short list, don't
+| item id | fr | render verdict |
+|---|---|---|
+| objets-articles-19 | agrafeuse | good depiction, holds up on its own merit |
+| objets-articles-11 | gomme | good depiction, holds up on its own merit |
+| objets-articles-07 | passeport | acceptable but weak |
+| objets-articles-12 | portefeuille | acceptable but weak |
+| objets-articles-09 | trousse | outright failure — also collides with mouchoirs |
+| objets-articles-17 | mouchoirs | outright failure — also collides with trousse |
+
+Ruling: *"Veto all six, restore your original bans, ship at 14."* His
+reasoning applies independent of any individual drawing's quality: in a
+four-option SpecuLearn round, three Apple-style emoji beside one flat
+hand-drawn SVG makes the drawn item the visually odd one on screen — the
+style mismatch itself becomes a cue to the answer, a structural leak that
+the most distinctive drawings (like agrafeuse and gomme, the two that read
+best on their own terms) leak *hardest*. That is why the two good renders
+were vetoed along with the two failures, rather than kept selectively — the
+leak is in the mismatch, not in the drawing quality.
+
+On the mechanism itself (keep the TypeScript lookup, or move image paths
+into deck JSON?): *"Leave it in TypeScript — it's a short list, don't
 over-engineer."* `SPECULEARN_ITEM_IMAGES` in `speculearnReady.ts` stays as
 an empty lookup for future short-list exceptions; the six SVGs are removed
 from `public/objets-articles/` (recoverable from git history, `4158e2f`,
@@ -189,15 +203,16 @@ if ever revisited) and the six ids are back in `SPECULEARN_EXCLUDED_ITEMS`.
 objets-articles ships at 14/20, matching the sheet exactly. Total across
 the three decks: **34 playable / 10 banned**, as the sheet always said.
 
-## Why the SVG paths live in code
+## Why the SVG-lookup mechanism lives in code (mechanism kept, unused)
 
 `src/lib/collections/schema.ts` gives `Item` an `emoji` field and **no image
-field**. The SVG paths therefore could not go into the deck JSON, and live in a
-new TypeScript lookup, `SPECULEARN_ITEM_IMAGES` (item id → path) in
-`src/lib/collections/speculearnReady.ts`, consulted by `buildItems()` in
-`SpecuLearnContent.tsx`; an `img` wins over an `emoji`. This is a code-side
-pattern, not a content-side one — the deck JSON does not record that these six
-items have pictures.
+field**. Any future per-item SVG override therefore can't go into the deck
+JSON, and lives in a TypeScript lookup, `SPECULEARN_ITEM_IMAGES` (item id →
+path) in `src/lib/collections/speculearnReady.ts`, consulted by
+`buildItems()` in `SpecuLearnContent.tsx`; an `img` wins over an `emoji`
+when present. This is a code-side pattern, not a content-side one — the deck
+JSON never records that an item has a picture. As of the veto, the lookup is
+empty; nothing currently uses it.
 
 Per STATUS's 24 Aug ruling 4, emoji authoring is approved for four more decks —
 **core-nouns, days, matieres, professions** — which are queued to follow this

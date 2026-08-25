@@ -45,7 +45,7 @@ const EMBEDDABLE = new Set(["say", "complete", "dice", "grammarathon"]);
  * equal-weight flaps: done steps ✓ and muted, the next undone step accented
  * in the practice family's colour. The 22 Aug flow walk found the popup
  * carried exactly ONE ordering cue ("try it first") and named neither
- * SpecuLearn nor EtuDice; the path is the authored order made visible.
+ * SpecuLearn nor Sorting; the path is the authored order made visible.
  * Everything not in the chain (games, review, skills extras) stays a flap.
  */
 const CHAIN_KEYS = ["pretest", "speculearn", "lesson", "dice", "flip", "complete"] as const;

@@ -28,13 +28,13 @@ export default function PracticePage({ collectionId, embedded = false }: { colle
 
   if (!practiceSet) {
     if (embedded) {
-      return <p className="py-10 text-center text-sm text-[color:var(--fluo-ink-soft)]">No dice practice for this deck yet.</p>;
+      return <p className="py-10 text-center text-sm text-[color:var(--fluo-ink-soft)]">No sorting exercise for this deck yet.</p>;
     }
     return (
       <CahierShell tabs={tabs} active="dice">
         <div className="mx-auto max-w-3xl px-4 py-10">
           <div className="rounded-2xl border-2 border-slate-200 bg-white p-10 text-center">
-            <div className="text-6xl" aria-hidden>🎲</div>
+            <div className="text-6xl" aria-hidden>🗂️</div>
             <h2 className="mt-3 text-xl font-black text-slate-900">
               No practice available
             </h2>
@@ -43,7 +43,7 @@ export default function PracticePage({ collectionId, embedded = false }: { colle
               <code className="rounded bg-slate-100 px-1.5 py-0.5">
                 {collectionId}
               </code>{" "}
-              doesn't have a dice-practice configuration yet.
+              doesn't have sorting groups yet.
             </p>
             <div className="mt-5 flex justify-center gap-3">
               <Link href="/" className="fluo-btn fluo-btn-ghost">
@@ -247,7 +247,7 @@ function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: 
         right={<>✓ {score}/{uniqueTotal}{inReview ? " · review" : ""}</>}
         cta={
           done
-            ? { label: "🎲 Roll again", onClick: restart }
+            ? { label: "Sort again", onClick: restart }
             : !submitted && !retry
               ? { label: "Check", onClick: () => { if (selected) commit(selected); }, disabled: !selected }
               : null
@@ -297,7 +297,7 @@ function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: 
         <div>
           <h1 className="text-3xl font-black text-slate-900">{set.title}</h1>
           <p className="mt-1 text-base text-slate-600">
-            {set.prompt ?? "Dice practice — sort each item into its correct group."}
+            {set.prompt ?? "Sort each item into its correct group."}
           </p>
         </div>
         <button
@@ -539,25 +539,25 @@ function Recap({
     <article className={inShell ? undefined : "fluo-card fluo-h-5"} data-hue={inShell ? undefined : 5}>
       <div className="text-center">
         <div className="text-6xl" aria-hidden>
-          {pct === 100 ? "🏆" : pct >= 75 ? "🎉" : pct >= 50 ? "💪" : "🎲"}
+          {pct === 100 ? "🏆" : pct >= 75 ? "🎉" : pct >= 50 ? "💪" : "🗂️"}
         </div>
         <h2 className="mt-2 text-2xl font-black text-slate-900">
           {score} / {total} correct
         </h2>
         <p className="text-slate-600">
           {pct === 100
-            ? "Parfait. Roll again to stay sharp."
+            ? "Parfait. Go again to stay sharp."
             : pct >= 75
               ? "Strong round — one more pass on the tricky ones."
               : pct >= 50
-                ? "Getting there. Roll again."
-                : "Keep rolling — repetition is the game."}
+                ? "Getting there. Go again."
+                : "Keep going — repetition is the game."}
         </p>
       </div>
       {!inShell && (
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <button type="button" onClick={onRestart} className="fluo-btn fluo-btn-lg">
-            🎲 Roll again
+            Sort again
           </button>
           <Link href="/" className="fluo-btn fluo-btn-ghost">
             ← Back to lessons

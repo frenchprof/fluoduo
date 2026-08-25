@@ -71,7 +71,9 @@ check("aria-expanded" in rail,
 # 3 · each family holds exactly what Dan listed
 EXPECT = {
     # Dan, 2026-08-23: rename xPlain → Memo, approved surface #3.
-    "practice": {"SpecuLearn", "Memo", "EtuDice", "4Mémoire", "iComplete"},
+    # Dan, 2026-08-25: rename EtuDice → Sorting — the tile opens the group
+    # sort, not the die. "EtuDice" now names only the d12 in the pager.
+    "practice": {"SpecuLearn", "Memo", "Sorting", "4Mémoire", "iComplete"},
     "review":   {"DéjàRevu", "GramMarathon"},
     "skills":   {"ConjugaZone", "ÉcouTexte", "WorDrill", "VoixLà", "ComposeIt", "ChaTutor"},
     "svplay":   {"NumBus", "NumBourse", "VocabulaRain", "LexicaLater"},

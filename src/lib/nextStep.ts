@@ -5,7 +5,7 @@
  * learner along the STOP'S PRACTICE CHAIN — the practice family in its
  * authored registry order (src/content/activities.ts):
  *
- *   Pre-Test → SpecuLearn → Memo → EtuDice → 4Mémoire → iComplete
+ *   Pre-Test → SpecuLearn → Memo → Sorting → 4Mémoire → iComplete
  *
  * (Pre-Test folds into the SpecuLearn step — the 2026-08-10 merger; cellHref
  * already opens the pretest door for decks with no SpecuLearn set.)

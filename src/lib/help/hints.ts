@@ -30,7 +30,7 @@ export type Rung = {
 
 /** The task contexts the ladder distinguishes (docs/TRACK_D_HELP_LADDER.md §2). */
 export type TaskKind =
-  | "mcq"        // pick one of N (EtuDice, SpecuLearn, lesson mcq cards)
+  | "mcq"        // pick one of N (Sorting, SpecuLearn, lesson mcq cards)
   | "cloze"      // one gap in a sentence (GramMarathon, lesson gap cards)
   | "typed"      // type the French for an English prompt (iComplete, 4Mémoire test, lesson translate/build)
   | "dictation"  // hear it, write it (ÉcouTexte)
