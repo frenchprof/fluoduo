@@ -275,10 +275,21 @@ Only ONE agent edits this file at a time; say so in your commit.
   was selected. That giveaway is gone; the two behaviours are not both live.
   The forms are derived rather than stored (possessives are regular; the noun's
   agreement class is already declared by its `col:` tag), so **no schema field was
-  added** — the opt-in is the deck's own column declaration, and
-  `verify/verify35-possessives.py` (39 assertions) is the tripwire that fails if a
-  rename ever switches the expansion off. It is wired into `verify.yml`, per that
-  file's own rule that a check CI never runs is not a check. The "(m)"/"(f)" gloss
+  added** — the opt-in is IMPLICIT: `CompleteItContent.tsx` detects the expansion
+  by checking whether a deck's Letris columns are the literal keys `mon`/`ma`/`mes`
+  (`POSS_COL_AGREEMENT`, keyed on those three strings exactly). Nothing in the
+  code or the deck JSON names this deck as "the possessives deck" — the column
+  names ARE the switch. Renaming those three columns for any reason would
+  silently turn the expansion off and restore the original giveaway (the prompt
+  printing the possessive, « mon book » → type « mon livre » — see above), with
+  no error, just 31 questions again and no warning to whoever made the rename.
+  `verify/verify35-possessives.py` (39 assertions) is the tripwire that fails in
+  that case; wired into `verify.yml`, per that file's own rule that a check CI
+  never runs is not a check. **Undecided:** whether to replace the implicit
+  column-name detection with an explicit opt-in — e.g. a `gameConfig.completeIt`
+  flag on the deck — so the switch doesn't ride on a naming coincidence. Raised
+  with Dan 24 Aug; his answer at the time was "I don't understand the question" —
+  still open, not re-raised since. The "(m)"/"(f)" gloss
   is stripped from the cue — that marker IS the answer — and the gender is offered
   on the ? ladder instead, per the litmus test (help on demand, never inline).
   Verified: **26 verify suites green** (the 25 that existed plus this one),
@@ -1094,6 +1105,103 @@ never reachable from this checkout's object database, so nothing was
 recovered from it; both fixes were simply redone here from the same source
 material and pushed straight to `origin` to close the window for a repeat.
 
+## 24 Aug — latent Complete It indexing bug (not fixed, flagged only)
+
+`CompleteItContent.tsx`'s `buildEntries()` (`src/app/practice/complete-it/[collectionId]/CompleteItContent.tsx:114`)
+builds each question's `itemIdx` from position in `practiceItems(deck)` (line
+117), which filters out `role:`-tagged items (`src/lib/collections/display.ts:62`).
+The render then reads `deck.items[entry.itemIdx]` (line 164) — indexing into
+the *unfiltered* array. The two only agree when nothing is filtered out.
+
+`possessives.json` (the deck this was checked against) carries no `role:`-
+tagged items, so its expansion is unaffected. But this is not merely
+hypothetical: `directions-matching.json` mixes 21 `role:`-tagged items with
+19 full phrases (40 total), and Complete It is ungated — `deckActivityTabs()`
+registers the `complete` flap for every curated deck unconditionally
+(`CahierShell.tsx:600`) — so that deck has the flap live today.
+
+Correction to an earlier overstatement of the symptom: prompt, answer, hints
+and grading all derive from the same single lookup at line 164, so each
+question stays internally self-consistent — it never mismatches its own
+prompt and answer. What actually breaks is *which items get drilled*: the
+`role:`-tagged fragments the filter exists to hide become the ones served
+(their positions in the filtered array collide with early indices into the
+unfiltered one), and full-phrase items past the filtered array's length are
+never reached at all. So on `directions-matching`, some questions likely
+drill role-fragment items that should have stayed hidden, and the tail of
+the 19 full phrases likely never appears. Latent, not urgent; flagged here
+so it doesn't cost someone an afternoon of confused debugging. Fix, when
+it's next touched: build entries by item id (or index within `deck.items`
+directly, applying the `role:` filter at read-time too) rather than mixing
+an index space from one array with lookups into another.
+
+## 24 Aug — closing state, and a process lesson from today's collisions
+
+**Final state as of this commit:** `origin/main` and `live/main` are both at
+`8e0b6d0` (PR #35 — the objets-articles veto + the first boissons-quote
+restore attempt) and deployed; this commit + PR #36 add the indexing-bug
+flag, the SpecuLearn appendix veto write-up (with Dan's render-review
+findings and his style-mismatch reasoning), and the possessives
+implicit-switch completion above. Once merged and deployed, `origin/main`
+and `live/main` will both sit one commit ahead of `8e0b6d0`. SpecuLearn's
+objets-articles is live at 14/20 (the veto applied); Dan's boissons
+attribution — `(Dan: "add the missing boisson part")` — is restored in
+`docs/CONTENT_FLAGS_2026-08-23.md`.
+
+**The lesson, stated plainly because it cost real rework three times today:**
+both `docs/CONTENT_FLAGS_2026-08-23.md` and this file were edited
+concurrently by more than one agent — a Claude Code session and a separate
+Cursor session, working on the same repo checkout pattern, sometimes at the
+same time. That is exactly what dropped Dan's boissons attribution twice
+(once in an earlier merge, a second time when a `git reset --hard` on his
+machine discarded a session's uncommitted fix before it could land), and
+what produced a duplicated SpecuLearn-veto write-up attempt (a second
+session did the identical two doc edits independently, only to find PR #36
+had already shipped them, and correctly stood itself down rather than
+committing a conflicting version).
+
+This file's own rule at the top — "Only ONE agent edits this file at a
+time; say so in your commit" — is not new. It was not followed today. The
+fix is not a new rule; it's actually following the one that already exists:
+before starting a doc edit here or in `CONTENT_FLAGS_2026-08-23.md`, check
+whether another session's work is already in flight (an open PR, a stash,
+a running agent) before writing a competing version, the same way the
+stood-down session did on its second pass today.
+
+## 24 Aug — the Index gets a key ("I really don't understand how to read it")
+
+The one open, unassigned item flagged 22 Aug: the U0–U4 unit grid and the
+per-row circles carried no legend — colour and shape were the whole
+message (litmus: decorative elements exempt, the tooltip is the label),
+but nothing on the page itself decoded them for a first-time reader, and a
+tooltip never shows on a phone. Not a case the litmus test's "redundant
+text" rule covers — removing the decoder for a colour-coded grid would
+leave the user unable to read the page at all, which is the test's own
+bar for what stays.
+
+**Built:** a `?` button next to the "📖 Index" heading (`IndexKey` in
+`src/app/activities/page.tsx`), same on-demand pattern as `StatsHelp.tsx`
+(closed by default, `aria-expanded`, dismiss on outside tap) — not inline
+text. Opens a small popover naming exactly four things: the stop circle
+(number → tap to go there, green ✓ once done), the tried cell (tier-toned
+disc + your accuracy), the open cell (hollow ring — there, not tried), the
+dash (nothing authored), and the three row-button quick links. Positioned
+`fixed` + viewport-centred rather than anchored to the button — the
+button sits mid-header-row, and a button-relative popover that wide ran
+off the right edge of a phone screen in testing; fixed to centre before
+shipping.
+
+Guarded by nine new assertions in `verify/verify24.py` (component exists
+and is rendered, starts closed, carries `aria-expanded`/`aria-label`,
+names all four states in its own text) — 58 → 67 assertions in that file.
+Screenshots taken on a 390px viewport (closed header row, open popover)
+and sent to Dan directly — not checked in; `scratchpad/` is working-only.
+
+Verified: `tsc` clean, all 26 verify suites green (867 total assertions),
+`npm run build` clean. `REQUIRE_SIGN_IN` flipped to `false` for the dev
+screenshots, confirmed restored to `true` before this commit.
+
+
 ## 25 Aug — the Menu tile EtuDice is renamed Sorting (display only)
 
 One name had drifted onto three different things:
@@ -1159,3 +1267,4 @@ flipping that flag locally (the patch-23 precedent) was blocked by this
 session's permission classifier, so the walk-through was static only: the
 card sequence and denominator were re-read and reasoned through, not
 observed. Worth one manual pass on a signed-in run before this is deployed.
+
