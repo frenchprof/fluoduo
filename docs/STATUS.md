@@ -1093,3 +1093,48 @@ had made the same two fixes independently before this one landed — it was
 never reachable from this checkout's object database, so nothing was
 recovered from it; both fixes were simply redone here from the same source
 material and pushed straight to `origin` to close the window for a repeat.
+
+## 25 Aug — the Menu tile EtuDice is renamed Sorting (display only)
+
+One name had drifted onto three different things:
+
+- `DiceConfig.newQuestion()` (`src/content/lessons/native/types.ts`) — a
+  generator that emits a fresh instance of the same structure on every call.
+  30 native lessons ship one; `buildCards.tsx` calls it per card and renders
+  the same instance as an MCQ, a gap-fill and a build. **This is what Dan
+  means by the dice** — *"switching to a different variation of the same
+  structure, nothing more"* (25 Aug).
+- The d12 in the lesson pager (`DIE_SIDES = 12`) — which does NOT vary
+  anything: `setQueue((q) => q.slice(entry))` cuts cards off the front, so
+  face 1 = all 12 cards and face 12 = one card. It is a run-length dial, and
+  because the ramp runs easy → hard (4 MCQ, 4 gap, 3 build, 1 translate) a
+  high roll is shorter *and* harder. **Unresolved — see below.**
+- The Menu tile "EtuDice 🎲", whose blurb read *"Roll the d12 — it sets your
+  starting card on the lesson ramp"* while the tile actually opened
+  `/practice/dice/[collectionId]`: a group-sorting MCQ over the deck's
+  Letris columns. No die, no variation.
+
+Dan's ruling: *"if it is a sorting exercise that got created accidentally,
+then i suppose we keep it, and maybe call it Sorting for now."* So the tile
+is **Sorting 🗂️**, blurb *"Which group does each word belong to?"* — and
+"EtuDice" now names only the d12 in the pager.
+
+**Display rename only.** The registry key stays `"dice"`, so the route
+`/practice/dice/[id]`, the deck tabs, `hasDicePractice()`, the activity
+ledger keys (`dice-practice:`) and every saved progress record are untouched.
+Changed strings: the registry row + its mergers note (`activities.ts`), the
+drill's prompt / empty state / fallback emoji (`PracticeContent.tsx`), the
+history label `KEY_SURFACES["dice-practice"].name` "Dice" → "Sorting"
+(`labels.ts`), and the comments in `CahierShell`, `MenuSplash`,
+`RailGroups`, `nextStep`, `SioModal`, `hints` that named the tile. Pinned in
+`verify/verify29-rail.py`'s `EXPECT["practice"]`.
+
+Verified: verify19/20/22/28/29 green (23/57/28/165/22), `tsc --noEmit`
+clean, `npm run build` clean. In `out/`, the only surviving "EtuDice" is the
+pager's own roll card — which is correct.
+
+**Open, for Dan.** The d12 still shortens the run instead of varying it.
+Two ways to keep it to the stated intent: delete the roll (three constants
+plus the roll card in `LessonPager`; run length stops being random), or turn
+it into a re-roll — same card, press it, `newQuestion()` hands you another
+instance. Not built either way; it is student-visible and needs Dan's word.

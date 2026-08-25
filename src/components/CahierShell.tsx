@@ -46,7 +46,7 @@ import { toPracticeSet } from "@/lib/practice/engine";
 import BottomBar from "@/components/BottomBar";
 import PageBand from "@/components/PageBand";
 
-/** Dice Practice is an MCQ over the deck's letris columns — no columns, no game. */
+/** Sorting is an MCQ over the deck's letris columns — no columns, no game. */
 export function hasDicePractice(collectionId: string): boolean {
   return !!CURATED.find((c) => c.id === collectionId)?.gameConfig?.letris;
 }
@@ -580,13 +580,13 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     // it kept (and later regained, 2026-07-22) its own flap below, gated to
     // decks with gap-authored items.
     registryTab("lesson", lessons.length > 0 ? `/lessons/${lessons[0].slug}` : `/lessons/deck/${collectionId}`),
-    // EtuDice and iComplete, back after the 2026-07-19 unification orphaned
+    // Sorting and iComplete, back after the 2026-07-19 unification orphaned
     // them. Placed here so the row reads as FluOlin Goals' own sequence:
-    // Memo -> EtuDice -> 4Memoire -> iComplete.
+    // Memo -> Sorting -> 4Memoire -> iComplete.
     //
-    // EtuDice is gated exactly like VocabulaRain and GramMarathon: only the 21
+    // Sorting is gated exactly like VocabulaRain and GramMarathon: only the 21
     // of 44 decks with >=2 letris columns can build a practice set, and on the
-    // rest /practice/dice/[id] renders "No dice practice for this deck yet".
+    // rest /practice/dice/[id] renders "No sorting exercise for this deck yet".
     // An absent flap beats a dead end -- and a rail slot could not be gated at
     // all, which is why it is here and not in the rail.
     ...(curatedDeck && toPracticeSet(curatedDeck)

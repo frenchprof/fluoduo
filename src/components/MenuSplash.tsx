@@ -19,7 +19,7 @@
  * No group headings: a tile carries its own emoji, name and family colour,
  * and twenty tiles read faster as one field than as six labelled shelves.
  *
- * The three per-deck activities (Memo, EtuDice, iComplete) have no page of
+ * The three per-deck activities (Memo, Sorting, iComplete) have no page of
  * their own — they live inside a deck — so their tile lands on the Index with
  * that activity preselected rather than being left out. A menu missing three
  * of its twenty would be the thing a learner notices.

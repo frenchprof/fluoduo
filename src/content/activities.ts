@@ -32,7 +32,8 @@
  *   Pre-Test  folds into SpecuLearn   (same job, two engines)
  *   Dictée    IS ÉcouTexte            (never a separate activity)
  *   EtuDice   is the dice difficulty roll, and it lives inside Memo (the
- *             lesson activity — named xPlain until 2026-08-23)
+ *             lesson activity — named xPlain until 2026-08-23). The tile
+ *             that used to carry the name is Sorting, a different exercise.
  *   ComposeIt covers RolePlayer AND WritInstructor
  *   Match It  KIV — off navigation entirely (only 1 of 50 decks has pairs;
  *             the other 49 links were 404s)
@@ -99,7 +100,11 @@ export const ACTIVITIES: Activity[] = [
   // Dan, 2026-08-23: renamed xPlain → Memo (approved surface #3). Key stays
   // "lesson" — display rename only.
   { key: "lesson", name: "Memo", emoji: "📚", family: "practice", href: null, hue: "#e0567f", blurb: "The lesson: rule, then practice." },
-  { key: "dice", name: "EtuDice", emoji: "🎲", family: "practice", href: null, hue: "#e3a700", blurb: "Roll the d12 — it sets your starting card on the lesson ramp." },
+  // Dan, 2026-08-25: renamed EtuDice → Sorting. The tile never opened a die —
+  // it opens the group-sorting MCQ, while the real d12 lives in the lesson
+  // pager. Key stays "dice": the route, the tabs and saved progress all
+  // hang off it. Display rename only.
+  { key: "dice", name: "Sorting", emoji: "🗂️", family: "practice", href: null, hue: "#e3a700", blurb: "Which group does each word belong to?" },
   { key: "flip", name: "4Mémoire", emoji: "🃏", family: "practice", href: "/activities?activity=flip", hue: "#2bb6c2", blurb: "Flashcards. English front, flip to French." },
   { key: "complete", name: "iComplete", emoji: "✏️", family: "practice", href: null, hue: "#7bbf2e", blurb: "Type the missing word." },
 
