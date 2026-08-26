@@ -382,8 +382,14 @@ Shipped ≈ 149 of ~150 in-scope units.
 
 ## Deploy
 
-**Deployed 23 Aug: `dckg/fluo` main is `919a1c2` (PR #33)** — the same commit as
-`origin/main` and the local tree, confirmed 24 Aug. There is no deploy debt.
+**Deployed 25 Aug: `dckg/fluo` main is `abdc86b`** — the same commit as
+`origin/main` and Dan's local tree. There is no deploy debt. (Superseded
+`919a1c2`, deployed 23 Aug.) That push carried PRs #37 and #38 — the
+EtuDice → Sorting rename, the deleted lesson-ramp entry die, the
+`claude/peers-vd2h6h` reconciliation — plus Dan's own `ff96b93` docs pair,
+which had been pushed to live on 24 Aug WITHOUT ever reaching `origin`. That
+drift is what made a parallel session read main as "independently rewritten";
+see **Always pull origin before pushing live**, below.
 Cloudflare Pages (`fluolingo-dot-com` → fluolingo.com) builds on that push.
 (Earlier revisions of this section stopped at 22 Aug / `1a29278`; PRs #32 and #33
 landed and were pushed after it was written.)
@@ -403,8 +409,54 @@ git push live main
 not treat `#` as a comment (`interactive_comments` is off by default), so a
 pasted `git push live main   # Cloudflare builds it` sends `#`, `Cloudflare`,
 `Pages`… as refspecs and fails with `error: src refspec # does not match any`.
-It cost one confusing failure on 22 Aug. Keep the command bare; put the
-explanation on its own line.
+It cost one confusing failure on 22 Aug, and a second on 25 Aug. Keep the
+command bare; put the explanation on its own line.
+
+**Always pull origin before pushing live.** Live must never hold a commit
+`origin` lacks. On 24 Aug `ff96b93` was pushed to live and not to origin; the
+next day `origin/main` had moved on, the two histories diverged, and `git pull`
+stopped dead with `fatal: Need to specify how to reconcile divergent branches`
+— while `git push live main` cheerfully reported `Everything up-to-date`,
+because local main and live/main still matched each other. Both symptoms, one
+cause.
+
+### Setting up a machine that has never deployed
+
+Deploying needs a clone plus the `live` remote. Node is NOT needed — Cloudflare
+builds on its own machines; install it only to run or edit the app locally.
+
+```sh
+xcode-select --install
+brew install gh
+gh auth login
+```
+
+For `gh auth login`: **GitHub.com → HTTPS → Yes** (authenticate git) **→ Login
+with a web browser**. The HTTPS + "authenticate git" answers are what let
+`git clone` work afterwards without a password prompt. Skip either install if
+`git --version` / `gh --version` already answers.
+
+```sh
+git clone https://github.com/frenchprof/fluoduo.git
+cd fluoduo
+git remote add live https://github.com/dckg/fluo.git
+git config --global pull.rebase false
+```
+
+`git config --global pull.rebase false` is per machine, not per clone, and it
+is what stops `git pull` refusing on divergent branches. Without it the pull
+aborts mid-way and leaves `MERGE_HEAD` behind, which then blocks every
+subsequent pull with `You have not concluded your merge`.
+
+After that, deploying from that machine is the two-line block above. If it
+answers `remote live already exists`, the machine is already set up.
+
+**If a merge opens vim** — a full-screen editor showing `Merge branch 'main'…`
+and lines starting with `#` — press <kbd>Esc</kbd>, type `:q!`, Enter, then run
+`git commit --no-edit`. Do NOT type shell commands into that screen: on 25 Aug
+a `git push …` line was typed into the message buffer, and `--no-edit` then
+swallowed the whole comment block into `abdc86b`'s subject line, where it
+remains.
 
 Validated before the merge: `next build` succeeds · `tsc` clean · eslint 115
 errors in 51 files (DOWN from the 118/52 baseline — main's own work removed
