@@ -41,7 +41,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { SIOS } from "@/content/sios";
-import { activity as activityInfo, familyOf } from "@/content/activities";
+import { activity as activityInfo, bandOf, familyOf } from "@/content/activities";
 import { nextStep, type NextStep } from "@/lib/nextStep";
 import PageBand from "@/components/PageBand";
 import BottomBar from "@/components/BottomBar";
@@ -164,6 +164,10 @@ export default function DrillShell({
   const router = useRouter();
   const act = activity ? activityInfo(activity) : undefined;
   const famKey = activity ? familyOf(activity) : null;
+  // The band over a drill is coloured by what the drill ASKS, not by which
+  // menu family it lives under (Dan, 2026-08-26). Family still drives the
+  // rail and the Menu; this is the activity's own page.
+  const bandKey = activity ? bandOf(activity) : null;
   // Resolved only when the finish row is up — ledger + progress are the
   // device's own localStorage, so this never runs during prerender (a finish
   // screen is always reached by interaction).
@@ -221,7 +225,7 @@ export default function DrillShell({
     : 0;
 
   return (
-    <div className={`${famKey ? `fam-${famKey}` : "fam-none"} flex h-dvh flex-col overflow-hidden bg-[color:var(--cahier-paper)]`}>
+    <div className={`${famKey ? `fam-${famKey}` : "fam-none"}${bandKey ? ` band-${bandKey}` : ""} flex h-dvh flex-col overflow-hidden bg-[color:var(--cahier-paper)]`}>
       {/* ── the notebook (2026-08-24, approved flow): drills live INSIDE the
           cahier — the family heading band on top (name from the registry,
           the drill's i/total as the band's ONE chip so the figure is never

@@ -1353,3 +1353,61 @@ session's permission classifier, so the walk-through was static only: the
 card sequence and denominator were re-read and reasoned through, not
 observed. Worth one manual pass on a signed-in run before this is deployed.
 
+
+## 26 Aug — the demand band: an activity's page is coloured by what it ASKS
+
+Dan: "all the activities [should] have a uniform colored band at the top …
+genuinely colored bands representing the activity (like on the PROFILE page)."
+
+The band already existed — every drill draws `PageBand`, coloured from
+`--fam-ink`. But the family axis says where an activity LIVES in the menu
+(Practice, Review, Skills), which is a fact about navigation, not about the
+learner. On the activity's own page the useful fact is what it DEMANDS. So a
+second axis now takes that band, and the family keeps the rail, the Menu and
+the section pages.
+
+Five branches, in the order of the evidence ladder already in
+`lib/evidence.ts` (recognition → constrained → free / productive):
+
+| band | asks | activities |
+|---|---|---|
+| `guess` | commit before you are taught | Pre-Test · SpecuLearn |
+| `lesson` | the rule, then practice | Memo — the only door that teaches |
+| `recog` | the answer is in view; find it | 4Mémoire · Sorting · Match It · VocabulaRain · LexicaLater · ÉcouTexte |
+| `prod` | retrieve one right answer | iComplete · GramMarathon · ConjugaZone (written) · WorDrill (spoken) |
+| `create` | no single right answer | ComposeIt · ChaTutor |
+
+Two of Dan's rulings are pinned in `verify36-band.py`. **WorDrill shares
+`prod`** — 26 Aug: *"keeping them apart is correct, but they are at different
+sub-branches of the same branch"*; the channel is a sub-branch, not a colour,
+and WorDrill is the only microphone in the app. **Sorting is `recog`, not
+`prod`** — `evidence.ts`'s own definition of "recognition" names *sorting into
+a column*, while its lookup table tags the drill `constrained`. The file
+contradicts itself and the definition wins here. **Open for Dan:** correcting
+that lookup would change what past answers mean in the mastery estimate, so
+the lookup is untouched.
+
+**The hues are derived, not picked, and that mattered.** The obvious semantic
+palette was the worst possible one: the first set (violet `#6d3fc0`, amber
+`#a15c00`, teal `#0f7480`, green `#2f6b3d`, crimson `#b32d55`) measured
+**dEok 0.038** at its worst pair under Machado deuteranopia/protanopia
+simulation — two of five bands indistinguishable. Amber/green/crimson sits
+exactly on the axis red-green colour blindness flattens, and four more
+hand-tuned attempts scored 0.019–0.043. The shipped five came out of a search
+over OKLCH with ≥45° hue separation and white contrast held between 4.5 and
+8.0: worst pair **0.120**, three times better, every band ≥4.5:1 against both
+white text and paper (guess 5.30/5.11 · lesson 4.95/4.77 · recog 5.36/5.16 ·
+prod 7.74/7.46 · create 7.32/7.05).
+
+Even so the band always prints the activity's NAME in white on it, so colour
+reinforces and never carries alone — `verify36` asserts that too. Five
+categories is past what hue alone can do for a red-green colour-blind reader,
+and no palette fixes that.
+
+`verify36-band.py` (45 assertions) recomputes every ratio AND every simulated
+separation from `globals.css`, the way verify33 does for the families. Full
+suite green (27 scripts), `tsc` clean, clean `npm run build`. Confirmed in the
+shipped bundle: the token, the `.band-*` class, and PageBand's
+`var(--band, var(--fam-ink, …))` fallback chain.
+
+NOT deployed. Nothing here has reached `origin/main` — it is a branch and a PR.

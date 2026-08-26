@@ -8,10 +8,13 @@ import type { ReactNode } from "react";
  * number pinned right on the highlighter chip. The sub-line is for DATA
  * (course · week, deck · count), never description — the litmus rule.
  *
- * The colour comes off the page's own `fam-*` class (--fam-ink), so the
- * band recolours by family with no prop; /moi and /profil never see it
- * (familyOf returns null there — their five-row scheme is the original
- * this band replicates).
+ * The colour comes off the page's own class, with no prop. A `band-*`
+ * class (--band) wins where one is set — that is WHAT THE ACTIVITY ASKS
+ * of the learner, which is what its own page should say (Dan,
+ * 2026-08-26). Otherwise it falls back to the `fam-*` family ink, which
+ * still colours the section pages. /moi and /profil never see either
+ * (both lookups return null there — their five-row scheme is the
+ * original this band replicates).
  */
 export default function PageBand({
   title,
@@ -27,7 +30,7 @@ export default function PageBand({
   return (
     <header
       className={`page-band flex items-center justify-between gap-3 py-3 pr-4 sm:pr-6 ${className}`}
-      style={{ background: "var(--fam-ink, var(--cahier-ink))", borderBottom: "3px solid var(--cahier-ink)" }}
+      style={{ background: "var(--band, var(--fam-ink, var(--cahier-ink)))", borderBottom: "3px solid var(--cahier-ink)" }}
     >
       <div className="min-w-0">
         <h1

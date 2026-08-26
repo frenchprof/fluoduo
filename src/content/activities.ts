@@ -181,6 +181,50 @@ const SITE_FAMILY: Record<string, FamilyKey> = {
  * hue. Unknown keys return null and the page stays uncoloured, which is the
  * right default: a page with no home should not borrow one.
  */
+/** What an activity DEMANDS of the learner — the thing its own page should be
+ *  coloured by. The family says where it lives in the menu; this says what it
+ *  makes you do. Five branches, in the order of the evidence ladder already in
+ *  lib/evidence.ts (recognition -> constrained -> free / productive).
+ *
+ *  Dan, 2026-08-26, on Produce's two halves: "keeping them apart is correct,
+ *  but they are at different sub-branches of the same branch." So WorDrill
+ *  shares `prod` with iComplete and GramMarathon — same demand on memory, and
+ *  the channel (spoken, the only microphone in the app) is a sub-branch, not
+ *  a colour of its own.
+ *
+ *  Sorting sits in `recog`, not `prod`: evidence.ts's own definition of
+ *  "recognition" names sorting into a column, while its lookup table tags the
+ *  drill "constrained". The file contradicts itself; the definition wins here.
+ *  Flagged for Dan — correcting the lookup changes what past answers mean. */
+export type BandKey = "guess" | "lesson" | "recog" | "prod" | "create";
+
+const BAND: Record<string, BandKey> = {
+  pretest: "guess",
+  speculearn: "guess",
+  lesson: "lesson",       // Memo
+  dice: "recog",          // Sorting
+  flip: "recog",          // 4Mémoire
+  matching: "recog",
+  vocabularain: "recog",
+  lexicalator: "recog",
+  complete: "prod",       // iComplete
+  grammarathon: "prod",
+  conjugaison: "prod",
+  say: "prod",            // WorDrill — spoken half of the same branch
+  wordrill: "prod",
+  ecoutexte: "recog",     // listening comprehension: the answer is in the audio
+  compose: "create",
+  tutor: "create",
+};
+
+/** The band an activity belongs to, or null where the page owns its colours
+ *  already (the same exemption familyOf makes for /moi and /profil). */
+export function bandOf(activeKey: string | undefined): BandKey | null {
+  if (!activeKey) return null;
+  if (SELF_COLOURED.has(activeKey)) return null;
+  return BAND[activeKey] ?? null;
+}
+
 export function familyOf(activeKey: string | undefined): FamilyKey | null {
   if (!activeKey) return null;
   // Pages that already own a complete colour scheme are left alone (Dan,

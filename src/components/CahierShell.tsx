@@ -41,7 +41,7 @@ import FirstTour from "@/components/FirstTour";
 import AccountButton from "@/components/AccountButton";
 import SoundControl from "@/components/SoundControl";
 import { isPlayableGap } from "@/lib/collections/gapSentence";
-import { activity, familyOf } from "@/content/activities";
+import { activity, bandOf, familyOf } from "@/content/activities";
 import { toPracticeSet } from "@/lib/practice/engine";
 import BottomBar from "@/components/BottomBar";
 import PageBand from "@/components/PageBand";
@@ -179,6 +179,9 @@ export default function CahierShell({
   // header falls back to plain paper and the spine rule does not match, so
   // the page renders exactly as it did before this system existed.
   const famKey = familyOf(active);
+  // What the page ASKS, where it is an activity — the band over it takes
+  // this over the family (Dan, 2026-08-26). Section pages keep the family.
+  const bandKey = bandOf(active);
 
   // Per-page browser-tab title (audit 2026-07-19: every page announced
   // itself as just "FluOlinGo" — tabs, history, bookmarks and screen-reader
@@ -285,7 +288,7 @@ export default function CahierShell({
              `active` key into one of the six, so a route does not have to
              declare a hue — and the whole site stops being one undivided
              field of paper. Unknown keys stay uncoloured on purpose. */
-          className={`cahier-page ${famKey ? `fam-${famKey}` : ""} ${nested ? "min-h-[calc(100vh-18px)]" : "min-h-screen"}`}
+          className={`cahier-page ${famKey ? `fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""} ${nested ? "min-h-[calc(100vh-18px)]" : "min-h-screen"}`}
         >
           {!nested && <div className="cahier-binding" aria-hidden />}
           {!nested && edgeGrip}
