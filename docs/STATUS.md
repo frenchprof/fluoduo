@@ -425,6 +425,14 @@ cause.
 Deploying needs a clone plus the `live` remote. Node is NOT needed — Cloudflare
 builds on its own machines; install it only to run or edit the app locally.
 
+**A phone cannot do this out of the box.** Neither iOS nor Android ships a
+terminal, so there is no `git` to run. It needs an app first: Working Copy
+(iOS) is a real git client with a UI and is much the best of them — clone, add
+the remote, pull, push, all by tapping; a-Shell or iSH (iOS) and Termux
+(Android) give a real shell where the commands below work as written; a
+Codespace in the mobile browser also works and is as unpleasant as it sounds.
+Everything else here assumes a Mac.
+
 ```sh
 xcode-select --install
 brew install gh
