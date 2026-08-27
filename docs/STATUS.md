@@ -1572,3 +1572,48 @@ That same test measured it: a selected option is shown ONLY by swapping its
 border from `--cahier-rule` to `--cahier-ink` — the same dark brown as the
 Check button beside it. Dan: *"A selected answer looks identical to the button
 you press next."* Real, and now measured rather than eyeballed.
+
+### 27 Aug — the glyph rule, narrowed honestly; and a practice worth keeping
+
+Dan ruled **"glyphs stay"**, settling a collision between two of his own
+rulings: the 21 Aug *one glyph, one job* rule (▶ means SOUND) and his own Home
+draft, which draws Play as a filled triangle. The draft wins.
+
+A parallel session (Peers) caught something I should have caught myself: the
+check in verify25 asserted only that the **character** ▶ was absent, and its
+comment defended that as "what the rule was ever about". That was a
+rationalisation. A learner cannot tell an SVG triangle from a ▶; the rule was
+about what the shape says, not which codepoint draws it.
+
+Rewritten to assert the rule as it now stands, both halves so neither drifts:
+
+- **A typed ▶ / ⏸ / ⏹ is audio** — inline with text a learner reads it as
+  "this will speak". Still banned on Home.
+- **The drawn key is navigation** — Home's three SVG keys are Dan's own design
+  and are the approved form. A later session reading only the 21 Aug note must
+  not "restore" them to words.
+
+**AND THE PRACTICE, taken from Peers:** they shipped a check an hour earlier
+that was **vacuous** — it sliced to the wrong ternary and passed with the bug
+fully restored; they only caught it by deliberately reintroducing the bug. So
+both new assertions above were proved to FAIL before being trusted:
+
+    mutation 1  typed ▶ inserted on Home   -> FAIL "a typed ▶/⏸/⏹ is back"
+    mutation 2  drawn Play path altered    -> FAIL "the drawn Play key is gone"
+    restored                                -> 22 passed · 0 failed
+
+Worth doing for every new check: a green check that cannot go red is worse
+than no check, because it is trusted.
+
+### Corrections exchanged with Peers, both directions
+
+They conceded #38 (they had diffed against the second parent, which trivially
+matches). Their caution that my #18 fix touches `sios.json` under the SIO
+freeze is **wrong**: the fix is `src/lib/useChoiceKeys.ts`, a keyboard handler,
+and this branch touches no content file at all —
+`git diff --name-only origin/main...HEAD` returns no `src/content/**` and no
+`sios.json`. The freeze is not engaged.
+
+They are waiting on my `ev.award` hook (#3) to land on main before wiring the
+pre-test to it, rather than building a parallel mechanism. It is on this
+branch, unmerged.
