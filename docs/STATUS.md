@@ -1411,3 +1411,60 @@ shipped bundle: the token, the `.band-*` class, and PageBand's
 `var(--band, var(--fam-ink, …))` fallback chain.
 
 NOT deployed. Nothing here has reached `origin/main` — it is a branch and a PR.
+
+## 26 Aug — Home rebuilt in soft 3D, and the stop comes before the activity
+
+From Dan's own draft ("FluOlinGo Home Header") plus his rule, same day: *"one
+may access the activity through the map or through the activity shortcut, if
+it is the latter, then go straight to the one within the current stop. In
+other words, one must first choose the stop before they can access the
+activity."*
+
+**Two surfaces, one light source.** `.neo-well` is a value pressed INTO the
+paper — read-only by construction, no hover, nothing to press. `.neo-key` is a
+control standing OUT of it, and pressing INVERTS it into its own well. Neither
+carries a border: depth is the affordance, which is what let the draft drop
+the card, the chip rail and the ruler without losing legibility. Both honour
+`prefers-reduced-motion`.
+
+**The page now reads:** welcome strip (edge to edge, the four dopamine hues,
+no box — the brand animation and the written « par Dr Chan » unchanged) →
+two wells (Stop *n*/50 with five unit dots · Streak, greyed at zero) → three
+keys (Play green · Rewind blue with its due badge, sunk flat when nothing is
+due · the nine-square, reward-orange) → « Next: … » → the Map postcard,
+untouched.
+
+**The navigation change is the substantive one.** The nine-square key used to
+open `MenuSplash`, twenty tiles with no stop attached — so tapping one asked
+"which activity?" before the learner had been asked "which stop?", and then
+had to ask again. It now opens `StopSheet`, built from
+`deckActivityTabs(activeSio.collectionId)`. Every door in it is already
+pointed at the stop the learner is on; a stop with no deck cannot open it at
+all. Verified live: at SIO-001 the sheet lists exactly the six activities the
+50-stop matrix predicts, and every link resolves to `sappeler` or its lesson.
+Each row wears its demand band from verify36.
+
+**Measured, not assumed.** The first build overflowed the right edge at 390px
+— the orange key was cut in half, exactly the failure Dan called out on 21 Aug
+("must not go hiding into the overspill off the screen"). The draft sizes its
+phone board down on purpose and this now does too: keys 50px → 58px from `sm`,
+wells 64px → 80px. Re-measured with Playwright at **320 / 360 / 390 / 430 px**
+— every well and key inside the viewport, `scrollWidth == viewport` at all
+four. verify31-topbar still green (13/13), so the top icon row is unmoved.
+
+**Three verify scripts had to move, and one caught a real regression.**
+verify19b's raw-hex ratchet went RED at 505 → 512: the draft's three glyph
+fills were hard-coded darks. Fixed properly rather than rebased — the glyph
+ink is now derived (`color-mix(in oklab, var(--dopa-win) 34%, black)` and
+siblings), and the ratchet came out at **501, four BELOW the old baseline**.
+verify25 and verify32-retention pinned the 21–22 Aug report-card hero that
+this draft deliberately replaces; both were rewritten to hold what survives
+(the two marks, the three destinations, the due badge, the glyph rule, the ban
+on a full-width CTA) rather than the shape that carried it, with the
+supersession named in the file. **verify37-home.py (24 assertions)** pins the
+new surfaces and the stop-before-activity rule.
+
+Full suite green (28 scripts), `tsc` clean, clean `npm run build`. ESLint: the
+one pre-existing `set-state-in-effect` error in HomeDashboard, unchanged.
+
+NOT deployed — branch and PR.
