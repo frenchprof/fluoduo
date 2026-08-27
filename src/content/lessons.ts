@@ -10,7 +10,10 @@ export type Lesson = { slug: string; title: string; unit: number };
 export const LESSONS: Record<string, Lesson> = {
   "tu-vous":           { slug: "tu-vous",           title: "Tu ou vous ?",                 unit: 0 },
   "salutations":       { slug: "salutations",       title: "Les salutations",              unit: 0 },
-  "se-presenter":      { slug: "se-presenter",      title: "Se présenter",                 unit: 1 },
+  // Unit 0 since 2026-08-27: the lesson is SIO-001's (Unité 0, Introductions).
+  // It was filed under U1 because it also carried age/nationality/family —
+  // Unit 1 material — which has now gone back to the stops that own it.
+  "se-presenter":      { slug: "se-presenter",      title: "Se présenter",                 unit: 0 },
   // Unit 2 since 2026-08-23 (Dan): the lesson now teaches négation (2)
   // « ne… plus » alongside pas — U2 material in the book; it also joins
   // SIO-028's rail below (Dan: "insert it somewhere as an addition").
@@ -60,7 +63,10 @@ export const LESSONS_BY_SIO: Record<string, string[]> = {
   "SIO-009": ["salutations"],
   "SIO-012": ["professions"],
   "SIO-016": ["nationalities"],
-  "SIO-014": ["se-presenter", "negation", "conjugaison-u1"],
+  // se-presenter dropped 2026-08-27: it earned this row by teaching être +
+  // agreement through nationality, which is SIO-016's job and has moved back
+  // there. conjugaison-u1 already drills être in all persons for this stop.
+  "SIO-014": ["negation", "conjugaison-u1"],
   "SIO-028": ["negation"],
   // avoir-etats FIRST: the SIO's grammar is avoir-vs-être states + age, not
   // the paradigm tables (Dan, 2026-07-08: "the avoir SIO doesn't match").

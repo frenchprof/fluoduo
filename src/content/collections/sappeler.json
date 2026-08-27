@@ -44,7 +44,7 @@
       "id": "sappeler-05",
       "fr": "Nous nous appelons Léa et Marc.",
       "en": "Our names are Léa and Marc.",
-      "gap": "nous appelons",
+      "gap": "appelons",
       "tags": []
     },
     {
@@ -52,7 +52,7 @@
       "fr": "Vous vous appelez Madame Martin.",
       "en": "Your name is Mrs Martin.",
       "note": "(formal)",
-      "gap": "vous appelez",
+      "gap": "appelez",
       "tags": []
     },
     {
@@ -84,7 +84,7 @@
       "fr": "Comment vous vous appelez ?",
       "en": "What's your name?",
       "note": "(formal)",
-      "gap": "vous appelez",
+      "gap": "appelez",
       "tags": []
     }
   ]

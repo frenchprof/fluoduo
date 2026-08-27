@@ -277,6 +277,40 @@ check("var(--cahier-hl)" in _rule and "#fff" not in _rule and "color: white" not
 check("inset" in _rule, ".answer-picked carries a non-colour cue (the inset sink), so the state is not hue-only",
       ".answer-picked has no inset cue — picked-vs-unpicked would rest on hue alone")
 
+# ── 14c · bite-sized objectives: Lesson 1 teaches ONE thing ───────────────
+# Dan, 2026-08-27: "the original intention (and is still the current
+# intention) is to have the objectives broken down into bitesized objectives.
+# so having four things at one go is not cool." se-presenter had four — name,
+# age, nationality, family — picked at random per card, so ~3 cards in 4 asked
+# about something SIO-001 never promises. Age and nationality own stops of
+# their own (SIO-019, SIO-016), so the cut sends them home rather than
+# deleting them. Assert the MEANING both ways: the intruders cannot be
+# generated, and the two things SIO-001 does promise are present.
+_sp = CODE["src/content/lessons/native/se-presenter.tsx"]
+for _pool, _who in [("AGES", "age → SIO-019"), ("NATS", "nationality → SIO-016"), ("FAMILY", "family")]:
+    check(_pool not in _sp, f"Lesson 1 cannot generate {_who}", f"se-presenter still carries the {_pool} pool — Lesson 1 is teaching {_who} again")
+check("Comment tu t'appelles" in _sp and "Comment vous vous appelez" in _sp,
+      "Lesson 1 teaches ASKING a name (SIO-001's can-do)", "se-presenter does not teach asking a name")
+check("Monsieur" in _sp and "Madame" in _sp,
+      "Lesson 1 teaches M./Mme as forms of address (SIO-001)", "se-presenter does not teach M./Mme")
+
+# A cloze must never ask for a word already standing in its own frame
+# (Dan: "why do we need two blanks to fill in the same blank"). The reflexive
+# vous/nous items blanked "vous appelez" out of "Comment vous vous appelez ?",
+# stranding a lone vous in the frame that the learner then had to retype.
+_deck = json.loads(read("src/content/collections/sappeler.json"))
+_items = _deck["items"] if isinstance(_deck, dict) else _deck
+_dupes = []
+for _it in _items:
+    _g = _it.get("gap")
+    if not _g or _g not in _it["fr"]:
+        continue
+    _i = _it["fr"].index(_g)
+    _frame = (_it["fr"][:_i] + " ____ " + _it["fr"][_i + len(_g):]).split()
+    if any(_w in _frame for _w in _g.split()):
+        _dupes.append(_it["id"])
+check(not _dupes, "no cloze asks for a word already printed in its frame", f"these frames repeat their own answer: {_dupes}")
+
 # ── 15 · CI ──────────────────────────────────────────────────────────────
 wf = read(".github/workflows/verify.yml")
 check("verify/verify27-bugs.py" in wf and wf.find("verify27-bugs") > wf.find("verify26"), "CI runs verify27-bugs after verify26", "verify27-bugs not wired after verify26")
