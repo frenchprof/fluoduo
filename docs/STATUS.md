@@ -1468,3 +1468,59 @@ Full suite green (28 scripts), `tsc` clean, clean `npm run build`. ESLint: the
 one pre-existing `set-state-in-effect` error in HomeDashboard, unchanged.
 
 NOT deployed — branch and PR.
+
+## 27 Aug — Dan played the app and found 19 things. Two fixed so far.
+
+Dan, after the first real play-through: *"JE SUIS VRAIMENT DÉSESPÉRÉ !"* — then
+nineteen numbered problems, most of which no code-reading test could have
+caught. His triage was right: 1, 3, 4, 7, 14 and 18 are one-liners; 2 is a
+content project.
+
+### The sign-in wall is now a BUILD-TIME switch
+
+`REQUIRE_SIGN_IN = process.env.NEXT_PUBLIC_OPEN_APP !== "1"`. Dan asked for
+"a secret sign in method for Claude" — a password would have been worse than
+useless: `output: "export"` means every line ships to every student, so a
+shared secret is findable with the developer tools in a minute, and it opens
+the wall into Firestore where the student records are. Compile-time instead: a
+production build never sets the flag and therefore contains no bypass at all,
+not even a disabled one. An agent builds a throwaway open copy, screenshots,
+deletes it. Confirmed in a browser: a normal `npm run build` still shows
+« Sign in to open the lesson ».
+
+`verify38-authwall.py` (8) keeps it safe: the default must be closed, and the
+flag must appear in NO committed config a deploy could read. (It failed on
+first run by matching the word "password" in its own explanatory comment —
+verify19b's lesson, relearned; it strips comments now.)
+
+### #4 — the audio only ever said the first word. Fixed, and it was site-wide.
+
+Dan: *"Tap « Nom — Je m'appelle Thomas » and it says just « Nom »… the app is
+only ever handing the speaker the label."* Exactly right, and the cause was
+not in that lesson. `SpeakZone`'s first branch means *"this row is entirely
+French — read it whole, minus any « — gloss » tail"*, and tested it with
+`row.closest('[lang="fr"]')`. That walks to **`<html lang="fr">`**, which every
+page has. So the branch was TRUE for every row on every page, and every tap
+spoke `rowText.split("—")[0]` — the English label. Not a truncation: the
+sentence was never handed over.
+
+The region lookup is now scoped to the SpeakZone (`zone.contains(frRegion)`),
+restoring what the rule always meant — French AUTHORED in the content, not the
+document's own lang. Proved in a real browser with the speech engine stubbed:
+before, both halves of the row spoke `["Nom"]`; after, both speak
+`["Je m'appelle Thomas."]`. This fixes every Mémo in the app.
+
+### Two things I told Dan that were wrong
+
+The lesson bar reads **/14**, not /15. The denominator is rule cards + 12, and
+`se-presenter` splits into 2 rule cards, not 3 — I gave him a number I had
+assumed rather than measured. And the dice screen IS gone: the Mémo card goes
+straight to Continue, confirmed on screen at last.
+
+### Still open from Dan's list
+
+1 (Continue button far below the text) · 2 (the lesson teaches a different
+thing from its promise — a content project, needs Dan) · 3 (a wrong answer
+pays 20 and the correction 60, so guessing first earns more than knowing) ·
+5 (progress is lost on leaving the page) · 6 · 7 · 8 · 9 · 10 · 11 · 12 · 13 ·
+14 · 15 · 16 · 17 · 18 (pressing "1" restarts the lesson) · 19.
