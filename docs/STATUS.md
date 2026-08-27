@@ -382,8 +382,14 @@ Shipped ≈ 149 of ~150 in-scope units.
 
 ## Deploy
 
-**Deployed 23 Aug: `dckg/fluo` main is `919a1c2` (PR #33)** — the same commit as
-`origin/main` and the local tree, confirmed 24 Aug. There is no deploy debt.
+**Deployed 25 Aug: `dckg/fluo` main is `abdc86b`** — the same commit as
+`origin/main` and Dan's local tree. There is no deploy debt. (Superseded
+`919a1c2`, deployed 23 Aug.) That push carried PRs #37 and #38 — the
+EtuDice → Sorting rename, the deleted lesson-ramp entry die, the
+`claude/peers-vd2h6h` reconciliation — plus Dan's own `ff96b93` docs pair,
+which had been pushed to live on 24 Aug WITHOUT ever reaching `origin`. That
+drift is what made a parallel session read main as "independently rewritten";
+see **Always pull origin before pushing live**, below.
 Cloudflare Pages (`fluolingo-dot-com` → fluolingo.com) builds on that push.
 (Earlier revisions of this section stopped at 22 Aug / `1a29278`; PRs #32 and #33
 landed and were pushed after it was written.)
@@ -403,8 +409,62 @@ git push live main
 not treat `#` as a comment (`interactive_comments` is off by default), so a
 pasted `git push live main   # Cloudflare builds it` sends `#`, `Cloudflare`,
 `Pages`… as refspecs and fails with `error: src refspec # does not match any`.
-It cost one confusing failure on 22 Aug. Keep the command bare; put the
-explanation on its own line.
+It cost one confusing failure on 22 Aug, and a second on 25 Aug. Keep the
+command bare; put the explanation on its own line.
+
+**Always pull origin before pushing live.** Live must never hold a commit
+`origin` lacks. On 24 Aug `ff96b93` was pushed to live and not to origin; the
+next day `origin/main` had moved on, the two histories diverged, and `git pull`
+stopped dead with `fatal: Need to specify how to reconcile divergent branches`
+— while `git push live main` cheerfully reported `Everything up-to-date`,
+because local main and live/main still matched each other. Both symptoms, one
+cause.
+
+### Setting up a machine that has never deployed
+
+Deploying needs a clone plus the `live` remote. Node is NOT needed — Cloudflare
+builds on its own machines; install it only to run or edit the app locally.
+
+**A phone cannot do this out of the box.** Neither iOS nor Android ships a
+terminal, so there is no `git` to run. It needs an app first: Working Copy
+(iOS) is a real git client with a UI and is much the best of them — clone, add
+the remote, pull, push, all by tapping; a-Shell or iSH (iOS) and Termux
+(Android) give a real shell where the commands below work as written; a
+Codespace in the mobile browser also works and is as unpleasant as it sounds.
+Everything else here assumes a Mac.
+
+```sh
+xcode-select --install
+brew install gh
+gh auth login
+```
+
+For `gh auth login`: **GitHub.com → HTTPS → Yes** (authenticate git) **→ Login
+with a web browser**. The HTTPS + "authenticate git" answers are what let
+`git clone` work afterwards without a password prompt. Skip either install if
+`git --version` / `gh --version` already answers.
+
+```sh
+git clone https://github.com/frenchprof/fluoduo.git
+cd fluoduo
+git remote add live https://github.com/dckg/fluo.git
+git config --global pull.rebase false
+```
+
+`git config --global pull.rebase false` is per machine, not per clone, and it
+is what stops `git pull` refusing on divergent branches. Without it the pull
+aborts mid-way and leaves `MERGE_HEAD` behind, which then blocks every
+subsequent pull with `You have not concluded your merge`.
+
+After that, deploying from that machine is the two-line block above. If it
+answers `remote live already exists`, the machine is already set up.
+
+**If a merge opens vim** — a full-screen editor showing `Merge branch 'main'…`
+and lines starting with `#` — press <kbd>Esc</kbd>, type `:q!`, Enter, then run
+`git commit --no-edit`. Do NOT type shell commands into that screen: on 25 Aug
+a `git push …` line was typed into the message buffer, and `--no-edit` then
+swallowed the whole comment block into `abdc86b`'s subject line, where it
+remains.
 
 Validated before the merge: `next build` succeeds · `tsc` clean · eslint 115
 errors in 51 files (DOWN from the 118/52 baseline — main's own work removed
@@ -1293,3 +1353,61 @@ session's permission classifier, so the walk-through was static only: the
 card sequence and denominator were re-read and reasoned through, not
 observed. Worth one manual pass on a signed-in run before this is deployed.
 
+
+## 26 Aug — the demand band: an activity's page is coloured by what it ASKS
+
+Dan: "all the activities [should] have a uniform colored band at the top …
+genuinely colored bands representing the activity (like on the PROFILE page)."
+
+The band already existed — every drill draws `PageBand`, coloured from
+`--fam-ink`. But the family axis says where an activity LIVES in the menu
+(Practice, Review, Skills), which is a fact about navigation, not about the
+learner. On the activity's own page the useful fact is what it DEMANDS. So a
+second axis now takes that band, and the family keeps the rail, the Menu and
+the section pages.
+
+Five branches, in the order of the evidence ladder already in
+`lib/evidence.ts` (recognition → constrained → free / productive):
+
+| band | asks | activities |
+|---|---|---|
+| `guess` | commit before you are taught | Pre-Test · SpecuLearn |
+| `lesson` | the rule, then practice | Memo — the only door that teaches |
+| `recog` | the answer is in view; find it | 4Mémoire · Sorting · Match It · VocabulaRain · LexicaLater · ÉcouTexte |
+| `prod` | retrieve one right answer | iComplete · GramMarathon · ConjugaZone (written) · WorDrill (spoken) |
+| `create` | no single right answer | ComposeIt · ChaTutor |
+
+Two of Dan's rulings are pinned in `verify36-band.py`. **WorDrill shares
+`prod`** — 26 Aug: *"keeping them apart is correct, but they are at different
+sub-branches of the same branch"*; the channel is a sub-branch, not a colour,
+and WorDrill is the only microphone in the app. **Sorting is `recog`, not
+`prod`** — `evidence.ts`'s own definition of "recognition" names *sorting into
+a column*, while its lookup table tags the drill `constrained`. The file
+contradicts itself and the definition wins here. **Open for Dan:** correcting
+that lookup would change what past answers mean in the mastery estimate, so
+the lookup is untouched.
+
+**The hues are derived, not picked, and that mattered.** The obvious semantic
+palette was the worst possible one: the first set (violet `#6d3fc0`, amber
+`#a15c00`, teal `#0f7480`, green `#2f6b3d`, crimson `#b32d55`) measured
+**dEok 0.038** at its worst pair under Machado deuteranopia/protanopia
+simulation — two of five bands indistinguishable. Amber/green/crimson sits
+exactly on the axis red-green colour blindness flattens, and four more
+hand-tuned attempts scored 0.019–0.043. The shipped five came out of a search
+over OKLCH with ≥45° hue separation and white contrast held between 4.5 and
+8.0: worst pair **0.120**, three times better, every band ≥4.5:1 against both
+white text and paper (guess 5.30/5.11 · lesson 4.95/4.77 · recog 5.36/5.16 ·
+prod 7.74/7.46 · create 7.32/7.05).
+
+Even so the band always prints the activity's NAME in white on it, so colour
+reinforces and never carries alone — `verify36` asserts that too. Five
+categories is past what hue alone can do for a red-green colour-blind reader,
+and no palette fixes that.
+
+`verify36-band.py` (45 assertions) recomputes every ratio AND every simulated
+separation from `globals.css`, the way verify33 does for the families. Full
+suite green (27 scripts), `tsc` clean, clean `npm run build`. Confirmed in the
+shipped bundle: the token, the `.band-*` class, and PageBand's
+`var(--band, var(--fam-ink, …))` fallback chain.
+
+NOT deployed. Nothing here has reached `origin/main` — it is a branch and a PR.

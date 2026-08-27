@@ -1496,6 +1496,47 @@ h3.cahier-display { font-size: var(--fs-h3); }
    the reference makes THRILLS neutral on purpose, and so does this. */
 .fam-none     { --fam: var(--cahier-line-strong); --fam-ink: var(--cahier-ink-soft); --fam-wash: var(--cahier-paper-2); }
 
+/* ── WHAT THE ACTIVITY ASKS YOU TO DO (Dan, 2026-08-26) ────────────────────
+   The family tells you where an activity LIVES in the menu. This tells you
+   what it DEMANDS of the learner, which is the thing a colour should carry
+   on the activity's own page. Five branches, taken from the ladder already
+   in lib/evidence.ts (recognition -> constrained -> free / productive):
+
+     guess   before you are taught     Pre-Test · SpecuLearn
+     lesson  the rule, then practice   Memo — the only door that teaches
+     recog   the answer is in view     4Mémoire · Sorting · Match It ·
+                                       VocabulaRain · LexicaLater
+     prod    retrieve one right answer iComplete · GramMarathon (written)
+                                       WorDrill (spoken — same branch, and
+                                       the only microphone in the app)
+     create  no single right answer    ComposeIt
+
+   These are BAND fills carrying white text, so every ink is measured against
+   white AND against --cahier-paper, whichever surface it lands on:
+   guess 5.30 / 5.11 · lesson 4.95 / 4.77 · recog 5.36 / 5.16 ·
+   prod 7.74 / 7.46 · create 7.32 / 7.05. All clear AA at both.
+
+   THE HUES ARE DERIVED, NOT PICKED. Five categories is past what hue alone
+   can carry for a red-green colour-blind reader, and the obvious semantic
+   palette is the worst possible one: amber/green/crimson is exactly the axis
+   deuteranopia flattens. A hand-picked set (violet #6d3fc0, amber #a15c00,
+   teal #0f7480, green #2f6b3d, crimson #b32d55) measured dEok 0.038 at its
+   worst pair under Machado deutan/protan simulation — indistinguishable.
+   These five came out of a search over OKLCH at >=45 deg hue separation,
+   white contrast held between 4.5 and 8.0: worst pair 0.120, roughly
+   3x better. Even so, colour is REINFORCEMENT here, never the only channel —
+   PageBand always prints the activity's name on the band. verify36
+   recomputes both the ratios and the simulated separations from this file. */
+:root {
+  --band-guess: #6c50e9;   --band-lesson: #6d7607;  --band-recog: #0e7397;
+  --band-prod: #9d2602;    --band-create: #a7016d;
+}
+.band-guess  { --band: var(--band-guess);  --band-wash: color-mix(in oklab, var(--band-guess) 12%, var(--cahier-paper)); }
+.band-lesson { --band: var(--band-lesson); --band-wash: color-mix(in oklab, var(--band-lesson) 12%, var(--cahier-paper)); }
+.band-recog  { --band: var(--band-recog);  --band-wash: color-mix(in oklab, var(--band-recog) 12%, var(--cahier-paper)); }
+.band-prod   { --band: var(--band-prod);   --band-wash: color-mix(in oklab, var(--band-prod) 12%, var(--cahier-paper)); }
+.band-create { --band: var(--band-create); --band-wash: color-mix(in oklab, var(--band-create) 12%, var(--cahier-paper)); }
+
 /* ── The SIO sheet's numbered path (approved guidance flow, 2026-08-24) ────
    The practice chain as steps, not equal flaps: done = ✓ + muted, the next
    undone step accented in the PRACTICE family's colour (the chain IS the

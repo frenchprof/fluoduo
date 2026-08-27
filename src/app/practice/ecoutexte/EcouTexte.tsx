@@ -317,7 +317,7 @@ export default function EcouTexte({
           supplies the family ink DrillShell pages don't inherit; the tagline
           fell to the litmus rule (the empty state says the same thing). */}
       <div className="fam-skills -mx-1 overflow-hidden rounded-2xl">
-        <PageBand title="ÉcouTexte" className="pl-4" />
+        <PageBand title="ÉcouTexte" className="band-recog pl-4" />
       </div>
 
       {header}
