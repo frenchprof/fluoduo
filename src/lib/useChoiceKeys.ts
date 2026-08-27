@@ -95,9 +95,28 @@ export function useChoiceKeys({
   onSpeak?: () => void;
   enabled?: boolean;
 }) {
+  // THE STAND-DOWN LASTS AS LONG AS THE SURFACE, NOT AS LONG AS A QUESTION
+  // (Dan, 2026-08-27: "pretest pressing 1,2,3,4 does advance to the next
+  // question, but at some point after the last question, continuously pressing
+  // 1,2,3,4 leads to jump 11 lessons down").
+  //
+  // Eleven is the tell: KeyNav's digit shortcut reads a two-digit stop number,
+  // so 1 then 1 is SIO-011. It is meant to stand down while a choice exercise
+  // owns the digits — but the stand-down used to live inside the handler
+  // effect, which is gated on `enabled`. The moment the last question was
+  // answered, `enabled` went false, the effect tore down, activeCount fell to
+  // zero, and the digits a learner was still pressing became navigation.
+  //
+  // So the claim is now its own mount-lifetime effect: while this component
+  // exists, digits belong to it, answering or not. A pressed 1 after the last
+  // question does nothing, which is the correct nothing.
+  useEffect(() => {
+    activeCount++;
+    return () => { activeCount--; };
+  }, []);
+
   useEffect(() => {
     if (!enabled) return;
-    activeCount++;
     const h = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement | null;
       if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT" || t.isContentEditable)) return;
@@ -126,7 +145,6 @@ export function useChoiceKeys({
     };
     window.addEventListener("keydown", h);
     return () => {
-      activeCount--;
       window.removeEventListener("keydown", h);
     };
   });
