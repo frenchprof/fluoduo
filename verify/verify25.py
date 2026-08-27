@@ -102,69 +102,62 @@ check(home.count('role="progressbar"') == 0,
       "no progressbar roles remain in the hero",
       "a progressbar role is still in the hero — the status bar is not gone")
 
-# 2b · the marks are a horizontal report-card row
+# 2b · SUPERSEDED, 2026-08-26 — the report card became soft 3D.
+# Dan drew the replacement himself ("FluOlinGo Home Header") and asked for it
+# built: the two readings are WELLS pressed into the paper, the three actions
+# are PILLOWS standing out of it. So the checks below no longer look for a
+# five-cell row of worded buttons — that design is gone on purpose, not by
+# accident. What SURVIVES the restyle is what these checks now hold: the two
+# essential marks, the three destinations, the due badge, the glyph rule, and
+# the ban on a full-width CTA. verify37-home.py pins the new surfaces.
 check("<dl" in home and "<dt" in home and "<dd" in home,
-      "the marks are a description list — each figure carries its label",
-      "the marks are not a <dl> of value/label pairs")
-dl_open = home.find("<dl")
-dl_cls = home[dl_open:home.find(">", dl_open)] if dl_open >= 0 else ""
-check("MARKS" in home and "flex-wrap" not in dl_cls and "flex-1" in home,
-      "every mark shares one row — the marks list never wraps",
-      "the row of marks can wrap — a report card's row stays a row")
+      "the readings are still a description list — each figure carries its label",
+      "the readings are not a <dl> of value/label pairs")
 
-# 3 · one glyph, one job (2026-08-21) + the unified strip (Dan, 2026-08-22:
-# "the two stats and three buttons in a more unified manner ... Rewind
-# (Repeat errors), Play (stop on study path), Menu (to another activity)"
-# and "Remove the bulky Continue button that occupies entire width above the
-# map"). The three actions are WORDS, so the glyph rule stands untouched:
-# transport glyphs mean sound and nothing else.
 sec_start = home.find("<section")
-sec_end = home.find("</section>", sec_start)
+sec_end = home.rfind("</section>")
 hero = home[sec_start:sec_end]
-# Scoped to HomeDashboard on purpose. The Map postcard below the hero draws
-# its CURRENT-STOP pin from HomeMap — a map pin, not a control.
+
+# 3 · one glyph, one job (2026-08-21). The three actions are now SVG shapes
+# inside coloured keys, not emoji — so the transport-glyph rule is untouched:
+# no ▶ or 🔁 CHARACTER appears, which is what the rule was ever about.
 check("▶" not in home,
-      "no ▶ control in HomeDashboard — the triangle belongs to sound",
+      "no ▶ character in HomeDashboard — the triangle glyph belongs to sound",
       "a ▶ is back on Home; it reads as 'a voice will speak', not 'go'")
-check("🔁" not in hero,
-      "no 🔁 in the hero — the Review tab carries that destination",
-      "the hero's 🔁 is back, duplicating the Review tab and ÉcouTexte's 'again'")
-# Dan, 2026-08-22 (round 13, superseding the 21 Aug round buttons): the three
-# actions are WORDS — Rewind (repeat errors), Play (the stop on the study
-# path), Menu — sharing the five-cell row with the two marks.
-for word, where in (('title="Rewind — ', "/reviser"), ('title={`Play — ', "the current stop"), ('title="Menu — ', "the Menu splash")):
-    check(word in hero,
-          f"the {where} action is a WORD button in the hero row",
-          f"a worded action left the unified row — Dan's 22 Aug trio is broken")
-check('href="/reviser"' in hero,
+check("🔁" not in home,
+      "no 🔁 on Home — the Review tab carries that destination",
+      "the 🔁 is back, duplicating the Review tab and ÉcouTexte's 'again'")
+
+# The three destinations survive the restyle, whatever shape they wear.
+check('href="/reviser"' in home,
       "Rewind points at /reviser — repeat your errors",
       "Rewind lost its /reviser destination")
-check("activeSio.unit}#${activeSio.id}" in hero,
+check("activeSio.unit}#${activeSio.id}" in home,
       "Play continues the course at the current stop (old Continue's job)",
       "Play no longer opens the current stop")
-check("dueCount > 0 &&" in hero,
+check("dueCount > 0" in home,
       "Rewind carries the due count — the one deadline on Home",
       "the due badge left Rewind; the deadline is invisible again")
-# Dan, 2026-08-21: "I am not fond of having a huge CONTINUER button occupying
-# so much space" — and 22 Aug: "Remove the bulky Continue button that
-# occupies entire width above the map." A full-width CTA is a CI failure
-# now, not a matter of taste.
-check("fluo-btn-lg" not in home and 'className="fluo-btn' not in home,
-      "no full-width CTA under the card — the actions live in the row",
-      "a full-width button is back under the hero (Dan, twice: do not)")
-check("flex-[2]" in home and "flex-[3]" in home,
-      "ONE row of five equal cells — two marks + three actions",
-      "the marks and the actions no longer share one five-cell row")
-check(home.count("›") >= 3,
-      "› marks every 'this leaves the page' word — Rewind, Play, the Map card",
-      "the chevron is missing; navigation has no consistent mark")
+# The third action changed MEANING on 26 Aug, and that is the point of the
+# rebuild: it opened the stop-less Menu, it now opens the current stop's own
+# activities. "One must first choose the stop before they can access the
+# activity." verify37 holds the rest of that rule.
+check("StopSheet" in home and "MenuSplash" not in home,
+      "the third key opens THIS STOP's activities, not the stop-less Menu",
+      "Home still opens a stop-less activity menu")
 
-# 4 · the TWO essential marks (Dan, 2026-08-21, decluttering: "we only need
-# the essential ones — since all the rest can be derived"): course progress
-# in ONE form (the fraction; the % lives in the tooltip) and the streak with
-# its visible ×XP multiplier. Level/XP/gems left the hero for /moi + /profil.
+# Dan, 2026-08-21 and again 22 Aug: no huge CONTINUER, no full-width CTA.
+# Still true, and still a CI failure rather than a matter of taste.
+check("fluo-btn-lg" not in home and 'className="fluo-btn' not in home,
+      "no full-width CTA under the card — the actions are the keys",
+      "a full-width button is back under the hero (Dan, twice: do not)")
+
+# 4 · the TWO essential marks (Dan, 2026-08-21, decluttering). The FORM
+# changed — the course fraction is now the stop number over fifty, which is
+# the same fact in the map's own units — but both marks and the multiplier
+# still have to be on the page.
 for marker, what in (
-    ("doneTotal}/${SIOS.length", "the course mark (fraction form)"),
+    ("SIOS.length", "the course mark (a figure over fifty)"),
     ("progress.streak", "the streak"),
     ("mult > 1", "the visible ×XP multiplier on the streak"),
 ):
@@ -172,7 +165,7 @@ for marker, what in (
           f"{what} survives the restyle",
           f"{what} was lost — the two essential marks are the hero's floor")
 check("progress.xp" not in home and "progress.gems" not in home and "lvl.into" not in home,
-      "level / XP / gems left the hero (derived marks live on /moi, /profil)",
+      "level / XP / gems stay off Home (derived marks live on /moi, /profil)",
       "a derived mark crept back into the hero row")
 
 print("\npatch 25 check (hero rows)\n" + "-" * 66)

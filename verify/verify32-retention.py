@@ -121,9 +121,16 @@ ok("--fluo-danger" not in home,
    "the hero is using --fluo-danger again — either the streak multiplier (the only "
    "coloured reward would be red) or the due-count badge (pending review work framed "
    "as failure, which the ethics constraint forbids)")
-ok("dopa-streak-ink" in home and 'role: "win"' in home,
-   "course and streak take their roles",
-   "the hero marks lost their role colours")
+# The MARKS array went with the report card on 2026-08-26 (Dan's soft-3D
+# draft), so the check is now on the tokens themselves rather than on the
+# shape that used to carry them: the streak keeps its own role ink, and the
+# three keys wear the roles that mean what they do.
+ok("dopa-streak-ink" in home,
+   "the streak still takes its own role ink",
+   "the streak lost its role colour")
+ok(all(t in home for t in ("--dopa-win", "--dopa-focus", "--dopa-reward")),
+   "the three keys wear the roles that mean what they do",
+   "a key on Home is no longer coloured by its role")
 
 # ── ethics ────────────────────────────────────────────────────────────────
 ip = read("src/components/InstallPrompt.tsx")
