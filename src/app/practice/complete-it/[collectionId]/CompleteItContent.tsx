@@ -286,7 +286,16 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
       </>
     ) : (
       <p className="mt-1 text-xl font-black text-[color:var(--fluo-ink)]">
-        {art && <span className="text-[color:var(--cahier-ink-soft)] font-medium mr-1">{art}</span>}
+        {/* The article is NOT printed (Dan, 2026-08-25). It used to sit here
+            in grey and was then required in the typed answer — so the learner
+            copied the one thing the question is actually asking: whether the
+            noun is le or la. The 2026-08-24 possessives fix had already
+            blanked it for possessive questions ("printing the article here is
+            what used to hand the learner « mon » before they had chosen it");
+            this generalises that to every deck, which is what that fix always
+            implied. Nothing is lost: `art` still feeds the help ladder below,
+            whose first rung reports masculine/feminine on demand — scaffolding
+            behind the ? button, never inline (the litmus rule). */}
         <span>{bareWord(item.en)}{item.note ? <span className="ml-1 text-sm font-medium text-[color:var(--fluo-ink-soft)]">{item.note}</span> : null}</span>
       </p>
     )
