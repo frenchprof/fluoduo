@@ -329,11 +329,19 @@ export default function DrillShell({
               underneath it."). That line is a hint rung (hints.ts), and hints
               accumulate in help.shown for the life of the card — so a correct
               answer landed a tick ON TOP of the advice that got the learner
-              there. Once the item is right the advice is spent: drop it. A
-              WRONG verdict keeps its hints, because those are what the learner
-              is about to act on. Fixed in the shell, so every drill that shows
-              a verdict is fixed at once. */}
-          {help && help.shown.length > 0 && feedback?.kind !== "correct" && (
+              there. Once the item is right the advice is spent: drop it.
+
+              A wrong verdict keeps its hints ONLY while the learner can still
+              act on them. A REVEALED card cannot be acted on — the options are
+              disabled and the CTA is "Continue" — yet its verdict.kind is
+              "wrong", so guarding on kind alone left "Not that one, pick
+              again" sitting under a card with no pick left to make. Not merely
+              stale: impossible to follow. The terminal states are "correct" OR
+              "revealed"; help.revealed is the signal kind does not carry.
+              Nothing is lost by dropping the rungs on reveal — the tray itself
+              already names the answer. Fixed in the shell, so every drill that
+              shows a verdict is fixed at once. */}
+          {help && help.shown.length > 0 && !help.revealed && feedback?.kind !== "correct" && (
             <div className="drill-hints mt-3 space-y-1" aria-live="polite">
               {help.shown.map((r, k) => (
                 <p key={k} lang="fr" className="rounded-lg bg-[color:var(--cahier-hl)]/30 px-2 py-1 text-sm font-medium text-[color:var(--cahier-ink)]">
