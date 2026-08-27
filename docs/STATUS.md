@@ -1468,3 +1468,152 @@ Full suite green (28 scripts), `tsc` clean, clean `npm run build`. ESLint: the
 one pre-existing `set-state-in-effect` error in HomeDashboard, unchanged.
 
 NOT deployed — branch and PR.
+
+## 27 Aug — Dan played the app and found 19 things. Two fixed so far.
+
+Dan, after the first real play-through: *"JE SUIS VRAIMENT DÉSESPÉRÉ !"* — then
+nineteen numbered problems, most of which no code-reading test could have
+caught. His triage was right: 1, 3, 4, 7, 14 and 18 are one-liners; 2 is a
+content project.
+
+### The sign-in wall is now a BUILD-TIME switch
+
+`REQUIRE_SIGN_IN = process.env.NEXT_PUBLIC_OPEN_APP !== "1"`. Dan asked for
+"a secret sign in method for Claude" — a password would have been worse than
+useless: `output: "export"` means every line ships to every student, so a
+shared secret is findable with the developer tools in a minute, and it opens
+the wall into Firestore where the student records are. Compile-time instead: a
+production build never sets the flag and therefore contains no bypass at all,
+not even a disabled one. An agent builds a throwaway open copy, screenshots,
+deletes it. Confirmed in a browser: a normal `npm run build` still shows
+« Sign in to open the lesson ».
+
+`verify38-authwall.py` (8) keeps it safe: the default must be closed, and the
+flag must appear in NO committed config a deploy could read. (It failed on
+first run by matching the word "password" in its own explanatory comment —
+verify19b's lesson, relearned; it strips comments now.)
+
+### #4 — the audio only ever said the first word. Fixed, and it was site-wide.
+
+Dan: *"Tap « Nom — Je m'appelle Thomas » and it says just « Nom »… the app is
+only ever handing the speaker the label."* Exactly right, and the cause was
+not in that lesson. `SpeakZone`'s first branch means *"this row is entirely
+French — read it whole, minus any « — gloss » tail"*, and tested it with
+`row.closest('[lang="fr"]')`. That walks to **`<html lang="fr">`**, which every
+page has. So the branch was TRUE for every row on every page, and every tap
+spoke `rowText.split("—")[0]` — the English label. Not a truncation: the
+sentence was never handed over.
+
+The region lookup is now scoped to the SpeakZone (`zone.contains(frRegion)`),
+restoring what the rule always meant — French AUTHORED in the content, not the
+document's own lang. Proved in a real browser with the speech engine stubbed:
+before, both halves of the row spoke `["Nom"]`; after, both speak
+`["Je m'appelle Thomas."]`. This fixes every Mémo in the app.
+
+### Two things I told Dan that were wrong
+
+The lesson bar reads **/14**, not /15. The denominator is rule cards + 12, and
+`se-presenter` splits into 2 rule cards, not 3 — I gave him a number I had
+assumed rather than measured. And the dice screen IS gone: the Mémo card goes
+straight to Continue, confirmed on screen at last.
+
+### Still open from Dan's list
+
+1 (Continue button far below the text) · 2 (the lesson teaches a different
+thing from its promise — a content project, needs Dan) · 3 (a wrong answer
+pays 20 and the correction 60, so guessing first earns more than knowing) ·
+5 (progress is lost on leaving the page) · 6 · 7 · 8 · 9 · 10 · 11 · 12 · 13 ·
+14 · 15 · 16 · 17 · 18 (pressing "1" restarts the lesson) · 19.
+
+### 27 Aug, later — three more of Dan's nineteen, each measured
+
+**#1 — the Continue button was 390px below the text.** Dan: *"You read a short
+card at the top of the screen, then have to scroll down past two-thirds of a
+blank page to find the button. Every card. Every lesson."* Measured on a
+390×844 phone: the memo text ended at y=344, Continue began at y=734. The
+cause was `flex-1` on DrillShell's scroller — `1 1 0%` forces it to fill the
+column whatever its content, so the footer was always pinned to the bottom.
+`flex-initial` (`0 1 auto`) grows to the content and shrinks only when the
+content would overflow. **Re-measured: 30px at 390×844 AND at 360×640**, button
+on screen without scrolling, and a tall exercise card still fills the slot and
+scrolls inside as before. Deliberately NOT `justify-center` — Dan ruled that
+out on 11 Aug.
+
+**#3 — a wrong answer paid more than a right one.** Dan: *"guessing first and
+correcting earns 80, while getting it right immediately earns only 60. The app
+pays you more for not knowing."* Exactly right: the help ladder calls
+`recordItemResult` on EVERY attempt, so wrong paid `XP_WRONG` (20) and the
+correction then paid `XP_CORRECT` (60) on top. Fixed by paying ONCE per item
+per run — the first attempt pays, a re-attempt records and steps the SRS but
+earns nothing further:
+
+    right first time             60
+    wrong, then right            20
+    wrong, wrong, then right     20
+
+This keeps the settled rule that effort counts and errors are never punished
+(hearts stay on the refused list) while making knowing always beat guessing.
+
+**#14 — "1 days in a row"**, on the toast every learner meets on day one.
+Pluralised.
+
+### Reported but NOT reproduced — #18
+
+Dan: *"pressing '1' doesn't pick answer 1 — it throws you back to the start of
+the lesson and wipes the bar."* Driven in a real browser on `se-presenter`, on
+both the memo card and an exercise card: pressing 1 does **not** navigate, the
+bar does not change, and it **does** select option 1 (border moves
+`--cahier-rule` → `--cahier-ink`) and enables Check. Needs the screen Dan was
+on before it can be fixed — a different drill, or a game, or the SIO page.
+
+### Confirmed in passing — #13
+
+That same test measured it: a selected option is shown ONLY by swapping its
+border from `--cahier-rule` to `--cahier-ink` — the same dark brown as the
+Check button beside it. Dan: *"A selected answer looks identical to the button
+you press next."* Real, and now measured rather than eyeballed.
+
+### 27 Aug — the glyph rule, narrowed honestly; and a practice worth keeping
+
+Dan ruled **"glyphs stay"**, settling a collision between two of his own
+rulings: the 21 Aug *one glyph, one job* rule (▶ means SOUND) and his own Home
+draft, which draws Play as a filled triangle. The draft wins.
+
+A parallel session (Peers) caught something I should have caught myself: the
+check in verify25 asserted only that the **character** ▶ was absent, and its
+comment defended that as "what the rule was ever about". That was a
+rationalisation. A learner cannot tell an SVG triangle from a ▶; the rule was
+about what the shape says, not which codepoint draws it.
+
+Rewritten to assert the rule as it now stands, both halves so neither drifts:
+
+- **A typed ▶ / ⏸ / ⏹ is audio** — inline with text a learner reads it as
+  "this will speak". Still banned on Home.
+- **The drawn key is navigation** — Home's three SVG keys are Dan's own design
+  and are the approved form. A later session reading only the 21 Aug note must
+  not "restore" them to words.
+
+**AND THE PRACTICE, taken from Peers:** they shipped a check an hour earlier
+that was **vacuous** — it sliced to the wrong ternary and passed with the bug
+fully restored; they only caught it by deliberately reintroducing the bug. So
+both new assertions above were proved to FAIL before being trusted:
+
+    mutation 1  typed ▶ inserted on Home   -> FAIL "a typed ▶/⏸/⏹ is back"
+    mutation 2  drawn Play path altered    -> FAIL "the drawn Play key is gone"
+    restored                                -> 22 passed · 0 failed
+
+Worth doing for every new check: a green check that cannot go red is worse
+than no check, because it is trusted.
+
+### Corrections exchanged with Peers, both directions
+
+They conceded #38 (they had diffed against the second parent, which trivially
+matches). Their caution that my #18 fix touches `sios.json` under the SIO
+freeze is **wrong**: the fix is `src/lib/useChoiceKeys.ts`, a keyboard handler,
+and this branch touches no content file at all —
+`git diff --name-only origin/main...HEAD` returns no `src/content/**` and no
+`sios.json`. The freeze is not engaged.
+
+They are waiting on my `ev.award` hook (#3) to land on main before wiring the
+pre-test to it, rather than building a parallel mechanism. It is on this
+branch, unmerged.

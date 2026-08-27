@@ -386,7 +386,7 @@ function ExerciseCard({
               ? "border-[color:var(--cahier-rule)] bg-white text-[color:var(--cahier-ink)]/30 line-through"
               : !answered
               ? isPicked
-                ? "border-[color:var(--cahier-ink)] bg-[color:var(--cahier-ink)] text-white"
+                ? "answer-picked"
                 : "border-[color:var(--cahier-rule)] bg-white text-[color:var(--cahier-ink)] hover:border-[color:var(--cahier-ink)]"
               : isAnswer
                 ? "border-[color:var(--drill-ok)] bg-[color:var(--drill-ok-bg)] text-[color:var(--cahier-ink)]"

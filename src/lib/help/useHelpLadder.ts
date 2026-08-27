@@ -133,11 +133,17 @@ export function useHelpLadder(opts: UseHelpLadderOpts): HelpLadderApi {
     const at = Date.now();
     if (!rec.noRecord && itemId) {
       const ev = evidenceOf(before);
+      // Only the FIRST attempt on an item pays (Dan, 2026-08-27). A retry
+      // after a wrong answer, or after the answer was revealed, still records
+      // — the evidence trail wants every attempt — but earns nothing more, so
+      // guessing first can never out-earn knowing.
+      const firstTry = before.wrongTries === 0 && !before.revealed;
       recordItemResult(itemId, correct, rec.given, rec.activity, {
         hintsTaken: ev.hintsTaken,
         revealed: ev.revealed,
         assistance: ev.assistance,
         latencyMs: rec.latencyMs,
+        award: firstTry,
       });
     }
     return apply(step(before, { type: "attempt", correct, at }), before, at);

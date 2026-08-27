@@ -211,6 +211,15 @@ shell = CODE["src/components/DrillShell.tsx"]
 check("help?: DrillHelp | null" in shell and "drill-help" in shell and "help.onClimb" in shell, "DrillShell has the ? control", "DrillShell lacks the help control")
 check("help.hintsAvail + 1" in shell and "help.revealed" in shell, "rung dots (hints + the answer)", "no rung dots")
 check("drill-hints" in shell and "help.shown.map" in shell, "hint chips render from help.shown", "no hint chips")
+# Dan #7 (2026-08-27): advice must not outlive the moment it can be acted on.
+# Guarding on kind alone was half a fix — a REVEALED card's verdict.kind is
+# "wrong", so "Not that one — pick again" survived under a card whose options
+# are disabled. Both terminal states must gate the chips, so assert the
+# MEANING (a reveal hides them) and not one spelling of the condition.
+_chip_guard = re.search(r"\{help && help\.shown\.length > 0 &&([^(]*)\(", shell)
+_g = _chip_guard.group(1) if _chip_guard else ""
+check(bool(_chip_guard) and "!help.revealed" in _g, "hint chips are hidden on a REVEALED card (#7 reveal path)", f"the chip guard does not exclude a revealed card: {_g.strip()!r}")
+check(bool(_chip_guard) and 'feedback?.kind !== "correct"' in _g, "hint chips are hidden on a CORRECT verdict (#7 correction path)", f"the chip guard does not exclude a correct verdict: {_g.strip()!r}")
 check("why?: ReactNode" in shell and "WHY" in shell and "drill-why" in shell and "aria-expanded" in shell, "the WHY toggle on the tray", "no WHY toggle")
 check("absolute inset-x-0 bottom-0" in shell, "the tray still overlays", "the tray no longer overlays")
 

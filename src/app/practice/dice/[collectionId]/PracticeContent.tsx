@@ -459,7 +459,7 @@ function ItemCard({
               cls = "border-rose-500 bg-rose-50 text-rose-900";
             else cls = "border-slate-200 bg-white text-slate-400";
           } else if (selected?.key === c.key) {
-            cls = "border-slate-900 bg-slate-900 text-white";
+            cls = "answer-picked";
           }
           return (
             <button
@@ -471,7 +471,7 @@ function ItemCard({
               className={`rounded-xl border-2 px-4 py-3 text-center text-lg font-extrabold transition ${cls}`}
             >
               {/* The 1-4 keys answer (useChoiceKeys) — show them (Dan, 2026-07-16). */}
-              <span aria-hidden className="mr-2 align-middle text-xs font-bold opacity-50">{i + 1}</span>
+              <span aria-hidden className="answer-key mr-2 align-middle text-xs font-bold opacity-50">{i + 1}</span>
               {c.label}
               {submitted && isAnswer && (
                 <span className="ml-2" aria-hidden>

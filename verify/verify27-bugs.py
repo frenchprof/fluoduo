@@ -249,6 +249,34 @@ check("SYNC_STALE_MS" in st and "trail.lastEventAt - synced > SYNC_STALE_MS" in 
       "teacher Last sync reads STALE against the newest event and shows the last error", "teacher panel lacks the staleness read")
 check("lastSyncedAt?: number" in td and "syncErrorCount?: number" in td, "StudentDetail types the sync fields", "StudentDetail lacks sync fields")
 
+# ── 14b · #13: a picked answer is not a button ───────────────────────────
+# Dan, 2026-08-27: "A selected answer looks identical to the button you press
+# next — same dark brown, so it reads as unpressed." Measured and true: a
+# picked option was a solid dark fill with white text, beside a Check button
+# that is a solid dark fill with white text. The three answer-selection sites
+# must all route through .answer-picked, and that class must NOT re-create the
+# CTA's costume: no dark fill, no white text, and it must carry a non-colour
+# cue (the inset sink) so the state survives a greyscale/CVD reading.
+_pick_sites = [
+    "src/app/practice/dice/[collectionId]/PracticeContent.tsx",
+    "src/app/practice/speculearn/[collectionId]/SpecuLearnContent.tsx",
+    "src/app/lessons/pager/LessonPager.tsx",
+]
+for _f in _pick_sites:
+    _src = CODE.get(_f, "")
+    check("answer-picked" in _src, f"{_f.split('/')[-1]}: the picked answer uses .answer-picked", f"{_f} does not use .answer-picked")
+    check("bg-slate-900 text-white" not in _src and "bg-[color:var(--cahier-ink)] text-white" not in _src,
+          f"{_f.split('/')[-1]}: no picked-answer state wearing the CTA's dark fill + white text",
+          f"{_f} still gives a picked answer the CTA costume")
+_css = read("src/app/globals.css")
+_m = re.search(r"\.answer-picked\s*\{(.*?)\}", _css, re.S)
+_rule = _m.group(1) if _m else ""
+check(bool(_m), ".answer-picked is defined once, in the sheet", ".answer-picked is not defined")
+check("var(--cahier-hl)" in _rule and "#fff" not in _rule and "color: white" not in _rule,
+      ".answer-picked is the marker, not a second dark button", f".answer-picked looks like a CTA: {_rule.strip()[:80]!r}")
+check("inset" in _rule, ".answer-picked carries a non-colour cue (the inset sink), so the state is not hue-only",
+      ".answer-picked has no inset cue — picked-vs-unpicked would rest on hue alone")
+
 # ── 15 · CI ──────────────────────────────────────────────────────────────
 wf = read(".github/workflows/verify.yml")
 check("verify/verify27-bugs.py" in wf and wf.find("verify27-bugs") > wf.find("verify26"), "CI runs verify27-bugs after verify26", "verify27-bugs not wired after verify26")

@@ -898,6 +898,36 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
    variant lip colour (primary/accent/gold) since -sm is declared last. */
 .cahier-btn-sm { padding: 0.3rem 0.65rem; font-size: 0.78rem; border-radius: 8px; }
 
+/* A PICKED ANSWER IS NOT A BUTTON (Dan #13, 2026-08-27: "A selected answer
+   looks identical to the button you press next — same dark brown, so it reads
+   as unpressed"). He was right, and the measurement agrees: a picked option
+   was a solid dark fill with white text, sitting beside a Check button that is
+   a solid dark fill with white text. Two different roles wearing one costume —
+   « I have chosen this » and « press me to go on ».
+
+   The cure uses the vocabulary this sheet already speaks. .cahier-btn says
+   pressable with a raised bottom lip; so a thing already pressed says it by
+   losing the lip and sinking — Dan's own word for the fault was "unpressed".
+   On top of that it takes the chartreuse marker, because the learner's act
+   here is marking a page, not pressing a control. That is three independent
+   cues — hue, lightness, and depth — so the state does not rest on colour
+   alone and survives a colour-blind reading. Answer selection ONLY: the
+   segmented toggles (deck direction, teacher filters, OpenFeedback modes)
+   keep the dark fill, where it is the ordinary idiom and no CTA sits beside
+   it to be confused with. */
+.answer-picked {
+  background: var(--cahier-hl);
+  border-color: var(--cahier-ink);
+  color: var(--cahier-ink);
+  /* The sink is INK, not the marker's own edge. Measured: chartreuse against
+     white paper is 1.26:1, and under a tritan reading it desaturates to
+     near-white — so picked-vs-unpicked cannot rest on the fill. A dark inner
+     rim reads in greyscale, which is the strictest version of the test. */
+  box-shadow: inset 0 3px 0 0 color-mix(in oklab, var(--cahier-ink) 55%, transparent);
+  transform: translateY(1px);
+}
+.answer-picked .answer-key { opacity: 1; }
+
 /* DrillShell's feedback tray slides up OVER the footer — it must never push
    the body (the reflow is what made six drills feel like six apps). */
 @keyframes drill-tray {

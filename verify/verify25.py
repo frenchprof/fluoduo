@@ -121,9 +121,29 @@ hero = home[sec_start:sec_end]
 # 3 · one glyph, one job (2026-08-21). The three actions are now SVG shapes
 # inside coloured keys, not emoji — so the transport-glyph rule is untouched:
 # no ▶ or 🔁 CHARACTER appears, which is what the rule was ever about.
-check("▶" not in home,
-      "no ▶ character in HomeDashboard — the triangle glyph belongs to sound",
-      "a ▶ is back on Home; it reads as 'a voice will speak', not 'go'")
+# ── THE GLYPH RULE, NARROWED HONESTLY (Dan, 2026-08-27: "glyphs stay") ──────
+# The 21 Aug rule said ▶ means SOUND and nothing else. Dan's own Home draft
+# then drew Play as a filled triangle, and I built it — so two of his rulings
+# collided. A parallel session (Peers) caught that the check here only asserted
+# the CHARACTER was absent, and that the comment defending it ("what the rule
+# was ever about") was a rationalisation: a learner cannot tell an SVG triangle
+# from a ▶, so the shape says the same thing either way. That was a fair hit.
+#
+# Dan ruled: the draft wins. So the rule is not "no triangles" — it is:
+#
+#   A TYPED ▶ / 🔁 IS AUDIO. Those characters sit inline with text, where a
+#   learner reads them as "this will speak". They stay banned on Home.
+#   THE DRAWN KEY IS NAVIGATION. Home's three SVG keys are Dan's own design
+#   and are the approved form. They must not be "restored" to words by a later
+#   session reading only the 21 Aug note.
+#
+# Both halves are asserted, so neither can drift: the ban AND the approval.
+check("▶" not in home and "⏸" not in home and "⏹" not in home,
+      "no typed transport character on Home — inline, those read as audio",
+      "a typed ▶/⏸/⏹ is back on Home, where it reads as 'this will speak'")
+check('d="M6 3.5 L22 13 L6 22.5 Z"' in home,
+      "Play is the DRAWN key from Dan's draft — the approved form, 27 Aug",
+      "Home's drawn Play key is gone; a later session reverted Dan's own design")
 check("🔁" not in home,
       "no 🔁 on Home — the Review tab carries that destination",
       "the 🔁 is back, duplicating the Review tab and ÉcouTexte's 'again'")
