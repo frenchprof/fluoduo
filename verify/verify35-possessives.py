@@ -116,6 +116,28 @@ check(re.search(r"const art = \(!inflected && item\)", src) is not None,
 check("possPerson ?" in src and "POSS_CUE[possPerson]" in src,
       "the possessive prompt shows the ENGLISH cue, not the French form",
       "the possessive prompt branch is missing")
+
+# 3b · generalised 2026-08-25 (Dan): the SAME giveaway existed on every
+# ordinary article deck — the prompt printed « le » in grey and then required
+# it in the typed answer, so the learner copied the one thing being asked.
+# The possessive fix above only ever blanked it for inflected questions. The
+# plain branch must now print NO article either; `art` survives for the
+# answer, the alternates and the help ladder, whose first rung reports
+# masculine/feminine on demand.
+# `art` is a VALUE (answer, alternates, ladder) and must never again be a
+# rendered node. Asserting on the whole file, not a slice: an earlier version
+# of this check sliced from the last ") : (" and silently landed on the
+# feedback block, so it passed with the giveaway fully restored. Whole-file is
+# both stricter and un-fool-able here, because `{art &&` has exactly one
+# meaning in JSX — render it.
+check("{art &&" not in src,
+      "the prompt no longer renders the article — gender is the question, not the cue",
+      "`{art &&` is back in the prompt: the learner is shown « le » and then asked "
+      "to type it back, which tests spelling only")
+check("article: art" in src,
+      "`art` still feeds the help ladder (gender available behind the ? button)",
+      "`art` no longer reaches hintsFor — removing the print also removed the "
+      "on-demand gender hint, which is a net loss for the learner")
 # The (m)/(f)/(pl) gloss is the answer to the question being asked.
 poss_branch = src[src.find("possPerson ? ("):src.find("POSS_CUE[possPerson]") + 400] if "possPerson ? (" in src else ""
 check("bareWord(item.en)" in poss_branch,
