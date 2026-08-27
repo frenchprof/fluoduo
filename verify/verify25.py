@@ -121,9 +121,17 @@ hero = home[sec_start:sec_end]
 # 3 · one glyph, one job (2026-08-21). The three actions are now SVG shapes
 # inside coloured keys, not emoji — so the transport-glyph rule is untouched:
 # no ▶ or 🔁 CHARACTER appears, which is what the rule was ever about.
+# DAN RULED, 2026-08-27: "glyphs stay." A parallel session (Peers) raised the
+# real conflict — Home's three keys are filled SVG shapes (play triangle,
+# double-triangle rewind, nine-square grid) drawn by Dan in his own Home draft,
+# and the 21 Aug "one glyph, one job" rule says a triangle means SOUND. Both
+# were his. He chose the draft. So the SVG triangle on the Play key is
+# DELIBERATE and must not be "restored" to a word by a later session.
+# The character check below still stands: an emoji/text ▶ in the markup is a
+# different thing from the drawn key, and that one is still banned.
 check("▶" not in home,
-      "no ▶ character in HomeDashboard — the triangle glyph belongs to sound",
-      "a ▶ is back on Home; it reads as 'a voice will speak', not 'go'")
+      "no ▶ character in HomeDashboard — the drawn key is deliberate, a typed one is not",
+      "a ▶ character is back on Home; the drawn SVG key is the approved form")
 check("🔁" not in home,
       "no 🔁 on Home — the Review tab carries that destination",
       "the 🔁 is back, duplicating the Review tab and ÉcouTexte's 'again'")

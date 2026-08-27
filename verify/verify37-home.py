@@ -109,6 +109,18 @@ ok("sm:min-w-[80px]" in home and "min-w-[64px]" in home,
    "the wells are narrower on a phone",
    "the wells do not shrink — the row will not fit 320px")
 
+# 6b · spent hints do not survive a correct answer (Dan, 2026-08-27: "The red
+#      error stays after you fix it … 'Not that one, pick again' is still
+#      sitting underneath it"). That line is a hint rung in hints.ts, and hints
+#      accumulate in help.shown for the life of the card — so the tick landed
+#      on top of the advice that produced it. The shell drops them on a correct
+#      verdict; a WRONG verdict keeps its hints, because those are what the
+#      learner is about to act on.
+shell = read("src/components/DrillShell.tsx")
+ok('feedback?.kind !== "correct"' in shell,
+   "hints are dropped once the answer is right — spent advice does not linger",
+   "a correct answer still renders the hints that led to it")
+
 # 7 · the ruler stayed deleted ("the map already shows where you are")
 ok("pct" not in home,
    "no second progress line — the map is the one place that says where you are",
