@@ -1524,3 +1524,51 @@ thing from its promise — a content project, needs Dan) · 3 (a wrong answer
 pays 20 and the correction 60, so guessing first earns more than knowing) ·
 5 (progress is lost on leaving the page) · 6 · 7 · 8 · 9 · 10 · 11 · 12 · 13 ·
 14 · 15 · 16 · 17 · 18 (pressing "1" restarts the lesson) · 19.
+
+### 27 Aug, later — three more of Dan's nineteen, each measured
+
+**#1 — the Continue button was 390px below the text.** Dan: *"You read a short
+card at the top of the screen, then have to scroll down past two-thirds of a
+blank page to find the button. Every card. Every lesson."* Measured on a
+390×844 phone: the memo text ended at y=344, Continue began at y=734. The
+cause was `flex-1` on DrillShell's scroller — `1 1 0%` forces it to fill the
+column whatever its content, so the footer was always pinned to the bottom.
+`flex-initial` (`0 1 auto`) grows to the content and shrinks only when the
+content would overflow. **Re-measured: 30px at 390×844 AND at 360×640**, button
+on screen without scrolling, and a tall exercise card still fills the slot and
+scrolls inside as before. Deliberately NOT `justify-center` — Dan ruled that
+out on 11 Aug.
+
+**#3 — a wrong answer paid more than a right one.** Dan: *"guessing first and
+correcting earns 80, while getting it right immediately earns only 60. The app
+pays you more for not knowing."* Exactly right: the help ladder calls
+`recordItemResult` on EVERY attempt, so wrong paid `XP_WRONG` (20) and the
+correction then paid `XP_CORRECT` (60) on top. Fixed by paying ONCE per item
+per run — the first attempt pays, a re-attempt records and steps the SRS but
+earns nothing further:
+
+    right first time             60
+    wrong, then right            20
+    wrong, wrong, then right     20
+
+This keeps the settled rule that effort counts and errors are never punished
+(hearts stay on the refused list) while making knowing always beat guessing.
+
+**#14 — "1 days in a row"**, on the toast every learner meets on day one.
+Pluralised.
+
+### Reported but NOT reproduced — #18
+
+Dan: *"pressing '1' doesn't pick answer 1 — it throws you back to the start of
+the lesson and wipes the bar."* Driven in a real browser on `se-presenter`, on
+both the memo card and an exercise card: pressing 1 does **not** navigate, the
+bar does not change, and it **does** select option 1 (border moves
+`--cahier-rule` → `--cahier-ink`) and enables Check. Needs the screen Dan was
+on before it can be fixed — a different drill, or a game, or the SIO page.
+
+### Confirmed in passing — #13
+
+That same test measured it: a selected option is shown ONLY by swapping its
+border from `--cahier-rule` to `--cahier-ink` — the same dark brown as the
+Check button beside it. Dan: *"A selected answer looks identical to the button
+you press next."* Real, and now measured rather than eyeballed.

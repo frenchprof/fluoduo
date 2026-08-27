@@ -307,8 +307,21 @@ export default function DrillShell({
           left a short item (one flashcard) floating mid-viewport with a
           header-sized hole above it. Content starts a fixed beat below the
           bar; tall drills fill the slot exactly as before. */}
-      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 [&_h1]:hidden">
-        <div className="mx-auto flex w-full max-w-[600px] flex-1 flex-col justify-start pb-4 pt-6 sm:pt-10">
+      {/* THE BODY SIZES TO ITS CONTENT (Dan, 2026-08-27: "You read a short card
+          at the top of the screen, then have to scroll down past two-thirds of
+          a blank page to find the button. Every card. Every lesson.").
+          Measured on a 390x844 phone: the memo text ended at y=344 and Continue
+          began at y=734 — a 390px void, near half the screen.
+          The cause was `flex-1` here: `1 1 0%` forces the scroller to fill the
+          column whatever its content, so the footer was always pinned to the
+          bottom. `flex-initial` is `0 1 auto` — it grows to the content and
+          only shrinks when the content would overflow. A short card now has its
+          button directly beneath it; a tall drill still fills the slot and
+          scrolls inside exactly as before.
+          NOT justify-center: Dan ruled that out on 2026-08-11 (a short item
+          floated mid-viewport under a header-sized hole). */}
+      <div className="flex min-h-0 flex-initial flex-col overflow-y-auto px-4 [&_h1]:hidden">
+        <div className="mx-auto flex w-full max-w-[600px] flex-col justify-start pb-4 pt-6 sm:pt-10">
           {children}
           {help && help.shown.length > 0 && (
             <div className="drill-hints mt-3 space-y-1" aria-live="polite">

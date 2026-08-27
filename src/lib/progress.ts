@@ -434,7 +434,13 @@ export function recordItemResult(
   activity?: string,
   /** How the answer was produced (PRD §7). Omit and the record still
    *  stores, just without evidence meaning — adoption is incremental. */
-  ev?: { hintsTaken?: number; revealed?: boolean; latencyMs?: number; assistance?: AssistanceLevel },
+  ev?: {
+    hintsTaken?: number; revealed?: boolean; latencyMs?: number; assistance?: AssistanceLevel;
+    /** FALSE for a re-attempt on an item already answered in this run — the
+     *  response is still recorded (the evidence trail wants every attempt),
+     *  but it pays nothing. See the XP note below. */
+    award?: boolean;
+  },
 ): Progress {
   const prev = loadProgress();
   const itemSrs = { ...prev.itemSrs, [itemId]: stepItemSrs(prev.itemSrs[itemId], correct, Date.now()) };
@@ -449,7 +455,22 @@ export function recordItemResult(
   // (base × streak multiplier — audit 2026-07-19, honest receipts). Dynamic
   // import keeps Firestore out of this module's static graph (usage.ts
   // rule); fire-and-forget, signed-out is a no-op.
-  const paid = Math.round((correct ? XP_CORRECT : XP_WRONG) * xpMultiplier(p.streak));
+  // ONE PAYMENT PER ITEM PER RUN (Dan, 2026-08-27: "getting it wrong earns you
+  // points … guessing first and correcting earns 80, while getting it right
+  // immediately earns only 60. The app pays you more for not knowing.")
+  //
+  // He was exactly right: the help ladder calls this on EVERY attempt, so a
+  // wrong answer paid XP_WRONG and the correction then paid XP_CORRECT on top.
+  // The fix is not to stop paying for errors — effort counting is the settled
+  // rule, and hearts are on the refused list — it is to pay ONCE. The first
+  // attempt on an item is what pays; a re-attempt after it records the answer
+  // and steps the SRS, but earns nothing further. So:
+  //     right first time            60
+  //     wrong, then right           20
+  //     wrong, wrong, then right    20
+  // Knowing it always beats guessing at it, and trying still beats not trying.
+  const award = ev?.award !== false;
+  const paid = award ? Math.round((correct ? XP_CORRECT : XP_WRONG) * xpMultiplier(p.streak)) : 0;
   void import("@/lib/firebase/responses")
     .then((m) =>
       m.recordResponse(itemId, correct, {
@@ -465,7 +486,7 @@ export function recordItemResult(
       }),
     )
     .catch(() => {});
-  return finalize(addXp(p, correct ? XP_CORRECT : XP_WRONG));
+  return finalize(award ? addXp(p, correct ? XP_CORRECT : XP_WRONG) : p);
 }
 
 /**
