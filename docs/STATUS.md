@@ -1761,3 +1761,88 @@ assertion stayed green with the call deleted because the import line alone
 satisfied it; and verify40's absence checks first failed on the *comments*
 explaining that the code deliberately does not score. All three would have
 shipped as green-but-vacuous.
+
+## 2026-08-28 — Dan's pre-test amendments (SIO-001/003/004/009) + a pre-test for the SIO-010 role-play
+
+Dan's markup, applied to Unit 0's bank (`src/content/sios/unit0-questions.ts`)
+and the panel that renders it (`src/app/Unit0Panel.tsx`).
+
+**The small ones.** SIO-001 Q9 now names a **[male] professor** (the answer
+turns on *Monsieur*, so the referent's sex could not be left open). SIO-003 Q5
+asks for **"yi grek"**, not "i grec" — every other letter in that set is a
+pronunciation respelling and Y was the one spelling; the `LETTER` map moved
+with it, so the wrong-pick whys say the same thing. SIO-003 Q7 carries Dan's
+bracketed note about the ü sound (German *für*, Mandarin *yu*) — `letterQ` took
+an optional third argument rather than the question being unrolled into a
+literal. SIO-004 gains **Q11 midi**, and `MOMENT` gains its gloss so midi can
+also serve as a distractor.
+
+**SIO-009.** The Adieu question is gone — it was the only item in the bank that
+ran backwards ("which phrase is NOT appropriate"). Every situation that was a
+bare description now ends on **"You say:"**, so the learner produces a line
+instead of judging a sentence; Q4 and Q10 already carried their own cue and
+were left alone. Q5 wears the highlighter on **"around 7pm"** (new optional
+`hl` field — a literal substring of the title, rendered not stored, so the
+saved record still keys on the plain text). Q7 is Dan's rewrite: prof and
+student **already know each other**, morning arrival — its distractor whys were
+re-pointed at that ("you already know each other", "your prof already knows
+it"). Q9's *Enchanté* → **Pardon** and *Bonjour* → **Merci**, per Dan.
+
+  ⚠️ Flagged for Dan: Q9's replacement takes "Bonjour, monsieur." out of the
+  8pm question, and that was the item's original teaching point — *bonjour*
+  vs *bonsoir* by hour. The 8pm cue is still in the prompt but nothing now
+  contrasts with it. Say the word and it comes back as a fifth option.
+
+Editing a prompt orphans its old record on purpose (`unit0QuestionId` keys on
+prompt + answer) — a reworded question is a different question.
+
+**SIO-010 — the role-play now has a pre-test.** The header used to say it was
+"intentionally absent … a mini-oral done in class". Dan reversed that: the
+seven moves of the atelier dialogue (greet · ask a name · give yours · ask how
+it's written · say how it's written · enchanté · take leave) are now seven
+questions, asked of **three audiences** — A a student (informal 1:1) · B a
+client (formal 1:1) · C a group (informal, one-to-many) — 21 items in
+`SIO010_SITUATIONS`.
+
+Three decisions the content forced:
+
+- **The learner picks the audience first.** "How do you ask for their name" has
+  no answer until you know whether you face one student, a client or a group —
+  the situation is exactly what settles tu vs vous. A shuffled pool of all 21
+  would have been unanswerable, so each situation is its own run.
+- **Authored order, not shuffled** (new `ordered` prop). These seven questions
+  ARE the dialogue in sequence; options still shuffle.
+- **The model dialogue waits.** `DialoguePlayer` moved behind `AfterPretest`.
+  It is the answer key — shown first it hands over all seven lines, which is
+  the one thing the blueprint says a pretest must never do.
+
+`UNIT0_QUESTIONS["SIO-010"]` is the flat union of the three runs, so the
+generic consumers (the Pre-Test flap, `pretestHrefForDeck`) see that the SIO
+has questions; nothing ever renders all 21 at once. The flap's gate moved from
+`!isProduction` to "the bank is non-empty" — SIO-010 is an atelier *and* has
+questions now.
+
+**Multi-answer questions.** Q1 of each situation asks which greetings *are*
+appropriate — plural, and a register is a set of usable openings, not one best
+one. New `multi` flag: taps toggle, an **OK** button confirms, and the pick is
+graded on the exact set (a missed correct answer counts the same as an extra
+one). The record stores the set joined by `MULTI_SEP`, in option order rather
+than tap order, and WHY concatenates the whys of every wrongly-ticked option —
+which subsumes the single-answer case, so both paths run the same code. Number
+keys are disabled on these (a key ANSWERS, which is wrong when a tap only
+ticks); they keep their numeral chips off to say so.
+
+**Checks.** tsc clean · eslint unchanged (3 pre-existing React-Compiler errors
+in Unit0Panel, same three as `main`) · `npm run build` green · check:short,
+check:textgen and all 33 verify suites pass, verify40 included — nothing
+pre-lesson is scored. The bank was walked in node: 21 SIO-010 items, no
+duplicate question id across the whole of Unit 0, no duplicate option value in
+a question, every wrong option carries a why and no correct one does, every
+`hl` is a real substring of its title. Driven in a browser with the sign-in
+wall opened locally (never committed): the picker, the multi-select + OK, the
+green/red grading, "Bring to class", and the dialogue appearing only after the
+seventh answer.
+
+**Still open:** the SIO-010 competence line in `sios.json` still describes only
+the tu/vous 1:1 exchange — the pretest now also drills the formal-client and
+one-to-many registers. Worth Dan's word before rewriting a can-do statement.
