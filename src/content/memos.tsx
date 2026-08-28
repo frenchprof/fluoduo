@@ -9,6 +9,7 @@
  */
 import type { ReactNode } from "react";
 import { speak } from "@/games/letris/speech";
+import { ATELIER_DIALOGUES, type DialogueLine } from "@/content/ateliers";
 
 /** `title` is nullable because splitMemo drops it on continuation cards — a
  *  Mémo announces itself once, not on every slice. Render no <h2> at all
@@ -66,6 +67,79 @@ const B = ({ children }: { children: ReactNode }) => (
 const Lines = ({ children }: { children: ReactNode }) => (
   <ul className="mt-2 space-y-1 text-[15px] text-[color:var(--cahier-ink)]">{children}</ul>
 );
+
+/**
+ * THE ATELIER MÉMO — the model, before you are asked to produce it.
+ *
+ * The six production stops (SIO-010, 020, 030, 040, 049, 050) had no Mémo at
+ * all: a learner opened « Première rencontre » and landed on CHOOSE THE FRENCH
+ * with nothing to have read first. Every other stop opens on something to
+ * learn from; these opened on a test.
+ *
+ * What they need is not a grammar table — nothing here is new grammar, it is
+ * all assembled from what the unit has already covered. What they need is the
+ * MODEL, which has existed in ateliers.ts all along and was only ever used to
+ * cut up into flip-cards. Dan, 2026-07-02, said as much when the ateliers were
+ * designed: "they should look like the mini-dialogue in 010, then an option
+ * either to play all integrally at once or to play only selected lines."
+ *
+ * So: the dialogue, whole, every line tappable to hear, plus one button that
+ * plays it through. Two speakers are marked A/B and coloured apart, because a
+ * role-play you are about to perform needs to show whose turn is whose; a
+ * monologue (the e-mail, the country) has one speaker and no marks — a label
+ * that says nothing is exactly the text the litmus rule removes.
+ */
+function AtelierMemo({ sioId }: { sioId: string }) {
+  const lines: DialogueLine[] = ATELIER_DIALOGUES[sioId] ?? [];
+  const twoVoices = lines.some((l) => l.who === "B");
+  const playAll = () => {
+    // Sequential, not all at once: the browser queues utterances, so pushing
+    // them in order is enough and keeps each line's own `say` override.
+    for (const l of lines) speak(l.say ?? l.fr, "fr-FR");
+  };
+  return (
+    <ul className="space-y-1.5">
+      {lines.map((l, i) => (
+        <li key={i} className="flex gap-2">
+          {twoVoices && (
+            <span
+              aria-hidden
+              className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full text-[11px] font-black"
+              style={
+                l.who === "A"
+                  ? { background: "var(--cahier-hl)", color: "var(--cahier-ink)" }
+                  : { background: "var(--cahier-ink)", color: "#fff" }
+              }
+            >
+              {l.who}
+            </span>
+          )}
+          <span className="min-w-0">
+            <button
+              type="button"
+              lang="fr"
+              onClick={() => speak(l.say ?? l.fr, "fr-FR")}
+              className="text-left text-[15px] font-bold text-[color:var(--cahier-ink)] underline decoration-dotted underline-offset-4 transition hover:decoration-solid active:scale-[0.99]"
+              title="🔊"
+            >
+              {l.fr}
+            </button>
+            <span className="block text-[13px] text-[color:var(--cahier-ink-soft)]">{l.en}</span>
+          </span>
+        </li>
+      ))}
+      <li className="pt-1">
+        <button
+          type="button"
+          onClick={playAll}
+          className="cahier-btn cahier-btn-sm cahier-btn-accent font-black"
+        >
+          🔊 Tout écouter
+        </button>
+      </li>
+    </ul>
+  );
+}
 
 export const DECK_MEMOS: Record<string, ReactNode> = {
   /* ---------- L'alphabet ---------- */
@@ -525,7 +599,21 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
   ),
 };
 
-/** The Mémo card for a deck, or undefined (ateliers — their Lire is the model dialogue). */
+// The six ateliers get theirs from ATELIER_DIALOGUES rather than by hand, so a
+// line edited in the model cannot drift out of the Mémo that teaches it — and
+// a seventh atelier added later is covered without anyone remembering to.
+for (const sioId of Object.keys(ATELIER_DIALOGUES)) {
+  DECK_MEMOS[`atelier-${sioId.toLowerCase()}`] = (
+    <Card title="Le modèle">
+      <AtelierMemo sioId={sioId} />
+    </Card>
+  );
+}
+
+
+/** The Mémo card for a deck, or undefined. The ateliers have one since
+ *  2026-08-28: theirs IS the model dialogue, which is what a production stop
+ *  needs to read before it is asked to produce. */
 export function memoForDeck(id: string): ReactNode | undefined {
   return DECK_MEMOS[id];
 }
