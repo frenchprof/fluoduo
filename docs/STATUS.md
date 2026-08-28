@@ -1617,3 +1617,69 @@ and this branch touches no content file at all —
 They are waiting on my `ev.award` hook (#3) to land on main before wiring the
 pre-test to it, rather than building a parallel mechanism. It is on this
 branch, unmerged.
+
+## 27-28 Aug — Peers: three of Dan's five fixes, the bands, and the font
+
+**Deployed.** `origin/main` = `live/main` = `f3944a5`, pushed by Dan.
+
+**The split.** Two sessions worked the repo at once and collided five times in
+a day (duplicate matrices, a duplicate reconciliation PR, both of us chasing
+the same bug). Settled by surface: **the colour-review session takes colour,
+Home and the visual system; Peers takes the practice-chain mechanics and
+content truth.** It held for the rest of the session. Cross-session messaging
+does not reach a cloud session, so Dan relayed by hand — slow but it worked.
+
+**Shipped here (PRs #41, #43):**
+- **iComplete stopped printing the article it then asked the learner to type.**
+  Every ordinary article deck showed « le » in grey and required it back, so
+  the learner copied the one thing the question asks. Generalises the 24 Aug
+  possessives fix, which had the same reasoning but was scoped to one deck.
+  `art` still feeds the help ladder, whose first rung gives the gender on
+  demand — scaffolding kept, giveaway removed.
+- **Session length.** No drill capped its queue: possessives ran 136
+  questions, nationalities 100, WorDrill "Tout" the whole curriculum. New
+  `src/lib/sessionLength.ts` offers 10 / 25 / all; decks of ≤14 are never
+  asked, and a length that would not shorten the run is dropped. Wired into
+  iComplete. **4Mémoire, WorDrill and GramMarathon still uncapped** — the
+  helper is shared and ready.
+- **The band reaches every drill.** The band system shipped 24 Aug into
+  exactly TWO surfaces; seven drills had none, which was Dan's complaint on
+  the 24th *and* again on the 27th. Now on SpecuLearn, Sorting, 4Mémoire,
+  iComplete, GramMarathon, WorDrill. ÉcouTexte keeps its own PageBand.
+- **The type system stopped being opt-in.** `body { font-family: Arial,
+  Helvetica, sans-serif }` was create-next-app boilerplate present since the
+  first commit. Measured: **50-83% of real text runs on every page were
+  Arial**, including « tes parents » at 30px in a drill — the French being
+  taught. Fonts were loading fine the whole time; nothing asked for them.
+  `body` now takes `var(--font-body-stack)`; re-measured at 0% Arial, no
+  page gained a horizontal overflow.
+- **Three checks that had never run.** `verify36-band`, `verify37-home` and
+  `verify38-authwall` shipped with #42 and were never added to the workflow.
+  38 guards the sign-in wall. All wired, with `verify39`.
+
+**Still open, in this half:**
+- **Pre-test records nothing** — no ledger, no SRS, no evidence, no XP. Dan's
+  ruling: remember the misses, but do not dent accuracy, cost XP or enter the
+  review schedule. **Unblocked** now `ev.award` is on main: pass
+  `award: false`. Do NOT build a parallel mechanism.
+- **The dice and the dropdowns.** Dan (25 Aug): the dice was never a
+  difficulty control — it randomised *which variation* (subject × verb ×
+  polarity), and the selectors above it let a learner aim their own practice.
+  Both are gone. Approved to restore **both**, plus ★/★★/★★★ buttons to enter
+  the ramp — Dan settled the contradiction on 27 Aug: **a learner MAY
+  deliberately start at ★★★.**
+- **Five SIO promises the content cannot keep** (stops 1, 2, 3, 17, 18) and
+  nine stops with items but no lesson and no memo. A full rewrite of all 50
+  in the concrete "you will say…" form is drafted and **frozen** — the SIO
+  freeze holds; it needs Dan's markup, not an agent's judgement.
+- `claude-review` has failed on every PR since ~20 Aug (bad API key). It gates
+  nothing. Recommendation stands: delete the workflow rather than fix it — a
+  permanently-red ✗ trains everyone to ignore red marks.
+
+**A practice worth keeping.** Three check-quality bugs surfaced in one night,
+all the same shape: an assertion that could not fail. One sliced to the wrong
+ternary and passed with the bug fully restored; one matched a token (`▶`)
+rather than the meaning (a drawn triangle); one used `[^>]*` and reported two
+false failures. **Write the check, then break the code and watch it go red
+before trusting it.** Both sessions adopted this; it is cheap and it caught
+things review did not.
