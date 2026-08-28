@@ -415,6 +415,8 @@ export default function SayItContent({
       <>{body}</>
     ) : (
       <DrillShell
+        activity="wordrill"
+        deck={collectionId}
         exitHref={drillExitHref(collectionId)}
         progress={finished ? null : { done: answered, total: cards.length }}
         right={

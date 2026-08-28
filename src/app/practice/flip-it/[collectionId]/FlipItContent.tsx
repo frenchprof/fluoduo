@@ -165,6 +165,8 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
 
   return (
     <DrillShell
+      activity="flip"
+      deck={collection.id}
       exitHref={drillExitHref(collection.id)}
       progress={done ? null : { done: i, total: rows.length }}
       right={<>✓ {nReviewed}/{rows.length}</>}

@@ -181,6 +181,8 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
     // the hint (as the 40/60 secondary) and the feedback tray.
     return (
       <DrillShell
+        activity="grammarathon"
+        deck={collectionId}
         exitHref={drillExitHref(collectionId)}
         progress={done ? null : { done: i, total }}
         right={<>✓ {score.ok}</>}
