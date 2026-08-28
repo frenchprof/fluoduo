@@ -38,6 +38,7 @@ import { hintsFor, revealText } from "@/lib/help/hints";
 import { useHelpLadder } from "@/lib/help/useHelpLadder";
 import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import { optionGridClass } from "@/lib/optionGrid";
+import { saveRun, loadRun, clearRun } from "@/lib/lessonRun";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 
@@ -57,6 +58,8 @@ export default function LessonPager({
   const lesson = getNativeLesson(slug ?? "");
   const sio = collectionId ? SIOS.find((s) => s.collectionId === collectionId) : undefined;
   const activityKey = collectionId ?? slug ?? "lesson";
+  /** Identity of THIS lesson's run — a saved place never crosses lessons. */
+  const runKey = `${activityKey}::${slug ?? ""}`;
   useActivityPlay("lesson-pager", activityKey);
 
   const [rules, setRules] = useState<React.ReactNode[]>([]);
@@ -91,17 +94,21 @@ export default function LessonPager({
       activityKey,
     });
     setRules(r);
-    setQueue(exercises.map((ex) => ({ ex, requeued: false })));
-    setI(0);
+    // #5: come back to where you were. The rules are rebuilt (deterministic);
+    // only the shuffled half is restored, and loadRun refuses any save whose
+    // rule count no longer matches rather than resume one card off.
+    const saved = loadRun<QueuedEx>(runKey, r.length);
+    setQueue(saved ? saved.queue : exercises.map((ex) => ({ ex, requeued: false })));
+    setI(saved ? saved.i : 0);
     setSelected(null);
     setValue("");
     setResult(null);
-    setScore({ ok: 0, total: 0 });
-    setMisses([]);
+    setScore(saved ? saved.score : { ok: 0, total: 0 });
+    setMisses(saved ? (saved.misses as Exercise[]) : []);
     setXpEarned(null);
     startRef.current = Date.now();
     cardStartRef.current = Date.now();
-    xpAtStartRef.current = loadProgress().xp;
+    xpAtStartRef.current = saved ? saved.xpAtStart : loadProgress().xp;
     endWroteRef.current = false;
   };
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -202,6 +209,25 @@ export default function LessonPager({
     setRetry(false);
     if (ladder.revealed && ex?.kind !== "mcq") setValue("");
   };
+
+  // #5: persist the place on every move. Written after render rather than
+  // inside next(), so a requeue (which lands in setQueue) is already in the
+  // saved queue — saving from next() would store the position without the
+  // card the wrong answer just appended.
+  useEffect(() => {
+    if (!ready || !queue) return;
+    if (end) { clearRun(); return; }
+    if (i <= rules.length) return;   // still in the Mémo — nothing to return to
+    saveRun<QueuedEx>({
+      key: runKey,
+      rulesLen: rules.length,
+      queue,
+      i,
+      score,
+      misses,
+      xpAtStart: xpAtStartRef.current,
+    });
+  }, [ready, queue, i, score, misses, end, rules.length, runKey]);
 
   // The SIO write — the reason the Home path finally reacts. Once per run.
   const accuracy = score.total ? score.ok / score.total : 0;

@@ -10,10 +10,15 @@
 import type { ReactNode } from "react";
 import { speak } from "@/games/letris/speech";
 
-function Card({ title, children }: { title: ReactNode; children: ReactNode }) {
+/** `title` is nullable because splitMemo drops it on continuation cards — a
+ *  Mémo announces itself once, not on every slice. Render no <h2> at all
+ *  then, or the heading's margin leaves a gap where a title used to be. */
+function Card({ title, children }: { title?: ReactNode; children: ReactNode }) {
   return (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
-      <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">{title}</h2>
+      {title != null && (
+        <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">{title}</h2>
+      )}
       {children}
     </div>
   );

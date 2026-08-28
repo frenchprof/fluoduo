@@ -30,6 +30,8 @@ import { prepositionsLieuxLesson } from "./prepositions-lieux";
 import { partitifsLesson } from "./partitifs";
 import { mangerBoireLesson } from "./manger-boire";
 import { futurProcheLesson } from "./futur-proche";
+import { pouvoirLesson } from "./pouvoir";
+import { conseilsLesson } from "./conseils";
 import { frequenceLesson } from "./frequence";
 import { demonstratifsLesson } from "./demonstratifs";
 import { revisionU1Lesson, revisionU3U4Lesson, revisionU4Lesson } from "./revisions";
@@ -62,6 +64,8 @@ export const NATIVE_LESSONS: Record<string, NativeLesson> = {
   partitifs: partitifsLesson,
   "manger-boire": mangerBoireLesson,
   "futur-proche": futurProcheLesson,
+  "pouvoir": pouvoirLesson,
+  "conseils": conseilsLesson,
   frequence: frequenceLesson,
   demonstratifs: demonstratifsLesson,
   "revision-u1": revisionU1Lesson,

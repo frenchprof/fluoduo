@@ -10,7 +10,10 @@ export type Lesson = { slug: string; title: string; unit: number };
 export const LESSONS: Record<string, Lesson> = {
   "tu-vous":           { slug: "tu-vous",           title: "Tu ou vous ?",                 unit: 0 },
   "salutations":       { slug: "salutations",       title: "Les salutations",              unit: 0 },
-  "se-presenter":      { slug: "se-presenter",      title: "Se présenter",                 unit: 1 },
+  // Unit 0 since 2026-08-27: the lesson is SIO-001's (Unité 0, Introductions).
+  // It was filed under U1 because it also carried age/nationality/family —
+  // Unit 1 material — which has now gone back to the stops that own it.
+  "se-presenter":      { slug: "se-presenter",      title: "Se présenter",                 unit: 0 },
   // Unit 2 since 2026-08-23 (Dan): the lesson now teaches négation (2)
   // « ne… plus » alongside pas — U2 material in the book; it also joins
   // SIO-028's rail below (Dan: "insert it somewhere as an addition").
@@ -34,6 +37,11 @@ export const LESSONS: Record<string, Lesson> = {
   "possessifs":        { slug: "possessifs",        title: "Les adjectifs possessifs",     unit: 2 },
   "conjugaison-er":    { slug: "conjugaison-er",    title: "Conjugaison : -er, faire, aller", unit: 2 },
   "modaux":            { slug: "modaux",            title: "Modaux : vouloir, pouvoir",    unit: 2 },
+  // Written 2026-08-27 because SIO-037 and SIO-048 had no lesson of their own:
+  // both opened `modaux`, the vouloir/pouvoir/devoir paradigm table, so two
+  // different goals showed the same screen and neither showed its own.
+  "pouvoir":           { slug: "pouvoir",           title: "Pouvoir + infinitif",          unit: 3 },
+  "conseils":          { slug: "conseils",          title: "Donner un conseil",            unit: 4 },
   "rendezvous":        { slug: "rendezvous",        title: "Proposer, accepter, refuser", unit: 2 },
   "meteo":             { slug: "meteo",             title: "La météo",                     unit: 3 },
   "prepositions":      { slug: "prepositions",      title: "Prépositions : pays & villes",  unit: 3 },
@@ -60,7 +68,13 @@ export const LESSONS_BY_SIO: Record<string, string[]> = {
   "SIO-009": ["salutations"],
   "SIO-012": ["professions"],
   "SIO-016": ["nationalities"],
-  "SIO-014": ["se-presenter", "negation", "conjugaison-u1"],
+  // se-presenter dropped 2026-08-27: it earned this row by teaching être +
+  // agreement through nationality, which is SIO-016's job and has moved back
+  // there. conjugaison-u1 LEADS — it drills être in all persons, which is this
+  // stop's promise; dropping se-presenter left negation first by accident, so
+  // "Subject pronouns + ÊTRE" opened a negation lesson. negation stays second
+  // (this stop also meets « ne … pas »), and SIO-028 owns it outright.
+  "SIO-014": ["conjugaison-u1", "negation"],
   "SIO-028": ["negation"],
   // avoir-etats FIRST: the SIO's grammar is avoir-vs-être states + age, not
   // the paradigm tables (Dan, 2026-07-08: "the avoir SIO doesn't match").
@@ -73,9 +87,10 @@ export const LESSONS_BY_SIO: Record<string, string[]> = {
   "SIO-026": ["aller"],
   "SIO-027": ["quand"],
   "SIO-029": ["rendezvous", "modaux"], // vouloir forms live in the modaux lesson
-  "SIO-037": ["modaux"],
+  // Its own lesson now; modaux stays second as the paradigm reference.
+  "SIO-037": ["pouvoir", "modaux"],
   "SIO-047": ["futur-proche", "modaux"],
-  "SIO-048": ["modaux"],
+  "SIO-048": ["conseils", "modaux"],
   "SIO-031": ["meteo"],
   "SIO-032": ["prepositions"],
   "SIO-033": ["prepositions-lieux"],

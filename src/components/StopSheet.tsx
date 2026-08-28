@@ -37,16 +37,34 @@ export default function StopSheet({
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
     window.addEventListener("keydown", onKey);
     panel.current?.focus();
-    return () => window.removeEventListener("keydown", onKey);
+    // THE SHEET OWNS THE SCREEN (Dan, 2026-08-27: "why are there two sets of
+    // links?", and "the pretest questions should not be sitting at the base of
+    // four buttons, because it only belongs to one button"). Both are the same
+    // fault seen twice: the page behind kept scrolling and reading through the
+    // scrim, so the rail's activity flaps sat beside a list of activities, and
+    // the pre-test's own questions ran on under the five numbered doors as
+    // though they belonged to all of them. A sheet that says "do these, in
+    // this order" cannot leave a competing list legible behind it.
+    const body = document.body;
+    const prev = body.style.overflow;
+    body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      body.style.overflow = prev;
+    };
   }, [onClose]);
 
   const tabs = deckActivityTabs(collectionId).filter((t) => t.href);
 
   return (
     <div
-      className="fixed inset-0 z-[90] flex items-end justify-center bg-black/35 p-0 sm:items-center sm:p-4"
+      className="fixed inset-0 z-[100] flex items-end justify-center bg-black/65 p-0 backdrop-blur-[2px] sm:items-center sm:p-4"
       onClick={onClose}
       role="presentation"
+      /* z-100, not 90: .cahier-bottombar is itself z-90, and on a tie the
+         later element paints on top — so the bottom bar's five activity
+         icons stayed lit above the scrim, which is half of "two sets of
+         links" all by itself. */
     >
       <div
         ref={panel}
