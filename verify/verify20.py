@@ -298,6 +298,46 @@ for name, p, marker, *classes in LEGENDS:
           f"{name}'s keyboard legend hides where there is no keyboard",
           f"{p}: legend near {marker!r} is not gated by {classes}")
 
+# ── every drill wears a named band (Dan, 2026-08-25: "there should be a
+# coloured band at the top of every page") ───────────────────────────────
+# The band system shipped 24 Aug and was wired into exactly TWO surfaces —
+# the lesson pager and ConjugaZone. Seven drills rendered with no band at
+# all, which is the same complaint Dan had already made once ("why doesn't
+# every page have this, with its relevant name of activity"). A drill that
+# hands DrillShell no `activity` gets no band, silently.
+#
+# This asserts PRESENCE, not colour: verify36-band owns what colour a band
+# wears. ÉcouTexte is exempt because it draws its own PageBand directly —
+# checked here so the exemption can't quietly become "no band".
+import glob as _glob
+_shell_users = [p for p in _glob.glob("src/app/**/*.tsx", recursive=True)
+                if "<DrillShell" in read(p)]
+check(len(_shell_users) >= 8,
+      f"{len(_shell_users)} surfaces render DrillShell",
+      f"only {len(_shell_users)} surfaces render DrillShell — the sweep below "
+      "would pass vacuously")
+for _p in sorted(_shell_users):
+    _src = read(_p)
+    _name = _p.split("/")[-1]
+    if "ecoutexte" in _p.lower():
+        check("PageBand" in _src,
+              f"{_name} draws its own PageBand (exempt from the shell's)",
+              f"{_name} has neither a DrillShell band nor its own PageBand")
+        continue
+    # Scan a WINDOW after the tag opens, not `[^>]*`: a prop like
+    # `right={<>✓ {score.ok}</>}` contains '>', so a negated-class regex
+    # stops before reaching `activity=` and reports a false failure. (It did,
+    # on the two surfaces that had the band all along.)
+    _found = False
+    for _m in re.finditer(r"<DrillShell\b", _src):
+        if "activity=" in _src[_m.start():_m.start() + 900]:
+            _found = True
+            break
+    check(_found,
+          f"{_name} names its activity, so the band appears",
+          f"{_name} renders DrillShell with no `activity` prop — that page has "
+          "no band and the learner cannot see which activity they are in")
+
 print("\npatch 20-21 check (phase 1)\n" + "-" * 66)
 for x in OK:   print("  ok    " + x)
 for x in FAIL: print("  FAIL  " + x)

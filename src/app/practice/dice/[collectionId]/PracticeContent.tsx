@@ -242,6 +242,8 @@ function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: 
   if (inShell) {
     return (
       <DrillShell
+        activity="dice"
+        deck={set.collectionId}
         exitHref={drillExitHref(set.collectionId)}
         progress={done ? null : { done: step, total: queue.length }}
         right={<>✓ {score}/{uniqueTotal}{inReview ? " · review" : ""}</>}

@@ -247,7 +247,13 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
   if (!asked) {
     const lengths = offer(order.length)!;
     return (
-      <DrillShell exitHref={drillExitHref(collectionId)} progress={null} cta={null}>
+      <DrillShell
+        activity="complete"
+        deck={collectionId}
+        exitHref={drillExitHref(collectionId)}
+        progress={null}
+        cta={null}
+      >
         <div className="flex flex-col items-center gap-5 pt-8 text-center">
           <p className="fluo-serif text-xl font-black text-[color:var(--fluo-ink)]">
             How many questions?
@@ -468,6 +474,8 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
   // and the feedback tray; the body is the prompt and the input, nothing else.
   return (
     <DrillShell
+      activity="complete"
+      deck={collectionId}
       exitHref={drillExitHref(collectionId)}
       progress={done ? null : { done: i, total }}
       right={<>✓ {score.ok}</>}
