@@ -319,11 +319,18 @@ check(len(_shell_users) >= 8,
 for _p in sorted(_shell_users):
     _src = read(_p)
     _name = _p.split("/")[-1]
-    if "ecoutexte" in _p.lower():
-        check("PageBand" in _src,
-              f"{_name} draws its own PageBand (exempt from the shell's)",
-              f"{_name} has neither a DrillShell band nor its own PageBand")
-        continue
+    # ÉcouTexte used to be exempt here, on the grounds that it drew its own
+    # PageBand. It did — INSIDE DrillShell's body, which carries
+    # `[&_h1]:hidden`, so its title computed to display:none and the bar
+    # showed empty from the day it shipped (23 Aug) to 27 Aug. A band with no
+    # word in it passed the old "has a PageBand" test, which is why the
+    # exemption is gone: every drill now proves the same way, through the
+    # shell, and nothing gets to draw a heading inside a region that hides
+    # headings.
+    check("<PageBand" not in _src,
+          f"{_name} does not hand-roll a band inside the shell's hidden-h1 body",
+          f"{_name} renders its own PageBand inside DrillShell — its title will "
+          "compute to display:none and the band will show empty")
     # Scan a WINDOW after the tag opens, not `[^>]*`: a prop like
     # `right={<>✓ {score.ok}</>}` contains '>', so a negated-class regex
     # stops before reaching `activity=` and reports a false failure. (It did,

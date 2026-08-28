@@ -44,7 +44,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import DrillShell from "@/components/DrillShell";
-import PageBand from "@/components/PageBand";
 import { pauseSpeech, resumeSpeech, speak, speakSequence } from "@/games/letris/speech";
 import { gradeAnswer, type Grade } from "@/lib/practice/cloze";
 import { fingerprint, generateUnheard } from "@/lib/textgen/engine";
@@ -311,14 +310,18 @@ export default function EcouTexte({
 
   const body = (
     <div className="space-y-3">
-      {/* The SAME heading band as every page (Dan, 2026-08-23: "why doesn't
-          ÉcouTexte have the same look as the other activities") — the 22 Aug
-          ad-hoc wordmark block predated the band system by a day. fam-skills
-          supplies the family ink DrillShell pages don't inherit; the tagline
-          fell to the litmus rule (the empty state says the same thing). */}
-      <div className="fam-skills -mx-1 overflow-hidden rounded-2xl">
-        <PageBand title="ÉcouTexte" className="band-recog pl-4" />
-      </div>
+      {/* The band is DrillShell's now (`activity="ecoutexte"` below), not a
+          PageBand drawn here.
+          WHY THIS MOVED (Dan, 2026-08-27: "i need ecoutexte in the same look
+          too"). A hand-rolled PageBand went in on 23 Aug answering this same
+          request — and rendered its title at 0x0 from the day it shipped,
+          because DrillShell's scrolling body carries `[&_h1]:hidden` to stop
+          drills printing a second page title. So the bar appeared, correctly
+          coloured, with no word in it: exactly the "not the same look" Dan
+          reported again four days later. Measured, not guessed — the h1 had
+          the right text, font, size and colour, and computed display:none.
+          Letting the shell own the band puts the heading OUTSIDE the hidden
+          region and makes this page identical to the other seven drills. */}
 
       {header}
 
@@ -587,6 +590,7 @@ export default function EcouTexte({
   // advance by accident.
   return (
     <DrillShell
+      activity="ecoutexte"
       exitHref="/activities"
       progress={text ? { done: worked, total: sentences.length } : null}
       right={text ? <>{worked}/{sentences.length}</> : undefined}
