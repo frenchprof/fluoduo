@@ -337,6 +337,28 @@ check(not _clash, "no two stops open the same lesson first",
 for _slug in ("pouvoir", "conseils"):
     check(os.path.exists(f"src/content/lessons/native/{_slug}.tsx"), f"{_slug}.tsx exists", f"{_slug}.tsx is missing")
 
+# ── 14e · the production stops open on a model, not a test ───────────────
+# The six ateliers (SIO-010, 020, 030, 040, 049, 050) had no Mémo at all: a
+# learner opened "Première rencontre" and landed straight on CHOOSE THE
+# FRENCH. Every other stop opens on something to read; these opened on a test.
+# Their Mémo is the model dialogue that has been in ateliers.ts all along —
+# DERIVED from it, never transcribed, so an edited line cannot drift out of
+# the Mémo that teaches it.
+_memos = CODE["src/content/memos.tsx"]
+_at = read("src/content/ateliers.ts")
+_sios_with_dialogue = re.findall(r'"(SIO-\d+)":\s*\[', _at)
+check(len(_sios_with_dialogue) >= 6, "ateliers.ts still carries the model dialogues",
+      f"only {len(_sios_with_dialogue)} atelier dialogues found")
+check("ATELIER_DIALOGUES" in _memos and "DECK_MEMOS[`atelier-" in _memos,
+      "every atelier's Mémo is derived from ATELIER_DIALOGUES",
+      "memos.tsx no longer builds the atelier Mémos from the dialogues")
+_hand = re.findall(r'^\s{2}"?(atelier-sio-\d+)"?:\s', _memos, re.M)
+check(not _hand, "no atelier Mémo is transcribed by hand (it would drift from the model)",
+      f"hand-written atelier memos found: {_hand}")
+check("speak(" in _memos and "Tout écouter" in _memos,
+      "the model can be heard — line by line and whole",
+      "the atelier Mémo lost its audio")
+
 # ── 15 · CI ──────────────────────────────────────────────────────────────
 wf = read(".github/workflows/verify.yml")
 check("verify/verify27-bugs.py" in wf and wf.find("verify27-bugs") > wf.find("verify26"), "CI runs verify27-bugs after verify26", "verify27-bugs not wired after verify26")
