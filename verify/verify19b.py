@@ -68,6 +68,24 @@ hard("--tier-good" in css and "var(--tier-good" in css + code,
      "the accuracy tier scale is consumed, not just declared",
      "--tier-good is declared and used nowhere — the tier scale is dead again")
 
+# The page's BASELINE typeface (Dan, 2026-08-27: "make sure there is visual
+# unity ... the fonts"). `body { font-family: Arial, Helvetica, sans-serif }`
+# was create-next-app boilerplate that survived from the first commit, which
+# made the whole five-face type system OPT-IN: measured before the fix,
+# 50-83% of the real text runs on every page were Arial, « tes parents » in
+# the Sorting drill among them. The house stack must be the default, not a
+# class a component remembers to add.
+_body_rule = re.search(r"(?<!-)\bbody\s*\{[^}]*\}", css)
+_body_rule = _body_rule.group(0) if _body_rule else ""
+hard("var(--font-body-stack)" in _body_rule,
+     "body defaults to the house body stack — the type system is not opt-in",
+     "body does not set font-family: var(--font-body-stack) — every unclassed "
+     "run falls back to the browser default, which is how Arial ruled the app")
+hard("Arial, Helvetica" not in _body_rule,
+     "the create-next-app Arial boilerplate is gone from the body rule",
+     "`Arial, Helvetica, sans-serif` is back on body — the starter template's "
+     "default is overriding Work Sans again")
+
 hard("HUES[i % HUES.length]" not in code,
      "no card colour comes from a rotating hue index",
      "HUES[i % HUES.length] is back: colour that encodes nothing")
