@@ -16,6 +16,8 @@ import Link from "next/link";
 import { CURATED } from "@/content/collections";
 import { speak } from "@/games/letris/speech";
 import { logEvent } from "@/lib/firebase/usage";
+import { recordPretestAnswer } from "@/lib/pretestRecord";
+import { sioForDeck } from "@/lib/curriculum";
 import CahierShell, { type ShellTab } from "@/components/CahierShell";
 import type { Collection, Item } from "@/lib/collections/schema";
 import { shuffle } from "@/lib/shuffle";
@@ -148,16 +150,39 @@ function PretestRunner({
     if (submitted || !q) return;
     const correct = choice.id === q.item.id;
     setSubmitted({ id: choice.id, correct });
+    const pretestId = `picture:${collection.id}`;
+    const picked = displayMap[choice.id] ?? choice.fr;
     // This format used to record NOTHING — every picture pretest a class sat was
     // invisible to the gap report. Same event and shape as the authored pretests
     // (/pretests/[id]) and the SIO popup quiz, keyed by deck since these are
     // generated per deck rather than authored one by one.
     void logEvent("pretest.answer", {
-      pretestId: `picture:${collection.id}`,
+      pretestId,
       itemId: q.item.id,
       correct,
-      picked: displayMap[choice.id] ?? choice.fr,
+      picked,
       direction: q.direction,
+    });
+    // …and the LOCAL gap record, which is what "Bring to class" actually reads.
+    // The usage event above goes to Firestore for the teacher dashboard; the SIO
+    // popup's list reads pretestRecord, so logging alone left the learner's own
+    // report empty. Both directions record the same pairing — picture → French
+    // name — because that is the gap either direction exposes, and it is what
+    // the list can usefully print. `sioForDeck` is the shared resolver (see
+    // curriculum.ts: one map, so callers stop building their own).
+    //
+    // Deliberately NOT recordItemResult: a pretest is sat BEFORE the lesson, so
+    // its misses must not cost XP, dent accuracy or enter the review queue
+    // (Dan, 2026-08-27: "remember it, but don't score it"). This module writes
+    // localStorage only and touches neither XP nor the SRS ladder.
+    recordPretestAnswer({
+      pretestId,
+      sioId: sioForDeck(collection.id) ?? "",
+      itemId: q.item.id,
+      correct,
+      picked,
+      answer: displayMap[q.item.id] ?? q.item.fr,
+      stem: q.item.emoji ?? "",
     });
   }
   function next() {

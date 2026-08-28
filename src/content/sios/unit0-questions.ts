@@ -49,6 +49,24 @@ export type Unit0Question = {
   options: Unit0Option[];
 };
 
+/**
+ * A stable identity for one Unit-0 question, derived from its own text.
+ *
+ * These questions are authored as bare literals with no `id`, and the panel
+ * shuffles both the bank and each question's options on every popup open — so
+ * neither the array index nor the render order can key a saved record. The
+ * question's prompt plus its correct answer is what actually distinguishes one
+ * from another, so that is the key. Editing a question's wording therefore
+ * orphans its old record, which is the behaviour we want: a reworded question
+ * is a different question, and a stale "bring to class" line for a prompt that
+ * no longer exists would be worse than losing it.
+ */
+export function unit0QuestionId(q: Unit0Question): string {
+  const prompt = q.stem ?? q.title ?? q.emoji ?? "";
+  const answer = q.options.find((o) => o.ok)?.v ?? "";
+  return `${prompt}|${answer}`.replace(/\s+/g, " ").trim();
+}
+
 /** s'appeler forms → the subject each belongs to (for wrong-pick whys). */
 const APPELER: Record<string, string> = {
   "m'appelle": "je",

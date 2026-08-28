@@ -140,7 +140,7 @@ export function AfterPretest({ children }: { children: ReactNode }) {
 /** The learner's gap report (PRIME "bring to class"): items whose LAST attempt
  *  was wrong. Reads localStorage on mount (so a reopened popup shows the
  *  latest attempt) and refreshes on every recorded answer while mounted. */
-function BringToClass({ sioId }: { sioId: string }) {
+export function BringToClass({ sioId }: { sioId: string }) {
   const [misses, setMisses] = useState<ReturnType<typeof missesForSio>>([]);
   useEffect(() => {
     const read = () => setMisses(missesForSio(sioId));

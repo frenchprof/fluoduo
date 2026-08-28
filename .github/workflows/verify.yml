@@ -141,3 +141,6 @@ jobs:
 
       - name: "Session length — a practice run has a finish line (25 Aug)"
         run: python3 verify/verify39-session-length.py
+
+      - name: "A pretest is remembered, never scored (28 Aug)"
+        run: python3 verify/verify40-pretest-record.py
