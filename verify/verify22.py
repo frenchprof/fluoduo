@@ -28,7 +28,7 @@ What this asserts:
 
 Run from the repo root:  python3 verify/verify22.py
 """
-import os, re, sys
+import json, os, re, sys
 
 FAIL = []
 OK = []
@@ -109,12 +109,22 @@ check(bool(_split) and "cloneElement" not in (_split.group(0) if _split else "")
 check("cloneElement" not in cards,
       "buildCards clones no memo element at all",
       "buildCards still clones a memo element")
-ramp = re.search(r"RAMP:\s*ExerciseKind\[\]\s*=\s*\[(.*?)\]", cards, re.S)
-kinds = re.findall(r'"(mcq|gap|build|translate)"', ramp.group(1)) if ramp else []
+# The default ramp moved to lib/lessonEntry.ts on 2026-08-28, when entry level
+# ★/★★/★★★ arrived: buildCards now holds `RAMP = rampFor(1)` rather than a
+# literal, so the old regex over buildCards.tsx matched nothing and reported an
+# empty ramp. Same assertion, asked of the module that now owns the answer —
+# executed rather than parsed, so it cannot go stale the same way twice.
+# (verify41 covers the other two levels and the equal-length invariant.)
+import subprocess as _sp
+_js = ('import { rampFor } from "./src/lib/lessonEntry.ts";'
+       'console.log(JSON.stringify(rampFor(1)));')
+_r = _sp.run(["node", "--experimental-strip-types", "--input-type=module", "-e", _js],
+             capture_output=True, text=True)
+kinds = json.loads(_r.stdout.strip().splitlines()[-1]) if _r.returncode == 0 else []
 check(len(kinds) == 12 and kinds.count("mcq") == 4 and kinds.count("gap") == 4
       and kinds.count("build") == 3 and kinds.count("translate") == 1,
-      "the ramp is 12 cards: 4 MCQ → 4 gap → 3 build → 1 translate",
-      f"the ramp is wrong: {kinds}")
+      "the default ramp is 12 cards: 4 MCQ → 4 gap → 3 build → 1 translate",
+      f"the ramp is wrong: {kinds}" if _r.returncode == 0 else f"ramp run failed: {_r.stderr[-300:]}")
 # The entry die is gone and must stay gone: no face→start map, no d12, and
 # above all nothing that trims the ramp before the learner walks it.
 check("ROLL_ENTRY" not in cards and "ROLL_ENTRY" not in pager,

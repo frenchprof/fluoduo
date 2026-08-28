@@ -28,6 +28,7 @@ import type { DiceQuestion, NativeLesson } from "@/content/lessons/native/types"
 import { gappedItems } from "@/lib/collections/gramMarathonReady";
 import { gapSentence, gapSentenceEn } from "@/lib/collections/gapSentence";
 import { splitGap } from "@/lib/practice/cloze";
+import { rampFor, type EntryLevel, type ExerciseKind } from "@/lib/lessonEntry";
 import { shuffle } from "@/lib/shuffle";
 
 /** A Mémo is one card, so a lesson carries exactly one rule card before the
@@ -35,23 +36,21 @@ import { shuffle } from "@/lib/shuffle";
  *  and reading `1` bare at the call site says nothing. See splitMemo. */
 export const RULE_CARDS_MAX = 1;
 
-export type ExerciseKind = "mcq" | "gap" | "build" | "translate";
+export type { ExerciseKind } from "@/lib/lessonEntry";
 
-/** The 12-card ramp — 4 MCQ, 4 gap, 3 build, 1 translate. */
-export const RAMP: ExerciseKind[] = [
-  "mcq", "mcq", "mcq", "mcq",
-  "gap", "gap", "gap", "gap",
-  "build", "build", "build",
-  "translate",
-];
+/** The default ramp — 4 MCQ, 4 gap, 3 build, 1 translate. Now one of three
+ *  (lib/lessonEntry.ts): entry level ★ / ★★ / ★★★ chooses the MIX, never the
+ *  length, so a higher level is harder work and not less of it. */
+export const RAMP: ExerciseKind[] = rampFor(1);
 
-/* NO ENTRY DIE (Dan, 2026-08-25: "drop the shortcuts, learning should not
- * allow that"). DIE_SIDES / ROLL_ENTRY / rollLabel are gone. A d12 used to
- * open the ramp and its face was a START INDEX — the pager did
+/* THE ENTRY DIE IS STILL GONE, and this is the distinction that matters.
+ * A d12 used to open the ramp and its face was a START INDEX — the pager did
  * `queue.slice(entry)`, so a 1 walked all twelve cards and a 12 left only the
  * translation. That made the die a run-length dial, and since the ramp runs
- * easy → hard a high roll bought less work at the hard end. Every learner now
- * walks the whole ramp. (The die Dan means — a different variation of the
+ * easy → hard a high roll bought less work at the hard end. Dan removed it
+ * ("drop the shortcuts") and has since allowed entry at ★★★ — which is the
+ * opposite request: same twelve cards, harder ones. rampFor() enforces that;
+ * nothing slices the queue. (The die Dan means — a different variation of the
  * same structure — is DiceConfig.newQuestion(), called per card below.) */
 
 export type Exercise = {
@@ -201,14 +200,19 @@ function deckSupply(deck: Collection, activityKey: string): Supply {
 }
 
 /** The native lesson's generated questions + its EN→FR bonus bank. */
-function lessonSupply(lesson: NativeLesson, activityKey: string): Supply {
+function lessonSupply(
+  lesson: NativeLesson,
+  activityKey: string,
+  pinned?: Record<string, string>,
+): Supply {
+  const steered = !!pinned && Object.values(pinned).some(Boolean);
   let bonusBag = shuffle(lesson.bonus);
   const drawBonus = () => {
     if (!lesson.bonus.length) return null;
     if (!bonusBag.length) bonusBag = shuffle(lesson.bonus);
     return bonusBag.pop()!;
   };
-  const q = (): DiceQuestion => lesson.dice.newQuestion();
+  const q = (): DiceQuestion => lesson.dice.newQuestion(pinned);
 
   return {
     make(kind) {
@@ -241,7 +245,11 @@ function lessonSupply(lesson: NativeLesson, activityKey: string): Supply {
           };
         }
         case "translate": {
-          const b = drawBonus();
+          // The bonus bank is a fixed authored list, so it cannot honour a
+          // pinned axis: a learner who asked for "vous + être + négatif" would
+          // get a translate card about anything at all, in a run that claims to
+          // be about their selection. Steered runs generate instead.
+          const b = steered ? null : drawBonus();
           if (b) {
             return {
               kind, itemId: b.fr, activity: `lesson:${activityKey}`,
@@ -268,19 +276,31 @@ export function buildCards({
   lesson,
   memo,
   activityKey,
+  entry = 1,
+  pinned,
 }: {
   deck?: Collection;
   lesson?: NativeLesson;
   /** The Mémo to split — lesson.memo ?? memoForDeck(deck.id), resolved by the caller. */
   memo?: ReactNode;
   activityKey: string;
+  /** Where the learner enters the ramp: ★ / ★★ / ★★★. Same card count at
+   *  every level — see lib/lessonEntry.ts on why that is load-bearing. */
+  entry?: EntryLevel;
+  /** Axis values the learner pinned in the dropdowns; see DiceConfig.axes. */
+  pinned?: Record<string, string>;
 }): { rules: ReactNode[]; exercises: Exercise[] } {
   const supplies: Supply[] = [];
-  if (deck) supplies.push(deckSupply(deck, activityKey));
-  if (lesson) supplies.push(lessonSupply(lesson, activityKey));
+  // With axes pinned, the DECK supply is dropped: its questions are drawn from
+  // the deck's own items and cannot honour "only vous + être", so mixing it in
+  // would serve cards that ignore the learner's selection while looking like
+  // they answer it. A steered run is the lesson generator's alone.
+  const steered = !!pinned && Object.values(pinned).some(Boolean);
+  if (deck && !(steered && lesson)) supplies.push(deckSupply(deck, activityKey));
+  if (lesson) supplies.push(lessonSupply(lesson, activityKey, pinned));
 
   const exercises: Exercise[] = [];
-  RAMP.forEach((kind, i) => {
+  rampFor(entry).forEach((kind, i) => {
     for (let s = 0; s < supplies.length; s++) {
       // Alternate supplies card by card; fall through if one can't serve.
       const ex = supplies[(i + s) % supplies.length].make(kind);

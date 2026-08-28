@@ -144,3 +144,6 @@ jobs:
 
       - name: "A pretest is remembered, never scored (28 Aug)"
         run: python3 verify/verify40-pretest-record.py
+
+      - name: "Entry level ★/★★/★★★ and the restored selectors (28 Aug)"
+        run: python3 verify/verify41-lesson-entry.py
