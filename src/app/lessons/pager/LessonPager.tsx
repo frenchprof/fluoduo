@@ -39,6 +39,7 @@ import { useHelpLadder } from "@/lib/help/useHelpLadder";
 import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import { optionGridClass } from "@/lib/optionGrid";
 import { saveRun, loadRun, clearRun } from "@/lib/lessonRun";
+import { ENTRY_LABELS, ENTRY_LEVELS, type EntryLevel } from "@/lib/lessonEntry";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 
@@ -65,6 +66,15 @@ export default function LessonPager({
   const [rules, setRules] = useState<React.ReactNode[]>([]);
   const [queue, setQueue] = useState<QueuedEx[] | null>(null);
   const [i, setI] = useState(0);
+  // Where the learner enters the ramp. `asked` is separate from `entry`
+  // because ★ is both the default AND a real choice — a single nullable
+  // level could not tell "hasn't chosen" from "chose Découverte".
+  const [entry, setEntry] = useState<EntryLevel>(1);
+  const [asked, setAsked] = useState(false);
+  const [buildTick, setBuildTick] = useState(0);
+  /** Axis values pinned in the dropdowns; "" = free (the generator rolls it). */
+  const [pinned, setPinned] = useState<Record<string, string>>({});
+  const axes = lesson?.dice.axes ?? null;
   // Answer state for the current card.
   const [selected, setSelected] = useState<string | null>(null);
   const [value, setValue] = useState("");
@@ -92,12 +102,17 @@ export default function LessonPager({
       lesson: lesson ?? undefined,
       memo: lesson?.memo ?? (collectionId ? memoForDeck(collectionId) : undefined),
       activityKey,
+      entry,
+      pinned,
     });
     setRules(r);
     // #5: come back to where you were. The rules are rebuilt (deterministic);
     // only the shuffled half is restored, and loadRun refuses any save whose
     // rule count no longer matches rather than resume one card off.
     const saved = loadRun<QueuedEx>(runKey, r.length);
+    // A resumed run is already at a level — asking again would pose a question
+    // whose answer is then thrown away, since the saved queue is what loads.
+    if (saved) setAsked(true);
     setQueue(saved ? saved.queue : exercises.map((ex) => ({ ex, requeued: false })));
     setI(saved ? saved.i : 0);
     setSelected(null);
@@ -106,13 +121,26 @@ export default function LessonPager({
     setScore(saved ? saved.score : { ok: 0, total: 0 });
     setMisses(saved ? (saved.misses as Exercise[]) : []);
     setXpEarned(null);
-    startRef.current = Date.now();
-    cardStartRef.current = Date.now();
+    // The clocks and the XP baseline are set by the CALLER, in the effect.
+    // Reading Date.now() or writing a ref inside build() is flagged impure
+    // once the compiler can reach build() from a render path, and this run's
+    // start time is genuinely the effect's business, not the builder's.
+    return saved;
+  };
+  // One effect owns the build, so build() stays a plain effect-scope function
+  // (the compiler flags Date.now()/refs inside anything it can reach from a
+  // render path). `buildTick` is the chooser's trigger: pressing ★ when entry
+  // is already 1 changes no other dependency, and would otherwise keep the
+  // mount build and silently discard the axes the learner had just pinned.
+  useEffect(() => {
+    const saved = build();
+    const now = Date.now();
+    startRef.current = now;
+    cardStartRef.current = now;
     xpAtStartRef.current = saved ? saved.xpAtStart : loadProgress().xp;
     endWroteRef.current = false;
-  };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => { build(); }, [collectionId, lessonSlug]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [collectionId, lessonSlug, buildTick]);
 
   // ── where are we ──────────────────────────────────────────────────────────
   const ready = queue !== null;
@@ -290,21 +318,102 @@ export default function LessonPager({
   // The finished run's footer (the approved flow, 2026-08-24): ONE primary
   // « Next › » once the SIO write has landed; ↻ Try again is the quiet
   // "Repeat". null while running — the base cta/feedback own the footer.
-  const finish: DrillFinish | null = end ? { repeat: build } : null;
+  const finish: DrillFinish | null = end ? { repeat: () => { clearRun(); setAsked(false); setBuildTick((t) => t + 1); } } : null;
+
+  // Ask before the first card. Rendered from the SINGLE return below rather
+  // than as an early `return <DrillShell>`: a conditional early return makes
+  // the React Compiler bail on the whole component, after which it flags the
+  // Date.now() and ref writes inside build() that it accepts today. Same
+  // screen, one return path.
+  const chooser = (
+    <div className="flex flex-col items-center gap-5 pt-8 text-center">
+          <p className="fluo-serif text-xl font-black text-[color:var(--fluo-ink)]">
+            Where do you want to start?
+          </p>
+          <div className="flex w-full max-w-sm flex-col gap-2.5">
+            {ENTRY_LEVELS.map((lv) => (
+              <button
+                key={lv}
+                type="button"
+                onClick={() => { setEntry(lv); setAsked(true); setBuildTick((t) => t + 1); }}
+                className="cahier-btn cahier-btn-primary flex-col items-center gap-0.5 py-3"
+              >
+                <span className="text-base font-black tracking-wide">
+                  {ENTRY_LABELS[lv].stars} {ENTRY_LABELS[lv].name}
+                </span>
+                <span className="text-xs font-bold opacity-80">{ENTRY_LABELS[lv].blurb}</span>
+              </button>
+            ))}
+          </div>
+          {/* Every level is the same number of cards — say so, because the
+              die this replaces made a high roll mean LESS work and a learner
+              who remembers that would reasonably expect ★★★ to be shorter. */}
+          <p className="text-xs font-bold text-[color:var(--fluo-ink-soft)]">
+            Same {denom} cards either way — harder, not shorter.
+          </p>
+
+          {/* The selectors from Dan's original site, restored alongside the
+              die (2026-08-27: "both — dropdowns and dice"). Only lessons that
+              declare their axes show this; the rest start straight away. */}
+          {axes && axes.length > 0 && (
+            <div className="mt-2 w-full max-w-sm border-t-2 border-[color:var(--cahier-rule)] pt-4">
+              <p className="fluo-label mb-2 text-[color:var(--fluo-ink-soft)]">
+                Practise something specific
+              </p>
+              <div className="flex flex-col gap-2">
+                {axes.map((ax) => (
+                  <label key={ax.key} className="flex items-center justify-between gap-3 text-sm font-bold">
+                    <span className="text-[color:var(--fluo-ink-soft)]">{ax.label}</span>
+                    <select
+                      value={pinned[ax.key] ?? ""}
+                      onChange={(e) => setPinned((p) => ({ ...p, [ax.key]: e.target.value }))}
+                      className="min-w-36 rounded-lg border-2 border-[color:var(--cahier-rule)] bg-white px-2 py-1.5 font-bold text-[color:var(--cahier-ink)]"
+                      lang="fr"
+                    >
+                      {/* "" is a real, useful value: leave it and the generator
+                          rolls that axis, which is the pre-selector behaviour. */}
+                      <option value="">au hasard</option>
+                      {ax.options.map((o) => (
+                        <option key={o.value} value={o.value}>{o.label}</option>
+                      ))}
+                    </select>
+                  </label>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() =>
+                  setPinned(
+                    Object.fromEntries(
+                      axes.map((ax) => [
+                        ax.key,
+                        ax.options[Math.floor(Math.random() * ax.options.length)].value,
+                      ]),
+                    ),
+                  )
+                }
+                className="cahier-btn mt-3 w-full justify-center"
+              >
+                🎲 Roll the dice
+              </button>
+            </div>
+          )}
+        </div>
+  );
 
   return (
     <DrillShell
       exitHref={exitHref}
-      progress={end || !ready ? null : { done, total: denom }}
+      progress={end || !ready || !asked ? null : { done, total: denom }}
       right={<>✓ {score.ok}</>}
-      cta={cta}
-      feedback={feedback}
-      help={card === "ex" && !end ? ladder.help : null}
+      cta={asked ? cta : null}
+      feedback={asked ? feedback : null}
+      help={asked && card === "ex" && !end ? ladder.help : null}
       activity="lesson"
       deck={collectionId}
-      finish={finish}
+      finish={asked ? finish : null}
     >
-      {!ready ? null : card === "rule" ? (
+      {!ready ? null : !asked ? chooser : card === "rule" ? (
         <div className="pt-2"><SpeakZone>{rules[i]}</SpeakZone></div>
       ) : card === "ex" && ex ? (
         <ExerciseCard ex={ex} selected={selected} value={value} result={result} struck={struckAll}

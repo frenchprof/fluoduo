@@ -1683,3 +1683,81 @@ rather than the meaning (a drawn triangle); one used `[^>]*` and reported two
 false failures. **Write the check, then break the code and watch it go red
 before trusting it.** Both sessions adopted this; it is cheap and it caught
 things review did not.
+
+---
+
+## 2026-08-28 — the pre-test remembers; the ramp gets an entry (Peers)
+
+Both of Dan's outstanding items from 27 Aug, built and checked.
+
+**The pre-test remembers, and still does not score.** Four surfaces put
+pre-lesson questions in front of a learner; only two fed the gap report.
+
+    PretestQuiz            records (via the runner)
+    /pretests/[id]         records (via the runner)
+    picture pretest        logged to Firestore, NEVER to the gap record —
+                           its own header claimed a report it did not feed
+    Unit-0 popup           recorded nothing at all, while gating the lesson
+                           button on being answered ("pretest first")
+
+Both wired to `recordPretestAnswer` — the existing mechanism, not a parallel
+one. The picture engine resolves its SIO through the shared `sioForDeck`;
+Unit-0 keys on a content-derived id because its bank is reshuffled per open
+and its questions carry no `id`, so position cannot key a saved record.
+
+Unit 0 would then have been **a write with no reader**: `BringToClass` had
+exactly one render site, inside `SioDetail`'s pretest branch, and Unit 0 draws
+its own popup body. Exported and rendered there too.
+
+The "never scored" half held everywhere **by accident** — no pretest ever
+called `recordItemResult` — and nothing stopped one from starting to. That is
+now `verify40`'s load-bearing assertion.
+
+**Entry level ★ / ★★ / ★★★.** The invariant that matters, and the reason this
+is not the old die: **every level is the same twelve cards.** The removed d12's
+face was a START INDEX (`queue.slice(entry)`), so a 12 left the lone
+translation — a run-length dial dressed as difficulty, selling least work at
+the hard end. Dan's "a learner may choose to start at 3 stars" is the opposite
+request. `rampFor()` shifts the MIX (★ 4 MCQ → ★★★ none, 10 of 12 build or
+translate) and never the length; `verify41` executes all three ramps and fails
+if their lengths ever differ.
+
+**Dropdowns and dice.** `DiceConfig.axes` is optional, so a lesson opts in and
+the other 33 keep working untouched — the axes ARE the grammar and one fixed
+"subject × topic × verb" would be wrong nearly everywhere. `conjugaison-u1` is
+the reference (subject × verb × polarity) with a 🎲 that fills all three at
+random. Its generator moved to `conjugaison-u1.gen.ts`: node cannot strip types
+from a `.tsx`, so a generator beside the Mémo could not be executed by a check
+— and **a generator that ignores a pin looks identical in source to one that
+honours it.** verify41 runs it 2016 times across every pin combination.
+
+A steered run drops the two supplies that cannot honour a pin — the deck's own
+items and the authored bonus bank — rather than serve off-target cards into a
+run that claims to be about the learner's selection.
+
+**Still open:**
+- **Selectors on the other 14 lessons** that have a real subject axis
+  (`aimer`, `aller`, `faire`, `modaux`, `futur-proche`, `pouvoir`,
+  `conjugaison-er`, `manger-boire`, …). The mechanism is built and proven on
+  one; each further lesson is a small generator split plus an `axes` block.
+- **Session length** on 4Mémoire, WorDrill, GramMarathon — `lib/sessionLength.ts`
+  is shared and ready.
+- **Unit 0's bank calls itself "post-lesson"** in its own header while the UI
+  gates the lesson button on it ("pretest first"). It is recorded as a pretest
+  because that is how it is used. Worth Dan's ruling on which it is.
+- Five SIO promises the content cannot keep (stops 1, 2, 3, 17, 18); the
+  50-promise rewrite stays frozen pending Dan's markup.
+- `claude-review` still red on every PR since ~20 Aug; recommendation stands.
+- `LessonPager` carries one React-Compiler lint error more than main (6 vs 5,
+  same pre-existing class — the compiler has bailed on that component, so a
+  `Date.now()` in an effect reads as render-phase). Lint gates neither CI nor
+  the build; noted rather than hidden.
+
+**The practice held.** Every assertion in verify40 and verify41 was proved to
+FAIL before being trusted, and three separate weaknesses surfaced that way:
+two break tests were run with a one-liner that truncated the file before
+reading it (so they only proved the check notices an EMPTY file); one
+assertion stayed green with the call deleted because the import line alone
+satisfied it; and verify40's absence checks first failed on the *comments*
+explaining that the code deliberately does not score. All three would have
+shipped as green-but-vacuous.

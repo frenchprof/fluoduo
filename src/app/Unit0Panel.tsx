@@ -21,12 +21,13 @@ import { speak } from "@/games/letris/speech";
 import { SIOS, sioStatement } from "@/content/sios";
 import { lessonsForSio } from "@/content/lessons";
 import { CURATED } from "@/content/collections";
-import { UNIT0_QUESTIONS, type Unit0Question } from "@/content/sios/unit0-questions";
+import { UNIT0_QUESTIONS, unit0QuestionId, type Unit0Question } from "@/content/sios/unit0-questions";
+import { recordPretestAnswer } from "@/lib/pretestRecord";
 import { getAtelier } from "@/content/ateliers";
 import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import AuthGate from "@/components/AuthGate";
 import SioModal, { popupActivityTabs } from "./SioModal";
-import { AfterPretest } from "./SioDetail";
+import { AfterPretest, BringToClass } from "./SioDetail";
 import DialoguePlayer from "./DialoguePlayer";
 import MarkDoneButton from "./sio/[id]/MarkDoneButton";
 import { shuffle } from "@/lib/shuffle";
@@ -119,6 +120,13 @@ export default function Unit0Panel({ openSioId, onSioClosed }: { openSioId?: str
             </AuthGate>
           )}
 
+          {/* Units 1-4 get this from SioDetail's pretest branch; Unit 0 draws
+              its own popup body, so without this line the misses recorded above
+              would have had no reader — written and never shown. */}
+          <div className="mt-3">
+            <BringToClass sioId={openSio.id} />
+          </div>
+
           {/* Lesson buttons: bottom only, and (for question SIOs) only after
               every question is answered — pretest first (Dan, 2026-07-05). */}
           {lessonsForSio(openSio.id).length > 0 && (() => {
@@ -168,6 +176,24 @@ function Unit0Questions({ sio }: { sio: (typeof UNIT0_SIOS)[number] }) {
     setPicked((prev) => ({ ...prev, [i]: o.v }));
     if (o.ok) sfx.correct(); else sfx.wrong();
     if (o.ok) speak(ttsFor(q, o.v), "fr-FR");
+    // Unit 0 graded and then forgot: these questions gate the lesson button
+    // above (line ~123, "pretest first"), so a Unit-0 learner sits them BEFORE
+    // the lesson exactly as Units 1-4 sit theirs — but nothing was written, so
+    // their misses never reached "Bring to class" while every other unit's did.
+    // Same store, same shape as the runner (lib/pretests/runner.ts).
+    //
+    // Not recordItemResult, by the same rule as the other two engines: a
+    // pre-lesson miss is remembered, never scored — no XP, no accuracy, no
+    // review queue (Dan, 2026-08-27: "remember it, but don't score it").
+    recordPretestAnswer({
+      pretestId: `unit0:${sio.id}`,
+      sioId: sio.id,
+      itemId: unit0QuestionId(q),
+      correct: o.ok,
+      picked: o.v,
+      answer: q.options.find((x) => x.ok)?.v ?? "",
+      stem: (q.stem ?? q.title ?? q.emoji ?? "").replace(/\s+/g, " ").trim(),
+    });
     // All answered → post-pretest content (lesson button) may appear.
     if (Object.keys(picked).length + 1 === questions.length && questions.length > 0) {
       window.dispatchEvent(new CustomEvent("fluolingo:pretest-complete", { detail: { id: sio.id } }));
