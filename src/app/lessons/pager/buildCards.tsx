@@ -22,7 +22,7 @@
  * Everything here runs in the pager's MOUNT EFFECT, never during render —
  * same SSR-hydration rule as every drill (shuffle in effects only).
  */
-import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import type { Collection, Item } from "@/lib/collections/schema";
 import type { DiceQuestion, NativeLesson } from "@/content/lessons/native/types";
 import { gappedItems } from "@/lib/collections/gramMarathonReady";
@@ -30,7 +30,10 @@ import { gapSentence, gapSentenceEn } from "@/lib/collections/gapSentence";
 import { splitGap } from "@/lib/practice/cloze";
 import { shuffle } from "@/lib/shuffle";
 
-export const RULE_CARDS_MAX = 3;
+/** A Mémo is one card, so a lesson carries exactly one rule card before the
+ *  ramp. Kept as a named constant because the run length is rule cards + 12
+ *  and reading `1` bare at the call site says nothing. See splitMemo. */
+export const RULE_CARDS_MAX = 1;
 
 export type ExerciseKind = "mcq" | "gap" | "build" | "translate";
 
@@ -97,25 +100,31 @@ function distractors(pool: string[], answer: string, n = 3): string[] {
 /* ── Rule cards ──────────────────────────────────────────────────────────── */
 
 /**
- * Split a Mémo at its top-level children into at most RULE_CARDS_MAX cards.
- * The memo node is the outer card (rounded-2xl div or <Card>); each part is
- * that same element cloned with a slice of its children, so both markup
- * families (memos.tsx and the native lessons' hand-rolled divs) split the
- * same way. A short memo (≤3 children) stays one card.
+ * A Mémo is ONE card. It used to be sliced into up to three parts at
+ * its top-level children, and the measurements say that did more harm than
+ * good (Dan, 2026-08-27, on Units 0 and 1: "Memos are urgent").
+ *
+ * The heuristic was child COUNT, which turns out not to predict height at all
+ * — measured across all 27 deck memos at 390x844 and 360x640:
+ *
+ *     nationalities   1 child   the TALLEST memo   never split (1 <= 3)
+ *     salutations     1 child   459px              never split
+ *     alphabet        8 kids    449px, shorter     split into 3
+ *
+ * So it chopped memos that fit and left the tall ones whole — backwards in
+ * exactly the cases that matter. And the slicing was visibly wrong where it
+ * did fire: cloning the wrapper stamped « L'alphabet — 7 familles de sons »
+ * onto all three cards, the first of which showed three families; the third
+ * held one letter and a closing line.
+ *
+ * Nothing is at risk from dropping it, because the app already relies on the
+ * fallback for its tallest memos: at 390x844 no memo overflows its slot, and
+ * at 360x640 the nine that do already scroll — verified on `salutations`
+ * (459px in a 405px slot), which scrolls 102px with its last line reachable.
+ * A reference you scroll beats a reference cut into arbitrary thirds.
  */
 export function splitMemo(memo: ReactNode): ReactNode[] {
-  if (memo == null) return [];
-  if (!isValidElement(memo)) return [memo];
-  const el = memo as ReactElement<{ children?: ReactNode }>;
-  const kids = Children.toArray(el.props.children);
-  if (kids.length <= 3) return [memo];
-  const parts = Math.min(RULE_CARDS_MAX, Math.ceil(kids.length / 3));
-  const per = Math.ceil(kids.length / parts);
-  const out: ReactNode[] = [];
-  for (let i = 0; i < kids.length; i += per) {
-    out.push(cloneElement(el, { key: `memo-${i}` }, kids.slice(i, i + per)));
-  }
-  return out.slice(0, RULE_CARDS_MAX);
+  return memo == null ? [] : [memo];
 }
 
 /* ── Question supplies ───────────────────────────────────────────────────── */

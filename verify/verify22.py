@@ -93,9 +93,22 @@ check("onNext" not in pager,
       "the pager binds its own onNext (Enter would advance twice)")
 
 # 3 · buildCards structure
-check("RULE_CARDS_MAX = 3" in cards,
-      "rule cards cap at 3",
-      "RULE_CARDS_MAX is not 3")
+# A Mémo is ONE card since 2026-08-27. The old 3-way slice keyed on child
+# COUNT, which does not predict height: it chopped `alphabet` (8 children,
+# 449px) into three while leaving `nationalities` and `salutations` (1 child,
+# taller) whole — backwards where it mattered — and cloning the wrapper
+# stamped the heading onto every slice, so card one claimed "7 familles de
+# sons" above three of them. Assert the MEANING (a memo is not sliced), not
+# the number: a check that only reads "= 1" would pass on a file that still
+# slices.
+check("RULE_CARDS_MAX = 1" in cards, "a Mémo is one rule card", "RULE_CARDS_MAX is not 1")
+_split = re.search(r"export function splitMemo.*?\n\}", cards, re.S)
+check(bool(_split) and "cloneElement" not in (_split.group(0) if _split else ""),
+      "splitMemo does not slice the memo (no cloneElement)",
+      "splitMemo is slicing the Mémo again — the heading will repeat on every card")
+check("cloneElement" not in cards,
+      "buildCards clones no memo element at all",
+      "buildCards still clones a memo element")
 ramp = re.search(r"RAMP:\s*ExerciseKind\[\]\s*=\s*\[(.*?)\]", cards, re.S)
 kinds = re.findall(r'"(mcq|gap|build|translate)"', ramp.group(1)) if ramp else []
 check(len(kinds) == 12 and kinds.count("mcq") == 4 and kinds.count("gap") == 4
