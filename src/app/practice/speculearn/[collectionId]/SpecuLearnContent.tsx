@@ -314,6 +314,8 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
 
   return (
     <DrillShell
+      activity="speculearn"
+      deck={collectionId}
       exitHref={drillExitHref(collectionId)}
       progress={screen === "quiz" && queue.length > 0 ? { done: idx, total: queue.length } : null}
       right={<>{score} pt</>}

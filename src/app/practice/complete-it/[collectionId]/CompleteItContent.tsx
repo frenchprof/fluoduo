@@ -30,6 +30,7 @@ import WordBank from "@/components/WordBank";
 import type { Collection, Item } from "@/lib/collections/schema";
 import { gradeAgainst, type Grade } from "@/lib/practice/cloze";
 import { shuffle } from "@/lib/shuffle";
+import { cap, label, offer, type SessionLength } from "@/lib/sessionLength";
 
 // The private normalize/deaccent/grade trio (a byte-clone of cloze.ts) died
 // in the grading unification (2026-08-11) — THE grader lives in
@@ -130,7 +131,15 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
   useActivityPlay("complete-it", collectionId);
   const deck = CURATED.find((c) => c.id === collectionId);
 
+  // The FULL shuffled run, and the length the learner picked off it (Dan,
+  // 2026-08-25: "let the learner choose before starting"). `order` stays the
+  // whole thing so a chosen length can be re-cut on restart without
+  // reshuffling into a different deck slice; `chosen` is null until the
+  // learner answers, and `offer()` returns null on a short deck, which is
+  // what lets those decks skip the question entirely.
   const [order, setOrder] = useState<QEntry[] | null>(null);
+  const [chosen, setChosen] = useState<SessionLength | null>(null);
+  const [asked, setAsked] = useState(false);
   const [i, setI] = useState(0);
   const [value, setValue] = useState("");
   const [result, setResult] = useState<Grade | null>(null);
@@ -148,7 +157,11 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
 
   useEffect(() => {
     if (!deck) return;
-    setOrder(shuffle(buildEntries(deck)));
+    const full = shuffle(buildEntries(deck));
+    setOrder(full);
+    // A deck short enough not to need the question is answered for the
+    // learner: `asked` goes true immediately and the run is the whole deck.
+    setAsked(offer(full.length) === null);
   }, [deck]);
 
   useEffect(() => {
@@ -158,9 +171,16 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
 
   // Item selection + the help ladder's hooks come BEFORE the early returns
   // (hooks must run in the same order every render).
-  const total = order?.length ?? 0;
-  const done = order === null || i >= total;
-  const entry = done ? null : order![i];
+  // The RUN is the chosen slice of the shuffled order — `total` drives the
+  // progress denominator, the done card and `next()`, so capping here caps
+  // all three without touching any of them.
+  const run = useMemo(
+    () => (order === null ? null : cap(order, chosen)),
+    [order, chosen],
+  );
+  const total = run?.length ?? 0;
+  const done = run === null || i >= total;
+  const entry = done ? null : run![i];
   const item = deck && entry != null ? deck.items[entry.itemIdx] : null;
   const natForm = entry?.natForm;
   const possPerson = entry?.possPerson;
@@ -217,6 +237,44 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
   }
   if (order === null) return null;
 
+  // HOW LONG? — asked once, before any French appears, and only on a deck
+  // long enough for the answer to matter. Three known quantities: the "all"
+  // key names its real number so nothing is a mystery.
+  // Rendered INSIDE DrillShell, not before it: an early bare return dropped
+  // the notebook frame, the exit ✕ and the bottom bar, so the first thing a
+  // learner saw did not look like the app (caught in a browser, not in
+  // review). No progress and no CTA — the choice IS the control.
+  if (!asked) {
+    const lengths = offer(order.length)!;
+    return (
+      <DrillShell
+        activity="complete"
+        deck={collectionId}
+        exitHref={drillExitHref(collectionId)}
+        progress={null}
+        cta={null}
+      >
+        <div className="flex flex-col items-center gap-5 pt-8 text-center">
+          <p className="fluo-serif text-xl font-black text-[color:var(--fluo-ink)]">
+            How many questions?
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            {lengths.map((n) => (
+              <button
+                key={String(n)}
+                type="button"
+                onClick={() => { setChosen(n); setAsked(true); }}
+                className="cahier-btn cahier-btn-primary min-w-20 justify-center"
+              >
+                {label(n, order.length)}
+              </button>
+            ))}
+          </div>
+        </div>
+      </DrillShell>
+    );
+  }
+
   function check() {
     if (result !== null || retry || !item) return;
     // item.alt = alternative nouns; compose each with the article exactly
@@ -259,7 +317,13 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
   }
 
   function restart() {
-    setOrder(shuffle(buildEntries(deck!)));
+    // A replay reshuffles and asks again — a learner who did ten may well
+    // want twenty-five next, and re-asking costs one tap. `chosen` resets so
+    // the question is genuinely open; a short deck still skips it.
+    const full = shuffle(buildEntries(deck!));
+    setOrder(full);
+    setChosen(null);
+    setAsked(offer(full.length) === null);
     setI(0); setValue(""); setResult(null); setRetry(false); setScore({ ok: 0, total: 0 });
   }
 
@@ -410,6 +474,8 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
   // and the feedback tray; the body is the prompt and the input, nothing else.
   return (
     <DrillShell
+      activity="complete"
+      deck={collectionId}
       exitHref={drillExitHref(collectionId)}
       progress={done ? null : { done: i, total }}
       right={<>✓ {score.ok}</>}

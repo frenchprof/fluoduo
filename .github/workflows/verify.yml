@@ -125,3 +125,19 @@ jobs:
 
       - name: "Possessives — the whole paradigm drilled, the prompt no longer prints the answer (24 Aug)"
         run: python3 verify/verify35-possessives.py
+
+      # 36-38 shipped with PR #42 and were never added here, so none of them
+      # had ever run — the same gap verify31-wordrill sat in for a fortnight.
+      # 38 is the one that matters most: it guards the sign-in wall against
+      # being left open, and a guard CI never runs guards nothing.
+      - name: "Activity bands — coloured by what the activity asks (25 Aug)"
+        run: python3 verify/verify36-band.py
+
+      - name: "Home — the stop comes before the activity; the drawn keys stay (25 Aug)"
+        run: python3 verify/verify37-home.py
+
+      - name: "The sign-in wall stays up in production"
+        run: python3 verify/verify38-authwall.py
+
+      - name: "Session length — a practice run has a finish line (25 Aug)"
+        run: python3 verify/verify39-session-length.py
