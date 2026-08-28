@@ -311,6 +311,32 @@ for _it in _items:
         _dupes.append(_it["id"])
 check(not _dupes, "no cloze asks for a word already printed in its frame", f"these frames repeat their own answer: {_dupes}")
 
+# ── 14d · one goal, one lesson ───────────────────────────────────────────
+# The audit of all fifty stops (2026-08-27) found the mirror of Lesson 1's
+# fault: `modaux` — a vouloir/pouvoir/devoir paradigm table — was the ONLY
+# lesson behind SIO-037 ("say what is possible, ask permission") and SIO-048
+# ("give simple advice"), so two different goals opened the same screen and
+# neither opened its own. Each now leads with a lesson written for it.
+_les = read("src/content/lessons.ts")
+_by_sio = dict(re.findall(r'"(SIO-\d+)":\s*\[([^\]]*)\]', _les[_les.index("LESSONS_BY_SIO"):]))
+def _first(sio):
+    got = re.findall(r'"([a-z0-9\-]+)"', _by_sio.get(sio, ""))
+    return got[0] if got else None
+for _sio, _want in [("SIO-037", "pouvoir"), ("SIO-048", "conseils")]:
+    check(_first(_sio) == _want, f"{_sio} leads with its own lesson ({_want})",
+          f"{_sio} leads with {_first(_sio)!r}, not its own lesson — the learner gets someone else's screen")
+# and no two stops may LEAD with the same lesson: that is the fault itself
+_leads = {}
+_clash = []
+for _sio in _by_sio:
+    _f = _first(_sio)
+    if _f and _f in _leads: _clash.append((_leads[_f], _sio, _f))
+    elif _f: _leads[_f] = _sio
+check(not _clash, "no two stops open the same lesson first",
+      f"stops sharing a primary lesson: {_clash}")
+for _slug in ("pouvoir", "conseils"):
+    check(os.path.exists(f"src/content/lessons/native/{_slug}.tsx"), f"{_slug}.tsx exists", f"{_slug}.tsx is missing")
+
 # ── 15 · CI ──────────────────────────────────────────────────────────────
 wf = read(".github/workflows/verify.yml")
 check("verify/verify27-bugs.py" in wf and wf.find("verify27-bugs") > wf.find("verify26"), "CI runs verify27-bugs after verify26", "verify27-bugs not wired after verify26")
