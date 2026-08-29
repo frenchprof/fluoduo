@@ -28,7 +28,7 @@
   "cefrMode": "Spoken Interaction",
   "skill": "interaction",
   "isProduction": false,
-  "canDo": "I can tell which pronoun (tu vs vous) is more appropriate in a particular context.",
+  "canDo": "I can tell which pronoun (tu vs vous) is more appropriate depending on whom I am addressing.",
   "competence": "Select tu / vous (polite sg) / vous (pl) correctly in ≥10/12 situations; give a one-phrase reason for each choice.",
   "collectionId": "tu-vous",
   "fr": "Tu (toi) ou vous ?"

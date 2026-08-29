@@ -1,8 +1,22 @@
 /**
- * Unit 0's collective post-lesson MCQ bank — one small set per SIO, purely to
- * drive home the 10 foundational objectives (Dan, 2026-07-01). Ported from
+ * Unit 0's collective PRE-TEST bank — one small set per SIO, purely to drive
+ * home the 10 foundational objectives (Dan, 2026-07-01). Ported from
  * Dan's existing pre-lesson app at laf1201.withdrchan.com, then degendered
  * (teacher lines address Monsieur, not the source's "Madame") and adapted.
+ *
+ * This header said "post-lesson" until 2026-08-28, which contradicted the panel
+ * that renders it — Unit0Panel hides the lesson button until every question is
+ * answered ("pretest first", 2026-07-05). Dan settled it with a rule that
+ * decides the question by FORM rather than by intent:
+ *
+ *     "pre-tests should only involve MCQ, if it is not an MCQ then it is a
+ *      post-lesson activity"
+ *
+ * Every question here is multiple choice — `options` is required on
+ * Unit0Question, so a free-text one cannot be authored — so this is a
+ * pre-test, and its misses are remembered without being scored (they feed
+ * "Bring to class"; no XP, no accuracy, no review queue). verify40 holds the
+ * rule for all four pre-test surfaces.
  *
  * WHY model (Dan, 2026-07-02): explanations are PER WRONG OPTION — each
  * distractor carries a `why` that explains why THAT choice is wrong. The UI

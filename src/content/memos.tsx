@@ -7,8 +7,8 @@
  * glosses, pill rows, one ⚠ line max. Litmus rule: pattern + examples only.
  * All examples are REAL items from the deck JSONs — never invented words.
  */
-import type { ReactNode } from "react";
-import { speak } from "@/games/letris/speech";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { speak, speakSequence } from "@/games/letris/speech";
 import { ATELIER_DIALOGUES, type DialogueLine } from "@/content/ateliers";
 
 /** `title` is nullable because splitMemo drops it on continuation cards — a
@@ -92,10 +92,48 @@ const Lines = ({ children }: { children: ReactNode }) => (
 function AtelierMemo({ sioId }: { sioId: string }) {
   const lines: DialogueLine[] = ATELIER_DIALOGUES[sioId] ?? [];
   const twoVoices = lines.some((l) => l.who === "B");
+  const stopRef = useRef<null | (() => void)>(null);
+  const [playing, setPlaying] = useState(false);
+
+  // Cancel in-flight playback when the Mémo closes, so a card you swiped away
+  // from does not keep talking.
+  useEffect(() => () => stopRef.current?.(), []);
+
+  /**
+   * PLAY ALL, via speakSequence.
+   *
+   * This looped plain `speak()` and only the LAST line was ever heard: speak()
+   * defaults to `interrupt: true`, whose first act is `synth.cancel()`, so each
+   * line cancelled the one before it. (Where a line had a banked studio clip
+   * it returned before the cancel, which is worse in the other direction —
+   * those fire simultaneously.) Eight lines in, one line out.
+   *
+   * This is the fault Dan reported on 2026-07-07, "play all is not playing
+   * all", and speakSequence exists because of it — it holds a reference to
+   * every utterance (Chrome garbage-collects them mid-queue and the chain
+   * dies) and nudges resume() on a timer (Chrome silently pauses long runs).
+   * Reimplementing the queue by hand threw both of those away.
+   *
+   * A and B get different voices, matching DialoguePlayer — this is a
+   * role-play, and hearing whose turn is whose is half of what the model is
+   * for. A second tap stops it, which a runaway ten-line read needs.
+   */
   const playAll = () => {
-    // Sequential, not all at once: the browser queues utterances, so pushing
-    // them in order is enough and keeps each line's own `say` override.
-    for (const l of lines) speak(l.say ?? l.fr, "fr-FR");
+    if (playing) {
+      stopRef.current?.();
+      setPlaying(false);
+      return;
+    }
+    setPlaying(true);
+    const parts = lines.map((l) => ({
+      text: l.say ?? l.fr,
+      gender: l.who === "A" ? ("f" as const) : ("m" as const),
+    }));
+    stopRef.current = speakSequence(parts, "fr-FR");
+    // speakSequence has no done-callback; release the button on a best-effort
+    // timeout proportional to the text, same rule as DialoguePlayer.
+    const approxMs = parts.reduce((n, p) => n + p.text.length * 90 + 400, 0);
+    window.setTimeout(() => setPlaying(false), approxMs);
   };
   return (
     <ul className="space-y-1.5">
@@ -132,9 +170,9 @@ function AtelierMemo({ sioId }: { sioId: string }) {
         <button
           type="button"
           onClick={playAll}
-          className="cahier-btn cahier-btn-sm cahier-btn-accent font-black"
+          className={`cahier-btn cahier-btn-sm font-black ${playing ? "cahier-btn-correct" : "cahier-btn-accent"}`}
         >
-          🔊 Tout écouter
+          {playing ? "⏹ Arrêter" : "🔊 Tout écouter"}
         </button>
       </li>
     </ul>

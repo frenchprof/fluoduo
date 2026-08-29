@@ -140,6 +140,41 @@ for sym in SCORING:
           f"Unit-0's doPick does not call {sym}",
           f"Unit-0's doPick calls {sym} — a pre-lesson miss now costs XP / accuracy / review")
 
+# ---- 2b · MCQ IS WHAT MAKES IT A PRE-TEST ----------------------------------
+# Dan's rule (2026-08-28), which decides pre- vs post- by FORM, not intent:
+#
+#     "pre-tests should only involve MCQ, if it is not an MCQ then it is a
+#      post-lesson activity"
+#
+# It is what settled Unit 0, whose own header called it "post-lesson" while the
+# panel gated the lesson button on it. The rule also explains WHY the scoring
+# ban above is safe to enforce: picking from four options before you have been
+# taught is a guess, and a guess must not be charged for. The moment a surface
+# asks a learner to TYPE, it is asking them to produce, which is post-lesson
+# work — and post-lesson work is scored. So a typing field appearing on any of
+# these screens does not mean "tighten the pretest", it means the screen has
+# stopped being a pretest.
+for name, src in (("PretestQuiz", popup), ("/pretests/[id]", solo),
+                  ("the picture pretest", picture)):
+    body = code(src)
+    typed = [t for t in ("<input", "<textarea", "contentEditable") if t in body]
+    check(not typed,
+          f"{name} is multiple choice only",
+          f"{name} now takes typed input ({', '.join(typed)}) — by Dan's rule that "
+          "makes it a POST-lesson activity, which must be scored; it cannot stay a pretest")
+
+# The two schemas must stay choice-only: PretestItem carries an answer plus
+# distractors, and Unit0Question requires `options`. Either gaining a free-text
+# mode would let a typed question be authored INTO a pretest, which the
+# per-surface check above cannot see.
+schema = read("src/lib/pretests/schema.ts")
+check("distractors" in schema,
+      "an authored pretest item is answer + distractors (choice-only by construction)",
+      "PretestItem no longer carries distractors — pretests can now be free-text")
+check(re.search(r"options:\s*Unit0Option\[\];", bank) is not None,
+      "a Unit-0 question REQUIRES options — a free-text one cannot be authored",
+      "Unit0Question.options is no longer required — a typed question could enter the pretest")
+
 # ---- 3 · the store stays independent of the scoring module -----------------
 check("@/lib/progress" not in store,
       "the gap store is independent of progress.ts",

@@ -88,12 +88,25 @@ function tourFor(rawPath: string): Tour | null {
     };
   }
   if (/^\/lessons\//.test(path)) {
+    // Rewritten 2026-08-28. The old three steps described the LessonFlow page
+    // patch 22 deleted: "Lire → Pratique → Générateur", chips that jump between
+    // parts, and a #lf-pratique anchor that exists nowhere in the codebase. It
+    // had been pointing at a screen that no longer existed for weeks, so it
+    // highlighted nothing and silently skipped — the same shape as the
+    // ÉcouTexte band, something that reports as present and does nothing. It
+    // got more wrong on 2026-08-28, when lessons started opening on the entry
+    // chooser the tour had never heard of.
+    //
+    // These steps name what is actually on screen, and the selectors are
+    // `data-tour` hooks in LessonPager rather than utility classes, so a
+    // styling change cannot quietly unhook the tour again. The axes step is
+    // skipped automatically on the lessons that declare no selectors.
     return {
       key: "lesson",
       steps: [
-        { selector: ".sticky.backdrop-blur", action: "tap", text: "A lesson is one page: Lire → Pratique → Générateur. These chips jump between the parts." },
-        { selector: "#lf-pratique", action: "tap", text: "Practice climbs four levels: pick it ★, type the word ★★, write the whole sentence ★★★, then translate ⭐." },
-        { text: "Finish with the 🎲 Générateur — it rolls endless fresh sentences. Wrong answers cost nothing; they teach." },
+        { selector: '[data-tour="entry"]', action: "tap", text: "Choose where to start. All three are the same twelve cards — ★★★ is harder, not shorter." },
+        { selector: '[data-tour="axes"]', action: "tap", text: "Want one thing in particular? Pin a subject or a verb — or 🎲 for a random mix." },
+        { text: "Then it is one card at a time: the Mémo to read, then the ramp. Wrong answers cost nothing; they teach." },
       ],
     };
   }
