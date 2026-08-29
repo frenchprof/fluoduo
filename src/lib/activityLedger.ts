@@ -21,6 +21,7 @@
  * responses collection; this is the learner's own quick view. Left for
  * later: replaying responses into it after sign-in (data-truth backlog).
  */
+import { ensureRenumber3435 } from "./migrations/renumber3435";
 import { normalizePath } from "@/lib/labels";
 import { deckForItem, sioForDeck, sioForItem } from "@/lib/curriculum";
 
@@ -75,6 +76,7 @@ export function sioForAttempt(activityId: string | undefined, itemId: string): s
 
 export function loadLedger(): Ledger {
   if (typeof window === "undefined") return {};
+  ensureRenumber3435();
   try {
     const raw = window.localStorage.getItem(KEY);
     const v = raw ? JSON.parse(raw) : {};

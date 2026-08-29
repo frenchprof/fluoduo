@@ -103,3 +103,34 @@ It refuses if the export's columns or its 50 SIO ids don't line up with what's
 here, and keeps the previous file as `.csv.bak`. It used to have a path to a
 *v4_1* export baked in — running it would have overwritten every row's specs
 from a spreadsheet several versions old, and reported success.
+
+---
+
+## SIO-034 and SIO-035 exchanged numbers (2026-08-29)
+
+Dan: *"if you want to bring locating places closer to giving directions, we
+should move the questions up so questions take 34, and those 2 take 35 36."*
+So « Questions » is now 34 and « Où est… ? » is 35, which puts locating a place
+directly beside asking for directions at 36.
+
+**This one is simpler than the six above.** They were *displaced* specs — a row
+whose objective had changed under it, whose cards had to be found a home
+somewhere else. This is a straight exchange of two adjacent objectives, so each
+spec simply moved with the objective it describes:
+
+| Row | Objective is now | Spec it now carries |
+|---|---|---|
+| **SIO-034** | Yes/no and open-ended questions | *"~10 cards — English question"*, 2 baskets: oui/non / question ouverte |
+| **SIO-035** | Locating places + article contraction | *"~8 cards — simple diagram or English cue"*, no baskets — visual matching |
+
+Nothing was rewritten or retired. `Flashcard Set` (3.04 / 3.05) is owned by the
+app and stayed with the number, as did the objective columns the sync writes.
+
+**The sync cannot catch this.** It disclaims the four spec columns by design,
+so it re-pointed the objectives and reported success while leaving both specs
+describing the other row — which is exactly the state the six rows above were
+found in. If two objectives are ever swapped again, their specs must be swapped
+in the same commit, by hand.
+
+The learner-side half of this renumber is `src/lib/migrations/renumber3435.ts`,
+which swaps the ids in every store keyed by them. See `verify49`.

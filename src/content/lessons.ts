@@ -32,7 +32,7 @@ export const LESSONS: Record<string, Lesson> = {
   "ou-est":            { slug: "ou-est",            title: "Où est… ?",                    unit: 3 },
   "avoir-etats":       { slug: "avoir-etats",       title: "Avoir ou être ? — les états",  unit: 1 },
   // Unit 3, not 1: the book teaches est-ce que / qu'est-ce que in U3 (questions (2),
-  // book p. 92) — U1's questions are quel + intonation. SIO mapping (SIO-035, u3)
+  // book p. 92) — U1's questions are quel + intonation. SIO mapping (SIO-034, u3)
   // was already right; only these gallery labels front-ran the book (audit 1.4).
   "questions-oui-non": { slug: "questions-oui-non", title: "Questions : oui ou non",       unit: 3 },
   "mots-interrogatifs":{ slug: "mots-interrogatifs",title: "Les mots interrogatifs",       unit: 3 },
@@ -91,7 +91,7 @@ export const LESSONS_BY_SIO: Record<string, string[]> = {
   "SIO-008": ["on-fait-quoi"],
   "SIO-011": ["moi-aussi"],
   "SIO-021": ["qu-est-ce-que-c-est"],
-  "SIO-034": ["ou-est"],
+  "SIO-035": ["ou-est"],
   "SIO-017": ["langues-pays"],
   "SIO-018": ["nombres-echanges"],
   "SIO-009": ["salutations"],
@@ -109,7 +109,7 @@ export const LESSONS_BY_SIO: Record<string, string[]> = {
   // the paradigm tables (Dan, 2026-07-08: "the avoir SIO doesn't match").
   "SIO-019": ["avoir-etats", "conjugaison-u1"],
   "SIO-015": ["articles-pays"],
-  "SIO-035": ["questions-oui-non", "mots-interrogatifs"],
+  "SIO-034": ["questions-oui-non", "mots-interrogatifs"],
   "SIO-022": ["possessifs"],
   "SIO-023": ["aimer", "aimer-infinitif", "conjugaison-er"],
   "SIO-024": ["faire"],

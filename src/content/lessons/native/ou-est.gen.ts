@@ -1,5 +1,5 @@
 /**
- * « La banque est à côté de la poste. » — the generator for SIO-034's lesson.
+ * « La banque est à côté de la poste. » — the generator for SIO-035's lesson.
  *
  * WHY THIS LESSON EXISTS, and a correction. My audit called this stop a gap
  * because « à côté de » appears nowhere in its deck. That was wrong for the

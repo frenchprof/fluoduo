@@ -1,5 +1,5 @@
 /**
- * « Où est la banque ? » — SIO-034's lesson (written 2026-08-29).
+ * « Où est la banque ? » — SIO-035's lesson (written 2026-08-29).
  *
  * The deck sorts sixteen prepositions into the three groups that matter and
  * its letris columns teach which take `de`. What it never did was put two

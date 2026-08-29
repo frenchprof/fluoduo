@@ -2566,10 +2566,56 @@ The filename still says `three` while the file now covers nine stops. Renaming
 means re-wiring the workflow, and `verify-wiring` makes a stale NAME harmless
 where a stale number is not.
 
-**Open for Dan: the renumbering.** He proposed moving questions up so that
-questions take 34 and locating/directions take 35 and 36. Investigated but NOT
-done — the map label reads `sio.num`, but `SioModal.tsx:242` renders `sio.id`
-to the learner and `doneSios` stores ids, so a renumber that touches ids would
-silently reset progress. Needs his call on whether `num` alone moves.
+**The renumbering** was Dan's next call — see the entry below; it is done.
+
+**Stop 36** (asking for directions) is still unbuilt.
+
+## 29 Aug — SIO-034 and SIO-035 exchanged numbers
+
+Dan: *"if you want to bring locating places closer to giving directions, we
+should move the questions up so questions take 34, and those 2 take 35 36."*
+
+Unit 3 now reads **33 Places in town · 34 Questions · 35 Où est… ? · 36
+Directions**, verified in a browser on `/unit/3`.
+
+### The invariant this turned up
+
+**A SIO's id and its `num` are in lockstep** — `SIO-034` always has `num: 34` —
+unbroken across all fifty, with `SIO-045A` at 45.5 as the one deliberate
+half-step. Nobody had written it down. It is how Dan's own 2026-07-01 renumber
+of 012-014 and 022-028 was done, and `verify49` now asserts it so it cannot
+drift.
+
+That makes a renumber more dangerous than it looks: **the number moves the id,
+and the id is what every store on the learner's device is keyed by.** Without a
+migration, whoever had finished « Où est… ? » would open the app to find they
+had finished « Questions », with their pre-test misses filed under the wrong
+stop. The 2026-07-01 renumber escaped this only because the 2026-08-11 reset
+wiped every blob a fortnight later. There has been no reset since.
+
+### What moved
+
+Content moves, positions stay — so `sios.json` and the two pre-test JSONs keep
+their `id` / `num` / `setId` / `lessonNo` and exchange everything else. The file
+stays in numeric order and the diff is 18 lines.
+
+- `src/lib/migrations/renumber3435.ts` — swaps the ids in `doneSios`, `itemSrs`,
+  the activity ledger and the pre-test record. Stamped, because **the swap is
+  its own inverse**: a second run would put everyone back. Called from the top
+  of all three stores' `load()`, so there is no boot-ordering dependency.
+- The finale's `finale:SIO-034:2` shape caught a bug in my first version, which
+  swapped only the FIRST colon segment and silently missed every GramMarathon
+  answer. It maps every segment now.
+- The pre-tests hold 8 and 7 items, so they could not be renamed — the content
+  moved between the files and each item id was re-homed.
+- The handoff CSV: the sync re-pointed the objective columns, but it disclaims
+  the four flashcard-spec columns by design, so it reported success while
+  leaving both specs describing the other row. Swapped by hand and recorded in
+  `docs/CSV_SPEC_REASSIGNMENT.md`. **If two objectives are ever swapped again,
+  their specs must be swapped in the same commit.**
+
+Driven in a browser against a seeded pre-swap blob: all four stores followed,
+and a reload did not swap back. `verify49` break-tested on 8 mutations, all red,
+none vacuous. 39 checks green, tsc and build clean.
 
 **Stop 36** (asking for directions) is still unbuilt.

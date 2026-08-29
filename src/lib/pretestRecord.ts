@@ -7,6 +7,7 @@
  * Clear semantics: retaking an item OVERWRITES its record — a later correct
  * answer clears the miss.
  */
+import { ensureRenumber3435 } from "./migrations/renumber3435";
 
 const KEY = "fluolingo:pretest.v1";
 
@@ -34,6 +35,7 @@ type Store = {
 };
 
 function load(): Store {
+  ensureRenumber3435();
   try {
     const raw = localStorage.getItem(KEY);
     if (raw) {

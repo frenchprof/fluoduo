@@ -148,7 +148,7 @@ export function outcomeForItem(itemId: string): string | undefined {
   if (!itemId) return undefined;
   const { pretestToSio } = indexes();
 
-  // finale:SIO-034:2 — the outcome is stated outright
+  // finale:SIO-035:2 — the outcome is stated outright
   if (itemId.startsWith("finale:")) {
     const parts = itemId.split(":");
     return parts[1]?.startsWith("SIO-") ? parts[1] : undefined;
