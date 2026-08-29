@@ -163,3 +163,6 @@ jobs:
 
       - name: patch 45 — deck promises (SIO-001 M./Mme, SIO-005 mnemonics)
         run: python3 verify/verify45-promise-gaps.py
+
+      - name: patch 46 — every lesson with selectors honours them
+        run: python3 verify/verify46-lesson-axes.py

@@ -6,35 +6,7 @@
  */
 import type { NativeLesson } from "./types";
 
-const SUBJECTS = [
-  { disp: "Je", slot: "je" }, { disp: "Tu", slot: "tu" }, { disp: "Il", slot: "il" },
-  { disp: "Elle", slot: "il" }, { disp: "On", slot: "il" }, { disp: "Nous", slot: "nous" },
-  { disp: "Vous", slot: "vous" }, { disp: "Ils", slot: "ils" }, { disp: "Elles", slot: "ils" },
-] as const;
-const END: Record<string, string> = { je: "e", tu: "es", il: "e", nous: "ons", vous: "ez", ils: "ent" };
-const VERBS = [
-  { stem: "aim", en: "like" }, { stem: "ador", en: "love" }, { stem: "détest", en: "hate" },
-] as const;
-const NOUNS: { fr: string; art: "le" | "la" | "l'" | "les"; en: string }[] = [
-  { fr: "sport", art: "le", en: "sport" }, { fr: "football", art: "le", en: "football" },
-  { fr: "tennis", art: "le", en: "tennis" }, { fr: "yoga", art: "le", en: "yoga" },
-  { fr: "piano", art: "le", en: "piano" }, { fr: "cinéma", art: "le", en: "cinema" },
-  { fr: "chant", art: "le", en: "singing" }, { fr: "danse", art: "la", en: "dance" },
-  { fr: "natation", art: "la", en: "swimming" }, { fr: "musique", art: "la", en: "music" },
-  { fr: "lecture", art: "la", en: "reading" }, { fr: "boxe", art: "la", en: "boxing" },
-  { fr: "art", art: "l'", en: "art" }, { fr: "athlétisme", art: "l'", en: "athletics" },
-  { fr: "escalade", art: "l'", en: "climbing" }, { fr: "équitation", art: "l'", en: "horse-riding" },
-  { fr: "films", art: "les", en: "films" }, { fr: "livres", art: "les", en: "books" },
-  { fr: "concerts", art: "les", en: "concerts" },
-];
-const ARTS = ["le", "la", "l'", "les"];
-
-const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)];
-const np = (art: string, fr: string) => art + (art === "l'" ? "" : " ") + fr;
-function subjVerb(s: (typeof SUBJECTS)[number], v: (typeof VERBS)[number]): string {
-  const c = v.stem + END[s.slot];
-  return s.slot === "je" && /^[aeiouéèêh]/i.test(c) ? `J'${c}` : `${s.disp} ${c}`;
-}
+import { AIMER_AXES, aimerQuestion } from "./aimer.gen";
 
 export const aimerLesson: NativeLesson = {
   slug: "aimer",
@@ -65,18 +37,8 @@ export const aimerLesson: NativeLesson = {
   ),
   dice: {
     instruction: "Choose the right definite article for the thing liked.",
-    newQuestion() {
-      const s = pick(SUBJECTS), v = pick(VERBS), n = pick(NOUNS);
-      const sv = subjVerb(s, v);
-      return {
-        meta: `${sv} … (${v.en})`,
-        big: n.fr,
-        en: n.en,
-        correct: `${sv} ${np(n.art, n.fr)}.`,
-        easyOptions: ARTS.map((a) => `${sv} ${np(a, n.fr)}.`),
-        med: { before: sv, choices: ARTS, correct: n.art, after: `${n.fr}.` },
-      };
-    },
+    newQuestion: aimerQuestion,
+    axes: AIMER_AXES,
   },
   bonus: [
     { en: "I like sport.", fr: "J'aime le sport." },

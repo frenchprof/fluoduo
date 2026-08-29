@@ -2253,6 +2253,141 @@ going on" he objected to in Unit 0 Lesson 1.
 clipped — the constraint is the Continue button (593 baseline, 734 loaded),
 not the screen. A baseline run without the block is what made the regression
 legible: 144→563, clear.
+## 2026-08-29 — session length reaches the other three drills, and LessonPager's lint is real-fixed
+
+Two of the four Dan asked to settle. (`/activities` and the lesson selectors
+follow separately.)
+
+**Session length, everywhere it was missing.** `lib/sessionLength.ts` had one
+caller. It now has four, and the question is asked once per run, before any
+French, only on a queue long enough for the answer to matter:
+
+- **4Mémoire** — the cap lands on the CARD RUN only. "all" (the grid) and
+  "list" (the table) are reference views over the whole deck; hiding cards from
+  a table someone is reading is a different act from shortening a drill. The
+  deck-wide ✓ counter still counts the deck.
+- **GramMarathon** — straight cap on the shuffled gap queue.
+- **WorDrill** — the one that needed it most. Its "Tout" scope compiles every
+  curated deck into one run: **834 words**, measured in a browser. The cap went
+  into `SayItContent`, which WorDrill drives, so per-deck Say It gets it too,
+  and every progress readout (shell bar, session map, the run counter and its
+  bar) now counts against the RUN rather than the deck — a bar filling towards
+  a number nobody chose is not progress.
+
+**The chooser is one component now** (`components/HowManyQuestions.tsx`). Four
+drills asking the same question in four hand-copied blocks would read as four
+different questions within a month. Factoring it out also fixed a real bug in
+the original: CompleteIt wrapped its chooser in `DrillShell` unconditionally,
+so an embedded run in a SIO popup drew a whole drill frame — exit ✕, bottom bar
+and all — inside the popup for one screen and then threw it away. Every call
+site now picks its own wrapper. WorDrill's chooser keeps a "← Change scope"
+button: it is reached from the scope picker, and the one screen with no way
+back should not be the one that opens a run of the entire curriculum.
+
+Driven in a browser, wall opened locally: 4Mémoire 33 → 10, GramMarathon 30 →
+10, CompleteIt 33 → 25, Say It 33 → 10 and → 25 (the progress denominator reads
+the chosen number in each), WorDrill Tout offering 10 / 25 / **All 834**, and a
+14-item deck correctly never asked.
+
+**LessonPager: four of six lint errors fixed at the source, two suppressed with
+the reason.** Not "gates nothing, leave it". The four were `react-hooks/refs` —
+`endedAtRef.current - startRef.current` computed in the render body to print
+the finished run's ⏱ time. That is a genuine render-phase ref read, and it is
+what made the React Compiler bail on the component; once it bails, later
+diagnostics are measured against a component it has given up on, which is how
+an ordinary `Date.now()` inside an EFFECT came to be reported as impure
+"during render". The elapsed time is known exactly once — when the run ends —
+so it is computed there and held in state. `endedAtRef` is gone.
+
+The remaining two are a real conflict between two rules, not noise: `build()`
+shuffles, shuffling in render breaks SSR hydration (the AGENTS rule every drill
+follows), so the build must be an effect, and an effect that builds a queue must
+set state. Suppressed on their own lines with that written beside them.
+
+Repo lint **138 → 132**; LessonPager is now clean rather than the worst file.
+
+**Not verified in a browser:** the end card's ⏱ readout. Driving a 13-card
+lesson to its end kept stalling on blocked Firebase auth calls. The argument
+that it is safe is structural rather than observed: `elapsed` starts null and
+is set by the same effect that used to write `endedAtRef`, so the end card
+shows 0:00 for exactly the one frame it always did (the ref was also 0 until
+that effect ran) and then the real value. Replay clears it. Worth a look next
+time someone has the app open.
+
+## 2026-08-29 — the selectors reach every lesson that has an axis
+
+The last of Dan's four. `conjugaison-u1` had proved the mechanism on one
+lesson; **thirteen more now carry it**, which is every remaining lesson with a
+real axis. (`prepositions-core` appeared in the survey but is a shared helper
+module other lessons build on, not a lesson — correctly left alone.)
+
+| lesson | axes |
+|---|---|
+| aimer | Sujet · Verbe · Article |
+| aimer-infinitif | Sujet · Verbe |
+| aller | Sujet · Préposition · Forme |
+| avoir-etats | Sujet · Type (âge / avoir / être) |
+| conjugaison-er | Sujet · Verbes (réguliers / irréguliers) |
+| faire | Sujet · Partitif · Forme |
+| frequence | Sujet · Fréquence |
+| futur-proche | Sujet · Forme |
+| manger-boire | Sujet · Verbe |
+| modaux | Sujet · Verbe |
+| nationalities | Accord · Pays |
+| pouvoir | Sujet · Usage (capacité / permission / refus) |
+| se-presenter | Tâche |
+
+**The axes are chosen, not enumerated.** Every varying list could be a
+dropdown; most shouldn't be. aller's nineteen PLACES are vocabulary, so the
+axis is the **preposition** (au / à la / à l' / aux / en / chez) — the thing
+the lesson actually teaches — and places are rolled within it. aimer's article,
+faire's partitive and nationalities' agreement are the same call. Where a
+branch WAS the grammar it became an axis rather than a coin toss:
+conjugaison-er's -er/irregular split, avoir-etats' three rounds, pouvoir's
+three uses, se-presenter's three name tasks. A learner who keeps missing the
+irregulars can now sit only those.
+
+**One helper, not fourteen copies** (`native/axis.ts`). The subtle part is what
+a pin that matches nothing must do: **roll**, not throw and not return the
+first item, or a dropdown silently becomes a filter that empties the lesson.
+Written once. `pinnedGroup` narrows rather than overrides, because pinning "au"
+and rolling "piscine" would produce a wrong sentence, not a harder question.
+Per-lesson negative rates are kept (faire leans negative 40%, aller 35%) —
+flattening them to a coin toss would have changed every unsteered run.
+
+**verify43, 198 checks, executing the generators.** This is the only kind of
+check that works here: a generator that ignores its `pinned` argument compiles,
+renders, and looks in source EXACTLY like one that honours it. So for every
+axis it pins each option 200 times and requires two options whose outputs are
+**disjoint**. "Exists a pair" rather than "all pairs" deliberately — pouvoir's
+« permission » only applies to a subject that could be asking and falls back
+otherwise, a legitimate narrowing all-pairs would call a failure. It also
+requires every declared key to be READ, every option to generate something, and
+unpinned runs to still vary.
+
+Four break-tests: a pin silently ignored, an axis declared but never read, an
+option matching nothing, and the `@/` alias returning. **The third exposed a
+vacuous assertion** — "every option generates something" could not fail,
+because a throwing generator killed the probe before the check ran. The probe
+now catches per-sample throws so that option reports as generating nothing.
+Green-but-unfalsifiable is the failure this repo keeps finding; it found
+another one.
+
+**Two knock-ons.** The generators must load under plain node, so the two that
+used `@/lib/shuffle` now import it by relative path — `@/` is a bundler
+feature. That dropped verify27's "one shuffle" ratchet below its threshold;
+the ratchet now counts both spellings, since its rule is one shuffle, not one
+spelling, and it was re-broken to confirm it still bites.
+
+Driven in a browser: /lessons/aimer shows Sujet · Verbe · Article with 🎲 Roll
+the dice on the entry screen, faire three, se-presenter one — matching the
+declarations exactly.
+
+**Not done, and not asked for:** lessons with no subject axis (possessifs,
+meteo, partitifs, quand, …). Some may still have one worth having —
+possessifs varies the possessor — but that is a content judgement per lesson,
+not a mechanical follow-on.
+
 
 ## 29 Aug — the last two deck-side promise gaps (Dan: "fix it and merge pls")
 

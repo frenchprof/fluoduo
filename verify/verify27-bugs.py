@@ -154,7 +154,12 @@ check(not biased, "no sort(() => Math.random() - 0.5) left in src", f"biased shu
 FY = re.compile(r"for \(let i = \w+\.length - 1; i > 0; i--\) \{\s*const j = Math\.floor\(Math\.random\(\) \* \(i \+ 1\)\)")
 copies = [f for f in SRC if f != "src/lib/shuffle.ts" and FY.search(CODE[f])]
 check(not copies, "no private Fisher–Yates copy outside shuffle.ts", f"private copies: {copies}")
-users = [f for f in SRC if 'from "@/lib/shuffle"' in CODE[f]]
+# Both spellings count. The alias is the normal one; a module that must run
+# under `node --experimental-strip-types` (the lesson generators verify46
+# executes) cannot use it, because @/ is a bundler feature — so those import
+# the same file by relative path. The rule is "one shuffle", not "one spelling".
+users = [f for f in SRC
+         if 'from "@/lib/shuffle"' in CODE[f] or 'lib/shuffle.ts"' in CODE[f]]
 check(len(users) >= 20, f"{len(users)} files import the one shuffle (>= 20)", f"only {len(users)} files import shuffle.ts")
 check("stableShuffle" in CODE["src/app/decks/[id]/mcq/Content.tsx"] and "mulberry32" in CODE["src/app/practice/grammarathon/finale/FinaleContent.tsx"],
       "seeded shuffles (deck MCQ, Finale) kept their generators", "a seeded shuffle was lost")
