@@ -103,6 +103,37 @@ check(not missing_class,
       "every class a step names exists in the source",
       "a tour step points at a class nothing carries: " + "; ".join(missing_class))
 
+# ---- 3b · no tour branch is unreachable ------------------------------------
+# tourFor() is a chain of `if (path…) return`, so an earlier branch matching the
+# same prefix makes a later one dead code. That happened the day this check was
+# written: the Index was retired ("the map is the front door"), its tour was
+# repointed from /activities to /map rather than deleted, and the /map tour
+# added the same day matched first — so it was unreachable AND wrong, three of
+# its four targets being nowhere on the map page.
+#
+# Nothing about that is visible in a diff, and section 1-3 above cannot see it:
+# those selectors all exist SOMEWHERE in src, which is the weaker question this
+# file can answer statically. Reachability it can answer exactly.
+branch_paths = re.findall(r'if \((?:/\^?\\?/?([\w\\/^]+?)/?\\?/?\.test\(path\)|path\.startsWith\("([^"]+)"\))', tour)
+# Normalise BOTH forms to the same shape before comparing. The two guard styles
+# in this file yield different strings for the same route — a regex guard gives
+# "map", a startsWith guard gives "/map" — and comparing them raw made the
+# check blind to exactly the shadowing it was written for: "/map".startswith(
+# "map") is False. Caught by injecting the dead branch and watching nothing
+# fail, twice.
+def norm(g: str) -> str:
+    return g.replace("\\", "").lstrip("^/").rstrip("/")
+guards = [norm(a or b) for a, b in branch_paths]
+guards = [g for g in guards if g]
+shadowed = []
+for i, later in enumerate(guards):
+    for earlier in guards[:i]:
+        if later.startswith(earlier):
+            shadowed.append(f"/{later} is never reached — /{earlier} matches first")
+check(not shadowed,
+      f"every tour branch is reachable ({len(guards)} path guards, none shadowed)",
+      "a tour branch is dead code: " + "; ".join(shadowed))
+
 # ---- 4 · the lesson tour describes the CURRENT lesson ----------------------
 lesson_tour = tour[tour.find('key: "lesson"'):]
 lesson_tour = lesson_tour[: lesson_tour.find("};")] if "};" in lesson_tour else lesson_tour

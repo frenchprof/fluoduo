@@ -99,17 +99,14 @@ function tourFor(rawPath: string): Tour | null {
       ],
     };
   }
-  if (path.startsWith("/map")) {
-    return {
-      key: "index",
-      steps: [
-        { selector: 'input[type="search"]', action: "tap", text: "Search any topic here — accents optional (cafe finds café)." },
-        { selector: "thead tr", action: "tap", text: "Each column is one activity — same colors as in the ❓ Guide." },
-        { selector: "tbody tr", action: "tap", text: "A row is one topic. Every icon is a door — tap any cell to play." },
-        { selector: "section.fluo-h-5", action: "tap", text: "✨ Your decks: build your own cards with ➕ and they appear here." },
-      ],
-    };
-  }
+  // The "index" tour is GONE (2026-08-29). It described /activities — the
+  // search field, the column headers, the rows, "your decks" — and that page
+  // was deleted when the Index was retired ("the map is the front door").
+  // Its branch was repointed to /map rather than removed, which left it both
+  // unreachable, since the /map tour above matches first, and wrong if it had
+  // been reached: three of its four targets (thead, tbody, section.fluo-h-5)
+  // are nowhere on the map page. A tour for a deleted page cannot be salvaged
+  // by pointing it at a different one.
   if (/^\/lessons\//.test(path)) {
     // Rewritten 2026-08-28. The old three steps described the LessonFlow page
     // patch 22 deleted: "Lire → Pratique → Générateur", chips that jump between
