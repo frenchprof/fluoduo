@@ -38,7 +38,9 @@
         "le",
         "rouge"
       ],
-      "tags": []
+      "tags": [],
+      "example": "le feu rouge",
+      "exampleEn": "a red traffic light"
     },
     {
       "id": "colors-02",
@@ -49,7 +51,9 @@
         "l'o",
         "range"
       ],
-      "tags": []
+      "tags": [],
+      "example": "le fluo orange",
+      "exampleEn": "an orange highlighter"
     },
     {
       "id": "colors-03",
@@ -60,7 +64,9 @@
         "le",
         "jaune"
       ],
-      "tags": []
+      "tags": [],
+      "example": "le citron jaune",
+      "exampleEn": "a yellow lemon"
     },
     {
       "id": "colors-04",
@@ -71,7 +77,9 @@
         "le",
         "vert"
       ],
-      "tags": []
+      "tags": [],
+      "example": "le concombre vert",
+      "exampleEn": "a green cucumber"
     },
     {
       "id": "colors-05",
@@ -82,7 +90,9 @@
         "le",
         "bleu"
       ],
-      "tags": []
+      "tags": [],
+      "example": "le ciel bleu",
+      "exampleEn": "a blue sky"
     },
     {
       "id": "colors-06",
@@ -94,7 +104,9 @@
         "vio",
         "let"
       ],
-      "tags": []
+      "tags": [],
+      "example": "le raisin violet",
+      "exampleEn": "a purple grape"
     },
     {
       "id": "colors-07",
@@ -106,7 +118,9 @@
         "mar",
         "ron"
       ],
-      "tags": []
+      "tags": [],
+      "example": "le chocolat marron",
+      "exampleEn": "brown chocolate"
     },
     {
       "id": "colors-08",
@@ -117,7 +131,9 @@
         "le",
         "blanc"
       ],
-      "tags": []
+      "tags": [],
+      "example": "le lait blanc",
+      "exampleEn": "white milk"
     },
     {
       "id": "colors-09",
@@ -128,7 +144,9 @@
         "le",
         "noir"
       ],
-      "tags": []
+      "tags": [],
+      "example": "le café noir",
+      "exampleEn": "black coffee"
     },
     {
       "id": "colors-10",
@@ -139,7 +157,9 @@
         "le",
         "gris"
       ],
-      "tags": []
+      "tags": [],
+      "example": "le nuage gris",
+      "exampleEn": "a grey cloud"
     },
     {
       "id": "colors-11",
@@ -150,7 +170,9 @@
         "le",
         "rose"
       ],
-      "tags": []
+      "tags": [],
+      "example": "le flamant rose",
+      "exampleEn": "a pink flamingo"
     },
     {
       "id": "colors-12",
