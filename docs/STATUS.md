@@ -2725,6 +2725,47 @@ shrinking the type further — « Quelle nationalité ? », « Un ou des ? »,
 own); some plainly would not (ChaTutor, VoixLà, the two number games), and
 those now at least have a landing of their own.
 
+## 29 Aug — « épeler » is retired
+
+Dan: *"i want to remove the word epeler throughout the website, since it
+already commented ça s'écrit which is a lot more useful."*
+
+The lesson's VISIBLE text was already « Comment ça s'écrit ? » — its Mémo, its
+title in `lessons.ts`, its bonus lines. The word survived in three places
+instead:
+
+  · the slug, so the URL read `/lessons/epeler`
+  · a ComposeIt bank label, `{ label: "Épeler" }` — the one a learner reads
+  · two code comments (letris/sets.ts, verify48)
+
+`epeler` → **`ca-secrit`** throughout: the two files renamed, the exports
+(`caSecritLesson`, `CA_SECRIT_AXES`, `caSecritQuestion`), the registry key,
+`LESSONS_BY_SIO["SIO-003"]`, and verify48's own references. The old URL now
+answers "No lesson epeler" in dev and 404s in the export — safe, since the
+lesson was a day old and `generateStaticParams` no longer emits it. Nothing
+learner-owned is keyed on a lesson slug: `lessonRun` is a 12-hour cache, the
+SRS is keyed on items and `markSioDone` on the SIO id.
+
+**A check of mine that reported success while failing.** verify48 has TWO
+report blocks — an early bail after the generator setup, and the real one at
+the end. I appended the new assertions after the final
+`if FAIL: … sys.exit(1)`, so they RAN, appended to a list that had already
+been printed, and the script exited 0. The only symptom was the count sliding
+56 → 55. Worse than a vacuous check: a vacuous check passes when it should
+fail, this one *failed silently while claiming to pass*.
+
+Caught because the break test read the whole tail rather than grepping for a
+FAIL line — the grep found nothing and I nearly wrote it off as vacuous. **In
+a file with more than one report block, an appended check must go above the
+FIRST one that can exit.** All three assertions now fail with exit code 1 on
+exactly their own fault, verified one at a time.
+
+The guard is deliberately tree-wide (`src/**/*.{ts,tsx,json}`) rather than
+scoped to the three files the word was in, because the point is that it does
+not come back. Two companions assert the rename did not quietly unhook
+SIO-003 — a lesson can be renamed out of existence and still pass a
+"the word is gone" check.
+
 ## 29 Aug — re-audit of Dan's nineteen, and the pairing bug it found
 
 Dan could not recall the ten missing bug texts and asked for a fresh audit

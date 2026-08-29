@@ -17,7 +17,7 @@ import { conjugaisonU1Lesson } from "./conjugaison-u1";
 // promise: SIO-003 taught 26 letters and promised the spelling exchange,
 // SIO-017 taught 19 language names and promised the country link, SIO-018
 // taught 15 numerals and promised ages, prices and quantities.
-import { epelerLesson } from "./epeler";
+import { caSecritLesson } from "./ca-secrit";
 import { languesPaysLesson } from "./langues-pays";
 import { nombresEchangesLesson } from "./nombres-echanges";
 // SIO-011: the deck frames « c'est moi » already; what it never drilled was
@@ -86,7 +86,7 @@ export const NATIVE_LESSONS: Record<string, NativeLesson> = {
   "conseils": conseilsLesson,
   frequence: frequenceLesson,
   demonstratifs: demonstratifsLesson,
-  epeler: epelerLesson,
+  "ca-secrit": caSecritLesson,
   "langues-pays": languesPaysLesson,
   "nombres-echanges": nombresEchangesLesson,
   "moi-aussi": moiAussiLesson,

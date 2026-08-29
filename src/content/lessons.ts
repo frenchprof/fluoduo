@@ -21,7 +21,7 @@ export const LESSONS: Record<string, Lesson> = {
   "conjugaison-u1":    { slug: "conjugaison-u1",    title: "Conjugaison (Unité 1)",        unit: 1 },
   // Three lessons written 2026-08-28 for stops that promised an ACT and
   // taught only the vocabulary it needed (Dan: "3, 17, 18 fill the content").
-  "epeler":            { slug: "epeler",            title: "Comment ça s’écrit ?",        unit: 0 },
+  "ca-secrit":            { slug: "ca-secrit",            title: "Comment ça s’écrit ?",        unit: 0 },
   "langues-pays":      { slug: "langues-pays",      title: "On parle quelle langue ?",     unit: 1 },
   "nombres-echanges":  { slug: "nombres-echanges",  title: "Les nombres au quotidien",     unit: 1 },
   "moi-aussi":         { slug: "moi-aussi",         title: "Moi aussi, moi non plus",      unit: 1 },
@@ -76,7 +76,7 @@ export const LESSONS: Record<string, Lesson> = {
 export const LESSONS_BY_SIO: Record<string, string[]> = {
   "SIO-001": ["se-presenter", "conjugaison-u1"], // s'appeler: taught in L01 + L03
   "SIO-002": ["tu-vous"],
-  // SIO-003 promised "or ASK how it is spelled" and taught A-Z; `epeler` is
+  // SIO-003 promised "or ASK how it is spelled" and taught A-Z; `ca-secrit` is
   // the lesson it never had.
   //
   // SIO-010's atelier PERFORMS « Comment ça s’écrit ? », so it depends on this
@@ -85,7 +85,7 @@ export const LESSONS_BY_SIO: Record<string, string[]> = {
   // on someone else's screen, which is the fault that rule exists to stop. The
   // atelier meets the phrase in its own model dialogue instead, which is what
   // a production stop opens on.
-  "SIO-003": ["epeler"],
+  "SIO-003": ["ca-secrit"],
   "SIO-004": ["quel-jour"],
   "SIO-007": ["combien"],
   "SIO-008": ["on-fait-quoi"],

@@ -70,7 +70,7 @@ export function spelledAloud(letters: readonly string[]): string {
 
 type Mode = "ask" | "tell";
 
-export const EPELER_AXES: DiceAxis[] = [
+export const CA_SECRIT_AXES: DiceAxis[] = [
   { key: "name", label: "Prénom", options: NAMES.map((n) => ({ value: n.name, label: n.name })) },
   {
     key: "mode",
@@ -106,7 +106,7 @@ const ASK_WRONG = [
   "Comment tu écris ?",
 ];
 
-export function epelerQuestion(pinned?: Record<string, string>): DiceQuestion {
+export function caSecritQuestion(pinned?: Record<string, string>): DiceQuestion {
   const n = NAMES.find((x) => x.name === pinned?.name) ?? pick(NAMES);
   const mode: Mode = pinned?.mode === "ask" || pinned?.mode === "tell"
     ? pinned.mode
