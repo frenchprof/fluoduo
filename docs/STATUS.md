@@ -1843,6 +1843,32 @@ wall opened locally (never committed): the picker, the multi-select + OK, the
 green/red grading, "Bring to class", and the dialogue appearing only after the
 seventh answer.
 
-**Still open:** the SIO-010 competence line in `sios.json` still describes only
-the tu/vous 1:1 exchange — the pretest now also drills the formal-client and
-one-to-many registers. Worth Dan's word before rewriting a can-do statement.
+**The SIO-010 statement, rewritten** (Dan: "rewrite the statement"). It
+described only the tu/vous 1:1 chain while the pretest now drills three
+registers, so can-do, competence and description were all re-cut — in the
+handoff CSV, which is the source, and mirrored into `sios.json`:
+
+> I can carry a first meeting in French right through, with a fellow student,
+> with a client, or with a group, and I know how to complete every step —
+> greet, ask a name, give one's own name, ask Et toi ? / Et vous ?, ask and
+> answer Comment ça s'écrit ?, say Enchanté(e), take leave — in the register
+> the situation calls for: tu, vous, or the plural vous of a group.
+
+That is `sioStatement`'s mechanical join of the two fields; the measurable half
+carries `(≥6/7 steps in each of the 3)`, which `targetHigherLimit` strips before
+display, as it does for the other 49. It is also SHORTER than what it replaces:
+the old pair listed the whole Bonjour → Au revoir chain twice, once in each
+field.
+
+**⚠ Two generator landmines found while doing it — neither touched, both real:**
+
+- `scripts/gen-sios.mjs` (documented as CSV → `sios.json`) **no longer
+  reproduces the committed file**: it does not emit the `short` field that
+  `check:short` requires of all 50, so a run rewrites 800 lines and breaks the
+  build. Running it is how I found this; the edit was made in the CSV *and*
+  applied to `sios.json` by hand instead.
+- `scripts/handoff_cefr.py` (which `add-candos.py` writes into the CSV) is
+  **off by one from SIO-008 onward** — its "SIO-010" holds SIO-009's greetings
+  can-do, its "SIO-009" holds SIO-008's. Re-applying it would silently shift
+  every can-do in Units 0-4 by one SIO. Left alone; realigning it is its own
+  job, and it is not on any live path.
