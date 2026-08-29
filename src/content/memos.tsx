@@ -233,11 +233,11 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
       <div className="mt-2 grid grid-cols-2 gap-2 text-[15px] text-[color:var(--cahier-ink)]">
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
           <B>un</B> / <B>le</B> — masculine
-          <p lang="fr" className="mt-1">un croissant, un café, le football</p>
+          <p lang="fr" className="mt-1">un homme, un sport, le football</p>
         </div>
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
-          <B>une</B> — feminine
-          <p lang="fr" className="mt-1">une classe, une région, une minute</p>
+          <B>une</B> / <B>la</B> — feminine
+          <p lang="fr" className="mt-1">une femme, une activité, la danse</p>
         </div>
       </div>
       <p className="mt-3 text-[15px] text-[color:var(--cahier-ink)]">
@@ -247,9 +247,13 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
       </p>
       <Lines>
         <li><B>C&rsquo;est où ?</B> — <i lang="fr">C&rsquo;est un café. C&rsquo;est une région.</i></li>
-        <li><B>C&rsquo;est qui ?</B> — <i lang="fr">C&rsquo;est un groupe.</i></li>
+        <li><B>C&rsquo;est qui ?</B> — <i lang="fr">C&rsquo;est une étudiante. C&rsquo;est un groupe.</i></li>
         <li><B>C&rsquo;est quoi ?</B> — <i lang="fr">C&rsquo;est un croissant. C&rsquo;est une minute.</i></li>
       </Lines>
+      <p className="mt-3 text-[15px] text-[color:var(--cahier-ink)]">
+        A general word takes <B>un</B>/<B>une</B>; the named one takes <B>le</B>/<B>la</B> —{" "}
+        <i lang="fr">un sport → le football</i>, <i lang="fr">une activité → la danse</i>.
+      </p>
       <Warn>
         These words are nearly English — so the only new thing to learn is the{" "}
         <B>gender</B>. Learn each noun WITH its article, never on its own.

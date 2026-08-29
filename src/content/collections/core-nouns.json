@@ -21,7 +21,7 @@
         },
         {
           "key": "f",
-          "label": "UNE",
+          "label": "UNE / LA",
           "prefix": "",
           "choiceLabel": "feminine"
         }
@@ -49,102 +49,54 @@
   "items": [
     {
       "id": "core-nouns-01",
-      "fr": "croissant",
-      "en": "croissant",
+      "fr": "homme",
+      "en": "man",
       "tags": [
         "col:m",
-        "q:quoi"
+        "q:qui"
       ],
-      "example": "C'est quoi ? — C'est un croissant.",
-      "exampleEn": "It's a croissant.",
+      "example": "C'est qui ? — C'est un homme.",
+      "exampleEn": "It's a man.",
       "gap": "un"
     },
     {
       "id": "core-nouns-02",
-      "fr": "classe",
-      "en": "classroom",
+      "fr": "femme",
+      "en": "woman",
       "tags": [
         "col:f",
-        "q:ou"
+        "q:qui"
       ],
-      "example": "C'est où ? — C'est une classe.",
-      "exampleEn": "It's a classroom.",
+      "example": "C'est qui ? — C'est une femme.",
+      "exampleEn": "It's a woman.",
       "gap": "une"
     },
     {
       "id": "core-nouns-03",
-      "fr": "macaron",
-      "en": "macaron",
+      "fr": "étudiant",
+      "en": "student (m)",
       "tags": [
         "col:m",
-        "q:quoi"
+        "q:qui"
       ],
-      "example": "C'est quoi ? — C'est un macaron.",
-      "exampleEn": "It's a macaron.",
+      "example": "C'est qui ? — C'est un étudiant.",
+      "exampleEn": "It's a student.",
       "gap": "un"
     },
     {
       "id": "core-nouns-04",
-      "fr": "consonne",
-      "en": "consonant",
+      "fr": "étudiante",
+      "en": "student (f)",
       "tags": [
         "col:f",
-        "q:quoi"
+        "q:qui"
       ],
-      "example": "C'est quoi ? — C'est une consonne.",
-      "exampleEn": "It's a consonant.",
+      "example": "C'est qui ? — C'est une étudiante.",
+      "exampleEn": "It's a student.",
       "gap": "une"
     },
     {
       "id": "core-nouns-05",
-      "fr": "café",
-      "en": "café",
-      "tags": [
-        "col:m",
-        "q:ou"
-      ],
-      "example": "C'est où ? — C'est un café.",
-      "exampleEn": "It's a café.",
-      "gap": "un"
-    },
-    {
-      "id": "core-nouns-06",
-      "fr": "activité",
-      "en": "activity",
-      "tags": [
-        "col:f",
-        "q:quoi"
-      ],
-      "example": "C'est quoi ? — C'est une activité.",
-      "exampleEn": "It's an activity.",
-      "gap": "une"
-    },
-    {
-      "id": "core-nouns-07",
-      "fr": "sport",
-      "en": "sport",
-      "tags": [
-        "col:m",
-        "q:quoi"
-      ],
-      "example": "C'est quoi ? — C'est un sport.",
-      "exampleEn": "It's a sport.",
-      "gap": "un"
-    },
-    {
-      "id": "core-nouns-08",
-      "fr": "nationalité",
-      "en": "nationality",
-      "tags": [
-        "col:f",
-        "q:quoi"
-      ],
-      "example": "C'est quoi ? — C'est une nationalité.",
-      "exampleEn": "It's a nationality.",
-      "gap": "une"
-    },
-    {
-      "id": "core-nouns-09",
       "fr": "groupe",
       "en": "group",
       "tags": [
@@ -156,7 +108,31 @@
       "gap": "un"
     },
     {
-      "id": "core-nouns-10",
+      "id": "core-nouns-06",
+      "fr": "classe",
+      "en": "classroom",
+      "tags": [
+        "col:f",
+        "q:ou"
+      ],
+      "example": "C'est où ? — C'est une classe.",
+      "exampleEn": "It's a classroom.",
+      "gap": "une"
+    },
+    {
+      "id": "core-nouns-07",
+      "fr": "café",
+      "en": "café",
+      "tags": [
+        "col:m",
+        "q:ou"
+      ],
+      "example": "C'est où ? — C'est un café.",
+      "exampleEn": "It's a café.",
+      "gap": "un"
+    },
+    {
+      "id": "core-nouns-08",
       "fr": "région",
       "en": "region",
       "tags": [
@@ -166,6 +142,30 @@
       "example": "C'est où ? — C'est une région.",
       "exampleEn": "It's a region.",
       "gap": "une"
+    },
+    {
+      "id": "core-nouns-09",
+      "fr": "province",
+      "en": "province",
+      "tags": [
+        "col:f",
+        "q:ou"
+      ],
+      "example": "C'est où ? — C'est une province.",
+      "exampleEn": "It's a province.",
+      "gap": "une"
+    },
+    {
+      "id": "core-nouns-10",
+      "fr": "sport",
+      "en": "sport",
+      "tags": [
+        "col:m",
+        "q:quoi"
+      ],
+      "example": "C'est quoi ? — C'est un sport.",
+      "exampleEn": "It's a sport.",
+      "gap": "un"
     },
     {
       "id": "core-nouns-11",
@@ -181,18 +181,54 @@
     },
     {
       "id": "core-nouns-12",
-      "fr": "province",
-      "en": "province",
+      "fr": "activité",
+      "en": "activity",
       "tags": [
         "col:f",
-        "q:ou"
+        "q:quoi"
       ],
-      "example": "C'est où ? — C'est une province.",
-      "exampleEn": "It's a province.",
+      "example": "C'est quoi ? — C'est une activité.",
+      "exampleEn": "It's an activity.",
       "gap": "une"
     },
     {
       "id": "core-nouns-13",
+      "fr": "danse",
+      "en": "dance",
+      "tags": [
+        "col:f",
+        "q:quoi"
+      ],
+      "example": "C'est quoi ? — C'est la danse.",
+      "exampleEn": "It's dance.",
+      "gap": "la"
+    },
+    {
+      "id": "core-nouns-14",
+      "fr": "croissant",
+      "en": "croissant",
+      "tags": [
+        "col:m",
+        "q:quoi"
+      ],
+      "example": "C'est quoi ? — C'est un croissant.",
+      "exampleEn": "It's a croissant.",
+      "gap": "un"
+    },
+    {
+      "id": "core-nouns-15",
+      "fr": "macaron",
+      "en": "macaron",
+      "tags": [
+        "col:m",
+        "q:quoi"
+      ],
+      "example": "C'est quoi ? — C'est un macaron.",
+      "exampleEn": "It's a macaron.",
+      "gap": "un"
+    },
+    {
+      "id": "core-nouns-16",
       "fr": "champagne",
       "en": "champagne",
       "tags": [
@@ -204,7 +240,31 @@
       "gap": "le"
     },
     {
-      "id": "core-nouns-14",
+      "id": "core-nouns-17",
+      "fr": "consonne",
+      "en": "consonant",
+      "tags": [
+        "col:f",
+        "q:quoi"
+      ],
+      "example": "C'est quoi ? — C'est une consonne.",
+      "exampleEn": "It's a consonant.",
+      "gap": "une"
+    },
+    {
+      "id": "core-nouns-18",
+      "fr": "nationalité",
+      "en": "nationality",
+      "tags": [
+        "col:f",
+        "q:quoi"
+      ],
+      "example": "C'est quoi ? — C'est une nationalité.",
+      "exampleEn": "It's a nationality.",
+      "gap": "une"
+    },
+    {
+      "id": "core-nouns-19",
       "fr": "minute",
       "en": "minute",
       "tags": [
