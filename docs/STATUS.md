@@ -1867,8 +1867,29 @@ field.
   `check:short` requires of all 50, so a run rewrites 800 lines and breaks the
   build. Running it is how I found this; the edit was made in the CSV *and*
   applied to `sios.json` by hand instead.
-- `scripts/handoff_cefr.py` (which `add-candos.py` writes into the CSV) is
-  **off by one from SIO-008 onward** — its "SIO-010" holds SIO-009's greetings
-  can-do, its "SIO-009" holds SIO-008's. Re-applying it would silently shift
-  every can-do in Units 0-4 by one SIO. Left alone; realigning it is its own
-  job, and it is not on any live path.
+- `scripts/handoff_cefr.py` (which `add-candos.py` and `merge-handoff-csv.py`
+  write into the CSV) has **drifted from the live objectives**: of its 50
+  can-dos, 23 match `sios.json` exactly and 27 do not. Measured, not eyeballed:
+
+  - **9 hold a different SIO's exact can-do.** SIO-012/013/014 rotate among
+    themselves, and 022/023/024/025/026/028 rotate among 022-027. Re-applying
+    those files the wrong text under the right heading.
+  - **Unit 0 is shifted by one place across SIO-008/009/010** — handoff_cefr's
+    008 is a « C'est ___ ? » objective that no longer exists in Unit 0 at all,
+    its 009 is live 008 (classroom instructions), its 010 is live 009
+    (greetings). The old question-words SIO left Unit 0 (it is now SIO-035) and
+    handoff_cefr never moved with it.
+  - The remaining differences are simply **older wordings of the right topic**
+    (SIO-002-007, 011, 027, 042-044, 047, 048), and **SIO-045A is absent** —
+    it postdates the 50-row numbering.
+
+  This is the quieter of the two hazards and the worse in kind. Nothing in the
+  app or the build imports it, so it does nothing until someone runs
+  `add-candos.py` or `merge-handoff-csv.py` — and then it fails SILENTLY: the
+  CSV still parses, the build still passes, and a wrong can-do just appears
+  under the right objective. Left alone; realigning it is its own job.
+
+  (An earlier version of this note said it was "off by one from SIO-008
+  onward" and would shift every can-do in Units 0-4. That was read off two
+  adjacent rows, not measured. The shift is real but confined to Unit 0's
+  008/009/010; everywhere else the drift has a different shape.)
