@@ -68,7 +68,7 @@ export const FIRST_MEETING_BANK: ComposeBank = {
   categories: withPalette([
     { label: "Saluer", phrases: ["Bonjour", "Salut", "Bonsoir"] },
     { label: "Se présenter", phrases: ["Je m'appelle", "Moi, c'est", "Et toi ?", "Enchanté", "Enchantée"] },
-    { label: "Épeler", phrases: ["Ça s'écrit", "Comment ça s'écrit ?", "avec un", "deux"] },
+    { label: "Ça s'écrit", phrases: ["Ça s'écrit", "Comment ça s'écrit ?", "avec un", "deux"] },
     { label: "Politesse", phrases: ["s'il te plaît", "merci", "de rien"] },
     { label: "Partir", phrases: ["Au revoir", "À bientôt", "À demain", "Bonne journée"] },
   ]),

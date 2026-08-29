@@ -5,14 +5,14 @@
  * taught twenty-six letters. This teaches the exchange those letters are for,
  * and it is the phrase SIO-010's atelier asks the learner to perform.
  *
- * The paradigm data and the generator live in ./epeler.gen.ts so a check can
+ * The paradigm data and the generator live in ./ca-secrit.gen.ts so a check can
  * execute them; this file is the Mémo.
  */
 import type { NativeLesson } from "./types";
-import { EPELER_AXES, epelerQuestion, spelledOut } from "./epeler.gen";
+import { CA_SECRIT_AXES, caSecritQuestion, spelledOut } from "./ca-secrit.gen";
 
-export const epelerLesson: NativeLesson = {
-  slug: "epeler",
+export const caSecritLesson: NativeLesson = {
+  slug: "ca-secrit",
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">
@@ -64,8 +64,8 @@ export const epelerLesson: NativeLesson = {
   ),
   dice: {
     instruction: "Ask how it is spelled, or spell it out.",
-    axes: EPELER_AXES,
-    newQuestion: epelerQuestion,
+    axes: CA_SECRIT_AXES,
+    newQuestion: caSecritQuestion,
   },
   bonus: [
     { en: "How do you spell it?", fr: "Comment ça s'écrit ?", alt: ["Ça s'écrit comment ?"] },
