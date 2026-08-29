@@ -19,6 +19,8 @@ import { deaccent, normalize } from "@/lib/practice/cloze";
 import { reviserHref } from "@/lib/reviser";
 import type { Collection, Item } from "@/lib/collections/schema";
 import { shuffle } from "@/lib/shuffle";
+import { cap, offer, type SessionLength } from "@/lib/sessionLength";
+import HowManyQuestions from "@/components/HowManyQuestions";
 
 type Phase = "idle" | "listening" | "result";
 type Grade = "perfect" | "good" | "homophone" | "close" | "miss";
@@ -145,17 +147,38 @@ export default function SayItContent({
   // recall, FR is read-aloud, same word, same grader (hence the FR badge).
   const [promptLang, setPromptLang] = useState<"en" | "fr">("en");
 
+  // How long this run is (Dan, 2026-08-25). This is the drill that most needed
+  // it: WorDrill's "Tout" scope compiles EVERY curated deck into one run, so
+  // without a cap the finish line was hundreds of words away. `cards` stays
+  // the whole compiled deck; `runTotal` is what the learner actually signed
+  // up for, and every progress readout counts against that rather than the
+  // deck — a bar filling towards a number nobody chose is not progress.
+  const [asked, setAsked] = useState(false);
+  const [runTotal, setRunTotal] = useState(0);
+
+  /** Seed the working queue from `list`, cut to `choice`. */
+  const seedRun = useCallback((list: Item[], choice: SessionLength) => {
+    const run = cap(list, choice);
+    setRunTotal(run.length);
+    setCard(run[0] ?? null);
+    setQueue(run.slice(1));
+    setTrail([]);
+    setLog([]);
+    setFinished(false);
+  }, []);
+
   // Shuffle on mount only — shuffling during render breaks SSR hydration
   // (the AGENTS/handoff "no Math.random() during render" rule).
   useEffect(() => {
     const list = deck ? shuffle(practiceItems(deck).filter((i) => i.fr)) : [];
     setCards(list);
-    setCard(list[0] ?? null);
-    setQueue(list.slice(1));
-    setTrail([]);
-    setLog([]);
-    setFinished(false);
-  }, [deck]);
+    // A deck short enough not to need the question is answered for the
+    // learner, and the run starts immediately.
+    const skip = offer(list.length) === null;
+    setAsked(skip);
+    if (skip) seedRun(list, null);
+    else { setCard(null); setQueue([]); setTrail([]); setLog([]); setFinished(false); setRunTotal(0); }
+  }, [deck, seedRun]);
 
   const [phase, setPhase] = useState<Phase>("idle");
   // Peek at the French (Dan, 2026-07-15: "a button to see the French words
@@ -279,19 +302,20 @@ export default function SayItContent({
   }, [stopRec, score.total]);
 
   const restart = useCallback(() => {
+    // A replay reshuffles and asks again — someone who did ten may want
+    // twenty-five next, and re-asking costs one tap.
     const list = shuffle(cards);
     setCards(list);
-    setCard(list[0] ?? null);
-    setQueue(list.slice(1));
-    setTrail([]);
+    const skip = offer(list.length) === null;
+    setAsked(skip);
+    if (skip) seedRun(list, null);
+    else { setCard(null); setQueue([]); setTrail([]); setLog([]); setFinished(false); setRunTotal(0); }
     setScore({ ok: 0, total: 0 });
-    setLog([]);
-    setFinished(false);
     setPhase("idle");
     setRevealed(false);
     setTranscript("");
     setResult(null);
-  }, [cards]);
+  }, [cards, seedRun]);
 
   const startListening = useCallback(() => {
     const c = cardRef.current;
@@ -404,6 +428,42 @@ export default function SayItContent({
   }, [startListening, stopRec, next, listenModel, skip, back, endNow, embedded]);
 
   const answered = trail.filter((t) => !t.skipped).length;
+
+  // HOW LONG? — asked once, before any word. Three shapes, because this
+  // component runs in three frames: the drill page (DrillShell), the SIO
+  // popup (bare), and WorDrill (bare, but arrived at from a scope picker, so
+  // it keeps a way back — otherwise the one screen with no ✕ would be the one
+  // that opens a run of the entire curriculum).
+  if (!asked && cards.length > 0) {
+    const body = (
+      <>
+        <HowManyQuestions
+          lengths={offer(cards.length)!}
+          total={cards.length}
+          onPick={(n) => { setAsked(true); seedRun(cards, n); }}
+        />
+        {onExit && (
+          <div className="mt-5 text-center">
+            <button type="button" onClick={onExit} className="fluo-btn fluo-btn-sm">
+              ← Change scope
+            </button>
+          </div>
+        )}
+      </>
+    );
+    return embedded ? <div className="px-4 pb-6 pt-2">{body}</div> : (
+      <DrillShell
+        activity="wordrill"
+        deck={collectionId}
+        exitHref={drillExitHref(collectionId)}
+        progress={null}
+        cta={null}
+      >
+        {body}
+      </DrillShell>
+    );
+  }
+
   const ui = result ? GRADE_UI[result.grade] : null;
   const isCorrect = result?.grade === "perfect" || result?.grade === "good" || result?.grade === "homophone";
 
@@ -418,7 +478,7 @@ export default function SayItContent({
         activity="wordrill"
         deck={collectionId}
         exitHref={drillExitHref(collectionId)}
-        progress={finished ? null : { done: answered, total: cards.length }}
+        progress={finished ? null : { done: answered, total: runTotal }}
         right={
           <>
             ✓ {score.ok}/{score.total}
@@ -678,7 +738,7 @@ export default function SayItContent({
                 </p>
 
                 {log.length > 0 && (
-                  <SessionMap marks={marks} total={cards.length} className="mt-4 max-w-[280px]" />
+                  <SessionMap marks={marks} total={runTotal} className="mt-4 max-w-[280px]" />
                 )}
 
                 {/* Back stays (Dan, 2026-07-16) — the design dropped it, but a
@@ -726,7 +786,7 @@ export default function SayItContent({
         <div className="mb-4 text-center">
           <p className="fluo-label">{deck.title}</p>
           {embedded && !finished && card && (
-            <p className="text-xs text-[color:var(--fluo-ink-soft)]">{answered + 1} / {cards.length}</p>
+            <p className="text-xs text-[color:var(--fluo-ink-soft)]">{answered + 1} / {runTotal}</p>
           )}
         </div>
 
@@ -735,7 +795,7 @@ export default function SayItContent({
           <div className="h-1.5 rounded-full bg-[color:var(--fluo-line)] mb-6 overflow-hidden">
             <div
               className="h-full rounded-full bg-emerald-500 transition-all"
-              style={{ width: `${cards.length ? ((finished ? cards.length : answered) / cards.length) * 100 : 0}%` }}
+              style={{ width: `${runTotal ? ((finished ? runTotal : answered) / runTotal) * 100 : 0}%` }}
             />
           </div>
         )}

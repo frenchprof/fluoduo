@@ -31,12 +31,20 @@ import { SIOS } from "@/content/sios";
 import WordBank from "@/components/WordBank";
 
 import { shuffle } from "@/lib/shuffle";
+import { cap, offer, type SessionLength } from "@/lib/sessionLength";
+import HowManyQuestions from "@/components/HowManyQuestions";
 
 export default function GramMarathonContent({ collectionId, embedded = false }: { collectionId: string; embedded?: boolean }) {
   useActivityPlay("grammarathon", collectionId);
   const deck = CURATED.find((c) => c.id === collectionId);
 
+  // The FULL shuffled queue, and the length the learner picked off it (Dan,
+  // 2026-08-25). `order` stays whole so a replay can re-cut it; `chosen` is
+  // null until answered, and `offer()` returns null on a short deck, which is
+  // what lets those decks skip the question. Same shape as CompleteIt.
   const [order, setOrder] = useState<number[] | null>(null);
+  const [chosen, setChosen] = useState<SessionLength | null>(null);
+  const [asked, setAsked] = useState(false);
   const [i, setI] = useState(0);
   const [value, setValue] = useState("");
   const [result, setResult] = useState<Grade | null>(null);
@@ -55,7 +63,10 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
   // idée !") sits the game out.
   useEffect(() => {
     if (!deck) return;
-    setOrder(shuffle(deck.items.map((it, idx) => (isPlayableGap(it) ? idx : -1)).filter((x) => x >= 0)));
+    const full = shuffle(deck.items.map((it, idx) => (isPlayableGap(it) ? idx : -1)).filter((x) => x >= 0));
+    setOrder(full);
+    // Short enough not to need asking → answered for the learner.
+    setAsked(offer(full.length) === null);
   }, [deck]);
 
   useEffect(() => {
@@ -64,9 +75,12 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
   }, [i, result]);
 
   // Item selection + the ladder's hooks come BEFORE the early returns.
-  const total = order?.length ?? 0;
-  const done = order === null || i >= total;
-  const item = done || !deck ? null : deck.items[order![i]];
+  // The RUN is the chosen slice: `total` drives the progress denominator, the
+  // done card and next(), so capping here caps all three.
+  const run = useMemo(() => (order === null ? null : cap(order, chosen)), [order, chosen]);
+  const total = run?.length ?? 0;
+  const done = run === null || i >= total;
+  const item = done || !deck ? null : deck.items[run![i]];
   const gap = item?.gap ?? "";
   const { before, after } = item ? splitGap(gapSentence(item), gap) : { before: "", after: "" };
   const isRight = result === "perfect" || result === "good";
@@ -90,6 +104,30 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
 
   if (!deck) return <main className="p-6">No deck <code>{collectionId}</code>.</main>;
   if (order === null) return null;
+
+  // HOW LONG? — asked once, before any French, and only on a queue long
+  // enough for the answer to matter. Bare when embedded in a SIO popup; the
+  // full drill frame only on its own page.
+  if (!asked) {
+    const body = (
+      <HowManyQuestions
+        lengths={offer(order.length)!}
+        total={order.length}
+        onPick={(n) => { setChosen(n); setAsked(true); }}
+      />
+    );
+    return embedded ? body : (
+      <DrillShell
+        activity="grammarathon"
+        deck={collectionId}
+        exitHref={drillExitHref(collectionId)}
+        progress={null}
+        cta={null}
+      >
+        {body}
+      </DrillShell>
+    );
+  }
 
   function check() {
     if (result !== null || retry || !item) return;
@@ -122,7 +160,12 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
   }
 
   function restart() {
-    setOrder(shuffle(deck!.items.map((it, idx) => (isPlayableGap(it) ? idx : -1)).filter((x) => x >= 0)));
+    // A replay reshuffles and asks again — someone who did ten may want
+    // twenty-five next, and re-asking costs one tap. A short deck still skips.
+    const full = shuffle(deck!.items.map((it, idx) => (isPlayableGap(it) ? idx : -1)).filter((x) => x >= 0));
+    setOrder(full);
+    setChosen(null);
+    setAsked(offer(full.length) === null);
     setI(0); setValue(""); setResult(null); setRetry(false); setScore({ ok: 0, total: 0 });
   }
 

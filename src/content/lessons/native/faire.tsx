@@ -5,28 +5,7 @@
  */
 import type { NativeLesson } from "./types";
 
-const SUBJECTS = [
-  { disp: "Je", slot: "je" }, { disp: "Tu", slot: "tu" }, { disp: "Il", slot: "il" },
-  { disp: "Elle", slot: "il" }, { disp: "On", slot: "il" }, { disp: "Nous", slot: "nous" },
-  { disp: "Vous", slot: "vous" }, { disp: "Ils", slot: "ils" }, { disp: "Elles", slot: "ils" },
-] as const;
-const FAIRE: Record<string, string> = { je: "fais", tu: "fais", il: "fait", nous: "faisons", vous: "faites", ils: "font" };
-const ACTIVITIES: { fr: string; part: "du" | "de la" | "de l'" | "des"; en: string }[] = [
-  { fr: "yoga", part: "du", en: "yoga" }, { fr: "sport", part: "du", en: "sport" },
-  { fr: "karaté", part: "du", en: "karate" }, { fr: "vélo", part: "du", en: "cycling" },
-  { fr: "football", part: "du", en: "football" }, { fr: "basket", part: "du", en: "basketball" },
-  { fr: "tennis", part: "du", en: "tennis" }, { fr: "ski", part: "du", en: "skiing" },
-  { fr: "chant", part: "du", en: "singing" }, { fr: "danse", part: "de la", en: "dance" },
-  { fr: "natation", part: "de la", en: "swimming" }, { fr: "musique", part: "de la", en: "music" },
-  { fr: "photographie", part: "de la", en: "photography" }, { fr: "peinture", part: "de la", en: "painting" },
-  { fr: "boxe", part: "de la", en: "boxing" }, { fr: "escalade", part: "de l'", en: "climbing" },
-  { fr: "équitation", part: "de l'", en: "horse riding" }, { fr: "athlétisme", part: "de l'", en: "athletics" },
-  { fr: "escrime", part: "de l'", en: "fencing" }, { fr: "arts martiaux", part: "des", en: "martial arts" },
-];
-
-const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)];
-const np = (art: string, fr: string) => art + (art.endsWith("'") ? "" : " ") + fr;
-const isVowel = (fr: string) => /^[aeiouéèêàh]/i.test(fr);
+import { FAIRE_AXES, faireQuestion } from "./faire.gen";
 
 export const faireLesson: NativeLesson = {
   slug: "faire",
@@ -52,23 +31,8 @@ export const faireLesson: NativeLesson = {
   ),
   dice: {
     instruction: "Choose the right partitive article after faire (watch the negative!).",
-    newQuestion() {
-      const s = pick(SUBJECTS), a = pick(ACTIVITIES), neg = Math.random() < 0.4;
-      const f = FAIRE[s.slot];
-      const sv = neg ? `${s.disp} ne ${f} pas` : `${s.disp} ${f}`;
-      const art = neg ? (isVowel(a.fr) ? "d'" : "de") : a.part;
-      const arts = neg
-        ? [art, art === "d'" ? "de" : "d'", a.part, a.part === "du" ? "de la" : "du"]
-        : ["du", "de la", "de l'", "des"];
-      return {
-        meta: `${sv} … (${neg ? "don't do" : "do"})`,
-        big: a.fr,
-        en: a.en,
-        correct: `${sv} ${np(art, a.fr)}.`,
-        easyOptions: [...new Set(arts)].map((x) => `${sv} ${np(x, a.fr)}.`),
-        med: { before: sv, choices: [...new Set(arts)], correct: art, after: `${a.fr}.` },
-      };
-    },
+    newQuestion: faireQuestion,
+    axes: FAIRE_AXES,
   },
   bonus: [
     { en: "I do sport.", fr: "Je fais du sport." },
