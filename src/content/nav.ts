@@ -30,7 +30,8 @@ export type NavSlot = { key: string; label: string; emoji: string; href: string 
  *
  * WHAT CHANGED FROM THE FOUR. Index (📖 /activities) lost its own slot —
  * Dan: "Goals and Index to merge later on as one". Nothing was orphaned:
- * Practice already points at /activities, which IS the Index, so the
+ * Practice pointed at /activities, which WAS the Index; the Index was
+ * retired on 2026-08-29 and Practice now points at /map. So the
  * destination kept a slot even though the name went.
  *
  * User is deliberately absent, unchanged from the four-slot bar: the account

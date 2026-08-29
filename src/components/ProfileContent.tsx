@@ -74,7 +74,7 @@ const HL = "var(--fluo-hl)";
 /** The Index row for an outcome — one place, every activity for it. */
 const indexHref = (sio: string) => {
   const s = SIOS.find((x) => x.id === sio);
-  return s ? `/activities?unit=${s.unit}#${s.id}` : "/activities";
+  return s ? `/unit/${s.unit}#${s.id}` : "/map";
 };
 
 export default function ProfileContent() {
@@ -396,7 +396,7 @@ export default function ProfileContent() {
             <span className="fluo-mono text-[10px] font-semibold leading-relaxed" style={{ color: SOFT }}>
               TEACHER SEES OUTCOMES · ACCURACY
             </span>
-            <a href="/activities" className="fluo-mono text-[10px] font-bold no-underline">DETAILS</a>
+            <a href="/map" className="fluo-mono text-[10px] font-bold no-underline">MAP</a>
             <button type="button" onClick={() => exportCsv(acc)} className="fluo-mono text-[10px] font-bold underline underline-offset-2" style={{ color: "var(--cahier-accent)" }}>
               EXPORT
             </button>

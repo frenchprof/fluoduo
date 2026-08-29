@@ -76,7 +76,7 @@ function tourFor(rawPath: string): Tour | null {
       ],
     };
   }
-  if (path.startsWith("/activities")) {
+  if (path.startsWith("/map")) {
     return {
       key: "index",
       steps: [

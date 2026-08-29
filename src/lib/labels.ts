@@ -144,7 +144,7 @@ const PATH_NAMES: Array<[string, string]> = [
   ["/tutor", "ChaTutor"],
   ["/moi", "My Progress"],
   ["/teacher", "Teacher"],
-  ["/activities", "Index"],
+  ["/map", "Carte"],
   ["/leaderboard", "Leaderboard"],
   ["/profil", "Profile"],
   // Routes that existed in siteTabs.ts and nowhere here, so the teacher saw
@@ -166,7 +166,7 @@ const KEY_SURFACES: Record<string, { name: string; href: (deck: string) => strin
   mcq: { name: "Deck MCQ", href: (d) => (d ? `/decks/${d}/mcq` : null) },
   grammarathon: { name: "GramMarathon", href: (d) => (d ? `/practice/grammarathon/${d}` : null) },
   finale: { name: "GramMarathon Final", href: () => "/practice/grammarathon/finale" },
-  speculearn: { name: "SpecuLearn", href: (d) => (d ? `/practice/speculearn/${d}` : "/activities?activity=speculearn") },
+  speculearn: { name: "SpecuLearn", href: (d) => (d ? `/practice/speculearn/${d}` : "/practice/speculearn") },
   "say-it": { name: "WorDrill", href: (d) => (d ? `/practice/say-it/${d}` : "/practice/wordrill") },
   wordrill: { name: "WorDrill", href: () => "/practice/wordrill" },
   "complete-it": { name: "Complete It", href: (d) => (d ? `/practice/complete-it/${d}` : null) },

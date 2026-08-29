@@ -64,7 +64,7 @@ export default function MenuSplash({ onClose }: { onClose: () => void }) {
             return (
               <li key={a.key}>
                 <Link
-                  href={a.href ?? `/activities?activity=${a.key}`}
+                  href={a.href ?? "/map"}
                   onClick={close}
                   title={`${a.name} — ${a.blurb}`}
                   className="flex h-full flex-col items-center justify-start gap-1 rounded-xl border-2 px-1 py-2 text-center shadow-[2px_2px_0_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5"

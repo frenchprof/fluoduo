@@ -1,220 +1,204 @@
 #!/usr/bin/env python3
 """
-Patch 24 — the Index redesign (2026-08-17).
+Patch 24's Index — RETIRED 2026-08-29 — and what replaced it.
 
-The plan rows (UI_WORK_PLAN_1.md → PATCH 24): activity chip rail + unit
-segmented control + ten rows (one per SIO of the selected unit), state in
-the URL; the matrix cell says how you did (tier colour / ring / dash), not
-whether the link works; the activity hub pages are redirects into the Index
-with the activity preselected; `?gaps=1` is the authoring backlog; Memo
-(named xPlain until Dan's 2026-08-23 rename, approved surface #3) /
-4Mémoire / WorDrill are per-row buttons, not columns.
+WHAT THIS FILE USED TO HOLD
+---------------------------
+The Index redesign: an activity chip rail over a five-unit segmented control,
+ten rows per unit, state in the URL, each cell saying how you DID on that
+activity for that outcome; the activity hubs redirected into it with the
+activity preselected; `?gaps=1` was the authoring backlog.
 
-What this asserts (static, over source):
+WHY IT IS GONE
+--------------
+Dan, 22 Aug, on the Index: "I really don't understand how to read it." A key
+was added (assertion 9 below, now dropped with the page). It did not take, and
+on 2026-08-29 he retired the page outright:
 
-  1  The Index page: chip rail (role=tablist) + unit group + rows; state
-     read from ?activity / ?unit / ?gaps and written with replaceState;
-     no <table> of activity columns for the learner view; the old
-     HEAD/HEAD_TITLES/HEAD_CHIPS lists are gone.
-  2  indexMatrix: chips = the content-gated activities, buttons = the three
-     every deck has; both drawn from the registry; hrefs via
-     deckActivityTabs (eligibility not re-derived); Pre-Test folds into the
-     SpecuLearn cell; every SIO has a deck (rows = SIOs is sound).
-  3  The cell: three states (tried → tier token + number, open → ring,
-     none → dash); tier tokens only; the ledger is the source.
-  4  activityLedger: recordResponse writes it (one writer), Index reads it,
-     tier scale matches /moi (50 / 75).
-  5  Hubs: ActivityHub.tsx deleted; /practice/flip-it, /practice/grammarathon,
-     /practice/speculearn render IndexRedirect → /activities?activity=…;
-     the registry hrefs for those three point into the Index; verify19's
-     route check tolerates the query.
-  6  ?gaps=1: GapsView exists, iterates all SIOS, counts per column, and is
-     not linked from the learner chrome.
-  7  No hex literal in the new files (tokens only, verify19b's rule).
-  8  CI runs this file after verify23.
-  9  The « ? » key (24 Aug, Dan 22 Aug: "I really don't understand how to
-     read it"): an on-demand popover next to the heading, closed by
-     default, naming what the stop circle, the tried/open/none cell states
-     and the row buttons mean — not inline text.
+  "we shouldn't have to land on the index page at all. the maps should still
+   be the front door for everything"
+
+and, for the activity tiles:
+
+  "it takes them to the landing page that lists all the X on the website, and
+   perhaps highlight the one relevant to their latest Pre-test"
+
+So the one page that did both jobs became two doors that each do one:
+
+  the MAP  — choose a STOP. Tap it, get its popup, pick anything it has.
+  a LANDING — you have already chosen the ACTIVITY; here is every stop that
+             has it, in course order, one unit open at a time.
+
+WHAT THIS FILE HOLDS NOW
+
+  1  The Index is DELETED, not merely unlinked — page and IndexRedirect both
+     gone, and nothing in src/ still links to /activities. A half-removed
+     route that still renders is the worse outcome.
+  2  ActivityLanding exists and the three activity hubs render it.
+  3  The registry's three activity hrefs point at those landings, and the
+     Practice family points at the map.
+  4  The ghost state is DERIVED from cellHref, never a second list. A stop
+     without the activity must still appear — a missing row says "this stop
+     has nothing", when what it has is everything except this one activity.
+  5  One unit open at a time, and a fallback for browsers without exclusive
+     `<details name>` accordions.
+  6  The last pre-tested stop is marked, read on mount rather than in render
+     (localStorage does not exist on the server).
+  7  The authoring backlog survived the deletion — it moved to /teacher
+     rather than being lost with the page it was hiding inside.
+  8  indexMatrix and activityLedger, which the Index used and the landings
+     still use, keep the contracts patch 24 gave them.
+  9  No hex literal in the new files (tokens only, verify19b's rule).
 
 Run from the repo root:  python3 verify/verify24.py
 """
-import os, re, sys, json
+import os
+import re
+import sys
 
 FAIL, OK = [], []
 
 
-def check(cond, ok_msg, fail_msg):
-    (OK if cond else FAIL).append(ok_msg if cond else fail_msg)
+def check(cond, good, bad):
+    (OK if cond else FAIL).append(good if cond else bad)
 
 
 def read(p):
     return open(p, encoding="utf-8").read() if os.path.isfile(p) else ""
 
 
-def strip_comments(src):
-    src = re.sub(r"/\*.*?\*/", "", src, flags=re.S)
-    src = re.sub(r"^\s*//.*$", "", src, flags=re.M)
-    src = re.sub(r"\{/\*.*?\*/\}", "", src, flags=re.S)
-    return src
-
-
 if not os.path.isfile("package.json"):
-    print("run from the repo root"); sys.exit(2)
+    print("run from the repo root")
+    sys.exit(2)
 
-page = read("src/app/activities/page.tsx")
-pcode = strip_comments(page)
-matrix = read("src/lib/indexMatrix.ts")
-mcode = strip_comments(matrix)
-ledger = read("src/lib/activityLedger.ts")
-lcode = strip_comments(ledger)
-responses = strip_comments(read("src/lib/firebase/responses.ts"))
-reg = read("src/content/activities.ts")
-redirect = read("src/components/IndexRedirect.tsx")
-css = read("src/app/globals.css")
+LANDING = "src/components/ActivityLanding.tsx"
+REG = "src/content/activities.ts"
+MATRIX = "src/lib/indexMatrix.ts"
+LEDGER = "src/lib/activityLedger.ts"
+GAPS = "src/app/teacher/Gaps.tsx"
+HUBS = {
+    "src/app/practice/flip-it/page.tsx": "flip",
+    "src/app/practice/grammarathon/page.tsx": "grammarathon",
+    "src/app/practice/speculearn/page.tsx": "speculearn",
+}
 
-# ── 1 · the page ─────────────────────────────────────────────────────────
-check('role="tablist"' in pcode and "index-chips" in pcode,
-      "chip rail is a tablist", "no chip rail (role=tablist / .index-chips) on the Index")
-check('aria-label="Unit"' in pcode and "grid-cols-5" in pcode,
-      "unit segmented control has five segments", "no five-segment unit control")
-check("siosOfUnit(url.unit)" in pcode and "index-rows" in pcode,
-      "rows are the SIOs of the selected unit", "rows are not siosOfUnit(unit)")
-for param in ('q.get("activity")', 'q.get("unit")', 'q.get("gaps")'):
-    check(param in pcode, f"URL state read: {param}", f"URL state not read: {param}")
-check("history.replaceState" in pcode, "URL state written with replaceState",
-      "state is not written back to the URL")
-check('"popstate"' in pcode and "useSyncExternalStore" in pcode, "Back/Forward re-read the URL",
-      "no popstate listener — Back does not move the Index")
-for stale in ("HEAD_TITLES", "HEAD_CHIPS", "cellsFor(", "<details", "minWidth: 560"):
-    check(stale not in pcode, f"old matrix artefact gone: {stale}",
-          f"old matrix artefact still present: {stale}")
-# The learner view has no activity-column table; only GapsView (Dan's) may.
-learner_view = pcode.split("function GapsView")[0]
-check("<table" not in learner_view, "learner view is rows, not a table",
-      "learner view still renders a <table>")
+# ---- 1 · the Index is really gone ------------------------------------------
+for dead in ("src/app/activities/page.tsx", "src/app/activities", "src/components/IndexRedirect.tsx"):
+    check(not os.path.exists(dead),
+          f"{dead} is deleted",
+          f"{dead} is back — the Index was retired on 2026-08-29")
 
-# ── 2 · indexMatrix ──────────────────────────────────────────────────────
-check("CHIP_KEYS" in mcode and "ROW_BUTTON_KEYS" in mcode,
-      "chip keys and row-button keys are declared in one place",
-      "indexMatrix does not declare CHIP_KEYS / ROW_BUTTON_KEYS")
-chips = re.search(r"CHIP_KEYS = \[([^\]]*)\]", mcode)
-btns = re.search(r"ROW_BUTTON_KEYS = \[([^\]]*)\]", mcode)
-chip_keys = re.findall(r'"([a-z]+)"', chips.group(1)) if chips else []
-btn_keys = re.findall(r'"([a-z]+)"', btns.group(1)) if btns else []
-check(set(btn_keys) == {"lesson", "flip", "wordrill"},
-      # Dan, 2026-08-23: rename xPlain → Memo, approved surface #3.
-      "row buttons are Memo · 4Mémoire · WorDrill", f"row buttons are {btn_keys}")
-check(not set(chip_keys) & set(btn_keys), "no activity is both a chip and a button",
-      f"overlap: {set(chip_keys) & set(btn_keys)}")
-reg_keys = set(re.findall(r'\{ key: "([a-z]+)", name:', reg))
-check(set(chip_keys) <= reg_keys and set(btn_keys) <= reg_keys,
-      "every chip/button key is a registry key",
-      f"keys not in the registry: {set(chip_keys + btn_keys) - reg_keys}")
-check("deckActivityTabs(" in mcode, "cell hrefs come from deckActivityTabs (eligibility not re-derived)",
-      "indexMatrix re-derives eligibility instead of asking deckActivityTabs")
-for banned in ("isLexReadyId(", "getLetrisSet(", "composeBankForDeck(", "isPlayableGap"):
-    check(banned not in mcode and banned not in pcode,
-          f"no private eligibility rule: {banned}",
-          f"{banned} used on the Index — a second definition of eligibility")
-check('find("pretest")' in mcode, "Pre-Test folds into the SpecuLearn cell",
-      "the SpecuLearn cell ignores the pretest — decks with only a pretest lose their door")
+# Nothing may link to it. Comments explaining the retirement are fine and this
+# file is full of them; an href is not — a dead link is worse than the page it
+# points at. So the scan runs over CODE, with comments stripped first.
+def strip_comments(src: str) -> str:
+    src = re.sub(r"/\*.*?\*/", "", src, flags=re.S)
+    return re.sub(r"^\s*//.*$", "", src, flags=re.M)
 
-# rows = SIOs is sound only if every SIO owns a deck that exists.
-try:
-    sios = json.load(open("src/content/sios/sios.json", encoding="utf-8"))
-    deck_ids = {os.path.basename(f)[:-5] for f in os.listdir("src/content/collections") if f.endswith(".json")}
-    no_deck = [s["id"] for s in sios if not s.get("collectionId")]
-    per_unit = {}
-    for s in sios:
-        per_unit[s["unit"]] = per_unit.get(s["unit"], 0) + 1
-    check(len(sios) == 50 and not no_deck, "50 SIOs, every one with a deck",
-          f"{len(sios)} SIOs, without deck: {no_deck}")
-    check(all(n == 10 for n in per_unit.values()), "ten SIOs per unit — ten rows",
-          f"SIOs per unit: {per_unit}")
-except Exception as e:
-    check(False, "", f"could not read sios.json: {e}")
 
-# ── 3 · the cell ─────────────────────────────────────────────────────────
-check("function ResultCell" in pcode, "ResultCell exists", "no ResultCell component")
-for state in ("index-cell-tried", "index-cell-open", "index-cell-none"):
-    check(state in pcode, f"cell state rendered: {state}", f"cell state missing: {state}")
-check("tierToken(pct)" in pcode, "tried cells wear the tier token",
-      "tried cells do not use tierToken")
-check("accuracyFor(ledger" in pcode, "cell accuracy comes from the ledger",
-      "cell does not read the ledger")
-check("isSioDone(" in pcode, "✓ on the stop once the outcome is done", "isSioDone not consulted")
+linkers = []
+for root, _dirs, files in os.walk("src"):
+    for f in files:
+        if not f.endswith((".ts", ".tsx")):
+            continue
+        fp = os.path.join(root, f)
+        for m in re.finditer(r'["`](/activities[^"`]*)["`]', strip_comments(read(fp))):
+            linkers.append(f"{fp} → {m.group(1)}")
+check(not linkers,
+      "nothing in src/ links to /activities",
+      f"still linking to the retired Index: {linkers[:4]}")
 
-# ── 4 · the ledger ───────────────────────────────────────────────────────
-check("noteAttempt(item, correct" in responses, "recordResponse writes the ledger",
-      "recordResponse does not call noteAttempt — the ledger has no writer")
-writers = [f for f in ("src/lib/progress.ts", "src/app/activities/page.tsx") if "noteAttempt(" in strip_comments(read(f))]
-check(not writers, "one writer (recordResponse)", f"extra ledger writers: {writers}")
-check("normalizePath(" in lcode, "ledger normalises renamed routes (letris → vocabularain…)",
-      "ledger does not normalise activityIds")
-# 2026-08-17: the ledger re-exports outcomeRows.tierToken, whose thresholds are
-# progress.ts's tierFor (50 / 75) — one definition, no private numbers here.
-check('export { tierToken } from "@/lib/outcomeRows"' in lcode and "pct < 50" not in lcode,
-      "tier thresholds 50 / 75 — the ledger re-exports the one tierToken",
-      "ledger carries its own tier thresholds")
-check('"fluolingo:activityLedger"' in lcode, "ledger key namespaced", "ledger key not namespaced")
+# ---- 2 · the landing exists, and the hubs render it ------------------------
+land = read(LANDING)
+check(bool(land), f"{LANDING} exists", f"{LANDING} is missing — the tiles have nowhere to land")
+for hub, key in HUBS.items():
+    src = read(hub)
+    check("ActivityLanding" in src and f'activityKey="{key}"' in src,
+          f"{hub.split('/')[-2]} renders its own landing",
+          f"{hub} does not render ActivityLanding with activityKey={key!r}")
 
-# ── 5 · hubs → redirects ─────────────────────────────────────────────────
-check(not os.path.isfile("src/components/ActivityHub.tsx"), "ActivityHub.tsx deleted",
-      "ActivityHub.tsx still exists")
-check("window.location.replace(" in redirect and "/activities?activity=" in redirect,
-      "IndexRedirect replaces into /activities?activity=…",
-      "IndexRedirect does not redirect into the Index")
-for route, key in (("flip-it", "flip"), ("grammarathon", "grammarathon"), ("speculearn", "speculearn")):
-    src = read(f"src/app/practice/{route}/page.tsx")
-    check(f'<IndexRedirect activity="{key}" />' in src, f"/practice/{route} → Index ({key})",
-          f"/practice/{route} is not a redirect into the Index")
-    check(f'href: "/activities?activity={key}"' in reg, f"registry: {key} points into the Index",
-          f"registry href for {key} still points at the old hub")
-check("ActivityHub" not in "".join(read(f"src/app/practice/{r}/page.tsx") for r in ("flip-it", "grammarathon")),
-      "no hub page renders ActivityHub", "a hub page still renders ActivityHub")
-check('href.split("?")[0]' in read("verify/verify19.py"), "verify19 tolerates the query in registry hrefs",
-      "verify19 will fail on /activities?activity=…")
+# ---- 3 · the registry points at the new doors ------------------------------
+reg = read(REG)
+for key, href in (("speculearn", "/practice/speculearn"),
+                  ("flip", "/practice/flip-it"),
+                  ("grammarathon", "/practice/grammarathon")):
+    check(f'href: "{href}"' in reg,
+          f"registry: {key} → {href}",
+          f"registry: {key} does not point at {href}")
+fam = reg.split("export const FAMILIES")[-1]
+check('"/map"' in fam,
+      "registry: the Practice family opens the map",
+      "the Practice family no longer reaches the map")
 
-# ── 6 · gaps ─────────────────────────────────────────────────────────────
-check("function GapsView" in pcode and "gapCells()" in pcode, "GapsView reads gapCells()",
-      "no GapsView / gapCells")
-check("SIOS.map(" in pcode.split("function GapsView")[-1], "gaps view walks all fifty SIOs",
-      "gaps view does not iterate SIOS")
-chrome = "".join(read(f) for f in ("src/components/CahierShell.tsx", "src/components/BottomBar.tsx",
-                                   "src/components/siteTabs.ts", "src/content/nav.ts", "src/content/activities.ts"))
-check("gaps=1" not in chrome, "?gaps=1 is not linked from the learner chrome",
-      "?gaps=1 is linked from the chrome — it is Dan's view")
+# ---- 4 · the ghost is derived, and the row keeps its place -----------------
+check("cellHref(" in land,
+      "the landing asks cellHref whether a stop has the activity",
+      "the landing derives availability some other way — that is a second list to keep in step")
+check("aria-disabled" in land and "border-dashed" in land,
+      "the landing has a ghost state to render",
+      "the landing has no ghost state — a stop lacking the activity would vanish")
+# ...and actually RENDERS it. The check above only proves the ghost branch
+# exists; filtering the list before the map would leave every one of its
+# strings in place while dropping the rows. Break-testing that is what caught
+# this: the sabotage passed. So the row list must reach `.map` unfiltered.
+row_map = re.search(r"\{(\w+)(\.filter\([^)]*\))?\.map\(\(\{ sio, href \}\)", land)
+check(row_map is not None and row_map.group(2) is None,
+      "every stop reaches the row list — the ghosts are rendered, not filtered out",
+      "the landing filters its rows before rendering, so stops lacking the activity disappear")
 
-# ── 7 · tokens only ──────────────────────────────────────────────────────
-HEX = re.compile(r"#[0-9a-fA-F]{3,8}\b")
-for f in ("src/app/activities/page.tsx", "src/lib/indexMatrix.ts", "src/lib/activityLedger.ts",
-          "src/components/IndexRedirect.tsx"):
-    check(not HEX.search(read(f)), f"no hex literal in {os.path.basename(f)}",
-          f"hex literal in {f}")
-check(".index-chips" in css, "Index CSS in globals (scrollbar-less rail)", "no .index-chips rule")
+# ---- 5 · one unit open at a time -------------------------------------------
+check('name="unit"' in land,
+      "the units are one exclusive `<details name>` accordion",
+      "the landing's units are not an exclusive accordion — fifty rows at once is the wall the Index was")
+check("d.open = false" in land,
+      "a fallback closes the others where exclusive accordions are unsupported",
+      "no fallback: on a browser without exclusive `<details name>` every unit would stay open")
 
-# ── 8 · CI ───────────────────────────────────────────────────────────────
-wf = read(".github/workflows/verify.yml")
-check("verify/verify24.py" in wf, "CI runs verify24", "verify24 is not wired into verify.yml")
-check(wf.find("verify23.py") < wf.find("verify24.py"), "verify24 runs after verify23",
-      "verify24 is wired before verify23")
+# ---- 6 · the last pre-test is marked, safely -------------------------------
+check("latestPretestSio" in land,
+      "the landing marks the learner's last pre-tested stop",
+      "the landing does not use latestPretestSio — Dan asked for that highlight")
+check("useEffect" in land and "latestPretestSio()" not in land.split("useEffect")[0],
+      "the record is read on mount, not during render",
+      "latestPretestSio is read in the render body — localStorage does not exist on the server")
 
-# ── 9 · the « ? » key (24 Aug) ───────────────────────────────────────────
-check("function IndexKey" in pcode, "IndexKey component exists", "no IndexKey component")
-check("<IndexKey />" in pcode or "<IndexKey/>" in pcode, "IndexKey rendered on the page",
-      "IndexKey defined but never rendered")
-check('useState(false)' in pcode.split("function IndexKey")[-1].split("function")[0],
-      "the key starts closed (on demand, not inline)", "the key does not start closed")
-key_body = pcode.split("function IndexKey")[-1].split("function ResultCell")[0] if "function IndexKey" in pcode else ""
-for must in ("aria-expanded", "aria-label"):
-    check(must in key_body, f"key toggle carries {must}", f"key toggle missing {must}")
-for glyph in ("your accuracy", "tried yet", "authored here yet", "stop's number"):
-    check(glyph in key_body, f"key explains: {glyph!r}", f"key does not explain: {glyph!r}")
+# ---- 7 · the authoring backlog survived ------------------------------------
+gaps = read(GAPS)
+check(bool(gaps), "the authoring backlog moved to /teacher", "the ?gaps=1 backlog was lost with the Index")
+check("gapCells(" in gaps,
+      "the backlog is still derived from gapCells",
+      "the backlog no longer derives from gapCells — it has become a list to maintain")
+# Both halves, because either alone is satisfied by the other's leftovers:
+# deleting the PANELS entry leaves `panel === "gaps"` in the render, and
+# deleting the render leaves the tab. Break-testing found that too.
+teach = read("src/app/teacher/page.tsx")
+check('{ key: "gaps"' in teach and 'panel === "gaps"' in teach and "<Gaps" in teach,
+      "the backlog has a tab AND a render on /teacher",
+      "the /teacher gaps panel is half-wired — a tab with nothing behind it, or a render with no way in")
 
-print("\npatch 24 check\n" + "-" * 66)
-for x in OK:   print("  ok    " + x)
-for x in FAIL: print("  FAIL  " + x)
-print("-" * 66)
-print(f"  {len(OK)} passed · {len(FAIL)} failed")
-sys.exit(1 if FAIL else 0)
+# ---- 8 · the contracts patch 24 gave the shared helpers --------------------
+mx = read(MATRIX)
+check("CHIP_KEYS" in mx and "ROW_BUTTON_KEYS" in mx,
+      "indexMatrix still names the content-gated and always-present activities",
+      "indexMatrix lost its activity split")
+check("deckActivityTabs" in mx,
+      "cellHref resolves through deckActivityTabs (eligibility is not re-derived)",
+      "indexMatrix re-derives eligibility instead of using deckActivityTabs")
+led = read(LEDGER)
+check("recordResponse" in led,
+      "activityLedger still has its one writer",
+      "activityLedger's writer is gone")
+
+# ---- 9 · tokens, not hex ---------------------------------------------------
+for p in (LANDING, GAPS):
+    hexes = re.findall(r"#[0-9a-fA-F]{3,8}\b", read(p))
+    check(not hexes,
+          f"{p.split('/')[-1]} uses tokens, no raw hex",
+          f"{p} has raw hex {hexes[:3]} — verify19b's rule")
+
+print("\n".join(f"  ok    {m}" for m in OK))
+if FAIL:
+    print("\n".join(f"  FAIL  {m}" for m in FAIL))
+    print(f"\n{len(FAIL)} failed, {len(OK)} passed")
+    sys.exit(1)
+print(f"\nall {len(OK)} checks passed")

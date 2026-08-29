@@ -78,7 +78,9 @@ check("router.replace(`/practice/flip-it/${id}`)" in study, "the redirect lands 
 bare = [f for f in SRC if "No deck specified." in read(f)]
 check(not bare, "no page renders the bare string \"No deck specified.\"", f"bare string still in {bare}")
 nodeck = CODE.get("src/app/decks/NoDeck.tsx", "")
-check('href="/activities"' in nodeck and "CahierShell" in nodeck, "NoDeck links to the Index inside the shell", "NoDeck lacks an Index link / shell")
+check('href="/map"' in nodeck and "CahierShell" in nodeck,
+      "NoDeck links to the map inside the shell",
+      "NoDeck lacks a map link / shell")
 for p in ("src/app/decks/view/page.tsx", "src/app/decks/study/page.tsx", "src/app/decks/mcq/page.tsx"):
     check("<NoDeck />" in CODE[p], f"{p} renders NoDeck without ?id=", f"{p} does not render NoDeck")
 

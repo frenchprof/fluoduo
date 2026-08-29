@@ -99,7 +99,7 @@ export function fixtureEvents(): Ev[] {
     const days = 3 + Math.floor(r() * 12);
     for (let d = 0; d < days; d++) {
       const t = NOW - d * DAY - r() * 8 * 3_600_000;
-      out.push({ uid: FIXTURE_UIDS[i], type: "page.view", ts: new Date(t), payload: { path: "/activities", name: NAMES[i] } });
+      out.push({ uid: FIXTURE_UIDS[i], type: "page.view", ts: new Date(t), payload: { path: "/map", name: NAMES[i] } });
       if (r() < 0.6) out.push({ uid: FIXTURE_UIDS[i], type: "game.start", ts: new Date(t + 60_000), payload: { game: "flip-it", collectionId: SIOS[Math.floor(r() * 20)].collectionId } });
     }
   }

@@ -62,7 +62,7 @@ export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
                         {activitiesIn(f.key).map((a) => (
                           <li key={a.key} className="flex flex-col items-center gap-1" title={a.blurb}>
                             <Link
-                              href={a.href ?? "/activities"}
+                              href={a.href ?? "/map"}
                               className="flex h-12 w-12 items-center justify-center rounded-2xl border-2 bg-white/80 text-2xl shadow-[2px_2px_0_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5"
                               style={{ borderColor: a.hue }}
                             >

@@ -591,7 +591,7 @@ export default function EcouTexte({
   return (
     <DrillShell
       activity="ecoutexte"
-      exitHref="/activities"
+      exitHref="/map"
       progress={text ? { done: worked, total: sentences.length } : null}
       right={text ? <>{worked}/{sentences.length}</> : undefined}
       secondary={

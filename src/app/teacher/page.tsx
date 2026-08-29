@@ -41,6 +41,7 @@ import Students from "./Students";
 import Activities from "./Activities";
 import Pretests from "./Pretests";
 import FeedbackPanel from "./FeedbackPanel";
+import Gaps from "./Gaps";
 
 const PANELS = [
   { key: "now", label: "🟢 Class now" },
@@ -50,6 +51,7 @@ const PANELS = [
   { key: "students", label: "🧑‍🎓 Students" },
   { key: "activities", label: "🕹️ Activities" },
   { key: "pretests", label: "🧪 Pretests" },
+  { key: "gaps", label: "🧱 Gaps" },
   { key: "feedback", label: "💬 Feedback" },
 ] as const;
 type PanelKey = (typeof PANELS)[number]["key"];
@@ -319,6 +321,7 @@ function Dashboard({ canWrite }: { canWrite: boolean }) {
         {panel === "students" && <Students events={shown ?? []} roster={roster} initialUid={jumpUid} details={details} fetched={fetched} />}
         {panel === "activities" && <Activities events={shown ?? []} roster={roster} includeTeachers={includeTeachers} />}
         {panel === "pretests" && <Pretests events={shown ?? []} />}
+        {panel === "gaps" && <Gaps />}
         {panel === "feedback" && <FeedbackPanel nameOf={nameOf} canWrite={canWrite} />}
       </div>
     </div>

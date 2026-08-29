@@ -299,7 +299,7 @@ export default function LessonPager({
   });
 
   // ── shell wiring ─────────────────────────────────────────────────────────
-  const exitHref = deck ? drillExitHref(deck.id) : "/activities";
+  const exitHref = deck ? drillExitHref(deck.id) : "/map";
   const isLast = ready && i + 1 >= exStart + (queue?.length ?? 0);
 
   const cta = end
