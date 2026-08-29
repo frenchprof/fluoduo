@@ -2525,3 +2525,51 @@ the viewport, which is the mistake that made it look like it fitted.
   proposal put to Dan is to lint only the files a PR touches: new work must be
   clean, the 51 existing files stay until someone is in them anyway, and the
   pile can only shrink. Awaiting his yes/no.
+
+## 29 Aug — five more stops filled (4, 7, 8, 21, 34)
+
+The 50-promise audit found stops whose can-do names an ACT while the deck
+behind it teaches only that act's vocabulary. Three were filled first (3, 17,
+18), then 11. These are the last five, on Dan's rulings of 29 Aug:
+
+| stop | what it now teaches | Dan's ruling |
+|---|---|---|
+| 4  | « On est mardi. » · « C'est le matin. » | simplest possible sentences |
+| 7  | counting **to ten only**, plus « Il y a combien d'étudiants ? » | "stop at number 10 and just add" |
+| 8  | **exactly two lines**: « Pardon, on fait quoi ? » · « Répétez s'il vous plaît. » | "only very basic structures" |
+| 21 | « C'est une gomme. » · « Ce sont des téléphones. » | simplest possible sentences |
+| 34 | two places in ONE sentence, with the `de` contraction | "34's lesson must talk about them — content to be expanded" |
+
+"This is unit 0 for pete's sake" is the register for all of them.
+
+**Stop 34 is the one with a rule.** Its deck already sorts sixteen prepositions
+into the three groups that matter — takes `de`, takes no `de`, takes no place
+at all — so my audit calling it a gap was wrong for the same reason stop 11
+was: the deck stores letris COLUMNS, not sentences. What it never did was put
+two places in one sentence, which is the entire promise. And that is where
+`de + le → du` / `de + les → des` becomes unavoidable. « loin de le parc » is
+the error the lesson exists to prevent.
+
+**Corrections made by executing rather than reading.** « Les toilettes **est**
+… » shipped and survived a read-through; running every preposition × every
+place caught it, and `estOf()` now agrees. The prompt had the same fault («  Où
+est les toilettes ? »). One plural place out of eleven is enough to be wrong on.
+My own test regex was also wrong — `\b(du|des|de la|de l')\b` fails on `de
+l'école`, because `é` is not a `\w`.
+
+`verify48` gains section 7: 11,000 cards executed across the five, plus the
+pins, plus three assertions that hold Dan's rulings specifically — stop 7's
+maximum is 10, stop 8 has exactly 2 replies, and no card contains an
+uncontracted « de le ». All five break-tested red; none vacuous.
+
+The filename still says `three` while the file now covers nine stops. Renaming
+means re-wiring the workflow, and `verify-wiring` makes a stale NAME harmless
+where a stale number is not.
+
+**Open for Dan: the renumbering.** He proposed moving questions up so that
+questions take 34 and locating/directions take 35 and 36. Investigated but NOT
+done — the map label reads `sio.num`, but `SioModal.tsx:242` renders `sio.id`
+to the learner and `doneSios` stores ids, so a renumber that touches ids would
+silently reset progress. Needs his call on whether `num` alone moves.
+
+**Stop 36** (asking for directions) is still unbuilt.
