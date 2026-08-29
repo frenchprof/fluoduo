@@ -31,6 +31,15 @@ import { combienLesson } from "./combien";
 import { onFaitQuoiLesson } from "./on-fait-quoi";
 import { quEstCeLesson } from "./qu-est-ce-que-c-est";
 import { ouEstLesson } from "./ou-est";
+// SIO-036: the deck gives directions and never asks for them — « Quel est le
+// chemin pour … ? » is its title and appears on no card.
+import { leCheminLesson } from "./le-chemin";
+// Three more promises whose deck taught only the vocabulary: 13 never asks
+// its own title's question, 44 is fourteen shop names against a four-act
+// can-do, and 45A holds the numerals without the arithmetic that builds them.
+import { quelleMatiereLesson } from "./quelle-matiere";
+import { auMarcheLesson } from "./au-marche";
+import { soixanteDixLesson } from "./soixante-dix";
 import { avoirEtatsLesson } from "./avoir-etats";
 import { questionsOuiNonLesson } from "./questions-oui-non";
 import { motsInterrogatifsLesson } from "./mots-interrogatifs";
@@ -95,6 +104,10 @@ export const NATIVE_LESSONS: Record<string, NativeLesson> = {
   "on-fait-quoi": onFaitQuoiLesson,
   "qu-est-ce-que-c-est": quEstCeLesson,
   "ou-est": ouEstLesson,
+  "le-chemin": leCheminLesson,
+  "quelle-matiere": quelleMatiereLesson,
+  "au-marche": auMarcheLesson,
+  "soixante-dix": soixanteDixLesson,
   "revision-u1": revisionU1Lesson,
   "revision-u3u4": revisionU3U4Lesson,
   "revision-u4": revisionU4Lesson,
