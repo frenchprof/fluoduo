@@ -13,7 +13,8 @@
   "isProduction": false,
   "canDo": "I can introduce myself and other people, ask someone their name, and address someone politely with M./Mme.",
   "competence": "Conjugate s'appeler in all 6 persons (≥5/6); ask a name with tu and with vous; introduce a third person (Il/Elle s'appelle…); use M./Mme as a form of address.",
-  "collectionId": "sappeler"
+  "collectionId": "sappeler",
+  "fr": "Je m'appelle…"
  },
  {
   "id": "SIO-002",
@@ -29,7 +30,8 @@
   "isProduction": false,
   "canDo": "I can tell which pronoun (tu vs vous) is more appropriate in a particular context.",
   "competence": "Select tu / vous (polite sg) / vous (pl) correctly in ≥10/12 situations; give a one-phrase reason for each choice.",
-  "collectionId": "tu-vous"
+  "collectionId": "tu-vous",
+  "fr": "Tu (toi) ou vous ?"
  },
  {
   "id": "SIO-003",
@@ -45,7 +47,8 @@
   "isProduction": false,
   "canDo": "I can say how a name is spelled, or ask how it is spelled.",
   "competence": "Name all 26 letters; sort them into the 7 vowel-sound groups; spell a given word aloud (≥90% letters correct).",
-  "collectionId": "alphabet"
+  "collectionId": "alphabet",
+  "fr": "Ça s'écrit comment ?"
  },
  {
   "id": "SIO-004",
@@ -61,7 +64,8 @@
   "isProduction": false,
   "canDo": "I can tell which day of the week and what moment of the day it is, or ask: When is it?",
   "competence": "List the 7 days in order and the 3 moments of the day; label a day as weekday/weekend; ask and answer C'est quand ?",
-  "collectionId": "days"
+  "collectionId": "days",
+  "fr": "C'est quand ?"
  },
  {
   "id": "SIO-005",
@@ -77,7 +81,8 @@
   "isProduction": false,
   "canDo": "I know the word for twelve different colors in French (red, orange, yellow, green, blue, purple, brown, white, black, grey, pink, beige), or ask: How is it? (What color is it?)",
   "competence": "Name the 12 colours; give the matching mnemonic object for each (≥10/12).",
-  "collectionId": "colors"
+  "collectionId": "colors",
+  "fr": "C'est comment ?"
  },
  {
   "id": "SIO-006",
@@ -93,7 +98,8 @@
   "isProduction": false,
   "canDo": "I can say whether a noun is masculine or feminine, and answer Where is it? Who is it? What is it? with it.",
   "competence": "Label the 18 nouns with un/une/le/la (≥15/18); answer C'est où ? / C'est qui ? / C'est quoi ? appropriately for a given item.",
-  "collectionId": "core-nouns"
+  "collectionId": "core-nouns",
+  "fr": "C'est quoi ?"
  },
  {
   "id": "SIO-007",
@@ -109,7 +115,8 @@
   "isProduction": false,
   "canDo": "I know my French numbers from 0 to 20, or ask how many students there are in the classroom.",
   "competence": "Read aloud any number 0–20; identify 17–19 as composites (dix-sept = 10 + 7); say 20; answer Il y a combien d'étudiants ?",
-  "collectionId": "numbers-0-20"
+  "collectionId": "numbers-0-20",
+  "fr": "Il y a combien de… ?"
  },
  {
   "id": "SIO-008",
@@ -125,7 +132,8 @@
   "isProduction": false,
   "canDo": "I can understand and respond to classroom instructions like Écoutez !, Regardez !, Répétez !, Lisez !, Écrivez !, Parlez !, Notez !, Comptez !, Associez !, or ask what we are doing.",
   "competence": "Perform the correct action for the 9 instructions (≥8/9); ask On fait quoi ?",
-  "collectionId": "consignes"
+  "collectionId": "consignes",
+  "fr": "Les instructions de classe"
  },
  {
   "id": "SIO-009",
@@ -141,7 +149,8 @@
   "isProduction": false,
   "canDo": "I can greet and say goodbye based on time of day and register (casual or formal).",
   "competence": "Produce the register-appropriate greeting/leave-taking for a given time and relationship (≥8/10); sort phrases into meeting vs parting and universal vs familiar.",
-  "collectionId": "salutations"
+  "collectionId": "salutations",
+  "fr": "Bonjour ! Salut ! Au revoir !"
  },
  {
   "id": "SIO-010",
@@ -157,7 +166,8 @@
   "isProduction": true,
   "canDo": "I can simulate a simple first-time meeting in French, from Bonjour, to Comment tu t'appelles, to Et toi ?, to Comment ça s'écrit, to Enchanté, to Au revoir !",
   "competence": "Complete all steps of a first-meeting exchange: greet, ask a name (tu or vous), give one's own name, ask Et toi ?, ask/answer Comment ça s'écrit ?, say Enchanté(e), and take leave (Au revoir).",
-  "collectionId": "atelier-sio-010"
+  "collectionId": "atelier-sio-010",
+  "fr": "Un dialogue simple"
  },
  {
   "id": "SIO-011",
