@@ -2619,3 +2619,108 @@ and a reload did not swap back. `verify49` break-tested on 8 mutations, all red,
 none vacuous. 39 checks green, tsc and build clean.
 
 **Stop 36** (asking for directions) is still unbuilt.
+
+## 29 Aug — the banded icon tile, shared; and the stop sheet says what the stop is FOR
+
+Dan, on seeing the stop sheet: *"actually those icons are very good. i want to
+use them"* — on the activity landings and in the stop popup.
+
+**One tile, one file.** `src/components/ActivityIcon.tsx`: the activity's emoji
+on a box filled with its DEMAND band (`bandOf`), 40px in the sheet and 28px in
+the landings' fifty rows. It had lived inline in StopSheet, so "use it
+elsewhere" meant a second copy or a component; a duplicated tile is exactly how
+one activity ends up wearing two colours on two screens, which is the fault
+`activities.ts` exists to end. It is `aria-hidden` and every caller prints the
+name — colour reinforces, never carries alone. No emoji renders no tile: an
+empty coloured square reads as a fault, and the element is decorative.
+
+**The stop sheet now carries the SIO in full** (Dan, same day: the stop should
+open to "(1) the SIO in full, (2) the app icons. that's all"). Heading is the
+French `fr` title, the English `short` rides under it small, then the can-do.
+NOT `competence` — that is grading wording and has never been shown to a
+learner.
+
+**A regression I caused and then paid for.** The 28px tile is 10px wider than
+the bare emoji it replaced, and the landings' label column was already tight:
+measured at 390px, main truncated **4 of Unit 0's 10** French titles and my
+tile made it 5. Recovered from the row's own slack — the number chip 32→28px
+and two gaps — so the column went 149px → 151px and the count is back to 4.
+The tile is paid for out of chrome, not out of the objective.
+
+**Still truncating, and NOT mine:** « Ça s'écrit comment ? » (167px), « Il y a
+combien de… ? » (162), « Les instructions de classe » (206) and « Bonjour !
+Salut ! Au revoir ! » (211) against a 151px column. No tightening closes a
+60px gap; it needs a decision — wrap to two lines, drop the size, or accept
+the ellipsis. Dan's call, flagged not taken.
+
+**verify36 gains four assertions, and two of them were vacuous on first
+break-test** — the same two shapes this repo keeps finding:
+- `"bandOf(" in file` passed with the call deleted, because the component's
+  own docstring EXPLAINS that the fill comes from `bandOf()`. Comments are
+  stripped now (verify19b and verify40 each learned this before).
+- `"ActivityIcon" in file` passed with the element deleted, because the import
+  line alone satisfied it. It matches `<ActivityIcon` now (the `function
+  AllCards` lesson, 28 Aug).
+The copy-detector also fired on `PageBand.tsx`, which fills a page-wide strip
+from the same variable and is not a copy of anything; it now requires the box
+to centre a glyph, which a strip never does.
+
+## 29 Aug — every activity page names itself, and the two games get a landing
+
+Dan, in one sitting: *"why is the coloured heading strip not consistently
+showing the name of activity"*, *"why doesn't NumBus and NumBourse land on the
+same type of selection page as VocabulaRain and LexicaLater"*, and *"even if
+they do not have 50-stop list, it should still have a landing page before the
+game begins, e.g. for settings and so on"*.
+
+**The audit that answered all of it** (every activity's href driven in a real
+browser, 390px). Fourteen have a door; the pattern rollout had reached three:
+
+    the 50-stop landing   SpecuLearn · 4Mémoire · GramMarathon
+    their own page        WorDrill · ÉcouTexte · ConjugaZone · VoixLà ·
+                          ComposeIt · ChaTutor · VocabulaRain · LexicaLater ·
+                          DéjàRevu
+    NO STRIP AT ALL       NumBus · NumBourse
+    no door at all        Memo · Sorting · iComplete (stop-only, by design)
+
+Nothing was wrong with the individual pages — the rollout simply stopped at
+three. Worth stating plainly because it looked like eleven separate faults.
+
+**The strip fix is one word.** `CahierShell` takes the strip's label, its
+family wash AND its demand band from `active`. ActivityLanding passed
+`unit-${openUnit}`, so all three landings announced themselves as "Unité 0"
+while every other page in the app said its own name. It passes `activityKey`
+now. No unit flap is marked, which is honest: the page spans all five.
+
+**`GameLanding.tsx`** — the page a game opens on before it starts: the shell
+(so the strip names it and the rail is reachable), the emoji, the name and the
+blurb from the registry, then whatever the game needs. NumBus's settings form
+moved into it; NumBourse, which had no landing at all, gets one naming its
+eight-level ladder and a deliberate ▶ Jouer.
+
+**This reverses a patch-23 decision on Dan's word**, and that is the point
+worth recording: patch 23 put the NumBus setup inside `GameFrame` — "one ✕,
+one ⋯, no page header" — so the form wore the game's chrome. The cost was that
+the step had no identity and the activity was unreachable from the rail while
+in it. A settings step is a PAGE, not a frame of the game. The GAME still
+wears GameFrame.
+
+**A correction I made and then unmade.** Having moved the name into the strip,
+I stripped it from the landing's section band as redundant. Wrong: every other
+page in the app names itself in BOTH — WorDrill's strip says WorDrill and its
+heading says 🎙️ WorDrill. Dan's complaint was that the STRIP was inconsistent,
+not that the heading repeated it. Restored.
+
+**Also from the same sitting:** the fifty landing rows no longer each wear the
+same activity icon (Dan: "there is no need to have one icon per line. it's a
+bloody waste of space" — his own litmus rule: the page IS that activity), and
+the French objective drops 16px → 13px. Measured across all fifty rows at
+390px: `main` truncated 4 of Unit 0's 10 and 3 more in Units 1/2/4; nothing
+truncates now. Three of those were my own titles, shortened rather than
+shrinking the type further — « Quelle nationalité ? », « Un ou des ? »,
+« Après soixante-neuf… ».
+
+**Still open, and Dan's call:** the eleven activities that are not on the
+50-stop pattern. Some would suit it (WorDrill, iComplete via a door of its
+own); some plainly would not (ChaTutor, VoixLà, the two number games), and
+those now at least have a landing of their own.

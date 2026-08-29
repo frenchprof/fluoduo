@@ -269,7 +269,7 @@
   "canDo": "I can say what nationality someone is, using the correct form.",
   "competence": "Produce all 4 nationality forms for each of 25 countries; match country → nationality (≥20/25).",
   "collectionId": "nationalities",
-  "fr": "Tu es de quelle nationalité ?"
+  "fr": "Quelle nationalité ?"
  },
  {
   "id": "SIO-017",
@@ -354,7 +354,7 @@
   "canDo": "I can point out and name objects and people and ask what something is.",
   "competence": "Present ≥6 of the 14 items (un sac, un livre, un cahier, un téléphone, un stylo, un crayon, un passeport, une carte d'identité, une trousse, des ciseaux, une gomme, un portefeuille, des lunettes, une clé) with c'est + un/une and ce sont + des; ask C'est quoi ?",
   "collectionId": "objets-articles",
-  "fr": "C'est un… ? Ce sont des… ?"
+  "fr": "Un ou des ?"
  },
  {
   "id": "SIO-022",
@@ -762,7 +762,7 @@
   "canDo": "I can say and understand the numbers from 70 to 99, including in prices.",
   "competence": "Count 70–99 following the soixante-dix / quatre-vingts patterns, and use them in market prices (Ça fait … euros).",
   "collectionId": "numbers-70-99",
-  "fr": "Soixante-dix, quatre-vingts…"
+  "fr": "Après soixante-neuf…"
  },
  {
   "id": "SIO-046",

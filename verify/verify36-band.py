@@ -168,6 +168,84 @@ ok(re.search(r"bandOf[\s\S]{0,300}SELF_COLOURED\.has", reg) is not None,
    "/moi and /profil keep their own scheme — bandOf returns null there",
    "bandOf does not exempt the self-coloured pages")
 
+# ── the banded icon tile lives in ONE file (2026-08-29) ───────────────────
+# Dan, on seeing the stop sheet: "actually those icons are very good. i want
+# to use them" — so the tile that had been inline in StopSheet now serves the
+# activity landings too. Two copies of it is precisely how one activity ends
+# up wearing two different colours on two screens, which is the fault the
+# registry exists to prevent. Asserted structurally: exactly one component
+# defines it, and nobody hand-rolls a second.
+import glob as _glob
+
+# Strip comments first. The docstring of ActivityIcon.tsx EXPLAINS that the
+# fill comes from bandOf(), so a check over the raw file passed with the call
+# itself deleted — the third time this repo has caught a check reading its own
+# explanation (verify19b, verify40).
+def _nocomment(src):
+    import re as _re
+    src = _re.sub(r"/\*.*?\*/", "", src, flags=_re.S)
+    return _re.sub(r"^\s*//.*$", "", src, flags=_re.M)
+
+_icon = _nocomment(open("src/components/ActivityIcon.tsx", encoding="utf-8").read())
+_ok = "bandOf(activityKey)" in _icon and "var(--band" in _icon
+(PASS if _ok else FAIL).append(
+    "ActivityIcon.tsx is the one banded tile (bandOf + var(--band))"
+    if _ok else "ActivityIcon.tsx missing, or it no longer derives its fill from bandOf")
+
+# A hand-rolled copy is a SMALL SQUARE tile filled with the band — a grid box
+# that centres one glyph. Matching `var(--band` alone was too loose and fired
+# on PageBand.tsx, which fills a whole page strip with the same variable and
+# is not a copy of anything; the tile is distinguished by centring a glyph in
+# a box, which a page-wide strip never does.
+_copies = []
+for _f in _glob.glob("src/**/*.tsx", recursive=True):
+    if _f.replace("\\", "/").endswith("components/ActivityIcon.tsx"):
+        continue
+    _src = open(_f, encoding="utf-8").read()
+    if 'var(--band' in _src and "place-items-center" in _src:
+        _copies.append(_f)
+(PASS if not _copies else FAIL).append(
+    "no second copy of the tile — every caller imports ActivityIcon"
+    if not _copies else f"the tile is hand-rolled again in: {_copies}")
+
+# The landings deliberately do NOT use it (Dan, 2026-08-29: "there is no need
+# to have one icon per line. it's a bloody waste of space") — that page is ONE
+# activity, so its icon belongs in the band at the top, once. The tile is a
+# stop-sheet thing, where every row is a different activity.
+for _f, _who in (("src/components/StopSheet.tsx", "the stop sheet"),):
+    # `<ActivityIcon` — the RENDER, not the name. Checking the bare name
+    # passed with the element deleted, because the import line alone satisfied
+    # it (the `function AllCards` lesson, 2026-08-28).
+    _src = open(_f, encoding="utf-8").read()
+    _u = "<ActivityIcon" in _src
+    (PASS if _u else FAIL).append(
+        f"{_who} draws its activities with ActivityIcon"
+        if _u else f"{_who} no longer uses ActivityIcon")
+
+# ── every activity page names ITSELF in the strip (2026-08-29) ────────────
+# Dan: "why is the coloured heading strip not consistently showing the name of
+# activity". CahierShell takes the strip's label, its family wash AND its
+# demand band from `active`, so an activity page that passes anything else
+# gets someone else's identity. The landings passed `unit-${openUnit}` and so
+# every one of them announced itself as "Unité 0".
+_al = _nocomment(open("src/components/ActivityLanding.tsx", encoding="utf-8").read())
+_ok = "active={activityKey}" in _al and "active={`unit-" not in _al
+(PASS if _ok else FAIL).append(
+    "the activity landings pass their own key as CahierShell's `active`"
+    if _ok else "an activity landing passes a unit as `active` — its strip will say Unité N")
+
+# NumBus and NumBourse were the only two activities in the app with no strip
+# at all: both dropped the learner straight into a GameFrame. Dan: "even if
+# they do not have 50-stop list, it should still have a landing page before
+# the game begins, e.g. for settings and so on."
+for _f, _who in (("src/app/games/numbus/page.tsx", "NumBus"),
+                 ("src/app/games/numbourse/page.tsx", "NumBourse")):
+    _src = _nocomment(open(_f, encoding="utf-8").read())
+    _u = "<GameLanding" in _src
+    (PASS if _u else FAIL).append(
+        f"{_who} opens on a landing page, not straight into the game"
+        if _u else f"{_who} no longer has a landing page before the game")
+
 print("\n".join("  ok    " + p for p in PASS))
 print("\n".join("  FAIL  " + f for f in FAIL))
 print("-" * 66)

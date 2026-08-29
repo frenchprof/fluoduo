@@ -22,7 +22,9 @@
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { deckActivityTabs } from "@/components/CahierShell";
+import ActivityIcon from "@/components/ActivityIcon";
 import { bandOf } from "@/content/activities";
+import { SIOS } from "@/content/sios";
 
 export default function StopSheet({
   stopId, topic, collectionId, onClose,
@@ -32,6 +34,16 @@ export default function StopSheet({
   collectionId: string;
   onClose: () => void;
 }) {
+  // THE SIO IN FULL (Dan, 2026-08-29: the stop should open to "(1) the SIO in
+  // full, (2) the app icons. that's all"). The sheet already had the icons and
+  // the English topic; the objective itself was missing, so the learner saw
+  // six doors and no statement of what the stop is FOR.
+  //
+  // What "in full" is, and what it is not: the French title (`fr`) and the
+  // can-do, which are the learner's own words for the goal. NOT `competence`
+  // — that is the grading wording (">=8/10 situations"), which has never been
+  // shown to a learner and is not going to start here.
+  const sio = SIOS.find((x) => x.id === stopId);
   const panel = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
@@ -83,14 +95,32 @@ export default function StopSheet({
                 style={{ background: "var(--dopa-focus)" }}>
             Stop {Number(stopId.slice(4, 7))}
           </span>
-          <h2 className="cahier-hand min-w-0 flex-1 truncate text-xl leading-none text-[color:var(--cahier-ink)]">
-            {topic}
+          <h2 className="cahier-hand min-w-0 flex-1 truncate text-xl leading-none text-[color:var(--cahier-ink)]"
+              lang={sio?.fr ? "fr" : undefined}>
+            {sio?.fr ?? topic}
           </h2>
           <button type="button" onClick={onClose} aria-label="Close"
                   className="neo-key h-9 w-9 rounded-xl text-lg font-black text-[color:var(--cahier-ink)]">
             ✕
           </button>
         </div>
+
+        {/* The English map label rides under the French one, small, the way
+            the pre-lesson list prints the pair — and the can-do under that.
+            `topic` is the fallback heading when a stop has no `fr`, so it is
+            only repeated here when it is NOT already the heading. */}
+        {sio && (
+          <div className="mb-3">
+            {sio.fr && (
+              <p className="cahier-hand text-[13px] leading-tight text-[color:var(--cahier-ink)]/55">
+                {sio.short}
+              </p>
+            )}
+            <p className="mt-1.5 border-t border-[color:var(--cahier-rule)] pt-2 text-[13.5px] leading-snug text-[color:var(--cahier-ink)]">
+              {sio.canDo}
+            </p>
+          </div>
+        )}
 
         <ul className="flex flex-col gap-2">
           {tabs.map((t) => {
@@ -101,10 +131,7 @@ export default function StopSheet({
                   href={t.href!}
                   className={`neo-key flex items-center gap-3 rounded-2xl px-3 py-3${band ? ` band-${band}` : ""}`}
                 >
-                  <span aria-hidden className="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-xl"
-                        style={{ background: "var(--band, var(--cahier-paper-2))" }}>
-                    {t.emoji}
-                  </span>
+                  <ActivityIcon activityKey={t.key} emoji={t.emoji} />
                   <span className="min-w-0 flex-1 truncate text-[15px] font-black text-[color:var(--cahier-ink)]">
                     {t.label}
                   </span>
