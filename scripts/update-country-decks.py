@@ -183,20 +183,27 @@ def update_vocab():
 
 
 def update_cefr():
-    text = CEFR_PATH.read_text(encoding="utf-8")
-    text = text.replace(
-        "Label countries with le/la/l'/les (∅ where invariable) (≥80%); ask C'est quel pays ?",
-        "Label 25 countries with le/la/l'/les/∅ (≥20/25); ask C'est quel pays ?",
+    """Dead since 2026-08-29 — kept so a re-run explains itself instead of lying.
+
+    This used to patch three competence strings inside scripts/handoff_cefr.py
+    by search-and-replace, back when that module carried its own hand-typed copy
+    of all 50 descriptors. That copy had gone stale (23 of 50 still matched the
+    course; some had drifted onto the wrong SIO), so it now DERIVES from
+    src/content/sios/sios.json and stores no text at all.
+
+    Which means these replacements had already stopped doing anything: neither
+    the old strings nor the new ones were in the file. A no-op that reports
+    success is the failure mode this whole clean-up is about, so it says so.
+
+    The wording it wanted is already correct at the real source — SIO-015/016/017
+    in sios.json read "25 countries" today. Edit it there; the handoff CSV
+    follows via scripts/sync-sio-csv.mjs, which `npm run build` also checks.
+    """
+    print(
+        "update_cefr: skipped — descriptors now live in src/content/sios/sios.json, "
+        "not in scripts/handoff_cefr.py. SIO-015/016/017 already carry the 25-country "
+        "wording; nothing to patch."
     )
-    text = text.replace(
-        "Produce all 4 nationality-adjective forms for a given country; match country → nationality (≥80%).",
-        "Produce all 4 nationality forms for each of 25 countries; match country → nationality (≥20/25).",
-    )
-    text = text.replace(
-        "Match each country in a set to its language(s) (≥80%).",
-        "Match each of 25 countries to its language(s) (≥20/25).",
-    )
-    CEFR_PATH.write_text(text, encoding="utf-8")
 
 
 if __name__ == "__main__":

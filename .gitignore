@@ -57,3 +57,6 @@ work/**/*.png
 # 053c1c9 that way and sat in src/ until 25 Aug. They are never source.
 *.orig
 *.rej
+
+# merge-handoff-csv.py keeps the previous handoff CSV beside the new one
+*.csv.bak

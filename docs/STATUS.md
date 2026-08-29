@@ -2045,3 +2045,155 @@ per-activity hubs are untouched. Building it means one shared page component
 (band hue + second-column resolver + the popup) replacing the Index's chip
 rail, and `cellHref()` already answers "does this stop have this activity",
 so the ghost state is derivable rather than a new list to keep.
+## 2026-08-29 — the SIO spine gets ONE source, and the two stale copies are shut down
+
+Follow-up to the two generator landmines noted above. Dan: "can you fix the
+first and the second". Both fixed — and testing the first fix is what exposed
+the real problem, which was much larger than a broken script.
+
+**The first fix was BACKWARDS, and the test caught it.** `gen-sios.mjs` was
+documented as regenerating `sios.json` from the handoff CSV. Repairing it that
+way would have been a content disaster: run in check mode it reported that the
+CSV disagrees with the app on **17 SIOs across 46 fields**, and that for **14 of
+them the topic itself differs** — a different objective under the same number
+(the app's SIO-047 is "Making plans"; the CSV's is "Commerces"). Units 1, 2 and
+4 were reorganised in the app and the CSV never followed. Running the documented
+command would have reverted 17 objectives to superseded text and deleted
+SIO-045A. The app is unambiguously the live course — every one of those topics
+has a real deck, a real pretest and real lessons wired to it — so **the
+direction is reversed: `sios.json` is the source and the CSV follows.** Dan's
+call, put to him with the evidence.
+
+**What shipped.**
+
+- `scripts/gen-sios.mjs` is **deleted**, not left unused. Its two hardcoded maps
+  had rotted too: `COLLECTION_BY_SIO` knew 26 of the 50 live deck wirings and
+  disagreed with one, so a run also unwired half the course.
+- `scripts/sync-sio-csv.mjs` replaces it, app → CSV. It syncs only the
+  **objective** columns (Unit, Topic, SIO Description, Flashcard Set, CEFR Mode,
+  Can-Do, competence) and never the **flashcard spec** (Front side, Back side,
+  Overview columns, Letris / Notes), which the app does not hold. Proven: a
+  column-by-column diff of the 51 rows shows those four untouched, header and
+  row count identical.
+- `--check` is wired into `npm run build` as **check:sios**, so neither side can
+  drift quietly again. That, not the copying, is the part that fixes this.
+- Two guards make the tool safe to run: it **refuses to write** unless parsing
+  and re-serialising the CSV reproduces it byte for byte, and it refuses when a
+  row exists on only one side (a missing row is a decision, not a sync).
+- **Two ragged rows healed.** SIO-036 (13 fields) and SIO-040 (14) had a
+  competence pasted in unquoted years ago, so commas split it across phantom
+  columns. A spill is only collapsed when re-joining the tail reproduces the
+  app's value EXACTLY; anything else stops the script rather than deleting data.
+- `scripts/handoff_cefr.py` **stores nothing** now — it derives from
+  `sios.json`, with a guard that refuses a short read rather than let its
+  callers blank the CSV's descriptor columns. `add-candos.py` is consequently a
+  byte-identical no-op, verified.
+- `scripts/update-country-decks.py`'s `update_cefr()` had been silently doing
+  nothing for months (its search strings were in neither the old nor the new
+  file). It now says so instead of reporting success.
+- `docs/CSV_SPEC_MISMATCHES.md` — the 15 rows whose card spec still describes
+  the old objective, for Dan to work through in his own spreadsheet. Nothing in
+  the app depends on those columns.
+- `verify42-sio-source.py`, 19 checks. **Every one was proved to fail before
+  being trusted** — ten break-tests: restore the generator, drop check:sios from
+  the build, drift one CSV field, give handoff_cefr a stored copy, remove its
+  short-read guard, make the sync claim a flashcard column, remove the
+  round-trip guard, reintroduce a ragged row, point index.ts back at gen-sios,
+  delete the mismatch doc. All ten went red; all ten went green again on
+  restore.
+
+**SIO-045A is the NEWEST objective in Unit 4, not a leftover** — worth stating
+because Dan's recollection was the opposite. The history is in
+`src/content/pretests/index.ts` (2026-08-02): the app's own SIO-045 was "Market
+phrases", retired into SIO-044 (Commerces), its number kept as a deliberate
+permanent gap so nothing downstream would shift; "Numbers 70–99" was then added
+into that gap as SIO-045A. It has a deck, a pretest, six finale items and an
+index grouping today. The CSV's 5th Unit-4 row is a different objective again
+(frequency adverbs, which the app calls SIO-043), so the sync treats that as a
+reused slot, not a rename. **If Dan does want SIO-045A gone, that is an app
+content change and a separate job** — it is referenced in `sios.json`,
+`pretests/index.ts`, `finale.ts`, `index.ts` and learner progress records.
+
+**Untouched: `sios.json` and every app surface.** This whole change is tooling
+and the CSV. tsc clean · build green · eslint identical to main (138 both
+sides) · all 34 verify suites pass.
+
+## 2026-08-29 (later) — the loose ends closed: specs reassigned, the last handoff landmine defused
+
+Dan: "fix any of the unfixed matters above too." Everything left open by the
+morning's clean-up, done.
+
+**The six displaced flashcard specs — moved, not left for Dan.** The earlier
+note said only Dan could place them. That was wrong once the app's decks were
+actually read: the specs were not incorrect, they were **displaced**, and nearly
+every one had a home under some other number. SIO-047's shop cards belong to
+SIO-044, which IS Commerces now; SIO-045A's frequency-scale cards belong to
+SIO-043, which IS Frequency adverbs now; SIO-043's partitive-negative cards
+belong to SIO-042, which absorbed that content on 2026-08-02. Two were genuinely
+retired (the *avec* spec — the `avec-qui` deck no longer exists; the manger/boire
+spec — ConjugaZone covers it under SIO-042), and the three gaps that left were
+written fresh **from the decks the app actually ships** (`negation-pas`,
+`numbers-70-99`, `modaux-plans`), not invented. SIO-048 was trimmed from four
+modals to the three its objective names, matching `modaux-avis`.
+
+Proved the mirror image of the morning's change: a column-by-column diff shows
+**only** Front side / Back side / Overview columns / Letris-Notes moved, on
+exactly those 7 rows, with no objective column touched and no ragged rows.
+
+**Also over-flagged, and corrected.** The first list keyed off "the topic string
+changed", which called 15 rows broken. Nine were only renames — SIO-023 went
+from "aimer — what I like" to "Leisure activities — j'aime, j'adore" and its
+cards fit exactly as well as before. Only six were real. The doc is renamed
+`docs/CSV_SPEC_REASSIGNMENT.md` and is now a record of what moved, not a to-do.
+
+**`merge-handoff-csv.py` was the third landmine of the same family** and had
+gone unmentioned. It had an absolute path into a personal Downloads folder baked
+in, naming a **v4_1** export while the repo is on v9 — a run would have replaced
+all 9 base columns of every row, flashcard specs included, from a spreadsheet
+several versions old, and printed "Wrote …". It now takes the export as a
+required argument and refuses rather than proceeds when the export does not line
+up: base header must match column for column, the 50 SIO ids must match exactly
+(`--allow-id-changes` to override deliberately), the current file is copied to
+`.csv.bak` first, and it prints which rows actually changed. All four guards
+exercised; a clean export round-trips byte-identical.
+
+**verify42 grew to 25 checks**, each proved to fail first. The three new ones:
+no absolute path baked into any handoff script (this one caught my own docstring
+quoting the old path — the check was right, the docstring was reworded), the
+merge script refuses to run without an export, and **no non-atelier objective
+may be left with no cards described at all** — which is how the displacement
+went unnoticed for so long.
+
+One break-test needed redoing: sabotaging the merge script by removing its
+argument check tripped a *different* guard instead, so it exited non-zero and
+the assertion stayed green for the wrong reason. Re-sabotaged to silently
+default to a valid file elsewhere; then it went red properly.
+
+**Still Dan's, deliberately not touched:** whether SIO-045A should exist at all
+(he believes it is from an old system; the code says it is the newest objective
+in Unit 4 — evidence in `src/content/pretests/index.ts`, and removing it is an
+app change touching five files plus learner records), and SIO-009 Q9, where
+replacing *Bonjour* with *Merci* removed that item's bonjour-vs-bonsoir
+contrast — his explicit instruction, flagged once, left as asked.
+
+tsc clean · build green · eslint identical to main (138 both sides) · all 34
+verify suites pass · `sios.json` and every app surface untouched.
+
+### Merge note — the drift guard caught something on its first real run
+
+Merging this into `main` after PR #49 (the French objective titles) landed,
+`check:sios` immediately failed: that PR rewrote **SIO-006** in the app —
+topic, description, can-do and competence — replacing its classroom-object noun
+list (prénom, crayon, cahier, casque…) with eighteen near-cognates (croissant,
+région, football, nationalité…) whose meaning is already clear, so that gender
+is the whole task. The CSV was synced to follow.
+
+Its flashcard spec needed the same treatment, and shows why the new
+"no objective without cards" check is not enough on its own: the spec was
+non-empty and looked fine, but its examples (*'a pencil' → un crayon*) name a
+noun no longer in the objective, and its "2 baskets: un / une" predates the
+competence now asking for **un / une / le / la**. Rewritten to the new list.
+
+Worth noting as the pattern to expect: this is the ordinary working of the
+thing, not an incident. An app-side content change makes the build red, the
+sync moves the objective, and a human moves the cards after it.
