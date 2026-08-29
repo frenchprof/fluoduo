@@ -183,7 +183,8 @@
   "isProduction": false,
   "canDo": "I can identify any of the 8 stressed pronouns (moi, toi, lui, elle, nous, vous, eux, elles) by their position — after a preposition, after c'est, or standing alone (avec moi, c'est moi, moi !).",
   "competence": "Match each of them to their 8 subject pronouns (je, tu, …) (≥7/8).",
-  "collectionId": "stress-pronouns"
+  "collectionId": "stress-pronouns",
+  "fr": "Moi, toi, lui, elle…"
  },
  {
   "id": "SIO-012",
@@ -199,7 +200,8 @@
   "isProduction": false,
   "canDo": "I can say what job someone has.",
   "competence": "Name 10 professions in m/f forms; present a person with il est/elle est or C'est un/une ___ (≥8/10).",
-  "collectionId": "professions"
+  "collectionId": "professions",
+  "fr": "Tu fais quoi dans la vie ?"
  },
  {
   "id": "SIO-013",
@@ -215,7 +217,8 @@
   "isProduction": false,
   "canDo": "I can say and ask what someone is studying.",
   "competence": "Name academic subjects with the correct article; answer Qu'est-ce que tu étudies ? with Je suis étudiant(e) en ___.",
-  "collectionId": "matieres"
+  "collectionId": "matieres",
+  "fr": "Tu étudies quoi ?"
  },
  {
   "id": "SIO-014",
@@ -231,7 +234,8 @@
   "isProduction": false,
   "canDo": "I can say who someone is and give basic information about people, making the form agree for gender and number.",
   "competence": "Conjugate être in all 8 persons (≥7/8); apply m/f and sg/pl agreement to étudiant(e)(s).",
-  "collectionId": "etre-etudiant"
+  "collectionId": "etre-etudiant",
+  "fr": "Je suis, tu es, il est…"
  },
  {
   "id": "SIO-015",
@@ -247,7 +251,8 @@
   "isProduction": false,
   "canDo": "I can name countries with the correct article and ask which country something is.",
   "competence": "Label 25 countries with le/la/l'/les/∅ (≥20/25); ask C'est quel pays ?",
-  "collectionId": "countries-letris"
+  "collectionId": "countries-letris",
+  "fr": "C'est quel pays ?"
  },
  {
   "id": "SIO-016",
@@ -263,7 +268,8 @@
   "isProduction": false,
   "canDo": "I can say what nationality someone is, using the correct form.",
   "competence": "Produce all 4 nationality forms for each of 25 countries; match country → nationality (≥20/25).",
-  "collectionId": "nationalities"
+  "collectionId": "nationalities",
+  "fr": "Tu es de quelle nationalité ?"
  },
  {
   "id": "SIO-017",
@@ -279,7 +285,8 @@
   "isProduction": false,
   "canDo": "I can say which language(s) are spoken in a given country.",
   "competence": "Match each of 25 countries to its language(s) (≥20/25).",
-  "collectionId": "languages"
+  "collectionId": "languages",
+  "fr": "On parle quelle langue ?"
  },
  {
   "id": "SIO-018",
@@ -295,7 +302,8 @@
   "isProduction": false,
   "canDo": "I can understand and say numbers from 20 to 69 in simple exchanges (ages, prices, quantities).",
   "competence": "Read aloud any number 20–69; identify the 6 tens; build composites 21–69 with et un where required (≥90%).",
-  "collectionId": "numbers-20-69"
+  "collectionId": "numbers-20-69",
+  "fr": "Vingt, trente, quarante…"
  },
  {
   "id": "SIO-019",
@@ -311,7 +319,8 @@
   "isProduction": false,
   "canDo": "I can say my age and how I feel, in the affirmative and the negative.",
   "competence": "Conjugate avoir (≥7/8); give age (J'ai ___ ans); express the 4 states; sort 6 states into être vs avoir (≥5/6); produce affirmative and negative forms.",
-  "collectionId": "avoir-etats"
+  "collectionId": "avoir-etats",
+  "fr": "Tu as quel âge ?"
  },
  {
   "id": "SIO-020",
@@ -327,7 +336,8 @@
   "isProduction": true,
   "canDo": "I can write a few simple sentences about a francophone country I know, if I can prepare.",
   "competence": "Write 3–4 comprehensible sentences with all 4 elements present (name, location, language, one cultural fact).",
-  "collectionId": "atelier-sio-020"
+  "collectionId": "atelier-sio-020",
+  "fr": "Un petit texte sur un pays"
  },
  {
   "id": "SIO-021",
@@ -343,7 +353,8 @@
   "isProduction": false,
   "canDo": "I can point out and name objects and people and ask what something is.",
   "competence": "Present ≥6 of the 14 items (un sac, un livre, un cahier, un téléphone, un stylo, un crayon, un passeport, une carte d'identité, une trousse, des ciseaux, une gomme, un portefeuille, des lunettes, une clé) with c'est + un/une and ce sont + des; ask C'est quoi ?",
-  "collectionId": "objets-articles"
+  "collectionId": "objets-articles",
+  "fr": "C'est un… ? Ce sont des… ?"
  },
  {
   "id": "SIO-022",
@@ -359,7 +370,8 @@
   "isProduction": false,
   "canDo": "I can say what belongs to me and to others.",
   "competence": "Select the correct possessive (mon/ma/mes … son/sa/ses, + notre/votre/leur) by the noun's gender/number for ≥8 prompts (≥80%).",
-  "collectionId": "possessives"
+  "collectionId": "possessives",
+  "fr": "C'est à qui ?"
  },
  {
   "id": "SIO-023",
@@ -375,7 +387,8 @@
   "isProduction": false,
   "canDo": "I can say what things and activities I like.",
   "competence": "Conjugate aimer in all persons; produce aimer + definite article + N and aimer + infinitive (≥2 each).",
-  "collectionId": "aimer-activites"
+  "collectionId": "aimer-activites",
+  "fr": "Tu aimes quoi ?"
  },
  {
   "id": "SIO-024",
@@ -391,7 +404,8 @@
   "isProduction": false,
   "canDo": "I can say what sports and activities I do.",
   "competence": "Produce faire + du/de la/de l'/des with the correct contraction for ≥6 activities (≥80%).",
-  "collectionId": "faire-activites"
+  "collectionId": "faire-activites",
+  "fr": "Tu fais quel sport ?"
  },
  {
   "id": "SIO-025",
@@ -407,7 +421,8 @@
   "isProduction": false,
   "canDo": "I can ask why and give a simple reason for a preference.",
   "competence": "Answer Pourquoi ? with parce que c'est + adjective or parce que j'aime + N for ≥3 prompts.",
-  "collectionId": "parce-que"
+  "collectionId": "parce-que",
+  "fr": "Pourquoi ? Parce que…"
  },
  {
   "id": "SIO-026",
@@ -423,7 +438,8 @@
   "isProduction": false,
   "canDo": "I can say where I go.",
   "competence": "Produce aller + au/à la/à l'/aux with the correct contraction for ≥6 destinations (≥80%).",
-  "collectionId": "aller-destinations"
+  "collectionId": "aller-destinations",
+  "fr": "Tu vas où ?"
  },
  {
   "id": "SIO-027",
@@ -439,7 +455,8 @@
   "isProduction": false,
   "canDo": "I can say when I do my regular activities.",
   "competence": "Use le + day, le week-end, tous les…, and à + time for ≥5 prompts; sort into day/frequency/clock.",
-  "collectionId": "quand-time"
+  "collectionId": "quand-time",
+  "fr": "À quelle heure ?"
  },
  {
   "id": "SIO-028",
@@ -455,7 +472,8 @@
   "isProduction": false,
   "canDo": "I can say what I don't do and what I don't like.",
   "competence": "use ne … pas de after faire/il y a and quantities, but keep le/la/les after aimer, adorer and détester",
-  "collectionId": "negation-pas"
+  "collectionId": "negation-pas",
+  "fr": "Pas de ou pas le ?"
  },
  {
   "id": "SIO-029",
@@ -471,7 +489,8 @@
   "isProduction": false,
   "canDo": "I can invite someone and accept, refuse, or suggest another time, using set phrases.",
   "competence": "Use vouloir/pouvoir to perform all 4 functions (inviter/accepter/refuser/reporter) in a short dialogue.",
-  "collectionId": "vouloir-inviter"
+  "collectionId": "vouloir-inviter",
+  "fr": "Tu veux venir ?"
  },
  {
   "id": "SIO-030",
@@ -487,7 +506,8 @@
   "isProduction": true,
   "canDo": "I can write a short, friendly message with good wishes and simple linking words, if I can prepare.",
   "competence": "Produce well-wish formulas; write a 4–6 sentence email using ≥3 connectors (d'abord/ensuite/aussi/mais/et/enfin) correctly.",
-  "collectionId": "atelier-sio-030"
+  "collectionId": "atelier-sio-030",
+  "fr": "Un petit message amical"
  },
  {
   "id": "SIO-031",
@@ -503,7 +523,8 @@
   "isProduction": false,
   "canDo": "I can talk about and ask about today's weather in simple terms.",
   "competence": "Describe the weather with ≥6 expressions (≥80%); ask Quel temps fait-il ?",
-  "collectionId": "weather-letris"
+  "collectionId": "weather-letris",
+  "fr": "Il fait quel temps ?"
  },
  {
   "id": "SIO-032",
@@ -519,7 +540,8 @@
   "isProduction": false,
   "canDo": "I can say which country I am in, going to, or coming from.",
   "competence": "Use en/au/aux/à with être/aller/venir in ≥6 sentences (≥80%).",
-  "collectionId": "en-au-aux-a"
+  "collectionId": "en-au-aux-a",
+  "fr": "En France ou au Japon ?"
  },
  {
   "id": "SIO-033",
@@ -535,7 +557,8 @@
   "isProduction": false,
   "canDo": "I can say where I am, where I am going, and where I am coming from around town.",
   "competence": "Use être/aller/venir + contraction (au/à la/à l'/aux, du/de la/de l') in ≥6 sentences (≥80%).",
-  "collectionId": "lieux-letris"
+  "collectionId": "lieux-letris",
+  "fr": "Il y a quoi en ville ?"
  },
  {
   "id": "SIO-034",
@@ -551,7 +574,8 @@
   "isProduction": false,
   "canDo": "I can say where a place is in relation to another one.",
   "competence": "Use the spatial prepositions (à côté de, en face de, près de, loin de) + correct contraction for ≥4 prompts.",
-  "collectionId": "loin-lesson"
+  "collectionId": "loin-lesson",
+  "fr": "C'est à côté de quoi ?"
  },
  {
   "id": "SIO-035",
@@ -567,7 +591,8 @@
   "isProduction": false,
   "canDo": "I can ask simple yes/no and open questions to get the information I need.",
   "competence": "Form a yes/no question with Est-ce que…?; form an open question with each of the 7 question words (≥80%).",
-  "collectionId": "question-words"
+  "collectionId": "question-words",
+  "fr": "Oui, non… ou quoi ?"
  },
  {
   "id": "SIO-036",
@@ -583,7 +608,8 @@
   "isProduction": false,
   "canDo": "I can ask for and give simple directions to a place, without using commands.",
   "competence": "Give directions with vous + present / c'est + preposition (no imperative), understanding il faut + infinitive / on + present variants; use the ordinals première and deuxième correctly in ≥4 prompts (≥80%).",
-  "collectionId": "directions-matching"
+  "collectionId": "directions-matching",
+  "fr": "Pour aller à la gare ?"
  },
  {
   "id": "SIO-037",
@@ -599,7 +625,8 @@
   "isProduction": false,
   "canDo": "I can say what is possible or allowed in a place and ask for permission.",
   "competence": "Conjugate pouvoir (key persons); produce ≥3 on peut / je peux / vous pouvez + infinitive statements.",
-  "collectionId": "pouvoir"
+  "collectionId": "pouvoir",
+  "fr": "On peut faire quoi ici ?"
  },
  {
   "id": "SIO-038",
@@ -615,7 +642,8 @@
   "isProduction": false,
   "canDo": "I can ask how someone travels somewhere and say how I get there.",
   "competence": "Ask Comment tu vas à…?; answer with prendre + transport; use the pronoun y in ≥3 sentences.",
-  "collectionId": "transport"
+  "collectionId": "transport",
+  "fr": "Tu y vas comment ?"
  },
  {
   "id": "SIO-039",
@@ -631,7 +659,8 @@
   "isProduction": false,
   "canDo": "I can express what I want and need politely.",
   "competence": "Use je voudrais / j'aimerais / j'ai besoin de / je veux + noun or infinitive (all 4).",
-  "collectionId": "envies-besoins"
+  "collectionId": "envies-besoins",
+  "fr": "Je voudrais… J'ai besoin…"
  },
  {
   "id": "SIO-040",
@@ -647,7 +676,8 @@
   "isProduction": true,
   "canDo": "I can explain step by step how to get somewhere, linking the steps in order.",
   "competence": "Describe ≥4 ordered steps using d'abord/puis/ensuite/après/enfin, each step in the present tense with an explicit subject (no imperative), with transport + direction vocabulary.",
-  "collectionId": "atelier-sio-040"
+  "collectionId": "atelier-sio-040",
+  "fr": "Un itinéraire en étapes"
  },
  {
   "id": "SIO-041",
@@ -663,7 +693,8 @@
   "isProduction": false,
   "canDo": "I can say what I eat and drink at each meal.",
   "competence": "Name the 4 meals and ≥2 foods/drinks each; say what I eat/drink (≥80%).",
-  "collectionId": "aliments"
+  "collectionId": "aliments",
+  "fr": "Tu manges quoi le matin ?"
  },
  {
   "id": "SIO-042",
@@ -679,7 +710,8 @@
   "isProduction": false,
   "canDo": "I can talk about what I eat and drink — and what I don't — using the right articles.",
   "competence": "Choose definite vs partitive correctly in ≥8 prompts (≥80%); rewrite ≥5 negatives with de/d'; conjugate manger and boire (≥7/8 each).",
-  "collectionId": "partitifs"
+  "collectionId": "partitifs",
+  "fr": "Du, de la, ou des ?"
  },
  {
   "id": "SIO-043",
@@ -695,7 +727,8 @@
   "isProduction": false,
   "canDo": "I can say how often I do everyday things.",
   "competence": "Place the 5 frequency adverbs correctly relative to the verb in ≥5 sentences; order them on a frequency scale.",
-  "collectionId": "frequence"
+  "collectionId": "frequence",
+  "fr": "Tu fais ça souvent ?"
  },
  {
   "id": "SIO-044",
@@ -711,7 +744,8 @@
   "isProduction": false,
   "canDo": "I can shop for food, ask the price, ask for what I want politely, and handle a simple market exchange on either side of the stall.",
   "competence": "Match ≥5 shops to what they sell; say where I shop; ask Combien ça coûte ? / Je voudrais ___, s'il vous plaît; assign each line of a market dialogue to le marchand or le client, put the exchange in order, and produce Je voudrais…, Ça fait combien ?, Et avec ceci ?",
-  "collectionId": "commerces"
+  "collectionId": "commerces",
+  "fr": "Vous désirez ?"
  },
  {
   "id": "SIO-045A",
@@ -727,7 +761,8 @@
   "isProduction": false,
   "canDo": "I can say and understand the numbers from 70 to 99, including in prices.",
   "competence": "Count 70–99 following the soixante-dix / quatre-vingts patterns, and use them in market prices (Ça fait … euros).",
-  "collectionId": "numbers-70-99"
+  "collectionId": "numbers-70-99",
+  "fr": "Soixante-dix, quatre-vingts…"
  },
  {
   "id": "SIO-046",
@@ -743,7 +778,8 @@
   "isProduction": false,
   "canDo": "I can point out specific items (this/these) when shopping or ordering.",
   "competence": "Select ce/cet/cette/ces correctly by gender/number for ≥8 nouns (≥80%).",
-  "collectionId": "demonstratifs"
+  "collectionId": "demonstratifs",
+  "fr": "Ce gâteau ou cette tarte ?"
  },
  {
   "id": "SIO-047",
@@ -759,7 +795,8 @@
   "isProduction": false,
   "canDo": "I can say what I am going to do.",
   "competence": "Produce ≥5 futur-proche sentences with correctly conjugated aller + infinitive.",
-  "collectionId": "modaux-plans"
+  "collectionId": "modaux-plans",
+  "fr": "Tu vas faire quoi ?"
  },
  {
   "id": "SIO-048",
@@ -775,7 +812,8 @@
   "isProduction": false,
   "canDo": "I can give simple advice about food, health and daily life.",
   "competence": "Give ≥5 pieces of advice using devoir/falloir/pouvoir + infinitive with correct forms.",
-  "collectionId": "modaux-avis"
+  "collectionId": "modaux-avis",
+  "fr": "Tu dois… Il faut…"
  },
  {
   "id": "SIO-049",
@@ -791,7 +829,8 @@
   "isProduction": true,
   "canDo": "I can give a simple opinion about a restaurant, mentioning good and bad points.",
   "competence": "State ≥1 positive point, ≥1 negative point, and a clear recommendation (Je recommande / Je ne recommande pas).",
-  "collectionId": "atelier-sio-049"
+  "collectionId": "atelier-sio-049",
+  "fr": "Un avis sur un restaurant"
  },
  {
   "id": "SIO-050",
@@ -807,6 +846,7 @@
   "isProduction": true,
   "canDo": "I can get by in a simple restaurant visit from arrival to paying, using set phrases, as long as staff are patient.",
   "competence": "Complete all 6 steps: greet, read the menu, order (entrée/plat/boisson/dessert), interact, ask for the bill, pay and say goodbye.",
-  "collectionId": "atelier-sio-050"
+  "collectionId": "atelier-sio-050",
+  "fr": "Une scène au restaurant"
  }
 ]

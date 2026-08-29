@@ -25,6 +25,22 @@ export type Sio = {
   /** Phone-legible map label, ≤ 14 chars (scripts/check-short-labels.mjs
    *  fails the build otherwise). The full `topic` stays for titles/lists. */
   short: string;
+  /** The objective in French — the question or the words a learner would use
+   *  at this stop ("C'est quand ?", "Tu y vas comment ?"), or, for the
+   *  production ateliers, the thing being made ("Un dialogue simple").
+   *  Dan authored the first ten (2026-08-29) and the rest follow his
+   *  register. This is the label on surfaces with room to print it; `short`
+   *  stays the ≤14-char label the map stop can fit, so the two are never
+   *  interchangeable and neither is derivable from the other.
+   *
+   *  NOT length-capped — the 14-char cap on `short` is what forced this
+   *  field to exist. But the pre-lesson list gives it a 227px column at
+   *  .86rem/700 (measured), and overflow ellipses rather than wrapping.
+   *  Measure, don't count: character count is a bad proxy for width —
+   *  Dan's 29-char « Bonjour ! Salut ! Au revoir ! » is 220px, while a
+   *  28-char title of mine came to 241px and would have shipped as "…".
+   *  scratchpad width probe: `node width.mjs "<title>"`. */
+  fr: string;
   description: string;
   /** Spec flashcard-set id, e.g. "1.05". */
   setId: string;
