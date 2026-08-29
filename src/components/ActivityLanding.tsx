@@ -36,6 +36,7 @@
  */
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import ActivityIcon from "@/components/ActivityIcon";
 import CahierShell from "@/components/CahierShell";
 import SectionBand from "@/components/SectionBand";
 import { siteTabs } from "@/components/siteTabs";
@@ -157,9 +158,9 @@ function Row({
   isLast: boolean;
 }) {
   const label = (
-    <span className="flex min-w-0 flex-1 items-center gap-2.5 text-left">
+    <span className="flex min-w-0 flex-1 items-center gap-2 text-left">
       <span
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 text-[0.7rem] font-black"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 text-[0.7rem] font-black"
         style={{ borderColor: "var(--fluo-card-accent)", background: "var(--fluo-card-tint)" }}
       >
         {String(sio.num).padStart(2, "0")}
@@ -177,7 +178,7 @@ function Row({
     </span>
   );
 
-  const base = "flex w-full items-center gap-2 rounded-xl border-2 px-3 py-2 transition";
+  const base = "flex w-full items-center gap-1.5 rounded-xl border-2 px-2.5 py-2 transition";
   if (!href) {
     return (
       <li>
@@ -201,7 +202,7 @@ function Row({
         style={{ borderColor: isLast ? "var(--fluo-card-accent)" : "var(--fluo-line)" }}
       >
         {label}
-        <span aria-hidden className="shrink-0 text-lg">{act.emoji}</span>
+        <ActivityIcon activityKey={act.key} emoji={act.emoji} size="sm" />
       </Link>
     </li>
   );

@@ -2525,3 +2525,48 @@ the viewport, which is the mistake that made it look like it fitted.
   proposal put to Dan is to lint only the files a PR touches: new work must be
   clean, the 51 existing files stay until someone is in them anyway, and the
   pile can only shrink. Awaiting his yes/no.
+
+## 29 Aug — the banded icon tile, shared; and the stop sheet says what the stop is FOR
+
+Dan, on seeing the stop sheet: *"actually those icons are very good. i want to
+use them"* — on the activity landings and in the stop popup.
+
+**One tile, one file.** `src/components/ActivityIcon.tsx`: the activity's emoji
+on a box filled with its DEMAND band (`bandOf`), 40px in the sheet and 28px in
+the landings' fifty rows. It had lived inline in StopSheet, so "use it
+elsewhere" meant a second copy or a component; a duplicated tile is exactly how
+one activity ends up wearing two colours on two screens, which is the fault
+`activities.ts` exists to end. It is `aria-hidden` and every caller prints the
+name — colour reinforces, never carries alone. No emoji renders no tile: an
+empty coloured square reads as a fault, and the element is decorative.
+
+**The stop sheet now carries the SIO in full** (Dan, same day: the stop should
+open to "(1) the SIO in full, (2) the app icons. that's all"). Heading is the
+French `fr` title, the English `short` rides under it small, then the can-do.
+NOT `competence` — that is grading wording and has never been shown to a
+learner.
+
+**A regression I caused and then paid for.** The 28px tile is 10px wider than
+the bare emoji it replaced, and the landings' label column was already tight:
+measured at 390px, main truncated **4 of Unit 0's 10** French titles and my
+tile made it 5. Recovered from the row's own slack — the number chip 32→28px
+and two gaps — so the column went 149px → 151px and the count is back to 4.
+The tile is paid for out of chrome, not out of the objective.
+
+**Still truncating, and NOT mine:** « Ça s'écrit comment ? » (167px), « Il y a
+combien de… ? » (162), « Les instructions de classe » (206) and « Bonjour !
+Salut ! Au revoir ! » (211) against a 151px column. No tightening closes a
+60px gap; it needs a decision — wrap to two lines, drop the size, or accept
+the ellipsis. Dan's call, flagged not taken.
+
+**verify36 gains four assertions, and two of them were vacuous on first
+break-test** — the same two shapes this repo keeps finding:
+- `"bandOf(" in file` passed with the call deleted, because the component's
+  own docstring EXPLAINS that the fill comes from `bandOf()`. Comments are
+  stripped now (verify19b and verify40 each learned this before).
+- `"ActivityIcon" in file` passed with the element deleted, because the import
+  line alone satisfied it. It matches `<ActivityIcon` now (the `function
+  AllCards` lesson, 28 Aug).
+The copy-detector also fired on `PageBand.tsx`, which fills a page-wide strip
+from the same variable and is not a copy of anything; it now requires the box
+to centre a glyph, which a strip never does.
