@@ -1,417 +1,205 @@
 {
- "id": "core-nouns",
- "title": "Qui ou quoi ? Un ou une ?",
- "subtitle": "people vs things · masculine vs feminine",
- "langPair": "fr-en",
- "owner": "curated",
- "visibility": "public",
- "unit": 0,
- "lessonNo": 6,
- "lessonSlug": "core-nouns",
- "tags": [],
- "seq": 6,
- "gameConfig": {
-  "letris": {
-   "columns": [
-    {
-     "key": "qui_m",
-     "label": "QUI (m)",
-     "prefix": "un ",
-     "choiceLabel": "person (masculine)"
+  "id": "core-nouns",
+  "title": "Some nouns",
+  "subtitle": "masculine or feminine — the article tells you",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 0,
+  "lessonNo": 6,
+  "lessonSlug": "core-nouns",
+  "tags": [],
+  "seq": 6,
+  "gameConfig": {
+    "letris": {
+      "columns": [
+        {
+          "key": "m",
+          "label": "UN / LE",
+          "prefix": "",
+          "choiceLabel": "masculine"
+        },
+        {
+          "key": "f",
+          "label": "UNE",
+          "prefix": "",
+          "choiceLabel": "feminine"
+        }
+      ]
     },
-    {
-     "key": "qui_f",
-     "label": "QUI (f)",
-     "prefix": "une ",
-     "choiceLabel": "person (feminine)"
-    },
-    {
-     "key": "quoi_m",
-     "label": "QUOI (m)",
-     "prefix": "un ",
-     "choiceLabel": "thing (masculine)"
-    },
-    {
-     "key": "quoi_f",
-     "label": "QUOI (f)",
-     "prefix": "une ",
-     "choiceLabel": "thing (feminine)"
+    "lexicalator": {
+      "decoys": [
+        "crois",
+        "clas",
+        "maca",
+        "conso",
+        "caf",
+        "acti",
+        "spor",
+        "natio",
+        "grou",
+        "régi",
+        "foot",
+        "provi",
+        "cham",
+        "minu"
+      ]
     }
-   ]
   },
-  "lexicalator": {
-   "decoys": [
-    "pre",
-    "non",
-    "fam",
-    "dan",
-    "teu",
-    "prof",
-    "sère",
-    "clos",
-    "yan",
-    "hié",
-    "cri",
-    "seu"
-   ]
-  }
- },
- "items": [
-  {
-   "id": "core-nouns-01",
-   "fr": "prénom",
-   "en": "first name",
-   "syllables": [
-    "pré",
-    "nom"
-   ],
-   "tags": [
-    "col:quoi_m"
-   ],
-   "example": "Qu'est-ce que c'est ? — C'est un prénom.",
-   "exampleEn": "It's a first name.",
-   "gap": "un"
-  },
-  {
-   "id": "core-nouns-02",
-   "fr": "nom",
-   "en": "surname",
-   "syllables": [
-    "nom"
-   ],
-   "tags": [
-    "col:quoi_m"
-   ],
-   "example": "Qu'est-ce que c'est ? — C'est un nom.",
-   "exampleEn": "It's a surname.",
-   "gap": "un"
-  },
-  {
-   "id": "core-nouns-03",
-   "fr": "femme",
-   "en": "woman",
-   "syllables": [
-    "femme"
-   ],
-   "tags": [
-    "col:qui_f"
-   ],
-   "example": "Qui est-ce ? — C'est une femme.",
-   "exampleEn": "It's a woman.",
-   "gap": "une"
-  },
-  {
-   "id": "core-nouns-04",
-   "fr": "fille",
-   "en": "girl",
-   "syllables": [
-    "fille"
-   ],
-   "tags": [
-    "col:qui_f"
-   ],
-   "example": "Qui est-ce ? — C'est une fille.",
-   "exampleEn": "It's a girl.",
-   "gap": "une"
-  },
-  {
-   "id": "core-nouns-05",
-   "fr": "dame",
-   "en": "lady",
-   "syllables": [
-    "dame"
-   ],
-   "tags": [
-    "col:qui_f"
-   ],
-   "example": "Qui est-ce ? — C'est une dame.",
-   "exampleEn": "It's a lady.",
-   "gap": "une"
-  },
-  {
-   "id": "core-nouns-06",
-   "fr": "homme",
-   "en": "man",
-   "syllables": [
-    "homme"
-   ],
-   "tags": [
-    "col:qui_m"
-   ],
-   "example": "Qui est-ce ? — C'est un homme.",
-   "exampleEn": "It's a man.",
-   "gap": "un"
-  },
-  {
-   "id": "core-nouns-07",
-   "fr": "étudiant",
-   "en": "student (m)",
-   "syllables": [
-    "é",
-    "tu",
-    "diant"
-   ],
-   "tags": [
-    "col:qui_m"
-   ],
-   "example": "Qui est-ce ? — C'est un étudiant.",
-   "exampleEn": "It's a student (m).",
-   "gap": "un"
-  },
-  {
-   "id": "core-nouns-08",
-   "fr": "étudiante",
-   "en": "student (f)",
-   "syllables": [
-    "é",
-    "tu",
-    "diante"
-   ],
-   "tags": [
-    "col:qui_f"
-   ],
-   "example": "Qui est-ce ? — C'est une étudiante.",
-   "exampleEn": "It's a student (f).",
-   "gap": "une"
-  },
-  {
-   "id": "core-nouns-09",
-   "fr": "professeur",
-   "en": "teacher (m)",
-   "syllables": [
-    "pro",
-    "fes",
-    "seur"
-   ],
-   "tags": [
-    "col:qui_m"
-   ],
-   "example": "Qui est-ce ? — C'est un professeur.",
-   "exampleEn": "It's a teacher (m).",
-   "gap": "un"
-  },
-  {
-   "id": "core-nouns-10",
-   "fr": "professeure",
-   "en": "teacher (f)",
-   "syllables": [
-    "pro",
-    "fes",
-    "seure"
-   ],
-   "tags": [
-    "col:qui_f"
-   ],
-   "example": "Qui est-ce ? — C'est une professeure.",
-   "exampleEn": "It's a teacher (f).",
-   "gap": "une"
-  },
-  {
-   "id": "core-nouns-11",
-   "fr": "salle de classe",
-   "en": "classroom",
-   "syllables": [
-    "sal",
-    "le",
-    "de",
-    "clas",
-    "se"
-   ],
-   "tags": [
-    "col:quoi_f"
-   ],
-   "example": "Qu'est-ce que c'est ? — C'est une salle de classe.",
-   "exampleEn": "It's a classroom.",
-   "gap": "une"
-  },
-  {
-   "id": "core-nouns-12",
-   "fr": "tableau",
-   "en": "board",
-   "syllables": [
-    "ta",
-    "bleau"
-   ],
-   "tags": [
-    "col:quoi_m"
-   ],
-   "example": "Qu'est-ce que c'est ? — C'est un tableau.",
-   "exampleEn": "It's a board.",
-   "gap": "un"
-  },
-  {
-   "id": "core-nouns-13",
-   "fr": "livre",
-   "en": "book",
-   "syllables": [
-    "livre"
-   ],
-   "tags": [
-    "col:quoi_m"
-   ],
-   "example": "Qu'est-ce que c'est ? — C'est un livre.",
-   "exampleEn": "It's a book.",
-   "gap": "un"
-  },
-  {
-   "id": "core-nouns-14",
-   "fr": "crayon",
-   "en": "pencil",
-   "syllables": [
-    "cra",
-    "yon"
-   ],
-   "tags": [
-    "col:quoi_m"
-   ],
-   "example": "Qu'est-ce que c'est ? — C'est un crayon.",
-   "exampleEn": "It's a pencil.",
-   "gap": "un"
-  },
-  {
-   "id": "core-nouns-15",
-   "fr": "cahier",
-   "en": "exercise book",
-   "syllables": [
-    "ca",
-    "hier"
-   ],
-   "tags": [
-    "col:quoi_m"
-   ],
-   "example": "Qu'est-ce que c'est ? — C'est un cahier.",
-   "exampleEn": "It's a exercise book.",
-   "gap": "un"
-  },
-  {
-   "id": "core-nouns-16",
-   "fr": "casque",
-   "en": "headphones",
-   "syllables": [
-    "casque"
-   ],
-   "tags": [
-    "col:quoi_m"
-   ],
-   "example": "Qu'est-ce que c'est ? — C'est un casque.",
-   "exampleEn": "It's a headphones.",
-   "gap": "un"
-  },
-  {
-   "id": "core-nouns-17",
-   "fr": "micro",
-   "en": "microphone",
-   "syllables": [
-    "mi",
-    "cro"
-   ],
-   "tags": [
-    "col:quoi_m"
-   ],
-   "example": "Qu'est-ce que c'est ? — C'est un micro.",
-   "exampleEn": "It's a microphone.",
-   "gap": "un"
-  },
-  {
-   "id": "core-nouns-18",
-   "fr": "ami",
-   "en": "friend (m)",
-   "syllables": [
-    "a",
-    "mi"
-   ],
-   "tags": [
-    "col:qui_m"
-   ],
-   "example": "Qui est-ce ? — C'est un ami.",
-   "exampleEn": "It's a friend (m).",
-   "gap": "un"
-  },
-  {
-   "id": "core-nouns-19",
-   "fr": "garçon",
-   "en": "boy",
-   "syllables": [
-    "gar",
-    "çon"
-   ],
-   "tags": [
-    "col:qui_m"
-   ],
-   "example": "Qui est-ce ? — C'est un garçon.",
-   "exampleEn": "It's a boy.",
-   "gap": "un"
-  },
-  {
-   "id": "core-nouns-20",
-   "fr": "table",
-   "en": "table",
-   "syllables": [
-    "table"
-   ],
-   "tags": [
-    "col:quoi_f"
-   ],
-   "example": "Qu'est-ce que c'est ? — C'est une table.",
-   "exampleEn": "It's a table.",
-   "gap": "une"
-  },
-  {
-   "id": "core-nouns-21",
-   "fr": "salle",
-   "en": "room",
-   "syllables": [
-    "salle"
-   ],
-   "tags": [
-    "col:quoi_f"
-   ],
-   "example": "Qu'est-ce que c'est ? — C'est une salle.",
-   "exampleEn": "It's a room.",
-   "gap": "une"
-  },
-  {
-   "id": "core-nouns-22",
-   "fr": "classe",
-   "en": "class",
-   "syllables": [
-    "classe"
-   ],
-   "tags": [
-    "col:quoi_f"
-   ],
-   "example": "Qu'est-ce que c'est ? — C'est une classe.",
-   "exampleEn": "It's a class.",
-   "gap": "une"
-  },
-  {
-   "id": "core-nouns-23",
-   "fr": "monsieur",
-   "en": "gentleman / sir",
-   "syllables": [
-    "mon",
-    "sieur"
-   ],
-   "tags": [
-    "col:qui_m"
-   ],
-   "example": "Qui est-ce ? — C'est un monsieur.",
-   "exampleEn": "It's a gentleman / sir.",
-   "gap": "un"
-  },
-  {
-   "id": "core-nouns-24",
-   "fr": "chaise",
-   "en": "chair",
-   "syllables": [
-    "chaise"
-   ],
-   "tags": [
-    "col:quoi_f"
-   ],
-   "example": "Qu'est-ce que c'est ? — C'est une chaise.",
-   "exampleEn": "It's a chair.",
-   "gap": "une"
-  }
- ]
+  "items": [
+    {
+      "id": "core-nouns-01",
+      "fr": "croissant",
+      "en": "croissant",
+      "tags": [
+        "col:m"
+      ],
+      "example": "Qu'est-ce que c'est ? — C'est un croissant.",
+      "exampleEn": "It's a croissant.",
+      "gap": "un"
+    },
+    {
+      "id": "core-nouns-02",
+      "fr": "classe",
+      "en": "class",
+      "tags": [
+        "col:f"
+      ],
+      "example": "Qu'est-ce que c'est ? — C'est une classe.",
+      "exampleEn": "It's a class.",
+      "gap": "une"
+    },
+    {
+      "id": "core-nouns-03",
+      "fr": "macaron",
+      "en": "macaron",
+      "tags": [
+        "col:m"
+      ],
+      "example": "Qu'est-ce que c'est ? — C'est un macaron.",
+      "exampleEn": "It's a macaron.",
+      "gap": "un"
+    },
+    {
+      "id": "core-nouns-04",
+      "fr": "consonne",
+      "en": "consonant",
+      "tags": [
+        "col:f"
+      ],
+      "example": "Qu'est-ce que c'est ? — C'est une consonne.",
+      "exampleEn": "It's a consonant.",
+      "gap": "une"
+    },
+    {
+      "id": "core-nouns-05",
+      "fr": "café",
+      "en": "café",
+      "tags": [
+        "col:m"
+      ],
+      "example": "Qu'est-ce que c'est ? — C'est un café.",
+      "exampleEn": "It's a café.",
+      "gap": "un"
+    },
+    {
+      "id": "core-nouns-06",
+      "fr": "activité",
+      "en": "activity",
+      "tags": [
+        "col:f"
+      ],
+      "example": "Qu'est-ce que c'est ? — C'est une activité.",
+      "exampleEn": "It's an activity.",
+      "gap": "une"
+    },
+    {
+      "id": "core-nouns-07",
+      "fr": "sport",
+      "en": "sport",
+      "tags": [
+        "col:m"
+      ],
+      "example": "Qu'est-ce que c'est ? — C'est un sport.",
+      "exampleEn": "It's a sport.",
+      "gap": "un"
+    },
+    {
+      "id": "core-nouns-08",
+      "fr": "nationalité",
+      "en": "nationality",
+      "tags": [
+        "col:f"
+      ],
+      "example": "Qu'est-ce que c'est ? — C'est une nationalité.",
+      "exampleEn": "It's a nationality.",
+      "gap": "une"
+    },
+    {
+      "id": "core-nouns-09",
+      "fr": "groupe",
+      "en": "group",
+      "tags": [
+        "col:m"
+      ],
+      "example": "Qu'est-ce que c'est ? — C'est un groupe.",
+      "exampleEn": "It's a group.",
+      "gap": "un"
+    },
+    {
+      "id": "core-nouns-10",
+      "fr": "région",
+      "en": "region",
+      "tags": [
+        "col:f"
+      ],
+      "example": "Qu'est-ce que c'est ? — C'est une région.",
+      "exampleEn": "It's a region.",
+      "gap": "une"
+    },
+    {
+      "id": "core-nouns-11",
+      "fr": "football",
+      "en": "football",
+      "tags": [
+        "col:m"
+      ],
+      "example": "J'aime le football.",
+      "exampleEn": "I like football.",
+      "gap": "le"
+    },
+    {
+      "id": "core-nouns-12",
+      "fr": "province",
+      "en": "province",
+      "tags": [
+        "col:f"
+      ],
+      "example": "Qu'est-ce que c'est ? — C'est une province.",
+      "exampleEn": "It's a province.",
+      "gap": "une"
+    },
+    {
+      "id": "core-nouns-13",
+      "fr": "champagne",
+      "en": "champagne",
+      "tags": [
+        "col:m"
+      ],
+      "example": "J'aime le champagne.",
+      "exampleEn": "I like champagne.",
+      "gap": "le"
+    },
+    {
+      "id": "core-nouns-14",
+      "fr": "minute",
+      "en": "minute",
+      "tags": [
+        "col:f"
+      ],
+      "example": "Une minute, s'il vous plaît.",
+      "exampleEn": "One minute, please.",
+      "gap": "une"
+    }
+  ]
 }

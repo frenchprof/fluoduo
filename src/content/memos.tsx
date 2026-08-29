@@ -229,20 +229,26 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
 
   /* ---------- Qui ou quoi ? Un ou une ? ---------- */
   "core-nouns": (
-    <Card title="Qui ou quoi ? Un ou une ?">
+    <Card title="Some nouns">
       <div className="mt-2 grid grid-cols-2 gap-2 text-[15px] text-[color:var(--cahier-ink)]">
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
-          <B>QUI</B> = a person
-          <p lang="fr" className="mt-1">un garçon, une fille</p>
+          <B>un</B> / <B>le</B> — masculine
+          <p lang="fr" className="mt-1">un croissant, un café, le football</p>
         </div>
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
-          <B>QUOI</B> = a thing
-          <p lang="fr" className="mt-1">un livre, une table</p>
+          <B>une</B> — feminine
+          <p lang="fr" className="mt-1">une classe, une région, une minute</p>
         </div>
       </div>
       <p className="mt-3 text-[15px] text-[color:var(--cahier-ink)]">
-        <B>un</B> = masculine, <B>une</B> = feminine — for people AND things.
+        Every French noun is one or the other, and the article is what tells you.
+        You cannot hear it from the word — <span lang="fr"><i>un groupe</i></span> and{" "}
+        <span lang="fr"><i>une minute</i></span> end the same way.
       </p>
+      <Warn>
+        These words are nearly English — so the only new thing to learn is the{" "}
+        <B>gender</B>. Learn each noun WITH its article, never on its own.
+      </Warn>
     </Card>
   ),
 
