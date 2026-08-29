@@ -243,12 +243,12 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
       <p className="mt-3 text-[15px] text-[color:var(--cahier-ink)]">
         Every French noun is one or the other, and the article is what tells you.
         You cannot hear it from the word — <span lang="fr"><i>un groupe</i></span> and{" "}
-        <span lang="fr"><i>une minute</i></span> end the same way.
+        <span lang="fr"><i>une classe</i></span> end the same way.
       </p>
       <Lines>
         <li><B>C&rsquo;est où ?</B> — <i lang="fr">C&rsquo;est un café. C&rsquo;est une région.</i></li>
         <li><B>C&rsquo;est qui ?</B> — <i lang="fr">C&rsquo;est une étudiante. C&rsquo;est un groupe.</i></li>
-        <li><B>C&rsquo;est quoi ?</B> — <i lang="fr">C&rsquo;est un croissant. C&rsquo;est une minute.</i></li>
+        <li><B>C&rsquo;est quoi ?</B> — <i lang="fr">C&rsquo;est un croissant. C&rsquo;est la danse.</i></li>
       </Lines>
       <p className="mt-3 text-[15px] text-[color:var(--cahier-ink)]">
         A general word takes <B>un</B>/<B>une</B>; the named one takes <B>le</B>/<B>la</B> —{" "}

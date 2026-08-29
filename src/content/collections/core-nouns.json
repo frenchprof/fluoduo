@@ -262,18 +262,6 @@
       "example": "C'est quoi ? — C'est une nationalité.",
       "exampleEn": "It's a nationality.",
       "gap": "une"
-    },
-    {
-      "id": "core-nouns-19",
-      "fr": "minute",
-      "en": "minute",
-      "tags": [
-        "col:f",
-        "q:quoi"
-      ],
-      "example": "C'est quoi ? — C'est une minute.",
-      "exampleEn": "It's a minute.",
-      "gap": "une"
     }
   ]
 }

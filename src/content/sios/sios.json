@@ -86,13 +86,13 @@
   "unitLabel": "Unité 0",
   "topic": "Some nouns",
   "short": "Some nouns",
-  "description": "Use C'est où ? / C'est qui ? / C'est quoi ? to identify people, places and things; 19 nouns whose meaning is already clear in English, so the new thing to learn is the gender: un homme, une femme, un étudiant, une étudiante, un groupe, une classe, un café, une région, une province, un sport, le football, une activité, la danse, un croissant, un macaron, le champagne, une consonne, une nationalité, une minute.",
+  "description": "Use C'est où ? / C'est qui ? / C'est quoi ? to identify people, places and things; 18 nouns whose meaning is already clear in English, so the new thing to learn is the gender: un homme, une femme, un étudiant, une étudiante, un groupe, une classe, un café, une région, une province, un sport, le football, une activité, la danse, un croissant, un macaron, le champagne, une consonne, une nationalité.",
   "setId": "0.06",
   "cefrMode": "Spoken Production",
   "skill": "production",
   "isProduction": false,
   "canDo": "I can say whether a noun is masculine or feminine, and answer Where is it? Who is it? What is it? with it.",
-  "competence": "Label the 19 nouns with un/une/le/la (≥16/19); answer C'est où ? / C'est qui ? / C'est quoi ? appropriately for a given item.",
+  "competence": "Label the 18 nouns with un/une/le/la (≥15/18); answer C'est où ? / C'est qui ? / C'est quoi ? appropriately for a given item.",
   "collectionId": "core-nouns"
  },
  {
