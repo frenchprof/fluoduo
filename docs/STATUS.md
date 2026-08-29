@@ -1519,11 +1519,25 @@ straight to Continue, confirmed on screen at last.
 
 ### Still open from Dan's list
 
-1 (Continue button far below the text) · 2 (the lesson teaches a different
-thing from its promise — a content project, needs Dan) · 3 (a wrong answer
-pays 20 and the correction 60, so guessing first earns more than knowing) ·
-5 (progress is lost on leaving the page) · 6 · 7 · 8 · 9 · 10 · 11 · 12 · 13 ·
-14 · 15 · 16 · 17 · 18 (pressing "1" restarts the lesson) · 19.
+*(This line was stale as of 29 Aug — it still listed 1, 3, 5, 13, 14 and 18 as
+open after they had been fixed in the sections below it. Corrected here; the
+sections below are the record of each fix.)*
+
+**Closed:** 1 (Continue 390px below the text) · 3 (a wrong answer paid more
+than a right one) · 4 (the audio only said the first word) · 5 (progress lost
+on leaving) · 7 (the hint sat under the tick — both halves) · 13 (a picked
+answer looked like the Check button) · 14 ("1 days in a row").
+
+**Blocked on Dan:** 2 — the lesson teaches a different thing from its promise;
+a content project. · 18 — "pressing 1 restarts the lesson"; driven in a real
+browser on `se-presenter`, on both a memo card and an exercise card, and it
+does NOT navigate. Needs the screen Dan was actually on.
+
+**NOT WRITTEN DOWN ANYWHERE: 6 · 8 · 9 · 10 · 11 · 12 · 15 · 16 · 17 · 19.**
+Ten of the nineteen only ever existed as numbers in this file — their text was
+in Dan's chat message and was never copied into the repo, so no agent can pick
+them up. They need Dan to restate them. *Lesson: when Dan reports a list, the
+list itself goes into STATUS, not just its tally.*
 
 ### 27 Aug, later — three more of Dan's nineteen, each measured
 
