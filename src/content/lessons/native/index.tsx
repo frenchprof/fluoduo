@@ -20,6 +20,9 @@ import { conjugaisonU1Lesson } from "./conjugaison-u1";
 import { epelerLesson } from "./epeler";
 import { languesPaysLesson } from "./langues-pays";
 import { nombresEchangesLesson } from "./nombres-echanges";
+// SIO-011: the deck frames « c'est moi » already; what it never drilled was
+// the everyday echo. Dan, 2026-08-29: no prepositions, "... aussi / non plus".
+import { moiAussiLesson } from "./moi-aussi";
 import { avoirEtatsLesson } from "./avoir-etats";
 import { questionsOuiNonLesson } from "./questions-oui-non";
 import { motsInterrogatifsLesson } from "./mots-interrogatifs";
@@ -78,6 +81,7 @@ export const NATIVE_LESSONS: Record<string, NativeLesson> = {
   epeler: epelerLesson,
   "langues-pays": languesPaysLesson,
   "nombres-echanges": nombresEchangesLesson,
+  "moi-aussi": moiAussiLesson,
   "revision-u1": revisionU1Lesson,
   "revision-u3u4": revisionU3U4Lesson,
   "revision-u4": revisionU4Lesson,

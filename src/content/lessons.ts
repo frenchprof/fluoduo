@@ -24,6 +24,7 @@ export const LESSONS: Record<string, Lesson> = {
   "epeler":            { slug: "epeler",            title: "Comment ça s’écrit ?",        unit: 0 },
   "langues-pays":      { slug: "langues-pays",      title: "On parle quelle langue ?",     unit: 1 },
   "nombres-echanges":  { slug: "nombres-echanges",  title: "Les nombres au quotidien",     unit: 1 },
+  "moi-aussi":         { slug: "moi-aussi",         title: "Moi aussi, moi non plus",      unit: 1 },
   "avoir-etats":       { slug: "avoir-etats",       title: "Avoir ou être ? — les états",  unit: 1 },
   // Unit 3, not 1: the book teaches est-ce que / qu'est-ce que in U3 (questions (2),
   // book p. 92) — U1's questions are quel + intonation. SIO mapping (SIO-035, u3)
@@ -80,6 +81,7 @@ export const LESSONS_BY_SIO: Record<string, string[]> = {
   // atelier meets the phrase in its own model dialogue instead, which is what
   // a production stop opens on.
   "SIO-003": ["epeler"],
+  "SIO-011": ["moi-aussi"],
   "SIO-017": ["langues-pays"],
   "SIO-018": ["nombres-echanges"],
   "SIO-009": ["salutations"],
