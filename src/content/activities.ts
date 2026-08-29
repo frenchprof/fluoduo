@@ -96,7 +96,10 @@ export type Activity = {
 
 export const ACTIVITIES: Activity[] = [
   // ── 1 · FluOlin Goals — the sequence for one objective ────────────────────
-  { key: "speculearn", name: "SpecuLearn", emoji: "🔮", family: "practice", href: "/activities?activity=speculearn", hue: "#8a5fd4", blurb: "Guess before you're taught. Pre-Tests live here too." },
+  // Dan, 2026-08-29: "use this for SpecuLearn 💡". The crystal ball read as
+  // fortune-telling; the bulb reads as a guess worth having. Display only —
+  // the key, the route and saved progress all stay "speculearn".
+  { key: "speculearn", name: "SpecuLearn", emoji: "💡", family: "practice", href: "/activities?activity=speculearn", hue: "#8a5fd4", blurb: "Guess before you're taught. Pre-Tests live here too." },
   // Dan, 2026-08-23: renamed xPlain → Memo (approved surface #3). Key stays
   // "lesson" — display rename only.
   { key: "lesson", name: "Memo", emoji: "📚", family: "practice", href: null, hue: "#e0567f", blurb: "The lesson: rule, then practice." },

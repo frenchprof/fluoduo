@@ -102,6 +102,16 @@ bad = [s["id"] for s in sios if not isinstance(s.get("short"), str) or not s["sh
 check(len(sios) == 50, "50 SIOs in sios.json", f"expected 50 SIOs, found {len(sios)}")
 check(not bad, "every SIO has a `short` label ≤ 14 chars", f"short label missing/too long: {bad}")
 check("short: string" in read("src/content/sios/index.ts"), "the Sio type carries `short`", "Sio type lacks `short`")
+# `fr` is the OTHER label (2026-08-29): the objective in French, for lists with
+# room to print it. It is deliberately NOT capped — the cap is what forced the
+# split, since Dan's titles run to 29 chars and `short` must fit under a 56px
+# stop. Asserted here so the pair cannot drift apart: every stop needs both,
+# and `fr` must not merely echo `short`, or one of the two is dead weight.
+nofr = [s["id"] for s in sios if not isinstance(s.get("fr"), str) or not s["fr"].strip()]
+check(not nofr, "every SIO has a French `fr` title", f"`fr` missing/blank: {nofr}")
+echoes = [s["id"] for s in sios if isinstance(s.get("fr"), str) and s["fr"].strip().casefold() == s["short"].strip().casefold()]
+check(not echoes, "no `fr` title merely repeats its `short` label", f"`fr` echoes `short`: {echoes}")
+check("fr: string" in read("src/content/sios/index.ts"), "the Sio type carries `fr`", "Sio type lacks `fr`")
 check(os.path.isfile("scripts/check-short-labels.mjs"), "scripts/check-short-labels.mjs exists", "check-short-labels.mjs missing")
 pkg = json.load(open("package.json", encoding="utf-8"))
 check(pkg.get("scripts", {}).get("check:short", "").endswith("check-short-labels.mjs"),
