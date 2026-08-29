@@ -4,39 +4,8 @@
  * real in-app content following the aimer.tsx template.
  */
 import type { NativeLesson } from "./types";
-import { sample, shuffle } from "@/lib/shuffle";
 
-const SUBJECTS = [
-  { disp: "Je", slot: "je" }, { disp: "Tu", slot: "tu" }, { disp: "Il", slot: "il" },
-  { disp: "Elle", slot: "il" }, { disp: "On", slot: "il" }, { disp: "Nous", slot: "nous" },
-  { disp: "Vous", slot: "vous" }, { disp: "Ils", slot: "ils" }, { disp: "Elles", slot: "ils" },
-] as const;
-const END: Record<string, string> = { je: "e", tu: "es", il: "e", nous: "ons", vous: "ez", ils: "ent" };
-const ENDINGS = ["e", "es", "ons", "ez", "ent"];
-
-const ER_VERBS = [
-  { inf: "aimer", stem: "aim", en: "to like" },
-  { inf: "parler", stem: "parl", en: "to speak" },
-  { inf: "habiter", stem: "habit", en: "to live" },
-] as const;
-const IRR_VERBS = [
-  { inf: "faire", en: "to do / make", f: { je: "fais", tu: "fais", il: "fait", nous: "faisons", vous: "faites", ils: "font" } },
-  { inf: "aller", en: "to go", f: { je: "vais", tu: "vas", il: "va", nous: "allons", vous: "allez", ils: "vont" } },
-] as const;
-
-const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)];
-const startsVowel = (s: string) => /^[aeiouéèêh]/i.test(s);
-const sv = (s: (typeof SUBJECTS)[number], form: string) =>
-  s.slot === "je" && startsVowel(form) ? `J'${form}` : `${s.disp} ${form}`;
-
-const IRR_MEMO: [string, string, string, string, string][] = [
-  ["je / j'", "fais", "vais", "veux", "peux"],
-  ["tu", "fais", "vas", "veux", "peux"],
-  ["il / elle / on", "fait", "va", "veut", "peut"],
-  ["nous", "faisons", "allons", "voulons", "pouvons"],
-  ["vous", "faites", "allez", "voulez", "pouvez"],
-  ["ils / elles", "font", "vont", "veulent", "peuvent"],
-];
+import { CONJUGAISON_ER_AXES, IRR_MEMO, conjugaisonErQuestion } from "./conjugaison-er.gen";
 
 export const conjugaisonErLesson: NativeLesson = {
   slug: "conjugaison-er",
@@ -75,34 +44,8 @@ export const conjugaisonErLesson: NativeLesson = {
   ),
   dice: {
     instruction: "Conjugate the verb for the subject.",
-    newQuestion() {
-      const s = pick(SUBJECTS);
-      if (Math.random() < 0.6) {
-        const v = pick(ER_VERBS);
-        const form = v.stem + END[s.slot];
-        const otherEnds = sample(ENDINGS.filter((e) => e !== END[s.slot]), 3);
-        const stemDisp = s.slot === "je" && startsVowel(v.stem) ? `J'${v.stem}` : `${s.disp} ${v.stem}`;
-        return {
-          meta: `${s.disp} + …`,
-          big: v.inf,
-          en: v.en,
-          correct: `${sv(s, form)}.`,
-          easyOptions: [form, ...otherEnds.map((e) => v.stem + e)].map((f) => `${sv(s, f)}.`),
-          med: { before: stemDisp, choices: [...ENDINGS], correct: END[s.slot], after: "." },
-        };
-      }
-      const v = pick(IRR_VERBS);
-      const form = v.f[s.slot];
-      const others = shuffle([...new Set(Object.values(v.f))].filter((x) => x !== form));
-      return {
-        meta: `${s.disp} + …`,
-        big: v.inf,
-        en: v.en,
-        correct: `${sv(s, form)}.`,
-        easyOptions: [form, ...others.slice(0, 3)].map((f) => `${sv(s, f)}.`),
-        med: { before: s.disp, choices: [form, ...others.slice(0, 4)], correct: form, after: "." },
-      };
-    },
+    newQuestion: conjugaisonErQuestion,
+    axes: CONJUGAISON_ER_AXES,
   },
   bonus: [
     { en: "I want to go to the cinema.", fr: "Je veux aller au cinéma." },

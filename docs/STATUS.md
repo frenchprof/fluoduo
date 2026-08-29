@@ -2258,3 +2258,77 @@ is set by the same effect that used to write `endedAtRef`, so the end card
 shows 0:00 for exactly the one frame it always did (the ref was also 0 until
 that effect ran) and then the real value. Replay clears it. Worth a look next
 time someone has the app open.
+
+## 2026-08-29 — the selectors reach every lesson that has an axis
+
+The last of Dan's four. `conjugaison-u1` had proved the mechanism on one
+lesson; **thirteen more now carry it**, which is every remaining lesson with a
+real axis. (`prepositions-core` appeared in the survey but is a shared helper
+module other lessons build on, not a lesson — correctly left alone.)
+
+| lesson | axes |
+|---|---|
+| aimer | Sujet · Verbe · Article |
+| aimer-infinitif | Sujet · Verbe |
+| aller | Sujet · Préposition · Forme |
+| avoir-etats | Sujet · Type (âge / avoir / être) |
+| conjugaison-er | Sujet · Verbes (réguliers / irréguliers) |
+| faire | Sujet · Partitif · Forme |
+| frequence | Sujet · Fréquence |
+| futur-proche | Sujet · Forme |
+| manger-boire | Sujet · Verbe |
+| modaux | Sujet · Verbe |
+| nationalities | Accord · Pays |
+| pouvoir | Sujet · Usage (capacité / permission / refus) |
+| se-presenter | Tâche |
+
+**The axes are chosen, not enumerated.** Every varying list could be a
+dropdown; most shouldn't be. aller's nineteen PLACES are vocabulary, so the
+axis is the **preposition** (au / à la / à l' / aux / en / chez) — the thing
+the lesson actually teaches — and places are rolled within it. aimer's article,
+faire's partitive and nationalities' agreement are the same call. Where a
+branch WAS the grammar it became an axis rather than a coin toss:
+conjugaison-er's -er/irregular split, avoir-etats' three rounds, pouvoir's
+three uses, se-presenter's three name tasks. A learner who keeps missing the
+irregulars can now sit only those.
+
+**One helper, not fourteen copies** (`native/axis.ts`). The subtle part is what
+a pin that matches nothing must do: **roll**, not throw and not return the
+first item, or a dropdown silently becomes a filter that empties the lesson.
+Written once. `pinnedGroup` narrows rather than overrides, because pinning "au"
+and rolling "piscine" would produce a wrong sentence, not a harder question.
+Per-lesson negative rates are kept (faire leans negative 40%, aller 35%) —
+flattening them to a coin toss would have changed every unsteered run.
+
+**verify43, 198 checks, executing the generators.** This is the only kind of
+check that works here: a generator that ignores its `pinned` argument compiles,
+renders, and looks in source EXACTLY like one that honours it. So for every
+axis it pins each option 200 times and requires two options whose outputs are
+**disjoint**. "Exists a pair" rather than "all pairs" deliberately — pouvoir's
+« permission » only applies to a subject that could be asking and falls back
+otherwise, a legitimate narrowing all-pairs would call a failure. It also
+requires every declared key to be READ, every option to generate something, and
+unpinned runs to still vary.
+
+Four break-tests: a pin silently ignored, an axis declared but never read, an
+option matching nothing, and the `@/` alias returning. **The third exposed a
+vacuous assertion** — "every option generates something" could not fail,
+because a throwing generator killed the probe before the check ran. The probe
+now catches per-sample throws so that option reports as generating nothing.
+Green-but-unfalsifiable is the failure this repo keeps finding; it found
+another one.
+
+**Two knock-ons.** The generators must load under plain node, so the two that
+used `@/lib/shuffle` now import it by relative path — `@/` is a bundler
+feature. That dropped verify27's "one shuffle" ratchet below its threshold;
+the ratchet now counts both spellings, since its rule is one shuffle, not one
+spelling, and it was re-broken to confirm it still bites.
+
+Driven in a browser: /lessons/aimer shows Sujet · Verbe · Article with 🎲 Roll
+the dice on the entry screen, faire three, se-presenter one — matching the
+declarations exactly.
+
+**Not done, and not asked for:** lessons with no subject axis (possessifs,
+meteo, partitifs, quand, …). Some may still have one worth having —
+possessifs varies the possessor — but that is a content judgement per lesson,
+not a mechanical follow-on.

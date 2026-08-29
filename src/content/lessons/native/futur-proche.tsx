@@ -3,30 +3,8 @@
  * the Mémo + the 🎲 dice trainer + EN→FR bonus, as real in-app content.
  */
 import type { NativeLesson } from "./types";
-import { sample } from "@/lib/shuffle";
 
-const SUBJECTS = [
-  { disp: "Je", aller: "vais" }, { disp: "Tu", aller: "vas" }, { disp: "Il", aller: "va" },
-  { disp: "Elle", aller: "va" }, { disp: "On", aller: "va" }, { disp: "Nous", aller: "allons" },
-  { disp: "Vous", aller: "allez" }, { disp: "Ils", aller: "vont" }, { disp: "Elles", aller: "vont" },
-] as const;
-const ALLER = ["vais", "vas", "va", "allons", "allez", "vont"];
-const INFS = [
-  { fr: "faire du sport", en: "do sport" }, { fr: "manger équilibré", en: "eat healthily" },
-  { fr: "sortir ce soir", en: "go out tonight" }, { fr: "partir en vacances", en: "go on holiday" },
-  { fr: "dormir plus", en: "sleep more" }, { fr: "courir demain", en: "run tomorrow" },
-  { fr: "arrêter le café", en: "quit coffee" }, { fr: "étudier le français", en: "study French" },
-  { fr: "préparer le dîner", en: "make dinner" }, { fr: "regarder un film", en: "watch a film" },
-] as const;
-const MEMO_ROWS = [
-  ["je", "vais"], ["tu", "vas"], ["il / elle / on", "va"],
-  ["nous", "allons"], ["vous", "allez"], ["ils / elles", "vont"],
-] as const;
-
-const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)];
-const ne = (form: string) => (/^[aeiou]/.test(form) ? "n'" : "ne ");
-const phrase = (disp: string, form: string, neg: boolean) =>
-  neg ? `${disp} ${ne(form)}${form} pas` : `${disp} ${form}`;
+import { FUTUR_PROCHE_AXES, MEMO_ROWS, futurProcheQuestion } from "./futur-proche.gen";
 
 export const futurProcheLesson: NativeLesson = {
   slug: "futur-proche",
@@ -57,24 +35,8 @@ export const futurProcheLesson: NativeLesson = {
   ),
   dice: {
     instruction: "Build the sentence in the futur proche — watch the ✅/🚫 polarity.",
-    newQuestion() {
-      const s = pick(SUBJECTS), inf = pick(INFS);
-      const neg = Math.random() < 0.4;
-      const others = sample(ALLER.filter((f) => f !== s.aller), 3);
-      return {
-        meta: `${s.disp} … (${neg ? "🚫 négatif" : "✅ affirmatif"})`,
-        big: inf.fr,
-        en: inf.en,
-        correct: `${phrase(s.disp, s.aller, neg)} ${inf.fr}.`,
-        easyOptions: [s.aller, ...others].map((f) => `${phrase(s.disp, f, neg)} ${inf.fr}.`),
-        med: {
-          before: neg ? `${s.disp} ${ne(s.aller).trim()}` : s.disp,
-          choices: ALLER,
-          correct: s.aller,
-          after: neg ? `pas ${inf.fr}.` : `${inf.fr}.`,
-        },
-      };
-    },
+    newQuestion: futurProcheQuestion,
+    axes: FUTUR_PROCHE_AXES,
   },
   bonus: [
     { en: "I am going to do sport.", fr: "Je vais faire du sport." },
