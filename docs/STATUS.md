@@ -2197,3 +2197,64 @@ competence now asking for **un / une / le / la**. Rewritten to the new list.
 Worth noting as the pattern to expect: this is the ordinary working of the
 thing, not an incident. An app-side content change makes the build red, the
 sync moves the objective, and a human moves the cards after it.
+
+## 2026-08-29 — session length reaches the other three drills, and LessonPager's lint is real-fixed
+
+Two of the four Dan asked to settle. (`/activities` and the lesson selectors
+follow separately.)
+
+**Session length, everywhere it was missing.** `lib/sessionLength.ts` had one
+caller. It now has four, and the question is asked once per run, before any
+French, only on a queue long enough for the answer to matter:
+
+- **4Mémoire** — the cap lands on the CARD RUN only. "all" (the grid) and
+  "list" (the table) are reference views over the whole deck; hiding cards from
+  a table someone is reading is a different act from shortening a drill. The
+  deck-wide ✓ counter still counts the deck.
+- **GramMarathon** — straight cap on the shuffled gap queue.
+- **WorDrill** — the one that needed it most. Its "Tout" scope compiles every
+  curated deck into one run: **834 words**, measured in a browser. The cap went
+  into `SayItContent`, which WorDrill drives, so per-deck Say It gets it too,
+  and every progress readout (shell bar, session map, the run counter and its
+  bar) now counts against the RUN rather than the deck — a bar filling towards
+  a number nobody chose is not progress.
+
+**The chooser is one component now** (`components/HowManyQuestions.tsx`). Four
+drills asking the same question in four hand-copied blocks would read as four
+different questions within a month. Factoring it out also fixed a real bug in
+the original: CompleteIt wrapped its chooser in `DrillShell` unconditionally,
+so an embedded run in a SIO popup drew a whole drill frame — exit ✕, bottom bar
+and all — inside the popup for one screen and then threw it away. Every call
+site now picks its own wrapper. WorDrill's chooser keeps a "← Change scope"
+button: it is reached from the scope picker, and the one screen with no way
+back should not be the one that opens a run of the entire curriculum.
+
+Driven in a browser, wall opened locally: 4Mémoire 33 → 10, GramMarathon 30 →
+10, CompleteIt 33 → 25, Say It 33 → 10 and → 25 (the progress denominator reads
+the chosen number in each), WorDrill Tout offering 10 / 25 / **All 834**, and a
+14-item deck correctly never asked.
+
+**LessonPager: four of six lint errors fixed at the source, two suppressed with
+the reason.** Not "gates nothing, leave it". The four were `react-hooks/refs` —
+`endedAtRef.current - startRef.current` computed in the render body to print
+the finished run's ⏱ time. That is a genuine render-phase ref read, and it is
+what made the React Compiler bail on the component; once it bails, later
+diagnostics are measured against a component it has given up on, which is how
+an ordinary `Date.now()` inside an EFFECT came to be reported as impure
+"during render". The elapsed time is known exactly once — when the run ends —
+so it is computed there and held in state. `endedAtRef` is gone.
+
+The remaining two are a real conflict between two rules, not noise: `build()`
+shuffles, shuffling in render breaks SSR hydration (the AGENTS rule every drill
+follows), so the build must be an effect, and an effect that builds a queue must
+set state. Suppressed on their own lines with that written beside them.
+
+Repo lint **138 → 132**; LessonPager is now clean rather than the worst file.
+
+**Not verified in a browser:** the end card's ⏱ readout. Driving a 13-card
+lesson to its end kept stalling on blocked Firebase auth calls. The argument
+that it is safe is structural rather than observed: `elapsed` starts null and
+is set by the same effect that used to write `endedAtRef`, so the end card
+shows 0:00 for exactly the one frame it always did (the ref was also 0 until
+that effect ran) and then the real value. Replay clears it. Worth a look next
+time someone has the app open.

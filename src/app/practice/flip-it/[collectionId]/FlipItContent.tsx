@@ -46,6 +46,8 @@
  */
 
 import { useEffect, useMemo, useState } from "react";
+import { cap, offer, type SessionLength } from "@/lib/sessionLength";
+import HowManyQuestions from "@/components/HowManyQuestions";
 import Link from "next/link";
 import { CURATED } from "@/content/collections";
 import { speak } from "@/games/letris/speech";
@@ -107,6 +109,12 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
 
   /** Which of the three original views is on screen. */
   const [view, setView] = useState<"one" | "all" | "list">("one");
+  // How long the CARD RUN is (Dan, 2026-08-25). The cap lands on the card
+  // run only: "all" (the grid) and "list" (the table) are reference views
+  // over the whole deck, and hiding cards from a table the learner is reading
+  // would be a different thing entirely from shortening a drill.
+  const [chosen, setChosen] = useState<SessionLength | null>(null);
+  const [asked, setAsked] = useState(offer(rows.length) === null);
   const [test, setTest] = useState(false);
   const [i, setI] = useState(0);
   // The grid's flip state: flipAll inverts, so a learner can reveal the deck
@@ -119,9 +127,12 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
   // This run's marks — the recap. Deck-wide reviewed state lives in buckets.
   const [run, setRun] = useState({ su: 0, revoir: 0, right: 0, wrong: 0 });
 
-  const done = i >= rows.length;
-  const row = rows[Math.min(i, rows.length - 1)];
-  const isLast = i === rows.length - 1;
+  // The cards this run actually serves. `rows` stays whole for the grid, the
+  // table, and the deck-wide ✓ counter.
+  const runRows = useMemo(() => cap(rows, chosen), [rows, chosen]);
+  const done = i >= runRows.length;
+  const row = runRows[Math.min(i, runRows.length - 1)];
+  const isLast = i === runRows.length - 1;
   const parts = useMemo(() => partsFor(row, isNat, hasArt), [row, isNat, hasArt]);
   const allRight = parts.every((p) => judgePart(p, vals[p.key]));
   const nReviewed = rows.filter((r) => buckets[r.item.id] === "reviewed").length;
@@ -179,6 +190,9 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
     ? { ...ladder.help, onClimb: () => { if (ladder.climb().effect === "reveal") { setRetry(false); setPhase("revealed"); } } }
     : null;
   function restart() {
+    // A replay asks again — someone who did ten may want twenty-five next.
+    setChosen(null);
+    setAsked(offer(rows.length) === null);
     setI(0); setFlipped(false); setVals({}); setPhase("idle"); setRetry(false);
     setRun({ su: 0, revoir: 0, right: 0, wrong: 0 });
   }
@@ -191,12 +205,32 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
   // more thing to get right, exactly like the table.
   const nothingTyped = parts.filter((p) => p.type === "text").every((p) => !(vals[p.key] ?? "").trim());
 
+  // HOW LONG? — asked once, before any card. 4Mémoire is page-only, so the
+  // drill frame always wraps it.
+  if (!asked) {
+    return (
+      <DrillShell
+        activity="flip"
+        deck={collection.id}
+        exitHref={drillExitHref(collection.id)}
+        progress={null}
+        cta={null}
+      >
+        <HowManyQuestions
+          lengths={offer(rows.length)!}
+          total={rows.length}
+          onPick={(n) => { setChosen(n); setAsked(true); }}
+        />
+      </DrillShell>
+    );
+  }
+
   return (
     <DrillShell
       activity="flip"
       deck={collection.id}
       exitHref={drillExitHref(collection.id)}
-      progress={view !== "one" || done ? null : { done: i, total: rows.length }}
+      progress={view !== "one" || done ? null : { done: i, total: runRows.length }}
       right={<>✓ {nReviewed}/{rows.length}</>}
       cta={
         view !== "one"
