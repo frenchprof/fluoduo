@@ -2724,3 +2724,53 @@ shrinking the type further — « Quelle nationalité ? », « Un ou des ? »,
 50-stop pattern. Some would suit it (WorDrill, iComplete via a door of its
 own); some plainly would not (ChaTutor, VoixLà, the two number games), and
 those now at least have a landing of their own.
+
+## 29 Aug — re-audit of Dan's nineteen, and the pairing bug it found
+
+Dan could not recall the ten missing bug texts and asked for a fresh audit
+across all four areas the recovered nine clustered in.
+
+**Nine of the nineteen were recovered from PR #42** — 1 (the 390px void), 2
+(promise vs deck, which became the 50-promise audit), 3 (wrong outearning
+right), 4 (audio reading the label), 5 (run position lost on leaving), 7 (the
+hint under the tick), 13 (a picked answer wearing the button costume), 14 ("1
+days"), 18 (digits as navigation, later closed by Dan). **6, 8, 9, 10, 11, 12,
+15, 16, 17 and 19 exist nowhere** — searched every doc, every commit on
+`claude/fluolingo-19-bugs`, and every PR body. Only the numbers survive.
+
+### What the sweep found
+
+**Layout — clean.** 31 routes measured at 390x844: no horizontal scroll, no CTA
+off-screen with nothing to scroll, no content clipped without a scrollable
+ancestor. The only hits were the header brand link (25px) and the sound/timer
+chips (30px) against an arbitrary 32px bar — chrome, not a defect.
+
+**Audio — one real defect, fixed.** `SpeakZone.withSubject` found the subject
+with `row.querySelector("th, td")`, the row's FIRST cell. Correct for the
+two-column conjugation tables it was written against; silently wrong for
+SIO-011's four-column pronoun table, which packs two logical pairs per row.
+A tap on « eux » said **« il eux »** and one on « nous » said **« je nous »** —
+false pairings, taught by the one lesson whose whole subject is which pronoun
+goes with which. Now scans leftwards for the nearest subject cell, and a cell
+that is itself a subject stays alone. `verify50`, break-tested on 4 mutations,
+all red. The two-column behaviour is unchanged and asserted: « ai » still
+elides to « j'ai ».
+
+**Feedback — clean.** « Not that one — pick again » appears only while a card is
+still open (no Continue present), so the advice is always actionable. That is
+the state bug #7 was about, and it holds.
+
+**Scoring — not re-verified end to end; guarded at source.** My browser probe
+was **vacuous** — `wrongFirst ? opts : opts` made both runs answer identically,
+so the 0 -> 20 XP match proves nothing. The rule is asserted by `verify28`
+instead, at the mechanism: *a repaired answer (wrong then right, no hint) is
+nudge, not independent*. Recorded rather than quietly dropped, because a
+vacuous probe reported as a pass is worse than no probe.
+
+### A false alarm worth recording
+
+The `·` word lists in stop 35 appeared to speak only their first item. They do
+not: `sayTapped` splits on `·` and calls `speakSequence` with **gapMs: 1000**,
+and my harness waited 300ms. Given 9 seconds all six items speak. Dan's
+2026-07-08 ruling, working as designed. Checked before reporting — the same
+mistake as stops 11 and 34, where a literal search made teaching look absent.

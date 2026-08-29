@@ -38,13 +38,38 @@ const FUNCTION_WORDS = new Set([
   "ce", "cet", "cette", "ces", "que", "qu'",
 ]);
 
+const tokenOf = (el: Element | null | undefined): string =>
+  el?.textContent?.trim().split(/[\s/()]+/)[0]?.toLowerCase() ?? "";
+
 function withSubject(el: HTMLElement, text: string): string {
   if (/\s/.test(text) || NON_VERB.has(text.toLowerCase())) return text;
   const row = el.closest("tr");
-  const head = row?.querySelector<HTMLElement>("th, td");
-  if (!row || !head || head.contains(el)) return text;
-  const subj = head.textContent?.trim().split(/[\s/()]+/)[0]?.toLowerCase() ?? "";
-  if (!SUBJECT_TOKENS.has(subj)) return text;
+  if (!row) return text;
+  const cell = el.closest<HTMLElement>("th, td");
+  if (!cell) return text;
+
+  // The subject is the nearest SUBJECT-token cell to the LEFT, not the row's
+  // first cell. A conjugation table is two columns, so those are the same
+  // thing — but SIO-034's pronoun table is four, two logical pairs per row:
+  //
+  //     je | moi | nous | nous
+  //     il | lui | ils  | eux
+  //
+  // and pairing against cells[0] made a tap on « eux » say « il eux » and one
+  // on « nous » say « je nous » — a false pairing, on the very lesson about
+  // which pronoun goes with which. Caught by tapping the table in a browser
+  // with the speech engine stubbed; it is invisible in the rendered page.
+  //
+  // A cell that is ITSELF a subject stays alone: « nous » is a word, not the
+  // tail of a phrase.
+  if (SUBJECT_TOKENS.has(tokenOf(cell))) return text;
+  const cells = [...row.querySelectorAll<HTMLElement>("th, td")];
+  const here = cells.indexOf(cell);
+  let subj = "";
+  for (let i = here - 1; i >= 0; i--) {
+    if (SUBJECT_TOKENS.has(tokenOf(cells[i]))) { subj = tokenOf(cells[i]); break; }
+  }
+  if (!subj) return text;
   const s = subj === "j'" ? "je" : subj;
   if (s === "je" && /^[aeéèêiîoôuh]/i.test(text)) return `j'${text}`;
   return `${s} ${text}`;

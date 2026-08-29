@@ -161,6 +161,9 @@ jobs:
       - name: "A renumber moves the id, and carries the learner with it (29 Aug)"
         run: python3 verify/verify49-renumber-3435.py
 
+      - name: "A tapped cell is paired with the right subject (29 Aug)"
+        run: python3 verify/verify50-speakzone-pairing.py
+
       - name: "A tour step points at something that exists (28 Aug)"
         run: python3 verify/verify44-tour-targets.py
 
