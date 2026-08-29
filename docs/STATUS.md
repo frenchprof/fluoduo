@@ -2866,3 +2866,59 @@ symmetry is the reason Dan moved them next to each other.
 
 12,000 cards executed clean; `verify51` break-tested on 8 mutations, all red,
 none vacuous. 41 verify scripts green.
+
+## 29 Aug — SIO-006 built, lint scoped to PR-touched files, and an audit error
+
+**Dan asked for SIO-006** after I had flagged it as the weakest of the eight
+candidates and left it out. Built: « Qui est-ce ? » · « Qu'est-ce que c'est ? » ·
+« Où est le livre ? — Il est là. »
+
+### The audit error, which is the important part
+
+Rendering it showed a first card reading « C'est quoi ? — C'est ___ consonne »,
+a word not in the lesson's own noun list. That is the stop's deck, not the
+generator — and chasing it found this:
+
+**Twenty deck names exist in TWO places.** `src/content/<name>.json` is a letris
+TILE file; `src/content/collections/<name>.json` is the card deck the app reads.
+My gap audit globbed by basename and took the first hit, so for SIO-006 it
+judged the tile file and never saw the collection's 18 cards — every one of
+which carries « C'est qui ? — C'est un homme. » or « C'est où ? — C'est une
+classe. » in its `example` field.
+
+**So the questions were already taught and my justification was wrong.** This is
+the same failure written up three times earlier the same day — teaching hiding
+where a literal search does not reach — committed again, one stop later, in a
+new way. **Anything auditing a deck must resolve `collections/` FIRST.**
+
+The lesson survives on a narrower claim, and the comments now say so: the deck
+answers « C'est où ? » with « C'est une classe », never with a pronoun, so
+nothing anywhere teaches that a book is `il`. That rule is what it drills.
+
+### Re-checked, against the right files this time
+
+| stop | examples in the real deck | verdict |
+|---|---|---|
+| 35 « Où est » | 0 / 16 | gap was real |
+| 11 moi aussi | 0 / 12 | gap was real |
+| 13 matières | 0 / 16 | gap was real |
+| 44 commerces | 0 / 33 | gap was real |
+| 36 directions | 4 / 40, all GIVING | asking half was real |
+| **21 objets** | **20 / 20** — « C'est un sac », « Ce sont des ciseaux » | **partly over-built**: only the ASKING half was missing; the naming half was already taught |
+| 45A | single file, never at risk | gap was real |
+
+### Lint in CI, scoped
+
+Dan was unsure what was being asked, so: CI now lints **only the files a pull
+request touches**, on `pull_request` events. New work must be clean; the 51
+files holding the 130 existing problems stay until someone is in them anyway.
+
+Two traps, both tested before shipping:
+- **An empty file list must exit early.** `eslint` with no arguments lints the
+  whole project and would fail a docs-only PR on all 111 pre-existing errors.
+- **Deleted files must be filtered** (`--diff-filter=d`), or eslint errors on a
+  path that is gone.
+
+Checkout gained `fetch-depth: 0`; the default shallow clone has no base to diff
+against. Both cases driven locally: docs-only exits 0; touching
+`useDragFloat.ts` exits 1 naming the rule.
