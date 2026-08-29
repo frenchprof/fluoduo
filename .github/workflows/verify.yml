@@ -148,5 +148,12 @@ jobs:
       - name: "Entry level ★/★★/★★★ and the restored selectors (28 Aug)"
         run: python3 verify/verify41-lesson-entry.py
 
+      # Shipped with the SIO-spine work and never added here — the same gap
+      # verify31-wordrill and verify36-38 each sat in. It is the check that
+      # holds the CSV and sios.json to one another, so unwired it guards
+      # nothing.
+      - name: "One source for the SIO spine — CSV and sios.json agree"
+        run: python3 verify/verify42-sio-source.py
+
       - name: "Stops 3, 17, 18 teach the act they promise (28 Aug)"
-        run: python3 verify/verify42-three-stops.py
+        run: python3 verify/verify43-three-stops.py

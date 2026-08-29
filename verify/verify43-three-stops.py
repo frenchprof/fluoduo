@@ -2,6 +2,11 @@
 """
 Three stops that promised an act and taught only its vocabulary (2026-08-28).
 
+Numbered 43, not 42: the colour-review session shipped verify42-sio-source.py
+in parallel. Two files sharing a number is how verify31-wordrill sat unwired
+for a fortnight in this repo — the workflow named verify31 once and nobody
+noticed the other was never running.
+
 WHY THIS EXISTS. An audit of all fifty can-do statements against the decks
 behind them found the same shape three times: the stop names something the
 learner will DO, and the deck teaches only the words that act needs.
@@ -44,7 +49,7 @@ What this asserts:
   5  The prepositions are right (en / au / aux / à), which the sentence cannot
      avoid choosing.
 
-Run from the repo root:  python3 verify/verify42-three-stops.py
+Run from the repo root:  python3 verify/verify43-three-stops.py
 """
 import json, os, re, subprocess, sys
 
