@@ -1,64 +1,102 @@
-# Handoff CSV — rows whose flashcard spec no longer matches its objective
+# Handoff CSV — where the flashcard spec no longer fits its objective
 
-Generated 2026-08-29, when `scripts/sync-sio-csv.mjs` first brought
+Written 2026-08-29, when `scripts/sync-sio-csv.mjs` first brought
 `docs/handoff/LAF1201_SIOs_Flashcards_v9.csv` back in line with the app.
 
-**What happened.** The CSV had fallen 17 SIOs behind the live course. For the
-rows below the *topic itself* had changed — a different objective sitting under
-the same number — because Units 1, 2 and 4 were reorganised in the app and the
-CSV never followed. The sync rewrote each row's **objective** columns (Unit,
-Topic, SIO Description, Flashcard Set, CEFR Mode, Can-Do, competence) from the
-app, which is the live course.
+## What "flashcard spec" means here
 
-**What it did NOT touch,** because the app holds none of it and only Dan knows
-where it belongs: **Front side · Back side (flipped) · Overview columns ·
-Letris / Notes**. Those still describe the OLD objective.
+Each CSV row has two halves, and the sync only ever writes one of them.
 
-So each row below now reads correctly on the left and describes different cards
-on the right. **15 rows to work through.** Nothing in the app depends on
-these columns — this is the spreadsheet's own bookkeeping.
+| Half | Columns | Who owns it |
+|---|---|---|
+| **The objective** | Unit · Topic · SIO Description · Flashcard Set · CEFR Mode · Can-Do (A1) · Linguistic competence | **The app.** `sios.json` is the source; the sync writes these into the CSV. |
+| **The flashcard spec** | Front side · Back side (flipped) · Overview columns · Letris / Notes | **The CSV.** The app holds nothing like it, so the sync never touches these. |
 
-| Row | Objective was | Objective is now | Cards still describe |
+The spec is the instruction for building the cards — *"~8 cards — shop icon +
+English (🥖 bakery / 🥩 butcher)"*, *"2 baskets: un / une"*. The app has its own
+decks and does not read any of it.
+
+## What happened
+
+The CSV had fallen 17 objectives behind the course, because Units 1, 2 and 4
+were reorganised in the app and the CSV never followed. The sync rewrote the
+objective half of those rows. Where the objective under a number genuinely
+changed, its spec is now describing different cards from the ones the objective
+calls for.
+
+**Fifteen rows changed topic. Nine are only a rename — nothing to do. Six need
+attention.** Nothing in the app depends on any of it; this is the spreadsheet's
+own bookkeeping.
+
+---
+
+## Six rows to fix
+
+The objective moved; the spec stayed. In most cases the spec is still good
+material — it just belongs under a different number now.
+
+| Row | Objective is now | Spec still describes | Where that spec belongs |
 |---|---|---|---|
-| SIO-006 | Who, What, Where | Core nouns — people, things, places | Who, What, Where |
-| SIO-011 | Stress pronouns | Stressed pronouns | Stress pronouns |
-| SIO-013 | Matières | School subjects — les matières | Matières |
-| SIO-021 | c'est / ce sont + un/une/des + N | Everyday objects — c'est un… / ce sont des… | c'est / ce sont + un/une/des + N |
-| SIO-023 | aimer — what I like | Leisure activities — j'aime, j'adore | aimer — what I like |
-| SIO-028 | avec — with whom | Négation — pas de ou pas le ? | avec — with whom |
-| SIO-032 | être/aller/venir + city/country prepositions | en / au / aux / à — prepositions for cities & countries | être/aller/venir + city/country prepositions |
-| SIO-033 | être/aller/venir + places in town | Places in town | être/aller/venir + places in town |
-| SIO-038 | How to get somewhere + prendre + y | Getting around — en train, à vélo (+ y) | How to get somewhere + prendre + y |
-| SIO-042 | Liking vs consuming — partitives | Partitives + manger/boire | Liking vs consuming — partitives |
-| SIO-043 | Partitive — negative | Frequency adverbs | Partitive — negative |
-| SIO-044 | manger / boire | Commerces — shopping, and the market exchange | manger / boire |
-| SIO-045 → **SIO-045A** | Frequency adverbs | Numbers 70–99 | Frequency adverbs |
-| SIO-047 | Commerces — shopping | Making plans — aller + infinitif | Commerces — shopping |
-| SIO-048 | aller / pouvoir / devoir / falloir + infinitif | Giving advice — devoir / falloir / pouvoir | aller / pouvoir / devoir / falloir + infinitif |
+| **SIO-028** | Négation — pas de ou pas le ? | *avec* — "with me / with my friends / alone" | No home in the app — `avec` is not a live objective. Decide: fold in, or drop. |
+| **SIO-043** | Frequency adverbs | partitive negative — *Je mange de la viande.* | **SIO-042.** The app folded the negation content into partitives on 2026-08-02. |
+| **SIO-044** | Commerces — shopping | *manger / boire* — "she drinks water" | Retired. ConjugaZone already covers that conjugation under SIO-042. |
+| **SIO-045A** | Numbers 70–99 | frequency scale bar — *toujours … jamais* | **SIO-043**, which is Frequency adverbs now. Needs a new spec for 70–99. |
+| **SIO-047** | Making plans — aller + infinitif | shops — 🥖 bakery / 🥩 butcher | **SIO-044**, which is Commerces now. Needs a new spec for the futur proche. |
+| **SIO-048** | Giving advice — devoir / falloir / pouvoir | all four modals incl. *aller* + inf | Trim, don't move. The *aller* cards belong with SIO-047; the other three stay. |
 
-## The two that need a decision, not just an edit
+Two of those are effectively a swap: **SIO-044 and SIO-047 have exchanged
+objectives**, so their specs can simply trade places.
 
-- **SIO-045 → SIO-045A — a reused slot, not a rename.** Two different things
-  happened here and they are easy to confuse. The CSV's 5th Unit-4 row is
-  *Frequency adverbs*, which the app now calls **SIO-043**. Separately, the
-  app's own SIO-045 was *Market phrases*; it was retired into SIO-044
-  (Commerces) on 2026-08-02 and its number left as a deliberate permanent gap
-  so nothing downstream would shift — and *Numbers 70–99* was then added into
-  that gap as **SIO-045A**. (The history is recorded in
-  `src/content/pretests/index.ts`.) So SIO-045A is the newest objective in Unit
-  4, not a leftover. The consequence for this file: the row's frequency-adverb
-  card spec now sits under *Numbers 70–99*, and probably belongs with SIO-043.
-- **SIO-044 / SIO-047.** *Commerces — shopping* moved from 047 to 044, so those
-  two rows have effectively swapped card specs with each other.
+### Why SIO-045 became SIO-045A — a reused slot, not a rename
 
-## Keeping it from happening again
+Three separate things collide at this number, so it is worth spelling out.
 
-`npm run build` now runs `check:sios`, which fails if the CSV and the app
-disagree on any objective column. Edit either side and the build says so:
+- The **CSV's** 5th Unit-4 row is *Frequency adverbs* — which the app calls
+  **SIO-043**.
+- The **app's** own SIO-045 was *Market phrases*. It was retired into SIO-044
+  (Commerces) on 2026-08-02, and its number deliberately left as a permanent
+  gap so nothing downstream would shift.
+- *Numbers 70–99* was then added into that gap as **SIO-045A** — making it the
+  newest objective in Unit 4, not a leftover from an older system. It has a
+  deck, a pre-test, six finale items and its own place in "Situation 2 — Faire
+  ses courses".
+
+The history is recorded in `src/content/pretests/index.ts`.
+
+---
+
+## Nine rows that only got a better name
+
+The objective is the same; the spec still fits. **No action.** Listed so nobody
+re-opens them later wondering whether they were missed.
+
+| Row | Was | Now |
+|---|---|---|
+| SIO-006 | Who, What, Where | Core nouns — people, things, places |
+| SIO-011 | Stress pronouns | Stressed pronouns |
+| SIO-013 | Matières | School subjects — les matières |
+| SIO-021 | c'est / ce sont + un/une/des + N | Everyday objects — c'est un… / ce sont des… |
+| SIO-023 | aimer — what I like | Leisure activities — j'aime, j'adore |
+| SIO-032 | être/aller/venir + city/country prepositions | en / au / aux / à — prepositions for cities & countries |
+| SIO-033 | être/aller/venir + places in town | Places in town |
+| SIO-038 | How to get somewhere + prendre + y | Getting around — en train, à vélo (+ y) |
+| SIO-042 | Liking vs consuming — partitives | Partitives + manger/boire |
+
+SIO-042 is the one to glance at: its objective grew to cover *manger/boire*
+conjugation and the partitive negative, so the existing spec is now a subset
+rather than wrong.
+
+---
+
+## Keeping it from drifting again
+
+`npm run build` runs `check:sios`, which fails if the CSV and the app disagree
+on any objective column:
 
 ```
 node scripts/sync-sio-csv.mjs           # app → CSV, the usual direction
 node scripts/sync-sio-csv.mjs --check   # what the build runs
 ```
 
-Editing the CSV's card-spec columns is always safe — the check ignores them.
+Editing the four flashcard-spec columns is always safe — the check ignores them
+entirely, so working through the list above will never make the build red.
