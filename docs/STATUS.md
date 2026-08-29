@@ -2493,3 +2493,35 @@ tsc clean · build green · all 36 verify suites pass · lint **132 → 130**.
 they have no site-wide door in the registry (`href: null`) and are reached from
 a stop, which is the map's job. If Dan wants "all the Memos" as a page too,
 it is one line each.
+
+## 29 Aug — two of the open questions closed by Dan
+
+**#18 is SETTLED** (Dan's word, 2026-08-29). The report was *"pressing '1'
+doesn't pick answer 1 — it throws you back to the start of the lesson and
+wipes the bar"*. Driven in a real browser on `se-presenter`, on both a memo
+card and an exercise card: 1 does not navigate, the bar does not change, and
+it does select option 1. Not reproducible, and Dan has closed it rather than
+name another screen. No code change; recorded so nobody re-opens it from the
+old "still open" line.
+
+**The colours Mémo stays as it is.** The mnemonics live on the CARDS
+(`example`/`exampleEn`, rendering in iComplete's and GramMarathon's WHY and
+the pre-test review table) and NOT in the Mémo. Adding them there was measured
+and reverted: the card went 419px → 667px at 390×844 and its last row sat 76px
+behind the Continue button. Dan treated the question as closed with `le sable
+beige` shipped, so the Mémo keeps its three cognate sections. Do not re-add a
+fourth block without re-measuring against the Continue button — not against
+the viewport, which is the mistake that made it look like it fitted.
+
+**Still open, and both need Dan, not an agent:**
+- **The ten bugs — 6, 8, 9, 10, 11, 12, 15, 16, 17, 19.** Their text exists
+  nowhere in this repo; only the numbers were ever written down. Nobody can
+  work them until Dan restates the list.
+- **Lint in CI.** Audited 2026-08-29: `npx eslint src` reports 132 problems
+  (113 errors) across 51 files — 63 `set-state-in-effect`, 34
+  `no-unescaped-entities` (mostly French apostrophes in memos.tsx), 9
+  `react-hooks/refs`, 6 others. Turning it on repo-wide would paint every PR
+  red on day one, which is what deleting `claude-review` just cured. The
+  proposal put to Dan is to lint only the files a PR touches: new work must be
+  clean, the 51 existing files stay until someone is in them anyway, and the
+  pile can only shrink. Awaiting his yes/no.
