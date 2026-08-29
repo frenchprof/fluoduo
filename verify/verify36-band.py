@@ -208,8 +208,11 @@ for _f in _glob.glob("src/**/*.tsx", recursive=True):
     "no second copy of the tile — every caller imports ActivityIcon"
     if not _copies else f"the tile is hand-rolled again in: {_copies}")
 
-for _f, _who in (("src/components/StopSheet.tsx", "the stop sheet"),
-                 ("src/components/ActivityLanding.tsx", "the activity landings")):
+# The landings deliberately do NOT use it (Dan, 2026-08-29: "there is no need
+# to have one icon per line. it's a bloody waste of space") — that page is ONE
+# activity, so its icon belongs in the band at the top, once. The tile is a
+# stop-sheet thing, where every row is a different activity.
+for _f, _who in (("src/components/StopSheet.tsx", "the stop sheet"),):
     # `<ActivityIcon` — the RENDER, not the name. Checking the bare name
     # passed with the element deleted, because the import line alone satisfied
     # it (the `function AllCards` lesson, 2026-08-28).

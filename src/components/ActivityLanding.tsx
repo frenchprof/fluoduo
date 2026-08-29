@@ -36,7 +36,6 @@
  */
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import ActivityIcon from "@/components/ActivityIcon";
 import CahierShell from "@/components/CahierShell";
 import SectionBand from "@/components/SectionBand";
 import { siteTabs } from "@/components/siteTabs";
@@ -166,7 +165,7 @@ function Row({
         {String(sio.num).padStart(2, "0")}
       </span>
       <span className="min-w-0">
-        <span lang="fr" className="block truncate font-bold text-[color:var(--fluo-ink)]">{sio.fr}</span>
+        <span lang="fr" className="block truncate text-[13px] font-bold leading-tight text-[color:var(--fluo-ink)]">{sio.fr}</span>
         <span className="block truncate text-[0.7rem] text-[color:var(--fluo-ink-soft)]">{sio.short}</span>
       </span>
       {isLast && (
@@ -202,7 +201,7 @@ function Row({
         style={{ borderColor: isLast ? "var(--fluo-card-accent)" : "var(--fluo-line)" }}
       >
         {label}
-        <ActivityIcon activityKey={act.key} emoji={act.emoji} size="sm" />
+        <span aria-hidden className="shrink-0 text-sm font-black text-[color:var(--fluo-ink)]/35">›</span>
       </Link>
     </li>
   );
