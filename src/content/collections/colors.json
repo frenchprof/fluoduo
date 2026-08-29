@@ -182,7 +182,9 @@
         "le",
         "beige"
       ],
-      "tags": []
+      "tags": [],
+      "example": "le sable beige",
+      "exampleEn": "beige sand"
     }
   ]
 }

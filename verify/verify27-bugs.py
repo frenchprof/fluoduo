@@ -155,7 +155,7 @@ FY = re.compile(r"for \(let i = \w+\.length - 1; i > 0; i--\) \{\s*const j = Mat
 copies = [f for f in SRC if f != "src/lib/shuffle.ts" and FY.search(CODE[f])]
 check(not copies, "no private Fisher–Yates copy outside shuffle.ts", f"private copies: {copies}")
 # Both spellings count. The alias is the normal one; a module that must run
-# under `node --experimental-strip-types` (the lesson generators verify43
+# under `node --experimental-strip-types` (the lesson generators verify46
 # executes) cannot use it, because @/ is a bundler feature — so those import
 # the same file by relative path. The rule is "one shuffle", not "one spelling".
 users = [f for f in SRC
