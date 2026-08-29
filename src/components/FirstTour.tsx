@@ -63,6 +63,29 @@ function tourFor(rawPath: string): Tour | null {
       ],
     };
   }
+  // /map is where the whole course lives — a stop tapped anywhere lands here
+  // (Home goes /?unit=1 -> /map?unit=1) — and until 2026-08-28 it was the one
+  // major surface with NO tour at all: tourFor branched on "/", /unit/,
+  // /activities and /lessons/, so a first-time visitor to the map got nothing.
+  //
+  // Step one is the one that actually matters. The map is covered by a
+  // transparent glass and is inert until tapped, so that a scroll cannot drag
+  // it by accident. That is good behaviour and completely invisible: a learner
+  // who misses the small "Tap to use the map" badge concludes the map is
+  // broken. The tour says it out loud. The glass is gone once the map is
+  // awake, and an absent target is skipped, so a returning visitor is not told
+  // about a button that is no longer there.
+  if (/^\/map/.test(path)) {
+    return {
+      key: "map",
+      steps: [
+        { selector: '[data-tour="map-wake"]', action: "tap", text: "The map sleeps until you tap it — that way a scroll never drags it by accident." },
+        { selector: '[data-tour="map-view"]', action: "tap", text: "2D reads like a plan, 3D like a scene. Your choice sticks." },
+        { selector: '[data-tour="map"]', action: "tap", text: "Every stop on the road is one goal. Tap one and its sheet opens." },
+        { text: "✓ green = done, the highlighted stop = where your class is. Mistakes are welcome — they become your 📝 Bring to class list." },
+      ],
+    };
+  }
   if (/^\/unit\//.test(path)) {
     return {
       key: "unit",

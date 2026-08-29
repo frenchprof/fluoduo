@@ -117,11 +117,11 @@ jobs:
       - name: "Family identity — the second colour axis, contrast recomputed (21 Aug)"
         run: python3 verify/verify33-family.py
 
-      # A numbering collision with verify31-topbar.py left this suite out of
-      # the workflow since patch 31 shipped — it has been passing unwired the
-      # whole time (Dan, 2026-08-24: "no CI step runs it" — confirmed true).
+      # Renumbered 31 -> 47 on 2026-08-29. The collision with verify31-topbar
+      # is precisely why this sat unwired for a fortnight (Dan, 2026-08-24:
+      # "no CI step runs it" — confirmed true). verify46 forbids it now.
       - name: "WorDrill redesigned — Dan's design handoff (patch 31)"
-        run: python3 verify/verify31-wordrill.py
+        run: python3 verify/verify47-wordrill.py
 
       - name: "Possessives — the whole paradigm drilled, the prompt no longer prints the answer (24 Aug)"
         run: python3 verify/verify35-possessives.py
@@ -156,13 +156,18 @@ jobs:
         run: python3 verify/verify42-sio-source.py
 
       - name: "Stops 3, 17, 18 teach the act they promise (28 Aug)"
-        run: python3 verify/verify43-three-stops.py
+        run: python3 verify/verify48-three-stops.py
 
       - name: "A tour step points at something that exists (28 Aug)"
         run: python3 verify/verify44-tour-targets.py
 
+      # Renamed 43 -> 46 on main while this branch held it at 43; both sides
+      # wired it, so keep the name main settled on.
+      - name: patch 46 — every lesson with selectors honours them
+        run: python3 verify/verify46-lesson-axes.py
+
       - name: patch 45 — deck promises (SIO-001 M./Mme, SIO-005 mnemonics)
         run: python3 verify/verify45-promise-gaps.py
 
-      - name: patch 46 — every lesson with selectors honours them
-        run: python3 verify/verify46-lesson-axes.py
+      - name: "Every check runs, and no two share a number"
+        run: python3 verify/verify-wiring.py
