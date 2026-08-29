@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run check:short && next build",
+    "build": "npm run check:short && npm run check:sios && next build",
     "start": "next start",
     "lint": "eslint",
     "check:textgen": "node scripts/check-textgen.mjs",
-    "check:short": "node scripts/check-short-labels.mjs"
+    "check:short": "node scripts/check-short-labels.mjs",
+    "check:sios": "node scripts/sync-sio-csv.mjs --check"
   },
   "dependencies": {
     "firebase": "^12.15.0",
