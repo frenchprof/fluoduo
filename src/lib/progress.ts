@@ -32,6 +32,7 @@
  *     (accents, hyphens, numeric forms). The Pretest still never writes here:
  *     it's a deliberate cold diagnostic on a separate item-id namespace.
  */
+import { ensureRenumber3435 } from "./migrations/renumber3435";
 
 import {
   BADGES,
@@ -152,6 +153,7 @@ function normalize(raw: Partial<Progress>): Progress {
 
 export function loadProgress(): Progress {
   if (typeof window === "undefined") return defaultProgress();
+  ensureRenumber3435();
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return defaultProgress();

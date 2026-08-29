@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """
-Three stops that promised an act and taught only its vocabulary (2026-08-28).
+Stops that promised an act and taught only its vocabulary (2026-08-28).
+
+Started as three. It is nine now — the same shape kept turning up, so rather
+than a new file per batch the sections accumulate here. The filename still says
+`three`; renaming it means re-wiring the workflow, and verify-wiring makes a
+stale name harmless while a stale NUMBER is not.
 
 Numbered 45. It was 42, then 43, and collided both times with a file the
 colour-review session shipped in parallel (verify42-sio-source, then
@@ -49,6 +54,18 @@ What this asserts:
      SIO-016's 25. Filling a gap with a second gap is not filling it.
   5  The prepositions are right (en / au / aux / à), which the sentence cannot
      avoid choosing.
+  6  SIO-011's « aussi / non plus » follows the polarity of the sentence it
+     answers, and no preposition has crept back in (Dan, 29 Aug).
+  7  The five stops filled on 29 Aug — 4, 7, 8, 21, 34 — each hold the rule
+     Dan set for them, executed rather than read:
+       4   « On est mardi. » / « C'est le matin. »
+       7   counting, stopping AT TEN, plus « Il y a combien d'étudiants ? »
+       8   exactly two lines: « Pardon, on fait quoi ? » and « Répétez s'il
+           vous plaît. » Nothing else — "this is unit 0 for pete's sake".
+       21  « C'est une gomme. » / « Ce sont des téléphones. »
+       34  two places in ONE sentence, which is the stop's promise and the
+           one thing its deck never did — with the contraction (de+le -> du,
+           de+les -> des) that « loin de le parc » exists to prevent.
 
 Run from the repo root:  python3 verify/verify48-three-stops.py
 """
@@ -57,6 +74,9 @@ import json, os, re, subprocess, sys
 OK, FAIL = [], []
 def check(c, good, bad): (OK if c else FAIL).append(good if c else bad)
 def read(p): return open(p, encoding="utf-8").read() if os.path.isfile(p) else ""
+def code(src):
+    src = re.sub(r"/\*.*?\*/", "", src, flags=re.S)
+    return re.sub(r"//[^\n]*", "", src)
 
 if not os.path.isfile("package.json"):
     print("run from the repo root"); sys.exit(2)
@@ -64,9 +84,16 @@ if not os.path.isfile("package.json"):
 REG = "src/content/lessons.ts"
 NAT = "src/content/lessons/native/index.tsx"
 GENS = {
+    "moi-aussi": "src/content/lessons/native/moi-aussi.gen.ts",
     "epeler": "src/content/lessons/native/epeler.gen.ts",
     "langues-pays": "src/content/lessons/native/langues-pays.gen.ts",
     "nombres-echanges": "src/content/lessons/native/nombres-echanges.gen.ts",
+    # The five stops filled 29 Aug, on Dan's rulings (see section 7).
+    "quel-jour": "src/content/lessons/native/quel-jour.gen.ts",
+    "combien": "src/content/lessons/native/combien.gen.ts",
+    "on-fait-quoi": "src/content/lessons/native/on-fait-quoi.gen.ts",
+    "qu-est-ce-que-c-est": "src/content/lessons/native/qu-est-ce-que-c-est.gen.ts",
+    "ou-est": "src/content/lessons/native/ou-est.gen.ts",
 }
 for slug, p in GENS.items():
     check(os.path.isfile(p), f"{slug} generator present", f"MISSING {p}")
@@ -79,7 +106,10 @@ reg, nat = read(REG), read(NAT)
 
 # ---- 1-2 · each stop has its lesson, and it leads -------------------------
 for sio, slug in (("SIO-003", "epeler"), ("SIO-017", "langues-pays"),
-                  ("SIO-018", "nombres-echanges")):
+                  ("SIO-018", "nombres-echanges"), ("SIO-011", "moi-aussi"),
+                  ("SIO-004", "quel-jour"), ("SIO-007", "combien"),
+                  ("SIO-008", "on-fait-quoi"), ("SIO-021", "qu-est-ce-que-c-est"),
+                  ("SIO-035", "ou-est")):
     m = re.search(r'"%s":\s*\[([^\]]*)\]' % sio, reg)
     listed = [s.strip().strip('"') for s in m.group(1).split(",")] if m else []
     check(bool(m) and listed and listed[0] == slug,
@@ -238,6 +268,137 @@ check(not wrong_prep,
       f"every preposition agrees with the country's article in the nationalities deck "
       f"({len(article)} countries tagged)",
       "the lesson teaches a wrong preposition: " + "; ".join(wrong_prep))
+
+# ---- 6 · SIO-011: the tail follows the OTHER sentence ---------------------
+# The whole lesson is one rule — a negative takes « non plus », an affirmative
+# takes « aussi » — so that is what gets executed, not read. The distractor
+# set matters too: four of the eight pronouns do not change shape, and the
+# subject-form distractor collides with the answer for those (it shipped that
+# way for ten minutes and the generator caught it).
+JS11 = r"""
+import { echoCard, cestCard, ASKED } from "./src/content/lessons/native/moi-aussi.gen.ts";
+const bad = [];
+const norm = s => s.replace(/\s+/g, " ").replace(/\s+([?!.,])/g, "$1").trim();
+function audit(q, l) {
+  const w = m => { if (bad.length < 6) bad.push(`${l}: ${m}`); };
+  if (!q.easyOptions.includes(q.correct)) w("answer not among its options");
+  if (new Set(q.easyOptions).size !== q.easyOptions.length) w(`repeated option ${JSON.stringify(q.easyOptions)}`);
+  if (q.easyOptions.length < 4) w(`only ${q.easyOptions.length} options`);
+  if (new Set(q.med.choices).size !== q.med.choices.length) w("repeated cloze choice");
+  if (norm(`${q.med.before} ${q.med.correct} ${q.med.after}`) !== norm(q.correct)) w("cloze does not rebuild the answer");
+  const isNeg = /\bne \b|n'/.test(q.big);
+  if (isNeg && /aussi\.$/.test(q.correct)) w(`AUSSI after a negative: ${q.big} -> ${q.correct}`);
+  if (!isNeg && /non plus\.$/.test(q.correct)) w(`NON PLUS after an affirmative: ${q.big} -> ${q.correct}`);
+}
+for (let i = 0; i < 3000; i++) audit(echoCard(), "free");
+for (const a of ASKED) for (const p of ["aff", "neg"]) for (let k = 0; k < 30; k++) {
+  const q = echoCard({ person: a.answer, polarity: p });
+  audit(q, "pin");
+  if (!q.correct.startsWith(a.answer)) bad.push(`pin ignored: ${a.answer} -> ${q.correct}`);
+  if ((p === "neg") !== /non plus/.test(q.correct)) bad.push(`wrong tail for ${p}: ${q.correct}`);
+}
+for (const a of ASKED) audit(cestCard({ person: a.answer }), "cest");
+// « Et moi ? » must not return: every statement is first person, so it made the
+// speaker ask about themselves — a well-formed card that means nothing.
+const selfAsk = ASKED.some(a => /^Et moi/.test(a.cue));
+console.log(JSON.stringify({ bad: bad.slice(0, 6), selfAsk, people: ASKED.length }));
+"""
+r11 = subprocess.run(["node", "--experimental-strip-types", "--input-type=module", "-e", JS11],
+                     capture_output=True, text=True)
+check(r11.returncode == 0, "SIO-011's generator executed in node",
+      f"moi-aussi run failed: {r11.stderr[-400:]}")
+if r11.returncode == 0:
+    d11 = json.loads(r11.stdout.strip().splitlines()[-1])
+    check(not d11["bad"],
+          "every « aussi / non plus » card follows the sentence it answers",
+          f"the tail rule is broken: {d11['bad']}")
+    check(not d11["selfAsk"],
+          "« Et moi ? » is not in the echo drill (it made the speaker ask about themselves)",
+          "« Et moi ? » is back: with first-person statements it produces "
+          "\"J'ai un frère. Et moi ?\" — the speaker asking about themselves")
+
+# No prepositions in SIO-011 (Dan, 2026-08-29: "we don't want to see chez,
+# sans or other prepositions"). They were also Unit-3 material seven stops early.
+# The rule reads the CODE, not the prose. The first version searched raw source
+# and fired on this file's own header, which quotes Dan's ruling verbatim —
+# "chez, sans or other prepositions" — the same way verify40 first failed on the
+# comments explaining that pretests are not scored. Strip comments, then look
+# only inside the French string literals a learner could actually be shown.
+_ma = code(read(GENS["moi-aussi"]))
+_fr = re.findall(r'"([^"\n]*)"', _ma) + re.findall(r"`([^`\n]*)`", _ma)
+BANNED = ("chez", "avec", "sans", "pour", "devant", "derrière")
+_prep = sorted({w for w in BANNED
+                for t in _fr if re.search(r"\b" + w + r"\b\s+\w", t)})
+check(not _prep,
+      "SIO-011 teaches no prepositions (Dan, 29 Aug)",
+      f"a preposition is back in SIO-011: {_prep} — Dan ruled them out, and they "
+      "are Unit-3 material seven stops early")
+
+# ---- 7 · the five stops filled on 29 Aug ----------------------------------
+# Each carries a rule Dan set, and each is EXECUTED rather than read.
+JS5 = r"""
+const B = "./src/content/lessons/native/";
+const { quelJourQuestion } = await import(B + "quel-jour.gen.ts");
+const { combienQuestion, KEYS } = await import(B + "combien.gen.ts");
+const { onFaitQuoiQuestion, REPLIES } = await import(B + "on-fait-quoi.gen.ts");
+const { quEstCeQuestion } = await import(B + "qu-est-ce-que-c-est.gen.ts");
+const { ouEstQuestion, PLACES, AVEC_DE, SANS_DE, TOUT_SEUL } = await import(B + "ou-est.gen.ts");
+const norm = s => s.replace(/\s+/g, " ").replace(/\s+([?!.,])/g, "$1").trim();
+const bad = [];
+function audit(q, l) {
+  const w = m => { if (bad.length < 8) bad.push(`${l}: ${m}`); };
+  if (!q.easyOptions.includes(q.correct)) w("answer not among its options");
+  if (new Set(q.easyOptions).size !== q.easyOptions.length) w(`repeated option ${JSON.stringify(q.easyOptions)}`);
+  if (q.easyOptions.length < 4) w(`only ${q.easyOptions.length} options`);
+  if (new Set(q.med.choices).size !== q.med.choices.length) w("repeated cloze choice");
+  if (norm(`${q.med.before} ${q.med.correct} ${q.med.after}`) !== norm(q.correct)) w("cloze does not rebuild the answer");
+}
+for (let i = 0; i < 2000; i++) audit(quelJourQuestion(), "4");
+for (let i = 0; i < 2000; i++) audit(combienQuestion(), "7");
+for (let i = 0; i < 2000; i++) audit(onFaitQuoiQuestion(), "8");
+for (let i = 0; i < 2000; i++) audit(quEstCeQuestion(), "21");
+for (let i = 0; i < 3000; i++) {
+  const q = ouEstQuestion(); audit(q, "34");
+  // « Les toilettes SONT » — the deck's one plural place, and the generator
+  // shipped "est" until every preposition x every place was run.
+  if (/^Les \S+ est /.test(q.correct)) bad.push(`plural subject, singular verb: ${q.correct}`);
+  if (/Où est les /.test(q.big)) bad.push(`plural in the prompt: ${q.big}`);
+}
+// Dan: stop 7 stops at ten.
+for (const n of KEYS) if (n > 10) bad.push(`stop 7 goes past ten: ${n}`);
+// Dan: stop 8 teaches only two lines.
+for (let i = 0; i < 300; i++) {
+  const q = onFaitQuoiQuestion();
+  if (!REPLIES.some(r => r.fr === q.correct)) bad.push(`stop 8 taught a third line: ${q.correct}`);
+}
+// Stop 34's contraction: de+le -> du, de+les -> des, and never "de le".
+for (const p of [...AVEC_DE, ...SANS_DE]) for (const pl of PLACES) {
+  const q = ouEstQuestion({ preposition: p, place: pl.fr });
+  audit(q, "34-pin");
+  if (!q.correct.includes(p)) bad.push(`preposition pin ignored: ${p} -> ${q.correct}`);
+  if (/\bde le\b|\bde les\b/.test(q.correct)) bad.push(`uncontracted de: ${q.correct}`);
+  const takesDe = AVEC_DE.includes(p);
+  // No trailing \b — "de l'école" has no word boundary after the apostrophe.
+  if (takesDe && !/(\bdu |\bdes |\bde la |\bde l')/.test(q.correct)) bad.push(`${p} lost its de: ${q.correct}`);
+}
+for (const p of TOUT_SEUL) {
+  const q = ouEstQuestion({ preposition: p });
+  if (/\bde\b|\bdu\b|\bdes\b/.test(q.correct)) bad.push(`${p} should take no place: ${q.correct}`);
+}
+console.log(JSON.stringify({ bad: bad.slice(0, 8), maxSeven: Math.max(...KEYS), replies: REPLIES.length }));
+"""
+r5 = subprocess.run(["node", "--experimental-strip-types", "--input-type=module", "-e", JS5],
+                    capture_output=True, text=True)
+check(r5.returncode == 0, "the five 29-Aug generators executed in node",
+      f"run failed: {r5.stderr[-400:]}")
+if r5.returncode == 0:
+    d5 = json.loads(r5.stdout.strip().splitlines()[-1])
+    check(not d5["bad"], "11000 cards across stops 4, 7, 8, 21 and 34 are well-formed",
+          f"generated cards are wrong: {d5['bad']}")
+    check(d5["maxSeven"] == 10, "stop 7 stops at ten (Dan, 29 Aug)",
+          f"stop 7 goes to {d5['maxSeven']} — Dan capped it at ten")
+    check(d5["replies"] == 2, "stop 8 teaches exactly two lines (Dan, 29 Aug)",
+          f"stop 8 teaches {d5['replies']} lines — Dan asked for two")
 
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:
