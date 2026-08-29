@@ -4,48 +4,7 @@
  */
 import type { NativeLesson } from "./types";
 
-const SUBJECTS = [
-  { disp: "Je", slot: "je" }, { disp: "Tu", slot: "tu" }, { disp: "Il", slot: "il" },
-  { disp: "Elle", slot: "il" }, { disp: "On", slot: "il" }, { disp: "Nous", slot: "nous" },
-  { disp: "Vous", slot: "vous" }, { disp: "Ils", slot: "ils" }, { disp: "Elles", slot: "ils" },
-] as const;
-type Verb = {
-  name: string;
-  en: string;
-  forms: Record<"je" | "tu" | "il" | "nous" | "vous" | "ils", string>;
-  comps: readonly { fr: string; en: string }[];
-};
-const VERBS: readonly Verb[] = [
-  {
-    name: "manger", en: "eat",
-    forms: { je: "mange", tu: "manges", il: "mange", nous: "mangeons", vous: "mangez", ils: "mangent" },
-    comps: [
-      { fr: "du pain", en: "bread" }, { fr: "de la salade", en: "salad" },
-      { fr: "des œufs", en: "eggs" }, { fr: "de la viande", en: "meat" },
-      { fr: "du fromage", en: "cheese" }, { fr: "des frites", en: "fries" },
-    ],
-  },
-  {
-    name: "boire", en: "drink",
-    forms: { je: "bois", tu: "bois", il: "boit", nous: "buvons", vous: "buvez", ils: "boivent" },
-    comps: [
-      { fr: "du café", en: "coffee" }, { fr: "de l'eau", en: "water" },
-      { fr: "du lait", en: "milk" }, { fr: "du jus", en: "juice" }, { fr: "du thé", en: "tea" },
-    ],
-  },
-];
-const SLOTS = ["je", "tu", "il", "nous", "vous", "ils"] as const;
-const MEMO_ROWS = [
-  ["je", "mange", "bois"], ["tu", "manges", "bois"], ["il / elle / on", "mange", "boit"],
-  ["nous", "mangeons", "buvons"], ["vous", "mangez", "buvez"], ["ils / elles", "mangent", "boivent"],
-] as const;
-
-const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)];
-function uniqueForms(v: Verb): string[] {
-  const out: string[] = [];
-  for (const k of SLOTS) if (!out.includes(v.forms[k])) out.push(v.forms[k]);
-  return out;
-}
+import { MANGER_BOIRE_AXES, MEMO_ROWS, mangerBoireQuestion } from "./manger-boire.gen";
 
 export const mangerBoireLesson: NativeLesson = {
   slug: "manger-boire",
@@ -81,19 +40,8 @@ export const mangerBoireLesson: NativeLesson = {
   ),
   dice: {
     instruction: "Conjugate the verb for the given subject: subject + verb + food/drink.",
-    newQuestion() {
-      const s = pick(SUBJECTS), v = pick(VERBS), c = pick(v.comps);
-      const form = v.forms[s.slot];
-      const forms = uniqueForms(v);
-      return {
-        meta: `${s.disp} … · ${v.name} (${v.en})`,
-        big: c.fr,
-        en: c.en,
-        correct: `${s.disp} ${form} ${c.fr}.`,
-        easyOptions: forms.map((f) => `${s.disp} ${f} ${c.fr}.`),
-        med: { before: s.disp, choices: forms, correct: form, after: `${c.fr}.` },
-      };
-    },
+    newQuestion: mangerBoireQuestion,
+    axes: MANGER_BOIRE_AXES,
   },
   bonus: [
     { en: "I eat some bread.", fr: "Je mange du pain." },

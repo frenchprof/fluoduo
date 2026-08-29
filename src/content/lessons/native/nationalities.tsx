@@ -7,33 +7,7 @@
  */
 import type { NativeLesson } from "./types";
 
-type FormKey = "ms" | "fs" | "mp" | "fp";
-
-const COUNTRIES = [
-  { pays: "la France", en: "France", ms: "français", fs: "française", mp: "français", fp: "françaises" },
-  { pays: "la Chine", en: "China", ms: "chinois", fs: "chinoise", mp: "chinois", fp: "chinoises" },
-  { pays: "le Portugal", en: "Portugal", ms: "portugais", fs: "portugaise", mp: "portugais", fp: "portugaises" },
-  { pays: "l'Angleterre", en: "England", ms: "anglais", fs: "anglaise", mp: "anglais", fp: "anglaises" },
-  { pays: "la Tunisie", en: "Tunisia", ms: "tunisien", fs: "tunisienne", mp: "tunisiens", fp: "tunisiennes" },
-  { pays: "l'Indonésie", en: "Indonesia", ms: "indonésien", fs: "indonésienne", mp: "indonésiens", fp: "indonésiennes" },
-  { pays: "la Corée", en: "Korea", ms: "coréen", fs: "coréenne", mp: "coréens", fp: "coréennes" },
-  { pays: "le Mexique", en: "Mexico", ms: "mexicain", fs: "mexicaine", mp: "mexicains", fp: "mexicaines" },
-  { pays: "les États-Unis", en: "United States", ms: "américain", fs: "américaine", mp: "américains", fp: "américaines" },
-  { pays: "l'Allemagne", en: "Germany", ms: "allemand", fs: "allemande", mp: "allemands", fp: "allemandes" },
-  { pays: "la Russie", en: "Russia", ms: "russe", fs: "russe", mp: "russes", fp: "russes" },
-  { pays: "la Suisse", en: "Switzerland", ms: "suisse", fs: "suisse", mp: "suisses", fp: "suisses" },
-  { pays: "la Grèce", en: "Greece", ms: "grec", fs: "grecque", mp: "grecs", fp: "grecques" },
-  { pays: "la Turquie", en: "Turkey", ms: "turc", fs: "turque", mp: "turcs", fp: "turques" },
-] as const;
-
-const SUBJECTS: { disp: string; verb: string; key: FormKey; en: string }[] = [
-  { disp: "Il", verb: "est", key: "ms", en: "he" },
-  { disp: "Elle", verb: "est", key: "fs", en: "she" },
-  { disp: "Ils", verb: "sont", key: "mp", en: "they (m.)" },
-  { disp: "Elles", verb: "sont", key: "fp", en: "they (f.)" },
-];
-
-const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)];
+import { NATIONALITIES_AXES, nationalitiesQuestion } from "./nationalities.gen";
 
 export const nationalitiesLesson: NativeLesson = {
   slug: "nationalities",
@@ -77,24 +51,8 @@ export const nationalitiesLesson: NativeLesson = {
   ),
   dice: {
     instruction: "Give the nationality — agreed with the subject.",
-    newQuestion() {
-      const c = pick(COUNTRIES);
-      const s = pick(SUBJECTS);
-      const form = c[s.key];
-      const forms = [...new Set([c.ms, c.fs, c.mp, c.fp])];
-      const options = forms.map((f) => `${s.disp} ${s.verb} ${f}.`);
-      // Invariable adjectives (russe, suisse) leave under 3 distinct forms —
-      // pad with the verb-agreement near-miss.
-      if (options.length < 3) options.push(`${s.disp} ${s.verb === "est" ? "sont" : "est"} ${form}.`);
-      return {
-        meta: `Et les habitants ? — ${s.en}`,
-        big: c.pays,
-        en: c.en,
-        correct: `${s.disp} ${s.verb} ${form}.`,
-        easyOptions: options,
-        med: { before: `${s.disp} ${s.verb}`, choices: forms, correct: form, after: "." },
-      };
-    },
+    newQuestion: nationalitiesQuestion,
+    axes: NATIONALITIES_AXES,
   },
   bonus: [
     { en: "He is French.", fr: "Il est français." },

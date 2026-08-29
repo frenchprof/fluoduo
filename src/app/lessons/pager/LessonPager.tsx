@@ -92,7 +92,15 @@ export default function LessonPager({
   const cardStartRef = useRef(0);
   const xpAtStartRef = useRef(0);
   const endWroteRef = useRef(false);
-  const endedAtRef = useRef(0);
+  // How long the finished run took, in state rather than a ref. It used to be
+  // `endedAtRef.current - startRef.current` computed in the render body, which
+  // is a render-phase ref read — react-hooks/refs, and the reason the React
+  // Compiler bailed on this whole component. Once it bails, every later
+  // diagnostic is measured against a component it has given up on, which is
+  // how an ordinary Date.now() inside an EFFECT came to be reported as an
+  // impure call "during render". The elapsed time is known exactly once, at
+  // the moment the run ends, so it is computed there and stored.
+  const [elapsed, setElapsed] = useState<{ mins: number; secs: number } | null>(null);
 
   // Shuffling (and the generators' Math.random) live here, never in render —
   // SSR hydration stays deterministic. Same rule as every drill.
@@ -132,8 +140,21 @@ export default function LessonPager({
   // render path). `buildTick` is the chooser's trigger: pressing ★ when entry
   // is already 1 changes no other dependency, and would otherwise keep the
   // mount build and silently discard the axes the learner had just pinned.
+  //
+  // The two suppressions below are a genuine conflict between two rules, not
+  // noise. `build()` shuffles, and shuffling in render breaks SSR hydration
+  // (the AGENTS rule every drill follows) — so the build MUST be an effect,
+  // and an effect that builds a queue must set state. react-hooks/purity then
+  // reports the effect's own Date.now() as an impure call "during render",
+  // which is the compiler describing a component it has partially given up on
+  // rather than a real render-phase call. Fixing the render-phase ref reads
+  // this component used to have took it from six diagnostics to these two;
+  // these two cannot go without moving Math.random() into render, which would
+  // be the worse bug.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     const saved = build();
+    // eslint-disable-next-line react-hooks/purity
     const now = Date.now();
     startRef.current = now;
     cardStartRef.current = now;
@@ -262,7 +283,8 @@ export default function LessonPager({
   useEffect(() => {
     if (!end || endWroteRef.current) return;
     endWroteRef.current = true;
-    endedAtRef.current = Date.now();
+    const ms = Date.now() - startRef.current;
+    setElapsed({ mins: Math.floor(ms / 60000), secs: Math.floor((ms % 60000) / 1000) });
     if (sio) markSioDone(sio.id, accuracy);
     setXpEarned(loadProgress().xp - xpAtStartRef.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -311,14 +333,13 @@ export default function LessonPager({
         }
       : null;
 
-  const mins = Math.floor((endedAtRef.current - startRef.current) / 60000);
-  const secs = Math.floor(((endedAtRef.current - startRef.current) % 60000) / 1000);
+  const { mins, secs } = elapsed ?? { mins: 0, secs: 0 };
   const pct = Math.round(accuracy * 100);
 
   // The finished run's footer (the approved flow, 2026-08-24): ONE primary
   // « Next › » once the SIO write has landed; ↻ Try again is the quiet
   // "Repeat". null while running — the base cta/feedback own the footer.
-  const finish: DrillFinish | null = end ? { repeat: () => { clearRun(); setAsked(false); setBuildTick((t) => t + 1); } } : null;
+  const finish: DrillFinish | null = end ? { repeat: () => { clearRun(); setAsked(false); setElapsed(null); setBuildTick((t) => t + 1); } } : null;
 
   // Ask before the first card. Rendered from the SINGLE return below rather
   // than as an early `return <DrillShell>`: a conditional early return makes

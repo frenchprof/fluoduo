@@ -30,7 +30,8 @@ import WordBank from "@/components/WordBank";
 import type { Collection, Item } from "@/lib/collections/schema";
 import { gradeAgainst, type Grade } from "@/lib/practice/cloze";
 import { shuffle } from "@/lib/shuffle";
-import { cap, label, offer, type SessionLength } from "@/lib/sessionLength";
+import { cap, offer, type SessionLength } from "@/lib/sessionLength";
+import HowManyQuestions from "@/components/HowManyQuestions";
 
 // The private normalize/deaccent/grade trio (a byte-clone of cloze.ts) died
 // in the grading unification (2026-08-11) — THE grader lives in
@@ -244,9 +245,18 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
   // the notebook frame, the exit ✕ and the bottom bar, so the first thing a
   // learner saw did not look like the app (caught in a browser, not in
   // review). No progress and no CTA — the choice IS the control.
+  // ...but NOT when embedded in a SIO popup, where the shell is exactly what
+  // must not appear — that drew a whole drill frame inside the popup for one
+  // screen and then threw it away (2026-08-29).
   if (!asked) {
-    const lengths = offer(order.length)!;
-    return (
+    const body = (
+      <HowManyQuestions
+        lengths={offer(order.length)!}
+        total={order.length}
+        onPick={(n) => { setChosen(n); setAsked(true); }}
+      />
+    );
+    return embedded ? body : (
       <DrillShell
         activity="complete"
         deck={collectionId}
@@ -254,23 +264,7 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
         progress={null}
         cta={null}
       >
-        <div className="flex flex-col items-center gap-5 pt-8 text-center">
-          <p className="fluo-serif text-xl font-black text-[color:var(--fluo-ink)]">
-            How many questions?
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            {lengths.map((n) => (
-              <button
-                key={String(n)}
-                type="button"
-                onClick={() => { setChosen(n); setAsked(true); }}
-                className="cahier-btn cahier-btn-primary min-w-20 justify-center"
-              >
-                {label(n, order.length)}
-              </button>
-            ))}
-          </div>
-        </div>
+        {body}
       </DrillShell>
     );
   }
