@@ -75,7 +75,7 @@ const REGISTRY: Record<string, LetrisSet> = {
   // Content-gap wave (2026-08-23): rain sets for the decks that had none,
   // keyed by deck id so the rails' `collectionId.replace("-letris", "")`
   // lands here. Category axes come from the syllabus: U0 jours + moments,
-  // U0 alphabet pour épeler (rhyme families), U0/U1 nombres 1–10 vs 11–69
+  // U0 alphabet pour « ça s'écrit » (rhyme families), U0/U1 nombres 1–10 vs 11–69
   // (« vingt et un » vs « vingt-deux »), U4 nombres (3) de 70 à 100,
   // U1 accord des adjectifs de nationalité, U1/U2 l'élision (le/l'),
   // U2 aimer + article défini vs aimer + infinitif.

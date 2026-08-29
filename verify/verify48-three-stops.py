@@ -85,7 +85,7 @@ REG = "src/content/lessons.ts"
 NAT = "src/content/lessons/native/index.tsx"
 GENS = {
     "moi-aussi": "src/content/lessons/native/moi-aussi.gen.ts",
-    "epeler": "src/content/lessons/native/epeler.gen.ts",
+    "ca-secrit": "src/content/lessons/native/ca-secrit.gen.ts",
     "langues-pays": "src/content/lessons/native/langues-pays.gen.ts",
     "nombres-echanges": "src/content/lessons/native/nombres-echanges.gen.ts",
     # The five stops filled 29 Aug, on Dan's rulings (see section 7).
@@ -105,7 +105,7 @@ if FAIL:
 reg, nat = read(REG), read(NAT)
 
 # ---- 1-2 · each stop has its lesson, and it leads -------------------------
-for sio, slug in (("SIO-003", "epeler"), ("SIO-017", "langues-pays"),
+for sio, slug in (("SIO-003", "ca-secrit"), ("SIO-017", "langues-pays"),
                   ("SIO-018", "nombres-echanges"), ("SIO-011", "moi-aussi"),
                   ("SIO-004", "quel-jour"), ("SIO-007", "combien"),
                   ("SIO-008", "on-fait-quoi"), ("SIO-021", "qu-est-ce-que-c-est"),
@@ -120,19 +120,19 @@ for sio, slug in (("SIO-003", "epeler"), ("SIO-017", "langues-pays"),
           f"{slug} is registered in both the gallery and the native index",
           f"{slug} is missing from LESSONS or NATIVE_LESSONS — the route 404s")
 
-# The atelier depends on `epeler` but must not LEAD with it — one goal, one
+# The atelier depends on `ca-secrit` but must not LEAD with it — one goal, one
 # lesson (verify27). I made exactly this mistake and the rule caught it.
 _m10 = re.search(r'"SIO-010":\s*\[([^\]]*)\]', reg)
-check(not _m10 or "epeler" not in _m10.group(1),
+check(not _m10 or "ca-secrit" not in _m10.group(1),
       "SIO-010 does not borrow SIO-003's lesson (one goal, one lesson)",
-      "SIO-010 leads with `epeler` — a production stop opening on another "
+      "SIO-010 leads with `ca-secrit` — a production stop opening on another "
       "stop's lesson is exactly what verify27 forbids")
 
 # ---- 3-5 · the generators, EXECUTED --------------------------------------
 # Read, not executed, is not enough: a generator that produces malformed French
 # or a cloze that does not rebuild its own sentence looks fine in source.
 JS = r"""
-import { epelerQuestion, NAMES } from "./src/content/lessons/native/epeler.gen.ts";
+import { caSecritQuestion, NAMES } from "./src/content/lessons/native/ca-secrit.gen.ts";
 import { languesPaysQuestion, PLACES, bareLang } from "./src/content/lessons/native/langues-pays.gen.ts";
 import { nombresQuestion, NUMBER_KEYS } from "./src/content/lessons/native/nombres-echanges.gen.ts";
 
@@ -150,17 +150,17 @@ function audit(label, q) {
     w(`cloze does not rebuild the graded sentence: "${norm(`${q.med.before} ${q.med.correct} ${q.med.after}`)}" vs "${norm(q.correct)}"`);
   if (/undefined|NaN|\[object/.test(JSON.stringify(q))) w("a placeholder leaked into the card");
 }
-for (let i = 0; i < 2000; i++) audit("epeler", epelerQuestion());
+for (let i = 0; i < 2000; i++) audit("ca-secrit", caSecritQuestion());
 for (let i = 0; i < 2000; i++) audit("langues", languesPaysQuestion());
 for (let i = 0; i < 2000; i++) audit("nombres", nombresQuestion());
 
 // Pins honoured, and the promised act actually asked for.
 let asked = { spell: 0, ask: 0, lang: 0, prep: 0, age: 0, prix: 0, qty: 0 };
 for (const n of NAMES) {
-  const t = epelerQuestion({ name: n.name, mode: "tell" });
-  if (!t.correct.includes(n.letters.join(" – "))) bad.push(`epeler pin ignored: ${n.name}`);
+  const t = caSecritQuestion({ name: n.name, mode: "tell" });
+  if (!t.correct.includes(n.letters.join(" – "))) bad.push(`ca-secrit pin ignored: ${n.name}`);
   if (t.correct.includes("s'écrit")) asked.spell++;
-  const a = epelerQuestion({ name: n.name, mode: "ask" });
+  const a = caSecritQuestion({ name: n.name, mode: "ask" });
   if (/^Comment ça s'écrit/.test(a.correct)) asked.ask++;
 }
 for (const p of PLACES) {
@@ -400,9 +400,35 @@ if r5.returncode == 0:
     check(d5["replies"] == 2, "stop 8 teaches exactly two lines (Dan, 29 Aug)",
           f"stop 8 teaches {d5['replies']} lines — Dan asked for two")
 
+# ── the word « épeler » is retired (Dan, 2026-08-29) ──────────────────────
+# "i want to remove the word epeler throughout the website, since it already
+# commented ça s'écrit which is a lot more useful". The lesson's visible text
+# was already « Comment ça s'écrit ? »; the word survived in its slug (so in
+# /lessons/epeler), in a ComposeIt bank label a learner reads, and in two
+# comments. Asserted over the whole tree, not the three files it was in,
+# because the point is that it does not come BACK.
+import glob as _g, re as _re
+_hits = [f for f in (_g.glob("src/**/*.ts", recursive=True)
+                     + _g.glob("src/**/*.tsx", recursive=True)
+                     + _g.glob("src/**/*.json", recursive=True))
+         if _re.search(r"[\u00e9e]peler", open(f, encoding="utf-8").read(), _re.I)]
+check(not _hits, "the word \u00ab \u00e9peler \u00bb appears nowhere in src/",
+      f"\u00ab \u00e9peler \u00bb is back in: {_hits}")
+# And the lesson is still wired under its new slug: a rename that quietly
+# unhooks SIO-003 would pass the check above and fail the learner.
+_ls = read("src/content/lessons.ts")
+check('"SIO-003": ["ca-secrit"]' in _ls and '"ca-secrit":' in _ls,
+      "SIO-003 opens the lesson under its new slug ca-secrit",
+      "SIO-003 is no longer wired to ca-secrit")
+check('"ca-secrit": caSecritLesson' in read("src/content/lessons/native/index.tsx"),
+      "ca-secrit is registered as a native lesson",
+      "ca-secrit is not in the native registry \u2014 the stop would fall back")
+
+
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:
     print("\n".join(f"  FAIL {m}" for m in FAIL))
     print(f"\n{len(FAIL)} failed, {len(OK)} passed")
     sys.exit(1)
+
 print(f"\nall {len(OK)} checks passed")
