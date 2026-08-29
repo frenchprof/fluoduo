@@ -160,3 +160,6 @@ jobs:
 
       - name: "A tour step points at something that exists (28 Aug)"
         run: python3 verify/verify44-tour-targets.py
+
+      - name: patch 45 — deck promises (SIO-001 M./Mme, SIO-005 mnemonics)
+        run: python3 verify/verify45-promise-gaps.py

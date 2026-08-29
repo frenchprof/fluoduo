@@ -2253,3 +2253,51 @@ going on" he objected to in Unit 0 Lesson 1.
 clipped — the constraint is the Continue button (593 baseline, 734 loaded),
 not the screen. A baseline run without the block is what made the regression
 legible: 144→563, clear.
+
+## 29 Aug — the last two deck-side promise gaps (Dan: "fix it and merge pls")
+
+**SIO-005 · beige.** The v9 sheet gives eleven colours a mnemonic and stops.
+Dan settled the twelfth: **`le sable beige`**. All 12 now carry one.
+
+**SIO-001 · M./Mme as a form of address.** The competence names it and the
+LESSON already teaches it — `se-presenter.tsx` has a `title` task and the Mémo
+reads « Bonjour, Madame Martin ». The **deck** did not: `sappeler.json` held
+`Monsieur` zero times and `Madame` once, inside « Vous vous appelez Madame
+Martin », where Madame is part of a NAME, not an address. So 4Mémoire,
+WorDrill, iComplete, GramMarathon and Letris — five of the six surfaces —
+could never show it. Three cards added, in the lesson's own vocabulary:
+
+    Bonjour, Madame Martin.              Au revoir, Monsieur Dubois.
+    Comment vous vous appelez, Madame ?  (title in final position)
+
+**A correction I owed Dan.** I told him "the one thing about politeness that
+SIO-001 promises is the one thing it never shows". That was wrong — the lesson
+shows it; only the deck didn't. The gap was real but narrower than I said, and
+the distinction matters: it is why `verify45` asserts the DECK and not the
+lesson.
+
+**`verify45-promise-gaps.py`** (5 assertions, each proved to fail on its own
+fault first). Two are worth keeping in mind:
+
+- **The vocative is matched on its PUNCTUATION**, `,\s*(Monsieur|Madame|M\.|Mme)`,
+  not on the bare word. A check for "Madame" appears in the file would have
+  passed on « Vous vous appelez Madame Martin » — the very card that made the
+  gap. The break test that matters is #1: with the three new cards removed,
+  i.e. the deck exactly as it was, the check goes red.
+- The colour/mnemonic match first fired on **its own bad extraction**:
+  `fr.split()[-1]` yields `l'orange`, which is not a substring of
+  `le fluo orange`. The content was right; the article has to be stripped,
+  elision included. Looked before believing it, as with the two earlier
+  generator false alarms.
+
+**Numbered 45, not 44** — `verify44-tour-targets.py` already existed. Peers
+renamed their own 42 to 43 for exactly this reason hours earlier, and I walked
+into it anyway. `ls verify/` before choosing a number costs nothing; the
+collision cost verify31-wordrill a fortnight of never running. Wired into the
+workflow, and every one of the 36 scripts is still named there.
+
+**Still open, all of it needing Dan:** the ten bugs (6, 8, 9, 10, 11, 12, 15,
+16, 17, 19) whose text exists nowhere; #18's screen; and whether the colours
+Mémo should make room for the mnemonics by dropping one of its three sections
+(they are on the cards either way — the card overflows behind Continue if a
+fourth block is added, measured).

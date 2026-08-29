@@ -86,6 +86,30 @@
       "note": "(formal)",
       "gap": "appelez",
       "tags": []
+    },
+    {
+      "id": "sappeler-11",
+      "fr": "Bonjour, Madame Martin.",
+      "en": "Hello, Mrs Martin.",
+      "note": "(formal)",
+      "gap": "Madame",
+      "tags": []
+    },
+    {
+      "id": "sappeler-12",
+      "fr": "Au revoir, Monsieur Dubois.",
+      "en": "Goodbye, Mr Dubois.",
+      "note": "(formal)",
+      "gap": "Monsieur",
+      "tags": []
+    },
+    {
+      "id": "sappeler-13",
+      "fr": "Comment vous vous appelez, Madame ?",
+      "en": "What's your name? (to a woman you address formally)",
+      "note": "(formal)",
+      "gap": "Madame",
+      "tags": []
     }
   ]
 }
