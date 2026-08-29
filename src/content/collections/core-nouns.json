@@ -1,7 +1,7 @@
 {
   "id": "core-nouns",
   "title": "Some nouns",
-  "subtitle": "masculine or feminine — the article tells you",
+  "subtitle": "où · qui · quoi — and un or une",
   "langPair": "fr-en",
   "owner": "curated",
   "visibility": "public",
@@ -52,21 +52,23 @@
       "fr": "croissant",
       "en": "croissant",
       "tags": [
-        "col:m"
+        "col:m",
+        "q:quoi"
       ],
-      "example": "Qu'est-ce que c'est ? — C'est un croissant.",
+      "example": "C'est quoi ? — C'est un croissant.",
       "exampleEn": "It's a croissant.",
       "gap": "un"
     },
     {
       "id": "core-nouns-02",
       "fr": "classe",
-      "en": "class",
+      "en": "classroom",
       "tags": [
-        "col:f"
+        "col:f",
+        "q:ou"
       ],
-      "example": "Qu'est-ce que c'est ? — C'est une classe.",
-      "exampleEn": "It's a class.",
+      "example": "C'est où ? — C'est une classe.",
+      "exampleEn": "It's a classroom.",
       "gap": "une"
     },
     {
@@ -74,9 +76,10 @@
       "fr": "macaron",
       "en": "macaron",
       "tags": [
-        "col:m"
+        "col:m",
+        "q:quoi"
       ],
-      "example": "Qu'est-ce que c'est ? — C'est un macaron.",
+      "example": "C'est quoi ? — C'est un macaron.",
       "exampleEn": "It's a macaron.",
       "gap": "un"
     },
@@ -85,9 +88,10 @@
       "fr": "consonne",
       "en": "consonant",
       "tags": [
-        "col:f"
+        "col:f",
+        "q:quoi"
       ],
-      "example": "Qu'est-ce que c'est ? — C'est une consonne.",
+      "example": "C'est quoi ? — C'est une consonne.",
       "exampleEn": "It's a consonant.",
       "gap": "une"
     },
@@ -96,9 +100,10 @@
       "fr": "café",
       "en": "café",
       "tags": [
-        "col:m"
+        "col:m",
+        "q:ou"
       ],
-      "example": "Qu'est-ce que c'est ? — C'est un café.",
+      "example": "C'est où ? — C'est un café.",
       "exampleEn": "It's a café.",
       "gap": "un"
     },
@@ -107,9 +112,10 @@
       "fr": "activité",
       "en": "activity",
       "tags": [
-        "col:f"
+        "col:f",
+        "q:quoi"
       ],
-      "example": "Qu'est-ce que c'est ? — C'est une activité.",
+      "example": "C'est quoi ? — C'est une activité.",
       "exampleEn": "It's an activity.",
       "gap": "une"
     },
@@ -118,9 +124,10 @@
       "fr": "sport",
       "en": "sport",
       "tags": [
-        "col:m"
+        "col:m",
+        "q:quoi"
       ],
-      "example": "Qu'est-ce que c'est ? — C'est un sport.",
+      "example": "C'est quoi ? — C'est un sport.",
       "exampleEn": "It's a sport.",
       "gap": "un"
     },
@@ -129,9 +136,10 @@
       "fr": "nationalité",
       "en": "nationality",
       "tags": [
-        "col:f"
+        "col:f",
+        "q:quoi"
       ],
-      "example": "Qu'est-ce que c'est ? — C'est une nationalité.",
+      "example": "C'est quoi ? — C'est une nationalité.",
       "exampleEn": "It's a nationality.",
       "gap": "une"
     },
@@ -140,9 +148,10 @@
       "fr": "groupe",
       "en": "group",
       "tags": [
-        "col:m"
+        "col:m",
+        "q:qui"
       ],
-      "example": "Qu'est-ce que c'est ? — C'est un groupe.",
+      "example": "C'est qui ? — C'est un groupe.",
       "exampleEn": "It's a group.",
       "gap": "un"
     },
@@ -151,9 +160,10 @@
       "fr": "région",
       "en": "region",
       "tags": [
-        "col:f"
+        "col:f",
+        "q:ou"
       ],
-      "example": "Qu'est-ce que c'est ? — C'est une région.",
+      "example": "C'est où ? — C'est une région.",
       "exampleEn": "It's a region.",
       "gap": "une"
     },
@@ -162,10 +172,11 @@
       "fr": "football",
       "en": "football",
       "tags": [
-        "col:m"
+        "col:m",
+        "q:quoi"
       ],
-      "example": "J'aime le football.",
-      "exampleEn": "I like football.",
+      "example": "C'est quoi ? — C'est le football.",
+      "exampleEn": "It's football.",
       "gap": "le"
     },
     {
@@ -173,9 +184,10 @@
       "fr": "province",
       "en": "province",
       "tags": [
-        "col:f"
+        "col:f",
+        "q:ou"
       ],
-      "example": "Qu'est-ce que c'est ? — C'est une province.",
+      "example": "C'est où ? — C'est une province.",
       "exampleEn": "It's a province.",
       "gap": "une"
     },
@@ -184,10 +196,11 @@
       "fr": "champagne",
       "en": "champagne",
       "tags": [
-        "col:m"
+        "col:m",
+        "q:quoi"
       ],
-      "example": "J'aime le champagne.",
-      "exampleEn": "I like champagne.",
+      "example": "C'est quoi ? — C'est le champagne.",
+      "exampleEn": "It's champagne.",
       "gap": "le"
     },
     {
@@ -195,10 +208,11 @@
       "fr": "minute",
       "en": "minute",
       "tags": [
-        "col:f"
+        "col:f",
+        "q:quoi"
       ],
-      "example": "Une minute, s'il vous plaît.",
-      "exampleEn": "One minute, please.",
+      "example": "C'est quoi ? — C'est une minute.",
+      "exampleEn": "It's a minute.",
       "gap": "une"
     }
   ]

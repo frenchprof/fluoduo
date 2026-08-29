@@ -245,6 +245,11 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
         You cannot hear it from the word — <span lang="fr"><i>un groupe</i></span> and{" "}
         <span lang="fr"><i>une minute</i></span> end the same way.
       </p>
+      <Lines>
+        <li><B>C&rsquo;est où ?</B> — <i lang="fr">C&rsquo;est un café. C&rsquo;est une région.</i></li>
+        <li><B>C&rsquo;est qui ?</B> — <i lang="fr">C&rsquo;est un groupe.</i></li>
+        <li><B>C&rsquo;est quoi ?</B> — <i lang="fr">C&rsquo;est un croissant. C&rsquo;est une minute.</i></li>
+      </Lines>
       <Warn>
         These words are nearly English — so the only new thing to learn is the{" "}
         <B>gender</B>. Learn each noun WITH its article, never on its own.
