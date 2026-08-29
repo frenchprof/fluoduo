@@ -91,7 +91,14 @@ export default function ActivityLanding({ activityKey }: { activityKey: string }
   if (!act) return <main className="p-6">No activity <code>{activityKey}</code>.</main>;
 
   return (
-    <CahierShell tabs={siteTabs()} active={`unit-${openUnit ?? 0}`}>
+    // `active` is the ACTIVITY, not the open unit. It was `unit-N`, which is
+    // why every landing's coloured strip said "Unité 0" while every other page
+    // in the app said its own name (Dan, 2026-08-29: "why is the coloured
+    // heading strip not consistently showing the name of activity"). The strip
+    // takes its label, its family wash and its demand band from `active`, so
+    // this one word is the whole fix. No unit flap is marked now, which is
+    // honest: this page spans all five.
+    <CahierShell tabs={siteTabs()} active={activityKey}>
       {(
         <SectionBand
           family={act.family}

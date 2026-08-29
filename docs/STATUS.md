@@ -2570,3 +2570,63 @@ break-test** — the same two shapes this repo keeps finding:
 The copy-detector also fired on `PageBand.tsx`, which fills a page-wide strip
 from the same variable and is not a copy of anything; it now requires the box
 to centre a glyph, which a strip never does.
+
+## 29 Aug — every activity page names itself, and the two games get a landing
+
+Dan, in one sitting: *"why is the coloured heading strip not consistently
+showing the name of activity"*, *"why doesn't NumBus and NumBourse land on the
+same type of selection page as VocabulaRain and LexicaLater"*, and *"even if
+they do not have 50-stop list, it should still have a landing page before the
+game begins, e.g. for settings and so on"*.
+
+**The audit that answered all of it** (every activity's href driven in a real
+browser, 390px). Fourteen have a door; the pattern rollout had reached three:
+
+    the 50-stop landing   SpecuLearn · 4Mémoire · GramMarathon
+    their own page        WorDrill · ÉcouTexte · ConjugaZone · VoixLà ·
+                          ComposeIt · ChaTutor · VocabulaRain · LexicaLater ·
+                          DéjàRevu
+    NO STRIP AT ALL       NumBus · NumBourse
+    no door at all        Memo · Sorting · iComplete (stop-only, by design)
+
+Nothing was wrong with the individual pages — the rollout simply stopped at
+three. Worth stating plainly because it looked like eleven separate faults.
+
+**The strip fix is one word.** `CahierShell` takes the strip's label, its
+family wash AND its demand band from `active`. ActivityLanding passed
+`unit-${openUnit}`, so all three landings announced themselves as "Unité 0"
+while every other page in the app said its own name. It passes `activityKey`
+now. No unit flap is marked, which is honest: the page spans all five.
+
+**`GameLanding.tsx`** — the page a game opens on before it starts: the shell
+(so the strip names it and the rail is reachable), the emoji, the name and the
+blurb from the registry, then whatever the game needs. NumBus's settings form
+moved into it; NumBourse, which had no landing at all, gets one naming its
+eight-level ladder and a deliberate ▶ Jouer.
+
+**This reverses a patch-23 decision on Dan's word**, and that is the point
+worth recording: patch 23 put the NumBus setup inside `GameFrame` — "one ✕,
+one ⋯, no page header" — so the form wore the game's chrome. The cost was that
+the step had no identity and the activity was unreachable from the rail while
+in it. A settings step is a PAGE, not a frame of the game. The GAME still
+wears GameFrame.
+
+**A correction I made and then unmade.** Having moved the name into the strip,
+I stripped it from the landing's section band as redundant. Wrong: every other
+page in the app names itself in BOTH — WorDrill's strip says WorDrill and its
+heading says 🎙️ WorDrill. Dan's complaint was that the STRIP was inconsistent,
+not that the heading repeated it. Restored.
+
+**Also from the same sitting:** the fifty landing rows no longer each wear the
+same activity icon (Dan: "there is no need to have one icon per line. it's a
+bloody waste of space" — his own litmus rule: the page IS that activity), and
+the French objective drops 16px → 13px. Measured across all fifty rows at
+390px: `main` truncated 4 of Unit 0's 10 and 3 more in Units 1/2/4; nothing
+truncates now. Three of those were my own titles, shortened rather than
+shrinking the type further — « Quelle nationalité ? », « Un ou des ? »,
+« Après soixante-neuf… ».
+
+**Still open, and Dan's call:** the eleven activities that are not on the
+50-stop pattern. Some would suit it (WorDrill, iComplete via a door of its
+own); some plainly would not (ChaTutor, VoixLà, the two number games), and
+those now at least have a landing of their own.

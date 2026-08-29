@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import AuthGate from "@/components/AuthGate";
-import GameFrame from "@/components/GameFrame";
+import GameLanding from "@/components/GameLanding";
 import NumBus from "@/games/numbus/NumBus";
 import NumBusSetup from "@/games/numbus/NumBusSetup";
 import type { NumBusConfig } from "@/games/numbus/config";
@@ -10,16 +10,18 @@ import type { NumBusConfig } from "@/games/numbus/config";
 export default function NumBusClient() {
   const [config, setConfig] = useState<NumBusConfig | null>(null);
 
-  // The setup step wears the same frame as the game (patch 23): one ✕, one
-  // ⋯, no page header — the title lives in the ⋯ sheet, not over the form.
+  // The setup step is a PAGE now, not a frame of the game (Dan, 2026-08-29:
+  // "even if they do not have 50-stop list, it should still have a landing
+  // page before the game begins, e.g. for settings and so on"). Patch 23 had
+  // put it inside GameFrame — "no page header" — which left the only two
+  // activities in the app with no coloured strip and nothing on screen naming
+  // them. The GAME still wears GameFrame; only the settings step moved out.
   return (
     <AuthGate what="play">
       {!config ? (
-        <GameFrame title="🚌 NumBus" exitHref="/" progress={null}>
-          <div className="mx-auto h-full max-w-3xl overflow-y-auto px-4 py-4">
-            <NumBusSetup onStart={setConfig} />
-          </div>
-        </GameFrame>
+        <GameLanding activityKey="numbus">
+          <NumBusSetup onStart={setConfig} />
+        </GameLanding>
       ) : (
         <NumBus config={config} onQuit={() => setConfig(null)} />
       )}

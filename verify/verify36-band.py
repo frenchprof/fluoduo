@@ -222,6 +222,30 @@ for _f, _who in (("src/components/StopSheet.tsx", "the stop sheet"),):
         f"{_who} draws its activities with ActivityIcon"
         if _u else f"{_who} no longer uses ActivityIcon")
 
+# ── every activity page names ITSELF in the strip (2026-08-29) ────────────
+# Dan: "why is the coloured heading strip not consistently showing the name of
+# activity". CahierShell takes the strip's label, its family wash AND its
+# demand band from `active`, so an activity page that passes anything else
+# gets someone else's identity. The landings passed `unit-${openUnit}` and so
+# every one of them announced itself as "Unité 0".
+_al = _nocomment(open("src/components/ActivityLanding.tsx", encoding="utf-8").read())
+_ok = "active={activityKey}" in _al and "active={`unit-" not in _al
+(PASS if _ok else FAIL).append(
+    "the activity landings pass their own key as CahierShell's `active`"
+    if _ok else "an activity landing passes a unit as `active` — its strip will say Unité N")
+
+# NumBus and NumBourse were the only two activities in the app with no strip
+# at all: both dropped the learner straight into a GameFrame. Dan: "even if
+# they do not have 50-stop list, it should still have a landing page before
+# the game begins, e.g. for settings and so on."
+for _f, _who in (("src/app/games/numbus/page.tsx", "NumBus"),
+                 ("src/app/games/numbourse/page.tsx", "NumBourse")):
+    _src = _nocomment(open(_f, encoding="utf-8").read())
+    _u = "<GameLanding" in _src
+    (PASS if _u else FAIL).append(
+        f"{_who} opens on a landing page, not straight into the game"
+        if _u else f"{_who} no longer has a landing page before the game")
+
 print("\n".join("  ok    " + p for p in PASS))
 print("\n".join("  FAIL  " + f for f in FAIL))
 print("-" * 66)
