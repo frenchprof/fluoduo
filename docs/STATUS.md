@@ -1761,3 +1761,70 @@ assertion stayed green with the call deleted because the import line alone
 satisfied it; and verify40's absence checks first failed on the *comments*
 explaining that the code deliberately does not score. All three would have
 shipped as green-but-vacuous.
+
+## 29 Aug — the French objective titles, and the pre-lesson landing page
+
+Dan renamed the first ten stops to French question forms. Written into
+`short` they break the Home map: `short` is the label printed under a 56px
+stop, capped at 14 characters by `scripts/check-short-labels.mjs` (which runs
+before `next build`) and asserted by `verify/verify25b.py`. The longest of
+Dan's ten, « Bonjour ! Salut ! Au revoir ! », is 29.
+
+`short` therefore keeps the English map label and a new **optional `fr`**
+field on each SIO carries the full French title, for surfaces with room to
+print it (Dan: "We keep the English but in much smaller FluOlinGo font, and
+put the full french title out in the list"). Ten stops have one; the field is
+absent on the other forty, so nothing downstream needs to know about it yet.
+
+| id | `short` (map, ≤14) | `fr` (lists) |
+|---|---|---|
+| SIO-001 | Introductions | Je m'appelle… |
+| SIO-002 | Tu / Vous | Tu (toi) ou vous ? |
+| SIO-003 | Alphabet | Ça s'écrit comment ? |
+| SIO-004 | Days & moments | C'est quand ? |
+| SIO-005 | Colours | C'est comment ? |
+| SIO-006 | Some nouns | C'est quoi ? |
+| SIO-007 | Numbers 0–20 | Il y a combien de… ? |
+| SIO-008 | Classroom talk | Les instructions de classe |
+| SIO-009 | Greetings | Bonjour ! Salut ! Au revoir ! |
+| SIO-010 | First meeting | Un dialogue simple |
+
+Two of Dan's titles were typeset rather than copied: "Au Revoir!" is written
+« Au revoir ! » — lowercase r mid-sentence, and the space French puts before
+« ! », the convention the rest of the content already follows. Told him.
+
+**The landing-page mock** (artifact `41600283-afda-4e2d-8315-35d71e450291`,
+generator `scratchpad/pl/gen.py`, not in the repo) is a design for ONE page
+holding all fifty pre-lesson entries: an accordion with one unit open at a
+time (`<details name>` + a fallback for browsers without exclusive
+accordions), a whole Pre-Test button per row, or a half/half split with
+SpecuLearn where the deck is in `SPECULEARN_READY` (nine of fifty).
+
+Two things it got wrong and now doesn't, both worth remembering:
+
+- **A flex `<th>` is not a table cell.** The rows were a `<table>` with
+  `th{display:flex}` to get the number and the name onto one line. That takes
+  the `th` out of the table box model, so the browser wraps it in an anonymous
+  cell and the row's geometry stops being the stylesheet's — which is what put
+  the title on a line of its own, the thing Dan kept reporting and I kept
+  measuring as fixed. The rows are a flex list now: three children, one line,
+  no trapdoor.
+- **`num` is a sort key, not a label.** SIO-045A's `num` is `45.5`, so a mock
+  that prints `num` numbers a stop "45.5". It shows `45A` now, parsed from
+  the id.
+
+Row height is 43px either way — the 32px button plus its shadow governs it —
+so the small Patrick Hand gloss under the French title costs no vertical
+space at all.
+
+**Not verified:** the Patrick Hand webfont could not load in this container
+(the egress proxy refused `fonts.googleapis.com`), so the screenshots show a
+serif fallback for the gloss line and the two hand-lettered headings.
+`document.fonts.check()` returns *true* in that situation — it says "nothing
+is pending", not "the webfont arrived" — so it is not a usable probe. The
+published artifact loads the font normally; the widths measured here are
+wider than Patrick Hand's, so "no title is clipped" is conservative.
+
+**Still open on this page:** the other forty stops have no `fr` title, so
+units 1–4 show their English `short` as the label with no gloss. That is the
+honest state of the content, not a layout decision.
