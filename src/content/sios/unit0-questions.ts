@@ -24,8 +24,10 @@
  * one; nothing explains a correct answer (the TTS + green fill do that job).
  *
  * SIO-006 (core nouns) has no equivalent in the source site — authored fresh.
- * SIO-010 (the first-meeting role-play) is intentionally absent — it's a
- * mini-oral simulation done in class with the instructor, not an online MCQ.
+ * SIO-010 (the first-meeting role-play) WAS intentionally absent — a mini-oral
+ * done in class, not an online MCQ. Dan reversed that on 2026-08-28: the
+ * role-play now has a pretest of its own, one run per audience — see
+ * SIO010_SITUATIONS below.
  *
  * 2026-07-05 QC pass: the remaining keepers from the same legacy bank were
  * ported (s'appellent + third-person introduction for SIO-001, dimanche + the
@@ -51,6 +53,19 @@ export type Unit0Question = {
   en?: string;
   /** Colour for the title text (the colours quiz shows "red" in red). */
   hue?: string;
+  /**
+   * A literal substring of `title` that wears the highlighter (Dan,
+   * 2026-08-28: "Q5 highlight 'around 7pm'"). Rendered, not stored — the
+   * saved record still keys on the plain title.
+   */
+  hl?: string;
+  /**
+   * Several options are correct and the learner picks EVERY one that fits
+   * ("which of the following ARE appropriate greetings…", SIO-010). The pick
+   * is graded on the exact set: a missing correct answer is as wrong as an
+   * extra one.
+   */
+  multi?: true;
   /** Spoken on a correct pick instead of the default (colours: "le rouge"). */
   tts?: string;
   /**
@@ -100,10 +115,10 @@ const LETTER: Record<string, string> = {
   A: "ah", B: "bay", C: "say", D: "day", E: "uh", F: "eff", G: "jay",
   H: "arsh", I: "ee", J: "jee", K: "kah", L: "ell", M: "emm", N: "enn",
   O: "oh", P: "pay", Q: "kü", R: "air", S: "ess", T: "tay", U: "ü",
-  V: "vay", W: "doo-bluh-vay", X: "eeks", Y: "i grec", Z: "zed",
+  V: "vay", W: "doo-bluh-vay", X: "eeks", Y: "yi grek", Z: "zed",
 };
-const letterQ = (name: string, opts: [string, boolean][]): Unit0Question => ({
-  title: `Which letter is “${name}”?`,
+const letterQ = (name: string, opts: [string, boolean][], note?: string): Unit0Question => ({
+  title: `Which letter is “${name}”?${note ? ` ${note}` : ""}`,
   options: opts.map(([v, ok]) => (ok ? { v, ok } : { v, ok, why: `${v} is “${LETTER[v]}”.` })),
 });
 
@@ -113,7 +128,7 @@ const DAY: Record<string, string> = {
   vendredi: "Friday", samedi: "Saturday", dimanche: "Sunday",
 };
 const MOMENT: Record<string, string> = {
-  matin: "the morning", "après-midi": "the afternoon",
+  matin: "the morning", midi: "midday", "après-midi": "the afternoon",
   soir: "the evening", nuit: "the night",
 };
 const COLOR: Record<string, string> = {
@@ -219,6 +234,187 @@ const instructionQ = (
   ],
 });
 
+/**
+ * SIO-010 — the first-meeting role-play. Dan, 2026-08-28: "a pre-test for all
+ * the expected lines needed in that Simulated dialogue, but with lines that
+ * are answers to the following questions as multiple choices."
+ *
+ * The seven questions are the seven moves of the atelier dialogue (greet · ask
+ * a name · give yours · ask how it's written · say how it's written · enchanté ·
+ * take leave), and the SAME seven are asked of three situations, because the
+ * line changes with the audience:
+ *
+ *   A informal 1:1 (another student) · B formal 1:1 (a client) · C informal
+ *   one-to-many (a group).
+ *
+ * The learner PICKS the situation first — Q2-Q7 are undecidable without it
+ * (tu or vous is exactly what the situation settles), so a shuffled pool of all
+ * 21 would be unanswerable. Each situation is its own 7-question run.
+ *
+ * Q1 is `multi`: "which of the following ARE appropriate greetings" has more
+ * than one right answer, and a register is a SET of usable openings, not a
+ * single best one.
+ */
+export type Unit0Situation = {
+  key: string;
+  /** Flap label — the audience, which is all the learner needs to choose. */
+  label: string;
+  questions: Unit0Question[];
+};
+
+/** Joins a multi-answer pick into the single string the record stores. */
+export const MULTI_SEP = " · ";
+
+export const SIO010_SITUATIONS: Unit0Situation[] = [
+  {
+    key: "informal",
+    label: "🎓 A student (informal, 1:1)",
+    questions: [
+      { multi: true, title: "Which of these are appropriate greetings with another university student?", options: [
+        { v: "Salut !", ok: true },
+        { v: "Bonjour !", ok: true },
+        { v: "Coucou !", ok: true },
+        { v: "Bonjour, monsieur.", ok: false, why: "Monsieur is formal address — over-formal for a fellow student." },
+        { v: "Au revoir !", ok: false, why: "That's a goodbye, not a greeting." },
+      ] },
+      { title: "You ask the other student their name. You say:", options: [
+        { v: "Comment tu t'appelles ?", ok: true },
+        { v: "Comment vous vous appelez ?", ok: false, why: "Vous is formal or plural — one fellow student takes tu." },
+        { v: "Comment ça s'écrit ?", ok: false, why: "That asks how a name is SPELLED, not what it is." },
+        { v: "Je m'appelle comment ?", ok: false, why: "That asks what YOUR own name is." },
+      ] },
+      { title: "You give your own name. You say:", options: [
+        { v: "Moi, je m'appelle Léa.", ok: true },
+        { v: "Tu t'appelles Léa.", ok: false, why: "That tells the other person THEIR name is Léa." },
+        { v: "Elle s'appelle Léa.", ok: false, why: "That gives a third person's name — 'her name is Léa'." },
+        { v: "Ça s'écrit Léa.", ok: false, why: "Ça s'écrit spells a name out letter by letter." },
+      ] },
+      { title: "You ask how that name is written. You say:", options: [
+        { v: "Comment ça s'écrit ?", ok: true },
+        { v: "Comment tu t'appelles ?", ok: false, why: "That asks the name itself — you already have it." },
+        { v: "Comment ça va ?", ok: false, why: "That asks how they are." },
+        { v: "Ça s'écrit L – É – A.", ok: false, why: "That ANSWERS the question — it spells the name out." },
+      ] },
+      { title: "You spell your own name out loud. You say:", tts: "Ça s'écrit, L, É, A", options: [
+        { v: "Ça s'écrit L – É – A.", ok: true },
+        { v: "Comment ça s'écrit ?", ok: false, why: "That ASKS the question." },
+        { v: "Je m'appelle L – É – A.", ok: false, why: "Je m'appelle gives the name, not its letters." },
+        { v: "Ça s'appelle L – É – A.", ok: false, why: "S'appeler is for names; spelling uses s'écrire." },
+      ] },
+      { title: "You have just exchanged names. You say:", options: [
+        { v: "Enchanté !", ok: true },
+        { v: "Merci !", ok: false, why: "Merci means 'thank you'." },
+        { v: "Au revoir !", ok: false, why: "That's a goodbye — you have only just met." },
+        { v: "S'il te plaît.", ok: false, why: "That means 'please'." },
+      ] },
+      { title: "You leave the other student. You say:", options: [
+        { v: "Au revoir !", ok: true },
+        { v: "Bonjour !", ok: false, why: "That's a hello." },
+        { v: "Enchanté !", ok: false, why: "That's for the moment you are introduced." },
+        { v: "Comment ça va ?", ok: false, why: "That asks how they are — you are leaving." },
+      ] },
+    ],
+  },
+  {
+    key: "formal",
+    label: "💼 A client (formal, 1:1)",
+    questions: [
+      { multi: true, title: "Which of these are appropriate greetings with a business client?", options: [
+        { v: "Bonjour, madame.", ok: true },
+        { v: "Bonjour, monsieur.", ok: true },
+        { v: "Bonsoir, madame.", ok: true },
+        { v: "Salut !", ok: false, why: "Salut is casual — too familiar for a client." },
+        { v: "Coucou !", ok: false, why: "Coucou is very informal — friends and family only." },
+      ] },
+      { title: "You ask the client their name. You say:", options: [
+        { v: "Comment vous vous appelez ?", ok: true },
+        { v: "Comment tu t'appelles ?", ok: false, why: "Tu is too familiar with a client — vous." },
+        { v: "Comment ça s'écrit ?", ok: false, why: "That asks how a name is SPELLED, not what it is." },
+        { v: "Je m'appelle comment ?", ok: false, why: "That asks what YOUR own name is." },
+      ] },
+      { title: "You give your own name to the client. You say:", options: [
+        { v: "Je m'appelle Léa Martin.", ok: true },
+        { v: "Vous vous appelez Léa Martin.", ok: false, why: "That tells the client THEIR name is Léa Martin." },
+        { v: "Elle s'appelle Léa Martin.", ok: false, why: "That gives a third person's name." },
+        { v: "Enchanté, Léa Martin.", ok: false, why: "Enchanté is 'nice to meet you' — it doesn't give your name." },
+      ] },
+      { title: "You ask the client how their name is written. You say:", options: [
+        { v: "Comment ça s'écrit ?", ok: true },
+        { v: "Comment vous vous appelez ?", ok: false, why: "That asks the name itself — you already have it." },
+        { v: "Comment allez-vous ?", ok: false, why: "That asks how they are." },
+        { v: "Ça s'écrit M – A – R – T – I – N.", ok: false, why: "That ANSWERS the question — it spells the name out." },
+      ] },
+      { title: "You spell your own surname for the client. You say:", tts: "Ça s'écrit, M, A, R, T, I, N", options: [
+        { v: "Ça s'écrit M – A – R – T – I – N.", ok: true },
+        { v: "Comment ça s'écrit ?", ok: false, why: "That ASKS the question." },
+        { v: "Je m'appelle M – A – R – T – I – N.", ok: false, why: "Je m'appelle gives the name, not its letters." },
+        { v: "Ça s'appelle M – A – R – T – I – N.", ok: false, why: "S'appeler is for names; spelling uses s'écrire." },
+      ] },
+      { title: "The client has just given you their name. You say:", options: [
+        { v: "Enchanté, madame.", ok: true },
+        { v: "Merci, madame.", ok: false, why: "Merci is 'thank you' — on meeting someone it's Enchanté." },
+        { v: "Salut !", ok: false, why: "Salut is casual — too familiar for a client." },
+        { v: "Au revoir, madame.", ok: false, why: "That's a goodbye — you have only just met." },
+      ] },
+      { title: "You take leave of the client. You say:", options: [
+        { v: "Au revoir, madame.", ok: true },
+        { v: "Salut !", ok: false, why: "Salut is casual — too familiar for a client." },
+        { v: "Bonjour, madame.", ok: false, why: "That's a hello." },
+        { v: "Enchanté, madame.", ok: false, why: "That's for the moment you are introduced." },
+      ] },
+    ],
+  },
+  {
+    key: "group",
+    label: "👥 A group (informal, 1 to many)",
+    questions: [
+      { multi: true, title: "Which of these are appropriate greetings with more than one person?", options: [
+        { v: "Bonjour à tous !", ok: true },
+        { v: "Salut tout le monde !", ok: true },
+        { v: "Bonjour !", ok: true },
+        { v: "Bonjour, monsieur.", ok: false, why: "Monsieur addresses ONE man — a group takes à tous / tout le monde." },
+        { v: "Au revoir tout le monde !", ok: false, why: "That's a goodbye, not a greeting." },
+      ] },
+      { title: "You ask the group their names. You say:", options: [
+        { v: "Comment vous vous appelez ?", ok: true },
+        { v: "Comment tu t'appelles ?", ok: false, why: "Tu is singular — more than one person is always vous, even among friends." },
+        { v: "Comment ils s'appellent ?", ok: false, why: "That asks about a third group — 'what are THEIR names?'" },
+        { v: "Comment nous nous appelons ?", ok: false, why: "That asks what OUR own names are." },
+      ] },
+      { title: "You give your own name to the group. You say:", options: [
+        { v: "Moi, je m'appelle Léa.", ok: true },
+        { v: "Nous nous appelons Léa.", ok: false, why: "Nous is 'we' — you are one person." },
+        { v: "Vous vous appelez Léa.", ok: false, why: "That tells the group THEIR name is Léa." },
+        { v: "Ils s'appellent Léa.", ok: false, why: "That gives a third group's name." },
+      ] },
+      { title: "You ask the group how their names are written. You say:", options: [
+        { v: "Comment ça s'écrit ?", ok: true },
+        { v: "Comment vous vous appelez ?", ok: false, why: "That asks the names themselves — you already have them." },
+        { v: "Comment ça va ?", ok: false, why: "That asks how they are." },
+        { v: "Ça s'écrit L – É – A.", ok: false, why: "That ANSWERS the question — it spells the name out." },
+      ] },
+      { title: "You spell your own name for the group. You say:", tts: "Ça s'écrit, L, É, A", options: [
+        { v: "Ça s'écrit L – É – A.", ok: true },
+        { v: "Comment ça s'écrit ?", ok: false, why: "That ASKS the question." },
+        { v: "Je m'appelle L – É – A.", ok: false, why: "Je m'appelle gives the name, not its letters." },
+        { v: "Vous vous écrivez L – É – A.", ok: false, why: "It is the NAME that is written, not the people: ça s'écrit…" },
+      ] },
+      { title: "You have just exchanged names with the group. You say:", options: [
+        { v: "Enchanté !", ok: true },
+        { v: "Merci !", ok: false, why: "Merci means 'thank you'." },
+        { v: "Salut !", ok: false, why: "Salut is a hello or a bye — not 'nice to meet you'." },
+        { v: "Au revoir tout le monde !", ok: false, why: "That's a goodbye — you have only just met." },
+      ] },
+      { title: "You leave the group. You say:", options: [
+        { v: "Au revoir tout le monde !", ok: true },
+        { v: "Bonjour à tous !", ok: false, why: "That's a hello." },
+        { v: "Au revoir, monsieur.", ok: false, why: "Monsieur addresses ONE man — a group takes tout le monde / à tous." },
+        { v: "Enchanté !", ok: false, why: "That's for the moment you are introduced." },
+      ] },
+    ],
+  },
+];
+
 export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
   "SIO-001": [
     { stem: "[Moi,] Je ___ Dan.", en: "My name is Dan.", options: appelerOpts("m'appelle", ["s'appellent", "vous appelez", "nous appelons"]) },
@@ -230,7 +426,7 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
     // 2026-07-05 port: the ils/elles person + introducing a third person.
     { stem: "[Eux,] Ils ___ Pierre et Marc.", en: "Their names are Pierre and Marc.", options: appelerOpts("s'appellent", ["s'appelle", "nous appelons", "vous appelez"]) },
     { stem: "[Elles,] Elles ___ Marie et Léa.", en: "Their names are Marie and Léa.", options: appelerOpts("s'appellent", ["m'appelle", "t'appelles", "s'appelle"]) },
-    { title: "You're introducing your friend Marc to your professor.", options: [
+    { title: "You're introducing your friend Marc to your [male] professor.", options: [
       { v: "Monsieur, je vous présente Marc. Il s'appelle Marc Tan.", ok: true },
       { v: "Monsieur, je te présente Marc.", ok: false, why: "Te is tu-register — with your professor it's je vous présente." },
       { v: "Monsieur, je m'appelle Marc.", ok: false, why: "Je m'appelle gives YOUR name — you're introducing Marc." },
@@ -258,9 +454,10 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
     letterQ("air", [["U", false], ["F", false], ["R", true], ["L", false]]),
     letterQ("jay", [["G", true], ["K", false], ["J", false], ["V", false]]),
     letterQ("say", [["S", false], ["T", false], ["C", true], ["X", false]]),
-    letterQ("i grec", [["E", false], ["I", false], ["Y", true], ["U", false]]),
+    letterQ("yi grek", [["E", false], ["I", false], ["Y", true], ["U", false]]),
     letterQ("jee", [["B", false], ["G", false], ["J", true], ["W", false]]),
-    letterQ("kü", [["K", false], ["Q", true], ["P", false], ["M", false]]),
+    letterQ("kü", [["K", false], ["Q", true], ["P", false], ["M", false]],
+      "(Note: the ü sound also exists in languages like German e.g. ‘für’ and Mandarin e.g. ‘yu’.)"),
   ],
   "SIO-004": [
     // Concise per Dan (2026-07-02): just the word, choices beside it.
@@ -275,6 +472,8 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
     glossQ("Morning", "matin", ["soir", "nuit", "après-midi"], MOMENT),
     glossQ("Afternoon", "après-midi", ["matin", "soir", "nuit"], MOMENT),
     glossQ("Evening", "soir", ["après-midi", "nuit", "matin"], MOMENT),
+    // 2026-08-28 (Dan): midi joins the moments of the day.
+    glossQ("Midday", "midi", ["matin", "après-midi", "nuit"], MOMENT),
   ],
   "SIO-005": [
     // Dan's 12 colours (2026-07-02) — the word shown IN its colour; the
@@ -358,24 +557,22 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
     instructionQ("🔢", "Comptez !", "Count", [["Notez !", "Note down"], ["Associez !", "Match"], ["Écrivez !", "Write"]]),
     instructionQ("🔗", "Associez !", "Match", [["Comptez !", "Count"], ["Notez !", "Note down"], ["Regardez !", "Look"]]),
   ],
+  // 2026-08-28 (Dan): every situation now ends on the cue "You say:" — the
+  // learner produces the line, they don't judge a description. The Adieu
+  // odd-one-out question is retired (it asked which phrase does NOT fit —
+  // the only question in the bank that ran backwards).
   "SIO-009": [
-    { title: "It's your first day of class. The professor asks you to introduce yourself.", options: [
+    { title: "It's your first day of class. The professor asks you to introduce yourself. You say:", options: [
       { v: "Je m'appelle Dan.", ok: true },
       { v: "Enchanté.", ok: false, why: "Enchanté is the reply when someone ELSE is introduced to you." },
       { v: "Bonjour, monsieur.", ok: false, why: "A greeting — the professor asked you to introduce yourself." },
       { v: "Merci.", ok: false, why: "Merci means 'thank you'." },
     ] },
-    { title: "Class is over. You say goodbye specifically to your professor as you leave.", options: [
+    { title: "Class is over. You take leave of your professor. You say:", options: [
       { v: "Au revoir.", ok: true },
       { v: "Bonjour, monsieur.", ok: false, why: "That's a hello, not a goodbye." },
       { v: "À plus !", ok: false, why: "À plus is casual slang between friends — the safe goodbye to a professor is Au revoir." },
       { v: "Coucou !", ok: false, why: "Coucou is a very informal hello — not a goodbye, not for professors." },
-    ] },
-    { title: "You're leaving a friend's place after a short visit. Which phrase is NOT appropriate here?", options: [
-      { v: "Adieu.", ok: true },
-      { v: "Salut !", ok: false, why: "Salut is perfectly normal between friends — the odd one out is Adieu ('farewell forever')." },
-      { v: "À bientôt !", ok: false, why: "À bientôt is perfectly normal here — the odd one out is Adieu ('farewell forever')." },
-      { v: "Au revoir.", ok: false, why: "Au revoir is always fine — the odd one out is Adieu ('farewell forever')." },
     ] },
     { title: "You'll see your classmate again tomorrow. What do you say as you leave?", options: [
       { v: "À demain !", ok: true },
@@ -383,13 +580,13 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
       { v: "Enchanté.", ok: false, why: "Enchanté is for first meetings." },
       { v: "Pardon.", ok: false, why: "Pardon means 'excuse me'." },
     ] },
-    { title: "You wave goodbye to a shopkeeper as you leave the store, around 7pm.", options: [
+    { title: "You wave goodbye to a shopkeeper as you leave the store, around 7pm. You say:", hl: "around 7pm", options: [
       { v: "Bonne soirée !", ok: true },
       { v: "Bonne journée !", ok: false, why: "Bonne journée is the daytime wish — at 7pm wish a good evening." },
       { v: "Bonjour !", ok: false, why: "Bonjour is a daytime hello — at 7pm, and when leaving, you wish Bonne soirée." },
       { v: "Bonne nuit.", ok: false, why: "Bonne nuit is only for bedtime." },
     ] },
-    { title: "Class ends in the early afternoon. You wish the professor a good rest of the day.", options: [
+    { title: "Class ends in the early afternoon. You wish the professor a good rest of the day. You say:", options: [
       { v: "Bonne journée !", ok: true },
       { v: "Bonne soirée !", ok: false, why: "Bonne soirée is for the evening — it's early afternoon." },
       { v: "Coucou !", ok: false, why: "Coucou is a very informal hello." },
@@ -397,23 +594,23 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
     ] },
     // 2026-07-05 port: the greeting side (hellos by time + register) — the
     // first six items were all leave-takings.
-    { title: "It's 9am. You meet your French professor in the hallway for the first time.", options: [
+    { title: "Your French prof and you already know each other. You have just arrived in school and run into your prof that morning. You say:", options: [
       { v: "Bonjour, monsieur.", ok: true },
-      { v: "Enchanté.", ok: false, why: "Enchanté is the reply when someone is introduced to you." },
-      { v: "Je m'appelle Dan.", ok: false, why: "That gives your name — greet first." },
-      { v: "Vous vous appelez comment ?", ok: false, why: "That asks a name — greet first." },
+      { v: "Enchanté.", ok: false, why: "Enchanté is the reply when someone is introduced to you — you already know each other." },
+      { v: "Je m'appelle Dan.", ok: false, why: "That gives your name — your prof already knows it." },
+      { v: "Vous vous appelez comment ?", ok: false, why: "That asks a name — you already know each other." },
     ] },
-    { title: "You see your classmate just before class starts.", options: [
+    { title: "You see your classmate just before class starts. You say:", options: [
       { v: "Salut !", ok: true },
       { v: "Bonsoir.", ok: false, why: "Bonsoir is the evening greeting — and formal for a classmate." },
       { v: "Au revoir.", ok: false, why: "That's a goodbye, not a hello." },
       { v: "Merci.", ok: false, why: "Merci means 'thank you'." },
     ] },
-    { title: "It's 8pm. You greet a stranger you're seated next to at a dinner.", options: [
+    { title: "It's 8pm. You are seated next to a stranger at a dinner. You say:", options: [
       { v: "Bonsoir.", ok: true },
-      { v: "Bonjour, monsieur.", ok: false, why: "Bonjour is the daytime greeting — after ~6pm it's Bonsoir." },
       { v: "Tu t'appelles comment ?", ok: false, why: "Tu is too familiar for a stranger — and greet before asking a name." },
-      { v: "Enchanté.", ok: false, why: "Enchanté is for when you're introduced to someone — just greet: Bonsoir." },
+      { v: "Pardon.", ok: false, why: "Pardon means 'excuse me' — it apologises, it doesn't greet." },
+      { v: "Merci.", ok: false, why: "Merci means 'thank you' — greet first: Bonsoir." },
     ] },
     { title: "You're heading to bed and say this to family before sleeping.", options: [
       { v: "Bonne nuit.", ok: true },
@@ -422,4 +619,8 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
       { v: "Bonjour, monsieur.", ok: false, why: "A formal daytime hello — not a bedtime wish to family." },
     ] },
   ],
+  // The flat union — what every generic consumer (the Pre-Test flap,
+  // pretestHrefForDeck) asks: does this SIO have questions? The panel renders
+  // SIO-010 one situation at a time, so nothing ever shows all 21 at once.
+  "SIO-010": SIO010_SITUATIONS.flatMap((sit) => sit.questions),
 };

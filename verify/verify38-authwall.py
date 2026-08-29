@@ -61,6 +61,26 @@ for word in ("password", "secretCode", "bypassToken", "magicLink"):
        f"no {word} bypass — a shared secret in a static export is not a secret",
        f"a {word} bypass exists; it ships to every student's browser")
 
+# A TIMEOUT IS NOT A VERDICT (Dan, 2026-08-28: "i log in once with the switch
+# button at the home page, then i am asked to log in again at the other
+# pages"). The gate's fail-safe collapsed auth's three states into two: after
+# 4s it showed the sign-in prompt whether auth had answered `null` or had not
+# answered at all, so a signed-in learner whose restore ran long was told to
+# sign in again. Home is the one ungated surface, which is why it looked like
+# "everywhere except Home". Assert the DISTINCTION, not the wording.
+ok("=== undefined" in gate or "user === undefined" in gate,
+   "the gate distinguishes 'auth has not answered' from 'signed out'",
+   "the gate no longer separates undefined (resolving) from null (signed out)")
+_res = re.search(r"const resolving = user === undefined;", gate)
+ok(bool(_res),
+   "'resolving' is named, so the two states cannot be conflated by accident",
+   "the gate lost its explicit resolving state")
+# The prompt's heading must be conditional on that state — a heading that
+# always reads "Sign in to …" is the bug, whatever the branch above computes.
+ok("resolving ?" in gate and "Still checking" in gate,
+   "while auth is unresolved the gate says so, and never asserts signed-out",
+   "the gate still asserts 'Sign in' while auth is unresolved")
+
 print("\n".join("  ok    " + p for p in PASS))
 print("\n".join("  FAIL  " + f for f in FAIL))
 print("-" * 66)

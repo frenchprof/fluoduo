@@ -359,6 +359,25 @@ check("speak(" in _memos and "Tout écouter" in _memos,
       "the model can be heard — line by line and whole",
       "the atelier Mémo lost its audio")
 
+# ── 14f · 4Mémoire keeps its three views ─────────────────────────────────
+# Dan, 2026-08-28: "The original 4Mémoire consists of 3 views: cards one by
+# one, cards all at once, and cards in a list. ALL OF THAT HAS BEEN LOST!"
+# True: patch 20-21 (b83d1ec, 10 Aug) rewrote the three-view page into a
+# one-card drill, MOVED the table to /decks/:id, and dropped the grid without
+# saying so — while leaving the file header still naming all three views,
+# which is how it went unnoticed for eighteen days. A header is not a check.
+_flip = CODE["src/app/practice/flip-it/[collectionId]/FlipItContent.tsx"]
+check('"one" | "all" | "list"' in _flip, "4Mémoire still has all three views",
+      "4Mémoire no longer offers one/all/list — a view has been dropped again")
+check("function AllCards({" in _flip, "the all-at-once grid exists",
+      "the AllCards grid is gone again (deleted 10 Aug, restored 28 Aug)")
+check("CuratedDeckTable" in _flip, "the list view renders the SAME table /decks/:id uses",
+      "4Mémoire no longer renders the list; it must not fork its own copy")
+# The list must be reachable while practising, not only from the end-of-run
+# recap — that was the old door, and it required finishing every card first.
+_recap_only = _flip.count("CuratedDeckTable") == 0
+check(not _recap_only, "the list is reachable during the run", "the list is only reachable from the recap")
+
 # ── 15 · CI ──────────────────────────────────────────────────────────────
 wf = read(".github/workflows/verify.yml")
 check("verify/verify27-bugs.py" in wf and wf.find("verify27-bugs") > wf.find("verify26"), "CI runs verify27-bugs after verify26", "verify27-bugs not wired after verify26")

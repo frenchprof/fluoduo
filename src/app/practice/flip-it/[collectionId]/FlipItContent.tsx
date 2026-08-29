@@ -3,11 +3,30 @@
 /**
  * 4MÉMOIRE — the flashcard drill, in DrillShell (patch 20–21).
  *
- * This file used to be a 1,380-line three-view page (table / one card / all
- * cards) in its own CahierFrame. The card flow is now a drill like every
- * other: one card in the shell, the shell owns progress, the CTA row and the
- * Enter/Space binding. The table (browse, cover/reveal, notes, grouping,
- * subsets) split out to /decks/:id — see CuratedDeckTable.tsx.
+ * THE THREE VIEWS ARE BACK (Dan, 2026-08-28: "The original 4Mémoire consists
+ * of 3 views: cards one by one, cards all at once, and cards in a list. ALL
+ * OF THAT HAS BEEN LOST!"). He was right, and the history says so: patch
+ * 20-21 (b83d1ec, 10 Aug) rewrote a 1,380-line three-view page into a
+ * one-card drill. It preserved the one-card flow and MOVED the table to
+ * /decks/:id — but it dropped the all-at-once grid without saying so, and
+ * left this header still naming all three, which is how the loss stayed
+ * invisible for eighteen days. The list was not lost but might as well have
+ * been: its only door was a link in the end-of-run recap, so a learner had to
+ * finish every card to reach it.
+ *
+ * A view switch chooses between them again:
+ *   🂠 One    the drill — one card in the shell, which keeps progress, the
+ *            CTA row and the Enter/Space binding, and the 📖/✍️ modes.
+ *   ▤ All    the grid, restored from b83d1ec^ — every card at once, tap one
+ *            to flip it or flip them all, each with its own ✓/↺ mark.
+ *   ▦ List   CuratedDeckTable, the same component /decks/:id renders, so the
+ *            two surfaces cannot drift.
+ *
+ * The grid comes back WITHOUT the old grouping: that keyed on the table's
+ * sort control, which does not exist in the drill, and inventing one here
+ * would be rebuilding a different thing. The grid is study-only — ✍️ Me
+ * tester already tests card by card, and the original's inline grid test
+ * duplicated it.
  *
  * Two modes, one card at a time:
  *   📖 Étudier — front (emoji + English), CTA Retourner flips; the flipped
@@ -37,10 +56,13 @@ import { logEvent } from "@/lib/firebase/usage";
 import { hintsFor } from "@/lib/help/hints";
 import { useHelpLadder } from "@/lib/help/useHelpLadder";
 import DrillShell, { drillExitHref } from "@/components/DrillShell";
+import CuratedDeckTable from "@/app/decks/[id]/CuratedDeckTable";
 import WordBank from "@/components/WordBank";
 import {
   ART_LABEL,
   FrenchAnswer,
+  NatForms,
+  ReviewToggle,
   articleOptionsOf,
   judgePart,
   partsFor,
@@ -83,8 +105,14 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
   const [buckets, setBuckets] = useState<Record<string, Bucket>>({});
   useEffect(() => { setBuckets(loadBuckets(collection.id)); }, [collection.id]);
 
+  /** Which of the three original views is on screen. */
+  const [view, setView] = useState<"one" | "all" | "list">("one");
   const [test, setTest] = useState(false);
   const [i, setI] = useState(0);
+  // The grid's flip state: flipAll inverts, so a learner can reveal the deck
+  // and then hide individual cards back.
+  const [flipAll, setFlipAll] = useState(false);
+  const [flippedIds, setFlippedIds] = useState<Set<string>>(new Set());
   const [flipped, setFlipped] = useState(false);
   const [vals, setVals] = useState<Record<string, string>>({});
   const [phase, setPhase] = useState<Phase>("idle");
@@ -168,10 +196,12 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
       activity="flip"
       deck={collection.id}
       exitHref={drillExitHref(collection.id)}
-      progress={done ? null : { done: i, total: rows.length }}
+      progress={view !== "one" || done ? null : { done: i, total: rows.length }}
       right={<>✓ {nReviewed}/{rows.length}</>}
       cta={
-        done
+        view !== "one"
+          ? null
+          : done
           ? { label: "🃏 Again", onClick: restart }
           : test
             ? phase === "idle" && !retry
@@ -182,14 +212,15 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
               : { label: "Flip", onClick: () => setFlipped(true) }
       }
       secondary={
-        done ? null
+        view !== "one" || done ? null
           : test
             ? null
             : flipped ? { label: "↺ To review", onClick: () => markAndNext("toReview") } : null
       }
-      help={!done && test ? help : null}
+      help={view === "one" && !done && test ? help : null}
       feedback={
-        !done && test && retry && phase === "idle"
+        view !== "one" ? null
+          : !done && test && retry && phase === "idle"
           ? { kind: "wrong", body: "Not yet", cta: { label: "Try again", onClick: () => setRetry(false) } }
           : !done && test && phase !== "idle"
           ? {
@@ -208,7 +239,42 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
           : null
       }
     >
-      {!done && (
+      {/* The three views, named. Colour never carries the choice alone —
+          the active one is filled and marked aria-pressed. */}
+      <div className="mb-4 flex items-center justify-center gap-1.5">
+        {([["one", "🂠", "One"], ["all", "▤", "All"], ["list", "▦", "List"]] as const).map(([k, icon, label]) => (
+          <button
+            key={k}
+            type="button"
+            aria-pressed={view === k}
+            onClick={() => setView(k)}
+            className={`cahier-btn cahier-btn-sm font-black ${view === k ? "cahier-btn-primary" : ""}`}
+          >
+            <span aria-hidden>{icon}</span> {label}
+          </button>
+        ))}
+      </div>
+
+      {view === "list" && <CuratedDeckTable collection={collection} />}
+
+      {view === "all" && (
+        <>
+          <div className="mb-3 flex justify-center">
+            <button type="button" onClick={() => { setFlipAll((f) => !f); setFlippedIds(new Set()); }}
+              className="cahier-btn cahier-btn-sm">
+              {flipAll ? "🙈 Hide all" : "👁️ Reveal all"}
+            </button>
+          </div>
+          <AllCards rows={rows} hasArt={hasArt} buckets={buckets}
+            onBucket={(id, b) => setBuckets(setBucket(collection.id, id, b))}
+            flipAll={flipAll} flippedIds={flippedIds}
+            onFlipOne={(id) => setFlippedIds((prev) => {
+              const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); return n;
+            })} />
+        </>
+      )}
+
+      {view === "one" && !done && (
         <>
           <div className="mb-4 flex items-center justify-center gap-1.5">
             <button type="button" role="switch" aria-checked={test}
@@ -236,10 +302,72 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
           </div>
         </>
       )}
-      {done && (
+      {view === "one" && done && (
         <Recap test={test} run={run} nReviewed={nReviewed} total={rows.length} deckId={collection.id} />
       )}
     </DrillShell>
+  );
+}
+
+/* ─────────────────────────── all at once ─────────────────────────── */
+
+/**
+ * The grid deleted on 10 Aug, restored from b83d1ec^ — every card at once.
+ *
+ * Kept from the original: the 3:2 card, tapping one to flip it, the per-card
+ * ✓/↺ toggle writing the same buckets store the list and the drill read.
+ * `flipAll` INVERTS rather than sets, so "Reveal all" then tapping one card
+ * hides that card again — the original behaviour, and the reason it is not
+ * simply a boolean per card.
+ *
+ * Dropped deliberately: the grouping (it keyed on the table's sort control,
+ * which the drill does not have) and the inline test fields (✍️ Me tester
+ * already does that, card by card, with the help ladder).
+ */
+function AllCards({
+  rows, hasArt, buckets, onBucket, flipAll, flippedIds, onFlipOne,
+}: {
+  rows: Row[];
+  hasArt: boolean;
+  buckets: Record<string, Bucket>;
+  onBucket: (id: string, b: Bucket) => void;
+  flipAll: boolean;
+  flippedIds: Set<string>;
+  onFlipOne: (id: string) => void;
+}) {
+  const showBack = (id: string) => (flipAll ? !flippedIds.has(id) : flippedIds.has(id));
+  // Denser than the original's grid-cols-1 / sm:grid-cols-2. The point of this
+  // view is seeing the deck AT ONCE, and one 3:2 card per row on a phone is
+  // just the one-card view with extra scrolling.
+  return (
+    <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+      {rows.map((row) => (
+        <div
+          key={row.item.id}
+          className="relative flex aspect-[3/2] flex-col overflow-hidden rounded-xl border-2 bg-white p-2"
+          style={{ borderColor: "color-mix(in oklab, var(--cahier-ink) 15%, transparent)" }}
+        >
+          <div className="mb-1 flex items-center justify-between gap-1">
+            <span className="shrink-0 text-2xl" aria-hidden>{row.item.emoji}</span>
+            <ReviewToggle value={buckets[row.item.id]} onChange={(b) => onBucket(row.item.id, b)} />
+          </div>
+          <button
+            type="button"
+            onClick={() => onFlipOne(row.item.id)}
+            aria-label={showBack(row.item.id) ? `Hide ${row.item.en}` : `Reveal ${row.item.en}`}
+            className="flex flex-1 flex-col items-center justify-center p-1 text-center transition hover:brightness-95"
+          >
+            {showBack(row.item.id) ? (
+              row.item.nat
+                ? <NatForms nat={row.item.nat} size="sm" />
+                : <FrenchAnswer row={row} hasArt={hasArt} />
+            ) : (
+              <span className="cahier-display text-sm font-bold text-[color:var(--cahier-ink)]">{row.item.en}</span>
+            )}
+          </button>
+        </div>
+      ))}
+    </div>
   );
 }
 
