@@ -1893,3 +1893,76 @@ field.
   onward" and would shift every can-do in Units 0-4. That was read off two
   adjacent rows, not measured. The shift is real but confined to Unit 0's
   008/009/010; everywhere else the drift has a different shape.)
+
+## 2026-08-29 — the SIO spine gets ONE source, and the two stale copies are shut down
+
+Follow-up to the two generator landmines noted above. Dan: "can you fix the
+first and the second". Both fixed — and testing the first fix is what exposed
+the real problem, which was much larger than a broken script.
+
+**The first fix was BACKWARDS, and the test caught it.** `gen-sios.mjs` was
+documented as regenerating `sios.json` from the handoff CSV. Repairing it that
+way would have been a content disaster: run in check mode it reported that the
+CSV disagrees with the app on **17 SIOs across 46 fields**, and that for **14 of
+them the topic itself differs** — a different objective under the same number
+(the app's SIO-047 is "Making plans"; the CSV's is "Commerces"). Units 1, 2 and
+4 were reorganised in the app and the CSV never followed. Running the documented
+command would have reverted 17 objectives to superseded text and deleted
+SIO-045A. The app is unambiguously the live course — every one of those topics
+has a real deck, a real pretest and real lessons wired to it — so **the
+direction is reversed: `sios.json` is the source and the CSV follows.** Dan's
+call, put to him with the evidence.
+
+**What shipped.**
+
+- `scripts/gen-sios.mjs` is **deleted**, not left unused. Its two hardcoded maps
+  had rotted too: `COLLECTION_BY_SIO` knew 26 of the 50 live deck wirings and
+  disagreed with one, so a run also unwired half the course.
+- `scripts/sync-sio-csv.mjs` replaces it, app → CSV. It syncs only the
+  **objective** columns (Unit, Topic, SIO Description, Flashcard Set, CEFR Mode,
+  Can-Do, competence) and never the **flashcard spec** (Front side, Back side,
+  Overview columns, Letris / Notes), which the app does not hold. Proven: a
+  column-by-column diff of the 51 rows shows those four untouched, header and
+  row count identical.
+- `--check` is wired into `npm run build` as **check:sios**, so neither side can
+  drift quietly again. That, not the copying, is the part that fixes this.
+- Two guards make the tool safe to run: it **refuses to write** unless parsing
+  and re-serialising the CSV reproduces it byte for byte, and it refuses when a
+  row exists on only one side (a missing row is a decision, not a sync).
+- **Two ragged rows healed.** SIO-036 (13 fields) and SIO-040 (14) had a
+  competence pasted in unquoted years ago, so commas split it across phantom
+  columns. A spill is only collapsed when re-joining the tail reproduces the
+  app's value EXACTLY; anything else stops the script rather than deleting data.
+- `scripts/handoff_cefr.py` **stores nothing** now — it derives from
+  `sios.json`, with a guard that refuses a short read rather than let its
+  callers blank the CSV's descriptor columns. `add-candos.py` is consequently a
+  byte-identical no-op, verified.
+- `scripts/update-country-decks.py`'s `update_cefr()` had been silently doing
+  nothing for months (its search strings were in neither the old nor the new
+  file). It now says so instead of reporting success.
+- `docs/CSV_SPEC_MISMATCHES.md` — the 15 rows whose card spec still describes
+  the old objective, for Dan to work through in his own spreadsheet. Nothing in
+  the app depends on those columns.
+- `verify42-sio-source.py`, 19 checks. **Every one was proved to fail before
+  being trusted** — ten break-tests: restore the generator, drop check:sios from
+  the build, drift one CSV field, give handoff_cefr a stored copy, remove its
+  short-read guard, make the sync claim a flashcard column, remove the
+  round-trip guard, reintroduce a ragged row, point index.ts back at gen-sios,
+  delete the mismatch doc. All ten went red; all ten went green again on
+  restore.
+
+**SIO-045A is the NEWEST objective in Unit 4, not a leftover** — worth stating
+because Dan's recollection was the opposite. The history is in
+`src/content/pretests/index.ts` (2026-08-02): the app's own SIO-045 was "Market
+phrases", retired into SIO-044 (Commerces), its number kept as a deliberate
+permanent gap so nothing downstream would shift; "Numbers 70–99" was then added
+into that gap as SIO-045A. It has a deck, a pretest, six finale items and an
+index grouping today. The CSV's 5th Unit-4 row is a different objective again
+(frequency adverbs, which the app calls SIO-043), so the sync treats that as a
+reused slot, not a rename. **If Dan does want SIO-045A gone, that is an app
+content change and a separate job** — it is referenced in `sios.json`,
+`pretests/index.ts`, `finale.ts`, `index.ts` and learner progress records.
+
+**Untouched: `sios.json` and every app surface.** This whole change is tooling
+and the CSV. tsc clean · build green · eslint identical to main (138 both
+sides) · all 34 verify suites pass.

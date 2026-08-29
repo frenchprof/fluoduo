@@ -1,8 +1,12 @@
 /**
  * The 50-SIO spine — the navigation backbone of FluOlinGo.
  *
- * Generated from docs/handoff/LAF1201_SIOs_Flashcards_v9.csv by scripts/gen-sios.mjs
- * (the v9 spec is the source of truth; regenerate, don't hand-edit sios.json).
+ * sios.json IS THE SOURCE — edit it by hand. The handoff CSV
+ * (docs/handoff/LAF1201_SIOs_Flashcards_v9.csv) follows it via
+ * scripts/sync-sio-csv.mjs, and `npm run build` fails if the two drift apart.
+ * It used to run the other way, with sios.json regenerated FROM the CSV; the
+ * CSV had fallen 17 objectives behind the course by the time anyone noticed —
+ * see that script's header.
  *
  * Each SIO is one learning intention: a learner-facing Can-Do statement plus the
  * measurable linguistic competence the pre/post activities assess. The home hub
