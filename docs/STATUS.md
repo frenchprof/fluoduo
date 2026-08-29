@@ -1686,6 +1686,14 @@ things review did not.
 
 ---
 
+## 28 Aug evening — SIO + pre-test extract (Cursor, no code change)
+
+Dan asked for every SIO followed by its pre-test questions. Extracted from
+live content: 50 stops, 44 with an authored MCQ bank (450 items), 6
+production/atelier stops with none (010, 020, 030, 040, 049, 050). Unit 0
+is the inline popup bank; Units 1–4 are `src/content/pretests/*.json`.
+Delivered as a canvas, not a repo file.
+
 ## 2026-08-28 — the pre-test remembers; the ramp gets an entry (Peers)
 
 Both of Dan's outstanding items from 27 Aug, built and checked.
