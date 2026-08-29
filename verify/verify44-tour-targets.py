@@ -62,7 +62,20 @@ for root, _, files in os.walk("src"):
 SRC = "\n".join(SRC)
 
 # Only the tour DEFINITIONS carry `selector:`; grab them all.
-selectors = re.findall(r'selector:\s*[\'"`]([^\'"`]+)[\'"`]', tour)
+#
+# The quote handling matters, and the first version got it wrong in exactly the
+# way this file exists to catch. It used [^'"`]+ as the body, which stops at the
+# FIRST quote of any kind — so a single-quoted selector containing double
+# quotes, which is every data-tour hook:
+#
+#     { selector: '[data-tour="map-wake"]', ... }
+#
+# was captured as the fragment `[data-tour=`. That fragment contains no hook
+# name, so the "does this hook exist?" loop found nothing to look up and passed
+# vacuously. Proved by deleting data-tour="map-wake" from MapBody while the
+# tour still pointed at it: the check stayed green. Match to the SAME quote.
+selectors = re.findall(r"""selector:\s*(['"`])((?:(?!\1).)*)\1""", tour)
+selectors = [body for _q, body in selectors]
 check(len(selectors) >= 6,
       f"{len(selectors)} tour steps name a target",
       f"only {len(selectors)} selectors found — has the tour shape changed?")
@@ -105,17 +118,27 @@ check("data-tour" in lesson_tour,
       "the lesson tour anchors on data-tour hooks, not on utility classes",
       "the lesson tour uses styling classes as targets — a restyle unhooks it silently")
 
-# ---- 5 · the map is where the course lives --------------------------------
-# /map is what a stop-click opens (a click on Home goes /?unit=1 -> /map?unit=1).
-# tourFor() branches on "/", /unit/, /activities and /lessons/ — so a first-time
-# visitor to the map gets nothing. This is flagged, not enforced: writing that
-# tour is Dan's call. The assertion holds only that the gap stays VISIBLE.
-has_map_tour = '"/map"' in tour or "startsWith(\"/map\")" in tour or "/^\\/map/" in tour
-noted = "map" in tour.lower()
-check(has_map_tour or noted,
-      "the missing /map tour is either written or written down",
-      "/map has no tour and no note saying so — the screen the whole course "
-      "lives on greets a first-time visitor with nothing")
+# ---- 5 · the map has a tour -----------------------------------------------
+# /map is what a stop-click opens (Home goes /?unit=1 -> /map?unit=1), and it
+# had no tour: tourFor branched on "/", /unit/, /activities and /lessons/ only.
+# Written 2026-08-28, so this is now an assertion rather than the "keep the gap
+# visible" placeholder it started as.
+check('key: "map"' in tour,
+      "/map has its own tour — the screen the whole course lives on",
+      "/map has no tour: a first-time visitor to the screen the whole course "
+      "lives on is greeted with nothing")
+
+# The step that earns the tour: the map is inert behind a transparent glass
+# until tapped. That is deliberate — it stops a scroll dragging the map — and
+# entirely invisible, so a learner who misses the small badge concludes the map
+# is broken. If the tour ever stops saying this, it has lost its reason to
+# exist.
+map_tour = tour[tour.find('key: "map"'):]
+map_tour = map_tour[: map_tour.find("};")] if "};" in map_tour else map_tour
+check('data-tour="map-wake"' in map_tour,
+      "the map tour explains that the map must be woken with a tap",
+      "the map tour no longer points at the wake glass — the one thing about "
+      "this screen a learner cannot work out for themselves")
 
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:

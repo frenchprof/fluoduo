@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 """
+Renumbered 31 -> 47 on 2026-08-29. It shared "31" with verify31-topbar.py, and
+that collision is exactly why it sat unwired for a fortnight: the workflow
+named verify31 once and it read as covering both. verify46 now forbids two
+checks sharing a number, and this was the last one left.
+
 Patch 31 — WorDrill redesigned (2026-08-22, from Dan's Claude Design handoff).
 
 The handoff carried four artboards. The sprint clock — a 30/60/120s countdown
@@ -33,7 +38,7 @@ cannot check:
  10  The done screen hands its misses to the Reviser through reviserHref,
      the one path patch 23 already built.
 
-Run from the repo root:  python3 verify/verify31-wordrill.py
+Run from the repo root:  python3 verify/verify47-wordrill.py
 """
 import os, re, sys
 
