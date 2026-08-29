@@ -1966,3 +1966,64 @@ content change and a separate job** — it is referenced in `sios.json`,
 **Untouched: `sios.json` and every app surface.** This whole change is tooling
 and the CSV. tsc clean · build green · eslint identical to main (138 both
 sides) · all 34 verify suites pass.
+
+## 2026-08-29 (later) — the loose ends closed: specs reassigned, the last handoff landmine defused
+
+Dan: "fix any of the unfixed matters above too." Everything left open by the
+morning's clean-up, done.
+
+**The six displaced flashcard specs — moved, not left for Dan.** The earlier
+note said only Dan could place them. That was wrong once the app's decks were
+actually read: the specs were not incorrect, they were **displaced**, and nearly
+every one had a home under some other number. SIO-047's shop cards belong to
+SIO-044, which IS Commerces now; SIO-045A's frequency-scale cards belong to
+SIO-043, which IS Frequency adverbs now; SIO-043's partitive-negative cards
+belong to SIO-042, which absorbed that content on 2026-08-02. Two were genuinely
+retired (the *avec* spec — the `avec-qui` deck no longer exists; the manger/boire
+spec — ConjugaZone covers it under SIO-042), and the three gaps that left were
+written fresh **from the decks the app actually ships** (`negation-pas`,
+`numbers-70-99`, `modaux-plans`), not invented. SIO-048 was trimmed from four
+modals to the three its objective names, matching `modaux-avis`.
+
+Proved the mirror image of the morning's change: a column-by-column diff shows
+**only** Front side / Back side / Overview columns / Letris-Notes moved, on
+exactly those 7 rows, with no objective column touched and no ragged rows.
+
+**Also over-flagged, and corrected.** The first list keyed off "the topic string
+changed", which called 15 rows broken. Nine were only renames — SIO-023 went
+from "aimer — what I like" to "Leisure activities — j'aime, j'adore" and its
+cards fit exactly as well as before. Only six were real. The doc is renamed
+`docs/CSV_SPEC_REASSIGNMENT.md` and is now a record of what moved, not a to-do.
+
+**`merge-handoff-csv.py` was the third landmine of the same family** and had
+gone unmentioned. It had an absolute path into a personal Downloads folder baked
+in, naming a **v4_1** export while the repo is on v9 — a run would have replaced
+all 9 base columns of every row, flashcard specs included, from a spreadsheet
+several versions old, and printed "Wrote …". It now takes the export as a
+required argument and refuses rather than proceeds when the export does not line
+up: base header must match column for column, the 50 SIO ids must match exactly
+(`--allow-id-changes` to override deliberately), the current file is copied to
+`.csv.bak` first, and it prints which rows actually changed. All four guards
+exercised; a clean export round-trips byte-identical.
+
+**verify42 grew to 25 checks**, each proved to fail first. The three new ones:
+no absolute path baked into any handoff script (this one caught my own docstring
+quoting the old path — the check was right, the docstring was reworded), the
+merge script refuses to run without an export, and **no non-atelier objective
+may be left with no cards described at all** — which is how the displacement
+went unnoticed for so long.
+
+One break-test needed redoing: sabotaging the merge script by removing its
+argument check tripped a *different* guard instead, so it exited non-zero and
+the assertion stayed green for the wrong reason. Re-sabotaged to silently
+default to a valid file elsewhere; then it went red properly.
+
+**Still Dan's, deliberately not touched:** whether SIO-045A should exist at all
+(he believes it is from an old system; the code says it is the newest objective
+in Unit 4 — evidence in `src/content/pretests/index.ts`, and removing it is an
+app change touching five files plus learner records), and SIO-009 Q9, where
+replacing *Bonjour* with *Merci* removed that item's bonjour-vs-bonsoir
+contrast — his explicit instruction, flagged once, left as asked.
+
+tsc clean · build green · eslint identical to main (138 both sides) · all 34
+verify suites pass · `sios.json` and every app surface untouched.

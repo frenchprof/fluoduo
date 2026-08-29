@@ -31,6 +31,7 @@ WHAT IS TRUE NOW, AND WHAT THIS FILE PINS
 
 Run: python3 verify/verify42-sio-source.py
 """
+import csv
 import json
 import re
 import subprocess
@@ -142,7 +143,6 @@ check("serializeCsv(rows) !== original" in sync_src,
       "the round-trip guard is gone — a serializer bug would silently rewrite all 51 rows")
 
 # ---- 9 · no ragged rows left in the CSV ------------------------------------
-import csv  # noqa: E402
 with (ROOT / CSV).open(newline="", encoding="utf-8") as f:
     rows = list(csv.reader(f))
 ragged = [r[1].strip() for r in rows[1:] if len(r) != len(rows[0])]
@@ -150,7 +150,47 @@ check(not ragged,
       f"every CSV row has the header's {len(rows[0])} columns",
       f"ragged CSV rows again ({', '.join(ragged)}) — an unquoted comma has spilled a field")
 
-# ---- 10 · docs point at the source, not the retired generator --------------
+# ---- 10 · no handoff script carries a baked-in path to someone's laptop ----
+# merge-handoff-csv.py had `UPLOAD = Path("/Users/keijidan/Downloads/…v4_1…")`
+# hardcoded — pointing at a spreadsheet several versions old, while claiming to
+# rebuild the current one. Running it would have replaced all 9 base columns of
+# every row (flashcard specs included) and reported success.
+for rel_path in ("scripts/merge-handoff-csv.py", "scripts/add-candos.py", "scripts/sync-sio-csv.mjs"):
+    src = read(rel_path)
+    baked = re.findall(r'["\'](/Users/|/home/|[A-Za-z]:\\\\)[^"\']*["\']', src)
+    check(not baked,
+          f"{rel_path} has no absolute path baked in",
+          f"{rel_path} hardcodes {baked[:1]} — a stale local file would silently overwrite the CSV")
+
+check("sys.argv" in read("scripts/merge-handoff-csv.py"),
+      "merge-handoff-csv.py takes the export as an argument",
+      "merge-handoff-csv.py no longer takes a path — it is guessing which file to merge")
+
+# It must refuse rather than merge when given nothing.
+r = run("python3", "scripts/merge-handoff-csv.py")
+check(r.returncode != 0,
+      "merge-handoff-csv.py refuses to run without an export",
+      "merge-handoff-csv.py runs with no argument — it will overwrite the CSV from somewhere")
+
+# ---- 11 · every objective still has cards described for it -----------------
+# The spec columns are the CSV's own; the sync never writes them, so an empty
+# one means a reorganisation left an objective with no cards behind it.
+spec_cols = ["Front side", "Back side (flipped)", "Overview columns"]
+with (ROOT / CSV).open(newline="", encoding="utf-8") as f:
+    _rows = list(csv.reader(f))
+_h = _rows[0]
+PRODUCTION = {s["id"] for s in sios if s["isProduction"]}
+specless = [
+    r[1].strip() for r in _rows[1:]
+    if r[1].strip().startswith("SIO-")
+    and r[1].strip() not in PRODUCTION            # ateliers have no flashcards by design
+    and not any(r[_h.index(c)].strip() for c in spec_cols)
+]
+check(not specless,
+      "every non-atelier SIO has a flashcard spec",
+      f"no cards described for {', '.join(specless)} — an objective was left without any")
+
+# ---- 12 · docs point at the source, not the retired generator --------------
 index_ts = read("src/content/sios/index.ts")
 check("gen-sios" not in index_ts,
       "index.ts no longer names the retired generator",
@@ -158,9 +198,9 @@ check("gen-sios" not in index_ts,
 check("sync-sio-csv" in index_ts and "SOURCE" in index_ts,
       "index.ts names sios.json as the source and the sync as the follower",
       "index.ts does not say which file is the source")
-check((ROOT / "docs/CSV_SPEC_MISMATCHES.md").exists(),
-      "the flashcard-spec mismatch list is written down",
-      "docs/CSV_SPEC_MISMATCHES.md is missing — the half-state is undocumented")
+check((ROOT / "docs/CSV_SPEC_REASSIGNMENT.md").exists(),
+      "the flashcard-spec reassignment is written down",
+      "docs/CSV_SPEC_REASSIGNMENT.md is missing — the half-state is undocumented")
 
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:

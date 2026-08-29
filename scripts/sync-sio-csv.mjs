@@ -37,11 +37,13 @@
  *              columns, Letris / Notes. The app holds none of it; this script
  *              never touches those columns.
  *
- * ⚠️ The 14 renumbered rows therefore end up with a correct objective beside a
- * flashcard spec still describing the OLD one. That is a known, deliberate
- * half-state — see docs/CSV_SPEC_MISMATCHES.md for the list to work through.
- * It is not something this script can fix: only Dan knows which cards belong
- * with which objective now.
+ * The first sync therefore left 6 rows with a correct objective beside a
+ * flashcard spec describing a different one. Those were reassigned by hand the
+ * same day — the specs were not wrong, they were displaced, and each one had a
+ * home under some other number (SIO-047's shop cards belong to SIO-044, which
+ * IS Commerces now, and so on). docs/CSV_SPEC_REASSIGNMENT.md is the record.
+ * A future reorganisation will do the same thing again: this script moves the
+ * objective, and a human moves the cards after it.
  *
  * And because a sync tool is only run when someone remembers to, --check runs
  * on every build. Edit either side and the build says so. That is the part
@@ -77,7 +79,7 @@ const SYNCED = {
  * NOT a rename: the two ids are different objectives. From SIO-043 onward the
  * CSV is still on the OLD numbering, so its ids and the app's stopped lining up
  * years of edits ago. This maps the SLOT, and the resulting card-spec mismatch
- * is listed in docs/CSV_SPEC_MISMATCHES.md.
+ * is listed in docs/CSV_SPEC_REASSIGNMENT.md.
  */
 const SLOT_REUSED = {
   // The CSV's 5th Unit-4 row is "Frequency adverbs" — which the app now calls
@@ -276,4 +278,4 @@ for (const r of rows.slice(1)) {
 
 writeFileSync(CSV, serializeCsv(rows));
 console.log(`\nWrote ${changes.length} field change(s)${reslots.length ? ` and ${reslots.length} reslot(s)` : ""} → ${rel(CSV)}`);
-console.log(`The flashcard-spec columns were not touched — see docs/CSV_SPEC_MISMATCHES.md for the rows whose cards now describe a different objective.`);
+console.log(`The flashcard-spec columns were not touched — see docs/CSV_SPEC_REASSIGNMENT.md for the rows whose cards now describe a different objective.`);
