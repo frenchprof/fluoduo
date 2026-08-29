@@ -360,7 +360,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
         {screen === "quiz" && t && (
           <div>
             <p className="min-w-0 truncate text-center text-xs font-bold text-[color:var(--cahier-ink-soft)]" lang="fr" title={subtitle}>
-              🔮 {subtitle}
+              💡 {subtitle}
             </p>
             <p className="mt-1 hidden text-center text-[10px] font-bold text-[color:var(--cahier-ink-soft)] sm:block">{CHOICE_KEYS_HINT}</p>
             {SPECULEARN_PROMPT_FRAME[collectionId] && (
