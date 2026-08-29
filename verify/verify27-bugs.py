@@ -358,6 +358,29 @@ check(not _hand, "no atelier Mémo is transcribed by hand (it would drift from t
 check("speak(" in _memos and "Tout écouter" in _memos,
       "the model can be heard — line by line and whole",
       "the atelier Mémo lost its audio")
+# "Tout écouter" must use speakSequence, not a loop over speak().
+#
+# It shipped as `for (const l of lines) speak(...)`, and only the LAST line was
+# ever heard: speak() defaults to interrupt:true, whose first act is
+# synth.cancel(), so each line cancelled the one before it. Measured in a
+# browser with the speech API instrumented — ten speaks, ten cancels.
+#
+# The button existed, the lines were right, and the check above was green
+# throughout, because "can it speak" and "does it play all of it" are different
+# questions. This asks the second one. speakSequence is not interchangeable
+# here: it holds a reference to every utterance (Chrome garbage-collects them
+# mid-queue and the chain dies) and nudges resume() on a timer (Chrome pauses
+# long runs) — the two fixes behind Dan's 2026-07-07 "play all is not playing
+# all". A hand-rolled queue throws both away.
+_play = _memos[_memos.find("const playAll"):]
+_play = _play[: _play.find("\n  };")] if "\n  };" in _play else _play[:900]
+check("speakSequence" in _play,
+      "Tout écouter plays the whole model through speakSequence",
+      "playAll no longer uses speakSequence")
+check(not re.search(r"for\s*\(.*\)\s*speak\(", _play),
+      "Tout écouter does not loop bare speak() (each call cancels the last)",
+      "playAll loops speak() again — interrupt:true means only the LAST line is "
+      "heard; this is Dan's 'play all is not playing all' back")
 
 # ── 14f · 4Mémoire keeps its three views ─────────────────────────────────
 # Dan, 2026-08-28: "The original 4Mémoire consists of 3 views: cards one by

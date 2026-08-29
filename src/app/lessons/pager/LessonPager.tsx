@@ -330,7 +330,7 @@ export default function LessonPager({
           <p className="fluo-serif text-xl font-black text-[color:var(--fluo-ink)]">
             Where do you want to start?
           </p>
-          <div className="flex w-full max-w-sm flex-col gap-2.5">
+          <div data-tour="entry" className="flex w-full max-w-sm flex-col gap-2.5">
             {ENTRY_LEVELS.map((lv) => (
               <button
                 key={lv}
@@ -356,7 +356,7 @@ export default function LessonPager({
               die (2026-08-27: "both — dropdowns and dice"). Only lessons that
               declare their axes show this; the rest start straight away. */}
           {axes && axes.length > 0 && (
-            <div className="mt-2 w-full max-w-sm border-t-2 border-[color:var(--cahier-rule)] pt-4">
+            <div data-tour="axes" className="mt-2 w-full max-w-sm border-t-2 border-[color:var(--cahier-rule)] pt-4">
               <p className="fluo-label mb-2 text-[color:var(--fluo-ink-soft)]">
                 Practise something specific
               </p>
