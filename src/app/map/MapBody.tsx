@@ -102,7 +102,7 @@ export default function MapBody() {
     <>
       {/* 2D · 3D — a small segmented control; the map below follows. */}
       <div ref={mapRef} className="mb-2 flex scroll-mt-3 items-center justify-end">
-        <div role="group" aria-label="Map view" className="fluo-mono flex overflow-hidden rounded-lg border-2 text-[11px] font-black" style={{ borderColor: "var(--cahier-ink)" }}>
+        <div data-tour="map-view" role="group" aria-label="Map view" className="fluo-mono flex overflow-hidden rounded-lg border-2 text-[11px] font-black" style={{ borderColor: "var(--cahier-ink)" }}>
           {(["2d", "3d"] as const).map((v) => (
             <button
               key={v}
@@ -128,7 +128,7 @@ export default function MapBody() {
         </div>
       </div>
       <div className="relative">
-        <div className={engaged ? undefined : "pointer-events-none select-none"} {...(engaged ? {} : { inert: true })}>
+        <div data-tour="map" className={engaged ? undefined : "pointer-events-none select-none"} {...(engaged ? {} : { inert: true })}>
           {mapView === "3d" ? (
             <HomeMap3D progress={progress} activeId={activeId} accent={accent} focusUnit={openUnit ?? undefined} onOpenUnit={showUnit} onOpenSio={openSio} />
           ) : (
@@ -138,6 +138,7 @@ export default function MapBody() {
         {!engaged && (
           <button
             type="button"
+            data-tour="map-wake"
             onClick={() => setEngaged(true)}
             className="absolute inset-0 z-10 flex cursor-pointer items-end justify-center rounded-2xl pb-4"
             aria-label="Tap to use the map"
