@@ -16,8 +16,12 @@
  */
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import Link from "next/link";
 import { useDragFloat } from "@/lib/useDragFloat";
 import { usePathname } from "next/navigation";
+import { SIOS } from "@/content/sios";
+import { loadProgress } from "@/lib/progress";
+import { nextSioId } from "@/lib/continuer";
 
 const SEEN_KEY = "fluolingo:tours.v2"; // JSON map { [tourKey]: 1 }
 const NEVER_KEY = "fluolingo:tours.never"; // "1" = never auto-offer anywhere
@@ -29,6 +33,9 @@ type Step = {
   /** tap = catcher over the hole advances on click; drag = events pass
    *  through so the width grip actually drags, release advances. */
   action?: "tap" | "drag";
+  /** "play" = the finish card whose big button IS Play — it navigates to the
+   *  current stop exactly as the hero pill does (approved flow, 2026-08-24). */
+  kind?: "play";
 };
 
 type Tour = { key: string; steps: Step[] };
@@ -42,13 +49,40 @@ function tourFor(rawPath: string): Tour | null {
   let path = rawPath.replace(/\.html$/, "");
   if (path === "/index") path = "/";
   if (path === "/" || path === "") {
+    // Rebuilt to the approved flow mocks (2026-08-24). The old four steps
+    // named surfaces that no longer exist (❓ HELP, ❓ Guide, tappable Home
+    // goals), taught a desktop drag on phones, and step 2's buttons rendered
+    // behind the bottom bar — the 22 Aug flow walk reproduced the Skills tab
+    // eating the Next tap. Three steps now, ending ON Play.
     return {
       key: "home",
       steps: [
-        { selector: "nav.cahier-tabs, .cahier-menu > button", action: "tap", text: "Tap a flap: the five Unités on top; below, ❓ HELP!, 🗂️ Index and the tools. They follow you everywhere." },
-        { selector: "main.cahier-page", action: "tap", text: "Tap the sheet — each place is a sheet in the notebook, and deeper sheets stack on top of their parent." },
-        { selector: '[title="Drag to widen the page"]', action: "drag", text: "Drag this edge to make the page wider — try it! The popups resize from their ◢ corner too." },
-        { text: "Start on 🏠 Home and tap the goal your class is working on: Pre-Test first, then the cards, then the Lesson. The full manual lives under ❓ Guide. Bonne route !" },
+        { selector: 'a[title^="Play"]', action: "tap", text: "Play — your next stop on the path." },
+        { selector: "nav.cahier-bottombar", action: "tap", text: "The five tabs — press and hold one for its name." },
+        { kind: "play", text: "Start here" },
+      ],
+    };
+  }
+  // /map is where the whole course lives — a stop tapped anywhere lands here
+  // (Home goes /?unit=1 -> /map?unit=1) — and until 2026-08-28 it was the one
+  // major surface with NO tour at all: tourFor branched on "/", /unit/,
+  // /activities and /lessons/, so a first-time visitor to the map got nothing.
+  //
+  // Step one is the one that actually matters. The map is covered by a
+  // transparent glass and is inert until tapped, so that a scroll cannot drag
+  // it by accident. That is good behaviour and completely invisible: a learner
+  // who misses the small "Tap to use the map" badge concludes the map is
+  // broken. The tour says it out loud. The glass is gone once the map is
+  // awake, and an absent target is skipped, so a returning visitor is not told
+  // about a button that is no longer there.
+  if (/^\/map/.test(path)) {
+    return {
+      key: "map",
+      steps: [
+        { selector: '[data-tour="map-wake"]', action: "tap", text: "The map sleeps until you tap it — that way a scroll never drags it by accident." },
+        { selector: '[data-tour="map-view"]', action: "tap", text: "2D reads like a plan, 3D like a scene. Your choice sticks." },
+        { selector: '[data-tour="map"]', action: "tap", text: "Every stop on the road is one goal. Tap one and its sheet opens." },
+        { text: "✓ green = done, the highlighted stop = where your class is. Mistakes are welcome — they become your 📝 Bring to class list." },
       ],
     };
   }
@@ -56,30 +90,43 @@ function tourFor(rawPath: string): Tour | null {
     return {
       key: "unit",
       steps: [
-        { selector: "main .grid.grid-cols-5 > button, main button.group", action: "tap", text: "Every circle is a goal. Tap one and its sheet opens: Pre-Test first, then the cards, then the Lesson." },
-        { selector: "nav.cahier-tabs, .cahier-menu > button", action: "tap", text: "The flaps stay with you — switch Unité or head 🏠 Home any time." },
+        // "Pre-Test first, then the cards, then the Lesson" retired
+        // (2026-08-24): it contradicted the authored order the sheet's
+        // numbered path now shows — the path speaks for itself.
+        { selector: "main .grid.grid-cols-5 > button, main button.group", action: "tap", text: "Every circle is a goal. Tap one and its sheet opens — follow the numbered path." },
+        { selector: "nav.cahier-tabs, .cahier-menu > button", action: "tap", text: "The flaps stay with you — switch Unit or head 🏠 Home any time." },
         { text: "✓ green = done, the highlighted circle = where your class is. Mistakes are welcome — they become your 📝 Bring to class list." },
       ],
     };
   }
-  if (path.startsWith("/activities")) {
-    return {
-      key: "index",
-      steps: [
-        { selector: 'input[type="search"]', action: "tap", text: "Search any topic here — accents optional (cafe finds café)." },
-        { selector: "thead tr", action: "tap", text: "Each column is one activity — same colors as in the ❓ Guide." },
-        { selector: "tbody tr", action: "tap", text: "A row is one topic. Every icon is a door — tap any cell to play." },
-        { selector: "section.fluo-h-5", action: "tap", text: "✨ Vos decks: build your own cards with ➕ and they appear here." },
-      ],
-    };
-  }
+  // The "index" tour is GONE (2026-08-29). It described /activities — the
+  // search field, the column headers, the rows, "your decks" — and that page
+  // was deleted when the Index was retired ("the map is the front door").
+  // Its branch was repointed to /map rather than removed, which left it both
+  // unreachable, since the /map tour above matches first, and wrong if it had
+  // been reached: three of its four targets (thead, tbody, section.fluo-h-5)
+  // are nowhere on the map page. A tour for a deleted page cannot be salvaged
+  // by pointing it at a different one.
   if (/^\/lessons\//.test(path)) {
+    // Rewritten 2026-08-28. The old three steps described the LessonFlow page
+    // patch 22 deleted: "Lire → Pratique → Générateur", chips that jump between
+    // parts, and a #lf-pratique anchor that exists nowhere in the codebase. It
+    // had been pointing at a screen that no longer existed for weeks, so it
+    // highlighted nothing and silently skipped — the same shape as the
+    // ÉcouTexte band, something that reports as present and does nothing. It
+    // got more wrong on 2026-08-28, when lessons started opening on the entry
+    // chooser the tour had never heard of.
+    //
+    // These steps name what is actually on screen, and the selectors are
+    // `data-tour` hooks in LessonPager rather than utility classes, so a
+    // styling change cannot quietly unhook the tour again. The axes step is
+    // skipped automatically on the lessons that declare no selectors.
     return {
       key: "lesson",
       steps: [
-        { selector: ".sticky.backdrop-blur", action: "tap", text: "A lesson is one page: Lire → Pratique → Générateur. These chips jump between the parts." },
-        { selector: "#lf-pratique", action: "tap", text: "Pratique climbs four levels: pick it ★, type the word ★★, write the whole sentence ★★★, then translate ⭐." },
-        { text: "Finish with the 🎲 Générateur — it rolls endless fresh sentences. Wrong answers cost nothing; they teach." },
+        { selector: '[data-tour="entry"]', action: "tap", text: "Choose where to start. All three are the same twelve cards — ★★★ is harder, not shorter." },
+        { selector: '[data-tour="axes"]', action: "tap", text: "Want one thing in particular? Pin a subject or a verb — or 🎲 for a random mix." },
+        { text: "Then it is one card at a time: the Mémo to read, then the ramp. Wrong answers cost nothing; they teach." },
       ],
     };
   }
@@ -223,8 +270,8 @@ export default function FirstTour() {
         {...drag.handlers}
         style={drag.style}
         onClick={() => { if (drag.consumeClick()) return; startTour(); }}
-        title="Revoir le petit tour"
-        aria-label="Revoir le petit tour"
+        title="Replay the tour"
+        aria-label="Replay the tour"
         className="fixed z-[80] flex h-10 w-10 items-center justify-center rounded-full border-2 border-[color:var(--cahier-ink)] bg-white text-lg shadow-[3px_3px_0_var(--cahier-hl,#eaff00)] transition hover:-translate-y-0.5 active:translate-y-0"
       >
         ✨
@@ -235,16 +282,21 @@ export default function FirstTour() {
 
   if (mode === "offer") {
     return createPortal(
-      <div className="fixed bottom-4 left-4 z-[80] max-w-[16rem] rounded-2xl border-2 border-[color:var(--cahier-ink)] bg-white p-3 shadow-[4px_4px_0_var(--cahier-hl,#eaff00)]">
+      // Above the bottom bar's floor, never behind it (2026-08-24): the
+      // third option, "Never offer again", used to be clipped off-screen.
+      <div
+        className="fixed left-4 z-[80] max-w-[16rem] rounded-2xl border-2 border-[color:var(--cahier-ink)] bg-white p-3 shadow-[4px_4px_0_var(--cahier-hl,#eaff00)]"
+        style={{ bottom: "calc(var(--bottombar-floor, 8px) + 8px)" }}
+      >
         <p className="text-sm font-black text-[color:var(--cahier-ink)]">
-          ✨ Première visite ici ?
+          ✨ First time here?
         </p>
         <div className="mt-2 flex gap-2">
           <button type="button" onClick={startTour} className="cahier-btn cahier-btn-sm cahier-btn-accent font-black">
-            Petit tour !
+            Quick tour!
           </button>
           <button type="button" onClick={finish} className="cahier-btn cahier-btn-sm">
-            Non merci
+            No thanks
           </button>
         </div>
         <button
@@ -252,7 +304,7 @@ export default function FirstTour() {
           onClick={neverAgain}
           className="mt-1.5 text-[0.65rem] font-bold text-[color:var(--cahier-ink-soft)] underline-offset-2 hover:underline"
         >
-          Ne plus jamais proposer
+          Never offer again
         </button>
       </div>,
       document.body,
@@ -262,13 +314,47 @@ export default function FirstTour() {
   const s = STEPS[step];
   const last = step >= STEPS.length - 1;
   const dim = "rgba(42, 46, 110, 0.55)";
+
+  // The finish card (home tour): its big button IS Play — the same current
+  // stop the hero pill computes. Tapping it marks the tour seen and goes.
+  if (s.kind === "play") {
+    const sio = SIOS.find((x) => x.id === nextSioId(loadProgress()));
+    const href = sio ? `/unit/${sio.unit}#${sio.id}` : "/";
+    return createPortal(
+      <div className="fixed inset-0 z-[100]">
+        <div className="absolute inset-0" style={{ background: dim }} onClick={finish} />
+        <div
+          className="absolute left-1/2 top-1/2 w-[min(19rem,88vw)] -translate-x-1/2 -translate-y-1/2 rounded-2xl border-2 border-[color:var(--cahier-ink)] bg-white p-6 text-center shadow-[0_5px_0_var(--cahier-hl,#eaff00)]"
+        >
+          <p className="text-lg font-black text-[color:var(--cahier-ink)]">Start here</p>
+          <Link
+            href={href}
+            onClick={finish}
+            className="fluo-mono mx-auto mt-4 flex h-14 w-52 max-w-full items-center justify-center gap-1 rounded-full border-[3px] border-[color:var(--cahier-ink)] text-xl font-black text-[color:var(--cahier-ink)] no-underline"
+            style={{ background: "var(--cahier-hl, #eaff00)", boxShadow: "0 4px 0 rgba(0,0,0,0.3), 0 0 0 6px rgba(212, 242, 76, 0.45)" }}
+          >
+            Play<span aria-hidden>›</span>
+          </Link>
+          <p className="fluo-mono mt-4 text-xs font-black text-[color:var(--cahier-ink-soft)]">{step + 1}/{STEPS.length}</p>
+        </div>
+      </div>,
+      document.body,
+    );
+  }
+
   // The spotlight HOLE stays interactive: the dim is four strips AROUND it,
   // not one sheet over it, so the learner can do the step's action for real.
   const hole = rect
     ? { top: rect.top - 6, left: rect.left - 6, width: rect.width + 12, height: rect.height + 12 }
     : null;
-  return (
-    <div className="fixed inset-0 z-[80]" style={{ pointerEvents: "none" }}>
+  // PORTALED to <body> and z-[100] (2026-08-24): the overlay used to render
+  // inside the page tree at z-[80] while the bottom bar is fixed at z-90 —
+  // so on any step whose bubble landed low, the bar covered the buttons and
+  // ATE the Next tap (the flow walk reproduced it landing on the Skills
+  // tab). From the body at z-100 the overlay and its bubble sit in the root
+  // stacking context above the bar (90) whatever context the page creates.
+  return createPortal(
+    <div className="fixed inset-0 z-[100]" style={{ pointerEvents: "none" }}>
       {hole ? (
         <>
           <div className="absolute" style={{ pointerEvents: "auto", background: dim, top: 0, left: 0, right: 0, height: Math.max(0, hole.top) }} />
@@ -305,6 +391,7 @@ export default function FirstTour() {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

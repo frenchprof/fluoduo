@@ -8,8 +8,9 @@
  * however many SIOs fall under that group, NOT a fixed zigzag.
  *
  * Clicking a circle opens the shared SioModal popup (pretest inline, activity
- * flaps). Deep links work: /unit/2#SIO-023 opens that SIO's popup on mount —
- * the home learning path links here that way.
+ * flaps). Deep links work: /#SIO-023 (or the legacy /unit/2#SIO-023, which
+ * redirects) opens that SIO's popup on mount; Home's map passes `openSioId`
+ * for taps after mount (patch 25: the unit page is a deep link into Home).
  *
  * Node states, backed by src/lib/progress.ts: done (self-marked) or active
  * (the single earliest not-done SIO site-wide — shown only when it falls in
@@ -39,17 +40,19 @@ function deckAndPretestFor(sio: Sio) {
 
 export default function UnitSection({
   unit,
-  forceOpen,
+  openSioId,
+  onSioClosed,
 }: {
   unit: number;
-  /** The /practice/* and /lessons/* URLs render the unit page with this SIO's
-   *  popup already open on an activity view — level 2 floats from every
-   *  entrance, not just popup flaps (Dan, 2026-07-05). */
-  forceOpen?: { sioId: string; view?: string; lessonSlug?: string };
+  /** Home's map: open this SIO's popup (patch 25); `onSioClosed` clears it. */
+  openSioId?: string | null;
+  onSioClosed?: () => void;
 }) {
+  // (The forceOpen prop died with patch 22: the /lessons/* URLs render the
+  // full-screen pager now, so no route needs the popup pre-opened for it.)
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [progress, setProgress] = useState<Progress>(defaultProgress());
-  const [openId, setOpenId] = useState<string | null>(forceOpen?.sioId ?? null);
+  const [openId, setOpenId] = useState<string | null>(null);
 
   const sios = SIOS.filter((s) => s.unit === unit);
   const meta = UNIT_META[unit] ?? { label: `Unité ${unit}`, subtitle: "", emoji: "📚" };
@@ -66,13 +69,20 @@ export default function UnitSection({
     // Deep link: /unit/N#SIO-0XX opens that popup (home path lands here).
     // Unit 0 popups belong to Unit0Panel (its modal carries the MCQs — this
     // generic one would open empty), so it handles its own deep links.
-    if (!forceOpen && unit !== 0) {
+    if (unit !== 0) {
       const hash = window.location.hash.replace("#", "");
       if (hash && SIOS.some((s) => s.id === hash && s.unit === unit)) setOpenId(hash);
     }
     return () => window.removeEventListener("fluolingo:progress-updated", refresh);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unit]);
+
+  // Home's map taps a stop → open that SIO here without a navigation
+  // (patch 25: /unit/N is a deep link into Home now, the map is the page).
+  useEffect(() => {
+    if (unit !== 0 && openSioId && sios.some((s) => s.id === openSioId)) setOpenId(openSioId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openSioId, unit]);
 
   function toggle(key: string) {
     setCollapsed((prev) => {
@@ -111,7 +121,7 @@ export default function UnitSection({
       </div>
 
       {unit === 0 ? (
-        <Unit0Panel forceOpen={forceOpen} />
+        <Unit0Panel openSioId={openSioId} onSioClosed={onSioClosed} />
       ) : (
         <div className="space-y-5">
           {groups.map((group) => {
@@ -167,13 +177,9 @@ export default function UnitSection({
             sio={openSio}
             onClose={() => {
               setOpenId(null);
-              // An activity URL with its popup closed IS the unit page — make
-              // the address bar agree so refresh/share land right.
-              if (forceOpen) window.history.replaceState(null, "", `/unit/${unit}`);
+              onSioClosed?.();
             }}
             deck={deck}
-            initialView={openSio.id === forceOpen?.sioId ? forceOpen?.view : undefined}
-            lessonSlug={openSio.id === forceOpen?.sioId ? forceOpen?.lessonSlug : undefined}
             tabs={
               openSio.isProduction
                 ? popupActivityTabs(deck) // atelier decks: flip/say/complete on the model lines
@@ -213,7 +219,7 @@ function SioNode({
     >
       {active && (
         <span className="fluo-mono rounded-full bg-[var(--fluo-danger)] px-2 py-0.5 text-[10px] font-bold text-white">
-          Continuer
+          Continue
         </span>
       )}
       <span

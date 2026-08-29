@@ -1,15 +1,22 @@
 # Deploying FluoLingo
 
 Production site: **fluolingo.withdrchan.com** (Cloudflare Pages project
-`fluoguo`, also serving `fluoguo.pages.dev`; `fluolingo.com` 302-redirects to
-the withdrchan URL).
+`fluolingo-dot-com` — the dashboard's name, corrected 2026-08-17; this doc used
+to say `fluoguo`, which was the old project — also serving
+`fluolingo-dot-com.pages.dev`; `fluolingo.com` 302-redirects to the withdrchan
+URL).
 
 > **fluolinguo.com is RETIRED** (2026-07-19). The domain has no DNS records and
 > must not be referenced anywhere — links, docs, QR codes, Firebase authorised
 > domains, or Pages custom domains. If it still appears as a custom domain on
-> the `fluoguo` Pages project, remove it (dashboard → fluoguo → Custom domains).
+> the `fluolingo-dot-com` Pages project, remove it (dashboard →
+> fluolingo-dot-com → Custom domains).
 
 ## How it deploys
+
+> **Which `main`?** Production is `dckg/fluo` (git remote `live`). Working repo is
+> `frenchprof/fluoduo` (`origin`). Merging to origin's `main` does NOT deploy;
+> **`git push live main` does.** See `docs/STATUS.md`.
 
 Cloudflare Pages **auto-builds on every push to `main`** (`npm run build` →
 `next build`, static export to `out/`, plus the `functions/` Pages Functions).

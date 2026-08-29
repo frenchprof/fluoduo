@@ -30,10 +30,10 @@ export const articlesPaysLesson: NativeLesson = {
         L&rsquo;article des pays
       </h2>
       <ul className="space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
-        <li><b className="text-lg text-[color:var(--cahier-la)]">la</b> + féminin — <i lang="fr">la France, la Chine</i></li>
-        <li><b className="text-lg text-[color:var(--cahier-la)]">le</b> + masculin — <i lang="fr">le Japon, le Canada, le Portugal</i></li>
-        <li><b className="text-lg text-[color:var(--cahier-la)]">l&rsquo;</b> + voyelle — <i lang="fr">l&rsquo;Italie, l&rsquo;Espagne, l&rsquo;Allemagne, l&rsquo;Angleterre</i></li>
-        <li><b className="text-lg text-[color:var(--cahier-la)]">les</b> + pluriel — <i lang="fr">les États-Unis</i></li>
+        <li><b className="text-lg text-[color:var(--gram-fem)]">la</b> + féminin — <i lang="fr">la France, la Chine</i></li>
+        <li><b className="text-lg text-[color:var(--gram-masc)]">le</b> + masculin — <i lang="fr">le Japon, le Canada, le Portugal</i></li>
+        <li><b className="text-lg text-[color:var(--gram-neutral)]">l&rsquo;</b> + voyelle — <i lang="fr">l&rsquo;Italie, l&rsquo;Espagne, l&rsquo;Allemagne, l&rsquo;Angleterre</i></li>
+        <li><b className="text-lg text-[color:var(--gram-neutral)]">les</b> + pluriel — <i lang="fr">les États-Unis</i></li>
       </ul>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
         ⚠️ <b>Gender tip:</b> countries ending in <b>-e</b> are feminine (<span lang="fr">la Franc<u>e</u>, la Chin<u>e</u></span>);

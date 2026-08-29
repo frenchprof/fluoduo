@@ -92,7 +92,18 @@ export default function KeyNav() {
           const num = parseInt(buf.current, 10);
           clear();
           const sio = SIOS.find((s) => s.num === num);
-          if (sio) router.push(`/sio/${sio.id}`);
+          // The outcome lives on The Map now (/sio/[id] is only a
+          // redirect): `/map?unit=N#SIO-0NN` opens its popup. Already on
+          // the map → set the hash so its hashchange listener opens it
+          // without a reload.
+          if (sio) {
+            if (window.location.pathname === "/map") {
+              window.history.replaceState(null, "", `/map?unit=${sio.unit}`);
+              window.location.hash = sio.id;
+            } else {
+              router.push(`/map?unit=${sio.unit}#${sio.id}`);
+            }
+          }
         } else {
           timer.current = window.setTimeout(clear, DIGIT_WINDOW_MS);
         }

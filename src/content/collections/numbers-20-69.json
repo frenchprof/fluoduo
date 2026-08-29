@@ -15,7 +15,7 @@
       "id": "numbers-20-69-01",
       "fr": "vingt",
       "en": "20",
-      "tags": [],
+      "tags": ["col:dizaine"],
       "syllables": [
         "vingt"
       ]
@@ -24,7 +24,7 @@
       "id": "numbers-20-69-02",
       "fr": "vingt et un",
       "en": "21",
-      "tags": [],
+      "tags": ["col:et_un"],
       "syllables": [
         "vingt",
         "et",
@@ -35,7 +35,7 @@
       "id": "numbers-20-69-03",
       "fr": "vingt-deux",
       "en": "22",
-      "tags": [],
+      "tags": ["col:trait"],
       "syllables": [
         "vingt",
         "-deux"
@@ -45,7 +45,7 @@
       "id": "numbers-20-69-04",
       "fr": "trente",
       "en": "30",
-      "tags": [],
+      "tags": ["col:dizaine"],
       "syllables": [
         "trente"
       ]
@@ -54,7 +54,7 @@
       "id": "numbers-20-69-05",
       "fr": "trente et un",
       "en": "31",
-      "tags": [],
+      "tags": ["col:et_un"],
       "syllables": [
         "trente",
         "et",
@@ -65,7 +65,7 @@
       "id": "numbers-20-69-06",
       "fr": "trente-cinq",
       "en": "35",
-      "tags": [],
+      "tags": ["col:trait"],
       "syllables": [
         "trente",
         "-cinq"
@@ -75,7 +75,7 @@
       "id": "numbers-20-69-07",
       "fr": "quarante",
       "en": "40",
-      "tags": [],
+      "tags": ["col:dizaine"],
       "syllables": [
         "qua",
         "rante"
@@ -85,7 +85,7 @@
       "id": "numbers-20-69-08",
       "fr": "quarante et un",
       "en": "41",
-      "tags": [],
+      "tags": ["col:et_un"],
       "syllables": [
         "qua",
         "rante",
@@ -97,7 +97,7 @@
       "id": "numbers-20-69-09",
       "fr": "quarante-sept",
       "en": "47",
-      "tags": [],
+      "tags": ["col:trait"],
       "syllables": [
         "qua",
         "rante",
@@ -108,7 +108,7 @@
       "id": "numbers-20-69-10",
       "fr": "cinquante",
       "en": "50",
-      "tags": [],
+      "tags": ["col:dizaine"],
       "syllables": [
         "cin",
         "quante"
@@ -118,7 +118,7 @@
       "id": "numbers-20-69-11",
       "fr": "cinquante et un",
       "en": "51",
-      "tags": [],
+      "tags": ["col:et_un"],
       "syllables": [
         "cin",
         "quante",
@@ -130,7 +130,7 @@
       "id": "numbers-20-69-12",
       "fr": "cinquante-huit",
       "en": "58",
-      "tags": [],
+      "tags": ["col:trait"],
       "syllables": [
         "cin",
         "quante",
@@ -141,7 +141,7 @@
       "id": "numbers-20-69-13",
       "fr": "soixante",
       "en": "60",
-      "tags": [],
+      "tags": ["col:dizaine"],
       "syllables": [
         "soi",
         "xante"
@@ -151,7 +151,7 @@
       "id": "numbers-20-69-14",
       "fr": "soixante et un",
       "en": "61",
-      "tags": [],
+      "tags": ["col:et_un"],
       "syllables": [
         "soi",
         "xante",
@@ -163,7 +163,7 @@
       "id": "numbers-20-69-15",
       "fr": "soixante-neuf",
       "en": "69",
-      "tags": [],
+      "tags": ["col:trait"],
       "syllables": [
         "soi",
         "xante",
@@ -172,6 +172,28 @@
     }
   ],
   "gameConfig": {
+    "letris": {
+      "columns": [
+        {
+          "key": "dizaine",
+          "label": "DIZAINE RONDE",
+          "prefix": "",
+          "choiceLabel": "a round ten — 20, 30, 40…"
+        },
+        {
+          "key": "et_un",
+          "label": "… ET UN",
+          "prefix": "",
+          "choiceLabel": "ten + et un — 21, 31, 41…"
+        },
+        {
+          "key": "trait",
+          "label": "AVEC TRAIT D'UNION",
+          "prefix": "",
+          "choiceLabel": "hyphenated — 22, 35, 47…"
+        }
+      ]
+    },
     "lexicalator": {
       "decoys": [
         "vin",

@@ -76,6 +76,7 @@
     {
       "id": "vouloir-inviter-10",
       "fr": "Plutôt dimanche ?",
+      "syllables": ["Plu", "tôt", "di", "man", "che?"],
       "en": "Rather Sunday? (counter-propose)",
       "gap": "Plutôt",
       "tags": []
@@ -91,6 +92,7 @@
     {
       "id": "vouloir-inviter-12",
       "fr": "Avec plaisir !",
+      "syllables": ["A", "vec", "plai", "sir!"],
       "en": "With pleasure!",
       "gap": "plaisir",
       "tags": []
@@ -98,6 +100,7 @@
     {
       "id": "vouloir-inviter-13",
       "fr": "D'accord !",
+      "syllables": ["D'ac", "cord!"],
       "en": "Okay! / Agreed!",
       "gap": "D'accord",
       "tags": []
@@ -107,6 +110,41 @@
       "fr": "Désolé, je suis occupé ce soir.",
       "en": "Sorry, I'm busy tonight. (m.)",
       "gap": "occupé",
+      "tags": []
+    },
+    {
+      "id": "vouloir-inviter-15",
+      "fr": "Bon anniversaire !",
+      "en": "Happy birthday!",
+      "gap": "Bon",
+      "tags": []
+    },
+    {
+      "id": "vouloir-inviter-16",
+      "fr": "Bonne chance !",
+      "en": "Good luck!",
+      "gap": "Bonne",
+      "tags": []
+    },
+    {
+      "id": "vouloir-inviter-17",
+      "fr": "Bon voyage !",
+      "en": "Have a good trip!",
+      "gap": "Bon",
+      "tags": []
+    },
+    {
+      "id": "vouloir-inviter-18",
+      "fr": "Bonne année !",
+      "en": "Happy New Year!",
+      "gap": "Bonne",
+      "tags": []
+    },
+    {
+      "id": "vouloir-inviter-19",
+      "fr": "Bonne fête !",
+      "en": "Happy name day!",
+      "gap": "Bonne",
       "tags": []
     }
   ]

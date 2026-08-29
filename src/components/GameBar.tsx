@@ -1,108 +1,111 @@
 "use client";
 
 /**
- * The persistent chrome for game surfaces.
+ * GameBar v2 — the one bar every game wears (patch 23).
  *
- * WHY: five games — NumBus, NumBourse, Compose It, LexicaLater, VocabulaRain —
- * each rendered their own ad-hoc top bar: a browser-style "← Back", the game's
- * name, and a help dot, in five different colour schemes. None of them offered
- * a way back to FluOlinGo, and none carried the icons that exist on every other
- * page. A learner who opened a game from a link was stranded there (Dan,
- * 2026-08-10: "the games are also missing the visible back to FluoLingo link at
- * the top left and the usual icons at the top… some of these deserve to be
- * permanently on screen no matter where one is on the website").
+ *   ┌────────────────────────────────────────────┐  56px
+ *   │  ✕   ▓▓▓▓▓▓░░░░░░░░   ♥♥♡   240   ⋯        │
+ *   └────────────────────────────────────────────┘
  *
- * PRD §10: "Lessons, review activities, games, stories, AI interactions, and
- * teacher surfaces should feel like parts of the same product even when their
- * activity mechanics differ."
+ * v1 (patch 13) was a site bar borrowed for games: ← FluOlinGo, the game's
+ * name, four destination icons and a help dot. It answered "where am I" but
+ * it did not carry the game — score, lives and progress were still painted
+ * by each game in its own header, in its own colours, one line lower. Six
+ * games, six HUDs (audit §C). v2 is DrillShell's bar with the two things a
+ * game has that a drill does not: hearts (where the game keeps them) and a
+ * ⋯ menu for what used to be a row of pills — sound, help, music, hard mode,
+ * quit. GameFrame owns the ⋯ sheet; this component only draws the bar.
  *
- * WHY NOT THE FULL CahierShell: a game needs its screen. Duolingo's lesson
- * player deliberately strips its chrome to protect focus — but it always keeps
- * an exit and a sense of place. This is that: the smallest bar that answers
- * "where am I, and how do I get out", and no more. The flap rail stays off.
+ * ON HEARTS: DrillShell refuses hearts because lives lockout is on the
+ * refused list for CURRICULUM drills. The games are opt-in arcade play and
+ * three of them (NumBus, NumBourse, LexicaLater) already run on lives — the
+ * bar shows what the game has, and shows nothing when it has none.
  *
- * It is `sticky`, not fixed: the way out scrolls with you and never covers the
- * game.
+ * Tokens only.
  */
+
 import Link from "next/link";
 import type { ReactNode } from "react";
-import BackLink from "@/components/BackLink";
-import HelpDot from "@/components/HelpDot";
 
-/** Always-available destinations. Deliberately four, not fifteen. */
-const LINKS: Array<{ href: string; icon: string; label: string }> = [
-  { href: "/activities", icon: "🗂️", label: "Index" },
-  { href: "/moi", icon: "📊", label: "Mon progrès" },
-  { href: "/leaderboard", icon: "🏆", label: "Classement" },
-  { href: "/profil", icon: "👤", label: "Profil" },
-];
+export type GameProgress = { done: number; total: number };
+export type GameHearts = { left: number; total: number };
 
 export default function GameBar({
-  title,
-  up,
-  right,
+  exitHref,
+  onExit,
+  progress,
+  hearts,
+  score,
+  onMenu,
+  menuOpen,
 }: {
-  /** What this activity is. Keep it short — it is a place marker, not a header. */
-  title: ReactNode;
-  /** One level up, when the game has a gallery. Omitted = no second arrow. */
-  up?: string;
-  /** Live game state that belongs in the bar (a score, a timer). */
-  right?: ReactNode;
+  /** The ✕. A game you cannot leave is a trap. */
+  exitHref: string;
+  /** When set the ✕ is a button (a setup step to return to), not a link. */
+  onExit?: () => void;
+  /** null = the game has no notion of progress (a free composer). */
+  progress: GameProgress | null;
+  /** Shown only for games that keep lives. */
+  hearts?: GameHearts | null;
+  /** The score / counter — the learner feedback Dan's litmus rule keeps. */
+  score?: ReactNode;
+  onMenu: () => void;
+  menuOpen: boolean;
 }) {
+  const pct = progress && progress.total > 0
+    ? Math.min(100, Math.round((progress.done / progress.total) * 100))
+    : 0;
+  const exitCls =
+    "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xl font-black text-[color:var(--cahier-ink)]/50 transition hover:bg-[color:var(--cahier-ink)]/10 hover:text-[color:var(--cahier-ink)]";
   return (
-    <div
-      className="sticky top-0 z-30 border-b"
-      style={{
-        background: "var(--cahier-paper-raised, rgba(255,255,255,0.86))",
-        borderColor: "var(--cahier-line-strong, rgba(0,0,0,0.12))",
-        backdropFilter: "blur(6px)",
-      }}
-    >
-      <div className="mx-auto flex max-w-4xl items-center gap-3 px-3 py-2">
-        {/* The way home. First element, every game, same place, always. */}
-        <Link
-          href="/"
-          className="shrink-0 rounded-full px-2.5 py-1 text-sm font-bold no-underline"
-          style={{ color: "var(--cahier-accent, #2f4fa8)" }}
+    <div className="game-bar flex h-14 shrink-0 items-center gap-3 border-b-2 border-[color:var(--cahier-ink)]/10 bg-[color:var(--cahier-paper-raised)]/80 px-3 backdrop-blur sm:px-5">
+      {onExit ? (
+        <button type="button" onClick={onExit} aria-label="Exit" className={exitCls}>✕</button>
+      ) : (
+        <Link href={exitHref} aria-label="Exit" className={exitCls}>✕</Link>
+      )}
+
+      {progress ? (
+        <div
+          className="h-3.5 min-w-0 flex-1 overflow-hidden rounded-full bg-[color:var(--cahier-ink)]/10"
+          role="progressbar"
+          aria-valuenow={progress.done}
+          aria-valuemin={0}
+          aria-valuemax={progress.total}
         >
-          ← <span className="hidden sm:inline">FluOlinGo</span>
-        </Link>
+          <div
+            className="h-full rounded-full bg-[color:var(--drill-ok)] transition-[width] duration-300"
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+      ) : (
+        <div className="flex-1" />
+      )}
 
-        {up && (
-          <BackLink
-            fallback={up}
-            className="shrink-0 text-xs font-bold"
-            // A second, weaker arrow: back to this game's own gallery.
-          >
-            ↩︎
-          </BackLink>
-        )}
-
+      {hearts && hearts.total > 0 && (
         <span
-          lang="fr"
-          className="min-w-0 flex-1 truncate text-center text-sm font-bold"
-          style={{ color: "var(--cahier-ink-soft, #4a4a4a)" }}
+          className="shrink-0 text-base leading-none text-[color:var(--drill-bad)]"
+          title="Lives"
+          aria-label={`${hearts.left} of ${hearts.total} lives`}
         >
-          {title}
+          {"♥".repeat(Math.max(0, hearts.left))}
+          <span className="opacity-25">{"♥".repeat(Math.max(0, hearts.total - hearts.left))}</span>
         </span>
+      )}
 
-        {right}
+      {score !== undefined && score !== null && (
+        <span className="cahier-mono shrink-0 text-sm font-bold text-[color:var(--cahier-ink)]/70">{score}</span>
+      )}
 
-        <nav className="flex shrink-0 items-center gap-0.5">
-          {LINKS.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              title={l.label}
-              aria-label={l.label}
-              className="rounded-full px-1.5 py-1 text-base no-underline"
-            >
-              {l.icon}
-            </Link>
-          ))}
-          <HelpDot />
-        </nav>
-      </div>
+      <button
+        type="button"
+        onClick={onMenu}
+        aria-label="Menu"
+        aria-expanded={menuOpen}
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xl font-black text-[color:var(--cahier-ink)]/60 transition hover:bg-[color:var(--cahier-ink)]/10 hover:text-[color:var(--cahier-ink)]"
+      >
+        ⋯
+      </button>
     </div>
   );
 }

@@ -73,6 +73,8 @@ const ACTIVITY_EVIDENCE: Array<[string, EvidenceType]> = [
   ["dice-practice", "constrained"],
   ["/practice/dice/", "constrained"],
   ["lesson-dice:", "constrained"],
+  ["lesson:", "constrained"],          // the lesson pager's gap/build/translate cards
+
   ["conj", "constrained"],
   ["/conjugaison", "constrained"],
   ["say-it", "productive"],
@@ -146,7 +148,7 @@ export function outcomeForItem(itemId: string): string | undefined {
   if (!itemId) return undefined;
   const { pretestToSio } = indexes();
 
-  // finale:SIO-034:2 — the outcome is stated outright
+  // finale:SIO-035:2 — the outcome is stated outright
   if (itemId.startsWith("finale:")) {
     const parts = itemId.split(":");
     return parts[1]?.startsWith("SIO-") ? parts[1] : undefined;
@@ -210,11 +212,19 @@ export function assistanceFromHints(hintsTaken: number): AssistanceLevel {
 export function buildEvidence(
   itemId: string,
   activityId: string | undefined,
-  opts: { hintsTaken?: number; revealed?: boolean; evidenceType?: EvidenceType } = {},
+  opts: {
+    hintsTaken?: number;
+    revealed?: boolean;
+    evidenceType?: EvidenceType;
+    /** The exact rung the help ladder showed (Track D: ladder.ts
+     *  evidenceOf). Wins over the count-derived guess — a single hint may
+     *  be a nudge (category) or a scaffold (first letter). */
+    assistance?: AssistanceLevel;
+  } = {},
 ): EvidenceMeta {
   const assistance: AssistanceLevel = opts.revealed
     ? "answer"
-    : assistanceFromHints(opts.hintsTaken ?? 0);
+    : opts.assistance ?? assistanceFromHints(opts.hintsTaken ?? 0);
   const meta: EvidenceMeta = {
     assistance,
     assistCount: Math.min(20, Math.max(0, opts.hintsTaken ?? 0)),

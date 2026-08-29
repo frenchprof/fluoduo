@@ -13,21 +13,20 @@
  *     rising curve cannot be memorisation).
  * Honest-epistemology note baked into the UI: no causal claim, no control
  * group — these are same-learner, same-items gains, stated as such.
+ *
+ * Patch 26: no `Compute` button. The page fetches every learner's answer
+ * log once (fetchClassDetails) and this panel is a useMemo over that map —
+ * it is simply there when the tab opens, and moves with the 30 s repoll.
  */
-import { useState } from "react";
-import { fetchStudentDetail, type Learner } from "./data";
+import { useMemo } from "react";
+import { type Learner, type StudentDetail } from "./data";
 
 type Row = { name: string; first: number; later: number; nFirst: number; nLater: number; conquered: number; missed: number; finFirst: number | null; finLast: number | null; finDays: number };
 
 function pct(n: number, d: number): number | null { return d > 0 ? Math.round((100 * n) / d) : null; }
 
-export default function Evidence({ roster }: { roster: Learner[] }) {
-  const [busy, setBusy] = useState(false);
-  const [rows, setRows] = useState<Row[] | null>(null);
-  const [raw, setRaw] = useState<string[][] | null>(null); // attempt-level, for the verifiable export
-
-  async function compute() {
-    setBusy(true);
+export default function Evidence({ roster, details, fetched }: { roster: Learner[]; details: Map<string, StudentDetail>; fetched: number }) {
+  const { rows, raw } = useMemo(() => {
     const out: Row[] = [];
     const rawRows: string[][] = [];
     for (const l of roster) {
@@ -36,52 +35,50 @@ export default function Evidence({ roster }: { roster: Learner[] }) {
       // isTeacher alone missed it — that flag needs a stamped admin email,
       // which the cageyc@ account never left in telemetry. Belt and braces:
       if (l.isTeacher || /cagey/i.test(l.name) || (l.email ?? "").toLowerCase().startsWith("cageyc")) continue;
-      try {
-        const d = await fetchStudentDetail(l.uids);
-        // group this learner's responses by item, chronological
-        const byItem = new Map<string, { ok: boolean; ts: number; act: string }[]>();
-        const finale: { ok: boolean; ts: number }[] = [];
-        for (const r of d.responses) {
-          if (!r.ts) continue;
-          rawRows.push([l.name, r.item, r.ts.toISOString(), r.status !== "missed" ? "correct" : "wrong", r.givenAnswer ?? "", r.activityId ?? ""]);
-          const rec = { ok: r.status !== "missed", ts: r.ts.getTime(), act: r.activityId ?? "" };
-          const arr = byItem.get(r.item) ?? [];
-          arr.push(rec);
-          byItem.set(r.item, arr);
-          if ((r.activityId ?? "").includes("finale")) finale.push({ ok: rec.ok, ts: rec.ts });
+      const d = details.get(l.uid);
+      if (!d) continue;
+      // group this learner's responses by item, chronological
+      const byItem = new Map<string, { ok: boolean; ts: number; act: string }[]>();
+      const finale: { ok: boolean; ts: number }[] = [];
+      for (const r of d.responses) {
+        if (!r.ts) continue;
+        rawRows.push([l.name, r.item, r.ts.toISOString(), r.status !== "missed" ? "correct" : "wrong", r.givenAnswer ?? "", r.activityId ?? ""]);
+        const rec = { ok: r.status !== "missed", ts: r.ts.getTime(), act: r.activityId ?? "" };
+        const arr = byItem.get(r.item) ?? [];
+        arr.push(rec);
+        byItem.set(r.item, arr);
+        if ((r.activityId ?? "").includes("finale")) finale.push({ ok: rec.ok, ts: rec.ts });
+      }
+      let firstOk = 0, nFirst = 0, laterOk = 0, nLater = 0, conquered = 0, missedFirst = 0;
+      for (const arr of byItem.values()) {
+        arr.sort((a, b) => a.ts - b.ts);
+        nFirst++; if (arr[0].ok) firstOk++;
+        for (let i = 1; i < arr.length; i++) { nLater++; if (arr[i].ok) laterOk++; }
+        if (!arr[0].ok) { missedFirst++; if (arr[arr.length - 1].ok) conquered++; }
+      }
+      // finale by day: first day's accuracy vs latest day's
+      let finFirst: number | null = null, finLast: number | null = null, finDays = 0;
+      if (finale.length > 0) {
+        const byDay = new Map<string, { ok: number; n: number }>();
+        for (const f of finale) {
+          const k = new Date(f.ts).toDateString();
+          const b = byDay.get(k) ?? { ok: 0, n: 0 };
+          b.n++; if (f.ok) b.ok++;
+          byDay.set(k, b);
         }
-        let firstOk = 0, nFirst = 0, laterOk = 0, nLater = 0, conquered = 0, missedFirst = 0;
-        for (const arr of byItem.values()) {
-          arr.sort((a, b) => a.ts - b.ts);
-          nFirst++; if (arr[0].ok) firstOk++;
-          for (let i = 1; i < arr.length; i++) { nLater++; if (arr[i].ok) laterOk++; }
-          if (!arr[0].ok) { missedFirst++; if (arr[arr.length - 1].ok) conquered++; }
-        }
-        // finale by day: first day's accuracy vs latest day's
-        let finFirst: number | null = null, finLast: number | null = null, finDays = 0;
-        if (finale.length > 0) {
-          const byDay = new Map<string, { ok: number; n: number }>();
-          for (const f of finale) {
-            const k = new Date(f.ts).toDateString();
-            const b = byDay.get(k) ?? { ok: 0, n: 0 };
-            b.n++; if (f.ok) b.ok++;
-            byDay.set(k, b);
-          }
-          const days = [...byDay.entries()].sort((a, b) => new Date(a[0]).getTime() - new Date(b[0]).getTime());
-          finDays = days.length;
-          finFirst = pct(days[0][1].ok, days[0][1].n);
-          finLast = pct(days[days.length - 1][1].ok, days[days.length - 1][1].n);
-        }
-        out.push({
-          name: l.name, first: firstOk, nFirst, later: laterOk, nLater,
-          conquered, missed: missedFirst, finFirst, finLast, finDays,
-        });
-      } catch { /* skip unreadable learner */ }
+        const days = [...byDay.entries()].sort((a, b) => new Date(a[0]).getTime() - new Date(b[0]).getTime());
+        finDays = days.length;
+        finFirst = pct(days[0][1].ok, days[0][1].n);
+        finLast = pct(days[days.length - 1][1].ok, days[days.length - 1][1].n);
+      }
+      out.push({
+        name: l.name, first: firstOk, nFirst, later: laterOk, nLater,
+        conquered, missed: missedFirst, finFirst, finLast, finDays,
+      });
     }
-    setRows(out);
-    setRaw(rawRows);
-    setBusy(false);
-  }
+    return { rows: out.length ? out : null, raw: rawRows.length ? rawRows : null };
+  }, [roster, details]);
+  const busy = fetched < roster.length;
 
   const T = rows
     ? rows.reduce((a, r) => ({
@@ -100,9 +97,7 @@ export default function Evidence({ roster }: { roster: Learner[] }) {
     <div className="mt-2 rounded-2xl border-2 border-emerald-300 bg-emerald-50/40 p-4">
       <div className="flex items-center justify-end gap-2">
         <div className="flex gap-1.5">
-          <button type="button" onClick={() => void compute()} disabled={busy} className="rounded-full border-2 border-emerald-700 bg-white px-3 py-1 text-xs font-black text-emerald-800 disabled:opacity-50">
-            {busy ? "Computing…" : rows ? "Recompute" : "Compute"}
-          </button>
+          {busy && <span className="text-xs font-bold text-emerald-800">{fetched}/{roster.length} learners loaded…</span>}
           {raw && (
             <button
               type="button"
@@ -125,7 +120,7 @@ export default function Evidence({ roster }: { roster: Learner[] }) {
         </div>
       </div>
       {!rows && !busy && (
-        <p className="mt-1 text-xs text-emerald-900/70">Reads every student's complete answer log. Same learner, same items, before vs after — no causal claim, no control group; stated as such.</p>
+        <p className="mt-1 text-xs text-emerald-900/70">No answer logs yet. Same learner, same items, before vs after — no causal claim, no control group; stated as such.</p>
       )}
       {rows && T && (
         <div className="mt-2 space-y-3 text-sm text-emerald-950">
@@ -148,7 +143,7 @@ export default function Evidence({ roster }: { roster: Learner[] }) {
               ))}
             </div>
           </div>
-          <p className="text-xs text-emerald-800/70">Method: per item per student, attempts ordered chronologically; “first” is the earliest recorded attempt (pre-test or first drill), “later” all subsequent attempts; Final attempts grouped by calendar day. Computed live from the answer logs — re-run any time.</p>
+          <p className="text-xs text-emerald-800/70">Method: per item per student, attempts ordered chronologically; “first” is the earliest recorded attempt (pre-test or first drill), “later” all subsequent attempts; Final attempts grouped by calendar day. Drawn from the answer logs the page holds; moves with the 30 s repoll.</p>
         </div>
       )}
     </div>

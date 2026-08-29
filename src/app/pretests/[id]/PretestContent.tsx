@@ -5,8 +5,7 @@ import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import Link from "next/link";
 import { getPretest, sioIdForPretest } from "@/content/pretests";
 import { speak } from "@/games/letris/speech";
-import { logEvent } from "@/lib/firebase/usage";
-import { recordPretestAnswer, stemForItem } from "@/lib/pretestRecord";
+import { judgePretestAnswer, shuffle, ttsTextForItem } from "@/lib/pretests/runner";
 import CahierShell, { type ShellTab } from "@/components/CahierShell";
 import MarkDoneButton from "@/app/sio/[id]/MarkDoneButton";
 import type { Pretest, PretestItem } from "@/lib/pretests/schema";
@@ -15,7 +14,7 @@ import { optionGridClass } from "@/lib/optionGrid";
 // The Pretest is a cold pre-lesson diagnostic — its tab rail deliberately does
 // NOT link to Practice activities (pre/post boundary, see PRETEST_BLUEPRINT.md).
 const PRETEST_TABS: ShellTab[] = [
-  { key: "home", label: "Accueil", emoji: "🏠", href: "/" },
+  { key: "home", label: "Home", emoji: "🏠", href: "/" },
   { key: "pretest", label: "Pretest", emoji: "🧪" },
 ];
 
@@ -23,21 +22,12 @@ type Verdict = { picked: string; correct: boolean };
 
 const TTS_KEY = "fluolingo.pretestTts.v1";
 
-/** The sentence to SPEAK — always the full sentence, not the answer alone.
- *  Fixes the LAF1201 bug where TTS read only the correct word. */
-function ttsTextForItem(item: PretestItem): string {
-  if (item.fullSentence && item.fullSentence.trim()) return item.fullSentence;
-  return `${item.sentenceBefore} ${item.answer} ${item.sentenceAfter}`
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
 export default function PretestPage({ id }: { id: string }) {
   const pretest = getPretest(id);
 
   if (!pretest) {
     return (
-      <CahierShell tabs={PRETEST_TABS} active="pretest" crumb="🧪 Pretest">
+      <CahierShell tabs={PRETEST_TABS} active="pretest">
         <div className="mx-auto max-w-3xl px-4 py-10">
           <div className="rounded-2xl border-2 border-slate-200 bg-white p-10 text-center">
             <div className="text-6xl" aria-hidden>🤷</div>
@@ -60,7 +50,6 @@ export default function PretestPage({ id }: { id: string }) {
     <CahierShell
       tabs={PRETEST_TABS}
       active="pretest"
-      crumb={`🧪 Unit ${pretest.unit} · Lesson ${pretest.lessonNo} · ${pretest.lessonSlug}`}
     >
       <PretestRunner pretest={pretest} />
     </CahierShell>
@@ -123,24 +112,10 @@ function PretestRunner({ pretest }: { pretest: Pretest }) {
 
   function pick(choice: string) {
     if (submitted || !item) return;
-    const correct = choice === item.answer;
+    // The judge + gap-report + usage ledger live in the shared runner
+    // (patch 22) — this engine only renders the verdict.
+    const correct = judgePretestAnswer(pretest.id, item, choice);
     setSubmitted({ picked: choice, correct });
-    // Gap report (audit R1): persist the verdict so it survives navigation.
-    recordPretestAnswer({
-      pretestId: pretest.id,
-      sioId: sioIdForPretest(pretest.id) ?? "",
-      itemId: item.id,
-      correct,
-      picked: choice,
-      answer: item.answer,
-      stem: stemForItem(item),
-    });
-    void logEvent("pretest.answer", {
-      pretestId: pretest.id,
-      itemId: item.id,
-      correct,
-      picked: choice,
-    });
   }
   function next() {
     if (!submitted || !item) return;
@@ -421,15 +396,4 @@ function Recap({
       </div>
     </article>
   );
-}
-
-/* ──────────────────────────────────────────────────────────── */
-
-function shuffle<T>(arr: T[]): T[] {
-  const out = [...arr];
-  for (let i = out.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [out[i], out[j]] = [out[j], out[i]];
-  }
-  return out;
 }

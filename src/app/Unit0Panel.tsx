@@ -5,8 +5,12 @@
  * Situations 1/2/3 exist for Unit 0). Clicking a tile opens the shared
  * SioModal, body = one merged Can-Do+competence sentence (no section
  * labels, per Dan 2026-07-01: "STICK TO THE ESSENTIALS. SHORT AND SWEET.
- * EFFICIENT") followed by that SIO's MCQs — or, for SIO-010, a note that
- * it's a mini-oral simulation done in class (no online questions).
+ * EFFICIENT") followed by that SIO's MCQs.
+ *
+ * SIO-010 (the role-play) is the one that reads differently: the learner picks
+ * an audience (student / client / group) and sits that audience's seven lines,
+ * and only then does the model dialogue appear. Showing the dialogue first
+ * would have handed over every answer — a pretest is a COLD guess.
  *
  * "Also try" game chips (Letris/Match It) show if a deck exists for the SIO
  * — Dan asked for Days/Numbers/Colors → Match It and the un/une article SIO
@@ -21,34 +25,30 @@ import { speak } from "@/games/letris/speech";
 import { SIOS, sioStatement } from "@/content/sios";
 import { lessonsForSio } from "@/content/lessons";
 import { CURATED } from "@/content/collections";
-import { UNIT0_QUESTIONS, type Unit0Question } from "@/content/sios/unit0-questions";
+import {
+  MULTI_SEP,
+  SIO010_SITUATIONS,
+  UNIT0_QUESTIONS,
+  unit0QuestionId,
+  type Unit0Question,
+} from "@/content/sios/unit0-questions";
+import { recordPretestAnswer } from "@/lib/pretestRecord";
 import { getAtelier } from "@/content/ateliers";
 import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import AuthGate from "@/components/AuthGate";
 import SioModal, { popupActivityTabs } from "./SioModal";
-import { AfterPretest } from "./SioDetail";
+import { AfterPretest, BringToClass } from "./SioDetail";
 import DialoguePlayer from "./DialoguePlayer";
 import MarkDoneButton from "./sio/[id]/MarkDoneButton";
+import { shuffle } from "@/lib/shuffle";
 
 const UNIT0_SIOS = SIOS.filter((s) => s.unit === 0);
 
-function shuffle<T>(arr: T[]): T[] {
-  const out = [...arr];
-  for (let i = out.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [out[i], out[j]] = [out[j], out[i]];
-  }
-  return out;
-}
 
-export default function Unit0Panel({
-  forceOpen,
-}: {
-  /** Same contract as UnitSection's — /practice/* URLs for Unit-0 decks land
-   *  here with the popup pre-opened on an activity view. */
-  forceOpen?: { sioId: string; view?: string; lessonSlug?: string };
-}) {
-  const [openId, setOpenId] = useState<string | null>(forceOpen?.sioId ?? null);
+export default function Unit0Panel({ openSioId, onSioClosed }: { openSioId?: string | null; onSioClosed?: () => void } = {}) {
+  // (The forceOpen prop died with patch 22 — no route pre-opens this popup
+  // any more; the lesson URLs render the full-screen pager instead.)
+  const [openId, setOpenId] = useState<string | null>(null);
   const openSio = openId ? UNIT0_SIOS.find((s) => s.id === openId) : undefined;
 
   // Deep link: /unit/0#SIO-00X opens that popup — the home learning path links
@@ -56,11 +56,14 @@ export default function Unit0Panel({
   // (that popup opened EMPTY, Dan's 2026-07-05 bug report), so unit 0's hash
   // handling lives here where the questions are.
   useEffect(() => {
-    if (forceOpen) return;
     const hash = window.location.hash.replace("#", "");
     if (hash && UNIT0_SIOS.some((s) => s.id === hash)) setOpenId(hash);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  // Home's map taps a Unit-0 stop after mount (patch 25).
+  useEffect(() => {
+    if (openSioId && UNIT0_SIOS.some((s) => s.id === openSioId)) setOpenId(openSioId);
+  }, [openSioId]);
 
   // The pink "Unité 0" header + done-counter is rendered by SioHub's collapse
   // header (same as Units 1–4); this panel is just the tile grid — no second
@@ -97,18 +100,16 @@ export default function Unit0Panel({
           sio={openSio}
           onClose={() => {
             setOpenId(null);
-            // An activity URL with its popup closed IS the unit page — make
-            // the address bar agree so refresh/share land right.
-            if (forceOpen) window.history.replaceState(null, "", "/unit/0");
+            onSioClosed?.();
           }}
           deck={openSio.collectionId ? CURATED.find((c) => c.id === openSio.collectionId) : undefined}
-          initialView={openSio.id === forceOpen?.sioId ? forceOpen?.view : undefined}
-          lessonSlug={openSio.id === forceOpen?.sioId ? forceOpen?.lessonSlug : undefined}
           tabs={popupActivityTabs(
             openSio.collectionId ? CURATED.find((c) => c.id === openSio.collectionId) : undefined,
             // Unit-0 questions render inline right here → Pre-Test is the
-            // popup's active flap, matching the Units 1-4 popups.
-            !openSio.isProduction && (UNIT0_QUESTIONS[openSio.id] ?? []).length > 0
+            // popup's active flap, matching the Units 1-4 popups. Gated on the
+            // BANK, not on isProduction: SIO-010 is an atelier and now has
+            // questions too (Dan, 2026-08-28).
+            (UNIT0_QUESTIONS[openSio.id] ?? []).length > 0
               ? { inline: true, href: null }
               : undefined,
           )}
@@ -118,7 +119,18 @@ export default function Unit0Panel({
           </p>
 
           {openSio.id === "SIO-010" ? (
-            <DialoguePlayer lines={getAtelier(openSio.id) ?? []} />
+            <>
+              <AuthGate what="try these" compact>
+                <Sio010Pretest sio={openSio} />
+              </AuthGate>
+              {/* The model dialogue IS the answer key — it waits for the
+                  attempt (Dan's pretesting rule: never front-load the model). */}
+              <AfterPretest>
+                <div className="mt-4">
+                  <DialoguePlayer lines={getAtelier(openSio.id) ?? []} />
+                </div>
+              </AfterPretest>
+            </>
           ) : openSio.isProduction ? (
             <div className="rounded-xl border-2 border-dashed p-3" style={{ borderColor: "var(--fluo-card-accent)" }}>
               <p className="text-sm text-[color:var(--fluo-ink-soft)]">
@@ -130,6 +142,13 @@ export default function Unit0Panel({
               <Unit0Questions sio={openSio} />
             </AuthGate>
           )}
+
+          {/* Units 1-4 get this from SioDetail's pretest branch; Unit 0 draws
+              its own popup body, so without this line the misses recorded above
+              would have had no reader — written and never shown. */}
+          <div className="mt-3">
+            <BringToClass sioId={openSio.id} />
+          </div>
 
           {/* Lesson buttons: bottom only, and (for question SIOs) only after
               every question is answered — pretest first (Dan, 2026-07-05). */}
@@ -156,7 +175,18 @@ export default function Unit0Panel({
   );
 }
 
-function Unit0Questions({ sio }: { sio: (typeof UNIT0_SIOS)[number] }) {
+function Unit0Questions({
+  sio,
+  bank,
+  ordered = false,
+}: {
+  sio: (typeof UNIT0_SIOS)[number];
+  bank?: Unit0Question[];
+  /** Keep the authored question order (SIO-010: the seven questions ARE the
+   *  seven moves of the dialogue, in the order they are spoken). Options are
+   *  still shuffled. */
+  ordered?: boolean;
+}) {
   // Fresh random question AND option order on every popup open (this
   // component mounts per open) — never the authored order. Activity modes
   // live on the popup's flap tabs, not in the body. Answers are held HERE
@@ -167,10 +197,10 @@ function Unit0Questions({ sio }: { sio: (typeof UNIT0_SIOS)[number] }) {
   const [questions, setQuestions] = useState<Unit0Question[]>([]);
   const [picked, setPicked] = useState<Record<number, string>>({});
   useEffect(() => {
-    const base = UNIT0_QUESTIONS[sio.id] ?? [];
-    setQuestions(shuffle(base).map((q) => ({ ...q, options: shuffle(q.options) })));
+    const base = bank ?? UNIT0_QUESTIONS[sio.id] ?? [];
+    setQuestions((ordered ? base : shuffle(base)).map((q) => ({ ...q, options: shuffle(q.options) })));
     setPicked({});
-  }, [sio.id]);
+  }, [sio.id, bank, ordered]);
 
   const activeIdx = questions.findIndex((_, i) => picked[i] === undefined);
 
@@ -180,6 +210,26 @@ function Unit0Questions({ sio }: { sio: (typeof UNIT0_SIOS)[number] }) {
     setPicked((prev) => ({ ...prev, [i]: o.v }));
     if (o.ok) sfx.correct(); else sfx.wrong();
     if (o.ok) speak(ttsFor(q, o.v), "fr-FR");
+    // Unit 0 graded and then forgot: these questions gate the lesson button
+    // above (line ~123, "pretest first"), so a Unit-0 learner sits them BEFORE
+    // the lesson exactly as Units 1-4 sit theirs — but nothing was written, so
+    // their misses never reached "Bring to class" while every other unit's did.
+    // Same store, same shape as the runner (lib/pretests/runner.ts).
+    //
+    // Not recordItemResult, by the same rule as the other two engines: a
+    // pre-lesson miss is remembered, never scored — no XP, no accuracy, no
+    // review queue (Dan, 2026-08-27: "remember it, but don't score it").
+    recordPretestAnswer({
+      pretestId: `unit0:${sio.id}`,
+      sioId: sio.id,
+      itemId: unit0QuestionId(q),
+      correct: o.ok,
+      picked: o.v,
+      answer: q.multi
+        ? q.options.filter((x) => x.ok).map((x) => x.v).join(MULTI_SEP)
+        : q.options.find((x) => x.ok)?.v ?? "",
+      stem: (q.stem ?? q.title ?? q.emoji ?? "").replace(/\s+/g, " ").trim(),
+    });
     // All answered → post-pretest content (lesson button) may appear.
     if (Object.keys(picked).length + 1 === questions.length && questions.length > 0) {
       window.dispatchEvent(new CustomEvent("fluolingo:pretest-complete", { detail: { id: sio.id } }));
@@ -191,9 +241,11 @@ function Unit0Questions({ sio }: { sio: (typeof UNIT0_SIOS)[number] }) {
       document.querySelector("[data-u0q-active]")?.scrollIntoView({ block: "center", behavior: "smooth" });
     }, 60);
   };
+  // A number key ANSWERS — which is wrong for a multi-answer question, where a
+  // tap only toggles one of several picks. Those are mouse/touch only.
   useChoiceKeys({
-    count: activeIdx >= 0 ? questions[activeIdx]?.options.length ?? 0 : 0,
-    enabled: activeIdx >= 0,
+    count: activeIdx >= 0 && !questions[activeIdx]?.multi ? questions[activeIdx]?.options.length ?? 0 : 0,
+    enabled: activeIdx >= 0 && !questions[activeIdx]?.multi,
     onPick: (k) => {
       const q = questions[activeIdx];
       if (q && q.options[k]) {
@@ -215,11 +267,62 @@ function Unit0Questions({ sio }: { sio: (typeof UNIT0_SIOS)[number] }) {
   );
 }
 
+/**
+ * SIO-010's pretest — pick the audience, then sit that audience's seven lines.
+ * The situation is NOT decoration: "how do you ask for their name" has no
+ * answer until you know whether you're facing one student, a client or a
+ * group, so a single shuffled pool of all 21 would be unanswerable. Each run
+ * remounts (keyed on the situation), so switching audiences starts clean.
+ */
+function Sio010Pretest({ sio }: { sio: (typeof UNIT0_SIOS)[number] }) {
+  const [key, setKey] = useState<string | null>(null);
+  const sit = SIO010_SITUATIONS.find((s) => s.key === key);
+  return (
+    <div className="space-y-3">
+      <div className="flex flex-wrap gap-2">
+        {SIO010_SITUATIONS.map((s) => (
+          <button
+            key={s.key}
+            type="button"
+            onClick={() => setKey(s.key)}
+            className={`rounded-full border-2 px-3 py-1.5 text-xs font-bold transition ${
+              s.key === key
+                ? "border-[color:var(--fluo-ink)] bg-[color:var(--fluo-ink)] text-white"
+                : "border-[color:var(--fluo-ink)] bg-[var(--fluo-card)] text-[color:var(--fluo-ink)] hover:bg-[var(--fluo-card-tint)]"
+            }`}
+          >
+            {s.label}
+          </button>
+        ))}
+      </div>
+      {sit && <Unit0Questions key={sit.key} sio={sio} bank={sit.questions} ordered />}
+    </div>
+  );
+}
+
+/** The prompt, with the one span Dan asked to highlight worn as a marker
+ *  ("around 7pm"). Stems keep their own bracket framing untouched. */
+function promptNodes(q: Unit0Question) {
+  const text = q.stem ?? q.title ?? "";
+  const i = q.stem || !q.hl ? -1 : text.indexOf(q.hl);
+  if (i < 0) return text;
+  return (
+    <>
+      {text.slice(0, i)}
+      <span className="fluo-hl">{q.hl}</span>
+      {text.slice(i + q.hl!.length)}
+    </>
+  );
+}
+
 /** The French to SPEAK on a correct pick: the question's own tts (colour
  *  mnemonics like "le feu rouge"), else the completed stem (bracketed framing
  *  stripped), else the bare option (letters say their French names). */
 function ttsFor(q: Unit0Question, v: string): string {
   if (q.tts) return q.tts;
+  // A multi-answer pick lands as "Salut ! · Bonjour !" — read the greetings,
+  // not the separator.
+  if (q.multi) return q.options.filter((o) => o.ok).map((o) => o.v).join(", ");
   if (q.stem) return q.stem.replace(/\[[^\]]*\]\s*/g, "").replace("___", v);
   return v;
 }
@@ -239,18 +342,40 @@ function QuizQuestion({
 }) {
   const [showWhy, setShowWhy] = useState(false);
   const [showExample, setShowExample] = useState(false);
+  // Multi-answer questions collect taps here until the learner confirms; a
+  // single-answer question never touches this.
+  const [sel, setSel] = useState<string[]>([]);
+  const answered = picked !== null;
   // WHY appears only on a WRONG pick, and explains only why THAT choice is
-  // wrong (Dan, 2026-07-02) — the why lives on the wrong option itself.
-  const pickedOpt = picked !== null ? q.options.find((o) => o.v === picked) : undefined;
-  const whyText = pickedOpt && !pickedOpt.ok ? pickedOpt.why : undefined;
+  // wrong (Dan, 2026-07-02) — the why lives on the wrong option itself. A
+  // multi-answer pick is stored as the joined set, so every wrongly-ticked
+  // option gets its say.
+  const pickedVals = picked === null ? [] : picked.split(MULTI_SEP);
+  const whyText =
+    q.options
+      .filter((o) => !o.ok && o.why && pickedVals.includes(o.v))
+      .map((o) => o.why)
+      .join(" ") || undefined;
+  const correctVals = q.options.filter((o) => o.ok).map((o) => o.v);
+  const confirmMulti = () =>
+    onPick({
+      // Option order, not tap order — the record must not depend on which the
+      // learner happened to tick first.
+      v: q.options.filter((o) => sel.includes(o.v)).map((o) => o.v).join(MULTI_SEP),
+      ok: sel.length === correctVals.length && sel.every((v) => correctVals.includes(v)),
+    });
 
   // First click = the answer (speaks the completed form when correct). Once
   // answered, every option stays playable: clicking any of them — including
   // the one already picked — speaks it (Dan, 2026-07-02: all letters
   // playable; a click reveals that letter's name).
-  function tap(o: { v: string; ok: boolean }, answered: boolean) {
-    if (!answered) onPick(o);
-    else speak(o.v, "fr-FR");
+  function tap(o: { v: string; ok: boolean }, done: boolean) {
+    if (done) { speak(o.v, "fr-FR"); return; }
+    if (q.multi) {
+      setSel((prev) => (prev.includes(o.v) ? prev.filter((v) => v !== o.v) : [...prev, o.v]));
+      return;
+    }
+    onPick(o);
   }
 
   // The "exemple" button appears once attempted (the mnemonic contains the
@@ -296,7 +421,7 @@ function QuizQuestion({
                 className={`${q.stem ? "fluo-serif text-base" : "text-sm"} font-bold text-[color:var(--fluo-ink)]`}
                 style={q.hue ? { color: q.hue, textShadow: "0 0 2px rgba(0,0,0,.45)" } : undefined}
               >
-                {q.stem ?? q.title}
+                {promptNodes(q)}
                 {/* the reveal appears only once attempted — shown first it
                     leaks single-answer questions (Dan, 2026-07-02) */}
                 {q.en && picked && (
@@ -310,13 +435,16 @@ function QuizQuestion({
         )}
         <span className="flex flex-wrap items-center gap-2">
           {q.options.map((o, oi) => {
-            const isPicked = picked === o.v;
+            const isPicked = pickedVals.includes(o.v);
             const showResult = picked !== null;
             // Strong, solid-fill contrast (Dan: "i cannot tell what is what if
             // everything is of the same color") — correct/wrong get a bold
             // fill + white text, not a pale tint on a similar border.
             const cls = !showResult
-              ? "border-[color:var(--fluo-ink)] bg-[var(--fluo-card)] text-[color:var(--fluo-ink)] hover:bg-[var(--fluo-card-tint)]"
+              ? sel.includes(o.v)
+                // Ticked, not yet graded — multi-answer only.
+                ? "border-[color:var(--fluo-ink)] bg-[color:var(--fluo-ink)] text-white"
+                : "border-[color:var(--fluo-ink)] bg-[var(--fluo-card)] text-[color:var(--fluo-ink)] hover:bg-[var(--fluo-card-tint)]"
               : o.ok
                 ? "border-[#178a4d] bg-[#178a4d] text-white"
                 : isPicked
@@ -329,7 +457,7 @@ function QuizQuestion({
                 onClick={() => tap(o, showResult)}
                 className={`rounded-full border-2 px-3 py-1.5 text-sm font-bold transition ${cls}`}
               >
-                {active && !showResult && oi < 9 && (
+                {active && !q.multi && !showResult && oi < 9 && (
                   <span aria-hidden className="mr-1.5 inline-flex h-4 w-4 items-center justify-center rounded-full bg-[color:var(--fluo-ink)] text-[10px] font-black text-white">
                     {oi + 1}
                   </span>
@@ -339,6 +467,16 @@ function QuizQuestion({
             );
           })}
         </span>
+        {q.multi && !answered && (
+          <button
+            type="button"
+            disabled={sel.length === 0}
+            onClick={confirmMulti}
+            className="rounded-full border-2 border-[color:var(--fluo-ink)] bg-[var(--fluo-hl)] px-3 py-1.5 text-sm font-black text-[color:var(--fluo-ink)] transition disabled:opacity-40"
+          >
+            OK
+          </button>
+        )}
       </div>
       {showExample && q.example && (
         <p className="mt-2 rounded-lg bg-white/70 p-2.5 text-xs text-[color:var(--fluo-ink)]">

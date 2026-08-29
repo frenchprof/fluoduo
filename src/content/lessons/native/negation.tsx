@@ -34,13 +34,14 @@ export const negationLesson: NativeLesson = {
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">
-        La négation : <em>ne … pas</em>
+        La négation : <em>ne … pas</em> · <em>ne … plus</em>
       </h2>
       <ul className="space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
-        <li><b className="text-[color:var(--cahier-la)]">ne</b> + verbe + <b className="text-[color:var(--cahier-la)]">pas</b> — <i lang="fr">Je <b>ne</b> suis <b>pas</b> français.</i></li>
-        <li><b className="text-[color:var(--cahier-la)]">n&rsquo;</b> + voyelle — <i lang="fr">Je <b>n&rsquo;</b>ai <b>pas</b> quinze ans.</i></li>
+        <li><b className="text-[color:var(--gram-neutral)]">ne</b> + verbe + <b className="text-[color:var(--gram-neutral)]">pas</b> — <i lang="fr">Je <b>ne</b> suis <b>pas</b> français.</i></li>
+        <li><b className="text-[color:var(--gram-neutral)]">n&rsquo;</b> + voyelle — <i lang="fr">Je <b>n&rsquo;</b>ai <b>pas</b> quinze ans.</i></li>
         <li>Verbe réfléchi : <i>ne</i> avant <i>me/te/se</i> — <i lang="fr">Je <b>ne</b> m&rsquo;appelle <b>pas</b> Marie.</i></li>
         <li><i lang="fr">Il y a</i> → <i lang="fr">Il <b>n&rsquo;</b>y a <b>pas</b></i> — <i lang="fr">Il n&rsquo;y a pas de chat.</i></li>
+        <li><b className="text-[color:var(--gram-neutral)]">ne</b> + verbe + <b className="text-[color:var(--gram-neutral)]">plus</b> = not any more — <i lang="fr">Le stylo <b>n&rsquo;</b>est <b>plus</b> sur la table.</i></li>
       </ul>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
         ⚠️ After <i lang="fr">il n&rsquo;y a pas</i>, <b>un / une / des → de</b>:{" "}

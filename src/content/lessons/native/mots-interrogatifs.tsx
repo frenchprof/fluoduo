@@ -3,6 +3,7 @@
  * EN→FR bonus distilled from the 05-mots-interrogatifs.html drchan import.
  */
 import type { NativeLesson } from "./types";
+import { sample } from "@/lib/shuffle";
 
 const ITEMS = [
   { answer: "Je m'appelle Thomas.", en: "My name is Thomas.", question: "Comment tu t'appelles ?", alternates: ["Tu t'appelles comment ?", "Comment t'appelles-tu ?", "Comment est-ce que tu t'appelles ?"], qword: "Comment", rest: "tu t'appelles ?" },
@@ -19,14 +20,6 @@ const ITEMS = [
 ] as const;
 
 const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)];
-const sample = <T,>(a: readonly T[], n: number): T[] => {
-  const o = [...a];
-  for (let i = o.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [o[i], o[j]] = [o[j], o[i]];
-  }
-  return o.slice(0, n);
-};
 
 export const motsInterrogatifsLesson: NativeLesson = {
   slug: "mots-interrogatifs",
@@ -36,11 +29,11 @@ export const motsInterrogatifsLesson: NativeLesson = {
         Les mots interrogatifs
       </h2>
       <ul className="space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
-        <li><b className="text-[color:var(--cahier-la)]">Comment</b> — name — <i lang="fr">Comment tu t&rsquo;appelles ?</i></li>
-        <li><b className="text-[color:var(--cahier-la)]">Quel(le)</b> + nom — which/what — <i lang="fr">Quel âge as-tu ? · Quelle langue parles-tu ?</i></li>
-        <li><b className="text-[color:var(--cahier-la)]">Combien de</b> — how many — <i lang="fr">Combien de personnes y a-t-il dans ta famille ?</i></li>
-        <li><b className="text-[color:var(--cahier-la)]">Qui</b> — who — <i lang="fr">Qui est-ce ?</i></li>
-        <li><b className="text-[color:var(--cahier-la)]">Est-ce que</b> — yes/no — <i lang="fr">Est-ce que tu es français ?</i></li>
+        <li><b className="text-[color:var(--gram-neutral)]">Comment</b> — name — <i lang="fr">Comment tu t&rsquo;appelles ?</i></li>
+        <li><b className="text-[color:var(--gram-neutral)]">Quel(le)</b> + nom — which/what — <i lang="fr">Quel âge as-tu ? · Quelle langue parles-tu ?</i></li>
+        <li><b className="text-[color:var(--gram-neutral)]">Combien de</b> — how many — <i lang="fr">Combien de personnes y a-t-il dans ta famille ?</i></li>
+        <li><b className="text-[color:var(--gram-neutral)]">Qui</b> — who — <i lang="fr">Qui est-ce ?</i></li>
+        <li><b className="text-[color:var(--gram-neutral)]">Est-ce que</b> — yes/no — <i lang="fr">Est-ce que tu es français ?</i></li>
       </ul>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
         ⚠️ <b><span lang="fr">Quel</span> agrees with the noun, not the subject</b> —{" "}

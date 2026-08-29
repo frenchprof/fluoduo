@@ -6,7 +6,6 @@
  *  event trail (pages, games, pretest accuracy). The deep stores live under
  *  users/{uid}/… and are fetched per student on drilldown. */
 
-import { CURATED } from "@/content/collections";
 import { SIOS } from "@/content/sios";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -16,98 +15,27 @@ import {
 import { XP_CORRECT, XP_WRONG, XP_SIO_BASE, XP_CONVERSATION } from "@/lib/economy";
 import { Kpi, TableBox, Section, SectionGroup } from "./ui";
 import Evidence from "./Evidence";
-import { outcomeForItem } from "@/lib/evidence";
 import { describeActivity, describePath, hrefForActivity, normalizePath, titleFor } from "@/lib/labels";
-import { describeItem } from "@/lib/labels";
 import { describeGame } from "@/lib/labels";
+import HeatStrip from "@/components/HeatStrip";
+import { isMiss, outcomeAccuracy, outcomeOf, outcomeRows, UNMAPPED, tierClass } from "@/lib/outcomeRows";
 
-/** ⬇️ Analytics summary CSV (Dan, 2026-07-25): one row per student — paste
- *  emails to filter (blank = everyone). Reuses fetchStudentDetail, so aliased
- *  accounts merge into one row exactly as the modal does. */
-function ExportCsv({ roster }: { roster: Learner[] }) {
-  // UID-keyed roster (Dan's Auth-console reconciliation, 2026-07-25). Email
-  // matching silently dropped learners whose telemetry carries no email
-  // (Su Yeon, wenyi, Tracy) — UIDs are authoritative. Every person exports a
-  // row ALWAYS: zeros are visible, absence is not.
-  // UID-keyed roster (Dan's Auth-console reconciliation, 2026-07-25). Email
-  // matching silently dropped learners whose telemetry carries no email
-  // (Su Yeon, wenyi, Tracy) — UIDs are authoritative. Every person exports a
-  // row ALWAYS: zeros are visible, absence is not.
-  //
-  // NAMES AND EMAILS ARE NOT LISTED HERE (2026-08-10). This is a client
-  // component in a statically exported app: everything in it is downloadable
-  // from the CDN without signing in. The uids below are opaque and are what
-  // guarantee a row per person; the label comes from `roster`, which is read
-  // from Firestore behind the rules that check isAdmin(), by the very same
-  // uid lookup this loop already does for Last seen and Days active.
-  const CLASS_UIDS: string[][] = [
-    ["8IcpkURn0ldOXLiApCdhdsqQoxW2", "ZKvLZyfOfLZFYAEUoTzApQMYClf2"],
-    ["1S70OPFAAVPEsu6vOr8JZdk2U022"],
-    ["C2sWIzLKdseHKUxgh67yPp3o7Rq1"],
-    ["k1sTtpYd4ZXCFKYQU4OiBA4dD4l1", "6uyQO9YgBTRLC5Dw1JuU7Fe2cTB3"],
-    ["pyjnl9OaQcO8L2BXDWEFsfEB9kq2"],
-    ["JgMNsLKm2MNHWQwvNvRJJQRqc523"],
-    ["OwiJwWynkrh0xqHgUWrjEJFqjVF3"],
-    ["z60kqOZYZONTswgvhEJIZ4zWmLY2"],
-    ["yzb1vTPlhIbxgqwTy21wVUYRudr1"],
-    ["iPWnxPgkzieTfJex4Z2Gtu0mfHR2"],
-    ["a529sUZMsYUgKdWn4rJXvPu4A6V2"],
-    ["EkOHxvkcbOeb71CnIviR1RaON7L2"],
-    ["kBwnJxptXQPVbbE22eEdFm0yDqw2"],
-    ["Sn8AsHunJEbYcyLEedtWYZUODI73"],
-    ["zLoCjj7H7ubON34tl2u1N7y8c7b2"],
-    ["kQVWo2UmsoZrFhQvThBWeRS1nN03"],
-  ];
-  const [busy, setBusy] = useState(false);
-  const run = async () => {
-    setBusy(true);
-    try {
-      const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
-      const lines = ["Name,Email,UID(s),XP,Streak,SIOs done,Answers,Accuracy %,Last seen,Days active"];
-      for (const uids of CLASS_UIDS) {
-        const l = roster.find((r) => r.uids.some((u) => uids.includes(u))) ?? null;
-        const d = await fetchStudentDetail(uids);
-        const answers = d.responses.length;
-        const missed = d.responses.filter((r) => str(r.status) === "missed").length;
-        const acc = answers > 0 ? Math.round(100 * (1 - missed / answers)) : "";
-        lines.push([
-          // Falls back to the uid rather than inventing a name: a student with
-          // no roster entry has no telemetry at all, and that is worth seeing.
-          esc(l?.name ?? uids[0]), esc(l?.email ?? ""), esc(uids.join(" + ")),
-          d.progress?.xp ?? 0, d.progress?.streak ?? 0, d.progress?.doneSios?.length ?? 0,
-          answers, acc, esc(l?.lastSeen ? fmtWhen(l.lastSeen) : ""), l?.daysActive ?? "",
-        ].join(","));
-      }
-      const blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = `fluolingo-analytics-${new Date().toISOString().slice(0, 10)}.csv`;
-      a.click();
-      URL.revokeObjectURL(a.href);
-    } finally { setBusy(false); }
-  };
-  return (
-    <Section id="stu:csv" title="⬇️ Export analytics summary (CSV)" meta={`${CLASS_UIDS.length} students`}>
-      <div className="mt-2 rounded-xl border-2 border-slate-200 bg-white p-3">
-        <p className="text-xs text-slate-500">ST2FR26 · 16 students, UID-matched (aliases merged) — one row each, always.</p>
-        <button type="button" onClick={() => void run()} disabled={busy}
-          className="mt-1.5 rounded-full border-2 border-slate-900 bg-yellow-100 px-4 py-1 text-sm font-black text-slate-900 shadow-[2px_2px_0_#1f2440] disabled:opacity-50">
-          {busy ? "Building…" : "⬇️ Download CSV"}
-        </button>
-      </div>
-    </Section>
-  );
-}
+// The analytics-summary CSV moved to the Reports tab (2026-08-11) — card 4,
+// same CLASS_UIDS, same rows. See Reports.tsx.
 
-export default function Students({ events, roster, initialUid }: { events: Ev[]; roster: Learner[]; initialUid?: string | null }) {
+/** A progress doc older than this against the learner's newest event = not
+ *  syncing (D4). Twelve hours clears a whole evening of study + the 04:00
+ *  day rollover; the 2.5 s push debounce is noise next to it. */
+const SYNC_STALE_MS = 12 * 60 * 60 * 1000;
+
+export default function Students({ events, roster, initialUid, details, fetched }: { events: Ev[]; roster: Learner[]; initialUid?: string | null; details: Map<string, StudentDetail>; fetched: number }) {
   const [sel, setSel] = useState<string | null>(initialUid ?? null);
   useEffect(() => { if (initialUid) setSel(initialUid); }, [initialUid]);
   const selected = roster.find((l) => l.uid === sel) ?? null;
   return (
     <SectionGroup>
-      <ExportCsv roster={roster} />
       <Section id="stu:evidence" title="📈 Learning evidence — within-student gains">
-        <Evidence roster={roster} />
+        <Evidence roster={roster} details={details} fetched={fetched} />
       </Section>
       <Section id="stu:roster" title="Roster" meta={`${roster.length} learners · click one for the full picture`} defaultOpen>
       <TableBox head={["Learner", "Last seen", "Days active", "Page views", "Games", "Pretest answers", "XP", "Streak"]}>
@@ -136,16 +64,20 @@ export default function Students({ events, roster, initialUid }: { events: Ev[];
         )}
       </TableBox>
       </Section>
-      {selected && <StudentPanel key={selected.uid} learner={selected} events={events} onClose={() => setSel(null)} />}
+      {selected && <StudentPanel key={selected.uid} learner={selected} events={events} cached={details.get(selected.uid) ?? null} onClose={() => setSel(null)} />}
     </SectionGroup>
   );
 }
 
-function StudentPanel({ learner, events, onClose }: { learner: Learner; events: Ev[]; onClose: () => void }) {
-  const [detail, setDetail] = useState<StudentDetail | null>(null);
+function StudentPanel({ learner, events, cached, onClose }: { learner: Learner; events: Ev[]; cached: StudentDetail | null; onClose: () => void }) {
+  // The page's pool already fetched this learner (patch 26) — use it; the
+  // fetch below is only for a learner the pool has not reached yet.
+  const [fetchedDetail, setDetail] = useState<StudentDetail | null>(null);
+  const detail = cached ?? fetchedDetail;
   const [error, setError] = useState(false);
 
   useEffect(() => {
+    if (cached) return;
     let cancelled = false;
     fetchStudentDetail(learner.uids).then(
       (d) => { if (!cancelled) setDetail(d); },
@@ -153,7 +85,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
     );
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- key={uid} remounts the panel per learner
-  }, [learner.uid]);
+  }, [learner.uid, !!cached]);
 
   const trail = useMemo(() => {
     const mine = events.filter((e) => learner.uids.includes(e.uid));
@@ -166,10 +98,14 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
     let supAnswers = 0;
     let supCorrect = 0;
     let tutorMsgs = 0;
+    let syncErrors = 0;
+    let lastEventAt = 0;
     const tutorRecent: { ts: Date | null; text: string }[] = [];
     const days = new Set<string>();
     for (const ev of mine) {
       if (ev.ts) days.add(SG_DAY_KEY.format(ev.ts));
+      if (ev.ts && ev.ts.getTime() > lastEventAt) lastEventAt = ev.ts.getTime();
+      if (ev.type === "sync.error") syncErrors += 1;
       if (ev.type === "page.view" || ev.type === "supplement.open") {
         const path = str(ev.payload.path) ?? str(ev.payload.href);
         if (path) {
@@ -205,12 +141,10 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
     }
     tutorRecent.sort((a, b) => (b.ts?.getTime() ?? 0) - (a.ts?.getTime() ?? 0));
     // ── Time on task, reconstructed ──────────────────────────────────────
-    // WHY: users/{uid}/sessions has two readers and NO writer — nothing in the
-    // codebase has created a session document since the writer was removed, so
-    // every session carries a real durationMs and a null activityId. The total
-    // was true; the per-activity breakdown read "(unlabelled)" for every row on
-    // every learner and could not be repaired by labelling, because there was
-    // nothing there to label (Dan, 2026-08-10). Logged as D6.
+    // WHY: users/{uid}/sessions had two readers and NO writer — nothing in the
+    // codebase created a session document since the old suite's writer went,
+    // so every session carried a null activityId (D6, Dan 2026-08-10). The
+    // readers are gone since 2026-08-17; this estimate is the one time source.
     //
     // page.view events DO carry a path and a timestamp, so dwell is the gap to
     // the learner's NEXT view. Two honest bounds:
@@ -240,6 +174,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
       answers, correct, supAnswers, supCorrect, tutorMsgs,
       tutorRecent: tutorRecent.slice(0, 10),
       daysActive: days.size,
+      syncErrors, lastEventAt,
     };
   }, [events, learner.uids]);
 
@@ -251,18 +186,19 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
     let latencyN = 0;
     for (const r of detail.responses) {
       byStatus.set(r.status, (byStatus.get(r.status) ?? 0) + 1);
-      if (r.status === "missed" || r.status === "retried") misses.set(r.item, (misses.get(r.item) ?? 0) + 1);
+      if (isMiss(r.status)) misses.set(r.item, (misses.get(r.item) ?? 0) + 1);
       if (r.latencyMs !== null) { latencySum += r.latencyMs; latencyN += 1; }
     }
     const total = detail.responses.length;
-    const good = (byStatus.get("met") ?? 0) + (byStatus.get("mastered") ?? 0);
+    const good = byStatus.get("met") ?? 0;
     return {
       total, byStatus,
       accuracy: total > 0 ? Math.round((good / total) * 100) : null,
       avgLatency: latencyN > 0 ? Math.round(latencySum / latencyN) : null,
-      hardest: [...misses.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8),
     };
   }, [detail]);
+
+  const hardestRows = useMemo(() => (detail ? outcomeRows(detail.responses).filter((r) => r.missed > 0) : []), [detail]);
 
   // ── Exercise identity (2026-07-20, Dan: "merge some info — I cannot see
   // the results of the individual exercises anymore") ─────────────────────
@@ -279,17 +215,8 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
   // links at wherever there can be links — I am very lost"). A normalized
   // activity key IS a destination: paths link to themselves, prefix keys map
   // to their activity's home page.
-  // Hardest ITEMS need their own resolver: an item id names the exercise
-  // that owns it (Dan, 2026-07-22: "click on the lines to access the
-  // questions in question — pllllease").
-  const itemHref = (item: string): string | null => {
-    if (item.startsWith("finale:")) return "/practice/grammarathon/finale";
-    if (item.startsWith("conj-")) return "/conjugaison";
-    if (item.startsWith("letris:") || item.startsWith("vocabularain:")) return "/games/vocabularain";
-    if (item.startsWith("devine:") || item.startsWith("speculearn:")) return "/practice/speculearn";
-    const c = CURATED.find((x) => x.items?.some((it: { id?: string }) => it.id === item));
-    return c ? `/decks/${c.id}` : null;
-  };
+  // Hardest ITEMS used to need their own resolver here; since patch 26 the
+  // hardest table is outcome rows, and an outcome links to its Index row.
   const hrefFor = (key: string): string | null => hrefForActivity(key);
   const ExLink = ({ k, label }: { k: string; label: string }) => {
     const href = hrefFor(k);
@@ -301,34 +228,19 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
   // ── Results by exercise: EVERY response, grouped (not just the last 15) ──
   const byExercise = useMemo(() => {
     if (!detail) return null;
-    type G = { key: string; label: string; n: number; ok: number; missed: number; retried: number; last: number };
+    type G = { key: string; label: string; n: number; ok: number; missed: number; last: number };
     const m = new Map<string, G>();
     for (const r of detail.responses) {
       const key = normActivity(r.activityId);
       let g = m.get(key);
-      if (!g) m.set(key, (g = { key, label: labelActivity(key), n: 0, ok: 0, missed: 0, retried: 0, last: 0 }));
+      if (!g) m.set(key, (g = { key, label: labelActivity(key), n: 0, ok: 0, missed: 0, last: 0 }));
       g.n += 1;
-      if (r.status === "met" || r.status === "mastered") g.ok += 1;
-      else if (r.status === "retried") g.retried += 1;
-      else g.missed += 1;
+      if (isMiss(r.status)) g.missed += 1;
+      else g.ok += 1;
       const t = r.ts?.getTime() ?? 0;
       if (t > g.last) g.last = t;
     }
     return [...m.values()].sort((a, b) => b.last - a.last);
-  }, [detail]);
-
-  const sessStats = useMemo(() => {
-    if (!detail) return null;
-    const byActivity = new Map<string, { n: number; ms: number }>();
-    let totalMs = 0;
-    for (const s of detail.sessions) {
-      const key = normActivity(s.activityId);
-      let a = byActivity.get(key);
-      if (!a) byActivity.set(key, (a = { n: 0, ms: 0 }));
-      a.n += 1;
-      if (s.durationMs !== null) { a.ms += s.durationMs; totalMs += s.durationMs; }
-    }
-    return { totalMs, byActivity: [...byActivity.entries()].sort((a, b) => b[1].ms - a[1].ms) };
   }, [detail]);
 
   const p = detail?.progress;
@@ -354,7 +266,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
       <button
         type="button"
         onClick={onClose}
-        aria-label="Fermer"
+        aria-label="Close"
         className="float-right rounded-lg border-2 border-slate-300 bg-white px-2 py-0.5 text-sm font-black text-slate-600 hover:border-slate-500"
       >
         ✕
@@ -381,6 +293,9 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
 
       {detail && (
         <>
+          {/* The syllabus heat-strip (patch 26): this learner's accuracy on
+              every outcome, one glance. The same component /moi shows them. */}
+          <HeatStrip className="mt-3" values={outcomeAccuracy(detail.responses)} done={new Set(p?.doneSios ?? [])} label={`${learner.name} — accuracy by outcome`} />
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
             <Kpi label="XP" value={p?.xp ?? learner.board?.xp ?? 0} />
             <Kpi label="Gems" value={p?.gems ?? learner.board?.gems ?? 0} />
@@ -388,12 +303,36 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
             <Kpi label="SIOs done" value={p?.doneSios?.length ?? 0} sub={`of ${SIOS.length}`} />
             <Kpi label="Badges" value={p?.badges?.length ?? 0} />
             <Kpi label="SRS items" value={srsIds.length} sub={`${srsDue} due now`} />
-            <Kpi label="Attempts" value={detail.attemptsCount ?? "—"} sub="audit log" />
-            <Kpi
-              label="Last sync"
-              value={p?.updatedAt ? fmtWhen(new Date(p.updatedAt)) : "never"}
-            />
+            <Kpi label="Answers" value={detail.responses.length} sub="recorded" />
+            {/* D4 diagnostic (2026-08-17): the doc's own "last good sync"
+                stamp vs the learner's newest event. A learner whose events run
+                on while the doc sits still is the not-syncing case Dan saw
+                twice and could not diagnose — it now reads STALE here, with
+                the last error the device reported and how many there were. */}
+            {(() => {
+              const synced = p?.lastSyncedAt ?? p?.updatedAt ?? null;
+              const stale = trail.lastEventAt > 0 && (synced === null || trail.lastEventAt - synced > SYNC_STALE_MS);
+              const errs = (p?.syncErrorCount ?? 0) + trail.syncErrors;
+              return (
+                <Kpi
+                  label="Last sync"
+                  value={<span style={stale ? { color: "var(--tier-weak)" } : undefined}>{synced ? fmtWhen(new Date(synced)) : "never"}</span>}
+                  sub={
+                    stale
+                      ? `STALE — active ${fmtWhen(new Date(trail.lastEventAt))}${errs ? ` · ${errs} sync error${errs === 1 ? "" : "s"}` : ""}`
+                      : errs
+                        ? `${errs} sync error${errs === 1 ? "" : "s"}${p?.lastSyncError ? ` · ${p.lastSyncError}` : ""}`
+                        : "in step"
+                  }
+                />
+              );
+            })()}
           </div>
+          {p?.lastSyncError && (
+            <p className="mt-1 text-xs" style={{ color: "var(--tier-weak)" }} title={p.lastSyncErrorAt ? fmtWhen(new Date(p.lastSyncErrorAt)) : undefined}>
+              Last sync error reported by this learner&rsquo;s device: <code>{p.lastSyncError}</code>
+            </p>
+          )}
 
           {/* XP audit (Dan, 2026-07-15: "check if XPs awarded correctly e.g.
               for Parker"). Two checks: (1) leaderboard must equal the synced
@@ -420,7 +359,7 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
               // hardcoded phantom 60/20s (Dan, 2026-07-17: "still red for
               // some").
               if (r.xp === 0 || r.activityId?.startsWith("letris:") || r.activityId?.startsWith("mcq:")) { unpaid++; continue; }
-              const good = r.status === "met" || r.status === "mastered";
+              const good = !isMiss(r.status);
               const old = (r.ts?.getTime() ?? 0) < RETUNE; // undated → old rate (strict floor)
               if (good) { if (old) okOld++; else okNew++; }
               else { if (old) koOld++; else koNew++; }
@@ -467,13 +406,13 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
               >
               <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
                 <Kpi label="Responses" value={respStats.total} />
-                <Kpi label="Accuracy" value={respStats.accuracy !== null ? `${respStats.accuracy}%` : "—"} sub="met + mastered" />
+                <Kpi label="Accuracy" value={respStats.accuracy !== null ? `${respStats.accuracy}%` : "—"} sub="met / all" />
                 <Kpi label="Avg response time" value={respStats.avgLatency !== null ? `${(respStats.avgLatency / 1000).toFixed(1)} s` : "—"} />
                 <Kpi
                   label="Status split"
                   value={
                     <span className="text-sm font-bold">
-                      {["mastered", "met", "retried", "missed"]
+                      {["met", "missed"]
                         .map((s) => `${s} ${respStats.byStatus.get(s) ?? 0}`)
                         .join(" · ")}
                     </span>
@@ -481,34 +420,46 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
                 />
               </div>
               </Section>
-              {respStats.hardest.length > 0 && (
-                <Section id="sp:hardest" title="Hardest items" meta={`${respStats.hardest.length} items · ${respStats.hardest[0][1]} misses at worst`}>
-                  <TableBox head={["Item", "Misses"]}>
-                    {respStats.hardest.map(([item, n]) => (
-                      <tr key={item} className="border-t border-slate-100">
-                        <td className="px-3 py-2 font-bold text-slate-900" lang="fr">{(() => { const h = itemHref(item); return h ? <a href={h} target="_blank" rel="noreferrer" title={item} className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{describeItem(item).label}</a> : describeItem(item).label; })()}</td>
-                        <td className="px-3 py-2 text-right font-black text-rose-600">{n}</td>
+              {/* Outcome rows, items nested (patch 26) — the same fold /moi
+                  shows the learner, so teacher and student read one picture:
+                  which OUTCOME bleeds, then which words inside it. */}
+              {hardestRows.length > 0 && (
+                <Section id="sp:hardest" title="Hardest outcomes" meta={`${hardestRows.length} outcomes · ${hardestRows[0].missed} misses at worst`}>
+                  <TableBox head={["Outcome", "Score", "Weak / seen", "Misses", "Items"]}>
+                    {hardestRows.map((r) => (
+                      <tr key={r.sio} className="border-t border-slate-100">
+                        <td className="px-3 py-2 font-bold text-slate-900" title={r.sio === UNMAPPED ? "Answers whose item is in no outcome" : `${r.sio} · ${r.topic}`}>
+                          {r.sio === UNMAPPED ? <span className="text-slate-500">Not yet mapped</span> : <a href={`/unit/${r.unit}#${r.sio}`} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900"><span className="fluo-mono text-xs text-slate-500">U{r.unit}·{r.num}</span> {r.short}</a>}
+                        </td>
+                        <td className={`px-3 py-2 text-right font-black ${tierClass(r.pct)}`}>{r.pct}%</td>
+                        <td className="px-3 py-2 text-right text-slate-700">{r.weakItems} / {r.itemsSeen}</td>
+                        <td className="px-3 py-2 text-right font-black text-rose-600">{r.missed}</td>
+                        <td className="px-3 py-2 text-slate-700" lang="fr">
+                          {r.items.slice(0, 6).map((it) => (
+                            <span key={it.item} className="mr-2 inline-block whitespace-nowrap" title={`${it.item} · ${it.missed} of ${it.n} missed`}>{it.label} <b className="text-rose-600">✗{it.missed}</b></span>
+                          ))}
+                          {r.items.length > 6 && <span className="text-xs text-slate-500">+{r.items.length - 6}</span>}
+                        </td>
                       </tr>
                     ))}
                   </TableBox>
                 </Section>
               )}
               <Section id="sp:byexercise" title="Results by exercise" meta={`${(byExercise ?? []).length} exercises`}>
-              <TableBox head={["Exercise", "Answers", "✓ ok", "✗ missed", "retried", "Last done"]}>
+              <TableBox head={["Exercise", "Answers", "✓ ok", "✗ missed", "Last done"]}>
                 {(byExercise ?? []).map((g, i) => (
                   <tr key={i} className="border-t border-slate-100">
                     <td className="px-3 py-2 font-bold text-slate-900"><ExLink k={g.key} label={g.label} /></td>
                     <td className="px-3 py-2 text-right text-slate-700">{g.n}</td>
                     <td className="px-3 py-2 text-right font-bold text-emerald-700">{g.ok}</td>
                     <td className="px-3 py-2 text-right font-bold text-rose-600">{g.missed}</td>
-                    <td className="px-3 py-2 text-right text-amber-600">{g.retried}</td>
                     <td className="px-3 py-2 text-slate-700 whitespace-nowrap">{g.last ? fmtWhen(new Date(g.last)) : "—"}</td>
                   </tr>
                 ))}
               </TableBox>
               </Section>
               <Section id="sp:recent" title="Recent answers" meta={`last ${Math.min(15, detail.responses.length)} of ${detail.responses.length}`}>
-              <TableBox head={["When", "Item", "Lesson", "Status", "Given answer", "Activity", "Time"]}>
+              <TableBox head={["When", "Item", "Lesson", "Status", "Given answer", "Activity", "Evidence", "Time"]}>
                 {detail.responses.slice(0, 15).map((r, i) => (
                   <tr key={i} className="border-t border-slate-100">
                     <td className="px-3 py-2 text-slate-700 whitespace-nowrap">{fmtWhen(r.ts)}</td>
@@ -522,17 +473,24 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
                         is append-only. */}
                     <td className="px-3 py-2 text-slate-600 whitespace-nowrap">
                       {(() => {
-                        const sio = outcomeForItem(r.item);
+                        // What the writer stored first (evidence block), the join second.
+                        const sio = outcomeOf(r);
                         if (!sio) return <span className="text-slate-400">-</span>;
                         const topic = SIOS.find((s) => s.id === sio)?.topic;
                         return <span title={topic ?? sio}>{sio}{topic ? ` \u00b7 ${topic.slice(0, 28)}` : ""}</span>;
                       })()}
                     </td>
-                    <td className={`px-3 py-2 font-bold ${r.status === "missed" ? "text-rose-600" : r.status === "retried" ? "text-amber-600" : "text-emerald-700"}`}>
+                    <td className={`px-3 py-2 font-bold ${isMiss(r.status) ? "text-rose-600" : "text-emerald-700"}`}>
                       {r.status}
                     </td>
                     <td className="px-3 py-2 text-slate-700" lang="fr">{r.givenAnswer ?? "—"}</td>
                     <td className="px-3 py-2 text-slate-700">{r.activityId ? <ExLink k={normActivity(r.activityId)} label={labelActivity(normActivity(r.activityId))} /> : "—"}</td>
+                    {/* The evidence block (PRD §7): kind of performance and how
+                        much help was taken. Absent on rows older than 10 Aug =
+                        "not recorded", never "none". */}
+                    <td className="px-3 py-2 text-slate-600 whitespace-nowrap" title={r.independent === false ? "assisted — does not count as independent mastery" : undefined}>
+                      {r.evidenceType ? `${r.evidenceType}${r.assistance && r.assistance !== "none" ? ` · 🪜 ${r.assistance}` : ""}` : "—"}
+                    </td>
                     <td className="px-3 py-2 text-right text-slate-700">
                       {r.latencyMs !== null ? `${(r.latencyMs / 1000).toFixed(1)} s` : "—"}
                     </td>
@@ -546,34 +504,22 @@ function StudentPanel({ learner, events, onClose }: { learner: Learner; events: 
             <p className="mt-4 text-sm text-slate-500">No item-level responses recorded for this learner yet.</p>
           )}
 
-          {((sessStats && detail.sessions.length > 0) || trail.dwell.length > 0) && (
+          {trail.dwell.length > 0 && (
             <Section
               id="sp:time"
               title="Time on task"
-              meta={
-                sessStats && detail.sessions.length > 0
-                  ? `${detail.sessions.length} sessions · ${fmtDuration(sessStats.totalMs)}`
-                  : `~${fmtDuration(trail.dwellTotal)} estimated`
-              }
+              meta={`~${fmtDuration(trail.dwellTotal)} estimated`}
             >
-              {/* Session docs stopped being written at some point, so a learner
-                  can have page views and no sessions at all. The estimate still
-                  has something to say about them. */}
+              {/* Page-view dwell is the ONLY time source (D6 closed 2026-08-17:
+                  users/{uid}/sessions had no writer, so its reader is gone). */}
               <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <Kpi label="Sessions" value={detail.sessions.length} />
-                <Kpi label="Total time" value={sessStats && detail.sessions.length > 0 ? fmtDuration(sessStats.totalMs) : "—"} sub={sessStats && detail.sessions.length > 0 ? "measured" : "no session records"} />
                 <Kpi label="Est. from page views" value={fmtDuration(trail.dwellTotal)} sub={`${trail.dwell.length} activities`} />
               </div>
-              {/* The per-activity split comes from page-view dwell, NOT from the
-                  session docs: those carry a real durationMs and a null
-                  activityId, so this table read "(unlabelled)" for every row on
-                  every learner (D6 — session telemetry orphaned, 2026-08-10).
-                  The totals above are still the session docs, which are sound. */}
               {trail.dwell.length > 0 ? (
                 <>
                   <p className="mt-3 text-xs text-slate-500">
                     Estimated from page views — time between one view and the next, ignoring gaps over 30 minutes
-                    (tab left open). Session totals above are measured; this split is an estimate.
+                    (tab left open). An estimate, not a measurement.
                   </p>
                   <TableBox head={["Activity", "Views", "Est. time"]}>
                     {trail.dwell.map(([path, d]) => (

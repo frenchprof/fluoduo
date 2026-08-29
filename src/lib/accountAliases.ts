@@ -77,6 +77,17 @@ export const ALIAS_PUBLISH_UIDS: Record<string, string> = {
 /** The canonical names above, for the board's same-name fold. */
 export const ALIAS_CANON_NAMES: string[] = Array.from(new Set(Object.values(ALIAS_PUBLISH_UIDS)));
 
+/** THE name a learner is on the board as — one function for the writer
+ *  (progressSync publishes it) and the reader (LeaderboardList marks "you"
+ *  by it). Alias first, then the Google display name, then a neutral word.
+ *  NEVER an email or its local part: the writer used to fall back to
+ *  `email.split("@")[0]`, so a learner with no display name was published
+ *  under half their address, and the roster/board disagreed about who they
+ *  were (the leaderboard identity mismatch, closed 2026-08-17). */
+export function boardName(uid: string, displayName: string | null | undefined): string {
+  return ALIAS_PUBLISH_UIDS[uid] || (displayName ?? "").trim() || "Anonymous";
+}
+
 /** Prior-term leaderboard docs (Dan, 2026-07-07) — hidden from the public
  *  board AND the teacher roster. Firestore rules can't retroactively hide
  *  existing docs from a collection read, so both surfaces filter here.

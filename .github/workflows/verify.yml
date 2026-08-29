@@ -24,9 +24,9 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
@@ -43,5 +43,137 @@ jobs:
       - name: No student PII in a learner-facing bundle
         run: python3 verify/verify18.py
 
+      # 18b widens 18 to the whole export: no roster email or name override
+      # in ANY file the CDN serves — /teacher's chunks included.
+      - name: Patch 18b — no student PII anywhere on the public CDN
+        run: python3 verify/verify18b.py
+
       - name: Patch 19 — one name per activity, gates, nav, breakpoints
         run: python3 verify/verify19.py
+
+      - name: Patch 19b — visual pass tokens + drift ratchet
+        run: python3 verify/verify19b.py
+
+      - name: Patch 19c — HELP derives from the registry; crumb prop gone
+        run: python3 verify/verify19c.py
+
+      - name: Patch 20-21 — DrillShell phase 1 (shell, 4 routes, SioModal, legends)
+        run: python3 verify/verify20.py
+
+      - name: Cohort reset — term marker, board scope, teacher toggle
+        run: python3 verify/verify21.py
+
+      - name: Patch 22 — the lesson pager (ramp, roll, end card, one pretest runner)
+        run: python3 verify/verify22.py
+
+      # Peers' Reports tab shipped with its own check (PR #18) but no CI step —
+      # wired here by the review's follow-up, per the house rule that a check
+      # that CI never runs is not a check.
+      - name: Teacher Reports tab — four cards, CSVs, measured float floor
+        run: python3 verify/verify-reports.py
+
+      - name: Grading unification — ONE grader, divergence table executed
+        run: python3 verify/verify-grading.py
+
+      - name: Patch 25 (hero rows) — hairline hero, actions grouped
+        run: python3 verify/verify25.py
+
+      - name: "Patch 25b — Home path: 2D/3D map, deep link, short labels, print"
+        run: python3 verify/verify25b.py
+
+      - name: Patch 25c — Home map 3D view is a real perspective scene
+        run: python3 verify/verify25c.py
+
+      - name: "Patch 23 — games: GameFrame, post-mortem → ReVue, credits once, galleries"
+        run: python3 verify/verify23.py
+
+      - name: "Patch 24 — the Index: chip rail, unit segments, result cells, hubs → redirects, ?gaps=1"
+        run: python3 verify/verify24.py
+
+      - name: Patch 26 — /moi outcome rows + heat-strip, teacher Class now + matrix, one pool fetch
+        run: python3 verify/verify26.py
+
+      - name: Loose bugs + data-truth — deck gates/empty state/tokens, /sio redirect, one weak, one shuffle, D6/D7/D9/D10/D11/D4, board identity
+        run: python3 verify/verify27-bugs.py
+
+      - name: Track D — the help ladder in DrillShell (machine + eval cases executed, every drill wired, evidence, ReVue hook, feedback function + fallback)
+        run: python3 verify/verify28-trackd.py
+
+      - name: "Rail + Menu — six families, twenty tiles (19 Aug)"
+        run: python3 verify/verify29-rail.py
+
+      - name: "Profile — one learner model at /moi + /profil (goal, next action, five rows, five-slot bar)"
+        run: python3 verify/verify30-profile.py
+
+      - name: "Dopamine accents — seven roles pinned, contrast recomputed, Cahier ground and regions untouched (21 Aug)"
+        run: python3 verify/verify34-dopamine.py
+
+      - name: "Top bar — the icon row never overflows off the screen (21 Aug)"
+        run: python3 verify/verify31-topbar.py
+
+      - name: "Retention build — manifest, eight reward moments, +XP, receipts, weekly board, ethics (21 Aug)"
+        run: python3 verify/verify32-retention.py
+
+      - name: "Family identity — the second colour axis, contrast recomputed (21 Aug)"
+        run: python3 verify/verify33-family.py
+
+      # Renumbered 31 -> 47 on 2026-08-29. The collision with verify31-topbar
+      # is precisely why this sat unwired for a fortnight (Dan, 2026-08-24:
+      # "no CI step runs it" — confirmed true). verify46 forbids it now.
+      - name: "WorDrill redesigned — Dan's design handoff (patch 31)"
+        run: python3 verify/verify47-wordrill.py
+
+      - name: "Possessives — the whole paradigm drilled, the prompt no longer prints the answer (24 Aug)"
+        run: python3 verify/verify35-possessives.py
+
+      # 36-38 shipped with PR #42 and were never added here, so none of them
+      # had ever run — the same gap verify31-wordrill sat in for a fortnight.
+      # 38 is the one that matters most: it guards the sign-in wall against
+      # being left open, and a guard CI never runs guards nothing.
+      - name: "Activity bands — coloured by what the activity asks (25 Aug)"
+        run: python3 verify/verify36-band.py
+
+      - name: "Home — the stop comes before the activity; the drawn keys stay (25 Aug)"
+        run: python3 verify/verify37-home.py
+
+      - name: "The sign-in wall stays up in production"
+        run: python3 verify/verify38-authwall.py
+
+      - name: "Session length — a practice run has a finish line (25 Aug)"
+        run: python3 verify/verify39-session-length.py
+
+      - name: "A pretest is remembered, never scored (28 Aug)"
+        run: python3 verify/verify40-pretest-record.py
+
+      - name: "Entry level ★/★★/★★★ and the restored selectors (28 Aug)"
+        run: python3 verify/verify41-lesson-entry.py
+
+      # Shipped with the SIO-spine work and never added here — the same gap
+      # verify31-wordrill and verify36-38 each sat in. It is the check that
+      # holds the CSV and sios.json to one another, so unwired it guards
+      # nothing.
+      - name: "One source for the SIO spine — CSV and sios.json agree"
+        run: python3 verify/verify42-sio-source.py
+
+      - name: "Stops 3, 17, 18 teach the act they promise (28 Aug)"
+        run: python3 verify/verify48-three-stops.py
+
+      - name: "A renumber moves the id, and carries the learner with it (29 Aug)"
+        run: python3 verify/verify49-renumber-3435.py
+
+      - name: "A tapped cell is paired with the right subject (29 Aug)"
+        run: python3 verify/verify50-speakzone-pairing.py
+
+      - name: "A tour step points at something that exists (28 Aug)"
+        run: python3 verify/verify44-tour-targets.py
+
+      # Renamed 43 -> 46 on main while this branch held it at 43; both sides
+      # wired it, so keep the name main settled on.
+      - name: patch 46 — every lesson with selectors honours them
+        run: python3 verify/verify46-lesson-axes.py
+
+      - name: patch 45 — deck promises (SIO-001 M./Mme, SIO-005 mnemonics)
+        run: python3 verify/verify45-promise-gaps.py
+
+      - name: "Every check runs, and no two share a number"
+        run: python3 verify/verify-wiring.py

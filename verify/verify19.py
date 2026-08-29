@@ -6,7 +6,7 @@ It asserts the things a screenshot cannot:
 
   1  every activity has exactly ONE name and ONE emoji across every surface
   2  EtuDice's flap gate matches the decks that can actually run it
-  3  the bottom bar has four slots, and neither Accueil nor Moi
+  3  the bottom bar is the five families minus User, derived not hand-kept
   4  no `1100` breakpoint survives in the rail
   5  no flap subtitles anywhere
   6  every href in the registry resolves to a route that exists
@@ -52,7 +52,9 @@ check(not dupe_names, "no activity name is used twice",
 
 # The old spellings must be gone from every surface that renders a flap.
 STALE = {
-    '"Lesson"': "xPlain", '"Flip It"': "4Mémoire",
+    # Dan, 2026-08-23: rename xPlain → Memo, approved surface #3 — the
+    # registry name for key "lesson" is now "Memo".
+    '"Lesson"': "Memo", '"Flip It"': "4Mémoire",
     '"Compose It"': "ComposeIt", '"Say It"': "WorDrill",
 }
 for lit, should in STALE.items():
@@ -89,21 +91,36 @@ check('registryTab("complete"' in shell, "iComplete has a flap on every deck",
       "iComplete has no flap — its route is still orphaned")
 
 # ── 3 · the bottom bar ─────────────────────────────────────────────────────
-slots = re.findall(r'key: "([a-z]+)"', nav)
-check(len(slots) == 0 or "index" in nav, "bottom bar leads with Index",
-      "bottom bar does not include Index")
+# Index lost its own slot on 2026-08-22 (Dan: "Goals and Index to merge later
+# on as one") and the Index itself was retired on 2026-08-29 ("we shouldn't
+# have to land on the index page at all. the maps should still be the front
+# door for everything"). The RULE is unchanged and is what this checks: the
+# Practice family's destination must not be orphaned. It is now the map.
+check("/map" in open("src/content/activities.ts", encoding="utf-8").read().split("export const FAMILIES")[-1],
+      "the Practice family reaches the map (the front door for choosing a stop)",
+      "no bottom-bar slot reaches /map — the Practice family is orphaned")
 # Look at the SLOTS, not the file. The first version grepped the whole module
 # and failed on the word "Accueil" inside the comment explaining why Accueil is
 # not in the bar (2026-08-10).
 slot_labels = re.findall(r'label: "([^"]+)"', nav.split("export const BOTTOM_NAV")[-1])
 for banned, why in (("Accueil", "the FluOlinGo wordmark is the home link"),
                     ("Mon progrès", "the account chip is the profile door"),
+                    ("My Progress", "the account chip is the profile door"),
                     ("Moi", "the account chip is the profile door")):
     check(banned not in slot_labels, f"bottom bar has no {banned} ({why})",
           f"bottom bar still has {banned} — {why}")
-check(1 <= len(slot_labels) <= 4,
-      f"bottom bar declares {len(slot_labels)} literal slot label(s) (rest derive from FAMILIES)",
-      f"bottom bar declares {len(slot_labels)} slots — expected at most 4")
+# FIVE SLOTS, FULLY DERIVED (Dan, 2026-08-22 profile design: "minus User, i
+# think we should have those 5 emojis as base shortcuts instead"). The bar was
+# four with Index hand-written as the one literal; Index merged into Goals, so
+# now EVERY slot comes off FAMILIES and there are no literal labels left. That
+# is the point of the check: a hand-kept second list is the bug (patch 19c's
+# `activitiesInFamilyOrder()` rule), so zero literals is the pass.
+check(len(slot_labels) == 0,
+      "bottom bar hand-keeps no slot labels — all five derive from FAMILIES",
+      f"bottom bar hand-keeps {len(slot_labels)} literal label(s) — derive them from FAMILIES")
+check("FAMILIES.filter" in nav and 'f.key !== "user"' in nav,
+      "bottom bar is FAMILIES minus User (the account chip is the profile door)",
+      "bottom bar no longer derives from FAMILIES minus User")
 check("BottomBar" in shell, "BottomBar is mounted in CahierShell",
       "BottomBar is not mounted — the phone still has only the burger")
 
@@ -124,7 +141,9 @@ check(hints == 0, "no flap carries a subtitle",
 # ── 6 · every registry href resolves ───────────────────────────────────────
 missing = []
 for href in re.findall(r'href: "(/[^"]*)"', reg):
-    seg = href.strip("/")
+    # Patch 24: deck-scoped activities point into the Index with a query
+    # (`/activities?activity=flip`) — the route is the path part.
+    seg = href.split("?")[0].strip("/")
     if not seg:
         continue
     if not (os.path.isfile(f"src/app/{seg}/page.tsx") or os.path.isdir(f"src/app/{seg}")):

@@ -16,7 +16,7 @@
    "fr": "le petit-déjeuner",
    "en": "breakfast",
    "emoji": "🌅",
-   "tags": [],
+   "tags": ["col:repas"],
    "syllables": [
     "le",
     "pe",
@@ -31,7 +31,7 @@
    "fr": "le déjeuner",
    "en": "lunch",
    "emoji": "🕛",
-   "tags": [],
+   "tags": ["col:repas"],
    "syllables": [
     "le",
     "dé",
@@ -44,7 +44,7 @@
    "fr": "le goûter",
    "en": "afternoon snack",
    "emoji": "🍪",
-   "tags": [],
+   "tags": ["col:repas"],
    "syllables": [
     "le",
     "goû",
@@ -56,7 +56,7 @@
    "fr": "le dîner",
    "en": "dinner",
    "emoji": "🌙",
-   "tags": [],
+   "tags": ["col:repas"],
    "syllables": [
     "le",
     "dî",
@@ -80,7 +80,7 @@
    "fr": "du café",
    "en": "coffee",
    "emoji": "☕",
-   "tags": [],
+   "tags": ["col:boissons"],
    "syllables": [
     "du",
     "ca",
@@ -92,7 +92,7 @@
    "fr": "du lait",
    "en": "milk",
    "emoji": "🥛",
-   "tags": [],
+   "tags": ["col:boissons"],
    "syllables": [
     "du",
     "lait"
@@ -126,7 +126,7 @@
    "fr": "de la viande",
    "en": "meat",
    "emoji": "🥩",
-   "tags": [],
+   "tags": ["col:viandes"],
    "syllables": [
     "de",
     "la",
@@ -138,7 +138,7 @@
    "fr": "du poisson",
    "en": "fish",
    "emoji": "🐟",
-   "tags": [],
+   "tags": ["col:viandes"],
    "syllables": [
     "du",
     "pois",
@@ -183,7 +183,7 @@
    "fr": "de la salade",
    "en": "salad",
    "emoji": "🥗",
-   "tags": [],
+   "tags": ["col:legumes"],
    "syllables": [
     "de",
     "la",
@@ -196,7 +196,7 @@
    "fr": "de l'eau",
    "en": "water",
    "emoji": "💧",
-   "tags": [],
+   "tags": ["col:boissons"],
    "syllables": [
     "de",
     "l'eau"
@@ -258,7 +258,7 @@
     "pou",
     "let"
    ],
-   "tags": []
+   "tags": ["col:viandes"]
   },
   {
    "id": "aliments-22",
@@ -293,7 +293,7 @@
     "as",
     "perges"
    ],
-   "tags": []
+   "tags": ["col:legumes"]
   },
   {
    "id": "aliments-25",
@@ -306,7 +306,7 @@
     "pi",
     "gnons"
    ],
-   "tags": []
+   "tags": ["col:legumes"]
   },
   {
    "id": "aliments-26",
@@ -318,10 +318,62 @@
     "oi",
     "gnons"
    ],
-   "tags": []
+   "tags": ["col:legumes"]
+  },
+  {
+   "id": "aliments-27",
+   "fr": "du thé",
+   "en": "tea",
+   "emoji": "🍵",
+   "syllables": [
+    "du",
+    "thé"
+   ],
+   "tags": ["col:boissons"]
+  },
+  {
+   "id": "aliments-28",
+   "fr": "du jus d'orange",
+   "en": "orange juice",
+   "emoji": "🧃",
+   "syllables": [
+    "du",
+    "jus",
+    "d'o",
+    "range"
+   ],
+   "tags": ["col:boissons"]
   }
  ],
  "gameConfig": {
+  "letris": {
+   "columns": [
+    {
+     "key": "repas",
+     "label": "LES REPAS",
+     "prefix": "",
+     "choiceLabel": "a meal of the day"
+    },
+    {
+     "key": "legumes",
+     "label": "LÉGUMES",
+     "prefix": "",
+     "choiceLabel": "vegetables"
+    },
+    {
+     "key": "viandes",
+     "label": "VIANDE & POISSON",
+     "prefix": "",
+     "choiceLabel": "meat & fish"
+    },
+    {
+     "key": "boissons",
+     "label": "BOISSONS",
+     "prefix": "",
+     "choiceLabel": "drinks"
+    }
+   ]
+  },
   "lexicalator": {
    "decoys": [
     "cro",

@@ -174,7 +174,7 @@ function TutorPageInner() {
     setPaused(false);
     setProgress(0);
     const player = speakMixed(content, {
-      // Faster default (Dan, 2026-07-27: "too slow"); the 🐢 button still passes 0.6.
+      // Faster default (Dan, 2026-07-27: "too slow"); the 🐌 button still passes 0.6.
       rate: rate ?? 1.15,
       onDone: () => { setPlayingIdx(null); setPaused(false); setProgress(0); },
       onProgress: setProgress,
@@ -273,7 +273,7 @@ function TutorPageInner() {
       }
       const data = await r.json().catch(() => null);
       if (!r.ok || !data?.reply) {
-        setMessages((m) => [...m, { role: "assistant", content: "Oups — j'ai eu un souci technique. Réessayez !" }]);
+        setMessages((m) => [...m, { role: "assistant", content: "Oops — I hit a technical problem. Try again!" }]);
         return;
       }
       setMessages((m) => {
@@ -289,7 +289,7 @@ function TutorPageInner() {
         return next;
       });
     } catch {
-      setMessages((m) => [...m, { role: "assistant", content: "Oups — j'ai eu un souci technique. Réessayez !" }]);
+      setMessages((m) => [...m, { role: "assistant", content: "Oops — I hit a technical problem. Try again!" }]);
     } finally {
       setBusy(false);
     }
@@ -300,7 +300,7 @@ function TutorPageInner() {
         {offline ? (
           <div className="rounded-2xl border-2 border-dashed border-[color:var(--cahier-ink)]/40 bg-white p-5">
             <p className="text-sm font-bold text-[color:var(--cahier-ink)]">
-              Le tuteur n&rsquo;est pas encore branché ici. 🔌
+              The tutor isn&rsquo;t connected here yet. 🔌
             </p>
             <p className="mt-1.5 text-sm text-[color:var(--cahier-ink-soft)]">
               In the meantime, the tutor still lives on{" "}
@@ -358,7 +358,7 @@ function TutorPageInner() {
                       </>
                     ) : (
                       <>
-                        <button type="button" onClick={() => playMsg(i, m.content)} title="Écouter"
+                        <button type="button" onClick={() => playMsg(i, m.content)} title="Listen"
                           className="rounded-lg border border-[#3f9c17] bg-[#58cc02] px-2 py-0.5 text-xs font-bold text-white">
                           ▶
                         </button>
@@ -412,7 +412,7 @@ function TutorPageInner() {
                   <button
                     type="button"
                     onClick={() => toggleMic("fr-FR")}
-                    title={recording === "fr-FR" ? "Arrêter la dictée" : "Dicter en français"}
+                    title={recording === "fr-FR" ? "Stop dictation" : "Dictate in French"}
                     aria-pressed={recording === "fr-FR"}
                     className={`cahier-btn font-black ${recording === "fr-FR" ? "!border-[#d33131] !bg-[#ff4b4b] !text-white animate-pulse" : ""}`}
                   >
@@ -441,7 +441,7 @@ function TutorPageInner() {
                 </>
               )}
               <button type="submit" disabled={busy || !input.trim()} className="cahier-btn cahier-btn-accent font-black disabled:opacity-40">
-                Envoyer
+                Send
               </button>
               </div>
             </form>
@@ -458,12 +458,10 @@ function TutorPageInner() {
 // the compact gate sits where the conversation will appear.
 export default function TutorPage() {
   return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="tutor" crumb="🤖 ChaTutor">
+    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="tutor">
       <div className="mx-auto flex max-w-2xl flex-col gap-3 px-3 pb-5 pt-2">
-        <h1 className="cahier-display cahier-hand text-3xl font-normal text-[color:var(--cahier-ink)]">🤖 ChaTutor <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· Tutor</span></h1>
-        <p className="-mt-2 text-sm text-[color:var(--cahier-ink-soft)]">
-          Ton tuteur IA — write, speak, or role-play in French.
-        </p>
+        {/* The h1 + tagline moved into the shell's heading band (variant A,
+            2026-08-23) — the tagline fell to the litmus rule. */}
         <AuthGate what="talk to the tutor" compact>
           <TutorPageInner />
         </AuthGate>

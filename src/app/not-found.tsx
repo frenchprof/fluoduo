@@ -27,22 +27,20 @@ export default function NotFound() {
         🧭
       </p>
 
-      <h1 lang="fr" className="cahier-hand cahier-display text-3xl font-normal text-[color:var(--cahier-ink)]">
-        Page introuvable
+      <h1 className="cahier-hand cahier-display text-3xl font-normal text-[color:var(--cahier-ink)]">
+        Page not found
       </h1>
 
       <p className="cahier-body text-sm leading-relaxed text-[color:var(--fluo-ink-soft)]">
-        <span lang="fr">Cette page n&rsquo;existe pas ou a été déplacée.</span>
-        <br />
-        <span lang="en">This page doesn&rsquo;t exist, or it has moved.</span>
+        This page doesn&rsquo;t exist, or it has moved.
       </p>
 
       <div className="flex flex-wrap items-center justify-center gap-2">
         <Link href="/" className="fluo-btn">
-          ▶ <span lang="fr">Accueil</span>
+          ▶ Home
         </Link>
-        <Link href="/activities" className="cahier-btn">
-          🗂️ <span lang="fr">Index</span>
+        <Link href="/map" className="cahier-btn">
+          📖 <span lang="fr">Index</span>
         </Link>
       </div>
 

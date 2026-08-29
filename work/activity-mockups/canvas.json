@@ -1,0 +1,212 @@
+{
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "title": "The Menu",
+      "x": 940,
+      "y": 0,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "SpecuLearn.dc.html",
+      "title": "1 · SpecuLearn",
+      "x": 0,
+      "y": 1140,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "XPlain.dc.html",
+      "title": "2 · xPlain",
+      "x": 470,
+      "y": 1140,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "EtuDice.dc.html",
+      "title": "3 · EtuDice",
+      "x": 940,
+      "y": 1140,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Memoire.dc.html",
+      "title": "4 · 4Mémoire",
+      "x": 1410,
+      "y": 1140,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "IComplete.dc.html",
+      "title": "5 · iComplete",
+      "x": 1880,
+      "y": 1140,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "NumBus.dc.html",
+      "title": "6 · NumBus",
+      "x": 0,
+      "y": 2280,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "NumBourse.dc.html",
+      "title": "7 · NumBourse",
+      "x": 470,
+      "y": 2280,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "VocabulaRain.dc.html",
+      "title": "8 · VocabulaRain",
+      "x": 940,
+      "y": 2280,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "LexicaLater.dc.html",
+      "title": "9 · LexicaLater",
+      "x": 1410,
+      "y": 2280,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "DejaRevu.dc.html",
+      "title": "10 · DéjàRevu",
+      "x": 1880,
+      "y": 2280,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "GramMarathon.dc.html",
+      "title": "11 · GramMarathon",
+      "x": 0,
+      "y": 3420,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "ConjugaZone.dc.html",
+      "title": "12 · ConjugaZone",
+      "x": 470,
+      "y": 3420,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "EcouTexte.dc.html",
+      "title": "13 · ÉcouTexte",
+      "x": 940,
+      "y": 3420,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "WorDrill.dc.html",
+      "title": "14 · WorDrill",
+      "x": 1410,
+      "y": 3420,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "VoixLa.dc.html",
+      "title": "15 · VoixLà",
+      "x": 1880,
+      "y": 3420,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "ComposeIt.dc.html",
+      "title": "16 · ComposeIt",
+      "x": 0,
+      "y": 4560,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "ChaTutor.dc.html",
+      "title": "17 · ChaTutor",
+      "x": 470,
+      "y": 4560,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "MyProgress.dc.html",
+      "title": "18 · My Progress",
+      "x": 940,
+      "y": 4560,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Leaderboard.dc.html",
+      "title": "19 · Leaderboard",
+      "x": 1410,
+      "y": 4560,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "Profile.dc.html",
+      "title": "20 · Profile",
+      "x": 1880,
+      "y": 4560,
+      "w": 390,
+      "h": 844
+    }
+  ],
+  "annotations": [
+    {
+      "id": "n-menu",
+      "x": 940,
+      "y": -170,
+      "w": 390,
+      "text": "The hub these twenty hang off — 4x5 on a phone, 5x4 on a tablet, one tile per activity in the registry's family order.\nThe canvas below is laid out in exactly the Menu's order, so a tile and its screen sit in the same place."
+    },
+    {
+      "id": "n-practice",
+      "x": 0,
+      "y": 970,
+      "w": 390,
+      "text": "PRACTICE — the five that teach something new.\nAll five run inside DrillShell: one item, the 56px bar, the ? help ladder, no per-activity header. That shared frame is why six drills stopped feeling like six apps."
+    },
+    {
+      "id": "n-svplay",
+      "x": 0,
+      "y": 2110,
+      "w": 390,
+      "text": "SvPLAY — the four games, plus DéjàRevu at the end of the row.\nThe games keep their own worlds (a road, a trading floor, rain, a vault) rather than paper. That is deliberate and worth keeping — but it is also where the 508 off-system hex values live."
+    },
+    {
+      "id": "n-skills",
+      "x": 0,
+      "y": 3250,
+      "w": 390,
+      "text": "REVIEW + SKILLS — the drills that push production rather than recognition.\nConjugaZone is the one to study: it withholds the conjugation table until you finish, so the table is the reward instead of the gate. Study follows proof."
+    },
+    {
+      "id": "n-user",
+      "x": 0,
+      "y": 4390,
+      "w": 390,
+      "text": "The last two Skills, then USER — the three surfaces that tell a learner where they stand.\nThese carry almost all the reward cues, and today almost all of them render in body-text ink. They are where the colour review bites hardest."
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

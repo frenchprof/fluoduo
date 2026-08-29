@@ -1,0 +1,125 @@
+{
+ "id": "numbers-0-20-letris",
+ "title": "0 à 10 ou 11 à 20 ?",
+ "subtitle": "which band does each number word belong to?",
+ "language": "fr",
+ "categories": [
+  {
+   "key": "petits",
+   "label": "0 – 10",
+   "prefix": ""
+  },
+  {
+   "key": "grands",
+   "label": "11 – 20",
+   "prefix": ""
+  }
+ ],
+ "tiles": [
+  {
+   "text": "ZÉRO",
+   "category": "petits",
+   "meaning": "0"
+  },
+  {
+   "text": "UN",
+   "category": "petits",
+   "meaning": "1"
+  },
+  {
+   "text": "DEUX",
+   "category": "petits",
+   "meaning": "2"
+  },
+  {
+   "text": "TROIS",
+   "category": "petits",
+   "meaning": "3"
+  },
+  {
+   "text": "QUATRE",
+   "category": "petits",
+   "meaning": "4"
+  },
+  {
+   "text": "CINQ",
+   "category": "petits",
+   "meaning": "5"
+  },
+  {
+   "text": "SIX",
+   "category": "petits",
+   "meaning": "6"
+  },
+  {
+   "text": "SEPT",
+   "category": "petits",
+   "meaning": "7"
+  },
+  {
+   "text": "HUIT",
+   "category": "petits",
+   "meaning": "8"
+  },
+  {
+   "text": "NEUF",
+   "category": "petits",
+   "meaning": "9"
+  },
+  {
+   "text": "DIX",
+   "category": "petits",
+   "meaning": "10"
+  },
+  {
+   "text": "ONZE",
+   "category": "grands",
+   "meaning": "11"
+  },
+  {
+   "text": "DOUZE",
+   "category": "grands",
+   "meaning": "12"
+  },
+  {
+   "text": "TREIZE",
+   "category": "grands",
+   "meaning": "13"
+  },
+  {
+   "text": "QUATORZE",
+   "category": "grands",
+   "meaning": "14"
+  },
+  {
+   "text": "QUINZE",
+   "category": "grands",
+   "meaning": "15"
+  },
+  {
+   "text": "SEIZE",
+   "category": "grands",
+   "meaning": "16"
+  },
+  {
+   "text": "DIX-SEPT",
+   "category": "grands",
+   "meaning": "17"
+  },
+  {
+   "text": "DIX-HUIT",
+   "category": "grands",
+   "meaning": "18"
+  },
+  {
+   "text": "DIX-NEUF",
+   "category": "grands",
+   "meaning": "19"
+  },
+  {
+   "text": "VINGT",
+   "category": "grands",
+   "meaning": "20"
+  }
+ ]
+}

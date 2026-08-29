@@ -3,7 +3,7 @@
  * Writes collection JSON files to src/content/collections/, matching the
  * existing schema (see nationalities.json / weather-letris.json for the
  * reference shape). Run once, then hand-wire the imports in
- * src/content/collections/index.ts and scripts/gen-sios.mjs's
+ * src/content/collections/index.ts and sios.json's
  * COLLECTION_BY_SIO.
  */
 import { writeFileSync } from "node:fs";

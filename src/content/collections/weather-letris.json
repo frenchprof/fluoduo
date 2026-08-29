@@ -430,6 +430,132 @@
     "l'an",
     "née"
    ]
+  },
+  {
+   "id": "weather-letris-33-fait-beau",
+   "fr": "Il fait beau au printemps.",
+   "en": "The weather is nice in spring.",
+   "tags": [],
+   "gap": "Il fait"
+  },
+  {
+   "id": "weather-letris-34-fait-froid",
+   "fr": "Il fait froid en hiver.",
+   "en": "It's cold in winter.",
+   "tags": [],
+   "gap": "Il fait"
+  },
+  {
+   "id": "weather-letris-35-fait-chaud",
+   "fr": "Il fait chaud en été.",
+   "en": "It's hot in summer.",
+   "tags": [],
+   "gap": "Il fait"
+  },
+  {
+   "id": "weather-letris-36-ya-vent",
+   "fr": "Il y a du vent en automne.",
+   "en": "There's wind in autumn.",
+   "tags": [],
+   "gap": "Il y a"
+  },
+  {
+   "id": "weather-letris-37-ya-soleil",
+   "fr": "Il y a du soleil aujourd'hui.",
+   "en": "There's sunshine today.",
+   "tags": [],
+   "gap": "Il y a"
+  },
+  {
+   "id": "weather-letris-38-ya-orages",
+   "fr": "Il y a des orages en été.",
+   "en": "There are storms in summer.",
+   "tags": [],
+   "gap": "Il y a"
+  },
+  {
+   "id": "weather-letris-39-pleut-aujourdhui",
+   "fr": "Il pleut aujourd'hui.",
+   "en": "It's raining today.",
+   "tags": [],
+   "gap": "Il pleut"
+  },
+  {
+   "id": "weather-letris-40-neige-hiver",
+   "fr": "Il neige en hiver.",
+   "en": "It snows in winter.",
+   "tags": [],
+   "gap": "Il neige"
+  },
+  {
+   "id": "weather-letris-41-gele-hiver",
+   "fr": "Il gèle en hiver.",
+   "en": "It's freezing in winter.",
+   "tags": [],
+   "gap": "Il gèle"
+  },
+  {
+   "id": "weather-letris-42-fait-degres",
+   "fr": "Il fait 20 degrés aujourd'hui.",
+   "en": "It's 20 degrees today.",
+   "tags": [],
+   "gap": "Il fait"
+  },
+  {
+   "id": "weather-letris-43-ya-brouillard",
+   "fr": "Il y a du brouillard le matin.",
+   "en": "There's fog in the morning.",
+   "tags": [],
+   "gap": "Il y a"
+  },
+  {
+   "id": "weather-letris-44-pleut-printemps",
+   "fr": "Il pleut souvent au printemps.",
+   "en": "It often rains in spring.",
+   "tags": [],
+   "gap": "Il pleut"
+  },
+  {
+   "id": "weather-letris-45-des-nuages",
+   "fr": "des nuages",
+   "en": "There are clouds.",
+   "emoji": "☁️",
+   "tags": [
+    "col:il_y_a"
+   ],
+   "syllables": [
+    "des",
+    "nua",
+    "ges"
+   ]
+  },
+  {
+   "id": "weather-letris-46-nuageux",
+   "fr": "nuageux",
+   "en": "It is cloudy.",
+   "emoji": "🌥️",
+   "tags": [
+    "col:c_est"
+   ],
+   "syllables": [
+    "nua",
+    "geux"
+   ]
+  },
+  {
+   "id": "weather-letris-47-ensoleille",
+   "fr": "ensoleillé",
+   "en": "It is sunny.",
+   "emoji": "☀️",
+   "tags": [
+    "col:c_est"
+   ],
+   "syllables": [
+    "en",
+    "so",
+    "leil",
+    "lé"
+   ]
   }
  ],
  "gameConfig": {
@@ -449,6 +575,11 @@
      "key": "il",
      "label": "IL",
      "prefix": "Il "
+    },
+    {
+     "key": "c_est",
+     "label": "C'EST",
+     "prefix": "C'est "
     }
    ]
   }

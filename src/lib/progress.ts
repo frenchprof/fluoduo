@@ -32,6 +32,7 @@
  *     (accents, hyphens, numeric forms). The Pretest still never writes here:
  *     it's a deliberate cold diagnostic on a separate item-id namespace.
  */
+import { ensureRenumber3435 } from "./migrations/renumber3435";
 
 import {
   BADGES,
@@ -45,25 +46,81 @@ import {
   XP_SIO_MASTERY,
   XP_CONVERSATION,
 } from "@/lib/economy";
-import { dayKey, previousDay, learnerZone } from "@/lib/dayKey";
-import { buildEvidence } from "@/lib/evidence";
+import { dayKey, previousDay, learnerZone, weekKey } from "@/lib/dayKey";
+import { buildEvidence, type AssistanceLevel } from "@/lib/evidence";
+import { CURRENT_TERM } from "@/lib/term";
+import { SIOS } from "@/content/sios";
 
 export type Progress = {
   doneSios: string[];
   gems: number; // SPENDABLE balance (paid by badges, spent on cosmetics)
   xp: number; // lifetime score (drives levels + leaderboard); never spent
   streak: number;
+  /** XP earned inside the current ISO week, for the weekly board. Resets when
+   *  `weekKey` moves on — a cumulative board is decided by week three, and
+   *  everyone deserves a live race (DOPAMINE_REVIEW §9). */
+  weekXp: number;
+  /** The ISO week `weekXp` belongs to ("YYYY-Www"), learner-local. */
+  weekKey: string | null;
   lastActiveDay: string | null; // "YYYY-MM-DD", learner-local, 04:00 rollover
   timeZone?: string; // IANA zone lastActiveDay was computed in
   itemSrs: Record<string, ItemSrs>;
   badges: string[]; // earned badge ids
   cosmetics: { owned: string[]; equipped: Record<string, string> };
+  /** Cohort marker (src/lib/term.ts). Stamped once — CURRENT_TERM for
+   *  accounts born after the 2026-08-11 reset, LEGACY_TERM for accounts
+   *  whose remote doc predates the field (progressSync decides). */
+  term?: string;
+  /** The pinned goal (Design handoff, 2026-08-22): WHICH of the fifty you are
+   *  aiming at and BY WHEN. Deliberately not a copy of the can-do sentence —
+   *  the spine is the source of truth for what the outcome says; this stores
+   *  only the commitment the spine cannot hold. Absent until one is set. */
+  goal?: { sio: string; by: string | null };
 };
+
+/** What rides on `fluolingo:reward`. `size` drives how loud the celebration
+ *  is — see RewardToast. */
+export type RewardDetail =
+  | { type: "level"; size: RewardSize; level: number }
+  | { type: "badge"; size: RewardSize; id: string }
+  | { type: "streak"; size: RewardSize; streak: number; mult: number }
+  | { type: "multiplier"; size: RewardSize; mult: number; streak: number }
+  | { type: "sio"; size: RewardSize; id: string }
+  | { type: "unit"; size: RewardSize; unit: number; count: number }
+  | { type: "mastery"; size: RewardSize; count: number }
+  | { type: "perfect"; size: RewardSize; count: number };
+
+/** chime = a tick of acknowledgement · full = the fanfare, once a unit. */
+export type RewardSize = "chime" | "small" | "big" | "full";
 
 export type ItemSrs = {
   due: number; // epoch ms when the item should resurface
   intervalDays: number;
 };
+
+// ── THE ONE DEFINITION OF "WEAK" (data-truth backlog, 2026-08-17) ──────────
+// Four rules used to coexist: the tier scale (accuracy < 50 red, < 75 amber)
+// in outcomeRows.ts AND again in activityLedger.ts; the teacher's missColor
+// (miss rate >= 50 red, >= 25 amber — the same idea, off by one at 75); the
+// Reviser's "weak" (SRS interval reset to 0 by a miss); /moi's and the
+// Finale's "weak" (interval <= 1 day). Every site now calls these two.
+/** Accuracy below this is WEAK (red). */
+export const WEAK_BELOW = 50;
+/** Accuracy from this up is GOOD (green); between = MEDIUM (amber). */
+export const GOOD_FROM = 75;
+export type Tier = "weak" | "medium" | "good";
+/** The tier of a 0..100 accuracy; null when nothing was answered. */
+export function tierFor(pct: number | null | undefined): Tier | null {
+  if (pct == null || Number.isNaN(pct)) return null;
+  if (pct < WEAK_BELOW) return "weak";
+  if (pct < GOOD_FROM) return "medium";
+  return "good";
+}
+/** An SRS item is WEAK while its interval is at most one day: just missed
+ *  (0, the ladder reset) or repaired-but-fragile (1, the first rung back). */
+export function isWeakSrs(s: ItemSrs | undefined | null): boolean {
+  return !!s && s.intervalDays <= 1;
+}
 
 // Correctness-weighted XP: completing a SIO always earns the base; on top of
 // that a mastery bonus scales with how many of the SIO's practice items the
@@ -76,7 +133,7 @@ const STORAGE_KEY = "fluolingo:progress";
 // todayStr() replaced by dayKey() - learner-local zone, 04:00 rollover.
 
 export function defaultProgress(): Progress {
-  return { doneSios: [], gems: 0, xp: 0, streak: 0, lastActiveDay: null, itemSrs: {}, badges: [], cosmetics: { owned: [], equipped: {} } };
+  return { doneSios: [], gems: 0, xp: 0, streak: 0, weekXp: 0, weekKey: null, lastActiveDay: null, itemSrs: {}, badges: [], cosmetics: { owned: [], equipped: {} }, term: CURRENT_TERM };
 }
 
 /** Fill in fields added after a learner's blob was first written, and migrate
@@ -96,6 +153,7 @@ function normalize(raw: Partial<Progress>): Progress {
 
 export function loadProgress(): Progress {
   if (typeof window === "undefined") return defaultProgress();
+  ensureRenumber3435();
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return defaultProgress();
@@ -118,6 +176,12 @@ function saveProgress(p: Progress): Progress {
   } catch {
     // localStorage unavailable — state still works for this session
   }
+  // Announce EVERY save, not just sync pull-merges (patch 22): the Home road
+  // and unit HUDs listen for this event, so before this line an SIO write from
+  // a lesson's end card never repainted the path until a full reload.
+  try {
+    window.dispatchEvent(new CustomEvent("fluolingo:progress-updated"));
+  } catch {}
   onSave?.(p);
   return p;
 }
@@ -162,16 +226,41 @@ export function clearLocalLearnerData(): void {
   } catch {}
 }
 
-/** Add XP for one action, scaled by today's fire multiplier. */
+/** Pin (or re-pin) the goal — which outcome, by when. Passing null clears it.
+ *  Persisted like any other progress field, so it syncs with the blob. */
+export function setGoal(sio: string | null, by: string | null): Progress {
+  const p = loadProgress();
+  return saveProgress({ ...p, goal: sio ? { sio, by } : undefined });
+}
+
+/** Add XP for one action, scaled by today's fire multiplier.
+ *
+ *  Also fills the weekly bucket (rolling it over when the ISO week turns) and
+ *  announces the award on `fluolingo:xp`, so the floating +XP can show the
+ *  multiplier actually paying out. Before this, XP was earned on every right
+ *  answer and shown nowhere at the time — the whole reason a streak is worth
+ *  having was invisible (DOPAMINE_REVIEW §4). */
 function addXp(p: Progress, base: number): Progress {
-  return { ...p, xp: p.xp + Math.round(base * xpMultiplier(p.streak)) };
+  const mult = xpMultiplier(p.streak);
+  const paid = Math.round(base * mult);
+  const wk = weekKey();
+  const rolled = p.weekKey === wk ? (p.weekXp ?? 0) : 0;
+  try {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("fluolingo:xp", { detail: { base, mult, paid } }));
+    }
+  } catch {
+    /* the float is decoration; never let it break an award */
+  }
+  return { ...p, xp: p.xp + paid, weekXp: rolled + paid, weekKey: wk };
 }
 
 /** Award any newly-earned badges (crediting their gem bounty), then persist.
  *  Emits a `fluolingo:reward` event per new badge and on a level-up so any
  *  mounted HUD can celebrate. Every earning path ends here. */
 function finalize(p: Progress): Progress {
-  const beforeXp = loadProgress().xp; // persisted state, pre-save
+  const before = loadProgress(); // persisted state, pre-save
+  const beforeXp = before.xp;
   const ctx = badgeContext(p);
   let gems = p.gems;
   const badges = [...p.badges];
@@ -184,14 +273,52 @@ function finalize(p: Progress): Progress {
     }
   }
   const saved = saveProgress({ ...p, gems, badges });
+  // Every earning path funnels through here, so every celebration is decided
+  // here too — by diffing the persisted state against the saved one. Before
+  // this, `fluolingo:reward` fired on 2 of the 8 moments the app already
+  // tracked: a level-up and a badge. Crossing into a x1.5 multiplier — the
+  // single biggest improvement a learner can earn — showed nothing at all
+  // (DOPAMINE_REVIEW §5).
+  //
+  // `size` is what stops this becoming noise. If every moment gets confetti,
+  // none of them mean anything, so the ladder runs chime -> small -> big ->
+  // full and only a finished unit gets the fanfare.
   try {
     if (typeof window !== "undefined") {
+      const fire = (detail: RewardDetail) =>
+        window.dispatchEvent(new CustomEvent("fluolingo:reward", { detail }));
+
       if (levelForXp(saved.xp).level > levelForXp(beforeXp).level) {
-        window.dispatchEvent(new CustomEvent("fluolingo:reward", { detail: { type: "level", level: levelForXp(saved.xp).level } }));
+        fire({ type: "level", size: "big", level: levelForXp(saved.xp).level });
       }
-      for (const id of fresh) {
-        window.dispatchEvent(new CustomEvent("fluolingo:reward", { detail: { type: "badge", id } }));
+      for (const id of fresh) fire({ type: "badge", size: "big", id });
+
+      // The streak, and the multiplier tier it may have just unlocked.
+      if (saved.streak > before.streak) {
+        const was = xpMultiplier(before.streak);
+        const now = xpMultiplier(saved.streak);
+        fire({ type: "streak", size: "small", streak: saved.streak, mult: now });
+        if (now > was) fire({ type: "multiplier", size: "big", mult: now, streak: saved.streak });
       }
+
+      // A finished objective — and, if it was the last of its unit, the unit.
+      const freshSio = saved.doneSios.find((id) => !before.doneSios.includes(id));
+      if (freshSio) {
+        fire({ type: "sio", size: "small", id: freshSio });
+        const unit = SIOS.find((s) => s.id === freshSio)?.unit;
+        if (unit != null) {
+          const inUnit = SIOS.filter((s) => s.unit === unit);
+          if (inUnit.length > 0 && inUnit.every((s) => saved.doneSios.includes(s.id))) {
+            fire({ type: "unit", size: "full", unit, count: inUnit.length });
+          }
+        }
+      }
+
+      // A word that has just climbed onto the spacing ladder for the first time.
+      const mastered = (q: Progress) =>
+        Object.values(q.itemSrs).filter((s) => s.intervalDays > 0).length;
+      const gained = mastered(saved) - mastered(before);
+      if (gained > 0) fire({ type: "mastery", size: "chime", count: gained });
     }
   } catch {
     /* celebration is best-effort */
@@ -309,7 +436,13 @@ export function recordItemResult(
   activity?: string,
   /** How the answer was produced (PRD §7). Omit and the record still
    *  stores, just without evidence meaning — adoption is incremental. */
-  ev?: { hintsTaken?: number; revealed?: boolean; latencyMs?: number },
+  ev?: {
+    hintsTaken?: number; revealed?: boolean; latencyMs?: number; assistance?: AssistanceLevel;
+    /** FALSE for a re-attempt on an item already answered in this run — the
+     *  response is still recorded (the evidence trail wants every attempt),
+     *  but it pays nothing. See the XP note below. */
+    award?: boolean;
+  },
 ): Progress {
   const prev = loadProgress();
   const itemSrs = { ...prev.itemSrs, [itemId]: stepItemSrs(prev.itemSrs[itemId], correct, Date.now()) };
@@ -324,7 +457,22 @@ export function recordItemResult(
   // (base × streak multiplier — audit 2026-07-19, honest receipts). Dynamic
   // import keeps Firestore out of this module's static graph (usage.ts
   // rule); fire-and-forget, signed-out is a no-op.
-  const paid = Math.round((correct ? XP_CORRECT : XP_WRONG) * xpMultiplier(p.streak));
+  // ONE PAYMENT PER ITEM PER RUN (Dan, 2026-08-27: "getting it wrong earns you
+  // points … guessing first and correcting earns 80, while getting it right
+  // immediately earns only 60. The app pays you more for not knowing.")
+  //
+  // He was exactly right: the help ladder calls this on EVERY attempt, so a
+  // wrong answer paid XP_WRONG and the correction then paid XP_CORRECT on top.
+  // The fix is not to stop paying for errors — effort counting is the settled
+  // rule, and hearts are on the refused list — it is to pay ONCE. The first
+  // attempt on an item is what pays; a re-attempt after it records the answer
+  // and steps the SRS, but earns nothing further. So:
+  //     right first time            60
+  //     wrong, then right           20
+  //     wrong, wrong, then right    20
+  // Knowing it always beats guessing at it, and trying still beats not trying.
+  const award = ev?.award !== false;
+  const paid = award ? Math.round((correct ? XP_CORRECT : XP_WRONG) * xpMultiplier(p.streak)) : 0;
   void import("@/lib/firebase/responses")
     .then((m) =>
       m.recordResponse(itemId, correct, {
@@ -335,11 +483,31 @@ export function recordItemResult(
         evidence: buildEvidence(itemId, activity, {
           hintsTaken: ev?.hintsTaken,
           revealed: ev?.revealed,
+          assistance: ev?.assistance,
         }),
       }),
     )
     .catch(() => {});
-  return finalize(addXp(p, correct ? XP_CORRECT : XP_WRONG));
+  return finalize(award ? addXp(p, correct ? XP_CORRECT : XP_WRONG) : p);
+}
+
+/**
+ * Put items into the review queue NOW (patch 23 — the game-over post-mortem's
+ * CORRIGER MAINTENANT). Each item's ladder drops to the "due immediately"
+ * rung, which is exactly what `dueForReview` reads — so the ReVue page shows
+ * them the moment it opens. Deliberately NOT recordItemResult: the game has
+ * already graded and paid the attempt (evidence + XP) when the miss happened;
+ * queueing it again must not write a second wrong answer or a second receipt.
+ * Unknown ids (a spoken number with no curated item) are skipped by the
+ * caller — this writes whatever it is given.
+ */
+export function queueForReview(itemIds: string[]): Progress {
+  const prev = loadProgress();
+  if (itemIds.length === 0) return prev;
+  const now = Date.now();
+  const itemSrs = { ...prev.itemSrs };
+  for (const id of itemIds) itemSrs[id] = { due: now, intervalDays: 0 };
+  return saveProgress({ ...prev, itemSrs });
 }
 
 /** True if the item was never practiced or its interval has elapsed — the Reviser's bias signal. */

@@ -36,9 +36,10 @@ export type Item = {
    * Other written forms of `fr` that a typed-answer check should also accept
    * as correct — same meaning, different legitimate phrasing (e.g. singular
    * vs. generic-plural: "le sport" / "les sports"). Display always uses `fr`;
-   * this only widens grading. Currently read by Flip It's Test Yourself
-   * (FlipItContent.tsx's partsFor/judge) — not yet wired into other graders
-   * (Complete It, Say It, GramMarathon), which still check `fr` alone.
+   * this only widens grading. Read by Flip It's Test Yourself (judgePart)
+   * and, since the grading unification (2026-08-11), Complete It — both via
+   * lib/practice/cloze.ts's gradeAgainst. Say It and GramMarathon still
+   * check `fr` alone (speech and gap answers have no alt semantics yet).
    */
   alt?: string[];
   /** English gloss / meaning. */

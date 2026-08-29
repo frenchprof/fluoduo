@@ -16,6 +16,9 @@ import { sfx } from "@/games/audio/sfx";
 import { awardConversationXp } from "@/lib/progress";
 import { recordResponse } from "@/lib/firebase/responses";
 import { categoryHeaderClass, type ComposeBank } from "@/games/compose/banks";
+import GameFrame from "@/components/GameFrame";
+import GameOver from "@/components/GameOver";
+import { drillExitHref } from "@/components/DrillShell";
 
 /** Join tapped chips into readable French (", " chips collapse into commas). */
 function joinChips(chips: string[]): string {
@@ -124,39 +127,68 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
     if (dialogueText) speak(dialogueText, lang);
   };
 
+  const exitHref = drillExitHref(bank.deckId);
+  const help = (
+    <>
+      <p>Tap phrases to build a sentence; ✔ adds it to the dialogue. 🔊 reads any line back.</p>
+      {bank.aiCheck && <p className="mt-2">🚶 The passer-by reads the whole itinerary and reacts — in French.</p>}
+    </>
+  );
+  const record = (
+    <ol className="flex flex-col gap-1.5">
+      {lines.map((l, i) => (
+        <li key={`${i}-${l}`} lang="fr" className="rounded-lg border-2 border-[color:var(--cahier-line)] px-2 py-1 text-sm">{l}</li>
+      ))}
+    </ol>
+  );
+
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 py-6 text-[color:var(--cahier-ink)]">
-      <header className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 lang="fr" className="cahier-display text-2xl font-black">
-            {scenario?.headline ?? "…"}
-          </h1>
-          <p className="text-sm text-[color:var(--cahier-ink-soft)]">
-            {scenario?.instructionEn ?? ""}
-          </p>
+    <GameFrame
+      title={`${bank.emoji} ${bank.title}`}
+      exitHref={exitHref}
+      progress={null}
+      score={lines.length > 0 ? <>{lines.length} ✎</> : undefined}
+      help={help}
+      menu={[
+        { label: "New scenario", onClick: reset },
+        { label: "🧹 Clear", onClick: clearOnly },
+      ]}
+      record={record}
+      recordTitle="✎ Your lines"
+    >
+    <div className="mx-auto flex h-full w-full max-w-5xl flex-col gap-4 overflow-y-auto px-4 py-4 text-[color:var(--cahier-ink)]">
+      {/* The task — the one line the learner cannot compose without. */}
+      <div className="flex flex-wrap items-end justify-between gap-2">
+        <div className="min-w-0">
+          <p lang="fr" className="cahier-display text-xl font-black">{scenario?.headline ?? "…"}</p>
+          <p className="text-sm text-[color:var(--cahier-ink-soft)]">{scenario?.instructionEn ?? ""}</p>
         </div>
-        <div className="flex items-center gap-2 text-sm">
-          <button
-            type="button"
-            onClick={undo}
-            disabled={line.length === 0 && lines.length === 0}
-            className="cahier-btn cahier-btn-sm"
-          >
-            ↶ Undo
-          </button>
-          <button
-            type="button"
-            onClick={clearOnly}
-            disabled={line.length === 0 && lines.length === 0}
-            className="cahier-btn cahier-btn-sm"
-          >
-            🧹 Clear
-          </button>
-          <button type="button" onClick={reset} className="cahier-btn cahier-btn-sm">
-            🔁 New scenario
-          </button>
-        </div>
-      </header>
+        <button
+          type="button"
+          onClick={undo}
+          disabled={line.length === 0 && lines.length === 0}
+          className="cahier-btn cahier-btn-sm"
+        >
+          ↶ Undo
+        </button>
+      </div>
+
+      {feedback?.done && (
+        <GameOver
+          emoji={bank.emoji}
+          title="Bravo !"
+          score={<>{lines.length} ✎</>}
+          won
+          misses={[]}
+          onReplay={reset}
+          exitHref={exitHref}
+          extra={
+            <div className="mt-3 rounded-xl border-2 border-[color:var(--cahier-gold)] bg-[color:var(--cahier-gold)]/10 px-4 py-3">
+              <p lang="fr" className="text-sm leading-relaxed">🚶 {feedback.reply}</p>
+            </div>
+          }
+        />
+      )}
 
       <div className="min-h-[120px] rounded-xl border-2 border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-2)] p-5">
         {/* The passer-by's question opens the scene — tap to rehear. */}
@@ -229,7 +261,7 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
               disabled={!dialogueText || checking}
               className="cahier-btn cahier-btn-gold"
             >
-              {checking ? "🚶 …" : "🚶 Le passant vérifie"}
+              {checking ? "🚶 …" : "🚶 The passer-by checks"}
             </button>
           )}
         </div>
@@ -246,7 +278,7 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
               type="button"
               onClick={() => speak(feedback.reply, lang, { gender: "m" })}
               className="shrink-0 text-2xl leading-none"
-              aria-label="Réécouter"
+              aria-label="Listen again"
               title="🔊"
             >
               🚶
@@ -287,5 +319,6 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
         ))}
       </div>
     </div>
+    </GameFrame>
   );
 }

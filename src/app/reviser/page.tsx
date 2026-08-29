@@ -13,23 +13,17 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import CahierShell from "@/components/CahierShell";
+import SectionBand from "@/components/SectionBand";
 import AuthGate from "@/components/AuthGate";
 import { speak } from "@/games/letris/speech";
 import { loadProgress, recordItemResult } from "@/lib/progress";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
-import { dueForReview, gapsByDeck, allReviewItems, type ReviewItem, type Gap } from "@/lib/reviser";
+import { dueForReview, gapsByDeck, allReviewItems, reviewFocusFrom, type ReviewItem, type Gap } from "@/lib/reviser";
 import { optionGridClass } from "@/lib/optionGrid";
+import { shuffle } from "@/lib/shuffle";
 
 type Card = { item: ReviewItem; options: string[] };
 
-function shuffle<T>(a: T[]): T[] {
-  const o = [...a];
-  for (let i = o.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [o[i], o[j]] = [o[j], o[i]];
-  }
-  return o;
-}
 
 function buildCard(item: ReviewItem, pool: ReviewItem[]): Card {
   const sameDeck = pool.filter((x) => x.deckId === item.deckId && x.en !== item.en);
@@ -43,7 +37,7 @@ function buildCard(item: ReviewItem, pool: ReviewItem[]): Card {
   return { item, options: shuffle([item.en, ...distractors]) };
 }
 
-const TABS = [{ key: "reviser", label: "DéjàRevu", emoji: "🔁" }];
+const TABS = [{ key: "reviser", label: "DéjàRevu", emoji: "🔖" }];
 
 // Long queues are split into pages of 20 (Dan, 2026-07-13) — a bounded
 // session beats an 80-card wall; the next page is offered at the end.
@@ -62,7 +56,15 @@ export default function ReviserPage() {
     const p = loadProgress();
     const now = Date.now();
     const pool = allReviewItems();
-    setCards(shuffle(dueForReview(p, now)).map((it) => buildCard(it, pool)));
+    // A game's post-mortem (patch 23) arrives with `?items=a,b,c` — those
+    // misses lead the session, in the order they were missed; the rest of
+    // what is due follows, shuffled as before. Read off the window here (not
+    // useSearchParams) so the static export never needs a Suspense boundary.
+    const focus = reviewFocusFrom(window.location.search);
+    const due = dueForReview(p, now);
+    const lead = focus.map((id) => pool.find((it) => it.id === id)).filter((x): x is ReviewItem => !!x);
+    const rest = shuffle(due.filter((it) => !focus.includes(it.id)));
+    setCards([...lead, ...rest].map((it) => buildCard(it, pool)));
     setGaps(gapsByDeck(p, now));
   }, []);
 
@@ -90,18 +92,20 @@ export default function ReviserPage() {
     setI((n) => n + 1);
   }
 
+  // Chrome OUTSIDE the gate (2026-08-24): signed out this page used to be a
+  // bare full-screen lock — no band, no bottom bar, no way to know where you
+  // were. The gate now renders inside the page's normal chrome.
   return (
-    <AuthGate what="review">
     <CahierShell
       tabs={TABS}
       active="reviser"
       topRight={total > 0 && !done ? <span className="fluo-mono text-sm font-bold">{i}/{total} · ✓ {score}</span> : null}
+      /* The heading band carries the name and the ONE number; the old h1 +
+         explainer paragraph fell to the litmus rule (2026-08-23, variant A). */
+      band={{ stat: total > 0 && !done ? `${cards.length} due` : null }}
     >
+      <AuthGate what="review">
       <div className="mx-auto max-w-xl px-4 pb-6 pt-2">
-        <h1 className="fluo-serif text-2xl font-black text-[color:var(--fluo-ink)]">🔁 DéjàRevu <span className="text-lg font-bold text-[color:var(--fluo-ink-soft)]">· Review</span></h1>
-        <p className="mt-1 mb-5 text-sm text-[color:var(--fluo-ink-soft)]">
-          Words you&rsquo;ve practised that are due again. Answering here reschedules them.{cards.length > PAGE ? ` ${cards.length} dus — par pages de ${PAGE}.` : ""}
-        </p>
 
         {total === 0 ? (
           <div className="rounded-2xl border-2 p-5 text-center" style={{ borderColor: "var(--fluo-line)" }}>
@@ -119,7 +123,7 @@ export default function ReviserPage() {
                 <button type="button"
                   onClick={() => { setOffset((o) => o + PAGE); setI(0); setScore(0); setPicked(null); }}
                   className="fluo-btn mt-3">
-                  ▶ Les {Math.min(PAGE, remaining)} suivants ({remaining} restants)
+                  ▶ Next {Math.min(PAGE, remaining)} ({remaining} left)
                 </button>
               ) : (
                 <p className="mt-1 text-sm text-[color:var(--fluo-ink-soft)]">Come back tomorrow for the next batch.</p>
@@ -171,16 +175,18 @@ export default function ReviserPage() {
           </div>
         )}
       </div>
+      </AuthGate>
     </CahierShell>
-    </AuthGate>
   );
 }
 
 function GapPanel({ gaps }: { gaps: Gap[] }) {
   if (gaps.length === 0) return null;
+  // A colour-coded band, not a bare heading (SectionBand.tsx): this page
+  // measured 2.5% saturated — the flattest core surface on the site — and a
+  // learner arriving here could not tell at a glance which world they were in.
   return (
-    <div>
-      <h2 className="fluo-label mb-2 text-[color:var(--fluo-ink-soft)]">Where your gaps are</h2>
+    <SectionBand family="review" label="WHERE YOUR GAPS ARE" pill={`${gaps.length} deck${gaps.length === 1 ? "" : "s"}`}>
       <div className="space-y-1.5">
         {gaps.map((g) => (
           <Link
@@ -191,13 +197,13 @@ function GapPanel({ gaps }: { gaps: Gap[] }) {
           >
             <span lang="fr" className="text-sm font-bold text-[color:var(--fluo-ink)]">{g.deckTitle}</span>
             <span className="flex items-center gap-2 text-xs font-bold">
-              {g.weak > 0 && <span className="rounded-full bg-[#c0392b] px-2 py-0.5 text-white">{g.weak} weak</span>}
-              {g.due > 0 && <span className="rounded-full bg-[#e0a100] px-2 py-0.5 text-white">{g.due} due</span>}
+              {g.weak > 0 && <span className="rounded-full px-2 py-0.5 text-white" style={{ background: "var(--dopa-miss)" }}>{g.weak} weak</span>}
+              {g.due > 0 && <span className="rounded-full px-2 py-0.5 text-white" style={{ background: "var(--dopa-focus)" }}>{g.due} due</span>}
               <span className="text-[color:var(--fluo-ink-soft)]">{g.seen} seen</span>
             </span>
           </Link>
         ))}
       </div>
-    </div>
+    </SectionBand>
   );
 }

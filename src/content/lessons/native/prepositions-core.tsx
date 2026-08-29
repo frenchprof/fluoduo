@@ -6,7 +6,8 @@
  *   prepositions       → GEOS  (à/en/au/aux + de/du/des/d')   — SIO-032
  *   prepositions-lieux → PLACES (au/à la/à l'/aux + du/…/des) — SIO-033
  */
-import type { DiceConfig } from "@/games/dice/DiceTrainer";
+import type { DiceConfig } from "./types";
+import { sample } from "@/lib/shuffle";
 
 export const SUBJECTS = [
   { disp: "Je", slot: "je" }, { disp: "Tu", slot: "tu" }, { disp: "Il", slot: "il" },
@@ -86,7 +87,7 @@ export function buildDice(opts: { dests: Dest[]; toChoices: string[]; fromChoice
       const sv = `${s.disp} ${(dir === "to" ? ALLER : VENIR)[s.slot]}`;
       const prep = prepFor(d, dir);
       const choices = dir === "to" ? toChoices : fromChoices;
-      const wrong = choices.filter((c) => c !== prep).sort(() => Math.random() - 0.5).slice(0, 3);
+      const wrong = sample(choices.filter((c) => c !== prep), 3);
       return {
         meta: `${sv} … (${dir === "to" ? "go to" : "come from"})`,
         big: d.fr,

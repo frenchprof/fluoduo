@@ -43,7 +43,7 @@ function McqPageInner({ id }: { id: string }) {
   }, [id]);
 
   return (
-    <CahierShell tabs={withActive(deckTabs(id), "mcq")} active="mcq" crumb="🎯 MCQ">
+    <CahierShell tabs={withActive(deckTabs(id), "mcq")} active="mcq">
       <div className="mx-auto max-w-3xl px-4 py-4">
         {collection === undefined && (
           <p className="rounded-2xl border-2 border-dashed border-slate-300 bg-white p-10 text-center text-base text-slate-500">

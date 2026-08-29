@@ -5,51 +5,61 @@
  * guess-first activity (Dan, 2026-07-14).
  * aliments runs on its photo bank (public/devine + devine-aliments.json);
  * every other SPECULEARN_READY deck runs on its items' emoji as the image
- * (Dan approved the generalization the same day). Five modes (Mixte /
- * Mot→Image / Image→Mot / 🎤 Répète / 🎤 Devine et dis), accent-tolerant
- * Say It grading, keyboard 1–4/⏎/R, Cahier skin, and every answer pays
- * XP + streak + SRS through recordItemResult (which also writes the
- * teacher evidence trail).
+ * (Dan approved the generalization the same day). Accent-tolerant Say It
+ * grading, keyboard 1–4/⏎/R, and every answer pays XP + streak + SRS
+ * through recordItemResult (which also writes the teacher evidence trail).
+ *
+ * THE CONFIG WIZARD IS GONE (patch 20–21). The start screen asked a
+ * first-year to pick a direction (5 modes) and a pack before the first
+ * question — a curriculum decision they can't make. The drill now opens
+ * straight into Mixte over the whole deck inside DrillShell; the 🎤 modes
+ * (Répète / Devine et dis) survive as restart chips on the end card, where
+ * a learner who has met the words can choose to say them.
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import CahierShell, { withActive, deckActivityTabs } from "@/components/CahierShell";
+import DrillShell, { drillExitHref } from "@/components/DrillShell";
 import { CURATED } from "@/content/collections";
 import { speak } from "@/games/letris/speech";
-import { recordItemResult } from "@/lib/progress";
+import { hintsFor } from "@/lib/help/hints";
+import { useHelpLadder } from "@/lib/help/useHelpLadder";
 import { sfx } from "@/games/audio/sfx";
 import { logEvent } from "@/lib/firebase/usage";
-import { BUILDING_EMOJI, SPECULEARN_EXCLUDED_ITEMS } from "@/lib/collections/speculearnReady";
+import {
+  BUILDING_EMOJI,
+  SPECULEARN_EXCLUDED_ITEMS,
+  SPECULEARN_ITEM_IMAGES,
+  SPECULEARN_PROMPT_FRAME,
+} from "@/lib/collections/speculearnReady";
+import { deaccent, normalize } from "@/lib/practice/cloze";
 import { useChoiceKeys, CHOICE_KEYS_HINT } from "@/lib/useChoiceKeys";
 import PHOTO_ITEMS from "@/content/devine-aliments.json";
+import { shuffle } from "@/lib/shuffle";
 
 /** One playable card: the word, its grammar tag (colored), and its visual
  *  (photo for aliments, emoji elsewhere). s = aliments pack number. */
 type DevItem = { w: string; tag: string | null; color: string; img?: string; emoji?: string; s?: number };
 
-type Mode = "mix" | "wi" | "iw" | "say-t" | "say-s";
+type Mode = "mix" | "say-t" | "say-s";
 type Dir = "wi" | "iw" | "say-t" | "say-s";
 
 const MASC = "#0b63c4";
 const FEM = "#e0567f";
 const INK = "var(--cahier-ink)";
 
-/* Accent-tolerant, article-optional matching — as in the original. */
-const strip = (t: string) =>
-  t.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z' ]/g, " ").replace(/\s+/g, " ").trim();
+/* Accent-tolerant, article-optional matching. The transforms come from THE
+   grader (cloze.ts) since the unification (2026-08-11); only the SPEECH
+   policy stays local — leading article optional, containment rather than
+   equality (an ASR transcript wraps the word in a sentence), and a
+   space-collapsed second pass. The l' elision is peeled BEFORE normalize
+   deletes apostrophes, so « l'eau »'s base word stays "eau". */
+const strip = (t: string) => deaccent(normalize(t));
 const baseWord = (w: string) =>
-  strip(w).replace(/^(les?|la|l'|une?|des|du|de la) /, "").replace(/^l'/, "");
+  strip(w.replace(/^l['’]/i, "")).replace(/^(les?|la|une?|des|du|de la) /, "");
 const saidRight = (heard: string, w: string) => {
   const h = strip(heard);
-  return h.includes(baseWord(w)) || h.replace(/ /g, "").includes(baseWord(w).replace(/[' ]/g, ""));
-};
-const shuffle = <T,>(a: T[]): T[] => {
-  const b = a.slice();
-  for (let i = b.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [b[i], b[j]] = [b[j], b[i]];
-  }
-  return b;
+  const b = baseWord(w);
+  return h.includes(b) || h.replace(/ /g, "").includes(b.replace(/ /g, ""));
 };
 
 /** Grammar tag + color from the French article (emoji decks have no g/n
@@ -75,7 +85,7 @@ function withArticle(fr: string, tags: string[] | undefined): string {
   return col ? COL_ARTICLE[col] + fr : fr;
 }
 
-function buildItems(collectionId: string): { items: DevItem[]; subtitle: string; hasPacks: boolean } {
+function buildItems(collectionId: string): { items: DevItem[]; subtitle: string } {
   if (collectionId === "aliments") {
     const items = (PHOTO_ITEMS as { w: string; g: "m" | "f"; n: 0 | 1; s: 1 | 2; img: string }[]).map((it) => ({
       w: it.w,
@@ -84,16 +94,25 @@ function buildItems(collectionId: string): { items: DevItem[]; subtitle: string;
       img: it.img,
       s: it.s,
     }));
-    return { items, subtitle: "Les aliments", hasPacks: true };
+    return { items, subtitle: "Les aliments" };
   }
   const deck = CURATED.find((c) => c.id === collectionId);
   const items = (deck?.items ?? [])
-    .filter((it) => it.fr && it.emoji && !BUILDING_EMOJI.has(it.emoji) && !SPECULEARN_EXCLUDED_ITEMS.has(it.id))
+    .filter(
+      (it) =>
+        it.fr &&
+        !SPECULEARN_EXCLUDED_ITEMS.has(it.id) &&
+        // A visual comes from EITHER the item's emoji (banned when it's a
+        // building look-alike, see BUILDING_EMOJI) OR a purpose-made SVG
+        // keyed by item id (SPECULEARN_ITEM_IMAGES) — never neither.
+        ((it.emoji && !BUILDING_EMOJI.has(it.emoji)) || SPECULEARN_ITEM_IMAGES[it.id]),
+    )
     .map((it) => {
       const w = withArticle(it.fr, it.tags);
-      return { w, ...tagFromArticle(w), emoji: it.emoji as string };
+      const img = SPECULEARN_ITEM_IMAGES[it.id];
+      return { w, ...tagFromArticle(w), emoji: img ? undefined : (it.emoji as string), img };
     });
-  return { items, subtitle: deck?.title ?? collectionId, hasPacks: false };
+  return { items, subtitle: deck?.title ?? collectionId };
 }
 
 type RecLike = {
@@ -123,10 +142,8 @@ function Visual({ it, className }: { it: DevItem; className: string }) {
 }
 
 export default function SpecuLearnContent({ collectionId }: { collectionId: string }) {
-  const { items: ITEMS, subtitle, hasPacks } = useMemo(() => buildItems(collectionId), [collectionId]);
-  const [screen, setScreen] = useState<"start" | "quiz" | "end">("start");
-  const [mode, setMode] = useState<Mode>("mix");
-  const [deck, setDeck] = useState<"all" | "1" | "2">("all");
+  const { items: ITEMS, subtitle } = useMemo(() => buildItems(collectionId), [collectionId]);
+  const [screen, setScreen] = useState<"quiz" | "end">("quiz");
   const [sttOk, setSttOk] = useState(false);
   const [queue, setQueue] = useState<Trial[]>([]);
   const [idx, setIdx] = useState(0);
@@ -134,18 +151,23 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
   const [wrong, setWrong] = useState<DevItem[]>([]);
   const [locked, setLocked] = useState(false);
   const [picked, setPicked] = useState<DevItem | null>(null);
+  // Select-then-commit (patch 20–21): tapping an option SELECTS; the shell's
+  // Vérifier COMMITS. Speech trials commit on the mic result as before.
+  const [selected, setSelected] = useState<DevItem | null>(null);
   const [heard, setHeard] = useState("");
   const [listening, setListening] = useState(false);
   const [opts, setOpts] = useState<DevItem[]>([]);
   const [verdictGood, setVerdictGood] = useState<boolean | null>(null);
+  // Track D: a wrong pick/say that is NOT final — struck option, pick again.
+  const [retry, setRetry] = useState(false);
+  const [struck, setStruck] = useState<DevItem[]>([]);
   const recRef = useRef<RecLike | null>(null);
   const retryRef = useRef<DevItem[] | null>(null);
 
   useEffect(() => { setSttOk(getRec() !== null); }, []);
   useEffect(() => () => { try { recRef.current?.stop(); } catch {} }, []);
 
-  const pool = (): DevItem[] =>
-    retryRef.current ?? (deck === "all" || !hasPacks ? ITEMS : ITEMS.filter((i) => i.s === Number(deck)));
+  const pool = (): DevItem[] => retryRef.current ?? ITEMS;
 
   const distractors = (it: DevItem): DevItem[] => {
     const same = pool().filter((x) => x !== it);
@@ -155,13 +177,14 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
 
   const prepare = (q: Trial[], i: number) => {
     const t = q[i];
-    setPicked(null); setHeard(""); setVerdictGood(null); setLocked(false);
+    setPicked(null); setSelected(null); setHeard(""); setVerdictGood(null); setLocked(false);
+    setRetry(false); setStruck([]);
     if (t.dir === "wi" || t.dir === "iw") setOpts(shuffle([t.it, ...distractors(t.it)]));
     else setOpts([]);
     if (t.dir === "say-t") speak(t.it.w, "fr-FR");
   };
 
-  const start = () => {
+  const start = (mode: Mode) => {
     const q = shuffle(pool()).map((it) => ({
       it,
       dir: (mode === "mix" ? (Math.random() < 0.5 ? "wi" : "iw") : mode) as Dir,
@@ -172,21 +195,70 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
     prepare(q, 0);
   };
 
-  /** One graded outcome — XP/streak/SRS + the teacher evidence trail. */
+  // No start screen: the first question IS the first screen (the wizard is
+  // gone). Shuffle must wait for the client — Math.random during render
+  // breaks SSR hydration.
+  const started = useRef(false);
+  useEffect(() => {
+    if (started.current || ITEMS.length === 0) return;
+    started.current = true;
+    start("mix");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ITEMS]);
+
+  const t = queue[idx];
+  // The help ladder (Track D). Picks: the struck wrong pick is the hint;
+  // says: first letters, then the skeleton, then the word.
+  const isSay = !!t && (t.dir === "say-t" || t.dir === "say-s");
+  const hints = useMemo(
+    () => (t ? hintsFor(isSay ? "say" : "mcq", { answer: t.it.w, options: opts.map((o) => o.w) }) : []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [t?.it.w, isSay, opts],
+  );
+  const ladder = useHelpLadder({
+    kind: isSay ? "say" : "mcq",
+    itemKey: t ? `${idx}:${t.it.w}` : null,
+    itemId: t ? `devine:${baseWord(t.it.w)}` : undefined,
+    surface: "speculearn",
+    hints,
+    reveal: t?.it.w ?? "",
+    enabled: screen === "quiz" && !!t,
+  });
+  const struckSet = useMemo(() => {
+    const out = new Set(struck.map((o) => o.w));
+    for (const w of ladder.eliminated) if (w !== t?.it.w) out.add(w);
+    return out;
+  }, [struck, ladder.eliminated, t?.it.w]);
+
+  /** One graded outcome — XP/streak/SRS + the teacher evidence trail (via
+   *  the ladder, which stamps the assistance actually shown). */
   const grade = (it: DevItem, good: boolean, given?: string) => {
     // The devine: prefix predates the SpecuLearn rename — kept so every
     // learner's SRS history for these words survives (ids are invisible).
-    recordItemResult(`devine:${baseWord(it.w)}`, good, given);
-    if (good) { setScore((s) => s + 1); sfx.correct(); } else { setWrong((w) => [...w, it]); sfx.wrong(); }
-    setVerdictGood(good);
-    setLocked(true);
-    speak(it.w, "fr-FR");
+    const first = ladder.ladder.wrongTries === 0 && !ladder.revealed;
+    const r = ladder.attempt(good, { given, activity: `speculearn:${collectionId}` });
+    if (good) { if (first) setScore((s) => s + 1); sfx.correct(); } else { if (first) setWrong((w) => [...w, it]); sfx.wrong(); }
+    if (r.effect === "done" || r.effect === "reveal") {
+      setVerdictGood(good);
+      setLocked(true);
+      speak(it.w, "fr-FR");
+    } else {
+      // Not final: strike the pick (mcq) / keep the mic open (say), retry.
+      if (selected) setStruck((k) => [...k, selected]);
+      setSelected(null);
+      setRetry(true);
+    }
   };
 
-  const pick = (o: DevItem, it: DevItem) => {
-    if (locked) return;
-    setPicked(o);
-    grade(it, o === it, o.w);
+  const pick = (o: DevItem) => {
+    if (locked || struckSet.has(o.w)) return;
+    setSelected(o);
+  };
+
+  const commit = (it: DevItem) => {
+    if (locked || !selected) return;
+    setPicked(selected);
+    grade(it, selected === it, selected.w);
   };
 
   const listen = (it: DevItem) => {
@@ -213,6 +285,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
 
   const next = () => {
     if (!locked) return;
+    ladder.skip();
     if (idx + 1 >= queue.length) {
       void logEvent("game.end", { game: "speculearn", collectionId, score });
       setScreen("end");
@@ -222,111 +295,85 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
     prepare(queue, idx + 1);
   };
 
-  const again = (retryWrong: boolean) => {
+  const again = (retryWrong: boolean, mode: Mode = "mix") => {
     retryRef.current = retryWrong ? [...new Set(wrong)] : null;
-    start();
+    start(mode);
     if (!retryWrong) retryRef.current = null;
   };
 
-  const t = queue[idx];
   useChoiceKeys({
     count: opts.length,
     enabled: screen === "quiz" && !!t,
-    onPick: (i) => { const o = opts[i]; if (o && t && !locked) pick(o, t.it); },
-    onNext: next,
+    onPick: (i) => { const o = opts[i]; if (o && t && !locked) pick(o); },
+    // DrillShell's own Enter/Space binding fires the tray's Continue.
+    onNext: undefined,
     // In « Devine et dis » the word must not be heard before answering.
     onSpeak: () => { if (t && (t.dir !== "say-s" || locked)) speak(t.it.w, "fr-FR"); },
   });
-  const pillCls = (sel: boolean) =>
-    `rounded-xl border-2 px-2.5 py-1.5 text-left text-sm font-bold transition ${
-      sel ? "border-slate-900 bg-slate-900 text-white" : "border-slate-300 bg-white text-slate-700 hover:border-slate-500"
-    }`;
   const card = "rounded-2xl border-2 border-[color:var(--cahier-ink)]/25 bg-white p-3";
 
   return (
-    <CahierShell tabs={withActive(deckActivityTabs(collectionId), "speculearn")} active="speculearn" crumb="🔮 SpecuLearn">
-      <div className="mx-auto max-w-2xl px-3 py-3">
-        {/* One tight line each — a long deck subtitle was wrapping the title
-            to three lines and pushing the start screen past a phone's fold
-            (Dan, 2026-07-15). During the quiz there is NO header at all: the
-            deck name rides the progress row instead ("the header for
-            SpecuLearn is taking up too much space"). */}
-        {screen !== "quiz" && (
-          <h1 className="cahier-display text-xl font-black text-[color:var(--cahier-ink)]">
-            🔮 SpecuLearn
-            <span className="block truncate text-sm font-bold text-[color:var(--cahier-ink-soft)]" lang="fr" title={subtitle}>{subtitle}</span>
-          </h1>
-        )}
-
-        {screen === "start" && (
-          /* ONE mobile screen (Dan, 2026-07-15: "Choisis ta direction,
-             choisis ton paquet — all that can easily fit on the same screen
-             without scrolling"): the how-it-works card became one whisper
-             line, both pickers run 2-up/3-up on the smallest screens, and
-             the vertical rhythm is halved. */
-          <div className="mt-2 space-y-2">
-            <p className="text-[13px] text-[color:var(--cahier-ink)]">
-              <b>Devine d&rsquo;abord</b> — l&rsquo;essai aide à retenir.
-            </p>
-            <div className={card}>
-              <h2 className="text-sm font-black text-[color:var(--cahier-ink)]">{hasPacks ? "1 · Choisis ta direction" : "Choisis ta direction"}</h2>
-              <div className="mt-1.5 grid grid-cols-2 gap-1.5">
-                {([
-                  ["mix", "Mixte", "les deux directions"],
-                  ["wi", "Mot → Image", "lis le mot, choisis l'image"],
-                  ["iw", "Image → Mot", "regarde l'image, choisis le mot"],
-                  ...(sttOk
-                    ? ([["say-t", "🎤 Répète", "écoute, puis dis-le"], ["say-s", "🎤 Devine et dis", "image seule — dis le mot"]] as const)
-                    : []),
-                ] as [Mode, string, string][]).map(([m, label, hint]) => (
-                  <button key={m} type="button" onClick={() => setMode(m)} className={pillCls(mode === m)}>
-                    {label} <span className="block text-[11px] font-normal leading-tight opacity-70">{hint}</span>
+    <DrillShell
+      activity="speculearn"
+      deck={collectionId}
+      exitHref={drillExitHref(collectionId)}
+      progress={screen === "quiz" && queue.length > 0 ? { done: idx, total: queue.length } : null}
+      right={<>{score} pt</>}
+      cta={
+        screen === "end"
+          ? { label: "↻ Play again", onClick: () => again(false) }
+          : t && (t.dir === "wi" || t.dir === "iw") && !locked && !retry
+            ? { label: "Check", onClick: () => commit(t.it), disabled: !selected }
+            : null
+      }
+      help={screen === "quiz" ? ladder.help : null}
+      secondary={
+        screen === "end" && wrong.length > 0
+          ? { label: `Redo my mistakes (${[...new Set(wrong)].length})`, onClick: () => again(true) }
+          : null
+      }
+      feedback={
+        screen === "quiz" && t && retry && !locked
+          ? {
+              kind: "wrong",
+              body: ladder.revealed ? <span lang="fr">→ {t.it.w}</span> : "Not yet",
+              cta: { label: isSay ? (ladder.revealed ? "Say it" : "Try again") : "Pick again", onClick: () => setRetry(false) },
+            }
+          : screen === "quiz" && t && locked
+          ? {
+              kind: verdictGood ? "correct" : "wrong",
+              body: (
+                <>
+                  {verdictGood ? "Bravo !" : "Not quite…"}
+                  <button type="button" onClick={() => speak(t.it.w, "fr-FR")} className="ml-2 font-black" style={{ color: t.it.color }}>
+                    {t.it.w} 🔊
                   </button>
-                ))}
-              </div>
-            </div>
-            {hasPacks && (
-              <div className={card}>
-                <h2 className="text-sm font-black text-[color:var(--cahier-ink)]">2 · Choisis ton paquet</h2>
-                <div className="mt-1.5 grid grid-cols-3 gap-1.5">
-                  {([
-                    ["all", "Tout", ITEMS.length],
-                    ["1", "Fruits & douceurs", ITEMS.filter((i) => i.s === 1).length],
-                    ["2", "À table", ITEMS.filter((i) => i.s === 2).length],
-                  ] as ["all" | "1" | "2", string, number][]).map(([d, label, count]) => (
-                    <button key={d} type="button" onClick={() => setDeck(d)} className={pillCls(deck === d)}>
-                      <span className="block text-[12px] leading-tight">{label} <span className="font-normal opacity-70">· {count}</span></span>
-                    </button>
-                  ))}
-                </div>
-                <p className="mt-1.5 text-xs text-[color:var(--cahier-ink-soft)]">
-                  <i className="mr-1 inline-block h-2.5 w-2.5 rounded-full align-middle" style={{ background: MASC }} /> masculin ·{" "}
-                  <i className="mx-1 inline-block h-2.5 w-2.5 rounded-full align-middle" style={{ background: FEM }} /> féminin — comme sur tes fiches !
-                </p>
-              </div>
-            )}
-            <button type="button" onClick={() => { retryRef.current = null; start(); }} className="fluo-btn w-full font-black">
-              C&rsquo;est parti ! →
-            </button>
-          </div>
-        )}
-
+                  {t.it.tag && <span className="ml-2 text-xs font-medium italic opacity-80">{t.it.tag}</span>}
+                </>
+              ),
+              cta: { label: idx + 1 >= queue.length ? "Result" : "Continue", onClick: next },
+            }
+          : null
+      }
+    >
+      <div className="mx-auto w-full max-w-2xl">
         {screen === "quiz" && t && (
-          <div className="mt-1">
-            <div className="flex items-center justify-between gap-2 text-xs font-bold text-[color:var(--cahier-ink-soft)]">
-              <span className="min-w-0 truncate" lang="fr" title={subtitle}>🔮 {subtitle}</span>
-              <span className="shrink-0">{idx + 1}/{queue.length} · {score} pt</span>
-            </div>
-            <div className="mt-1 h-2 overflow-hidden rounded-full border-2 border-[color:var(--cahier-ink)]/30 bg-white">
-              <div className="h-full rounded-full bg-[var(--fluo-hl)] transition-all" style={{ width: `${(100 * idx) / queue.length}%` }} />
-            </div>
-            <p className="mt-1 hidden text-right text-[10px] font-bold text-[color:var(--cahier-ink-soft)] sm:block">{CHOICE_KEYS_HINT}</p>
+          <div>
+            <p className="min-w-0 truncate text-center text-xs font-bold text-[color:var(--cahier-ink-soft)]" lang="fr" title={subtitle}>
+              💡 {subtitle}
+            </p>
+            <p className="mt-1 hidden text-center text-[10px] font-bold text-[color:var(--cahier-ink-soft)] sm:block">{CHOICE_KEYS_HINT}</p>
+            {SPECULEARN_PROMPT_FRAME[collectionId] && (
+              <p className="mt-2 text-center text-base font-black text-[color:var(--cahier-ink)]" lang="fr">
+                « {SPECULEARN_PROMPT_FRAME[collectionId]} »
+              </p>
+            )}
 
-            <div className={`${card} mt-4 text-center`}>
+            <div className={`${card} mt-3 text-center`}>
               {(t.dir === "say-t" || t.dir === "say-s") ? (
                 <>
                   <p className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">
-                    {t.dir === "say-t" ? "Écoute, puis dis-le à voix haute" : "Qu'est-ce que c'est ? Dis-le en français !"}
+                    {t.dir === "say-t" ? "Listen, then say it out loud" : "What is it? Say it in French!"}
                   </p>
                   <Visual it={t.it} className="mx-auto mt-3 h-40 w-40 rounded-xl border-2 border-[color:var(--cahier-ink)]/20" />
                   {t.dir === "say-t" && (
@@ -336,7 +383,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
                   )}
                   <div className="mt-3 flex items-center justify-center gap-2">
                     {t.dir === "say-t" && (
-                      <button type="button" onClick={() => speak(t.it.w, "fr-FR")} className="fluo-btn fluo-btn-sm">🔊 Réécouter</button>
+                      <button type="button" onClick={() => speak(t.it.w, "fr-FR")} className="fluo-btn fluo-btn-sm">🔊 Listen again</button>
                     )}
                     <button
                       type="button"
@@ -344,7 +391,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
                       className={`fluo-btn fluo-btn-sm ${listening ? "!bg-rose-600 !text-white" : ""}`}
                       disabled={locked}
                     >
-                      {listening ? "⏹ J'écoute…" : "🎤 Je le dis"}
+                      {listening ? "⏹ Listening…" : "🎤 Say it"}
                     </button>
                   </div>
                   {heard && <p className="mt-2 text-sm italic text-[color:var(--cahier-ink-soft)]">« {heard} »</p>}
@@ -360,15 +407,20 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
                       <button
                         key={o.w}
                         type="button"
-                        onClick={() => pick(o, t.it)}
+                        onClick={() => pick(o)}
+                        disabled={struckSet.has(o.w)}
                         className={`relative overflow-hidden rounded-xl border-2 transition ${
-                          locked
+                          !locked && struckSet.has(o.w)
+                            ? "border-slate-200 opacity-30 grayscale"
+                            : locked
                             ? o === t.it
                               ? "border-emerald-600 ring-2 ring-emerald-400"
                               : o === picked
                                 ? "border-rose-600 opacity-70"
                                 : "border-slate-200 opacity-40"
-                            : "border-slate-300 hover:border-slate-900"
+                            : o === selected
+                              ? "border-slate-900 ring-2 ring-slate-900"
+                              : "border-slate-300 hover:border-slate-900"
                         }`}
                       >
                         <span className="absolute left-1 top-1 z-10 rounded bg-black/60 px-1.5 text-xs font-bold text-white">{i + 1}</span>
@@ -386,15 +438,20 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
                       <button
                         key={o.w}
                         type="button"
-                        onClick={() => pick(o, t.it)}
+                        onClick={() => pick(o)}
+                        disabled={struckSet.has(o.w)}
                         className={`rounded-xl border-2 px-3 py-2.5 text-base font-bold transition ${
-                          locked
+                          !locked && struckSet.has(o.w)
+                            ? "border-slate-200 text-slate-300 line-through"
+                            : locked
                             ? o === t.it
                               ? "border-emerald-600 bg-emerald-50 text-emerald-900"
                               : o === picked
                                 ? "border-rose-600 bg-rose-50 text-rose-900 line-through"
                                 : "border-slate-200 text-slate-400"
-                            : "border-slate-300 bg-white text-slate-800 hover:border-slate-900"
+                            : o === selected
+                              ? "answer-picked"
+                              : "border-slate-300 bg-white text-slate-800 hover:border-slate-900"
                         }`}
                       >
                         <span className="mr-2 text-xs opacity-60">{i + 1}</span>
@@ -404,49 +461,40 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
                   </div>
                 </>
               )}
-
-              {locked && (
-                <div className={`mt-4 rounded-xl border-2 p-3 ${verdictGood ? "border-emerald-500 bg-emerald-50" : "border-rose-400 bg-rose-50"}`}>
-                  <p className="text-sm font-black text-[color:var(--cahier-ink)]">
-                    {verdictGood ? "Bravo !" : "Pas tout à fait…"}
-                  </p>
-                  <button type="button" onClick={() => speak(t.it.w, "fr-FR")} className="mt-1 text-xl font-black" style={{ color: t.it.color }}>
-                    {t.it.w} 🔊
-                  </button>
-                  {t.it.tag && <p className="text-xs italic text-[color:var(--cahier-ink-soft)]">{t.it.tag}</p>}
-                  <button type="button" onClick={next} className="fluo-btn fluo-btn-sm mt-2 font-black">
-                    {idx + 1 >= queue.length ? "Résultat →" : "Suivant →"}
-                  </button>
-                </div>
-              )}
             </div>
           </div>
+        )}
+
+        {screen === "quiz" && !t && (
+          <p className="py-10 text-center text-sm text-[color:var(--cahier-ink-soft)]">
+            {ITEMS.length === 0 ? "Nothing to guess in this deck." : "…"}
+          </p>
         )}
 
         {screen === "end" && (
-          <div className={`${card} mt-4 text-center`}>
+          <div className={`${card} text-center`}>
             <p className="text-3xl font-black text-[color:var(--cahier-ink)]">{score} / {queue.length}</p>
             <p className="mt-1 text-sm text-[color:var(--cahier-ink-soft)]">
               {score === queue.length
-                ? "Parfait ! Tu connais tous ces mots."
+                ? "Parfait ! You know all these words."
                 : score >= queue.length * 0.8
-                  ? "Très bien ! Encore quelques mots à consolider."
+                  ? "Très bien ! A few words left to consolidate."
                   : score >= queue.length * 0.5
-                    ? "Bon début — refais tes erreurs pour les retenir."
-                    : "Continue — deviner compte déjà comme apprentissage !"}
+                    ? "Good start — redo your mistakes to lock them in."
+                    : "Keep going — guessing already counts as learning!"}
             </p>
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-              {wrong.length > 0 && (
-                <button type="button" onClick={() => again(true)} className="fluo-btn fluo-btn-sm font-black">
-                  🔁 Refaire mes erreurs ({[...new Set(wrong)].length})
-                </button>
-              )}
-              <button type="button" onClick={() => again(false)} className="fluo-btn fluo-btn-sm">↻ Rejouer</button>
-              <button type="button" onClick={() => { retryRef.current = null; setScreen("start"); }} className="fluo-btn fluo-btn-sm">⚙️ Options</button>
-            </div>
+            {/* The 🎤 modes moved here from the deleted wizard: saying the
+                words is a choice for AFTER meeting them, not a gate before
+                the first question. */}
+            {sttOk && (
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                <button type="button" onClick={() => again(false, "say-t")} className="fluo-btn fluo-btn-sm">🎤 Repeat</button>
+                <button type="button" onClick={() => again(false, "say-s")} className="fluo-btn fluo-btn-sm">🎤 Guess and say</button>
+              </div>
+            )}
           </div>
         )}
       </div>
-    </CahierShell>
+    </DrillShell>
   );
 }

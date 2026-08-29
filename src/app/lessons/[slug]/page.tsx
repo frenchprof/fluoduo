@@ -1,8 +1,6 @@
 import AuthGate from "@/components/AuthGate";
 import { LESSONS, deckForLesson } from "@/content/lessons";
-import UnitActivityPage from "@/app/UnitActivityPage";
-import LessonFlow from "@/app/lessons/LessonFlow";
-import NativeLessonView from "../NativeLessonView";
+import LessonPager from "@/app/lessons/pager/LessonPager";
 
 export function generateStaticParams() {
   return Object.keys(LESSONS).map((slug) => ({ slug }));
@@ -14,22 +12,12 @@ export default async function LessonPage({ params }: { params: Promise<{ slug: s
   if (!lesson) {
     return <main className="p-6 text-[color:var(--fluo-ink)]">No lesson <code>{slug}</code>.</main>;
   }
+  // Patch 22: every lesson is the full-screen card pager — deck lessons draw
+  // from both supplies, the deckless revisions ride the generator alone.
   const deckId = deckForLesson(slug);
-  if (!deckId) {
-    // Cross-unit revisions have no single deck home — standalone memo + trainers.
-    return (
-      <AuthGate what="open the lesson">
-        <NativeLessonView slug={slug} title={lesson.title} unit={lesson.unit} />
-      </AuthGate>
-    );
-  }
-  // Deck lessons render as the unified Lesson flow of their deck (2026-07-05).
   return (
-    <UnitActivityPage
-      collectionId={deckId}
-      view="lesson"
-      lessonSlug={slug}
-      fallback={<AuthGate what="open the lesson"><LessonFlow collectionId={deckId} lessonSlug={slug} /></AuthGate>}
-    />
+    <AuthGate what="open the lesson">
+      <LessonPager collectionId={deckId ?? undefined} lessonSlug={slug} />
+    </AuthGate>
   );
 }

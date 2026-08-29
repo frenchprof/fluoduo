@@ -18,6 +18,9 @@ import { speakCloud as speak, speakSequenceCloud as speakSequence, stopCloudVoic
 import { awardConversationXp } from "@/lib/progress";
 import { recordResponse } from "@/lib/firebase/responses";
 import { CAFE_PRICES, categoryHeaderClass, type ComposeBank } from "@/games/compose/banks";
+import GameFrame from "@/components/GameFrame";
+import GameOver from "@/components/GameOver";
+import { drillExitHref } from "@/components/DrillShell";
 
 // "waiter" is the internal key for the persona (café waiter, classmate,
 // friend, shopkeeper…) whatever the scene; "me" is the learner.
@@ -314,12 +317,41 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
     );
   };
 
+  const exitHref = drillExitHref(bank.deckId);
+  const stageIdx = ["order", "drink", "more", "pay", "done"].indexOf(stage);
+  const help = (
+    <>
+      <p>{personaEmoji} speaks first. Compose your reply from the phrases below and / or type it, then ✔ Reply. Every line can be replayed with a tap.</p>
+    </>
+  );
+  const record = (
+    <ol className="flex flex-col gap-1.5">
+      {messages.filter((m) => m.who === "me").map((m, i) => (
+        <li key={i} lang="fr" className="rounded-lg border-2 border-[color:var(--cahier-line)] px-2 py-1 text-sm">{m.text}</li>
+      ))}
+    </ol>
+  );
+
   return (
-    <div style={themeVars} className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-4 py-6 text-[color:var(--dlg-ink)]">
+    <GameFrame
+      title={`${bank.emoji} ${bank.title}`}
+      exitHref={exitHref}
+      progress={aiOnly ? null : { done: done ? 4 : Math.max(0, stageIdx), total: 4 }}
+      score={messages.filter((m) => m.who === "me").length > 0 ? <>{messages.filter((m) => m.who === "me").length} ✎</> : undefined}
+      help={help}
+      menu={[
+        { label: "Restart", onClick: start },
+        { label: "▶️ Listen to the dialogue", onClick: playAll },
+      ]}
+      record={record}
+      recordTitle="✎ Your lines"
+    >
+    <div style={themeVars} className="mx-auto flex h-full w-full max-w-3xl flex-col gap-4 overflow-y-auto px-4 py-4 text-[color:var(--dlg-ink)]">
       {/* Scenario reminder — who/where the learner is (Dan, 2026-07-19: "there
-          is a need to remind users that we are in the context of ___"). */}
+          is a need to remind users that we are in the context of ___"). Kept
+          on the board by Dan's explicit ask; it is the task, not decoration. */}
       {bank.scene?.contextEn && (
-        <p className="-mb-3 rounded-lg border-2 border-[color:var(--dlg-edge)] bg-white/60 px-3 py-1.5 text-xs font-bold text-[color:var(--dlg-ink)]/80">
+        <p className="-mb-2 rounded-lg border-2 border-[color:var(--dlg-edge)] bg-white/60 px-3 py-1.5 text-xs font-bold text-[color:var(--dlg-ink)]/80">
           {bank.emoji} {bank.scene.contextEn}
         </p>
       )}
@@ -354,69 +386,60 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
         /* aiOnly scene with no backend (local preview / key not set): degrade
            gracefully rather than accept nonsense. */
         <div className="rounded-xl border-2 border-[color:var(--dlg-edge)] bg-white p-5 text-center text-[color:var(--dlg-ink)]">
-          <p className="text-lg font-black">🔌 L&rsquo;assistant n&rsquo;est pas disponible ici</p>
-          <p className="mt-1 text-sm">Cette conversation a besoin d&rsquo;une connexion. Réessayez sur le site en ligne.</p>
+          <p className="text-lg font-black">🔌 The assistant isn&rsquo;t available here</p>
+          <p className="mt-1 text-sm">This conversation needs a connection. Try again on the live site.</p>
           <button
             type="button"
             onClick={() => { setUnavailable(false); start(); }}
             className="mt-4 rounded-xl border-2 border-[color:var(--dlg-strong)] bg-white px-4 py-2 font-black text-[color:var(--dlg-deep)] transition hover:bg-[var(--dlg-persona-bg)]"
           >
-            🔁 Réessayer
+            Retry
           </button>
         </div>
       ) : done ? (
-        /* Recap card — the rule engine tracked a priced order; the AI waiter
-           gave the total in the chat, so its recap is just the replay. */
-        <div className="rounded-xl border-2 border-[color:var(--dlg-strong)] bg-white p-5">
-          {ordered.length > 0 ? (
-            <>
-              <h2 lang="fr" className="text-lg font-black">🧾 L&rsquo;addition</h2>
-              <ul className="mt-2 flex flex-col gap-1">
-                {ordered.map((p, i) => (
-                  <li key={`${i}-${p}`} lang="fr" className="flex justify-between text-sm">
-                    <span>{p}</span>
-                    <span className="font-bold">{CAFE_PRICES[p] ?? 0} €</span>
-                  </li>
-                ))}
-              </ul>
-              <p lang="fr" className="mt-2 flex justify-between border-t-2 border-[color:var(--dlg-edge)] pt-2 font-black">
-                <span>Total</span>
-                <span>{total} €</span>
-              </p>
-            </>
-          ) : (
-            <h2 lang="fr" className="text-lg font-black">👋 Merci, à bientôt !</h2>
-          )}
-          {/* Le bilan du prof — the debrief the roleplay itself never gives
-              (the persona stays in character; the teaching lands here).
-              English + French mixed, so deliberately NOT a speak button. */}
-          {(debrief || debriefBusy) && (
-            <div className="mt-4 rounded-xl border-2 border-dashed border-[color:var(--dlg-strong)] bg-[var(--dlg-persona-bg)] p-4">
-              <h3 className="text-sm font-black uppercase tracking-widest text-[color:var(--dlg-deep)]">✍️ Le bilan du prof</h3>
-              {debriefBusy ? (
-                <p className="mt-2 animate-pulse text-sm">Je relis votre conversation…</p>
-              ) : (
-                <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed">{debrief}</p>
+        /* The post-mortem (patch 23): the bill the rule engine tracked (the AI
+           waiter gave the total in the chat), and le bilan du prof — the
+           debrief the roleplay itself never gives. English + French mixed, so
+           deliberately NOT a speak button. */
+        <GameOver
+          emoji={personaEmoji}
+          title={ordered.length > 0 ? "L’addition" : "Merci, à bientôt !"}
+          won
+          misses={[]}
+          onReplay={start}
+          exitHref={exitHref}
+          extra={
+            <div className="mt-3">
+              {ordered.length > 0 && (
+                <>
+                  <ul className="flex flex-col gap-1">
+                    {ordered.map((p, i) => (
+                      <li key={`${i}-${p}`} lang="fr" className="flex justify-between text-sm">
+                        <span>{p}</span>
+                        <span className="font-bold">{CAFE_PRICES[p] ?? 0} €</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <p lang="fr" className="mt-2 flex justify-between border-t-2 border-[color:var(--cahier-line)] pt-2 font-black">
+                    <span>Total</span>
+                    <span>{total} €</span>
+                  </p>
+                </>
               )}
+              {(debrief || debriefBusy) && (
+                <div className="mt-3 rounded-xl border-2 border-dashed border-[color:var(--cahier-gold)] bg-[color:var(--cahier-gold)]/10 p-3">
+                  <h3 className="text-xs font-black uppercase tracking-widest text-[color:var(--cahier-ink-soft)]">✍️ Le bilan du prof</h3>
+                  {debriefBusy ? (
+                    <p className="mt-2 animate-pulse text-sm">Reviewing your conversation…</p>
+                  ) : (
+                    <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed">{debrief}</p>
+                  )}
+                </div>
+              )}
+              <button type="button" onClick={playAll} className="cahier-btn cahier-btn-sm mt-3">▶️ Listen to the dialogue</button>
             </div>
-          )}
-          <div className="mt-4 flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={playAll}
-              className="rounded-xl border-b-4 border-[color:var(--dlg-deep)] bg-[var(--dlg-strong)] px-4 py-2 font-black text-white transition hover:brightness-105"
-            >
-              ▶️ Écouter le dialogue
-            </button>
-            <button
-              type="button"
-              onClick={start}
-              className="rounded-xl border-2 border-[color:var(--dlg-strong)] bg-white px-4 py-2 font-black text-[color:var(--dlg-deep)] transition hover:bg-[var(--dlg-persona-bg)]"
-            >
-              🔁 Rejouer
-            </button>
-          </div>
-        </div>
+          }
+        />
       ) : (
         <>
           {/* Reply under construction: tapped chips + free text (Dan,
@@ -437,7 +460,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
                 lang="fr"
                 value={typed}
                 onChange={(e) => setTyped(e.target.value)}
-                placeholder="…ou tapez ici"
+                placeholder="…or type here"
                 disabled={busy || done}
                 className="min-w-[8rem] flex-1 rounded-lg border-2 border-[color:var(--dlg-edge)] bg-white px-3 py-1.5 text-base text-[color:var(--dlg-ink)] outline-none focus:border-[color:var(--dlg-strong)]"
                 autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
@@ -455,7 +478,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
                 disabled={!draftText || busy}
                 className="rounded-xl border-b-4 border-[color:var(--dlg-deep)] bg-[var(--dlg-strong)] px-4 py-1.5 font-black text-white transition hover:brightness-105 disabled:opacity-40"
               >
-                ✔ Je réponds
+                ✔ Reply
               </button>
             </form>
           </div>
@@ -495,5 +518,6 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
         </>
       )}
     </div>
+    </GameFrame>
   );
 }

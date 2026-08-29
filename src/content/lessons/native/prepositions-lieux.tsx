@@ -23,10 +23,10 @@ export const prepositionsLieuxLesson: NativeLesson = {
           </tr>
         </thead>
         <tbody lang="fr">
-          <tr><td className="p-1">le musée</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">au musée</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">du musée</td></tr>
-          <tr><td className="p-1">la gare</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">à la gare</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">de la gare</td></tr>
-          <tr><td className="p-1">l&rsquo;école</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">à l&rsquo;école</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">de l&rsquo;école</td></tr>
-          <tr><td className="p-1">les magasins</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">aux magasins</td><td className="p-1 font-bold text-[color:var(--cahier-la)]">des magasins</td></tr>
+          <tr><td className="p-1">le musée</td><td className="p-1 font-bold text-[color:var(--gram-masc)]">au musée</td><td className="p-1 font-bold text-[color:var(--gram-masc)]">du musée</td></tr>
+          <tr><td className="p-1">la gare</td><td className="p-1 font-bold text-[color:var(--gram-fem)]">à la gare</td><td className="p-1 font-bold text-[color:var(--gram-fem)]">de la gare</td></tr>
+          <tr><td className="p-1">l&rsquo;école</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">à l&rsquo;école</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">de l&rsquo;école</td></tr>
+          <tr><td className="p-1">les magasins</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">aux magasins</td><td className="p-1 font-bold text-[color:var(--gram-neutral)]">des magasins</td></tr>
         </tbody>
       </table>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">

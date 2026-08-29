@@ -206,6 +206,86 @@
       "tags": [
         "col:heure"
       ]
+    },
+    {
+      "id": "quand-time-13",
+      "fr": "Je nage le lundi.",
+      "en": "I swim on Mondays.",
+      "example": "Je nage tous les jours.",
+      "tags": [],
+      "gap": "le"
+    },
+    {
+      "id": "quand-time-14",
+      "fr": "Je fais du sport tous les matins.",
+      "en": "I do sport every morning.",
+      "example": "Je fais du sport le week-end.",
+      "tags": [],
+      "gap": "tous les"
+    },
+    {
+      "id": "quand-time-15",
+      "fr": "Le cours de français est à 8 heures.",
+      "en": "The French class is at 8 o'clock.",
+      "example": "Le cours de français est le lundi.",
+      "tags": [],
+      "gap": "à"
+    },
+    {
+      "id": "quand-time-16",
+      "fr": "Nous regardons la télé le week-end.",
+      "en": "We watch TV on weekends.",
+      "example": "Nous regardons la télé tous les soirs.",
+      "tags": [],
+      "gap": "le"
+    },
+    {
+      "id": "quand-time-17",
+      "fr": "Je vais au cinéma à 10 heures.",
+      "en": "I'm going to the cinema at 10 o'clock.",
+      "example": "Je vais au cinéma le samedi.",
+      "tags": [],
+      "gap": "à"
+    },
+    {
+      "id": "quand-time-18",
+      "fr": "Ils font du sport tous les week-ends.",
+      "en": "They do sport every weekend.",
+      "example": "Ils font du sport le mardi.",
+      "tags": [],
+      "gap": "tous les"
+    },
+    {
+      "id": "quand-time-19",
+      "fr": "Tu nages le mardi ?",
+      "en": "Do you swim on Tuesdays?",
+      "example": "Tu nages tous les matins ?",
+      "tags": [],
+      "gap": "le"
+    },
+    {
+      "id": "quand-time-20",
+      "fr": "Elle va à la piscine le samedi.",
+      "en": "She goes to the swimming pool on Saturdays.",
+      "example": "Elle va à la piscine à 10 heures.",
+      "tags": [],
+      "gap": "le"
+    },
+    {
+      "id": "quand-time-21",
+      "fr": "Je regarde la télé tous les soirs.",
+      "en": "I watch TV every evening.",
+      "example": "Je regarde la télé le lundi.",
+      "tags": [],
+      "gap": "tous les"
+    },
+    {
+      "id": "quand-time-22",
+      "fr": "Je regarde la télé à minuit.",
+      "en": "I watch TV at midnight.",
+      "example": "Je regarde la télé à 10 heures.",
+      "tags": [],
+      "gap": "à"
     }
   ]
 }

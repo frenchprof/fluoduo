@@ -1,89 +1,38 @@
 "use client";
 
 /**
- * The Home page body (Dan, 2026-07-05: "a true blue Home page… all of the 50
- * SIOs on a single learning path visually — an overview of where you are in
- * the learning journey"). Hero: Bienvenue with the ▶/🔁 icon buttons, the
- * stat pills and the two progress bars. Below it, the continuous ROAD MAP
- * (components/RoadMap): all 55 stops snaking left→right→left like a real
- * road, sized to the screen.
+ * The Home page body — SOFT 3D (Dan's draft, 2026-08-26).
+ *
+ * Two surfaces do all the work of the old card: the two readings are WELLS
+ * pressed into the paper, the three actions are PILLOWS standing out of it,
+ * and pressing one sinks it into its own well. Light falls from the top left
+ * throughout. No borders anywhere — depth carries the affordance, so nothing
+ * needs a label to say it is pressable.
+ *
+ * What the draft removed and why: the card around the greeting (the welcome
+ * is a strip now, edge to edge in the four dopamine hues), and the ruler —
+ * "the map already shows where you are; a second progress line was saying it
+ * twice."
+ *
+ * STOP BEFORE ACTIVITY (Dan, same day): "one must first choose the stop
+ * before they can access the activity." The nine-square key therefore opens
+ * the activities OF THE CURRENT STOP (StopSheet), not the old twenty-tile
+ * Menu — which asked "which activity?" before the learner had been asked
+ * "which stop?", and then had to ask again.
+ *
+ * The Map postcard, matted and inert, still sits below; the COURSE MAP still
+ * lives at /map, and the old `/?unit=N#SIO-0XX` deep links are still
+ * forwarded so printed QR codes and bookmarks survive.
  */
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import StatsHelp from "@/components/StatsHelp";
-import GuideSplash from "@/components/GuideSplash";
-import RankBadge from "@/components/RankBadge";
-import RoadMap from "@/components/RoadMap";
+import StopSheet from "@/components/StopSheet";
+import HomeMap from "@/components/HomeMap";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
-import { equippedAccent, levelForXp, xpMultiplier } from "@/lib/economy";
+import { equippedAccent, xpMultiplier } from "@/lib/economy";
 import { dueForReview } from "@/lib/reviser";
-
-export default function HomeDashboard() {
-  const [progress, setProgress] = useState<Progress>(defaultProgress());
-  const [dueCount, setDueCount] = useState(0);
-  // Armed on mount: nothing pops up by default any more (Dan, 2026-07-14),
-  // so the FluOlinGo brand animation plays on a clear stage right away.
-  const [heroPlay, setHeroPlay] = useState(false);
-  // Once the stroke has played, the ink is pinned by class — engines can
-  // drop a finished animation's fill state (Dan, 2026-07-14: "the color
-  // disappears right after").
-  const [inkDone, setInkDone] = useState(false);
-  // Quick Guide popup, summoned from the hero button next to the (?) circle
-  // (Dan, 2026-07-14: "insert a QuickGuide link where my red arrow points").
-  const [qgOpen, setQgOpen] = useState(false);
-
-  useEffect(() => {
-    const refresh = () => {
-      const p = loadProgress();
-      setProgress(p);
-      setDueCount(dueForReview(p, Date.now()).length);
-    };
-    refresh();
-    window.addEventListener("fluolingo:progress-updated", refresh);
-
-    // The full letter-wave + hand-written byline runs ~5½ s — delightful
-    // once, a toll on every return trip (audit 2026-07-19). Play the full
-    // show once per browser session; afterwards render the finished look
-    // instantly (no .is-play = static letters + written byline; .is-inked
-    // pins the highlighter ink).
-    try {
-      if (window.sessionStorage.getItem("fluolingo:heroPlayed")) {
-        setInkDone(true);
-      } else {
-        window.sessionStorage.setItem("fluolingo:heroPlayed", "1");
-        setHeroPlay(true);
-      }
-    } catch {
-      setHeroPlay(true); // storage blocked → just play
-    }
-    return () => {
-      window.removeEventListener("fluolingo:progress-updated", refresh);
-    };
-  }, []);
-
-  // "Continuer" = the first not-done goal AFTER the furthest « done » (Dan,
-  // 2026-07-08: a learner who marked a later step done continues from there).
-  const activeId = nextSioId(progress);
-  const activeSio = SIOS.find((s) => s.id === activeId);
-  const doneTotal = SIOS.filter((s) => isSioDone(s.id, progress)).length;
-  const pct = Math.round((doneTotal / SIOS.length) * 100);
-  // Done-in-order run from the very start — the streak-momentum counter.
-  let seqRun = 0;
-  for (const s of SIOS) {
-    if (isSioDone(s.id, progress)) seqRun++;
-    else break;
-  }
-
-  // Economy view: level from lifetime XP, the fire multiplier, and the accent
-  // colour the learner has equipped (drives the hero CTA + bars).
-  const lvl = levelForXp(progress.xp);
-  const mult = xpMultiplier(progress.streak);
-  const accent = equippedAccent(progress);
-  const xpPct = Math.round((lvl.into / lvl.span) * 100);
-
-  const chip = "fluo-mono flex items-center gap-1.5 rounded-full border-2 border-[color:var(--fluo-ink)] bg-white/75 px-3 py-1 text-sm font-bold text-[color:var(--fluo-ink)]";
 
 /** « par Dr Chan » as pen strokes, in writing order (stem before bowl, the
  *  way a hand actually writes print letters). Baseline y=25, x-height 13,
@@ -117,161 +66,315 @@ const BYLINE_STROKES = [
   "M118,17.5 C119,13.5 126,12 126,18 L126,25",
 ];
 
+
+export default function HomeDashboard() {
+  const [progress, setProgress] = useState<Progress>(defaultProgress());
+  // Armed on mount: nothing pops up by default (Dan, 2026-07-14), so the
+  // FluOlinGo brand animation plays on a clear stage right away.
+  const [heroPlay, setHeroPlay] = useState(false);
+  // Once the stroke has played, the ink is pinned by class — engines can
+  // drop a finished animation's fill state (Dan, 2026-07-14: "the color
+  // disappears right after").
+  const [inkDone, setInkDone] = useState(false);
+  // Quick Guide popup, summoned from the hero button next to the (?) circle
+  // (Dan, 2026-07-14: "insert a QuickGuide link where my red arrow points").
+  const [qgOpen, setQgOpen] = useState(false);
+  // The Review button's count — the one destination on Home with a deadline.
+  const [dueCount, setDueCount] = useState(0);
+
+  useEffect(() => {
+    const refresh = () => {
+      const p = loadProgress();
+      setProgress(p);
+      setDueCount(dueForReview(p, Date.now()).length);
+    };
+    refresh();
+    window.addEventListener("fluolingo:progress-updated", refresh);
+    // The map lives at /map now — forward its old deep links (`/?unit=N`
+    // and/or `#SIO-0XX`) so printed QR codes and bookmarks keep working.
+    const q = new URLSearchParams(window.location.search).get("unit");
+    const hash = window.location.hash.replace("#", "");
+    const isSio = SIOS.some((s) => s.id === hash);
+    if (isSio || (q !== null && /^[0-4]$/.test(q))) {
+      window.location.replace(`/map${window.location.search}${window.location.hash}`);
+      return;
+    }
+
+    // The letter-wave + hand-written byline now runs ~3.5 s (compacted from
+    // the original 5.5 s when Dan brought it back, 2026-08-11). Play the
+    // full show once per browser session; afterwards render the finished
+    // look instantly (no .is-play = static letters + written byline;
+    // .is-inked pins the highlighter ink).
+    try {
+      if (window.sessionStorage.getItem("fluolingo:heroPlayed")) {
+        setInkDone(true);
+      } else {
+        window.sessionStorage.setItem("fluolingo:heroPlayed", "1");
+        setHeroPlay(true);
+      }
+    } catch {
+      setHeroPlay(true); // storage blocked → just play
+    }
+    return () => {
+      window.removeEventListener("fluolingo:progress-updated", refresh);
+    };
+  }, []);
+
+  // "Continuer" = the first not-done goal AFTER the furthest « done » (Dan,
+  // 2026-07-08: a learner who marked a later step done continues from there).
+  const activeId = nextSioId(progress);
+  const activeSio = SIOS.find((s) => s.id === activeId);
+  const doneTotal = SIOS.filter((s) => isSioDone(s.id, progress)).length;
+  // Done-in-order run from the very start — the streak-momentum counter.
+  let seqRun = 0;
+  for (const s of SIOS) {
+    if (isSioDone(s.id, progress)) seqRun++;
+    else break;
+  }
+
+  // The fire multiplier and the accent colour the learner has equipped
+  // (drives the hero CTA).
+  const mult = xpMultiplier(progress.streak);
+  // The stop NUMBER (SIO-007 -> 7) and which unit it sits in — the two
+  // figures the wells show. Falls back to the last stop when everything
+  // is done, so the reading never blanks.
+  const stopNo = activeSio ? Number(activeSio.id.slice(4, 7)) : SIOS.length;
+  const activeUnit = activeSio ? activeSio.unit : 4;
+  const accent = equippedAccent(progress);
+
+
   return (
     <>
-      <section
-        className="mb-7 rounded-2xl border-2 border-[color:var(--fluo-ink)] p-5 shadow-[5px_5px_0_var(--fluo-hl)]"
-        style={{ background: "linear-gradient(120deg, #fbe3ec 0%, #def3f5 45%, #ecf7cf 100%)" }}
-      >
-        {/* ONE row at every width (Dan, 2026-07-08: the réviser icon must sit
-            on the same line as Bienvenue, extreme right, smaller) — icons
-            only; tooltips and aria-labels carry the words. */}
-        <div className="flex items-center justify-between gap-3">
-          <h1 className="fluo-serif text-2xl font-black text-[color:var(--fluo-ink)]">
-            {/* "Bienvenue sur" stays still; FluOlinGo performs the Kallang
-                Wave, then the fluo highlighter sweeps over it (Dan,
-                2026-07-13). Once per page load. */}
-            {/* nowrap: with a boosted phone text size the two words split
-                across lines (Dan, 2026-07-17) — break before FluOlinGo
-                instead. */}
-            <span className="whitespace-nowrap">Bienvenue sur</span>{" "}
-            <span
-              className={`fluo-brand${heroPlay ? " is-play" : ""}${inkDone ? " is-inked" : ""}`}
-              aria-label="FluOlinGo"
-              onAnimationEnd={(e) => {
-                if (e.animationName === "fluo-brand-hl") setInkDone(true);
-              }}
+      {/* The REPORT CARD hero (Dan, 2026-08-19: "minimalist, no status bar,
+          a bit like a report card but horizontally"; Design's "FluOlinGo Home
+          standalone" ref). This REVERSES the 11 Aug hero shrink — Dan's call,
+          made from the Design reference twice over.
+          What went: the two hairline progress bars ("no status bar") and the
+          chip rail. What came back: the « Bienvenue sur FluOlinGo » heading
+          with its brand animation and written byline.
+          What arrived: one horizontal strip of figures — value over label,
+          hairline dividers between — read across like a report card's row of
+          marks. Every cell is a progress counter, which Dan's litmus test
+          keeps as learner feedback; the labels ARE the text that lets you
+          read the figure, so they stay.
+          Zeroes are NOT hidden here (the 20 Jul progressive-disclosure rule
+          applied to the chip rail, where a zero chip read as a reproach): a
+          report card with missing columns reads as broken, and the Design
+          ref shows 0% and 0/51 on purpose. Gems stay off the card — a shop
+          currency is not a mark; /profil still carries it. */}
+      {/* ── the welcome strip ─────────────────────────────────────────
+          Edge to edge, no box: the draft took the card off and let the four
+          dopamine hues run the full width under the top bar. The heading and
+          byline are INK on the strip, so nothing depends on the gradient for
+          contrast. The brand animation and the written « par Dr Chan » are
+          unchanged — they play once per browser session. */}
+      <section aria-label="Welcome" className="home-strip -mx-4 mb-5 px-4 py-3 sm:-mx-6 sm:px-6">
+        <h1 className="fluo-serif text-2xl font-black leading-none text-[color:var(--fluo-ink)]">
+          <span className="whitespace-nowrap">Bienvenue sur</span>{" "}
+          <span
+            className={`fluo-brand${heroPlay ? " is-play" : ""}${inkDone ? " is-inked" : ""}`}
+            aria-label="FluOlinGo"
+            onAnimationEnd={(e) => {
+              if (e.animationName === "fluo-brand-hl") setInkDone(true);
+            }}
+          >
+            <span aria-hidden>
+              {"FluOlinGo".split("").map((ch, i) => (
+                <span key={i} className="fluo-brand-letter" style={{ animationDelay: `${0.1 + i * 0.05}s` }}>
+                  {ch}
+                </span>
+              ))}
+            </span>
+          </span>
+        </h1>
+        <svg
+          role="img"
+          aria-label="par Dr Chan"
+          viewBox="0 0 134 36"
+          className={`fluo-byline mt-1 h-4 w-auto${heroPlay ? " is-play" : ""}`}
+        >
+          <g
+            transform="translate(4 0) skewX(-8)"
+            fill="none"
+            stroke="var(--fluo-ink)"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            {BYLINE_STROKES.map((d, i) => (
+              <path key={i} d={d} pathLength={1} style={{ animationDelay: `${2.0 + i * 0.08}s` }} />
+            ))}
+          </g>
+        </svg>
+      </section>
+
+      {/* ── two wells, three keys ──────────────────────────────────────
+          No card. The readings are pressed IN (read-only by construction —
+          no hover, nothing to press), the actions stand OUT. That contrast
+          is the whole instruction set. */}
+      <div className="mb-3 flex items-center justify-between gap-2 sm:gap-3">
+        <dl className="flex min-w-0 items-stretch gap-2">
+          {/* WHERE YOU ARE. One figure, and five dots for the five units —
+              the draft's replacement for the ruler it deleted. */}
+          <div className="neo-well flex min-w-[64px] flex-col items-center justify-center gap-0.5 rounded-2xl px-2 py-2 sm:min-w-[80px] sm:px-3">
+            <dt className="sr-only">Stop</dt>
+            <dd className="cahier-hand text-[20px] leading-none text-[color:var(--cahier-ink)] [font-variant-numeric:tabular-nums] sm:text-[23px]">
+              {stopNo}<span className="text-sm text-[color:var(--cahier-ink-soft)]">/{SIOS.length}</span>
+            </dd>
+            <span aria-hidden className="fluo-mono text-[9.5px] font-extrabold uppercase tracking-[0.09em] text-[color:var(--cahier-ink-soft)]">
+              Stop
+            </span>
+            <span aria-hidden className="mt-0.5 flex gap-[2.5px]">
+              {[0, 1, 2, 3, 4].map((u) => (
+                <i
+                  key={u}
+                  className="h-1 w-1 rounded-full"
+                  style={{ background: u <= activeUnit ? "var(--dopa-win)" : "var(--cahier-ink)", opacity: u <= activeUnit ? 1 : 0.2 }}
+                />
+              ))}
+            </span>
+          </div>
+          {/* THE ONE READING WITH A DEADLINE. Greys out at zero — a streak of
+              nothing is not a reproach, it is simply not lit yet. */}
+          <div className="neo-well flex min-w-[64px] flex-col items-center justify-center gap-0.5 rounded-2xl px-2 py-2 sm:min-w-[80px] sm:px-3"
+               title={mult > 1 ? `Day streak — everything earns ×${mult}` : "Day streak"}>
+            <dt className="sr-only">Streak</dt>
+            <dd
+              className="cahier-hand text-[20px] leading-none [font-variant-numeric:tabular-nums] sm:text-[23px]"
+              style={{ color: progress.streak > 0 ? "var(--dopa-streak-ink)" : "var(--cahier-ink-soft)", opacity: progress.streak > 0 ? 1 : 0.55 }}
             >
-              <span aria-hidden>
-                {"FluOlinGo".split("").map((ch, i) => (
-                  <span key={i} className="fluo-brand-letter" style={{ animationDelay: `${0.15 + i * 0.07}s` }}>
-                    {ch}
-                  </span>
-                ))}
-              </span>
+              {progress.streak}{mult > 1 && <b className="text-sm">×{mult}</b>}
+            </dd>
+            <span aria-hidden
+                  className="fluo-mono text-[9.5px] font-extrabold uppercase tracking-[0.09em]"
+                  style={{ color: "var(--cahier-ink-soft)", opacity: progress.streak > 0 ? 1 : 0.55 }}>
+              🔥 Streak
             </span>
-            {/* No trailing ✨ — on a phone it wrapped onto a line of its own
-                (Dan, 2026-07-17: "occupying an entire line"). */}
-            {/* Byline (Dan, 2026-07-15) — "written on the spot": each pen
-                stroke draws itself and the next letter only starts once the
-                previous one is complete. Hand-authored print-italic strokes
-                (no cursive faces per the house type rule), starting after
-                the ✨ blink. */}
-            <span className="mt-0.5 block pl-1">
-              <svg
-                role="img"
-                aria-label="par Dr Chan"
-                viewBox="0 0 134 36"
-                className={`fluo-byline h-[1.1em] w-auto${heroPlay ? " is-play" : ""}`}
-              >
-                <g
-                  transform="translate(4 0) skewX(-8)"
-                  fill="none"
-                  stroke="var(--fluo-ink-soft)"
-                  strokeWidth="2.4"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  {BYLINE_STROKES.map((d, i) => (
-                    <path key={i} d={d} pathLength={1} style={{ animationDelay: `${2.8 + i * 0.17}s` }} />
-                  ))}
-                </g>
+          </div>
+        </dl>
+
+        {/* Three pillows. The FILL is the dopamine role; the depth is the
+            affordance. Rewind sinks to a flat well when nothing is due. */}
+        <div className="flex shrink-0 items-center gap-2">
+          {activeSio && (
+            <Link
+              href={`/unit/${activeSio.unit}#${activeSio.id}`}
+              aria-label={`Play — ${activeSio.topic}, your stop on the study path`}
+              title={`Play — « ${activeSio.topic} », your stop on the study path`}
+              className={`neo-key grid h-[50px] w-[50px] place-items-center rounded-[15px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]${doneTotal === 0 ? " fluo-play-halo" : ""}`}
+              style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-win) 55%, white) 0%, var(--dopa-win) 52%, color-mix(in oklab, var(--dopa-win) 70%, black) 100%)" }}
+            >
+              <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden>
+                <path d="M6 3.5 L22 13 L6 22.5 Z" fill="var(--key-ink-win)" stroke="var(--key-ink-win)" strokeWidth="2.5" strokeLinejoin="round" />
               </svg>
-            </span>
-          </h1>
-          <div className="flex shrink-0 items-center gap-2">
-            {activeSio && (
-              <Link
-                href={`/unit/${activeSio.unit}#${activeSio.id}`}
-                aria-label="Continuer"
-                title={`Continuer — « ${activeSio.topic} », the next objective after your latest 'done'.`}
-                className="flex h-8 w-9 items-center justify-center rounded-lg border-2 text-base text-white shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
-                style={{ background: accent, borderColor: accent }}
-              >
-                <span aria-hidden>▶</span>
-              </Link>
-            )}
+            </Link>
+          )}
+          {dueCount > 0 ? (
             <Link
               href="/reviser"
-              aria-label="DéjàRevu"
-              title="DéjàRevu — vos mots à revoir"
-              className="relative flex h-8 w-9 items-center justify-center rounded-lg border-2 border-[color:var(--fluo-ink)] bg-white/80 text-base text-[color:var(--fluo-ink)] shadow-[2px_2px_0_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5"
+              aria-label={`Rewind — ${dueCount} to repeat`}
+              title="Rewind — repeat the words you missed"
+              className="neo-key relative grid h-[50px] w-[50px] place-items-center rounded-[15px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
+              style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-focus) 55%, white) 0%, var(--dopa-focus) 52%, color-mix(in oklab, var(--dopa-focus) 70%, black) 100%)" }}
             >
-              <span aria-hidden>🔁</span>
-              {dueCount > 0 && (
-                <span className="absolute -right-2 -top-2 rounded-full bg-[var(--fluo-danger)] px-1.5 text-[10px] font-bold text-white">{dueCount}</span>
-              )}
+              <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden>
+                <path d="M12.5 6.5 L12.5 19.5 L3.5 13 Z" fill="var(--key-ink-focus)" stroke="var(--key-ink-focus)" strokeWidth="2.4" strokeLinejoin="round" />
+                <path d="M22.5 6.5 L22.5 19.5 L13.5 13 Z" fill="var(--key-ink-focus)" stroke="var(--key-ink-focus)" strokeWidth="2.4" strokeLinejoin="round" />
+              </svg>
+              <span className="fluo-mono absolute -right-2 -top-2 rounded-full px-1.5 py-0.5 text-[11px] font-bold text-white [font-variant-numeric:tabular-nums]"
+                    style={{ background: "var(--cahier-ink)" }}>
+                {dueCount}
+              </span>
             </Link>
-          </div>
-        </div>
-
-        <div className="mt-4 flex flex-wrap items-center gap-2.5">
-          {/* Compact rank (N5, name in the tooltip) — the spelled-out name
-              made the chip row wrap and pushed QuickGuide onto its own line
-              (Dan, 2026-07-14). */}
-          <Link href="/profil" className={`${chip} hover:-translate-y-0.5 !px-2`} title={`Votre niveau — N${lvl.level} · ${lvl.name}`}>
-            🎚️ <RankBadge level={lvl.level} name={lvl.name} compact className="text-xs" />
-          </Link>
-          <span className={chip}>✓ {doneTotal}/{SIOS.length}</span>
-          {/* Progressive disclosure (Dan, 2026-07-20: "hide the zeroes until
-              they are no longer zero"): a newcomer's row of 🔥0 ⭐0 💎0 read
-              as "you are behind" before their first action, and three
-              unexplained currencies are noise until their meaning is earned.
-              Each chip appears at its first non-zero value — a small unlock
-              moment that introduces the currency exactly when it becomes
-              relevant. Returning students see no change. Derived straight
-              from progress — no new storage. */}
-          {progress.streak > 0 && (
-            <span className={chip} title={mult > 1 ? `Série active : XP ×${mult}` : "Série de jours"}>
-              🔥 {progress.streak}{mult > 1 && <b className="text-[color:var(--fluo-danger)]"> ×{mult}</b>}
+          ) : (
+            <span
+              aria-disabled="true"
+              title="Rewind — nothing waiting to be repeated"
+              className="neo-key grid h-[50px] w-[50px] place-items-center rounded-[15px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
+            >
+              <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden style={{ opacity: 0.4 }}>
+                <path d="M12.5 6.5 L12.5 19.5 L3.5 13 Z" fill="var(--key-ink-focus)" stroke="var(--key-ink-focus)" strokeWidth="2.4" strokeLinejoin="round" />
+                <path d="M22.5 6.5 L22.5 19.5 L13.5 13 Z" fill="var(--key-ink-focus)" stroke="var(--key-ink-focus)" strokeWidth="2.4" strokeLinejoin="round" />
+              </svg>
             </span>
           )}
-          {/* XP is exactly what the leaderboard ranks — the chip IS the way
-              to the Classement. */}
-          {progress.xp > 0 && (
-            <Link href="/leaderboard" className={`${chip} hover:-translate-y-0.5`} title="Classement · votre rang">⭐ {progress.xp}</Link>
-          )}
-          {progress.gems > 0 && (
-            <Link href="/profil" className={`${chip} hover:-translate-y-0.5`} title="Boutique">💎 {progress.gems}</Link>
-          )}
-          <StatsHelp />
           <button
             type="button"
             onClick={() => setQgOpen(true)}
-            className="rounded-lg border-2 px-3 py-1 text-sm font-black shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
-            style={{ background: "var(--fluo-ink)", borderColor: "var(--fluo-ink)", color: "#d4f24c" }}
+            disabled={!activeSio?.collectionId}
+            aria-label="All activities at this stop"
+            title="Every activity available at your stop"
+            className="neo-key grid h-[50px] w-[50px] place-items-center rounded-[15px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
+            style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-reward) 55%, white) 0%, var(--dopa-reward) 52%, color-mix(in oklab, var(--dopa-reward) 70%, black) 100%)" }}
           >
-            HELP!
+            <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden>
+              <g fill="var(--key-ink-reward)">
+                {[3.5, 10.25, 17].map((y) =>
+                  [3.5, 10.25, 17].map((x) => <rect key={`${x}-${y}`} x={x} y={y} width="5.5" height="5.5" rx="1.4" />),
+                )}
+              </g>
+            </svg>
           </button>
         </div>
-        {qgOpen && <GuideSplash onClose={() => setQgOpen(false)} />}
+      </div>
 
-        {/* Two bars: overall course completion, and XP into the current level. */}
-        <div className="mt-3 space-y-2">
-          <div className="flex items-center gap-2">
-            <span className="fluo-mono w-16 shrink-0 text-xs font-bold text-[color:var(--fluo-ink)]">Cours</span>
-            <span className="h-2.5 flex-1 overflow-hidden rounded-full border-2 border-[color:var(--fluo-ink)] bg-white/75">
-              <span className="block h-full rounded-full transition-all duration-500" style={{ width: `${Math.max(pct, 2)}%`, background: accent }} />
-            </span>
-            <span className="fluo-mono w-10 shrink-0 text-right text-xs font-bold text-[color:var(--fluo-ink)]">{pct}%</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="fluo-mono w-16 shrink-0 text-xs font-bold text-[color:var(--fluo-ink)]">Niveau {lvl.level}</span>
-            <span className="h-2.5 flex-1 overflow-hidden rounded-full border-2 border-[color:var(--fluo-ink)] bg-white/75">
-              <span className="block h-full rounded-full transition-all duration-500" style={{ width: `${Math.max(xpPct, 2)}%`, background: accent }} />
-            </span>
-            <span className="fluo-mono w-14 shrink-0 text-right text-xs font-bold text-[color:var(--fluo-ink)]">{lvl.into}/{lvl.span}</span>
-          </div>
-        </div>
-      </section>
+      {/* Where Play goes, in words — the one line of prose the draft keeps,
+          because a coloured triangle cannot name a destination. */}
+      {activeSio && (
+        <p className="mb-3.5 text-[12.5px] text-[color:var(--cahier-ink-soft)]">
+          Next: <strong className="font-semibold text-[color:var(--cahier-ink)]">{activeSio.topic}</strong>
+        </p>
+      )}
+
+      {qgOpen && activeSio?.collectionId && (
+        <StopSheet
+          stopId={activeSio.id}
+          topic={activeSio.topic}
+          collectionId={activeSio.collectionId}
+          onClose={() => setQgOpen(false)}
+        />
+      )}
 
       {/* Streak momentum (Dan, 2026-07-08, episode model): counts done-in-order
           from the start; a skip simply stops the run — never blocks. */}
       {seqRun >= 2 && seqRun < SIOS.length && (
-        <p className="fluo-mono mb-2 text-xs font-black text-[color:var(--fluo-ink)]">🔗 {seqRun} d&rsquo;affilée !</p>
+        <p className="fluo-mono mb-2 text-xs font-black text-[color:var(--fluo-ink)]">🔗 {seqRun} in a row!</p>
       )}
 
-      <RoadMap progress={progress} activeId={activeId} accent={accent} />
+      {/* 🗺️ The Map as a POSTCARD (Dan, 2026-08-21): a read-only snapshot
+          of the learner's stretch of the course — the course mark, drawn.
+          Inert on purpose (pointer-events off): a finger can't catch it, a
+          tap anywhere is the door to the real map on /map. */}
+      {/* The snapshot contains the map's own links, so the door to /map is
+          a STRETCHED sibling link over the top — an <a> may not contain an
+          <a>. `inert` keeps the frozen map's controls out of the tab order
+          and the a11y tree. */}
+      <div
+        className="relative mt-2 overflow-hidden rounded-2xl border-2 transition hover:-translate-y-0.5"
+        style={{ borderColor: "var(--cahier-ink)", background: "var(--cahier-paper-raised)", boxShadow: "var(--shadow-card)" }}
+      >
+        {/* One more layer between the page and the picture (Dan, 2026-08-22):
+            the snapshot sits in a recessed mat, so it reads as a mounted
+            photo — a surface you scroll PAST, never a control. The mat plus
+            `inert` + pointer-events-none below mean no gesture over it can
+            ever catch: a finger going down the page glides over. */}
+        <div className="p-2 pb-0" aria-hidden>
+          <div
+            inert
+            className="pointer-events-none select-none overflow-hidden rounded-xl"
+            style={{ boxShadow: "inset 0 2px 8px rgba(0,0,0,0.18), inset 0 0 0 1.5px var(--cahier-line)" }}
+          >
+            <HomeMap progress={progress} activeId={activeId} accent={accent} postcard />
+          </div>
+        </div>
+        <span className="flex items-center gap-2 border-t-2 px-4 py-2.5" style={{ borderColor: "var(--cahier-ink)" }}>
+          <span aria-hidden className="text-xl">🗺️</span>
+          <span lang="fr" className="fluo-serif min-w-0 flex-1 text-lg font-black leading-tight text-[color:var(--fluo-ink)]">The Map</span>
+          <span className="fluo-mono text-xs font-black text-[color:var(--fluo-ink)]/70">2D · 3D</span>
+          <span aria-hidden className="fluo-mono text-xl font-black text-[color:var(--fluo-ink)]">›</span>
+        </span>
+        <Link href="/map" aria-label="The Map — open the course map" className="absolute inset-0 z-10" />
+      </div>
     </>
   );
 }

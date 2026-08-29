@@ -87,16 +87,16 @@ export default function AccentBar() {
       <div className="mx-auto flex max-w-lg items-stretch gap-2">
         <button type="button" onPointerDown={press(() => setShift((s) => !s))}
           className={`cahier-btn cahier-btn-sm shrink-0 ${shift ? "cahier-btn-primary" : ""}`}
-          aria-label="Majuscule" title="Majuscule">⇧</button>
+          aria-label="Shift" title="Shift">⇧</button>
         <div className="grid flex-1 grid-cols-8 gap-1">
           {keys.map((ch) => (
             <button key={ch} type="button"
               onPointerDown={press(() => targetRef.current && insertAtCursor(targetRef.current, ch))}
-              className="cahier-btn cahier-btn-sm !px-0 text-base" aria-label={`Insérer ${ch}`}>{ch}</button>
+              className="cahier-btn cahier-btn-sm !px-0 text-base" aria-label={`Insert ${ch}`}>{ch}</button>
           ))}
         </div>
         <button type="button" onPointerDown={press(() => setVisible(false))}
-          className="cahier-btn cahier-btn-sm shrink-0" aria-label="Masquer">✕</button>
+          className="cahier-btn cahier-btn-sm shrink-0" aria-label="Hide">✕</button>
       </div>
     </div>
   );

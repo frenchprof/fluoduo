@@ -38,11 +38,17 @@ concurrency:
 
 jobs:
   build:
+    # The preview exists only in the WORKING repo. The same commits get
+    # pushed to dckg/fluo (production, built by Cloudflare), where GitHub
+    # Pages is deliberately disabled — without this guard the workflow runs
+    # there too and fails with a 404 on every deploy (seen 2026-08-21).
+    # `deploy` needs `build`, so skipping this skips both.
+    if: github.repository == 'frenchprof/fluoduo'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm

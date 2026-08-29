@@ -14,29 +14,11 @@
 
 import { useEffect, useState } from "react";
 import { useChoiceKeys } from "@/lib/useChoiceKeys";
-import { getPretest, sioIdForPretest } from "@/content/pretests";
+import { getPretest } from "@/content/pretests";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
-import { logEvent } from "@/lib/firebase/usage";
-import { recordPretestAnswer, stemForItem } from "@/lib/pretestRecord";
+import { judgePretestAnswer, shuffle, ttsTextForItem } from "@/lib/pretests/runner";
 import type { PretestItem } from "@/lib/pretests/schema";
-
-/** Speak the FULL sentence, never the lonely answer word. */
-function ttsTextForItem(item: PretestItem): string {
-  if (item.fullSentence && item.fullSentence.trim()) return item.fullSentence;
-  return `${item.sentenceBefore} ${item.answer} ${item.sentenceAfter}`
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function shuffle<T>(arr: T[]): T[] {
-  const out = [...arr];
-  for (let i = out.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [out[i], out[j]] = [out[j], out[i]];
-  }
-  return out;
-}
 
 type Q = { item: PretestItem; choices: string[] };
 
@@ -93,26 +75,12 @@ export default function PretestQuiz({ pretestId }: { pretestId: string }) {
     if (last) {
       window.dispatchEvent(new CustomEvent("fluolingo:pretest-complete", { detail: { id: pretestId } }));
     }
-    const correct = choice === q.item.answer;
+    // The judge + gap-report + usage ledger live in the shared runner
+    // (patch 22) — this engine only renders the verdict.
+    const correct = judgePretestAnswer(pretestId, q.item, choice);
     if (correct) sfx.correct(); else sfx.wrong();
     if (last) sfx.stage(); // pretest finished — the bigger stage jingle too
     if (correct) speak(ttsTextForItem(q.item), "fr-FR");
-    // Gap report (audit R1): persist the verdict so it survives popup close.
-    recordPretestAnswer({
-      pretestId,
-      sioId: sioIdForPretest(pretestId) ?? "",
-      itemId: q.item.id,
-      correct,
-      picked: choice,
-      answer: q.item.answer,
-      stem: stemForItem(q.item),
-    });
-    void logEvent("pretest.answer", {
-      pretestId,
-      itemId: q.item.id,
-      correct,
-      picked: choice,
-    });
   }
 
   // Per Dan: the counter stays (learners track progress with it); no labels.

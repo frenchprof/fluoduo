@@ -23,6 +23,7 @@ import type { Sio } from "@/content/sios";
 import type { Collection } from "@/lib/collections/schema";
 import { deckActivityTabs } from "@/components/CahierShell";
 import AuthGate from "@/components/AuthGate";
+import { accuracyFor, activityKeyFor, loadLedger, LEDGER_EVENT, type Ledger } from "@/lib/activityLedger";
 
 // Level-2 activities float INSIDE this popup (Dan, 2026-07-05: "can i ask for
 // level 2 to be all floating like the SIOs pretest") — the unit page stays
@@ -31,12 +32,31 @@ const SayItContent = dynamic(() => import("@/app/practice/say-it/[collectionId]/
 const CompleteItContent = dynamic(() => import("@/app/practice/complete-it/[collectionId]/CompleteItContent"));
 const DicePractice = dynamic(() => import("@/app/practice/dice/[collectionId]/PracticeContent"));
 const GramMarathonContent = dynamic(() => import("@/app/practice/grammarathon/[collectionId]/GramMarathonContent"));
-const LessonFlow = dynamic(() => import("@/app/lessons/LessonFlow"));
 
-/** Activity keys that render inside the popup; the rest navigate out. */
-const EMBEDDABLE = new Set(["say", "complete", "dice", "grammarathon", "lesson"]);
+/** Activity keys that render inside the popup; the rest navigate out.
+ *  "lesson" left this set with patch 22 — the lesson is the full-screen card
+ *  pager now, so its flap navigates like any non-embeddable activity. */
+const EMBEDDABLE = new Set(["say", "complete", "dice", "grammarathon"]);
 
-const SIZE_KEY = "fluolingo:popupSize";
+/**
+ * THE NUMBERED PATH (Dan-approved guidance flow, 2026-08-24). The practice
+ * chain — the activities.ts "sequence you actually do for one objective",
+ * Pre-Test leading — renders in the popup body as numbered steps instead of
+ * equal-weight flaps: done steps ✓ and muted, the next undone step accented
+ * in the practice family's colour. The 22 Aug flow walk found the popup
+ * carried exactly ONE ordering cue ("try it first") and named neither
+ * SpecuLearn nor Sorting; the path is the authored order made visible.
+ * Everything not in the chain (games, review, skills extras) stays a flap.
+ */
+const CHAIN_KEYS = ["pretest", "speculearn", "lesson", "dice", "flip", "complete"] as const;
+
+/** Step done-ness reads the device ledger exactly as the Index's cells do:
+ *  attempted = accuracyFor() non-null, keyed by the same route→registry
+ *  mapping (activityKeyFor). The inline Pre-Test has no href; the ledger
+ *  itself folds pretests into the speculearn row, so that is its key. */
+function ledgerKeyFor(t: PopupTab): string | undefined {
+  return activityKeyFor(t.href) ?? (t.key === "pretest" ? "speculearn" : t.key);
+}
 
 export type PopupTab = { key: string; label: string; emoji: string; href?: string; active?: boolean; hint?: string };
 
@@ -128,8 +148,6 @@ export default function SioModal({
   onClose,
   tabs,
   deck,
-  initialView,
-  lessonSlug,
   children,
 }: {
   sio: Sio;
@@ -138,24 +156,31 @@ export default function SioModal({
   /** When given, embeddable activity flaps switch the popup body in place —
    *  level 2 floats above the unit page instead of navigating away. */
   deck?: Collection;
-  /** Open directly on an activity view (the /practice/* URLs land here). */
-  initialView?: string;
-  /** For the lesson view: which of the deck's lessons to show. */
-  lessonSlug?: string;
   children: ReactNode;
 }) {
   const hueOf = (i: number) => TAB_HUES[i % TAB_HUES.length];
-  const panelRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
-  const [view, setView] = useState(initialView ?? "main");
-
-  // Activities need elbow room: widen the panel when leaving the main view
-  // (unless the learner already sized it bigger themselves).
+  const [view, setView] = useState("main");
+  // This device's tally — refreshed live so a step earns its ✓ while the
+  // popup is still open (the inline pretest grades right here).
+  const [ledger, setLedger] = useState<Ledger>(() => loadLedger());
   useEffect(() => {
-    const el = panelRef.current;
-    if (!el || view === "main") return;
-    if (el.offsetWidth < 700) el.style.width = `${Math.min(880, window.innerWidth * 0.9)}px`;
-  }, [view]);
+    const refresh = () => setLedger(loadLedger());
+    window.addEventListener(LEDGER_EVENT, refresh);
+    return () => window.removeEventListener(LEDGER_EVENT, refresh);
+  }, []);
+
+  // Split the one flap list: the practice chain becomes the numbered path,
+  // in CHAIN_KEYS order; the rest stay flaps.
+  const chain = CHAIN_KEYS.map((k) => (tabs ?? []).find((t) => t.key === k)).filter(
+    (t): t is PopupTab => !!t,
+  );
+  const flaps = (tabs ?? []).filter((t) => !CHAIN_KEYS.includes(t.key as (typeof CHAIN_KEYS)[number]));
+  const stepDone = (t: PopupTab) => {
+    const k = ledgerKeyFor(t);
+    return !!k && accuracyFor(ledger, k, sio.id) !== null;
+  };
+  const nextKey = chain.find((t) => !stepDone(t))?.key;
 
   const embeds: Record<string, ReactNode> = deck
     ? {
@@ -163,7 +188,6 @@ export default function SioModal({
         complete: <CompleteItContent collectionId={deck.id} embedded />,
         dice: <DicePractice collectionId={deck.id} embedded />,
         grammarathon: <GramMarathonContent collectionId={deck.id} embedded />,
-        lesson: <LessonFlow collectionId={deck.id} lessonSlug={lessonSlug} embedded />,
       }
     : {};
   const flapProps = (t: PopupTab) => {
@@ -186,54 +210,12 @@ export default function SioModal({
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  // The panel is user-resizable (drag the bottom-right corner). Widening it
-  // lets a question's four options stay on one line; they only wrap when the
-  // panel is too narrow (Dan, 2026-07-02). The chosen size persists across
-  // popups. Restore/clamp happens post-mount, so SSR stays deterministic.
-  useEffect(() => {
-    const el = panelRef.current;
-    if (!el) return;
-    try {
-      const raw = localStorage.getItem(SIZE_KEY);
-      if (raw) {
-        const { w, h } = JSON.parse(raw);
-        if (w) el.style.width = `${Math.min(w, window.innerWidth * 0.9)}px`;
-        if (h) el.style.height = `${Math.min(h, window.innerHeight * 0.88)}px`;
-      }
-    } catch {}
-    const ro = new ResizeObserver(() => {
-      try {
-        localStorage.setItem(SIZE_KEY, JSON.stringify({ w: el.offsetWidth, h: el.offsetHeight }));
-      } catch {}
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  // Pointer-drag resize from the visible ◢ grip. setPointerCapture is what
-  // makes this work on iPad — without it, iOS Safari stops delivering move
-  // events as soon as the finger leaves the tiny grip.
-  function startResize(e: React.PointerEvent<HTMLDivElement>) {
-    const el = panelRef.current;
-    if (!el) return;
-    e.preventDefault();
-    const grip = e.currentTarget;
-    try { grip.setPointerCapture(e.pointerId); } catch {}
-    const sw = el.offsetWidth, sh = el.offsetHeight, sx = e.clientX, sy = e.clientY;
-    const move = (ev: PointerEvent) => {
-      ev.preventDefault();
-      el.style.width = `${Math.min(Math.max(256, sw + ev.clientX - sx), window.innerWidth * 0.9)}px`;
-      el.style.height = `${Math.min(Math.max(160, sh + ev.clientY - sy), window.innerHeight * 0.88)}px`;
-    };
-    const done = () => {
-      grip.removeEventListener("pointermove", move);
-      grip.removeEventListener("pointerup", done);
-      grip.removeEventListener("pointercancel", done);
-    };
-    grip.addEventListener("pointermove", move);
-    grip.addEventListener("pointerup", done);
-    grip.addEventListener("pointercancel", done);
-  }
+  // ~120 lines of chrome left here on 2026-08-10 (patch 20–21): drag-resize
+  // (◢ grip + pointer capture), a persisted panel size, an auto-widen on
+  // leaving the main view, and the ⤢ full-page escape hatch. All of it was
+  // compensation for holding a drill inside a container that shouldn't hold
+  // one — the /practice/* routes now render drills full-screen in
+  // DrillShell, and the popup that remains is a fixed-size SIO card.
 
   return (
     <div
@@ -245,12 +227,10 @@ export default function SioModal({
       <div className="flex max-w-full items-start" onClick={(e) => e.stopPropagation()}>
         <div className="relative max-w-full">
         <div
-          ref={panelRef}
-          className="resize overflow-auto rounded-2xl border-2 bg-[var(--fluo-card)] p-5"
+          className="overflow-auto rounded-2xl border-2 bg-[var(--fluo-card)] p-5"
           style={{
             borderColor: "var(--fluo-card-accent)",
-            width: "32rem",
-            minWidth: "16rem",
+            width: view === "main" ? "32rem" : "52rem",
             maxWidth: "90vw",
             minHeight: "10rem",
             maxHeight: "88vh",
@@ -264,25 +244,63 @@ export default function SioModal({
               <h2 className="fluo-readable mt-1 text-xl font-bold text-[color:var(--fluo-ink)]">{sio.topic}</h2>
             </div>
             <div className="flex items-center gap-1.5">
-              {/* Escape hatch from the floating window to the SIO's own page
-                  (Dan, 2026-07-12: "Expand to a full page link at the top"). */}
-              <Link
-                href={`/sio/${sio.id}`}
-                className="fluo-btn fluo-btn-sm"
-                aria-label="Ouvrir en pleine page"
-                title="Ouvrir en pleine page"
-              >
-                ⤢
-              </Link>
               <button ref={closeRef} type="button" onClick={onClose} className="fluo-btn fluo-btn-sm" aria-label="Close">
                 ✕
               </button>
             </div>
           </div>
-          {/* narrow screens: the flaps as a row under the header */}
-          {tabs && tabs.length > 0 && (
+          {/* The numbered path — the practice chain in authored order. */}
+          {chain.length > 0 && (
+            <ol className="sio-path" aria-label="Practice path">
+              {chain.map((t, i) => {
+                const done = stepDone(t);
+                const here = t.key === nextKey;
+                const cls = `sio-step${done ? " is-done" : ""}${here ? " is-here" : ""}`;
+                const body = (
+                  <>
+                    <span className="sio-step-num" aria-hidden>{i + 1}</span>
+                    <span className="sio-step-emoji" aria-hidden>{t.emoji}</span>
+                    <span className="sio-step-name">{t.label}</span>
+                    {done ? (
+                      <span className="sio-step-end">✓</span>
+                    ) : here ? (
+                      <span className="sio-step-end" aria-hidden>›</span>
+                    ) : null}
+                  </>
+                );
+                // Same routing contract as the flaps: embeddables switch the
+                // popup body in place; the inline Pre-Test returns to it; the
+                // rest navigate out.
+                if (deck && EMBEDDABLE.has(t.key) && embeds[t.key]) {
+                  return (
+                    <li key={t.key}>
+                      <button type="button" className={cls} onClick={() => setView(t.key)}>{body}</button>
+                    </li>
+                  );
+                }
+                if (t.key === "pretest" && !t.href) {
+                  return (
+                    <li key={t.key}>
+                      <button type="button" className={cls} onClick={() => setView("main")}>{body}</button>
+                    </li>
+                  );
+                }
+                return (
+                  <li key={t.key}>
+                    {t.href ? (
+                      <Link href={t.href} className={cls}>{body}</Link>
+                    ) : (
+                      <span className={cls}>{body}</span>
+                    )}
+                  </li>
+                );
+              })}
+            </ol>
+          )}
+          {/* narrow screens: the remaining flaps as a row under the path */}
+          {flaps.length > 0 && (
             <div className="mb-3 flex flex-wrap gap-1.5 sm:hidden">
-              {tabs.map((t, i) => (
+              {flaps.map((t, i) => (
                 <Flap key={t.key} tab={t} hue={hueOf(i)} className="!rounded-md !px-2 !py-1 text-xs" {...flapProps(t)} />
               ))}
             </div>
@@ -291,27 +309,12 @@ export default function SioModal({
             <AuthGate what="practice" compact>{embeds[view]}</AuthGate>
           )}
         </div>
-        {/* Visible resize grip: the native CSS handle is a faint browser
-            triangle nobody finds (Dan, 2026-07-05) and touch screens never
-            show it — this one works with any pointer. */}
-        <div
-          onPointerDown={startResize}
-          className="absolute -bottom-2 -right-2 z-10 flex h-11 w-11 cursor-nwse-resize touch-none select-none items-end justify-end pb-2.5 pr-2.5"
-          title="Drag to resize"
-          aria-hidden
-        >
-          <span
-            className="flex h-6 w-6 items-center justify-center rounded-full border-2 bg-white text-xs leading-none shadow"
-            style={{ color: "var(--fluo-card-accent)", borderColor: "var(--fluo-card-accent)" }}
-          >
-            ◢
-          </span>
         </div>
-        </div>
-        {/* wide screens: flaps poke off the popup's right edge, home-page style */}
-        {tabs && tabs.length > 0 && (
+        {/* wide screens: the non-chain flaps poke off the popup's right edge,
+            home-page style — the chain itself lives in the body's path */}
+        {flaps.length > 0 && (
           <nav className="mt-14 hidden shrink-0 flex-col gap-2 sm:flex" aria-label="Practice activities">
-            {tabs.map((t, i) => (
+            {flaps.map((t, i) => (
               <Flap key={t.key} tab={t} hue={hueOf(i)} {...flapProps(t)} />
             ))}
           </nav>

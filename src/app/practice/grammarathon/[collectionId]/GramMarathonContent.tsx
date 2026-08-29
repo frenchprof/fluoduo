@@ -11,49 +11,47 @@
  * This is the per-deck round, reached via its own "🏃 GramMarathon" flap
  * (deckActivityTabs, CahierShell.tsx) — shown only for decks with at least
  * one valid gap item (it.gap present and actually occurring inside it.fr).
- * Distinct from: (1) the Finale (FinaleContent.tsx, /practice/grammarathon/
+ * Distinct from the Finale (FinaleContent.tsx, /practice/grammarathon/
  * finale), a separate hand-authored 437-item bank across all SIOs, always
- * reachable regardless of deck; (2) DicedPractice's own inline ★★
- * Intermédiaire gap-fill on the same gapped deck (games/dice/DicedPractice.tsx)
- * — same gap data, a completely separate drill.
+ * reachable regardless of deck. (The lesson's own gap-fill over the same
+ * data is the pager's gap tier since patch 22.)
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
+import DrillShell, { drillExitHref } from "@/components/DrillShell";
 import { CURATED } from "@/content/collections";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { gradeGap, splitGap, type Grade } from "@/lib/practice/cloze";
-import { recordItemResult } from "@/lib/progress";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
 import { gapSentence, isPlayableGap } from "@/lib/collections/gapSentence";
-import { buildLadder, shownRungs } from "@/lib/help/ladder";
+import { hintsFor } from "@/lib/help/hints";
+import { useHelpLadder } from "@/lib/help/useHelpLadder";
 import { SIOS } from "@/content/sios";
+import WordBank from "@/components/WordBank";
 
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+import { shuffle } from "@/lib/shuffle";
+import { cap, offer, type SessionLength } from "@/lib/sessionLength";
+import HowManyQuestions from "@/components/HowManyQuestions";
 
 export default function GramMarathonContent({ collectionId, embedded = false }: { collectionId: string; embedded?: boolean }) {
   useActivityPlay("grammarathon", collectionId);
   const deck = CURATED.find((c) => c.id === collectionId);
-  const tabs = useMemo(() => (deck ? withActive(deckActivityTabs(deck.id), "grammarathon") : []), [deck]);
 
+  // The FULL shuffled queue, and the length the learner picked off it (Dan,
+  // 2026-08-25). `order` stays whole so a replay can re-cut it; `chosen` is
+  // null until answered, and `offer()` returns null on a short deck, which is
+  // what lets those decks skip the question. Same shape as CompleteIt.
   const [order, setOrder] = useState<number[] | null>(null);
+  const [chosen, setChosen] = useState<SessionLength | null>(null);
+  const [asked, setAsked] = useState(false);
   const [i, setI] = useState(0);
   const [value, setValue] = useState("");
   const [result, setResult] = useState<Grade | null>(null);
   const [score, setScore] = useState({ ok: 0, total: 0 });
-  // Help ladder (PRD §8). Per-deck GramMarathon had none at all — a learner
-  // stuck here got a bare "wrong", while the same grammar point in Finale
-  // offered four escalating clues. That asymmetry was backwards: Finale is the
-  // summative surface; the lesson drill is where scaffolding belongs most.
-  const [clue, setClue] = useState(0);
+  // A wrong try that is NOT final (Track D): "not yet", maybe a hint, and
+  // the input stays live.
+  const [retry, setRetry] = useState(false);
   const sioTopic = useMemo(
     () => SIOS.find((s) => s.collectionId === collectionId)?.topic,
     [collectionId],
@@ -65,7 +63,10 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
   // idée !") sits the game out.
   useEffect(() => {
     if (!deck) return;
-    setOrder(shuffle(deck.items.map((it, idx) => (isPlayableGap(it) ? idx : -1)).filter((x) => x >= 0)));
+    const full = shuffle(deck.items.map((it, idx) => (isPlayableGap(it) ? idx : -1)).filter((x) => x >= 0));
+    setOrder(full);
+    // Short enough not to need asking → answered for the learner.
+    setAsked(offer(full.length) === null);
   }, [deck]);
 
   useEffect(() => {
@@ -73,49 +74,212 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
     else nextRef.current?.focus(); // keep the type→Enter→Enter rhythm — no mouse needed
   }, [i, result]);
 
-  if (!deck) return <main className="p-6">No deck <code>{collectionId}</code>.</main>;
-  if (order === null) return null;
-
-  const total = order.length;
-  const done = i >= total;
-  const item = done ? null : deck.items[order[i]];
+  // Item selection + the ladder's hooks come BEFORE the early returns.
+  // The RUN is the chosen slice: `total` drives the progress denominator, the
+  // done card and next(), so capping here caps all three.
+  const run = useMemo(() => (order === null ? null : cap(order, chosen)), [order, chosen]);
+  const total = run?.length ?? 0;
+  const done = run === null || i >= total;
+  const item = done || !deck ? null : deck.items[run![i]];
   const gap = item?.gap ?? "";
   const { before, after } = item ? splitGap(gapSentence(item), gap) : { before: "", after: "" };
   const isRight = result === "perfect" || result === "good";
 
-  /** Rungs for the current item. No `category` — per-deck items carry no
-   *  hand-authored label, so this ladder opens at the lesson rung and runs one
-   *  shorter than Finale's. Same shape, same ending: a reachable answer. */
-  function ladderForItem() {
-    return buildLadder({ answer: gap, topic: sioTopic });
+  // The help ladder (Track D): cloze rungs from the item (lemma as the
+  // nudge, first letter, skeleton), ONE ? control in the shell bar.
+  const hints = useMemo(
+    () => hintsFor("cloze", { answer: gap, pos: item?.lemma ? `← ${item.lemma}` : undefined, topic: sioTopic, example: item?.example }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [gap, item?.id],
+  );
+  const ladder = useHelpLadder({
+    kind: "cloze",
+    itemKey: item?.id ?? null,
+    itemId: item?.id,
+    surface: "grammarathon",
+    hints,
+    reveal: gap,
+    enabled: !done && !!item,
+  });
+
+  if (!deck) return <main className="p-6">No deck <code>{collectionId}</code>.</main>;
+  if (order === null) return null;
+
+  // HOW LONG? — asked once, before any French, and only on a queue long
+  // enough for the answer to matter. Bare when embedded in a SIO popup; the
+  // full drill frame only on its own page.
+  if (!asked) {
+    const body = (
+      <HowManyQuestions
+        lengths={offer(order.length)!}
+        total={order.length}
+        onPick={(n) => { setChosen(n); setAsked(true); }}
+      />
+    );
+    return embedded ? body : (
+      <DrillShell
+        activity="grammarathon"
+        deck={collectionId}
+        exitHref={drillExitHref(collectionId)}
+        progress={null}
+        cta={null}
+      >
+        {body}
+      </DrillShell>
+    );
   }
 
   function check() {
-    if (result !== null || !item) return;
+    if (result !== null || retry || !item) return;
     const g = gradeGap(value, gap);
-    setResult(g);
-    setScore((s) => ({ ok: s.ok + (g !== "wrong" ? 1 : 0), total: s.total + 1 }));
-    recordItemResult(item.id, g !== "wrong", undefined, `grammarathon:${collectionId}`, {
-      hintsTaken: clue,
-    });
-    if (g !== "wrong") sfx.correct(); else sfx.wrong();
-    if (g !== "wrong") speak(gapSentence(item), "fr-FR");
+    const ok = g !== "wrong";
+    if (ladder.ladder.wrongTries === 0 && !ladder.revealed) {
+      setScore((s) => ({ ok: s.ok + (ok ? 1 : 0), total: s.total + 1 }));
+    }
+    const r = ladder.attempt(ok, { given: value, activity: `grammarathon:${collectionId}` });
+    if (ok) sfx.correct(); else sfx.wrong();
+    if (r.effect === "done") {
+      setResult(g);
+      if (ok) speak(gapSentence(item), "fr-FR");
+    } else {
+      setRetry(true);
+    }
   }
 
   function next() {
-    setClue(0);
     if (i + 1 >= total) sfx.stage(); // run complete — the done card is about to show
     setResult(null);
+    setRetry(false);
     setValue("");
     setI((n) => n + 1);
   }
-
-  function restart() {
-    setOrder(shuffle(deck!.items.map((it, idx) => (isPlayableGap(it) ? idx : -1)).filter((x) => x >= 0)));
-    setI(0); setValue(""); setResult(null); setScore({ ok: 0, total: 0 }); setClue(0);
+  function tryAgain() {
+    setRetry(false);
+    if (ladder.revealed) setValue("");
+    inputRef.current?.focus();
   }
 
-  const body = (
+  function restart() {
+    // A replay reshuffles and asks again — someone who did ten may want
+    // twenty-five next, and re-asking costs one tap. A short deck still skips.
+    const full = shuffle(deck!.items.map((it, idx) => (isPlayableGap(it) ? idx : -1)).filter((x) => x >= 0));
+    setOrder(full);
+    setChosen(null);
+    setAsked(offer(full.length) === null);
+    setI(0); setValue(""); setResult(null); setRetry(false); setScore({ ok: 0, total: 0 });
+  }
+
+  const sentence = item ? (
+    <p lang="fr" className="mt-1 text-xl font-black text-[color:var(--fluo-ink)]">
+      {before}
+      <span className={`mx-0.5 inline-block min-w-[3ch] border-b-2 px-1 text-center ${result === null ? "border-[color:var(--fluo-ink)] text-[color:var(--fluo-ink-soft)]" : isRight ? "border-emerald-500 text-emerald-700" : "border-rose-500 text-rose-700"}`}>
+        {result === null ? " " : gap}
+      </span>
+      {after}
+    </p>
+  ) : null;
+
+  // The popup form draws the rungs itself; the shell draws them on the page.
+  const rungsShown = ladder.shown.length > 0 && item ? (
+    <div className="mt-3 space-y-1">
+      {ladder.shown.map((r, k) => (
+        <p key={k} lang="fr" className="rounded-lg bg-[color:var(--cahier-hl)]/30 px-2 py-1 text-sm text-[color:var(--cahier-ink)]">
+          {r.text}
+        </p>
+      ))}
+    </div>
+  ) : null;
+  const why = item?.example ? (
+    <p lang="fr"><span className="font-bold">{item.example}</span>{item.exampleEn && <span className="ml-2 opacity-70">— {item.exampleEn}</span>}</p>
+  ) : undefined;
+
+  // Word-bank distractors: the deck's OTHER gaps — the grammar words the
+  // learner is actually choosing between (du / de la / des / d'…).
+  const bankPool = item
+    ? deck.items.filter((it) => isPlayableGap(it) && it.id !== item.id).map((it) => it.gap as string)
+    : [];
+
+  // Typing above sm; word-bank tiles below it (patch 20–21) — one `value`,
+  // so grading/XP/evidence never know which surface produced the string.
+  const answerInput = (
+    <>
+      <input
+        ref={inputRef}
+        lang="fr"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        disabled={result !== null}
+        placeholder="the missing word…"
+        className={`cahier-answer hidden w-full sm:block ${result === null ? "" : isRight ? "!border-emerald-500 !text-emerald-700" : "!border-rose-500 !text-rose-700"}`}
+        autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
+      />
+      <div className="sm:hidden">
+        <WordBank answer={gap} pool={bankPool} value={value} onChange={setValue} disabled={result !== null} />
+      </div>
+    </>
+  );
+
+  if (!embedded) {
+    // Full page = DrillShell (patch 20–21): the shell owns progress, Check,
+    // the hint (as the 40/60 secondary) and the feedback tray.
+    return (
+      <DrillShell
+        activity="grammarathon"
+        deck={collectionId}
+        exitHref={drillExitHref(collectionId)}
+        progress={done ? null : { done: i, total }}
+        right={<>✓ {score.ok}</>}
+        cta={
+          done
+            ? { label: "↻ Again", onClick: restart }
+            : result === null && !retry
+              ? { label: "Check", onClick: check, disabled: !value.trim() }
+              : null
+        }
+        help={done ? null : ladder.help}
+        feedback={
+          retry && item
+            ? {
+                kind: "wrong",
+                body: ladder.revealed
+                  ? <><span lang="fr">→ {gap}</span><button type="button" onClick={() => speak(gapSentence(item), "fr-FR")} className="ml-2 text-base opacity-70 hover:opacity-100" title="Hear it">🔊</button></>
+                  : "Not yet",
+                cta: { label: ladder.revealed ? "Type it" : "Try again", onClick: tryAgain },
+              }
+            : result === null || !item
+            ? null
+            : {
+                kind: isRight ? "correct" : "wrong",
+                body: (
+                  <>
+                    {isRight ? (result === "good" ? "Bien ! (accent differs)" : "Parfait !") : null}
+                    {result !== "perfect" && <span lang="fr" className="ml-1">→ {gap}</span>}
+                    <button type="button" onClick={() => speak(gapSentence(item), "fr-FR")} className="ml-2 text-base opacity-70 hover:opacity-100" title="Hear it">🔊</button>
+                  </>
+                ),
+                why,
+                cta: { label: i + 1 >= total ? "Finish" : "Continue", onClick: next },
+              }
+        }
+      >
+        {done ? (
+          <div className="text-center">
+            <p className="text-4xl" aria-hidden>🎉</p>
+            <p className="mt-2 text-2xl font-black text-[color:var(--cahier-ink)]">✓ {score.ok}/{total}</p>
+            <p lang="fr" className="mt-1 text-sm font-bold text-[color:var(--cahier-ink)]/60">{deck.title}</p>
+          </div>
+        ) : item ? (
+          <div>
+            {sentence}
+            <p className="mt-1 text-sm text-[color:var(--fluo-ink-soft)]">{item.en}</p>
+            <div className="mt-5">{answerInput}</div>
+          </div>
+        ) : null}
+      </DrillShell>
+    );
+  }
+
+  return (
       <div className="mx-auto max-w-lg px-4 py-6">
         <h1 className="fluo-serif text-2xl font-black text-[color:var(--fluo-ink)]">🏃 GramMarathon</h1>
         <p lang="fr" className="mt-1 mb-5 text-sm text-[color:var(--fluo-ink-soft)]">{deck.title}</p>
@@ -127,72 +291,31 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
           </div>
         ) : item ? (
           <div className="rounded-2xl border-2 bg-[var(--fluo-card)] p-4" style={{ borderColor: "var(--fluo-line)" }}>
-            <p lang="fr" className="mt-1 text-xl font-black text-[color:var(--fluo-ink)]">
-              {before}
-              <span className={`mx-0.5 inline-block min-w-[3ch] border-b-2 px-1 text-center ${result === null ? "border-[color:var(--fluo-ink)] text-[color:var(--fluo-ink-soft)]" : isRight ? "border-emerald-500 text-emerald-700" : "border-rose-500 text-rose-700"}`}>
-                {result === null ? " " : gap}
-              </span>
-              {after}
-            </p>
+            {sentence}
             <p className="mt-1 text-sm text-[color:var(--fluo-ink-soft)]">{item.en}</p>
-            {clue > 0 && (
-              <div className="mt-3 space-y-1">
-                {shownRungs(ladderForItem(), clue).map((r, k) => (
-                  <p key={k} lang="fr" className="rounded-lg bg-amber-50 px-2 py-1 text-sm text-amber-900">
-                    {r.text}
-                  </p>
-                ))}
-              </div>
-            )}
+            {rungsShown}
 
-            <form onSubmit={(e) => { e.preventDefault(); result === null ? check() : next(); }} className="mt-4">
-              <input
-                ref={inputRef}
-                lang="fr"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                disabled={result !== null}
-                placeholder="le mot qui manque…"
-                className={`cahier-answer w-full ${result === null ? "" : isRight ? "!border-emerald-500 !text-emerald-700" : "!border-rose-500 !text-rose-700"}`}
-                autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
-              />
+            <form onSubmit={(e) => { e.preventDefault(); retry ? tryAgain() : result === null ? check() : next(); }} className="mt-4">
+              {answerInput}
               {result === null ? (
                 <>
-                  <button type="submit" className="fluo-btn mt-3 w-full">Check</button>
-                  {clue < ladderForItem().length && (
+                  {retry && <p className="mt-2 text-sm font-bold text-[color:var(--drill-bad-ink)]">✗ Not yet</p>}
+                  <button type="submit" className="fluo-btn mt-3 w-full">{retry ? "Try again" : "Check"}</button>
+                  {ladder.help?.label && (
                     <button
                       type="button"
-                      onClick={() => {
-                        const rungs = ladderForItem();
-                        const next = Math.min(rungs.length, clue + 1);
-                        setClue(next);
-                        const rung = rungs[next - 1]?.level ?? "nudge";
-                        void import("@/lib/firebase/usage")
-                          .then((m) =>
-                            m.logEvent(rung === "answer" ? "answer.reveal" : "hint.tap", {
-                              surface: "grammarathon",
-                              itemId: item.id,
-                              deck: collectionId,
-                              rung,
-                              level: next,
-                            }),
-                          )
-                          .catch(() => {});
-                      }}
-                      className="mt-2 w-full rounded-full border-2 border-amber-300 bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-800"
+                      onClick={ladder.climb}
+                      disabled={ladder.help.disabled}
+                      className="mt-2 w-full rounded-full border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-1.5 text-xs font-bold text-[color:var(--cahier-ink)] disabled:opacity-40"
                     >
-                      {clue === 0
-                        ? "💡 un indice"
-                        : clue >= ladderForItem().length - 1
-                          ? "✅ voir la réponse"
-                          : "💡 encore un indice"}
+                      ? {ladder.help.label}
                     </button>
                   )}
                 </>
               ) : (
                 <>
                   <div className={`mt-3 flex items-center gap-2 rounded-xl border-2 px-3 py-2 text-sm font-bold ${isRight ? "border-emerald-300 bg-emerald-50 text-emerald-700" : "border-rose-300 bg-rose-50 text-rose-700"}`}>
-                    <span>{isRight ? (result === "good" ? "✅ Bien ! (accent différent)" : "✅ Parfait !") : "❌"}</span>
+                    <span>{isRight ? (result === "good" ? "✅ Bien ! (accent differs)" : "✅ Parfait !") : "❌"}</span>
                     {result !== "perfect" && <span lang="fr" className="text-[color:var(--fluo-ink)]">→ {gap}</span>}
                     <button type="button" onClick={() => speak(gapSentence(item), "fr-FR")} className="ml-auto text-base opacity-70 hover:opacity-100" title="Hear it">🔊</button>
                   </div>
@@ -206,15 +329,5 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
           </div>
         ) : null}
       </div>
-  );
-  if (embedded) return body;
-  return (
-    <CahierShell
-      tabs={tabs}
-      active="grammarathon"
-      topRight={!done ? <span className="fluo-mono text-sm font-bold">{i}/{total} · ✓ {score.ok}</span> : null}
-    >
-      {body}
-    </CahierShell>
   );
 }

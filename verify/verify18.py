@@ -70,5 +70,5 @@ if bad:
     print(f"{bad} learner-facing page(s) ship a student's email. DO NOT DEPLOY.")
     sys.exit(1)
 print("No learner-facing page ships a student's email address.")
-print("NOTE: /teacher is still a public static page and its own chunk still")
-print("carries rosterPrivate.ts. That is a separate, larger fix.")
+print("NOTE: verify18b.py covers the rest of the CDN — /teacher included —")
+print("since the roster maps moved to Firestore (admin/rosterPrivate).")

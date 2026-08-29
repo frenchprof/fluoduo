@@ -141,6 +141,9 @@ export type FreshOpts = {
   nextSeed?: () => number;
   /** How many candidate texts to try before giving up. */
   tries?: number;
+  /** Force a scenario instead of drawing one — the topic picker's choice
+   *  (2026-08-22). Undefined keeps the old behaviour: any of the unit's. */
+  scenarioId?: string;
 };
 
 /**
@@ -160,7 +163,7 @@ export function generateUnheard(gen: UnitTextGen, opts: FreshOpts): FreshResult 
   let bestRepeats = Infinity;
 
   for (let attempt = 0; attempt < tries; attempt++) {
-    const text = generateText(gen, { sentences: opts.sentences, seed: nextSeed() });
+    const text = generateText(gen, { sentences: opts.sentences, seed: nextSeed(), scenarioId: opts.scenarioId });
     const repeats = text.sentences.filter((s) => opts.heard.has(fingerprint(s.fr))).length;
     if (repeats === 0) return { text, fresh: true, rejected: attempt };
     if (repeats < bestRepeats) {

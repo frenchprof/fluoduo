@@ -8,10 +8,14 @@ import { bareWord } from "@/lib/collections/display";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { recordItemResult } from "@/lib/progress";
+import { hintsFor } from "@/lib/help/hints";
+import { useHelpLadder } from "@/lib/help/useHelpLadder";
 import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import { logEvent } from "@/lib/firebase/usage";
 import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
+import DrillShell, { drillExitHref } from "@/components/DrillShell";
 import type { PracticeChoice, PracticeItem, PracticeSet } from "@/lib/practice/engine";
+import { shuffle } from "@/lib/shuffle";
 
 const TTS_KEY = "fluolingo.practiceTts.v1";
 
@@ -24,13 +28,13 @@ export default function PracticePage({ collectionId, embedded = false }: { colle
 
   if (!practiceSet) {
     if (embedded) {
-      return <p className="py-10 text-center text-sm text-[color:var(--fluo-ink-soft)]">No dice practice for this deck yet.</p>;
+      return <p className="py-10 text-center text-sm text-[color:var(--fluo-ink-soft)]">No sorting exercise for this deck yet.</p>;
     }
     return (
-      <CahierShell tabs={tabs} active="dice" crumb="🎲 Practice">
+      <CahierShell tabs={tabs} active="dice">
         <div className="mx-auto max-w-3xl px-4 py-10">
           <div className="rounded-2xl border-2 border-slate-200 bg-white p-10 text-center">
-            <div className="text-6xl" aria-hidden>🎲</div>
+            <div className="text-6xl" aria-hidden>🗂️</div>
             <h2 className="mt-3 text-xl font-black text-slate-900">
               No practice available
             </h2>
@@ -39,7 +43,7 @@ export default function PracticePage({ collectionId, embedded = false }: { colle
               <code className="rounded bg-slate-100 px-1.5 py-0.5">
                 {collectionId}
               </code>{" "}
-              doesn't have a dice-practice configuration yet.
+              doesn't have sorting groups yet.
             </p>
             <div className="mt-5 flex justify-center gap-3">
               <Link href="/" className="fluo-btn fluo-btn-ghost">
@@ -53,23 +57,13 @@ export default function PracticePage({ collectionId, embedded = false }: { colle
   }
 
   if (embedded) return <PracticeRunner set={practiceSet} />;
-  return (
-    <CahierShell tabs={tabs} active="dice" crumb={`🎲 Practice · ${practiceSet.title}`}>
-      <PracticeRunner set={practiceSet} />
-    </CahierShell>
-  );
+  // Full page = DrillShell (patch 20–21) — no unit map, no popup, the first
+  // question is the first thing on screen.
+  return <PracticeRunner set={practiceSet} inShell />;
 }
 
-function shuffle<T>(arr: T[]): T[] {
-  const out = [...arr];
-  for (let i = out.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [out[i], out[j]] = [out[j], out[i]];
-  }
-  return out;
-}
 
-function PracticeRunner({ set }: { set: PracticeSet }) {
+function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: boolean }) {
   const [queue, setQueue] = useState<PracticeItem[]>([]);
   const [step, setStep] = useState(0);
   // First-attempt verdict per item id — drives the score AND which items get
@@ -77,7 +71,17 @@ function PracticeRunner({ set }: { set: PracticeSet }) {
   const [firstResults, setFirstResults] = useState<Record<string, boolean>>({});
   const [reviewRound, setReviewRound] = useState(false);
   const [submitted, setSubmitted] = useState<Verdict | null>(null);
+  // Select-then-commit (patch 20–21, DrillShell only): tapping an option
+  // SELECTS it; the shell's Vérifier COMMITS. Six drills had four different
+  // interaction grammars — this is the one the shell standardizes on. The
+  // SioModal-embedded form keeps instant-commit until the drill popup itself
+  // is retired (patch 22 took only the LESSON out of the popup).
+  const [selected, setSelected] = useState<PracticeChoice | null>(null);
   const [ttsOn, setTtsOn] = useState(true);
+  // Track D: a wrong pick that is NOT final — the pick is struck, the
+  // learner picks again (≥ 3 options). `struck` = keys out of play.
+  const [retry, setRetry] = useState(false);
+  const [struck, setStruck] = useState<string[]>([]);
 
   // Shuffle on mount (client-side only — avoids SSR hydration mismatch).
   useEffect(() => {
@@ -121,6 +125,27 @@ function PracticeRunner({ set }: { set: PracticeSet }) {
     [item],
   );
 
+  // The help ladder (Track D). MCQ has no cold hint: the first rung is the
+  // struck wrong pick; with ≥ 4 options a second strikes down to two.
+  const hints = useMemo(
+    () => (item ? hintsFor("mcq", { answer: item.correctLabel, options: choices.map((c) => c.label) }) : []),
+    [item, choices],
+  );
+  const ladder = useHelpLadder({
+    kind: "mcq",
+    itemKey: item ? `${item.id}:${step}` : null,
+    itemId: item?.id,
+    surface: "dice",
+    hints,
+    reveal: item?.correctLabel ?? "",
+    enabled: inShell && !done && !!item,
+  });
+  const eliminatedKeys = useMemo(
+    () => choices.filter((c) => ladder.eliminated.includes(c.label) && item && c.key !== item.correctColKey).map((c) => c.key),
+    [choices, ladder.eliminated, item],
+  );
+  const outOfPlay = useMemo(() => [...new Set([...struck, ...eliminatedKeys])], [struck, eliminatedKeys]);
+
   useEffect(() => {
     if (submitted?.correct && ttsOn && item) {
       speak(item.ttsText, "fr-FR");
@@ -140,26 +165,52 @@ function PracticeRunner({ set }: { set: PracticeSet }) {
     count: choices.length,
     enabled: !!item,
     onPick: (i) => { if (choices[i]) pick(choices[i]); },
-    onNext: () => { if (submitted) next(); },
+    // In DrillShell the shell's own Enter/Space binding fires the tray CTA —
+    // a second Enter handler here would advance twice.
+    onNext: inShell ? undefined : () => { if (submitted) next(); },
     onSpeak: () => { if (item) speak(item.ttsText, "fr-FR"); },
   });
 
+  /** Tap: instant-commit in the popup, select in the shell. */
   function pick(choice: PracticeChoice) {
+    if (submitted || !item) return;
+    if (inShell) { setSelected(choice); return; }
+    commit(choice);
+  }
+
+  function commit(choice: PracticeChoice) {
     if (submitted || !item) return;
     const correct = choice.key === item.correctColKey;
     if (correct) sfx.correct(); else sfx.wrong();
-    setSubmitted({ picked: choice.key, correct });
     if (!(item.id in firstResults)) {
       setFirstResults({ ...firstResults, [item.id]: correct });
     }
-    // Every attempt writes spacing state: a first-try miss resets the ladder,
-    // a correct review-round repair steps back to the 1-day rung.
-    recordItemResult(item.id, correct, undefined, `dice:${set.collectionId}`);
+    if (!inShell) {
+      // The popup keeps its one-shot grammar (no ladder there).
+      recordItemResult(item.id, correct, undefined, `dice:${set.collectionId}`);
+      setSubmitted({ picked: choice.key, correct });
+      return;
+    }
+    // Every attempt writes spacing state + evidence (via the ladder): a
+    // first-try miss resets the SRS ladder, a correct repair steps back to
+    // the 1-day rung — and a hinted item is queued for ReVue when it closes.
+    const r = ladder.attempt(correct, { given: choice.label, activity: `dice:${set.collectionId}` });
+    if (r.effect === "done" || r.effect === "reveal") {
+      setSubmitted({ picked: choice.key, correct });
+    } else {
+      setStruck((k) => [...k, choice.key]);
+      setSelected(null);
+      setRetry(true);
+    }
   }
 
   function next() {
     if (!submitted || !item) return;
+    ladder.skip();
     setSubmitted(null);
+    setSelected(null);
+    setRetry(false);
+    setStruck([]);
     if (step === queue.length - 1 && willReview) {
       setQueue([...queue, ...shuffle(missedSoFar)]);
       setReviewRound(true);
@@ -175,6 +226,9 @@ function PracticeRunner({ set }: { set: PracticeSet }) {
     setFirstResults({});
     setReviewRound(false);
     setSubmitted(null);
+    setSelected(null);
+    setRetry(false);
+    setStruck([]);
   }
 
   if (queue.length === 0) {
@@ -185,13 +239,67 @@ function PracticeRunner({ set }: { set: PracticeSet }) {
     );
   }
 
+  if (inShell) {
+    return (
+      <DrillShell
+        activity="dice"
+        deck={set.collectionId}
+        exitHref={drillExitHref(set.collectionId)}
+        progress={done ? null : { done: step, total: queue.length }}
+        right={<>✓ {score}/{uniqueTotal}{inReview ? " · review" : ""}</>}
+        cta={
+          done
+            ? { label: "Sort again", onClick: restart }
+            : !submitted && !retry
+              ? { label: "Check", onClick: () => { if (selected) commit(selected); }, disabled: !selected }
+              : null
+        }
+        help={done ? null : ladder.help}
+        feedback={
+          !done && retry && !submitted
+            ? { kind: "wrong", body: "Not yet", cta: { label: "Pick again", onClick: () => setRetry(false) } }
+            : !done && submitted
+            ? {
+                kind: submitted.correct ? "correct" : "wrong",
+                body: (
+                  <>
+                    {submitted.correct ? "Correct !" : "The answer:"}{" "}
+                    <span lang="fr" className="font-extrabold">{item?.correctLabel}</span>
+                  </>
+                ),
+                cta: { label: isLast ? "🏁 See recap" : "Continue", onClick: next },
+              }
+            : null
+        }
+      >
+        {!done && item && (
+          <ItemCard
+            item={item}
+            choices={choices}
+            submitted={submitted}
+            selected={selected}
+            struck={outOfPlay}
+            onPick={pick}
+            onNext={next}
+            onSpeak={() => ttsOn && item && speak(item.ttsText, "fr-FR")}
+            isLast={isLast}
+            inline={false}
+            ttsOn={ttsOn}
+            onToggleTts={() => setTtsOn((v) => !v)}
+          />
+        )}
+        {done && <Recap score={score} total={uniqueTotal} onRestart={restart} inShell />}
+      </DrillShell>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
       <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-3xl font-black text-slate-900">{set.title}</h1>
           <p className="mt-1 text-base text-slate-600">
-            {set.prompt ?? "Dice practice — sort each item into its correct group."}
+            {set.prompt ?? "Sort each item into its correct group."}
           </p>
         </div>
         <button
@@ -272,21 +380,36 @@ function ItemCard({
   item,
   choices,
   submitted,
+  selected = null,
+  struck = [],
   onPick,
   onNext,
   onSpeak,
   isLast,
+  /** false under DrillShell: the shell renders the verdict tray and the
+   *  Next CTA, so the card is the prompt and the options only. */
+  inline = true,
+  ttsOn,
+  onToggleTts,
 }: {
   item: PracticeItem;
   choices: PracticeChoice[];
   submitted: Verdict | null;
+  /** Shell mode only: the picked-but-not-committed option. */
+  selected?: PracticeChoice | null;
+  /** Shell mode only: option keys the ladder has struck out (wrong picks,
+   *  eliminated distractors). Disabled and dimmed. */
+  struck?: string[];
   onPick: (c: PracticeChoice) => void;
   onNext: () => void;
   onSpeak: () => void;
   isLast: boolean;
+  inline?: boolean;
+  ttsOn?: boolean;
+  onToggleTts?: () => void;
 }) {
   return (
-    <article className="fluo-card fluo-h-2" data-hue={2}>
+    <article className={inline ? "fluo-card fluo-h-2" : undefined} data-hue={inline ? 2 : undefined}>
       {item.emoji && (
         <div className="my-2 text-center text-6xl" aria-hidden>
           {item.emoji}
@@ -299,7 +422,7 @@ function ItemCard({
       {/* bareWord: "chef (m)" would hand the learner the sorting answer */}
       <p className="mt-1 text-center text-base text-slate-500">{bareWord(item.en)}</p>
 
-      <div className="mt-3 flex justify-center">
+      <div className="mt-3 flex justify-center gap-2">
         <button
           type="button"
           onClick={onSpeak}
@@ -308,32 +431,49 @@ function ItemCard({
         >
           🔊 Listen
         </button>
+        {onToggleTts && (
+          <button
+            type="button"
+            onClick={onToggleTts}
+            title={ttsOn ? "TTS on — click to mute" : "TTS muted — click to enable"}
+            className={`rounded-full border-2 px-3 py-1.5 text-sm font-bold transition ${
+              ttsOn ? "border-emerald-300 bg-emerald-50 text-emerald-700" : "border-slate-200 bg-white text-slate-400"
+            }`}
+          >
+            {ttsOn ? "🔊" : "🔇"}
+          </button>
+        )}
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
         {choices.map((c, i) => {
           const isPicked = submitted?.picked === c.key;
           const isAnswer = c.key === item.correctColKey;
+          const isStruck = !submitted && struck.includes(c.key);
           let cls =
             "border-slate-200 bg-white text-slate-900 hover:border-slate-400";
-          if (submitted) {
+          if (isStruck) {
+            cls = "border-slate-200 bg-white text-slate-300 line-through";
+          } else if (submitted) {
             if (isAnswer)
               cls = "border-emerald-500 bg-emerald-50 text-emerald-900";
             else if (isPicked)
               cls = "border-rose-500 bg-rose-50 text-rose-900";
             else cls = "border-slate-200 bg-white text-slate-400";
+          } else if (selected?.key === c.key) {
+            cls = "answer-picked";
           }
           return (
             <button
               key={c.key}
               type="button"
               onClick={() => onPick(c)}
-              disabled={!!submitted}
+              disabled={!!submitted || isStruck}
               lang="fr"
               className={`rounded-xl border-2 px-4 py-3 text-center text-lg font-extrabold transition ${cls}`}
             >
               {/* The 1-4 keys answer (useChoiceKeys) — show them (Dan, 2026-07-16). */}
-              <span aria-hidden className="mr-2 align-middle text-xs font-bold opacity-50">{i + 1}</span>
+              <span aria-hidden className="answer-key mr-2 align-middle text-xs font-bold opacity-50">{i + 1}</span>
               {c.label}
               {submitted && isAnswer && (
                 <span className="ml-2" aria-hidden>
@@ -350,7 +490,7 @@ function ItemCard({
         })}
       </div>
 
-      {submitted && (
+      {inline && submitted && (
         <div
           className={`mt-5 rounded-xl border-2 p-3 text-sm font-bold ${
             submitted.correct
@@ -372,7 +512,7 @@ function ItemCard({
         </div>
       )}
 
-      {submitted && (
+      {inline && submitted && (
         <div className="mt-5 flex justify-end">
           <button type="button" onClick={onNext} className="fluo-btn fluo-btn-lg">
             {isLast ? "🏁 See recap" : "Next →"}
@@ -387,39 +527,45 @@ function Recap({
   score,
   total,
   onRestart,
+  /** true under DrillShell: the shell's CTA is the Roll-again and its ✕ is
+   *  the exit, so the card carries no buttons of its own. */
+  inShell = false,
 }: {
   score: number;
   total: number;
   onRestart: () => void;
+  inShell?: boolean;
 }) {
   const pct = Math.round((score / total) * 100);
   return (
-    <article className="fluo-card fluo-h-5" data-hue={5}>
+    <article className={inShell ? undefined : "fluo-card fluo-h-5"} data-hue={inShell ? undefined : 5}>
       <div className="text-center">
         <div className="text-6xl" aria-hidden>
-          {pct === 100 ? "🏆" : pct >= 75 ? "🎉" : pct >= 50 ? "💪" : "🎲"}
+          {pct === 100 ? "🏆" : pct >= 75 ? "🎉" : pct >= 50 ? "💪" : "🗂️"}
         </div>
         <h2 className="mt-2 text-2xl font-black text-slate-900">
           {score} / {total} correct
         </h2>
         <p className="text-slate-600">
           {pct === 100
-            ? "Parfait. Roll again to stay sharp."
+            ? "Parfait. Go again to stay sharp."
             : pct >= 75
               ? "Strong round — one more pass on the tricky ones."
               : pct >= 50
-                ? "Getting there. Roll again."
-                : "Keep rolling — repetition is the game."}
+                ? "Getting there. Go again."
+                : "Keep going — repetition is the game."}
         </p>
       </div>
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-        <button type="button" onClick={onRestart} className="fluo-btn fluo-btn-lg">
-          🎲 Roll again
-        </button>
-        <Link href="/" className="fluo-btn fluo-btn-ghost">
-          ← Back to lessons
-        </Link>
-      </div>
+      {!inShell && (
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <button type="button" onClick={onRestart} className="fluo-btn fluo-btn-lg">
+            Sort again
+          </button>
+          <Link href="/" className="fluo-btn fluo-btn-ghost">
+            ← Back to lessons
+          </Link>
+        </div>
+      )}
     </article>
   );
 }

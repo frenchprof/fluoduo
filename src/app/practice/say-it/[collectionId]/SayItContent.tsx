@@ -2,16 +2,25 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { CURATED } from "@/content/collections";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { logEvent } from "@/lib/firebase/usage";
-import CahierShell, { deckActivityTabs, withActive } from "@/components/CahierShell";
+import DrillShell, { drillExitHref } from "@/components/DrillShell";
+import SessionMap, { type Mark } from "@/components/SessionMap";
+import SpeechMeter from "@/components/SpeechMeter";
 import { practiceItems } from "@/lib/collections/display";
 import { recordItemResult } from "@/lib/progress";
+import { hintsFor } from "@/lib/help/hints";
+import { useHelpLadder, type HelpLadderApi } from "@/lib/help/useHelpLadder";
+import { deaccent, normalize } from "@/lib/practice/cloze";
+import { reviserHref } from "@/lib/reviser";
 import type { Collection, Item } from "@/lib/collections/schema";
+import { shuffle } from "@/lib/shuffle";
+import { cap, offer, type SessionLength } from "@/lib/sessionLength";
+import HowManyQuestions from "@/components/HowManyQuestions";
 
 type Phase = "idle" | "listening" | "result";
 type Grade = "perfect" | "good" | "homophone" | "close" | "miss";
@@ -28,29 +37,11 @@ function frFull(article: string, fr: string): string {
   return article.endsWith("'") ? `${article}${fr}` : `${article} ${fr}`;
 }
 
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
 
-function normalize(s: string) {
-  return s
-    .toLowerCase()
-    .trim()
-    // hyphens → space so "dix-sept" matches a spoken "dix sept"
-    .replace(/[-–—]/g, " ")
-    .replace(/[.,!?;:'"«»()]/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function deaccent(s: string) {
-  return s.normalize("NFD").replace(/[̀-ͯ]/g, "");
-}
+// The private normalize/deaccent (byte-clones of cloze.ts) died in the
+// grading unification (2026-08-11) — the transforms come from THE grader in
+// lib/practice/cloze.ts. Only the SPEECH policy below stays local: it sits
+// on top of the shared normalizer, never beside it.
 
 /** SPEECH-only tolerance: French silent endings make "il s'appelle" and
  *  "ils s'appellent" perfect homophones — the recognizer picks a spelling,
@@ -97,24 +88,44 @@ function gradeAnswer(recognized: string, expected: string, expectedAlt?: string)
 
 const GRADE_UI: Record<Grade, { icon: string; label: string; cls: string }> = {
   perfect: { icon: "✅", label: "Parfait !", cls: "text-emerald-700 bg-emerald-50 border-emerald-300" },
-  good: { icon: "✅", label: "Bien ! (accent différent)", cls: "text-emerald-700 bg-emerald-50 border-emerald-300" },
-  homophone: { icon: "✅", label: "Parfait ! (même prononciation)", cls: "text-emerald-700 bg-emerald-50 border-emerald-300" },
+  good: { icon: "✅", label: "Bien ! (accent differs)", cls: "text-emerald-700 bg-emerald-50 border-emerald-300" },
+  homophone: { icon: "✅", label: "Parfait ! (same pronunciation)", cls: "text-emerald-700 bg-emerald-50 border-emerald-300" },
   close: { icon: "🟡", label: "Presque !", cls: "text-amber-700 bg-amber-50 border-amber-300" },
-  miss: { icon: "❌", label: "Pas tout à fait…", cls: "text-rose-700 bg-rose-50 border-rose-300" },
+  miss: { icon: "❌", label: "Not quite…", cls: "text-rose-700 bg-rose-50 border-rose-300" },
 };
+
+/** perfect/good/homophone all mean "said it" — the session map is not the
+ *  place to re-litigate an accent. */
+function markFor(g: Grade): Mark {
+  if (g === "perfect" || g === "good" || g === "homophone") return "ok";
+  return g === "close" ? "shaky" : "bad";
+}
 
 export default function SayItContent({
   collectionId,
   embedded = false,
   deckOverride,
+  variant = "default",
+  onExit,
 }: {
   collectionId: string;
   embedded?: boolean;
   /** A synthetic deck (the Marathon oral compiles every deck into one) —
    *  items arrive with articles already baked into fr. */
   deckOverride?: Collection;
+  /** "wordrill" = the patch-31 layout: EN/FR prompt switch, session map, live
+   *  meter, the help ladder on 🔤. It is a variant, NOT a new value of
+   *  `embedded` — SioModal is embedded too and must keep the popup look. */
+  variant?: "default" | "wordrill";
+  /** WorDrill's ✕ returns to its scope picker rather than leaving the page. */
+  onExit?: () => void;
 }) {
   const deck = deckOverride ?? CURATED.find((c) => c.id === collectionId);
+  const isWorDrill = variant === "wordrill";
+  // The ladder is the recording path too (it queues hinted items for ReVue),
+  // so WorDrill joins the standalone page in using it. SioModal's popup keeps
+  // the old direct-record path — it has no shell bar to hang rungs off.
+  const ladderOn = !embedded || isWorDrill;
 
   // A run is a working queue, NOT an endless carousel (Dan, 2026-07-03: "there
   // should be a natural end rather than looping continuously"). `card` is on
@@ -128,17 +139,46 @@ export default function SayItContent({
   const [queue, setQueue] = useState<Item[]>([]);
   const [trail, setTrail] = useState<{ it: Item; skipped: boolean }[]>([]);
   const [finished, setFinished] = useState(false);
+  // Every graded word, in the order it was answered — the session map reads
+  // the marks, the done screen reads the misses. Skips are not in here: a
+  // deferred word was never answered, so it has no outcome to show.
+  const [log, setLog] = useState<{ it: Item; mark: Mark }[]>([]);
+  // Which language the PROMPT shows. The mic always grades French — EN is
+  // recall, FR is read-aloud, same word, same grader (hence the FR badge).
+  const [promptLang, setPromptLang] = useState<"en" | "fr">("en");
+
+  // How long this run is (Dan, 2026-08-25). This is the drill that most needed
+  // it: WorDrill's "Tout" scope compiles EVERY curated deck into one run, so
+  // without a cap the finish line was hundreds of words away. `cards` stays
+  // the whole compiled deck; `runTotal` is what the learner actually signed
+  // up for, and every progress readout counts against that rather than the
+  // deck — a bar filling towards a number nobody chose is not progress.
+  const [asked, setAsked] = useState(false);
+  const [runTotal, setRunTotal] = useState(0);
+
+  /** Seed the working queue from `list`, cut to `choice`. */
+  const seedRun = useCallback((list: Item[], choice: SessionLength) => {
+    const run = cap(list, choice);
+    setRunTotal(run.length);
+    setCard(run[0] ?? null);
+    setQueue(run.slice(1));
+    setTrail([]);
+    setLog([]);
+    setFinished(false);
+  }, []);
 
   // Shuffle on mount only — shuffling during render breaks SSR hydration
   // (the AGENTS/handoff "no Math.random() during render" rule).
   useEffect(() => {
     const list = deck ? shuffle(practiceItems(deck).filter((i) => i.fr)) : [];
     setCards(list);
-    setCard(list[0] ?? null);
-    setQueue(list.slice(1));
-    setTrail([]);
-    setFinished(false);
-  }, [deck]);
+    // A deck short enough not to need the question is answered for the
+    // learner, and the run starts immediately.
+    const skip = offer(list.length) === null;
+    setAsked(skip);
+    if (skip) seedRun(list, null);
+    else { setCard(null); setQueue([]); setTrail([]); setLog([]); setFinished(false); setRunTotal(0); }
+  }, [deck, seedRun]);
 
   const [phase, setPhase] = useState<Phase>("idle");
   // Peek at the French (Dan, 2026-07-15: "a button to see the French words
@@ -153,6 +193,24 @@ export default function SayItContent({
   phaseRef.current = phase;
   const cardRef = useRef<Item | null>(null);
   cardRef.current = card;
+
+  // The help ladder (Track D) — standalone (shell) runs only. Rungs: how
+  // the word starts, its skeleton, then the written form (the older 🔤
+  // peek, now recorded as the answer rung). Two misses climb by themselves.
+  const expectedFr = card && deck ? frFull(articleOf(deck, card), card.fr) : card?.fr ?? "";
+  const hints = useMemo(() => hintsFor("say", { answer: expectedFr }), [expectedFr]);
+  const ladder = useHelpLadder({
+    kind: "say",
+    itemKey: card?.id ?? null,
+    itemId: card?.id,
+    surface: "say-it",
+    hints,
+    reveal: expectedFr,
+    enabled: ladderOn && !finished && !!card,
+  });
+  const ladderRef = useRef<HelpLadderApi>(ladder);
+  ladderRef.current = ladder;
+  const peek = ladderOn ? ladder.revealed : revealed;
 
   useEffect(() => {
     const win = window as any;
@@ -193,6 +251,7 @@ export default function SayItContent({
   // comes off the queue, or — when the queue is empty — the run ends.
   const next = useCallback(() => {
     resetTurn();
+    ladderRef.current.skip();
     if (card) setTrail((t) => [...t, { it: card, skipped: false }]);
     if (queue.length > 0) {
       setCard(queue[0]);
@@ -243,18 +302,20 @@ export default function SayItContent({
   }, [stopRec, score.total]);
 
   const restart = useCallback(() => {
+    // A replay reshuffles and asks again — someone who did ten may want
+    // twenty-five next, and re-asking costs one tap.
     const list = shuffle(cards);
     setCards(list);
-    setCard(list[0] ?? null);
-    setQueue(list.slice(1));
-    setTrail([]);
+    const skip = offer(list.length) === null;
+    setAsked(skip);
+    if (skip) seedRun(list, null);
+    else { setCard(null); setQueue([]); setTrail([]); setLog([]); setFinished(false); setRunTotal(0); }
     setScore({ ok: 0, total: 0 });
-    setFinished(false);
     setPhase("idle");
     setRevealed(false);
     setTranscript("");
     setResult(null);
-  }, [cards]);
+  }, [cards, seedRun]);
 
   const startListening = useCallback(() => {
     const c = cardRef.current;
@@ -291,11 +352,19 @@ export default function SayItContent({
         // Jingle first, independent of any TTS — short enough not to clash.
         if (ok) sfx.correct(); else sfx.wrong();
         setResult({ grade: g, recognized: t });
-        setScore((s) => ({ ok: s.ok + (ok ? 1 : 0), total: s.total + 1 }));
         // Feed the Reviser: a miss (or a partial "close") resurfaces the word;
         // a clean say advances its spacing ladder. Say It items are curated deck
-        // items, so their ids line up with the Reviser's review queue.
-        if (c.id) recordItemResult(c.id, ok, t, `say-it:${collectionId}`);
+        // items, so their ids line up with the Reviser's review queue. The
+        // ladder records it (with the help actually shown) and, when help
+        // was taken, queues it for ReVue. First try only scores.
+        const L = ladderRef.current;
+        const first = L.ladder.wrongTries === 0 && !L.revealed;
+        if (first || !ladderOn) setScore((s) => ({ ok: s.ok + (ok ? 1 : 0), total: s.total + 1 }));
+        if (first || !ladderOn) setLog((l) => [...l, { it: c, mark: markFor(g) }]);
+        if (c.id) {
+          if (!ladderOn) recordItemResult(c.id, ok, t, `say-it:${collectionId}`);
+          else L.attempt(ok, { given: t, activity: `say-it:${collectionId}` });
+        }
         return t;
       });
     };
@@ -306,11 +375,17 @@ export default function SayItContent({
         setPhase("result");
         sfx.wrong();
         setResult({ grade: "miss", recognized: "(rien entendu)" });
-        setScore((s) => ({ ...s, total: s.total + 1 }));
-        if (c.id) recordItemResult(c.id, false, "(rien entendu)", `say-it:${collectionId}`);
+        const L = ladderRef.current;
+        const firstTry = L.ladder.wrongTries === 0 || !ladderOn;
+        if (firstTry) setScore((s) => ({ ...s, total: s.total + 1 }));
+        if (firstTry) setLog((l) => [...l, { it: c, mark: "bad" }]);
+        if (c.id) {
+          if (!ladderOn) recordItemResult(c.id, false, "(rien entendu)", `say-it:${collectionId}`);
+          else L.attempt(false, { given: "(rien entendu)", activity: `say-it:${collectionId}` });
+        }
       } else if (e.error === "not-allowed") {
         setPhase("idle");
-        alert("Veuillez autoriser l'accès au microphone dans votre navigateur.");
+        alert("Please allow microphone access in your browser.");
       } else {
         setPhase("idle");
       }
@@ -328,33 +403,117 @@ export default function SayItContent({
     speak(deck ? frFull(articleOf(deck, c), c.fr) : c.fr, "fr-FR");
   }, [deck]);
 
-  // Every function has a key (Dan, 2026-07-15): Space drives the mic (and
-  // retries from the result card), Enter advances, and the letters mirror
-  // the buttons — R écouter, V voir, S skip, B back, E end.
+  // Every function has a key (Dan, 2026-07-15): Space drives the mic, and
+  // the letters mirror the buttons — R écouter, V voir, S skip, B back,
+  // E end. On the RESULT card, standalone runs live inside DrillShell, whose
+  // single Enter/Space binding fires Continue — this handler stands down
+  // there (a second handler would retry AND advance on the same keypress).
+  // Embedded (SioModal) keeps the old Space-retry / Enter-next pair.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const p = phaseRef.current;
       const k = e.key.toLowerCase();
       if (e.key === " " && p === "listening") { e.preventDefault(); stopRec(); return; }
-      if (e.key === " ") { e.preventDefault(); startListening(); return; } // idle start + result retry
-      if (e.key === "Enter" && p === "result") next();
+      if (e.key === " " && (p !== "result" || embedded)) { e.preventDefault(); startListening(); return; }
+      if (e.key === "Enter" && p === "result" && embedded) next();
       if (p === "listening") return; // no side actions while the mic is open
       if (k === "r") listenModel();
-      if (k === "v") setRevealed((r) => !r);
+      if (k === "v") { if (ladderOn) ladderRef.current.climb(); else setRevealed((r) => !r); }
       if (k === "s") skip();
       if (k === "b") back();
       if (k === "e") endNow();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [startListening, stopRec, next, listenModel, skip, back, endNow]);
+  }, [startListening, stopRec, next, listenModel, skip, back, endNow, embedded]);
 
-  const tabs = withActive(deckActivityTabs(collectionId), "say");
+  const answered = trail.filter((t) => !t.skipped).length;
+
+  // HOW LONG? — asked once, before any word. Three shapes, because this
+  // component runs in three frames: the drill page (DrillShell), the SIO
+  // popup (bare), and WorDrill (bare, but arrived at from a scope picker, so
+  // it keeps a way back — otherwise the one screen with no ✕ would be the one
+  // that opens a run of the entire curriculum).
+  if (!asked && cards.length > 0) {
+    const body = (
+      <>
+        <HowManyQuestions
+          lengths={offer(cards.length)!}
+          total={cards.length}
+          onPick={(n) => { setAsked(true); seedRun(cards, n); }}
+        />
+        {onExit && (
+          <div className="mt-5 text-center">
+            <button type="button" onClick={onExit} className="fluo-btn fluo-btn-sm">
+              ← Change scope
+            </button>
+          </div>
+        )}
+      </>
+    );
+    return embedded ? <div className="px-4 pb-6 pt-2">{body}</div> : (
+      <DrillShell
+        activity="wordrill"
+        deck={collectionId}
+        exitHref={drillExitHref(collectionId)}
+        progress={null}
+        cta={null}
+      >
+        {body}
+      </DrillShell>
+    );
+  }
+
+  const ui = result ? GRADE_UI[result.grade] : null;
+  const isCorrect = result?.grade === "perfect" || result?.grade === "good" || result?.grade === "homophone";
+
   // Embedded = floating inside the SIO popup (the unit page stays visible
-  // behind); the standalone page keeps the full CahierShell chrome.
-  const wrap = (body: React.ReactNode, topRight?: React.ReactNode) =>
-    embedded ? <>{body}</> : (
-      <CahierShell tabs={tabs} active="say" crumb="🎙️ WorDrill" topRight={topRight}>{body}</CahierShell>
+  // behind); standalone = DrillShell (patch 20–21), which owns progress,
+  // the score, the result tray and Continue.
+  const wrap = (body: React.ReactNode) =>
+    embedded ? (
+      <>{body}</>
+    ) : (
+      <DrillShell
+        activity="wordrill"
+        deck={collectionId}
+        exitHref={drillExitHref(collectionId)}
+        progress={finished ? null : { done: answered, total: runTotal }}
+        right={
+          <>
+            ✓ {score.ok}/{score.total}
+            {score.total > 0 && ` (${Math.round((score.ok / score.total) * 100)}%)`}
+          </>
+        }
+        cta={finished ? { label: "Restart", onClick: restart } : null}
+        help={finished ? null : ladder.help}
+        feedback={
+          !finished && phase === "result" && result && ui && card
+            ? {
+                kind: isCorrect ? "correct" : "wrong",
+                body: (
+                  <>
+                    {ui.icon} {ui.label}
+                    <span className="ml-2 font-medium">&ldquo;{result.recognized || "—"}&rdquo;</span>
+                    <span className="ml-2">
+                      →{" "}
+                      <span lang="fr" className="font-black">
+                        {deck ? frFull(articleOf(deck, card), card.fr) : card.fr}
+                      </span>
+                    </span>
+                    <button type="button" onClick={listenModel} className="ml-2 align-middle text-base opacity-70 hover:opacity-100" aria-label="Listen" title="Listen (R)">🔊</button>
+                    <button type="button" onClick={startListening} className="ml-3 rounded-full border-2 border-current px-2 py-0.5 text-xs font-bold" title="Try again">
+                      🎤 Try again
+                    </button>
+                  </>
+                ),
+                cta: { label: "Continue", onClick: next },
+              }
+            : null
+        }
+      >
+        {body}
+      </DrillShell>
     );
 
   if (!deck) {
@@ -380,39 +539,279 @@ export default function SayItContent({
     );
   }
 
-  const answered = trail.filter((t) => !t.skipped).length;
-  const ui = result ? GRADE_UI[result.grade] : null;
-  const isCorrect = result?.grade === "perfect" || result?.grade === "good" || result?.grade === "homophone";
+  /* ── WorDrill (patch 31) ────────────────────────────────────────────────
+     One cahier sheet inside the site chrome (Dan: "chrome: keep it, drill
+     sits inside"), so this draws its own bar rather than moving to
+     DrillShell, which is h-dvh and would take the whole viewport.
+     The controls say what the old prose said: no kicker, no "Tap to speak",
+     no keyboard legend — the mic, the switch and the rungs carry it. */
+  if (isWorDrill) {
+    const marks = log.map((l) => l.mark);
+    const missedIds = log.filter((l) => l.mark !== "ok").map((l) => l.it.id).filter(Boolean);
+    const frOf = (it: Item) => frFull(articleOf(deck, it), it.fr);
+
+    const langBtn = (v: "en" | "fr") => (
+      <button
+        type="button"
+        onClick={() => setPromptLang(v)}
+        aria-pressed={promptLang === v}
+        className={`px-3 py-1 text-[0.7rem] font-black transition ${
+          promptLang === v
+            ? "bg-[color:var(--cahier-ink)] text-[color:var(--cahier-hl)]"
+            : "bg-white text-[color:var(--cahier-ink-soft)]"
+        }`}
+      >
+        {v.toUpperCase()}
+      </button>
+    );
+
+    return (
+      <div className="mx-auto max-w-2xl px-4 pb-6 pt-2">
+        <div className="cahier-page overflow-hidden rounded-2xl border-2 border-[color:var(--cahier-ink)]/12 shadow-md">
+          {/* bar: exit · what the prompt shows · what you have said */}
+          <div className="flex h-14 items-center gap-3 border-b-2 border-[color:var(--cahier-ink)]/12 px-4">
+            <button
+              type="button"
+              onClick={onExit}
+              aria-label="Back to the scopes"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xl font-black text-[color:var(--cahier-ink)]/45 transition hover:bg-[color:var(--cahier-ink)]/10 hover:text-[color:var(--cahier-ink)]"
+            >
+              ✕
+            </button>
+            {!finished && (
+              <div className="inline-flex shrink-0 overflow-hidden rounded-full border-[1.5px] border-[color:var(--cahier-ink)]">
+                {langBtn("en")}
+                {langBtn("fr")}
+              </div>
+            )}
+            <span className="flex-1" />
+            <span className="fluo-mono shrink-0 text-sm font-bold text-[color:var(--tier-good)]">
+              ✓ {score.ok}
+              <span className="font-normal text-[color:var(--cahier-ink-soft)]">/{score.total}</span>
+            </span>
+          </div>
+
+          <div className="cahier-foolscap px-4 pb-5 pt-6 sm:px-6">
+            {finished ? (
+              /* ── the run, read back ──────────────────────────────────── */
+              <div className="text-center">
+                <p className="text-5xl font-black leading-none tracking-tight text-[color:var(--cahier-ink)]">
+                  {score.ok}
+                  <span className="text-2xl text-[color:var(--cahier-ink-soft)]">/{score.total}</span>
+                </p>
+                {log.length > 0 && (
+                  <SessionMap marks={marks} total={log.length} size={11} className="mx-auto mt-5 max-w-[290px]" />
+                )}
+                {log.some((l) => l.mark !== "ok") && (
+                  <div className="mt-5 overflow-hidden rounded-xl border-[1.5px] border-[color:var(--cahier-ink)]/16 bg-white text-left">
+                    {log
+                      .filter((l) => l.mark !== "ok")
+                      .map((l, i) => (
+                        <div
+                          key={`${l.it.id}-${i}`}
+                          className="flex items-center gap-2.5 border-b border-[color:var(--cahier-line)] px-3 py-2 last:border-b-0"
+                        >
+                          <span
+                            className="block h-[7px] w-[7px] shrink-0 rounded-full"
+                            style={{ background: l.mark === "bad" ? "var(--tier-weak)" : "var(--tier-medium)" }}
+                          />
+                          <span lang="fr" className="min-w-0 flex-1 truncate text-sm font-black">{frOf(l.it)}</span>
+                          <span className="shrink-0 text-xs text-[color:var(--cahier-ink-soft)]">{l.it.en}</span>
+                          <button
+                            type="button"
+                            onClick={() => speak(frOf(l.it), "fr-FR")}
+                            aria-label={`Listen to ${frOf(l.it)}`}
+                            className="shrink-0 text-base opacity-70 transition hover:opacity-100"
+                          >
+                            🔊
+                          </button>
+                        </div>
+                      ))}
+                  </div>
+                )}
+                <div className="mt-5 flex flex-wrap justify-center gap-2">
+                  <button type="button" onClick={restart} className="cahier-btn cahier-btn-accent cahier-btn-sm">Restart</button>
+                  {missedIds.length > 0 && (
+                    <Link href={reviserHref(missedIds)} className="cahier-btn cahier-btn-sm">
+                      Les {missedIds.length} ratés ›
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ) : card ? (
+              /* ── one word ─────────────────────────────────────────────── */
+              <div className="flex flex-col items-center">
+                {card.emoji && <span className="block text-4xl leading-none">{card.emoji}</span>}
+                <p
+                  lang={promptLang}
+                  className="mt-2.5 text-center text-[1.6rem] font-black leading-tight tracking-tight sm:text-[1.9rem]"
+                >
+                  {promptLang === "en" ? card.en : frOf(card)}
+                </p>
+                {ladder.help && ladder.help.shown.length > 0 && (
+                  <p
+                    lang="fr"
+                    className="cahier-hl mt-3 inline-block rounded-sm px-1.5 fluo-mono text-lg font-black"
+                    style={{ mixBlendMode: "multiply" }}
+                  >
+                    {ladder.help.shown[ladder.help.shown.length - 1].text}
+                  </p>
+                )}
+
+                {/* 🔊 · mic · 🔤 — the mic always grades French, whatever the
+                    prompt shows, which is what the FR badge is for. */}
+                <div className="mt-6 flex items-center gap-[18px]">
+                  <button
+                    type="button"
+                    onClick={listenModel}
+                    disabled={phase === "listening"}
+                    aria-label="Listen"
+                    title="Listen (R)"
+                    className="cahier-btn flex h-11 w-11 items-center justify-center !rounded-full !p-0 text-lg disabled:opacity-40 sm:h-[38px] sm:w-[38px] sm:text-base"
+                  >
+                    🔊
+                  </button>
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={phase === "listening" ? stopRec : startListening}
+                      aria-label={phase === "listening" ? "Stop" : "Start speaking"}
+                      className={`flex h-[76px] w-[76px] items-center justify-center rounded-full text-2xl shadow-lg transition active:scale-95 ${
+                        phase === "listening"
+                          ? "bg-[color:var(--drill-bad-mid)] text-white ring-4 ring-[color:var(--drill-bad-soft)]"
+                          : "bg-[color:var(--cahier-hl)] text-[color:var(--cahier-ink)] hover:brightness-95"
+                      }`}
+                    >
+                      {phase === "listening" ? "⏹" : "🎤"}
+                    </button>
+                    <span
+                      lang="fr"
+                      aria-hidden
+                      className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 rounded-full bg-[color:var(--cahier-ink)] px-1.5 text-[0.52rem] font-black tracking-[0.1em] text-[color:var(--cahier-hl)]"
+                    >
+                      FR
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => ladder.climb()}
+                    disabled={!ladder.help?.label || ladder.help?.disabled}
+                    aria-label={ladder.help?.label ?? "Show the word"}
+                    title={`${ladder.help?.label ?? "Show"} (V)`}
+                    className={`cahier-btn flex h-11 w-11 flex-col items-center justify-center gap-[2px] !rounded-full !p-0 disabled:opacity-40 sm:h-[38px] sm:w-[38px] ${
+                      peek ? "!bg-[color:var(--cahier-hl)]" : ""
+                    }`}
+                  >
+                    <span className="text-base leading-none sm:text-sm" aria-hidden>🔤</span>
+                    {ladder.help && (
+                      <span className="flex gap-[2px]" aria-hidden>
+                        {Array.from({ length: ladder.help.hintsAvail + 1 }, (_, k) => {
+                          const isReveal = k === ladder.help!.hintsAvail;
+                          const on = isReveal ? ladder.help!.revealed : k < ladder.help!.hintsTaken;
+                          return (
+                            <span
+                              key={k}
+                              className="block h-[3px] w-[3px] rounded-full"
+                              style={{
+                                background: on
+                                  ? isReveal ? "var(--tier-weak)" : "var(--cahier-ink)"
+                                  : "rgba(42,46,110,.25)",
+                              }}
+                            />
+                          );
+                        })}
+                      </span>
+                    )}
+                  </button>
+                </div>
+
+                <SpeechMeter active={phase === "listening"} className="mt-3.5" />
+
+                {/* The recognizer's own words — the one signal that proves it
+                    heard something. The meter says "sound"; this says "words". */}
+                <p
+                  lang="fr"
+                  aria-live="polite"
+                  className="mt-1 h-5 text-center text-sm font-medium italic text-[color:var(--cahier-ink-soft)]"
+                >
+                  {phase === "listening" && transcript ? `« ${transcript} »` : ""}
+                </p>
+
+                {log.length > 0 && (
+                  <SessionMap marks={marks} total={runTotal} className="mt-4 max-w-[280px]" />
+                )}
+
+                {/* Back stays (Dan, 2026-07-16) — the design dropped it, but a
+                    skipped word you cannot return to is the bug that put it
+                    here. Content-sized, not full-width bars. */}
+                <div className="mt-5 flex flex-wrap justify-center gap-2 border-t-2 border-[color:var(--cahier-ink)]/12 pt-4">
+                  <button type="button" onClick={back} disabled={trail.length === 0} className="cahier-btn cahier-btn-sm disabled:opacity-40" title="Back (B)">Back</button>
+                  <button type="button" onClick={skip} disabled={queue.length === 0} className="cahier-btn cahier-btn-sm disabled:opacity-40" title="Defer this word to the end (S)">Skip</button>
+                  <button type="button" onClick={endNow} className="cahier-btn cahier-btn-sm" title="End here (E)">End here</button>
+                </div>
+
+                {phase === "result" && result && ui && (
+                  <div
+                    className={`-mx-4 mt-4 w-[calc(100%+2rem)] border-t-2 px-4 py-3 sm:-mx-6 sm:w-[calc(100%+3rem)] sm:px-6 ${
+                      isCorrect
+                        ? "border-[color:var(--drill-ok-soft)] bg-[color:var(--drill-ok-bg)]"
+                        : "border-[color:var(--drill-bad-soft)] bg-[color:var(--drill-bad-bg)]"
+                    }`}
+                  >
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                      <p
+                        className={`min-w-0 flex-1 text-sm font-black ${
+                          isCorrect ? "text-[color:var(--drill-ok-ink)]" : "text-[color:var(--drill-bad-ink)]"
+                        }`}
+                      >
+                        {ui.icon} {ui.label}
+                        <span lang="fr" className="ml-1.5 font-extrabold">&ldquo;{result.recognized || "—"}&rdquo;</span>
+                        <span className="ml-1.5">→ <span lang="fr">{frOf(card)}</span></span>
+                        <button type="button" onClick={listenModel} className="ml-1.5 align-middle text-base opacity-70 hover:opacity-100" aria-label="Listen" title="Listen (R)">🔊</button>
+                      </p>
+                      <button type="button" onClick={next} className="cahier-btn cahier-btn-primary cahier-btn-sm shrink-0">Continue</button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return wrap(
       <div className="mx-auto max-w-2xl px-4 py-4">
         <div className="mb-4 text-center">
           <p className="fluo-label">{deck.title}</p>
-          {!finished && card && (
-            <p className="text-xs text-[color:var(--fluo-ink-soft)]">{answered + 1} / {cards.length}</p>
+          {embedded && !finished && card && (
+            <p className="text-xs text-[color:var(--fluo-ink-soft)]">{answered + 1} / {runTotal}</p>
           )}
         </div>
 
-        {/* Progress bar */}
-        <div className="h-1.5 rounded-full bg-[color:var(--fluo-line)] mb-6 overflow-hidden">
-          <div
-            className="h-full rounded-full bg-emerald-500 transition-all"
-            style={{ width: `${cards.length ? ((finished ? cards.length : answered) / cards.length) * 100 : 0}%` }}
-          />
-        </div>
+        {/* Progress bar — DrillShell draws its own; only the popup needs one */}
+        {embedded && (
+          <div className="h-1.5 rounded-full bg-[color:var(--fluo-line)] mb-6 overflow-hidden">
+            <div
+              className="h-full rounded-full bg-emerald-500 transition-all"
+              style={{ width: `${runTotal ? ((finished ? runTotal : answered) / runTotal) * 100 : 0}%` }}
+            />
+          </div>
+        )}
 
         {finished && (
           <div className="cahier-sheet rounded-2xl p-8 text-center shadow-md">
             <p className="mb-2 text-4xl">🎉</p>
-            <h1 className="fluo-serif text-2xl font-black text-[color:var(--fluo-ink)]">Terminé ! <span className="text-lg font-bold text-[color:var(--fluo-ink-soft)]">· Done!</span></h1>
+            <h1 className="fluo-serif text-2xl font-black text-[color:var(--fluo-ink)]">Done!</h1>
             <p className="mt-2 text-sm text-[color:var(--fluo-ink-soft)]">
               You said {score.total} {score.total === 1 ? "word" : "words"}
               {score.total > 0 && <> · ✓ {score.ok} ({Math.round((score.ok / score.total) * 100)}%)</>}.
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-2">
-              <button type="button" onClick={restart} className="fluo-btn fluo-btn-sm">🔁 Recommencer</button>
-              <Link href="/reviser" className="fluo-btn fluo-btn-sm fluo-btn-ghost">🔁 DéjàRevu</Link>
-              <Link href="/" className="fluo-btn fluo-btn-sm fluo-btn-ghost">← Back to the path</Link>
+              {embedded && <button type="button" onClick={restart} className="fluo-btn fluo-btn-sm">Restart</button>}
+              <Link href="/reviser" className="fluo-btn fluo-btn-sm fluo-btn-ghost">DéjàRevu ›</Link>
+              {embedded && <Link href="/" className="fluo-btn fluo-btn-sm fluo-btn-ghost">← Back to the path</Link>}
             </div>
           </div>
         )}
@@ -431,7 +830,7 @@ export default function SayItContent({
               {card.note && (
                 <p className="mt-1 text-sm text-[color:var(--cahier-ink-soft)]">{card.note}</p>
               )}
-              {revealed && phase !== "result" && (
+              {embedded && peek && phase !== "result" && (
                 <p lang="fr" className="cahier-hl mx-auto mt-2 inline-block rounded-sm px-2 fluo-serif text-xl font-black text-[color:var(--cahier-ink)]">
                   {frFull(articleOf(deck, card), card.fr)}
                 </p>
@@ -448,8 +847,8 @@ export default function SayItContent({
                       type="button"
                       onClick={listenModel}
                       className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-[color:var(--cahier-ink)]/25 bg-white text-xl shadow-md transition-all hover:border-[color:var(--cahier-ink)] active:scale-95"
-                      aria-label="Écouter"
-                      title="Écouter (R)"
+                      aria-label="Listen"
+                      title="Listen (R)"
                     >
                       🔊
                     </button>
@@ -473,14 +872,15 @@ export default function SayItContent({
                   {phase === "idle" && (
                     <button
                       type="button"
-                      onClick={() => setRevealed((r) => !r)}
-                      className={`flex h-12 w-12 items-center justify-center rounded-full border-2 text-xl shadow-md transition-all active:scale-95 ${
-                        revealed
+                      onClick={() => (embedded ? setRevealed((r) => !r) : ladder.climb())}
+                      disabled={!embedded && ladder.help?.disabled}
+                      className={`flex h-12 w-12 items-center justify-center rounded-full border-2 text-xl shadow-md transition-all active:scale-95 disabled:opacity-40 ${
+                        peek
                           ? "border-[color:var(--cahier-ink)] bg-[color:var(--cahier-hl,#eaff00)]"
                           : "border-[color:var(--cahier-ink)]/25 bg-white hover:border-[color:var(--cahier-ink)]"
                       }`}
-                      aria-label="Voir le mot"
-                      title="Voir (V)"
+                      aria-label={embedded ? "Show the word" : ladder.help?.label ?? "Show the word"}
+                      title={embedded ? "Show (V)" : `${ladder.help?.label ?? "Show"} (V)`}
                     >
                       🔤
                     </button>
@@ -497,8 +897,9 @@ export default function SayItContent({
               </div>
             )}
 
-            {/* Result */}
-            {phase === "result" && result && ui && (
+            {/* Result — inline only in the popup; DrillShell's tray owns it
+                on the standalone page */}
+            {embedded && phase === "result" && result && ui && (
               <div className={`rounded-xl border-2 p-4 ${ui.cls}`}>
                 <p className="font-black text-lg mb-2">{ui.icon} {ui.label}</p>
                 <div className="space-y-2 text-sm">
@@ -511,7 +912,7 @@ export default function SayItContent({
                     <span lang="fr" className={`font-black ${isCorrect ? "text-emerald-700" : "text-rose-700"}`}>
                       {deck ? frFull(articleOf(deck, card), card.fr) : card.fr}
                     </span>
-                    <button type="button" onClick={listenModel} className="ml-2 align-middle text-base" aria-label="Écouter" title="Écouter (R)">
+                    <button type="button" onClick={listenModel} className="ml-2 align-middle text-base" aria-label="Listen" title="Listen (R)">
                       🔊
                     </button>
                   </div>
@@ -526,6 +927,13 @@ export default function SayItContent({
                 </div>
               </div>
             )}
+            {!embedded && phase === "result" && card && (
+              /* The word, restated large while the tray shows the verdict —
+                 the learner should study the target, not the toolbar. */
+              <p lang="fr" className="text-center fluo-serif text-2xl font-black text-[color:var(--cahier-ink)]">
+                {deck ? frFull(articleOf(deck, card), card.fr) : card.fr}
+              </p>
+            )}
           </div>
         )}
 
@@ -538,7 +946,7 @@ export default function SayItContent({
               className="fluo-btn fluo-btn-sm fluo-btn-ghost disabled:opacity-40"
               title="Back (B)"
             >
-              ⏮ Back
+              Back
             </button>
             <button
               type="button"
@@ -547,23 +955,21 @@ export default function SayItContent({
               className="fluo-btn fluo-btn-sm fluo-btn-ghost disabled:opacity-40"
               title="Defer this word to the end (S)"
             >
-              ⤼ Skip
+              Skip
             </button>
             <button type="button" onClick={endNow} className="fluo-btn fluo-btn-sm fluo-btn-ghost" title="End here (E)">
-              ⏹ End here
+              End here
             </button>
           </div>
         )}
 
+        {/* Keyboard legend: keyboards live above sm — a phone renders 8
+            shortcuts it cannot press (patch 20–21). */}
         {!finished && card && (
-          <p className="mt-4 text-center text-xs text-[color:var(--fluo-ink-soft)]">
+          <p className="mt-4 hidden text-center text-xs text-[color:var(--fluo-ink-soft)] sm:block">
             Space = 🎤 / stop / retry · Enter = next · R = 🔊 · V = 🔤 · S = skip · B = back · E = end
           </p>
         )}
       </div>,
-    <span className="fluo-mono text-sm font-bold text-[color:var(--cahier-ink)]">
-      {score.ok}/{score.total}
-      {score.total > 0 && ` (${Math.round((score.ok / score.total) * 100)}%)`}
-    </span>,
   );
 }

@@ -2,8 +2,8 @@
  * Data layer for the teacher analytics dashboard. Everything here reads
  * Firestore collections the rules already grant admins: `events` (usage
  * telemetry), `leaderboard` (public progress mirror), `feedback` (bug
- * reports), and per-student docs under users/{uid} (progress blob, sessions,
- * responses, attempts). No collection-group queries — those would need a
+ * reports), and per-student docs under users/{uid} (progress blob,
+ * responses). No collection-group queries — those would need a
  * rules redeploy — so class-wide aggregates come from `events`, and the
  * deeper per-student stores are fetched one student at a time on drilldown.
  * Firestore is imported dynamically (usage.ts pattern): the bundle never
@@ -11,9 +11,66 @@
  */
 
 import { EXCLUDED_BOARD_UIDS, HIDDEN_ROSTER_UID_PREFIXES, isHiddenRosterName } from "@/lib/accountAliases";
-// Teacher-only, and deliberately in its own module so it cannot reach a
-// chunk the learner loads. See src/lib/rosterPrivate.ts.
-import { canonicalEmail, KNOWN_EMAILS, ROSTER_NAMES } from "@/lib/rosterPrivate";
+
+/**
+ * Screenshot/check fixture (patch 26). The teacher page cannot render without
+ * live Firestore and an admin sign-in, so a build with
+ * NEXT_PUBLIC_TEACHER_FIXTURE=1 swaps every fetch below for fixture.ts's
+ * synthetic sixteen. The constant is inlined at build time: in a normal
+ * build it is `false`, the branches are dead and fixture.ts is never
+ * bundled. Never set it for a deploy.
+ */
+export const FIXTURE = process.env.NEXT_PUBLIC_TEACHER_FIXTURE === "1";
+import { TERM_START_MS, isCurrentTerm } from "@/lib/term";
+
+/**
+ * Student-identifying roster maps — fetched at runtime, NEVER bundled.
+ *
+ * These used to be compiled in (src/lib/rosterPrivate.ts, deleted 2026-08-10).
+ * /teacher is a statically exported page on a public CDN with no auth in
+ * front of it, so its chunk — student emails included — was downloadable by
+ * anyone with the URL. The maps now live in Firestore at admin/rosterPrivate
+ * behind the same isAdmin() rules as everything else this page reads.
+ * Canonical copy + provenance: scripts/roster-private.json; push it with
+ * scripts/seed-roster-private.mjs. verify/verify18b.py proves the build
+ * output stays clean.
+ */
+export type RosterMeta = {
+  /** alias email → canonical email (all lowercase). */
+  aliasEmails: Record<string, string>;
+  /** uid → display name, where the telemetry's own name is wrong or absent. */
+  rosterNames: Record<string, string>;
+  /** uid → email for accounts whose only sign-ins predate authEvents coverage. */
+  knownEmails: Record<string, string>;
+};
+
+export const EMPTY_ROSTER_META: RosterMeta = { aliasEmails: {}, rosterNames: {}, knownEmails: {} };
+
+/** null = the doc does not exist yet (seed script never ran). Throws on
+ *  permission-denied and network failures like every other fetch here. */
+export async function fetchRosterMeta(): Promise<RosterMeta | null> {
+  if (FIXTURE) return (await import("./fixture")).fixtureRosterMeta();
+  const [{ getDoc, doc }, { db }] = await Promise.all([
+    import("firebase/firestore"),
+    import("@/lib/firebase/db"),
+  ]);
+  const snap = await getDoc(doc(db, "admin", "rosterPrivate"));
+  if (!snap.exists()) return null;
+  const d = snap.data() as Record<string, unknown>;
+  const rec = (v: unknown): Record<string, string> => {
+    if (!v || typeof v !== "object" || Array.isArray(v)) return {};
+    const out: Record<string, string> = {};
+    for (const [k, val] of Object.entries(v)) if (typeof val === "string") out[k] = val;
+    return out;
+  };
+  return { aliasEmails: rec(d.aliasEmails), rosterNames: rec(d.rosterNames), knownEmails: rec(d.knownEmails) };
+}
+
+export function canonicalEmail(aliasEmails: Record<string, string>, email: string | null | undefined): string | null {
+  if (!email) return null;
+  const e = email.toLowerCase();
+  return aliasEmails[e] ?? e;
+}
 
 // Mirror of firestore.rules isAdmin() — keep the two lists in sync.
 // Read-only tier (Dan, 2026-07-20): peer reviewers see the whole teacher
@@ -45,6 +102,9 @@ export type BoardRow = {
   level: number;
   gems: number;
   streak: number;
+  /** Cohort marker (src/lib/term.ts); absent on rows that predate the
+   *  2026-08-11 reset. */
+  term?: string;
 };
 
 export type Learner = {
@@ -54,6 +114,11 @@ export type Learner = {
   uids: string[];
   /** Excluded from the teacher page entirely (accountAliases hidden lists). */
   hidden?: boolean;
+  /** Belongs to the current cohort (term.ts): board row carries CURRENT_TERM,
+   *  or the account was first seen after the reset. The teacher page shows
+   *  only these by default — prior cohorts stay behind the "all cohorts"
+   *  toggle, and nothing is deleted. */
+  currentTerm?: boolean;
   name: string;
   email: string | null;
   isTeacher: boolean;
@@ -77,14 +142,17 @@ export type StudentDetail = {
     badges?: string[];
     itemSrs?: Record<string, { due?: number; intervalDays?: number }>;
     updatedAt?: number;
+    /** D4 diagnostic (progressSync, 2026-08-17). */
+    lastSyncedAt?: number;
+    lastSyncError?: string | null;
+    lastSyncErrorAt?: number | null;
+    syncErrorCount?: number;
   } | null;
-  sessions: {
-    activityId: string | null;
-    durationMs: number | null;
-    startedAt: number | null;
-    xp: number | null;
-    level: number | null;
-  }[];
+  // `sessions` and `attemptsCount` LEFT this shape on 2026-08-17 (D6 / D7):
+  // users/{uid}/sessions had two readers and no writer since the old suite
+  // (every activityId null), users/{uid}/attempts had a reader and never a
+  // writer. Time on task is the page-view dwell estimate; the answer count
+  // is `responses.length`.
   responses: {
     item: string;
     status: string;
@@ -93,8 +161,12 @@ export type StudentDetail = {
     givenAnswer: string | null;
     activityId: string | null;
     ts: Date | null;
+    /** Evidence block (responses.ts, 2026-08-10) — read since 2026-08-17. */
+    outcomeId: string | null;
+    evidenceType: string | null;
+    assistance: string | null;
+    independent: boolean | null;
   }[];
-  attemptsCount: number | null;
 };
 
 export const SG_DAY_KEY = new Intl.DateTimeFormat("en-CA", {
@@ -134,6 +206,7 @@ export function num(v: unknown): number | null {
 export const EVENT_FETCH_CAP = 50_000;
 
 export async function fetchAllEvents(): Promise<Ev[]> {
+  if (FIXTURE) return (await import("./fixture")).fixtureEvents();
   const [{ getDocs, collection, limit, orderBy, query }, { db }] = await Promise.all([
     import("firebase/firestore"),
     import("@/lib/firebase/db"),
@@ -169,6 +242,7 @@ export async function fetchAllEvents(): Promise<Ev[]> {
 }
 
 export async function fetchLeaderboard(): Promise<Map<string, BoardRow>> {
+  if (FIXTURE) return (await import("./fixture")).fixtureBoard();
   const [{ getDocs, collection }, { db }] = await Promise.all([
     import("firebase/firestore"),
     import("@/lib/firebase/db"),
@@ -183,21 +257,25 @@ export async function fetchLeaderboard(): Promise<Map<string, BoardRow>> {
       level: num(d.level) ?? 1,
       gems: num(d.gems) ?? 0,
       streak: num(d.streak) ?? 0,
+      term: str(d.term) ?? undefined,
     });
   });
   return out;
 }
 
 /** Roster derived from events (every active account signs in → events exist)
- *  unioned with leaderboard rows, so pre-tracking students still appear. */
-export function buildRoster(events: Ev[], board: Map<string, BoardRow>): Learner[] {
+ *  unioned with leaderboard rows, so pre-tracking students still appear.
+ *  `meta` comes from fetchRosterMeta(); pass EMPTY_ROSTER_META when it is
+ *  unavailable — the roster still builds, just without alias merging and
+ *  name/email overrides. */
+export function buildRoster(events: Ev[], board: Map<string, BoardRow>, meta: RosterMeta): Learner[] {
   const byUid = new Map<string, Learner>();
   const days = new Map<string, Set<string>>();
   const ensure = (uid: string): Learner => {
     let l = byUid.get(uid);
     if (!l) {
       byUid.set(uid, (l = {
-        uid, uids: [uid], name: ROSTER_NAMES[uid] ?? uid.slice(0, 8), email: canonicalEmail(KNOWN_EMAILS[uid]) ?? null, isTeacher: false,
+        uid, uids: [uid], name: meta.rosterNames[uid] ?? uid.slice(0, 8), email: canonicalEmail(meta.aliasEmails, meta.knownEmails[uid]) ?? null, isTeacher: false,
         firstSeen: null, lastSeen: null, daysActive: 0,
         pageViews: 0, gamePlays: 0, pretestAnswers: 0,
         board: board.get(uid) ?? null,
@@ -211,7 +289,7 @@ export function buildRoster(events: Ev[], board: Map<string, BoardRow>): Learner
     const name = str(ev.payload.name);
     const email = str(ev.payload.email);
     // A known uid keeps the name we were told, whatever the event claims.
-    if (name && !ROSTER_NAMES[ev.uid]) l.name = name;
+    if (name && !meta.rosterNames[ev.uid]) l.name = name;
     if (email) {
       l.email = email;
       if (ADMIN_EMAILS.includes(email)) l.isTeacher = true;
@@ -235,7 +313,7 @@ export function buildRoster(events: Ev[], board: Map<string, BoardRow>): Learner
   const byCanon = new Map<string, Learner>();
   const merged: Learner[] = [];
   for (const l of byUid.values()) {
-    const canon = canonicalEmail(l.email);
+    const canon = canonicalEmail(meta.aliasEmails, l.email);
     const t = canon ? byCanon.get(canon) : undefined;
     if (!canon || !t) {
       if (canon) byCanon.set(canon, l);
@@ -259,6 +337,7 @@ export function buildRoster(events: Ev[], board: Map<string, BoardRow>): Learner
         level: Math.max(t.board?.level ?? 1, l.board?.level ?? 1),
         gems: (t.board?.gems ?? 0) + (l.board?.gems ?? 0),
         streak: Math.max(t.board?.streak ?? 0, l.board?.streak ?? 0),
+        term: canonSide.board?.term ?? t.board?.term ?? l.board?.term,
       };
     }
   }
@@ -273,6 +352,14 @@ export function buildRoster(events: Ev[], board: Map<string, BoardRow>): Learner
     l.hidden =
       isHiddenRosterName(l.name) ||
       l.uids.some((u) => EXCLUDED_BOARD_UIDS.has(u) || HIDDEN_ROSTER_UID_PREFIXES.some((pre) => u.startsWith(pre)));
+    // Cohort reset (Dan, 2026-08-11): current = the board row says so, or the
+    // account's first trace postdates the reset (covers a freshman's first
+    // minutes, before their first leaderboard publish). Teachers are always
+    // "current" so the include-teachers toggle keeps working.
+    l.currentTerm =
+      l.isTeacher ||
+      isCurrentTerm(l.board?.term) ||
+      (!!l.firstSeen && l.firstSeen.getTime() >= TERM_START_MS);
   }
   return merged.sort(
     (a, b) => (b.lastSeen?.getTime() ?? 0) - (a.lastSeen?.getTime() ?? 0),
@@ -281,7 +368,7 @@ export function buildRoster(events: Ev[], board: Map<string, BoardRow>): Learner
 
 /** Fetch one person's stores. Aliased students have several uids — every
  *  store is fetched per-uid and combined (XP/gems add, SIOs/badges union,
- *  responses/sessions concatenate). */
+ *  responses concatenate). */
 export async function fetchStudentDetail(uids: string[]): Promise<StudentDetail> {
   const parts = await Promise.all(uids.map(fetchOneStudent));
   if (parts.length === 1) return parts[0];
@@ -297,42 +384,25 @@ export async function fetchStudentDetail(uids: string[]): Promise<StudentDetail>
       itemSrs: Object.assign({}, ...progresses.map((p) => p.itemSrs ?? {})),
       updatedAt: Math.max(...progresses.map((p) => p.updatedAt ?? 0)) || undefined,
     },
-    sessions: parts.flatMap((p) => p.sessions),
     responses: parts.flatMap((p) => p.responses).sort((a, b) => (b.ts?.getTime() ?? 0) - (a.ts?.getTime() ?? 0)),
-    attemptsCount: parts.some((p) => p.attemptsCount !== null)
-      ? parts.reduce((n, p) => n + (p.attemptsCount ?? 0), 0)
-      : null,
   };
 }
 
 async function fetchOneStudent(uid: string): Promise<StudentDetail> {
-  const [{ getDoc, getDocs, getCountFromServer, doc, collection }, { db }] = await Promise.all([
+  if (FIXTURE) return (await import("./fixture")).fixtureDetail(uid);
+  const [{ getDoc, getDocs, doc, collection }, { db }] = await Promise.all([
     import("firebase/firestore"),
     import("@/lib/firebase/db"),
   ]);
-  const [progressSnap, sessionsSnap, responsesSnap, attemptsAgg] = await Promise.all([
+  const [progressSnap, responsesSnap] = await Promise.all([
     getDoc(doc(db, "users", uid, "app", "progress")).catch(() => null),
-    getDocs(collection(db, "users", uid, "sessions")).catch(() => null),
     getDocs(collection(db, "users", uid, "responses")).catch(() => null),
-    getCountFromServer(collection(db, "users", uid, "attempts")).catch(() => null),
   ]);
 
   const out: StudentDetail = {
     progress: progressSnap?.exists() ? (progressSnap.data() as StudentDetail["progress"]) : null,
-    sessions: [],
     responses: [],
-    attemptsCount: attemptsAgg ? attemptsAgg.data().count : null,
   };
-  sessionsSnap?.forEach((d) => {
-    const s = d.data() as Record<string, unknown>;
-    out.sessions.push({
-      activityId: str(s.activityId),
-      durationMs: num(s.durationMs),
-      startedAt: num(s.startedAt),
-      xp: num(s.xp),
-      level: num(s.level),
-    });
-  });
   responsesSnap?.forEach((d) => {
     const r = d.data() as Record<string, unknown> & { timestamp?: { toDate?: () => Date } };
     if (typeof r.item !== "string" || typeof r.status !== "string") return;
@@ -344,9 +414,82 @@ async function fetchOneStudent(uid: string): Promise<StudentDetail> {
       givenAnswer: str(r.givenAnswer),
       activityId: str(r.activityId),
       ts: r.timestamp?.toDate?.() ?? null,
+      outcomeId: str(r.outcomeId),
+      evidenceType: str(r.evidenceType),
+      assistance: str(r.assistance),
+      independent: typeof r.independent === "boolean" ? r.independent : null,
     });
   });
   out.responses.sort((a, b) => (b.ts?.getTime() ?? 0) - (a.ts?.getTime() ?? 0));
-  out.sessions.sort((a, b) => (b.startedAt ?? 0) - (a.startedAt ?? 0));
+  return out;
+}
+
+/**
+ * The whole class, ONCE (patch 26). Every panel that needs answer logs —
+ * Class now, the outcome × student matrix, Evidence, the analytics CSV, the
+ * per-student drilldown — used to fetch its own copies (Evidence behind a
+ * `Compute` button, sixteen sequential round-trips). This fetches each
+ * learner once through a small pool and hands the map to all of them.
+ * `onEach` lets the page render tiles as they land rather than after the
+ * last one.
+ */
+export const POOL_SIZE = 4;
+
+export async function fetchClassDetails(
+  learners: Learner[],
+  onEach?: (uid: string, d: StudentDetail) => void,
+): Promise<Map<string, StudentDetail>> {
+  const out = new Map<string, StudentDetail>();
+  const queue = [...learners];
+  const worker = async () => {
+    for (let l = queue.shift(); l; l = queue.shift()) {
+      try {
+        const d = await fetchStudentDetail(l.uids);
+        out.set(l.uid, d);
+        onEach?.(l.uid, d);
+      } catch {
+        /* an unreadable learner is a hole in the map, not a dead page */
+      }
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(POOL_SIZE, learners.length) }, worker));
+  return out;
+}
+
+/**
+ * The repoll (Class now, every 30 s): only answers newer than `sinceMs`, per
+ * uid — a single-field range on `timestamp`, no composite index. Returned in
+ * StudentDetail's response shape so the caller can prepend them.
+ */
+export async function fetchResponsesSince(uids: string[], sinceMs: number): Promise<Map<string, StudentDetail["responses"]>> {
+  const out = new Map<string, StudentDetail["responses"]>();
+  if (FIXTURE) {
+    // The fixture "class" answers a little every poll, so the board moves.
+    const { fixtureDetail } = await import("./fixture");
+    for (const u of uids) {
+      const fresh = fixtureDetail(u).responses.filter((r) => (r.ts?.getTime() ?? 0) > sinceMs);
+      if (fresh.length) out.set(u, fresh);
+    }
+    return out;
+  }
+  const [{ getDocs, collection, query, where, Timestamp }, { db }] = await Promise.all([
+    import("firebase/firestore"),
+    import("@/lib/firebase/db"),
+  ]);
+  await Promise.all(uids.map(async (uid) => {
+    const snap = await getDocs(query(collection(db, "users", uid, "responses"), where("timestamp", ">", Timestamp.fromMillis(sinceMs)))).catch(() => null);
+    const rows: StudentDetail["responses"] = [];
+    snap?.forEach((d) => {
+      const r = d.data() as Record<string, unknown> & { timestamp?: { toDate?: () => Date } };
+      if (typeof r.item !== "string" || typeof r.status !== "string") return;
+      rows.push({
+        item: r.item, status: r.status, xp: num(r.xp) ?? 0, latencyMs: num(r.latencyMs),
+        givenAnswer: str(r.givenAnswer), activityId: str(r.activityId), ts: r.timestamp?.toDate?.() ?? null,
+        outcomeId: str(r.outcomeId), evidenceType: str(r.evidenceType), assistance: str(r.assistance),
+        independent: typeof r.independent === "boolean" ? r.independent : null,
+      });
+    });
+    if (rows.length) out.set(uid, rows.sort((a, b) => (b.ts?.getTime() ?? 0) - (a.ts?.getTime() ?? 0)));
+  }));
   return out;
 }

@@ -5,8 +5,8 @@
  *   sign-in → pull remote, MERGE with local, save locally, push merged
  *   every local save after that → debounced push (2.5 s)
  * Merge favours the learner: union of done SIOs, max gems/streak, later
- * lastActiveDay, and per-item SRS keeps whichever entry is scheduled further
- * out (the more-learned state).
+ * lastActiveDay (with ITS timeZone — D11), and per-item SRS keeps whichever
+ * entry is scheduled further out (the more-learned state). See progressMerge.ts.
  * Firestore is imported DYNAMICALLY — this module must add zero bytes of
  * Firestore to any page's static graph (same rule as usage.ts).
  */
@@ -18,40 +18,53 @@ import {
   type Progress,
 } from "@/lib/progress";
 import { levelForXp } from "@/lib/economy";
-import { ALIAS_PUBLISH_UIDS } from "@/lib/accountAliases";
+import { mergeProgress } from "@/lib/progressMerge";
+import { boardName } from "@/lib/accountAliases";
+import { CURRENT_TERM, LEGACY_TERM } from "@/lib/term";
+import { logEvent } from "./usage";
 
 const DOC_PATH = ["app", "progress"] as const;
 const PUSH_DEBOUNCE_MS = 2500;
 
-export function mergeProgress(local: Progress, remote: Partial<Progress> | undefined): Progress {
-  if (!remote) return local;
-  const itemSrs = { ...(remote.itemSrs ?? {}) };
-  for (const [id, s] of Object.entries(local.itemSrs)) {
-    const r = itemSrs[id];
-    itemSrs[id] = !r || s.due >= r.due ? s : r;
+// ── D4 diagnostic (2026-08-17) ──────────────────────────────────────────────
+// Two learners' progress docs stopped syncing and nothing in the app could
+// say why: push() swallowed every error and the doc had no "last good sync"
+// stamp of its own (updatedAt is set by the same write that fails). Now:
+//   · every successful push stamps `lastSyncedAt` on the doc, plus the LAST
+//     failure this device saw (`lastSyncError`, `lastSyncErrorAt`,
+//     `syncErrorCount`) — so a pipe that recovers still tells the story;
+//   · every failure (pull or push) is remembered on the device AND sent as a
+//     `sync.error` event (a separate collection, separate rules — a rules
+//     denial on the progress doc still gets reported).
+// The teacher student panel reads both: "Last sync" turns STALE when the
+// learner's events run more than SYNC_STALE_MS past the doc, and shows the
+// last error and the error count.
+const SYNC_STATE_KEY = "fluolingo:syncState";
+type SyncState = { lastError?: string; lastErrorAt?: number; errorCount?: number };
+function readSyncState(): SyncState {
+  try {
+    return JSON.parse(window.localStorage.getItem(SYNC_STATE_KEY) ?? "{}") as SyncState;
+  } catch {
+    return {};
   }
-  return {
-    doneSios: [...new Set([...(remote.doneSios ?? []), ...local.doneSios])],
-    // gems are a spendable balance; max favours the learner (a tiny refund on
-    // the rare spend-then-merge is acceptable in beta). xp is monotonic.
-    gems: Math.max(local.gems, remote.gems ?? 0),
-    xp: Math.max(local.xp ?? 0, remote.xp ?? 0),
-    streak: Math.max(local.streak, remote.streak ?? 0),
-    lastActiveDay:
-      [local.lastActiveDay, remote.lastActiveDay ?? null]
-        .filter((d): d is string => !!d)
-        .sort()
-        .pop() ?? null,
-    timeZone: local.timeZone ?? remote.timeZone,
-    itemSrs,
-    badges: [...new Set([...(remote.badges ?? []), ...(local.badges ?? [])])],
-    cosmetics: {
-      owned: [...new Set([...(remote.cosmetics?.owned ?? []), ...(local.cosmetics?.owned ?? [])])],
-      // equipped: the device the learner is on wins, else whatever remote had.
-      equipped: { ...(remote.cosmetics?.equipped ?? {}), ...(local.cosmetics?.equipped ?? {}) },
-    },
-  };
 }
+function noteSyncError(phase: "pull" | "push", e: unknown): void {
+  const message = (e instanceof Error ? `${e.name}: ${e.message}` : String(e)).slice(0, 200);
+  try {
+    const s = readSyncState();
+    window.localStorage.setItem(
+      SYNC_STATE_KEY,
+      JSON.stringify({ lastError: `${phase}: ${message}`, lastErrorAt: Date.now(), errorCount: (s.errorCount ?? 0) + 1 }),
+    );
+  } catch {
+    /* storage blocked — the event below still goes out */
+  }
+  void logEvent("sync.error", { phase, message });
+}
+
+// The merge itself is pure and lives in @/lib/progressMerge (verify27 runs
+// it in node); re-exported so callers keep this import path.
+export { mergeProgress };
 
 let pushTimer: number | null = null;
 
@@ -63,9 +76,20 @@ async function push(p: Progress): Promise<void> {
       import("firebase/firestore"),
       import("./db"),
     ]);
-    await setDoc(doc(db, "users", uid, ...DOC_PATH), { ...p, updatedAt: Date.now() });
-  } catch {
-    // offline / rules hiccup — local state is still authoritative on-device
+    const s = readSyncState();
+    const now = Date.now();
+    await setDoc(doc(db, "users", uid, ...DOC_PATH), {
+      ...p,
+      updatedAt: now,
+      lastSyncedAt: now,
+      lastSyncError: s.lastError ?? null,
+      lastSyncErrorAt: s.lastErrorAt ?? null,
+      syncErrorCount: s.errorCount ?? 0,
+    });
+  } catch (e) {
+    // offline / rules hiccup — local state is still authoritative on-device;
+    // remembered + reported so the teacher can see a learner who never lands.
+    noteSyncError("push", e);
   }
   void publishLeaderboard(p);
 }
@@ -91,15 +115,21 @@ async function publishLeaderboard(p: Progress): Promise<void> {
   // Aliased accounts publish under their canonical display name, keyed by
   // UID (2026-08-10; was email, Dan 2026-07-16) — the fold still survives a
   // Google rename, and no learner downloads another learner's address to
-  // look up their own.
-  const name =
-    ALIAS_PUBLISH_UIDS[u.uid] ||
-    u.displayName ||
-    (u.email ? u.email.split("@")[0] : "Anonyme");
+  // look up their own. ONE identity function (boardName), shared with the
+  // board's reader; never an email or its local part.
+  const name = boardName(u.uid, u.displayName);
   try {
     // Rank by XP now (the lifetime score); keep gems for continuity and publish
-    // the level so the board can show each learner's rank name.
-    await setDoc(ref, { name, xp: p.xp, level: levelForXp(p.xp).level, gems: p.gems, streak: p.streak, updatedAt: Date.now() }, { merge: true });
+    // the level so the board can show each learner's rank name. `term` scopes
+    // the board to the current cohort (term.ts) — the create rule's allowlist
+    // in firestore.rules MUST include it (deployed 2026-08-11).
+    await setDoc(ref, { name, xp: p.xp, level: levelForXp(p.xp).level, gems: p.gems, streak: p.streak,
+      // The weekly race (DOPAMINE_REVIEW §9). Published alongside the
+      // lifetime figure, never instead of it — the board keeps both views,
+      // and `weekKey` is what lets a reader tell a live total from a stale
+      // one without trusting the writer's clock.
+      weekXp: p.weekXp ?? 0, weekKey: p.weekKey ?? null,
+      term: p.term ?? CURRENT_TERM, updatedAt: Date.now() }, { merge: true });
   } catch {
     // Write denied → excluded (admin / opt-out). Remove any stale entry.
     try { await deleteDoc(ref); } catch {}
@@ -126,6 +156,11 @@ export async function startProgressSync(): Promise<void> {
     ]);
     const snap = await getDoc(doc(db, "users", uid, ...DOC_PATH));
     let merged = mergeProgress(loadProgress(), snap.exists() ? (snap.data() as Partial<Progress>) : undefined);
+    // Cohort stamp (term.ts). A remote doc WITHOUT the field predates the
+    // 2026-08-11 reset → legacy, whatever a fresh device's default says.
+    if (snap.exists() && !(snap.data() as Partial<Progress>).term) {
+      merged = { ...merged, term: LEGACY_TERM };
+    }
     // One-time carry-over of prior-course XP (Dan, 2026-07-06). The old laf1201
     // suite shares this Firebase project + leaderboard collection; its rows hold
     // a lifetime `totalXP`. Seed it as an XP FLOOR so a returning student keeps
@@ -134,13 +169,17 @@ export async function startProgressSync(): Promise<void> {
       const oldRow = await getDoc(doc(db, "leaderboard", uid));
       const oldXp = Number((oldRow.exists() ? oldRow.data() : {})?.totalXP ?? 0);
       if (Number.isFinite(oldXp) && oldXp > merged.xp) merged = { ...merged, xp: oldXp };
+      // A board row with no progress doc is also a pre-reset account (synced
+      // before progressSync existed) — legacy, not a freshman.
+      if (!snap.exists() && oldRow.exists()) merged = { ...merged, term: LEGACY_TERM };
     } catch {
       /* no old row / read denied — nothing to carry over */
     }
     replaceProgress(merged);
     void push(merged);
-  } catch {
+  } catch (e) {
     // pull failed — keep local, still enable live pushes
+    noteSyncError("pull", e);
   }
   setOnProgressSave(schedulePush);
 }

@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * A small inline "?" that opens the Quick Guide (GuideSplash) from pages that
+ * A small inline "?" that opens the Menu (MenuSplash) from pages that
  * live OUTSIDE the CahierShell — the immersive game/practice views (Dan,
  * 2026-07-20: "provide help on all pages"). Deliberately NOT a floating
  * button: an earlier floating control once sat on top of the game controls
@@ -11,7 +11,7 @@
  * it for free.
  */
 import { useState } from "react";
-import GuideSplash from "@/components/GuideSplash";
+import MenuSplash from "@/components/MenuSplash";
 
 export default function HelpDot({ className = "" }: { className?: string }) {
   const [open, setOpen] = useState(false);
@@ -32,7 +32,7 @@ export default function HelpDot({ className = "" }: { className?: string }) {
       >
         ?
       </button>
-      {open && <GuideSplash onClose={() => setOpen(false)} />}
+      {open && <MenuSplash onClose={() => setOpen(false)} />}
     </>
   );
 }

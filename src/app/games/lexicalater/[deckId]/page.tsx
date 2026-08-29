@@ -1,11 +1,10 @@
 import BackLink from "@/components/BackLink";
-import HelpDot from "@/components/HelpDot";
 import Lexicalator, { type LexEntry } from "@/games/lexicalator/Lexicalator";
 import AuthGate from "@/components/AuthGate";
+import GameFrame from "@/components/GameFrame";
 import { CURATED } from "@/content/collections";
-import { displayFr } from "@/lib/collections/display";
-import { isLexReady, lexBase } from "@/lib/collections/lexReady";
-import GameBar from "@/components/GameBar";
+import { displayFr, prefixTokens } from "@/lib/collections/display";
+import { isLexReady, lexBase, lexReadyItems } from "@/lib/collections/lexReady";
 
 export function generateStaticParams() {
   return CURATED.map((c) => ({ deckId: c.id }));
@@ -24,38 +23,47 @@ export default async function ConveyorPage({
   const collection = CURATED.find((c) => c.id === deckId);
   if (!collection) {
     return (
-      <main className="min-h-screen p-6 text-[#4a3413]" style={{ background: "linear-gradient(180deg,#fff3d6,#ffe9bd)" }}>
-        No deck <code>{deckId}</code>.
-      </main>
+      <GameFrame title="🧰 LexicaLater" exitHref="/games/lexicalater" progress={null}>
+        <p className="p-6 text-[color:var(--cahier-ink-soft)]">No deck <code>{deckId}</code>.</p>
+      </GameFrame>
     );
   }
-
-  const shell = (body: React.ReactNode) => (
-    <AuthGate what="play">
-      <main className="min-h-screen" style={{ background: "linear-gradient(180deg,#eaf7ff 0%,#f6fbff 100%)" }}>
-        <GameBar title="🧰 LexicaLater" up="/games/lexicalater" />
-        {body}
-      </main>
-    </AuthGate>
-  );
 
   // Not yet hand-syllabified → the game isn't available for this deck (rather
-  // than falling back to the retired ConveyorMatch).
+  // than falling back to the retired ConveyorMatch). Same frame, empty board.
   if (!isLexReady(collection)) {
-    return shell(
-      <div className="mx-auto max-w-md px-6 py-20 text-center text-[#075985]">
-        <p className="text-4xl" aria-hidden>🧰</p>
-        <h1 className="mt-3 text-xl font-black">LexicaLater is being prepared for “{collection.title}”.</h1>
-        <p className="mt-2 text-sm text-[#075985]/80">This deck&rsquo;s words still need their syllables. Try another activity in the meantime.</p>
-        <BackLink fallback="/" className="mt-5 inline-block rounded-2xl border-b-4 border-[#1899d6] bg-[#1cb0f6] px-4 py-2 font-black text-white">← Back</BackLink>
-      </div>,
+    return (
+      <AuthGate what="play">
+        <GameFrame title="🧰 LexicaLater" exitHref="/games/lexicalater" progress={null}>
+          <div className="mx-auto max-w-md px-6 py-20 text-center text-[color:var(--cahier-ink)]">
+            <p className="text-4xl" aria-hidden>🧰</p>
+            <p className="mt-3 text-xl font-black">LexicaLater is being prepared for “{collection.title}”.</p>
+            <BackLink fallback="/games/lexicalater" className="cahier-btn mt-5 inline-block">← Back</BackLink>
+          </div>
+        </GameFrame>
+      </AuthGate>
     );
   }
 
-  const entries: LexEntry[] = collection.items.map((it) => {
-    // Bare fragments never speak alone (Dan, 2026-07-08: « sciences » must be
-    // heard as « Les sciences ») — completion TTS says the article/prefix form.
-    const say = displayFr(it, collection);
+  // Only the syllabified subset plays — a deck can be lexReady with some
+  // items still unsegmented (Dan, 2026-08-02: Commerces' dialogue sentences
+  // aren't syllabified and never will be; the vocabulary items are).
+  const entries: LexEntry[] = lexReadyItems(collection).map((it) => {
+    // The article/prefix is part of what's LEARNED, not just spoken (Dan,
+    // 2026-08-02: "the article must be around to be learned with the noun";
+    // "if it says il est nageur we should also read the same"). A bare
+    // fragment used to build the tiles and the trésor chip while completion
+    // TTS quietly spoke the fuller displayFr() form — a chest could say
+    // « Il est nageur » for a trésor chip that only ever showed « nageur ».
+    // Now the prefix's own words (il/est, un, à/la, ce…) become their own
+    // keyholes ahead of the word's hand-authored syllables, so what's built,
+    // shown, and spoken are the same sentence.
+    const prefix = prefixTokens(it, collection);
+    const wordBase = lexBase(it.fr);
+    const prefixStr = prefix.join(" ");
+    // Elided prefixes ("l'", "à l'", "de l'") glue straight onto the word —
+    // "l'école", never "l' école".
+    const phrase = prefixStr ? prefixStr + (/['’]$/.test(prefixStr) ? "" : " ") + wordBase : wordBase;
     return {
       // Keep the full en gloss, register marker and all (2026-08-02 bug
       // report): bareWord() used to strip "(m)"/"(f)" here, so gendered
@@ -64,10 +72,14 @@ export default async function ConveyorPage({
       // sibling-morph mechanic (tapKey) forgives most mixups, but only when
       // the sibling is actually dealt — otherwise the tap reads as a plain
       // decoy and the miss is unexplained.
-      id: it.id, fr: lexBase(it.fr), en: it.en, syllables: it.syllables!,
-      say: say !== it.fr ? say : undefined,
+      id: it.id, fr: phrase, en: it.en, syllables: [...prefix, ...it.syllables!],
+      say: displayFr(it, collection),
     };
   });
   const decoys = collection.gameConfig?.lexicalator?.decoys ?? [];
-  return shell(<Lexicalator title={collection.title} subtitle={collection.subtitle} entries={entries} decoys={decoys} />);
+  return (
+    <AuthGate what="play">
+      <Lexicalator title={collection.title} subtitle={collection.subtitle} entries={entries} decoys={decoys} deckId={collection.id} />
+    </AuthGate>
+  );
 }

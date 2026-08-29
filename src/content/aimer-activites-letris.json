@@ -1,0 +1,110 @@
+{
+ "id": "aimer-activites-letris",
+ "title": "J'aime le sport ou j'aime nager ?",
+ "subtitle": "noun with its article, or bare infinitive?",
+ "language": "fr",
+ "categories": [
+  {
+   "key": "nom",
+   "label": "J'AIME LE · LA · LES",
+   "prefix": "J'aime "
+  },
+  {
+   "key": "verbe",
+   "label": "J'AIME + VERBE",
+   "prefix": "J'aime "
+  }
+ ],
+ "tiles": [
+  {
+   "text": "SPORT",
+   "displayName": "le sport",
+   "category": "nom",
+   "meaning": "sports"
+  },
+  {
+   "text": "MUSIQUE",
+   "displayName": "la musique",
+   "category": "nom",
+   "meaning": "music"
+  },
+  {
+   "text": "CINÉMA",
+   "displayName": "le cinéma",
+   "category": "nom",
+   "meaning": "cinema"
+  },
+  {
+   "text": "LECTURE",
+   "displayName": "la lecture",
+   "category": "nom",
+   "meaning": "reading"
+  },
+  {
+   "text": "JEUX VIDÉO",
+   "displayName": "les jeux vidéo",
+   "category": "nom",
+   "meaning": "video games"
+  },
+  {
+   "text": "DANSE",
+   "displayName": "la danse",
+   "category": "nom",
+   "meaning": "dance"
+  },
+  {
+   "text": "VOYAGER",
+   "displayName": "voyager",
+   "category": "verbe",
+   "meaning": "to travel"
+  },
+  {
+   "text": "CUISINER",
+   "displayName": "cuisiner",
+   "category": "verbe",
+   "meaning": "to cook"
+  },
+  {
+   "text": "DESSINER",
+   "displayName": "dessiner",
+   "category": "verbe",
+   "meaning": "to draw"
+  },
+  {
+   "text": "CHANTER",
+   "displayName": "chanter",
+   "category": "verbe",
+   "meaning": "to sing"
+  },
+  {
+   "text": "DANSER",
+   "displayName": "danser",
+   "category": "verbe",
+   "meaning": "to dance"
+  },
+  {
+   "text": "LIRE",
+   "displayName": "lire",
+   "category": "verbe",
+   "meaning": "to read"
+  },
+  {
+   "text": "COURIR",
+   "displayName": "courir",
+   "category": "verbe",
+   "meaning": "to run"
+  },
+  {
+   "text": "NAGER",
+   "displayName": "nager",
+   "category": "verbe",
+   "meaning": "to swim"
+  },
+  {
+   "text": "SORTIR",
+   "displayName": "sortir",
+   "category": "verbe",
+   "meaning": "to go out"
+  }
+ ]
+}

@@ -1,5 +1,7 @@
 # FLUOLINGO — TODO / Build Plan
 
+> **⚠️ HISTORICAL. Read `docs/STATUS.md` first — it is the only current source of truth (17 Aug 2026). This file is kept for the reasoning behind decisions, not for what is left to do.**
+
 _Last updated: 22 June 2026. Owner: Dr Daniel Chan._
 
 This file is the single source of truth for the "universal tagged collections + Duolingo-style

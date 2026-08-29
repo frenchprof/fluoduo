@@ -3,33 +3,17 @@
  * ▶ Continue, NOTHING else. Shared between /guide and the first-visit splash.
  * On the splash, Continue dismisses it for good (onContinue); on the page it
  * simply leads home. Everything longer lives behind 💡 About and the tour.
+ *
+ * The activity grid DERIVES from the registry (patch 19c). This panel used to
+ * keep its own list of 15 activities with its own names ("Lesson", "Flip It")
+ * and its own emoji — one of the four disagreeing surfaces the registry was
+ * built to end, and the one patch 19 did not reach. Two of its tiles both
+ * truncated to "GramMara…" and became the same button. Now: every registry
+ * activity, grouped by family in family order, four columns, names never
+ * truncated — and a rename in activities.ts lands here by itself.
  */
 import Link from "next/link";
-
-/** "Drill with these": every activity as an iPhone-style app icon — name
- *  beneath, the short phrase on mouseover. */
-const ACTIVITIES: { emoji: string; name: string; hue: number; what: string; href: string }[] = [
-  // Canonical app order (Dan, 2026-07-19): SpecuLearn-PreTest · Lesson +
-  // Flip-It · ConjugaZone · VocabulaRain · Lexicalator · Composer · ChaTutor ·
-  // DéjàRevu — WorDrill (né Say It) rides along at the end. Every tile LINKS
-  // to its page (Dan, 2026-07-22: "the HELP page is missing links to main
-  // pages, e.g. GramMarathon") — and the marathons join the family.
-  { emoji: "🔮", name: "SpecuLearn", hue: 3, what: "guess first — then the answer", href: "/practice/speculearn" },
-  { emoji: "📚", name: "Lesson", hue: 0, what: "the rule, then drills", href: "/activities" },
-  { emoji: "🃏", name: "Flip It", hue: 1, what: "flashcards", href: "/activities" },
-  { emoji: "🔤", name: "ConjugaZone", hue: 2, what: "conjugation sprints", href: "/conjugaison" },
-  { emoji: "🌧️", name: "Vocabularain", hue: 3, what: "sort the falling words", href: "/games/vocabularain" },
-  { emoji: "🧰", name: "LexicaLater", hue: 4, what: "build the words", href: "/games/lexicalater" },
-  { emoji: "📈", name: "NumBourse", hue: 2, what: "type the shouted stock prices in digits", href: "/games/numbourse" },
-  { emoji: "🚌", name: "NumBus", hue: 0, what: "hear the bus number in French, type the digits", href: "/games/numbus" },
-  { emoji: "🧩", name: "Compose It", hue: 5, what: "build dialogues", href: "/activities" },
-  { emoji: "🏃", name: "GramMarathon", hue: 2, what: "typed grammar sprints, deck by deck", href: "/activities" },
-  { emoji: "🏁", name: "GramMarathon Final", hue: 1, what: "50 questions, toutes les leçons — every visit a new draw", href: "/practice/grammarathon/finale" },
-  { emoji: "🤖", name: "ChaTutor", hue: 5, what: "chat, role-play, get corrected", href: "/tutor" },
-  { emoji: "🔁", name: "DéjàRevu", hue: 0, what: "resurfaces your misses at the right moment", href: "/reviser" },
-  { emoji: "🎙️", name: "WorDrill", hue: 4, what: "speak — the mic checks (per deck or all decks)", href: "/practice/wordrill" },
-  { emoji: "🗣️", name: "VoixLà", hue: 3, what: "hear any French, at your speed", href: "/tts" },
-];
+import { FAMILIES, activitiesIn } from "@/content/activities";
 
 const STEPS: { hue: number; what: React.ReactNode }[] = [
   { hue: 1, what: <>🏠 <b>Unité 0–4</b> flaps → tap the goal</> },
@@ -49,7 +33,11 @@ export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
         {STEPS.map((s, i) => (
           <li
             key={i}
-            className={`fluo-h-${s.hue} flex items-center gap-3 rounded-xl border-2 p-3 ${i === 2 ? "col-span-2 !items-start" : ""}`}
+            // Step 3 stacks on a phone: beside the number circle the grid got
+            // ~64px per column and 12-char names (VocabulaRain, LexicaLater)
+            // collided — caught on the 390px screenshot, invisible to the
+            // structural check.
+            className={`fluo-h-${s.hue} flex items-center gap-3 rounded-xl border-2 p-3 ${i === 2 ? "col-span-2 !items-start max-sm:flex-col max-sm:!items-stretch" : ""}`}
             style={{ borderColor: "var(--fluo-card-accent)", background: "var(--fluo-card-tint)" }}
           >
             <span
@@ -61,22 +49,37 @@ export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
             <span className="min-w-0 flex-1">
               <p className="text-sm font-bold leading-relaxed text-[color:var(--cahier-ink)]">{s.what}</p>
               {i === 2 && (
-                <ul className="mt-3 grid grid-cols-3 gap-x-2 gap-y-3 sm:grid-cols-6">
-                  {ACTIVITIES.map((a) => (
-                    <li key={a.name} className={`fluo-h-${a.hue} flex flex-col items-center gap-1`} title={a.what}>
-                      <Link
-                        href={a.href}
-                        className="flex h-12 w-12 items-center justify-center rounded-2xl border-2 bg-white/80 text-2xl shadow-[2px_2px_0_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5"
-                        style={{ borderColor: "var(--fluo-card-accent)" }}
-                      >
-                        {a.emoji}
-                      </Link>
-                      <span className="max-w-full truncate text-center text-[11px] font-bold leading-tight text-[color:var(--cahier-ink)]">
-                        {a.name}
-                      </span>
-                    </li>
+                <div className="mt-3 flex flex-col gap-3">
+                  {FAMILIES.map((f) => (
+                    <div key={f.key}>
+                      {/* The family name is navigation text — it is the same
+                          label the bottom bar derives (nav.ts), pointing at
+                          the same doors. */}
+                      <p className="text-[11px] font-black uppercase tracking-wide text-[color:var(--cahier-ink)]/60">
+                        <span aria-hidden>{f.emoji}</span> {f.name.replace(/^FluOlin /, "")}
+                      </p>
+                      <ul className="mt-1.5 grid grid-cols-4 gap-x-1 gap-y-3 sm:gap-x-2">
+                        {activitiesIn(f.key).map((a) => (
+                          <li key={a.key} className="flex flex-col items-center gap-1" title={a.blurb}>
+                            <Link
+                              href={a.href ?? "/map"}
+                              className="flex h-12 w-12 items-center justify-center rounded-2xl border-2 bg-white/80 text-2xl shadow-[2px_2px_0_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5"
+                              style={{ borderColor: a.hue }}
+                            >
+                              {a.emoji}
+                            </Link>
+                            {/* Full name, always — 8 of 15 used to cut to
+                                "GramMara…". Wrapping is allowed; cutting is
+                                not. */}
+                            <span className="w-full break-words text-center text-[10px] font-bold leading-tight tracking-tight text-[color:var(--cahier-ink)] sm:text-[11px] sm:tracking-normal">
+                              {a.name}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   ))}
-                </ul>
+                </div>
               )}
             </span>
           </li>

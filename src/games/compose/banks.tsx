@@ -326,7 +326,9 @@ const MARCHE_BANK: ComposeBank = {
   title: "Chez les commerçants",
   emoji: "🧺",
   unit: 4,
-  deckId: "au-marche",
+  // au-marche merged into commerces (content-gap audit, 2026-08-23) — the
+  // bank pointed at the retired id and never showed on any rail.
+  deckId: "commerces",
   mode: "dialogue",
   scene: { opening: "Bonjour ! Vous désirez ?", emoji: "🧑‍🌾", voice: "m", aiOnly: true, theme: THEME_MARCHE, contextEn: "You're shopping at the market stall — ask for quantities and prices, then pay." },
   categories: withPalette([
@@ -371,6 +373,10 @@ export function getComposeBank(id: string): ComposeBank | undefined {
   return BANKS.find((b) => b.id === id);
 }
 
-export function composeBankForDeck(deckId: string): ComposeBank | undefined {
-  return BANKS.find((b) => b.deckId === deckId);
+/** Every bank attached to one deck's activity rail, in BANKS order. Most decks
+ *  carry at most one; atelier-sio-040 carries two since the book's U3 written
+ *  atelier landed (Dan, 2026-08-23): the itinerary AND « L'e-carte postale »
+ *  are both presented at stop 40, with the SIOs untouched. */
+export function composeBanksForDeck(deckId: string): ComposeBank[] {
+  return BANKS.filter((b) => b.deckId === deckId);
 }

@@ -7,13 +7,19 @@
  * glosses, pill rows, one ⚠ line max. Litmus rule: pattern + examples only.
  * All examples are REAL items from the deck JSONs — never invented words.
  */
-import type { ReactNode } from "react";
-import { speak } from "@/games/letris/speech";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { speak, speakSequence } from "@/games/letris/speech";
+import { ATELIER_DIALOGUES, type DialogueLine } from "@/content/ateliers";
 
-function Card({ title, children }: { title: ReactNode; children: ReactNode }) {
+/** `title` is nullable because splitMemo drops it on continuation cards — a
+ *  Mémo announces itself once, not on every slice. Render no <h2> at all
+ *  then, or the heading's margin leaves a gap where a title used to be. */
+function Card({ title, children }: { title?: ReactNode; children: ReactNode }) {
   return (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
-      <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">{title}</h2>
+      {title != null && (
+        <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">{title}</h2>
+      )}
       {children}
     </div>
   );
@@ -55,12 +61,123 @@ function Warn({ children }: { children: ReactNode }) {
 }
 
 const B = ({ children }: { children: ReactNode }) => (
-  <b lang="fr" className="text-[color:var(--cahier-la)]">{children}</b>
+  <b lang="fr" className="text-[color:var(--gram-neutral)]">{children}</b>
 );
 
 const Lines = ({ children }: { children: ReactNode }) => (
   <ul className="mt-2 space-y-1 text-[15px] text-[color:var(--cahier-ink)]">{children}</ul>
 );
+
+/**
+ * THE ATELIER MÉMO — the model, before you are asked to produce it.
+ *
+ * The six production stops (SIO-010, 020, 030, 040, 049, 050) had no Mémo at
+ * all: a learner opened « Première rencontre » and landed on CHOOSE THE FRENCH
+ * with nothing to have read first. Every other stop opens on something to
+ * learn from; these opened on a test.
+ *
+ * What they need is not a grammar table — nothing here is new grammar, it is
+ * all assembled from what the unit has already covered. What they need is the
+ * MODEL, which has existed in ateliers.ts all along and was only ever used to
+ * cut up into flip-cards. Dan, 2026-07-02, said as much when the ateliers were
+ * designed: "they should look like the mini-dialogue in 010, then an option
+ * either to play all integrally at once or to play only selected lines."
+ *
+ * So: the dialogue, whole, every line tappable to hear, plus one button that
+ * plays it through. Two speakers are marked A/B and coloured apart, because a
+ * role-play you are about to perform needs to show whose turn is whose; a
+ * monologue (the e-mail, the country) has one speaker and no marks — a label
+ * that says nothing is exactly the text the litmus rule removes.
+ */
+function AtelierMemo({ sioId }: { sioId: string }) {
+  const lines: DialogueLine[] = ATELIER_DIALOGUES[sioId] ?? [];
+  const twoVoices = lines.some((l) => l.who === "B");
+  const stopRef = useRef<null | (() => void)>(null);
+  const [playing, setPlaying] = useState(false);
+
+  // Cancel in-flight playback when the Mémo closes, so a card you swiped away
+  // from does not keep talking.
+  useEffect(() => () => stopRef.current?.(), []);
+
+  /**
+   * PLAY ALL, via speakSequence.
+   *
+   * This looped plain `speak()` and only the LAST line was ever heard: speak()
+   * defaults to `interrupt: true`, whose first act is `synth.cancel()`, so each
+   * line cancelled the one before it. (Where a line had a banked studio clip
+   * it returned before the cancel, which is worse in the other direction —
+   * those fire simultaneously.) Eight lines in, one line out.
+   *
+   * This is the fault Dan reported on 2026-07-07, "play all is not playing
+   * all", and speakSequence exists because of it — it holds a reference to
+   * every utterance (Chrome garbage-collects them mid-queue and the chain
+   * dies) and nudges resume() on a timer (Chrome silently pauses long runs).
+   * Reimplementing the queue by hand threw both of those away.
+   *
+   * A and B get different voices, matching DialoguePlayer — this is a
+   * role-play, and hearing whose turn is whose is half of what the model is
+   * for. A second tap stops it, which a runaway ten-line read needs.
+   */
+  const playAll = () => {
+    if (playing) {
+      stopRef.current?.();
+      setPlaying(false);
+      return;
+    }
+    setPlaying(true);
+    const parts = lines.map((l) => ({
+      text: l.say ?? l.fr,
+      gender: l.who === "A" ? ("f" as const) : ("m" as const),
+    }));
+    stopRef.current = speakSequence(parts, "fr-FR");
+    // speakSequence has no done-callback; release the button on a best-effort
+    // timeout proportional to the text, same rule as DialoguePlayer.
+    const approxMs = parts.reduce((n, p) => n + p.text.length * 90 + 400, 0);
+    window.setTimeout(() => setPlaying(false), approxMs);
+  };
+  return (
+    <ul className="space-y-1.5">
+      {lines.map((l, i) => (
+        <li key={i} className="flex gap-2">
+          {twoVoices && (
+            <span
+              aria-hidden
+              className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full text-[11px] font-black"
+              style={
+                l.who === "A"
+                  ? { background: "var(--cahier-hl)", color: "var(--cahier-ink)" }
+                  : { background: "var(--cahier-ink)", color: "#fff" }
+              }
+            >
+              {l.who}
+            </span>
+          )}
+          <span className="min-w-0">
+            <button
+              type="button"
+              lang="fr"
+              onClick={() => speak(l.say ?? l.fr, "fr-FR")}
+              className="text-left text-[15px] font-bold text-[color:var(--cahier-ink)] underline decoration-dotted underline-offset-4 transition hover:decoration-solid active:scale-[0.99]"
+              title="🔊"
+            >
+              {l.fr}
+            </button>
+            <span className="block text-[13px] text-[color:var(--cahier-ink-soft)]">{l.en}</span>
+          </span>
+        </li>
+      ))}
+      <li className="pt-1">
+        <button
+          type="button"
+          onClick={playAll}
+          className={`cahier-btn cahier-btn-sm font-black ${playing ? "cahier-btn-correct" : "cahier-btn-accent"}`}
+        >
+          {playing ? "⏹ Arrêter" : "🔊 Tout écouter"}
+        </button>
+      </li>
+    </ul>
+  );
+}
 
 export const DECK_MEMOS: Record<string, ReactNode> = {
   /* ---------- L'alphabet ---------- */
@@ -144,26 +261,41 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
         <li><B>une</B> <span lang="fr">table</span> — feminine</li>
         <li><B>des</B> <span lang="fr">livres</span>, <B>des</B> <span lang="fr">tables</span> — any plural</li>
       </Lines>
-      <Warn>After a negative: <span lang="fr">pas <b className="text-[color:var(--cahier-la)]">de</b> livres</span>.</Warn>
+      <Warn>After a negative: <span lang="fr">pas <b className="text-[color:var(--gram-neutral)]">de</b> livres</span>.</Warn>
     </Card>
   ),
 
   /* ---------- Qui ou quoi ? Un ou une ? ---------- */
   "core-nouns": (
-    <Card title="Qui ou quoi ? Un ou une ?">
+    <Card title="Some nouns">
       <div className="mt-2 grid grid-cols-2 gap-2 text-[15px] text-[color:var(--cahier-ink)]">
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
-          <B>QUI</B> = a person
-          <p lang="fr" className="mt-1">un garçon, une fille</p>
+          <B>un</B> / <B>le</B> — masculine
+          <p lang="fr" className="mt-1">un homme, un sport, le football</p>
         </div>
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
-          <B>QUOI</B> = a thing
-          <p lang="fr" className="mt-1">un livre, une table</p>
+          <B>une</B> / <B>la</B> — feminine
+          <p lang="fr" className="mt-1">une femme, une activité, la danse</p>
         </div>
       </div>
       <p className="mt-3 text-[15px] text-[color:var(--cahier-ink)]">
-        <B>un</B> = masculine, <B>une</B> = feminine — for people AND things.
+        Every French noun is one or the other, and the article is what tells you.
+        You cannot hear it from the word — <span lang="fr"><i>un groupe</i></span> and{" "}
+        <span lang="fr"><i>une classe</i></span> end the same way.
       </p>
+      <Lines>
+        <li><B>C&rsquo;est où ?</B> — <i lang="fr">C&rsquo;est un café. C&rsquo;est une région.</i></li>
+        <li><B>C&rsquo;est qui ?</B> — <i lang="fr">C&rsquo;est une étudiante. C&rsquo;est un groupe.</i></li>
+        <li><B>C&rsquo;est quoi ?</B> — <i lang="fr">C&rsquo;est un croissant. C&rsquo;est la danse.</i></li>
+      </Lines>
+      <p className="mt-3 text-[15px] text-[color:var(--cahier-ink)]">
+        A general word takes <B>un</B>/<B>une</B>; the named one takes <B>le</B>/<B>la</B> —{" "}
+        <i lang="fr">un sport → le football</i>, <i lang="fr">une activité → la danse</i>.
+      </p>
+      <Warn>
+        These words are nearly English — so the only new thing to learn is the{" "}
+        <B>gender</B>. Learn each noun WITH its article, never on its own.
+      </Warn>
     </Card>
   ),
 
@@ -184,9 +316,9 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
   "negation-pas": (
     <Card title="Pas de ou pas le ?">
       <Lines>
-        <li><B>ne … pas de</B> — <span lang="fr">Je fais <b className="text-[color:var(--cahier-la)]">du</b> tennis. → Je ne fais pas <b className="text-[color:var(--cahier-la)]">de</b> tennis.</span></li>
-        <li><B>ne … pas de</B> — <span lang="fr">Il y a <b className="text-[color:var(--cahier-la)]">du</b> café. → Il n'y a pas <b className="text-[color:var(--cahier-la)]">de</b> café.</span></li>
-        <li><span lang="fr">❤️ aimer · adorer · détester</span> keep <B>le / la / les</B> — <span lang="fr">J'aime <b className="text-[color:var(--cahier-la)]">le</b> tennis. → Je n'aime pas <b className="text-[color:var(--cahier-la)]">le</b> tennis.</span></li>
+        <li><B>ne … pas de</B> — <span lang="fr">Je fais <b className="text-[color:var(--gram-neutral)]">du</b> tennis. → Je ne fais pas <b className="text-[color:var(--gram-neutral)]">de</b> tennis.</span></li>
+        <li><B>ne … pas de</B> — <span lang="fr">Il y a <b className="text-[color:var(--gram-neutral)]">du</b> café. → Il n'y a pas <b className="text-[color:var(--gram-neutral)]">de</b> café.</span></li>
+        <li><span lang="fr">❤️ aimer · adorer · détester</span> keep <B>le / la / les</B> — <span lang="fr">J'aime <b className="text-[color:var(--gram-neutral)]">le</b> tennis. → Je n'aime pas <b className="text-[color:var(--gram-neutral)]">le</b> tennis.</span></li>
       </Lines>
       <Warn><span lang="fr">de</span> + vowel → <span lang="fr">d'</span> : <span lang="fr">pas d'eau</span>.</Warn>
     </Card>
@@ -378,7 +510,7 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
     <Card title="20 à 69 — cinq dizaines">
       <PillRow items={["vingt", "trente", "quarante", "cinquante", "soixante"]} />
       <Lines>
-        <li>+1 → <B>et un</B> — <span lang="fr">vingt <b className="text-[color:var(--cahier-la)]">et un</b>, trente <b className="text-[color:var(--cahier-la)]">et un</b>, soixante <b className="text-[color:var(--cahier-la)]">et un</b></span></li>
+        <li>+1 → <B>et un</B> — <span lang="fr">vingt <b className="text-[color:var(--gram-neutral)]">et un</b>, trente <b className="text-[color:var(--gram-neutral)]">et un</b>, soixante <b className="text-[color:var(--gram-neutral)]">et un</b></span></li>
         <li>the rest → hyphen — <span lang="fr">vingt<B>-</B>deux, quarante<B>-</B>sept, soixante<B>-</B>neuf</span></li>
       </Lines>
     </Card>
@@ -390,10 +522,10 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
     <Card title="70 à 99 — le système change !">
       <PillRow items={["soixante-dix", "quatre-vingts", "quatre-vingt-dix"]} />
       <Lines>
-        <li>70–79 = <B>soixante + 10…19</B> — <span lang="fr">soixante-<b className="text-[color:var(--cahier-la)]">douze</b> (72), soixante-<b className="text-[color:var(--cahier-la)]">dix-neuf</b> (79)</span></li>
-        <li>71 garde le <B>et</B> — <span lang="fr">soixante <b className="text-[color:var(--cahier-la)]">et onze</b></span> · mais 81, 91 : <span lang="fr">quatre-vingt-un, quatre-vingt-onze</span> — <B>sans et !</B></li>
-        <li>80 = 4 × 20 → <span lang="fr">quatre-vingt<b className="text-[color:var(--cahier-la)]">s</b></span> avec un <B>-s</B>… qui <B>disparaît</B> devant un nombre : <span lang="fr">quatre-vingt-cinq (85)</span></li>
-        <li>90–99 = <B>quatre-vingt + 10…19</B> — <span lang="fr">quatre-vingt-<b className="text-[color:var(--cahier-la)]">quinze</b> (95), quatre-vingt-<b className="text-[color:var(--cahier-la)]">dix-neuf</b> (99)</span></li>
+        <li>70–79 = <B>soixante + 10…19</B> — <span lang="fr">soixante-<b className="text-[color:var(--gram-neutral)]">douze</b> (72), soixante-<b className="text-[color:var(--gram-neutral)]">dix-neuf</b> (79)</span></li>
+        <li>71 garde le <B>et</B> — <span lang="fr">soixante <b className="text-[color:var(--gram-neutral)]">et onze</b></span> · mais 81, 91 : <span lang="fr">quatre-vingt-un, quatre-vingt-onze</span> — <B>sans et !</B></li>
+        <li>80 = 4 × 20 → <span lang="fr">quatre-vingt<b className="text-[color:var(--gram-neutral)]">s</b></span> avec un <B>-s</B>… qui <B>disparaît</B> devant un nombre : <span lang="fr">quatre-vingt-cinq (85)</span></li>
+        <li>90–99 = <B>quatre-vingt + 10…19</B> — <span lang="fr">quatre-vingt-<b className="text-[color:var(--gram-neutral)]">quinze</b> (95), quatre-vingt-<b className="text-[color:var(--gram-neutral)]">dix-neuf</b> (99)</span></li>
         <li>Au marché : <span lang="fr">« Ça fait quatre-vingt-cinq euros. » (85 €)</span></li>
       </Lines>
     </Card>
@@ -520,7 +652,21 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
   ),
 };
 
-/** The Mémo card for a deck, or undefined (ateliers — their Lire is the model dialogue). */
+// The six ateliers get theirs from ATELIER_DIALOGUES rather than by hand, so a
+// line edited in the model cannot drift out of the Mémo that teaches it — and
+// a seventh atelier added later is covered without anyone remembering to.
+for (const sioId of Object.keys(ATELIER_DIALOGUES)) {
+  DECK_MEMOS[`atelier-${sioId.toLowerCase()}`] = (
+    <Card title="Le modèle">
+      <AtelierMemo sioId={sioId} />
+    </Card>
+  );
+}
+
+
+/** The Mémo card for a deck, or undefined. The ateliers have one since
+ *  2026-08-28: theirs IS the model dialogue, which is what a production stop
+ *  needs to read before it is asked to produce. */
 export function memoForDeck(id: string): ReactNode | undefined {
   return DECK_MEMOS[id];
 }

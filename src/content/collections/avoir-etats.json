@@ -233,6 +233,86 @@
       "tags": [
         "col:ils_sont"
       ]
+    },
+    {
+      "id": "avoir-etats-17",
+      "fr": "J'ai faim.",
+      "en": "I'm hungry.",
+      "lemma": "avoir",
+      "tags": [],
+      "gap": "ai"
+    },
+    {
+      "id": "avoir-etats-18",
+      "fr": "Tu as soif ?",
+      "en": "Are you thirsty?",
+      "lemma": "avoir",
+      "tags": [],
+      "gap": "as"
+    },
+    {
+      "id": "avoir-etats-19",
+      "fr": "Il a froid.",
+      "en": "He is cold.",
+      "lemma": "avoir",
+      "tags": [],
+      "gap": "a"
+    },
+    {
+      "id": "avoir-etats-20",
+      "fr": "Nous avons chaud.",
+      "en": "We are hot.",
+      "lemma": "avoir",
+      "tags": [],
+      "gap": "avons"
+    },
+    {
+      "id": "avoir-etats-21",
+      "fr": "Vous avez faim ?",
+      "en": "Are you hungry?",
+      "lemma": "avoir",
+      "tags": [],
+      "gap": "avez"
+    },
+    {
+      "id": "avoir-etats-22",
+      "fr": "Ils ont soif.",
+      "en": "They are thirsty.",
+      "lemma": "avoir",
+      "tags": [],
+      "gap": "ont"
+    },
+    {
+      "id": "avoir-etats-23",
+      "fr": "Il est fatigué.",
+      "en": "He is tired.",
+      "lemma": "être",
+      "tags": [],
+      "gap": "est"
+    },
+    {
+      "id": "avoir-etats-24",
+      "fr": "Elle est malade.",
+      "en": "She is sick.",
+      "lemma": "être",
+      "tags": [],
+      "gap": "est"
+    },
+    {
+      "id": "avoir-etats-25",
+      "fr": "Ils sont contents.",
+      "en": "They are happy.",
+      "lemma": "être",
+      "tags": [],
+      "gap": "sont"
+    },
+    {
+      "id": "avoir-etats-26",
+      "fr": "Elles sont tristes.",
+      "en": "They (f) are sad.",
+      "lemma": "être",
+      "tags": [],
+      "gap": "sont"
     }
   ]
 }

@@ -18,7 +18,8 @@ import Link from "next/link";
  *  every half-width laptop window with NO navigation but the burger.
  *  Keep in sync with the media query in globals.css. */
 const RAIL_MIN_PX = 900;
-import GuideSplash from "@/components/GuideSplash";
+import MenuSplash from "@/components/MenuSplash";
+import RailGroups from "@/components/RailGroups";
 import type { CSSProperties, MouseEvent as ReactMouseEvent, ReactNode } from "react";
 
 const PAGE_WIDTH_KEY = "fluolingo:pageWidth";
@@ -35,18 +36,17 @@ import { SIOS } from "@/content/sios";
 import { getPretestForSio } from "@/content/pretests";
 import { UNIT0_QUESTIONS } from "@/content/sios/unit0-questions";
 import { getLetrisSet } from "@/games/letris/sets";
-import { composeBankForDeck } from "@/games/compose/banks";
+import { composeBanksForDeck } from "@/games/compose/banks";
 import FirstTour from "@/components/FirstTour";
 import AccountButton from "@/components/AccountButton";
-import SearchOverlay from "@/components/SearchOverlay";
-import RankingOverlay from "@/components/RankingOverlay";
 import SoundControl from "@/components/SoundControl";
 import { isPlayableGap } from "@/lib/collections/gapSentence";
-import { activity } from "@/content/activities";
+import { activity, bandOf, familyOf } from "@/content/activities";
 import { toPracticeSet } from "@/lib/practice/engine";
 import BottomBar from "@/components/BottomBar";
+import PageBand from "@/components/PageBand";
 
-/** Dice Practice is an MCQ over the deck's letris columns — no columns, no game. */
+/** Sorting is an MCQ over the deck's letris columns — no columns, no game. */
 export function hasDicePractice(collectionId: string): boolean {
   return !!CURATED.find((c) => c.id === collectionId)?.gameConfig?.letris;
 }
@@ -127,8 +127,8 @@ function TabFlap({
 export default function CahierShell({
   tabs = [],
   active,
-  crumb,
   topRight,
+  band,
   children,
 }: {
   /** Page-context flaps (a deck's activities, Teacher, …). The two site
@@ -137,8 +137,10 @@ export default function CahierShell({
    *  the flap rail must never "randomly disappear" (Dan, 2026-07-05). */
   tabs?: ShellTab[];
   active: string;
-  crumb?: ReactNode; // small label on the top bar's right side
   topRight?: ReactNode; // extra top-bar content (e.g. a live score)
+  /** The heading band's data slots (sub-line + the one number), or `false`
+   *  to suppress the band on a page that draws its own heading. */
+  band?: { title?: ReactNode; sub?: ReactNode; stat?: ReactNode } | false;
   children: ReactNode;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -156,8 +158,6 @@ export default function CahierShell({
     document.addEventListener("pointerdown", close, true);
     return () => document.removeEventListener("pointerdown", close, true);
   }, [menuOpen]);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [rankingOpen, setRankingOpen] = useState(false);
   // The Quick Guide no longer pops up by default (Dan, 2026-07-14) — it
   // opens from the inverted QuickGuide button right after the ❓ flap.
   const [quickGuideOpen, setQuickGuideOpen] = useState(false);
@@ -175,16 +175,24 @@ export default function CahierShell({
   const deckUnit = deckId ? CURATED.find((c) => c.id === deckId)?.unit : undefined;
   const unitKey = deckUnit === undefined ? undefined : `unit-${deckUnit}`;
   const isActiveFlap = (t: ShellTab) => active === t.key || t.key === unitKey;
+  // null for a page that colours itself — then NO fam- class is added, the
+  // header falls back to plain paper and the spine rule does not match, so
+  // the page renders exactly as it did before this system existed.
+  const famKey = familyOf(active);
+  // What the page ASKS, where it is an activity — the band over it takes
+  // this over the family (Dan, 2026-08-26). Section pages keep the family.
+  const bandKey = bandOf(active);
 
   // Per-page browser-tab title (audit 2026-07-19: every page announced
   // itself as just "FluOlinGo" — tabs, history, bookmarks and screen-reader
   // page announcements were indistinguishable). The active flap's label IS
   // the page's name; deck/context pages fall back to their first context
-  // flap, then to a string crumb. Home (no matching flap) keeps the default.
+  // flap, then to the registry (patch 19c retired the `crumb` prop, whose
+  // only surviving job was this fallback). Home keeps the default.
   const pageLabel =
     [...site, ...tools, ...context].find((t) => t.key === active)?.label ??
     context[0]?.label ??
-    (typeof crumb === "string" ? crumb : undefined);
+    activity(active)?.name;
   useEffect(() => {
     document.title = pageLabel ? `${pageLabel} · FluOlinGo` : "FluOlinGo";
   }, [pageLabel]);
@@ -275,44 +283,64 @@ export default function CahierShell({
   const page = (
         <main
           ref={(el) => { if (!nested) outerRef.current = el; }}
-          className={`cahier-page ${nested ? "min-h-[calc(100vh-18px)]" : "min-h-screen"}`}
+          /* EVERY page wears its family's colour, from one place (Dan,
+             2026-08-21: "I WANT COLOR"). familyOf() turns the page's own
+             `active` key into one of the six, so a route does not have to
+             declare a hue — and the whole site stops being one undivided
+             field of paper. Unknown keys stay uncoloured on purpose. */
+          className={`cahier-page ${famKey ? `fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""} ${nested ? "min-h-[calc(100vh-18px)]" : "min-h-screen"}`}
         >
           {!nested && <div className="cahier-binding" aria-hidden />}
           {!nested && edgeGrip}
 
-          <div className="sticky top-0 z-10 border-b-2 border-[color:var(--cahier-ink)]/15 bg-[color:var(--cahier-paper)]/90 backdrop-blur">
-            <div className={`flex items-center justify-between gap-2 py-3 pr-3 sm:pr-5 ${nested ? "pl-5 sm:pl-7" : "pl-9 sm:pl-16"}`}>
+          {/* The family band: the header field is the family's wash and the
+              page carries its spine. Both are tokens, so switching family
+              switches the page and nothing else moves. */}
+          <div
+            className="sticky top-0 z-10 border-b-2 border-[color:var(--cahier-ink)]/15 backdrop-blur"
+            style={{ background: "var(--fam-wash, var(--cahier-paper))" }}
+          >
+            {/* py-2 + tighter left inset (Dan, 2026-08-21): the wordmark hugs
+                the page's top-left corner — just clear of the spiral binding
+                (38px), no further. */}
+            <div className={`flex items-center justify-between gap-2 py-2 pr-3 sm:pr-5 ${nested ? "pl-5 sm:pl-7" : "pl-9 sm:pl-11"}`}>
               {/* The wordmark is ALWAYS a door home (Dan, 2026-07-25) — on
                   the home page it simply arrives where you already are. */}
-              <Link href="/" className="cahier-display text-lg font-black text-[color:var(--cahier-ink)]">
+              {/* THE RULE OF THIS BAR (Dan, 2026-08-21: "the top most row of
+                  icons still exist, and must not go hiding into the overspill
+                  off the screen"): every icon in .cahier-topbar is a
+                  destination, the strip is shrink-0, and nothing may push it
+                  past the right edge. So the bar has a yield order, widest
+                  concession first:
+
+                    1. `topRight` — page-supplied, variable width, and the one
+                       thing that broke the budget. It now has its OWN
+                       shrinkable slot below (min-w-0 + truncate), OUTSIDE the
+                       icon strip, so a long score readout ellipsizes instead
+                       of shoving ☰ off the screen.
+                    2. the wordmark — a door home the ← already signals, so it
+                       truncates legibly.
+                    3. the icons — never. They are the invariant.
+
+                  Measured on /reviser before this: at 320px the score readout
+                  and ☰ were both off-screen; at 360 and 390 one added chip was
+                  enough to lose ☰. verify31 pins the structure. */}
+              <Link href="/" className="cahier-display min-w-0 shrink truncate text-lg font-black text-[color:var(--cahier-ink)]">
                 {active !== "home" && <>← </>}<span className="cahier-hl">FluOlinGo</span>
               </Link>
-              <div className="cahier-topbar flex shrink-0 items-center gap-1 sm:gap-2">
-                {/* Icon strip, macOS-menu-bar style (Dan, 2026-07-08): 🔍 opens
-                    the floating search, 🏆 floats the ranking, 🏠 goes home —
-                    icons only, no words. */}
-                <button
-                  type="button"
-                  aria-label="Rechercher un mot"
-                  title="Rechercher un mot · Search a word"
-                  onClick={() => setSearchOpen(true)}
-                  className="cahier-btn cahier-btn-sm"
-                >
-                  🔍
-                </button>
-                <button
-                  type="button"
-                  aria-label="Classement"
-                  title="Classement · Leaderboard"
-                  onClick={() => setRankingOpen(true)}
-                  className="cahier-btn cahier-btn-sm"
-                >
-                  🏆
-                </button>
+              {/* Yield slot 1 — shrinks and truncates before anything else. */}
+              {topRight && (
+                <div className="cahier-topslot min-w-0 flex-shrink truncate text-right">{topRight}</div>
+              )}
+              <div className="cahier-topbar flex max-w-full shrink-0 flex-wrap items-center justify-end gap-1 sm:flex-nowrap sm:gap-2">
+                {/* Icon strip, macOS-menu-bar style (Dan, 2026-07-08) — icons
+                    only, no words. 🔍 and 🏆 left the bar (Dan, 2026-08-22):
+                    word search lives in the Index's own box, the ranking on
+                    /leaderboard. */}
                 <SoundControl />
-                {/* 🏠 and the crumb yield below sm — the ← FluOlinGo link is
-                    the home door there, and they were pushing the ☰ off a
-                    phone screen (Dan, 2026-07-15). */}
+                {/* 🏠 yields below sm — the ← FluOlinGo link is the home
+                    door there, and it was pushing the ☰ off a phone screen
+                    (Dan, 2026-07-15). */}
                 {/* !important — .cahier-btn's own display rule beats a bare
                     `hidden` utility. */}
                 <Link href="/" aria-label="Home" title="Home" className="cahier-btn cahier-btn-sm !hidden sm:!inline-flex">
@@ -325,7 +353,6 @@ export default function CahierShell({
                 <Link href="/moi" aria-label="My learning history" title="My learning history" className="cahier-btn cahier-btn-sm">
                   ⌛
                 </Link>
-                {topRight}
                 <AccountButton />
                 {/* Half-a-button inward on mobile (Dan, 2026-07-25: the corner made ☰
                     unreachable on some phones); flush again from sm up. */}
@@ -362,7 +389,7 @@ export default function CahierShell({
                         className="cahier-tab cahier-tab--sm !rounded-md text-left font-black"
                         style={{ background: "var(--cahier-ink)", borderColor: "var(--cahier-ink)", color: "#d4f24c" }}
                       >
-                        <span aria-hidden>❓</span> HELP!
+                        <span aria-hidden>▦</span> MENU
                       </button>
                       {tools.map((t, i) => (
                         <TabFlap
@@ -392,7 +419,18 @@ export default function CahierShell({
             </div>
           </div>
 
-          <div className={`py-5 pr-4 sm:pr-7 ${nested ? "pl-5 sm:pl-7" : "pl-12 sm:pl-16"}`}>{children}</div>
+          {/* The page's heading band (Dan, 2026-08-23, variant A): every
+              family page opens with the same structure the profile page
+              established — name on the family's ink, one number right.
+              Home keeps its hero instead; /moi and /profil have no famKey. */}
+          {famKey && active !== "home" && band !== false && (band?.title ?? pageLabel) && (
+            <PageBand title={band?.title ?? pageLabel} sub={band?.sub} stat={band?.stat} className={nested ? "pl-5 sm:pl-7" : "pl-12 sm:pl-16"} />
+          )}
+
+          {/* Ruled paper behind the content well — horizontals only, no vertical
+              margin line (Dan, 2026-08-10). Opt-in class rather than a body
+              background so a drill or a game can turn it off. */}
+          <div className={`cahier-foolscap py-5 pr-4 sm:pr-7 ${nested ? "pl-5 sm:pl-7" : "pl-12 sm:pl-16"}`}>{children}</div>
           {/* Phone navigation. Nested shells (SioModal) must not draw a
               second one on top of the page's own. */}
           {!nested && <BottomBar />}
@@ -422,32 +460,23 @@ export default function CahierShell({
           <button
             type="button"
             onClick={expandFull}
-            aria-label="Agrandir la page · Expand to full width"
+            aria-label="Expand to full width"
             title="Tap (or double-tap the grey space) to expand the page"
             className="fixed right-2 top-1/2 z-40 flex h-11 w-11 -translate-y-1/2 animate-pulse items-center justify-center rounded-full border-2 border-[color:var(--cahier-ink)] bg-white text-xl text-[color:var(--cahier-ink)] shadow-lg"
           >
             <span aria-hidden>⤢</span>
           </button>
         )}
-        {searchOpen && <SearchOverlay onClose={() => setSearchOpen(false)} />}
-        {rankingOpen && <RankingOverlay onClose={() => setRankingOpen(false)} />}
-        {quickGuideOpen && <GuideSplash onClose={() => setQuickGuideOpen(false)} />}
+        {quickGuideOpen && <MenuSplash onClose={() => setQuickGuideOpen(false)} />}
         <nav className="cahier-tabs" aria-label="Pages">
           {/* TOP tier: Unités only (Dan, 2026-07-15) — Home's doors are the
               top-left FluOlinGo link and the 🏠 icon. */}
-          {site.map((t, i) => (
-            <TabFlap
-              key={t.key}
-              tab={t}
-              hue={hueOf(t, i)}
-              active={isActiveFlap(t)}
-              className={`cahier-tab ${context.length > 0 ? "cahier-tab--back1" : ""}`}
-            />
-          ))}
-          {/* LOWER tier (Dan, 2026-07-15: everything non-Unité, thin so ALL
-              of them fit): QuickGuide keeps its inverted colors, then Index,
-              WorDrill, SpecuLearn and the tools. */}
-          <span aria-hidden className="h-3" />
+          {/* THE RAIL, grouped (Dan, 19 Aug: "at the side there should be
+              only 5 tabs … and under them the individual tabs under them").
+              MENU first, then the six families, each opening to its own
+              children. The five Unité flaps are no longer a tier of their
+              own — they are Goals' children, because a unit IS ten goals.
+              RailGroups owns the open/shut state. */}
           <button
             key="quickguide"
             type="button"
@@ -455,11 +484,11 @@ export default function CahierShell({
             className="cahier-tab cahier-tab--xs font-black"
             style={{ background: "var(--cahier-ink)", borderColor: "var(--cahier-ink)", color: "#d4f24c" }}
           >
-            <span aria-hidden>❓</span> HELP!
+            <span aria-hidden>▦</span> MENU
           </button>
-          {tools.map((t, i) => (
-            <TabFlap key={t.key} tab={t} hue={hueOf(t, i)} active={active === t.key} className="cahier-tab cahier-tab--xs" />
-          ))}
+          <span aria-hidden className="h-2" />
+          <RailGroups activeKey={active} />
+
           {context.length > 0 && <span aria-hidden className="h-3" />}
           {context.map((t, i) => (
             <TabFlap key={t.key} tab={t} hue={hueOf(t, i)} active={active === t.key} className="cahier-tab cahier-tab--sm" />
@@ -510,7 +539,8 @@ function trackSupplementOpen(
  * One name, one emoji, one hue per activity — from `src/content/activities.ts`.
  *
  * The deck flaps used to spell things their own way: "Lesson" here and
- * "xPlain" in the rail, "Flip It" here and "4Mémoire" there, "Compose It" here
+ * "xPlain" in the rail (renamed "Memo" 2026-08-23), "Flip It" here and
+ * "4Mémoire" there, "Compose It" here
  * and "ComposeIt" there. Same activity, two names, two surfaces. Now a rename
  * happens in the registry or it does not happen.
  *
@@ -527,7 +557,7 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
   const lessons = lessonsForDeck(collectionId);
   const pretestHref = pretestHrefForDeck(collectionId);
   const rainSet = getLetrisSet(collectionId.replace("-letris", ""));
-  const composeBank = composeBankForDeck(collectionId);
+  const composeBanks = composeBanksForDeck(collectionId);
   const curatedDeck = CURATED.find((c) => c.id === collectionId);
   return [
     ...(pretestHref
@@ -553,20 +583,24 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     // it kept (and later regained, 2026-07-22) its own flap below, gated to
     // decks with gap-authored items.
     registryTab("lesson", lessons.length > 0 ? `/lessons/${lessons[0].slug}` : `/lessons/deck/${collectionId}`),
-    // EtuDice and iComplete, back after the 2026-07-19 unification orphaned
+    // Sorting and iComplete, back after the 2026-07-19 unification orphaned
     // them. Placed here so the row reads as FluOlin Goals' own sequence:
-    // xPlain -> EtuDice -> 4Memoire -> iComplete.
+    // Memo -> Sorting -> 4Memoire -> iComplete.
     //
-    // EtuDice is gated exactly like VocabulaRain and GramMarathon: only the 21
+    // Sorting is gated exactly like VocabulaRain and GramMarathon: only the 21
     // of 44 decks with >=2 letris columns can build a practice set, and on the
-    // rest /practice/dice/[id] renders "No dice practice for this deck yet".
+    // rest /practice/dice/[id] renders "No sorting exercise for this deck yet".
     // An absent flap beats a dead end -- and a rail slot could not be gated at
     // all, which is why it is here and not in the rail.
     ...(curatedDeck && toPracticeSet(curatedDeck)
       ? [registryTab("dice", `/practice/dice/${collectionId}`)]
       : []),
-    registryTab("complete", `/practice/complete-it/${collectionId}`),
+    // 4Mémoire BEFORE iComplete (2026-08-24, approved guidance flow): the
+    // authored family order in activities.ts is dice → flip → complete, and
+    // the SIO sheet's numbered path renders this list's order — the two
+    // surfaces may not disagree (the 22 Aug flow walk caught them doing so).
     registryTab("flip", `/practice/flip-it/${collectionId}`),
+    registryTab("complete", `/practice/complete-it/${collectionId}`),
     ...(rainSet
       ? [registryTab("vocabularain", `/games/vocabularain/${collectionId.replace("-letris", "")}`)]
       : []),
@@ -580,9 +614,15 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     ...(curatedDeck && hasMatching(curatedDeck)
       ? [{ key: "matching", label: "Match It", emoji: "🔗", href: `/games/matching/${collectionId}` } as ShellTab]
       : []),
-    ...(composeBank
-      ? [registryTab("compose", `/games/compose/${composeBank.id}`)]
-      : []),
+    // One flap per compose bank on the deck. The first wears the registry
+    // chrome ("ComposeIt"); any further bank flies its own title + emoji so
+    // two doors never read as one (atelier-sio-040 carries the itinerary AND
+    // « L'e-carte postale » — Dan, 2026-08-23). The Index's compose cell
+    // keeps pointing at the first (key "compose" is what cellHref finds).
+    ...composeBanks.map((bank, i) => {
+      const tab = registryTab("compose", `/games/compose/${bank.id}`);
+      return i === 0 ? tab : { ...tab, key: `compose-${bank.id}`, label: bank.title, emoji: bank.emoji };
+    }),
     // Resurrected as a NAMED activity (Dan, 2026-07-22) — the per-deck typed
     // sprint, distinct from the Final's authored bank. Only for decks whose
     // items carry gaps, so the marathon is never empty.

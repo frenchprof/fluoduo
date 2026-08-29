@@ -16,13 +16,16 @@ import Link from "next/link";
 import { CURATED } from "@/content/collections";
 import { speak } from "@/games/letris/speech";
 import { logEvent } from "@/lib/firebase/usage";
+import { recordPretestAnswer } from "@/lib/pretestRecord";
+import { sioForDeck } from "@/lib/curriculum";
 import CahierShell, { type ShellTab } from "@/components/CahierShell";
 import type { Collection, Item } from "@/lib/collections/schema";
+import { shuffle } from "@/lib/shuffle";
 
 // Cold pre-lesson diagnostic — no Practice-activity links on the rail
 // (pre/post boundary, same rule as /pretests/[id]).
 const PRETEST_TABS: ShellTab[] = [
-  { key: "home", label: "Accueil", emoji: "🏠", href: "/" },
+  { key: "home", label: "Home", emoji: "🏠", href: "/" },
   { key: "pretest", label: "Pretest", emoji: "🧪" },
 ];
 
@@ -40,7 +43,7 @@ export default function PicturePretestPage({ collectionId }: { collectionId: str
 
   if (!collection || pictureItems.length < N_CHOICES) {
     return (
-      <CahierShell tabs={PRETEST_TABS} active="pretest" crumb="🧪 Pretest">
+      <CahierShell tabs={PRETEST_TABS} active="pretest">
         <div className="mx-auto max-w-3xl px-4 py-10">
           <div className="rounded-2xl border-2 border-slate-200 bg-white p-10 text-center">
             <div className="text-6xl" aria-hidden>🖼️</div>
@@ -64,20 +67,12 @@ export default function PicturePretestPage({ collectionId }: { collectionId: str
   }
 
   return (
-    <CahierShell tabs={PRETEST_TABS} active="pretest" crumb={`🧪 Pretest · ${collection.title}`}>
+    <CahierShell tabs={PRETEST_TABS} active="pretest">
       <PretestRunner collection={collection} pictureItems={pictureItems} />
     </CahierShell>
   );
 }
 
-function shuffle<T>(arr: T[]): T[] {
-  const out = [...arr];
-  for (let i = out.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [out[i], out[j]] = [out[j], out[i]];
-  }
-  return out;
-}
 
 /** Build one question per item, alternating direction, with N_CHOICES options. */
 function buildQuestions(items: Item[]): Question[] {
@@ -155,16 +150,39 @@ function PretestRunner({
     if (submitted || !q) return;
     const correct = choice.id === q.item.id;
     setSubmitted({ id: choice.id, correct });
+    const pretestId = `picture:${collection.id}`;
+    const picked = displayMap[choice.id] ?? choice.fr;
     // This format used to record NOTHING — every picture pretest a class sat was
     // invisible to the gap report. Same event and shape as the authored pretests
     // (/pretests/[id]) and the SIO popup quiz, keyed by deck since these are
     // generated per deck rather than authored one by one.
     void logEvent("pretest.answer", {
-      pretestId: `picture:${collection.id}`,
+      pretestId,
       itemId: q.item.id,
       correct,
-      picked: displayMap[choice.id] ?? choice.fr,
+      picked,
       direction: q.direction,
+    });
+    // …and the LOCAL gap record, which is what "Bring to class" actually reads.
+    // The usage event above goes to Firestore for the teacher dashboard; the SIO
+    // popup's list reads pretestRecord, so logging alone left the learner's own
+    // report empty. Both directions record the same pairing — picture → French
+    // name — because that is the gap either direction exposes, and it is what
+    // the list can usefully print. `sioForDeck` is the shared resolver (see
+    // curriculum.ts: one map, so callers stop building their own).
+    //
+    // Deliberately NOT recordItemResult: a pretest is sat BEFORE the lesson, so
+    // its misses must not cost XP, dent accuracy or enter the review queue
+    // (Dan, 2026-08-27: "remember it, but don't score it"). This module writes
+    // localStorage only and touches neither XP nor the SRS ladder.
+    recordPretestAnswer({
+      pretestId,
+      sioId: sioForDeck(collection.id) ?? "",
+      itemId: q.item.id,
+      correct,
+      picked,
+      answer: displayMap[q.item.id] ?? q.item.fr,
+      stem: q.item.emoji ?? "",
     });
   }
   function next() {

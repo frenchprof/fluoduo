@@ -27,6 +27,9 @@ export const SPECULEARN_READY = [
   "languages",
   "lieux-letris",
   "commerces",
+  "colors",
+  "transport",
+  "objets-articles",
 ] as const;
 
 export function isSpecuLearnReady(id: string): boolean {
@@ -58,4 +61,74 @@ export const SPECULEARN_EXCLUDED_ITEMS = new Set([
   //               words are near-synonyms: whichever is asked, the other is
   //               defensible (Dan, 2026-07-19). Écrivez stays; Notez keeps
   //               living in Flip It / Letris / MCQ.
+
+  // --- colors (SPECULEARN_ITEMS.md, 2026-08-24) ---
+  "colors-12", // le beige — no swatch exists at all: no circle, no heart,
+  //              and every tan-ish stand-in (🟤📦🧸) reads as marron
+  //              (colors-07's twin). Dan: "just drop them" — no image.
+
+  // --- transport (SPECULEARN_ITEMS.md, 2026-08-24) ---
+  "transport-10-prendre-metro", // prendre le métro — image-twin of 🚇, already en métro
+  "transport-11-prendre-voiture", // prendre la voiture — image-twin of 🚗, already en voiture
+  "transport-12-prendre-avion", // prendre l'avion — image-twin of ✈️, already en avion
+  // These three are also verb phrases (prendre + article + noun), unlike
+  // the nine en/à prepositional phrases that stay — banning them is what
+  // keeps the playable transport set one grammatical category (Dan's
+  // amendment 1, 2026-08-24: "we cannot have verb phrases alongside
+  // prepositional phrases"). Category purity check: every remaining
+  // transport item carries tags col:en or col:a — no exceptions.
+
+  // --- objets-articles (SPECULEARN_ITEMS.md, 2026-08-24 — Dan's veto) ---
+  // The 24 Aug build drew purpose-made SVGs for these six instead of
+  // honouring the sheet's bans (see SPECULEARN_ITEM_IMAGES below and
+  // SPECULEARN_ITEMS.md's appendix). Dan reviewed the actual renders and
+  // ruled: "Veto all six, restore your original bans, ship at 14." Two
+  // (trousse, mouchoirs) also read as confusable with each other.
+  "objets-articles-07", // passeport — no passport emoji; 🛂 is passport
+  //   *control*, and next to carte d'identité either answer is defensible
+  "objets-articles-09", // trousse — no pencil-case emoji; 👝 is a bag
+  "objets-articles-11", // gomme — Unicode has no eraser emoji
+  "objets-articles-12", // portefeuille — 👛 is a coin purse (porte-monnaie)
+  "objets-articles-17", // mouchoirs — 🧻 reads toilet roll, 🤧 the sneeze
+  "objets-articles-19", // agrafeuse — 📎 is a paperclip, a different object
 ]);
+
+/* Category-purity note (Dan, 2026-08-24 amendment 1): each deck's playable
+ * SpecuLearn set must be ONE grammatical category.
+ *   colors            → definite article + colour noun ("le rouge", …).
+ *                        11/12 play once colors-12 (no image) is excluded.
+ *   transport          → en/à prepositional phrases ONLY ("en train",
+ *                        "à vélo", …). The three prendre-* verb phrases
+ *                        above are excluded for exactly this reason, not
+ *                        only the image-twin reason.
+ *   objets-articles     → bare noun + col:un/col:une/col:des tag (the
+ *                        indefinite article is rendered by withArticle() in
+ *                        SpecuLearnContent.tsx). 14/20 play — the six with
+ *                        no honest emoji are excluded above, per Dan's
+ *                        sheet and veto, not drawn around.
+ */
+
+/** Per-item image overrides — the mechanism stays (Dan, 2026-08-24: "leave
+ *  it in TypeScript, it's a short list, don't over-engineer"), currently
+ *  empty. A 24 Aug build populated this with six purpose-drawn SVGs for the
+ *  objets-articles items excluded above, sidestepping the emoji-inventory
+ *  limit the sheet in SPECULEARN_ITEMS.md flagged; Dan reviewed the actual
+ *  renders and vetoed all six ("restore your original bans, ship at 14") —
+ *  two (trousse, mouchoirs) also read as confusable with each other. The
+ *  SVGs are gone from `public/objets-articles/`; recoverable from git
+ *  history (commit `4158e2f`) if ever revisited. Mirrors the aliments
+ *  photo-bank mechanism (an `img` path wins over `emoji` in
+ *  SpecuLearnContent's Visual component) but keyed by item id rather than a
+ *  whole separate deck, for exactly this kind of small per-item exception. */
+export const SPECULEARN_ITEM_IMAGES: Record<string, string> = {};
+
+/** Per-deck SpecuLearn prompt frame (Dan, 2026-08-24 amendment 2). The
+ *  transport en/à items are answers to a specific question, not free-
+ *  floating vocabulary — showing that question above the options is what
+ *  keeps "en train" / "à vélo" honestly interpretable as a mode of
+ *  transport rather than a stray noun. Rendered lang="fr" above the
+ *  options in SpecuLearnContent.tsx; decks not listed here render nothing
+ *  extra (unchanged behaviour). */
+export const SPECULEARN_PROMPT_FRAME: Record<string, string> = {
+  transport: "Tu y vas comment ?",
+};

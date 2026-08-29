@@ -14,27 +14,27 @@ export function useDragFloat(key: string, def: { right: number; bottom: number }
   const suppressClick = useRef(false);
 
   useEffect(() => {
+    // Clamp the DEFAULT too, not just a saved spot — a fresh device used to
+    // take `def` raw, which put both floats on top of the bottom bar
+    // (patch 19's floor only ever rescued remembered positions).
     try {
       const raw = localStorage.getItem(key);
-      if (raw) {
-        const p = JSON.parse(raw) as { right: number; bottom: number };
-        setPos(clamp(p));
-      }
+      setPos(clamp(raw ? (JSON.parse(raw) as { right: number; bottom: number }) : def));
     } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 
   function clamp(p: { right: number; bottom: number }) {
     const w = typeof window === "undefined" ? 9999 : window.innerWidth;
     const h = typeof window === "undefined" ? 9999 : window.innerHeight;
-    // Below sm the bottom bar owns the last 56px + safe area. Without this
-    // floor the feedback bubble and the tour launcher sit on top of the
-    // first and last nav slots (seen 2026-08-10). BOTTOM_BAR_H must stay in
-    // sync with .cahier-bottombar in globals.css.
-    const BOTTOM_BAR_H = 60;
-    const floor = w < 640 ? BOTTOM_BAR_H + 8 : 4;
+    // Viewport clamping only. Obstruction floors are NOT guessed here any
+    // more (a hardcoded bar height drifted the moment the bar changed):
+    // whatever owns a fixed bottom obstruction declares its own floor —
+    // DrillShell sets --float-floor, the phone nav sets --bottombar-floor,
+    // measured — and the rendered `bottom` below takes the max.
     return {
       right: Math.min(Math.max(p.right, 4), Math.max(w - 56, 4)),
-      bottom: Math.min(Math.max(p.bottom, floor), Math.max(h - 56, floor)),
+      bottom: Math.min(Math.max(p.bottom, 4), Math.max(h - 56, 4)),
     };
   }
 
@@ -75,8 +75,14 @@ export function useDragFloat(key: string, def: { right: number; bottom: number }
     return false;
   };
 
+  // The rendered bottom respects every declared floor (DrillShell sets
+  // --float-floor while mounted, the phone nav sets --bottombar-floor while
+  // visible). CSS max() keeps this reactive across client-side navigation
+  // and breakpoint changes with no route coupling; dragging still works —
+  // the visual position simply pins at the floor instead of sliding under.
+  const bottom = `max(${pos.bottom}px, var(--float-floor, 0px), var(--bottombar-floor, 0px))`;
   const style: CSSProperties = side === "left"
-    ? { left: pos.right, bottom: pos.bottom, touchAction: "none" }
-    : { right: pos.right, bottom: pos.bottom, touchAction: "none" };
+    ? { left: pos.right, bottom, touchAction: "none" }
+    : { right: pos.right, bottom, touchAction: "none" };
   return { style, handlers: { onPointerDown, onPointerMove, onPointerUp, onPointerCancel: onPointerUp }, consumeClick };
 }

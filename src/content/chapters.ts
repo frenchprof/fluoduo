@@ -36,3 +36,15 @@ export const CHAPTERS: Record<number, Chapter> = {
     tagline: "Le grand final au restaurant",
   },
 };
+
+/**
+ * Where the CLASS is this week — the 🚩 on the Home map (patch 25, 2026-08-17).
+ * The road is "paved" (solid) up to this stop and unpaved (dotted) beyond,
+ * so a learner can see at a glance whether they are ahead of or behind the
+ * class. Nothing about it locks: every stop stays tappable.
+ *
+ * Hand-set for now: nothing in progress/cohort exposes a per-week position
+ * (src/lib/term.ts only stamps the term). Dan moves it as the term goes —
+ * or a later patch derives it from TERM_START_MS + a week table.
+ */
+export const CLASS_FLAG_SIO = "SIO-010";

@@ -1,26 +1,65 @@
 /**
- * Shared cloze grading + gap splitting — extracted from GramMarathon so Diced
- * Practice (the Lesson's Pratique widget) grades typed answers identically:
- * exact → deaccented "good" → wrong, with the d'/de elision alternate.
+ * THE typed-answer grader (grading unification, 2026-08-11) — one normalizer,
+ * one tier engine, every drill. Extracted from GramMarathon originally; the
+ * audit then found seven independent implementations grading the same string
+ * differently ("l'eau" typed with a phone's curly apostrophe passed Flip It
+ * and failed Complete It, on the same deck row). They now all come here:
+ *
+ *   Complete It · GramMarathon · Finale (strict AND non-strict) · lesson
+ *   pager · ÉcouTexte · ConjugaZone · 4Mémoire's judgePart (drill + table)
+ *   · Say It and SpecuLearn's speech layers (their extra tolerance sits ON
+ *   TOP of this normalizer, never beside it)
+ *
+ * The philosophy the tiers encode (progress.ts): effort counts, errors are
+ * shown. "perfect" = the exact form; "good" = right idea, wrong surface
+ * (an accent slip, a de-for-d' elision) — full credit, but the canonical
+ * form is revealed. Never silently equate what a learner should SEE differ.
  */
 
 export type Grade = "perfect" | "good" | "wrong";
 
 export function normalize(s: string) {
-  return s.toLowerCase().trim().replace(/[-–—]/g, " ").replace(/[.,!?;:'"«»()]/g, "").replace(/\s+/g, " ").trim();
+  return s
+    .toLowerCase()
+    .trim()
+    // Phone keyboards type ’ (curly); every answer key is authored with '
+    // (straight). Fold BEFORE the punctuation strip or the two glyphs grade
+    // differently — the exact bug that made « l’eau » fail half the drills.
+    .replace(/[’‘]/g, "'")
+    .replace(/[-–—]/g, " ")
+    .replace(/[.,!?;:'"«»“”()]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 export function deaccent(s: string) {
   return s.normalize("NFD").replace(/[̀-ͯ]/g, "");
 }
 
-export function gradeAnswer(typed: string, answer: string): Grade {
+export type GradeOpts = {
+  /** "strict": an accent difference is WRONG, not "good" — the Finale's
+   *  où-vs-ou items, where the accent IS the tested knowledge. */
+  accents?: "lenient" | "strict";
+};
+
+export function gradeAnswer(typed: string, answer: string, opts: GradeOpts = {}): Grade {
   const t = normalize(typed);
   const a = normalize(answer);
   if (!t) return "wrong";
   if (t === a) return "perfect";
-  if (deaccent(t) === deaccent(a)) return "good";
+  if (opts.accents !== "strict" && deaccent(t) === deaccent(a)) return "good";
   return "wrong";
+}
+
+/** Best tier across an answer and its accepted alternates. */
+export function gradeAgainst(typed: string, answers: readonly string[], opts: GradeOpts = {}): Grade {
+  let best: Grade = "wrong";
+  for (const a of answers) {
+    const g = gradeAnswer(typed, a, opts);
+    if (g === "perfect") return "perfect";
+    if (g === "good") best = "good";
+  }
+  return best;
 }
 
 /**

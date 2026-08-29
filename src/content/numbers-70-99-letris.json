@@ -1,0 +1,163 @@
+{
+ "id": "numbers-70-99-letris",
+ "title": "70, 80 ou 90 ?",
+ "subtitle": "read the word, find its decade",
+ "language": "fr",
+ "categories": [
+  {
+   "key": "soixante_dix",
+   "label": "70 – 79",
+   "prefix": ""
+  },
+  {
+   "key": "quatre_vingts",
+   "label": "80 – 89",
+   "prefix": ""
+  },
+  {
+   "key": "quatre_vingt_dix",
+   "label": "90 – 99",
+   "prefix": ""
+  }
+ ],
+ "tiles": [
+  {
+   "text": "SOIXANTE-DIX",
+   "displayName": "soixante-dix",
+   "category": "soixante_dix",
+   "meaning": "70"
+  },
+  {
+   "text": "SOIXANTE ET ONZE",
+   "displayName": "soixante et onze",
+   "category": "soixante_dix",
+   "meaning": "71"
+  },
+  {
+   "text": "SOIXANTE-DOUZE",
+   "displayName": "soixante-douze",
+   "category": "soixante_dix",
+   "meaning": "72"
+  },
+  {
+   "text": "SOIXANTE-TREIZE",
+   "displayName": "soixante-treize",
+   "category": "soixante_dix",
+   "meaning": "73"
+  },
+  {
+   "text": "SOIXANTE-QUINZE",
+   "displayName": "soixante-quinze",
+   "category": "soixante_dix",
+   "meaning": "75"
+  },
+  {
+   "text": "SOIXANTE-SEIZE",
+   "displayName": "soixante-seize",
+   "category": "soixante_dix",
+   "meaning": "76"
+  },
+  {
+   "text": "SOIXANTE-DIX-SEPT",
+   "displayName": "soixante-dix-sept",
+   "category": "soixante_dix",
+   "meaning": "77"
+  },
+  {
+   "text": "SOIXANTE-DIX-NEUF",
+   "displayName": "soixante-dix-neuf",
+   "category": "soixante_dix",
+   "meaning": "79"
+  },
+  {
+   "text": "QUATRE-VINGTS",
+   "displayName": "quatre-vingts",
+   "category": "quatre_vingts",
+   "meaning": "80"
+  },
+  {
+   "text": "QUATRE-VINGT-UN",
+   "displayName": "quatre-vingt-un",
+   "category": "quatre_vingts",
+   "meaning": "81"
+  },
+  {
+   "text": "QUATRE-VINGT-DEUX",
+   "displayName": "quatre-vingt-deux",
+   "category": "quatre_vingts",
+   "meaning": "82"
+  },
+  {
+   "text": "QUATRE-VINGT-QUATRE",
+   "displayName": "quatre-vingt-quatre",
+   "category": "quatre_vingts",
+   "meaning": "84"
+  },
+  {
+   "text": "QUATRE-VINGT-CINQ",
+   "displayName": "quatre-vingt-cinq",
+   "category": "quatre_vingts",
+   "meaning": "85"
+  },
+  {
+   "text": "QUATRE-VINGT-SEPT",
+   "displayName": "quatre-vingt-sept",
+   "category": "quatre_vingts",
+   "meaning": "87"
+  },
+  {
+   "text": "QUATRE-VINGT-NEUF",
+   "displayName": "quatre-vingt-neuf",
+   "category": "quatre_vingts",
+   "meaning": "89"
+  },
+  {
+   "text": "QUATRE-VINGT-DIX",
+   "displayName": "quatre-vingt-dix",
+   "category": "quatre_vingt_dix",
+   "meaning": "90"
+  },
+  {
+   "text": "QUATRE-VINGT-ONZE",
+   "displayName": "quatre-vingt-onze",
+   "category": "quatre_vingt_dix",
+   "meaning": "91"
+  },
+  {
+   "text": "QUATRE-VINGT-DOUZE",
+   "displayName": "quatre-vingt-douze",
+   "category": "quatre_vingt_dix",
+   "meaning": "92"
+  },
+  {
+   "text": "QUATRE-VINGT-TREIZE",
+   "displayName": "quatre-vingt-treize",
+   "category": "quatre_vingt_dix",
+   "meaning": "93"
+  },
+  {
+   "text": "QUATRE-VINGT-QUINZE",
+   "displayName": "quatre-vingt-quinze",
+   "category": "quatre_vingt_dix",
+   "meaning": "95"
+  },
+  {
+   "text": "QUATRE-VINGT-SEIZE",
+   "displayName": "quatre-vingt-seize",
+   "category": "quatre_vingt_dix",
+   "meaning": "96"
+  },
+  {
+   "text": "QUATRE-VINGT-DIX-SEPT",
+   "displayName": "quatre-vingt-dix-sept",
+   "category": "quatre_vingt_dix",
+   "meaning": "97"
+  },
+  {
+   "text": "QUATRE-VINGT-DIX-NEUF",
+   "displayName": "quatre-vingt-dix-neuf",
+   "category": "quatre_vingt_dix",
+   "meaning": "99"
+  }
+ ]
+}

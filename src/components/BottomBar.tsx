@@ -25,12 +25,43 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { BOTTOM_NAV } from "@/content/nav";
 import { readUiPrefs } from "@/lib/uiPrefs";
+import { loadProgress } from "@/lib/progress";
+import { dueForReview } from "@/lib/reviser";
 
 export default function BottomBar() {
   const pathname = usePathname();
   const [held, setHeld] = useState<string | null>(null);
   const [labels, setLabels] = useState(false);
+  const [due, setDue] = useState(0);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const nav = useRef<HTMLElement | null>(null);
+
+  // The draggable floats must clear this bar on EVERY page that shows it —
+  // 1502ee2 fixed the same overlap for DrillShell's footer by having the
+  // shell declare a floor, and the bar it turns out needs to be its own
+  // declarer too, or each new page re-discovers the bug (Reports did,
+  // 2026-08-11). Measured, not guessed: offsetHeight already includes the
+  // safe-area padding, and it is 0 while `sm:hidden` hides the bar, which
+  // correctly withdraws the floor on wide screens.
+  useEffect(() => {
+    const el = nav.current;
+    if (!el) return;
+    const root = document.documentElement;
+    const set = () => {
+      const h = el.offsetHeight;
+      if (h > 0) root.style.setProperty("--bottombar-floor", `${h + 8}px`);
+      else root.style.removeProperty("--bottombar-floor");
+    };
+    set();
+    const ro = new ResizeObserver(set);
+    ro.observe(el);
+    window.addEventListener("resize", set);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", set);
+      root.style.removeProperty("--bottombar-floor");
+    };
+  }, []);
 
   // Read after mount: prerender must not depend on localStorage or every page
   // ships one learner's preference baked into the HTML.
@@ -39,6 +70,16 @@ export default function BottomBar() {
     sync();
     window.addEventListener("fluolingo:uiprefs", sync);
     return () => window.removeEventListener("fluolingo:uiprefs", sync);
+  }, []);
+
+  // The due count used to ride Home's round 🔁 button. That button went
+  // (2026-08-21), and the count came here rather than being lost — this tab
+  // is the same destination the hero button had.
+  useEffect(() => {
+    const sync = () => setDue(dueForReview(loadProgress(), Date.now()).length);
+    sync();
+    window.addEventListener("fluolingo:progress-updated", sync);
+    return () => window.removeEventListener("fluolingo:progress-updated", sync);
   }, []);
 
   const press = useCallback((key: string) => {
@@ -55,7 +96,7 @@ export default function BottomBar() {
   useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
 
   return (
-    <nav className="cahier-bottombar sm:hidden" aria-label="Sections">
+    <nav ref={nav} className="cahier-bottombar sm:hidden" aria-label="Sections">
       {BOTTOM_NAV.map((slot) => {
         const active = pathname === slot.href || pathname.startsWith(slot.href + "/");
         const showLabel = labels || held === slot.key;
@@ -63,7 +104,7 @@ export default function BottomBar() {
           <Link
             key={slot.key}
             href={slot.href}
-            aria-label={slot.label}
+            aria-label={slot.key === "review" && due > 0 ? `${slot.label} — ${due} due` : slot.label}
             aria-current={active ? "page" : undefined}
             data-active={active}
             className="cahier-bottombar-slot"
@@ -76,7 +117,14 @@ export default function BottomBar() {
             {held === slot.key && !labels && (
               <span aria-hidden className="cahier-bottombar-tip">{slot.label}</span>
             )}
-            <span aria-hidden className="cahier-bottombar-icon">{slot.emoji}</span>
+            <span aria-hidden className="relative inline-flex cahier-bottombar-icon">
+              {slot.emoji}
+              {slot.key === "review" && due > 0 && (
+                <span className="absolute -right-3 -top-1 rounded-full bg-[var(--fluo-danger)] px-1.5 text-[10px] font-bold leading-[1.4] text-white">
+                  {due}
+                </span>
+              )}
+            </span>
             {/* Rendered but visually hidden when labels are off, so the row's
                 height never changes when someone toggles them on. */}
             <span aria-hidden className={showLabel && labels ? "cahier-bottombar-label" : "sr-only"}>

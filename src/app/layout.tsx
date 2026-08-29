@@ -1,5 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Work_Sans, Patrick_Hand, Roboto } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import BetaNotice from "@/components/BetaNotice";
 import FeedbackButton from "@/components/FeedbackButton";
@@ -8,6 +9,8 @@ import PageViewTracker from "@/components/PageViewTracker";
 import KeyNav from "@/components/KeyNav";
 import AccentBar from "@/components/AccentBar";
 import RewardToast from "@/components/RewardToast";
+import XpFloat from "@/components/XpFloat";
+import InstallPrompt from "@/components/InstallPrompt";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -59,18 +62,40 @@ const patrickHand = Patrick_Hand({
   display: "swap",
 });
 
+// FluOlinGo Hand — Dan's own brand hand-lettering (uploaded 2026-08-23), the
+// face of the page heading bands: what the design handoff's headers were
+// drawn in, now served from the repo instead of approximated by Patrick Hand.
+const fluoHand = localFont({
+  src: "../fonts/FluOlinGoHandRegular.otf",
+  variable: "--font-fluohand",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   // Template so every page can name itself in tabs/history/bookmarks
   // (audit 2026-07-19: every page was just "FluOlinGo"). Client pages set
   // theirs via CahierShell; server pages via metadata/generateMetadata.
   title: { default: "FluOlinGo", template: "%s · FluOlinGo" },
+  // LAF1201 STAYS (decided 2026-08-17, UI_WORK_PLAN_1 loose bugs): it is the
+  // course code students and Google search for; English first, the code
+  // second, no French in the description (English-first chrome rule).
   description:
-    "Gamified French (A1) practice for NUS LAF1201 — vocabulary games, speech drills, spaced revision and an AI tutor.",
+    "French A1 practice for NUS LAF1201 — vocabulary games, speech drills, spaced revision and an AI tutor.",
   // Browsers must NEVER offer to auto-translate this site (Dan, 2026-07-10):
   // rewriting the French into English destroys the learning content. The
   // meta tag is Chrome/Google Translate's opt-out; translate="no" on <html>
   // (below) is the standards-based signal other engines honour.
   other: { google: "notranslate" },
+  // iOS ignores the manifest's icons — it wants its own link tag (Apple has
+  // never implemented `purpose: maskable` either, hence the separate art).
+  appleWebApp: { capable: true, title: "FluOlinGo", statusBarStyle: "default" },
+  icons: { apple: "/icons/apple-touch-icon.png" },
+};
+
+/** The OS chrome takes the ink, so an installed window frames the paper
+ *  rather than sitting in a white box. */
+export const viewport: Viewport = {
+  themeColor: "#312620",
 };
 
 export default function RootLayout({
@@ -86,7 +111,7 @@ export default function RootLayout({
       // reverse. English-heavy blocks can opt out with lang="en" spans.
       lang="fr"
       translate="no"
-      className={`${geistSans.variable} ${geistMono.variable} ${workSans.variable} ${workSansDisplay.variable} ${patrickHand.variable} ${roboto.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${workSans.variable} ${workSansDisplay.variable} ${patrickHand.variable} ${fluoHand.variable} ${roboto.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         {children}
@@ -105,6 +130,8 @@ export default function RootLayout({
         <KeyNav />
         <AccentBar />
         <RewardToast />
+        <XpFloat />
+        <InstallPrompt />
       </body>
     </html>
   );

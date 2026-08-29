@@ -1,0 +1,115 @@
+{
+ "id": "languages-letris",
+ "title": "Le ou l' ?",
+ "subtitle": "pick the article for each language",
+ "language": "fr",
+ "categories": [
+  {
+   "key": "le",
+   "label": "LE",
+   "prefix": "Je parle le "
+  },
+  {
+   "key": "l_apos",
+   "label": "L'",
+   "prefix": "Je parle l'"
+  }
+ ],
+ "tiles": [
+  {
+   "text": "FRANÇAIS",
+   "category": "le",
+   "meaning": "French"
+  },
+  {
+   "text": "CHINOIS",
+   "category": "le",
+   "meaning": "Mandarin / Chinese"
+  },
+  {
+   "text": "HINDI",
+   "category": "le",
+   "meaning": "Hindi / Urdu"
+  },
+  {
+   "text": "PORTUGAIS",
+   "category": "le",
+   "meaning": "Portuguese"
+  },
+  {
+   "text": "RUSSE",
+   "category": "le",
+   "meaning": "Russian"
+  },
+  {
+   "text": "JAPONAIS",
+   "category": "le",
+   "meaning": "Japanese"
+  },
+  {
+   "text": "TURC",
+   "category": "le",
+   "meaning": "Turkish"
+  },
+  {
+   "text": "TAMOUL",
+   "category": "le",
+   "meaning": "Tamil"
+  },
+  {
+   "text": "CANTONAIS",
+   "category": "le",
+   "meaning": "Cantonese"
+  },
+  {
+   "text": "VIETNAMIEN",
+   "category": "le",
+   "meaning": "Vietnamese"
+  },
+  {
+   "text": "FILIPINO",
+   "category": "le",
+   "meaning": "Filipino"
+  },
+  {
+   "text": "CORÉEN",
+   "category": "le",
+   "meaning": "Korean"
+  },
+  {
+   "text": "THAÏ",
+   "category": "le",
+   "meaning": "Thai"
+  },
+  {
+   "text": "MALAIS",
+   "category": "le",
+   "meaning": "Malay"
+  },
+  {
+   "text": "ANGLAIS",
+   "category": "l_apos",
+   "meaning": "English"
+  },
+  {
+   "text": "ESPAGNOL",
+   "category": "l_apos",
+   "meaning": "Spanish"
+  },
+  {
+   "text": "ARABE",
+   "category": "l_apos",
+   "meaning": "Arabic"
+  },
+  {
+   "text": "INDONÉSIEN",
+   "category": "l_apos",
+   "meaning": "Indonesian"
+  },
+  {
+   "text": "ALLEMAND",
+   "category": "l_apos",
+   "meaning": "German"
+  }
+ ]
+}

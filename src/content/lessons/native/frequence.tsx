@@ -7,31 +7,7 @@
 import type { NativeLesson } from "./types";
 import { speak } from "@/games/letris/speech";
 
-const SUBJECTS = [
-  { disp: "Je", slot: "je" }, { disp: "Tu", slot: "tu" }, { disp: "Il", slot: "il" },
-  { disp: "Elle", slot: "il" }, { disp: "On", slot: "il" }, { disp: "Nous", slot: "nous" },
-  { disp: "Vous", slot: "vous" }, { disp: "Ils", slot: "ils" }, { disp: "Elles", slot: "ils" },
-] as const;
-const END: Record<string, string> = { je: "e", tu: "es", il: "e", nous: "ons", vous: "ez", ils: "ent" };
-const ACTS = [
-  { stem: "regard", rest: "la télé", en: "watch TV" },
-  { stem: "écout", rest: "de la musique", en: "listen to music" },
-  { stem: "travaill", rest: "", en: "work" },
-  { stem: "cuisin", rest: "", en: "cook" },
-  { stem: "jou", rest: "au foot", en: "play football" },
-  { stem: "dans", rest: "", en: "dance" },
-] as const;
-const ADV = [
-  { fr: "toujours", en: "always" }, { fr: "souvent", en: "often" },
-  { fr: "régulièrement", en: "regularly" }, { fr: "parfois", en: "sometimes" },
-  { fr: "rarement", en: "rarely" },
-] as const;
-const SCALE = [...ADV, { fr: "jamais", en: "never" }] as const;
-
-const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)];
-function subjVerb(s: (typeof SUBJECTS)[number], verb: string): string {
-  return s.slot === "je" && /^[aeiouéèêh]/i.test(verb) ? `J'${verb}` : `${s.disp} ${verb}`;
-}
+import { FREQUENCE_AXES, SCALE, frequenceQuestion } from "./frequence.gen";
 
 export const frequenceLesson: NativeLesson = {
   slug: "frequence",
@@ -68,30 +44,8 @@ export const frequenceLesson: NativeLesson = {
   ),
   dice: {
     instruction: "Place the frequency adverb — right after the verb.",
-    newQuestion() {
-      const s = pick(SUBJECTS), a = pick(ACTS), adv = pick(ADV);
-      const verb = a.stem + END[s.slot];
-      const sv = subjVerb(s, verb);
-      const tail = a.rest ? ` ${a.rest}` : "";
-      const other = pick(ADV.filter((x) => x.fr !== adv.fr));
-      return {
-        meta: `${sv} … (${a.en})`,
-        big: adv.fr,
-        en: adv.en,
-        correct: `${sv} ${adv.fr}${tail}.`,
-        easyOptions: [
-          `${sv} ${adv.fr}${tail}.`,
-          `${s.disp} ${adv.fr} ${verb}${tail}.`,
-          `${sv} ${other.fr}${tail}.`,
-        ],
-        med: {
-          before: sv,
-          choices: ADV.map((x) => x.fr),
-          correct: adv.fr,
-          after: a.rest ? `${a.rest}.` : ".",
-        },
-      };
-    },
+    newQuestion: frequenceQuestion,
+    axes: FREQUENCE_AXES,
   },
   bonus: [
     { en: "I often watch TV.", fr: "Je regarde souvent la télé." },

@@ -12,6 +12,10 @@ rules_version = '2';
 //   events / authEvents              telemetry                        (signed-in create; events shape-checked)
 //   feedback                         bug reports                      (ANONYMOUS create, shape-checked, admin read)
 //   collections/{id}                 user-created decks               (owner write, public/unlisted read)
+//   oralST2_2026/{uid}               ST2 oral-test bookings           (owner+admin write, shape-checked, signed-in read)
+//   oralST2_2026_invites/{email}     teammate invites by email        (leader create, leader/invitee/admin delete)
+//   mail/{id}                        Trigger Email extension outbox   (signed-in create, shape-checked)
+//   siteVisits/{site}_{uid}          cross-site Google-login attendance (owner create/update, admin read/delete)
 service cloud.firestore {
   match /databases/{database}/documents {
     function isSignedIn() { return request.auth != null; }
@@ -42,10 +46,7 @@ service cloud.firestore {
         && request.resource.data.name.size() <= 60
         && request.resource.data.xp is int
         && request.resource.data.xp >= 0
-        && request.resource.data.xp <= 2000   // was 100 — rejected every correct
-          // answer at streak >= 7 (60 x2 = 120), silently, since the x2 tier
-          // shipped. Ceiling now clears the largest legitimate payout
-          // (XP_SIO_BASE + XP_SIO_MASTERY = 600, x2 = 1200) with headroom.00000
+        && request.resource.data.xp <= 10000000
         && request.resource.data.level is int
         && request.resource.data.level >= 1
         && request.resource.data.level <= 1000
@@ -54,7 +55,24 @@ service cloud.firestore {
         && request.resource.data.gems <= 1000000
         && request.resource.data.streak is int
         && request.resource.data.streak >= 0
-        && request.resource.data.streak <= 100000;
+        && request.resource.data.streak <= 100000
+        // Weekly race (2026-08-21): optional for the same reason as `term` —
+        // a legacy laf1201 row updated with merge:true has neither field, and
+        // a denied write makes the client delete the learner's own row. When
+        // present, weekXp is bounded like xp and weekKey is a short key.
+        && (!('weekXp' in request.resource.data)
+            || (request.resource.data.weekXp is int
+                && request.resource.data.weekXp >= 0
+                && request.resource.data.weekXp <= 10000000))
+        && (!('weekKey' in request.resource.data)
+            || request.resource.data.weekKey == null
+            || (request.resource.data.weekKey is string
+                && request.resource.data.weekKey.size() <= 10))
+        // Cohort marker (2026-08-11 reset): optional so legacy merge:true
+        // updates keep passing; when present it must be a short string.
+        && (!('term' in request.resource.data)
+            || (request.resource.data.term is string
+                && request.resource.data.term.size() <= 20));
     }
     function validSession() {
       return request.resource.data.keys().hasOnly(
@@ -108,12 +126,16 @@ service cloud.firestore {
       // givenAnswer are optional analytics fields (fluency curves / error
       // taxonomy) — validated when present so they can ship later without a
       // rules redeploy.
-      match /responses/{responseId} {
+     match /responses/{responseId} {
         allow read:   if isOwner(uid) || isAdmin();
         allow create: if isOwner(uid)
           && request.resource.data.keys().hasOnly(
               ['item', 'attempts', 'status', 'xp', 'timestamp', 'sessionId', 'activityId',
-               'latencyMs', 'givenAnswer', 'intervalDays', 'due'])
+               'latencyMs', 'givenAnswer', 'intervalDays', 'due',
+               // Evidence model (2026-08-10). All optional, so existing writers
+               // keep working unchanged. PRD §7: a correct answer is not one
+               // fact — it matters HOW it was produced.
+               'outcomeId', 'evidenceType', 'assistance', 'assistCount', 'independent'])
           && request.resource.data.item is string
           && request.resource.data.item.size() >= 1
           && request.resource.data.item.size() <= 200
@@ -123,7 +145,15 @@ service cloud.firestore {
           && request.resource.data.status in ['met', 'missed', 'retried', 'mastered']
           && request.resource.data.xp is int
           && request.resource.data.xp >= 0
-          && request.resource.data.xp <= 100
+          // WAS 100 (fixed 2026-08-10). progress.ts pays 60 x streak-multiplier,
+          // and the x2 tier at streak >= 7 writes 120 — so EVERY correct answer
+          // from a learner on a 7-day streak was denied here and swallowed by
+          // the catch in responses.ts. Wrong answers (40) passed, so affected
+          // learners' evidence kept their errors and discarded their successes.
+          // Confirmed against live data: zero stored documents exceeded 100.
+          // New ceiling clears the largest legitimate payout
+          // (XP_SIO_BASE + XP_SIO_MASTERY = 600, x2 = 1200) with headroom.
+          && request.resource.data.xp <= 2000
           && request.resource.data.timestamp == request.time
           && (!('sessionId' in request.resource.data)
               || (request.resource.data.sessionId is string
@@ -144,7 +174,24 @@ service cloud.firestore {
                   && request.resource.data.intervalDays <= 3650))
           && (!('due' in request.resource.data)
               || (request.resource.data.due is int
-                  && request.resource.data.due >= 0));
+                  && request.resource.data.due >= 0))
+          // ── evidence model ────────────────────────────────────────────
+          && (!('outcomeId' in request.resource.data)
+              || (request.resource.data.outcomeId is string
+                  && request.resource.data.outcomeId.size() <= 40))
+          && (!('evidenceType' in request.resource.data)
+              || request.resource.data.evidenceType in
+                 ['recognition', 'constrained', 'free', 'receptive',
+                  'productive', 'transfer', 'delayed', 'diagnostic', 'teacher'])
+          && (!('assistance' in request.resource.data)
+              || request.resource.data.assistance in
+                 ['none', 'nudge', 'question', 'scaffold', 'partial', 'answer'])
+          && (!('assistCount' in request.resource.data)
+              || (request.resource.data.assistCount is int
+                  && request.resource.data.assistCount >= 0
+                  && request.resource.data.assistCount <= 20))
+          && (!('independent' in request.resource.data)
+              || request.resource.data.independent is bool);
         allow update, delete: if false;
       }
       // Session summaries: xp/level only ever rise (a client can't quietly
@@ -184,7 +231,7 @@ service cloud.firestore {
       // user's own row (its excluded-user fallback). Values are what matter.
       allow create: if isOwner(uid) && !isAdmin() && !isExcludedFromLeaderboard()
         && request.resource.data.keys().hasOnly(
-            ['name', 'xp', 'level', 'gems', 'streak', 'updatedAt'])
+            ['name', 'xp', 'level', 'gems', 'streak', 'weekXp', 'weekKey', 'term', 'updatedAt'])
         && validLeaderboardRow();
       allow update: if isOwner(uid) && !isAdmin() && !isExcludedFromLeaderboard()
         && validLeaderboardRow();
@@ -272,6 +319,115 @@ service cloud.firestore {
         && request.resource.data.owner == resource.data.owner
         && validDeck();
       allow delete: if isSignedIn() && resource.data.owner == request.auth.uid;
+    }
+    // ── ST2FR26 ORAL TEST (oraltest.withdrchan.com, July 2026) ──────────
+    // Booking = one doc per student. Leaders write {size,name,email,ts};
+    // size 0 = "open to either" (floater awaiting a match); teammates who
+    // confirm an invite add team:<leaderUid>. Signed-in read (the whole
+    // class sees the live schedule). Admin may also WRITE: the teacher's
+    // "Finalize leftovers" button pairs remaining floaters into duos (the
+    // odd one out gets examiner:true) and must preserve each student's
+    // original sign-up ts — hence ts == request.time is waived for admin.
+    match /oralST2_2026/{uid} {
+      allow read: if isSignedIn();
+      allow create, update: if (isOwner(uid) || isAdmin())
+        && request.resource.data.keys().hasOnly(['size', 'name', 'email', 'team', 'ts', 'examiner'])
+        && request.resource.data.size in [0, 2, 3]
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 1
+        && request.resource.data.name.size() <= 80
+        && request.resource.data.email is string
+        && request.resource.data.email.size() <= 120
+        && request.resource.data.ts is timestamp
+        && (isAdmin() || request.resource.data.ts == request.time)
+        && (!('team' in request.resource.data)
+            || (request.resource.data.team is string
+                && request.resource.data.team.size() <= 60))
+        && (!('examiner' in request.resource.data)
+            || request.resource.data.examiner is bool);
+      allow delete: if isOwner(uid) || isAdmin();
+    }
+    // Teammate invites, keyed by the invitee's LOWERCASE Google email.
+    // Create: only by the (signed-in) leader, stamped with their own uid.
+    // Delete: the leader revokes, the invitee accepts/declines (their token
+    // email must match the doc id), or an admin cleans up.
+    match /oralST2_2026_invites/{email} {
+      allow read: if isSignedIn();
+      // Admin may stamp `by` with a pre_ leader key when pre-booking groups
+      // on students' behalf from the Teacher tab.
+      allow create: if isSignedIn()
+        && request.resource.data.keys().hasOnly(['by', 'byName', 'size', 'ts'])
+        && (request.resource.data.by == request.auth.uid || isAdmin())
+        && request.resource.data.byName is string
+        && request.resource.data.byName.size() >= 1
+        && request.resource.data.byName.size() <= 80
+        && request.resource.data.size in [2, 3]
+        && request.resource.data.ts == request.time;
+      allow update: if false;
+      allow delete: if isAdmin()
+        || (isSignedIn() && resource.data.by == request.auth.uid)
+        || (isSignedIn() && request.auth.token.email.lower() == email);
+    }
+    // Outbox for the "Trigger Email from Firestore" extension (invite nudges).
+    // Create-only and shape-checked; the extension itself reads/updates via
+    // the Admin SDK, which bypasses rules. If the extension isn't installed,
+    // docs simply accumulate harmlessly (client treats sending as best-effort).
+    match /mail/{id} {
+      allow create: if isSignedIn()
+        && request.resource.data.keys().hasOnly(['to', 'message'])
+        && request.resource.data.to is list
+        && request.resource.data.to.size() == 1
+        && request.resource.data.message is map
+        && request.resource.data.message.keys().hasOnly(['subject', 'text'])
+        && request.resource.data.message.subject is string
+        && request.resource.data.message.subject.size() <= 200
+        && request.resource.data.message.text is string
+        && request.resource.data.message.text.size() <= 4000;
+      allow read, update, delete: if false;
+    }
+    // SITE-WIDE VISIT ATTENDANCE (shared across every withdrchan.com site on
+    // this project — oraltest, laf2201/French 2, and future sites). Doc id is
+    // "<site>_<uid>", so the id itself demarcates alongside the `site` field.
+    // Owner creates their own first-visit doc, then may only bump
+    // lastVisit/visitCount on return visits — every other field is frozen
+    // after creation. Admin can read across all students/sites for dashboards
+    // and delete for cleanup.
+    match /siteVisits/{docId} {
+      allow read: if isOwner(resource.data.uid) || isAdmin();
+      allow create: if isSignedIn()
+        && request.resource.data.uid == request.auth.uid
+        && docId == request.resource.data.site + '_' + request.auth.uid
+        && request.resource.data.keys().hasOnly(
+            ['site', 'uid', 'email', 'displayName', 'firstVisit', 'lastVisit', 'visitCount'])
+        && request.resource.data.site is string
+        && request.resource.data.site.size() >= 1
+        && request.resource.data.site.size() <= 40
+        && request.resource.data.email is string
+        && request.resource.data.email.size() <= 120
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() <= 120
+        && request.resource.data.firstVisit == request.time
+        && request.resource.data.lastVisit == request.time
+        && request.resource.data.visitCount == 1;
+      allow update: if isOwner(resource.data.uid)
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.site == resource.data.site
+        && request.resource.data.email == resource.data.email
+        && request.resource.data.displayName == resource.data.displayName
+        && request.resource.data.firstVisit == resource.data.firstVisit
+        && request.resource.data.lastVisit == request.time
+        && request.resource.data.visitCount == resource.data.visitCount + 1;
+      allow delete: if isAdmin();
+    }
+   // Teacher-only configuration. admin/rosterPrivate holds the roster maps
+    // (account aliases, name overrides, uid→email seeds) that used to be
+    // compiled into the /teacher page — a public static asset anyone could
+    // download. They live here precisely so they are never in the JS the CDN
+    // serves. Writer: scripts/seed-roster-private.mjs (service account, which
+    // bypasses rules); the isAdmin() write keeps the door open for an
+    // in-console edit without a redeploy.
+    match /admin/{docId} {
+      allow read, write: if isAdmin();
     }
     // Explicit default-deny for anything unmatched (self-documenting; Firestore
     // already denies unmatched paths).

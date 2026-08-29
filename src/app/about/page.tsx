@@ -43,7 +43,9 @@ const COMMITMENTS: { emoji: string; title: string; hue: number; body: React.Reac
     hue: 1,
     body: (
       <>
-        Reading about French is the weakest way to learn it, so reading is rationed (the Mémo is one card, never a
+        {/* "Memo", not "Mémo" — matches the activity's registry name (Dan,
+            2026-08-23 rename, approved surface #3; chrome is English). */}
+        Reading about French is the weakest way to learn it, so reading is rationed (the Memo is one card, never a
         chapter) and everything else makes you <b>produce</b>: pick, type, build the whole sentence, speak it, compose a
         dialogue where the waiter actually reacts to what you order. The activity ladder climbs from recognising to
         constructing to interacting.
@@ -72,7 +74,7 @@ const COMMITMENTS: { emoji: string; title: string; hue: number; body: React.Reac
     body: (
       <>
         The 50 goals here are <b>your course&rsquo;s</b>{" "}can-do objectives — not an app company&rsquo;s syllabus. FluOlinGo
-        prepares you before each class and consolidates after it, with reviews spaced over time (<b>🔁 DéjàRevu</b>).
+        prepares you before each class and consolidates after it, with reviews spaced over time (<b>🔖 DéjàRevu</b>).
         Commercial apps teach their own curriculum to nobody in particular; this one exists to make{" "}
         <b>your next lesson</b>{" "}work better. That&rsquo;s a different job — and it&rsquo;s the job that matters here.
       </>
@@ -93,7 +95,7 @@ const REFERENCES: string[] = [
 
 export default function AboutPage() {
   return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "guide")} active="guide" crumb="💡 About">
+    <CahierShell tabs={tabsWithActive(siteTabs(), "guide")} active="guide">
       <div className="mx-auto max-w-2xl px-3 py-5">
         <h1 className="cahier-display cahier-hand text-3xl font-normal text-[color:var(--cahier-ink)]">
           💡 Why <span className="cahier-hl px-1">FluOlinGo</span> is built this way
@@ -133,7 +135,7 @@ export default function AboutPage() {
         <p className="mt-6 text-sm font-bold text-[color:var(--cahier-ink)]">
           <Link href="/guide" className="underline">← Back to the Guide</Link>
           {" · "}
-          <Link href="/" className="underline">Commencez ici 🏠</Link>
+          <Link href="/" className="underline">Start here 🏠</Link>
         </p>
       </div>
     </CahierShell>

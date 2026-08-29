@@ -15,7 +15,8 @@
       "id": "transport-01-en-train",
       "fr": "en train",
       "en": "by train",
-      "tags": [],
+      "emoji": "🚄",
+      "tags": ["col:en"],
       "example": "J'y vais en train.",
       "exampleEn": "I go there by train.",
       "gap": "en",
@@ -28,7 +29,8 @@
       "id": "transport-02-en-bus",
       "fr": "en bus",
       "en": "by bus",
-      "tags": [],
+      "emoji": "🚌",
+      "tags": ["col:en"],
       "example": "Tu y vas en bus ?",
       "exampleEn": "Are you going there by bus?",
       "gap": "en",
@@ -41,7 +43,8 @@
       "id": "transport-03-en-metro",
       "fr": "en métro",
       "en": "by metro",
-      "tags": [],
+      "emoji": "🚇",
+      "tags": ["col:en"],
       "example": "J'y vais en métro.",
       "exampleEn": "I go there by metro.",
       "gap": "en",
@@ -55,7 +58,8 @@
       "id": "transport-04-en-voiture",
       "fr": "en voiture",
       "en": "by car",
-      "tags": [],
+      "emoji": "🚗",
+      "tags": ["col:en"],
       "example": "On y va en voiture.",
       "exampleEn": "We're going there by car.",
       "gap": "en",
@@ -69,7 +73,8 @@
       "id": "transport-05-en-avion",
       "fr": "en avion",
       "en": "by plane",
-      "tags": [],
+      "emoji": "✈️",
+      "tags": ["col:en"],
       "example": "Nous y allons en avion.",
       "exampleEn": "We go there by plane.",
       "gap": "en",
@@ -83,7 +88,8 @@
       "id": "transport-06-en-bateau",
       "fr": "en bateau",
       "en": "by boat",
-      "tags": [],
+      "emoji": "⛵",
+      "tags": ["col:en"],
       "example": "Ils y vont en bateau.",
       "exampleEn": "They go there by boat.",
       "gap": "en",
@@ -97,7 +103,8 @@
       "id": "transport-07-a-velo",
       "fr": "à vélo",
       "en": "by bike",
-      "tags": [],
+      "emoji": "🚲",
+      "tags": ["col:a"],
       "example": "J'y vais à vélo.",
       "exampleEn": "I go there by bike.",
       "gap": "à",
@@ -111,7 +118,8 @@
       "id": "transport-08-a-pied",
       "fr": "à pied",
       "en": "on foot",
-      "tags": [],
+      "emoji": "🚶",
+      "tags": ["col:a"],
       "example": "J'y vais à pied.",
       "exampleEn": "I go there on foot.",
       "gap": "à",
@@ -124,7 +132,8 @@
       "id": "transport-09-a-moto",
       "fr": "à moto",
       "en": "by motorbike",
-      "tags": [],
+      "emoji": "🏍️",
+      "tags": ["col:a"],
       "example": "Elle y va à moto.",
       "exampleEn": "She goes there by motorbike.",
       "gap": "à",
@@ -183,6 +192,22 @@
     }
   ],
   "gameConfig": {
+    "letris": {
+      "columns": [
+        {
+          "key": "a",
+          "label": "À …",
+          "prefix": "",
+          "choiceLabel": "à — on foot or astride"
+        },
+        {
+          "key": "en",
+          "label": "EN …",
+          "prefix": "",
+          "choiceLabel": "en — a vehicle you sit inside"
+        }
+      ]
+    },
     "lexicalator": {
       "decoys": [
         "tra",

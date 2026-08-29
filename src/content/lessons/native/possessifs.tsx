@@ -64,7 +64,7 @@ export const possessifsLesson: NativeLesson = {
             <tr key={en}>
               <td className="border border-[color:var(--cahier-rule)] px-2 py-1 italic">{en}</td>
               {[m, f, v, pl].map((c, i) => (
-                <td key={i} lang="fr" className={`border border-[color:var(--cahier-rule)] px-2 py-1 font-bold ${i === 2 && c !== f ? "text-[color:var(--cahier-la)]" : ""}`}>{c}</td>
+                <td key={i} lang="fr" className={`border border-[color:var(--cahier-rule)] px-2 py-1 font-bold ${i === 2 && c !== f ? "text-[color:var(--gram-neutral)]" : ""}`}>{c}</td>
               ))}
             </tr>
           ))}

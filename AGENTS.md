@@ -17,25 +17,48 @@ Clarified by Dan the same day:
   right of an answered question — available on demand, never inline by
   default.
 
-## Cursor Cloud specific instructions
+# Start here — every session (2026-08-17)
+
+Read `docs/STATUS.md` before anything else and update it before you stop. `HANDOFF.md`, `TODO.md` and `docs/planning/*` are historical.
+
+## Working on this repo — the setup notes
 
 FluoLingo is a single Next.js 16 (Turbopack, App Router) app. Dependencies are
 plain npm (`package-lock.json`); the update script runs `npm ci`. Node 22 is
 used in CI.
 
-- Run/dev/build/lint/typecheck: use the `package.json` scripts — `npm run dev`
-  (http://localhost:3000), `npm run build`, `npm run lint`. Typecheck with
-  `npx tsc --noEmit`. `npm run lint` currently reports pre-existing errors
-  (mostly `react-hooks/set-state-in-effect`); CI (`.github/workflows/verify.yml`)
-  does NOT run lint — it runs `tsc --noEmit`, `npm run build`, then the Python
-  checks `verify/verify18.py` and `verify/verify19.py`. `tsc --noEmit` is clean.
-- Auth gate: learning activities (pretest / practice / Flip It / games / mark-as-done)
-  are gated behind Google sign-in via `REQUIRE_SIGN_IN` in `src/lib/authConfig.ts`.
-  To test those activities locally without real Google auth, set it to `false`
-  temporarily and do NOT commit that change (re-enable `true` before finishing).
-  Local-first features (browsing, notes) work without sign-in.
-- `next.config.ts` uses `output: "export"` (static export) and a `PAGES_BASE_PATH`
-  env var only for the GitHub Pages preview; leave it unset for normal dev/build.
-- `functions/api/*` are Cloudflare Pages Functions (ChaTutor, TTS, Compose check,
-  `/api/correct`) — server-side, not part of `next dev`; those endpoints won't run
-  locally.
+- **Scripts.** `npm run dev` (http://localhost:3000); `npm run build`, which is
+  `check:short && check:sios && next build` — the two guards run first, so a
+  build failure may be a label or a CSV drift rather than a compile error.
+  Typecheck with `npx tsc --noEmit`, which is clean and must stay clean.
+- **Lint.** `npm run lint` reports pre-existing errors (mostly
+  `react-hooks/set-state-in-effect`). **CI does not run lint** — turning it on
+  repo-wide would paint every PR red on day one, and whether to lint only
+  PR-touched files is an open question for Dan.
+- **CI** is one job, `verify`: `tsc --noEmit`, `npm run build`, then every
+  script in `verify/`, each named on its own `run:` line in
+  `.github/workflows/verify.yml`. Add a check and you must add that line —
+  `verify-wiring.py` fails the build if any script is unnamed, if the workflow
+  names a deleted one, or if two share a leading number. *A check that CI never
+  runs is not a check*: `verify31-wordrill` sat unrun for a fortnight because
+  its number collided with another file's.
+- **The auth wall.** Learning activities (pretest / practice / Flip It / games /
+  mark-as-done) sit behind Google sign-in. To open them locally, build or run
+  with the environment variable:
+
+  ```
+  NEXT_PUBLIC_OPEN_APP=1 npm run build
+  ```
+
+  **Do not hand-edit `REQUIRE_SIGN_IN` in `src/lib/authConfig.ts`.** It reads
+  that variable, so a production build contains no bypass at all — not even a
+  disabled one — and `verify38-authwall.py` fails if the flag is ever committed
+  into a config file. Browsing and notes work without signing in either way.
+- **`next.config.ts`** uses `output: "export"` (static export), so `next start`
+  will refuse to run — serve the `out/` directory instead. `PAGES_BASE_PATH` is
+  only for the GitHub Pages preview; leave it unset for normal dev and build.
+- **`functions/api/*`** are Cloudflare Pages Functions (ChaTutor, TTS, Compose
+  check, `/api/correct`) — server-side, not part of `next dev`, so those
+  endpoints do not run locally.
+- **Deploying** is Dan's, from his machine: `git pull && git push live main`,
+  where `live` is the Cloudflare Pages remote. Agents push to `origin` only.

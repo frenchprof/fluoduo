@@ -23,7 +23,7 @@ export default function SearchOverlay({ onClose }: { onClose: () => void }) {
       onClick={onClose}
       role="dialog"
       aria-modal="true"
-      aria-label="Recherche"
+      aria-label="Search"
     >
       <div
         className="mx-auto mt-[12vh] w-[min(92vw,34rem)] rounded-2xl border-2 border-[color:var(--fluo-ink,#222850)] bg-[color:var(--cahier-paper,#fdfbf4)] p-3 shadow-2xl"
@@ -31,7 +31,7 @@ export default function SearchOverlay({ onClose }: { onClose: () => void }) {
       >
         <DeckSearch className="max-w-none" autoFocus />
         <p className="mt-2 px-1 text-[11px] font-bold text-[color:var(--fluo-ink,#222850)]/50">
-          Échap pour fermer · Esc to close
+          Esc to close
         </p>
       </div>
     </div>

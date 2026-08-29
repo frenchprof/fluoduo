@@ -21,7 +21,9 @@ import { speak } from "@/games/letris/speech";
 import { chiptune } from "@/games/audio/chiptune";
 import { sfx } from "@/games/audio/sfx";
 import CreditsSplash from "@/games/CreditsSplash";
-import SoundControl from "@/components/SoundControl";
+import GameFrame from "@/components/GameFrame";
+import GameOver, { type GameMiss } from "@/components/GameOver";
+import { reviewItemByFrench } from "@/lib/reviser";
 import { frenchNumber, frenchDigits } from "./frenchNumbers";
 import { holdDigitKeys } from "@/lib/useChoiceKeys";
 
@@ -94,7 +96,10 @@ export default function NumBourse() {
   const dealtAtRef = useRef(0);
   const resolvedRef = useRef(false); // the current ticket is settled (win/miss)
   const musicAutoRef = useRef(false);
-  const missedRef = useRef<Order[]>([]);
+  // Lost tickets, with what was typed — the post-mortem's three columns.
+  const missedRef = useRef<Array<{ order: Order; given: string }>>([]);
+  const typedRef = useRef("");
+  typedRef.current = typed;
   const inputRef = useRef<HTMLInputElement>(null);
   // The hidden input exists so a physical keyboard can type digits. On a phone,
   // focusing it only summons the OS keypad over the game — and that keypad has
@@ -188,7 +193,7 @@ export default function NumBourse() {
     recordResponse(order.words, false, { activity: "numbourse" });
     sfx.wrong();
     setCombo(0);
-    missedRef.current = [...missedRef.current.slice(-4), order];
+    missedRef.current = [...missedRef.current, { order, given: typedRef.current }];
     setReveal(true);
     const nl = lives - 1;
     setLives(nl);
@@ -279,15 +284,58 @@ export default function NumBourse() {
   );
 
   const barColor = timeFrac > 0.5 ? "#58cc02" : timeFrac > 0.25 ? "#ffc800" : "#ff4b4b";
-  const maxNow = LEVELS[level - 1].max;
 
   // Client-only: tickets and the tape roll with Math.random — don't SSR them.
   if (!mounted) return null;
 
+  const misses: GameMiss[] = missedRef.current.map((m) => ({
+    itemId: reviewItemByFrench(m.order.words)?.id,
+    prompt: m.order.words,
+    expected: `${frenchDigits(m.order.value)} €`,
+    given: m.given ? `${m.given} €` : undefined,
+  }));
+
+  const help = (
+    <>
+      <p>Type the shouted valuation in digits, then Enter — before the ticket expires.</p>
+      <p className="mt-2">Six trades close a level; eight levels widen the range up to 999 999 €. A wrong or expired trade costs a life.</p>
+      <p className="mt-2"><b>Hard</b>: the value is heard, never shown — tap 🔊 to hear it again.</p>
+    </>
+  );
+
+  // The blotter — the desktop live record.
+  const record = (
+    <ol className="flex flex-col gap-1.5">
+      {[...history].reverse().map((h, i) => (
+        <li key={history.length - i} lang="fr" title={h.words}
+          className="flex items-baseline gap-2 rounded-lg border-2 border-[color:var(--drill-ok-soft)] bg-[color:var(--drill-ok-bg)] px-2 py-1 text-sm">
+          <span aria-hidden>{h.side === "ACHAT" ? "▲" : "▼"}</span>
+          <span className="min-w-0 flex-1 truncate font-bold">{h.words}</span>
+          <span className="cahier-mono shrink-0 font-black">{frenchDigits(h.value)} €</span>
+        </li>
+      ))}
+    </ol>
+  );
+
   return (
-    // data-kbnav-off: digits type the trade here — the site-wide keyboard
-    // navigation must stand down on this page.
-    <div data-kbnav-off className="mx-auto max-w-3xl px-4 py-4" style={{ color: "#0c4a6e" }}>
+    <GameFrame
+      title="📈 NumBourse"
+      exitHref="/"
+      progress={{ done: doneCount, total: QUOTA }}
+      hearts={{ left: lives, total: START_LIVES }}
+      score={<>{score} · L{level}</>}
+      help={help}
+      menu={[
+        { label: "🎵 Music", active: music, onClick: () => { chiptune.toggle("bourse"); setMusic(chiptune.playing() === "bourse"); } },
+        { label: "😤 Hard", active: hard, onClick: () => setHard((h) => !h) },
+      ]}
+      record={record}
+      recordTitle="📋 Your orders"
+      background="linear-gradient(180deg, var(--region-village-band) 0%, var(--cahier-paper) 60%)"
+    >
+    {/* data-kbnav-off: digits type the trade here — the site-wide keyboard
+        navigation must stand down on this page. */}
+    <div data-kbnav-off className="mx-auto h-full max-w-3xl overflow-y-auto px-4 py-3" style={{ color: "#0c4a6e" }}>
       <CreditsSplash game="NumBourse" emoji="📈" onDone={() => setStarted(true)} />
       <style>{`
         @keyframes nbscroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
@@ -296,60 +344,6 @@ export default function NumBourse() {
         @keyframes nbcaret{0%,100%{opacity:1}50%{opacity:.1}}
         @keyframes nbland{0%{transform:translateY(-14px) scale(1.06);opacity:0}100%{transform:translateY(0) scale(1);opacity:1}}
       `}</style>
-
-      {/* HUD */}
-      <header className="mb-3 flex flex-wrap items-center gap-2">
-        <div className="mr-auto">
-          <h1 className="text-2xl font-black tracking-tight" style={{ color: "#0c4a6e", textShadow: "0 2px 0 #fff" }}>
-            📈 Num<span style={{ color: "#0f8a5f" }}>Bourse</span>
-          </h1>
-          <p className="text-xs font-bold" style={{ color: "#075985" }}>Palais Brongniart — séance en cours</p>
-        </div>
-        <span title="Points earned" className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">
-          Score <b style={{ color: "#58cc02" }}>{score}</b>
-        </span>
-        <span
-          title={`Valuations up to ${frenchDigits(maxNow)} this level`}
-          className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold"
-        >
-          Niveau <b style={{ color: "#1cb0f6" }}>{level}</b> <b style={{ color: "#ff9600" }}>≤ {frenchDigits(maxNow)}</b>
-        </span>
-        <span title={`Trades locked this level — ${QUOTA} closes it`} className="rounded-xl border-2 border-sky-200 bg-white px-2 py-0.5 text-sm font-bold">
-          Ordres <b style={{ color: "#ff9600" }}>{doneCount}/{QUOTA}</b>
-        </span>
-        <span title="Lives — a wrong or expired trade costs one" className="text-lg" style={{ color: "#ff4b4b" }}>
-          {"♥".repeat(Math.max(0, lives))}
-          <span className="opacity-20">{"♥".repeat(Math.max(0, START_LIVES - lives))}</span>
-        </span>
-        <span className="flex items-center gap-2 rounded-xl border-2 border-sky-300 bg-sky-100 px-2 py-1">
-          <button
-            type="button"
-            onClick={() => { chiptune.toggle("bourse"); setMusic(chiptune.playing() === "bourse"); }}
-            title={music ? "Turn the music off" : "Turn the music on"}
-            className={`rounded-lg border-2 border-b-4 px-2 py-0.5 text-xs font-black transition active:translate-y-0.5 active:border-b-2 ${
-              music ? "border-[#3f9c17] bg-[#58cc02] text-white" : "border-[#e08600] bg-[#ffc800] text-[#5a3a08]"
-            }`}
-          >
-            {music ? "🔊 Musique" : "🎵 Musique"}
-          </button>
-          <SoundControl />
-          <button
-            type="button"
-            onClick={() => setHard((h) => !h)}
-            title="Hard mode — the shouted value is heard, never shown"
-            className={`rounded-lg border-2 border-b-4 px-2 py-0.5 text-xs font-black transition active:translate-y-0.5 active:border-b-2 ${
-              hard ? "border-rose-700 bg-rose-500 text-white" : "border-[#e08600] bg-[#ffc800] text-[#5a3a08]"
-            }`}
-          >
-            {hard ? "😤 Hard ✓" : "😤 Hard"}
-          </button>
-        </span>
-      </header>
-
-      <p className="mb-2 text-center text-xs font-semibold" style={{ color: "#075985" }}>
-        Type the shouted valuation in digits, then Enter — before the ticket expires.
-        {hard && <b style={{ color: "#c0392b" }}> Hard: listen only — tap 🔊 to hear it again.</b>}
-      </p>
 
       {/* Ticker tape — decorative market noise above the board. */}
       <div className="overflow-hidden rounded-t-2xl border-4 border-b-0 border-white" style={{ background: "#081712" }} aria-hidden>
@@ -499,9 +493,9 @@ export default function NumBourse() {
         )}
       </div>
 
-      {/* Trades locked — the session blotter (same role as « Votre trésor »). */}
-      <div className="mt-3 flex min-h-[2.5rem] flex-wrap items-center gap-2">
-        <span className="mr-1 text-[0.7rem] font-black uppercase tracking-wider" style={{ color: "#0f8a5f" }}>📋 Vos ordres :</span>
+      {/* Trades locked — the session blotter; on a desktop it lives in the
+          frame's record pane, so this row is phones only. */}
+      <div className="mt-3 flex min-h-[2.5rem] flex-wrap items-center gap-2 lg:hidden">
         {history.map((h, i) => (
           <span
             key={i}
@@ -515,52 +509,32 @@ export default function NumBourse() {
         ))}
       </div>
 
-      {/* Level-done / closing-bell / margin-call popups. */}
-      {(over || won || levelDone) && (
+      {/* Level-done: a beat of fanfare, then the next level deals itself. */}
+      {levelDone && !over && !won && (
         <div className="fixed inset-0 z-[70] grid place-items-center bg-black/30 p-4" role="dialog" aria-modal="true">
           <div className="w-full max-w-sm rounded-3xl border-4 border-sky-200 bg-white p-5 text-center shadow-2xl">
-            {won ? (
-              <>
-                <p className="text-3xl" aria-hidden>🔔</p>
-                <p className="text-2xl font-black" style={{ color: "#0f8a5f" }}>Clôture de la séance !</p>
-                <p className="mt-1 text-sm font-semibold" style={{ color: "#075985" }}>
-                  Les huit niveaux — jusqu&rsquo;à {frenchDigits(999999)} € — score <b>{score}</b>.
-                </p>
-                <button type="button" onClick={reset} className="mt-3 rounded-2xl border-b-4 border-[#1899d6] bg-[#1cb0f6] px-4 py-2 font-black text-white">
-                  Play again
-                </button>
-              </>
-            ) : levelDone ? (
-              <>
-                <p className="text-2xl font-black" style={{ color: "#ff9600" }}>Niveau {level} terminé !</p>
-                <p className="text-sm font-semibold" style={{ color: "#075985" }}>
-                  Score {score} · niveau {level + 1} : jusqu&rsquo;à {frenchDigits(LEVELS[Math.min(level, LEVELS.length - 1)].max)}…
-                </p>
-              </>
-            ) : (
-              <>
-                <p className="text-lg font-black">Appel de marge !</p>
-                <p className="text-sm" style={{ color: "#075985" }}>Niveau {level} · score {score}</p>
-                {/* Post-mortem (the LexicaLater rule): SAY what went wrong —
-                    each lost trade with its words and its digits. */}
-                {missedRef.current.length > 0 && (
-                  <div lang="fr" className="mt-2 text-sm" style={{ color: "#9a3412" }}>
-                    Les ordres perdus :
-                    {missedRef.current.map((m, i) => (
-                      <p key={i} className="mt-1">
-                        « {m.words} » = <b>{frenchDigits(m.value)}</b>
-                      </p>
-                    ))}
-                  </div>
-                )}
-                <button type="button" onClick={reset} className="mt-3 rounded-2xl border-b-4 border-[#1899d6] bg-[#1cb0f6] px-4 py-2 font-black text-white">
-                  Play again
-                </button>
-              </>
-            )}
+            <p className="text-2xl font-black" style={{ color: "#ff9600" }}>Level {level} complete!</p>
+            <p className="text-sm font-semibold" style={{ color: "#075985" }}>
+              Score {score} · level {level + 1}: up to {frenchDigits(LEVELS[Math.min(level, LEVELS.length - 1)].max)}…
+            </p>
           </div>
         </div>
       )}
+
+      {/* Closing bell / margin call — the post-mortem (patch 23). */}
+      {(over || won) && (
+        <GameOver
+          emoji={won ? "🔔" : "📉"}
+          title={won ? "Market closed!" : "Appel de marge !"}
+          score={<>{score} · level {level}</>}
+          won={won}
+          misses={misses}
+          fallbackSio="SIO-007"
+          onReplay={reset}
+          exitHref="/"
+        />
+      )}
     </div>
+    </GameFrame>
   );
 }

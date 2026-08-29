@@ -258,6 +258,86 @@
    "tags": [
     "col:ces"
    ]
+  },
+  {
+   "id": "demonstratifs-17",
+   "fr": "Je voudrais ce gâteau.",
+   "en": "I'd like this cake.",
+   "example": "Je voudrais cette tarte.",
+   "tags": [],
+   "gap": "ce"
+  },
+  {
+   "id": "demonstratifs-18",
+   "fr": "Je mange cette pomme.",
+   "en": "I'm eating this apple.",
+   "example": "Je mange ce pain.",
+   "tags": [],
+   "gap": "cette"
+  },
+  {
+   "id": "demonstratifs-19",
+   "fr": "Tu veux cet avocat ?",
+   "en": "Do you want this avocado?",
+   "example": "Tu veux ces olives ?",
+   "tags": [],
+   "gap": "cet"
+  },
+  {
+   "id": "demonstratifs-20",
+   "fr": "J'adore ces fraises.",
+   "en": "I love these strawberries.",
+   "example": "J'adore cette orange.",
+   "tags": [],
+   "gap": "ces"
+  },
+  {
+   "id": "demonstratifs-21",
+   "fr": "Je voudrais ce croissant.",
+   "en": "I'd like this croissant.",
+   "example": "Je voudrais cet abricot.",
+   "tags": [],
+   "gap": "ce"
+  },
+  {
+   "id": "demonstratifs-22",
+   "fr": "Il mange cet ananas.",
+   "en": "He's eating this pineapple.",
+   "example": "Il mange ce fromage.",
+   "tags": [],
+   "gap": "cet"
+  },
+  {
+   "id": "demonstratifs-23",
+   "fr": "Nous mangeons ces légumes.",
+   "en": "We're eating these vegetables.",
+   "example": "Nous mangeons cette banane.",
+   "tags": [],
+   "gap": "ces"
+  },
+  {
+   "id": "demonstratifs-24",
+   "fr": "Tu veux cette orange ?",
+   "en": "Do you want this orange?",
+   "example": "Tu veux cet œuf ?",
+   "tags": [],
+   "gap": "cette"
+  },
+  {
+   "id": "demonstratifs-25",
+   "fr": "Je voudrais ces carottes.",
+   "en": "I'd like these carrots.",
+   "example": "Je voudrais ce gâteau.",
+   "tags": [],
+   "gap": "ces"
+  },
+  {
+   "id": "demonstratifs-26",
+   "fr": "Elle mange cet œuf.",
+   "en": "She's eating this egg.",
+   "example": "Elle mange cette tarte.",
+   "tags": [],
+   "gap": "cet"
   }
  ]
 }

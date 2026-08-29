@@ -1,0 +1,78 @@
+{
+ "id": "days-letris",
+ "title": "Semaine, week-end ou moment ?",
+ "subtitle": "days of the week vs the moments of the day",
+ "language": "fr",
+ "categories": [
+  {
+   "key": "semaine",
+   "label": "SEMAINE",
+   "prefix": ""
+  },
+  {
+   "key": "weekend",
+   "label": "WEEK-END",
+   "prefix": ""
+  },
+  {
+   "key": "moment",
+   "label": "MOMENT",
+   "prefix": ""
+  }
+ ],
+ "tiles": [
+  {
+   "text": "LUNDI",
+   "category": "semaine",
+   "meaning": "Monday"
+  },
+  {
+   "text": "MARDI",
+   "category": "semaine",
+   "meaning": "Tuesday"
+  },
+  {
+   "text": "MERCREDI",
+   "category": "semaine",
+   "meaning": "Wednesday"
+  },
+  {
+   "text": "JEUDI",
+   "category": "semaine",
+   "meaning": "Thursday"
+  },
+  {
+   "text": "VENDREDI",
+   "category": "semaine",
+   "meaning": "Friday"
+  },
+  {
+   "text": "SAMEDI",
+   "category": "weekend",
+   "meaning": "Saturday"
+  },
+  {
+   "text": "DIMANCHE",
+   "category": "weekend",
+   "meaning": "Sunday"
+  },
+  {
+   "text": "LE MATIN",
+   "displayName": "le matin",
+   "category": "moment",
+   "meaning": "in the morning"
+  },
+  {
+   "text": "L'APRÈS-MIDI",
+   "displayName": "l'après-midi",
+   "category": "moment",
+   "meaning": "in the afternoon"
+  },
+  {
+   "text": "LE SOIR",
+   "displayName": "le soir",
+   "category": "moment",
+   "meaning": "in the evening"
+  }
+ ]
+}

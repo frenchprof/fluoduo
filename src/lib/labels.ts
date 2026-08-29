@@ -137,14 +137,14 @@ const PATH_NAMES: Array<[string, string]> = [
   ["/games/numbus", "NumBus"],
   ["/pretests/picture/", "Picture pretest"],
   ["/pretests/", "Pretest"],
-  ["/lessons/", "Leçon"],
+  ["/lessons/", "Lesson"],
   ["/decks/", "Deck"],
   ["/conjugaison", "ConjugaZone"],
   ["/reviser", "DéjàRevu"],
   ["/tutor", "ChaTutor"],
   ["/moi", "My Progress"],
   ["/teacher", "Teacher"],
-  ["/activities", "Index"],
+  ["/map", "Carte"],
   ["/leaderboard", "Leaderboard"],
   ["/profil", "Profile"],
   // Routes that existed in siteTabs.ts and nowhere here, so the teacher saw
@@ -152,7 +152,7 @@ const PATH_NAMES: Array<[string, string]> = [
   // matched the gallery route itself) plus these four.
   ["/tts", "VoixLà"],
   ["/guide", "Guide"],
-  ["/about", "À propos"],
+  ["/about", "About"],
   ["/hidden/vocabularain", "VocabulaRain (hi-scores)"],
 ];
 
@@ -170,7 +170,7 @@ const KEY_SURFACES: Record<string, { name: string; href: (deck: string) => strin
   "say-it": { name: "WorDrill", href: (d) => (d ? `/practice/say-it/${d}` : "/practice/wordrill") },
   wordrill: { name: "WorDrill", href: () => "/practice/wordrill" },
   "complete-it": { name: "Complete It", href: (d) => (d ? `/practice/complete-it/${d}` : null) },
-  "dice-practice": { name: "Dice", href: (d) => (d ? `/practice/dice/${d}` : null) },
+  "dice-practice": { name: "Sorting", href: (d) => (d ? `/practice/dice/${d}` : null) },
   "flip-it": { name: "Flip It", href: (d) => (d ? `/practice/flip-it/${d}` : null) },
   ecoutexte: { name: "ÉcouTexte", href: () => "/practice/ecoutexte" },
   compose: { name: "Compose It", href: (d) => (d ? `/games/compose/${d}` : null) },
@@ -206,7 +206,7 @@ export function describeDeck(id: string): PathInfo {
   // sort into the week they belong to rather than piling up at the end.
   if (gone)
     return {
-      label: `${gone.name} (retiré)`,
+      label: `${gone.name} (retired)`,
       retired: true,
       note: gone.story,
       journey: journeyForSio(gone.wasSio),

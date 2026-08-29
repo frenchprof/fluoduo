@@ -185,10 +185,10 @@ function TtsPageInner() {
       // NEVER fail silently (Dan, 2026-07-13: "not generating any mp3 as
       // promised") — the missing Google TTS key is the usual cause.
       if ([503, 404, 405, 501].includes(r.status)) {
-        setMp3Err("🎧 pas encore branché : la clé GOOGLE_TTS_API_KEY manque sur Cloudflare");
+        setMp3Err("🎧 not connected yet: the GOOGLE_TTS_API_KEY key is missing on Cloudflare");
         return;
       }
-      if (!r.ok) { setMp3Err("⚠️ génération impossible — réessayez dans un instant"); return; }
+      if (!r.ok) { setMp3Err("⚠️ generation failed — try again in a moment"); return; }
       setMp3Err(null);
       setMadeBy(r.headers.get("x-tts-engine"));
       const blob = await r.blob();
@@ -218,14 +218,14 @@ function TtsPageInner() {
       // NEVER fail silently (Dan, 2026-07-10: "the corriger button is not
       // doing any work") — name the failure so it can be diagnosed.
       if ([503, 404, 405, 501].includes(r.status)) {
-        setFixErr("✏️ pas encore branché ici (clé API absente ou déploiement en cours)");
+        setFixErr("✏️ not connected here yet (API key missing, or deployment in progress)");
         return;
       }
       const data = (await r.json().catch(() => null)) as { corrected?: string } | null;
       if (r.ok && data?.corrected) setFix(data.corrected);
-      else setFixErr("⚠️ correction indisponible — réessayez dans un instant");
+      else setFixErr("⚠️ correction unavailable — try again in a moment");
     } catch {
-      setFixErr("⚠️ pas de connexion — réessayez");
+      setFixErr("⚠️ no connection — try again");
     } finally {
       setFixBusy(false);
     }
@@ -243,12 +243,9 @@ function TtsPageInner() {
     fix.replace(/\s+/g, " ").trim().toLowerCase() === text.replace(/\s+/g, " ").trim().toLowerCase();
 
   return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="tts" crumb="🔊 VoixLà (TTS)">
+    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="tts">
       <div className="mx-auto max-w-2xl px-3 pb-5 pt-2">
-        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">
-          🔊 VoixLà <span className="text-lg font-bold text-[color:var(--cahier-ink-soft)]">· Text-to-Speech</span>
-        </h1>
-
+        {/* The h1 moved into the shell's heading band (variant A, 2026-08-23). */}
         {/* Same warm panel as the Tutor (Dan, 2026-07-13: "adopt similar
             colors for Studio TTS just like the Tutor"). */}
         <div
@@ -261,7 +258,7 @@ function TtsPageInner() {
           value={text}
           onChange={(e) => { setText(e.target.value); grow(); }}
           rows={4}
-          placeholder="Écrivez votre texte ici…"
+          placeholder="Type your text here…"
           autoComplete="off" autoCorrect="off" spellCheck={false}
           className="w-full resize-y rounded-2xl border-2 border-[#a8cdf0] p-4 text-lg text-[color:var(--cahier-ink)] shadow-sm outline-none focus:border-[color:var(--cahier-le)]"
           style={{ background: "linear-gradient(180deg,#ffffff,#f2f8ff)" }}
@@ -270,18 +267,18 @@ function TtsPageInner() {
         {/* ONE compact row, one voice paradigm: 👩/👨 cast toggle drives both
             the ▶ listen and the 🎧 MP3. */}
         <div className="mt-2 flex flex-wrap items-center gap-1.5">
-          <button type="button" onClick={toggleVoice} title="Voix" aria-label={voiceSel === "f" ? "Voix femme" : "Voix homme"}
+          <button type="button" onClick={toggleVoice} title="Voice" aria-label={voiceSel === "f" ? "Female voice" : "Male voice"}
             className="cahier-btn cahier-btn-sm">
             {voiceSel === "f" ? "👩" : "👨"}
           </button>
           <button type="button" onClick={cycleSpeed}
-            title="Vitesse de lecture" aria-label={`Vitesse ×${speed}`}
+            title="Playback speed" aria-label={`Speed ×${speed}`}
             className="cahier-btn cahier-btn-sm font-black tabular-nums">
             🗣 ×{speed.toFixed(2).replace(/0+$/, "").replace(/\.$/, ".0")}
           </button>
           <button type="button" onClick={play} disabled={!text.trim()}
             className="cahier-btn cahier-btn-sm cahier-btn-primary font-black disabled:opacity-50">
-            ▶<span className="hidden sm:inline"> Écouter</span>
+            ▶<span className="hidden sm:inline"> Listen</span>
           </button>
           {speaking && (
             <button type="button" onClick={stop} className="cahier-btn cahier-btn-sm">
@@ -290,20 +287,20 @@ function TtsPageInner() {
           )}
           <button type="button" onClick={() => void makeMp3()} disabled={!text.trim() || mp3Busy}
             className="cahier-btn cahier-btn-sm cahier-btn-accent font-black disabled:opacity-50">
-            {mp3Busy ? "⏳…" : <>🎧<span className="hidden sm:inline"> Générer le MP3</span></>}
+            {mp3Busy ? "⏳…" : <>🎧<span className="hidden sm:inline"> Generate the MP3</span></>}
           </button>
           {isAdmin && (
             <button type="button"
               onClick={() => setEngine(ENGINES[(ENGINES.indexOf(engine) + 1) % ENGINES.length])}
-              title="Moteur du MP3 (visible aux profs uniquement)"
+              title="MP3 engine (visible to teachers only)"
               className="cahier-btn cahier-btn-sm font-black">
               🎛 {ENGINE_LABEL[engine]}
             </button>
           )}
           <button type="button" onClick={() => void corriger()} disabled={!text.trim() || fixBusy}
-            title="Vérifier et corriger le français"
+            title="Check and correct the French"
             className="cahier-btn cahier-btn-sm font-black disabled:opacity-50">
-            {fixBusy ? "⏳…" : <>✏️<span className="hidden sm:inline"> Corriger</span></>}
+            {fixBusy ? "⏳…" : <>✏️<span className="hidden sm:inline"> Correct</span></>}
           </button>
         </div>
 
@@ -315,7 +312,7 @@ function TtsPageInner() {
             « Adopter » swaps the clean version into the box to be heard. */}
         {fix !== null && (
           fixClean ? (
-            <p className="mt-2 text-sm font-bold text-[#2e7d00]">✓ Aucune erreur !</p>
+            <p className="mt-2 text-sm font-bold text-[#2e7d00]">✓ No errors!</p>
           ) : (
             <div className="mt-2 rounded-xl border-2 border-dashed border-[color:var(--cahier-rule)] bg-white p-3">
               <p lang="fr" className="text-lg leading-relaxed">
@@ -335,7 +332,7 @@ function TtsPageInner() {
               <div className="mt-2 flex gap-1.5">
                 <button type="button" onClick={() => { setText(fix); setFix(null); }}
                   className="cahier-btn cahier-btn-sm cahier-btn-primary font-black">
-                  ✓ Adopter
+                  ✓ Use this
                 </button>
                 <button type="button" onClick={() => setFix(null)} className="cahier-btn cahier-btn-sm">
                   ✕
@@ -350,7 +347,7 @@ function TtsPageInner() {
           <input
             type="range" min={0} max={1000} value={Math.round(progress * 1000)}
             onChange={(e) => seek(Number(e.target.value) / 1000)}
-            aria-label="Position dans la lecture"
+            aria-label="Playback position"
             className="mt-2 w-full cursor-pointer accent-[color:var(--cahier-le,#1cb0f6)]"
           />
         )}
@@ -360,12 +357,12 @@ function TtsPageInner() {
           <div className="mt-3">
             <div className="flex items-center gap-1.5">
               <audio controls src={mp3Url} className="min-w-0 flex-1" />
-              <a href={mp3Url} download="fluolingo-tts.mp3" title="Télécharger" className="cahier-btn cahier-btn-sm">
+              <a href={mp3Url} download="fluolingo-tts.mp3" title="Download" className="cahier-btn cahier-btn-sm">
                 ⬇
               </a>
             </div>
             {isAdmin && madeBy && (
-              <p className="mt-1 text-xs font-bold text-slate-500">🎛 moteur : {madeBy}</p>
+              <p className="mt-1 text-xs font-bold text-slate-500">🎛 engine: {madeBy}</p>
             )}
           </div>
         )}

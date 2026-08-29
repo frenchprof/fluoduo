@@ -1,0 +1,162 @@
+{
+ "id": "alphabet-letris",
+ "title": "Ça rime avec quoi ?",
+ "subtitle": "sort the letters by the vowel you hear",
+ "language": "fr",
+ "categories": [
+  {
+   "key": "ay",
+   "label": "…É (bé)",
+   "prefix": ""
+  },
+  {
+   "key": "air",
+   "label": "…È (èf)",
+   "prefix": ""
+  },
+  {
+   "key": "ah",
+   "label": "…A (ka)",
+   "prefix": ""
+  },
+  {
+   "key": "i",
+   "label": "…I (ji)",
+   "prefix": ""
+  }
+ ],
+ "tiles": [
+  {
+   "text": "B",
+   "displayName": "B",
+   "category": "ay",
+   "meaning": "bé"
+  },
+  {
+   "text": "C",
+   "displayName": "C",
+   "category": "ay",
+   "meaning": "cé"
+  },
+  {
+   "text": "D",
+   "displayName": "D",
+   "category": "ay",
+   "meaning": "dé"
+  },
+  {
+   "text": "G",
+   "displayName": "G",
+   "category": "ay",
+   "meaning": "gé"
+  },
+  {
+   "text": "P",
+   "displayName": "P",
+   "category": "ay",
+   "meaning": "pé"
+  },
+  {
+   "text": "T",
+   "displayName": "T",
+   "category": "ay",
+   "meaning": "té"
+  },
+  {
+   "text": "V",
+   "displayName": "V",
+   "category": "ay",
+   "meaning": "vé"
+  },
+  {
+   "text": "W",
+   "displayName": "W",
+   "category": "ay",
+   "meaning": "double vé"
+  },
+  {
+   "text": "F",
+   "displayName": "F",
+   "category": "air",
+   "meaning": "èf"
+  },
+  {
+   "text": "L",
+   "displayName": "L",
+   "category": "air",
+   "meaning": "èl"
+  },
+  {
+   "text": "M",
+   "displayName": "M",
+   "category": "air",
+   "meaning": "èm"
+  },
+  {
+   "text": "N",
+   "displayName": "N",
+   "category": "air",
+   "meaning": "èn"
+  },
+  {
+   "text": "R",
+   "displayName": "R",
+   "category": "air",
+   "meaning": "èr"
+  },
+  {
+   "text": "S",
+   "displayName": "S",
+   "category": "air",
+   "meaning": "ès"
+  },
+  {
+   "text": "Z",
+   "displayName": "Z",
+   "category": "air",
+   "meaning": "zèd"
+  },
+  {
+   "text": "A",
+   "displayName": "A",
+   "category": "ah",
+   "meaning": "ah"
+  },
+  {
+   "text": "H",
+   "displayName": "H",
+   "category": "ah",
+   "meaning": "ache"
+  },
+  {
+   "text": "K",
+   "displayName": "K",
+   "category": "ah",
+   "meaning": "ka"
+  },
+  {
+   "text": "I",
+   "displayName": "I",
+   "category": "i",
+   "meaning": "i"
+  },
+  {
+   "text": "J",
+   "displayName": "J",
+   "category": "i",
+   "meaning": "ji"
+  },
+  {
+   "text": "X",
+   "displayName": "X",
+   "category": "i",
+   "meaning": "iks"
+  },
+  {
+   "text": "Y",
+   "displayName": "Y",
+   "category": "i",
+   "meaning": "i grec"
+  }
+ ]
+}
