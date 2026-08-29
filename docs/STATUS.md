@@ -1686,6 +1686,14 @@ things review did not.
 
 ---
 
+## 28 Aug evening — SIO + pre-test extract (Cursor, no code change)
+
+Dan asked for every SIO followed by its pre-test questions. Extracted from
+live content: 50 stops, 44 with an authored MCQ bank (450 items), 6
+production/atelier stops with none (010, 020, 030, 040, 049, 050). Unit 0
+is the inline popup bank; Units 1–4 are `src/content/pretests/*.json`.
+Delivered as a canvas, not a repo file.
+
 ## 2026-08-28 — the pre-test remembers; the ramp gets an entry (Peers)
 
 Both of Dan's outstanding items from 27 Aug, built and checked.
@@ -1761,6 +1769,138 @@ assertion stayed green with the call deleted because the import line alone
 satisfied it; and verify40's absence checks first failed on the *comments*
 explaining that the code deliberately does not score. All three would have
 shipped as green-but-vacuous.
+
+## 2026-08-28 — Dan's pre-test amendments (SIO-001/003/004/009) + a pre-test for the SIO-010 role-play
+
+Dan's markup, applied to Unit 0's bank (`src/content/sios/unit0-questions.ts`)
+and the panel that renders it (`src/app/Unit0Panel.tsx`).
+
+**The small ones.** SIO-001 Q9 now names a **[male] professor** (the answer
+turns on *Monsieur*, so the referent's sex could not be left open). SIO-003 Q5
+asks for **"yi grek"**, not "i grec" — every other letter in that set is a
+pronunciation respelling and Y was the one spelling; the `LETTER` map moved
+with it, so the wrong-pick whys say the same thing. SIO-003 Q7 carries Dan's
+bracketed note about the ü sound (German *für*, Mandarin *yu*) — `letterQ` took
+an optional third argument rather than the question being unrolled into a
+literal. SIO-004 gains **Q11 midi**, and `MOMENT` gains its gloss so midi can
+also serve as a distractor.
+
+**SIO-009.** The Adieu question is gone — it was the only item in the bank that
+ran backwards ("which phrase is NOT appropriate"). Every situation that was a
+bare description now ends on **"You say:"**, so the learner produces a line
+instead of judging a sentence; Q4 and Q10 already carried their own cue and
+were left alone. Q5 wears the highlighter on **"around 7pm"** (new optional
+`hl` field — a literal substring of the title, rendered not stored, so the
+saved record still keys on the plain text). Q7 is Dan's rewrite: prof and
+student **already know each other**, morning arrival — its distractor whys were
+re-pointed at that ("you already know each other", "your prof already knows
+it"). Q9's *Enchanté* → **Pardon** and *Bonjour* → **Merci**, per Dan.
+
+  ⚠️ Flagged for Dan: Q9's replacement takes "Bonjour, monsieur." out of the
+  8pm question, and that was the item's original teaching point — *bonjour*
+  vs *bonsoir* by hour. The 8pm cue is still in the prompt but nothing now
+  contrasts with it. Say the word and it comes back as a fifth option.
+
+Editing a prompt orphans its old record on purpose (`unit0QuestionId` keys on
+prompt + answer) — a reworded question is a different question.
+
+**SIO-010 — the role-play now has a pre-test.** The header used to say it was
+"intentionally absent … a mini-oral done in class". Dan reversed that: the
+seven moves of the atelier dialogue (greet · ask a name · give yours · ask how
+it's written · say how it's written · enchanté · take leave) are now seven
+questions, asked of **three audiences** — A a student (informal 1:1) · B a
+client (formal 1:1) · C a group (informal, one-to-many) — 21 items in
+`SIO010_SITUATIONS`.
+
+Three decisions the content forced:
+
+- **The learner picks the audience first.** "How do you ask for their name" has
+  no answer until you know whether you face one student, a client or a group —
+  the situation is exactly what settles tu vs vous. A shuffled pool of all 21
+  would have been unanswerable, so each situation is its own run.
+- **Authored order, not shuffled** (new `ordered` prop). These seven questions
+  ARE the dialogue in sequence; options still shuffle.
+- **The model dialogue waits.** `DialoguePlayer` moved behind `AfterPretest`.
+  It is the answer key — shown first it hands over all seven lines, which is
+  the one thing the blueprint says a pretest must never do.
+
+`UNIT0_QUESTIONS["SIO-010"]` is the flat union of the three runs, so the
+generic consumers (the Pre-Test flap, `pretestHrefForDeck`) see that the SIO
+has questions; nothing ever renders all 21 at once. The flap's gate moved from
+`!isProduction` to "the bank is non-empty" — SIO-010 is an atelier *and* has
+questions now.
+
+**Multi-answer questions.** Q1 of each situation asks which greetings *are*
+appropriate — plural, and a register is a set of usable openings, not one best
+one. New `multi` flag: taps toggle, an **OK** button confirms, and the pick is
+graded on the exact set (a missed correct answer counts the same as an extra
+one). The record stores the set joined by `MULTI_SEP`, in option order rather
+than tap order, and WHY concatenates the whys of every wrongly-ticked option —
+which subsumes the single-answer case, so both paths run the same code. Number
+keys are disabled on these (a key ANSWERS, which is wrong when a tap only
+ticks); they keep their numeral chips off to say so.
+
+**Checks.** tsc clean · eslint unchanged (3 pre-existing React-Compiler errors
+in Unit0Panel, same three as `main`) · `npm run build` green · check:short,
+check:textgen and all 33 verify suites pass, verify40 included — nothing
+pre-lesson is scored. The bank was walked in node: 21 SIO-010 items, no
+duplicate question id across the whole of Unit 0, no duplicate option value in
+a question, every wrong option carries a why and no correct one does, every
+`hl` is a real substring of its title. Driven in a browser with the sign-in
+wall opened locally (never committed): the picker, the multi-select + OK, the
+green/red grading, "Bring to class", and the dialogue appearing only after the
+seventh answer.
+
+**The SIO-010 statement, rewritten** (Dan: "rewrite the statement"). It
+described only the tu/vous 1:1 chain while the pretest now drills three
+registers, so can-do, competence and description were all re-cut — in the
+handoff CSV, which is the source, and mirrored into `sios.json`:
+
+> I can carry a first meeting in French right through, with a fellow student,
+> with a client, or with a group, and I know how to complete every step —
+> greet, ask a name, give one's own name, ask Et toi ? / Et vous ?, ask and
+> answer Comment ça s'écrit ?, say Enchanté(e), take leave — in the register
+> the situation calls for: tu, vous, or the plural vous of a group.
+
+That is `sioStatement`'s mechanical join of the two fields; the measurable half
+carries `(≥6/7 steps in each of the 3)`, which `targetHigherLimit` strips before
+display, as it does for the other 49. It is also SHORTER than what it replaces:
+the old pair listed the whole Bonjour → Au revoir chain twice, once in each
+field.
+
+**⚠ Two generator landmines found while doing it — neither touched, both real:**
+
+- `scripts/gen-sios.mjs` (documented as CSV → `sios.json`) **no longer
+  reproduces the committed file**: it does not emit the `short` field that
+  `check:short` requires of all 50, so a run rewrites 800 lines and breaks the
+  build. Running it is how I found this; the edit was made in the CSV *and*
+  applied to `sios.json` by hand instead.
+- `scripts/handoff_cefr.py` (which `add-candos.py` and `merge-handoff-csv.py`
+  write into the CSV) has **drifted from the live objectives**: of its 50
+  can-dos, 23 match `sios.json` exactly and 27 do not. Measured, not eyeballed:
+
+  - **9 hold a different SIO's exact can-do.** SIO-012/013/014 rotate among
+    themselves, and 022/023/024/025/026/028 rotate among 022-027. Re-applying
+    those files the wrong text under the right heading.
+  - **Unit 0 is shifted by one place across SIO-008/009/010** — handoff_cefr's
+    008 is a « C'est ___ ? » objective that no longer exists in Unit 0 at all,
+    its 009 is live 008 (classroom instructions), its 010 is live 009
+    (greetings). The old question-words SIO left Unit 0 (it is now SIO-035) and
+    handoff_cefr never moved with it.
+  - The remaining differences are simply **older wordings of the right topic**
+    (SIO-002-007, 011, 027, 042-044, 047, 048), and **SIO-045A is absent** —
+    it postdates the 50-row numbering.
+
+  This is the quieter of the two hazards and the worse in kind. Nothing in the
+  app or the build imports it, so it does nothing until someone runs
+  `add-candos.py` or `merge-handoff-csv.py` — and then it fails SILENTLY: the
+  CSV still parses, the build still passes, and a wrong can-do just appears
+  under the right objective. Left alone; realigning it is its own job.
+
+  (An earlier version of this note said it was "off by one from SIO-008
+  onward" and would shift every can-do in Units 0-4. That was read off two
+  adjacent rows, not measured. The shift is real but confined to Unit 0's
+  008/009/010; everywhere else the drift has a different shape.)
 
 ## 29 Aug — the French objective titles, and the pre-lesson landing page
 
