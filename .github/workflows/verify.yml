@@ -158,6 +158,9 @@ jobs:
       - name: "Stops 3, 17, 18 teach the act they promise (28 Aug)"
         run: python3 verify/verify48-three-stops.py
 
+      - name: "A renumber moves the id, and carries the learner with it (29 Aug)"
+        run: python3 verify/verify49-renumber-3435.py
+
       - name: "A tour step points at something that exists (28 Aug)"
         run: python3 verify/verify44-tour-targets.py
 

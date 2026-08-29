@@ -109,7 +109,7 @@ for sio, slug in (("SIO-003", "epeler"), ("SIO-017", "langues-pays"),
                   ("SIO-018", "nombres-echanges"), ("SIO-011", "moi-aussi"),
                   ("SIO-004", "quel-jour"), ("SIO-007", "combien"),
                   ("SIO-008", "on-fait-quoi"), ("SIO-021", "qu-est-ce-que-c-est"),
-                  ("SIO-034", "ou-est")):
+                  ("SIO-035", "ou-est")):
     m = re.search(r'"%s":\s*\[([^\]]*)\]' % sio, reg)
     listed = [s.strip().strip('"') for s in m.group(1).split(",")] if m else []
     check(bool(m) and listed and listed[0] == slug,
