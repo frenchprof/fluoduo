@@ -2815,3 +2815,54 @@ not: `sayTapped` splits on `·` and calls `speakSequence` with **gapMs: 1000**,
 and my harness waited 300ms. Given 9 seconds all six items speak. Dan's
 2026-07-08 ruling, working as designed. Checked before reporting — the same
 mistake as stops 11 and 34, where a literal search made teaching look absent.
+
+## 29 Aug — the eight candidate gaps, audited; four were real
+
+Dan: *"merge then do those"*. The eight stops whose can-do named an act with no
+lesson behind it, looked at properly rather than guessed.
+
+**Three were not gaps at all**, and that is the finding worth keeping:
+
+| stop | why it was never a gap |
+|---|---|
+| **25** Pourquoi ? | every card carries the question in its `example` field — *"Pourquoi tu aimes le sport ?"* |
+| **38** Getting around | same shape — *"Tu y vas en bus ?"* |
+| **39** Wants & needs | the cards ARE the polite act (*"Je voudrais un café."*), not vocabulary for it |
+
+Third time this session a deck looked empty because the teaching sits where a
+literal search does not reach — frames (stop 11), letris columns (stop 34), and
+now `example` fields. `verify51` asserts these three as an ABSENCE so the next
+audit cannot re-flag them and stack a second lesson on one goal.
+
+**A fourth, SIO-006, was left alone** and is Dan's call. Its deck's own
+categories are QUI (m/f) and QUOI (m/f) — two of the three question words its
+can-do names. Only « Où » is missing, and that is owned outright by SIO-035 in
+Unit 3. A lesson here would mostly duplicate one seven stops later.
+
+### The four that were real
+
+| stop | taught | missing, now built |
+|---|---|---|
+| **13** Les matières | 16 subjects by article | asking — « Quelle matière ? » was the deck's TITLE and on no card |
+| **36** Directions | 8 verb phrases, all present tense (the "without commands" half, done well) | asking — same, title only |
+| **44** Shops & market | 14 shop names by article | all four acts: the request, the price, the exchange, both sides of the stall |
+| **45A** Numbers 70–99 | 30 bare numerals | the ARITHMETIC (60+10, 4x20, 4x20+10) and prices |
+
+Stop 36 mirrors 35 deliberately: `à + le -> au` against `de + le -> du`. That
+symmetry is the reason Dan moved them next to each other.
+
+### Two faults found by executing
+
+- **`\bà le\b` never fires.** `à` is not an ASCII word character, so there is
+  no word boundary between the space and it. The 36 contraction check shipped
+  **vacuous** and was caught only by breaking `aPlace` and watching it stay
+  green. Fourth time this session for this exact trap — match the space, not
+  the word.
+- **The `good` axis was inert on half of stop 44.** The stallholder's card
+  asked a bare « Ça fait combien ? », so pinning "tomates" gave the same cards
+  as pinning "œufs". The colour-review session's `verify46` caught it by
+  sampling every option and finding no disjoint pair. It was weaker content
+  too — a price with nothing priced. The prompt names the goods now.
+
+12,000 cards executed clean; `verify51` break-tested on 8 mutations, all red,
+none vacuous. 41 verify scripts green.
