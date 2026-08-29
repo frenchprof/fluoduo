@@ -156,16 +156,18 @@ jobs:
         run: python3 verify/verify42-sio-source.py
 
       - name: "Stops 3, 17, 18 teach the act they promise (28 Aug)"
-        run: python3 verify/verify45-three-stops.py
+        run: python3 verify/verify48-three-stops.py
 
       - name: "A tour step points at something that exists (28 Aug)"
         run: python3 verify/verify44-tour-targets.py
 
-      # Shipped with the lesson-selector work and never added here — the FOURTH
-      # check to arrive without a CI line (after verify31-wordrill, verify36-38
-      # and verify42-sio-source). verify46 below now makes that impossible.
-      - name: "Lesson axes — every lesson with a real axis declares it"
-        run: python3 verify/verify43-lesson-axes.py
+      # Renamed 43 -> 46 on main while this branch held it at 43; both sides
+      # wired it, so keep the name main settled on.
+      - name: patch 46 — every lesson with selectors honours them
+        run: python3 verify/verify46-lesson-axes.py
+
+      - name: patch 45 — deck promises (SIO-001 M./Mme, SIO-005 mnemonics)
+        run: python3 verify/verify45-promise-gaps.py
 
       - name: "Every check runs, and no two share a number"
-        run: python3 verify/verify46-every-check-runs.py
+        run: python3 verify/verify-wiring.py

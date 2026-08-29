@@ -40,7 +40,7 @@ What this asserts:
      on a file that no longer exists.
   3  No two scripts share a leading number, outside the lettered families.
 
-Run from the repo root:  python3 verify/verify46-every-check-runs.py
+Run from the repo root:  python3 verify/verify-wiring.py
 """
 import glob, os, re, sys
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""verify43 — every lesson that offers selectors actually honours them.
+"""verify46 — every lesson that offers selectors actually honours them.
 
 WHY THIS EXISTS
 ---------------
@@ -29,7 +29,14 @@ WHAT IT ASSERTS
       `@/` alias, since that is a bundler feature and would make every check
       here impossible to run.
 
-Run from the repo root:  python3 verify/verify43-lesson-axes.py
+Renumbered 43 -> 46 on 2026-08-29: it shipped as verify43 while
+verify43-three-stops.py already held that number, and the workflow names a
+number once — so this script was in the repo and never ran, which is the exact
+trap its own session had renamed 42 -> 43 to avoid hours earlier. (The
+colour-review session then picked 44, which was also taken, and moved to 45.
+Three collisions in one day: check `ls verify/` before choosing.)
+
+Run from the repo root:  python3 verify/verify46-lesson-axes.py
 """
 import json
 import os
@@ -53,7 +60,7 @@ if not os.path.isfile("package.json"):
     sys.exit(2)
 
 NAT = "src/content/lessons/native"
-PROBE = "verify/.verify43-probe.mjs"
+PROBE = "verify/.verify46-probe.mjs"
 
 # The lessons that carry selectors. Derived from the directory rather than
 # typed out, so a new .gen.ts is covered the day it lands instead of the day
@@ -74,7 +81,7 @@ for slug in SLUGS:
 
 # ---- drive the generators in node ------------------------------------------
 probe = """
-// Written by verify43. Executes every steerable generator across its own axes.
+// Written by verify46. Executes every steerable generator across its own axes.
 const SLUGS = %s;
 const out = {};
 for (const slug of SLUGS) {

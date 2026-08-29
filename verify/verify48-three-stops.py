@@ -6,7 +6,7 @@ Numbered 45. It was 42, then 43, and collided both times with a file the
 colour-review session shipped in parallel (verify42-sio-source, then
 verify43-lesson-axes). Two files sharing a number is how verify31-wordrill sat
 unwired for a fortnight — the workflow names the number once and nobody
-notices the other never runs. verify46 now makes that impossible to repeat.
+notices the other never runs. verify-wiring now makes that impossible to repeat.
 
 WHY THIS EXISTS. An audit of all fifty can-do statements against the decks
 behind them found the same shape three times: the stop names something the
@@ -50,7 +50,7 @@ What this asserts:
   5  The prepositions are right (en / au / aux / à), which the sentence cannot
      avoid choosing.
 
-Run from the repo root:  python3 verify/verify45-three-stops.py
+Run from the repo root:  python3 verify/verify48-three-stops.py
 """
 import json, os, re, subprocess, sys
 
