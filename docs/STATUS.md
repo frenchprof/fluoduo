@@ -1519,11 +1519,25 @@ straight to Continue, confirmed on screen at last.
 
 ### Still open from Dan's list
 
-1 (Continue button far below the text) · 2 (the lesson teaches a different
-thing from its promise — a content project, needs Dan) · 3 (a wrong answer
-pays 20 and the correction 60, so guessing first earns more than knowing) ·
-5 (progress is lost on leaving the page) · 6 · 7 · 8 · 9 · 10 · 11 · 12 · 13 ·
-14 · 15 · 16 · 17 · 18 (pressing "1" restarts the lesson) · 19.
+*(This line was stale as of 29 Aug — it still listed 1, 3, 5, 13, 14 and 18 as
+open after they had been fixed in the sections below it. Corrected here; the
+sections below are the record of each fix.)*
+
+**Closed:** 1 (Continue 390px below the text) · 3 (a wrong answer paid more
+than a right one) · 4 (the audio only said the first word) · 5 (progress lost
+on leaving) · 7 (the hint sat under the tick — both halves) · 13 (a picked
+answer looked like the Check button) · 14 ("1 days in a row").
+
+**Blocked on Dan:** 2 — the lesson teaches a different thing from its promise;
+a content project. · 18 — "pressing 1 restarts the lesson"; driven in a real
+browser on `se-presenter`, on both a memo card and an exercise card, and it
+does NOT navigate. Needs the screen Dan was actually on.
+
+**NOT WRITTEN DOWN ANYWHERE: 6 · 8 · 9 · 10 · 11 · 12 · 15 · 16 · 17 · 19.**
+Ten of the nineteen only ever existed as numbers in this file — their text was
+in Dan's chat message and was never copied into the repo, so no agent can pick
+them up. They need Dan to restate them. *Lesson: when Dan reports a list, the
+list itself goes into STATUS, not just its tally.*
 
 ### 27 Aug, later — three more of Dan's nineteen, each measured
 
@@ -2197,3 +2211,45 @@ competence now asking for **un / une / le / la**. Rewritten to the new list.
 Worth noting as the pattern to expect: this is the ordinary working of the
 thing, not an incident. An app-side content change makes the build red, the
 sync moves the objective, and a human moves the cards after it.
+
+
+## 29 Aug — SIO-005's mnemonic objects, found and wired to the cards
+
+SIO-005 is assessed on *"Name the 12 colours; **give the matching mnemonic
+object for each** (≥10/12)"* and the deck carried the bare colour word and
+nothing else — `le rouge`, `le jaune`, twelve of them, no example, no phrase.
+Nothing in the app had ever shown a learner the thing it then graded.
+
+They were in `docs/handoff/LAF1201_SIOs_Flashcards_v9.csv`, row 5, all along.
+Now on the items as `example` / `exampleEn`, which renders in iComplete's and
+GramMarathon's WHY and in the pre-test review table (the `!inflected` guard on
+those paths is for nationality/possessive decks only, so it does not apply
+here):
+
+    le rouge  → le feu rouge        le violet → le raisin violet
+    l'orange  → le fluo orange      le marron → le chocolat marron
+    le jaune  → le citron jaune     le blanc  → le lait blanc
+    le vert   → le concombre vert   le noir   → le café noir
+    le bleu   → le ciel bleu        le gris   → le nuage gris
+                                    le rose   → le flamant rose
+
+**ELEVEN, not twelve.** I told Dan "the twelve colour nouns" and listed
+`le sable beige` among them — the sheet has eleven and **beige has none**;
+that one was mine, not his. Left absent rather than invented. Beige is already
+this deck's odd one out: no swatch emoji, and excluded from SpecuLearn
+(`colors-12`) for having no honest image. It needs Dan's word.
+
+**The Mémo was tried and reverted, on measurement.** Adding the eleven as a
+pill row made the card 419px → 667px at 390×844, and the last row of pills sat
+**76px behind the Continue button**, clipped with nothing on screen to say
+more was there. Compacting the pills (no article) did not save it — the longer
+label wrapped and the card grew again. So the mnemonics live on the cards, and
+whether the Mémo should teach them is Dan's call: the card is already full
+with his cognate groups, and cramming a third list into it is the "too much
+going on" he objected to in Unit 0 Lesson 1.
+
+*Method note:* the first measurement compared the card's bottom against the
+**viewport** (844) and printed "fits without scrolling" while it was in fact
+clipped — the constraint is the Continue button (593 baseline, 734 loaded),
+not the screen. A baseline run without the block is what made the regression
+legible: 144→563, clear.
