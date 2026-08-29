@@ -1,16 +1,10 @@
-import Link from "next/link";
-import IndexRedirect from "@/components/IndexRedirect";
+import ActivityLanding from "@/components/ActivityLanding";
 
-/** /practice/speculearn — was the SpecuLearn hub; now a door into the Index with
- *  SpecuLearn preselected (patch 24). See IndexRedirect. */
+/** /practice/speculearn — SpecuLearn's own landing: every stop that has it, in course
+ *  order, one unit open at a time. It used to bounce into the Index, which Dan
+ *  retired on 2026-08-29 ("we shouldn't have to land on the index page at
+ *  all"). The map stays the front door for choosing a STOP; this is the door
+ *  for someone who has already chosen the ACTIVITY. */
 export default function Page() {
-  return (
-    <main className="mx-auto max-w-3xl px-4 py-10 text-center">
-      <IndexRedirect activity="speculearn" />
-      {/* No-JS fallback: the same link, by hand. */}
-      <Link href="/activities?activity=speculearn" className="fluo-mono text-sm font-bold underline">
-        📖 Index → SpecuLearn
-      </Link>
-    </main>
-  );
+  return <ActivityLanding activityKey="speculearn" />;
 }

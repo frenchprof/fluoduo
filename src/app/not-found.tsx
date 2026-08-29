@@ -39,7 +39,7 @@ export default function NotFound() {
         <Link href="/" className="fluo-btn">
           ▶ Home
         </Link>
-        <Link href="/activities" className="cahier-btn">
+        <Link href="/map" className="cahier-btn">
           📖 <span lang="fr">Index</span>
         </Link>
       </div>

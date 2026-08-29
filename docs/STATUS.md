@@ -2387,3 +2387,61 @@ declarations exactly.
 meteo, partitifs, quand, …). Some may still have one worth having —
 possessifs varies the possessor — but that is a content judgement per lesson,
 not a mechanical follow-on.
+
+## 2026-08-29 — the Index is retired; the map is the front door, and each activity gets its own landing
+
+Dan: *"we shouldn't have to land on the index page at all. the maps should
+still be the front door for everything"* and, for the tiles, *"it takes them to
+the landing page that lists all the X on the website, and perhaps highlight the
+one relevant to their latest Pre-test"*. Both built; `/activities` deleted.
+
+**The one page that did two jobs is now two doors that each do one.**
+
+- **The map** — how you choose a STOP. Tap it, get its popup, pick anything it
+  has. Every stop-level activity with no page of its own (Memo, Sorting,
+  iComplete) now falls back here instead of to the Index.
+- **A landing** — for someone who has already chosen the ACTIVITY: every stop
+  that has it, in course order. `/practice/flip-it`, `/practice/speculearn`,
+  `/practice/grammarathon` render it today; adding another is one line.
+
+**Three decisions inside the landing.** One unit open at a time (`<details
+name>`, with a hand-rolled fallback for browsers without exclusive accordions)
+— fifty rows at once is the wall the Index was. A stop lacking the activity
+**ghosts rather than disappears**: a missing row says "this stop has nothing"
+when what it has is everything except this one activity, and the ghost is
+derived from `cellHref`, never a second list. The learner's **last pre-tested
+stop is marked and its unit opens first** — a guess before instruction is the
+best signal the app has for where someone actually is.
+
+**The authoring backlog was rescued, not deleted.** `?gaps=1` was a hidden
+query on the learner-facing Index; deleting the page would have taken it too.
+It is now a **🧱 Gaps panel on /teacher**, still derived from `gapCells()`, so
+a gap closes the moment content lands with nothing to tick off.
+
+**Fifteen files repointed** — the site tab (Index → 🗺️ Carte), the registry's
+three activity hrefs and the Practice family, DrillShell's exit fallback,
+LessonPager's, ÉcouTexte's, ConjugaZone's, the profile footer, deck search,
+NoDeck, not-found, the first-run tour, the rail and Menu fallbacks, the teacher
+student links, and `labels.ts`. Verified in a browser: `/activities` 404s, and
+zero `/activities` links survive on Home, the map or any of the three landings.
+
+**verify24 rewritten, not deleted.** It WAS the Index-redesign suite; it now
+holds what replaced it, with the supersession and Dan's words in the file
+header — 27 checks. verify19, 26, 27 and 30 each carried one "the Index exists"
+assertion; each was re-pointed at the rule it was actually protecting (the
+Practice family must not be orphaned; the heat strip's remaining three homes;
+NoDeck's door; the profile footer's).
+
+**Six break-tests, and two of mine were vacuous.** "Ghost rows are rendered"
+and "the backlog has a panel" both passed while sabotaged — the first because
+filtering the list before `.map` leaves every ghost string in place, the second
+because deleting the tab leaves `panel === "gaps"` in the render. Both are now
+structural (the row list must reach `.map` unfiltered; the panel needs a tab
+AND a render AND the component). All six fire.
+
+tsc clean · build green · all 36 verify suites pass · lint **132 → 130**.
+
+**Still open:** the remaining seven stop-level activities have no landing —
+they have no site-wide door in the registry (`href: null`) and are reached from
+a stop, which is the map's job. If Dan wants "all the Memos" as a page too,
+it is one line each.

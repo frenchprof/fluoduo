@@ -92,11 +92,13 @@ check('registryTab("complete"' in shell, "iComplete has a flap on every deck",
 
 # ── 3 · the bottom bar ─────────────────────────────────────────────────────
 # Index lost its own slot on 2026-08-22 (Dan: "Goals and Index to merge later
-# on as one"), but its DESTINATION must not have been orphaned — Practice
-# points at /activities, which is the Index.
-check("/activities" in open("src/content/activities.ts", encoding="utf-8").read().split("export const FAMILIES")[-1],
-      "the Index route still has a slot (Practice → /activities)",
-      "no bottom-bar slot reaches /activities — the Index is orphaned")
+# on as one") and the Index itself was retired on 2026-08-29 ("we shouldn't
+# have to land on the index page at all. the maps should still be the front
+# door for everything"). The RULE is unchanged and is what this checks: the
+# Practice family's destination must not be orphaned. It is now the map.
+check("/map" in open("src/content/activities.ts", encoding="utf-8").read().split("export const FAMILIES")[-1],
+      "the Practice family reaches the map (the front door for choosing a stop)",
+      "no bottom-bar slot reaches /map — the Practice family is orphaned")
 # Look at the SLOTS, not the file. The first version grepped the whole module
 # and failed on the word "Accueil" inside the comment explaining why Accueil is
 # not in the bar (2026-08-10).

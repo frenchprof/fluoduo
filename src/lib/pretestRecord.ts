@@ -82,6 +82,23 @@ export function recordPretestAnswer(a: {
 }
 
 /** Currently-missed items for a SIO (last attempt wrong), oldest first. */
+/**
+ * The SIO of the learner's most recent pre-test answer, or null.
+ *
+ * Dan, 2026-08-29: an activity's landing page should "perhaps highlight the
+ * one relevant to their latest Pre-test". The store already knows — every
+ * record carries its `sioId` and the moment it was written — so this is a max
+ * over `at` rather than a new thing to remember. A guess before instruction is
+ * the best signal the app has for where a learner actually is: it is the most
+ * recent thing they chose to sit, and by design they sat it not knowing the
+ * answers.
+ */
+export function latestPretestSio(): string | null {
+  const items = Object.values(load().items);
+  if (!items.length) return null;
+  return items.reduce((a, b) => (b.at > a.at ? b : a)).sioId || null;
+}
+
 export function missesForSio(
   sioId: string,
 ): Array<{ itemId: string; stem: string; answer: string; picked: string }> {

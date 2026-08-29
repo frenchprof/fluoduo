@@ -44,14 +44,16 @@ function childrenOf(f: FamilyKey): Child[] {
     }));
   }
   // Same fallback as the Menu: Memo, Sorting and iComplete have no page of
-  // their own (they live inside a deck), so they land on the Index with that
-  // activity preselected. Dan listed all five under Practice; a rail showing
-  // two of them would be the drift this rail exists to end.
+  // their own — they live inside a deck, so there is no "all the Memos"
+  // to land on. They go to the map, which is where a stop gets chosen
+  // (Dan, 2026-08-29: "the maps should still be the front door for
+  // everything"). Dan listed all five under Practice; a rail showing two of
+  // them would be the drift this rail exists to end.
   return activitiesIn(f).map((a) => ({
     key: a.key,
     label: a.name,
     emoji: a.emoji,
-    href: a.href ?? `/activities?activity=${a.key}`,
+    href: a.href ?? "/map",
     hue: a.hue,
   }));
 }

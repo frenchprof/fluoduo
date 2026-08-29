@@ -140,8 +140,8 @@ check("FAMILIES.filter" in NAV and 'f.key !== "user"' in NAV,
       "the bar is not the five families minus User")
 
 print("\n7 · the footer's doors")
-check("/activities" in PROFILE and "exportCsv" in PROFILE and "/moi/historique" in PROFILE,
-      "DETAILS · EXPORT · HISTORY all resolve",
+check("/map" in PROFILE and "exportCsv" in PROFILE and "/moi/historique" in PROFILE,
+      "MAP · EXPORT · HISTORY all resolve",
       "a footer door is missing")
 check("SortableTable" in HIST and "CAP" not in HIST,
       "the history page is uncapped — completeness is its whole point",

@@ -88,7 +88,7 @@ export type DrillHelp = {
  *  decks outside the spine. One rule, every drill. */
 export function drillExitHref(collectionId: string): string {
   const sio = SIOS.find((s) => s.collectionId === collectionId);
-  return sio ? `/unit/${sio.unit}` : "/activities";
+  return sio ? `/unit/${sio.unit}` : "/map";
 }
 
 /** A finished run's footer (the approved flow, 2026-08-24): ONE primary

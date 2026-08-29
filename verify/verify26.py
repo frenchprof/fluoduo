@@ -108,8 +108,10 @@ check("unitNumbers()" in st and "siosForUnit(u)" in st, "one row per unit, every
 check("aria-label={title}" in st and ">{s.short}" not in st and ">{s.id}" not in st,
       "no text in the cell — title/aria only", "HeatStrip prints text inside the cell")
 check("app/teacher" not in st and "./data" not in st, "HeatStrip is learner-safe", "HeatStrip imports teacher code")
-mounts = [k for k in ("moi", "students", "now", "index") if "<HeatStrip" in code[k]]
-check(len(mounts) == 4, f"heat-strip mounted on four pages: {', '.join(F[k] for k in mounts)}",
+# The Index was the fourth mount and was retired on 2026-08-29; the strip's
+# three remaining homes are what this now holds.
+mounts = [k for k in ("moi", "students", "now") if "<HeatStrip" in code[k]]
+check(len(mounts) == 3, f"heat-strip mounted on three pages: {', '.join(F[k] for k in mounts)}",
       f"heat-strip mounted on {len(mounts)} pages: {mounts}")
 
 # ── 3 · the profile page ─────────────────────────────────────────────────
@@ -137,10 +139,16 @@ check("SortableTable" in hist and "EVERY ANSWER" in hist,
       "the answer log lives on /moi/historique, uncapped",
       "the full answer history has no home since the segments went")
 
-# ── 4 · Index ────────────────────────────────────────────────────────────
-ix = code["index"]
-check("id={sio.id}" in ix, "Index rows carry id={sio.id}", "Index rows have no anchor id")
-check('size="sm"' in ix and "<HeatStrip" in ix, "compact strip on the Index", "no compact strip on the Index")
+# ── 4 · the Index (retired 2026-08-29) ──────────────────────────────────
+# It carried anchored rows and a compact heat strip. Both went with it: an
+# activity's landing lists stops for ONE activity and has nothing to anchor
+# nine columns to, and a strip of "how you did everywhere" is the Index's
+# question, not a landing's. What survives is that the page is really gone —
+# a half-deleted route that still renders is the worse outcome.
+import os as _os
+check(not _os.path.exists("src/app/activities/page.tsx"),
+      "the Index page is deleted, not merely unlinked",
+      "src/app/activities/page.tsx is back — Dan retired it on 2026-08-29")
 
 # ── 5 · Class now ────────────────────────────────────────────────────────
 n = code["now"]

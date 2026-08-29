@@ -63,7 +63,7 @@ export type Family = { key: FamilyKey; name: string; emoji: string; href: string
  */
 export const FAMILIES: Family[] = [
   { key: "goals", name: "FluOlin Goals", emoji: "🎯", href: "/" },
-  { key: "practice", name: "FluOlin Practice", emoji: "✏️", href: "/activities" },
+  { key: "practice", name: "FluOlin Practice", emoji: "✏️", href: "/map" },
   { key: "svplay", name: "FluOlin SvPlay", emoji: "🎮", href: "/games/vocabularain" },
   // 🔖 not 🔁 (2026-08-21): the transport glyphs belong to sound. ÉcouTexte's
   // "🔁 Listen again" has to keep meaning "again", so the Review family — a
@@ -84,7 +84,9 @@ export type Activity = {
   family: FamilyKey;
   /** Gallery / index href. `null` = reached only through a deck. Since
    *  patch 24 the deck-scoped activities point INTO the Index with themselves
-   *  preselected (`/activities?activity=…`) — the hubs that listed decks are
+   *  its own landing (`/practice/flip-it`) listing every stop that has it;
+   *  a stop-level activity with no page of its own has `null` and is reached
+   *  from the map. The old Index hubs are
    *  redirects now. */
   href: string | null;
   /** Flap hue, kept from siteTabs so nothing shifts colour. */
@@ -99,7 +101,7 @@ export const ACTIVITIES: Activity[] = [
   // Dan, 2026-08-29: "use this for SpecuLearn 💡". The crystal ball read as
   // fortune-telling; the bulb reads as a guess worth having. Display only —
   // the key, the route and saved progress all stay "speculearn".
-  { key: "speculearn", name: "SpecuLearn", emoji: "💡", family: "practice", href: "/activities?activity=speculearn", hue: "#8a5fd4", blurb: "Guess before you're taught. Pre-Tests live here too." },
+  { key: "speculearn", name: "SpecuLearn", emoji: "💡", family: "practice", href: "/practice/speculearn", hue: "#8a5fd4", blurb: "Guess before you're taught. Pre-Tests live here too." },
   // Dan, 2026-08-23: renamed xPlain → Memo (approved surface #3). Key stays
   // "lesson" — display rename only.
   { key: "lesson", name: "Memo", emoji: "📚", family: "practice", href: null, hue: "#e0567f", blurb: "The lesson: rule, then practice." },
@@ -108,12 +110,12 @@ export const ACTIVITIES: Activity[] = [
   // pager. Key stays "dice": the route, the tabs and saved progress all
   // hang off it. Display rename only.
   { key: "dice", name: "Sorting", emoji: "🗂️", family: "practice", href: null, hue: "#e3a700", blurb: "Which group does each word belong to?" },
-  { key: "flip", name: "4Mémoire", emoji: "🃏", family: "practice", href: "/activities?activity=flip", hue: "#2bb6c2", blurb: "Flashcards. English front, flip to French." },
+  { key: "flip", name: "4Mémoire", emoji: "🃏", family: "practice", href: "/practice/flip-it", hue: "#2bb6c2", blurb: "Flashcards. English front, flip to French." },
   { key: "complete", name: "iComplete", emoji: "✏️", family: "practice", href: null, hue: "#7bbf2e", blurb: "Type the missing word." },
 
   // ── 2 · FluOlin Review — automatic first, then the one you choose ─────────
   { key: "reviser", name: "DéjàRevu", emoji: "🔖", family: "review", href: "/reviser", hue: "#7bbf2e", blurb: "Comes back when you're about to forget it." },
-  { key: "grammarathon", name: "GramMarathon", emoji: "🏃", family: "review", href: "/activities?activity=grammarathon", hue: "#3b6fd4", blurb: "Gap-fill sprint across a whole deck." },
+  { key: "grammarathon", name: "GramMarathon", emoji: "🏃", family: "review", href: "/practice/grammarathon", hue: "#3b6fd4", blurb: "Gap-fill sprint across a whole deck." },
 
   // ── 3 · FluOlin Skills — forms → receptive → productive ───────────────────
   { key: "conjugaison", name: "ConjugaZone", emoji: "🔤", family: "skills", href: "/conjugaison", hue: "#2bb6c2", blurb: "Verb endings until they come without thinking." },

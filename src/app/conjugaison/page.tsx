@@ -165,7 +165,7 @@ export default function ConjugaisonPage() {
 
   return (
     <DrillShell
-      exitHref="/activities"
+      exitHref="/map"
       progress={drilling && queue ? { done: k, total: queue.length } : null}
       right={<>✓ {score.ok}</>}
       activity="conjugaison"
