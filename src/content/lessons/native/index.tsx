@@ -13,6 +13,13 @@ import { alimentsLesson } from "./aliments";
 import { sePresenterLesson } from "./se-presenter";
 import { negationLesson } from "./negation";
 import { conjugaisonU1Lesson } from "./conjugaison-u1";
+// Written 2026-08-28 for the three stops whose decks could not keep their
+// promise: SIO-003 taught 26 letters and promised the spelling exchange,
+// SIO-017 taught 19 language names and promised the country link, SIO-018
+// taught 15 numerals and promised ages, prices and quantities.
+import { epelerLesson } from "./epeler";
+import { languesPaysLesson } from "./langues-pays";
+import { nombresEchangesLesson } from "./nombres-echanges";
 import { avoirEtatsLesson } from "./avoir-etats";
 import { questionsOuiNonLesson } from "./questions-oui-non";
 import { motsInterrogatifsLesson } from "./mots-interrogatifs";
@@ -68,6 +75,9 @@ export const NATIVE_LESSONS: Record<string, NativeLesson> = {
   "conseils": conseilsLesson,
   frequence: frequenceLesson,
   demonstratifs: demonstratifsLesson,
+  epeler: epelerLesson,
+  "langues-pays": languesPaysLesson,
+  "nombres-echanges": nombresEchangesLesson,
   "revision-u1": revisionU1Lesson,
   "revision-u3u4": revisionU3U4Lesson,
   "revision-u4": revisionU4Lesson,

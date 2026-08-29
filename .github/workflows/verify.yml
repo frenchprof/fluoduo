@@ -147,3 +147,6 @@ jobs:
 
       - name: "Entry level ★/★★/★★★ and the restored selectors (28 Aug)"
         run: python3 verify/verify41-lesson-entry.py
+
+      - name: "Stops 3, 17, 18 teach the act they promise (28 Aug)"
+        run: python3 verify/verify42-three-stops.py

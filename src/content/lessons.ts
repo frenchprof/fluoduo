@@ -19,6 +19,11 @@ export const LESSONS: Record<string, Lesson> = {
   // SIO-028's rail below (Dan: "insert it somewhere as an addition").
   "negation":          { slug: "negation",          title: "La négation",                  unit: 2 },
   "conjugaison-u1":    { slug: "conjugaison-u1",    title: "Conjugaison (Unité 1)",        unit: 1 },
+  // Three lessons written 2026-08-28 for stops that promised an ACT and
+  // taught only the vocabulary it needed (Dan: "3, 17, 18 fill the content").
+  "epeler":            { slug: "epeler",            title: "Comment ça s’écrit ?",        unit: 0 },
+  "langues-pays":      { slug: "langues-pays",      title: "On parle quelle langue ?",     unit: 1 },
+  "nombres-echanges":  { slug: "nombres-echanges",  title: "Les nombres au quotidien",     unit: 1 },
   "avoir-etats":       { slug: "avoir-etats",       title: "Avoir ou être ? — les états",  unit: 1 },
   // Unit 3, not 1: the book teaches est-ce que / qu'est-ce que in U3 (questions (2),
   // book p. 92) — U1's questions are quel + intonation. SIO mapping (SIO-035, u3)
@@ -65,6 +70,18 @@ export const LESSONS: Record<string, Lesson> = {
 export const LESSONS_BY_SIO: Record<string, string[]> = {
   "SIO-001": ["se-presenter", "conjugaison-u1"], // s'appeler: taught in L01 + L03
   "SIO-002": ["tu-vous"],
+  // SIO-003 promised "or ASK how it is spelled" and taught A-Z; `epeler` is
+  // the lesson it never had.
+  //
+  // SIO-010's atelier PERFORMS « Comment ça s’écrit ? », so it depends on this
+  // lesson — but it deliberately does NOT list it. One goal, one lesson
+  // (verify27, from #44): a stop that leads with another stop's lesson opens
+  // on someone else's screen, which is the fault that rule exists to stop. The
+  // atelier meets the phrase in its own model dialogue instead, which is what
+  // a production stop opens on.
+  "SIO-003": ["epeler"],
+  "SIO-017": ["langues-pays"],
+  "SIO-018": ["nombres-echanges"],
   "SIO-009": ["salutations"],
   "SIO-012": ["professions"],
   "SIO-016": ["nationalities"],
