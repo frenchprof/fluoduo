@@ -23,6 +23,14 @@ import { nombresEchangesLesson } from "./nombres-echanges";
 // SIO-011: the deck frames « c'est moi » already; what it never drilled was
 // the everyday echo. Dan, 2026-08-29: no prepositions, "... aussi / non plus".
 import { moiAussiLesson } from "./moi-aussi";
+// Stops 4, 7, 8, 21 and 34 — the promises whose second half had nothing
+// behind it (Dan, 2026-08-29: simplest possible sentences; 7 stops at ten;
+// 8 gets two lines only; 34's lesson must talk about the prepositions).
+import { quelJourLesson } from "./quel-jour";
+import { combienLesson } from "./combien";
+import { onFaitQuoiLesson } from "./on-fait-quoi";
+import { quEstCeLesson } from "./qu-est-ce-que-c-est";
+import { ouEstLesson } from "./ou-est";
 import { avoirEtatsLesson } from "./avoir-etats";
 import { questionsOuiNonLesson } from "./questions-oui-non";
 import { motsInterrogatifsLesson } from "./mots-interrogatifs";
@@ -82,6 +90,11 @@ export const NATIVE_LESSONS: Record<string, NativeLesson> = {
   "langues-pays": languesPaysLesson,
   "nombres-echanges": nombresEchangesLesson,
   "moi-aussi": moiAussiLesson,
+  "quel-jour": quelJourLesson,
+  combien: combienLesson,
+  "on-fait-quoi": onFaitQuoiLesson,
+  "qu-est-ce-que-c-est": quEstCeLesson,
+  "ou-est": ouEstLesson,
   "revision-u1": revisionU1Lesson,
   "revision-u3u4": revisionU3U4Lesson,
   "revision-u4": revisionU4Lesson,
