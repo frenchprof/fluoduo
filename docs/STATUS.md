@@ -2059,3 +2059,44 @@ per-activity hubs are untouched. Building it means one shared page component
 (band hue + second-column resolver + the popup) replacing the Index's chip
 rail, and `cellHref()` already answers "does this stop have this activity",
 so the ghost state is derivable rather than a new list to keep.
+
+## 29 Aug — SIO-005's mnemonic objects, found and wired to the cards
+
+SIO-005 is assessed on *"Name the 12 colours; **give the matching mnemonic
+object for each** (≥10/12)"* and the deck carried the bare colour word and
+nothing else — `le rouge`, `le jaune`, twelve of them, no example, no phrase.
+Nothing in the app had ever shown a learner the thing it then graded.
+
+They were in `docs/handoff/LAF1201_SIOs_Flashcards_v9.csv`, row 5, all along.
+Now on the items as `example` / `exampleEn`, which renders in iComplete's and
+GramMarathon's WHY and in the pre-test review table (the `!inflected` guard on
+those paths is for nationality/possessive decks only, so it does not apply
+here):
+
+    le rouge  → le feu rouge        le violet → le raisin violet
+    l'orange  → le fluo orange      le marron → le chocolat marron
+    le jaune  → le citron jaune     le blanc  → le lait blanc
+    le vert   → le concombre vert   le noir   → le café noir
+    le bleu   → le ciel bleu        le gris   → le nuage gris
+                                    le rose   → le flamant rose
+
+**ELEVEN, not twelve.** I told Dan "the twelve colour nouns" and listed
+`le sable beige` among them — the sheet has eleven and **beige has none**;
+that one was mine, not his. Left absent rather than invented. Beige is already
+this deck's odd one out: no swatch emoji, and excluded from SpecuLearn
+(`colors-12`) for having no honest image. It needs Dan's word.
+
+**The Mémo was tried and reverted, on measurement.** Adding the eleven as a
+pill row made the card 419px → 667px at 390×844, and the last row of pills sat
+**76px behind the Continue button**, clipped with nothing on screen to say
+more was there. Compacting the pills (no article) did not save it — the longer
+label wrapped and the card grew again. So the mnemonics live on the cards, and
+whether the Mémo should teach them is Dan's call: the card is already full
+with his cognate groups, and cramming a third list into it is the "too much
+going on" he objected to in Unit 0 Lesson 1.
+
+*Method note:* the first measurement compared the card's bottom against the
+**viewport** (844) and printed "fits without scrolling" while it was in fact
+clipped — the constraint is the Continue button (593 baseline, 734 loaded),
+not the screen. A baseline run without the block is what made the regression
+legible: 144→563, clear.
