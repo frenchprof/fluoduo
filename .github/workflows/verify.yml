@@ -178,5 +178,8 @@ jobs:
       - name: patch 45 — deck promises (SIO-001 M./Mme, SIO-005 mnemonics)
         run: python3 verify/verify45-promise-gaps.py
 
+      - name: "Where the name comes from — one space, or none, and never smaller (30 Aug)"
+        run: python3 verify/verify52-fluolingo-origin.py
+
       - name: "Every check runs, and no two share a number"
         run: python3 verify/verify-wiring.py

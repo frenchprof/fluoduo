@@ -326,6 +326,40 @@ Only ONE agent edits this file at a time; say so in your commit.
   lesson** (my brief said ~19). Verification unchanged as expected for a docs-only
   change: all 26 `verify/verify*.py` green, `tsc` clean on `src`.
 
+- **30 Aug (this session, sole STATUS holder for this edit): the name-origin
+  animation, built to Dan's written spec.** `Fluency {achieved} on
+  {customisable} linguistic goals` → **Fluolingo**, on the fluorescent
+  highlighter ground. Two fields cycle Dan's nine words each (pale-blue and
+  pale-green chips behind those two words ONLY), decelerating — the intervals
+  grow 33 → 272 ms, which is the whole of the slow-down, no separate pass —
+  and land on « achieved » / « customisable ». Then four transformations, each
+  held long enough to read: the fields go → the words clip to Flu / lin / go →
+  `on` clips to `o` → the three spaces close.
+  **What the earlier GIF got wrong and this does not:** it held
+  `Flu   o   lin   go`, with the deleted letters' width still on the page.
+  There are two operations and they must look different — a *reduction* leaves
+  letters and closes to ONE ORDINARY SPACE, a *merge* closes the spaces
+  themselves — so a departed letter is laid out with **zero width, parked on
+  the seam its phrase closed over**. The survivors' target positions are then
+  already hole-free, travelling towards them IS the inward move, and no stale
+  width can survive to leave a gap. Measured in a browser at every held beat:
+  every gap exactly 1.000 × a space, zero at the merge, centre offset 0.00 px,
+  sizes 32.27 → 34.53 → 36.95 → 39.54 → 42.30 px (×1.07 a step, never down).
+  The four surviving pieces take their colours in the hold BEFORE the letters
+  around them are cut, so the viewer sees where Flu + o + lin + go came from.
+  Files: `src/lib/fluolingoOrigin.ts` (stages, beats, layout arithmetic — no
+  DOM anywhere in it) · `src/components/FluolingoOrigin.tsx` (renderer: one
+  rAF loop writing transforms, no React state per frame, no CSS transition) ·
+  `src/app/hidden/fluolingo/page.tsx` (somewhere to watch it, off every
+  learner path). Palette in seven `--fluo-origin-*` tokens (the renderer holds no
+  hex; the bloom is `color-mix`, because `--fluo-ink` is authored in `lab()`
+  and only the browser reads every syntax the stylesheet may use).
+  `verify52-fluolingo-origin.py` — **66 checks, wired into CI**,
+  and it EXECUTES the module under Node's type stripping rather than reading
+  it: verified to fail when a gap is widened and when a growth step goes
+  backwards. Nothing on a learner surface changed; mounting it elsewhere is
+  one import and one tag. NOT deployed.
+
 ## Programme — done
 
 - **23 Aug (Peers, the content-gap wave + visual unity): eight authoring
