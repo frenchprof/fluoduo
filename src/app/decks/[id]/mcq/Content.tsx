@@ -13,6 +13,7 @@ import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import type { Collection, Item } from "@/lib/collections/schema";
 import CahierShell, { withActive } from "@/components/CahierShell";
 import { deckTabs } from "../DeckContent";
+import { buildEvidence } from "@/lib/evidence";
 
 type Dir = "fr-en" | "en-fr";
 const DIR_KEY = "fluolingo.mcqDir.v1";
@@ -26,6 +27,7 @@ function McqPageInner({ id }: { id: string }) {
     let cancelled = false;
     const curated = CURATED.find((c) => c.id === id);
     if (curated) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- the deck is loaded asynchronously; there is no render-time value to derive it from.
       setCollection(curated);
       return;
     }
@@ -68,6 +70,7 @@ function Runner({ collection }: { collection: Collection }) {
   // Seed starts fixed (SSR-safe), then randomises on mount so every activation
   // gets a fresh question round + option order; Restart re-rolls it again.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Math.random() must NOT run during render: the static export would ship one seed to every learner and hydration would mismatch.
     setSeed(1 + Math.floor(Math.random() * 1_000_000));
   }, []);
   const [step, setStep] = useState(0);
@@ -77,6 +80,7 @@ function Runner({ collection }: { collection: Collection }) {
   useEffect(() => {
     try {
       const d = localStorage.getItem(DIR_KEY);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage cannot be read during render (AGENTS.md); this is the accepted mount-time read.
       if (d === "fr-en" || d === "en-fr") setDir(d);
       const t = localStorage.getItem(TTS_KEY);
       if (t === "0") setTtsOn(false);
@@ -139,7 +143,17 @@ function Runner({ collection }: { collection: Collection }) {
     const correct = sideText(question, dir).answer === text;
     // MCQ grades outside recordItemResult (it never fed the SRS), so it
     // writes the evidence trail directly.
-    recordResponse(question.id, correct, { given: text, activity: `mcq:${collection.id}` });
+    //
+    // It did not, until 30 Aug. This comment claimed the evidence trail while
+    // the call passed no `evidence` at all, which is probably why nobody
+    // looked: the answer stored as bare right/wrong, with no outcomeId and no
+    // evidenceType. Not routed through recordItemResult — the comment above is
+    // still the reason — so buildEvidence is called directly.
+    recordResponse(question.id, correct, {
+      given: text,
+      activity: `mcq:${collection.id}`,
+      evidence: buildEvidence(question.id, `mcq:${collection.id}`),
+    });
     if (correct) setScore((s) => s + 1);
   }
   function next() {

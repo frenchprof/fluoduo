@@ -21,6 +21,7 @@ import { CAFE_PRICES, categoryHeaderClass, type ComposeBank } from "@/games/comp
 import GameFrame from "@/components/GameFrame";
 import GameOver from "@/components/GameOver";
 import { drillExitHref } from "@/components/DrillShell";
+import { buildEvidence } from "@/lib/evidence";
 
 // "waiter" is the internal key for the persona (café waiter, classmate,
 // friend, shopkeeper…) whatever the scene; "me" is the learner.
@@ -145,6 +146,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
   // Dialogue over → pull the teacher's bilan automatically.
   const done = stage === "done" || aiDone;
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fires a network fetch when the conversation ends; the state it sets arrives from outside React.
     if (done && debrief === null && !debriefBusy && messages.length >= 2) void fetchDebrief(messages);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [done]);
@@ -201,7 +203,12 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
         setAiDone(true);
         sfx.stage();
         awardConversationXp();
-        recordResponse(bank.id, true, { activity: `compose:${bank.id}` });
+        recordResponse(bank.id, true, {
+          activity: `compose:${bank.id}`,
+          // awardConversationXp() above is this game's payment; routing through
+          // recordItemResult would pay a second time.
+          evidence: buildEvidence(bank.id, `compose:${bank.id}`),
+        });
         void logEvent("game.end", { game: "compose", collectionId: bank.id });
       } else sfx.correct();
     } catch {
@@ -249,7 +256,12 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
       if (next === "done") {
         sfx.stage();
         awardConversationXp();
-        recordResponse(bank.id, true, { activity: `compose:${bank.id}` });
+        recordResponse(bank.id, true, {
+          activity: `compose:${bank.id}`,
+          // awardConversationXp() above is this game's payment; routing through
+          // recordItemResult would pay a second time.
+          evidence: buildEvidence(bank.id, `compose:${bank.id}`),
+        });
         void logEvent("game.end", { game: "compose", collectionId: bank.id });
       } else sfx.correct();
       speakSequence(

@@ -171,6 +171,9 @@ jobs:
       - name: "Four more stops whose deck taught only the vocabulary (29 Aug)"
         run: python3 verify/verify51-four-more-stops.py
 
+      - name: "Every direct recordResponse caller writes an evidence block (30 Aug)"
+        run: python3 verify/verify54-evidence-writers.py
+
       - name: Family hubs — every bottom-bar slot opens its family
         run: python3 verify/verify52-nav-hubs.py
 

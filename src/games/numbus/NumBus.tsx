@@ -18,6 +18,7 @@ import { reviewItemByFrench } from "@/lib/reviser";
 import { logEvent } from "@/lib/firebase/usage";
 import { claimDigitKeys } from "@/lib/useChoiceKeys";
 import { blindWidth, configKey, dealRound, type Blind, type NumBusConfig, type NumBusMode, type NumBusRound } from "./config";
+import { buildEvidence } from "@/lib/evidence";
 
 const ROUNDS_PER_RUN = 10;
 const LIVES = 3;
@@ -514,7 +515,15 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
       setServed((n) => n + 1);
       setLog((l) => [...l, { words: round.words, digits: round.digits, suffix: round.suffix, given: answer, ok: won }]);
       void import("@/lib/firebase/responses")
-        .then((m) => m.recordResponse(round.words, won, { given: answer || "—", activity: "numbus" }))
+        .then((m) =>
+          m.recordResponse(round.words, won, {
+            given: answer || "—",
+            activity: "numbus",
+            // NumBus keeps its own scoring, so this stays recordResponse and
+            // does not pay XP. The evidence block is what was missing.
+            evidence: buildEvidence(round.words, "numbus"),
+          }),
+        )
         .catch(() => {});
 
       if (won) {
@@ -559,6 +568,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
     const total = round.seconds * 1000;
     const start = performance.now();
     leftRef.current = 1;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- seeds the countdown the interval below drives; the timer is the external system.
     setLeft(1);
     const id = window.setInterval(() => {
       const remaining = 1 - (performance.now() - start) / total;

@@ -31,18 +31,19 @@ used in CI.
   `check:short && check:sios && next build` — the two guards run first, so a
   build failure may be a label or a CSV drift rather than a compile error.
   Typecheck with `npx tsc --noEmit`, which is clean and must stay clean.
-- **Lint.** `npm run lint` reports pre-existing errors repo-wide (mostly
-  `react-hooks/set-state-in-effect`) — around 130 problems across 51 files, so
-  it is NOT run repo-wide. **CI lints the files each PR touches** (workflow
-  step "Lint the files this PR touches", added 29 Aug; this paragraph said "CI
-  does not run lint" until 30 Aug and cost two sessions a red build).
-  **Budget for it: a one-line change to an old file inherits that file's lint
-  debt.** Where the rule disagrees with an older deliberate decision —
-  localStorage cannot be read during render; a shuffle must happen after mount
-  so SSR and the first client render agree — a targeted
-  `eslint-disable-next-line` **with the reason written out** is the accepted
-  resolution. Fix what is genuinely a fault; do not restructure a working
-  component to satisfy a rule in a PR that is about something else.
+- **Lint.** `npm run lint` over the whole repo reports ~130 pre-existing
+  problems (mostly `react-hooks/set-state-in-effect`) across ~51 files. **CI
+  lints every file a pull request TOUCHES** — not the whole repo, which would
+  paint every PR red on day one. The workflow step is "Lint the files this PR
+  touches", added 29 Aug. Consequence to budget for: a one-line change to an
+  old file inherits that file's whole lint debt. Where the rule contradicts a
+  deliberate decision (localStorage cannot be read during render; a live ref
+  must be written during render or an async callback fires a stale value; a
+  shuffle must happen after mount so SSR and the first client render agree), a
+  targeted `eslint-disable-next-line` **with the reason written out** is the
+  accepted resolution — see `SayItContent.tsx`. Fix what is genuinely a fault;
+  do not restructure a working component to satisfy a rule in a PR that is
+  about something else.
 - **CI** is one job, `verify`: `tsc --noEmit`, `npm run build`, then every
   script in `verify/`, each named on its own `run:` line in
   `.github/workflows/verify.yml`. Add a check and you must add that line —
