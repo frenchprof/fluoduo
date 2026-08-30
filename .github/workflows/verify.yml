@@ -25,6 +25,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          # Lint-changed-files diffs against the PR base, which a
+          # shallow clone does not have.
+          fetch-depth: 0
 
       - uses: actions/setup-node@v5
         with:
@@ -180,3 +184,35 @@ jobs:
 
       - name: "Every check runs, and no two share a number"
         run: python3 verify/verify-wiring.py
+
+      # Lint, scoped to the files THIS pull request touches (Dan, 29 Aug).
+      #
+      # `npx eslint src` reports 130 problems across 51 files. Turning that
+      # on repo-wide would fail every PR on day one, which is what deleting
+      # claude-review just cured. Scoped instead: new work must be clean, the
+      # existing files stay until someone is in them anyway, and the pile can
+      # only shrink.
+      #
+      # Two traps, both deliberate:
+      #  - An EMPTY file list must exit, not fall through. `eslint` with no
+      #    arguments lints the whole project and would fail on all 111
+      #    pre-existing errors — a docs-only PR would go red.
+      #  - Deleted files must be filtered out, or eslint errors on a path
+      #    that is no longer there.
+      - name: "Lint the files this PR touches"
+        if: github.event_name == 'pull_request'
+        run: |
+          # No fetch here. `fetch-depth: 0` on checkout above already has the
+          # full history and every ref, and `--depth=0` is not even valid —
+          # git rejects it with "depth 0 is not a positive number". Swallowed
+          # by `|| true`, it printed a red `fatal:` on every GREEN run, which
+          # is exactly the kind of line that teaches people to ignore CI.
+          BASE="origin/${{ github.base_ref }}"
+          CHANGED=$(git diff --name-only --diff-filter=d "$BASE"...HEAD -- 'src/**/*.ts' 'src/**/*.tsx')
+          if [ -z "$CHANGED" ]; then
+            echo "No source files touched — nothing to lint."
+            exit 0
+          fi
+          echo "Linting $(echo "$CHANGED" | wc -l) changed file(s):"
+          echo "$CHANGED"
+          npx eslint $CHANGED

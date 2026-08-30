@@ -18,6 +18,18 @@ That is the third time this session a deck looked empty because the teaching
 was somewhere a literal search does not reach — frames, letris columns, and
 now `example` fields. The four below are the ones that survived looking.
 
+AND THEN I MADE THE SAME MISTAKE AGAIN, one stop later, in a new way: 20 deck
+names exist BOTH at src/content/<name>.json (a letris tile file) and at
+src/content/collections/<name>.json (the card deck the app actually reads).
+The audit globbed by basename and took the first hit, so for SIO-006 it judged
+a tile file and never saw the 18 examples in the collection. Anything auditing
+a deck must resolve collections/ FIRST.
+
+SIO-006 was therefore never a gap, and its lesson is gone. Its one real rule —
+gender picks the PRONOUN, not just the article — went to SIO-021 instead, where
+the objects actually are (Dan, 29 Aug: "il/elle for objects should go to 21,
+which should also include ils/elles"). verify48 asserts it there.
+
   SIO-013  "say AND ASK what someone is studying"
            -> 16 subject names sorted by article. « Quelle matière ? » is the
            deck's TITLE and appears on no card.
@@ -94,7 +106,10 @@ for slug, sio in GENS.items():
 # ---- 2 · the three NON-gaps keep no lesson ---------------------------------
 # An absence, deliberately. Their decks already teach both halves in the
 # `example` field, and a lesson on top would be a second door onto one goal.
-for sio, why in (("SIO-025", "every card carries « Pourquoi … ? » in its example"),
+for sio, why in (("SIO-006", "all 18 cards carry « C'est qui ? » / « C'est où ? » in "
+                            "their example field; the pronoun rule it lacked moved to SIO-021, "
+                            "where the objects are (Dan, 29 Aug)"),
+                 ("SIO-025", "every card carries « Pourquoi … ? » in its example"),
                  ("SIO-038", "every card carries « Tu y vas en … ? » in its example"),
                  ("SIO-039", "the cards are the polite act, not vocabulary for it")):
     m = re.search(r'"%s":\s*\[([^\]]*)\]' % sio, reg)
@@ -140,6 +155,7 @@ for (let i = 0; i < 3000; i++) {
   if (/^Je veux\b/.test(q.correct)) w(`44 graded the rude form: ${q.correct}`);
 }
 for (let i = 0; i < 3000; i++) audit(soixanteQuestion(), "45A");
+
 for (const a of ASKS) for (const p of PLACES) {
   const q = cheminQuestion({ ask: a.key, place: p.fr });
   audit(q, "36pin");

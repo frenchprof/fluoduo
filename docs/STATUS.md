@@ -2908,3 +2908,71 @@ sits between a learner and an answer.
 
 Green: `tsc --noEmit`, `npm run build`, all 41 verify scripts. No content,
 data or component touched — one file.
+
+## 29 Aug — SIO-006 withdrawn, its rule moved to 21; lint scoped
+
+**SIO-006's lesson was built and then removed.** Dan asked for it after I had
+flagged it as the weakest of the eight candidates; rendering it exposed why my
+flag had been right and my write-up wrong.
+
+### The audit error
+
+The first card read « C'est quoi ? — C'est ___ consonne », a word not in the
+lesson's own list. That is the stop's deck, not the generator, and chasing it
+found: **twenty deck names exist in TWO places.** `src/content/<name>.json` is a
+letris TILE file; `src/content/collections/<name>.json` is the card deck the app
+reads. The gap audit globbed by basename and took the first hit, so for SIO-006
+it judged a tile file and never saw the collection's 18 cards — every one
+carrying « C'est qui ? — C'est un homme. » or « C'est où ? — C'est une classe. »
+in its `example` field.
+
+**So SIO-006 was never a gap.** Same failure written up three times earlier the
+same day — teaching hiding where a literal search does not reach — committed
+again in a new way. **Anything auditing a deck must resolve `collections/`
+FIRST.** `verify51` asserts SIO-006 as an absence now.
+
+### The rule moved to where the objects are
+
+Dan: *"il/elle for objects should go to 21, which should also include ils/elles
+(sac, gomme, ciseaux, lunettes)."* SIO-021's lesson gains all four:
+
+| | → |
+|---|---|
+| C'est **un** sac. | **Il** est là. |
+| C'est **une** gomme. | **Elle** est là. |
+| Ce sont **des** ciseaux. | **Ils** sont là. |
+| Ce sont **des** lunettes. | **Elles** sont là. |
+
+English has only *it* and *they* for the four, so each must be chosen — and the
+verb moves with the number, `est` → `sont`.
+
+**A second fault fixed on the way.** Stop 21's plural branch pluralised a
+singular with a bare `+ "s"` (« Ce sont des sacs. ») — true French, but not what
+the deck teaches. It uses the deck's own plural-ONLY cards now: `ciseaux`,
+`lunettes`, `écouteurs`, `mouchoirs`, none of which has a singular at all.
+`verify48` asserts both, break-tested, all red.
+
+### Re-checked against the right files
+
+| stop | examples in the real deck | verdict |
+|---|---|---|
+| 35, 11, 13, 44 | 0 | gaps were real |
+| 36 | 4 / 40, all GIVING | asking half was real |
+| **21** | **20 / 20** | **partly over-built** — only the ASKING half was missing |
+| 45A | single file | never at risk |
+
+### Lint in CI, scoped
+
+Dan was unsure what was being asked, so: CI now lints **only the files a pull
+request touches**, on `pull_request` events. New work must be clean; the 51
+files holding the 130 existing problems stay until someone is in them anyway.
+
+Two traps, both driven locally before shipping:
+- **An empty file list must exit early.** `eslint` with no arguments lints the
+  whole project and would fail a docs-only PR on all 111 pre-existing errors.
+- **Deleted files must be filtered** (`--diff-filter=d`), or eslint errors on a
+  path that is gone.
+
+Checkout gained `fetch-depth: 0`; a shallow clone has no base to diff against.
+Verified both ways: docs-only exits 0; touching `useDragFloat.ts` exits 1
+naming the rule.
