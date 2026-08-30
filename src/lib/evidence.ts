@@ -24,7 +24,6 @@
  * built on a store with a known-bad window. Any analysis spanning before
  * 2026-08-10 must carry that caveat.
  */
-import { SIOS } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import { sioForDeck, sioForItem } from "@/lib/curriculum";
 import { PRETESTS, sioIdForPretest } from "@/content/pretests";
@@ -61,7 +60,27 @@ export type EvidenceMeta = {
 
 // ── activity → evidence type ────────────────────────────────────────────────
 // Longest prefix wins. Keys match the `activity` tag threaded through
-// recordItemResult since commit 709d7a0, and the pathname fallback.
+// recordItemResult since commit 709d7a0.
+//
+// THE PATH-SHAPED KEYS ARE NOT A FALLBACK, and never were (audit 2026-08-30).
+// `recordResponse` falls back to `location.pathname` for the `activityId` it
+// STORES, but `buildEvidence` is handed the raw `activity` argument and has no
+// such fallback — so a caller that passes nothing stores a pathname in
+// `activityId` and NO `evidenceType` at all. Every `/`-prefixed key below was
+// therefore unreachable, and eight call sites that passed no activity wrote
+// answers with no evidence meaning: the whole of ConjugaZone, both deck
+// Test-Yourself surfaces, LexicaLater, Match It and — worst — the Reviser,
+// which is the ONLY source of `delayed` evidence the app has.
+//
+// The fix is at the call sites (every one now passes an explicit tag) rather
+// than a pathname fallback here, for the reason recordItemResult's own
+// docstring gives: a game embedded in SioModal never navigates, so its
+// pathname is whatever host page happened to be open. The path keys are kept
+// only because `activityId` values shaped like paths are already in the store
+// from before the tags existed, and a reader resolving history needs them.
+//
+// verify53-evidence-coverage.py fails the build if any activity string the app
+// emits resolves to no type here.
 const ACTIVITY_EVIDENCE: Array<[string, EvidenceType]> = [
   ["pretest", "diagnostic"],
   ["/pretests/", "diagnostic"],
@@ -71,11 +90,13 @@ const ACTIVITY_EVIDENCE: Array<[string, EvidenceType]> = [
   ["complete-it", "constrained"],
   ["/practice/complete-it/", "constrained"],
   ["dice-practice", "constrained"],
+  ["dice:", "constrained"],
   ["/practice/dice/", "constrained"],
   ["lesson-dice:", "constrained"],
   ["lesson:", "constrained"],          // the lesson pager's gap/build/translate cards
 
   ["conj", "constrained"],
+  ["deck-test:", "constrained"],   // the deck page's Test Yourself — typed target
   ["/conjugaison", "constrained"],
   ["say-it", "productive"],
   ["/practice/say-it/", "productive"],
@@ -89,16 +110,20 @@ const ACTIVITY_EVIDENCE: Array<[string, EvidenceType]> = [
   ["/practice/speculearn/", "receptive"],
   ["/practice/flip-it/", "recognition"],
   ["flip-it", "recognition"],
+  ["lexicalater:", "recognition"],
   ["/games/lexicalater", "recognition"],
   ["/games/vocabularain", "recognition"],
+  ["letris:", "recognition"],
   ["/games/letris", "recognition"],
+  ["matching:", "recognition"],
   ["/games/matching", "recognition"],
   ["numbourse", "recognition"],
   ["/games/numbourse", "recognition"],
   ["numbus", "recognition"],
   ["/games/numbus", "recognition"],
   ["mcq:", "recognition"],
-  ["/reviser", "delayed"],                        // the review queue IS spaced retrieval
+  ["reviser", "delayed"],                         // the review queue IS spaced retrieval
+  ["/reviser", "delayed"],
 ];
 
 export function evidenceTypeFor(activityId: string | undefined): EvidenceType | undefined {

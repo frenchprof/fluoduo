@@ -81,6 +81,7 @@ export default function ConjugaisonPage() {
     try {
       const v = new URLSearchParams(window.location.search).get("v");
       const ids = (v ?? "").split(",").filter((id) => VERBS.some((x) => x.id === id));
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- shuffled after mount so SSR and the first client render agree — pre-existing, not this change's
       if (ids.length > 0) setPicked(ids);
     } catch {}
   }, []);
@@ -98,6 +99,7 @@ export default function ConjugaisonPage() {
   // (Re)build the run whenever the verb set changes. Client-only: shuffling
   // during render would break SSR hydration.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- shuffled after mount so SSR and the first client render agree — pre-existing, not this change's
     setQueue(shuffle(shown.flatMap((v) => v.forms.flatMap((f, i) => (f === "—" ? [] : [{ v, i }])))));
     setK(0); setValue(""); setResult(null); setScore({ ok: 0, total: 0 });
     setScreen("drill");
@@ -112,7 +114,10 @@ export default function ConjugaisonPage() {
     if (!cell || result !== null) return;
     const t = value.trim();
     const ok = t !== "" && (gradeAnswer(t, form) !== "wrong" || gradeAnswer(t, spoken) !== "wrong");
-    recordItemResult(`conj-${cell.v.id}-${cell.i}`, ok);
+    // The activity tag is what gives this answer an evidence TYPE — without it
+    // buildEvidence stores no `evidenceType` at all (audit 2026-08-30). Typing
+    // one required form is constrained production, so `conj:` resolves there.
+    recordItemResult(`conj-${cell.v.id}-${cell.i}`, ok, t, `conj:${cell.v.id}`);
     setResult(ok);
     setScore((s) => ({ ok: s.ok + (ok ? 1 : 0), total: s.total + 1 }));
     if (ok) sfx.correct(); else sfx.wrong();

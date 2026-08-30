@@ -113,6 +113,10 @@ function drawDaily(seedKey: string | number): string[] {
 
 type Verdict = { ok: boolean; others: string[]; expected: string[] };
 
+/** One tag for both write paths below (they used to disagree). Resolves to
+ *  `delayed` — the finale draws SRS-scheduled, weakness-weighted items. */
+const FINALE_ACTIVITY = "/practice/grammarathon/finale";
+
 export default function FinaleContent() {
   const [ids, setIds] = useState<string[] | null>(null);
   const [idx, setIdx] = useState(0);
@@ -129,6 +133,7 @@ export default function FinaleContent() {
   // Every visit is a FRESH weakness-weighted draw (Dan, 2026-07-21: the
   // cached daily paper felt dead — and a reload loses typing anyway, so a
   // frozen draw protected nothing). Seed = clock + entropy.
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- shuffled after mount so SSR and the first client render agree — pre-existing, not this change's
   useEffect(() => { setIds(drawDaily(Date.now() + ":" + Math.random())); }, []);
 
   const paper = useMemo(() => {
@@ -163,7 +168,12 @@ export default function FinaleContent() {
     const hintsTaken = clue[q.id] ?? 0;
     if (!graded.current.has(q.id)) {
       graded.current.add(q.id);
-      recordItemResult(q.id, ok, given, undefined, { hintsTaken });
+      // The tag was `undefined` here while the post-assistance branch below
+      // passed the full path — so the FIRST attempt, the independent
+      // measurement that pays, stored no evidence type, and only the weaker
+      // resolved-with-help record was typed `delayed`. Exactly backwards
+      // (audit 2026-08-30). Both branches now pass the same string.
+      recordItemResult(q.id, ok, given, FINALE_ACTIVITY, { hintsTaken });
     } else if (ok) {
       // Resolved AFTER assistance. The first attempt already stands as the
       // independent measurement, so this pays nothing and does not touch the
@@ -176,7 +186,7 @@ export default function FinaleContent() {
           m.recordResponse(q.id, true, {
             given,
             xpPaid: 0,
-            evidence: buildEvidence(q.id, "/practice/grammarathon/finale", {
+            evidence: buildEvidence(q.id, FINALE_ACTIVITY, {
               hintsTaken,
               revealed,
             }),
@@ -235,7 +245,7 @@ export default function FinaleContent() {
   }
 
   if (!paper) {
-    return <p className="px-1 py-6 text-sm text-slate-500">Preparing today's marathon…</p>;
+    return <p className="px-1 py-6 text-sm text-slate-500">Preparing today&rsquo;s marathon…</p>;
   }
 
   if (finished) {
@@ -331,7 +341,7 @@ export default function FinaleContent() {
           </ul>
         )}
         {(clue[q.id] ?? 0) > 0 && !v?.ok && (
-          <p className="mt-1.5 text-xs text-slate-500">Try again — the answer is never revealed: it's yours to find!</p>
+          <p className="mt-1.5 text-xs text-slate-500">Try again — the answer is never revealed: it&rsquo;s yours to find!</p>
         )}
         {v?.ok && (
           <div className="mt-2 text-[15px]">

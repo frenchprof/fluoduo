@@ -53,6 +53,7 @@ export default function MatchingGame({ set }: { set: MatchingSet }) {
   const [lefts, setLefts] = useState<MatchingLeft[]>(set.lefts);
   const [rights, setRights] = useState<MatchingRight[]>(set.rights);
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- shuffled after mount so SSR and the first client render agree — pre-existing, not this change's
     setLefts(shuffle(set.lefts));
     setRights(shuffle(set.rights));
   }, [set.lefts, set.rights]);
@@ -106,7 +107,7 @@ export default function MatchingGame({ set }: { set: MatchingSet }) {
       if (attempts === 0) void logEvent("game.start", { game: "matching", collectionId: set.id });
       setAttempts((a) => a + 1);
       const left = leftById.get(leftId);
-      recordItemResult(rightId, isValid, left?.text);
+      recordItemResult(rightId, isValid, left?.text, `matching:${set.id}`);
       if (isValid && solvedRightIds.size + 1 >= total) {
         void logEvent("game.end", { game: "matching", collectionId: set.id, score: correct + 1, total });
       }

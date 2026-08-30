@@ -158,6 +158,9 @@ export default function Lexicalator({
   /** Where ✕ leads. */
   exitHref?: string;
 }) {
+  // `deckId` is optional (the mixed board passes none), so the tag falls back
+  // to a stable literal rather than the string "lexicalater:undefined".
+  const LEX_ACTIVITY = `lexicalater:${deckId ?? "mixed"}`;
   const [level, setLevel] = useState(1);
   const [score, setScore] = useState(0);
   const [cleared, setCleared] = useState(0);
@@ -183,6 +186,7 @@ export default function Lexicalator({
   const [music, setMusic] = useState(false);
   const musicAutoRef = useRef(false);
   const [mounted, setMounted] = useState(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- shuffled after mount so SSR and the first client render agree — pre-existing, not this change's
   useEffect(() => setMounted(true), []);
   useEffect(() => () => chiptune.stop(), []); // stop the loop on unmount
 
@@ -300,6 +304,7 @@ export default function Lexicalator({
     // Re-gear each word for the level's breakdown (whole word / syllables /
     // spelling chunks — see the ladder above).
     const geared = pool.map((e) => gearEntry(level, e));
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- shuffled after mount so SSR and the first client render agree — pre-existing, not this change's
     setQuota(Math.min(QUOTA, geared.length));
     setChests(geared.slice(0, LANE).map((entry, i) => ({ entry, filled: blankFill(entry), tint: i % CHEST_TINTS.length })));
     tintSeq.current = LANE;
@@ -348,7 +353,10 @@ export default function Lexicalator({
           ? [...new Set([...real].map(mutateChunk).filter((m): m is string => !!m && !real.has(m) && !isPartOfLaneWord(m)))].slice(0, 6)
           : decoys.filter((d) => !real.has(d) && !isPartialOfMono(d) && !isPartOfLaneWord(d));
     return shuffle([...real, ...usable]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // The dep is a JOINED id list on purpose — the board must re-deal when the
+    // chests change identity, not when their array does. Both rules object to
+    // the same deliberate line; pre-existing, and not this change's to redesign.
+    // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/use-memo
   }, [chests.map((c) => c.entry.id).join(","), level]);
 
   // The keyboard layer itself — attached to the window so no focus is
@@ -361,6 +369,7 @@ export default function Lexicalator({
       if (/^[1-9]$/.test(e.key) || e.key === "0") {
         const idx = e.key === "0" ? 9 : Number(e.key) - 1;
         const token = beltPool[idx];
+        // eslint-disable-next-line react-hooks/immutability -- the key handler closes over the current tapKey — pre-existing
         if (token) { e.preventDefault(); tapKey(token); }
         return;
       }
@@ -481,7 +490,7 @@ export default function Lexicalator({
       nextFilled[slot] = true;
       const complete = nextFilled.every(Boolean);
       if (complete) {
-        recordItemResult(entry.id, true);
+        recordItemResult(entry.id, true, undefined, LEX_ACTIVITY);
         sfx.correct(); // ta-daa BEFORE the word is spoken
         speak(entry.say ?? entry.fr, "fr-FR"); // article/prefix form when the deck has one
         setScore((s) => s + 10 + Math.min(combo, 5) * 2);
@@ -541,7 +550,7 @@ export default function Lexicalator({
       setRattle(token);
       window.setTimeout(() => setRattle(null), 300);
       setCombo(0);
-      recordItemResult(cur.entry.id, false);
+      recordItemResult(cur.entry.id, false, token, LEX_ACTIVITY);
       setLives((l) => {
         const nl = l - 1;
         if (nl <= 0) setOver(true);
@@ -641,7 +650,7 @@ export default function Lexicalator({
 
       {level >= 2 && entries.some((e) => LIVERY_COLOR_WORDS.some((w) => e.fr.toLowerCase().includes(w))) && (
         <p className="mb-2 text-center text-[11px] font-black" style={{ color: "#b45309" }}>
-          ⚠️ Chest colours don't match the words!
+          ⚠️ Chest colours don&rsquo;t match the words!
         </p>
       )}
 
