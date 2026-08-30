@@ -244,16 +244,17 @@ export default function DrillShell({
       )}
       <div className="cahier-foolscap relative flex min-h-0 flex-1 flex-col">
         <div className="cahier-binding" aria-hidden />
-        {/* Clear the coils on the side the coils are ON. `.cahier-binding` is
-            `right: 0` (globals.css) — it moved there when the desk was
-            mirrored for the left-hand rail — but this padding stayed on the
-            left, so for every drill the content was inset 38px away from
-            nothing and ran UNDER the 38px binding on the other side. Invisible
-            on a wide screen, which is why it survived: the content column is
-            capped at 600px and only touches the binding once the viewport is
-            narrow. Found 2026-08-30 when Le concept put the first long prose
-            in this container and lost the end of every line. */}
-        <div className="flex min-h-0 flex-1 flex-col pr-[38px]">
+        {/* Clear the coils, which bind the LEFT edge (Dan, 2026-08-30: "the
+            binding should be on the left, not on the right"). Between the
+            30 Aug mirroring and that correction the two disagreed — the coils
+            had moved right with the rail while every clearing padding stayed
+            left — so drill content was inset 38px away from nothing and ran
+            UNDER the binding on the other side. Invisible on a wide screen,
+            because the column caps at 600px and only meets the binding once
+            the viewport is narrow; Le concept put the first long prose in
+            here and lost the end of every line. Keep this on the same side as
+            `.cahier-binding` in globals.css. */}
+        <div className="flex min-h-0 flex-1 flex-col pl-[38px]">
       {/* ── the 56px bar ─────────────────────────────────────────────── */}
       <div className="flex h-14 shrink-0 items-center gap-3 border-b-2 border-[color:var(--cahier-ink)]/10 bg-white/45 px-3 sm:px-5">
         <Link

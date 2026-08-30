@@ -429,13 +429,13 @@ export default function CahierShell({
               established — name on the family's ink, one number right.
               Home keeps its hero instead; /moi and /profil have no famKey. */}
           {famKey && active !== "home" && band !== false && (band?.title ?? pageLabel) && (
-            <PageBand title={band?.title ?? pageLabel} sub={band?.sub} stat={band?.stat} className={nested ? "pr-5 sm:pr-7" : "pr-12 sm:pr-16"} />
+            <PageBand title={band?.title ?? pageLabel} sub={band?.sub} stat={band?.stat} className={nested ? "pl-5 sm:pl-7" : "pl-12 sm:pl-16"} />
           )}
 
           {/* Ruled paper behind the content well — horizontals only, no vertical
               margin line (Dan, 2026-08-10). Opt-in class rather than a body
               background so a drill or a game can turn it off. */}
-          <div className={`cahier-foolscap py-5 pl-4 sm:pl-7 ${nested ? "pr-5 sm:pr-7" : "pr-12 sm:pr-16"}`}>{children}</div>
+          <div className={`cahier-foolscap py-5 pr-4 sm:pr-7 ${nested ? "pl-5 sm:pl-7" : "pl-12 sm:pl-16"}`}>{children}</div>
           {/* Phone navigation. Nested shells (SioModal) must not draw a
               second one on top of the page's own. */}
           {!nested && <BottomBar />}

@@ -652,7 +652,7 @@ body {
    right. The whole desk is mirrored, not just the rail. */
 .cahier-binding {
   position: absolute;
-  top: 0; bottom: 0; right: 0;
+  top: 0; bottom: 0; left: 0;
   width: 38px;
   background-image: repeating-linear-gradient(
     to bottom,
@@ -664,7 +664,7 @@ body {
     var(--cahier-spiral-lo) 25px 26px,
     transparent 26px 33px
   );
-  -webkit-mask-image: radial-gradient(circle at left, #000 60%, transparent 61%);
+  -webkit-mask-image: radial-gradient(circle at right, #000 60%, transparent 61%);
   mask-image: none;
   pointer-events: none;
 }
@@ -672,9 +672,9 @@ body {
   /* punch-hole shadow where the page meets the coils */
   content: "";
   position: absolute;
-  top: 0; bottom: 0; left: 0;
+  top: 0; bottom: 0; right: 0;
   width: 8px;
-  background: linear-gradient(to left, rgba(42, 46, 110, 0.10), transparent);
+  background: linear-gradient(to right, rgba(42, 46, 110, 0.10), transparent);
 }
 
 /* Index tab — pastel, juts out from the LEFT edge (2026-08-30). */
@@ -773,8 +773,11 @@ body {
   display: flex;
   align-items: flex-start;
   flex-wrap: nowrap;            /* never let the tab rail drop below the page */
-  /* the gutter is on the right now: the rail leads, the coils trail */
-  padding-right: clamp(8px, 3vw, 44px);
+  /* The coils bind the LEFT edge (Dan, 2026-08-30: "the binding should be on
+     the left, not on the right"), so the gutter is on the left. This reverses
+     the 30 Aug mirroring, which moved the coils across with the rail — the
+     rail moving left never meant the binding should leave it. */
+  padding-left: clamp(8px, 3vw, 44px);
 }
 .cahier-page {
   position: relative;
@@ -787,7 +790,7 @@ body {
     var(--cahier-rule) 31px 32px
   );
   background-position: 0 64px;
-  border-radius: 16px 4px 4px 16px;
+  border-radius: 4px 16px 16px 4px;
   box-shadow: 0 12px 34px rgba(34, 40, 80, 0.20);
   color: var(--cahier-ink);
   overflow: hidden;
@@ -806,14 +809,14 @@ body {
   position: relative;
   flex: 0 1 980px;
   min-width: 0;
-  border-radius: 16px 4px 4px 16px;
+  border-radius: 4px 16px 16px 4px;
   background: #efede3;
   box-shadow: 0 0 0 1.5px rgba(42, 46, 110, 0.22), 0 12px 34px rgba(34, 40, 80, 0.20);
-  padding: 18px 48px 0 18px;
+  padding: 18px 18px 0 48px;
 }
 .cahier-stack--inner {
   position: relative;
-  border-radius: 14px 4px 4px 14px;
+  border-radius: 4px 14px 14px 4px;
   background: #f4f2e7;
   box-shadow: 0 0 0 1.5px rgba(42, 46, 110, 0.16), 0 8px 22px rgba(34, 40, 80, 0.14);
   padding: 18px 18px 0 18px;
@@ -829,7 +832,7 @@ body {
 .cahier-stack--inner .cahier-page {
   flex: none;
   width: 100%;
-  border-radius: 14px 4px 4px 14px;
+  border-radius: 4px 14px 14px 4px;
   box-shadow: 0 6px 18px rgba(34, 40, 80, 0.16), 0 0 0 1.5px rgba(42, 46, 110, 0.14);
 }
 .cahier-tabs {
