@@ -41,7 +41,7 @@ import FirstTour from "@/components/FirstTour";
 import AccountButton from "@/components/AccountButton";
 import SoundControl from "@/components/SoundControl";
 import { isPlayableGap } from "@/lib/collections/gapSentence";
-import { activity, bandOf, familyOf, familyShort, hubFamily } from "@/content/activities";
+import { activity, bandOf, familyOf, familyShort, hubFamily, isReadingSurface } from "@/content/activities";
 import { toPracticeSet } from "@/lib/practice/engine";
 import BottomBar from "@/components/BottomBar";
 import PageBand from "@/components/PageBand";
@@ -293,7 +293,7 @@ export default function CahierShell({
              `active` key into one of the six, so a route does not have to
              declare a hue — and the whole site stops being one undivided
              field of paper. Unknown keys stay uncoloured on purpose. */
-          className={`cahier-page ${famKey ? `fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""} ${nested ? "min-h-[calc(100vh-18px)]" : "min-h-screen"}`}
+          className={`cahier-page ${famKey ? `fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""}${isReadingSurface(active) ? " paper-sand" : ""} ${nested ? "min-h-[calc(100vh-18px)]" : "min-h-screen"}`}
         >
           {!nested && <div className="cahier-binding" aria-hidden />}
           {!nested && edgeGrip}

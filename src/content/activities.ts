@@ -278,6 +278,24 @@ export function bandOf(activeKey: string | undefined): BandKey | null {
   return BAND[activeKey] ?? null;
 }
 
+/**
+ * Pages you READ rather than answer — the ones that take the sand paper.
+ *
+ * Dan chose it blind (2026-08-30): shown the six family grounds and the sand
+ * with no labels and asked which he wanted under a page of French he was
+ * reading, he picked the sand. The test was built so that answer would settle
+ * the question either way.
+ *
+ * The Memo IS the lesson (key "lesson"); the guide and the quick guide are the
+ * other two surfaces that hold a page of prose. A drill is not here, however
+ * long it runs: you are answering it, not reading it.
+ */
+const READING = new Set(["lesson", "guide", "quickguide"]);
+
+export function isReadingSurface(activeKey: string | undefined): boolean {
+  return !!activeKey && READING.has(activeKey);
+}
+
 export function familyOf(activeKey: string | undefined): FamilyKey | null {
   if (!activeKey) return null;
   // Pages that already own a complete colour scheme are left alone (Dan,
