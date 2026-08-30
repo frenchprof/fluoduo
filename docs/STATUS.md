@@ -2869,29 +2869,47 @@ none vacuous. 41 verify scripts green.
 
 ## 30 Aug — a reusable cycling-reveal → acronym animation
 
-Dan's ask, built as one self-contained component and one hidden playground.
-Nothing else in the app is touched; nothing links to it yet.
+Dan's ask, built as one self-contained component, one hidden playground and a
+downloadable recording. Nothing else in the app is touched; nothing links to it.
 
 - **`src/components/CyclingRevealAcronym.tsx`** — a sentence template whose
   slots tumble like reels through their word lists, decelerating and landing on
   a stagger; the finished sentence holds, readable; then every character the
-  acronym does not need shrinks away while the capitals fly together into it.
+  acronym does not need shrinks away while the survivors fly together into it.
   Everything is a prop: the template (`{}` or `{0}` placeholders), each slot's
   word list and landing word, the nine timings, the acronym's size, gap and
-  optional separator ("." gives A.S.A.P.).
-- **The acronym is never configured.** It is read off the SETTLED sentence by
-  capitalisation, so a changed word list changes the acronym with no second
-  list to keep in sync. `acronymFrom` can replace the *test* (for a script
-  without letter case), never the letters.
+  optional separator ("." gives A.S.A.P).
+- **The acronym is derived, in two parts.** WHICH words contribute is read off
+  the SETTLED sentence by capitalisation, so a changed word list changes the
+  acronym with no second list to keep in sync. HOW MUCH of each contributing
+  word comes along is `keep` (Dan, 30 Aug: *"I don't necessarily want to land on
+  the first letter per word, but the first few"*): unset gives the initialism
+  (Fluent Learners → FL), `keep={3}` gives the truncated form (→ Flu Lea), and
+  a slot's own `keep` overrides, so the parts can differ — Belgium 2 ·
+  Netherlands 2 · Luxembourg 3 is **BeNeLux**, which no initialism could say.
+  Survivors that were neighbours stay neighbours: the gap and the separator go
+  between runs, not inside a truncation. `acronymFrom` still replaces the whole
+  test for a script without letter case — a rule, never a list of indices.
+- **A long acronym cannot overflow.** `keep` can make it longer than the
+  sentence's own box, so the ruler carries an unscaled copy and the ghost is
+  shrunk to fit. Measured against the ruler, never against the live ghost —
+  that would shrink it, find it now fits, grow it back, and oscillate.
 - **No colours, no tokens, no app imports.** It inherits font, size and colour
   from wherever it is dropped and stamps `data-phase` for the host to style
   off. That is the whole reusability claim, so it must not acquire a single
   `--cahier-*`.
-- **Playground: `/hidden/cycling-reveal`** (noindex, in nobody's nav), with
-  three presets that share nothing — FLUO, SCUBA and a serif A.S.A.P. — plus
-  Replay / Skip / Reset and live sliders for the four timings. Its own chrome
-  uses the Cahier tokens; the three preset palettes are literal `oklch()` on
-  purpose, standing in for a host page's colours.
+- **Playground: `/hidden/cycling-reveal`** (noindex, in nobody's nav), four
+  presets that share nothing — FLUO, SCUBA, a serif A.S.A.P and BeNeLux — with
+  Replay / Skip / Reset and live sliders for the four timings and `keep`. Its
+  own chrome uses the Cahier tokens; the preset palettes are literal `oklch()`
+  on purpose, standing in for a host page's colours.
+- **The asset: `npm run record:cycling-reveal`** (`scripts/record-cycling-reveal.mjs`)
+  drives the playground with Playwright and writes `docs/assets/cycling-reveal.webm`
+  + `.png`; the committed `.gif` is made from that webm with the ffmpeg one-liner
+  in the script's header. **Deliberately `docs/assets/`, not `public/`** — public/
+  is copied into the static export, so a demo recording there would be downloaded
+  by learners who will never see it. Playwright is a hand-run tool, not an app
+  dependency; the script says so and exits with the install line if it is absent.
 
 ### What the build taught
 
@@ -2912,7 +2930,10 @@ Nothing else in the app is touched; nothing links to it yet.
   A reel that depended on its identity restarted its timer chain on every
   parent render and never reached its last word. Timings are read through a
   ref, and the phase clock depends on the numbers, not the object.
+- **A one-shot `querySelectorAll` cannot hide the app's overlays** — several of
+  them mount after hydration and walked back into the recording. The recorder
+  uses one CSS rule (`body > *:not(main)`), which nothing can outrun.
 
 `tsc` clean, `npm run build` green, all 41 verify scripts green, and the two
 `verify19b` ratchets both go DOWN (the demo carries no raw hex and no stock
-Tailwind palette class). `eslint` clean on all three new files.
+Tailwind palette class). `eslint` clean on all three new source files.

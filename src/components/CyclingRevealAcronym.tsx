@@ -2,7 +2,7 @@
 
 /**
  * CyclingRevealAcronym — a sentence that tumbles into place, then folds into
- * its own initials.
+ * the short form hiding inside it.
  *
  * Three acts, all driven from props:
  *
@@ -11,14 +11,23 @@
  *                on the chosen one. Reels start on a stagger, so the sentence
  *                assembles left-to-right rather than snapping at once.
  *   2. SETTLE    The finished sentence sits still and readable for a beat.
- *   3. COLLAPSE  Everything that is not a capital letter shrinks away, and the
- *                capitals slide together into the acronym they always spelled.
+ *   3. COLLAPSE  Everything the short form does not need shrinks away, and
+ *                what is left slides together into the word it always spelled
+ *                — an initialism (FLUO) or a truncation (BeNeLux); see `keep`.
  *
- * WHICH LETTERS SURVIVE IS NOT CONFIGURED. They are read off the settled
+ * WHICH WORDS SURVIVE IS NOT CONFIGURED. They are read off the settled
  * sentence by capitalisation, so changing a word list changes the acronym with
- * no second list to keep in sync. (`acronymFrom` overrides the test itself for
- * scripts without letter case, but it is still a rule, never a hand-written
- * list of indices.)
+ * no second list to keep in sync.
+ *
+ * HOW MUCH of each surviving word comes along is the `keep` prop: unset, a
+ * word contributes its capitals (Fluent Learners → FL); `keep={3}` and it
+ * contributes its first three characters instead (Fluent Learners → Flu Lea),
+ * which is the syllabic abbreviation — MoDem, BeNeLux, Interpol — rather than
+ * the initialism. A slot can override it, so the parts can be different
+ * lengths: Belgium + Netherlands + Luxembourg at 2, 2, 3 is BeNeLux. The rule
+ * stays a rule either way: capitalisation decides WHETHER a word contributes,
+ * `keep` decides HOW MUCH, and neither is a hand-written list of indices.
+ * (`acronymFrom` replaces the whole test for scripts without letter case.)
  *
  * SELF-CONTAINED ON PURPOSE. No app imports, no design tokens, no colours of
  * its own: it inherits font, size and colour from wherever it is dropped, and
@@ -39,6 +48,7 @@
  */
 
 import {
+  Fragment,
   forwardRef,
   useCallback,
   useEffect,
@@ -64,6 +74,11 @@ const useMeasureEffect = typeof window === "undefined" ? useEffect : useLayoutEf
 export type CyclingSlot = {
   /** The words this slot tumbles through, in the order they are shown. */
   words: string[];
+  /**
+   * How many leading characters of the landed word carry into the acronym,
+   * overriding the component's `keep`. Unset means "follow the component".
+   */
+  keep?: number;
   /**
    * The word it stops on — an index into `words`, or the word itself.
    * Defaults to the last word, so a list can simply end on its answer.
@@ -93,6 +108,22 @@ export type CyclingTiming = {
 };
 
 export type CyclingPhase = "idle" | "cycling" | "settled" | "collapsing" | "acronym";
+
+/** One character of the settled sentence, with everything a rule could want. */
+export type AcronymChar = {
+  char: string;
+  /** Position in the settled sentence, counted in code points. */
+  index: number;
+  /** The whitespace-delimited word it belongs to. */
+  word: string;
+  /** Its position within that word. */
+  indexInWord: number;
+  /** The slot the word came from, or undefined for template text. */
+  slot?: number;
+  sentence: string;
+};
+
+export type AcronymRule = (char: AcronymChar) => boolean;
 
 export type CyclingRevealHandle = {
   /** Run it from the top. */
@@ -125,10 +156,21 @@ export type CyclingRevealAcronymProps = {
   /** Optional glue between letters — "." gives F.L.A. */
   acronymSeparator?: string;
   /**
-   * Which characters of the settled sentence survive. Default: capitals.
-   * A rule, not a list — it is re-run on whatever the slots landed on.
+   * How many leading characters each contributing word carries into the
+   * acronym. Unset (the default) means "its capitals" — the initialism.
+   * `keep={2}` gives the truncated form: Modulator Demodulator → MoDem.
+   * A slot's own `keep` wins over this.
+   *
+   * It never changes WHICH words contribute — that stays capitalisation, so a
+   * lowercase connecting word is left out at any `keep`.
    */
-  acronymFrom?: (char: string, index: number, sentence: string) => boolean;
+  keep?: number;
+  /**
+   * Replaces the test entirely, for scripts where case means nothing. Still a
+   * rule, re-run on whatever the slots landed on; `keep` is ignored when it is
+   * supplied, since this predicate already decides every character.
+   */
+  acronymFrom?: AcronymRule;
   /**
    * Reel width while spinning. "max" holds every reel at its widest candidate
    * so the line never re-wraps mid-spin, then eases down to the landed word.
@@ -440,7 +482,8 @@ const CyclingRevealAcronym = forwardRef<CyclingRevealHandle, CyclingRevealAcrony
       acronymScale = 1.5,
       acronymGap = "0.08em",
       acronymSeparator = "",
-      acronymFrom = isCapital,
+      keep,
+      acronymFrom,
       spinWidth = "max",
       lineHeight = 1.35,
       onPhaseChange,
@@ -472,17 +515,78 @@ const CyclingRevealAcronym = forwardRef<CyclingRevealHandle, CyclingRevealAcrony
       [template, slots, landIndexes],
     );
 
-    /** The survivors, read off the settled sentence — never configured. */
-    const kept = useMemo(() => {
-      const chars = Array.from(sentence);
-      const out: { index: number; char: string }[] = [];
-      chars.forEach((ch, i) => {
-        if (acronymFrom(ch, i, sentence)) out.push({ index: i, char: ch });
-      });
+    /**
+     * The settled sentence cut into whitespace-delimited words, each still
+     * knowing where it starts and which slot (if any) it came from. Both parts
+     * of the acronym rule are per-word — which words contribute, and how much
+     * of each — so the words have to exist before either can be applied.
+     */
+    const words = useMemo(() => {
+      const out: { text: string; start: number; slot?: number }[] = [];
+      for (const p of pieces) {
+        let offset = p.start;
+        for (const token of p.text.split(/(\s+)/)) {
+          if (token && !/^\s+$/.test(token)) {
+            out.push({ text: token, start: offset, slot: p.kind === "slot" ? p.slot : undefined });
+          }
+          offset += len(token);
+        }
+      }
       return out;
-    }, [sentence, acronymFrom]);
+    }, [pieces]);
 
-    const acronym = useMemo(() => kept.map((k) => k.char).join(acronymSeparator), [kept, acronymSeparator]);
+    /**
+     * The survivors.
+     *
+     * Two questions, answered separately. WHICH words contribute is
+     * capitalisation, always — that is what makes the acronym follow the words
+     * the slots landed on instead of a list someone has to remember to update.
+     * HOW MUCH of a contributing word comes along is `keep`: its capitals when
+     * unset, its first `keep` characters when set, and a slot may set its own
+     * so BeNeLux can take 2, 2 and 3.
+     */
+    const kept = useMemo(() => {
+      const out: { index: number; char: string }[] = [];
+      for (const w of words) {
+        const chars = Array.from(w.text);
+        const push = (i: number) => out.push({ index: w.start + i, char: chars[i] });
+
+        if (acronymFrom) {
+          chars.forEach((char, i) => {
+            if (acronymFrom({ char, index: w.start + i, word: w.text, indexInWord: i, slot: w.slot, sentence }))
+              push(i);
+          });
+          continue;
+        }
+        const capitals = chars.map((c, i) => (isCapital(c) ? i : -1)).filter((i) => i >= 0);
+        if (capitals.length === 0) continue; // a lowercase connecting word, at any keep
+        const n = (w.slot !== undefined ? slots[w.slot]?.keep : undefined) ?? keep;
+        if (n === undefined) capitals.forEach(push);
+        else for (let i = 0; i < Math.min(n, chars.length); i++) push(i);
+      }
+      return out;
+    }, [words, sentence, slots, keep, acronymFrom]);
+
+    /**
+     * Survivors that were neighbours in the sentence stay neighbours in the
+     * acronym: `Fluent` at keep 3 is the single run "Flu", not F · l · u. The
+     * gap and the separator go BETWEEN runs, which is what makes MoDem read as
+     * two parts and FLUO as four.
+     */
+    const groups = useMemo(() => {
+      const out: { index: number; char: string }[][] = [];
+      for (const k of kept) {
+        const last = out[out.length - 1];
+        if (last && k.index === last[last.length - 1].index + 1) last.push(k);
+        else out.push([k]);
+      }
+      return out;
+    }, [kept]);
+
+    const acronym = useMemo(
+      () => groups.map((g) => g.map((c) => c.char).join("")).join(acronymSeparator),
+      [groups, acronymSeparator],
+    );
 
     /* ── phase machine ─────────────────────────────────────────────────── */
 
@@ -583,8 +687,13 @@ const CyclingRevealAcronym = forwardRef<CyclingRevealHandle, CyclingRevealAcrony
     const rulerRef = useRef<HTMLSpanElement>(null);
     const ghostRef = useRef<HTMLSpanElement>(null);
     const charEls = useRef(new Map<number, HTMLElement>());
-    const ghostEls = useRef<(HTMLElement | null)[]>([]);
-    const [metrics, setMetrics] = useState<{ widths: number[][]; lineHeightPx: number } | null>(null);
+    const ghostEls = useRef(new Map<number, HTMLElement>());
+    const [metrics, setMetrics] = useState<{
+      widths: number[][];
+      lineHeightPx: number;
+      /** ≤ 1 — how much the acronym must shrink to fit the stage. */
+      fit: number;
+    } | null>(null);
 
     const register = useCallback((index: number, el: HTMLElement | null) => {
       if (el) charEls.current.set(index, el);
@@ -606,15 +715,33 @@ const CyclingRevealAcronym = forwardRef<CyclingRevealHandle, CyclingRevealAcrony
         (widths[s] ||= [])[w] = row.getBoundingClientRect().width;
       }
       const line = ruler.querySelector<HTMLElement>("[data-line]");
-      setMetrics({ widths, lineHeightPx: line ? line.getBoundingClientRect().height : 0 });
+
+      /* `keep` can make the acronym longer than the sentence's own box — a
+       * four-word line at keep 3 is twelve characters at acronymScale. The
+       * ruler carries an unscaled copy of the finished acronym precisely so
+       * the fit can be measured against something the fit has not already
+       * changed; measuring the live ghost would shrink it, find it now fits,
+       * grow it back, and oscillate. */
+      const proof = ruler.querySelector<HTMLElement>("[data-acronym]");
+      const room = stageRef.current?.clientWidth ?? 0;
+      const want = proof ? proof.getBoundingClientRect().width : 0;
+      const fit = want > 0 && room > 0 ? Math.min(1, room / want) : 1;
+
+      setMetrics({ widths, lineHeightPx: line ? line.getBoundingClientRect().height : 0, fit });
     }, [slots]);
+
+    /** The acronym's real size: what was asked for, less whatever it takes to fit. */
+    const shownScale = acronymScale * (metrics?.fit ?? 1);
 
     useMeasureEffect(() => {
       measure();
       const stage = stageRef.current;
-      if (!stage || typeof ResizeObserver === "undefined") return;
+      const ruler = rulerRef.current;
+      if (!stage || !ruler || typeof ResizeObserver === "undefined") return;
       const ro = new ResizeObserver(measure);
       ro.observe(stage);
+      // The ruler's acronym changes with `keep`, so the fit must be retaken.
+      ro.observe(ruler);
       document.fonts?.ready.then(measure).catch(() => {});
       return () => ro.disconnect();
     }, [measure]);
@@ -637,11 +764,11 @@ const CyclingRevealAcronym = forwardRef<CyclingRevealHandle, CyclingRevealAcrony
       if (phase !== "collapsing" || reduced) return;
       const stage = stageRef.current;
       if (!stage) return;
-      const scale = acronymScale;
+      const scale = shownScale;
       const next = new Map<number, string>();
-      kept.forEach((k, i) => {
+      kept.forEach((k) => {
         const src = charEls.current.get(k.index);
-        const dst = ghostEls.current[i];
+        const dst = ghostEls.current.get(k.index);
         if (!src || !dst) return;
         const a = src.getBoundingClientRect();
         const b = dst.getBoundingClientRect();
@@ -651,7 +778,7 @@ const CyclingRevealAcronym = forwardRef<CyclingRevealHandle, CyclingRevealAcrony
       });
       const raf = requestAnimationFrame(() => setFlight(next));
       return () => cancelAnimationFrame(raf);
-    }, [phase, kept, acronymScale, reduced]);
+    }, [phase, kept, shownScale, reduced]);
 
     /* ── rendering ─────────────────────────────────────────────────────── */
 
@@ -689,11 +816,11 @@ const CyclingRevealAcronym = forwardRef<CyclingRevealHandle, CyclingRevealAcrony
     );
 
     const ghostItems: ReactNode[] = [];
-    kept.forEach((k, i) => {
-      if (i > 0 && acronymSeparator) {
+    groups.forEach((group, gi) => {
+      if (gi > 0 && acronymSeparator) {
         ghostItems.push(
           <span
-            key={`sep${i}`}
+            key={`sep${gi}`}
             style={{
               opacity: collapsing ? 1 : 0,
               transition: `opacity ${collapseMs * 0.5}ms ease ${collapseMs * 0.45}ms`,
@@ -704,21 +831,28 @@ const CyclingRevealAcronym = forwardRef<CyclingRevealHandle, CyclingRevealAcrony
         );
       }
       ghostItems.push(
-        <span
-          key={i}
-          ref={(el) => {
-            ghostEls.current[i] = el;
-          }}
-          style={{
-            // The ghost is the target, not the actor: invisible until the
-            // flying letters have arrived exactly on top of it, then swapped
-            // in so the finished acronym is real, selectable text at its real
-            // size rather than a scaled-up transform.
-            opacity: phase === "acronym" ? 1 : 0,
-            transition: reduced ? `opacity ${REDUCED_FADE_MS}ms ease` : undefined,
-          }}
-        >
-          {k.char}
+        // One run, set tight: the gap belongs between runs, not inside a word's
+        // own truncation.
+        <span key={gi} style={{ display: "inline-flex" }}>
+          {group.map((k) => (
+            <span
+              key={k.index}
+              ref={(el) => {
+                if (el) ghostEls.current.set(k.index, el);
+                else ghostEls.current.delete(k.index);
+              }}
+              style={{
+                // The ghost is the target, not the actor: invisible until the
+                // flying letters have arrived exactly on top of it, then
+                // swapped in so the finished acronym is real, selectable text
+                // at its real size rather than a scaled-up transform.
+                opacity: phase === "acronym" ? 1 : 0,
+                transition: reduced ? `opacity ${REDUCED_FADE_MS}ms ease` : undefined,
+              }}
+            >
+              {k.char}
+            </span>
+          ))}
         </span>,
       );
     });
@@ -808,7 +942,7 @@ const CyclingRevealAcronym = forwardRef<CyclingRevealHandle, CyclingRevealAcrony
             justifyContent: "center",
             alignItems: "center",
             gap: acronymGap,
-            fontSize: `${acronymScale}em`,
+            fontSize: `${shownScale}em`,
             whiteSpace: "nowrap",
             pointerEvents: phase === "acronym" ? undefined : "none",
           }}
@@ -832,6 +966,21 @@ const CyclingRevealAcronym = forwardRef<CyclingRevealHandle, CyclingRevealAcrony
         >
           <span data-line style={ATOM}>
             M
+          </span>
+          <span
+            data-acronym
+            style={{ ...ATOM, display: "inline-flex", gap: acronymGap, fontSize: `${acronymScale}em` }}
+          >
+            {groups.map((g, gi) => (
+              <Fragment key={gi}>
+                {acronymSeparator && gi > 0 ? <span>{acronymSeparator}</span> : null}
+                <span style={{ display: "inline-flex" }}>
+                  {g.map((k) => (
+                    <span key={k.index}>{k.char}</span>
+                  ))}
+                </span>
+              </Fragment>
+            ))}
           </span>
           {slots.map((s, si) =>
             s.words.map((w, wi) => (

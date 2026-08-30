@@ -29,6 +29,9 @@ type Preset = {
   slots: CyclingSlot[];
   separator: string;
   scale: number;
+  gap: string;
+  /** Leading characters carried per word; undefined = the capitals alone. */
+  keep?: number;
   /** Everything visual lives out here, in the caller. */
   paper: string;
   ink: string;
@@ -49,6 +52,7 @@ const PRESETS: Preset[] = [
     ],
     separator: "",
     scale: 1.9,
+    gap: "0.08em",
     paper: "oklch(19% 0.017 250)",
     ink: "oklch(96% 0.012 85)",
     type: "font-black tracking-tight text-[clamp(22px,5.4vw,44px)]",
@@ -67,6 +71,7 @@ const PRESETS: Preset[] = [
     ],
     separator: "",
     scale: 1.6,
+    gap: "0.08em",
     paper: "oklch(95% 0.025 215)",
     ink: "oklch(43% 0.075 215)",
     type: "font-semibold tracking-tight text-[clamp(18px,4.2vw,34px)]",
@@ -74,7 +79,7 @@ const PRESETS: Preset[] = [
   },
   {
     id: "asap",
-    name: "A.S.A.P.",
+    name: "A.S.A.P",
     template: "get it done {} {} {} {}",
     slots: [
       { words: ["All", "Almost", "As"] },
@@ -84,10 +89,30 @@ const PRESETS: Preset[] = [
     ],
     separator: ".",
     scale: 1.7,
+    gap: "0.04em",
     paper: "oklch(96.5% 0.04 88)",
     ink: "oklch(46% 0.1 70)",
     type: "font-serif italic text-[clamp(18px,4.4vw,34px)]",
     timing: { cycleMs: 110, finalCycleMs: 520, staggerMs: 320, spins: 2 },
+  },
+  {
+    // The point of this one: the parts are DIFFERENT lengths — 2, 2, 3 — and
+    // each is the slot's own `keep`. An initialism could only ever say BNL.
+    id: "benelux",
+    name: "BeNeLux",
+    template: "{} {} {}",
+    slots: [
+      { words: ["Bruges", "Brussels", "Belgium"], keep: 2 },
+      { words: ["Nijmegen", "Netherlands"], keep: 2 },
+      { words: ["Liège", "Leuven", "Luxembourg"], keep: 3 },
+    ],
+    separator: "",
+    scale: 1.8,
+    gap: "0",
+    paper: "oklch(97% 0.02 145)",
+    ink: "oklch(40% 0.09 150)",
+    type: "font-black tracking-tight text-[clamp(20px,5vw,40px)]",
+    timing: { cycleMs: 95, staggerMs: 300, settleHoldMs: 1400 },
   },
 ];
 
@@ -112,6 +137,9 @@ function Stage({ preset, loop }: { preset: Preset; loop: boolean }) {
   const ref = useRef<CyclingRevealHandle>(null);
   const [phase, setPhase] = useState<CyclingPhase>("idle");
   const [timing, setTiming] = useState<Partial<CyclingTiming>>(preset.timing);
+  // 0 stands for "unset" in the stepper — the capitals alone.
+  const [keep, setKeep] = useState(preset.keep ?? 0);
+  const perSlot = preset.slots.some((sl) => sl.keep !== undefined);
   const value = (k: keyof CyclingTiming) => timing[k] ?? preset.timing[k] ?? DEFAULTS[k];
 
   return (
@@ -128,7 +156,9 @@ function Stage({ preset, loop }: { preset: Preset; loop: boolean }) {
           timing={timing}
           loop={loop}
           acronymScale={preset.scale}
+          acronymGap={preset.gap}
           acronymSeparator={preset.separator}
+          keep={keep || undefined}
           onPhaseChange={setPhase}
           className={`${preset.type} text-center`}
         />
@@ -170,6 +200,34 @@ function Stage({ preset, loop }: { preset: Preset; loop: boolean }) {
           </button>
         ))}
 
+        {/* A slot's own keep beats the component's, so where the slots set it
+            the slider would be a control that does nothing. Say so instead. */}
+        {perSlot ? (
+          <span className="font-mono text-[11px]" style={{ color: "var(--cahier-ink-soft)" }}>
+            keep <b style={{ color: "var(--cahier-ink)" }}>{preset.slots.map((sl) => sl.keep).join("·")}</b> per slot
+          </span>
+        ) : (
+          <label
+            className="flex items-center gap-1.5 font-mono text-[11px]"
+            style={{ color: "var(--cahier-ink-soft)" }}
+          >
+            keep
+            <input
+              type="range"
+              min={0}
+              max={5}
+              step={1}
+              value={keep}
+              onChange={(e) => setKeep(Number(e.target.value))}
+              className="w-16"
+              style={{ accentColor: "var(--cahier-ink)" }}
+            />
+            <b className="w-9 text-right tabular-nums" style={{ color: "var(--cahier-ink)" }}>
+              {keep || "caps"}
+            </b>
+          </label>
+        )}
+
         <div className="ml-auto flex flex-wrap gap-x-4 gap-y-1">
           {SLIDERS.map((s) => (
             <label
@@ -204,7 +262,11 @@ export default function CyclingRevealDemo() {
 
   return (
     <div className="space-y-6">
+      {/* data-demo-chrome: the playground's own furniture, which
+          scripts/record-cycling-reveal.mjs hides so the asset is the
+          component and not the page around it. */}
       <label
+        data-demo-chrome
         className="flex w-fit cursor-pointer items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-bold"
         style={{
           borderColor: "var(--cahier-line-strong)",

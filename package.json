@@ -9,7 +9,8 @@
     "lint": "eslint",
     "check:textgen": "node scripts/check-textgen.mjs",
     "check:short": "node scripts/check-short-labels.mjs",
-    "check:sios": "node scripts/sync-sio-csv.mjs --check"
+    "check:sios": "node scripts/sync-sio-csv.mjs --check",
+    "record:cycling-reveal": "node scripts/record-cycling-reveal.mjs"
   },
   "dependencies": {
     "firebase": "^12.15.0",
