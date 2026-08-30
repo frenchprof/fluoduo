@@ -28,6 +28,10 @@ designed treatment.
 **Twenty stops (40%) are Tier 1.** Fixing the ladder and writing concepts serves
 those twenty completely and the rest not at all.
 
+The split is 20 / 15 / 15 — Systemic Grammar, Lexical Core, and Phraseology
+(nine phrase stops plus the six ateliers they feed). Three roughly equal
+strands, two of which have no treatment designed.
+
 ## Tier 1 · Systemic Grammar — 20 stops
 
 The ★ ladder and the concept-as-puzzle apply directly. These are the stops
@@ -84,29 +88,71 @@ Dan's brief — the lexique table is the natural home, not the dice.
 Note 45A: French 70–99 is arithmetic, not vocabulary — 4×20+10+9. That one has
 a rule and could take a Tier 1 treatment.
 
-## Tier 3 · Phraseology — 9 stops
+## Tier 3 · Phraseology — 9 phrase stops + 6 ateliers = 15, ONE strand
 
-Whole blocks. Not assembled from parts, and analysing them into parts is
-actively wrong at this level: *il fait beau* is not IL + FAIRE + BEAU to a
-beginner, it is the weather. Treatment is recognition and retrieval of the
-block, plus knowing **when** to say it.
+**Dan, 30 Aug: *"Ateliers and phrases go together, it is about using the same
+set of phrases in context."*** The ateliers are not a fourth category and not
+"all three tiers at once" — they are Tier 3's own destination. The phrase stops
+teach the blocks; the atelier is where the same blocks get used for something.
 
-| # | stop | the blocks |
+The atelier scripts settle it. Read them and they are phrase sets, not
+grammar showcases:
+
+| atelier | the phrase set it deploys | fed by |
 |---|---|---|
-| 1 | Introductions | *je m'appelle…*, *enchanté* |
-| 8 | Classroom talk | *Pardon, on fait quoi ?*, *Répétez s'il vous plaît.* |
-| 9 | Greetings | *ça va ?*, *à bientôt* |
-| 25 | Pourquoi ? | *pourquoi… parce que…* — a semi-fixed pair |
-| 27 | Telling time | *il est huit heures et quart* |
-| 29 | Invitations | *tu veux… ?* / *je veux bien* / *désolé, je ne peux pas* |
-| 31 | Weather | *il fait beau*, *il pleut* |
-| 36 | Directions | *tournez à droite*, *prenez la première rue* |
-| 39 | Wants & needs | *je voudrais…*, *j'ai besoin de…* |
+| 10 First meeting | *Bonjour · Comment tu t'appelles ? · Je m'appelle… · Comment ça s'écrit ? · Enchanté · À demain* | 1, 9, 3 |
+| 20 Present a country | *Voici… · C'est un pays… · Ici, il y a… · Le drapeau a…* | **nothing** |
+| 30 Short email | *Salut · Merci pour ton message · Bon anniversaire · Bonne chance · Bon voyage · À bientôt* | 29 |
+| 40 Itinerary | *D'abord · Ensuite · Puis · Enfin · en face de · tu peux prendre…* | 36 |
+| 49 Restaurant review | *C'est délicieux · Ce n'est pas cher · Parfois… · Je recommande* | 43 |
+| 50 Au restaurant | *Vous désirez ? · Je voudrais… · Vous voulez… ? · Je veux bien · S'il vous plaît · Bon appétit* | 39, 29 |
 
-## Ateliers — 6 stops, no tier
+Blocks are not assembled from parts, and analysing them into parts is actively
+wrong at this level: *il fait beau* is not IL + FAIRE + BEAU to a beginner, it
+is the weather. Treatment is recognition and retrieval of the block, plus
+knowing **when** to say it — and the atelier is the *when*.
 
-10, 20, 30, 40, 49, 50. Production. These are where all three tiers are spent
-at once; they are the output, not a syllabus item to classify.
+| # | phrase stop | the blocks | used in |
+|---|---|---|---|
+| 1 | Introductions | *je m'appelle…*, *enchanté* | 10 |
+| 8 | Classroom talk | *Pardon, on fait quoi ?*, *Répétez s'il vous plaît.* | — (the classroom itself) |
+| 9 | Greetings | *ça va ?*, *à bientôt* | 10, 30 |
+| 25 | Pourquoi ? | *pourquoi… parce que…* — a semi-fixed pair | 30, 49 |
+| 27 | Telling time | *il est huit heures et quart* | — |
+| 29 | Invitations | *tu veux… ?* / *je veux bien* / *désolé, je ne peux pas* | 30, 50 |
+| 31 | Weather | *il fait beau*, *il pleut* | — |
+| 36 | Directions | *tournez à droite*, *prenez la première rue* | 40 |
+| 39 | Wants & needs | *je voudrais…*, *j'ai besoin de…* | 50 |
+
+### Two ateliers teach phrases no stop ever taught
+
+Reading the scripts against the stops turns up a real hole, not a
+classification quibble.
+
+- **20 · Present a country** deploys *Voici… / C'est un pays… / Ici, il y a… /
+  Le drapeau a…* — presentation frames. No stop in Unit 1 teaches them. The
+  atelier is the first and only place a learner meets them.
+- **40 · Itinerary** deploys *D'abord / Ensuite / Puis / Enfin*. Its own topic
+  line says "with connectors", and 30's says "well wishes **+ connectors**" —
+  so two ateliers carry the connector teaching, and no stop does.
+
+Under Dan's reading this is a syllabus gap, not an atelier feature: the atelier
+is meant to *re-use* a phrase set, so a phrase set that appears for the first
+time in the atelier has skipped its own lesson. Candidates: a presentation-frame
+stop before 20, and a connector stop before 40 — or fold the connectors into 25
+(*pourquoi… parce que…* is already the same kind of thing).
+
+### What Tier 3's treatment looks like
+
+The pairing hands us the shape for free, and it is not a gap-fill:
+
+1. **Meet the block whole** — hear it, say it, no analysis.
+2. **Match block to situation** — the real skill: *bon voyage* or *bonne
+   chance*? The choice is pragmatic, not grammatical.
+3. **Deploy in the atelier** — the same blocks, in the dialogue, performed.
+
+Step 2 is what no current activity does, and it is where the ★ ladder has
+nothing to offer: there is no scaffolding to withdraw from *enchanté*.
 
 ## What this changes in the plan
 
@@ -119,8 +165,10 @@ Three tiers, three treatments.
 2. **Tier 2's treatment is undesigned.** Track D (Le lexique) is the beginning
    of it and should be promoted out of "low priority" — for 15 stops it is not
    a side surface, it *is* the lesson.
-3. **Tier 3's treatment is undesigned.** Chunk-level: recognise the block,
-   choose the right block for the situation. Not a gap-fill.
+3. **Tier 3 has a treatment, once the ateliers are counted in.** Meet the block
+   whole → match block to situation → deploy in the atelier. The atelier is
+   already built for all six; what is missing is step 2, and the two phrase sets
+   that have no lesson (presentation frames, connectors).
 4. **The activity cull becomes answerable.** An activity is not good or bad in
    the abstract — it is right or wrong *for a tier*. Sorting is plainly a Tier 2
    instrument (semantic mapping). The question to put to Dan is per activity:
