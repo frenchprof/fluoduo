@@ -83,6 +83,43 @@ const COMMITMENTS: { emoji: string; title: string; hue: number; body: React.Reac
   },
 ];
 
+/** The wordmark, cut where the name cuts: FluOlinGo = Fluency On Linguistic
+ *  Goals. The capitals in the house spelling already mark the seams — this
+ *  only writes down what they were doing. (Dan, 2026-08-30.) */
+const WORDMARK: { piece: string; word: string }[] = [
+  { piece: "Flu", word: "Fluency" },
+  { piece: "O", word: "On" },
+  { piece: "lin", word: "Linguistic" },
+  { piece: "Go", word: "Goals" },
+];
+
+/** A name that is only a noun phrase hides its verb — "fluency ——— on
+ *  linguistic goals" — and the reader restores one. This one hides four, and
+ *  they are a ladder, not a menu: each rung stands on the one above it, and
+ *  each demands its own qualifier on the goals. Foundation first. */
+const LADDER: { verb: string; qualifier: string; why: string }[] = [
+  {
+    verb: "built",
+    qualifier: "your course’s",
+    why: "The fifty goals are LAF1201’s own can-do objectives, not an app company’s syllabus. You can only build on ground someone owns.",
+  },
+  {
+    verb: "trained",
+    qualifier: "linguistic",
+    why: "Every drill targets a language competence — never a streak, a daily target or a points total. You can only train a competence.",
+  },
+  {
+    verb: "earned",
+    qualifier: "one of fifty",
+    why: "The pre-test, the practice and the revision all happen inside a single objective at a time. You can only earn what is countable — and countable means finishable.",
+  },
+  {
+    verb: "measured",
+    qualifier: "named",
+    why: "Each goal carries a can-do statement and the competence its pre- and post-activities assess. You can only measure what is specified.",
+  },
+];
+
 const REFERENCES: string[] = [
   "Roediger, H. L., & Karpicke, J. D. (2006). Test-enhanced learning: Taking memory tests improves long-term retention. Psychological Science, 17(3), 249–255.",
   "Kapur, M. (2008). Productive failure. Cognition and Instruction, 26(3), 379–424.",
@@ -122,6 +159,53 @@ export default function AboutPage() {
             </li>
           ))}
         </ol>
+
+        <section className="mt-7">
+          <h2 className="cahier-section rounded-md px-3 py-1.5">The name</h2>
+
+          <div
+            className="fluo-h-3 mt-3 flex flex-wrap items-end justify-center gap-x-2 gap-y-2 rounded-xl border-2 p-4"
+            style={{ borderColor: "var(--fluo-card-accent)", background: "var(--fluo-card-tint)" }}
+          >
+            {WORDMARK.map((w) => (
+              <span key={w.word} className="text-center">
+                <span className="cahier-display block text-2xl font-black text-[color:var(--cahier-ink)]">{w.piece}</span>
+                <span className="block text-[0.7rem] font-bold uppercase tracking-wide text-[color:var(--cahier-ink-soft)]">
+                  {w.word}
+                </span>
+              </span>
+            ))}
+          </div>
+
+          <p className="mt-3 text-sm leading-relaxed text-[color:var(--cahier-ink)]">
+            The middle word is the one doing the work. Commercial apps promise fluency <i>in French</i> — unbounded,
+            unmeasurable, always one more subscription away. This one promises fluency <b>on</b> fifty named goals:
+            finite, checkable, and finishable. A name that is only a noun phrase hides its verb, and this one hides
+            four — each standing on the one above it.
+          </p>
+
+          <ol className="mt-3 space-y-2">
+            {LADDER.map((r, i) => (
+              <li
+                key={r.verb}
+                className={`fluo-h-${i} rounded-xl border-l-8 p-3`}
+                style={{ borderColor: "var(--fluo-card-accent)", background: "var(--fluo-card-tint)" }}
+              >
+                <p className="text-sm font-black text-[color:var(--cahier-ink)]">
+                  Fluency <span className="cahier-hl px-1">{r.verb}</span> on <b>{r.qualifier}</b> goals
+                </p>
+                <p className="mt-1 text-sm leading-relaxed text-[color:var(--cahier-ink)]">{r.why}</p>
+              </li>
+            ))}
+          </ol>
+
+          <p className="mt-3 text-sm leading-relaxed text-[color:var(--cahier-ink)]">
+            Take a rung away and the ones above it lose their footing: fluency measured on goals nobody built on is an
+            audit with no building under it, and fluency earned on goals never trained is a badge. All four verbs take
+            the same preposition — build <b>on</b>, train <b>on</b>, earn <b>on</b>, measure <b>on</b> — so the name
+            keeps that one word and lets you read whichever rung you are standing on.
+          </p>
+        </section>
 
         <section className="mt-7">
           <h2 className="cahier-section rounded-md px-3 py-1.5">References</h2>
