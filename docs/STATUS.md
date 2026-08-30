@@ -2869,71 +2869,94 @@ none vacuous. 41 verify scripts green.
 
 ## 30 Aug — a reusable cycling-reveal → acronym animation
 
-Dan's ask, built as one self-contained component, one hidden playground and a
-downloadable recording. Nothing else in the app is touched; nothing links to it.
+Dan's ask, built as one self-contained component, one hidden playground, and a
+GIF the page can make of itself. Nothing else in the app is touched; nothing
+links to it.
 
 - **`src/components/CyclingRevealAcronym.tsx`** — a sentence template whose
   slots tumble like reels through their word lists, decelerating and landing on
-  a stagger; the finished sentence holds, readable; then every character the
-  acronym does not need shrinks away while the survivors fly together into it.
+  a stagger; the finished sentence holds, readable; then everything the short
+  form does not need shrinks away while the survivors fly together into it.
   Everything is a prop: the template (`{}` or `{0}` placeholders), each slot's
-  word list and landing word, the nine timings, the acronym's size, gap and
+  word list and landing word, eleven timings, the short form's size, gap and
   optional separator ("." gives A.S.A.P).
-- **The acronym is derived, in two parts.** WHICH words contribute is read off
-  the SETTLED sentence by capitalisation, so a changed word list changes the
-  acronym with no second list to keep in sync. HOW MUCH of each contributing
-  word comes along is `keep` (Dan, 30 Aug: *"I don't necessarily want to land on
-  the first letter per word, but the first few"*): unset gives the initialism
-  (Fluent Learners → FL), `keep={3}` gives the truncated form (→ Flu Lea), and
-  a slot's own `keep` overrides, so the parts can differ — Belgium 2 ·
-  Netherlands 2 · Luxembourg 3 is **BeNeLux**, which no initialism could say.
-  Survivors that were neighbours stay neighbours: the gap and the separator go
-  between runs, not inside a truncation. `acronymFrom` still replaces the whole
-  test for a script without letter case — a rule, never a list of indices.
-- **A long acronym cannot overflow.** `keep` can make it longer than the
-  sentence's own box, so the ruler carries an unscaled copy and the ghost is
-  shrunk to fit. Measured against the ruler, never against the live ghost —
-  that would shrink it, find it now fits, grow it back, and oscillate.
+- **The short form is derived, in two parts.** WHICH words contribute is read
+  off the SETTLED sentence by capitalisation, so a changed word list changes
+  the result with no second list to keep in sync. HOW MUCH of each contributing
+  word comes along is `keep`: unset gives the initialism (Fluent Learners → FL),
+  `keep={3}` gives the truncation (→ Flu Lea), and a slot's own `keep`
+  overrides, so the parts can differ — Belgium 2 · Netherlands 2 ·
+  Luxembourg 3 is **BeNeLux**, which no initialism could say.
+- **`keep` as an ARRAY is a run of stages** (Dan, 30 Aug: *"I do need multiple
+  intermediate truncations"*). `keep={[5, 3, 2, 1]}` lands on
+  *Fluen Learn Under Ordin* → *Flu Lea Und Ord* → *Fl Le Un Or* → *FLUO*,
+  holding each long enough to read. A slot's array shortens at its own rate; a
+  shorter array holds its last value, so one part can stay put while the rest
+  compress around it.
+- **A long form cannot overflow.** `keep` can make a stage wider than the
+  sentence's own box, so each stage is shrunk to fit — measured against an
+  unscaled copy carried in the ruler, never against the live ghost, which would
+  shrink it, find it now fits, grow it back and oscillate.
 - **No colours, no tokens, no app imports.** It inherits font, size and colour
-  from wherever it is dropped and stamps `data-phase` for the host to style
-  off. That is the whole reusability claim, so it must not acquire a single
-  `--cahier-*`.
+  from wherever it is dropped and stamps `data-phase` for the host to style off.
 - **Playground: `/hidden/cycling-reveal`** (noindex, in nobody's nav), four
-  presets that share nothing — FLUO, SCUBA, a serif A.S.A.P and BeNeLux — with
-  Replay / Skip / Reset and live sliders for the four timings and `keep`. Its
-  own chrome uses the Cahier tokens; the preset palettes are literal `oklch()`
-  on purpose, standing in for a host page's colours.
-- **The asset: `npm run record:cycling-reveal`** (`scripts/record-cycling-reveal.mjs`)
-  drives the playground with Playwright and writes `docs/assets/cycling-reveal.webm`
-  + `.png`; the committed `.gif` is made from that webm with the ffmpeg one-liner
-  in the script's header. **Deliberately `docs/assets/`, not `public/`** — public/
-  is copied into the static export, so a demo recording there would be downloaded
-  by learners who will never see it. Playwright is a hand-run tool, not an app
-  dependency; the script says so and exits with the install line if it is absent.
+  presets that share nothing — FLUO (staged), SCUBA, a serif A.S.A.P and
+  BeNeLux — with Replay / Skip / Reset, live timing sliders, a `keep` control,
+  and **Download GIF**.
+
+### The GIF the page makes of itself
+
+`handle.recordGif()` / `handle.downloadGif()`, behind the playground's button.
+No dependency was added and nothing is sent anywhere: it runs in the browser,
+in about six seconds for a six-second animation, and produces a ~500 KB GIF.
+
+- **`src/lib/domFilm.ts` films glyphs, not pixels.** A browser will not hand a
+  page a picture of itself, and the usual answers are all bad: html2canvas
+  re-implements CSS, SVG `foreignObject` renders in an isolated document so
+  every web font must be fetched and inlined, and there is no DOM equivalent of
+  `canvas.captureStream()`. But this animation is only ever text, so each frame
+  is SAMPLED — every glyph's box, size, colour and alpha read off the live DOM —
+  and redrawn later with `fillText`. The browser still does all the layout,
+  kerning and easing; canvas draws with the document's own loaded fonts, so
+  nothing needs embedding. Measured against a screenshot of the same state, the
+  exported frame differs by 1.46/255 per channel — antialiasing and the
+  palette, nothing structural.
+- **`src/lib/gif.ts` is a GIF89a encoder in a page of code**, because adding a
+  fifth runtime dependency to save a well-specified byte layout is a bad trade.
+  Frames are pulled one at a time, twice (palette, then encode): holding a
+  hundred 766×231 RGBA frames is 240 MB and would lose a phone browser.
+- Verified against Pillow rather than by eye, which is the only reason it works.
+  **Flat text on a flat ground decodes pixel-exact.**
 
 ### What the build taught
 
-- **The collapse is measured, not computed.** The acronym is laid out for real
-  first, as an invisible ghost at its final size, and each surviving character
-  is translated onto its ghost twin. Hand-computing the target positions would
-  mean re-deriving kerning and centring, and letters could land somewhere the
-  finished acronym is not.
-- **Three bugs the browser found, not the types.** (1) A reel is absolutely
-  positioned inside a clipped box, so before the ruler runs it has no height
-  and the sentence renders BLANK — which is exactly what the static export
-  shipped until the reel learned to fall back to plain text while unmeasured.
-  (2) `skip()` left the sentence sitting under the acronym: no letter had
-  flown, so no letter had been hidden. (3) `prefers-reduced-motion` read
-  through an effect arrives one render too late — the tumble has already
-  started — so it is read at the moment a run starts instead.
+- **Two off-by-ones in one line.** GIF's LZW widens its code as the dictionary
+  fills, and the decoder counts one entry ahead of the encoder. Widening a step
+  early and widening a step late both produce a file that decodes to a smear;
+  the first attempt did one, the fix did the other, and only the third matched
+  the reference encoder.
+- **A dominant colour broke the median cut, and only on light backgrounds.**
+  The cut goes at the weighted median, which for a flat ground IS the ground —
+  and when the ground sorts last on the splitting channel, the cut takes
+  everything and leaves an empty half. That aborted the split, so every
+  dark-text-on-light-paper export came out as one flat colour while the one
+  dark preset looked fine. Clamping the cut to leave both sides non-empty fixed
+  it. **It was found by counting colours in the decoded output, not by looking
+  at it** — the broken files opened perfectly happily.
+- **The collapse is measured, not computed.** Each stage's short form is laid
+  out for real first, as an invisible ghost, and each survivor is translated
+  onto its ghost twin. And the rest positions are snapshotted ONCE: a transform
+  replaces its predecessor rather than composing with it, so measuring stage
+  two against where stage one put the letters moves everything twice.
+- **Three bugs the browser found, not the types.** An unmeasured reel is a
+  clipped box of absolutely positioned children, so the sentence rendered BLANK
+  in the static export until the reel learned to fall back to plain text;
+  `skip()` left the sentence sitting under the short form, because no letter
+  had flown and so none had been hidden; and `prefers-reduced-motion` read
+  through an effect arrives one render after the tumble has started.
 - **`timing={{ cycleMs: 50 }}` written inline is a new object every render.**
   A reel that depended on its identity restarted its timer chain on every
-  parent render and never reached its last word. Timings are read through a
-  ref, and the phase clock depends on the numbers, not the object.
-- **A one-shot `querySelectorAll` cannot hide the app's overlays** — several of
-  them mount after hydration and walked back into the recording. The recorder
-  uses one CSS rule (`body > *:not(main)`), which nothing can outrun.
+  parent render and never reached its last word.
 
-`tsc` clean, `npm run build` green, all 41 verify scripts green, and the two
-`verify19b` ratchets both go DOWN (the demo carries no raw hex and no stock
-Tailwind palette class). `eslint` clean on all three new source files.
+`tsc` clean, `npm run build` green, all 41 verify scripts green, both
+`verify19b` ratchets down, `eslint` clean on all five new source files.

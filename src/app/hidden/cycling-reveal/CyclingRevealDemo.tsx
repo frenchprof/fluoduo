@@ -30,8 +30,11 @@ type Preset = {
   separator: string;
   scale: number;
   gap: string;
-  /** Leading characters carried per word; undefined = the capitals alone. */
-  keep?: number;
+  /**
+   * Leading characters carried per word; undefined = the capitals alone.
+   * An array is a sequence of forms to land on in turn.
+   */
+  keep?: number | number[];
   /** Everything visual lives out here, in the caller. */
   paper: string;
   ink: string;
@@ -53,6 +56,8 @@ const PRESETS: Preset[] = [
     separator: "",
     scale: 1.9,
     gap: "0.08em",
+    // Four forms, not one: the sentence is seen compressing.
+    keep: [5, 3, 2, 1],
     paper: "oklch(19% 0.017 250)",
     ink: "oklch(96% 0.012 85)",
     type: "font-black tracking-tight text-[clamp(22px,5.4vw,44px)]",
@@ -137,9 +142,17 @@ function Stage({ preset, loop }: { preset: Preset; loop: boolean }) {
   const ref = useRef<CyclingRevealHandle>(null);
   const [phase, setPhase] = useState<CyclingPhase>("idle");
   const [timing, setTiming] = useState<Partial<CyclingTiming>>(preset.timing);
+  // null when idle; otherwise what the recorder is doing, for the button face.
+  const [recording, setRecording] = useState<string | null>(null);
   // 0 stands for "unset" in the stepper — the capitals alone.
-  const [keep, setKeep] = useState(preset.keep ?? 0);
-  const perSlot = preset.slots.some((sl) => sl.keep !== undefined);
+  const [keep, setKeep] = useState(typeof preset.keep === "number" ? preset.keep : 0);
+  // A slider can only say one number, so it stands down wherever the preset is
+  // saying something a slider cannot: a run of stages, or a length per slot.
+  const fixed = Array.isArray(preset.keep)
+    ? preset.keep.join("·") + " staged"
+    : preset.slots.some((sl) => sl.keep !== undefined)
+      ? preset.slots.map((sl) => sl.keep).join("·") + " per slot"
+      : null;
   const value = (k: keyof CyclingTiming) => timing[k] ?? preset.timing[k] ?? DEFAULTS[k];
 
   return (
@@ -158,7 +171,7 @@ function Stage({ preset, loop }: { preset: Preset; loop: boolean }) {
           acronymScale={preset.scale}
           acronymGap={preset.gap}
           acronymSeparator={preset.separator}
-          keep={keep || undefined}
+          keep={Array.isArray(preset.keep) ? preset.keep : keep || undefined}
           onPhaseChange={setPhase}
           className={`${preset.type} text-center`}
         />
@@ -188,6 +201,30 @@ function Stage({ preset, loop }: { preset: Preset; loop: boolean }) {
         >
           Replay
         </button>
+        <button
+          type="button"
+          disabled={recording !== null}
+          onClick={async () => {
+            setRecording("filming…");
+            try {
+              // Looping would film the run twice; the recorder wants one pass.
+              await ref.current?.downloadGif(`cycling-reveal-${preset.id}.gif`, {
+                onProgress: (f, note) =>
+                  setRecording(note === "filming" ? `filming ${Math.round(f * 100)}%` : "encoding…"),
+              });
+            } finally {
+              setRecording(null);
+            }
+          }}
+          className={`${BTN} border`}
+          style={{
+            borderColor: "var(--cahier-line-strong)",
+            color: "var(--cahier-ink)",
+            opacity: recording ? 0.6 : 1,
+          }}
+        >
+          {recording ?? "Download GIF"}
+        </button>
         {(["skip", "reset"] as const).map((action) => (
           <button
             key={action}
@@ -200,11 +237,9 @@ function Stage({ preset, loop }: { preset: Preset; loop: boolean }) {
           </button>
         ))}
 
-        {/* A slot's own keep beats the component's, so where the slots set it
-            the slider would be a control that does nothing. Say so instead. */}
-        {perSlot ? (
+        {fixed ? (
           <span className="font-mono text-[11px]" style={{ color: "var(--cahier-ink-soft)" }}>
-            keep <b style={{ color: "var(--cahier-ink)" }}>{preset.slots.map((sl) => sl.keep).join("·")}</b> per slot
+            keep <b style={{ color: "var(--cahier-ink)" }}>{fixed}</b>
           </span>
         ) : (
           <label

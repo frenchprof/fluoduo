@@ -75,10 +75,12 @@ export type CyclingSlot = {
   /** The words this slot tumbles through, in the order they are shown. */
   words: string[];
   /**
-   * How many leading characters of the landed word carry into the acronym,
+   * How many leading characters of the landed word carry into the short form,
    * overriding the component's `keep`. Unset means "follow the component".
+   * An array gives this slot a different length at each stage, so the parts
+   * can shorten at their own rates.
    */
-  keep?: number;
+  keep?: number | number[];
   /**
    * The word it stops on — an index into `words`, or the word itself.
    * Defaults to the last word, so a list can simply end on its answer.
@@ -101,8 +103,12 @@ export type CyclingTiming = {
   staggerMs: number;
   /** How long the finished sentence is held, readable, before it folds. */
   settleHoldMs: number;
-  /** The fold itself. */
+  /** The fold itself — the sentence's first move to a shorter form. */
   collapseMs: number;
+  /** Each later move, when `keep` names more than one form. */
+  stageCollapseMs: number;
+  /** How long each intermediate form is held before the next fold. */
+  stageHoldMs: number;
   /** How long the acronym is held before a `loop` run starts over. */
   acronymHoldMs: number;
 };
@@ -130,8 +136,35 @@ export type CyclingRevealHandle = {
   play: () => void;
   /** Back to the un-started sentence. */
   reset: () => void;
-  /** Jump straight to the finished acronym. */
+  /** Jump straight to the finished short form. */
   skip: () => void;
+  /**
+   * Play it once from the top, filming as it goes, and hand back a GIF.
+   *
+   * It runs in real time, because it films the real animation rather than
+   * simulating it — a five-second reveal takes five seconds to record. The
+   * promise resolves once the encoding is done.
+   */
+  recordGif: (options?: RecordOptions) => Promise<Blob>;
+  /** recordGif, then hand the file to the browser as a download. */
+  downloadGif: (filename?: string, options?: RecordOptions) => Promise<void>;
+};
+
+export type RecordOptions = {
+  /**
+   * The box to film. Defaults to the component's parent — for a component
+   * dropped into a coloured panel that is the panel, which is what anyone
+   * would expect the recording to look like.
+   */
+  target?: HTMLElement | null;
+  /** Sampling ceiling. 20–25 is plenty for text; lower makes a smaller file. */
+  fps?: number;
+  /** GIF palette size, 2–256. */
+  maxColors?: number;
+  /** How long the finished form is held at the end of the film. */
+  tailMs?: number;
+  /** Called with 0–1 as the film is captured and then encoded. */
+  onProgress?: (fraction: number, note: "filming" | "encoding") => void;
 };
 
 export type CyclingRevealAcronymProps = {
@@ -156,15 +189,20 @@ export type CyclingRevealAcronymProps = {
   /** Optional glue between letters — "." gives F.L.A. */
   acronymSeparator?: string;
   /**
-   * How many leading characters each contributing word carries into the
-   * acronym. Unset (the default) means "its capitals" — the initialism.
+   * How many leading characters each contributing word carries into the short
+   * form. Unset (the default) means "its capitals" — the initialism.
    * `keep={2}` gives the truncated form: Modulator Demodulator → MoDem.
-   * A slot's own `keep` wins over this.
+   *
+   * An ARRAY is a sequence of forms to land on in turn, each held for
+   * `stageHoldMs` before the next: `keep={[5, 3, 1]}` reads
+   *   Fluent Learners → Fluen Learn → Flu Lea → F L
+   * so the sentence is seen compressing rather than jumping to its initials.
+   * A slot's own `keep` wins over this, per stage.
    *
    * It never changes WHICH words contribute — that stays capitalisation, so a
    * lowercase connecting word is left out at any `keep`.
    */
-  keep?: number;
+  keep?: number | number[];
   /**
    * Replaces the test entirely, for scripts where case means nothing. Still a
    * rule, re-run on whatever the slots landed on; `keep` is ignored when it is
@@ -197,6 +235,8 @@ const DEFAULT_TIMING: CyclingTiming = {
   staggerMs: 260,
   settleHoldMs: 1300,
   collapseMs: 900,
+  stageCollapseMs: 480,
+  stageHoldMs: 420,
   acronymHoldMs: 2200,
 };
 
@@ -287,6 +327,7 @@ function Word({
         return (
           <span
             key={k}
+            data-ch
             ref={index < 0 || !register ? undefined : (el) => register(index, el)}
             style={{ ...ATOM, ...(charStyle && index >= 0 ? charStyle(index) : null) }}
           >
@@ -416,6 +457,7 @@ function Reel({
 
   return (
     <span
+      data-clip
       style={{
         ...ATOM,
         position: "relative",
@@ -536,56 +578,80 @@ const CyclingRevealAcronym = forwardRef<CyclingRevealHandle, CyclingRevealAcrony
     }, [pieces]);
 
     /**
-     * The survivors.
+     * How many stages the fold has: one per entry of the longest `keep` array
+     * anywhere in the config, and one if nobody wrote an array at all.
+     */
+    const stageCount = useMemo(() => {
+      const lengths = [keep, ...slots.map((sl) => sl.keep)].map((k) => (Array.isArray(k) ? k.length : 1));
+      return Math.max(1, ...lengths);
+    }, [keep, slots]);
+
+    const [stage, setStage] = useState(0);
+    const lastStage = stageCount - 1;
+
+    /**
+     * The survivors of one stage.
      *
      * Two questions, answered separately. WHICH words contribute is
-     * capitalisation, always — that is what makes the acronym follow the words
-     * the slots landed on instead of a list someone has to remember to update.
-     * HOW MUCH of a contributing word comes along is `keep`: its capitals when
-     * unset, its first `keep` characters when set, and a slot may set its own
-     * so BeNeLux can take 2, 2 and 3.
+     * capitalisation, always — that is what makes the short form follow the
+     * words the slots landed on instead of a list someone has to remember to
+     * update. HOW MUCH of a contributing word comes along is `keep`: its
+     * capitals when unset, its first `keep` characters when set, per stage, and
+     * a slot may set its own so BeNeLux can take 2, 2 and 3.
+     *
+     * An array shorter than the run of stages holds its last value, so
+     * `keep={[6, 3, 1]}` with one slot pinned at `keep={2}` means that slot
+     * stays two characters long throughout while the rest shorten around it.
      */
-    const kept = useMemo(() => {
-      const out: { index: number; char: string }[] = [];
-      for (const w of words) {
-        const chars = Array.from(w.text);
-        const push = (i: number) => out.push({ index: w.start + i, char: chars[i] });
+    const survivorsAt = useCallback(
+      (at: number) => {
+        const out: { index: number; char: string }[] = [];
+        for (const w of words) {
+          const chars = Array.from(w.text);
+          const push = (i: number) => out.push({ index: w.start + i, char: chars[i] });
 
-        if (acronymFrom) {
-          chars.forEach((char, i) => {
-            if (acronymFrom({ char, index: w.start + i, word: w.text, indexInWord: i, slot: w.slot, sentence }))
-              push(i);
-          });
-          continue;
+          if (acronymFrom) {
+            chars.forEach((char, i) => {
+              if (acronymFrom({ char, index: w.start + i, word: w.text, indexInWord: i, slot: w.slot, sentence }))
+                push(i);
+            });
+            continue;
+          }
+          const capitals = chars.map((c, i) => (isCapital(c) ? i : -1)).filter((i) => i >= 0);
+          if (capitals.length === 0) continue; // a lowercase connecting word, at any keep
+          const raw = (w.slot !== undefined ? slots[w.slot]?.keep : undefined) ?? keep;
+          const n = Array.isArray(raw) ? raw[Math.min(at, raw.length - 1)] : raw;
+          if (n === undefined) capitals.forEach(push);
+          else for (let i = 0; i < Math.min(n, chars.length); i++) push(i);
         }
-        const capitals = chars.map((c, i) => (isCapital(c) ? i : -1)).filter((i) => i >= 0);
-        if (capitals.length === 0) continue; // a lowercase connecting word, at any keep
-        const n = (w.slot !== undefined ? slots[w.slot]?.keep : undefined) ?? keep;
-        if (n === undefined) capitals.forEach(push);
-        else for (let i = 0; i < Math.min(n, chars.length); i++) push(i);
-      }
-      return out;
-    }, [words, sentence, slots, keep, acronymFrom]);
+        return out;
+      },
+      [words, sentence, slots, keep, acronymFrom],
+    );
+
+    const kept = useMemo(() => survivorsAt(stage), [survivorsAt, stage]);
 
     /**
      * Survivors that were neighbours in the sentence stay neighbours in the
-     * acronym: `Fluent` at keep 3 is the single run "Flu", not F · l · u. The
-     * gap and the separator go BETWEEN runs, which is what makes MoDem read as
-     * two parts and FLUO as four.
+     * short form: `Fluent` at keep 3 is the single run "Flu", not F · l · u.
+     * The gap and the separator go BETWEEN runs, which is what makes MoDem read
+     * as two parts and FLUO as four.
      */
-    const groups = useMemo(() => {
+    const runs = (chars: { index: number; char: string }[]) => {
       const out: { index: number; char: string }[][] = [];
-      for (const k of kept) {
+      for (const k of chars) {
         const last = out[out.length - 1];
         if (last && k.index === last[last.length - 1].index + 1) last.push(k);
         else out.push([k]);
       }
       return out;
-    }, [kept]);
+    };
+
+    const groups = useMemo(() => runs(kept), [kept]);
 
     const acronym = useMemo(
-      () => groups.map((g) => g.map((c) => c.char).join("")).join(acronymSeparator),
-      [groups, acronymSeparator],
+      () => runs(survivorsAt(lastStage)).map((g) => g.map((c) => c.char).join("")).join(acronymSeparator),
+      [survivorsAt, lastStage, acronymSeparator],
     );
 
     /* ── phase machine ─────────────────────────────────────────────────── */
@@ -609,6 +675,7 @@ const CyclingRevealAcronym = forwardRef<CyclingRevealHandle, CyclingRevealAcrony
     const reset = useCallback(() => {
       landedRef.current = 0;
       setFlight(null);
+      setStage(0);
       setRunId((r) => r + 1);
       setPhase("idle");
     }, []);
@@ -616,10 +683,82 @@ const CyclingRevealAcronym = forwardRef<CyclingRevealHandle, CyclingRevealAcrony
     const skip = useCallback(() => {
       landedRef.current = slots.length;
       setFlight(null);
+      setStage(lastStage);
       setPhase("acronym");
-    }, [slots.length]);
+    }, [slots.length, lastStage]);
 
-    useImperativeHandle(ref, () => ({ play, reset, skip }), [play, reset, skip]);
+    /* ── recording ─────────────────────────────────────────────────────── */
+
+    // The phase machine is driven by timers, so the recorder — which is a
+    // promise, not a render — cannot ask React where it has got to. It watches
+    // this instead, refreshed after each commit.
+    const phaseRef = useRef(phase);
+    useEffect(() => {
+      phaseRef.current = phase;
+    }, [phase]);
+
+    const recordGif = useCallback(
+      async (options: RecordOptions = {}) => {
+        const host = stageRef.current;
+        const target = options.target ?? (host?.parentElement as HTMLElement | null) ?? host;
+        if (!target) throw new Error("nothing to film");
+
+        const { startFilm, filmToGif } = await import("@/lib/domFilm");
+        const tailMs = options.tailMs ?? 900;
+
+        reset();
+        // One frame for the reset to land, so the film opens on the sentence
+        // as it starts rather than on the tail of whatever ran before.
+        await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+        const film = startFilm(target, { maxFps: options.fps ?? 22 });
+        play();
+
+        await new Promise<void>((resolve) => {
+          const started = performance.now();
+          const poll = () => {
+            const done = phaseRef.current === "acronym";
+            // A ceiling as well as a condition: a tab that is backgrounded
+            // stops firing rAF, and a recorder with no way out would hang the
+            // promise for ever.
+            const overrun = performance.now() - started > 60_000;
+            if ((done && performance.now() - started > 300) || overrun) {
+              window.setTimeout(resolve, done ? tailMs : 0);
+              return;
+            }
+            options.onProgress?.(Math.min(0.95, (performance.now() - started) / 8000), "filming");
+            window.setTimeout(poll, 100);
+          };
+          poll();
+        });
+
+        const shot = film.stop();
+        options.onProgress?.(1, "filming");
+        options.onProgress?.(0, "encoding");
+        // Yield once so the progress note paints before the encoder takes the
+        // main thread for a second or two.
+        await new Promise((r) => setTimeout(r, 0));
+        const blob = await filmToGif(shot, { maxColors: options.maxColors ?? 96, tailMs });
+        options.onProgress?.(1, "encoding");
+        return blob;
+      },
+      [play, reset],
+    );
+
+    const downloadGif = useCallback(
+      async (filename = "cycling-reveal.gif", options?: RecordOptions) => {
+        const blob = await recordGif(options);
+        const { saveBlob } = await import("@/lib/domFilm");
+        saveBlob(blob, filename);
+      },
+      [recordGif],
+    );
+
+    useImperativeHandle(
+      ref,
+      () => ({ play, reset, skip, recordGif, downloadGif }),
+      [play, reset, skip, recordGif, downloadGif],
+    );
 
     /* Trigger: controlled `start` when given, otherwise `autoStart` on mount.
      * Web fonts are waited for — measuring the collapse against a fallback
@@ -648,7 +787,12 @@ const CyclingRevealAcronym = forwardRef<CyclingRevealHandle, CyclingRevealAcrony
       };
     }, [start, autoStart, play, reset]);
 
-    const collapseMs = reduced ? REDUCED_FADE_MS : timing.collapseMs;
+    /** This fold's duration: the first one is the big move, the rest are steps. */
+    const collapseMs = reduced
+      ? REDUCED_FADE_MS
+      : stage === 0
+        ? timing.collapseMs
+        : timing.stageCollapseMs;
 
     useEffect(() => {
       onPhaseChange?.(phase);
@@ -662,7 +806,14 @@ const CyclingRevealAcronym = forwardRef<CyclingRevealHandle, CyclingRevealAcrony
         return () => window.clearTimeout(t);
       }
       if (phase === "collapsing") {
-        const t = window.setTimeout(() => setPhase("acronym"), collapseMs);
+        // Each fold finishes, is held long enough to be read as a form in its
+        // own right, and then the next one starts. The last one does not hold:
+        // it hands over to the finished short form.
+        const done = stage >= lastStage;
+        const t = window.setTimeout(
+          () => (done ? setPhase("acronym") : setStage((k) => k + 1)),
+          collapseMs + (done ? 0 : timing.stageHoldMs),
+        );
         return () => window.clearTimeout(t);
       }
       if (phase === "acronym" && loop) {
@@ -672,7 +823,17 @@ const CyclingRevealAcronym = forwardRef<CyclingRevealHandle, CyclingRevealAcrony
       // Primitives only, for the same reason the reel reads its timing from a
       // ref: an inline `timing` object would re-arm the hold on every render
       // and the sentence would never move on.
-    }, [phase, timing.settleHoldMs, timing.acronymHoldMs, collapseMs, loop, play]);
+    }, [
+      phase,
+      stage,
+      lastStage,
+      timing.settleHoldMs,
+      timing.stageHoldMs,
+      timing.acronymHoldMs,
+      collapseMs,
+      loop,
+      play,
+    ]);
 
     const onLand = useCallback(() => {
       landedRef.current += 1;
@@ -691,8 +852,10 @@ const CyclingRevealAcronym = forwardRef<CyclingRevealHandle, CyclingRevealAcrony
     const [metrics, setMetrics] = useState<{
       widths: number[][];
       lineHeightPx: number;
-      /** ≤ 1 — how much the acronym must shrink to fit the stage. */
+      /** ≤ 1 — how much this stage's form must shrink to fit the box. */
       fit: number;
+      /** Which stage that fit was taken for. The flight waits for its own. */
+      fitStage: number;
     } | null>(null);
 
     const register = useCallback((index: number, el: HTMLElement | null) => {
@@ -727,19 +890,21 @@ const CyclingRevealAcronym = forwardRef<CyclingRevealHandle, CyclingRevealAcrony
       const want = proof ? proof.getBoundingClientRect().width : 0;
       const fit = want > 0 && room > 0 ? Math.min(1, room / want) : 1;
 
-      setMetrics({ widths, lineHeightPx: line ? line.getBoundingClientRect().height : 0, fit });
-    }, [slots]);
+      setMetrics({ widths, lineHeightPx: line ? line.getBoundingClientRect().height : 0, fit, fitStage: stage });
+      // `stage` is a dependency on purpose: every stage is a different, shorter
+      // form, so every stage needs its own fit taken before anything flies.
+    }, [slots, stage]);
 
     /** The acronym's real size: what was asked for, less whatever it takes to fit. */
     const shownScale = acronymScale * (metrics?.fit ?? 1);
 
     useMeasureEffect(() => {
       measure();
-      const stage = stageRef.current;
+      const host = stageRef.current;
       const ruler = rulerRef.current;
-      if (!stage || !ruler || typeof ResizeObserver === "undefined") return;
+      if (!host || !ruler || typeof ResizeObserver === "undefined") return;
       const ro = new ResizeObserver(measure);
-      ro.observe(stage);
+      ro.observe(host);
       // The ruler's acronym changes with `keep`, so the fit must be retaken.
       ro.observe(ruler);
       document.fonts?.ready.then(measure).catch(() => {});
@@ -754,54 +919,98 @@ const CyclingRevealAcronym = forwardRef<CyclingRevealHandle, CyclingRevealAcrony
     /* ── the flight ────────────────────────────────────────────────────── */
 
     /**
-     * Read where each surviving character is, read where its ghost twin is,
-     * and hand the difference back as a transform. Deliberately in a
-     * layout effect + one animation frame: the characters must be PAINTED
-     * where the sentence left them before the transform is applied, or the
-     * browser has no start value to animate from and they teleport.
+     * Where every character sits with no transform on it, relative to the host
+     * box, taken once when the fold begins.
+     *
+     * Taken ONCE because a transform replaces its predecessor rather than
+     * composing with it: measuring stage two against the positions stage one
+     * put the letters in would ask each letter to move by the difference twice.
+     * Layout does not change during the fold — only transforms and opacity do —
+     * so one snapshot is good for every stage, and storing it relative to the
+     * host makes it survive the page being scrolled between stages.
+     */
+    const restRects = useRef(new Map<number, { cx: number; cy: number }>());
+
+    /**
+     * Read where each surviving character rests, read where its twin in this
+     * stage's ghost sits, and hand the difference back as a transform.
+     *
+     * Deliberately in a layout effect plus one animation frame: the characters
+     * must be PAINTED where the sentence left them before the transform is
+     * applied, or the browser has no start value to animate from and they
+     * teleport. And it waits for `fitStage` to catch up, because a ghost that
+     * is still sized for the previous, longer form is the wrong target.
      */
     useMeasureEffect(() => {
       if (phase !== "collapsing" || reduced) return;
-      const stage = stageRef.current;
-      if (!stage) return;
-      const scale = shownScale;
-      const next = new Map<number, string>();
-      kept.forEach((k) => {
-        const src = charEls.current.get(k.index);
+      const host = stageRef.current;
+      if (!host || metrics?.fitStage !== stage) return;
+      const box = host.getBoundingClientRect();
+
+      if (stage === 0) {
+        restRects.current = new Map();
+        charEls.current.forEach((el, index) => {
+          const r = el.getBoundingClientRect();
+          restRects.current.set(index, {
+            cx: r.left + r.width / 2 - box.left,
+            cy: r.top + r.height / 2 - box.top,
+          });
+        });
+      }
+
+      const moves = new Map<number, string>();
+      for (const k of kept) {
+        const rest = restRects.current.get(k.index);
         const dst = ghostEls.current.get(k.index);
-        if (!src || !dst) return;
-        const a = src.getBoundingClientRect();
+        if (!rest || !dst) continue;
         const b = dst.getBoundingClientRect();
-        const dx = b.left + b.width / 2 - (a.left + a.width / 2);
-        const dy = b.top + b.height / 2 - (a.top + a.height / 2);
-        next.set(k.index, `translate(${dx.toFixed(2)}px, ${dy.toFixed(2)}px) scale(${scale})`);
-      });
-      const raf = requestAnimationFrame(() => setFlight(next));
+        const dx = b.left + b.width / 2 - box.left - rest.cx;
+        const dy = b.top + b.height / 2 - box.top - rest.cy;
+        moves.set(k.index, `translate(${dx.toFixed(2)}px, ${dy.toFixed(2)}px) scale(${shownScale.toFixed(4)})`);
+      }
+      // Merged onto what is already flying, not rebuilt: a character this stage
+      // drops keeps the transform that put it where it is and fades from there,
+      // rather than snapping back into the sentence to disappear. Merging in
+      // the updater rather than from a ref keeps `flight` out of the effect's
+      // dependencies, which would otherwise re-run it on its own output.
+      const raf = requestAnimationFrame(() => setFlight((prev) => new Map([...(prev ?? []), ...moves])));
       return () => cancelAnimationFrame(raf);
-    }, [phase, kept, shownScale, reduced]);
+    }, [phase, stage, kept, shownScale, reduced, metrics]);
 
     /* ── rendering ─────────────────────────────────────────────────────── */
 
     const collapsing = phase === "collapsing" || phase === "acronym";
     const total = Math.max(1, len(sentence));
 
+    const keptSet = useMemo(() => new Set(kept.map((k) => k.index)), [kept]);
+
     const charStyle = useCallback(
       (index: number): CSSProperties | undefined => {
         if (!collapsing || reduced) return undefined;
         const fly = flight?.get(index);
         if (fly !== undefined) {
+          // Already flown. It stays exactly where it landed; whether it is
+          // still SHOWN depends on whether this stage still wants it — a
+          // character the next, shorter form drops fades out from where it is
+          // rather than snapping home to disappear.
+          const wanted = keptSet.has(index);
           return {
             transform: fly,
-            opacity: phase === "acronym" ? 0 : 1,
-            transition: `transform ${timing.collapseMs}ms ${FLY_EASE}`,
+            opacity: phase === "acronym" || !wanted ? 0 : 1,
+            transition:
+              phase === "acronym"
+                ? // The final hand-over to the real acronym is a swap, not a
+                  // fade: the letters are already exactly on top of it.
+                  `transform ${collapseMs}ms ${FLY_EASE}`
+                : `transform ${collapseMs}ms ${FLY_EASE}, opacity ${collapseMs * 0.6}ms ease-in`,
             willChange: "transform",
             position: "relative",
             zIndex: 1,
           };
         }
-        if (kept.some((k) => k.index === index)) return { position: "relative", zIndex: 1 };
-        // Everything the acronym does not keep: out of the way, staggered
-        // across the line so the sentence dissolves rather than blinks.
+        if (keptSet.has(index)) return { position: "relative", zIndex: 1 };
+        // Never wanted by any stage: out of the way, staggered across the line
+        // so the sentence dissolves rather than blinks.
         const delay = flight ? (index / total) * timing.collapseMs * 0.3 : 0;
         return {
           opacity: flight ? 0 : 1,
@@ -812,7 +1021,7 @@ const CyclingRevealAcronym = forwardRef<CyclingRevealHandle, CyclingRevealAcrony
           willChange: "transform, opacity",
         };
       },
-      [collapsing, reduced, flight, phase, kept, timing.collapseMs, total],
+      [collapsing, reduced, flight, phase, keptSet, collapseMs, timing.collapseMs, total],
     );
 
     const ghostItems: ReactNode[] = [];
@@ -821,6 +1030,7 @@ const CyclingRevealAcronym = forwardRef<CyclingRevealHandle, CyclingRevealAcrony
         ghostItems.push(
           <span
             key={`sep${gi}`}
+            data-ch
             style={{
               opacity: collapsing ? 1 : 0,
               transition: `opacity ${collapseMs * 0.5}ms ease ${collapseMs * 0.45}ms`,
@@ -837,6 +1047,7 @@ const CyclingRevealAcronym = forwardRef<CyclingRevealHandle, CyclingRevealAcrony
           {group.map((k) => (
             <span
               key={k.index}
+              data-ch
               ref={(el) => {
                 if (el) ghostEls.current.set(k.index, el);
                 else ghostEls.current.delete(k.index);

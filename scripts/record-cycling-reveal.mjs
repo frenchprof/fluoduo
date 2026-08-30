@@ -14,8 +14,14 @@
  *
  *   npm i -g playwright && npx playwright install chromium
  *
- * For a GIF, convert the webm with a real ffmpeg (the one Playwright bundles is
- * a stripped build with no gif muxer and no scale filter):
+ * NOTE: the playground can also export a GIF of ONE preset by itself, with no
+ * tooling at all — the Download GIF button, which films the live DOM and
+ * encodes in the browser (src/lib/domFilm.ts, src/lib/gif.ts). This script is
+ * for the other picture: the whole page, every preset at once, for the docs.
+ *
+ * For a GIF of the whole page, convert the webm with a real ffmpeg (the one
+ * Playwright bundles is a stripped build with no gif muxer and no scale
+ * filter):
  *
  *   ffmpeg -i docs/assets/cycling-reveal.webm \
  *     -vf "fps=8,scale=640:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=48[p];[b][p]paletteuse" \
@@ -35,7 +41,7 @@ const arg = (name, fallback) => {
 const URL_ = arg("url", "http://localhost:3000");
 const SECONDS = Number(arg("seconds", 18));
 const WIDTH = Number(arg("width", 900));
-const HEIGHT = Number(arg("height", 1300));
+const HEIGHT = Number(arg("height", 1245));
 const OUT = "docs/assets";
 const TMP = join(OUT, ".record");
 
