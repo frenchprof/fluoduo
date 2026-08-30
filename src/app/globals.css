@@ -1525,12 +1525,22 @@ h3.cahier-display { font-size: var(--fs-h3); }
    spine >=3.94 on its band and >=4.55 on paper · band label >=11.80 ·
    pill label >=4.55. verify33 recomputes them from this file. */
 :root {
-  --fam-goals: #e3a700;  --fam-goals-ink: #9c6300;  --fam-goals-wash: #feeac7;
-  --fam-practice: #7bbf2e;  --fam-practice-ink: #3f7f00;  --fam-practice-wash: #def6cd;
-  --fam-svplay: #e0567f;  --fam-svplay-ink: #c63d69;  --fam-svplay-wash: #ffdee8;
-  --fam-review: #2bb6c2;  --fam-review-ink: #007c88;  --fam-review-wash: #d2f4f8;
-  --fam-skills: #8a5fd4;  --fam-skills-ink: #8459cd;  --fam-skills-wash: #f1e6ff;
-  --fam-user: #e8852e;  --fam-user-ink: #b35500;  --fam-user-wash: #ffe5ce;
+  /* THE SIX, EVENLY SPACED (Dan, 2026-08-30: "apply the new dopamine look
+     EVERYWHERE"). One hue every 60° starting at 20°, which of the sixty
+     possible starting points is both the best for a colour-blind reader and,
+     within a degree, the one that moved the six families least from the
+     colours they had. Each family's three tokens are DERIVED, not picked:
+     --fam is the hue at full strength; --fam-wash is it at 92.5% lightness,
+     capped so no hue shouts over the rest; --fam-*-ink is walked down in
+     lightness until it clears 4.5:1 on THREE surfaces at once — its own wash
+     (the band label), white (the pill), and the paper (body text). Worst
+     case across all six: 4.53:1, 5.54:1, 5.17:1. */
+  --fam-user: #ff4b5d;  --fam-user-ink: #c51837;  --fam-user-wash: #ffdbda;         /*  20° coral   */
+  --fam-practice: #ffc330;  --fam-practice-ink: #845e0c;  --fam-practice-wash: #ffe1a7;  /*  80° yellow  */
+  --fam-goals: #31b700;  --fam-goals-ink: #27780d;  --fam-goals-wash: #caf4c0;      /* 140° green   */
+  --fam-review: #00aeb5;  --fam-review-ink: #0e7479;  --fam-review-wash: #a2f8fc;   /* 200° cyan    */
+  --fam-skills: #5495ff;  --fam-skills-ink: #005ae9;  --fam-skills-wash: #d6e7ff;   /* 260° blue    */
+  --fam-svplay: #e237ff;  --fam-svplay-ink: #a81bc3;  --fam-svplay-wash: #fbd8ff;   /* 320° magenta */
 }
 
 /* One class per family sets the trio; SectionBand reads only the trio, so a

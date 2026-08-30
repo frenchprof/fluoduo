@@ -374,14 +374,14 @@ export default function SayItContent({
       if (e.error === "no-speech") {
         setPhase("result");
         sfx.wrong();
-        setResult({ grade: "miss", recognized: "(rien entendu)" });
+        setResult({ grade: "miss", recognized: "(nothing heard)" });
         const L = ladderRef.current;
         const firstTry = L.ladder.wrongTries === 0 || !ladderOn;
         if (firstTry) setScore((s) => ({ ...s, total: s.total + 1 }));
         if (firstTry) setLog((l) => [...l, { it: c, mark: "bad" }]);
         if (c.id) {
-          if (!ladderOn) recordItemResult(c.id, false, "(rien entendu)", `say-it:${collectionId}`);
-          else L.attempt(false, { given: "(rien entendu)", activity: `say-it:${collectionId}` });
+          if (!ladderOn) recordItemResult(c.id, false, "(nothing heard)", `say-it:${collectionId}`);
+          else L.attempt(false, { given: "(nothing heard)", activity: `say-it:${collectionId}` });
         }
       } else if (e.error === "not-allowed") {
         setPhase("idle");

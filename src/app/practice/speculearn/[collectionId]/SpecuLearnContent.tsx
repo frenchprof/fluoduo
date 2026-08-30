@@ -270,12 +270,12 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
     rec.onresult = (e) => {
       const alts = Array.from({ length: e.results[0]?.length ?? 0 }, (_, k) => e.results[0][k]?.transcript ?? "");
       const t = alts[0] ?? "";
-      setHeard(t || "(rien entendu)");
-      grade(it, alts.some((a) => saidRight(a, it.w)), t || "(rien entendu)");
+      setHeard(t || "(nothing heard)");
+      grade(it, alts.some((a) => saidRight(a, it.w)), t || "(nothing heard)");
     };
     rec.onerror = (e) => {
       recRef.current = null; setListening(false);
-      if (e.error === "no-speech" && !locked) { setHeard("(rien entendu)"); grade(it, false, "(rien entendu)"); }
+      if (e.error === "no-speech" && !locked) { setHeard("(nothing heard)"); grade(it, false, "(nothing heard)"); }
     };
     rec.onend = () => { recRef.current = null; setListening(false); };
     recRef.current = rec;

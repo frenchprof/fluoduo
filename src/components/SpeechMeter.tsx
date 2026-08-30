@@ -7,7 +7,7 @@
  * wiggle on a fixed timer whenever the recognizer is open. That animates
  * identically whether the learner is speaking, mumbling or silent, which is
  * the one thing a meter must not do — it would say "I hear you" while the
- * recognizer heard nothing, and the "(rien entendu)" verdict a moment later
+ * recognizer heard nothing, and the "(nothing heard)" verdict a moment later
  * would contradict it. So the bars are a rolling history of real RMS from a
  * parallel getUserMedia stream: flat means flat.
  *
