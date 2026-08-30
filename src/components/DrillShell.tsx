@@ -41,7 +41,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { SIOS } from "@/content/sios";
-import { activity as activityInfo, bandOf, familyOf } from "@/content/activities";
+import { activity as activityInfo, bandOf, familyOf, isReadingSurface } from "@/content/activities";
 import { nextStep, type NextStep } from "@/lib/nextStep";
 import PageBand from "@/components/PageBand";
 import BottomBar from "@/components/BottomBar";
@@ -189,6 +189,10 @@ export default function DrillShell({
   // space). The tray's CTA wins while the tray is up.
   const liveCta = feedback ? feedback.cta : finish ? { label: "Next ›", onClick: goNext } : cta;
   const liveRef = useRef(liveCta);
+  // A live ref, written during render on purpose: the key handler below is
+  // bound once and fires long after, and it must press the CTA that is on
+  // screen NOW — not the one that existed when the listener was attached.
+  // eslint-disable-next-line react-hooks/refs
   liveRef.current = liveCta;
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -225,7 +229,7 @@ export default function DrillShell({
     : 0;
 
   return (
-    <div className={`${famKey ? `fam-${famKey}` : "fam-none"}${bandKey ? ` band-${bandKey}` : ""} flex h-dvh flex-col overflow-hidden bg-[color:var(--cahier-paper)]`}>
+    <div className={`${famKey ? `fam-${famKey}` : "fam-none"}${bandKey ? ` band-${bandKey}` : ""}${isReadingSurface(activity) ? " paper-sand" : ""} flex h-dvh flex-col overflow-hidden bg-[color:var(--cahier-paper)]`}>
       {/* ── the notebook (2026-08-24, approved flow): drills live INSIDE the
           cahier — the family heading band on top (name from the registry,
           the drill's i/total as the band's ONE chip so the figure is never

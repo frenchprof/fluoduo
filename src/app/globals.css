@@ -787,7 +787,7 @@ body {
     var(--cahier-rule) 31px 32px
   );
   background-position: 0 64px;
-  border-radius: 4px 16px 16px 4px;
+  border-radius: 16px 4px 4px 16px;
   box-shadow: 0 12px 34px rgba(34, 40, 80, 0.20);
   color: var(--cahier-ink);
   overflow: hidden;
@@ -1327,7 +1327,20 @@ h3.cahier-display { font-size: var(--fs-h3); }
 /* The family spine — a 6px edge down the page's left gutter, just inside the
    binding. It is the page's "where am I", and it is the cheapest possible
    version: one border, no layout, no per-page markup. */
-.cahier-page[class*="fam-"] { border-left: 6px solid var(--fam-ink, transparent); }
+.cahier-page[class*="fam-"] {
+  border-left: 6px solid var(--fam-ink, transparent);
+  /* the ruled lines keep their own colour; only the paper under them changes */
+  background-color: var(--fam-page, var(--cahier-paper));
+}
+/* A page you READ rather than answer takes the sand instead of its family's
+   ground — the strip, the section band and the rail still say which family
+   it belongs to. Wins over the family rule above by being later and equally
+   specific, which is why it is written here and not beside the tokens. */
+.paper-sand,
+.cahier-page.paper-sand[class*="fam-"] {
+  background-color: var(--sable-page);
+  --cahier-rule: var(--sable-rule);
+}
 
 /* Accuracy tiers, finally doing the job the rotating hue was pretending to do.
    Deliberately distinct from --cahier-accent so "this is a link" never reads
@@ -1541,19 +1554,56 @@ h3.cahier-display { font-size: var(--fs-h3); }
   --fam-review: #00aeb5;  --fam-review-ink: #0e7479;  --fam-review-wash: #a2f8fc;   /* 200° cyan    */
   --fam-skills: #5495ff;  --fam-skills-ink: #005ae9;  --fam-skills-wash: #d6e7ff;   /* 260° blue    */
   --fam-svplay: #e237ff;  --fam-svplay-ink: #a81bc3;  --fam-svplay-wash: #fbd8ff;   /* 320° magenta */
+
+  /* THE PAGE GROUND (Dan, 2026-08-30: "apply the new dopamine look
+     EVERYWHERE"). The same six hues at 97.5% lightness — about a quarter of
+     the wash's strength — so a page is its family's paper rather than grey
+     paper with a coloured strip on it. This is the 60 of 60-30-10, and it is
+     the level the whole scheme was missing: `--band-wash` was invented for it
+     on 26 Aug and never wired to anything.
+     Faint on purpose. Body ink clears 13.6:1 on every one and the soft ink
+     7.1:1 — both AAA — because a ground you read a page of French on has to
+     be quieter than one you glance at. */
+  /* THE READING PAPER — « le sable beige », the colour already in the colours
+     deck (#d9c39a), worked out into a surface. Dan picked it, blind, over all
+     six family grounds when asked which he wanted under a page of French he
+     was READING rather than answering.
+     It is not a seventh family: a Memo keeps its family's strip, its section
+     band and its rail. Only the paper changes, because a page you stay on
+     should not be competing with the words. Body ink is derived against the
+     CARD, the darker of the two surfaces, at 7.2:1 — the stricter standard,
+     for prose rather than buttons. */
+  --sable-page: #f9ebd1;  --sable-card: #ebd8b5;
+  --sable-rule: #e0cba4;  --sable-ink: #4e4026;  --sable-soft: #6b5d44;
+
+  --fam-user-page: #fff3f2;      --fam-practice-page: #fff5e2;
+  --fam-goals-page: #edfcea;     --fam-review-page: #e2fdfe;
+  --fam-skills-page: #f0f7ff;    --fam-svplay-page: #fff1ff;
 }
 
 /* One class per family sets the trio; SectionBand reads only the trio, so a
    band never hard-codes a hue and a new family is three tokens plus a line. */
-.fam-goals    { --fam: var(--fam-goals);    --fam-ink: var(--fam-goals-ink);    --fam-wash: var(--fam-goals-wash); }
-.fam-practice { --fam: var(--fam-practice); --fam-ink: var(--fam-practice-ink); --fam-wash: var(--fam-practice-wash); }
-.fam-svplay   { --fam: var(--fam-svplay);   --fam-ink: var(--fam-svplay-ink);   --fam-wash: var(--fam-svplay-wash); }
-.fam-review   { --fam: var(--fam-review);   --fam-ink: var(--fam-review-ink);   --fam-wash: var(--fam-review-wash); }
-.fam-skills   { --fam: var(--fam-skills);   --fam-ink: var(--fam-skills-ink);   --fam-wash: var(--fam-skills-wash); }
-.fam-user     { --fam: var(--fam-user);     --fam-ink: var(--fam-user-ink);     --fam-wash: var(--fam-user-wash); }
+.fam-goals    { --fam: var(--fam-goals);    --fam-ink: var(--fam-goals-ink);    --fam-wash: var(--fam-goals-wash);    --fam-page: var(--fam-goals-page); }
+.fam-practice { --fam: var(--fam-practice); --fam-ink: var(--fam-practice-ink); --fam-wash: var(--fam-practice-wash); --fam-page: var(--fam-practice-page); }
+.fam-svplay   { --fam: var(--fam-svplay);   --fam-ink: var(--fam-svplay-ink);   --fam-wash: var(--fam-svplay-wash);   --fam-page: var(--fam-svplay-page); }
+.fam-review   { --fam: var(--fam-review);   --fam-ink: var(--fam-review-ink);   --fam-wash: var(--fam-review-wash);   --fam-page: var(--fam-review-page); }
+.fam-skills   { --fam: var(--fam-skills);   --fam-ink: var(--fam-skills-ink);   --fam-wash: var(--fam-skills-wash);   --fam-page: var(--fam-skills-page); }
+.fam-user     { --fam: var(--fam-user);     --fam-ink: var(--fam-user-ink);     --fam-wash: var(--fam-user-wash);     --fam-page: var(--fam-user-page); }
 /* The colourless one. A stack where every row is coloured has no hierarchy —
    the reference makes THRILLS neutral on purpose, and so does this. */
 .fam-none     { --fam: var(--cahier-line-strong); --fam-ink: var(--cahier-ink-soft); --fam-wash: var(--cahier-paper-2); }
+
+/* Ten stops, two to a row (Dan, 2026-08-30: "the columns are to be split
+   halfway at the screen's width"). One grid rather than two columns, so the
+   divide is the container's exact midpoint; `minmax(0,1fr)` because a long
+   French title would otherwise push its column wider than its neighbour. One
+   column below 520px, where two would give each stop about 120px. */
+.stop-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+@media (max-width: 520px) { .stop-grid { grid-template-columns: 1fr; } }
 
 /* ── WHAT THE ACTIVITY ASKS YOU TO DO (Dan, 2026-08-26) ────────────────────
    The family tells you where an activity LIVES in the menu. This tells you

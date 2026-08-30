@@ -73,6 +73,10 @@ export default function ActivityLanding({ activityKey }: { activityKey: string }
   useEffect(() => {
     const focus = lastSio ?? nextSioId(loadProgress());
     const sio = SIOS.find((s) => s.id === focus);
+    // Which unit to open is read from localStorage, which does not exist on
+    // the server — so this cannot be derived during render without breaking
+    // the prerender. The lint rule and that constraint genuinely disagree.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setOpenUnit(sio ? sio.unit : 0);
   }, [lastSio]);
 
@@ -130,7 +134,7 @@ export default function ActivityLanding({ activityKey }: { activityKey: string }
                       {got}/{unitRows.length}
                     </span>
                   </summary>
-                  <ul className="flex flex-col gap-1.5 px-3 pb-3">
+                  <ul className="stop-grid px-3 pb-3">
                     {unitRows.map(({ sio, href }) => (
                       <Row key={sio.id} sio={sio} href={href} act={act} isLast={sio.id === lastSio} />
                     ))}
