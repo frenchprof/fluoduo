@@ -15,7 +15,7 @@
  * FluOlin Goals is not in this list because Goals IS home — the wordmark. And
  * FluOlin User is not in it because Moi is the account chip, top right.
  */
-import { FAMILIES } from "@/content/activities";
+import { FAMILIES, familyShort } from "@/content/activities";
 
 export type NavSlot = { key: string; label: string; emoji: string; href: string };
 
@@ -37,12 +37,21 @@ export type NavSlot = { key: string; label: string; emoji: string; href: string 
  * User is deliberately absent, unchanged from the four-slot bar: the account
  * chip in the top bar is the profile door, and a second one down here was the
  * duplication that took the bar from six to four in the first place.
+ *
+ * EVERY SLOT NOW OPENS ITS FAMILY, not a member of it (2026-08-30). Dan:
+ * "can we first establish if those are really the five that we need anchored
+ * below? the most likely shortcuts needed by learners should go there." The
+ * five were right; two of the doors were not. 🎮 opened VocabulaRain and 💪
+ * opened ConjugaZone, because those two families had no hub page to open —
+ * so the other three games and the other five skills had no shortcut at all.
+ * `/games` and `/skills` are that missing page; verify52 fails the build if a
+ * slot ever points into a single activity again.
  */
 export const BOTTOM_NAV: NavSlot[] = FAMILIES.filter((f) => f.key !== "user").map((f) => ({
   key: f.key,
   // "FluOlin Review" is the family's name; the bar shows the short form,
   // because a 5-slot bar on a 390px phone gives each label ~72px.
-  label: f.name.replace(/^FluOlin /, ""),
+  label: familyShort(f),
   emoji: f.emoji,
   href: f.href,
 }));

@@ -167,6 +167,9 @@ jobs:
       - name: "Four more stops whose deck taught only the vocabulary (29 Aug)"
         run: python3 verify/verify51-four-more-stops.py
 
+      - name: Family hubs — every bottom-bar slot opens its family
+        run: python3 verify/verify52-nav-hubs.py
+
       - name: "A tour step points at something that exists (28 Aug)"
         run: python3 verify/verify44-tour-targets.py
 

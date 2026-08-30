@@ -41,7 +41,7 @@ import FirstTour from "@/components/FirstTour";
 import AccountButton from "@/components/AccountButton";
 import SoundControl from "@/components/SoundControl";
 import { isPlayableGap } from "@/lib/collections/gapSentence";
-import { activity, bandOf, familyOf } from "@/content/activities";
+import { activity, bandOf, familyOf, familyShort, hubFamily } from "@/content/activities";
 import { toPracticeSet } from "@/lib/practice/engine";
 import BottomBar from "@/components/BottomBar";
 import PageBand from "@/components/PageBand";
@@ -189,10 +189,15 @@ export default function CahierShell({
   // the page's name; deck/context pages fall back to their first context
   // flap, then to the registry (patch 19c retired the `crumb` prop, whose
   // only surviving job was this fallback). Home keeps the default.
+  const hub = hubFamily(active);
   const pageLabel =
     [...site, ...tools, ...context].find((t) => t.key === active)?.label ??
     context[0]?.label ??
-    activity(active)?.name;
+    activity(active)?.name ??
+    // A family hub is not an activity and has no flap, so without this its
+    // browser tab would say plain "FluOlinGo" — the fault the per-page title
+    // was introduced to end.
+    (hub && familyShort(hub));
   useEffect(() => {
     document.title = pageLabel ? `${pageLabel} · FluOlinGo` : "FluOlinGo";
   }, [pageLabel]);
