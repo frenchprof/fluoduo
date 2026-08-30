@@ -3021,3 +3021,66 @@ Two traps, both driven locally before shipping:
 Checkout gained `fetch-depth: 0`; a shallow clone has no base to diff against.
 Verified both ways: docs-only exits 0; touching `useDragFloat.ts` exits 1
 naming the rule.
+
+## 30 Aug — §2 of the evidence brief: the eight writers
+
+The colour-review session's `docs/EVIDENCE_HANDOFF.md` split the evidence work
+three ways and left §2 to Peers. This is that.
+
+**Their corrected list checks out.** Verified independently before trusting it,
+because the brief had already been wrong about its own §2 twice: eight direct
+`recordResponse` call sites in six files. `OpenFeedback.tsx:61` is correctly
+excluded — it hand-builds a full evidence block.
+
+**One extra find.** `src/app/decks/[id]/mcq/Content.tsx` carried the comment
+
+    // MCQ grades outside recordItemResult (it never fed the SRS), so it
+    // writes the evidence trail directly.
+
+directly above a call passing no evidence at all. A comment asserting the
+missing thing is worse than no comment — it answers the question a reader would
+otherwise go and check, which is probably why this sat unnoticed.
+
+### What was done, and what was deliberately not
+
+All eight keep `recordResponse` and gain `evidence: buildEvidence(...)`. They
+were NOT routed through `recordItemResult`, which pays XP and steps the SRS:
+Letris says so in its own comment ("must not double-pay XP per tile") and
+Compose calls `awardConversationXp()` a line above. Routing them would have
+started paying where the design says not to.
+
+Five of the six tags resolve on main today; `letris:` resolves once the colour
+session's §1 lands — their branch adds it, confirmed.
+
+**`verify54-evidence-writers.py`** asserts the other half of their `verify53`.
+Theirs checks that every TAG resolves; mine checks that the call CARRIES a
+block. The two are independent and the gap between them is exactly where eight
+sites sat — their tags were all fine, nothing read them. It reads the call's
+argument object by balancing parentheses and asserts the `evidence:` KEY, an
+absence rather than a value, because that is how the eight hid from the first
+scan. Break-tested on 3 mutations, all red.
+
+### The lint gate, paid in full
+
+Touching those six files inherited **16 pre-existing problems, 14 errors** —
+exactly the cost this gate was designed to impose, and the one the brief warned
+about. Cleared per `AGENTS.md`:
+
+- **One was real**: an unescaped apostrophe in LetrisGame's « Let's go! ».
+- **The other thirteen** are React Compiler rules firing on decisions this repo
+  records as deliberate — live refs written during render so async callbacks
+  read current values; `localStorage` read at mount because it cannot be read
+  during render; `Math.random()` in an effect because running it during render
+  would ship one seed to every learner on a static export and break hydration;
+  the `mounted` hydration guard, whose whole purpose is to be false during
+  render. Each disabled with its reason written out, not restructured —
+  rewriting eight game components as a side effect of adding an evidence field
+  would be a large, untested diff in code this change does not otherwise touch.
+
+**A near miss worth recording.** My first scan of `ACTIVITY_EVIDENCE` parsed
+**zero** prefixes and reported all six tags unresolved. The table is
+`Array<[string, EvidenceType]>`, not an object literal, and my regex expected
+`"key": "value"`. Six false failures, caught only by disbelieving a scan that
+found nothing. The same shape as both of theirs.
+
+tsc clean, build clean, 43 verify scripts green, touched files at 0 lint errors.

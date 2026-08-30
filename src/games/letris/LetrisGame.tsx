@@ -11,6 +11,7 @@ import GameOver, { type GameMiss } from "@/components/GameOver";
 import { reviewItemByFrench } from "@/lib/reviser";
 import { logEvent } from "@/lib/firebase/usage";
 import { shuffle } from "@/lib/shuffle";
+import { buildEvidence } from "@/lib/evidence";
 
 export type LetrisCategory = {
   key: string;
@@ -179,6 +180,7 @@ export default function LetrisGame({
   const [phase, setPhase] = useState<Phase>("day");
   const [phaseMsg, setPhaseMsg] = useState<PhaseMsg | null>(null);
   const phaseRef = useRef<Phase>("day");
+  // eslint-disable-next-line react-hooks/refs -- a LIVE ref: written during render so an async callback reads the current value, not the one captured when it was created.
   phaseRef.current = phase;
   // Lifetime per-word correct tally (drives day→night); per-PHASE tally (each
   // word once more within night / within storm); storm misses for the mercy rule.
@@ -188,6 +190,7 @@ export default function LetrisGame({
   const wordTexts = useMemo(() => [...new Set(pool.map((t) => t.text))], [pool]);
   const musicAutoRef = useRef(false);
   const musicRef = useRef(false);
+  // eslint-disable-next-line react-hooks/refs -- a LIVE ref: written during render so an async callback reads the current value, not the one captured when it was created.
   musicRef.current = music;
   const dawnTimerRef = useRef<number | null>(null);
   // First interaction — key OR tap — starts the tune (both are user gestures,
@@ -210,6 +213,7 @@ export default function LetrisGame({
   // true while the ⋯ sheet holds the rain (not the learner's own pause).
   const [menuAuto, setMenuAuto] = useState(false);
   const onGameEndRef = useRef(onGameEnd);
+  // eslint-disable-next-line react-hooks/refs -- a LIVE ref: written during render so an async callback reads the current value, not the one captured when it was created.
   onGameEndRef.current = onGameEnd;
   useEffect(() => {
     if (gameOver) {
@@ -239,6 +243,7 @@ export default function LetrisGame({
   const lastDropRef = useRef(0);
   const rafRef = useRef<number | null>(null);
   const stateRef = useRef({ board, active, queue, paused, gameOver });
+  // eslint-disable-next-line react-hooks/refs -- a LIVE ref: written during render so an async callback reads the current value, not the one captured when it was created.
   stateRef.current = { board, active, queue, paused, gameOver };
 
   const spawnTile = useCallback(() => {
@@ -287,6 +292,7 @@ export default function LetrisGame({
         .then((m) => m.recordResponse(a.tile.text, correct, {
           given: set.categories[a.col]?.label ?? String(a.col),
           activity: `letris:${set.id}`,
+          evidence: buildEvidence(a.tile.text, `letris:${set.id}`),
         }))
         .catch(() => {});
       setFlash({ col: a.col, kind: correct ? "ok" : "bad" });
@@ -530,6 +536,7 @@ export default function LetrisGame({
   const [dusk, setDusk] = useState(false);
   useEffect(() => {
     if (phase !== "day" || paused) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- the guard clause of an interval effect: clearing dusk IS the synchronisation this effect exists for.
       setDusk(false);
       return;
     }
@@ -648,7 +655,7 @@ export default function LetrisGame({
               onClick={() => { setStudied(true); autoMusic(); }}
               className="mt-5 w-full rounded-xl border-2 border-b-4 border-sky-300 bg-sky-100 px-4 py-2 text-lg font-black text-sky-800 transition hover:bg-sky-50 active:translate-y-[2px] active:border-b-2"
             >
-              ▶ Let's go!
+              ▶ Let&rsquo;s go!
             </button>
           </div>
         </div>
