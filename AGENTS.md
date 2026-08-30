@@ -31,10 +31,15 @@ used in CI.
   `check:short && check:sios && next build` — the two guards run first, so a
   build failure may be a label or a CSV drift rather than a compile error.
   Typecheck with `npx tsc --noEmit`, which is clean and must stay clean.
-- **Lint.** `npm run lint` reports pre-existing errors (mostly
-  `react-hooks/set-state-in-effect`). **CI does not run lint** — turning it on
-  repo-wide would paint every PR red on day one, and whether to lint only
-  PR-touched files is an open question for Dan.
+- **Lint.** `npm run lint` over the whole repo reports ~130 pre-existing
+  problems (mostly `react-hooks/set-state-in-effect`) across ~51 files. **CI
+  lints every file a pull request TOUCHES** — not the whole repo, which would
+  paint every PR red on day one. Consequence to budget for: a one-line change
+  to an old file inherits that file's whole lint debt. Where the rule
+  contradicts a deliberate decision (localStorage cannot be read during render;
+  a live ref must be written during render or an async callback fires a stale
+  value), a targeted `eslint-disable-next-line` **with the reason written out**
+  is the accepted resolution — see `SayItContent.tsx`.
 - **CI** is one job, `verify`: `tsc --noEmit`, `npm run build`, then every
   script in `verify/`, each named on its own `run:` line in
   `.github/workflows/verify.yml`. Add a check and you must add that line —
