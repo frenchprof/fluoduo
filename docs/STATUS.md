@@ -2866,3 +2866,53 @@ symmetry is the reason Dan moved them next to each other.
 
 12,000 cards executed clean; `verify51` break-tested on 8 mutations, all red,
 none vacuous. 41 verify scripts green.
+
+## 30 Aug — a reusable cycling-reveal → acronym animation
+
+Dan's ask, built as one self-contained component and one hidden playground.
+Nothing else in the app is touched; nothing links to it yet.
+
+- **`src/components/CyclingRevealAcronym.tsx`** — a sentence template whose
+  slots tumble like reels through their word lists, decelerating and landing on
+  a stagger; the finished sentence holds, readable; then every character the
+  acronym does not need shrinks away while the capitals fly together into it.
+  Everything is a prop: the template (`{}` or `{0}` placeholders), each slot's
+  word list and landing word, the nine timings, the acronym's size, gap and
+  optional separator ("." gives A.S.A.P.).
+- **The acronym is never configured.** It is read off the SETTLED sentence by
+  capitalisation, so a changed word list changes the acronym with no second
+  list to keep in sync. `acronymFrom` can replace the *test* (for a script
+  without letter case), never the letters.
+- **No colours, no tokens, no app imports.** It inherits font, size and colour
+  from wherever it is dropped and stamps `data-phase` for the host to style
+  off. That is the whole reusability claim, so it must not acquire a single
+  `--cahier-*`.
+- **Playground: `/hidden/cycling-reveal`** (noindex, in nobody's nav), with
+  three presets that share nothing — FLUO, SCUBA and a serif A.S.A.P. — plus
+  Replay / Skip / Reset and live sliders for the four timings. Its own chrome
+  uses the Cahier tokens; the three preset palettes are literal `oklch()` on
+  purpose, standing in for a host page's colours.
+
+### What the build taught
+
+- **The collapse is measured, not computed.** The acronym is laid out for real
+  first, as an invisible ghost at its final size, and each surviving character
+  is translated onto its ghost twin. Hand-computing the target positions would
+  mean re-deriving kerning and centring, and letters could land somewhere the
+  finished acronym is not.
+- **Three bugs the browser found, not the types.** (1) A reel is absolutely
+  positioned inside a clipped box, so before the ruler runs it has no height
+  and the sentence renders BLANK — which is exactly what the static export
+  shipped until the reel learned to fall back to plain text while unmeasured.
+  (2) `skip()` left the sentence sitting under the acronym: no letter had
+  flown, so no letter had been hidden. (3) `prefers-reduced-motion` read
+  through an effect arrives one render too late — the tumble has already
+  started — so it is read at the moment a run starts instead.
+- **`timing={{ cycleMs: 50 }}` written inline is a new object every render.**
+  A reel that depended on its identity restarted its timer chain on every
+  parent render and never reached its last word. Timings are read through a
+  ref, and the phase clock depends on the numbers, not the object.
+
+`tsc` clean, `npm run build` green, all 41 verify scripts green, and the two
+`verify19b` ratchets both go DOWN (the demo carries no raw hex and no stock
+Tailwind palette class). `eslint` clean on all three new files.
