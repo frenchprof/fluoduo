@@ -22,6 +22,7 @@
  */
 import { useEffect, useMemo, useRef, useState } from "react";
 import DrillShell, { drillExitHref, type DrillFeedback, type DrillFinish } from "@/components/DrillShell";
+import LessonTabs from "@/app/lessons/pager/LessonTabs";
 import OpenFeedback from "@/components/OpenFeedback";
 import SpeakZone from "@/components/SpeakZone";
 import WordBank from "@/components/WordBank";
@@ -434,7 +435,20 @@ export default function LessonPager({
       deck={collectionId}
       finish={asked ? finish : null}
     >
-      {!ready ? null : !asked ? chooser : card === "rule" ? (
+      {!ready ? null : !asked ? (
+        // Dan's six tabs (2026-08-30), as FRONT MATTER only — see LessonTabs.
+        // The moment a level is chosen `asked` flips, the tabs go, and the
+        // one-card pager takes over untouched. Les formes shows the same Mémo
+        // the run opens with: browsable here, walked there.
+        <LessonTabs
+          sio={sio}
+          deck={deck}
+          concept={lesson?.concept}
+          memo={lesson?.memo ?? (collectionId ? memoForDeck(collectionId) : undefined)}
+          bonus={lesson?.bonus}
+          exercise={chooser}
+        />
+      ) : card === "rule" ? (
         <div className="pt-2"><SpeakZone>{rules[i]}</SpeakZone></div>
       ) : card === "ex" && ex ? (
         <ExerciseCard ex={ex} selected={selected} value={value} result={result} struck={struckAll}
