@@ -354,10 +354,17 @@ Only ONE agent edits this file at a time; say so in your commit.
   learner path). Palette in seven `--fluo-origin-*` tokens (the renderer holds no
   hex; the bloom is `color-mix`, because `--fluo-ink` is authored in `lab()`
   and only the browser reads every syntax the stylesheet may use).
-  `verify52-fluolingo-origin.py` — **66 checks, wired into CI**,
+  **One renderer, mounted twice:** the engine is plain DOM in
+  `src/lib/fluolingoOriginRender.ts`, the `.tsx` is a mount, and
+  `scripts/build-origin-html.mjs` compiles the SAME two modules (plus the
+  tokens, read out of globals.css) into one self-contained page —
+  `work/fluolingo-origin/fluolingo-origin.html`, 22 kB, opens from `file://`,
+  no server and no network. A hand-written copy for sharing would answer
+  Dan's next note in one place and not the other, and the copy is the one
+  people watch. `verify52-fluolingo-origin.py` — **78 checks, wired into CI**,
   and it EXECUTES the module under Node's type stripping rather than reading
-  it: verified to fail when a gap is widened and when a growth step goes
-  backwards. Nothing on a learner surface changed; mounting it elsewhere is
+  it: verified to fail when a gap is widened, when a growth step goes
+  backwards, and when the standalone page falls behind the source. Nothing on a learner surface changed; mounting it elsewhere is
   one import and one tag. NOT deployed.
 
 ## Programme — done

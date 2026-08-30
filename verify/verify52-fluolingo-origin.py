@@ -33,8 +33,9 @@ rule reduces to "step never decreases", which is arithmetic and checkable.
 Neither rule can be checked from the rendered pixels in CI: there is no
 browser here. Both CAN be checked from the layout arithmetic, which is why
 `src/lib/fluolingoOrigin.ts` holds the stages, the beats and the placement
-maths with no DOM anywhere in it, and `FluolingoOrigin.tsx` is only a
-renderer. This file EXECUTES that module — under Node's type stripping, the
+maths with no DOM anywhere in it, `fluolingoOriginRender.ts` is the renderer
+in plain DOM, and `FluolingoOrigin.tsx` only mounts it. This file EXECUTES
+the arithmetic module — under Node's type stripping, the
 same code the browser runs, not a paraphrase of it.
 
 What this asserts:
@@ -73,10 +74,13 @@ if not os.path.isfile("package.json"):
     print("run from the repo root"); sys.exit(2)
 
 LIB = "src/lib/fluolingoOrigin.ts"
+REND = "src/lib/fluolingoOriginRender.ts"
 COMP = "src/components/FluolingoOrigin.tsx"
 PAGE = "src/app/hidden/fluolingo/page.tsx"
+BUILD = "scripts/build-origin-html.mjs"
+HTML = "work/fluolingo-origin/fluolingo-origin.html"
 
-for p in (LIB, COMP, PAGE):
+for p in (LIB, REND, COMP, PAGE, BUILD, HTML):
     check(os.path.isfile(p), f"{p} is there", f"MISSING {p}")
 if FAIL:
     print("\n".join(f"  FAIL {m}" for m in FAIL)); sys.exit(1)
@@ -218,12 +222,12 @@ check(steps == sorted(steps),
 check(steps[0] == 0 and steps[-1] == len(steps) - 1,
       "one growth step per transformation, from the settled sentence on",
       f"the steps run {steps} for {len(steps)} stages")
-comp = code(read(COMP))
+comp = code(read(REND))
 check(re.search(r"\(1 \+ grow\) \*\* STAGES\[\w+\]\.step", comp) is not None,
       "the renderer sizes every stage as base * (1 + growth) ** step",
       "the renderer no longer derives the size from the step — the "
       "never-shrink rule is not being applied")
-check("Math.max(0, growth)" in comp,
+check(re.search(r"Math\.max\(0, opts\.growth", comp) is not None,
       "a negative growth cannot be passed in to make the text shrink",
       "growth is not clamped: FluolingoOrigin growth={-0.1} would shrink the text")
 
@@ -307,7 +311,7 @@ check(D["chipFade"][0] >= B["holdSentenceEnds"] and D["chipFade"][1] <= B["reduc
       "the two field chips last exactly as long as the fields do",
       f"the chip fade {D['chipFade']} outlives the fields it marks")
 
-# ---- 8 · the renderer owns pixels and nothing else -------------------------
+# ---- 8 · one renderer, mounted twice ---------------------------------------
 for name in ("STAGES", "BEATS", "layoutStage", "cycleTicks", "widestSentenceEm"):
     check(re.search(rf"\b{name}\b", comp) is not None,
           f"the renderer takes {name} from the module",
@@ -327,11 +331,14 @@ check(not re.search(r"#[0-9a-fA-F]{3,8}\b", comp),
       "the renderer carries no raw colour — every hue is a --fluo-origin-* token",
       "the renderer hard-codes a colour: the palette now lives in two places")
 css = read("src/app/globals.css")
+# the ground is the host's own background, so the mount sets it; the rest are
+# per-glyph and belong to the engine
+users = comp + read(COMP) + read(BUILD)
 for token in ("ground", "flu", "o", "lin", "go", "field-1", "field-2"):
     name = f"--fluo-origin-{token}"
-    check(name in css and name in comp,
-          f"{name} is declared in globals.css and used by the renderer",
-          f"{name} is missing from globals.css or unused by the renderer")
+    check(name in css and name in users,
+          f"{name} is declared in globals.css and used",
+          f"{name} is missing from globals.css or used by nothing")
 check("var(--fluo-ink)" in comp,
       "the un-coloured letters are the site's own ink",
       "the renderer does not take its ink from --fluo-ink")
@@ -346,6 +353,40 @@ check("FluolingoOrigin" in page and "@/components/FluolingoOrigin" in page,
       "/hidden/fluolingo mounts the animation",
       "the preview page does not mount FluolingoOrigin — the animation ships "
       "with nowhere to watch it")
+
+# The React component must stay a MOUNT. The engine is plain DOM so the same
+# code can be compiled into a standalone page; the moment any of the layout
+# maths creeps back into the .tsx there are two renderers, and only one of them
+# is the one being watched.
+tsx = code(read(COMP))
+check("mountOrigin" in tsx,
+      "the React component mounts the shared engine rather than owning one",
+      "FluolingoOrigin.tsx no longer calls mountOrigin — the renderer has "
+      "been forked back into the component")
+for owned in ("layoutStage", "cycleTicks", "requestAnimationFrame", "getComputedStyle"):
+    check(owned not in tsx,
+          f"the component leaves {owned} to the engine",
+          f"FluolingoOrigin.tsx calls {owned}: the engine is being duplicated "
+          "in React, and the standalone page will drift from the app")
+
+# The standalone file is a build output, and a stale one is worse than none:
+# it is the copy that gets opened and sent on. Regenerate and compare.
+build = read(BUILD)
+check("fluolingoOriginRender" in build and "fluolingoOrigin.ts" in build,
+      "the standalone page is compiled from the app's own two modules",
+      "the build script no longer compiles the app's modules — the shared "
+      "page would be a second implementation")
+before = read(HTML)
+r2 = subprocess.run(["node", BUILD], capture_output=True, text=True)
+check(r2.returncode == 0,
+      "scripts/build-origin-html.mjs runs",
+      f"the standalone build failed: {(r2.stderr or r2.stdout)[-400:]}")
+check(read(HTML) == before,
+      f"{HTML} is current — it is the same code the app runs",
+      f"{HTML} is STALE: re-run `node {BUILD}` and commit the result")
+check("<script" in before and "src=" not in before.split("<style>")[0],
+      "the standalone page is self-contained — no server, no network, one file",
+      "the standalone page pulls something in from outside itself")
 
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:
