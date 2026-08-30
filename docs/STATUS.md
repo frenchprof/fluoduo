@@ -11,6 +11,47 @@ Only ONE agent edits this file at a time; say so in your commit.
 - `main` on `frenchprof/fluoduo` (origin) — the working repo.
 - Production = `dckg/fluo` (remote `live`), Cloudflare Pages project
   `fluolingo-dot-com` auto-builds its `main`. **Deploy = `git push live main`.**
+- 30 Aug (Claude Code, PR #72) — **DAN'S SIX-TAB FRAMEWORK IS BACK, AND THE
+  DESK IS BACK TO BINDING-LEFT / FLAPS-RIGHT.** He sent three lessons from his
+  original course site (aimer, faire du/de la, possessifs): "this framework is
+  how it should be in EVERY SIO". Le parcours · Le concept · Les formes ·
+  L'exercice · Le bonus · Le lexique — three already existed under other names
+  (the Mémo IS Les formes, `dice` IS L'exercice, `bonus` IS Le bonus).
+  **`LessonConcept`** (native/types.ts) takes its shape from his own concept
+  tabs: required subtitle/contrast/question/answer/remember, optional pitfall
+  table, flowchart, mini-check. `demonstratifs` is the reference; the other 46
+  are Peers' to draft and **Dan's to correct — `contrast` and `remember` are
+  the pedagogical claim and never ship unread**. **`LessonTabs`** renders all
+  six as FRONT MATTER only: they exist while `asked` is false and vanish the
+  moment an entry level is picked, so patch 22's one-card discipline is
+  untouched (verified: 6 tabs before, 0 after). Le parcours and Le lexique
+  needed NO authoring — `canDo`/`competence`/`collectionId` were already in
+  every SIO record.
+  **TWO CORRECTIONS I HAD WRONG.** (a) I told Dan the three-rung ladder was
+  missing and recommended retiring Sorting partly on that basis. It is not
+  missing — `lib/lessonEntry.ts`, live, HIS call of 27 Aug ("yes a learner may
+  choose to start at 3 stars"). What is genuinely missing from his original is
+  only the mid-run 🚀/⬇ and the 80% gate. (b) The coils: the 30 Aug mirroring
+  moved them right with the rail, which was the wrong half to mirror. Between
+  the two the desk disagreed with itself and **every drill's content ran UNDER
+  the binding on a narrow screen** — invisible until Le concept put the first
+  long prose in that container. Coils bind the LEFT again, every clearing
+  padding with them.
+  **THE ☰ IS THE NAVIGATION NOW** (Dan: the rail "cannot be flaps … they have
+  to be drop down like in most interfaces", "burger menu left, flaps right").
+  Two flap systems parted company: the six-family rail moved into the dropdown
+  (top left, every width), a page's own flaps stayed flaps on the right. This
+  also closed the 19 Aug open item — the dropdown listed activities FLAT while
+  the rail showed the families; it takes `RailGroups` now. `toolTabs()` no
+  longer renders whole there (it duplicated the families); **only Carte
+  remains and Dan has said that shortcut row can be swapped for something
+  else — it is free.**
+  Checks: verify29's rail assertions followed the rail into the dropdown;
+  verify19's "the rail returns at 900px" became the stronger invariant it was
+  reaching for — NOTHING may hide the ☰ at any width. Both break-tested.
+  **NEXT: A2–A5, then the mid-run ladder controls.** Still Dan's alone: the 11
+  SIOs with no lesson, the Sorting keep-or-retire call, the `transfer` rule,
+  the four food items in `negation-pas`, and `git push live main`.
 - 30 Aug (Claude Code, same branch) — **DAN ANSWERED THE FOUR EVIDENCE
   QUESTIONS; `diagnostic` IS NOW REACHABLE.** (1) Pre-tests go into the evidence
   store: `recordPretestEvidence` in `lib/pretests/runner.ts` (both authored
