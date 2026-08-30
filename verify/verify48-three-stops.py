@@ -341,7 +341,7 @@ const B = "./src/content/lessons/native/";
 const { quelJourQuestion } = await import(B + "quel-jour.gen.ts");
 const { combienQuestion, KEYS } = await import(B + "combien.gen.ts");
 const { onFaitQuoiQuestion, REPLIES } = await import(B + "on-fait-quoi.gen.ts");
-const { quEstCeQuestion } = await import(B + "qu-est-ce-que-c-est.gen.ts");
+const { quEstCeQuestion, OBJECTS, PLURALS, pronounFor } = await import(B + "qu-est-ce-que-c-est.gen.ts");
 const { ouEstQuestion, PLACES, AVEC_DE, SANS_DE, TOUT_SEUL } = await import(B + "ou-est.gen.ts");
 const norm = s => s.replace(/\s+/g, " ").replace(/\s+([?!.,])/g, "$1").trim();
 const bad = [];
@@ -357,6 +357,32 @@ for (let i = 0; i < 2000; i++) audit(quelJourQuestion(), "4");
 for (let i = 0; i < 2000; i++) audit(combienQuestion(), "7");
 for (let i = 0; i < 2000; i++) audit(onFaitQuoiQuestion(), "8");
 for (let i = 0; i < 2000; i++) audit(quEstCeQuestion(), "21");
+// Dan, 29 Aug: "il/elle for objects should go to 21, which should also include
+// ils/elles (sac, gomme, ciseaux, lunettes)." All four forms, and the verb
+// moving with the number — English has only "it" and "they" for the lot.
+const forms = new Set();
+for (let i = 0; i < 3000; i++) {
+  const q = quEstCeQuestion({ kind: "pronom" });
+  audit(q, "21-pronom");
+  const m = q.correct.match(/^(Il|Elle|Ils|Elles) (est|sont) là\.$/);
+  if (!m) { bad.push(`21 pronoun card malformed: ${q.correct}`); continue; }
+  const [, p, v] = m;
+  forms.add(p);
+  const plural = p === "Ils" || p === "Elles";
+  if (plural !== (v === "sont")) bad.push(`21 verb does not follow number: ${q.correct}`);
+  const noun = [...OBJECTS, ...PLURALS].find(n => q.big.includes(n.fr));
+  if (!noun) { bad.push(`21 pronoun prompt names no noun: ${q.big}`); continue; }
+  const isPl = PLURALS.some(x => x.fr === noun.fr);
+  if (p !== pronounFor(noun.f, isPl)) bad.push(`21 ${noun.fr}: got ${p}, want ${pronounFor(noun.f, isPl)}`);
+}
+// The plural cards are the deck's OWN plural-only nouns. They used to be a
+// singular with a bare + "s" ("Ce sont des sacs"), which is true French but
+// not what the deck teaches; `ciseaux` and `lunettes` have no singular at all.
+for (let i = 0; i < 1000; i++) {
+  const q = quEstCeQuestion({ kind: "pluriel" });
+  if (!PLURALS.some(p => q.correct === `Ce sont des ${p.fr}.`))
+    bad.push(`21 plural is not a deck plural-only noun: ${q.correct}`);
+}
 for (let i = 0; i < 3000; i++) {
   const q = ouEstQuestion(); audit(q, "34");
   // « Les toilettes SONT » — the deck's one plural place, and the generator
@@ -385,7 +411,7 @@ for (const p of TOUT_SEUL) {
   const q = ouEstQuestion({ preposition: p });
   if (/\bde\b|\bdu\b|\bdes\b/.test(q.correct)) bad.push(`${p} should take no place: ${q.correct}`);
 }
-console.log(JSON.stringify({ bad: bad.slice(0, 8), maxSeven: Math.max(...KEYS), replies: REPLIES.length }));
+console.log(JSON.stringify({ bad: bad.slice(0, 8), maxSeven: Math.max(...KEYS), replies: REPLIES.length, forms: [...forms].sort() }));
 """
 r5 = subprocess.run(["node", "--experimental-strip-types", "--input-type=module", "-e", JS5],
                     capture_output=True, text=True)
@@ -399,6 +425,10 @@ if r5.returncode == 0:
           f"stop 7 goes to {d5['maxSeven']} — Dan capped it at ten")
     check(d5["replies"] == 2, "stop 8 teaches exactly two lines (Dan, 29 Aug)",
           f"stop 8 teaches {d5['replies']} lines — Dan asked for two")
+    check(d5["forms"] == ["Elle", "Elles", "Il", "Ils"],
+          "stop 21 drills all four pronouns — il · elle · ils · elles (Dan, 29 Aug)",
+          f"stop 21 produces only {d5['forms']} — Dan asked for ils/elles too, on "
+          "sac, gomme, ciseaux and lunettes")
 
 # ── the word « épeler » is retired (Dan, 2026-08-29) ──────────────────────
 # "i want to remove the word epeler throughout the website, since it already

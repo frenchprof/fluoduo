@@ -37,9 +37,6 @@ import { leCheminLesson } from "./le-chemin";
 // Three more promises whose deck taught only the vocabulary: 13 never asks
 // its own title's question, 44 is fourteen shop names against a four-act
 // can-do, and 45A holds the numerals without the arithmetic that builds them.
-// SIO-006: the deck's four columns teach QUI/QUOI and un/une; what they
-// cannot carry is the sentence, and « Où ? » is absent altogether.
-import { quiQuoiOuLesson } from "./qui-quoi-ou";
 import { quelleMatiereLesson } from "./quelle-matiere";
 import { auMarcheLesson } from "./au-marche";
 import { soixanteDixLesson } from "./soixante-dix";
@@ -108,7 +105,6 @@ export const NATIVE_LESSONS: Record<string, NativeLesson> = {
   "qu-est-ce-que-c-est": quEstCeLesson,
   "ou-est": ouEstLesson,
   "le-chemin": leCheminLesson,
-  "qui-quoi-ou": quiQuoiOuLesson,
   "quelle-matiere": quelleMatiereLesson,
   "au-marche": auMarcheLesson,
   "soixante-dix": soixanteDixLesson,
