@@ -79,7 +79,16 @@ function writeOpen(next: Record<string, boolean>): void {
   listeners.forEach((fn) => fn());
 }
 
-export default function RailGroups({ activeKey }: { activeKey?: string }) {
+export default function RailGroups({
+  activeKey,
+  onNavigate,
+}: {
+  activeKey?: string;
+  /** Close the ☰ after a child link is followed. The rail used to live on the
+   *  desk, where nothing had to close; it is now inside the dropdown, and a
+   *  menu that stays open over the page it just opened is a bug. */
+  onNavigate?: () => void;
+}) {
   const owning = FAMILIES.find((f) =>
     childrenOf(f.key).some((c) => c.key === activeKey),
   )?.key;
@@ -126,6 +135,7 @@ export default function RailGroups({ activeKey }: { activeKey?: string }) {
                     key={c.key}
                     href={c.href}
                     aria-current={c.key === activeKey ? "page" : undefined}
+                    onClick={onNavigate}
                     className="cahier-tab cahier-tab--xs cahier-tab--child"
                     style={{ borderLeftColor: c.hue }}
                   >

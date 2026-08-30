@@ -677,15 +677,17 @@ body {
   background: linear-gradient(to right, rgba(42, 46, 110, 0.10), transparent);
 }
 
-/* Index tab — pastel, juts out from the LEFT edge (2026-08-30). */
+/* Index tab — pastel, juts out from the RIGHT edge (Dan, 2026-08-30: "burger
+   menu left, flaps right"). The thick coloured edge is the one TOUCHING the
+   page, so it flips with the side; the rounded corners are the free edge. */
 .cahier-tab {
   display: flex;
   align-items: center;
   gap: 0.4rem;
   padding: 0.38rem 0.75rem;
   border: 1.5px solid rgba(42, 46, 110, 0.35);
-  border-right: 6px solid var(--tab-hue, var(--cahier-hl));
-  border-radius: 12px 0 0 12px;
+  border-left: 6px solid var(--tab-hue, var(--cahier-hl));
+  border-radius: 0 12px 12px 0;
   background: #fff;
   color: var(--cahier-ink-soft);
   font-family: var(--font-body-stack);
@@ -707,7 +709,7 @@ body {
 .cahier-tabs .cahier-tab--xs { width: 144px; }
 /* A family's children sit indented under it, so the rail's two ranks read as
    one hierarchy rather than twenty-two equals (Dan, 19 Aug). */
-.cahier-tabs .cahier-tab--child { width: 132px; margin-right: 12px; }
+.cahier-tabs .cahier-tab--child { width: 132px; margin-left: 12px; }
 .cahier-tabs .cahier-tab > span:last-child { overflow: hidden; text-overflow: ellipsis; }
 /* Two-line flap: activity name over a tiny action verb ("browse the cards")
  * — first-timers can't tell Flip It from Lesson by name alone (Dan,
@@ -767,7 +769,7 @@ body {
   width: 182px;
   padding: 0.75rem 1rem;
   font-size: 0.95rem;
-  border-right-width: 8px;
+  border-left-width: 8px;
 }
 .cahier-deskrow {
   display: flex;
@@ -826,7 +828,9 @@ body {
    (Dan, 2026-07-14: "showing a gap with the edge of the page (again)") —
    tuck the rail back over the stack so flaps touch the page like real
    index tabs. The rail is z-index 3, above the stack's edge bands. */
-.cahier-stack ~ .cahier-tabs { order: -1; margin-right: -19px; }
+/* Flaps on the right tuck LEFT over the stack's edge, so they touch the
+   paper like real index tabs (the 2026-07-14 fix, mirrored). */
+.cahier-stack ~ .cahier-tabs { margin-left: -19px; }
 
 .cahier-stack .cahier-page,
 .cahier-stack--inner .cahier-page {
@@ -836,7 +840,10 @@ body {
   box-shadow: 0 6px 18px rgba(34, 40, 80, 0.16), 0 0 0 1.5px rgba(42, 46, 110, 0.14);
 }
 .cahier-tabs {
-  order: -1;                    /* the rail leads the desk row (2026-08-30) */
+  /* The per-deck flaps TRAIL the page (Dan, 2026-08-30: "burger menu left,
+     flaps right"). The six-family rail that used to lead this row is now the
+     ☰ dropdown; what is left here is page furniture, and it sits on the free
+     edge opposite the coils. */
   position: sticky;
   top: 18px;
   display: none;            /* hidden below 900px — icons-only 640-900, bottom bar under */
@@ -849,10 +856,12 @@ body {
   overflow-y: auto;
   overscroll-behavior: contain;
 }
-.cahier-menu { display: block; }   /* the ☰ wrapper — shown below 900px */
-@media (min-width: 900px) {
+/* The ☰ IS the navigation now, at every width (Dan, 2026-08-30) — it used to
+   appear only below 900px, where it stood in for the desk rail. Nothing hides
+   it any more; verify19 asserts that no rule ever does. */
+.cahier-menu { display: block; }
+@media (min-width: 640px) {
   .cahier-tabs { display: flex; }
-  .cahier-menu { display: none; }
 }
 /* Number fields: the native spinner sat ON TOP of the digit in narrow boxes
  * (Dan, 2026-07-05, Flip It subsets) — type the number instead. */
@@ -1250,9 +1259,9 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 @media (max-width: 639.98px) {
   .cahier-page { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
 }
-/* Tablet: the rail returns, icons only. */
+/* Tablet: the page flaps shrink to icons — there are only a few of them now,
+   but a deck with five views still needs the room. */
 @media (min-width: 640px) and (max-width: 899.98px) {
-  .cahier-tabs { display: flex; }
   .cahier-tabs .cahier-tab-label,
   .cahier-tabs .cahier-tab-text,
   .cahier-tabs .cahier-tab-hint { display: none; }
