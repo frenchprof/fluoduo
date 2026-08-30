@@ -202,8 +202,12 @@ jobs:
       - name: "Lint the files this PR touches"
         if: github.event_name == 'pull_request'
         run: |
+          # No fetch here. `fetch-depth: 0` on checkout above already has the
+          # full history and every ref, and `--depth=0` is not even valid —
+          # git rejects it with "depth 0 is not a positive number". Swallowed
+          # by `|| true`, it printed a red `fatal:` on every GREEN run, which
+          # is exactly the kind of line that teaches people to ignore CI.
           BASE="origin/${{ github.base_ref }}"
-          git fetch --no-tags --depth=0 origin "${{ github.base_ref }}" || true
           CHANGED=$(git diff --name-only --diff-filter=d "$BASE"...HEAD -- 'src/**/*.ts' 'src/**/*.tsx')
           if [ -z "$CHANGED" ]; then
             echo "No source files touched — nothing to lint."
