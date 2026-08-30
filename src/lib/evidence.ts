@@ -101,13 +101,22 @@ const ACTIVITY_EVIDENCE: Array<[string, EvidenceType]> = [
   ["say-it", "productive"],
   ["/practice/say-it/", "productive"],
   ["/practice/wordrill", "productive"],
+  ["lesson-write:", "free"],   // the pager's open-writing card, ChaTutor-checked
   ["compose-solo", "free"],
   ["compose:", "free"],
   ["/games/compose/", "free"],
   ["ecoutexte", "receptive"],
   ["/practice/ecoutexte", "receptive"],
-  ["speculearn", "receptive"],
-  ["/practice/speculearn/", "receptive"],
+  // SpecuLearn is a PRIOR-KNOWLEDGE probe, not comprehension (Dan, 2026-08-30:
+  // "it is a sort of diagnostic about what one might already know beforehand,
+  // one's prior knowledge"). It shows a picture and four words and asks before
+  // the lesson has taught them. It was mapped `receptive` — listening/reading
+  // comprehension — which is neither what the screen does (it is a four-way
+  // pick) nor what the guess is for. CAVEAT worth knowing: the drill is
+  // replayable, so a second run is no longer prior knowledge; the type is
+  // right for the activity's purpose, not provably for every attempt.
+  ["speculearn", "diagnostic"],
+  ["/practice/speculearn/", "diagnostic"],
   ["/practice/flip-it/", "recognition"],
   ["flip-it", "recognition"],
   ["lexicalater:", "recognition"],

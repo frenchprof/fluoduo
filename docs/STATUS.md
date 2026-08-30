@@ -11,6 +11,59 @@ Only ONE agent edits this file at a time; say so in your commit.
 - `main` on `frenchprof/fluoduo` (origin) — the working repo.
 - Production = `dckg/fluo` (remote `live`), Cloudflare Pages project
   `fluolingo-dot-com` auto-builds its `main`. **Deploy = `git push live main`.**
+- 30 Aug (Claude Code, same branch) — **DAN ANSWERED THE FOUR EVIDENCE
+  QUESTIONS; `diagnostic` IS NOW REACHABLE.** (1) Pre-tests go into the evidence
+  store: `recordPretestEvidence` in `lib/pretests/runner.ts` (both authored
+  engines) and in `PicturePretestContent` (which keeps its own ledger). It is
+  `recordResponse` directly with `xpPaid: 0` and NO SRS step — never
+  `recordItemResult` — so his 27 Aug "remember it, but don't score it" rule is
+  untouched: that rule governs XP, accuracy and the review queue, none of which
+  the response store drives. (4) SpecuLearn is `diagnostic`, not `receptive` —
+  Dan: *"it is a sort of diagnostic about what one might already know
+  beforehand, one's prior knowledge."* CAVEAT recorded in the code: the drill is
+  replayable, so a second run is no longer prior knowledge.
+  **The check found two more bugs while being extended for this.** Its first
+  version could not see the very code written against it — `{ given, activity }`
+  ES shorthand — and teaching it that (scoped to recorder-call arguments; a
+  file-wide pattern reported eleven phantoms from DrillShell props and
+  destructured parameters) exposed `lesson-write:` from the pager's open-writing
+  card, which matched no prefix and stored no type. Now `free`. verify53 is 44
+  assertions, break-tested seven ways in total.
+  **STILL DAN'S, both raised in `docs/EVIDENCE_HANDOFF.md`:** `transfer` (needs a
+  rule for "unfamiliar context" — his Unit 2 example correction below means the
+  example I gave was invalid, so the question is genuinely still open), and the
+  Sorting `recog` vs `constrained` contradiction, now overtaken by the Sorting
+  review.
+
+- 30 Aug (Claude Code) — **SORTING REVIEWED; DAN'S ORIGINAL FOUND.** Dan:
+  *"Sorting was never supposed to have existed. I don't recognise the activity
+  and perhaps it was something else that slowly drifted into this."* He then sent
+  his original build (`Leçon 8 — Hobbies I : aimer + faire + N`). **Sorting is
+  not a drifted EtuDice; it is a different exercise that took the name** in the
+  25 Aug rename. The original is a GENERATOR (subject × verb × activity, a fresh
+  sentence per roll — that is what the die does) and PRODUCTIVE (the learner
+  forms the sentence), with three learner-chosen rungs: ★ pick the conjugation,
+  ★★ verb + article, ★★★ type the whole sentence from memory, 80% to climb.
+  Sorting is derived from LexicaLater's column config ("No content authoring
+  needed", `lib/practice/engine.ts`), is recognition, and has one rung.
+  **The original mechanic SURVIVES and is correct**: 27 of 28 native lessons
+  carry both the dropdowns and the die, `aimer` among them, and `DiceAxis` cites
+  Dan's site by name. What did NOT come back is his LADDER — the pager runs a
+  fixed ramp (4 MCQ, 4 gap, 3 build, 1 translate) instead of levels the learner
+  picks and climbs. That is the one piece genuinely missing.
+  **Audit of Sorting itself:** 31 of 44 decks generate one; 3 decks print their
+  own answer (`partitifs` **8 of 8**, `transport` 6/9, `negation-pas` 11/20 — 25
+  of 552 questions). Also found: Sorting says `Correct !` in French, breaching
+  the no-French-interface rule. Playable sample + the full audit:
+  https://claude.ai/code/artifact/9c6da1d8-05ef-49aa-80c6-a932f93334e7
+  **AWAITING DAN:** keep and fix the three decks · retire it · or retire it and
+  rebuild the ladder over the 27 lesson generators (my recommendation).
+  **Unit 2 food leak, his question:** `negation-pas` (u2) teaches the negated
+  partitive with *pas de café · pas de chocolat · pas d'eau · plus de café*, and
+  u4 `partitifs` teaches it again with eight more. The rest of `negation-pas` is
+  `faire` + activity, which is where u2 belongs. Swapping those four items
+  removes the overlap. NOT YET DONE — it is content, and his call.
+
 - 30 Aug (Claude Code, branch `claude/evidence-brief`, commit `e4a1fb8`) —
   **THE EVIDENCE STORE WAS RECORDING ANSWERS WITH NO MEANING.** `recordResponse`
   falls back to `location.pathname` for the activityId it stores;

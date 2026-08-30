@@ -46,5 +46,50 @@ export function judgePretestAnswer(pretestId: string, item: PretestItem, choice:
     correct,
     picked: choice,
   });
+  recordPretestEvidence(pretestId, item.id, correct, choice);
   return correct;
 }
+
+/**
+ * The pre-test answer as EVIDENCE (Dan, 2026-08-30: "yes").
+ *
+ * A pre-test is the only occasion the app can observe a learner cold, before
+ * instruction — which is exactly what `diagnostic` means in PRD §7, and until
+ * now the store held none, because pre-tests wrote only localStorage and a
+ * usage event. Those two live in different piles from every other answer, so
+ * "did they know this before the lesson, and after?" could not be asked of the
+ * store at all.
+ *
+ * DAN'S 27 AUGUST RULE IS UNTOUCHED — "remember it, but don't score it". That
+ * rule is about XP, accuracy and the review queue, and this deliberately goes
+ * nowhere near them: NOT recordItemResult (which pays XP and steps the SRS
+ * ladder), but recordResponse directly, with `xpPaid: 0`. A pre-test miss
+ * still costs nothing and still never enters the review queue.
+ *
+ * The label is what makes this safe. Anything reading the response store must
+ * honour `evidenceType: "diagnostic"` — a cold guess counted as a failure is
+ * the one way this could do harm.
+ *
+ * Dynamic import keeps Firestore out of this module's static graph (the
+ * usage.ts rule); fire-and-forget, signed-out is a no-op.
+ */
+function recordPretestEvidence(
+  pretestId: string,
+  itemId: string,
+  correct: boolean,
+  picked: string,
+): void {
+  const activity = `pretest:${pretestId}`;
+  void Promise.all([import("@/lib/firebase/responses"), import("@/lib/evidence")])
+    .then(([r, e]) =>
+      r.recordResponse(itemId, correct, {
+        given: picked,
+        activity,
+        xpPaid: 0,
+        evidence: e.buildEvidence(itemId, activity),
+      }),
+    )
+    .catch(() => {});
+}
+
+export { recordPretestEvidence };

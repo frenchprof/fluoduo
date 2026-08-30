@@ -68,12 +68,29 @@ def resolve(tag):
 # colour and labels, a different thing wearing the same word, and treating the
 # two as one is what made the first draft of this scan report phantoms.
 KEY = re.compile(r'\bactivity:\s*(?:`([^`]*)`|"([^"]*)")')
+# `activity={`lesson-write:${deck.id}`}` — a JSX tag handed to a component that
+# forwards it to a recorder (OpenFeedback). Only the BACKTICK form counts:
+# `activity="lesson"` on DrillShell is the registry key for colour and labels,
+# a different thing wearing the same word, and every one of those is a plain
+# string. The two never collide, but the day one does, this is the line to fix.
+JSX = re.compile(r'\bactivity=\{`([^`]*)`\}')
 IDENT = re.compile(r'\bactivity:\s*([A-Za-z_$][\w$]*)\s*[,}]')
 # `activity: string` in a type literal is a declaration, not a tag; and a
 # member expression (`rec.activity`, `ex.activity`) is a PASSTHROUGH — the
 # literal it carries is scanned at its own call site, so following it here
 # would only report the same tag twice under a name that cannot resolve.
 TS_TYPES = {"string", "number", "boolean", "undefined", "null", "unknown", "any"}
+# `{ given, activity, xpPaid }` — the ES shorthand property. It carries a tag
+# exactly as `activity: x` does, and the first version of this check could not
+# see it: recordPretestEvidence (runner.ts) was written that way and passed
+# silently on the very day the check was added. A scan that cannot see the
+# code written against it is worth nothing.
+#
+# Scoped to the ARGUMENTS of a recorder call, never file-wide: `{ activity }`
+# also appears in DrillShell's props, in destructured parameters and in type
+# literals, and a pattern loose enough to catch those reports eleven phantoms
+# for every real tag.
+SHORT = re.compile(r"(?:^|[,{]\s*)activity\s*[,}]")
 
 def args_of(src, i):
     """Split a call's arguments by depth, respecting strings. A regex across a
@@ -111,8 +128,21 @@ for dp, ds, fs in os.walk(os.path.join(ROOT, "src")):
         # local `const NAME = \`tag...\`` so a hoisted tag still resolves
         consts = {m.group(1): (m.group(2) or m.group(3))
                   for m in re.finditer(r'\bconst\s+([A-Za-z_$][\w$]*)\s*=\s*(?:`([^`]*)`|"([^"]*)")', src)}
+        for m in JSX.finditer(src):
+            EMITTED.append((m.group(1), rel, src[:m.start()].count("\n") + 1))
         for m in KEY.finditer(src):
             EMITTED.append(((m.group(1) or m.group(2)), rel, src[:m.start()].count("\n") + 1))
+        for m in re.finditer(r"\brecordResponse\s*\(", src):
+            ln = src[:m.start()].count("\n") + 1
+            for a in args_of(src, m.end() - 1)[2:]:
+                if not SHORT.search(a):
+                    continue
+                if "activity" in consts:
+                    EMITTED.append((consts["activity"], rel, ln))
+                elif re.search(r"\bactivity\??:\s*string", src):
+                    pass   # a declared parameter or prop: forwarded, not authored
+                else:
+                    INDIRECT.append(("activity (shorthand)", rel, ln))
         for m in IDENT.finditer(src):
             name = m.group(1)
             if name in consts:
@@ -169,15 +199,19 @@ for name, rel, ln in sorted(set(INDIRECT)):
 # `delayed` again fails here, and wiring `diagnostic` fails here too — with a
 # reason to update this list rather than a silent pass.
 #
-#   diagnostic  UNREACHABLE BY DESIGN. Pretests write localStorage only
-#               (recordPretestAnswer); Dan, 2026-08-27: "remember it, but
-#               don't score it". Putting them in the evidence store is his
-#               call, not a wiring fix.
+#   diagnostic  REACHABLE since 2026-08-30, from two sources. Dan said yes to
+#               writing pre-tests into the evidence store, and named SpecuLearn
+#               a prior-knowledge probe. Pre-tests reach it through
+#               recordPretestEvidence (runner.ts) with xpPaid 0 and no SRS
+#               step, so his 27 Aug "remember it, but don't score it" rule is
+#               untouched — that rule governs XP, accuracy and the review
+#               queue, none of which the response store drives.
 #   transfer    UNREACHABLE — no caller sets it and nothing derives it. It
 #               needs a rule for "an unfamiliar context", which is a
 #               modelling decision, not a lookup.
 #   teacher     UNREACHABLE — no sign-off surface exists yet.
-EXPECTED = {"recognition", "constrained", "free", "receptive", "productive", "delayed"}
+EXPECTED = {"recognition", "constrained", "free", "receptive", "productive",
+            "delayed", "diagnostic"}
 ok(seen_types == EXPECTED,
    f"the app produces exactly {sorted(seen_types)}",
    f"the reachable evidence types have changed: {sorted(seen_types)}, expected "
