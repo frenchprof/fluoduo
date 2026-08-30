@@ -2866,3 +2866,45 @@ symmetry is the reason Dan moved them next to each other.
 
 12,000 cards executed clean; `verify51` break-tested on 8 mutations, all red,
 none vacuous. 41 verify scripts green.
+
+## 30 Aug — the name gets written down: "Fluency On Linguistic Goals"
+
+Dan asked which expansion of **FluOlinGo** suits best, from five candidates
+(*on · over · of · Fluent Outcomes · through Online*). **"Fluency On
+Linguistic Goals" wins on the evidence already in the repo**: the house
+spelling **Flu**O**lin**Go splices onto it letter-for-letter, and the seams
+are the capitals we have been printing all along. The rejected four, briefly:
+*over* sets fluency against the objectives; *of* is a genitive with nothing
+on the far end; *Fluent Outcomes* is four nouns with no joint, in
+assessment-office register, on a page whose first commitment is that nothing
+here is graded; *through Online Goals* breaks the splice (nothing supplies
+`lin`) and foregrounds the delivery medium in an app that exists to make
+Thursday's class land.
+
+Written up as a **"The name" section on `/about`** (`src/app/about/page.tsx`),
+after the five commitments and before the References. It carries:
+
+- the wordmark cut at its four seams, each piece over the word it abbreviates;
+- the point of the preposition — fluency *in French* is unbounded and
+  unfalsifiable, fluency *on* fifty named goals is finite and checkable;
+- **the ladder**. A name that is only a noun phrase hides its verb, and this
+  one hides four. They are not four rival readings — they are four rungs, each
+  standing on the one above, and each demanding its own qualifier on the goals:
+
+  | rung | verb | qualifier | why that pairing |
+  |---|---|---|---|
+  | 1 | built on | your course's | a foundation you do not own is a rival syllabus |
+  | 2 | trained on | linguistic | you train a competence, not a streak |
+  | 3 | earned on | one of fifty | earning is per-unit, so the unit must be countable |
+  | 4 | measured on | named | measurement needs an identity to attach a number to |
+
+  The compression is legitimate because all four verbs govern the same
+  preposition — build/train/earn/measure **on** — so `on` survives as their
+  common residue and each reader restores the rung they stand on.
+
+The section is text on a page that is off every learner path (rationale only,
+linked from the Guide footer), so the litmus test does not bite: nothing here
+sits between a learner and an answer.
+
+Green: `tsc --noEmit`, `npm run build`, all 41 verify scripts. No content,
+data or component touched — one file.
