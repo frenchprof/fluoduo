@@ -11,8 +11,20 @@ Only ONE agent edits this file at a time; say so in your commit.
 - `main` on `frenchprof/fluoduo` (origin) — the working repo.
 - Production = `dckg/fluo` (remote `live`), Cloudflare Pages project
   `fluolingo-dot-com` auto-builds its `main`. **Deploy = `git push live main`.**
-- 30 Aug (Claude Code, branch `claude/fluolingo-color-review-9thj8x`, NOT yet
-  merged): four commits, all from Dan's session on the colour system.
+- 30 Aug (Claude Code) — **PR #65 and #66 merged to `main`, not yet deployed.**
+  #66 finished the colour work beyond the palette: the six family hues wash the
+  PAGE at 97.5% lightness (the 60 of 60-30-10 — `--band-wash` was invented for
+  this on 26 Aug and never wired); pages you READ rather than answer (Memo,
+  guide, quick guide — `isReadingSurface()`) take « le sable beige » instead,
+  which Dan chose BLIND over all six family grounds; and a unit's ten stops sit
+  two to a row, dividing at the container's exact midpoint.
+  **The changed-file lint gate is live** and AGENTS.md is wrong about it: CI
+  lints every file a PR touches, so touching an old file inherits its lint
+  debt. Six such errors were met this way — three fixed (capability probes now
+  use `useSyncExternalStore`), five marked with the reason the older decision
+  stands (localStorage cannot be read during render; a live ref must be written
+  during render or a key handler fires a stale CTA).
+- 30 Aug (Claude Code, PR #65): four commits, all from Dan's session on the colour system.
   · **Family hubs** — `/games` and `/skills` now exist. `BOTTOM_NAV` takes each
     slot's href from `FAMILIES`, and two families had no hub, so 🎮 opened
     VocabulaRain (one game of four) and 💪 opened ConjugaZone (one of six).
