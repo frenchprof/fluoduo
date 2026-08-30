@@ -154,6 +154,7 @@ const PATH_NAMES: Array<[string, string]> = [
   ["/guide", "Guide"],
   ["/about", "About"],
   ["/hidden/vocabularain", "VocabulaRain (hi-scores)"],
+  ["/hidden/cycling-reveal", "Cycling reveal (component demo)"],
 ];
 
 /**
