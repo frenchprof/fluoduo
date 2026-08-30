@@ -11,6 +11,36 @@ Only ONE agent edits this file at a time; say so in your commit.
 - `main` on `frenchprof/fluoduo` (origin) — the working repo.
 - Production = `dckg/fluo` (remote `live`), Cloudflare Pages project
   `fluolingo-dot-com` auto-builds its `main`. **Deploy = `git push live main`.**
+- 30 Aug (Claude Code, branch `claude/evidence-brief`, commit `e4a1fb8`) —
+  **THE EVIDENCE STORE WAS RECORDING ANSWERS WITH NO MEANING.** `recordResponse`
+  falls back to `location.pathname` for the activityId it stores;
+  `buildEvidence` gets the raw `activity` argument and has no fallback, and
+  nothing made them agree. A caller that passed no activity wrote a sensible
+  activityId and NO `evidenceType` — so 22 of the 35 keys in
+  `ACTIVITY_EVIDENCE`, every path-shaped one, were unreachable, and ten live
+  surfaces wrote unreadable answers. **The Reviser is the only surface that can
+  produce `delayed`** (it alone serves an item because its spacing interval
+  elapsed) and it produced none, ever — the strongest signal PRD §7 asks for
+  has been absent since the model was built. The Grammarathon finale had it
+  backwards: the first attempt, the one that pays, passed `undefined`, while
+  the post-assistance re-record passed the full path. All ten now pass an
+  explicit tag; `verify53-evidence-coverage.py` (break-tested four ways) fails
+  the build on a tag that resolves to nothing, a call with no tag, a live
+  surface resolving through a path key, or the Reviser losing `delayed`.
+  **NOT DONE, and deliberately — both are Dan's calls, not lookup errors:**
+  `diagnostic` (pretests stay out of the store entirely, his 27 Aug rule
+  "remember it, but don't score it"; writing them with `xpPaid: 0` and no SRS
+  step would honour that rule, but it changes what the teacher dashboard sees)
+  and `transfer` (needs a rule for what "unfamiliar context" means before it
+  needs code). Also open for Dan: `activities.ts` files Sorting as `recog`
+  while the table maps every dice prefix to `constrained` — left alone because
+  changing it reclassifies every Sorting answer already stored.
+  **Still free for Peers:** the eight direct `recordResponse` callers in six
+  files (§2 of `docs/EVIDENCE_HANDOFF.md`) that skip `buildEvidence` and store
+  bare right/wrong. Their tags are fine; nothing reads them.
+  `docs/EVIDENCE_HANDOFF.md` is corrected — its §1 reported an `fr-FR` bug that
+  does not exist (a regex matching across a call boundary) and its §2 named
+  five callers when there are eight.
 - 30 Aug (Claude Code) — **PR #65 and #66 merged to `main`, not yet deployed.**
   #66 finished the colour work beyond the palette: the six family hues wash the
   PAGE at 97.5% lightness (the 60 of 60-30-10 — `--band-wash` was invented for
