@@ -644,10 +644,15 @@ body {
 }
 .cahier-modeswitch[data-on="true"] .cahier-modeswitch-knob { left: 33px; }
 
-/* Spiral ring binding — metallic coils down the left gutter (responsive). */
+/* Spiral ring binding — metallic coils down the RIGHT gutter (responsive).
+   They moved from the left when the flap rail did (Dan, 2026-08-30: "i want
+   that bigger change ... for the left menu instead of right"). The coils and
+   the tabs are the two things that live in a gutter, and they cannot share
+   one: index tabs belong on the edge AWAY from the binding, which is now the
+   right. The whole desk is mirrored, not just the rail. */
 .cahier-binding {
   position: absolute;
-  top: 0; bottom: 0; left: 0;
+  top: 0; bottom: 0; right: 0;
   width: 38px;
   background-image: repeating-linear-gradient(
     to bottom,
@@ -659,7 +664,7 @@ body {
     var(--cahier-spiral-lo) 25px 26px,
     transparent 26px 33px
   );
-  -webkit-mask-image: radial-gradient(circle at right, #000 60%, transparent 61%);
+  -webkit-mask-image: radial-gradient(circle at left, #000 60%, transparent 61%);
   mask-image: none;
   pointer-events: none;
 }
@@ -667,34 +672,34 @@ body {
   /* punch-hole shadow where the page meets the coils */
   content: "";
   position: absolute;
-  top: 0; bottom: 0; right: 0;
+  top: 0; bottom: 0; left: 0;
   width: 8px;
-  background: linear-gradient(to right, rgba(42, 46, 110, 0.10), transparent);
+  background: linear-gradient(to left, rgba(42, 46, 110, 0.10), transparent);
 }
 
-/* Index tab — pastel, juts out from the right edge. */
+/* Index tab — pastel, juts out from the LEFT edge (2026-08-30). */
 .cahier-tab {
   display: flex;
   align-items: center;
   gap: 0.4rem;
   padding: 0.38rem 0.75rem;
   border: 1.5px solid rgba(42, 46, 110, 0.35);
-  border-left: 6px solid var(--tab-hue, var(--cahier-hl));
-  border-radius: 0 12px 12px 0;
+  border-right: 6px solid var(--tab-hue, var(--cahier-hl));
+  border-radius: 12px 0 0 12px;
   background: #fff;
   color: var(--cahier-ink-soft);
   font-family: var(--font-body-stack);
   font-weight: 700;
   font-size: 0.82rem;
   cursor: pointer;
-  box-shadow: 2px 2px 0 rgba(42, 46, 110, 0.10);
+  box-shadow: -2px 2px 0 rgba(42, 46, 110, 0.10);
   transition: transform 0.14s, background 0.14s, color 0.14s, box-shadow 0.14s;
   white-space: nowrap;
 }
 /* Layer sizes — the rail reads as a hierarchy: site row > deck activities >
  * in-page views (Flip It). */
-.cahier-tab--sm { padding: 0.28rem 0.65rem; font-size: 0.74rem; border-left-width: 5px; }
-.cahier-tab--xs { padding: 0.2rem 0.55rem; font-size: 0.68rem; border-left-width: 4px; }
+.cahier-tab--sm { padding: 0.28rem 0.65rem; font-size: 0.74rem; border-right-width: 5px; }
+.cahier-tab--xs { padding: 0.2rem 0.55rem; font-size: 0.68rem; border-right-width: 4px; }
 /* In the rail, flap LENGTH steps down by the same proportion as the sheets
  * (980/930/880): deeper tiers are shorter tongues. Long labels ellipsize. */
 .cahier-tabs .cahier-tab { width: 160px; }
@@ -702,7 +707,7 @@ body {
 .cahier-tabs .cahier-tab--xs { width: 144px; }
 /* A family's children sit indented under it, so the rail's two ranks read as
    one hierarchy rather than twenty-two equals (Dan, 19 Aug). */
-.cahier-tabs .cahier-tab--child { width: 132px; margin-left: 12px; }
+.cahier-tabs .cahier-tab--child { width: 132px; margin-right: 12px; }
 .cahier-tabs .cahier-tab > span:last-child { overflow: hidden; text-overflow: ellipsis; }
 /* Two-line flap: activity name over a tiny action verb ("browse the cards")
  * — first-timers can't tell Flip It from Lesson by name alone (Dan,
@@ -720,8 +725,8 @@ body {
  * surrounds the current page (spread shadows below), so level-1 flaps poke
  * out of the level-1 sheet, never out of the current page (Dan, 2026-07-05:
  * exactly like the SIO popup over its page). */
-.cahier-tab--back1 { margin-left: 18px; }
-.cahier-tab--back2 { margin-left: 36px; }
+.cahier-tab--back1 { margin-right: 18px; }
+.cahier-tab--back2 { margin-right: 36px; }
 .cahier-tab:hover { transform: translateX(-3px); }
 .cahier-tab[data-active="true"] {
   background: var(--tab-hue, var(--cahier-hl));
@@ -762,13 +767,14 @@ body {
   width: 182px;
   padding: 0.75rem 1rem;
   font-size: 0.95rem;
-  border-left-width: 8px;
+  border-right-width: 8px;
 }
 .cahier-deskrow {
   display: flex;
   align-items: flex-start;
   flex-wrap: nowrap;            /* never let the tab rail drop below the page */
-  padding-left: clamp(8px, 3vw, 44px);
+  /* the gutter is on the right now: the rail leads, the coils trail */
+  padding-right: clamp(8px, 3vw, 44px);
 }
 .cahier-page {
   position: relative;
@@ -800,14 +806,14 @@ body {
   position: relative;
   flex: 0 1 980px;
   min-width: 0;
-  border-radius: 4px 16px 16px 4px;
+  border-radius: 16px 4px 4px 16px;
   background: #efede3;
   box-shadow: 0 0 0 1.5px rgba(42, 46, 110, 0.22), 0 12px 34px rgba(34, 40, 80, 0.20);
-  padding: 18px 18px 0 48px;
+  padding: 18px 48px 0 18px;
 }
 .cahier-stack--inner {
   position: relative;
-  border-radius: 4px 14px 14px 4px;
+  border-radius: 14px 4px 4px 14px;
   background: #f4f2e7;
   box-shadow: 0 0 0 1.5px rgba(42, 46, 110, 0.16), 0 8px 22px rgba(34, 40, 80, 0.14);
   padding: 18px 18px 0 18px;
@@ -817,16 +823,17 @@ body {
    (Dan, 2026-07-14: "showing a gap with the edge of the page (again)") —
    tuck the rail back over the stack so flaps touch the page like real
    index tabs. The rail is z-index 3, above the stack's edge bands. */
-.cahier-stack ~ .cahier-tabs { margin-left: -19px; }
+.cahier-stack ~ .cahier-tabs { order: -1; margin-right: -19px; }
 
 .cahier-stack .cahier-page,
 .cahier-stack--inner .cahier-page {
   flex: none;
   width: 100%;
-  border-radius: 4px 14px 14px 4px;
+  border-radius: 14px 4px 4px 14px;
   box-shadow: 0 6px 18px rgba(34, 40, 80, 0.16), 0 0 0 1.5px rgba(42, 46, 110, 0.14);
 }
 .cahier-tabs {
+  order: -1;                    /* the rail leads the desk row (2026-08-30) */
   position: sticky;
   top: 18px;
   display: none;            /* hidden below 900px — icons-only 640-900, bottom bar under */
