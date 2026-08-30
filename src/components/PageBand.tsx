@@ -29,7 +29,7 @@ export default function PageBand({
 }) {
   return (
     <header
-      className={`page-band flex items-center justify-between gap-3 py-3 pr-4 sm:pr-6 ${className}`}
+      className={`page-band flex items-center justify-between gap-3 py-3 pl-4 sm:pl-6 ${className}`}
       style={{ background: "var(--band, var(--fam-ink, var(--cahier-ink)))", borderBottom: "3px solid var(--cahier-ink)" }}
     >
       <div className="min-w-0">

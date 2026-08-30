@@ -41,7 +41,7 @@ import FirstTour from "@/components/FirstTour";
 import AccountButton from "@/components/AccountButton";
 import SoundControl from "@/components/SoundControl";
 import { isPlayableGap } from "@/lib/collections/gapSentence";
-import { activity, bandOf, familyOf } from "@/content/activities";
+import { activity, bandOf, familyOf, familyShort, hubFamily } from "@/content/activities";
 import { toPracticeSet } from "@/lib/practice/engine";
 import BottomBar from "@/components/BottomBar";
 import PageBand from "@/components/PageBand";
@@ -189,10 +189,15 @@ export default function CahierShell({
   // the page's name; deck/context pages fall back to their first context
   // flap, then to the registry (patch 19c retired the `crumb` prop, whose
   // only surviving job was this fallback). Home keeps the default.
+  const hub = hubFamily(active);
   const pageLabel =
     [...site, ...tools, ...context].find((t) => t.key === active)?.label ??
     context[0]?.label ??
-    activity(active)?.name;
+    activity(active)?.name ??
+    // A family hub is not an activity and has no flap, so without this its
+    // browser tab would say plain "FluOlinGo" — the fault the per-page title
+    // was introduced to end.
+    (hub && familyShort(hub));
   useEffect(() => {
     document.title = pageLabel ? `${pageLabel} · FluOlinGo` : "FluOlinGo";
   }, [pageLabel]);
@@ -303,7 +308,7 @@ export default function CahierShell({
             {/* py-2 + tighter left inset (Dan, 2026-08-21): the wordmark hugs
                 the page's top-left corner — just clear of the spiral binding
                 (38px), no further. */}
-            <div className={`flex items-center justify-between gap-2 py-2 pr-3 sm:pr-5 ${nested ? "pl-5 sm:pl-7" : "pl-9 sm:pl-11"}`}>
+            <div className={`flex items-center justify-between gap-2 py-2 pl-3 sm:pl-5 ${nested ? "pr-5 sm:pr-7" : "pr-9 sm:pr-11"}`}>
               {/* The wordmark is ALWAYS a door home (Dan, 2026-07-25) — on
                   the home page it simply arrives where you already are. */}
               {/* THE RULE OF THIS BAR (Dan, 2026-08-21: "the top most row of
@@ -424,13 +429,13 @@ export default function CahierShell({
               established — name on the family's ink, one number right.
               Home keeps its hero instead; /moi and /profil have no famKey. */}
           {famKey && active !== "home" && band !== false && (band?.title ?? pageLabel) && (
-            <PageBand title={band?.title ?? pageLabel} sub={band?.sub} stat={band?.stat} className={nested ? "pl-5 sm:pl-7" : "pl-12 sm:pl-16"} />
+            <PageBand title={band?.title ?? pageLabel} sub={band?.sub} stat={band?.stat} className={nested ? "pr-5 sm:pr-7" : "pr-12 sm:pr-16"} />
           )}
 
           {/* Ruled paper behind the content well — horizontals only, no vertical
               margin line (Dan, 2026-08-10). Opt-in class rather than a body
               background so a drill or a game can turn it off. */}
-          <div className={`cahier-foolscap py-5 pr-4 sm:pr-7 ${nested ? "pl-5 sm:pl-7" : "pl-12 sm:pl-16"}`}>{children}</div>
+          <div className={`cahier-foolscap py-5 pl-4 sm:pl-7 ${nested ? "pr-5 sm:pr-7" : "pr-12 sm:pr-16"}`}>{children}</div>
           {/* Phone navigation. Nested shells (SioModal) must not draw a
               second one on top of the page's own. */}
           {!nested && <BottomBar />}

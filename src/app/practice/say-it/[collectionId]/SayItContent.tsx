@@ -2,7 +2,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { CURATED } from "@/content/collections";
 import { sfx } from "@/games/audio/sfx";
@@ -171,6 +171,11 @@ export default function SayItContent({
   // (the AGENTS/handoff "no Math.random() during render" rule).
   useEffect(() => {
     const list = deck ? shuffle(practiceItems(deck).filter((i) => i.fr)) : [];
+    // Deliberate: the shuffle CANNOT move into render without breaking SSR
+    // hydration, per the note above and the repo's no-Math.random()-during-
+    // render rule. The lint rule and the decision genuinely disagree; the
+    // decision is older and has a reason.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCards(list);
     // A deck short enough not to need the question is answered for the
     // learner, and the run starts immediately.
@@ -187,11 +192,27 @@ export default function SayItContent({
   const [transcript, setTranscript] = useState("");
   const [result, setResult] = useState<{ grade: Grade; recognized: string } | null>(null);
   const [score, setScore] = useState({ ok: 0, total: 0 });
-  const [supported, setSupported] = useState<boolean | null>(null);
+  // Same as SpecuLearn: a capability probe, not state to be set from an
+  // effect. `null` is no longer needed — the server snapshot is the answer
+  // for the server, and `false` renders the unsupported notice only after
+  // hydration has said so.
+  const supported = useSyncExternalStore(
+    () => () => {},
+    () => { const w = window as any; return !!(w.SpeechRecognition || w.webkitSpeechRecognition); },
+    () => true,
+  );
   const recRef = useRef<any>(null);
+  // THREE LIVE REFS, WRITTEN DURING RENDER, ON PURPOSE. The speech recogniser
+  // fires its callbacks asynchronously, long after the render that started it,
+  // and those callbacks must see the CURRENT phase, card and ladder — not the
+  // ones captured when recognition began. Moving these into an effect makes
+  // each callback read a value one render stale, which is a real bug in a
+  // recogniser. The lint rule is right in general and wrong here.
   const phaseRef = useRef<Phase>("idle");
+  // eslint-disable-next-line react-hooks/refs -- see above
   phaseRef.current = phase;
   const cardRef = useRef<Item | null>(null);
+  // eslint-disable-next-line react-hooks/refs -- see above
   cardRef.current = card;
 
   // The help ladder (Track D) — standalone (shell) runs only. Rungs: how
@@ -209,13 +230,10 @@ export default function SayItContent({
     enabled: ladderOn && !finished && !!card,
   });
   const ladderRef = useRef<HelpLadderApi>(ladder);
+  // eslint-disable-next-line react-hooks/refs -- see the live-refs note above
   ladderRef.current = ladder;
   const peek = ladderOn ? ladder.revealed : revealed;
 
-  useEffect(() => {
-    const win = window as any;
-    setSupported(!!(win.SpeechRecognition || win.webkitSpeechRecognition));
-  }, []);
 
   // Session telemetry (2026-07-15 XP/analytics audit): Say It fed the Reviser
   // and XP but never the teacher Activities panel — WorDrill runs were
@@ -374,14 +392,14 @@ export default function SayItContent({
       if (e.error === "no-speech") {
         setPhase("result");
         sfx.wrong();
-        setResult({ grade: "miss", recognized: "(rien entendu)" });
+        setResult({ grade: "miss", recognized: "(nothing heard)" });
         const L = ladderRef.current;
         const firstTry = L.ladder.wrongTries === 0 || !ladderOn;
         if (firstTry) setScore((s) => ({ ...s, total: s.total + 1 }));
         if (firstTry) setLog((l) => [...l, { it: c, mark: "bad" }]);
         if (c.id) {
-          if (!ladderOn) recordItemResult(c.id, false, "(rien entendu)", `say-it:${collectionId}`);
-          else L.attempt(false, { given: "(rien entendu)", activity: `say-it:${collectionId}` });
+          if (!ladderOn) recordItemResult(c.id, false, "(nothing heard)", `say-it:${collectionId}`);
+          else L.attempt(false, { given: "(nothing heard)", activity: `say-it:${collectionId}` });
         }
       } else if (e.error === "not-allowed") {
         setPhase("idle");
@@ -520,7 +538,7 @@ export default function SayItContent({
     return wrap(<p className="py-16 text-center text-[color:var(--cahier-ink-soft)]">Deck not found.</p>);
   }
 
-  if (supported === false) {
+  if (!supported) {
     return wrap(
         <div className="mx-auto max-w-md py-16 text-center">
           <p className="text-3xl mb-3">🎤</p>

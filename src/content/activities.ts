@@ -64,13 +64,20 @@ export type Family = { key: FamilyKey; name: string; emoji: string; href: string
 export const FAMILIES: Family[] = [
   { key: "goals", name: "FluOlin Goals", emoji: "🎯", href: "/" },
   { key: "practice", name: "FluOlin Practice", emoji: "✏️", href: "/map" },
-  { key: "svplay", name: "FluOlin SvPlay", emoji: "🎮", href: "/games/vocabularain" },
+  // /games, not /games/vocabularain (Dan, 2026-08-30, on the bottom bar:
+  // "can we first establish if those are really the five that we need
+  // anchored below? the most likely shortcuts needed by learners should go
+  // there"). The five slots were right; two of the doors were not. A learner
+  // tapping 🎮 got whichever game happened to be first in the registry, and
+  // the other three had no shortcut at all.
+  { key: "svplay", name: "FluOlin SvPlay", emoji: "🎮", href: "/games" },
   // 🔖 not 🔁 (2026-08-21): the transport glyphs belong to sound. ÉcouTexte's
   // "🔁 Listen again" has to keep meaning "again", so the Review family — a
   // DESTINATION — cannot wear the same mark. 🔖 = put it aside, come
   // back to it (Dan chose it over 👀, 2026-08-21).
   { key: "review", name: "FluOlin Review", emoji: "🔖", href: "/reviser" },
-  { key: "skills", name: "FluOlin Skills", emoji: "💪", href: "/conjugaison" },
+  // Same fault, same fix: 💪 used to open ConjugaZone, one of six.
+  { key: "skills", name: "FluOlin Skills", emoji: "💪", href: "/skills" },
   { key: "user", name: "FluOlin User", emoji: "👤", href: "/moi" },
 ];
 
@@ -143,6 +150,46 @@ export function activitiesInFamilyOrder(): Activity[] {
   return FAMILIES.flatMap((f) => ACTIVITIES.filter((a) => a.family === f.key));
 }
 
+/**
+ * The families that have a hub PAGE of their own, by the `active` key that
+ * page passes to the shell. Goals is Home, Practice is the map, Review is the
+ * Reviser and User is /moi — four families whose hub already existed under
+ * another name. These two did not, so a family shortcut had to point at one
+ * arbitrary member (`/games/vocabularain`, `/conjugaison`) until 2026-08-30.
+ */
+const FAMILY_HUBS: Record<string, FamilyKey> = { games: "svplay", skills: "skills" };
+
+/**
+ * The families whose door is deliberately ONE activity's page, and which one.
+ *
+ * Writing this down is the point. Without it, "the family opens whatever
+ * happens to be first in its list" and "the family opens the thing a learner
+ * actually wants" look identical in the code — which is how 🎮 came to open
+ * VocabulaRain. verify52 fails on any family door that is an activity's own
+ * page and is not named here.
+ *
+ *   review  the DUE QUEUE is the need. Tapping 🔖 to reach a two-tile menu,
+ *           when the slot is already wearing a badge counting what is due,
+ *           would put a choice in front of the one action the badge is
+ *           advertising. GramMarathon stays in the rail and the Menu.
+ *   user    /moi is the learner model; the account chip in the top bar goes
+ *           to the same place. User is not in the bottom bar at all.
+ */
+export const DELIBERATE_DOOR: Record<string, string> = { review: "reviser", user: "moi" };
+
+/** The family a hub page is the hub OF, or undefined for any other page. */
+export function hubFamily(activeKey: string | undefined): Family | undefined {
+  if (!activeKey) return undefined;
+  const key = FAMILY_HUBS[activeKey];
+  return key ? FAMILIES.find((f) => f.key === key) : undefined;
+}
+
+/** "FluOlin SvPlay" → "SvPlay". The bar, the rail and the hub headings all
+ *  want the short form; three copies of this regex is how they drift apart. */
+export function familyShort(f: Family): string {
+  return f.name.replace(/^FluOlin /, "");
+}
+
 /** Everything in one family, in its authored order. */
 export function activitiesIn(family: FamilyKey): Activity[] {
   return ACTIVITIES.filter((a) => a.family === family);
@@ -171,9 +218,10 @@ const SITE_FAMILY: Record<string, FamilyKey> = {
   home: "goals", activities: "goals", index: "goals", guide: "goals", quickguide: "goals",
   map: "goals", carte: "goals", unit: "goals", sio: "goals", lessons: "goals", decks: "goals",
   pretests: "practice", practice: "practice",
-  games: "svplay",
+  games: "svplay", svplay: "svplay",
   reviser: "review",
   moi: "user", leaderboard: "user", profil: "user", reglages: "user", teacher: "user",
+  skills: "skills",
   conjugaison: "skills", tts: "skills", tutor: "skills", wordrill: "skills",
   ecoutexte: "skills", compose: "skills",
 };

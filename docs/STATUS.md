@@ -11,6 +11,39 @@ Only ONE agent edits this file at a time; say so in your commit.
 - `main` on `frenchprof/fluoduo` (origin) — the working repo.
 - Production = `dckg/fluo` (remote `live`), Cloudflare Pages project
   `fluolingo-dot-com` auto-builds its `main`. **Deploy = `git push live main`.**
+- 30 Aug (Claude Code, branch `claude/fluolingo-color-review-9thj8x`, NOT yet
+  merged): four commits, all from Dan's session on the colour system.
+  · **Family hubs** — `/games` and `/skills` now exist. `BOTTOM_NAV` takes each
+    slot's href from `FAMILIES`, and two families had no hub, so 🎮 opened
+    VocabulaRain (one game of four) and 💪 opened ConjugaZone (one of six).
+    `FamilyHub` wears the same `SectionBand` as `ActivityLanding`, after Dan:
+    "the same uniformed look of the cahier ... for all pages AND HUBS".
+    `DELIBERATE_DOOR` records the two families whose door stays one activity
+    (Review → the due queue, User → /moi) and why. `verify52` guards it all.
+  · **The menu rail moved to the LEFT**, and the whole desk mirrored with it:
+    the spiral coils, the flaps' hue border and rounded corners, the child
+    indents, the paper's corners, the 48px coil gutter, the desk row's padding,
+    and every "clear the coils" padding in CahierShell and PageBand. `order:-1`
+    lives on `.cahier-tabs` itself — the `.cahier-stack ~` selector only matches
+    pages using the stack wrapper, so the first attempt moved it on some pages
+    only.
+  · **The six families took a new palette**: one hue every 60° from 20° — coral
+    · yellow · green · cyan · blue · magenta. Chosen by scanning all sixty
+    rotations; this one is best for a colour-blind reader AND within a degree of
+    the least disruptive. Each family's three tokens are derived, not picked:
+    the ink is walked down until it clears 4.5:1 on its own wash, on white and
+    on the paper at once (worst case 4.53 / 5.54 / 5.17).
+  · « rien entendu » → "(nothing heard)". Dan reviewed a 28-item inventory of
+    French in the interface and wanted **only this one** changed — "▶ Jouer",
+    "Choisir un autre", "Bravo !", "Parfait !", "Unité N" and the rest all stay.
+  · **DECIDED, keep as is**: the strip stays coloured by what an activity ASKS
+    (Dan's rule of 26 Aug), not by its family. Both options were photographed
+    from the built app side by side (artifact "Two Rules for One Strip") and Dan
+    chose today's. Do not re-open. Note the demand colour reaches exactly two
+    things — `PageBand` and `ActivityIcon` — so it is shell, not page interior,
+    and cannot conflict with the 22 Aug approvals, which were interiors.
+  · Found, NOT fixed: `--band-wash` is computed for all five demand colours in
+    `globals.css` and read by nothing.
 - 17 Aug, morning (on `main`, deployed at `3453b1e`): SIO-036/040 softening +
   `envies-besoins` gap fix; SIO objectives doc; PR #19 grading unification (had
   never been merged); PRs #18/#20 finally deployed; STATUS.md born.

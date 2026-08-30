@@ -17,7 +17,7 @@
  * a learner who has met the words can choose to say them.
  */
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import DrillShell, { drillExitHref } from "@/components/DrillShell";
 import { CURATED } from "@/content/collections";
 import { speak } from "@/games/letris/speech";
@@ -144,7 +144,11 @@ function Visual({ it, className }: { it: DevItem; className: string }) {
 export default function SpecuLearnContent({ collectionId }: { collectionId: string }) {
   const { items: ITEMS, subtitle } = useMemo(() => buildItems(collectionId), [collectionId]);
   const [screen, setScreen] = useState<"quiz" | "end">("quiz");
-  const [sttOk, setSttOk] = useState(false);
+  // Whether this browser has a speech recogniser. Read through
+  // useSyncExternalStore rather than set from an effect: the server snapshot
+  // is `false`, the client's is the real answer, and no cascading render is
+  // needed to get there. Same pattern as the WorDrill page's progress read.
+  const sttOk = useSyncExternalStore(() => () => {}, () => getRec() !== null, () => false);
   const [queue, setQueue] = useState<Trial[]>([]);
   const [idx, setIdx] = useState(0);
   const [score, setScore] = useState(0);
@@ -164,7 +168,6 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
   const recRef = useRef<RecLike | null>(null);
   const retryRef = useRef<DevItem[] | null>(null);
 
-  useEffect(() => { setSttOk(getRec() !== null); }, []);
   useEffect(() => () => { try { recRef.current?.stop(); } catch {} }, []);
 
   const pool = (): DevItem[] => retryRef.current ?? ITEMS;
@@ -228,7 +231,9 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
     const out = new Set(struck.map((o) => o.w));
     for (const w of ladder.eliminated) if (w !== t?.it.w) out.add(w);
     return out;
-  }, [struck, ladder.eliminated, t?.it.w]);
+    // `t?.it`, not `t?.it.w`: the compiler infers the whole item as the
+    // dependency and refuses to keep the memo when the two disagree.
+  }, [struck, ladder.eliminated, t?.it]);
 
   /** One graded outcome — XP/streak/SRS + the teacher evidence trail (via
    *  the ladder, which stamps the assistance actually shown). */
@@ -270,12 +275,12 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
     rec.onresult = (e) => {
       const alts = Array.from({ length: e.results[0]?.length ?? 0 }, (_, k) => e.results[0][k]?.transcript ?? "");
       const t = alts[0] ?? "";
-      setHeard(t || "(rien entendu)");
-      grade(it, alts.some((a) => saidRight(a, it.w)), t || "(rien entendu)");
+      setHeard(t || "(nothing heard)");
+      grade(it, alts.some((a) => saidRight(a, it.w)), t || "(nothing heard)");
     };
     rec.onerror = (e) => {
       recRef.current = null; setListening(false);
-      if (e.error === "no-speech" && !locked) { setHeard("(rien entendu)"); grade(it, false, "(rien entendu)"); }
+      if (e.error === "no-speech" && !locked) { setHeard("(nothing heard)"); grade(it, false, "(nothing heard)"); }
     };
     rec.onend = () => { recRef.current = null; setListening(false); };
     recRef.current = rec;
