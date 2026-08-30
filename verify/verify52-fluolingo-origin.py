@@ -384,6 +384,15 @@ check(r2.returncode == 0,
 check(read(HTML) == before,
       f"{HTML} is current — it is the same code the app runs",
       f"{HTML} is STALE: re-run `node {BUILD}` and commit the result")
+# a token may point at another token (--fluo-ink is var(--cahier-ink), itself
+# declared twice). An unresolved var() fails SILENTLY in CSS: the letters lose
+# their ink and the frame its border, and the page still renders.
+root = re.search(r":root \{(.*?)\n  \}", before, re.S)
+check(root is not None and "var(--" not in root.group(1),
+      "the standalone page's palette is fully resolved — no var() with "
+      "nothing behind it",
+      "the standalone page carries an unresolved custom property: its ink "
+      "and border will silently vanish")
 check("<script" in before and "src=" not in before.split("<style>")[0],
       "the standalone page is self-contained — no server, no network, one file",
       "the standalone page pulls something in from outside itself")

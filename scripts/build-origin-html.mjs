@@ -68,10 +68,20 @@ if (clash.length) die(`the two modules both declare ${clash.join(", ")}`);
 // --fluo-ink is declared TWICE in that file (the 10 Aug override block wins),
 // so take the LAST declaration of every token, exactly as the cascade does.
 const css = fs.readFileSync(CSS, "utf8");
-const tokenValue = (name) => {
+const declared = (name) => {
   const hits = [...css.matchAll(new RegExp(`${name}\\s*:\\s*([^;]+);`, "g"))];
   if (!hits.length) die(`${name} is not declared in globals.css`);
   return hits[hits.length - 1][1].trim();
+};
+// ...and a token may point at another token: --fluo-ink is var(--cahier-ink),
+// which is itself declared twice. Follow the chain, or the standalone page
+// ships a var() with nothing behind it — the letters lose their ink and the
+// frame loses its border, silently, because that is what CSS does with an
+// unresolved custom property.
+const tokenValue = (name, seen = new Set()) => {
+  if (seen.has(name)) die(`${name} refers to itself`);
+  seen.add(name);
+  return declared(name).replace(/var\(\s*(--[\w-]+)\s*\)/g, (_, ref) => tokenValue(ref, seen));
 };
 const TOKENS = [
   "--fluo-ink", "--fluo-serif", "--fluo-bg",
@@ -118,6 +128,8 @@ const show = mountOrigin(stage);
 stage.addEventListener("click", () => show.replay());
 </script>
 `;
+
+if (/var\(--/.test(vars)) die(`a palette token is still unresolved:\n${vars}`);
 
 fs.mkdirSync(OUT_DIR, { recursive: true });
 fs.writeFileSync(OUT, html);
