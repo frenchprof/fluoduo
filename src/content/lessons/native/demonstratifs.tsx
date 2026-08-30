@@ -26,6 +26,80 @@ const frame = (art: string, noun: string) => `Qu'est-ce que tu fais ${art} ${nou
 
 export const demonstratifsLesson: NativeLesson = {
   slug: "demonstratifs",
+  // THE REFERENCE CONCEPT (2026-08-30) — the first of 47, and the worked
+  // example the rest are drafted against. Every claim here comes from the
+  // Mémo below it; nothing new was invented. Dan reviews `contrast` and
+  // `remember` before any of these reach a learner — those two are the
+  // pedagogy, the rest is apparatus.
+  concept: {
+    subtitle: "Why cet is not a third gender",
+    contrast: (
+      <>
+        In English, <i>this</i> never changes: this book, this week, this afternoon. In
+        French, <i lang="fr">ce / cet / cette / ces</i> agrees with the noun — and one of
+        the four is chosen by <b>sound</b>, not by gender. That is the key insight.
+      </>
+    ),
+    question: (
+      <>
+        Why is it <i lang="fr">cet été</i> but <i lang="fr">ce soir</i>, when{" "}
+        <i lang="fr">été</i> and <i lang="fr">soir</i> are both masculine?
+      </>
+    ),
+    answer: (
+      <>
+        Because <i lang="fr">été</i> begins with a vowel. <i lang="fr">Cet</i> is{" "}
+        <i lang="fr">ce</i> adjusted so the two words run together — a pronunciation
+        form, not a gender. <i lang="fr">Cet été</i>, <i lang="fr">cet hiver</i> and{" "}
+        <i lang="fr">cet après-midi</i> are all still masculine.
+      </>
+    ),
+    pitfall: [
+      { label: <><i lang="fr">été</i> (m., vowel)</>, wrong: <i lang="fr">ce été</i>, right: <i lang="fr">cet été</i> },
+      { label: <><i lang="fr">après-midi</i> (m., vowel)</>, wrong: <i lang="fr">ce après-midi</i>, right: <i lang="fr">cet après-midi</i> },
+      { label: <><i lang="fr">semaine</i> (f.)</>, wrong: <i lang="fr">cet semaine</i>, right: <i lang="fr">cette semaine</i> },
+    ],
+    flow: [
+      { depth: 0, text: "Is the noun plural?" },
+      { depth: 1, text: "yes → ces" },
+      { depth: 1, text: "no  → is it feminine?" },
+      { depth: 2, text: "yes → cette" },
+      { depth: 2, text: "no  → does it start with a vowel or silent h?" },
+      { depth: 3, text: "yes → cet" },
+      { depth: 3, text: "no  → ce" },
+    ],
+    check: [
+      {
+        q: <>Why <i lang="fr">cet automne</i> and not <i lang="fr">cette automne</i>?</>,
+        a: (
+          <>
+            Because <i lang="fr">automne</i> is masculine. It takes <i lang="fr">cet</i>{" "}
+            only because it begins with a vowel — the gender has not changed.
+          </>
+        ),
+      },
+      {
+        q: <>You hear <i lang="fr">[set] semaine</i>. Which spelling?</>,
+        a: (
+          <>
+            <i lang="fr">Cette</i> — <i lang="fr">semaine</i> is feminine.{" "}
+            <i lang="fr">Cet</i> only ever appears before a masculine vowel word.
+          </>
+        ),
+      },
+    ],
+    inShort: (
+      <>
+        <i lang="fr">ce</i> masculine · <i lang="fr">cet</i> masculine before a vowel ·{" "}
+        <i lang="fr">cette</i> feminine · <i lang="fr">ces</i> plural
+      </>
+    ),
+    remember: (
+      <>
+        <i lang="fr">Cet</i> is <i lang="fr">ce</i> made easier to say. It is not a gender.
+      </>
+    ),
+  },
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">
