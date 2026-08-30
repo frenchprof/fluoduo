@@ -64,6 +64,7 @@ export default function ReviserPage() {
     const due = dueForReview(p, now);
     const lead = focus.map((id) => pool.find((it) => it.id === id)).filter((x): x is ReviewItem => !!x);
     const rest = shuffle(due.filter((it) => !focus.includes(it.id)));
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- shuffled after mount so SSR and the first client render agree — pre-existing, not this change's
     setCards([...lead, ...rest].map((it) => buildCard(it, pool)));
     setGaps(gapsByDeck(p, now));
   }, []);
@@ -80,7 +81,12 @@ export default function ReviserPage() {
     if (picked !== null || !card) return;
     const correct = choice === card.item.en;
     setPicked(choice);
-    recordItemResult(card.item.id, correct);
+    // `reviser` is the app's ONLY source of `delayed` evidence — an item is
+    // only offered here once its spacing interval has elapsed, which is what
+    // PRD §7 means by retrieval after a delay. Untagged, this wrote answers
+    // with no evidence type and the strongest signal the store can carry was
+    // never produced at all (audit 2026-08-30).
+    recordItemResult(card.item.id, correct, choice, "reviser");
     if (correct) {
       setScore((s) => s + 1);
       speak(card.item.fr, "fr-FR");
@@ -129,6 +135,11 @@ export default function ReviserPage() {
                 <p className="mt-1 text-sm text-[color:var(--fluo-ink-soft)]">Come back tomorrow for the next batch.</p>
               )}
             </div>
+            {/* Recomputed rather than read from `gaps` state on purpose: this is
+                the END-of-queue panel, so it must reflect the answers just given,
+                and the state was computed on mount. Pre-existing; the purity rule
+                is right in general and wrong here. */}
+            {/* eslint-disable-next-line react-hooks/purity */}
             <GapPanel gaps={gapsByDeck(loadProgress(), Date.now())} />
           </div>
         ) : card ? (

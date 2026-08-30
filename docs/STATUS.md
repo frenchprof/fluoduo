@@ -11,6 +11,130 @@ Only ONE agent edits this file at a time; say so in your commit.
 - `main` on `frenchprof/fluoduo` (origin) — the working repo.
 - Production = `dckg/fluo` (remote `live`), Cloudflare Pages project
   `fluolingo-dot-com` auto-builds its `main`. **Deploy = `git push live main`.**
+- 30 Aug (Claude Code, PR #72) — **DAN'S SIX-TAB FRAMEWORK IS BACK, AND THE
+  DESK IS BACK TO BINDING-LEFT / FLAPS-RIGHT.** He sent three lessons from his
+  original course site (aimer, faire du/de la, possessifs): "this framework is
+  how it should be in EVERY SIO". Le parcours · Le concept · Les formes ·
+  L'exercice · Le bonus · Le lexique — three already existed under other names
+  (the Mémo IS Les formes, `dice` IS L'exercice, `bonus` IS Le bonus).
+  **`LessonConcept`** (native/types.ts) takes its shape from his own concept
+  tabs: required subtitle/contrast/question/answer/remember, optional pitfall
+  table, flowchart, mini-check. `demonstratifs` is the reference; the other 46
+  are Peers' to draft and **Dan's to correct — `contrast` and `remember` are
+  the pedagogical claim and never ship unread**. **`LessonTabs`** renders all
+  six as FRONT MATTER only: they exist while `asked` is false and vanish the
+  moment an entry level is picked, so patch 22's one-card discipline is
+  untouched (verified: 6 tabs before, 0 after). Le parcours and Le lexique
+  needed NO authoring — `canDo`/`competence`/`collectionId` were already in
+  every SIO record.
+  **TWO CORRECTIONS I HAD WRONG.** (a) I told Dan the three-rung ladder was
+  missing and recommended retiring Sorting partly on that basis. It is not
+  missing — `lib/lessonEntry.ts`, live, HIS call of 27 Aug ("yes a learner may
+  choose to start at 3 stars"). What is genuinely missing from his original is
+  only the mid-run 🚀/⬇ and the 80% gate. (b) The coils: the 30 Aug mirroring
+  moved them right with the rail, which was the wrong half to mirror. Between
+  the two the desk disagreed with itself and **every drill's content ran UNDER
+  the binding on a narrow screen** — invisible until Le concept put the first
+  long prose in that container. Coils bind the LEFT again, every clearing
+  padding with them.
+  **THE ☰ IS THE NAVIGATION NOW** (Dan: the rail "cannot be flaps … they have
+  to be drop down like in most interfaces", "burger menu left, flaps right").
+  Two flap systems parted company: the six-family rail moved into the dropdown
+  (top left, every width), a page's own flaps stayed flaps on the right. This
+  also closed the 19 Aug open item — the dropdown listed activities FLAT while
+  the rail showed the families; it takes `RailGroups` now. `toolTabs()` no
+  longer renders whole there (it duplicated the families); **only Carte
+  remains and Dan has said that shortcut row can be swapped for something
+  else — it is free.**
+  Checks: verify29's rail assertions followed the rail into the dropdown;
+  verify19's "the rail returns at 900px" became the stronger invariant it was
+  reaching for — NOTHING may hide the ☰ at any width. Both break-tested.
+  **NEXT: A2–A5, then the mid-run ladder controls.** Still Dan's alone: the 11
+  SIOs with no lesson, the Sorting keep-or-retire call, the `transfer` rule,
+  the four food items in `negation-pas`, and `git push live main`.
+- 30 Aug (Claude Code, same branch) — **DAN ANSWERED THE FOUR EVIDENCE
+  QUESTIONS; `diagnostic` IS NOW REACHABLE.** (1) Pre-tests go into the evidence
+  store: `recordPretestEvidence` in `lib/pretests/runner.ts` (both authored
+  engines) and in `PicturePretestContent` (which keeps its own ledger). It is
+  `recordResponse` directly with `xpPaid: 0` and NO SRS step — never
+  `recordItemResult` — so his 27 Aug "remember it, but don't score it" rule is
+  untouched: that rule governs XP, accuracy and the review queue, none of which
+  the response store drives. (4) SpecuLearn is `diagnostic`, not `receptive` —
+  Dan: *"it is a sort of diagnostic about what one might already know
+  beforehand, one's prior knowledge."* CAVEAT recorded in the code: the drill is
+  replayable, so a second run is no longer prior knowledge.
+  **The check found two more bugs while being extended for this.** Its first
+  version could not see the very code written against it — `{ given, activity }`
+  ES shorthand — and teaching it that (scoped to recorder-call arguments; a
+  file-wide pattern reported eleven phantoms from DrillShell props and
+  destructured parameters) exposed `lesson-write:` from the pager's open-writing
+  card, which matched no prefix and stored no type. Now `free`. verify53 is 44
+  assertions, break-tested seven ways in total.
+  **STILL DAN'S, both raised in `docs/EVIDENCE_HANDOFF.md`:** `transfer` (needs a
+  rule for "unfamiliar context" — his Unit 2 example correction below means the
+  example I gave was invalid, so the question is genuinely still open), and the
+  Sorting `recog` vs `constrained` contradiction, now overtaken by the Sorting
+  review.
+
+- 30 Aug (Claude Code) — **SORTING REVIEWED; DAN'S ORIGINAL FOUND.** Dan:
+  *"Sorting was never supposed to have existed. I don't recognise the activity
+  and perhaps it was something else that slowly drifted into this."* He then sent
+  his original build (`Leçon 8 — Hobbies I : aimer + faire + N`). **Sorting is
+  not a drifted EtuDice; it is a different exercise that took the name** in the
+  25 Aug rename. The original is a GENERATOR (subject × verb × activity, a fresh
+  sentence per roll — that is what the die does) and PRODUCTIVE (the learner
+  forms the sentence), with three learner-chosen rungs: ★ pick the conjugation,
+  ★★ verb + article, ★★★ type the whole sentence from memory, 80% to climb.
+  Sorting is derived from LexicaLater's column config ("No content authoring
+  needed", `lib/practice/engine.ts`), is recognition, and has one rung.
+  **The original mechanic SURVIVES and is correct**: 27 of 28 native lessons
+  carry both the dropdowns and the die, `aimer` among them, and `DiceAxis` cites
+  Dan's site by name. What did NOT come back is his LADDER — the pager runs a
+  fixed ramp (4 MCQ, 4 gap, 3 build, 1 translate) instead of levels the learner
+  picks and climbs. That is the one piece genuinely missing.
+  **Audit of Sorting itself:** 31 of 44 decks generate one; 3 decks print their
+  own answer (`partitifs` **8 of 8**, `transport` 6/9, `negation-pas` 11/20 — 25
+  of 552 questions). Also found: Sorting says `Correct !` in French, breaching
+  the no-French-interface rule. Playable sample + the full audit:
+  https://claude.ai/code/artifact/9c6da1d8-05ef-49aa-80c6-a932f93334e7
+  **AWAITING DAN:** keep and fix the three decks · retire it · or retire it and
+  rebuild the ladder over the 27 lesson generators (my recommendation).
+  **Unit 2 food leak, his question:** `negation-pas` (u2) teaches the negated
+  partitive with *pas de café · pas de chocolat · pas d'eau · plus de café*, and
+  u4 `partitifs` teaches it again with eight more. The rest of `negation-pas` is
+  `faire` + activity, which is where u2 belongs. Swapping those four items
+  removes the overlap. NOT YET DONE — it is content, and his call.
+
+- 30 Aug (Claude Code, branch `claude/evidence-brief`, commit `e4a1fb8`) —
+  **THE EVIDENCE STORE WAS RECORDING ANSWERS WITH NO MEANING.** `recordResponse`
+  falls back to `location.pathname` for the activityId it stores;
+  `buildEvidence` gets the raw `activity` argument and has no fallback, and
+  nothing made them agree. A caller that passed no activity wrote a sensible
+  activityId and NO `evidenceType` — so 22 of the 35 keys in
+  `ACTIVITY_EVIDENCE`, every path-shaped one, were unreachable, and ten live
+  surfaces wrote unreadable answers. **The Reviser is the only surface that can
+  produce `delayed`** (it alone serves an item because its spacing interval
+  elapsed) and it produced none, ever — the strongest signal PRD §7 asks for
+  has been absent since the model was built. The Grammarathon finale had it
+  backwards: the first attempt, the one that pays, passed `undefined`, while
+  the post-assistance re-record passed the full path. All ten now pass an
+  explicit tag; `verify53-evidence-coverage.py` (break-tested four ways) fails
+  the build on a tag that resolves to nothing, a call with no tag, a live
+  surface resolving through a path key, or the Reviser losing `delayed`.
+  **NOT DONE, and deliberately — both are Dan's calls, not lookup errors:**
+  `diagnostic` (pretests stay out of the store entirely, his 27 Aug rule
+  "remember it, but don't score it"; writing them with `xpPaid: 0` and no SRS
+  step would honour that rule, but it changes what the teacher dashboard sees)
+  and `transfer` (needs a rule for what "unfamiliar context" means before it
+  needs code). Also open for Dan: `activities.ts` files Sorting as `recog`
+  while the table maps every dice prefix to `constrained` — left alone because
+  changing it reclassifies every Sorting answer already stored.
+  **Still free for Peers:** the eight direct `recordResponse` callers in six
+  files (§2 of `docs/EVIDENCE_HANDOFF.md`) that skip `buildEvidence` and store
+  bare right/wrong. Their tags are fine; nothing reads them.
+  `docs/EVIDENCE_HANDOFF.md` is corrected — its §1 reported an `fr-FR` bug that
+  does not exist (a regex matching across a call boundary) and its §2 named
+  five callers when there are eight.
 - 30 Aug (Claude Code) — **PR #65 and #66 merged to `main`, not yet deployed.**
   #66 finished the colour work beyond the palette: the six family hues wash the
   PAGE at 97.5% lightness (the 60 of 60-30-10 — `--band-wash` was invented for

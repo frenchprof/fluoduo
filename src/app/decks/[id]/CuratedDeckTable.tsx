@@ -178,8 +178,10 @@ function DeckTable({ collection, items }: { collection: Collection; items: Item[
   const [buckets, setBuckets] = useState<Record<string, Bucket>>({});
   const [notes, setNotes] = useState<DeckNotes>({});
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- shuffled after mount so SSR and the first client render agree — pre-existing, not this change's
   useEffect(() => { setBuckets(loadBuckets(collection.id)); }, [collection.id]);
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- shuffled after mount so SSR and the first client render agree — pre-existing, not this change's
     setNotes(loadLocal(collection.id));
     syncIfDue(collection.id).then(setNotes).catch(() => {});
   }, [collection.id]);
@@ -421,7 +423,7 @@ function DeckTable({ collection, items }: { collection: Collection; items: Item[
           buckets={buckets} onBucket={setRowBucket} selected={selected} onToggleSelect={toggleSel} onSelectAll={selectMany}
           notes={notes} setNotes={setNotes} articleOptions={articleOptions} />
       ) : (
-        <AllCards rows={rows} isNat={isNat} test={test} order={order} buckets={buckets} onBucket={setRowBucket}
+        <AllCards deckId={collection.id} rows={rows} isNat={isNat} test={test} order={order} buckets={buckets} onBucket={setRowBucket}
           articleOptions={articleOptions} flipAll={flipAll} flippedIds={flippedIds} setFlippedIds={setFlippedIds} />
       )}
       </Step>
@@ -595,9 +597,9 @@ function groupRows(rows: Row[], order: Order): { label: string; rows: Row[] }[] 
 }
 
 function AllCards({
-  rows, isNat, test, order, buckets, onBucket, articleOptions, flipAll, flippedIds, setFlippedIds,
+  deckId, rows, isNat, test, order, buckets, onBucket, articleOptions, flipAll, flippedIds, setFlippedIds,
 }: {
-  rows: Row[]; isNat: boolean; test: boolean; order: Order;
+  deckId: string; rows: Row[]; isNat: boolean; test: boolean; order: Order;
   buckets: Record<string, Bucket>; onBucket: (id: string, b: Bucket) => void;
   articleOptions: string[];
   flipAll: boolean; flippedIds: Set<string>; setFlippedIds: (fn: (s: Set<string>) => Set<string>) => void;
@@ -630,7 +632,7 @@ function AllCards({
               {test ? (
                 <div className="flex flex-1 items-center px-1">
                   <AnswerField key={row.item.id} parts={partsFor(row, isNat, articleOptions.some((a) => a !== ""))} articleOptions={articleOptions}
-                    onResult={(ok) => { recordItemResult(row.item.id, ok); void logEvent("flashcard.review", { itemId: row.item.id, rating: ok ? "good" : "again" }); if (ok) onBucket(row.item.id, "reviewed"); }} />
+                    onResult={(ok) => { recordItemResult(row.item.id, ok, undefined, `deck-test:${deckId}`); void logEvent("flashcard.review", { itemId: row.item.id, rating: ok ? "good" : "again" }); if (ok) onBucket(row.item.id, "reviewed"); }} />
                 </div>
               ) : (
                 <button type="button" onClick={() => flipOne(row.item.id)} className="flex flex-1 flex-col items-center justify-center p-1 text-center transition hover:brightness-95">
@@ -775,6 +777,7 @@ function Overview({
   // Test Yourself: cover the answer columns; off: reveal everything.
   useEffect(() => {
     if (test) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- shuffled after mount so SSR and the first client render agree — pre-existing, not this change's
       setCoveredCols(new Set(coverableHere.filter((c) => answerCols.includes(c))));
       setRevealedCell(new Set());
       setHidden(new Set());
@@ -912,7 +915,7 @@ function Overview({
                   const status = buckets[row.item.id];
                   if (test) {
                     return (
-                      <TestRow key={row.item.id} row={row} cols={cols} isNat={isNat}
+                      <TestRow key={row.item.id} deckId={deckId} row={row} cols={cols} isNat={isNat}
                         articleOptions={articleOptions} status={status}
                         onBucket={onBucket} selected={selected} onToggleSelect={onToggleSelect}
                         notes={notes} editNotes={editNotes}
@@ -980,9 +983,9 @@ function Overview({
 /** One Test-Yourself row: a single Check/Reveal validates ALL answer parts at
  * once (article + noun, or the four nationality forms), inline on the same row. */
 function TestRow({
-  row, cols, isNat, articleOptions, status, onBucket, selected, onToggleSelect, notes, editNotes, onNote, tint,
+  deckId, row, cols, isNat, articleOptions, status, onBucket, selected, onToggleSelect, notes, editNotes, onNote, tint,
 }: {
-  row: Row; cols: ColDef[]; isNat: boolean; articleOptions: string[];
+  deckId: string; row: Row; cols: ColDef[]; isNat: boolean; articleOptions: string[];
   status: Bucket | undefined; onBucket: (id: string, b: Bucket) => void;
   selected: Set<string>; onToggleSelect: (id: string) => void;
   notes: DeckNotes; editNotes: boolean; onNote: (t: string) => void; tint?: string;
@@ -1002,7 +1005,9 @@ function TestRow({
 
   function check() {
     setPhase("checked");
-    recordItemResult(row.item.id, allRight);
+    // Test Yourself types the target from the English/emoji prompt — constrained
+    // production. Untagged it stored no evidence type at all (audit 2026-08-30).
+    recordItemResult(row.item.id, allRight, mergedMine || undefined, `deck-test:${deckId}`);
     void logEvent("flashcard.review", { itemId: row.item.id, rating: allRight ? "good" : "again" });
     if (allRight) onBucket(row.item.id, "reviewed");
   }

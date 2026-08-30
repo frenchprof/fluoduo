@@ -17,6 +17,7 @@ import { CURATED } from "@/content/collections";
 import { speak } from "@/games/letris/speech";
 import { logEvent } from "@/lib/firebase/usage";
 import { recordPretestAnswer } from "@/lib/pretestRecord";
+import { recordPretestEvidence } from "@/lib/pretests/runner";
 import { sioForDeck } from "@/lib/curriculum";
 import CahierShell, { type ShellTab } from "@/components/CahierShell";
 import type { Collection, Item } from "@/lib/collections/schema";
@@ -127,6 +128,7 @@ function PretestRunner({
   const displayMap = useMemo(() => buildDisplayMap(collection), [collection]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- shuffled after mount so SSR and the first client render agree — pre-existing, not this change's
     setQuestions(buildQuestions(pictureItems));
   }, [pictureItems]);
 
@@ -184,6 +186,11 @@ function PretestRunner({
       answer: displayMap[q.item.id] ?? q.item.fr,
       stem: q.item.emoji ?? "",
     });
+    // …and the evidence trail, as `diagnostic` (Dan, 2026-08-30). This format
+    // has its own ledger rather than the shared runner, so it needs the call
+    // too — see the note on recordPretestEvidence for why this is NOT
+    // recordItemResult and why the 27 Aug "don't score it" rule still holds.
+    recordPretestEvidence(pretestId, q.item.id, correct, picked);
   }
   function next() {
     if (!submitted || !q) return;

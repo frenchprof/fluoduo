@@ -330,6 +330,79 @@ export default function CahierShell({
                   Measured on /reviser before this: at 320px the score readout
                   and ☰ were both off-screen; at 360 and 390 one added chip was
                   enough to lose ☰. verify31 pins the structure. */}
+            {/* ☰ LEADS THE BAR (Dan, 2026-08-30: "burger menu left"). It sat
+                at the far right for as long as it was a phone-only stand-in
+                for the desk rail; now that it IS the navigation at every
+                width, it takes the position navigation takes — first, before
+                the wordmark. The icon strip on the right stays destinations
+                only, which is what verify31 pins. */}
+            <div ref={menuRef} className="cahier-menu relative shrink-0">
+                <button
+                  type="button"
+                  aria-label="Navigation"
+                  aria-expanded={menuOpen}
+                  onClick={() => setMenuOpen((o) => !o)}
+                  className="cahier-btn cahier-btn-sm"
+                >
+                  {menuOpen ? "✕" : "☰"}
+                </button>
+
+                {menuOpen && (
+                  // max-h + scroll: with the tools group the list outgrows
+                  // small screens and items were cut off (Dan, 2026-07-08).
+                  <div className="absolute left-0 top-full z-50 mt-1 flex max-h-[75vh] w-60 flex-col gap-1 overflow-y-auto rounded-lg border-2 border-[color:var(--cahier-ink)]/20 bg-white p-1 shadow-lg">
+                    {/* THE GROUPED FAMILIES, not a flat list (Dan,
+                        2026-08-30: the rail "cannot be flaps … they have to
+                        be drop down like in most interfaces"). This dropdown
+                        used to list `site` flat while the desk rail showed
+                        the six families — the one surface that disagreed
+                        with the rail, flagged in STATUS on 19 Aug and left
+                        open because the rail was the real navigation. Now
+                        the dropdown IS the navigation, so it takes the
+                        grouped structure and the disagreement closes. */}
+                    <RailGroups activeKey={active} onNavigate={() => setMenuOpen(false)} />
+                    <hr className="my-0.5 border-[color:var(--cahier-ink)]/15" />
+                    <button
+                      key="quickguide"
+                      type="button"
+                      onClick={() => { setQuickGuideOpen(true); setMenuOpen(false); }}
+                      className="cahier-tab cahier-tab--sm !rounded-md text-left font-black"
+                      style={{ background: "var(--cahier-ink)", borderColor: "var(--cahier-ink)", color: "#d4f24c" }}
+                    >
+                      <span aria-hidden>▦</span> MENU
+                    </button>
+                    {/* Only what RailGroups above does NOT already list.
+                        `toolTabs()` is Carte plus every navigable activity, and
+                        the six families cover the activities — rendering it
+                        whole put SpecuLearn and 4Mémoire in this menu twice.
+                        Carte belongs to no family, so it is the one that stays.
+                        Dan, 2026-08-30: "the shortcuts below can be swapped to
+                        something else" — this row is now free for whatever he
+                        wants a standing shortcut to be. */}
+                    {tools.filter((t) => t.key === "map").map((t, i) => (
+                      <TabFlap
+                        key={t.key}
+                        tab={t}
+                        hue={hueOf(t, i)}
+                        active={active === t.key}
+                        className="cahier-tab cahier-tab--sm !rounded-md text-left"
+                        onNavigate={() => setMenuOpen(false)}
+                      />
+                    ))}
+                    {context.length > 0 && <hr className="my-0.5 border-[color:var(--cahier-ink)]/15" />}
+                    {context.map((t, i) => (
+                      <TabFlap
+                        key={t.key}
+                        tab={t}
+                        hue={hueOf(t, i)}
+                        active={active === t.key}
+                        className="cahier-tab cahier-tab--sm !rounded-md text-left"
+                        onNavigate={() => setMenuOpen(false)}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
               <Link href="/" className="cahier-display min-w-0 shrink truncate text-lg font-black text-[color:var(--cahier-ink)]">
                 {active !== "home" && <>← </>}<span className="cahier-hl">FluOlinGo</span>
               </Link>
@@ -359,67 +432,6 @@ export default function CahierShell({
                   ⌛
                 </Link>
                 <AccountButton />
-                {/* Half-a-button inward on mobile (Dan, 2026-07-25: the corner made ☰
-                    unreachable on some phones); flush again from sm up. */}
-                <div ref={menuRef} className="cahier-menu relative mr-5 sm:mr-0">
-                  <button
-                    type="button"
-                    aria-label="Navigation"
-                    aria-expanded={menuOpen}
-                    onClick={() => setMenuOpen((o) => !o)}
-                    className="cahier-btn cahier-btn-sm"
-                  >
-                    {menuOpen ? "✕" : "☰"}
-                  </button>
-
-                  {menuOpen && (
-                    // max-h + scroll: with the tools group the list outgrows
-                    // small screens and items were cut off (Dan, 2026-07-08).
-                    <div className="absolute right-0 top-full z-50 mt-1 flex max-h-[75vh] w-48 flex-col gap-1 overflow-y-auto rounded-lg border-2 border-[color:var(--cahier-ink)]/20 bg-white p-1 shadow-lg">
-                      {site.map((t, i) => (
-                        <TabFlap
-                          key={t.key}
-                          tab={t}
-                          hue={hueOf(t, i)}
-                          active={isActiveFlap(t)}
-                          className="cahier-tab !rounded-md text-left"
-                          onNavigate={() => setMenuOpen(false)}
-                        />
-                      ))}
-                      <hr className="my-0.5 border-[color:var(--cahier-ink)]/15" />
-                      <button
-                        key="quickguide"
-                        type="button"
-                        onClick={() => { setQuickGuideOpen(true); setMenuOpen(false); }}
-                        className="cahier-tab cahier-tab--sm !rounded-md text-left font-black"
-                        style={{ background: "var(--cahier-ink)", borderColor: "var(--cahier-ink)", color: "#d4f24c" }}
-                      >
-                        <span aria-hidden>▦</span> MENU
-                      </button>
-                      {tools.map((t, i) => (
-                        <TabFlap
-                          key={t.key}
-                          tab={t}
-                          hue={hueOf(t, i)}
-                          active={active === t.key}
-                          className="cahier-tab cahier-tab--sm !rounded-md text-left"
-                          onNavigate={() => setMenuOpen(false)}
-                        />
-                      ))}
-                      {context.length > 0 && <hr className="my-0.5 border-[color:var(--cahier-ink)]/15" />}
-                      {context.map((t, i) => (
-                        <TabFlap
-                          key={t.key}
-                          tab={t}
-                          hue={hueOf(t, i)}
-                          active={active === t.key}
-                          className="cahier-tab cahier-tab--sm !rounded-md text-left"
-                          onNavigate={() => setMenuOpen(false)}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
               </div>
             </div>
           </div>
@@ -429,13 +441,13 @@ export default function CahierShell({
               established — name on the family's ink, one number right.
               Home keeps its hero instead; /moi and /profil have no famKey. */}
           {famKey && active !== "home" && band !== false && (band?.title ?? pageLabel) && (
-            <PageBand title={band?.title ?? pageLabel} sub={band?.sub} stat={band?.stat} className={nested ? "pr-5 sm:pr-7" : "pr-12 sm:pr-16"} />
+            <PageBand title={band?.title ?? pageLabel} sub={band?.sub} stat={band?.stat} className={nested ? "pl-5 sm:pl-7" : "pl-12 sm:pl-16"} />
           )}
 
           {/* Ruled paper behind the content well — horizontals only, no vertical
               margin line (Dan, 2026-08-10). Opt-in class rather than a body
               background so a drill or a game can turn it off. */}
-          <div className={`cahier-foolscap py-5 pl-4 sm:pl-7 ${nested ? "pr-5 sm:pr-7" : "pr-12 sm:pr-16"}`}>{children}</div>
+          <div className={`cahier-foolscap py-5 pr-4 sm:pr-7 ${nested ? "pl-5 sm:pl-7" : "pl-12 sm:pl-16"}`}>{children}</div>
           {/* Phone navigation. Nested shells (SioModal) must not draw a
               second one on top of the page's own. */}
           {!nested && <BottomBar />}
@@ -473,28 +485,13 @@ export default function CahierShell({
           </button>
         )}
         {quickGuideOpen && <MenuSplash onClose={() => setQuickGuideOpen(false)} />}
-        <nav className="cahier-tabs" aria-label="Pages">
-          {/* TOP tier: Unités only (Dan, 2026-07-15) — Home's doors are the
-              top-left FluOlinGo link and the 🏠 icon. */}
-          {/* THE RAIL, grouped (Dan, 19 Aug: "at the side there should be
-              only 5 tabs … and under them the individual tabs under them").
-              MENU first, then the six families, each opening to its own
-              children. The five Unité flaps are no longer a tier of their
-              own — they are Goals' children, because a unit IS ten goals.
-              RailGroups owns the open/shut state. */}
-          <button
-            key="quickguide"
-            type="button"
-            onClick={() => setQuickGuideOpen(true)}
-            className="cahier-tab cahier-tab--xs font-black"
-            style={{ background: "var(--cahier-ink)", borderColor: "var(--cahier-ink)", color: "#d4f24c" }}
-          >
-            <span aria-hidden>▦</span> MENU
-          </button>
-          <span aria-hidden className="h-2" />
-          <RailGroups activeKey={active} />
-
-          {context.length > 0 && <span aria-hidden className="h-3" />}
+        {/* Only the per-deck activity flaps live on the desk now (Dan,
+            2026-08-30: "burger menu left, flaps right"). The six-family rail
+            moved into the ☰ above; what is left is the handful of tabs that
+            belong to THIS page — List / All on a deck, the activity tabs on a
+            drill — which are page furniture rather than site navigation, and
+            which Dan kept as flaps. */}
+        <nav className="cahier-tabs" aria-label="This page">
           {context.map((t, i) => (
             <TabFlap key={t.key} tab={t} hue={hueOf(t, i)} active={active === t.key} className="cahier-tab cahier-tab--sm" />
           ))}

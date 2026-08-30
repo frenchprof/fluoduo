@@ -34,12 +34,16 @@ used in CI.
 - **Lint.** `npm run lint` over the whole repo reports ~130 pre-existing
   problems (mostly `react-hooks/set-state-in-effect`) across ~51 files. **CI
   lints every file a pull request TOUCHES** — not the whole repo, which would
-  paint every PR red on day one. Consequence to budget for: a one-line change
-  to an old file inherits that file's whole lint debt. Where the rule
-  contradicts a deliberate decision (localStorage cannot be read during render;
-  a live ref must be written during render or an async callback fires a stale
-  value), a targeted `eslint-disable-next-line` **with the reason written out**
-  is the accepted resolution — see `SayItContent.tsx`.
+  paint every PR red on day one. The workflow step is "Lint the files this PR
+  touches", added 29 Aug. Consequence to budget for: a one-line change to an
+  old file inherits that file's whole lint debt. Where the rule contradicts a
+  deliberate decision (localStorage cannot be read during render; a live ref
+  must be written during render or an async callback fires a stale value; a
+  shuffle must happen after mount so SSR and the first client render agree), a
+  targeted `eslint-disable-next-line` **with the reason written out** is the
+  accepted resolution — see `SayItContent.tsx`. Fix what is genuinely a fault;
+  do not restructure a working component to satisfy a rule in a PR that is
+  about something else.
 - **CI** is one job, `verify`: `tsc --noEmit`, `npm run build`, then every
   script in `verify/`, each named on its own `run:` line in
   `.github/workflows/verify.yml`. Add a check and you must add that line —

@@ -124,9 +124,19 @@ check("FAMILIES.filter" in nav and 'f.key !== "user"' in nav,
 check("BottomBar" in shell, "BottomBar is mounted in CahierShell",
       "BottomBar is not mounted — the phone still has only the burger")
 
-# ── 4 · the tablet band ────────────────────────────────────────────────────
-check("min-width: 900px" in css, "the rail returns at 900px",
-      "globals.css still gates the rail at 1100px — tablets get no navigation")
+# ── 4 · navigation exists at EVERY width ───────────────────────────────────
+# This used to assert "the rail returns at 900px", because below that width the
+# desk rail vanished and the ☰ stood in for it — so a wrong breakpoint left
+# tablets with neither. On 2026-08-30 Dan replaced the rail with the dropdown
+# outright ("the rail cannot be flaps … they have to be drop down like in most
+# interfaces"), so the ☰ IS the navigation now and no breakpoint may hide it.
+# That is the same intent, guaranteed more simply: assert nothing turns it off
+# rather than that a rule turns it back on.
+hides_menu = re.search(r"\.cahier-menu\s*\{[^}]*display:\s*none", css)
+check(hides_menu is None,
+      "nothing hides the ☰ at any width — it is the navigation everywhere",
+      "a rule sets .cahier-menu to display:none — at that width the app has no "
+      "navigation at all, because the desk rail it used to fall back to is gone")
 check("window.innerWidth < 1100" not in shell, "no 1100px breakpoint left in CahierShell",
       "CahierShell still compares against 1100 — CSS and JS will disagree")
 check("min-width: 640px) and (max-width: 899.98px" in css,

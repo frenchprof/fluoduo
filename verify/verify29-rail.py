@@ -52,15 +52,33 @@ check(fams == WANT,
 check("RailGroups" in shell, "the shell renders RailGroups", "the shell does not render RailGroups")
 # toolTabs() still legitimately feeds the phone ☰ dropdown and the active-label
 # lookup; what must be gone is the flat column INSIDE the rail itself.
+# WHERE THE GROUPED RAIL LIVES CHANGED ON 2026-08-30. Dan: the rail "cannot be
+# flaps … they have to be drop down like in most interfaces", with "burger menu
+# left, flaps right". So RailGroups moved OFF the desk and into the ☰ dropdown,
+# which is now the navigation at every width rather than a phone stand-in. The
+# rule it must still obey is the same one, in its new home: grouped, never a
+# flat column.
+menu_start = shell.find("absolute left-0 top-full")
+menu_end = shell.find("</div>", shell.find("tools.filter", menu_start)) if menu_start >= 0 else -1
+menu_block = shell[menu_start:menu_end] if menu_start >= 0 else ""
+check(bool(menu_block) and "site.map" not in menu_block,
+      "the ☰ dropdown is grouped — no flat site map inside it",
+      "the ☰ dropdown maps site flat — it disagrees with the families again")
+check("RailGroups" in menu_block,
+      "the ☰ dropdown renders RailGroups",
+      "the ☰ dropdown does not render RailGroups — the grouped families are gone")
+# tools.map WHOLE would duplicate the families (SpecuLearn and 4Mémoire twice);
+# only Carte, which belongs to no family, may come through.
+check("tools.map" not in menu_block,
+      "the dropdown does not re-list every activity under the families",
+      "the dropdown renders tools.map whole — activities appear twice")
+# The desk keeps only this page's own flaps, on the right.
 nav_start = shell.find('<nav className="cahier-tabs"')
 nav_end = shell.find("</nav>", nav_start)
 rail_block = shell[nav_start:nav_end] if nav_start >= 0 else ""
-check(bool(rail_block) and "tools.map" not in rail_block and "site.map" not in rail_block,
-      "the rail column is grouped — no flat tools/site map inside the nav",
-      "the rail still maps tools/site flat — the 22-flap column is back")
-check("RailGroups" in rail_block,
-      "the rail column is RailGroups",
-      "the nav does not render RailGroups")
+check(bool(rail_block) and "RailGroups" not in rail_block,
+      "the desk nav holds page flaps only, not the site rail",
+      "the six-family rail is back on the desk — it belongs in the ☰")
 check("UNIT_META" in rail and 'f === "goals"' in rail,
       "the Unités are Goals' children, not a tier of their own",
       "the rail does not put the units under Goals")
