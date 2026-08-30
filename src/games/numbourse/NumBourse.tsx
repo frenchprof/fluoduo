@@ -26,6 +26,7 @@ import GameOver, { type GameMiss } from "@/components/GameOver";
 import { reviewItemByFrench } from "@/lib/reviser";
 import { frenchNumber, frenchDigits } from "./frenchNumbers";
 import { holdDigitKeys } from "@/lib/useChoiceKeys";
+import { buildEvidence } from "@/lib/evidence";
 
 const START_LIVES = 3;
 const QUOTA = 6; // trades to close a level
@@ -112,6 +113,7 @@ export default function NumBourse() {
     inputRef.current?.focus({ preventScroll: true });
   }, []);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- the hydration guard. Its whole purpose is to be false during render and true after mount.
   useEffect(() => setMounted(true), []);
   useEffect(() => holdDigitKeys(), []);
   useEffect(() => () => chiptune.stop(), []);
@@ -149,6 +151,7 @@ export default function NumBourse() {
   // Deal the level's first ticket — on start and on each level change.
   useEffect(() => {
     if (!started) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- resetting the round counter when the level changes is the synchronisation this effect performs.
     setDoneCount(0);
     setLevelDone(false);
     deal(level);
@@ -190,7 +193,10 @@ export default function NumBourse() {
   function miss() {
     if (!order || resolvedRef.current) return;
     resolvedRef.current = true;
-    recordResponse(order.words, false, { activity: "numbourse" });
+    recordResponse(order.words, false, {
+      activity: "numbourse",
+      evidence: buildEvidence(order.words, "numbourse"),
+    });
     sfx.wrong();
     setCombo(0);
     missedRef.current = [...missedRef.current, { order, given: typedRef.current }];
@@ -216,7 +222,10 @@ export default function NumBourse() {
       return;
     }
     resolvedRef.current = true;
-    recordResponse(order.words, true, { activity: "numbourse" });
+    recordResponse(order.words, true, {
+      activity: "numbourse",
+      evidence: buildEvidence(order.words, "numbourse"),
+    });
     sfx.correct();
     setScore((s) => s + 10 + Math.min(combo, 5) * 2);
     setCombo((c) => c + 1);

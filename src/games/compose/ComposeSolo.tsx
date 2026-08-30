@@ -19,6 +19,7 @@ import { categoryHeaderClass, type ComposeBank } from "@/games/compose/banks";
 import GameFrame from "@/components/GameFrame";
 import GameOver from "@/components/GameOver";
 import { drillExitHref } from "@/components/DrillShell";
+import { buildEvidence } from "@/lib/evidence";
 
 /** Join tapped chips into readable French (", " chips collapse into commas). */
 function joinChips(chips: string[]): string {
@@ -47,6 +48,7 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
 
   useEffect(() => {
     const s = bank.newScenario();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- newScenario() is random; running it during render would break hydration on a static export.
     setScenario(s);
     // The Composer never opens on a blank sheet (Dan, 2026-07-19): the
     // passer-by asks the way out loud before the learner builds a reply.
@@ -108,7 +110,12 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
       if (data.done) {
         sfx.stage();
         awardConversationXp();
-        recordResponse(bank.id, true, { activity: `compose-solo:${bank.id}` });
+        recordResponse(bank.id, true, {
+          activity: `compose-solo:${bank.id}`,
+          // awardConversationXp() above is this game's payment; routing through
+          // recordItemResult would pay a second time.
+          evidence: buildEvidence(bank.id, `compose-solo:${bank.id}`),
+        });
         void logEvent("game.end", { game: "compose-solo", collectionId: bank.id });
       } else sfx.correct();
     } catch {
