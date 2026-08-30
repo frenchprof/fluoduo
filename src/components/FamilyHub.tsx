@@ -25,9 +25,18 @@
  * NOT AUTH-GATED. The activities behind these tiles gate themselves; browsing
  * has never needed a sign-in, and a wall in front of a menu would be a wall in
  * front of finding out what the app contains.
+ *
+ * THE SAME FURNITURE AS EVERY OTHER PAGE (Dan, 2026-08-30: "make sure for the
+ * desktop version we have the same uniformed look of the cahier with the
+ * headers and menus etc for all pages AND HUBS"). The first version put a bare
+ * grid of tiles on the ruled paper — shell and heading strip, but none of the
+ * section furniture every landing wears. It now uses the same `SectionBand` as
+ * ActivityLanding, with the same spine, wash and count pill, so a hub and a
+ * landing are the same kind of page at a glance.
  */
 import Link from "next/link";
 import CahierShell from "@/components/CahierShell";
+import SectionBand from "@/components/SectionBand";
 import ActivityIcon from "@/components/ActivityIcon";
 import { activitiesIn, familyShort, hubFamily } from "@/content/activities";
 
@@ -43,7 +52,11 @@ export default function FamilyHub({ activeKey }: { activeKey: string }) {
 
   return (
     <CahierShell active={activeKey} band={{ title: familyShort(family), stat: String(tiles.length) }}>
-      <div className="mx-auto w-full max-w-3xl px-4 pb-24 pt-4">
+      <SectionBand
+        family={family.key}
+        label={`${family.emoji} ${familyShort(family)}`}
+        pill={`${tiles.length}`}
+      >
         <ul className="grid gap-2.5 sm:grid-cols-2">
           {tiles.map((a) => (
             <li key={a.key}>
@@ -64,7 +77,7 @@ export default function FamilyHub({ activeKey }: { activeKey: string }) {
             </li>
           ))}
         </ul>
-      </div>
+      </SectionBand>
     </CahierShell>
   );
 }
