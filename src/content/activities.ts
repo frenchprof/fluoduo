@@ -56,29 +56,36 @@ export type Family = { key: FamilyKey; name: string; emoji: string; href: string
  * Order is Dan's, 19 Aug — 2a → 2b → 2e → 2c → 2d → 2f, with Pre-Lesson and
  * Goals confirmed as the same tab:
  *
- *   Goals · Practice · SvPlay · Review · Skills · User
+ *   Goals · Practice · Games · Revise · Skills · User
  *
  * Play sits third, straight after the practice you have just done; the two
  * heavier families (Review, Skills) follow it.
  */
 export const FAMILIES: Family[] = [
-  { key: "goals", name: "FluOlin Goals", emoji: "🎯", href: "/" },
-  { key: "practice", name: "FluOlin Practice", emoji: "✏️", href: "/map" },
+  { key: "goals", name: "FluOLin Goals", emoji: "🎯", href: "/" },
+  // 🏋️ (Dan, 2026-08-31) — the same mark the lesson's Pract. tab wears
+  // since #108, so "practice" is one glyph everywhere.
+  { key: "practice", name: "FluOLin Practice", emoji: "🏋️", href: "/map" },
   // /games, not /games/vocabularain (Dan, 2026-08-30, on the bottom bar:
   // "can we first establish if those are really the five that we need
   // anchored below? the most likely shortcuts needed by learners should go
   // there"). The five slots were right; two of the doors were not. A learner
   // tapping 🎮 got whichever game happened to be first in the registry, and
   // the other three had no shortcut at all.
-  { key: "svplay", name: "FluOlin SvPlay", emoji: "🎮", href: "/games" },
-  // 🔖 not 🔁 (2026-08-21): the transport glyphs belong to sound. ÉcouTexte's
-  // "🔁 Listen again" has to keep meaning "again", so the Review family — a
-  // DESTINATION — cannot wear the same mark. 🔖 = put it aside, come
-  // back to it (Dan chose it over 👀, 2026-08-21).
-  { key: "review", name: "FluOlin Review", emoji: "🔖", href: "/reviser" },
-  // Same fault, same fix: 💪 used to open ConjugaZone, one of six.
-  { key: "skills", name: "FluOlin Skills", emoji: "💪", href: "/skills" },
-  { key: "user", name: "FluOlin User", emoji: "👤", href: "/profil" },
+  // "Games", not "SvPlay" and not "Play" (Dan, 2026-08-31): Home's hero key
+  // is now CONTINUE (your current stop), so the family door says what is
+  // behind it and no two doors share a name. Key stays "svplay" — the
+  // Memo-rename precedent: display renames never touch keys or routes.
+  { key: "svplay", name: "FluOLin Games", emoji: "🎮", href: "/games" },
+  // "Revise" with 🔄 (Dan, 2026-08-31), superseding his 21 Aug 🔖 pick.
+  // The 21 Aug rule itself stands: 🔁 — ÉcouTexte's "Listen again" mark —
+  // stays banned as a destination glyph (verify25 pins it off Home); 🔄 is
+  // a different character and was Dan's explicit choice.
+  { key: "review", name: "FluOLin Revise", emoji: "🔄", href: "/reviser" },
+  // Same fault, same fix: the emoji used to open ConjugaZone, one of six.
+  // 💬 (Dan, 2026-08-31) — the skills are speaking skills; 💪 moved on.
+  { key: "skills", name: "FluOLin Skills", emoji: "💬", href: "/skills" },
+  { key: "user", name: "FluOLin User", emoji: "👤", href: "/profil" },
 ];
 
 export type Activity = {
@@ -223,10 +230,10 @@ export function hubFamily(activeKey: string | undefined): Family | undefined {
   return key ? FAMILIES.find((f) => f.key === key) : undefined;
 }
 
-/** "FluOlin SvPlay" → "SvPlay". The bar, the rail and the hub headings all
+/** "FluOLin Games" → "Games". The bar, the rail and the hub headings all
  *  want the short form; three copies of this regex is how they drift apart. */
 export function familyShort(f: Family): string {
-  return f.name.replace(/^FluOlin /, "");
+  return f.name.replace(/^FluOLin /, "");
 }
 
 /** Everything in one family, in its authored order. */

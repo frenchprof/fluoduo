@@ -13,7 +13,7 @@
  * truncated — and a rename in activities.ts lands here by itself.
  */
 import Link from "next/link";
-import { FAMILIES, activitiesIn } from "@/content/activities";
+import { FAMILIES, activitiesIn, familyShort } from "@/content/activities";
 
 const STEPS: { hue: number; what: React.ReactNode }[] = [
   { hue: 1, what: <>🏠 <b>Unité 0–4</b> flaps → tap the goal</> },
@@ -56,7 +56,7 @@ export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
                           label the bottom bar derives (nav.ts), pointing at
                           the same doors. */}
                       <p className="text-[11px] font-black uppercase tracking-wide text-[color:var(--cahier-ink)]/60">
-                        <span aria-hidden>{f.emoji}</span> {f.name.replace(/^FluOlin /, "")}
+                        <span aria-hidden>{f.emoji}</span> {familyShort(f)}
                       </p>
                       <ul className="mt-1.5 grid grid-cols-4 gap-x-1 gap-y-3 sm:gap-x-2">
                         {activitiesIn(f.key).map((a) => (

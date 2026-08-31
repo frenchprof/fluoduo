@@ -1,5 +1,5 @@
 /**
- * The 50-SIO spine — the navigation backbone of FluOlinGo.
+ * The 50-SIO spine — the navigation backbone of FluOLinGo.
  *
  * sios.json IS THE SOURCE — edit it by hand. The handoff CSV
  * (docs/handoff/LAF1201_SIOs_Flashcards_v9.csv) follows it via

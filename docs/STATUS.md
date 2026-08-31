@@ -6,6 +6,53 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 31 Aug PM — THE NAMES ARE LAW (#109), and the tab strip is one row (#108)
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Two more of Dan's rulings landed the same evening, both driven by pictures:
+
+- **#108** (`51eb067`): the lesson's four tabs fit ONE row. The wrap was 4px
+  of six-tab-era padding; the strip is now a four-column grid, wearing the
+  emoji Dan sent: ➡️ Path · 💡 Idea · 📐 Forms · 🏋️ Pract.
+- **#109** (`66faa42`): a **permanent rule in AGENTS.md** — the brand is
+  **FluOLinGo** (capitals F·O·L·G, Fluency On Linguistic Goals) and the six
+  families are 🎯 Goals · 🏋️ Practice · 🎮 Games · 🔄 Revise · 💬 Skills ·
+  👤 User. SvPlay → Games; Home's hero key is **Continue** (né Play), so no
+  two doors share a name. Registry keys unchanged. Found en route:
+  RailGroups and GuideBody carried private copies of familyShort's regex —
+  consolidated onto the helper.
+
+**DEPLOYED.** Dan pushed `live main` the same evening — production (`dckg/fluo`)
+is at `66faa42`, carrying the whole day: #94 · #97 · #98 · #99 · #100 · #101 ·
+#102 · #103 · #105 · #106 · #108 · #109. Nothing on origin/main is undeployed
+except this STATUS entry itself.
+
+**Awaiting Dan's read on the live site:** the one-row tab strip, the FluOLinGo
+respelling, the new family icons, and the two French forms in the salutations
+concept (« bonne soirée », « bon appétit »).
+
+## 31 Aug PM — #100 MERGED; decision 1 is RESOLVED
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan: *"I m READY to merge."* PR #100 (Color review's Tier-3 redraft + the
+27% concept-page cut + Tier 1 batch 1) is squash-merged as `9a3c67b` —
+today's ninth merge. **Decision 1 is answered: the Tier-3 shape holds**, so
+both drafting lanes are unlocked — Tier 1's remaining 14 concepts and the
+Tier-3 batch of 8 phrase stops, batches of five, every batch read by Dan
+before ship.
+
+The one merge conflict (LessonTabs' "How to decide") resolved to Peers'
+`Section` fold rather than #100's raw `<details>` — same collapse, but the
+closed fold names its count, per the collapse rule. verify67's flow
+assertions were amended to guard the same claim through the component, and
+fold notes gained a `count()` pluralizer ("1 step", not "1 steps").
+
+**Dan's two follow-ups:** deploy (`git pull && git push live main` — nine
+merges are waiting), and a native-speaker read of `bonne soirée` (new) and
+`bon appétit` (atelier 50) in the shipped salutations concept.
+
 ## 31 Aug — the Tier 3 concept, redrafted on Dan's ruling
 
 **Dan overruled the first draft, and he was right.** I had built it on one line
@@ -88,9 +135,9 @@ lane = report it in STATUS, don't do it.
 | Agent (session) | Lane | Owns right now |
 |---|---|---|
 | **fluoduo-main** | **Integration** — merges, branch hygiene, verify-number renumbers, cross-session stall watch, previews for Dan, deploy shepherding | The 31 Aug cleanup sweep; this roster |
-| **Color review** | **Concepts** — the tier pipeline (Tier 1 ×19, Tier 2 second half), keeper of the Stocktake ledger | Next Tier batch, gated on Dan's salutations read |
+| **Color review** | **Concepts** — the tier pipeline (Tier 1 ×19, Tier 2 second half), keeper of the Stocktake ledger | **Gate OPEN** (#100 merged, decision 1 resolved): next Tier-1 batch and the Tier-3 eight |
 | **Pre-tests** | **Pre-test surfaces** | ✅ Unit-0 pages (#98) · ✅ popup collapse (#99) · **now: derived done-ness**; then concept drafting as second capacity |
-| **Peers** | **Features** | 31 Aug PM: SIO-005/006 lessons, the colour ladder, band weight, English tabs, Words-under-Forms, the collapse rule — handed over per `docs/HANDOFF_PEERS_31AUG.md`, **landing as #105**. Queue then empty; next assignment is Dan's |
+| **Peers** | **Features** | 31 Aug PM: SIO-005/006 lessons, the colour ladder, band weight, English tabs, Words-under-Forms, the collapse rule — **LANDED — #105, `d85533b`**. Queue empty; next assignment is Dan's |
 | **Dan** | **Decisions + reads + deploys** | The queue below; every pedagogical claim is read before it ships |
 
 ### Rules every session respects
@@ -144,6 +191,7 @@ lane = report it in STATUS, don't do it.
   TRANSPARENT (« bonne nuit » = bonne + a feminine noun); the moment alone
   only where it is OPAQUE (« il fait beau »). The redraft and the 27% page
   cut are in **#100**, awaiting fluoduo-main's merge under rule 7.
+  cut **MERGED — #100, `9a3c67b`, 31 Aug PM**, Tier 1 batch 1 with it.
   Remaining, in order:
   1. **Tier 1 — 19 concepts.** The critical path, nothing gating it. Batches
      of five, every batch read by Dan before ship.
@@ -271,7 +319,7 @@ Dan assigns. Listed so the queue is not re-derived by whoever picks it up.
 
 | # | Decision | Blocks |
 |---|---|---|
-| 1 | Salutations concept read — does the Tier-3 shape hold? | 14 Tier-3 + gating 19 Tier-1 drafts |
+| ~~1~~ | ~~Salutations concept read — does the Tier-3 shape hold?~~ **RESOLVED 31 Aug — it holds; #100 merged** | ~~14 Tier-3 + gating 19 Tier-1 drafts~~ nothing — both lanes open |
 | 2 | FluOlinGo Hand font: (a) want it? (b) wire in same PR or assets-only? | font branch |
 | 3 | Home-rebuild branch: confirm delete (stale draft of shipped #40; main's StopSheet newer) | one branch |
 | 4 | Cycling pair: keep either / both / park both under work/ | two branches |

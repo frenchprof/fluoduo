@@ -65,10 +65,13 @@ const TABS: { key: TabKey; emoji: string; label: string; does: string }[] = [
   // Pract." — Bonus is a level of the chooser since #97, and Words lives
   // under Forms, so the strip is four tabs and fits a phone without hiding
   // any at the scrolled-off end.
-  { key: "parcours", emoji: "🗺", label: "Path", does: "what you will be able to do" },
+  // The emoji set is Dan's, sent as four emoji for the four tabs (2026-08-31,
+  // choosing the one-row strip): ➡️ the path ahead · 💡 the idea · 📐 the
+  // forms measured out · 🏋️ the workout.
+  { key: "parcours", emoji: "➡️", label: "Path", does: "what you will be able to do" },
   { key: "concept", emoji: "💡", label: "Idea", does: "why French does it this way" },
-  { key: "formes", emoji: "📖", label: "Forms", does: "the forms themselves, and every word" },
-  { key: "exercice", emoji: "📝", label: "Pract.", does: "use them, one card at a time — ⭐ Bonus included" },
+  { key: "formes", emoji: "📐", label: "Forms", does: "the forms themselves, and every word" },
+  { key: "exercice", emoji: "🏋️", label: "Pract.", does: "use them, one card at a time — ⭐ Bonus included" },
 ];
 
 /**
@@ -542,14 +545,15 @@ export default function LessonTabs({
 
   return (
     <div className="pt-1">
-      {/* WRAPS, it does not scroll (2026-08-31). Six tabs cannot fit one row at
-          390px however short the labels get — measured: 594px of tabs in a
-          328px strip even after Dan shortened them. `overflow-x-auto` then
-          HIDES the tabs at the end, which is exactly how "Words" came to be
-          missing from the screenshot he was reading when he cut the labels to
-          five. Wrapping costs one row of height on a phone and nothing on a
-          desktop, and no tab is ever out of sight. */}
-      <div role="tablist" aria-label="Lesson sections" className="-mx-1 flex flex-wrap gap-1 px-1 pb-2">
+      {/* ONE ROW, four equal columns (Dan, 2026-08-31: "it seems we cannot
+          squeeze the four in a row, then why"). The why was 4px: the pills
+          kept the padding they wore as six, and 332px of tabs met a 328px
+          strip, so "Pract." wrapped. A grid fits by construction at every
+          width and never hides a tab — the fault `overflow-x-auto` had, which
+          is how "Words" once vanished off the end of the strip. Shown to Dan
+          against no-emoji and tightened-padding variants; he chose this and
+          sent the four emoji himself. */}
+      <div role="tablist" aria-label="Lesson sections" className="grid grid-cols-4 gap-1 pb-2">
         {TABS.map((t) => {
           const on = t.key === tab;
           return (
@@ -560,7 +564,10 @@ export default function LessonTabs({
               aria-selected={on}
               onClick={() => setTab(t.key)}
               className={[
-                "flex shrink-0 items-center gap-1.5 rounded-xl border-2 px-2.5 py-1.5 text-[13px] font-black transition",
+                // The sub-360 step exists for 320px phones: a column there is
+                // ~61px and "📐 Forms" at 13px is ~63 — the two widest pills
+                // clipped. Measured, not guessed.
+                "flex items-center justify-center gap-0.5 rounded-xl border-2 px-1 py-1.5 text-[12px] font-black transition min-[360px]:gap-1 min-[360px]:text-[13px]",
                 on
                   ? "border-[color:var(--cahier-ink)] bg-[color:var(--fam-ink)] text-white"
                   : "border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-raised)] text-[color:var(--fluo-ink-soft)]",

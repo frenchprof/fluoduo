@@ -6,7 +6,7 @@ import ProfileContent from "@/components/ProfileContent";
  *  /profil are the SAME page now: the merge folded the economy into a strip,
  *  and both routes stayed live so every existing link, QR and bookmark lands
  *  where it always did. */
-export const metadata = { title: "My Profile — FluOlinGo" };
+export const metadata = { title: "My Profile — FluOLinGo" };
 
 export default function Page() {
   return (

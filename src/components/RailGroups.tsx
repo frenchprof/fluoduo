@@ -23,7 +23,7 @@
  */
 import { useSyncExternalStore } from "react";
 import Link from "next/link";
-import { FAMILIES, activitiesIn, type FamilyKey } from "@/content/activities";
+import { FAMILIES, activitiesIn, familyShort, type FamilyKey } from "@/content/activities";
 import { UNIT_META } from "@/content/sios";
 import { UNIT_ACCENTS } from "@/components/siteTabs";
 
@@ -114,7 +114,10 @@ export default function RailGroups({
       {FAMILIES.map((f) => {
         const kids = childrenOf(f.key);
         const isOpen = !!open[f.key];
-        const label = f.name.replace(/^FluOlin /, "");
+        // familyShort, not a local regex — this line carried its own copy of
+        // the strip and silently showed "FluOLin Goals" when the prefix was
+        // respelled on 31 Aug. The drift familyShort's docstring predicted.
+        const label = familyShort(f);
         return (
           <div key={f.key} className="contents">
             <button

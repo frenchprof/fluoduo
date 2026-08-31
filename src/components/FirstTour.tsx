@@ -57,7 +57,7 @@ function tourFor(rawPath: string): Tour | null {
     return {
       key: "home",
       steps: [
-        { selector: 'a[title^="Play"]', action: "tap", text: "Play — your next stop on the path." },
+        { selector: 'a[title^="Continue"]', action: "tap", text: "Continue — your next stop on the path." },
         { selector: "nav.cahier-bottombar", action: "tap", text: "The five tabs — press and hold one for its name." },
         { kind: "play", text: "Start here" },
       ],

@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * "Add FluOlinGo to your home screen" — offered ONCE, on the learner's third
+ * "Add FluOLinGo to your home screen" — offered ONCE, on the learner's third
  * visit or later, and never again once answered.
  *
  * The third-visit rule is the whole ethic of it. A prompt on first open asks
@@ -102,7 +102,7 @@ export default function InstallPrompt() {
                className="shrink-0 rounded-xl border-2" style={{ borderColor: "var(--cahier-ink)" }} />
           <div className="min-w-0">
             <p className="cahier-display text-base font-black leading-tight text-[color:var(--cahier-ink)]">
-              Keep FluOlinGo a thumb away
+              Keep FluOLinGo a thumb away
             </p>
             <p className="mt-0.5 text-[13px] leading-snug text-[color:var(--cahier-ink-soft)]">
               {ios
