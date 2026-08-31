@@ -127,7 +127,19 @@ export const ACTIVITIES: Activity[] = [
   // had drifted "into things like EtuDice and Sorting", and the confusion its
   // name caused reached all the way into the evidence table (see evidence.ts).
   { key: "flip", name: "4Mémoire", emoji: "🃏", family: "practice", href: "/practice/flip-it", hue: "#2bb6c2", blurb: "Flashcards. English front, flip to French." },
-  { key: "complete", name: "iComplete", emoji: "✏️", family: "practice", href: null, hue: "#7bbf2e", blurb: "Type the missing word." },
+  // iCOMPLETE IS RETIRED (Dan, 2026-08-31: "we don't need a separate
+  // CompleteIt exercise anymore. it will be part of Memo's activities …
+  // we can retire CompleteIt and Sorting").
+  //
+  // Same pattern as Sorting above: the registry row is gone so no tile, flap
+  // or chip offers it; the route stays so banked answers keep a label and the
+  // decision is reversible. Its BAND row, ledger prefixes and evidence tags
+  // below all stay — they describe answers already given.
+  //
+  // Why it went: the Memo's difficulty ladder IS iComplete now. Moyen is
+  // "complete the sentence, one piece missing", Difficile is two pieces —
+  // Dan's own classification of CompleteIt — so the standalone drill was the
+  // same exercise offered twice under a second name.
 
   // ── 2 · FluOlin Review — automatic first, then the one you choose ─────────
   { key: "reviser", name: "DéjàRevu", emoji: "🔖", family: "review", href: "/reviser", hue: "#7bbf2e", blurb: "Comes back when you're about to forget it." },

@@ -104,10 +104,13 @@ check("aria-expanded" in rail,
 EXPECT = {
     # Dan, 2026-08-23: rename xPlain → Memo, approved surface #3.
     # Sorting was CUT on 2026-08-31 ("sorting is cut") — off navigation the way
-    # Match It went, registry row gone and route kept. So `practice` is four.
+    # Match It went, registry row gone and route kept.
+    # iComplete RETIRED the same day ("we can retire CompleteIt … it will be
+    # part of Memo's activities") — the Memo's Moyen/Difficile tiers are one-
+    # and two-piece completion, so `practice` is three.
     # Dan, 2026-08-25: rename EtuDice → Sorting — the tile opened the group
     # sort, not the die. "EtuDice" now names only the d12 in the pager.
-    "practice": {"SpecuLearn", "Memo", "4Mémoire", "iComplete"},
+    "practice": {"SpecuLearn", "Memo", "4Mémoire"},
     "review":   {"DéjàRevu", "GramMarathon"},
     "skills":   {"ConjugaZone", "ÉcouTexte", "WorDrill", "VoixLà", "ComposeIt", "ChaTutor"},
     "svplay":   {"NumBus", "NumBourse", "VocabulaRain", "LexicaLater"},
@@ -130,13 +133,13 @@ check("grid-cols-4" in menu,
 check("sm:grid-cols-5" in menu,
       "the Menu grid is five across from sm (4x5 / 5x4)",
       "the Menu grid does not widen to five from sm")
-check(len(rows) == 19,
-      f"the registry holds nineteen activities ({len(rows)})",
-      f"the registry holds {len(rows)} activities, expected 19. Cutting Sorting on "
-      "2026-08-31 took it from twenty, so the Menu grid is no longer the exact 4x5 "
-      "Dan specified — five across leaves the last row one short. Flagged to him "
-      "rather than papered over; if a tile is added or removed, change this "
-      "number on purpose.")
+check(len(rows) == 18,
+      f"the registry holds eighteen activities ({len(rows)})",
+      f"the registry holds {len(rows)} activities, expected 18. Sorting was cut "
+      "and iComplete retired on 2026-08-31 (the Memo's ladder absorbed it), "
+      "taking the registry from twenty to eighteen — so the Menu grid is no "
+      "longer the exact 4x5 Dan specified. Flagged to him rather than papered "
+      "over; if a tile is added or removed, change this number on purpose.")
 check(">Menu<" in menu or "Menu</h2>" in menu,
       "the popup calls itself Menu",
       "the popup does not say Menu")

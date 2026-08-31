@@ -84,8 +84,17 @@ check('registryTab("dice"' not in shell,
       "2026-08-31. A tile that is gone from the registry and still tabbed is a "
       "dead end wearing a live link.")
 
-check('registryTab("complete"' in shell, "iComplete has a flap on every deck",
-      "iComplete has no flap — its route is still orphaned")
+# REVERSED 2026-08-31. This used to demand the flap EXIST ("its route is
+# still orphaned" was the 19 Jul fault). Dan retired the activity the same
+# day the Memo's ladder absorbed it: "we don't need a separate CompleteIt
+# exercise anymore … we can retire CompleteIt and Sorting". Moyen/Difficile
+# ARE one- and two-piece completion, so the flap would offer the same
+# exercise twice. Orphaned-on-purpose, like Sorting's, with banked answers
+# keeping their labels.
+check('registryTab("complete"' not in shell,
+      "iComplete offers no flap — the Memo's ladder is the completion exercise",
+      "CahierShell still builds a flap for `complete`, but Dan retired it on "
+      "2026-08-31 — the Memo's Moyen/Difficile tiers are that exercise now")
 
 # ── 3 · the bottom bar ─────────────────────────────────────────────────────
 # Index lost its own slot on 2026-08-22 (Dan: "Goals and Index to merge later

@@ -29,14 +29,15 @@ import { accuracyFor, activityKeyFor, loadLedger, LEDGER_EVENT, type Ledger } fr
 // level 2 to be all floating like the SIOs pretest") — the unit page stays
 // visible behind. Loaded lazily so unit pages don't bundle every activity.
 const SayItContent = dynamic(() => import("@/app/practice/say-it/[collectionId]/SayItContent"));
-const CompleteItContent = dynamic(() => import("@/app/practice/complete-it/[collectionId]/CompleteItContent"));
 const DicePractice = dynamic(() => import("@/app/practice/dice/[collectionId]/PracticeContent"));
 const GramMarathonContent = dynamic(() => import("@/app/practice/grammarathon/[collectionId]/GramMarathonContent"));
 
 /** Activity keys that render inside the popup; the rest navigate out.
  *  "lesson" left this set with patch 22 — the lesson is the full-screen card
  *  pager now, so its flap navigates like any non-embeddable activity. */
-const EMBEDDABLE = new Set(["say", "complete", "dice", "grammarathon"]);
+// "complete" left with iComplete's retirement (Dan, 2026-08-31) — the Memo's
+// Moyen/Difficile tiers are the completion exercise now.
+const EMBEDDABLE = new Set(["say", "dice", "grammarathon"]);
 
 /**
  * THE NUMBERED PATH (Dan-approved guidance flow, 2026-08-24). The practice
@@ -48,7 +49,7 @@ const EMBEDDABLE = new Set(["say", "complete", "dice", "grammarathon"]);
  * SpecuLearn nor Sorting; the path is the authored order made visible.
  * Everything not in the chain (games, review, skills extras) stays a flap.
  */
-const CHAIN_KEYS = ["pretest", "speculearn", "lesson", "dice", "flip", "complete"] as const;
+const CHAIN_KEYS = ["pretest", "speculearn", "lesson", "dice", "flip"] as const;
 
 /** Step done-ness reads the device ledger exactly as the Index's cells do:
  *  attempted = accuracyFor() non-null, keyed by the same route→registry
@@ -185,7 +186,6 @@ export default function SioModal({
   const embeds: Record<string, ReactNode> = deck
     ? {
         say: <SayItContent collectionId={deck.id} embedded />,
-        complete: <CompleteItContent collectionId={deck.id} embedded />,
         dice: <DicePractice collectionId={deck.id} embedded />,
         grammarathon: <GramMarathonContent collectionId={deck.id} embedded />,
       }

@@ -369,12 +369,11 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     // Sorting's flap is gone with the activity (Dan, 2026-08-31: "sorting is
     // cut"). The route survives so banked answers keep a label, but nothing
     // offers it any more — see the note in content/activities.ts.
-    // 4Mémoire BEFORE iComplete (2026-08-24, approved guidance flow): the
-    // authored family order in activities.ts is dice → flip → complete, and
-    // the SIO sheet's numbered path renders this list's order — the two
-    // surfaces may not disagree (the 22 Aug flow walk caught them doing so).
+    // iComplete's flap is gone with the activity (Dan, 2026-08-31: "we can
+    // retire CompleteIt … it will be part of Memo's activities" — the Memo's
+    // Moyen/Difficile tiers ARE one- and two-piece completion now). The
+    // route survives so banked answers keep a label — see activities.ts.
     registryTab("flip", `/practice/flip-it/${collectionId}`),
-    registryTab("complete", `/practice/complete-it/${collectionId}`),
     ...(rainSet
       ? [registryTab("vocabularain", `/games/vocabularain/${collectionId.replace("-letris", "")}`)]
       : []),
