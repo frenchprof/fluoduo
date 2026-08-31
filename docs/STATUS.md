@@ -3062,6 +3062,45 @@ The lesson is the mirror, not the CSS: a left→right sweep over a stylesheet
 will hit declarations that were already on the correct side. Mirroring is not a
 find-and-replace.
 
+## 31 Aug — Tier 1, batch 1 of four
+
+Five concepts, and they are one argument rather than five: **what the negative
+does to the article tells you which article it was.** That is the contrast Dan's
+own L08 and L09 pages set up between them, so batch 1 is the pair plus the three
+stops that complete it.
+
+| stop | the question the FORMS cannot answer |
+|---|---|
+| **23** Likes (L08) | « Je ne fais pas **de** sport » loses its article — so why does « Je n'aime pas **le** sport » keep one? |
+| **24** Faire du/de la (L09) | `du` is not a word: it is `de` + `le`. A negative removes the portion, so the `le` half goes and `de` is what was always underneath |
+| **42** Partitives | four forms are one word plus an article — only `le` and `les` fuse with `de`, which is why `de la` and `de l'` stay in two |
+| **28** Négation | `ne` does not go before the verb; it goes before the verb **and everything glued to it** (`me`, `te`, `se`, `y`) |
+| **22** Possessives (L13) | the possessive agrees with what is owned, so « son livre » is his book AND hers, and no form will ever tell you which |
+
+Every claim is lifted from the Mémo already in the file. The Mémos state the
+FACTS — "even in the negative the article stays le/la/les", "in the negative
+du/de la/des all become de". None of them says WHY, and the why is what turns
+stop 24 from a second rule into a consequence of the first.
+
+### The measurement that was worth more than the concepts
+
+The page-length harness reported **1111px / 1.98 screens for all seven concepts
+measured, identical to the pixel.** Seven different pages cannot be the same
+height. The URL was hardcoded to `salutations` — a `sed` that silently matched
+nothing — so every run measured the same page. Parameterised properly the
+numbers separate: 923–1111px, and it immediately found a real fault, negation's
+flow box scrolling sideways at 304px in a 296px box. Shortened; gone.
+
+**Identical numbers across different inputs is the tell.** Nothing in the output
+said "vacuous"; it took noticing that seven pages agreeing exactly is not a
+result. Fifth vacuous check this session, and the first found by suspicion
+rather than by break-testing.
+
+All 20 concepts render clean · every one under two screens · nothing scrolls
+sideways · `tsc` clean · build passes · 56 verify scripts green · lint clean.
+
+**Not merged** — rule 6. Handed to fluoduo-main.
+
 ## 31 Aug — the first Tier 3 concept, and whether the format survives it
 
 Peers and this session independently reached the same conclusion: Tier 3 is the

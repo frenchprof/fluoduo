@@ -44,6 +44,54 @@ export const partitifsLesson: NativeLesson = {
       </p>
     </div>
   ),
+  // TIER 1 · stop 42. The four forms look like four words; they are one thing
+  // twice over — `de` + the definite article. That single reading explains the
+  // whole table AND the negative, and it is nowhere in the Mémo.
+  concept: {
+    subtitle: "Four forms, one word plus an article",
+    contrast: (
+      <>
+        English says <i>some</i>, or nothing at all &mdash; <i>I eat bread</i>. French makes you
+        say how much of it you mean, and the word for that is always{" "}
+        <i lang="fr">de</i>. What changes after it is only the article:{" "}
+        <i lang="fr">de</i> + <i lang="fr">le</i> = <i lang="fr">du</i>,{" "}
+        <i lang="fr">de</i> + <i lang="fr">les</i> = <i lang="fr">des</i>.
+      </>
+    ),
+    question: (
+      <>
+        Why is it <i lang="fr">de la salade</i> and <i lang="fr">de l&rsquo;eau</i> in two
+        words, but <i lang="fr">du pain</i> in one?
+      </>
+    ),
+    answer: (
+      <>
+        Because only <i lang="fr">le</i> and <i lang="fr">les</i> fuse with{" "}
+        <i lang="fr">de</i>. <i lang="fr">La</i> and <i lang="fr">l&rsquo;</i> never do, so they
+        simply stand there: <i lang="fr">de la</i>, <i lang="fr">de l&rsquo;</i>. There are not
+        four things to learn &mdash; there is <i lang="fr">de</i>, and an article that sometimes
+        sticks to it.
+      </>
+    ),
+    pitfallHeads: ["written out", "what French says"],
+    pitfall: [
+      { label: <><i lang="fr">de</i> + <i lang="fr">le</i> pain</>, wrong: <><i lang="fr">de le pain</i></>, right: <><i lang="fr">du pain</i></> },
+      { label: <><i lang="fr">de</i> + <i lang="fr">les</i> œufs</>, wrong: <><i lang="fr">de les œufs</i></>, right: <><i lang="fr">des œufs</i></> },
+      { label: <><i lang="fr">de</i> + <i lang="fr">la</i> viande</>, wrong: <>&mdash;</>, right: <><i lang="fr">de la viande</i>, no fusion</> },
+    ],
+    check: [
+      { q: <>You drink some water. Which form, and why that one?</>,
+        a: <><i lang="fr">de l&rsquo;eau</i> &mdash; <i lang="fr">l&rsquo;</i> does not fuse with <i lang="fr">de</i>.</> },
+      { q: <>Now say you do not drink it.</>,
+        a: <><i lang="fr">Je ne bois pas <b>d&rsquo;</b>eau.</i> The article half goes; <i lang="fr">de</i> is what was underneath.</> },
+    ],
+    remember: (
+      <>
+        It is always <i lang="fr">de</i>. <i lang="fr">Du</i> and <i lang="fr">des</i> are just{" "}
+        <i lang="fr">de</i> with <i lang="fr">le</i> and <i lang="fr">les</i> stuck to it.
+      </>
+    ),
+  },
   dice: {
     instruction: "Choose the right partitive article for the food.",
     newQuestion() {
