@@ -219,6 +219,32 @@ lane = report it in STATUS, don't do it.
     questions are self-describing since #92, so a single run across all three
     audiences is a small change whenever Dan wants it.
 
+  4. ✅ **DONE — the ateliers' popup, which escaped #99's collapse.** Dan,
+     31 Aug, looking at SIO-020: *"i would rather the SIO and the items
+     (however few) not be lumped into the same space anymore."*
+     `SioDetail` had four branches. #99 emptied three; the fourth fired only on
+     `sio.isProduction`, so the SIX ATELIER STOPS went on printing their whole
+     model dialogue — six to ten lines of French and English with play buttons
+     — above the link list, for eight days, through a review and a deploy.
+     **And the dialogue is that stop's pre-test answer key.** An atelier
+     pre-test asks "which French line says « The flag has two colours »?" and
+     offers three more lines OF THAT DIALOGUE as the wrong options
+     (`pretests/ateliers.gen.ts`) — all six were on screen, above the button
+     that starts it. A cold guess was impossible, so the one thing the pre-test
+     measures could not be measured.
+     The dialogue needed no new page: it is the atelier deck's Mémo,
+     « Le modèle », built from the same `ATELIER_DIALOGUES` so it cannot drift
+     — Memo → 📐 Forms, with « Tout écouter ». `SioDetail` is now the statement
+     and nothing else (201 → 62 lines); `DialoguePlayer.tsx` is deleted rather
+     than left unmounted, its job done better by the Mémo. Every atelier
+     pre-test already opened its own page and still does.
+     **verify66 is EXTENDED rather than joined by a new suite, because verify66
+     is what let this through**: its check 4 scanned `UnitSection` and
+     `Unit0Panel` — the two files the collapse's diff touched — and never
+     opened `SioDetail`, the body those two MOUNT. It now scans the render, not
+     the diff. Break-tested by restoring the original branch verbatim: four
+     assertions fire.
+
   **After those:** Tier-1 concept batches in parallel with Color review, same
   read-before-ship rule.
 - **Peers — features.** Queue empty since Sorting was cut (#93). Next

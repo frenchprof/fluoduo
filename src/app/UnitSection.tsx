@@ -193,10 +193,14 @@ export default function UnitSection({
             }
             footer={<MarkDoneButton sioId={openSio.id} />}
           >
-            {/* The statement only. SioDetail's tiles, chips and inline quiz
-                went with the collapse — the links below say what the stop has,
-                and saying it twice was the whole problem. */}
-            <SioDetail sio={openSio} deck={deck} pretestHref={pretestHref} showPractice={false} />
+            {/* The statement only — SioDetail takes nothing else now. Its
+                tiles, chips, inline quiz AND (since 31 Aug) the ateliers'
+                model dialogue all went with the collapse: the links below say
+                what the stop has, and saying it twice was the whole problem.
+                The dialogue's case was the worst of the four — it is the
+                atelier pre-test's answer key, printed above the button that
+                starts it. */}
+            <SioDetail sio={openSio} />
           </SioModal>
         );
       })()}
