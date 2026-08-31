@@ -406,6 +406,29 @@ if formes:
 
 
 # ── 8 · long panels collapse, and the right half stays open ────────────────
+
+# EVERY fold names what is behind it. Dan's rule: a closed section with no count
+# "is a section nobody opens, which is just deletion with extra steps."
+_folds = re.findall(r"<Section\s+([^>]*?)>", TABS, re.S)
+_foldable = [f for f in _folds if "folds={false}" not in f]
+_bare = [re.sub(r"\s+", " ", f).strip()[:60] for f in _foldable if "note=" not in f]
+check(not _bare,
+      f"all {len(_foldable)} folds say what is behind them",
+      "these collapsed sections show a bare chevron and nothing else, so a learner has no "
+      "reason to open them: " + "; ".join(_bare))
+
+# THE `first:` TRAP, in the one place it bites. A <summary> is ALWAYS the first
+# child of its <details>, so a `first:` variant on the SHARED heading style
+# fires on every collapsible section at once and strips the rule and margin off
+# all of them, while plain <h3> headings keep theirs. The page then looks like
+# the folds are not sections at all. Found by looking at the render, not the
+# class list; the reset lives in HEAD_FIRST and is applied per element instead.
+_head = re.search(r"const HEAD =(.*?);", TABS, re.S)
+check(_head is not None and "first:" not in _head.group(1),
+      "the shared heading style carries no `first:` variant",
+      "`first:` is back in HEAD. A <summary> is always its <details>'s first child, so it "
+      "fires on EVERY fold and strips the rule off all of them — see HEAD_FIRST.")
+
 # Dan, 2026-08-31: "now that the page is long please collapse part of it. can
 # you make it a rule for all — this is the rule from now on." The rule is in
 # AGENTS.md; ONE component implements it, so a second panel cannot invent a
@@ -439,7 +462,13 @@ if conc:
           "actual point is folded away. Apparatus collapses; the argument never does.")
     for field, what in (("c.pitfall", "the pitfall table"), ("c.flow", "the decision flow"),
                         ("c.check", "the self-check")):
-        seg = conc.split(field, 1)[1][:200] if field in conc else ""
+        # COMMENT-STRIPPED, and a wider window. This read the 200 characters
+        # after the guard, so adding a three-line explanatory comment between
+        # `{c.flow && …(` and its `<Section>` pushed the tag out of range and
+        # failed a section that was correctly folded. A structural assertion
+        # must not depend on how much prose sits next to the structure.
+        bare = strip_comments(conc)
+        seg = bare.split(field, 1)[1][:400] if field in bare else ""
         check("<Section" in seg,
               f"{what} folds",
               f"{what} is not wrapped in a Section, so it is open on arrival and the page "
@@ -467,6 +496,7 @@ check('folds={false}' in formes_body,
 check('note={deck?.items?.length' in formes_body,
       "the folded word list says how many words are behind it",
       "the word list folds with no count, so nothing tells a learner it is worth opening")
+
 
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:

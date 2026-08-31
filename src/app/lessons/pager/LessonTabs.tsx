@@ -268,7 +268,10 @@ function Concept({ c }: { c?: LessonConcept }) {
       )}
 
       {c.flow && c.flow.length > 0 && (
-        <Section title="How to decide">
+        // The count is the DECISIONS, not the lines: a flow's indented lines
+        // are branches under a question, and "5 lines" would describe the
+        // rendering rather than what the learner is about to walk through.
+        <Section title="How to decide" note={`${c.flow.filter((l) => l.depth === 0).length} steps`}>
           <div className="overflow-x-auto rounded-xl bg-[color:var(--cahier-paper-raised)] p-3">
             {c.flow.map((line, n) => (
               <p
