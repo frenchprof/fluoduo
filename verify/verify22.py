@@ -5,10 +5,10 @@ Patch 22 — the lesson pager (2026-08-11).
 The audit called the lesson "the worst page in the app": 44 tappable controls
 before the first answer, the difficulty picker rendered twice with identical
 labels, three 🎲 roll buttons, a drill that never ended, no progress bar, no
-completion screen. The pager replaces all of it: min(3, memoCards) rule cards
-→ a fixed 12-card ramp
-(4 MCQ → 4 gap → 3 build → 1 translate) → an end card with XP/accuracy/time
-and the SIO write that finally makes the Home path react.
+completion screen. The pager replaces all of it: a fixed 12-card ramp whose
+mechanic is the chosen difficulty tier (Facile / Moyen / Difficile / Bonus,
+lib/lessonEntry.ts) → an end card with XP/accuracy/time and the SIO write
+that finally makes the Home path react.
 
 What this asserts:
 
@@ -16,8 +16,10 @@ What this asserts:
      DiceTrainer, both difficulty pickers, every 🎲 New-question button.
   2  The pager exists and is the DrillShell mold: shell import, exit href,
      select-then-commit (no onNext double-Enter), once-ending run.
-  3  buildCards: 3 rule cards max, the 12-card ramp with the 4/4/3/1 split,
-     wrong answers re-queue once.
+  3  buildCards: NO rule cards (2026-08-31, Dan: "Why is the same screen
+     appearing before the questions appear, it is a repeat?" — the Mémo
+     lives under Les formes in the tabs, not in the run), the 12-card
+     Facile ramp (4 mcq + 8 build), wrong answers re-queue once.
      2026-08-25: the entry die is GONE (Dan: "drop the shortcuts, learning
      should not allow that") — its face sliced the queue, so a high roll
      meant fewer cards. Asserted below as an absence.
@@ -75,9 +77,15 @@ for root, _, files in os.walk("src"):
 check(roll_buttons == 0,
       "every 🎲 New-question button is gone",
       f"{roll_buttons} 🎲 New-question button(s) survive")
+# NOTE, 31 Aug: Dan renamed the entry levels to Facile/Moyen/Difficile, so a
+# "★★★ Difficile" can legitimately be RENDERED again — by ONE chooser, the
+# entry screen. What died in patch 22 was the same picker rendered twice
+# mid-lesson. The source stores stars and name as separate strings
+# (ENTRY_LABELS), so this literal appearing in a FILE still means someone has
+# hand-built a second picker — which is exactly what the check should catch.
 check(pickers == 0,
-      "both difficulty pickers are gone (no ★★★ Difficile anywhere)",
-      f"a difficulty picker survives ({pickers} ★★★ label(s))")
+      "no hand-built difficulty picker anywhere (the entry chooser renders from ENTRY_LABELS)",
+      f"a hand-built difficulty picker survives ({pickers} '★★★ Difficile' literal(s))")
 
 # 2 · the pager is the DrillShell mold
 pager = strip_comments(read("src/app/lessons/pager/LessonPager.tsx"))
@@ -93,37 +101,35 @@ check("onNext" not in pager,
       "the pager binds its own onNext (Enter would advance twice)")
 
 # 3 · buildCards structure
-# A Mémo is ONE card since 2026-08-27. The old 3-way slice keyed on child
-# COUNT, which does not predict height: it chopped `alphabet` (8 children,
-# 449px) into three while leaving `nationalities` and `salutations` (1 child,
-# taller) whole — backwards where it mattered — and cloning the wrapper
-# stamped the heading onto every slice, so card one claimed "7 familles de
-# sons" above three of them. Assert the MEANING (a memo is not sliced), not
-# the number: a check that only reads "= 1" would pass on a file that still
-# slices.
-check("RULE_CARDS_MAX = 1" in cards, "a Mémo is one rule card", "RULE_CARDS_MAX is not 1")
-_split = re.search(r"export function splitMemo.*?\n\}", cards, re.S)
-check(bool(_split) and "cloneElement" not in (_split.group(0) if _split else ""),
-      "splitMemo does not slice the memo (no cloneElement)",
-      "splitMemo is slicing the Mémo again — the heading will repeat on every card")
+# NO RULE CARDS since 2026-08-31. The Mémo used to open the run as a rule
+# card — authored when the pager was the whole lesson. Once the six tabs
+# arrived (LessonTabs, 30 Aug) the identical Mémo sat one tap away under
+# « Les formes », so the in-run copy showed every learner the same screen
+# twice; Dan called it: "it is a repeat". The tab is its only home now, and
+# a rule card growing back is a regression, not a feature.
+check("splitMemo" not in cards and "RULE_CARDS_MAX" not in cards,
+      "no rule cards: buildCards builds exercises only",
+      "a rule-card mechanism is back in buildCards — the Mémo would open the "
+      "run again, repeating Les formes")
+check('"rule"' not in pager and "rules[i]" not in pager,
+      "the pager has no rule-card branch — the run opens on the first exercise",
+      "the pager renders a rule card again — the Mémo repeat Dan flagged on 31 Aug")
 check("cloneElement" not in cards,
       "buildCards clones no memo element at all",
       "buildCards still clones a memo element")
-# The default ramp moved to lib/lessonEntry.ts on 2026-08-28, when entry level
-# ★/★★/★★★ arrived: buildCards now holds `RAMP = rampFor(1)` rather than a
-# literal, so the old regex over buildCards.tsx matched nothing and reported an
-# empty ramp. Same assertion, asked of the module that now owns the answer —
-# executed rather than parsed, so it cannot go stale the same way twice.
-# (verify41 covers the other two levels and the equal-length invariant.)
+# The default ramp lives in lib/lessonEntry.ts; buildCards holds
+# `RAMP = rampFor(1)`. Since 31 Aug level 1 is Facile — Dan: "Sorting was
+# supposed to be Facile" — so the default run recognises (mcq) and sorts the
+# given words into order (build). Executed rather than parsed, so it cannot
+# go stale. (verify41 covers the other levels and the equal-length invariant.)
 import subprocess as _sp
 _js = ('import { rampFor } from "./src/lib/lessonEntry.ts";'
        'console.log(JSON.stringify(rampFor(1)));')
 _r = _sp.run(["node", "--experimental-strip-types", "--input-type=module", "-e", _js],
              capture_output=True, text=True)
 kinds = json.loads(_r.stdout.strip().splitlines()[-1]) if _r.returncode == 0 else []
-check(len(kinds) == 12 and kinds.count("mcq") == 4 and kinds.count("gap") == 4
-      and kinds.count("build") == 3 and kinds.count("translate") == 1,
-      "the default ramp is 12 cards: 4 MCQ → 4 gap → 3 build → 1 translate",
+check(len(kinds) == 12 and kinds.count("mcq") == 4 and kinds.count("build") == 8,
+      "the default (Facile) ramp is 12 cards: 4 MCQ → 8 build — recognise, then sort",
       f"the ramp is wrong: {kinds}" if _r.returncode == 0 else f"ramp run failed: {_r.stderr[-300:]}")
 # The entry die is gone and must stay gone: no face→start map, no d12, and
 # above all nothing that trims the ramp before the learner walks it.
@@ -162,11 +168,16 @@ for route in ("src/app/lessons/[slug]/page.tsx", "src/app/lessons/deck/[collecti
     check("LessonPager" in strip_comments(read(route)),
           f"{route.split('/')[-2]} route renders the pager",
           f"{route} does not render LessonPager")
+# SUPERSEDED 2026-08-31 by the popup collapse (verify66). Patch 22 took the
+# LESSON out of SioModal's EMBEDDABLE set so its flap navigated to the pager;
+# this asserted that one absence. The collapse removed EMBEDDABLE itself — now
+# NOTHING renders inside the popup and every row is a link — so the old check
+# would fail on a stronger version of the thing it was protecting. The rule it
+# was really defending is the one restated here: the lesson opens as a page.
 modal = strip_comments(read("src/app/SioModal.tsx"))
-emb = re.search(r"EMBEDDABLE\s*=\s*new Set\(\[(.*?)\]\)", modal, re.S)
-check(bool(emb) and "lesson" not in emb.group(1),
-      "SioModal no longer embeds the lesson (its flap navigates to the pager)",
-      "SioModal still embeds the lesson view")
+check("dynamic(" not in modal,
+      "SioModal embeds nothing at all — the lesson, like every row, is a link",
+      "SioModal lazily imports a view again: something renders inside the popup")
 
 # 6 · one pretest runner
 runner_ok = os.path.isfile("src/lib/pretests/runner.ts")

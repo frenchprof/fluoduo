@@ -74,6 +74,10 @@ function Runner({ collection }: { collection: Collection }) {
   useEffect(() => {
     try {
       const d = localStorage.getItem(DIR_KEY);
+      // Deliberate: the saved direction lives in localStorage, which cannot
+      // be read during render (the site is statically exported) — this mount
+      // effect has to seed it.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (d === "fr-en" || d === "en-fr") setDir(d);
     } catch {}
   }, []);

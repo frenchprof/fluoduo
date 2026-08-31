@@ -45,8 +45,9 @@ lane = report it in STATUS, don't do it.
    they are the only session that can see two in-flight branches at once. When
    a branch is ready, **hand it over explicitly**: which files it touches,
    which of those are shared, and what you already know it collides with. A
-   branch that is merely pushed has not been handed over. Rebasing after
-   someone else lands first is the AUTHOR's job, not the integrator's.
+   branch that is merely pushed has not been handed over. Dan still reads
+   content/pedagogy and rules on decisions; deploys stay his
+   (`git push live main`) until decision 9 lands.
 
    *Why rule 2 is not enough.* On 31 Aug this session and fluoduo-main built
    into each other for an afternoon. Both branches merged CLEANLY into `main`
@@ -62,9 +63,38 @@ lane = report it in STATUS, don't do it.
   batches of five, every batch read by Dan before ship). Tier 2: the
   second-half compound-name concept, plus Colours/Some-nouns once decision 6
   lands. Keeper of the Stocktake ledger — re-issue it when the counts move.
-- **Pre-tests — the pre-test surface, then capacity.** Unit-0 pre-test pages
-  (in flight, the last uncovered pre-test surface). When done: take Tier-1
-  concept batches in parallel with Color review, same read-before-ship rule.
+- **Pre-tests — the pre-test surface, then capacity.** ~~Unit-0 pre-test pages
+  (in flight, the last uncovered pre-test surface).~~ **DONE — #98.** All ten
+  now render at `/pretests/unit0/SIO-00N`; every stop in the course has a
+  pre-test with a page of its own.
+  **NOW IN FLIGHT — the SIO popup collapse and derived done-ness.** These are
+  two instructions Dan gave this session that the roster's lane text does not
+  list; he confirmed them as mine on 31 Aug rather than leaving them unowned.
+  Claimed here so nobody else opens the same files:
+  1. **The popup collapses to the statement and ONE list of links.** Dan:
+     "collapse the interfaces to ONLY reveal the SIO spelled out fully, then
+     the links to the relevant items within the stop. THAT IS IT." Today a
+     stop stacks the same activity list THREE times — the numbered path, the
+     right-edge flaps, and the narrow-screen flap row — and four activities
+     (WorDrill, iComplete, Sorting, GramMarathon) render INSIDE the popup
+     rather than opening, so an identical-looking flap does two different
+     things. The list will derive from `cellHref` per stop, which is why the
+     Sorting cut (#93) needs no change here and why the now-stale `dice` in
+     `CHAIN_KEYS` drops out on its own. Unblocked by #98: collapsing before
+     those pages existed would have cost all ten Unit-0 stops their pre-test.
+  2. **Done-ness becomes derived; Mark as done is removed.** Dan: "it should
+     only be marked done if it is really FULLY done, so we should remove it."
+     A stop ticks when everything at it is done, so the popup's link list and
+     the completion rule become the SAME list. **Grandfathered, Dan's call**:
+     existing `doneSios` stand and the rule only ever adds — nobody's 34/50
+     becomes 21/50 and no badge is revoked. `doneSios` is read in 14 files,
+     `economy.ts`'s four badges included, so this is not a one-file change.
+     Follows 1, because the link list IS the definition.
+  **After those:** Tier-1 concept batches in parallel with Color review, same
+  read-before-ship rule.
+- **Peers — features.** Queue empty since Sorting was cut (#93). Next
+  assignment is Dan's; until then, nothing — not audits, not others'
+  branches.
 - **Peers — features.** 31 Aug PM: two Tier 2 stops given lesson files
   (SIO-005 Colours, SIO-006 Some nouns), Dan's colour ladder, the SemiBold
   band, the short English tabs, Words folded under Forms, and the collapse
@@ -72,6 +102,7 @@ lane = report it in STATUS, don't do it.
   it must land AFTER #97 and rebase onto it — `docs/HANDOFF_PEERS_31AUG.md`
   carries the merge hazard, which is invisible in both diffs. Queue otherwise
   empty; next assignment is Dan's.
+
 - **fluoduo-main — integration.** The 31 Aug cleanup sweep on Dan's go
   (six empty branches + La Carte deleted, PR #6 closed, stalled sessions
   archived; French 4 rebased to a PR; verify renumbers 52→64 on
@@ -141,6 +172,73 @@ Dan assigns. Listed so the queue is not re-derived by whoever picks it up.
 | 7 | Empty shortcut row under MENU: fill or delete? | one surface |
 | 8 | `rule:` namespace (894-item tagging): go / stay parked? | transfer evidence |
 | 9 | Deploy mirror Action (needs one fine-grained PAT from you) | ends manual deploys |
+
+## 31 Aug PM — Dan read salutations; the difficulty ladder is his now
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan's read of the salutations concept came back as five design rulings, built
+the same day on `claude/fluoduo-pr9-review-sync-8uoyfx` (integration lane took
+it with Dan's direct feedback; Pre-tests stood down and handed over notes):
+
+1. **Levels renamed + remapped** — `lessonEntry.ts` now carries ★ Facile /
+   ★★ Moyen / ★★★ Difficile / ⭐ Bonus. His classification: Facile =
+   recognise + sort the given words (mcq + build); Moyen = complete ONE
+   missing piece; Difficile = TWO (slots via `blankKeysFor`); Bonus = the
+   whole sentence from English. Four ramps, 12 cards each, equal length still
+   absolute.
+2. **The repeat is dead** — the in-run Mémo rule card duplicated Les formes
+   once the six tabs landed; the run now opens on question 1/12. The Mémo's
+   one home is the tab.
+3. **Forms are the heroes** — bold French forms with caption labels in
+   salutations + every Mémo; `verify65-memo-forms.py` (new, in CI) pins the
+   rule across all 44 lesson Mémos and memos.tsx.
+4. **His "why are they all mcq?"** — three causes fixed: gapless decks fall
+   back to BUILD at Moyen+ (MCQ only at Facile); Difficile single-blank
+   fallbacks are TYPED at every width; Difficile on a slotted lesson drops
+   the deck supply.
+5. **iComplete retired** (Dan: "we can retire CompleteIt and Sorting") — the
+   Memo's Moyen/Difficile ARE completion; registry row + flap + chain gone,
+   route/evidence/ledger stay, exactly the Sorting (#93) pattern. The
+   registry is 18 activities — the Menu grid is no longer Dan's exact 4×5;
+   flagged, not papered over.
+
+verify22/41/57/58 remapped; verify65 claimed by full branch scan (64 stays
+reserved for fluency-cycling's renumber). Decision 1's answer: the Tier-3
+concept SHAPE was not rejected — his feedback targeted the lesson chrome —
+so Color review's Tier-3 batch can move the moment Dan says the concept
+itself reads well. THE ROSTER merged to main (#94, squash `9a4b61a`).
+
+**Same day, later (all on PR #97):** the two-blank card gained a
+full-sentence English reference and colour-matched blank/box groups (Dan:
+shaded, full hues, not numerals). The **ambiguity audit** Dan ordered ran
+over every drill/pretest/game — 8 findings + 3 answer-key bugs, all fixed
+(ou-est's fixed gloss, aimer-infinitif's answer-printing big, GramMarathon's
+noun-level gloss, avoir-etats chaud/froid, discarded alternates ×2, pretest
+transFirst ×3, combien/au-marché/aller answer keys). **Dan's 4×4**: Menu is
+16 tiles — NumBus+NumBourse under one 🔢 Numbers hub (/games/numbers),
+My Progress folded into Profile, and the lesson's « Le bonus » tab parked
+under L'exercice (the ⭐ Bonus level serves it). Sorting cut + iComplete
+retired completed the count.
+
+**COORDINATION — Peers' branch (`claude/peers-vd2h6h`) vs PR #97.** Peers
+carries Colours + Some nouns lessons, `Slot.first` in cloze.ts, English tab
+labels, and verify66. Merge ORDER: **#97 first** (Dan-directed, green), then
+Peers rebases with three adaptations, none large:
+1. `blankKeysFor` — #97 makes it `level <= 2 → one key` (Moyen = one piece).
+   Keep Peers' `first` flag; it now picks the ONE key for levels 1–2:
+   `const lead = blankable.find((s) => s.first); return [lead?.key ?? keys[0]]`.
+   Their "★ the colour word · ★★ colour word + noun" ladder maps to
+   Moyen = the flagged colour word, Difficile = both. Same intent, new names.
+2. `verify66` pins SIX tab labels including "Bonus" — #97 parks that tab
+   (Dan's word), so the assertion drops to five. Their English label rename
+   is theirs to keep — no conflict beyond the list literal.
+3. `LessonTabs.tsx` will conflict textually (label rename vs tab removal) —
+   resolution: their labels, minus the bonus entry, exercice `does` noting
+   "⭐ Bonus included".
+No one pushes to the other's branch (roster rule 3); this note is the
+hand-off. Peers' "Every Some nouns card carries the English sentence" is the
+same ambiguity-fix pattern as the audit — convergent, no clash.
 
 ## Where the code is
 

@@ -1,46 +1,58 @@
 #!/usr/bin/env python3
 """
-Entry level and the restored selectors (2026-08-28).
+Entry level and the restored selectors (2026-08-28; renamed and remapped
+2026-08-31).
 
-WHY THIS EXISTS. Two of Dan's rulings land in the lesson pager:
+WHY THIS EXISTS. Three of Dan's rulings land in the lesson pager:
 
-  "yes a learner may choose to start at 3 stars"   (27 Aug)
-  "both — dropdowns and dice"                      (27 Aug)
+  "yes a learner may choose to start at 3 stars"                   (27 Aug)
+  "both — dropdowns and dice"                                      (27 Aug)
+  "instead of Découverte, Entraînement, Maîtrise, it was supposed
+   to be Facile, Moyen and Difficile (Difficulty level) and there
+   should be a bonus for translating simple sentences"             (31 Aug)
 
-THE MISTAKE THE FIRST ONE MUST NOT REPEAT. A d12 used to open the ramp and its
+THE 31 AUG CLASSIFICATION, in his words: Sorting is Facile; CompleteIt is
+Difficile if it involves two items, Moyen if it involves one; the entire
+sentence is Bonus. In ramp vocabulary: Facile recognises (mcq) and sorts the
+given words into order (build); Moyen is gap with ONE blank; Difficile is gap
+with TWO blanks where the generator authored slots; Bonus is translate.
+
+THE MISTAKE THE LADDER MUST NOT REPEAT. A d12 used to open the ramp and its
 face was a START INDEX: the pager did `queue.slice(entry)`, so a 1 walked all
 twelve cards and a 12 left the lone translation. A run-length dial dressed as
-difficulty — and because the ramp runs easy → hard, a high roll bought less
-work at the hard end. It was removed on 25 Aug ("drop the shortcuts"). Dan's
-reversal is about ENTRY, not about shortening, so the invariant this file
-exists to hold is:
+difficulty. It was removed on 25 Aug ("drop the shortcuts"), so the invariant
+this file exists to hold is:
 
     every entry level is the SAME NUMBER OF CARDS.
 
-★★★ buys a harder run, never a shorter one. A learner who wants a shorter
-sitting uses the session-length chooser, which is honest about being one.
+Difficile buys a harder run, never a shorter one. A learner who wants a
+shorter sitting uses the session-length chooser, which is honest about being
+one.
 
-THE SECOND. The selectors are per-lesson because the axes ARE the grammar —
-conjugaison-u1 varies subject x verb x polarity and most lessons vary
-something else, so one fixed triple would be wrong nearly everywhere. A lesson
-declares `dice.axes`; the pager shows the row only for lessons that do; and
-`newQuestion(pinned)` must actually honour what was pinned, which is checked
-here by EXECUTING the generator rather than reading it.
+THE SELECTORS. Per-lesson because the axes ARE the grammar — conjugaison-u1
+varies subject x verb x polarity and most lessons vary something else, so one
+fixed triple would be wrong nearly everywhere. A lesson declares `dice.axes`;
+the pager shows the row only for lessons that do; and `newQuestion(pinned)`
+must actually honour what was pinned, which is checked here by EXECUTING the
+generator rather than reading it.
 
 What this asserts:
 
-  1  All three ramps are the same length, and that length is RAMP_LENGTH.
+  1  All four ramps are the same length, and that length is RAMP_LENGTH.
      This is the load-bearing one — it is what the old die got wrong.
-  2  The ramps get harder: no level has more MCQ than the one below it, and
-     ★★/★★★ contain none at all.
-  3  Nothing slices the queue by entry level (the old `slice(entry)` bug).
-  4  buildCards takes the level and the pins, and the pager passes both.
-  5  The generator HONOURS a pin: conjugaison-u1's is executed 2000 times
+  2  The mechanics match Dan's classification: Facile = mcq + build and
+     nothing produced from nothing; Moyen and Difficile are all gap; Bonus is
+     all translate. blankKeysFor gives Moyen ONE key and Difficile all of
+     them — executed, since that is where "one piece / two pieces" lives.
+  3  The labels are Dan's names — Facile / Moyen / Difficile / Bonus.
+  4  Nothing slices the queue by entry level (the old `slice(entry)` bug).
+  5  buildCards takes the level and the pins, and the pager passes both.
+  6  The generator HONOURS a pin: conjugaison-u1's is executed 2000 times
      across pin combinations, and every question must match what was asked
      for. A pin that is silently ignored is worse than no selector at all.
-  6  An unpinned call still varies everything — the selector must not have
+  7  An unpinned call still varies everything — the selector must not have
      frozen the default behaviour.
-  7  Steered runs drop the supplies that cannot honour a pin: the deck's own
+  8  Steered runs drop the supplies that cannot honour a pin: the deck's own
      items, and the authored bonus bank. Both would serve off-target cards
      into a run that claims to be about the learner's selection.
 
@@ -71,18 +83,31 @@ entry, build, pager = read(ENTRY), read(BUILD), read(PAGER)
 types, lesson = read(TYPES), read(LESSON)
 gen = read(GEN)
 
-# ---- 1-2 · the ramps, executed --------------------------------------------
+# ---- 1-3 · the ramps, the blanks and the names, executed -------------------
 # Read the ramps out of the module itself rather than re-typing them here: a
 # copy in this file would pass while the app shipped something else.
 RAMP_JS = r"""
-import { rampFor, ENTRY_LEVELS, RAMP_LENGTH } from "./src/lib/lessonEntry.ts";
+import { rampFor, ENTRY_LEVELS, ENTRY_LABELS, RAMP_LENGTH } from "./src/lib/lessonEntry.ts";
+import { blankKeysFor } from "./src/content/lessons/native/cloze.ts";
 const out = {};
 for (const lv of ENTRY_LEVELS) {
   const r = rampFor(lv);
-  out[lv] = { len: r.length, mcq: r.filter(k => k === "mcq").length,
-              hard: r.filter(k => k === "build" || k === "translate").length };
+  out[lv] = {
+    len: r.length,
+    mcq: r.filter(k => k === "mcq").length,
+    gap: r.filter(k => k === "gap").length,
+    build: r.filter(k => k === "build").length,
+    translate: r.filter(k => k === "translate").length,
+    name: ENTRY_LABELS[lv].name,
+  };
 }
-console.log(JSON.stringify({ out, RAMP_LENGTH }));
+const slots = [
+  { key: "verb", text: "aime", choices: ["aime", "aimes"] },
+  { text: "le" },
+  { key: "noun", text: "sport", choices: ["sport", "tennis"] },
+];
+const blanks = Object.fromEntries(ENTRY_LEVELS.map(lv => [lv, blankKeysFor(lv, slots).length]));
+console.log(JSON.stringify({ out, blanks, RAMP_LENGTH }));
 """
 n = subprocess.run(["node", "--experimental-strip-types", "--input-type=module", "-e", RAMP_JS],
                    capture_output=True, text=True)
@@ -98,23 +123,55 @@ if n.returncode == 0:
     check(all(v == d["RAMP_LENGTH"] for v in lens.values()),
           f"every ramp is RAMP_LENGTH ({d['RAMP_LENGTH']})",
           f"a ramp is not RAMP_LENGTH: {lens} vs {d['RAMP_LENGTH']}")
-    mcq = {lv: v["mcq"] for lv, v in d["out"].items()}
-    hard = {lv: v["hard"] for lv, v in d["out"].items()}
-    check(mcq["1"] > 0 and mcq["2"] == 0 and mcq["3"] == 0,
-          "★ recognises first; ★★ and ★★★ have no multiple choice",
-          f"MCQ counts do not ramp: {mcq}")
-    check(hard["1"] < hard["2"] < hard["3"],
-          f"harder work strictly increases with the stars {hard}",
-          f"the levels do not get harder: build+translate counts {hard}")
 
-# ---- 3 · nothing slices the queue by level ---------------------------------
+    o = d["out"]
+    check(o["1"]["mcq"] > 0 and o["1"]["build"] > 0
+          and o["1"]["gap"] == 0 and o["1"]["translate"] == 0,
+          "Facile recognises and sorts — mcq + build, nothing produced from nothing",
+          f"Facile is not mcq+build: {o['1']}")
+    check(o["2"]["gap"] == d["RAMP_LENGTH"],
+          "Moyen is CompleteIt throughout — every card a gap",
+          f"Moyen is not all gap: {o['2']}")
+    check(o["3"]["gap"] == d["RAMP_LENGTH"],
+          "Difficile is CompleteIt throughout — every card a gap",
+          f"Difficile is not all gap: {o['3']}")
+    check(o["4"]["translate"] == d["RAMP_LENGTH"],
+          "Bonus is the entire sentence — every card a translate",
+          f"Bonus is not all translate: {o['4']}")
+
+    # "Moyen if it involves one, Difficile if it involves two" lives in
+    # blankKeysFor — with two blankable slots on offer, Moyen takes 1 and
+    # Difficile takes both.
+    b = d["blanks"]
+    check(b["2"] == 1,
+          "Moyen withdraws ONE piece (blankKeysFor gives one key)",
+          f"Moyen withdraws {b['2']} pieces — Dan: 'Moyen if it involves one'")
+    check(b["3"] == 2,
+          "Difficile withdraws TWO pieces (blankKeysFor gives every key)",
+          f"Difficile withdraws {b['3']} pieces — Dan: 'Difficile if it involves two items'")
+
+    names = [o[str(lv)]["name"] for lv in (1, 2, 3, 4)]
+    check(names == ["Facile", "Moyen", "Difficile", "Bonus"],
+          "the levels wear Dan's names: Facile / Moyen / Difficile / Bonus",
+          f"the level names drifted: {names} — Dan replaced "
+          "Découverte/Entraînement/Maîtrise on 31 Aug")
+    # Comments may QUOTE the old names (the header quotes Dan's ruling); only
+    # code that could still render them is a failure.
+    _live = re.sub(r"/\*.*?\*/", "", entry + pager, flags=re.S)
+    _live = re.sub(r"//[^\n]*", "", _live)
+    for old in ("Découverte", "Entraînement", "Maîtrise"):
+        check(old not in _live,
+              f"the old name {old!r} is gone from live code",
+              f"{old!r} survives outside comments — the 31 Aug rename is half-applied")
+
+# ---- 4 · nothing slices the queue by level ---------------------------------
 code = re.sub(r"/\*.*?\*/", "", build + pager, flags=re.S)
 code = re.sub(r"//[^\n]*", "", code)
 check("slice(entry" not in code and ".slice(level" not in code,
       "the entry level never slices the queue",
       "something slices the queue by entry level — that is exactly the removed die")
 
-# ---- 4 · the level and the pins are threaded -------------------------------
+# ---- 5 · the level and the pins are threaded -------------------------------
 check("entry?: EntryLevel" in build and "rampFor(entry)" in build,
       "buildCards takes the entry level and builds its ramp from it",
       "buildCards ignores the entry level")
@@ -133,7 +190,7 @@ check("axes" in types and "newQuestion: (pinned?" in types,
       "DiceConfig declares axes and a steerable newQuestion",
       "DiceConfig has no axes / newQuestion is not steerable")
 
-# ---- 5-6 · the generator actually honours a pin ----------------------------
+# ---- 6-7 · the generator actually honours a pin ----------------------------
 # Executed, not read. A pin that is quietly ignored looks identical in source
 # to one that works, and is worse than offering no selector at all.
 GEN_JS = r"""
@@ -181,13 +238,31 @@ if g.returncode == 0:
           f"an unpinned call still varies freely ({r['freeVariety']} distinct prompts in 400)",
           f"unpinned generation collapsed to {r['freeVariety']} prompts — the selector froze the default")
 
-# ---- 7 · steered runs drop the supplies that cannot honour a pin -----------
+# ---- 8 · steered runs drop the supplies that cannot honour a pin -----------
 check("steered" in build and "!(steered && lesson)" in build,
       "a steered run drops the deck supply, which cannot honour a pin",
       "a steered run still mixes in deck items, which ignore the selection")
 check(re.search(r"steered \? null : drawBonus\(\)", build) is not None,
       "a steered run does not draw from the fixed bonus bank",
       "a steered run still draws authored bonus sentences, which ignore the selection")
+
+# ---- 9 · Difficile means two pieces, and its scaffold is really withdrawn --
+# Dan's live-site report, 31 Aug: "all the levels … why are they all mcq?"
+# Three causes, three fixes, each pinned here as a source check:
+check('entry === 3 && slotted' in build,
+      "a Difficile run on a slotted lesson drops the deck supply (one-piece cards)",
+      "Difficile mixes deck cards back in — half its run is Moyen again")
+check(build.count("entry >= 3 ? { typed: true }") == 2,
+      "Difficile's single-blank fallbacks are TYPED — no word bank playing MCQ",
+      "a Difficile gap card carries a word bank again: three tiles read as MCQ, "
+      "the withdrawn scaffold handed back")
+check('entry >= 2 ? "build" : "mcq"' in build,
+      "a gapless deck falls back to BUILD at Moyen and up, MCQ only at Facile",
+      "a gapless deck turns Moyen/Difficile gap cards into MCQ — Dan's "
+      "'why are they all mcq?' verbatim")
+check('ex.typed ? "block" : "hidden sm:block"' in pager and "!ex.typed &&" in pager,
+      "the pager renders a typed card as an input at every width, bank gone",
+      "the pager still offers the word bank on a typed card")
 
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:

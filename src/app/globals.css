@@ -1673,23 +1673,33 @@ h3.cahier-display { font-size: var(--fs-h3); }
    undone step accented in the PRACTICE family's colour (the chain IS the
    FluOlin Practice sequence, whatever page the sheet opens over). Matches
    flow-mocks/stop-sheet.html. */
-.sio-path { display: flex; flex-direction: column; gap: 8px; margin: 2px 0 14px; padding: 0; list-style: none; }
-.sio-path li { display: contents; }
+/* TWO COLUMNS (Dan, 2026-08-31: "have them as buttons over two columns like
+   we have always done for other things") — the same shape .stop-grid gives
+   the activity landings, so a stop's links look like every other grid of
+   choices in the app.
+   It does NOT collapse to one column the way .stop-grid does below 520px.
+   That breakpoint exists for a full-width page; this grid lives inside a
+   32rem popup that is already narrower than it, so collapsing would leave
+   eight full-width rows on a phone — the tall single column this replaced. */
+.sio-path {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px; margin: 2px 0 14px; padding: 0; list-style: none;
+}
 .sio-step {
-  display: flex; width: 100%; align-items: center; gap: 11px; text-align: left;
+  display: flex; width: 100%; height: 100%; align-items: center; gap: 8px; text-align: left;
   background: #fff; border: 2px solid rgba(42, 46, 110, 0.18);
-  border-radius: 13px; padding: 9px 13px;
+  border-radius: 13px; padding: 9px 11px;
   box-shadow: 0 2px 0 rgba(42, 46, 110, 0.14);
   text-decoration: none; cursor: pointer;
 }
 .sio-step-num {
-  width: 27px; height: 27px; flex: 0 0 auto; border-radius: 50%;
+  width: 24px; height: 24px; flex: 0 0 auto; border-radius: 50%;
   border: 2px solid var(--fam-practice-ink); color: var(--fam-practice-ink);
   background: #fff; display: flex; align-items: center; justify-content: center;
   font-family: var(--fluo-mono); font-weight: 800; font-size: 14px;
 }
-.sio-step-emoji { font-size: 19px; line-height: 1; }
-.sio-step-name { font-weight: 700; font-size: 15px; color: var(--fluo-ink, var(--cahier-ink)); }
+.sio-step-emoji { font-size: 17px; line-height: 1; flex: 0 0 auto; }
+.sio-step-name { font-weight: 700; font-size: 14px; line-height: 1.15; color: var(--fluo-ink, var(--cahier-ink)); min-width: 0; }
 .sio-step-end { margin-left: auto; font-weight: 900; font-size: 17px; color: var(--fam-practice-ink); }
 .sio-step.is-done { opacity: 0.55; background: #f4f5ee; box-shadow: none; }
 .sio-step.is-done .sio-step-num { background: var(--fam-practice-ink); color: #fff; }

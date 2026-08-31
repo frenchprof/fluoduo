@@ -69,9 +69,13 @@ function others<T>(a: readonly T[], not: T, n: number): T[] {
   return out;
 }
 
-/** « un kilo de tomates » — quantity + DE, never « de les » or « des ». */
+/** « un kilo de tomates » — quantity + DE, never « de les » or « des ».
+ *  DE elides before a vowel: « une douzaine d'œufs », « un kilo d'oranges » —
+ *  the answer key used to serve « de œufs » in the very drill that teaches
+ *  quantity-DE (found by executing the generator, 31 Aug). */
 export function quantityOf(g: Good): string {
-  return `${g.unit} de ${g.fr}`;
+  const de = /^[aeiouéèêàhœ]/i.test(g.fr) ? "d'" : "de ";
+  return `${g.unit} ${de}${g.fr}`;
 }
 
 export function marcheQuestion(pinned?: Record<string, string>): DiceQuestion {

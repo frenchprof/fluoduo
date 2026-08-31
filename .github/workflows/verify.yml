@@ -201,6 +201,12 @@ jobs:
       - name: "The atelier pre-tests cover every line, and invent no French (31 Aug)"
         run: python3 verify/verify63-atelier-pretests.py
 
+      - name: "Every Unit-0 pre-test has its own page, popup shares the questions (31 Aug)"
+        run: python3 verify/verify64-unit0-pretest-pages.py
+
+      - name: "The SIO popup is the outcome and ONE list of links (31 Aug)"
+        run: python3 verify/verify66-popup-collapse.py
+
       - name: "A tour step points at something that exists (28 Aug)"
         run: python3 verify/verify44-tour-targets.py
 
@@ -213,7 +219,7 @@ jobs:
         run: python3 verify/verify45-promise-gaps.py
 
       - name: "SIO-005 and SIO-006 have a lesson; the colour ladder, the band weight, the English tabs (31 Aug)"
-        run: python3 verify/verify66-two-tier2-stops.py
+        run: python3 verify/verify68-two-tier2-stops.py
 
       - name: "Every check runs, and no two share a number"
         run: python3 verify/verify-wiring.py
@@ -255,3 +261,6 @@ jobs:
 
       - name: The rail's tiers step down on the coloured edge
         run: python3 verify/verify61-flap-edge.py
+
+      - name: The Mémo's French forms are its bold heroes
+        run: python3 verify/verify65-memo-forms.py

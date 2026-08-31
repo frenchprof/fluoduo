@@ -6,10 +6,12 @@
  * before the first answer, two identical difficulty pickers, three 🎲 roll
  * buttons, a drill that never ended).
  *
- * Card order: rule cards (the Mémo, split — 3 max) → the exercise ramp
- * (buildCards.tsx). Wrong answers re-queue ONCE at the end. The run ENDS:
- * 🎉 + XP/accuracy/time + the missed items, and the SIO write that finally
- * makes the Home path react.
+ * Card order: the exercise ramp only (buildCards.tsx) — the Mémo is NOT a
+ * card any more. It lives under « Les formes » in the front-matter tabs;
+ * opening the run with it showed every learner the same screen twice (Dan,
+ * 2026-08-31: "it is a repeat"). Wrong answers re-queue ONCE at the end. The
+ * run ENDS: 🎉 + XP/accuracy/time + the missed items, and the SIO write that
+ * finally makes the Home path react.
  *
  * NO ROLL (Dan, 2026-08-25: "drop the shortcuts, learning should not allow
  * that"). A d12 used to open the ramp and its face SLICED the queue —
@@ -24,7 +26,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import DrillShell, { drillExitHref, type DrillFeedback, type DrillFinish } from "@/components/DrillShell";
 import LessonTabs from "@/app/lessons/pager/LessonTabs";
 import OpenFeedback from "@/components/OpenFeedback";
-import SpeakZone from "@/components/SpeakZone";
 import WordBank from "@/components/WordBank";
 import { CURATED } from "@/content/collections";
 import { SIOS } from "@/content/sios";
@@ -64,12 +65,11 @@ export default function LessonPager({
   const runKey = `${activityKey}::${slug ?? ""}`;
   useActivityPlay("lesson-pager", activityKey);
 
-  const [rules, setRules] = useState<React.ReactNode[]>([]);
   const [queue, setQueue] = useState<QueuedEx[] | null>(null);
   const [i, setI] = useState(0);
   // Where the learner enters the ramp. `asked` is separate from `entry`
-  // because ★ is both the default AND a real choice — a single nullable
-  // level could not tell "hasn't chosen" from "chose Découverte".
+  // because Facile is both the default AND a real choice — a single nullable
+  // level could not tell "hasn't chosen" from "chose Facile".
   const [entry, setEntry] = useState<EntryLevel>(1);
   const [asked, setAsked] = useState(false);
   const [buildTick, setBuildTick] = useState(0);
@@ -109,19 +109,17 @@ export default function LessonPager({
   // Shuffling (and the generators' Math.random) live here, never in render —
   // SSR hydration stays deterministic. Same rule as every drill.
   const build = () => {
-    const { rules: r, exercises } = buildCards({
+    const { exercises } = buildCards({
       deck,
       lesson: lesson ?? undefined,
-      memo: lesson?.memo ?? (collectionId ? memoForDeck(collectionId) : undefined),
       activityKey,
       entry,
       pinned,
     });
-    setRules(r);
-    // #5: come back to where you were. The rules are rebuilt (deterministic);
-    // only the shuffled half is restored, and loadRun refuses any save whose
-    // rule count no longer matches rather than resume one card off.
-    const saved = loadRun<QueuedEx>(runKey, r.length);
+    // #5: come back to where you were. Only the shuffled queue is saved, and
+    // loadRun refuses any save whose rule count no longer matches — rule
+    // cards are gone, so 0 also retires every pre-rename save cleanly.
+    const saved = loadRun<QueuedEx>(runKey, 0);
     // A resumed run is already at a level — asking again would pose a question
     // whose answer is then thrown away, since the saved queue is what loads.
     if (saved) setAsked(true);
@@ -170,20 +168,13 @@ export default function LessonPager({
 
   // ── where are we ──────────────────────────────────────────────────────────
   const ready = queue !== null;
-  const exStart = rules.length;
-  const card: "rule" | "ex" | "end" = !ready
-    ? "rule"
-    : i < rules.length
-      ? "rule"
-      : i - exStart < (queue?.length ?? 0)
-        ? "ex"
-        : "end";
-  const current = card === "ex" ? queue![i - exStart] : null;
+  const card: "ex" | "end" = ready && i >= (queue?.length ?? 0) ? "end" : "ex";
+  const current = ready && card === "ex" ? queue![i] : null;
   const ex = current?.ex ?? null;
 
-  // Denominator: the rule cards plus the whole ramp — no longer trimmed by
-  // anything. Requeued repeats never grow it.
-  const denom = rules.length + (queue?.filter((q) => !q.requeued).length ?? 0);
+  // Denominator: the whole ramp — no longer trimmed by anything. Requeued
+  // repeats never grow it.
+  const denom = queue?.filter((q) => !q.requeued).length ?? 0;
   const done = Math.min(i, denom);
   const end = ready && card === "end";
 
@@ -260,8 +251,7 @@ export default function LessonPager({
   const next = () => {
     ladder.skip();
     const n = i + 1;
-    const total = exStart + (queue?.length ?? 0);
-    if (n >= total) sfx.stage(); // run complete — the end card is about to show
+    if (n >= (queue?.length ?? 0)) sfx.stage(); // run complete — the end card is about to show
     setSelected(null);
     setValue("");
     setPicks([]);
@@ -283,17 +273,17 @@ export default function LessonPager({
   useEffect(() => {
     if (!ready || !queue) return;
     if (end) { clearRun(); return; }
-    if (i <= rules.length) return;   // still in the Mémo — nothing to return to
+    if (i <= 0) return;   // nothing answered yet — nothing to return to
     saveRun<QueuedEx>({
       key: runKey,
-      rulesLen: rules.length,
+      rulesLen: 0,
       queue,
       i,
       score,
       misses,
       xpAtStart: xpAtStartRef.current,
     });
-  }, [ready, queue, i, score, misses, end, rules.length, runKey]);
+  }, [ready, queue, i, score, misses, end, runKey]);
 
   // The SIO write — the reason the Home path finally reacts. Once per run.
   const accuracy = score.total ? score.ok / score.total : 0;
@@ -317,15 +307,13 @@ export default function LessonPager({
 
   // ── shell wiring ─────────────────────────────────────────────────────────
   const exitHref = deck ? drillExitHref(deck.id) : "/map";
-  const isLast = ready && i + 1 >= exStart + (queue?.length ?? 0);
+  const isLast = ready && i + 1 >= (queue?.length ?? 0);
 
   const cta = end
     ? null
-    : card === "rule"
-      ? { label: "Continue", onClick: next }
-      : result === null && !retry
-        ? { label: "Check", onClick: commit, disabled: !given.trim() }
-        : null;
+    : result === null && !retry
+      ? { label: "Check", onClick: commit, disabled: !given.trim() }
+      : null;
 
   const feedback: DrillFeedback | null =
     card === "ex" && retry && ex
@@ -366,7 +354,7 @@ export default function LessonPager({
   const chooser = (
     <div className="flex flex-col items-center gap-5 pt-8 text-center">
           <p className="fluo-serif text-xl font-black text-[color:var(--fluo-ink)]">
-            Where do you want to start?
+            Choose your level
           </p>
           <div data-tour="entry" className="flex w-full max-w-sm flex-col gap-2.5">
             {ENTRY_LEVELS.map((lv) => (
@@ -461,11 +449,8 @@ export default function LessonPager({
           deck={deck}
           concept={lesson?.concept}
           memo={lesson?.memo ?? (collectionId ? memoForDeck(collectionId) : undefined)}
-          bonus={lesson?.bonus}
           exercise={chooser}
         />
-      ) : card === "rule" ? (
-        <div className="pt-2"><SpeakZone>{rules[i]}</SpeakZone></div>
       ) : card === "ex" && ex ? (
         <ExerciseCard ex={ex} selected={selected} value={value} picks={picks} result={result} struck={struckAll}
           onSelect={(c) => result === null && !struckAll.includes(c) && setSelected(c)} onType={setValue}
@@ -555,6 +540,23 @@ function ExerciseCard({
           : `border-[color:var(--drill-bad)] bg-[color:var(--drill-bad-bg)]${filled ? " line-through" : ""}`
     }`;
 
+  // On a TWO-blank card, each blank and its word boxes share a COLOUR (Dan,
+  // 31 Aug: "i would use different shaded word boxes on top of numbers") —
+  // the shading, not a numeral, says which boxes feed which blank. FULL tab
+  // hues, not washes: a pale mix faded into the cream paper (Dan, same day:
+  // "the color fading into the background would not do"). Teal and apricot
+  // sit far apart on the common colourblind axes, reading order is the
+  // redundant cue, and ink on either hue clears every contrast bar. Verdict
+  // colours still take over once answered.
+  const GROUP_HUES = ["var(--cahier-t1)", "var(--cahier-t2)", "var(--cahier-t0)"] as const;
+  const groupWash = (b: number) => {
+    const hue = GROUP_HUES[b % GROUP_HUES.length];
+    return {
+      background: hue,
+      borderColor: `color-mix(in srgb, ${hue} 60%, var(--cahier-ink))`,
+    };
+  };
+
   return (
     <div className="space-y-4 pt-2">
       {ex.meta && (
@@ -588,15 +590,31 @@ function ExerciseCard({
               sg.kind === "text" ? (
                 <span key={n}>{sg.text}</span>
               ) : (
-                <span key={n} className={blankClass(!!picks[blankIndex(ex.segments!, n)])}>
-                  {picks[blankIndex(ex.segments!, n)] || "?"}
+                /* Each blank wears its group's WASH, matching its word boxes
+                   below — the shading says which boxes feed which blank. */
+                <span
+                  key={n}
+                  className={blankClass(!!picks[blankIndex(ex.segments!, n)])}
+                  style={!answered ? groupWash(blankIndex(ex.segments!, n)) : undefined}
+                >
+                  {picks[blankIndex(ex.segments!, n)] || <span className="opacity-40">?</span>}
                 </span>
               ),
             )}
           </p>
+          {/* The English reference. With two pieces withdrawn the French no
+              longer determines the answer — « Il … … athlétisme » admits
+              aime / adore / déteste — so the sentence's meaning has to come
+              from somewhere the blanks cannot erase. */}
+          {ex.en && (
+            // Same reference styling as the single-blank card: equal size,
+            // italic, unbolded (Dan, 31 Aug).
+            <p lang="en" className="text-center text-2xl font-normal italic leading-snug text-[color:var(--cahier-ink)]/75">{ex.en}</p>
+          )}
           {/* One row of choices per blank, in reading order. TWO ROWS IS THE
-              POINT of ★★: the verb decision and the article decision are made
-              separately, and the learner can see that they are separate. */}
+              POINT of Difficile: the verb decision and the article decision
+              are made separately, and the learner can see that they are
+              separate. */}
           <div className="space-y-2.5">
             {ex.segments.map((sg, n) => {
               if (sg.kind !== "blank") return null;
@@ -609,7 +627,7 @@ function ExerciseCard({
                     const cls = !answered
                       ? isPicked
                         ? "answer-picked"
-                        : "border-[color:var(--cahier-rule)] bg-white hover:bg-[color:var(--cahier-paper-2)]"
+                        : "hover:brightness-95"
                       : isAnswer
                         ? "border-[color:var(--drill-ok)] bg-[color:var(--drill-ok-bg)]"
                         : isPicked
@@ -622,6 +640,7 @@ function ExerciseCard({
                         lang="fr"
                         disabled={answered}
                         onClick={() => onPick(b, c)}
+                        style={!answered && !isPicked ? groupWash(b) : undefined}
                         className={`rounded-lg border-2 px-3 py-2 text-lg font-semibold text-[color:var(--cahier-ink)] transition ${cls}`}
                       >
                         {c}
@@ -652,13 +671,16 @@ function ExerciseCard({
           <span lang="fr">{ex.after}</span>
         </p>
       )}
-      {ex.en && !ex.big && (
+      {/* The segmented card renders its own reference line above the rows. */}
+      {ex.en && !ex.big && !ex.segments && (
         // Equal size to the French frame above it, italic and unbolded so it
-        // reads as the reference rather than competing with the target.
+        // reads as the reference rather than competing with the target (Dan,
+        // 31 Aug: "of equal size (but italics non bold)").
         <p lang="en" className="text-center text-2xl font-normal italic leading-snug text-[color:var(--cahier-ink)]/75">
           {ex.en}
         </p>
       )}
+
 
       {ex.kind === "mcq" && ex.options && (
         <div className={optionGridClass(ex.options, "gap-2.5")}>
@@ -706,7 +728,10 @@ function ExerciseCard({
       {ex.kind !== "mcq" && !ex.segments && (
         <div className="mx-auto max-w-md space-y-2">
           {/* Build cards use word tiles at EVERY width; typed cards keep the
-              input on sm+ and switch to tiles below (the word-bank rule). */}
+              input on sm+ and switch to tiles below (the word-bank rule) —
+              EXCEPT a `typed` card (Difficile's withdrawn scaffold), which is
+              the input at every width: on a phone the bank's three tiles are
+              visually an MCQ, which is the level's whole point removed. */}
           {!ex.tiles && (
             <input
               type="text"
@@ -718,12 +743,14 @@ function ExerciseCard({
               autoCapitalize="none"
               autoCorrect="off"
               spellCheck={false}
-              className="hidden w-full rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-2 text-center text-lg font-bold text-[color:var(--cahier-ink)] focus:border-[color:var(--cahier-ink)] focus:outline-none sm:block"
+              className={`w-full rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-2 text-center text-lg font-bold text-[color:var(--cahier-ink)] focus:border-[color:var(--cahier-ink)] focus:outline-none ${ex.typed ? "block" : "hidden sm:block"}`}
             />
           )}
-          <div className={ex.tiles ? undefined : "sm:hidden"}>
-            <WordBank answer={ex.answer} pool={ex.bankPool ?? []} value={value} onChange={onType} disabled={answered} />
-          </div>
+          {!ex.typed && (
+            <div className={ex.tiles ? undefined : "sm:hidden"}>
+              <WordBank answer={ex.answer} pool={ex.bankPool ?? []} value={value} onChange={onType} disabled={answered} />
+            </div>
+          )}
         </div>
       )}
     </div>

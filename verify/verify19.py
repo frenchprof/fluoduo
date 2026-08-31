@@ -40,9 +40,12 @@ css = read("src/app/globals.css")
 # Match ACTIVITIES rows only. FAMILIES rows have the same {key,name,emoji}
 # shape, so an unanchored regex counted 5 families as activities and reported
 # 25 where there are 20 (caught by this check's own first run, 2026-08-10).
-entries = re.findall(r'\{ key: "([a-z]+)", name: "([^"]+)", emoji: "([^"]+)"[^}]*family:', reg)
-check(len(entries) >= 17, f"registry has {len(entries)} activities",
-      f"registry has only {len(entries)} activities — expected >=17")
+# `short` (the tight-box truncation, #99) may sit between name and emoji.
+entries = re.findall(r'\{ key: "([a-z]+)", name: "([^"]+)",(?: short: "[^"]+",)? emoji: "([^"]+)"[^}]*family:', reg)
+# Floor moved 31 Aug: Sorting cut, iComplete retired, NumBus+NumBourse under
+# one Numbers hub, My Progress folded into Profile — Dan's 16 (4x4).
+check(len(entries) >= 16, f"registry has {len(entries)} activities",
+      f"registry has only {len(entries)} activities — expected >=16")
 
 names = {k: n for k, n, _ in entries}
 emojis = {k: e for k, _, e in entries}
@@ -84,8 +87,24 @@ check('registryTab("dice"' not in shell,
       "2026-08-31. A tile that is gone from the registry and still tabbed is a "
       "dead end wearing a live link.")
 
-check('registryTab("complete"' in shell, "iComplete has a flap on every deck",
-      "iComplete has no flap — its route is still orphaned")
+# REWRITTEN 2026-08-31, from both directions at once. This asserted the
+# opposite — iComplete MUST have a flap, because the flap was the only door to
+# its route. Two rulings of Dan's landed the same day: "iComplete does not
+# have its door from here, but through Memo" (#99 — the door moves) and "we
+# don't need a separate CompleteIt exercise anymore … we can retire CompleteIt
+# and Sorting" (#97 — the registry row goes too). The Memo's Moyen/Difficile
+# tiers ARE one- and two-piece completion, so a flap beside Memo would offer
+# the ladder's own card as an alternative to it.
+#
+# The consequence is recorded rather than hidden: nothing links
+# `/practice/complete-it/` — the standalone twelve-question run over a deck is
+# unreachable, and only the ladder's cards remain. Same shape as the Sorting
+# cut above: the route survives so banked answers keep their label and the
+# decision stays reversible, and nothing offers it.
+check('registryTab("complete"' not in shell,
+      "iComplete offers no flap — its door is Memo (retired into the ladder)",
+      "CahierShell builds a flap for `complete` again — a second door beside "
+      "Memo, presenting the ladder's own card as an alternative to it.")
 
 # ── 3 · the bottom bar ─────────────────────────────────────────────────────
 # Index lost its own slot on 2026-08-22 (Dan: "Goals and Index to merge later

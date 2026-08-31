@@ -76,11 +76,17 @@ export default function NewDeckPage() {
   const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => {
+    // The saved draft lives in localStorage, which cannot be read during
+    // render (the site is statically exported) — this mount effect has to
+    // seed it. Block-disabled: the rule reports only the first setState it
+    // meets, and which one that is differs between local and CI eslint.
+    /* eslint-disable react-hooks/set-state-in-effect */
     try {
       const raw = localStorage.getItem(DRAFT_KEY);
       if (raw) setDraft({ ...EMPTY, ...JSON.parse(raw) });
     } catch {}
     setHydrated(true);
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
   useEffect(() => {
     if (!hydrated) return;

@@ -37,6 +37,23 @@ const ARTS = ["le", "la", "l'", "les"];
 
 const np = (art: string, fr: string) => art + (art === "l'" ? "" : " ") + fr;
 const conj = (s: (typeof SUBJECTS)[number], v: (typeof VERBS)[number]) => v.stem + END[s.slot];
+
+/* The English reference, as a WHOLE sentence — "He loves athletics." A bare
+ * noun gloss cannot pin the verb, and at Difficile the meta (which named it)
+ * is dropped for leaking the answer, so without this the card had several
+ * defensible verbs (Dan, 31 Aug: "it seems multiple answers are possible …
+ * unless there is an English reference to refer to"). */
+const SUBJ_EN: Record<string, { pron: string; third: boolean }> = {
+  Je: { pron: "I", third: false }, Tu: { pron: "You", third: false },
+  Il: { pron: "He", third: true }, Elle: { pron: "She", third: true },
+  On: { pron: "We", third: false }, Nous: { pron: "We", third: false },
+  Vous: { pron: "You", third: false }, Ils: { pron: "They", third: false },
+  Elles: { pron: "They", third: false },
+};
+function sentenceEn(s: (typeof SUBJECTS)[number], v: (typeof VERBS)[number], n: (typeof NOUNS)[number]): string {
+  const e = SUBJ_EN[s.disp];
+  return `${e.pron} ${e.third ? `${v.en}s` : v.en} ${n.en}.`;
+}
 function subjVerb(s: (typeof SUBJECTS)[number], v: (typeof VERBS)[number]): string {
   const c = conj(s, v);
   return s.slot === "je" && /^[aeiouéèêh]/i.test(c) ? `J'${c}` : `${s.disp} ${c}`;
@@ -90,7 +107,7 @@ export function aimerQuestion(pinned?: Record<string, string>): DiceQuestion {
   return {
     meta: `${sv} … (${v.en})`,
     big: n.fr,
-    en: n.en,
+    en: sentenceEn(s, v, n),
     correct: sentence(slots),
     easyOptions: ARTS.map((a) => `${sv} ${np(a, n.fr)}.`),
     // Derived, not hand-written: the two can no longer drift apart, and the

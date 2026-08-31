@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# RENUMBERED 66 -> 68 at merge time (integration, 31 Aug): #99's popup check
+# took 66 while this branch was in flight, and #100 claims 67 — the fifth and
+# sixth number collisions, both caught before CI this time.
 """
 The two Tier 2 stops that had no lesson file — and the three decisions Dan made
 on 2026-08-31 alongside them.
@@ -36,7 +39,7 @@ WHAT SHIPPED, AND WHY EACH PART IS ASSERTED HERE RATHER THAN READ.
     mixed, and picked all-English. Mixed is asserted against, because that is
     the state a half-finished rename lands in.
 
-RUN FROM THE REPO ROOT:  python3 verify/verify66-two-tier2-stops.py
+RUN FROM THE REPO ROOT:  python3 verify/verify68-two-tier2-stops.py
 """
 import json, os, re, sys
 

@@ -21,6 +21,9 @@ export default function BetaNotice() {
 
   useEffect(() => {
     try {
+      // Deliberate: the dismissal flag lives in localStorage, which cannot
+      // be read during render — this mount effect has to seed `open`.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (!window.localStorage.getItem(KEY)) setOpen(true);
     } catch {}
   }, []);

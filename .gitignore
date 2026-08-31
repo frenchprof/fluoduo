@@ -60,3 +60,6 @@ work/**/*.png
 
 # merge-handoff-csv.py keeps the previous handoff CSV beside the new one
 *.csv.bak
+
+# Agent worktrees (session-local working copies; auto-cleaned)
+.claude/worktrees/

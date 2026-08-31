@@ -19,7 +19,7 @@ src/content/lessons/native/cloze.ts
 src/content/lessons/native/types.ts
 ```
 
-Verify numbers do **not** collide — #97 takes 65, this branch takes 66.
+Verify numbers do **not** collide — #97 takes 65, this branch takes 66 — renumbered to 68 at merge (66 went to #99, 67 to #100).
 
 ## The one merge hazard that is invisible in the diff
 
@@ -49,7 +49,7 @@ export function blankKeysFor(level: 1 | 2 | 3 | 4, slots: Slot[]): string[] {
 }
 ```
 
-`verify66` executes this under `node --experimental-strip-types` and asserts
+`verify68` executes this under `node --experimental-strip-types` and asserts
 both halves, so a merge that drops either goes red rather than shipping.
 
 ## What to carry over, and what to drop
@@ -69,7 +69,7 @@ Practice, which is the better resolution. Take theirs.
 | `Slot.first` | `cloze.ts` | See above. The dangerous one. |
 | `DiceQuestion.bigLang` | `types.ts`, `buildCards.tsx`, `LessonPager.tsx` | An EN→FR prompt was going out tagged `lang="fr"`, so 🔊 read English with French phonics. Also the styling Dan asked for: the English reference at the French's size, italic, unbolded. |
 | `colors.tsx`, `core-nouns.tsx` | new files | SIO-005 / SIO-006 — the two Tier 2 stops that had a deck and no lesson file. No conflict with #97. |
-| `verify66` | new | 68 assertions, eleven break-tested. |
+| `verify68` | new | 68 assertions, eleven break-tested. |
 | `verify51` amendment | `verify51-four-more-stops.py` | It asserted SIO-006 must have NO lesson. Amended with the reasoning, not silenced — its case was about the question frames, not gender. |
 
 ## Three permanent rules were added to AGENTS.md today

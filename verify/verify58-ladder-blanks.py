@@ -1,22 +1,24 @@
 #!/usr/bin/env python3
 """
-A2 — the ★ ladder withdraws SCAFFOLDING, and ★ still gets yesterday's card.
+A2 — the ladder withdraws SCAFFOLDING; Facile and Moyen keep yesterday's card.
 
-WHAT THIS GUARDS. `lessonEntry.ts` varies the KIND of exercise across levels
-(mcq / gap / build / translate), which produces a difficulty gradient without
-the mechanism Dan's pages describe: his levels remove scaffolding from ONE
-sentence. `multiBlankCard` is where that now happens — it decides, for a level,
-how much of a slotted question to take away.
+WHAT THIS GUARDS. `lessonEntry.ts` varies the KIND of exercise across levels,
+which produces a difficulty gradient without the mechanism Dan's pages
+describe: his levels remove scaffolding from ONE sentence. `multiBlankCard` is
+where that now happens — it decides, for a level, how much of a slotted
+question to take away. Renamed and remapped 2026-08-31 to Dan's
+classification: "CompleteIt is supposed to [be] Difficile if it involves two
+items, or Moyen if it involves one."
 
 THE TWO THINGS THAT MUST BOTH HOLD, and they pull against each other:
 
-  1. ★★ and ★★★ must give TWO blanks on a slotted question. That is the whole
-     point, and it is what `med` could never express.
-  2. ★ and every one of the 46 unconverted generators must produce EXACTLY the
-     card they produced before — `multiBlankCard` returns null for them and the
-     old `med` path runs untouched. A ladder that quietly changed the easiest
-     level for every lesson in the app would be a regression wearing a feature's
-     clothes.
+  1. Difficile (level 3) must give TWO blanks on a slotted question. That is
+     the whole point, and it is what `med` could never express.
+  2. Facile, Moyen and every one of the 46 unconverted generators must produce
+     EXACTLY the single-blank card they produced before — `multiBlankCard`
+     returns null for them and the old `med` path runs untouched. A ladder
+     that quietly changed an easier level for every lesson in the app would be
+     a regression wearing a feature's clothes.
 
 WHY IT LIVES IN A .ts AND NOT IN buildCards.tsx. `node --experimental-strip-types`
 cannot load a .tsx, so anything in the pager is unreachable from a check — the
@@ -133,44 +135,47 @@ check(not off,
       "slots are assembling the sentence wrongly: " +
       "; ".join(f"[{x['gen']}] {x['correct']!r} not in {x['options']}" for x in off))
 
-# ── 1 · one star is untouched ──────────────────────────────────────────────
-star1 = [x for x in lv[1] if x["isMulti"]]
-check(not star1,
-      "★ takes the single-blank path — the card it built yesterday",
-      f"{len(star1)} of 200 ★ cards became multi-blank. ★ must keep the med "
-      "path byte for byte, or this ladder silently changed the easiest level "
-      "for every learner.")
+# ── 1 · Facile and Moyen are untouched (one piece missing = the med path) ──
+for level in (1, 2):
+    rows = lv[level]
+    single = [x for x in rows if x["isMulti"]]
+    check(not single,
+          f"level {level} ({'Facile' if level == 1 else 'Moyen'}) takes the "
+          "single-blank path — the card it built yesterday",
+          f"{len(single)} of {len(rows)} level-{level} cards became multi-blank. "
+          "Moyen is ONE piece missing (Dan, 31 Aug); the med path must hold.")
 
-check(all(x["med"] and x["med"]["correct"] for x in lv[1]),
-      "★ still carries a populated `med`",
-      "a ★ card lost its med — the old path is what 46 generators depend on")
+    check(all(x["med"] and x["med"]["correct"] for x in rows),
+          f"level {level} still carries a populated `med`",
+          f"a level-{level} card lost its med — the old path is what 46 "
+          "generators depend on")
 
-# ── 2 · two stars and up withdraw TWO ──────────────────────────────────────
-for level in (2, 3):
+# ── 2 · Difficile withdraws TWO ────────────────────────────────────────────
+for level in (3,):
     rows = lv[level]
     multi = [x for x in rows if x["isMulti"]]
     check(len(multi) == len(rows),
-          f"{'★★' if level == 2 else '★★★'} builds a multi-blank card every time",
+          "Difficile builds a multi-blank card every time",
           f"only {len(multi)} of {len(rows)} cards at level {level} withdrew more "
           "than one piece — the level is not withdrawing scaffolding")
 
     counts = {x["blanks"] for x in multi}
     check(counts == {2},
-          f"{'★★' if level == 2 else '★★★'} withdraws exactly two pieces",
+          "Difficile withdraws exactly two pieces",
           f"level {level} blank counts are {sorted(counts)}, expected 2")
 
     off = [x for x in multi if x["keys"] != x["want"]][:3]
     check(not off,
-          f"{'★★' if level == 2 else '★★★'} blanks each generator's own two keys "
+          "Difficile blanks each generator's own two keys "
           "— aimer and faire the verb and article, aller the verb and preposition",
           f"level {level} blanked the wrong slots: " +
           "; ".join(f"[{x['gen']}] {x['keys']} != {x['want']}" for x in off))
 
 # ── 3 · the noun must survive, or there is nothing to choose an article for ─
-naked = [x for x in lv[2] if x["shown"].count("___") != 2][:3]
+naked = [x for x in lv[3] if x["shown"].count("___") != 2][:3]
 check(not naked,
-      "★★ leaves the subject and the bare noun standing",
-      "★★ blanked something other than exactly two pieces: " +
+      "Difficile leaves the subject and the bare noun standing",
+      "Difficile blanked something other than exactly two pieces: " +
       "; ".join(f"[{x['gen']}] {x['shown']}" for x in naked))
 
 # The graded string must be the blanks joined in reading order — that is exactly
@@ -180,16 +185,16 @@ check(not naked,
 # faire: "fais de la" is three words and two blanks, because a partitive is two
 # words. An assertion shaped around one generator is an assertion that will
 # reject the next one.
-wrong = [x for x in lv[2] if x["answer"] != " ".join(x["answers"])][:3]
+wrong = [x for x in lv[3] if x["answer"] != " ".join(x["answers"])][:3]
 check(not wrong,
       "the graded string is the blanks joined in reading order",
       "the answer is not its blanks joined: " +
       "; ".join(f"[{x['gen']}] {x['answer']!r} != {x['answers']}" for x in wrong))
 
-two = [x for x in lv[2] if len(x["answers"]) != 2][:3]
+two = [x for x in lv[3] if len(x["answers"]) != 2][:3]
 check(not two,
-      "★★ has exactly two blanks to fill, whatever their word count",
-      "a ★★ card has the wrong number of blanks: " +
+      "Difficile has exactly two blanks to fill, whatever their word count",
+      "a Difficile card has the wrong number of blanks: " +
       "; ".join(f"[{x['gen']}] {x['answers']}" for x in two))
 
 # ORDER, not just membership. The picks are joined in reading order and graded
@@ -206,7 +211,7 @@ def in_order(row):
         at = k + len(w)
     return pos == sorted(pos)
 
-contained = [x for x in lv[2] if not in_order(x)][:3]
+contained = [x for x in lv[3] if not in_order(x)][:3]
 check(not contained,
       "both blanked words come out of the sentence, IN READING ORDER",
       "a blank's answers are missing or out of order against the sentence they "
@@ -214,23 +219,24 @@ check(not contained,
       "; ".join(f"[{x['gen']}] {x['answer']!r} vs {x['full']!r}" for x in contained))
 
 # ── 3b · the prompt must not print an answer ───────────────────────────────
-# aimer's meta is "Tu adores … (love)". At ★ that is exactly right — the verb is
-# shown and the article is the question. At ★★ the verb IS the question, so the
-# same line prints the answer directly above the gap. Found by opening the card
+# aimer's meta is "Tu adores … (love)". At Moyen that is exactly right — the
+# verb is shown and the article is the question. At Difficile the verb IS the
+# question, so the same line prints the answer above the gap. Found by opening the card
 # in a browser, not by reading the code, which is the whole argument for doing
 # that once per feature.
-leaky = [x for x in lv[2] if x["metaLeaks"]]
+leaky = [x for x in lv[3] if x["metaLeaks"]]
 check(leaky,
-      f"the raw generator meta does leak at ★★ ({len(leaky)}/{len(lv[2])}) — so the "
-      "guard in buildCards has something to do",
-      "no ★★ meta leaks an answer, which makes the guard below untestable here: "
-      "has aimer's meta changed? If so this assertion is the one to update.")
+      f"the raw generator meta does leak at Difficile ({len(leaky)}/{len(lv[3])}) — "
+      "so the guard in buildCards has something to do",
+      "no Difficile meta leaks an answer, which makes the guard below untestable "
+      "here: has aimer's meta changed? If so this assertion is the one to update.")
 
-lone = [x for x in lv[1] if x["metaLeaks"]]
+lone = [x for x in lv[1] + lv[2] if x["metaLeaks"]]
 check(not lone,
-      "★ never leaks — its meta shows the verb because the verb is not the question",
-      f"{len(lone)} ★ cards leak their own answer, which would be a real bug in "
-      "the single-blank path")
+      "Facile/Moyen never leak — their meta shows the verb because the verb is "
+      "not the question",
+      f"{len(lone)} single-blank cards leak their own answer, which would be a "
+      "real bug in the med path")
 
 # ── 4 · a slotless generator is left completely alone ──────────────────────
 # NOTE ON THIS ONE. The outcome is protected twice — by the `!q.slots?.length`
@@ -260,8 +266,8 @@ check('ex.kind !== "mcq" && !ex.segments' in src,
 
 check("metaLeaksAnswer(x.meta" in open("src/app/lessons/pager/buildCards.tsx", encoding="utf-8").read(),
       "buildCards drops a meta line that would print a blanked answer",
-      "buildCards no longer guards the context line, so a ★★ card can print "
-      "the verb it is about to ask for")
+      "buildCards no longer guards the context line, so a Difficile card can "
+      "print the verb it is about to ask for")
 
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:

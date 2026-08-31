@@ -104,14 +104,20 @@ check("aria-expanded" in rail,
 EXPECT = {
     # Dan, 2026-08-23: rename xPlain → Memo, approved surface #3.
     # Sorting was CUT on 2026-08-31 ("sorting is cut") — off navigation the way
-    # Match It went, registry row gone and route kept. So `practice` is four.
+    # Match It went, registry row gone and route kept.
+    # iComplete RETIRED the same day ("we can retire CompleteIt … it will be
+    # part of Memo's activities") — the Memo's Moyen/Difficile tiers are one-
+    # and two-piece completion, so `practice` is three.
     # Dan, 2026-08-25: rename EtuDice → Sorting — the tile opened the group
     # sort, not the die. "EtuDice" now names only the d12 in the pager.
-    "practice": {"SpecuLearn", "Memo", "4Mémoire", "iComplete"},
+    "practice": {"SpecuLearn", "Memo", "4Mémoire"},
     "review":   {"DéjàRevu", "GramMarathon"},
     "skills":   {"ConjugaZone", "ÉcouTexte", "WorDrill", "VoixLà", "ComposeIt", "ChaTutor"},
-    "svplay":   {"NumBus", "NumBourse", "VocabulaRain", "LexicaLater"},
-    "user":     {"My Progress", "Leaderboard", "Profile"},
+    # 31 Aug consolidations, Dan's words: "park NumBus / NumBourse under a
+    # hub-tab Numbers … MyProgress should be swallowed by Profile. So that
+    # would be 16 (4x4)". Both game routes and /moi survive off-tile.
+    "svplay":   {"Numbers", "VocabulaRain", "LexicaLater"},
+    "user":     {"Leaderboard", "Profile"},
 }
 rows = re.findall(r'\{ key: "[a-z]+", name: "([^"]+)".*?family: "([a-z]+)"', reg)
 for fam, want in EXPECT.items():
@@ -123,20 +129,19 @@ check(not [f for _, f in rows if f == "goals"],
       "Goals carries no activity rows — its children are the fifty objectives",
       "an activity is still filed under goals — the 19 Aug regrouping is undone")
 
-# 4 · the Menu is a grid of all twenty
+# 4 · the Menu is Dan's 4x4
 check("grid-cols-4" in menu,
-      "the Menu grid is four across on a phone",
+      "the Menu grid is four across",
       "the Menu grid is not grid-cols-4")
-check("sm:grid-cols-5" in menu,
-      "the Menu grid is five across from sm (4x5 / 5x4)",
-      "the Menu grid does not widen to five from sm")
-check(len(rows) == 19,
-      f"the registry holds nineteen activities ({len(rows)})",
-      f"the registry holds {len(rows)} activities, expected 19. Cutting Sorting on "
-      "2026-08-31 took it from twenty, so the Menu grid is no longer the exact 4x5 "
-      "Dan specified — five across leaves the last row one short. Flagged to him "
-      "rather than papered over; if a tile is added or removed, change this "
-      "number on purpose.")
+check("sm:grid-cols-5" not in menu,
+      "the Menu stays 4x4 at every width (Dan, 31 Aug: '16 (4x4)')",
+      "the Menu widens to five across again — sixteen tiles leave a hole there")
+check(len(rows) == 16,
+      f"the registry holds sixteen activities ({len(rows)}) — Dan's 4x4",
+      f"the registry holds {len(rows)} activities, expected 16 — Dan's 4x4 "
+      "(31 Aug: Sorting cut, iComplete retired, NumBus+NumBourse under one "
+      "Numbers hub, My Progress folded into Profile). If a tile is added or "
+      "removed, change this number on purpose.")
 check(">Menu<" in menu or "Menu</h2>" in menu,
       "the popup calls itself Menu",
       "the popup does not say Menu")
