@@ -36,12 +36,15 @@
  * a lesson without one renders the tab with the reason it is empty, rather
  * than hiding the tab. A hidden gap is a gap nobody fixes.
  */
-import { useState, type ReactNode } from "react";
+import { Fragment, useState, type ReactNode } from "react";
 import type { Collection } from "@/lib/collections/schema";
 import type { Sio } from "@/content/sios";
 import type { LessonConcept, NativeLesson } from "@/content/lessons/native/types";
 
-type TabKey = "parcours" | "concept" | "formes" | "exercice" | "bonus" | "lexique";
+// "lexique" is NOT here: the word list moved UNDER Forms on 2026-08-31
+// (Dan: "can we put Words under Forms?"). It is a section of that panel now,
+// not a destination, so it has no tab key and nothing can route to it.
+type TabKey = "parcours" | "concept" | "formes" | "exercice" | "bonus";
 
 const TABS: { key: TabKey; emoji: string; label: string; does: string }[] = [
   // `does` earns the path list its place. Without it that list is the tab
@@ -65,7 +68,6 @@ const TABS: { key: TabKey; emoji: string; label: string; does: string }[] = [
   { key: "formes", emoji: "📖", label: "Forms", does: "the forms themselves" },
   { key: "exercice", emoji: "📝", label: "Pract.", does: "use them, one card at a time" },
   { key: "bonus", emoji: "⭐", label: "Bonus", does: "the other direction — English to French" },
-  { key: "lexique", emoji: "📚", label: "Words", does: "every word in this lesson" },
 ];
 
 /**
@@ -282,6 +284,42 @@ function articleShowsGender(fr: string): boolean {
   return /^(le|la|un|une|du|de la)\s/i.test(fr.trim());
 }
 
+/* ── 2 · Forms — the rules, then the words ─────────────────────────────────
+ * Dan, 2026-08-31: "can we put Words under Forms?"
+ *
+ * They answer the same question at two grains. The Mémo states the pattern;
+ * the word list is the pattern's own instances, and on a Tier 2 stop it IS the
+ * lesson — « un café · une classe » is both the vocabulary and the evidence
+ * for the rule above it. Splitting them across two tabs made a learner tab
+ * back and forth to hold one idea, and it is the tab that pushed the strip to
+ * six, which no phone row fits.
+ *
+ * Both halves get a real heading, or the table just runs on out of the bottom
+ * of the Mémo with nothing to say it has started — the fault Dan reported on
+ * the concept page an hour earlier. */
+function Formes({
+  memo, deck, lexique,
+}: { memo?: ReactNode; deck?: Collection; lexique?: ReactNode }) {
+  const hasWords = !!lexique || !!deck?.items?.length;
+  if (!memo && !hasWords) return <Empty what="No Mémo and no deck for this lesson." />;
+  return (
+    <Panel>
+      {memo && (
+        <>
+          <H>The pattern</H>
+          <div className="mt-2">{memo}</div>
+        </>
+      )}
+      {hasWords && (
+        <>
+          <H>Every word in this lesson</H>
+          {lexique ?? <Lexique deck={deck} bare />}
+        </>
+      )}
+    </Panel>
+  );
+}
+
 /* ── 5 · Le lexique ────────────────────────────────────────────────────────
  * The deck's words, as a reveal table.
  *
@@ -294,7 +332,7 @@ function articleShowsGender(fr: string): boolean {
  * So this is the reading half only, which is what Dan's lexique tab does:
  * hide a column, reveal cells one at a time. The full table with its buckets
  * and notes stays one tap away at /decks/[id], where it already lives. */
-function Lexique({ deck }: { deck?: Collection }) {
+function Lexique({ deck, bare = false }: { deck?: Collection; bare?: boolean }) {
   const [hide, setHide] = useState<"none" | "fr" | "en">("none");
   const [shown, setShown] = useState<Set<string>>(new Set());
   if (!deck?.items?.length) {
@@ -320,9 +358,12 @@ function Lexique({ deck }: { deck?: Collection }) {
       </button>
     );
   };
+  // `bare` when nested inside Forms: that panel already supplies the padding
+  // and the heading, so a second Panel here would double both.
+  const Wrap = bare ? Fragment : Panel;
   return (
-    <Panel>
-      <div className="mb-2 flex flex-wrap gap-1.5">
+    <Wrap>
+      <div className="mb-2 mt-2 flex flex-wrap gap-1.5">
         {([["none", "Show both"], ["en", "Hide English"], ["fr", "Hide French"]] as const).map(([k, label]) => (
           <button
             key={k}
@@ -391,7 +432,7 @@ function Lexique({ deck }: { deck?: Collection }) {
       <p className="mt-2 text-xs font-bold text-[color:var(--fluo-ink-soft)]">
         {deck.items.length} words · the full table, with your notes and review marks, is on the deck page.
       </p>
-    </Panel>
+    </Wrap>
   );
 }
 
@@ -461,10 +502,9 @@ export default function LessonTabs({
 
       {tab === "parcours" && <Parcours sio={sio} here={tab} />}
       {tab === "concept" && <Concept c={concept} />}
-      {tab === "formes" && (memo ? <Panel>{memo}</Panel> : <Empty what="No Mémo for this lesson." />)}
+      {tab === "formes" && <Formes memo={memo} deck={deck} lexique={lexique} />}
       {tab === "exercice" && <Panel>{exercise}</Panel>}
       {tab === "bonus" && <Bonus pairs={bonus} />}
-      {tab === "lexique" && (lexique ?? <Lexique deck={deck} />)}
     </div>
   );
 }

@@ -303,11 +303,11 @@ check(tabs_body is not None, "the TABS table parsed",
       "TABS is unreadable — the assertions below are vacuous")
 if tabs_body:
     labels = re.findall(r'label:\s*"([^"]+)"', tabs_body.group(1))
-    check(labels == ["Path", "Idea", "Forms", "Pract.", "Bonus", "Words"],
-          "all six tabs carry Dan's short English labels",
-          f"the tab strip reads {labels}. Dan chose all-English on 2026-08-31, then cut the "
-          "labels himself to save width: Path · Idea · Forms · Pract. · Bonus (+ Words, "
-          "the sixth, which his screenshot had scrolled off the edge).")
+    check(labels == ["Path", "Idea", "Forms", "Pract.", "Bonus"],
+          "five tabs: Path · Idea · Forms · Pract. · Bonus",
+          f"the tab strip reads {labels}. Dan chose all-English on 2026-08-31, cut the labels "
+          "himself to save width, then moved Words UNDER Forms — so there are five tabs, not "
+          "six, and no tab of its own for the word list.")
     check(max(len(l) for l in labels) <= 6,
           "no label is longer than six characters — the strip fits without scrolling",
           f"the longest label is {max(labels, key=len)!r}. The point of shortening was width: "
@@ -351,6 +351,45 @@ if hblock:
           "headings are full ink at black weight, so they outrank the prose",
           "H() no longer sets full ink and black weight, so the heading does not stand out "
           "from the paragraph under it")
+
+
+# ── 7 · the word list lives UNDER Forms, not beside it ─────────────────────
+# Dan, 2026-08-31: "can we put Words under Forms?" The Mémo states the pattern
+# and the deck is that pattern's own instances — on a Tier 2 stop the word list
+# IS the lesson. Two consequences are asserted, because a half-done move leaves
+# the panel merged and the tab still there, which looks finished either way.
+check('key: "lexique"' not in TABS,
+      "there is no Words tab — the word list is a section, not a destination",
+      "TABS still carries a `lexique` row, so the word list has both a tab AND a place "
+      "inside Forms")
+check('"lexique"' not in re.search(r"type TabKey = ([^;]+);", TABS).group(1),
+      "`lexique` is gone from TabKey, so nothing can route to it",
+      "TabKey still admits \"lexique\", so a stale link or a stored tab value can select a "
+      "tab that no longer renders anything")
+# SLICED, not regex-matched. Every brace-based boundary I tried closed on
+# the DESTRUCTURING brace — `}: { memo?: ... }) {` puts a `}` in column 0
+# three lines into the signature — capturing none of the body, so both
+# assertions below failed against perfectly correct code. The next
+# top-level declaration is the honest end of a function.
+def _decl(src, name):
+    i = src.find(f"function {name}(")
+    if i < 0:
+        return None
+    nxt = [j for j in (src.find("\nfunction ", i + 1), src.find("\n/* \u2500", i + 1),
+                       src.find("\nexport ", i + 1)) if j > 0]
+    return src[i:min(nxt)] if nxt else src[i:]
+formes = _decl(TABS, "Formes")
+check(formes is not None, "the Forms panel parsed",
+      "there is no Formes component — the merge did not happen")
+if formes:
+    f = formes
+    check("{memo}" in f and "Lexique" in f,
+          "Forms renders the Mémo AND the word list",
+          "the Forms panel does not render both halves, so the move dropped one of them")
+    check(f.count("<H>") >= 2,
+          "each half of Forms has its own heading",
+          "the word list runs straight on out of the bottom of the Mémo with nothing to say "
+          "it has started — the same fault Dan reported on the concept page")
 
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:
