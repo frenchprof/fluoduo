@@ -39,6 +39,7 @@ import pu4_sio047 from "./u4-sio047.json";
 import pu4_sio047p from "./u4-sio047-plans.json";
 import pu4_sio048a from "./u4-sio048-advice.json";
 import pu4_sio045a from "./u4-sio045a-nombres.json";
+import { ATELIER_GENERATED, ATELIER_PRETEST_BY_SIO } from "./ateliers.gen";
 
 export const PRETESTS: Pretest[] = [
   weather as unknown as Pretest,
@@ -76,6 +77,10 @@ export const PRETESTS: Pretest[] = [
   pu4_sio045a as unknown as Pretest,
   pu4_sio047p as unknown as Pretest,
   pu4_sio048a as unknown as Pretest,
+  // The five atelier stops had no pre-test at all: no deck, no authored MCQs,
+  // just the model dialogue. Generated from that dialogue — see ateliers.gen.ts
+  // for why the wrong options are other lines of it and never invented French.
+  ...ATELIER_GENERATED,
 ];
 
 export function getPretest(id: string): Pretest | undefined {
@@ -161,6 +166,11 @@ const PRETEST_BY_SIO: Record<string, string> = {
   "SIO-046": "u4-sio046",
   "SIO-047": "u4-sio047-plans",
   "SIO-048": "u4-sio048-advice",
+  // The ateliers, generated from their own model dialogues (2026-08-31).
+  // Spread last so a hand-authored attachment always wins over a generated
+  // one — if an atelier ever gets an authored pre-test, adding the line above
+  // is the whole change.
+  ...ATELIER_PRETEST_BY_SIO,
 };
 
 export function getPretestForSio(sioId: string): Pretest | undefined {
