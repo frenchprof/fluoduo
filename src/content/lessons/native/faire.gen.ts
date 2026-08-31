@@ -10,6 +10,7 @@
  */
 import type { DiceAxis, DiceQuestion } from "./types";
 import { pinned1, pinnedGroup, pinnedNeg, roll, POLARITY_AXIS } from "./axis.ts";
+import { medFrom, sentence, type Slot } from "./cloze.ts";
 
 const SUBJECTS = [
   { disp: "Je", slot: "je" }, { disp: "Tu", slot: "tu" }, { disp: "Il", slot: "il" },
@@ -32,6 +33,35 @@ const ACTIVITIES: { fr: string; part: "du" | "de la" | "de l'" | "des"; en: stri
 
 const np = (art: string, fr: string) => art + (art.endsWith("'") ? "" : " ") + fr;
 const isVowel = (fr: string) => /^[aeiouéèêàh]/i.test(fr);
+/** Every distinct form of FAIRE — the options when the verb is the blank. */
+const FAIRE_FORMS = [...new Set(Object.values(FAIRE))];
+
+/**
+ * The sentence as its parts — subject · VERB · (pas) · PARTITIVE · activity.
+ *
+ * This is L09, carrying the same contrast as L08 from the other side: ★ takes
+ * the verb, ★★ takes the verb AND the partitive, which is the du/de la decision
+ * the whole stop exists to teach.
+ *
+ * In the negative the verb sits INSIDE the negation — « Tu ne fais pas … » — so
+ * `ne` and `pas` are two separate pieces of scenery with the blank between them.
+ * Blanking the wrong word there would still look right in source, which is why
+ * verify58 executes this rather than reading it.
+ */
+function slotsFor(
+  s: (typeof SUBJECTS)[number],
+  a: (typeof ACTIVITIES)[number],
+  neg: boolean,
+  art: string,
+  arts: string[],
+): Slot[] {
+  const verb: Slot = { key: "verb", text: FAIRE[s.slot], choices: FAIRE_FORMS };
+  const article: Slot = { key: "article", text: art, choices: arts };
+  const tail: Slot = { text: `${a.fr}.` };
+  return neg
+    ? [{ text: `${s.disp} ne` }, verb, { text: "pas" }, article, tail]
+    : [{ text: s.disp }, verb, article, tail];
+}
 
 export const FAIRE_AXES: DiceAxis[] = [
   { key: "subject", label: "Sujet", options: SUBJECTS.map((s) => ({ value: s.disp, label: s.disp })) },
@@ -53,12 +83,15 @@ export function faireQuestion(pinned?: Record<string, string>): DiceQuestion {
       const arts = neg
         ? [art, art === "d'" ? "de" : "d'", a.part, a.part === "du" ? "de la" : "du"]
         : ["du", "de la", "de l'", "des"];
-      return {
-        meta: `${sv} … (${neg ? "don't do" : "do"})`,
-        big: a.fr,
-        en: a.en,
-        correct: `${sv} ${np(art, a.fr)}.`,
-        easyOptions: [...new Set(arts)].map((x) => `${sv} ${np(x, a.fr)}.`),
-        med: { before: sv, choices: [...new Set(arts)], correct: art, after: `${a.fr}.` },
-      };
-    }
+  const slots = slotsFor(s, a, neg, art, [...new Set(arts)]);
+  return {
+    meta: `${sv} … (${neg ? "don't do" : "do"})`,
+    big: a.fr,
+    en: a.en,
+    correct: sentence(slots),
+    easyOptions: [...new Set(arts)].map((x) => `${sv} ${np(x, a.fr)}.`),
+    // Derived, not hand-written — the two can no longer drift apart.
+    med: medFrom(slots, "article"),
+    slots,
+  };
+}
