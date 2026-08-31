@@ -23,7 +23,7 @@
 
 | | | |
 |---|---|---|
-| **A1** multi-slot `DiceQuestion` | **still open** | `med` is still `{ before, choices, correct, after }` on main — one blank, fixed by the generator. Dan's ★★ remains inexpressible. Mine unless you say otherwise. |
+| **A1** multi-slot `DiceQuestion` | **still open — and bigger than I said** | `med` is still `{ before, choices, correct, after }` on main: one blank, fixed by the generator. Dan's ★★ remains inexpressible. **31 Aug: it blocks Tier 2 as well.** He specified the vocabulary ladder as ★ whole item · ★★ fill the article · ★★★ fill article *and* noun — the same two-slot cloze. So A1 unblocks **35 stops, not 20**. Mine unless you say otherwise. |
 | **A2** the ★ ladder on scaffolding | **still open**, blocked by A1 | `lessonEntry.ts` still varies `mcq \| gap \| build \| translate`. |
 | **A3** `concept` on `NativeLesson` | **done — yours** | `LessonConcept` with `subtitle / contrast / question / answer / remember` required. Better than what I had planned: requiring a claim *and* a question is what stops a concept decaying into a second Mémo. |
 | **A4** render the pathway | **done — yours** | The six tabs, as front matter. |
@@ -66,8 +66,15 @@ on it and both are worth knowing here:
 - **A vocabulary lesson keeps the same six tabs.** My draft invented a seventh
   stage; Dan's answer was that *Les formes* for a noun is the vocab list with
   **gender**, as in SpecuLearn. So the tabs don't change per tier — only their
-  contents do. That is a much better answer than mine and it means Tier 2 needs
-  no container work at all.
+  contents do.
+- **The ladder is the same cloze in both tiers.** I twice got this wrong. First
+  I made the vocabulary ladder a sorting task, and Dan's verdict was that it
+  "asks the wrong questions" — it was the Sorting game wearing a ladder's
+  clothes, i.e. the exact drift he sent us to fix. Then I claimed the corrected
+  version needed no type change. It does: he specified ★★ as *fill in the
+  article* and ★★★ as *fill in the article and the noun*, which is a two-slot
+  cloze on one frame — structurally identical to L08's ★★. **One mechanism
+  serves both tiers**, which is the strongest argument for A1 there is.
 
 **The activity cull.** All 20 activity keys, what each drills, which tier it
 serves or none — for Dan to strike through.
