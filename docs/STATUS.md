@@ -116,9 +116,35 @@ lane = report it in STATUS, don't do it.
   batches of five, every batch read by Dan before ship). Tier 2: the
   second-half compound-name concept, plus Colours/Some-nouns once decision 6
   lands. Keeper of the Stocktake ledger — re-issue it when the counts move.
-- **Pre-tests — the pre-test surface, then capacity.** Unit-0 pre-test pages
-  (in flight, the last uncovered pre-test surface). When done: take Tier-1
-  concept batches in parallel with Color review, same read-before-ship rule.
+- **Pre-tests — the pre-test surface, then capacity.** ~~Unit-0 pre-test pages
+  (in flight, the last uncovered pre-test surface).~~ **DONE — #98.** All ten
+  now render at `/pretests/unit0/SIO-00N`; every stop in the course has a
+  pre-test with a page of its own.
+  **NOW IN FLIGHT — the SIO popup collapse and derived done-ness.** These are
+  two instructions Dan gave this session that the roster's lane text does not
+  list; he confirmed them as mine on 31 Aug rather than leaving them unowned.
+  Claimed here so nobody else opens the same files:
+  1. **The popup collapses to the statement and ONE list of links.** Dan:
+     "collapse the interfaces to ONLY reveal the SIO spelled out fully, then
+     the links to the relevant items within the stop. THAT IS IT." Today a
+     stop stacks the same activity list THREE times — the numbered path, the
+     right-edge flaps, and the narrow-screen flap row — and four activities
+     (WorDrill, iComplete, Sorting, GramMarathon) render INSIDE the popup
+     rather than opening, so an identical-looking flap does two different
+     things. The list will derive from `cellHref` per stop, which is why the
+     Sorting cut (#93) needs no change here and why the now-stale `dice` in
+     `CHAIN_KEYS` drops out on its own. Unblocked by #98: collapsing before
+     those pages existed would have cost all ten Unit-0 stops their pre-test.
+  2. **Done-ness becomes derived; Mark as done is removed.** Dan: "it should
+     only be marked done if it is really FULLY done, so we should remove it."
+     A stop ticks when everything at it is done, so the popup's link list and
+     the completion rule become the SAME list. **Grandfathered, Dan's call**:
+     existing `doneSios` stand and the rule only ever adds — nobody's 34/50
+     becomes 21/50 and no badge is revoked. `doneSios` is read in 14 files,
+     `economy.ts`'s four badges included, so this is not a one-file change.
+     Follows 1, because the link list IS the definition.
+  **After those:** Tier-1 concept batches in parallel with Color review, same
+  read-before-ship rule.
 - **Peers — features.** Queue empty since Sorting was cut (#93). Next
   assignment is Dan's; until then, nothing — not audits, not others'
   branches.

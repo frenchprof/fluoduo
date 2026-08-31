@@ -84,8 +84,22 @@ check('registryTab("dice"' not in shell,
       "2026-08-31. A tile that is gone from the registry and still tabbed is a "
       "dead end wearing a live link.")
 
-check('registryTab("complete"' in shell, "iComplete has a flap on every deck",
-      "iComplete has no flap — its route is still orphaned")
+# REWRITTEN 2026-08-31. This asserted the opposite — that iComplete MUST have
+# a flap on every deck, because the flap was the only door to its route and a
+# route nobody links is dead. Dan changed where the door is, not whether one
+# exists: "iComplete does not have its door from here, but through Memo". It is
+# the ★ ladder's `gap` card, which the lesson pager builds itself, so offering
+# it beside Memo presented the two as alternatives when one contains the other.
+#
+# The consequence is recorded rather than hidden: with the flap gone, nothing
+# links `/practice/complete-it/` — the STANDALONE twelve-question run over a
+# deck is unreachable, and only the ladder's cards remain. Same shape as the
+# Sorting cut above: the route survives so banked answers keep their label and
+# the decision stays reversible, and nothing offers it.
+check('registryTab("complete"' not in shell,
+      "iComplete offers no flap — its door is Memo, per Dan's 31 Aug ruling",
+      "CahierShell builds a flap for `complete` again — that is a second door "
+      "beside Memo, presenting the ladder's own card as an alternative to it.")
 
 # ── 3 · the bottom bar ─────────────────────────────────────────────────────
 # Index lost its own slot on 2026-08-22 (Dan: "Goals and Index to merge later

@@ -374,7 +374,16 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     // the SIO sheet's numbered path renders this list's order — the two
     // surfaces may not disagree (the 22 Aug flow walk caught them doing so).
     registryTab("flip", `/practice/flip-it/${collectionId}`),
-    registryTab("complete", `/practice/complete-it/${collectionId}`),
+    // iComplete has NO DOOR OF ITS OWN from a stop (Dan, 2026-08-31:
+    // "iComplete does not have its door from here, but through Memo"). It is
+    // the ★ ladder's `gap` card, which the lesson pager builds itself — so it
+    // is reached by opening Memo and working the ladder, not by picking it off
+    // the stop's list beside Memo as if the two were alternatives.
+    //
+    // NOT a cut, unlike Sorting above: the activity, its route and its ladder
+    // card all stay. Only the duplicate door goes. Removing the line here is
+    // what takes it out of the SIO popup, the landings and the completion
+    // chain at once, because all three read this list.
     ...(rainSet
       ? [registryTab("vocabularain", `/games/vocabularain/${collectionId.replace("-letris", "")}`)]
       : []),

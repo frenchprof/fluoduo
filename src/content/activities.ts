@@ -86,6 +86,16 @@ export type Activity = {
   key: string;
   /** The ONE name. Never spelled a second way anywhere. */
   name: string;
+  /** A shorter form for tight boxes ONLY — today, the two-column button grid
+   *  in the SIO popup, where a cell is ~168px on a phone (Dan, 2026-08-31:
+   *  "GramMarathon can be shortened on the button to GramMarath").
+   *
+   *  This is NOT a second name, and the `name` rule above still holds: every
+   *  surface with room spells the activity out. Set it only where the full
+   *  name genuinely does not fit, and keep it recognisable as a truncation of
+   *  the same word — a different word here would be exactly the second
+   *  spelling that rule forbids. */
+  short?: string;
   /** The ONE emoji. */
   emoji: string;
   family: FamilyKey;
@@ -131,7 +141,7 @@ export const ACTIVITIES: Activity[] = [
 
   // ── 2 · FluOlin Review — automatic first, then the one you choose ─────────
   { key: "reviser", name: "DéjàRevu", emoji: "🔖", family: "review", href: "/reviser", hue: "#7bbf2e", blurb: "Comes back when you're about to forget it." },
-  { key: "grammarathon", name: "GramMarathon", emoji: "🏃", family: "review", href: "/practice/grammarathon", hue: "#3b6fd4", blurb: "Gap-fill sprint across a whole deck." },
+  { key: "grammarathon", name: "GramMarathon", short: "GramMarath", emoji: "🏃", family: "review", href: "/practice/grammarathon", hue: "#3b6fd4", blurb: "Gap-fill sprint across a whole deck." },
 
   // ── 3 · FluOlin Skills — forms → receptive → productive ───────────────────
   { key: "conjugaison", name: "ConjugaZone", emoji: "🔤", family: "skills", href: "/conjugaison", hue: "#2bb6c2", blurb: "Verb endings until they come without thinking." },
