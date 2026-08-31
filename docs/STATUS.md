@@ -108,22 +108,7 @@ lane = report it in STATUS, don't do it.
    carry on in your lane.
 6. fluoduo-main sweeps session states daily; anything stalled >24h
    (a pending permission, a need-input nobody saw) is reported to Dan.
-7. **NO SESSION MERGES ITS OWN WORK.** Dan, 31 Aug: *"can we, moving forward,
-   push everything to fluoduo main for quality check, and letting fluoduo main
-   do the necessary merging?"* You open the PR; **fluoduo-main reviews it,
-   resolves any conflict against main, and merges.** This is not a licence to
-   hand over unfinished work — every gate still runs in your own lane first
-   (`tsc`, `npm run build`, the whole `verify/` suite, lint on the files you
-   touched, and the render for anything a learner can see), because handing
-   over something unverified only moves the cost. What ends is a session being
-   the last pair of eyes on its own change, which is how #88 and #89 both
-   claimed verify60 within five minutes and how five number collisions reached
-   `main` in one day.
-   Two things the PR body owes the merger, so they are not rediscovered:
-   **how it merges into `main`**, and **what it conflicts with in any other
-   open PR**. #100 is the first PR written this way.
-   "Push to fluoduo-main" means a PR they merge — **not** commits pushed onto
-   their branch, which rule 3 still forbids.
+
 
 ### The work, by lane (what each agent is MEANT to deliver)
 
