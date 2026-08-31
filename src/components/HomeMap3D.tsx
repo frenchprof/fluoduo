@@ -50,7 +50,7 @@ import { CHAPTERS, CLASS_FLAG_SIO } from "@/content/chapters";
 import { sioKind, sioSecondary, KIND_LABEL } from "@/content/sioKinds";
 import { isSioDone, type Progress } from "@/lib/progress";
 import { KIND_COLOR, REGIONS, ARENA_PLACE, KindLegend } from "@/components/HomeMap";
-import { HORIZON_Y, SKYLINE_Y, MAX_AHEAD, FULL_AHEAD, N_STOPS, getWorldX, pathXAt, cameraForward, project, zOrder, type Projected } from "@/lib/map3d/projection";
+import { HORIZON_Y, SKYLINE_Y, FULL_AHEAD, N_STOPS, getWorldX, pathXAt, cameraForward, project, zOrder, type Projected } from "@/lib/map3d/projection";
 import { getSkyColors, sunPosition, clockHour, CLOUDS, STARS } from "@/lib/map3d/sky";
 import { ROADSIDE_ITEMS, NATURE_ITEMS, type RBuild, type RProp, type NatureType } from "@/lib/map3d/scene";
 
@@ -780,7 +780,6 @@ export default function HomeMap3D({
                     const kind = sioKind(st.id);
                     const second = sioSecondary(st.id);
                     const colour = KIND_COLOR[kind];
-                    const ahead = i > travelledTo;
                     const flag = st.id === CLASS_FLAG_SIO;
                     const nodeH = Math.round(sz * scaleY);
                     // Round 9 (Dan): a fat skirt under the face — the button's

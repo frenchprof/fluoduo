@@ -64,9 +64,13 @@ export default function WordBank({
   }, [answer]);
 
   const [chosen, setChosen] = useState<number[]>([]);
+  // Deliberate: a new answer means a new token row — the picked words must
+  // reset with it, and the host owns `answer`, not this component.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setChosen([]); }, [answer]);
   // An empty `value` from the host (next question, retry) clears the row
-  // even when the answer text happens to repeat.
+  // even when the answer text happens to repeat. Deliberate, as above.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { if (value === "") setChosen([]); }, [value]);
 
   const emit = (idxs: number[]) => {

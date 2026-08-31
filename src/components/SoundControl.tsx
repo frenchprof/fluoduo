@@ -28,6 +28,12 @@ export default function SoundControl() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
+    // The mute flags and the saved volume live in the audio module and
+    // localStorage — neither can be read during render (static export), so
+    // this mount effect has to seed them. Block-disabled: the rule reports
+    // only the first setState it meets, and which one that is differs
+    // between local and CI eslint.
+    /* eslint-disable react-hooks/set-state-in-effect */
     const readAll = () => setMuted({
       voice: isChannelMuted("voice"),
       music: isChannelMuted("music"),
@@ -38,6 +44,7 @@ export default function SoundControl() {
       const v = parseFloat(window.localStorage.getItem(VOL_KEY) ?? "");
       if (!Number.isNaN(v)) setVol(v);
     } catch {}
+    /* eslint-enable react-hooks/set-state-in-effect */
     return onChannelMuteChange(readAll);
   }, []);
 

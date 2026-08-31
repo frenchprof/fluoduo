@@ -12,7 +12,7 @@ import {
   type Ev, type Learner, type StudentDetail,
   fetchStudentDetail, fmtWhen, fmtDuration, str, num, SG_DAY_KEY,
 } from "./data";
-import { XP_CORRECT, XP_WRONG, XP_SIO_BASE, XP_CONVERSATION } from "@/lib/economy";
+import { XP_CORRECT, XP_WRONG, XP_CONVERSATION } from "@/lib/economy";
 import { Kpi, TableBox, Section, SectionGroup } from "./ui";
 import Evidence from "./Evidence";
 import { describeActivity, describePath, hrefForActivity, normalizePath, titleFor } from "@/lib/labels";
@@ -30,6 +30,10 @@ const SYNC_STALE_MS = 12 * 60 * 60 * 1000;
 
 export default function Students({ events, roster, initialUid, details, fetched }: { events: Ev[]; roster: Learner[]; initialUid?: string | null; details: Map<string, StudentDetail>; fetched: number }) {
   const [sel, setSel] = useState<string | null>(initialUid ?? null);
+  // Deliberate: the ?uid= deep link must re-select whenever it changes,
+  // while taps stay free to change the selection afterwards — deriving sel
+  // from the prop would lose one behaviour or the other.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { if (initialUid) setSel(initialUid); }, [initialUid]);
   const selected = roster.find((l) => l.uid === sel) ?? null;
   return (
@@ -246,6 +250,9 @@ function StudentPanel({ learner, events, cached, onClose }: { learner: Learner; 
   const p = detail?.progress;
   const srs = p?.itemSrs ?? {};
   const srsIds = Object.keys(srs);
+  // Deliberate: "due now" belongs to the moment the modal renders; threading
+  // a clock through state would restructure a working page for no gain.
+  // eslint-disable-next-line react-hooks/purity
   const now = Date.now();
   const srsDue = srsIds.filter((id) => (srs[id]?.due ?? Infinity) <= now).length;
 

@@ -83,6 +83,12 @@ export default function HomeDashboard() {
   const [dueCount, setDueCount] = useState(0);
 
   useEffect(() => {
+    // Progress, the due-count and the once-per-session hero flag live in
+    // local/sessionStorage, which cannot be read during render (the site is
+    // statically exported) — this mount effect has to seed that state.
+    // Block-disabled: the rule reports only the first setState it meets, and
+    // which one that is differs between local and CI eslint.
+    /* eslint-disable react-hooks/set-state-in-effect */
     const refresh = () => {
       const p = loadProgress();
       setProgress(p);
@@ -115,6 +121,7 @@ export default function HomeDashboard() {
     } catch {
       setHeroPlay(true); // storage blocked → just play
     }
+    /* eslint-enable react-hooks/set-state-in-effect */
     return () => {
       window.removeEventListener("fluolingo:progress-updated", refresh);
     };

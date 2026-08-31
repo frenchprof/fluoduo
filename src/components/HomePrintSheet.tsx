@@ -33,7 +33,10 @@ export default function HomePrintSheet({ progress }: { progress: Progress }) {
   const [origin, setOrigin] = useState<string | null>(null);
   useEffect(() => {
     // The QR must point at THIS deployment (fluolingo.com in production, a
-    // preview URL on a preview) — read it, do not hard-code it.
+    // preview URL on a preview) — read it, do not hard-code it. Deliberate:
+    // window does not exist during render (static export), so the origin is
+    // seeded on mount.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setOrigin(window.location.origin);
   }, []);
   if (!origin) return null;
