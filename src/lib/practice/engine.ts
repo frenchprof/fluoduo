@@ -34,6 +34,87 @@ export type PracticeSet = {
   items: PracticeItem[];
 };
 
+/**
+ * A SORTING QUESTION MUST NOT PRINT ITS OWN ANSWER (Dan, 2026-08-31: keep
+ * Sorting, "it can be useful if phrased / worded correctly" — this is the
+ * wording).
+ *
+ * Three decks asked the learner to choose a form that was sitting in the
+ * prompt. `partitifs` was every one of its eight questions: « Je mange du
+ * pain. » over DU · DE LA · DE L' · DES. A learner with no French scores full
+ * marks by matching letters, and this is the deck for the unit that teaches
+ * the partitive. `transport` did it in 6 of 9, `negation-pas` in 11 of 20.
+ *
+ * The fix is here rather than in 25 hand-edited items, because the fault is
+ * structural: whenever a deck sorts SENTENCES (rather than bare words) by a
+ * form those sentences contain, every question gives itself away. Blanking it
+ * turns each one into the question it was meant to be — « Je mange ___ pain. »
+ * — and any future sentence deck is born correct.
+ *
+ * ONLY THE CORRECT COLUMN'S FORM IS BLANKED. A wrong option appearing in the
+ * prompt is not a giveaway, it is a distractor doing its job.
+ *
+ * Elision is why this is not a word-boundary regex: « de l' » is followed
+ * immediately by its noun in « de l'eau », so a form ending in an apostrophe
+ * must match with no boundary after it.
+ */
+const BLANK = "___";
+
+/**
+ * Surface forms a column label can appear as, longest first.
+ *
+ * Labels come in three shapes and the order of operations matters:
+ *   "DU"                      one form
+ *   "à — on foot or astride"  a form and a gloss; the gloss is dropped
+ *   "ne … pas le / la / les"  a GAP, then ALTERNATIVES sharing a prefix
+ *
+ * So: drop the gloss, split on the gap, and read alternatives out of each
+ * segment separately. Splitting on "/" and "…" together made "ne" the first
+ * part of the last example, so the shared prefix was taken from the wrong
+ * segment — « Je n'aime pas le tennis » lost "pas le" while « Elle n'aime pas
+ * la natation » lost only "la", and one deck asked two different questions.
+ *
+ * ALTERNATIVES INHERIT THEIR SEGMENT'S PREFIX: "pas le / la / les" yields
+ * "pas le", "pas la", "pas les" — not "pas le", "la", "les".
+ */
+function surfaceForms(label: string): string[] {
+  const out: string[] = [];
+  for (const segment of label.split("—")[0].replace(/___/g, " ").split("…")) {
+    const alts = segment
+      .split("/")
+      .map((p) => p.replace(/\s+/g, " ").trim())
+      .filter(Boolean);
+    if (!alts.length) continue;
+    const lead = alts[0].split(" ").slice(0, -1).join(" ");
+    for (const [i, alt] of alts.entries()) {
+      out.push(i > 0 && lead && !alt.includes(" ") ? `${lead} ${alt}` : alt);
+    }
+  }
+  // longest first, so "de la" is tried before "de" and "pas le" before "le"
+  return [...new Set(out)].filter((f) => f.length >= 2).sort((x, y) => y.length - x.length);
+}
+
+/** Fold accents and case so « À LA » matches « à la ». */
+function fold(s: string): string {
+  return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
+/** The prompt with the correct column's form blanked out, or unchanged when
+ *  it does not appear — which is the case for 28 of the 31 decks. */
+export function hideAnswer(fr: string, correctLabel: string): string {
+  const flat = fold(fr);
+  for (const form of surfaceForms(correctLabel)) {
+    const f = fold(form);
+    // A form ending in an apostrophe elides into its noun, so it needs a
+    // boundary before it only.
+    const tail = f.endsWith("'") ? "" : "(?![a-z'])";
+    const re = new RegExp(`(?<![a-z'])${f.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}${tail}`, "i");
+    const m = re.exec(flat);
+    if (m) return fr.slice(0, m.index) + BLANK + fr.slice(m.index + form.length);
+  }
+  return fr;
+}
+
 export function toPracticeSet(collection: Collection): PracticeSet | null {
   const letrisConfig = collection.gameConfig?.letris;
   if (!letrisConfig || letrisConfig.columns.length < 2) return null;
@@ -54,7 +135,9 @@ export function toPracticeSet(collection: Collection): PracticeSet | null {
     const correctFrame = item.frames?.[colKey];
     items.push({
       id: item.id,
-      fr: item.fr,
+      // The DISPLAY copy only — the deck's own `fr` is untouched, and `ttsText`
+      // below still speaks the full sentence on a correct answer.
+      fr: hideAnswer(item.fr, choices.find((c) => c.key === colKey)!.label),
       en: item.en,
       emoji: item.emoji,
       correctColKey: colKey,
