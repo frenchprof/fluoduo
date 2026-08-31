@@ -23,7 +23,10 @@ Clarified by Dan the same day:
 a rule for all — this is the rule from now on."***
 
 A page a learner has to scroll past the fold has stopped showing them where
-they are. So on **every** surface, not just the one that prompted this:
+they are — the whole of it must fit on one screen before anything is expanded
+(Dan, same day: *"all long pages must be collapsed for the lower sections, so
+the entire fits on one screen first"*). So on **every** surface, not just the
+one that prompted this:
 
 - **The argument stays open. The apparatus collapses.** On a lesson that means
   the claim and its answer are open on arrival; the pitfall table, the decision
@@ -70,6 +73,7 @@ The exception is work with no visual surface at all (a check, a data
 migration, a type). There, show the *evidence* instead: the check's output,
 the row counts before and after. The principle is the same — the finished
 thing, not an account of it.
+
 
 # Start here — every session (2026-08-17)
 
@@ -132,6 +136,7 @@ Read **THE ROSTER** at the top of `docs/STATUS.md` before starting work —
 lanes are assigned there and integration work (branch audits, renumbering,
 closures, merges of others' work) belongs to the integration lane only.
 
+<<<<<<< HEAD
 ## fluoduo-main is the integration lane — permanent (2026-08-31)
 
 **Dan: *"can we, moving forward, push everything to fluoduo-main for quality
@@ -165,6 +170,27 @@ other on five files, three of them semantically:
 Nothing here was carelessness — each side scanned for verify-number collisions
 and found none. The number scan catches files; it cannot catch two sessions
 editing the same *function*. That is what an integration lane is for.
+=======
+**EVERY merge goes through fluoduo-main** (Dan, 2026-08-31). Open the PR, get
+CI green, then leave it — including a PR of your own work. One session merging
+everything is what catches a collision between two branches that are each
+individually correct, which no single session can see from inside its own lane.
+
+**Before you open a branch, look at what is already in flight on the files you
+are about to touch.** This is the half the merge rule does not cover: a merge
+gate catches a collision AFTER both sessions have built the same thing.
+
+```
+gh pr list --state open        # or the GitHub MCP equivalent
+git diff --name-only origin/main...origin/<branch>
+```
+
+Worked example, 31 Aug — the cost of not doing it. PR #97 retired iComplete at
+07:11. The pre-tests session branched to do the same job at **07:29**, eighteen
+minutes later, and neither knew until both had merged or were ready to. Dan had
+told both sessions, in different words, an hour apart. No merge policy prevents
+that; thirty seconds of looking does.
+>>>>>>> origin/main
 
 **Claiming a verify number:** scan EVERY remote branch, never just `main` —
 an in-flight number is precisely what main cannot show you. Four collisions
