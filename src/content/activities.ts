@@ -78,7 +78,7 @@ export const FAMILIES: Family[] = [
   { key: "review", name: "FluOlin Review", emoji: "🔖", href: "/reviser" },
   // Same fault, same fix: 💪 used to open ConjugaZone, one of six.
   { key: "skills", name: "FluOlin Skills", emoji: "💪", href: "/skills" },
-  { key: "user", name: "FluOlin User", emoji: "👤", href: "/moi" },
+  { key: "user", name: "FluOlin User", emoji: "👤", href: "/profil" },
 ];
 
 export type Activity = {
@@ -154,15 +154,21 @@ export const ACTIVITIES: Activity[] = [
   { key: "tutor", name: "ChaTutor", emoji: "🤖", family: "skills", href: "/tutor", hue: "#8a5fd4", blurb: "Ask anything, in French or English." },
 
   // ── 4 · FluOlin SvPlay — gentlest first ───────────────────────────────────
-  { key: "numbus", name: "NumBus", emoji: "🚌", family: "svplay", href: "/games/numbus", hue: "#e0567f", blurb: "Type the number you hear." },
-  { key: "numbourse", name: "NumBourse", emoji: "📈", family: "svplay", href: "/games/numbourse", hue: "#0f8a5f", blurb: "Same, shouted, against the clock." },
+  // NumBus + NumBourse share ONE hub tile (Dan, 2026-08-31: "park NumBus /
+  // NumBourse under a hub-tab Numbers"). Both game routes survive untouched;
+  // the hub at /games/numbers is the one door. Their activityLedger prefixes
+  // and evidence tags below stay — they describe answers already given.
+  { key: "numbers", name: "Numbers", emoji: "🔢", family: "svplay", href: "/games/numbers", hue: "#e0567f", blurb: "Numbers by ear — NumBus and NumBourse." },
   { key: "vocabularain", name: "VocabulaRain", emoji: "🌧️", family: "svplay", href: "/games/vocabularain", hue: "#5b8def", blurb: "Words fall — catch them in the right clause." },
   { key: "lexicalator", name: "LexicaLater", emoji: "🧰", family: "svplay", href: "/games/lexicalater", hue: "#e3a700", blurb: "Stitch word parts back together." },
 
   // ── 5 · FluOlin User ──────────────────────────────────────────────────────
-  { key: "moi", name: "My Progress", emoji: "📊", family: "user", href: "/moi", hue: "#5b8def", blurb: "What you know, what you don't." },
+  // MY PROGRESS IS SWALLOWED BY PROFILE (Dan, 2026-08-31). /profil and /moi
+  // have rendered the SAME ProfileContent since the 22 Aug merge, so the two
+  // tiles were two doors to one page. The /moi route stays for bookmarks and
+  // the account chip; Profile is the one tile.
   { key: "leaderboard", name: "Leaderboard", emoji: "🏆", family: "user", href: "/leaderboard", hue: "#e3a700", blurb: "Where you sit against the class." },
-  { key: "profil", name: "Profile", emoji: "👤", family: "user", href: "/profil", hue: "#8a5fd4", blurb: "Streak, XP, badges, colours." },
+  { key: "profil", name: "Profile", emoji: "👤", family: "user", href: "/profil", hue: "#8a5fd4", blurb: "Your learning, streak, XP, badges." },
 ];
 
 /** Every activity, in FAMILIES order then authored order — what the Menu grid
@@ -193,10 +199,12 @@ const FAMILY_HUBS: Record<string, FamilyKey> = { games: "svplay", skills: "skill
  *           when the slot is already wearing a badge counting what is due,
  *           would put a choice in front of the one action the badge is
  *           advertising. GramMarathon stays in the rail and the Menu.
- *   user    /moi is the learner model; the account chip in the top bar goes
- *           to the same place. User is not in the bottom bar at all.
+ *   user    Profile IS the learner model — /profil and /moi render the same
+ *           page, and My Progress's tile folded into Profile on 31 Aug
+ *           ("MyProgress should be swallowed by Profile"). The account chip
+ *           still opens /moi; User is not in the bottom bar at all.
  */
-export const DELIBERATE_DOOR: Record<string, string> = { review: "reviser", user: "moi" };
+export const DELIBERATE_DOOR: Record<string, string> = { review: "reviser", user: "profil" };
 
 /** The family a hub page is the hub OF, or undefined for any other page. */
 export function hubFamily(activeKey: string | undefined): Family | undefined {

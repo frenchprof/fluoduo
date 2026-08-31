@@ -449,7 +449,6 @@ export default function LessonPager({
           deck={deck}
           concept={lesson?.concept}
           memo={lesson?.memo ?? (collectionId ? memoForDeck(collectionId) : undefined)}
-          bonus={lesson?.bonus}
           exercise={chooser}
         />
       ) : card === "ex" && ex ? (

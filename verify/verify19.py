@@ -41,8 +41,10 @@ css = read("src/app/globals.css")
 # shape, so an unanchored regex counted 5 families as activities and reported
 # 25 where there are 20 (caught by this check's own first run, 2026-08-10).
 entries = re.findall(r'\{ key: "([a-z]+)", name: "([^"]+)", emoji: "([^"]+)"[^}]*family:', reg)
-check(len(entries) >= 17, f"registry has {len(entries)} activities",
-      f"registry has only {len(entries)} activities — expected >=17")
+# Floor moved 31 Aug: Sorting cut, iComplete retired, NumBus+NumBourse under
+# one Numbers hub, My Progress folded into Profile — Dan's 16 (4x4).
+check(len(entries) >= 16, f"registry has {len(entries)} activities",
+      f"registry has only {len(entries)} activities — expected >=16")
 
 names = {k: n for k, n, _ in entries}
 emojis = {k: e for k, _, e in entries}
