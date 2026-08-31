@@ -31,6 +31,80 @@ const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)]
 
 export const professionsLesson: NativeLesson = {
   slug: "professions",
+  // TIER 2 CONCEPT — a question the WORD LIST cannot answer.
+  //
+  // Peers, 2026-08-31: the brief differs per tier. A Tier 1 concept answers a
+  // question the FORMS cannot; a Tier 2 concept answers one the word list
+  // cannot. Knowing every word on this deck still leaves this unanswered,
+  // which is what earns the tab its place on a vocabulary stop.
+  //
+  // Lifted from the Mémo below; no grammar introduced that it does not teach.
+  // DRAFTED — `contrast` and `remember` are the pedagogical claim and go to
+  // Dan before they reach a learner.
+  concept: {
+    subtitle: "Why « il est médecin » has no word for “a”",
+    contrast: (
+      <>
+        English cannot name a job without an article — <i>she is <b>a</b> doctor</i>.
+        French drops it after <i lang="fr">être</i>: <i lang="fr">elle est médecin</i>.
+        It comes back the moment you point instead of describe. That is the key
+        insight.
+      </>
+    ),
+    question: (
+      <>
+        Why <i lang="fr">Il est médecin</i>, but <i lang="fr">C&rsquo;est un médecin</i>?
+      </>
+    ),
+    answer: (
+      <>
+        After <i lang="fr">être</i> the job is a <b>description</b> — what someone does,
+        not a thing being counted — so no article. <i lang="fr">C&rsquo;est</i> points at
+        a person, one of many, so <i lang="fr">un</i> / <i lang="fr">une</i> returns.
+      </>
+    ),
+    pitfall: [
+      { label: <>describing</>, wrong: <i lang="fr">il est un médecin</i>, right: <i lang="fr">il est médecin</i> },
+      { label: <>pointing</>, wrong: <i lang="fr">c&rsquo;est médecin</i>, right: <i lang="fr">c&rsquo;est un médecin</i> },
+      { label: <>a woman</>, wrong: <i lang="fr">elle est un acteur</i>, right: <i lang="fr">elle est actrice</i> },
+    ],
+    flow: [
+      { depth: 0, text: "Describing or pointing?" },
+      { depth: 1, text: "describing → il est + job" },
+      { depth: 1, text: "pointing   → c'est un + job" },
+    ],
+    check: [
+      {
+        q: <>Why is <i lang="fr">Elle est professeure</i> right without <i lang="fr">une</i>?</>,
+        a: (
+          <>
+            Because <i lang="fr">être</i> is describing her work, not counting her among
+            professors. English needs “a” there; French does not.
+          </>
+        ),
+      },
+      {
+        q: <>You point at someone and say what they do. Which form?</>,
+        a: (
+          <>
+            <i lang="fr">C&rsquo;est un médecin</i> — pointing brings the article back.
+          </>
+        ),
+      },
+    ],
+    inShort: (
+      <>
+        <i lang="fr">il / elle est</i> + job, bare · <i lang="fr">c&rsquo;est</i> +{" "}
+        <i lang="fr">un</i> / <i lang="fr">une</i> + job
+      </>
+    ),
+    remember: (
+      <>
+        <i lang="fr">Être</i> describes. <i lang="fr">C&rsquo;est</i> points. Only pointing
+        needs an article.
+      </>
+    ),
+  },
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">
