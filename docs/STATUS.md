@@ -35,7 +35,22 @@ lane = report it in STATUS, don't do it.
 5. Integration sweeps (branch audits, renumbers, closures) belong to
    fluoduo-main alone. If you find a cross-branch problem, write it here and
    carry on in your lane.
-6. fluoduo-main sweeps session states daily; anything stalled >24h
+6. **EVERY merge goes through fluoduo-main** (Dan, 31 Aug) — including a PR
+   of your own work. Open it, get CI green, leave it. A single integrator is
+   what catches a collision between two branches that are each individually
+   correct; no session can see that from inside its own lane.
+7. **Before opening a branch, check what is in flight on the files you are
+   about to touch** — `gh pr list --state open`, then
+   `git diff --name-only origin/main...origin/<branch>`. Rule 6 catches a
+   collision at the merge, which is AFTER both sessions built the same thing.
+   31 Aug: #97 retired iComplete at 07:11; the pre-tests session branched to
+   do the same job at 07:29. Dan had told both, in different words, an hour
+   apart. Thirty seconds of looking would have caught it; a merge gate would
+   not have.
+8. **A long page opens collapsed below the fold** so the whole of it fits one
+   screen before anything is expanded (Dan, 31 Aug). Permanent design rule,
+   written out in AGENTS.md beside the litmus test.
+9. fluoduo-main sweeps session states daily; anything stalled >24h
    (a pending permission, a need-input nobody saw) is reported to Dan.
 
 ### The work, by lane (what each agent is MEANT to deliver)

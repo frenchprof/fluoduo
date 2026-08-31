@@ -17,6 +17,24 @@ Clarified by Dan the same day:
   right of an answered question — available on demand, never inline by
   default.
 
+# One screen first — permanent design rule (2026-08-31)
+
+**A long page opens collapsed below the fold: the whole of it must fit on one
+screen before anything is expanded.** Dan: *"all long pages must be collapsed
+for the lower sections, so the entire fits on one screen first."*
+
+The lower sections become `<details>` (or the same accordion the activity
+landings use) so a learner sees the SHAPE of the page — how many parts, what
+they are — before any one part fills the viewport. Scrolling to discover that
+a page has six sections is finding out too late.
+
+What stays open: the first section, and anything a learner must act on to
+proceed. What collapses: everything below it.
+
+This is a sibling of the litmus rule above, not a special case of it. The
+litmus rule removes text that earns nothing; this one keeps text that earns
+its place but defers it, so the page can still be read at a glance.
+
 # Start here — every session (2026-08-17)
 
 Read `docs/STATUS.md` before anything else and update it before you stop. `HANDOFF.md`, `TODO.md` and `docs/planning/*` are historical.
@@ -77,6 +95,26 @@ used in CI.
 Read **THE ROSTER** at the top of `docs/STATUS.md` before starting work —
 lanes are assigned there and integration work (branch audits, renumbering,
 closures, merges of others' work) belongs to the integration lane only.
+
+**EVERY merge goes through fluoduo-main** (Dan, 2026-08-31). Open the PR, get
+CI green, then leave it — including a PR of your own work. One session merging
+everything is what catches a collision between two branches that are each
+individually correct, which no single session can see from inside its own lane.
+
+**Before you open a branch, look at what is already in flight on the files you
+are about to touch.** This is the half the merge rule does not cover: a merge
+gate catches a collision AFTER both sessions have built the same thing.
+
+```
+gh pr list --state open        # or the GitHub MCP equivalent
+git diff --name-only origin/main...origin/<branch>
+```
+
+Worked example, 31 Aug — the cost of not doing it. PR #97 retired iComplete at
+07:11. The pre-tests session branched to do the same job at **07:29**, eighteen
+minutes later, and neither knew until both had merged or were ready to. Dan had
+told both sessions, in different words, an hour apart. No merge policy prevents
+that; thirty seconds of looking does.
 
 **Claiming a verify number:** scan EVERY remote branch, never just `main` —
 an in-flight number is precisely what main cannot show you. Four collisions
