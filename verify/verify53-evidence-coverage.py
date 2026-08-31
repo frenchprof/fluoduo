@@ -206,9 +206,15 @@ for name, rel, ln in sorted(set(INDIRECT)):
 #               step, so his 27 Aug "remember it, but don't score it" rule is
 #               untouched — that rule governs XP, accuracy and the review
 #               queue, none of which the response store drives.
-#   transfer    UNREACHABLE — no caller sets it and nothing derives it. It
-#               needs a rule for "an unfamiliar context", which is a
-#               modelling decision, not a lookup.
+#   transfer    UNREACHABLE, and now known to be STRUCTURALLY so rather than
+#               merely unbuilt. Dan settled the rule on 2026-08-31 — an
+#               outcome met in a deck other than the one that taught it — and
+#               it cannot fire: item -> deck -> outcome is 1:1 (894 items, none
+#               in two decks), so an outcome has no other deck to be met in.
+#               Unlocking it needs a cross-deck `rule:` tag namespace; see the
+#               note in evidence.ts. Do not "fix" this by inventing a looser
+#               rule — a transfer signal that fires on ordinary practice is
+#               worse than none.
 #   teacher     UNREACHABLE — no sign-off surface exists yet.
 EXPECTED = {"recognition", "constrained", "free", "receptive", "productive",
             "delayed", "diagnostic"}

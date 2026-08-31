@@ -36,6 +36,10 @@ export type EvidenceType =
   | "free"          // open production with no single right answer
   | "receptive"     // listening / reading comprehension
   | "productive"    // spoken production
+  // NOT DERIVABLE TODAY, and structurally so rather than merely unbuilt — see
+  // the note under ACTIVITY_EVIDENCE. Dan settled the rule on 2026-08-31
+  // ("any deck other than the one that taught it") and it cannot fire: an
+  // outcome belongs to exactly one deck by construction.
   | "transfer"      // the outcome applied in an unfamiliar context
   | "delayed"       // retrieval after a spacing interval
   | "diagnostic"    // cold pretest, before instruction
@@ -81,6 +85,32 @@ export type EvidenceMeta = {
 //
 // verify53-evidence-coverage.py fails the build if any activity string the app
 // emits resolves to no type here.
+//
+// WHY `transfer` IS UNREACHABLE (2026-08-31). Dan settled the rule — an
+// outcome met in a deck OTHER than the one that taught it — and it turns out
+// not to be computable here, so nothing was built rather than something that
+// can never fire.
+//
+// The chain is `item -> deck -> outcome`: `outcomeForItem` resolves an item to
+// its deck by MEMBERSHIP, and `sioForDeck` resolves that deck to its outcome.
+// Measured: 894 curated items, NONE claimed by two decks. So an outcome
+// belongs to exactly one deck by construction, and "the same outcome in a
+// different deck" is a contradiction here rather than a rare case. The only
+// cross-deck activities are the Reviser and the Grammarathon finale, and both
+// are already `delayed` — the stronger signal anyway.
+//
+// WHAT WOULD UNLOCK IT: a rule tag that travels across decks, independent of
+// membership. Items carry `col:` tags today, but those are DECK-LOCAL category
+// keys — `col:des` is the partitive DES in `partitifs` and the indefinite
+// plural DES in `commerces`: one string, two rules. A `rule:partitif`
+// namespace applied wherever a rule is exercised would make transfer
+// computable — a correct answer on an item tagged `rule:X` inside a deck whose
+// own outcome is not the one that teaches X. That is content work across 894
+// items, and Dan's to spend or not.
+//
+// DO NOT loosen the rule to make it fire. A transfer signal that lights up on
+// ordinary same-deck practice is worse than none: it would inflate exactly the
+// measure PRD §7 exists to keep honest.
 const ACTIVITY_EVIDENCE: Array<[string, EvidenceType]> = [
   ["pretest", "diagnostic"],
   ["/pretests/", "diagnostic"],
