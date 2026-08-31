@@ -11,6 +11,32 @@ Only ONE agent edits this file at a time; say so in your commit.
 - `main` on `frenchprof/fluoduo` (origin) — the working repo.
 - Production = `dckg/fluo` (remote `live`), Cloudflare Pages project
   `fluolingo-dot-com` auto-builds its `main`. **Deploy = `git push live main`.**
+- 31 Aug (Claude Code) — **CORRECTION: THERE ARE NOT 11 SIOs WITHOUT A LESSON.
+  THERE ARE NONE.** I reported that count twice (STATUS below, and the work
+  plan) and it is wrong. I measured `LESSONS_BY_SIO`, the registry of NAMED
+  lessons — but `deckActivityTabs` routes every deck to
+  `/lessons/deck/<collectionId>` when it has no named lesson, and says so
+  outright at CahierShell:587: *"EVERY deck has a Lesson"*. All eleven stops
+  have a working lesson page, reachable from their stop, with all six tabs.
+  Verified in the browser on `/lessons/deck/atelier-sio-050`.
+  **Dan's point, and it was already true:** *"no lesson means listing out all
+  the relevant phrases and sentences, so we don't start an activity cold in the
+  atelier"*, then *"the list itself is a lesson, no?"* and *"flashcards (flip
+  it) can do that of course"*. Yes on all three. For an atelier, **Les formes
+  already renders « Le modèle »** — the dialogue with speaker roles, French
+  over English, with Tout écouter; Le lexique lists the same lines as a reveal
+  table; Le parcours states the SIO ("I can get by in a simple restaurant visit
+  from arrival to paying, using set phrases"); and Flip It runs on the same
+  deck because ATELIER_DECKS are spread into CURATED. The list IS the lesson,
+  and it has been for these six all along.
+  **So Track E does not exist.** It was an artefact of counting the wrong
+  table. What remains for the ateliers is a CONTENT question, not a build one:
+  each is a single model dialogue of 6-10 lines, so a learner who wants tea
+  rather than coffee, or the bill, has nothing. Whether that becomes a phrase
+  BANK (the pattern plus its variations) or stays one worked model is Dan's
+  call. Three faults worth fixing either way: SIO-010 has "Bonjour !" twice as
+  two identical cards, SIO-030 ends on the signature "Léa" / "Léa", and SIO-049
+  reviews a restaurant without naming a single dish.
 - 30 Aug (Claude Code, PR #72) — **DAN'S SIX-TAB FRAMEWORK IS BACK, AND THE
   DESK IS BACK TO BINDING-LEFT / FLAPS-RIGHT.** He sent three lessons from his
   original course site (aimer, faire du/de la, possessifs): "this framework is
