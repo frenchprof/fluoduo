@@ -1,0 +1,564 @@
+<title>Les repas et les aliments</title>
+<style>
+@font-face{
+  font-family:"FluOlinGo Hand";
+  src:url("data:font/otf;base64,__FONT_B64__") format("opentype");
+  font-weight:400; font-display:swap;
+}
+
+/* ---------------------------------------------------------------- tokens
+   Taken from the app's Cahier system in src/app/globals.css, not invented.
+   --ink is #312620: --cahier-ink is declared twice and the later warm
+   near-black is what actually renders (COLOR_REVIEW.md, Finding H).
+   --masc / --fem ARE --gram-masc / --gram-fem: on the forms grid they mark
+   grammatical gender, which is exactly what colour review defined them for.  */
+:root{
+  --desk:#c4c7cf;
+  --paper:#fbfbf6;
+  --paper-2:#f2f2ec;
+  --ink:#312620;
+  --ink-soft:#6a6459;
+  --rule:#cdcdc6;
+  --edge:#e7e7e0;
+  --red:#d11149;
+  --red-soft:#e08b80;
+  --hl:#d4f24c;
+  --hl-ink:#231f1a;
+  --teal:#1f8f9a;
+  --teal-soft:#d8f0f2;
+  --gold:#9a7826;
+  --gold-soft:#f3e8cd;
+  --shadow:rgba(49,38,32,.16);
+  --hole:#aab0bb;
+  --masc:#2d5bff;
+  --fem:#d11149;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --desk:#131211;
+    --paper:#232120;
+    --paper-2:#2b2927;
+    --ink:#f0eae2;
+    --ink-soft:#a49b8f;
+    --rule:#3d3936;
+    --edge:#332f2c;
+    --red:#ff8098;
+    --red-soft:#a85661;
+    --hl:#d4f24c;
+    --hl-ink:#231f1a;
+    --teal:#68d4de;
+    --teal-soft:#1d3c40;
+    --gold:#e2c078;
+    --gold-soft:#3a3320;
+    --shadow:rgba(0,0,0,.5);
+    --hole:#4a4744;
+    --masc:#8fabff;
+    --fem:#ff8098;
+  }
+}
+:root[data-theme="dark"]{
+  --desk:#131211;
+  --paper:#232120;
+  --paper-2:#2b2927;
+  --ink:#f0eae2;
+  --ink-soft:#a49b8f;
+  --rule:#3d3936;
+  --edge:#332f2c;
+  --red:#ff8098;
+  --red-soft:#a85661;
+  --hl:#d4f24c;
+  --hl-ink:#231f1a;
+  --teal:#68d4de;
+  --teal-soft:#1d3c40;
+  --gold:#e2c078;
+  --gold-soft:#3a3320;
+  --shadow:rgba(0,0,0,.5);
+  --hole:#4a4744;
+  --masc:#8fabff;
+  --fem:#ff8098;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--desk);
+  color:var(--ink);
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  font-size:17px; line-height:1.62;
+  padding:clamp(12px,3vw,44px) clamp(8px,3vw,32px);
+}
+.label{
+  font-family:ui-monospace,"SFMono-Regular",Menlo,"Courier New",monospace;
+  text-transform:uppercase; letter-spacing:.1em; font-weight:700;
+  font-size:.68rem; color:var(--ink-soft);
+}
+.hand{font-family:"FluOlinGo Hand","Iowan Old Style",Georgia,serif;font-weight:400}
+.hl{background:var(--hl);color:var(--hl-ink);padding:0 .2em;border-radius:3px;
+    -webkit-box-decoration-break:clone;box-decoration-break:clone}
+
+/* ------------------------------------------------------------- the sheet */
+.sheet{
+  max-width:1180px; margin:0 auto; background:var(--paper);
+  border:1px solid var(--edge); border-radius:3px;
+  box-shadow:0 18px 44px -18px var(--shadow),0 2px 0 var(--edge);
+  position:relative; overflow:hidden;
+}
+.sheet::before{ /* the red margin rule */
+  content:""; position:absolute; inset:0 auto 0 clamp(30px,5.2vw,62px);
+  width:1.5px; background:var(--red-soft); opacity:.75;
+}
+.holes{position:absolute;left:clamp(9px,2vw,22px);top:0;bottom:0;width:18px;
+  display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;
+  pointer-events:none}
+.holes i{width:13px;height:13px;border-radius:50%;background:var(--desk);
+  box-shadow:inset 0 1px 2px var(--shadow);display:block}
+.body{padding:clamp(26px,4vw,52px) clamp(20px,4vw,54px) 44px clamp(46px,7.5vw,96px)}
+
+/* -------------------------------------------------------------- masthead */
+.mast{border-bottom:1.5px solid var(--rule);padding-bottom:22px;margin-bottom:34px}
+.mast h1{font-family:"FluOlinGo Hand","Iowan Old Style",Georgia,serif;
+  font-weight:400;font-size:clamp(2.3rem,6vw,3.6rem);line-height:1.02;
+  margin:.16em 0 .1em;text-wrap:balance}
+.mast p.sub{margin:0;color:var(--ink-soft);font-style:italic}
+.tier{display:inline-flex;align-items:center;gap:.5em;margin-top:14px;
+  background:var(--gold-soft);color:var(--ink);border:1px solid var(--gold);
+  border-radius:999px;padding:.3em .9em}
+.tier b{font-family:ui-monospace,Menlo,monospace;font-size:.7rem;
+  text-transform:uppercase;letter-spacing:.1em}
+
+/* --------------------------------------------------- stage + margin note */
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:34px;
+  align-items:start;margin:0 0 46px}
+.stage > .col{min-width:0;max-width:68ch}
+aside.note{
+  border-left:2px solid var(--red);padding:2px 0 2px 14px;
+  font-size:.83rem;line-height:1.55;color:var(--ink-soft);
+}
+aside.note b{color:var(--red);display:block;font-family:ui-monospace,Menlo,monospace;
+  font-size:.64rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4em}
+.notes{display:grid;gap:20px;align-content:start}
+@media (max-width:880px){
+  .stage{grid-template-columns:minmax(0,1fr);gap:20px}
+  aside.note{background:var(--paper-2);padding:12px 14px;border-radius:0 4px 4px 0}
+}
+
+h2.st{font-family:"FluOlinGo Hand","Iowan Old Style",Georgia,serif;font-weight:400;
+  font-size:clamp(1.5rem,3.4vw,2.05rem);margin:0 0 .1em;
+  display:flex;align-items:baseline;gap:.42em;text-wrap:balance}
+h2.st .n{font-family:ui-monospace,Menlo,monospace;font-size:.7rem;color:var(--ink-soft);
+  letter-spacing:.1em;border:1px solid var(--rule);border-radius:3px;
+  padding:.15em .45em;flex:none;position:relative;top:-.28em}
+.lede{color:var(--ink-soft);margin:.2em 0 1.1em}
+
+/* --------------------------------------------------------------- pathway */
+ol.path{list-style:none;padding:0;margin:0;display:grid;gap:2px}
+ol.path li{display:grid;grid-template-columns:1.9em 1fr;gap:.6em;
+  padding:.62em .7em;border-radius:4px;align-items:baseline}
+ol.path li:nth-child(odd){background:var(--paper-2)}
+ol.path li b{font-weight:400}
+ol.path li span.k{color:var(--ink-soft);font-size:.9em}
+ol.path li i{font-style:normal;color:var(--ink-soft);
+  font-family:ui-monospace,Menlo,monospace;font-size:.78rem}
+ol.path li[data-new]{box-shadow:inset 3px 0 0 var(--hl)}
+
+/* --------------------------------------------------------------- concept */
+.q{border:1.5px solid var(--ink);border-radius:5px;padding:22px 24px;background:var(--paper)}
+.q .label{margin-bottom:.6em}
+.q p.ask{font-size:1.22rem;line-height:1.45;margin:0;text-wrap:balance}
+.reveal{margin-top:18px}
+.reveal summary{cursor:pointer;display:inline-flex;align-items:center;gap:.5em;
+  font-family:ui-monospace,Menlo,monospace;font-size:.72rem;text-transform:uppercase;
+  letter-spacing:.1em;color:var(--hl-ink);background:var(--hl);
+  padding:.45em .9em;border-radius:999px;list-style:none}
+.reveal summary::-webkit-details-marker{display:none}
+.reveal summary:focus-visible{outline:2.5px solid var(--teal);outline-offset:2px}
+.reveal[open] summary{background:var(--paper-2);color:var(--ink-soft)}
+.reveal .ans{margin-top:14px;padding-left:16px;border-left:3px solid var(--hl)}
+.second{margin-top:26px;background:var(--paper-2);border-radius:5px;padding:18px 22px}
+.second h3{margin:.1em 0 .4em;font-size:1.02rem}
+
+/* ---------------------------------------------------------- the sort key */
+.map{display:grid;gap:14px;align-items:start;grid-template-columns:repeat(auto-fill,minmax(215px,1fr))}
+.grp{background:var(--paper-2);border-radius:6px;padding:13px 14px 15px;
+  border-top:3px solid var(--accent,var(--rule))}
+.map .grp{--accent:var(--teal)}
+.grp h4{margin:0 0 .55em;font-size:.97rem;font-weight:600;display:flex;
+  align-items:baseline;gap:.4em;flex-wrap:wrap}
+.grp-sub{margin-left:auto;font-family:ui-monospace,Menlo,monospace;
+  font-size:.63rem;letter-spacing:.05em;color:var(--ink-soft);text-transform:uppercase}
+.prop{color:var(--red);font-weight:700;cursor:help}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:.84rem;background:var(--paper);color:var(--ink);
+  border:1px solid var(--rule);border-radius:4px;padding:.3em .55em;cursor:default;
+  display:flex;align-items:center;gap:.38em;line-height:1.3}
+.chip:focus-visible{outline:2.5px solid var(--teal);outline-offset:2px}
+.chip-e{font-size:1.05em}
+.chip-en{color:var(--ink-soft);font-size:.86em;font-style:italic}
+.chip-en::before{content:"· "}
+.gap{margin-top:16px;font-size:.83rem;color:var(--ink-soft);
+  border:1px dashed var(--red-soft);border-radius:5px;padding:11px 14px}
+.gap b{color:var(--red)}
+
+/* ----------------------------------------------------------------- le tri */
+.levels{display:grid;gap:12px}
+.lvl{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;
+  border:1px solid var(--rule);border-radius:6px;padding:15px 17px;background:var(--paper)}
+.lvl .stars{font-size:1.05rem;letter-spacing:.06em;color:var(--gold);white-space:nowrap;
+  font-family:ui-monospace,Menlo,monospace}
+.lvl h4{margin:0 0 .18em;font-size:1.04rem}
+.lvl p{margin:0;color:var(--ink-soft);font-size:.93rem}
+.lvl .eg{margin-top:.55em;font-size:.9rem;color:var(--ink);
+  background:var(--paper-2);border-radius:4px;padding:.5em .7em;display:inline-block}
+
+/* ------------------------------------------------------------ self-check */
+table.check{width:100%;border-collapse:collapse;font-size:.94rem}
+table.check th{text-align:left;padding:.5em .7em;border-bottom:1.5px solid var(--rule)}
+table.check td{padding:.62em .7em;border-bottom:1px solid var(--edge);vertical-align:top}
+table.check td.a{color:transparent;background:var(--paper-2);border-radius:3px;
+  transition:color .12s,background .12s;cursor:pointer;width:44%;position:relative}
+table.check td.a::after{content:"⋯ hover";position:absolute;left:.7em;top:.62em;
+  color:var(--ink-soft);font-family:ui-monospace,Menlo,monospace;font-size:.66rem;
+  letter-spacing:.09em;text-transform:uppercase}
+table.check tr:hover td.a,table.check td.a:focus-visible,table.check td.a.shown{
+  color:var(--hl-ink);background:var(--hl)}
+table.check tr:hover td.a::after,table.check td.a:focus-visible::after,
+table.check td.a.shown::after{content:""}
+table.check td.a:focus-visible{outline:2.5px solid var(--teal);outline-offset:-2px}
+.scroll{overflow-x:auto}
+
+/* --------------------------------------------------------------- closing */
+.rule{border:0;border-top:1.5px solid var(--rule);margin:44px 0 26px}
+.ask-box{border:2px solid var(--red);border-radius:6px;padding:20px 24px;background:var(--paper)}
+.ask-box h3{margin:.1em 0 .5em;font-family:"FluOlinGo Hand",Georgia,serif;
+  font-weight:400;font-size:1.5rem}
+.ask-box ol{margin:0;padding-left:1.2em}
+.ask-box li{margin:.45em 0}
+footer.f{margin-top:30px;padding-top:16px;border-top:1px solid var(--edge);
+  display:flex;flex-wrap:wrap;gap:.6em 1.4em;align-items:baseline}
+footer.f .label{color:var(--ink-soft)}
+
+/* ------------------------------------------------- compound-name contrast */
+.pats{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));margin-top:8px}
+.pat{background:var(--paper-2);border-radius:6px;padding:14px 16px 16px;
+  border-top:3px solid var(--pc,var(--rule))}
+.pat[data-p="a"]{--pc:var(--teal)}
+.pat[data-p="de"]{--pc:var(--gold)}
+.pat h4{margin:0 0 .1em;font-size:1rem;font-weight:600;
+  font-family:ui-monospace,Menlo,monospace;color:var(--pc)}
+.pat .when{margin:.15em 0 .7em;font-size:.86rem;color:var(--ink-soft)}
+.pat ul{margin:0;padding-left:1.05em;font-size:.93rem}
+.pat li{margin:.24em 0}
+.pat li b{color:var(--pc);font-weight:600}
+.pat li i{font-style:italic;color:var(--ink-soft);font-size:.88em}
+.pivot{margin-top:16px;background:var(--paper);border:1.5px solid var(--ink);
+  border-radius:5px;padding:14px 18px;font-size:1.02rem;text-wrap:balance}
+.pivot b{white-space:nowrap}
+.sub-h{margin:34px 0 .3em;font-size:1.06rem;font-weight:600;text-wrap:balance}
+.sub-h b{font-family:ui-monospace,Menlo,monospace}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+
+/* ------------------------------------------------ the forms (gender) grid */
+.gcols{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.gcol{background:var(--paper-2);border-radius:6px;padding:13px 14px 15px;
+  border-top:3px solid var(--gm,var(--rule))}
+.gcol[data-g="m"]{--gm:var(--masc)}
+.gcol[data-g="f"]{--gm:var(--fem)}
+.gcol[data-g="x"]{--gm:var(--ink-soft)}
+.gcol h4{margin:0 0 .1em;font-size:.97rem;font-weight:600;display:flex;
+  align-items:baseline;gap:.4em;flex-wrap:wrap}
+.gcol-sub{margin:0 0 .6em;font-family:ui-monospace,Menlo,monospace;font-size:.74rem;
+  letter-spacing:.04em;color:var(--gm)}
+.chip[data-g="m"] .chip-fr{color:var(--masc)}
+.chip[data-g="f"] .chip-fr{color:var(--fem)}
+</style>
+
+<div class="sheet">
+  <div class="holes" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="body">
+
+    <header class="mast">
+      <div class="label">Unit 4 · Lesson 1 · SIO-041</div>
+      <h1>Les repas et les aliments</h1>
+      <p class="sub">What I eat and drink at each meal</p>
+      <div class="tier"><span aria-hidden="true">📚</span><b>Tier 2 · Lexical Core</b></div>
+    </header>
+
+    <div class="stage">
+      <div class="col">
+        <h2 class="st"><span class="n">0</span><span aria-hidden="true">🗺</span> Learning path</h2>
+        <p class="lede">The same five stages as a grammar lesson, in the same
+          order — <em>learning path · concept · forms · exercise · bonus · word
+          list</em>. What changes is what goes inside two of them.</p>
+        <ol class="path">
+          <li><i>1</i><span><b>💡 The concept</b> <span class="k">— one question the word list cannot answer.</span></span></li>
+          <li data-new><i>2</i><span><b>📖 The forms</b> <span class="k">— what each word makes you learn along with it.</span></span></li>
+          <li data-new><i>3</i><span><b>📝 The exercise</b> <span class="k">— sort the words, with less and less help.</span></span></li>
+          <li><i>4</i><span><b>⭐ The bonus</b> <span class="k">— English to French, no hints. Aim for 80%.</span></span></li>
+          <li><i>5</i><span><b>📚 The word list</b> <span class="k">— all 28 words, with test modes.</span></span></li>
+        </ol>
+      </div>
+      <aside class="note">
+        <b>What changed</b>
+        Nothing structural. My first draft invented a new stage called
+        <em>the map</em>; that was wrong. A vocabulary lesson runs the same five
+        stages — only the <strong>contents</strong> of stages 2 and 3 differ,
+        because a noun's forms are not a verb's forms and sorting words is not
+        conjugating them.
+      </aside>
+    </div>
+
+    <div class="stage">
+      <div class="col">
+        <h2 class="st"><span class="n">1</span><span aria-hidden="true">💡</span> The concept</h2>
+        <p class="lede"><span class="hl">Do not skip this.</span></p>
+
+        <div class="q">
+          <div class="label">One question</div>
+          <p class="ask">A French meal has a course that an English meal has no
+            slot for. Which one — and when does it arrive?</p>
+          <details class="reveal">
+            <summary>The answer, in one sentence</summary>
+            <div class="ans">
+              <p><strong>Cheese</strong> — <em>le fromage</em> is its own course,
+              after the dish and before the dessert. So in French
+              <em>du fromage</em> is not a topping or a snack: it has a place in
+              the order of a meal, and the word carries that place with it.</p>
+            </div>
+          </details>
+        </div>
+
+        <div class="second">
+          <h3>And a second thing.</h3>
+          <p>Five of these words are <strong>ingredients</strong> — du sucre, de
+          la farine, de l'huile, du sel, des oignons. You don't order them, you
+          cook with them, and that makes them their own category rather than an
+          odd leftover: a learner who can follow a recipe needs them exactly as
+          much as one who can read a menu.</p>
+        </div>
+      </div>
+      <aside class="note">
+        <b>Why this is still a concept</b>
+        A Tier 1 concept is a question the <em>forms</em> cannot answer — why
+        <em>son cahier</em> is both his and hers. A Tier 2 concept is a question
+        the <em>word list</em> cannot answer. Same move, different target: no
+        vocabulary table will ever tell you where cheese comes.
+      </aside>
+    </div>
+
+    <div class="stage">
+      <div class="col">
+        <h2 class="st"><span class="n">2</span><span aria-hidden="true">📖</span> The forms</h2>
+        <p class="lede">A noun has forms too. Not a conjugation — a
+          <strong>gender</strong>, which you cannot work out from the meaning and
+          have to learn with the word, the way you learn its spelling.</p>
+
+        <div class="gcols"><!--FORMS--></div>
+
+        <p class="gap"><b>The third column is the lesson.</b> Nine of these 42
+          words are stored in a form that <em>hides</em> the gender — <code>de
+          l'</code> before a vowel, <code>des</code> in the plural. A learner who
+          only ever meets <em>de l'eau</em> has never been told that
+          <em>eau</em> is feminine. <b>And nothing in <code>aliments.json</code>
+          records gender as a field</b>, so the three columns above are inferred
+          from the article in the string. That is a content fix before it is a
+          design one.</p>
+
+        <h3 class="sub-h">And the other thing a food word makes you learn: <b>à</b> or <b>de</b>?</h3>
+        <p>Compound food names come in two shapes, and English does not
+          distinguish them — "apple tart" and "apple juice" are built the same
+          way. French builds them differently, and the difference is
+          <em>how much of the thing is that ingredient</em>.</p>
+
+        <div class="pats">
+          <div class="pat" data-p="a">
+            <h4>à + article + noun</h4>
+            <p class="when">One important ingredient, among others.</p>
+            <ul>
+              <li>une tarte <b>aux</b> pommes <i>apple tart</i></li>
+              <li>une glace <b>à la</b> vanille <i>vanilla ice cream</i></li>
+              <li>un sandwich <b>au</b> fromage <i>cheese sandwich</i></li>
+              <li>un café <b>au</b> lait <i>coffee with milk</i></li>
+            </ul>
+          </div>
+          <div class="pat" data-p="de">
+            <h4>de + noun, no article</h4>
+            <p class="when">What the thing is made <em>of</em> — the main
+              ingredient, often the only one.</p>
+            <ul>
+              <li>un jus <b>de</b> pomme <i>apple juice</i></li>
+              <li>du jus <b>d'</b>orange <i>orange juice — in this deck</i></li>
+              <li>une soupe <b>de</b> poisson <i>fish soup</i></li>
+              <li>une salade <b>de</b> fruits <i>fruit salad</i></li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="pivot">Same fruit, two shapes: <b>une tarte aux pommes</b> —
+          apples in it, several of them, so the noun goes plural — against
+          <b>un jus de pomme</b>, where the apple is what the juice <em>is</em>,
+          so it stays singular. The preposition carries the number with it.</p>
+
+        <p class="gap"><b>Only one of the 42 shows this.</b>
+          <em>Du jus d'orange</em> is the deck's single compound name, so the
+          pattern above is drawn from outside it. Same question as the exercise
+          frame: either the deck grows a handful of compounds, or a Tier 2 lesson
+          is allowed to teach with words it does not own.</p>
+      </div>
+      <aside class="note">
+        <b>Where this came from</b>
+        Your suggestion — a vocab list with gender and so on, as in SpecuLearn.
+        It is a better answer than the one I drew, because it is genuinely a
+        <em>forms</em> stage: something un-derivable that must be learned
+        alongside the word. My version showed what the words <em>mean</em>, which
+        is not the same job.
+      </aside>
+      <aside class="note">
+        <b>The colours are borrowed, not invented</b>
+        Blue and red are <code>--gram-masc</code> and <code>--gram-fem</code>,
+        the tokens colour review mapped across all 98 sites. Here they mean
+        exactly what they were defined to mean, so they are the right tokens
+        rather than a new pair.
+      </aside>
+    </div>
+
+    <div class="stage">
+      <div class="col">
+        <h2 class="st"><span class="n">3</span><span aria-hidden="true">📝</span> The exercise</h2>
+        <p class="lede">One sentence, three levels — the same mechanism as the
+          grammar ladder. What is withdrawn each time is a <strong>piece of the
+          answer</strong>, and the first piece to go is the article, because that
+          is the part the forms tab says you cannot work out.</p>
+        <p class="lede">The frame carries <strong>two</strong> article slots,
+          because <em>avec</em> takes the partitive all over again — and the
+          second one is the one learners drop.</p>
+
+        <div class="levels">
+          <div class="lvl">
+            <div class="stars">★</div>
+            <div>
+              <h4>Choose it whole</h4>
+              <p>Article and noun arrive together. Pick the one that fits.</p>
+              <div class="eg">🥖 « Je prends du pain avec <b>__________</b>. »<br>
+                <em>du beurre · de la confiture · des frites</em></div>
+            </div>
+          </div>
+          <div class="lvl">
+            <div class="stars">★★</div>
+            <div>
+              <h4>Fill in the article</h4>
+              <p>Both nouns are given. Supply both articles — so the gender has
+                to be known, not recognised, twice.</p>
+              <div class="eg">« Je prends <b>____</b> pain avec <b>____</b> beurre. »
+                <span class="gloss">du … du</span></div>
+            </div>
+          </div>
+          <div class="lvl">
+            <div class="stars">★★★</div>
+            <div>
+              <h4>Fill in both</h4>
+              <p>Article and noun, all four slots, from the cue alone.</p>
+              <div class="eg">🥖🧈 « Je prends <b>____</b> <b>______</b> avec <b>____</b> <b>______</b>. »
+                <span class="gloss">du pain avec du beurre</span></div>
+            </div>
+          </div>
+        </div>
+
+        <p class="gap"><b>One word here is not in this deck.</b>
+          <em>De la confiture</em> lives in <code>partitifs.json</code>, the
+          stop&nbsp;42 deck, not in <code>aliments.json</code> — and it is the
+          natural partner for <em>du pain</em>. So the frame either draws from
+          both decks or <code>aliments</code> gains the word. Worth settling
+          early: if a Tier 2 exercise may only use its own deck, that constrains
+          every frame in all fifteen stops.</p>
+
+      </div>
+      <aside class="note">
+        <b>This changes Track A's priority</b>
+        I had written that Tier 2 needed no type change. With ★★ blanking the
+        article and ★★★ blanking article <em>and</em> noun, that is no longer
+        true: this is a <strong>two-slot cloze</strong>, the same shape as ★★ in
+        L08. <code>DiceQuestion.med</code> holds one blank fixed by the
+        generator, so neither tier can express its own ladder today. A1 now
+        unblocks 35 stops rather than 20, which makes it the most load-bearing
+        thing left in the container.
+      </aside>
+    </div>
+
+    <div class="stage">
+      <div class="col">
+        <h2 class="st"><span class="n">✓</span> Ready for the exercise?</h2>
+        <p class="lede">Hover or tap the right-hand column to reveal. If three of
+          the four come back without effort, go on.</p>
+        <div class="scroll">
+          <table class="check">
+            <thead><tr><th>Question</th><th>Answer <span class="label">(hover to reveal)</span></th></tr></thead>
+            <tbody>
+              <tr><td>Where does cheese come in a French meal?</td><td class="a" tabindex="0">Its own course — after the dish, before the dessert</td></tr>
+              <tr><td>Is <em>eau</em> masculine or feminine? How would you know?</td><td class="a" tabindex="0">Feminine — and <em>de l'eau</em> does not tell you; you have to have learned it</td></tr>
+              <tr><td>Say "sugar" with its article.</td><td class="a" tabindex="0">du sucre</td></tr>
+              <tr><td>Order a coffee and a croissant.</td><td class="a" tabindex="0">Je voudrais un café et un croissant, s'il vous plaît.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <aside class="note">
+        <b>On the word "self-check"</b>
+        The phrase is not mine — it is in all three of the pages you sent, four
+        times in L08. Kept here with its mechanic intact, but the questions
+        changed: a Tier 1 self-check asks you to state a rule, so this one asks
+        you to <em>retrieve</em>, which is what Tier 2 actually trains.
+      </aside>
+    </div>
+
+    <div class="stage">
+      <div class="col">
+        <h2 class="st"><span class="n">4</span><span aria-hidden="true">⭐</span> The bonus &nbsp;·&nbsp; <span class="n">5</span><span aria-hidden="true">📚</span> The word list</h2>
+        <p class="lede">Both unchanged from a grammar lesson, and deliberately
+          so. The bonus is English → French with no hints, aiming at 80%. The
+          word list is the reference table for all 42 words, both directions,
+          click a cell to reveal.</p>
+      </div>
+      <aside class="note">
+        <b>Why leave them alone</b>
+        A tier is a difference in <em>treatment</em>, not a different app. Two of
+        the five stages already do the right thing for every tier; changing them
+        would be change for its own sake.
+      </aside>
+    </div>
+
+    <hr class="rule">
+
+    <div class="ask-box">
+      <h3>Three things to rule on</h3>
+      <ol>
+        <li><strong>A concept stage for a vocabulary stop</strong> — is the
+          cheese course the right kind of question, or should a Lexical Core
+          lesson simply not have a concept stage?</li>
+        <li><strong>Gender as "the forms"</strong> — your answer, drawn here. Is
+          the third column (the seven words whose article hides their gender) the
+          right thing to build a stage around?</li>
+        <li><strong>The frame</strong> — « Je prends du pain avec du beurre » gives
+          two article decisions in one sentence, which is what makes the cloze
+          worth doing. Does one frame carry all 28 words, or does a vocabulary
+          stop need a small set of frames and a rule for which word takes
+          which?</li>
+      </ol>
+    </div>
+
+    <footer class="f">
+      <span class="label">FluOlinGo · Unit 4 — Meals and food</span>
+      <span class="label">42 words from aliments.json</span>
+      <span class="label">Tier 2 sample · 30 Aug 2026</span>
+    </footer>
+  </div>
+</div>
+
+<script>
+(function(){
+  // Tap-to-reveal on the self-check, so hover is not the only way in.
+  document.querySelectorAll("table.check td.a").forEach(function(td){
+    td.addEventListener("click", function(){ td.classList.add("shown"); });
+  });
+})();
+</script>

@@ -10,6 +10,7 @@
  */
 import type { DiceAxis, DiceQuestion } from "./types";
 import { pinned1, pinnedGroup, roll } from "./axis.ts";
+import { medFrom, sentence, type Slot } from "./cloze.ts";
 
 const SUBJECTS = [
   { disp: "Je", slot: "je" }, { disp: "Tu", slot: "tu" }, { disp: "Il", slot: "il" },
@@ -35,9 +36,36 @@ const NOUNS: { fr: string; art: "le" | "la" | "l'" | "les"; en: string }[] = [
 const ARTS = ["le", "la", "l'", "les"];
 
 const np = (art: string, fr: string) => art + (art === "l'" ? "" : " ") + fr;
+const conj = (s: (typeof SUBJECTS)[number], v: (typeof VERBS)[number]) => v.stem + END[s.slot];
 function subjVerb(s: (typeof SUBJECTS)[number], v: (typeof VERBS)[number]): string {
-  const c = v.stem + END[s.slot];
+  const c = conj(s, v);
   return s.slot === "je" && /^[aeiouéèêh]/i.test(c) ? `J'${c}` : `${s.disp} ${c}`;
+}
+
+/**
+ * The sentence as its parts — subject (fixed) · VERB · ARTICLE · noun (fixed).
+ *
+ * This is the lesson: ★ takes the verb away, ★★ takes the verb and the article,
+ * which is the contrast the whole stop exists to teach and which a single-blank
+ * `med` could not express. The subject stays fixed at every level because
+ * choosing it is not what this lesson is about.
+ *
+ * `J'aime` is one chunk with no space, so the subject slot carries the
+ * apostrophe and `sentence()` glues across it.
+ */
+function slotsFor(
+  s: (typeof SUBJECTS)[number],
+  v: (typeof VERBS)[number],
+  n: (typeof NOUNS)[number],
+): Slot[] {
+  const c = conj(s, v);
+  const elides = s.slot === "je" && /^[aeiouéèêh]/i.test(c);
+  return [
+    { text: elides ? "J'" : s.disp },
+    { key: "verb", text: c, choices: VERBS.map((x) => conj(s, x)) },
+    { key: "article", text: n.art, choices: ARTS },
+    { text: `${n.fr}.` },
+  ];
 }
 
 /** Sujet and Verbe shape the sentence; Article is the point of the lesson. */
@@ -57,13 +85,17 @@ export function aimerQuestion(pinned?: Record<string, string>): DiceQuestion {
   // A pinned article narrows the NOUNS rather than being applied on top of
   // one — « le danse » would be a wrong sentence, not a harder question.
   const n = roll(pinnedGroup(NOUNS, pinned?.article, (x) => x.art));
-      const sv = subjVerb(s, v);
-      return {
-        meta: `${sv} … (${v.en})`,
-        big: n.fr,
-        en: n.en,
-        correct: `${sv} ${np(n.art, n.fr)}.`,
-        easyOptions: ARTS.map((a) => `${sv} ${np(a, n.fr)}.`),
-        med: { before: sv, choices: ARTS, correct: n.art, after: `${n.fr}.` },
-      };
-    }
+  const sv = subjVerb(s, v);
+  const slots = slotsFor(s, v, n);
+  return {
+    meta: `${sv} … (${v.en})`,
+    big: n.fr,
+    en: n.en,
+    correct: sentence(slots),
+    easyOptions: ARTS.map((a) => `${sv} ${np(a, n.fr)}.`),
+    // Derived, not hand-written: the two can no longer drift apart, and the
+    // value is byte-identical to what this generator used to build itself.
+    med: medFrom(slots, "article"),
+    slots,
+  };
+}

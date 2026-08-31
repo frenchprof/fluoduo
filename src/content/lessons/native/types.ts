@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { Slot } from "./cloze";
 
 /**
  * One generated question (authored per-lesson in the `dice` config). These
@@ -19,8 +20,23 @@ export type DiceQuestion = {
   alternates?: string[];
   /** Full-sentence options for the MCQ tier (must include `correct`). */
   easyOptions: string[];
-  /** The cloze tier: a frame with the answer typed into it. */
+  /** The cloze tier: a frame with the answer typed into it.
+   *  ONE blank, chosen by the generator — see `slots` for why that is not
+   *  enough, and `medFrom` in cloze.ts for how a slotted generator keeps
+   *  producing this without hand-writing it. */
   med: { before: string; choices: string[]; correct: string; after: string };
+  /**
+   * The sentence as its parts, so a LEVEL can decide how much to withdraw
+   * rather than the generator deciding once (2026-08-31).
+   *
+   * `med` holds one blank, so Dan's ★★ — "subject + bare noun shown, pick the
+   * verb AND the article" — could not be expressed, and neither could the
+   * vocabulary ladder's ★★★, "fill in the article and the noun". Optional
+   * because 47 generators predate it and must keep working untouched; where it
+   * is present, `med` should be derived from it with `medFrom` so the two can
+   * never drift apart.
+   */
+  slots?: Slot[];
 };
 
 /**
