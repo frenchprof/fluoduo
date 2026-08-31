@@ -235,7 +235,7 @@ function DeckTable({ collection, items }: { collection: Collection; items: Item[
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [subsetSize, setSubsetSize] = useState<number | null>(null);
   function toggleSel(id: string) {
-    setSelected((s) => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n; });
+    setSelected((s) => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n; });
   }
   function selectMany(ids: string[], on: boolean) {
     setSelected((s) => { const n = new Set(s); ids.forEach((id) => (on ? n.add(id) : n.delete(id))); return n; });
@@ -607,7 +607,7 @@ function AllCards({
   flipAll: boolean; flippedIds: Set<string>; setFlippedIds: (fn: (s: Set<string>) => Set<string>) => void;
 }) {
   function flipOne(id: string) {
-    setFlippedIds((s) => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n; });
+    setFlippedIds((s) => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n; });
   }
   const showBack = (id: string) => (flipAll ? !flippedIds.has(id) : flippedIds.has(id));
 

@@ -29,7 +29,7 @@ export const futurProcheLesson: NativeLesson = {
       </p>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
         ⚠️ <b>The negation wraps <i>aller</i></b>, not the infinitive:{" "}
-        <span lang="fr">Je <b>ne</b> vais <b>pas</b> sortir. · Nous <b>n'</b>allons <b>pas</b> travailler.</span>
+        <span lang="fr">Je <b>ne</b> vais <b>pas</b> sortir. · Nous <b>n&rsquo;</b>allons <b>pas</b> travailler.</span>
       </p>
     </div>
   ),

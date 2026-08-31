@@ -149,11 +149,18 @@ function Dashboard({ canWrite }: { canWrite: boolean }) {
 
   useEffect(() => {
     let cancelled = false;
+    // Deliberate: this effect synchronises with Firestore; a reload must
+    // clear the previous fetch synchronously so no panel shows stale data
+    // while the new one is in flight. Block-disabled: the rule reports only
+    // the first setState it meets, and which one that is differs between
+    // local and CI eslint.
+    /* eslint-disable react-hooks/set-state-in-effect */
     setEvents(null);
     setBoard(null);
     setMeta(null);
     setMetaMiss(null);
     setFailed([]);
+    /* eslint-enable react-hooks/set-state-in-effect */
     // One stream failing must not blank the page: the events trail and the
     // leaderboard are independent, and most panels need only the first.
     void Promise.allSettled([fetchAllEvents(), fetchLeaderboard(), fetchRosterMeta()]).then(([e, b, m]) => {
@@ -212,8 +219,14 @@ function Dashboard({ canWrite }: { canWrite: boolean }) {
   useEffect(() => {
     if (roster.length === 0) return;
     let cancelled = false;
+    // Deliberate: this effect synchronises with Firestore; a roster change
+    // must clear the previous class's details synchronously so no tile shows
+    // stale data. Block-disabled: the rule reports only the first setState
+    // it meets, and which one that is differs between local and CI eslint.
+    /* eslint-disable react-hooks/set-state-in-effect */
     setDetails(new Map());
     setFetched(0);
+    /* eslint-enable react-hooks/set-state-in-effect */
     void fetchClassDetails(roster, (uid, d) => {
       if (cancelled) return;
       setDetails((m) => new Map(m).set(uid, d));

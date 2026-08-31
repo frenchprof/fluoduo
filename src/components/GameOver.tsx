@@ -109,6 +109,9 @@ export default function GameOver({
   // progress live in localStorage.
   const [next, setNext] = useState<NextStep | null>(null);
   useEffect(() => {
+    // Deliberate: nextStep reads the ledger and progress from localStorage,
+    // which cannot be read during render (see the comment above).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setNext(nextStep(undefined, { collectionId: deckId, sioId: fallbackSio }));
   }, [deckId, fallbackSio]);
 

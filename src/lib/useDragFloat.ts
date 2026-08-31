@@ -19,6 +19,10 @@ export function useDragFloat(key: string, def: { right: number; bottom: number }
     // (patch 19's floor only ever rescued remembered positions).
     try {
       const raw = localStorage.getItem(key);
+      // Deliberate: the saved position lives in localStorage and the clamp
+      // needs window.innerWidth/Height — neither exists during render
+      // (static export), so the position is seeded on mount.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPos(clamp(raw ? (JSON.parse(raw) as { right: number; bottom: number }) : def));
     } catch {}
     // eslint-disable-next-line react-hooks/exhaustive-deps

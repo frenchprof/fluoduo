@@ -43,6 +43,12 @@ export default function MapBody() {
   const [engaged, setEngaged] = useState(false);
 
   useEffect(() => {
+    // Progress and the saved 2D/3D choice live in localStorage, and the deep
+    // link lives in the URL — none of which can be read during render (the
+    // site is statically exported), so this mount effect has to seed that
+    // state. Block-disabled: the rule reports only the first setState it
+    // meets, and which one that is differs between local and CI eslint.
+    /* eslint-disable react-hooks/set-state-in-effect */
     const refresh = () => setProgress(loadProgress());
     refresh();
     window.addEventListener("fluolingo:progress-updated", refresh);
@@ -61,6 +67,7 @@ export default function MapBody() {
       if (sio) setOpenSioId(sio.id);
     };
     readUrl();
+    /* eslint-enable react-hooks/set-state-in-effect */
     window.addEventListener("hashchange", readUrl);
     window.addEventListener("popstate", readUrl);
     return () => {
