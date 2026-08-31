@@ -107,6 +107,9 @@ function TutorPageInner() {
   const [busy, setBusy] = useState(false);
   // Auto-speak toggle (Dan, 2026-07-27: option to NOT verbalise every line).
   const [autoSpeak, setAutoSpeak] = useState(true);
+  // Deliberate: the saved toggle lives in localStorage, which cannot be read
+  // during render (the site is statically exported) — this effect seeds it.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { try { setAutoSpeak(localStorage.getItem("fl.tutor.autoSpeak") !== "off"); } catch {} }, []);
   const [offline, setOffline] = useState(false);
   // Per-balloon player (Dan, 2026-07-12: "play, pause and stop buttons next
@@ -124,6 +127,9 @@ function TutorPageInner() {
   const [recording, setRecording] = useState<"fr-FR" | "en-US" | null>(null);
   const [sttAvailable, setSttAvailable] = useState(false);
   const recRef = useRef<SpeechRecognitionLike | null>(null);
+  // Deliberate: SpeechRecognition is a browser API — probing it during
+  // render would break SSR/hydration, so availability is seeded on mount.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setSttAvailable(getRecognizer() !== null); }, []);
 
   /** One mic per language (Dan, 2026-07-13: "separate STT buttons for

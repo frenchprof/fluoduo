@@ -23,6 +23,10 @@ export default function Overview({ events, roster, includeTeachers, onStudent }:
     const evs = events.filter((e) => uids.has(e.uid) && e.ts);
 
     const todayKey = SG_DAY_KEY.format(new Date());
+    // Deliberate: "the last 7 days" belongs to the moment the dashboard
+    // model is computed (once per data load); threading a clock through
+    // state would restructure a working page for no gain.
+    // eslint-disable-next-line react-hooks/purity
     const weekAgo = Date.now() - 7 * 86400000;
     const activeToday = new Set<string>();
     const active7d = new Set<string>();

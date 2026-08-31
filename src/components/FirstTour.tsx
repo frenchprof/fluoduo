@@ -156,6 +156,11 @@ export default function FirstTour() {
   const STEPS = tour?.steps ?? [];
 
   useEffect(() => {
+    // The seen/never flags live in localStorage, which cannot be read during
+    // render — this route-change effect has to seed `mode`. Block-disabled:
+    // the rule reports only the first setState it meets, and which one that
+    // is differs between local and CI eslint.
+    /* eslint-disable react-hooks/set-state-in-effect */
     if (!tour) {
       setMode("hidden");
       return;
@@ -166,6 +171,7 @@ export default function FirstTour() {
     } catch {
       setMode("chip");
     }
+    /* eslint-enable react-hooks/set-state-in-effect */
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
@@ -173,6 +179,11 @@ export default function FirstTour() {
   // or hidden on this page/viewport).
   useEffect(() => {
     if (mode !== "tour") return;
+    // The target's rectangle comes from getBoundingClientRect — the DOM
+    // cannot be measured during render, so the spotlight state is seeded
+    // here. Block-disabled: the rule reports only the first setState it
+    // meets, and which one that is differs between local and CI eslint.
+    /* eslint-disable react-hooks/set-state-in-effect */
     let i = step;
     while (i < STEPS.length) {
       const sel = STEPS[i].selector;
@@ -190,6 +201,7 @@ export default function FirstTour() {
       i += 1;
     }
     finish();
+    /* eslint-enable react-hooks/set-state-in-effect */
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, step]);
 

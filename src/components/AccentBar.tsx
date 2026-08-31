@@ -89,6 +89,10 @@ export default function AccentBar() {
           className={`cahier-btn cahier-btn-sm shrink-0 ${shift ? "cahier-btn-primary" : ""}`}
           aria-label="Shift" title="Shift">⇧</button>
         <div className="grid flex-1 grid-cols-8 gap-1">
+          {/* The ref is read inside the pointerdown handler `press` wraps —
+              at event time, never during render; the rule cannot see through
+              the handler factory (it flags the whole map callback). */}
+          {/* eslint-disable-next-line react-hooks/refs */}
           {keys.map((ch) => (
             <button key={ch} type="button"
               onPointerDown={press(() => targetRef.current && insertAtCursor(targetRef.current, ch))}
