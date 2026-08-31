@@ -253,7 +253,7 @@
     {
       "id": "avoir-etats-19",
       "fr": "Il a froid.",
-      "en": "He is cold.",
+      "en": "He is cold. (feels cold)",
       "lemma": "avoir",
       "tags": [],
       "gap": "a"
@@ -261,7 +261,7 @@
     {
       "id": "avoir-etats-20",
       "fr": "Nous avons chaud.",
-      "en": "We are hot.",
+      "en": "We are hot. (feel hot)",
       "lemma": "avoir",
       "tags": [],
       "gap": "avons"

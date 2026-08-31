@@ -48,18 +48,24 @@ export function combienQuestion(pinned?: Record<string, string>): DiceQuestion {
   const n = KEYS.includes(pn) ? pn : pick(KEYS);
   const c = pick(COUNTED);
   const word = numberFor(n, c.f);
-  const correct = `Il y a ${word} ${c.fr}.`;
+  // The NOUN agrees with the count. The answer key used to read « Il y a un
+  // étudiants » and « zéro professeurs » (found by executing the generator,
+  // 31 Aug) — after un/une and zéro, French takes the singular.
+  const noun = n <= 1 ? c.fr.replace(/s$/, "") : c.fr;
+  // « combien de » only elides before a vowel: d'étudiants, but DE personnes.
+  const de = /^[aeiouéèêh]/i.test(c.fr) ? "d'" : "de ";
+  const correct = `Il y a ${word} ${noun}.`;
   return {
     meta: "combien ? 🔢",
-    big: `« Il y a combien d'${c.fr} ? »  → ${n}`,
-    en: `There are ${n} ${c.en}.`,
+    big: `« Il y a combien ${de}${c.fr} ? »  → ${n}`,
+    en: n === 1 ? `There is 1 ${c.en.replace(/s$/, "").replace("people", "person")}.` : `There are ${n} ${c.en}.`,
     correct,
-    alternates: [`Il y a ${word} ${c.fr}`],
+    alternates: [`Il y a ${word} ${noun}`],
     easyOptions: [
       correct,
-      `Il a ${word} ${c.fr}.`,
-      ...otherNumbers(n, 2, c.f).map((w) => `Il y a ${w} ${c.fr}.`),
+      `Il a ${word} ${noun}.`,
+      ...otherNumbers(n, 2, c.f).map((w) => `Il y a ${w} ${noun}.`),
     ],
-    med: { before: "Il y a", choices: [word, ...otherNumbers(n, 3, c.f)], correct: word, after: `${c.fr}.` },
+    med: { before: "Il y a", choices: [word, ...otherNumbers(n, 3, c.f)], correct: word, after: `${noun}.` },
   };
 }

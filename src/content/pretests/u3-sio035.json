@@ -7,6 +7,7 @@
   "items": [
     {
       "id": "u3-sio035-01",
+      "transFirst": true,
       "sentenceBefore": "Mon passeport est ",
       "sentenceAfter": " le sac.",
       "answer": "dans",
@@ -25,6 +26,7 @@
     },
     {
       "id": "u3-sio035-02",
+      "transFirst": true,
       "sentenceBefore": "Les assiettes sont ",
       "sentenceAfter": " la table.",
       "answer": "sur",
@@ -43,6 +45,7 @@
     },
     {
       "id": "u3-sio035-03",
+      "transFirst": true,
       "sentenceBefore": "On se retrouve ",
       "sentenceAfter": " le cinéma à 19h.",
       "answer": "devant",

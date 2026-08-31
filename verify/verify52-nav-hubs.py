@@ -52,9 +52,11 @@ ok(len(FAMILIES) == 6, "six families parsed from the registry",
    f"expected 6 families, parsed {len(FAMILIES)} — has the shape of FAMILIES changed?")
 
 ACTIVITIES = re.findall(
-    r'\{\s*key:\s*"([a-z]+)",\s*name:\s*"([^"]+)",\s*emoji:\s*"[^"]*",\s*'
+    r'\{\s*key:\s*"([a-z]+)",\s*name:\s*"([^"]+)",\s*(?:short:\s*"[^"]*",\s*)?emoji:\s*"[^"]*",\s*'
     r'family:\s*"([a-z]+)",\s*href:\s*(?:"([^"]+)"|null)', ACT_C)
-ok(len(ACTIVITIES) >= 18, f"{len(ACTIVITIES)} activities parsed from the registry",
+# Floor moved 31 Aug — Dan's 16 (4x4): Sorting, iComplete, NumBus/NumBourse
+# (one Numbers hub) and My Progress all left the tile grid.
+ok(len(ACTIVITIES) >= 16, f"{len(ACTIVITIES)} activities parsed from the registry",
    f"only {len(ACTIVITIES)} activities parsed — has the shape of ACTIVITIES changed?")
 
 act_hrefs = {h for _, _, _, h in ACTIVITIES if h}

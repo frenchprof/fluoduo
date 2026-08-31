@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-Slots: the ★★ level is expressible, and `med` is derived rather than drifting.
+Slots: the two-blank level is expressible, and `med` is derived, not drifting.
 
 WHAT WENT WRONG BEFORE. `DiceQuestion.med` is `{ before, choices, correct,
 after }` — one blank, chosen by the generator when it built the string. Dan's
-own L08 ladder is
+ladder (renamed 2026-08-31: Facile / Moyen / Difficile / Bonus) needs
 
-    ★    subject + article + noun shown  ->  pick the VERB
-    ★★   subject + BARE NOUN shown       ->  pick the VERB and the ARTICLE
-    ★★★  nothing shown                   ->  type the whole sentence
+    Moyen      subject + article + noun shown  ->  pick the VERB
+    Difficile  subject + BARE NOUN shown       ->  pick the VERB and the ARTICLE
+    Bonus      nothing shown                   ->  the sentence from English
 
-so ★★ could not be represented at all. `src/content/lessons/native/cloze.ts`
+so the two-piece level could not be represented at all. `src/content/lessons/native/cloze.ts`
 adds `slots`, and `aimer.gen.ts` is the first generator to author them.
 
 WHY THIS RUNS THE CODE INSTEAD OF READING IT. A generator that builds the wrong
@@ -70,10 +70,10 @@ for (let i = 0; i < 400; i++) {
     med: q.med,
     derived: slots.length ? medFrom(slots, "article") : null,
     blankable: slots.filter(isBlankable).map((s) => s.key),
-    one: cloze(slots, blankKeysFor(1, slots)).filter((s) => s.kind === "blank").map((s) => s.key),
-    two: cloze(slots, blankKeysFor(2, slots)).filter((s) => s.kind === "blank").map((s) => s.key),
-    // What ★★ actually shows the learner: the bare noun must survive.
-    twoText: cloze(slots, blankKeysFor(2, slots))
+    one: cloze(slots, blankKeysFor(2, slots)).filter((s) => s.kind === "blank").map((s) => s.key),
+    two: cloze(slots, blankKeysFor(3, slots)).filter((s) => s.kind === "blank").map((s) => s.key),
+    // What Difficile actually shows the learner: the bare noun must survive.
+    twoText: cloze(slots, blankKeysFor(3, slots))
       .map((s) => (s.kind === "blank" ? `[${s.key}]` : s.text)).join(" "),
   });
 }
@@ -145,22 +145,23 @@ shape = [x for x in rows if sorted(x["med"].keys()) != ["after", "before", "choi
 check(not shape, "the derived med keeps the four legacy keys",
       f"med has the wrong keys: {[x['med'] for x in shape]}")
 
-# 3 · THE POINT: one blank at ★, two at ★★.
+# 3 · THE POINT: one blank at Moyen, two at Difficile (Dan, 31 Aug:
+#     "Moyen if it involves one … Difficile if it involves two items").
 ones = {tuple(x["one"]) for x in rows}
 twos = {tuple(x["two"]) for x in rows}
 check(ones == {("verb",)},
-      "★ blanks exactly one slot, the verb",
-      f"★ should blank the verb alone; it blanks {sorted(ones)}")
+      "Moyen blanks exactly one slot, the verb",
+      f"Moyen should blank the verb alone; it blanks {sorted(ones)}")
 check(twos == {("verb", "article")},
-      "★★ blanks TWO slots — the verb and the article, which `med` could not express",
-      f"★★ should blank verb+article; it blanks {sorted(twos)}")
+      "Difficile blanks TWO slots — verb and article, which `med` could not express",
+      f"Difficile should blank verb+article; it blanks {sorted(twos)}")
 
-# 4 · ★★ must still show the bare noun. If the noun vanished, the learner has
-#     nothing to choose an article FOR, and the lesson's contrast is gone.
+# 4 · Difficile must still show the bare noun. If the noun vanished, the
+#     learner has nothing to choose an article FOR, and the contrast is gone.
 noun_gone = [x for x in rows if x["twoText"].count("[") != 2][:3]
 check(not noun_gone,
-      "★★ leaves the subject and the bare noun standing",
-      "★★ blanked something other than exactly two slots: " +
+      "Difficile leaves the subject and the bare noun standing",
+      "Difficile blanked something other than exactly two slots: " +
       "; ".join(x["twoText"] for x in noun_gone))
 
 print("\n".join(f"  ok   {m}" for m in OK))

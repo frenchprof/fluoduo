@@ -74,7 +74,7 @@
     {
       "id": "sappeler-09",
       "fr": "Comment tu t'appelles ?",
-      "en": "What's your name?",
+      "en": "What's your name? (informal)",
       "note": "(informal)",
       "gap": "t'appelles",
       "tags": []
@@ -82,7 +82,7 @@
     {
       "id": "sappeler-10",
       "fr": "Comment vous vous appelez ?",
-      "en": "What's your name?",
+      "en": "What's your name? (formal)",
       "note": "(formal)",
       "gap": "appelez",
       "tags": []

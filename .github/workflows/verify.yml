@@ -258,3 +258,6 @@ jobs:
 
       - name: The rail's tiers step down on the coloured edge
         run: python3 verify/verify61-flap-edge.py
+
+      - name: The Mémo's French forms are its bold heroes
+        run: python3 verify/verify65-memo-forms.py

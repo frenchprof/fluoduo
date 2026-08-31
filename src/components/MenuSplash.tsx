@@ -58,7 +58,9 @@ export default function MenuSplash({ onClose }: { onClose: () => void }) {
           </button>
         </div>
 
-        <ul className="grid grid-cols-4 gap-2 sm:grid-cols-5">
+        {/* 4×4 at every width (Dan, 2026-08-31: sixteen tiles after the three
+            consolidations — "So that would be 16 (4x4)"). */}
+        <ul className="grid grid-cols-4 gap-2">
           {activitiesInFamilyOrder().map((a) => {
             const family = FAMILIES.find((f) => f.key === a.family);
             return (
