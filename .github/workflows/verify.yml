@@ -207,6 +207,9 @@ jobs:
       - name: "The SIO popup is the outcome and ONE list of links (31 Aug)"
         run: python3 verify/verify66-popup-collapse.py
 
+      - name: "An atelier's Mémo opens on the model and its words (31 Aug)"
+        run: python3 verify/verify71-atelier-opens-on-forms.py
+
       - name: "A tour step points at something that exists (28 Aug)"
         run: python3 verify/verify44-tour-targets.py
 

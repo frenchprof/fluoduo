@@ -244,6 +244,16 @@ lane = report it in STATUS, don't do it.
      opened `SioDetail`, the body those two MOUNT. It now scans the render, not
      the diff. Break-tested by restoring the original branch verbatim: four
      assertions fire.
+     **And the model moved to the FRONT of the Memo, same PR** — Dan, minutes
+     later: *"Atelier's Memo is to open on the range of sentences and
+     vocabulary one is expected to use or understand. Simple as that."* Taking
+     the dialogue out of the popup left it correct but far: two taps and a
+     level chooser away. An atelier's lesson now opens on **Forms**, which is
+     exactly that pair — « Le modèle » in full with « Tout écouter », and every
+     word under it (Words went under Forms on 31 Aug). Chosen by
+     `sio.isProduction`, never by a deck-id prefix, so a seventh atelier is
+     covered. Ordinary lessons still open on Pract. — shown side by side.
+     `verify71`, 13 checks, all break-tested.
 
   **After those:** Tier-1 concept batches in parallel with Color review, same
   read-before-ship rule.
