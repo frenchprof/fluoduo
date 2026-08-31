@@ -283,25 +283,25 @@ export const SIO010_SITUATIONS: Unit0Situation[] = [
         { v: "Comment ça s'écrit ?", ok: false, why: "That asks how a name is SPELLED, not what it is." },
         { v: "Je m'appelle comment ?", ok: false, why: "That asks what YOUR own name is." },
       ] },
-      { title: "You give your own name. You say:", options: [
+      { title: "You give your own name to the other student. You say:", options: [
         { v: "Moi, je m'appelle Léa.", ok: true },
         { v: "Tu t'appelles Léa.", ok: false, why: "That tells the other person THEIR name is Léa." },
         { v: "Elle s'appelle Léa.", ok: false, why: "That gives a third person's name — 'her name is Léa'." },
         { v: "Ça s'écrit Léa.", ok: false, why: "Ça s'écrit spells a name out letter by letter." },
       ] },
-      { title: "You ask how that name is written. You say:", options: [
+      { title: "You ask the other student how their name is written. You say:", options: [
         { v: "Comment ça s'écrit ?", ok: true },
         { v: "Comment tu t'appelles ?", ok: false, why: "That asks the name itself — you already have it." },
         { v: "Comment ça va ?", ok: false, why: "That asks how they are." },
         { v: "Ça s'écrit L – É – A.", ok: false, why: "That ANSWERS the question — it spells the name out." },
       ] },
-      { title: "You spell your own name out loud. You say:", tts: "Ça s'écrit, L, É, A", options: [
+      { title: "You spell your own name for the other student. You say:", tts: "Ça s'écrit, L, É, A", options: [
         { v: "Ça s'écrit L – É – A.", ok: true },
         { v: "Comment ça s'écrit ?", ok: false, why: "That ASKS the question." },
         { v: "Je m'appelle L – É – A.", ok: false, why: "Je m'appelle gives the name, not its letters." },
         { v: "Ça s'appelle L – É – A.", ok: false, why: "S'appeler is for names; spelling uses s'écrire." },
       ] },
-      { title: "You have just exchanged names. You say:", options: [
+      { title: "You have just exchanged names with the other student. You say:", options: [
         { v: "Enchanté !", ok: true },
         { v: "Merci !", ok: false, why: "Merci means 'thank you'." },
         { v: "Au revoir !", ok: false, why: "That's a goodbye — you have only just met." },
