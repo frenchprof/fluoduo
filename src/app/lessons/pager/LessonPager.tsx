@@ -541,6 +541,17 @@ function ExerciseCard({
           : `border-[color:var(--drill-bad)] bg-[color:var(--drill-bad-bg)]${filled ? " line-through" : ""}`
     }`;
 
+  // On a TWO-blank card, each blank and its word boxes share a WASH (Dan,
+  // 31 Aug: "i would use different shaded word boxes on top of numbers") —
+  // the shading, not a numeral, says which boxes feed which blank. Teal and
+  // apricot sit far apart on the common colourblind axes, and reading order
+  // is the redundant cue. Verdict colours still take over once answered.
+  const GROUP_HUES = ["var(--cahier-t1)", "var(--cahier-t2)", "var(--cahier-t0)"] as const;
+  const groupWash = (b: number, strength: number) => ({
+    background: `color-mix(in srgb, ${GROUP_HUES[b % GROUP_HUES.length]} ${strength}%, white)`,
+    borderColor: GROUP_HUES[b % GROUP_HUES.length],
+  });
+
   return (
     <div className="space-y-4 pt-2">
       {ex.meta && (
@@ -558,13 +569,14 @@ function ExerciseCard({
               sg.kind === "text" ? (
                 <span key={n}>{sg.text}</span>
               ) : (
-                /* Each blank is NUMBERED and its choice row wears the same
-                   number — with two undifferentiated rows it was not clear
-                   which row fed which blank (Dan, 31 Aug). */
-                <span key={n} className={blankClass(!!picks[blankIndex(ex.segments!, n)])}>
-                  {picks[blankIndex(ex.segments!, n)] || (
-                    <span className="opacity-40">{blankIndex(ex.segments!, n) + 1}</span>
-                  )}
+                /* Each blank wears its group's WASH, matching its word boxes
+                   below — the shading says which boxes feed which blank. */
+                <span
+                  key={n}
+                  className={blankClass(!!picks[blankIndex(ex.segments!, n)])}
+                  style={!answered ? groupWash(blankIndex(ex.segments!, n), 45) : undefined}
+                >
+                  {picks[blankIndex(ex.segments!, n)] || <span className="opacity-40">?</span>}
                 </span>
               ),
             )}
@@ -585,18 +597,14 @@ function ExerciseCard({
               if (sg.kind !== "blank") return null;
               const b = blankIndex(ex.segments!, n);
               return (
-                <div key={n} className="flex items-start gap-2">
-                  <span aria-hidden className="w-4 shrink-0 pt-3 text-center text-xs font-bold text-[color:var(--cahier-ink)] opacity-50">
-                    {b + 1}
-                  </span>
-                  <div className={`flex-1 ${optionGridClass(sg.choices, "gap-2")}`}>
+                <div key={n} className={optionGridClass(sg.choices, "gap-2")}>
                   {sg.choices.map((c) => {
                     const isPicked = picks[b] === c;
                     const isAnswer = c === sg.answer;
                     const cls = !answered
                       ? isPicked
                         ? "answer-picked"
-                        : "border-[color:var(--cahier-rule)] bg-white hover:bg-[color:var(--cahier-paper-2)]"
+                        : "hover:brightness-95"
                       : isAnswer
                         ? "border-[color:var(--drill-ok)] bg-[color:var(--drill-ok-bg)]"
                         : isPicked
@@ -609,13 +617,13 @@ function ExerciseCard({
                         lang="fr"
                         disabled={answered}
                         onClick={() => onPick(b, c)}
+                        style={!answered && !isPicked ? groupWash(b, 22) : undefined}
                         className={`rounded-lg border-2 px-3 py-2 text-lg font-semibold text-[color:var(--cahier-ink)] transition ${cls}`}
                       >
                         {c}
                       </button>
                     );
                   })}
-                  </div>
                 </div>
               );
             })}
