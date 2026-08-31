@@ -123,10 +123,21 @@ function Concept({ c }: { c?: LessonConcept }) {
       <h2 className="cahier-display text-lg font-black leading-tight">{c.subtitle}</h2>
       <p className="mt-2">{c.contrast}</p>
 
+      {/* THE ANSWER COLLAPSES (Dan, 2026-08-31: "it is a very long page, can
+          we make the answer collapsible"). Measured on salutations at 390px:
+          the concept ran 1512px in a 561px slot — 2.7 screens — and the
+          answer is its longest single block.
+
+          It also puts the tab's core beat on the same footing as the rest of
+          the app: the question is asked, the answer is there when the learner
+          wants it, never before. Same <details> the mini-checks below already
+          use, so one interaction idiom, not two — and <details> rather than
+          state so it survives SSR and needs no hydration to open. */}
       <H>One question</H>
-      <p className="text-base font-bold">{c.question}</p>
-      <H>The answer</H>
-      <p>{c.answer}</p>
+      <details className="mt-1 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-raised)] p-3">
+        <summary className="cursor-pointer text-base font-bold">{c.question}</summary>
+        <div className="mt-2">{c.answer}</div>
+      </details>
 
       {c.pitfall && c.pitfall.length > 0 && (
         <>
@@ -156,18 +167,24 @@ function Concept({ c }: { c?: LessonConcept }) {
 
       {c.flow && c.flow.length > 0 && (
         <>
+          {/* Collapsed for the same reason as the answer: a decision tree is
+              CONSULTED, not read. A learner who already knows the rule scrolls
+              past it on every visit; one who does not, opens it. */}
           <H>How to decide</H>
-          <div className="overflow-x-auto rounded-xl bg-[color:var(--cahier-paper-raised)] p-3">
-            {c.flow.map((line, n) => (
-              <p
-                key={n}
-                className="whitespace-pre font-mono text-[13px] leading-6"
-                style={{ paddingInlineStart: `${line.depth * 1.4}rem` }}
-              >
-                {line.text}
-              </p>
-            ))}
-          </div>
+          <details className="rounded-xl bg-[color:var(--cahier-paper-raised)] p-3">
+            <summary className="cursor-pointer font-bold">Show the steps</summary>
+            <div className="mt-2 overflow-x-auto">
+              {c.flow.map((line, n) => (
+                <p
+                  key={n}
+                  className="whitespace-pre font-mono text-[13px] leading-6"
+                  style={{ paddingInlineStart: `${line.depth * 1.4}rem` }}
+                >
+                  {line.text}
+                </p>
+              ))}
+            </div>
+          </details>
         </>
       )}
 

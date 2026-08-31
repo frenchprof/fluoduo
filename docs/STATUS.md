@@ -6,6 +6,77 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 31 Aug — the Tier 3 concept, redrafted on Dan's ruling
+
+**Dan overruled the first draft, and he was right.** I had built it on one line
+from `SYLLABUS_TIERS.md` — *"analysing them into parts is actively wrong at this
+level"* — and read it as a ban on all form analysis at a phrase stop. It is not.
+Its own example says what it means: « il fait beau » is not IL + FAIRE + BEAU.
+That is a claim about **opaque** blocks. Dan, 31 Aug: *"B is not out. it is every
+bit valid… this is basic enough analysis."*
+
+So the Tier 3 shape is **not** "moment instead of form". It is:
+
+- **transparent block** → the form pattern AND the moment;
+- **opaque block** (« il fait beau », « ça va ») → the moment only.
+
+### What the redraft argues
+
+*Why it is bonjour but bonne nuit.* `le jour`/`le soir` are masculine → `bon`;
+`la journée`/`la nuit` are feminine → `bonne`. **All four are already in this
+stop**, so the whole contrast sits inside the lesson.
+
+It is **generative**, which the first draft was not: the rule hands the learner
+`bonne soirée` untaught, and `bon appétit`, `bonne chance`, `bon voyage` when
+atelier 30 and 50 arrive. The first draft described eleven blocks; this one
+explains one rule.
+
+Two of the first draft's three pitfall rows **repeated the Mémo's own warning
+box** ("Salut ! = hello AND bye"; "Bonne nuit ! only at bedtime"). Dan's litmus
+test, pointed at my own work. Gone; the rows now show the agreement error, which
+the Mémo does not cover.
+
+### The page was too long — measured, not estimated
+
+Dan: *"it is a very long page, can we make the answer collapsible"*. At 390×844
+the concept ran **1512px in a 561px slot — 2.70 screens**.
+
+Collapsing the answer alone bought only 2.70 → 2.39. So every section was
+measured, and there was no single villain: contrast 23%, decision tree 19%,
+summaries 19%, checks 18%. It was long because it had six blocks, not one fat
+one. Three changes, **1111px — 1.98 screens, a 27% cut**:
+
+- the **answer** collapses behind the question (the WHY-button shape Dan settled
+  on 2026-07-02: on demand, never inline by default);
+- the **decision tree** collapses behind "Show the steps" — a tree is consulted,
+  not read;
+- **`inShort` dropped** from salutations: it said "bon + masculine · bonne +
+  feminine" and `remember` said the same, better.
+
+`<details>`, not React state, so the export ships collapsed and no learner on a
+slow phone sees the answer flash open then shut. Same idiom the mini-checks
+already use.
+
+**This changes all fifteen concepts**, since the collapse is in the shared
+renderer. All fifteen re-rendered and scanned: clean.
+
+### A fault the page-level check could not see
+
+The flow box ran past the right edge at 390px — a decision rule the learner had
+to scroll sideways to finish. My earlier "no horizontal overflow" was true of
+the PAGE and false of that box, which scrolls inside itself; I reported the
+page-level result as if it settled it. Fixed by one example per line.
+
+`verify67-concept-length.py` pins both disclosures. **Break-tested on seven
+mutations; two were green on the first pass** — `wrapping_details` took the
+nearest PRECEDING `<details>`, so an earlier disclosure that had already closed
+made any block look wrapped (un-collapsing the flow stayed green); and deleting
+a `<summary>` left the control labelled by the browser's own default. Both
+closed.
+
+**Still Dan's to approve:** `bonne soirée` (new to the app) and `bon appétit`
+(already in atelier 50) appear as predicted forms.
+
 ## THE ROSTER (31 Aug 2026) — lanes, rules, and the decision queue
 
 Four agents audited the same six branches on the same morning; that

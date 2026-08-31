@@ -255,3 +255,6 @@ jobs:
 
       - name: The rail's tiers step down on the coloured edge
         run: python3 verify/verify61-flap-edge.py
+
+      - name: The concept's answer and decision tree stay collapsed
+        run: python3 verify/verify67-concept-length.py

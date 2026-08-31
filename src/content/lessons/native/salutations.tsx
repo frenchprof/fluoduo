@@ -125,12 +125,19 @@ export const salutationsLesson: NativeLesson = {
         right: <><i lang="fr">bon voyage</i></>,
       },
     ],
+    // One example per line. The three-example lines this replaces ran past the
+    // right edge at 390px — a decision rule the learner had to scroll sideways
+    // to finish reading. Caught by screenshotting the box, not by the
+    // page-level overflow check, which was green because the box scrolls
+    // inside itself.
     flow: [
-      { depth: 0, text: "You are wishing someone a good something." },
-      { depth: 1, text: "Is that noun masculine? → bon" },
-      { depth: 2, text: "le jour → bonjour · le soir → bonsoir · le voyage → bon voyage" },
-      { depth: 1, text: "Is it feminine? → bonne" },
-      { depth: 2, text: "la journée → bonne journée · la nuit → bonne nuit · la chance → bonne chance" },
+      { depth: 0, text: "Wishing someone a good something?" },
+      { depth: 1, text: "the noun is masculine → bon" },
+      { depth: 2, text: "le jour → bonjour" },
+      { depth: 2, text: "le voyage → bon voyage" },
+      { depth: 1, text: "the noun is feminine → bonne" },
+      { depth: 2, text: "la nuit → bonne nuit" },
+      { depth: 2, text: "la chance → bonne chance" },
     ],
     check: [
       {
@@ -148,12 +155,6 @@ export const salutationsLesson: NativeLesson = {
         a: <><i lang="fr">Bon app&eacute;tit !</i></>,
       },
     ],
-    inShort: (
-      <>
-        <i lang="fr">bon</i> + masculine &middot; <i lang="fr">bonne</i>{" "}
-        + feminine &mdash; the greeting agrees like any other adjective
-      </>
-    ),
     remember: (
       <>
         <i lang="fr">Bonjour</i> and <i lang="fr">bonne nuit</i> are not two
