@@ -103,9 +103,11 @@ check("aria-expanded" in rail,
 # 3 · each family holds exactly what Dan listed
 EXPECT = {
     # Dan, 2026-08-23: rename xPlain → Memo, approved surface #3.
-    # Dan, 2026-08-25: rename EtuDice → Sorting — the tile opens the group
+    # Sorting was CUT on 2026-08-31 ("sorting is cut") — off navigation the way
+    # Match It went, registry row gone and route kept. So `practice` is four.
+    # Dan, 2026-08-25: rename EtuDice → Sorting — the tile opened the group
     # sort, not the die. "EtuDice" now names only the d12 in the pager.
-    "practice": {"SpecuLearn", "Memo", "Sorting", "4Mémoire", "iComplete"},
+    "practice": {"SpecuLearn", "Memo", "4Mémoire", "iComplete"},
     "review":   {"DéjàRevu", "GramMarathon"},
     "skills":   {"ConjugaZone", "ÉcouTexte", "WorDrill", "VoixLà", "ComposeIt", "ChaTutor"},
     "svplay":   {"NumBus", "NumBourse", "VocabulaRain", "LexicaLater"},
@@ -128,9 +130,13 @@ check("grid-cols-4" in menu,
 check("sm:grid-cols-5" in menu,
       "the Menu grid is five across from sm (4x5 / 5x4)",
       "the Menu grid does not widen to five from sm")
-check(len(rows) == 20,
-      f"the registry holds twenty activities — the grid is exactly 4x5 ({len(rows)})",
-      f"the registry holds {len(rows)} activities, so the grid is no longer 4x5")
+check(len(rows) == 19,
+      f"the registry holds nineteen activities ({len(rows)})",
+      f"the registry holds {len(rows)} activities, expected 19. Cutting Sorting on "
+      "2026-08-31 took it from twenty, so the Menu grid is no longer the exact 4x5 "
+      "Dan specified — five across leaves the last row one short. Flagged to him "
+      "rather than papered over; if a tile is added or removed, change this "
+      "number on purpose.")
 check(">Menu<" in menu or "Menu</h2>" in menu,
       "the popup calls itself Menu",
       "the popup does not say Menu")

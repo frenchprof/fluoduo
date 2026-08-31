@@ -112,11 +112,20 @@ export const ACTIVITIES: Activity[] = [
   // Dan, 2026-08-23: renamed xPlain → Memo (approved surface #3). Key stays
   // "lesson" — display rename only.
   { key: "lesson", name: "Memo", emoji: "📚", family: "practice", href: null, hue: "#e0567f", blurb: "The lesson: rule, then practice." },
-  // Dan, 2026-08-25: renamed EtuDice → Sorting. The tile never opened a die —
-  // it opens the group-sorting MCQ, while the real d12 lives in the lesson
-  // pager. Key stays "dice": the route, the tabs and saved progress all
-  // hang off it. Display rename only.
-  { key: "dice", name: "Sorting", emoji: "🗂️", family: "practice", href: null, hue: "#e3a700", blurb: "Which group does each word belong to?" },
+  // SORTING IS CUT (Dan, 2026-08-31: "sorting is cut").
+  //
+  // Off navigation, the way Match It went on 10 Aug — the registry row is gone
+  // so no tile or tab offers it, and the route stays so banked answers keep a
+  // label and the decision is reversible. `dice` therefore keeps its BAND row
+  // below, its activityLedger prefixes and its evidence tags: they describe
+  // answers already given, not a surface still offered.
+  //
+  // Why it went. ACTIVITY_CULL.md: Sorting and VocabulaRain drill the same
+  // thing — which of the deck's four Letris columns a word belongs to — one as
+  // a static MCQ and one as falling tiles. The game version is the one that
+  // earns the drill. It was also the tile Dan named when he said the framework
+  // had drifted "into things like EtuDice and Sorting", and the confusion its
+  // name caused reached all the way into the evidence table (see evidence.ts).
   { key: "flip", name: "4Mémoire", emoji: "🃏", family: "practice", href: "/practice/flip-it", hue: "#2bb6c2", blurb: "Flashcards. English front, flip to French." },
   { key: "complete", name: "iComplete", emoji: "✏️", family: "practice", href: null, hue: "#7bbf2e", blurb: "Type the missing word." },
 
