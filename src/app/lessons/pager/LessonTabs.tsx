@@ -178,6 +178,12 @@ function Section({
   );
 }
 
+/** "1 step" / "3 steps" — a fold's note is learner-facing text, and "1 steps"
+ *  on a language-learning app undermines the product it labels. */
+function count(n: number, word: string): string {
+  return `${n} ${word}${n === 1 ? "" : "s"}`;
+}
+
 function Panel({ children }: { children: ReactNode }) {
   return <div className="pb-4 pt-3 text-[15px] leading-relaxed text-[color:var(--cahier-ink)]">{children}</div>;
 }
@@ -238,13 +244,24 @@ function Concept({ c }: { c?: LessonConcept }) {
       <h2 className="cahier-display text-lg font-black leading-tight">{c.subtitle}</h2>
       <p className="mt-2">{c.contrast}</p>
 
+      {/* THE ANSWER COLLAPSES (Dan, 2026-08-31: "it is a very long page, can
+          we make the answer collapsible"). Measured on salutations at 390px:
+          the concept ran 1512px in a 561px slot — 2.7 screens — and the
+          answer is its longest single block.
+
+          It also puts the tab's core beat on the same footing as the rest of
+          the app: the question is asked, the answer is there when the learner
+          wants it, never before. Same <details> the mini-checks below already
+          use, so one interaction idiom, not two — and <details> rather than
+          state so it survives SSR and needs no hydration to open. */}
       <H>One question</H>
-      <p className="text-base font-bold">{c.question}</p>
-      <H>The answer</H>
-      <p>{c.answer}</p>
+      <details className="mt-1 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-raised)] p-3">
+        <summary className="cursor-pointer text-base font-bold">{c.question}</summary>
+        <div className="mt-2">{c.answer}</div>
+      </details>
 
       {c.pitfall && c.pitfall.length > 0 && (
-        <Section title="⚠️ The common pitfall" note={`${c.pitfall.length} traps`}>
+        <Section title="⚠️ The common pitfall" note={count(c.pitfall.length, "trap")}>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-sm">
               <thead>
@@ -269,10 +286,12 @@ function Concept({ c }: { c?: LessonConcept }) {
       )}
 
       {c.flow && c.flow.length > 0 && (
-        // The count is the DECISIONS, not the lines: a flow's indented lines
-        // are branches under a question, and "5 lines" would describe the
+        // Collapsed because a decision tree is CONSULTED, not read — #100's
+        // intent — but through `Section` so the fold names its count. The
+        // count is the DECISIONS, not the lines: a flow's indented lines are
+        // branches under a question, and "5 lines" would describe the
         // rendering rather than what the learner is about to walk through.
-        <Section title="How to decide" note={`${c.flow.filter((l) => l.depth === 0).length} steps`}>
+        <Section title="How to decide" note={count(c.flow.filter((l) => l.depth === 0).length, "step")}>
           <div className="overflow-x-auto rounded-xl bg-[color:var(--cahier-paper-raised)] p-3">
             {c.flow.map((line, n) => (
               <p
@@ -288,7 +307,7 @@ function Concept({ c }: { c?: LessonConcept }) {
       )}
 
       {c.check && c.check.length > 0 && (
-        <Section title="✅ Before you go on" note={`${c.check.length} questions`}>
+        <Section title="✅ Before you go on" note={count(c.check.length, "question")}>
           <div className="flex flex-col gap-2">
             {c.check.map((x, n) => (
               // <details> rather than state: the answer must stay hidden until
@@ -372,7 +391,7 @@ function Formes({
       {hasWords && (
         <Section
           title="Every word in this lesson"
-          note={deck?.items?.length ? `${deck.items.length} words` : undefined}
+          note={deck?.items?.length ? count(deck.items.length, "word") : undefined}
         >
           {lexique ?? <Lexique deck={deck} bare />}
         </Section>

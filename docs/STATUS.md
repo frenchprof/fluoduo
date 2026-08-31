@@ -6,6 +6,77 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 31 Aug — the Tier 3 concept, redrafted on Dan's ruling
+
+**Dan overruled the first draft, and he was right.** I had built it on one line
+from `SYLLABUS_TIERS.md` — *"analysing them into parts is actively wrong at this
+level"* — and read it as a ban on all form analysis at a phrase stop. It is not.
+Its own example says what it means: « il fait beau » is not IL + FAIRE + BEAU.
+That is a claim about **opaque** blocks. Dan, 31 Aug: *"B is not out. it is every
+bit valid… this is basic enough analysis."*
+
+So the Tier 3 shape is **not** "moment instead of form". It is:
+
+- **transparent block** → the form pattern AND the moment;
+- **opaque block** (« il fait beau », « ça va ») → the moment only.
+
+### What the redraft argues
+
+*Why it is bonjour but bonne nuit.* `le jour`/`le soir` are masculine → `bon`;
+`la journée`/`la nuit` are feminine → `bonne`. **All four are already in this
+stop**, so the whole contrast sits inside the lesson.
+
+It is **generative**, which the first draft was not: the rule hands the learner
+`bonne soirée` untaught, and `bon appétit`, `bonne chance`, `bon voyage` when
+atelier 30 and 50 arrive. The first draft described eleven blocks; this one
+explains one rule.
+
+Two of the first draft's three pitfall rows **repeated the Mémo's own warning
+box** ("Salut ! = hello AND bye"; "Bonne nuit ! only at bedtime"). Dan's litmus
+test, pointed at my own work. Gone; the rows now show the agreement error, which
+the Mémo does not cover.
+
+### The page was too long — measured, not estimated
+
+Dan: *"it is a very long page, can we make the answer collapsible"*. At 390×844
+the concept ran **1512px in a 561px slot — 2.70 screens**.
+
+Collapsing the answer alone bought only 2.70 → 2.39. So every section was
+measured, and there was no single villain: contrast 23%, decision tree 19%,
+summaries 19%, checks 18%. It was long because it had six blocks, not one fat
+one. Three changes, **1111px — 1.98 screens, a 27% cut**:
+
+- the **answer** collapses behind the question (the WHY-button shape Dan settled
+  on 2026-07-02: on demand, never inline by default);
+- the **decision tree** collapses behind "Show the steps" — a tree is consulted,
+  not read;
+- **`inShort` dropped** from salutations: it said "bon + masculine · bonne +
+  feminine" and `remember` said the same, better.
+
+`<details>`, not React state, so the export ships collapsed and no learner on a
+slow phone sees the answer flash open then shut. Same idiom the mini-checks
+already use.
+
+**This changes all fifteen concepts**, since the collapse is in the shared
+renderer. All fifteen re-rendered and scanned: clean.
+
+### A fault the page-level check could not see
+
+The flow box ran past the right edge at 390px — a decision rule the learner had
+to scroll sideways to finish. My earlier "no horizontal overflow" was true of
+the PAGE and false of that box, which scrolls inside itself; I reported the
+page-level result as if it settled it. Fixed by one example per line.
+
+`verify67-concept-length.py` pins both disclosures. **Break-tested on seven
+mutations; two were green on the first pass** — `wrapping_details` took the
+nearest PRECEDING `<details>`, so an earlier disclosure that had already closed
+made any block look wrapped (un-collapsing the flow stayed green); and deleting
+a `<summary>` left the control labelled by the browser's own default. Both
+closed.
+
+**Still Dan's to approve:** `bonne soirée` (new to the app) and `bon appétit`
+(already in atelier 50) appear as predicted forms.
+
 ## THE ROSTER (31 Aug 2026) — lanes, rules, and the decision queue
 
 Four agents audited the same six branches on the same morning; that
@@ -64,13 +135,28 @@ lane = report it in STATUS, don't do it.
    (a pending permission, a need-input nobody saw) is reported to Dan.
 
 
+
 ### The work, by lane (what each agent is MEANT to deliver)
 
-- **Color review — the concept pipeline.** Tier 3: 14 remaining after
-  salutations (gated on Dan's read of that one). Tier 1: all 19 (drafted in
-  batches of five, every batch read by Dan before ship). Tier 2: the
-  second-half compound-name concept, plus Colours/Some-nouns once decision 6
-  lands. Keeper of the Stocktake ledger — re-issue it when the counts move.
+- **Color review — the concept pipeline.** Updated 31 Aug PM.
+  **Tier 3 shape: SETTLED.** Dan read salutations and overruled the first
+  draft — form analysis is valid at a phrase stop where the block is
+  TRANSPARENT (« bonne nuit » = bonne + a feminine noun); the moment alone
+  only where it is OPAQUE (« il fait beau »). The redraft and the 27% page
+  cut are in **#100**, awaiting fluoduo-main's merge under rule 7.
+  Remaining, in order:
+  1. **Tier 1 — 19 concepts.** The critical path, nothing gating it. Batches
+     of five, every batch read by Dan before ship.
+  2. **Tier 3 — 8 more phrase stops.** Classroom talk, Pourquoi ?, Telling
+     time, Invitations, Weather, Directions, Wants & needs, Introductions.
+     The salutations shape applies directly.
+  3. **The 6 ateliers have no native lesson file** — a concept has nowhere to
+     live on stops 10/20/30/40/49/50. They need a file before Tier 3 closes.
+  4. **Tier 2 second half** — compound names, *tarte aux pommes* against
+     *jus de pomme*.
+  5. **Colours (5) + Some nouns (6)** — the two Tier 2 stops with no native
+     lesson file. Decision 6: give them one, or Tier 2 is done at 13.
+  Keeper of the Stocktake ledger — re-issue when the counts move.
 - **Pre-tests — the pre-test surface, then capacity.** ~~Unit-0 pre-test pages
   (in flight, the last uncovered pre-test surface).~~ **DONE — #98.** All ten
   now render at `/pretests/unit0/SIO-00N`; every stop in the course has a
@@ -3195,6 +3281,45 @@ right with the modifiers left behind. All seven red on the first pass.
 The lesson is the mirror, not the CSS: a left→right sweep over a stylesheet
 will hit declarations that were already on the correct side. Mirroring is not a
 find-and-replace.
+
+## 31 Aug — Tier 1, batch 1 of four
+
+Five concepts, and they are one argument rather than five: **what the negative
+does to the article tells you which article it was.** That is the contrast Dan's
+own L08 and L09 pages set up between them, so batch 1 is the pair plus the three
+stops that complete it.
+
+| stop | the question the FORMS cannot answer |
+|---|---|
+| **23** Likes (L08) | « Je ne fais pas **de** sport » loses its article — so why does « Je n'aime pas **le** sport » keep one? |
+| **24** Faire du/de la (L09) | `du` is not a word: it is `de` + `le`. A negative removes the portion, so the `le` half goes and `de` is what was always underneath |
+| **42** Partitives | four forms are one word plus an article — only `le` and `les` fuse with `de`, which is why `de la` and `de l'` stay in two |
+| **28** Négation | `ne` does not go before the verb; it goes before the verb **and everything glued to it** (`me`, `te`, `se`, `y`) |
+| **22** Possessives (L13) | the possessive agrees with what is owned, so « son livre » is his book AND hers, and no form will ever tell you which |
+
+Every claim is lifted from the Mémo already in the file. The Mémos state the
+FACTS — "even in the negative the article stays le/la/les", "in the negative
+du/de la/des all become de". None of them says WHY, and the why is what turns
+stop 24 from a second rule into a consequence of the first.
+
+### The measurement that was worth more than the concepts
+
+The page-length harness reported **1111px / 1.98 screens for all seven concepts
+measured, identical to the pixel.** Seven different pages cannot be the same
+height. The URL was hardcoded to `salutations` — a `sed` that silently matched
+nothing — so every run measured the same page. Parameterised properly the
+numbers separate: 923–1111px, and it immediately found a real fault, negation's
+flow box scrolling sideways at 304px in a 296px box. Shortened; gone.
+
+**Identical numbers across different inputs is the tell.** Nothing in the output
+said "vacuous"; it took noticing that seven pages agreeing exactly is not a
+result. Fifth vacuous check this session, and the first found by suspicion
+rather than by break-testing.
+
+All 20 concepts render clean · every one under two screens · nothing scrolls
+sideways · `tsc` clean · build passes · 56 verify scripts green · lint clean.
+
+**Not merged** — rule 6. Handed to fluoduo-main.
 
 ## 31 Aug — the first Tier 3 concept, and whether the format survives it
 

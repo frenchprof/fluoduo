@@ -78,6 +78,49 @@ export const possessifsLesson: NativeLesson = {
       </p>
     </div>
   ),
+  // TIER 1 · stop 22 (Dan's L13). The Mémo states the rule; the concept shows
+  // what the rule COSTS — `son livre` cannot tell you whose, and no French
+  // speaker finds that a problem. That is the thing English speakers resist.
+  concept: {
+    subtitle: "Why son livre does not tell you whose",
+    contrast: (
+      <>
+        English picks the possessive by the <b>owner</b> &mdash; <i>his</i> book,{" "}
+        <i>her</i> book. French picks it by the <b>thing owned</b>. So{" "}
+        <i lang="fr">son livre</i> is his book <u>and</u> her book, and nothing in the form will
+        ever tell you which.
+      </>
+    ),
+    question: (
+      <>
+        Marie has a book. How do you say <i>her book</i>?
+      </>
+    ),
+    answer: (
+      <>
+        <i lang="fr">Son livre</i> &mdash; because <i lang="fr">livre</i> is masculine.{" "}
+        <i lang="fr">Sa</i> would be wrong, even though the owner is a woman. If you need to say
+        whose, French adds it elsewhere; the possessive is busy agreeing with the noun.
+      </>
+    ),
+    pitfall: [
+      { label: <>her book</>, wrong: <><i lang="fr">sa livre</i></>, right: <><i lang="fr">son livre</i> &mdash; <i lang="fr">le</i> livre</> },
+      { label: <>his car</>, wrong: <><i lang="fr">son voiture</i></>, right: <><i lang="fr">sa voiture</i> &mdash; <i lang="fr">la</i> voiture</> },
+      { label: <>my stapler</>, wrong: <><i lang="fr">ma agrafeuse</i></>, right: <><i lang="fr">mon agrafeuse</i></> },
+    ],
+    check: [
+      { q: <>Why <i lang="fr">mon agrafeuse</i> when <i lang="fr">agrafeuse</i> is feminine?</>,
+        a: <>For sound, not gender. <i lang="fr">Ma</i> before a vowel is hard to say, so the masculine form stands in. The word is still feminine.</> },
+      { q: <>Hugo has a sister. <i>His sister</i>?</>,
+        a: <><i lang="fr">Sa sœur</i> &mdash; <i lang="fr">sœur</i> is feminine, and the owner does not come into it.</> },
+    ],
+    remember: (
+      <>
+        The possessive agrees with what is owned, never with who owns it. That is why{" "}
+        <i lang="fr">son livre</i> is both his and hers.
+      </>
+    ),
+  },
   dice: {
     instruction: "Rebuild the sentence with C'est / Ce sont + the right possessive.",
     newQuestion() {

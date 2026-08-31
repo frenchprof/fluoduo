@@ -49,6 +49,61 @@ export const negationLesson: NativeLesson = {
       </p>
     </div>
   ),
+  // TIER 1 · stop 28. The Mémo lists five placements. What it never states is
+  // the single principle underneath them: `ne` goes before EVERYTHING attached
+  // to the verb, not before the verb.
+  concept: {
+    subtitle: "Where ne goes when the verb is not alone",
+    contrast: (
+      <>
+        English negates with one word dropped in after the verb &mdash; <i>I am not</i>. French
+        wraps the verb in two, <i lang="fr">ne</i> &hellip; <i lang="fr">pas</i>, and the
+        difficulty is never <i lang="fr">pas</i>. It is knowing how far left{" "}
+        <i lang="fr">ne</i> has to go.
+      </>
+    ),
+    question: (
+      <>
+        <i lang="fr">Je m&rsquo;appelle Marie.</i> Make it negative. Does{" "}
+        <i lang="fr">ne</i> come before <i lang="fr">m&rsquo;</i> or after it?
+      </>
+    ),
+    answer: (
+      <>
+        Before: <i lang="fr">Je <b>ne</b> m&rsquo;appelle <b>pas</b> Marie.</i>{" "}
+        <i lang="fr">M&rsquo;appelle</i> is one unit &mdash; the little pronoun belongs to the
+        verb, not to you &mdash; so <i lang="fr">ne</i> goes in front of the whole unit. Same
+        with <i lang="fr">il y a</i>: <i lang="fr">il <b>n&rsquo;</b>y a <b>pas</b></i>, because{" "}
+        <i lang="fr">y a</i> is the unit.
+      </>
+    ),
+    pitfall: [
+      { label: <><i lang="fr">je m&rsquo;appelle</i></>, wrong: <><i lang="fr">Je me ne appelle pas</i></>, right: <><i lang="fr">Je <b>ne</b> m&rsquo;appelle pas</i></> },
+      { label: <><i lang="fr">il y a</i></>, wrong: <><i lang="fr">Il y ne a pas</i></>, right: <><i lang="fr">Il <b>n&rsquo;</b>y a pas</i></> },
+    ],
+    // Lines kept short enough to fit 390px without the box scrolling sideways.
+    // "Find the verb and anything glued to it." measured 304px in a 296px box —
+    // a decision rule the learner had to drag to finish reading.
+    flow: [
+      { depth: 0, text: "Find the verb —" },
+      { depth: 1, text: "me · te · se · y are part of it" },
+      { depth: 0, text: "ne goes before that whole unit" },
+      { depth: 1, text: "n' before a vowel" },
+      { depth: 0, text: "pas goes after the verb" },
+    ],
+    check: [
+      { q: <>Negate <i lang="fr">Tu t&rsquo;appelles L&eacute;a.</i></>,
+        a: <><i lang="fr">Tu <b>ne</b> t&rsquo;appelles <b>pas</b> L&eacute;a.</i></> },
+      { q: <>Negate <i lang="fr">J&rsquo;ai quinze ans.</i></>,
+        a: <><i lang="fr">Je <b>n&rsquo;</b>ai <b>pas</b> quinze ans.</i> Vowel, so <i lang="fr">n&rsquo;</i>.</> },
+    ],
+    remember: (
+      <>
+        <i lang="fr">Ne</i> does not go before the verb &mdash; it goes before the verb{" "}
+        <b>and everything stuck to it</b>.
+      </>
+    ),
+  },
   dice: {
     instruction: "Put the sentence in the negative.",
     newQuestion() {
