@@ -369,10 +369,12 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     // Sorting's flap is gone with the activity (Dan, 2026-08-31: "sorting is
     // cut"). The route survives so banked answers keep a label, but nothing
     // offers it any more — see the note in content/activities.ts.
-    // iComplete's flap is gone with the activity (Dan, 2026-08-31: "we can
-    // retire CompleteIt … it will be part of Memo's activities" — the Memo's
-    // Moyen/Difficile tiers ARE one- and two-piece completion now). The
-    // route survives so banked answers keep a label — see activities.ts.
+    // iComplete's flap is gone with the activity. Two of Dan's 31 Aug rulings
+    // arrived at the same line from both ends: "iComplete does not have its
+    // door from here, but through Memo" (#99) and then "we can retire
+    // CompleteIt … it will be part of Memo's activities" (#97) — the Memo's
+    // Moyen/Difficile tiers ARE one- and two-piece completion now. The route
+    // survives so banked answers keep a label — see activities.ts.
     registryTab("flip", `/practice/flip-it/${collectionId}`),
     ...(rainSet
       ? [registryTab("vocabularain", `/games/vocabularain/${collectionId.replace("-letris", "")}`)]

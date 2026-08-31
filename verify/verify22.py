@@ -168,11 +168,16 @@ for route in ("src/app/lessons/[slug]/page.tsx", "src/app/lessons/deck/[collecti
     check("LessonPager" in strip_comments(read(route)),
           f"{route.split('/')[-2]} route renders the pager",
           f"{route} does not render LessonPager")
+# SUPERSEDED 2026-08-31 by the popup collapse (verify66). Patch 22 took the
+# LESSON out of SioModal's EMBEDDABLE set so its flap navigated to the pager;
+# this asserted that one absence. The collapse removed EMBEDDABLE itself — now
+# NOTHING renders inside the popup and every row is a link — so the old check
+# would fail on a stronger version of the thing it was protecting. The rule it
+# was really defending is the one restated here: the lesson opens as a page.
 modal = strip_comments(read("src/app/SioModal.tsx"))
-emb = re.search(r"EMBEDDABLE\s*=\s*new Set\(\[(.*?)\]\)", modal, re.S)
-check(bool(emb) and "lesson" not in emb.group(1),
-      "SioModal no longer embeds the lesson (its flap navigates to the pager)",
-      "SioModal still embeds the lesson view")
+check("dynamic(" not in modal,
+      "SioModal embeds nothing at all — the lesson, like every row, is a link",
+      "SioModal lazily imports a view again: something renders inside the popup")
 
 # 6 · one pretest runner
 runner_ok = os.path.isfile("src/lib/pretests/runner.ts")

@@ -77,7 +77,13 @@ STORE   = "src/lib/pretestRecord.ts"
 POPUP   = "src/app/PretestQuiz.tsx"
 SOLO    = "src/app/pretests/[id]/PretestContent.tsx"
 PICTURE = "src/app/pretests/picture/[collectionId]/PicturePretestContent.tsx"
-UNIT0   = "src/app/Unit0Panel.tsx"
+# The Unit-0 questions left Unit0Panel on 2026-08-31: they now render on their
+# own page as well as in the popup (Dan: "each pre-test to now have its own page
+# rather just a pop up"), so they live in one component both surfaces mount.
+# Read from ONE file — not this and the panel concatenated: a check satisfied by
+# whichever file still has the code is how a stale duplicate survives, which is
+# exactly what verify64 forbids here.
+UNIT0   = "src/components/Unit0Pretest.tsx"
 BANK    = "src/content/sios/unit0-questions.ts"
 
 for p in (RUNNER, STORE, POPUP, SOLO, PICTURE, UNIT0, BANK):

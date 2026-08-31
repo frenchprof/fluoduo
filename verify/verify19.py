@@ -86,17 +86,24 @@ check('registryTab("dice"' not in shell,
       "2026-08-31. A tile that is gone from the registry and still tabbed is a "
       "dead end wearing a live link.")
 
-# REVERSED 2026-08-31. This used to demand the flap EXIST ("its route is
-# still orphaned" was the 19 Jul fault). Dan retired the activity the same
-# day the Memo's ladder absorbed it: "we don't need a separate CompleteIt
-# exercise anymore … we can retire CompleteIt and Sorting". Moyen/Difficile
-# ARE one- and two-piece completion, so the flap would offer the same
-# exercise twice. Orphaned-on-purpose, like Sorting's, with banked answers
-# keeping their labels.
+# REWRITTEN 2026-08-31, from both directions at once. This asserted the
+# opposite — iComplete MUST have a flap, because the flap was the only door to
+# its route. Two rulings of Dan's landed the same day: "iComplete does not
+# have its door from here, but through Memo" (#99 — the door moves) and "we
+# don't need a separate CompleteIt exercise anymore … we can retire CompleteIt
+# and Sorting" (#97 — the registry row goes too). The Memo's Moyen/Difficile
+# tiers ARE one- and two-piece completion, so a flap beside Memo would offer
+# the ladder's own card as an alternative to it.
+#
+# The consequence is recorded rather than hidden: nothing links
+# `/practice/complete-it/` — the standalone twelve-question run over a deck is
+# unreachable, and only the ladder's cards remain. Same shape as the Sorting
+# cut above: the route survives so banked answers keep their label and the
+# decision stays reversible, and nothing offers it.
 check('registryTab("complete"' not in shell,
-      "iComplete offers no flap — the Memo's ladder is the completion exercise",
-      "CahierShell still builds a flap for `complete`, but Dan retired it on "
-      "2026-08-31 — the Memo's Moyen/Difficile tiers are that exercise now")
+      "iComplete offers no flap — its door is Memo (retired into the ladder)",
+      "CahierShell builds a flap for `complete` again — a second door beside "
+      "Memo, presenting the ladder's own card as an alternative to it.")
 
 # ── 3 · the bottom bar ─────────────────────────────────────────────────────
 # Index lost its own slot on 2026-08-22 (Dan: "Goals and Index to merge later
