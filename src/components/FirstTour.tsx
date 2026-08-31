@@ -68,18 +68,15 @@ function tourFor(rawPath: string): Tour | null {
   // major surface with NO tour at all: tourFor branched on "/", /unit/,
   // /activities and /lessons/, so a first-time visitor to the map got nothing.
   //
-  // Step one is the one that actually matters. The map is covered by a
-  // transparent glass and is inert until tapped, so that a scroll cannot drag
-  // it by accident. That is good behaviour and completely invisible: a learner
-  // who misses the small "Tap to use the map" badge concludes the map is
-  // broken. The tour says it out loud. The glass is gone once the map is
-  // awake, and an absent target is skipped, so a returning visitor is not told
-  // about a button that is no longer there.
+  // The tour used to open on the wake glass ("tap to use the map"); the
+  // glass was removed on 2026-08-31 with the map on its own page, so the
+  // tour now opens on the 2D/3D toggle — the map's front-and-centre control.
   if (/^\/map/.test(path)) {
     return {
       key: "map",
       steps: [
-        { selector: '[data-tour="map-wake"]', action: "tap", text: "The map sleeps until you tap it — that way a scroll never drags it by accident." },
+        // The wake-glass step went with the glass itself (Dan, 2026-08-31) —
+        // the map answers the first tap now, nothing to explain.
         { selector: '[data-tour="map-view"]', action: "tap", text: "2D reads like a plan, 3D like a scene. Your choice sticks." },
         { selector: '[data-tour="map"]', action: "tap", text: "Every stop on the road is one goal. Tap one and its sheet opens." },
         { text: "✓ green = done, the highlighted stop = where your class is. Mistakes are welcome — they become your 📝 Bring to class list." },
