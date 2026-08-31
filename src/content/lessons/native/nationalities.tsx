@@ -22,13 +22,12 @@ export const nationalitiesLesson: NativeLesson = {
   // DRAFTED — `contrast` and `remember` are the pedagogical claim and go to
   // Dan before they reach a learner.
   concept: {
-    subtitle: "Why « la France » keeps its capital and « français » loses it",
+    subtitle: "Why français has no capital",
     contrast: (
       <>
-        English capitalises every nationality — <i>he is French</i>, <i>a French film</i>.
-        French capitalises the <b>country</b>, but not the <b>adjective</b>:{" "}
-        <i lang="fr">la France</i>, and <i lang="fr">il est français</i>. That is the key
-        insight, and it is a spelling rule with a grammatical reason behind it.
+        English capitalises every nationality &mdash; <i>he is French</i>, <i>a French
+        film</i>. French capitalises the country but not the adjective:{" "}
+        <i lang="fr">la France</i>, and <i lang="fr">il est fran&ccedil;ais</i>.
       </>
     ),
     question: (
