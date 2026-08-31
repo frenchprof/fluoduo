@@ -6,6 +6,73 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## THE ROSTER (31 Aug 2026) — lanes, rules, and the decision queue
+
+Four agents audited the same six branches on the same morning; that
+redundancy is why this section exists. One lane each. Work outside your
+lane = report it in STATUS, don't do it.
+
+### Lanes
+
+| Agent (session) | Lane | Owns right now |
+|---|---|---|
+| **fluoduo-main** | **Integration** — merges, branch hygiene, verify-number renumbers, cross-session stall watch, previews for Dan, deploy shepherding | The 31 Aug cleanup sweep; this roster |
+| **Color review** | **Concepts** — the tier pipeline (Tier 1 ×19, Tier 2 second half), keeper of the Stocktake ledger | Next Tier batch, gated on Dan's salutations read |
+| **Pre-tests** | **Pre-test surfaces** | Unit-0 pre-test pages; after that, joins concept drafting as second capacity |
+| **Peers** | **Features** | Free since Sorting was cut (#93) — next feature is Dan's to assign |
+| **Dan** | **Decisions + reads + deploys** | The queue below; every pedagogical claim is read before it ships |
+
+### Rules every session respects
+
+1. STATUS.md first; one editor at a time; say so in the commit (unchanged).
+2. **A verify number is claimed by scanning EVERY remote branch, not main** —
+   four collisions now (31, 52 ×2, 60). The command lives in AGENTS.md so it
+   is read at boot. Suffixes (18b, 19c, 25b) are the sanctioned variant form.
+3. **No pushing to another session's branch** without Dan's explicit word.
+4. **A finished deliverable gets a PR or a STATUS row before the session
+   disconnects** — a silent push-and-vanish is how La Carte and the six empty
+   branches rotted.
+5. Integration sweeps (branch audits, renumbers, closures) belong to
+   fluoduo-main alone. If you find a cross-branch problem, write it here and
+   carry on in your lane.
+6. fluoduo-main sweeps session states daily; anything stalled >24h
+   (a pending permission, a need-input nobody saw) is reported to Dan.
+
+### The work, by lane (what each agent is MEANT to deliver)
+
+- **Color review — the concept pipeline.** Tier 3: 14 remaining after
+  salutations (gated on Dan's read of that one). Tier 1: all 19 (drafted in
+  batches of five, every batch read by Dan before ship). Tier 2: the
+  second-half compound-name concept, plus Colours/Some-nouns once decision 6
+  lands. Keeper of the Stocktake ledger — re-issue it when the counts move.
+- **Pre-tests — the pre-test surface, then capacity.** Unit-0 pre-test pages
+  (in flight, the last uncovered pre-test surface). When done: take Tier-1
+  concept batches in parallel with Color review, same read-before-ship rule.
+- **Peers — features.** Queue empty since Sorting was cut (#93). Next
+  assignment is Dan's; until then, nothing — not audits, not others'
+  branches.
+- **fluoduo-main — integration.** The 31 Aug cleanup sweep on Dan's go
+  (six empty branches + La Carte deleted, PR #6 closed, stalled sessions
+  archived; French 4 rebased to a PR; verify renumbers 52→64 on
+  fluency-cycling and the stale 31s on font/home-rebuild). The deploy mirror
+  Action once decision 9 lands. The daily stall sweep, standing.
+- **Dan — the decision queue below**, and the reads: salutations now, then
+  every concept batch.
+
+### Decision queue (Dan — each blocks someone)
+
+| # | Decision | Blocks |
+|---|---|---|
+| 1 | Salutations concept read — does the Tier-3 shape hold? | 14 Tier-3 + gating 19 Tier-1 drafts |
+| 2 | FluOlinGo Hand font: (a) want it? (b) wire in same PR or assets-only? | font branch |
+| 3 | Home-rebuild branch: confirm delete (stale draft of shipped #40; main's StopSheet newer) | one branch |
+| 4 | Cycling pair: keep either / both / park both under work/ | two branches |
+| 5 | French 4 scaling docs: merge after your read? | one branch |
+| 6 | Colours + Some nouns: native-lesson file, or tier done at 13? | Tier 2 close-out |
+| 7 | Empty shortcut row under MENU: fill or delete? | one surface |
+| 8 | `rule:` namespace (894-item tagging): go / stay parked? | transfer evidence |
+| 9 | Deploy mirror Action (needs one fine-grained PAT from you) | ends manual deploys |
+
 ## Where the code is
 
 - `main` on `frenchprof/fluoduo` (origin) — the working repo.
