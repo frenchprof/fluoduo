@@ -23,7 +23,14 @@ Two more of Dan's rulings landed the same evening, both driven by pictures:
   RailGroups and GuideBody carried private copies of familyShort's regex —
   consolidated onto the helper.
 
-**Twelve merges** now await Dan's deploy (`git pull && git push live main`).
+**DEPLOYED.** Dan pushed `live main` the same evening — production (`dckg/fluo`)
+is at `66faa42`, carrying the whole day: #94 · #97 · #98 · #99 · #100 · #101 ·
+#102 · #103 · #105 · #106 · #108 · #109. Nothing on origin/main is undeployed
+except this STATUS entry itself.
+
+**Awaiting Dan's read on the live site:** the one-row tab strip, the FluOLinGo
+respelling, the new family icons, and the two French forms in the salutations
+concept (« bonne soirée », « bon appétit »).
 
 ## 31 Aug PM — #100 MERGED; decision 1 is RESOLVED
 
