@@ -65,8 +65,19 @@ const patrickHand = Patrick_Hand({
 // FluOlinGo Hand — Dan's own brand hand-lettering (uploaded 2026-08-23), the
 // face of the page heading bands: what the design handoff's headers were
 // drawn in, now served from the repo instead of approximated by Patrick Hand.
+// TWO WEIGHTS, from ONE build (2026-08-31). PR #95 shipped the complete
+// nine-weight family; what was loaded here was a 15 KB first-upload Regular
+// from August, a different build. Mixing that Regular with a SemiBold from
+// the new family would put two drawings of the same hand on one page.
+//
+// Only the two the app uses are loaded. The other seven sit in fonts/ until
+// something needs them: all nine would cost ~316 KB on every page for eight
+// weights nothing renders.
 const fluoHand = localFont({
-  src: "../fonts/FluOlinGoHandRegular.otf",
+  src: [
+    { path: "../fonts/FluOlinGoHand-Regular.woff2", weight: "400", style: "normal" },
+    { path: "../fonts/FluOlinGoHand-SemiBold.woff2", weight: "600", style: "normal" },
+  ],
   variable: "--font-fluohand",
   display: "swap",
 });

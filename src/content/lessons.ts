@@ -41,6 +41,10 @@ export const LESSONS: Record<string, Lesson> = {
   "questions-oui-non": { slug: "questions-oui-non", title: "Questions : oui ou non",       unit: 3 },
   "mots-interrogatifs":{ slug: "mots-interrogatifs",title: "Les mots interrogatifs",       unit: 3 },
   "articles-pays":     { slug: "articles-pays",     title: "Les articles des pays",        unit: 1 },
+  // SIO-005 / SIO-006, added 2026-08-31 — Unité 0, the two Tier 2 stops that
+  // had a deck but no lesson file to hold a concept.
+  "colors":            { slug: "colors",            title: "Les couleurs",                 unit: 0 },
+  "core-nouns":        { slug: "core-nouns",        title: "Quelques noms",                unit: 0 },
   "professions":       { slug: "professions",       title: "Les professions",              unit: 1 },
   "nationalities":     { slug: "nationalities",     title: "Les nationalités",             unit: 1 },
   "revision-u1":       { slug: "revision-u1",       title: "Révision — Unité 1",           unit: 1 },
@@ -103,6 +107,8 @@ export const LESSONS_BY_SIO: Record<string, string[]> = {
   "SIO-017": ["langues-pays"],
   "SIO-018": ["nombres-echanges"],
   "SIO-009": ["salutations"],
+  "SIO-005": ["colors"],
+  "SIO-006": ["core-nouns"],
   "SIO-012": ["professions"],
   "SIO-016": ["nationalities"],
   // se-presenter dropped 2026-08-27: it earned this row by teaching être +

@@ -18,8 +18,8 @@ lane = report it in STATUS, don't do it.
 |---|---|---|
 | **fluoduo-main** | **Integration** — merges, branch hygiene, verify-number renumbers, cross-session stall watch, previews for Dan, deploy shepherding | The 31 Aug cleanup sweep; this roster |
 | **Color review** | **Concepts** — the tier pipeline (Tier 1 ×19, Tier 2 second half), keeper of the Stocktake ledger | Next Tier batch, gated on Dan's salutations read |
-| **Pre-tests** | **Pre-test surfaces** | Unit-0 pre-test pages; after that, joins concept drafting as second capacity |
-| **Peers** | **Features** | Free since Sorting was cut (#93) — next feature is Dan's to assign |
+| **Pre-tests** | **Pre-test surfaces** | ✅ Unit-0 pages (#98) · ✅ popup collapse (#99) · **now: derived done-ness**; then concept drafting as second capacity |
+| **Peers** | **Features** | 31 Aug PM: SIO-005/006 lessons, the colour ladder, band weight, English tabs, Words-under-Forms, the collapse rule — handed over per `docs/HANDOFF_PEERS_31AUG.md`, **landing as #105**. Queue then empty; next assignment is Dan's |
 | **Dan** | **Decisions + reads + deploys** | The queue below; every pedagogical claim is read before it ships |
 
 ### Rules every session respects
@@ -35,15 +35,34 @@ lane = report it in STATUS, don't do it.
 5. Integration sweeps (branch audits, renumbers, closures) belong to
    fluoduo-main alone. If you find a cross-branch problem, write it here and
    carry on in your lane.
-6. fluoduo-main sweeps session states daily; anything stalled >24h
+6. **EVERY merge goes through fluoduo-main** (Dan, 31 Aug) — including a PR
+   of your own work. Open it, get CI green, leave it. A single integrator is
+   what catches a collision between two branches that are each individually
+   correct; no session can see that from inside its own lane. When a branch
+   is ready, **hand it over explicitly** — which files it touches, which are
+   shared, what you already know it collides with (`HANDOFF_PEERS_31AUG.md`
+   is the model); a branch that is merely pushed has not been handed over. The merge
+   mechanics — conflict resolution, verify sweeps, sequencing against
+   in-flight branches — are the integration lane's; Dan still reads
+   content/pedagogy and rules on decisions, and deploys stay his
+   (`git push live main`) until decision 9 lands.
+7. **Before opening a branch, check what is in flight on the files you are
+   about to touch** — `gh pr list --state open`, then
+   `git diff --name-only origin/main...origin/<branch>`. Rule 6 catches a
+   collision at the merge, which is AFTER both sessions built the same thing.
+   31 Aug: #97 retired iComplete at 07:11; the pre-tests session branched to
+   do the same job at 07:29. Dan had told both, in different words, an hour
+   apart. Thirty seconds of looking would have caught it; a merge gate would
+   not have. And the file scan is not enough either: on the same day two
+   branches merged cleanly into main while conflicting with EACH OTHER inside
+   one function (`blankKeysFor`), where both edits were needed and dropping
+   either silently inverted a lesson.
+8. **A long page opens collapsed below the fold** so the whole of it fits one
+   screen before anything is expanded (Dan, 31 Aug). Permanent design rule,
+   written out in AGENTS.md beside the litmus test.
+9. fluoduo-main sweeps session states daily; anything stalled >24h
    (a pending permission, a need-input nobody saw) is reported to Dan.
-7. **(Dan, 31 Aug PM) Every lane pushes finished work as a PR to origin;
-   fluoduo-main quality-checks and does the merging.** Dan still reads
-   content/pedagogy and rules on decisions; the merge mechanics — conflict
-   resolution, verify sweeps, sequencing against in-flight branches — are
-   the integration lane's. Deploys stay Dan's (`git push live main`) until
-   decision 9 lands. Precipitating case: #97 and #99 cut iComplete's flap
-   from two directions on the same afternoon.
+
 
 ### The work, by lane (what each agent is MEANT to deliver)
 
@@ -56,22 +75,27 @@ lane = report it in STATUS, don't do it.
   (in flight, the last uncovered pre-test surface).~~ **DONE — #98.** All ten
   now render at `/pretests/unit0/SIO-00N`; every stop in the course has a
   pre-test with a page of its own.
-  **NOW IN FLIGHT — the SIO popup collapse and derived done-ness.** These are
-  two instructions Dan gave this session that the roster's lane text does not
-  list; he confirmed them as mine on 31 Aug rather than leaving them unowned.
-  Claimed here so nobody else opens the same files:
-  1. **The popup collapses to the statement and ONE list of links.** Dan:
+  **The popup collapse and derived done-ness** — two instructions Dan gave on
+  31 Aug that the roster's original lane text did not list; he confirmed them
+  as mine rather than leave them unowned. State as of 31 Aug PM:
+  1. ✅ **DONE — #99. The popup is the statement and ONE list of links.** Dan:
      "collapse the interfaces to ONLY reveal the SIO spelled out fully, then
-     the links to the relevant items within the stop. THAT IS IT." Today a
-     stop stacks the same activity list THREE times — the numbered path, the
+     the links to the relevant items within the stop. THAT IS IT." A stop had
+     stacked the same activity list THREE times — the numbered path, the
      right-edge flaps, and the narrow-screen flap row — and four activities
-     (WorDrill, iComplete, Sorting, GramMarathon) render INSIDE the popup
-     rather than opening, so an identical-looking flap does two different
-     things. The list will derive from `cellHref` per stop, which is why the
-     Sorting cut (#93) needs no change here and why the now-stale `dice` in
-     `CHAIN_KEYS` drops out on its own. Unblocked by #98: collapsing before
-     those pages existed would have cost all ten Unit-0 stops their pre-test.
-  2. **Done-ness becomes derived; Mark as done is removed.** Dan: "it should
+     rendered INSIDE the popup rather than opening, so an identical-looking
+     flap did two different things. Now: the statement, then one two-column
+     grid of links, every row an `<a>`. SioModal 325 → 200 lines.
+     The list derives from `deckActivityTabs` per stop, which is what made the
+     Sorting cut (#93) free here and what carried Dan's later "iComplete does
+     not have its door from here, but through Memo" for the cost of one
+     `registryTab` line. Unblocked by #98: collapsing before those pages
+     existed would have cost all ten Unit-0 stops their pre-test.
+     Pinned by verify66 (22 checks, all break-tested); verify22, verify64 and
+     verify19 were each rewritten rather than silenced when the collapse made
+     their old assertions false.
+  2. ⏳ **NEXT, and the last of my lane. Done-ness becomes derived; Mark as
+     done is removed.** Dan: "it should
      only be marked done if it is really FULLY done, so we should remove it."
      A stop ticks when everything at it is done, so the popup's link list and
      the completion rule become the SAME list. **Grandfathered, Dan's call**:
@@ -79,11 +103,28 @@ lane = report it in STATUS, don't do it.
      becomes 21/50 and no badge is revoked. `doneSios` is read in 14 files,
      `economy.ts`'s four badges included, so this is not a one-file change.
      Follows 1, because the link list IS the definition.
+  **Two things #99 left on the board, neither mine to decide:**
+  · The STANDALONE iComplete drill is unreachable — nothing links
+    `/practice/complete-it/` since its door moved to Memo. #97 goes further
+    and deletes the registry row. Intended, but it is a door that closed.
+  · SIO-010's picker still shows a learner 7 of its 21 questions, on the one
+    stop whose whole point is that register changes with audience. The
+    questions are self-describing since #92, so a single run across all three
+    audiences is a small change whenever Dan wants it.
+
   **After those:** Tier-1 concept batches in parallel with Color review, same
   read-before-ship rule.
 - **Peers — features.** Queue empty since Sorting was cut (#93). Next
   assignment is Dan's; until then, nothing — not audits, not others'
   branches.
+- **Peers — features.** 31 Aug PM: two Tier 2 stops given lesson files
+  (SIO-005 Colours, SIO-006 Some nouns), Dan's colour ladder, the SemiBold
+  band, the short English tabs, Words folded under Forms, and the collapse
+  rule. Branch `claude/peers-vd2h6h` is pushed and **handed to fluoduo-main**;
+  it must land AFTER #97 and rebase onto it — `docs/HANDOFF_PEERS_31AUG.md`
+  carries the merge hazard, which is invisible in both diffs. Queue otherwise
+  empty; next assignment is Dan's.
+
 - **fluoduo-main — integration.** The 31 Aug cleanup sweep on Dan's go
   (six empty branches + La Carte deleted, PR #6 closed, stalled sessions
   archived; French 4 rebased to a PR; verify renumbers 52→64 on
@@ -91,6 +132,54 @@ lane = report it in STATUS, don't do it.
   Action once decision 9 lands. The daily stall sweep, standing.
 - **Dan — the decision queue below**, and the reads: salutations now, then
   every concept batch.
+
+### Peers — open queue (31 Aug PM)
+
+Nothing here is in flight; the branch is handed over and the lane is idle until
+Dan assigns. Listed so the queue is not re-derived by whoever picks it up.
+
+**Owed by me, once #97 lands**
+
+1. **Rebase `claude/peers-vd2h6h` onto #97.** Author's job under rule 7. The
+   carry-over list and the one merge hazard are in
+   `docs/HANDOFF_PEERS_31AUG.md`; do not merge from memory of this entry.
+2. **Drop the Bonus tab from the rebase.** #97 already cut it and made ⭐ Bonus
+   a LEVEL of Practice, which is the better resolution. Theirs wins.
+
+**Waiting on Dan — none of it blocking**
+
+3. **Deploy: manual, a Deploy button, or mirror on every merge?** All three need
+   one fine-grained PAT with write access to `dckg/fluo` only. My read is the
+   button: full auto-mirror quietly deletes the moment Dan decides a class sees
+   new work; a button removes only the terminal. **`live` is 12 commits behind.**
+4. **The Mémo and the word list overlap on a Tier 2 stop.** On `core-nouns` the
+   Mémo already lists all eighteen words with their articles and the table below
+   repeats them without. By the litmus test one of them is redundant. Two ways:
+   trim the table, or make the Mémo the PATTERN only (the -e / -ité argument,
+   three examples) and let the table carry all eighteen. I would take the
+   second — it stops the Mémo being a word list.
+5. **Colours: agreement is still untaught.** The lesson teaches POSITION because
+   all twelve deck mnemonics are masculine, so `vert / verte` cannot be shown
+   without inventing French. Needs new deck content from Dan, or an explicit
+   decision that agreement lives on another stop.
+
+**Found, not fixed — wider than one branch, and #97 is in this area**
+
+6. **The deck supply asks two questions at once.** A gender card offers
+   `un · la · une · le` — four articles across two series — when the stop
+   teaches gender alone. The lesson generators already offer only the matching
+   pair; `deckSupply` draws its distractors from every gap in the deck.
+7. **A gapless deck silently turns Moyen/Difficile back into multiple choice**
+   (`buildCards`: `kind === "gap" && !(hasGaps && item.gap) ? "mcq" : kind`).
+   `colors.json` is such a deck, so a level whose own label promises no
+   multiple choice serves it. #97 fixes part of this for slotted lessons; the
+   gapless-deck half remains.
+
+**Candidate work, unassigned**
+
+8. Six generators still on the single-blank `med` shape rather than slots:
+   `ou-est`, `manger-boire`, `partitifs`, `demonstratifs`, `negation`,
+   `en-au-aux`. Only worth doing where Dan wants a two-piece rung on that stop.
 
 ### Decision queue (Dan — each blocks someone)
 
@@ -232,9 +321,11 @@ Peers rebases with three adaptations, none large:
    `const lead = blankable.find((s) => s.first); return [lead?.key ?? keys[0]]`.
    Their "★ the colour word · ★★ colour word + noun" ladder maps to
    Moyen = the flagged colour word, Difficile = both. Same intent, new names.
-2. `verify66` pins SIX tab labels including "Bonus" — #97 parks that tab
-   (Dan's word), so the assertion drops to five. Their English label rename
-   is theirs to keep — no conflict beyond the list literal.
+2. Their branch also claims `verify66` — taken since by #99's popup check,
+   and #100 (Color review) claims 67 — so Peers renumbers to **68**. Their
+   verify's tab-label list pins SIX tabs including "Bonus" — #97 parks that
+   tab (Dan's word), so the assertion drops to five. Their English label
+   rename is theirs to keep — no conflict beyond the list literal.
 3. `LessonTabs.tsx` will conflict textually (label rename vs tab removal) —
    resolution: their labels, minus the bonus entry, exercice `does` noting
    "⭐ Bonus included".
@@ -247,6 +338,61 @@ same ambiguity-fix pattern as the audit — convergent, no clash.
 - `main` on `frenchprof/fluoduo` (origin) — the working repo.
 - Production = `dckg/fluo` (remote `live`), Cloudflare Pages project
   `fluolingo-dot-com` auto-builds its `main`. **Deploy = `git push live main`.**
+- 31 Aug PM (Peers) — **THREE PERMANENT RULES, TWO TIER 2 STOPS, AND A
+  HANDOFF.** Branch `claude/peers-vd2h6h`, pushed, **not merged** — it goes to
+  fluoduo-main under the new rule 7 above. `docs/HANDOFF_PEERS_31AUG.md` is the
+  handoff; read that before merging, not this entry.
+
+  **Dan's three rules, all in AGENTS.md, all in his words.**
+  (1) *"Often times i cannot understand what the agent is telling me about what
+  has changed. so long as i don't see, i can only guess (often wrongly). can we
+  make it a point to always show what the finished product looks like rather
+  than just describe."* Every visible change now ships with a picture of the
+  REAL route; before and after side by side; a decision put to Dan shows its
+  options instead of listing them; and it outranks brevity.
+  (2) *"Now that the page is long please collapse part of it. can you make it a
+  rule for all."* **The argument stays open, the apparatus collapses** — a
+  learner READS the claim and its answer and CONSULTS the pitfall table, the
+  flow, the self-check, the word list. A closed section must say what is behind
+  it ("18 words", "3 traps"), or it is deletion with extra steps. One `Section`
+  component, native `<details>`.
+  (3) Rule 7 above — fluoduo-main integrates.
+
+  **SIO-005 and SIO-006 have lesson files at last** — the last two Tier 2 stops
+  with a deck and nowhere to put a concept. Colours teaches POSITION, not
+  agreement: all twelve deck mnemonics are masculine, so an agreement lesson
+  would have to invent the feminine forms. Some nouns teaches that gender is
+  stored WITH the word, and the deck supplies its own counterexample (« un
+  groupe » ends in -e). Every French string is the deck's own; verify66 holds
+  both hand-written tables to the JSON item by item, because a flipped gender
+  teaches a wrong article and reads as ordinary code.
+
+  **Dan's colour ladder needed a mechanism.** « le feu rouge » puts the NOUN
+  leftmost, so the old "★ takes the first blankable slot" rule asked the wrong
+  half. `Slot.first` lets a slot claim ★; it defaults to the old behaviour, and
+  verify66 EXECUTES `blankKeysFor` rather than reading it. **This is the merge
+  hazard with #97** — see the handoff.
+
+  Also: the band is SemiBold 600 (three things had to agree or the CSS says 600
+  while the screen renders 400); the six tabs are Dan's short English ones and
+  the strip now WRAPS rather than scrolling, because 594px of tabs in a 328px
+  phone strip was hiding the sixth — which is why Dan's own shortened list
+  stopped at five; Words moved under Forms.
+
+  **Four faults found by DRIVING the app, none visible in a diff or a passing
+  check:** a distractor wrong twice over (« le orange fluo » — bad order AND
+  bad elision, so a learner rejects it on the elision and never thinks about
+  the word order the card exists to test); the English reference at `text-sm`
+  against the French `text-2xl`, and going out tagged `lang="fr"` so 🔊 read
+  English with French phonics; `first:mt-0` in the shared heading style, which
+  stripped the rule off EVERY collapsible section because a `<summary>` is
+  always its parent's first child; and a bare noun as the EN→FR prompt, which
+  at ★★★ asked a learner to build « C'est un homme. » out of the word "man".
+
+  tsc clean · build green · all 54 suites pass · verify66 has 68 assertions,
+  eleven break-tested — two of which were vacuous on the first pass and are
+  documented as such in the file.
+
 - 31 Aug (Claude Code) — **THE FIVE ATELIER STOPS HAVE A PRE-TEST FOR THE
   FIRST TIME.** Dan: "i need your help to build the pre-test which will consist
   of questions with English line, and a choice between 4 french lines. Until

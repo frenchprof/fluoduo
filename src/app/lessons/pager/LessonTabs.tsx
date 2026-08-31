@@ -39,29 +39,142 @@
  * a lesson without one renders the tab with the reason it is empty, rather
  * than hiding the tab. A hidden gap is a gap nobody fixes.
  */
-import { useState, type ReactNode } from "react";
+import { Fragment, useState, type ReactNode } from "react";
 import type { Collection } from "@/lib/collections/schema";
 import type { Sio } from "@/content/sios";
 import type { LessonConcept } from "@/content/lessons/native/types";
 
-type TabKey = "parcours" | "concept" | "formes" | "exercice" | "lexique";
+// "lexique" is NOT here: the word list moved UNDER Forms on 2026-08-31
+// (Dan: "can we put Words under Forms?"). It is a section of that panel now,
+// not a destination, so it has no tab key and nothing can route to it.
+// "bonus" is not here either: #97 parked it under practice the same day —
+// the ⭐ Bonus level of the chooser serves those sentences.
+type TabKey = "parcours" | "concept" | "formes" | "exercice";
 
 const TABS: { key: TabKey; emoji: string; label: string; does: string }[] = [
   // `does` earns the path list its place. Without it that list is the tab
   // strip retyped one inch lower, which is exactly what Dan's litmus test
   // deletes: text that, removed, costs the learner nothing.
-  { key: "parcours", emoji: "🗺", label: "Le parcours", does: "what you will be able to do" },
-  { key: "concept", emoji: "💡", label: "Le concept", does: "why French does it this way" },
-  { key: "formes", emoji: "📖", label: "Les formes", does: "the forms themselves" },
-  { key: "exercice", emoji: "📝", label: "L'exercice", does: "use them, one card at a time — ⭐ Bonus included" },
-  { key: "lexique", emoji: "📚", label: "Le lexique", does: "every word in this lesson" },
+  // ENGLISH AND SHORT (Dan, 2026-08-31). Shown the strip three ways he chose
+  // "A · all six in English" — the tabs are furniture, and a beginner should not
+  // have to decode the navigation before reaching the French. Mixing the two was
+  // shown and rejected: one English tab among five French reads as something
+  // nobody finished rather than as a decision.
+  //
+  // Then he cut the labels himself, to save width: "Path · Idea · Forms ·
+  // Pract." — Bonus is a level of the chooser since #97, and Words lives
+  // under Forms, so the strip is four tabs and fits a phone without hiding
+  // any at the scrolled-off end.
+  { key: "parcours", emoji: "🗺", label: "Path", does: "what you will be able to do" },
+  { key: "concept", emoji: "💡", label: "Idea", does: "why French does it this way" },
+  { key: "formes", emoji: "📖", label: "Forms", does: "the forms themselves, and every word" },
+  { key: "exercice", emoji: "📝", label: "Pract.", does: "use them, one card at a time — ⭐ Bonus included" },
 ];
 
-/** Section heading inside a panel. The panels are read, not scanned, so they
- *  get ordinary prose hierarchy rather than the app's band furniture. */
+/**
+ * Section heading inside a panel.
+ *
+ * Dan, 2026-08-31, reading the concept tab: *"the page can be better organised
+ * (the headings are hardly salient). and i can hardly make out the sections
+ * from each other."* He was right — these were `fluo-label`: small, uppercase
+ * and in the SOFT ink, the same treatment the app gives throwaway captions. A
+ * heading in the caption style is not a heading, it is a caption sitting where
+ * a heading should be, and nothing separated one section from the next.
+ *
+ * Three changes, and each does one job: a **rule above** cuts the sections
+ * apart, a **coloured marker** in the lesson's own family hue gives the eye
+ * something to land on down the left edge, and the text moves to **full ink at
+ * black weight** so it outranks the prose beneath it. The first heading drops
+ * its rule — a divider above the first item separates it from nothing.
+ */
+// NO `first:` VARIANTS HERE, on purpose. A <summary> is ALWAYS the first child
+// of its <details>, so `first:mt-0 first:border-t-0` fired on every collapsible
+// section and stripped the rule and the margin off all of them — the folds sat
+// flush against the paragraph above while the plain headings kept their rule.
+// Found by looking at the rendered page, not the class list. The reset now
+// belongs to whoever is actually first in the PANEL: `first:` on the <h3>,
+// and a child-targeting variant on the <details>.
+const HEAD =
+  "mt-8 flex items-center gap-2.5 border-t-2 border-[color:var(--cahier-rule)] pt-3.5" +
+  " text-[13px] font-black uppercase tracking-[0.09em] text-[color:var(--cahier-ink)]";
+
+const HEAD_FIRST = "first:mt-0 first:border-t-0 first:pt-0";
+
+const MARKER =
+  "inline-block h-3.5 w-1 shrink-0 rounded-full bg-[color:var(--fam-ink,var(--cahier-ink))]";
+
 function H({ children }: { children: ReactNode }) {
   return (
-    <p className="fluo-label mt-4 text-[color:var(--fluo-ink-soft)] first:mt-0">{children}</p>
+    <h3 className={`${HEAD} ${HEAD_FIRST}`}>
+      <span aria-hidden className={MARKER} />
+      {children}
+    </h3>
+  );
+}
+
+/**
+ * A section that can be folded away.
+ *
+ * Dan, 2026-08-31: *"now that the page is long please collapse part of it. can
+ * you make it a rule for all — this is the rule from now on."* The rule is in
+ * AGENTS.md; this is the one component that implements it, so a second panel
+ * cannot invent a different disclosure.
+ *
+ * WHAT OPENS AND WHAT CLOSES. The argument stays open, the apparatus collapses:
+ * a learner READS the claim and its answer, and CONSULTS the pitfall table, the
+ * decision flow and the word list. Consulting is what a fold is for.
+ *
+ * `note` is not decoration — a closed section has to say what is behind it
+ * ("18 words", "3 traps"), or nobody opens it and collapsing becomes deletion
+ * with extra steps.
+ *
+ * NATIVE `<details>`, deliberately. Keyboard operation, the screen-reader
+ * expanded/collapsed state and find-in-page all come free; a `useState` div
+ * would have to reimplement three of those and would get one of them wrong.
+ * `[&::-webkit-details-marker]:hidden` drops Safari's default triangle so the
+ * chevron below is the only one.
+ */
+function Section({
+  title, note, children, open = false, folds = true,
+}: {
+  title: ReactNode;
+  note?: string;
+  children: ReactNode;
+  open?: boolean;
+  folds?: boolean;
+}) {
+  if (!folds) {
+    return (
+      <>
+        <H>{title}</H>
+        {children}
+      </>
+    );
+  }
+  return (
+    <details
+      open={open}
+      className="group first:[&>summary]:mt-0 first:[&>summary]:border-t-0 first:[&>summary]:pt-0"
+    >
+      <summary
+        className={`${HEAD} cursor-pointer list-none [&::-webkit-details-marker]:hidden`}
+      >
+        <span aria-hidden className={MARKER} />
+        <span>{title}</span>
+        {note && (
+          <span className="font-mono text-[10px] font-bold normal-case tracking-normal text-[color:var(--fluo-ink-soft)]">
+            {note}
+          </span>
+        )}
+        <span
+          aria-hidden
+          className="ml-auto text-[color:var(--fluo-ink-soft)] transition-transform group-open:rotate-90 motion-reduce:transition-none"
+        >
+          ▶
+        </span>
+      </summary>
+      {children}
+    </details>
   );
 }
 
@@ -88,7 +201,7 @@ function Empty({ what }: { what: string }) {
  * a rendering job, not a writing one. */
 function Parcours({ sio, here }: { sio?: Sio; here: TabKey }) {
   if (!sio) {
-    return <Empty what="This lesson is not wired to a curriculum objective, so there is no parcours to show." />;
+    return <Empty what="This lesson is not wired to a curriculum objective, so there is no Path to show." />;
   }
   return (
     <Panel>
@@ -100,7 +213,7 @@ function Parcours({ sio, here }: { sio?: Sio; here: TabKey }) {
       <ol className="mt-1 space-y-2">
         {TABS.map((t, n) => (
           <li key={t.key} className="flex items-baseline gap-2.5">
-            <span className="shrink-0 font-mono text-xs font-bold text-[color:var(--fluo-ink-soft)]">{n}</span>
+            <span className="shrink-0 font-mono text-xs font-bold text-[color:var(--fluo-ink-soft)]">{n + 1}</span>
             <span aria-hidden>{t.emoji}</span>
             <span>
               <span className={t.key === here ? "font-black" : "font-bold"}>{t.label}</span>
@@ -118,7 +231,7 @@ function Parcours({ sio, here }: { sio?: Sio; here: TabKey }) {
  * native/types.ts for which are required and why. */
 function Concept({ c }: { c?: LessonConcept }) {
   if (!c) {
-    return <Empty what="Le concept has not been written for this lesson yet. Les formes has the rules in the meantime." />;
+    return <Empty what="Idea has not been written for this lesson yet. Forms has the rules in the meantime." />;
   }
   return (
     <Panel>
@@ -131,8 +244,7 @@ function Concept({ c }: { c?: LessonConcept }) {
       <p>{c.answer}</p>
 
       {c.pitfall && c.pitfall.length > 0 && (
-        <>
-          <H>⚠️ The common pitfall</H>
+        <Section title="⚠️ The common pitfall" note={`${c.pitfall.length} traps`}>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-sm">
               <thead>
@@ -153,12 +265,14 @@ function Concept({ c }: { c?: LessonConcept }) {
               </tbody>
             </table>
           </div>
-        </>
+        </Section>
       )}
 
       {c.flow && c.flow.length > 0 && (
-        <>
-          <H>How to decide</H>
+        // The count is the DECISIONS, not the lines: a flow's indented lines
+        // are branches under a question, and "5 lines" would describe the
+        // rendering rather than what the learner is about to walk through.
+        <Section title="How to decide" note={`${c.flow.filter((l) => l.depth === 0).length} steps`}>
           <div className="overflow-x-auto rounded-xl bg-[color:var(--cahier-paper-raised)] p-3">
             {c.flow.map((line, n) => (
               <p
@@ -170,12 +284,11 @@ function Concept({ c }: { c?: LessonConcept }) {
               </p>
             ))}
           </div>
-        </>
+        </Section>
       )}
 
       {c.check && c.check.length > 0 && (
-        <>
-          <H>✅ Before you go on</H>
+        <Section title="✅ Before you go on" note={`${c.check.length} questions`}>
           <div className="flex flex-col gap-2">
             {c.check.map((x, n) => (
               // <details> rather than state: the answer must stay hidden until
@@ -187,7 +300,7 @@ function Concept({ c }: { c?: LessonConcept }) {
               </details>
             ))}
           </div>
-        </>
+        </Section>
       )}
 
       {c.inShort && (
@@ -231,6 +344,43 @@ function articleShowsGender(fr: string): boolean {
   return /^(le|la|un|une|du|de la)\s/i.test(fr.trim());
 }
 
+/* ── 2 · Forms — the rules, then the words ─────────────────────────────────
+ * Dan, 2026-08-31: "can we put Words under Forms?"
+ *
+ * They answer the same question at two grains. The Mémo states the pattern;
+ * the word list is the pattern's own instances, and on a Tier 2 stop it IS the
+ * lesson — « un café · une classe » is both the vocabulary and the evidence
+ * for the rule above it. Splitting them across two tabs made a learner tab
+ * back and forth to hold one idea, and it is the tab that pushed the strip to
+ * six, which no phone row fits.
+ *
+ * Both halves get a real heading, or the table just runs on out of the bottom
+ * of the Mémo with nothing to say it has started — the fault Dan reported on
+ * the concept page an hour earlier. */
+function Formes({
+  memo, deck, lexique,
+}: { memo?: ReactNode; deck?: Collection; lexique?: ReactNode }) {
+  const hasWords = !!lexique || !!deck?.items?.length;
+  if (!memo && !hasWords) return <Empty what="No Mémo and no deck for this lesson." />;
+  return (
+    <Panel>
+      {memo && (
+        <Section title="The pattern" folds={false}>
+          <div className="mt-2">{memo}</div>
+        </Section>
+      )}
+      {hasWords && (
+        <Section
+          title="Every word in this lesson"
+          note={deck?.items?.length ? `${deck.items.length} words` : undefined}
+        >
+          {lexique ?? <Lexique deck={deck} bare />}
+        </Section>
+      )}
+    </Panel>
+  );
+}
+
 /* ── 5 · Le lexique ────────────────────────────────────────────────────────
  * The deck's words, as a reveal table.
  *
@@ -243,11 +393,11 @@ function articleShowsGender(fr: string): boolean {
  * So this is the reading half only, which is what Dan's lexique tab does:
  * hide a column, reveal cells one at a time. The full table with its buckets
  * and notes stays one tap away at /decks/[id], where it already lives. */
-function Lexique({ deck }: { deck?: Collection }) {
+function Lexique({ deck, bare = false }: { deck?: Collection; bare?: boolean }) {
   const [hide, setHide] = useState<"none" | "fr" | "en">("none");
   const [shown, setShown] = useState<Set<string>>(new Set());
   if (!deck?.items?.length) {
-    return <Empty what="This lesson has no deck, so there is no lexique." />;
+    return <Empty what="This lesson has no deck, so there are no Words." />;
   }
   const reveal = (id: string) => setShown((s) => new Set(s).add(id));
   const hiddenCount = deck.items.filter((i) => i.gender && !articleShowsGender(i.fr)).length;
@@ -269,9 +419,12 @@ function Lexique({ deck }: { deck?: Collection }) {
       </button>
     );
   };
+  // `bare` when nested inside Forms: that panel already supplies the padding
+  // and the heading, so a second Panel here would double both.
+  const Wrap = bare ? Fragment : Panel;
   return (
-    <Panel>
-      <div className="mb-2 flex flex-wrap gap-1.5">
+    <Wrap>
+      <div className="mb-2 mt-2 flex flex-wrap gap-1.5">
         {([["none", "Show both"], ["en", "Hide English"], ["fr", "Hide French"]] as const).map(([k, label]) => (
           <button
             key={k}
@@ -340,7 +493,7 @@ function Lexique({ deck }: { deck?: Collection }) {
       <p className="mt-2 text-xs font-bold text-[color:var(--fluo-ink-soft)]">
         {deck.items.length} words · the full table, with your notes and review marks, is on the deck page.
       </p>
-    </Panel>
+    </Wrap>
   );
 }
 
@@ -370,8 +523,15 @@ export default function LessonTabs({
 
   return (
     <div className="pt-1">
-      <div role="tablist" aria-label="Lesson sections" className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-2">
-        {TABS.map((t, n) => {
+      {/* WRAPS, it does not scroll (2026-08-31). Six tabs cannot fit one row at
+          390px however short the labels get — measured: 594px of tabs in a
+          328px strip even after Dan shortened them. `overflow-x-auto` then
+          HIDES the tabs at the end, which is exactly how "Words" came to be
+          missing from the screenshot he was reading when he cut the labels to
+          five. Wrapping costs one row of height on a phone and nothing on a
+          desktop, and no tab is ever out of sight. */}
+      <div role="tablist" aria-label="Lesson sections" className="-mx-1 flex flex-wrap gap-1 px-1 pb-2">
+        {TABS.map((t) => {
           const on = t.key === tab;
           return (
             <button
@@ -387,7 +547,11 @@ export default function LessonTabs({
                   : "border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-raised)] text-[color:var(--fluo-ink-soft)]",
               ].join(" ")}
             >
-              <span className="font-mono text-[10px] opacity-70">{n}</span>
+              {/* The number is gone from the STRIP, by Dan's litmus test: the
+                  tabs sit in order left to right, so the digit tells a learner
+                  nothing they cannot already see, and it cost ~14px per tab
+                  across six tabs. The path list still numbers them 1-6, where
+                  the sequence is the actual claim being made. */}
               <span aria-hidden>{t.emoji}</span>
               <span className="whitespace-nowrap">{t.label}</span>
             </button>
@@ -397,9 +561,9 @@ export default function LessonTabs({
 
       {tab === "parcours" && <Parcours sio={sio} here={tab} />}
       {tab === "concept" && <Concept c={concept} />}
-      {tab === "formes" && (memo ? <Panel>{memo}</Panel> : <Empty what="No Mémo for this lesson." />)}
+      {tab === "formes" && <Formes memo={memo} deck={deck} lexique={lexique} />}
       {tab === "exercice" && <Panel>{exercise}</Panel>}
-      {tab === "lexique" && (lexique ?? <Lexique deck={deck} />)}
+
     </div>
   );
 }

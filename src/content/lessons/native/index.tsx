@@ -38,6 +38,12 @@ import { leCheminLesson } from "./le-chemin";
 // its own title's question, 44 is fourteen shop names against a four-act
 // can-do, and 45A holds the numerals without the arithmetic that builds them.
 import { quelleMatiereLesson } from "./quelle-matiere";
+// SIO-005 and SIO-006 — the two Tier 2 stops that had a deck and no lesson
+// file, so a concept had nowhere to live (Dan, 2026-08-31: "then just show
+// it"). Colours teaches word order; Some nouns teaches that gender is stored
+// with the word.
+import { colorsLesson } from "./colors";
+import { coreNounsLesson } from "./core-nouns";
 import { auMarcheLesson } from "./au-marche";
 import { soixanteDixLesson } from "./soixante-dix";
 import { avoirEtatsLesson } from "./avoir-etats";
@@ -108,6 +114,8 @@ export const NATIVE_LESSONS: Record<string, NativeLesson> = {
   "quelle-matiere": quelleMatiereLesson,
   "au-marche": auMarcheLesson,
   "soixante-dix": soixanteDixLesson,
+  colors: colorsLesson,
+  "core-nouns": coreNounsLesson,
   "revision-u1": revisionU1Lesson,
   "revision-u3u4": revisionU3U4Lesson,
   "revision-u4": revisionU4Lesson,

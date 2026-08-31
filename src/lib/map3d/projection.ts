@@ -154,5 +154,15 @@ export function project(worldX: number, relZ: number, camZ: number, vw: number, 
   return { px, py, scale: sc, scaleY, size: Math.max(20, Math.round(vh * 0.11 * sc)), t, reveal: 1, behind: true };
 }
 
-/** Paint order: far things first. */
-export const zOrder = (scale: number) => Math.round((1 - scale) * 900);
+/**
+ * Paint order: NEAR things on top — Dan's round 5: "each farther ball tucked
+ * behind the nearer one."
+ *
+ * This was `(1 - scale) * 900`, which is backwards: a smaller (farther) scale
+ * got the HIGHER z-index, so the moment a stop crested the horizon it painted
+ * over the nearer stops descending in front of it — measured at the crest
+ * cluster, stop 8 (z 499) covered 7 (466) covered 6 (429), which is exactly
+ * Dan's 31 Aug report: "the items disappear too soon after they appear on
+ * the horizon". Bigger scale = nearer = higher z, full stop.
+ */
+export const zOrder = (scale: number) => Math.round(scale * 900);
