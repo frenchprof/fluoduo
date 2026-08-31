@@ -132,6 +132,40 @@ Read **THE ROSTER** at the top of `docs/STATUS.md` before starting work —
 lanes are assigned there and integration work (branch audits, renumbering,
 closures, merges of others' work) belongs to the integration lane only.
 
+## fluoduo-main is the integration lane — permanent (2026-08-31)
+
+**Dan: *"can we, moving forward, push everything to fluoduo-main for quality
+check, and letting fluoduo-main do the necessary merging?"*** Yes. So:
+
+- **You push your own branch to `origin` and stop there.** Never merge your own
+  work, and never merge anyone else's.
+- **fluoduo-main reviews and merges.** Order of landing is theirs to decide —
+  they are the only session that can see two in-flight branches at once.
+- **When your branch is ready, hand it over explicitly**: say which files it
+  touches, which shared ones, and what you know it collides with. A branch that
+  is merely pushed has not been handed over.
+- **Rebasing after someone else lands first is the author's job, not the
+  integrator's.** They will tell you; replay your change on the new base.
+
+WHY, IN ONE CASE. On 31 Aug this session and fluoduo-main built into each other
+for an afternoon without either knowing. #97 renamed the ladder
+Facile/Moyen/Difficile/Bonus and cut the Bonus TAB; this branch had, the same
+hour, shortened the tab labels to English, moved Words under Forms, and been
+holding the Bonus tab open pending Dan's answer — a question #97 had already
+settled. Both branches merged cleanly into `main` and conflicted with each
+other on five files, three of them semantically:
+
+- `blankKeysFor` — they widened it to four levels, this branch added
+  `Slot.first` so Dan's colours ★ withdraws the COLOUR and not the leftmost
+  gap. **Both are needed.** A merge that keeps only the four-level rule silently
+  inverts the colours ladder, and nothing in either diff looks wrong.
+- the tab labels, renamed on one side and restructured on the other;
+- `verify57` / `verify58`, edited by both.
+
+Nothing here was carelessness — each side scanned for verify-number collisions
+and found none. The number scan catches files; it cannot catch two sessions
+editing the same *function*. That is what an integration lane is for.
+
 **Claiming a verify number:** scan EVERY remote branch, never just `main` —
 an in-flight number is precisely what main cannot show you. Four collisions
 have already happened (31, 52 twice, 60):
