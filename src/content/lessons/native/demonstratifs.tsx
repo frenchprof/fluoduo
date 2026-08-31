@@ -26,11 +26,18 @@ const frame = (art: string, noun: string) => `Qu'est-ce que tu fais ${art} ${nou
 
 export const demonstratifsLesson: NativeLesson = {
   slug: "demonstratifs",
-  // THE REFERENCE CONCEPT (2026-08-30) — the first of 47, and the worked
-  // example the rest are drafted against. Every claim here comes from the
-  // Mémo below it; nothing new was invented. Dan reviews `contrast` and
-  // `remember` before any of these reach a learner — those two are the
-  // pedagogy, the rest is apparatus.
+  // THE REFERENCE CONCEPT — the first of 47, and the worked example the rest
+  // are drafted against. Every claim here comes from the Mémo below it;
+  // nothing new was invented.
+  //
+  // APPROVED BY DAN, 2026-08-31: "it is fine the way you wrote it about cet
+  // and cette". That matters beyond this one lesson — `contrast` and
+  // `remember` are the pedagogical claim, the two fields where a wrong
+  // sentence teaches a wrong rule, and the rule is that they reach Dan before
+  // they reach a learner. This is the first pass through that gate, so the
+  // drafting arrangement it proves is the one the other 46 follow: an agent
+  // fills the nine slots from the Mémo and invents no grammar; Dan rules on
+  // slots 2 and 9. Do not treat his approval here as covering the rest.
   concept: {
     subtitle: "Why cet is not a third gender",
     contrast: (
