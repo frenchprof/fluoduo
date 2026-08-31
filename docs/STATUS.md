@@ -279,22 +279,29 @@ Dan assigns. Listed so the queue is not re-derived by whoever picks it up.
 2. **Drop the Bonus tab from the rebase.** #97 already cut it and made ⭐ Bonus
    a LEVEL of Practice, which is the better resolution. Theirs wins.
 
-**Waiting on Dan — none of it blocking**
+**Answered by Dan, 31 Aug PM — closed**
 
-3. **Deploy: manual, a Deploy button, or mirror on every merge?** All three need
-   one fine-grained PAT with write access to `dckg/fluo` only. My read is the
-   button: full auto-mirror quietly deletes the moment Dan decides a class sees
-   new work; a button removes only the terminal. **`live` is 12 commits behind.**
-4. **The Mémo and the word list overlap on a Tier 2 stop.** On `core-nouns` the
-   Mémo already lists all eighteen words with their articles and the table below
-   repeats them without. By the litmus test one of them is redundant. Two ways:
-   trim the table, or make the Mémo the PATTERN only (the -e / -ité argument,
-   three examples) and let the table carry all eighteen. I would take the
-   second — it stops the Mémo being a word list.
-5. **Colours: agreement is still untaught.** The lesson teaches POSITION because
-   all twelve deck mnemonics are masculine, so `vert / verte` cannot be shown
-   without inventing French. Needs new deck content from Dan, or an explicit
-   decision that agreement lives on another stop.
+3. ~~Deploy: manual, a Deploy button, or mirror on merge?~~ **Routed to
+   fluoduo-main** (Dan: *"we said everything will go through
+   [fluoduo-main] first"*). The decision and the build are theirs; the option
+   I would put to them is the BUTTON — full auto-mirror quietly deletes the
+   moment Dan decides a class sees new work, a button removes only the
+   terminal. All three need one fine-grained PAT with write access to
+   `dckg/fluo` alone. **`live` is 17 commits behind `main`** and that is the
+   one thing currently costing anything.
+4. ~~The Mémo and the word list overlap on a Tier 2 stop.~~ **Withdrawn — the
+   collapse rule already fixed the visible half.** Dan: *"i don't see the
+   repeated 18."* Measured on `d85533b`: with the word list folded, « homme »
+   appears ONCE on screen; opening the fold makes it two. The duplication only
+   exists for a learner who asked to see the list, which is what a fold is for.
+5. ~~Colours: agreement is still untaught.~~ **Settled: flagged, not taught.**
+   Dan: *"it is too early to introduce feminine at stop 4. We can draw
+   attention to the fact that there are differences in feminine, but it is not
+   the focus yet."* One italic line under the Mémo, and deliberately **no
+   feminine example** — naming a form would make it a second thing to learn on
+   a stop whose job is word order, and every one of this deck's twelve
+   mnemonics is masculine, so any example would be invented French. The line
+   exists only to stop a learner concluding a colour word never changes.
 
 **Found, not fixed — wider than one branch, and #97 is in this area**
 
