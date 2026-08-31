@@ -267,3 +267,6 @@ jobs:
 
       - name: The Mémo's French forms are its bold heroes
         run: python3 verify/verify65-memo-forms.py
+
+      - name: The concept's answer and decision tree stay collapsed
+        run: python3 verify/verify67-concept-length.py

@@ -3,7 +3,7 @@
 /**
  * The Home course map, 2D view (patch 25; Dan's decision 1, 2026-08-17: the
  * map has two views, 2D and 3D, the learner toggles). This file is the 2D
- * one, built from Design's "FluOlinGo Home standalone" reference:
+ * one, built from Design's "FluOLinGo Home standalone" reference:
  *
  *   · a rectangular map inside a bordered scroll box, a zoom % control
  *     (30–200, fit-to-width = 100 %);

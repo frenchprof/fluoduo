@@ -7,7 +7,7 @@
  *   │  ✕   ▓▓▓▓▓▓░░░░░░░░   ♥♥♡   240   ⋯        │
  *   └────────────────────────────────────────────┘
  *
- * v1 (patch 13) was a site bar borrowed for games: ← FluOlinGo, the game's
+ * v1 (patch 13) was a site bar borrowed for games: ← FluOLinGo, the game's
  * name, four destination icons and a help dot. It answered "where am I" but
  * it did not carry the game — score, lives and progress were still painted
  * by each game in its own header, in its own colours, one line lower. Six

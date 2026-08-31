@@ -1,9 +1,9 @@
 /**
  * The bottom bar — four slots, and why it is four and not five.
  *
- * Dan, 2026-08-10: "there is the FluOlinGo highlighted link back to Home. Is
+ * Dan, 2026-08-10: "there is the FluOLinGo highlighted link back to Home. Is
  * that doing double work with Accueil below; similarly the Moi appears twice
- * (I would suggest using FluOlinGo as the Home link, and to keep the Moi at
+ * (I would suggest using FluOLinGo as the Home link, and to keep the Moi at
  * the top, so that we can use the five (now four) slots below the screen for
  * Index - ReVue - Skills - SvPlay; and not using words on the mobile if
  * possible and let the words appear only when the finger lays on it?)"
@@ -49,7 +49,7 @@ export type NavSlot = { key: string; label: string; emoji: string; href: string 
  */
 export const BOTTOM_NAV: NavSlot[] = FAMILIES.filter((f) => f.key !== "user").map((f) => ({
   key: f.key,
-  // "FluOlin Review" is the family's name; the bar shows the short form,
+  // "FluOLin Revise" is the family's name; the bar shows the short form,
   // because a 5-slot bar on a 390px phone gives each label ~72px.
   label: familyShort(f),
   emoji: f.emoji,

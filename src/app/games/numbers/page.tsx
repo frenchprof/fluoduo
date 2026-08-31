@@ -11,7 +11,7 @@ import { siteTabs, tabsWithActive } from "@/components/siteTabs";
  * game routes themselves are untouched: banked answers, ledger prefixes and
  * evidence tags all still point at /games/numbus and /games/numbourse.
  */
-export const metadata = { title: "Numbers — FluOlinGo" };
+export const metadata = { title: "Numbers — FluOLinGo" };
 
 const GAMES = [
   {
