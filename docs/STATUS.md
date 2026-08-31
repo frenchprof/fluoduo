@@ -156,16 +156,24 @@ taking the tail after the last colon and asking `sioForDeck`; a SIO id there
 resolves to nothing and the write silently no-ops — which is indistinguishable
 from success at the call site. Traced rather than assumed.
 
-`verify68`: 15 checks, every one break-tested. One was vacuous on the first
+`verify69`: 15 checks, every one break-tested. One was vacuous on the first
 pass for the FOURTH time today — `"maybeCompleteStop" in ledger` was satisfied
 by the helper's own definition, so deleting the call stayed green. It now
 asserts the call inside `noteAttempt`'s body.
 
-### For the integration lane — a fifth verify-number collision
+### For the integration lane — the fifth collision, and how it landed
 
-`verify66-two-tier2-stops.py` sits on `claude/peers-vd2h6h`, against
-`verify66-popup-collapse.py` which has been on main since #99. Not touched,
-per rule 5.
+`verify66-two-tier2-stops.py` sat on `claude/peers-vd2h6h` against
+`verify66-popup-collapse.py`, on main since #99. The peers renumbered it to
+**68** and it merged that way in #105 — which collided with THIS branch's
+`verify68-derived-doneness.py`, still open as #104. Two files sharing a leading
+number is exactly what `verify-wiring.py` fails on, so #104 would have broken
+main the moment it merged.
+
+Renumbered here: **verify68-derived-doneness → verify69**, workflow line moved
+with it. 67 is taken by `verify67-concept-length.py` on the colour-review
+branch (#100), so 69 is the first free number across every remote branch, not
+just main.
 
 ## 31 Aug PM — Dan read salutations; the difficulty ladder is his now
 

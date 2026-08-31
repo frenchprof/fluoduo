@@ -39,7 +39,7 @@ WHAT IS PINNED
      the badges are unchanged — earned now rather than claimed.
   7  ATTEMPTED, not passed. Errors are learning signals here, never a cost.
 
-Run from the repo root:  python3 verify/verify68-derived-doneness.py
+Run from the repo root:  python3 verify/verify69-derived-doneness.py
 """
 import os
 import re
