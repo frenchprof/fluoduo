@@ -175,7 +175,7 @@ jobs:
         run: python3 verify/verify54-evidence-writers.py
 
       - name: "Slots: the two-star level is expressible, and med is derived (31 Aug)"
-        run: python3 verify/verify55-cloze-slots.py
+        run: python3 verify/verify57-cloze-slots.py
 
       - name: Family hubs — every bottom-bar slot opens its family
         run: python3 verify/verify52-nav-hubs.py

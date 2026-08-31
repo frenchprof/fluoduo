@@ -26,7 +26,14 @@ builder reads `med`.
 Node runs the .ts directly (`--experimental-strip-types`), which is why cloze.ts
 sits beside the generators: `@/` aliases do not resolve under bare node.
 
-Run from the repo root:  python3 verify/verify55-cloze-slots.py
+Numbered 57 after two collisions. This was 55 while on a branch; 55 and then 56
+were taken on main by another session's atelier-cards and sorting-answers checks
+while this one was in review. verify-wiring.py fails the build on a shared
+leading number — which is how verify31-wordrill sat unrun for a fortnight — and
+it caught both, in CI, on the first push. Working out of a branch for a day is
+enough to collide twice.
+
+Run from the repo root:  python3 verify/verify57-cloze-slots.py
 """
 import json, os, subprocess, sys, tempfile
 
