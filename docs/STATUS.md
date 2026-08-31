@@ -73,6 +73,42 @@ lane = report it in STATUS, don't do it.
 | 8 | `rule:` namespace (894-item tagging): go / stay parked? | transfer evidence |
 | 9 | Deploy mirror Action (needs one fine-grained PAT from you) | ends manual deploys |
 
+## 31 Aug PM — Dan read salutations; the difficulty ladder is his now
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan's read of the salutations concept came back as five design rulings, built
+the same day on `claude/fluoduo-pr9-review-sync-8uoyfx` (integration lane took
+it with Dan's direct feedback; Pre-tests stood down and handed over notes):
+
+1. **Levels renamed + remapped** — `lessonEntry.ts` now carries ★ Facile /
+   ★★ Moyen / ★★★ Difficile / ⭐ Bonus. His classification: Facile =
+   recognise + sort the given words (mcq + build); Moyen = complete ONE
+   missing piece; Difficile = TWO (slots via `blankKeysFor`); Bonus = the
+   whole sentence from English. Four ramps, 12 cards each, equal length still
+   absolute.
+2. **The repeat is dead** — the in-run Mémo rule card duplicated Les formes
+   once the six tabs landed; the run now opens on question 1/12. The Mémo's
+   one home is the tab.
+3. **Forms are the heroes** — bold French forms with caption labels in
+   salutations + every Mémo; `verify65-memo-forms.py` (new, in CI) pins the
+   rule across all 44 lesson Mémos and memos.tsx.
+4. **His "why are they all mcq?"** — three causes fixed: gapless decks fall
+   back to BUILD at Moyen+ (MCQ only at Facile); Difficile single-blank
+   fallbacks are TYPED at every width; Difficile on a slotted lesson drops
+   the deck supply.
+5. **iComplete retired** (Dan: "we can retire CompleteIt and Sorting") — the
+   Memo's Moyen/Difficile ARE completion; registry row + flap + chain gone,
+   route/evidence/ledger stay, exactly the Sorting (#93) pattern. The
+   registry is 18 activities — the Menu grid is no longer Dan's exact 4×5;
+   flagged, not papered over.
+
+verify22/41/57/58 remapped; verify65 claimed by full branch scan (64 stays
+reserved for fluency-cycling's renumber). Decision 1's answer: the Tier-3
+concept SHAPE was not rejected — his feedback targeted the lesson chrome —
+so Color review's Tier-3 batch can move the moment Dan says the concept
+itself reads well. THE ROSTER merged to main (#94, squash `9a4b61a`).
+
 ## Where the code is
 
 - `main` on `frenchprof/fluoduo` (origin) — the working repo.
