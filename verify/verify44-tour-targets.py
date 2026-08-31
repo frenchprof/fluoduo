@@ -162,14 +162,19 @@ check('key: "map"' in tour,
 # The step that earns the tour: the map is inert behind a transparent glass
 # until tapped. That is deliberate — it stops a scroll dragging the map — and
 # entirely invisible, so a learner who misses the small badge concludes the map
-# is broken. If the tour ever stops saying this, it has lost its reason to
-# exist.
+# is broken. REVERSED 2026-08-31: the wake glass itself is gone (Dan: "maybe
+# we should remove the layer of transparent glass over it"), so the tour must
+# no longer promise a wake tap that nothing needs — and the view toggle,
+# now the map's front-and-centre control, is what the tour opens on.
 map_tour = tour[tour.find('key: "map"'):]
 map_tour = map_tour[: map_tour.find("};")] if "};" in map_tour else map_tour
-check('data-tour="map-wake"' in map_tour,
-      "the map tour explains that the map must be woken with a tap",
-      "the map tour no longer points at the wake glass — the one thing about "
-      "this screen a learner cannot work out for themselves")
+check('data-tour="map-wake"' not in map_tour,
+      "the map tour no longer points at the removed wake glass",
+      "the map tour still tells learners to wake the map — the glass was "
+      "removed on 31 Aug, so that step points at nothing")
+check('data-tour="map-view"' in map_tour,
+      "the map tour opens on the 2D/3D toggle",
+      "the map tour lost its view-toggle step")
 
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:
