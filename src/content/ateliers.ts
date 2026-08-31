@@ -70,6 +70,28 @@ export const ATELIER_DIALOGUES: Record<string, DialogueLine[]> = {
   // Unité 4 — review a restaurant (aimer, c'est, adjectives, frequency, recommander).
   "SIO-049": [
     { who: "A", fr: "J'aime beaucoup ce restaurant.", en: "I really like this restaurant." },
+    // A review that never says what was eaten (Dan, 2026-08-31: "yes pls fix").
+    //
+    // PARTITIF, NOT DÉFINI — and the first draft of this line got it wrong.
+    // I wrote « Je prends toujours LE poisson » and justified it as the
+    // Unité 2 aimer + le/la/les rule. That rule is for verbs of PREFERENCE:
+    // « j'aime le poisson » names the category. `prendre` is not one of them,
+    // and with `toujours` this is a habit of consuming some unspecified
+    // quantity — which is the partitive, « du poisson », the Unité 4 rule the
+    // partitifs deck in this same unit exists to teach. Dan caught it:
+    // "is WRONG. Je prends toujours du poisson".
+    //
+    // (« Je prends le poisson » IS idiomatic when choosing one dish off a
+    // menu. It is wrong HERE because `toujours` makes the sentence habitual,
+    // and wrong for this deck either way — an A1 learner meeting the
+    // partitive needs to see the partitive.)
+    //
+    // Every word is already taught: `du poisson` and `des frites` are both in
+    // this unit's `aliments` deck, and `prendre` comes from SIO-040's
+    // itinerary ("tu prends la première rue"). The rest of this atelier is
+    // Dan's; only this line is drafted, and it now follows the rule the unit
+    // teaches rather than one borrowed from two units earlier.
+    { who: "A", fr: "Je prends toujours du poisson avec des frites.", en: "I always have fish with chips." },
     { who: "A", fr: "C'est délicieux !", en: "It's delicious!" },
     { who: "A", fr: "Le service est rapide.", en: "The service is fast." },
     { who: "A", fr: "Ce n'est pas cher.", en: "It's not expensive." },

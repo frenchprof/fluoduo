@@ -183,6 +183,12 @@ jobs:
       - name: Every activity tag resolves to an evidence type
         run: python3 verify/verify53-evidence-coverage.py
 
+      - name: An atelier's dialogue line is not automatically a card
+        run: python3 verify/verify55-atelier-cards.py
+
+      - name: No Sorting question prints its own answer
+        run: python3 verify/verify56-sorting-answers.py
+
       - name: "A tour step points at something that exists (28 Aug)"
         run: python3 verify/verify44-tour-targets.py
 

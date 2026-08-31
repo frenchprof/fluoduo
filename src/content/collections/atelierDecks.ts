@@ -33,11 +33,35 @@ export const ATELIER_DECKS: Collection[] = Object.entries(ATELIER_META).map(([si
     lessonSlug: meta.slug,
     tags: [],
     seq: meta.seq,
-    items: lines.map((l, i) => ({
-      id: `${idBase}-${String(i + 1).padStart(2, "0")}`,
-      fr: l.fr,
-      en: l.en,
-      tags: [],
-    })),
+    // A DIALOGUE LINE IS NOT ALWAYS A CARD (Dan, 2026-08-31: "yes pls fix").
+    //
+    // The dialogues are correct as dialogues — two people really do both say
+    // « Bonjour ! », and an e-mail really does end on the sender's name. As
+    // FLASHCARDS those same lines are faults: SIO-010 dealt "Bonjour !" twice
+    // in a row as two identical cards, and SIO-030 ended on a card reading
+    // « Léa » / "Léa", which asks the learner to recall nothing. So the filter
+    // is here, on the deck, and the dialogue above is left alone — Les formes
+    // still renders « Le modèle » complete, turn by turn.
+    //
+    // Two rules, both about whether a card can teach:
+    //   · a line already dealt (same `fr`) — a duplicate card is a free point
+    //   · a line whose French and English are identical — a proper name, not
+    //     language to learn
+    //
+    // THE INDEX IS THE LINE'S, NOT THE CARD'S. Ids are SRS keys and stored
+    // response keys, so renumbering after a filter would silently detach every
+    // learner's history for these decks. `i` stays the position in the
+    // dialogue; the ids simply skip the numbers the filter removed.
+    items: lines
+      .map((l, i) => ({
+        id: `${idBase}-${String(i + 1).padStart(2, "0")}`,
+        fr: l.fr,
+        en: l.en,
+        tags: [] as string[],
+      }))
+      .filter((it, i, all) => {
+        if (it.fr.trim() === it.en.trim()) return false;
+        return all.findIndex((o) => o.fr === it.fr) === i;
+      }),
   } as Collection;
 });
