@@ -38,6 +38,27 @@ lane = report it in STATUS, don't do it.
 6. fluoduo-main sweeps session states daily; anything stalled >24h
    (a pending permission, a need-input nobody saw) is reported to Dan.
 
+### The work, by lane (what each agent is MEANT to deliver)
+
+- **Color review — the concept pipeline.** Tier 3: 14 remaining after
+  salutations (gated on Dan's read of that one). Tier 1: all 19 (drafted in
+  batches of five, every batch read by Dan before ship). Tier 2: the
+  second-half compound-name concept, plus Colours/Some-nouns once decision 6
+  lands. Keeper of the Stocktake ledger — re-issue it when the counts move.
+- **Pre-tests — the pre-test surface, then capacity.** Unit-0 pre-test pages
+  (in flight, the last uncovered pre-test surface). When done: take Tier-1
+  concept batches in parallel with Color review, same read-before-ship rule.
+- **Peers — features.** Queue empty since Sorting was cut (#93). Next
+  assignment is Dan's; until then, nothing — not audits, not others'
+  branches.
+- **fluoduo-main — integration.** The 31 Aug cleanup sweep on Dan's go
+  (six empty branches + La Carte deleted, PR #6 closed, stalled sessions
+  archived; French 4 rebased to a PR; verify renumbers 52→64 on
+  fluency-cycling and the stale 31s on font/home-rebuild). The deploy mirror
+  Action once decision 9 lands. The daily stall sweep, standing.
+- **Dan — the decision queue below**, and the reads: salutations now, then
+  every concept batch.
+
 ### Decision queue (Dan — each blocks someone)
 
 | # | Decision | Blocks |
