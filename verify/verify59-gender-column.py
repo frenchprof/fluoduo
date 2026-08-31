@@ -12,6 +12,13 @@ column is for.
 `gender` had been in the Item schema all along with NO deck populating it — a
 dead field. `aliments` is the first.
 
+NUMBERED 59, NOT 58. Peers' A2 landed `verify58-ladder-blanks.py` between this
+check's two commits, so both arrived as 58 and `verify-wiring` failed on main —
+which is precisely the fault it exists to catch: `verify31-wordrill` sat unrun
+for a fortnight because its number collided. Both were wired and both ran; the
+number was the whole problem. Take the next free number when two agents are
+adding checks in the same hour.
+
 THE TRAP THIS GUARDS. A half-populated deck is worse than an empty one. The
 lexique shows nothing where `gender` is absent, so on a partial deck a blank
 cell means either "this word has no gender" or "nobody recorded it" — and the
@@ -22,7 +29,7 @@ It also checks that the emphasis still points somewhere: the filled badge marks
 words whose ARTICLE does not give the gender away, and if a deck's every word
 is `le`/`la`, the highlight would be decoration.
 
-Run from the repo root:  python3 verify/verify58-gender-column.py
+Run from the repo root:  python3 verify/verify59-gender-column.py
 """
 import json, os, re, sys
 
