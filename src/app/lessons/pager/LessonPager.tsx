@@ -560,11 +560,27 @@ function ExerciseCard({
       {ex.meta && (
         <p className="text-center text-xs font-bold uppercase tracking-wider text-[color:var(--cahier-ink)]/60">{ex.meta}</p>
       )}
-      {ex.big && (
-        <p className="text-center text-2xl font-bold leading-snug text-[color:var(--cahier-ink)]" lang={ex.kind === "translate" || ex.kind === "build" ? undefined : "fr"}>
-          {ex.big}
-        </p>
-      )}
+      {ex.big && (() => {
+        // An EN->FR prompt is a REFERENCE to build from, not a target to read
+        // aloud. Dan, 2026-08-31: "it should not be more salient than the
+        // french, but still it should be of equal size (but italics non
+        // bold)." So: same 2xl as the French, italic, regular weight, and one
+        // step down in ink. `bigLang` also stops English going out tagged
+        // lang="fr", which made the 🔊 button read it with French phonics.
+        const english = ex.bigLang === "en" || ex.kind === "translate" || ex.kind === "build";
+        return (
+          <p
+            className={`text-center text-2xl leading-snug ${
+              english
+                ? "font-normal italic text-[color:var(--cahier-ink)]/75"
+                : "font-bold text-[color:var(--cahier-ink)]"
+            }`}
+            lang={english ? "en" : "fr"}
+          >
+            {ex.big}
+          </p>
+        );
+      })()}
       {ex.segments && (
         <>
           <p className="text-center text-2xl font-bold leading-snug text-[color:var(--cahier-ink)]" lang="fr">
@@ -637,7 +653,11 @@ function ExerciseCard({
         </p>
       )}
       {ex.en && !ex.big && (
-        <p className="text-center text-sm italic text-[color:var(--cahier-ink)]/70">{ex.en}</p>
+        // Equal size to the French frame above it, italic and unbolded so it
+        // reads as the reference rather than competing with the target.
+        <p lang="en" className="text-center text-2xl font-normal italic leading-snug text-[color:var(--cahier-ink)]/75">
+          {ex.en}
+        </p>
       )}
 
       {ex.kind === "mcq" && ex.options && (

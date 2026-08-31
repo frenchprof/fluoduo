@@ -47,24 +47,52 @@ const TABS: { key: TabKey; emoji: string; label: string; does: string }[] = [
   // `does` earns the path list its place. Without it that list is the tab
   // strip retyped one inch lower, which is exactly what Dan's litmus test
   // deletes: text that, removed, costs the learner nothing.
-  // ENGLISH, all six (Dan, 2026-08-31, shown the strip three ways and picking
-  // "A · all six in English"). The tabs are furniture, not content: a beginner
-  // should not have to decode the navigation before reaching the French. Mixing
-  // the two — one English tab among five French — was shown and rejected; it
-  // reads as something nobody finished rather than as a decision.
-  { key: "parcours", emoji: "🗺", label: "Learning path", does: "what you will be able to do" },
-  { key: "concept", emoji: "💡", label: "The idea", does: "why French does it this way" },
-  { key: "formes", emoji: "📖", label: "The forms", does: "the forms themselves" },
-  { key: "exercice", emoji: "📝", label: "Practice", does: "use them, one card at a time" },
+  // ENGLISH AND SHORT (Dan, 2026-08-31). Shown the strip three ways he chose
+  // "A · all six in English" — the tabs are furniture, and a beginner should not
+  // have to decode the navigation before reaching the French. Mixing the two was
+  // shown and rejected: one English tab among five French reads as something
+  // nobody finished rather than as a decision.
+  //
+  // Then he cut the labels himself, to save width: "Path · Idea · Forms · Pract.
+  // · Bonus". Six labelled tabs plus their numbers overflowed on a phone, and a
+  // strip that scrolls hides the tabs at its end. `does` carries the full
+  // meaning one inch below on the path list, so the short label costs a learner
+  // nothing — which is the only reason it passes the litmus test. "Words" is
+  // mine: his list stopped at five because the screenshot he was reading had
+  // scrolled the sixth off the edge.
+  { key: "parcours", emoji: "🗺", label: "Path", does: "what you will be able to do" },
+  { key: "concept", emoji: "💡", label: "Idea", does: "why French does it this way" },
+  { key: "formes", emoji: "📖", label: "Forms", does: "the forms themselves" },
+  { key: "exercice", emoji: "📝", label: "Pract.", does: "use them, one card at a time" },
   { key: "bonus", emoji: "⭐", label: "Bonus", does: "the other direction — English to French" },
-  { key: "lexique", emoji: "📚", label: "Word list", does: "every word in this lesson" },
+  { key: "lexique", emoji: "📚", label: "Words", does: "every word in this lesson" },
 ];
 
-/** Section heading inside a panel. The panels are read, not scanned, so they
- *  get ordinary prose hierarchy rather than the app's band furniture. */
+/**
+ * Section heading inside a panel.
+ *
+ * Dan, 2026-08-31, reading the concept tab: *"the page can be better organised
+ * (the headings are hardly salient). and i can hardly make out the sections
+ * from each other."* He was right — these were `fluo-label`: small, uppercase
+ * and in the SOFT ink, the same treatment the app gives throwaway captions. A
+ * heading in the caption style is not a heading, it is a caption sitting where
+ * a heading should be, and nothing separated one section from the next.
+ *
+ * Three changes, and each does one job: a **rule above** cuts the sections
+ * apart, a **coloured marker** in the lesson's own family hue gives the eye
+ * something to land on down the left edge, and the text moves to **full ink at
+ * black weight** so it outranks the prose beneath it. The first heading drops
+ * its rule — a divider above the first item separates it from nothing.
+ */
 function H({ children }: { children: ReactNode }) {
   return (
-    <p className="fluo-label mt-4 text-[color:var(--fluo-ink-soft)] first:mt-0">{children}</p>
+    <h3 className="mt-8 flex items-center gap-2.5 border-t-2 border-[color:var(--cahier-rule)] pt-3.5 text-[13px] font-black uppercase tracking-[0.09em] text-[color:var(--cahier-ink)] first:mt-0 first:border-t-0 first:pt-0">
+      <span
+        aria-hidden
+        className="inline-block h-3.5 w-1 shrink-0 rounded-full bg-[color:var(--fam-ink,var(--cahier-ink))]"
+      />
+      {children}
+    </h3>
   );
 }
 
@@ -91,7 +119,7 @@ function Empty({ what }: { what: string }) {
  * a rendering job, not a writing one. */
 function Parcours({ sio, here }: { sio?: Sio; here: TabKey }) {
   if (!sio) {
-    return <Empty what="This lesson is not wired to a curriculum objective, so there is no learning path to show." />;
+    return <Empty what="This lesson is not wired to a curriculum objective, so there is no Path to show." />;
   }
   return (
     <Panel>
@@ -103,7 +131,7 @@ function Parcours({ sio, here }: { sio?: Sio; here: TabKey }) {
       <ol className="mt-1 space-y-2">
         {TABS.map((t, n) => (
           <li key={t.key} className="flex items-baseline gap-2.5">
-            <span className="shrink-0 font-mono text-xs font-bold text-[color:var(--fluo-ink-soft)]">{n}</span>
+            <span className="shrink-0 font-mono text-xs font-bold text-[color:var(--fluo-ink-soft)]">{n + 1}</span>
             <span aria-hidden>{t.emoji}</span>
             <span>
               <span className={t.key === here ? "font-black" : "font-bold"}>{t.label}</span>
@@ -121,7 +149,7 @@ function Parcours({ sio, here }: { sio?: Sio; here: TabKey }) {
  * native/types.ts for which are required and why. */
 function Concept({ c }: { c?: LessonConcept }) {
   if (!c) {
-    return <Empty what="The idea has not been written for this lesson yet. The forms has the rules in the meantime." />;
+    return <Empty what="Idea has not been written for this lesson yet. Forms has the rules in the meantime." />;
   }
   return (
     <Panel>
@@ -270,7 +298,7 @@ function Lexique({ deck }: { deck?: Collection }) {
   const [hide, setHide] = useState<"none" | "fr" | "en">("none");
   const [shown, setShown] = useState<Set<string>>(new Set());
   if (!deck?.items?.length) {
-    return <Empty what="This lesson has no deck, so there is no word list." />;
+    return <Empty what="This lesson has no deck, so there are no Words." />;
   }
   const reveal = (id: string) => setShown((s) => new Set(s).add(id));
   const hiddenCount = deck.items.filter((i) => i.gender && !articleShowsGender(i.fr)).length;
@@ -395,8 +423,15 @@ export default function LessonTabs({
 
   return (
     <div className="pt-1">
-      <div role="tablist" aria-label="Lesson sections" className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-2">
-        {TABS.map((t, n) => {
+      {/* WRAPS, it does not scroll (2026-08-31). Six tabs cannot fit one row at
+          390px however short the labels get — measured: 594px of tabs in a
+          328px strip even after Dan shortened them. `overflow-x-auto` then
+          HIDES the tabs at the end, which is exactly how "Words" came to be
+          missing from the screenshot he was reading when he cut the labels to
+          five. Wrapping costs one row of height on a phone and nothing on a
+          desktop, and no tab is ever out of sight. */}
+      <div role="tablist" aria-label="Lesson sections" className="-mx-1 flex flex-wrap gap-1 px-1 pb-2">
+        {TABS.map((t) => {
           const on = t.key === tab;
           return (
             <button
@@ -412,7 +447,11 @@ export default function LessonTabs({
                   : "border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-raised)] text-[color:var(--fluo-ink-soft)]",
               ].join(" ")}
             >
-              <span className="font-mono text-[10px] opacity-70">{n}</span>
+              {/* The number is gone from the STRIP, by Dan's litmus test: the
+                  tabs sit in order left to right, so the digit tells a learner
+                  nothing they cannot already see, and it cost ~14px per tab
+                  across six tabs. The path list still numbers them 1-6, where
+                  the sequence is the actual claim being made. */}
               <span aria-hidden>{t.emoji}</span>
               <span className="whitespace-nowrap">{t.label}</span>
             </button>

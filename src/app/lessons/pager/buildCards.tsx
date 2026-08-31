@@ -66,6 +66,8 @@ export type Exercise = {
   big?: string;
   /** Muted English gloss. */
   en?: string;
+  /** Language of `big`; "en" also renders it as a reference, not a target. */
+  bigLang?: "fr" | "en";
   /** Cloze frame around the blank (mcq + gap cards). */
   before?: string;
   after?: string;
@@ -233,7 +235,7 @@ function lessonSupply(
           const x = q();
           return {
             kind, itemId: x.correct, activity: `mcq:lesson:${activityKey}`,
-            meta: x.meta, big: x.big, en: x.en,
+            meta: x.meta, big: x.big, bigLang: x.bigLang, en: x.en,
             options: shuffle(x.easyOptions),
             answer: x.correct, alternates: x.alternates, say: x.correct,
           };
@@ -260,14 +262,14 @@ function lessonSupply(
             return {
               kind, itemId: x.correct, activity: `lesson:${activityKey}`,
               meta: metaLeaksAnswer(x.meta, blanked) ? undefined : x.meta,
-              big: x.big, en: x.en,
+              big: x.big, bigLang: x.bigLang, en: x.en,
               segments: multi.segments, answer: multi.answer,
               bankPool: x.easyOptions, say: x.correct,
             };
           }
           return {
             kind, itemId: x.correct, activity: `lesson:${activityKey}`,
-            meta: x.meta, big: x.big, en: x.en,
+            meta: x.meta, big: x.big, bigLang: x.bigLang, en: x.en,
             before: x.med.before, after: x.med.after,
             answer: x.med.correct, bankPool: x.easyOptions, say: x.correct,
           };
@@ -276,7 +278,7 @@ function lessonSupply(
           const x = q();
           return {
             kind, itemId: x.correct, activity: `lesson:${activityKey}`,
-            meta: x.meta, big: x.big, en: x.en,
+            meta: x.meta, big: x.big, bigLang: x.bigLang, en: x.en,
             answer: x.correct, alternates: x.alternates,
             bankPool: x.easyOptions, tiles: true, say: x.correct,
           };
@@ -297,7 +299,7 @@ function lessonSupply(
           const x = q();
           return {
             kind, itemId: x.correct, activity: `lesson:${activityKey}`,
-            meta: x.meta, big: x.big, en: x.en,
+            meta: x.meta, big: x.big, bigLang: x.bigLang, en: x.en,
             answer: x.correct, alternates: x.alternates, say: x.correct,
           };
         }

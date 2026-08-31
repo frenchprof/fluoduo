@@ -303,10 +303,16 @@ check(tabs_body is not None, "the TABS table parsed",
       "TABS is unreadable — the assertions below are vacuous")
 if tabs_body:
     labels = re.findall(r'label:\s*"([^"]+)"', tabs_body.group(1))
-    check(labels == ["Learning path", "The idea", "The forms", "Practice", "Bonus", "Word list"],
-          "all six tabs are English, in Dan's order",
-          f"the tab strip reads {labels}. Dan was shown all-English, all-French and mixed "
-          "on 2026-08-31 and chose all-English.")
+    check(labels == ["Path", "Idea", "Forms", "Pract.", "Bonus", "Words"],
+          "all six tabs carry Dan's short English labels",
+          f"the tab strip reads {labels}. Dan chose all-English on 2026-08-31, then cut the "
+          "labels himself to save width: Path · Idea · Forms · Pract. · Bonus (+ Words, "
+          "the sixth, which his screenshot had scrolled off the edge).")
+    check(max(len(l) for l in labels) <= 6,
+          "no label is longer than six characters — the strip fits without scrolling",
+          f"the longest label is {max(labels, key=len)!r}. The point of shortening was width: "
+          "a strip that scrolls hides the tabs at its end, which is how the sixth tab came "
+          "to be missing from the screenshot in the first place.")
     french = [l for l in labels if re.match(r"^(Le |La |Les |L')", l)]
     check(not french,
           "no French label left in the strip",
@@ -321,6 +327,30 @@ check(not stale,
       "the empty-state messages use the new tab names",
       "these messages still send a learner to a French tab name that is no longer on the "
       "strip: " + "; ".join(stale))
+
+
+# ── 6 · the concept page's sections are legible as sections ────────────────
+# Dan, 2026-08-31: "the headings are hardly salient. and i can hardly make out
+# the sections from each other." They were `fluo-label` — small, uppercase and
+# in the SOFT ink, which is the app's caption treatment. Asserted so nobody
+# quietly returns them to it.
+hblock = re.search(r"function H\(\{ children[^}]*\}[^)]*\)\s*\{(.*?)\n\}", TABS, re.S)
+check(hblock is not None, "the section-heading component parsed",
+      "H() is unreadable — the assertions below are vacuous")
+if hblock:
+    h = hblock.group(1)
+    check("fluo-label" not in h,
+          "section headings are not the app's caption style",
+          "H() is back on `fluo-label`, the small soft-ink caption treatment. A heading in "
+          "the caption style is a caption sitting where a heading should be.")
+    check("border-t" in h,
+          "a rule separates one section from the next",
+          "H() draws no top border, so the sections run together — the second half of what "
+          "Dan reported")
+    check("--cahier-ink" in h and "font-black" in h,
+          "headings are full ink at black weight, so they outrank the prose",
+          "H() no longer sets full ink and black weight, so the heading does not stand out "
+          "from the paragraph under it")
 
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:

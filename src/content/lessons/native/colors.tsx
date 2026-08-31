@@ -194,6 +194,7 @@ export const colorsLesson: NativeLesson = {
         // not the answer. metaLeaksAnswer would fire on either at ★★.
         meta: "thing + colour",
         big: m.en,
+        bigLang: "en" as const,
         correct,
         easyOptions: swapped ? [correct, swapped, ...decoys] : [correct, ...decoys],
         slots,

@@ -221,6 +221,7 @@ export const coreNounsLesson: NativeLesson = {
         // noun, so it stays honest at ★★ where both are blanked.
         meta: ASK[n.q],
         big: n.enFull,
+        bigLang: "en" as const,
         correct,
         easyOptions: [correct, `C'est ${wrongArt} ${n.fr}.`, ...decoys],
         slots,
