@@ -67,96 +67,98 @@ export const salutationsLesson: NativeLesson = {
       };
     },
   },
-  // ── TIER 3 · the first Phraseology concept ────────────────────────────
-  // Written 2026-08-31 to test whether LessonConcept can carry a PHRASE stop
-  // at all. Tiers 1 and 2 argue about a system: a rule the forms hide, a
-  // distinction the word list cannot state. Tier 3 has no system to expose —
-  // SYLLABUS_TIERS is explicit that analysing a block into parts is "actively
-  // wrong at this level". So the slots stay, and what fills them moves from
-  // FORM to MOMENT: `flow` branches on the situation rather than the shape of
-  // a word, and `pitfall` contrasts WHEN a block is said rather than what it
-  // is made of. Every phrase below is already in SITS or `bonus`; nothing here
-  // is new French.
+  // ── TIER 3 · Phraseology, second draft ───────────────────────────────
+  // Dan, 31 Aug, overruling the first draft: form analysis is NOT out at this
+  // level. The SYLLABUS_TIERS line I built that draft on — "analysing them
+  // into parts is actively wrong" — is about OPAQUE blocks, and its example
+  // says so: « il fait beau » is not IL + FAIRE + BEAU. « Bonne nuit » is a
+  // different animal: its parts are visible, and the rule is one the learner
+  // already has.
+  //
+  // So a Tier 3 concept takes the form pattern WHERE THE BLOCK IS
+  // TRANSPARENT, and the moment only where it is opaque. This one is the
+  // transparent case, and the whole contrast lives inside the stop:
+  // bonjour / bonsoir against bonne journée / bonne nuit.
+  //
+  // The two pitfall rows about WHEN to say a block are gone — the Mémo's
+  // warning box already carries them ("Salut ! = hello AND bye"; "Bonne nuit !
+  // only at bedtime"), and a second screen repeating it is exactly what the
+  // litmus test removes.
   concept: {
-    subtitle: "Why a greeting is chosen, not built",
+    subtitle: "Why it is bonjour but bonne nuit",
     contrast: (
       <>
-        English lets one phrase cover several moments — <i>good night</i> both ends an
-        evening and sends someone to bed, and <i>see you</i> needs nothing added. French
-        keeps a separate block for each moment, and the block is fixed: you do not
-        assemble <i lang="fr">&Agrave; demain !</i> out of pieces, you reach for it because
-        you will see them tomorrow.
+        English <i>good</i> never changes — good morning, good night, good trip.
+        French has to choose between <i lang="fr">bon</i> and{" "}
+        <i lang="fr">bonne</i>, and it chooses by the noun that follows. So the
+        greeting is not one block to swallow: it is <i lang="fr">bon</i> or{" "}
+        <i lang="fr">bonne</i> agreeing with a word you already know.
       </>
     ),
     question: (
       <>
-        You know all eleven greetings. It is 22 h and you are going to bed. Which one?
+        Four of these greetings are the same two words. Why{" "}
+        <i lang="fr">bonjour</i> and <i lang="fr">bonsoir</i>, but{" "}
+        <i lang="fr">bonne journ&eacute;e</i> and <i lang="fr">bonne nuit</i>?
       </>
     ),
     answer: (
       <>
-        <i lang="fr">Bonne nuit !</i>{" "}— and only there. It is not the evening&rsquo;s
-        goodbye. Leaving in the day is <i lang="fr">Bonne journ&eacute;e !</i>, and{" "}
-        <i lang="fr">Bonne nuit !</i> is kept for bedtime. English <i>good night</i> does
-        both jobs, which is exactly why the instinct is to reuse it.
+        Gender. <i lang="fr">Le jour</i> and <i lang="fr">le soir</i> are
+        masculine, so <i lang="fr">bon</i>. <i lang="fr">La journ&eacute;e</i>{" "}
+        and <i lang="fr">la nuit</i> are feminine, so <i lang="fr">bonne</i>.
+        The masculine pair is written as one word; the feminine pair stays two.
+        Once you see it, <i lang="fr">bonne soir&eacute;e</i> is not a new
+        phrase to learn — <i lang="fr">la soir&eacute;e</i> is feminine, so it
+        could not have been anything else.
       </>
     ),
     pitfall: [
       {
-        label: <><i lang="fr">Bonne nuit !</i></>,
-        wrong: <>any goodbye after dark</>,
-        right: <>bedtime only</>,
+        label: <><i lang="fr">la nuit</i></>,
+        wrong: <><i lang="fr">bon nuit</i></>,
+        right: <><i lang="fr">bonne nuit</i></>,
       },
       {
-        label: <><i lang="fr">Salut !</i></>,
-        wrong: <>hello</>,
-        right: <>hello <b>and</b> goodbye — friends</>,
-      },
-      {
-        label: <><i lang="fr">Enchant&eacute; !</i></>,
-        wrong: <>whenever you meet someone</>,
-        right: <>the first meeting</>,
+        label: <><i lang="fr">le voyage</i></>,
+        wrong: <><i lang="fr">bonne voyage</i></>,
+        right: <><i lang="fr">bon voyage</i></>,
       },
     ],
     flow: [
-      { depth: 0, text: "Arriving, or leaving?" },
-      { depth: 1, text: "Arriving, a friend → Salut ! · Coucou !" },
-      { depth: 1, text: "Arriving, anyone else → Bonjour ! · Bonsoir ! in the evening" },
-      { depth: 1, text: "Leaving — do you know when you will meet again?" },
-      { depth: 2, text: "tomorrow → À demain !" },
-      { depth: 2, text: "soon → À bientôt !" },
-      { depth: 2, text: "later the same day, friends → À plus tard !" },
-      { depth: 2, text: "you do not know → Au revoir !" },
+      { depth: 0, text: "You are wishing someone a good something." },
+      { depth: 1, text: "Is that noun masculine? → bon" },
+      { depth: 2, text: "le jour → bonjour · le soir → bonsoir · le voyage → bon voyage" },
+      { depth: 1, text: "Is it feminine? → bonne" },
+      { depth: 2, text: "la journée → bonne journée · la nuit → bonne nuit · la chance → bonne chance" },
     ],
     check: [
       {
-        q: <><i lang="fr">Salut !</i> is in both halves of the M&eacute;mo. Is that a mistake?</>,
+        q: <>You leave at 18 h and want to wish them a good evening. <i lang="fr">La soir&eacute;e</i> — which?</>,
         a: (
           <>
-            No — it is the one block that does both jobs. Hello <b>and</b> goodbye, and
-            only with friends.
+            <i lang="fr">Bonne soir&eacute;e !</i> — feminine, like{" "}
+            <i lang="fr">la journ&eacute;e</i>. You have never been taught this
+            phrase; the rule gave it to you.
           </>
         ),
       },
       {
-        q: <>You leave the bakery at 10 h. Which one?</>,
-        a: (
-          <>
-            <i lang="fr">Bonne journ&eacute;e !</i> — a wish for the day ahead.{" "}
-            <i lang="fr">Bonne nuit !</i> would send the baker to bed.
-          </>
-        ),
+        q: <>Someone is about to eat. <i lang="fr">L&rsquo;app&eacute;tit</i> is masculine.</>,
+        a: <><i lang="fr">Bon app&eacute;tit !</i></>,
       },
     ],
     inShort: (
       <>
-        arriving or leaving &middot; how well you know them &middot; when you meet again
+        <i lang="fr">bon</i> + masculine &middot; <i lang="fr">bonne</i>{" "}
+        + feminine &mdash; the greeting agrees like any other adjective
       </>
     ),
     remember: (
       <>
-        A greeting is not built, it is chosen: the moment picks the block. And{" "}
-        <i lang="fr">Salut !</i> is the only one that works at both ends.
+        <i lang="fr">Bonjour</i> and <i lang="fr">bonne nuit</i> are not two
+        things to memorise. They are one adjective agreeing with{" "}
+        <i lang="fr">le jour</i> and <i lang="fr">la nuit</i>.
       </>
     ),
   },
