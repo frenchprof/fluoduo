@@ -329,6 +329,45 @@ Dan assigns. Listed so the queue is not re-derived by whoever picks it up.
 | 8 | `rule:` namespace (894-item tagging): go / stay parked? | transfer evidence |
 | 9 | Deploy mirror Action (needs one fine-grained PAT from you) | ends manual deploys |
 
+## 31 Aug — Tier 3: the six remaining phrase stops
+
+Written to the shape Dan settled on the salutations read — **the form pattern
+AND the moment where the block is transparent, the moment alone where it is
+opaque.** Three of each, which is the first real test that the distinction
+carries its weight rather than being a form of words.
+
+**TRANSPARENT — the parts are visible, so analyse them**
+
+| stop | the claim |
+|---|---|
+| **1** Introductions | the little pronoun MOVES: `je m'` · `tu t'` · `il s'` · `vous vous` — and with *vous* the word really does appear twice, which reads as a typo until you know why |
+| **36** Directions | `à + le → au`, `à + les → aux`; `la` and `l'` never fuse. **The same rule as `du` / `des`**, deliberately echoed so the learner meets one rule twice rather than two rules once |
+| **27** Telling time | French counts hours, so `heure` is a noun: singular at one, plural after. `une heure` is not an exception |
+
+**OPAQUE — parsing is the mistake, so the claim is about use**
+
+| stop | the claim |
+|---|---|
+| **31** Weather | the syllabus's own example: « il fait beau » is not IL + FAIRE + BEAU. Four frames, and the KIND OF WORD picks one — adjective → `il fait`, noun → `il y a`, own verb → `il pleut`. Never `il est chaud` |
+| **29** Invitations | the Mémo's four moves read as a menu; they are an ORDER. **Négocier only exists after a refusal** — there is nothing to negotiate until someone has said no |
+| **8** Classroom talk | an asymmetry the Mémo states without drawing the conclusion: eight instructions IN, two lines OUT. The eight are for the ear, not the mouth |
+
+Every phrase is already in its lesson's own Mémo. No new French.
+
+**Tier 3 is now 7 of 15.** The remaining eight are the six ateliers (10, 20, 30,
+40, 49, 50), which still have no `native/*.tsx` for a concept to live in, plus
+stops 25 and 39, which have no lesson file either. That file work is what closes
+the tier, and it is not concept drafting.
+
+28 concepts render clean. Two shipped with a jammed em dash — `</b> &mdash;` and
+`</i> &mdash;` lose the space and need `{" "}` — caught by the render scan, not
+by reading. That is the fourth time this session for the same JSX whitespace
+trap; the scan is the only thing that has ever caught it.
+
+**Every concept still exceeds one screen**, these six by 30–179px. That is the
+270px of chrome handed to Peers, not something these add — the existing 22 are
+over by the same margins.
+
 ## 31 Aug — 270px of chrome before the first word (for Peers)
 
 Dan, shown the strip between the Mémo band and the tab rail: *"i don't
