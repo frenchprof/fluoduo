@@ -9,6 +9,67 @@ import { PLACES, buildDice } from "./prepositions-core";
 
 export const prepositionsLieuxLesson: NativeLesson = {
   slug: "prepositions-lieux",
+  // TIER 2 CONCEPT — a question the WORD LIST cannot answer. Lifted from the
+  // Mémo below; no grammar introduced that it does not teach. DRAFTED —
+  // `contrast` and `remember` are the pedagogical claim and go to Dan first.
+  concept: {
+    subtitle: "Why only some articles contract",
+    contrast: (
+      <>
+        English says <i>to the museum</i> and <i>to the station</i> with the same two
+        words every time. French fuses the preposition with{" "}
+        <i lang="fr">le</i> and <i lang="fr">les</i> — <i lang="fr">au musée</i>,{" "}
+        <i lang="fr">aux magasins</i> — but leaves <i lang="fr">la</i> and{" "}
+        <i lang="fr">l&rsquo;</i> untouched.
+      </>
+    ),
+    question: (
+      <>
+        Why <i lang="fr">au musée</i> but <i lang="fr">à la gare</i>?
+      </>
+    ),
+    answer: (
+      <>
+        Because <i lang="fr">à + le</i> contracts to <i lang="fr">au</i>, while{" "}
+        <i lang="fr">à + la</i> does not contract at all. The gender of the place decides
+        it, and the same pairing works for <i lang="fr">de</i>.
+      </>
+    ),
+    pitfall: [
+      { label: <>masculine</>, wrong: <i lang="fr">à le musée</i>, right: <i lang="fr">au musée</i> },
+      { label: <>plural</>, wrong: <i lang="fr">à les magasins</i>, right: <i lang="fr">aux magasins</i> },
+      { label: <>feminine</>, wrong: <i lang="fr">au gare</i>, right: <i lang="fr">à la gare</i> },
+    ],
+    flow: [
+      { depth: 0, text: "Which article does the place take?" },
+      { depth: 1, text: "le  → au   / du" },
+      { depth: 1, text: "les → aux  / des" },
+      { depth: 1, text: "la  → à la / de la   (no change)" },
+      { depth: 1, text: "l'  → à l' / de l'   (no change)" },
+    ],
+    check: [
+      {
+        q: <>Coming <i>from</i> the shops?</>,
+        a: <><i lang="fr">des magasins</i> — <i lang="fr">de + les</i> contracts the same way.</>,
+      },
+      {
+        q: <>Why does <i lang="fr">à l&rsquo;école</i> not contract?</>,
+        a: <>Only <i lang="fr">le</i> and <i lang="fr">les</i> contract. <i lang="fr">L&rsquo;</i> never does.</>,
+      },
+    ],
+    inShort: (
+      <>
+        <i lang="fr">à+le=au</i> · <i lang="fr">à+les=aux</i> ·{" "}
+        <i lang="fr">de+le=du</i> · <i lang="fr">de+les=des</i>
+      </>
+    ),
+    remember: (
+      <>
+        Only <i lang="fr">le</i> and <i lang="fr">les</i> contract.{" "}
+        <i lang="fr">La</i> and <i lang="fr">l&rsquo;</i> never do.
+      </>
+    ),
+  },
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">

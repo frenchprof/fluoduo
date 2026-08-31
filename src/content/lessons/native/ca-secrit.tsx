@@ -13,6 +13,59 @@ import { CA_SECRIT_AXES, caSecritQuestion, spelledOut } from "./ca-secrit.gen";
 
 export const caSecritLesson: NativeLesson = {
   slug: "ca-secrit",
+  // TIER 2 CONCEPT — a question the WORD LIST cannot answer. Lifted from the
+  // Mémo below; no grammar introduced that it does not teach. DRAFTED —
+  // `contrast` and `remember` are the pedagogical claim and go to Dan first.
+  concept: {
+    subtitle: "Why an accent is part of the letter, not decoration",
+    contrast: (
+      <>
+        English spells a name letter by letter and has no accents to report. In French
+        the accent belongs to the letter: <i lang="fr">É</i> is not <i lang="fr">E</i>,
+        and a French ear does not hear them as the same. You have to say it aloud.
+      </>
+    ),
+    question: (
+      <>
+        Spelling <i lang="fr">Léa</i>, why is it not enough to say{" "}
+        <i lang="fr">L &ndash; E &ndash; A</i>?
+      </>
+    ),
+    answer: (
+      <>
+        Because <i lang="fr">E</i> and <i lang="fr">É</i> are different letters to a
+        French listener. You say <i lang="fr">L &ndash; E accent aigu &ndash; A</i>, and
+        the accent is spoken, not implied.
+      </>
+    ),
+    pitfall: [
+      { label: <><i lang="fr">Léa</i></>, wrong: <>L &ndash; E &ndash; A</>, right: <>L &ndash; E accent aigu &ndash; A</> },
+      { label: <><i lang="fr">Inès</i></>, wrong: <>I &ndash; N &ndash; E &ndash; S</>, right: <>I &ndash; N &ndash; E accent grave &ndash; S</> },
+      { label: <>asking</>, wrong: <i lang="fr">Comment ça écrit ?</i>, right: <i lang="fr">Comment ça s&rsquo;écrit ?</i> },
+    ],
+    check: [
+      {
+        q: <>Why <i lang="fr">ça s&rsquo;écrit</i> rather than <i lang="fr">ça écrit</i>?</>,
+        a: (
+          <>
+            <i lang="fr">S&rsquo;écrire</i> is reflexive — the word &ldquo;writes itself&rdquo;.
+            The <i lang="fr">s&rsquo;</i> is not optional.
+          </>
+        ),
+      },
+      {
+        q: <>How do you say the accent in <i lang="fr">Chloé</i>?</>,
+        a: <><i lang="fr">E accent aigu</i> — the same accent as in <i lang="fr">Léa</i>.</>,
+      },
+    ],
+    inShort: (
+      <>
+        <i lang="fr">É</i> = <i lang="fr">e accent aigu</i> ·{" "}
+        <i lang="fr">È</i> = <i lang="fr">e accent grave</i>
+      </>
+    ),
+    remember: <>Say the accent. <i lang="fr">É</i> is not <i lang="fr">E</i>.</>,
+  },
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">

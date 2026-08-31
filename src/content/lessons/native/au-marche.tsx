@@ -12,6 +12,60 @@ import { MARCHE_AXES, marcheQuestion } from "./au-marche.gen";
 
 export const auMarcheLesson: NativeLesson = {
   slug: "au-marche",
+  // TIER 2 CONCEPT — a question the WORD LIST cannot answer. Lifted from the
+  // Mémo below; no grammar introduced that it does not teach. DRAFTED —
+  // `contrast` and `remember` are the pedagogical claim and go to Dan first.
+  concept: {
+    subtitle: "Why a quantity is followed by bare « de »",
+    contrast: (
+      <>
+        English says <i>a kilo <b>of</b> tomatoes</i> and keeps the same little word
+        everywhere. French drops the article entirely after a quantity:{" "}
+        <i lang="fr">un kilo de tomates</i>, never{" "}
+        <i lang="fr">un kilo des tomates</i>.
+      </>
+    ),
+    question: (
+      <>
+        Why <i lang="fr">un kilo de tomates</i> and not{" "}
+        <i lang="fr">un kilo des tomates</i>?
+      </>
+    ),
+    answer: (
+      <>
+        Because the quantity has already done the counting. Once{" "}
+        <i lang="fr">un kilo</i> or <i lang="fr">une douzaine</i> has said how much,
+        the noun needs no article of its own — only <i lang="fr">de</i> to join them.
+      </>
+    ),
+    pitfall: [
+      { label: <>a quantity</>, wrong: <i lang="fr">un kilo des tomates</i>, right: <i lang="fr">un kilo de tomates</i> },
+      { label: <>before a vowel</>, wrong: <i lang="fr">une douzaine de œufs</i>, right: <i lang="fr">une douzaine d&rsquo;œufs</i> },
+      { label: <>asking politely</>, wrong: <i lang="fr">je veux un kilo</i>, right: <i lang="fr">je voudrais un kilo</i> },
+    ],
+    check: [
+      {
+        q: <>Why <i lang="fr">je voudrais</i> rather than <i lang="fr">je veux</i>?</>,
+        a: (
+          <>
+            <i lang="fr">Je veux</i> is blunt — what a child says. The conditional{" "}
+            <i lang="fr">je voudrais</i> is the request form an adult uses.
+          </>
+        ),
+      },
+      {
+        q: <>How would you ask for half a kilo of strawberries?</>,
+        a: <><i lang="fr">Je voudrais un demi-kilo de fraises</i> — bare <i lang="fr">de</i> again.</>,
+      },
+    ],
+    inShort: (
+      <>
+        quantity + <i lang="fr">de</i> + noun, no article ·{" "}
+        <i lang="fr">je voudrais</i> to ask
+      </>
+    ),
+    remember: <>After a quantity, <i lang="fr">de</i> stands alone.</>,
+  },
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">

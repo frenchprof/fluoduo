@@ -136,8 +136,8 @@ function Concept({ c }: { c?: LessonConcept }) {
               <thead>
                 <tr className="text-left text-xs uppercase text-[color:var(--fluo-ink-soft)]">
                   <th className="py-1 pr-3 font-bold" />
-                  <th className="py-1 pr-3 font-bold text-[color:var(--drill-bad-mid)]">✗ English logic</th>
-                  <th className="py-1 font-bold text-[color:var(--drill-ok)]">✓ French logic</th>
+                  <th className="py-1 pr-3 font-bold text-[color:var(--drill-bad-mid)]">✗ {c.pitfallHeads?.[0] ?? "English logic"}</th>
+                  <th className="py-1 font-bold text-[color:var(--drill-ok)]">✓ {c.pitfallHeads?.[1] ?? "French logic"}</th>
                 </tr>
               </thead>
               <tbody>

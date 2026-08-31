@@ -49,6 +49,70 @@ const wrongArt = (np: string) =>
 
 export const alimentsLesson: NativeLesson = {
   slug: "aliments",
+  // TIER 2 CONCEPT — a question the WORD LIST cannot answer. Lifted from the
+  // Mémo below; no grammar introduced that it does not teach. DRAFTED —
+  // `contrast` and `remember` are the pedagogical claim and go to Dan first.
+  concept: {
+    subtitle: "Why the article often hides the gender",
+    contrast: (
+      <>
+        A word list normally tells you a noun&rsquo;s gender through its article —{" "}
+        <i lang="fr">le pain</i>, <i lang="fr">la viande</i>. But{" "}
+        <i lang="fr">de l&rsquo;</i> before a vowel and <i lang="fr">des</i> in the plural
+        say nothing at all, so nine of these words arrive with their gender hidden.
+      </>
+    ),
+    question: (
+      <>
+        You have only ever met <i lang="fr">de l&rsquo;eau</i>. Is{" "}
+        <i lang="fr">eau</i> masculine or feminine?
+      </>
+    ),
+    answer: (
+      <>
+        Feminine — <i lang="fr">une eau</i>, <i lang="fr">la belle eau</i>. Nothing in{" "}
+        <i lang="fr">de l&rsquo;eau</i> could have told you, because{" "}
+        <i lang="fr">l&rsquo;</i> is what both genders become before a vowel. The word list
+        marks these; the article cannot.
+      </>
+    ),
+    // Not English logic here — the wrong column is what the ARTICLE suggests,
+    // which is a French signal misread, not an English habit transferred.
+    pitfallHeads: ["what the article suggests", "what is true"],
+    pitfall: [
+      { label: <><i lang="fr">de l&rsquo;eau</i></>, wrong: <>looks masculine</>, right: <><i lang="fr">f</i> — une eau</> },
+      { label: <><i lang="fr">des frites</i></>, wrong: <>looks masculine</>, right: <><i lang="fr">f pl</i> — une frite</> },
+      { label: <><i lang="fr">des champignons</i></>, wrong: <>looks feminine</>, right: <><i lang="fr">m pl</i> — un champignon</> },
+    ],
+    check: [
+      {
+        q: <>Why does <i lang="fr">de la viande</i> not need marking?</>,
+        a: <>Because <i lang="fr">la</i> already says it. Only <i lang="fr">de l&rsquo;</i> and <i lang="fr">des</i> hide it.</>,
+      },
+      {
+        q: <>You eat some meat. Which form?</>,
+        a: (
+          <>
+            <i lang="fr">Je mange de la viande</i> — you eat SOME of it, so the partitive,
+            and <i lang="fr">viande</i> is feminine.
+          </>
+        ),
+      },
+    ],
+    inShort: (
+      <>
+        <i lang="fr">le</i> / <i lang="fr">la</i> / <i lang="fr">un</i> /{" "}
+        <i lang="fr">une</i> show the gender · <i lang="fr">de l&rsquo;</i> and{" "}
+        <i lang="fr">des</i> hide it
+      </>
+    ),
+    remember: (
+      <>
+        <i lang="fr">De l&rsquo;</i> and <i lang="fr">des</i> tell you nothing. Learn the
+        gender <em>with</em> the word.
+      </>
+    ),
+  },
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">
