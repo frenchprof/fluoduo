@@ -343,6 +343,173 @@
     "range"
    ],
    "tags": ["col:boissons"]
+  },
+  {
+   "id": "aliments-29",
+   "fr": "un abricot",
+   "en": "an apricot",
+   "emoji": "🍑",
+   "tags": [],
+   "syllables": [
+    "un",
+    "a",
+    "bri",
+    "cot"
+   ]
+  },
+  {
+   "id": "aliments-30",
+   "fr": "une banane",
+   "en": "a banana",
+   "emoji": "🍌",
+   "tags": [],
+   "syllables": [
+    "une",
+    "ba",
+    "nane"
+   ]
+  },
+  {
+   "id": "aliments-31",
+   "fr": "des carottes",
+   "en": "carrots",
+   "emoji": "🥕",
+   "tags": ["col:legumes"],
+   "syllables": [
+    "des",
+    "ca",
+    "rottes"
+   ]
+  },
+  {
+   "id": "aliments-32",
+   "fr": "des fraises",
+   "en": "strawberries",
+   "emoji": "🍓",
+   "tags": [],
+   "syllables": [
+    "des",
+    "fraises"
+   ]
+  },
+  {
+   "id": "aliments-33",
+   "fr": "une orange",
+   "en": "an orange",
+   "emoji": "🍊",
+   "tags": [],
+   "syllables": [
+    "une",
+    "o",
+    "range"
+   ]
+  },
+  {
+   "id": "aliments-34",
+   "fr": "un œuf",
+   "en": "an egg",
+   "emoji": "🥚",
+   "tags": [],
+   "syllables": [
+    "un",
+    "œuf"
+   ]
+  },
+  {
+   "id": "aliments-35",
+   "fr": "un gâteau",
+   "en": "a cake",
+   "emoji": "🍰",
+   "tags": [],
+   "syllables": [
+    "un",
+    "gâ",
+    "teau"
+   ]
+  },
+  {
+   "id": "aliments-36",
+   "fr": "une tarte",
+   "en": "a tart",
+   "emoji": "🥧",
+   "tags": [],
+   "syllables": [
+    "une",
+    "tarte"
+   ]
+  },
+  {
+   "id": "aliments-37",
+   "fr": "de la confiture",
+   "en": "jam",
+   "emoji": "🍯",
+   "tags": [],
+   "syllables": [
+    "de",
+    "la",
+    "con",
+    "fi",
+    "ture"
+   ]
+  },
+  {
+   "id": "aliments-38",
+   "fr": "du chocolat",
+   "en": "chocolate",
+   "emoji": "🍫",
+   "tags": [],
+   "syllables": [
+    "du",
+    "cho",
+    "co",
+    "lat"
+   ]
+  },
+  {
+   "id": "aliments-39",
+   "fr": "du sel",
+   "en": "salt",
+   "emoji": "🧂",
+   "tags": [],
+   "syllables": [
+    "du",
+    "sel"
+   ]
+  },
+  {
+   "id": "aliments-40",
+   "fr": "un sandwich",
+   "en": "a sandwich",
+   "emoji": "🥪",
+   "tags": [],
+   "syllables": [
+    "un",
+    "sand",
+    "wich"
+   ]
+  },
+  {
+   "id": "aliments-41",
+   "fr": "une glace",
+   "en": "an ice cream",
+   "emoji": "🍦",
+   "tags": [],
+   "syllables": [
+    "une",
+    "glace"
+   ]
+  },
+  {
+   "id": "aliments-42",
+   "fr": "du jambon",
+   "en": "ham",
+   "emoji": "🍖",
+   "tags": ["col:viandes"],
+   "syllables": [
+    "du",
+    "jam",
+    "bon"
+   ]
   }
  ],
  "gameConfig": {

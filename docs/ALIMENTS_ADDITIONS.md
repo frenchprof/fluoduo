@@ -82,9 +82,33 @@ Four new, for the compound pattern:
 
     un sandwich · une glace · de la vanille · du jambon
 
-That would take the deck from 28 to 47. **Not a recommendation** — a costed
-option. Nineteen more words is a materially longer stop, and the alternative
-(let the lesson borrow) costs nothing and leaves the decks alone.
+**Dan, 31 Aug: "then grow it!"** Done — the deck went from 28 to **42**, not
+47, and the five that fell away fell away for a reason:
+
+| dropped | why |
+|---|---|
+| du poivre | no emoji depicts ground pepper; 🌶️ is a chilli |
+| de la vanille | unpicturable, and it is only ever needed inside *une glace à la vanille* |
+| des fruits | a category word, and every candidate emoji collides with 🍎 pomme |
+| des légumes | same, and 🥦 would sit next to 🥬 asperges |
+| des œufs | *un œuf* covers it; a singular/plural pair of the same word is not two words |
+
+That is the deck's own SpecuLearn rule applied honestly: an emoji must depict the
+word and map to exactly one word in its deck (`speculearnReady.ts`,
+`SPECULEARN_ITEMS.md`). Five words could not clear it, so they are not in.
+
+### A correction, because it was in three documents
+
+I had called the 12 untagged items a content gap. They are not. `col:` values
+feed `gameConfig.letris.columns`, which declares four columns — repas, legumes,
+viandes, boissons — and an item with no `col:` tag simply does not appear in
+Letris. It is a game roster, not a taxonomy, and inventing `col:feculents` would
+have produced a tag that nothing reads. The new words follow the same rule: only
+*des carottes* (legumes) and *du jambon* (viandes) took a tag.
+
+**The real gap stands and is untouched by this commit: nothing anywhere records
+a course.** That is what a Tier 2 word list needs to arrange itself, and it has
+no source in the data yet.
 
 ## Why this is not just a content chore
 

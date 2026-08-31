@@ -99,9 +99,14 @@ should hold: **a vocab list with gender**, as in SpecuLearn.
 ways. Every one is a content fix that blocks your surface, so take them as the
 prerequisite list rather than as trivia:
 
-1. **12 of the 28 items carry no `col:` tag** — croissant, pain, fromage, riz,
-   pâtes, pomme, beurre, sucre, farine, huile, soupe, frites.
-2. **Nothing records a course.** No field, no tag.
+1. ~~12 of the 28 items carry no `col:` tag.~~ **I had this wrong and it is
+   worth un-learning.** `col:` values are not a semantic taxonomy — they feed
+   `gameConfig.letris.columns`, which declares exactly four: repas, legumes,
+   viandes, boissons. An item without one simply does not appear in Letris. So
+   the untagged items are not a defect, and inventing `col:feculents` would
+   produce a tag nothing reads.
+2. **Nothing records a course**, and this is the real gap. No field, no tag,
+   nowhere — so the arrangement a Tier 2 word list needs has no source.
 3. **Nothing records gender**, and the strings often hide it. `du` is *de + le*
    so it does mark masculine, and `de la` marks feminine — but `de l'` and `des`
    mark nothing, which covers **7 of the 28**: de l'eau, de l'huile, des pâtes,
