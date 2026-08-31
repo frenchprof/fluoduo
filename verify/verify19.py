@@ -5,7 +5,7 @@ Patch 19's check. Exits non-zero on any failure, so CI can gate on it.
 It asserts the things a screenshot cannot:
 
   1  every activity has exactly ONE name and ONE emoji across every surface
-  2  EtuDice's flap gate matches the decks that can actually run it
+  2  Sorting offers no flap — the activity is off navigation (31 Aug)
   3  the bottom bar is the five families minus User, derived not hand-kept
   4  no `1100` breakpoint survives in the rail
   5  no flap subtitles anywhere
@@ -66,26 +66,23 @@ for lit, should in STALE.items():
 check("registryTab(" in shell, "deckActivityTabs reads the registry",
       "deckActivityTabs does not use registryTab() — names can still drift")
 
-# ── 2 · EtuDice's gate ─────────────────────────────────────────────────────
-check("toPracticeSet(curatedDeck)" in shell, "EtuDice's flap is gated on toPracticeSet",
-      "EtuDice's flap is NOT gated — it will dead-end on decks with no practice set")
-
-capable = 0
-total = 0
-for f in glob.glob("src/content/collections/*.json"):
-    try:
-        c = json.load(open(f, encoding="utf-8"))
-    except Exception:
-        continue
-    if not isinstance(c, dict) or "items" not in c:
-        continue
-    total += 1
-    cols = ((c.get("gameConfig") or {}).get("letris") or {}).get("columns") or []
-    if len(cols) >= 2:
-        capable += 1
-check(0 < capable < total,
-      f"EtuDice runs on {capable} of {total} decks — the gate is doing real work",
-      f"EtuDice gate is pointless: {capable} of {total} decks")
+# ── 2 · Sorting offers no flap at all ──────────────────────────────────────
+# This used to assert that Sorting's flap was GATED on toPracticeSet, so it
+# could not dead-end on a deck with no columns. Dan cut the activity on
+# 2026-08-31 ("sorting is cut"), so there is no flap left to gate and the old
+# assertion would now pass only by accident. (It would in fact fail: cutting the
+# flap left `toPracticeSet` unused and the import went with it — which is the
+# kind of residue a cut leaves behind if nobody looks.)
+#
+# The replacement is stricter: no flap may be built for `dice` at all. The
+# route survives on purpose (banked answers keep a label, the decision is
+# reversible, the Match It precedent), so a check that only looked for the
+# route would see nothing wrong.
+check('registryTab("dice"' not in shell,
+      "Sorting offers no flap — the activity is off navigation",
+      "CahierShell still builds a flap for `dice`, but the activity was cut on "
+      "2026-08-31. A tile that is gone from the registry and still tabbed is a "
+      "dead end wearing a live link.")
 
 check('registryTab("complete"' in shell, "iComplete has a flap on every deck",
       "iComplete has no flap — its route is still orphaned")

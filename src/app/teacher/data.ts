@@ -22,7 +22,6 @@ import { EXCLUDED_BOARD_UIDS, HIDDEN_ROSTER_UID_PREFIXES, isHiddenRosterName } f
  */
 export const FIXTURE = process.env.NEXT_PUBLIC_TEACHER_FIXTURE === "1";
 import { TERM_START_MS, isCurrentTerm } from "@/lib/term";
-import { readEvidenceType } from "@/lib/evidence";
 
 /**
  * Student-identifying roster maps — fetched at runtime, NEVER bundled.
@@ -416,11 +415,7 @@ async function fetchOneStudent(uid: string): Promise<StudentDetail> {
       activityId: str(r.activityId),
       ts: r.timestamp?.toDate?.() ?? null,
       outcomeId: str(r.outcomeId),
-      // Read through the correction table: an answer banked from Sorting
-      // carries the `constrained` the old lookup produced, and Sorting shows
-      // the learner every column. Nothing is rewritten — the activity was
-      // always stored, and the type is an interpretation of it.
-      evidenceType: readEvidenceType(str(r.evidenceType), str(r.activityId)),
+      evidenceType: str(r.evidenceType),
       assistance: str(r.assistance),
       independent: typeof r.independent === "boolean" ? r.independent : null,
     });
@@ -490,11 +485,7 @@ export async function fetchResponsesSince(uids: string[], sinceMs: number): Prom
       rows.push({
         item: r.item, status: r.status, xp: num(r.xp) ?? 0, latencyMs: num(r.latencyMs),
         givenAnswer: str(r.givenAnswer), activityId: str(r.activityId), ts: r.timestamp?.toDate?.() ?? null,
-        outcomeId: str(r.outcomeId), // Read through the correction table: an answer banked from Sorting
-      // carries the `constrained` the old lookup produced, and Sorting shows
-      // the learner every column. Nothing is rewritten — the activity was
-      // always stored, and the type is an interpretation of it.
-      evidenceType: readEvidenceType(str(r.evidenceType), str(r.activityId)), assistance: str(r.assistance),
+        outcomeId: str(r.outcomeId), evidenceType: str(r.evidenceType), assistance: str(r.assistance),
         independent: typeof r.independent === "boolean" ? r.independent : null,
       });
     });

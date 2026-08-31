@@ -39,7 +39,6 @@ import { composeBanksForDeck } from "@/games/compose/banks";
 import FirstTour from "@/components/FirstTour";
 import { isPlayableGap } from "@/lib/collections/gapSentence";
 import { activity, bandOf, familyOf, familyShort, hubFamily, isReadingSurface } from "@/content/activities";
-import { toPracticeSet } from "@/lib/practice/engine";
 import BottomBar from "@/components/BottomBar";
 import PageBand from "@/components/PageBand";
 
@@ -367,12 +366,9 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     //
     // Sorting is gated exactly like VocabulaRain and GramMarathon: only the 21
     // of 44 decks with >=2 letris columns can build a practice set, and on the
-    // rest /practice/dice/[id] renders "No sorting exercise for this deck yet".
-    // An absent flap beats a dead end -- and a rail slot could not be gated at
-    // all, which is why it is here and not in the rail.
-    ...(curatedDeck && toPracticeSet(curatedDeck)
-      ? [registryTab("dice", `/practice/dice/${collectionId}`)]
-      : []),
+    // Sorting's flap is gone with the activity (Dan, 2026-08-31: "sorting is
+    // cut"). The route survives so banked answers keep a label, but nothing
+    // offers it any more — see the note in content/activities.ts.
     // 4Mémoire BEFORE iComplete (2026-08-24, approved guidance flow): the
     // authored family order in activities.ts is dice → flip → complete, and
     // the SIO sheet's numbered path renders this list's order — the two

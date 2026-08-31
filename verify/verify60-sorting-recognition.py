@@ -107,38 +107,40 @@ for pat in ('/^sorting:/, "dice-practice:"', '/^dice:/, "dice-practice:"'):
           "and every display label resolve through normalizePath, so answers "
           "under that name would stop being counted as Sorting at all")
 
-# ── 5 · the read-time correction ────────────────────────────────────────────
-mis = re.search(r"const MISCACHED[^=]*=\s*\[(.*?)\n\];", EV, re.S)
-check(mis is not None, "the MISCACHED table parsed",
-      "MISCACHED is gone or unreadable — nothing corrects the answers already "
-      "banked under the old tag")
-rows = re.findall(r'\["([^"]+)",\s*"([a-z]+)",\s*"([a-z]+)"\]', mis.group(1)) if mis else []
-covered = {r[0] for r in rows}
-missing = [a.split("alphabet")[0] for a in ALIASES
-           if not any(a.startswith(p) for p in covered)]
-check(not missing,
-      f"all {len(covered)} Sorting names are corrected at read time",
-      f"these names have no correction row, so answers banked under them still "
-      f"READ as constrained: {missing}")
+# ── 5 · the activity is off navigation, and the record survives it ─────────
+# Dan cut Sorting on 2026-08-31. Off navigation the way Match It went: the
+# registry row is gone so nothing offers it, and the route, the ledger prefixes
+# and the evidence tags stay — they describe answers already given, not a
+# surface still offered. A cut that also deleted the tags would orphan every
+# banked Sorting answer, which is the failure this asserts against.
+ACT = open("src/content/activities.ts", encoding="utf-8").read()
+check('{ key: "dice", name: "Sorting"' not in ACT,
+      "Sorting is off the activity registry — nothing offers it",
+      "activities.ts still registers Sorting as an activity, but Dan cut it on "
+      "2026-08-31")
+check('dice: "recog"' in ACT,
+      "its BAND row stays, so banked answers keep a colour",
+      "the `dice` BAND row went with the registry row. Match It kept its band "
+      "for exactly this reason: answers already given still need a label, and "
+      "verify62 reads this row.")
 
-check(all(was == "constrained" for _, was, _ in rows),
-      "the correction only rewrites the `constrained` the old table produced",
-      "a correction row rewrites something other than `constrained`, which would "
-      "clobber a DELIBERATE override — open writing stores `free` and a pre-test "
-      "stores `diagnostic`, and neither is a miscache: " + str(rows))
+SHELL = open("src/components/CahierShell.tsx", encoding="utf-8").read()
+check('registryTab("dice"' not in SHELL,
+      "and no deck builds a flap for it",
+      "CahierShell still tabs `dice` — a cut activity with a live link")
 
-# ── 6 · the dashboard actually reads through it ─────────────────────────────
-DT = open("src/app/teacher/data.ts", encoding="utf-8").read()
-n = len(re.findall(r"readEvidenceType\(str\(r\.evidenceType\)", DT))
-check(n >= 2,
-      f"the teacher dashboard reads all {n} response paths through the correction",
-      f"only {n} of the dashboard's evidenceType reads go through "
-      "readEvidenceType — the rest still show the stored tag, so the same answer "
-      "reads two different ways depending on which table it lands in")
-
-check("str(r.evidenceType)," not in DT.replace("readEvidenceType(str(r.evidenceType),", ""),
-      "no dashboard path still takes the stored tag raw",
-      "a raw `str(r.evidenceType)` survives in data.ts")
+# The read-time correction that used to be asserted here is GONE, on purpose.
+# It rewrote a stored `constrained` from Sorting into `recognition` for display.
+# Dan, 2026-08-31: "The student list has been reset, so no worries" — there are
+# no old Sorting records left for it to correct, so it was dead weight solving a
+# problem that had left the data. Asserted as absent so it does not creep back
+# without the reasoning.
+EVSRC = open("src/lib/evidence.ts", encoding="utf-8").read()
+check("readEvidenceType" not in EVSRC,
+      "no read-time correction — the reset removed what it corrected",
+      "readEvidenceType is back in evidence.ts. It corrected pre-31-Aug Sorting "
+      "records, and the student list was reset, so there is nothing for it to "
+      "do. If records are being kept again, say so here.")
 
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:
