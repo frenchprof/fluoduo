@@ -3,15 +3,17 @@
 /**
  * buildCards() — the lesson pager's deck of cards (patch 22).
  *
- * The audit's prescription (UI_AUDIT.md, "THE LESSON"): min(3, memoCards) + 12
- * cards. Rule cards come from splitting the Mémo at its top-level children;
- * exercises are a FIXED RAMP — difficulty stops being a button and becomes
- * the sequence itself:
+ * Twelve exercise cards, whose KIND is the difficulty tier the learner chose
+ * (lib/lessonEntry.ts — Dan, 2026-08-31): Facile recognises and sorts,
+ * Moyen completes one missing piece, Difficile completes two, Bonus
+ * translates the whole sentence from English.
  *
- *   cards 1-4   MCQ        recognise the form   (evidence: recognition)
- *   cards 5-8   gap        produce it in a frame (constrained)
- *   cards 9-11  build      assemble the full sentence from word tiles
- *   card  12    translate  produce the sentence from English alone
+ * NO RULE CARDS ANY MORE (Dan, same day: "Why is the same screen appearing
+ * before the questions appear, it is a repeat?"). The Mémo used to open the
+ * run as a rule card — authored when the pager was the whole lesson. Since
+ * the six tabs arrived (LessonTabs, 30 Aug) the identical Mémo sits one tap
+ * away under « Les formes », so the in-run copy showed every learner the
+ * same screen twice. The tab is now its only home.
  *
  * Two question supplies exist and both are used when both exist, alternating:
  * the deck's own items (finite, SRS-keyed by real item ids) and the native
@@ -22,7 +24,6 @@
  * Everything here runs in the pager's MOUNT EFFECT, never during render —
  * same SSR-hydration rule as every drill (shuffle in effects only).
  */
-import { type ReactNode } from "react";
 import type { Collection, Item } from "@/lib/collections/schema";
 import type { DiceQuestion, NativeLesson } from "@/content/lessons/native/types";
 import { gappedItems } from "@/lib/collections/gramMarathonReady";
@@ -32,16 +33,11 @@ import { rampFor, type EntryLevel, type ExerciseKind } from "@/lib/lessonEntry";
 import { metaLeaksAnswer, multiBlankCard, type ClozeSegment } from "@/content/lessons/native/cloze";
 import { shuffle } from "@/lib/shuffle";
 
-/** A Mémo is one card, so a lesson carries exactly one rule card before the
- *  ramp. Kept as a named constant because the run length is rule cards + 12
- *  and reading `1` bare at the call site says nothing. See splitMemo. */
-export const RULE_CARDS_MAX = 1;
-
 export type { ExerciseKind } from "@/lib/lessonEntry";
 
-/** The default ramp — 4 MCQ, 4 gap, 3 build, 1 translate. Now one of three
- *  (lib/lessonEntry.ts): entry level ★ / ★★ / ★★★ chooses the MIX, never the
- *  length, so a higher level is harder work and not less of it. */
+/** The default (Facile) ramp — one of four (lib/lessonEntry.ts): the level
+ *  chooses the MECHANIC, never the length, so a higher level is harder work
+ *  and not less of it. */
 export const RAMP: ExerciseKind[] = rampFor(1);
 
 /* THE ENTRY DIE IS STILL GONE, and this is the distinction that matters.
@@ -82,6 +78,17 @@ export type Exercise = {
   /** Grade with gradeGap (d'/de elision) instead of gradeAnswer. */
   gapGrade?: boolean;
   /**
+   * Typed at EVERY width — no word bank below sm.
+   *
+   * Difficile's single-blank fallback (a lesson whose generator has no slots
+   * yet, or a deck item). On a phone the word bank's three tiles are visually
+   * an MCQ — Dan, 31 Aug: "all the levels … why are they all mcq?" — so at
+   * the level whose whole point is withdrawn scaffolding, the bank goes and
+   * the learner types. Moyen keeps the bank: picking the one missing piece
+   * from choices IS his old site's ★ mechanic.
+   */
+  typed?: boolean;
+  /**
    * A cloze with MORE THAN ONE blank, for a question that authored `slots`.
    *
    * Present only at ★★ and above, and only where the generator gave the
@@ -107,42 +114,12 @@ function distractors(pool: string[], answer: string, n = 3): string[] {
   return out;
 }
 
-/* ── Rule cards ──────────────────────────────────────────────────────────── */
-
-/**
- * A Mémo is ONE card. It used to be sliced into up to three parts at
- * its top-level children, and the measurements say that did more harm than
- * good (Dan, 2026-08-27, on Units 0 and 1: "Memos are urgent").
- *
- * The heuristic was child COUNT, which turns out not to predict height at all
- * — measured across all 27 deck memos at 390x844 and 360x640:
- *
- *     nationalities   1 child   the TALLEST memo   never split (1 <= 3)
- *     salutations     1 child   459px              never split
- *     alphabet        8 kids    449px, shorter     split into 3
- *
- * So it chopped memos that fit and left the tall ones whole — backwards in
- * exactly the cases that matter. And the slicing was visibly wrong where it
- * did fire: cloning the wrapper stamped « L'alphabet — 7 familles de sons »
- * onto all three cards, the first of which showed three families; the third
- * held one letter and a closing line.
- *
- * Nothing is at risk from dropping it, because the app already relies on the
- * fallback for its tallest memos: at 390x844 no memo overflows its slot, and
- * at 360x640 the nine that do already scroll — verified on `salutations`
- * (459px in a 405px slot), which scrolls 102px with its last line reachable.
- * A reference you scroll beats a reference cut into arbitrary thirds.
- */
-export function splitMemo(memo: ReactNode): ReactNode[] {
-  return memo == null ? [] : [memo];
-}
-
 /* ── Question supplies ───────────────────────────────────────────────────── */
 
 type Supply = { make: (kind: ExerciseKind) => Exercise | null };
 
 /** The deck's own items — real item ids, so answers feed each item's SRS. */
-function deckSupply(deck: Collection, activityKey: string): Supply {
+function deckSupply(deck: Collection, activityKey: string, entry: EntryLevel = 1): Supply {
   const pool = gappedItems(deck);
   const hasGaps = pool.length > 0;
   const items = hasGaps ? pool : deck.items;
@@ -164,8 +141,12 @@ function deckSupply(deck: Collection, activityKey: string): Supply {
       const en = gapSentenceEn(item);
       const say = sentence;
       // A gapless deck has no French-only frame to blank — its gap positions
-      // fall back to MCQ rather than fake a cloze.
-      const k = kind === "gap" && !(hasGaps && item.gap) ? "mcq" : kind;
+      // fall back rather than fake a cloze. At Facile that fallback is MCQ;
+      // at Moyen and up it is BUILD, because a learner who chose "complete
+      // the sentence" and got twelve recognition cards is Dan's 31 Aug bug
+      // report verbatim ("why are they all mcq?"). Assembling the sentence is
+      // the nearest honest demand a gapless deck can make.
+      const k = kind === "gap" && !(hasGaps && item.gap) ? (entry >= 2 ? "build" : "mcq") : kind;
       switch (k) {
         case "mcq": {
           if (hasGaps && item.gap) {
@@ -190,7 +171,8 @@ function deckSupply(deck: Collection, activityKey: string): Supply {
             kind: "gap", itemId: item.id, activity: `lesson:${activityKey}`,
             meta: item.lemma ? `(${item.lemma})` : undefined,
             before, after, en,
-            answer: item.gap!, bankPool: gapPool, say, gapGrade: true,
+            answer: item.gap!, say, gapGrade: true,
+            ...(entry >= 3 ? { typed: true } : { bankPool: gapPool }),
           };
         }
         case "build":
@@ -269,7 +251,8 @@ function lessonSupply(
             kind, itemId: x.correct, activity: `lesson:${activityKey}`,
             meta: x.meta, big: x.big, en: x.en,
             before: x.med.before, after: x.med.after,
-            answer: x.med.correct, bankPool: x.easyOptions, say: x.correct,
+            answer: x.med.correct, say: x.correct,
+            ...(entry >= 3 ? { typed: true } : { bankPool: x.easyOptions }),
           };
         }
         case "build": {
@@ -311,29 +294,33 @@ function lessonSupply(
 export function buildCards({
   deck,
   lesson,
-  memo,
   activityKey,
   entry = 1,
   pinned,
 }: {
   deck?: Collection;
   lesson?: NativeLesson;
-  /** The Mémo to split — lesson.memo ?? memoForDeck(deck.id), resolved by the caller. */
-  memo?: ReactNode;
   activityKey: string;
-  /** Where the learner enters the ramp: ★ / ★★ / ★★★. Same card count at
-   *  every level — see lib/lessonEntry.ts on why that is load-bearing. */
+  /** The difficulty tier: Facile / Moyen / Difficile / Bonus. Same card
+   *  count at every level — see lib/lessonEntry.ts on why that is
+   *  load-bearing. */
   entry?: EntryLevel;
   /** Axis values the learner pinned in the dropdowns; see DiceConfig.axes. */
   pinned?: Record<string, string>;
-}): { rules: ReactNode[]; exercises: Exercise[] } {
+}): { exercises: Exercise[] } {
   const supplies: Supply[] = [];
   // With axes pinned, the DECK supply is dropped: its questions are drawn from
   // the deck's own items and cannot honour "only vous + être", so mixing it in
   // would serve cards that ignore the learner's selection while looking like
   // they answer it. A steered run is the lesson generator's alone.
   const steered = !!pinned && Object.values(pinned).some(Boolean);
-  if (deck && !(steered && lesson)) supplies.push(deckSupply(deck, activityKey));
+  // Same argument at Difficile on a lesson whose generator authors slots: the
+  // deck supply can only ever withdraw ONE piece, so mixing it in serves
+  // Moyen cards into a run the learner chose for two (Dan, 31 Aug:
+  // "Difficile if it involves two items"). Slots are structural — one probe
+  // says whether this generator has them.
+  const slotted = !!lesson && !!lesson.dice.newQuestion(pinned)?.slots?.length;
+  if (deck && !(steered && lesson) && !(entry === 3 && slotted)) supplies.push(deckSupply(deck, activityKey, entry));
   if (lesson) supplies.push(lessonSupply(lesson, activityKey, pinned, entry));
 
   const exercises: Exercise[] = [];
@@ -345,5 +332,5 @@ export function buildCards({
     }
   });
 
-  return { rules: splitMemo(memo), exercises };
+  return { exercises };
 }

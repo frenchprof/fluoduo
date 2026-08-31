@@ -271,11 +271,11 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
       <div className="mt-2 grid grid-cols-2 gap-2 text-[15px] text-[color:var(--cahier-ink)]">
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
           <B>un</B> / <B>le</B> — masculine
-          <p lang="fr" className="mt-1">un homme, un sport, le football</p>
+          <p lang="fr" className="mt-1 font-black">un homme, un sport, le football</p>
         </div>
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
           <B>une</B> / <B>la</B> — feminine
-          <p lang="fr" className="mt-1">une femme, une activité, la danse</p>
+          <p lang="fr" className="mt-1 font-black">une femme, une activité, la danse</p>
         </div>
       </div>
       <p className="mt-3 text-[15px] text-[color:var(--cahier-ink)]">
@@ -303,10 +303,10 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
   "parce-que": (
     <Card title="Pourquoi ? Parce que…">
       <Lines>
-        <li><span lang="fr">Pourquoi tu étudies le français ?</span> — <B>Parce que</B> <span lang="fr">j'aime la France.</span></li>
-        <li><span lang="fr">Pourquoi… ?</span> — <B>Parce qu'</B><span lang="fr">il fait beau.</span></li>
+        <li><span lang="fr">Pourquoi tu étudies le français ?</span> — <B>Parce que</B> <span lang="fr">j&rsquo;aime la France.</span></li>
+        <li><span lang="fr">Pourquoi… ?</span> — <B>Parce qu&rsquo;</B><span lang="fr">il fait beau.</span></li>
       </Lines>
-      <Warn><span lang="fr">parce que</span> + <span lang="fr">il</span> → <span lang="fr">parce qu'il</span>.</Warn>
+      <Warn><span lang="fr">parce que</span> + <span lang="fr">il</span> → <span lang="fr">parce qu&rsquo;il</span>.</Warn>
     </Card>
   ),
 
@@ -317,10 +317,10 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
     <Card title="Pas de ou pas le ?">
       <Lines>
         <li><B>ne … pas de</B> — <span lang="fr">Je fais <b className="text-[color:var(--gram-neutral)]">du</b> tennis. → Je ne fais pas <b className="text-[color:var(--gram-neutral)]">de</b> tennis.</span></li>
-        <li><B>ne … pas de</B> — <span lang="fr">Il y a <b className="text-[color:var(--gram-neutral)]">du</b> café. → Il n'y a pas <b className="text-[color:var(--gram-neutral)]">de</b> café.</span></li>
-        <li><span lang="fr">❤️ aimer · adorer · détester</span> keep <B>le / la / les</B> — <span lang="fr">J'aime <b className="text-[color:var(--gram-neutral)]">le</b> tennis. → Je n'aime pas <b className="text-[color:var(--gram-neutral)]">le</b> tennis.</span></li>
+        <li><B>ne … pas de</B> — <span lang="fr">Il y a <b className="text-[color:var(--gram-neutral)]">du</b> café. → Il n&rsquo;y a pas <b className="text-[color:var(--gram-neutral)]">de</b> café.</span></li>
+        <li><span lang="fr">❤️ aimer · adorer · détester</span> keep <B>le / la / les</B> — <span lang="fr">J&rsquo;aime <b className="text-[color:var(--gram-neutral)]">le</b> tennis. → Je n&rsquo;aime pas <b className="text-[color:var(--gram-neutral)]">le</b> tennis.</span></li>
       </Lines>
-      <Warn><span lang="fr">de</span> + vowel → <span lang="fr">d'</span> : <span lang="fr">pas d'eau</span>.</Warn>
+      <Warn><span lang="fr">de</span> + vowel → <span lang="fr">d&rsquo;</span> : <span lang="fr">pas d&rsquo;eau</span>.</Warn>
     </Card>
   ),
 
@@ -328,10 +328,10 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
   "envies-besoins": (
     <Card title="Envies et besoins">
       <Lines>
-        <li><span lang="fr">J'ai</span> <B>envie de</B> <span lang="fr">dormir</span> — I feel like…</li>
-        <li><span lang="fr">J'ai</span> <B>besoin d'</B><span lang="fr">un café</span> — I need…</li>
+        <li><span lang="fr">J&rsquo;ai</span> <B>envie de</B> <span lang="fr">dormir</span> — I feel like…</li>
+        <li><span lang="fr">J&rsquo;ai</span> <B>besoin d&rsquo;</B><span lang="fr">un café</span> — I need…</li>
       </Lines>
-      <Warn><span lang="fr">de</span> + vowel → <span lang="fr">d'</span>.</Warn>
+      <Warn><span lang="fr">de</span> + vowel → <span lang="fr">d&rsquo;</span>.</Warn>
     </Card>
   ),
 
@@ -393,7 +393,7 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
         ]}
       />
       <Lines>
-        <li><B>(no noun)</B> — <span lang="fr">C'est <B>là-bas</B> !</span></li>
+        <li><B>(no noun)</B> — <span lang="fr">C&rsquo;est <B>là-bas</B> !</span></li>
       </Lines>
       <PillRow
         items={[
@@ -404,7 +404,7 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
         ]}
       />
       <p className="mt-3 text-[15px] text-[color:var(--cahier-ink)]">
-        Distance: <B>c'est à</B> + duration — <span lang="fr">C'est <B>à dix minutes</B> à pied.</span>
+        Distance: <B>c&rsquo;est à</B> + duration — <span lang="fr">C&rsquo;est <B>à dix minutes</B> à pied.</span>
       </p>
     </Card>
   ),
@@ -454,7 +454,7 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
         ]}
       />
       <p className="mt-3 text-[15px] text-[color:var(--cahier-ink)]">
-        <B>d'abord</B> → <B>puis</B> → <B>ensuite</B> → <B>enfin</B>
+        <B>d&rsquo;abord</B> → <B>puis</B> → <B>ensuite</B> → <B>enfin</B>
       </p>
     </Card>
   ),
@@ -463,7 +463,7 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
   "stress-pronouns": (
     <Card title="Moi, toi, lui… — three jobs">
       <Lines>
-        <li>emphasis — <B>Moi</B>, <span lang="fr">j'aime le café</span></li>
+        <li>emphasis — <B>Moi</B>, <span lang="fr">j&rsquo;aime le café</span></li>
         <li>after prepositions — <span lang="fr">avec</span> <B>lui</B>, <span lang="fr">pour</span> <B>elle</B></li>
         <li>alone — <span lang="fr">Et</span> <B>toi</B> ?</li>
       </Lines>
@@ -536,20 +536,20 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
     <Card title="Salutations">
       <div className="mt-2 grid grid-cols-2 gap-2 text-[14px] text-[color:var(--cahier-ink)]">
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
-          <B>→ arriver</B>, poli
-          <p lang="fr" className="mt-1">Bonjour ! Bonsoir !</p>
+          <p className="fluo-label text-[color:var(--cahier-ink-soft)]">→ arriver · poli</p>
+          <p lang="fr" className="mt-1 text-[15px] font-black">Bonjour ! Bonsoir !</p>
         </div>
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
-          <B>→ arriver</B>, copains
-          <p lang="fr" className="mt-1">Salut ! Coucou !</p>
+          <p className="fluo-label text-[color:var(--cahier-ink-soft)]">→ arriver · copains</p>
+          <p lang="fr" className="mt-1 text-[15px] font-black">Salut ! Coucou !</p>
         </div>
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
-          <B>partir →</B>, poli
-          <p lang="fr" className="mt-1">Au revoir ! Bonne journée ! À demain ! À bientôt !</p>
+          <p className="fluo-label text-[color:var(--cahier-ink-soft)]">partir → · poli</p>
+          <p lang="fr" className="mt-1 text-[15px] font-black">Au revoir ! Bonne journée ! À demain ! À bientôt !</p>
         </div>
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
-          <B>partir →</B>, copains
-          <p lang="fr" className="mt-1">Salut ! À plus tard ! À plus !</p>
+          <p className="fluo-label text-[color:var(--cahier-ink-soft)]">partir → · copains</p>
+          <p lang="fr" className="mt-1 text-[15px] font-black">Salut ! À plus tard ! À plus !</p>
         </div>
       </div>
     </Card>
@@ -579,7 +579,7 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
     <Card title="Quelles langues ?">
       <Lines>
         <li>language = <B>le</B> + masculine nationality, no capital</li>
-        <li><B>le</B> <span lang="fr">français</span>, <B>le</B> <span lang="fr">chinois</span>, <B>l'</B><span lang="fr">anglais</span>, <B>l'</B><span lang="fr">espagnol</span></li>
+        <li><B>le</B> <span lang="fr">français</span>, <B>le</B> <span lang="fr">chinois</span>, <B>l&rsquo;</B><span lang="fr">anglais</span>, <B>l&rsquo;</B><span lang="fr">espagnol</span></li>
       </Lines>
       <PillRow items={["français", "anglais", "chinois", "espagnol", "japonais", "russe", "coréen"]} />
       <Warn><span lang="fr">Je parle français</span> — no article after <span lang="fr">parler</span>.</Warn>
@@ -608,7 +608,7 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
       <p className="mt-2 text-[13px] font-bold text-[color:var(--cahier-ink)]">À apprendre (the few to learn)</p>
       <Lines>
         <li><B>le dessin</B> — art</li>
-        <li><B>l'informatique</B> — computer science</li>
+        <li><B>l&rsquo;informatique</B> — computer science</li>
         <li><B>les langues</B> — languages</li>
       </Lines>
     </Card>
@@ -619,7 +619,7 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
     <Card title="Les lieux — le, la ou l' ?">
       <PillRow label={<B>le</B>} items={["le parc", "le café", "le cinéma", "le musée", "le marché"]} />
       <PillRow label={<B>la</B>} items={["la gare", "la banque", "la poste", "la piscine", "la pharmacie"]} />
-      <PillRow label={<span><B>l'</B> + vowel</span>} items={["l'hôtel", "l'école", "l'hôpital", "l'église", "l'université"]} />
+      <PillRow label={<span><B>l&rsquo;</B> + vowel</span>} items={["l'hôtel", "l'école", "l'hôpital", "l'église", "l'université"]} />
     </Card>
   ),
 
@@ -629,11 +629,11 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
       <Lines>
         <li><B>le</B> <span lang="fr">pain</span> → <B>du</B> <span lang="fr">pain</span> — <span lang="fr">du café, du lait, du fromage</span></li>
         <li><B>la</B> <span lang="fr">salade</span> → <B>de la</B> <span lang="fr">salade</span> — <span lang="fr">de la viande</span></li>
-        <li><B>l'</B><span lang="fr">eau</span> → <B>de l'</B><span lang="fr">eau</span></li>
+        <li><B>l&rsquo;</B><span lang="fr">eau</span> → <B>de l&rsquo;</B><span lang="fr">eau</span></li>
         <li><B>les</B> <span lang="fr">pâtes</span> → <B>des</B> <span lang="fr">pâtes</span></li>
       </Lines>
       <p className="mt-3 text-[15px] text-[color:var(--cahier-ink)]">
-        "some of it" = <B>du</B> / <B>de la</B> / <B>des</B>
+        &quot;some of it&quot; = <B>du</B> / <B>de la</B> / <B>des</B>
       </p>
     </Card>
   ),
