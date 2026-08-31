@@ -62,6 +62,8 @@ export type Exercise = {
   big?: string;
   /** Muted English gloss. */
   en?: string;
+  /** Language of `big`; "en" also renders it as a reference, not a target. */
+  bigLang?: "fr" | "en";
   /** Cloze frame around the blank (mcq + gap cards). */
   before?: string;
   after?: string;
@@ -220,7 +222,7 @@ function lessonSupply(
           const x = q();
           return {
             kind, itemId: x.correct, activity: `mcq:lesson:${activityKey}`,
-            meta: x.meta, big: x.big, en: x.en,
+            meta: x.meta, big: x.big, bigLang: x.bigLang, en: x.en,
             options: shuffle(x.easyOptions),
             answer: x.correct, alternates: x.alternates, say: x.correct,
           };
@@ -247,13 +249,16 @@ function lessonSupply(
             return {
               kind, itemId: x.correct, activity: `lesson:${activityKey}`,
               meta: metaLeaksAnswer(x.meta, blanked) ? undefined : x.meta,
-              // No `big`: the generators' big is the bare noun, which the
-              // segmented sentence already shows — a repeat, not a prompt.
-              // `en` is the full English sentence and is the card's REFERENCE:
-              // with two pieces withdrawn and the meta dropped for leaking,
-              // several verbs were defensible without it (Dan, 31 Aug: "it
-              // seems multiple answers are possible … unless there is an
-              // English reference to refer to").
+              // A FRENCH `big` is dropped here: the generators' big is the
+              // bare noun the segmented sentence already shows — a repeat,
+              // not a prompt (#97). An ENGLISH big (bigLang: "en") survives:
+              // it IS the card's reference — "an orange highlighter" over
+              // « le fluo ___ » (Peers' colours ladder) — and `en` remains
+              // the fallback full-sentence reference where no big is given
+              // (Dan, 31 Aug: "it seems multiple answers are possible …
+              // unless there is an English reference to refer to").
+              big: x.bigLang === "en" ? x.big : undefined,
+              bigLang: x.bigLang,
               en: x.en,
               segments: multi.segments, answer: multi.answer,
               bankPool: x.easyOptions, say: x.correct,
@@ -273,7 +278,7 @@ function lessonSupply(
           });
           return {
             kind, itemId: x.correct, activity: `lesson:${activityKey}`,
-            meta: x.meta, big: x.big, en: x.en,
+            meta: x.meta, big: x.big, bigLang: x.bigLang, en: x.en,
             before: x.med.before, after: x.med.after,
             answer: x.med.correct, say: x.correct,
             alternates: gapAlts.length ? gapAlts : undefined,
@@ -284,7 +289,7 @@ function lessonSupply(
           const x = q();
           return {
             kind, itemId: x.correct, activity: `lesson:${activityKey}`,
-            meta: x.meta, big: x.big, en: x.en,
+            meta: x.meta, big: x.big, bigLang: x.bigLang, en: x.en,
             answer: x.correct, alternates: x.alternates,
             bankPool: x.easyOptions, tiles: true, say: x.correct,
           };
@@ -305,7 +310,7 @@ function lessonSupply(
           const x = q();
           return {
             kind, itemId: x.correct, activity: `lesson:${activityKey}`,
-            meta: x.meta, big: x.big, en: x.en,
+            meta: x.meta, big: x.big, bigLang: x.bigLang, en: x.en,
             answer: x.correct, alternates: x.alternates, say: x.correct,
           };
         }

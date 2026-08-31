@@ -15,6 +15,19 @@ export type DiceQuestion = {
    *  copying), so a generator whose only honest prompt is the English `en`
    *  may now omit it — the card then shows `en` as the reference. */
   big?: string;
+  /**
+   * What language `big` is in. Defaults to French.
+   *
+   * An EN→FR card's prompt IS the English — "an orange highlighter", and the
+   * learner supplies « le fluo orange ». The renderer used to assume `big` was
+   * French for every kind except translate/build, so those prompts went out
+   * tagged `lang="fr"`: a screen reader and the 🔊 button both read English
+   * words with French phonics. Setting this also styles it as a REFERENCE
+   * rather than a target — same size as the French, italic, not bold (Dan,
+   * 2026-08-31: "it should not be more salient than the french, but still it
+   * should be of equal size (but italics non bold)").
+   */
+  bigLang?: "fr" | "en";
   /** Muted English gloss under the prompt. */
   en?: string;
   /** The full correct sentence — graded against, and spoken. */
