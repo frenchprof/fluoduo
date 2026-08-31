@@ -222,6 +222,33 @@ function Bonus({ pairs }: { pairs?: NativeLesson["bonus"] }) {
   );
 }
 
+/**
+ * A NOUN HAS FORMS, AND ITS ARTICLE OFTEN HIDES THEM.
+ *
+ * Dan, 30-31 Aug, settling the Tier 2 shape: "a vocab list with gender and so
+ * on, as seen in SpecuLearn." Sorting `aliments` by gender gives 23 masculine,
+ * 10 feminine, and NINE whose article says nothing — `de l'` before a vowel and
+ * `des` in the plural. A learner who only ever meets « de l'eau » is never told
+ * that `eau` is feminine, and that is the gap the column exists to close.
+ *
+ * `gender` has been in the Item schema all along and NO deck populated it — a
+ * dead field. `aliments` is the first to carry it. Where a deck has not, the
+ * column shows nothing rather than guessing from the article, because guessing
+ * from the article is exactly the mistake the learner is making.
+ */
+const GENDER_LABEL: Record<string, { short: string; full: string; hue: string }> = {
+  m: { short: "m", full: "masculine", hue: "var(--gram-masc)" },
+  f: { short: "f", full: "feminine", hue: "var(--gram-fem)" },
+  mpl: { short: "m pl", full: "masculine plural", hue: "var(--gram-masc)" },
+  fpl: { short: "f pl", full: "feminine plural", hue: "var(--gram-fem)" },
+};
+
+/** True when the item's own French gives the gender away, so the column is
+ *  only telling the learner something they could not already see. */
+function articleShowsGender(fr: string): boolean {
+  return /^(le|la|un|une|du|de la)\s/i.test(fr.trim());
+}
+
 /* ── 5 · Le lexique ────────────────────────────────────────────────────────
  * The deck's words, as a reveal table.
  *
@@ -241,6 +268,7 @@ function Lexique({ deck }: { deck?: Collection }) {
     return <Empty what="This lesson has no deck, so there is no lexique." />;
   }
   const reveal = (id: string) => setShown((s) => new Set(s).add(id));
+  const hiddenCount = deck.items.filter((i) => i.gender && !articleShowsGender(i.fr)).length;
   const cell = (id: string, col: "fr" | "en", text: string, lang?: string) => {
     // A hidden cell is a QUESTION, so it is a button — tapping it is the
     // answer. Revealed cells stop being interactive rather than staying
@@ -282,21 +310,52 @@ function Lexique({ deck }: { deck?: Collection }) {
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-sm">
           <tbody>
-            {deck.items.map((it) => (
-              <tr key={it.id} className="border-t border-[color:var(--cahier-rule)]">
-                <td className="w-8 py-1.5 text-lg" aria-hidden>{it.emoji ?? ""}</td>
-                <td className="py-1.5 pr-3 font-bold text-[color:var(--cahier-ink)]">
-                  {cell(it.id, "fr", it.fr, "fr")}
-                </td>
-                <td className="py-1.5 text-[color:var(--fluo-ink-soft)]">
-                  {cell(it.id, "en", it.en ?? "")}
-                </td>
-              </tr>
-            ))}
+            {deck.items.map((it) => {
+              const g = it.gender ? GENDER_LABEL[it.gender] : undefined;
+              const hidden = !!g && !articleShowsGender(it.fr);
+              return (
+                <tr key={it.id} className="border-t border-[color:var(--cahier-rule)]">
+                  <td className="w-8 py-1.5 text-lg" aria-hidden>{it.emoji ?? ""}</td>
+                  <td className="py-1.5 pr-3 font-bold text-[color:var(--cahier-ink)]">
+                    {cell(it.id, "fr", it.fr, "fr")}
+                  </td>
+                  {/* The gender column. Emphasised only where the article does
+                      NOT already show it — those are the words a learner would
+                      otherwise never be told, and the reason the column is
+                      here rather than being left to the article. */}
+                  <td className="w-12 py-1.5 pr-3 text-center">
+                    {g && (
+                      <span
+                        title={hidden ? `${g.full} — the article does not show it` : g.full}
+                        className={[
+                          "inline-block rounded px-1.5 py-0.5 text-[11px] font-black",
+                          hidden ? "text-white" : "",
+                        ].join(" ")}
+                        style={hidden
+                          ? { background: g.hue }
+                          : { color: g.hue }}
+                      >
+                        {g.short}
+                      </span>
+                    )}
+                  </td>
+                  <td className="py-1.5 text-[color:var(--fluo-ink-soft)]">
+                    {cell(it.id, "en", it.en ?? "")}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
-      <p className="mt-3 text-xs font-bold text-[color:var(--fluo-ink-soft)]">
+      {hiddenCount > 0 && (
+        <p className="mt-3 text-xs font-bold text-[color:var(--fluo-ink-soft)]">
+          <span className="mr-1.5 inline-block rounded bg-[color:var(--gram-fem)] px-1.5 py-0.5 text-[11px] font-black text-white">f</span>
+          {hiddenCount} of these {deck.items.length} words hide their gender behind{" "}
+          <i lang="fr">de l&rsquo;</i> or <i lang="fr">des</i> — the article will not tell you.
+        </p>
+      )}
+      <p className="mt-2 text-xs font-bold text-[color:var(--fluo-ink-soft)]">
         {deck.items.length} words · the full table, with your notes and review marks, is on the deck page.
       </p>
     </Panel>

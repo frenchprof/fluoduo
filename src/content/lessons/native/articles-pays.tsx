@@ -24,6 +24,80 @@ const np = (art: string, fr: string) => art + (art === "l'" ? "" : " ") + fr;
 
 export const articlesPaysLesson: NativeLesson = {
   slug: "articles-pays",
+  // TIER 2 CONCEPT — a question the WORD LIST cannot answer.
+  //
+  // Peers, 2026-08-31: the brief differs per tier. A Tier 1 concept answers a
+  // question the FORMS cannot; a Tier 2 concept answers one the word list
+  // cannot. Knowing every word on this deck still leaves this unanswered,
+  // which is what earns the tab its place on a vocabulary stop.
+  //
+  // Lifted from the Mémo below; no grammar introduced that it does not teach.
+  // DRAFTED — `contrast` and `remember` are the pedagogical claim and go to
+  // Dan before they reach a learner.
+  concept: {
+    subtitle: "Why a country has a gender",
+    contrast: (
+      <>
+        In English a country is just its name — <i>France</i>, <i>Japan</i>. In French
+        the name arrives with an article attached, and that article has a gender:{" "}
+        <i lang="fr">la France</i>, <i lang="fr">le Japon</i>. The article is part of the
+        name, not something you add.
+      </>
+    ),
+    question: (
+      <>
+        Why <i lang="fr">la France</i> but <i lang="fr">le Japon</i>?
+      </>
+    ),
+    answer: (
+      <>
+        Because <i lang="fr">France</i> ends in <b>-e</b> and is feminine, while{" "}
+        <i lang="fr">Japon</i> does not and is masculine. The ending is the clue, and it
+        is right far more often than it is wrong.
+      </>
+    ),
+    pitfall: [
+      { label: <>ends in -e</>, wrong: <i lang="fr">le France</i>, right: <i lang="fr">la France</i> },
+      { label: <>starts with a vowel</>, wrong: <i lang="fr">la Italie</i>, right: <i lang="fr">l&rsquo;Italie</i> },
+      { label: <>plural name</>, wrong: <i lang="fr">le États-Unis</i>, right: <i lang="fr">les États-Unis</i> },
+    ],
+    flow: [
+      { depth: 0, text: "Is the name plural?" },
+      { depth: 1, text: "yes → les" },
+      { depth: 1, text: "no  → does it start with a vowel?" },
+      { depth: 2, text: "yes → l'" },
+      { depth: 2, text: "no  → does it end in -e?" },
+      { depth: 3, text: "yes → la" },
+      { depth: 3, text: "no  → le" },
+    ],
+    check: [
+      {
+        q: <>« Chine » ends in -e. Which article?</>,
+        a: <><i lang="fr">la Chine</i> — the -e ending marks it feminine.</>,
+      },
+      {
+        q: <>Why <i lang="fr">l&rsquo;Allemagne</i> rather than <i lang="fr">la Allemagne</i>?</>,
+        a: (
+          <>
+            It is feminine, but it begins with a vowel, so <i lang="fr">la</i> elides to{" "}
+            <i lang="fr">l&rsquo;</i>. The gender has not changed — only the sound.
+          </>
+        ),
+      },
+    ],
+    inShort: (
+      <>
+        <i lang="fr">la</i> + féminin · <i lang="fr">le</i> + masculin ·{" "}
+        <i lang="fr">l&rsquo;</i> + voyelle · <i lang="fr">les</i> + pluriel
+      </>
+    ),
+    remember: (
+      <>
+        The article is part of the country&rsquo;s name. Learn <i lang="fr">le Japon</i>,
+        never <i lang="fr">Japon</i> on its own.
+      </>
+    ),
+  },
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">
