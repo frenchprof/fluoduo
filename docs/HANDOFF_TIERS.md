@@ -4,6 +4,34 @@
 `docs/SYLLABUS_TIERS.md` (the classification) and `docs/LESSON_SPEC_PLAN.md`
 (the tracks). Both are in PR #71.
 
+> **Corrected 31 Aug, and the correction is the important part.** This file's
+> "what I am doing next" claimed Track A. By the time it merged, `25e13ee` and
+> `99d5c4a` were already on main: `LessonConcept` is on `NativeLesson`, and the
+> six tabs render as front matter. **A3 and A4 are DONE and they are not mine.**
+> Thank you for the warning — it stopped me rebuilding both. See "Where Track A
+> actually stands" below, which replaces the section under it.
+>
+> One thing you may want from Dan before going further. He ruled on 30 Aug:
+> *"must not be in french for the instructional headings."* The six tabs shipped
+> as **Le parcours · Le concept · Les formes · L'exercice · Le bonus · Le
+> lexique**. Those are instructional headings, so his rule reaches them — but
+> they are also the names in his own three approved pages, which is why you
+> used them and why I would have too. It needs his word, not ours. I have put
+> the question to him.
+
+## Where Track A actually stands
+
+| | | |
+|---|---|---|
+| **A1** multi-slot `DiceQuestion` | **still open** | `med` is still `{ before, choices, correct, after }` on main — one blank, fixed by the generator. Dan's ★★ remains inexpressible. Mine unless you say otherwise. |
+| **A2** the ★ ladder on scaffolding | **still open**, blocked by A1 | `lessonEntry.ts` still varies `mcq \| gap \| build \| translate`. |
+| **A3** `concept` on `NativeLesson` | **done — yours** | `LessonConcept` with `subtitle / contrast / question / answer / remember` required. Better than what I had planned: requiring a claim *and* a question is what stops a concept decaying into a second Mémo. |
+| **A4** render the pathway | **done — yours** | The six tabs, as front matter. |
+| **A5** self-check interaction | **subsumed** | `LessonConcept.check` covers it. |
+
+So the only thing left in the container is the question type, and it does not
+touch `LessonPager.tsx` or the tab work at all. We are not in the same files.
+
 ## What happened, in three sentences
 
 Dan sent three of his original lesson pages and said the framework in them had
@@ -18,30 +46,31 @@ Then Dan added: *"Ateliers and phrases go together, it is about using the same
 set of phrases in context."* That folds the six ateliers into Tier 3, which is
 why Tier 3 is 15 and not 9.
 
-## What I am doing next — do not start these
+## What I am doing next — the corrected list
 
-**Track A, the container.** It is one agent's job by definition: every item is
-in the same three files, so a second agent working here is a merge conflict, not
-help.
+**A1, the question type, and only that.** `DiceQuestion.med` is
+`{ before, choices, correct, after }` — one blank, fixed by the generator. Dan's
+★★ ("pick the verb AND the article") is therefore not expressible. The plan is
+an optional `slots?: Slot[]` beside `med`, with `med` derived when absent, so
+the 47 existing generators keep working while the ladder is rebuilt on *which
+slots are given*. That is `types.ts` and `lessonEntry.ts`; it does not enter
+`LessonPager.tsx`.
 
-- `src/content/lessons/native/types.ts`
-- `src/lib/lessonEntry.ts`
-- `src/components/LessonPager.tsx`
+**The Tier 2 shape, for Dan.** A sample lesson page he can approve, since he has
+approved a Tier 1 shape and nothing else and nobody should author fifteen
+Lexical Core lessons against a shape I invented. Two rulings already came back
+on it and both are worth knowing here:
 
-A1 first, because everything waits on it. `DiceQuestion.med` is
-`{ before, choices, correct, after }` — **one** blank, and which blank is fixed
-by the generator. Dan's ★★ ("pick the verb AND the article") is therefore not
-expressible in the type. Adding an optional `slots?: Slot[]` beside `med`, with
-`med` derived when absent, lets the 47 existing generators keep working while
-the ladder gets rebuilt on *which slots are given* instead of on
-`mcq | gap | build | translate`.
+- **Instructional headings in English.** His words, 30 Aug. Applies to whatever
+  either of us writes.
+- **A vocabulary lesson keeps the same six tabs.** My draft invented a seventh
+  stage; Dan's answer was that *Les formes* for a noun is the vocab list with
+  **gender**, as in SpecuLearn. So the tabs don't change per tier — only their
+  contents do. That is a much better answer than mine and it means Tier 2 needs
+  no container work at all.
 
-Then A3 (`concept` on `NativeLesson`) and A4 (render the pathway in order).
-
-**Two things for Dan, not code.** A Tier 2 sample lesson page for him to
-approve — he has approved a Tier 1 shape and nothing else, and nobody should
-author fifteen Lexical Core lessons against a shape I invented. And the activity
-cull: all 20 activity keys, what each drills, which tier it serves or none.
+**The activity cull.** All 20 activity keys, what each drills, which tier it
+serves or none — for Dan to strike through.
 
 ## What is yours, if you want it
 
@@ -54,17 +83,29 @@ grammar lesson with a lexique bolted on the end. Under the classification,
 the lesson.**
 
 Dan's brief for Tier 2 is *"meaning-focused, semantic mapping, contextual
-retrieval"*. Semantic mapping is an information-design problem before it is a
-data problem: the same set of words carved two different ways, and the carving
-is what teaches. `src/content/collections/aliments.json` is the honest test —
-28 items, and the tags already carve them by category (`col:boissons`,
-`col:viandes`, `col:legumes`, `col:repas`).
+retrieval"*, and on 30 Aug he sharpened it twice: sort the words **by course** —
+dessert, main dish, fruit — and *do not* separate starter from main, because in
+a French meal the two overlap. Then, on what a vocabulary lesson's *Les formes*
+should hold: **a vocab list with gender**, as in SpecuLearn.
 
-**One thing to know before you start: 12 of those 28 items carry no `col:` tag
-at all** — croissant, pain, fromage, riz, pâtes, pomme, beurre, sucre, farine,
-huile, soupe, frites. So the deck cannot render a semantic map today. That is a
-content fix, not a design one, and it is mine unless you want it; either way it
-blocks the surface, so say early if you are taking Track D.
+`src/content/collections/aliments.json` is the honest test, and it fails three
+ways. Every one is a content fix that blocks your surface, so take them as the
+prerequisite list rather than as trivia:
+
+1. **12 of the 28 items carry no `col:` tag** — croissant, pain, fromage, riz,
+   pâtes, pomme, beurre, sucre, farine, huile, soupe, frites.
+2. **Nothing records a course.** No field, no tag.
+3. **Nothing records gender**, and the strings often hide it. `du` is *de + le*
+   so it does mark masculine, and `de la` marks feminine — but `de l'` and `des`
+   mark nothing, which covers **7 of the 28**: de l'eau, de l'huile, des pâtes,
+   des frites, des asperges, des champignons, des oignons. A learner who only
+   ever meets *de l'eau* is never told that *eau* is feminine.
+
+Point 3 is the one worth having. It is not a data gap to paper over — it is the
+lesson. The sample builds the forms stage around exactly that column.
+
+These are mine unless you want them; either way say early if you are taking
+Track D.
 
 ### 2 · Do the three tiers want a visual identity?
 
@@ -94,11 +135,15 @@ breaking on purpose before it is believed.
 
 ## The line between us
 
-Mine: `types.ts`, `lessonEntry.ts`, `LessonPager.tsx`, the native lesson
-modules, `docs/SYLLABUS_TIERS.md`.
+Mine: `DiceQuestion` / the ladder in `types.ts` and `lessonEntry.ts`, the deck
+content fixes above, `docs/SYLLABUS_TIERS.md`.
 
-Yours: `globals.css`, the tokens, the deck surfaces, `/decks`, anything under
-Track D.
+Yours: `LessonPager.tsx` and the six tabs, `LessonConcept` and the concept
+drafts, `globals.css`, the tokens, the deck surfaces, `/decks`, Track D.
+
+`types.ts` is now shared — you own `LessonConcept`, I own `DiceQuestion`. They
+are different declarations in one file, so expect a conflict only if we both
+touch the imports.
 
 Append-only and expect trivial conflicts: `docs/STATUS.md`, `AGENTS.md`,
 `src/content/lessons.ts`, `src/content/lessons/native/index.tsx`. Resolve by
