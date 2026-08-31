@@ -2773,6 +2773,41 @@ the viewport, which is the mistake that made it look like it fitted.
   clean, the 51 existing files stay until someone is in them anyway, and the
   pile can only shrink. Awaiting his yes/no.
 
+## 31 Aug — the rail lost its hierarchy in the 30 Aug mirror
+
+Found while reading `claude/pre-tests-amendments-hndx8r`, not by a check. My own
+regression, in `be0930c` ("The menu rail moves to the left, and the desk mirrors
+with it"): a blanket left→right sweep caught two lines that were **already
+correct**, and flipped `.cahier-tab--sm` / `--xs` from `border-left-width` to
+`border-right-width`.
+
+A flap's tier is drawn by the thickness of its coloured edge — 6px site row,
+5px deck activity, 4px in-page view — and that is the only thing carrying
+"site row > deck activities > Flip It" visually. Measured in a browser rather
+than read:
+
+    cahier-tab       left=6px right=1px      base, correct
+    cahier-tab--sm   left=6px right=5px      no step-down, stray grey edge
+    cahier-tab--xs   left=6px right=4px      same
+
+So all three tiers wore an identical 6px hue and the two lower ones grew a
+5px/4px GREY edge on the opposite side that nothing asked for. Shipped 30 Aug,
+live since. Both files parsed, tsc was clean, and every check stayed green —
+nothing in the suite looked at this at all.
+
+`verify61-flap-edge.py` guards it, and deliberately **does not pin the side**.
+Dan has moved the binding once and may move it again; pinning "left" would make
+a future correct mirror fail here for the wrong reason. It reads which border
+the base rule paints with `var(--tab-hue)` and asserts the modifiers step *that*
+edge down and leave the other alone. Break-tested on seven mutations — the
+regression itself, each modifier flipped, a lost step, two tiers at the same
+width, the hue leaving the border, the base rule renamed, and the desk flipped
+right with the modifiers left behind. All seven red on the first pass.
+
+The lesson is the mirror, not the CSS: a left→right sweep over a stylesheet
+will hit declarations that were already on the correct side. Mirroring is not a
+find-and-replace.
+
 ## 31 Aug — Sorting was filed under two different difficulties
 
 The band on the page called Sorting `recog` (set 26 Aug, from evidence.ts's own

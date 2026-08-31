@@ -699,9 +699,15 @@ body {
   white-space: nowrap;
 }
 /* Layer sizes — the rail reads as a hierarchy: site row > deck activities >
- * in-page views (Flip It). */
-.cahier-tab--sm { padding: 0.28rem 0.65rem; font-size: 0.74rem; border-right-width: 5px; }
-.cahier-tab--xs { padding: 0.2rem 0.55rem; font-size: 0.68rem; border-right-width: 4px; }
+ * in-page views (Flip It). The step-down is on the COLOURED edge, which is
+ * the left one: 6px / 5px / 4px. These two lines were mirrored to
+ * `border-right-width` by mistake in be0930c, when the desk moved left — a
+ * blanket left→right sweep caught them, but they were already correct and
+ * should not have moved. Measured: with `right`, all three flaps kept a 6px
+ * hue on the left (no hierarchy at all) and grew a 5px/4px GREY edge on the
+ * right that nothing asked for. */
+.cahier-tab--sm { padding: 0.28rem 0.65rem; font-size: 0.74rem; border-left-width: 5px; }
+.cahier-tab--xs { padding: 0.2rem 0.55rem; font-size: 0.68rem; border-left-width: 4px; }
 /* In the rail, flap LENGTH steps down by the same proportion as the sheets
  * (980/930/880): deeper tiers are shorter tongues. Long labels ellipsize. */
 .cahier-tabs .cahier-tab { width: 160px; }
