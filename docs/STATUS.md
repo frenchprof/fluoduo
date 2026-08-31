@@ -108,14 +108,44 @@ lane = report it in STATUS, don't do it.
    carry on in your lane.
 6. fluoduo-main sweeps session states daily; anything stalled >24h
    (a pending permission, a need-input nobody saw) is reported to Dan.
+7. **NO SESSION MERGES ITS OWN WORK.** Dan, 31 Aug: *"can we, moving forward,
+   push everything to fluoduo main for quality check, and letting fluoduo main
+   do the necessary merging?"* You open the PR; **fluoduo-main reviews it,
+   resolves any conflict against main, and merges.** This is not a licence to
+   hand over unfinished work — every gate still runs in your own lane first
+   (`tsc`, `npm run build`, the whole `verify/` suite, lint on the files you
+   touched, and the render for anything a learner can see), because handing
+   over something unverified only moves the cost. What ends is a session being
+   the last pair of eyes on its own change, which is how #88 and #89 both
+   claimed verify60 within five minutes and how five number collisions reached
+   `main` in one day.
+   Two things the PR body owes the merger, so they are not rediscovered:
+   **how it merges into `main`**, and **what it conflicts with in any other
+   open PR**. #100 is the first PR written this way.
+   "Push to fluoduo-main" means a PR they merge — **not** commits pushed onto
+   their branch, which rule 3 still forbids.
 
 ### The work, by lane (what each agent is MEANT to deliver)
 
-- **Color review — the concept pipeline.** Tier 3: 14 remaining after
-  salutations (gated on Dan's read of that one). Tier 1: all 19 (drafted in
-  batches of five, every batch read by Dan before ship). Tier 2: the
-  second-half compound-name concept, plus Colours/Some-nouns once decision 6
-  lands. Keeper of the Stocktake ledger — re-issue it when the counts move.
+- **Color review — the concept pipeline.** Updated 31 Aug PM.
+  **Tier 3 shape: SETTLED.** Dan read salutations and overruled the first
+  draft — form analysis is valid at a phrase stop where the block is
+  TRANSPARENT (« bonne nuit » = bonne + a feminine noun); the moment alone
+  only where it is OPAQUE (« il fait beau »). The redraft and the 27% page
+  cut are in **#100**, awaiting fluoduo-main's merge under rule 7.
+  Remaining, in order:
+  1. **Tier 1 — 19 concepts.** The critical path, nothing gating it. Batches
+     of five, every batch read by Dan before ship.
+  2. **Tier 3 — 8 more phrase stops.** Classroom talk, Pourquoi ?, Telling
+     time, Invitations, Weather, Directions, Wants & needs, Introductions.
+     The salutations shape applies directly.
+  3. **The 6 ateliers have no native lesson file** — a concept has nowhere to
+     live on stops 10/20/30/40/49/50. They need a file before Tier 3 closes.
+  4. **Tier 2 second half** — compound names, *tarte aux pommes* against
+     *jus de pomme*.
+  5. **Colours (5) + Some nouns (6)** — the two Tier 2 stops with no native
+     lesson file. Decision 6: give them one, or Tier 2 is done at 13.
+  Keeper of the Stocktake ledger — re-issue when the counts move.
 - **Pre-tests — the pre-test surface, then capacity.** ~~Unit-0 pre-test pages
   (in flight, the last uncovered pre-test surface).~~ **DONE — #98.** All ten
   now render at `/pretests/unit0/SIO-00N`; every stop in the course has a
