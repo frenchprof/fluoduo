@@ -30,6 +30,11 @@ export default function PretestQuiz({ pretestId }: { pretestId: string }) {
   useEffect(() => {
     const p = getPretest(pretestId);
     if (!p) return;
+    // The shuffle must happen after mount so SSR and the first client render
+    // agree (see the header comment) — so this effect has to seed state.
+    // Block-disabled: the rule reports only the first setState it meets, and
+    // which one that is differs between local and CI eslint.
+    /* eslint-disable react-hooks/set-state-in-effect */
     setQs(
       shuffle(p.items).map((item) => ({
         item,
@@ -37,9 +42,8 @@ export default function PretestQuiz({ pretestId }: { pretestId: string }) {
       })),
     );
     setPicked({});
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [pretestId]);
-
-  if (!pretest) return null;
 
   const total = qs.length;
   const answered = Object.keys(picked).length;
@@ -65,6 +69,10 @@ export default function PretestQuiz({ pretestId }: { pretestId: string }) {
     },
     onNext: scrollToActive,
   });
+
+  // After the hooks — React requires every render to call them in the same
+  // order, so the no-pretest bail-out cannot sit above useChoiceKeys.
+  if (!pretest) return null;
 
   function pick(q: Q, choice: string) {
     if (picked[q.item.id] !== undefined) return;
@@ -117,20 +125,22 @@ function QuestionCard({
   const { item, choices } = q;
   const showResult = picked !== undefined;
   const correct = picked === item.answer;
-  const [showWhy, setShowWhy] = useState(false);
   // WHY appears only on a WRONG answer, and explains only why THAT choice is
   // wrong (Dan, 2026-07-02). Correct answers get TTS + green — no explanation.
   const whyText = !correct && picked !== undefined ? item.whyWrong?.[picked] : undefined;
   // Auto-open the correction (Dan, 2026-07-27): a wrong answer TRIGGERS the
   // explanation — no second tap required; the WHY pill becomes a hide toggle.
-  useEffect(() => { if (whyText) setShowWhy(true); }, [whyText]);
+  // (An answer can never be un-picked, so "has whyText and not hidden" is
+  // exactly the old auto-open-then-toggle behaviour, derived at render time.)
+  const [whyHidden, setWhyHidden] = useState(false);
+  const showWhy = !!whyText && !whyHidden;
 
   return (
     <div className="relative rounded-xl border-2 bg-[var(--fluo-card)] p-3" style={{ borderColor: "var(--fluo-line)" }}>
       {whyText && (
         <button
           type="button"
-          onClick={() => setShowWhy((v) => !v)}
+          onClick={() => setWhyHidden((v) => !v)}
           className={`absolute right-2 top-2 rounded-full border-2 px-2 py-0.5 text-[0.6rem] font-black tracking-wider transition ${
             showWhy
               ? "border-[color:var(--fluo-ink)] bg-[color:var(--fluo-ink)] text-white"

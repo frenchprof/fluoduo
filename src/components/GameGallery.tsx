@@ -79,6 +79,9 @@ export default function GameGallery({
   const [next, setNext] = useState<GalleryEntry | undefined>(undefined);
   const [open, setOpen] = useState(false);
   useEffect(() => {
+    // Deliberate: pickNext reads progress from localStorage, which cannot
+    // be read during render — this mount effect has to seed the pick.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setNext(pickNext(entries));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

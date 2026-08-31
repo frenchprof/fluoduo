@@ -12,6 +12,11 @@ export default function MyDecks({ bare = false }: { bare?: boolean }) {
 
   useEffect(() => {
     if (!user) {
+      // Deliberate: this effect synchronises with Firestore (an external
+      // system); on sign-out the previous user's decks must be cleared
+      // synchronously so no render shows them. The fetched list arrives in
+      // async callbacks below, which the rule accepts.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDecks(null);
       return;
     }

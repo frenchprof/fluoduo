@@ -291,6 +291,10 @@ function ItemsSection({ collection }: { collection: Collection }) {
   useEffect(() => {
     try {
       const m = localStorage.getItem(VIEW_KEY);
+      // Deliberate: the saved view mode lives in localStorage, which cannot
+      // be read during render (the site is statically exported) — this mount
+      // effect has to seed it.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (m === "cards" || m === "list") setMode(m);
     } catch {}
   }, []);

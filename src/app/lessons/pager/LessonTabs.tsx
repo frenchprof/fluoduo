@@ -4,15 +4,18 @@
  * The six tabs — Dan's own lesson framework, restored (2026-08-30).
  *
  * He sent three lessons from his original course site and said: "this
- * framework is how it should be in EVERY SIO." All three carry the same six
+ * framework is how it should be in EVERY SIO." All three carry the same
  * tabs, in the same order, numbered as a path:
  *
  *   🗺 0 Le parcours · 💡 1 Le concept · 📖 2 Les formes
- *   📝 3 L'exercice  · ⭐ 4 Le bonus   · 📚 5 Le lexique
+ *   📝 3 L'exercice  · 📚 4 Le lexique
  *
  * Three of them were already here under other names — the Mémo IS Les formes,
- * `dice` IS L'exercice, `bonus` IS Le bonus. This adds the three that were
- * missing and puts a frame around all six.
+ * `dice` IS L'exercice. LE BONUS TAB IS PARKED UNDER L'EXERCICE (Dan,
+ * 2026-08-31: "we can park Bonus under practice, so it does not have to have
+ * its own tab") — since the chooser gained the ⭐ Bonus level, the browsable
+ * pairs duplicated the exercise that serves them; the bank itself
+ * (NativeLesson.bonus) still feeds the Bonus tier's translate cards.
  *
  * THIS DOES NOT REOPEN PATCH 22. The pager exists because the imported HTML
  * put "44 tappable controls before the first answer, two identical difficulty
@@ -39,9 +42,9 @@
 import { useState, type ReactNode } from "react";
 import type { Collection } from "@/lib/collections/schema";
 import type { Sio } from "@/content/sios";
-import type { LessonConcept, NativeLesson } from "@/content/lessons/native/types";
+import type { LessonConcept } from "@/content/lessons/native/types";
 
-type TabKey = "parcours" | "concept" | "formes" | "exercice" | "bonus" | "lexique";
+type TabKey = "parcours" | "concept" | "formes" | "exercice" | "lexique";
 
 const TABS: { key: TabKey; emoji: string; label: string; does: string }[] = [
   // `does` earns the path list its place. Without it that list is the tab
@@ -50,8 +53,7 @@ const TABS: { key: TabKey; emoji: string; label: string; does: string }[] = [
   { key: "parcours", emoji: "🗺", label: "Le parcours", does: "what you will be able to do" },
   { key: "concept", emoji: "💡", label: "Le concept", does: "why French does it this way" },
   { key: "formes", emoji: "📖", label: "Les formes", does: "the forms themselves" },
-  { key: "exercice", emoji: "📝", label: "L'exercice", does: "use them, one card at a time" },
-  { key: "bonus", emoji: "⭐", label: "Le bonus", does: "the other direction — English to French" },
+  { key: "exercice", emoji: "📝", label: "L'exercice", does: "use them, one card at a time — ⭐ Bonus included" },
   { key: "lexique", emoji: "📚", label: "Le lexique", does: "every word in this lesson" },
 ];
 
@@ -219,26 +221,6 @@ function Concept({ c }: { c?: LessonConcept }) {
   );
 }
 
-/* ── 4 · Le bonus ──────────────────────────────────────────────────────────
- * The reverse direction, which the run already uses as its last card kind.
- * Here it is browsable: the pairs, answers hidden until asked for. */
-function Bonus({ pairs }: { pairs?: NativeLesson["bonus"] }) {
-  if (!pairs?.length) return <Empty what="No bonus sentences for this lesson." />;
-  return (
-    <Panel>
-      <H>Say it in French</H>
-      <div className="flex flex-col gap-2">
-        {pairs.map((b) => (
-          <details key={b.en} className="rounded-xl border-2 border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-raised)] p-3">
-            <summary className="cursor-pointer font-bold">{b.en}</summary>
-            <p lang="fr" className="mt-2 font-black text-[color:var(--cahier-ink)]">{b.fr}</p>
-          </details>
-        ))}
-      </div>
-    </Panel>
-  );
-}
-
 /**
  * A NOUN HAS FORMS, AND ITS ARTICLE OFTEN HIDES THEM.
  *
@@ -384,7 +366,6 @@ export default function LessonTabs({
   deck,
   concept,
   memo,
-  bonus,
   exercise,
   lexique,
 }: {
@@ -393,7 +374,6 @@ export default function LessonTabs({
   concept?: LessonConcept;
   /** Les formes — the Mémo, exactly as the run's rule card renders it. */
   memo?: ReactNode;
-  bonus?: NativeLesson["bonus"];
   /** L'exercice — the entry-level chooser. Picking a level ends the tabs. */
   exercise: ReactNode;
   /** Le lexique — the deck table, passed in so this file stays free of the
@@ -436,7 +416,6 @@ export default function LessonTabs({
       {tab === "concept" && <Concept c={concept} />}
       {tab === "formes" && (memo ? <Panel>{memo}</Panel> : <Empty what="No Mémo for this lesson." />)}
       {tab === "exercice" && <Panel>{exercise}</Panel>}
-      {tab === "bonus" && <Bonus pairs={bonus} />}
       {tab === "lexique" && (lexique ?? <Lexique deck={deck} />)}
     </div>
   );

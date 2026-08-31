@@ -29,6 +29,10 @@ export default function MarkDoneButton({ sioId }: { sioId: string }) {
   const [progress, setProgress] = useState<Progress | null>(null);
 
   useEffect(() => {
+    // Deliberate: progress lives in localStorage, which cannot be read
+    // during render (the site is statically exported) — this mount effect
+    // has to seed it.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setProgress(loadProgress());
   }, []);
 

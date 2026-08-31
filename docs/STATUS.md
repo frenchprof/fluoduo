@@ -108,6 +108,13 @@ lane = report it in STATUS, don't do it.
    carry on in your lane.
 6. fluoduo-main sweeps session states daily; anything stalled >24h
    (a pending permission, a need-input nobody saw) is reported to Dan.
+7. **(Dan, 31 Aug PM) Every lane pushes finished work as a PR to origin;
+   fluoduo-main quality-checks and does the merging.** Dan still reads
+   content/pedagogy and rules on decisions; the merge mechanics — conflict
+   resolution, verify sweeps, sequencing against in-flight branches — are
+   the integration lane's. Deploys stay Dan's (`git push live main`) until
+   decision 9 lands. Precipitating case: #97 and #99 cut iComplete's flap
+   from two directions on the same afternoon.
 
 
 ### The work, by lane (what each agent is MEANT to deliver)
@@ -184,6 +191,73 @@ lane = report it in STATUS, don't do it.
 | 7 | Empty shortcut row under MENU: fill or delete? | one surface |
 | 8 | `rule:` namespace (894-item tagging): go / stay parked? | transfer evidence |
 | 9 | Deploy mirror Action (needs one fine-grained PAT from you) | ends manual deploys |
+
+## 31 Aug PM — Dan read salutations; the difficulty ladder is his now
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan's read of the salutations concept came back as five design rulings, built
+the same day on `claude/fluoduo-pr9-review-sync-8uoyfx` (integration lane took
+it with Dan's direct feedback; Pre-tests stood down and handed over notes):
+
+1. **Levels renamed + remapped** — `lessonEntry.ts` now carries ★ Facile /
+   ★★ Moyen / ★★★ Difficile / ⭐ Bonus. His classification: Facile =
+   recognise + sort the given words (mcq + build); Moyen = complete ONE
+   missing piece; Difficile = TWO (slots via `blankKeysFor`); Bonus = the
+   whole sentence from English. Four ramps, 12 cards each, equal length still
+   absolute.
+2. **The repeat is dead** — the in-run Mémo rule card duplicated Les formes
+   once the six tabs landed; the run now opens on question 1/12. The Mémo's
+   one home is the tab.
+3. **Forms are the heroes** — bold French forms with caption labels in
+   salutations + every Mémo; `verify65-memo-forms.py` (new, in CI) pins the
+   rule across all 44 lesson Mémos and memos.tsx.
+4. **His "why are they all mcq?"** — three causes fixed: gapless decks fall
+   back to BUILD at Moyen+ (MCQ only at Facile); Difficile single-blank
+   fallbacks are TYPED at every width; Difficile on a slotted lesson drops
+   the deck supply.
+5. **iComplete retired** (Dan: "we can retire CompleteIt and Sorting") — the
+   Memo's Moyen/Difficile ARE completion; registry row + flap + chain gone,
+   route/evidence/ledger stay, exactly the Sorting (#93) pattern. The
+   registry is 18 activities — the Menu grid is no longer Dan's exact 4×5;
+   flagged, not papered over.
+
+verify22/41/57/58 remapped; verify65 claimed by full branch scan (64 stays
+reserved for fluency-cycling's renumber). Decision 1's answer: the Tier-3
+concept SHAPE was not rejected — his feedback targeted the lesson chrome —
+so Color review's Tier-3 batch can move the moment Dan says the concept
+itself reads well. THE ROSTER merged to main (#94, squash `9a4b61a`).
+
+**Same day, later (all on PR #97):** the two-blank card gained a
+full-sentence English reference and colour-matched blank/box groups (Dan:
+shaded, full hues, not numerals). The **ambiguity audit** Dan ordered ran
+over every drill/pretest/game — 8 findings + 3 answer-key bugs, all fixed
+(ou-est's fixed gloss, aimer-infinitif's answer-printing big, GramMarathon's
+noun-level gloss, avoir-etats chaud/froid, discarded alternates ×2, pretest
+transFirst ×3, combien/au-marché/aller answer keys). **Dan's 4×4**: Menu is
+16 tiles — NumBus+NumBourse under one 🔢 Numbers hub (/games/numbers),
+My Progress folded into Profile, and the lesson's « Le bonus » tab parked
+under L'exercice (the ⭐ Bonus level serves it). Sorting cut + iComplete
+retired completed the count.
+
+**COORDINATION — Peers' branch (`claude/peers-vd2h6h`) vs PR #97.** Peers
+carries Colours + Some nouns lessons, `Slot.first` in cloze.ts, English tab
+labels, and verify66. Merge ORDER: **#97 first** (Dan-directed, green), then
+Peers rebases with three adaptations, none large:
+1. `blankKeysFor` — #97 makes it `level <= 2 → one key` (Moyen = one piece).
+   Keep Peers' `first` flag; it now picks the ONE key for levels 1–2:
+   `const lead = blankable.find((s) => s.first); return [lead?.key ?? keys[0]]`.
+   Their "★ the colour word · ★★ colour word + noun" ladder maps to
+   Moyen = the flagged colour word, Difficile = both. Same intent, new names.
+2. `verify66` pins SIX tab labels including "Bonus" — #97 parks that tab
+   (Dan's word), so the assertion drops to five. Their English label rename
+   is theirs to keep — no conflict beyond the list literal.
+3. `LessonTabs.tsx` will conflict textually (label rename vs tab removal) —
+   resolution: their labels, minus the bonus entry, exercice `does` noting
+   "⭐ Bonus included".
+No one pushes to the other's branch (roster rule 3); this note is the
+hand-off. Peers' "Every Some nouns card carries the English sentence" is the
+same ambiguity-fix pattern as the audit — convergent, no clash.
 
 ## Where the code is
 

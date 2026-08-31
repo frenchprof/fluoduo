@@ -23,6 +23,9 @@ export default function AccountButton() {
   // the user icon will bring up a floating window of the user's detailed info").
   const [progress, setProgress] = useState<Progress>(defaultProgress());
   useEffect(() => {
+    // Deliberate: progress lives in localStorage, which cannot be read
+    // during render — the numbers are refreshed when the window opens.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (open) setProgress(loadProgress());
   }, [open]);
 

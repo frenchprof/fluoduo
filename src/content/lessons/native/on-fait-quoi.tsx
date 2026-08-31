@@ -27,7 +27,7 @@ export const onFaitQuoiLesson: NativeLesson = {
           <p className="text-[13px] text-[color:var(--cahier-ink-soft)]">Say it again, please.</p>
         </div>
       </div>
-      <p className="mt-3 text-[13px] text-[color:var(--cahier-ink-soft)]" lang="fr">
+      <p className="mt-3 text-[13px] font-bold text-[color:var(--cahier-ink-soft)]" lang="fr">
         {INSTRUCTIONS.map((i) => i.fr).join(" · ")}
       </p>
     </div>
