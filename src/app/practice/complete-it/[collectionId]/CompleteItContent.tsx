@@ -425,7 +425,7 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
           <div className="rounded-2xl border-2 bg-[var(--fluo-card)] p-4" style={{ borderColor: "var(--fluo-line)" }}>
             {prompt}
             {rungsShown}
-            <form onSubmit={(e) => { e.preventDefault(); retry ? tryAgain() : result === null ? check() : next(); }} className="mt-4">
+            <form onSubmit={(e) => { e.preventDefault(); if (retry) tryAgain(); else if (result === null) check(); else next(); }} className="mt-4">
               {answerInput}
               {result === null ? (
                 <>

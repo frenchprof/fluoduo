@@ -54,9 +54,7 @@ function saveLocal(deckId: string, notes: DeckNotes) {
 export function graphemeCount(s: string): number {
   try {
     const seg = new Intl.Segmenter(undefined, { granularity: "grapheme" });
-    let n = 0;
-    for (const _ of seg.segment(s)) n++;
-    return n;
+    return [...seg.segment(s)].length;
   } catch {
     return [...s].length; // code points (handles surrogate pairs)
   }

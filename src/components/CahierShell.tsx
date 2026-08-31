@@ -77,13 +77,6 @@ export default function CahierShell({
   const tools = tabsWithActive(toolTabs(), active);
   // Pages that pass the site row itself just deduplicate to no context group.
   const context = tabs.filter((t) => !site.some((s) => s.key === t.key) && !tools.some((s) => s.key === t.key));
-  // On a deck's activity page, the deck's Unité is the active layer of the
-  // site row (Dan, 2026-07-05: "the activated Unité layer is not marked") —
-  // highlighted but still clickable.
-  const deckId = context.map((t) => t.href?.match(/^\/practice\/[a-z-]+\/([^/#?]+)/)?.[1]).find(Boolean);
-  const deckUnit = deckId ? CURATED.find((c) => c.id === deckId)?.unit : undefined;
-  const unitKey = deckUnit === undefined ? undefined : `unit-${deckUnit}`;
-  const isActiveFlap = (t: ShellTab) => active === t.key || t.key === unitKey;
   // null for a page that colours itself — then NO fam- class is added, the
   // header falls back to plain paper and the spine rule does not match, so
   // the page renders exactly as it did before this system existed.

@@ -12,7 +12,7 @@ import {
   type Ev, type Learner, type StudentDetail,
   fetchStudentDetail, fmtWhen, fmtDuration, str, num, SG_DAY_KEY,
 } from "./data";
-import { XP_CORRECT, XP_WRONG, XP_SIO_BASE, XP_CONVERSATION } from "@/lib/economy";
+import { XP_CORRECT, XP_WRONG, XP_CONVERSATION } from "@/lib/economy";
 import { Kpi, TableBox, Section, SectionGroup } from "./ui";
 import Evidence from "./Evidence";
 import { describeActivity, describePath, hrefForActivity, normalizePath, titleFor } from "@/lib/labels";

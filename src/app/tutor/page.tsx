@@ -8,7 +8,7 @@
  * preview, where /api/tutor 404s — the page degrades to a friendly
  * "not wired up yet" card instead of a broken chat.
  */
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState } from "react";
 import CahierShell from "@/components/CahierShell";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 import { pauseSpeech, resumeSpeech, isSpeechPaused, guessLang, type MixedPlayback } from "@/games/letris/speech";
@@ -18,22 +18,6 @@ import { speakMixedCloud as speakMixed, stopCloudVoice } from "@/lib/cloudVoice"
 import { logEvent } from "@/lib/firebase/usage";
 import AuthGate from "@/components/AuthGate";
 import type { ReactNode } from "react";
-
-/** Rotating capability demos (Dan, 2026-07-25): a different example prompt
- *  each landing, so learners SEE what ChaTutor can do — any medium language,
- *  grammar contrasts, role-plays, revision. \u23CE hint kept at the end. */
-const DEMO_PROMPTS = [
-  "Explain the difference between « le » and « du » in Korean",
-  "\u7528\u4e2d\u6587\u89e3\u91ca « au » \u548c « \u00e0 la » \u7684\u533a\u522b",
-  "Explain « faire du v\u00e9lo » vs « aller \u00e0 v\u00e9lo » in Malay",
-  "Why is it « Je suis fran\u00e7ais » with a small f? Explain in Tamil",
-  "Correct my sentence: « Je mange de la pain »",
-  "Quiz me on Unit\u00e9 4 food vocabulary",
-  "Role-play a market seller \u2014 I\u2019ll be the customer",
-  "Explain numbers 70\u201399 in Hindi",
-  "What should I revise for the test? Ask me 3 questions first",
-  "Explique-moi « pas de » vs « pas le » \u2014 en fran\u00e7ais simple !",
-];
 
 
 type ChatMsg = { role: "user" | "assistant"; content: string };
