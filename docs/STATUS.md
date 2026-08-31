@@ -2756,9 +2756,14 @@ fourth block without re-measuring against the Continue button — not against
 the viewport, which is the mistake that made it look like it fitted.
 
 **Still open, and both need Dan, not an agent:**
-- **The ten bugs — 6, 8, 9, 10, 11, 12, 15, 16, 17, 19.** Their text exists
-  nowhere in this repo; only the numbers were ever written down. Nobody can
-  work them until Dan restates the list.
+- **The ten bugs — 6, 8, 9, 10, 11, 12, 15, 16, 17, 19.** ~~Their text exists
+  nowhere in this repo; only the numbers were ever written down.~~ **CLOSED
+  2026-08-31.** Dan could not restate them, so the numbering is retired rather
+  than carried as a permanent unknown: the 29 Aug sweep audited all four areas
+  the recovered nine clustered in (layout, audio, feedback, scoring) and found
+  one real defect, the SpeakZone false pairing, now fixed and guarded by
+  verify50. A bare number is not a bug report. Do not re-open this list; file
+  anything new as its own item with its text.
 - **Lint in CI.** Audited 2026-08-29: `npx eslint src` reports 132 problems
   (113 errors) across 51 files — 63 `set-state-in-effect`, 34
   `no-unescaped-entities` (mostly French apostrophes in memos.tsx), 9
@@ -2767,6 +2772,142 @@ the viewport, which is the mistake that made it look like it fitted.
   proposal put to Dan is to lint only the files a PR touches: new work must be
   clean, the 51 existing files stay until someone is in them anyway, and the
   pile can only shrink. Awaiting his yes/no.
+
+## 31 Aug — the rail lost its hierarchy in the 30 Aug mirror
+
+Found while reading `claude/pre-tests-amendments-hndx8r`, not by a check. My own
+regression, in `be0930c` ("The menu rail moves to the left, and the desk mirrors
+with it"): a blanket left→right sweep caught two lines that were **already
+correct**, and flipped `.cahier-tab--sm` / `--xs` from `border-left-width` to
+`border-right-width`.
+
+A flap's tier is drawn by the thickness of its coloured edge — 6px site row,
+5px deck activity, 4px in-page view — and that is the only thing carrying
+"site row > deck activities > Flip It" visually. Measured in a browser rather
+than read:
+
+    cahier-tab       left=6px right=1px      base, correct
+    cahier-tab--sm   left=6px right=5px      no step-down, stray grey edge
+    cahier-tab--xs   left=6px right=4px      same
+
+So all three tiers wore an identical 6px hue and the two lower ones grew a
+5px/4px GREY edge on the opposite side that nothing asked for. Shipped 30 Aug,
+live since. Both files parsed, tsc was clean, and every check stayed green —
+nothing in the suite looked at this at all.
+
+`verify61-flap-edge.py` guards it, and deliberately **does not pin the side**.
+Dan has moved the binding once and may move it again; pinning "left" would make
+a future correct mirror fail here for the wrong reason. It reads which border
+the base rule paints with `var(--tab-hue)` and asserts the modifiers step *that*
+edge down and leave the other alone. Break-tested on seven mutations — the
+regression itself, each modifier flipped, a lost step, two tiers at the same
+width, the hue leaving the border, the base rule renamed, and the desk flipped
+right with the modifiers left behind. All seven red on the first pass.
+
+The lesson is the mirror, not the CSS: a left→right sweep over a stylesheet
+will hit declarations that were already on the correct side. Mirroring is not a
+find-and-replace.
+
+## 31 Aug — Sorting: two agents, same bug, one hour apart
+
+Peers and this session both found Sorting's mistag and both opened a PR for it
+within five minutes (#88, #89). Both retagged it `recognition`; both claimed
+`verify60`. Merging both as-is would have failed `verify-wiring` on the
+duplicate number and conflicted in `evidence.ts` — **the second time in one day**
+that two agents claimed the same verify number (verify58 turned main red this
+morning). Before taking a number, check every remote branch, not just main:
+
+    for b in $(git for-each-ref --format='%(refname:short)' refs/remotes/origin); do
+      git ls-tree --name-only $b verify/; done | grep -o 'verify[0-9]*' | sort -u
+
+**Peers' #89 shipped; this session's Sorting half was dropped.** Theirs was
+better on root cause: the surface now emits `sorting:` instead of `dice:`, so
+the four entries named after the pedagogy stop pointing at the one activity that
+is not it — which is how the confusion arose and how it would have recurred. The
+three legacy names stay in the table and in `normalizePath`, so answers already
+banked still resolve.
+
+**Dan chose the read-time correction** (`readEvidenceType`), which was option (b)
+in all but name: stored Sorting records are re-read as `recognition` rather than
+left at the `constrained` the old table produced. Deliberate overrides are left
+alone — open writing keeps `free`, a pre-test keeps `diagnostic`. The principle
+Peers put on it is the right one: *the activity is the observation and was always
+stored; the type is an interpretation of it, and interpretations should be
+current.* That dissolves the (a)-vs-(b) choice instead of picking a side. It was
+safe to choose freely because nothing gates on `evidenceType` (see below).
+
+What survives from #88 is the complementary half: `verify62-band-evidence.py`
+(renumbered from 60) cross-checks the band against the evidence table for **all
+21 surfaces**, where Peers' `verify60-sorting-recognition.py` asserts the
+pathway did not move. Different questions, both worth keeping. verify62 names
+`sorting:` AND the legacy `dice:`, because asserting only the alias would stay
+green while the live tag drifted.
+
+## 31 Aug — how Sorting came to be filed under two difficulties
+
+The band on the page called Sorting `recog` (set 26 Aug, from evidence.ts's own
+definition of "recognition": *pick from options, sort into a column*). The
+lookup table in the same file tagged every `dice:` answer `constrained`. So for
+five days the page told the learner one thing and the stored record said
+another, and nothing in CI compared the two files.
+
+Sorting is genuinely recognition, and the code settles it rather than the
+naming: `PracticeContent.commit` compares `choice.key` to `item.correctColKey`
+and strikes a wrong pick out of the visible set — the answer is on screen
+throughout. `dice:`, `dice-practice`, `/practice/dice/` and the (unemitted)
+`lesson-dice:` are now `recognition`.
+
+**I overstated the risk when I put this to Dan**, and the correction is the
+reason it could be settled without him. I said changing the lookup would change
+"what the teacher dashboard and the star ladder believe those learners have
+demonstrated". The star ladder does not read `evidenceType` at all. **Nothing**
+does: it is written by `firebase/responses.ts` and read only as display text in
+`teacher/Students.tsx:492`, passed straight through `teacher/data.ts` with no
+aggregation, filter or threshold anywhere. Checked before acting — the three
+options I offered (forward-only / retroactive / correct the band instead) were
+weighted against a consequence that does not exist.
+
+So: **forward only, no migration.** Records written before 31 Aug keep
+`constrained`, and the teacher's response list shows both labels for Sorting
+across that date. It costs interpretation in one column and nothing else. A
+retroactive pass stays cheap if Dan ever wants the old labels corrected, for
+the same reason: no derived state depends on them.
+
+`verify62-band-evidence.py` holds the two files together, in both directions,
+bridged through `activityLedger.PREFIX_TO_KEY` (activity string → registry key,
+which is what `BAND` is keyed by). It parses all three tables from source
+rather than restating them, so deleting a row makes the row vanish here instead
+of leaving a stale copy green.
+
+**Break-tested on twelve mutations; three exposed real holes on the first
+pass.** Reverting Sorting to `constrained` went red, as did flipping the band,
+WorDrill as recognition, Compose as constrained, pretests losing `diagnostic`,
+Flip It as free, iComplete as recognition, Compose banded recog, and both table
+renames. The three that came back GREEN:
+- **`str.find("const ACTIVITY_EVIDENCE")` prefix-matches a renamed table**, so
+  the vacuity guard did not fire on a rename. Openers now carry the `:`.
+- **`checked >= 12` was a floor, not a count.** Dropping Sorting from the
+  ledger bridge took coverage 21 → 19 and the floor stayed green — the same
+  silence this check exists to end. It asserts `== 21` now, so adding a surface
+  fails once, on purpose.
+- **One mutation was simply wrong**: there is no `["say-it:", …]` row, only
+  `["say-it", …]`, so the sed matched nothing and the "hole" was my test. Redone
+  against the real row: red.
+
+Fourth time this session that a check written to guard something passed while
+guarding nothing. The pattern is the same each time — a scan that matches more
+loosely than the thing it is asserting.
+
+### SIO-045A stays
+
+Flagged because I had earlier called it leftover junk from a renumbering. It is
+not: 45 was left as a deliberate hole on 2 Aug when Market phrases folded into
+SIO-044 (Commerces), so that 46+ would not shift and break saved progress, and
+**Numbers 70–99** was then dropped into it. Today it has its own deck, pre-test,
+six finale items, an index grouping, 18 references across `src/`, learner
+progress records — and, since 29 Aug, purpose-built content for the arithmetic
+(60+10, 4×20, 4×20+10) and prices. PR #86 shipped its concept (`soixante-dix`).
+Killing it would discard work merged days ago. Keep; the question is closed.
 
 ## 29 Aug — five more stops filled (4, 7, 8, 21, 34)
 

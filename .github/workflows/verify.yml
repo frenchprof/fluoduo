@@ -243,3 +243,9 @@ jobs:
           echo "Linting $(echo "$CHANGED" | wc -l) changed file(s):"
           echo "$CHANGED"
           npx eslint $CHANGED
+
+      - name: The band a learner sees and the evidence we store agree
+        run: python3 verify/verify62-band-evidence.py
+
+      - name: The rail's tiers step down on the coloured edge
+        run: python3 verify/verify61-flap-edge.py
