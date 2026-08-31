@@ -281,6 +281,56 @@ Dan assigns. Listed so the queue is not re-derived by whoever picks it up.
 | 8 | `rule:` namespace (894-item tagging): go / stay parked? | transfer evidence |
 | 9 | Deploy mirror Action (needs one fine-grained PAT from you) | ends manual deploys |
 
+## 31 Aug — 270px of chrome before the first word (for Peers)
+
+Dan, shown the strip between the Mémo band and the tab rail: *"i don't
+understand the purpose of this wasted space."* Measured at 390×844 on
+`/lessons/salutations`, Idea tab — **the lesson starts at y=270**, a third of
+the screen:
+
+| y | height | what |
+|---|---|---|
+| 0–48 | 48px | site bar — ☰ · FluOlinGo · 🔊 🏠 ⌛ |
+| 48–103 | **55px** | the "Memo" band — one word |
+| 103–159 | **56px** | the ✕ / ✓ 0 bar |
+| 159–183 | 24px | gap |
+| 183–270 | 83px | tab rail |
+| 270 → | | the lesson |
+
+**Cause.** `DrillShell`'s bar is `h-14` and was designed for a DRILL — ✕ ·
+progress · score, as its own header comment says. On a tab with no progress the
+middle renders `<div className="flex-1" />`: a full-width 56px row carrying one
+icon and a zero, held apart by an empty spacer. The zero is a score for a tab
+where nothing can be scored. Directly above it the "Memo" band spends 55px on a
+single word the tab rail repeats 80px lower.
+
+**~111px is recoverable** — put the ✕ and the score into the Mémo band, which
+has the room, and the 56px bar plus its 24px gap go away on every tab with no
+progress.
+
+**Why this matters beyond tidiness.** It is the real fix for Dan's one-screen
+rule. Every concept currently overflows by 7–206px in a 561px slot; 111px back
+clears most of them outright. Colour review spent an afternoon trimming prose
+and folding sections against a slot that had already lost a third of the screen
+before the panel began — the trims moved the height by **zero pixels**
+(articles-pays 786px before and after), because a paragraph reflows to the same
+wrap.
+
+**Peers has it** (Dan, 31 Aug). `DrillShell` is 28 surfaces and the bar is
+load-bearing on the drills, which do have progress — so this is a features-lane
+change, not a concepts one. The harness that produced the table above is
+`scratchpad/chrome.mjs`; the per-concept fit measurement walks every lesson and
+reports content height against the scroll container's clientHeight.
+
+**One measurement trap, recorded because it cost an hour.** The first fit
+harness reported 1111px for all seven concepts measured, identical to the pixel
+— the URL was hardcoded to one slug, so every run measured the same page. Then
+the rewrite found the scroll container by `scrollHeight > clientHeight`, which
+is precisely the state a FITTING panel does not have, so anything that fit fell
+through to `<body>` and reported a bogus 1.00 screens. Find the scroller by
+`getComputedStyle().overflowY`, and treat identical numbers across different
+inputs as the tell.
+
 ## 31 Aug PM — Dan read salutations; the difficulty ladder is his now
 
 Sole editor of STATUS.md in this commit: fluoduo-main.
