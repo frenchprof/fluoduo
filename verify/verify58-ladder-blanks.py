@@ -40,12 +40,24 @@ if not os.path.isfile("package.json"):
 
 DRIVER = r"""
 import { aimerQuestion } from "./src/content/lessons/native/aimer.gen.ts";
+import { faireQuestion } from "./src/content/lessons/native/faire.gen.ts";
+import { allerQuestion } from "./src/content/lessons/native/aller.gen.ts";
 import { metaLeaksAnswer, multiBlankCard } from "./src/content/lessons/native/cloze.ts";
+
+// Every generator converted to slots, with the keys its ladder must blank and
+// the key `med` is derived from. Add a row when you convert the next one — a
+// generator absent from here is a generator nothing checks.
+const GENS = [
+  { name: "aimer", fn: aimerQuestion, keys: ["verb", "article"] },
+  { name: "faire", fn: faireQuestion, keys: ["verb", "article"] },
+  { name: "aller", fn: allerQuestion, keys: ["verb", "prep"] },
+];
 
 const out = { 1: [], 2: [], 3: [] };
 for (const level of [1, 2, 3]) {
-  for (let i = 0; i < 200; i++) {
-    const q = aimerQuestion();
+  for (const g of GENS) {
+  for (let i = 0; i < 120; i++) {
+    const q = g.fn();
     const card = multiBlankCard(q, level);
     out[level].push({
       isMulti: card !== null,
@@ -65,7 +77,19 @@ for (const level of [1, 2, 3]) {
       metaLeaks: card
         ? metaLeaksAnswer(q.meta, card.segments.flatMap((s) => (s.kind === "blank" ? [s.answer] : [])))
         : false,
+      // The per-blank answers. NOT the same as answer.split(" "): a single
+      // blank's answer can itself contain a space — "de la", "à la", "chez le"
+      // — which is exactly what broke the first version of the assertion below.
+      answers: card ? card.segments.flatMap((s) => (s.kind === "blank" ? [s.answer] : [])) : [],
+      gen: g.name,
+      want: g.keys,
+      // The independent oracle: easyOptions is still assembled the old way, so
+      // it can catch slots that rebuild the sentence wrongly. Comparing
+      // sentence(slots) to `correct` cannot — `correct` IS sentence(slots).
+      inOptions: q.easyOptions.includes(q.correct),
+      options: q.easyOptions,
     });
+  }
   }
 }
 // A generator that authored no slots must be left completely alone. So must
@@ -91,14 +115,23 @@ if r.returncode != 0:
 data = json.loads(r.stdout)
 lv = {int(k): v for k, v in data["out"].items()}
 
-check(all(len(v) == 200 for v in lv.values()),
-      "600 cards built across the three levels",
-      f"expected 200 per level, got {[len(v) for v in lv.values()]} — a run that "
-      "builds nothing passes vacuously")
+GENS = sorted({x["gen"] for x in lv[1]})
+check(all(len(v) == 360 for v in lv.values()) and len(GENS) == 3,
+      f"1080 cards built across three levels and {len(GENS)} generators ({', '.join(GENS)})",
+      f"expected 360 per level over 3 generators, got {[len(v) for v in lv.values()]} "
+      f"across {GENS} — a run that builds nothing passes vacuously")
 
 check(all(x["slotted"] for x in lv[1]),
-      "the generator under test really does author slots",
-      "aimer stopped authoring slots, so every assertion below is vacuous")
+      "every generator under test really does author slots",
+      "a converted generator stopped authoring slots, so the assertions below "
+      "are vacuous for it")
+
+# The sentence the slots build must be one the OLD formula also builds.
+off = [x for x in lv[2] if not x["inOptions"]][:3]
+check(not off,
+      "every slotted sentence is one easyOptions also contains",
+      "slots are assembling the sentence wrongly: " +
+      "; ".join(f"[{x['gen']}] {x['correct']!r} not in {x['options']}" for x in off))
 
 # ── 1 · one star is untouched ──────────────────────────────────────────────
 star1 = [x for x in lv[1] if x["isMulti"]]
@@ -126,24 +159,38 @@ for level in (2, 3):
           f"{'★★' if level == 2 else '★★★'} withdraws exactly two pieces",
           f"level {level} blank counts are {sorted(counts)}, expected 2")
 
-    keys = {tuple(x["keys"]) for x in multi}
-    check(keys == {("verb", "article")},
-          f"{'★★' if level == 2 else '★★★'} takes the verb AND the article — Dan's L08",
-          f"level {level} blanks {sorted(keys)}, expected the verb and the article")
+    off = [x for x in multi if x["keys"] != x["want"]][:3]
+    check(not off,
+          f"{'★★' if level == 2 else '★★★'} blanks each generator's own two keys "
+          "— aimer and faire the verb and article, aller the verb and preposition",
+          f"level {level} blanked the wrong slots: " +
+          "; ".join(f"[{x['gen']}] {x['keys']} != {x['want']}" for x in off))
 
 # ── 3 · the noun must survive, or there is nothing to choose an article for ─
 naked = [x for x in lv[2] if x["shown"].count("___") != 2][:3]
 check(not naked,
       "★★ leaves the subject and the bare noun standing",
       "★★ blanked something other than exactly two pieces: " +
-      "; ".join(x["shown"] for x in naked))
+      "; ".join(f"[{x['gen']}] {x['shown']}" for x in naked))
 
-# The joined answer must be the two words, in reading order — that is what the
-# learner's picks are compared against.
-wrong = [x for x in lv[2] if len(x["answer"].split(" ")) != 2][:3]
+# The graded string must be the blanks joined in reading order — that is exactly
+# what the learner's picks are joined into before grading.
+#
+# Count BLANKS, not words. The first version of this counted words and failed on
+# faire: "fais de la" is three words and two blanks, because a partitive is two
+# words. An assertion shaped around one generator is an assertion that will
+# reject the next one.
+wrong = [x for x in lv[2] if x["answer"] != " ".join(x["answers"])][:3]
 check(not wrong,
-      "the graded answer is the two blanks joined in reading order",
-      "a ★★ answer is not two words: " + "; ".join(repr(x["answer"]) for x in wrong))
+      "the graded string is the blanks joined in reading order",
+      "the answer is not its blanks joined: " +
+      "; ".join(f"[{x['gen']}] {x['answer']!r} != {x['answers']}" for x in wrong))
+
+two = [x for x in lv[2] if len(x["answers"]) != 2][:3]
+check(not two,
+      "★★ has exactly two blanks to fill, whatever their word count",
+      "a ★★ card has the wrong number of blanks: " +
+      "; ".join(f"[{x['gen']}] {x['answers']}" for x in two))
 
 # ORDER, not just membership. The picks are joined in reading order and graded
 # as one string, so an answer assembled backwards would grade every correct
@@ -164,7 +211,7 @@ check(not contained,
       "both blanked words come out of the sentence, IN READING ORDER",
       "a blank's answers are missing or out of order against the sentence they "
       "were taken from: " +
-      "; ".join(f"{x['answer']!r} vs {x['full']!r}" for x in contained))
+      "; ".join(f"[{x['gen']}] {x['answer']!r} vs {x['full']!r}" for x in contained))
 
 # ── 3b · the prompt must not print an answer ───────────────────────────────
 # aimer's meta is "Tu adores … (love)". At ★ that is exactly right — the verb is
@@ -174,7 +221,7 @@ check(not contained,
 # that once per feature.
 leaky = [x for x in lv[2] if x["metaLeaks"]]
 check(leaky,
-      f"the raw generator meta does leak at ★★ ({len(leaky)}/200) — so the "
+      f"the raw generator meta does leak at ★★ ({len(leaky)}/{len(lv[2])}) — so the "
       "guard in buildCards has something to do",
       "no ★★ meta leaks an answer, which makes the guard below untestable here: "
       "has aimer's meta changed? If so this assertion is the one to update.")
