@@ -38,7 +38,11 @@ lane = report it in STATUS, don't do it.
 6. **EVERY merge goes through fluoduo-main** (Dan, 31 Aug) — including a PR
    of your own work. Open it, get CI green, leave it. A single integrator is
    what catches a collision between two branches that are each individually
-   correct; no session can see that from inside its own lane.
+   correct; no session can see that from inside its own lane. The merge
+   mechanics — conflict resolution, verify sweeps, sequencing against
+   in-flight branches — are the integration lane's; Dan still reads
+   content/pedagogy and rules on decisions, and deploys stay his
+   (`git push live main`) until decision 9 lands.
 7. **Before opening a branch, check what is in flight on the files you are
    about to touch** — `gh pr list --state open`, then
    `git diff --name-only origin/main...origin/<branch>`. Rule 6 catches a
@@ -52,13 +56,6 @@ lane = report it in STATUS, don't do it.
    written out in AGENTS.md beside the litmus test.
 9. fluoduo-main sweeps session states daily; anything stalled >24h
    (a pending permission, a need-input nobody saw) is reported to Dan.
-7. **(Dan, 31 Aug PM) Every lane pushes finished work as a PR to origin;
-   fluoduo-main quality-checks and does the merging.** Dan still reads
-   content/pedagogy and rules on decisions; the merge mechanics — conflict
-   resolution, verify sweeps, sequencing against in-flight branches — are
-   the integration lane's. Deploys stay Dan's (`git push live main`) until
-   decision 9 lands. Precipitating case: #97 and #99 cut iComplete's flap
-   from two directions on the same afternoon.
 
 ### The work, by lane (what each agent is MEANT to deliver)
 
@@ -192,9 +189,11 @@ Peers rebases with three adaptations, none large:
    `const lead = blankable.find((s) => s.first); return [lead?.key ?? keys[0]]`.
    Their "★ the colour word · ★★ colour word + noun" ladder maps to
    Moyen = the flagged colour word, Difficile = both. Same intent, new names.
-2. `verify66` pins SIX tab labels including "Bonus" — #97 parks that tab
-   (Dan's word), so the assertion drops to five. Their English label rename
-   is theirs to keep — no conflict beyond the list literal.
+2. Their branch also claims `verify66` — taken since by #99's popup check,
+   and #100 (Color review) claims 67 — so Peers renumbers to **68**. Their
+   verify's tab-label list pins SIX tabs including "Bonus" — #97 parks that
+   tab (Dan's word), so the assertion drops to five. Their English label
+   rename is theirs to keep — no conflict beyond the list literal.
 3. `LessonTabs.tsx` will conflict textually (label rename vs tab removal) —
    resolution: their labels, minus the bonus entry, exercice `does` noting
    "⭐ Bonus included".
