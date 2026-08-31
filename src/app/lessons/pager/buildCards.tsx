@@ -242,7 +242,14 @@ function lessonSupply(
             return {
               kind, itemId: x.correct, activity: `lesson:${activityKey}`,
               meta: metaLeaksAnswer(x.meta, blanked) ? undefined : x.meta,
-              big: x.big, en: x.en,
+              // No `big`: the generators' big is the bare noun, which the
+              // segmented sentence already shows — a repeat, not a prompt.
+              // `en` is the full English sentence and is the card's REFERENCE:
+              // with two pieces withdrawn and the meta dropped for leaking,
+              // several verbs were defensible without it (Dan, 31 Aug: "it
+              // seems multiple answers are possible … unless there is an
+              // English reference to refer to").
+              en: x.en,
               segments: multi.segments, answer: multi.answer,
               bankPool: x.easyOptions, say: x.correct,
             };

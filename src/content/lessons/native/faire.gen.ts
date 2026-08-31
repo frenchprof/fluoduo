@@ -69,6 +69,23 @@ export const FAIRE_AXES: DiceAxis[] = [
   POLARITY_AXIS,
 ];
 
+/* The English reference, as a WHOLE sentence — "He does yoga." / "He doesn't
+ * do yoga." A bare noun gloss cannot pin the polarity or the verb once the
+ * meta is dropped for leaking answers (Dan, 31 Aug: "multiple answers are
+ * possible … unless there is an English reference"). */
+const SUBJ_EN: Record<string, { pron: string; third: boolean }> = {
+  Je: { pron: "I", third: false }, Tu: { pron: "You", third: false },
+  Il: { pron: "He", third: true }, Elle: { pron: "She", third: true },
+  On: { pron: "We", third: false }, Nous: { pron: "We", third: false },
+  Vous: { pron: "You", third: false }, Ils: { pron: "They", third: false },
+  Elles: { pron: "They", third: false },
+};
+function sentenceEn(s: (typeof SUBJECTS)[number], a: (typeof ACTIVITIES)[number], neg: boolean): string {
+  const e = SUBJ_EN[s.disp];
+  if (neg) return `${e.pron} ${e.third ? "doesn't" : "don't"} do ${a.en}.`;
+  return `${e.pron} ${e.third ? "does" : "do"} ${a.en}.`;
+}
+
 /**
  * One question. Any axis in `pinned` is honoured; anything absent (or "") is
  * rolled, so an unsteered call behaves exactly as before the selectors.
@@ -87,7 +104,7 @@ export function faireQuestion(pinned?: Record<string, string>): DiceQuestion {
   return {
     meta: `${sv} … (${neg ? "don't do" : "do"})`,
     big: a.fr,
-    en: a.en,
+    en: sentenceEn(s, a, neg),
     correct: sentence(slots),
     easyOptions: [...new Set(arts)].map((x) => `${sv} ${np(x, a.fr)}.`),
     // Derived, not hand-written — the two can no longer drift apart.

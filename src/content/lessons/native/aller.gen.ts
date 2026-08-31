@@ -92,6 +92,24 @@ export const ALLER_AXES: DiceAxis[] = [
   },
 ];
 
+/* The English reference, as a WHOLE sentence — "He goes to the cinema." /
+ * "He doesn't go to the cinema." A bare place gloss cannot pin the polarity
+ * or the verb once the meta is dropped for leaking answers (Dan, 31 Aug:
+ * "multiple answers are possible … unless there is an English reference"). */
+const PRON_EN: Record<string, { pron: string; third: boolean }> = {
+  je: { pron: "I", third: false }, tu: { pron: "You", third: false },
+  il: { pron: "He", third: true }, elle: { pron: "She", third: true },
+  on: { pron: "We", third: false }, nous: { pron: "We", third: false },
+  vous: { pron: "You", third: false }, ils: { pron: "They", third: false },
+  elles: { pron: "They", third: false },
+};
+function sentenceEn(s: (typeof SUBJECTS)[number], p: (typeof PLACES)[number], neg: boolean): string {
+  const e = PRON_EN[s.pron];
+  const dest = p.lieu === "ville" ? "into town" : `to the ${p.en}`;
+  if (neg) return `${e.pron} ${e.third ? "doesn't" : "don't"} go ${dest}.`;
+  return `${e.pron} ${e.third ? "goes" : "go"} ${dest}.`;
+}
+
 /**
  * One question. Any axis in `pinned` is honoured; anything absent (or "") is
  * rolled, so an unsteered call behaves exactly as before the selectors existed.
@@ -119,7 +137,7 @@ export function allerQuestion(pinned?: Record<string, string>): DiceQuestion {
   return {
     meta: `${sv} … (${neg ? "don't/doesn't go" : "go/goes"})`,
     big: p.lieu,
-    en: p.en,
+    en: sentenceEn(s, p, neg),
     correct: sentence(slots),
     easyOptions: alts.map((a) => `${sv} ${pp(a, p.lieu)}.`),
     // Derived, not hand-written — the two can no longer drift apart.

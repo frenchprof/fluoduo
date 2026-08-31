@@ -558,21 +558,38 @@ function ExerciseCard({
               sg.kind === "text" ? (
                 <span key={n}>{sg.text}</span>
               ) : (
+                /* Each blank is NUMBERED and its choice row wears the same
+                   number — with two undifferentiated rows it was not clear
+                   which row fed which blank (Dan, 31 Aug). */
                 <span key={n} className={blankClass(!!picks[blankIndex(ex.segments!, n)])}>
-                  {picks[blankIndex(ex.segments!, n)] || "?"}
+                  {picks[blankIndex(ex.segments!, n)] || (
+                    <span className="opacity-40">{blankIndex(ex.segments!, n) + 1}</span>
+                  )}
                 </span>
               ),
             )}
           </p>
+          {/* The English reference. With two pieces withdrawn the French no
+              longer determines the answer — « Il … … athlétisme » admits
+              aime / adore / déteste — so the sentence's meaning has to come
+              from somewhere the blanks cannot erase. */}
+          {ex.en && (
+            <p className="text-center text-sm italic text-[color:var(--cahier-ink)]/70">{ex.en}</p>
+          )}
           {/* One row of choices per blank, in reading order. TWO ROWS IS THE
-              POINT of ★★: the verb decision and the article decision are made
-              separately, and the learner can see that they are separate. */}
+              POINT of Difficile: the verb decision and the article decision
+              are made separately, and the learner can see that they are
+              separate. */}
           <div className="space-y-2.5">
             {ex.segments.map((sg, n) => {
               if (sg.kind !== "blank") return null;
               const b = blankIndex(ex.segments!, n);
               return (
-                <div key={n} className={optionGridClass(sg.choices, "gap-2")}>
+                <div key={n} className="flex items-start gap-2">
+                  <span aria-hidden className="w-4 shrink-0 pt-3 text-center text-xs font-bold text-[color:var(--cahier-ink)] opacity-50">
+                    {b + 1}
+                  </span>
+                  <div className={`flex-1 ${optionGridClass(sg.choices, "gap-2")}`}>
                   {sg.choices.map((c) => {
                     const isPicked = picks[b] === c;
                     const isAnswer = c === sg.answer;
@@ -598,6 +615,7 @@ function ExerciseCard({
                       </button>
                     );
                   })}
+                  </div>
                 </div>
               );
             })}
@@ -622,7 +640,8 @@ function ExerciseCard({
           <span lang="fr">{ex.after}</span>
         </p>
       )}
-      {ex.en && !ex.big && (
+      {/* The segmented card renders its own reference line above the rows. */}
+      {ex.en && !ex.big && !ex.segments && (
         <p className="text-center text-sm italic text-[color:var(--cahier-ink)]/70">{ex.en}</p>
       )}
 
