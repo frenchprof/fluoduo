@@ -119,24 +119,28 @@ const ACTIVITY_EVIDENCE: Array<[string, EvidenceType]> = [
   ["/practice/grammarathon/", "constrained"],
   ["complete-it", "constrained"],
   ["/practice/complete-it/", "constrained"],
-  // Sorting. The learner reads a word and taps one of the group columns
-  // ALREADY ON SCREEN (PracticeContent.commit compares choice.key against
-  // item.correctColKey, and a wrong pick is struck out of the visible set) —
-  // which is this file's own definition of "recognition" up at line 34,
-  // *sort into a column*, verbatim. It was tagged "constrained" until
-  // 2026-08-31; the band in content/activities.ts had said "recog" since
-  // 26 Aug, so the page and the stored record disagreed. The definition wins;
-  // verify60 now holds the two files together so they cannot drift again.
+  // SORTING IS RECOGNITION, and the four names below are all the same activity.
   //
-  // FORWARD ONLY. Records written before 2026-08-31 keep "constrained", so
-  // the teacher's response list shows both labels for Sorting across that
-  // date. Nothing computes on evidenceType — it is written by responses.ts
-  // and read only as display text in teacher/Students.tsx — so the mixed
-  // labels cost interpretation, never a learner's progress.
+  // Dan, 2026-08-31: "the dice is meant to be part of the 6-step pedagogy that
+  // we have settled in the learning path." It is — and that dice is the line
+  // BELOW, `lesson:`, the pager's exercise stage. These four are the standalone
+  // Sorting tile, which normalizePath() folds together into `dice-practice:`
+  // and labels.ts names "Sorting". The word "dice" on them is a leftover from
+  // when EtuDice wore that tile, and it is what made this look like a question
+  // about the pathway when it never was.
+  //
+  // Sorting shows the learner every column and asks which one. Its own code
+  // says so — PracticeContent builds `hintsFor("mcq", …)` over the visible
+  // choices — and the activity band has called it recognition since 26 Aug.
+  // Only this table disagreed, and it is the table that was wrong.
+  //
+  // `sorting:` is what the surface emits now; the three legacy names stay so
+  // that answers already banked still resolve.
+  ["sorting:", "recognition"],
   ["dice-practice", "recognition"],
   ["dice:", "recognition"],
   ["/practice/dice/", "recognition"],
-  ["lesson-dice:", "recognition"],   // no emitter today; same drill if revived
+  ["lesson-dice:", "recognition"],
   ["lesson:", "constrained"],          // the lesson pager's gap/build/translate cards
 
   ["conj", "constrained"],
@@ -316,4 +320,42 @@ export function buildEvidence(
   const type = opts.evidenceType ?? evidenceTypeFor(activityId);
   if (type) meta.evidenceType = type;
   return meta;
+}
+
+/**
+ * The evidence type to READ off a stored answer.
+ *
+ * A stored `evidenceType` is two different things wearing one field: usually a
+ * cached lookup of the activity, but sometimes a deliberate override the writer
+ * passed — `free` for open writing, `diagnostic` for a pre-test. Recomputing
+ * everything from the activity would silently discard the second kind.
+ *
+ * So this corrects only what was demonstrably miscached: an answer whose
+ * activity is Sorting and whose stamp is the `constrained` the old table
+ * produced. Anything else is returned untouched, because it may have been
+ * chosen on purpose.
+ *
+ * Nothing is rewritten. The activity is the observation and it was always
+ * stored; the type is an interpretation of it, and interpretations should be
+ * current.
+ */
+const MISCACHED: Array<[prefix: string, was: EvidenceType, now: EvidenceType]> = [
+  // Sorting, under every name it has been emitted with (2026-08-31).
+  ["sorting:", "constrained", "recognition"],
+  ["dice:", "constrained", "recognition"],
+  ["dice-practice", "constrained", "recognition"],
+  ["/practice/dice/", "constrained", "recognition"],
+  ["lesson-dice:", "constrained", "recognition"],
+];
+
+export function readEvidenceType(
+  stored: string | null | undefined,
+  activityId: string | null | undefined,
+): string | null {
+  if (!stored) return stored ?? null;
+  if (!activityId) return stored;
+  for (const [prefix, was, now] of MISCACHED) {
+    if (activityId.startsWith(prefix) && stored === was) return now;
+  }
+  return stored;
 }

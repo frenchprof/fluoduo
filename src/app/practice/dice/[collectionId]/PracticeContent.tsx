@@ -43,7 +43,7 @@ export default function PracticePage({ collectionId, embedded = false }: { colle
               <code className="rounded bg-slate-100 px-1.5 py-0.5">
                 {collectionId}
               </code>{" "}
-              doesn't have sorting groups yet.
+              doesn&rsquo;t have sorting groups yet.
             </p>
             <div className="mt-5 flex justify-center gap-3">
               <Link href="/" className="fluo-btn fluo-btn-ghost">
@@ -85,12 +85,19 @@ function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: 
 
   // Shuffle on mount (client-side only — avoids SSR hydration mismatch).
   useEffect(() => {
+    // The shuffle must happen AFTER mount so the server render and the first
+    // client render agree (AGENTS.md). Shuffling during render would ship one
+    // fixed order in the static export and mismatch on hydration.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- see above
     setQueue(shuffle(set.items));
   }, [set]);
 
   useEffect(() => {
     try {
       const t = localStorage.getItem(TTS_KEY);
+      // localStorage cannot be read during render (AGENTS.md); this is the
+      // accepted mount-time read of a saved preference.
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- see above
       if (t === "0") setTtsOn(false);
     } catch {}
   }, []);
@@ -187,14 +194,17 @@ function PracticeRunner({ set, inShell = false }: { set: PracticeSet; inShell?: 
     }
     if (!inShell) {
       // The popup keeps its one-shot grammar (no ladder there).
-      recordItemResult(item.id, correct, undefined, `dice:${set.collectionId}`);
+      // `sorting:`, not `dice:` — this tile is not the lesson's dice roll, and the
+      // old name is what made its evidence type look like a question about the
+      // six-step pathway. normalizePath keeps every banked `dice:` answer working.
+      recordItemResult(item.id, correct, undefined, `sorting:${set.collectionId}`);
       setSubmitted({ picked: choice.key, correct });
       return;
     }
     // Every attempt writes spacing state + evidence (via the ladder): a
     // first-try miss resets the SRS ladder, a correct repair steps back to
     // the 1-day rung — and a hinted item is queued for ReVue when it closes.
-    const r = ladder.attempt(correct, { given: choice.label, activity: `dice:${set.collectionId}` });
+    const r = ladder.attempt(correct, { given: choice.label, activity: `sorting:${set.collectionId}` });
     if (r.effect === "done" || r.effect === "reveal") {
       setSubmitted({ picked: choice.key, correct });
     } else {

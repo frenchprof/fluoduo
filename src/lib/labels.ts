@@ -114,6 +114,7 @@ export function normalizePath(id: string): string {
     .replace(/^devine:/, "speculearn:")
     .replace(/^conveyor:/, "lexicalater:")
     .replace(/^lexicalator:/, "lexicalater:")
+    .replace(/^sorting:/, "dice-practice:")
     .replace(/^dice:/, "dice-practice:")
     .replace(/^lesson-dice:/, "dice-practice:")
     .replace(/^compose-solo:/, "compose:");

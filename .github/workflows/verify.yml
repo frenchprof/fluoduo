@@ -180,6 +180,9 @@ jobs:
       - name: "The star ladder withdraws scaffolding, and one star is unchanged (31 Aug)"
         run: python3 verify/verify58-ladder-blanks.py
 
+      - name: "Sorting is recognition, and the six-step pathway is untouched (31 Aug)"
+        run: python3 verify/verify60-sorting-recognition.py
+
       - name: Family hubs — every bottom-bar slot opens its family
         run: python3 verify/verify52-nav-hubs.py
 
