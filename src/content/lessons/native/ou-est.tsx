@@ -76,6 +76,54 @@ export const ouEstLesson: NativeLesson = {
       </div>
     </div>
   ),
+  // TIER 1 · stop 35. Deliberately the mirror of stop 26: the same two articles
+  // fuse, with `de` instead of `à`. A learner who has met du in the partitives
+  // meets it here as a PLACE word and should recognise it, not relearn it.
+  concept: {
+    subtitle: "Why du turns up again, far from any food",
+    contrast: (
+      <>
+        You have already met <i lang="fr">du</i> and <i lang="fr">des</i> in front of food.
+        Here they are in front of buildings &mdash; <i lang="fr">&agrave; c&ocirc;t&eacute; du
+        parc</i>. Same two words, because it is the same fusion:{" "}
+        <i lang="fr">de</i> + <i lang="fr">le</i>, <i lang="fr">de</i> +{" "}
+        <i lang="fr">les</i>.
+      </>
+    ),
+    question: (
+      <>
+        <i lang="fr">&Agrave; c&ocirc;t&eacute; de la poste</i> but{" "}
+        <i lang="fr">&agrave; c&ocirc;t&eacute; du parc</i>. Why not{" "}
+        <i lang="fr">de le parc</i>?
+      </>
+    ),
+    answer: (
+      <>
+        Because <i lang="fr">de</i> + <i lang="fr">le</i> is always{" "}
+        <i lang="fr">du</i> &mdash; in a bakery or on a map. Only{" "}
+        <i lang="fr">le</i> and <i lang="fr">les</i> change;{" "}
+        <i lang="fr">la</i> and <i lang="fr">l&rsquo;</i> stay as they are.
+      </>
+    ),
+    pitfallHeads: ["written out", "what French says"],
+    pitfall: [
+      { label: <><i lang="fr">de</i> + <i lang="fr">le</i> parc</>, wrong: <><i lang="fr">de le parc</i></>, right: <><i lang="fr">du parc</i></> },
+      { label: <><i lang="fr">de</i> + <i lang="fr">les</i> toilettes</>, wrong: <><i lang="fr">de les toilettes</i></>, right: <><i lang="fr">des toilettes</i></> },
+      { label: <><i lang="fr">de</i> + <i lang="fr">l&rsquo;</i> h&ocirc;tel</>, wrong: <><i lang="fr">du h&ocirc;tel</i></>, right: <><i lang="fr">de l&rsquo;h&ocirc;tel</i></> },
+    ],
+    check: [
+      { q: <>The bank is next to the post office.</>,
+        a: <><i lang="fr">La banque est &agrave; c&ocirc;t&eacute; de la poste.</i></> },
+      { q: <>Where else have you seen <i lang="fr">du</i> and <i lang="fr">des</i>?</>,
+        a: <>After <i lang="fr">faire</i> and in front of food. One fusion, three lessons.</> },
+    ],
+    remember: (
+      <>
+        <i lang="fr">Du</i> and <i lang="fr">des</i> are never about food. They are{" "}
+        <i lang="fr">de</i> plus an article, wherever they appear.
+      </>
+    ),
+  },
   dice: {
     instruction: "Say where it is — and mind the de.",
     axes: OU_EST_AXES,

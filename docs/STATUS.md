@@ -329,6 +329,30 @@ Dan assigns. Listed so the queue is not re-derived by whoever picks it up.
 | 8 | `rule:` namespace (894-item tagging): go / stay parked? | transfer evidence |
 | 9 | Deploy mirror Action (needs one fine-grained PAT from you) | ends manual deploys |
 
+## 31 Aug — Tier 1, batch 2: the fusion becomes one rule, not five
+
+| stop | the question the FORMS cannot answer |
+|---|---|
+| **26** Aller | is « à l'école » an exception? **No** — only `le` and `les` fuse, so `l'` has nothing to fuse with. There is no `*al` because there was never going to be one, and the fusion is obligatory |
+| **35** Où est…? | why `du parc`, far from any food? Because `de` + `le` is **always** `du` — in a bakery or on a map. Same fusion, third lesson |
+| **32** En / au / aux / à | **direction picks the SET before the place picks the form.** Knowing `le Japon` is masculine cannot tell you between `au Japon` and `du Japon` |
+| **19** Avoir — states | the TEST the Mémo does not give: does the word **agree**? `fatigué → fatigués`, so adjective, so `être`. `faim` does not, so noun, so you **have** it |
+| **14** Pronouns × être | `j'` and `n'` are ONE rule in two places — `je`, `ne`, `le`, `de`, `que` all drop `-e` before a vowel. `ils n'ont pas` stops looking irregular |
+
+**Batch 2 exists to make batch 1 smaller.** Stops 42, 36, 26 and 35 all teach the
+same fusion, and stop 32 is the rule above it. Written separately they are five
+things to memorise; written to point at each other they are one rule met five
+times. Each concept says so explicitly — stop 35's check asks *"where else have
+you seen du and des?"* and answers *"one fusion, three lessons."*
+
+Every claim comes from the lesson's own Mémo. No new French.
+
+**Tier 1 is 11 of 20.** Nine left: stops 2, 11, 21, 34, 37, 38, 43, 47, 48.
+
+33 concepts render clean. One shipped with a jammed em dash (`</i> &mdash;`),
+caught by the render scan — fifth time this session for that trap, and the scan
+has caught every one. Nothing has ever caught it by reading.
+
 ## 31 Aug — Tier 3: the six remaining phrase stops
 
 Written to the shape Dan settled on the salutations read — **the form pattern

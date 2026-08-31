@@ -52,6 +52,49 @@ export const conjugaisonU1Lesson: NativeLesson = {
       </p>
     </div>
   ),
+  // TIER 1 · stop 14. The table shows three verbs; what it never states is that
+  // j' and n' are the SAME rule in two places. Naming it once makes l', d', qu'
+  // predictable instead of six separate oddities.
+  concept: {
+    subtitle: "Why je becomes j’ and ne becomes n’",
+    contrast: (
+      <>
+        English lets two vowels sit together &mdash; <i>I am</i>, <i>I have</i>. French does
+        not like the join, so the small word in front gives up its vowel:{" "}
+        <i lang="fr">je ai</i> becomes <i lang="fr">j&rsquo;ai</i>.
+      </>
+    ),
+    question: (
+      <>
+        <i lang="fr">Tu n&rsquo;es pas</i> and <i lang="fr">j&rsquo;ai</i>{" "}&mdash; two
+        different words shortened. Two rules, or one?
+      </>
+    ),
+    answer: (
+      <>
+        One. <i lang="fr">Je</i>, <i lang="fr">ne</i>, <i lang="fr">le</i>,{" "}
+        <i lang="fr">de</i> and <i lang="fr">que</i> all drop their vowel before another
+        vowel. That is why <i lang="fr">ils n&rsquo;ont pas</i> looks irregular and is not
+        &mdash; and why you will never meet <i lang="fr">*je ai</i>.
+      </>
+    ),
+    pitfall: [
+      { label: <><i lang="fr">je</i> + <i lang="fr">ai</i></>, wrong: <><i lang="fr">je ai</i></>, right: <><i lang="fr">j&rsquo;ai</i></> },
+      { label: <><i lang="fr">ne</i> + <i lang="fr">es</i></>, wrong: <><i lang="fr">tu ne es pas</i></>, right: <><i lang="fr">tu n&rsquo;es pas</i></> },
+      { label: <><i lang="fr">je</i> + <i lang="fr">suis</i></>, wrong: <><i lang="fr">j&rsquo;suis</i></>, right: <><i lang="fr">je suis</i></> },
+    ],
+    check: [
+      { q: <>Why is it <i lang="fr">je suis</i> and not <i lang="fr">j&rsquo;suis</i>?</>,
+        a: <><i lang="fr">Suis</i> starts with a consonant, so there is no join to avoid.</> },
+      { q: <>Negate <i lang="fr">ils ont</i>.</>,
+        a: <><i lang="fr">Ils n&rsquo;ont pas.</i> A vowel follows, so <i lang="fr">ne</i> drops its own.</> },
+    ],
+    remember: (
+      <>
+        One rule, not six: a small word ending in <b>-e</b> loses it before a vowel.
+      </>
+    ),
+  },
   dice: {
     instruction: "Conjugate the verb for the given subject.",
     axes: CONJ_U1_AXES,
