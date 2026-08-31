@@ -29,6 +29,7 @@ import { gappedItems } from "@/lib/collections/gramMarathonReady";
 import { gapSentence, gapSentenceEn } from "@/lib/collections/gapSentence";
 import { splitGap } from "@/lib/practice/cloze";
 import { rampFor, type EntryLevel, type ExerciseKind } from "@/lib/lessonEntry";
+import { multiBlankCard, type ClozeSegment } from "@/content/lessons/native/cloze";
 import { shuffle } from "@/lib/shuffle";
 
 /** A Mémo is one card, so a lesson carries exactly one rule card before the
@@ -80,6 +81,16 @@ export type Exercise = {
   say?: string;
   /** Grade with gradeGap (d'/de elision) instead of gradeAnswer. */
   gapGrade?: boolean;
+  /**
+   * A cloze with MORE THAN ONE blank, for a question that authored `slots`.
+   *
+   * Present only at ★★ and above, and only where the generator gave the
+   * question its parts — one blank still travels as `before`/`after`, byte for
+   * byte as before, so ★ and all 46 slotless lessons are untouched by this.
+   * `answer` is the blanks joined by a space, which is what the learner's
+   * picks are joined into, so the existing graders need no change.
+   */
+  segments?: ClozeSegment[];
 };
 
 
@@ -204,6 +215,7 @@ function lessonSupply(
   lesson: NativeLesson,
   activityKey: string,
   pinned?: Record<string, string>,
+  entry: EntryLevel = 1,
 ): Supply {
   const steered = !!pinned && Object.values(pinned).some(Boolean);
   let bonusBag = shuffle(lesson.bonus);
@@ -228,6 +240,23 @@ function lessonSupply(
         }
         case "gap": {
           const x = q();
+          // THE ★ LADDER, where it actually happens. A question that authored
+          // `slots` can have more than one piece withdrawn: ★ takes the verb,
+          // ★★ takes the verb AND the article — Dan's L08 — and the vocabulary
+          // ladder takes the article, then the article and the noun.
+          //
+          // Two blanks or more go down the segmented path; one blank keeps the
+          // before/after shape it has always had, so ★ and every slotless
+          // generator produce exactly the card they produced yesterday.
+          const multi = multiBlankCard(x, entry);
+          if (multi) {
+            return {
+              kind, itemId: x.correct, activity: `lesson:${activityKey}`,
+              meta: x.meta, big: x.big, en: x.en,
+              segments: multi.segments, answer: multi.answer,
+              bankPool: x.easyOptions, say: x.correct,
+            };
+          }
           return {
             kind, itemId: x.correct, activity: `lesson:${activityKey}`,
             meta: x.meta, big: x.big, en: x.en,
@@ -297,7 +326,7 @@ export function buildCards({
   // they answer it. A steered run is the lesson generator's alone.
   const steered = !!pinned && Object.values(pinned).some(Boolean);
   if (deck && !(steered && lesson)) supplies.push(deckSupply(deck, activityKey));
-  if (lesson) supplies.push(lessonSupply(lesson, activityKey, pinned));
+  if (lesson) supplies.push(lessonSupply(lesson, activityKey, pinned, entry));
 
   const exercises: Exercise[] = [];
   rampFor(entry).forEach((kind, i) => {
