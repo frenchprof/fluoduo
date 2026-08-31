@@ -17,18 +17,28 @@
  * preposition is pinned.
  */
 import type { DiceAxis, DiceQuestion } from "./types";
+import { medFrom, sentence, type Slot } from "./cloze.ts";
 
-export const SUBJECTS: { aff: string; neg: string }[] = [
-  { aff: "je vais", neg: "je ne vais pas" },
-  { aff: "tu vas", neg: "tu ne vas pas" },
-  { aff: "il va", neg: "il ne va pas" },
-  { aff: "elle va", neg: "elle ne va pas" },
-  { aff: "on va", neg: "on ne va pas" },
-  { aff: "nous allons", neg: "nous n'allons pas" },
-  { aff: "vous allez", neg: "vous n'allez pas" },
-  { aff: "ils vont", neg: "ils ne vont pas" },
-  { aff: "elles vont", neg: "elles ne vont pas" },
+/**
+ * `pron` and `verb` are the same sentence as `aff`/`neg`, taken apart.
+ *
+ * The whole phrases stay because the axis dropdown and every existing caller
+ * read them; the parts were added (2026-08-31) so the ★ ladder can blank the
+ * VERB as well as the preposition — a phrase cannot be half-withdrawn.
+ */
+export const SUBJECTS: { aff: string; neg: string; pron: string; verb: string }[] = [
+  { aff: "je vais", neg: "je ne vais pas", pron: "je", verb: "vais" },
+  { aff: "tu vas", neg: "tu ne vas pas", pron: "tu", verb: "vas" },
+  { aff: "il va", neg: "il ne va pas", pron: "il", verb: "va" },
+  { aff: "elle va", neg: "elle ne va pas", pron: "elle", verb: "va" },
+  { aff: "on va", neg: "on ne va pas", pron: "on", verb: "va" },
+  { aff: "nous allons", neg: "nous n'allons pas", pron: "nous", verb: "allons" },
+  { aff: "vous allez", neg: "vous n'allez pas", pron: "vous", verb: "allez" },
+  { aff: "ils vont", neg: "ils ne vont pas", pron: "ils", verb: "vont" },
+  { aff: "elles vont", neg: "elles ne vont pas", pron: "elles", verb: "vont" },
 ];
+/** Every distinct form of ALLER — the options when the verb is the blank. */
+const ALLER_FORMS = ["vais", "vas", "va", "allons", "allez", "vont"];
 
 export const PLACES: { lieu: string; pre: string; en: string }[] = [
   { lieu: "cinéma", pre: "au", en: "cinema" },
@@ -95,12 +105,25 @@ export function allerQuestion(pinned?: Record<string, string>): DiceQuestion {
   const neg = pinned?.polarity === "neg" || (pinned?.polarity !== "aff" && Math.random() < 0.35);
   const sv = cap(neg ? s.neg : s.aff);
   const alts = ALT[p.pre];
+  // The sentence as its parts — pronoun · VERB · (pas) · PREPOSITION · place.
+  // ★ takes the verb; ★★ takes the verb AND the preposition, which is the
+  // contraction this stop exists to teach. In the negative the verb sits inside
+  // « ne … pas », and « nous n'allons » elides, so the pronoun chunk carries the
+  // apostrophe and sentence() glues across it.
+  const verb: Slot = { key: "verb", text: s.verb, choices: ALLER_FORMS };
+  const prep: Slot = { key: "prep", text: p.pre, choices: [...alts] };
+  const tail: Slot = { text: `${p.lieu}.` };
+  const slots: Slot[] = neg
+    ? [{ text: `${cap(s.pron)} ${/^[aeiouéèêh]/i.test(s.verb) ? "n'" : "ne"}` }, verb, { text: "pas" }, prep, tail]
+    : [{ text: cap(s.pron) }, verb, prep, tail];
   return {
     meta: `${sv} … (${neg ? "don't/doesn't go" : "go/goes"})`,
     big: p.lieu,
     en: p.en,
-    correct: `${sv} ${pp(p.pre, p.lieu)}.`,
+    correct: sentence(slots),
     easyOptions: alts.map((a) => `${sv} ${pp(a, p.lieu)}.`),
-    med: { before: sv, choices: [...alts], correct: p.pre, after: `${p.lieu}.` },
+    // Derived, not hand-written — the two can no longer drift apart.
+    med: medFrom(slots, "prep"),
+    slots,
   };
 }
