@@ -82,6 +82,23 @@ All three are Dan's words, and none is mine to soften:
    closed section says what is behind it.
 3. **fluoduo-main is the integration lane** — the rule this file exists under.
 
+## `docs/STATUS.md` will conflict — keep both sides
+
+This branch writes to STATUS on Dan's explicit instruction ("write it in"),
+knowing #97 carries its own 31 Aug PM entry. That is a conflict I caused
+deliberately rather than one to be surprised by, and it is the same class of
+thing the new rule 7 is about, so it is named here rather than discovered.
+
+Three separate places, all additive, none rewriting an existing line:
+
+- **Rule 7** in THE ROSTER's rules list — Dan's integration-lane instruction.
+- **The Peers lane row and bullet** — was "free since Sorting was cut".
+- **A `31 Aug PM (Peers)` entry** above the existing 31 Aug entries, plus a
+  **"Peers — open queue"** subsection under "The work, by lane".
+
+Take both entries. Nothing in mine contradicts #97's; if the two 31 Aug PM
+entries sit adjacent, that is correct — two sessions shipped that afternoon.
+
 ## State
 
 `tsc` clean · wall-open build green · all 54 suites pass · lint clean on every
