@@ -66,11 +66,15 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
     const full = shuffle(deck.items.map((it, idx) => (isPlayableGap(it) ? idx : -1)).filter((x) => x >= 0));
     // The shuffle must happen after mount so SSR and the first client render
     // agree (the AGENTS rule every drill follows) — so this effect has to
-    // seed state; there is no render-time home for it.
+    // seed state; there is no render-time home for it. Block-disabled: the
+    // rule reports only the first setState it meets, and which one that is
+    // differs between local and CI eslint — a line directive on the wrong one
+    // fails the build either side.
+    /* eslint-disable react-hooks/set-state-in-effect */
     setOrder(full);
     // Short enough not to need asking → answered for the learner.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setAsked(offer(full.length) === null);
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [deck]);
 
   useEffect(() => {
