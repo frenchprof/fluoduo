@@ -541,16 +541,22 @@ function ExerciseCard({
           : `border-[color:var(--drill-bad)] bg-[color:var(--drill-bad-bg)]${filled ? " line-through" : ""}`
     }`;
 
-  // On a TWO-blank card, each blank and its word boxes share a WASH (Dan,
+  // On a TWO-blank card, each blank and its word boxes share a COLOUR (Dan,
   // 31 Aug: "i would use different shaded word boxes on top of numbers") —
-  // the shading, not a numeral, says which boxes feed which blank. Teal and
-  // apricot sit far apart on the common colourblind axes, and reading order
-  // is the redundant cue. Verdict colours still take over once answered.
+  // the shading, not a numeral, says which boxes feed which blank. FULL tab
+  // hues, not washes: a pale mix faded into the cream paper (Dan, same day:
+  // "the color fading into the background would not do"). Teal and apricot
+  // sit far apart on the common colourblind axes, reading order is the
+  // redundant cue, and ink on either hue clears every contrast bar. Verdict
+  // colours still take over once answered.
   const GROUP_HUES = ["var(--cahier-t1)", "var(--cahier-t2)", "var(--cahier-t0)"] as const;
-  const groupWash = (b: number, strength: number) => ({
-    background: `color-mix(in srgb, ${GROUP_HUES[b % GROUP_HUES.length]} ${strength}%, white)`,
-    borderColor: GROUP_HUES[b % GROUP_HUES.length],
-  });
+  const groupWash = (b: number) => {
+    const hue = GROUP_HUES[b % GROUP_HUES.length];
+    return {
+      background: hue,
+      borderColor: `color-mix(in srgb, ${hue} 60%, var(--cahier-ink))`,
+    };
+  };
 
   return (
     <div className="space-y-4 pt-2">
@@ -574,7 +580,7 @@ function ExerciseCard({
                 <span
                   key={n}
                   className={blankClass(!!picks[blankIndex(ex.segments!, n)])}
-                  style={!answered ? groupWash(blankIndex(ex.segments!, n), 45) : undefined}
+                  style={!answered ? groupWash(blankIndex(ex.segments!, n)) : undefined}
                 >
                   {picks[blankIndex(ex.segments!, n)] || <span className="opacity-40">?</span>}
                 </span>
@@ -617,7 +623,7 @@ function ExerciseCard({
                         lang="fr"
                         disabled={answered}
                         onClick={() => onPick(b, c)}
-                        style={!answered && !isPicked ? groupWash(b, 22) : undefined}
+                        style={!answered && !isPicked ? groupWash(b) : undefined}
                         className={`rounded-lg border-2 px-3 py-2 text-lg font-semibold text-[color:var(--cahier-ink)] transition ${cls}`}
                       >
                         {c}
