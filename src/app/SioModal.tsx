@@ -33,6 +33,7 @@ import type { ReactNode } from "react";
 import type { Sio } from "@/content/sios";
 import type { Collection } from "@/lib/collections/schema";
 import { deckActivityTabs } from "@/components/CahierShell";
+import { activity } from "@/content/activities";
 import { accuracyFor, activityKeyFor, loadLedger, LEDGER_EVENT, type Ledger } from "@/lib/activityLedger";
 
 export type PopupTab = { key: string; label: string; emoji: string; href?: string; active?: boolean; hint?: string };
@@ -49,8 +50,17 @@ export function popupActivityTabs(
   deck?: Collection,
   pretest?: { inline: boolean; href: string | null },
 ): PopupTab[] | undefined {
+  // `short ?? name`: the popup's buttons are a two-column grid, so a cell is
+  // about 168px on a phone. The registry's short form is used HERE and only
+  // here — every surface with room still spells the activity out.
   const base: PopupTab[] = deck
-    ? deckActivityTabs(deck.id).map((t) => ({ key: t.key, label: t.label, emoji: t.emoji ?? "", href: t.href, hint: t.hint }))
+    ? deckActivityTabs(deck.id).map((t) => ({
+        key: t.key,
+        label: activity(t.key)?.short ?? t.label,
+        emoji: t.emoji ?? "",
+        href: t.href,
+        hint: t.hint,
+      }))
     : [];
   if (pretest && (pretest.inline || pretest.href)) {
     const tab: PopupTab = pretest.inline
