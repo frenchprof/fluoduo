@@ -70,6 +70,13 @@ export const ATELIER_DIALOGUES: Record<string, DialogueLine[]> = {
   // Unité 4 — review a restaurant (aimer, c'est, adjectives, frequency, recommander).
   "SIO-049": [
     { who: "A", fr: "J'aime beaucoup ce restaurant.", en: "I really like this restaurant." },
+    // A review that never says what was eaten (Dan, 2026-08-31: "yes pls fix").
+    // Every word here is already taught: `du poisson` and `des frites` are both
+    // in the `aliments` deck for this unit, `prendre` comes from SIO-040's
+    // itinerary ("tu prends la première rue"), and the definite article for a
+    // habitual choice is the aimer + le/la/les rule from Unité 2. DRAFTED, like
+    // Le concept — the wording is mine until Dan rules on it.
+    { who: "A", fr: "Je prends toujours le poisson avec des frites.", en: "I always have the fish with chips." },
     { who: "A", fr: "C'est délicieux !", en: "It's delicious!" },
     { who: "A", fr: "Le service est rapide.", en: "The service is fast." },
     { who: "A", fr: "Ce n'est pas cher.", en: "It's not expensive." },
