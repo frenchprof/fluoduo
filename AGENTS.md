@@ -17,6 +17,34 @@ Clarified by Dan the same day:
   right of an answered question — available on demand, never inline by
   default.
 
+# Show it, don't describe it — permanent rule (2026-08-31)
+
+**Dan: *"often times i cannot understand what the agent is telling me about
+what has changed. so long as i don't see, i can only guess (often wrongly).
+can we make it a point to always show what the finished product looks like
+rather than just describe."***
+
+A prose summary of a UI change is not a report of that change; it is a request
+that Dan reconstruct the screen in his head from your words. He has been doing
+that for weeks and guessing wrong. So:
+
+- **Every change a learner or teacher can SEE ships with a picture of it.**
+  Drive the real app and screenshot the real route — `NEXT_PUBLIC_OPEN_APP=1`
+  gets past the sign-in wall, Chromium and Playwright are installed. A rendered
+  mock is second best and must be labelled as one.
+- **Before and after, side by side**, whenever something changed rather than
+  appeared. "The band is now SemiBold" means nothing alone; the two bands next
+  to each other mean everything.
+- **When a decision is being put to Dan, show the options, don't list them.**
+  Three tab strips he can point at beat three sentences he has to imagine.
+- **This outranks brevity.** A short message he cannot act on is not shorter
+  than a long one he can — it is a message that has to be sent twice.
+
+The exception is work with no visual surface at all (a check, a data
+migration, a type). There, show the *evidence* instead: the check's output,
+the row counts before and after. The principle is the same — the finished
+thing, not an account of it.
+
 # Start here — every session (2026-08-17)
 
 Read `docs/STATUS.md` before anything else and update it before you stop. `HANDOFF.md`, `TODO.md` and `docs/planning/*` are historical.

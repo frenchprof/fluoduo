@@ -47,12 +47,17 @@ const TABS: { key: TabKey; emoji: string; label: string; does: string }[] = [
   // `does` earns the path list its place. Without it that list is the tab
   // strip retyped one inch lower, which is exactly what Dan's litmus test
   // deletes: text that, removed, costs the learner nothing.
-  { key: "parcours", emoji: "🗺", label: "Le parcours", does: "what you will be able to do" },
-  { key: "concept", emoji: "💡", label: "Le concept", does: "why French does it this way" },
-  { key: "formes", emoji: "📖", label: "Les formes", does: "the forms themselves" },
-  { key: "exercice", emoji: "📝", label: "L'exercice", does: "use them, one card at a time" },
-  { key: "bonus", emoji: "⭐", label: "Le bonus", does: "the other direction — English to French" },
-  { key: "lexique", emoji: "📚", label: "Le lexique", does: "every word in this lesson" },
+  // ENGLISH, all six (Dan, 2026-08-31, shown the strip three ways and picking
+  // "A · all six in English"). The tabs are furniture, not content: a beginner
+  // should not have to decode the navigation before reaching the French. Mixing
+  // the two — one English tab among five French — was shown and rejected; it
+  // reads as something nobody finished rather than as a decision.
+  { key: "parcours", emoji: "🗺", label: "Learning path", does: "what you will be able to do" },
+  { key: "concept", emoji: "💡", label: "The idea", does: "why French does it this way" },
+  { key: "formes", emoji: "📖", label: "The forms", does: "the forms themselves" },
+  { key: "exercice", emoji: "📝", label: "Practice", does: "use them, one card at a time" },
+  { key: "bonus", emoji: "⭐", label: "Bonus", does: "the other direction — English to French" },
+  { key: "lexique", emoji: "📚", label: "Word list", does: "every word in this lesson" },
 ];
 
 /** Section heading inside a panel. The panels are read, not scanned, so they
@@ -86,7 +91,7 @@ function Empty({ what }: { what: string }) {
  * a rendering job, not a writing one. */
 function Parcours({ sio, here }: { sio?: Sio; here: TabKey }) {
   if (!sio) {
-    return <Empty what="This lesson is not wired to a curriculum objective, so there is no parcours to show." />;
+    return <Empty what="This lesson is not wired to a curriculum objective, so there is no learning path to show." />;
   }
   return (
     <Panel>
@@ -116,7 +121,7 @@ function Parcours({ sio, here }: { sio?: Sio; here: TabKey }) {
  * native/types.ts for which are required and why. */
 function Concept({ c }: { c?: LessonConcept }) {
   if (!c) {
-    return <Empty what="Le concept has not been written for this lesson yet. Les formes has the rules in the meantime." />;
+    return <Empty what="The idea has not been written for this lesson yet. The forms has the rules in the meantime." />;
   }
   return (
     <Panel>
@@ -265,7 +270,7 @@ function Lexique({ deck }: { deck?: Collection }) {
   const [hide, setHide] = useState<"none" | "fr" | "en">("none");
   const [shown, setShown] = useState<Set<string>>(new Set());
   if (!deck?.items?.length) {
-    return <Empty what="This lesson has no deck, so there is no lexique." />;
+    return <Empty what="This lesson has no deck, so there is no word list." />;
   }
   const reveal = (id: string) => setShown((s) => new Set(s).add(id));
   const hiddenCount = deck.items.filter((i) => i.gender && !articleShowsGender(i.fr)).length;

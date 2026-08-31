@@ -48,6 +48,20 @@ export type Slot = {
   text: string;
   /** What to offer when this slot is blanked. Required wherever `key` is. */
   choices?: string[];
+  /**
+   * ★ takes THIS slot, even though it is not the leftmost.
+   *
+   * Reading order is usually withdrawal order — in « Tu aimes le sport » the
+   * verb is both the first gap and the first thing to ask for. Colours break
+   * that: the phrase is « le feu rouge », so the leftmost blankable slot is the
+   * NOUN, while Dan's ladder (2026-08-31) is "★ just the colour word · ★★ the
+   * colour word and the noun". Without this the one-star card would withdraw
+   * the wrong half of the phrase and quietly teach the wrong lesson.
+   *
+   * Ignored above ★, where every blankable slot goes anyway. At most one slot
+   * should set it; the first that does wins.
+   */
+  first?: boolean;
 };
 
 export type ClozeSegment =
@@ -115,7 +129,8 @@ export function medFrom(slots: Slot[], blankKey: string): DiceQuestion["med"] {
 /**
  * Which keys a star level takes away, by default.
  *
- * ★   the first blankable slot — one decision, the rest scaffolded.
+ * ★   ONE slot — the one flagged `first`, or else the leftmost blankable.
+ *     One decision, the rest scaffolded.
  * ★★  every blankable slot — Dan's "pick the verb AND the article", and the
  *     vocabulary ladder's "fill in the article".
  * ★★★ every blankable slot as well: at three stars the pager gives no bank and
@@ -125,8 +140,14 @@ export function medFrom(slots: Slot[], blankKey: string): DiceQuestion["med"] {
  * A lesson whose ladder does not fit this may pass its own keys to `cloze`.
  */
 export function blankKeysFor(level: 1 | 2 | 3, slots: Slot[]): string[] {
-  const keys = slots.filter(isBlankable).map((s) => s.key!);
-  return level === 1 ? keys.slice(0, 1) : keys;
+  const blankable = slots.filter(isBlankable);
+  const keys = blankable.map((s) => s.key!);
+  if (level !== 1) return keys;
+  // `first` overrides reading order — see the Slot field for why colours need
+  // it. Defaults to keys[0], so every generator that predates the flag keeps
+  // producing exactly the card it produced before.
+  const lead = blankable.find((s) => s.first);
+  return keys.length === 0 ? [] : [lead?.key ?? keys[0]];
 }
 
 /**

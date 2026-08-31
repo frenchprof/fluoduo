@@ -553,7 +553,11 @@ body {
 /* Expressive display face. Apply DELIBERATELY to major page titles only. */
 .cahier-hand    { font-family: var(--font-hand-stack); font-weight: 400; letter-spacing: 0; }
 /* The heading bands’ face — Dan’s own FluOlinGo Hand OTF (2026-08-23). */
-.fluo-band-hand { font-family: var(--font-fluohand-stack); font-weight: 400; letter-spacing: 0; }
+/* SemiBold, not Regular (Dan, 2026-08-31, shown the two bands side by side).
+   The band is white type on a saturated ground, where a stroke optically
+   thins; Regular read washed at the stroke ends and Bold started closing the
+   counters at 28px. 600 holds the letterforms and gains the presence. */
+.fluo-band-hand { font-family: var(--font-fluohand-stack); font-weight: 600; letter-spacing: 0; }
 .cahier-hl {
   background-color: var(--cahier-hl);
   mix-blend-mode: multiply;
