@@ -17,6 +17,64 @@ Clarified by Dan the same day:
   right of an answered question — available on demand, never inline by
   default.
 
+# Long pages collapse — permanent design rule (2026-08-31)
+
+**Dan: *"now that the page is long please collapse part of it. can you make it
+a rule for all — this is the rule from now on."***
+
+A page a learner has to scroll past the fold has stopped showing them where
+they are — the whole of it must fit on one screen before anything is expanded
+(Dan, same day: *"all long pages must be collapsed for the lower sections, so
+the entire fits on one screen first"*). So on **every** surface, not just the
+one that prompted this:
+
+- **The argument stays open. The apparatus collapses.** On a lesson that means
+  the claim and its answer are open on arrival; the pitfall table, the decision
+  flow, the self-check and the word list start closed. If a learner must read
+  it to understand the point, it is open; if they consult it, it is closed.
+- **A closed section says what is behind it** — "18 words", "3 traps" — not a
+  bare chevron. A collapsed section with no count is a section nobody opens,
+  which is just deletion with extra steps.
+- **Use native `<details>`/`<summary>`.** Keyboard and screen reader support
+  come free, it needs no state, and it survives having no JavaScript. Do not
+  hand-roll a disclosure with `useState` and a div.
+- **Never collapse the only copy of something a learner needs to answer the
+  question in front of them.** Collapsing is for reference, never for the
+  prompt, the options, or the feedback.
+
+This rule and the litmus test point the same way: the litmus test deletes text
+that costs nothing, and this one folds away text that earns its place but not
+its position. Neither is licence to hide the lesson.
+
+# Show it, don't describe it — permanent rule (2026-08-31)
+
+**Dan: *"often times i cannot understand what the agent is telling me about
+what has changed. so long as i don't see, i can only guess (often wrongly).
+can we make it a point to always show what the finished product looks like
+rather than just describe."***
+
+A prose summary of a UI change is not a report of that change; it is a request
+that Dan reconstruct the screen in his head from your words. He has been doing
+that for weeks and guessing wrong. So:
+
+- **Every change a learner or teacher can SEE ships with a picture of it.**
+  Drive the real app and screenshot the real route — `NEXT_PUBLIC_OPEN_APP=1`
+  gets past the sign-in wall, Chromium and Playwright are installed. A rendered
+  mock is second best and must be labelled as one.
+- **Before and after, side by side**, whenever something changed rather than
+  appeared. "The band is now SemiBold" means nothing alone; the two bands next
+  to each other mean everything.
+- **When a decision is being put to Dan, show the options, don't list them.**
+  Three tab strips he can point at beat three sentences he has to imagine.
+- **This outranks brevity.** A short message he cannot act on is not shorter
+  than a long one he can — it is a message that has to be sent twice.
+
+The exception is work with no visual surface at all (a check, a data
+migration, a type). There, show the *evidence* instead: the check's output,
+the row counts before and after. The principle is the same — the finished
+thing, not an account of it.
+
+
 # Start here — every session (2026-08-17)
 
 Read `docs/STATUS.md` before anything else and update it before you stop. `HANDOFF.md`, `TODO.md` and `docs/planning/*` are historical.
@@ -77,6 +135,62 @@ used in CI.
 Read **THE ROSTER** at the top of `docs/STATUS.md` before starting work —
 lanes are assigned there and integration work (branch audits, renumbering,
 closures, merges of others' work) belongs to the integration lane only.
+
+<<<<<<< HEAD
+## fluoduo-main is the integration lane — permanent (2026-08-31)
+
+**Dan: *"can we, moving forward, push everything to fluoduo-main for quality
+check, and letting fluoduo-main do the necessary merging?"*** Yes. So:
+
+- **You push your own branch to `origin` and stop there.** Never merge your own
+  work, and never merge anyone else's.
+- **fluoduo-main reviews and merges.** Order of landing is theirs to decide —
+  they are the only session that can see two in-flight branches at once.
+- **When your branch is ready, hand it over explicitly**: say which files it
+  touches, which shared ones, and what you know it collides with. A branch that
+  is merely pushed has not been handed over.
+- **Rebasing after someone else lands first is the author's job, not the
+  integrator's.** They will tell you; replay your change on the new base.
+
+WHY, IN ONE CASE. On 31 Aug this session and fluoduo-main built into each other
+for an afternoon without either knowing. #97 renamed the ladder
+Facile/Moyen/Difficile/Bonus and cut the Bonus TAB; this branch had, the same
+hour, shortened the tab labels to English, moved Words under Forms, and been
+holding the Bonus tab open pending Dan's answer — a question #97 had already
+settled. Both branches merged cleanly into `main` and conflicted with each
+other on five files, three of them semantically:
+
+- `blankKeysFor` — they widened it to four levels, this branch added
+  `Slot.first` so Dan's colours ★ withdraws the COLOUR and not the leftmost
+  gap. **Both are needed.** A merge that keeps only the four-level rule silently
+  inverts the colours ladder, and nothing in either diff looks wrong.
+- the tab labels, renamed on one side and restructured on the other;
+- `verify57` / `verify58`, edited by both.
+
+Nothing here was carelessness — each side scanned for verify-number collisions
+and found none. The number scan catches files; it cannot catch two sessions
+editing the same *function*. That is what an integration lane is for.
+=======
+**EVERY merge goes through fluoduo-main** (Dan, 2026-08-31). Open the PR, get
+CI green, then leave it — including a PR of your own work. One session merging
+everything is what catches a collision between two branches that are each
+individually correct, which no single session can see from inside its own lane.
+
+**Before you open a branch, look at what is already in flight on the files you
+are about to touch.** This is the half the merge rule does not cover: a merge
+gate catches a collision AFTER both sessions have built the same thing.
+
+```
+gh pr list --state open        # or the GitHub MCP equivalent
+git diff --name-only origin/main...origin/<branch>
+```
+
+Worked example, 31 Aug — the cost of not doing it. PR #97 retired iComplete at
+07:11. The pre-tests session branched to do the same job at **07:29**, eighteen
+minutes later, and neither knew until both had merged or were ready to. Dan had
+told both sessions, in different words, an hour apart. No merge policy prevents
+that; thirty seconds of looking does.
+>>>>>>> origin/main
 
 **Claiming a verify number:** scan EVERY remote branch, never just `main` —
 an in-flight number is precisely what main cannot show you. Four collisions

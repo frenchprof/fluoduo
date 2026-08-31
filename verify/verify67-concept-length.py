@@ -89,25 +89,62 @@ if ans is not None:
        "the answer's <details> carries `open`, so it renders expanded and the "
        "collapse buys nothing.")
 
-flow = wrapping_details("{c.flow.map(")
+# AMENDED AT THE #100 x #105 MERGE (31 Aug). #100 wrapped the flow in a raw
+# <details>; #105 landed `Section` the same day — the ONE component that
+# implements the collapse rule, whose fold names its count ("4 steps"). The
+# merge kept Section, so the flow's disclosure now lives inside the component,
+# not at the use site, and `wrapping_details` cannot see it. The claim being
+# guarded is unchanged — the tree renders closed, with a labelled control —
+# it is just guarded in two halves: the use site defers to Section, and
+# Section itself is a closed <details> with a labelled <summary>.
+
+def wrapping_section(needle):
+    """The <Section …> opening tag whose block contains `needle` — same
+    closed-before-the-needle rejection as `wrapping_details`, for the same
+    break-tested reason."""
+    i = code.find(needle)
+    if i < 0:
+        return None
+    start = code.rfind("<Section", 0, i)
+    if start < 0:
+        return None
+    if "</Section>" in code[start:i]:
+        return None
+    return code[start:code.find(">", start) + 1]
+
+flow = wrapping_section("{c.flow.map(")
 ok(flow is not None,
-   "the decision tree sits inside a <details>",
-   "`How to decide` is rendered outside any <details>. It is a tree a learner "
+   "the decision tree sits inside a <Section> fold",
+   "`How to decide` is rendered outside any <Section>. It is a tree a learner "
    "CONSULTS, not reads; open by default it costs every visitor its full "
    "height on every visit.")
 if flow is not None:
-    # A <details> with no <summary> still collapses, but the browser labels it
-    # with its own default marker — an untranslated "Details" on a French
-    # lesson. Caught by break-testing: deleting the summary left the check
-    # green while the control lost its name.
-    ok("<summary" in flow,
-       "the decision tree's disclosure is labelled",
-       "the decision tree's <details> has no <summary>, so the browser supplies "
-       "its own default label. Give it words that say what opening it does.")
-    ok("open" not in (re.findall(r"<details([^>]*)>", flow) or [""])[0],
-       "the decision tree's disclosure is closed on arrival",
-       "the decision tree's <details> carries `open`, so it renders expanded "
-       "and the collapse buys nothing.")
+    ok("open" not in flow,
+       "the decision tree's fold is closed on arrival",
+       "the flow's <Section> passes `open`, so it renders expanded and the "
+       "collapse buys nothing.")
+    ok("folds={false}" not in flow.replace(" ", ""),
+       "the decision tree's fold actually folds",
+       "the flow's <Section> passes folds={false}, which renders a plain "
+       "heading — the collapse is gone in all but name.")
+    ok("note=" in flow,
+       "the fold names what is behind it",
+       "the flow's <Section> has no `note` — a closed section that does not "
+       "say what is behind it is a section nobody opens (AGENTS.md).")
+
+# The half Section owes: a real <details>, closed by default, with its own
+# <summary>. If Section ever becomes a useState div or ships `open` as its
+# default, every fold in the app breaks at once — this is where that fails.
+sec_at = code.find("function Section(")
+sec_body = code[sec_at:code.find("\nfunction ", sec_at + 1)] if sec_at >= 0 else ""
+ok(sec_at >= 0 and "<details" in sec_body and "<summary" in sec_body,
+   "Section renders a native, labelled <details>",
+   "Section no longer renders a <details> with a <summary> — the collapse "
+   "rule's one implementation has lost its mechanism.")
+ok("open = false" in sec_body or "open=false" in sec_body,
+   "Section is closed by default",
+   "Section's `open` no longer defaults to false, so every fold in the app "
+   "renders expanded and the 27% cut this check was written for is undone.")
 
 for line in PASS: print(f"  ok  {line}")
 for line in FAIL: print(f"FAIL  {line}")

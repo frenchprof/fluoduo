@@ -34,7 +34,7 @@ export default function PageBand({
     >
       <div className="min-w-0">
         <h1
-          className="fluo-band-hand truncate font-normal leading-none text-white"
+          className="fluo-band-hand truncate font-semibold leading-none text-white"
           style={{ fontSize: "var(--fs-h2)" }}
         >
           {title}

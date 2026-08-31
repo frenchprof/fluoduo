@@ -106,10 +106,24 @@ for slug, sio in GENS.items():
 # ---- 2 · the three NON-gaps keep no lesson ---------------------------------
 # An absence, deliberately. Their decks already teach both halves in the
 # `example` field, and a lesson on top would be a second door onto one goal.
-for sio, why in (("SIO-006", "all 18 cards carry « C'est qui ? » / « C'est où ? » in "
-                            "their example field; the pronoun rule it lacked moved to SIO-021, "
-                            "where the objects are (Dan, 29 Aug)"),
-                 ("SIO-025", "every card carries « Pourquoi … ? » in its example"),
+#
+# SIO-006 WAS IN THIS LIST AND CAME OUT ON 2026-08-31, on Dan's instruction
+# ("Stop 6: then just show it"). The 29 Aug reasoning was not wrong, it was
+# about something else: the deck does carry « C'est qui ? / où ? / quoi ? » on
+# all 18 cards, so a lesson re-teaching THE QUESTION FRAMES would indeed be a
+# second door. What the deck never does is argue the thing the stop's own
+# description calls its point — *"the new thing to learn is the gender"*. The
+# articles are in the data (`gap`, `col:m` / `col:f`); the claim that gender
+# cannot be heard, guessed from meaning, or read off the ending is nowhere,
+# and a word list cannot make it. That is a Tier 2 concept, and the framework
+# that names it postdates this check.
+#
+# So the lesson added is a gender lesson, not a question-frame lesson, and
+# verify66 holds it to that — its concept, its 18 genders and its articles are
+# all checked against core-nouns.json. If anyone ever adds a SECOND lesson to
+# SIO-006 that re-teaches the frames, this comment is the reason it should not
+# exist; the guard for it now lives in verify66's content assertions.
+for sio, why in (("SIO-025", "every card carries « Pourquoi … ? » in its example"),
                  ("SIO-038", "every card carries « Tu y vas en … ? » in its example"),
                  ("SIO-039", "the cards are the polite act, not vocabulary for it")):
     m = re.search(r'"%s":\s*\[([^\]]*)\]' % sio, reg)

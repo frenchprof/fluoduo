@@ -218,6 +218,9 @@ jobs:
       - name: patch 45 — deck promises (SIO-001 M./Mme, SIO-005 mnemonics)
         run: python3 verify/verify45-promise-gaps.py
 
+      - name: "SIO-005 and SIO-006 have a lesson; the colour ladder, the band weight, the English tabs (31 Aug)"
+        run: python3 verify/verify68-two-tier2-stops.py
+
       - name: "Every check runs, and no two share a number"
         run: python3 verify/verify-wiring.py
 

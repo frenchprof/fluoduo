@@ -48,6 +48,20 @@ export type Slot = {
   text: string;
   /** What to offer when this slot is blanked. Required wherever `key` is. */
   choices?: string[];
+  /**
+   * ★ takes THIS slot, even though it is not the leftmost.
+   *
+   * Reading order is usually withdrawal order — in « Tu aimes le sport » the
+   * verb is both the first gap and the first thing to ask for. Colours break
+   * that: the phrase is « le feu rouge », so the leftmost blankable slot is the
+   * NOUN, while Dan's ladder (2026-08-31) is "★ just the colour word · ★★ the
+   * colour word and the noun". Without this the one-star card would withdraw
+   * the wrong half of the phrase and quietly teach the wrong lesson.
+   *
+   * Ignored above ★, where every blankable slot goes anyway. At most one slot
+   * should set it; the first that does wins.
+   */
+  first?: boolean;
 };
 
 export type ClozeSegment =
@@ -118,9 +132,10 @@ export function medFrom(slots: Slot[], blankKey: string): DiceQuestion["med"] {
  * Dan's classification (2026-08-31): "CompleteIt is supposed to [be]
  * Difficile if it involves two items, or Moyen if it involves one." So:
  *
- * Facile (1)     first blankable slot — the ramp barely uses gap here, but
- *                a fallback card stays a one-decision card.
- * Moyen (2)      the first blankable slot — ONE piece missing.
+ * Facile (1) ·   ONE slot — the one flagged `first`, or else the leftmost
+ * Moyen (2)      blankable. `first` matters where reading order lies about
+ *                the lesson: « le feu rouge » puts the NOUN leftmost, and
+ *                the colours ladder blanks the COLOUR word (Peers, 31 Aug).
  * Difficile (3)  every blankable slot — TWO pieces missing (the earlier
  *                "★★ takes verb AND article" ruling moved up a tier with
  *                the rename; the mechanism is unchanged).
@@ -128,10 +143,16 @@ export function medFrom(slots: Slot[], blankKey: string): DiceQuestion["med"] {
  *                never asks for a cloze.
  *
  * A lesson whose ladder does not fit this may pass its own keys to `cloze`.
+ * This exact merged shape is the hazard docs/HANDOFF_PEERS_31AUG.md names:
+ * #97's four levels AND the `first` claim are both needed, and dropping
+ * either looks fine in a diff while silently inverting the colours lesson.
  */
 export function blankKeysFor(level: 1 | 2 | 3 | 4, slots: Slot[]): string[] {
-  const keys = slots.filter(isBlankable).map((s) => s.key!);
-  return level <= 2 ? keys.slice(0, 1) : keys;
+  const blankable = slots.filter(isBlankable);
+  const keys = blankable.map((s) => s.key!);
+  if (level > 2) return keys;                  // Difficile/Bonus take every slot
+  const lead = blankable.find((s) => s.first); // Facile/Moyen: a slot may claim ★
+  return keys.length === 0 ? [] : [lead?.key ?? keys[0]];
 }
 
 /**
