@@ -343,14 +343,27 @@ if hblock:
           "section headings are not the app's caption style",
           "H() is back on `fluo-label`, the small soft-ink caption treatment. A heading in "
           "the caption style is a caption sitting where a heading should be.")
-    check("border-t" in h,
+# The heading STYLE moved into a shared `HEAD` constant on 2026-08-31 so the
+# collapsible <summary> and the plain <h3> cannot drift apart. Assert the
+# constant, not H()'s body — that is where the styling now lives, and checking
+# the old place failed against correct code.
+head = re.search(r"const HEAD =(.*?);\n", TABS, re.S)
+check(head is not None, "the shared heading style parsed",
+      "HEAD is unreadable — the two assertions below are vacuous")
+if head:
+    hd = head.group(1)
+    check("border-t" in hd,
           "a rule separates one section from the next",
-          "H() draws no top border, so the sections run together — the second half of what "
-          "Dan reported")
-    check("--cahier-ink" in h and "font-black" in h,
+          "the heading style draws no top border, so the sections run together — the second "
+          "half of what Dan reported")
+    check("--cahier-ink" in hd and "font-black" in hd,
           "headings are full ink at black weight, so they outrank the prose",
-          "H() no longer sets full ink and black weight, so the heading does not stand out "
-          "from the paragraph under it")
+          "the heading style no longer sets full ink and black weight, so a heading does not "
+          "stand out from the paragraph under it")
+    check("summary" in TABS and f"{{HEAD}}" in TABS,
+          "the folded and unfolded headings share one style",
+          "the <summary> does not use HEAD, so a collapsible section and a plain one can "
+          "drift into looking like different things")
 
 
 # ── 7 · the word list lives UNDER Forms, not beside it ─────────────────────
@@ -386,10 +399,74 @@ if formes:
     check("{memo}" in f and "Lexique" in f,
           "Forms renders the Mémo AND the word list",
           "the Forms panel does not render both halves, so the move dropped one of them")
-    check(f.count("<H>") >= 2,
-          "each half of Forms has its own heading",
+    check(f.count("<Section") >= 2,
+          "each half of Forms is its own titled section",
           "the word list runs straight on out of the bottom of the Mémo with nothing to say "
           "it has started — the same fault Dan reported on the concept page")
+
+
+# ── 8 · long panels collapse, and the right half stays open ────────────────
+# Dan, 2026-08-31: "now that the page is long please collapse part of it. can
+# you make it a rule for all — this is the rule from now on." The rule is in
+# AGENTS.md; ONE component implements it, so a second panel cannot invent a
+# different disclosure. Asserted here because the failure is silent both ways:
+# a fold that never closes reads as a plain heading, and a fold over the
+# ARGUMENT hides the lesson itself.
+check("function Section(" in TABS,
+      "there is one collapsible Section component",
+      "no Section component — each panel would hand-roll its own disclosure, which is how "
+      "two nav surfaces came to disagree for eleven days in August")
+sec = _decl(TABS, "Section")
+check(sec is not None and "<details" in sec and "<summary" in sec,
+      "it is a native <details>/<summary>",
+      "Section does not use <details>. A useState div has to reimplement keyboard "
+      "operation, the screen-reader expanded state and find-in-page, and will get one of "
+      "them wrong.")
+check(sec is not None and "note" in sec,
+      "a closed section can say what is behind it",
+      "Section takes no `note`, so a closed section shows a bare chevron. A fold nobody "
+      "opens is deletion with extra steps.")
+
+conc = _decl(TABS, "Concept")
+check(conc is not None, "the Concept panel parsed", "Concept is unreadable")
+if conc:
+    # The ARGUMENT — the claim, the question, the answer — must not be behind a
+    # fold. A learner reads those; everything else they consult.
+    argument = conc.split("c.pitfall")[0]
+    check("<Section" not in argument,
+          "the concept's argument (claim, question, answer) is open on arrival",
+          "the claim, the question or the answer is inside a <Section>, so the lesson's "
+          "actual point is folded away. Apparatus collapses; the argument never does.")
+    for field, what in (("c.pitfall", "the pitfall table"), ("c.flow", "the decision flow"),
+                        ("c.check", "the self-check")):
+        seg = conc.split(field, 1)[1][:200] if field in conc else ""
+        check("<Section" in seg,
+              f"{what} folds",
+              f"{what} is not wrapped in a Section, so it is open on arrival and the page "
+              "is as long as it was when Dan asked for this")
+        # A Section that is present but forced OPEN leaves the page exactly as
+        # long while every "does it fold?" assertion stays green — found by
+        # break-testing this file, where adding `open` to the pitfall changed
+        # nothing. Being in a Section is not the same as being collapsed.
+        # Match the TAG, not "text before the first >": the guard above it is
+        # `{c.pitfall && c.pitfall.length > 0 && (`, whose `> 0` is the first
+        # `>` in the segment, so splitting on it never reached the tag and this
+        # assertion passed with `open` sitting right there.
+        tag = re.search(r"<Section[^>]*>", seg)
+        opener = tag.group(0) if tag else ""
+        check(" open" not in opener and "open={true}" not in opener,
+              f"{what} starts closed",
+              f"{what} is a Section but carries `open`, so it is expanded on arrival and "
+              "the page is as long as before. The fold is decoration.")
+
+formes_body = _decl(TABS, "Formes") or ""
+check('folds={false}' in formes_body,
+      "Forms keeps the pattern open",
+      "the Mémo is behind a fold. It is the pattern the word list is evidence FOR — "
+      "collapsing it leaves a learner opening two folds to read one idea.")
+check('note={deck?.items?.length' in formes_body,
+      "the folded word list says how many words are behind it",
+      "the word list folds with no count, so nothing tells a learner it is worth opening")
 
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:

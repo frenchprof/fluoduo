@@ -86,15 +86,94 @@ const TABS: { key: TabKey; emoji: string; label: string; does: string }[] = [
  * black weight** so it outranks the prose beneath it. The first heading drops
  * its rule — a divider above the first item separates it from nothing.
  */
+// NO `first:` VARIANTS HERE, on purpose. A <summary> is ALWAYS the first child
+// of its <details>, so `first:mt-0 first:border-t-0` fired on every collapsible
+// section and stripped the rule and the margin off all of them — the folds sat
+// flush against the paragraph above while the plain headings kept their rule.
+// Found by looking at the rendered page, not the class list. The reset now
+// belongs to whoever is actually first in the PANEL: `first:` on the <h3>,
+// and a child-targeting variant on the <details>.
+const HEAD =
+  "mt-8 flex items-center gap-2.5 border-t-2 border-[color:var(--cahier-rule)] pt-3.5" +
+  " text-[13px] font-black uppercase tracking-[0.09em] text-[color:var(--cahier-ink)]";
+
+const HEAD_FIRST = "first:mt-0 first:border-t-0 first:pt-0";
+
+const MARKER =
+  "inline-block h-3.5 w-1 shrink-0 rounded-full bg-[color:var(--fam-ink,var(--cahier-ink))]";
+
 function H({ children }: { children: ReactNode }) {
   return (
-    <h3 className="mt-8 flex items-center gap-2.5 border-t-2 border-[color:var(--cahier-rule)] pt-3.5 text-[13px] font-black uppercase tracking-[0.09em] text-[color:var(--cahier-ink)] first:mt-0 first:border-t-0 first:pt-0">
-      <span
-        aria-hidden
-        className="inline-block h-3.5 w-1 shrink-0 rounded-full bg-[color:var(--fam-ink,var(--cahier-ink))]"
-      />
+    <h3 className={`${HEAD} ${HEAD_FIRST}`}>
+      <span aria-hidden className={MARKER} />
       {children}
     </h3>
+  );
+}
+
+/**
+ * A section that can be folded away.
+ *
+ * Dan, 2026-08-31: *"now that the page is long please collapse part of it. can
+ * you make it a rule for all — this is the rule from now on."* The rule is in
+ * AGENTS.md; this is the one component that implements it, so a second panel
+ * cannot invent a different disclosure.
+ *
+ * WHAT OPENS AND WHAT CLOSES. The argument stays open, the apparatus collapses:
+ * a learner READS the claim and its answer, and CONSULTS the pitfall table, the
+ * decision flow and the word list. Consulting is what a fold is for.
+ *
+ * `note` is not decoration — a closed section has to say what is behind it
+ * ("18 words", "3 traps"), or nobody opens it and collapsing becomes deletion
+ * with extra steps.
+ *
+ * NATIVE `<details>`, deliberately. Keyboard operation, the screen-reader
+ * expanded/collapsed state and find-in-page all come free; a `useState` div
+ * would have to reimplement three of those and would get one of them wrong.
+ * `[&::-webkit-details-marker]:hidden` drops Safari's default triangle so the
+ * chevron below is the only one.
+ */
+function Section({
+  title, note, children, open = false, folds = true,
+}: {
+  title: ReactNode;
+  note?: string;
+  children: ReactNode;
+  open?: boolean;
+  folds?: boolean;
+}) {
+  if (!folds) {
+    return (
+      <>
+        <H>{title}</H>
+        {children}
+      </>
+    );
+  }
+  return (
+    <details
+      open={open}
+      className="group first:[&>summary]:mt-0 first:[&>summary]:border-t-0 first:[&>summary]:pt-0"
+    >
+      <summary
+        className={`${HEAD} cursor-pointer list-none [&::-webkit-details-marker]:hidden`}
+      >
+        <span aria-hidden className={MARKER} />
+        <span>{title}</span>
+        {note && (
+          <span className="font-mono text-[10px] font-bold normal-case tracking-normal text-[color:var(--fluo-ink-soft)]">
+            {note}
+          </span>
+        )}
+        <span
+          aria-hidden
+          className="ml-auto text-[color:var(--fluo-ink-soft)] transition-transform group-open:rotate-90 motion-reduce:transition-none"
+        >
+          ▶
+        </span>
+      </summary>
+      {children}
+    </details>
   );
 }
 
@@ -164,8 +243,7 @@ function Concept({ c }: { c?: LessonConcept }) {
       <p>{c.answer}</p>
 
       {c.pitfall && c.pitfall.length > 0 && (
-        <>
-          <H>⚠️ The common pitfall</H>
+        <Section title="⚠️ The common pitfall" note={`${c.pitfall.length} traps`}>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-sm">
               <thead>
@@ -186,12 +264,11 @@ function Concept({ c }: { c?: LessonConcept }) {
               </tbody>
             </table>
           </div>
-        </>
+        </Section>
       )}
 
       {c.flow && c.flow.length > 0 && (
-        <>
-          <H>How to decide</H>
+        <Section title="How to decide">
           <div className="overflow-x-auto rounded-xl bg-[color:var(--cahier-paper-raised)] p-3">
             {c.flow.map((line, n) => (
               <p
@@ -203,12 +280,11 @@ function Concept({ c }: { c?: LessonConcept }) {
               </p>
             ))}
           </div>
-        </>
+        </Section>
       )}
 
       {c.check && c.check.length > 0 && (
-        <>
-          <H>✅ Before you go on</H>
+        <Section title="✅ Before you go on" note={`${c.check.length} questions`}>
           <div className="flex flex-col gap-2">
             {c.check.map((x, n) => (
               // <details> rather than state: the answer must stay hidden until
@@ -220,7 +296,7 @@ function Concept({ c }: { c?: LessonConcept }) {
               </details>
             ))}
           </div>
-        </>
+        </Section>
       )}
 
       {c.inShort && (
@@ -305,16 +381,17 @@ function Formes({
   return (
     <Panel>
       {memo && (
-        <>
-          <H>The pattern</H>
+        <Section title="The pattern" folds={false}>
           <div className="mt-2">{memo}</div>
-        </>
+        </Section>
       )}
       {hasWords && (
-        <>
-          <H>Every word in this lesson</H>
+        <Section
+          title="Every word in this lesson"
+          note={deck?.items?.length ? `${deck.items.length} words` : undefined}
+        >
           {lexique ?? <Lexique deck={deck} bare />}
-        </>
+        </Section>
       )}
     </Panel>
   );

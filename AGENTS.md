@@ -17,6 +17,32 @@ Clarified by Dan the same day:
   right of an answered question — available on demand, never inline by
   default.
 
+# Long pages collapse — permanent design rule (2026-08-31)
+
+**Dan: *"now that the page is long please collapse part of it. can you make it
+a rule for all — this is the rule from now on."***
+
+A page a learner has to scroll past the fold has stopped showing them where
+they are. So on **every** surface, not just the one that prompted this:
+
+- **The argument stays open. The apparatus collapses.** On a lesson that means
+  the claim and its answer are open on arrival; the pitfall table, the decision
+  flow, the self-check and the word list start closed. If a learner must read
+  it to understand the point, it is open; if they consult it, it is closed.
+- **A closed section says what is behind it** — "18 words", "3 traps" — not a
+  bare chevron. A collapsed section with no count is a section nobody opens,
+  which is just deletion with extra steps.
+- **Use native `<details>`/`<summary>`.** Keyboard and screen reader support
+  come free, it needs no state, and it survives having no JavaScript. Do not
+  hand-roll a disclosure with `useState` and a div.
+- **Never collapse the only copy of something a learner needs to answer the
+  question in front of them.** Collapsing is for reference, never for the
+  prompt, the options, or the feedback.
+
+This rule and the litmus test point the same way: the litmus test deletes text
+that costs nothing, and this one folds away text that earns its place but not
+its position. Neither is licence to hide the lesson.
+
 # Show it, don't describe it — permanent rule (2026-08-31)
 
 **Dan: *"often times i cannot understand what the agent is telling me about
