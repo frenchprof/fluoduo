@@ -59,6 +59,10 @@ export default function UnitSection({
 
   useEffect(() => {
     try {
+      // localStorage and the URL hash do not exist on the server, so neither
+      // the collapse state nor a deep link can be read during render. On mount
+      // is the only place they can be read at all.
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage, see above
       setCollapsed(JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "{}"));
     } catch {
       // ignore — falls back to fully expanded
@@ -74,15 +78,16 @@ export default function UnitSection({
       if (hash && SIOS.some((s) => s.id === hash && s.unit === unit)) setOpenId(hash);
     }
     return () => window.removeEventListener("fluolingo:progress-updated", refresh);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unit]);
 
   // Home's map taps a stop → open that SIO here without a navigation
   // (patch 25: /unit/N is a deep link into Home now, the map is the page).
   useEffect(() => {
+    // The map taps a stop AFTER mount (patch 25) — mirroring a prop the parent
+    // changes later is what an effect is for.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- post-mount prop, see above
     if (unit !== 0 && openSioId && sios.some((s) => s.id === openSioId)) setOpenId(openSioId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [openSioId, unit]);
+  }, [openSioId, unit, sios]);
 
   function toggle(key: string) {
     setCollapsed((prev) => {
@@ -171,7 +176,7 @@ export default function UnitSection({
       )}
 
       {unit !== 0 && openSio && (() => {
-        const { deck, pretestHref, pretestId } = deckAndPretestFor(openSio);
+        const { deck, pretestHref } = deckAndPretestFor(openSio);
         return (
           <SioModal
             sio={openSio}
@@ -179,15 +184,19 @@ export default function UnitSection({
               setOpenId(null);
               onSioClosed?.();
             }}
-            deck={deck}
             tabs={
               openSio.isProduction
                 ? popupActivityTabs(deck) // atelier decks: flip/say/complete on the model lines
-                : popupActivityTabs(deck, { inline: !!pretestId, href: pretestHref })
+                // `inline` is always false now: an authored pre-test opens its
+                // own page, as every pre-test in the course does since #98.
+                : popupActivityTabs(deck, { inline: false, href: pretestHref })
             }
+            footer={<MarkDoneButton sioId={openSio.id} />}
           >
-            <SioDetail sio={openSio} deck={deck} pretestHref={pretestHref} pretestId={pretestId} showPractice={openSio.isProduction} />
-            <MarkDoneButton sioId={openSio.id} />
+            {/* The statement only. SioDetail's tiles, chips and inline quiz
+                went with the collapse — the links below say what the stop has,
+                and saying it twice was the whole problem. */}
+            <SioDetail sio={openSio} deck={deck} pretestHref={pretestHref} showPractice={false} />
           </SioModal>
         );
       })()}

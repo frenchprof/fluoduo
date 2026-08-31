@@ -19,18 +19,11 @@
  * handoff doc, not silently dropped.
  */
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { SIOS, sioStatement } from "@/content/sios";
-import { lessonsForSio } from "@/content/lessons";
 import { CURATED } from "@/content/collections";
 import { UNIT0_QUESTIONS } from "@/content/sios/unit0-questions";
-import { getAtelier } from "@/content/ateliers";
-import AuthGate from "@/components/AuthGate";
 import SioModal, { popupActivityTabs } from "./SioModal";
-import { AfterPretest, BringToClass } from "./SioDetail";
-import DialoguePlayer from "./DialoguePlayer";
 import MarkDoneButton from "./sio/[id]/MarkDoneButton";
-import { Sio010Pretest, Unit0Questions } from "@/components/Unit0Pretest";
 
 const UNIT0_SIOS = SIOS.filter((s) => s.unit === 0);
 
@@ -97,73 +90,29 @@ export default function Unit0Panel({ openSioId, onSioClosed }: { openSioId?: str
             setOpenId(null);
             onSioClosed?.();
           }}
-          deck={openSio.collectionId ? CURATED.find((c) => c.id === openSio.collectionId) : undefined}
           tabs={popupActivityTabs(
             openSio.collectionId ? CURATED.find((c) => c.id === openSio.collectionId) : undefined,
-            // Unit-0 questions render inline right here → Pre-Test is the
-            // popup's active flap, matching the Units 1-4 popups. Gated on the
-            // BANK, not on isProduction: SIO-010 is an atelier and now has
-            // questions too (Dan, 2026-08-28).
+            // The Unit-0 questions used to render INLINE in this body, which is
+            // why this said `inline: true`. They have their own page since #98,
+            // so the Pre-Test is a link like every other row. Gated on the BANK,
+            // not on isProduction: SIO-010 is an atelier and has questions too.
             (UNIT0_QUESTIONS[openSio.id] ?? []).length > 0
-              ? { inline: true, href: null }
+              ? { inline: false, href: `/pretests/unit0/${openSio.id}` }
               : undefined,
           )}
+          footer={<MarkDoneButton sioId={openSio.id} />}
         >
+          {/* The SIO, spelled out fully — and then the links, which SioModal
+              draws. Everything else that used to stack up here went with the
+              collapse (Dan, 2026-08-31: "THAT IS IT"): the inline questions
+              are a page now, the model dialogue and the lesson chips would
+              answer the pre-test before it is taken, and Bring-to-class reads
+              best under the questions it came from, which is where the
+              pre-test page puts it. */}
           <p className="fluo-serif mb-4 text-base font-bold leading-snug text-[color:var(--fluo-ink)]">
             <span className="fluo-hl">{sioStatement(openSio)}</span>
           </p>
 
-          {openSio.id === "SIO-010" ? (
-            <>
-              <AuthGate what="try these" compact>
-                <Sio010Pretest sio={openSio} />
-              </AuthGate>
-              {/* The model dialogue IS the answer key — it waits for the
-                  attempt (Dan's pretesting rule: never front-load the model). */}
-              <AfterPretest>
-                <div className="mt-4">
-                  <DialoguePlayer lines={getAtelier(openSio.id) ?? []} />
-                </div>
-              </AfterPretest>
-            </>
-          ) : openSio.isProduction ? (
-            <div className="rounded-xl border-2 border-dashed p-3" style={{ borderColor: "var(--fluo-card-accent)" }}>
-              <p className="text-sm text-[color:var(--fluo-ink-soft)]">
-                🗣️ A mini-oral simulation done in class with your instructor — no online questions here.
-              </p>
-            </div>
-          ) : (
-            <AuthGate what="try these" compact>
-              <Unit0Questions sio={openSio} />
-            </AuthGate>
-          )}
-
-          {/* Units 1-4 get this from SioDetail's pretest branch; Unit 0 draws
-              its own popup body, so without this line the misses recorded above
-              would have had no reader — written and never shown. */}
-          <div className="mt-3">
-            <BringToClass sioId={openSio.id} />
-          </div>
-
-          {/* Lesson buttons: bottom only, and (for question SIOs) only after
-              every question is answered — pretest first (Dan, 2026-07-05). */}
-          {lessonsForSio(openSio.id).length > 0 && (() => {
-            const chips = (
-              <div className="mt-4 flex flex-wrap gap-2">
-                {lessonsForSio(openSio.id).map((l) => (
-                  <Link key={l.slug} href={`/lessons/${l.slug}`} className="fluo-btn fluo-btn-sm inline-flex">
-                    🎲 {l.title}
-                  </Link>
-                ))}
-              </div>
-            );
-            return openSio.isProduction ? chips : <AfterPretest>{chips}</AfterPretest>;
-          })()}
-
-          {/* Mark-as-done — Unit 0 popups were missing it while Units 1-4
-              (UnitSection) had it, so Unit-0 goals could never be completed
-              (Dan, 2026-07-05). */}
-          <MarkDoneButton sioId={openSio.id} />
         </SioModal>
       )}
     </div>
