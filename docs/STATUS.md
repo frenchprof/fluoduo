@@ -11,6 +11,41 @@ Only ONE agent edits this file at a time; say so in your commit.
 - `main` on `frenchprof/fluoduo` (origin) — the working repo.
 - Production = `dckg/fluo` (remote `live`), Cloudflare Pages project
   `fluolingo-dot-com` auto-builds its `main`. **Deploy = `git push live main`.**
+- 31 Aug (Claude Code) — **THE SITE MENU IS BACK ON EVERY PAGE.** Dan: "many
+  pages are missing that menu and other links in the area above the colored
+  header strip. can you reinstate them so that those are accessible at all
+  times". It was not a regression: the bar (☰ · ← FluOlinGo · 🔊 🏠 ⌛ account)
+  was WRITTEN INSIDE `CahierShell`, so only CahierShell pages ever had it.
+  Every drill runs in `DrillShell` (28 surfaces) and the deck table runs in
+  `CahierFrame`; neither ever drew one — a drill's only exit was its ✕, which
+  goes to exactly one place. Patch 20-21 made that focused mode on purpose;
+  Dan has now overruled it for NAVIGATION specifically.
+  **One component, three mounts** — `src/components/SiteTopBar.tsx`, mounted by
+  CahierShell, DrillShell and CahierFrame. Copying the markup was the other
+  option and is the one this repo has already been bitten by: the ☰ dropdown
+  and the desk rail were two nav surfaces that disagreed for eleven days
+  (19 Aug), closed only on 30 Aug. `TAB_HUES` / `ShellTab` / `TabFlap` moved to
+  `src/components/TabFlap.tsx` so the extraction did not create a cycle;
+  CahierShell re-exports `ShellTab` for its four existing importers.
+  **GameFrame is the one deliberate omission**, named in verify31: it is
+  `100dvh; overflow:hidden` and hands the leftover box to a board that must fit
+  exactly, and it already carries a ✕ and a ⋯ sheet.
+  Also: the deck table's own bar had a second 🔊 twenty pixels under the site
+  bar's — removed (litmus rule); and CahierFrame now takes `fam-*`/`band-*`
+  from its activity key, so its bar wears the family wash like every other page
+  instead of bare paper.
+  **verify31 gained section 0** — both mounts named, and neither shell may
+  carry `cahier-topbar` markup of its own; all four assertions break-tested.
+  verify29 and verify33 were repointed at SiteTopBar (read from ONE file, never
+  the two concatenated — that is how a stale copy survives), and break-testing
+  caught that **verify29's two RailGroups checks were vacuous in their previous
+  home too**: `"RailGroups" in shell` was satisfied by the import line and by a
+  comment, so deleting the element kept them green. Now `<RailGroups` against
+  comment-stripped source; both bite.
+  Driven in a browser at 390x844: bar present and no horizontal overflow on
+  complete-it, dice, conjugaison, reviser, map, moi, teacher, flip-it landing
+  and the deck table; the ☰ opens inside DrillShell's `overflow-hidden` without
+  being clipped, at 390 and 1280, with Practice open and iComplete marked.
 - 31 Aug (Claude Code) — **SORTING KEPT AND FIXED; `transfer` FOUND TO BE
   STRUCTURALLY UNREACHABLE.** Dan answered "all YES" to keeping Sorting, the
   `transfer` rule, and phrase banks for the ateliers.

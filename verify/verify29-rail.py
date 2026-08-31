@@ -34,6 +34,13 @@ reg   = read("src/content/activities.ts")
 rail  = read("src/components/RailGroups.tsx")
 menu  = read("src/components/MenuSplash.tsx")
 shell = read("src/components/CahierShell.tsx")
+# The ☰ dropdown left CahierShell on 2026-08-31 — Dan wanted the menu reachable
+# from a drill too, and the way to give DrillShell the same bar without a second
+# copy of it was to make the bar its own component. So the dropdown's rules are
+# unchanged; only the file holding them moved. Read it from ONE place, not from
+# both concatenated: a check that passes off whichever file still has the markup
+# is exactly how a stale duplicate survives.
+topbar = read("src/components/SiteTopBar.tsx")
 
 check(bool(rail), "RailGroups exists", "src/components/RailGroups.tsx missing")
 check(bool(menu), "MenuSplash exists", "src/components/MenuSplash.tsx missing")
@@ -49,7 +56,14 @@ check(fams == WANT,
       f"family order is {fams}, expected {WANT} (2a→2b→2e→2c→2d→2f)")
 
 # 2 · the rail is grouped, not flat
-check("RailGroups" in shell, "the shell renders RailGroups", "the shell does not render RailGroups")
+# `<RailGroups`, not "RailGroups": the import line and the comment explaining
+# what RailGroups already lists both carry the word, so a substring test stayed
+# green with the element deleted. Break-testing caught it — both of these
+# assertions were vacuous, in this file's previous home as well as this one.
+nocom_bar = re.sub(r"\{/\*[\s\S]*?\*/\}", "", topbar)
+check("<RailGroups" in nocom_bar,
+      "the site bar renders RailGroups",
+      "the site bar does not render RailGroups")
 # toolTabs() still legitimately feeds the phone ☰ dropdown and the active-label
 # lookup; what must be gone is the flat column INSIDE the rail itself.
 # WHERE THE GROUPED RAIL LIVES CHANGED ON 2026-08-30. Dan: the rail "cannot be
@@ -58,13 +72,13 @@ check("RailGroups" in shell, "the shell renders RailGroups", "the shell does not
 # which is now the navigation at every width rather than a phone stand-in. The
 # rule it must still obey is the same one, in its new home: grouped, never a
 # flat column.
-menu_start = shell.find("absolute left-0 top-full")
-menu_end = shell.find("</div>", shell.find("tools.filter", menu_start)) if menu_start >= 0 else -1
-menu_block = shell[menu_start:menu_end] if menu_start >= 0 else ""
+menu_start = nocom_bar.find("absolute left-0 top-full")
+menu_end = nocom_bar.find("</div>", nocom_bar.find("tools.filter", menu_start)) if menu_start >= 0 else -1
+menu_block = nocom_bar[menu_start:menu_end] if menu_start >= 0 else ""
 check(bool(menu_block) and "site.map" not in menu_block,
       "the ☰ dropdown is grouped — no flat site map inside it",
       "the ☰ dropdown maps site flat — it disagrees with the families again")
-check("RailGroups" in menu_block,
+check("<RailGroups" in menu_block,
       "the ☰ dropdown renders RailGroups",
       "the ☰ dropdown does not render RailGroups — the grouped families are gone")
 # tools.map WHOLE would duplicate the families (SpecuLearn and 4Mémoire twice);
@@ -120,7 +134,7 @@ check(len(rows) == 20,
 check(">Menu<" in menu or "Menu</h2>" in menu,
       "the popup calls itself Menu",
       "the popup does not say Menu")
-check("HELP!" not in shell and "HELP!" not in menu,
+check("HELP!" not in shell and "HELP!" not in topbar and "HELP!" not in menu,
       "no HELP! label survives on the rail or the popup",
       "a HELP! label is still on the rail or the popup")
 

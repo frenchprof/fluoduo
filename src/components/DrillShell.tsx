@@ -45,6 +45,7 @@ import { activity as activityInfo, bandOf, familyOf, isReadingSurface } from "@/
 import { nextStep, type NextStep } from "@/lib/nextStep";
 import PageBand from "@/components/PageBand";
 import BottomBar from "@/components/BottomBar";
+import SiteTopBar from "@/components/SiteTopBar";
 
 export type DrillCta = {
   label: string;
@@ -235,6 +236,19 @@ export default function DrillShell({
           the drill's i/total as the band's ONE chip so the figure is never
           printed twice), spiral binding down the left, ruled paper behind,
           the phone bottom bar kept. The drill's inner layout is untouched. */}
+      {/* ── the site bar (Dan, 2026-08-31: "many pages are missing that menu
+          and other links in the area above the colored header strip. can you
+          reinstate them so that those are accessible at all times").
+          A drill was a focused mode with ✕ · progress · score and nothing
+          else — the ✕ was the ONLY way out, and it goes exactly one place.
+          The ☰ is the whole site, so it comes back here too. Same component
+          CahierShell mounts, not a copy: two nav surfaces that drift apart is
+          the bug this repo spent eleven days on (STATUS, 19 Aug).
+          `nested` because a drill has no flap rail off the right edge, so the
+          bar takes the tighter right inset. */}
+      <div className="shrink-0">
+        <SiteTopBar active={activity ?? ""} nested />
+      </div>
       {act && (
         <PageBand
           title={act.name}

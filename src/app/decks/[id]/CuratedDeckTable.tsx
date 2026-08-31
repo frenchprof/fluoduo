@@ -37,7 +37,6 @@ import { recordItemResult } from "@/lib/progress";
 import { CahierFrame, TAB_HUES, type CahierTab } from "@/app/practice/flip-it/CahierFrame";
 import BackLink from "@/components/BackLink";
 import HelpDot from "@/components/HelpDot";
-import SoundControl from "@/components/SoundControl";
 import {
   ART_LABEL,
   NatForms,
@@ -147,8 +146,10 @@ function TopBar({ crumb }: { crumb: string }) {
         <span className="cahier-display truncate text-sm font-bold text-[color:var(--cahier-ink)]">
           🃏 4Mémoire · {crumb}
         </span>
+        {/* 🔊 left this bar on 2026-08-31: SiteTopBar sits directly above it
+            and carries the same control. Two of it, twenty pixels apart, is
+            exactly the redundancy the litmus rule removes. */}
         <span className="ml-auto flex items-center gap-2">
-          <SoundControl />
           <HelpDot className="text-[color:var(--cahier-ink)]" />
         </span>
       </div>
@@ -262,6 +263,7 @@ function DeckTable({ collection, items }: { collection: Collection; items: Item[
       tabs={VIEW_TABS}
       active={view}
       onSelect={(k) => setView(k as View)}
+      siteActive="flip"
       topBar={<TopBar crumb={collection.title} />}
     >
       <Step n={1} label="View & mode">
