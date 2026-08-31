@@ -2808,7 +2808,42 @@ The lesson is the mirror, not the CSS: a left→right sweep over a stylesheet
 will hit declarations that were already on the correct side. Mirroring is not a
 find-and-replace.
 
-## 31 Aug — Sorting was filed under two different difficulties
+## 31 Aug — Sorting: two agents, same bug, one hour apart
+
+Peers and this session both found Sorting's mistag and both opened a PR for it
+within five minutes (#88, #89). Both retagged it `recognition`; both claimed
+`verify60`. Merging both as-is would have failed `verify-wiring` on the
+duplicate number and conflicted in `evidence.ts` — **the second time in one day**
+that two agents claimed the same verify number (verify58 turned main red this
+morning). Before taking a number, check every remote branch, not just main:
+
+    for b in $(git for-each-ref --format='%(refname:short)' refs/remotes/origin); do
+      git ls-tree --name-only $b verify/; done | grep -o 'verify[0-9]*' | sort -u
+
+**Peers' #89 shipped; this session's Sorting half was dropped.** Theirs was
+better on root cause: the surface now emits `sorting:` instead of `dice:`, so
+the four entries named after the pedagogy stop pointing at the one activity that
+is not it — which is how the confusion arose and how it would have recurred. The
+three legacy names stay in the table and in `normalizePath`, so answers already
+banked still resolve.
+
+**Dan chose the read-time correction** (`readEvidenceType`), which was option (b)
+in all but name: stored Sorting records are re-read as `recognition` rather than
+left at the `constrained` the old table produced. Deliberate overrides are left
+alone — open writing keeps `free`, a pre-test keeps `diagnostic`. The principle
+Peers put on it is the right one: *the activity is the observation and was always
+stored; the type is an interpretation of it, and interpretations should be
+current.* That dissolves the (a)-vs-(b) choice instead of picking a side. It was
+safe to choose freely because nothing gates on `evidenceType` (see below).
+
+What survives from #88 is the complementary half: `verify62-band-evidence.py`
+(renumbered from 60) cross-checks the band against the evidence table for **all
+21 surfaces**, where Peers' `verify60-sorting-recognition.py` asserts the
+pathway did not move. Different questions, both worth keeping. verify62 names
+`sorting:` AND the legacy `dice:`, because asserting only the alias would stay
+green while the live tag drifted.
+
+## 31 Aug — how Sorting came to be filed under two difficulties
 
 The band on the page called Sorting `recog` (set 26 Aug, from evidence.ts's own
 definition of "recognition": *pick from options, sort into a column*). The
@@ -2838,7 +2873,7 @@ across that date. It costs interpretation in one column and nothing else. A
 retroactive pass stays cheap if Dan ever wants the old labels corrected, for
 the same reason: no derived state depends on them.
 
-`verify60-band-evidence.py` holds the two files together, in both directions,
+`verify62-band-evidence.py` holds the two files together, in both directions,
 bridged through `activityLedger.PREFIX_TO_KEY` (activity string → registry key,
 which is what `BAND` is keyed by). It parses all three tables from source
 rather than restating them, so deleting a row makes the row vanish here instead

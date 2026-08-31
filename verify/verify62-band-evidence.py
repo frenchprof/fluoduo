@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""verify60 — the colour a learner SEES and the record we STORE must agree.
+"""verify62 — the colour a learner SEES and the record we STORE must agree.
 
 Sorting was tagged "constrained" in `lib/evidence.ts` while the band in
 `content/activities.ts` called it `recog`, from 26 Aug to 31 Aug. Both files
@@ -142,12 +142,22 @@ ok(checked == COMPARED, f"{checked} surfaces compared across the two files",
 
 # ── the specific pair this check was written for ───────────────────────────
 # Named on its own so that losing it is loud, the way verify53 names `delayed`.
-ok(BAND_ROWS.get("dice") == "recog" and evidence_for("dice:") == "recognition",
-   "Sorting: band `recog`, evidence `recognition` — the two files agree",
-   f"Sorting has drifted again: band {BAND_ROWS.get('dice')!r}, evidence "
-   f"{evidence_for('dice:')!r}. The learner taps a group column that is already on "
-   f"screen (PracticeContent.commit compares choice.key to item.correctColKey), which "
-   f"is evidence.ts's own definition of recognition. Both must say recognition/recog.")
+# `sorting:` is what PracticeContent EMITS since #89; `dice:` is the legacy name
+# kept so answers banked before the rename still resolve. Both are named, because
+# asserting only the legacy alias would stay green while the live tag drifted —
+# which is the shape of hole that put this whole thread here.
+for tag in ("sorting:", "dice:"):
+    ok(evidence_for(tag) == "recognition",
+       f"{tag!r} -> recognition",
+       f"{tag!r} resolves to {evidence_for(tag)!r}. The learner taps a group column "
+       f"already on screen (PracticeContent.commit compares choice.key to "
+       f"item.correctColKey, and a wrong pick is struck from the visible set), which "
+       f"is evidence.ts's own definition of recognition at line 34.")
+ok(BAND_ROWS.get("dice") == "recog",
+   "Sorting's band is `recog` — page and record agree",
+   f"Sorting's band is {BAND_ROWS.get('dice')!r}, but its answers store recognition. "
+   f"The page would be claiming one thing about what the exercise demands while the "
+   f"teacher's record shows another — the exact five-day drift #88/#89 closed.")
 
 for line in PASS: print(f"  ok  {line}")
 for line in FAIL: print(f"FAIL  {line}")

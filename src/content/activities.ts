@@ -249,7 +249,7 @@ const SITE_FAMILY: Record<string, FamilyKey> = {
  *  "recognition" names sorting into a column. Its lookup table used to tag the
  *  drill "constrained", so this band and the stored record disagreed from
  *  26 Aug. Settled 2026-08-31 in the definition's favour — evidence.ts now
- *  tags `dice:` "recognition" too, forward only. `verify60-band-evidence.py`
+ *  tags `dice:` "recognition" too, forward only. `verify62-band-evidence.py`
  *  asserts the two files agree, in both directions. */
 export type BandKey = "guess" | "lesson" | "recog" | "prod" | "create";
 
