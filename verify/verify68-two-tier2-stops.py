@@ -233,8 +233,8 @@ const plain = [{ text: "Tu" }, { key: "verb", text: "aimes", choices: ["aimes","
 const flagged = [{ text: "le" }, { key: "noun", text: "feu", choices: ["feu","café"] },
                  { key: "color", text: "rouge", choices: ["rouge","noir"], first: true }];
 const out = {
-  plain1: blankKeysFor(1, plain), plain2: blankKeysFor(2, plain),
-  flag1: blankKeysFor(1, flagged), flag2: blankKeysFor(2, flagged),
+  plain1: blankKeysFor(1, plain), plain2: blankKeysFor(2, plain), plain3: blankKeysFor(3, plain),
+  flag1: blankKeysFor(1, flagged), flag2: blankKeysFor(2, flagged), flag3: blankKeysFor(3, flagged),
 };
 console.log(JSON.stringify(out));
 """
@@ -262,16 +262,28 @@ if got:
           "unflagged ★ still takes the leftmost blank — the 47 old generators are untouched",
           f"an unflagged ★ now returns {got['plain1']} instead of ['verb']. The `first` "
           "flag has changed the default and every generator that predates it just moved.")
-    check(got["plain2"] == ["verb", "article"],
-          "unflagged ★★ still takes every blank",
-          f"unflagged ★★ returns {got['plain2']}")
+    # AMENDED AT MERGE (31 Aug): #97 renamed the ladder the same afternoon —
+    # Moyen (level 2) takes ONE piece ("CompleteIt is supposed to [be] …
+    # Moyen if it involves one"), and TWO pieces is Difficile (level 3). The
+    # intent this held — a level that withdraws everything — moved up a tier.
+    check(got["plain2"] == ["verb"],
+          "unflagged Moyen takes one blank — the leftmost, like Facile",
+          f"unflagged Moyen returns {got['plain2']}, expected ['verb'] — Dan's "
+          "31 Aug ladder gives Moyen ONE piece; every blank is Difficile's")
+    check(got["plain3"] == ["verb", "article"],
+          "unflagged Difficile takes every blank",
+          f"unflagged Difficile returns {got['plain3']}")
     check(got["flag1"] == ["color"],
           "flagged ★ takes the colour, not the leftmost noun — Dan's ladder, executed",
           f"flagged ★ returns {got['flag1']}, so the one-star colours card blanks the "
           "wrong half of « le feu rouge »")
-    check(got["flag2"] == ["noun", "color"],
-          "flagged ★★ takes both, in reading order",
-          f"flagged ★★ returns {got['flag2']}")
+    check(got["flag2"] == ["color"],
+          "flagged Moyen takes the claimed colour — one piece, the right one",
+          f"flagged Moyen returns {got['flag2']}")
+    check(got["flag3"] == ["noun", "color"],
+          "flagged Difficile takes both, in reading order — Dan's '★★ the "
+          "colour word and the noun', which the rename calls Difficile",
+          f"flagged Difficile returns {got['flag3']}")
 
 # ── 4 · the heading band is SemiBold, in BOTH places that decide it ─────────
 CSS = read("src/app/globals.css")
@@ -306,11 +318,15 @@ check(tabs_body is not None, "the TABS table parsed",
       "TABS is unreadable — the assertions below are vacuous")
 if tabs_body:
     labels = re.findall(r'label:\s*"([^"]+)"', tabs_body.group(1))
-    check(labels == ["Path", "Idea", "Forms", "Pract.", "Bonus"],
-          "five tabs: Path · Idea · Forms · Pract. · Bonus",
+    # AMENDED AT MERGE (31 Aug): #97 parked the Bonus tab under practice the
+    # same day ("we can park Bonus under practice, so it does not have to
+    # have its own tab") — the ⭐ Bonus level of the chooser serves those
+    # sentences. Four tabs, not five.
+    check(labels == ["Path", "Idea", "Forms", "Pract."],
+          "four tabs: Path · Idea · Forms · Pract. — Bonus parked, Words under Forms",
           f"the tab strip reads {labels}. Dan chose all-English on 2026-08-31, cut the labels "
-          "himself to save width, then moved Words UNDER Forms — so there are five tabs, not "
-          "six, and no tab of its own for the word list.")
+          "himself to save width, moved Words UNDER Forms, and parked Bonus under practice — "
+          "so there are four tabs, and no tab of its own for the word list or the bonus.")
     check(max(len(l) for l in labels) <= 6,
           "no label is longer than six characters — the strip fits without scrolling",
           f"the longest label is {max(labels, key=len)!r}. The point of shortening was width: "

@@ -44,7 +44,10 @@ const NOUNS: { fr: string; en: string; g: "m" | "f"; art: string; q: Q; enFull: 
   { fr: "danse",       en: "dance",         g: "f", art: "la",  q: "quoi", enFull: "It's dance." },
   { fr: "croissant",   en: "croissant",     g: "m", art: "un",  q: "quoi", enFull: "It's a croissant." },
   { fr: "macaron",     en: "macaron",       g: "m", art: "un",  q: "quoi", enFull: "It's a macaron." },
-  { fr: "champagne",   en: "champagne",     g: "m", art: "le",  q: "quoi", enFull: "It's champagne." },
+  // The gloss gained "(the drink itself)" in #97's ambiguity audit — bare
+  // "It's champagne." reads naturally as « du champagne », which is not
+  // offered; the parenthesis pins LE. The lesson quotes the deck verbatim.
+  { fr: "champagne",   en: "champagne",     g: "m", art: "le",  q: "quoi", enFull: "It's champagne (the drink itself)." },
   { fr: "consonne",    en: "consonant",     g: "f", art: "une", q: "quoi", enFull: "It's a consonant." },
   { fr: "nationalité", en: "nationality",   g: "f", art: "une", q: "quoi", enFull: "It's a nationality." },
 ];
