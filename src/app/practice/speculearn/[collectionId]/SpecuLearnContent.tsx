@@ -133,6 +133,10 @@ type Trial = { it: DevItem; dir: Dir };
 
 function Visual({ it, className }: { it: DevItem; className: string }) {
   return it.img ? (
+    // Plain <img> on purpose: output:"export" ships no image optimizer, so
+    // next/image adds a runtime wrapper and optimizes nothing here.
+    // Reviewed with Dan 2026-08-31: disable, not fix.
+    // eslint-disable-next-line @next/next/no-img-element
     <img src={it.img} alt="" className={`${className} bg-white object-contain`} />
   ) : (
     <span aria-hidden className={`${className} flex items-center justify-center bg-white text-6xl`}>
