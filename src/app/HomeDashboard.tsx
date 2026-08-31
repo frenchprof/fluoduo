@@ -175,7 +175,13 @@ export default function HomeDashboard() {
           byline are INK on the strip, so nothing depends on the gradient for
           contrast. The brand animation and the written « par Dr Chan » are
           unchanged — they play once per browser session. */}
-      <section aria-label="Welcome" className="home-strip -mx-4 mb-5 px-4 py-3 sm:-mx-6 sm:px-6">
+      {/* -mt-7 swallows the wrapper's pt-2 (8px) and the foolscap's py-5 top
+          (20px) so the gradient meets the paper's top edge — the strip already
+          bled sideways, and the band of ruled paper above it said nothing
+          (Dan, 2026-08-31: "is this spacing absolutely needed or can it be
+          closed up?"). The 10px of desk between the bar and the paper stays:
+          that is the notebook, not a gap. */}
+      <section aria-label="Welcome" className="home-strip -mx-4 -mt-7 mb-5 px-4 py-3 sm:-mx-6 sm:px-6">
         <h1 className="fluo-serif text-2xl font-black leading-none text-[color:var(--fluo-ink)]">
           <span className="whitespace-nowrap">Bienvenue sur</span>{" "}
           <span

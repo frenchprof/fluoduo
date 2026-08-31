@@ -6,6 +6,32 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 31 Aug PM — THE NAMES ARE LAW (#109), and the tab strip is one row (#108)
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Two more of Dan's rulings landed the same evening, both driven by pictures:
+
+- **#108** (`51eb067`): the lesson's four tabs fit ONE row. The wrap was 4px
+  of six-tab-era padding; the strip is now a four-column grid, wearing the
+  emoji Dan sent: ➡️ Path · 💡 Idea · 📐 Forms · 🏋️ Pract.
+- **#109** (`66faa42`): a **permanent rule in AGENTS.md** — the brand is
+  **FluOLinGo** (capitals F·O·L·G, Fluency On Linguistic Goals) and the six
+  families are 🎯 Goals · 🏋️ Practice · 🎮 Games · 🔄 Revise · 💬 Skills ·
+  👤 User. SvPlay → Games; Home's hero key is **Continue** (né Play), so no
+  two doors share a name. Registry keys unchanged. Found en route:
+  RailGroups and GuideBody carried private copies of familyShort's regex —
+  consolidated onto the helper.
+
+**DEPLOYED.** Dan pushed `live main` the same evening — production (`dckg/fluo`)
+is at `66faa42`, carrying the whole day: #94 · #97 · #98 · #99 · #100 · #101 ·
+#102 · #103 · #105 · #106 · #108 · #109. Nothing on origin/main is undeployed
+except this STATUS entry itself.
+
+**Awaiting Dan's read on the live site:** the one-row tab strip, the FluOLinGo
+respelling, the new family icons, and the two French forms in the salutations
+concept (« bonne soirée », « bon appétit »).
+
 ## 31 Aug PM — #100 MERGED; decision 1 is RESOLVED
 
 Sole editor of STATUS.md in this commit: fluoduo-main.
