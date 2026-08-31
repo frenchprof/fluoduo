@@ -88,10 +88,17 @@ ok(len(banked) >= 10,
 # ---- 2 · ONE definition of the questions, mounted twice -------------------
 ok(bool(shared), f"{SHARED} exists — the questions have one home",
    f"{SHARED} is missing; the questions are defined somewhere per-surface")
-for name, src in (("the page", body), ("the popup", panel)):
-    ok("Unit0Pretest" in src,
-       f"{name} imports the shared questions",
-       f"{name} does not import from Unit0Pretest — it has its own copy, which will drift")
+ok("Unit0Pretest" in body,
+   "the page imports the shared questions",
+   "the page does not import from Unit0Pretest — it has its own copy, which will drift")
+# NARROWED 2026-08-31 by the popup collapse (verify66). This used to require
+# BOTH the page and the popup to mount the shared component, because both
+# rendered the questions. The popup no longer renders them at all — it is a
+# statement and a list of links, and its pre-test row is a link to the page.
+# So the popup is now asserted the other way: it must NOT render them.
+ok("Unit0Questions" not in nocom(panel),
+   "the popup does not render the questions — its pre-test row is a link to the page",
+   "the popup renders the Unit-0 questions again, which the collapse removed")
 # Neither surface may define the components itself.
 for name, src in (("the page body", body), ("the popup panel", panel)):
     ok("function Unit0Questions" not in nocom(src),
