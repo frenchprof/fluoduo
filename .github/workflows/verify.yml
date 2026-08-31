@@ -192,6 +192,9 @@ jobs:
       - name: No Sorting question prints its own answer
         run: python3 verify/verify56-sorting-answers.py
 
+      - name: A deck that records gender records it for every word
+        run: python3 verify/verify58-gender-column.py
+
       - name: "A tour step points at something that exists (28 Aug)"
         run: python3 verify/verify44-tour-targets.py
 
