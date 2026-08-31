@@ -28,6 +28,10 @@ export default function NumBusSetup({ onStart }: { onStart: (c: NumBusConfig) =>
   const [cfg, setCfg] = useState<NumBusConfig>(DEFAULT_NUMBUS_CONFIG);
 
   useEffect(() => {
+    // Deliberate: the saved config lives in localStorage, which cannot be
+    // read during render (the site is statically exported) — this mount
+    // effect has to seed it.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCfg(loadNumBusConfig());
   }, []);
 

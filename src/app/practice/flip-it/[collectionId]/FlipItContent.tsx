@@ -105,6 +105,10 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
   const hasArt = articleOptions.some((a) => a !== "");
 
   const [buckets, setBuckets] = useState<Record<string, Bucket>>({});
+  // Deliberate: the saved buckets live in localStorage, which cannot be read
+  // during render (the site is statically exported) — this effect has to
+  // seed them.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setBuckets(loadBuckets(collection.id)); }, [collection.id]);
 
   /** Which of the three original views is on screen. */

@@ -86,13 +86,13 @@ export const quelJourLesson: NativeLesson = {
           </p>
         </div>
       </div>
-      <p className="mt-3 text-[14px] text-[color:var(--cahier-ink)]" lang="fr">
+      <p className="mt-3 text-[14px] font-bold text-[color:var(--cahier-ink)]" lang="fr">
         {DAYS.join(" · ")}
       </p>
       <p className="mt-2 text-[14px] text-[color:var(--cahier-ink)]">
         <span lang="fr">C&rsquo;est quel moment&nbsp;? — C&rsquo;est {MOMENTS[0].fr}.</span>
       </p>
-      <p className="mt-1 text-[13px] text-[color:var(--cahier-ink-soft)]" lang="fr">
+      <p className="mt-1 text-[13px] font-bold text-[color:var(--cahier-ink-soft)]" lang="fr">
         {MOMENTS.map((m) => m.fr).join(" · ")}
       </p>
       <p className="mt-3 text-[14px] font-bold text-[color:var(--cahier-ink)]">

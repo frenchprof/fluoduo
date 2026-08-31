@@ -4,14 +4,14 @@
  *
  * THE PROBLEM THIS EXISTS FOR. `DiceQuestion.med` is
  * `{ before, choices, correct, after }`: **one** blank, and which blank it is
- * was decided by the generator when it built the string. Dan's own L08 ladder
- * needs two —
+ * was decided by the generator when it built the string. Dan's ladder needs
+ * two —
  *
- *     ★    subject + article + noun shown   ->  pick the VERB
- *     ★★   subject + BARE NOUN shown        ->  pick the VERB and the ARTICLE
- *     ★★★  nothing shown                    ->  type the whole sentence
+ *     Moyen      one piece withdrawn        ->  pick the VERB
+ *     Difficile  two pieces withdrawn       ->  pick the VERB and the ARTICLE
+ *     Bonus      nothing shown              ->  the whole sentence from English
  *
- * — so ★★ was not expressible at all, and `gap` could not isolate the le/du
+ * — so Difficile was not expressible at all, and `gap` could not isolate the le/du
  * contrast at the moment its support is withdrawn, which is the entire
  * grammatical point of that lesson. The same shape turned out to run the
  * vocabulary ladder too (Dan, 31 Aug: "★★ should be fill in the article and
@@ -113,20 +113,25 @@ export function medFrom(slots: Slot[], blankKey: string): DiceQuestion["med"] {
 }
 
 /**
- * Which keys a star level takes away, by default.
+ * Which keys a level takes away, by default.
  *
- * ★   the first blankable slot — one decision, the rest scaffolded.
- * ★★  every blankable slot — Dan's "pick the verb AND the article", and the
- *     vocabulary ladder's "fill in the article".
- * ★★★ every blankable slot as well: at three stars the pager gives no bank and
- *     the learner types, so the difference is the absence of choices, not a
- *     different set of blanks.
+ * Dan's classification (2026-08-31): "CompleteIt is supposed to [be]
+ * Difficile if it involves two items, or Moyen if it involves one." So:
+ *
+ * Facile (1)     first blankable slot — the ramp barely uses gap here, but
+ *                a fallback card stays a one-decision card.
+ * Moyen (2)      the first blankable slot — ONE piece missing.
+ * Difficile (3)  every blankable slot — TWO pieces missing (the earlier
+ *                "★★ takes verb AND article" ruling moved up a tier with
+ *                the rename; the mechanism is unchanged).
+ * Bonus (4)      every slot too, though the Bonus ramp is translation and
+ *                never asks for a cloze.
  *
  * A lesson whose ladder does not fit this may pass its own keys to `cloze`.
  */
-export function blankKeysFor(level: 1 | 2 | 3, slots: Slot[]): string[] {
+export function blankKeysFor(level: 1 | 2 | 3 | 4, slots: Slot[]): string[] {
   const keys = slots.filter(isBlankable).map((s) => s.key!);
-  return level === 1 ? keys.slice(0, 1) : keys;
+  return level <= 2 ? keys.slice(0, 1) : keys;
 }
 
 /**
@@ -135,9 +140,11 @@ export function blankKeysFor(level: 1 | 2 | 3, slots: Slot[]): string[] {
  *
  * `null` means "use the single-blank `med` path you have always used": either
  * the generator authored no slots (46 of 47 today) or the level takes one
- * blank, which `med` already represents exactly. So ★ and every unconverted
- * lesson produce the card they produced yesterday, byte for byte, and the new
- * path is reachable only where a generator opted in.
+ * blank, which `med` already represents exactly. So Facile/Moyen and every
+ * unconverted lesson produce the card they produced yesterday, byte for byte,
+ * and the two-blank path is reachable only where a generator opted in — a
+ * Difficile run on a slotless lesson falls back to the one-blank card until
+ * that generator is converted.
  *
  * It lives here rather than in the pager's `buildCards.tsx` for the reason
  * `axis.ts` and the generators do: `node --experimental-strip-types` cannot
@@ -151,7 +158,7 @@ export function blankKeysFor(level: 1 | 2 | 3, slots: Slot[]): string[] {
  */
 export function multiBlankCard(
   q: Pick<DiceQuestion, "slots">,
-  level: 1 | 2 | 3,
+  level: 1 | 2 | 3 | 4,
 ): { segments: ClozeSegment[]; answer: string } | null {
   if (!q.slots?.length) return null;
   const keys = blankKeysFor(level, q.slots);

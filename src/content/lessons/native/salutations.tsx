@@ -28,22 +28,25 @@ export const salutationsLesson: NativeLesson = {
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">Les salutations</h2>
+      {/* The FORMS are the heroes of the lesson (Dan, 2026-08-31: "not
+          salient enough — they should be in bold"), so the French is set
+          bold-black and the situation labels step back to captions. */}
       <div className="mt-2 grid grid-cols-2 gap-2 text-[14px] text-[color:var(--cahier-ink)]">
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
-          <b className="text-[color:var(--gram-neutral)]">→ arriver</b>, anytime
-          <p lang="fr" className="mt-1">Bonjour ! Bonsoir ! Enchanté !</p>
+          <p className="fluo-label text-[color:var(--cahier-ink-soft)]">→ arriver · anytime</p>
+          <p lang="fr" className="mt-1 text-[15px] font-black text-[color:var(--cahier-ink)]">Bonjour ! Bonsoir ! Enchanté !</p>
         </div>
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
-          <b className="text-[color:var(--gram-neutral)]">→ arriver</b>, friends
-          <p lang="fr" className="mt-1">Salut ! Coucou ! Ça va ?</p>
+          <p className="fluo-label text-[color:var(--cahier-ink-soft)]">→ arriver · friends</p>
+          <p lang="fr" className="mt-1 text-[15px] font-black text-[color:var(--cahier-ink)]">Salut ! Coucou ! Ça va ?</p>
         </div>
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
-          <b className="text-[color:var(--gram-neutral)]">partir →</b>, anytime
-          <p lang="fr" className="mt-1">Au revoir ! À demain ! À bientôt ! Bonne journée !</p>
+          <p className="fluo-label text-[color:var(--cahier-ink-soft)]">partir → · anytime</p>
+          <p lang="fr" className="mt-1 text-[15px] font-black text-[color:var(--cahier-ink)]">Au revoir ! À demain ! À bientôt ! Bonne journée !</p>
         </div>
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
-          <b className="text-[color:var(--gram-neutral)]">partir →</b>, friends
-          <p lang="fr" className="mt-1">Salut ! À plus tard ! À plus !</p>
+          <p className="fluo-label text-[color:var(--cahier-ink-soft)]">partir → · friends</p>
+          <p lang="fr" className="mt-1 text-[15px] font-black text-[color:var(--cahier-ink)]">Salut ! À plus tard ! À plus !</p>
         </div>
       </div>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">

@@ -77,13 +77,6 @@ export default function CahierShell({
   const tools = tabsWithActive(toolTabs(), active);
   // Pages that pass the site row itself just deduplicate to no context group.
   const context = tabs.filter((t) => !site.some((s) => s.key === t.key) && !tools.some((s) => s.key === t.key));
-  // On a deck's activity page, the deck's Unité is the active layer of the
-  // site row (Dan, 2026-07-05: "the activated Unité layer is not marked") —
-  // highlighted but still clickable.
-  const deckId = context.map((t) => t.href?.match(/^\/practice\/[a-z-]+\/([^/#?]+)/)?.[1]).find(Boolean);
-  const deckUnit = deckId ? CURATED.find((c) => c.id === deckId)?.unit : undefined;
-  const unitKey = deckUnit === undefined ? undefined : `unit-${deckUnit}`;
-  const isActiveFlap = (t: ShellTab) => active === t.key || t.key === unitKey;
   // null for a page that colours itself — then NO fam- class is added, the
   // header falls back to plain paper and the spine rule does not match, so
   // the page renders exactly as it did before this system existed.
@@ -369,21 +362,13 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     // Sorting's flap is gone with the activity (Dan, 2026-08-31: "sorting is
     // cut"). The route survives so banked answers keep a label, but nothing
     // offers it any more — see the note in content/activities.ts.
-    // 4Mémoire BEFORE iComplete (2026-08-24, approved guidance flow): the
-    // authored family order in activities.ts is dice → flip → complete, and
-    // the SIO sheet's numbered path renders this list's order — the two
-    // surfaces may not disagree (the 22 Aug flow walk caught them doing so).
+    // iComplete's flap is gone with the activity. Two of Dan's 31 Aug rulings
+    // arrived at the same line from both ends: "iComplete does not have its
+    // door from here, but through Memo" (#99) and then "we can retire
+    // CompleteIt … it will be part of Memo's activities" (#97) — the Memo's
+    // Moyen/Difficile tiers ARE one- and two-piece completion now. The route
+    // survives so banked answers keep a label — see activities.ts.
     registryTab("flip", `/practice/flip-it/${collectionId}`),
-    // iComplete has NO DOOR OF ITS OWN from a stop (Dan, 2026-08-31:
-    // "iComplete does not have its door from here, but through Memo"). It is
-    // the ★ ladder's `gap` card, which the lesson pager builds itself — so it
-    // is reached by opening Memo and working the ladder, not by picking it off
-    // the stop's list beside Memo as if the two were alternatives.
-    //
-    // NOT a cut, unlike Sorting above: the activity, its route and its ladder
-    // card all stay. Only the duplicate door goes. Removing the line here is
-    // what takes it out of the SIO popup, the landings and the completion
-    // chain at once, because all three read this list.
     ...(rainSet
       ? [registryTab("vocabularain", `/games/vocabularain/${collectionId.replace("-letris", "")}`)]
       : []),

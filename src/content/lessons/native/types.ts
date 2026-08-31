@@ -10,8 +10,11 @@ import type { Slot } from "./cloze";
 export type DiceQuestion = {
   /** Small context line above the prompt ("Quelle heure est-il ?"). */
   meta: string;
-  /** The big prompt itself (a clock, a cue phrase…). */
-  big: string;
+  /** The big prompt itself (a clock, a cue phrase…). Optional since 31 Aug:
+   *  aimer-infinitif's big WAS its exact French answer (the card graded
+   *  copying), so a generator whose only honest prompt is the English `en`
+   *  may now omit it — the card then shows `en` as the reference. */
+  big?: string;
   /** Muted English gloss under the prompt. */
   en?: string;
   /** The full correct sentence — graded against, and spoken. */

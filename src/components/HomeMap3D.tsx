@@ -50,7 +50,7 @@ import { CHAPTERS, CLASS_FLAG_SIO } from "@/content/chapters";
 import { sioKind, sioSecondary, KIND_LABEL } from "@/content/sioKinds";
 import { isSioDone, type Progress } from "@/lib/progress";
 import { KIND_COLOR, REGIONS, ARENA_PLACE, KindLegend } from "@/components/HomeMap";
-import { HORIZON_Y, SKYLINE_Y, MAX_AHEAD, FULL_AHEAD, N_STOPS, getWorldX, pathXAt, cameraForward, project, zOrder, type Projected } from "@/lib/map3d/projection";
+import { HORIZON_Y, SKYLINE_Y, FULL_AHEAD, N_STOPS, getWorldX, pathXAt, cameraForward, project, zOrder, type Projected } from "@/lib/map3d/projection";
 import { getSkyColors, sunPosition, clockHour, CLOUDS, STARS } from "@/lib/map3d/sky";
 import { ROADSIDE_ITEMS, NATURE_ITEMS, type RBuild, type RProp, type NatureType } from "@/lib/map3d/scene";
 
@@ -585,12 +585,25 @@ export default function HomeMap3D({
 
   // Land once measured: on the deep-linked unit's gate, else on the current stop.
   const landed = useRef<string | null>(null);
+  // A tap INSIDE the map also changes focusUnit (opening the stop's sheet),
+  // and re-landing on it yanked the camera to that unit's gate mid-tap —
+  // measured: one tap scrolled the box 255 → 3570, which is Dan's 31 Aug
+  // "tapping takes me further down the map rather than into the stop". A
+  // self-originated navigation consumes the landing instead of scrolling;
+  // only an EXTERNAL deep link (URL, region pill under the map) still lands.
+  const selfNav = useRef(false);
+  /** True while the imminent focus event was caused by a pointer, not Tab. */
+  const pointerFocus = useRef(false);
   useEffect(() => {
     const box = boxRef.current;
     if (!box || vw === 0) return;
     const key = `${focusUnit ?? "active"}:${activeId ?? ""}`;
     if (landed.current === key) return;
     landed.current = key;
+    if (selfNav.current) {
+      selfNav.current = false;
+      return;
+    }
     const z = focusUnit !== undefined ? focusUnit * 10 - 0.5 : homeZ;
     box.scrollTo({ top: scrollForCam(z), behavior: "auto" });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -673,8 +686,21 @@ export default function HomeMap3D({
           // touchAction pan-y: travel is the ONLY gesture — no pinch zoom in the
           // 3D view (Dan, 2026-08-20: "zooming in or out should not be allowed")
           style={{ maxHeight: "68vh", borderColor: "var(--cahier-line-strong)", background: PAPER, boxShadow: "var(--shadow-card)", touchAction: "pan-y" }}
+          // A TAP also focuses, and the focus-travel then yanked the camera
+          // out from under the finger — the tap read as "the map jumped
+          // further down" instead of opening the stop (Dan, 31 Aug; measured:
+          // one tap scrolled the box thousands of px). :focus-visible was not
+          // a reliable guard (Chromium applies it to click-focus on buttons
+          // in some builds), so the latch is explicit: a pointer interaction
+          // marks the next focus as pointer-born, and only keyboard-born
+          // focus travels.
+          onPointerDownCapture={() => {
+            pointerFocus.current = true;
+          }}
           onFocusCapture={(e) => {
-            // Keyboard focus on a stop travels the camera to it.
+            const wasPointer = pointerFocus.current;
+            pointerFocus.current = false;
+            if (wasPointer) return;
             const t = (e.target as HTMLElement).closest<HTMLElement>("[data-cam]");
             if (t) travelTo(Number(t.dataset.cam), false);
           }}
@@ -744,7 +770,7 @@ export default function HomeMap3D({
                       <div key={`gate${r.unit}`} className="absolute flex flex-col items-center" style={{ left: px, top: py, transform: `translate(-50%, -${(reveal * 100).toFixed(1)}%)`, zIndex: zOrder(scale) + 1, ...clipRise(reveal) }}>
                         <button
                           type="button"
-                          onClick={() => onOpenUnit?.(r.unit)}
+                          onClick={() => { selfNav.current = true; onOpenUnit?.(r.unit); }}
                           title={`${UNIT_META[r.unit].label} — ${CHAPTERS[r.unit].scenario} · ${done}/${inUnit.length}`}
                           aria-label={`${r.place} — ${UNIT_META[r.unit].label} · ${done}/${inUnit.length}`}
                           className="flex flex-col items-center"
@@ -780,7 +806,6 @@ export default function HomeMap3D({
                     const kind = sioKind(st.id);
                     const second = sioSecondary(st.id);
                     const colour = KIND_COLOR[kind];
-                    const ahead = i > travelledTo;
                     const flag = st.id === CLASS_FLAG_SIO;
                     const nodeH = Math.round(sz * scaleY);
                     // Round 9 (Dan): a fat skirt under the face — the button's
@@ -822,13 +847,19 @@ export default function HomeMap3D({
                         <button
                           type="button"
                           data-cam={i}
-                          onClick={() => onOpenSio?.(st.unit, st.id)}
+                          onClick={() => { selfNav.current = true; onOpenSio?.(st.unit, st.id); }}
                           title={`${st.id} · ${st.topic} (${KIND_LABEL[kind]}${second ? ` + ${KIND_LABEL[second]}` : ""})`}
                           aria-label={`${st.id} · ${st.topic} (${KIND_LABEL[kind]})${active ? " — continue here" : ""}`}
                           aria-current={active ? "step" : undefined}
                           className="home-map3d-node relative block"
                           style={{ width: baseW, height: totalH, background: "transparent", border: "none", padding: 0, cursor: "pointer" }}
                         >
+                          {/* Finger-sized hit halo: the visible button is the
+                              disc alone (~70×40px mid-chain), well under the
+                              44px touch floor — a near-miss scrolled the map
+                              instead of opening the stop (Dan, 31 Aug: "the
+                              area for tapping does not seem very clear"). */}
+                          <span aria-hidden className="absolute" style={{ inset: -Math.max(8, Math.round(sz * 0.18)) }} />
                           {/* pulsing gold ring — current stop */}
                           {active && (
                             <span
@@ -895,7 +926,7 @@ export default function HomeMap3D({
                             />
                           )}
                         </button>
-                        {nodeH > 48 && reveal === 1 && ( // names only for the two or three nearest — the round-5 chain is dense, and labels mid-chain shingled over the next disc
+                        {scale > 0.7 && reveal === 1 && ( // names for the nearest two or three standing stops. The old gate (nodeH > 48) was tuned for a taller box — on the 520px phone box nodeH tops out ~45, so NO stop ever wore its name there (Dan, 31 Aug: "why have the names of the stops vanished")
                           <span
                             aria-hidden
                             className="pointer-events-none mt-0.5 whitespace-nowrap rounded px-1 font-bold leading-tight"

@@ -64,7 +64,7 @@ export const combienLesson: NativeLesson = {
           How many students are there? — There are seven.
         </p>
       </div>
-      <p className="mt-3 text-[14px] text-[color:var(--cahier-ink)]" lang="fr">
+      <p className="mt-3 text-[14px] font-bold text-[color:var(--cahier-ink)]" lang="fr">
         {Object.keys(NUMBERS).map((k) => NUMBERS[Number(k)]).join(" · ")}
       </p>
       <p className="mt-3 text-[14px] font-bold text-[color:var(--cahier-ink)]">

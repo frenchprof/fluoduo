@@ -34,15 +34,20 @@ export default function MapBody() {
   const [openUnit, setOpenUnit] = useState<number | null>(null);
   const [openSioId, setOpenSioId] = useState<string | null>(null);
   const mapRef = useRef<HTMLDivElement | null>(null);
-  // The map behind one more layer (Dan, 2026-08-22: "embedded in one more
-  // layer to prevent scrolling on it accidentally when going down the page").
-  // Until the learner taps the sheet, the map is a picture: pointer-events
-  // off underneath, so a finger (or wheel) travelling down the page glides
-  // over — the 3D camera and the 2D zoom can only catch AFTER the tap says
-  // "I mean the map". Same contract as an embedded street map.
-  const [engaged, setEngaged] = useState(false);
+  // THE GLASS IS GONE (Dan, 2026-08-31: "maybe we should remove the layer of
+  // transparent glass over it"). It arrived on 22 Aug to stop a page-scroll
+  // being captured by the map — but the map has lived on its own page since
+  // 21 Aug, where there is little page below it to scroll to, and the extra
+  // tap-to-wake was reading as part of the tap confusion on the 3D view.
+  // touchAction pan-y on the box remains the scroll contract.
 
   useEffect(() => {
+    // Progress and the saved 2D/3D choice live in localStorage, and the deep
+    // link lives in the URL — none of which can be read during render (the
+    // site is statically exported), so this mount effect has to seed that
+    // state. Block-disabled: the rule reports only the first setState it
+    // meets, and which one that is differs between local and CI eslint.
+    /* eslint-disable react-hooks/set-state-in-effect */
     const refresh = () => setProgress(loadProgress());
     refresh();
     window.addEventListener("fluolingo:progress-updated", refresh);
@@ -61,6 +66,7 @@ export default function MapBody() {
       if (sio) setOpenSioId(sio.id);
     };
     readUrl();
+    /* eslint-enable react-hooks/set-state-in-effect */
     window.addEventListener("hashchange", readUrl);
     window.addEventListener("popstate", readUrl);
     return () => {
@@ -100,62 +106,49 @@ export default function MapBody() {
 
   return (
     <>
-      {/* 2D · 3D — a small segmented control; the map below follows. */}
-      <div ref={mapRef} className="mb-2 flex scroll-mt-3 items-center justify-end">
-        <div data-tour="map-view" role="group" aria-label="Map view" className="fluo-mono flex overflow-hidden rounded-lg border-2 text-[11px] font-black" style={{ borderColor: "var(--cahier-ink)" }}>
-          {(["2d", "3d"] as const).map((v) => (
-            <button
-              key={v}
-              type="button"
-              aria-pressed={mapView === v}
-              onClick={() => {
-                setMapView(v);
-                try {
-                  window.localStorage.setItem(MAP_VIEW_KEY, v);
-                } catch {
-                  // fine — the choice just does not persist
-                }
-              }}
-              className="px-2.5 py-1 leading-none"
-              style={{
-                background: mapView === v ? "var(--cahier-ink)" : "var(--cahier-paper-raised)",
-                color: mapView === v ? "var(--cahier-paper-raised)" : "var(--cahier-ink)",
-              }}
-            >
-              {v.toUpperCase()}
-            </button>
-          ))}
-        </div>
-      </div>
-      <div className="relative">
-        <div data-tour="map" className={engaged ? undefined : "pointer-events-none select-none"} {...(engaged ? {} : { inert: true })}>
+      <div ref={mapRef} className="relative scroll-mt-3">
+        <div data-tour="map">
           {mapView === "3d" ? (
             <HomeMap3D progress={progress} activeId={activeId} accent={accent} focusUnit={openUnit ?? undefined} onOpenUnit={showUnit} onOpenSio={openSio} />
           ) : (
             <HomeMap progress={progress} activeId={activeId} accent={accent} focusUnit={openUnit ?? undefined} onOpenUnit={showUnit} onOpenSio={openSio} />
           )}
         </div>
-        {!engaged && (
-          <button
-            type="button"
-            data-tour="map-wake"
-            onClick={() => setEngaged(true)}
-            className="absolute inset-0 z-10 flex cursor-pointer items-end justify-center rounded-2xl pb-4"
-            aria-label="Tap to use the map"
-            /* Transparent glass over the picture: it eats the tap that means
-               "wake the map" and nothing else — wheel and touch-drag on it
-               scroll the PAGE, because the glass itself has nothing to
-               scroll. */
-            style={{ background: "transparent", touchAction: "pan-y" }}
+        {/* 2D · 3D — front and centre AT THE TOP OF THE MAP BOX (Dan,
+            2026-08-31: "prominently displayed at the top in the middle of
+            the map box"), floating over the scene, not a corner control. */}
+        <div className="pointer-events-none absolute inset-x-0 top-3 z-[5] flex justify-center">
+          <div
+            data-tour="map-view"
+            role="group"
+            aria-label="Map view"
+            className="fluo-mono pointer-events-auto flex overflow-hidden rounded-xl border-2 text-sm font-black shadow-[2px_2px_0_rgba(0,0,0,0.22)]"
+            style={{ borderColor: "var(--cahier-ink)" }}
           >
-            <span
-              className="fluo-mono pointer-events-none rounded-full border-2 px-3 py-1.5 text-[11px] font-black shadow-[2px_2px_0_rgba(0,0,0,0.18)]"
-              style={{ borderColor: "var(--cahier-ink)", background: "var(--cahier-paper)", color: "var(--cahier-ink)" }}
-            >
-              Tap to use the map
-            </span>
-          </button>
-        )}
+            {(["2d", "3d"] as const).map((v) => (
+              <button
+                key={v}
+                type="button"
+                aria-pressed={mapView === v}
+                onClick={() => {
+                  setMapView(v);
+                  try {
+                    window.localStorage.setItem(MAP_VIEW_KEY, v);
+                  } catch {
+                    // fine — the choice just does not persist
+                  }
+                }}
+                className="px-5 py-2 leading-none"
+                style={{
+                  background: mapView === v ? "var(--cahier-ink)" : "var(--cahier-paper-raised)",
+                  color: mapView === v ? "var(--cahier-paper-raised)" : "var(--cahier-ink)",
+                }}
+              >
+                {v.toUpperCase()}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* The unit's SIO list, inline under the map — opens from a region

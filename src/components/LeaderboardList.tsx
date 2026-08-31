@@ -57,6 +57,10 @@ export default function LeaderboardList() {
 
   useEffect(() => {
     if (!user) {
+      // Deliberate: this effect synchronises with Firestore; on sign-out the
+      // board must be cleared synchronously so no render shows stale rows.
+      // The fetched rows arrive in async callbacks, which the rule accepts.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setRows(null);
       return;
     }

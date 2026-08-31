@@ -159,10 +159,16 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
   useEffect(() => {
     if (!deck) return;
     const full = shuffle(buildEntries(deck));
+    // The shuffle must happen after mount so SSR and the first client render
+    // agree (the AGENTS rule every drill follows) — so this effect has to
+    // seed state. Block-disabled: the rule reports only the first setState
+    // it meets, and which one that is differs between local and CI eslint.
+    /* eslint-disable react-hooks/set-state-in-effect */
     setOrder(full);
     // A deck short enough not to need the question is answered for the
     // learner: `asked` goes true immediately and the run is the whole deck.
     setAsked(offer(full.length) === null);
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [deck]);
 
   useEffect(() => {
@@ -425,7 +431,7 @@ export default function CompleteItContent({ collectionId, embedded = false }: { 
           <div className="rounded-2xl border-2 bg-[var(--fluo-card)] p-4" style={{ borderColor: "var(--fluo-line)" }}>
             {prompt}
             {rungsShown}
-            <form onSubmit={(e) => { e.preventDefault(); retry ? tryAgain() : result === null ? check() : next(); }} className="mt-4">
+            <form onSubmit={(e) => { e.preventDefault(); if (retry) tryAgain(); else if (result === null) check(); else next(); }} className="mt-4">
               {answerInput}
               {result === null ? (
                 <>

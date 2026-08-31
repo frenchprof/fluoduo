@@ -37,6 +37,14 @@ const ACTIVITIES: { fr: string; en: string; noun: string; faire: string | null }
 ];
 
 const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)];
+
+/* English pronouns for the full-sentence gloss — see the note in the maker. */
+const SUBJ_EN: Record<string, { pron: string; third: boolean }> = {
+  Je: { pron: "I", third: false }, Tu: { pron: "You", third: false },
+  Il: { pron: "He", third: true }, Elle: { pron: "She", third: true },
+  Nous: { pron: "We", third: false }, Vous: { pron: "You", third: false },
+  Ils: { pron: "They", third: false }, Elles: { pron: "They", third: false },
+};
 /** Conjugated subject + verb, with J'/n' elision (aime/adore start with a vowel). */
 function subjVerb(s: (typeof SUBJECTS)[number], v: (typeof VERBS)[number]): string {
   const c = v.stem + END[s.slot];
@@ -60,10 +68,21 @@ export function aimerInfinitifQuestion(pinned?: Record<string, string>): DiceQue
   const a = roll(ACTIVITIES);
       const sv = subjVerb(s, v);
       const third = a.faire ?? pick(ACTIVITIES.filter((x) => x.fr !== a.fr)).fr;
+      // THE CUE IS ENGLISH + THE FORM, NOT THE ANSWER. `big` used to print the
+      // exact French answer (the card graded copying), while the noun and
+      // faire options are perfectly grammatical French — so a learner reading
+      // the gloss instead of copying could defensibly pick « la cuisine » and
+      // be marked wrong (31 Aug ambiguity audit). Dan's own module-10 wording
+      // pinned it: "the option that uses aimer + infinitif, not the noun or
+      // faire form" — so the meta names the form, and the en is the whole
+      // sentence, which names the activity without printing its French.
+      const e = SUBJ_EN[s.disp];
+      const ven = e.third
+        ? (v.neg ? "doesn't like" : `${v.en}s`)
+        : (v.neg ? "don't like" : v.en);
       return {
-        meta: `${sv} … (${v.en})`,
-        big: a.fr,
-        en: a.en,
+        meta: `${sv} … (à l'infinitif)`,
+        en: `${e.pron} ${ven} to ${a.en}.`,
         correct: `${sv} ${a.fr}.`,
         easyOptions: [`${sv} ${a.fr}.`, `${sv} ${a.noun}.`, `${sv} ${third}.`],
         med: { before: sv, choices: [a.fr, a.noun, third], correct: a.fr, after: "" },

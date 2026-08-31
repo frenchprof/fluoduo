@@ -22,8 +22,14 @@ export default function ReglagesPage() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    // The saved prefs live in localStorage, which cannot be read during
+    // render (the site is statically exported) — this mount effect has to
+    // seed them. Block-disabled: the rule reports only the first setState it
+    // meets, and which one that is differs between local and CI eslint.
+    /* eslint-disable react-hooks/set-state-in-effect */
     setPrefs(readUiPrefs());
     setReady(true);
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
   function set<K extends keyof UiPrefs>(key: K, value: UiPrefs[K]) {
