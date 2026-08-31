@@ -7,7 +7,7 @@ import CahierShell from "@/components/CahierShell";
  *  the tap-to-use glass in MapBody has since solved the finger-scroll
  *  conflict that motivated it, so the notebook frame costs nothing. The
  *  shell's heading band carries the name; the map keeps its glass. */
-export const metadata = { title: "The Map — FluOlinGo" };
+export const metadata = { title: "The Map — FluOLinGo" };
 
 export default function MapPage() {
   return (

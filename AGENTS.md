@@ -75,6 +75,28 @@ the row counts before and after. The principle is the same — the finished
 thing, not an account of it.
 
 
+# The names — permanent (2026-08-31)
+
+**The brand is `FluOLinGo`** — capitals F, O, L, G, for **Fluency On
+Linguistic Goals**. Not FluOlinGo, not Fluolingo. Every learner-visible
+spelling uses it (Dan: *"put it in the repo that we shall call them by those
+names and by those icons, and FluOLinGo (with capitals F,O,L,G) for
+FluencyOnLinguisticGoals"*). Identifiers, storage keys (`fluolingo:*`) and
+the font files (`FluOlinGoHand-*.woff2`) keep their existing spellings —
+renaming those breaks things without a learner ever seeing the difference.
+
+**The six families are called by these names and wear these icons, and no
+others** (Dan, same day):
+
+    🎯 Goals · 🏋️ Practice · 🎮 Games · 🔄 Revise · 💬 Skills · 👤 User
+
+They live once, in `FAMILIES` (`src/content/activities.ts`), as
+`FluOLin <Name>`; everything else derives. Registry KEYS stay as they are
+(`svplay`, `review`) — the Memo-rename precedent: display renames never
+touch keys or routes. Home's hero key is **Continue** (the current stop),
+which is why the games family is Games and not Play: no two doors share a
+name.
+
 # Start here — every session (2026-08-17)
 
 Read `docs/STATUS.md` before anything else and update it before you stop. `HANDOFF.md`, `TODO.md` and `docs/planning/*` are historical.

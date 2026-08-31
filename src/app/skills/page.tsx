@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import FamilyHub from "@/components/FamilyHub";
 
-export const metadata: Metadata = { title: "Skills · FluOlinGo" };
+export const metadata: Metadata = { title: "Skills · FluOLinGo" };
 
 /** The 💪 slot's destination. Before this page it was /conjugaison — one of
  *  the six (Dan, 2026-08-30). */
