@@ -14,8 +14,11 @@ import { pinned1 } from "./axis.ts";
 const AVOIR_STATES = [
   { fr: "faim", en: "hungry" },
   { fr: "soif", en: "thirsty" },
-  { fr: "chaud", en: "hot" },
-  { fr: "froid", en: "cold" },
+  // "hot"/"cold" alone glossed BOTH « Vous avez chaud » and the grammatical
+  // « Vous êtes chaud » — English is the ambiguous side here, so the gloss
+  // names the FEELING, which only the avoir version expresses (31 Aug audit).
+  { fr: "chaud", en: "hot (feels hot)" },
+  { fr: "froid", en: "cold (feels cold)" },
 ] as const;
 const ETRE_STATES = [
   { fr: "fatigué", pl: "fatigués", en: "tired" },

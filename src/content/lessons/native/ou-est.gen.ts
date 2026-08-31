@@ -109,10 +109,16 @@ export function ouEstQuestion(pinned?: Record<string, string>): DiceQuestion {
   // column. Answering « Elle est là-bas. » is the whole card.
   if ((TOUT_SEUL as readonly string[]).includes(prep)) {
     const correct = `${withArticle(subject).replace(/^\w/, (c) => c.toUpperCase())} ${estOf(subject)} ${prep}.`;
+    // The gloss must name THE ROLLED ADVERB, not a fixed "over there / here":
+    // all four options are grammatical, so a gloss that doesn't track the
+    // answer left the card a coin toss (the 31 Aug ambiguity audit's top
+    // finding — and when « partout » rolled, the fixed gloss pointed at the
+    // three wrong options).
+    const advEn: Record<string, string> = { ici: "here", "là": "there", "là-bas": "over there", partout: "everywhere" };
     return {
       meta: "sans lieu 📍",
       big: `Où ${estOf(subject)} ${withArticle(subject)} ?`,
-      en: `Where is ${subject.en}? — over there / here.`,
+      en: `Where is ${subject.en}? — ${advEn[prep] ?? prep}.`,
       correct,
       easyOptions: dedupe([
         correct,

@@ -105,7 +105,12 @@ const PRON_EN: Record<string, { pron: string; third: boolean }> = {
 };
 function sentenceEn(s: (typeof SUBJECTS)[number], p: (typeof PLACES)[number], neg: boolean): string {
   const e = PRON_EN[s.pron];
-  const dest = p.lieu === "ville" ? "into town" : `to the ${p.en}`;
+  // A place whose English already carries its article ("a friend's place",
+  // "my place") must not gain a second one — "to the a friend's place" was
+  // in the shipped gloss (found by executing the generator, 31 Aug).
+  const dest = p.lieu === "ville" ? "into town"
+    : /^(a |an |the |my |your )/.test(p.en) ? `to ${p.en}`
+    : `to the ${p.en}`;
   if (neg) return `${e.pron} ${e.third ? "doesn't" : "don't"} go ${dest}.`;
   return `${e.pron} ${e.third ? "goes" : "go"} ${dest}.`;
 }

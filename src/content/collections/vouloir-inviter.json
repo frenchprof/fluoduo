@@ -55,7 +55,7 @@
     {
       "id": "vouloir-inviter-07",
       "fr": "On peut se voir samedi ?",
-      "en": "Suggest another day",
+      "en": "Can we see each other on Saturday?",
       "tags": [],
       "gap": "peut"
     },
@@ -69,7 +69,7 @@
     {
       "id": "vouloir-inviter-09",
       "fr": "On se retrouve samedi ?",
-      "en": "Shall we meet on Saturday?",
+      "en": "Shall we meet up on Saturday?",
       "gap": "se retrouve",
       "tags": []
     },

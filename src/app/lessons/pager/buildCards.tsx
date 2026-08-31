@@ -175,17 +175,22 @@ function deckSupply(deck: Collection, activityKey: string, entry: EntryLevel = 1
             ...(entry >= 3 ? { typed: true } : { bankPool: gapPool }),
           };
         }
+        // `item.alt` (schema.ts) holds authored acceptable variants — Complete
+        // It honoured it, these cards silently didn't, so a variant the deck
+        // itself declares correct was marked wrong (31 Aug ambiguity audit).
         case "build":
           return {
             kind: "build", itemId: item.id, activity: `lesson:${activityKey}`,
             meta: "Build the sentence", big: en,
-            answer: sentence, bankPool: sentencePool, tiles: true, say,
+            answer: sentence, alternates: item.alt,
+            bankPool: sentencePool, tiles: true, say,
           };
         case "translate":
           return {
             kind: "translate", itemId: item.id, activity: `lesson:${activityKey}`,
             meta: "Translate into French", big: en ?? item.en,
-            answer: sentence, bankPool: sentencePool, say,
+            answer: sentence, alternates: item.alt,
+            bankPool: sentencePool, say,
           };
       }
     },
@@ -254,11 +259,24 @@ function lessonSupply(
               bankPool: x.easyOptions, say: x.correct,
             };
           }
+          // A generator's `alternates` are FULL sentences ("Aux Philippines,
+          // on parle anglais."), but this card grades only the blank — so a
+          // prompt that says "they speak filipino, anglais — give one" marked
+          // the invited second answer wrong (31 Aug ambiguity audit). Where an
+          // alternate fits the same frame, its middle is this blank's own
+          // alternate; where the whole sentence IS the blank, that middle is
+          // the whole alternate, so both shapes are covered by one rule.
+          const gapAlts = (x.alternates ?? []).flatMap((alt) => {
+            if (!alt.startsWith(x.med.before) || !alt.endsWith(x.med.after)) return [];
+            const mid = alt.slice(x.med.before.length, alt.length - x.med.after.length).trim();
+            return mid && mid !== x.med.correct ? [mid] : [];
+          });
           return {
             kind, itemId: x.correct, activity: `lesson:${activityKey}`,
             meta: x.meta, big: x.big, en: x.en,
             before: x.med.before, after: x.med.after,
             answer: x.med.correct, say: x.correct,
+            alternates: gapAlts.length ? gapAlts : undefined,
             ...(entry >= 3 ? { typed: true } : { bankPool: x.easyOptions }),
           };
         }

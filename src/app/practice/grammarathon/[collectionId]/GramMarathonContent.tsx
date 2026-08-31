@@ -24,7 +24,7 @@ import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { gradeGap, splitGap, type Grade } from "@/lib/practice/cloze";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
-import { gapSentence, isPlayableGap } from "@/lib/collections/gapSentence";
+import { gapSentence, gapSentenceEn, isPlayableGap } from "@/lib/collections/gapSentence";
 import { hintsFor } from "@/lib/help/hints";
 import { useHelpLadder } from "@/lib/help/useHelpLadder";
 import { SIOS } from "@/content/sios";
@@ -64,8 +64,12 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
   useEffect(() => {
     if (!deck) return;
     const full = shuffle(deck.items.map((it, idx) => (isPlayableGap(it) ? idx : -1)).filter((x) => x >= 0));
+    // The shuffle must happen after mount so SSR and the first client render
+    // agree (the AGENTS rule every drill follows) — so this effect has to
+    // seed state; there is no render-time home for it.
     setOrder(full);
     // Short enough not to need asking → answered for the learner.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setAsked(offer(full.length) === null);
   }, [deck]);
 
@@ -271,7 +275,7 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
         ) : item ? (
           <div>
             {sentence}
-            <p className="mt-1 text-sm text-[color:var(--fluo-ink-soft)]">{item.en}</p>
+            <p className="mt-1 text-sm text-[color:var(--fluo-ink-soft)]">{gapSentenceEn(item)}</p>
             <div className="mt-5">{answerInput}</div>
           </div>
         ) : null}
@@ -292,10 +296,10 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
         ) : item ? (
           <div className="rounded-2xl border-2 bg-[var(--fluo-card)] p-4" style={{ borderColor: "var(--fluo-line)" }}>
             {sentence}
-            <p className="mt-1 text-sm text-[color:var(--fluo-ink-soft)]">{item.en}</p>
+            <p className="mt-1 text-sm text-[color:var(--fluo-ink-soft)]">{gapSentenceEn(item)}</p>
             {rungsShown}
 
-            <form onSubmit={(e) => { e.preventDefault(); retry ? tryAgain() : result === null ? check() : next(); }} className="mt-4">
+            <form onSubmit={(e) => { e.preventDefault(); if (retry) tryAgain(); else if (result === null) check(); else next(); }} className="mt-4">
               {answerInput}
               {result === null ? (
                 <>
