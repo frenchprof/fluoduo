@@ -246,9 +246,11 @@ const SITE_FAMILY: Record<string, FamilyKey> = {
  *  a colour of its own.
  *
  *  Sorting sits in `recog`, not `prod`: evidence.ts's own definition of
- *  "recognition" names sorting into a column, while its lookup table tags the
- *  drill "constrained". The file contradicts itself; the definition wins here.
- *  Flagged for Dan — correcting the lookup changes what past answers mean. */
+ *  "recognition" names sorting into a column. Its lookup table used to tag the
+ *  drill "constrained", so this band and the stored record disagreed from
+ *  26 Aug. Settled 2026-08-31 in the definition's favour — evidence.ts now
+ *  tags `dice:` "recognition" too, forward only. `verify60-band-evidence.py`
+ *  asserts the two files agree, in both directions. */
 export type BandKey = "guess" | "lesson" | "recog" | "prod" | "create";
 
 const BAND: Record<string, BandKey> = {

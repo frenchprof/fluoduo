@@ -119,10 +119,24 @@ const ACTIVITY_EVIDENCE: Array<[string, EvidenceType]> = [
   ["/practice/grammarathon/", "constrained"],
   ["complete-it", "constrained"],
   ["/practice/complete-it/", "constrained"],
-  ["dice-practice", "constrained"],
-  ["dice:", "constrained"],
-  ["/practice/dice/", "constrained"],
-  ["lesson-dice:", "constrained"],
+  // Sorting. The learner reads a word and taps one of the group columns
+  // ALREADY ON SCREEN (PracticeContent.commit compares choice.key against
+  // item.correctColKey, and a wrong pick is struck out of the visible set) —
+  // which is this file's own definition of "recognition" up at line 34,
+  // *sort into a column*, verbatim. It was tagged "constrained" until
+  // 2026-08-31; the band in content/activities.ts had said "recog" since
+  // 26 Aug, so the page and the stored record disagreed. The definition wins;
+  // verify60 now holds the two files together so they cannot drift again.
+  //
+  // FORWARD ONLY. Records written before 2026-08-31 keep "constrained", so
+  // the teacher's response list shows both labels for Sorting across that
+  // date. Nothing computes on evidenceType — it is written by responses.ts
+  // and read only as display text in teacher/Students.tsx — so the mixed
+  // labels cost interpretation, never a learner's progress.
+  ["dice-practice", "recognition"],
+  ["dice:", "recognition"],
+  ["/practice/dice/", "recognition"],
+  ["lesson-dice:", "recognition"],   // no emitter today; same drill if revived
   ["lesson:", "constrained"],          // the lesson pager's gap/build/translate cards
 
   ["conj", "constrained"],

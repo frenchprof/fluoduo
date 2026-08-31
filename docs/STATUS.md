@@ -2756,9 +2756,14 @@ fourth block without re-measuring against the Continue button — not against
 the viewport, which is the mistake that made it look like it fitted.
 
 **Still open, and both need Dan, not an agent:**
-- **The ten bugs — 6, 8, 9, 10, 11, 12, 15, 16, 17, 19.** Their text exists
-  nowhere in this repo; only the numbers were ever written down. Nobody can
-  work them until Dan restates the list.
+- **The ten bugs — 6, 8, 9, 10, 11, 12, 15, 16, 17, 19.** ~~Their text exists
+  nowhere in this repo; only the numbers were ever written down.~~ **CLOSED
+  2026-08-31.** Dan could not restate them, so the numbering is retired rather
+  than carried as a permanent unknown: the 29 Aug sweep audited all four areas
+  the recovered nine clustered in (layout, audio, feedback, scoring) and found
+  one real defect, the SpeakZone false pairing, now fixed and guarded by
+  verify50. A bare number is not a bug report. Do not re-open this list; file
+  anything new as its own item with its text.
 - **Lint in CI.** Audited 2026-08-29: `npx eslint src` reports 132 problems
   (113 errors) across 51 files — 63 `set-state-in-effect`, 34
   `no-unescaped-entities` (mostly French apostrophes in memos.tsx), 9
@@ -2767,6 +2772,72 @@ the viewport, which is the mistake that made it look like it fitted.
   proposal put to Dan is to lint only the files a PR touches: new work must be
   clean, the 51 existing files stay until someone is in them anyway, and the
   pile can only shrink. Awaiting his yes/no.
+
+## 31 Aug — Sorting was filed under two different difficulties
+
+The band on the page called Sorting `recog` (set 26 Aug, from evidence.ts's own
+definition of "recognition": *pick from options, sort into a column*). The
+lookup table in the same file tagged every `dice:` answer `constrained`. So for
+five days the page told the learner one thing and the stored record said
+another, and nothing in CI compared the two files.
+
+Sorting is genuinely recognition, and the code settles it rather than the
+naming: `PracticeContent.commit` compares `choice.key` to `item.correctColKey`
+and strikes a wrong pick out of the visible set — the answer is on screen
+throughout. `dice:`, `dice-practice`, `/practice/dice/` and the (unemitted)
+`lesson-dice:` are now `recognition`.
+
+**I overstated the risk when I put this to Dan**, and the correction is the
+reason it could be settled without him. I said changing the lookup would change
+"what the teacher dashboard and the star ladder believe those learners have
+demonstrated". The star ladder does not read `evidenceType` at all. **Nothing**
+does: it is written by `firebase/responses.ts` and read only as display text in
+`teacher/Students.tsx:492`, passed straight through `teacher/data.ts` with no
+aggregation, filter or threshold anywhere. Checked before acting — the three
+options I offered (forward-only / retroactive / correct the band instead) were
+weighted against a consequence that does not exist.
+
+So: **forward only, no migration.** Records written before 31 Aug keep
+`constrained`, and the teacher's response list shows both labels for Sorting
+across that date. It costs interpretation in one column and nothing else. A
+retroactive pass stays cheap if Dan ever wants the old labels corrected, for
+the same reason: no derived state depends on them.
+
+`verify60-band-evidence.py` holds the two files together, in both directions,
+bridged through `activityLedger.PREFIX_TO_KEY` (activity string → registry key,
+which is what `BAND` is keyed by). It parses all three tables from source
+rather than restating them, so deleting a row makes the row vanish here instead
+of leaving a stale copy green.
+
+**Break-tested on twelve mutations; three exposed real holes on the first
+pass.** Reverting Sorting to `constrained` went red, as did flipping the band,
+WorDrill as recognition, Compose as constrained, pretests losing `diagnostic`,
+Flip It as free, iComplete as recognition, Compose banded recog, and both table
+renames. The three that came back GREEN:
+- **`str.find("const ACTIVITY_EVIDENCE")` prefix-matches a renamed table**, so
+  the vacuity guard did not fire on a rename. Openers now carry the `:`.
+- **`checked >= 12` was a floor, not a count.** Dropping Sorting from the
+  ledger bridge took coverage 21 → 19 and the floor stayed green — the same
+  silence this check exists to end. It asserts `== 21` now, so adding a surface
+  fails once, on purpose.
+- **One mutation was simply wrong**: there is no `["say-it:", …]` row, only
+  `["say-it", …]`, so the sed matched nothing and the "hole" was my test. Redone
+  against the real row: red.
+
+Fourth time this session that a check written to guard something passed while
+guarding nothing. The pattern is the same each time — a scan that matches more
+loosely than the thing it is asserting.
+
+### SIO-045A stays
+
+Flagged because I had earlier called it leftover junk from a renumbering. It is
+not: 45 was left as a deliberate hole on 2 Aug when Market phrases folded into
+SIO-044 (Commerces), so that 46+ would not shift and break saved progress, and
+**Numbers 70–99** was then dropped into it. Today it has its own deck, pre-test,
+six finale items, an index grouping, 18 references across `src/`, learner
+progress records — and, since 29 Aug, purpose-built content for the arithmetic
+(60+10, 4×20, 4×20+10) and prices. PR #86 shipped its concept (`soixante-dix`).
+Killing it would discard work merged days ago. Keep; the question is closed.
 
 ## 29 Aug — five more stops filled (4, 7, 8, 21, 34)
 

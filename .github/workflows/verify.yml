@@ -240,3 +240,6 @@ jobs:
           echo "Linting $(echo "$CHANGED" | wc -l) changed file(s):"
           echo "$CHANGED"
           npx eslint $CHANGED
+
+      - name: The band a learner sees and the evidence we store agree
+        run: python3 verify/verify60-band-evidence.py
