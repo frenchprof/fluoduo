@@ -49,7 +49,7 @@ check(not os.path.isfile("src/components/GuideSplash.tsx"),
       "GuideSplash.tsx still exists alongside MenuSplash — two popups on one button")
 
 # 1 · six families in Dan's order
-fams = re.findall(r'\{ key: "([a-z]+)", name: "FluOlin', reg)
+fams = re.findall(r'\{ key: "([a-z]+)", name: "FluOL?in', reg)
 WANT = ["goals", "practice", "svplay", "review", "skills", "user"]
 check(fams == WANT,
       f"six families in Dan's 19 Aug order: {' · '.join(fams)}",

@@ -44,7 +44,7 @@ export default function HomePrintSheet({ progress }: { progress: Progress }) {
   return createPortal(
     <div className="home-print" aria-hidden>
       <div className="flex items-baseline justify-between border-b pb-1" style={{ borderColor: "var(--cahier-line-strong)" }}>
-        <span className="fluo-serif text-base font-black">FluOlinGo · French A1 · course map</span>
+        <span className="fluo-serif text-base font-black">FluOLinGo · French A1 · course map</span>
         <span className="text-[9px]" style={{ color: "var(--cahier-ink-soft)" }}>{origin.replace(/^https?:\/\//, "")}</span>
       </div>
       {REGIONS.map((r) => {

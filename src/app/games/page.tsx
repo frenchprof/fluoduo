@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import FamilyHub from "@/components/FamilyHub";
 
-export const metadata: Metadata = { title: "SvPlay · FluOlinGo" };
+export const metadata: Metadata = { title: "Games · FluOLinGo" };
 
 /** The 🎮 slot's destination. Before this page it was /games/vocabularain —
  *  one game of four (Dan, 2026-08-30). ComposeIt lives under /games in the
