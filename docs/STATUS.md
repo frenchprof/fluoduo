@@ -11,6 +11,24 @@ Only ONE agent edits this file at a time; say so in your commit.
 - `main` on `frenchprof/fluoduo` (origin) — the working repo.
 - Production = `dckg/fluo` (remote `live`), Cloudflare Pages project
   `fluolingo-dot-com` auto-builds its `main`. **Deploy = `git push live main`.**
+- 31 Aug (Claude Code) — **AN AGENT WROTE WRONG FRENCH INTO THE UNIT THAT
+  TEACHES THE RULE.** Fixing SIO-049 (a restaurant review naming no dish) I
+  added « Je prends toujours LE poisson » and justified it in the file as the
+  Unité 2 aimer + le/la/les rule. That rule is for verbs of PREFERENCE —
+  « j'aime le poisson » names the category. `prendre` is not one, and with
+  `toujours` the sentence is habitual, so it takes the PARTITIVE: « du
+  poisson », which is the Unité 4 rule the partitifs deck in that same unit
+  exists to teach. Dan: "is WRONG. Je prends toujours du poisson". Corrected.
+  **The lesson is about the gate, not the article.** `verify55` passed the bad
+  line — it checks that the review names a dish, and it did. No check caught it
+  and none reasonably could without a French grammar model, and a bad one would
+  be worse than none (« Je prends le poisson » IS idiomatic when choosing off a
+  menu; it was wrong only because of `toujours`). **So the rule stands and is
+  now proven: French drafted by an agent reaches Dan before it reaches a
+  learner** — the same gate `LessonConcept` sets for `contrast` and `remember`.
+  Every French string authored by an agent on 30-31 Aug has since been audited:
+  this was the only error, and the demonstratifs concept (approved by Dan the
+  same day) is clean.
 - 31 Aug (Claude Code) — **CORRECTION: THERE ARE NOT 11 SIOs WITHOUT A LESSON.
   THERE ARE NONE.** I reported that count twice (STATUS below, and the work
   plan) and it is wrong. I measured `LESSONS_BY_SIO`, the registry of NAMED
