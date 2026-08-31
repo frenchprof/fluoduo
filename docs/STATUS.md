@@ -18,7 +18,7 @@ lane = report it in STATUS, don't do it.
 |---|---|---|
 | **fluoduo-main** | **Integration** — merges, branch hygiene, verify-number renumbers, cross-session stall watch, previews for Dan, deploy shepherding | The 31 Aug cleanup sweep; this roster |
 | **Color review** | **Concepts** — the tier pipeline (Tier 1 ×19, Tier 2 second half), keeper of the Stocktake ledger | Next Tier batch, gated on Dan's salutations read |
-| **Pre-tests** | **Pre-test surfaces** | Unit-0 pre-test pages; after that, joins concept drafting as second capacity |
+| **Pre-tests** | **Pre-test surfaces** | ✅ Unit-0 pages (#98) · ✅ popup collapse (#99) · **now: derived done-ness**; then concept drafting as second capacity |
 | **Peers** | **Features** | Free since Sorting was cut (#93) — next feature is Dan's to assign |
 | **Dan** | **Decisions + reads + deploys** | The queue below; every pedagogical claim is read before it ships |
 
@@ -64,22 +64,27 @@ lane = report it in STATUS, don't do it.
   (in flight, the last uncovered pre-test surface).~~ **DONE — #98.** All ten
   now render at `/pretests/unit0/SIO-00N`; every stop in the course has a
   pre-test with a page of its own.
-  **NOW IN FLIGHT — the SIO popup collapse and derived done-ness.** These are
-  two instructions Dan gave this session that the roster's lane text does not
-  list; he confirmed them as mine on 31 Aug rather than leaving them unowned.
-  Claimed here so nobody else opens the same files:
-  1. **The popup collapses to the statement and ONE list of links.** Dan:
+  **The popup collapse and derived done-ness** — two instructions Dan gave on
+  31 Aug that the roster's original lane text did not list; he confirmed them
+  as mine rather than leave them unowned. State as of 31 Aug PM:
+  1. ✅ **DONE — #99. The popup is the statement and ONE list of links.** Dan:
      "collapse the interfaces to ONLY reveal the SIO spelled out fully, then
-     the links to the relevant items within the stop. THAT IS IT." Today a
-     stop stacks the same activity list THREE times — the numbered path, the
+     the links to the relevant items within the stop. THAT IS IT." A stop had
+     stacked the same activity list THREE times — the numbered path, the
      right-edge flaps, and the narrow-screen flap row — and four activities
-     (WorDrill, iComplete, Sorting, GramMarathon) render INSIDE the popup
-     rather than opening, so an identical-looking flap does two different
-     things. The list will derive from `cellHref` per stop, which is why the
-     Sorting cut (#93) needs no change here and why the now-stale `dice` in
-     `CHAIN_KEYS` drops out on its own. Unblocked by #98: collapsing before
-     those pages existed would have cost all ten Unit-0 stops their pre-test.
-  2. **Done-ness becomes derived; Mark as done is removed.** Dan: "it should
+     rendered INSIDE the popup rather than opening, so an identical-looking
+     flap did two different things. Now: the statement, then one two-column
+     grid of links, every row an `<a>`. SioModal 325 → 200 lines.
+     The list derives from `deckActivityTabs` per stop, which is what made the
+     Sorting cut (#93) free here and what carried Dan's later "iComplete does
+     not have its door from here, but through Memo" for the cost of one
+     `registryTab` line. Unblocked by #98: collapsing before those pages
+     existed would have cost all ten Unit-0 stops their pre-test.
+     Pinned by verify66 (22 checks, all break-tested); verify22, verify64 and
+     verify19 were each rewritten rather than silenced when the collapse made
+     their old assertions false.
+  2. ⏳ **NEXT, and the last of my lane. Done-ness becomes derived; Mark as
+     done is removed.** Dan: "it should
      only be marked done if it is really FULLY done, so we should remove it."
      A stop ticks when everything at it is done, so the popup's link list and
      the completion rule become the SAME list. **Grandfathered, Dan's call**:
@@ -87,6 +92,15 @@ lane = report it in STATUS, don't do it.
      becomes 21/50 and no badge is revoked. `doneSios` is read in 14 files,
      `economy.ts`'s four badges included, so this is not a one-file change.
      Follows 1, because the link list IS the definition.
+  **Two things #99 left on the board, neither mine to decide:**
+  · The STANDALONE iComplete drill is unreachable — nothing links
+    `/practice/complete-it/` since its door moved to Memo. #97 goes further
+    and deletes the registry row. Intended, but it is a door that closed.
+  · SIO-010's picker still shows a learner 7 of its 21 questions, on the one
+    stop whose whole point is that register changes with audience. The
+    questions are self-describing since #92, so a single run across all three
+    audiences is a small change whenever Dan wants it.
+
   **After those:** Tier-1 concept batches in parallel with Color review, same
   read-before-ship rule.
 - **Peers — features.** Queue empty since Sorting was cut (#93). Next
