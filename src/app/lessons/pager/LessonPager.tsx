@@ -677,7 +677,13 @@ function ExerciseCard({
         </div>
       )}
 
-      {ex.kind !== "mcq" && (
+      {/* A segmented cloze already IS the input — one row of choices per blank.
+          Showing the typed field and the word bank underneath it as well gave
+          the learner two ways to answer the same card and spelled the answer
+          out in the bank's pills ("les", "films."). Seen on the card, in a
+          browser; it is invisible from the code, because both halves are
+          individually correct. */}
+      {ex.kind !== "mcq" && !ex.segments && (
         <div className="mx-auto max-w-md space-y-2">
           {/* Build cards use word tiles at EVERY width; typed cards keep the
               input on sm+ and switch to tiles below (the word-bank rule). */}

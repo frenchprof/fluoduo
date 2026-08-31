@@ -40,7 +40,7 @@ if not os.path.isfile("package.json"):
 
 DRIVER = r"""
 import { aimerQuestion } from "./src/content/lessons/native/aimer.gen.ts";
-import { multiBlankCard, sentence } from "./src/content/lessons/native/cloze.ts";
+import { metaLeaksAnswer, multiBlankCard } from "./src/content/lessons/native/cloze.ts";
 
 const out = { 1: [], 2: [], 3: [] };
 for (const level of [1, 2, 3]) {
@@ -59,6 +59,12 @@ for (const level of [1, 2, 3]) {
       full: q.correct,
       med: q.med,
       slotted: !!q.slots,
+      meta: q.meta,
+      // The context line above the gap must not contain a word the card is
+      // about to ask for.
+      metaLeaks: card
+        ? metaLeaksAnswer(q.meta, card.segments.flatMap((s) => (s.kind === "blank" ? [s.answer] : [])))
+        : false,
     });
   }
 }
@@ -160,6 +166,25 @@ check(not contained,
       "were taken from: " +
       "; ".join(f"{x['answer']!r} vs {x['full']!r}" for x in contained))
 
+# ── 3b · the prompt must not print an answer ───────────────────────────────
+# aimer's meta is "Tu adores … (love)". At ★ that is exactly right — the verb is
+# shown and the article is the question. At ★★ the verb IS the question, so the
+# same line prints the answer directly above the gap. Found by opening the card
+# in a browser, not by reading the code, which is the whole argument for doing
+# that once per feature.
+leaky = [x for x in lv[2] if x["metaLeaks"]]
+check(leaky,
+      f"the raw generator meta does leak at ★★ ({len(leaky)}/200) — so the "
+      "guard in buildCards has something to do",
+      "no ★★ meta leaks an answer, which makes the guard below untestable here: "
+      "has aimer's meta changed? If so this assertion is the one to update.")
+
+lone = [x for x in lv[1] if x["metaLeaks"]]
+check(not lone,
+      "★ never leaks — its meta shows the verb because the verb is not the question",
+      f"{len(lone)} ★ cards leak their own answer, which would be a real bug in "
+      "the single-blank path")
+
 # ── 4 · a slotless generator is left completely alone ──────────────────────
 # NOTE ON THIS ONE. The outcome is protected twice — by the `!q.slots?.length`
 # guard and again by `keys.length < 2` — so breaking either alone leaves it
@@ -171,6 +196,25 @@ check(data["bare"] is None and data["empty"] is None and data["scenery"] is None
       f"multiBlankCard invented a card where there was nothing to withdraw: "
       f"bare={data['bare']}, empty={data['empty']}, scenery={data['scenery']} — "
       "that would change all 46 unconverted lessons")
+
+# ── 5 · the segmented card must not ALSO offer the typed input ─────────────
+# A source check, not an executed one, and said so plainly: the render is React
+# and is not run here. It is worth having anyway, because the fault it guards
+# was invisible from the code — both halves are individually correct, and only
+# opening the card showed the learner being given two ways to answer it with the
+# answer spelled out in the word bank's pills.
+pager = "src/app/lessons/pager/LessonPager.tsx"
+src = open(pager, encoding="utf-8").read()
+check('ex.kind !== "mcq" && !ex.segments' in src,
+      "the typed input and word bank are suppressed on a segmented card",
+      f"{pager} renders the word bank for a segmented cloze as well as its own "
+      "choice rows — two ways to answer one card, with the answer printed in "
+      "the pills")
+
+check("metaLeaksAnswer(x.meta" in open("src/app/lessons/pager/buildCards.tsx", encoding="utf-8").read(),
+      "buildCards drops a meta line that would print a blanked answer",
+      "buildCards no longer guards the context line, so a ★★ card can print "
+      "the verb it is about to ask for")
 
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:

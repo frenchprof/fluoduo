@@ -29,7 +29,7 @@ import { gappedItems } from "@/lib/collections/gramMarathonReady";
 import { gapSentence, gapSentenceEn } from "@/lib/collections/gapSentence";
 import { splitGap } from "@/lib/practice/cloze";
 import { rampFor, type EntryLevel, type ExerciseKind } from "@/lib/lessonEntry";
-import { multiBlankCard, type ClozeSegment } from "@/content/lessons/native/cloze";
+import { metaLeaksAnswer, multiBlankCard, type ClozeSegment } from "@/content/lessons/native/cloze";
 import { shuffle } from "@/lib/shuffle";
 
 /** A Mémo is one card, so a lesson carries exactly one rule card before the
@@ -250,9 +250,17 @@ function lessonSupply(
           // generator produce exactly the card they produced yesterday.
           const multi = multiBlankCard(x, entry);
           if (multi) {
+            // THE PROMPT MAY NOT PRINT ITS OWN ANSWER. `meta` is a context line
+            // the generator wrote for the single-blank card — aimer's is
+            // "Tu adores … (love)" — and at ★★ the verb is one of the blanks,
+            // so that line hands the learner the answer it is about to ask for.
+            // Found by opening the card, not by reading the code; the same
+            // fault verify35 and verify56 were written for.
+            const blanked = multi.segments.flatMap((sg) => (sg.kind === "blank" ? [sg.answer] : []));
             return {
               kind, itemId: x.correct, activity: `lesson:${activityKey}`,
-              meta: x.meta, big: x.big, en: x.en,
+              meta: metaLeaksAnswer(x.meta, blanked) ? undefined : x.meta,
+              big: x.big, en: x.en,
               segments: multi.segments, answer: multi.answer,
               bankPool: x.easyOptions, say: x.correct,
             };

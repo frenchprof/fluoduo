@@ -160,3 +160,26 @@ export function multiBlankCard(
   const answers = segments.flatMap((s) => (s.kind === "blank" ? [s.answer] : []));
   return { segments, answer: answers.join(" ") };
 }
+
+/**
+ * Does this context line hand the learner an answer the card is about to ask
+ * for?
+ *
+ * FOUND BY OPENING THE CARD, NOT BY READING THE CODE. `aimer`'s `meta` is
+ * "Tu adores … (love)" — perfectly correct for the single-blank card, where the
+ * verb is shown and the article is the question. At ★★ the verb is one of the
+ * blanks, so the same line prints the answer directly above the gap. It is the
+ * fault verify35 and verify56 exist for, arriving through a door neither was
+ * watching.
+ *
+ * Word-bounded on purpose, and not with `\b`: an accented French word is not
+ * made of ASCII word characters, so `\baime\b` does not fire on "j'aime" the
+ * way a reader expects. The delimiters are spelled out instead.
+ */
+export function metaLeaksAnswer(meta: string | undefined, answers: readonly string[]): boolean {
+  if (!meta) return false;
+  return answers.some((a) => {
+    const esc = a.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    return new RegExp(`(^|[\\s'’])${esc}([\\s.,!?]|$)`, "i").test(meta);
+  });
+}
