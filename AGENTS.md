@@ -71,3 +71,18 @@ used in CI.
   endpoints do not run locally.
 - **Deploying** is Dan's, from his machine: `git pull && git push live main`,
   where `live` is the Cloudflare Pages remote. Agents push to `origin` only.
+
+# Multi-agent rules (2026-08-31)
+
+Read **THE ROSTER** at the top of `docs/STATUS.md` before starting work —
+lanes are assigned there and integration work (branch audits, renumbering,
+closures, merges of others' work) belongs to the integration lane only.
+
+**Claiming a verify number:** scan EVERY remote branch, never just `main` —
+an in-flight number is precisely what main cannot show you. Four collisions
+have already happened (31, 52 twice, 60):
+
+```
+for b in $(git for-each-ref --format='%(refname:short)' refs/remotes/origin); do
+  git ls-tree --name-only $b verify/; done | grep -o 'verify[0-9]*' | sort -u
+```
