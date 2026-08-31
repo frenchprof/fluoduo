@@ -11,6 +11,35 @@ Only ONE agent edits this file at a time; say so in your commit.
 - `main` on `frenchprof/fluoduo` (origin) — the working repo.
 - Production = `dckg/fluo` (remote `live`), Cloudflare Pages project
   `fluolingo-dot-com` auto-builds its `main`. **Deploy = `git push live main`.**
+- 31 Aug (Claude Code) — **SORTING KEPT AND FIXED; `transfer` FOUND TO BE
+  STRUCTURALLY UNREACHABLE.** Dan answered "all YES" to keeping Sorting, the
+  `transfer` rule, and phrase banks for the ateliers.
+  **SORTING STAYS, and the wording was the whole fault.** Three decks asked the
+  learner to choose a form that was sitting in the prompt — `partitifs` in ALL
+  EIGHT of its questions, in the deck for the unit that teaches the partitive.
+  `hideAnswer` (lib/practice/engine.ts) blanks the correct column's form out of
+  the DISPLAYED prompt, so « Je mange du pain. » becomes « Je mange ___ pain. »
+  33 of 554 questions, 3 decks; the other 28 sort bare words and are untouched.
+  Fixed in the engine, not in 33 items, because the fault is structural: any
+  deck sorting SENTENCES by a form they contain gives every question away.
+  **Why keeping it was right:** `UnitSection.tsx:37` falls back to Sorting when
+  a stop has no authored pre-test — **31 of the 50 stops**, none of which has
+  an authored one as well. Retiring it would have removed the pre-test door
+  from 31 stops. It also tests far more than articles: 11 of the 31 decks are
+  article/gender/number, the other 20 are phonology (alphabet), register
+  (tu-vous, salutations), verb forms (avoir-etats), syntax, semantics and
+  number morphology.
+  **`transfer` IS NOT BUILDABLE, and nothing was built.** Dan's rule ("any deck
+  other than the one that taught it") cannot fire: `item -> deck -> outcome` is
+  1:1 — 894 curated items, NONE claimed by two decks — so an outcome belongs to
+  exactly one deck by construction and has no other deck to be met in. The only
+  cross-deck activities are the Reviser and the finale, both already `delayed`.
+  Unlocking it needs a cross-deck `rule:` tag namespace (today's `col:` tags are
+  deck-local: `col:des` is the partitive in `partitifs` and the indefinite
+  plural in `commerces`). Written up in evidence.ts and verify53, including the
+  instruction NOT to loosen the rule to make it fire.
+  **Still open for Dan:** the atelier phrase banks (he said yes; drafting has
+  not started), and `git push live main` — nothing from 30-31 Aug is deployed.
 - 31 Aug (Claude Code) — **AN AGENT WROTE WRONG FRENCH INTO THE UNIT THAT
   TEACHES THE RULE.** Fixing SIO-049 (a restaurant review naming no dish) I
   added « Je prends toujours LE poisson » and justified it in the file as the
