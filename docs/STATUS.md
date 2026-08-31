@@ -2883,6 +2883,59 @@ The lesson is the mirror, not the CSS: a left→right sweep over a stylesheet
 will hit declarations that were already on the correct side. Mirroring is not a
 find-and-replace.
 
+## 31 Aug — the first Tier 3 concept, and whether the format survives it
+
+Peers and this session independently reached the same conclusion: Tier 3 is the
+hole, and one phrase stop must be written before six ateliers are drafted to a
+shape that might have to move. Dan agreed. This is that one.
+
+**Stop chosen: SIO-009 Greetings (`salutations`).** The six ateliers have no
+native lesson file at all, so a concept cannot sit on one yet; of the nine phrase
+stops, this is the sharpest test — eleven fixed blocks, no rule under them, and a
+learner who knows `aller` will try to analyse « ça va ? » and get nothing.
+
+### What the test was actually asking
+
+Tiers 1 and 2 both argue about a SYSTEM: a rule the forms hide, a distinction the
+word list cannot state. `SYLLABUS_TIERS.md` is explicit that Tier 3 has no such
+system, and that analysing a block into parts is *"actively wrong at this level"*.
+So the question was not whether the slots would compile — it was whether they
+would ask for the wrong thing.
+
+**They hold, and what changes is what fills them.** The move is from FORM to
+MOMENT:
+- `flow` branches on the SITUATION (arriving or leaving? how well do you know
+  them? when will you meet again?), not on the shape of a word.
+- `pitfall` contrasts WHEN a block is said, not what it is made of —
+  « Bonne nuit ! » is bedtime, not any goodbye after dark.
+- `contrast` still lands on English logic, because English genuinely does merge
+  moments French keeps apart: *good night* both ends an evening and sends someone
+  to bed; « Salut ! » is the only French block that works at both ends.
+
+**Peers' worry about `enchanté` turns out to be answerable, and the escape hatch
+already shipped.** Their objection was that a phrase has no English logic to set
+a contrast against. Sometimes true — and `pitfallHeads` (added in #86, because
+`aliments` contrasts what the ARTICLE suggests with what is true) already makes
+both column headings overridable. Where a block genuinely has no English
+counterpart, the heads move; the slot does not.
+
+### A rendering fault the types could not catch
+
+`<i lang="fr">Bonne nuit !</i> — and only there.` rendered as
+`Bonne nuit !— and only there.` The plain space after `</i>` was dropped; `{" "}`
+fixes it. **This was NOT a fleet-wide problem** — all fifteen concepts were then
+rendered and scanned for a word character jammed against an em dash, and the
+other fourteen were clean. Checked before reporting, because "shipped concepts
+may all be broken" would have been a much louder and entirely wrong claim.
+
+Driven at 390×844: six tabs, Concept present, no horizontal overflow, no page
+errors, every slot rendering — and the mini-check answers correctly staying
+hidden until asked for.
+
+**Still Dan's to approve.** Sixteen sentences of drafted English and eleven
+French blocks, every one of them already in the file's own `SITS` or `bonus`.
+No new French.
+
 ## 31 Aug — Sorting: two agents, same bug, one hour apart
 
 Peers and this session both found Sorting's mistag and both opened a PR for it

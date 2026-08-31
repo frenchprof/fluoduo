@@ -67,6 +67,99 @@ export const salutationsLesson: NativeLesson = {
       };
     },
   },
+  // ── TIER 3 · the first Phraseology concept ────────────────────────────
+  // Written 2026-08-31 to test whether LessonConcept can carry a PHRASE stop
+  // at all. Tiers 1 and 2 argue about a system: a rule the forms hide, a
+  // distinction the word list cannot state. Tier 3 has no system to expose —
+  // SYLLABUS_TIERS is explicit that analysing a block into parts is "actively
+  // wrong at this level". So the slots stay, and what fills them moves from
+  // FORM to MOMENT: `flow` branches on the situation rather than the shape of
+  // a word, and `pitfall` contrasts WHEN a block is said rather than what it
+  // is made of. Every phrase below is already in SITS or `bonus`; nothing here
+  // is new French.
+  concept: {
+    subtitle: "Why a greeting is chosen, not built",
+    contrast: (
+      <>
+        English lets one phrase cover several moments — <i>good night</i> both ends an
+        evening and sends someone to bed, and <i>see you</i> needs nothing added. French
+        keeps a separate block for each moment, and the block is fixed: you do not
+        assemble <i lang="fr">&Agrave; demain !</i> out of pieces, you reach for it because
+        you will see them tomorrow.
+      </>
+    ),
+    question: (
+      <>
+        You know all eleven greetings. It is 22 h and you are going to bed. Which one?
+      </>
+    ),
+    answer: (
+      <>
+        <i lang="fr">Bonne nuit !</i>{" "}— and only there. It is not the evening&rsquo;s
+        goodbye. Leaving in the day is <i lang="fr">Bonne journ&eacute;e !</i>, and{" "}
+        <i lang="fr">Bonne nuit !</i> is kept for bedtime. English <i>good night</i> does
+        both jobs, which is exactly why the instinct is to reuse it.
+      </>
+    ),
+    pitfall: [
+      {
+        label: <><i lang="fr">Bonne nuit !</i></>,
+        wrong: <>any goodbye after dark</>,
+        right: <>bedtime only</>,
+      },
+      {
+        label: <><i lang="fr">Salut !</i></>,
+        wrong: <>hello</>,
+        right: <>hello <b>and</b> goodbye — friends</>,
+      },
+      {
+        label: <><i lang="fr">Enchant&eacute; !</i></>,
+        wrong: <>whenever you meet someone</>,
+        right: <>the first meeting</>,
+      },
+    ],
+    flow: [
+      { depth: 0, text: "Arriving, or leaving?" },
+      { depth: 1, text: "Arriving, a friend → Salut ! · Coucou !" },
+      { depth: 1, text: "Arriving, anyone else → Bonjour ! · Bonsoir ! in the evening" },
+      { depth: 1, text: "Leaving — do you know when you will meet again?" },
+      { depth: 2, text: "tomorrow → À demain !" },
+      { depth: 2, text: "soon → À bientôt !" },
+      { depth: 2, text: "later the same day, friends → À plus tard !" },
+      { depth: 2, text: "you do not know → Au revoir !" },
+    ],
+    check: [
+      {
+        q: <><i lang="fr">Salut !</i> is in both halves of the M&eacute;mo. Is that a mistake?</>,
+        a: (
+          <>
+            No — it is the one block that does both jobs. Hello <b>and</b> goodbye, and
+            only with friends.
+          </>
+        ),
+      },
+      {
+        q: <>You leave the bakery at 10 h. Which one?</>,
+        a: (
+          <>
+            <i lang="fr">Bonne journ&eacute;e !</i> — a wish for the day ahead.{" "}
+            <i lang="fr">Bonne nuit !</i> would send the baker to bed.
+          </>
+        ),
+      },
+    ],
+    inShort: (
+      <>
+        arriving or leaving &middot; how well you know them &middot; when you meet again
+      </>
+    ),
+    remember: (
+      <>
+        A greeting is not built, it is chosen: the moment picks the block. And{" "}
+        <i lang="fr">Salut !</i> is the only one that works at both ends.
+      </>
+    ),
+  },
   bonus: [
     { en: "Hello! (to the teacher, in the morning)", fr: "Bonjour !" },
     { en: "Good evening! (arriving at 8 pm)", fr: "Bonsoir !" },
