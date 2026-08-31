@@ -12,6 +12,59 @@ import { NOMBRES_AXES, nombresQuestion } from "./nombres-echanges.gen";
 
 export const nombresEchangesLesson: NativeLesson = {
   slug: "nombres-echanges",
+  // TIER 2 CONCEPT — a question the WORD LIST cannot answer. Lifted from the
+  // Mémo below; no grammar introduced that it does not teach. DRAFTED —
+  // `contrast` and `remember` are the pedagogical claim and go to Dan first.
+  concept: {
+    subtitle: "Why in French you HAVE your age",
+    contrast: (
+      <>
+        English <b>is</b> an age — <i>I am twenty-five</i>. French <b>has</b> one:{" "}
+        <i lang="fr">j&rsquo;ai vingt-cinq ans</i>. And where English can stop at the
+        number, French cannot: <i lang="fr">ans</i> is obligatory.
+      </>
+    ),
+    question: (
+      <>
+        Why <i lang="fr">j&rsquo;ai vingt-cinq ans</i> and never{" "}
+        <i lang="fr">je suis vingt-cinq</i>?
+      </>
+    ),
+    answer: (
+      <>
+        Because French counts age as something you possess, not something you are. The
+        verb is <i lang="fr">avoir</i>, and the years must be named —{" "}
+        <i lang="fr">j&rsquo;ai vingt-cinq</i> alone is not a sentence.
+      </>
+    ),
+    pitfall: [
+      { label: <>age</>, wrong: <i lang="fr">je suis vingt-cinq</i>, right: <i lang="fr">j&rsquo;ai vingt-cinq ans</i> },
+      { label: <>dropping <i lang="fr">ans</i></>, wrong: <i lang="fr">j&rsquo;ai vingt-cinq</i>, right: <i lang="fr">j&rsquo;ai vingt-cinq ans</i> },
+      { label: <>a woman, 21</>, wrong: <i lang="fr">trente et un personnes</i>, right: <i lang="fr">trente et une personnes</i> },
+    ],
+    check: [
+      {
+        q: <>Why <i lang="fr">trente et une personnes</i> with an <i lang="fr">-e</i>?</>,
+        a: (
+          <>
+            <i lang="fr">Un</i> is the one number that agrees, and{" "}
+            <i lang="fr">personne</i> is feminine. Every other number is invariable.
+          </>
+        ),
+      },
+      {
+        q: <>How do you ask a price?</>,
+        a: <><i lang="fr">C&rsquo;est combien ?</i> — and <i lang="fr">euro</i> takes its <i lang="fr">-s</i> in the plural.</>,
+      },
+    ],
+    inShort: (
+      <>
+        <i lang="fr">avoir</i> + number + <i lang="fr">ans</i> · only{" "}
+        <i lang="fr">un</i> agrees
+      </>
+    ),
+    remember: <>In French you <b>have</b> your age — and you must say <i lang="fr">ans</i>.</>,
+  },
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">

@@ -19,6 +19,66 @@ const Row = ({ n, fr, sum }: { n: number; fr: string; sum: string }) => (
 
 export const soixanteDixLesson: NativeLesson = {
   slug: "soixante-dix",
+  // TIER 2 CONCEPT — a question the WORD LIST cannot answer. Lifted from the
+  // Mémo below; no grammar introduced that it does not teach. DRAFTED —
+  // `contrast` and `remember` are the pedagogical claim and go to Dan first.
+  concept: {
+    subtitle: "Why 80 has an -s and 81 does not",
+    contrast: (
+      <>
+        English has a separate word for every ten — <i>seventy</i>, <i>eighty</i>,{" "}
+        <i>ninety</i>. French builds them by arithmetic:{" "}
+        <i lang="fr">soixante-dix</i> is 60+10 and{" "}
+        <i lang="fr">quatre-vingts</i> is 4&times;20. The plural{" "}
+        <i lang="fr">-s</i> is part of that sum, which is why it comes and goes.
+      </>
+    ),
+    question: (
+      <>
+        Why <i lang="fr">quatre-vingts</i> with an <i lang="fr">-s</i>, but{" "}
+        <i lang="fr">quatre-vingt-un</i> without?
+      </>
+    ),
+    answer: (
+      <>
+        Because <i lang="fr">quatre-vingts</i> means exactly four twenties — a finished
+        count, so the twenties are plural. The moment anything follows, the sum is no
+        longer exact and the <i lang="fr">-s</i> goes.
+      </>
+    ),
+    pitfall: [
+      { label: <>exactly 80</>, wrong: <i lang="fr">quatre-vingt</i>, right: <i lang="fr">quatre-vingts</i> },
+      { label: <>81</>, wrong: <i lang="fr">quatre-vingts-un</i>, right: <i lang="fr">quatre-vingt-un</i> },
+      { label: <>90</>, wrong: <i lang="fr">quatre-vingts-dix</i>, right: <i lang="fr">quatre-vingt-dix</i> },
+    ],
+    flow: [
+      { depth: 0, text: "Does anything follow quatre-vingt?" },
+      { depth: 1, text: "no  → quatre-vingts" },
+      { depth: 1, text: "yes → quatre-vingt-…" },
+    ],
+    check: [
+      {
+        q: <>Write 95.</>,
+        a: <><i lang="fr">quatre-vingt-quinze</i> — something follows, so no <i lang="fr">-s</i>.</>,
+      },
+      {
+        q: <>Why is 70 <i lang="fr">soixante-dix</i> and not a word of its own?</>,
+        a: <>Because French counts it as 60 + 10. The arithmetic is visible in the word.</>,
+      },
+    ],
+    inShort: (
+      <>
+        70 = 60+10 · 80 = 4&times;20 · the <i lang="fr">-s</i> only on{" "}
+        <i lang="fr">quatre-vingts</i> alone
+      </>
+    ),
+    remember: (
+      <>
+        The <i lang="fr">-s</i> on <i lang="fr">quatre-vingts</i> survives only when
+        nothing follows it.
+      </>
+    ),
+  },
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">

@@ -11,6 +11,68 @@ import { LANGUES_AXES, languesPaysQuestion } from "./langues-pays.gen";
 
 export const languesPaysLesson: NativeLesson = {
   slug: "langues-pays",
+  // TIER 2 CONCEPT — a question the WORD LIST cannot answer. Lifted from the
+  // Mémo below; no grammar introduced that it does not teach. DRAFTED —
+  // `contrast` and `remember` are the pedagogical claim and go to Dan first.
+  concept: {
+    subtitle: "Why the language loses its article and the country keeps its gender",
+    contrast: (
+      <>
+        English treats both as bare names — <i>they speak French</i>, <i>in France</i>.
+        French does the opposite in each case: the language <b>drops</b> its article after{" "}
+        <i lang="fr">parler</i>, while the country&rsquo;s own gender <b>chooses</b> the
+        little word in front of it.
+      </>
+    ),
+    question: (
+      <>
+        Why <i lang="fr">le français</i> on its own, but <i lang="fr">on parle français</i>{" "}
+        — and why <i lang="fr">en France</i> yet <i lang="fr">au Portugal</i>?
+      </>
+    ),
+    answer: (
+      <>
+        After <i lang="fr">parler</i> the language needs no article. The preposition is a
+        separate question, decided by the country: feminine takes{" "}
+        <i lang="fr">en</i>, masculine <i lang="fr">au</i>, plural{" "}
+        <i lang="fr">aux</i>, and a few small ones just <i lang="fr">à</i>.
+      </>
+    ),
+    pitfall: [
+      { label: <>after <i lang="fr">parler</i></>, wrong: <i lang="fr">on parle le français</i>, right: <i lang="fr">on parle français</i> },
+      { label: <>feminine country</>, wrong: <i lang="fr">au France</i>, right: <i lang="fr">en France</i> },
+      { label: <>masculine country</>, wrong: <i lang="fr">en Portugal</i>, right: <i lang="fr">au Portugal</i> },
+    ],
+    flow: [
+      { depth: 0, text: "Which country?" },
+      { depth: 1, text: "feminine → en" },
+      { depth: 1, text: "masculine → au" },
+      { depth: 1, text: "plural → aux" },
+      { depth: 1, text: "a city or small island → à" },
+    ],
+    check: [
+      {
+        q: <>How do you say <i>in the United States</i>?</>,
+        a: <><i lang="fr">aux États-Unis</i> — the name is plural, so the preposition is too.</>,
+      },
+      {
+        q: <>Does the language keep its article in <i lang="fr">j&rsquo;aime le français</i>?</>,
+        a: (
+          <>
+            Yes — the article only drops after <i lang="fr">parler</i>. With{" "}
+            <i lang="fr">aimer</i> you are naming the whole category, so it stays.
+          </>
+        ),
+      },
+    ],
+    inShort: (
+      <>
+        <i lang="fr">parler</i> + language, bare · <i lang="fr">en</i> /{" "}
+        <i lang="fr">au</i> / <i lang="fr">aux</i> / <i lang="fr">à</i> + country
+      </>
+    ),
+    remember: <>The language loses its article. The country keeps its gender.</>,
+  },
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">

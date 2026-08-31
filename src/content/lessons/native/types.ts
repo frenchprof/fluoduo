@@ -110,8 +110,16 @@ export type LessonConcept = {
   question: ReactNode;
   /** One sentence, then the worked instance. */
   answer: ReactNode;
-  /** ⚠ The pitfall: what English logic predicts, against what French does. */
+  /** ⚠ The pitfall: what the learner's instinct predicts, against what French
+   *  does. Usually that instinct IS English logic, which is why the columns
+   *  are headed that way by default. Not always: a Tier 2 concept about
+   *  hidden gender contrasts what the ARTICLE suggests with what is true, and
+   *  nothing about it is English. Override the two headings there — a column
+   *  head that mislabels its own contents teaches the wrong contrast. */
   pitfall?: { label: ReactNode; wrong: ReactNode; right: ReactNode }[];
+  /** [wrong-column heading, right-column heading]. Defaults to
+   *  ["English logic", "French logic"]. */
+  pitfallHeads?: [string, string];
   /** The branching rule as a learner runs it. `depth` indents the line. */
   flow?: { depth: number; text: string }[];
   /** ✅ Mini-check — questions whose answers stay hidden until asked for. */
