@@ -142,8 +142,8 @@ check("▶" not in home and "⏸" not in home and "⏹" not in home,
       "no typed transport character on Home — inline, those read as audio",
       "a typed ▶/⏸/⏹ is back on Home, where it reads as 'this will speak'")
 check('d="M6 3.5 L22 13 L6 22.5 Z"' in home,
-      "Play is the DRAWN key from Dan's draft — the approved form, 27 Aug",
-      "Home's drawn Play key is gone; a later session reverted Dan's own design")
+      "Continue (né Play, renamed 2026-08-31) is the DRAWN key from Dan's draft",
+      "Home's drawn Continue key is gone; a later session reverted Dan's own design")
 check("🔁" not in home,
       "no 🔁 on Home — the Review tab carries that destination",
       "the 🔁 is back, duplicating the Review tab and ÉcouTexte's 'again'")
@@ -153,8 +153,8 @@ check('href="/reviser"' in home,
       "Rewind points at /reviser — repeat your errors",
       "Rewind lost its /reviser destination")
 check("activeSio.unit}#${activeSio.id}" in home,
-      "Play continues the course at the current stop (old Continue's job)",
-      "Play no longer opens the current stop")
+      "Continue opens the current stop (renamed from Play 2026-08-31 — Dan freed the\n      word when the games family became Games, so no two doors share a name)",
+      "Continue no longer opens the current stop")
 check("dueCount > 0" in home,
       "Rewind carries the due count — the one deadline on Home",
       "the due badge left Rewind; the deadline is invisible again")

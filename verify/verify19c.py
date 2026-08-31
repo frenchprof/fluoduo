@@ -77,7 +77,7 @@ check("truncate" not in guide_code,
 # under it are now PRACTICE. It carries no `family: "goals"` row on purpose,
 # and the Menu grid iterates ACTIVITIES directly, so nothing renders empty.
 OBJECTIVE_FAMILIES = {"goals"}
-fams = set(re.findall(r'\{ key: "([a-z]+)", name: "FluOlin', reg))
+fams = set(re.findall(r'\{ key: "([a-z]+)", name: "FluOL?in', reg))
 fam_of = re.findall(r'family: "([a-z]+)"', reg)
 empty = sorted(fams - set(fam_of) - OBJECTIVE_FAMILIES)
 check(fams and not empty,

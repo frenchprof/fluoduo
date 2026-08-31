@@ -3,7 +3,7 @@ import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 import HistoryContent from "./HistoryContent";
 
 /** ⌛ Full activity history — the door at the foot of the profile. */
-export const metadata = { title: "My History — FluOlinGo" };
+export const metadata = { title: "My History — FluOLinGo" };
 
 export default function Page() {
   return (

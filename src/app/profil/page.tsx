@@ -13,7 +13,7 @@ import ProfileContent from "@/components/ProfileContent";
  * because it is linked from the account chip, printed handouts and old
  * bookmarks — a live page beats a hop.
  */
-export const metadata = { title: "My Profile — FluOlinGo" };
+export const metadata = { title: "My Profile — FluOLinGo" };
 
 export default function Page() {
   return (

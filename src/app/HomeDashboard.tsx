@@ -70,7 +70,7 @@ const BYLINE_STROKES = [
 export default function HomeDashboard() {
   const [progress, setProgress] = useState<Progress>(defaultProgress());
   // Armed on mount: nothing pops up by default (Dan, 2026-07-14), so the
-  // FluOlinGo brand animation plays on a clear stage right away.
+  // FluOLinGo brand animation plays on a clear stage right away.
   const [heroPlay, setHeroPlay] = useState(false);
   // Once the stroke has played, the ink is pinned by class — engines can
   // drop a finished animation's fill state (Dan, 2026-07-14: "the color
@@ -153,11 +153,11 @@ export default function HomeDashboard() {
   return (
     <>
       {/* The REPORT CARD hero (Dan, 2026-08-19: "minimalist, no status bar,
-          a bit like a report card but horizontally"; Design's "FluOlinGo Home
+          a bit like a report card but horizontally"; Design's "FluOLinGo Home
           standalone" ref). This REVERSES the 11 Aug hero shrink — Dan's call,
           made from the Design reference twice over.
           What went: the two hairline progress bars ("no status bar") and the
-          chip rail. What came back: the « Bienvenue sur FluOlinGo » heading
+          chip rail. What came back: the « Bienvenue sur FluOLinGo » heading
           with its brand animation and written byline.
           What arrived: one horizontal strip of figures — value over label,
           hairline dividers between — read across like a report card's row of
@@ -180,13 +180,13 @@ export default function HomeDashboard() {
           <span className="whitespace-nowrap">Bienvenue sur</span>{" "}
           <span
             className={`fluo-brand${heroPlay ? " is-play" : ""}${inkDone ? " is-inked" : ""}`}
-            aria-label="FluOlinGo"
+            aria-label="FluOLinGo"
             onAnimationEnd={(e) => {
               if (e.animationName === "fluo-brand-hl") setInkDone(true);
             }}
           >
             <span aria-hidden>
-              {"FluOlinGo".split("").map((ch, i) => (
+              {"FluOLinGo".split("").map((ch, i) => (
                 <span key={i} className="fluo-brand-letter" style={{ animationDelay: `${0.1 + i * 0.05}s` }}>
                   {ch}
                 </span>
@@ -266,8 +266,8 @@ export default function HomeDashboard() {
           {activeSio && (
             <Link
               href={`/unit/${activeSio.unit}#${activeSio.id}`}
-              aria-label={`Play — ${activeSio.topic}, your stop on the study path`}
-              title={`Play — « ${activeSio.topic} », your stop on the study path`}
+              aria-label={`Continue — ${activeSio.topic}, your stop on the study path`}
+              title={`Continue — « ${activeSio.topic} », your stop on the study path`}
               className={`neo-key grid h-[50px] w-[50px] place-items-center rounded-[15px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]${doneTotal === 0 ? " fluo-play-halo" : ""}`}
               style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-win) 55%, white) 0%, var(--dopa-win) 52%, color-mix(in oklab, var(--dopa-win) 70%, black) 100%)" }}
             >

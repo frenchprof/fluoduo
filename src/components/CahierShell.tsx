@@ -86,7 +86,7 @@ export default function CahierShell({
   const bandKey = bandOf(active);
 
   // Per-page browser-tab title (audit 2026-07-19: every page announced
-  // itself as just "FluOlinGo" — tabs, history, bookmarks and screen-reader
+  // itself as just "FluOLinGo" — tabs, history, bookmarks and screen-reader
   // page announcements were indistinguishable). The active flap's label IS
   // the page's name; deck/context pages fall back to their first context
   // flap, then to the registry (patch 19c retired the `crumb` prop, whose
@@ -97,11 +97,11 @@ export default function CahierShell({
     context[0]?.label ??
     activity(active)?.name ??
     // A family hub is not an activity and has no flap, so without this its
-    // browser tab would say plain "FluOlinGo" — the fault the per-page title
+    // browser tab would say plain "FluOLinGo" — the fault the per-page title
     // was introduced to end.
     (hub && familyShort(hub));
   useEffect(() => {
-    document.title = pageLabel ? `${pageLabel} · FluOlinGo` : "FluOlinGo";
+    document.title = pageLabel ? `${pageLabel} · FluOLinGo` : "FluOLinGo";
   }, [pageLabel]);
 
   const nested = context.length > 0;
@@ -200,7 +200,7 @@ export default function CahierShell({
           {!nested && <div className="cahier-binding" aria-hidden />}
           {!nested && edgeGrip}
 
-          {/* The site bar — ☰ · ← FluOlinGo · icons. It used to be written
+          {/* The site bar — ☰ · ← FluOLinGo · icons. It used to be written
               out here, which is exactly why only CahierShell pages had it;
               DrillShell mounts the same component now (Dan, 2026-08-31). */}
           <SiteTopBar active={active} tabs={tabs} topRight={topRight} nested={nested} />

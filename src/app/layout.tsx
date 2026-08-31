@@ -62,7 +62,7 @@ const patrickHand = Patrick_Hand({
   display: "swap",
 });
 
-// FluOlinGo Hand — Dan's own brand hand-lettering (uploaded 2026-08-23), the
+// FluOLinGo Hand — Dan's own brand hand-lettering (uploaded 2026-08-23), the
 // face of the page heading bands: what the design handoff's headers were
 // drawn in, now served from the repo instead of approximated by Patrick Hand.
 // TWO WEIGHTS, from ONE build (2026-08-31). PR #95 shipped the complete
@@ -84,9 +84,9 @@ const fluoHand = localFont({
 
 export const metadata: Metadata = {
   // Template so every page can name itself in tabs/history/bookmarks
-  // (audit 2026-07-19: every page was just "FluOlinGo"). Client pages set
+  // (audit 2026-07-19: every page was just "FluOLinGo"). Client pages set
   // theirs via CahierShell; server pages via metadata/generateMetadata.
-  title: { default: "FluOlinGo", template: "%s · FluOlinGo" },
+  title: { default: "FluOLinGo", template: "%s · FluOLinGo" },
   // LAF1201 STAYS (decided 2026-08-17, UI_WORK_PLAN_1 loose bugs): it is the
   // course code students and Google search for; English first, the code
   // second, no French in the description (English-first chrome rule).
@@ -99,7 +99,7 @@ export const metadata: Metadata = {
   other: { google: "notranslate" },
   // iOS ignores the manifest's icons — it wants its own link tag (Apple has
   // never implemented `purpose: maskable` either, hence the separate art).
-  appleWebApp: { capable: true, title: "FluOlinGo", statusBarStyle: "default" },
+  appleWebApp: { capable: true, title: "FluOLinGo", statusBarStyle: "default" },
   icons: { apple: "/icons/apple-touch-icon.png" },
 };
 
@@ -131,7 +131,7 @@ export default function RootLayout({
             students — say so, on every page. mt-auto pins it to the bottom
             of the flex column when content is short. */}
         <footer className="mt-auto px-4 pb-3 pt-6 text-center text-[11px] leading-relaxed text-neutral-500">
-          FluOlinGo · built by Dr Daniel Chan, NUS Centre for Language Studies · answers and activity are
+          FluOLinGo · built by Dr Daniel Chan, NUS Centre for Language Studies · answers and activity are
           recorded for learning analytics · <a href="/about" className="underline">about</a>
         </footer>
         <FeedbackButton />

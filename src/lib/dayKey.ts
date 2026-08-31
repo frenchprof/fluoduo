@@ -10,7 +10,7 @@
  *    product disagreed about the date by eight hours. Live reconciliation
  *    found 4 of 19 active learners (21%) holding a lastActiveDay one day
  *    earlier than their real activity, all of them late-night studiers whose
- *    00:00–08:00 SGT sessions landed on the previous UTC date. FluOlinGo is
+ *    00:00–08:00 SGT sessions landed on the previous UTC date. FluOLinGo is
  *    now global, so a UTC boundary would misplace every learner outside
  *    UTC±0, not just Singapore's night owls.
  *

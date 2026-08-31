@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * The site bar — ☰ · ← FluOlinGo · icons — and the one definition of it.
+ * The site bar — ☰ · ← FluOLinGo · icons — and the one definition of it.
  *
  * WHY IT IS ITS OWN COMPONENT (2026-08-31). Dan: *"many pages are missing that
  * menu and other links in the area above the coloured header strip. can you
@@ -180,7 +180,7 @@ export default function SiteTopBar({
           )}
         </div>
         <Link href="/" className="cahier-display min-w-0 shrink truncate text-lg font-black text-[color:var(--cahier-ink)]">
-          {active !== "home" && <>← </>}<span className="cahier-hl">FluOlinGo</span>
+          {active !== "home" && <>← </>}<span className="cahier-hl">FluOLinGo</span>
         </Link>
         {/* Yield slot 1 — shrinks and truncates before anything else. */}
         {topRight && (
@@ -192,7 +192,7 @@ export default function SiteTopBar({
               word search lives in the Index's own box, the ranking on
               /leaderboard. */}
           <SoundControl />
-          {/* 🏠 yields below sm — the ← FluOlinGo link is the home
+          {/* 🏠 yields below sm — the ← FluOLinGo link is the home
               door there, and it was pushing the ☰ off a phone screen
               (Dan, 2026-07-15). */}
           {/* !important — .cahier-btn's own display rule beats a bare

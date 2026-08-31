@@ -6,7 +6,7 @@ import type { MetadataRoute } from "next";
 export const dynamic = "force-static";
 
 /**
- * The web app manifest — what makes FluOlinGo installable.
+ * The web app manifest — what makes FluOLinGo installable.
  *
  * Until this file existed there was NO way back in. No manifest, no service
  * worker, no notification of any kind: a student on a phone had no icon to
@@ -24,8 +24,8 @@ export const dynamic = "force-static";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/",
-    name: "FluOlinGo — French A1 for LAF1201",
-    short_name: "FluOlinGo",
+    name: "FluOLinGo — French A1 for LAF1201",
+    short_name: "FluOLinGo",
     description:
       "French A1 practice for NUS LAF1201 — vocabulary games, speech drills, spaced revision and an AI tutor.",
     start_url: "/",
