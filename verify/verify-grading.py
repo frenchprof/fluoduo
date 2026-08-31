@@ -101,7 +101,6 @@ check("gradeAgainst" in cloze and '"strict"' in cloze,
 
 GRADING_FILES = {
     "src/app/practice/flip-it/shared.tsx": "judgePart (drill + deck table)",
-    "src/app/practice/complete-it/[collectionId]/CompleteItContent.tsx": "Complete It",
     "src/app/practice/say-it/[collectionId]/SayItContent.tsx": "Say It (speech)",
     "src/app/practice/grammarathon/finale/FinaleContent.tsx": "Finale",
     "src/app/practice/speculearn/[collectionId]/SpecuLearnContent.tsx": "SpecuLearn (speech)",
@@ -128,10 +127,13 @@ check("gradeAgainst(val ?? \"\", [p.correct, ...(p.alt ?? [])])" in shared,
       "judgePart delegates letters to gradeAgainst (articles stay exact)",
       "judgePart does not grade through gradeAgainst")
 
-complete = strip_comments(read("src/app/practice/complete-it/[collectionId]/CompleteItContent.tsx"))
-check("item.alt" in complete,
-      "Complete It finally honours item.alt (schema.ts had flagged it unwired)",
-      "Complete It still ignores item.alt")
+# COMPLETE IT IS GONE, and its two rows above with it (2026-08-31). The Memo
+# ladder's Moyen and Difficile ARE one- and two-piece completion (#97), the
+# popup's door moved to Memo (#99), and Dan cut the orphan route that was left
+# ("iComplete is to be deleted"). Its `item.alt` row went too: alt answers are
+# still honoured, but by the shared grader those tiers call — every remaining
+# entry in GRADING_FILES is asserted to import it, which is the stronger claim
+# the alt row was standing in for. See verify70.
 
 finale = strip_comments(read("src/app/practice/grammarathon/finale/FinaleContent.tsx"))
 check("normA" not in finale and "normD" not in finale,

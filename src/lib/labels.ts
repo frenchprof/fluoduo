@@ -170,7 +170,18 @@ const KEY_SURFACES: Record<string, { name: string; href: (deck: string) => strin
   speculearn: { name: "SpecuLearn", href: (d) => (d ? `/practice/speculearn/${d}` : "/practice/speculearn") },
   "say-it": { name: "WorDrill", href: (d) => (d ? `/practice/say-it/${d}` : "/practice/wordrill") },
   wordrill: { name: "WorDrill", href: () => "/practice/wordrill" },
-  "complete-it": { name: "Complete It", href: (d) => (d ? `/practice/complete-it/${d}` : null) },
+  // iComplete's ROUTE IS DELETED (Dan, 2026-08-31: "iComplete is to be deleted,
+  // or at least converted to Intermediaire and Difficile within Memo"). The
+  // conversion landed first — the Memo ladder's Moyen and Difficile ARE
+  // one- and two-piece completion (#97) — so the standalone drill was the same
+  // exercise under a second name, and #99 had already taken away its door.
+  //
+  // The NAME stays and the href goes to null. Those are separate jobs and only
+  // the second one is affected by a deleted page: a learner who sat iComplete
+  // in July still has those answers in their history, and "Complete It" is what
+  // they were doing. A row that reads "(unlabelled)" would erase their work;
+  // a row that LINKS would 404. So: labelled, not linked.
+  "complete-it": { name: "Complete It", href: () => null },
   "dice-practice": { name: "Sorting", href: (d) => (d ? `/practice/dice/${d}` : null) },
   "flip-it": { name: "Flip It", href: (d) => (d ? `/practice/flip-it/${d}` : null) },
   ecoutexte: { name: "ÉcouTexte", href: () => "/practice/ecoutexte" },
@@ -315,6 +326,19 @@ export function describeActivity(raw: string | null | undefined): PathInfo {
 }
 
 /**
+ * Routes that no longer exist, whose answers are still in people's histories.
+ *
+ * A path-shaped activityId is normally its own href — that is what makes a
+ * history row clickable without a table. But `/practice/complete-it/aliments`
+ * is a real id sitting in real response documents and, since the route was
+ * deleted on 31 Aug, a 404. Naming the prefix here is the whole fix: the row
+ * keeps its label from PATH_NAMES and simply stops being a link.
+ *
+ * Prefixes, not exact paths, because the deck id is on the end of every one.
+ */
+const RETIRED_ROUTES = ["/practice/complete-it/"];
+
+/**
  * Where a labelled row should link to. Null only when there is genuinely
  * nowhere to go — which is rarer than the old `startsWith("/")` test assumed,
  * and is why key-recorded surfaces used to render as dead text.
@@ -322,6 +346,7 @@ export function describeActivity(raw: string | null | undefined): PathInfo {
 export function hrefForActivity(raw: string | null | undefined): string | null {
   if (!raw || raw === "unknown") return null;
   const id = normalizePath(raw);
+  if (RETIRED_ROUTES.some((p) => id.startsWith(p))) return null;
   if (id.startsWith("/")) return id;
   const { surface, deck } = splitKey(id);
   return surface ? surface.href(deck) : null;

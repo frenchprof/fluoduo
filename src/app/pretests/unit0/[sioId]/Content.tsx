@@ -30,9 +30,10 @@ import { SIO010_SITUATIONS, UNIT0_QUESTIONS } from "@/content/sios/unit0-questio
 export default function Unit0PretestPage({ sioId }: { sioId: string }) {
   const sio = getSio(sioId);
   if (!sio) return null;
-  // SIO-010's bank is all three audiences flattened (21), but a learner sits
-  // ONE audience's seven — the picker scopes the run. Printing 21 would promise
-  // three times the work they are about to do.
+  // SIO-010's bank is all three audiences flattened (21) and a learner now sits
+  // all three, but as three TABS of seven (Dan, 2026-08-31). So the honest line
+  // is "3 situations · 7 questions each", not a flat 21: 21 in one number reads
+  // as one very long run, which is exactly what the tabs are not.
   const count = sioId === "SIO-010"
     ? SIO010_SITUATIONS[0].questions.length
     : (UNIT0_QUESTIONS[sioId] ?? []).length;
@@ -48,9 +49,11 @@ export default function Unit0PretestPage({ sioId }: { sioId: string }) {
         <p className="fluo-serif mb-4 text-base font-bold leading-snug text-[color:var(--fluo-ink)]">
           <span className="fluo-hl">{sioStatement(sio)}</span>
         </p>
-        {/* SIO-010 picks its audience first: "how do you ask their name" has no
-            answer until you know whether you face a student, a client or a
-            group, so one shuffled pool of all 21 would be unanswerable. */}
+        {/* SIO-010 settles its audience first: "how do you ask their name" has
+            no answer until you know whether you face a student, a client or a
+            group, so one shuffled pool of all 21 would be unanswerable. Three
+            tabs rather than one pick, since 31 Aug — the tu/vous contrast is
+            this stop, and a learner who sat one audience never met it. */}
         {sioId === "SIO-010" ? <Sio010Pretest sio={sio} /> : <Unit0Questions sio={sio} />}
 
         <div className="mt-4">
@@ -58,9 +61,10 @@ export default function Unit0PretestPage({ sioId }: { sioId: string }) {
         </div>
 
         <p className="mt-6 text-center text-xs font-bold text-[color:var(--fluo-ink-soft)]">
-          {count} question{count === 1 ? "" : "s"}
-          {sioId === "SIO-010" ? " per situation" : ""} · a guess before the lesson is the
-          point — nothing here is scored.
+          {sioId === "SIO-010"
+            ? `${SIO010_SITUATIONS.length} situations · ${count} questions each`
+            : `${count} question${count === 1 ? "" : "s"}`}{" "}
+          · a guess before the lesson is the point — nothing here is scored.
         </p>
       </SectionBand>
     </CahierShell>

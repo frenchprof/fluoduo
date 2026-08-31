@@ -207,6 +207,9 @@ jobs:
       - name: "The SIO popup is the outcome and ONE list of links (31 Aug)"
         run: python3 verify/verify66-popup-collapse.py
 
+      - name: "iComplete's route is cut, and SIO-010 sits all three audiences (31 Aug)"
+        run: python3 verify/verify70-icomplete-cut-sio010-tabs.py
+
       - name: "A tour step points at something that exists (28 Aug)"
         run: python3 verify/verify44-tour-targets.py
 
