@@ -52,7 +52,7 @@ ok(len(FAMILIES) == 6, "six families parsed from the registry",
    f"expected 6 families, parsed {len(FAMILIES)} — has the shape of FAMILIES changed?")
 
 ACTIVITIES = re.findall(
-    r'\{\s*key:\s*"([a-z]+)",\s*name:\s*"([^"]+)",\s*emoji:\s*"[^"]*",\s*'
+    r'\{\s*key:\s*"([a-z]+)",\s*name:\s*"([^"]+)",\s*(?:short:\s*"[^"]*",\s*)?emoji:\s*"[^"]*",\s*'
     r'family:\s*"([a-z]+)",\s*href:\s*(?:"([^"]+)"|null)', ACT_C)
 # Floor moved 31 Aug — Dan's 16 (4x4): Sorting, iComplete, NumBus/NumBourse
 # (one Numbers hub) and My Progress all left the tile grid.

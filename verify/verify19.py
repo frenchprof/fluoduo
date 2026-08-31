@@ -40,7 +40,8 @@ css = read("src/app/globals.css")
 # Match ACTIVITIES rows only. FAMILIES rows have the same {key,name,emoji}
 # shape, so an unanchored regex counted 5 families as activities and reported
 # 25 where there are 20 (caught by this check's own first run, 2026-08-10).
-entries = re.findall(r'\{ key: "([a-z]+)", name: "([^"]+)", emoji: "([^"]+)"[^}]*family:', reg)
+# `short` (the tight-box truncation, #99) may sit between name and emoji.
+entries = re.findall(r'\{ key: "([a-z]+)", name: "([^"]+)",(?: short: "[^"]+",)? emoji: "([^"]+)"[^}]*family:', reg)
 # Floor moved 31 Aug: Sorting cut, iComplete retired, NumBus+NumBourse under
 # one Numbers hub, My Progress folded into Profile — Dan's 16 (4x4).
 check(len(entries) >= 16, f"registry has {len(entries)} activities",

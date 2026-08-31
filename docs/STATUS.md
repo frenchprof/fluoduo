@@ -37,6 +37,13 @@ lane = report it in STATUS, don't do it.
    carry on in your lane.
 6. fluoduo-main sweeps session states daily; anything stalled >24h
    (a pending permission, a need-input nobody saw) is reported to Dan.
+7. **(Dan, 31 Aug PM) Every lane pushes finished work as a PR to origin;
+   fluoduo-main quality-checks and does the merging.** Dan still reads
+   content/pedagogy and rules on decisions; the merge mechanics — conflict
+   resolution, verify sweeps, sequencing against in-flight branches — are
+   the integration lane's. Deploys stay Dan's (`git push live main`) until
+   decision 9 lands. Precipitating case: #97 and #99 cut iComplete's flap
+   from two directions on the same afternoon.
 
 ### The work, by lane (what each agent is MEANT to deliver)
 
