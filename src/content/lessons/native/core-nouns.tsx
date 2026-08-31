@@ -28,25 +28,25 @@ type Q = "qui" | "ou" | "quoi";
 /** The eighteen, exactly as core-nouns.json tags them. verify66 holds this
  *  table to the deck rather than trusting it — a flipped gender here would
  *  teach the wrong article and read as perfectly ordinary code. */
-const NOUNS: { fr: string; en: string; g: "m" | "f"; art: string; q: Q }[] = [
-  { fr: "homme",       en: "man",           g: "m", art: "un",  q: "qui" },
-  { fr: "femme",       en: "woman",         g: "f", art: "une", q: "qui" },
-  { fr: "étudiant",    en: "student (m)",   g: "m", art: "un",  q: "qui" },
-  { fr: "étudiante",   en: "student (f)",   g: "f", art: "une", q: "qui" },
-  { fr: "groupe",      en: "group",         g: "m", art: "un",  q: "qui" },
-  { fr: "classe",      en: "classroom",     g: "f", art: "une", q: "ou" },
-  { fr: "café",        en: "café",          g: "m", art: "un",  q: "ou" },
-  { fr: "région",      en: "region",        g: "f", art: "une", q: "ou" },
-  { fr: "province",    en: "province",      g: "f", art: "une", q: "ou" },
-  { fr: "sport",       en: "sport",         g: "m", art: "un",  q: "quoi" },
-  { fr: "football",    en: "football",      g: "m", art: "le",  q: "quoi" },
-  { fr: "activité",    en: "activity",      g: "f", art: "une", q: "quoi" },
-  { fr: "danse",       en: "dance",         g: "f", art: "la",  q: "quoi" },
-  { fr: "croissant",   en: "croissant",     g: "m", art: "un",  q: "quoi" },
-  { fr: "macaron",     en: "macaron",       g: "m", art: "un",  q: "quoi" },
-  { fr: "champagne",   en: "champagne",     g: "m", art: "le",  q: "quoi" },
-  { fr: "consonne",    en: "consonant",     g: "f", art: "une", q: "quoi" },
-  { fr: "nationalité", en: "nationality",   g: "f", art: "une", q: "quoi" },
+const NOUNS: { fr: string; en: string; g: "m" | "f"; art: string; q: Q; enFull: string }[] = [
+  { fr: "homme",       en: "man",           g: "m", art: "un",  q: "qui", enFull: "It's a man." },
+  { fr: "femme",       en: "woman",         g: "f", art: "une", q: "qui", enFull: "It's a woman." },
+  { fr: "étudiant",    en: "student (m)",   g: "m", art: "un",  q: "qui", enFull: "It's a student. (m.)" },
+  { fr: "étudiante",   en: "student (f)",   g: "f", art: "une", q: "qui", enFull: "It's a student. (f.)" },
+  { fr: "groupe",      en: "group",         g: "m", art: "un",  q: "qui", enFull: "It's a group." },
+  { fr: "classe",      en: "classroom",     g: "f", art: "une", q: "ou", enFull: "It's a classroom." },
+  { fr: "café",        en: "café",          g: "m", art: "un",  q: "ou", enFull: "It's a café." },
+  { fr: "région",      en: "region",        g: "f", art: "une", q: "ou", enFull: "It's a region." },
+  { fr: "province",    en: "province",      g: "f", art: "une", q: "ou", enFull: "It's a province." },
+  { fr: "sport",       en: "sport",         g: "m", art: "un",  q: "quoi", enFull: "It's a sport." },
+  { fr: "football",    en: "football",      g: "m", art: "le",  q: "quoi", enFull: "It's football." },
+  { fr: "activité",    en: "activity",      g: "f", art: "une", q: "quoi", enFull: "It's an activity." },
+  { fr: "danse",       en: "dance",         g: "f", art: "la",  q: "quoi", enFull: "It's dance." },
+  { fr: "croissant",   en: "croissant",     g: "m", art: "un",  q: "quoi", enFull: "It's a croissant." },
+  { fr: "macaron",     en: "macaron",       g: "m", art: "un",  q: "quoi", enFull: "It's a macaron." },
+  { fr: "champagne",   en: "champagne",     g: "m", art: "le",  q: "quoi", enFull: "It's champagne." },
+  { fr: "consonne",    en: "consonant",     g: "f", art: "une", q: "quoi", enFull: "It's a consonant." },
+  { fr: "nationalité", en: "nationality",   g: "f", art: "une", q: "quoi", enFull: "It's a nationality." },
 ];
 
 const ASK: Record<Q, string> = { qui: "C'est qui ?", ou: "C'est où ?", quoi: "C'est quoi ?" };
@@ -220,7 +220,7 @@ export const coreNounsLesson: NativeLesson = {
         // The deck's own question frame. It names neither the article nor the
         // noun, so it stays honest at ★★ where both are blanked.
         meta: ASK[n.q],
-        big: n.en,
+        big: n.enFull,
         correct,
         easyOptions: [correct, `C'est ${wrongArt} ${n.fr}.`, ...decoys],
         slots,

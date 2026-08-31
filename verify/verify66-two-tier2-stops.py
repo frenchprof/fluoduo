@@ -151,6 +151,43 @@ check(groupe is not None and "col:m" in groupe["tags"],
       "is gone from the deck or no longer masculine, so the argument now has no instance "
       "in front of the learner.")
 
+# ── 2b · every card carries an English reference you can build the French from
+# Dan, 2026-08-31: "Is there the English reference to build the french from on
+# each question?" For colours, yes and always was — `big` is the deck's
+# exampleEn ("a red traffic light"). For Some nouns it was the BARE NOUN,
+# "man", which does not tell a learner they are meant to produce a whole
+# sentence, and is ambiguous besides: the deck maps « étudiant » and
+# « étudiante » to the same English. So the card now shows the full sentence,
+# with the gender marker kept wherever English alone cannot choose.
+check("big: n.enFull" in NSRC and "big: n.en," not in NSRC,
+      "some nouns: the card shows the whole English sentence, not the bare noun",
+      "some nouns: the card's `big` is the bare noun again. « man » does not ask for "
+      "« C'est un homme. », and at ★★★ a learner is asked to translate it from nothing.")
+check("big: m.en" in CSRC,
+      "colours: the card shows the deck's full English phrase",
+      "colours: the card no longer shows an English reference, so there is nothing to "
+      "build the French from")
+
+enfull = dict(re.findall(r'fr:\s*"([^"]+)".*?enFull:\s*"([^"]+)"', NSRC))
+check(len(enfull) == 18, f"some nouns: {len(enfull)} English references parsed",
+      f"some nouns: parsed {len(enfull)} enFull values, not 18 — the assertions below are vacuous")
+mismatch = []
+for fr, e in enfull.items():
+    it = deck_by_fr.get(fr)
+    if not it:
+        continue
+    if not e.startswith(it.get("exampleEn", "\0")):
+        mismatch.append(f"{fr}: {e!r} is not the deck's {it.get('exampleEn')!r}")
+check(not mismatch, "some nouns: every English reference is the deck's own exampleEn",
+      "some nouns: invented English — " + "; ".join(mismatch))
+
+dupes = [e for e in set(enfull.values()) if list(enfull.values()).count(e) > 1]
+check(not dupes,
+      "some nouns: no two words share an English reference",
+      "some nouns: these English prompts are ambiguous — two different French answers are "
+      "correct for the same prompt, so the learner cannot know which is wanted: " +
+      "; ".join(dupes))
+
 # ── 3 · the star ladder withdraws the colour, and nothing else moved ────────
 CLOZE = read("src/content/lessons/native/cloze.ts")
 check("first?: boolean" in CLOZE,
