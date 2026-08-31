@@ -544,7 +544,25 @@ export default function LessonTabs({
   const [tab, setTab] = useState<TabKey>("exercice");
 
   return (
-    <div className="pt-1">
+    /* THE TABS SIT WITH THE BAND, not a beat below it (Dan, 2026-08-31, shown
+       four gaps rendered on the page and picking 8px).
+
+       `-mt-5` cancels most of DrillShell's `pt-6` content padding, and does it
+       HERE rather than there on purpose. That padding is shared by all 28
+       DrillShell surfaces and encodes a ruling of Dan's from 11 Aug — a drill
+       CARD must start a fixed beat below the bar, because a short card floating
+       under a header-sized hole was wrong. Cutting it at source would reopen
+       that on every drill to tidy one lesson page.
+
+       Tabs are not a card. They are header furniture, so they belong against
+       the header; the drill content below keeps its beat untouched. Measured at
+       390px: band-to-tabs 28px -> 8px.
+
+       TWO VALUES because the padding it cancels has two: `pt-6` (24px) on a
+       phone, `sm:pt-10` (40px) above it. One offset gave 8px on the phone and
+       24px on a desktop — the same gap Dan had just rejected, surviving at the
+       width he was not looking at. */
+    <div className="-mt-5 pt-1 sm:-mt-9">
       {/* ONE ROW, four equal columns (Dan, 2026-08-31: "it seems we cannot
           squeeze the four in a row, then why"). The why was 4px: the pills
           kept the padding they wore as six, and 332px of tabs met a 328px

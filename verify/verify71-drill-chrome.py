@@ -111,6 +111,36 @@ check(lead_cls is not None and "-my-1" in lead_cls.group(1),
       "the band's ✕ has no `-my-1`. The title line is 28px inside py-3, so an untrimmed "
       "36px control adds 8px of band — measured, it gave back less than it saved.")
 
+# ── 5 · the tabs sit with the band, and the drill's beat is untouched ──────
+# Dan picked 8px from four gaps rendered on the page (2026-08-31). The offset
+# lives on the TABS, not on DrillShell's shared content padding: that padding
+# is used by all 28 surfaces and encodes an 11 Aug ruling — a drill CARD starts
+# a fixed beat below the bar, because a short card under a header-sized hole
+# was wrong. Cutting it at source would reopen that everywhere to tidy one page.
+TABS_SRC = open("src/app/lessons/pager/LessonTabs.tsx", encoding="utf-8").read()
+wrap = re.search(r'return \(\s*(?:/\*.*?\*/\s*)?<div className="([^"]*)">\s*\{/\* ONE ROW', TABS_SRC, re.S)
+check(wrap is not None,
+      "the tabs wrapper parsed",
+      "could not find the tab strip's wrapper — the assertions below are vacuous")
+if wrap:
+    cls = wrap.group(1)
+    check("-mt-" in cls,
+          "the tabs pull themselves up to the band",
+          "the tab strip no longer offsets itself, so it sits a full content-beat below "
+          "the band — the 28px gap Dan rejected")
+    check("sm:-mt-" in cls,
+          "and at desktop width too, where the padding it cancels is larger",
+          "only ONE offset is set. DrillShell's padding is pt-6 on a phone and sm:pt-10 "
+          "above it, so a single value leaves the desktop at the gap Dan rejected — the "
+          "same fault surviving at the width he was not looking at.")
+
+DS_PAD = re.search(r'className="mx-auto flex w-full max-w-\[600px\][^"]*"', open("src/components/DrillShell.tsx", encoding="utf-8").read())
+check(DS_PAD is not None and "pt-6" in DS_PAD.group(0) and "sm:pt-10" in DS_PAD.group(0),
+      "DrillShell's own content beat is untouched — all 28 surfaces keep it",
+      "DrillShell's content padding changed. That is the shared beat every drill card "
+      "sits on (Dan, 11 Aug: a short card under a header-sized hole was wrong). Tightening "
+      "the LESSON tabs must not reach it.")
+
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:
     print("\n".join(f"  FAIL {m}" for m in FAIL))
