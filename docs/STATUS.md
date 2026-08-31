@@ -109,6 +109,37 @@ concept SHAPE was not rejected — his feedback targeted the lesson chrome —
 so Color review's Tier-3 batch can move the moment Dan says the concept
 itself reads well. THE ROSTER merged to main (#94, squash `9a4b61a`).
 
+**Same day, later (all on PR #97):** the two-blank card gained a
+full-sentence English reference and colour-matched blank/box groups (Dan:
+shaded, full hues, not numerals). The **ambiguity audit** Dan ordered ran
+over every drill/pretest/game — 8 findings + 3 answer-key bugs, all fixed
+(ou-est's fixed gloss, aimer-infinitif's answer-printing big, GramMarathon's
+noun-level gloss, avoir-etats chaud/froid, discarded alternates ×2, pretest
+transFirst ×3, combien/au-marché/aller answer keys). **Dan's 4×4**: Menu is
+16 tiles — NumBus+NumBourse under one 🔢 Numbers hub (/games/numbers),
+My Progress folded into Profile, and the lesson's « Le bonus » tab parked
+under L'exercice (the ⭐ Bonus level serves it). Sorting cut + iComplete
+retired completed the count.
+
+**COORDINATION — Peers' branch (`claude/peers-vd2h6h`) vs PR #97.** Peers
+carries Colours + Some nouns lessons, `Slot.first` in cloze.ts, English tab
+labels, and verify66. Merge ORDER: **#97 first** (Dan-directed, green), then
+Peers rebases with three adaptations, none large:
+1. `blankKeysFor` — #97 makes it `level <= 2 → one key` (Moyen = one piece).
+   Keep Peers' `first` flag; it now picks the ONE key for levels 1–2:
+   `const lead = blankable.find((s) => s.first); return [lead?.key ?? keys[0]]`.
+   Their "★ the colour word · ★★ colour word + noun" ladder maps to
+   Moyen = the flagged colour word, Difficile = both. Same intent, new names.
+2. `verify66` pins SIX tab labels including "Bonus" — #97 parks that tab
+   (Dan's word), so the assertion drops to five. Their English label rename
+   is theirs to keep — no conflict beyond the list literal.
+3. `LessonTabs.tsx` will conflict textually (label rename vs tab removal) —
+   resolution: their labels, minus the bonus entry, exercice `does` noting
+   "⭐ Bonus included".
+No one pushes to the other's branch (roster rule 3); this note is the
+hand-off. Peers' "Every Some nouns card carries the English sentence" is the
+same ambiguity-fix pattern as the audit — convergent, no clash.
+
 ## Where the code is
 
 - `main` on `frenchprof/fluoduo` (origin) — the working repo.
