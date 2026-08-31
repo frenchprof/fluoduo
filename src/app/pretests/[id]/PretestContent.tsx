@@ -69,6 +69,11 @@ function PretestRunner({ pretest }: { pretest: Pretest }) {
   const [ttsOn, setTtsOn] = useState(true);
 
   useEffect(() => {
+    // Shuffled AFTER mount on purpose: a pre-test is a static page, so
+    // shuffling during render would give the server one order and the first
+    // client render another, and the hydration mismatch would swap the options
+    // under the learner's finger.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- SSR determinism, see above
     setItems(shuffle(pretest.items));
   }, [pretest]);
   const total = items.length;
@@ -76,6 +81,9 @@ function PretestRunner({ pretest }: { pretest: Pretest }) {
   useEffect(() => {
     try {
       const t = localStorage.getItem(TTS_KEY);
+      // localStorage does not exist on the server, so this preference cannot be
+      // read during render; on mount is the only place it can be read at all.
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage, see above
       if (t === "0") setTtsOn(false);
     } catch {}
   }, []);
@@ -107,7 +115,15 @@ function PretestRunner({ pretest }: { pretest: Pretest }) {
     enabled: !!item && !done,
     onPick: (i) => { if (choices[i] !== undefined) pick(choices[i]); },
     onNext: () => { if (submitted) next(); },
-    onSpeak: () => { if (item && ttsOn) speak(ttsTextForItem(item), "fr-FR"); },
+    // Same leak, through the keyboard: on a BARE item (no sentence around the
+    // blank — see ItemCard) the "full sentence" IS the answer, so the speak key
+    // must not work until the pick is in.
+    onSpeak: () => {
+      if (!item || !ttsOn) return;
+      const bare = !item.sentenceBefore.trim() && !item.sentenceAfter.trim();
+      if (bare && !submitted) return;
+      speak(ttsTextForItem(item), "fr-FR");
+    },
   });
 
   function pick(choice: string) {
@@ -222,8 +238,25 @@ function ItemCard({
   isLast: boolean;
 }) {
   // Minimalist per Dan: gapped sentence, TTS, English meaning, choices — only.
+  //
+  // A BARE item has no sentence around the blank: the whole French line IS the
+  // answer, and the English above is the entire question ("which of these four
+  // lines says this?"). The atelier pre-tests are all like this.
+  //
+  // Two things that are right for a gapfill are wrong for a bare item, and both
+  // are silent faults rather than visible ones:
+  //   · The dashed "?" pill promises a sentence with a hole in it. There is no
+  //     sentence. It is an empty frame around nothing.
+  //   · "Hear the full sentence" speaks `ttsTextForItem`, which for a bare item
+  //     is the answer and nothing else. The button reads the correct line aloud
+  //     before the learner has picked — it hands over the answer.
+  // So a bare item shows neither until it has been answered, at which point the
+  // pill carries the verdict and hearing the line is feedback, exactly like the
+  // auto-speak that already fires on a correct pick.
+  const bare = !item.sentenceBefore.trim() && !item.sentenceAfter.trim();
   return (
     <article className="fluo-card fluo-h-1" data-hue={1}>
+      {(!bare || submitted) && (
       <p className="my-3 text-center text-2xl font-bold leading-snug text-slate-900">
         <span lang="fr">{item.sentenceBefore}</span>
         <span
@@ -250,6 +283,7 @@ function ItemCard({
         </span>
         <span lang="fr">{item.sentenceAfter}</span>
       </p>
+      )}
       {item.sentenceTrans && item.transFirst && !submitted ? (
         <p className="mx-auto mt-1 w-fit rounded-lg border-l-4 border-[color:var(--fluo-hl)] bg-[color:var(--fluo-hl)]/20 px-3 py-1.5 text-center text-base font-bold text-[color:var(--fluo-ink)]">
           🎯 {item.sentenceTrans}
@@ -260,6 +294,7 @@ function ItemCard({
         </p>
       ) : null}
 
+      {(!bare || submitted) && (
       <div className="mt-3 flex justify-center">
         <button
           type="button"
@@ -270,6 +305,7 @@ function ItemCard({
           🔊 Hear the full sentence
         </button>
       </div>
+      )}
 
       <div className={`mt-5 ${optionGridClass(choices, "gap-2.5")}`}>
         {choices.map((c, i) => {

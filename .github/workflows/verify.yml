@@ -198,6 +198,9 @@ jobs:
       - name: A deck that records gender records it for every word
         run: python3 verify/verify59-gender-column.py
 
+      - name: "The atelier pre-tests cover every line, and invent no French (31 Aug)"
+        run: python3 verify/verify63-atelier-pretests.py
+
       - name: "A tour step points at something that exists (28 Aug)"
         run: python3 verify/verify44-tour-targets.py
 

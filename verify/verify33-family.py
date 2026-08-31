@@ -112,7 +112,11 @@ shell = open("src/components/CahierShell.tsx", encoding="utf-8").read()
 ok("familyOf(active)" in shell,
    "the shell derives each page's family from its own active key",
    "the shell no longer colours pages — 50 routes go back to undivided paper")
-ok('var(--fam-wash' in shell,
+# The sticky header is SiteTopBar's since 2026-08-31 (it moved out so a drill
+# could mount the same bar). It still takes the family's wash, and the page it
+# sits on still gets its fam- class from CahierShell's familyOf(active) above.
+topbar = open("src/components/SiteTopBar.tsx", encoding="utf-8").read()
+ok('var(--fam-wash' in topbar,
    "the sticky header takes the family's field",
    "the header lost its family band")
 acts = open("src/content/activities.ts", encoding="utf-8").read()

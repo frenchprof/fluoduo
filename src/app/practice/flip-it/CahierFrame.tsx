@@ -8,13 +8,22 @@
  * the left gutter, pastel index tabs off the right edge switching the VIEWS
  * (Overview / Cards / All Cards). Navigation back out is the ← Back in the
  * top bar — no site/deck rail here, same convention as the games.
- * No ☰ menu (Dan, 2026-07-05): with only three views, FlipItContent renders
- * them as plain buttons under step 1 — that covers narrow screens; the side
- * rail stays on wide ones.
+ * The VIEW switcher needs no ☰ (Dan, 2026-07-05): with only three views,
+ * FlipItContent renders them as plain buttons under step 1 — that covers
+ * narrow screens; the side rail stays on wide ones.
+ *
+ * The SITE menu is a different thing and does mount here, since 2026-08-31 —
+ * Dan: "many pages are missing that menu and other links in the area above the
+ * colored header strip. can you reinstate them so that those are accessible at
+ * all times". The frame's own bar is page furniture (← Back, the deck's name,
+ * the ? dot); above it now sits the same SiteTopBar every other shell mounts,
+ * so the way out of a deck is not one link to one place.
  */
 
 import { useEffect, useRef } from "react";
 import type { CSSProperties, ReactNode } from "react";
+import SiteTopBar from "@/components/SiteTopBar";
+import { bandOf, familyOf } from "@/content/activities";
 
 const WIDTH_KEY = "fluolingo:flipWidth";
 
@@ -33,16 +42,26 @@ export function CahierFrame({
   tabs,
   active,
   onSelect,
+  siteActive,
   topBar,
   children,
 }: {
   tabs: CahierTab[];
   active: string;
   onSelect: (key: string) => void;
+  /** Registry key of the ACTIVITY this frame is showing — the site bar's
+   *  `active`, which is what colours the bar and marks the open family in
+   *  the ☰. Not `active` above: that is the open VIEW inside the frame. */
+  siteActive: string;
   topBar?: ReactNode;
   children: ReactNode;
 }) {
   const hueOf = (t: CahierTab, i: number) => t.hue ?? TAB_HUES[i % TAB_HUES.length];
+  // Same one line CahierShell uses: the page's own key picks its family, so
+  // the site bar above wears --fam-wash here too instead of falling back to
+  // bare paper while every other page in the app is coloured.
+  const famKey = familyOf(siteActive);
+  const bandKey = bandOf(siteActive);
   const pageRef = useRef<HTMLElement>(null);
 
   // The notebook is user-widenable: drag the page's right edge (Dan,
@@ -91,7 +110,7 @@ export function CahierFrame({
   return (
     <div className="cahier-desk cahier-desk--flip">
       <div className="cahier-deskrow">
-        <main ref={pageRef} className="cahier-page min-h-screen">
+        <main ref={pageRef} className={`cahier-page min-h-screen${famKey ? ` fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""}`}>
           <div className="cahier-binding" aria-hidden />
           {/* Right-edge drag handle: widen the notebook page. */}
           <div
@@ -105,6 +124,7 @@ export function CahierFrame({
             </span>
           </div>
 
+          <SiteTopBar active={siteActive} />
           {topBar}
           <div className="py-5 pl-12 pr-4 sm:pl-16 sm:pr-7">{children}</div>
         </main>

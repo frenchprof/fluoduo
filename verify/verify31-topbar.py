@@ -44,14 +44,47 @@ def ok(cond, good, bad):
 if not os.path.isfile("package.json"):
     print("run from the repo root"); sys.exit(2)
 
-shell = open("src/components/CahierShell.tsx", encoding="utf-8").read()
+# WHERE THE BAR LIVES CHANGED ON 2026-08-31, and section 0 below is why the
+# move is checked rather than just followed. Dan: "many pages are missing that
+# menu and other links in the area above the colored header strip. can you
+# reinstate them so that those are accessible at all times". The bar was written
+# inside CahierShell, so only CahierShell pages had it; every drill runs in
+# DrillShell, which never drew one. It is now SiteTopBar, mounted by both.
+#
+# So this file reads SiteTopBar. Not CahierShell-or-SiteTopBar, and not the two
+# concatenated: a check satisfied by whichever file still carries the markup is
+# how a stale second copy survives, which is the failure mode section 0 exists
+# to catch.
+bar = open("src/components/SiteTopBar.tsx", encoding="utf-8").read()
+cahier = open("src/components/CahierShell.tsx", encoding="utf-8").read()
+drill = open("src/components/DrillShell.tsx", encoding="utf-8").read()
 css = open("src/app/globals.css", encoding="utf-8").read()
-nocom_shell = re.sub(r"\{/\*[\s\S]*?\*/\}", "", shell)
+nocom_shell = re.sub(r"\{/\*[\s\S]*?\*/\}", "", bar)
 nocom_css = re.sub(r"/\*[\s\S]*?\*/", "", css)
+
+# ── 0 · ONE bar, mounted twice ────────────────────────────────────────────
+# Everything below pins the bar's internals in ONE file. That only protects
+# the app while there is one file: a second copy pasted into a shell would
+# keep this suite green and drift on its own, which is precisely what this
+# repo did for eleven days with the ☰ dropdown and the desk rail (STATUS,
+# 19 Aug). So both mounts are named, and neither shell may carry the markup.
+# GameFrame is the one deliberate omission: it is `height: 100dvh; overflow:
+# hidden` and hands the leftover box to a board that must fit exactly, and it
+# already carries a ✕ and a ⋯ sheet. A bar of unknown height there would take
+# rows off every board. Named here so the gap reads as a decision.
+frame = open("src/app/practice/flip-it/CahierFrame.tsx", encoding="utf-8").read()
+for name, src in (("CahierShell", cahier), ("DrillShell", drill), ("CahierFrame", frame)):
+    ok("<SiteTopBar" in src,
+       f"{name} mounts SiteTopBar",
+       f"{name} does not mount SiteTopBar — its pages have no ☰ and no way out but one link")
+    ok("cahier-topbar" not in re.sub(r"\{/\*[\s\S]*?\*/\}", "", src),
+       f"{name} has no icon strip of its own",
+       f"{name} carries its own copy of the icon strip — two bars will drift apart")
+
 
 m = re.search(r'className="(cahier-topbar[^"]*)"', nocom_shell)
 strip = m.group(1) if m else ""
-ok(bool(m), "the icon strip is still there", "no .cahier-topbar found in CahierShell")
+ok(bool(m), "the icon strip is still there", "no .cahier-topbar found in SiteTopBar")
 
 # ── 1 · the strip is never squeezed, and never overflows ───────────────────
 ok("shrink-0" in strip,

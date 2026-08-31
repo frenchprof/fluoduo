@@ -11,6 +11,76 @@ Only ONE agent edits this file at a time; say so in your commit.
 - `main` on `frenchprof/fluoduo` (origin) — the working repo.
 - Production = `dckg/fluo` (remote `live`), Cloudflare Pages project
   `fluolingo-dot-com` auto-builds its `main`. **Deploy = `git push live main`.**
+- 31 Aug (Claude Code) — **THE FIVE ATELIER STOPS HAVE A PRE-TEST FOR THE
+  FIRST TIME.** Dan: "i need your help to build the pre-test which will consist
+  of questions with English line, and a choice between 4 french lines. Until
+  all the french lines are covered". SIO-020, 030, 040, 049 and 050 have no
+  deck and no authored MCQs — their whole content was the model dialogue that
+  played inside the SIO popup, so they were the only stops on the board with no
+  pre-test door at all. The dialogue now IS the pre-test: every line takes its
+  turn as the answer, the three wrong options are other lines of the same
+  dialogue. 33 questions across five stops, at `/pretests/atelier-sio-0NN` —
+  real pages on the existing route, so they inherit the gap report, the
+  ledger and Bring-to-class for free.
+  **Not one word of invented French.** Taking Dan's "4 french lines" literally
+  is also the only safe reading: every option is French he already wrote and
+  approved. A generator minting plausible distractors would be an agent
+  drafting ~99 new sentences straight to a learner — the thing the 31 Aug rule
+  forbids after « Je prends toujours LE poisson ». verify63 asserts it against
+  the dialogue, not against the generator's source, because a generator that
+  invents French looks identical in source to one that reuses it.
+  **A real answer leak, found by driving it.** "🔊 Hear the full sentence"
+  speaks `ttsTextForItem`, which for these items is the answer and nothing
+  else — tapping it before picking read the correct line aloud. So did the
+  keyboard shortcut. Both now wait for the pick on a BARE item (no sentence
+  around the blank), which also removes the dashed "?" pill that was framing
+  nothing. Authored pretests are untouched, asserted in both states.
+  **SIO-010 deliberately keeps its bespoke three-situation pre-test** — a
+  generated line-match cannot ask which greeting suits which audience.
+  verify63: 26 checks, wired into the workflow, **every one break-tested** —
+  and one of them was vacuous on the first pass (`"ATELIER_GENERATED" in reg`
+  was satisfied by the import line, so deleting the spread stayed green). That
+  is the third vacuous assertion of this shape found this week; the rule is now
+  plain: **never assert a name, assert the construct** (`...SPREAD`, `<Element`).
+  tsc clean · build green · all 37 suites pass · the two pre-existing
+  `set-state-in-effect` errors on PretestContent got targeted disables with
+  reasons (CI lints files a PR touches, so they would have painted this red).
+
+- 31 Aug (Claude Code) — **THE SITE MENU IS BACK ON EVERY PAGE.** Dan: "many
+  pages are missing that menu and other links in the area above the colored
+  header strip. can you reinstate them so that those are accessible at all
+  times". It was not a regression: the bar (☰ · ← FluOlinGo · 🔊 🏠 ⌛ account)
+  was WRITTEN INSIDE `CahierShell`, so only CahierShell pages ever had it.
+  Every drill runs in `DrillShell` (28 surfaces) and the deck table runs in
+  `CahierFrame`; neither ever drew one — a drill's only exit was its ✕, which
+  goes to exactly one place. Patch 20-21 made that focused mode on purpose;
+  Dan has now overruled it for NAVIGATION specifically.
+  **One component, three mounts** — `src/components/SiteTopBar.tsx`, mounted by
+  CahierShell, DrillShell and CahierFrame. Copying the markup was the other
+  option and is the one this repo has already been bitten by: the ☰ dropdown
+  and the desk rail were two nav surfaces that disagreed for eleven days
+  (19 Aug), closed only on 30 Aug. `TAB_HUES` / `ShellTab` / `TabFlap` moved to
+  `src/components/TabFlap.tsx` so the extraction did not create a cycle;
+  CahierShell re-exports `ShellTab` for its four existing importers.
+  **GameFrame is the one deliberate omission**, named in verify31: it is
+  `100dvh; overflow:hidden` and hands the leftover box to a board that must fit
+  exactly, and it already carries a ✕ and a ⋯ sheet.
+  Also: the deck table's own bar had a second 🔊 twenty pixels under the site
+  bar's — removed (litmus rule); and CahierFrame now takes `fam-*`/`band-*`
+  from its activity key, so its bar wears the family wash like every other page
+  instead of bare paper.
+  **verify31 gained section 0** — both mounts named, and neither shell may
+  carry `cahier-topbar` markup of its own; all four assertions break-tested.
+  verify29 and verify33 were repointed at SiteTopBar (read from ONE file, never
+  the two concatenated — that is how a stale copy survives), and break-testing
+  caught that **verify29's two RailGroups checks were vacuous in their previous
+  home too**: `"RailGroups" in shell` was satisfied by the import line and by a
+  comment, so deleting the element kept them green. Now `<RailGroups` against
+  comment-stripped source; both bite.
+  Driven in a browser at 390x844: bar present and no horizontal overflow on
+  complete-it, dice, conjugaison, reviser, map, moi, teacher, flip-it landing
+  and the deck table; the ☰ opens inside DrillShell's `overflow-hidden` without
+  being clipped, at 390 and 1280, with Practice open and iComplete marked.
 - 31 Aug (Claude Code) — **SORTING KEPT AND FIXED; `transfer` FOUND TO BE
   STRUCTURALLY UNREACHABLE.** Dan answered "all YES" to keeping Sorting, the
   `transfer` rule, and phrase banks for the ateliers.
@@ -2673,8 +2743,13 @@ into it anyway. `ls verify/` before choosing a number costs nothing; the
 collision cost verify31-wordrill a fortnight of never running. Wired into the
 workflow, and every one of the 36 scripts is still named there.
 
-**Still open, all of it needing Dan:** the ten bugs (6, 8, 9, 10, 11, 12, 15,
-16, 17, 19) whose text exists nowhere; #18's screen; and whether the colours
+**SUPERSEDED on 29 Aug — see "re-audit of Dan's nineteen" below.** The ten
+numbers (6, 8, 9, 10, 11, 12, 15, 16, 17, 19) are dead: Dan could not recall
+them either and asked for a fresh sweep instead, which ran across all four
+areas the recovered nine clustered in and found one real defect (the SpeakZone
+pairing bug). Do not wait on Dan for these, and do not re-open the numbering.
+#18 was CLOSED by Dan on 29 Aug ("SETTLED", below) after it would not reproduce.
+**Still open:** whether the colours
 Mémo should make room for the mnemonics by dropping one of its three sections
 (they are on the cards either way — the card overflows behind Continue if a
 fourth block is added, measured).
