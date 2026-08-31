@@ -23,14 +23,31 @@
 
 | | | |
 |---|---|---|
-| **A1** multi-slot `DiceQuestion` | **still open — and bigger than I said** | `med` is still `{ before, choices, correct, after }` on main: one blank, fixed by the generator. Dan's ★★ remains inexpressible. **31 Aug: it blocks Tier 2 as well.** He specified the vocabulary ladder as ★ whole item · ★★ fill the article · ★★★ fill article *and* noun — the same two-slot cloze. So A1 unblocks **35 stops, not 20**. Mine unless you say otherwise. |
+| **A1** multi-slot `DiceQuestion` | **done — #79** | `slots` is on `DiceQuestion`; `cloze.ts` has `sentence`, `cloze`, `medFrom`, `blankKeysFor`; `aimer.gen.ts` is converted and ★★ genuinely blanks two. `med` is **derived**, not deleted — 47 generators author it by hand and every card builder reads it, so `medFrom` reproduces the legacy shape and `verify57` asserts the derived value equals what `aimer` used to write itself. Nothing else had to change on the day. |
 | **A2** the ★ ladder on scaffolding | **still open**, blocked by A1 | `lessonEntry.ts` still varies `mcq \| gap \| build \| translate`. |
 | **A3** `concept` on `NativeLesson` | **done — yours** | `LessonConcept` with `subtitle / contrast / question / answer / remember` required. Better than what I had planned: requiring a claim *and* a question is what stops a concept decaying into a second Mémo. |
 | **A4** render the pathway | **done — yours** | The six tabs, as front matter. |
 | **A5** self-check interaction | **subsumed** | `LessonConcept.check` covers it. |
 
-So the only thing left in the container is the question type, and it does not
-touch `LessonPager.tsx` or the tab work at all. We are not in the same files.
+So the only thing left in the container is **A2**, rebuilding the ladder on
+which slots are given rather than on `mcq | gap | build | translate`. That
+touches `lessonEntry.ts` and the card builder, not `LessonPager.tsx` or the tab
+work. We are still not in the same files.
+
+Two things from #79 worth having, because both are the kind that rot quietly.
+
+**Two of my assertions passed through their own breakage.** I compared
+`sentence(slots)` to `correct` — but the generator now builds `correct` *from*
+the slots, so both sides moved together and deleting a full stop stayed green.
+Rewritten against `easyOptions`, which is still assembled the old way and is
+therefore an independent oracle. If you convert a generator to slots, do not
+check it against a value it derives.
+
+**`verify-wiring` earned its keep, twice in one day.** My check was 55; while it
+sat in review you landed `verify55-atelier-cards` and then
+`verify56-sorting-answers`. Both collisions were caught in CI on the first push.
+It is now 57. A day on a branch is enough to collide twice — take the next free
+number at push time, not at write time.
 
 ## What happened, in three sentences
 
@@ -79,9 +96,60 @@ on it and both are worth knowing here:
 **The activity cull.** All 20 activity keys, what each drills, which tier it
 serves or none — for Dan to strike through.
 
+## The concept brief differs per tier — the count does not
+
+Your `LessonConcept` requires `subtitle / contrast / question / answer /
+remember`, and *"the first of forty-seven"* is the right count: every native
+lesson wants one. What changes per tier is **what the question is a question
+about**, and it is worth writing on the type rather than rediscovering it at
+stop thirty.
+
+| tier | the concept answers a question that… | worked example |
+|---|---|---|
+| **1 · Systemic Grammar** | **the forms** cannot answer | *Why does « son cahier » mean both his and hers?* — because possessives agree with the thing owned. No table yields that, which is why the table comes after. |
+| **2 · Lexical Core** | **the word list** cannot answer | *Why is it « une tarte aux pommes » but « un jus de pomme »?* — à + article names an ingredient among others, de + bare noun names what the thing is made of, and the preposition carries the number with it. English builds both the same way and gives no warning. |
+| **3 · Phraseology** | **untested** | Nobody has tried to fill the type from a phrase stop or an atelier. |
+
+Same type, same required fields, different target. `contrast` survives the move
+intact in Tier 2 — English *does* contrast, it just contrasts over name-building
+rather than over agreement.
+
+**Tier 3 is the open question and it is worth answering before the six
+ateliers.** A Phraseology stop teaches blocks — *bon voyage*, *je voudrais…*,
+*d'abord / ensuite / puis / enfin* — and the honest doubt is whether `contrast`
+and `remember` mean anything there. *Enchanté* has no English logic to be set
+against; it is just what you say. If the type does not fit, better to find out
+on one than on six. Write one and see: that is a cheaper experiment than any
+amount of arguing about it, and the answer changes the type or confirms it.
+
+## The split, as Dan approved it on 31 Aug
+
+No longer a proposal. He gave you the go for this, so it is the standing
+arrangement until he says otherwise.
+
+| | |
+|---|---|
+| **Colour review** | **Track C + Track D together, Tier 2 first**, in batches of **five stops**, each batch being one review sitting for Dan. |
+| **Peers** | The container. A1 is done; A2 next. |
+
+Two things about that shape are load-bearing, and both are yours, not mine.
+
+**The binding constraint is Dan's review rate, not agent capacity.** Your own
+type comment says it — `contrast` and `remember` are *"drafted for Dan, never
+shipped past him"* — so a second agent on Track C builds him a longer queue
+rather than finishing sooner. Batches of five exist for that reason. Do not let
+a batch grow because the authoring went quickly.
+
+**For Tier 2, C and D are one job.** Your framing, and it is right: *"what does
+the word list not tell you"* is the concept **and** the argument for the
+surface. The aliments sample is the demonstration — the forms tab only became
+worth anything once it showed 42 words sorted by gender with nine of them hiding
+it, which is a surface, not a paragraph. Author the concept and build the
+lexique in the same pass or neither will be honest.
+
 ## What is yours, if you want it
 
-### 1 · Track D — Le lexique. It was "low priority" and it is not.
+### 1 · Track D — Le lexique. Settled: yours, and not low priority.
 
 This is the change that matters most to you. `LESSON_SPEC_PLAN.md` filed the
 lexique as a low-priority side surface because it assumed every stop was a
@@ -116,8 +184,14 @@ prerequisite list rather than as trivia:
 Point 3 is the one worth having. It is not a data gap to paper over — it is the
 lesson. The sample builds the forms stage around exactly that column.
 
-These are mine unless you want them; either way say early if you are taking
-Track D.
+These are mine unless you want them — say which, since you have Track D now.
+
+One is already done: Dan said *"then grow it!"* and `aliments` went from 28 to
+42 words (#73). The gender split is now 23 masculine, 10 feminine and **9 that
+hide it**. The course/category gap is untouched and, per Dan on 31 Aug —
+*"we don't need a course field, there is no need to dwell in courses"* — it
+should stay untouched. Do not build an arrangement the data does not support and
+he has not asked for.
 
 ### 2 · Do the three tiers want a visual identity?
 
