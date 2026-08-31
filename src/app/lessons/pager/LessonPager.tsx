@@ -79,6 +79,9 @@ export default function LessonPager({
   // Answer state for the current card.
   const [selected, setSelected] = useState<string | null>(null);
   const [value, setValue] = useState("");
+  /** One pick per blank, for a cloze with more than one. Empty for every
+   *  other card, which is what keeps the single-blank path untouched. */
+  const [picks, setPicks] = useState<string[]>([]);
   const [result, setResult] = useState<Grade | null>(null);
   // Track D: a wrong try that is NOT final — a hint (or the answer) opened,
   // the input stays live; MCQ strikes the wrong pick.
@@ -126,6 +129,7 @@ export default function LessonPager({
     setI(saved ? saved.i : 0);
     setSelected(null);
     setValue("");
+    setPicks([]);
     setResult(null);
     setScore(saved ? saved.score : { ok: 0, total: 0 });
     setMisses(saved ? (saved.misses as Exercise[]) : []);
@@ -184,7 +188,17 @@ export default function LessonPager({
   const end = ready && card === "end";
 
   // ── commit + advance ─────────────────────────────────────────────────────
-  const given = ex?.kind === "mcq" ? selected ?? "" : value;
+  // A segmented cloze is graded as one string — the picks joined in reading
+  // order, against `answer`, which the builder joined the same way. So both
+  // graders, the help ladder and the evidence trail all keep working on a
+  // two-blank card without knowing it has two blanks.
+  const segs = ex?.segments;
+  const blanks = segs ? segs.filter((sg) => sg.kind === "blank").length : 0;
+  const given = segs
+    ? (picks.length === blanks && picks.every(Boolean) ? picks.join(" ") : "")
+    : ex?.kind === "mcq"
+      ? selected ?? ""
+      : value;
 
   // The help ladder (Track D): mcq → struck picks; gap → cloze rungs;
   // build/translate → typed rungs (first letter / skeleton). Every graded
@@ -238,6 +252,7 @@ export default function LessonPager({
     } else {
       if (ex.kind === "mcq" && selected) setStruck((k) => [...k, selected]);
       setSelected(null);
+      setPicks([]);
       setRetry(true);
     }
   };
@@ -249,6 +264,7 @@ export default function LessonPager({
     if (n >= total) sfx.stage(); // run complete — the end card is about to show
     setSelected(null);
     setValue("");
+    setPicks([]);
     setResult(null);
     setRetry(false);
     setStruck([]);
@@ -451,8 +467,9 @@ export default function LessonPager({
       ) : card === "rule" ? (
         <div className="pt-2"><SpeakZone>{rules[i]}</SpeakZone></div>
       ) : card === "ex" && ex ? (
-        <ExerciseCard ex={ex} selected={selected} value={value} result={result} struck={struckAll}
-          onSelect={(c) => result === null && !struckAll.includes(c) && setSelected(c)} onType={setValue} />
+        <ExerciseCard ex={ex} selected={selected} value={value} picks={picks} result={result} struck={struckAll}
+          onSelect={(c) => result === null && !struckAll.includes(c) && setSelected(c)} onType={setValue}
+          onPick={(n, c) => result === null && setPicks((p) => { const q = [...p]; q[n] = c; return q; })} />
       ) : (
         <div className="flex flex-col items-center gap-4 pt-6 text-center">
           <span className="text-6xl" aria-hidden>{pct === 100 ? "🏆" : pct >= 75 ? "🎉" : pct >= 50 ? "💪" : "📖"}</span>
@@ -492,27 +509,51 @@ export default function LessonPager({
 
 /* ── one exercise card ─────────────────────────────────────────────────────── */
 
+/** Which blank a segment is, counting only blanks. `picks` is indexed by BLANK
+ *  and not by segment, because the learner is choosing answers rather than
+ *  filling in pieces of scenery. */
+function blankIndex(segments: NonNullable<Exercise["segments"]>, at: number): number {
+  let n = 0;
+  for (let k = 0; k < at; k++) if (segments[k].kind === "blank") n++;
+  return n;
+}
+
 function ExerciseCard({
   ex,
   selected,
   value,
+  picks,
   result,
   struck = [],
   onSelect,
   onType,
+  onPick,
 }: {
   ex: Exercise;
   selected: string | null;
+  picks: string[];
   value: string;
   result: Grade | null;
   /** MCQ options the ladder struck out (wrong picks). */
   struck?: string[];
   onSelect: (c: string) => void;
   onType: (v: string) => void;
+  onPick: (n: number, choice: string) => void;
 }) {
   const answered = result !== null;
   const isFrame = ex.before !== undefined;
   const shown = ex.kind === "mcq" ? selected : value;
+
+  // A blank's own skin, shared by the one-blank frame and by each blank of a
+  // segmented cloze, so the two cannot drift apart visually.
+  const blankClass = (filled: boolean) =>
+    `mx-1.5 inline-block min-w-[90px] rounded-md border-b-2 border-dashed px-2 align-baseline ${
+      !answered
+        ? "border-[color:var(--cahier-rule)] bg-white/70"
+        : result !== "wrong"
+          ? "border-[color:var(--drill-ok)] bg-[color:var(--drill-ok-bg)]"
+          : `border-[color:var(--drill-bad)] bg-[color:var(--drill-bad-bg)]${filled ? " line-through" : ""}`
+    }`;
 
   return (
     <div className="space-y-4 pt-2">
@@ -523,6 +564,59 @@ function ExerciseCard({
         <p className="text-center text-2xl font-bold leading-snug text-[color:var(--cahier-ink)]" lang={ex.kind === "translate" || ex.kind === "build" ? undefined : "fr"}>
           {ex.big}
         </p>
+      )}
+      {ex.segments && (
+        <>
+          <p className="text-center text-2xl font-bold leading-snug text-[color:var(--cahier-ink)]" lang="fr">
+            {ex.segments.map((sg, n) =>
+              sg.kind === "text" ? (
+                <span key={n}>{sg.text}</span>
+              ) : (
+                <span key={n} className={blankClass(!!picks[blankIndex(ex.segments!, n)])}>
+                  {picks[blankIndex(ex.segments!, n)] || "?"}
+                </span>
+              ),
+            )}
+          </p>
+          {/* One row of choices per blank, in reading order. TWO ROWS IS THE
+              POINT of ★★: the verb decision and the article decision are made
+              separately, and the learner can see that they are separate. */}
+          <div className="space-y-2.5">
+            {ex.segments.map((sg, n) => {
+              if (sg.kind !== "blank") return null;
+              const b = blankIndex(ex.segments!, n);
+              return (
+                <div key={n} className={optionGridClass(sg.choices, "gap-2")}>
+                  {sg.choices.map((c) => {
+                    const isPicked = picks[b] === c;
+                    const isAnswer = c === sg.answer;
+                    const cls = !answered
+                      ? isPicked
+                        ? "answer-picked"
+                        : "border-[color:var(--cahier-rule)] bg-white hover:bg-[color:var(--cahier-paper-2)]"
+                      : isAnswer
+                        ? "border-[color:var(--drill-ok)] bg-[color:var(--drill-ok-bg)]"
+                        : isPicked
+                          ? "border-[color:var(--drill-bad)] bg-[color:var(--drill-bad-bg)] line-through"
+                          : "border-[color:var(--cahier-rule)] bg-white opacity-50";
+                    return (
+                      <button
+                        key={c}
+                        type="button"
+                        lang="fr"
+                        disabled={answered}
+                        onClick={() => onPick(b, c)}
+                        className={`rounded-lg border-2 px-3 py-2 text-lg font-semibold text-[color:var(--cahier-ink)] transition ${cls}`}
+                      >
+                        {c}
+                      </button>
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </div>
+        </>
       )}
       {isFrame && (
         <p className="text-center text-2xl font-bold leading-snug text-[color:var(--cahier-ink)]">

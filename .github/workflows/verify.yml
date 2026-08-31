@@ -177,6 +177,9 @@ jobs:
       - name: "Slots: the two-star level is expressible, and med is derived (31 Aug)"
         run: python3 verify/verify57-cloze-slots.py
 
+      - name: "The star ladder withdraws scaffolding, and one star is unchanged (31 Aug)"
+        run: python3 verify/verify58-ladder-blanks.py
+
       - name: Family hubs — every bottom-bar slot opens its family
         run: python3 verify/verify52-nav-hubs.py
 

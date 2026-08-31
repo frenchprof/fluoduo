@@ -128,3 +128,35 @@ export function blankKeysFor(level: 1 | 2 | 3, slots: Slot[]): string[] {
   const keys = slots.filter(isBlankable).map((s) => s.key!);
   return level === 1 ? keys.slice(0, 1) : keys;
 }
+
+/**
+ * The card for a level, when — and only when — that level withdraws more than
+ * one piece.
+ *
+ * `null` means "use the single-blank `med` path you have always used": either
+ * the generator authored no slots (46 of 47 today) or the level takes one
+ * blank, which `med` already represents exactly. So ★ and every unconverted
+ * lesson produce the card they produced yesterday, byte for byte, and the new
+ * path is reachable only where a generator opted in.
+ *
+ * It lives here rather than in the pager's `buildCards.tsx` for the reason
+ * `axis.ts` and the generators do: `node --experimental-strip-types` cannot
+ * load a .tsx, so logic that lives there is unreachable from a check — and a
+ * ladder that silently blanks the wrong slot looks, in source, exactly like one
+ * that does not.
+ *
+ * `answer` is the blanks joined by a space, which is how the learner's picks
+ * are joined before grading, so both graders, the help ladder and the evidence
+ * trail keep working without knowing the card has two blanks.
+ */
+export function multiBlankCard(
+  q: Pick<DiceQuestion, "slots">,
+  level: 1 | 2 | 3,
+): { segments: ClozeSegment[]; answer: string } | null {
+  if (!q.slots?.length) return null;
+  const keys = blankKeysFor(level, q.slots);
+  if (keys.length < 2) return null;
+  const segments = cloze(q.slots, keys);
+  const answers = segments.flatMap((s) => (s.kind === "blank" ? [s.answer] : []));
+  return { segments, answer: answers.join(" ") };
+}
