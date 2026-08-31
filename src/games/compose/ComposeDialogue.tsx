@@ -137,6 +137,10 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
     if (startedRef.current) return; // survive dev double-mount
     startedRef.current = true;
     start();
+  // Run-once by design (startedRef survives the dev double-mount); adding
+  // `start` would restart the whole dialogue whenever its identity changes.
+  // Reviewed with Dan 2026-08-31: disable, not fix.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
