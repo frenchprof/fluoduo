@@ -94,13 +94,14 @@ export const transportLesson: NativeLesson = {
         English has <i>by metro</i> and <i>take the metro</i> too, and choosing between
         them is a matter of taste. In French the choice is structural:{" "}
         <i lang="fr">en métro</i> has no article, <i lang="fr">prendre le métro</i> has
-        one, and that article is the only thing telling the two apart.
+        one.
       </>
     ),
     question: (
       <>
         This deck lists <i lang="fr">en voiture</i> <b>and</b>{" "}
-        <i lang="fr">prendre la voiture</i> &mdash; the same car, twice. If the frame
+        <i lang="fr">prendre la voiture</i>{" "}
+        &mdash; the same car, twice. If the frame
         belonged to the vehicle, only one of them could be right. So what decides?
       </>
     ),
@@ -167,8 +168,8 @@ export const transportLesson: NativeLesson = {
     inShort: "No article, it's how you went. An article, it's what you took.",
     remember: (
       <>
-        <b>No article &rarr; the manner. An article &rarr; the vehicle.</b> One line sorts
-        all twelve &mdash; and sorts the thirteenth you meet outside this list.
+        <b>No article &rarr; the manner. An article &rarr; the vehicle.</b>{" "}
+        One line sorts all twelve &mdash; and sorts the thirteenth you meet outside this list.
       </>
     ),
   },

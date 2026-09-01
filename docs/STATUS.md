@@ -352,19 +352,55 @@ lane = report it in STATUS, don't do it.
   only where it is OPAQUE (« il fait beau »). The redraft and the 27% page
   cut are in **#100**, awaiting fluoduo-main's merge under rule 7.
   cut **MERGED — #100, `9a3c67b`, 31 Aug PM**, Tier 1 batch 1 with it.
-  Remaining, in order:
-  1. **Tier 1 — 19 concepts.** The critical path, nothing gating it. Batches
-     of five, every batch read by Dan before ship.
-  2. **Tier 3 — 8 more phrase stops.** Classroom talk, Pourquoi ?, Telling
-     time, Invitations, Weather, Directions, Wants & needs, Introductions.
-     The salutations shape applies directly.
-  3. **The 6 ateliers have no native lesson file** — a concept has nowhere to
-     live on stops 10/20/30/40/49/50. They need a file before Tier 3 closes.
-  4. **Tier 2 second half** — compound names, *tarte aux pommes* against
-     *jus de pomme*.
-  5. **Colours (5) + Some nouns (6)** — the two Tier 2 stops with no native
-     lesson file. Decision 6: give them one, or Tier 2 is done at 13.
-  Keeper of the Stocktake ledger — re-issue when the counts move.
+  **Re-audited 1 Sep from the repo, not from this list** — the counts below were
+  stale in every line. The audit walks `LESSONS_BY_SIO` and looks for a
+  `concept:` in each stop's lesson file. (It found its own blind spot first: the
+  SIO id regex was `SIO-\d+`, which silently skips **SIO-045A** and reported
+  Tier 2 one short. A scan that matches more narrowly than the thing it asserts
+  invents a gap; one that matches more loosely drowns the signal. Both have now
+  happened here.)
+
+  1. ✅ **Tier 1 — 20/20. DONE.** Closed by SIO-038, whose file arrived from
+     Peers (#120) and whose concept went on the same hour.
+  2. ✅ **Tier 2 — 15/15. DONE.** Decision 6 resolved by #105: Colours and Some
+     nouns both have files and both carry concepts. SIO-045A is mapped to
+     `soixante-dix` and has one too.
+  3. **Tier 3 — 8 of 15, and every gap is a MISSING FILE, not a missing
+     argument.**
+     - phrase stops **7 of 9** — SIO-025 (`parce-que`) and SIO-039
+       (`envies-besoins`) have no lesson file. Both are job A of
+       `docs/HANDOVER_LESSON_FILES.md`.
+     - ateliers **1 of 6** — SIO-010 done, and it is the shape the other five
+       copy. SIO-020/030/040/049/050 have no file.
+  4. ✅ **The compound-names concept — DONE, and it cost the concept that was
+     there.** Dan, asked where it belongs: *"put it where we learn about food
+     items."* That is SIO-041, which already carried one, so *why the article
+     often hides the gender* was **replaced** by *why French needs a joint where
+     English just stacks nouns* — `à` puts it in (*le gâteau au chocolat*), `de`
+     says what it is made of (*le jus d'orange*), and the article falls out of
+     the choice. Dan saw both side by side before it shipped. `aliments.tsx`
+     names the commit that removed the old one, so a revert is one lookup away.
+
+  **THE STOCKTAKE, re-issued 1 Sep — 45 concepts across 52 stops.**
+
+  | tier | stops | concepts | what is missing |
+  |---|---|---|---|
+  | 1 · Systemic Grammar | 20 | **20** ✅ | — |
+  | 2 · Lexical Core | 15 | **15** ✅ | — |
+  | 3 · phrase stops | 9 | **7** | SIO-025, SIO-039 |
+  | 3 · ateliers | 6 | **1** | SIO-020 / 030 / 040 / 049 / 050 |
+
+  **Seven concepts remain and NOT ONE of them is blocked on an argument.** Every
+  gap is a lesson file that does not exist yet, so the pipeline's critical path
+  now runs through other lanes: the five atelier files are Peers' (STATUS line
+  544), SIO-025 and SIO-039 went to Pre-tests with #123. SIO-010 is written and
+  is the shape the other five copy — an atelier concept argues the REGISTER, the
+  thing a model dialogue cannot show because it only ever runs one.
+
+  Two things this lane can do with no file at all, in the order they are worth
+  doing: re-read the 45 against Dan's litmus test now that they can be compared
+  as a set, and draft the five atelier arguments from `ATELIER_DIALOGUES` so
+  they drop in the hour each file lands rather than the day after.
 - **Pre-tests — the pre-test surface, then capacity.** ~~Unit-0 pre-test pages
   (in flight, the last uncovered pre-test surface).~~ **DONE — #98.** All ten
   now render at `/pretests/unit0/SIO-00N`; every stop in the course has a
