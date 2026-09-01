@@ -289,18 +289,34 @@ lane = report it in STATUS, don't do it.
   only where it is OPAQUE (« il fait beau »). The redraft and the 27% page
   cut are in **#100**, awaiting fluoduo-main's merge under rule 7.
   cut **MERGED — #100, `9a3c67b`, 31 Aug PM**, Tier 1 batch 1 with it.
-  Remaining, in order:
-  1. **Tier 1 — 19 concepts.** The critical path, nothing gating it. Batches
-     of five, every batch read by Dan before ship.
-  2. **Tier 3 — 8 more phrase stops.** Classroom talk, Pourquoi ?, Telling
-     time, Invitations, Weather, Directions, Wants & needs, Introductions.
-     The salutations shape applies directly.
-  3. **The 6 ateliers have no native lesson file** — a concept has nowhere to
-     live on stops 10/20/30/40/49/50. They need a file before Tier 3 closes.
-  4. **Tier 2 second half** — compound names, *tarte aux pommes* against
-     *jus de pomme*.
-  5. **Colours (5) + Some nouns (6)** — the two Tier 2 stops with no native
-     lesson file. Decision 6: give them one, or Tier 2 is done at 13.
+  **Re-audited 1 Sep from the repo, not from this list** — the counts below were
+  stale in every line. The audit walks `LESSONS_BY_SIO` and looks for a
+  `concept:` in each stop's lesson file. (It found its own blind spot first: the
+  SIO id regex was `SIO-\d+`, which silently skips **SIO-045A** and reported
+  Tier 2 one short. A scan that matches more narrowly than the thing it asserts
+  invents a gap; one that matches more loosely drowns the signal. Both have now
+  happened here.)
+
+  1. ✅ **Tier 1 — 20/20. DONE.** Closed by SIO-038, whose file arrived from
+     Peers (#120) and whose concept went on the same hour.
+  2. ✅ **Tier 2 — 15/15. DONE.** Decision 6 resolved by #105: Colours and Some
+     nouns both have files and both carry concepts. SIO-045A is mapped to
+     `soixante-dix` and has one too.
+  3. **Tier 3 — 8 of 15, and every gap is a MISSING FILE, not a missing
+     argument.**
+     - phrase stops **7 of 9** — SIO-025 (`parce-que`) and SIO-039
+       (`envies-besoins`) have no lesson file. Both are job A of
+       `docs/HANDOVER_LESSON_FILES.md`.
+     - ateliers **1 of 6** — SIO-010 done, and it is the shape the other five
+       copy. SIO-020/030/040/049/050 have no file.
+  4. **The compound-names concept** — *tarte aux pommes* against *jus de
+     pomme*. **Open, and it needs a decision from Dan before it can be
+     written**, because there is nowhere to put it: `LessonConcept` gives one
+     concept per lesson, and both food stops already carry one — SIO-041
+     (`aliments`) argues *why the article often hides the gender*, SIO-044
+     (`au-marche`) argues *why a quantity is followed by bare « de »*. So the
+     compound rule either replaces one of those, or the stop it belongs to is a
+     different one, or a lesson needs to be able to hold two.
   Keeper of the Stocktake ledger — re-issue when the counts move.
 - **Pre-tests — the pre-test surface, then capacity.** ~~Unit-0 pre-test pages
   (in flight, the last uncovered pre-test surface).~~ **DONE — #98.** All ten
