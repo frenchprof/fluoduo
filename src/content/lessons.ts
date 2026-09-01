@@ -79,6 +79,15 @@ export const LESSONS: Record<string, Lesson> = {
   // deck gives it.
   "parce-que":         { slug: "parce-que",         title: "Pourquoi ? Parce que…",        unit: 2 },
   "wants-needs":       { slug: "wants-needs",       title: "Envies et besoins",            unit: 3 },
+  // The five remaining ateliers, 2026-09-01 — same shape as atelier-rencontre:
+  // the Mémo is the generated model passed through, and the exercise is the
+  // grammar each stop is graded on, out of Dan's reviewed FINALE bank. Slugs
+  // are each deck's own `lessonSlug` from atelierDecks.ts.
+  "atelier-pays":     { slug: "atelier-pays", title: "Atelier — Présenter un pays", unit: 1 },
+  "atelier-email":    { slug: "atelier-email", title: "Atelier — Un petit e-mail", unit: 2 },
+  "atelier-itineraire": { slug: "atelier-itineraire", title: "Atelier — L'itinéraire", unit: 3 },
+  "atelier-avis-resto": { slug: "atelier-avis-resto", title: "Atelier — Avis de restaurant", unit: 4 },
+  "atelier-resto":    { slug: "atelier-resto", title: "Atelier — Au restaurant", unit: 4 },
   "revision-u3u4":     { slug: "revision-u3u4",     title: "Révision — Unités 3 & 4",      unit: 3 },
   "aliments":          { slug: "aliments",          title: "Les repas & les aliments",     unit: 4 },
   "partitifs":         { slug: "partitifs",         title: "Les articles partitifs",       unit: 4 },
@@ -116,6 +125,11 @@ export const LESSONS_BY_SIO: Record<string, string[]> = {
   "SIO-010": ["atelier-rencontre"],
   "SIO-025": ["parce-que"],
   "SIO-039": ["wants-needs"],
+  "SIO-020": ["atelier-pays"],
+  "SIO-030": ["atelier-email"],
+  "SIO-040": ["atelier-itineraire"],
+  "SIO-049": ["atelier-avis-resto"],
+  "SIO-050": ["atelier-resto"],
   "SIO-004": ["quel-jour"],
   "SIO-007": ["combien"],
   "SIO-008": ["on-fait-quoi"],

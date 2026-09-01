@@ -58,6 +58,13 @@ import { atelierRencontreLesson } from "./atelier-rencontre";
 // envies-besoins attaches its opener to every sentence.
 import { parceQueLesson } from "./parce-que";
 import { wantsNeedsLesson } from "./wants-needs";
+// The five remaining ateliers. Each passes its generated Mémo through — see
+// atelier-rencontre.tsx for why authoring one deletes the model dialogue.
+import { atelierPaysLesson } from "./atelier-pays";
+import { atelierEmailLesson } from "./atelier-email";
+import { atelierItineraireLesson } from "./atelier-itineraire";
+import { atelierAvisRestoLesson } from "./atelier-avis-resto";
+import { atelierRestoLesson } from "./atelier-resto";
 import { auMarcheLesson } from "./au-marche";
 import { soixanteDixLesson } from "./soixante-dix";
 import { avoirEtatsLesson } from "./avoir-etats";
@@ -134,6 +141,11 @@ export const NATIVE_LESSONS: Record<string, NativeLesson> = {
   "atelier-rencontre": atelierRencontreLesson,
   "parce-que": parceQueLesson,
   "wants-needs": wantsNeedsLesson,
+  "atelier-pays": atelierPaysLesson,
+  "atelier-email": atelierEmailLesson,
+  "atelier-itineraire": atelierItineraireLesson,
+  "atelier-avis-resto": atelierAvisRestoLesson,
+  "atelier-resto": atelierRestoLesson,
   "revision-u1": revisionU1Lesson,
   "revision-u3u4": revisionU3U4Lesson,
   "revision-u4": revisionU4Lesson,
