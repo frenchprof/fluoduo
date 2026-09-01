@@ -84,16 +84,24 @@ if not os.path.isfile("package.json"):
 HOME = "src/app/HomeDashboard.tsx"
 MAPB = "src/app/map/MapBody.tsx"
 VIEW = "src/lib/mapView.ts"
+# THE SWITCH MOVED, 1 Sep, and this file follows it. It was `ViewSwitch`,
+# written inside HomeDashboard; Dan then asked for the deck's study–test
+# control to be "redone like the 2D 3D switch", so it became
+# components/PillSwitch.tsx and Home is one of two callers now. Every claim
+# below is unchanged — the geometry, the label that swaps ends, the navigation
+# — only where each lives moved.
+PILL = "src/components/PillSwitch.tsx"
 
 home, mapb, view = code(read(HOME)), code(read(MAPB)), code(read(VIEW))
+pill = code(read(PILL))
 ok(bool(home) and bool(mapb), "Home and the map body exist", f"{HOME} or {MAPB} is missing")
 
 # ---- 1 · the rows, and which control sits in which ------------------------
-# Positional, not by name: `<ViewSwitch` appearing anywhere in the file says
+# Positional, not by name: `<PillSwitch` appearing anywhere in the file says
 # nothing about which row it is in. These indices say it.
 i_dl = home.find("<dl")
 i_next = home.find("Next:")
-i_switch = home.find("<ViewSwitch")
+i_switch = home.find("<PillSwitch")
 i_keys = home.find('aria-label={`Continue')
 ok(min(i_dl, i_next, i_switch, i_keys) > 0,
    "the counter, « Next: … », the switch and the Continue key are all on the page",
@@ -112,15 +120,22 @@ ok(between.count("</div>") >= 1,
    "the counter, the name, the switch and the keys are in one flex row again; nothing is 'up' or 'down'")
 
 # ---- 2 · the label lives inside the switch --------------------------------
-# GUARDED, because `str.find` returns -1 and `home[-1:]` is a non-empty string
-# — so the unguarded slice made "the switch is its own component" true even
-# when ViewSwitch had been renamed away. Break-testing caught it.
-i_fn = home.find("function ViewSwitch(")
-sw = home[i_fn:] if i_fn >= 0 else ""
-ok(bool(sw), "the switch is its own component", "ViewSwitch is gone — nothing draws the track, the label or the knob")
-ok(re.search(r'const name = on \? "3D" : "2D"', sw) is not None and "{name}" in sw,
-   "the switch renders its own state as text — « 2D » / « 3D » inside the track",
+# GUARDED, because `str.find` returns -1 and a negative slice is non-empty —
+# the unguarded version made "the switch is its own component" true even when
+# the component had been renamed away. Break-testing caught it.
+i_fn = pill.find("export default function PillSwitch(")
+sw = pill[i_fn:] if i_fn >= 0 else ""
+ok(bool(sw), "the switch is its own shared component",
+   "PillSwitch is gone — nothing draws the track, the label or the knob")
+ok('const name = on ? onLabel : offLabel;' in sw and "{name}" in sw,
+   "the switch renders its own state as text, inside the track",
    "the switch no longer draws a label; Dan asked for the labels transferred INTO the switch")
+# AND HOME STILL NAMES ITS TWO STATES. The component is generic now, so the
+# labels moved to the caller — an assertion that only read the component would
+# pass with Home passing nothing at all.
+ok(re.search(r'offLabel="2D"', home) is not None and re.search(r'onLabel="3D"', home) is not None,
+   "Home's switch is still labelled « 2D » / « 3D »",
+   "Home no longer passes the two view labels — the pill would render empty")
 ok('id="view-switch-label"' not in home and '"3D view"' not in home and ">\n          3D view" not in home,
    "the external « 3D view » caption is gone",
    "the caption outside the track is back — it names the property and not the state, and the litmus test deletes it")
@@ -132,13 +147,12 @@ ok(re.search(r'\[on \? "left" : "right"\]', sw) is not None,
 # ---- 3 · it navigates, through the shared helper --------------------------
 i_flip = home.find("onFlip={")
 flip = home[i_flip:i_flip + 700] if i_flip >= 0 else ""
-# RE-POINTED 2 Sep, and the 1 Sep ruling it enforced is superseded, not
-# forgotten: "make sure the switch literally takes you the map it promises
-# to" gave way, one day later and looking at the hero, to "this needs to
-# stay on screen when users tap 2D>3D>2D and so on. The separate map
-# interface is for fuller-screen map." The visible consequence the 1 Sep
-# ruling demanded is still there — the postcard below flips with the
-# switch — but the flip no longer navigates.
+# RE-POINTED 2 Sep (re-applied here after the PillSwitch relocation): the
+# 1 Sep "make sure the switch literally takes you the map it promises to"
+# gave way, one day later and looking at the hero, to "this needs to stay
+# on screen when users tap 2D>3D>2D and so on. The separate map interface
+# is for fuller-screen map." The visible consequence is the postcard
+# flipping below; the flip no longer navigates.
 ok("router.push(" not in flip,
    "flipping the switch stays on Home — the postcard flips instead",
    "the switch navigates again; Dan (2 Sep): toggling 2D>3D>2D must stay on screen")

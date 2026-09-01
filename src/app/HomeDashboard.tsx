@@ -25,6 +25,7 @@
  * forwarded so printed QR codes and bookmarks survive.
  */
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import StopSheet from "@/components/StopSheet";
 import HomeMap from "@/components/HomeMap";
@@ -35,6 +36,7 @@ import { nextSioId } from "@/lib/continuer";
 import { equippedAccent } from "@/lib/economy";
 import { dueForReview } from "@/lib/reviser";
 import { loadMapView, mapHref, saveMapView } from "@/lib/mapView";
+import PillSwitch from "@/components/PillSwitch";
 
 /** « par Dr Chan » as pen strokes, in writing order (stem before bowl, the
  *  way a hand actually writes print letters). Baseline y=25, x-height 13,
@@ -91,6 +93,7 @@ export default function HomeDashboard() {
   const [qgOpen, setQgOpen] = useState(false);
   // The Review button's count — the one destination on Home with a deadline.
   const [dueCount, setDueCount] = useState(0);
+  const router = useRouter();
 
   useEffect(() => {
     // Progress, the due-count and the once-per-session hero flag live in
@@ -284,7 +287,9 @@ export default function HomeDashboard() {
               the litmus test removes. The <dt> stays, unseen: a screen reader
               would otherwise read "1 slash 50" with nothing to say what of. */}
           <div className="neo-well flex min-w-[64px] flex-col items-center justify-center rounded-2xl px-2 py-2.5 sm:min-w-[80px] sm:px-3">
-            <dt className="sr-only">Stop</dt>
+            {/* « Goal », not « Stop » (Dan, 1 Sep) — the word a screen
+                reader hears for this counter is the word the bands print. */}
+            <dt className="sr-only">Goal</dt>
             <dd className="cahier-hand text-[22px] leading-none text-[color:var(--cahier-ink)] [font-variant-numeric:tabular-nums] sm:text-[26px]">
               {stopNo}<span className="text-base text-[color:var(--cahier-ink-soft)]">/{SIOS.length}</span>
             </dd>
@@ -335,7 +340,11 @@ export default function HomeDashboard() {
 
       {/* ── ROW B · the controls ─────────────────────────────────────────── */}
       <div className="mb-3 flex flex-wrap items-center justify-between gap-x-2 gap-y-2 sm:gap-x-3">
-        <ViewSwitch
+        <PillSwitch
+          label="Map view"
+          title="Tap to switch the map's view — the postcard below flips with it"
+          offLabel="2D"
+          onLabel="3D"
           on={view3d}
           onFlip={(next) => {
             setView3d(next);
@@ -369,8 +378,8 @@ export default function HomeDashboard() {
           {activeSio && (
             <Link
               href={`/unit/${activeSio.unit}#${activeSio.id}`}
-              aria-label={`Continue — ${activeSio.topic}, your stop on the study path`}
-              title={`Continue — « ${activeSio.topic} », your stop on the study path`}
+              aria-label={`Continue — ${activeSio.topic}, your goal on the study path`}
+              title={`Continue — « ${activeSio.topic} », your goal on the study path`}
               className={`neo-key grid h-[44px] w-[44px] place-items-center rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]${doneTotal === 0 ? " fluo-play-halo" : ""}`}
               style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-win) 55%, white) 0%, var(--dopa-win) 52%, color-mix(in oklab, var(--dopa-win) 70%, black) 100%)" }}
             >
@@ -392,8 +401,8 @@ export default function HomeDashboard() {
           {afterSio && (
             <Link
               href={`/unit/${afterSio.unit}#${afterSio.id}`}
-              aria-label={`Next stop — ${afterSio.topic}`}
-              title={`Next stop — « ${afterSio.topic} »`}
+              aria-label={`Next goal — ${afterSio.topic}`}
+              title={`Next goal — « ${afterSio.topic} »`}
               className="neo-key grid h-[44px] w-[44px] place-items-center rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
               style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-win) 34%, white) 0%, color-mix(in oklab, var(--dopa-win) 72%, white) 52%, color-mix(in oklab, var(--dopa-win) 55%, black) 100%)" }}
             >
@@ -436,8 +445,8 @@ export default function HomeDashboard() {
             type="button"
             onClick={() => setQgOpen(true)}
             disabled={!activeSio?.collectionId}
-            aria-label="All activities at this stop"
-            title="Every activity available at your stop"
+            aria-label="All activities at this goal"
+            title="Every activity available at your goal"
             className="neo-key grid h-[44px] w-[44px] place-items-center rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
             style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-reward) 55%, white) 0%, var(--dopa-reward) 52%, color-mix(in oklab, var(--dopa-reward) 70%, black) 100%)" }}
           >
@@ -523,79 +532,3 @@ export default function HomeDashboard() {
   );
 }
 
-/**
- * THE MAP VIEW SWITCH — one control, two states, and the state is written on it.
- *
- * Dan's picture (1 Sep): a chunky pill, the knob at one end and the label
- * « 2D » / « 3D » sitting in the empty half at the other, each in its own
- * colour. "Can we transfer the labels of the 3D switch into the switch
- * itself." The external « 3D view » caption it replaces was doing two jobs
- * badly: it named the property but not the state (a knob to its right, off,
- * beside the words "3D view" — is that 3D or not?), and it cost the row 60px
- * of prose to say what two characters inside the track now say exactly.
- * Dan's litmus test disposes of it: with the label inside, the caption's
- * removal costs a learner nothing.
- *
- * IT NAVIGATES, and that is deliberate (Dan, same day: "make sure the switch
- * literally takes you the map it promises to"). It named a view of a map and
- * did nothing a learner could see — defensible while it sat against the map
- * card, which was the door; not defensible now that it sits under the
- * counter, a page away from that card. So flipping it saves the choice and
- * opens the map in the view it now shows. `role="switch"` stays because the
- * flip is real and persists; the accessible name says the navigation out loud
- * rather than letting it be a surprise.
- *
- * THE LABEL CANNOT SIT UNDER THE KNOB. Track 72, padding 4, knob 28, so the
- * travel is 36 and the free half is 36 wide. The label is pinned 10 from the
- * end the knob is NOT at, which puts a ~24px word between 38 and 62 (off) or
- * 10 and 34 (on) — clear of the knob's 4–32 and 40–68 by 6px either way.
- *
- * AND 72 IS NOT A ROUND NUMBER, it is the width that keeps Dan's two rows two
- * rows. The keys beside it are 4 × 44 with 4px gaps = 188, and a 360px phone
- * leaves 272 for the pair: 72 + 8 + 188 = 268 fits with 4 to spare, where the
- * first build's 80 and 6px gaps came to 282 and wrapped the keys onto a third
- * line. 320 still wraps, deliberately — four keys and a switch cannot share a
- * line there at any size a finger can hit, and the switch taking the first
- * line is exactly where Dan put it ("to the left under the 4/30").
- */
-function ViewSwitch({ on, onFlip }: { on: boolean; onFlip: (next: boolean) => void }) {
-  const name = on ? "3D" : "2D";
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={on}
-      aria-label={`Map view: ${name}. Switching opens the map in the other view.`}
-      title={`The map in ${name} — tap to switch to ${on ? "2D" : "3D"} and open it`}
-      onClick={() => onFlip(!on)}
-      className="neo-well relative flex h-[38px] w-[72px] shrink-0 items-center rounded-full p-[4px] transition"
-    >
-      {/* The colours are Dan's: 2D blue, 3D red — and the knob wears the same
-          hue as the word, so the pill reads as one object in one state rather
-          than a coloured word next to a neutral part. */}
-      <span
-        aria-hidden
-        className="fluo-mono absolute top-1/2 -translate-y-1/2 text-[16px] font-black leading-none tracking-tight"
-        style={{
-          [on ? "left" : "right"]: "10px",
-          color: on ? "var(--dopa-reward-ink)" : "var(--dopa-focus-ink)",
-        }}
-      >
-        {name}
-      </span>
-      {/* The knob is a rounded SQUARE, as Dan drew it — the same corner radius
-          family as the four keys beside it, so the row reads as one set of
-          physical parts rather than a switch borrowed from somewhere else. */}
-      <span
-        aria-hidden
-        className="neo-key block h-[28px] w-[28px] rounded-[9px] transition-transform duration-200 ease-out"
-        style={{
-          transform: on ? "translateX(36px)" : "translateX(0)",
-          background: on
-            ? "linear-gradient(155deg, color-mix(in oklab, var(--dopa-reward) 55%, white) 0%, var(--dopa-reward) 52%, color-mix(in oklab, var(--dopa-reward) 70%, black) 100%)"
-            : "linear-gradient(155deg, color-mix(in oklab, var(--dopa-focus) 55%, white) 0%, var(--dopa-focus) 52%, color-mix(in oklab, var(--dopa-focus) 70%, black) 100%)",
-        }}
-      />
-    </button>
-  );
-}

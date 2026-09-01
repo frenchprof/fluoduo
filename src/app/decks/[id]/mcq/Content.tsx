@@ -54,7 +54,7 @@ function McqPageInner({ id }: { id: string }) {
     <CahierShell
       tabs={withActive(deckTabs(id), "mcq")}
       active="mcq"
-      band={{ title: collection?.title ?? "MCQ", sub: stopTagForDeck(id) }}
+      band={{ title: "MCQ", tag: stopTagForDeck(id) }}
     >
       <div className="mx-auto max-w-3xl px-4 py-4">
         {collection === undefined && (

@@ -32,7 +32,7 @@ export default function Gaps() {
   }, [cells]);
 
   if (cells.length === 0) {
-    return <p className="text-sm text-slate-500">Every activity has content at every stop.</p>;
+    return <p className="text-sm text-slate-500">Every activity has content at every goal.</p>;
   }
   return (
     <SectionGroup>
