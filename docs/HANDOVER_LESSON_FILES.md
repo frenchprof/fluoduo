@@ -13,6 +13,14 @@ A concept lives in `src/content/lessons/native/<slug>.tsx`. **Nine stops have no
 such file**, so there is physically nowhere to put one. Tier 1 and Tier 2 are
 otherwise finished; Tier 3 is 7 of 15 and *all eight remaining stops are here*.
 
+**What a learner sees today.** Nothing is broken — Path, Forms and Pract. all
+work off the deck. The 💡 Idea tab is the one that cannot: with no file to read
+a `concept` from, `LessonTabs` falls back to
+
+> Idea has not been written for this lesson yet. Forms has the rules in the meantime.
+
+That sentence, on nine stops, is what this handover removes.
+
 ## The nine, and they are two different jobs
 
 ### A · Three ordinary stops — decks with items (your #105 job again)
@@ -29,23 +37,30 @@ items, a dice generator over them, and a bonus bank.
 **SIO-038 matters out of proportion to its size** — it is the *only* Tier 1 stop
 without a file, so it is the single thing standing between Tier 1 and complete.
 
-### B · Six ateliers — decks with ZERO items
+### B · Six ateliers — decks built from a dialogue, not authored word by word
 
-| stop | can-do | deck |
-|---|---|---|
-| **SIO-010** | carry a first meeting | `atelier-sio-010` |
-| **SIO-020** | write a few sentences about a country | `atelier-sio-020` |
-| **SIO-030** | write a short friendly message | `atelier-sio-030` |
-| **SIO-040** | explain step by step how to get somewhere | `atelier-sio-040` |
-| **SIO-049** | give a simple opinion about a restaurant | `atelier-sio-049` |
-| **SIO-050** | get by in a simple restaurant visit | `atelier-sio-050` |
+| stop | can-do | deck | cards |
+|---|---|---|---|
+| **SIO-010** | carry a first meeting | `atelier-sio-010` | 9 |
+| **SIO-020** | write a few sentences about a country | `atelier-sio-020` | 6 |
+| **SIO-030** | write a short friendly message | `atelier-sio-030` | 8 |
+| **SIO-040** | explain step by step how to get somewhere | `atelier-sio-040` | 6 |
+| **SIO-049** | give a simple opinion about a restaurant | `atelier-sio-049` | 7 |
+| **SIO-050** | get by in a simple restaurant visit | `atelier-sio-050` | 7 |
 
-**Their decks hold no items at all.** The content is a model dialogue in
-`ATELIER_DIALOGUES` (`src/content/ateliers.ts`), shaped
-`{ who, fr, en, say? }`. So the Mémo is built from the dialogue's lines, and the
-dice/bonus draw on those lines rather than on deck items. That is the part that
-has no precedent yet — SIO-010's dialogue is ten lines and is the one to
-prototype on.
+**CORRECTION, 1 Sep — an earlier draft of this file said these decks hold zero
+items. They do not, and have not since `783306c`.** `ATELIER_DECKS`
+(`src/content/collections/atelierDecks.ts`) builds each deck from the model
+dialogue in `ATELIER_DIALOGUES` (`src/content/ateliers.ts`), one card per line,
+dropping a line already dealt and a line whose French and English are identical.
+The counts above are what that filter leaves. Verified by driving the app, not
+by reading the source — `/lessons/deck/atelier-sio-010` deals cards.
+
+What is still different from job A: the source is a **dialogue**, not a word
+list, so a card is a whole turn (« Comment ça s'écrit ? ») rather than a lexical
+item. The Mémo has to argue about the exchange, and the dice/bonus draw on those
+turns. That shape has no precedent yet — SIO-010's dialogue is ten lines, nine
+cards, and is the one to prototype on.
 
 ---
 
