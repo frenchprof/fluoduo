@@ -52,6 +52,55 @@ export const prepositionsLesson: NativeLesson = {
       </p>
     </div>
   ),
+  // TIER 1 · stop 32. The claim ABOVE stops 26 and 35: two parallel sets, and
+  // the DIRECTION picks the set before the place picks the form. Without that,
+  // a learner has eight unrelated words instead of two systems of four.
+  concept: {
+    subtitle: "Why direction comes before the place",
+    contrast: (
+      <>
+        English uses one preposition for going and another for coming, and neither depends on
+        the place: <i>to Paris</i>, <i>from Paris</i>. French has <b>two sets of four</b>, and
+        you choose the set by direction before the place chooses the form.
+      </>
+    ),
+    question: (
+      <>
+        You know the place is <i lang="fr">le Japon</i>. Is that enough to pick the word?
+      </>
+    ),
+    answer: (
+      <>
+        No &mdash; you need the direction first. Going there is{" "}
+        <i lang="fr">au Japon</i>; coming from there is <i lang="fr">du Japon</i>. The place
+        tells you <i>which of the four</i>; only the direction tells you{" "}
+        <i>which set of four</i>.
+      </>
+    ),
+    flow: [
+      { depth: 0, text: "Going or coming?" },
+      { depth: 1, text: "going → à · en · au · aux" },
+      { depth: 1, text: "coming → de · d' · du · des" },
+      { depth: 0, text: "Then the place picks the form." },
+    ],
+    pitfallHeads: ["place only", "direction, then place"],
+    pitfall: [
+      { label: <>to Paris</>, wrong: <><i lang="fr">de Paris</i></>, right: <><i lang="fr">&agrave; Paris</i></> },
+      { label: <>from France</>, wrong: <><i lang="fr">en France</i></>, right: <><i lang="fr">de France</i></> },
+    ],
+    check: [
+      { q: <>You are coming from Portugal &mdash; <i lang="fr">le Portugal</i>.</>,
+        a: <><i lang="fr">Je viens du Portugal.</i> Coming, so the second set; masculine, so <i lang="fr">du</i>.</> },
+      { q: <>Why is knowing the gender not enough?</>,
+        a: <>It picks the form within a set. It cannot pick the set.</> },
+    ],
+    remember: (
+      <>
+        Two questions, in order: which direction, then which place. The gender only answers
+        the second.
+      </>
+    ),
+  },
   dice: buildDice({
     dests: GEOS,
     toChoices: ["à", "en", "au", "aux"],

@@ -70,6 +70,52 @@ export const sePresenterLesson: NativeLesson = {
       </p>
     </div>
   ),
+  // TIER 3 · stop 1. TRANSPARENT block: the parts are visible and one of them
+  // moves. The Mémo states that the little pronoun changes; what it cannot say
+  // is that this is the whole of what makes the phrase work.
+  concept: {
+    subtitle: "Why the little word changes with you",
+    contrast: (
+      <>
+        English has one phrase for this &mdash; <i>my name is</i>{" "}&mdash; and nothing in it
+        moves. French carries a small extra pronoun that <b>changes with the subject</b>:{" "}
+        <i lang="fr">je m&rsquo;appelle</i>, <i lang="fr">tu t&rsquo;appelles</i>,{" "}
+        <i lang="fr">il s&rsquo;appelle</i>.
+      </>
+    ),
+    question: (
+      <>
+        <i lang="fr">Comment vous vous appelez&nbsp;?</i> Why is{" "}
+        <i lang="fr">vous</i> written twice?
+      </>
+    ),
+    answer: (
+      <>
+        Because the two are doing different jobs. The first is the subject; the second is that
+        little pronoun, which for <i lang="fr">vous</i> happens to be{" "}
+        <i lang="fr">vous</i> as well. It is not a slip of the pen &mdash;{" "}
+        <i lang="fr">je m&rsquo;</i>, <i lang="fr">tu t&rsquo;</i>,{" "}
+        <i lang="fr">il s&rsquo;</i>, <i lang="fr">vous vous</i>.
+      </>
+    ),
+    pitfallHeads: ["treated as one fixed block", "what actually moves"],
+    pitfall: [
+      { label: <>tu</>, wrong: <><i lang="fr">tu m&rsquo;appelles</i></>, right: <><i lang="fr">tu t&rsquo;appelles</i></> },
+      { label: <>vous</>, wrong: <><i lang="fr">comment vous appelez&nbsp;?</i></>, right: <><i lang="fr">comment vous <b>vous</b> appelez&nbsp;?</i></> },
+    ],
+    check: [
+      { q: <>Emma introduces herself. Which pronoun?</>,
+        a: <><i lang="fr">Je m&rsquo;appelle Emma.</i></> },
+      { q: <>You ask a friend.</>,
+        a: <><i lang="fr">Comment tu t&rsquo;appelles&nbsp;?</i> &mdash; <i lang="fr">tu</i> takes <i lang="fr">t&rsquo;</i>.</> },
+    ],
+    remember: (
+      <>
+        The phrase is not fixed. The small pronoun agrees with whoever is being named &mdash;
+        and with <i lang="fr">vous</i> the word really does appear twice.
+      </>
+    ),
+  },
   dice: {
     instruction: "Names: say one, ask for one, or address someone politely.",
     newQuestion: sePresenterQuestion,

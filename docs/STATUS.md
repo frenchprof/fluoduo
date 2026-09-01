@@ -287,6 +287,7 @@ lane = report it in STATUS, don't do it.
   draft — form analysis is valid at a phrase stop where the block is
   TRANSPARENT (« bonne nuit » = bonne + a feminine noun); the moment alone
   only where it is OPAQUE (« il fait beau »). The redraft and the 27% page
+  cut are in **#100**, awaiting fluoduo-main's merge under rule 7.
   cut **MERGED — #100, `9a3c67b`, 31 Aug PM**, Tier 1 batch 1 with it.
   Remaining, in order:
   1. **Tier 1 — 19 concepts.** The critical path, nothing gating it. Batches
@@ -501,6 +502,137 @@ Dan assigns. Listed so the queue is not re-derived by whoever picks it up.
 | 8 | `rule:` namespace (894-item tagging): parked by design until the concepts finish | transfer evidence |
 | 9 | **Deploys through fluoduo-main** (ruled) — needs the fine-grained PAT (write to dckg/fluo) as an Actions secret | ends manual deploys |
 
+## 1 Sep — THE HANDOVER IS SPLIT, and Pre-tests gets two assignments
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan, 1 Sep ("give him both"), load-balancing the nine-file handover below —
+Peers carries three assignments while Pre-tests sat idle after Lot A. The
+split is BY STOP, disjoint files, written here BEFORE either session opens
+one (the 31 Aug #97-collision lesson):
+
+- **PRE-TESTS takes the three deck-backed files** — SIO-025 `parce-que`
+  (6 items), **SIO-038 `transport`** (12), SIO-039 `envies-besoins` (10).
+  The model is `colors.tsx`; the full brief, the registration joints, the
+  no-invented-French rule and the `{" "}` trap are all in
+  `docs/HANDOVER_LESSON_FILES.md` — read it before writing a line. SIO-038
+  first: it alone stands between Tier 1 and complete. The `concept` slot
+  stays EMPTY in all three — Color review drafts concepts on top.
+- **PRE-TESTS also takes the cycling redo** (decision 4's ruling): the
+  fluency-cycling animation rebuilt in FluOLinGo Hand — the two 30 Aug
+  branches are superseded reference, not a base. Same skills as the
+  Kallang wave. Second priority, after the three files.
+- **PEERS keeps the six atelier files** (10 · 20 · 30 · 40 · 49 · 50 — the
+  novel dialogue-built half; prototype on SIO-010) plus the DrillShell
+  chrome fold and the Practice hub. **Do NOT build 025/038/039** — they are
+  Pre-tests' now.
+
+## 31 Aug — nine stops have no lesson file: handover to Peers (SPLIT 1 Sep — see above)
+
+Full brief in **`docs/HANDOVER_LESSON_FILES.md`**. The short of it:
+
+A concept lives in `native/<slug>.tsx`, and nine stops have no such file, so
+there is nowhere to put one. **Tier 1 and Tier 2 are otherwise finished; Tier 3
+is 7 of 15 and all eight remaining stops are in this list.**
+
+**Two different jobs, not one.** Three stops (25 `parce-que` 6 items, 38
+`transport` 12, 39 `envies-besoins` 10) have ordinary decks — that is Peers'
+own #105 job again, and `colors.tsx` is the model. The six ateliers (10, 20, 30,
+40, 49, 50) have decks with **zero items**: their content is a model dialogue in
+`ATELIER_DIALOGUES` (`src/content/ateliers.ts`), so the Mémo must be built from
+dialogue lines. That half has no precedent — SIO-010's ten lines are the one to
+prototype on.
+
+**SIO-038 is out of proportion to its size**: the only Tier 1 stop without a
+file, so it alone stands between Tier 1 and complete.
+
+Handed over with the three registration joints (verify68 asserts all three — a
+file that exists unwired looks finished in a diff), the no-invented-French rule
+and its best precedent (colors.tsx refusing to teach agreement because every
+mnemonic is masculine), the `{" "}` trap, and both browser scans including the
+`scrollHeight > clientHeight` fault that makes a fitting panel unmeasurable.
+
+Peers writes the file — slug, Mémo, dice, bonus. **The `concept` slot stays
+empty; that is this lane's.**
+
+## 31 Aug — Tier 1 batch 4, the last: verb + infinitive
+
+Four concepts across stops 37, 47 and 48, and they are one argument: **only the
+first verb conjugates, the second stays an infinitive, and the negative wraps
+the one doing the work.** Three of the four Mémos state that as a separate ⚠️
+warning; the concept makes it the rule the warnings follow from.
+
+| stop | file | the claim |
+|---|---|---|
+| **37** Pouvoir | `pouvoir` | « on ne peut **pas** fumer » — `pas` lands on `pouvoir` because `fumer` is only its object |
+| **37** Modals | `modaux` | **`il faut` has no person.** There is no `je faut`; when you need to say WHO, you need `devoir`. That is what the impersonal form costs |
+| **47** Making plans | `futur-proche` | a verb of MOVEMENT doing the work of a TENSE — `aller` + infinitive has no walking in it, and the future costs no new conjugation at all |
+| **48** Giving advice | `conseils` | the verb carries the force AND the audience: `tu peux` suggests, `tu dois` presses, `il faut` presses without naming anyone |
+
+**Stop 38 (Getting around) has no lesson mapping in `LESSONS_BY_SIO`**, so there
+is no file for a concept to live in. It is not draftable, and that is a content
+gap rather than a concept one — the same shape as the six ateliers.
+
+Every claim comes from the lesson's own Mémo. No new French.
+
+### Where the pipeline stands
+
+**Tier 1: 21 of 22 lesson files** across its 20 stops (some stops carry two).
+Only stop 38 is unreachable. **Tier 2: complete. Tier 3: 7 of 15**, and the
+remaining eight all need a lesson file created first.
+
+43 concepts now, and after the pane rebuild **43 of 43 fit one screen** with
+**zero jammed words**. Both numbers were 0-of-N and 8 respectively this morning.
+
+One more jam shipped and was caught by the browser scan (`futur-proche`,
+`</i> the same way`). The static `verify72` did not see it — same-line again,
+which is exactly what its corrected header now says it cannot cover.
+
+## 31 Aug — Tier 1, batch 3: five stops closed
+
+Six concepts, because stop 34 has two lesson files and splitting one stop
+across batches is worse than a batch of six.
+
+| stop | the question the FORMS cannot answer |
+|---|---|
+| **2** Tu / Vous | `vous` is **two words** — polite-singular and plural. « Vous parlez ? » cannot tell you how many people are meant, and no French speaker tries. Only `tu` is unambiguous |
+| **11** Moi, toi, lui | `je` cannot stand alone — it exists to sit in front of a verb. Take the verb away and you need the other set, which for **four of the eight** means a different word |
+| **21** C'est / Ce sont | `c'est` **introduces**, `il est` **continues** — the switch happens the moment the thing has a name. And the opener agrees in number: `ce sont des ciseaux`, never `c'est des` |
+| **34** Yes/no | **`si` is a second yes**, for contradicting a negative question. English has no word for it, so learners answer `oui` and are misunderstood |
+| **34** Question words | `quel` is an **adjective** wearing a question word's clothes: it agrees with the noun beside it, never with the person being asked. A woman is still asked `quel âge` |
+| **43** Frequency | straight **after** the verb — even when that splits the verb from its object, which English never does |
+
+Every claim comes from the lesson's own Mémo. No new French.
+
+**Tier 1 is 17 of 20.** Three left: stops 37 Pouvoir, 38 Getting around, 47
+Making plans, 48 Giving advice — a modal cluster, which is batch 4. (Four
+stops; 17+4 = 21 because stop 34 carried two files.)
+
+### The spacing check was wrong about itself
+
+`verify72` shipped an hour ago claiming same-line `</i> word` "usually
+survives". **It does not.** Four more of this batch jammed that way —
+`tu-vous`, `moi-aussi`, `questions-oui-non`, `mots-interrogatifs` — and on
+tu-vous line 116 one instance survives and the next does not, on the same line,
+with nothing in the source to tell them apart.
+
+A blanket static rule would flag **418 sites across 39 files** to catch the
+twelve real ones: churn, and a style rule wearing a bug check's clothes. So the
+header now says the truth — only the rendered page knows — and the check pins
+the two things it can honestly assert: the newline shape, and the twelve fixed
+sites.
+
+**Three faults in the pins themselves, all found by break-testing:**
+1. anchors carried literal backslashes from `r"...\"fr\"..."`, so they matched
+   nothing;
+2. a pin that could not find its site **passed**, reporting "the phrase was
+   rewritten" — which is exactly how four reverted fixes went green;
+3. the follow text was matched literally, but it wraps across source lines, so
+   `means everything else` never matched `means\n        everything else`.
+
+A missing pin is now a FAILURE, and the follow text matches any whitespace run.
+Break-tested by reverting every `{" "}` in six files: all red.
+
 ## 31 Aug PM — a stop is done when it is done (pre-tests lane)
 
 Dan: *"I think it should only be marked done if it is really FULLY done. so we
@@ -569,6 +701,166 @@ Renumbered here: **verify68-derived-doneness → verify69**, workflow line moved
 with it. 67 is taken by `verify67-concept-length.py` on the colour-review
 branch (#100), so 69 is the first free number across every remote branch, not
 just main.
+
+## 31 Aug — eight jammed words, four of them already on main
+
+Dan asked to SEE the eleven unmerged concepts rather than read about them. The
+contact sheet showed two faults no check had caught: **« des**in front of
+food »** and **« produce**French »** — a word butted straight against the next
+across an element edge.
+
+JSX drops the whitespace between a close tag and the text after it when the two
+sit on different source lines. In the file it reads `<i>des</i> in front of
+food` and it renders `desin front of food`. Source correct, `tsc` happy, build
+green, review blind. **Only the rendered page shows it.**
+
+The earlier scan looked for a jammed EM DASH and passed all eight, because
+these are word against word. Widening it found **eight**, and four were already
+merged: `ca-secrit`, `combien`, `conjugaison-u1`, `faire`, `langues-pays`,
+`negation` (on main), plus `on-fait-quoi` and `ou-est` (caught before merge).
+All fixed with `{" "}` at the element edge.
+
+### The detector took three tries, and the failures are the lesson
+
+1. **Every block boundary counted as a jam** — heading→paragraph, summary→note.
+   400 hits, the two real ones buried. Restricted to INLINE adjacency inside a
+   single block.
+2. **Excluding `div` to kill the summary badges also excluded the ANSWERS**,
+   which render in a div. Four real faults vanished from the report and it
+   looked cleaner. Exclude `summary` only.
+3. **`verify72`'s own regression pins matched the FIRST occurrence** of the
+   anchor rather than the fixed site — `il y a</i>` appears four times in
+   combien.tsx — so the check failed on correct code. Anchored on the close tag
+   AND the words that follow. Same first-occurrence trap as verify69's guards.
+
+`verify72-jsx-spacing.py` is static and says so in its header: the honest
+detector needs a browser CI does not run for this route, so it flags the SHAPE
+(inline close, newline, word, no `{" "}`) and names the eight sites so a revert
+is loud. Same-line `</i> word` is deliberately NOT flagged — it usually
+survives, and flagging it would bury the real thing, which is exactly what the
+first version did.
+
+Break-tested on four mutations: each named fix reverted, a new jam introduced
+anywhere, and a file carrying a fix deleted. All red.
+
+**Sixth vacuous or over-broad check this session.** The pattern is stable
+enough to state: a scan that matches more loosely than the thing it asserts
+will either drown the signal or invent one. Identical numbers across different
+inputs, and a "clean" report that got cleaner when you narrowed the query, are
+both tells.
+
+## 31 Aug — Tier 1, batch 2: the fusion becomes one rule, not five
+
+| stop | the question the FORMS cannot answer |
+|---|---|
+| **26** Aller | is « à l'école » an exception? **No** — only `le` and `les` fuse, so `l'` has nothing to fuse with. There is no `*al` because there was never going to be one, and the fusion is obligatory |
+| **35** Où est…? | why `du parc`, far from any food? Because `de` + `le` is **always** `du` — in a bakery or on a map. Same fusion, third lesson |
+| **32** En / au / aux / à | **direction picks the SET before the place picks the form.** Knowing `le Japon` is masculine cannot tell you between `au Japon` and `du Japon` |
+| **19** Avoir — states | the TEST the Mémo does not give: does the word **agree**? `fatigué → fatigués`, so adjective, so `être`. `faim` does not, so noun, so you **have** it |
+| **14** Pronouns × être | `j'` and `n'` are ONE rule in two places — `je`, `ne`, `le`, `de`, `que` all drop `-e` before a vowel. `ils n'ont pas` stops looking irregular |
+
+**Batch 2 exists to make batch 1 smaller.** Stops 42, 36, 26 and 35 all teach the
+same fusion, and stop 32 is the rule above it. Written separately they are five
+things to memorise; written to point at each other they are one rule met five
+times. Each concept says so explicitly — stop 35's check asks *"where else have
+you seen du and des?"* and answers *"one fusion, three lessons."*
+
+Every claim comes from the lesson's own Mémo. No new French.
+
+**Tier 1 is 11 of 20.** Nine left: stops 2, 11, 21, 34, 37, 38, 43, 47, 48.
+
+33 concepts render clean. One shipped with a jammed em dash (`</i> &mdash;`),
+caught by the render scan — fifth time this session for that trap, and the scan
+has caught every one. Nothing has ever caught it by reading.
+
+## 31 Aug — Tier 3: the six remaining phrase stops
+
+Written to the shape Dan settled on the salutations read — **the form pattern
+AND the moment where the block is transparent, the moment alone where it is
+opaque.** Three of each, which is the first real test that the distinction
+carries its weight rather than being a form of words.
+
+**TRANSPARENT — the parts are visible, so analyse them**
+
+| stop | the claim |
+|---|---|
+| **1** Introductions | the little pronoun MOVES: `je m'` · `tu t'` · `il s'` · `vous vous` — and with *vous* the word really does appear twice, which reads as a typo until you know why |
+| **36** Directions | `à + le → au`, `à + les → aux`; `la` and `l'` never fuse. **The same rule as `du` / `des`**, deliberately echoed so the learner meets one rule twice rather than two rules once |
+| **27** Telling time | French counts hours, so `heure` is a noun: singular at one, plural after. `une heure` is not an exception |
+
+**OPAQUE — parsing is the mistake, so the claim is about use**
+
+| stop | the claim |
+|---|---|
+| **31** Weather | the syllabus's own example: « il fait beau » is not IL + FAIRE + BEAU. Four frames, and the KIND OF WORD picks one — adjective → `il fait`, noun → `il y a`, own verb → `il pleut`. Never `il est chaud` |
+| **29** Invitations | the Mémo's four moves read as a menu; they are an ORDER. **Négocier only exists after a refusal** — there is nothing to negotiate until someone has said no |
+| **8** Classroom talk | an asymmetry the Mémo states without drawing the conclusion: eight instructions IN, two lines OUT. The eight are for the ear, not the mouth |
+
+Every phrase is already in its lesson's own Mémo. No new French.
+
+**Tier 3 is now 7 of 15.** The remaining eight are the six ateliers (10, 20, 30,
+40, 49, 50), which still have no `native/*.tsx` for a concept to live in, plus
+stops 25 and 39, which have no lesson file either. That file work is what closes
+the tier, and it is not concept drafting.
+
+28 concepts render clean. Two shipped with a jammed em dash — `</b> &mdash;` and
+`</i> &mdash;` lose the space and need `{" "}` — caught by the render scan, not
+by reading. That is the fourth time this session for the same JSX whitespace
+trap; the scan is the only thing that has ever caught it.
+
+**Every concept still exceeds one screen**, these six by 30–179px. That is the
+270px of chrome handed to Peers, not something these add — the existing 22 are
+over by the same margins.
+
+## 31 Aug — 270px of chrome before the first word (for Peers)
+
+Dan, shown the strip between the Mémo band and the tab rail: *"i don't
+understand the purpose of this wasted space."* Measured at 390×844 on
+`/lessons/salutations`, Idea tab — **the lesson starts at y=270**, a third of
+the screen:
+
+| y | height | what |
+|---|---|---|
+| 0–48 | 48px | site bar — ☰ · FluOlinGo · 🔊 🏠 ⌛ |
+| 48–103 | **55px** | the "Memo" band — one word |
+| 103–159 | **56px** | the ✕ / ✓ 0 bar |
+| 159–183 | 24px | gap |
+| 183–270 | 83px | tab rail |
+| 270 → | | the lesson |
+
+**Cause.** `DrillShell`'s bar is `h-14` and was designed for a DRILL — ✕ ·
+progress · score, as its own header comment says. On a tab with no progress the
+middle renders `<div className="flex-1" />`: a full-width 56px row carrying one
+icon and a zero, held apart by an empty spacer. The zero is a score for a tab
+where nothing can be scored. Directly above it the "Memo" band spends 55px on a
+single word the tab rail repeats 80px lower.
+
+**~111px is recoverable** — put the ✕ and the score into the Mémo band, which
+has the room, and the 56px bar plus its 24px gap go away on every tab with no
+progress.
+
+**Why this matters beyond tidiness.** It is the real fix for Dan's one-screen
+rule. Every concept currently overflows by 7–206px in a 561px slot; 111px back
+clears most of them outright. Colour review spent an afternoon trimming prose
+and folding sections against a slot that had already lost a third of the screen
+before the panel began — the trims moved the height by **zero pixels**
+(articles-pays 786px before and after), because a paragraph reflows to the same
+wrap.
+
+**Peers has it** (Dan, 31 Aug). `DrillShell` is 28 surfaces and the bar is
+load-bearing on the drills, which do have progress — so this is a features-lane
+change, not a concepts one. The harness that produced the table above is
+`scratchpad/chrome.mjs`; the per-concept fit measurement walks every lesson and
+reports content height against the scroll container's clientHeight.
+
+**One measurement trap, recorded because it cost an hour.** The first fit
+harness reported 1111px for all seven concepts measured, identical to the pixel
+— the URL was hardcoded to one slug, so every run measured the same page. Then
+the rewrite found the scroll container by `scrollHeight > clientHeight`, which
+is precisely the state a FITTING panel does not have, so anything that fit fell
+through to `<body>` and reported a bogus 1.00 screens. Find the scroller by
+`getComputedStyle().overflowY`, and treat identical numbers across different
+inputs as the tell.
 
 ## 31 Aug PM — Dan read salutations; the difficulty ladder is his now
 

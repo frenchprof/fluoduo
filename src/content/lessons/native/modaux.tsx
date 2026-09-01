@@ -42,6 +42,55 @@ export const modauxLesson: NativeLesson = {
       </p>
     </div>
   ),
+  // TIER 1 · stop 37. Three verbs sharing one shape, plus the one that has no
+  // shape at all. `il faut` being impersonal is the Mémo's warning; the concept
+  // says what that costs — it cannot tell you WHO must.
+  concept: {
+    subtitle: "Why il faut has no person",
+    contrast: (
+      <>
+        English says who must &mdash; <i>I must</i>, <i>you must</i>. French can too
+        (<i lang="fr">je dois</i>, <i lang="fr">tu dois</i>), but it also has{" "}
+        <i lang="fr">il faut</i>, which has <b>no person at all</b> and never changes.
+      </>
+    ),
+    question: (
+      <>
+        <i lang="fr">Il faut boire de l&rsquo;eau.</i> Who has to drink it?
+      </>
+    ),
+    answer: (
+      <>
+        Nobody in particular &mdash; everybody. That is the point of it. There is no{" "}
+        <i lang="fr">je faut</i> or <i lang="fr">nous fallons</i>; the form is the same
+        whoever the advice is for. When you need to say who, you need{" "}
+        <i lang="fr">devoir</i>: <i lang="fr">tu dois boire de l&rsquo;eau</i>.
+      </>
+    ),
+    pitfallHeads: ["treating it like a verb with a person", "what il faut is"],
+    pitfall: [
+      { label: <>I must</>, wrong: <><i lang="fr">je faut</i></>, right: <><i lang="fr">je dois</i></> },
+      { label: <>we must</>, wrong: <><i lang="fr">nous fallons</i></>, right: <><i lang="fr">nous devons</i></> },
+      { label: <>one must</>, wrong: <>&mdash;</>, right: <><i lang="fr">il faut</i>, always</> },
+    ],
+    flow: [
+      { depth: 0, text: "Does it matter who?" },
+      { depth: 1, text: "yes → devoir, conjugated" },
+      { depth: 1, text: "no → il faut, never changed" },
+    ],
+    check: [
+      { q: <>All three verbs take the same thing after them. What?</>,
+        a: <>An infinitive. <i lang="fr">Je veux partir</i>, <i lang="fr">je peux partir</i>, <i lang="fr">je dois partir</i>.</> },
+      { q: <>Turn <i lang="fr">il faut partir</i> into advice for one person.</>,
+        a: <><i lang="fr">Tu dois partir.</i></> },
+    ],
+    remember: (
+      <>
+        <i lang="fr">Il faut</i> says something must happen. Only{" "}
+        <i lang="fr">devoir</i> can say who.
+      </>
+    ),
+  },
   dice: {
     instruction: "Conjugate the modal verb for the subject — the infinitive stays.",
     newQuestion: modauxQuestion,

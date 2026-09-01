@@ -45,10 +45,9 @@ export const professionsLesson: NativeLesson = {
     subtitle: "Why « il est médecin » has no word for “a”",
     contrast: (
       <>
-        English cannot name a job without an article — <i>she is <b>a</b> doctor</i>.
-        French drops it after <i lang="fr">être</i>: <i lang="fr">elle est médecin</i>.
-        It comes back the moment you point instead of describe. That is the key
-        insight.
+        English cannot name a job without an article &mdash; <i>she is a doctor</i>.
+        French drops it after <i lang="fr">&ecirc;tre</i>:{" "}
+        <i lang="fr">elle est m&eacute;decin</i>. It returns the moment you point.
       </>
     ),
     question: (

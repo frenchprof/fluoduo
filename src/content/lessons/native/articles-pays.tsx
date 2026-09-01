@@ -38,10 +38,9 @@ export const articlesPaysLesson: NativeLesson = {
     subtitle: "Why a country has a gender",
     contrast: (
       <>
-        In English a country is just its name — <i>France</i>, <i>Japan</i>. In French
-        the name arrives with an article attached, and that article has a gender:{" "}
-        <i lang="fr">la France</i>, <i lang="fr">le Japon</i>. The article is part of the
-        name, not something you add.
+        In English a country is just its name &mdash; France, Japan. In French the name
+        arrives with an article, and that article has a gender:{" "}
+        <i lang="fr">la France</i>, <i lang="fr">le Japon</i>.
       </>
     ),
     question: (
