@@ -397,12 +397,11 @@ export default function ProfileContent() {
             </Section>
           ))}
 
-          {/* ── The footer line: what the teacher sees, and the three doors
-              out of the page. ── */}
+          {/* ── The footer line: the three doors out of the page. The
+              "TEACHER SEES OUTCOMES · ACCURACY" label that used to open it
+              was cut by Dan (2 Sep) under the litmus test — removing it
+              stops no learner from finding anything. ── */}
           <div className="flex flex-wrap items-center gap-2.5 px-4 py-3" style={{ background: PAPER }}>
-            <span className="fluo-mono text-[10px] font-semibold leading-relaxed" style={{ color: SOFT }}>
-              TEACHER SEES OUTCOMES · ACCURACY
-            </span>
             <a href="/map" className="fluo-mono text-[10px] font-bold no-underline">MAP</a>
             <button type="button" onClick={() => exportCsv(acc)} className="fluo-mono text-[10px] font-bold underline underline-offset-2" style={{ color: "var(--cahier-accent)" }}>
               EXPORT
