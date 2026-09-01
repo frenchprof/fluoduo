@@ -39,7 +39,7 @@ import { useActivityPlay } from "@/lib/firebase/activityLog";
 import { hintsFor, revealText } from "@/lib/help/hints";
 import { useHelpLadder } from "@/lib/help/useHelpLadder";
 import { useChoiceKeys } from "@/lib/useChoiceKeys";
-import { optionGridClass } from "@/lib/optionGrid";
+import { optionGridClass, STACK_ABOVE, STACK_ABOVE_2XL } from "@/lib/optionGrid";
 import { sharedAffix } from "@/lib/practice/sharedAffix";
 import { saveRun, loadRun, clearRun } from "@/lib/lessonRun";
 import { ENTRY_LABELS, ENTRY_LEVELS, type EntryLevel } from "@/lib/lessonEntry";
@@ -586,6 +586,40 @@ function ExerciseCard({
   const partOf = (opt: string | null): string | null =>
     opt == null || !optionSplit ? opt : (optionSplit.parts[ex.options!.indexOf(opt)] ?? opt);
 
+  /**
+   * THE FRENCH ON A CARD IS ONE SIZE — the question and the answers alike.
+   *
+   * Dan, 2026-09-01: *"I see that some questions have both the Q and the A in
+   * French. In that case they should equally big."*
+   *
+   * The frame was text-2xl and the French options text-lg, which came about
+   * honestly: the options were sized against the ENGLISH prompt, back when the
+   * English was the only other thing on the card. Once the shared frame arrived
+   * the card had French above French, at two different sizes, with nothing to
+   * justify the step — both are the sentence.
+   *
+   * They step down TOGETHER when an option is long, never one alone, so that
+   * "equally big" survives the case it would otherwise break on: an atelier
+   * deals whole turns as options (« Ce week-end, je vais au cinéma avec des
+   * amis. ») and four of those at 24px is three lines apiece.
+   *
+   * The threshold is optionGrid's own STACK_ABOVE rather than a second number,
+   * because it answers the same question — is this option too long to sit
+   * beside another — and gapSentence is the standing lesson about one rule
+   * living in five places.
+   */
+  const frAnswers: string[] =
+    ex.kind === "mcq"
+      ? (optionSplit?.parts ?? ex.options ?? [])
+      : ex.segments
+        ? ex.segments.flatMap((s) => (s.kind === "blank" ? s.choices : []))
+        : [];
+  const FR_TEXT = frAnswers.some((o) => (o ?? "").length > STACK_ABOVE) ? "text-lg" : "text-2xl";
+  // "Equally big" means levelling UP — the options grow to the sentence, the
+  // sentence does not shrink to the options — so an option too wide for a
+  // two-column cell at 24px takes a full-width row instead of dropping a size.
+  const FR_CELL = FR_TEXT === "text-2xl" ? STACK_ABOVE_2XL : STACK_ABOVE;
+
   /** Nothing may sit between the blank and what follows it: sentence-final
    *  punctuation, or the noun an elided « l' » is glued to. */
   const gluesRight = (after: string | undefined) =>
@@ -655,7 +689,7 @@ function ExerciseCard({
             className={
               english
                 ? `text-center ${EN_TEXT}`
-                : "text-center text-2xl font-bold leading-snug text-[color:var(--cahier-ink)]"
+                : `text-center ${FR_TEXT} font-bold leading-snug text-[color:var(--cahier-ink)]`
             }
             lang={english ? "en" : "fr"}
           >
@@ -665,7 +699,7 @@ function ExerciseCard({
       })()}
       {ex.segments && (
         <>
-          <p className="text-center text-2xl font-bold leading-snug text-[color:var(--cahier-ink)]" lang="fr">
+          <p className={`text-center ${FR_TEXT} font-bold leading-snug text-[color:var(--cahier-ink)]`} lang="fr">
             {ex.segments.map((sg, n) =>
               sg.kind === "text" ? (
                 <span key={n}>{sg.text}</span>
@@ -700,7 +734,7 @@ function ExerciseCard({
               if (sg.kind !== "blank") return null;
               const b = blankIndex(ex.segments!, n);
               return (
-                <div key={n} className={optionGridClass(sg.choices, "gap-2")}>
+                <div key={n} className={optionGridClass(sg.choices, "gap-2", FR_CELL)}>
                   {sg.choices.map((c) => {
                     const isPicked = picks[b] === c;
                     const isAnswer = c === sg.answer;
@@ -721,7 +755,7 @@ function ExerciseCard({
                         disabled={answered}
                         onClick={() => onPick(b, c)}
                         style={!answered && !isPicked ? groupWash(b) : undefined}
-                        className={`rounded-lg border-2 px-3 py-2 text-lg font-semibold text-[color:var(--cahier-ink)] transition ${cls}`}
+                        className={`rounded-lg border-2 px-3 py-2 ${FR_TEXT} font-semibold text-[color:var(--cahier-ink)] transition ${cls}`}
                       >
                         {c}
                       </button>
@@ -737,7 +771,7 @@ function ExerciseCard({
           of the class list, so narrowing `blankClass` left the frame card — the
           one Dan was looking at — still 90px wide. */}
       {isFrame && (
-        <p className="text-center text-2xl font-bold leading-snug text-[color:var(--cahier-ink)]">
+        <p className={`text-center ${FR_TEXT} font-bold leading-snug text-[color:var(--cahier-ink)]`}>
           <span lang="fr">{tightPunct(ex.before ?? "")}</span>
           <span className={blankClass(!!shown?.trim(), gluesRight(ex.after))} lang="fr">
             {shown?.trim() ? shown : <span className="opacity-40">?</span>}
@@ -758,7 +792,7 @@ function ExerciseCard({
 
       {/* The frame the options were all repeating, hoisted and read once. */}
       {optionSplit && (
-        <p className="text-center text-2xl font-bold leading-snug text-[color:var(--cahier-ink)]">
+        <p className={`text-center ${FR_TEXT} font-bold leading-snug text-[color:var(--cahier-ink)]`}>
           <span lang="fr">{tightPunct(optionSplit.before)}</span>
           <span className={blankClass(!!shown?.trim(), gluesRight(optionSplit.after))} lang="fr">
             {shown?.trim() ? partOf(shown) : <span className="opacity-40">?</span>}
@@ -767,7 +801,7 @@ function ExerciseCard({
         </p>
       )}
       {ex.kind === "mcq" && ex.options && (
-        <div className={optionGridClass(optionSplit?.parts ?? ex.options, "gap-2.5")}>
+        <div className={optionGridClass(optionSplit?.parts ?? ex.options, "gap-2.5", FR_CELL)}>
           {ex.options.map((c, n) => {
             const isPicked = (answered ? shown : selected) === c;
             const isAnswer = c === ex.answer;
@@ -795,7 +829,7 @@ function ExerciseCard({
                 // MCQ card, and the English prompt above them is sized to
                 // match. Left at 16px the target read smaller than its own
                 // reference line.
-                className={`rounded-xl border-2 px-4 py-3 text-center text-lg font-bold transition ${cls}`}
+                className={`rounded-xl border-2 px-4 py-3 text-center ${FR_TEXT} font-bold transition ${cls}`}
               >
                 {!answered && (
                   <span aria-hidden className="mr-2 text-xs font-bold opacity-50">{n + 1}</span>

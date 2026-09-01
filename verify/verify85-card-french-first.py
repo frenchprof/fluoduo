@@ -146,16 +146,41 @@ def main() -> int:
                     bad.append(f"an English line does not use EN_TEXT: {m.group(1)[:70]}")
         if not re.search(r"\.fluo-en\s*\{[^}]*font-fluohand-stack", ROOT.joinpath("src/app/globals.css").read_text(encoding="utf-8")):
             bad.append(".fluo-en is not defined against the FluOLinGo Hand stack in globals.css.")
-        # The options ARE the French on an MCQ card; at text-base they were
-        # smaller than the English above them.
-        opt = re.search(r"rounded-xl border-2 px-4 py-3 text-center (text-\w+)", pg)
-        if not opt:
-            bad.append("cannot find the MCQ option class in LessonPager.tsx.")
-        elif opt.group(1) in ("text-xs", "text-sm", "text-base"):
+
+        # 3 — THE FRENCH ON A CARD IS ONE SIZE, question and answers alike
+        #     (Dan, 1 Sep: "some questions have both the Q and the A in French.
+        #     In that case they should equally big"). The frame was 2xl and the
+        #     options text-lg, because the options had been sized against the
+        #     English back when English was the only other thing on the card.
+        if "FR_TEXT" not in pg:
             bad.append(
-                f"MCQ options are {opt.group(1)}, smaller than the text-lg English "
-                "prompt above them — the reference outsizes the target."
+                "LessonPager has no single FR_TEXT size. The French question and "
+                "the French answers must be set from one value, or they drift "
+                "apart again."
             )
+        else:
+            # Nothing French may carry its own size any more.
+            for m in re.finditer(r'className=(?:\{`|")([^`"]*\btext-2xl\b[^`"]*)(?:`\}|")', pg):
+                if "${FR_TEXT}" not in m.group(0):
+                    bad.append(f"a French line hard-codes text-2xl instead of FR_TEXT: {m.group(1)[:60]}")
+
+    # 4 — an English prompt must SAY it is English.
+    #
+    # `big: item.en` under a meta reading "Choose the French" rendered bold,
+    # sans and larger than the French options, and 🔊 read it with French
+    # phonics — because the pager reads `bigLang`, and this card never set it.
+    # Nothing looked wrong while both languages were styled the same.
+    bc = ROOT / "src/app/lessons/pager/buildCards.tsx"
+    src_bc = bc.read_text(encoding="utf-8") if bc.exists() else ""
+    for m in re.finditer(r"big: (item\.en|en|en \?\? item\.en),([^\n]*)", src_bc):
+        if "bigLang" not in m.group(2):
+            bad.append(
+                f"a card sets an English `big` without `bigLang: \"en\"`: {m.group(0)[:70]} — "
+                "it will be drawn as the French target and spoken with French phonics."
+            )
+    # The old assertion here pinned the MCQ option class to a literal size.
+    # FR_TEXT above supersedes it: the options are now sized with the French
+    # question rather than against a number of their own.
 
     if bad:
         print("verify85 — the card's French leads:")
