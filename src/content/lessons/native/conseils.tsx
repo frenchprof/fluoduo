@@ -109,7 +109,8 @@ export const conseilsLesson: NativeLesson = {
     question: (
       <>
         <i lang="fr">Tu dois manger des l&eacute;gumes</i> and{" "}
-        <i lang="fr">il faut manger des l&eacute;gumes</i> &mdash; same advice. What is
+        <i lang="fr">il faut manger des l&eacute;gumes</i>{" "}
+        &mdash; same advice. What is
         different?
       </>
     ),

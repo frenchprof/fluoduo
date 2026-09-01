@@ -51,7 +51,8 @@ export const onFaitQuoiLesson: NativeLesson = {
     ),
     answer: (
       <>
-        <i lang="fr">Pardon, on fait quoi&nbsp;?</i> &mdash; and if you heard but need it
+        <i lang="fr">Pardon, on fait quoi&nbsp;?</i>{" "}
+        &mdash; and if you heard but need it
         again, <i lang="fr">R&eacute;p&eacute;tez s&rsquo;il vous pla&icirc;t.</i> Two lines
         cover almost every moment of being lost, which is why the other eight are for your
         ear and not your mouth.

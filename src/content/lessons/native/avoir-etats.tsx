@@ -60,7 +60,8 @@ export const avoirEtatsLesson: NativeLesson = {
     answer: (
       <>
         Ask whether it <b>agrees</b>. <i lang="fr">Fatigu&eacute;</i> changes &mdash;{" "}
-        <i lang="fr">ils sont fatigu&eacute;s</i> &mdash; so it is an adjective, and adjectives
+        <i lang="fr">ils sont fatigu&eacute;s</i>{" "}
+        &mdash; so it is an adjective, and adjectives
         take <i lang="fr">&ecirc;tre</i>. <i lang="fr">Froid</i> and{" "}
         <i lang="fr">faim</i> do not change here; they are nouns, and you{" "}
         <b>have</b> a noun.

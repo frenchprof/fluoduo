@@ -100,7 +100,8 @@ export const transportLesson: NativeLesson = {
     question: (
       <>
         This deck lists <i lang="fr">en voiture</i> <b>and</b>{" "}
-        <i lang="fr">prendre la voiture</i> &mdash; the same car, twice. If the frame
+        <i lang="fr">prendre la voiture</i>{" "}
+        &mdash; the same car, twice. If the frame
         belonged to the vehicle, only one of them could be right. So what decides?
       </>
     ),
