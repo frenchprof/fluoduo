@@ -413,6 +413,10 @@ export default function LetrisGame({
       });
       setActive(null);
     },
+    // cols/set.id/speech/tts deliberately excluded: they are fixed for the
+    // life of a round, and a re-created landing callback re-registers into
+    // the falling-block loop mid-drop. Reviewed with Dan 2026-08-31: disable, not fix.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [catIndex, catColor, colorOf, set.categories, set.language, wordTexts],
   );
 

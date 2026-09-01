@@ -37,6 +37,7 @@ import {
   type Unit0Question,
 } from "@/content/sios/unit0-questions";
 import { recordPretestAnswer } from "@/lib/pretestRecord";
+import { recordPretestEvidence } from "@/lib/pretests/runner";
 import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import { shuffle } from "@/lib/shuffle";
 
@@ -111,6 +112,19 @@ export function Unit0Questions({
     // Not recordItemResult, by the same rule as the other two engines: a
     // pre-lesson miss is remembered, never scored — no XP, no accuracy, no
     // review queue (Dan, 2026-08-27: "remember it, but don't score it").
+    // AND the response store, which is where the activity ledger is written
+    // (recordResponse calls noteAttempt before its uid check). Unit 0 wrote the
+    // gap record and nothing else, so its pre-tests were invisible to the
+    // ledger: the popup's Pre-Test ✓ never lit on a Unit-0 stop, and under the
+    // derived-done rule those ten stops could never have completed at all.
+    // Units 1-4 have always done this through the runner; `xpPaid: 0` is what
+    // keeps Dan's "remember it, but don't score it" true either way.
+    // The activity id must END in the stop's DECK id: activityLedger resolves
+    // the stop by taking the tail after the last colon and asking sioForDeck,
+    // which maps deck ids — a SIO id there resolves to nothing and the ledger
+    // write silently no-ops. Traced rather than assumed, because a no-op here
+    // looks identical to success from the call site.
+    recordPretestEvidence(sio.collectionId ?? sio.id, unit0QuestionId(q), o.ok, o.v);
     recordPretestAnswer({
       pretestId: `unit0:${sio.id}`,
       sioId: sio.id,
