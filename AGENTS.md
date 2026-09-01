@@ -97,6 +97,27 @@ touch keys or routes. Home's hero key is **Continue** (the current stop),
 which is why the games family is Games and not Play: no two doors share a
 name.
 
+# A count earns its place when it describes what you cannot see — permanent (2026-09-01)
+
+**Dan, looking at a hub mock-up: *"Do we need that number on the right end of
+that strip for every strip?"***
+
+No. `/practice` printed **2** on the shell band and **2** again on the section
+band, directly above two tiles anyone can see. The count told a learner nothing
+they were not already looking at, twice.
+
+This is not in tension with the collapse rule above — it is the same rule from
+the other side. That one says a CLOSED section must say what is behind it
+("18 words", "3 traps"), because the content is hidden and a bare chevron is
+deletion with extra steps. The reason a closed count earns its place is exactly
+the reason an open one does not.
+
+    closed fold, list hidden      -> count it: "18 words"
+    open list, tiles on screen    -> the list counts itself
+
+So: put a number on a band only where the thing it counts is out of sight —
+folded away, behind a link, or still to come. Never as furniture.
+
 # A wrong answer is allowed to be wrong French — permanent (2026-09-01)
 
 **Dan, shown five cases one by one and asked which to revert: *"i would leave

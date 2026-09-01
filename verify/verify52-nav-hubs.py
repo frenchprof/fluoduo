@@ -32,7 +32,13 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PASS, FAIL = [], []
 def ok(c, good, bad): (PASS if c else FAIL).append(good if c else bad)
 
-def read(rel): return open(os.path.join(ROOT, rel), encoding="utf-8").read()
+def read(rel):
+    # "" for a missing file, so a DELETED hub page is reported by name instead
+    # of raising FileNotFoundError. Deleting src/app/practice/page.tsx is
+    # exactly what this suite exists to catch, and until 1 Sep it answered with
+    # a traceback — the same fault verify58 had, found the same way.
+    p = os.path.join(ROOT, rel)
+    return open(p, encoding="utf-8").read() if os.path.isfile(p) else ""
 
 def nocomment(src):
     """Strip comments. A rule that a comment can satisfy is not a rule — a
@@ -98,7 +104,8 @@ for key, name, _emoji, href in FAMILIES:
        f"{name} points at {href}, but {page} does not exist")
 
 # ── 3 · the two hubs render the hub, for the right family ───────────────────
-for route, key in (("src/app/games/page.tsx", "games"), ("src/app/skills/page.tsx", "skills")):
+for route, key in (("src/app/games/page.tsx", "games"), ("src/app/skills/page.tsx", "skills"),
+                   ("src/app/practice/page.tsx", "practice")):
     src = nocomment(read(route))
     ok("<FamilyHub" in src and f'activeKey="{key}"' in src,
        f"{route} renders <FamilyHub activeKey=\"{key}\">",
@@ -107,8 +114,11 @@ for route, key in (("src/app/games/page.tsx", "games"), ("src/app/skills/page.ts
 hubs = re.search(r"FAMILY_HUBS[^=]*=\s*\{([^}]*)\}", ACT_C)
 ok(hubs is not None, "FAMILY_HUBS is declared", "FAMILY_HUBS has gone from activities.ts")
 hub_keys = dict(re.findall(r'(\w+):\s*"([a-z]+)"', hubs.group(1))) if hubs else {}
-ok(hub_keys == {"games": "svplay", "skills": "skills"},
-   "FAMILY_HUBS maps games->svplay and skills->skills",
+# Practice joined on 1 Sep — its door was /map, which is Goals' page, so the
+# 🏋️ slot opened another family's front door and SpecuLearn and 4Mémoire had no
+# shortcut of their own. Same fault 🎮 and 💪 had before 30 Aug.
+ok(hub_keys == {"games": "svplay", "skills": "skills", "practice": "practice"},
+   "FAMILY_HUBS maps games->svplay, skills->skills and practice->practice",
    f"FAMILY_HUBS is {hub_keys or 'unreadable'} — the hub pages and the families disagree")
 
 # ── 4 · a hub page must be COLOURED, or it is a white page with a white band ─
@@ -123,6 +133,9 @@ for k, fam in hub_keys.items():
 # ── 5 · a hub with nothing in it is a dead end ──────────────────────────────
 for k, fam in hub_keys.items():
     n = len([1 for _key, _n, f, h in ACTIVITIES if f == fam and h])
+    # Two is the floor and Practice sits exactly on it: SpecuLearn and 4Mémoire
+    # have doors, Memo is reached from a stop and has none. A third would make
+    # this comfortable; a second going away would make the hub a redirect.
     ok(n >= 2, f"the {fam} hub lists {n} activities",
        f"the {fam} hub would list {n} activities — a hub for one thing should be "
        f"that thing's page instead")

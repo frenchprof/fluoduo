@@ -112,9 +112,17 @@ check('registryTab("complete"' not in shell,
 # have to land on the index page at all. the maps should still be the front
 # door for everything"). The RULE is unchanged and is what this checks: the
 # Practice family's destination must not be orphaned. It is now the map.
-check("/map" in open("src/content/activities.ts", encoding="utf-8").read().split("export const FAMILIES")[-1],
-      "the Practice family reaches the map (the front door for choosing a stop)",
-      "no bottom-bar slot reaches /map — the Practice family is orphaned")
+# AMENDED 1 Sep. The RULE stated above is unchanged — the Practice family's
+# destination must not be orphaned — and what satisfies it has moved on twice.
+# It was the Index, then the map, and now Practice has a hub page of its own
+# (/practice), which is what 🎮 and 💪 were given on 30 Aug for the identical
+# reason: a family whose shortcut points at another family's page has no door.
+# The map is Goals' front door and Home still opens it — verify25b asserts
+# that, so this no longer needs to.
+check('"/practice"' in open("src/content/activities.ts", encoding="utf-8").read().split("export const FAMILIES")[-1],
+      "the Practice family reaches its own hub, not another family's page",
+      "the Practice family does not point at /practice — it is orphaned, or it has "
+      "gone back to borrowing /map, which belongs to Goals")
 # Look at the SLOTS, not the file. The first version grepped the whole module
 # and failed on the word "Accueil" inside the comment explaining why Accueil is
 # not in the bar (2026-08-10).
