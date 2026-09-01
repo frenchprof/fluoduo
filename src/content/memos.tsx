@@ -162,7 +162,16 @@ function AtelierMemo({ sioId }: { sioId: string }) {
             >
               {l.fr}
             </button>
-            <span className="block text-[13px] text-[color:var(--cahier-ink-soft)]">{l.en}</span>
+            {/* NO GLOSS HERE. Every one of these turns is dealt as a card by
+                ATELIER_DECKS, so the word list in THIS SAME PANEL already
+                carries all of them with their English — text whose removal
+                costs a learner nothing, which is Dan's litmus test, and it cost
+                the panel a great deal: an atelier OPENS on Forms (Dan, 31 Aug),
+                and the model ran past the fold on a 390px phone — SIO-030's
+                nine-line e-mail at 1.47 screens, SIO-010's at 1.33.
+                Making the gloss INLINE was tried first and is not the answer:
+                it saved 0.02 of a screen and made every long turn wrap
+                mid-translation. */}
           </span>
         </li>
       ))}
