@@ -27,7 +27,7 @@ import { useActivityPlay } from "@/lib/firebase/activityLog";
 import { gapDecoyPool, gapSentence, gapSentenceEn, isPlayableGap } from "@/lib/collections/gapSentence";
 import { hintsFor } from "@/lib/help/hints";
 import { useHelpLadder } from "@/lib/help/useHelpLadder";
-import { SIOS } from "@/content/sios";
+import { stopForDeck } from "@/lib/stopTag";
 import WordBank from "@/components/WordBank";
 
 import { shuffle } from "@/lib/shuffle";
@@ -53,7 +53,7 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
   // the input stays live.
   const [retry, setRetry] = useState(false);
   const sioTopic = useMemo(
-    () => SIOS.find((s) => s.collectionId === collectionId)?.topic,
+    () => stopForDeck(collectionId)?.topic,
     [collectionId],
   );
   const inputRef = useRef<HTMLInputElement>(null);

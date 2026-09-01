@@ -264,6 +264,20 @@ const SITE_FAMILY: Record<string, FamilyKey> = {
   home: "goals", activities: "goals", index: "goals", guide: "goals", quickguide: "goals",
   map: "goals", carte: "goals", unit: "goals", sio: "goals", lessons: "goals", decks: "goals",
   pretests: "practice", practice: "practice",
+  // The SUB-PAGES, added 1 Sep after Dan's chrome audit: "there are pages
+  // missing this colored vertical strip on the left". Each of these was
+  // passing an `active` key with no entry here, and a null family costs a
+  // page THREE things at once, which is why the fault looked like three
+  // faults: no `fam-` class means no spine (the rule is
+  // `[class*="fam-"]`), no family ink, and — because CahierShell renders the
+  // heading band only `{famKey && …}` — no band either, so the page fell
+  // back to a bare <h1> at whatever height its content happened to start.
+  // Measured before the fix: five different heading heights across the site.
+  pretest: "practice", mcq: "practice", study: "practice", new: "goals",
+  // `deck` is the USER-deck page (a curated deck renders CuratedDeckTable,
+  // whose `active` is its view key and already resolves) and `dice` is Diced
+  // Practice. Both were passing keys with no entry, so both drew no spine.
+  deck: "goals", dice: "practice",
   games: "svplay", svplay: "svplay",
   reviser: "review",
   moi: "user", leaderboard: "user", profil: "user", reglages: "user", teacher: "user",

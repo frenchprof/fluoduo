@@ -11,6 +11,7 @@ import { logEvent } from "@/lib/firebase/usage";
 import { recordResponse } from "@/lib/firebase/responses";
 import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import type { Collection, Item } from "@/lib/collections/schema";
+import { stopTagForDeck } from "@/lib/stopTag";
 import CahierShell, { withActive } from "@/components/CahierShell";
 import { deckTabs } from "../DeckContent";
 import { buildEvidence } from "@/lib/evidence";
@@ -45,7 +46,16 @@ function McqPageInner({ id }: { id: string }) {
   }, [id]);
 
   return (
-    <CahierShell tabs={withActive(deckTabs(id), "mcq")} active="mcq">
+    /* THE BAND, NAMED HERE (Dan's 1 Sep chrome audit). This page could not
+       name itself: a curated deck gets no MCQ flap (DeckContent.deckTabs), so
+       the shell's flap lookup found nothing and the page drew a bare <h1> on
+       plain paper while every other page opened with a band. It knows the deck
+       and the deck knows its stop, so it can say both. */
+    <CahierShell
+      tabs={withActive(deckTabs(id), "mcq")}
+      active="mcq"
+      band={{ title: collection?.title ?? "MCQ", sub: stopTagForDeck(id) }}
+    >
       <div className="mx-auto max-w-3xl px-4 py-4">
         {collection === undefined && (
           <p className="rounded-2xl border-2 border-dashed border-slate-300 bg-white p-10 text-center text-base text-slate-500">
@@ -174,7 +184,9 @@ function Runner({ collection }: { collection: Collection }) {
     <>
       <header className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-black text-slate-900">{collection.title}</h1>
+          {/* The deck's name moved to the band (1 Sep) — it was printed here
+              because the page had none. The direction line stays: it is what
+              this run ASKS, which the band's title does not say. */}
           <p className="text-sm text-slate-500">{dir === "fr-en" ? "🇫🇷 → EN" : "EN → 🇫🇷"} — pick the matching translation.</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">

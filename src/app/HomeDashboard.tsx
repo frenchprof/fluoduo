@@ -200,7 +200,16 @@ export default function HomeDashboard() {
           The strip keeps its top padding: that space is between the top bar
           and the heading, and closing THAT would crowd two pieces of chrome
           into each other. */}
-      <section aria-label="Welcome" className="home-strip -mx-4 -mt-7 mb-2.5 px-4 pb-2.5 pt-3 sm:-mx-6 sm:px-6">
+      {/* IT BLEEDS TO THE EDGE NOW (Dan, 1 Sep: "there are pages whose
+          horizontal strips don't bleed to the edge (they should)"). The pull
+          was `-mx-4`, which claws back 16px — but the content well it sits in
+          is padded `pl-12 sm:pl-16` to clear the binding, so the strip stopped
+          32px short of the paper on the left while every PageBand on the site
+          runs edge to edge. The negative margins now match the well's OWN
+          padding exactly, and the same padding is added back inside, so the
+          heading has not moved a pixel; only the colour behind it reaches
+          further. */}
+      <section aria-label="Welcome" className="home-strip -ml-12 -mr-4 -mt-7 mb-2.5 pb-2.5 pl-12 pr-4 pt-3 sm:-ml-16 sm:-mr-7 sm:pl-16 sm:pr-7">
         {/* THE HERO IN FLUOLINGO HAND, SIZED TO THE WINDOW (Dan, 1 Sep: "the
             hero to be in FluOLinGo font and resized relative to the width of
             the window"). A clamp, not a breakpoint step: `Bienvenue sur` is

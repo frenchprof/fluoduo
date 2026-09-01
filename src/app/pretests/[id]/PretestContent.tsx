@@ -6,6 +6,7 @@ import Link from "next/link";
 import { getPretest } from "@/content/pretests";
 import { speak } from "@/games/letris/speech";
 import { judgePretestAnswer, shuffle, ttsTextForItem } from "@/lib/pretests/runner";
+import { stopForPretestId, stopTag } from "@/lib/stopTag";
 import CahierShell, { type ShellTab } from "@/components/CahierShell";
 import type { Pretest, PretestItem } from "@/lib/pretests/schema";
 import { optionGridClass } from "@/lib/optionGrid";
@@ -46,9 +47,15 @@ export default function PretestPage({ id }: { id: string }) {
   }
 
   return (
+    /* Title and STOP, both (Dan, 1 Sep). Before this the page had no family
+       at all — `pretest` was missing from SITE_FAMILY while `pretests` was
+       there — so it drew no spine and no band, and its name sat as a bare
+       <h1> 58px lower than every other page's title. The stop comes from the
+       pre-test's own id, which encodes it. */
     <CahierShell
       tabs={PRETEST_TABS}
       active="pretest"
+      band={{ title: pretest.title, sub: stopTag(stopForPretestId(pretest.id)) }}
     >
       <PretestRunner pretest={pretest} />
     </CahierShell>
@@ -149,7 +156,9 @@ function PretestRunner({ pretest }: { pretest: Pretest }) {
     <div className="mx-auto max-w-3xl px-4 py-8">
       <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-black text-slate-900">{pretest.title}</h1>
+          {/* The title moved to the band (1 Sep); the subtitle stays, because
+              the band's sub-line carries the STOP and a band may hold one
+              sub-line, not two. */}
           {pretest.subtitle && (
             <p className="mt-1 text-base text-slate-600">{pretest.subtitle}</p>
           )}
