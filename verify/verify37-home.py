@@ -102,9 +102,19 @@ ok('aria-disabled="true"' in home,
 #     go hiding into the overspill off the screen"). Measured live at
 #     320/360/390/430 px — nothing clipped, scrollWidth == viewport — and the
 #     responsive classes that make that true are pinned here.
-ok("sm:h-[58px]" in home and "h-[50px]" in home,
-   "the keys are 50px on a phone and 58px from sm",
-   "the keys are one size — the row overflowed at 390px before this")
+#     RESIZED 1 Sep, and the claim is unchanged: the keys have a PHONE size and
+#     a larger one from sm, and the phone size is whatever makes the row fit.
+#     It was 50px for three keys. Dan's Next-stop key made it four, and 4x50 +
+#     3 gaps is 224px against a row that is 232px wide at 320 and 271 at 360 —
+#     the `1/50` well went from 64px to 0.4px and was drawn UNDER the keys at
+#     both, escaping at 390 by 0.3px. So the literal 50 is gone and the RULE is
+#     asserted instead: two sizes, and the phone one between the 44px
+#     touch-target floor and 50px. verify25 pins the row's matching wrap.
+m = re.search(r"h-\[(\d+)px\] w-\[\1px\] place-items-center", home)
+phone = int(m.group(1)) if m else 0
+ok("sm:h-[58px]" in home and 44 <= phone <= 50,
+   f"the keys are {phone}px on a phone and 58px from sm",
+   f"the phone key size is {phone or 'missing'}px: below 44 it is under the touch-target floor, above 50 the four keys and the 1/50 well do not fit a 360px row")
 ok("sm:min-w-[80px]" in home and "min-w-[64px]" in home,
    "the wells are narrower on a phone",
    "the wells do not shrink — the row will not fit 320px")
