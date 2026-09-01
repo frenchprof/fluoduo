@@ -144,12 +144,6 @@ export default function HomeDashboard() {
   // forward key that goes nowhere is worse than no forward key.
   const afterSio = activeSio ? SIOS[SIOS.indexOf(activeSio) + 1] : undefined;
   const doneTotal = SIOS.filter((s) => isSioDone(s.id, progress)).length;
-  // Done-in-order run from the very start — the streak-momentum counter.
-  let seqRun = 0;
-  for (const s of SIOS) {
-    if (isSioDone(s.id, progress)) seqRun++;
-    else break;
-  }
 
   // The accent colour the learner has equipped (drives the hero CTA). The fire
   // multiplier left with the streak tile — it is read where the streak now is,
@@ -393,11 +387,13 @@ export default function HomeDashboard() {
         />
       )}
 
-      {/* Streak momentum (Dan, 2026-07-08, episode model): counts done-in-order
-          from the start; a skip simply stops the run — never blocks. */}
-      {seqRun >= 2 && seqRun < SIOS.length && (
-        <p className="fluo-mono mb-2 text-xs font-black text-[color:var(--fluo-ink)]">🔗 {seqRun} in a row!</p>
-      )}
+      {/* THE « n IN A ROW » COUNTER IS GONE (Dan, 1 Sep: "we don't need that
+          actually, please remove it"). It counted stops completed in order from
+          SIO-001 and stopped at the first gap — his own 8 July episode-model
+          note. What retired it is the 🔥 day streak moving into the top bar
+          hours earlier: two numbers of things-in-a-row within a few centimetres
+          of each other, one counting DAYS and one counting STOPS, and nothing
+          on the screen saying which was which. */}
 
       {/* 🗺️ The Map as a POSTCARD (Dan, 2026-08-21): a read-only snapshot
           of the learner's stretch of the course — the course mark, drawn.
