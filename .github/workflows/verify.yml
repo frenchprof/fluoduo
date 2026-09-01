@@ -214,6 +214,9 @@ jobs:
       - name: "An atelier's Mémo opens on the model and its words (31 Aug)"
         run: python3 verify/verify71-atelier-opens-on-forms.py
 
+      - name: "SIO-039 has a lesson, and its French is the deck's own (1 Sep)"
+        run: python3 verify/verify76-envies-besoins.py
+
       - name: "A tour step points at something that exists (28 Aug)"
         run: python3 verify/verify44-tour-targets.py
 
