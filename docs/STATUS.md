@@ -68,7 +68,31 @@ with iComplete); whether `SessionReceipt` + `useRunXp` should be re-hosted (0
 hosts since #125's parent); and whether Facile's four leading MCQ cards should
 stay, given its blurb still reads "Sort the words into order".
 
-**Still queued for Pre-tests:** the cycling redo (FluOLinGo Hand).
+**The cycling redo — DONE, and it was not a re-skin.** Decision 4 asked for the
+fluency-cycling animation rebuilt in FluOLinGo Hand. The 30 Aug cut ended on
+`Fluolingo`, all lowercase — a spelling THE NAMES RULE killed the next day. So
+the show gains a sixth stage, and the capitals are its point rather than its
+styling: up to the merge it is the spaces that mark the four words, and closing
+them is both what makes the name and what would throw the four words away.
+`Fluolingo` is one word; `FluOLinGo` is still four.
+
+    Fluency {achieved} on {customisable} linguistic goals
+      -> Fluency on linguistic goals -> Flu on lin go -> Flu o lin go
+      -> Fluolingo -> FluOLinGo
+
+Dan's 30 Aug arithmetic carries over intact (stage table, beats, the growing
+cycle intervals that ARE the deceleration, and the rule that a dead letter
+takes no width and sits on the seam it closed); `phaseAt` is new, so a renderer
+cannot answer "which stage am I between?" in its own `if` ladder and drift —
+which is what let the earlier cut rest on `Flu   o   lin   go` with holes in
+it. New files: `src/lib/fluolingoOrigin.ts` (data + arithmetic, no DOM),
+`src/components/FluolingoOrigin.tsx` (pixels only), `/hidden/fluolingo`
+(noindex) to watch it on, `verify81` (executes the spec; 13 sabotages, all
+caught). **Where it belongs is Dan's call** — it is on its own page and nothing
+else mounts it. Neither 30 Aug branch was merged; both can be deleted once Dan
+has seen this.
+
+**Pre-tests' queue is now empty.**
 
 ## 1 Sep evening — SIO-039 lands, SIO-025 is ruled, and live is at #124
 
