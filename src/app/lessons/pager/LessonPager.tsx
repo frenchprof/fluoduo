@@ -48,6 +48,27 @@ import { speak } from "@/games/letris/speech";
 
 type QueuedEx = { ex: Exercise; requeued: boolean };
 
+/**
+ * EVERY ENGLISH SENTENCE ON A CARD, IN ONE PLACE.
+ *
+ * Dan, 2026-09-01: *"The English sentences are still too big. Perhaps switch
+ * all English sentences to the House Font (FluOLinGo)."*
+ *
+ * The size had already been cut twice that day and the English still read as a
+ * second target, because it was set in the SAME face as the French above it.
+ * Only size and ink separated them, and those are degrees — a reader has to
+ * compare two lines to tell which is which. A different FACE separates them by
+ * kind: the French is the sentence, the English is the note in the margin. So
+ * the house hand, one step down at text-lg, and the size is now a constant
+ * rather than a rule about frames — "never bigger than the French" is satisfied
+ * outright when the English is always the smaller of the two.
+ *
+ * It is a CONSTANT because the three English lines on a card were three
+ * separate class strings, and two of them still said text-2xl after the first
+ * pass narrowed the third.
+ */
+const EN_TEXT = "fluo-en text-lg leading-snug text-[color:var(--cahier-ink)]/75";
+
 export default function LessonPager({
   collectionId,
   lessonSlug,
@@ -626,35 +647,16 @@ function ExerciseCard({
       )}
       {ex.big && (() => {
         // An EN->FR prompt is a REFERENCE to build from, not a target to read
-        // aloud. Dan, 2026-08-31: "it should not be more salient than the
-        // french, but still it should be of equal size (but italics non
-        // bold)." So: same 2xl as the French, italic, regular weight, and one
-        // step down in ink. `bigLang` also stops English going out tagged
-        // lang="fr", which made the 🔊 button read it with French phonics.
+        // aloud. `bigLang` also stops English going out tagged lang="fr",
+        // which made the 🔊 button read it with French phonics.
         const english = ex.bigLang === "en" || ex.kind === "translate" || ex.kind === "build";
-        // ENGLISH IS NEVER BIGGER THAN THE FRENCH ON THE SAME CARD (Dan,
-        // 1 Sep: "english should never be bigger than french").
-        //
-        // "Equal size" was read as a constant — text-2xl — and on a frame card
-        // that is right, because the French frame is text-2xl too. On an MCQ
-        // card there IS no French frame: the only French is in the options, at
-        // text-lg. So a 24px English prompt sat above 18px French answers and
-        // the reference was half again the size of the target.
-        //
-        // The size therefore follows the card's own French rather than a fixed
-        // number. A French `big` keeps 2xl unconditionally — it is the target.
-        // A split MCQ now HAS a French frame, so its English goes back to
-        // matching it at 2xl — the rule is "never bigger", not "always smaller".
-        const frenchIsFrame =
-          !!ex.segments || (!!ex.before && ex.before.length > 0) || !!ex.after || !!optionSplit;
-        const size = english && !frenchIsFrame ? "text-lg" : "text-2xl";
         return (
           <p
-            className={`text-center ${size} leading-snug ${
+            className={
               english
-                ? "font-normal italic text-[color:var(--cahier-ink)]/75"
-                : "font-bold text-[color:var(--cahier-ink)]"
-            }`}
+                ? `text-center ${EN_TEXT}`
+                : "text-center text-2xl font-bold leading-snug text-[color:var(--cahier-ink)]"
+            }
             lang={english ? "en" : "fr"}
           >
             {ex.big}
@@ -687,7 +689,7 @@ function ExerciseCard({
           {ex.en && (
             // Same reference styling as the single-blank card: equal size,
             // italic, unbolded (Dan, 31 Aug).
-            <p lang="en" className="text-center text-2xl font-normal italic leading-snug text-[color:var(--cahier-ink)]/75">{ex.en}</p>
+            <p lang="en" className={`text-center ${EN_TEXT}`}>{ex.en}</p>
           )}
           {/* One row of choices per blank, in reading order. TWO ROWS IS THE
               POINT of Difficile: the verb decision and the article decision
@@ -748,7 +750,7 @@ function ExerciseCard({
         // Equal size to the French frame above it, italic and unbolded so it
         // reads as the reference rather than competing with the target (Dan,
         // 31 Aug: "of equal size (but italics non bold)").
-        <p lang="en" className="text-center text-2xl font-normal italic leading-snug text-[color:var(--cahier-ink)]/75">
+        <p lang="en" className={`text-center ${EN_TEXT}`}>
           {ex.en}
         </p>
       )}

@@ -112,14 +112,40 @@ def main() -> int:
     if not pg:
         bad.append("LessonPager.tsx is missing")
     else:
-        # Again the behaviour, not the name: keeping `frenchIsFrame` declared
-        # and hard-coding the size back to text-2xl passed an earlier version.
-        if not re.search(r"!frenchIsFrame\s*\?\s*\"text-lg\"\s*:\s*\"text-2xl\"", pg):
+        # ONE class string for every English sentence on a card, and it is
+        # smaller than the French unconditionally.
+        #
+        # This assertion used to require a ternary sizing the English against
+        # whether the card had a French frame. That rule was right and still
+        # too clever: the English remained the same FACE as the French, so only
+        # size and ink told them apart, and Dan sent the card back again —
+        # "the English sentences are still too big." The English is now the
+        # house hand at a fixed text-lg, which satisfies "never bigger" outright
+        # and cannot drift back per-card, because there is only one string.
+        en = re.search(r'const EN_TEXT = "([^"]+)"', pg)
+        if not en:
             bad.append(
-                "the English prompt's size is not computed from whether the card "
-                "shows a French frame. Dan, 1 Sep: \"english should never be "
-                "bigger than french.\""
+                "LessonPager has no single EN_TEXT class for its English lines. "
+                "There were three separate strings and two still said text-2xl "
+                "after the first pass narrowed the third."
             )
+        else:
+            cls = en.group(1)
+            if "fluo-en" not in cls:
+                bad.append(
+                    "EN_TEXT does not carry `fluo-en`, so the English is set in "
+                    'the same face as the French (Dan, 1 Sep: "switch all English '
+                    'sentences to the House Font (FluOLinGo)").'
+                )
+            if not re.search(r"\btext-(sm|base|lg)\b", cls):
+                bad.append(f"EN_TEXT is sized {cls!r} — the English must be smaller than the 2xl French.")
+            # Every English line must USE it; a stray text-2xl on a lang="en"
+            # paragraph is the exact regression this replaces.
+            for m in re.finditer(r'<p lang="en"[^>]*className=(\{[^}]*\}|"[^"]*")', pg):
+                if "EN_TEXT" not in m.group(1):
+                    bad.append(f"an English line does not use EN_TEXT: {m.group(1)[:70]}")
+        if not re.search(r"\.fluo-en\s*\{[^}]*font-fluohand-stack", ROOT.joinpath("src/app/globals.css").read_text(encoding="utf-8")):
+            bad.append(".fluo-en is not defined against the FluOLinGo Hand stack in globals.css.")
         # The options ARE the French on an MCQ card; at text-base they were
         # smaller than the English above them.
         opt = re.search(r"rounded-xl border-2 px-4 py-3 text-center (text-\w+)", pg)
