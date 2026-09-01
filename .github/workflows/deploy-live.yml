@@ -86,8 +86,28 @@ jobs:
             echo "::error::Contents is Read and write."
             exit 1
           fi
-          echo "dckg/fluo is visible — pushing"
+          echo "dckg/fluo is visible — but that only proves METADATA read,"
+          echo "which every fine-grained token gets for free. Probing git data:"
+          # ls-remote needs Contents:read — the first permission the API
+          # check above cannot see. Run 11 passed every check and still 404'd
+          # on the push, which is how we learned the gap.
+          if ! git ls-remote "https://x-access-token:${GH_TOKEN}@github.com/dckg/fluo.git" HEAD >/dev/null 2>&1; then
+            echo "::error::The token sees dckg/fluo's metadata but cannot READ its"
+            echo "::error::git data: the Contents permission is MISSING ENTIRELY —"
+            echo "::error::or the green Update button on the token page was never"
+            echo "::error::pressed. Permissions > Repositories must list"
+            echo "::error::'Contents: Read and write', then Update."
+            exit 1
+          fi
+          echo "git read OK — Contents:read is granted; pushing"
 
       - name: Mirror main to dckg/fluo
+        env:
+          GH_TOKEN: ${{ secrets.LIVE_DEPLOY_TOKEN }}
         run: |
-          git push "https://x-access-token:${{ secrets.LIVE_DEPLOY_TOKEN }}@github.com/dckg/fluo.git" HEAD:main
+          if ! git push "https://x-access-token:${GH_TOKEN}@github.com/dckg/fluo.git" HEAD:main; then
+            echo "::error::READ works but the PUSH was refused: Contents is"
+            echo "::error::Read-only. On the token page set Contents to"
+            echo "::error::'Read and write', press Update, and re-run."
+            exit 1
+          fi
