@@ -69,6 +69,10 @@ export const LESSONS: Record<string, Lesson> = {
   // so its concept had nowhere to live. The deck is three frames (en / à /
   // prendre + article), not twelve nouns.
   "transport":         { slug: "transport",         title: "Comment tu y vas ?",           unit: 3 },
+  // SIO-010, 2026-09-01 — the first of the six ateliers to get a lesson file.
+  // The slug is the deck's own `lessonSlug` (atelierDecks.ts), so the two names
+  // for one stop cannot drift.
+  "atelier-rencontre": { slug: "atelier-rencontre", title: "Atelier — Première rencontre", unit: 0 },
   "revision-u3u4":     { slug: "revision-u3u4",     title: "Révision — Unités 3 & 4",      unit: 3 },
   "aliments":          { slug: "aliments",          title: "Les repas & les aliments",     unit: 4 },
   "partitifs":         { slug: "partitifs",         title: "Les articles partitifs",       unit: 4 },
@@ -98,6 +102,12 @@ export const LESSONS_BY_SIO: Record<string, string[]> = {
   // atelier meets the phrase in its own model dialogue instead, which is what
   // a production stop opens on.
   "SIO-003": ["ca-secrit"],
+  // Its OWN lesson, which is what the note above always allowed: the rule is
+  // that a stop must not lead with someone else's screen, not that a production
+  // stop may not have one. The Mémo it opens on is still the model dialogue —
+  // see atelier-rencontre.tsx for why that had to be passed through rather
+  // than written.
+  "SIO-010": ["atelier-rencontre"],
   "SIO-004": ["quel-jour"],
   "SIO-007": ["combien"],
   "SIO-008": ["on-fait-quoi"],

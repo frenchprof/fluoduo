@@ -234,6 +234,9 @@ jobs:
       - name: "SIO-038 has a lesson; its twelve sentences are the deck's own and ★ withdraws the frame (1 Sep)"
         run: python3 verify/verify74-transport-stop.py
 
+      - name: "An atelier's lesson adds the register and does not eat the model (1 Sep)"
+        run: python3 verify/verify75-atelier-lesson.py
+
       - name: "Every check runs, and no two share a number"
         run: python3 verify/verify-wiring.py
 
