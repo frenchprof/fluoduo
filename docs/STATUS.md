@@ -6,6 +6,48 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 1 Sep, late — the chrome audit, and the strips become one strip
+
+Sole editor of STATUS.md in this commit: Pre-tests.
+
+Dan went through the app screen by screen and reported four faults; three of
+them turned out to be ONE. A page's `active` key becomes a family through
+`familyOf`, and a null family costs it the spine (`[class*="fam-"]`), the
+family ink AND the heading band (CahierShell renders it `{famKey && …}`) all at
+once. Six keys had no entry and Settings passed `active=""`. Measured before:
+six pages with no strip and five different heading heights. The spine also
+never reached DrillShell — the rule named `.cahier-page` and the drill root is
+not one, so every drill carried the right class and drew nothing.
+
+Then a second round of rulings on the strips themselves:
+
+- **One line, one thickness.** Every band is now 47px, activity name first,
+  then the goal tag inline: « 4Mémoire · GOAL 39/50 · Wants & needs ». The
+  stacked title-over-sub made bands 55px or 41px depending on whether a page
+  had a sub-line.
+- **No number at the end.** The chip was three different figures wearing one
+  shape — a drill's i/total, the profile's outcomes, a deck page's (?) —
+  which is not a figure anyone can read.
+- **« GOAL », not « stop »**, everywhere a learner reads it before a number
+  (verify82 scans for it rather than listing the sites).
+- **The study–test switch is the map's switch.** Both are now
+  `components/PillSwitch.tsx`; the deck's version was an emoji knob plus a
+  word beside it, saying one thing twice in 96px.
+- **Profil is in the family system** (Dan: "i say touch Profil please"), and
+  the deck's « ← Back » row and the Unit-0 pre-test's SectionBand are page
+  bands. Home's rainbow hero is the one strip left out, by Dan's own exemption.
+
+New: `lib/stopTag.ts` (which absorbed FIVE hand-written copies of the deck →
+goal lookup), `components/PillSwitch.tsx`, `verify82`. Rewritten naming their
+supersession: `verify68` (it named ProfileContent as a file that hand-rolls a
+band; it stopped), `verify25b`, `verify25c`, `verify80`.
+
+**Open for Dan:** at 320px four bands truncate the goal's NAME with an
+ellipsis — the activity and the number always survive, which is the priority
+order, but he may want the name dropped below some width instead. And Profil's
+band no longer shows the signed-in name (the rule says the activity's name);
+its ground is now the user family's pale pink.
+
 ## 1 Sep, night — the wrong answers, and Home's switch actually opens the map
 
 Sole editor of STATUS.md in this commit: Pre-tests.

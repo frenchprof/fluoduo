@@ -106,9 +106,10 @@ export default function ReviserPage() {
       tabs={TABS}
       active="reviser"
       topRight={total > 0 && !done ? <span className="fluo-mono text-sm font-bold">{i}/{total} · ✓ {score}</span> : null}
-      /* The heading band carries the name and the ONE number; the old h1 +
-         explainer paragraph fell to the litmus rule (2026-08-23, variant A). */
-      band={{ stat: total > 0 && !done ? `${cards.length} due` : null }}
+      /* The band is the name alone now (Dan, 1 Sep: "drop the number at the
+         end of that strip"). The due count has not been lost — `topRight`
+         above still carries the run's figures, and the page's own list says
+         how many are due. */
     >
       <AuthGate what="review">
       <div className="mx-auto max-w-xl px-4 pb-6 pt-2">

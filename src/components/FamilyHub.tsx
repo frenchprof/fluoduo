@@ -51,7 +51,10 @@ export default function FamilyHub({ activeKey }: { activeKey: string }) {
   const tiles = activitiesIn(family.key).filter((a) => a.href);
 
   return (
-    <CahierShell active={activeKey} band={{ title: familyShort(family), stat: String(tiles.length) }}>
+    // No count on the strip (Dan, 1 Sep) — the SectionBand directly below
+    // already carries it as its pill, which is where a count belongs: beside
+    // the thing it counts.
+    <CahierShell active={activeKey} band={{ title: familyShort(family) }}>
       <SectionBand
         family={family.key}
         label={`${family.emoji} ${familyShort(family)}`}

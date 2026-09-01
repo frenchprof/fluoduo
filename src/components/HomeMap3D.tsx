@@ -1010,7 +1010,7 @@ export default function HomeMap3D({
         {pin !== "visible" && activeIdx >= 0 && (
           <button
             type="button"
-            aria-label="Back to your stop"
+            aria-label="Back to your goal"
             onClick={recentre}
             className="absolute right-3 top-3 z-[4] flex flex-col items-center rounded-full border-2 px-2.5 py-1.5 leading-none shadow-[var(--shadow-card)] transition hover:-translate-y-0.5"
             style={{ borderColor: INK, background: "var(--fluo-hl)" }}

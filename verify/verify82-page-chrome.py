@@ -175,16 +175,35 @@ for root, _dirs, files in os.walk("src"):
 ok(not hand,
    "the deck → stop lookup lives only in lib/stopTag.ts",
    f"the lookup is hand-written again in {hand[:3]} — two copies of one question is how they start disagreeing")
-ok("STOP ${n}/${SIOS.length}" in stopt,
-   "the tag is the stop's POSITION out of fifty, the same figure Home's counter shows",
-   "the stop tag no longer prints the position; `SIO-039` is an id a learner cannot place")
+# « GOAL », not « STOP » (Dan, 1 Sep: "the words 'stop' before the stop number
+# should also be replaced with goal"). The brand is Fluency On Linguistic GOALS
+# and the family holding the path is 🎯 Goals, so « stop » was the one place the
+# course called its own unit something the rest of the app does not.
+ok("GOAL ${n}/${SIOS.length}" in stopt,
+   "the tag reads GOAL and the POSITION out of fifty — the figure Home's counter shows",
+   "the tag no longer reads `GOAL n/50`; either the word reverted to « stop » or "
+   "the position went back to being an id a learner cannot place")
+ok("${sio.short}" in stopt,
+   "and the goal's NAME, in the map's own compact wording",
+   "the tag no longer names the goal — Dan: 'the number AND name of the stop'")
 
 # ---- 5 · the drill band carries it ----------------------------------------
 i = drill.find("<PageBand")
 band = drill[i:i + 700] if i >= 0 else ""
-ok("sub={stopTagForDeck(" in band,
-   "a drill's band says which stop it belongs to",
-   "the drill band has no stop sub-line — Dan: 'no identity tag regarding which stop it belongs to'")
+ok("tag={stopTagForDeck(" in band,
+   "a drill's band says which goal it belongs to",
+   "the drill band has no goal tag — Dan: 'no identity tag regarding which stop it belongs to'")
+# ONE LINE, NO NUMBER (Dan, 1 Sep). Both are properties of PageBand itself, so
+# they hold for every band at once rather than page by page.
+pb = code(read("src/components/PageBand.tsx"))
+ok("stat" not in pb,
+   "no band carries a number at its end",
+   "PageBand has a `stat` slot again — Dan: 'drop the number at the end of that strip', and it "
+   "was three different figures wearing one chip")
+ok("truncate" in pb and "whitespace-nowrap" in pb and "block" not in pb.split("{tag")[0].split("<p")[-1],
+   "the band is one line: the tag runs inline after the title and both truncate",
+   "the band can wrap to two lines again — Dan: 'all colored strips must be uniformly of the "
+   "same thickness (one line text max)'")
 
 # ---- 6 · Home's strip pulls by exactly the well's padding ------------------
 # BOTH numbers read out of the source and compared, never asserted twice: the
@@ -217,6 +236,42 @@ for path, dup in (
        f"{os.path.basename(os.path.dirname(path))} does not print its title under its own band",
        f"{path} prints its name twice — the band carries it now, and two headings one line apart "
        "is the identity crisis rather than the cure")
+
+# ---- 8 · the band says the ACTIVITY first, and « goal » not « stop » ------
+# Dan, 1 Sep: "the word that appears must be the activity name. followed in the
+# same row by the number and name of the stop." Two of these bands used to open
+# with something else entirely, and both read as duplication the moment the tag
+# arrived beside them: the deck page opened with the DECK's title, which is the
+# same string the tag carries, and Profil opened with the signed-in user's name.
+for path, want, was in (
+    ("src/app/decks/[id]/CuratedDeckTable.tsx", 'title={activityInfo("flip")?.name', "the deck's own title"),
+    ("src/components/ProfileContent.tsx", 'title="Moi"', "the signed-in user's name"),
+    ("src/app/pretests/[id]/PretestContent.tsx", 'title: "Pretest"', "the pre-test's own title"),
+):
+    ok(want in code(read(path)),
+       f"{os.path.basename(os.path.dirname(path))}'s band opens with the ACTIVITY's name",
+       f"{path} opens its band with {was} again — Dan: 'the word that appears must be the "
+       "activity name', and beside the goal tag that reads as the same thing said twice")
+
+# THE WORD IS « GOAL » wherever a learner reads it before a number. Scanned
+# rather than listed, so a new one cannot slip in: any JSX text or aria-label
+# of the form "Stop <number>" or "stop N". Left alone deliberately: Say It's
+# "Stop" (stop recording) and NumBus's 🚏 Stops (bus stops in a game), neither
+# of which is a course unit.
+strays = []
+for root, _dirs, files in os.walk("src"):
+    for f in files:
+        if not f.endswith((".ts", ".tsx")):
+            continue
+        p_ = os.path.join(root, f)
+        if "say-it" in p_ or "numbus" in p_.lower():
+            continue
+        body = code(read(p_))
+        for m in re.finditer(r'(?:aria-label=|title=|>)\s*[{"`\s]*([Ss]top)\s+(?:\{|\d|N)', body):
+            strays.append(f"{os.path.basename(p_)}: …{body[max(0, m.start() - 12):m.end() + 6]}…")
+ok(not strays,
+   "no surface says « stop » before a number — the course counts in GOALS",
+   f"« stop » still precedes a number here: {strays[:3]}")
 
 print("\n".join("  ok    " + m for m in PASS))
 if FAIL:
