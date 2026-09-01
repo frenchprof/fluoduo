@@ -180,10 +180,76 @@ ok('from "./cloze.ts"' in gen,
    "the generator imports with an explicit .ts, as node's loader requires",
    "the generator uses an extensionless import — node resolves it to nothing and the check cannot run")
 
-# ---- 4 · the concept slot stays for the concepts lane --------------------
-ok(re.search(r"^\s*concept:", src, flags=re.M) is None,
-   "the `concept` slot is empty — the concepts lane writes the argument",
-   "the lesson file fills in `concept`; the handover reserves that for Color review")
+# ---- 4 · the concept, now written -----------------------------------------
+#
+# CROSS-LANE EDIT — concepts lane, 1 Sep. Read this before reverting it.
+#
+# As pushed this asserted `concept` was ABSENT, which was right while the field
+# was owed: a stub renders to a learner as the real argument. SIO-039's concept
+# is now written, so absence has flipped meaning — it would mean a merge dropped
+# it. Same intent, asserted from the other side. This is the third file to take
+# this edit (verify74, verify75, and now here); the wording is kept identical
+# across the three so they read as one decision rather than three.
+ok(re.search(r"^\s*concept:", src, flags=re.M) is not None,
+   "envies-besoins.tsx carries its concept",
+   "envies-besoins.tsx has no `concept` — SIO-039 was the stop that read 'Idea has not been written for this lesson yet'")
+
+for slot in ("subtitle", "contrast", "question", "answer", "remember"):
+    ok(re.search(rf"^\s+{slot}:", src, flags=re.M) is not None,
+       f"the concept fills `{slot}`",
+       f"the concept has no `{slot}` — a concept missing a required slot is a stub with a type annotation")
+
+# find(), not index(): with the concept gone the check above has already said so
+# in words, and index() would raise here, turning a diagnosed failure into a
+# traceback that names no cause.
+_at = src.find("  concept: {")
+_concept = src[_at:] if _at != -1 else ""
+
+# THE ARGUMENT IS THE SPLIT, AND A STUB CANNOT FAKE IT. The Memo already states
+# that three frames take their object bare and two need `de`; the concept exists
+# to say WHY, which means it has to set a verb frame against an avoir frame. A
+# concept naming only one side is not making this stop's argument.
+for needle, why in (
+        ("Je veux", "a bare verb frame"),
+        ("besoin", "an avoir frame, which is the half that needs de"),
+        ("noun", "the noun — the reason de is there at all"),
+):
+    ok(needle in _concept,
+       f"the claim uses {why}",
+       f"the concept never names {why}, so it is not explaining the split the Memo states")
+
+# NO NEW FRENCH: every quoted French line must already exist in the deck, in
+# this file, or in another concept. Extracted rather than listed — a check that
+# names its own examples passes on French nobody has ever seen.
+_norm = lambda t: re.sub(r"\s+", " ", t.replace("\u2019", "'").replace("&rsquo;", "'")
+                                        .replace("&mdash;", "-").replace("&nbsp;", " ")).strip()
+_hay = _norm(read("src/content/collections/envies-besoins.json")
+             + "".join(read(f"src/content/lessons/native/{n}.tsx")
+                       for n in ("au-marche", "nombres-echanges")))
+#
+# THE `wrong:` COLUMN IS EXEMPT, AND HAS TO BE. A pitfall table's left column is
+# deliberately incorrect French — « Je veux de partir » exists in no source file
+# BECAUSE IT IS THE ERROR. A first draft of this check flagged all four of them
+# and would have been silenced rather than fixed, which is worse than not
+# having it. So the wrong cells are cut out before the scan, and everything that
+# remains — the claim, the right column, the flow, the checks — must be real.
+_scanned = re.sub(r"wrong:.*?(?=\n\s*right:)", "", _concept, flags=re.S)
+_unaccounted = []
+for raw in re.findall(r'<i lang="fr">(.*?)</i>', _scanned, flags=re.S):
+    txt = _norm(re.sub(r'\{" "\}', " ", re.sub(r"<[^>]+>", "", raw)))
+    if not txt:
+        continue
+    # A GAP IS NOT INVENTED FRENCH. A mini-check prints the deck's own sentence
+    # with a blank in it — « J'ai besoin ___ un hôtel » is « J'ai besoin d'un
+    # hôtel » minus the answer. So a line is split on its gap (or on an elided
+    # middle) and every part must be real; the whole never will be.
+    parts = [c.strip(" .!?…") for c in re.split(r"_{2,}|…", txt) if c.strip(" .!?…")]
+    if all(c.lower() in _hay.lower() for c in parts):
+        continue
+    _unaccounted.append(txt)
+ok(not _unaccounted,
+   "every French line in the concept comes from the deck or an existing lesson",
+   "French in the concept that appears in no source file: " + "; ".join(f"<< {u} >>" for u in _unaccounted[:4]))
 
 # ---- 5 · one composed string, and it is the error ------------------------
 # Read from the GENERATOR, not the .tsx — the card logic moved there so it could
