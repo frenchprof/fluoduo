@@ -25,10 +25,10 @@
  * forwarded so printed QR codes and bookmarks survive.
  */
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import StopSheet from "@/components/StopSheet";
 import HomeMap from "@/components/HomeMap";
+import HomeMap3D from "@/components/HomeMap3D";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
@@ -91,7 +91,6 @@ export default function HomeDashboard() {
   const [qgOpen, setQgOpen] = useState(false);
   // The Review button's count — the one destination on Home with a deadline.
   const [dueCount, setDueCount] = useState(0);
-  const router = useRouter();
 
   useEffect(() => {
     // Progress, the due-count and the once-per-session hero flag live in
@@ -341,14 +340,13 @@ export default function HomeDashboard() {
           onFlip={(next) => {
             setView3d(next);
             saveMapView(next ? "3d" : "2d");
-            // AND GO. Dan, 1 Sep: "make sure the switch literally takes you the
-            // map it promises to." It used to set a preference and stop, which
-            // was defensible while it sat against the map card — the card was
-            // the door and the switch chose which door. It is now across the
-            // page from that card, under the counter, so a control naming a
-            // view and doing nothing visible is a dead end. Flipping it opens
-            // the map it names, in the view it names.
-            router.push(mapHref(next ? "3d" : "2d"));
+            // AND STAY. This navigated to /map for one day (Dan, 1 Sep: "make
+            // sure the switch literally takes you the map it promises to") —
+            // superseded 2 Sep, looking at the hero: "this needs to stay on
+            // screen when users tap 2D>3D>2D and so on. The separate map
+            // interface is for fuller-screen map." The postcard below flips
+            // with it, so the switch now has a visible consequence ON this
+            // page — which was the 1 Sep complaint — without costing the hero.
           }}
         />
 
@@ -494,7 +492,14 @@ export default function HomeDashboard() {
             className="pointer-events-none select-none overflow-hidden rounded-xl"
             style={{ boxShadow: "inset 0 2px 8px rgba(0,0,0,0.18), inset 0 0 0 1.5px var(--cahier-line)" }}
           >
-            <HomeMap progress={progress} activeId={activeId} accent={accent} postcard />
+            {/* The postcard FLIPS with the switch (Dan, 2 Sep: toggling
+                2D>3D>2D stays on this screen) — still inert either way; a
+                tap anywhere is still the door to /map in the shown view. */}
+            {view3d ? (
+              <HomeMap3D progress={progress} activeId={activeId} accent={accent} />
+            ) : (
+              <HomeMap progress={progress} activeId={activeId} accent={accent} postcard />
+            )}
           </div>
         </div>
         <span className="flex items-center gap-2 border-t-2 px-4 py-2.5" style={{ borderColor: "var(--cahier-ink)" }}>

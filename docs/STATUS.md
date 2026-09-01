@@ -6,6 +6,25 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 2 Sep — Map of FluOLinGo-land (Dan's spec, executed same hour)
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan's 2 Sep map rulings, all in one PR: /map's band reads « Map of
+FluOLinGo-land » over one legend-carrying sentence; ONE fixed control row
+(2D⇄3D switch left, zoom right — migrated up from under the map) that never
+moves between views; the 2D view is Map2DGrid — ten rows of five, all fifty
+stops at a glance, units told apart by colour bands, not names; the U0–U4
+jump chips deleted; the unit panel under the map RETIRED (Dan, over the
+Unité 0 tile grid: "we don't need this anymore … delete it") — a stop opens
+StopPopup directly, one popup for all fifty, lifted out of UnitSection.
+Home's switch no longer navigates (1 Sep "takes you to the map" superseded
+by 2 Sep "this needs to stay on screen when users tap 2D>3D>2D"): the
+postcard flips in place, the hero never moves. verify25b/25c/80 re-pointed
+with the new rulings written in. UnitSection/Unit0Panel are now unmounted
+on /map — files kept this PR (Unit0Pretest still imports one, four checks
+pin them); their deletion is queued integration cleanup.
+
 ## 1 Sep, night — the wrong answers, and Home's switch actually opens the map
 
 Sole editor of STATUS.md in this commit: Pre-tests.
