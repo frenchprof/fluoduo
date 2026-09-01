@@ -502,6 +502,33 @@ Dan assigns. Listed so the queue is not re-derived by whoever picks it up.
 | 8 | `rule:` namespace (894-item tagging): parked by design until the concepts finish | transfer evidence |
 | 9 | **Deploys through fluoduo-main** (ruled) — needs the fine-grained PAT (write to dckg/fluo) as an Actions secret | ends manual deploys |
 
+## 1 Sep — PRACTICE HUB: PEERS PUSHED ONE, PRE-TESTS IS BUILDING ONE. PICK ONE.
+
+Sole editor of STATUS.md in this commit: Peers.
+
+Dan, 1 Sep: *"You know what Pretests is working on this too, so abort"* — Peers
+has stopped. The work was already committed and pushed when that arrived, so
+this is here to stop fluoduo-main discovering two Practice hubs at merge time.
+
+**Peers' version is `46fa2d5` on `claude/peers-vd2h6h`.** Three pieces, all
+small, all revertable independently:
+
+| piece | files |
+|---|---|
+| the hub itself | `FAMILIES.practice.href` /map → /practice · `FAMILY_HUBS` + `practice` · new `src/app/practice/page.tsx` (4 lines, on the games/skills pattern) |
+| the three pins | verify19, verify24 (both asserted Practice reaches /map), verify52 (asserted FAMILY_HUBS is exactly games+skills) — amended with reasoning, break-tested |
+| **not the hub at all** | `auto-rows-fr` equal-height on `FamilyHub` (fixes /games and /skills too), the SectionBand/count removal, the counts rule in AGENTS.md, and verify52's `read()` returning "" so a deleted hub page is NAMED instead of raising FileNotFoundError |
+
+**If Pre-tests' version lands, the first two rows should be reverted and the
+third kept** — the third is Dan's equal-height and "drop the redundant label"
+instructions from the mock-up rounds, and none of it is specific to Practice.
+Whoever merges: take one hub, not a blend.
+
+The collision itself is the #97 pattern for the third time today (the nine
+lesson files were the second, recorded below). Neither session could see the
+other; the roster split that would have prevented it was written after both had
+started.
+
 ## 1 Sep — ALL NINE LESSON FILES ARE BUILT (Peers) — THE SPLIT BELOW IS STALE
 
 Sole editor of STATUS.md in this commit: Peers.
