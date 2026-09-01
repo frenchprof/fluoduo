@@ -62,6 +62,55 @@ for sel in ("neo-well", "neo-key"):
        f".{sel} carries no border — the shadow does that work",
        f".{sel} still draws a border")
 
+# 2b · EVERY DEPRESSED SHAPE IS OUTLINED (Dan, 1 Sep: "for those depressed items
+#      … can you put a thin black outline on the shape of the depressed space,
+#      including for the 3D view switch and the buttons that are greyed out
+#      because nothing lies underneath").
+#
+#      A shadow ring, never a `border`: a border adds 2px to both axes, and
+#      these wells sit in a row measured to the pixel (four keys and a 64px well
+#      have 232px at 320). Checked as an INSET 0 0 0 1px layer for that reason —
+#      if someone "fixes" it into a real border the row starts overflowing and
+#      nothing else here would notice.
+#
+#      The disabled key is included because it IS a well — Rewind with nothing
+#      waiting — and Dan named it in the same breath. Without the ring a
+#      disabled key and a pale key are the same picture.
+RING = re.compile(r"inset 0 0 0 1px")
+for sel, what in (
+    (r"\.neo-well\s*\{", "a well"),
+    (r"\.neo-key\[disabled\][^{]*\{", "a key with nothing behind it"),
+):
+    m = re.search(sel + r"([^}]*)\}", css)
+    ok(m and RING.search(m.group(1)) is not None,
+       f"{what} carries the thin ring on the shape of the depressed space",
+       f"{what} has no ring — a depressed space with no outline is not what Dan asked for")
+    ok(m and "border:" not in m.group(1).replace("border: 0", ""),
+       f"{what}'s outline is a shadow, not a border — it costs no layout",
+       f"{what} draws its outline with a border, which adds 2px to a row measured to the pixel")
+
+# 2c · BUTTONS STAND PROUDER, in z alone (Dan, same message: "greater thickness
+#      … no difference to the x and y axis, but the z axis should show the
+#      buttons with more protrusion"). The lip is a box-shadow, so nothing about
+#      any button's box changes — measured before and after at 320 and 390, the
+#      top bar's row height, the burger's position and the icon strip's right
+#      edge are identical to the pixel. The two families are pinned at their own
+#      depths because they started at different ones (2px and 4px).
+lip = re.search(r"\.cahier-btn\s*\{[^}]*box-shadow:\s*0 (\d+)px 0 0", css)
+ok(lip and int(lip.group(1)) >= 4,
+   f".cahier-btn stands {lip.group(1) if lip else '?'}px proud — the burger included",
+   "the site-wide button lip is back under 4px")
+flip = re.search(r"\.fluo-btn\s*\{[^}]*box-shadow:\s*0 (\d+)px 0 0", css)
+ok(flip and int(flip.group(1)) >= 7,
+   f".fluo-btn stands {flip.group(1) if flip else '?'}px proud",
+   "the fluo-btn lip is back under 7px")
+# A press must travel the WHOLE lip or the button never lands.
+act = re.search(r"\.cahier-btn:active\s*\{([^}]*)\}", css)
+ok(act and re.search(r"translateY\((\d+)px\)", act.group(1))
+   and int(re.search(r"translateY\((\d+)px\)", act.group(1)).group(1)) == int(lip.group(1)),
+   "a pressed .cahier-btn travels its whole lip — it lands on the paper",
+   "the press does not travel the full lip: a held button floats above the paper and never closes")
+
 # 3 · the welcome is a STRIP, not a card
 ok(".home-strip" in css and "linear-gradient" in re.search(r"\.home-strip\s*\{([^}]*)\}", css).group(1),
    "the welcome is an edge-to-edge gradient strip",

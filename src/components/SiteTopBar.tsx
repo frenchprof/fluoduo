@@ -287,8 +287,21 @@ function StreakMark() {
        rule is that nothing pushes the ☰ off a 320px screen: two lines of ~13px
        cost less horizontally than 🔥 and a numeral in a row, and the icons
        either side are square. */
+    /* IN A DEPRESSED SPACE (Dan, 1 Sep: "can the streak sitting next to the
+       on/off button be within a depressed space"). The right reading, and it
+       settles what the mark IS: every neighbour in this strip is a door that
+       stands out, and a well is the app's word for a value you read rather
+       than press. It now says that in the same vocabulary Home uses for 1/50,
+       ring and all — so a learner meets one grammar of depth everywhere and
+       nothing here offers a press that does nothing.
+
+       py-0.5, not py-1, and that was measured rather than picked: the well needs
+       a little room or its inset ring closes on the numeral, but at py-1 the
+       bar grew from 30.3px to 33 — the streak was making the whole top bar
+       taller on every one of the 28 surfaces to give itself breathing space.
+       Half of it is enough for the ring and costs the bar nothing. */
     <span
-      className="flex shrink-0 flex-col items-center px-0.5 leading-none"
+      className="neo-well flex shrink-0 flex-col items-center rounded-lg px-1.5 py-0.5 leading-none"
       title={mult > 1 ? `Day streak — everything earns ×${mult}` : "Day streak"}
       aria-label={`Day streak: ${streak}`}
     >
