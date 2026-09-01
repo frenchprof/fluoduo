@@ -20,11 +20,14 @@ and #107 merged; files: `SiteTopBar.tsx`, `HomeDashboard.tsx`, verify25/31
 updates). Dan's notes, verbatim where legible:
 
 1. *"The top return link to be in the same FluOLinGo font but with the
-   Kalland wave effect and irregular highlighter movement"* — the top bar's
-   FluOLinGo wordmark takes the Hand font; the highlighter behind it moves
-   irregularly, like a real marker. ("Kalland" is not a term we know —
-   BEFORE building, show Dan two or three animation options side by side
-   and let him point; do not guess silently.)
+   KALLANG wave effect and irregular highlighter movement"* — Dan clarified
+   1 Sep: **the Kallang Wave**, the stadium crowd wave (Singapore's National
+   Stadium). The top bar's FluOLinGo wordmark takes the Hand font and its
+   LETTERS rise and dip in sequence, one after another, like a crowd wave
+   rolling through — the hero brand already renders one span per character
+   (HomeDashboard splits the string), so the same structure animates it.
+   The highlighter behind it moves irregularly, like a real marker's sweep.
+   Respect prefers-reduced-motion: the wave stills, the wordmark stays.
 2. *"The hero to be in FluOLinGo font and resized relative to the width of
    the window"* — « Bienvenue sur FluOLinGo » in FluOLinGo Hand, sized with
    a viewport-relative clamp, not a fixed step.
