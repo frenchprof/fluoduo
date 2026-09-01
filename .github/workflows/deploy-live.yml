@@ -54,6 +54,40 @@ jobs:
             exit 1
           fi
 
+      # Runs 2-7 all died on `remote: Repository not found`, which is one
+      # message for THREE different faults: the secret is empty or missing on
+      # THIS repo (an empty token pushes anonymously, and a private repo
+      # answers 404 to strangers), the token is expired or malformed, or the
+      # token is fine but was never granted dckg/fluo. This step names which,
+      # without ever printing the token — Actions masks it, and `gh api user`
+      # prints only the login it authenticates as.
+      - name: Say exactly what the deploy token can see
+        env:
+          GH_TOKEN: ${{ secrets.LIVE_DEPLOY_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::LIVE_DEPLOY_TOKEN is EMPTY. The secret must be a"
+            echo "::error::Repository secret on frenchprof/fluoduo (Settings >"
+            echo "::error::Secrets and variables > Actions) — the workflow runs"
+            echo "::error::HERE, so a secret stored on dckg/fluo never reaches it."
+            exit 1
+          fi
+          login=$(gh api user --jq .login 2>/dev/null || true)
+          if [ -z "$login" ]; then
+            echo "::error::The token authenticates as NOBODY — it is expired,"
+            echo "::error::revoked, or was pasted with a stray character."
+            exit 1
+          fi
+          echo "token authenticates as: $login"
+          if ! gh api repos/dckg/fluo --jq .full_name 2>/dev/null; then
+            echo "::error::The token is valid (it is $login) but CANNOT SEE"
+            echo "::error::dckg/fluo. On its settings page check: Resource owner"
+            echo "::error::is dckg, Repository access includes dckg/fluo, and"
+            echo "::error::Contents is Read and write."
+            exit 1
+          fi
+          echo "dckg/fluo is visible — pushing"
+
       - name: Mirror main to dckg/fluo
         run: |
           git push "https://x-access-token:${{ secrets.LIVE_DEPLOY_TOKEN }}@github.com/dckg/fluo.git" HEAD:main
