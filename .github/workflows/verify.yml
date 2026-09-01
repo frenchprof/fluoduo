@@ -262,6 +262,9 @@ jobs:
       - name: "A gapped card is dealt as a sentence, and no English outsizes its French (1 Sep)"
         run: python3 verify/verify85-card-french-first.py
 
+      - name: "Shared words go in the frame, not on every option; the blank is a square (1 Sep)"
+        run: python3 verify/verify86-shared-affix.py
+
       - name: "Every check runs, and no two share a number"
         run: python3 verify/verify-wiring.py
 

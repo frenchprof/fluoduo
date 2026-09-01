@@ -40,6 +40,7 @@ import { hintsFor, revealText } from "@/lib/help/hints";
 import { useHelpLadder } from "@/lib/help/useHelpLadder";
 import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import { optionGridClass } from "@/lib/optionGrid";
+import { sharedAffix } from "@/lib/practice/sharedAffix";
 import { saveRun, loadRun, clearRun } from "@/lib/lessonRun";
 import { ENTRY_LABELS, ENTRY_LEVELS, type EntryLevel } from "@/lib/lessonEntry";
 import { sfx } from "@/games/audio/sfx";
@@ -547,6 +548,28 @@ function ExerciseCard({
   const isFrame = ex.before !== undefined;
   const shown = ex.kind === "mcq" ? selected : value;
 
+  // WHAT EVERY OPTION SAYS IS NOT A CHOICE (Dan, 1 Sep: "if the MCQ answers are
+  // going to be nearly identical except for one part, then put the identical
+  // parts in the question and just separate out the choice parts!").
+  //
+  // « Nous y allons » appeared in all four options; a learner read it four
+  // times and it distinguished nothing. Lifted into a frame it is read once,
+  // and the options become « à vélo » / « en métro » / « en avion », which IS
+  // the question. sharedAffix returns null whenever there is nothing worth
+  // lifting, and this whole path then costs nothing.
+  //
+  // The option's VALUE is still the full sentence — only its LABEL is reduced —
+  // so grading, the SRS key and the 🔊 read-back are all untouched.
+  const optionSplit =
+    ex.kind === "mcq" && !isFrame && !ex.segments && ex.options ? sharedAffix(ex.options) : null;
+  const partOf = (opt: string | null): string | null =>
+    opt == null || !optionSplit ? opt : (optionSplit.parts[ex.options!.indexOf(opt)] ?? opt);
+
+  /** Nothing may sit between the blank and what follows it: sentence-final
+   *  punctuation, or the noun an elided « l' » is glued to. */
+  const gluesRight = (after: string | undefined) =>
+    /^[.,?!;:»)]/.test(after ?? "") || /['’]$/.test(ex.answer ?? "");
+
   // FRENCH PUNCTUATION DOES NOT BREAK OFF ITS WORD.
   //
   // « Tu prends la voiture ? » is written with a space before the question
@@ -558,8 +581,20 @@ function ExerciseCard({
 
   // A blank's own skin, shared by the one-blank frame and by each blank of a
   // segmented cloze, so the two cannot drift apart visually.
-  const blankClass = (filled: boolean) =>
-    `mx-1.5 inline-block min-w-[90px] rounded-md border-b-2 border-dashed px-2 align-baseline ${
+  // min-w-[1.6em], not 90px (Dan, 1 Sep: "can we have the question mark in a
+  // minimal square rather than a super long blank?? why waste the space?").
+  // 90px was set when a blank held a typed answer; on an MCQ frame it holds a
+  // « ? » and reserved five characters of empty paper, which is what pushed
+  // « Tu prends ? voiture ? » onto two lines in the first place. It is in `em`
+  // so it tracks the 2xl frame rather than fixing a pixel count, and the box
+  // still GROWS to whatever the answer turns out to be.
+  //
+  // `tightRight` closes the gap on the right when nothing belongs there: a
+  // full stop (« On y va [?] . » read as if the sentence had a hole after the
+  // blank) or an elision, where « l' » glues to its noun and « Nous prenons
+  // [?] avion. » would teach the opposite of what the card is about.
+  const blankClass = (filled: boolean, tightRight = false) =>
+    `ml-1.5 ${tightRight ? "mr-0" : "mr-1.5"} inline-block min-w-[1.6em] rounded-md border-b-2 border-dashed px-2 text-center align-baseline ${
       !answered
         ? "border-[color:var(--cahier-rule)] bg-white/70"
         : result !== "wrong"
@@ -608,7 +643,10 @@ function ExerciseCard({
         //
         // The size therefore follows the card's own French rather than a fixed
         // number. A French `big` keeps 2xl unconditionally — it is the target.
-        const frenchIsFrame = !!ex.segments || (!!ex.before && ex.before.length > 0) || !!ex.after;
+        // A split MCQ now HAS a French frame, so its English goes back to
+        // matching it at 2xl — the rule is "never bigger", not "always smaller".
+        const frenchIsFrame =
+          !!ex.segments || (!!ex.before && ex.before.length > 0) || !!ex.after || !!optionSplit;
         const size = english && !frenchIsFrame ? "text-lg" : "text-2xl";
         return (
           <p
@@ -693,20 +731,14 @@ function ExerciseCard({
           </div>
         </>
       )}
+      {/* One blank skin for every card. This block used to carry its own copy
+          of the class list, so narrowing `blankClass` left the frame card — the
+          one Dan was looking at — still 90px wide. */}
       {isFrame && (
         <p className="text-center text-2xl font-bold leading-snug text-[color:var(--cahier-ink)]">
           <span lang="fr">{tightPunct(ex.before ?? "")}</span>
-          <span
-            className={`mx-1.5 inline-block min-w-[90px] rounded-md border-b-2 border-dashed px-2 align-baseline ${
-              !answered
-                ? "border-[color:var(--cahier-rule)] bg-white/70"
-                : result !== "wrong"
-                  ? "border-[color:var(--drill-ok)] bg-[color:var(--drill-ok-bg)]"
-                  : "border-[color:var(--drill-bad)] bg-[color:var(--drill-bad-bg)] line-through"
-            }`}
-            lang="fr"
-          >
-            {shown?.trim() ? shown : "?"}
+          <span className={blankClass(!!shown?.trim(), gluesRight(ex.after))} lang="fr">
+            {shown?.trim() ? shown : <span className="opacity-40">?</span>}
           </span>
           <span lang="fr">{tightPunct(ex.after ?? "")}</span>
         </p>
@@ -722,8 +754,18 @@ function ExerciseCard({
       )}
 
 
+      {/* The frame the options were all repeating, hoisted and read once. */}
+      {optionSplit && (
+        <p className="text-center text-2xl font-bold leading-snug text-[color:var(--cahier-ink)]">
+          <span lang="fr">{tightPunct(optionSplit.before)}</span>
+          <span className={blankClass(!!shown?.trim(), gluesRight(optionSplit.after))} lang="fr">
+            {shown?.trim() ? partOf(shown) : <span className="opacity-40">?</span>}
+          </span>
+          <span lang="fr">{tightPunct(optionSplit.after)}</span>
+        </p>
+      )}
       {ex.kind === "mcq" && ex.options && (
-        <div className={optionGridClass(ex.options, "gap-2.5")}>
+        <div className={optionGridClass(optionSplit?.parts ?? ex.options, "gap-2.5")}>
           {ex.options.map((c, n) => {
             const isPicked = (answered ? shown : selected) === c;
             const isAnswer = c === ex.answer;
@@ -756,7 +798,10 @@ function ExerciseCard({
                 {!answered && (
                   <span aria-hidden className="mr-2 text-xs font-bold opacity-50">{n + 1}</span>
                 )}
-                {c}
+                {/* The LABEL is reduced when the frame above carries the rest;
+                    the value stays `c`, so grading and 🔊 read the whole
+                    sentence. */}
+                {optionSplit ? optionSplit.parts[n] : c}
               </button>
             );
           })}
