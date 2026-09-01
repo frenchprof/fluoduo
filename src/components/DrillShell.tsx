@@ -225,6 +225,18 @@ export default function DrillShell({
     return () => { document.documentElement.style.removeProperty("--float-floor"); };
   }, []);
 
+  // The 56px row earns its height only if it carries the progress bar or the
+  // help ladder. `right` alone does not: with no row, it becomes the band's
+  // stat. See the row's own comment for the measurement.
+  //
+  // `|| !act` IS THE TRAP GUARD, and it is not hypothetical. The ✕ now lives
+  // in the band, and the band only renders when `activityInfo()` resolves —
+  // which it does NOT for a route whose registry row was retired while the
+  // route stayed (Sorting, #93; iComplete, #97 — both deliberately kept
+  // reachable so banked answers keep their labels). Without this the row would
+  // vanish on exactly those pages and take the only way out with it. "A drill
+  // you cannot leave is a trap" is this file's own words, twenty lines up.
+  const barNeeded = !!progress || !!help || !act;
   const pct = progress && progress.total > 0
     ? Math.min(100, Math.round((progress.done / progress.total) * 100))
     : 0;
@@ -249,11 +261,35 @@ export default function DrillShell({
       <div className="shrink-0">
         <SiteTopBar active={activity ?? ""} nested />
       </div>
+      {/* THE ✕ LIVES IN THE BAND (2026-08-31). It used to sit in the 56px bar
+          below, whose middle was a 243px EMPTY spacer on every surface with no
+          progress — a lesson's tab view, a landing, a finished run. Measured at
+          390px on /lessons/colors: 187px of chrome before the first tab, of
+          which that bar plus the gap under it was 84px carrying one glyph and
+          one number. The band was already drawn, already 55px tall, and
+          carrying a single word.
+
+          It is here on EVERY surface, not only the ones that lost the bar: an
+          exit that moves depending on whether a drill happens to show progress
+          is worse than one that costs a row. The `pl-12 sm:pl-14` this replaces
+          existed to hold that space open. */}
       {act && (
         <PageBand
           title={act.name}
-          stat={progress ? `${progress.done}/${progress.total}` : undefined}
-          className="shrink-0 pl-12 sm:pl-14"
+          lead={
+            <Link
+              href={exitHref}
+              aria-label="Exit"
+              // -my-1 keeps the 36px tap target without growing the band: the title line
+              // is 28px inside py-3, so an untrimmed 36px control added 8px of
+              // height and gave back less than it saved.
+              className="-my-1 -ml-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xl font-black text-white/70 transition hover:bg-white/15 hover:text-white"
+            >
+              ✕
+            </Link>
+          }
+          stat={progress ? `${progress.done}/${progress.total}` : right ?? undefined}
+          className="shrink-0"
         />
       )}
       <div className="cahier-foolscap relative flex min-h-0 flex-1 flex-col">
@@ -269,15 +305,30 @@ export default function DrillShell({
             here and lost the end of every line. Keep this on the same side as
             `.cahier-binding` in globals.css. */}
         <div className="flex min-h-0 flex-1 flex-col pl-[38px]">
-      {/* ── the 56px bar ─────────────────────────────────────────────── */}
+      {/* ── the 56px bar — ONLY where it carries something ────────────
+          It renders for a progress bar or the ? help ladder, and for nothing
+          else. Before this it rendered always: on a lesson's tab view, a
+          landing, a finished run, it was a ✕ at one end, a score at the other
+          and 243px of empty `flex-1` between them, costing 84px with the gap
+          beneath it. The ✕ moved to the band and the score goes there too when
+          this row is absent, so nothing is lost — one row stops being drawn.
+
+          Where progress or help DO exist the row is unchanged, which is most
+          of the 28 surfaces mounting this shell: the progress bar is the
+          learner's position in the run and the ? ladder is load-bearing. */}
+      {barNeeded && (
       <div className="flex h-14 shrink-0 items-center gap-3 border-b-2 border-[color:var(--cahier-ink)]/10 bg-white/45 px-3 sm:px-5">
-        <Link
-          href={exitHref}
-          aria-label="Exit"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xl font-black text-[color:var(--cahier-ink)]/50 transition hover:bg-[color:var(--cahier-ink)]/10 hover:text-[color:var(--cahier-ink)]"
-        >
-          ✕
-        </Link>
+        {/* Only where there is no band to host it — see `barNeeded`. Two ✕ on
+            one screen would be worse than the row this change removes. */}
+        {!act && (
+          <Link
+            href={exitHref}
+            aria-label="Exit"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xl font-black text-[color:var(--cahier-ink)]/50 transition hover:bg-[color:var(--cahier-ink)]/10 hover:text-[color:var(--cahier-ink)]"
+          >
+            ✕
+          </Link>
+        )}
         {progress ? (
           <div
             className="h-3.5 min-w-0 flex-1 overflow-hidden rounded-full bg-[color:var(--cahier-ink)]/10"
@@ -323,12 +374,16 @@ export default function DrillShell({
             </span>
           </button>
         )}
+        {/* Only when the row exists. With no row, `right` is the band's stat —
+            the band shows at most ONE number by design, and with no progress
+            to show there is no competition for the slot. */}
         {right && (
           <div className="cahier-mono shrink-0 text-sm font-bold text-[color:var(--cahier-ink)]/70">
             {right}
           </div>
         )}
       </div>
+      )}
 
       {/* ── one item, near the header; stray <h1>s are swallowed ─────── */}
       {/* justify-start, not justify-center (Dan, 2026-08-11): dead-centre

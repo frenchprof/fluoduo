@@ -44,6 +44,15 @@ import { quelleMatiereLesson } from "./quelle-matiere";
 // with the word.
 import { colorsLesson } from "./colors";
 import { coreNounsLesson } from "./core-nouns";
+// SIO-038 — the last Tier 1 stop whose deck had no lesson file (colour review's
+// handover, 31 Aug). Its twelve items are three frames: en + a vehicle you sit
+// inside, à + on foot or astride, prendre + the definite article.
+import { transportLesson } from "./transport";
+// SIO-010 — the first atelier with a lesson file, and the prototype for the
+// other five. Its Mémo is the generated model, passed through: authoring one
+// here would REPLACE the dialogue an atelier opens on (LessonPager resolves
+// `lesson?.memo ?? memoForDeck(...)`).
+import { atelierRencontreLesson } from "./atelier-rencontre";
 import { auMarcheLesson } from "./au-marche";
 import { soixanteDixLesson } from "./soixante-dix";
 import { avoirEtatsLesson } from "./avoir-etats";
@@ -116,6 +125,8 @@ export const NATIVE_LESSONS: Record<string, NativeLesson> = {
   "soixante-dix": soixanteDixLesson,
   colors: colorsLesson,
   "core-nouns": coreNounsLesson,
+  transport: transportLesson,
+  "atelier-rencontre": atelierRencontreLesson,
   "revision-u1": revisionU1Lesson,
   "revision-u3u4": revisionU3U4Lesson,
   "revision-u4": revisionU4Lesson,

@@ -228,6 +228,15 @@ jobs:
       - name: "SIO-005 and SIO-006 have a lesson; the colour ladder, the band weight, the English tabs (31 Aug)"
         run: python3 verify/verify68-two-tier2-stops.py
 
+      - name: "The drill's ✕ has one home, and the 56px row is only drawn when it carries something (31 Aug)"
+        run: python3 verify/verify73-drill-chrome.py
+
+      - name: "SIO-038 has a lesson; its twelve sentences are the deck's own and ★ withdraws the frame (1 Sep)"
+        run: python3 verify/verify74-transport-stop.py
+
+      - name: "An atelier's lesson adds the register and does not eat the model (1 Sep)"
+        run: python3 verify/verify75-atelier-lesson.py
+
       - name: "Every check runs, and no two share a number"
         run: python3 verify/verify-wiring.py
 
