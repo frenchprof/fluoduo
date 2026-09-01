@@ -70,7 +70,7 @@ export const leCheminLesson: NativeLesson = {
     </div>
   ),
   // TIER 3 · stop 36. TRANSPARENT, and the same fusion the partitives concept
-  // teaches: only `le` and `les` glue to the preposition. Deliberately echoes
+  // teaches: only `le` and `les` merge with the preposition. Deliberately echoes
   // stop 42 so the learner meets one rule twice, not two rules once.
   concept: {
     subtitle: "Why au but à la",
@@ -78,7 +78,7 @@ export const leCheminLesson: NativeLesson = {
       <>
         English uses one word for all of them &mdash; <i>to the station</i>,{" "}
         <i>to the museum</i>. French keeps <i lang="fr">à</i> and the article separate, then
-        glues two of the four together: <i lang="fr">à</i> + <i lang="fr">le</i> ={" "}
+        merges with two of the four: <i lang="fr">à</i> + <i lang="fr">le</i> ={" "}
         <i lang="fr">au</i>, <i lang="fr">à</i> + <i lang="fr">les</i> ={" "}
         <i lang="fr">aux</i>.
       </>
@@ -107,11 +107,11 @@ export const leCheminLesson: NativeLesson = {
       { q: <>You are looking for the hospital &mdash; <i lang="fr">l&rsquo;h&ocirc;pital</i>.</>,
         a: <><i lang="fr">&agrave; l&rsquo;h&ocirc;pital</i> &mdash; <i lang="fr">l&rsquo;</i> does not fuse.</> },
       { q: <>Where have you met this fusion before?</>,
-        a: <>With <i lang="fr">de</i>: <i lang="fr">du</i> and <i lang="fr">des</i> are the same two glued forms.</> },
+        a: <>With <i lang="fr">de</i>: <i lang="fr">du</i> and <i lang="fr">des</i> are the same two merged forms.</> },
     ],
     remember: (
       <>
-        <i lang="fr">Le</i> and <i lang="fr">les</i> glue; <i lang="fr">la</i> and{" "}
+        <i lang="fr">Le</i> and <i lang="fr">les</i> merge; <i lang="fr">la</i> and{" "}
         <i lang="fr">l&rsquo;</i> never do. One rule, and it works for{" "}
         <i lang="fr">&agrave;</i> and <i lang="fr">de</i> alike.
       </>
