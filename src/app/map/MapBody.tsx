@@ -56,8 +56,16 @@ export default function MapBody() {
     } catch {
       // storage blocked → 2D
     }
-    // Deep link: ?unit=N and/or #SIO-0XX (the grammar Home used).
+    // Deep link: ?unit=N and/or #SIO-0XX (the grammar Home used), and since
+    // 1 Sep ?view=2d|3d — Home's prominent 2D/3D buttons (Dan's mock) are
+    // only honest if each opens the map IN that view. The URL wins over the
+    // saved choice and becomes it, so the next plain visit keeps the view.
     const readUrl = () => {
+      const view = new URLSearchParams(window.location.search).get("view");
+      if (view === "2d" || view === "3d") {
+        setMapView(view);
+        try { window.localStorage.setItem(MAP_VIEW_KEY, view); } catch { /* storage blocked */ }
+      }
       const q = new URLSearchParams(window.location.search).get("unit");
       const hash = window.location.hash.replace("#", "");
       const sio = SIOS.find((s) => s.id === hash);

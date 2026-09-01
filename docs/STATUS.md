@@ -6,6 +6,48 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 1 Sep — Dan's eight Home annotations, DIVIDED (the labour, not the files)
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan annotated the live Home (screenshot in the fluoduo-main session, 09:53
+local) with eight numbered notes and said *"divide the labour to do this."*
+The division is BY SURFACE, one session per file cluster, because 31 Aug
+proved two sessions in one file is how afternoons are lost.
+
+**LOT A — Home + top bar rework → PRE-TESTS session** (lane free since #104
+and #107 merged; files: `SiteTopBar.tsx`, `HomeDashboard.tsx`, verify25/31
+updates). Dan's notes, verbatim where legible:
+
+1. *"The top return link to be in the same FluOLinGo font but with the
+   Kalland wave effect and irregular highlighter movement"* — the top bar's
+   FluOLinGo wordmark takes the Hand font; the highlighter behind it moves
+   irregularly, like a real marker. ("Kalland" is not a term we know —
+   BEFORE building, show Dan two or three animation options side by side
+   and let him point; do not guess silently.)
+2. *"The hero to be in FluOLinGo font and resized relative to the width of
+   the window"* — « Bienvenue sur FluOLinGo » in FluOLinGo Hand, sized with
+   a viewport-relative clamp, not a fixed step.
+3. *"Just 1/50 (nothing else)"* — the stop tile loses the word STOP and the
+   dot row; the fraction alone.
+4. *"Move the streak value and emoji up between History and User"* — the
+   🔥 count leaves the tile row and docks in the top bar between ⌛ and the
+   account button; the streak tile goes.
+5. *"Add a forward button (= Next stop)"* — a ⏭ key beside Continue ▶,
+   opening the stop AFTER the current one. Mind verify25's drawn-key rule:
+   draw it as an SVG key like its siblings, no typed transport character.
+6. *"Close the gap more"* — the space between the hero band and the key row
+   shrinks further (the hero's mb-5 and whatever the row adds above).
+
+**LOT B — prominent 2D/3D → FLUODUO-MAIN** (files: the Home map card /
+`HomeMap*`; the map area is integration's from #103): *"More prominent 2-D
+and 3-D view buttons"* — Dan mocked two big colour-filled buttons (cyan 2D,
+magenta 3D). Build to his mock, show before/after.
+
+**Untouched queues:** Peers keeps the DrillShell chrome fold + the Practice
+hub; Color review stays on concepts. Lot A lands as ONE PR to fluoduo-main;
+every visible change ships with its picture, per the rule.
+
 ## 31 Aug evening — Dan cleared the decision queue
 
 Sole editor of STATUS.md in this commit: fluoduo-main.
