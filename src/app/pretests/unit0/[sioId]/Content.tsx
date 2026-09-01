@@ -20,6 +20,7 @@
  * has no business offering them before the attempt.
  */
 import CahierShell from "@/components/CahierShell";
+import { stopTag } from "@/lib/stopTag";
 import SectionBand from "@/components/SectionBand";
 import { siteTabs } from "@/components/siteTabs";
 import { Sio010Pretest, Unit0Questions } from "@/components/Unit0Pretest";
@@ -39,8 +40,20 @@ export default function Unit0PretestPage({ sioId }: { sioId: string }) {
     : (UNIT0_QUESTIONS[sioId] ?? []).length;
 
   return (
-    <CahierShell tabs={siteTabs()} active="pretest" band={false}>
-      <SectionBand family="goals" label={`🧪 ${sio.topic}`} pill={sio.id.slice(4)}>
+    /* THE BAND IS BACK ON (Dan, 1 Sep). `band={false}` was here because the
+       SectionBand below was already carrying the stop's name — but a
+       SectionBand is a SECTION header (a pale family wash, collapsible, wraps
+       its children) and it was doing a page header's job. The result was a
+       page whose only heading sat 48px inside the paper in a different
+       typeface from every other page's, with the family strip drawn at its
+       edge instead of the page's. The page band names the stop and carries the
+       tag; the SectionBand goes back to introducing the section under it. */
+    <CahierShell
+      tabs={siteTabs()}
+      active="pretest"
+      band={{ title: sio.topic, sub: stopTag(sio) }}
+    >
+      <SectionBand family="goals" label="🧪 Can you already do this?">
         {/* The can-do gets the popup's own treatment — a highlighted serif
             line — not SectionBand's `gloss`, which renders inline in
             parentheses at 60% opacity and is built for a short phrase. These

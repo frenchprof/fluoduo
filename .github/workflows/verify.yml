@@ -240,6 +240,21 @@ jobs:
       - name: "An atelier's lesson adds the register and does not eat the model (1 Sep)"
         run: python3 verify/verify75-atelier-lesson.py
 
+      # Renumbered 76 -> 83 at merge: Peers' branch minted a second verify76
+      # while verify76-envies-besoins was landing — the in-flight collision the
+      # AGENTS.md sweep exists to catch, found by Pre-tests mid-flight.
+      - name: "SIO-025 has a lesson; ★ withdraws the frame (1 Sep)"
+        run: python3 verify/verify83-parce-que.py
+
+      - name: "The five remaining ateliers: the model survives, and no option Dan did not review (1 Sep)"
+        run: python3 verify/verify77-five-ateliers.py
+
+      # Renumbered 82 -> 84 at merge: the SECOND live verify-number collision
+      # of the evening (Peers minted 82 while Pre-tests' verify82-page-chrome
+      # was merging in #131). The remote sweep only helps if run at minting.
+      - name: "The atelier model's English is toggled, on by default, never deleted (1 Sep)"
+        run: python3 verify/verify84-atelier-english.py
+
       - name: "Every check runs, and no two share a number"
         run: python3 verify/verify-wiring.py
 
@@ -293,6 +308,15 @@ jobs:
       # The browser half of verify72, LAST on purpose: it replaces out/ with
       # an OPEN export, and the wall build above is the one verify18/18b
       # audit — nothing may read out/ after this line expecting the wall.
+      - name: "Home's two control rows and the map view switch (1 Sep)"
+        run: python3 verify/verify80-home-view-switch.py
+
+      - name: "The origin animation ends on the NAME — FluOLinGo (1 Sep)"
+        run: python3 verify/verify81-fluolingo-origin.py
+
+      - name: "Every page wears the same chrome — spine, band, stop (1 Sep)"
+        run: python3 verify/verify82-page-chrome.py
+
       # The scan launches the runner's preinstalled Chrome via
       # playwright-core; no browser download step is needed.
       - name: Rebuild the export open, for the browser to walk

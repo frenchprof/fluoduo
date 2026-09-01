@@ -10,7 +10,13 @@ import HomeDashboard from "./HomeDashboard";
 export default function Home() {
   return (
     <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="home">
-      <div className="mx-auto max-w-3xl px-1 py-2">
+      {/* `px-1` removed 1 Sep. Four pixels of nothing, and they were what
+          stopped the welcome strip bleeding to the paper's edge: the strip
+          pulls itself out by the content well's own padding, and a second
+          padded wrapper in between meant it always stopped 4px short on each
+          side. Cheaper to delete than to make the strip know about two
+          ancestors — and nothing on Home was relying on 4px. */}
+      <div className="mx-auto max-w-3xl py-2">
         {/* Hero + journey both live in HomeDashboard (client: they need
             live progress for the CTA, chips and bar). */}
         <HomeDashboard />

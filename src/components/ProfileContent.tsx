@@ -38,6 +38,7 @@
  * Tokens only — verify19b's raw-hex ratchet.
  */
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import PageBand from "@/components/PageBand";
 import { SIOS } from "@/content/sios";
 import { loadProgress, setGoal, type Progress } from "@/lib/progress";
 import { useAuthUser } from "@/lib/firebase/auth";
@@ -171,27 +172,29 @@ export default function ProfileContent() {
   return (
     <div className="profile-page pb-8">
       {/* ── Who, which course, how far. The count is the only number here:
-          the whole point of the page is that progress is outcomes done. ── */}
-      <header
-        className="flex items-center justify-between gap-3 rounded-t-2xl px-4 py-3"
-        style={{ background: "var(--fluo-secondary)", borderBottom: `3px solid ${INK}` }}
-      >
-        <div className="min-w-0">
-          {/* Sized from the scale, not invented: the header is a compact strip
-              that also carries the outcome count, so it takes --fs-h2 rather
-              than the h1 default (globals.css `h1.cahier-display`). */}
-          <h1 className="fluo-band-hand truncate font-semibold leading-none text-white" style={{ fontSize: "var(--fs-h2)" }}>
-            {user?.displayName ?? "Moi"}
-          </h1>
-          {/* A label, not prose — `.cahier-page p` would force it to body size. */}
-          <span className="fluo-mono mt-1.5 block truncate text-[10px] font-bold leading-none tracking-[0.06em] text-white/90">
-            {COURSE_CODE} · {COURSE_LEVEL} · WEEK {courseWeek(now)}
-          </span>
-        </div>
-        <span className="fluo-mono shrink-0 rounded-md px-2 py-1.5 text-[11px] font-black" style={{ background: HL, color: INK }}>
-          {p.doneSios.length} / {SIOS.length}
-        </span>
-      </header>
+          the whole point of the page is that progress is outcomes done. ──
+
+          IT IS PageBand NOW (Dan, 1 Sep: "i say touch Profil please").
+          PageBand's own docstring says it "replicates" this header — so the
+          site's one heading structure and this page were the same markup
+          written twice, and they had already drifted: this copy was rounded at
+          the top and sat inside the content well's padding, so it stopped 48px
+          short of the paper while every real band ran to the edge. That is
+          Dan's second complaint, on the page he pointed at.
+
+          The negative margins are the pull Home's welcome strip uses: out by
+          exactly the well's padding and the same padding back inside, so the
+          words do not move and only the colour reaches further. */}
+      <PageBand
+        title={user?.displayName ?? "Moi"}
+        sub={`${COURSE_CODE} · ${COURSE_LEVEL} · WEEK ${courseWeek(now)}`}
+        stat={`${p.doneSios.length} / ${SIOS.length}`}
+        className="-ml-12 -mr-4 pl-12 pr-4 sm:-ml-16 sm:-mr-7 sm:pl-16 sm:pr-7"
+      />
+      {/* The body keeps the reading width the page wrapper used to give it —
+          the band must be outside it, or a band centred inside 768px is not a
+          band that reaches the paper. */}
+      <div className="mx-auto max-w-3xl">
 
       {/* Wide: the two things you act on pin to the left, the record collapses
           beside them. Phone: one column, the same order. */}
@@ -390,12 +393,11 @@ export default function ProfileContent() {
             </Section>
           ))}
 
-          {/* ── The footer line: what the teacher sees, and the three doors
-              out of the page. ── */}
+          {/* ── The footer line: the three doors out of the page. The
+              "TEACHER SEES OUTCOMES · ACCURACY" label that used to open it
+              was cut by Dan (2 Sep) under the litmus test — removing it
+              stops no learner from finding anything. ── */}
           <div className="flex flex-wrap items-center gap-2.5 px-4 py-3" style={{ background: PAPER }}>
-            <span className="fluo-mono text-[10px] font-semibold leading-relaxed" style={{ color: SOFT }}>
-              TEACHER SEES OUTCOMES · ACCURACY
-            </span>
             <a href="/map" className="fluo-mono text-[10px] font-bold no-underline">MAP</a>
             <button type="button" onClick={() => exportCsv(acc)} className="fluo-mono text-[10px] font-bold underline underline-offset-2" style={{ color: "var(--cahier-accent)" }}>
               EXPORT
@@ -403,6 +405,7 @@ export default function ProfileContent() {
             <a href="/moi/historique" className="fluo-mono text-[10px] font-bold no-underline">HISTORY</a>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

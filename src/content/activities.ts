@@ -65,7 +65,11 @@ export const FAMILIES: Family[] = [
   { key: "goals", name: "FluOLin Goals", emoji: "🎯", href: "/" },
   // 🏋️ (Dan, 2026-08-31) — the same mark the lesson's Pract. tab wears
   // since #108, so "practice" is one glyph everywhere.
-  { key: "practice", name: "FluOLin Practice", emoji: "🏋️", href: "/map" },
+  // /practice since 1 Sep, not /map. The 🏋️ slot pointed at the learning
+  // path because Practice had no page of its own — the same fault 🎮 and
+  // 💪 had, fixed on 30 Aug by giving them a hub. The map is Goals', and
+  // Home still opens it (verify25b).
+  { key: "practice", name: "FluOLin Practice", emoji: "🏋️", href: "/practice" },
   // /games, not /games/vocabularain (Dan, 2026-08-30, on the bottom bar:
   // "can we first establish if those are really the five that we need
   // anchored below? the most likely shortcuts needed by learners should go
@@ -201,7 +205,17 @@ export function activitiesInFamilyOrder(): Activity[] {
  * another name. These two did not, so a family shortcut had to point at one
  * arbitrary member (`/games/vocabularain`, `/conjugaison`) until 2026-08-30.
  */
-const FAMILY_HUBS: Record<string, FamilyKey> = { games: "svplay", skills: "skills" };
+const FAMILY_HUBS: Record<string, FamilyKey> = {
+  games: "svplay",
+  skills: "skills",
+  // Practice joined them on 1 Sep. Its door was /map — the learning path,
+  // which belongs to Goals — so 🏋️ opened someone else's page and the two
+  // activities that DO have doors of their own (SpecuLearn, 4Mémoire) had no
+  // shortcut at all. Memo has no href and is reached from a stop, so the hub
+  // lists two: exactly Dan's rule for it, "except when one item is not
+  // active, then it does not appear".
+  practice: "practice",
+};
 
 /**
  * The families whose door is deliberately ONE activity's page, and which one.
@@ -257,13 +271,36 @@ export function navigableActivities(): Activity[] {
 }
 
 /** Pages whose own design already assigns colour, so the shell must not. */
-const SELF_COLOURED = new Set(["moi", "profil"]);
+// EMPTIED 1 Sep, on Dan's word ("i say touch Profil please"). It held
+// /moi and /profil since 21 Aug, when he asked to "maintain the current look
+// of the profile page" — the reasoning was that its rows each carry a hue and
+// a family band over the top would be a second, louder system arguing with the
+// first. That reasoning was not wrong; it was about a band ARRIVING on a page
+// that had its own. What it left behind was a page with no spine and a heading
+// card inset in a rounded box while every other page's ran edge to edge — the
+// exact two faults Dan named in the 1 Sep audit. The rows keep their hues; the
+// heading becomes the same band as everywhere else.
+const SELF_COLOURED = new Set<string>([]);
 
 /** Site keys that are not activities but still belong somewhere. */
 const SITE_FAMILY: Record<string, FamilyKey> = {
   home: "goals", activities: "goals", index: "goals", guide: "goals", quickguide: "goals",
   map: "goals", carte: "goals", unit: "goals", sio: "goals", lessons: "goals", decks: "goals",
   pretests: "practice", practice: "practice",
+  // The SUB-PAGES, added 1 Sep after Dan's chrome audit: "there are pages
+  // missing this colored vertical strip on the left". Each of these was
+  // passing an `active` key with no entry here, and a null family costs a
+  // page THREE things at once, which is why the fault looked like three
+  // faults: no `fam-` class means no spine (the rule is
+  // `[class*="fam-"]`), no family ink, and — because CahierShell renders the
+  // heading band only `{famKey && …}` — no band either, so the page fell
+  // back to a bare <h1> at whatever height its content happened to start.
+  // Measured before the fix: five different heading heights across the site.
+  pretest: "practice", mcq: "practice", study: "practice", new: "goals",
+  // `deck` is the USER-deck page (a curated deck renders CuratedDeckTable,
+  // whose `active` is its view key and already resolves) and `dice` is Diced
+  // Practice. Both were passing keys with no entry, so both drew no spine.
+  deck: "goals", dice: "practice",
   games: "svplay", svplay: "svplay",
   reviser: "review",
   moi: "user", leaderboard: "user", profil: "user", reglages: "user", teacher: "user",

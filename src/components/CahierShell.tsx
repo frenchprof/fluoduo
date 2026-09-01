@@ -31,7 +31,6 @@ import { logEvent } from "@/lib/firebase/usage";
 import { siteTabs, toolTabs, tabsWithActive } from "@/components/siteTabs";
 import SiteTopBar from "@/components/SiteTopBar";
 import TabFlap, { hueOf, type ShellTab } from "@/components/TabFlap";
-import { SIOS } from "@/content/sios";
 import { getPretestForSio } from "@/content/pretests";
 import { UNIT0_QUESTIONS } from "@/content/sios/unit0-questions";
 import { getLetrisSet } from "@/games/letris/sets";
@@ -39,6 +38,7 @@ import { composeBanksForDeck } from "@/games/compose/banks";
 import FirstTour from "@/components/FirstTour";
 import { isPlayableGap } from "@/lib/collections/gapSentence";
 import { activity, bandOf, familyOf, familyShort, hubFamily, isReadingSurface } from "@/content/activities";
+import { stopForDeck } from "@/lib/stopTag";
 import BottomBar from "@/components/BottomBar";
 import PageBand from "@/components/PageBand";
 
@@ -94,7 +94,14 @@ export default function CahierShell({
   const hub = hubFamily(active);
   const pageLabel =
     [...site, ...tools, ...context].find((t) => t.key === active)?.label ??
-    context[0]?.label ??
+    // `context[0]?.label` used to sit here, and it could only ever be wrong.
+    // It fires exactly when the active key is NOT among the page's own flaps
+    // — and the first context flap on every deck page is « Home », so
+    // /decks/<curated>/mcq (curated decks get no MCQ flap, DeckContent.tsx)
+    // announced itself as Home. Invisible until 1 Sep, because that page had
+    // no family and so drew no band at all; giving it one made the old label
+    // visible. A page that cannot name itself from its own flaps should say
+    // nothing and let its caller pass a `band` title, not borrow a sibling's.
     activity(active)?.name ??
     // A family hub is not an activity and has no flap, so without this its
     // browser tab would say plain "FluOLinGo" — the fault the per-page title
@@ -273,7 +280,7 @@ export default function CahierShell({
 /** Where this deck's Pre-Test lives: the authored pretest page, or (Unit 0)
  *  the SIO popup whose body carries the questions. Null = no pretest. */
 export function pretestHrefForDeck(collectionId: string): string | null {
-  const sio = SIOS.find((s) => s.collectionId === collectionId);
+  const sio = stopForDeck(collectionId);
   if (!sio) return null;
   const pretest = getPretestForSio(sio.id);
   if (pretest) return `/pretests/${pretest.id}`;

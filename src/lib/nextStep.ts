@@ -30,6 +30,7 @@
  * moment the finish screen renders.
  */
 import { activitiesIn, activity } from "@/content/activities";
+import { stopForDeck } from "@/lib/stopTag";
 import { SIOS, type Sio } from "@/content/sios";
 import { cellHref } from "@/lib/indexMatrix";
 import { accuracyFor, loadLedger, type Ledger } from "@/lib/activityLedger";
@@ -90,7 +91,7 @@ export function nextStep(
   // Rule 1 — the anchor stop.
   let anchor =
     (at?.sioId && SIOS.find((s) => s.id === at.sioId)) ||
-    (at?.collectionId && SIOS.find((s) => s.collectionId === at.collectionId)) ||
+    (at?.collectionId && stopForDeck(at.collectionId)) ||
     undefined;
   let offPath = false;
   if (!anchor) {

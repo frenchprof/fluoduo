@@ -38,10 +38,14 @@ export default function ReglagesPage() {
   }
 
   return (
-    <CahierShell tabs={withActive(siteTabs(), "")} active="">
+    /* `active=""` until 1 Sep, which is the emptiest possible answer to
+       "which page is this?" — familyOf("") returns null before it looks
+       anything up, so Settings had no spine, no family ink and no heading
+       band, and its title sat as a bare <h1> on plain paper. `reglages` was
+       already mapped to the user family; the page simply never said so. */
+    <CahierShell tabs={withActive(siteTabs(), "reglages")} active="reglages" band={{ title: "Settings" }}>
       <div className="mx-auto max-w-2xl px-2 pb-8 pt-2">
-        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">⚙️ Settings</h1>
-
+        {/* « Settings » is the band's now (1 Sep). */}
         <div className="mt-2 flex gap-2 text-sm font-bold">
           <Link href="/moi" className="no-underline text-[color:var(--cahier-accent,#2f4fa8)]">My Progress</Link>
           <Link href="/leaderboard" className="no-underline text-[color:var(--cahier-accent,#2f4fa8)]">Leaderboard</Link>

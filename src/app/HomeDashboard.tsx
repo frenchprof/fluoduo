@@ -25,6 +25,7 @@
  * forwarded so printed QR codes and bookmarks survive.
  */
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import StopSheet from "@/components/StopSheet";
 import HomeMap from "@/components/HomeMap";
@@ -33,6 +34,7 @@ import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/p
 import { nextSioId } from "@/lib/continuer";
 import { equippedAccent } from "@/lib/economy";
 import { dueForReview } from "@/lib/reviser";
+import { loadMapView, mapHref, saveMapView } from "@/lib/mapView";
 
 /** « par Dr Chan » as pen strokes, in writing order (stem before bowl, the
  *  way a hand actually writes print letters). Baseline y=25, x-height 13,
@@ -72,10 +74,13 @@ export default function HomeDashboard() {
   // Armed on mount: nothing pops up by default (Dan, 2026-07-14), so the
   // FluOLinGo brand animation plays on a clear stage right away.
   const [heroPlay, setHeroPlay] = useState(false);
-  // Which view the map door opens. Session-local on purpose: it is a way of
-  // looking at the map, not a setting about the learner, and a preference
-  // stored here would be a third place the map's view can come from (the
-  // other two being ?view= and the map's own control).
+  // Which view the map opens in. NOT session-local any more, and the change is
+  // the fix for Dan's "make sure the switch literally takes you the map it
+  // promises to" (1 Sep). It used to start at 2D on every visit and its map
+  // link carried `?view=2d`, which /map then SAVED — so a learner who had
+  // chosen 3D on the map, came Home and went back was silently returned to 2D
+  // by a control that looked like it was only reporting the state. It now
+  // reads and writes the same store the map does (lib/mapView.ts).
   const [view3d, setView3d] = useState(false);
   // Once the stroke has played, the ink is pinned by class — engines can
   // drop a finished animation's fill state (Dan, 2026-07-14: "the color
@@ -86,6 +91,7 @@ export default function HomeDashboard() {
   const [qgOpen, setQgOpen] = useState(false);
   // The Review button's count — the one destination on Home with a deadline.
   const [dueCount, setDueCount] = useState(0);
+  const router = useRouter();
 
   useEffect(() => {
     // Progress, the due-count and the once-per-session hero flag live in
@@ -94,6 +100,7 @@ export default function HomeDashboard() {
     // Block-disabled: the rule reports only the first setState it meets, and
     // which one that is differs between local and CI eslint.
     /* eslint-disable react-hooks/set-state-in-effect */
+    setView3d(loadMapView() === "3d");
     const refresh = () => {
       const p = loadProgress();
       setProgress(p);
@@ -193,7 +200,16 @@ export default function HomeDashboard() {
           The strip keeps its top padding: that space is between the top bar
           and the heading, and closing THAT would crowd two pieces of chrome
           into each other. */}
-      <section aria-label="Welcome" className="home-strip -mx-4 -mt-7 mb-2.5 px-4 pb-2.5 pt-3 sm:-mx-6 sm:px-6">
+      {/* IT BLEEDS TO THE EDGE NOW (Dan, 1 Sep: "there are pages whose
+          horizontal strips don't bleed to the edge (they should)"). The pull
+          was `-mx-4`, which claws back 16px — but the content well it sits in
+          is padded `pl-12 sm:pl-16` to clear the binding, so the strip stopped
+          32px short of the paper on the left while every PageBand on the site
+          runs edge to edge. The negative margins now match the well's OWN
+          padding exactly, and the same padding is added back inside, so the
+          heading has not moved a pixel; only the colour behind it reaches
+          further. */}
+      <section aria-label="Welcome" className="home-strip -ml-12 -mr-4 -mt-7 mb-2.5 pb-2.5 pl-12 pr-4 pt-3 sm:-ml-16 sm:-mr-7 sm:pl-16 sm:pr-7">
         {/* THE HERO IN FLUOLINGO HAND, SIZED TO THE WINDOW (Dan, 1 Sep: "the
             hero to be in FluOLinGo font and resized relative to the width of
             the window"). A clamp, not a breakpoint step: `Bienvenue sur` is
@@ -244,7 +260,21 @@ export default function HomeDashboard() {
           No card. The readings are pressed IN (read-only by construction —
           no hover, nothing to press), the actions stand OUT. That contrast
           is the whole instruction set. */}
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-x-2 gap-y-2 sm:gap-x-3">
+      {/* TWO ROWS, AND DAN SWAPPED THEM (1 Sep: "we swap the positions of the
+          four buttons and the next stop's name: the buttons down and the name
+          of the next stop up").
+
+          ROW A — where you are, and where you are going: the counter well and
+          « Next: … », a reading beside a reading.
+          ROW B — what you can do about it: the view switch and the four keys,
+          a control beside four controls.
+
+          Before the swap the rows cut across that: keys sat with the counter
+          and the destination's NAME sat with the switch, so each row held one
+          thing to read and one thing to press and neither row had a subject.
+          The switch also moved to the left, under the counter, which is what
+          made the swap possible — it had been sharing its row with the name. */}
+      <div className="mb-2 flex items-center justify-between gap-2">
         <dl className="flex min-w-0 items-stretch gap-2">
           {/* WHERE YOU ARE. One figure, and five dots for the five units —
               the draft's replacement for the ruler it deleted. */}
@@ -269,6 +299,59 @@ export default function HomeDashboard() {
               components/SiteTopBar.tsx; verify25 follows it there. */}
         </dl>
 
+        {/* WHERE CONTINUE GOES, in words — the one piece of prose the draft
+            keeps, because a coloured triangle cannot name a destination. Two
+            lines as Dan wrote it ("Next: <br> [title]").
+
+            `short`, NOT `topic`, and that is the whole reason this line works.
+            Topics run to 55 characters ("en / au / aux / à — prepositions for
+            cities & countries"); beside the counter well there are ~165px left
+            on a 320px phone, so a topic can only ever arrive truncated — and
+            the first build of this showed "Introducti…", which is one of the
+            SHORTEST. `short` is the curriculum's own compact name, capped at
+            14 characters by check:short and asserted by verify25b, and it is
+            what every stop on the map is labelled with. So the learner reads
+            the same words here and there, at every width, uncut. The full
+            topic stays as the title attribute. */}
+        {activeSio && (
+          <p
+            title={activeSio.topic}
+            /* flex-1 + min-w-0 + truncate, and every one of the three is load
+               bearing. Without flex-1 the block sizes to its content and simply
+               overflows the page — measured at 320px, the topic ran 11.7px past
+               the right edge while `scrollWidth === clientWidth` reported it
+               unclipped, because nowrap without overflow:hidden grows the box
+               rather than cutting the text. With all three, the row can never
+               overflow at any width. */
+            className="min-w-0 flex-1 truncate text-right text-[12.5px] leading-tight text-[color:var(--cahier-ink-soft)]"
+          >
+            Next:
+            <br />
+            <strong className="font-semibold text-[color:var(--cahier-ink)]">
+              {activeSio.short}
+            </strong>
+          </p>
+        )}
+      </div>
+
+      {/* ── ROW B · the controls ─────────────────────────────────────────── */}
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-x-2 gap-y-2 sm:gap-x-3">
+        <ViewSwitch
+          on={view3d}
+          onFlip={(next) => {
+            setView3d(next);
+            saveMapView(next ? "3d" : "2d");
+            // AND GO. Dan, 1 Sep: "make sure the switch literally takes you the
+            // map it promises to." It used to set a preference and stop, which
+            // was defensible while it sat against the map card — the card was
+            // the door and the switch chose which door. It is now across the
+            // page from that card, under the counter, so a control naming a
+            // view and doing nothing visible is a dead end. Flipping it opens
+            // the map it names, in the view it names.
+            router.push(mapHref(next ? "3d" : "2d"));
+          }}
+        />
+
         {/* FOUR pillows since Dan's Next-stop key (1 Sep). The FILL is the
             dopamine role; the depth is the affordance. Rewind sinks to a flat
             well when nothing is due.
@@ -284,7 +367,7 @@ export default function HomeDashboard() {
             AND the well on one line at any size a finger can hit, so the row
             is allowed to WRAP there — the well takes the first line and the
             keys the second, rather than one of them disappearing. */}
-        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+        <div className="flex shrink-0 items-center gap-1 sm:gap-2">
           {activeSio && (
             <Link
               href={`/unit/${activeSio.unit}#${activeSio.id}`}
@@ -371,13 +454,6 @@ export default function HomeDashboard() {
         </div>
       </div>
 
-      {/* « Next: … » MOVED — it now rides the switch's row, on the right (Dan,
-          1 Sep). It was a line of its own between the keys and the map, and a
-          full-width line for four words is a whole row of paper spent on a
-          caption. Beside the switch it costs nothing: that row was one 58px
-          control and empty space to its right. See the view-switch block
-          below. */}
-
       {qgOpen && activeSio?.collectionId && (
         <StopSheet
           stopId={activeSio.id}
@@ -403,91 +479,6 @@ export default function HomeDashboard() {
           a STRETCHED sibling link over the top — an <a> may not contain an
           <a>. `inert` keeps the frozen map's controls out of the tab order
           and the a11y tree. */}
-      {/* THE VIEW SWITCH — a physical toggle, not two buttons (Dan, 1 Sep,
-          with a picture: a label, then a chunky track with a coloured knob).
-          It replaces the pair of cyan/magenta blocks that answered his earlier
-          "more prominent 2-D and 3-D view buttons": prominent was the right
-          fix for invisible, but TWO buttons said there were two doors to the
-          map when there is one door and two ways of drawing what is behind it.
-          A switch says that: one destination, one property of it.
-
-          WHAT IT DOES, and why it does not navigate on flip. The map card
-          below is already the door — the whole card, a stretched link. So the
-          switch only chooses WHICH view that door opens, which is why it is a
-          `role="switch"` and not a link: flipping it must not take a learner
-          somewhere, or the control they were setting is gone before they see
-          it take effect.
-
-          The snapshot stays the 2D drawing either way. Rendering HomeMap3D in
-          the postcard was the other option and is refused: the card is inert
-          by construction — pointer-events off, `inert`, a finger going down
-          the page glides over it — and a live 3D scene in there is a surface
-          that catches. The consequence is instead made visible in the caption
-          below, which reads "The Map · 3D" when the switch is on. */}
-      <div className="mt-2 flex items-center gap-2">
-        <span id="view-switch-label" className="fluo-mono shrink-0 whitespace-nowrap text-[13px] font-black text-[color:var(--cahier-ink)]">
-          3D view
-        </span>
-        <button
-          type="button"
-          role="switch"
-          aria-checked={view3d}
-          aria-labelledby="view-switch-label"
-          onClick={() => setView3d((v) => !v)}
-          className="neo-well relative h-[30px] w-[58px] shrink-0 rounded-full p-[3px] transition"
-        >
-          {/* The knob is a rounded SQUARE, as Dan drew it — the same corner
-              radius family as the three keys above, so the row of controls
-              reads as one set of physical parts rather than a switch borrowed
-              from somewhere else. */}
-          <span
-            aria-hidden
-            className="neo-key block h-[24px] w-[24px] rounded-[8px] transition-transform duration-200 ease-out"
-            style={{
-              transform: view3d ? "translateX(28px)" : "translateX(0)",
-              background: view3d
-                ? "linear-gradient(155deg, color-mix(in oklab, var(--dopa-reward) 55%, white) 0%, var(--dopa-reward) 52%, color-mix(in oklab, var(--dopa-reward) 70%, black) 100%)"
-                : "linear-gradient(155deg, #fff 0%, var(--cahier-paper-raised) 60%, color-mix(in oklab, var(--cahier-ink) 12%, white) 100%)",
-            }}
-          />
-        </button>
-        {/* WHERE CONTINUE GOES, in words — the one piece of prose the draft
-            keeps, because a coloured triangle cannot name a destination. Two
-            lines as Dan wrote it ("Next: <br> [title]").
-
-            `short`, NOT `topic`, and that is the whole reason this row works.
-            Topics run to 55 characters ("en / au / aux / à — prepositions for
-            cities & countries"); beside a 58px switch and its label there are
-            ~165px left on a 320px phone, so a topic can only ever arrive
-            truncated — and the first build of this row showed "Introducti…",
-            which is one of the SHORTEST. `short` is the curriculum's own
-            compact name, capped at 14 characters by check:short and asserted
-            by verify25b, and it is what every stop on the map is labelled
-            with. So the learner reads the same words here and there, at every
-            width, uncut. The full topic stays as the title attribute. */}
-        {activeSio && (
-          <p
-            title={activeSio.topic}
-            /* flex-1 + min-w-0 + truncate, and every one of the three is load
-               bearing. Without flex-1 the block sizes to its content and simply
-               overflows the page — measured at 320px, the topic ran 11.7px past
-               the right edge while `scrollWidth === clientWidth` reported it
-               unclipped, because nowrap without overflow:hidden grows the box
-               rather than cutting the text. (Second time today I have measured
-               overflow that way and been told a lie by it.) With all three, the
-               row can never overflow at any width, and `short` being ≤14
-               characters means the ellipsis is a safety net rather than the
-               normal case. */
-            className="ml-auto min-w-0 flex-1 truncate text-right text-[12.5px] leading-tight text-[color:var(--cahier-ink-soft)]"
-          >
-            Next:
-            <br />
-            <strong className="font-semibold text-[color:var(--cahier-ink)]">
-              {activeSio.short}
-            </strong>
-          </p>
-        )}
-      </div>
       <div
         className="relative mt-2 overflow-hidden rounded-2xl border-2 transition hover:-translate-y-0.5"
         style={{ borderColor: "var(--cahier-ink)", background: "var(--cahier-paper-raised)", boxShadow: "var(--shadow-card)" }}
@@ -518,11 +509,88 @@ export default function HomeDashboard() {
           <span aria-hidden className="fluo-mono text-xl font-black text-[color:var(--fluo-ink)]">›</span>
         </span>
         <Link
-          href={`/map?view=${view3d ? "3d" : "2d"}`}
+          href={mapHref(view3d ? "3d" : "2d")}
           aria-label={`The Map — open the course map in ${view3d ? "3D" : "2D"}`}
           className="absolute inset-0 z-10"
         />
       </div>
     </>
+  );
+}
+
+/**
+ * THE MAP VIEW SWITCH — one control, two states, and the state is written on it.
+ *
+ * Dan's picture (1 Sep): a chunky pill, the knob at one end and the label
+ * « 2D » / « 3D » sitting in the empty half at the other, each in its own
+ * colour. "Can we transfer the labels of the 3D switch into the switch
+ * itself." The external « 3D view » caption it replaces was doing two jobs
+ * badly: it named the property but not the state (a knob to its right, off,
+ * beside the words "3D view" — is that 3D or not?), and it cost the row 60px
+ * of prose to say what two characters inside the track now say exactly.
+ * Dan's litmus test disposes of it: with the label inside, the caption's
+ * removal costs a learner nothing.
+ *
+ * IT NAVIGATES, and that is deliberate (Dan, same day: "make sure the switch
+ * literally takes you the map it promises to"). It named a view of a map and
+ * did nothing a learner could see — defensible while it sat against the map
+ * card, which was the door; not defensible now that it sits under the
+ * counter, a page away from that card. So flipping it saves the choice and
+ * opens the map in the view it now shows. `role="switch"` stays because the
+ * flip is real and persists; the accessible name says the navigation out loud
+ * rather than letting it be a surprise.
+ *
+ * THE LABEL CANNOT SIT UNDER THE KNOB. Track 72, padding 4, knob 28, so the
+ * travel is 36 and the free half is 36 wide. The label is pinned 10 from the
+ * end the knob is NOT at, which puts a ~24px word between 38 and 62 (off) or
+ * 10 and 34 (on) — clear of the knob's 4–32 and 40–68 by 6px either way.
+ *
+ * AND 72 IS NOT A ROUND NUMBER, it is the width that keeps Dan's two rows two
+ * rows. The keys beside it are 4 × 44 with 4px gaps = 188, and a 360px phone
+ * leaves 272 for the pair: 72 + 8 + 188 = 268 fits with 4 to spare, where the
+ * first build's 80 and 6px gaps came to 282 and wrapped the keys onto a third
+ * line. 320 still wraps, deliberately — four keys and a switch cannot share a
+ * line there at any size a finger can hit, and the switch taking the first
+ * line is exactly where Dan put it ("to the left under the 4/30").
+ */
+function ViewSwitch({ on, onFlip }: { on: boolean; onFlip: (next: boolean) => void }) {
+  const name = on ? "3D" : "2D";
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={on}
+      aria-label={`Map view: ${name}. Switching opens the map in the other view.`}
+      title={`The map in ${name} — tap to switch to ${on ? "2D" : "3D"} and open it`}
+      onClick={() => onFlip(!on)}
+      className="neo-well relative flex h-[38px] w-[72px] shrink-0 items-center rounded-full p-[4px] transition"
+    >
+      {/* The colours are Dan's: 2D blue, 3D red — and the knob wears the same
+          hue as the word, so the pill reads as one object in one state rather
+          than a coloured word next to a neutral part. */}
+      <span
+        aria-hidden
+        className="fluo-mono absolute top-1/2 -translate-y-1/2 text-[16px] font-black leading-none tracking-tight"
+        style={{
+          [on ? "left" : "right"]: "10px",
+          color: on ? "var(--dopa-reward-ink)" : "var(--dopa-focus-ink)",
+        }}
+      >
+        {name}
+      </span>
+      {/* The knob is a rounded SQUARE, as Dan drew it — the same corner radius
+          family as the four keys beside it, so the row reads as one set of
+          physical parts rather than a switch borrowed from somewhere else. */}
+      <span
+        aria-hidden
+        className="neo-key block h-[28px] w-[28px] rounded-[9px] transition-transform duration-200 ease-out"
+        style={{
+          transform: on ? "translateX(36px)" : "translateX(0)",
+          background: on
+            ? "linear-gradient(155deg, color-mix(in oklab, var(--dopa-reward) 55%, white) 0%, var(--dopa-reward) 52%, color-mix(in oklab, var(--dopa-reward) 70%, black) 100%)"
+            : "linear-gradient(155deg, color-mix(in oklab, var(--dopa-focus) 55%, white) 0%, var(--dopa-focus) 52%, color-mix(in oklab, var(--dopa-focus) 70%, black) 100%)",
+        }}
+      />
+    </button>
   );
 }

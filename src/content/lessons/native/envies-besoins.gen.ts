@@ -76,7 +76,10 @@ const FRAME_WORDS = FRAMES.map((f) => f.fr);
 export const ENVIES_AXES: DiceAxis[] = [
   {
     key: "frame",
-    label: "Formule",
+    // "Formule" told Dan nothing on the screen (2 Sep: the selector "is very
+    // unclear in both cases" — this draft's label and the other's "Envie"
+    // alike). The label now names the thing the dropdown actually swaps.
+    label: "Opener",
     options: FRAMES.map((f) => ({ value: f.fr, label: f.de ? `${f.fr} de…` : `${f.fr}…` })),
   },
 ];

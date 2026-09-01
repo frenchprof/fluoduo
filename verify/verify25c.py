@@ -157,7 +157,13 @@ check("export const KIND_COLOR" not in m3, "KIND_COLOR defined once (HomeMap.tsx
 check("var(--cahier-gold)" in m3, "the current stop's ring is --cahier-gold", "gold ring not from the token")
 
 # 7 · toggle intact
-check("<HomeMap3D " in carte and "<HomeMap " in carte and '"fluo.homeMapView"' in carte and "aria-pressed" in carte,
+# The key moved to lib/mapView.ts on 1 Sep (see verify25b's note and verify80):
+# Home's switch reads the same value now, and one setting spelt in three files
+# is one setting until it isn't. The claim here — the map still renders both
+# views, drives them from a pressed control, and remembers the choice — is
+# unchanged; only where "remembers" is implemented moved, so the check asks
+# MapBody for the CALL rather than for the string.
+check("<HomeMap3D " in carte and "<HomeMap " in carte and "saveMapView(" in carte and "aria-pressed" in carte,
       "The Map's 2D ⇄ 3D toggle is intact", "the 2D/3D toggle in MapBody broke")
 
 # 8 · no classmates / emails

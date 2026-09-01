@@ -398,28 +398,31 @@ lane = report it in STATUS, don't do it.
   cosmetically. This lane has NOT resolved it and aborted the merge rather than
   pick a winner.
 
-  **THE STOCKTAKE, re-issued 1 Sep evening — 46 concepts written, 6 drafted.**
+  **THE STOCKTAKE, re-issued 2 Sep — ALL THREE TIERS COMPLETE, 50 of 50.**
 
-  | tier | stops | concepts | what is missing |
-  |---|---|---|---|
-  | 1 · Systemic Grammar | 20 | **20** ✅ | — |
-  | 2 · Lexical Core | 15 | **15** ✅ | — |
-  | 3 · phrase stops | 9 | **7** | SIO-025, SIO-039 |
-  | 3 · ateliers | 6 | **1** | SIO-020 / 030 / 040 / 049 / 050 |
+  | tier | stops | concepts |
+  |---|---|---|
+  | 1 · Systemic Grammar | 20 | **20** |
+  | 2 · Lexical Core | 15 | **15** |
+  | 3 · phrase stops | 9 | **9** |
+  | 3 · ateliers | 6 | **6** |
 
-  **ALL NINE LESSON FILES NOW EXIST**, which changes what this lane is waiting
-  for. SIO-038, SIO-039 and SIO-010 are written; the remaining six —
-  SIO-025 and the five ateliers — are on Peers' branch with `concept` left
-  empty, and **all six arguments are drafted and rendered** in
-  `docs/ATELIER_CONCEPTS_DRAFT.md`. They are paste-ready: typechecked against
-  `LessonConcept`, and each grafted onto a real page and driven in a browser, so
-  the jams that only rendering can see are already out. Nothing here waits on an
-  argument any more — only on Peers' branch landing.
+  Closed by the six that fluoduo-main unblocked in #136 — SIO-025 and the five
+  remaining ateliers. Every one had been drafted on 1 Sep in
+  `docs/ATELIER_CONCEPTS_DRAFT.md` against the stop's own dialogue, before the
+  file existed, so landing them was a paste: **the six went in unchanged**, and
+  the drafting-ahead was worth roughly a day.
 
-  Each one will also need its stop's verify check inverted from "`concept` is
-  absent" to "`concept` is present, with its required slots". `verify74`,
-  `verify75` and `verify76` carry that hunk already, worded identically so the
-  three read as one decision rather than three.
+  Five verify checks now assert `concept` PRESENT where they asserted it absent
+  — verify74, 75, 76, 77, 83, worded identically so they read as one decision.
+  Every one break-tested.
+
+  **What this lane still owes: nothing on the pipeline.** Open with Dan:
+  the Sum-up pane (three questions, shown 1 Sep), and whether the
+  `wants-needs` naming should have carried SIO-039 — resolved by default in
+  #136 in favour of `envies-besoins`, which is the file this lane's concept
+  sits on.
+
 - **Pre-tests — the pre-test surface, then capacity.** ~~Unit-0 pre-test pages
   (in flight, the last uncovered pre-test surface).~~ **DONE — #98.** All ten
   now render at `/pretests/unit0/SIO-00N`; every stop in the course has a
