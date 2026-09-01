@@ -25,12 +25,13 @@ import { SIOS, UNIT_META } from "@/content/sios";
 import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
 import { equippedAccent } from "@/lib/economy";
-
-const MAP_VIEW_KEY = "fluo.homeMapView";
+// The key and its read/write live in lib/mapView.ts, shared with Home's
+// switch — three surfaces set this view and they must not spell it three ways.
+import { loadMapView, saveMapView, type MapView } from "@/lib/mapView";
 
 export default function MapBody() {
   const [progress, setProgress] = useState<Progress>(defaultProgress());
-  const [mapView, setMapView] = useState<"2d" | "3d">("2d");
+  const [mapView, setMapView] = useState<MapView>("2d");
   const [openUnit, setOpenUnit] = useState<number | null>(null);
   const [openSioId, setOpenSioId] = useState<string | null>(null);
   const mapRef = useRef<HTMLDivElement | null>(null);
@@ -51,11 +52,7 @@ export default function MapBody() {
     const refresh = () => setProgress(loadProgress());
     refresh();
     window.addEventListener("fluolingo:progress-updated", refresh);
-    try {
-      if (window.localStorage.getItem(MAP_VIEW_KEY) === "3d") setMapView("3d");
-    } catch {
-      // storage blocked → 2D
-    }
+    setMapView(loadMapView());
     // Deep link: ?unit=N and/or #SIO-0XX (the grammar Home used), and since
     // 1 Sep ?view=2d|3d — Home's prominent 2D/3D buttons (Dan's mock) are
     // only honest if each opens the map IN that view. The URL wins over the
@@ -64,7 +61,7 @@ export default function MapBody() {
       const view = new URLSearchParams(window.location.search).get("view");
       if (view === "2d" || view === "3d") {
         setMapView(view);
-        try { window.localStorage.setItem(MAP_VIEW_KEY, view); } catch { /* storage blocked */ }
+        saveMapView(view);
       }
       const q = new URLSearchParams(window.location.search).get("unit");
       const hash = window.location.hash.replace("#", "");
@@ -140,11 +137,7 @@ export default function MapBody() {
                 aria-pressed={mapView === v}
                 onClick={() => {
                   setMapView(v);
-                  try {
-                    window.localStorage.setItem(MAP_VIEW_KEY, v);
-                  } catch {
-                    // fine — the choice just does not persist
-                  }
+                  saveMapView(v);
                 }}
                 className="px-5 py-2 leading-none"
                 style={{
