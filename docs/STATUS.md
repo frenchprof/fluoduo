@@ -495,6 +495,34 @@ Dan assigns. Listed so the queue is not re-derived by whoever picks it up.
 | 8 | `rule:` namespace (894-item tagging): parked by design until the concepts finish | transfer evidence |
 | 9 | **Deploys through fluoduo-main** (ruled) — needs the fine-grained PAT (write to dckg/fluo) as an Actions secret | ends manual deploys |
 
+## 31 Aug — nine stops have no lesson file: handover to Peers
+
+Full brief in **`docs/HANDOVER_LESSON_FILES.md`**. The short of it:
+
+A concept lives in `native/<slug>.tsx`, and nine stops have no such file, so
+there is nowhere to put one. **Tier 1 and Tier 2 are otherwise finished; Tier 3
+is 7 of 15 and all eight remaining stops are in this list.**
+
+**Two different jobs, not one.** Three stops (25 `parce-que` 6 items, 38
+`transport` 12, 39 `envies-besoins` 10) have ordinary decks — that is Peers'
+own #105 job again, and `colors.tsx` is the model. The six ateliers (10, 20, 30,
+40, 49, 50) have decks with **zero items**: their content is a model dialogue in
+`ATELIER_DIALOGUES` (`src/content/ateliers.ts`), so the Mémo must be built from
+dialogue lines. That half has no precedent — SIO-010's ten lines are the one to
+prototype on.
+
+**SIO-038 is out of proportion to its size**: the only Tier 1 stop without a
+file, so it alone stands between Tier 1 and complete.
+
+Handed over with the three registration joints (verify68 asserts all three — a
+file that exists unwired looks finished in a diff), the no-invented-French rule
+and its best precedent (colors.tsx refusing to teach agreement because every
+mnemonic is masculine), the `{" "}` trap, and both browser scans including the
+`scrollHeight > clientHeight` fault that makes a fitting panel unmeasurable.
+
+Peers writes the file — slug, Mémo, dice, bonus. **The `concept` slot stays
+empty; that is this lane's.**
+
 ## 31 Aug — Tier 1 batch 4, the last: verb + infinitive
 
 Four concepts across stops 37, 47 and 48, and they are one argument: **only the
