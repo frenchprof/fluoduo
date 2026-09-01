@@ -527,21 +527,31 @@ Peers carries three assignments while Pre-tests sat idle after Lot A. The
 split is BY STOP, disjoint files, written here BEFORE either session opens
 one (the 31 Aug #97-collision lesson):
 
-- **PRE-TESTS takes the three deck-backed files** — SIO-025 `parce-que`
-  (6 items), **SIO-038 `transport`** (12), SIO-039 `envies-besoins` (10).
-  The model is `colors.tsx`; the full brief, the registration joints, the
-  no-invented-French rule and the `{" "}` trap are all in
-  `docs/HANDOVER_LESSON_FILES.md` — read it before writing a line. SIO-038
-  first: it alone stands between Tier 1 and complete. The `concept` slot
-  stays EMPTY in all three — Color review drafts concepts on top.
+- **AMENDED after #120 (same day, 16:20Z): SIO-038 is DONE — Peers built it
+  in #120 before this split reached main.** Nobody rebuilds it. Tier 1's
+  last gap is filled the moment Color review drafts 038's concept.
+- **PRE-TESTS takes the remaining TWO deck-backed files** — SIO-025
+  `parce-que` (6 items) and SIO-039 `envies-besoins` (10). The model is
+  `colors.tsx` — or Peers' fresh `transport` from #120, which is newer; the
+  full brief, the registration joints, the no-invented-French rule and the
+  `{" "}` trap are all in `docs/HANDOVER_LESSON_FILES.md` — read it before
+  writing a line. The `concept` slot stays EMPTY in both — Color review
+  drafts concepts on top.
 - **PRE-TESTS also takes the cycling redo** (decision 4's ruling): the
   fluency-cycling animation rebuilt in FluOLinGo Hand — the two 30 Aug
   branches are superseded reference, not a base. Same skills as the
-  Kallang wave. Second priority, after the three files.
+  Kallang wave. Second priority, after the two files.
 - **PEERS keeps the six atelier files** (10 · 20 · 30 · 40 · 49 · 50 — the
-  novel dialogue-built half; prototype on SIO-010) plus the DrillShell
-  chrome fold and the Practice hub. **Do NOT build 025/038/039** — they are
-  Pre-tests' now.
+  dialogue-built half; prototype on SIO-010) plus the Practice hub (the
+  DrillShell chrome fold landed in #120). **Do NOT build 025/039** — they
+  are Pre-tests' now. **The handover's "no precedent" line is out of
+  date** (Pre-tests' catch): #111 already generates the atelier Mémo —
+  « Le modèle » — from `ATELIER_DIALOGUES` in `memos.tsx`. Start from
+  that, not from zero.
+- **Roster corrections** (Pre-tests flagged the staleness): their lane row's
+  "next: Tier-1 concept batches" is dead — #119 completed Tier 1; #104 and
+  #107 are MERGED, not open. Their live queue is exactly the two items
+  above. Where an older section below contradicts this one, this one wins.
 
 ## 31 Aug — nine stops have no lesson file: handover to Peers (SPLIT 1 Sep — see above)
 
