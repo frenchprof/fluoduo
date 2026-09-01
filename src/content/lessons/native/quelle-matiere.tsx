@@ -28,7 +28,7 @@ export const quelleMatiereLesson: NativeLesson = {
       <>
         English names a subject bare — <i>I study French</i>, <i>I study maths</i>. French
         keeps the article every time: <i lang="fr">j&rsquo;étudie le français</i>,{" "}
-        <i lang="fr">j&rsquo;étudie les mathématiques</i>. The article never drops.
+        <i lang="fr">j&rsquo;étudie les mathématiques</i>.
       </>
     ),
     question: (
@@ -41,8 +41,6 @@ export const quelleMatiereLesson: NativeLesson = {
       <>
         Because a school subject is a <b>whole field</b>, and French marks a whole
         category with <i lang="fr">le</i> / <i lang="fr">la</i> / <i lang="fr">les</i>.
-        English simply does not mark it, which is why the article feels like it is
-        missing rather than added.
       </>
     ),
     pitfall: [

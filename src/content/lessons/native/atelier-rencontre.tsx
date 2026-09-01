@@ -87,8 +87,7 @@ export const atelierRencontreLesson: NativeLesson = {
       <>
         English changes almost nothing between meeting a classmate and meeting a
         client &mdash; <i>Hi</i> becomes <i>Good morning</i> and the rest of the
-        exchange runs the same. In French the choice reaches every turn of it: the
-        greeting, the question, the reply, and the goodbye all move together.
+        exchange runs the same. In French the choice reaches every turn of it.
       </>
     ),
     question: (
@@ -103,8 +102,8 @@ export const atelierRencontreLesson: NativeLesson = {
         <i lang="fr">Bonjour, madame.</i>, <i lang="fr">Comment tu t&rsquo;appelles ?</i>{" "}
         becomes <i lang="fr">Comment vous vous appelez ?</i>,{" "}
         <i lang="fr">Enchanté !</i> becomes <i lang="fr">Enchanté, madame.</i>, and{" "}
-        <i lang="fr">Au revoir !</i> becomes <i lang="fr">Au revoir, madame.</i> You do
-        not translate your way across turn by turn &mdash; you pick the script at the
+        <i lang="fr">Au revoir !</i> becomes <i lang="fr">Au revoir, madame.</i>{" "}
+        You do not translate your way across turn by turn &mdash; you pick the script at the
         door and run it. <b>One line does not move:</b>{" "}
         <i lang="fr">Comment ça s&rsquo;écrit ?</i> is the same to a student, a client
         and a group, because it asks about the letters rather than the person.

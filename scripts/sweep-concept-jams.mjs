@@ -33,7 +33,13 @@ const slugs = readdirSync(DIR).filter(f=>f.endsWith('.tsx')&&f!=='index.tsx')
   .map(f=>f.replace('.tsx',''));
 console.log('concepts to sweep:', slugs.length);
 // A jam: an em/en dash with NO space on one side, either side.
-const RX = /(\S—|—\S)/g;
+// TWO SHAPES OF THE SAME FAULT, and the second was found only after the first
+// was already shipping. A closing tag can lose its following space anywhere,
+// not just before an em dash: `</b> One line sorts` rendered as "vehicle.One".
+// So match a dash touching a word on either side, AND punctuation running
+// straight into a capital. The second pattern deliberately requires the
+// punctuation — bare lowercase-then-capital would flag FluOLinGo on every page.
+const RX = /(\S—|—\S|[.,;!?][A-ZÀ-ÝÉÈÊ])/g;
 const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
 const bad = [], errs = [];
 for (const slug of slugs) {
