@@ -23,10 +23,19 @@ What this asserts:
   3  Only lengths that would actually shorten the run are offered — "25" on
      a deck of twenty is the same run as "all" wearing another label.
   4  cap() slices, and `null` means everything.
-  5  iComplete asks BEFORE the first question and renders the chooser inside
-     DrillShell — an early bare return dropped the notebook frame, the exit
-     and the bottom bar, which is how it was first written and caught in a
-     browser.
+  5  The witness drill asks BEFORE the first question and renders the chooser
+     inside DrillShell — an early bare return dropped the notebook frame, the
+     exit and the bottom bar, which is how it was first written and caught in
+     a browser.
+
+     THE WITNESS MOVED, 2026-08-31: it was iComplete, whose route Dan cut
+     ("iComplete is to be deleted") once the Memo ladder's Moyen and Difficile
+     had taken over one- and two-piece completion. GramMarathon carries the
+     identical contract — `asked`, `cap(order, chosen)`, `total` off the capped
+     run, chooser inside the shell — so nothing here is weakened: the same six
+     claims are made about a drill that still exists. The 136-question run this
+     file was written against was iComplete on `possessives`; the number stays
+     in the prose because it is why the rule exists, not because that run does.
   6  The run, not the full deck, drives the drill: `total` comes from the
      capped queue, so the progress denominator and the done card follow.
 
@@ -42,7 +51,7 @@ if not os.path.isfile("package.json"):
     print("run from the repo root"); sys.exit(2)
 
 LIB = "src/lib/sessionLength.ts"
-DRILL = "src/app/practice/complete-it/[collectionId]/CompleteItContent.tsx"
+DRILL = "src/app/practice/grammarathon/[collectionId]/GramMarathonContent.tsx"
 lib, drill = read(LIB), read(DRILL)
 
 # 1 · one source of truth
@@ -51,8 +60,8 @@ check("SESSION_LENGTHS" in lib and "export function cap" in lib and "export func
       "the helper exports SESSION_LENGTHS / offer() / cap()",
       "the helper is missing one of SESSION_LENGTHS / offer() / cap()")
 check("sessionLength" in drill,
-      "iComplete imports the shared helper",
-      "iComplete does not import sessionLength — lengths would be declared twice")
+      "the witness drill imports the shared helper",
+      "the witness drill does not import sessionLength — lengths would be declared twice")
 
 # 2-4 · behaviour, executed rather than read
 try:
@@ -88,8 +97,8 @@ except Exception as e:
 
 # 5 · asked before the run, inside the shell
 check("if (!asked)" in drill,
-      "iComplete asks before the first question",
-      "iComplete never gates on `asked` — the chooser would not appear")
+      "the witness drill asks before the first question",
+      "the witness drill never gates on `asked` — the chooser would not appear")
 gate = drill[drill.find("if (!asked)"):drill.find("if (!asked)") + 1200] if "if (!asked)" in drill else ""
 check("<DrillShell" in gate,
       "the chooser renders inside DrillShell (frame, exit and bars intact)",

@@ -4,11 +4,18 @@
  * one device per learner (no accounts/server yet — that's a further increment).
  *
  * Scope, deliberately kept simple for this first pass:
- *   - doneSios: a SIO is "done" when the learner self-marks it via the
- *     MarkDoneButton on its Post-lesson Practice section (see /sio/[id]). There
- *     is no game-completion telemetry wired up yet (Flip It / Match It / Letris
- *     don't report back), so self-marking is the only honest signal available —
- *     same pattern Flip It already uses for its Reviewed/To-Review toggle.
+ *   - doneSios: a SIO is "done" when every activity the stop OFFERS has been
+ *     attempted — derived, not declared (Dan, 2026-08-31: "it should only be
+ *     marked done if it is really FULLY done, so we should remove it"). The
+ *     rule and its reasoning live in lib/doneness.ts; it fires from
+ *     activityLedger's noteAttempt, the one write path a graded answer already
+ *     takes, and still goes through markSioDone below so XP, gems, the streak
+ *     and the badges are unchanged.
+ *     Until then this was SELF-MARKED via a MarkDoneButton, because no game
+ *     reported completion back to any shared store. The activity ledger (added
+ *     later) is that telemetry, which is what made the button removable.
+ *     GRANDFATHERED: entries written by the old button stand, and the derived
+ *     rule only ever adds — nothing can un-tick.
  *   - NOTHING IS LOCKED (Dan's explicit call, 2026-07-01: "we must not lock any
  *     of the future modules"). An earlier pass of this store had an
  *     `isSioLocked` sequential-unlock rule — it was removed. "Done" still
@@ -397,6 +404,15 @@ export function equipCosmetic(id: string | null): Progress {
   return saveProgress({ ...p, cosmetics: { ...p.cosmetics, equipped: { ...p.cosmetics.equipped, [c.slot]: id } } });
 }
 
+/**
+ * Un-tick a stop. NOTHING CALLS THIS since the Mark-as-done button was deleted
+ * on 2026-08-31 and done-ness became derived — kept because the reset path and
+ * a future teacher correction are the obvious callers, and because deleting it
+ * would take the only way back from a wrong tick with it.
+ *
+ * It is NOT part of the derived rule: that rule only ever adds (grandfathering
+ * is exactly this — nothing un-ticks on its own).
+ */
 export function unmarkSioDone(id: string): Progress {
   const p = loadProgress();
   return saveProgress({ ...p, doneSios: p.doneSios.filter((x) => x !== id) });
