@@ -144,12 +144,6 @@ export default function HomeDashboard() {
   // forward key that goes nowhere is worse than no forward key.
   const afterSio = activeSio ? SIOS[SIOS.indexOf(activeSio) + 1] : undefined;
   const doneTotal = SIOS.filter((s) => isSioDone(s.id, progress)).length;
-  // Done-in-order run from the very start — the streak-momentum counter.
-  let seqRun = 0;
-  for (const s of SIOS) {
-    if (isSioDone(s.id, progress)) seqRun++;
-    else break;
-  }
 
   // The accent colour the learner has equipped (drives the hero CTA). The fire
   // multiplier left with the streak tile — it is read where the streak now is,
@@ -250,7 +244,7 @@ export default function HomeDashboard() {
           No card. The readings are pressed IN (read-only by construction —
           no hover, nothing to press), the actions stand OUT. That contrast
           is the whole instruction set. */}
-      <div className="mb-3 flex items-center justify-between gap-2 sm:gap-3">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-x-2 gap-y-2 sm:gap-x-3">
         <dl className="flex min-w-0 items-stretch gap-2">
           {/* WHERE YOU ARE. One figure, and five dots for the five units —
               the draft's replacement for the ruler it deleted. */}
@@ -275,15 +269,28 @@ export default function HomeDashboard() {
               components/SiteTopBar.tsx; verify25 follows it there. */}
         </dl>
 
-        {/* Three pillows. The FILL is the dopamine role; the depth is the
-            affordance. Rewind sinks to a flat well when nothing is due. */}
-        <div className="flex shrink-0 items-center gap-2">
+        {/* FOUR pillows since Dan's Next-stop key (1 Sep). The FILL is the
+            dopamine role; the depth is the affordance. Rewind sinks to a flat
+            well when nothing is due.
+
+            THE FOURTH KEY COST THE ROW ITS FIT, and this is the repair.
+            Measured: the group is 4 keys + 3 gaps, and the row has 232px at
+            320px wide, 271 at 360 and 300 at 390. At 50px each the group was
+            224px, which left the `1/50` well 8px of a 64px box — it was drawn
+            UNDER the keys at both 320 and 360, and only 390 escaped by 0.3px.
+            Nobody would have caught that from a 390px screenshot.
+            44px below sm (still the 44px touch-target floor) with a 6px gap
+            makes the group 194px, which fits 360. 320 cannot hold four keys
+            AND the well on one line at any size a finger can hit, so the row
+            is allowed to WRAP there — the well takes the first line and the
+            keys the second, rather than one of them disappearing. */}
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           {activeSio && (
             <Link
               href={`/unit/${activeSio.unit}#${activeSio.id}`}
               aria-label={`Continue — ${activeSio.topic}, your stop on the study path`}
               title={`Continue — « ${activeSio.topic} », your stop on the study path`}
-              className={`neo-key grid h-[50px] w-[50px] place-items-center rounded-[15px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]${doneTotal === 0 ? " fluo-play-halo" : ""}`}
+              className={`neo-key grid h-[44px] w-[44px] place-items-center rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]${doneTotal === 0 ? " fluo-play-halo" : ""}`}
               style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-win) 55%, white) 0%, var(--dopa-win) 52%, color-mix(in oklab, var(--dopa-win) 70%, black) 100%)" }}
             >
               <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden>
@@ -306,7 +313,7 @@ export default function HomeDashboard() {
               href={`/unit/${afterSio.unit}#${afterSio.id}`}
               aria-label={`Next stop — ${afterSio.topic}`}
               title={`Next stop — « ${afterSio.topic} »`}
-              className="neo-key grid h-[50px] w-[50px] place-items-center rounded-[15px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
+              className="neo-key grid h-[44px] w-[44px] place-items-center rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
               style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-win) 34%, white) 0%, color-mix(in oklab, var(--dopa-win) 72%, white) 52%, color-mix(in oklab, var(--dopa-win) 55%, black) 100%)" }}
             >
               <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden>
@@ -320,7 +327,7 @@ export default function HomeDashboard() {
               href="/reviser"
               aria-label={`Rewind — ${dueCount} to repeat`}
               title="Rewind — repeat the words you missed"
-              className="neo-key relative grid h-[50px] w-[50px] place-items-center rounded-[15px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
+              className="neo-key relative grid h-[44px] w-[44px] place-items-center rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
               style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-focus) 55%, white) 0%, var(--dopa-focus) 52%, color-mix(in oklab, var(--dopa-focus) 70%, black) 100%)" }}
             >
               <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden>
@@ -336,7 +343,7 @@ export default function HomeDashboard() {
             <span
               aria-disabled="true"
               title="Rewind — nothing waiting to be repeated"
-              className="neo-key grid h-[50px] w-[50px] place-items-center rounded-[15px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
+              className="neo-key grid h-[44px] w-[44px] place-items-center rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
             >
               <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden style={{ opacity: 0.4 }}>
                 <path d="M12.5 6.5 L12.5 19.5 L3.5 13 Z" fill="var(--key-ink-focus)" stroke="var(--key-ink-focus)" strokeWidth="2.4" strokeLinejoin="round" />
@@ -350,7 +357,7 @@ export default function HomeDashboard() {
             disabled={!activeSio?.collectionId}
             aria-label="All activities at this stop"
             title="Every activity available at your stop"
-            className="neo-key grid h-[50px] w-[50px] place-items-center rounded-[15px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
+            className="neo-key grid h-[44px] w-[44px] place-items-center rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
             style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-reward) 55%, white) 0%, var(--dopa-reward) 52%, color-mix(in oklab, var(--dopa-reward) 70%, black) 100%)" }}
           >
             <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden>
@@ -364,13 +371,12 @@ export default function HomeDashboard() {
         </div>
       </div>
 
-      {/* Where Play goes, in words — the one line of prose the draft keeps,
-          because a coloured triangle cannot name a destination. */}
-      {activeSio && (
-        <p className="mb-3.5 text-[12.5px] text-[color:var(--cahier-ink-soft)]">
-          Next: <strong className="font-semibold text-[color:var(--cahier-ink)]">{activeSio.topic}</strong>
-        </p>
-      )}
+      {/* « Next: … » MOVED — it now rides the switch's row, on the right (Dan,
+          1 Sep). It was a line of its own between the keys and the map, and a
+          full-width line for four words is a whole row of paper spent on a
+          caption. Beside the switch it costs nothing: that row was one 58px
+          control and empty space to its right. See the view-switch block
+          below. */}
 
       {qgOpen && activeSio?.collectionId && (
         <StopSheet
@@ -381,11 +387,13 @@ export default function HomeDashboard() {
         />
       )}
 
-      {/* Streak momentum (Dan, 2026-07-08, episode model): counts done-in-order
-          from the start; a skip simply stops the run — never blocks. */}
-      {seqRun >= 2 && seqRun < SIOS.length && (
-        <p className="fluo-mono mb-2 text-xs font-black text-[color:var(--fluo-ink)]">🔗 {seqRun} in a row!</p>
-      )}
+      {/* THE « n IN A ROW » COUNTER IS GONE (Dan, 1 Sep: "we don't need that
+          actually, please remove it"). It counted stops completed in order from
+          SIO-001 and stopped at the first gap — his own 8 July episode-model
+          note. What retired it is the 🔥 day streak moving into the top bar
+          hours earlier: two numbers of things-in-a-row within a few centimetres
+          of each other, one counting DAYS and one counting STOPS, and nothing
+          on the screen saying which was which. */}
 
       {/* 🗺️ The Map as a POSTCARD (Dan, 2026-08-21): a read-only snapshot
           of the learner's stretch of the course — the course mark, drawn.
@@ -416,8 +424,8 @@ export default function HomeDashboard() {
           the page glides over it — and a live 3D scene in there is a surface
           that catches. The consequence is instead made visible in the caption
           below, which reads "The Map · 3D" when the switch is on. */}
-      <div className="mt-2 flex items-center gap-2.5">
-        <span id="view-switch-label" className="fluo-mono text-[13px] font-black text-[color:var(--cahier-ink)]">
+      <div className="mt-2 flex items-center gap-2">
+        <span id="view-switch-label" className="fluo-mono shrink-0 whitespace-nowrap text-[13px] font-black text-[color:var(--cahier-ink)]">
           3D view
         </span>
         <button
@@ -443,6 +451,42 @@ export default function HomeDashboard() {
             }}
           />
         </button>
+        {/* WHERE CONTINUE GOES, in words — the one piece of prose the draft
+            keeps, because a coloured triangle cannot name a destination. Two
+            lines as Dan wrote it ("Next: <br> [title]").
+
+            `short`, NOT `topic`, and that is the whole reason this row works.
+            Topics run to 55 characters ("en / au / aux / à — prepositions for
+            cities & countries"); beside a 58px switch and its label there are
+            ~165px left on a 320px phone, so a topic can only ever arrive
+            truncated — and the first build of this row showed "Introducti…",
+            which is one of the SHORTEST. `short` is the curriculum's own
+            compact name, capped at 14 characters by check:short and asserted
+            by verify25b, and it is what every stop on the map is labelled
+            with. So the learner reads the same words here and there, at every
+            width, uncut. The full topic stays as the title attribute. */}
+        {activeSio && (
+          <p
+            title={activeSio.topic}
+            /* flex-1 + min-w-0 + truncate, and every one of the three is load
+               bearing. Without flex-1 the block sizes to its content and simply
+               overflows the page — measured at 320px, the topic ran 11.7px past
+               the right edge while `scrollWidth === clientWidth` reported it
+               unclipped, because nowrap without overflow:hidden grows the box
+               rather than cutting the text. (Second time today I have measured
+               overflow that way and been told a lie by it.) With all three, the
+               row can never overflow at any width, and `short` being ≤14
+               characters means the ellipsis is a safety net rather than the
+               normal case. */
+            className="ml-auto min-w-0 flex-1 truncate text-right text-[12.5px] leading-tight text-[color:var(--cahier-ink-soft)]"
+          >
+            Next:
+            <br />
+            <strong className="font-semibold text-[color:var(--cahier-ink)]">
+              {activeSio.short}
+            </strong>
+          </p>
+        )}
       </div>
       <div
         className="relative mt-2 overflow-hidden rounded-2xl border-2 transition hover:-translate-y-0.5"

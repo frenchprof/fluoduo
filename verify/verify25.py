@@ -180,6 +180,24 @@ check("StopSheet" in home and "MenuSplash" not in home,
       "the third key opens THIS STOP's activities, not the stop-less Menu",
       "Home still opens a stop-less activity menu")
 
+# 3b · THE KEY ROW STILL FITS A PHONE (1 Sep). Dan's Next-stop key made it four
+# keys, and four 50px keys are 224px against a row that is 232px wide at 320
+# and 271 at 360 — which crushed the `1/50` well from 64px to 0.4px and drew it
+# UNDER the keys. Nothing looked wrong at 390, where it survived by 0.3px, so a
+# screenshot at the usual width would have shipped it.
+#
+# Two things repair it and both are pinned, because either alone leaves a width
+# broken: the keys shrink below sm (44px, the touch-target floor), and the row
+# may WRAP so that 320 gives the well its own line instead of losing it.
+keyrow = re.search(r'className="mb-3 flex[^"]*"', home)
+kr = keyrow.group(0) if keyrow else ""
+check("flex-wrap" in kr,
+      "the key row may wrap — at 320px the well takes a line of its own",
+      "the key row cannot wrap; at 320px four keys crush the 1/50 well to nothing and draw over it")
+check("h-[44px]" in home and "sm:h-[58px]" in home,
+      "the keys are 44px below sm (the touch-target floor) and 58 above",
+      "the keys no longer shrink below sm; four of them plus the well do not fit a 360px phone")
+
 # Dan, 2026-08-21 and again 22 Aug: no huge CONTINUER, no full-width CTA.
 # Still true, and still a CI failure rather than a matter of taste.
 check("fluo-btn-lg" not in home and 'className="fluo-btn' not in home,

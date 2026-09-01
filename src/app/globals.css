@@ -489,44 +489,47 @@ body {
   user-select: none;
   background: var(--fluo-primary);
   color: var(--fluo-primary-ink);
-  box-shadow: 0 4px 0 0 var(--fluo-primary-shadow);
+  /* DEEPENED 4px -> 7px (Dan, 1 Sep, "greater thickness … the z axis"). The
+     press now travels the WHOLE lip: it used to stop at 2 of 4, so a held
+     button still floated 2px above the paper and never quite landed. */
+  box-shadow: 0 7px 0 0 var(--fluo-primary-shadow);
   transition: transform 0.06s, box-shadow 0.06s, filter 0.15s;
 }
 .fluo-btn:hover { filter: brightness(1.04); }
 .fluo-btn:active {
-  transform: translateY(2px);
-  box-shadow: 0 2px 0 0 var(--fluo-primary-shadow);
+  transform: translateY(7px);
+  box-shadow: 0 0 0 0 var(--fluo-primary-shadow);
 }
 .fluo-btn:disabled {
   background: #d8c7a8;
   color: #9a8e76;
-  box-shadow: 0 4px 0 0 #b6a98a;
+  box-shadow: 0 7px 0 0 #b6a98a;
   cursor: not-allowed;
   filter: none;
 }
-.fluo-btn-secondary { background: var(--fluo-secondary); color: #fff; box-shadow: 0 4px 0 0 var(--fluo-secondary-shadow); }
-.fluo-btn-secondary:active { box-shadow: 0 2px 0 0 var(--fluo-secondary-shadow); }
-.fluo-btn-danger { background: var(--fluo-danger); color: #fff; box-shadow: 0 4px 0 0 var(--fluo-danger-shadow); }
-.fluo-btn-danger:active { box-shadow: 0 2px 0 0 var(--fluo-danger-shadow); }
+.fluo-btn-secondary { background: var(--fluo-secondary); color: #fff; box-shadow: 0 7px 0 0 var(--fluo-secondary-shadow); }
+.fluo-btn-secondary:active { box-shadow: 0 0 0 0 var(--fluo-secondary-shadow); }
+.fluo-btn-danger { background: var(--fluo-danger); color: #fff; box-shadow: 0 7px 0 0 var(--fluo-danger-shadow); }
+.fluo-btn-danger:active { box-shadow: 0 0 0 0 var(--fluo-danger-shadow); }
 /* Outline / paper button (Leaderboard, View & print). */
 .fluo-btn-ghost {
   background: var(--fluo-card);
   color: var(--fluo-ink);
   border-color: var(--fluo-ink);
-  box-shadow: 0 4px 0 0 rgba(34, 48, 90, 0.25);
+  box-shadow: 0 7px 0 0 rgba(34, 48, 90, 0.25);
 }
 .fluo-btn-ghost:hover { filter: brightness(0.99); }
-.fluo-btn-ghost:active { transform: translateY(2px); box-shadow: 0 2px 0 0 rgba(34, 48, 90, 0.25); }
+.fluo-btn-ghost:active { transform: translateY(7px); box-shadow: 0 0 0 0 rgba(34, 48, 90, 0.25); }
 .fluo-btn-sm { padding: 0.5rem 0.9rem; font-size: 0.85rem; border-radius: 10px; }
 .fluo-btn-lg { padding: 1.05rem 1.8rem; font-size: 1.1rem; border-radius: 18px; }
 
 /* Activity marker colours (for the practice picker). */
-.fluo-btn-flip     { background: #2bb6c2; color: #06303a; box-shadow: 0 4px 0 0 #1d8b96; }
-.fluo-btn-complete { background: #46c95f; color: #093d18; box-shadow: 0 4px 0 0 #2f9a43; }
-.fluo-btn-type     { background: #f4d935; color: #4a3a05; box-shadow: 0 4px 0 0 #cdb318; }
-.fluo-btn-say      { background: #f39a2e; color: #4a2c05; box-shadow: 0 4px 0 0 #cc7d18; }
-.fluo-btn-arrange  { background: #f25ca2; color: #4a0c2c; box-shadow: 0 4px 0 0 #cc3d80; }
-.fluo-btn-correct  { background: #a06ce4; color: #2a0c4a; box-shadow: 0 4px 0 0 #7d49c0; }
+.fluo-btn-flip     { background: #2bb6c2; color: #06303a; box-shadow: 0 7px 0 0 #1d8b96; }
+.fluo-btn-complete { background: #46c95f; color: #093d18; box-shadow: 0 7px 0 0 #2f9a43; }
+.fluo-btn-type     { background: #f4d935; color: #4a3a05; box-shadow: 0 7px 0 0 #cdb318; }
+.fluo-btn-say      { background: #f39a2e; color: #4a2c05; box-shadow: 0 7px 0 0 #cc7d18; }
+.fluo-btn-arrange  { background: #f25ca2; color: #4a0c2c; box-shadow: 0 7px 0 0 #cc3d80; }
+.fluo-btn-correct  { background: #a06ce4; color: #2a0c4a; box-shadow: 0 7px 0 0 #7d49c0; }
 
 /* Foolscap paper surface — ruled lines + red margin + punch holes. */
 .fluo-surface {
@@ -1028,23 +1031,33 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   user-select: none;
   background: var(--cahier-paper);
   color: var(--cahier-ink);
-  /* Solid bottom lip so a button reads as pressable, not a flat label
-     (Dan, 2026-07-05: buttons "not obvious that they are to be clicked on"). */
-  box-shadow: 0 2px 0 0 var(--cahier-ink);
+  /* THE LIP — a solid slab under the button, so it reads as pressable rather
+     than as a flat label (Dan, 2026-07-05: buttons "not obvious that they are
+     to be clicked on"). DEEPENED 2px -> 4px on 1 Sep: "can the buttons all
+     over the website (including the burger menu) be of a greater thickness …
+     no difference to the x and y axis, but the z axis should show the buttons
+     with more protrusion."
+     A shadow, so nothing about the button's box changes — the top bar's row
+     height, the icon strip's width budget and every measured layout hold. The
+     press below travels the full 4px, or the button would bottom out early and
+     leave a lip it never closes. Every variant carries its own lip colour and
+     each is deepened to match; a 2px left behind would read as a different
+     button rather than a different colour. */
+  box-shadow: 0 4px 0 0 var(--cahier-ink);
   transition: background 0.14s, color 0.14s, transform 0.06s, box-shadow 0.06s, filter 0.14s;
 }
 .cahier-btn:hover { background: #f1f1ea; filter: brightness(1.01); }
-.cahier-btn:active { transform: translateY(2px); box-shadow: 0 0 0 0 var(--cahier-ink); }
-.cahier-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: 0 2px 0 0 rgba(42, 46, 110, 0.3); }
-.cahier-btn-primary { background: var(--cahier-ink); color: #fff; border-color: var(--cahier-ink); box-shadow: 0 2px 0 0 #191c50; }
+.cahier-btn:active { transform: translateY(4px); box-shadow: 0 0 0 0 var(--cahier-ink); }
+.cahier-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: 0 4px 0 0 rgba(42, 46, 110, 0.3); }
+.cahier-btn-primary { background: var(--cahier-ink); color: #fff; border-color: var(--cahier-ink); box-shadow: 0 4px 0 0 #191c50; }
 .cahier-btn-primary:hover { background: #383d86; }
 .cahier-btn-primary:active { box-shadow: 0 0 0 0 #191c50; }
-.cahier-btn-accent { background: var(--cahier-hl); border-color: var(--cahier-hl-edge); color: var(--cahier-ink); box-shadow: 0 2px 0 0 var(--cahier-hl-edge); }
+.cahier-btn-accent { background: var(--cahier-hl); border-color: var(--cahier-hl-edge); color: var(--cahier-ink); box-shadow: 0 4px 0 0 var(--cahier-hl-edge); }
 .cahier-btn-accent:hover { filter: brightness(1.03); }
 .cahier-btn-accent:active { box-shadow: 0 0 0 0 var(--cahier-hl-edge); }
 /* Gold call-to-action variant — breaks the navy/paper monotony for the one
    "do this next" button on a screen (Générateur roll, Continue, etc.). */
-.cahier-btn-gold { background: var(--cahier-gold); border-color: #a9852f; color: #3a2b04; box-shadow: 0 2px 0 0 #a9852f; }
+.cahier-btn-gold { background: var(--cahier-gold); border-color: #a9852f; color: #3a2b04; box-shadow: 0 4px 0 0 #a9852f; }
 .cahier-btn-gold:hover { filter: brightness(1.04); }
 .cahier-btn-gold:active { box-shadow: 0 0 0 0 #a9852f; }
 /* Size modifier only — never re-set box-shadow here, or it would override the
@@ -1847,7 +1860,9 @@ h3.cahier-display { font-size: var(--fs-h3); }
 /* ══ SOFT 3D — the Home rebuild (Dan's draft, 2026-08-26) ══════════════════
    "all buttons must [be] neomorphic and all values must be depressed spaced
    indicators." Two surfaces, one light source (top-left), no borders anywhere
-   — the shadows do the work the borders used to:
+   — the shadows do the work the borders used to, the 1 Sep ring included: it
+   is an INSET SHADOW, so a well is outlined without a `border` and without
+   growing by 2px in a row that is measured to the pixel:
 
      .neo-well  a value pressed INTO the paper. Read-only by construction:
                 no hover, no shadow standing out, nothing to press.
@@ -1861,6 +1876,13 @@ h3.cahier-display { font-size: var(--fs-h3); }
 .neo-well {
   background: var(--cahier-paper-2);
   box-shadow:
+    /* THE RING (Dan, 1 Sep: "for those depressed items … put a thin black
+       outline on the shape of the depressed space"). A shadow layer, not a
+       `border` — a border would add 2px to both axes, and these wells sit in a
+       row measured to the pixel: four keys and a 64px well have 232px at 320.
+       An inset ring costs no layout, follows the border-radius for free, and
+       keeps the "no borders, the shadows do that work" rule literally true. */
+    inset 0 0 0 1px color-mix(in oklab, var(--cahier-ink) 62%, transparent),
     inset 5px 5px 9px color-mix(in oklab, var(--cahier-ink) 22%, transparent),
     inset -5px -5px 9px color-mix(in oklab, white 92%, transparent),
     0 1px 0 color-mix(in oklab, white 70%, transparent);
@@ -1868,25 +1890,39 @@ h3.cahier-display { font-size: var(--fs-h3); }
 }
 .neo-key {
   background: var(--cahier-paper-raised);
+  /* DEEPER, NOT BIGGER (Dan, 1 Sep: "no difference to the x and y axis, but
+     the z axis should show the buttons with more protrusion"). Every value
+     below is a shadow or an inset — none of them is width, height or padding —
+     so the row measurements hold and only the apparent height changes:
+     the cast shadow drops further and darker (7px/12px/20px at 32%), and the
+     bottom inset lip triples (-1px -3px -> -1px -6px) so the key has a visible
+     SIDE rather than just a shadow under it. */
   box-shadow:
-    -4px -4px 8px color-mix(in oklab, white 90%, transparent),
-    5px 7px 14px color-mix(in oklab, var(--cahier-ink) 24%, transparent),
-    inset 1px 2px 0 color-mix(in oklab, white 55%, transparent),
-    inset -1px -3px 0 color-mix(in oklab, black 14%, transparent);
+    -5px -5px 10px color-mix(in oklab, white 92%, transparent),
+    7px 12px 20px color-mix(in oklab, var(--cahier-ink) 32%, transparent),
+    inset 1px 3px 0 color-mix(in oklab, white 62%, transparent),
+    inset -1px -6px 0 color-mix(in oklab, black 16%, transparent);
   border: 0;
   transition: transform .1s ease, box-shadow .1s ease;
 }
-.neo-key:hover { transform: translateY(-2px); }
+.neo-key:hover { transform: translateY(-3px); }
 .neo-key:active {
-  transform: translateY(2px);
+  transform: translateY(4px);
   box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--cahier-ink) 62%, transparent),
     inset 4px 5px 9px color-mix(in oklab, black 28%, transparent),
     inset -3px -3px 7px color-mix(in oklab, white 35%, transparent);
 }
 .neo-key:focus-visible { outline: 3px solid var(--dopa-focus); outline-offset: 4px; }
+/* A key with nothing behind it is a WELL, not a faded button — Rewind when
+   no words are waiting. Dan named it in the same breath as the wells ("the
+   buttons that are greyed out because nothing lies underneath"), so it takes
+   the same ring: the outline is what says "this is a hole", and without it a
+   disabled key and a pale key are the same picture. */
 .neo-key[disabled], .neo-key[aria-disabled="true"] {
   background: var(--cahier-paper-2); cursor: default; transform: none;
   box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--cahier-ink) 62%, transparent),
     inset 4px 4px 8px color-mix(in oklab, var(--cahier-ink) 20%, transparent),
     inset -4px -4px 8px color-mix(in oklab, white 90%, transparent);
 }
