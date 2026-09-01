@@ -7,7 +7,8 @@
  * directly), so the page is one redirect: `/?unit=N#SIO-0NN`, where Home
  * scrolls the map to the region band and opens that outcome's popup.
  * The fifty static pages still build (old bookmarks, QR codes) — each is
- * only this. MarkDoneButton stays in this folder; three pages import it.
+ * only this. MarkDoneButton was deleted on 2026-08-31 — done-ness is derived now
+ * (lib/doneness.ts), so nothing in this folder but the redirect.
  */
 import Link from "next/link";
 import { notFound } from "next/navigation";

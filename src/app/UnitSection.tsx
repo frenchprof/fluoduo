@@ -26,7 +26,6 @@ import { nextSioId } from "@/lib/continuer";
 import Unit0Panel from "./Unit0Panel";
 import SioModal, { popupActivityTabs } from "./SioModal";
 import SioDetail from "./SioDetail";
-import MarkDoneButton from "./sio/[id]/MarkDoneButton";
 
 const STORAGE_KEY = "fluolingo:hubCollapse";
 
@@ -191,7 +190,6 @@ export default function UnitSection({
                 // own page, as every pre-test in the course does since #98.
                 : popupActivityTabs(deck, { inline: false, href: pretestHref })
             }
-            footer={<MarkDoneButton sioId={openSio.id} />}
           >
             {/* The statement only. SioDetail's tiles, chips and inline quiz
                 went with the collapse — the links below say what the stop has,

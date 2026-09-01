@@ -380,6 +380,75 @@ Dan assigns. Listed so the queue is not re-derived by whoever picks it up.
 | 8 | `rule:` namespace (894-item tagging): parked by design until the concepts finish | transfer evidence |
 | 9 | **Deploys through fluoduo-main** (ruled) — needs the fine-grained PAT (write to dckg/fluo) as an Actions secret | ends manual deploys |
 
+## 31 Aug PM — a stop is done when it is done (pre-tests lane)
+
+Dan: *"I think it should only be marked done if it is really FULLY done. so we
+should remove it."* The last of the three the pre-tests lane took on 31 Aug —
+Unit-0 pages (#98), the popup collapse (#99), and now this.
+
+**`doneSios` was self-declared.** A learner could open a stop, tap Mark as done
+having answered nothing, and it counted: the map circle filled, the n/50
+counter moved, Continuer advanced past it, the teacher's heat strip showed it,
+and four badges in `economy.ts` read the length of that list. The sharpest case
+was the PRE-TEST page, which offered to mark the stop done the moment the cold
+guess was over.
+
+**The rule (`lib/doneness.ts`).** A stop completes when every non-game activity
+it OFFERS has been attempted. The list comes from `deckActivityTabs` — the same
+list the popup draws as its links — so what a stop shows you and what it asks
+of you are one list and cannot disagree. That is also what makes it survive a
+cull: Sorting (#93) and iComplete (#97) left the requirement by leaving the
+list, with no edit here.
+
+**Dan chose the non-game reading**, shown both side by side. Every link put 6-7
+activities between a learner and a tick at most stops, VocabulaRain and
+LexicaLater included; excluding the games family leaves 4-6, still every
+teaching surface. Excluded BY FAMILY, so a game added tomorrow is an extra
+without anyone remembering to exempt it.
+
+It fires from `noteAttempt` — the one write path a graded answer already takes
+— and NOT from `isSioDone`, which runs inside render loops in thirteen files.
+Completion still goes through `markSioDone`, so XP, gems, the streak and the
+badges are unchanged, mastery weighting included. **Grandfathered** (Dan's
+call): an already-done stop is never re-examined, so nothing can un-tick.
+
+Driven end to end on SIO-001: four of five activities leaves the stop
+untouched; the fifth, a real pre-test answer, yields `done: true, xp: 300,
+gems: 5`.
+
+### Two faults building it found, both pre-existing
+
+**Unit-0 pre-tests never reached the activity ledger.** `pretestRecord` writes
+the gap report; the LEDGER is written by `recordResponse`, which Units 1-4
+reach through the runner and Unit 0 did not. So the popup's Pre-Test ✓ never
+lit on a Unit-0 stop, and under this rule those ten stops could never have
+completed at all. Fixed by calling the runner's own `recordPretestEvidence` —
+same helper, same `xpPaid: 0`, so "remember it, but don't score it" still holds.
+
+**An activity id must END in the stop's DECK id.** The ledger resolves a stop by
+taking the tail after the last colon and asking `sioForDeck`; a SIO id there
+resolves to nothing and the write silently no-ops — which is indistinguishable
+from success at the call site. Traced rather than assumed.
+
+`verify69`: 15 checks, every one break-tested. One was vacuous on the first
+pass for the FOURTH time today — `"maybeCompleteStop" in ledger` was satisfied
+by the helper's own definition, so deleting the call stayed green. It now
+asserts the call inside `noteAttempt`'s body.
+
+### For the integration lane — the fifth collision, and how it landed
+
+`verify66-two-tier2-stops.py` sat on `claude/peers-vd2h6h` against
+`verify66-popup-collapse.py`, on main since #99. The peers renumbered it to
+**68** and it merged that way in #105 — which collided with THIS branch's
+`verify68-derived-doneness.py`, still open as #104. Two files sharing a leading
+number is exactly what `verify-wiring.py` fails on, so #104 would have broken
+main the moment it merged.
+
+Renumbered here: **verify68-derived-doneness → verify69**, workflow line moved
+with it. 67 is taken by `verify67-concept-length.py` on the colour-review
+branch (#100), so 69 is the first free number across every remote branch, not
+just main.
+
 ## 31 Aug PM — Dan read salutations; the difficulty ladder is his now
 
 Sole editor of STATUS.md in this commit: fluoduo-main.
