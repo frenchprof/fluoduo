@@ -72,6 +72,11 @@ export default function HomeDashboard() {
   // Armed on mount: nothing pops up by default (Dan, 2026-07-14), so the
   // FluOLinGo brand animation plays on a clear stage right away.
   const [heroPlay, setHeroPlay] = useState(false);
+  // Which view the map door opens. Session-local on purpose: it is a way of
+  // looking at the map, not a setting about the learner, and a preference
+  // stored here would be a third place the map's view can come from (the
+  // other two being ?view= and the map's own control).
+  const [view3d, setView3d] = useState(false);
   // Once the stroke has played, the ink is pinned by class — engines can
   // drop a finished animation's fill state (Dan, 2026-07-14: "the color
   // disappears right after").
@@ -390,27 +395,54 @@ export default function HomeDashboard() {
           a STRETCHED sibling link over the top — an <a> may not contain an
           <a>. `inert` keeps the frozen map's controls out of the tab order
           and the a11y tree. */}
-      {/* PROMINENT 2D / 3D (Dan, 1 Sep, annotating the live Home: "More
-          prominent 2-D and 3-D view buttons", mocked as two big colour
-          blocks — cyan 2D, magenta 3D — ABOVE the map box). Each opens the
-          map IN that view (?view=), which is what makes two buttons more
-          than one door split in half. Colours are Dan's own mock; black ink
-          clears 4.5:1 on both fills. */}
-      <div className="mt-2 grid grid-cols-2 gap-2" role="group" aria-label="Open the map">
-        <Link
-          href="/map?view=2d"
-          className="rounded-xl border-2 py-2.5 text-center text-xl font-black text-black transition hover:-translate-y-0.5"
-          style={{ borderColor: "var(--cahier-ink)", background: "#3ee6f5", boxShadow: "var(--shadow-card)" }}
+      {/* THE VIEW SWITCH — a physical toggle, not two buttons (Dan, 1 Sep,
+          with a picture: a label, then a chunky track with a coloured knob).
+          It replaces the pair of cyan/magenta blocks that answered his earlier
+          "more prominent 2-D and 3-D view buttons": prominent was the right
+          fix for invisible, but TWO buttons said there were two doors to the
+          map when there is one door and two ways of drawing what is behind it.
+          A switch says that: one destination, one property of it.
+
+          WHAT IT DOES, and why it does not navigate on flip. The map card
+          below is already the door — the whole card, a stretched link. So the
+          switch only chooses WHICH view that door opens, which is why it is a
+          `role="switch"` and not a link: flipping it must not take a learner
+          somewhere, or the control they were setting is gone before they see
+          it take effect.
+
+          The snapshot stays the 2D drawing either way. Rendering HomeMap3D in
+          the postcard was the other option and is refused: the card is inert
+          by construction — pointer-events off, `inert`, a finger going down
+          the page glides over it — and a live 3D scene in there is a surface
+          that catches. The consequence is instead made visible in the caption
+          below, which reads "The Map · 3D" when the switch is on. */}
+      <div className="mt-2 flex items-center gap-2.5">
+        <span id="view-switch-label" className="fluo-mono text-[13px] font-black text-[color:var(--cahier-ink)]">
+          3D view
+        </span>
+        <button
+          type="button"
+          role="switch"
+          aria-checked={view3d}
+          aria-labelledby="view-switch-label"
+          onClick={() => setView3d((v) => !v)}
+          className="neo-well relative h-[30px] w-[58px] shrink-0 rounded-full p-[3px] transition"
         >
-          2D
-        </Link>
-        <Link
-          href="/map?view=3d"
-          className="rounded-xl border-2 py-2.5 text-center text-xl font-black text-black transition hover:-translate-y-0.5"
-          style={{ borderColor: "var(--cahier-ink)", background: "#f57ae0", boxShadow: "var(--shadow-card)" }}
-        >
-          3D
-        </Link>
+          {/* The knob is a rounded SQUARE, as Dan drew it — the same corner
+              radius family as the three keys above, so the row of controls
+              reads as one set of physical parts rather than a switch borrowed
+              from somewhere else. */}
+          <span
+            aria-hidden
+            className="neo-key block h-[24px] w-[24px] rounded-[8px] transition-transform duration-200 ease-out"
+            style={{
+              transform: view3d ? "translateX(28px)" : "translateX(0)",
+              background: view3d
+                ? "linear-gradient(155deg, color-mix(in oklab, var(--dopa-reward) 55%, white) 0%, var(--dopa-reward) 52%, color-mix(in oklab, var(--dopa-reward) 70%, black) 100%)"
+                : "linear-gradient(155deg, #fff 0%, var(--cahier-paper-raised) 60%, color-mix(in oklab, var(--cahier-ink) 12%, white) 100%)",
+            }}
+          />
+        </button>
       </div>
       <div
         className="relative mt-2 overflow-hidden rounded-2xl border-2 transition hover:-translate-y-0.5"
@@ -432,10 +464,20 @@ export default function HomeDashboard() {
         </div>
         <span className="flex items-center gap-2 border-t-2 px-4 py-2.5" style={{ borderColor: "var(--cahier-ink)" }}>
           <span aria-hidden className="text-xl">🗺️</span>
-          <span lang="fr" className="fluo-serif min-w-0 flex-1 text-lg font-black leading-tight text-[color:var(--fluo-ink)]">The Map</span>
+          <span lang="fr" className="fluo-serif min-w-0 flex-1 text-lg font-black leading-tight text-[color:var(--fluo-ink)]">
+            The Map
+            {/* The switch's visible consequence. Without it the toggle sets
+                something a learner cannot see until after they have tapped
+                away from it. */}
+            {view3d && <span className="fluo-mono ml-1.5 text-sm font-black text-[color:var(--dopa-reward)]"> · 3D</span>}
+          </span>
           <span aria-hidden className="fluo-mono text-xl font-black text-[color:var(--fluo-ink)]">›</span>
         </span>
-        <Link href="/map" aria-label="The Map — open the course map" className="absolute inset-0 z-10" />
+        <Link
+          href={`/map?view=${view3d ? "3d" : "2d"}`}
+          aria-label={`The Map — open the course map in ${view3d ? "3D" : "2D"}`}
+          className="absolute inset-0 z-10"
+        />
       </div>
     </>
   );
