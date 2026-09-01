@@ -6,6 +6,49 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 1 Sep evening — SIO-039 lands, SIO-025 is ruled, and live is at #124
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Three merges this round, and a deploy that happened from Dan's side:
+
+- **#125 (`aae60c0`) — SIO-039 « Envies et besoins » has its lesson.** Ten
+  cards, five frames, and the two things the deck demonstrates but never
+  states: the bare/`de` split (« Je voudrais un plan » against « J'ai besoin
+  d'un plan », 6–4 exactly along that line) and the politeness scale. Concept
+  slot left EMPTY — that is Color review's to fill, per the handover.
+  verify76 executes the generator 4000 times rather than regex-reading it.
+  Screenshots taken at QC: Forms carries the frames, Idea correctly shows the
+  empty-concept placeholder.
+  - **SIO-038 stood down in the same PR** — Pre-tests' pre-flight scan found
+    Peers had built it eight hours before the split assigned it (the #97
+    collision shape, caught mid-work this time, which is the scan doing its
+    job).
+  - **SIO-025 is ruled a NON-gap, with the reasoning written into verify51**:
+    both halves already taught; every candidate concept needs French the deck
+    does not contain, so a lesson would be a slot filled rather than a claim
+    made. It stays out unless Dan overrules. The QC merge left verify51's
+    no-lesson loop holding SIO-025 alone — 038 and 039 both came out on 1 Sep.
+  - **Pre-tests' queue is now just the cycling redo** (FluOLinGo Hand font).
+- **#126 (`f873e91`) — docs/DEPLOY_PULL_SETUP.md**, the pull-direction deploy
+  for dckg/fluo. One correction to its premise, from Dan after it merged: the
+  PAT was minted **signed in as dckg**, not frenchprof — so the doc's
+  diagnosis of runs 2–6 is wrong, though its three setup steps remain valid
+  as the pull-direction alternative.
+- **#127 (`ef6bacc`) — deploy-live now diagnoses its own failure.** Run 7
+  (fired after Dan's correction) still died on `remote: Repository not
+  found`, which is ONE message for three faults: secret empty/missing on
+  frenchprof/fluoduo (an empty token pushes anonymously; a private repo 404s
+  strangers), token dead, or token not granted dckg/fluo. A step now checks
+  each in turn and names the one that holds, printing only the login the
+  token authenticates as. The next run answers the question instead of
+  repeating it.
+- **Live is at `09539b5` (#124)** — Dan deployed ~17:21Z; the Cloudflare
+  build log confirms 751 pages, functions uploaded, published. Not yet live:
+  `f873e91`/`aae60c0`/`ef6bacc`, of which **the SIO-039 lesson is the one a
+  learner can see**. One more deploy (Dan's three commands, or deploy-live
+  once the token fault is fixed) picks all three up.
+
 ## 1 Sep — Dan's eight Home annotations, DIVIDED (the labour, not the files)
 
 Sole editor of STATUS.md in this commit: fluoduo-main.
