@@ -49,7 +49,27 @@ Three merges this round, and a deploy that happened from Dan's side:
   learner can see**. One more deploy (Dan's three commands, or deploy-live
   once the token fault is fixed) picks all three up.
 
-## 1 Sep — Dan's eight Home annotations, DIVIDED (the labour, not the files)
+## 1 Sep, later — the jam scan goes to CI, and decision 8 comes off the shelf
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Two rulings from Dan, same message:
+
+- **"The jam sweep should be in CI. It's the only instrument that catches
+  that class."** Done — PR #130: `scripts/jam-scan.mjs` (the browser scan
+  verify72's docstring promised, now committed instead of living in one
+  session's scratchpad), run by verify79 against an open rebuild that
+  verify.yml does LAST, after the wall build verify18/18b audit. verify38
+  grew one precise exemption for that line, with assertions that keep it
+  precise. **Its first run found three jams live on main** — « à lagare »,
+  « aumusée » (le-chemin), "whatyou" (transport), all three with a same-line
+  source space the compiler dropped — fixed in the same PR. Number 79 claimed
+  after the remote sweep; Peers holds 77/78 in flight.
+- **Decision 8 — `rule:` namespace tagging of the 894 items — is back on the
+  radar.** It was parked "until the concepts finish"; at 45 of 52 that is
+  close enough (Dan, 1 Sep). Not yet assigned to a lane: it wants Dan's
+  shape-of-the-tagging ruling first, and Color review is the natural owner
+  once the last 8 Tier-3 concepts land.
 
 Sole editor of STATUS.md in this commit: fluoduo-main.
 
