@@ -89,9 +89,46 @@ const Lines = ({ children }: { children: ReactNode }) => (
  * monologue (the e-mail, the country) has one speaker and no marks — a label
  * that says nothing is exactly the text the litmus rule removes.
  */
+/** One preference across every atelier — a learner who turns the English off on
+ *  the e-mail does not want it back on the restaurant. */
+const EN_KEY = "fluolingo:atelier:en";
+
 function AtelierMemo({ sioId }: { sioId: string }) {
   const lines: DialogueLine[] = ATELIER_DIALOGUES[sioId] ?? [];
   const twoVoices = lines.some((l) => l.who === "B");
+  /**
+   * ENGLISH ON OR OFF, and the learner decides (Dan, 1 Sep: "leave the english
+   * but allow users to toggle with or without English support").
+   *
+   * The gloss was removed outright earlier today because the model ran past the
+   * fold on a phone — SIO-030's nine-line e-mail at 1.47 screens, and an atelier
+   * OPENS on this panel. Taking it away fixed the fold and cost the meaning.
+   * A switch settles both: the English is there by default, and anyone who
+   * wants the whole model on one screen turns it off.
+   *
+   * Defaults to ON and reads the stored choice in an effect, never during
+   * render: SSR has no localStorage, and a value read during render would make
+   * the server's HTML and the first client render disagree.
+   */
+  const [showEn, setShowEn] = useState(true);
+  useEffect(() => {
+    try {
+      // localStorage cannot be read during render: the server has none, so a
+      // stored "off" read at render time would make the SSR html and the first
+      // client render disagree and React would throw away the tree. Reading it
+      // after mount is the accepted resolution in this repo (AGENTS.md;
+      // SayItContent.tsx is the worked example). The one-frame flash is of the
+      // DEFAULT, which is English shown — the safe side to flash.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setShowEn(window.localStorage.getItem(EN_KEY) !== "0");
+    } catch {}
+  }, []);
+  const toggleEn = () => {
+    setShowEn((v) => {
+      try { window.localStorage.setItem(EN_KEY, v ? "0" : "1"); } catch {}
+      return !v;
+    });
+  };
   const stopRef = useRef<null | (() => void)>(null);
   const [playing, setPlaying] = useState(false);
 
@@ -137,6 +174,41 @@ function AtelierMemo({ sioId }: { sioId: string }) {
   };
   return (
     <ul className="space-y-1.5">
+      {/* THE CONTROLS COME FIRST, and the first screenshot of this panel is why.
+          With the switch at the FOOT of the model, SIO-030's nine-line e-mail
+          ran to 1.47 screens on a phone — so the one control that fixes the fold
+          was itself below the fold, on the panel an atelier OPENS on. A switch
+          nobody can reach is the deleted gloss again with extra steps.
+
+          « Tout écouter » rides up with it: both govern the model as a whole,
+          and one control row reads as a toolbar where two read as clutter. */}
+      <li className="flex flex-wrap items-center gap-2 pb-1">
+        <button
+          type="button"
+          onClick={playAll}
+          className={`cahier-btn cahier-btn-sm font-black ${playing ? "cahier-btn-correct" : "cahier-btn-accent"}`}
+        >
+          {playing ? "⏹ Arrêter" : "🔊 Tout écouter"}
+        </button>
+        {/* It shows its STATE rather than its action, and it is styled like the
+            word list's Show both / Hide English / Hide French strip because that
+            strip is on this same panel: an action label here would put a second
+            "Hide English" on one screen, governing something else. */}
+        <button
+          type="button"
+          onClick={toggleEn}
+          aria-pressed={showEn}
+          className={[
+            "rounded-lg border-2 px-2.5 py-1 text-xs font-black",
+            showEn
+              ? "border-[color:var(--cahier-ink)] bg-[color:var(--fam-ink)] text-white"
+              : "border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-raised)] text-[color:var(--fluo-ink-soft)]",
+          ].join(" ")}
+          title={showEn ? "Hide the English" : "Show the English"}
+        >
+          🇬🇧 English
+        </button>
+      </li>
       {lines.map((l, i) => (
         <li key={i} className="flex gap-2">
           {twoVoices && (
@@ -162,22 +234,16 @@ function AtelierMemo({ sioId }: { sioId: string }) {
             >
               {l.fr}
             </button>
-            <span className="block text-[13px] text-[color:var(--cahier-ink-soft)]">{l.en}</span>
+            {showEn && (
+              <span className="block text-[13px] text-[color:var(--cahier-ink-soft)]">{l.en}</span>
+            )}
           </span>
         </li>
       ))}
-      <li className="pt-1">
-        <button
-          type="button"
-          onClick={playAll}
-          className={`cahier-btn cahier-btn-sm font-black ${playing ? "cahier-btn-correct" : "cahier-btn-accent"}`}
-        >
-          {playing ? "⏹ Arrêter" : "🔊 Tout écouter"}
-        </button>
-      </li>
     </ul>
   );
 }
+
 
 export const DECK_MEMOS: Record<string, ReactNode> = {
   /* ---------- L'alphabet ---------- */

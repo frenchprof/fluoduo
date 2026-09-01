@@ -147,9 +147,18 @@ ok(re.search(r'\[on \? "left" : "right"\]', sw) is not None,
 # ---- 3 · it navigates, through the shared helper --------------------------
 i_flip = home.find("onFlip={")
 flip = home[i_flip:i_flip + 700] if i_flip >= 0 else ""
-ok("router.push(mapHref(" in flip,
-   "flipping the switch opens the map, in the view it names",
-   "the switch sets a value and stops — Dan: 'make sure the switch literally takes you the map it promises to'")
+# RE-POINTED 2 Sep (re-applied here after the PillSwitch relocation): the
+# 1 Sep "make sure the switch literally takes you the map it promises to"
+# gave way, one day later and looking at the hero, to "this needs to stay
+# on screen when users tap 2D>3D>2D and so on. The separate map interface
+# is for fuller-screen map." The visible consequence is the postcard
+# flipping below; the flip no longer navigates.
+ok("router.push(" not in flip,
+   "flipping the switch stays on Home — the postcard flips instead",
+   "the switch navigates again; Dan (2 Sep): toggling 2D>3D>2D must stay on screen")
+ok("view3d ? (" in home and "<HomeMap3D" in home,
+   "the postcard renders the view the switch names",
+   "the switch flips a value the postcard ignores — a control with no visible consequence, the 1 Sep complaint reborn")
 ok("saveMapView(" in flip,
    "the choice is remembered",
    "the flip is not persisted; coming back Home would show the other view")
