@@ -42,6 +42,49 @@ export const frequenceLesson: NativeLesson = {
       </p>
     </div>
   ),
+  // TIER 1 · stop 43. One position rule, and it is the opposite of English's.
+  // The Mémo states it in its title; the concept gives the reason it sticks.
+  concept: {
+    subtitle: "Why the adverb comes after the verb",
+    contrast: (
+      <>
+        English puts the frequency word <b>before</b> the verb &mdash; <i>I often run</i>,{" "}
+        <i>she rarely watches TV</i>. French puts it <b>straight after</b>:{" "}
+        <i lang="fr">Je cours souvent</i>, <i lang="fr">Elle regarde rarement la
+        t&eacute;l&eacute;</i>.
+      </>
+    ),
+    question: (
+      <>
+        <i>She rarely watches TV.</i> Where does{" "}
+        <i lang="fr">rarement</i> go?
+      </>
+    ),
+    answer: (
+      <>
+        Between the verb and its object: <i lang="fr">Elle regarde rarement la
+        t&eacute;l&eacute;.</i> The adverb is describing the verb, and French keeps it next
+        to what it describes &mdash; even when that splits the verb from its object, which
+        English never does.
+      </>
+    ),
+    pitfall: [
+      { label: <>I often run</>, wrong: <><i lang="fr">Je souvent cours</i></>, right: <><i lang="fr">Je cours souvent</i></> },
+      { label: <>she rarely watches TV</>, wrong: <><i lang="fr">Elle rarement regarde la t&eacute;l&eacute;</i></>, right: <><i lang="fr">Elle regarde rarement la t&eacute;l&eacute;</i></> },
+    ],
+    check: [
+      { q: <>You always eat bread.</>,
+        a: <><i lang="fr">Je mange toujours du pain.</i> After the verb, before the object.</> },
+      { q: <>What is the English habit that gets in the way?</>,
+        a: <>Putting the adverb in front of the verb. French never does.</> },
+    ],
+    remember: (
+      <>
+        Straight after the verb &mdash; even when that puts it between the verb and its
+        object.
+      </>
+    ),
+  },
   dice: {
     instruction: "Place the frequency adverb — right after the verb.",
     newQuestion: frequenceQuestion,

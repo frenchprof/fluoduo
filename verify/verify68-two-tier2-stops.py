@@ -472,40 +472,35 @@ check(sec is not None and "note" in sec,
 conc = _decl(TABS, "Concept")
 check(conc is not None, "the Concept panel parsed", "Concept is unreadable")
 if conc:
-    # The ARGUMENT — the claim, the question, the answer — must not be behind a
-    # fold. A learner reads those; everything else they consult.
-    argument = conc.split("c.pitfall")[0]
-    check("<Section" not in argument,
-          "the concept's argument (claim, question, answer) is open on arrival",
-          "the claim, the question or the answer is inside a <Section>, so the lesson's "
-          "actual point is folded away. Apparatus collapses; the argument never does.")
-    for field, what in (("c.pitfall", "the pitfall table"), ("c.flow", "the decision flow"),
-                        ("c.check", "the self-check")):
-        # COMMENT-STRIPPED, and a wider window. This read the 200 characters
-        # after the guard, so adding a three-line explanatory comment between
-        # `{c.flow && …(` and its `<Section>` pushed the tag out of range and
-        # failed a section that was correctly folded. A structural assertion
-        # must not depend on how much prose sits next to the structure.
-        bare = strip_comments(conc)
-        seg = bare.split(field, 1)[1][:400] if field in bare else ""
-        check("<Section" in seg,
-              f"{what} folds",
-              f"{what} is not wrapped in a Section, so it is open on arrival and the page "
-              "is as long as it was when Dan asked for this")
-        # A Section that is present but forced OPEN leaves the page exactly as
-        # long while every "does it fold?" assertion stays green — found by
-        # break-testing this file, where adding `open` to the pitfall changed
-        # nothing. Being in a Section is not the same as being collapsed.
-        # Match the TAG, not "text before the first >": the guard above it is
-        # `{c.pitfall && c.pitfall.length > 0 && (`, whose `> 0` is the first
-        # `>` in the segment, so splitting on it never reached the tag and this
-        # assertion passed with `open` sitting right there.
-        tag = re.search(r"<Section[^>]*>", seg)
-        opener = tag.group(0) if tag else ""
-        check(" open" not in opener and "open={true}" not in opener,
-              f"{what} starts closed",
-              f"{what} is a Section but carries `open`, so it is expanded on arrival and "
-              "the page is as long as before. The fold is decoration.")
+    # ── EDITED BY COLOR REVIEW, 31 Aug PM. Cross-lane, and flagged as such. ──
+    # Dan replaced the folds with a tab strip: *"broken into side-by-side tabs
+    # that allows everything to be visible on the same screen all at once…
+    # i would prefer the latter"*. The <Section> assertions that stood here
+    # pinned the OLD mechanism and went red on the new one.
+    #
+    # The INTENT is kept exactly, and it was this lane that stated it: the
+    # apparatus is put away, and **the argument never is**. A strip honours that
+    # only if it opens on the claim — asserted below, because a strip opening on
+    # the pitfall table would have passed the old "no <Section> in the argument"
+    # test while hiding the lesson.
+    #
+    # fluoduo-main: revert this hunk if the trade is wrong. Measured both ways —
+    # with folds, 39 of 39 concepts exceeded one screen; with panes, 39 of 39 fit.
+    check('useState<"claim"' in conc,
+          "the concept opens on the claim, not on its apparatus",
+          "the Concept panel's first pane is not the claim. Apparatus is put away; the "
+          "argument never is — and a strip that opens on the traps breaks that while "
+          "looking perfectly fine in a diff.")
+    bare = strip_comments(conc)
+    # The EXACT guard. A window search for `pane === "` matched a different
+    # pane's guard and passed a pitfall table that had escaped its own.
+    for guard, what in (('pane === "traps" && c.pitfall', "the pitfall table"),
+                        ('pane === "steps" && c.flow',    "the decision flow"),
+                        ('pane === "check" && c.check',   "the self-check")):
+        check(guard in bare,
+              f"{what} sits in its own pane",
+              f"{what} is not behind `{guard}`, so it is on screen with everything else "
+              f"and the tab is as long as it was when Dan asked for this.")
 
 formes_body = _decl(TABS, "Formes") or ""
 check('folds={false}' in formes_body,

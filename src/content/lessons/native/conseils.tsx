@@ -93,6 +93,62 @@ export const conseilsLesson: NativeLesson = {
       </p>
     </div>
   ),
+  // TIER 1 · stop 48. Three ways to advise is not three grammars — it is one
+  // grammar and a choice about FORCE and AUDIENCE. The Mémo names the three;
+  // the concept says what picks between them.
+  concept: {
+    subtitle: "Why three ways to give the same advice",
+    contrast: (
+      <>
+        English softens advice with extra words &mdash; <i>you should probably</i>,{" "}
+        <i>maybe you could</i>. French changes the <b>verb</b> instead, and the choice says
+        two things at once: how hard you are pushing, and whether you mean this person or
+        anyone.
+      </>
+    ),
+    question: (
+      <>
+        <i lang="fr">Tu dois manger des l&eacute;gumes</i> and{" "}
+        <i lang="fr">il faut manger des l&eacute;gumes</i> &mdash; same advice. What is
+        different?
+      </>
+    ),
+    answer: (
+      <>
+        Who it lands on. <i lang="fr">Tu dois</i> is aimed at you and is hard to
+        refuse;{" "}
+        <i lang="fr">il faut</i> is a general truth and lets nobody off, but names nobody
+        either. <i lang="fr">Tu peux go&ucirc;ter</i> is the soft one &mdash; a suggestion
+        you may decline.
+      </>
+    ),
+    pitfallHeads: ["all three read as the same", "what each one does"],
+    pitfall: [
+      { label: <><i lang="fr">tu dois</i></>, wrong: <>a gentle nudge</>, right: <>strong, and aimed at you</> },
+      { label: <><i lang="fr">il faut</i></>, wrong: <>advice to one person</>, right: <>strong, and aimed at nobody</> },
+      { label: <><i lang="fr">tu peux</i></>, wrong: <>permission</>, right: <>a suggestion you may refuse</> },
+    ],
+    flow: [
+      { depth: 0, text: "How hard are you pushing?" },
+      { depth: 1, text: "gently → tu peux…" },
+      { depth: 1, text: "firmly → is it about THIS person?" },
+      { depth: 2, text: "yes → tu dois…" },
+      { depth: 2, text: "no, it is general → il faut…" },
+    ],
+    check: [
+      { q: <>Tell a friend, gently, to try it.</>,
+        a: <><i lang="fr">Tu peux go&ucirc;ter.</i></> },
+      { q: <>Why can <i lang="fr">il faut</i> feel less rude than <i lang="fr">tu dois</i>?</>,
+        a: <>It names no one. The obligation is in the world rather than on the person in front of you.</> },
+    ],
+    remember: (
+      <>
+        The verb carries the force. <i lang="fr">Tu peux</i> suggests,{" "}
+        <i lang="fr">tu dois</i> presses, <i lang="fr">il faut</i> presses without naming
+        anyone.
+      </>
+    ),
+  },
   dice: {
     instruction: "Give the advice — mind how strong it is, and who it is for.",
     newQuestion() {

@@ -67,6 +67,57 @@ export const tuVousLesson: NativeLesson = {
       </p>
     </div>
   ),
+  // TIER 1 · stop 2. The Mémo lists three uses of two words. The claim is that
+  // ONE of them does two jobs, which is why `vous parlez` cannot tell you how
+  // many people are being addressed — and why nobody minds.
+  concept: {
+    subtitle: "Why vous is two different words",
+    contrast: (
+      <>
+        English has one <i>you</i> for everybody. French has two, and the second one is
+        doing <b>two jobs at once</b>: polite to one person, and plural to any group at
+        all &mdash; friends included.
+      </>
+    ),
+    question: (
+      <>
+        <i lang="fr">Vous parlez fran&ccedil;ais&nbsp;?</i>{" "}
+        &mdash; one person, or several?
+      </>
+    ),
+    answer: (
+      <>
+        You cannot tell, and French speakers do not try. The form is the same for a
+        stranger you are being polite to and for a room full of friends. Only{" "}
+        <i lang="fr">tu</i> is unambiguous: exactly one person, and one you know well.
+      </>
+    ),
+    pitfallHeads: ["one English you", "two French ones"],
+    pitfall: [
+      { label: <>a friend</>, wrong: <><i lang="fr">vous parles</i></>, right: <><i lang="fr">tu parles</i></> },
+      { label: <>your teacher</>, wrong: <><i lang="fr">tu parlez</i></>, right: <><i lang="fr">vous parlez</i></> },
+      { label: <>two friends</>, wrong: <><i lang="fr">tu parlez</i></>, right: <><i lang="fr">vous parlez</i></> },
+    ],
+    flow: [
+      { depth: 0, text: "How many people?" },
+      { depth: 1, text: "more than one → vous" },
+      { depth: 1, text: "one → do you know them well?" },
+      { depth: 2, text: "yes → tu" },
+      { depth: 2, text: "no → vous" },
+    ],
+    check: [
+      { q: <>Two friends. Which one?</>,
+        a: <><i lang="fr">Vous</i> &mdash; a group is always <i lang="fr">vous</i>, however close.</> },
+      { q: <>Why is choosing wrong worse than a spelling mistake?</>,
+        a: <>Because it is not a grammar error. It says something about the relationship.</> },
+    ],
+    remember: (
+      <>
+        <i lang="fr">Tu</i> means one person you know. <i lang="fr">Vous</i>{" "}means
+        everything else &mdash; and it will not tell you which.
+      </>
+    ),
+  },
   dice: {
     instruction: "Ask the question — tu or vous, depending on who you're talking to.",
     newQuestion() {
