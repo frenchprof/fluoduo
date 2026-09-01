@@ -19,6 +19,13 @@ name: deploy-live
 on:
   workflow_dispatch:
 
+# The guard step reads the verify check's conclusion through the checks API,
+# and the default GITHUB_TOKEN does not carry that scope unless declared —
+# run 1 failed exactly there (403, "Resource not accessible by integration").
+permissions:
+  contents: read
+  checks: read
+
 jobs:
   mirror:
     runs-on: ubuntu-latest
