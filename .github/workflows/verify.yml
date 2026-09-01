@@ -237,6 +237,9 @@ jobs:
       - name: "An atelier's lesson adds the register and does not eat the model (1 Sep)"
         run: python3 verify/verify75-atelier-lesson.py
 
+      - name: "SIO-025 and SIO-039 have a lesson; ★ withdraws the frame and the opener (1 Sep)"
+        run: python3 verify/verify76-two-tier3-stops.py
+
       - name: "Every check runs, and no two share a number"
         run: python3 verify/verify-wiring.py
 

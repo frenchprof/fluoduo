@@ -73,6 +73,12 @@ export const LESSONS: Record<string, Lesson> = {
   // The slug is the deck's own `lessonSlug` (atelierDecks.ts), so the two names
   // for one stop cannot drift.
   "atelier-rencontre": { slug: "atelier-rencontre", title: "Atelier — Première rencontre", unit: 0 },
+  // SIO-025 and SIO-039, 2026-09-01 — the two ordinary Tier 3 stops from colour
+  // review's handover. `wants-needs` is envies-besoins.json's own declared
+  // `lessonSlug`; the deck keeps its French id, the lesson takes the name the
+  // deck gives it.
+  "parce-que":         { slug: "parce-que",         title: "Pourquoi ? Parce que…",        unit: 2 },
+  "wants-needs":       { slug: "wants-needs",       title: "Envies et besoins",            unit: 3 },
   "revision-u3u4":     { slug: "revision-u3u4",     title: "Révision — Unités 3 & 4",      unit: 3 },
   "aliments":          { slug: "aliments",          title: "Les repas & les aliments",     unit: 4 },
   "partitifs":         { slug: "partitifs",         title: "Les articles partitifs",       unit: 4 },
@@ -108,6 +114,8 @@ export const LESSONS_BY_SIO: Record<string, string[]> = {
   // see atelier-rencontre.tsx for why that had to be passed through rather
   // than written.
   "SIO-010": ["atelier-rencontre"],
+  "SIO-025": ["parce-que"],
+  "SIO-039": ["wants-needs"],
   "SIO-004": ["quel-jour"],
   "SIO-007": ["combien"],
   "SIO-008": ["on-fait-quoi"],

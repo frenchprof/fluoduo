@@ -11,9 +11,14 @@ the finding that costs most is the false one:
                                  `example` field ("Pourquoi tu aimes le
                                  sport ?"). Both halves already taught.
   SIO-038  Getting around      — same shape ("Tu y vas en bus ?").
-                                 REVERSED 2026-09-01; see the note at part 2.
   SIO-039  Wants & needs       — the cards ARE the polite act ("Je voudrais un
                                  café."), not vocabulary for it.
+
+  ALL THREE WERE REVERSED ON 2026-09-01, one at a time and each for its own
+  reason. The reasons are at part 2, and none of them says the finding above
+  was wrong; each says it was about something else. The list stays because the
+  false finding is still the expensive one — and because a check that records
+  why it changed its mind is worth more than one that quietly stops asserting.
 
 That is the third time this session a deck looked empty because the teaching
 was somewhere a literal search does not reach — frames, letris columns, and
@@ -51,9 +56,11 @@ which should also include ils/elles"). verify48 asserts it there.
 What this asserts:
 
   1  Each of the four now has a lesson, and it leads that stop's rail.
-  2  The three NON-gaps still have no lesson — asserted as an absence, so the
-     next audit does not re-flag them and build a lesson on top of teaching
-     that is already there (verify27: one goal, one lesson).
+  2  The three NON-gaps each lead with the ONE lesson written for them, and no
+     other. This was an absence assertion until 2026-09-01 — "they must have no
+     lesson at all" — and all three were reversed; what survives is the half
+     that was always the real point, that a stop must not open on a second door
+     onto teaching it already has (verify27: one goal, one lesson).
   3  The generators, EXECUTED: 12,000 cards well-formed, every cloze rebuilds
      its own sentence, every pin honoured.
   4  The rules each lesson exists for, checked as rules rather than as text:
@@ -104,9 +111,11 @@ for slug, sio in GENS.items():
           f"{slug} is registered in the gallery and the native index",
           f"{slug} is missing from LESSONS or NATIVE_LESSONS — the route 404s")
 
-# ---- 2 · the three NON-gaps keep no lesson ---------------------------------
-# An absence, deliberately. Their decks already teach both halves in the
-# `example` field, and a lesson on top would be a second door onto one goal.
+# ---- 2 · the three NON-gaps lead with their own lesson, and only it ---------
+# This asserted an ABSENCE until 2026-09-01 — all three had to have no lesson,
+# because their decks already teach both halves in the `example` field and a
+# lesson on top would be a second door onto one goal. All three were then
+# reversed, each with its reasoning written below rather than deleted.
 #
 # SIO-006 WAS IN THIS LIST AND CAME OUT ON 2026-08-31, on Dan's instruction
 # ("Stop 6: then just show it"). The 29 Aug reasoning was not wrong, it was
@@ -147,13 +156,40 @@ for slug, sio in GENS.items():
 # withdraw the deck's own `gap`. If anyone adds a SECOND lesson to SIO-038 that
 # re-teaches « Tu y vas comment ? », this comment is the reason it should not
 # exist.
-for sio, why in (("SIO-025", "every card carries « Pourquoi … ? » in its example"),
-                 ("SIO-039", "the cards are the polite act, not vocabulary for it")):
+#
+# SIO-025 AND SIO-039 CAME OUT ON 2026-09-01, the last two of the three, and
+# the reasoning is the same shape a third and fourth time:
+#
+#   SIO-025 — the deck's `example` fields do carry « Pourquoi … ? », so a lesson
+#   re-teaching THE QUESTION would be a second door. What no card asks is what
+#   comes AFTER « parce que »: the stop's own competence is "parce que c'est +
+#   adjective or parce que j'aime + N", every card shows that frame already
+#   attached, and the deck quietly contains a third opening its SIO never names
+#   (« Parce que je fais du sport avec mes amis. »).
+#
+#   SIO-039 — the cards ARE the polite act, exactly as recorded. What they never
+#   ask is WHICH act: five openers, each with the deck's own nuance in its
+#   English (« (polite request) », « (wish) », "I need", "I want", "I feel
+#   like"), and the French always shows the opener already chosen. The
+#   competence names four of the five and asks for all of them.
+#
+# Both lessons therefore teach the CHOICE, not the phrase — the same distinction
+# that took SIO-006 and SIO-038 off this list. verify76 holds them to it: both
+# tables are rebuilt against their decks, and ★ is asserted to withdraw the
+# frame and the opener rather than a word the English prompt already gives.
+#
+# The three-line loop that stood here is gone because it has nothing left to
+# assert, not because it was silenced. What replaces it is stronger: the same
+# stops are now covered by a check that says what they MUST teach instead of
+# one that said they must stay empty.
+for sio, slug in (("SIO-025", "parce-que"), ("SIO-038", "transport"), ("SIO-039", "wants-needs")):
     m = re.search(r'"%s":\s*\[([^\]]*)\]' % sio, reg)
-    check(m is None or not m.group(1).strip(),
-          f"{sio} still has no lesson — it was never a gap ({why})",
-          f"{sio} has been given a lesson, but it was not a gap: {why}. "
-          "Re-read the deck's example fields before adding one.")
+    listed = [x.strip().strip('"') for x in (m.group(1) if m else "").split(",") if x.strip()]
+    check(listed == [slug],
+          f"{sio} leads with its own lesson ({slug}) and no other",
+          f"{sio} lists {listed} — a reversed non-gap must lead with the lesson written FOR it; "
+          f"one goal, one lesson (verify27), and a second door here is what the original "
+          f"finding was right to warn about.")
 
 # ---- 3-4 · the generators, EXECUTED ----------------------------------------
 JS = r"""

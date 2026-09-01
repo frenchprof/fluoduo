@@ -53,6 +53,11 @@ import { transportLesson } from "./transport";
 // here would REPLACE the dialogue an atelier opens on (LessonPager resolves
 // `lesson?.memo ?? memoForDeck(...)`).
 import { atelierRencontreLesson } from "./atelier-rencontre";
+// SIO-025 and SIO-039 — the two ordinary Tier 3 stops. Both decks show the
+// choice already made: parce-que attaches its frame to every reason, and
+// envies-besoins attaches its opener to every sentence.
+import { parceQueLesson } from "./parce-que";
+import { wantsNeedsLesson } from "./wants-needs";
 import { auMarcheLesson } from "./au-marche";
 import { soixanteDixLesson } from "./soixante-dix";
 import { avoirEtatsLesson } from "./avoir-etats";
@@ -127,6 +132,8 @@ export const NATIVE_LESSONS: Record<string, NativeLesson> = {
   "core-nouns": coreNounsLesson,
   transport: transportLesson,
   "atelier-rencontre": atelierRencontreLesson,
+  "parce-que": parceQueLesson,
+  "wants-needs": wantsNeedsLesson,
   "revision-u1": revisionU1Lesson,
   "revision-u3u4": revisionU3U4Lesson,
   "revision-u4": revisionU4Lesson,
