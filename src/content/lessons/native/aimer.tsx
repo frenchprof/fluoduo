@@ -57,7 +57,8 @@ export const aimerLesson: NativeLesson = {
     ),
     answer: (
       <>
-        Because <i lang="fr">aimer</i> talks about the thing <b>in general</b> &mdash; the
+        Because <i lang="fr">aimer</i> talks about the thing <b>in general</b>{" "}
+        &mdash; the
         whole category. Disliking a category does not make it smaller: there is still such a
         thing as sport, you simply do not like it. <i lang="fr">Faire du sport</i> is a{" "}
         <b>portion</b> of it, and once you say no there is no portion left to name. Same

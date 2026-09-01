@@ -63,7 +63,8 @@ export const frequenceLesson: NativeLesson = {
     answer: (
       <>
         Between the verb and its object: <i lang="fr">Elle regarde rarement la
-        t&eacute;l&eacute;.</i> The adverb is describing the verb, and French keeps it next
+        t&eacute;l&eacute;.</i>{" "}
+        The adverb is describing the verb, and French keeps it next
         to what it describes &mdash; even when that splits the verb from its object, which
         English never does.
       </>

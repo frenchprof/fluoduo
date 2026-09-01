@@ -49,67 +49,151 @@ const wrongArt = (np: string) =>
 
 export const alimentsLesson: NativeLesson = {
   slug: "aliments",
-  // TIER 2 CONCEPT — a question the WORD LIST cannot answer. Lifted from the
-  // Mémo below; no grammar introduced that it does not teach. DRAFTED —
-  // `contrast` and `remember` are the pedagogical claim and go to Dan first.
+  // TIER 2 CONCEPT — SIO-041, REPLACED 1 Sep on Dan's instruction ("put it
+  // where we learn about food items"). What stood here argued *why the article
+  // often hides the gender* — « de l'eau » and « des frites » say nothing, so
+  // nine of these words arrive gender-unmarked. It was a good caution and it is
+  // recoverable from git (see the commit that made this change) if Dan wants it
+  // back. Two things decided against it. Its practical advice — learn the
+  // gender with the word — is ALREADY delivered by the lexique, which marks
+  // every one of those nine; on Dan's litmus test, a claim whose removal costs
+  // the learner nothing is redundant. And it had no generative reach: it warned
+  // about a list rather than letting a learner build anything.
+  //
+  // It could not simply move, either. A concept has to sit on its own lesson's
+  // Mémo, and the only other food lesson without one is `manger-boire`, whose
+  // Mémo is a conjugation table for manger and boire — noun gender would be a
+  // stranger on it.
+  //
+  // NO INVENTED FRENCH, AND EVERY PHRASE IS TRACEABLE.
+  //   « le gâteau au chocolat »  — devine-aliments.json
+  //   « du jus d'orange »        — this deck, plus finale.ts and textgen/unit4
+  //   « des pommes de terre »    — devine-aliments.json
+  //   « une tarte aux pommes »   — DAN'S OWN, from the roster line that
+  //                                commissioned this concept. Flagged because it
+  //                                is the one phrase not already in the content.
   concept: {
-    subtitle: "Why the article often hides the gender",
+    subtitle: "Why French needs a joint where English just stacks nouns",
     contrast: (
       <>
-        A word list normally tells you a noun&rsquo;s gender through its article —{" "}
-        <i lang="fr">le pain</i>, <i lang="fr">la viande</i>. But{" "}
-        <i lang="fr">de l&rsquo;</i> before a vowel and <i lang="fr">des</i> in the plural
-        say nothing at all, so nine of these words arrive with their gender hidden.
+        English builds a food name by piling the words up &mdash; <i>chocolate cake</i>,{" "}
+        <i>orange juice</i>, <i>apple tart</i>{" "}
+        &mdash; and the first word describes the
+        second. French cannot stack: the main thing comes first and a joint carries the
+        rest. There are two joints, and choosing the wrong one changes what the dish is.
       </>
     ),
     question: (
       <>
-        You have only ever met <i lang="fr">de l&rsquo;eau</i>. Is{" "}
-        <i lang="fr">eau</i> masculine or feminine?
+        <i lang="fr">le gâteau au chocolat</i> but <i lang="fr">le jus d&rsquo;orange</i>.
+        Both name a food by what is in it. So why not the same little word twice?
       </>
     ),
     answer: (
       <>
-        Feminine — <i lang="fr">une eau</i>, <i lang="fr">la belle eau</i>. Nothing in{" "}
-        <i lang="fr">de l&rsquo;eau</i> could have told you, because{" "}
-        <i lang="fr">l&rsquo;</i> is what both genders become before a vowel. The word list
-        marks these; the article cannot.
+        Because they say different things. <i lang="fr">à</i> puts the second thing{" "}
+        <b>in</b> the first: the cake has chocolate in it, and could have been made
+        without. <i lang="fr">de</i> says the first thing is <b>made of</b> the second
+        and of nothing else: the juice <em>is</em> the orange, pressed. And the joint
+        brings its own article rule &mdash; <i lang="fr">à</i> keeps the article and fuses
+        with it (<i lang="fr">à + le → au</i>), while <i lang="fr">de</i> drops it
+        altogether: <i lang="fr">jus d&rsquo;orange</i>, never{" "}
+        <i lang="fr">jus de l&rsquo;orange</i>.
       </>
     ),
-    // Not English logic here — the wrong column is what the ARTICLE suggests,
-    // which is a French signal misread, not an English habit transferred.
-    pitfallHeads: ["what the article suggests", "what is true"],
+    pitfallHeads: ["what stacking gives", "what French builds"],
     pitfall: [
-      { label: <><i lang="fr">de l&rsquo;eau</i></>, wrong: <>looks masculine</>, right: <><i lang="fr">f</i> — une eau</> },
-      { label: <><i lang="fr">des frites</i></>, wrong: <>looks masculine</>, right: <><i lang="fr">f pl</i> — une frite</> },
-      { label: <><i lang="fr">des champignons</i></>, wrong: <>looks feminine</>, right: <><i lang="fr">m pl</i> — un champignon</> },
+      {
+        label: <>the order</>,
+        wrong: <i lang="fr">chocolat gâteau</i>,
+        right: (
+          <>
+            <i lang="fr">le gâteau au chocolat</i>{" "}
+            &mdash; the thing first, what is in it after
+          </>
+        ),
+      },
+      {
+        label: <>an article after <i lang="fr">de</i></>,
+        wrong: <i lang="fr">le jus de l&rsquo;orange</i>,
+        right: (
+          <>
+            <i lang="fr">le jus d&rsquo;orange</i>{" "}
+            &mdash; a kind, not a quantity, so no article
+          </>
+        ),
+      },
+      {
+        label: <>the wrong joint</>,
+        wrong: <i lang="fr">le gâteau de chocolat</i>,
+        right: (
+          <>
+            <i lang="fr">le gâteau au chocolat</i>{" "}
+            &mdash; chocolate is in it, not what it is made of
+          </>
+        ),
+      },
+      {
+        label: <>plural after <i lang="fr">à</i></>,
+        wrong: <i lang="fr">une tarte à les pommes</i>,
+        right: (
+          <>
+            <i lang="fr">une tarte aux pommes</i>{" "}
+            &mdash; <i lang="fr">à + les</i> always fuses
+          </>
+        ),
+      },
+    ],
+    flow: [
+      { depth: 0, text: "Name the main thing first — le gâteau, le jus, une tarte." },
+      { depth: 0, text: "Is the second thing IN it, one ingredient among others?" },
+      { depth: 1, text: "à + the article, fused — au chocolat, aux pommes." },
+      { depth: 0, text: "Is the first thing MADE OF the second, and nothing else?" },
+      { depth: 1, text: "de + the bare noun, no article — jus d'orange." },
     ],
     check: [
       {
-        q: <>Why does <i lang="fr">de la viande</i> not need marking?</>,
-        a: <>Because <i lang="fr">la</i> already says it. Only <i lang="fr">de l&rsquo;</i> and <i lang="fr">des</i> hide it.</>,
-      },
-      {
-        q: <>You eat some meat. Which form?</>,
+        q: (
+          <>
+            A tart with apples in it: <i lang="fr">une tarte ___ pommes</i>. Which joint?
+          </>
+        ),
         a: (
           <>
-            <i lang="fr">Je mange de la viande</i> — you eat SOME of it, so the partitive,
-            and <i lang="fr">viande</i> is feminine.
+            <i lang="fr">aux</i>{" "}
+        &mdash; the apples are in it, so <i lang="fr">à</i>, and{" "}
+            <i lang="fr">à + les</i> fuses to <i lang="fr">aux</i>:{" "}
+            <i lang="fr">une tarte aux pommes</i>.
+          </>
+        ),
+      },
+      {
+        q: (
+          <>
+            Why <i lang="fr">jus d&rsquo;orange</i> rather than{" "}
+            <i lang="fr">jus de l&rsquo;orange</i>?
+          </>
+        ),
+        a: (
+          <>
+            Because it names the <b>kind</b> of juice, not some quantity of one
+            particular orange. An article would make it a quantity, and{" "}
+            <i lang="fr">de</i> in a compound never carries one.
           </>
         ),
       },
     ],
     inShort: (
       <>
-        <i lang="fr">le</i> / <i lang="fr">la</i> / <i lang="fr">un</i> /{" "}
-        <i lang="fr">une</i> show the gender · <i lang="fr">de l&rsquo;</i> and{" "}
-        <i lang="fr">des</i> hide it
+        <i lang="fr">à</i> puts it <b>in</b> · <i lang="fr">de</i> says what it is{" "}
+        <b>made of</b>
       </>
     ),
     remember: (
       <>
-        <i lang="fr">De l&rsquo;</i> and <i lang="fr">des</i> tell you nothing. Learn the
-        gender <em>with</em> the word.
+        <b>In it &rarr; <i lang="fr">au / à la / aux</i>. Made of it &rarr;{" "}
+        <i lang="fr">de</i>, bare.</b> The main thing is always named first, and the
+        article tells you which joint you took.
       </>
     ),
   },

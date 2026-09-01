@@ -11,8 +11,10 @@ the finding that costs most is the false one:
                                  `example` field ("Pourquoi tu aimes le
                                  sport ?"). Both halves already taught.
   SIO-038  Getting around      — same shape ("Tu y vas en bus ?").
+                                 REVERSED 2026-09-01; see the note at part 2.
   SIO-039  Wants & needs       — the cards ARE the polite act ("Je voudrais un
                                  café."), not vocabulary for it.
+                                 REVERSED 2026-09-01; see the note at part 2.
 
   ALL THREE WERE REVERSED ON 2026-09-01, one at a time and each for its own
   reason. The reasons are at part 2, and none of them says the finding above
@@ -174,15 +176,21 @@ for slug, sio in GENS.items():
 #   competence names four of the five and asks for all of them.
 #
 # Both lessons therefore teach the CHOICE, not the phrase — the same distinction
-# that took SIO-006 and SIO-038 off this list. verify76 holds them to it: both
-# tables are rebuilt against their decks, and ★ is asserted to withdraw the
-# frame and the opener rather than a word the English prompt already gives.
+# that took SIO-006 and SIO-038 off this list. verify76 holds 039 to it and
+# verify83 holds 025: each table is rebuilt against its deck, and ★ is asserted
+# to withdraw the frame and the opener rather than a word the English gives.
+#
+# 039's surviving file is envies-besoins — the wants-needs draft was written in
+# parallel from the stale nine-file brief, and Dan graft-merged its winning
+# parts in on 2 Sep rather than keep two lessons on one goal. 025 Dan kept
+# explicitly (2 Sep: "what is wrong with that pourquoi lesson that we need to
+# drop it").
 #
 # The three-line loop that stood here is gone because it has nothing left to
 # assert, not because it was silenced. What replaces it is stronger: the same
 # stops are now covered by a check that says what they MUST teach instead of
 # one that said they must stay empty.
-for sio, slug in (("SIO-025", "parce-que"), ("SIO-038", "transport"), ("SIO-039", "wants-needs")):
+for sio, slug in (("SIO-025", "parce-que"), ("SIO-038", "transport"), ("SIO-039", "envies-besoins")):
     m = re.search(r'"%s":\s*\[([^\]]*)\]' % sio, reg)
     listed = [x.strip().strip('"') for x in (m.group(1) if m else "").split(",") if x.strip()]
     check(listed == [slug],

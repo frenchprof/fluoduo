@@ -63,6 +63,8 @@ export const LESSONS: Record<string, Lesson> = {
   "conseils":          { slug: "conseils",          title: "Donner un conseil",            unit: 4 },
   "rendezvous":        { slug: "rendezvous",        title: "Proposer, accepter, refuser", unit: 2 },
   "meteo":             { slug: "meteo",             title: "La météo",                     unit: 3 },
+  // SIO-039, written 1 Sep — deck-backed stop with no lesson file (handover).
+  "envies-besoins":    { slug: "envies-besoins",    title: "Envies et besoins",            unit: 3 },
   "prepositions":      { slug: "prepositions",      title: "Prépositions : pays & villes",  unit: 3 },
   "prepositions-lieux":{ slug: "prepositions-lieux",title: "Prépositions : en ville",       unit: 3 },
   // SIO-038, 2026-09-01 — the last Tier 1 stop with a deck and no lesson file,
@@ -74,11 +76,7 @@ export const LESSONS: Record<string, Lesson> = {
   // for one stop cannot drift.
   "atelier-rencontre": { slug: "atelier-rencontre", title: "Atelier — Première rencontre", unit: 0 },
   // SIO-025 and SIO-039, 2026-09-01 — the two ordinary Tier 3 stops from colour
-  // review's handover. `wants-needs` is envies-besoins.json's own declared
-  // `lessonSlug`; the deck keeps its French id, the lesson takes the name the
-  // deck gives it.
   "parce-que":         { slug: "parce-que",         title: "Pourquoi ? Parce que…",        unit: 2 },
-  "wants-needs":       { slug: "wants-needs",       title: "Envies et besoins",            unit: 3 },
   // The five remaining ateliers, 2026-09-01 — same shape as atelier-rencontre:
   // the Mémo is the generated model passed through, and the exercise is the
   // grammar each stop is graded on, out of Dan's reviewed FINALE bank. Slugs
@@ -124,7 +122,6 @@ export const LESSONS_BY_SIO: Record<string, string[]> = {
   // than written.
   "SIO-010": ["atelier-rencontre"],
   "SIO-025": ["parce-que"],
-  "SIO-039": ["wants-needs"],
   "SIO-020": ["atelier-pays"],
   "SIO-030": ["atelier-email"],
   "SIO-040": ["atelier-itineraire"],
@@ -169,6 +166,7 @@ export const LESSONS_BY_SIO: Record<string, string[]> = {
   "SIO-029": ["rendezvous", "modaux"], // vouloir forms live in the modaux lesson
   // Its own lesson now; modaux stays second as the paradigm reference.
   "SIO-037": ["pouvoir", "modaux"],
+  "SIO-039": ["envies-besoins"],
   "SIO-047": ["futur-proche", "modaux"],
   "SIO-048": ["conseils", "modaux"],
   "SIO-031": ["meteo"],

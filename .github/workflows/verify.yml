@@ -214,6 +214,9 @@ jobs:
       - name: "An atelier's Mémo opens on the model and its words (31 Aug)"
         run: python3 verify/verify71-atelier-opens-on-forms.py
 
+      - name: "SIO-039 has a lesson, and its French is the deck's own (1 Sep)"
+        run: python3 verify/verify76-envies-besoins.py
+
       - name: "A tour step points at something that exists (28 Aug)"
         run: python3 verify/verify44-tour-targets.py
 
@@ -237,12 +240,14 @@ jobs:
       - name: "An atelier's lesson adds the register and does not eat the model (1 Sep)"
         run: python3 verify/verify75-atelier-lesson.py
 
-      - name: "SIO-025 and SIO-039 have a lesson; ★ withdraws the frame and the opener (1 Sep)"
-        run: python3 verify/verify76-two-tier3-stops.py
+      # Renumbered 76 -> 83 at merge: Peers' branch minted a second verify76
+      # while verify76-envies-besoins was landing — the in-flight collision the
+      # AGENTS.md sweep exists to catch, found by Pre-tests mid-flight.
+      - name: "SIO-025 has a lesson; ★ withdraws the frame (1 Sep)"
+        run: python3 verify/verify83-parce-que.py
 
       - name: "The five remaining ateliers: the model survives, and no option Dan did not review (1 Sep)"
         run: python3 verify/verify77-five-ateliers.py
-
 
       - name: "Every check runs, and no two share a number"
         run: python3 verify/verify-wiring.py
@@ -293,3 +298,23 @@ jobs:
 
       - name: A word may not butt against the next across an element edge
         run: python3 verify/verify72-jsx-spacing.py
+
+      # The browser half of verify72, LAST on purpose: it replaces out/ with
+      # an OPEN export, and the wall build above is the one verify18/18b
+      # audit — nothing may read out/ after this line expecting the wall.
+      - name: "Home's two control rows and the map view switch (1 Sep)"
+        run: python3 verify/verify80-home-view-switch.py
+
+      - name: "The origin animation ends on the NAME — FluOLinGo (1 Sep)"
+        run: python3 verify/verify81-fluolingo-origin.py
+
+      - name: "Every page wears the same chrome — spine, band, stop (1 Sep)"
+        run: python3 verify/verify82-page-chrome.py
+
+      # The scan launches the runner's preinstalled Chrome via
+      # playwright-core; no browser download step is needed.
+      - name: Rebuild the export open, for the browser to walk
+        run: NEXT_PUBLIC_OPEN_APP=1 npm run build
+
+      - name: "The jam scan — every lesson RENDERED, every tab and pane (1 Sep)"
+        run: python3 verify/verify79-jam-scan.py

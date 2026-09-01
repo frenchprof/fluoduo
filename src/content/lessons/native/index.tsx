@@ -44,6 +44,7 @@ import { quelleMatiereLesson } from "./quelle-matiere";
 // with the word.
 import { colorsLesson } from "./colors";
 import { coreNounsLesson } from "./core-nouns";
+import { enviesBesoinsLesson } from "./envies-besoins";
 // SIO-038 — the last Tier 1 stop whose deck had no lesson file (colour review's
 // handover, 31 Aug). Its twelve items are three frames: en + a vehicle you sit
 // inside, à + on foot or astride, prendre + the definite article.
@@ -57,7 +58,6 @@ import { atelierRencontreLesson } from "./atelier-rencontre";
 // choice already made: parce-que attaches its frame to every reason, and
 // envies-besoins attaches its opener to every sentence.
 import { parceQueLesson } from "./parce-que";
-import { wantsNeedsLesson } from "./wants-needs";
 // The five remaining ateliers. Each passes its generated Mémo through — see
 // atelier-rencontre.tsx for why authoring one deletes the model dialogue.
 import { atelierPaysLesson } from "./atelier-pays";
@@ -137,10 +137,10 @@ export const NATIVE_LESSONS: Record<string, NativeLesson> = {
   "soixante-dix": soixanteDixLesson,
   colors: colorsLesson,
   "core-nouns": coreNounsLesson,
+  "envies-besoins": enviesBesoinsLesson,
   transport: transportLesson,
   "atelier-rencontre": atelierRencontreLesson,
   "parce-que": parceQueLesson,
-  "wants-needs": wantsNeedsLesson,
   "atelier-pays": atelierPaysLesson,
   "atelier-email": atelierEmailLesson,
   "atelier-itineraire": atelierItineraireLesson,

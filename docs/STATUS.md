@@ -6,7 +6,158 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
-## 1 Sep — Dan's eight Home annotations, DIVIDED (the labour, not the files)
+## 1 Sep, night — the wrong answers, and Home's switch actually opens the map
+
+Sole editor of STATUS.md in this commit: Pre-tests.
+
+Two rounds of Dan's corrections on the same evening, one branch
+(`claude/lesson-files-025-038-039`, restarted off `main` after #125 merged).
+
+**The wrong answers on `envies-besoins` could be right.** Every cloze surface
+builds its decoys from the deck's OTHER gap words — correct for « du / de la /
+des », wrong here: « Je ___ visiter Paris » marked `veux` correct and offered
+`voudrais`, which is good French differing only in register. Four of ten cards
+could mark a learner wrong for knowing more. Dan's fix, verbatim: *"i would
+make the wrong answers veut and voudrait"* — third person, wrong on agreement
+after « Je », and unable to collide with each other. Then, seeing the fixed
+card: *"i would put besoin and rêve instead of envie and aimerais (which start
+with vowels)"* — a vowel-initial decoy is wrong on ELISION before it is wrong
+about wanting and needing, so a learner rejects it having understood nothing.
+Both rules now live in one new deck field, `gapDecoys` (schema.ts), read by one
+new helper, `gapDecoyPool` (gapSentence.ts), which **three** surfaces now share
+— the pager's ★ MCQ, the pager's ★★ word bank and GramMarathon's — because
+each derived that pool for itself and this deck could have been corrected in
+one and stayed broken in the other two. Every other deck is byte-for-byte
+unchanged: absent `gapDecoys`, the pool is the deck's own gaps.
+
+**Home's view switch.** Dan: *"transfer the labels of the 3D switch into the
+switch itself … move it to the left under the 4/30 … swap the positions of the
+four buttons and the next stop's name … and make sure the switch literally
+takes you the map it promises to."* All four done. The last one was a real
+defect: Home's switch started at 2D on every visit whatever the learner had
+chosen, and its map link carried `?view=2d`, which /map then SAVED — so
+choosing 3D on the map, going Home and coming back put you in 2D, changed by a
+control that looked like it was only reporting the state. New `lib/mapView.ts`
+holds the key, the reader, the writer and the href builder for the three
+surfaces that set this view; flipping the switch now saves the choice and opens
+the map in it.
+
+**Handover to fluoduo-main.** Branch `claude/lesson-files-025-038-039`, three
+commits off `7787fad8`. Two lots in one branch, splittable at the commit
+boundary:
+- *decoys* — `src/lib/collections/schema.ts`, `gapSentence.ts`,
+  `src/app/lessons/pager/buildCards.tsx`, `GramMarathonContent.tsx`,
+  `src/content/collections/envies-besoins.json`, `verify76`.
+- *Home* — `src/app/HomeDashboard.tsx`, `src/app/map/MapBody.tsx`,
+  `src/lib/mapView.ts`, `verify25b`, `verify25c`, `verify80`, `verify.yml`.
+
+Shared files anyone else may be in: `buildCards.tsx`, `HomeDashboard.tsx`,
+`MapBody.tsx`, `verify25b/25c`, `.github/workflows/verify.yml`.
+
+**⚠ A verify-number collision that is NOT ours to fix.**
+`verify76-envies-besoins.py` has been on `main` since #125 (`aae60c0`);
+`origin/claude/peers-vd2h6h` carries `verify76-two-tier3-stops.py`. Two checks
+sharing a leading number fails `verify-wiring.py`, so that branch cannot merge
+until it renumbers — 80 is now taken too, so **81 up is free**. Flagged rather
+than renumbered: ours is already on main, and renumbering a merged check is
+how the 31/52/60 collisions turned into two problems each.
+
+**Open with Dan, unchanged from this morning:** whether SIO-025 gets a lesson
+after all; whether SIO-022's ×6 possessives drill should be re-homed (it died
+with iComplete); whether `SessionReceipt` + `useRunXp` should be re-hosted (0
+hosts since #125's parent); and whether Facile's four leading MCQ cards should
+stay, given its blurb still reads "Sort the words into order".
+
+**The cycling redo — DONE, and it was not a re-skin.** Decision 4 asked for the
+fluency-cycling animation rebuilt in FluOLinGo Hand. The 30 Aug cut ended on
+`Fluolingo`, all lowercase — a spelling THE NAMES RULE killed the next day. So
+the show gains a sixth stage, and the capitals are its point rather than its
+styling: up to the merge it is the spaces that mark the four words, and closing
+them is both what makes the name and what would throw the four words away.
+`Fluolingo` is one word; `FluOLinGo` is still four.
+
+    Fluency {achieved} on {customisable} linguistic goals
+      -> Fluency on linguistic goals -> Flu on lin go -> Flu o lin go
+      -> Fluolingo -> FluOLinGo
+
+Dan's 30 Aug arithmetic carries over intact (stage table, beats, the growing
+cycle intervals that ARE the deceleration, and the rule that a dead letter
+takes no width and sits on the seam it closed); `phaseAt` is new, so a renderer
+cannot answer "which stage am I between?" in its own `if` ladder and drift —
+which is what let the earlier cut rest on `Flu   o   lin   go` with holes in
+it. New files: `src/lib/fluolingoOrigin.ts` (data + arithmetic, no DOM),
+`src/components/FluolingoOrigin.tsx` (pixels only), `/hidden/fluolingo`
+(noindex) to watch it on, `verify81` (executes the spec; 13 sabotages, all
+caught). **Where it belongs is Dan's call** — it is on its own page and nothing
+else mounts it. Neither 30 Aug branch was merged; both can be deleted once Dan
+has seen this.
+
+**Pre-tests' queue is now empty.**
+
+## 1 Sep evening — SIO-039 lands, SIO-025 is ruled, and live is at #124
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Three merges this round, and a deploy that happened from Dan's side:
+
+- **#125 (`aae60c0`) — SIO-039 « Envies et besoins » has its lesson.** Ten
+  cards, five frames, and the two things the deck demonstrates but never
+  states: the bare/`de` split (« Je voudrais un plan » against « J'ai besoin
+  d'un plan », 6–4 exactly along that line) and the politeness scale. Concept
+  slot left EMPTY — that is Color review's to fill, per the handover.
+  verify76 executes the generator 4000 times rather than regex-reading it.
+  Screenshots taken at QC: Forms carries the frames, Idea correctly shows the
+  empty-concept placeholder.
+  - **SIO-038 stood down in the same PR** — Pre-tests' pre-flight scan found
+    Peers had built it eight hours before the split assigned it (the #97
+    collision shape, caught mid-work this time, which is the scan doing its
+    job).
+  - **SIO-025 is ruled a NON-gap, with the reasoning written into verify51**:
+    both halves already taught; every candidate concept needs French the deck
+    does not contain, so a lesson would be a slot filled rather than a claim
+    made. It stays out unless Dan overrules. The QC merge left verify51's
+    no-lesson loop holding SIO-025 alone — 038 and 039 both came out on 1 Sep.
+  - **Pre-tests' queue is now just the cycling redo** (FluOLinGo Hand font).
+- **#126 (`f873e91`) — docs/DEPLOY_PULL_SETUP.md**, the pull-direction deploy
+  for dckg/fluo. One correction to its premise, from Dan after it merged: the
+  PAT was minted **signed in as dckg**, not frenchprof — so the doc's
+  diagnosis of runs 2–6 is wrong, though its three setup steps remain valid
+  as the pull-direction alternative.
+- **#127 (`ef6bacc`) — deploy-live now diagnoses its own failure.** Run 7
+  (fired after Dan's correction) still died on `remote: Repository not
+  found`, which is ONE message for three faults: secret empty/missing on
+  frenchprof/fluoduo (an empty token pushes anonymously; a private repo 404s
+  strangers), token dead, or token not granted dckg/fluo. A step now checks
+  each in turn and names the one that holds, printing only the login the
+  token authenticates as. The next run answers the question instead of
+  repeating it.
+- **Live is at `09539b5` (#124)** — Dan deployed ~17:21Z; the Cloudflare
+  build log confirms 751 pages, functions uploaded, published. Not yet live:
+  `f873e91`/`aae60c0`/`ef6bacc`, of which **the SIO-039 lesson is the one a
+  learner can see**. One more deploy (Dan's three commands, or deploy-live
+  once the token fault is fixed) picks all three up.
+
+## 1 Sep, later — the jam scan goes to CI, and decision 8 comes off the shelf
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Two rulings from Dan, same message:
+
+- **"The jam sweep should be in CI. It's the only instrument that catches
+  that class."** Done — PR #130: `scripts/jam-scan.mjs` (the browser scan
+  verify72's docstring promised, now committed instead of living in one
+  session's scratchpad), run by verify79 against an open rebuild that
+  verify.yml does LAST, after the wall build verify18/18b audit. verify38
+  grew one precise exemption for that line, with assertions that keep it
+  precise. **Its first run found three jams live on main** — « à lagare »,
+  « aumusée » (le-chemin), "whatyou" (transport), all three with a same-line
+  source space the compiler dropped — fixed in the same PR. Number 79 claimed
+  after the remote sweep; Peers holds 77/78 in flight.
+- **Decision 8 — `rule:` namespace tagging of the 894 items — is back on the
+  radar.** It was parked "until the concepts finish"; at 45 of 52 that is
+  close enough (Dan, 1 Sep). Not yet assigned to a lane: it wants Dan's
+  shape-of-the-tagging ruling first, and Color review is the natural owner
+  once the last 8 Tier-3 concepts land.
 
 Sole editor of STATUS.md in this commit: fluoduo-main.
 
@@ -289,19 +440,55 @@ lane = report it in STATUS, don't do it.
   only where it is OPAQUE (« il fait beau »). The redraft and the 27% page
   cut are in **#100**, awaiting fluoduo-main's merge under rule 7.
   cut **MERGED — #100, `9a3c67b`, 31 Aug PM**, Tier 1 batch 1 with it.
-  Remaining, in order:
-  1. **Tier 1 — 19 concepts.** The critical path, nothing gating it. Batches
-     of five, every batch read by Dan before ship.
-  2. **Tier 3 — 8 more phrase stops.** Classroom talk, Pourquoi ?, Telling
-     time, Invitations, Weather, Directions, Wants & needs, Introductions.
-     The salutations shape applies directly.
-  3. **The 6 ateliers have no native lesson file** — a concept has nowhere to
-     live on stops 10/20/30/40/49/50. They need a file before Tier 3 closes.
-  4. **Tier 2 second half** — compound names, *tarte aux pommes* against
-     *jus de pomme*.
-  5. **Colours (5) + Some nouns (6)** — the two Tier 2 stops with no native
-     lesson file. Decision 6: give them one, or Tier 2 is done at 13.
-  Keeper of the Stocktake ledger — re-issue when the counts move.
+  **Re-audited 1 Sep from the repo, not from this list** — the counts below were
+  stale in every line. The audit walks `LESSONS_BY_SIO` and looks for a
+  `concept:` in each stop's lesson file. (It found its own blind spot first: the
+  SIO id regex was `SIO-\d+`, which silently skips **SIO-045A** and reported
+  Tier 2 one short. A scan that matches more narrowly than the thing it asserts
+  invents a gap; one that matches more loosely drowns the signal. Both have now
+  happened here.)
+
+  1. ✅ **Tier 1 — 20/20. DONE.** Closed by SIO-038, whose file arrived from
+     Peers (#120) and whose concept went on the same hour.
+  2. ✅ **Tier 2 — 15/15. DONE.** Decision 6 resolved by #105: Colours and Some
+     nouns both have files and both carry concepts. SIO-045A is mapped to
+     `soixante-dix` and has one too.
+  3. **Tier 3 — 8 of 15, and every gap is a MISSING FILE, not a missing
+     argument.**
+     - phrase stops **7 of 9** — SIO-025 (`parce-que`) and SIO-039
+       (`envies-besoins`) have no lesson file. Both are job A of
+       `docs/HANDOVER_LESSON_FILES.md`.
+     - ateliers **1 of 6** — SIO-010 done, and it is the shape the other five
+       copy. SIO-020/030/040/049/050 have no file.
+  4. ✅ **The compound-names concept — DONE, and it cost the concept that was
+     there.** Dan, asked where it belongs: *"put it where we learn about food
+     items."* That is SIO-041, which already carried one, so *why the article
+     often hides the gender* was **replaced** by *why French needs a joint where
+     English just stacks nouns* — `à` puts it in (*le gâteau au chocolat*), `de`
+     says what it is made of (*le jus d'orange*), and the article falls out of
+     the choice. Dan saw both side by side before it shipped. `aliments.tsx`
+     names the commit that removed the old one, so a revert is one lookup away.
+
+  **THE STOCKTAKE, re-issued 1 Sep — 45 concepts across 52 stops.**
+
+  | tier | stops | concepts | what is missing |
+  |---|---|---|---|
+  | 1 · Systemic Grammar | 20 | **20** ✅ | — |
+  | 2 · Lexical Core | 15 | **15** ✅ | — |
+  | 3 · phrase stops | 9 | **7** | SIO-025, SIO-039 |
+  | 3 · ateliers | 6 | **1** | SIO-020 / 030 / 040 / 049 / 050 |
+
+  **Seven concepts remain and NOT ONE of them is blocked on an argument.** Every
+  gap is a lesson file that does not exist yet, so the pipeline's critical path
+  now runs through other lanes: the five atelier files are Peers' (STATUS line
+  544), SIO-025 and SIO-039 went to Pre-tests with #123. SIO-010 is written and
+  is the shape the other five copy — an atelier concept argues the REGISTER, the
+  thing a model dialogue cannot show because it only ever runs one.
+
+  Two things this lane can do with no file at all, in the order they are worth
+  doing: re-read the 45 against Dan's litmus test now that they can be compared
+  as a set, and draft the five atelier arguments from `ATELIER_DIALOGUES` so
+  they drop in the hour each file lands rather than the day after.
 - **Pre-tests — the pre-test surface, then capacity.** ~~Unit-0 pre-test pages
   (in flight, the last uncovered pre-test surface).~~ **DONE — #98.** All ten
   now render at `/pretests/unit0/SIO-00N`; every stop in the course has a
@@ -603,21 +790,31 @@ Peers carries three assignments while Pre-tests sat idle after Lot A. The
 split is BY STOP, disjoint files, written here BEFORE either session opens
 one (the 31 Aug #97-collision lesson):
 
-- **PRE-TESTS takes the three deck-backed files** — SIO-025 `parce-que`
-  (6 items), **SIO-038 `transport`** (12), SIO-039 `envies-besoins` (10).
-  The model is `colors.tsx`; the full brief, the registration joints, the
-  no-invented-French rule and the `{" "}` trap are all in
-  `docs/HANDOVER_LESSON_FILES.md` — read it before writing a line. SIO-038
-  first: it alone stands between Tier 1 and complete. The `concept` slot
-  stays EMPTY in all three — Color review drafts concepts on top.
+- **AMENDED after #120 (same day, 16:20Z): SIO-038 is DONE — Peers built it
+  in #120 before this split reached main.** Nobody rebuilds it. Tier 1's
+  last gap is filled the moment Color review drafts 038's concept.
+- **PRE-TESTS takes the remaining TWO deck-backed files** — SIO-025
+  `parce-que` (6 items) and SIO-039 `envies-besoins` (10). The model is
+  `colors.tsx` — or Peers' fresh `transport` from #120, which is newer; the
+  full brief, the registration joints, the no-invented-French rule and the
+  `{" "}` trap are all in `docs/HANDOVER_LESSON_FILES.md` — read it before
+  writing a line. The `concept` slot stays EMPTY in both — Color review
+  drafts concepts on top.
 - **PRE-TESTS also takes the cycling redo** (decision 4's ruling): the
   fluency-cycling animation rebuilt in FluOLinGo Hand — the two 30 Aug
   branches are superseded reference, not a base. Same skills as the
-  Kallang wave. Second priority, after the three files.
+  Kallang wave. Second priority, after the two files.
 - **PEERS keeps the six atelier files** (10 · 20 · 30 · 40 · 49 · 50 — the
-  novel dialogue-built half; prototype on SIO-010) plus the DrillShell
-  chrome fold and the Practice hub. **Do NOT build 025/038/039** — they are
-  Pre-tests' now.
+  dialogue-built half; prototype on SIO-010) plus the Practice hub (the
+  DrillShell chrome fold landed in #120). **Do NOT build 025/039** — they
+  are Pre-tests' now. **The handover's "no precedent" line is out of
+  date** (Pre-tests' catch): #111 already generates the atelier Mémo —
+  « Le modèle » — from `ATELIER_DIALOGUES` in `memos.tsx`. Start from
+  that, not from zero.
+- **Roster corrections** (Pre-tests flagged the staleness): their lane row's
+  "next: Tier-1 concept batches" is dead — #119 completed Tier 1; #104 and
+  #107 are MERGED, not open. Their live queue is exactly the two items
+  above. Where an older section below contradicts this one, this one wins.
 
 ## 31 Aug — nine stops have no lesson file: handover to Peers (SPLIT 1 Sep — see above)
 

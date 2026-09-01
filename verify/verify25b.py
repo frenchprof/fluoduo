@@ -65,22 +65,46 @@ check(bool(map2d), "HomeMap.tsx (2D) exists", "src/components/HomeMap.tsx missin
 check(bool(map3d), "HomeMap3D.tsx (3D) exists", "src/components/HomeMap3D.tsx missing")
 check("<HomeMap " in carte and "<HomeMap3D " in carte,
       "The Map renders both views", "MapBody does not render both HomeMap and HomeMap3D")
-check('"fluo.homeMapView"' in carte, "the 2D/3D choice is remembered under fluo.homeMapView",
-      "the toggle key fluo.homeMapView is missing from MapBody")
+# SUPERSEDED, 1 Sep, and rewritten rather than dropped. This matched the key's
+# LITERAL TEXT inside MapBody, which stopped being where it lives when Home's
+# switch started reading the same value: three surfaces set this view (the
+# map's control, `?view=` on any link in, Home's switch), and a key spelt in
+# three files is how they begin to disagree. It moved to lib/mapView.ts and
+# MapBody calls the reader and writer. The CLAIM is unchanged and now covers
+# more ground — the choice is remembered, and remembered in one place — so the
+# check follows it instead of matching the old string. verify80 owns the rest.
+view_mod = strip_comments(read("src/lib/mapView.ts"))
+check('MAP_VIEW_KEY = "fluo.homeMapView"' in view_mod,
+      "the 2D/3D choice is remembered under fluo.homeMapView",
+      "the toggle key fluo.homeMapView is missing from lib/mapView.ts")
+check("loadMapView()" in carte and "saveMapView(" in carte,
+      "MapBody reads and writes that choice through the shared module",
+      "MapBody no longer calls loadMapView/saveMapView — it has its own storage access again")
 check('"2d"' in carte and '"3d"' in carte and "aria-pressed" in carte,
       "a 2D · 3D segmented control (aria-pressed) drives the view",
       "no 2D/3D segmented control found")
-# ONE DOOR, not the literal string. This asserted `href="/map"` exactly, which
-# stopped being how Home spells it on 1 Sep: the map card now carries the view
-# the switch has chosen (`/map?view=2d|3d`, honoured and persisted by MapBody
-# above). The CLAIM — Home reaches the map by one card — is not only intact but
-# stronger than when this was written: Dan's two prominent 2D/3D blocks were a
-# second and third door, and the switch that replaced them navigates nowhere.
-# So the check counts doors instead of matching a string.
-doors = re.findall(r'href=\{?[`"]/map[^`"]*[`"]', home)
-check(len(doors) == 1,
-      f"Home reaches the map by exactly one card ({doors[0] if doors else '—'})",
-      f"Home has {len(doors)} links to /map; there should be one card and no second door")
+# ONE CARD, and — since Dan's last change of the day — one switch beside it.
+#
+# This has now been rewritten twice, and both times because the claim moved
+# rather than because it was wrong. It began as `href="/map"` matched exactly.
+# On 1 Sep morning the card grew the view the switch had chosen, so it counted
+# `/map…` hrefs instead and asserted there was one. That evening Dan asked for
+# the switch itself to open the map ("make sure the switch literally takes you
+# the map it promises to"), which makes a SECOND way in — deliberately.
+#
+# So the claim today is not "one door" but "no door Home spells for itself":
+# every route to the map is built by mapHref(), the same helper /map's reader
+# is paired with, and there is still exactly one LINK — the card. A raw
+# `/map?view=` reappearing in Home is the failure this guards, because that is
+# precisely how the promise broke before: Home wrote `?view=2d` by hand on
+# every visit and /map dutifully saved it over the learner's choice.
+raw = re.findall(r'href=\{?[`"]/map[^`"]*[`"]', home)
+check(not raw,
+      "Home spells no /map URL of its own — every route goes through mapHref()",
+      f"Home hand-writes {len(raw)} /map link(s): {raw[:2]} — the writer and the reader can now drift apart")
+check(home.count("href={mapHref(") == 1,
+      "the map card is still the one LINK to the map",
+      f"Home has {home.count('href={mapHref(')} map links; the card is meant to be the only one")
 check(not os.path.isfile("src/components/RoadMap.tsx") and "RoadMap" not in home,
       "RoadMap.tsx is gone and nothing in HomeDashboard renders it",
       "RoadMap is still around / rendered")

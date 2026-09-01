@@ -40,10 +40,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
-import { SIOS } from "@/content/sios";
 import { activity as activityInfo, bandOf, familyOf, isReadingSurface } from "@/content/activities";
 import { nextStep, type NextStep } from "@/lib/nextStep";
 import PageBand from "@/components/PageBand";
+import { stopForDeck, stopTagForDeck } from "@/lib/stopTag";
 import BottomBar from "@/components/BottomBar";
 import SiteTopBar from "@/components/SiteTopBar";
 
@@ -88,7 +88,9 @@ export type DrillHelp = {
 /** Where a drill's ✕ leads: the deck's unit on the path, or the Index for
  *  decks outside the spine. One rule, every drill. */
 export function drillExitHref(collectionId: string): string {
-  const sio = SIOS.find((s) => s.collectionId === collectionId);
+  // Through lib/stopTag.ts, which is now the one place a deck id is turned
+  // into its stop — this was the second hand-written copy of that `find`.
+  const sio = stopForDeck(collectionId);
   return sio ? `/unit/${sio.unit}` : "/map";
 }
 
@@ -242,7 +244,11 @@ export default function DrillShell({
     : 0;
 
   return (
-    <div className={`${famKey ? `fam-${famKey}` : "fam-none"}${bandKey ? ` band-${bandKey}` : ""}${isReadingSurface(activity) ? " paper-sand" : ""} flex h-dvh flex-col overflow-hidden bg-[color:var(--cahier-paper)]`}>
+    /* `cahier-drill` is not decoration: it is what lets the family spine in
+       globals.css name this shell as well as `.cahier-page`. Without it the
+       root carried `fam-practice` and drew no left edge, which is the fault
+       Dan's 1 Sep audit found on every drill in the app. */
+    <div className={`cahier-drill ${famKey ? `fam-${famKey}` : "fam-none"}${bandKey ? ` band-${bandKey}` : ""}${isReadingSurface(activity) ? " paper-sand" : ""} flex h-dvh flex-col overflow-hidden bg-[color:var(--cahier-paper)]`}>
       {/* ── the notebook (2026-08-24, approved flow): drills live INSIDE the
           cahier — the family heading band on top (name from the registry,
           the drill's i/total as the band's ONE chip so the figure is never
@@ -276,6 +282,13 @@ export default function DrillShell({
       {act && (
         <PageBand
           title={act.name}
+          /* WHICH STOP THIS IS (Dan, 1 Sep: "there are pages where there is no
+             identity tag regarding which stop it belongs to"). A drill named
+             its activity and its deck and never its position, so the only way
+             to answer "where am I on the course" was to leave and look at the
+             map. Undefined for a deck off the study path, and PageBand then
+             renders no sub-line at all rather than an empty one. */
+          sub={stopTagForDeck(deck)}
           lead={
             <Link
               href={exitHref}

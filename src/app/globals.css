@@ -1473,8 +1473,15 @@ h3.cahier-display { font-size: var(--fs-h3); }
 .cahier-page { background-color: var(--cahier-paper); }
 /* The family spine — a 6px edge down the page's left gutter, just inside the
    binding. It is the page's "where am I", and it is the cheapest possible
-   version: one border, no layout, no per-page markup. */
-.cahier-page[class*="fam-"] {
+   version: one border, no layout, no per-page markup.
+   BOTH SHELLS, since 1 Sep. This selector named `.cahier-page` alone, and
+   DrillShell's root is not one — so every drill (Flip It, Say It,
+   GramMarathon, ConjugaZone, the lesson pager, a deck's study run) carried
+   the right `fam-` class and drew no spine at all. Dan, 1 Sep: "there are
+   pages missing this colored vertical strip on the left in whatever color it
+   should be in." The class the drill root now carries is `cahier-drill`, so
+   the two shells are named rather than matched by shape. */
+:is(.cahier-page, .cahier-drill)[class*="fam-"] {
   border-left: 6px solid var(--fam-ink, transparent);
   /* the ruled lines keep their own colour; only the paper under them changes */
   background-color: var(--fam-page, var(--cahier-paper));
@@ -1484,7 +1491,7 @@ h3.cahier-display { font-size: var(--fs-h3); }
    it belongs to. Wins over the family rule above by being later and equally
    specific, which is why it is written here and not beside the tokens. */
 .paper-sand,
-.cahier-page.paper-sand[class*="fam-"] {
+:is(.cahier-page, .cahier-drill).paper-sand[class*="fam-"] {
   background-color: var(--sable-page);
   --cahier-rule: var(--sable-rule);
 }

@@ -7,9 +7,15 @@
  "visibility": "public",
  "unit": 3,
  "lessonNo": 9,
- "lessonSlug": "wants-needs",
+ "lessonSlug": "envies-besoins",
  "tags": [],
  "seq": 309,
+ "gapDecoys": {
+  "voudrais": "voudrait",
+  "veux": "veut",
+  "envie": "besoin",
+  "aimerais": "rêve"
+ },
  "items": [
   {
    "id": "envies-besoins-01",

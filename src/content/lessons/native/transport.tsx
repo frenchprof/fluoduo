@@ -73,6 +73,107 @@ const frameBlock = (f: (typeof FRAMES)[number]) => (
 export const transportLesson: NativeLesson = {
   slug: "transport",
 
+  // TIER 1 · SIO-038, drafted by the concepts lane on the Mémo above.
+  //
+  // THE DECK MAKES THE ARGUMENT, NOT ME. Three vehicles are listed TWICE —
+  // métro, voiture, avion — once under `en` and once under `prendre`. A frame
+  // that were a property of the vehicle could not do that, so the repetition
+  // is a proof, and it is transport.json's, not mine. Every French string
+  // below is an item's `fr` or its `example`; nothing is written for the
+  // concept.
+  //
+  // Why this belongs to Tier 1 rather than reading as vocabulary: it is the
+  // article rule again, seen from the other side. Elsewhere in the tier the
+  // article survives (`Je n'aime pas LE sport`) or collapses into the
+  // preposition (`à + le → au`). Here its PRESENCE is the whole signal — no
+  // article and you named a manner, an article and you named a thing.
+  concept: {
+    subtitle: "Why the same métro takes two different frames",
+    contrast: (
+      <>
+        English has <i>by metro</i> and <i>take the metro</i> too, and choosing between
+        them is a matter of taste. In French the choice is structural:{" "}
+        <i lang="fr">en métro</i> has no article, <i lang="fr">prendre le métro</i> has
+        one.
+      </>
+    ),
+    question: (
+      <>
+        This deck lists <i lang="fr">en voiture</i> <b>and</b>{" "}
+        <i lang="fr">prendre la voiture</i>{" "}
+        &mdash; the same car, twice. If the frame
+        belonged to the vehicle, only one of them could be right. So what decides?
+      </>
+    ),
+    answer: (
+      <>
+        Not the vehicle, but <b>what you are saying about the journey</b>.{" "}
+        <i lang="fr">en</i> answers <i>how</i> you travelled, so the vehicle is a manner
+        and takes <b>no article</b>: <i lang="fr">On y va en voiture.</i>{" "}
+        <i lang="fr">prendre</i> answers <i>what</i> you took, so the vehicle is an
+        object and takes <b>its own article</b>:{" "}
+        <i lang="fr">Tu prends la voiture ?</i> Same car, two sentences, and the
+        article is the tell.
+      </>
+    ),
+    pitfallHeads: ["what English predicts", "what French does"],
+    pitfall: [
+      {
+        label: <>the article after <i lang="fr">en</i></>,
+        wrong: <i lang="fr">en le bus</i>,
+        right: <><i lang="fr">en bus</i> &mdash; a manner never carries one</>,
+      },
+      {
+        label: <>the article after <i lang="fr">prendre</i></>,
+        wrong: <i lang="fr">prendre métro</i>,
+        right: <><i lang="fr">prendre le métro</i> &mdash; an object always does</>,
+      },
+      {
+        label: <>choosing <i lang="fr">à</i> for a car</>,
+        wrong: <i lang="fr">à voiture</i>,
+        right: <><i lang="fr">en voiture</i> &mdash; you sit inside it</>,
+      },
+      {
+        label: <>choosing <i lang="fr">en</i> for your feet</>,
+        wrong: <i lang="fr">en pied</i>,
+        right: <><i lang="fr">à pied</i> &mdash; there is no vehicle to be inside</>,
+      },
+    ],
+    flow: [
+      { depth: 0, text: "Are you naming the vehicle as the thing you took?" },
+      { depth: 1, text: "prendre + le / la / l' — Je prends le métro." },
+      { depth: 0, text: "Otherwise you are saying how you travelled." },
+      { depth: 1, text: "Inside it? en + no article — J'y vais en train." },
+      { depth: 1, text: "On your feet, or astride it? à + no article — J'y vais à vélo." },
+    ],
+    check: [
+      {
+        q: <>« <i lang="fr">On y va ___ voiture.</i> » &mdash; <i lang="fr">en</i> or <i lang="fr">la</i>?</>,
+        a: (
+          <>
+            <i lang="fr">en</i>. No article, so it answers <i>how</i> you went.
+          </>
+        ),
+      },
+      {
+        q: <>« <i lang="fr">Tu prends ___ voiture ?</i> » &mdash; <i lang="fr">en</i> or <i lang="fr">la</i>?</>,
+        a: (
+          <>
+            <i lang="fr">la</i>. The article is there, so it names <i>what</i>{" "}you took
+            &mdash; the same car as above.
+          </>
+        ),
+      },
+    ],
+    inShort: "No article, it's how you went. An article, it's what you took.",
+    remember: (
+      <>
+        <b>No article &rarr; the manner. An article &rarr; the vehicle.</b>{" "}
+        One line sorts all twelve &mdash; and sorts the thirteenth you meet outside this list.
+      </>
+    ),
+  },
+
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">
