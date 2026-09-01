@@ -20,11 +20,24 @@ export default function PageBand({
   title,
   sub,
   stat,
+  lead,
   className = "",
 }: {
   title: ReactNode;
   sub?: ReactNode;
   stat?: ReactNode;
+  /**
+   * One control pinned to the band's left, before the title — the drill's ✕
+   * (2026-08-31).
+   *
+   * It moved here because the row that used to hold it, DrillShell's 56px bar,
+   * carried the ✕, a 243px EMPTY spacer and a score on any surface with no
+   * progress to show. Measured at 390px on /lessons/colors: 187px of chrome
+   * before the first tab, of which that bar and the gap under it were 84px
+   * spent on one glyph and one number. The band was already there, already
+   * had the height, and was carrying a single word.
+   */
+  lead?: ReactNode;
   className?: string;
 }) {
   return (
@@ -32,7 +45,8 @@ export default function PageBand({
       className={`page-band flex items-center justify-between gap-3 py-3 pl-4 sm:pl-6 ${className}`}
       style={{ background: "var(--band, var(--fam-ink, var(--cahier-ink)))", borderBottom: "3px solid var(--cahier-ink)" }}
     >
-      <div className="min-w-0">
+      {lead}
+      <div className="min-w-0 flex-1">
         <h1
           className="fluo-band-hand truncate font-semibold leading-none text-white"
           style={{ fontSize: "var(--fs-h2)" }}

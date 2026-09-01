@@ -10,12 +10,11 @@ the finding that costs most is the false one:
   SIO-025  « Pourquoi ? »      — every card carries the question in its
                                  `example` field ("Pourquoi tu aimes le
                                  sport ?"). Both halves already taught.
-  SIO-038  Getting around      — same shape ("Tu y vas en bus ?"). A lesson
-                                 was added on 1 Sep by the features lane; if
-                                 this check fails, that is why, and check 2's
-                                 note is where the reasoning belongs.
+  SIO-038  Getting around      — same shape ("Tu y vas en bus ?").
+                                 REVERSED 2026-09-01; see the note at part 2.
   SIO-039  Wants & needs       — the cards ARE the polite act ("Je voudrais un
                                  café."), not vocabulary for it.
+                                 REVERSED 2026-09-01; see the note at part 2.
 
 That is the third time this session a deck looked empty because the teaching
 was somewhere a literal search does not reach — frames, letris columns, and
@@ -53,7 +52,7 @@ which should also include ils/elles"). verify48 asserts it there.
 What this asserts:
 
   1  Each of the four now has a lesson, and it leads that stop's rail.
-  2  The three NON-gaps still have no lesson — asserted as an absence, so the
+  2  The remaining NON-gap still has no lesson — asserted as an absence, so the
      next audit does not re-flag them and build a lesson on top of teaching
      that is already there (verify27: one goal, one lesson).
   3  The generators, EXECUTED: 12,000 cards well-formed, every cloze rebuilds
@@ -106,7 +105,7 @@ for slug, sio in GENS.items():
           f"{slug} is registered in the gallery and the native index",
           f"{slug} is missing from LESSONS or NATIVE_LESSONS — the route 404s")
 
-# ---- 2 · the three NON-gaps keep no lesson ---------------------------------
+# ---- 2 · the NON-gaps that remain keep no lesson ---------------------------
 # An absence, deliberately. Their decks already teach both halves in the
 # `example` field, and a lesson on top would be a second door onto one goal.
 #
@@ -126,8 +125,32 @@ for slug, sio in GENS.items():
 # all checked against core-nouns.json. If anyone ever adds a SECOND lesson to
 # SIO-006 that re-teaches the frames, this comment is the reason it should not
 # exist; the guard for it now lives in verify66's content assertions.
-# SIO-039 CAME OUT ON 2026-09-01, the third to leave this list and by the same
-# test the other two were judged by.
+#
+# SIO-038 CAME OUT ON 2026-09-01, the same way and for the same kind of reason.
+# The 29 Aug finding was again true and again about something else: the deck's
+# `example` fields do carry « Tu y vas en bus ? », so a lesson re-teaching THE
+# QUESTION would be a second door. What no card in that deck ever asks is which
+# of THREE frames a mode of transport takes — `en` + a vehicle you sit inside,
+# `à` + on foot or astride, `prendre` + the definite article. Two of those three
+# are glossed exactly once in the whole repo, in the deck's letris `gameConfig`
+# columns, which is a GAME's configuration and reaches no card; the third is
+# glossed nowhere. Every card shows the preposition already attached, so the
+# choice between them is never put to a learner, and the stop's own competence
+# asks for all three ("answer with prendre + transport; use the pronoun y").
+#
+# It was also the last Tier 1 stop with a deck and no
+# src/content/lessons/native/<slug>.tsx, so its concept had physically nowhere
+# to live (colour review's handover, 31 Aug).
+#
+# So the lesson added teaches the FRAMES, not the question — the same
+# distinction that took SIO-006 out of this list. verify74 holds it to that: its
+# twelve sentences are reassembled from transport.json and ★ is asserted to
+# withdraw the deck's own `gap`. If anyone adds a SECOND lesson to SIO-038 that
+# re-teaches « Tu y vas comment ? », this comment is the reason it should not
+# exist.
+#
+# SIO-039 CAME OUT ON 2026-09-01 TOO, the fourth to leave this list and by the
+# same test the other three were judged by.
 #
 # The 29 Aug finding stands as written: the cards ARE the polite act, so a
 # lesson that re-taught « Je voudrais un café » as vocabulary would be a second
@@ -154,8 +177,7 @@ for slug, sio in GENS.items():
 # other candidate concept need French the deck does not contain. A lesson there
 # would be a slot filled rather than a claim made, which is the opposite of the
 # refusal `colors.tsx` set as the standard.
-for sio, why in (("SIO-025", "every card carries « Pourquoi … ? » in its example"),
-                 ("SIO-038", "every card carries « Tu y vas en … ? » in its example")):
+for sio, why in (("SIO-025", "every card carries « Pourquoi … ? » in its example"),):
     m = re.search(r'"%s":\s*\[([^\]]*)\]' % sio, reg)
     check(m is None or not m.group(1).strip(),
           f"{sio} still has no lesson — it was never a gap ({why})",

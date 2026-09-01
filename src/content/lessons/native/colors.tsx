@@ -157,6 +157,21 @@ export const colorsLesson: NativeLesson = {
         not <span lang="fr">le jaune citron</span>. On its own,{" "}
         <span lang="fr"><i>le jaune</i></span> means the colour yellow.
       </p>
+      {/* FLAGGED, NOT TAUGHT. Dan, 2026-08-31: "it is too early to introduce
+          feminine at stop 4. We can draw attention to the fact that there are
+          differences in feminine, but it is not the focus yet."
+
+          So: one sentence, and NO feminine example. Naming a form here would
+          make it a second thing to learn on a stop whose job is word order —
+          and every one of this deck's twelve mnemonics is masculine, so any
+          example would be French this lesson invented. The sentence exists to
+          stop a learner concluding that a colour word never changes, which is
+          what a page of « le … » examples otherwise implies. */}
+      <p className="mt-2 text-sm italic text-[color:var(--fluo-ink-soft)]">
+        One thing to know, not to learn yet: some colours change their spelling
+        when the thing is feminine. That comes later — here, only the order
+        matters.
+      </p>
     </div>
   ),
 
