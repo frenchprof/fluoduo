@@ -27,6 +27,8 @@
  */
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { loadProgress } from "@/lib/progress";
+import { xpMultiplier } from "@/lib/economy";
 import type { ReactNode } from "react";
 import MenuSplash from "@/components/MenuSplash";
 import RailGroups from "@/components/RailGroups";
@@ -179,8 +181,35 @@ export default function SiteTopBar({
             </div>
           )}
         </div>
-        <Link href="/" className="cahier-display min-w-0 shrink truncate text-lg font-black text-[color:var(--cahier-ink)]">
-          {active !== "home" && <>← </>}<span className="cahier-hl">FluOLinGo</span>
+        {/* text-xl, not the text-lg it wore in the display face: FluOLinGo Hand
+            has a smaller x-height and the wordmark lost presence at 18px next
+            to a ☰ that did not change. Measured at 320px after the bump — the
+            burger and the whole icon strip stay on screen, which is the only
+            budget this size is allowed to spend. */}
+        <Link href="/" className="min-w-0 shrink truncate text-xl font-black text-[color:var(--cahier-ink)]">
+          {active !== "home" && <>← </>}
+          {/* THE KALLANG WAVE (Dan, 1 Sep: "the top return link to be in the
+              same FluOLinGo font but with the KALLANG wave effect and
+              irregular highlighter movement" — the stadium crowd wave at the
+              National Stadium). One span per letter, rising and dipping in
+              sequence, so the crest travels through the word rather than the
+              word bouncing as a block. The delay is per LETTER and the cycle
+              is one animation, which is what makes it read as a wave: at any
+              instant the letters are at nine different points of the same arc.
+
+              The letters are aria-hidden and the name is given once to a
+              screen reader — nine separate characters would otherwise be read
+              out one at a time, which is how the hero already does it. */}
+          <span className="fluo-wave">
+            <span aria-hidden>
+              {"FluOLinGo".split("").map((ch, i) => (
+                <span key={i} className="fluo-wave-letter" style={{ animationDelay: `${i * 0.09}s` }}>
+                  {ch}
+                </span>
+              ))}
+            </span>
+            <span className="sr-only">FluOLinGo</span>
+          </span>
         </Link>
         {/* Yield slot 1 — shrinks and truncates before anything else. */}
         {topRight && (
@@ -207,11 +236,70 @@ export default function SiteTopBar({
           <Link href="/moi" aria-label="My learning history" title="My learning history" className="cahier-btn cahier-btn-sm">
             ⌛
           </Link>
+          {/* 🔥 THE STREAK, between History and User (Dan, 1 Sep: "move the
+              streak value and emoji up between History and User"). It was a
+              tile on Home, which meant the one reading with a deadline was
+              visible only on the one page a learner leaves first. Here it is
+              on all 28 surfaces, including the drill they are in the middle
+              of — which is where a streak argues for itself.
+
+              NOT a button: every other item in this strip is a destination
+              (verify31's rule) and a streak is a reading. It renders as plain
+              text so the icon strip keeps meaning "these go somewhere". */}
+          <StreakMark />
           <AccountButton />
         </div>
       </div>
     </div>
       {quickGuideOpen && <MenuSplash onClose={() => setQuickGuideOpen(false)} />}
     </>
+  );
+}
+
+/**
+ * The day streak, as a reading rather than a door.
+ *
+ * WHY IT READS AFTER MOUNT. `loadProgress()` touches localStorage, which does
+ * not exist while the page is being statically exported — and this bar renders
+ * on every one of those pages. Reading during render would give the server one
+ * number and the first client render another, and React would blame the
+ * mismatch on the whole subtree, which here is the entire top bar. So it
+ * starts null and renders NOTHING until the real value arrives: a streak that
+ * appears a frame late is invisible; a top bar that fails to hydrate is not.
+ *
+ * Zero stays hidden rather than greyed. On Home the tile could afford to show
+ * an unlit 0 beside its label — a column missing from a report card reads as
+ * broken. In a five-icon strip there is no row to keep, and « 🔥 0 » next to
+ * the account button is a reproach carried onto every screen in the app.
+ */
+function StreakMark() {
+  const [streak, setStreak] = useState<number | null>(null);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage cannot be read during render; see above
+    setStreak(loadProgress().streak);
+  }, []);
+  if (streak === null || streak <= 0) return null;
+  const mult = xpMultiplier(streak);
+  return (
+    /* THE NUMBER ABOVE THE FIRE (Dan, 1 Sep: "would it be possible to show 4
+       above the fire at the top instead?"). Stacked, not side by side — which
+       also buys back the width the pair was spending in a strip whose one hard
+       rule is that nothing pushes the ☰ off a 320px screen: two lines of ~13px
+       cost less horizontally than 🔥 and a numeral in a row, and the icons
+       either side are square. */
+    <span
+      className="flex shrink-0 flex-col items-center px-0.5 leading-none"
+      title={mult > 1 ? `Day streak — everything earns ×${mult}` : "Day streak"}
+      aria-label={`Day streak: ${streak}`}
+    >
+      <span
+        aria-hidden
+        className="fluo-mono text-[13px] font-black [font-variant-numeric:tabular-nums]"
+        style={{ color: "var(--dopa-streak-ink)" }}
+      >
+        {streak}
+      </span>
+      <span aria-hidden className="text-[12px]">🔥</span>
+    </span>
   );
 }

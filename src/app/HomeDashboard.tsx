@@ -31,7 +31,7 @@ import HomeMap from "@/components/HomeMap";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
-import { equippedAccent, xpMultiplier } from "@/lib/economy";
+import { equippedAccent } from "@/lib/economy";
 import { dueForReview } from "@/lib/reviser";
 
 /** « par Dr Chan » as pen strokes, in writing order (stem before bowl, the
@@ -72,6 +72,11 @@ export default function HomeDashboard() {
   // Armed on mount: nothing pops up by default (Dan, 2026-07-14), so the
   // FluOLinGo brand animation plays on a clear stage right away.
   const [heroPlay, setHeroPlay] = useState(false);
+  // Which view the map door opens. Session-local on purpose: it is a way of
+  // looking at the map, not a setting about the learner, and a preference
+  // stored here would be a third place the map's view can come from (the
+  // other two being ?view= and the map's own control).
+  const [view3d, setView3d] = useState(false);
   // Once the stroke has played, the ink is pinned by class — engines can
   // drop a finished animation's fill state (Dan, 2026-07-14: "the color
   // disappears right after").
@@ -131,6 +136,13 @@ export default function HomeDashboard() {
   // 2026-07-08: a learner who marked a later step done continues from there).
   const activeId = nextSioId(progress);
   const activeSio = SIOS.find((s) => s.id === activeId);
+  // THE STOP AFTER THIS ONE (Dan, 1 Sep: "add a forward button (= Next
+  // stop)"). Taken from the map's own order — the SIOS array IS the study path
+  // — rather than by adding one to the id: the numbering has gaps and a half
+  // (45.5), so `SIO-045` + 1 is not a stop and `SIO-046` is not always next.
+  // Undefined at the last stop, where the key simply does not render: a
+  // forward key that goes nowhere is worse than no forward key.
+  const afterSio = activeSio ? SIOS[SIOS.indexOf(activeSio) + 1] : undefined;
   const doneTotal = SIOS.filter((s) => isSioDone(s.id, progress)).length;
   // Done-in-order run from the very start — the streak-momentum counter.
   let seqRun = 0;
@@ -139,14 +151,13 @@ export default function HomeDashboard() {
     else break;
   }
 
-  // The fire multiplier and the accent colour the learner has equipped
-  // (drives the hero CTA).
-  const mult = xpMultiplier(progress.streak);
-  // The stop NUMBER (SIO-007 -> 7) and which unit it sits in — the two
-  // figures the wells show. Falls back to the last stop when everything
-  // is done, so the reading never blanks.
+  // The accent colour the learner has equipped (drives the hero CTA). The fire
+  // multiplier left with the streak tile — it is read where the streak now is,
+  // in the top bar.
+  // The stop NUMBER (SIO-007 -> 7). Falls back to the last stop when
+  // everything is done, so the reading never blanks. The unit index went with
+  // the five dots: "just 1/50 (nothing else)".
   const stopNo = activeSio ? Number(activeSio.id.slice(4, 7)) : SIOS.length;
-  const activeUnit = activeSio ? activeSio.unit : 4;
   const accent = equippedAccent(progress);
 
 
@@ -181,8 +192,22 @@ export default function HomeDashboard() {
           (Dan, 2026-08-31: "is this spacing absolutely needed or can it be
           closed up?"). The 10px of desk between the bar and the paper stays:
           that is the notebook, not a gap. */}
-      <section aria-label="Welcome" className="home-strip -mx-4 -mt-7 mb-5 px-4 py-3 sm:-mx-6 sm:px-6">
-        <h1 className="fluo-serif text-2xl font-black leading-none text-[color:var(--fluo-ink)]">
+      {/* mb-5 -> mb-2.5 and py-3 -> pb-2.5 (Dan, 1 Sep: "close the gap more").
+          The 20px under the strip plus the key row's own mb-3 put 32px of
+          empty paper between the brand and the first thing a learner can
+          press — on the one screen whose whole job is to get them pressing it.
+          The strip keeps its top padding: that space is between the top bar
+          and the heading, and closing THAT would crowd two pieces of chrome
+          into each other. */}
+      <section aria-label="Welcome" className="home-strip -mx-4 -mt-7 mb-2.5 px-4 pb-2.5 pt-3 sm:-mx-6 sm:px-6">
+        {/* THE HERO IN FLUOLINGO HAND, SIZED TO THE WINDOW (Dan, 1 Sep: "the
+            hero to be in FluOLinGo font and resized relative to the width of
+            the window"). A clamp, not a breakpoint step: `Bienvenue sur` is
+            the longest unbreakable run on the page, so the heading has to grow
+            and shrink CONTINUOUSLY with the viewport or it will either wrap at
+            360px or sit small at 1024. Measured at the ends — 320px gives
+            27px, 1280px is capped at 52px before the line outgrows its band. */}
+        <h1 className="fluo-band-hand font-black leading-[1.05] text-[color:var(--fluo-ink)] text-[clamp(1.7rem,7.4vw,3.25rem)]">
           <span className="whitespace-nowrap">Bienvenue sur</span>{" "}
           <span
             className={`fluo-brand${heroPlay ? " is-play" : ""}${inkDone ? " is-inked" : ""}`}
@@ -229,41 +254,25 @@ export default function HomeDashboard() {
         <dl className="flex min-w-0 items-stretch gap-2">
           {/* WHERE YOU ARE. One figure, and five dots for the five units —
               the draft's replacement for the ruler it deleted. */}
-          <div className="neo-well flex min-w-[64px] flex-col items-center justify-center gap-0.5 rounded-2xl px-2 py-2 sm:min-w-[80px] sm:px-3">
+          {/* JUST 1/50 (Dan, 1 Sep: "just 1/50 (nothing else)"). The word STOP
+              and the five unit dots are gone. Both were readable and neither
+              was needed: the fraction already says where you are, and the dots
+              said it a second time at a coarser grain — which is exactly what
+              the litmus test removes. The <dt> stays, unseen: a screen reader
+              would otherwise read "1 slash 50" with nothing to say what of. */}
+          <div className="neo-well flex min-w-[64px] flex-col items-center justify-center rounded-2xl px-2 py-2.5 sm:min-w-[80px] sm:px-3">
             <dt className="sr-only">Stop</dt>
-            <dd className="cahier-hand text-[20px] leading-none text-[color:var(--cahier-ink)] [font-variant-numeric:tabular-nums] sm:text-[23px]">
-              {stopNo}<span className="text-sm text-[color:var(--cahier-ink-soft)]">/{SIOS.length}</span>
+            <dd className="cahier-hand text-[22px] leading-none text-[color:var(--cahier-ink)] [font-variant-numeric:tabular-nums] sm:text-[26px]">
+              {stopNo}<span className="text-base text-[color:var(--cahier-ink-soft)]">/{SIOS.length}</span>
             </dd>
-            <span aria-hidden className="fluo-mono text-[9.5px] font-extrabold uppercase tracking-[0.09em] text-[color:var(--cahier-ink-soft)]">
-              Stop
-            </span>
-            <span aria-hidden className="mt-0.5 flex gap-[2.5px]">
-              {[0, 1, 2, 3, 4].map((u) => (
-                <i
-                  key={u}
-                  className="h-1 w-1 rounded-full"
-                  style={{ background: u <= activeUnit ? "var(--dopa-win)" : "var(--cahier-ink)", opacity: u <= activeUnit ? 1 : 0.2 }}
-                />
-              ))}
-            </span>
           </div>
-          {/* THE ONE READING WITH A DEADLINE. Greys out at zero — a streak of
-              nothing is not a reproach, it is simply not lit yet. */}
-          <div className="neo-well flex min-w-[64px] flex-col items-center justify-center gap-0.5 rounded-2xl px-2 py-2 sm:min-w-[80px] sm:px-3"
-               title={mult > 1 ? `Day streak — everything earns ×${mult}` : "Day streak"}>
-            <dt className="sr-only">Streak</dt>
-            <dd
-              className="cahier-hand text-[20px] leading-none [font-variant-numeric:tabular-nums] sm:text-[23px]"
-              style={{ color: progress.streak > 0 ? "var(--dopa-streak-ink)" : "var(--cahier-ink-soft)", opacity: progress.streak > 0 ? 1 : 0.55 }}
-            >
-              {progress.streak}{mult > 1 && <b className="text-sm">×{mult}</b>}
-            </dd>
-            <span aria-hidden
-                  className="fluo-mono text-[9.5px] font-extrabold uppercase tracking-[0.09em]"
-                  style={{ color: "var(--cahier-ink-soft)", opacity: progress.streak > 0 ? 1 : 0.55 }}>
-              🔥 Streak
-            </span>
-          </div>
+          {/* THE STREAK TILE IS GONE — it moved to the top bar, between ⌛ and
+              the account button (Dan, 1 Sep: "move the streak value and emoji
+              up between History and User"). It is not lost, it is PROMOTED:
+              the one reading with a deadline used to live on the page a
+              learner leaves first, and now rides all 28 surfaces including
+              the drill they are in the middle of. See StreakMark in
+              components/SiteTopBar.tsx; verify25 follows it there. */}
         </dl>
 
         {/* Three pillows. The FILL is the dopamine role; the depth is the
@@ -279,6 +288,30 @@ export default function HomeDashboard() {
             >
               <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden>
                 <path d="M6 3.5 L22 13 L6 22.5 Z" fill="var(--key-ink-win)" stroke="var(--key-ink-win)" strokeWidth="2.5" strokeLinejoin="round" />
+              </svg>
+            </Link>
+          )}
+          {/* NEXT STOP — beside Continue, as Dan drew it. DRAWN, not typed:
+              verify25's rule is that a typed ⏭/▶ sits inline with text and
+              reads as "this will speak", while a drawn key in a coloured
+              pillow is navigation. So it is a triangle and a bar — skip-next,
+              not fast-forward, which is what two triangles would say and which
+              Rewind's two triangles already say in mirror.
+
+              It wears the same win hue as Continue but at the flatter end of
+              the gradient: they are the same journey, and the near one has to
+              stay the brighter of the two or the row grows a second hero. */}
+          {afterSio && (
+            <Link
+              href={`/unit/${afterSio.unit}#${afterSio.id}`}
+              aria-label={`Next stop — ${afterSio.topic}`}
+              title={`Next stop — « ${afterSio.topic} »`}
+              className="neo-key grid h-[50px] w-[50px] place-items-center rounded-[15px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
+              style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-win) 34%, white) 0%, color-mix(in oklab, var(--dopa-win) 72%, white) 52%, color-mix(in oklab, var(--dopa-win) 55%, black) 100%)" }}
+            >
+              <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden>
+                <path d="M5 4.5 L17.5 13 L5 21.5 Z" fill="var(--key-ink-win)" stroke="var(--key-ink-win)" strokeWidth="2.4" strokeLinejoin="round" />
+                <rect x="19" y="4.5" width="3.2" height="17" rx="1.3" fill="var(--key-ink-win)" />
               </svg>
             </Link>
           )}
@@ -362,27 +395,54 @@ export default function HomeDashboard() {
           a STRETCHED sibling link over the top — an <a> may not contain an
           <a>. `inert` keeps the frozen map's controls out of the tab order
           and the a11y tree. */}
-      {/* PROMINENT 2D / 3D (Dan, 1 Sep, annotating the live Home: "More
-          prominent 2-D and 3-D view buttons", mocked as two big colour
-          blocks — cyan 2D, magenta 3D — ABOVE the map box). Each opens the
-          map IN that view (?view=), which is what makes two buttons more
-          than one door split in half. Colours are Dan's own mock; black ink
-          clears 4.5:1 on both fills. */}
-      <div className="mt-2 grid grid-cols-2 gap-2" role="group" aria-label="Open the map">
-        <Link
-          href="/map?view=2d"
-          className="rounded-xl border-2 py-2.5 text-center text-xl font-black text-black transition hover:-translate-y-0.5"
-          style={{ borderColor: "var(--cahier-ink)", background: "#3ee6f5", boxShadow: "var(--shadow-card)" }}
+      {/* THE VIEW SWITCH — a physical toggle, not two buttons (Dan, 1 Sep,
+          with a picture: a label, then a chunky track with a coloured knob).
+          It replaces the pair of cyan/magenta blocks that answered his earlier
+          "more prominent 2-D and 3-D view buttons": prominent was the right
+          fix for invisible, but TWO buttons said there were two doors to the
+          map when there is one door and two ways of drawing what is behind it.
+          A switch says that: one destination, one property of it.
+
+          WHAT IT DOES, and why it does not navigate on flip. The map card
+          below is already the door — the whole card, a stretched link. So the
+          switch only chooses WHICH view that door opens, which is why it is a
+          `role="switch"` and not a link: flipping it must not take a learner
+          somewhere, or the control they were setting is gone before they see
+          it take effect.
+
+          The snapshot stays the 2D drawing either way. Rendering HomeMap3D in
+          the postcard was the other option and is refused: the card is inert
+          by construction — pointer-events off, `inert`, a finger going down
+          the page glides over it — and a live 3D scene in there is a surface
+          that catches. The consequence is instead made visible in the caption
+          below, which reads "The Map · 3D" when the switch is on. */}
+      <div className="mt-2 flex items-center gap-2.5">
+        <span id="view-switch-label" className="fluo-mono text-[13px] font-black text-[color:var(--cahier-ink)]">
+          3D view
+        </span>
+        <button
+          type="button"
+          role="switch"
+          aria-checked={view3d}
+          aria-labelledby="view-switch-label"
+          onClick={() => setView3d((v) => !v)}
+          className="neo-well relative h-[30px] w-[58px] shrink-0 rounded-full p-[3px] transition"
         >
-          2D
-        </Link>
-        <Link
-          href="/map?view=3d"
-          className="rounded-xl border-2 py-2.5 text-center text-xl font-black text-black transition hover:-translate-y-0.5"
-          style={{ borderColor: "var(--cahier-ink)", background: "#f57ae0", boxShadow: "var(--shadow-card)" }}
-        >
-          3D
-        </Link>
+          {/* The knob is a rounded SQUARE, as Dan drew it — the same corner
+              radius family as the three keys above, so the row of controls
+              reads as one set of physical parts rather than a switch borrowed
+              from somewhere else. */}
+          <span
+            aria-hidden
+            className="neo-key block h-[24px] w-[24px] rounded-[8px] transition-transform duration-200 ease-out"
+            style={{
+              transform: view3d ? "translateX(28px)" : "translateX(0)",
+              background: view3d
+                ? "linear-gradient(155deg, color-mix(in oklab, var(--dopa-reward) 55%, white) 0%, var(--dopa-reward) 52%, color-mix(in oklab, var(--dopa-reward) 70%, black) 100%)"
+                : "linear-gradient(155deg, #fff 0%, var(--cahier-paper-raised) 60%, color-mix(in oklab, var(--cahier-ink) 12%, white) 100%)",
+            }}
+          />
+        </button>
       </div>
       <div
         className="relative mt-2 overflow-hidden rounded-2xl border-2 transition hover:-translate-y-0.5"
@@ -404,10 +464,20 @@ export default function HomeDashboard() {
         </div>
         <span className="flex items-center gap-2 border-t-2 px-4 py-2.5" style={{ borderColor: "var(--cahier-ink)" }}>
           <span aria-hidden className="text-xl">🗺️</span>
-          <span lang="fr" className="fluo-serif min-w-0 flex-1 text-lg font-black leading-tight text-[color:var(--fluo-ink)]">The Map</span>
+          <span lang="fr" className="fluo-serif min-w-0 flex-1 text-lg font-black leading-tight text-[color:var(--fluo-ink)]">
+            The Map
+            {/* The switch's visible consequence. Without it the toggle sets
+                something a learner cannot see until after they have tapped
+                away from it. */}
+            {view3d && <span className="fluo-mono ml-1.5 text-sm font-black text-[color:var(--dopa-reward)]"> · 3D</span>}
+          </span>
           <span aria-hidden className="fluo-mono text-xl font-black text-[color:var(--fluo-ink)]">›</span>
         </span>
-        <Link href="/map" aria-label="The Map — open the course map" className="absolute inset-0 z-10" />
+        <Link
+          href={`/map?view=${view3d ? "3d" : "2d"}`}
+          aria-label={`The Map — open the course map in ${view3d ? "3D" : "2D"}`}
+          className="absolute inset-0 z-10"
+        />
       </div>
     </>
   );

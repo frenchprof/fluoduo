@@ -82,9 +82,23 @@ check("fluo-brand-letter" in home and "fluo-byline" in home and "BYLINE_STROKES"
 check("heroPlayed" in home,
       "the once-per-session gate survives (full show once, finished look after)",
       "the once-per-session gate is gone — the show would replay every visit")
-check("<h1" in home and "text-2xl" in home,
-      "the greeting is a real h1 at text-2xl — the page has its heading back",
-      "the greeting is not an h1 at text-2xl (the 19 Aug reversal is half-applied)")
+# SUPERSEDED IN ITS SIZE, NOT IN ITS SUBSTANCE (Dan, 1 Sep: "the hero to be in
+# FluOLinGo font and resized relative to the window"). `text-2xl` was a fixed
+# 24px at every width and is now a clamp; asserting the old literal would fail
+# the instruction that replaced it. What the check was ever FOR survives and is
+# still asserted: the greeting is a real <h1>, so the page has a heading.
+# The new half is that the size must scale — a fixed step would be the very
+# thing Dan asked to leave behind, and a clamp with no vw term is a fixed step
+# wearing a function.
+check("<h1" in home, "the greeting is a real h1 — the page has its heading",
+      "the greeting is no longer an h1 (the 19 Aug reversal is half-applied)")
+h1 = home[home.find("<h1"):home.find(">", home.find("<h1")) + 1]
+check("clamp(" in h1 and "vw" in h1,
+      "the greeting is sized by a viewport clamp, not a fixed step",
+      "the greeting has no vw-based clamp — Dan asked for it resized relative to the window")
+check("fluo-band-hand" in h1,
+      "the greeting is set in FluOLinGo Hand",
+      "the greeting is not in the FluOLinGo Hand face Dan asked for")
 
 css = read("src/app/globals.css")
 check("fluo-brand-hl 1s" in css and "0.95s forwards" in css,
@@ -176,14 +190,29 @@ check("fluo-btn-lg" not in home and 'className="fluo-btn' not in home,
 # changed — the course fraction is now the stop number over fifty, which is
 # the same fact in the map's own units — but both marks and the multiplier
 # still have to be on the page.
-for marker, what in (
-    ("SIOS.length", "the course mark (a figure over fifty)"),
-    ("progress.streak", "the streak"),
-    ("mult > 1", "the visible ×XP multiplier on the streak"),
-):
-    check(marker in home,
-          f"{what} survives the restyle",
-          f"{what} was lost — the two essential marks are the hero's floor")
+# THE STREAK MOVED, IT WAS NOT LOST (Dan, 1 Sep: "move the streak value and
+# emoji up between History and User"). This block asserted both essential marks
+# were ON HOME. One of them is now in the TOP BAR, which is a promotion, not a
+# deletion: the one reading with a deadline used to live on the page a learner
+# leaves first and now rides all 28 surfaces, the drill included.
+#
+# So the rule follows it rather than relaxing. Both marks are still asserted —
+# the course fraction here, the streak and its multiplier at their new address —
+# and the streak is additionally asserted GONE from Home, so it cannot quietly
+# come back and be shown twice.
+check("SIOS.length" in home,
+      "the course mark (a figure over fifty) survives the restyle",
+      "the course mark was lost — it is the hero's floor")
+bar = read("src/components/SiteTopBar.tsx")
+check("progress" in bar and "streak" in bar,
+      "the streak is in the top bar, where Dan moved it",
+      "the streak is on neither Home nor the top bar — the one reading with a deadline is gone")
+check("xpMultiplier" in bar,
+      "the ×XP multiplier followed the streak into the bar",
+      "the multiplier was dropped in the move — a streak that does not say what it buys is a number")
+check("progress.streak" not in home,
+      "the streak is not ALSO on Home — it moved, it did not multiply",
+      "the streak is on Home as well as the bar; the tile Dan removed is back")
 check("progress.xp" not in home and "progress.gems" not in home and "lvl.into" not in home,
       "level / XP / gems stay off Home (derived marks live on /moi, /profil)",
       "a derived mark crept back into the hero row")
