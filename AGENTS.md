@@ -149,8 +149,14 @@ used in CI.
 - **`functions/api/*`** are Cloudflare Pages Functions (ChaTutor, TTS, Compose
   check, `/api/correct`) — server-side, not part of `next dev`, so those
   endpoints do not run locally.
-- **Deploying** is Dan's, from his machine: `git pull && git push live main`,
-  where `live` is the Cloudflare Pages remote. Agents push to `origin` only.
+- **Deploying** goes through fluoduo-main (Dan, 2026-08-31: "we go through
+  fluoduo main"): the `deploy-live` workflow (workflow_dispatch) mirrors
+  `main` to `dckg/fluo`, the Cloudflare Pages repo, refusing any commit
+  whose `verify` check is not green. fluoduo-main fires it as the last step
+  of a QC round; Dan can fire it from the Actions tab; his manual
+  `git push live main` still works and stays the fallback. Agents push to
+  `origin` only — the workflow's PAT (`LIVE_DEPLOY_TOKEN`) is the one
+  sanctioned door to production.
 
 # Multi-agent rules (2026-08-31)
 
