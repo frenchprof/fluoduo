@@ -24,7 +24,7 @@ import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { gradeGap, splitGap, type Grade } from "@/lib/practice/cloze";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
-import { gapSentence, gapSentenceEn, isPlayableGap } from "@/lib/collections/gapSentence";
+import { gapDecoyPool, gapSentence, gapSentenceEn, isPlayableGap } from "@/lib/collections/gapSentence";
 import { hintsFor } from "@/lib/help/hints";
 import { useHelpLadder } from "@/lib/help/useHelpLadder";
 import { SIOS } from "@/content/sios";
@@ -202,10 +202,13 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
   ) : undefined;
 
   // Word-bank distractors: the deck's OTHER gaps — the grammar words the
-  // learner is actually choosing between (du / de la / des / d'…).
-  const bankPool = item
-    ? deck.items.filter((it) => isPlayableGap(it) && it.id !== item.id).map((it) => it.gap as string)
-    : [];
+  // learner is actually choosing between (du / de la / des / d'…) — via the
+  // one helper, so a deck's `gapDecoys` correction reaches this drill too and
+  // not only the lesson pager's cards. Excluded by ANSWER rather than by item
+  // id: two items sharing a gap word used to put the answer in the bank as its
+  // own distractor, which the tile builder then dropped, quietly leaving this
+  // bank one tile short.
+  const bankPool = item ? gapDecoyPool(deck, item.gap as string) : [];
 
   // Typing above sm; word-bank tiles below it (patch 20–21) — one `value`,
   // so grading/XP/evidence never know which surface produced the string.

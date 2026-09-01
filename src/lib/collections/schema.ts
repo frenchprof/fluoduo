@@ -182,6 +182,28 @@ export type Collection = {
 
   items: Item[];
   gameConfig?: GameConfig;
+  /**
+   * Substitutions applied to a gap word when it is used as somebody else's
+   * WRONG ANSWER. Read only by `gapDecoyPool` (gapSentence.ts); the item's own
+   * `gap` is never rewritten, so nothing a learner is asked to produce changes.
+   *
+   * WHY IT EXISTS (Dan, 2026-09-01: *"i would make the wrong answers veut and
+   * voudrait"*). Every cloze surface builds its wrong answers out of the deck's
+   * OTHER gaps, which is normally exactly right — a learner choosing between
+   * « du / de la / des » is choosing between the real options. It fails when two
+   * of a deck's gaps are interchangeable. `envies-besoins` blanks « Je ___
+   * visiter Paris. », marks `veux` correct, and offers `voudrais` as wrong —
+   * but « Je voudrais visiter Paris » is good French, and the two differ only
+   * in register. The learner is marked wrong for knowing more.
+   *
+   *     "gapDecoys": { "voudrais": "voudrait", "veux": "veut" }
+   *
+   * The third-person forms are wrong on agreement after « Je », so they are
+   * plausible and unambiguously incorrect — and they cannot collide with each
+   * other either. Absent (every other deck), the pool is the deck's own gaps,
+   * unchanged.
+   */
+  gapDecoys?: Record<string, string>;
   /** Provenance for migrated decks. */
   source?: string;
 };

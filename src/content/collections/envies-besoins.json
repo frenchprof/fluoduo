@@ -10,6 +10,10 @@
  "lessonSlug": "wants-needs",
  "tags": [],
  "seq": 309,
+ "gapDecoys": {
+  "voudrais": "voudrait",
+  "veux": "veut"
+ },
  "items": [
   {
    "id": "envies-besoins-01",

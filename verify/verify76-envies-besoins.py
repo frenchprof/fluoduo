@@ -29,6 +29,17 @@ THE THREE THINGS THAT CAN SILENTLY BE WRONG ABOUT SUCH A FILE
       hand-asserted it could be wrong; it is checked against which items in the
       JSON actually carry `de`/`d'` after the frame.
 
+  4 · THE WRONG ANSWERS CAN BE RIGHT. Every cloze surface builds its decoys
+      from the deck's OTHER gaps, which is normally exactly right — a learner
+      choosing between « du / de la / des » is choosing between the real
+      options. This deck broke it: « Je ___ visiter Paris. » marked `veux`
+      correct and offered `voudrais`, and « Je voudrais visiter Paris » is good
+      French. Four of the ten cards could mark a learner wrong for knowing
+      more. Dan, 2026-09-01: *"i would make the wrong answers veut and
+      voudrait"* — the third person, wrong on agreement after « Je », so it
+      cannot be co-correct with anything. Section 6 pins the substitution AND
+      the fact that all three surfaces read it from one helper.
+
 WHAT IS NOT CHECKED HERE, deliberately: the register scale (polite → blunt).
 It is real and it is in the deck's own English glosses, but it is a claim about
 usage rather than a fact about strings, and a check that asserted it would be
@@ -201,6 +212,89 @@ ok(gen.count("easyOptions") == 1,
 ok("newQuestion: enviesQuestion" in src,
    "the lesson delegates its card to the executable generator",
    "the lesson has its own inline generator again — verify76 could not execute it")
+
+# ---- 6 · a wrong answer is wrong -----------------------------------------
+# THE FAULT. `gapPool` was the deck's own gap words, so « Je ___ visiter
+# Paris. » (answer `veux`) offered `voudrais` — good French, differing only in
+# register — and marked the learner wrong for picking it. Four of ten cards.
+# Dan's fix is the third-person form: `veut`/`voudrait` are wrong on agreement
+# after « Je », so they are plausible and cannot be right.
+#
+# EXECUTED, for the same reason as section 2: gapSentence.ts has no runtime
+# imports, so the real pool builder runs here rather than being re-guessed.
+POOL_JS = r"""
+const fs = await import("node:fs");
+const { gapDecoyPool, isPlayableGap } =
+  await import("./src/lib/collections/gapSentence.ts");
+const deck = JSON.parse(fs.readFileSync("./src/content/collections/envies-besoins.json", "utf8"));
+const play = deck.items.filter(isPlayableGap);
+const keys = Object.keys(deck.gapDecoys ?? {});
+const known = new Set([...play.map((i) => i.gap), ...Object.values(deck.gapDecoys ?? {})]);
+const offered = {}, faults = [];
+for (const it of play) {
+  const pool = gapDecoyPool(deck, it.gap);
+  offered[it.gap] = [...new Set([...(offered[it.gap] ?? []), ...pool])];
+  // The answer is never its own wrong option, at either end of the map.
+  if (pool.includes(it.gap)) faults.push("own answer offered as a decoy: " + it.gap);
+  for (const d of pool) {
+    // A substitutable form must never reach a learner as a wrong answer —
+    // that IS the fault, and it is the one thing the map exists to stop.
+    if (keys.includes(d)) faults.push(`"${d}" is still offered against "${it.gap}"`);
+    // And nothing invented: every decoy is a deck gap or a declared decoy.
+    if (!known.has(d)) faults.push(`"${d}" is neither a deck gap nor a declared decoy`);
+  }
+}
+console.log(JSON.stringify({
+  faults: [...new Set(faults)],
+  keys: keys.sort(),
+  // the answers themselves are untouched — gapDecoys rewrites decoys, not the deck
+  answersIntact: play.every((i) => i.fr.includes(i.gap)) && play.length === deck.items.length,
+  poolSizes: Object.values(offered).map((p) => p.length),
+}));
+"""
+r6 = subprocess.run(["node", "--experimental-strip-types", "--input-type=module", "-e", POOL_JS],
+                    capture_output=True, text=True)
+ok(r6.returncode == 0, "the decoy pool builder executed in node",
+   f"gapDecoyPool would not run: {r6.stderr[-400:]}")
+if r6.returncode == 0:
+    p6 = json.loads(r6.stdout.strip().splitlines()[-1])
+    ok(not p6["faults"],
+       "no card offers a wrong answer that the deck marks correct anywhere else, "
+       "and every option is a deck gap or a declared decoy",
+       f"the wrong answers can be right: {p6['faults'][:4]}")
+    ok(p6["keys"] == ["veux", "voudrais"],
+       "both interchangeable forms are substituted — « Je voudrais X » and « Je veux X » "
+       "are the same sentence in two registers, so neither may stand as the other's mistake",
+       f"gapDecoys substitutes {p6['keys']}; the pair that can be co-correct is ['veux', 'voudrais']")
+    ok(re.search(r'"voudrais":\s*"voudrait"', read(DECK)) is not None
+       and re.search(r'"veux":\s*"veut"', read(DECK)) is not None,
+       "the substitutes are the third-person forms Dan named — wrong on agreement after « Je »",
+       "the substitutes are no longer veut/voudrait; anything else risks being co-correct again")
+    ok(p6["answersIntact"],
+       "every item's own `gap` still occurs verbatim in its `fr` — the map moved the "
+       "wrong answers, never the right one",
+       "an item's gap no longer occurs in its sentence: the substitution has reached the ANSWER")
+    ok(min(p6["poolSizes"]) >= 3,
+       f"every card still has at least 3 wrong answers to draw from (smallest pool: {min(p6['poolSizes'])})",
+       f"a card is down to {min(p6['poolSizes'])} wrong options — the MCQ wants three")
+
+# ONE SOURCE OF WRONG ANSWERS. Three surfaces derived this pool separately, so
+# this deck could be corrected in the lesson pager and stay broken in
+# GramMarathon — invisible in a diff, and only a learner would find it.
+PAGER = "src/app/lessons/pager/buildCards.tsx"
+GM = "src/app/practice/grammarathon/[collectionId]/GramMarathonContent.tsx"
+for path, uses in ((PAGER, ("distractors(decoysFor(", "bankPool: decoysFor(")),
+                   (GM, ("gapDecoyPool(deck,",))):
+    body = read(path)
+    body = re.sub(r"^\s*//.*$", "", body, flags=re.M)
+    body = re.sub(r"/\*[\s\S]*?\*/", "", body)
+    for u in uses:
+        ok(u in body,
+           f"{os.path.basename(path)} takes its wrong answers from the shared pool ({u.rstrip('(')})",
+           f"{os.path.basename(path)} no longer calls {u.rstrip('(')} — it builds its own decoys, so gapDecoys would not reach it")
+    ok(re.search(r"\.map\(\s*\(it\)\s*=>\s*it\.gap", body) is None,
+       f"{os.path.basename(path)} does not re-derive a raw gap pool",
+       f"{os.path.basename(path)} maps the deck's gaps into a pool of its own again — the substitution is bypassed")
 
 print("\n".join("  ok    " + m for m in PASS))
 if FAIL:
