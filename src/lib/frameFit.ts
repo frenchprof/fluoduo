@@ -67,7 +67,10 @@ export function startsWithVowelSound(s: string): boolean {
   const w = s.trimStart();
   if (!w) return false;
   if (H_ASPIRE.test(w)) return false;
-  return /^[aàâeéèêëiîïoôuùûüyh]/i.test(w);
+  // œ and æ are vowels and « une douzaine d'œufs » is correct French — the
+  // first version of this list omitted them and the check reported au-marche
+  // as an offender, which is a fault in the rule, not in the lesson.
+  return /^[aàâäeéèêëiîïoôöuùûüyœæh]/i.test(w);
 }
 
 /** The last whole word of a frame, lowercased; "" when it ends in an apostrophe. */

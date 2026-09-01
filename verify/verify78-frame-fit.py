@@ -33,7 +33,14 @@ WHAT IS ASSERTED, AND WHAT DELIBERATELY IS NOT
       are the same offer wearing different controls, and only one of them was
       obviously wrong.
 
-  4 · MEANING IS NOT ASSERTED. `fitsFrame` checks the joins and nothing else.
+  4 · THE LESSON GENERATORS ARE HELD TO THE SAME RULE. Driving all nine slotted
+      stops on 1 Sep found the identical fault on the other side: aimer offered
+      « Je déteste l'boxe », aller « On va à l'café », faire « Il fait de
+      l'vélo » — 666 distinct bad options between them, on main, on every run.
+      The deck supply was only half of it, and fixing that half alone would have
+      left the worse half in place while looking finished.
+
+  5 · MEANING IS NOT ASSERTED. `fitsFrame` checks the joins and nothing else.
       Whether « Je Madame » is a sensible distractor is a question about
       meaning, and the only general answer to that is per-deck knowledge — which
       is what a lesson's own generator carries (transport.gen.ts's GAP_CHOICES,
@@ -241,6 +248,61 @@ check(all(n == len([r for r in D[deck] if not r.get("unsplittable")]) or n <= 2
       f"{sorted(byDeck.items())}",
       f"the fallback is hitting a few cards of a deck whose others still offer choices: "
       f"{sorted(byDeck.items())} — that is a rule inconsistency, not a determined gap")
+
+# ---- 4 · the lesson generators obey it too ---------------------------------
+gen_probe = """
+// Written by verify78.
+import fs from "node:fs";
+const F = await import("../src/lib/frameFit.ts");
+const dir = "src/content/lessons/native";
+const out = {};
+for (const f of fs.readdirSync(dir)) {
+  if (!f.endsWith(".gen.ts")) continue;
+  const slug = f.slice(0, -".gen.ts".length);
+  const mod = await import(`../${dir}/${f}`);
+  const gen = Object.entries(mod).find(([k, v]) => k.endsWith("Question") && typeof v === "function")?.[1];
+  if (!gen) continue;
+  const bad = new Set();
+  let n = 0;
+  for (let i = 0; i < 600; i++) {
+    let q; try { q = gen(); } catch { continue; }
+    for (const o of q.easyOptions ?? []) {
+      n++;
+      // Every elided form inside an option must be followed by a vowel sound.
+      for (const m of String(o).matchAll(/(\\S*['\u2019])(\\S+)/g)) {
+        if (!F.startsWithVowelSound(m[2])) bad.add(o);
+      }
+    }
+  }
+  out[slug] = { bad: [...bad].slice(0, 4), count: bad.size, options: n };
+}
+console.log("@@JSON@@" + JSON.stringify(out));
+"""
+open(PROBE, "w", encoding="utf-8").write(gen_probe)
+try:
+    r2 = subprocess.run(["node", "--experimental-strip-types", PROBE],
+                        capture_output=True, text=True, timeout=300)
+finally:
+    if os.path.isfile(PROBE):
+        os.remove(PROBE)
+m2 = [l for l in r2.stdout.splitlines() if l.startswith("@@JSON@@")]
+if not m2:
+    print("  FAIL the lesson generators could not be executed:")
+    print((r2.stderr or r2.stdout)[-1500:])
+    sys.exit(1)
+G = json.loads(m2[0][len("@@JSON@@"):])
+
+check(len(G) >= 15, f"{len(G)} lesson generators executed",
+      f"only {len(G)} generators ran — the glob has stopped finding them")
+offenders = {k: v for k, v in G.items() if v["count"]}
+check(not offenders,
+      f"no lesson generator offers an elided form before a consonant "
+      f"({sum(v['options'] for v in G.values())} options checked)",
+      f"{len(offenders)} generator(s) offer French that cannot be said: "
+      + "; ".join(f"{k}: {v['bad'][:2]}" for k, v in list(offenders.items())[:3]))
+for slug in ("aimer", "aller", "faire"):
+    check(slug in G, f"{slug} is covered", f"{slug}.gen.ts did not run — it is one of the three "
+          f"that shipped « l'boxe », « à l'café » and « de l'vélo », so it must stay covered")
 
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:

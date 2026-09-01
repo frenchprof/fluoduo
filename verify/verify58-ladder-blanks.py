@@ -89,6 +89,7 @@ for (const level of [1, 2, 3]) {
       // it can catch slots that rebuild the sentence wrongly. Comparing
       // sentence(slots) to `correct` cannot — `correct` IS sentence(slots).
       inOptions: q.easyOptions.includes(q.correct),
+      correct: q.correct,
       options: q.easyOptions,
     });
   }
@@ -132,8 +133,14 @@ check(all(x["slotted"] for x in lv[1]),
 off = [x for x in lv[2] if not x["inOptions"]][:3]
 check(not off,
       "every slotted sentence is one easyOptions also contains",
+      # The row carries `correct` for this message. It did not until 1 Sep, so
+      # the first time this assertion actually failed it raised KeyError instead
+      # of naming the fault — a check that cannot report is a check nobody can
+      # act on. (What it was hiding: faire's negative round takes « de », and a
+      # new options filter had been handed the affirmative « du » as the answer
+      # to keep, so the negative cards lost their own correct option.)
       "slots are assembling the sentence wrongly: " +
-      "; ".join(f"[{x['gen']}] {x['correct']!r} not in {x['options']}" for x in off))
+      "; ".join(f"[{x['gen']}] {x.get('correct')!r} not in {x['options']}" for x in off))
 
 # ── 1 · Facile and Moyen are untouched (one piece missing = the med path) ──
 for level in (1, 2):
