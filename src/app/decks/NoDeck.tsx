@@ -11,7 +11,7 @@ import CahierShell from "@/components/CahierShell";
 
 export default function NoDeck() {
   return (
-    <CahierShell tabs={[{ key: "home", label: "Home", emoji: "🏠", href: "/" }, { key: "map", label: "Carte", emoji: "🗺️", href: "/map" }]} active="index">
+    <CahierShell tabs={[{ key: "home", label: "Home", emoji: "🏠", href: "/" }, { key: "map", label: "Map", emoji: "🗺️", href: "/map" }]} active="index">
       <div className="mx-auto max-w-md px-4 py-10 text-center">
         <div className="rounded-2xl border-2 p-8" style={{ borderColor: "var(--cahier-line)", background: "var(--cahier-paper-raised)" }}>
           <div className="text-5xl" aria-hidden>🗂️</div>
