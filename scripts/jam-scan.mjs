@@ -111,9 +111,19 @@ const faults = new Map(); // slug -> Set of junction strings
 let pages = 0;
 for (const slug of slugs) {
   await page.goto(`http://localhost:${PORT}/lessons/${slug}`, { waitUntil: "networkidle" });
+  // WAIT for the strip, don't glance at it. The first CI run of this scan on
+  // main died here: `aimer` (alphabetically first, so the cold page) had not
+  // hydrated when an instant count() looked, and the scan called an open
+  // build a wall build. networkidle is when the network went quiet, not when
+  // React finished.
   const strip = page.getByRole("tab", { name: "Pract." });
-  if (!(await strip.count())) {
-    console.error(`${slug}: no tab strip — is this an open build? (wall pages have no tabs)`);
+  try {
+    await strip.first().waitFor({ timeout: 20000 });
+  } catch {
+    const walled = await page.getByText("Checking your sign-in").count();
+    console.error(walled
+      ? `${slug}: the sign-in wall rendered — this is NOT an open build. Rebuild: NEXT_PUBLIC_OPEN_APP=1 npm run build`
+      : `${slug}: no tab strip after 20s — the lesson page did not hydrate`);
     process.exit(2);
   }
   pages++;
