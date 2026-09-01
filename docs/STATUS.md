@@ -495,6 +495,39 @@ Dan assigns. Listed so the queue is not re-derived by whoever picks it up.
 | 8 | `rule:` namespace (894-item tagging): parked by design until the concepts finish | transfer evidence |
 | 9 | **Deploys through fluoduo-main** (ruled) — needs the fine-grained PAT (write to dckg/fluo) as an Actions secret | ends manual deploys |
 
+## 31 Aug — Tier 1 batch 4, the last: verb + infinitive
+
+Four concepts across stops 37, 47 and 48, and they are one argument: **only the
+first verb conjugates, the second stays an infinitive, and the negative wraps
+the one doing the work.** Three of the four Mémos state that as a separate ⚠️
+warning; the concept makes it the rule the warnings follow from.
+
+| stop | file | the claim |
+|---|---|---|
+| **37** Pouvoir | `pouvoir` | « on ne peut **pas** fumer » — `pas` lands on `pouvoir` because `fumer` is only its object |
+| **37** Modals | `modaux` | **`il faut` has no person.** There is no `je faut`; when you need to say WHO, you need `devoir`. That is what the impersonal form costs |
+| **47** Making plans | `futur-proche` | a verb of MOVEMENT doing the work of a TENSE — `aller` + infinitive has no walking in it, and the future costs no new conjugation at all |
+| **48** Giving advice | `conseils` | the verb carries the force AND the audience: `tu peux` suggests, `tu dois` presses, `il faut` presses without naming anyone |
+
+**Stop 38 (Getting around) has no lesson mapping in `LESSONS_BY_SIO`**, so there
+is no file for a concept to live in. It is not draftable, and that is a content
+gap rather than a concept one — the same shape as the six ateliers.
+
+Every claim comes from the lesson's own Mémo. No new French.
+
+### Where the pipeline stands
+
+**Tier 1: 21 of 22 lesson files** across its 20 stops (some stops carry two).
+Only stop 38 is unreachable. **Tier 2: complete. Tier 3: 7 of 15**, and the
+remaining eight all need a lesson file created first.
+
+43 concepts now, and after the pane rebuild **43 of 43 fit one screen** with
+**zero jammed words**. Both numbers were 0-of-N and 8 respectively this morning.
+
+One more jam shipped and was caught by the browser scan (`futur-proche`,
+`</i> the same way`). The static `verify72` did not see it — same-line again,
+which is exactly what its corrected header now says it cannot cover.
+
 ## 31 Aug — Tier 1, batch 3: five stops closed
 
 Six concepts, because stop 34 has two lesson files and splitting one stop
