@@ -502,6 +502,71 @@ Dan assigns. Listed so the queue is not re-derived by whoever picks it up.
 | 8 | `rule:` namespace (894-item tagging): parked by design until the concepts finish | transfer evidence |
 | 9 | **Deploys through fluoduo-main** (ruled) — needs the fine-grained PAT (write to dckg/fluo) as an Actions secret | ends manual deploys |
 
+## 1 Sep — ALL NINE LESSON FILES ARE BUILT (Peers) — THE SPLIT BELOW IS STALE
+
+Sole editor of STATUS.md in this commit: Peers.
+
+**STOP WORK ON SIO-025, SIO-038 AND SIO-039 IF ANYONE HAS STARTED THEM.** The
+split immediately below gives those three to Pre-tests and tells Peers not to
+build them. It was written after they were already pushed, and neither session
+could see the other — the #97 collision again, from the opposite direction.
+All nine are on `claude/peers-vd2h6h` (PR #120):
+
+| stop | file | commit |
+|---|---|---|
+| SIO-038 | `transport.tsx` + `.gen.ts` | `b246d21` |
+| SIO-010 | `atelier-rencontre.tsx` + `.gen.ts` | `e6b9793` |
+| SIO-025 | `parce-que.tsx` | `ea43c0d` |
+| SIO-039 | `wants-needs.tsx` + `.gen.ts` | `ea43c0d` |
+| SIO-020/030/040/049/050 | five `.tsx` + `atelierModel.ts` | `8284827` |
+
+`concept` is absent from all nine, as colour review asked. Checks: verify74
+(SIO-038), verify75 (the atelier shape), verify76 (025 + 039), verify77 (the
+five). verify51 lost its three "these stops must have NO lesson" assertions —
+amended with the reasoning, not silenced, and replaced by a stronger one: each
+must now LEAD with the single lesson written for it.
+
+**Pre-tests should take the cycling redo instead**, which is its second
+assignment below and is untouched.
+
+### Three things the handover said that turned out to be wrong
+
+1. **The atelier decks are not empty.** They carry one card per dialogue line
+   (colour review corrected this themselves in `b4cdd6c`), so the ateliers were
+   closer to the ordinary job than billed.
+2. **An atelier lesson must pass its Mémo through.** `LessonPager` resolves
+   `memo={lesson?.memo ?? memoForDeck(collectionId)}`, so merely REGISTERING a
+   lesson deletes « Le modèle » from the panel an atelier opens on — and
+   verify71 stays green while it happens, because it reads memos.tsx. Every
+   atelier lesson uses `memo: memoForDeck(DECK)`. verify75 and verify77 assert
+   it on all six.
+3. **The ateliers' exercise cannot come from FINALE_BANK.** It was built that
+   way first — the bank holds exactly what each stop is graded on — and it
+   produced « Bon chance » and « un sympa restaurant », because those items were
+   authored for a TYPE-IN game and a bank item guarantees nothing about another
+   item's answer in its frame. Reverted to the model's own turns. Dan has since
+   ruled that the repair is to correct the agreement rather than drop the
+   option, which re-opens the bank as a source; not rebuilt.
+
+### Also on this branch, and one of them is a reversal to read before touching
+
+- **Elision filtering was built and then reverted on Dan's ruling.** A rule that
+  removed every ungrammatical option app-wide (« l'boxe », « à l'bibliothèque »,
+  « J'veux ») shipped and was pulled: *"i would leave those alone, srsly"* —
+  a distractor's job is to be wrong, and picking the wrong contraction is the
+  A1 error the card exists to train out. The rule and its one exception are now
+  permanent in AGENTS.md. **Do not re-add it.**
+- Transport's options all keep the card's own subject (Dan: *"I would put 2 and
+  3 as Je …"*).
+- The atelier model fits one screen: SIO-030 1.47 → 1.06, SIO-010 1.33 → 1.00,
+  by dropping the per-line gloss the word list below already carries.
+- DrillShell chrome, the 8px band gap, the colours feminine note, and the
+  SpecuLearn/pre-tests handoff are all in the same PR.
+
+**Still open for Peers:** the Practice hub (assignment 2 of #113). **Open for
+Dan:** whether a slotted lesson should own its whole run (measured and
+photographed, one line either way), and whether to restore the atelier gloss.
+
 ## 1 Sep — THE HANDOVER IS SPLIT, and Pre-tests gets two assignments
 
 Sole editor of STATUS.md in this commit: fluoduo-main.
