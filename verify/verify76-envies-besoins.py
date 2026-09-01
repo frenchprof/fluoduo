@@ -230,9 +230,10 @@ const deck = JSON.parse(fs.readFileSync("./src/content/collections/envies-besoin
 const play = deck.items.filter(isPlayableGap);
 const keys = Object.keys(deck.gapDecoys ?? {});
 const known = new Set([...play.map((i) => i.gap), ...Object.values(deck.gapDecoys ?? {})]);
-const offered = {}, faults = [];
+const offered = {}, faults = [], used = new Set();
 for (const it of play) {
   const pool = gapDecoyPool(deck, it.gap);
+  pool.forEach((d) => used.add(d));
   offered[it.gap] = [...new Set([...(offered[it.gap] ?? []), ...pool])];
   // The answer is never its own wrong option, at either end of the map.
   if (pool.includes(it.gap)) faults.push("own answer offered as a decoy: " + it.gap);
@@ -244,9 +245,22 @@ for (const it of play) {
     if (!known.has(d)) faults.push(`"${d}" is neither a deck gap nor a declared decoy`);
   }
 }
+// A DECOY MUST START WITH A CONSONANT (Dan, 1 Sep: "i would put besoin and
+// rêve instead of envie and aimerais (which start with vowels)"). After « Je »
+// a vowel-initial word is wrong on ELISION before it is wrong on anything the
+// lesson teaches — « Je envie… » is rejectable at a glance by a learner who has
+// understood nothing about wanting and needing. `d'` counts as a consonant
+// start: it is the elision itself, and the whole point of the « besoin d' »
+// decoy is that it carries one.
+const VOWEL = /^[aeiouéèêàùîôûy]/i;
 console.log(JSON.stringify({
   faults: [...new Set(faults)],
   keys: keys.sort(),
+  vowelDecoys: [...used].filter((d) => VOWEL.test(d)).sort(),
+  // every vowel-initial gap the deck HAS must be substituted before it can be
+  // offered — the check above only sees what the map already fixed
+  vowelGapsLeft: play.map((i) => i.gap).filter((g) => VOWEL.test(g) && !(g in (deck.gapDecoys ?? {}))).sort(),
+  pairs: Object.entries(deck.gapDecoys ?? {}).sort(),
   // the answers themselves are untouched — gapDecoys rewrites decoys, not the deck
   answersIntact: play.every((i) => i.fr.includes(i.gap)) && play.length === deck.items.length,
   poolSizes: Object.values(offered).map((p) => p.length),
@@ -262,14 +276,28 @@ if r6.returncode == 0:
        "no card offers a wrong answer that the deck marks correct anywhere else, "
        "and every option is a deck gap or a declared decoy",
        f"the wrong answers can be right: {p6['faults'][:4]}")
-    ok(p6["keys"] == ["veux", "voudrais"],
+    ok(set(p6["keys"]) >= {"veux", "voudrais"},
        "both interchangeable forms are substituted — « Je voudrais X » and « Je veux X » "
        "are the same sentence in two registers, so neither may stand as the other's mistake",
        f"gapDecoys substitutes {p6['keys']}; the pair that can be co-correct is ['veux', 'voudrais']")
-    ok(re.search(r'"voudrais":\s*"voudrait"', read(DECK)) is not None
-       and re.search(r'"veux":\s*"veut"', read(DECK)) is not None,
-       "the substitutes are the third-person forms Dan named — wrong on agreement after « Je »",
-       "the substitutes are no longer veut/voudrait; anything else risks being co-correct again")
+    # DAN'S SECOND RULE, 1 Sep: "i would put besoin and rêve instead of envie
+    # and aimerais (which start with vowels)". A vowel-initial decoy after
+    # « Je » is wrong on elision before it is wrong on anything this lesson
+    # teaches, so a learner rejects it without having learnt a thing. Both
+    # halves are asserted: what the pool CAN offer, and what the deck still
+    # leaves unsubstituted — the first alone would pass a deck that grew a new
+    # vowel-initial gap and never offered it.
+    ok(not p6["vowelDecoys"],
+       "every wrong answer starts with a consonant — none is rejectable on elision alone",
+       f"vowel-initial wrong answers are offered: {p6['vowelDecoys']} — « Je envie… » is wrong before the lesson begins")
+    ok(not p6["vowelGapsLeft"],
+       "every vowel-initial gap word has a consonant-initial stand-in for when it is somebody else's mistake",
+       f"these gap words start with a vowel and are not substituted: {p6['vowelGapsLeft']}")
+    want = [["aimerais", "r\u00eave"], ["envie", "besoin"], ["veux", "veut"], ["voudrais", "voudrait"]]
+    ok(p6["pairs"] == want,
+       "the stand-ins are the words Dan named — veut · voudrait (wrong on agreement), "
+       "besoin · r\u00eave (consonant-initial, and each wrong on its own frame's « de »)",
+       f"the stand-ins are {p6['pairs']}; Dan named {want}")
     ok(p6["answersIntact"],
        "every item's own `gap` still occurs verbatim in its `fr` — the map moved the "
        "wrong answers, never the right one",

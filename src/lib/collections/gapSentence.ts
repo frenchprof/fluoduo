@@ -71,7 +71,10 @@ export function isPlayableGap(it: Item): boolean {
  * visiter Paris. », marks `veux` correct and offered `voudrais` — good French,
  * differing only in register — so a learner who picked it was marked wrong for
  * knowing more. `gapDecoys` maps such a pair to forms that cannot be right
- * (`voudrait`, `veut`: third person, wrong on agreement after « Je »).
+ * (`voudrait`, `veut`: third person, wrong on agreement after « Je »), and to
+ * forms that start with a CONSONANT — a vowel-initial wrong answer is wrong on
+ * elision (« Je envie… ») before it is wrong about wanting and needing, so a
+ * learner rejects it without having learnt anything (Dan, same day).
  *
  * The substitution touches the DECOY only. The item's own `gap` stays the
  * answer, is still what a typed answer is graded against, and is excluded here

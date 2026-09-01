@@ -196,12 +196,23 @@ export type Collection = {
    * but « Je voudrais visiter Paris » is good French, and the two differ only
    * in register. The learner is marked wrong for knowing more.
    *
-   *     "gapDecoys": { "voudrais": "voudrait", "veux": "veut" }
+   *     "gapDecoys": {
+   *       "voudrais": "voudrait", "veux": "veut",
+   *       "envie": "besoin", "aimerais": "rêve"
+   *     }
    *
    * The third-person forms are wrong on agreement after « Je », so they are
    * plausible and unambiguously incorrect — and they cannot collide with each
-   * other either. Absent (every other deck), the pool is the deck's own gaps,
-   * unchanged.
+   * other either.
+   *
+   * THE SECOND RULE IS ELISION (Dan, same day: *"i would put besoin and rêve
+   * instead of envie and aimerais (which start with vowels)"*). A wrong answer
+   * beginning with a vowel is wrong after « Je » before it is wrong about
+   * anything the lesson teaches: « Je envie… » is rejectable at a glance by a
+   * learner who has understood nothing. A stand-in earns its place by being
+   * wrong for the RIGHT reason, so it must start with a consonant too.
+   *
+   * Absent (every other deck), the pool is the deck's own gaps, unchanged.
    */
   gapDecoys?: Record<string, string>;
   /** Provenance for migrated decks. */
