@@ -158,7 +158,7 @@ export const transportLesson: NativeLesson = {
         q: <>« <i lang="fr">Tu prends ___ voiture ?</i> » &mdash; <i lang="fr">en</i> or <i lang="fr">la</i>?</>,
         a: (
           <>
-            <i lang="fr">la</i>. The article is there, so it names <i>what</i> you took
+            <i lang="fr">la</i>. The article is there, so it names <i>what</i>{" "}you took
             &mdash; the same car as above.
           </>
         ),

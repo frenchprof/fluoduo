@@ -289,3 +289,14 @@ jobs:
 
       - name: A word may not butt against the next across an element edge
         run: python3 verify/verify72-jsx-spacing.py
+
+      # The browser half of verify72, LAST on purpose: it replaces out/ with
+      # an OPEN export, and the wall build above is the one verify18/18b
+      # audit — nothing may read out/ after this line expecting the wall.
+      # The scan launches the runner's preinstalled Chrome via
+      # playwright-core; no browser download step is needed.
+      - name: Rebuild the export open, for the browser to walk
+        run: NEXT_PUBLIC_OPEN_APP=1 npm run build
+
+      - name: "The jam scan — every lesson RENDERED, every tab and pane (1 Sep)"
+        run: python3 verify/verify79-jam-scan.py
