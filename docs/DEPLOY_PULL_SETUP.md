@@ -67,8 +67,14 @@ jobs:
           fetch-depth: 0
 
       - name: Fetch the source main
+        # The `-c http...extraheader=` blanks, for this one command, the
+        # Authorization header actions/checkout persisted (this repo's own
+        # workflow token) — left in place it outvotes the token in the URL,
+        # which is the fault that ate deploy-live runs 2-12 on the source
+        # repo. The self-push below WANTS the persisted credential, so the
+        # header is cleared per-command rather than with persist-credentials.
         run: |
-          git fetch "https://x-access-token:${{ secrets.SOURCE_READ_TOKEN }}@github.com/frenchprof/fluoduo.git" main
+          git -c http.https://github.com/.extraheader= fetch "https://x-access-token:${{ secrets.SOURCE_READ_TOKEN }}@github.com/frenchprof/fluoduo.git" main
           echo "sha=$(git rev-parse FETCH_HEAD)" >> "$GITHUB_ENV"
 
       - name: Refuse to deploy a commit verify has not passed

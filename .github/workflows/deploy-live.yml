@@ -40,6 +40,16 @@ jobs:
         with:
           # The mirror pushes real history, so it needs all of it.
           fetch-depth: 0
+          # THE BUG THAT ATE RUNS 2-12. checkout persists the workflow's own
+          # GITHUB_TOKEN as an Authorization header on EVERY github.com
+          # request made from this clone — and that header outvotes the PAT
+          # in the push URL. So the push reached dckg/fluo authenticated as
+          # a token scoped to frenchprof/fluoduo only, and GitHub said
+          # "Repository not found" no matter how the PAT was configured.
+          # Eleven runs and three token regenerations were spent on what was
+          # this one line. The guard step is unaffected (gh api reads its
+          # token from env, not from git config).
+          persist-credentials: false
 
       - name: Refuse to deploy a commit verify has not passed
         env:
