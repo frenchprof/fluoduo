@@ -6,6 +6,84 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 31 Aug evening — Dan cleared the decision queue
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan answered eight of the nine standing decisions in one sitting. The rulings,
+each with its consequence:
+
+1. **DrillShell chrome → PEERS' NEXT ASSIGNMENT.** Color review measured
+   270px of chrome before the first word of French on a lesson at 390×844
+   (site bar 48 + Memo band 55 + ✕/score bar 56 + gap 24 + tab rail 83), with
+   ~111px recoverable: on tabs with NO progress the 56px DrillShell bar holds
+   ✕, an empty `flex-1` spacer, and a score of 0. **The job:** fold the ✕ and
+   the score into the Memo band; render the 56px bar only where progress
+   exists; drop the 24px gap under it. **The trap:** DrillShell is shared by
+   28 surfaces where the bar is load-bearing — the no-progress path must be a
+   separate branch of the code, and every DrillShell surface gets a
+   before/after screenshot. Acceptance: the ✕ and score live in the band; no
+   56px bar on progress-less tabs; 28 screenshots clean.
+2. **Practice family opens a HUB, not the map — PEERS, second item.** Dan:
+   *"Practice flap cannot open to the map, instead it must open to a hub page
+   that contain links to all the practice elements possible, from which we
+   can go to the stops in the map (i.e. it should bypass the map)."* So
+   `/practice` becomes a FamilyHub (the /games · /skills pattern,
+   verify52's), FAMILIES.practice.href moves off /map, and verify19/24/52's
+   "Practice reaches the map" pins are REWRITTEN, not silenced. The ☰'s
+   Carte row STAYS — with Practice no longer opening the map it is the
+   dropdown's only map door, so the duplication that condemned it is gone.
+3. **Deploys go through fluoduo-main** (decision 9). To make that real this
+   session needs a **fine-grained PAT with write access to `dckg/fluo`
+   only**, stored as an Actions secret on frenchprof/fluoduo — Dan's to
+   mint. Until it exists, deploys stay Dan's three commands.
+4. **Revise keeps 🔄** — "They are different characters indeed." The 🔁 ban
+   stands; the case is closed.
+5. **Font branch: salvaged and approved for delete.** Its one commit (the
+   nine OTF weights + build script) is ALREADY on main as #95, so nothing is
+   lost. Deleting remote branches is blocked from this environment — Dan:
+   `git push origin --delete claude/complete-font-characters-b9oz2p`.
+6. **Home-rebuild branch (decision 3): already gone** — deleted in an
+   earlier sweep. Closed.
+7. **Cycling (decision 4): to be REDONE in FluOLinGo Hand.** The two 30 Aug
+   branches are superseded but stay until the redo lands. Unassigned.
+8. **French 4 (decision 5): rebased to PR #112** — the plan + the A2 CSV on
+   today's main, stale STATUS hunks dropped. **Awaits Dan's read**; CI green
+   is not the gate.
+9. **The lint six: reasoned disables** (this commit) — each of the five
+   hook-deps warnings and the SpecuLearn `<img>` carries the reason the
+   working behaviour wins, in the AGENTS.md-sanctioned pattern. `npx eslint`
+   on those five files: 0 problems.
+
+Still open: **decision 8 only** (the `rule:` namespace) — parked by design
+until the concepts finish.
+
+## 31 Aug PM — THE NAMES ARE LAW (#109), and the tab strip is one row (#108)
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Two more of Dan's rulings landed the same evening, both driven by pictures:
+
+- **#108** (`51eb067`): the lesson's four tabs fit ONE row. The wrap was 4px
+  of six-tab-era padding; the strip is now a four-column grid, wearing the
+  emoji Dan sent: ➡️ Path · 💡 Idea · 📐 Forms · 🏋️ Pract.
+- **#109** (`66faa42`): a **permanent rule in AGENTS.md** — the brand is
+  **FluOLinGo** (capitals F·O·L·G, Fluency On Linguistic Goals) and the six
+  families are 🎯 Goals · 🏋️ Practice · 🎮 Games · 🔄 Revise · 💬 Skills ·
+  👤 User. SvPlay → Games; Home's hero key is **Continue** (né Play), so no
+  two doors share a name. Registry keys unchanged. Found en route:
+  RailGroups and GuideBody carried private copies of familyShort's regex —
+  consolidated onto the helper.
+
+**DEPLOYED.** Dan pushed `live main` the same evening — production (`dckg/fluo`)
+is at `66faa42`, carrying the whole day: #94 · #97 · #98 · #99 · #100 · #101 ·
+#102 · #103 · #105 · #106 · #108 · #109. Nothing on origin/main is undeployed
+except this STATUS entry itself.
+
+**Awaiting Dan's read on the live site:** the one-row tab strip, the FluOLinGo
+respelling, the new family icons, and the two French forms in the salutations
+concept (« bonne soirée », « bon appétit »).
+
 ## 31 Aug PM — #100 MERGED; decision 1 is RESOLVED
 
 Sole editor of STATUS.md in this commit: fluoduo-main.
@@ -221,9 +299,9 @@ lane = report it in STATUS, don't do it.
 
   **After those:** Tier-1 concept batches in parallel with Color review, same
   read-before-ship rule.
-- **Peers — features.** Queue empty since Sorting was cut (#93). Next
-  assignment is Dan's; until then, nothing — not audits, not others'
-  branches.
+- **Peers — features.** TWO ASSIGNMENTS from Dan's evening rulings (31 Aug):
+  the DrillShell chrome fold and the Practice hub — full specs in the
+  "Dan cleared the decision queue" section at the top of this file.
 - **Peers — features.** 31 Aug PM: two Tier 2 stops given lesson files
   (SIO-005 Colours, SIO-006 Some nouns), Dan's colour ladder, the SemiBold
   band, the short English tabs, Words folded under Forms, and the collapse
@@ -293,14 +371,14 @@ Dan assigns. Listed so the queue is not re-derived by whoever picks it up.
 | # | Decision | Blocks |
 |---|---|---|
 | ~~1~~ | ~~Salutations concept read — does the Tier-3 shape hold?~~ **RESOLVED 31 Aug — it holds; #100 merged** | ~~14 Tier-3 + gating 19 Tier-1 drafts~~ nothing — both lanes open |
-| 2 | FluOlinGo Hand font: (a) want it? (b) wire in same PR or assets-only? | font branch |
-| 3 | Home-rebuild branch: confirm delete (stale draft of shipped #40; main's StopSheet newer) | one branch |
-| 4 | Cycling pair: keep either / both / park both under work/ | two branches |
-| 5 | French 4 scaling docs: merge after your read? | one branch |
-| 6 | Colours + Some nouns: native-lesson file, or tier done at 13? | Tier 2 close-out |
-| 7 | Empty shortcut row under MENU: fill or delete? | one surface |
-| 8 | `rule:` namespace (894-item tagging): go / stay parked? | transfer evidence |
-| 9 | Deploy mirror Action (needs one fine-grained PAT from you) | ends manual deploys |
+| ~~2~~ | ~~Font~~ **RESOLVED**: wired via #95 + #105; branch approved-for-delete (evening ruling 5) | — |
+| ~~3~~ | ~~Home-rebuild delete~~ **CLOSED**: branch already gone (evening ruling 6) | — |
+| ~~4~~ | ~~Cycling pair~~ **RULED**: redo in FluOLinGo Hand; old pair superseded, kept until redo lands (evening ruling 7) | — |
+| 5 | French 4 scaling docs: **PR #112 open — read pending** (evening ruling 8) | one PR |
+| ~~6~~ | ~~Colours + Some nouns~~ **RESOLVED by #105**: both have lesson files; Tier 2 closes at 15 | — |
+| ~~7~~ | ~~Shortcut row~~ **RULED**: Carte STAYS (sole map door once Practice opens its hub — evening ruling 2) | — |
+| 8 | `rule:` namespace (894-item tagging): parked by design until the concepts finish | transfer evidence |
+| 9 | **Deploys through fluoduo-main** (ruled) — needs the fine-grained PAT (write to dckg/fluo) as an Actions secret | ends manual deploys |
 
 ## 31 Aug PM — a stop is done when it is done (pre-tests lane)
 

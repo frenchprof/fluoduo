@@ -410,6 +410,11 @@ export default function SayItContent({
     };
 
     rec.start();
+  // Deliberately []: startListening arms the browser recognizer with its
+  // mount-time collectionId/deck/ladderOn on purpose — a re-created callback
+  // while the mic is open tears down and re-arms recognition mid-utterance,
+  // which grades half a sentence. Reviewed with Dan 2026-08-31: disable, not fix.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Hear the model pronunciation (Dan, 2026-07-15: "offer a button to listen
@@ -443,6 +448,10 @@ export default function SayItContent({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
+  // Deliberately not ladderOn: the handler reads live state through the
+  // callbacks already listed, and re-binding the window key listener on
+  // every ladder toggle risks a keystroke landing between listeners.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startListening, stopRec, next, listenModel, skip, back, endNow, embedded]);
 
   const answered = trail.filter((t) => !t.skipped).length;
