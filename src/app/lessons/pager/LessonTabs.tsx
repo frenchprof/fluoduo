@@ -239,102 +239,147 @@ function Parcours({ sio, here }: { sio?: Sio; here: TabKey }) {
  * The slots are Dan's, read off his own concept tabs — see LessonConcept in
  * native/types.ts for which are required and why. */
 function Concept({ c }: { c?: LessonConcept }) {
+  const [pane, setPane] = useState<"claim" | "qa" | "traps" | "steps" | "check" | "sum">("claim");
   if (!c) {
     return <Empty what="Idea has not been written for this lesson yet. Forms has the rules in the meantime." />;
   }
+
+  /* SIDE-BY-SIDE PANES, NOT A STACK (Dan, 2026-08-31: *"broken into
+     side-by-side tabs that allows everything to be visible on the same screen
+     all at once… i would prefer the latter"*, offered against expand-collapse).
+
+     A fold answers "is it short enough yet?" one section at a time and still
+     leaves the reader scrolling to find out how many there are. A strip answers
+     it once: every part of the concept is named in a row you can see, and the
+     pane below is short by construction. The count moves from the fold's label
+     into the strip, so nothing is hidden behind a bare chevron.
+
+     THE CLAIM IS THE DEFAULT PANE, and that is not a detail. verify68 pins the
+     argument — subtitle, contrast, question, answer — as open on arrival:
+     "apparatus collapses; the argument never does". A strip whose first pane is
+     the claim keeps that promise, where a strip that opened on the pitfall
+     table would break it while passing the check.
+
+     `useState`, not `<details>`, because a pane is a choice between siblings
+     rather than a disclosure. The first pane renders server-side, so there is
+     no hydration flash — the claim is in the static HTML either way. */
+  const PANES = [
+    ["claim", "The idea", null],
+    ["qa", "Q & A", null],
+    ["traps", "Traps", c.pitfall?.length ?? 0],
+    ["steps", "Steps", c.flow?.filter((l) => l.depth === 0).length ?? 0],
+    ["check", "Check", c.check?.length ?? 0],
+    ["sum", "Sum up", null],
+  ] as const;
+  const shown = PANES.filter(([k]) =>
+    k === "claim" || k === "qa" || k === "sum"
+      ? true
+      : k === "traps" ? !!c.pitfall?.length
+      : k === "steps" ? !!c.flow?.length
+      : !!c.check?.length);
+
   return (
     <Panel>
-      <h2 className="cahier-display text-lg font-black leading-tight">{c.subtitle}</h2>
-      <p className="mt-2">{c.contrast}</p>
+      <div className="mb-3 flex flex-wrap gap-1.5">
+        {shown.map(([k, label, n]) => (
+          <button
+            key={k}
+            type="button"
+            onClick={() => setPane(k)}
+            aria-pressed={pane === k}
+            className={`rounded-full border-2 px-2.5 py-1 text-[12px] font-black transition ${
+              pane === k
+                ? "border-[color:var(--cahier-ink)] bg-[color:var(--cahier-ink)] text-[color:var(--cahier-paper)]"
+                : "border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-raised)] text-[color:var(--cahier-ink-soft)]"
+            }`}
+          >
+            {label}
+            {n ? <span className="ml-1 font-mono text-[10px] opacity-70">{n}</span> : null}
+          </button>
+        ))}
+      </div>
 
-      {/* THE ANSWER COLLAPSES (Dan, 2026-08-31: "it is a very long page, can
-          we make the answer collapsible"). Measured on salutations at 390px:
-          the concept ran 1512px in a 561px slot — 2.7 screens — and the
-          answer is its longest single block.
-
-          It also puts the tab's core beat on the same footing as the rest of
-          the app: the question is asked, the answer is there when the learner
-          wants it, never before. Same <details> the mini-checks below already
-          use, so one interaction idiom, not two — and <details> rather than
-          state so it survives SSR and needs no hydration to open. */}
-      <H>One question</H>
-      <details className="mt-1 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-raised)] p-3">
-        <summary className="cursor-pointer text-base font-bold">{c.question}</summary>
-        <div className="mt-2">{c.answer}</div>
-      </details>
-
-      {c.pitfall && c.pitfall.length > 0 && (
-        <Section title="⚠️ The common pitfall" note={count(c.pitfall.length, "trap")}>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-sm">
-              <thead>
-                <tr className="text-left text-xs uppercase text-[color:var(--fluo-ink-soft)]">
-                  <th className="py-1 pr-3 font-bold" />
-                  <th className="py-1 pr-3 font-bold text-[color:var(--drill-bad-mid)]">✗ {c.pitfallHeads?.[0] ?? "English logic"}</th>
-                  <th className="py-1 font-bold text-[color:var(--drill-ok)]">✓ {c.pitfallHeads?.[1] ?? "French logic"}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {c.pitfall.map((row, n) => (
-                  <tr key={n} className="border-t border-[color:var(--cahier-rule)]">
-                    <td className="py-1.5 pr-3 font-bold">{row.label}</td>
-                    <td className="py-1.5 pr-3 text-[color:var(--drill-bad-mid)] line-through">{row.wrong}</td>
-                    <td className="py-1.5 font-bold text-[color:var(--drill-ok)]">{row.right}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Section>
-      )}
-
-      {c.flow && c.flow.length > 0 && (
-        // Collapsed because a decision tree is CONSULTED, not read — #100's
-        // intent — but through `Section` so the fold names its count. The
-        // count is the DECISIONS, not the lines: a flow's indented lines are
-        // branches under a question, and "5 lines" would describe the
-        // rendering rather than what the learner is about to walk through.
-        <Section title="How to decide" note={count(c.flow.filter((l) => l.depth === 0).length, "step")}>
-          <div className="overflow-x-auto rounded-xl bg-[color:var(--cahier-paper-raised)] p-3">
-            {c.flow.map((line, n) => (
-              <p
-                key={n}
-                className="whitespace-pre font-mono text-[13px] leading-6"
-                style={{ paddingInlineStart: `${line.depth * 1.4}rem` }}
-              >
-                {line.text}
-              </p>
-            ))}
-          </div>
-        </Section>
-      )}
-
-      {c.check && c.check.length > 0 && (
-        <Section title="✅ Before you go on" note={count(c.check.length, "question")}>
-          <div className="flex flex-col gap-2">
-            {c.check.map((x, n) => (
-              // <details> rather than state: the answer must stay hidden until
-              // asked for, and a native disclosure is keyboard- and
-              // screen-reader-correct for free.
-              <details key={n} className="rounded-xl border-2 border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-raised)] p-3">
-                <summary className="cursor-pointer font-bold">{x.q}</summary>
-                <p className="mt-2 text-[color:var(--fluo-ink-soft)]">{x.a}</p>
-              </details>
-            ))}
-          </div>
-        </Section>
-      )}
-
-      {c.inShort && (
+      {pane === "claim" && (
         <>
-          <H>The whole system</H>
-          <p>{c.inShort}</p>
+          <h2 className="cahier-display text-lg font-black leading-tight">{c.subtitle}</h2>
+          <p className="mt-2">{c.contrast}</p>
         </>
       )}
 
-      <p className="mt-4 rounded-xl border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-3 font-bold">
-        If you remember only one thing: {c.remember}
-      </p>
+      {/* The worked instance sits in its own pane. Kept with the claim it ran
+          to 666px in a 561px slot on the longest concepts — the reader was
+          scrolling again, which is the thing the strip exists to end. */}
+      {pane === "qa" && (
+        <>
+          <p className="fluo-label text-[color:var(--fluo-ink-soft)]">One question</p>
+          <p className="mt-1 text-base font-bold">{c.question}</p>
+          <div className="mt-3">{c.answer}</div>
+        </>
+      )}
+
+      {pane === "traps" && c.pitfall && (
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr className="border-b-2 border-[color:var(--cahier-rule)] text-left text-[12px]">
+                <th className="py-1 pr-3" />
+                <th className="py-1 pr-3 font-bold text-[color:var(--drill-bad-mid)]">✗ {c.pitfallHeads?.[0] ?? "English logic"}</th>
+                <th className="py-1 font-bold text-[color:var(--drill-ok)]">✓ {c.pitfallHeads?.[1] ?? "French logic"}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {c.pitfall.map((row, n) => (
+                <tr key={n} className="border-b border-[color:var(--cahier-rule)]/60 align-baseline">
+                  <td className="py-1.5 pr-3 font-bold">{row.label}</td>
+                  <td className="py-1.5 pr-3 text-[color:var(--drill-bad-mid)] line-through">{row.wrong}</td>
+                  <td className="py-1.5 font-bold text-[color:var(--drill-ok)]">{row.right}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {pane === "steps" && c.flow && (
+        <div className="overflow-x-auto rounded-xl bg-[color:var(--cahier-paper-raised)] p-3">
+          {c.flow.map((line, n) => (
+            <p
+              key={n}
+              className="whitespace-pre font-mono text-[13px] leading-6"
+              style={{ paddingInlineStart: `${line.depth * 1.4}rem` }}
+            >
+              {line.text}
+            </p>
+          ))}
+        </div>
+      )}
+
+      {pane === "check" && c.check && (
+        <div className="flex flex-col gap-2">
+          {c.check.map((x, n) => (
+            // <details> here still: the ANSWER must stay hidden until asked for,
+            // which is a disclosure, not a change of pane.
+            <details key={n} className="rounded-xl border-2 border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-raised)] p-3">
+              <summary className="cursor-pointer font-bold">{x.q}</summary>
+              <div className="mt-2">{x.a}</div>
+            </details>
+          ))}
+        </div>
+      )}
+
+      {pane === "sum" && (
+        <>
+          {c.inShort && (
+            <>
+              <p className="fluo-label text-[color:var(--fluo-ink-soft)]">The whole system</p>
+              <p className="mt-1">{c.inShort}</p>
+            </>
+          )}
+          <p className="mt-3 rounded-xl border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-3 font-bold">
+            If you remember only one thing: {c.remember}
+          </p>
+        </>
+      )}
     </Panel>
   );
 }
