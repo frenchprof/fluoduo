@@ -296,6 +296,9 @@ jobs:
       - name: "Home's two control rows and the map view switch (1 Sep)"
         run: python3 verify/verify80-home-view-switch.py
 
+      - name: "The origin animation ends on the NAME — FluOLinGo (1 Sep)"
+        run: python3 verify/verify81-fluolingo-origin.py
+
       # The scan launches the runner's preinstalled Chrome via
       # playwright-core; no browser download step is needed.
       - name: Rebuild the export open, for the browser to walk
