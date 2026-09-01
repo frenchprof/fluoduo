@@ -118,11 +118,39 @@ ok(slot is not None and "truncate" in slot.group(1) and "min-w-0" in slot.group(
    "the topRight slot no longer truncates — it will push the icons")
 
 # ── 3 · the wordmark yields before the icons ──────────────────────────────
-mark = re.search(r'className="(cahier-display[^"]*)"', nocom_shell)
+# ANCHORED ON THE LINK, NOT ON A FONT CLASS. This searched for
+# `className="cahier-display…"`, which was the wordmark's display face until
+# 1 Sep, when Dan moved it to FluOLinGo Hand with the Kallang wave. The check
+# then failed for a font change while the behaviour it guards — yielding before
+# the icons — was untouched. A check that breaks on a restyle is a check people
+# learn to edit rather than read.
+#
+# The anchor is now the home link itself, which is what the rule is about: it
+# is the bar's yield slot at any width, in any face.
+mark = re.search(r'<Link href="/" className="([^"]*)"', nocom_shell)
 mk = mark.group(1) if mark else ""
-ok("min-w-0" in mk and "truncate" in mk,
+ok("min-w-0" in mk and "truncate" in mk and "shrink" in mk,
    "the wordmark truncates rather than pushing the icons off",
    "the wordmark no longer truncates: at 320px it alone costs 112px and the ☰ goes off-screen")
+
+# ── 3b · the streak is a READING, not a destination (1 Sep) ───────────────
+# Dan docked the streak in this strip, between ⌛ and the account button. Every
+# other item here is somewhere you can go — that is the strip's whole meaning,
+# and verify31 exists because things that push the icons off screen keep being
+# added. So the streak is pinned as text: not a <Link>, not a <button>, and
+# shrink-0 like its neighbours so it cannot be the thing that squeezes ☰ out.
+streak = re.search(r"function StreakMark\(\)[\s\S]*?\n\}", nocom_shell)
+sm = streak.group(0) if streak else ""
+ok(bool(sm), "the streak mark exists in the bar", "StreakMark is gone from the top bar")
+ok("<Link" not in sm and "<button" not in sm,
+   "the streak is a reading, not a door — the strip stays destinations only",
+   "the streak became a link or a button; the icon strip's one meaning is that everything in it goes somewhere")
+ok("shrink-0" in sm,
+   "the streak cannot be squeezed out of the strip",
+   "the streak is shrinkable: on a narrow phone it would collapse or push ☰ off, which is this file's whole subject")
+ok("streak === null" in sm or "streak == null" in sm,
+   "the streak renders nothing until it is read — no hydration mismatch on 28 pages",
+   "the streak renders a value on the server; localStorage does not exist there and the mismatch would blame the whole bar")
 
 # ── 4 · the small-screen width budget is still bought ─────────────────────
 mq = re.search(r"@media\s*\(max-width:\s*639px\)\s*\{([\s\S]*?)\n\}", nocom_css)
