@@ -243,6 +243,9 @@ jobs:
       - name: "The five remaining ateliers: the model survives, and no option Dan did not review (1 Sep)"
         run: python3 verify/verify77-five-ateliers.py
 
+      - name: "The atelier model's English is toggled, on by default, never deleted (1 Sep)"
+        run: python3 verify/verify82-atelier-english.py
+
 
       - name: "Every check runs, and no two share a number"
         run: python3 verify/verify-wiring.py
