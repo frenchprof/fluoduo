@@ -6,6 +6,70 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 1 Sep, night — the wrong answers, and Home's switch actually opens the map
+
+Sole editor of STATUS.md in this commit: Pre-tests.
+
+Two rounds of Dan's corrections on the same evening, one branch
+(`claude/lesson-files-025-038-039`, restarted off `main` after #125 merged).
+
+**The wrong answers on `envies-besoins` could be right.** Every cloze surface
+builds its decoys from the deck's OTHER gap words — correct for « du / de la /
+des », wrong here: « Je ___ visiter Paris » marked `veux` correct and offered
+`voudrais`, which is good French differing only in register. Four of ten cards
+could mark a learner wrong for knowing more. Dan's fix, verbatim: *"i would
+make the wrong answers veut and voudrait"* — third person, wrong on agreement
+after « Je », and unable to collide with each other. Then, seeing the fixed
+card: *"i would put besoin and rêve instead of envie and aimerais (which start
+with vowels)"* — a vowel-initial decoy is wrong on ELISION before it is wrong
+about wanting and needing, so a learner rejects it having understood nothing.
+Both rules now live in one new deck field, `gapDecoys` (schema.ts), read by one
+new helper, `gapDecoyPool` (gapSentence.ts), which **three** surfaces now share
+— the pager's ★ MCQ, the pager's ★★ word bank and GramMarathon's — because
+each derived that pool for itself and this deck could have been corrected in
+one and stayed broken in the other two. Every other deck is byte-for-byte
+unchanged: absent `gapDecoys`, the pool is the deck's own gaps.
+
+**Home's view switch.** Dan: *"transfer the labels of the 3D switch into the
+switch itself … move it to the left under the 4/30 … swap the positions of the
+four buttons and the next stop's name … and make sure the switch literally
+takes you the map it promises to."* All four done. The last one was a real
+defect: Home's switch started at 2D on every visit whatever the learner had
+chosen, and its map link carried `?view=2d`, which /map then SAVED — so
+choosing 3D on the map, going Home and coming back put you in 2D, changed by a
+control that looked like it was only reporting the state. New `lib/mapView.ts`
+holds the key, the reader, the writer and the href builder for the three
+surfaces that set this view; flipping the switch now saves the choice and opens
+the map in it.
+
+**Handover to fluoduo-main.** Branch `claude/lesson-files-025-038-039`, three
+commits off `7787fad8`. Two lots in one branch, splittable at the commit
+boundary:
+- *decoys* — `src/lib/collections/schema.ts`, `gapSentence.ts`,
+  `src/app/lessons/pager/buildCards.tsx`, `GramMarathonContent.tsx`,
+  `src/content/collections/envies-besoins.json`, `verify76`.
+- *Home* — `src/app/HomeDashboard.tsx`, `src/app/map/MapBody.tsx`,
+  `src/lib/mapView.ts`, `verify25b`, `verify25c`, `verify80`, `verify.yml`.
+
+Shared files anyone else may be in: `buildCards.tsx`, `HomeDashboard.tsx`,
+`MapBody.tsx`, `verify25b/25c`, `.github/workflows/verify.yml`.
+
+**⚠ A verify-number collision that is NOT ours to fix.**
+`verify76-envies-besoins.py` has been on `main` since #125 (`aae60c0`);
+`origin/claude/peers-vd2h6h` carries `verify76-two-tier3-stops.py`. Two checks
+sharing a leading number fails `verify-wiring.py`, so that branch cannot merge
+until it renumbers — 80 is now taken too, so **81 up is free**. Flagged rather
+than renumbered: ours is already on main, and renumbering a merged check is
+how the 31/52/60 collisions turned into two problems each.
+
+**Open with Dan, unchanged from this morning:** whether SIO-025 gets a lesson
+after all; whether SIO-022's ×6 possessives drill should be re-homed (it died
+with iComplete); whether `SessionReceipt` + `useRunXp` should be re-hosted (0
+hosts since #125's parent); and whether Facile's four leading MCQ cards should
+stay, given its blurb still reads "Sort the words into order".
+
+**Still queued for Pre-tests:** the cycling redo (FluOLinGo Hand).
+
 ## 1 Sep evening — SIO-039 lands, SIO-025 is ruled, and live is at #124
 
 Sole editor of STATUS.md in this commit: fluoduo-main.
