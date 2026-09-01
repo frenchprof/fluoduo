@@ -152,6 +152,51 @@ ok("streak === null" in sm or "streak == null" in sm,
    "the streak renders nothing until it is read — no hydration mismatch on 28 pages",
    "the streak renders a value on the server; localStorage does not exist there and the mismatch would blame the whole bar")
 
+# ── 3c · the Kallang wave TRAVELS, and stops when asked (1 Sep) ───────────
+# Dan: "the top return link to be in the same FluOLinGo font but with the
+# KALLANG wave effect and irregular highlighter movement", then, shown three
+# rhythms on one real-time axis: "A still looks like it is best."
+#
+# The one thing that makes it a wave rather than a bounce is that a letter's
+# ARC IS SHORTER THAN THE TIME THE CREST TAKES TO CROSS THE WORD. The first
+# draft had a 0.82s arc against a 0.72s crossing, every letter rose together,
+# and Dan read it as "no genuine wave" — correctly. So the relationship is
+# asserted arithmetically rather than by eye, because it is the difference
+# between the effect and its absence, and neither number looks wrong alone.
+mark_span = re.search(r'className="fluo-wave"[\s\S]*?</span>\s*</span>', nocom_shell)
+ms = mark_span.group(0) if mark_span else ""
+ok("fluo-wave-letter" in ms and "animationDelay" in ms,
+   "the wordmark animates PER LETTER with a stagger",
+   "the wordmark has no per-letter stagger — a word that moves as a block is a bounce, not a wave")
+stagger = re.search(r"i \* ([\d.]+)\}s", ms)
+per = float(stagger.group(1)) if stagger else 0.0
+cross = per * len("FluOLinGo")
+dur = re.search(r"animation:\s*fluo-kallang\s+([\d.]+)s", nocom_css)
+kf = re.search(r"@keyframes fluo-kallang \{([\s\S]*?)\n\}", nocom_css)
+rest = re.search(r"0%,\s*([\d.]+)%", kf.group(1)) if kf else None
+arc = (float(rest.group(1)) / 100) * float(dur.group(1)) if (rest and dur) else 99.0
+ok(0 < arc < cross,
+   f"a letter's arc ({arc:.2f}s) is shorter than the crossing ({cross:.2f}s) — the crest travels",
+   f"a letter's arc ({arc:.2f}s) is not shorter than the crossing ({cross:.2f}s): every letter rises together, which is a bounce wearing a stagger")
+ok("sr-only" in ms,
+   "the name is given once to a screen reader, not nine letters at a time",
+   "the wordmark's letters are not aria-hidden behind one readable name")
+# ALL of them, not the first: globals.css carries five reduced-motion blocks
+# (the hero's, the wave's, a global sweep, the map node's...) and matching only
+# the first found the HERO's and reported the wave unguarded. The first pass of
+# this very check did exactly that.
+rmbs = re.findall(r"@media \(prefers-reduced-motion: reduce\) \{([\s\S]*?)\n\}", nocom_css)
+rmb = next((b for b in rmbs if ".fluo-wave-letter" in b), "")
+ok("animation: none" in rmb,
+   "the wave stills for prefers-reduced-motion — Dan's own condition",
+   "the wave keeps running under prefers-reduced-motion")
+ok("display: none" not in rmb and "visibility: hidden" not in rmb,
+   "reduced motion stills the wave without hiding the wordmark",
+   "reduced motion hides the wordmark instead of stilling it — Dan: the wave stills, the wordmark stays")
+ok("fluo-wave--" not in nocom_css,
+   "only the chosen rhythm ships — no unapplied variant classes",
+   "an unchosen wave variant is still in the stylesheet; Dan picked A, the others are dead CSS")
+
 # ── 4 · the small-screen width budget is still bought ─────────────────────
 mq = re.search(r"@media\s*\(max-width:\s*639px\)\s*\{([\s\S]*?)\n\}", nocom_css)
 body = mq.group(1) if mq else ""
