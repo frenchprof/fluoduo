@@ -309,15 +309,35 @@ lane = report it in STATUS, don't do it.
        `docs/HANDOVER_LESSON_FILES.md`.
      - ateliers **1 of 6** — SIO-010 done, and it is the shape the other five
        copy. SIO-020/030/040/049/050 have no file.
-  4. **The compound-names concept** — *tarte aux pommes* against *jus de
-     pomme*. **Open, and it needs a decision from Dan before it can be
-     written**, because there is nowhere to put it: `LessonConcept` gives one
-     concept per lesson, and both food stops already carry one — SIO-041
-     (`aliments`) argues *why the article often hides the gender*, SIO-044
-     (`au-marche`) argues *why a quantity is followed by bare « de »*. So the
-     compound rule either replaces one of those, or the stop it belongs to is a
-     different one, or a lesson needs to be able to hold two.
-  Keeper of the Stocktake ledger — re-issue when the counts move.
+  4. ✅ **The compound-names concept — DONE, and it cost the concept that was
+     there.** Dan, asked where it belongs: *"put it where we learn about food
+     items."* That is SIO-041, which already carried one, so *why the article
+     often hides the gender* was **replaced** by *why French needs a joint where
+     English just stacks nouns* — `à` puts it in (*le gâteau au chocolat*), `de`
+     says what it is made of (*le jus d'orange*), and the article falls out of
+     the choice. Dan saw both side by side before it shipped. `aliments.tsx`
+     names the commit that removed the old one, so a revert is one lookup away.
+
+  **THE STOCKTAKE, re-issued 1 Sep — 45 concepts across 52 stops.**
+
+  | tier | stops | concepts | what is missing |
+  |---|---|---|---|
+  | 1 · Systemic Grammar | 20 | **20** ✅ | — |
+  | 2 · Lexical Core | 15 | **15** ✅ | — |
+  | 3 · phrase stops | 9 | **7** | SIO-025, SIO-039 |
+  | 3 · ateliers | 6 | **1** | SIO-020 / 030 / 040 / 049 / 050 |
+
+  **Seven concepts remain and NOT ONE of them is blocked on an argument.** Every
+  gap is a lesson file that does not exist yet, so the pipeline's critical path
+  now runs through other lanes: the five atelier files are Peers' (STATUS line
+  544), SIO-025 and SIO-039 went to Pre-tests with #123. SIO-010 is written and
+  is the shape the other five copy — an atelier concept argues the REGISTER, the
+  thing a model dialogue cannot show because it only ever runs one.
+
+  Two things this lane can do with no file at all, in the order they are worth
+  doing: re-read the 45 against Dan's litmus test now that they can be compared
+  as a set, and draft the five atelier arguments from `ATELIER_DIALOGUES` so
+  they drop in the hour each file lands rather than the day after.
 - **Pre-tests — the pre-test surface, then capacity.** ~~Unit-0 pre-test pages
   (in flight, the last uncovered pre-test surface).~~ **DONE — #98.** All ten
   now render at `/pretests/unit0/SIO-00N`; every stop in the course has a
