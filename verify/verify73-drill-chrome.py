@@ -26,7 +26,7 @@ This file reads SOURCE. The rendered proof is a browser sweep across the
 DrillShell surfaces, recorded in the commit; what a check can hold is that the
 guard and its two hosts stay wired to each other.
 
-Run from the repo root:  python3 verify/verify71-drill-chrome.py
+Run from the repo root:  python3 verify/verify73-drill-chrome.py
 """
 import os, re, sys
 

@@ -11,6 +11,7 @@ the finding that costs most is the false one:
                                  `example` field ("Pourquoi tu aimes le
                                  sport ?"). Both halves already taught.
   SIO-038  Getting around      — same shape ("Tu y vas en bus ?").
+                                 REVERSED 2026-09-01; see the note at part 2.
   SIO-039  Wants & needs       — the cards ARE the polite act ("Je voudrais un
                                  café."), not vocabulary for it.
 
@@ -123,8 +124,30 @@ for slug, sio in GENS.items():
 # all checked against core-nouns.json. If anyone ever adds a SECOND lesson to
 # SIO-006 that re-teaches the frames, this comment is the reason it should not
 # exist; the guard for it now lives in verify66's content assertions.
+#
+# SIO-038 CAME OUT ON 2026-09-01, the same way and for the same kind of reason.
+# The 29 Aug finding was again true and again about something else: the deck's
+# `example` fields do carry « Tu y vas en bus ? », so a lesson re-teaching THE
+# QUESTION would be a second door. What no card in that deck ever asks is which
+# of THREE frames a mode of transport takes — `en` + a vehicle you sit inside,
+# `à` + on foot or astride, `prendre` + the definite article. Two of those three
+# are glossed exactly once in the whole repo, in the deck's letris `gameConfig`
+# columns, which is a GAME's configuration and reaches no card; the third is
+# glossed nowhere. Every card shows the preposition already attached, so the
+# choice between them is never put to a learner, and the stop's own competence
+# asks for all three ("answer with prendre + transport; use the pronoun y").
+#
+# It was also the last Tier 1 stop with a deck and no
+# src/content/lessons/native/<slug>.tsx, so its concept had physically nowhere
+# to live (colour review's handover, 31 Aug).
+#
+# So the lesson added teaches the FRAMES, not the question — the same
+# distinction that took SIO-006 out of this list. verify74 holds it to that: its
+# twelve sentences are reassembled from transport.json and ★ is asserted to
+# withdraw the deck's own `gap`. If anyone adds a SECOND lesson to SIO-038 that
+# re-teaches « Tu y vas comment ? », this comment is the reason it should not
+# exist.
 for sio, why in (("SIO-025", "every card carries « Pourquoi … ? » in its example"),
-                 ("SIO-038", "every card carries « Tu y vas en … ? » in its example"),
                  ("SIO-039", "the cards are the polite act, not vocabulary for it")):
     m = re.search(r'"%s":\s*\[([^\]]*)\]' % sio, reg)
     check(m is None or not m.group(1).strip(),

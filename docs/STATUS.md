@@ -409,7 +409,7 @@ lane = report it in STATUS, don't do it.
      word under it (Words went under Forms on 31 Aug). Chosen by
      `sio.isProduction`, never by a deck-id prefix, so a seventh atelier is
      covered. Ordinary lessons still open on Pract. — shown side by side.
-     `verify71`, 13 checks, all break-tested.
+     `verify73`, 13 checks, all break-tested.
 
   **After those:** Tier-1 concept batches in parallel with Color review, same
   read-before-ship rule.
