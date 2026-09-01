@@ -81,6 +81,52 @@ export const moiAussiLesson: NativeLesson = {
       </p>
     </div>
   ),
+  // TIER 1 · stop 11. The Mémo says eight pronouns and that only four change
+  // shape. The claim is WHERE they turn up: exactly where there is no verb for
+  // an ordinary subject pronoun to attach to.
+  concept: {
+    subtitle: "Why moi and not je",
+    contrast: (
+      <>
+        English uses <i>me</i> for anything that is not the subject and thinks no more about
+        it. French keeps two sets, and the second one appears in one situation only:{" "}
+        <b>where there is no verb</b> for the pronoun to drive.
+      </>
+    ),
+    question: (
+      <>
+        <i lang="fr">Moi aussi.</i> Why not <i lang="fr">je aussi</i>?
+      </>
+    ),
+    answer: (
+      <>
+        Because <i lang="fr">je</i>{" "}cannot stand on its own &mdash; it exists to sit in
+        front of a verb, and there is no verb here. A pronoun left alone takes the stressed
+        form. Only four of the eight actually change:{" "}
+        <i lang="fr">je&rarr;moi</i>, <i lang="fr">tu&rarr;toi</i>,{" "}
+        <i lang="fr">il&rarr;lui</i>, <i lang="fr">ils&rarr;eux</i>. The rest look
+        unchanged, which is why the set is easy to miss.
+      </>
+    ),
+    pitfallHeads: ["with a verb in mind", "standing alone"],
+    pitfall: [
+      { label: <>me too</>, wrong: <><i lang="fr">je aussi</i></>, right: <><i lang="fr">moi aussi</i></> },
+      { label: <>and you?</>, wrong: <><i lang="fr">et tu&nbsp;?</i></>, right: <><i lang="fr">et toi&nbsp;?</i></> },
+      { label: <>him, not her</>, wrong: <><i lang="fr">il, pas elle</i></>, right: <><i lang="fr">lui, pas elle</i></> },
+    ],
+    check: [
+      { q: <>Why does <i lang="fr">elle</i> look the same in both sets?</>,
+        a: <>Because it is. Only four change shape; the other four are doing the same job in a different place.</> },
+      { q: <>Someone says they do not like coffee, and neither do you.</>,
+        a: <><i lang="fr">Moi non plus.</i> No verb, so the stressed form.</> },
+    ],
+    remember: (
+      <>
+        A subject pronoun needs a verb. Take the verb away and you need the other set &mdash;
+        which for four of them means a different word.
+      </>
+    ),
+  },
   dice: {
     instruction: "Answer with the right pronoun — and the right tail.",
     axes: MOI_AUSSI_AXES,

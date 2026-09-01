@@ -41,6 +41,51 @@ export const motsInterrogatifsLesson: NativeLesson = {
       </p>
     </div>
   ),
+  // TIER 1 · stop 34, the wh- half. The Mémo's warning is the whole concept:
+  // `quel` agrees with the NOUN it asks about, not with the person answering.
+  concept: {
+    subtitle: "Why quel changes but comment never does",
+    contrast: (
+      <>
+        English question words are frozen &mdash; <i>what</i>, <i>which</i>, <i>how</i>,
+        the same every time. Most French ones are too. One is not:{" "}
+        <i lang="fr">quel</i> is an <b>adjective</b>, so it agrees with the noun it asks
+        about.
+      </>
+    ),
+    question: (
+      <>
+        <i lang="fr">Quel &acirc;ge as-tu&nbsp;?</i> but{" "}
+        <i lang="fr">Quelle langue parles-tu&nbsp;?</i> What decides the ending?
+      </>
+    ),
+    answer: (
+      <>
+        The noun straight after it. <i lang="fr">L&rsquo;&acirc;ge</i> is masculine, so{" "}
+        <i lang="fr">quel</i>; <i lang="fr">la langue</i> is feminine, so{" "}
+        <i lang="fr">quelle</i>. Not the person being asked &mdash; a woman is still asked{" "}
+        <i lang="fr">quel &acirc;ge</i>.
+      </>
+    ),
+    pitfallHeads: ["agreeing with the person", "agreeing with the noun"],
+    pitfall: [
+      { label: <>asking a woman her age</>, wrong: <><i lang="fr">quelle &acirc;ge</i></>, right: <><i lang="fr">quel &acirc;ge</i></> },
+      { label: <>which languages</>, wrong: <><i lang="fr">quels langues</i></>, right: <><i lang="fr">quelles langues</i></> },
+      { label: <>how are you called</>, wrong: <><i lang="fr">comment</i> changing</>, right: <><i lang="fr">comment</i>, always</> },
+    ],
+    check: [
+      { q: <>Which countries &mdash; <i lang="fr">les pays</i>, masculine plural.</>,
+        a: <><i lang="fr">Quels pays&nbsp;?</i></> },
+      { q: <>Why does <i lang="fr">combien de</i> never change?</>,
+        a: <>It is not an adjective. Only <i lang="fr">quel</i> agrees.</> },
+    ],
+    remember: (
+      <>
+        <i lang="fr">Quel</i>{" "}is an adjective wearing a question word&rsquo;s clothes. It
+        agrees with the noun beside it, never with the person you are asking.
+      </>
+    ),
+  },
   dice: {
     instruction: "You are given the answer — form the matching French question.",
     newQuestion() {

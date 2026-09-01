@@ -495,6 +495,51 @@ Dan assigns. Listed so the queue is not re-derived by whoever picks it up.
 | 8 | `rule:` namespace (894-item tagging): parked by design until the concepts finish | transfer evidence |
 | 9 | **Deploys through fluoduo-main** (ruled) — needs the fine-grained PAT (write to dckg/fluo) as an Actions secret | ends manual deploys |
 
+## 31 Aug — Tier 1, batch 3: five stops closed
+
+Six concepts, because stop 34 has two lesson files and splitting one stop
+across batches is worse than a batch of six.
+
+| stop | the question the FORMS cannot answer |
+|---|---|
+| **2** Tu / Vous | `vous` is **two words** — polite-singular and plural. « Vous parlez ? » cannot tell you how many people are meant, and no French speaker tries. Only `tu` is unambiguous |
+| **11** Moi, toi, lui | `je` cannot stand alone — it exists to sit in front of a verb. Take the verb away and you need the other set, which for **four of the eight** means a different word |
+| **21** C'est / Ce sont | `c'est` **introduces**, `il est` **continues** — the switch happens the moment the thing has a name. And the opener agrees in number: `ce sont des ciseaux`, never `c'est des` |
+| **34** Yes/no | **`si` is a second yes**, for contradicting a negative question. English has no word for it, so learners answer `oui` and are misunderstood |
+| **34** Question words | `quel` is an **adjective** wearing a question word's clothes: it agrees with the noun beside it, never with the person being asked. A woman is still asked `quel âge` |
+| **43** Frequency | straight **after** the verb — even when that splits the verb from its object, which English never does |
+
+Every claim comes from the lesson's own Mémo. No new French.
+
+**Tier 1 is 17 of 20.** Three left: stops 37 Pouvoir, 38 Getting around, 47
+Making plans, 48 Giving advice — a modal cluster, which is batch 4. (Four
+stops; 17+4 = 21 because stop 34 carried two files.)
+
+### The spacing check was wrong about itself
+
+`verify72` shipped an hour ago claiming same-line `</i> word` "usually
+survives". **It does not.** Four more of this batch jammed that way —
+`tu-vous`, `moi-aussi`, `questions-oui-non`, `mots-interrogatifs` — and on
+tu-vous line 116 one instance survives and the next does not, on the same line,
+with nothing in the source to tell them apart.
+
+A blanket static rule would flag **418 sites across 39 files** to catch the
+twelve real ones: churn, and a style rule wearing a bug check's clothes. So the
+header now says the truth — only the rendered page knows — and the check pins
+the two things it can honestly assert: the newline shape, and the twelve fixed
+sites.
+
+**Three faults in the pins themselves, all found by break-testing:**
+1. anchors carried literal backslashes from `r"...\"fr\"..."`, so they matched
+   nothing;
+2. a pin that could not find its site **passed**, reporting "the phrase was
+   rewritten" — which is exactly how four reverted fixes went green;
+3. the follow text was matched literally, but it wraps across source lines, so
+   `means everything else` never matched `means\n        everything else`.
+
+A missing pin is now a FAILURE, and the follow text matches any whitespace run.
+Break-tested by reverting every `{" "}` in six files: all red.
+
 ## 31 Aug PM — a stop is done when it is done (pre-tests lane)
 
 Dan: *"I think it should only be marked done if it is really FULLY done. so we
