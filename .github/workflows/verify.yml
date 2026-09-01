@@ -243,8 +243,6 @@ jobs:
       - name: "The five remaining ateliers: the model survives, and no option Dan did not review (1 Sep)"
         run: python3 verify/verify77-five-ateliers.py
 
-      - name: "A deck's cloze never offers a word that is not French in its frame (1 Sep)"
-        run: python3 verify/verify78-frame-fit.py
 
       - name: "Every check runs, and no two share a number"
         run: python3 verify/verify-wiring.py

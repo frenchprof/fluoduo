@@ -11,7 +11,6 @@
 import type { DiceAxis, DiceQuestion } from "./types";
 import { pinned1, pinnedGroup, pinnedNeg, roll, POLARITY_AXIS } from "./axis.ts";
 import { medFrom, sentence, type Slot } from "./cloze.ts";
-import { fitsFrame } from "../../../lib/frameFit.ts";
 
 const SUBJECTS = [
   { disp: "Je", slot: "je" }, { disp: "Tu", slot: "tu" }, { disp: "Il", slot: "il" },
@@ -91,26 +90,6 @@ function sentenceEn(s: (typeof SUBJECTS)[number], a: (typeof ACTIVITIES)[number]
  * One question. Any axis in `pinned` is honoured; anything absent (or "") is
  * rolled, so an unsteered call behaves exactly as before the selectors.
  */
-
-/**
- * Which of these forms this word can actually take.
- *
- * FOUND BY DRIVING ALL NINE SLOTTED STOPS, 1 Sep. The list was offered whole
- * against every noun, so « Je déteste l'boxe », « On va à l'café » and « Il fait
- * de l'vélo » were on real cards — hundreds per run. An elided form can only
- * stand before a vowel, and a form that must elide cannot stand before a
- * consonant. `fitsFrame` is the same rule the deck supply uses
- * (src/lib/frameFit.ts), applied to the other half of one fault.
- *
- * The correct answer is kept whatever the rule says: the lesson wrote that
- * sentence, so if the rule disagrees the rule is wrong.
- */
-function fitting(pool: readonly string[], answer: string, word: string): string[] {
-  const out = [answer];
-  for (const a of pool) if (a !== answer && !out.includes(a) && fitsFrame("", a, word)) out.push(a);
-  return out;
-}
-
 export function faireQuestion(pinned?: Record<string, string>): DiceQuestion {
   const s = pinned1(SUBJECTS, pinned?.subject, (x) => x.disp);
   const a = roll(pinnedGroup(ACTIVITIES, pinned?.partitive, (x) => x.part));
@@ -127,7 +106,7 @@ export function faireQuestion(pinned?: Record<string, string>): DiceQuestion {
     big: a.fr,
     en: sentenceEn(s, a, neg),
     correct: sentence(slots),
-    easyOptions: fitting([...new Set(arts)], art, a.fr).map((x) => `${sv} ${np(x, a.fr)}.`),
+    easyOptions: [...new Set(arts)].map((x) => `${sv} ${np(x, a.fr)}.`),
     // Derived, not hand-written — the two can no longer drift apart.
     med: medFrom(slots, "article"),
     slots,

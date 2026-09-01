@@ -10,7 +10,6 @@
  */
 import type { DiceAxis, DiceQuestion } from "./types";
 import { pinned1 } from "./axis.ts";
-import { startsWithVowelSound } from "../../../lib/frameFit.ts";
 
 const AVOIR_STATES = [
   { fr: "faim", en: "hungry" },
@@ -38,16 +37,8 @@ const SUBJECTS = [
 ] as const;
 
 const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)];
-/**
- * « J'ai » but « Je suis » — elision needs a vowel to elide before.
- *
- * `elide: true` was applied unconditionally, so the être half of every Je card
- * read « J'suis chaud », « J'suis malade ». Found by driving all nine slotted
- * stops on 1 Sep, alongside « l'boxe », « à l'café » and « de l'vélo »; the
- * predicate is the one the deck supply uses (src/lib/frameFit.ts).
- */
 const sv = (s: (typeof SUBJECTS)[number], verb: string) =>
-  s.elide && startsWithVowelSound(verb) ? `J'${verb}` : `${s.disp} ${verb}`;
+  s.elide ? `J'${verb}` : `${s.disp} ${verb}`;
 
 export const AVOIR_ETATS_AXES: DiceAxis[] = [
   { key: "subject", label: "Sujet", options: SUBJECTS.map((s) => ({ value: s.disp, label: s.disp })) },

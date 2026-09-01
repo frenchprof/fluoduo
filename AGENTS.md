@@ -97,6 +97,41 @@ touch keys or routes. Home's hero key is **Continue** (the current stop),
 which is why the games family is Games and not Play: no two doors share a
 name.
 
+# A wrong answer is allowed to be wrong French — permanent (2026-09-01)
+
+**Dan, shown five cases one by one and asked which to revert: *"i would leave
+those alone, srsly"*.**
+
+The cards in question offered options like these, and every one of them is a
+DISTRACTOR — never the answer:
+
+    Il adore l'lecture.          (aimer — the learner picked l' over le/la/les)
+    Tu ne vas pas à l'bibliothèque.   (aller — picked à l' over au/à la/aux)
+    Il fait de l'sport.          (faire — picked de l' over du/de la/des)
+    J'suis fatigué.              (avoir-etats — picked être where avoir is right)
+    J'veux un plan.              (the deck's cloze — picked veux after « J' »)
+
+They break elision, and on 1 Sep a rule was written to filter them out of every
+options list in the app, on both sides of the card builder, with a check behind
+it. Dan reversed all of it. **A distractor's whole job is to be wrong, and
+choosing the wrong contraction is exactly the mistake an A1 learner makes** —
+removing it removes the error the card exists to train out.
+
+SO: do not filter an option for being ungrammatical. If a learner could arrive
+at that string by making the mistake the card is about, it belongs on the card.
+
+The line this does NOT cross, because it is a different fault: an option must
+still be one the learner could have PRODUCED by choosing wrongly. « Bon chance »
+was cut from the atelier cards (atelierModel.ts) because nobody chose « Bon » —
+it was printed by the frame, so the wrong form was the machine's, not the
+learner's. The test is *"could a learner have made this?"*, not *"is this
+French?"*.
+
+An argument was put twice that 4 and 5 above are that second kind — the « J' »
+is glued on by the code rather than chosen. Dan looked at all five and said
+leave them. That is the ruling; this note records the reasoning so the next
+session does not spend an afternoon rediscovering the filter.
+
 # Start here — every session (2026-08-17)
 
 Read `docs/STATUS.md` before anything else and update it before you stop. `HANDOFF.md`, `TODO.md` and `docs/planning/*` are historical.

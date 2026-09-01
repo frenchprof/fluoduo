@@ -18,7 +18,6 @@
  */
 import type { DiceAxis, DiceQuestion } from "./types";
 import { medFrom, sentence, type Slot } from "./cloze.ts";
-import { fitsFrame } from "../../../lib/frameFit.ts";
 
 /**
  * `pron` and `verb` are the same sentence as `aff`/`neg`, taken apart.
@@ -120,26 +119,6 @@ function sentenceEn(s: (typeof SUBJECTS)[number], p: (typeof PLACES)[number], ne
  * One question. Any axis in `pinned` is honoured; anything absent (or "") is
  * rolled, so an unsteered call behaves exactly as before the selectors existed.
  */
-
-/**
- * Which of these forms this word can actually take.
- *
- * FOUND BY DRIVING ALL NINE SLOTTED STOPS, 1 Sep. The list was offered whole
- * against every noun, so « Je déteste l'boxe », « On va à l'café » and « Il fait
- * de l'vélo » were on real cards — hundreds per run. An elided form can only
- * stand before a vowel, and a form that must elide cannot stand before a
- * consonant. `fitsFrame` is the same rule the deck supply uses
- * (src/lib/frameFit.ts), applied to the other half of one fault.
- *
- * The correct answer is kept whatever the rule says: the lesson wrote that
- * sentence, so if the rule disagrees the rule is wrong.
- */
-function fitting(pool: readonly string[], answer: string, word: string): string[] {
-  const out = [answer];
-  for (const a of pool) if (a !== answer && !out.includes(a) && fitsFrame("", a, word)) out.push(a);
-  return out;
-}
-
 export function allerQuestion(pinned?: Record<string, string>): DiceQuestion {
   const s = SUBJECTS.find((x) => x.aff === pinned?.subject) ?? pick(SUBJECTS);
   // A pinned preposition narrows the places rather than being applied on top
@@ -165,7 +144,7 @@ export function allerQuestion(pinned?: Record<string, string>): DiceQuestion {
     big: p.lieu,
     en: sentenceEn(s, p, neg),
     correct: sentence(slots),
-    easyOptions: fitting(alts, p.pre, p.lieu).map((a) => `${sv} ${pp(a, p.lieu)}.`),
+    easyOptions: alts.map((a) => `${sv} ${pp(a, p.lieu)}.`),
     // Derived, not hand-written — the two can no longer drift apart.
     med: medFrom(slots, "prep"),
     slots,
