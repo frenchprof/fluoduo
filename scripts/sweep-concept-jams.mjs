@@ -39,7 +39,47 @@ console.log('concepts to sweep:', slugs.length);
 // So match a dash touching a word on either side, AND punctuation running
 // straight into a capital. The second pattern deliberately requires the
 // punctuation — bare lowercase-then-capital would flag FluOLinGo on every page.
+// THIRD SHAPE, AND THIS ONE RETIRES THE GUESSWORK. Patterns catch a dash or a
+// capital butting its neighbour, but not « C'est</i> cannot » rendering as
+// "C'estcannot" — a lowercase letter, which no safe pattern can flag without
+// drowning in false positives. The reliable test is not a pattern at all:
+// compare the RENDER against the SOURCE. Every pair of adjacent words in the
+// source must survive as a pair in the page. A swallowed space breaks the pair
+// and nothing else does.
 const RX = /(\S—|—\S|[.,;!?][A-ZÀ-ÝÉÈÊ])/g;
+
+/** Word pairs from a concept's source, with JSX stripped the way React strips it. */
+function sourcePairs(src) {
+  const a = src.indexOf("  concept: {");
+  if (a < 0) return [];
+  // END AT WHICHEVER TOP-LEVEL KEY COMES NEXT, not at `memo` specifically.
+  // faire.tsx puts memo BEFORE concept, so indexOf("\n  memo:", a) returned -1
+  // and the slice ran to end of file, swallowing dice and bonus — which
+  // reported « de la » + « de » in the deck as a lost space. One false positive
+  // out of five on the first run, and it was this.
+  const b = ["\n  memo:", "\n  dice:", "\n  bonus:", "\n};"]
+    .map(k => src.indexOf(k, a)).filter(i => i > 0).sort((x, y) => x - y)[0];
+  let t = src.slice(a, b ?? undefined);
+  t = t.replace(/\/\/.*$/gm, "");                    // comments are not rendered
+  t = t.replace(/\{" "\}/g, " ");                     // explicit spaces ARE spaces
+  t = t.replace(/<[^>]+>/g, "");                      // tags
+  t = t.replace(/&rsquo;/g, "\u2019").replace(/&mdash;/g, "—")
+       .replace(/&nbsp;/g, " ").replace(/&eacute;/g, "é").replace(/&agrave;/g, "à")
+       .replace(/&ccedil;/g, "ç").replace(/&rarr;/g, "→").replace(/&times;/g, "×");
+  t = t.replace(/\b(subtitle|contrast|question|answer|remember|inShort|label|wrong|right|text|depth|q|a):/g, " ");
+  t = t.replace(/[{}[\]()"`]/g, " ").replace(/\s+/g, " ");
+  // PAIR ONLY GENUINELY ADJACENT WORDS. Filtering the token list first and
+  // pairing afterwards INVENTS adjacencies: « de la · de l' » dropped the
+  // middot and offered "la de", which is not in the source at all. So walk the
+  // raw stream and pair i with i+1 only when both are words.
+  const tok = t.split(" ");
+  const isWord = x => /^[\wà-ÿ'’-]+$/i.test(x) && /[a-zà-ÿ]{2,}/i.test(x);
+  const out = [];
+  for (let i = 0; i + 1 < tok.length; i++) {
+    if (isWord(tok[i]) && isWord(tok[i + 1])) out.push(tok[i] + " " + tok[i + 1]);
+  }
+  return out;
+}
 const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
 const bad = [], errs = [];
 for (const slug of slugs) {
@@ -60,6 +100,16 @@ for (const slug of slugs) {
     }
     // ignore the "—" used as a standalone bullet/separator with spaces both sides
     const hits=[...new Set(all.match(RX)||[])].filter(h=>!/^—$/.test(h));
+    // the source-vs-render pass: any adjacent pair the page lost a space in
+    const flat = all.replace(/\s+/g, " ");
+    // AND MATCH THE JOINED FORM ON WORD BOUNDARIES. A bare includes() found
+    // "lade" inside « salade » and called it a lost space.
+    const esc = x => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const lost = sourcePairs(readFileSync(DIR + "/" + slug + ".tsx", "utf8"))
+      .filter(pair => !flat.includes(pair) &&
+        new RegExp("(^|[^\\wà-ÿ'’])" + esc(pair.replace(" ", "")) + "([^\\wà-ÿ'’]|$)", "i").test(flat))
+      .slice(0, 4);
+    hits.push(...lost);
     if (hits.length) { bad.push([slug,hits]); console.log(`  JAM ${slug}: ${JSON.stringify(hits)}`); }
   } catch(e) { errs.push(slug); console.log(`  err ${slug}: ${e.message.slice(0,40)}`); }
   await p.close();

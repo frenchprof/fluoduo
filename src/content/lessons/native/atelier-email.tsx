@@ -54,7 +54,8 @@ export const atelierEmailLesson: NativeLesson = {
         Because the second word <b>is</b> the occasion. <i lang="fr">chance</i> is the
         luck an exam needs, <i lang="fr">voyage</i> is the trip to Paris,{" "}
         <i lang="fr">anniversaire</i> is Saturday itself. Wishing{" "}
-        <i lang="fr">bonne chance</i> for the trip does not sound odd &mdash; it wishes
+        <i lang="fr">bonne chance</i>{" "}
+        for the trip does not sound odd &mdash; it wishes
         something else entirely. So the work is not translating the feeling; it is
         finding the noun for what the person is about to do.
       </>

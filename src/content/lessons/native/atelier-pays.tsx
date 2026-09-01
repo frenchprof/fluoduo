@@ -62,97 +62,63 @@ export const atelierPaysLesson: NativeLesson = {
         <i lang="fr">c&rsquo;est</i> for all of them?
       </>
     ),
-    // ONE LINE PER OPENER (Dan, 2 Sep: "can be presented a new line for a new
-    // sentence"). The three jobs are three things, so they are three lines.
+    // DAN'S OWN FRAMING, 2 Sep, put into layman English at his request:
+    //   "Voici introduces a new referent to the discourse (— how to say this in
+    //    layman language?) C'est provides information about that referent, and
+    //    Il y a says what there is."
     //
-    // AND THE ARTICLE CLAIM IS GONE — it was wrong. This slot used to end "the
-    // article is not decoration on the opener; it is the opener's job showing
-    // through", and the remember line said "the opener decides the article, not
-    // the noun." Dan pushed back on the check that rested on it, and he is
-    // right: « Voici un pays » and « C'est le Japon » are both perfectly good
-    // French. The article follows the NOUN and how it is being referred to —
-    // « le Japon » takes one because a named country does (stop 15) — not the
-    // opener. The three-way job distinction survives on its own; the article
-    // rule never existed.
+    // "Introduces a new referent to the discourse" becomes "brings the thing in
+    // — the first time you mention it", and "provides information about that
+    // referent" becomes "says something about it, now that it is in".
+    //
+    // THIS IS A BETTER ARGUMENT THAN THE ONE IT REPLACES, and it is Dan's. Mine
+    // had three parallel jobs — showing, sorting, listing — which left the
+    // question "why not c'est throughout?" answered only by assertion. A chain
+    // answers it: « c'est » has nothing to be about until something has been
+    // brought in, which is also why the model runs in this order and not
+    // another.
+    //
+    // ONE LINE PER SENTENCE, also Dan's ("can be presented a new line for a new
+    // sentence").
     answer: (
       <div className="space-y-1.5">
-        <p>They do three different jobs, and only one of them is showing.</p>
         <p>
-          <i lang="fr">Voici</i>{" "}
-          &mdash; you <b>show</b> it:{" "}
-          <i lang="fr">Voici le Japon.</i>
+          <i lang="fr">Voici</i> &mdash; <b>brings the thing in</b>, the first time you
+          mention it: <i lang="fr">Voici le Japon.</i>
         </p>
         <p>
-          <i lang="fr">C&rsquo;est</i>{" "}
-          &mdash; you say <b>what kind</b> it is:{" "}
-          <i lang="fr">C&rsquo;est un pays asiatique.</i>
+          <i lang="fr">C&rsquo;est</i> &mdash; <b>says something about it</b>, now that
+          it is in: <i lang="fr">C&rsquo;est un pays asiatique.</i>
         </p>
         <p>
-          <i lang="fr">Il y a</i>{" "}
-          &mdash; you say <b>what is there</b>:{" "}
+          <i lang="fr">Il y a</i> &mdash; <b>says what is there</b>:{" "}
           <i lang="fr">Ici, il y a des Japonais.</i>
         </p>
         <p>
-          Reach for <i lang="fr">c&rsquo;est</i> every time and two of the three
-          sentences say something you did not mean.
+          So <i lang="fr">c&rsquo;est</i> cannot open: it has nothing to be about until
+          something has been brought in. That is also why the model runs in this order
+          and not another.
         </p>
       </div>
     ),
-    // NO PITFALL TABLE HERE, AND THE REASON IS SPECIFIC TO THIS STOP.
-    // Dan, 2 Sep, looking at the wrong column: "i would delete this column".
-    // It struck through « C'est le Japon », « Voici un pays asiatique » and
-    // « C'est des Japonais » — and ALL THREE ARE CORRECT FRENCH. They are wrong
-    // only for the job the line is doing, not wrong in the language. A wrong
-    // column works when the form is impossible (« en le bus »); here it would
-    // teach a beginner that three real sentences are errors.
+    // NO PITFALL TABLE — Dan's 2 Sep ruling, and it struck through correct
+    // French. See the commit; the same fault was in all six ateliers.
     //
-    // What the right column said now lives in `flow`, which was already saying
-    // it: the job decides the opener, and the article follows the opener.
+    // NO MINI-CHECK EITHER. Dan, 2 Sep: "i disagree with tis two questions. I am
+    // happy with just that one question about why not c'est throughout." That
+    // question is the `question` slot, and the answer above settles it, so a
+    // check asking it again in other words is the litmus test's own target.
     flow: [
-      { depth: 0, text: "Are you showing the thing itself? — Voici + its own article." },
-      { depth: 0, text: "Are you saying what KIND it is? — C'est + un / une." },
-      { depth: 0, text: "Are you saying what is THERE? — Il y a + des." },
+      { depth: 0, text: "First mention of the thing? — Voici." },
+      { depth: 0, text: "Saying something about it? — C'est." },
+      { depth: 0, text: "Saying what is there? — Il y a." },
     ],
-    // THE OLD CHECKS WERE BOTH CONTESTABLE, WHICH IS WHY DAN DID NOT AGREE WITH
-    // THEM. The first asked which opener names a flag on screen and answered
-    // « voici » — but « C'est le drapeau du Japon » is just as good, so the
-    // question had two right answers and marked one wrong. The second asked why
-    // « un pays » but « le Japon » and answered from the opener, which was the
-    // false rule above. These two name the JOB in the question, so the mapping
-    // is the only thing being tested and there is one answer.
-    check: [
-      {
-        q: (
-          <>
-            You have shown the country. Now you want to say it is in Asia. Which
-            opener?
-          </>
-        ),
-        a: (
-          <>
-            <i lang="fr">C&rsquo;est</i>{" "}
-          &mdash; you are saying what kind it is, not
-            showing it again: <i lang="fr">C&rsquo;est un pays asiatique.</i>
-          </>
-        ),
-      },
-      {
-        q: <>And to say who lives there?</>,
-        a: (
-          <>
-            <i lang="fr">Il y a</i>{" "}
-          &mdash; you are saying what is present:{" "}
-            <i lang="fr">Ici, il y a des Japonais.</i>
-          </>
-        ),
-      },
-    ],
-    inShort: "Voici shows · c'est says what kind · il y a says what is there",
+    inShort: "Voici brings it in · c'est says something about it · il y a says what is there",
     remember: (
       <>
-        <b>Three jobs, three openers.</b>{" "}
-        Decide whether you are showing it, saying
-        what kind it is, or saying what is there &mdash; and the opener follows.
+        <b>Bring it in, then say something about it.</b>{" "}
+        <i lang="fr">C&rsquo;est</i>{" "}
+        cannot come first &mdash; it needs something to talk about.
       </>
     ),
   },

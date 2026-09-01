@@ -51,7 +51,8 @@ export const atelierRestoLesson: NativeLesson = {
     answer: (
       <>
         Because only one of them is a want. <i lang="fr">Je voudrais</i> takes{" "}
-        <i lang="fr">vouloir</i> apart and softens it &mdash; it asks for something not
+        <i lang="fr">vouloir</i>{" "}
+        apart and softens it &mdash; it asks for something not
         yet offered, so it needs what you are asking for after it:{" "}
         <i lang="fr">un café</i>. <i lang="fr">Je veux bien</i> comes apart into
         nothing: it does not mean <i>I want well</i>, it means <b>yes please</b>, and it

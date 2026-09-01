@@ -92,7 +92,8 @@ export const atelierRencontreLesson: NativeLesson = {
     ),
     question: (
       <>
-        The model above runs on <i lang="fr">tu</i> from start to finish. Say the same
+        The model above runs on <i lang="fr">tu</i>{" "}
+        from start to finish. Say the same
         seven moments to a client instead &mdash; how many of the lines have to change?
       </>
     ),
