@@ -547,6 +547,15 @@ function ExerciseCard({
   const isFrame = ex.before !== undefined;
   const shown = ex.kind === "mcq" ? selected : value;
 
+  // FRENCH PUNCTUATION DOES NOT BREAK OFF ITS WORD.
+  //
+  // « Tu prends la voiture ? » is written with a space before the question
+  // mark, and on a phone the blank pill widens the line enough that the mark
+  // wrapped alone onto the next row — under a card that already shows a « ? »
+  // for the blank, so the sentence appeared to have two gaps. A narrow no-break
+  // space is what French typography calls for there anyway.
+  const tightPunct = (s: string) => s.replace(/ (?=[?!;:%»])/g, " ");
+
   // A blank's own skin, shared by the one-blank frame and by each blank of a
   // segmented cloze, so the two cannot drift apart visually.
   const blankClass = (filled: boolean) =>
@@ -588,9 +597,22 @@ function ExerciseCard({
         // step down in ink. `bigLang` also stops English going out tagged
         // lang="fr", which made the 🔊 button read it with French phonics.
         const english = ex.bigLang === "en" || ex.kind === "translate" || ex.kind === "build";
+        // ENGLISH IS NEVER BIGGER THAN THE FRENCH ON THE SAME CARD (Dan,
+        // 1 Sep: "english should never be bigger than french").
+        //
+        // "Equal size" was read as a constant — text-2xl — and on a frame card
+        // that is right, because the French frame is text-2xl too. On an MCQ
+        // card there IS no French frame: the only French is in the options, at
+        // text-lg. So a 24px English prompt sat above 18px French answers and
+        // the reference was half again the size of the target.
+        //
+        // The size therefore follows the card's own French rather than a fixed
+        // number. A French `big` keeps 2xl unconditionally — it is the target.
+        const frenchIsFrame = !!ex.segments || (!!ex.before && ex.before.length > 0) || !!ex.after;
+        const size = english && !frenchIsFrame ? "text-lg" : "text-2xl";
         return (
           <p
-            className={`text-center text-2xl leading-snug ${
+            className={`text-center ${size} leading-snug ${
               english
                 ? "font-normal italic text-[color:var(--cahier-ink)]/75"
                 : "font-bold text-[color:var(--cahier-ink)]"
@@ -673,7 +695,7 @@ function ExerciseCard({
       )}
       {isFrame && (
         <p className="text-center text-2xl font-bold leading-snug text-[color:var(--cahier-ink)]">
-          <span lang="fr">{ex.before}</span>
+          <span lang="fr">{tightPunct(ex.before ?? "")}</span>
           <span
             className={`mx-1.5 inline-block min-w-[90px] rounded-md border-b-2 border-dashed px-2 align-baseline ${
               !answered
@@ -686,7 +708,7 @@ function ExerciseCard({
           >
             {shown?.trim() ? shown : "?"}
           </span>
-          <span lang="fr">{ex.after}</span>
+          <span lang="fr">{tightPunct(ex.after ?? "")}</span>
         </p>
       )}
       {/* The segmented card renders its own reference line above the rows. */}
@@ -725,7 +747,11 @@ function ExerciseCard({
                 // Answered → options stay tappable purely for their sound.
                 onClick={() => (answered ? speak(c, "fr-FR") : onSelect(c))}
                 disabled={isStruck}
-                className={`rounded-xl border-2 px-4 py-3 text-center text-base font-bold transition ${cls}`}
+                // text-lg, not text-base: these options ARE the French on an
+                // MCQ card, and the English prompt above them is sized to
+                // match. Left at 16px the target read smaller than its own
+                // reference line.
+                className={`rounded-xl border-2 px-4 py-3 text-center text-lg font-bold transition ${cls}`}
               >
                 {!answered && (
                   <span aria-hidden className="mr-2 text-xs font-bold opacity-50">{n + 1}</span>
