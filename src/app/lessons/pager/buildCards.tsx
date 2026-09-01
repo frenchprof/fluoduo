@@ -32,6 +32,7 @@ import { splitGap } from "@/lib/practice/cloze";
 import { rampFor, type EntryLevel, type ExerciseKind } from "@/lib/lessonEntry";
 import { metaLeaksAnswer, multiBlankCard, type ClozeSegment } from "@/content/lessons/native/cloze";
 import { shuffle } from "@/lib/shuffle";
+import { fittingChoices } from "@/lib/frameFit";
 
 export type { ExerciseKind } from "@/lib/lessonEntry";
 
@@ -148,15 +149,29 @@ function deckSupply(deck: Collection, activityKey: string, entry: EntryLevel = 1
       // the sentence" and got twelve recognition cards is Dan's 31 Aug bug
       // report verbatim ("why are they all mcq?"). Assembling the sentence is
       // the nearest honest demand a gapless deck can make.
+      // The gap values that still make French in THIS item's frame. Computed
+      // once: the MCQ and the word bank are the same offer wearing different
+      // controls, and both were handing out « J'veux » (frameFit.ts).
+      const frame = hasGaps && item.gap ? splitGap(sentence, item.gap) : null;
+      const fits = frame ? fittingChoices(gapPool, item.gap!, frame.before, frame.after) : [];
+      // WHEN NO HONEST DISTRACTOR SURVIVES, ASK FOR PRODUCTION INSTEAD OF
+      // RECOGNITION. faire-activites gaps only « de » and « d' », in
+      // complementary distribution — de before a consonant, d' before a vowel —
+      // so for every one of its cards the other value is not French, and a
+      // choice between one option is not a question. Typing needs no
+      // distractors at all, and a whole-sentence MCQ substitutes nothing.
+      const choosable = fits.length >= 2;
       const k = kind === "gap" && !(hasGaps && item.gap) ? (entry >= 2 ? "build" : "mcq") : kind;
       switch (k) {
         case "mcq": {
-          if (hasGaps && item.gap) {
-            const { before, after } = splitGap(sentence, item.gap);
+          // `choosable` is the guard: with nothing honest to offer against the
+          // answer, this falls through to the whole-sentence MCQ below, which
+          // substitutes nothing into anything.
+          if (frame && item.gap && choosable) {
             return {
               kind: "mcq", itemId: item.id, activity: `mcq:lesson:${activityKey}`,
-              before, after, en,
-              options: shuffle([item.gap, ...distractors(gapPool, item.gap)]),
+              before: frame.before, after: frame.after, en,
+              options: shuffle([item.gap, ...distractors(fits, item.gap)]),
               answer: item.gap, say,
             };
           }
@@ -174,7 +189,10 @@ function deckSupply(deck: Collection, activityKey: string, entry: EntryLevel = 1
             meta: item.lemma ? `(${item.lemma})` : undefined,
             before, after, en,
             answer: item.gap!, say, gapGrade: true,
-            ...(entry >= 3 ? { typed: true } : { bankPool: gapPool }),
+            // Same filter on the word bank — a bank is a list of options with a
+            // different control — and the same fallback: nothing honest to
+            // offer means the learner types it.
+            ...(entry >= 3 || !choosable ? { typed: true } : { bankPool: fits }),
           };
         }
         // `item.alt` (schema.ts) holds authored acceptable variants — Complete

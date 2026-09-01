@@ -252,10 +252,20 @@ check(re.search(r"steered \? null : drawBonus\(\)", build) is not None,
 check('entry === 3 && slotted' in build,
       "a Difficile run on a slotted lesson drops the deck supply (one-piece cards)",
       "Difficile mixes deck cards back in — half its run is Moyen again")
-check(build.count("entry >= 3 ? { typed: true }") == 2,
-      "Difficile's single-blank fallbacks are TYPED — no word bank playing MCQ",
-      "a Difficile gap card carries a word bank again: three tiles read as MCQ, "
-      "the withdrawn scaffold handed back")
+# AMENDED 2026-09-01, and STRENGTHENED rather than relaxed. This counted the
+# literal `entry >= 3 ? { typed: true }` twice. The deck supply's copy now reads
+# `entry >= 3 || !choosable ? { typed: true }`: verify78 added a second reason to
+# withhold the word bank — when no gap value in the deck is grammatical in this
+# item's frame there is nothing honest to put in a bank, so the learner types it
+# (faire-activites gaps « de » and « d' » in complementary distribution). Both
+# forms end in `{ typed: true }` with `entry >= 3` in the condition, so the rule
+# this check exists for — Difficile never hands the scaffold back — holds in both
+# and is now true in one more case.
+typed = re.findall(r"entry >= 3(?: \|\| [^?]+)? \? \{ typed: true \}", build)
+check(len(typed) == 2,
+      f"Difficile's single-blank fallbacks are TYPED — no word bank playing MCQ ({len(typed)} sites)",
+      f"a Difficile gap card carries a word bank again: three tiles read as MCQ, "
+      f"the withdrawn scaffold handed back (found {len(typed)} typed fallbacks, expected 2)")
 check('entry >= 2 ? "build" : "mcq"' in build,
       "a gapless deck falls back to BUILD at Moyen and up, MCQ only at Facile",
       "a gapless deck turns Moyen/Difficile gap cards into MCQ — Dan's "
