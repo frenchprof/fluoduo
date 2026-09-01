@@ -87,12 +87,40 @@ check(re.search(r'"SIO-038":\s*\[[^\]]*"transport"', lessons) is not None,
       "SIO-038 points at the transport lesson",
       "LESSONS_BY_SIO has no SIO-038 -> transport row, so the stop still shows no lesson tab")
 
-# `concept` is colour review's to write. Assert it is ABSENT rather than
-# stubbed: a placeholder concept renders as a real argument to a learner and
-# has to be found and deleted before the real one can land.
-check(re.search(r"^\s*concept:", src, re.M) is None,
-      "transport.tsx leaves `concept` to the concepts lane",
-      "transport.tsx ships a `concept` — that field is colour review's, and a stub would read to a learner as the real argument")
+# CROSS-LANE EDIT — concepts lane, 1 Sep. Read this before reverting it.
+#
+# As pushed, this block asserted `concept` was ABSENT, which was exactly right
+# while the field was still owed: a stub renders to a learner as the real
+# argument and has to be hunted down before the true one can land. The concept
+# has now been written, so the same intent — *no placeholder reaches a learner*
+# — has to be asserted from the other side. Absence is no longer the safe
+# state; it would mean the argument was lost in a merge.
+#
+# So the pairing is inverted and tightened. A stub is not caught by presence
+# alone, hence the second and third checks: the four required slots must all be
+# there, and the claim must name the contrast this stop turns on — the same
+# vehicle under two frames — rather than being generic prose that happens to
+# typecheck.
+check(re.search(r"^\s*concept:", src, re.M) is not None,
+      "transport.tsx carries its concept",
+      "transport.tsx has no `concept` — SIO-038 is the last Tier 1 stop, and without it Tier 1 is not complete")
+
+for slot in ("subtitle", "contrast", "question", "answer", "remember"):
+    check(re.search(rf"^\s+{slot}:", src, re.M) is not None,
+          f"the concept fills `{slot}`",
+          f"transport.tsx's concept has no `{slot}` — a concept missing a required slot is a stub with a type annotation")
+
+# The argument is that the frame belongs to the SENTENCE, not the vehicle, and
+# the deck proves it by listing voiture twice. A concept that never mentions
+# the second frame cannot be making that argument.
+# find(), not index(): with the concept gone the first check has already said
+# so in words, and index() would raise here — turning a diagnosed failure into
+# a traceback that names no cause. A check that crashes reports nothing.
+_at = src.find("  concept: {")
+concept_src = src[_at:] if _at != -1 else ""
+check("prendre la voiture" in concept_src and "en voiture" in concept_src,
+      "the claim rests on the deck's own repeated vehicle",
+      "the concept never sets « en voiture » against « prendre la voiture », so it is not making the argument this stop exists for")
 
 # ---- 2-4 · execute the generator -------------------------------------------
 probe = """
