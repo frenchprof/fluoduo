@@ -103,14 +103,19 @@ export default function MapBody() {
 
   return (
     <>
-      {/* The sentence that carries the legend — Dan's wording, 2 Sep. */}
-      <p className="mb-1 text-[15px] font-bold text-[color:var(--cahier-ink)]">
+      {/* The sentence that carries the legend — Dan's wording, 2 Sep, set in
+          the brand's own hand (his follow-up: "It is the wrong font to use
+          for English text. Please use the FluOLinGo or Patrick Hand font …
+          so that it occupies one line maximum"). One line is enforced, not
+          hoped for: nowrap plus a viewport clamp that shrinks the hand face
+          before it ever wraps. */}
+      <p className="fluo-band-hand whitespace-nowrap text-[clamp(13px,4.3vw,19px)] leading-tight text-[color:var(--cahier-ink)]">
         In FluOLinGo-land, there are 50 color-coded goals to conquer:
       </p>
       <KindLegend />
 
       {/* ONE control row, fixed for both views: switch left, zoom right. */}
-      <div className="mb-3 mt-2 flex items-center justify-between gap-3">
+      <div className="mb-2 mt-1.5 flex items-center justify-between gap-3">
         <div
           data-tour="map-view"
           role="group"
@@ -184,7 +189,7 @@ export default function MapBody() {
           {mapView === "3d" ? (
             <HomeMap3D progress={progress} activeId={activeId} accent={accent} onOpenSio={openSio} />
           ) : (
-            <Map2DGrid progress={progress} activeId={activeId} onOpenSio={openSio} />
+            <Map2DGrid progress={progress} activeId={activeId} accent={accent} onOpenSio={openSio} />
           )}
         </div>
       </div>
