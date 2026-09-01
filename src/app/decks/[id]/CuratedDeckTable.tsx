@@ -23,7 +23,6 @@ import { logEvent } from "@/lib/firebase/usage";
 import PageBand from "@/components/PageBand";
 import PillSwitch from "@/components/PillSwitch";
 import { stopTagForDeck } from "@/lib/stopTag";
-import { activity as activityInfo } from "@/content/activities";
 import type { Collection, Item } from "@/lib/collections/schema";
 import {
   loadLocal,
@@ -160,13 +159,23 @@ export default function CuratedDeckTable({ collection }: { collection: Collectio
 function TopBar({ collectionId }: { collectionId: string }) {
   return (
     <PageBand
-      /* THE ACTIVITY, from the registry (Dan, 1 Sep: "the word that appears
-         must be the activity name"). This said the DECK's title, which is the
-         same string the goal tag beside it now carries — the band would have
-         printed « Envies et besoins · GOAL 39/50 · Envies/besoins ». The old
-         hand-written row had it right and hardcoded: "🃏 4Mémoire · {crumb}".
-         `activity("flip")` is where that name actually lives. */
-      title={activityInfo("flip")?.name ?? "4Mémoire"}
+      /* « Deck », which is what this page is (Dan, 1 Sep: "why are there two
+         4Memoires").
+
+         It said the DECK's title first — the same string the goal tag beside
+         it carries, so the band read « Envies et besoins · GOAL 39/50 ·
+         Envies/besoins ». Fixing that, I took the old hand-written row's
+         wording at face value ("🃏 4Mémoire · {crumb}") and used the registry's
+         name for `flip`. But that row was itself wrong, and putting it in a
+         proper band made the error visible: THIS PAGE IS NOT 4MÉMOIRE. It is
+         the deck's word table — List / All / Cards, notes, a shuffle — and
+         4Mémoire is the drill it LINKS to, with its own page and its own band
+         one tap away. Two pages wearing one name is the same fault as
+         `context[0]?.label` borrowing « Home », which this pass removed.
+
+         « Deck » is the page's own flap label, which is how every other page
+         in the app names itself. */
+      title="Deck"
       tag={stopTagForDeck(collectionId)}
       lead={
         <BackLink fallback="/" className="-my-1 -ml-1 flex h-9 shrink-0 items-center rounded-lg px-2 text-sm font-bold text-white/80 no-underline transition hover:bg-white/15 hover:text-white">

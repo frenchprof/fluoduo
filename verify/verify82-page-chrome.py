@@ -244,7 +244,7 @@ for path, dup in (
 # arrived beside them: the deck page opened with the DECK's title, which is the
 # same string the tag carries, and Profil opened with the signed-in user's name.
 for path, want, was in (
-    ("src/app/decks/[id]/CuratedDeckTable.tsx", 'title={activityInfo("flip")?.name', "the deck's own title"),
+    ("src/app/decks/[id]/CuratedDeckTable.tsx", 'title="Deck"', "a name that is not its own"),
     ("src/components/ProfileContent.tsx", 'title="Moi"', "the signed-in user's name"),
     ("src/app/pretests/[id]/PretestContent.tsx", 'title: "Pretest"', "the pre-test's own title"),
 ):
@@ -252,6 +252,23 @@ for path, want, was in (
        f"{os.path.basename(os.path.dirname(path))}'s band opens with the ACTIVITY's name",
        f"{path} opens its band with {was} again — Dan: 'the word that appears must be the "
        "activity name', and beside the goal tag that reads as the same thing said twice")
+
+# AND NO PAGE WEARS ANOTHER PAGE'S NAME. Dan, 1 Sep: "why are there two
+# 4Memoires". The deck's word table and Flip It both printed « 4Mémoire »,
+# because fixing the first fault above I took the old hand-written row's
+# wording at face value — that row was already wrong, and giving it a proper
+# band made it visible. 4Mémoire is the DRILL this page links to; this page is
+# the deck. Same shape as `context[0]?.label` borrowing « Home ».
+#
+# Asserted as: no page hands PageBand a registry activity's name that is not
+# its own. Two pages CAN legitimately share a title — both pre-tests are
+# « Pretest », at different goals, and the goal tag tells them apart — so this
+# names the one relationship that is wrong rather than banning duplicates.
+deck_tbl = code(read("src/app/decks/[id]/CuratedDeckTable.tsx"))
+ok('activity("flip")' not in deck_tbl and '"4Mémoire"' not in deck_tbl,
+   "the deck's table does not borrow the drill's name — 4Mémoire is one tap away, with its own band",
+   "the deck table calls itself 4Mémoire again; that is the drill it LINKS to, and two pages "
+   "wearing one name is the fault Dan spotted")
 
 # THE WORD IS « GOAL » wherever a learner reads it before a number. Scanned
 # rather than listed, so a new one cannot slip in: any JSX text or aria-label
