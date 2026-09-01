@@ -66,6 +66,55 @@ export const quEstCeLesson: NativeLesson = {
       </div>
     </div>
   ),
+  // TIER 1 · stop 21. Two claims that belong together: c'est/ce sont is a NUMBER
+  // agreement, and the pair hands over to il/elle once the thing is named. The
+  // Mémo shows both in a table without saying they are one move.
+  concept: {
+    subtitle: "Why c’est becomes il est",
+    contrast: (
+      <>
+        English says <i>it is</i> twice &mdash; <i>it is a pen</i>, <i>it is over there</i>.
+        French uses two different openers, and which one you need depends on whether the
+        thing has been <b>named yet</b>.
+      </>
+    ),
+    question: (
+      <>
+        <i lang="fr">C&rsquo;est un sac.</i> Now say it is over there.
+      </>
+    ),
+    answer: (
+      <>
+        <i lang="fr">Il est l&agrave;.</i> Once the thing is identified you stop pointing at
+        it and start talking about it, so the pronoun becomes the one that matches its
+        gender. And in the plural the opener changes too:{" "}
+        <i lang="fr">ce sont des ciseaux</i>, never <i lang="fr">c&rsquo;est des</i>.
+      </>
+    ),
+    pitfall: [
+      { label: <>several things</>, wrong: <><i lang="fr">c&rsquo;est des ciseaux</i></>, right: <><i lang="fr">ce sont des ciseaux</i></> },
+      { label: <>after naming it</>, wrong: <><i lang="fr">c&rsquo;est l&agrave;</i></>, right: <><i lang="fr">il est l&agrave;</i></> },
+    ],
+    flow: [
+      { depth: 0, text: "Naming it for the first time?" },
+      { depth: 1, text: "one → c'est" },
+      { depth: 1, text: "several → ce sont" },
+      { depth: 0, text: "Already named? → il · elle · ils · elles" },
+    ],
+    check: [
+      { q: <>« <i lang="fr">C&rsquo;est une gomme.</i> » Now say it is over there.</>,
+        a: <><i lang="fr">Elle est l&agrave;.</i> Feminine, because <i lang="fr">gomme</i> is.</> },
+      { q: <>Why is <i lang="fr">c&rsquo;est des ciseaux</i> wrong?</>,
+        a: <>The opener agrees in number like anything else. Several things take{" "}
+        <i lang="fr">ce sont</i>.</> },
+    ],
+    remember: (
+      <>
+        <i lang="fr">C&rsquo;est</i> introduces. <i lang="fr">Il est</i> continues. The
+        switch happens the moment the thing has a name.
+      </>
+    ),
+  },
   dice: { instruction: "Ask, and answer.", axes: QQC_AXES, newQuestion: quEstCeQuestion },
   bonus: [
     { en: "What is it? — It's a bag.", fr: "Qu'est-ce que c'est ? — C'est un sac." },

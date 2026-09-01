@@ -59,6 +59,50 @@ export const quandLesson: NativeLesson = {
       </p>
     </div>
   ),
+  // TIER 3 · stop 27. TRANSPARENT: `heure` is a noun and behaves like one, so
+  // the number agrees with it. The Mémo shows the forms; the concept says why
+  // one of them looks like an exception and is not.
+  concept: {
+    subtitle: "Why une heure has no -s",
+    contrast: (
+      <>
+        English says <i>it is</i> for the time and nothing changes &mdash; <i>one o&rsquo;clock</i>,{" "}
+        <i>eight o&rsquo;clock</i>. French is literally counting hours, so{" "}
+        <i lang="fr">heure</i> is a noun and takes the plural like any other.
+      </>
+    ),
+    question: (
+      <>
+        <i lang="fr">Il est huit heures</i> but <i lang="fr">il est une heure</i>. Where did
+        the <b>-s</b> go?
+      </>
+    ),
+    answer: (
+      <>
+        There is only one hour, so there is nothing to pluralise. You are not saying{" "}
+        <i>o&rsquo;clock</i>, you are saying <i>one hour</i> &mdash; and{" "}
+        <i lang="fr">une</i>, not <i lang="fr">un</i>, because{" "}
+        <i lang="fr">heure</i> is feminine.
+      </>
+    ),
+    pitfall: [
+      { label: <>01:05</>, wrong: <><i lang="fr">il est un heure cinq</i></>, right: <><i lang="fr">il est <b>une</b> heure cinq</i></> },
+      { label: <>08:00</>, wrong: <><i lang="fr">il est huit heure</i></>, right: <><i lang="fr">il est huit heure<b>s</b></i></> },
+      { label: <>10:21</>, wrong: <><i lang="fr">c&rsquo;est dix heures</i></>, right: <><i lang="fr">il est dix heures</i></> },
+    ],
+    check: [
+      { q: <>Say 00:30.</>,
+        a: <><i lang="fr">Il est z&eacute;ro heure trente</i> &mdash; one hour, so no <b>-s</b>.</> },
+      { q: <>Why <i lang="fr">une</i> and not <i lang="fr">un</i>?</>,
+        a: <><i lang="fr">L&rsquo;heure</i> is feminine, and the number agrees with it.</> },
+    ],
+    remember: (
+      <>
+        French counts hours rather than saying <i>o&rsquo;clock</i>, so{" "}
+        <i lang="fr">heure</i> behaves like any noun: singular at one, plural after.
+      </>
+    ),
+  },
   dice: {
     instruction: "Say the time on the clock in French.",
     newQuestion() {

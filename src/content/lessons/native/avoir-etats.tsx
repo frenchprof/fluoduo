@@ -39,6 +39,51 @@ export const avoirEtatsLesson: NativeLesson = {
       </p>
     </div>
   ),
+  // TIER 1 · stop 19. The Mémo lists which verb goes with what. The concept
+  // gives the TEST — does the word agree? — so the learner can decide for a
+  // word the list never showed them.
+  concept: {
+    subtitle: "Why you HAVE hunger and ARE tired",
+    contrast: (
+      <>
+        English uses <i>be</i> for all of it &mdash; <i>I am hungry</i>, <i>I am cold</i>,{" "}
+        <i>I am 19</i>, <i>I am tired</i>. French splits them, and the split is not about
+        meaning: it is about what kind of word comes next.
+      </>
+    ),
+    question: (
+      <>
+        <i lang="fr">J&rsquo;ai froid</i> but <i lang="fr">il est fatigu&eacute;</i>. How do
+        you tell which verb a new word wants?
+      </>
+    ),
+    answer: (
+      <>
+        Ask whether it <b>agrees</b>. <i lang="fr">Fatigu&eacute;</i> changes &mdash;{" "}
+        <i lang="fr">ils sont fatigu&eacute;s</i> &mdash; so it is an adjective, and adjectives
+        take <i lang="fr">&ecirc;tre</i>. <i lang="fr">Froid</i> and{" "}
+        <i lang="fr">faim</i> do not change here; they are nouns, and you{" "}
+        <b>have</b> a noun.
+      </>
+    ),
+    pitfall: [
+      { label: <>I am hungry</>, wrong: <><i lang="fr">je suis faim</i></>, right: <><i lang="fr">j&rsquo;ai faim</i></> },
+      { label: <>I am 19</>, wrong: <><i lang="fr">je suis 19</i></>, right: <><i lang="fr">j&rsquo;ai 19 ans</i></> },
+      { label: <>they are tired</>, wrong: <><i lang="fr">ils ont fatigu&eacute;</i></>, right: <><i lang="fr">ils sont fatigu&eacute;s</i></> },
+    ],
+    check: [
+      { q: <>They are thirsty.</>,
+        a: <><i lang="fr">Ils ont soif.</i> A noun, so <i lang="fr">avoir</i>.</> },
+      { q: <>Why must <i lang="fr">ans</i> be said at all?</>,
+        a: <>Because you are having nineteen OF something, and the something is years.</> },
+    ],
+    remember: (
+      <>
+        If it agrees, it is an adjective &mdash; <i lang="fr">&ecirc;tre</i>. If it does not,
+        it is a noun you <b>have</b>.
+      </>
+    ),
+  },
   dice: {
     instruction: "Avoir or être? Pick the sentence that says the state correctly.",
     newQuestion: avoirEtatsQuestion,

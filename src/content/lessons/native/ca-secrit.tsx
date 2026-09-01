@@ -48,7 +48,7 @@ export const caSecritLesson: NativeLesson = {
         q: <>Why <i lang="fr">ça s&rsquo;écrit</i> rather than <i lang="fr">ça écrit</i>?</>,
         a: (
           <>
-            <i lang="fr">S&rsquo;écrire</i> is reflexive — the word &ldquo;writes itself&rdquo;.
+            <i lang="fr">S&rsquo;écrire</i>{" "}is reflexive — the word &ldquo;writes itself&rdquo;.
             The <i lang="fr">s&rsquo;</i> is not optional.
           </>
         ),

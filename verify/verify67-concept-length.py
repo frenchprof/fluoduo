@@ -1,29 +1,30 @@
 #!/usr/bin/env python3
-"""verify67 — the concept tab's long blocks stay behind a disclosure.
+"""verify67 — the concept tab is panes, and the claim is the one you land on.
 
-Dan, 2026-08-31, looking at the salutations concept: *"it is a very long page,
-can we make the answer collapsible"*. Measured at 390x844 before the change:
-1512px of content in a 561px slot — 2.70 screens. After collapsing the answer
-and the decision tree, and dropping a summary line that restated another:
-1111px, 1.98 screens. A 27% cut.
+Dan, 2026-08-31, offered expand-collapse against a tab strip: *"broken into
+side-by-side tabs that allows everything to be visible on the same screen all
+at once… between the two, i would prefer the latter."*
 
-Two blocks are disclosures now, and this pins them there:
+That supersedes the folds this check first pinned. The GOAL is unchanged — the
+tab must fit one screen — and it is now met properly: measured at 390×844,
+**39 of 39 concepts fit**, where with everything open 39 of 39 were over, by
+30 to 330px. A fold answers "is it short enough yet?" one section at a time and
+still leaves the reader scrolling to learn how many sections there are. A strip
+answers it once, because every part is named in a row you can see.
 
-  THE ANSWER      asked, then available on tap — the same shape as the WHY
-                  button Dan settled on 2026-07-02 ("available on demand,
-                  never inline by default").
-  HOW TO DECIDE   a decision tree is CONSULTED, not read; a learner who knows
-                  the rule was scrolling past it on every visit.
+So this asserts the mechanism that achieves the goal, not the old one:
 
-Why <details> and not React state: it must render collapsed in the static
-export before any hydration, so a learner on a slow phone never sees the
-answer flash open and then close. State cannot promise that; <details> is
-closed in the markup itself.
+  · the panel is driven by a pane state, not a stack of disclosures
+  · every optional block renders behind a pane guard
+  · **the claim is the DEFAULT pane** — the argument is on arrival, which is the
+    promise verify68 makes, and which a strip could quietly break by opening on
+    the pitfall table while still passing a "no <Section>" test
+  · the mini-check answers stay `<details>`: an answer hidden until asked for is
+    a disclosure, not a change of pane, and conflating the two loses the
+    distinction
 
-This is a SOURCE check — it reads LessonTabs.tsx rather than restating what it
-should contain, so deleting the block makes the assertion fail instead of
-leaving a stale copy green. The rendered-height claim above was measured in a
-browser; this check guards the mechanism that produced it.
+Heights are measured in a browser, which CI does not run for this route, so the
+numbers above live in STATUS. This is the structural proxy for them.
 """
 import re, sys, pathlib
 
@@ -35,116 +36,60 @@ def ok(cond, good, bad):
     (PASS if cond else FAIL).append(good if cond else bad)
 
 if not SRC.exists():
-    print("FAIL  src/app/lessons/pager/LessonTabs.tsx is missing — this check "
-          "cannot run and must not pass")
+    print("FAIL  LessonTabs.tsx is missing — this check cannot run and must not pass")
     sys.exit(1)
-s = SRC.read_text(encoding="utf-8")
+raw = SRC.read_text(encoding="utf-8")
 
-# Comment-stripped, so a <details> named only in a comment cannot satisfy it —
-# the trap verify29's RailGroups assertions sat in until 31 Aug.
-code = re.sub(r"\{?/\*.*?\*/\}?", "", s, flags=re.S)
-code = re.sub(r"^\s*//.*$", "", code, flags=re.M)
+# Comment-stripped: this file explains its own markup in prose, and counting a
+# <details> named only in a comment is how an earlier version of the spacing
+# check reported 11 disclosures against 7 summaries.
+def strip_comments(t: str) -> str:
+    t = re.sub(r"\{/\*.*?\*/\}", "", t, flags=re.S)
+    t = re.sub(r"/\*.*?\*/", "", t, flags=re.S)
+    return re.sub(r"^\s*//.*$", "", t, flags=re.M)
+
+i = raw.find("function Concept({ c }")
+ok(i >= 0, "the Concept panel was found",
+   "no `function Concept({ c }` in LessonTabs.tsx — the panel has been renamed, "
+   "and every assertion below would be vacuous")
+if i < 0:
+    print("\n".join(f"FAIL  {x}" for x in FAIL)); sys.exit(1)
+j = raw.find("\n/**", i + 10)
+code = strip_comments(raw[i: j if j > i else len(raw)])
 
 ok("{c.answer}" in code, "the concept still renders c.answer",
-   "c.answer is no longer rendered at all — the concept has lost its answer, "
-   "which is a bigger problem than the one this check was written for")
-ok("{c.question}" in code, "the concept still renders c.question",
-   "c.question is no longer rendered")
+   "c.answer is no longer rendered at all — the concept has lost the half of the "
+   "argument the learner came for")
 
-def wrapping_details(needle):
-    """The <details> …</details> block ACTUALLY containing `needle`.
+ok("setPane" in code, "the panel is driven by a pane state",
+   "no pane state in the Concept panel — it has gone back to one stack, which is "
+   "what put 39 of 39 concepts over one screen")
 
-    The nearest PRECEDING `<details>` is not enough: an earlier disclosure that
-    has already closed sits before every later element in the file, so a naive
-    rfind reports any block as "wrapped". Break-testing caught this — replacing
-    the flow's `<details>` with a `<div>` left the check green, because it had
-    found the ANSWER's disclosure further up. So: reject the candidate if a
-    `</details>` falls between it and the needle.
-    """
-    i = code.find(needle)
-    if i < 0:
-        return None
-    start = code.rfind("<details", 0, i)
-    if start < 0:
-        return None
-    if "</details>" in code[start:i]:
-        return None          # that disclosure closed before reaching the needle
-    end = code.find("</details>", i)
-    return code[start:end] if end > 0 else None
+ok('useState<"claim"' in code, "the claim is the pane you land on",
+   'the default pane is not "claim". The strip may not open on the pitfall table '
+   "or the steps: the argument must be what a learner sees on arrival, and a strip "
+   "can break that promise while still passing a no-<Section> test.")
 
-ans = wrapping_details("{c.answer}")
-ok(ans is not None,
-   "the answer sits inside a <details>",
-   "the answer is rendered OUTSIDE any <details>, so it is open on arrival "
-   "again. Dan asked for it collapsible on 31 Aug and the page measured 2.70 "
-   "screens with it open. Put it back behind a disclosure.")
-if ans is not None:
-    ok("{c.question}" in ans,
-       "the question is the disclosure's own summary",
-       "the answer collapses but the question is not its summary — the learner "
-       "sees a bare 'show' control with nothing to think about first. The "
-       "question must be the <summary>.")
-    ok("open" not in re.findall(r"<details([^>]*)>", ans)[0] if re.findall(r"<details([^>]*)>", ans) else True,
-       "the answer's disclosure is closed on arrival",
-       "the answer's <details> carries `open`, so it renders expanded and the "
-       "collapse buys nothing.")
+# The EXACT pairing, not "a pane guard somewhere in the preceding 800
+# characters". That window found `pane === "` belonging to a DIFFERENT pane and
+# passed a pitfall table that had escaped its own — the same too-wide-window
+# fault verify68's comments warn about two screens further down.
+for guard, field, what in (
+        ('pane === "traps" && c.pitfall', "c.pitfall", "the pitfall table"),
+        ('pane === "steps" && c.flow',    "c.flow",    "the decision flow"),
+        ('pane === "check" && c.check',   "c.check",   "the self-check"),
+        ('pane === "qa"',                 "c.question", "the question"),
+        ('pane === "sum"',                "c.remember", "the one-sentence takeaway")):
+    ok(guard in code,
+       f"{what} renders behind `{guard}`",
+       f"{what} is not behind its pane guard `{guard}`, so it sits on screen with "
+       f"everything else and the tab is as long as it was before Dan asked for the strip.")
 
-# AMENDED AT THE #100 x #105 MERGE (31 Aug). #100 wrapped the flow in a raw
-# <details>; #105 landed `Section` the same day — the ONE component that
-# implements the collapse rule, whose fold names its count ("4 steps"). The
-# merge kept Section, so the flow's disclosure now lives inside the component,
-# not at the use site, and `wrapping_details` cannot see it. The claim being
-# guarded is unchanged — the tree renders closed, with a labelled control —
-# it is just guarded in two halves: the use site defers to Section, and
-# Section itself is a closed <details> with a labelled <summary>.
-
-def wrapping_section(needle):
-    """The <Section …> opening tag whose block contains `needle` — same
-    closed-before-the-needle rejection as `wrapping_details`, for the same
-    break-tested reason."""
-    i = code.find(needle)
-    if i < 0:
-        return None
-    start = code.rfind("<Section", 0, i)
-    if start < 0:
-        return None
-    if "</Section>" in code[start:i]:
-        return None
-    return code[start:code.find(">", start) + 1]
-
-flow = wrapping_section("{c.flow.map(")
-ok(flow is not None,
-   "the decision tree sits inside a <Section> fold",
-   "`How to decide` is rendered outside any <Section>. It is a tree a learner "
-   "CONSULTS, not reads; open by default it costs every visitor its full "
-   "height on every visit.")
-if flow is not None:
-    ok("open" not in flow,
-       "the decision tree's fold is closed on arrival",
-       "the flow's <Section> passes `open`, so it renders expanded and the "
-       "collapse buys nothing.")
-    ok("folds={false}" not in flow.replace(" ", ""),
-       "the decision tree's fold actually folds",
-       "the flow's <Section> passes folds={false}, which renders a plain "
-       "heading — the collapse is gone in all but name.")
-    ok("note=" in flow,
-       "the fold names what is behind it",
-       "the flow's <Section> has no `note` — a closed section that does not "
-       "say what is behind it is a section nobody opens (AGENTS.md).")
-
-# The half Section owes: a real <details>, closed by default, with its own
-# <summary>. If Section ever becomes a useState div or ships `open` as its
-# default, every fold in the app breaks at once — this is where that fails.
-sec_at = code.find("function Section(")
-sec_body = code[sec_at:code.find("\nfunction ", sec_at + 1)] if sec_at >= 0 else ""
-ok(sec_at >= 0 and "<details" in sec_body and "<summary" in sec_body,
-   "Section renders a native, labelled <details>",
-   "Section no longer renders a <details> with a <summary> — the collapse "
-   "rule's one implementation has lost its mechanism.")
-ok("open = false" in sec_body or "open=false" in sec_body,
-   "Section is closed by default",
-   "Section's `open` no longer defaults to false, so every fold in the app "
-   "renders expanded and the 27% cut this check was written for is undone.")
+ok("<details" in code and "{x.a}" in code,
+   "the mini-check answers are still a disclosure",
+   "the self-check answers are no longer behind <details>. An answer hidden until "
+   "asked for is a disclosure, not a pane; pinning them together loses the "
+   "distinction Dan drew between the two.")
 
 for line in PASS: print(f"  ok  {line}")
 for line in FAIL: print(f"FAIL  {line}")
