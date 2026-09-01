@@ -495,7 +495,32 @@ Dan assigns. Listed so the queue is not re-derived by whoever picks it up.
 | 8 | `rule:` namespace (894-item tagging): parked by design until the concepts finish | transfer evidence |
 | 9 | **Deploys through fluoduo-main** (ruled) — needs the fine-grained PAT (write to dckg/fluo) as an Actions secret | ends manual deploys |
 
-## 31 Aug — nine stops have no lesson file: handover to Peers
+## 1 Sep — THE HANDOVER IS SPLIT, and Pre-tests gets two assignments
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan, 1 Sep ("give him both"), load-balancing the nine-file handover below —
+Peers carries three assignments while Pre-tests sat idle after Lot A. The
+split is BY STOP, disjoint files, written here BEFORE either session opens
+one (the 31 Aug #97-collision lesson):
+
+- **PRE-TESTS takes the three deck-backed files** — SIO-025 `parce-que`
+  (6 items), **SIO-038 `transport`** (12), SIO-039 `envies-besoins` (10).
+  The model is `colors.tsx`; the full brief, the registration joints, the
+  no-invented-French rule and the `{" "}` trap are all in
+  `docs/HANDOVER_LESSON_FILES.md` — read it before writing a line. SIO-038
+  first: it alone stands between Tier 1 and complete. The `concept` slot
+  stays EMPTY in all three — Color review drafts concepts on top.
+- **PRE-TESTS also takes the cycling redo** (decision 4's ruling): the
+  fluency-cycling animation rebuilt in FluOLinGo Hand — the two 30 Aug
+  branches are superseded reference, not a base. Same skills as the
+  Kallang wave. Second priority, after the three files.
+- **PEERS keeps the six atelier files** (10 · 20 · 30 · 40 · 49 · 50 — the
+  novel dialogue-built half; prototype on SIO-010) plus the DrillShell
+  chrome fold and the Practice hub. **Do NOT build 025/038/039** — they are
+  Pre-tests' now.
+
+## 31 Aug — nine stops have no lesson file: handover to Peers (SPLIT 1 Sep — see above)
 
 Full brief in **`docs/HANDOVER_LESSON_FILES.md`**. The short of it:
 
