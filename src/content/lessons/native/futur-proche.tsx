@@ -33,6 +33,48 @@ export const futurProcheLesson: NativeLesson = {
       </p>
     </div>
   ),
+  // TIER 1 · stop 47. A verb of MOVEMENT doing the work of a TENSE. That is the
+  // step a learner has to take, and no table of forms can show it.
+  concept: {
+    subtitle: "Why going somewhere became going to do something",
+    contrast: (
+      <>
+        English does exactly the same thing and nobody notices: <i>I am going to eat</i> has
+        no walking in it. French borrows <i lang="fr">aller</i>{" "}the same way &mdash; a verb
+        of movement, put in front of an infinitive, stops meaning movement and starts
+        meaning <b>soon</b>.
+      </>
+    ),
+    question: (
+      <>
+        <i lang="fr">Je vais faire du sport.</i> Am I going somewhere?
+      </>
+    ),
+    answer: (
+      <>
+        No. <i lang="fr">Aller</i> + an infinitive is a tense, not a journey &mdash; it says
+        the thing is about to happen. You already know every form of it, which is the point:
+        the future costs you no new conjugation at all.
+      </>
+    ),
+    pitfall: [
+      { label: <>I am going to go out</>, wrong: <><i lang="fr">je vais aller sortir</i></>, right: <><i lang="fr">je vais sortir</i></> },
+      { label: <>we are not going to work</>, wrong: <><i lang="fr">nous allons ne pas travailler</i></>, right: <><i lang="fr">nous n&rsquo;allons pas travailler</i></> },
+    ],
+    check: [
+      { q: <>Why does the negative wrap <i lang="fr">aller</i> and not the infinitive?</>,
+        a: <>Because <i lang="fr">aller</i> is the verb doing the work. Same rule as{" "}
+        <i lang="fr">pouvoir</i>.</> },
+      { q: <>How many new endings does this tense need?</>,
+        a: <>None. You conjugate <i lang="fr">aller</i>, which you already have.</> },
+    ],
+    remember: (
+      <>
+        <i lang="fr">Aller</i> + infinitive is not travel. It is the near future, built from
+        a verb you already know.
+      </>
+    ),
+  },
   dice: {
     instruction: "Build the sentence in the futur proche — watch the ✅/🚫 polarity.",
     newQuestion: futurProcheQuestion,

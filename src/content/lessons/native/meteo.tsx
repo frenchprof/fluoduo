@@ -59,6 +59,57 @@ export const meteoLesson: NativeLesson = {
       </p>
     </div>
   ),
+  // TIER 3 · stop 31. OPAQUE — this is the syllabus's own example: « il fait
+  // beau » is not IL + FAIRE + BEAU. So no parsing. The claim is about WHICH
+  // FRAME to reach for, which is a real decision the phrase list cannot make.
+  concept: {
+    subtitle: "Why the weather has four different frames",
+    contrast: (
+      <>
+        English has one shape for nearly all of it &mdash; <i>it is sunny</i>,{" "}
+        <i>it is windy</i>, <i>it is raining</i>. French has four, and the kind of word you
+        want decides which. <i lang="fr">Il fait beau</i> is not built from{" "}
+        <i>it</i> + <i>makes</i> + <i>beautiful</i>; it is simply the frame for weather.
+      </>
+    ),
+    question: (
+      <>
+        You want to say <i>it is hot</i>. Which frame?
+      </>
+    ),
+    answer: (
+      <>
+        <i lang="fr">Il fait chaud.</i> Never <i lang="fr">il est chaud</i>, which says a
+        thing is hot to the touch. <i lang="fr">Il fait</i> takes an adjective;{" "}
+        <i lang="fr">il y a</i> takes a noun (<i lang="fr">du vent</i>,{" "}
+        <i lang="fr">de la pluie</i>); some weather is its own verb
+        (<i lang="fr">il pleut</i>, <i lang="fr">il neige</i>).
+      </>
+    ),
+    flow: [
+      { depth: 0, text: "What kind of word do you have?" },
+      { depth: 1, text: "adjective → il fait beau" },
+      { depth: 1, text: "noun → il y a du vent" },
+      { depth: 1, text: "its own verb → il pleut" },
+    ],
+    pitfall: [
+      { label: <>it is hot</>, wrong: <><i lang="fr">il est chaud</i></>, right: <><i lang="fr">il fait chaud</i></> },
+      { label: <>it is windy</>, wrong: <><i lang="fr">il fait vent</i></>, right: <><i lang="fr">il y a du vent</i></> },
+      { label: <>it is raining</>, wrong: <><i lang="fr">il fait pluie</i></>, right: <><i lang="fr">il pleut</i></> },
+    ],
+    check: [
+      { q: <>There are storms &mdash; <i lang="fr">des orages</i>.</>,
+        a: <><i lang="fr">Il y a des orages.</i> A noun, so <i lang="fr">il y a</i>.</> },
+      { q: <>It is 16 degrees.</>,
+        a: <><i lang="fr">Il fait 16 degr&eacute;s.</i></> },
+    ],
+    remember: (
+      <>
+        Do not translate <i>it is</i>. Ask what kind of word follows, and let that pick the
+        frame.
+      </>
+    ),
+  },
   dice: {
     instruction: "Say the weather — il fait, il y a, or il + verb.",
     newQuestion() {

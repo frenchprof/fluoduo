@@ -69,6 +69,54 @@ export const leCheminLesson: NativeLesson = {
       </div>
     </div>
   ),
+  // TIER 3 · stop 36. TRANSPARENT, and the same fusion the partitives concept
+  // teaches: only `le` and `les` glue to the preposition. Deliberately echoes
+  // stop 42 so the learner meets one rule twice, not two rules once.
+  concept: {
+    subtitle: "Why au but à la",
+    contrast: (
+      <>
+        English uses one word for all of them &mdash; <i>to the station</i>,{" "}
+        <i>to the museum</i>. French keeps <i lang="fr">à</i> and the article separate, then
+        glues two of the four together: <i lang="fr">à</i> + <i lang="fr">le</i> ={" "}
+        <i lang="fr">au</i>, <i lang="fr">à</i> + <i lang="fr">les</i> ={" "}
+        <i lang="fr">aux</i>.
+      </>
+    ),
+    question: (
+      <>
+        <i lang="fr">Au mus&eacute;e</i> is one word and{" "}
+        <i lang="fr">&agrave; la gare</i> is two. Why the difference?
+      </>
+    ),
+    answer: (
+      <>
+        Only <i lang="fr">le</i> and <i lang="fr">les</i> fuse with{" "}
+        <i lang="fr">&agrave;</i>. <i lang="fr">La</i> and <i lang="fr">l&rsquo;</i> never do,
+        so they simply stand there. It is the same rule you already met with{" "}
+        <i lang="fr">de</i>: <i lang="fr">du pain</i> but <i lang="fr">de la viande</i>.
+      </>
+    ),
+    pitfallHeads: ["written out", "what French says"],
+    pitfall: [
+      { label: <><i lang="fr">&agrave;</i> + <i lang="fr">le</i> mus&eacute;e</>, wrong: <><i lang="fr">&agrave; le mus&eacute;e</i></>, right: <><i lang="fr">au mus&eacute;e</i></> },
+      { label: <><i lang="fr">&agrave;</i> + <i lang="fr">les</i> toilettes</>, wrong: <><i lang="fr">&agrave; les toilettes</i></>, right: <><i lang="fr">aux toilettes</i></> },
+      { label: <><i lang="fr">&agrave;</i> + <i lang="fr">la</i> gare</>, wrong: <>&mdash;</>, right: <><i lang="fr">&agrave; la gare</i>, no fusion</> },
+    ],
+    check: [
+      { q: <>You are looking for the hospital &mdash; <i lang="fr">l&rsquo;h&ocirc;pital</i>.</>,
+        a: <><i lang="fr">&agrave; l&rsquo;h&ocirc;pital</i> &mdash; <i lang="fr">l&rsquo;</i> does not fuse.</> },
+      { q: <>Where have you met this fusion before?</>,
+        a: <>With <i lang="fr">de</i>: <i lang="fr">du</i> and <i lang="fr">des</i> are the same two glued forms.</> },
+    ],
+    remember: (
+      <>
+        <i lang="fr">Le</i> and <i lang="fr">les</i> glue; <i lang="fr">la</i> and{" "}
+        <i lang="fr">l&rsquo;</i> never do. One rule, and it works for{" "}
+        <i lang="fr">&agrave;</i> and <i lang="fr">de</i> alike.
+      </>
+    ),
+  },
   dice: {
     instruction: "Ask the way — and mind the à.",
     axes: CHEMIN_AXES,

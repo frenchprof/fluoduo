@@ -54,6 +54,49 @@ export const pouvoirLesson: NativeLesson = {
       </p>
     </div>
   ),
+  // TIER 1 · stop 37. The batch's through-line: only the FIRST verb conjugates.
+  // The Mémo states it as a warning about the negative; the concept makes it the
+  // rule the warning follows from.
+  concept: {
+    subtitle: "Why only the first verb changes",
+    contrast: (
+      <>
+        English changes the second verb too &mdash; <i>I can go</i>, <i>he can go</i>, but{" "}
+        <i>he goes</i>. French freezes it: whatever <i lang="fr">pouvoir</i> does, the verb
+        after it stays in the infinitive, every time.
+      </>
+    ),
+    question: (
+      <>
+        <i lang="fr">On ne peut pas fumer ici.</i> Why does{" "}
+        <i lang="fr">pas</i> land before <i lang="fr">fumer</i> and not after?
+      </>
+    ),
+    answer: (
+      <>
+        Because the negative wraps the verb that is doing the work, and that is{" "}
+        <i lang="fr">pouvoir</i>. <i lang="fr">Fumer</i> is just its object. The same
+        applies to the person: <i lang="fr">je peux</i>, <i lang="fr">nous pouvons</i>{" "}
+        &mdash; and <i lang="fr">fumer</i> never moves at all.
+      </>
+    ),
+    pitfall: [
+      { label: <>you cannot smoke</>, wrong: <><i lang="fr">on peut ne pas fumer</i></>, right: <><i lang="fr">on ne peut pas fumer</i></> },
+      { label: <>we can visit</>, wrong: <><i lang="fr">nous pouvons visitons</i></>, right: <><i lang="fr">nous pouvons visiter</i></> },
+    ],
+    check: [
+      { q: <>Ask permission to eat here.</>,
+        a: <><i lang="fr">Je peux manger ici&nbsp;?</i></> },
+      { q: <>Which of the two verbs carries the person?</>,
+        a: <>Only the first. The second is an infinitive and stays one.</> },
+    ],
+    remember: (
+      <>
+        One verb conjugates, one does not &mdash; and the negative belongs to the one that
+        does.
+      </>
+    ),
+  },
   dice: {
     instruction: "Say what is possible, ask permission, or say it is not allowed.",
     newQuestion: pouvoirQuestion,

@@ -82,6 +82,57 @@ export const rendezvousLesson: NativeLesson = {
       </p>
     </div>
   ),
+  // TIER 3 · stop 29. OPAQUE blocks, and the claim is about the SEQUENCE: the
+  // Mémo lists four groups, which reads as four equal choices. Three of them
+  // are, and one is conditional — négocier exists only after a refusal.
+  concept: {
+    subtitle: "Why you can only negotiate after a no",
+    contrast: (
+      <>
+        A list of phrases makes the four moves look like four options you pick from. They are
+        not: <b>propose</b>, then either <b>accept</b> or <b>refuse</b>{" "}&mdash; and only after
+        a refusal does <b>negotiate</b> exist at all. There is nothing to negotiate until
+        someone has said no.
+      </>
+    ),
+    question: (
+      <>
+        Your friend says <i lang="fr">D&eacute;sol&eacute;, je suis occup&eacute;.</i> What can
+        you say next that you could not have said before?
+      </>
+    ),
+    answer: (
+      <>
+        <i lang="fr">Et dimanche alors&nbsp;?</i> or <i lang="fr">Plut&ocirc;t samedi
+        matin&nbsp;?</i> &mdash; a <b>new day or time</b>. Opening with that would be strange,
+        because nothing has been turned down yet. And once you agree, the exchange is not
+        over: <i lang="fr">On se retrouve &agrave; quelle heure&nbsp;?</i>
+      </>
+    ),
+    pitfallHeads: ["what the list suggests", "what the exchange does"],
+    pitfall: [
+      { label: <>opening move</>, wrong: <><i lang="fr">Et dimanche alors&nbsp;?</i></>, right: <><i lang="fr">On se retrouve samedi soir&nbsp;?</i></> },
+      { label: <>after a yes</>, wrong: <>stop there</>, right: <><i lang="fr">&Agrave; quelle heure&nbsp;?</i></> },
+    ],
+    flow: [
+      { depth: 0, text: "① propose — On se retrouve samedi ?" },
+      { depth: 1, text: "yes → ④ accept, then ask the time" },
+      { depth: 1, text: "no → ② refuse" },
+      { depth: 2, text: "③ negotiate — a NEW day or time" },
+    ],
+    check: [
+      { q: <>They accept. Are you finished?</>,
+        a: <>No &mdash; agree the details: <i lang="fr">On se retrouve &agrave; quelle heure&nbsp;?</i></> },
+      { q: <>Why does <i lang="fr">Plut&ocirc;t samedi matin&nbsp;?</i> not work as an opener?</>,
+        a: <><i lang="fr">Plut&ocirc;t</i> offers an alternative, and nothing has been proposed yet to be an alternative to.</> },
+    ],
+    remember: (
+      <>
+        The four moves are an order, not a menu. Negotiating is what you do{" "}
+        <b>after</b> a no.
+      </>
+    ),
+  },
   dice: {
     instruction: "Give the line that plays the highlighted role in the dialogue.",
     newQuestion() {
