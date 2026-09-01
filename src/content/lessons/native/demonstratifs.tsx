@@ -42,9 +42,9 @@ export const demonstratifsLesson: NativeLesson = {
     subtitle: "Why cet is not a third gender",
     contrast: (
       <>
-        In English, <i>this</i> never changes: this book, this week, this afternoon. In
-        French, <i lang="fr">ce / cet / cette / ces</i> agrees with the noun — and one of
-        the four is chosen by <b>sound</b>, not by gender. That is the key insight.
+        In English <i>this</i> never changes &mdash; this book, this week. In French{" "}
+        <i lang="fr">ce / cet / cette / ces</i> agrees with the noun, and one of the four
+        is chosen by <b>sound</b>, not gender.
       </>
     ),
     question: (
@@ -71,7 +71,9 @@ export const demonstratifsLesson: NativeLesson = {
       { depth: 1, text: "yes → ces" },
       { depth: 1, text: "no  → is it feminine?" },
       { depth: 2, text: "yes → cette" },
-      { depth: 2, text: "no  → does it start with a vowel or silent h?" },
+      // Shortened 31 Aug: the long form measured 401px in a 296px box, so the
+      // last two branches sat off the right edge until you dragged them in.
+      { depth: 2, text: "no  → vowel or silent h?" },
       { depth: 3, text: "yes → cet" },
       { depth: 3, text: "no  → ce" },
     ],

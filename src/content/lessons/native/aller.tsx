@@ -35,6 +35,51 @@ export const allerLesson: NativeLesson = {
       </p>
     </div>
   ),
+  // TIER 1 · stop 26. The fusion again, but the claim here is that it is
+  // OBLIGATORY and that `à l'` is not an exception to it — l' simply is not one
+  // of the two that fuse. Pairs with stop 42's du/des and stop 36's au.
+  concept: {
+    subtitle: "Why à l’école is not an exception",
+    contrast: (
+      <>
+        English has one word to every place &mdash; <i>to the cinema</i>,{" "}
+        <i>to the pool</i>. French fuses <i lang="fr">&agrave;</i> with two of the four
+        articles and leaves the other two alone, and the fusion is <b>obligatory</b>.
+      </>
+    ),
+    question: (
+      <>
+        <i lang="fr">Au cin&eacute;ma</i>, <i lang="fr">aux magasins</i> &mdash; but{" "}
+        <i lang="fr">&agrave; l&rsquo;&eacute;cole</i>. Is that an exception?
+      </>
+    ),
+    answer: (
+      <>
+        No. Only <i lang="fr">le</i> and <i lang="fr">les</i> fuse.{" "}
+        <i lang="fr">La</i> and <i lang="fr">l&rsquo;</i> never do, so there is nothing to
+        fuse and nothing is missing. There is no <i lang="fr">*al</i> form because there was
+        never going to be one.
+      </>
+    ),
+    pitfallHeads: ["written out", "what French says"],
+    pitfall: [
+      { label: <><i lang="fr">&agrave;</i> + <i lang="fr">le</i></>, wrong: <><i lang="fr">&agrave; le cin&eacute;ma</i></>, right: <><i lang="fr">au cin&eacute;ma</i></> },
+      { label: <><i lang="fr">&agrave;</i> + <i lang="fr">les</i></>, wrong: <><i lang="fr">&agrave; les magasins</i></>, right: <><i lang="fr">aux magasins</i></> },
+      { label: <><i lang="fr">&agrave;</i> + <i lang="fr">l&rsquo;</i></>, wrong: <><i lang="fr">al &eacute;cole</i></>, right: <><i lang="fr">&agrave; l&rsquo;&eacute;cole</i></> },
+    ],
+    check: [
+      { q: <>She goes to the pool &mdash; <i lang="fr">la piscine</i>.</>,
+        a: <><i lang="fr">Elle va &agrave; la piscine.</i> <i lang="fr">La</i> does not fuse.</> },
+      { q: <>Is <i lang="fr">au</i> optional?</>,
+        a: <>No. <i lang="fr">&Agrave; le</i> is not a slower or more formal way of saying it &mdash; it is simply wrong.</> },
+    ],
+    remember: (
+      <>
+        Two of the four fuse and two never do. <i lang="fr">&Agrave; l&rsquo;</i> is the rule
+        working, not an escape from it.
+      </>
+    ),
+  },
   dice: {
     instruction: "Conjugate aller and contract à + article for the place.",
     newQuestion: allerQuestion,

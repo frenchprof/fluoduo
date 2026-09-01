@@ -15,13 +15,12 @@ export const languesPaysLesson: NativeLesson = {
   // Mémo below; no grammar introduced that it does not teach. DRAFTED —
   // `contrast` and `remember` are the pedagogical claim and go to Dan first.
   concept: {
-    subtitle: "Why the language loses its article and the country keeps its gender",
+    subtitle: "Why the language loses its article",
     contrast: (
       <>
-        English treats both as bare names — <i>they speak French</i>, <i>in France</i>.
-        French does the opposite in each case: the language <b>drops</b> its article after{" "}
-        <i lang="fr">parler</i>, while the country&rsquo;s own gender <b>chooses</b> the
-        little word in front of it.
+        English uses bare names &mdash; <i>they speak French</i>, <i>in France</i>. French
+        does neither: after <i lang="fr">parler</i> the language <b>drops</b>{" "} its article,
+        and the country&rsquo;s gender <b>chooses</b> the word in front.
       </>
     ),
     question: (

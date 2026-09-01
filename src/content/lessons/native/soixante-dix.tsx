@@ -26,11 +26,9 @@ export const soixanteDixLesson: NativeLesson = {
     subtitle: "Why 80 has an -s and 81 does not",
     contrast: (
       <>
-        English has a separate word for every ten — <i>seventy</i>, <i>eighty</i>,{" "}
-        <i>ninety</i>. French builds them by arithmetic:{" "}
-        <i lang="fr">soixante-dix</i> is 60+10 and{" "}
-        <i lang="fr">quatre-vingts</i> is 4&times;20. The plural{" "}
-        <i lang="fr">-s</i> is part of that sum, which is why it comes and goes.
+        English has a word for every ten &mdash; seventy, eighty, ninety. French builds
+        them by arithmetic: <i lang="fr">soixante-dix</i> is 60+10,{" "}
+        <i lang="fr">quatre-vingts</i> is 4&times;20. The <b>-s</b> is part of that sum.
       </>
     ),
     question: (

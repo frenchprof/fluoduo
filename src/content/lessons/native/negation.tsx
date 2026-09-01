@@ -71,7 +71,7 @@ export const negationLesson: NativeLesson = {
     answer: (
       <>
         Before: <i lang="fr">Je <b>ne</b> m&rsquo;appelle <b>pas</b> Marie.</i>{" "}
-        <i lang="fr">M&rsquo;appelle</i> is one unit &mdash; the little pronoun belongs to the
+        <i lang="fr">M&rsquo;appelle</i>{" "} is one unit &mdash; the little pronoun belongs to the
         verb, not to you &mdash; so <i lang="fr">ne</i> goes in front of the whole unit. Same
         with <i lang="fr">il y a</i>: <i lang="fr">il <b>n&rsquo;</b>y a <b>pas</b></i>, because{" "}
         <i lang="fr">y a</i> is the unit.

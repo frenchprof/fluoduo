@@ -97,6 +97,54 @@ export const questionsOuiNonLesson: NativeLesson = {
       </p>
     </div>
   ),
+  // TIER 1 · stop 34, the yes/no half. Three ways to ask the same thing is a
+  // REGISTER choice, not three rules. And `si` is a word English does not have,
+  // which is why learners answer a negative question wrongly.
+  concept: {
+    subtitle: "Why French has a second word for yes",
+    contrast: (
+      <>
+        English answers <i>yes</i> to everything. French keeps a second yes,{" "}
+        <i lang="fr">si</i>, for one job only: <b>contradicting a negative question</b>.
+        Answering <i lang="fr">oui</i> there is not rude, it is unclear.
+      </>
+    ),
+    question: (
+      <>
+        <i lang="fr">Tu n&rsquo;es pas fran&ccedil;ais&nbsp;?</i> You are. What do you say?
+      </>
+    ),
+    answer: (
+      <>
+        <i lang="fr">Si, je suis fran&ccedil;ais&nbsp;!</i> The question assumed you were
+        not, and <i lang="fr">si</i> exists to overturn that assumption. After an ordinary
+        question, <i lang="fr">oui</i> is right and <i lang="fr">si</i> would be strange.
+      </>
+    ),
+    pitfallHeads: ["one English yes", "which yes French wants"],
+    pitfall: [
+      { label: <><i lang="fr">Tu es fran&ccedil;ais&nbsp;?</i></>, wrong: <><i lang="fr">Si.</i></>, right: <><i lang="fr">Oui.</i></> },
+      { label: <><i lang="fr">Tu n&rsquo;es pas fran&ccedil;ais&nbsp;?</i></>, wrong: <><i lang="fr">Oui.</i></>, right: <><i lang="fr">Si.</i></> },
+    ],
+    flow: [
+      { depth: 0, text: "Was the question negative?" },
+      { depth: 1, text: "no → oui / non" },
+      { depth: 1, text: "yes, and you disagree → si" },
+    ],
+    check: [
+      { q: <>Three ways to ask the same yes/no question. Do they mean different things?</>,
+        a: <>No &mdash; intonation, <i lang="fr">est-ce que</i> and{" "}
+        <i lang="fr">n&rsquo;est-ce pas</i> differ in how formal they sound, not in meaning.</> },
+      { q: <><i lang="fr">Tu ne parles pas anglais&nbsp;?</i> You do.</>,
+        a: <><i lang="fr">Si&nbsp;!</i></> },
+    ],
+    remember: (
+      <>
+        <i lang="fr">Si</i>{" "}is the yes that says &ldquo;you were wrong to assume
+        otherwise&rdquo;. It only ever answers a negative.
+      </>
+    ),
+  },
   dice: {
     instruction: "Form the question that matches the given answer.",
     newQuestion() {
