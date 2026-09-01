@@ -3,11 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import Link from "next/link";
-import { getPretest, sioIdForPretest } from "@/content/pretests";
+import { getPretest } from "@/content/pretests";
 import { speak } from "@/games/letris/speech";
 import { judgePretestAnswer, shuffle, ttsTextForItem } from "@/lib/pretests/runner";
 import CahierShell, { type ShellTab } from "@/components/CahierShell";
-import MarkDoneButton from "@/app/sio/[id]/MarkDoneButton";
 import type { Pretest, PretestItem } from "@/lib/pretests/schema";
 import { optionGridClass } from "@/lib/optionGrid";
 
@@ -407,20 +406,11 @@ function Recap({
       {/* Done-nudge (Dan, 2026-07-08): finishing a pretest should prompt the
           mark-as-done — and explain that ▶ Continuer only advances past
           objectives MARKED done. */}
-      {(() => {
-        const sioId = sioIdForPretest(pretest.id);
-        return sioId ? (
-          <div className="mt-6 rounded-xl border-2 border-[color:var(--fluo-hl,#eaff00)] bg-[color:var(--fluo-hl,#eaff00)]/20 p-4">
-            <p className="text-sm font-bold text-slate-900">
-              Pretest complete — mark <span className="fluo-mono">{sioId}</span> as done?
-            </p>
-            <p className="mt-0.5 text-xs text-slate-600">
-              ▶ Continuer on the home page moves to your first objective <b>not yet marked done</b> — marking done is what moves it forward.
-            </p>
-            <MarkDoneButton sioId={sioId} />
-          </div>
-        ) : null;
-      })()}
+      {/* The "mark this done?" prompt went with the button on 2026-08-31. It was
+          the sharpest case for removing it: finishing the PRE-TEST offered to
+          complete the stop, when a pre-test is the cold guess BEFORE the
+          teaching. A stop now ticks when everything at it has been attempted —
+          see lib/doneness.ts. */}
 
       <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
         <button type="button" onClick={onRestart} className="fluo-btn fluo-btn-lg">

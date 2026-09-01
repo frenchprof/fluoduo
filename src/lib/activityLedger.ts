@@ -100,9 +100,57 @@ export function noteAttempt(itemId: string, correct: boolean, activityId?: strin
     t.last = Date.now();
     window.localStorage.setItem(KEY, JSON.stringify(l));
     window.dispatchEvent(new Event(LEDGER_EVENT));
+    maybeCompleteStop(sio, l);
   } catch {
     // storage blocked — the Index just shows the hollow ring
   }
+}
+
+/**
+ * Has this answer just finished the stop? Then the stop is done.
+ *
+ * Done-ness stopped being self-declared on 2026-08-31 (Dan: "it should only be
+ * marked done if it is really FULLY done, so we should remove it"). The check
+ * lives HERE, on the one write path a graded answer already takes, rather than
+ * in `isSioDone` — that is called inside render loops in thirteen files, and
+ * recomputing fifty stops' activity lists per render is work nobody asked for.
+ * A stop's state can only change when an answer lands, so this is the moment.
+ *
+ * It still goes through `markSioDone`, so XP, gems, the streak and the four
+ * badges behave exactly as they did when the button called it. The difference
+ * is only that the learner earned it instead of claiming it.
+ *
+ * Lazily imported so this module's own import graph stays small: `doneness`
+ * reaches deckActivityTabs, and a drill that only records an answer should not
+ * pull the shell in to do it.
+ */
+function maybeCompleteStop(sio: string, ledger: Ledger): void {
+  void (async () => {
+    try {
+      const [{ stopIsComplete }, { getSio }, { CURATED }, progress] = await Promise.all([
+        import("@/lib/doneness"),
+        import("@/content/sios"),
+        import("@/content/collections"),
+        import("@/lib/progress"),
+      ]);
+      const s = getSio(sio);
+      if (!s) return;
+      const p = progress.loadProgress();
+      // GRANDFATHERED, and this is where that is true: an already-done stop is
+      // never re-examined, so nothing can un-tick. The rule only ever adds.
+      if (progress.isSioDone(sio, p)) return;
+      if (!stopIsComplete(s, ledger)) return;
+      // The same mastery weighting the button applied, so the XP a completed
+      // stop pays is unchanged — only the way it is reached.
+      const items = s.collectionId
+        ? CURATED.find((c) => c.id === s.collectionId)?.items.map((it) => it.id) ?? []
+        : [];
+      progress.markSioDone(sio, progress.itemsMastery(items, p));
+    } catch {
+      // A stop that fails to auto-complete is a missed tick, never a broken
+      // answer — the tally above is already written and dispatched.
+    }
+  })();
 }
 
 /** 0..100 accuracy for one activity × outcome, null when never attempted. */

@@ -362,6 +362,28 @@ export default function HomeDashboard() {
           a STRETCHED sibling link over the top — an <a> may not contain an
           <a>. `inert` keeps the frozen map's controls out of the tab order
           and the a11y tree. */}
+      {/* PROMINENT 2D / 3D (Dan, 1 Sep, annotating the live Home: "More
+          prominent 2-D and 3-D view buttons", mocked as two big colour
+          blocks — cyan 2D, magenta 3D — ABOVE the map box). Each opens the
+          map IN that view (?view=), which is what makes two buttons more
+          than one door split in half. Colours are Dan's own mock; black ink
+          clears 4.5:1 on both fills. */}
+      <div className="mt-2 grid grid-cols-2 gap-2" role="group" aria-label="Open the map">
+        <Link
+          href="/map?view=2d"
+          className="rounded-xl border-2 py-2.5 text-center text-xl font-black text-black transition hover:-translate-y-0.5"
+          style={{ borderColor: "var(--cahier-ink)", background: "#3ee6f5", boxShadow: "var(--shadow-card)" }}
+        >
+          2D
+        </Link>
+        <Link
+          href="/map?view=3d"
+          className="rounded-xl border-2 py-2.5 text-center text-xl font-black text-black transition hover:-translate-y-0.5"
+          style={{ borderColor: "var(--cahier-ink)", background: "#f57ae0", boxShadow: "var(--shadow-card)" }}
+        >
+          3D
+        </Link>
+      </div>
       <div
         className="relative mt-2 overflow-hidden rounded-2xl border-2 transition hover:-translate-y-0.5"
         style={{ borderColor: "var(--cahier-ink)", background: "var(--cahier-paper-raised)", boxShadow: "var(--shadow-card)" }}
@@ -383,7 +405,6 @@ export default function HomeDashboard() {
         <span className="flex items-center gap-2 border-t-2 px-4 py-2.5" style={{ borderColor: "var(--cahier-ink)" }}>
           <span aria-hidden className="text-xl">🗺️</span>
           <span lang="fr" className="fluo-serif min-w-0 flex-1 text-lg font-black leading-tight text-[color:var(--fluo-ink)]">The Map</span>
-          <span className="fluo-mono text-xs font-black text-[color:var(--fluo-ink)]/70">2D · 3D</span>
           <span aria-hidden className="fluo-mono text-xl font-black text-[color:var(--fluo-ink)]">›</span>
         </span>
         <Link href="/map" aria-label="The Map — open the course map" className="absolute inset-0 z-10" />

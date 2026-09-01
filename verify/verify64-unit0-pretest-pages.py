@@ -27,8 +27,12 @@ WHAT IS PINNED
      answer key.
   4  A miss is remembered and never scored — recordPretestAnswer, never
      recordItemResult (Dan, 2026-08-27: "remember it, but don't score it").
-  5  SIO-010 keeps its audience picker, and the page does not promise 21
-     questions when a learner sits seven.
+  5  SIO-010 keeps its audience control, and the page does not promise a flat
+     21. NARROWED 2026-08-31 by verify70: the control became three TABS and a
+     learner now sits all three sevens (Dan: "B - but as a choice, 3 side by
+     side tabs"), so the shape of the control is verify70's to pin. What stays
+     here is that SIO-010 has one at all, and that the count is per situation —
+     21 in one number reads as a single very long run.
   6  Tokens, not raw hex (verify19b's rule).
 
 Run from the repo root:  python3 verify/verify64-unit0-pretest-pages.py
@@ -125,15 +129,16 @@ ok("recordItemResult" not in ns,
    "a pre-lesson miss is remembered, never scored",
    "the Unit-0 pre-test calls recordItemResult — it is scoring a cold guess")
 
-# ---- 5 · SIO-010 keeps its picker, and its count is honest ---------------
+# ---- 5 · SIO-010 keeps its audience control, and its count is honest -----
 ok("Sio010Pretest" in body and "SIO010_SITUATIONS" in shared,
-   "SIO-010 still picks its audience before answering",
-   "SIO-010 lost its audience picker — its questions are unanswerable without one")
-# The bank flattens all three audiences (21); a learner sits one audience's
-# seven. Printing the flattened figure promises three times the work.
+   "SIO-010 still settles its audience before answering",
+   "SIO-010 lost its audience control — its questions are unanswerable without one")
+# The bank flattens all three audiences (21); the page shows one situation's
+# seven and says there are three. Printing the flat figure reads as one long
+# run rather than three tabs — verify70 pins the other half of that line.
 ok("SIO010_SITUATIONS[0].questions.length" in body,
    "the page counts SIO-010's questions per situation, not all three flattened",
-   "the page prints SIO-010's flattened bank size — it promises 21 questions for a run of 7")
+   "the page prints SIO-010's flattened bank size — 21 in one number reads as one very long run")
 
 # ---- 6 · tokens, not hex --------------------------------------------------
 # Comments explaining a colour choice legitimately quote hex — the contrast

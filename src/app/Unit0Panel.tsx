@@ -23,7 +23,6 @@ import { SIOS, sioStatement } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import { UNIT0_QUESTIONS } from "@/content/sios/unit0-questions";
 import SioModal, { popupActivityTabs } from "./SioModal";
-import MarkDoneButton from "./sio/[id]/MarkDoneButton";
 
 const UNIT0_SIOS = SIOS.filter((s) => s.unit === 0);
 
@@ -100,7 +99,6 @@ export default function Unit0Panel({ openSioId, onSioClosed }: { openSioId?: str
               ? { inline: false, href: `/pretests/unit0/${openSio.id}` }
               : undefined,
           )}
-          footer={<MarkDoneButton sioId={openSio.id} />}
         >
           {/* The SIO, spelled out fully — and then the links, which SioModal
               draws. Everything else that used to stack up here went with the

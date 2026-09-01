@@ -197,6 +197,10 @@ export default function Lexicalator({
     void logEvent("game.end", { game: "lexicalator", collectionId: title, score });
     const t = window.setTimeout(() => setLevel((l) => l + 1), 1800);
     return () => window.clearTimeout(t);
+  // Fires on levelDone alone, by design: score and title are read at the
+  // moment the level completes — listing them would re-log game.end on
+  // every scoring tick. Reviewed with Dan 2026-08-31: disable, not fix.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [levelDone]);
 
   // Apply the shared volume (fluolingo:volume) on mount; the slider itself

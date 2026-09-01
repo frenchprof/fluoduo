@@ -69,7 +69,9 @@ export function siteTabs(): ShellTab[] {
  */
 export function toolTabs(): ShellTab[] {
   return [
-    { key: "map", label: "Carte", emoji: "🗺️", href: "/map", hue: "#5b8def" },
+    // "Map", not "Carte" (Dan, 2026-09-01) — the interface is English; the key
+    // and the /carte redirect route are untouched, display rename only.
+    { key: "map", label: "Map", emoji: "🗺️", href: "/map", hue: "#5b8def" },
     ...navigableActivities().map((a) => ({
       key: a.key,
       label: a.name,
