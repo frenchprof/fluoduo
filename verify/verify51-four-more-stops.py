@@ -10,7 +10,10 @@ the finding that costs most is the false one:
   SIO-025  « Pourquoi ? »      — every card carries the question in its
                                  `example` field ("Pourquoi tu aimes le
                                  sport ?"). Both halves already taught.
-  SIO-038  Getting around      — same shape ("Tu y vas en bus ?").
+  SIO-038  Getting around      — same shape ("Tu y vas en bus ?"). A lesson
+                                 was added on 1 Sep by the features lane; if
+                                 this check fails, that is why, and check 2's
+                                 note is where the reasoning belongs.
   SIO-039  Wants & needs       — the cards ARE the polite act ("Je voudrais un
                                  café."), not vocabulary for it.
 
@@ -123,9 +126,36 @@ for slug, sio in GENS.items():
 # all checked against core-nouns.json. If anyone ever adds a SECOND lesson to
 # SIO-006 that re-teaches the frames, this comment is the reason it should not
 # exist; the guard for it now lives in verify66's content assertions.
+# SIO-039 CAME OUT ON 2026-09-01, the third to leave this list and by the same
+# test the other two were judged by.
+#
+# The 29 Aug finding stands as written: the cards ARE the polite act, so a
+# lesson that re-taught « Je voudrais un café » as vocabulary would be a second
+# door onto one goal. The new lesson does not do that. What the deck never
+# argues is the thing that decides every one of its ten cards: three of the
+# frames take their object BARE and two are built on `avoir` + a noun and need
+# « de » — « Je voudrais un plan » against « J'ai besoin d'un plan ». The split
+# runs 6-4 exactly along that line and nothing on the deck says so. Nor does
+# anything rank them: two cards are glossed "(polite request)" and « Je veux »
+# is glossed plainly because it is plain, but a learner is never told that is a
+# scale, or which end to use on a stranger.
+#
+# The narrower claim is what verify76 holds the file to: its table must
+# reassemble to envies-besoins.json's own `fr` strings, so the lesson can teach
+# only French the deck already contains, and its one composed string is the
+# `de` error the lesson is about. If anyone adds a SECOND lesson to SIO-039
+# that re-teaches the phrases as vocabulary, this comment is the reason it
+# should not exist.
+#
+# SIO-025 STAYS. It was assigned in the same 1 Sep handover and was NOT built,
+# and that is a finding rather than an omission — see STATUS. Its six cards are
+# « Parce que … » and its six examples are « Pourquoi … ? », so both halves are
+# taught; the elision (« parce qu'il »), the pour/parce que contrast, and any
+# other candidate concept need French the deck does not contain. A lesson there
+# would be a slot filled rather than a claim made, which is the opposite of the
+# refusal `colors.tsx` set as the standard.
 for sio, why in (("SIO-025", "every card carries « Pourquoi … ? » in its example"),
-                 ("SIO-038", "every card carries « Tu y vas en … ? » in its example"),
-                 ("SIO-039", "the cards are the polite act, not vocabulary for it")):
+                 ("SIO-038", "every card carries « Tu y vas en … ? » in its example")):
     m = re.search(r'"%s":\s*\[([^\]]*)\]' % sio, reg)
     check(m is None or not m.group(1).strip(),
           f"{sio} still has no lesson — it was never a gap ({why})",

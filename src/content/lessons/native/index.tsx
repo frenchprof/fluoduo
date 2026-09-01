@@ -44,6 +44,7 @@ import { quelleMatiereLesson } from "./quelle-matiere";
 // with the word.
 import { colorsLesson } from "./colors";
 import { coreNounsLesson } from "./core-nouns";
+import { enviesBesoinsLesson } from "./envies-besoins";
 import { auMarcheLesson } from "./au-marche";
 import { soixanteDixLesson } from "./soixante-dix";
 import { avoirEtatsLesson } from "./avoir-etats";
@@ -116,6 +117,7 @@ export const NATIVE_LESSONS: Record<string, NativeLesson> = {
   "soixante-dix": soixanteDixLesson,
   colors: colorsLesson,
   "core-nouns": coreNounsLesson,
+  "envies-besoins": enviesBesoinsLesson,
   "revision-u1": revisionU1Lesson,
   "revision-u3u4": revisionU3U4Lesson,
   "revision-u4": revisionU4Lesson,
