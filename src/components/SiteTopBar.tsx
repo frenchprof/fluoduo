@@ -281,14 +281,25 @@ function StreakMark() {
   if (streak === null || streak <= 0) return null;
   const mult = xpMultiplier(streak);
   return (
+    /* THE NUMBER ABOVE THE FIRE (Dan, 1 Sep: "would it be possible to show 4
+       above the fire at the top instead?"). Stacked, not side by side — which
+       also buys back the width the pair was spending in a strip whose one hard
+       rule is that nothing pushes the ☰ off a 320px screen: two lines of ~13px
+       cost less horizontally than 🔥 and a numeral in a row, and the icons
+       either side are square. */
     <span
-      className="fluo-mono flex shrink-0 items-center gap-0.5 text-[13px] font-black leading-none [font-variant-numeric:tabular-nums]"
-      style={{ color: "var(--dopa-streak-ink)" }}
+      className="flex shrink-0 flex-col items-center px-0.5 leading-none"
       title={mult > 1 ? `Day streak — everything earns ×${mult}` : "Day streak"}
       aria-label={`Day streak: ${streak}`}
     >
-      <span aria-hidden>🔥</span>
-      <span aria-hidden>{streak}</span>
+      <span
+        aria-hidden
+        className="fluo-mono text-[13px] font-black [font-variant-numeric:tabular-nums]"
+        style={{ color: "var(--dopa-streak-ink)" }}
+      >
+        {streak}
+      </span>
+      <span aria-hidden className="text-[12px]">🔥</span>
     </span>
   );
 }

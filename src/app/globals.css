@@ -397,12 +397,15 @@ body {
   animation: fluo-kallang 2.4s ease-in-out infinite;
 }
 @keyframes fluo-kallang {
-  /* The crest occupies a THIRD of the cycle and the letter rests for the rest.
-     A sine that never rests reads as a wobble; a crowd wave is mostly stillness
-     with one person standing up. */
-  0%, 34%, 100% { transform: translateY(0) scaleY(1); }
-  12%           { transform: translateY(-0.26em) scaleY(1.06); }
-  22%           { transform: translateY(0.04em) scaleY(0.99); }
+  /* WHY THE ARC IS SHORT. A letter is up for 0.46s of the 2.4s cycle (19%),
+     and the wave takes 0.72s to cross the word (9 letters x 0.09s). Arc SHORTER
+     than crossing time is what makes the crest a crest: about four letters are
+     up at any instant and five are down, so the shape moves through the word.
+     The first draft gave each letter 0.82s — longer than the crossing — and all
+     nine rose together, which is a bounce wearing a stagger. */
+  0%, 19%, 100% { transform: translateY(0) scaleY(1); }
+  7%            { transform: translateY(-0.26em) scaleY(1.06); }
+  14%           { transform: translateY(0.04em) scaleY(0.99); }
 }
 
 /* THE HIGHLIGHTER, MOVING IRREGULARLY. The hero's ink is a static blob once
@@ -450,23 +453,30 @@ body {
      · .fluo-wave--round the wave passes, then the stand SITS for four seconds
        before it comes round again. Closest to a real Kallang wave; quietest in
        peripheral vision, which matters on a bar that is on every screen. */
-.fluo-wave--calm .fluo-wave-letter { animation-duration: 3.6s; }
-@supports (animation-timeline: auto) { /* grouping only — no feature needed */ }
-.fluo-wave--calm .fluo-wave-letter { animation-name: fluo-kallang-calm; }
+.fluo-wave--calm .fluo-wave-letter {
+  animation-name: fluo-kallang-calm;
+  animation-duration: 3.6s;
+}
 @keyframes fluo-kallang-calm {
-  0%, 46%, 100% { transform: translateY(0) scaleY(1); }
-  18%           { transform: translateY(-0.15em) scaleY(1.03); }
-  32%           { transform: translateY(0.02em) scaleY(1); }
+  /* Same crossing time, a longer arc (0.72s of 3.6s = 20%) and half the height:
+     neighbours overlap more, so the crest is wide and soft — a swell rather
+     than a wave. */
+  0%, 20%, 100% { transform: translateY(0) scaleY(1); }
+  8%            { transform: translateY(-0.15em) scaleY(1.03); }
+  15%           { transform: translateY(0.02em) scaleY(1); }
 }
 .fluo-wave--round .fluo-wave-letter {
   animation-name: fluo-kallang-round;
   animation-duration: 6s;
 }
 @keyframes fluo-kallang-round {
-  /* 1.4s of wave, 4.6s of stand. The crest is taller because it is rarer. */
-  0%, 23%, 100% { transform: translateY(0) scaleY(1); }
-  8%            { transform: translateY(-0.32em) scaleY(1.08); }
-  15%           { transform: translateY(0.05em) scaleY(0.98); }
+  /* A 0.48s arc (8% of 6s) inside a 6s cycle: the wave crosses in ~1.2s and the
+     word then stands still for 4.8s before it comes round. The crest is taller
+     because it is rarer — a wave you see four times a minute can afford to be
+     seen properly. */
+  0%, 8%, 100% { transform: translateY(0) scaleY(1); }
+  3%           { transform: translateY(-0.32em) scaleY(1.08); }
+  6%           { transform: translateY(0.05em) scaleY(0.98); }
 }
 
 @media (prefers-reduced-motion: reduce) {
