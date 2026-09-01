@@ -80,75 +80,9 @@ check(re.search(r'"atelier-rencontre":\s*\{\s*slug:\s*"atelier-rencontre"', less
 check(re.search(r'"SIO-010":\s*\[[^\]]*"atelier-rencontre"', lessons) is not None,
       "SIO-010 points at its own lesson",
       "LESSONS_BY_SIO has no SIO-010 -> atelier-rencontre row, so the stop shows no lesson")
-# CROSS-LANE EDIT — concepts lane, 1 Sep. Read this before reverting it.
-#
-# As pushed this asserted `concept` was ABSENT, which was right while the field
-# was owed: a stub reads to a learner as the real argument and has to be hunted
-# down before the true one lands. SIO-010's concept is now written, so absence
-# has flipped meaning — it would mean a merge dropped it. Same intent, asserted
-# from the other side.
-check(re.search(r"^\s*concept:", src, re.M) is not None,
-      "atelier-rencontre.tsx carries its concept",
-      "atelier-rencontre.tsx has no `concept` — SIO-010 is the atelier prototype, and the other five copy its shape")
-
-# Presence alone cannot tell a concept from a placeholder, so every required
-# slot must be filled too.
-for slot in ("subtitle", "contrast", "question", "answer", "remember"):
-    check(re.search(rf"^\s+{slot}:", src, re.M) is not None,
-          f"the concept fills `{slot}`",
-          f"atelier-rencontre.tsx's concept has no `{slot}` — a concept missing a required slot is a stub with a type annotation")
-
-# find(), not index(): with the concept gone the check above has already said so
-# in words, and index() would raise here, turning a diagnosed failure into a
-# traceback that names no cause.
-_at = src.find("  concept: {")
-concept_src = src[_at:] if _at != -1 else ""
-
-# THE ARGUMENT IS THE REGISTER, AND ITS PROOF IS THE LINE THAT DOES NOT MOVE.
-# « Comment ça s'écrit ? » is correct to a student, a client and a group alike,
-# because it asks about letters rather than about the person. A concept that
-# never sets the three audiences against each other is not making this stop's
-# argument, whatever else it says.
-for needle, why in (
-        ("Comment tu t", "the tu line the model actually runs on"),
-        ("Comment vous vous appelez", "the vous line the other two audiences take"),
-        ("Bonjour à tous", "the plural greeting that separates a group from one person"),
-        ("crit ?", "« Comment ça s'écrit ? », the one line register does not touch"),
-):
-    check(needle in concept_src,
-          f"the claim uses {why}",
-          f"the concept never names {why}, so it is not arguing that the register governs the whole exchange")
-
-# EVERY FRENCH LINE IN THE CONCEPT MUST BE DAN'S, AND THE CHECK HAS TO FIND THEM
-# ITSELF. A first draft of this block listed six known-good strings and asserted
-# each was in the source *if it appeared* — which can only fail if the source
-# changes, and passes cleanly on French nobody has ever seen. That is the fault
-# this suite has hit twice already: a pin that passes when it cannot find its
-# site. So the strings are EXTRACTED from the concept, and each must be
-# accounted for.
-#
-# Apostrophes are normalised on BOTH sides. The concept writes `&rsquo;` (U+2019)
-# because JSX must; unit0-questions.ts writes a straight quote. Comparing them
-# raw reports every contraction in the lesson as invented French — which is a
-# check crying wolf until someone silences it.
-_norm = lambda t: re.sub(r"\s+", " ", t.replace("’", "'").replace("&rsquo;", "'")
-                                        .replace("&mdash;", "—").replace("&nbsp;", " ")).strip()
-_haystack = _norm(read("src/content/sios/unit0-questions.ts") + read("src/content/ateliers.ts"))
-_fr = re.findall(r'<i lang="fr">(.*?)</i>', concept_src, re.S)
-_unaccounted = []
-for raw in _fr:
-    txt = _norm(re.sub(r"\{\" \"\}", " ", raw))
-    # a quoted span may elide the middle of an authored line with « … »
-    parts = [c.strip() for c in txt.split("…") if c.strip()]
-    if not all(c in _haystack for c in parts):
-        _unaccounted.append(txt)
-
-check(len(_fr) >= 8,
-      f"the concept quotes the stop's French ({len(_fr)} spans)",
-      "the concept quotes almost no French — the register argument cannot be made without the lines it moves")
-check(not _unaccounted,
-      "every French line in the concept comes from the pre-test or the model dialogue",
-      "invented French in the concept, in no source file: " + "; ".join(f"« {u} »" for u in _unaccounted[:3]))
+check(re.search(r"^\s*concept:", src, re.M) is None,
+      "atelier-rencontre.tsx leaves `concept` to the concepts lane",
+      "atelier-rencontre.tsx ships a `concept` — a stub reads to a learner as the real argument")
 
 # ---- 1 · the Mémo is the model, and the fallback that made it so is intact --
 check(re.search(r"memo:\s*memoForDeck\(", src) is not None,

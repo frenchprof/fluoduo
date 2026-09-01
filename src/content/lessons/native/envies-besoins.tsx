@@ -49,47 +49,92 @@
 import type { NativeLesson } from "./types";
 import { CARDS, ENVIES_AXES, FRAMES, enviesQuestion, line } from "./envies-besoins.gen";
 
+/** The five as speech acts, in the order the deck first uses them — the
+ *  wants-needs draft's taxonomy (Dan kept it, part 2 of the 2 Sep ruling).
+ *  Each act is the deck's own English gloss compressed to its act name. */
+const SPEECH_ACTS: { frame: string; act: string; tone: string }[] = [
+  { frame: "Je voudrais", act: "asking politely", tone: "var(--gram-masc)" },
+  { frame: "J'aimerais",  act: "a wish",          tone: "var(--gram-fem)" },
+  { frame: "J'ai besoin", act: "a need",          tone: "var(--cahier-ink)" },
+  { frame: "Je veux",     act: "a plain want",    tone: "var(--gram-masc)" },
+  { frame: "J'ai envie",  act: "a craving",       tone: "var(--gram-fem)" },
+];
+
 export const enviesBesoinsLesson: NativeLesson = {
   slug: "envies-besoins",
 
+  /* THE GRAFT (Dan, 2 Sep, part by part against the wants-needs draft —
+     "1B 2(merge: examples are always essential + add toggle for English)
+     3B but remove the last sentence and give an example instead"):
+     the headline stands alone (1B — the bare/de paragraph went with it; the
+     concept slot is where that argument will live); the body is the draft's
+     speech-act rows with the deck's French run under each, and the English
+     register glosses sit behind a native <details> toggle (2); the warning
+     box takes the draft's phrasing with the deck's own contrast pair as the
+     example (3). The generator and its checks stay this file's (part 4 —
+     with the selector relabelled, since "Formule" told Dan nothing). */
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">
-        Envies et besoins — <em>je voudrais, j&rsquo;ai besoin de</em>
+        Envies et besoins
       </h2>
-      {/* The rule, and nothing that the list below already shows. The first
-          draft added "Five ways to say what you want" in front of a list of
-          five ways to say what you want — the kind of sentence the litmus test
-          deletes, and 79px of the reason this Mémo ran past one screen. */}
-      <p className="mb-2 text-[15px] text-[color:var(--cahier-ink)]">
-        Three are verbs and take it <b>bare</b>; two are built on{" "}
-        <span lang="fr">avoir</span> + a noun, so they need <b lang="fr">de</b>.
-      </p>
 
-      <ul className="text-[15px] text-[color:var(--cahier-ink)]">
-        {FRAMES.map((f) => (
-          <li key={f.fr} className="mb-0.5">
-            <span lang="fr" className="font-bold">
-              {f.fr}
-              {f.de ? " de…" : "…"}
-            </span>
-            <span className="text-[color:var(--fluo-ink-soft)]">
-              {" "}
-              — {f.en} · {f.note}
-            </span>
-          </li>
-        ))}
-      </ul>
+      <div className="space-y-1.5">
+        {SPEECH_ACTS.map((sa) => {
+          const group = CARDS.filter((c) => c.frame === sa.frame);
+          const shifts = group.some((c) => c.link !== group[0].link);
+          return (
+            <div key={sa.frame}>
+              <p className="fluo-label mb-0.5" style={{ color: sa.tone }}>
+                {sa.act}
+              </p>
+              <p className="text-[15px] leading-snug text-[color:var(--cahier-ink)]" lang="fr">
+                {group.map((c, i) => (
+                  <span key={c.rest}>
+                    {i > 0 ? <span className="text-[color:var(--fluo-ink-soft)]"> · </span> : null}
+                    {/* The opener (frame + its de/d') is the bold hero, printed
+                        once — unless it changes within the row, which is only
+                        the craving row, where « de dormir » against « d'un
+                        chocolat chaud » IS the elision evidence. */}
+                    {i === 0 || shifts ? (
+                      <>
+                        <b style={{ color: sa.tone }}>
+                          {c.frame}
+                          {c.link ? (c.link === "de" ? " de" : " d’") : ""}
+                        </b>
+                        {/* an elided d' glues to its noun — « d'un hôtel » */}
+                        {c.link === "d'" ? "" : " "}
+                      </>
+                    ) : null}
+                    {c.rest.replace(/[.]$/, "")}
+                  </span>
+                ))}
+              </p>
+            </div>
+          );
+        })}
+      </div>
 
-      {/* The evidence, not a restatement: the two envie cards differ only in
-          what follows, and that is what makes the elision visible rather than
-          asserted. */}
-      {/* The pair, and only the pair. The second half of the first draft said
-          "and never after the plain verbs", which the paragraph above has
-          already said — so the example stays and the restatement goes. */}
+      {/* The English glosses and the register scale, on demand (Dan, 2 Sep:
+          "examples are always essential + add toggle for English"). Native
+          details per the collapse rule; the summary says what is behind it. */}
+      <details className="mt-2">
+        <summary className="fluo-label cursor-pointer text-[color:var(--fluo-ink-soft)]">
+          In English — and who to say it to · 5
+        </summary>
+        <ul className="mt-1 text-[13.5px] text-[color:var(--cahier-ink)]">
+          {FRAMES.map((f) => (
+            <li key={f.fr} className="mb-0.5">
+              <span lang="fr" className="font-bold">{f.fr}{f.de ? " de…" : "…"}</span>
+              <span className="text-[color:var(--fluo-ink-soft)]"> — {f.en} · {f.note}</span>
+            </li>
+          ))}
+        </ul>
+      </details>
+
       <p className="mt-2 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
-        ⚠️ <span lang="fr">de</span> loses its <b>e</b> before a vowel:{" "}
-        <span lang="fr"><b>J&rsquo;ai envie de dormir</b></span> but{" "}
+        ⚠️ <span lang="fr">de</span> becomes <span lang="fr"><b>d&rsquo;</b></span> before a
+        vowel: <span lang="fr"><b>J&rsquo;ai envie de dormir</b></span> but{" "}
         <span lang="fr"><b>J&rsquo;ai envie d&rsquo;un chocolat chaud</b></span>.
       </p>
     </div>

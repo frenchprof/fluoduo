@@ -54,6 +54,17 @@ import { transportLesson } from "./transport";
 // here would REPLACE the dialogue an atelier opens on (LessonPager resolves
 // `lesson?.memo ?? memoForDeck(...)`).
 import { atelierRencontreLesson } from "./atelier-rencontre";
+// SIO-025 and SIO-039 — the two ordinary Tier 3 stops. Both decks show the
+// choice already made: parce-que attaches its frame to every reason, and
+// envies-besoins attaches its opener to every sentence.
+import { parceQueLesson } from "./parce-que";
+// The five remaining ateliers. Each passes its generated Mémo through — see
+// atelier-rencontre.tsx for why authoring one deletes the model dialogue.
+import { atelierPaysLesson } from "./atelier-pays";
+import { atelierEmailLesson } from "./atelier-email";
+import { atelierItineraireLesson } from "./atelier-itineraire";
+import { atelierAvisRestoLesson } from "./atelier-avis-resto";
+import { atelierRestoLesson } from "./atelier-resto";
 import { auMarcheLesson } from "./au-marche";
 import { soixanteDixLesson } from "./soixante-dix";
 import { avoirEtatsLesson } from "./avoir-etats";
@@ -129,6 +140,12 @@ export const NATIVE_LESSONS: Record<string, NativeLesson> = {
   "envies-besoins": enviesBesoinsLesson,
   transport: transportLesson,
   "atelier-rencontre": atelierRencontreLesson,
+  "parce-que": parceQueLesson,
+  "atelier-pays": atelierPaysLesson,
+  "atelier-email": atelierEmailLesson,
+  "atelier-itineraire": atelierItineraireLesson,
+  "atelier-avis-resto": atelierAvisRestoLesson,
+  "atelier-resto": atelierRestoLesson,
   "revision-u1": revisionU1Lesson,
   "revision-u3u4": revisionU3U4Lesson,
   "revision-u4": revisionU4Lesson,

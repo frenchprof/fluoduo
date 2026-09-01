@@ -65,7 +65,11 @@ export const FAMILIES: Family[] = [
   { key: "goals", name: "FluOLin Goals", emoji: "🎯", href: "/" },
   // 🏋️ (Dan, 2026-08-31) — the same mark the lesson's Pract. tab wears
   // since #108, so "practice" is one glyph everywhere.
-  { key: "practice", name: "FluOLin Practice", emoji: "🏋️", href: "/map" },
+  // /practice since 1 Sep, not /map. The 🏋️ slot pointed at the learning
+  // path because Practice had no page of its own — the same fault 🎮 and
+  // 💪 had, fixed on 30 Aug by giving them a hub. The map is Goals', and
+  // Home still opens it (verify25b).
+  { key: "practice", name: "FluOLin Practice", emoji: "🏋️", href: "/practice" },
   // /games, not /games/vocabularain (Dan, 2026-08-30, on the bottom bar:
   // "can we first establish if those are really the five that we need
   // anchored below? the most likely shortcuts needed by learners should go
@@ -201,7 +205,17 @@ export function activitiesInFamilyOrder(): Activity[] {
  * another name. These two did not, so a family shortcut had to point at one
  * arbitrary member (`/games/vocabularain`, `/conjugaison`) until 2026-08-30.
  */
-const FAMILY_HUBS: Record<string, FamilyKey> = { games: "svplay", skills: "skills" };
+const FAMILY_HUBS: Record<string, FamilyKey> = {
+  games: "svplay",
+  skills: "skills",
+  // Practice joined them on 1 Sep. Its door was /map — the learning path,
+  // which belongs to Goals — so 🏋️ opened someone else's page and the two
+  // activities that DO have doors of their own (SpecuLearn, 4Mémoire) had no
+  // shortcut at all. Memo has no href and is reached from a stop, so the hub
+  // lists two: exactly Dan's rule for it, "except when one item is not
+  // active, then it does not appear".
+  practice: "practice",
+};
 
 /**
  * The families whose door is deliberately ONE activity's page, and which one.

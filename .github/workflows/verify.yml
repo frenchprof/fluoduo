@@ -240,6 +240,21 @@ jobs:
       - name: "An atelier's lesson adds the register and does not eat the model (1 Sep)"
         run: python3 verify/verify75-atelier-lesson.py
 
+      # Renumbered 76 -> 83 at merge: Peers' branch minted a second verify76
+      # while verify76-envies-besoins was landing — the in-flight collision the
+      # AGENTS.md sweep exists to catch, found by Pre-tests mid-flight.
+      - name: "SIO-025 has a lesson; ★ withdraws the frame (1 Sep)"
+        run: python3 verify/verify83-parce-que.py
+
+      - name: "The five remaining ateliers: the model survives, and no option Dan did not review (1 Sep)"
+        run: python3 verify/verify77-five-ateliers.py
+
+      # Renumbered 82 -> 84 at merge: the SECOND live verify-number collision
+      # of the evening (Peers minted 82 while Pre-tests' verify82-page-chrome
+      # was merging in #131). The remote sweep only helps if run at minting.
+      - name: "The atelier model's English is toggled, on by default, never deleted (1 Sep)"
+        run: python3 verify/verify84-atelier-english.py
+
       - name: "Every check runs, and no two share a number"
         run: python3 verify/verify-wiring.py
 
