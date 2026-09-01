@@ -30,12 +30,10 @@ fifty stops the work belonged to.
 
 WHAT IS PINNED, and why each would fail in silence
 
-  1  EVERY `active` key the app passes resolves to a family. This is the check
-     that matters — it fails on the NEXT page that forgets, which is how all
-     six of these got in. Executed against the real `familyOf`, over the keys
-     scraped out of the real source, with only the two pages Dan exempted
-     ("can we maintain the current look of the profile page") allowed to be
-     null.
+  1  EVERY `active` key the app passes resolves to a family, with NO exemption
+     left. This is the check that matters — it fails on the NEXT page that
+     forgets, which is how all six of these got in. Executed against the real
+     `familyOf`, over the keys scraped out of the real source.
   2  THE SPINE NAMES BOTH SHELLS. The rule said `.cahier-page` alone and
      DrillShell's root is not one, so every drill in the app carried the right
      family class and drew no strip. A regression here is invisible in a diff
@@ -127,15 +125,21 @@ ok(r.returncode == 0, "familyOf executed in node",
    f"could not resolve the page keys: {r.stderr[-300:]}")
 if r.returncode == 0:
     d = json.loads(r.stdout.strip().splitlines()[-1])
-    # /moi and /profil colour themselves — Dan, 2026-08-21: "can we maintain
-    # the current look of the profile page". Everything else must resolve.
-    stray = [k for k in d["unresolved"] if k not in ("moi", "profil")]
-    ok(not stray,
+    # NO EXEMPTIONS, since Dan closed the last one the same day: "i say touch
+    # Profil please". /moi and /profil had been exempt since 21 Aug ("can we
+    # maintain the current look of the profile page") — the reasoning was that
+    # a family band arriving over a page whose rows each carry a hue would be
+    # a second, louder system. That reasoning was about a band ARRIVING; what
+    # the exemption actually left was a page with no spine and a heading card
+    # inset in a rounded box, which is two of the four faults Dan then reported
+    # on that very page. So the assertion is simply: EVERY page resolves.
+    ok(not d["unresolved"],
        f"all {d['resolved']} page keys resolve to a family — every page gets its spine, its ink and its band",
-       f"these pages resolve to NO family, so each draws no strip, no colour and no heading band: {stray}")
-    ok(set(d["unresolved"]) == {"moi", "profil"},
-       "/moi and /profil are the only self-coloured pages, as Dan asked",
-       f"the self-coloured exemption has changed: {d['unresolved']}")
+       f"these pages resolve to NO family, so each draws no strip, no colour and no heading band: {d['unresolved']}")
+    ok("SELF_COLOURED = new Set<string>([])" in read("src/content/activities.ts"),
+       "no page is exempt from the family system",
+       "a page has been exempted from the family system again — that is how /profil "
+       "came to be the one page with no spine and an inset heading")
 ok('active=""' not in code(ALL_SRC),
    "no page passes an empty `active` — the emptiest possible answer to which page this is",
    'a page passes active="" again; familyOf returns null before it looks anything up')

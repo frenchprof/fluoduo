@@ -20,6 +20,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { logEvent } from "@/lib/firebase/usage";
+import PageBand from "@/components/PageBand";
+import { stopTagForDeck } from "@/lib/stopTag";
 import type { Collection, Item } from "@/lib/collections/schema";
 import {
   loadLocal,
@@ -138,22 +140,38 @@ export default function CuratedDeckTable({ collection }: { collection: Collectio
 // and none of the three helps a learner find the correct answer (Dan's
 // litmus test, AGENTS.md 2026-07-02: text that doesn't do that is
 // redundant).
-function TopBar({ crumb }: { crumb: string }) {
+/**
+ * IT IS THE PAGE BAND NOW (Dan, 1 Sep: "there are pages where there is an
+ * identity crisis as to where the activity name should be placed — we want
+ * visual unity please").
+ *
+ * This was a pale bar with a back button, the activity name and the deck's,
+ * set in the display face at 14px on translucent paper — a fourth way of
+ * heading a page, on a page that also had no band. Nothing about it needed to
+ * be its own thing: PageBand already takes a control on its left (`lead` — it
+ * is where a drill's ✕ lives), a title, a sub-line and one chip, which is
+ * exactly what this row held. The words are unchanged; where they sit and what
+ * they sit on are now the site's.
+ *
+ * The stop joins them, from the same helper every other surface uses.
+ */
+function TopBar({ crumb, collectionId }: { crumb: string; collectionId: string }) {
   return (
-    <div className="border-b-2 border-[color:var(--cahier-ink)]/15 bg-[var(--cahier-paper-2)]/85 backdrop-blur">
-      <div className="flex items-center gap-3 py-3 pl-12 pr-4 sm:pl-16">
-        <BackLink fallback="/" className="cahier-btn cahier-btn-sm">← Back</BackLink>
-        <span className="cahier-display truncate text-sm font-bold text-[color:var(--cahier-ink)]">
-          🃏 4Mémoire · {crumb}
-        </span>
-        {/* 🔊 left this bar on 2026-08-31: SiteTopBar sits directly above it
-            and carries the same control. Two of it, twenty pixels apart, is
-            exactly the redundancy the litmus rule removes. */}
-        <span className="ml-auto flex items-center gap-2">
-          <HelpDot className="text-[color:var(--cahier-ink)]" />
-        </span>
-      </div>
-    </div>
+    <PageBand
+      title={crumb}
+      sub={stopTagForDeck(collectionId)}
+      lead={
+        <BackLink fallback="/" className="-my-1 -ml-1 flex h-9 shrink-0 items-center rounded-lg px-2 text-sm font-bold text-white/80 no-underline transition hover:bg-white/15 hover:text-white">
+          ←
+        </BackLink>
+      }
+      /* 🔊 left this row on 2026-08-31: SiteTopBar sits directly above it and
+         carries the same control. Two of it, twenty pixels apart, is exactly
+         the redundancy the litmus rule removes. The (?) stays — it is the only
+         help this page has. */
+      stat={<HelpDot className="text-[color:var(--cahier-ink)]" />}
+      className="pl-12 sm:pl-16"
+    />
   );
 }
 
@@ -264,7 +282,7 @@ function DeckTable({ collection, items }: { collection: Collection; items: Item[
       active={view}
       onSelect={(k) => setView(k as View)}
       siteActive="flip"
-      topBar={<TopBar crumb={collection.title} />}
+      topBar={<TopBar crumb={collection.title} collectionId={collection.id} />}
     >
       <Step n={1} label="View & mode">
       {/* ONE row (Dan, 2026-07-20). Views as short buttons, the 📖/✍️
