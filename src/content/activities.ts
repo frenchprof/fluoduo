@@ -257,7 +257,16 @@ export function navigableActivities(): Activity[] {
 }
 
 /** Pages whose own design already assigns colour, so the shell must not. */
-const SELF_COLOURED = new Set(["moi", "profil"]);
+// EMPTIED 1 Sep, on Dan's word ("i say touch Profil please"). It held
+// /moi and /profil since 21 Aug, when he asked to "maintain the current look
+// of the profile page" — the reasoning was that its rows each carry a hue and
+// a family band over the top would be a second, louder system arguing with the
+// first. That reasoning was not wrong; it was about a band ARRIVING on a page
+// that had its own. What it left behind was a page with no spine and a heading
+// card inset in a rounded box while every other page's ran edge to edge — the
+// exact two faults Dan named in the 1 Sep audit. The rows keep their hues; the
+// heading becomes the same band as everywhere else.
+const SELF_COLOURED = new Set<string>([]);
 
 /** Site keys that are not activities but still belong somewhere. */
 const SITE_FAMILY: Record<string, FamilyKey> = {

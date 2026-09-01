@@ -291,13 +291,31 @@ band = re.search(r"\.fluo-band-hand\s*\{([^}]*)\}", CSS)
 check(band is not None and "font-weight: 600" in band.group(1),
       "the band class is font-weight 600",
       "`.fluo-band-hand` is not 600 — Dan picked SemiBold from a rendered specimen")
-for p in ("src/components/PageBand.tsx", "src/components/ProfileContent.tsx"):
-    src = read(p)
-    check("fluo-band-hand" in src and "font-normal" not in
-          (re.search(r'className="([^"]*fluo-band-hand[^"]*)"', src) or
-           type("x", (), {"group": lambda s, n: ""})()).group(1),
-          f"{os.path.basename(p)}: no font-normal utility fighting the class",
-          f"{p} still pins `font-normal` on the band title. A Tailwind utility beats "
+# REWRITTEN 1 Sep, naming the supersession. This named two files — PageBand
+# and ProfileContent — because both hand-rolled a heading band and either could
+# pin a `font-normal` utility that beats the class. ProfileContent stopped
+# hand-rolling one that day (Dan: "i say touch Profil please"; it renders
+# PageBand now), so the hard-coded pair began FAILING on a page for having been
+# fixed. The claim was never about those two files: it is that wherever the
+# band class is used, no utility fights it. So the check now finds the users
+# rather than being told them — and it also insists there is at least one, or
+# it would pass vacuously the day the class is dropped altogether.
+users = []
+for _root, _dirs, _files in os.walk("src"):
+    for _f in _files:
+        if _f.endswith(".tsx"):
+            _p = os.path.join(_root, _f)
+            if "fluo-band-hand" in read(_p):
+                users.append(_p)
+check(bool(users),
+      f"the band class is used in {len(users)} place(s)",
+      "nothing uses `.fluo-band-hand` — the band's typeface decision has no subject")
+for p in users:
+    cls = re.findall(r'className="([^"]*fluo-band-hand[^"]*)"', read(p))
+    bad = [c for c in cls if "font-normal" in c or "font-light" in c or "font-thin" in c]
+    check(not bad,
+          f"{os.path.basename(p)}: no weight utility fighting the class",
+          f"{p} pins a lighter weight on the band title ({bad[:1]}). A Tailwind utility beats "
           "`.fluo-band-hand`, so the CSS says 600 and the screen renders 400 — the change "
           "looks done and is not.")
 
