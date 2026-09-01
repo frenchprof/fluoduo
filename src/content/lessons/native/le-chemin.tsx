@@ -22,10 +22,10 @@ export const leCheminLesson: NativeLesson = {
         <div className="rounded-xl border-2 border-[color:var(--gram-neutral)]/40 bg-[color:var(--cahier-hl)]/25 p-2.5">
           <p className="fluo-label mb-1 text-[color:var(--cahier-ink-soft)]">demander</p>
           <p lang="fr" className="text-[15px] font-black text-[color:var(--cahier-ink)]">
-            Quel est le chemin pour aller <b>à la</b> gare&nbsp;?
+            Quel est le chemin pour aller <b>à la</b>{" "}gare&nbsp;?
           </p>
           <p lang="fr" className="text-[15px] font-black text-[color:var(--cahier-ink)]">
-            Comment on va <b>au</b> musée&nbsp;?
+            Comment on va <b>au</b>{" "}musée&nbsp;?
           </p>
           <p lang="fr" className="text-[15px] font-black text-[color:var(--cahier-ink)]">
             Pardon, je cherche la poste.

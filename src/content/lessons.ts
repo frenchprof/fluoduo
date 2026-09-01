@@ -63,6 +63,8 @@ export const LESSONS: Record<string, Lesson> = {
   "conseils":          { slug: "conseils",          title: "Donner un conseil",            unit: 4 },
   "rendezvous":        { slug: "rendezvous",        title: "Proposer, accepter, refuser", unit: 2 },
   "meteo":             { slug: "meteo",             title: "La météo",                     unit: 3 },
+  // SIO-039, written 1 Sep — deck-backed stop with no lesson file (handover).
+  "envies-besoins":    { slug: "envies-besoins",    title: "Envies et besoins",            unit: 3 },
   "prepositions":      { slug: "prepositions",      title: "Prépositions : pays & villes",  unit: 3 },
   "prepositions-lieux":{ slug: "prepositions-lieux",title: "Prépositions : en ville",       unit: 3 },
   // SIO-038, 2026-09-01 — the last Tier 1 stop with a deck and no lesson file,
@@ -147,6 +149,7 @@ export const LESSONS_BY_SIO: Record<string, string[]> = {
   "SIO-029": ["rendezvous", "modaux"], // vouloir forms live in the modaux lesson
   // Its own lesson now; modaux stays second as the paradigm reference.
   "SIO-037": ["pouvoir", "modaux"],
+  "SIO-039": ["envies-besoins"],
   "SIO-047": ["futur-proche", "modaux"],
   "SIO-048": ["conseils", "modaux"],
   "SIO-031": ["meteo"],

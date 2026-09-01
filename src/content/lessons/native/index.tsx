@@ -44,6 +44,7 @@ import { quelleMatiereLesson } from "./quelle-matiere";
 // with the word.
 import { colorsLesson } from "./colors";
 import { coreNounsLesson } from "./core-nouns";
+import { enviesBesoinsLesson } from "./envies-besoins";
 // SIO-038 — the last Tier 1 stop whose deck had no lesson file (colour review's
 // handover, 31 Aug). Its twelve items are three frames: en + a vehicle you sit
 // inside, à + on foot or astride, prendre + the definite article.
@@ -125,6 +126,7 @@ export const NATIVE_LESSONS: Record<string, NativeLesson> = {
   "soixante-dix": soixanteDixLesson,
   colors: colorsLesson,
   "core-nouns": coreNounsLesson,
+  "envies-besoins": enviesBesoinsLesson,
   transport: transportLesson,
   "atelier-rencontre": atelierRencontreLesson,
   "revision-u1": revisionU1Lesson,

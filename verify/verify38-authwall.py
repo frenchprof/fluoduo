@@ -41,15 +41,37 @@ ok("REQUIRE_SIGN_IN = true" not in cfg,
 
 # 2 · and the flag is nowhere a deploy could pick it up. This is the check
 #     that makes the switch safe: it can only ever be typed by hand, locally.
+#
+# ONE precise exemption, added 1 Sep with the jam scan (verify79): CI's own
+# verify.yml rebuilds the export open so a browser can walk the gated lesson
+# pages. That file is read by GitHub Actions and by NOTHING in the deploy
+# path — production is dckg/fluo running plain `npm run build` on Cloudflare
+# Pages, and the push mirror (deploy-live.yml) stays under the blanket ban.
+# The exemption is not a hole: the flag must appear in verify.yml exactly
+# once, on the rebuild line itself, and only AFTER the wall build that
+# verify18/18b audit — asserted below, so moving it above them fails loudly.
+CI_YML = ".github/workflows/verify.yml"
 tracked = []
 for pat in ("*.json", "*.yml", "*.yaml", "*.toml", ".env*", "*.sh"):
     tracked += glob.glob(pat) + glob.glob(f".github/**/{pat}", recursive=True) \
              + glob.glob(f"scripts/**/{pat}", recursive=True)
 hits = [f for f in sorted(set(tracked))
-        if os.path.isfile(f) and FLAG in read(f)]
+        if os.path.isfile(f) and FLAG in read(f) and f != CI_YML]
 ok(not hits,
    f"{FLAG} appears in no committed config — nothing a deploy reads can set it",
    f"{FLAG} IS COMMITTED in {hits} — a deploy could take the wall down for everyone")
+
+if os.path.isfile(CI_YML):
+    ci = read(CI_YML)
+    flag_lines = [l for l in ci.splitlines() if FLAG in l]
+    ok(len(flag_lines) == 1 and f"{FLAG}=1 npm run build" in flag_lines[0],
+       f"{FLAG} appears in verify.yml exactly once, on the jam scan's rebuild line",
+       f"{FLAG} appears in verify.yml on {len(flag_lines)} line(s), or off the rebuild "
+       f"line — the exemption covers ONE open rebuild for the browser scan and nothing else")
+    ok(0 < ci.find("verify18b.py") < ci.find(FLAG),
+       "the open rebuild comes after the wall build verify18/18b audit",
+       "the open rebuild sits BEFORE verify18/18b — they would audit the open export "
+       "and the wall build would ship unexamined")
 
 # 3 · no other route around the wall crept in beside it.
 gate = code("src/components/AuthGate.tsx")
