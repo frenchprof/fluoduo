@@ -31,6 +31,32 @@ WHAT IS PINNED
      its own pre-test: no inline questions, no model dialogue, no lesson chips.
   5  Every Unit-0 pre-test opens its PAGE (#98). `inline` is dead.
   6  The stale `dice` roster is gone with the numbered path.
+  7  SioDetail — the popup's body — is the STATEMENT AND NOTHING ELSE, and the
+     component that printed the ateliers' dialogue is deleted rather than left
+     unmounted.
+
+WHERE THIS SUITE WAS WRONG, AND WHY IT MATTERS (2026-08-31, second pass).
+
+Check 4 asserted "the popup body does not render DialoguePlayer" — of
+UnitSection and Unit0Panel, the two files the collapse edited. The body those
+two MOUNT is SioDetail, which this suite never opened. SioDetail had four
+branches; the collapse emptied three, and the fourth fired only when
+`sio.isProduction`. So the six ATELIER stops went on printing their entire
+model dialogue, six to ten lines of French and English with play buttons,
+directly above the link list — for eight days, through a review and a deploy,
+with a green check on a file whose whole subject is that duplication.
+
+The lesson is not "test harder", it is WHERE to point: the two files named
+were the ones the diff touched, and the file that actually renders was one
+import away. Dan found it by looking at the screen.
+
+It also was not merely duplication. The model dialogue IS the atelier
+pre-test's answer key — `content/pretests/ateliers.gen.ts` builds each question
+from one line and offers three more lines of the SAME dialogue as the wrong
+options — so every option was on screen above the button that starts it. The
+one thing a pre-test measures could not be measured. Dan, 2026-08-31: "i would
+rather the SIO and the items (however few) not be lumped into the same space
+anymore." 
 
 Run from the repo root:  python3 verify/verify66-popup-collapse.py
 """
@@ -69,9 +95,13 @@ if not os.path.isfile("package.json"):
 MODAL = "src/app/SioModal.tsx"
 UNIT = "src/app/UnitSection.tsx"
 U0 = "src/app/Unit0Panel.tsx"
+# The body the two panels MOUNT — the file this suite failed to open for eight
+# days. Named here so check 4 below scans what renders, not only what the
+# collapse's diff happened to touch.
+DETAIL = "src/app/SioDetail.tsx"
 
-modal, unit, u0 = read(MODAL), read(UNIT), read(U0)
-cm, cu, c0 = code(modal), code(unit), code(u0)
+modal, unit, u0, detail = read(MODAL), read(UNIT), read(U0), read(DETAIL)
+cm, cu, c0, cd = code(modal), code(unit), code(u0), code(detail)
 
 ok(bool(modal), f"{MODAL} exists", f"{MODAL} is missing")
 
@@ -115,7 +145,7 @@ ok(re.search(r'\bconst\s+\w+\s*=\s*\[\s*"(pretest|speculearn|lesson|flip)"', cm)
    "the popup hardcodes an activity list again — a cull would need an edit here")
 
 # ---- 4 · the body says the outcome, and answers nothing ------------------
-for name, src in (("UnitSection", cu), ("Unit0Panel", c0)):
+for name, src in (("UnitSection", cu), ("Unit0Panel", c0), ("SioDetail", cd)):
     for leak, why in (
         ("DialoguePlayer", "the model dialogue is an answer key"),
         ("Unit0Questions", "the questions have their own page since #98"),
@@ -138,6 +168,39 @@ ok(re.search(r"inline:\s*true", c0) is None and re.search(r"inline:\s*true", cu)
 ok('"dice"' not in cm,
    "the popup names no cut activity",
    "the popup still names dice/Sorting, which was cut in #93")
+
+# ---- 7 · the body is the statement, and nothing else ---------------------
+ok(bool(detail), f"{DETAIL} exists", f"{DETAIL} is missing — the popup has no body")
+# Asserted on the RENDER, not on a name: the file's own prose names the four
+# things it stopped rendering, which is exactly what a name-scan would pass on.
+# One <p>, one <span>, one call to sioStatement — anything else is a second
+# thing in the same space.
+body = cd[cd.find("export default function SioDetail("):]
+body = body[: body.find("\n}\n") + 3]
+ok("sioStatement(sio)" in body,
+   "the popup body renders the can-do statement",
+   "the popup body no longer renders the statement — Dan asked for the SIO spelled out fully")
+for tag, why in (
+    ("<div", "a wrapper means the body is holding more than one thing"),
+    ("<Link", "a link in the body duplicates the list below it"),
+    ("map(", "a list in the body is the list below it, twice"),
+    ("?", "a branch means some stops get more than the statement — which is how the ateliers kept their dialogue"),
+):
+    ok(tag not in body,
+       f"the body has no {tag!r} — {why}",
+       f"the popup body contains {tag!r}: {why}")
+# The dialogue's player is DELETED, not merely unmounted: an unmounted
+# component is one import from coming back, and its job is done better by the
+# atelier deck's Mémo (« Le modèle », content/memos.tsx), which is a LINK in
+# the list rather than a panel above it.
+ok(not os.path.isfile("src/app/DialoguePlayer.tsx"),
+   "DialoguePlayer is deleted — the dialogue is the Mémo, reached by a link",
+   "src/app/DialoguePlayer.tsx is back; the atelier popups can print their answer key again")
+players = [p for p in ("src/app/UnitSection.tsx", "src/app/Unit0Panel.tsx", DETAIL, MODAL)
+           if "DialoguePlayer" in code(read(p))]
+ok(not players,
+   "no popup surface mounts a dialogue player",
+   f"a popup surface mounts DialoguePlayer again: {players}")
 
 print("\n".join("  ok    " + m for m in PASS))
 if FAIL:

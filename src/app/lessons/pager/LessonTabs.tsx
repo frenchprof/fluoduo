@@ -526,6 +526,7 @@ export default function LessonTabs({
   memo,
   exercise,
   lexique,
+  open = "exercice",
 }: {
   sio?: Sio;
   deck?: Collection;
@@ -537,11 +538,25 @@ export default function LessonTabs({
   /** Le lexique — the deck table, passed in so this file stays free of the
    *  decks route's imports. */
   lexique?: ReactNode;
+  /**
+   * Which tab is open on arrival. Default "exercice" — see below.
+   *
+   * The ateliers pass "formes" (Dan, 2026-08-31: *"Atelier's Memo is to open
+   * on the range of sentences and vocabulary one is expected to use or
+   * understand. Simple as that"*). An atelier is a PRODUCTION stop: the task
+   * is to perform the exchange in class, so the model and its words are the
+   * thing to arrive at, and « Choose your level » is a question a learner
+   * cannot yet answer about material they have not seen.
+   */
+  open?: TabKey;
 }) {
   // Opens on L'exercice, NOT on Le parcours. A learner returning to a lesson
   // they know wants the exercise, and Dan's own path is a path, not a gate —
   // his tab bar lets you start anywhere. Reading order is offered, not forced.
-  const [tab, setTab] = useState<TabKey>("exercice");
+  //
+  // `open` is the initial value only, never a controlled prop: once a learner
+  // taps a tab the choice is theirs, and a re-render must not pull them back.
+  const [tab, setTab] = useState<TabKey>(open);
 
   return (
     <div className="pt-1">

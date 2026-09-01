@@ -330,6 +330,42 @@ lane = report it in STATUS, don't do it.
     end card is a drill-UX call; verify32 prints the host count on every run so
     it cannot go quiet again.
 
+  4. ✅ **DONE — the ateliers' popup, which escaped #99's collapse.** Dan,
+     31 Aug, looking at SIO-020: *"i would rather the SIO and the items
+     (however few) not be lumped into the same space anymore."*
+     `SioDetail` had four branches. #99 emptied three; the fourth fired only on
+     `sio.isProduction`, so the SIX ATELIER STOPS went on printing their whole
+     model dialogue — six to ten lines of French and English with play buttons
+     — above the link list, for eight days, through a review and a deploy.
+     **And the dialogue is that stop's pre-test answer key.** An atelier
+     pre-test asks "which French line says « The flag has two colours »?" and
+     offers three more lines OF THAT DIALOGUE as the wrong options
+     (`pretests/ateliers.gen.ts`) — all six were on screen, above the button
+     that starts it. A cold guess was impossible, so the one thing the pre-test
+     measures could not be measured.
+     The dialogue needed no new page: it is the atelier deck's Mémo,
+     « Le modèle », built from the same `ATELIER_DIALOGUES` so it cannot drift
+     — Memo → 📐 Forms, with « Tout écouter ». `SioDetail` is now the statement
+     and nothing else (201 → 62 lines); `DialoguePlayer.tsx` is deleted rather
+     than left unmounted, its job done better by the Mémo. Every atelier
+     pre-test already opened its own page and still does.
+     **verify66 is EXTENDED rather than joined by a new suite, because verify66
+     is what let this through**: its check 4 scanned `UnitSection` and
+     `Unit0Panel` — the two files the collapse's diff touched — and never
+     opened `SioDetail`, the body those two MOUNT. It now scans the render, not
+     the diff. Break-tested by restoring the original branch verbatim: four
+     assertions fire.
+     **And the model moved to the FRONT of the Memo, same PR** — Dan, minutes
+     later: *"Atelier's Memo is to open on the range of sentences and
+     vocabulary one is expected to use or understand. Simple as that."* Taking
+     the dialogue out of the popup left it correct but far: two taps and a
+     level chooser away. An atelier's lesson now opens on **Forms**, which is
+     exactly that pair — « Le modèle » in full with « Tout écouter », and every
+     word under it (Words went under Forms on 31 Aug). Chosen by
+     `sio.isProduction`, never by a deck-id prefix, so a seventh atelier is
+     covered. Ordinary lessons still open on Pract. — shown side by side.
+     `verify71`, 13 checks, all break-tested.
+
   **After those:** Tier-1 concept batches in parallel with Color review, same
   read-before-ship rule.
 - **Peers — features.** TWO ASSIGNMENTS from Dan's evening rulings (31 Aug):
