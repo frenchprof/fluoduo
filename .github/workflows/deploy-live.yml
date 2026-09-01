@@ -1,0 +1,59 @@
+# Deploy = mirror main to production (dckg/fluo), whose Cloudflare Pages
+# project auto-builds its main.
+#
+# Dan, 2026-08-31, on how deploys should work: "we go through fluoduo main."
+# So this is a MANUAL trigger, not a push mirror: fluoduo-main fires it as
+# the last step of a QC round, and Dan can fire it from the Actions tab.
+# Nothing deploys itself mid-lesson because a merge happened to land.
+#
+# Two refusals before the push, both cheap and both load-bearing:
+#   - only main deploys — a branch dispatch is a mistake, not a request;
+#   - only a commit whose `verify` check is GREEN deploys — the mirror must
+#     never outrun CI, even if a human fires it in the minutes between a
+#     merge and its verify run finishing.
+#
+# LIVE_DEPLOY_TOKEN is a fine-grained PAT: Contents read/write on dckg/fluo
+# and nothing else (minted by Dan, 2026-09-01). Actions masks it in logs.
+name: deploy-live
+
+on:
+  workflow_dispatch:
+
+# The guard step reads the verify check's conclusion through the checks API,
+# and the default GITHUB_TOKEN does not carry that scope unless declared —
+# run 1 failed exactly there (403, "Resource not accessible by integration").
+permissions:
+  contents: read
+  checks: read
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Refuse to deploy anything but main
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "deploy-live runs from main only (got ${{ github.ref }})"
+          exit 1
+
+      - uses: actions/checkout@v5
+        with:
+          # The mirror pushes real history, so it needs all of it.
+          fetch-depth: 0
+
+      - name: Refuse to deploy a commit verify has not passed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          conclusion=$(gh api \
+            "repos/${{ github.repository }}/commits/${{ github.sha }}/check-runs?check_name=verify" \
+            --jq '.check_runs[0].conclusion // "missing"')
+          echo "verify on ${{ github.sha }}: $conclusion"
+          if [ "$conclusion" != "success" ]; then
+            echo "verify is not green on this commit — not deploying"
+            exit 1
+          fi
+
+      - name: Mirror main to dckg/fluo
+        run: |
+          git push "https://x-access-token:${{ secrets.LIVE_DEPLOY_TOKEN }}@github.com/dckg/fluo.git" HEAD:main

@@ -88,10 +88,13 @@ check("setPos(clamp(raw ?" in drag_code,
       "the floats' default position is clamped like a saved one",
       "useDragFloat still takes the raw default — fresh devices overlap the bottom bar")
 
-# ── 2 · the four drill routes render the drill ─────────────────────────────
+# ── 2 · the drill routes render the drill ──────────────────────────────────
+# THREE, not four: iComplete's route was deleted on 31 Aug (Dan: "iComplete is
+# to be deleted"). The exercise is the Memo ladder's Moyen and Difficile tiers
+# now — verify70 pins that, and pins that those tiers keep completing one and
+# two missing pieces, which is what makes the deletion a move rather than a loss.
 ROUTES = {
     "dice": "src/app/practice/dice/[collectionId]/page.tsx",
-    "complete-it": "src/app/practice/complete-it/[collectionId]/page.tsx",
     "say-it": "src/app/practice/say-it/[collectionId]/page.tsx",
     "grammarathon": "src/app/practice/grammarathon/[collectionId]/page.tsx",
 }
@@ -114,10 +117,10 @@ check(not os.path.isfile("src/app/UnitActivityPage.tsx") and uap_importers == []
       "UnitActivityPage is fully retired (patch 22's pager replaced the popup path)",
       f"UnitActivityPage lives on: file={os.path.isfile('src/app/UnitActivityPage.tsx')}, importers={sorted(uap_importers)}")
 
-# ── 3 · the four drill bodies are on the shell ─────────────────────────────
+# ── 3 · the drill bodies are on the shell ──────────────────────────────────
+# iComplete dropped out here for the same reason as above.
 CONTENTS = {
     "EtuDice": "src/app/practice/dice/[collectionId]/PracticeContent.tsx",
-    "iComplete": "src/app/practice/complete-it/[collectionId]/CompleteItContent.tsx",
     "WorDrill": "src/app/practice/say-it/[collectionId]/SayItContent.tsx",
     "GramMarathon": "src/app/practice/grammarathon/[collectionId]/GramMarathonContent.tsx",
 }
@@ -162,16 +165,11 @@ check("setSelected" in specu and '"Check"' in specu,
       "SpecuLearn is select-then-commit in the shell",
       "SpecuLearn still commits on tap in the shell")
 
-# iComplete gains the help ladder it never had (its row's second half): the
-# same buildLadder/shownRungs pair GramMarathon uses, hints recorded as
-# evidence (hintsTaken) like everywhere else. Track D (2026-08-17) replaced
-# that pair with ONE state machine — useHelpLadder + hintsFor — whose hook
-# records hintsTaken/assistance itself (verify28 checks the recording).
-icomplete = strip_comments(read(CONTENTS["iComplete"]))
-check(("buildLadder" in icomplete and "shownRungs" in icomplete and "hintsTaken" in icomplete)
-      or ("useHelpLadder(" in icomplete and "hintsFor(" in icomplete and "ladder.attempt(" in icomplete),
-      "iComplete has the help ladder, and hints are recorded as evidence",
-      "iComplete still has no help ladder (buildLadder/shownRungs/hintsTaken or useHelpLadder/hintsFor)")
+# iComplete's help-ladder row is retired with its drill (31 Aug). It asserted
+# that iComplete had the same useHelpLadder/hintsFor state machine as every
+# other typed drill; the drill is deleted, so the claim has nothing to hold.
+# The rule it protected — a typed drill gives graded help and records it — is
+# still held for every typed drill that exists, by verify28's own table.
 
 # Word-bank tiles below sm: the typed drills keep their <input> for sm-and-up
 # and render tappable chips beneath it — one `value`, either surface.
@@ -179,7 +177,9 @@ bank = strip_comments(read("src/components/WordBank.tsx"))
 check(bool(bank) and "onChange(idxs.map((i) => tokens[i]).join(\" \"))" in bank,
       "WordBank exists and mirrors chips into the host's value",
       "src/components/WordBank.tsx missing or not mirroring value")
-for name, p in (("iComplete", CONTENTS["iComplete"]), ("GramMarathon", CONTENTS["GramMarathon"])):
+# iComplete dropped out of this pair on 31 Aug with its route; GramMarathon is
+# the typed drill that carries the word-bank contract now.
+for name, p in (("GramMarathon", CONTENTS["GramMarathon"]),):
     src = read(p)
     check("WordBank" in src and 'className="sm:hidden"' in src and "hidden w-full sm:block" in src,
           f"{name}: typing above sm, word-bank tiles below it",

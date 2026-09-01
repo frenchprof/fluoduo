@@ -6,6 +6,103 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 1 Sep — Dan's eight Home annotations, DIVIDED (the labour, not the files)
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan annotated the live Home (screenshot in the fluoduo-main session, 09:53
+local) with eight numbered notes and said *"divide the labour to do this."*
+The division is BY SURFACE, one session per file cluster, because 31 Aug
+proved two sessions in one file is how afternoons are lost.
+
+**LOT A — Home + top bar rework → PRE-TESTS session** (lane free since #104
+and #107 merged; files: `SiteTopBar.tsx`, `HomeDashboard.tsx`, verify25/31
+updates). Dan's notes, verbatim where legible:
+
+1. *"The top return link to be in the same FluOLinGo font but with the
+   KALLANG wave effect and irregular highlighter movement"* — Dan clarified
+   1 Sep: **the Kallang Wave**, the stadium crowd wave (Singapore's National
+   Stadium). The top bar's FluOLinGo wordmark takes the Hand font and its
+   LETTERS rise and dip in sequence, one after another, like a crowd wave
+   rolling through — the hero brand already renders one span per character
+   (HomeDashboard splits the string), so the same structure animates it.
+   The highlighter behind it moves irregularly, like a real marker's sweep.
+   Respect prefers-reduced-motion: the wave stills, the wordmark stays.
+2. *"The hero to be in FluOLinGo font and resized relative to the width of
+   the window"* — « Bienvenue sur FluOLinGo » in FluOLinGo Hand, sized with
+   a viewport-relative clamp, not a fixed step.
+3. *"Just 1/50 (nothing else)"* — the stop tile loses the word STOP and the
+   dot row; the fraction alone.
+4. *"Move the streak value and emoji up between History and User"* — the
+   🔥 count leaves the tile row and docks in the top bar between ⌛ and the
+   account button; the streak tile goes.
+5. *"Add a forward button (= Next stop)"* — a ⏭ key beside Continue ▶,
+   opening the stop AFTER the current one. Mind verify25's drawn-key rule:
+   draw it as an SVG key like its siblings, no typed transport character.
+6. *"Close the gap more"* — the space between the hero band and the key row
+   shrinks further (the hero's mb-5 and whatever the row adds above).
+
+**LOT B — prominent 2D/3D → FLUODUO-MAIN** (files: the Home map card /
+`HomeMap*`; the map area is integration's from #103): *"More prominent 2-D
+and 3-D view buttons"* — Dan mocked two big colour-filled buttons (cyan 2D,
+magenta 3D). Build to his mock, show before/after.
+
+**Untouched queues:** Peers keeps the DrillShell chrome fold + the Practice
+hub; Color review stays on concepts. Lot A lands as ONE PR to fluoduo-main;
+every visible change ships with its picture, per the rule.
+
+## 31 Aug evening — Dan cleared the decision queue
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan answered eight of the nine standing decisions in one sitting. The rulings,
+each with its consequence:
+
+1. **DrillShell chrome → PEERS' NEXT ASSIGNMENT.** Color review measured
+   270px of chrome before the first word of French on a lesson at 390×844
+   (site bar 48 + Memo band 55 + ✕/score bar 56 + gap 24 + tab rail 83), with
+   ~111px recoverable: on tabs with NO progress the 56px DrillShell bar holds
+   ✕, an empty `flex-1` spacer, and a score of 0. **The job:** fold the ✕ and
+   the score into the Memo band; render the 56px bar only where progress
+   exists; drop the 24px gap under it. **The trap:** DrillShell is shared by
+   28 surfaces where the bar is load-bearing — the no-progress path must be a
+   separate branch of the code, and every DrillShell surface gets a
+   before/after screenshot. Acceptance: the ✕ and score live in the band; no
+   56px bar on progress-less tabs; 28 screenshots clean.
+2. **Practice family opens a HUB, not the map — PEERS, second item.** Dan:
+   *"Practice flap cannot open to the map, instead it must open to a hub page
+   that contain links to all the practice elements possible, from which we
+   can go to the stops in the map (i.e. it should bypass the map)."* So
+   `/practice` becomes a FamilyHub (the /games · /skills pattern,
+   verify52's), FAMILIES.practice.href moves off /map, and verify19/24/52's
+   "Practice reaches the map" pins are REWRITTEN, not silenced. The ☰'s
+   Carte row STAYS — with Practice no longer opening the map it is the
+   dropdown's only map door, so the duplication that condemned it is gone.
+3. **Deploys go through fluoduo-main** (decision 9). To make that real this
+   session needs a **fine-grained PAT with write access to `dckg/fluo`
+   only**, stored as an Actions secret on frenchprof/fluoduo — Dan's to
+   mint. Until it exists, deploys stay Dan's three commands.
+4. **Revise keeps 🔄** — "They are different characters indeed." The 🔁 ban
+   stands; the case is closed.
+5. **Font branch: salvaged and approved for delete.** Its one commit (the
+   nine OTF weights + build script) is ALREADY on main as #95, so nothing is
+   lost. Deleting remote branches is blocked from this environment — Dan:
+   `git push origin --delete claude/complete-font-characters-b9oz2p`.
+6. **Home-rebuild branch (decision 3): already gone** — deleted in an
+   earlier sweep. Closed.
+7. **Cycling (decision 4): to be REDONE in FluOLinGo Hand.** The two 30 Aug
+   branches are superseded but stay until the redo lands. Unassigned.
+8. **French 4 (decision 5): rebased to PR #112** — the plan + the A2 CSV on
+   today's main, stale STATUS hunks dropped. **Awaits Dan's read**; CI green
+   is not the gate.
+9. **The lint six: reasoned disables** (this commit) — each of the five
+   hook-deps warnings and the SpecuLearn `<img>` carries the reason the
+   working behaviour wins, in the AGENTS.md-sanctioned pattern. `npx eslint`
+   on those five files: 0 problems.
+
+Still open: **decision 8 only** (the `rule:` namespace) — parked by design
+until the concepts finish.
+
 ## 31 Aug PM — THE NAMES ARE LAW (#109), and the tab strip is one row (#108)
 
 Sole editor of STATUS.md in this commit: fluoduo-main.
@@ -136,7 +233,7 @@ lane = report it in STATUS, don't do it.
 |---|---|---|
 | **fluoduo-main** | **Integration** — merges, branch hygiene, verify-number renumbers, cross-session stall watch, previews for Dan, deploy shepherding | The 31 Aug cleanup sweep; this roster |
 | **Color review** | **Concepts** — the tier pipeline (Tier 1 ×19, Tier 2 second half), keeper of the Stocktake ledger | **Gate OPEN** (#100 merged, decision 1 resolved): next Tier-1 batch and the Tier-3 eight |
-| **Pre-tests** | **Pre-test surfaces** | ✅ Unit-0 pages (#98) · ✅ popup collapse (#99) · **now: derived done-ness**; then concept drafting as second capacity |
+| **Pre-tests** | **Pre-test surfaces** | ✅ Unit-0 pages (#98) · ✅ popup collapse (#99) · ✅ derived done-ness (#104, open) · ✅ iComplete cut + SIO-010 tabs (#107, open) · **next: Tier-1 concept batches as second capacity** |
 | **Peers** | **Features** | 31 Aug PM: SIO-005/006 lessons, the colour ladder, band weight, English tabs, Words-under-Forms, the collapse rule — **LANDED — #105, `d85533b`**. Queue empty; next assignment is Dan's |
 | **Dan** | **Decisions + reads + deploys** | The queue below; every pedagogical claim is read before it ships |
 
@@ -236,20 +333,89 @@ lane = report it in STATUS, don't do it.
      becomes 21/50 and no badge is revoked. `doneSios` is read in 14 files,
      `economy.ts`'s four badges included, so this is not a one-file change.
      Follows 1, because the link list IS the definition.
-  **Two things #99 left on the board, neither mine to decide:**
-  · The STANDALONE iComplete drill is unreachable — nothing links
-    `/practice/complete-it/` since its door moved to Memo. #97 goes further
-    and deletes the registry row. Intended, but it is a door that closed.
-  · SIO-010's picker still shows a learner 7 of its 21 questions, on the one
-    stop whose whole point is that register changes with audience. The
-    questions are self-describing since #92, so a single run across all three
-    audiences is a small change whenever Dan wants it.
+  3. ✅ **DONE — #107. iComplete's orphan route cut; SIO-010 sits all three
+     audiences as tabs.** The two questions #99 left on the board, both put to
+     Dan on 31 Aug and both answered.
+     · *"iComplete is to be deleted, or at least converted to Intermediaire and
+       Difficile within Memo."* The conversion had already landed — the Memo
+       ladder's Moyen IS one-piece completion and Difficile IS two (#97) — so
+       what was left was 558 lines of route nothing linked to. Deleted. A
+       banked `/practice/complete-it/…` answer keeps its NAME and loses its
+       LINK (`RETIRED_ROUTES` in labels.ts): a row reading "(unlabelled)" would
+       erase a learner's July work, a row that linked would 404.
+     · *"B — but as a choice (3 side by side tabs to tap on to display the
+       different relevant content)."* SIO-010's picker scoped a run: pick one
+       audience, answer its seven, done — so a learner met `tu` or `vous` and
+       never the contrast, which is the entire stop. Now three tabs, all three
+       sat, all three MOUNTED so switching back to compare keeps the answers.
+       Two costs of that are paid rather than hoped away: the number keys are
+       live only in the visible tab, and each run scopes its own
+       scroll-into-view (three mounted runs made `document.querySelector` find
+       the wrong one).
+     Pinned by verify70 (28 checks, every one break-tested). Six suites were
+     REWRITTEN rather than silenced where the deleted drill was their witness:
+     verify-grading, verify20, verify28 and verify32 drop it from their tables;
+     verify39 moves its session-length witness to GramMarathon, which carries
+     the identical contract, so nothing is weakened; verify35 is rebuilt around
+     `possessifs.tsx`, the lesson the Memo ladder teaches.
+
+  **TWO ORPHANS THE iCOMPLETE RETIREMENT LEFT — Dan's call, not mine.** Both
+  went dark on main a week ago when #97/#99 took the activity's door away;
+  deleting the route made them visible, it did not create them. Neither is
+  deployed yet (`live` is behind).
+  · **SIO-022's ×6 possessives drill has no home.** Dan ruled GO on 24 Aug for
+    all six persons: the deck's 21 nouns × je/tu/il/nous/vous/ils = 126 typed
+    questions, because SIO-022's competence line promises exactly that and the
+    deck alone only ever asked the 1st person. That expansion lived ONLY in
+    CompleteItContent. `possessifs.tsx` teaches the paradigm and the Memo
+    ladder completes sentences from it, but neither asks for the deck's own
+    nouns across the persons. Re-homing it is a curriculum call.
+  · **The session receipt has no host.** `SessionReceipt.tsx` + `useRunXp` are
+    now referenced by nothing. Its only host was iComplete. Which run earns an
+    end card is a drill-UX call; verify32 prints the host count on every run so
+    it cannot go quiet again.
+
+  4. ✅ **DONE — the ateliers' popup, which escaped #99's collapse.** Dan,
+     31 Aug, looking at SIO-020: *"i would rather the SIO and the items
+     (however few) not be lumped into the same space anymore."*
+     `SioDetail` had four branches. #99 emptied three; the fourth fired only on
+     `sio.isProduction`, so the SIX ATELIER STOPS went on printing their whole
+     model dialogue — six to ten lines of French and English with play buttons
+     — above the link list, for eight days, through a review and a deploy.
+     **And the dialogue is that stop's pre-test answer key.** An atelier
+     pre-test asks "which French line says « The flag has two colours »?" and
+     offers three more lines OF THAT DIALOGUE as the wrong options
+     (`pretests/ateliers.gen.ts`) — all six were on screen, above the button
+     that starts it. A cold guess was impossible, so the one thing the pre-test
+     measures could not be measured.
+     The dialogue needed no new page: it is the atelier deck's Mémo,
+     « Le modèle », built from the same `ATELIER_DIALOGUES` so it cannot drift
+     — Memo → 📐 Forms, with « Tout écouter ». `SioDetail` is now the statement
+     and nothing else (201 → 62 lines); `DialoguePlayer.tsx` is deleted rather
+     than left unmounted, its job done better by the Mémo. Every atelier
+     pre-test already opened its own page and still does.
+     **verify66 is EXTENDED rather than joined by a new suite, because verify66
+     is what let this through**: its check 4 scanned `UnitSection` and
+     `Unit0Panel` — the two files the collapse's diff touched — and never
+     opened `SioDetail`, the body those two MOUNT. It now scans the render, not
+     the diff. Break-tested by restoring the original branch verbatim: four
+     assertions fire.
+     **And the model moved to the FRONT of the Memo, same PR** — Dan, minutes
+     later: *"Atelier's Memo is to open on the range of sentences and
+     vocabulary one is expected to use or understand. Simple as that."* Taking
+     the dialogue out of the popup left it correct but far: two taps and a
+     level chooser away. An atelier's lesson now opens on **Forms**, which is
+     exactly that pair — « Le modèle » in full with « Tout écouter », and every
+     word under it (Words went under Forms on 31 Aug). Chosen by
+     `sio.isProduction`, never by a deck-id prefix, so a seventh atelier is
+     covered. Ordinary lessons still open on Pract. — shown side by side.
+     `verify71`, 13 checks, all break-tested.
 
   **After those:** Tier-1 concept batches in parallel with Color review, same
   read-before-ship rule.
-- **Peers — features.** Queue empty since Sorting was cut (#93). Next
-  assignment is Dan's; until then, nothing — not audits, not others'
-  branches.
+- **Peers — features.** TWO ASSIGNMENTS from Dan's evening rulings (31 Aug):
+  the DrillShell chrome fold and the Practice hub — full specs in the
+  "Dan cleared the decision queue" section at the top of this file.
 - **Peers — features.** 31 Aug PM: two Tier 2 stops given lesson files
   (SIO-005 Colours, SIO-006 Some nouns), Dan's colour ladder, the SemiBold
   band, the short English tabs, Words folded under Forms, and the collapse
@@ -326,14 +492,83 @@ Dan assigns. Listed so the queue is not re-derived by whoever picks it up.
 | # | Decision | Blocks |
 |---|---|---|
 | ~~1~~ | ~~Salutations concept read — does the Tier-3 shape hold?~~ **RESOLVED 31 Aug — it holds; #100 merged** | ~~14 Tier-3 + gating 19 Tier-1 drafts~~ nothing — both lanes open |
-| 2 | FluOlinGo Hand font: (a) want it? (b) wire in same PR or assets-only? | font branch |
-| 3 | Home-rebuild branch: confirm delete (stale draft of shipped #40; main's StopSheet newer) | one branch |
-| 4 | Cycling pair: keep either / both / park both under work/ | two branches |
-| 5 | French 4 scaling docs: merge after your read? | one branch |
-| 6 | Colours + Some nouns: native-lesson file, or tier done at 13? | Tier 2 close-out |
-| 7 | Empty shortcut row under MENU: fill or delete? | one surface |
-| 8 | `rule:` namespace (894-item tagging): go / stay parked? | transfer evidence |
-| 9 | Deploy mirror Action (needs one fine-grained PAT from you) | ends manual deploys |
+| ~~2~~ | ~~Font~~ **RESOLVED**: wired via #95 + #105; branch approved-for-delete (evening ruling 5) | — |
+| ~~3~~ | ~~Home-rebuild delete~~ **CLOSED**: branch already gone (evening ruling 6) | — |
+| ~~4~~ | ~~Cycling pair~~ **RULED**: redo in FluOLinGo Hand; old pair superseded, kept until redo lands (evening ruling 7) | — |
+| 5 | French 4 scaling docs: **PR #112 open — read pending** (evening ruling 8) | one PR |
+| ~~6~~ | ~~Colours + Some nouns~~ **RESOLVED by #105**: both have lesson files; Tier 2 closes at 15 | — |
+| ~~7~~ | ~~Shortcut row~~ **RULED**: Carte STAYS (sole map door once Practice opens its hub — evening ruling 2) | — |
+| 8 | `rule:` namespace (894-item tagging): parked by design until the concepts finish | transfer evidence |
+| 9 | **Deploys through fluoduo-main** (ruled) — needs the fine-grained PAT (write to dckg/fluo) as an Actions secret | ends manual deploys |
+
+## 31 Aug PM — a stop is done when it is done (pre-tests lane)
+
+Dan: *"I think it should only be marked done if it is really FULLY done. so we
+should remove it."* The last of the three the pre-tests lane took on 31 Aug —
+Unit-0 pages (#98), the popup collapse (#99), and now this.
+
+**`doneSios` was self-declared.** A learner could open a stop, tap Mark as done
+having answered nothing, and it counted: the map circle filled, the n/50
+counter moved, Continuer advanced past it, the teacher's heat strip showed it,
+and four badges in `economy.ts` read the length of that list. The sharpest case
+was the PRE-TEST page, which offered to mark the stop done the moment the cold
+guess was over.
+
+**The rule (`lib/doneness.ts`).** A stop completes when every non-game activity
+it OFFERS has been attempted. The list comes from `deckActivityTabs` — the same
+list the popup draws as its links — so what a stop shows you and what it asks
+of you are one list and cannot disagree. That is also what makes it survive a
+cull: Sorting (#93) and iComplete (#97) left the requirement by leaving the
+list, with no edit here.
+
+**Dan chose the non-game reading**, shown both side by side. Every link put 6-7
+activities between a learner and a tick at most stops, VocabulaRain and
+LexicaLater included; excluding the games family leaves 4-6, still every
+teaching surface. Excluded BY FAMILY, so a game added tomorrow is an extra
+without anyone remembering to exempt it.
+
+It fires from `noteAttempt` — the one write path a graded answer already takes
+— and NOT from `isSioDone`, which runs inside render loops in thirteen files.
+Completion still goes through `markSioDone`, so XP, gems, the streak and the
+badges are unchanged, mastery weighting included. **Grandfathered** (Dan's
+call): an already-done stop is never re-examined, so nothing can un-tick.
+
+Driven end to end on SIO-001: four of five activities leaves the stop
+untouched; the fifth, a real pre-test answer, yields `done: true, xp: 300,
+gems: 5`.
+
+### Two faults building it found, both pre-existing
+
+**Unit-0 pre-tests never reached the activity ledger.** `pretestRecord` writes
+the gap report; the LEDGER is written by `recordResponse`, which Units 1-4
+reach through the runner and Unit 0 did not. So the popup's Pre-Test ✓ never
+lit on a Unit-0 stop, and under this rule those ten stops could never have
+completed at all. Fixed by calling the runner's own `recordPretestEvidence` —
+same helper, same `xpPaid: 0`, so "remember it, but don't score it" still holds.
+
+**An activity id must END in the stop's DECK id.** The ledger resolves a stop by
+taking the tail after the last colon and asking `sioForDeck`; a SIO id there
+resolves to nothing and the write silently no-ops — which is indistinguishable
+from success at the call site. Traced rather than assumed.
+
+`verify69`: 15 checks, every one break-tested. One was vacuous on the first
+pass for the FOURTH time today — `"maybeCompleteStop" in ledger` was satisfied
+by the helper's own definition, so deleting the call stayed green. It now
+asserts the call inside `noteAttempt`'s body.
+
+### For the integration lane — the fifth collision, and how it landed
+
+`verify66-two-tier2-stops.py` sat on `claude/peers-vd2h6h` against
+`verify66-popup-collapse.py`, on main since #99. The peers renumbered it to
+**68** and it merged that way in #105 — which collided with THIS branch's
+`verify68-derived-doneness.py`, still open as #104. Two files sharing a leading
+number is exactly what `verify-wiring.py` fails on, so #104 would have broken
+main the moment it merged.
+
+Renumbered here: **verify68-derived-doneness → verify69**, workflow line moved
+with it. 67 is taken by `verify67-concept-length.py` on the colour-review
+branch (#100), so 69 is the first free number across every remote branch, not
+just main.
 
 ## 31 Aug PM — Dan read salutations; the difficulty ladder is his now
 

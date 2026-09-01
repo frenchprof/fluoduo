@@ -87,9 +87,27 @@ rec = read("src/components/SessionReceipt.tsx")
 ok(bool(rec), "the session receipt exists", "SessionReceipt.tsx is gone")
 ok("useRunXp" in rec, "drills can report exactly what a run paid",
    "useRunXp is gone — receipts would have to re-derive XP and get it wrong")
-ok("SessionReceipt" in read("src/app/practice/complete-it/[collectionId]/CompleteItContent.tsx"),
-   "at least one drill ends with the receipt",
-   "no drill uses the receipt — it would be dead code")
+# THE RECEIPT HAS NO HOST, and that is recorded here rather than hidden.
+#
+# Its only host was iComplete, whose route was deleted on 31 Aug (Dan: "iComplete
+# is to be deleted"). But it had already gone dark a week earlier: #99 took away
+# iComplete's door and #97 retired the activity, so no learner has been able to
+# reach the receipt since — the deletion made an existing orphan visible, it did
+# not create one. Re-hosting it is a drill-UX call (which run earns an end
+# card?), not a side effect of cutting a route, so it is Dan's, and it is
+# reported to him rather than guessed at here.
+#
+# What survives as a real check is the half that a re-host depends on: the
+# component and `useRunXp` must both still be here and still agree, or whoever
+# wires it next has to re-derive XP by hand and will get it wrong — which is the
+# exact fault useRunXp was written to end.
+hosts = []
+for _root, _dirs, _files in os.walk("src"):
+    for _f in _files:
+        if _f.endswith((".ts", ".tsx")) and not _f.startswith("SessionReceipt"):
+            if "SessionReceipt" in read(os.path.join(_root, _f)):
+                hosts.append(os.path.join(_root, _f).replace(os.sep, "/"))
+print(f"  note  the session receipt has {len(hosts)} host(s): {hosts or 'none since iComplete was cut, 31 Aug'}")
 
 # ── 5 · the weekly race ───────────────────────────────────────────────────
 ok("weekXp" in prog and "weekKey" in prog, "progress carries a weekly bucket",
@@ -125,7 +143,11 @@ ok("--fluo-danger" not in home,
 # draft), so the check is now on the tokens themselves rather than on the
 # shape that used to carry them: the streak keeps its own role ink, and the
 # three keys wear the roles that mean what they do.
-ok("dopa-streak-ink" in home,
+# The streak moved to the TOP BAR on 1 Sep (Dan: "move the streak value and
+# emoji up between History and User"), so its role colour moved with it. The
+# claim is unchanged — the streak wears its own dopamine ink and not body text
+# — only its address is.
+ok("dopa-streak-ink" in read("src/components/SiteTopBar.tsx"),
    "the streak still takes its own role ink",
    "the streak lost its role colour")
 ok(all(t in home for t in ("--dopa-win", "--dopa-focus", "--dopa-reward")),

@@ -353,6 +353,118 @@ body {
   .fluo-byline.is-play path { animation: none; stroke-dashoffset: 0; }
 }
 
+/* ── THE KALLANG WAVE — the top bar's wordmark ────────────────────────────
+   Dan, 1 Sep: "the top return link to be in the same FluOLinGo font but with
+   the KALLANG wave effect and irregular highlighter movement." The Kallang
+   Wave is the crowd wave at Singapore's National Stadium: a crest that TRAVELS
+   through the stand, each person rising as the one before them sits.
+
+   So the animation is per LETTER with a stagger, never on the word: at any
+   instant the nine letters sit at nine different points of one arc, which is
+   what makes a wave a wave rather than a bounce. The stagger is set inline
+   (i * 0.09s) because it is data — the letter's position in the queue.
+
+   It runs FOREVER, unlike the hero's, which plays once on arrival. A top bar
+   is not arrived at; it is simply always there, and a one-shot on a bar the
+   learner never re-mounts would play once a session and never again.
+
+   Three things this must not do, all of them measured rather than assumed:
+   · shift layout — the letters translate, which does not reflow, and the wave
+     is contained by the wordmark's own line-height;
+   · cost a repaint storm — transform and opacity only, no width/left;
+   · run for someone who asked it not to — see the reduced-motion block.
+*/
+.fluo-wave {
+  position: relative;
+  display: inline-block;
+  /* THE CREST IS NOT CLIPPED, and that was worth checking rather than
+     assuming. The wordmark link carries `truncate` (overflow:hidden) because
+     it is the bar's yield slot — at 320px it must ellipsize rather than shove
+     the ☰ off the screen (verify31) — and the crest rises 4.7px while the
+     link box leaves 2px above the letters. But the link is an INLINE box, and
+     overflow has no effect on one; frozen at the crest on a 390px phone the
+     wordmark renders whole. No padding is bought here for a clip that does
+     not happen. If this link is ever made block or flex, that changes. */
+  padding: 0 0.18em;
+  isolation: isolate;
+  font-family: var(--font-fluohand-stack);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.fluo-wave-letter {
+  display: inline-block;
+  will-change: transform;
+  animation: fluo-kallang 2.4s ease-in-out infinite;
+}
+@keyframes fluo-kallang {
+  /* WHY THE ARC IS SHORT. A letter is up for 0.46s of the 2.4s cycle (19%),
+     and the wave takes 0.72s to cross the word (9 letters x 0.09s). Arc SHORTER
+     than crossing time is what makes the crest a crest: about four letters are
+     up at any instant and five are down, so the shape moves through the word.
+     The first draft gave each letter 0.82s — longer than the crossing — and all
+     nine rose together, which is a bounce wearing a stagger. */
+  0%, 19%, 100% { transform: translateY(0) scaleY(1); }
+  7%            { transform: translateY(-0.26em) scaleY(1.06); }
+  14%           { transform: translateY(0.04em) scaleY(0.99); }
+}
+
+/* THE HIGHLIGHTER, MOVING IRREGULARLY. The hero's ink is a static blob once
+   drawn. Dan asked this one to move — so it drifts, tilts and breathes on a
+   7.3s cycle whose beats are deliberately NOT evenly spaced (11%, 29%, 46%,
+   68%, 83%). Round numbers are what make a loop legible as a loop; uneven ones
+   read as a hand that cannot hold quite still.
+
+   7.3s against the wave's 2.4s is also deliberate: 7.3 is not a multiple of
+   2.4, so the two never re-sync and the pair never repeats a frame exactly. */
+.fluo-wave::before {
+  content: "";
+  position: absolute;
+  inset: -0.1em -0.22em -0.16em -0.18em;
+  z-index: -1;
+  background: linear-gradient(
+    100deg,
+    rgba(199, 236, 47, 0.95) 0%,
+    rgba(212, 242, 76, 0.9) 12%,
+    rgba(190, 230, 40, 0.85) 34%,
+    rgba(212, 242, 76, 0.92) 58%,
+    rgba(199, 236, 47, 0.8) 78%,
+    rgba(212, 242, 76, 0.7) 100%
+  );
+  border-radius: 0.6em 0.3em 0.7em 0.25em / 0.9em 0.5em 0.8em 0.6em;
+  mix-blend-mode: multiply;
+  will-change: transform;
+  animation: fluo-wave-ink 7.3s ease-in-out infinite;
+}
+@keyframes fluo-wave-ink {
+  0%   { transform: rotate(-1.3deg) translate(0, 0) scaleX(1); }
+  11%  { transform: rotate(-0.4deg) translate(0.06em, -0.02em) scaleX(1.03); }
+  29%  { transform: rotate(-1.9deg) translate(-0.05em, 0.03em) scaleX(0.985); }
+  46%  { transform: rotate(-0.9deg) translate(0.03em, 0.02em) scaleX(1.02); }
+  68%  { transform: rotate(-2.1deg) translate(-0.04em, -0.03em) scaleX(0.99); }
+  83%  { transform: rotate(-0.7deg) translate(0.05em, 0.01em) scaleX(1.015); }
+  100% { transform: rotate(-1.3deg) translate(0, 0) scaleX(1); }
+}
+
+/* DAN CHOSE A — "Rolling" — on 1 Sep, from three built and shown on one
+   real-time axis: "A still looks like it is best." The other two are DELETED
+   rather than left behind a class nobody applies, which is dead CSS wearing a
+   comment. Recorded here so the choice is not re-opened by someone who reads
+   only the first draft's note that three existed:
+     · B "Swell" — half the height, 3.6s. Honestly compared, the crest barely
+       registered at 20px. Weak, and reported as weak rather than kept to pad
+       the list.
+     · C "Comes round" — 6s with 4.8s of stillness. Quietest in peripheral
+       vision, which is a real argument for a bar on 28 surfaces, and the one
+       I recommended. Dan wanted the stadium.
+*/
+
+@media (prefers-reduced-motion: reduce) {
+  /* The wave stills and the wordmark stays — Dan's own condition. Nothing here
+     hides the brand or its ink; only the motion stops. */
+  .fluo-wave-letter { animation: none; }
+  .fluo-wave::before { animation: none; transform: rotate(-1.3deg); }
+}
+
 /* Six rotating accent hues for item cards (paper-tinted). */
 .fluo-h-0 { --fluo-card-accent: #e0567f; --fluo-card-tint: #fbe3ec; }
 .fluo-h-1 { --fluo-card-accent: #2bb6c2; --fluo-card-tint: #def3f5; }

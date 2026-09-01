@@ -20,10 +20,12 @@
  *   · the pre-test is a COLD guess — no model, no lesson, before the attempt;
  *   · a miss is remembered and never scored (Dan, 2026-08-27: "remember it,
  *     but don't score it") — recordPretestAnswer, never recordItemResult;
- *   · SIO-010 asks the audience first, because "how do you ask their name" has
- *     no answer until you know whether you face a student, a client or a group.
+ *   · SIO-010 settles the audience first, because "how do you ask their name"
+ *     has no answer until you know whether you face a student, a client or a
+ *     group. Since 31 Aug that is a TAB rather than a one-shot picker, and all
+ *     three are sat — see Sio010Pretest.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import type { Sio } from "@/content/sios";
@@ -35,6 +37,7 @@ import {
   type Unit0Question,
 } from "@/content/sios/unit0-questions";
 import { recordPretestAnswer } from "@/lib/pretestRecord";
+import { recordPretestEvidence } from "@/lib/pretests/runner";
 import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import { shuffle } from "@/lib/shuffle";
 
@@ -47,6 +50,8 @@ export function Unit0Questions({
   sio,
   bank,
   ordered = false,
+  keys = true,
+  onAnswered,
 }: {
   sio: Sio;
   bank?: Unit0Question[];
@@ -54,6 +59,16 @@ export function Unit0Questions({
    *  seven moves of the dialogue, in the order they are spoken). Options are
    *  still shuffled. */
   ordered?: boolean;
+  /**
+   * Whether the 1-N number keys answer here. SIO-010 mounts all three
+   * situations at once and hides two of them, so without this every keypress
+   * would be heard three times and answer a question the learner cannot see.
+   */
+  keys?: boolean;
+  /** How many are answered so far — SIO-010's tabs wear a tick when a
+   *  situation is finished, which is the only way to see which of the three
+   *  are done while two of them are hidden. */
+  onAnswered?: (n: number) => void;
 }) {
   // Fresh random question AND option order on every popup open (this
   // component mounts per open) — never the authored order. Activity modes
@@ -64,6 +79,11 @@ export function Unit0Questions({
   // the case in Unit 0").
   const [questions, setQuestions] = useState<Unit0Question[]>([]);
   const [picked, setPicked] = useState<Record<number, string>>({});
+  // Scoped, not `document.querySelector`: SIO-010 keeps three of these mounted
+  // at once, so a global lookup for the active question would find the FIRST
+  // situation's while the learner is answering the third's, and scroll the page
+  // away from what they just tapped.
+  const box = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const base = bank ?? UNIT0_QUESTIONS[sio.id] ?? [];
     // Shuffled AFTER mount on purpose: a pre-test page is statically exported,
@@ -92,6 +112,19 @@ export function Unit0Questions({
     // Not recordItemResult, by the same rule as the other two engines: a
     // pre-lesson miss is remembered, never scored — no XP, no accuracy, no
     // review queue (Dan, 2026-08-27: "remember it, but don't score it").
+    // AND the response store, which is where the activity ledger is written
+    // (recordResponse calls noteAttempt before its uid check). Unit 0 wrote the
+    // gap record and nothing else, so its pre-tests were invisible to the
+    // ledger: the popup's Pre-Test ✓ never lit on a Unit-0 stop, and under the
+    // derived-done rule those ten stops could never have completed at all.
+    // Units 1-4 have always done this through the runner; `xpPaid: 0` is what
+    // keeps Dan's "remember it, but don't score it" true either way.
+    // The activity id must END in the stop's DECK id: activityLedger resolves
+    // the stop by taking the tail after the last colon and asking sioForDeck,
+    // which maps deck ids — a SIO id there resolves to nothing and the ledger
+    // write silently no-ops. Traced rather than assumed, because a no-op here
+    // looks identical to success from the call site.
+    recordPretestEvidence(sio.collectionId ?? sio.id, unit0QuestionId(q), o.ok, o.v);
     recordPretestAnswer({
       pretestId: `unit0:${sio.id}`,
       sioId: sio.id,
@@ -103,22 +136,24 @@ export function Unit0Questions({
         : q.options.find((x) => x.ok)?.v ?? "",
       stem: (q.stem ?? q.title ?? q.emoji ?? "").replace(/\s+/g, " ").trim(),
     });
+    const answered = Object.keys(picked).length + 1;
+    onAnswered?.(answered);
     // All answered → post-pretest content (lesson button) may appear.
-    if (Object.keys(picked).length + 1 === questions.length && questions.length > 0) {
+    if (answered === questions.length && questions.length > 0) {
       window.dispatchEvent(new CustomEvent("fluolingo:pretest-complete", { detail: { id: sio.id } }));
     }
   }
 
   const scrollToActive = () => {
     window.setTimeout(() => {
-      document.querySelector("[data-u0q-active]")?.scrollIntoView({ block: "center", behavior: "smooth" });
+      box.current?.querySelector("[data-u0q-active]")?.scrollIntoView({ block: "center", behavior: "smooth" });
     }, 60);
   };
   // A number key ANSWERS — which is wrong for a multi-answer question, where a
   // tap only toggles one of several picks. Those are mouse/touch only.
   useChoiceKeys({
-    count: activeIdx >= 0 && !questions[activeIdx]?.multi ? questions[activeIdx]?.options.length ?? 0 : 0,
-    enabled: activeIdx >= 0 && !questions[activeIdx]?.multi,
+    count: keys && activeIdx >= 0 && !questions[activeIdx]?.multi ? questions[activeIdx]?.options.length ?? 0 : 0,
+    enabled: keys && activeIdx >= 0 && !questions[activeIdx]?.multi,
     onPick: (k) => {
       const q = questions[activeIdx];
       if (q && q.options[k]) {
@@ -130,7 +165,7 @@ export function Unit0Questions({
   });
 
   return (
-    <div className="space-y-3">
+    <div ref={box} className="space-y-3">
       {questions.map((q, i) => (
         <div key={i} {...(i === activeIdx ? { "data-u0q-active": true } : {})}>
           <QuizQuestion q={q} picked={picked[i] ?? null} active={i === activeIdx} onPick={(o) => doPick(i, o)} />
@@ -141,34 +176,88 @@ export function Unit0Questions({
 }
 
 /**
- * SIO-010's pretest — pick the audience, then sit that audience's seven lines.
- * The situation is NOT decoration: "how do you ask for their name" has no
- * answer until you know whether you're facing one student, a client or a
- * group, so a single shuffled pool of all 21 would be unanswerable. Each run
- * remounts (keyed on the situation), so switching audiences starts clean.
+ * SIO-010's pretest — three audiences, three tabs, all three sat.
+ *
+ * Dan, 2026-08-31: *"B - but as a choice (3 side by side tabs to tap on to
+ * display the different relevant content)"* — B being "run all three" against
+ * A, "leave it at one".
+ *
+ * WHAT THIS FIXES. The picker before it scoped a run: tap 🎓 A student, answer
+ * seven, done. A learner met `tu` and never `vous`, or the reverse — and this
+ * stop exists precisely to teach the difference between them. Seven questions
+ * of a twenty-one question contrast is not a third of the lesson, it is none of
+ * it, because the contrast IS the lesson.
+ *
+ * WHY THREE RUNS RATHER THAN ONE POOL OF 21. "How do you ask their name" has no
+ * answer until you know who you are facing, so the audience has to be settled
+ * before the question can be. A tab settles it and keeps it settled while the
+ * seven are answered — which a shuffled pool cannot do at all, and which a
+ * one-shot picker did only for whichever audience the learner happened to pick.
+ *
+ * ALL THREE STAY MOUNTED, hidden rather than unmounted. Switching tabs must not
+ * throw away answers: someone who does the student's seven, taps Client, then
+ * taps back to compare should find their seven still there — comparing is the
+ * point. Unmounting on switch (which the keyed remount used to do deliberately,
+ * to start a fresh run) would silently wipe them. Two consequences are handled
+ * rather than hoped away: the number keys are disabled everywhere but the
+ * visible tab, and each run scopes its own scroll-into-view.
  */
 export function Sio010Pretest({ sio }: { sio: Sio }) {
-  const [key, setKey] = useState<string | null>(null);
-  const sit = SIO010_SITUATIONS.find((s) => s.key === key);
+  const [key, setKey] = useState(SIO010_SITUATIONS[0].key);
+  // Answered-so-far per situation. A tick on a tab is the ONLY way to see that
+  // a hidden situation is finished — and a progress signal is the one kind of
+  // text Dan's litmus test keeps ("progress counters are useful learner
+  // feedback — keep").
+  const [done, setDone] = useState<Record<string, number>>({});
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap gap-2">
-        {SIO010_SITUATIONS.map((s) => (
-          <button
-            key={s.key}
-            type="button"
-            onClick={() => setKey(s.key)}
-            className={`rounded-full border-2 px-3 py-1.5 text-xs font-bold transition ${
-              s.key === key
-                ? "border-[color:var(--fluo-ink)] bg-[color:var(--fluo-ink)] text-white"
-                : "border-[color:var(--fluo-ink)] bg-[var(--fluo-card)] text-[color:var(--fluo-ink)] hover:bg-[var(--fluo-card-tint)]"
-            }`}
-          >
-            {s.label}
-          </button>
-        ))}
+      <div role="tablist" aria-label="Situation" className="grid grid-cols-3 gap-1.5">
+        {SIO010_SITUATIONS.map((s) => {
+          const on = s.key === key;
+          const finished = (done[s.key] ?? 0) >= s.questions.length;
+          return (
+            <button
+              key={s.key}
+              type="button"
+              role="tab"
+              aria-selected={on}
+              aria-label={s.label}
+              onClick={() => setKey(s.key)}
+              className={`rounded-xl border-2 px-2 py-2 text-center transition ${
+                on
+                  ? "border-[color:var(--fluo-ink)] bg-[color:var(--fluo-ink)] text-white"
+                  : "border-[color:var(--fluo-line)] bg-[var(--fluo-card)] text-[color:var(--fluo-ink)] hover:bg-[var(--fluo-card-tint)]"
+              }`}
+            >
+              <span className="block text-sm font-black leading-tight">
+                {s.who}
+                {finished && <span className="ml-1" aria-hidden>✓</span>}
+              </span>
+              {/* The register, not a subtitle: tu-or-vous decides every answer
+                  from Q2 on, so it stays on screen while they are answered. On
+                  the unselected tabs it is dimmed rather than dropped — three
+                  tabs that differ only by a noun would not say what the choice
+                  is between. */}
+              <span className={`block text-[0.6rem] font-bold leading-tight ${on ? "opacity-80" : "text-[color:var(--fluo-ink-soft)]"}`}>
+                {s.register}
+              </span>
+            </button>
+          );
+        })}
       </div>
-      {sit && <Unit0Questions key={sit.key} sio={sio} bank={sit.questions} ordered />}
+      {/* Hidden, not unmounted — the class as well as the attribute, so a future
+          display utility on this wrapper cannot un-hide it. */}
+      {SIO010_SITUATIONS.map((s) => (
+        <div key={s.key} hidden={s.key !== key} className={s.key === key ? undefined : "hidden"}>
+          <Unit0Questions
+            sio={sio}
+            bank={s.questions}
+            ordered
+            keys={s.key === key}
+            onAnswered={(n) => setDone((prev) => ({ ...prev, [s.key]: n }))}
+          />
+        </div>
+      ))}
     </div>
   );
 }

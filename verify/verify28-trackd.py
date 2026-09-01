@@ -224,8 +224,11 @@ check("why?: ReactNode" in shell and "WHY" in shell and "drill-why" in shell and
 check("absolute inset-x-0 bottom-0" in shell, "the tray still overlays", "the tray no longer overlays")
 
 # ── 5 · every drill wires it ──────────────────────────────────────────────
+# iComplete left this table on 31 Aug with its route (Dan: "iComplete is to be
+# deleted"); the exercise is the Memo ladder's Moyen and Difficile now, and the
+# lesson pager below is the surface that carries it — so the ladder contract is
+# still asserted for it, under a different name.
 DRILLS = {
-    "iComplete": "src/app/practice/complete-it/[collectionId]/CompleteItContent.tsx",
     "GramMarathon": "src/app/practice/grammarathon/[collectionId]/GramMarathonContent.tsx",
     "EtuDice": "src/app/practice/dice/[collectionId]/PracticeContent.tsx",
     "SpecuLearn": "src/app/practice/speculearn/[collectionId]/SpecuLearnContent.tsx",
@@ -238,7 +241,7 @@ for name, p in DRILLS.items():
     check("useHelpLadder(" in src and "hintsFor(" in src, f"{name} builds its ladder from the item", f"{name} ({p}) does not use useHelpLadder/hintsFor")
     check(re.search(r"help=\{", src) is not None, f"{name} hands help= to the shell", f"{name} does not pass help= to DrillShell")
     check(".attempt(" in src, f"{name} grades through ladder.attempt", f"{name} does not call ladder.attempt")
-    check(".skip()" in src or "retryAfterReveal" in src or name in ("iComplete", "GramMarathon"),
+    check(".skip()" in src or "retryAfterReveal" in src or name == "GramMarathon",
           f"{name} closes the item (skip) or retypes after reveal", f"{name} never closes the ladder")
 eco = CODE["src/app/practice/ecoutexte/EcouTexte.tsx"]
 check("wasRevealed ? { revealed: true }" in eco and "queueForReview(queued)" in eco, "ÉcouTexte: a check after reveal is assisted + queued", "ÉcouTexte does not tag/queue post-reveal checks")

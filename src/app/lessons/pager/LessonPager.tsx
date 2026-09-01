@@ -450,6 +450,24 @@ export default function LessonPager({
           concept={lesson?.concept}
           memo={lesson?.memo ?? (collectionId ? memoForDeck(collectionId) : undefined)}
           exercise={chooser}
+          // AN ATELIER OPENS ON FORMS (Dan, 2026-08-31: "Atelier's Memo is to
+          // open on the range of sentences and vocabulary one is expected to
+          // use or understand. Simple as that"). Forms is exactly that pair —
+          // « Le modèle », the whole model dialogue with « Tout écouter », and
+          // under it every word in the lesson.
+          //
+          // `sio.isProduction`, not a check on the deck id's shape: production
+          // is the property that makes the model the point — the stop's task is
+          // to PERFORM the exchange in class — and a seventh atelier added
+          // later is covered without anyone remembering to name it here.
+          //
+          // It also stops a question a learner cannot yet answer. « Choose your
+          // level » asks how hard they want material they have not seen; every
+          // other stop has met its words through a pre-test, a deck or a rule
+          // card first, and until 31 Aug an atelier met them in the popup —
+          // which is exactly where they must NOT be, being that stop's pre-test
+          // answer key (see SioDetail).
+          open={sio?.isProduction ? "formes" : undefined}
         />
       ) : card === "ex" && ex ? (
         <ExerciseCard ex={ex} selected={selected} value={value} picks={picks} result={result} struck={struckAll}
