@@ -29,17 +29,30 @@ export const atelierPaysLesson: NativeLesson = {
   slug: "atelier-pays",
 
   // TIER 3 · drafted 1 Sep in docs/ATELIER_CONCEPTS_DRAFT.md against this
-  // stop's own dialogue, before this file existed; pasted in unchanged once
-  // it landed. Typechecked and driven in a browser as a draft, and again
-  // here. No French below is new — every line is a turn of the model.
+  // stop's own dialogue, before this file existed. No French below is new.
+  //
+  // THE CONTRAST WAS FALSE AS DRAFTED, AND DAN CAUGHT IT. It read: "English
+  // presents almost anything with the same handful of words — this is, it's,
+  // there are — and they trade places freely." They do not. English has the
+  // same three-way system French does: presentational (here is / this is),
+  // identificational (it's), existential (there are), and « It's an Asian
+  // country » cannot become « There is an Asian country ». The claim invented
+  // an English weakness to make French look principled.
+  //
+  // The true difference is narrower and still worth the concept: English varies
+  // the SUBJECT and keeps one verb — this is, it is, there are — while French
+  // changes the construction, including the verb (être → avoir) and once
+  // dispensing with one (voici). A learner cannot derive one from another by
+  // swapping a pronoun, which is why all three have to be learned whole.
   concept: {
     subtitle: "Why presenting a country takes three openers, not one",
     contrast: (
       <>
-        English presents almost anything with the same handful of words &mdash;{" "}
-        <i>this is</i>, <i>it&rsquo;s</i>, <i>there are</i>{" "}
-        &mdash; and they trade places
-        freely. This model uses three in its first three lines and never swaps them.
+        English changes only the subject and keeps the verb &mdash; <i>this</i> is,{" "}
+        <i>it</i> is, <i>there</i> are. French changes the whole construction:{" "}
+        <i lang="fr">voici</i> has no verb at all, <i lang="fr">c&rsquo;est</i> is{" "}
+        <i lang="fr">être</i>, <i lang="fr">il y a</i> is <i lang="fr">avoir</i>. You
+        cannot get from one to the next by swapping a word.
       </>
     ),
     question: (
@@ -49,92 +62,97 @@ export const atelierPaysLesson: NativeLesson = {
         <i lang="fr">c&rsquo;est</i> for all of them?
       </>
     ),
+    // ONE LINE PER OPENER (Dan, 2 Sep: "can be presented a new line for a new
+    // sentence"). The three jobs are three things, so they are three lines.
+    //
+    // AND THE ARTICLE CLAIM IS GONE — it was wrong. This slot used to end "the
+    // article is not decoration on the opener; it is the opener's job showing
+    // through", and the remember line said "the opener decides the article, not
+    // the noun." Dan pushed back on the check that rested on it, and he is
+    // right: « Voici un pays » and « C'est le Japon » are both perfectly good
+    // French. The article follows the NOUN and how it is being referred to —
+    // « le Japon » takes one because a named country does (stop 15) — not the
+    // opener. The three-way job distinction survives on its own; the article
+    // rule never existed.
     answer: (
-      <>
-        Because they do three different jobs. <i lang="fr">Voici</i> <b>points</b>{" "}
-        &mdash;
-        you are showing the thing itself, so it keeps its own article:{" "}
-        <i lang="fr">le Japon</i>. <i lang="fr">C&rsquo;est</i> <b>classifies</b>{" "}
-        &mdash;
-        it puts the thing in a category, so the category is indefinite:{" "}
-        <i lang="fr">un pays</i>. <i lang="fr">Il y a</i> <b>inventories</b>{" "}
-        &mdash; it
-        says what is present, so what it counts is plural and indefinite:{" "}
-        <i lang="fr">des Japonais</i>. The article is not decoration on the opener; it
-        is the opener&rsquo;s job showing through.
-      </>
+      <div className="space-y-1.5">
+        <p>They do three different jobs, and only one of them is showing.</p>
+        <p>
+          <i lang="fr">Voici</i>{" "}
+          &mdash; you <b>show</b> it:{" "}
+          <i lang="fr">Voici le Japon.</i>
+        </p>
+        <p>
+          <i lang="fr">C&rsquo;est</i>{" "}
+          &mdash; you say <b>what kind</b> it is:{" "}
+          <i lang="fr">C&rsquo;est un pays asiatique.</i>
+        </p>
+        <p>
+          <i lang="fr">Il y a</i>{" "}
+          &mdash; you say <b>what is there</b>:{" "}
+          <i lang="fr">Ici, il y a des Japonais.</i>
+        </p>
+        <p>
+          Reach for <i lang="fr">c&rsquo;est</i> every time and two of the three
+          sentences say something you did not mean.
+        </p>
+      </div>
     ),
-    pitfallHeads: ["what one opener for everything gives", "what the job asks for"],
-    pitfall: [
-      {
-        label: <>showing the country</>,
-        wrong: <i lang="fr">C&rsquo;est le Japon</i>,
-        right: (
-          <>
-            <i lang="fr">Voici le Japon</i>{" "}
-            &mdash; you are pointing at it, not sorting it
-          </>
-        ),
-      },
-      {
-        label: <>saying what kind</>,
-        wrong: <i lang="fr">Voici un pays asiatique</i>,
-        right: (
-          <>
-            <i lang="fr">C&rsquo;est un pays asiatique</i>{" "}
-            &mdash; a category, so indefinite
-          </>
-        ),
-      },
-      {
-        label: <>saying who is there</>,
-        wrong: <i lang="fr">C&rsquo;est des Japonais</i>,
-        right: (
-          <>
-            <i lang="fr">Ici, il y a des Japonais</i>{" "}
-            &mdash; presence is <i lang="fr">il y a</i>, always
-          </>
-        ),
-      },
-    ],
+    // NO PITFALL TABLE HERE, AND THE REASON IS SPECIFIC TO THIS STOP.
+    // Dan, 2 Sep, looking at the wrong column: "i would delete this column".
+    // It struck through « C'est le Japon », « Voici un pays asiatique » and
+    // « C'est des Japonais » — and ALL THREE ARE CORRECT FRENCH. They are wrong
+    // only for the job the line is doing, not wrong in the language. A wrong
+    // column works when the form is impossible (« en le bus »); here it would
+    // teach a beginner that three real sentences are errors.
+    //
+    // What the right column said now lives in `flow`, which was already saying
+    // it: the job decides the opener, and the article follows the opener.
     flow: [
       { depth: 0, text: "Are you showing the thing itself? — Voici + its own article." },
       { depth: 0, text: "Are you saying what KIND it is? — C'est + un / une." },
       { depth: 0, text: "Are you saying what is THERE? — Il y a + des." },
     ],
+    // THE OLD CHECKS WERE BOTH CONTESTABLE, WHICH IS WHY DAN DID NOT AGREE WITH
+    // THEM. The first asked which opener names a flag on screen and answered
+    // « voici » — but « C'est le drapeau du Japon » is just as good, so the
+    // question had two right answers and marked one wrong. The second asked why
+    // « un pays » but « le Japon » and answered from the opener, which was the
+    // false rule above. These two name the JOB in the question, so the mapping
+    // is the only thing being tested and there is one answer.
     check: [
       {
         q: (
           <>
-            You put the flag on screen and name it. <i lang="fr">Voici</i> or{" "}
-            <i lang="fr">c&rsquo;est</i>?
+            You have shown the country. Now you want to say it is in Asia. Which
+            opener?
           </>
         ),
         a: (
           <>
-            <i lang="fr">Voici</i>{" "}
-        &mdash; you are showing it. Use{" "}
-            <i lang="fr">c&rsquo;est</i> for the next sentence, where you say what kind of
-            flag it is.
+            <i lang="fr">C&rsquo;est</i>{" "}
+          &mdash; you are saying what kind it is, not
+            showing it again: <i lang="fr">C&rsquo;est un pays asiatique.</i>
           </>
         ),
       },
       {
-        q: <>Why <i lang="fr">un pays</i> but <i lang="fr">le Japon</i>?</>,
+        q: <>And to say who lives there?</>,
         a: (
           <>
-            Because <i lang="fr">c&rsquo;est</i> sorts the country into a category, and a
-            category is one of many. <i lang="fr">Voici</i> shows the country itself, and
-            there is only one Japan.
+            <i lang="fr">Il y a</i>{" "}
+          &mdash; you are saying what is present:{" "}
+            <i lang="fr">Ici, il y a des Japonais.</i>
           </>
         ),
       },
     ],
-    inShort: "Voici points · c'est classifies · il y a inventories",
+    inShort: "Voici shows · c'est says what kind · il y a says what is there",
     remember: (
       <>
-        <b>The opener decides the article, not the noun.</b> Choose the job first &mdash;
-        showing, sorting, or listing &mdash; and the article follows on its own.
+        <b>Three jobs, three openers.</b>{" "}
+        Decide whether you are showing it, saying
+        what kind it is, or saying what is there &mdash; and the opener follows.
       </>
     ),
   },

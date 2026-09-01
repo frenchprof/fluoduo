@@ -58,39 +58,16 @@ export const atelierRestoLesson: NativeLesson = {
         answers an offer already made. That is why it is followed by no order at all.
       </>
     ),
-    pitfallHeads: ["taking the phrase apart", "what the phrase does"],
-    pitfall: [
-      {
-        label: <>ordering</>,
-        wrong: <i lang="fr">Je veux un café.</i>,
-        right: (
-          <>
-            <i lang="fr">Je voudrais un café, s&rsquo;il vous plaît.</i>{" "}
-            &mdash; you are asking, not stating
-          </>
-        ),
-      },
-      {
-        label: <>accepting an offer</>,
-        wrong: <i lang="fr">Je voudrais bien.</i>,
-        right: (
-          <>
-            <i lang="fr">Oui, je veux bien.</i>{" "}
-            &mdash; the block that means <i>yes please</i>
-          </>
-        ),
-      },
-      {
-        label: <>accepting, then ordering anyway</>,
-        wrong: <i lang="fr">Je veux bien de l&rsquo;eau.</i>,
-        right: (
-          <>
-            <i lang="fr">Oui, je veux bien.</i>{" "}
-            &mdash; the offer already named the thing
-          </>
-        ),
-      },
-    ],
+    // NO PITFALL TABLE — Dan's 2 Sep ruling on atelier-pays, applied to the fault
+    // wherever it repeats. Its wrong column struck through « Je veux un café » and « Je veux bien de l'eau », which are
+    // CORRECT FRENCH: wrong for the moment, not wrong in the language.
+    //
+    // THE LINE IS CLEAN AND WORTH KNOWING. A wrong column earns its place where
+    // the argument is about FORM — « en le bus », « une café », « bon nuit » are
+    // impossible, and striking them teaches something true. An atelier never
+    // argues form: it argues which correct option the moment asks for. So every
+    // atelier's wrong column was striking real French, and no Tier 1 or Tier 2
+    // concept has the fault. The right column's content stays in `flow`.
     flow: [
       { depth: 0, text: "Has the thing been offered to you yet?" },
       { depth: 1, text: "No — ask for it: Je voudrais + what you want, s'il vous plaît." },

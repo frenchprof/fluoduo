@@ -59,39 +59,16 @@ export const atelierEmailLesson: NativeLesson = {
         finding the noun for what the person is about to do.
       </>
     ),
-    pitfallHeads: ["translating the feeling", "naming the occasion"],
-    pitfall: [
-      {
-        label: <>before a trip</>,
-        wrong: <i lang="fr">bonne chance pour ton voyage</i>,
-        right: (
-          <>
-            <i lang="fr">bon voyage</i>{" "}
-            &mdash; the trip has its own noun, so use it
-          </>
-        ),
-      },
-      {
-        label: <>before an exam</>,
-        wrong: <i lang="fr">bon examen</i>,
-        right: (
-          <>
-            <i lang="fr">bonne chance pour ton examen</i>{" "}
-            &mdash; you wish the luck, not the exam
-          </>
-        ),
-      },
-      {
-        label: <>closing the message</>,
-        wrong: <i lang="fr">bonne chance</i>,
-        right: (
-          <>
-            <i lang="fr">bonne journée et à bientôt</i>{" "}
-            &mdash; the day, plus when you next meet
-          </>
-        ),
-      },
-    ],
+    // NO PITFALL TABLE — Dan's 2 Sep ruling on atelier-pays, applied to the fault
+    // wherever it repeats. Its wrong column struck through « bonne chance pour ton voyage » and « bonne chance », which are
+    // CORRECT FRENCH: wrong for the moment, not wrong in the language.
+    //
+    // THE LINE IS CLEAN AND WORTH KNOWING. A wrong column earns its place where
+    // the argument is about FORM — « en le bus », « une café », « bon nuit » are
+    // impossible, and striking them teaches something true. An atelier never
+    // argues form: it argues which correct option the moment asks for. So every
+    // atelier's wrong column was striking real French, and no Tier 1 or Tier 2
+    // concept has the fault. The right column's content stays in `flow`.
     flow: [
       { depth: 0, text: "What is the person about to do?" },
       { depth: 1, text: "Find the noun for it — anniversaire, voyage, journée." },

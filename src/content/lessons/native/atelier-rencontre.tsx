@@ -109,46 +109,16 @@ export const atelierRencontreLesson: NativeLesson = {
         and a group, because it asks about the letters rather than the person.
       </>
     ),
-    pitfallHeads: ["what a word-by-word swap gives", "what the moment asks for"],
-    pitfall: [
-      {
-        label: <>one fellow student</>,
-        wrong: <i lang="fr">Comment vous vous appelez ?</i>,
-        right: (
-          <>
-            <i lang="fr">Comment tu t&rsquo;appelles ?</i>{" "}
-            &mdash; one classmate takes{" "}
-            <i lang="fr">tu</i>
-          </>
-        ),
-      },
-      {
-        label: <>a client</>,
-        wrong: <i lang="fr">Bonjour !</i>,
-        right: (
-          <>
-            <i lang="fr">Bonjour, madame.</i>{" "}
-            &mdash; the title is the register
-          </>
-        ),
-      },
-      {
-        label: <>more than one person</>,
-        wrong: <i lang="fr">Salut !</i>,
-        right: (
-          <>
-            <i lang="fr">Bonjour à tous !</i>{" "}
-            &mdash; and you leave on{" "}
-            <i lang="fr">Au revoir tout le monde !</i>
-          </>
-        ),
-      },
-      {
-        label: <>changing script halfway</>,
-        wrong: <i lang="fr">Comment tu t&rsquo;appelles ? … Au revoir, madame.</i>,
-        right: <>whichever you opened on, finish on it</>,
-      },
-    ],
+    // NO PITFALL TABLE — Dan's 2 Sep ruling on atelier-pays, applied to the fault
+    // wherever it repeats. Its wrong column struck through « Comment vous vous appelez ? », « Bonjour ! » and « Salut ! », which are
+    // CORRECT FRENCH: wrong for the moment, not wrong in the language.
+    //
+    // THE LINE IS CLEAN AND WORTH KNOWING. A wrong column earns its place where
+    // the argument is about FORM — « en le bus », « une café », « bon nuit » are
+    // impossible, and striking them teaches something true. An atelier never
+    // argues form: it argues which correct option the moment asks for. So every
+    // atelier's wrong column was striking real French, and no Tier 1 or Tier 2
+    // concept has the fault. The right column's content stays in `flow`.
     flow: [
       { depth: 0, text: "At the door, one question: who am I talking to?" },
       { depth: 1, text: "One student — tu. Salut ! … Au revoir !" },

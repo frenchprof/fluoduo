@@ -60,39 +60,16 @@ export const atelierItineraireLesson: NativeLesson = {
         which you stop doing things.
       </>
     ),
-    pitfallHeads: ["a route that is only moves", "a route someone can finish"],
-    pitfall: [
-      {
-        label: <>the ending</>,
-        wrong: <i lang="fr">Enfin, tu tournes à gauche.</i>,
-        right: (
-          <>
-            <i lang="fr">Enfin, la gare est en face du parc.</i>{" "}
-            &mdash; how they will know
-          </>
-        ),
-      },
-      {
-        label: <><i lang="fr">enfin</i> mid-route</>,
-        wrong: <i lang="fr">Enfin, tu vas tout droit.</i>,
-        right: (
-          <>
-            <i lang="fr">Ensuite, tu vas tout droit.</i>{" "}
-            &mdash; <i lang="fr">enfin</i> is spent once, at the arrival
-          </>
-        ),
-      },
-      {
-        label: <>no landmark at all</>,
-        wrong: <>four moves, then nothing</>,
-        right: (
-          <>
-            <i lang="fr">en face du parc</i>{" "}
-            &mdash; a route with no end is a route nobody completes
-          </>
-        ),
-      },
-    ],
+    // NO PITFALL TABLE — Dan's 2 Sep ruling on atelier-pays, applied to the fault
+    // wherever it repeats. Its wrong column struck through « Enfin, tu tournes à gauche » and « Enfin, tu vas tout droit », which are
+    // CORRECT FRENCH: wrong for the moment, not wrong in the language.
+    //
+    // THE LINE IS CLEAN AND WORTH KNOWING. A wrong column earns its place where
+    // the argument is about FORM — « en le bus », « une café », « bon nuit » are
+    // impossible, and striking them teaches something true. An atelier never
+    // argues form: it argues which correct option the moment asks for. So every
+    // atelier's wrong column was striking real French, and no Tier 1 or Tier 2
+    // concept has the fault. The right column's content stays in `flow`.
     flow: [
       { depth: 0, text: "Open with where you are going — Pour aller à la gare…" },
       { depth: 0, text: "Then the moves, in order: D'abord · Ensuite · Puis." },
