@@ -70,7 +70,17 @@ check('"fluo.homeMapView"' in carte, "the 2D/3D choice is remembered under fluo.
 check('"2d"' in carte and '"3d"' in carte and "aria-pressed" in carte,
       "a 2D · 3D segmented control (aria-pressed) drives the view",
       "no 2D/3D segmented control found")
-check('href="/map"' in home, "Home links to The Map with one card", "Home has no card linking to /map")
+# ONE DOOR, not the literal string. This asserted `href="/map"` exactly, which
+# stopped being how Home spells it on 1 Sep: the map card now carries the view
+# the switch has chosen (`/map?view=2d|3d`, honoured and persisted by MapBody
+# above). The CLAIM — Home reaches the map by one card — is not only intact but
+# stronger than when this was written: Dan's two prominent 2D/3D blocks were a
+# second and third door, and the switch that replaced them navigates nowhere.
+# So the check counts doors instead of matching a string.
+doors = re.findall(r'href=\{?[`"]/map[^`"]*[`"]', home)
+check(len(doors) == 1,
+      f"Home reaches the map by exactly one card ({doors[0] if doors else '—'})",
+      f"Home has {len(doors)} links to /map; there should be one card and no second door")
 check(not os.path.isfile("src/components/RoadMap.tsx") and "RoadMap" not in home,
       "RoadMap.tsx is gone and nothing in HomeDashboard renders it",
       "RoadMap is still around / rendered")
