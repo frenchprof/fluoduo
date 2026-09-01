@@ -188,7 +188,7 @@ lane = report it in STATUS, don't do it.
 |---|---|---|
 | **fluoduo-main** | **Integration** — merges, branch hygiene, verify-number renumbers, cross-session stall watch, previews for Dan, deploy shepherding | The 31 Aug cleanup sweep; this roster |
 | **Color review** | **Concepts** — the tier pipeline (Tier 1 ×19, Tier 2 second half), keeper of the Stocktake ledger | **Gate OPEN** (#100 merged, decision 1 resolved): next Tier-1 batch and the Tier-3 eight |
-| **Pre-tests** | **Pre-test surfaces** | ✅ Unit-0 pages (#98) · ✅ popup collapse (#99) · **now: derived done-ness**; then concept drafting as second capacity |
+| **Pre-tests** | **Pre-test surfaces** | ✅ Unit-0 pages (#98) · ✅ popup collapse (#99) · ✅ derived done-ness (#104, open) · ✅ iComplete cut + SIO-010 tabs (#107, open) · **next: Tier-1 concept batches as second capacity** |
 | **Peers** | **Features** | 31 Aug PM: SIO-005/006 lessons, the colour ladder, band weight, English tabs, Words-under-Forms, the collapse rule — **LANDED — #105, `d85533b`**. Queue empty; next assignment is Dan's |
 | **Dan** | **Decisions + reads + deploys** | The queue below; every pedagogical claim is read before it ships |
 
@@ -288,14 +288,47 @@ lane = report it in STATUS, don't do it.
      becomes 21/50 and no badge is revoked. `doneSios` is read in 14 files,
      `economy.ts`'s four badges included, so this is not a one-file change.
      Follows 1, because the link list IS the definition.
-  **Two things #99 left on the board, neither mine to decide:**
-  · The STANDALONE iComplete drill is unreachable — nothing links
-    `/practice/complete-it/` since its door moved to Memo. #97 goes further
-    and deletes the registry row. Intended, but it is a door that closed.
-  · SIO-010's picker still shows a learner 7 of its 21 questions, on the one
-    stop whose whole point is that register changes with audience. The
-    questions are self-describing since #92, so a single run across all three
-    audiences is a small change whenever Dan wants it.
+  3. ✅ **DONE — #107. iComplete's orphan route cut; SIO-010 sits all three
+     audiences as tabs.** The two questions #99 left on the board, both put to
+     Dan on 31 Aug and both answered.
+     · *"iComplete is to be deleted, or at least converted to Intermediaire and
+       Difficile within Memo."* The conversion had already landed — the Memo
+       ladder's Moyen IS one-piece completion and Difficile IS two (#97) — so
+       what was left was 558 lines of route nothing linked to. Deleted. A
+       banked `/practice/complete-it/…` answer keeps its NAME and loses its
+       LINK (`RETIRED_ROUTES` in labels.ts): a row reading "(unlabelled)" would
+       erase a learner's July work, a row that linked would 404.
+     · *"B — but as a choice (3 side by side tabs to tap on to display the
+       different relevant content)."* SIO-010's picker scoped a run: pick one
+       audience, answer its seven, done — so a learner met `tu` or `vous` and
+       never the contrast, which is the entire stop. Now three tabs, all three
+       sat, all three MOUNTED so switching back to compare keeps the answers.
+       Two costs of that are paid rather than hoped away: the number keys are
+       live only in the visible tab, and each run scopes its own
+       scroll-into-view (three mounted runs made `document.querySelector` find
+       the wrong one).
+     Pinned by verify70 (28 checks, every one break-tested). Six suites were
+     REWRITTEN rather than silenced where the deleted drill was their witness:
+     verify-grading, verify20, verify28 and verify32 drop it from their tables;
+     verify39 moves its session-length witness to GramMarathon, which carries
+     the identical contract, so nothing is weakened; verify35 is rebuilt around
+     `possessifs.tsx`, the lesson the Memo ladder teaches.
+
+  **TWO ORPHANS THE iCOMPLETE RETIREMENT LEFT — Dan's call, not mine.** Both
+  went dark on main a week ago when #97/#99 took the activity's door away;
+  deleting the route made them visible, it did not create them. Neither is
+  deployed yet (`live` is behind).
+  · **SIO-022's ×6 possessives drill has no home.** Dan ruled GO on 24 Aug for
+    all six persons: the deck's 21 nouns × je/tu/il/nous/vous/ils = 126 typed
+    questions, because SIO-022's competence line promises exactly that and the
+    deck alone only ever asked the 1st person. That expansion lived ONLY in
+    CompleteItContent. `possessifs.tsx` teaches the paradigm and the Memo
+    ladder completes sentences from it, but neither asks for the deck's own
+    nouns across the persons. Re-homing it is a curriculum call.
+  · **The session receipt has no host.** `SessionReceipt.tsx` + `useRunXp` are
+    now referenced by nothing. Its only host was iComplete. Which run earns an
+    end card is a drill-UX call; verify32 prints the host count on every run so
+    it cannot go quiet again.
 
   **After those:** Tier-1 concept batches in parallel with Color review, same
   read-before-ship rule.

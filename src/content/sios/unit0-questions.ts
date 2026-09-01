@@ -247,9 +247,14 @@ const instructionQ = (
  *   A informal 1:1 (another student) · B formal 1:1 (a client) · C informal
  *   one-to-many (a group).
  *
- * The learner PICKS the situation first — Q2-Q7 are undecidable without it
- * (tu or vous is exactly what the situation settles), so a shuffled pool of all
- * 21 would be unanswerable. Each situation is its own 7-question run.
+ * ALL THREE ARE SAT, as three tabs (Dan, 2026-08-31: "B - but as a choice, 3
+ * side by side tabs to tap on to display the different relevant content").
+ * Until then a learner picked ONE audience, answered its seven and left — so
+ * they met tu or vous but never the contrast between them, which is the whole
+ * teaching point of this stop. They are still three separate runs rather than
+ * one pool of 21: Q2-Q7 are undecidable without the audience (tu or vous is
+ * exactly what the situation settles), so the tab is not decoration, it is the
+ * question's other half.
  *
  * Q1 is `multi`: "which of the following ARE appropriate greetings" has more
  * than one right answer, and a register is a SET of usable openings, not a
@@ -257,8 +262,20 @@ const instructionQ = (
  */
 export type Unit0Situation = {
   key: string;
-  /** Flap label — the audience, which is all the learner needs to choose. */
+  /** The audience in full — the tab's accessible name, and what a screen
+   *  reader reads where the two lines below read as a fragment. */
   label: string;
+  /**
+   * The tab face, in two lines, because three tabs sit side by side and the
+   * full label does not fit across a phone.
+   *
+   * `register` is NOT a subtitle: informal-vs-formal is what decides every
+   * answer from Q2 on, so it has to be legible while the questions are being
+   * answered, not only while the tab is being chosen. Dan's litmus test keeps
+   * text that the learner needs to find the right answer — this is that text.
+   */
+  who: string;
+  register: string;
   questions: Unit0Question[];
 };
 
@@ -269,6 +286,8 @@ export const SIO010_SITUATIONS: Unit0Situation[] = [
   {
     key: "informal",
     label: "🎓 A student (informal, 1:1)",
+    who: "🎓 Student",
+    register: "one to one · informal",
     questions: [
       { multi: true, title: "Which of these are appropriate greetings with another university student?", options: [
         { v: "Salut !", ok: true },
@@ -318,6 +337,8 @@ export const SIO010_SITUATIONS: Unit0Situation[] = [
   {
     key: "formal",
     label: "💼 A client (formal, 1:1)",
+    who: "💼 Client",
+    register: "one to one · formal",
     questions: [
       { multi: true, title: "Which of these are appropriate greetings with a business client?", options: [
         { v: "Bonjour, madame.", ok: true },
@@ -367,6 +388,8 @@ export const SIO010_SITUATIONS: Unit0Situation[] = [
   {
     key: "group",
     label: "👥 A group (informal, 1 to many)",
+    who: "👥 Group",
+    register: "one to many · informal",
     questions: [
       { multi: true, title: "Which of these are appropriate greetings with more than one person?", options: [
         { v: "Bonjour à tous !", ok: true },
