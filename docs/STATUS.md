@@ -381,7 +381,24 @@ lane = report it in STATUS, don't do it.
      the choice. Dan saw both side by side before it shipped. `aliments.tsx`
      names the commit that removed the old one, so a revert is one lookup away.
 
-  **THE STOCKTAKE, re-issued 1 Sep — 45 concepts across 52 stops.**
+  **CROSS-BRANCH COLLISION ON SIO-039 — for the integration lane, not this one
+  (rule 5).** Two complete lessons exist for the same stop, from two lanes, and
+  neither knew: `envies-besoins` (on `main`, #125) and `wants-needs`
+  (`origin/claude/peers-vd2h6h`, `ea43c0d`, unmerged). Same deck, same content,
+  different slug. Merging Peers' branch produces a duplicate key in
+  `LESSONS_BY_SIO` and does not compile, which is how it was found.
+
+  The fact that decides it: **`envies-besoins.json` declares
+  `lessonSlug: "wants-needs"`**, so Peers' name follows the deck's own
+  declaration. But `collection.lessonSlug` is read in exactly ONE place —
+  `DeckContent.tsx:192`, a display string after a `·` — so nothing routes on it
+  and both slugs work. **This is a naming choice, not a correctness one.**
+  Cost of picking `wants-needs`: this lane's SIO-039 concept (`1979d2d`) moves
+  file. Cost of picking `envies-besoins`: the deck's declaration stays wrong,
+  cosmetically. This lane has NOT resolved it and aborted the merge rather than
+  pick a winner.
+
+  **THE STOCKTAKE, re-issued 1 Sep evening — 46 concepts written, 6 drafted.**
 
   | tier | stops | concepts | what is missing |
   |---|---|---|---|
@@ -390,17 +407,19 @@ lane = report it in STATUS, don't do it.
   | 3 · phrase stops | 9 | **7** | SIO-025, SIO-039 |
   | 3 · ateliers | 6 | **1** | SIO-020 / 030 / 040 / 049 / 050 |
 
-  **Seven concepts remain and NOT ONE of them is blocked on an argument.** Every
-  gap is a lesson file that does not exist yet, so the pipeline's critical path
-  now runs through other lanes: the five atelier files are Peers' (STATUS line
-  544), SIO-025 and SIO-039 went to Pre-tests with #123. SIO-010 is written and
-  is the shape the other five copy — an atelier concept argues the REGISTER, the
-  thing a model dialogue cannot show because it only ever runs one.
+  **ALL NINE LESSON FILES NOW EXIST**, which changes what this lane is waiting
+  for. SIO-038, SIO-039 and SIO-010 are written; the remaining six —
+  SIO-025 and the five ateliers — are on Peers' branch with `concept` left
+  empty, and **all six arguments are drafted and rendered** in
+  `docs/ATELIER_CONCEPTS_DRAFT.md`. They are paste-ready: typechecked against
+  `LessonConcept`, and each grafted onto a real page and driven in a browser, so
+  the jams that only rendering can see are already out. Nothing here waits on an
+  argument any more — only on Peers' branch landing.
 
-  Two things this lane can do with no file at all, in the order they are worth
-  doing: re-read the 45 against Dan's litmus test now that they can be compared
-  as a set, and draft the five atelier arguments from `ATELIER_DIALOGUES` so
-  they drop in the hour each file lands rather than the day after.
+  Each one will also need its stop's verify check inverted from "`concept` is
+  absent" to "`concept` is present, with its required slots". `verify74`,
+  `verify75` and `verify76` carry that hunk already, worded identically so the
+  three read as one decision rather than three.
 - **Pre-tests — the pre-test surface, then capacity.** ~~Unit-0 pre-test pages
   (in flight, the last uncovered pre-test surface).~~ **DONE — #98.** All ten
   now render at `/pretests/unit0/SIO-00N`; every stop in the course has a
