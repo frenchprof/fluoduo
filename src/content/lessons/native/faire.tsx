@@ -50,7 +50,7 @@ export const faireLesson: NativeLesson = {
     ),
     answer: (
       <>
-        <i lang="fr">Je ne fais pas <b>de</b> yoga.</i> The <i lang="fr">le</i> half names a
+        <i lang="fr">Je ne fais pas <b>de</b> yoga.</i> The <i lang="fr">le</i>{" "}half names a
         portion of something, and a negative leaves no portion to name &mdash; so that half
         drops and the <i lang="fr">de</i> that was always there is what you hear. Compare{" "}
         <i lang="fr">Je n&rsquo;aime pas le sport</i>, where the article stays: preference is

@@ -25,7 +25,7 @@ export const combienLesson: NativeLesson = {
     ),
     answer: (
       <>
-        Because <i lang="fr">il y a</i> is not really &ldquo;he has&rdquo; — it is a fixed
+        Because <i lang="fr">il y a</i>{" "} is not really &ldquo;he has&rdquo; — it is a fixed
         expression meaning <i>there is / there are</i>. Nothing inside it agrees with
         anything, so it is learnt whole.
       </>

@@ -83,7 +83,7 @@ export const ouEstLesson: NativeLesson = {
     subtitle: "Why du turns up again, far from any food",
     contrast: (
       <>
-        You have already met <i lang="fr">du</i> and <i lang="fr">des</i> in front of food.
+        You have already met <i lang="fr">du</i> and <i lang="fr">des</i>{" "} in front of food.
         Here they are in front of buildings &mdash; <i lang="fr">&agrave; c&ocirc;t&eacute; du
         parc</i>. Same two words, because it is the same fusion:{" "}
         <i lang="fr">de</i> + <i lang="fr">le</i>, <i lang="fr">de</i> +{" "}

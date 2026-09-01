@@ -74,7 +74,7 @@ export const conjugaisonU1Lesson: NativeLesson = {
       <>
         One. <i lang="fr">Je</i>, <i lang="fr">ne</i>, <i lang="fr">le</i>,{" "}
         <i lang="fr">de</i> and <i lang="fr">que</i> all drop their vowel before another
-        vowel. That is why <i lang="fr">ils n&rsquo;ont pas</i> looks irregular and is not
+        vowel. That is why <i lang="fr">ils n&rsquo;ont pas</i>{" "} looks irregular and is not
         &mdash; and why you will never meet <i lang="fr">*je ai</i>.
       </>
     ),

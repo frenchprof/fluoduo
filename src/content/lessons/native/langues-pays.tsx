@@ -19,7 +19,7 @@ export const languesPaysLesson: NativeLesson = {
     contrast: (
       <>
         English uses bare names &mdash; <i>they speak French</i>, <i>in France</i>. French
-        does neither: after <i lang="fr">parler</i> the language <b>drops</b> its article,
+        does neither: after <i lang="fr">parler</i> the language <b>drops</b>{" "} its article,
         and the country&rsquo;s gender <b>chooses</b> the word in front.
       </>
     ),

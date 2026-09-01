@@ -267,3 +267,6 @@ jobs:
 
       - name: The concept's answer and decision tree stay collapsed
         run: python3 verify/verify67-concept-length.py
+
+      - name: A word may not butt against the next across an element edge
+        run: python3 verify/verify72-jsx-spacing.py

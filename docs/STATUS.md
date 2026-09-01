@@ -329,6 +329,53 @@ Dan assigns. Listed so the queue is not re-derived by whoever picks it up.
 | 8 | `rule:` namespace (894-item tagging): go / stay parked? | transfer evidence |
 | 9 | Deploy mirror Action (needs one fine-grained PAT from you) | ends manual deploys |
 
+## 31 Aug — eight jammed words, four of them already on main
+
+Dan asked to SEE the eleven unmerged concepts rather than read about them. The
+contact sheet showed two faults no check had caught: **« des**in front of
+food »** and **« produce**French »** — a word butted straight against the next
+across an element edge.
+
+JSX drops the whitespace between a close tag and the text after it when the two
+sit on different source lines. In the file it reads `<i>des</i> in front of
+food` and it renders `desin front of food`. Source correct, `tsc` happy, build
+green, review blind. **Only the rendered page shows it.**
+
+The earlier scan looked for a jammed EM DASH and passed all eight, because
+these are word against word. Widening it found **eight**, and four were already
+merged: `ca-secrit`, `combien`, `conjugaison-u1`, `faire`, `langues-pays`,
+`negation` (on main), plus `on-fait-quoi` and `ou-est` (caught before merge).
+All fixed with `{" "}` at the element edge.
+
+### The detector took three tries, and the failures are the lesson
+
+1. **Every block boundary counted as a jam** — heading→paragraph, summary→note.
+   400 hits, the two real ones buried. Restricted to INLINE adjacency inside a
+   single block.
+2. **Excluding `div` to kill the summary badges also excluded the ANSWERS**,
+   which render in a div. Four real faults vanished from the report and it
+   looked cleaner. Exclude `summary` only.
+3. **`verify72`'s own regression pins matched the FIRST occurrence** of the
+   anchor rather than the fixed site — `il y a</i>` appears four times in
+   combien.tsx — so the check failed on correct code. Anchored on the close tag
+   AND the words that follow. Same first-occurrence trap as verify69's guards.
+
+`verify72-jsx-spacing.py` is static and says so in its header: the honest
+detector needs a browser CI does not run for this route, so it flags the SHAPE
+(inline close, newline, word, no `{" "}`) and names the eight sites so a revert
+is loud. Same-line `</i> word` is deliberately NOT flagged — it usually
+survives, and flagging it would bury the real thing, which is exactly what the
+first version did.
+
+Break-tested on four mutations: each named fix reverted, a new jam introduced
+anywhere, and a file carrying a fix deleted. All red.
+
+**Sixth vacuous or over-broad check this session.** The pattern is stable
+enough to state: a scan that matches more loosely than the thing it asserts
+will either drown the signal or invent one. Identical numbers across different
+inputs, and a "clean" report that got cleaner when you narrowed the query, are
+both tells.
+
 ## 31 Aug — Tier 1, batch 2: the fusion becomes one rule, not five
 
 | stop | the question the FORMS cannot answer |

@@ -39,7 +39,7 @@ export const onFaitQuoiLesson: NativeLesson = {
     subtitle: "Why eight in and only two out",
     contrast: (
       <>
-        Most of a lesson asks you to <b>produce</b> French. Classroom language does not: the
+        Most of a lesson asks you to <b>produce</b>{" "} French. Classroom language does not: the
         teacher&rsquo;s eight instructions you only ever need to <b>recognise</b>, and you
         need just two lines of your own &mdash; the two that buy you time.
       </>
