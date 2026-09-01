@@ -257,13 +257,36 @@ export function navigableActivities(): Activity[] {
 }
 
 /** Pages whose own design already assigns colour, so the shell must not. */
-const SELF_COLOURED = new Set(["moi", "profil"]);
+// EMPTIED 1 Sep, on Dan's word ("i say touch Profil please"). It held
+// /moi and /profil since 21 Aug, when he asked to "maintain the current look
+// of the profile page" — the reasoning was that its rows each carry a hue and
+// a family band over the top would be a second, louder system arguing with the
+// first. That reasoning was not wrong; it was about a band ARRIVING on a page
+// that had its own. What it left behind was a page with no spine and a heading
+// card inset in a rounded box while every other page's ran edge to edge — the
+// exact two faults Dan named in the 1 Sep audit. The rows keep their hues; the
+// heading becomes the same band as everywhere else.
+const SELF_COLOURED = new Set<string>([]);
 
 /** Site keys that are not activities but still belong somewhere. */
 const SITE_FAMILY: Record<string, FamilyKey> = {
   home: "goals", activities: "goals", index: "goals", guide: "goals", quickguide: "goals",
   map: "goals", carte: "goals", unit: "goals", sio: "goals", lessons: "goals", decks: "goals",
   pretests: "practice", practice: "practice",
+  // The SUB-PAGES, added 1 Sep after Dan's chrome audit: "there are pages
+  // missing this colored vertical strip on the left". Each of these was
+  // passing an `active` key with no entry here, and a null family costs a
+  // page THREE things at once, which is why the fault looked like three
+  // faults: no `fam-` class means no spine (the rule is
+  // `[class*="fam-"]`), no family ink, and — because CahierShell renders the
+  // heading band only `{famKey && …}` — no band either, so the page fell
+  // back to a bare <h1> at whatever height its content happened to start.
+  // Measured before the fix: five different heading heights across the site.
+  pretest: "practice", mcq: "practice", study: "practice", new: "goals",
+  // `deck` is the USER-deck page (a curated deck renders CuratedDeckTable,
+  // whose `active` is its view key and already resolves) and `dice` is Diced
+  // Practice. Both were passing keys with no entry, so both drew no spine.
+  deck: "goals", dice: "practice",
   games: "svplay", svplay: "svplay",
   reviser: "review",
   moi: "user", leaderboard: "user", profil: "user", reglages: "user", teacher: "user",

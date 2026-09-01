@@ -28,7 +28,7 @@ import LessonTabs from "@/app/lessons/pager/LessonTabs";
 import OpenFeedback from "@/components/OpenFeedback";
 import WordBank from "@/components/WordBank";
 import { CURATED } from "@/content/collections";
-import { SIOS } from "@/content/sios";
+import { stopForDeck } from "@/lib/stopTag";
 import { lessonsForDeck } from "@/content/lessons";
 import { getNativeLesson } from "@/content/lessons/native";
 import { memoForDeck } from "@/content/memos";
@@ -59,7 +59,7 @@ export default function LessonPager({
   const deck = collectionId ? CURATED.find((c) => c.id === collectionId) : undefined;
   const slug = lessonSlug ?? (collectionId ? lessonsForDeck(collectionId)[0]?.slug : undefined);
   const lesson = getNativeLesson(slug ?? "");
-  const sio = collectionId ? SIOS.find((s) => s.collectionId === collectionId) : undefined;
+  const sio = stopForDeck(collectionId) ?? undefined;
   const activityKey = collectionId ?? slug ?? "lesson";
   /** Identity of THIS lesson's run — a saved place never crosses lessons. */
   const runKey = `${activityKey}::${slug ?? ""}`;

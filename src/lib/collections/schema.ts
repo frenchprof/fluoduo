@@ -182,6 +182,39 @@ export type Collection = {
 
   items: Item[];
   gameConfig?: GameConfig;
+  /**
+   * Substitutions applied to a gap word when it is used as somebody else's
+   * WRONG ANSWER. Read only by `gapDecoyPool` (gapSentence.ts); the item's own
+   * `gap` is never rewritten, so nothing a learner is asked to produce changes.
+   *
+   * WHY IT EXISTS (Dan, 2026-09-01: *"i would make the wrong answers veut and
+   * voudrait"*). Every cloze surface builds its wrong answers out of the deck's
+   * OTHER gaps, which is normally exactly right — a learner choosing between
+   * « du / de la / des » is choosing between the real options. It fails when two
+   * of a deck's gaps are interchangeable. `envies-besoins` blanks « Je ___
+   * visiter Paris. », marks `veux` correct, and offers `voudrais` as wrong —
+   * but « Je voudrais visiter Paris » is good French, and the two differ only
+   * in register. The learner is marked wrong for knowing more.
+   *
+   *     "gapDecoys": {
+   *       "voudrais": "voudrait", "veux": "veut",
+   *       "envie": "besoin", "aimerais": "rêve"
+   *     }
+   *
+   * The third-person forms are wrong on agreement after « Je », so they are
+   * plausible and unambiguously incorrect — and they cannot collide with each
+   * other either.
+   *
+   * THE SECOND RULE IS ELISION (Dan, same day: *"i would put besoin and rêve
+   * instead of envie and aimerais (which start with vowels)"*). A wrong answer
+   * beginning with a vowel is wrong after « Je » before it is wrong about
+   * anything the lesson teaches: « Je envie… » is rejectable at a glance by a
+   * learner who has understood nothing. A stand-in earns its place by being
+   * wrong for the RIGHT reason, so it must start with a consonant too.
+   *
+   * Absent (every other deck), the pool is the deck's own gaps, unchanged.
+   */
+  gapDecoys?: Record<string, string>;
   /** Provenance for migrated decks. */
   source?: string;
 };

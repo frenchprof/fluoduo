@@ -27,7 +27,7 @@
 import type { Collection, Item } from "@/lib/collections/schema";
 import type { DiceQuestion, NativeLesson } from "@/content/lessons/native/types";
 import { gappedItems } from "@/lib/collections/gramMarathonReady";
-import { gapSentence, gapSentenceEn } from "@/lib/collections/gapSentence";
+import { gapDecoyPool, gapSentence, gapSentenceEn } from "@/lib/collections/gapSentence";
 import { splitGap } from "@/lib/practice/cloze";
 import { rampFor, type EntryLevel, type ExerciseKind } from "@/lib/lessonEntry";
 import { metaLeaksAnswer, multiBlankCard, type ClozeSegment } from "@/content/lessons/native/cloze";
@@ -125,7 +125,11 @@ function deckSupply(deck: Collection, activityKey: string, entry: EntryLevel = 1
   const pool = gappedItems(deck);
   const hasGaps = pool.length > 0;
   const items = hasGaps ? pool : deck.items;
-  const gapPool = pool.map((it) => it.gap!).filter(Boolean);
+  // The wrong answers are NOT "the deck's other gaps" any more — they are that
+  // pool put through the deck's `gapDecoys` (gapSentence.ts), so a deck holding
+  // two interchangeable gap words can stop offering one as the other's mistake.
+  // Per ITEM, because the substitution has to know which gap is the answer.
+  const decoysFor = (answer: string) => gapDecoyPool(deck, answer);
   const frPool = deck.items.map((it) => it.fr).filter(Boolean);
   const sentencePool = items.map((it) => gapSentence(it));
   let bag: Item[] = [];
@@ -156,7 +160,7 @@ function deckSupply(deck: Collection, activityKey: string, entry: EntryLevel = 1
             return {
               kind: "mcq", itemId: item.id, activity: `mcq:lesson:${activityKey}`,
               before, after, en,
-              options: shuffle([item.gap, ...distractors(gapPool, item.gap)]),
+              options: shuffle([item.gap, ...distractors(decoysFor(item.gap), item.gap)]),
               answer: item.gap, say,
             };
           }
@@ -174,7 +178,7 @@ function deckSupply(deck: Collection, activityKey: string, entry: EntryLevel = 1
             meta: item.lemma ? `(${item.lemma})` : undefined,
             before, after, en,
             answer: item.gap!, say, gapGrade: true,
-            ...(entry >= 3 ? { typed: true } : { bankPool: gapPool }),
+            ...(entry >= 3 ? { typed: true } : { bankPool: decoysFor(item.gap!) }),
           };
         }
         // `item.alt` (schema.ts) holds authored acceptable variants — Complete
