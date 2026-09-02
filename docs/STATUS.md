@@ -37,6 +37,27 @@ itself, once, exactly when something was left out. verify87 checks that the
 identifier passed as `hint` appears inside that game's `help`, so a paraphrase
 fails; 20 assertions now, all break-tested.
 
+## 2 Sep — every game shows the volume button, and the bar stays put
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan: *"some games are missing the volume button"*, naming Numbers, NumBus,
+NumBourse. Two faults, both measured before fixing, both pinned by
+`verify90-game-volume.py`:
+
+1. **Sound was buried.** Patch 23 folded SoundControl into the ⋯ sheet, so
+   games were the only surfaces without the visible 🔊 every page's top bar
+   shows. It is ON GameBar now (✕ · progress · ♥ · score · 🔊 · ⋯), the same
+   component the site bar mounts — one mute state everywhere — and the ⋯
+   sheet's Sound row is gone (two doors to one control is the HelpDot fault).
+2. **The bar could scroll away.** The layout's footer sits under the 100dvh
+   frame, making a game page ~90px taller than the screen; focusing NumBus's
+   keypad scrolled ✕, 🔊 and ⋯ off the top (bar at y=−85, measured). GameFrame
+   pins the viewport while mounted and releases it on unmount.
+
+The Numbers hub itself always had the top-bar 🔊 — what Dan hit there was the
+games it opens onto.
+
 ## 2 Sep — the streak works where a learner can see it work
 
 Sole editor of STATUS.md in this commit: fluoduo-main.
