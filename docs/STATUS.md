@@ -156,6 +156,34 @@ So the shape is now:
   no white backdrop behind an open panel (4), FluOLinGo Hand for the labels
   (6).
 
+**SETTLED, 2 Sep (Dan: "ok agreed with all of that") — the grouping the
+popups open onto.** Drawn at
+https://claude.ai/code/artifact/63efcda1-2d00-47f3-a35c-c838af151a51 ("Six
+Doors, Fourteen Tiles"). The decisions, each Dan's:
+
+- **One tile moves: ConjugaZone → Practice** (a forms drill, not
+  communication). Everything else stays where it is; no renames, keys and
+  routes untouched.
+- **Tools split (Dan: "some of these (e.g. VoixLa) are better classified as
+  tools right")**: VoixLà and ChaTutor sit in a dashed OUTILS row at the
+  bottom of the Skills popup — greyed, unbadged, consulted-not-completed.
+  The test: rounds + finish line + grade = trainer; none of those = tool.
+- **Skill badges on trainers**: small pills — 🎧 écouter, 🎙️ parler,
+  ✍️ écrire — only where the activity actually grades that skill; two-skill
+  tiles wear both (ÉcouTexte 🎧✍️). **No 📖 badge**: Dan caught that the app
+  has no reading activity ("but there is no LIRE?") — the badge returns the
+  day one ships, never stretched onto flashcards before then.
+- **Practice and Revise stay separate doors** — their questions differ, and
+  Revise is the only door with a deadline: its popup wears the due count on
+  its face ("3 due today").
+- **🎯 Goals opens no popup** — it goes to the current stop (Continue); the
+  path has no tiles.
+
+Roadmap items recorded, not in this build: a READING activity (ÉcouTexte's
+sibling with the text on screen — the one untrained skill), and AMBIENT
+TOOLS (ChaTutor as a floating consult, VoixLà summonable wherever French is
+typed; the OUTILS row is the address, not the life).
+
 Still Pre-tests' surface — this section is the brief, not the build.
 
 ## 2 Sep — the stop BOOKMARK: the learner's word on where they are
