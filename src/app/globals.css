@@ -2019,3 +2019,31 @@ h3.cahier-display { font-size: var(--fs-h3); }
   background: linear-gradient(90deg,
     var(--dopa-focus) 0%, var(--dopa-win) 34%, var(--dopa-joy) 66%, var(--dopa-reward) 100%);
 }
+
+/* ---------- The stop bookmark (2 Sep 2026) ----------
+   The editable stop number on Home's hero well and the map's control row.
+   It is a READING that happens to be writable, so it must not wear the
+   cahier form-input skin (white box, border, width:100%) — the :not() pair
+   matches that skin's specificity and the later position wins; the bare
+   selector covers any surface outside the two shells. Focus keeps one quiet
+   cue: an underline in the ink the inputs' focus ring uses. */
+input.fluo-bookmark,
+.cahier-page input.fluo-bookmark:not([type="checkbox"]):not([type="radio"]),
+.cahier-sheet input.fluo-bookmark:not([type="checkbox"]):not([type="radio"]) {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  width: 2ch;
+  text-align: right;
+  transition: none;
+}
+input.fluo-bookmark:focus,
+.cahier-page input.fluo-bookmark:focus,
+.cahier-sheet input.fluo-bookmark:focus {
+  outline: none;
+  border: none;
+  box-shadow: 0 2px 0 0 var(--cahier-le);
+}

@@ -43,7 +43,7 @@ import { activity } from "@/content/activities";
 import { SIOS, UNIT_META, type Sio } from "@/content/sios";
 import { cellHref } from "@/lib/indexMatrix";
 import { latestPretestSio, PRETEST_RECORD_EVENT } from "@/lib/pretestRecord";
-import { nextSioId } from "@/lib/continuer";
+import { continueSioId } from "@/lib/continuer";
 import { loadProgress } from "@/lib/progress";
 
 const UNITS = [0, 1, 2, 3, 4];
@@ -71,7 +71,7 @@ export default function ActivityLanding({ activityKey }: { activityKey: string }
   // one their next stop is in, else Unité 0.
   const [openUnit, setOpenUnit] = useState<number | null>(null);
   useEffect(() => {
-    const focus = lastSio ?? nextSioId(loadProgress());
+    const focus = lastSio ?? continueSioId(loadProgress());
     const sio = SIOS.find((s) => s.id === focus);
     // Which unit to open is read from localStorage, which does not exist on
     // the server — so this cannot be derived during render without breaking

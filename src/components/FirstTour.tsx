@@ -21,7 +21,7 @@ import { useDragFloat } from "@/lib/useDragFloat";
 import { usePathname } from "next/navigation";
 import { SIOS } from "@/content/sios";
 import { loadProgress } from "@/lib/progress";
-import { nextSioId } from "@/lib/continuer";
+import { continueSioId } from "@/lib/continuer";
 
 const SEEN_KEY = "fluolingo:tours.v2"; // JSON map { [tourKey]: 1 }
 const NEVER_KEY = "fluolingo:tours.never"; // "1" = never auto-offer anywhere
@@ -311,7 +311,7 @@ export default function FirstTour() {
   // The finish card (home tour): its big button IS Play — the same current
   // stop the hero pill computes. Tapping it marks the tour seen and goes.
   if (s.kind === "play") {
-    const sio = SIOS.find((x) => x.id === nextSioId(loadProgress()));
+    const sio = SIOS.find((x) => x.id === continueSioId(loadProgress()));
     const href = sio ? `/unit/${sio.unit}#${sio.id}` : "/";
     return createPortal(
       <div className="fixed inset-0 z-[100]">

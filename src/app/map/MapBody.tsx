@@ -32,7 +32,8 @@ import { KindLegend } from "@/components/HomeMap";
 import StopPopup from "../StopPopup";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
-import { nextSioId } from "@/lib/continuer";
+import { nextSioId, loadBookmark, BOOKMARK_EVENT } from "@/lib/continuer";
+import StopBookmark from "@/components/StopBookmark";
 import { equippedAccent } from "@/lib/economy";
 // The key and its read/write live in lib/mapView.ts, shared with Home's
 // switch — the surfaces that set this view must not spell it three ways.
@@ -43,6 +44,8 @@ export default function MapBody() {
   const [mapView, setMapView] = useState<MapView>("2d");
   const [openSioId, setOpenSioId] = useState<string | null>(null);
   const [zoomPct, setZoomPct] = useState(100);
+  // The learner's bookmarked stop (Dan, 2 Sep) — null = compute as before.
+  const [bookmark, setBookmark] = useState<number | null>(null);
   const mapRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -55,6 +58,9 @@ export default function MapBody() {
     const refresh = () => setProgress(loadProgress());
     refresh();
     window.addEventListener("fluolingo:progress-updated", refresh);
+    const readBookmark = () => setBookmark(loadBookmark());
+    readBookmark();
+    window.addEventListener(BOOKMARK_EVENT, readBookmark);
     setMapView(loadMapView());
     const readUrl = () => {
       const view = new URLSearchParams(window.location.search).get("view");
@@ -78,6 +84,7 @@ export default function MapBody() {
     window.addEventListener("popstate", readUrl);
     return () => {
       window.removeEventListener("fluolingo:progress-updated", refresh);
+      window.removeEventListener(BOOKMARK_EVENT, readBookmark);
       window.removeEventListener("hashchange", readUrl);
       window.removeEventListener("popstate", readUrl);
     };
@@ -98,7 +105,9 @@ export default function MapBody() {
     saveMapView(v);
   };
 
-  const activeId = nextSioId(progress);
+  // The bookmark outranks the computation (Dan, 2 Sep) — from state, so the
+  // first client render agrees with the prerender.
+  const activeId = nextSioId(progress, bookmark);
   const accent = equippedAccent(progress);
   const openSioObj = openSioId ? SIOS.find((s) => s.id === openSioId) : undefined;
 
@@ -141,6 +150,18 @@ export default function MapBody() {
             onFlip={(next) => setView(next ? "3d" : "2d")}
           />
         </div>
+        <span className="flex shrink-0 items-center gap-2">
+        {/* THE BOOKMARK, left of the zoom (Dan, 2 Sep: "could that editable
+            indicator be placed to the left of zoom control") — the same
+            editable stop number Home's well carries, in this row's mono
+            dress. 🧑‍🎓 names it: it is the stop that figure stands on. */}
+        <span className="fluo-mono flex items-center text-[13px] font-black text-[color:var(--cahier-ink)]">
+          <span aria-hidden className="mr-0.5 text-[15px] leading-none">🧑‍🎓</span>
+          <StopBookmark
+            stopNo={activeId ? SIOS.findIndex((s) => s.id === activeId) + 1 : SIOS.length}
+            totalClassName="font-bold text-[color:var(--cahier-ink-faint)]"
+          />
+        </span>
         {/* Zoom, migrated up from under the map (Dan, 2 Sep: "right-aligned
             Zoom control field migrated from below"). */}
         <span className="fluo-mono flex shrink-0 items-center gap-1 text-[12px] font-bold text-[color:var(--cahier-ink-faint)]" aria-label="Zoom">
@@ -183,6 +204,7 @@ export default function MapBody() {
             +
           </button>
           <span aria-hidden>%</span>
+        </span>
         </span>
       </div>
 

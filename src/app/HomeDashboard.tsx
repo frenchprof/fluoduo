@@ -25,14 +25,14 @@
  * forwarded so printed QR codes and bookmarks survive.
  */
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import StopSheet from "@/components/StopSheet";
 import HomeMap from "@/components/HomeMap";
 import HomeMap3D from "@/components/HomeMap3D";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
-import { nextSioId } from "@/lib/continuer";
+import { nextSioId, loadBookmark, BOOKMARK_EVENT } from "@/lib/continuer";
+import StopBookmark from "@/components/StopBookmark";
 import { equippedAccent } from "@/lib/economy";
 import { dueForReview } from "@/lib/reviser";
 import { loadMapView, mapHref, saveMapView } from "@/lib/mapView";
@@ -93,7 +93,9 @@ export default function HomeDashboard() {
   const [qgOpen, setQgOpen] = useState(false);
   // The Review button's count — the one destination on Home with a deadline.
   const [dueCount, setDueCount] = useState(0);
-  const router = useRouter();
+  // The learner's own word on where they are (Dan, 2 Sep: wandering "should
+  // not force them to resume at that spot"). Null = no word given, compute.
+  const [bookmark, setBookmark] = useState<number | null>(null);
 
   useEffect(() => {
     // Progress, the due-count and the once-per-session hero flag live in
@@ -110,6 +112,9 @@ export default function HomeDashboard() {
     };
     refresh();
     window.addEventListener("fluolingo:progress-updated", refresh);
+    const readBookmark = () => setBookmark(loadBookmark());
+    readBookmark();
+    window.addEventListener(BOOKMARK_EVENT, readBookmark);
     // The map lives at /map now — forward its old deep links (`/?unit=N`
     // and/or `#SIO-0XX`) so printed QR codes and bookmarks keep working.
     const q = new URLSearchParams(window.location.search).get("unit");
@@ -138,12 +143,16 @@ export default function HomeDashboard() {
     /* eslint-enable react-hooks/set-state-in-effect */
     return () => {
       window.removeEventListener("fluolingo:progress-updated", refresh);
+      window.removeEventListener(BOOKMARK_EVENT, readBookmark);
     };
   }, []);
 
   // "Continuer" = the first not-done goal AFTER the furthest « done » (Dan,
-  // 2026-07-08: a learner who marked a later step done continues from there).
-  const activeId = nextSioId(progress);
+  // 2026-07-08: a learner who marked a later step done continues from there)
+  // — unless the learner has bookmarked a stop, whose word outranks the
+  // computation (Dan, 2 Sep). From state, not loadBookmark(): the first
+  // client render must agree with the prerender.
+  const activeId = nextSioId(progress, bookmark);
   const activeSio = SIOS.find((s) => s.id === activeId);
   // THE STOP AFTER THIS ONE (Dan, 1 Sep: "add a forward button (= Next
   // stop)"). Taken from the map's own order — the SIOS array IS the study path
@@ -290,8 +299,15 @@ export default function HomeDashboard() {
             {/* « Goal », not « Stop » (Dan, 1 Sep) — the word a screen
                 reader hears for this counter is the word the bands print. */}
             <dt className="sr-only">Goal</dt>
+            {/* EDITABLE (Dan, 2 Sep: "For the home page, we can make the stop
+                number indicator editable") — same reading, but now the learner
+                can write it: typing a number bookmarks that stop, clearing the
+                field hands the reading back to the computation. */}
             <dd className="cahier-hand text-[22px] leading-none text-[color:var(--cahier-ink)] [font-variant-numeric:tabular-nums] sm:text-[26px]">
-              {stopNo}<span className="text-base text-[color:var(--cahier-ink-soft)]">/{SIOS.length}</span>
+              <StopBookmark
+                stopNo={stopNo}
+                totalClassName="text-base text-[color:var(--cahier-ink-soft)]"
+              />
             </dd>
           </div>
           {/* THE STREAK TILE IS GONE — it moved to the top bar, between ⌛ and
