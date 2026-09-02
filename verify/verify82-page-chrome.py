@@ -368,6 +368,24 @@ if desk_top and row_left and dd:
        "and one gutter in, by the same expression the page row uses",
        f"the drill's gutter is {m_left.group(1) if m_left else 'unset'} and the page row's is "
        f"{row_left.group(1)} — two spellings of one edge, which is how they came apart before")
+# THREE PARTS, AND ONLY THREE. Dan drew the band with a ✕, a name and a goal
+# circle; PageBand also had a `trailing` slot ("one extra control, never a
+# number") and exactly one page filled it — the deck's band mounted the (?)
+# that opens the Menu, which is what the ☰ two centimetres above it opens. He
+# found it the moment the bands were lined up side by side: *"what is with the
+# question mark on the deck strip"*. The slot is gone, not just its occupant,
+# because a slot that exists is a slot that gets filled — and the band's whole
+# claim is that it is the same three parts on every page.
+band_src = read("src/components/PageBand.tsx")
+ok(re.search(r"^\s*trailing[,?]", code(band_src), flags=re.M) is None,
+   "the band has no spare slot — ✕, the activity's name, the goal, and nothing else",
+   "PageBand has a `trailing` slot again; one page filled the last one with a second "
+   "door to the Menu and the deck became the only band in the app with four things on it")
+ok("HelpDot" not in code(read("src/app/decks/[id]/CuratedDeckTable.tsx")),
+   "the deck's band does not mount a second Menu button",
+   "the deck's band mounts HelpDot again — HelpDot is for pages OUTSIDE the shell, which "
+   "have no ☰; a page inside it already has that door")
+
 ok("cahier-drilldesk" in drill,
    "DrillShell mounts that desk",
    "DrillShell's root is loose in the layout again — its spine starts at x=0 and every page's at the gutter")

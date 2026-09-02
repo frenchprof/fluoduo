@@ -70,7 +70,7 @@ export default function CahierShell({
    *  to suppress the band on a page that draws its own heading. */
   /** `tag` replaced `sub` + `stat` on 1 Sep: the band is ONE LINE now and
    *  carries no number at the end (Dan). See components/PageBand.tsx. */
-  band?: { title?: ReactNode; goal?: number; exitHref?: string; trailing?: ReactNode } | false;
+  band?: { title?: ReactNode; goal?: number; exitHref?: string } | false;
   children: ReactNode;
 }) {
   const site = tabsWithActive(siteTabs(), active);
@@ -236,7 +236,7 @@ export default function CahierShell({
               established — name on the family's ink, one number right.
               Home keeps its hero instead; /moi and /profil have no famKey. */}
           {famKey && active !== "home" && band !== false && (band?.title ?? pageLabel) && (
-            <PageBand title={band?.title ?? pageLabel} goal={band?.goal} exitHref={band?.exitHref ?? "/"} trailing={band?.trailing} /* No binding clearance any more — the band paints over the coils
+            <PageBand title={band?.title ?? pageLabel} goal={band?.goal} exitHref={band?.exitHref ?? "/"} /* No binding clearance any more — the band paints over the coils
                    (globals.css, `.page-band`), so it takes PageBand's own
                    padding like every other band and its ✕ lands in the same
                    place on every page. */ />
