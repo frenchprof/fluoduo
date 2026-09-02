@@ -28,6 +28,94 @@ const DECK = `atelier-${SIO.toLowerCase()}`;
 export const atelierAvisRestoLesson: NativeLesson = {
   slug: "atelier-avis-resto",
 
+  // TIER 3 · drafted 1 Sep in docs/ATELIER_CONCEPTS_DRAFT.md against this
+  // stop's own dialogue, before this file existed; pasted in unchanged once
+  // it landed. Typechecked and driven in a browser as a draft, and again
+  // here. No French below is new — every line is a turn of the model.
+  concept: {
+    subtitle: "Why the negative sentence is the compliment",
+    contrast: (
+      <>
+        In English a negative in a review reads as a complaint &mdash;{" "}
+        <i>it isn&rsquo;t fast</i>, <i>it wasn&rsquo;t good</i>. This review&rsquo;s one
+        negative sentence is its warmest praise, and its actual complaint contains no
+        negative at all.
+      </>
+    ),
+    question: (
+      <>
+        <i lang="fr">Ce n&rsquo;est pas cher</i> against{" "}
+        <i lang="fr">Parfois, le service est un peu lent</i>. Which of those two is the
+        criticism?
+      </>
+    ),
+    answer: (
+      <>
+        The second. <i lang="fr">Ce n&rsquo;est pas cher</i> denies a fault, which is a
+        compliment: cheapness is good news. The complaint is the sentence with no{" "}
+        <i lang="fr">ne… pas</i> in it, and it arrives wrapped three times &mdash;{" "}
+        <i lang="fr">parfois</i> says not always, <i lang="fr">un peu</i> says not very,
+        and <i lang="fr">mais je recommande ce restaurant</i> then overrules it
+        outright. A French review does not soften by hedging the grammar; it hedges the
+        <b> frequency</b>, the <b>degree</b>, and the <b>verdict</b>.
+      </>
+    ),
+    // NO PITFALL TABLE — Dan's 2 Sep ruling on atelier-pays, applied to the fault
+    // wherever it repeats. Its wrong column struck through « Le service est lent », which are
+    // CORRECT FRENCH: wrong for the moment, not wrong in the language.
+    //
+    // THE LINE IS CLEAN AND WORTH KNOWING. A wrong column earns its place where
+    // the argument is about FORM — « en le bus », « une café », « bon nuit » are
+    // impossible, and striking them teaches something true. An atelier never
+    // argues form: it argues which correct option the moment asks for. So every
+    // atelier's wrong column was striking real French, and no Tier 1 or Tier 2
+    // concept has the fault. The right column's content stays in `flow`.
+    flow: [
+      { depth: 0, text: "Say what you like, plainly — J'aime beaucoup ce restaurant." },
+      { depth: 0, text: "Give the evidence, negatives included: Ce n'est pas cher." },
+      { depth: 0, text: "One reservation, wrapped: parfois + un peu." },
+      { depth: 0, text: "Then the verdict, with mais — and the verdict wins." },
+    ],
+    check: [
+      {
+        q: (
+          <>
+            Is <i lang="fr">Ce n&rsquo;est pas cher</i> a good thing or a bad thing?
+          </>
+        ),
+        a: (
+          <>
+            Good. It denies a fault. The negative marks what the place is{" "}
+            <em>not</em> guilty of.
+          </>
+        ),
+      },
+      {
+        q: (
+          <>
+            You want to say the service is slow without withdrawing the
+            recommendation. What do you add?
+          </>
+        ),
+        a: (
+          <>
+            <i lang="fr">Parfois</i> and <i lang="fr">un peu</i>{" "}
+        &mdash; then close on{" "}
+            <i lang="fr">mais je recommande</i>, so the verdict is the last thing read.
+          </>
+        ),
+      },
+    ],
+    inShort: "The negative praises. The hedges criticise. The last line decides.",
+    remember: (
+      <>
+        <b>A complaint is softened by frequency and degree, not by grammar.</b>{" "}
+        <i lang="fr">Parfois</i>, <i lang="fr">un peu</i>, and then{" "}
+        <i lang="fr">mais</i>.
+      </>
+    ),
+  },
+
   memo: memoForDeck(DECK),
 
   // NO AXIS. A model's turns are not a set of kinds to filter — every line is

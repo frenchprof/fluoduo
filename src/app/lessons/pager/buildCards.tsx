@@ -164,9 +164,17 @@ function deckSupply(deck: Collection, activityKey: string, entry: EntryLevel = 1
               answer: item.gap, say,
             };
           }
+          // `bigLang: "en"` IS NOT OPTIONAL HERE, and its absence was invisible
+          // for as long as English and French were styled alike. The pager
+          // decides an English prompt from `bigLang` (plus the translate/build
+          // kinds), so this card — whose `big` is `item.en` and whose meta
+          // literally says "Choose the French" — was drawn as if the English
+          // were the target: bold, sans, and BIGGER than the French options
+          // under it. It also went out tagged lang="fr", so 🔊 read the English
+          // with French phonics. Same for the two below.
           return {
             kind: "mcq", itemId: item.id, activity: `mcq:lesson:${activityKey}`,
-            meta: "Choose the French", big: item.en,
+            meta: "Choose the French", big: item.en, bigLang: "en" as const,
             options: shuffle([item.fr, ...distractors(frPool, item.fr)]),
             answer: item.fr, say: item.fr,
           };
@@ -187,14 +195,14 @@ function deckSupply(deck: Collection, activityKey: string, entry: EntryLevel = 1
         case "build":
           return {
             kind: "build", itemId: item.id, activity: `lesson:${activityKey}`,
-            meta: "Build the sentence", big: en,
+            meta: "Build the sentence", big: en, bigLang: "en" as const,
             answer: sentence, alternates: item.alt,
             bankPool: sentencePool, tiles: true, say,
           };
         case "translate":
           return {
             kind: "translate", itemId: item.id, activity: `lesson:${activityKey}`,
-            meta: "Translate into French", big: en ?? item.en,
+            meta: "Translate into French", big: en ?? item.en, bigLang: "en" as const,
             answer: sentence, alternates: item.alt,
             bankPool: sentencePool, say,
           };

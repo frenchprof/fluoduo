@@ -94,7 +94,8 @@ export const alimentsLesson: NativeLesson = {
         Because they say different things. <i lang="fr">à</i> puts the second thing{" "}
         <b>in</b> the first: the cake has chocolate in it, and could have been made
         without. <i lang="fr">de</i> says the first thing is <b>made of</b> the second
-        and of nothing else: the juice <em>is</em> the orange, pressed. And the joint
+        and of nothing else: the juice <em>is</em>{" "}
+        the orange, pressed. And the joint
         brings its own article rule &mdash; <i lang="fr">à</i> keeps the article and fuses
         with it (<i lang="fr">à + le → au</i>), while <i lang="fr">de</i> drops it
         altogether: <i lang="fr">jus d&rsquo;orange</i>, never{" "}
@@ -124,6 +125,14 @@ export const alimentsLesson: NativeLesson = {
         ),
       },
       {
+        // RULED BY DAN, 2 Sep: "there is no such thing as gâteau de chocolat,
+        // only gâteau au chocolat." So this strike is sound — the form is
+        // impossible, not merely wrong for the job, which is the test a wrong
+        // column has to pass (see the atelier concepts, where it failed).
+        //
+        // STILL OPEN, two rows up: « le jus de l'orange » is struck through and
+        // it IS real French — the juice of one particular orange. Dan has not
+        // ruled on that one.
         label: <>the wrong joint</>,
         wrong: <i lang="fr">le gâteau de chocolat</i>,
         right: (
