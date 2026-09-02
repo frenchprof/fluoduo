@@ -79,6 +79,23 @@ const exe = process.env.JAM_BROWSER
 const browser = await chromium.launch(exe ? { executablePath: exe } : { channel: "chrome" });
 const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
 
+// WALK AS A RETURNING LEARNER, not a brand-new one. From 2026-09-02 every
+// activity opens on a first-run instruction (components/FirstRunHint.tsx) that
+// covers the page until it is dismissed — correct for a learner, fatal for a
+// scan whose whole job is to click every tab and measure the text underneath.
+// Setting the flags the popup itself writes is the same state a second visit
+// has; clicking « Got it » on each page would be a second, drifting copy of
+// that logic. The popup's own behaviour is checked by verify87.
+await page.addInitScript(() => {
+  try {
+    for (const k of ["lesson", "flip", "speculearn", "pretest", "grammarathon", "conjugaison", "ecoutexte", "wordrill"]) {
+      window.localStorage.setItem(`fluolingo:hint.${k}`, "1");
+    }
+  } catch {
+    // storage blocked — the scan will simply meet the popup and say so
+  }
+});
+
 const scan = () => page.evaluate(() => {
   const L = /\p{L}/u;
   const hits = [];

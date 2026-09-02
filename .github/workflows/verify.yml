@@ -317,6 +317,9 @@ jobs:
       - name: "Every page wears the same chrome — spine, band, stop (1 Sep)"
         run: python3 verify/verify82-page-chrome.py
 
+      - name: "First-run instructions: one per activity, none on a hub (2 Sep)"
+        run: python3 verify/verify87-first-run-hints.py
+
       # The scan launches the runner's preinstalled Chrome via
       # playwright-core; no browser download step is needed.
       - name: Rebuild the export open, for the browser to walk

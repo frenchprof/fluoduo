@@ -6,6 +6,58 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 2 Sep — first-run instructions on every activity
+
+Dan, twice in an hour: *"add a pop up instruction for the first time with a
+'do not show me again' regarding what the user needs to do"*, then *"can you
+add the same first timer pop ups instructions for all activity pages (hub
+pages excluded)."*
+
+**14 activities have one; every hub, picker, gallery and landing has none.**
+MémoiRecall · pre-tests · SpecuLearn · MneMemo · GramMarathon · ConjugaZone ·
+ÉcouTexte · WorDrill · VoixLà · ChaTutor · DéjàRevu · VocabulaRain ·
+LexicaLater · ComposeIt.
+
+HOW IT IS WIRED, and why not per page. The text is one row per activity in
+`content/hints.ts`; DrillShell and CahierShell each mount `ActivityFirstRun`
+with the key they ALREADY carry, so an activity gets its instruction by having
+a row and by nothing else — no page was edited. Hubs are excluded by ABSENCE
+rather than by a list of exclusions: no row, nothing mounts.
+
+`on: "drill" | "page"` is load-bearing, not bookkeeping. `wordrill` names the
+Say It DRILL and the deck-picker PAGE at /practice/wordrill; `conjugaison`
+likewise. Without it the picker fires the drill's instruction over a list of
+decks.
+
+THE GAMES REUSE THEIR OWN TEXT. GameFrame already took a `help` node — "how to
+play", behind ⋯ → Help — so a new `hintKey` makes that same node open once by
+itself. No game's instructions are written twice, so they cannot drift.
+NumBus and NumBourse pass nothing: they already open on a landing that
+explains them (Dan, 29 Aug), and a popup would say it twice one tap apart.
+
+TWO THINGS THE DRIVING FOUND, both fixed. It portals to `document.body` — a
+drill's root is `overflow-hidden` and clipped it. And it sits at **z-79, below
+CreditsSplash (z-80)**: above it, the instruction covered VocabulaRain's and
+LexicaLater's credits for three seconds and ate the tap meant to skip them.
+verify87 recomputes that comparison from both files rather than restating
+either number.
+
+Driven end to end: first visit shows it; « Got it » with the box unticked
+closes it and it RETURNS next visit; ticked, it never comes back; and the key
+is per activity, so dismissing MémoiRecall leaves SpecuLearn's alone.
+
+`scripts/jam-scan.mjs` now walks as a RETURNING learner (it seeds the flags
+the popup itself writes). Without that the modal intercepted its every click
+and verify79 timed out — which is the check doing its job.
+
+New: `components/FirstRunHint.tsx`, `content/hints.ts`,
+`verify87-first-run-hints.py` (18 assertions, all break-tested, wired into CI).
+
+**Open for Dan:** LexicaLater's popup is five paragraphs, because it is that
+game's existing ⋯ → Help text unedited. It reads long as an arrival card. Say
+the word and it gets a short first-run version with the full text staying
+behind ⋯.
+
 ## 2 Sep, later still — MémoiRecall's « Flip » button, and the card underneath it
 
 Dan: *"there is a redundant button called FLIP which is not working and which

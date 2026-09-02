@@ -630,6 +630,7 @@ export default function Lexicalator({
       hearts={{ left: lives, total: START_LIVES }}
       score={<>{score} · L{level}{level >= SPELL_LEVEL ? " ✍️" : ""}</>}
       help={help}
+      hintKey="lexicalater"
       menu={[
         { label: "🎵 Music", active: music, onClick: () => { chiptune.toggle("conveyor"); setMusic(chiptune.playing() === "conveyor"); } },
         { label: "😤 Hard", active: hard, onClick: () => setHard((h) => !h) },

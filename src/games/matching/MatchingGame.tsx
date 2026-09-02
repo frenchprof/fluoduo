@@ -187,6 +187,7 @@ export default function MatchingGame({ set }: { set: MatchingSet }) {
       progress={{ done: solvedRightIds.size, total }}
       score={<>{accuracy}%</>}
       help={help}
+      hintKey="matching"
       menu={[
         { label: "🇬🇧 Show English", active: showMeaning, onClick: () => setShowMeaning((v) => !v) },
         { label: "🔊 Audio", active: audioOn, onClick: () => setAudioOn((v) => !v) },

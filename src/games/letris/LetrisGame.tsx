@@ -605,6 +605,7 @@ export default function LetrisGame({
       progress={null}
       score={score}
       help={help}
+      hintKey="vocabularain"
       menu={[
         { label: "🎵 Music", active: music, onClick: () => {
           if (chiptune.playing()) { chiptune.stop(); setMusic(false); }

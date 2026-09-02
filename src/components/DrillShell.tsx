@@ -46,6 +46,7 @@ import PageBand from "@/components/PageBand";
 import { goalNumberForDeck, stopForDeck } from "@/lib/stopTag";
 import BottomBar from "@/components/BottomBar";
 import SiteTopBar from "@/components/SiteTopBar";
+import { ActivityFirstRun } from "@/components/FirstRunHint";
 
 export type DrillCta = {
   label: string;
@@ -589,6 +590,14 @@ export default function DrillShell({
         style={{ height: "calc(58px + env(safe-area-inset-bottom, 0px))" }}
       />
       <BottomBar />
+      {/* WHAT TO DO HERE, once, until the learner says stop (Dan, 2026-09-02:
+          "add the same first timer pop ups instructions for all activity
+          pages"). Mounted HERE rather than in each drill so an activity gets
+          its instruction by having a row in content/hints.ts and nothing
+          else — the shape ACTIVITIES exists for. Drills with no row draw
+          nothing. It portals to the body, because this root is
+          `overflow-hidden` and would clip it to the paper. */}
+      <ActivityFirstRun activityKey={activity} on="drill" />
     </div>
     </div>
   );

@@ -39,6 +39,7 @@ import Link from "next/link";
 import GameBar, { type GameHearts, type GameProgress } from "@/components/GameBar";
 import BottomSheet from "@/components/BottomSheet";
 import SoundControl from "@/components/SoundControl";
+import FirstRunHint from "@/components/FirstRunHint";
 
 export type { GameHearts, GameProgress };
 
@@ -67,6 +68,7 @@ export default function GameFrame({
   hearts,
   score,
   help,
+  hintKey,
   menu,
   record,
   recordTitle,
@@ -86,6 +88,20 @@ export default function GameFrame({
   score?: ReactNode;
   /** How to play — lives behind ⋯ → Help. Omit and the menu has no Help row. */
   help?: ReactNode;
+  /**
+   * Set this and `help` ALSO opens by itself the first time, with a "do not
+   * show me again" (Dan, 2026-09-02: "add the same first timer pop ups
+   * instructions for all activity pages"). It is the same node, not a second
+   * copy — a game's instructions cannot come to differ between the popup and
+   * the ⋯ menu, which is what a hand-written second version would guarantee
+   * within a month. Stable and never a display name: a rename must not
+   * re-open a hint the learner has dismissed.
+   *
+   * Games that already open on a LANDING that explains them (NumBus,
+   * NumBourse — Dan asked for those on 2026-08-29) pass nothing: they would
+   * be telling a learner the same thing twice, one tap apart.
+   */
+  hintKey?: string;
   /** Game-specific rows for the ⋯ sheet (music, hard mode, restart…). */
   menu?: GameMenuItem[];
   /** The live record (trésor, blotter, transcript…) — the desktop right pane. */
@@ -221,6 +237,12 @@ export default function GameFrame({
         <BottomSheet open={helpOpen} onClose={() => setHelpOpen(false)} title={<>❓ {title}</>}>
           <div className="game-help text-sm text-[color:var(--cahier-ink)]">{help}</div>
         </BottomSheet>
+      )}
+      {/* …and the same node, unbidden, the first time. */}
+      {help && hintKey && (
+        <FirstRunHint hintKey={hintKey} title={`How to play`}>
+          <div className="game-help">{help}</div>
+        </FirstRunHint>
       )}
     </div>
   );

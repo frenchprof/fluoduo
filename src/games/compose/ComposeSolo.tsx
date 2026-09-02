@@ -156,6 +156,7 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
       progress={null}
       score={lines.length > 0 ? <>{lines.length} ✎</> : undefined}
       help={help}
+      hintKey="compose"
       menu={[
         { label: "New scenario", onClick: reset },
         { label: "🧹 Clear", onClick: clearOnly },
