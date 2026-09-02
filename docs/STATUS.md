@@ -6,6 +6,32 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 2 Sep, later still — MémoiRecall's « Flip » button, and the card underneath it
+
+Dan: *"there is a redundant button called FLIP which is not working and which
+we don't even need."* Right on both counts and the second explains the first:
+the footer CTA said « Flip » and tapping the card did the same thing, on the
+one activity named for that gesture — so whichever one he used, the other
+looked inert. Driven in the real app it does flip; the fault is that there are
+two controls for one action.
+
+Removing it exposed what it had been covering: the card was a
+`<div role="button">` with an onClick, **no tabIndex and no key handler** —
+not a button. A keyboard could neither reach it nor fire it, and nobody
+noticed because DrillShell binds Enter to the CTA. With the CTA gone the card
+is the only way to turn one over, so it is a real `<button>` now: focus,
+Enter, Space and the role come free, and its label says which way it will go.
+Verified by driving it — Tab reaches the card, Enter and Space both flip.
+
+`verify27 §14g` pins all three (no Flip CTA, no hand-rolled role=button, the
+card is a `<button>` wired to onFlip), break-tested. `verify20` named « Flip »
+alongside « ✓ I know it » and « ↺ To review » as the study CTAs; rewritten
+naming the supersession — those two are self-marks and « Flip » never was.
+
+**Open for Dan:** with the button gone the card carries no visible cue that it
+is tappable. Three options were shown side by side (bare / a quiet ↻ in the
+corner / a ↻ chip in the family ink); shipped bare pending his pick.
+
 ## 2 Sep, later — the (?) leaves the deck band
 
 Dan, looking at seven bands side by side: *"what is with the question mark on

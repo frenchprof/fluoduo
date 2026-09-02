@@ -408,6 +408,27 @@ check("CuratedDeckTable" in _flip, "the list view renders the SAME table /decks/
 _recap_only = _flip.count("CuratedDeckTable") == 0
 check(not _recap_only, "the list is reachable during the run", "the list is only reachable from the recap")
 
+# ── 14g · the card IS the button ─────────────────────────────────────────
+# Dan, 2026-09-02: *"there is a redundant button called FLIP which is not
+# working and which we don't even need."* The footer CTA said « Flip » and did
+# the same thing as tapping the card, on the one activity named for that
+# gesture. It went; what it was covering for did not: the card was a
+# `<div role="button">` with an onClick, NO tabIndex and NO key handler —
+# which is not a button. A keyboard could neither reach it nor fire it, and
+# nobody noticed because the shell binds Enter to the CTA that was hiding the
+# fault. With the CTA gone the card is the only way to turn a card over, so it
+# has to be a real one.
+check(re.search(r'\{ label: "Flip"', _flip) is None,
+      "no « Flip » CTA — the card is the button, and one control does one job",
+      "the « Flip » CTA is back; it duplicates tapping the card, on the activity named for tapping the card")
+check(re.search(r'role="button"', _flip) is None,
+      "4Mémoire hand-rolls no role=button",
+      "a div is pretending to be a button again — role=button without tabIndex and a key handler "
+      "is unreachable by keyboard, which is exactly how the old card shipped")
+check(re.search(r"<button type=\"button\"[^>]*onClick=\{onFlip\}", _flip) is not None,
+      "the card is a real <button>, so Enter, Space, focus and the role come free",
+      "the card is not a <button> — with no Flip CTA left, a keyboard cannot turn a card over at all")
+
 # ── 15 · CI ──────────────────────────────────────────────────────────────
 wf = read(".github/workflows/verify.yml")
 check("verify/verify27-bugs.py" in wf and wf.find("verify27-bugs") > wf.find("verify26"), "CI runs verify27-bugs after verify26", "verify27-bugs not wired after verify26")
