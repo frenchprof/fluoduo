@@ -51,6 +51,21 @@ WHAT IS PINNED, and why each would fail in silence
      strip is not, it stops short of the paper again, which is complaint two.
   7  NO PAGE PRINTS ITS OWN NAME TWICE. Three pages had their <h1> replaced by
      the band; leaving it would have been the identity crisis, not a fix.
+  8  ONE PAGE SHAPE (Dan, 2026-09-01: "Ok move all to A"). Complaint three
+     survived the first pass, because "visual unity" is not a property of any
+     one screen — it only exists BETWEEN screens, and no check that reads one
+     page can see it. Swept across all 134 exported routes, the site drew its
+     band at two lefts (6px and 19px) and two tops (49 and 57): a drill's paper
+     filled the viewport while a page's lay on a grey desk, and separately 91
+     routes were drawn as a sheet inside a parent sheet BECAUSE THEY CARRIED
+     THEIR OWN TAB STRIP — an accident of `context.length > 0`, not a
+     statement about hierarchy. Ninety of those 91 were pre-tests, which are
+     inside nothing, and they paid 48px of a 430px screen and, because the bar
+     was drawn `{!nested && <BottomBar />}`, their whole bottom navigation.
+     So: no `nested` in CahierShell, a bottom bar that is not conditional, and
+     a drill sitting on the SAME desk numbers as a page — recomputed here from
+     `.cahier-desk` and `.cahier-deskrow` rather than restated, because a third
+     spelling of those two numbers is exactly how the two edges drifted apart.
 
 Run from the repo root:  python3 verify/verify82-page-chrome.py
 """
@@ -216,7 +231,13 @@ ok(re.search(r"goal != null", pb) is not None and "🎯" in pb,
 # ---- 6 · Home's strip pulls by exactly the well's padding ------------------
 # BOTH numbers read out of the source and compared, never asserted twice: the
 # well is CahierShell's, the pull is Home's, and they are in different files.
-well = re.search(r'cahier-foolscap py-5 pr-4 sm:pr-7 \$\{nested \? "[^"]*" : "pl-(\d+) sm:pl-(\d+)"\}', cahier)
+# THE TERNARY IS GONE (2026-09-02). This read the `: "pl-… sm:pl-…"` arm of
+# `${nested ? … : …}`; Dan's "Ok move all to A" left one page shape and one
+# padding, so the well is a plain string now. The claim is untouched — the
+# strip must pull out by exactly what the well pads in — and it is a stronger
+# read than before, because there is no longer a second arm the strip could be
+# agreeing with instead.
+well = re.search(r'cahier-foolscap py-5 pl-(\d+) pr-4 sm:pl-(\d+) sm:pr-7', cahier)
 strip = re.search(r'home-strip -ml-(\d+) -mr-(\d+)[^"]*pl-(\d+) pr-(\d+) [^"]*sm:-ml-(\d+) sm:-mr-(\d+) sm:pl-(\d+) sm:pr-(\d+)', home)
 ok(well is not None and strip is not None,
    "both the content well's padding and the strip's pull are readable from the source",
@@ -302,6 +323,54 @@ for root, _dirs, files in os.walk("src"):
 ok(not strays,
    "no surface says « stop » before a number — the course counts in GOALS",
    f"« stop » still precedes a number here: {strays[:3]}")
+
+# ---- 8 · one page shape, and one desk under both shells ------------------
+drill = code(read("src/components/DrillShell.tsx"))
+css_all = read("src/app/globals.css")
+
+# THE FLAG IS GONE. Asserted on the CONSTRUCT, not the word: `"nested" not in
+# cahier` would be broken by the paragraph of comment explaining the removal,
+# and `code()` strips those — but a future comment inside a JSX expression
+# would not be, so this looks for the two shapes that could bring it back.
+ok(re.search(r"\bconst nested\b", cahier) is None,
+   "CahierShell computes no `nested` flag — one page shape, not two",
+   "the `nested` flag is back; it is `context.length > 0`, which means "
+   "'this page has its own tabs' and was read as 'this page is inside another'")
+ok(re.search(r"\{\s*!?\s*nested\s*(?:&&|\?)", cahier) is None,
+   "nothing in CahierShell is drawn conditionally on it",
+   "something is still drawn only when a page has no tab strip — that is what "
+   "cost 90 pre-tests their bottom bar")
+ok(re.search(r"\{\s*<BottomBar\s*/>\s*\}|<BottomBar\s*/>", cahier) is not None
+   and re.search(r"nested\s*&&\s*<BottomBar", cahier) is None,
+   "every page gets the phone bottom bar",
+   "the bottom bar is conditional again — 90 pre-tests had none, on the "
+   "surfaces a learner spends most of their time answering on")
+
+# THE TWO DESK NUMBERS, read from their one home and compared with the drill's.
+# Neither is written here: this fails if either is CHANGED in one place, which
+# is the only way the two shells' left edges can come apart again.
+desk_top = re.search(r"\.cahier-desk \{[^}]*padding:\s*(\d+)px", css_all)
+row_left = re.search(r"\.cahier-deskrow \{[^}]*padding-left:\s*(clamp\([^)]*\))", css_all)
+dd = re.search(r"\.cahier-drilldesk \{([^}]*)\}", css_all)
+ok(desk_top is not None and row_left is not None and dd is not None,
+   "the page desk, its gutter and the drill desk are all readable from the CSS",
+   "cannot read one of .cahier-desk / .cahier-deskrow / .cahier-drilldesk — "
+   "the comparison below would be guessing")
+if desk_top and row_left and dd:
+    body = dd.group(1)
+    m_top = re.search(r"padding-top:\s*(\d+)px", body)
+    m_left = re.search(r"padding-left:\s*(clamp\([^)]*\))", body)
+    ok(m_top is not None and m_top.group(1) == desk_top.group(1),
+       f"a drill's paper starts the same {desk_top.group(1)}px down as a page's",
+       f"the drill desk pads {m_top.group(1) if m_top else 'nothing'} above the paper and a page "
+       f"desk pads {desk_top.group(1)} — the band jumps vertically the moment a learner starts answering")
+    ok(m_left is not None and m_left.group(1) == row_left.group(1),
+       "and one gutter in, by the same expression the page row uses",
+       f"the drill's gutter is {m_left.group(1) if m_left else 'unset'} and the page row's is "
+       f"{row_left.group(1)} — two spellings of one edge, which is how they came apart before")
+ok("cahier-drilldesk" in drill,
+   "DrillShell mounts that desk",
+   "DrillShell's root is loose in the layout again — its spine starts at x=0 and every page's at the gutter")
 
 print("\n".join("  ok    " + m for m in PASS))
 if FAIL:

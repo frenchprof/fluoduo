@@ -48,6 +48,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { cap, offer, type SessionLength } from "@/lib/sessionLength";
 import HowManyQuestions from "@/components/HowManyQuestions";
+import PillSwitch from "@/components/PillSwitch";
 import Link from "next/link";
 import { CURATED } from "@/content/collections";
 import { speak } from "@/games/letris/speech";
@@ -314,16 +315,27 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
 
       {view === "one" && !done && (
         <>
-          <div className="mb-4 flex items-center justify-center gap-1.5">
-            <button type="button" role="switch" aria-checked={test}
-              onClick={() => switchMode(!test)}
-              title={test ? "Test (type the name)" : "Study (flip the card)"}
-              data-on={test} className="cahier-modeswitch">
-              <span className="cahier-modeswitch-knob">{test ? "✍️" : "📖"}</span>
-            </button>
-            <span className="cahier-display text-sm font-bold text-[color:var(--cahier-ink)]">
-              {test ? "Test" : "Study"}
-            </span>
+          {/* THE SAME SWITCH THE DECK PAGE HAS (Dan, 2026-09-01: "the
+              study-test switch should be redone like the 2D 3D switch"). This
+              was the second one — `cahier-modeswitch`, a bare knob with the
+              word « Study » printed beside it, which names neither the state
+              nor the property: a knob sitting left next to "Study" does not
+              say whether you are about to study or have been. The emoji goes
+              inside the track and the caption goes away, which costs a learner
+              nothing and is the litmus test's whole test. */}
+          <div className="mb-4 flex items-center justify-center">
+            <PillSwitch
+              label="Card mode"
+              title={test ? "Test — type the name" : "Study — flip the card"}
+              offLabel="📖"
+              onLabel="✍️"
+              offSpoken="Study"
+              onSpoken="Test"
+              offHue="win"
+              onHue="streak"
+              on={test}
+              onFlip={switchMode}
+            />
           </div>
           {test ? (
             <TestCard key={row.item.id} row={row} parts={parts} phase={phase}

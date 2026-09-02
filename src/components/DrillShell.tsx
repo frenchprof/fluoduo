@@ -244,11 +244,20 @@ export default function DrillShell({
     : 0;
 
   return (
-    /* `cahier-drill` is not decoration: it is what lets the family spine in
+    /* ONE PAGE SHAPE (Dan, 2026-09-01: "Ok move all to A"). The desk wrapper
+       puts a drill's paper where every other page's paper is — 8px down and
+       one gutter in — so the coloured spine and the heading band line up
+       across the whole site instead of jumping 13px sideways and 8px up the
+       moment a learner starts answering. The wrapper owns the height now;
+       `h-full` inside it is the screen minus that 8px, so nothing overflows.
+       See `.cahier-drilldesk` in globals.css for which numbers come from where.
+
+       `cahier-drill` is not decoration: it is what lets the family spine in
        globals.css name this shell as well as `.cahier-page`. Without it the
        root carried `fam-practice` and drew no left edge, which is the fault
        Dan's 1 Sep audit found on every drill in the app. */
-    <div className={`cahier-drill ${famKey ? `fam-${famKey}` : "fam-none"}${bandKey ? ` band-${bandKey}` : ""}${isReadingSurface(activity) ? " paper-sand" : ""} flex h-dvh flex-col overflow-hidden bg-[color:var(--cahier-paper)]`}>
+    <div className="cahier-drilldesk">
+    <div className={`cahier-drill ${famKey ? `fam-${famKey}` : "fam-none"}${bandKey ? ` band-${bandKey}` : ""}${isReadingSurface(activity) ? " paper-sand" : ""} flex h-full min-w-0 flex-col overflow-hidden bg-[color:var(--cahier-paper)]`}>
       {/* ── the notebook (2026-08-24, approved flow): drills live INSIDE the
           cahier — the family heading band on top (name from the registry,
           the drill's i/total as the band's ONE chip so the figure is never
@@ -580,6 +589,7 @@ export default function DrillShell({
         style={{ height: "calc(58px + env(safe-area-inset-bottom, 0px))" }}
       />
       <BottomBar />
+    </div>
     </div>
   );
 }

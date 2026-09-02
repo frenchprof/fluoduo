@@ -915,6 +915,42 @@ body {
      rail moving left never meant the binding should leave it. */
   padding-left: clamp(8px, 3vw, 44px);
 }
+/* A DRILL SITS ON THE SAME DESK (Dan, 2026-09-01: "Ok move all to A", closing
+   a sweep of all 134 routes that found the site drawing its heading band at
+   two different left edges and two different tops).
+
+   A page is a sheet lying on grey with a gutter down its left; a drill was the
+   sheet ALONE, filling the viewport, so its coloured spine started at x=0 and
+   its band at y=0 while every other page's started at 19 and 8. Nothing was
+   wrong with either one on its own screen — the fault only exists between two
+   screens, which is why it survived so long.
+
+   The two numbers here are the desk's own and are written once each: the 8px
+   `.cahier-desk` shows above the paper, and the deskrow's left gutter. Change
+   either there and this follows, because a third spelling of them is how the
+   two edges came to disagree in the first place.
+
+   WHAT IT IS NOT is `.cahier-desk` + `.cahier-deskrow` reused wholesale. Those
+   two give a page 64px of desk BELOW it and let it grow past one screen; a
+   drill is exactly one screen tall and its footer tray is pinned to the bottom
+   of it. So the desk shows on the two edges a drill can spare and nowhere
+   else. */
+.cahier-drilldesk {
+  height: 100dvh;
+  display: flex;
+  background: var(--cahier-desk);
+  padding-top: 8px;                          /* = .cahier-desk's top padding */
+  padding-left: clamp(8px, 3vw, 44px);       /* = .cahier-deskrow's gutter    */
+}
+/* Only the corners that touch grey are rounded — the page's own radius, with
+   the two against the viewport edge left square rather than exposing desk
+   behind a curve that has nothing to sit on. */
+.cahier-drilldesk > .cahier-drill {
+  width: 100%;
+  border-radius: 4px 16px 0 0;
+  box-shadow: 0 12px 34px rgba(34, 40, 80, 0.20);
+}
+
 .cahier-page {
   position: relative;
   flex: 0 1 980px;

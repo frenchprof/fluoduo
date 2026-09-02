@@ -6,6 +6,59 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 2 Sep — one page shape, and every band on one edge
+
+Sole editor of STATUS.md in this commit: Pre-tests.
+
+The 1 Sep audit fixed each page and left the site un-uniform, because "visual
+unity" is not a property any single screen has — it exists only BETWEEN
+screens, and every check we had read one page at a time. Swept across all 134
+exported routes, the heading band was drawn at **two lefts (6px and 19px) and
+two tops (49 and 57)**. Dan, shown the three ways to converge: *"Ok move all
+to A"* — A being the 19px page-on-a-desk that 114 routes already had.
+
+Two causes, both removed:
+
+- **`nested` in CahierShell**, computed `context.length > 0` — a page was
+  drawn as a sheet inside a parent sheet BECAUSE IT CARRIED ITS OWN TAB STRIP.
+  That is an accident of how flaps are counted, not a statement about
+  hierarchy, and it caught **91 routes, 90 of them pre-tests**, which are
+  inside nothing. They paid 48px of a 430px screen and — because the bar was
+  drawn `{!nested && <BottomBar />}` — their entire bottom navigation. Nothing
+  ever passed the flag and nothing renders a CahierShell inside another, so
+  the stack branch had no caller to serve. `.cahier-stack` /
+  `.cahier-stack--inner` in globals.css are now used only by Flip It's
+  CahierFrame; left alone rather than deleted in this pass.
+- **A drill had no desk.** DrillShell's root was the viewport, so its spine
+  started at x=0. New `.cahier-drilldesk` gives it the page desk's two numbers
+  — `.cahier-desk`'s 8px above and `.cahier-deskrow`'s gutter — and *nothing
+  else*: a drill is exactly one screen and cannot spare the 64px of desk below
+  that a page gets. verify82 recomputes both from their one home rather than
+  restating them, because a third spelling of those numbers is how the two
+  edges came apart in the first place.
+
+Re-swept after: **121 banded routes, one regime — h47, top 57, left 19, ✕ at
+31.** The 13 without a band are the full-screen games, /hidden/*, and
+/moi/historique.
+
+Also: **the second study–test switch.** Dan's 1 Sep ruling was found on the
+deck table and missed on Flip It, so for a day the app shipped the new pill on
+one screen and the old bare knob with « Study » printed beside it on the
+other — the same between-screens shape as the sweep above. Both are PillSwitch
+now, and verify80 pins it by shape so the next hand-rolled one fails.
+
+Rewritten naming their supersession: `verify20` (its viewport lock read
+`h-dvh` on the drill's own root; the height is the wrapper's now, and it
+asserts both ends because either alone passes on a broken pair), `verify82`
+(§6's well-padding regex named the `nested` ternary; §8 is new — 7 assertions,
+all break-tested), `verify80` (§7 new, 4 assertions, break-tested).
+
+**Open for Dan:** the drill's desk shows grey on the left and above only —
+below and right it runs to the viewport edge, because a drill's footer tray is
+pinned to the bottom of the screen. Deliberate, and it reads as paper sliding
+off the bottom of the desk rather than lying on it. If he wants the desk all
+the way round, a drill loses ~72px of its one screen.
+
 ## 1 Sep, late — the chrome audit, and the strips become one strip
 
 Sole editor of STATUS.md in this commit: Pre-tests.

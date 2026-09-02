@@ -113,7 +113,24 @@ export default function CahierShell({
     document.title = pageLabel ? `${pageLabel} · FluOLinGo` : "FluOLinGo";
   }, [pageLabel]);
 
-  const nested = context.length > 0;
+  // ONE PAGE SHAPE (Dan, 2026-09-01: "Ok move all to A").
+  //
+  // There was a `nested` flag here, computed as `context.length > 0` — a page
+  // was drawn as a sheet inside a parent sheet BECAUSE IT CARRIED ITS OWN TAB
+  // STRIP. That is not a statement about hierarchy, it is an accident of how
+  // the flaps are counted, and measured across all 134 exported routes it
+  // caught 91 of them: 90 pre-tests and one deck sub-page. A pre-test is not
+  // inside anything — you reach it from a goal, it is a destination.
+  //
+  // What those 91 paid for it: 48px of a 430px screen, permanently, on the
+  // surfaces where a learner reads and answers most; no spiral binding of
+  // their own (the coils showing were the parent sheet's); and — the fault
+  // that settled it — NO BOTTOM NAVIGATION BAR, because it was drawn
+  // `{!nested && <BottomBar />}`. Ninety pre-tests had no bottom bar on a
+  // phone because they declare two flaps.
+  //
+  // Nothing ever passed the flag and nothing renders a CahierShell inside
+  // another, so the stack branch had no other caller to serve.
 
   // Every page's right edge is drag-widenable (Dan, 2026-07-05: "all the
   // pages should have their own draggable right edge") — resizes the outer
@@ -198,21 +215,21 @@ export default function CahierShell({
 
   const page = (
         <main
-          ref={(el) => { if (!nested) outerRef.current = el; }}
+          ref={(el) => { outerRef.current = el; }}
           /* EVERY page wears its family's colour, from one place (Dan,
              2026-08-21: "I WANT COLOR"). familyOf() turns the page's own
              `active` key into one of the six, so a route does not have to
              declare a hue — and the whole site stops being one undivided
              field of paper. Unknown keys stay uncoloured on purpose. */
-          className={`cahier-page ${famKey ? `fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""}${isReadingSurface(active) ? " paper-sand" : ""} ${nested ? "min-h-[calc(100vh-18px)]" : "min-h-screen"}`}
+          className={`cahier-page ${famKey ? `fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""}${isReadingSurface(active) ? " paper-sand" : ""} min-h-screen`}
         >
-          {!nested && <div className="cahier-binding" aria-hidden />}
-          {!nested && edgeGrip}
+          <div className="cahier-binding" aria-hidden />
+          {edgeGrip}
 
           {/* The site bar — ☰ · ← FluOLinGo · icons. It used to be written
               out here, which is exactly why only CahierShell pages had it;
               DrillShell mounts the same component now (Dan, 2026-08-31). */}
-          <SiteTopBar active={active} tabs={tabs} topRight={topRight} nested={nested} />
+          <SiteTopBar active={active} tabs={tabs} topRight={topRight} />
 
           {/* The page's heading band (Dan, 2026-08-23, variant A): every
               family page opens with the same structure the profile page
@@ -228,10 +245,11 @@ export default function CahierShell({
           {/* Ruled paper behind the content well — horizontals only, no vertical
               margin line (Dan, 2026-08-10). Opt-in class rather than a body
               background so a drill or a game can turn it off. */}
-          <div className={`cahier-foolscap py-5 pr-4 sm:pr-7 ${nested ? "pl-5 sm:pl-7" : "pl-12 sm:pl-16"}`}>{children}</div>
-          {/* Phone navigation. Nested shells (SioModal) must not draw a
-              second one on top of the page's own. */}
-          {!nested && <BottomBar />}
+          <div className={"cahier-foolscap py-5 pl-12 pr-4 sm:pl-16 sm:pr-7"}>{children}</div>
+          {/* Phone navigation, on every page now. It used to be withheld from
+              any page that carried its own tab strip, which was ninety
+              pre-tests — see the note above. */}
+          <BottomBar />
         </main>
   );
 
@@ -244,15 +262,11 @@ export default function CahierShell({
           if (e.target === e.currentTarget) expandFull();
         }}
       >
-        {nested ? (
-          <div ref={(el) => { outerRef.current = el; }} className="cahier-stack min-h-screen">
-            <div className="cahier-binding" aria-hidden />
-            {page}
-            {edgeGrip}
-          </div>
-        ) : (
-          page
-        )}
+        {/* One page shape (Dan, 1 Sep: "Ok move all to A"). The other branch
+            wrapped the page in `.cahier-stack` — a parent sheet peeking out
+            behind it — for any page that carried its own tab strip. See the
+            note on `nested` above for what that cost the 91 pages it caught. */}
+        {page}
 
         {shrunk && (
           <button
