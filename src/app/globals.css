@@ -769,6 +769,15 @@ body {
    the tabs are the two things that live in a gutter, and they cannot share
    one: index tabs belong on the edge AWAY from the binding, which is now the
    right. The whole desk is mirrored, not just the rail. */
+/* THE BAND CLEARS THE BINDING (Dan, 2026-09-01: "can you see that it is
+   vertically not visually uniform?"). Measured across twelve pages, every band
+   was 47px tall — and on five of them the spiral coils were drawn ACROSS its
+   left end, because the binding is absolutely positioned over the whole page
+   and the band is in normal flow beneath it. The consequence was not just the
+   coils: the band had to be padded 48px on those pages to keep its ✕ clear of
+   them, and 16px everywhere else, so the ✕ sat at three different x positions
+   across the site. One stacking context fixes both. */
+.page-band { position: relative; z-index: 2; }
 .cahier-binding {
   position: absolute;
   top: 0; bottom: 0; left: 0;

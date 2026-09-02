@@ -190,9 +190,10 @@ ok("${sio.short}" in stopt,
 # ---- 5 · the drill band carries it ----------------------------------------
 i = drill.find("<PageBand")
 band = drill[i:i + 700] if i >= 0 else ""
-ok("tag={stopTagForDeck(" in band,
+ok("goal={goalNumberForDeck(" in band,
    "a drill's band says which goal it belongs to",
-   "the drill band has no goal tag — Dan: 'no identity tag regarding which stop it belongs to'")
+   "the drill band has no goal circle — Dan: 'no identity tag regarding which stop it "
+   "belongs to', then 'a circle and the related goal number'")
 # ONE LINE, NO NUMBER (Dan, 1 Sep). Both are properties of PageBand itself, so
 # they hold for every band at once rather than page by page.
 pb = code(read("src/components/PageBand.tsx"))
@@ -200,10 +201,17 @@ ok("stat" not in pb,
    "no band carries a number at its end",
    "PageBand has a `stat` slot again — Dan: 'drop the number at the end of that strip', and it "
    "was three different figures wearing one chip")
-ok("truncate" in pb and "whitespace-nowrap" in pb and "block" not in pb.split("{tag")[0].split("<p")[-1],
-   "the band is one line: the tag runs inline after the title and both truncate",
+ok("truncate" in pb and "min-w-0 flex-1" in pb,
+   "the band is one line: the name truncates rather than wrapping",
    "the band can wrap to two lines again — Dan: 'all colored strips must be uniformly of the "
    "same thickness (one line text max)'")
+# THE ✕ AND THE CIRCLE, on every band (Dan, 1 Sep, with a drawing).
+ok('href={exitHref}' in pb and "✕" in pb,
+   "every band carries the ✕",
+   "the band draws no ✕ — Dan: 'can i have all strips looking like this: (1) with a X'")
+ok(re.search(r"goal != null", pb) is not None and "🎯" in pb,
+   "and the goal's circle, 🎯 and its number, where the page has a goal",
+   "the band draws no goal circle — Dan: '(2) with a circle and the related goal number'")
 
 # ---- 6 · Home's strip pulls by exactly the well's padding ------------------
 # BOTH numbers read out of the source and compared, never asserted twice: the
@@ -245,7 +253,12 @@ for path, dup in (
 # same string the tag carries, and Profil opened with the signed-in user's name.
 for path, want, was in (
     ("src/app/decks/[id]/CuratedDeckTable.tsx", 'title="Deck"', "a name that is not its own"),
-    ("src/components/ProfileContent.tsx", 'title="Moi"', "the signed-in user's name"),
+    # The profile's band moved OUT of ProfileContent and into its two routes
+    # on 1 Sep — drawn inside the content well it sat 20px lower than every
+    # other band on the site. The claim is unchanged: its first word is the
+    # activity's, not the signed-in name.
+    ("src/app/profil/page.tsx", 'band={{ title: "Moi" }}', "the signed-in user's name"),
+    ("src/app/moi/page.tsx", 'band={{ title: "Moi" }}', "the signed-in user's name"),
     ("src/app/pretests/[id]/PretestContent.tsx", 'title: "Pretest"', "the pre-test's own title"),
 ):
     ok(want in code(read(path)),
@@ -265,7 +278,7 @@ for path, want, was in (
 # « Pretest », at different goals, and the goal tag tells them apart — so this
 # names the one relationship that is wrong rather than banning duplicates.
 deck_tbl = code(read("src/app/decks/[id]/CuratedDeckTable.tsx"))
-ok('activity("flip")' not in deck_tbl and '"4Mémoire"' not in deck_tbl,
+ok('activity("flip")' not in deck_tbl and "4Mémoire" not in deck_tbl,
    "the deck's table does not borrow the drill's name — 4Mémoire is one tap away, with its own band",
    "the deck table calls itself 4Mémoire again; that is the drill it LINKS to, and two pages "
    "wearing one name is the fault Dan spotted")

@@ -43,7 +43,7 @@ import type { ReactNode } from "react";
 import { activity as activityInfo, bandOf, familyOf, isReadingSurface } from "@/content/activities";
 import { nextStep, type NextStep } from "@/lib/nextStep";
 import PageBand from "@/components/PageBand";
-import { stopForDeck, stopTagForDeck } from "@/lib/stopTag";
+import { goalNumberForDeck, stopForDeck } from "@/lib/stopTag";
 import BottomBar from "@/components/BottomBar";
 import SiteTopBar from "@/components/SiteTopBar";
 
@@ -282,25 +282,20 @@ export default function DrillShell({
       {act && (
         <PageBand
           title={act.name}
-          /* WHICH STOP THIS IS (Dan, 1 Sep: "there are pages where there is no
-             identity tag regarding which stop it belongs to"). A drill named
+          /* WHICH GOAL THIS IS (Dan, 1 Sep: "there are pages where there is
+             no identity tag regarding which stop it belongs to", then, with a
+             drawing, "a circle and the related goal number"). A drill named
              its activity and its deck and never its position, so the only way
              to answer "where am I on the course" was to leave and look at the
              map. Undefined for a deck off the study path, and PageBand then
-             renders no sub-line at all rather than an empty one. */
-          tag={stopTagForDeck(deck)}
-          lead={
-            <Link
-              href={exitHref}
-              aria-label="Exit"
-              // -my-1 keeps the 36px tap target without growing the band: the title line
-              // is 28px inside py-3, so an untrimmed 36px control added 8px of
-              // height and gave back less than it saved.
-              className="-my-1 -ml-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xl font-black text-white/70 transition hover:bg-white/15 hover:text-white"
-            >
-              ✕
-            </Link>
-          }
+             draws no circle rather than an empty one. */
+          goal={goalNumberForDeck(deck)}
+          /* The ✕ used to be built here and handed over as `lead`. It is
+             PageBand's own now, because Dan asked for it on EVERY strip and a
+             control that every band must have is not a thing each caller
+             should be able to spell differently. */
+          exitHref={exitHref}
+          exitLabel="Exit"
           /* THE NUMBER AT THE END IS GONE (Dan, 1 Sep: "drop the number at the
              end of that strip"). It was `i/total` here, the outcomes done on
              the profile and a (?) dot on a deck page — one chip meaning three

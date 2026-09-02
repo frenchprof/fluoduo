@@ -22,7 +22,7 @@ import Link from "next/link";
 import { logEvent } from "@/lib/firebase/usage";
 import PageBand from "@/components/PageBand";
 import PillSwitch from "@/components/PillSwitch";
-import { stopTagForDeck } from "@/lib/stopTag";
+import { goalNumberForDeck, stopForDeck } from "@/lib/stopTag";
 import type { Collection, Item } from "@/lib/collections/schema";
 import {
   loadLocal,
@@ -38,7 +38,6 @@ import { bareWord, displayEn, practiceItems } from "@/lib/collections/display";
 import { loadBuckets, setBucket, type Bucket } from "@/lib/practice/buckets";
 import { recordItemResult } from "@/lib/progress";
 import { CahierFrame, TAB_HUES, type CahierTab } from "@/app/practice/flip-it/CahierFrame";
-import BackLink from "@/components/BackLink";
 import HelpDot from "@/components/HelpDot";
 import {
   ART_LABEL,
@@ -176,12 +175,11 @@ function TopBar({ collectionId }: { collectionId: string }) {
          « Deck » is the page's own flap label, which is how every other page
          in the app names itself. */
       title="Deck"
-      tag={stopTagForDeck(collectionId)}
-      lead={
-        <BackLink fallback="/" className="-my-1 -ml-1 flex h-9 shrink-0 items-center rounded-lg px-2 text-sm font-bold text-white/80 no-underline transition hover:bg-white/15 hover:text-white">
-          ←
-        </BackLink>
-      }
+      goal={goalNumberForDeck(collectionId)}
+      /* The ← became the band's ✕ (Dan, 1 Sep: "all strips … with a X"). One
+         control on every strip, spelt once in PageBand, rather than a back
+         arrow here and a close there. */
+      exitHref={`/unit/${stopForDeck(collectionId)?.unit ?? 0}`}
       /* 🔊 left this row on 2026-08-31: SiteTopBar sits directly above it and
          carries the same control. Two of it, twenty pixels apart, is exactly
          the redundancy the litmus rule removes. The (?) stays — it is the only
@@ -190,7 +188,9 @@ function TopBar({ collectionId }: { collectionId: string }) {
          (?) is the only help this page has. The numeric chip that used to
          share this position is gone site-wide. */
       trailing={<HelpDot className="text-white/80" />}
-      className="pl-12 sm:pl-16"
+      /* No binding clearance — `.page-band` paints over the coils now
+         (globals.css), so this band takes PageBand's own padding like every
+         other one and its ✕ lands where every other ✕ lands. */
     />
   );
 }

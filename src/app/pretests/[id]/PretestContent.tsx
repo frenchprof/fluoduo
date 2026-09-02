@@ -6,7 +6,7 @@ import Link from "next/link";
 import { getPretest } from "@/content/pretests";
 import { speak } from "@/games/letris/speech";
 import { judgePretestAnswer, shuffle, ttsTextForItem } from "@/lib/pretests/runner";
-import { stopForPretestId, stopTag } from "@/lib/stopTag";
+import { goalNumber, stopForPretestId } from "@/lib/stopTag";
 import CahierShell, { type ShellTab } from "@/components/CahierShell";
 import type { Pretest, PretestItem } from "@/lib/pretests/schema";
 import { optionGridClass } from "@/lib/optionGrid";
@@ -55,7 +55,7 @@ export default function PretestPage({ id }: { id: string }) {
     <CahierShell
       tabs={PRETEST_TABS}
       active="pretest"
-      band={{ title: "Pretest", tag: stopTag(stopForPretestId(pretest.id)) }}
+      band={{ title: "Pretest", goal: goalNumber(stopForPretestId(pretest.id)) }}
     >
       <PretestRunner pretest={pretest} />
     </CahierShell>

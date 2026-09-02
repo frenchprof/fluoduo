@@ -67,7 +67,9 @@ export default function TeacherPage() {
   return (
     // Site row only, like ConjugaZone/Tuteur — a custom context flap group
     // left the tab rail hanging clear of the page edges (Dan, 2026-07-13).
-    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="teacher">
+    // `teacher` resolves to the user family, but its name is not a flap
+    // label, so the shell had no title and drew no band.
+    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="teacher" band={{ title: "Teacher" }}>
       <div className="mx-auto max-w-5xl px-4 py-8">
         {user === undefined ? (
           <p className="text-sm text-slate-500">Loading…</p>

@@ -132,7 +132,10 @@ const REFERENCES: string[] = [
 
 export default function AboutPage() {
   return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "guide")} active="guide">
+    // « About », not « Guide ». This page shares the `guide` key with /guide
+    // — which is why it had no band of its own to be wrong in. Named here
+    // rather than by borrowing its sibling's flap.
+    <CahierShell tabs={tabsWithActive(siteTabs(), "guide")} active="guide" band={{ title: "About" }}>
       <div className="mx-auto max-w-2xl px-3 py-5">
         <h1 className="cahier-display cahier-hand text-3xl font-normal text-[color:var(--cahier-ink)]">
           💡 Why <span className="cahier-hl px-1">FluOLinGo</span> is built this way

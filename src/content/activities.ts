@@ -128,7 +128,7 @@ export const ACTIVITIES: Activity[] = [
   { key: "speculearn", name: "SpecuLearn", emoji: "💡", family: "practice", href: "/practice/speculearn", hue: "#8a5fd4", blurb: "Guess before you're taught. Pre-Tests live here too." },
   // Dan, 2026-08-23: renamed xPlain → Memo (approved surface #3). Key stays
   // "lesson" — display rename only.
-  { key: "lesson", name: "Memo", emoji: "📚", family: "practice", href: null, hue: "#e0567f", blurb: "The lesson: rule, then practice." },
+  { key: "lesson", name: "MneMemo", emoji: "📚", family: "practice", href: null, hue: "#e0567f", blurb: "The lesson: rule, then practice." },
   // SORTING IS CUT (Dan, 2026-08-31: "sorting is cut").
   //
   // Off navigation, the way Match It went on 10 Aug — the registry row is gone
@@ -143,7 +143,7 @@ export const ACTIVITIES: Activity[] = [
   // earns the drill. It was also the tile Dan named when he said the framework
   // had drifted "into things like EtuDice and Sorting", and the confusion its
   // name caused reached all the way into the evidence table (see evidence.ts).
-  { key: "flip", name: "4Mémoire", emoji: "🃏", family: "practice", href: "/practice/flip-it", hue: "#2bb6c2", blurb: "Flashcards. English front, flip to French." },
+  { key: "flip", name: "MémoiRecall", emoji: "🃏", family: "practice", href: "/practice/flip-it", hue: "#2bb6c2", blurb: "Flashcards. English front, flip to French." },
   // iCOMPLETE IS RETIRED (Dan, 2026-08-31: "we don't need a separate
   // CompleteIt exercise anymore. it will be part of Memo's activities …
   // we can retire CompleteIt and Sorting").
