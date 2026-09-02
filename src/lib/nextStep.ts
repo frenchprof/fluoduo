@@ -35,7 +35,7 @@ import { SIOS, type Sio } from "@/content/sios";
 import { cellHref } from "@/lib/indexMatrix";
 import { accuracyFor, loadLedger, type Ledger } from "@/lib/activityLedger";
 import { loadProgress } from "@/lib/progress";
-import { nextSioId } from "@/lib/continuer";
+import { continueSioId } from "@/lib/continuer";
 
 export type NextStep = {
   href: string;
@@ -95,7 +95,7 @@ export function nextStep(
     undefined;
   let offPath = false;
   if (!anchor) {
-    const id = nextSioId(loadProgress());
+    const id = continueSioId(loadProgress());
     anchor = id ? SIOS.find((s) => s.id === id) : undefined;
     offPath = true;
     if (!anchor) return null; // all 50 done — rule 5
@@ -106,7 +106,7 @@ export function nextStep(
   if (here) return toStep(here, anchor, offPath);
 
   // Rule 4 — the chain is complete: onward to the next stop.
-  const contId = nextSioId(loadProgress());
+  const contId = continueSioId(loadProgress());
   let dest = contId && contId !== anchor.id ? SIOS.find((s) => s.id === contId) : undefined;
   if (!dest) dest = SIOS[SIOS.indexOf(anchor) + 1];
   if (!dest) return null; // the last stop's chain, all done — rule 5

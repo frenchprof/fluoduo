@@ -24,6 +24,7 @@
  * and saves it.
  */
 import { useEffect, useRef, useState } from "react";
+import PillSwitch from "@/components/PillSwitch";
 import Map2DGrid from "@/components/Map2DGrid";
 import HomeMap3D from "@/components/HomeMap3D";
 import HomePrintSheet from "@/components/HomePrintSheet";
@@ -31,7 +32,8 @@ import { KindLegend } from "@/components/HomeMap";
 import StopPopup from "../StopPopup";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
-import { nextSioId } from "@/lib/continuer";
+import { nextSioId, loadBookmark, BOOKMARK_EVENT } from "@/lib/continuer";
+import StopBookmark from "@/components/StopBookmark";
 import { equippedAccent } from "@/lib/economy";
 // The key and its read/write live in lib/mapView.ts, shared with Home's
 // switch — the surfaces that set this view must not spell it three ways.
@@ -42,6 +44,8 @@ export default function MapBody() {
   const [mapView, setMapView] = useState<MapView>("2d");
   const [openSioId, setOpenSioId] = useState<string | null>(null);
   const [zoomPct, setZoomPct] = useState(100);
+  // The learner's bookmarked stop (Dan, 2 Sep) — null = compute as before.
+  const [bookmark, setBookmark] = useState<number | null>(null);
   const mapRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -54,6 +58,9 @@ export default function MapBody() {
     const refresh = () => setProgress(loadProgress());
     refresh();
     window.addEventListener("fluolingo:progress-updated", refresh);
+    const readBookmark = () => setBookmark(loadBookmark());
+    readBookmark();
+    window.addEventListener(BOOKMARK_EVENT, readBookmark);
     setMapView(loadMapView());
     const readUrl = () => {
       const view = new URLSearchParams(window.location.search).get("view");
@@ -77,6 +84,7 @@ export default function MapBody() {
     window.addEventListener("popstate", readUrl);
     return () => {
       window.removeEventListener("fluolingo:progress-updated", refresh);
+      window.removeEventListener(BOOKMARK_EVENT, readBookmark);
       window.removeEventListener("hashchange", readUrl);
       window.removeEventListener("popstate", readUrl);
     };
@@ -97,7 +105,9 @@ export default function MapBody() {
     saveMapView(v);
   };
 
-  const activeId = nextSioId(progress);
+  // The bookmark outranks the computation (Dan, 2 Sep) — from state, so the
+  // first client render agrees with the prerender.
+  const activeId = nextSioId(progress, bookmark);
   const accent = equippedAccent(progress);
   const openSioObj = openSioId ? SIOS.find((s) => s.id === openSioId) : undefined;
 
@@ -116,29 +126,42 @@ export default function MapBody() {
 
       {/* ONE control row, fixed for both views: switch left, zoom right. */}
       <div className="mb-2 mt-1.5 flex items-center justify-between gap-3">
-        <div
-          data-tour="map-view"
-          role="group"
-          aria-label="Map view"
-          className="fluo-mono flex overflow-hidden rounded-xl border-2 text-sm font-black shadow-[2px_2px_0_rgba(0,0,0,0.22)]"
-          style={{ borderColor: "var(--cahier-ink)" }}
-        >
-          {(["2d", "3d"] as const).map((v) => (
-            <button
-              key={v}
-              type="button"
-              aria-pressed={mapView === v}
-              onClick={() => setView(v)}
-              className="px-5 py-2 leading-none"
-              style={{
-                background: mapView === v ? "var(--cahier-ink)" : "var(--cahier-paper-raised)",
-                color: mapView === v ? "var(--cahier-paper-raised)" : "var(--cahier-ink)",
-              }}
-            >
-              {v.toUpperCase()}
-            </button>
-          ))}
+        {/* THE SAME SWITCH AS HOME'S, which is where it should have been all
+            along (Dan, 2026-09-02: "Map of FluOLinGo page is missing the 2D-3D
+            switch that is a copy of the one on the homepage"). PillSwitch's own
+            docstring records that Dan drew it ON 1 SEP FOR THIS CONTROL — "can
+            the 2D 3D switch look more like this" — and it then shipped on Home
+            and on the deck page while the map it was designed for kept the
+            plain segmented pair. This is the component going where it was
+            meant to go.
+
+            THE WRAPPER IS NOT DECORATION. `data-tour="map-view"` is the first
+            tour's target for this step (FirstTour STEPS, and verify44 pins the
+            attribute), and PillSwitch renders its own button with no prop for
+            passing one through — so the hook lives on a wrapper and the tour
+            still finds it. */}
+        <div data-tour="map-view">
+          <PillSwitch
+            label="Map view"
+            title="Tap to switch between the plan and the scene"
+            offLabel="2D"
+            onLabel="3D"
+            on={mapView === "3d"}
+            onFlip={(next) => setView(next ? "3d" : "2d")}
+          />
         </div>
+        <span className="flex shrink-0 items-center gap-2">
+        {/* THE BOOKMARK, left of the zoom (Dan, 2 Sep: "could that editable
+            indicator be placed to the left of zoom control") — the same
+            editable stop number Home's well carries, in this row's mono
+            dress. 🧑‍🎓 names it: it is the stop that figure stands on. */}
+        <span className="fluo-mono flex items-center text-[13px] font-black text-[color:var(--cahier-ink)]">
+          <span aria-hidden className="mr-0.5 text-[15px] leading-none">🧑‍🎓</span>
+          <StopBookmark
+            stopNo={activeId ? SIOS.findIndex((s) => s.id === activeId) + 1 : SIOS.length}
+            totalClassName="font-bold text-[color:var(--cahier-ink-faint)]"
+          />
+        </span>
         {/* Zoom, migrated up from under the map (Dan, 2 Sep: "right-aligned
             Zoom control field migrated from below"). */}
         <span className="fluo-mono flex shrink-0 items-center gap-1 text-[12px] font-bold text-[color:var(--cahier-ink-faint)]" aria-label="Zoom">
@@ -181,6 +204,7 @@ export default function MapBody() {
             +
           </button>
           <span aria-hidden>%</span>
+        </span>
         </span>
       </div>
 

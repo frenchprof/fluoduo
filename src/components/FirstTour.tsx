@@ -21,7 +21,7 @@ import { useDragFloat } from "@/lib/useDragFloat";
 import { usePathname } from "next/navigation";
 import { SIOS } from "@/content/sios";
 import { loadProgress } from "@/lib/progress";
-import { nextSioId } from "@/lib/continuer";
+import { continueSioId } from "@/lib/continuer";
 
 const SEEN_KEY = "fluolingo:tours.v2"; // JSON map { [tourKey]: 1 }
 const NEVER_KEY = "fluolingo:tours.never"; // "1" = never auto-offer anywhere
@@ -32,7 +32,7 @@ type Step = {
   text: string;
   /** tap = catcher over the hole advances on click; drag = events pass
    *  through so the width grip actually drags, release advances. */
-  action?: "tap" | "drag";
+  action?: "tap";
   /** "play" = the finish card whose big button IS Play — it navigates to the
    *  current stop exactly as the hero pill does (approved flow, 2026-08-24). */
   kind?: "play";
@@ -202,28 +202,12 @@ export default function FirstTour() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, step]);
 
-  // Drag step: real pointer events reach the grip (no catcher), and a
-  // completed drag — grip pressed, then released — advances the tour.
-  useEffect(() => {
-    if (mode !== "tour" || STEPS[step]?.action !== "drag") return;
-    let dragging = false;
-    const down = (e: PointerEvent) => {
-      const t = e.target as Element | null;
-      if (t?.closest?.('[title="Drag to widen the page"]')) dragging = true;
-    };
-    const up = () => {
-      if (!dragging) return;
-      dragging = false;
-      window.setTimeout(() => goNext(), 300);
-    };
-    window.addEventListener("pointerdown", down, true);
-    window.addEventListener("pointerup", up, true);
-    return () => {
-      window.removeEventListener("pointerdown", down, true);
-      window.removeEventListener("pointerup", up, true);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, step]);
+  // THE DRAG STEP IS GONE. An effect here waited for a completed drag on
+  // [title="Drag to widen the page"] to advance the tour — but no entry in
+  // STEPS has ever carried `action: "drag"`, so the guard on the first line was
+  // never false and the whole block was unreachable. Dan removed the drag
+  // handle itself on 2026-09-02; this was already dead before that, and goes
+  // now rather than sitting as a tour step for a control that no longer exists.
 
   function markSeen() {
     if (!tour) return;
@@ -327,7 +311,7 @@ export default function FirstTour() {
   // The finish card (home tour): its big button IS Play — the same current
   // stop the hero pill computes. Tapping it marks the tour seen and goes.
   if (s.kind === "play") {
-    const sio = SIOS.find((x) => x.id === nextSioId(loadProgress()));
+    const sio = SIOS.find((x) => x.id === continueSioId(loadProgress()));
     const href = sio ? `/unit/${sio.unit}#${sio.id}` : "/";
     return createPortal(
       <div className="fixed inset-0 z-[100]">

@@ -47,7 +47,7 @@ WHAT IS PINNED, and why each would fail in silence
      play" behind ⋯ → Help; the popup shows that same node, so the two cannot
      drift. A second hand-written copy in content/hints.ts is the drift.
 
-Run from the repo root:  python3 verify/verify87-first-run-hints.py
+Run from the repo root:  python3 verify/verify88-first-run-hints.py
 """
 import os
 import re

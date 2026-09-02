@@ -51,12 +51,59 @@ the popup itself writes). Without that the modal intercepted its every click
 and verify79 timed out — which is the check doing its job.
 
 New: `components/FirstRunHint.tsx`, `content/hints.ts`,
-`verify87-first-run-hints.py` (18 assertions, all break-tested, wired into CI).
+`verify88-first-run-hints.py` (18 assertions, all break-tested, wired into CI).
 
 **Open for Dan:** LexicaLater's popup is five paragraphs, because it is that
 game's existing ⋯ → Help text unedited. It reads long as an arrival card. Say
 the word and it gets a short first-run version with the full text staying
 behind ⋯.
+
+## 2 Sep — CHANGE OF PLANS on the menu: popups per parent, children tabs retired
+
+Sole editor of STATUS.md in this commit: fluoduo-main. **This supersedes part
+of the six-ruling strips brief below — read this first, Pre-tests.**
+
+Dan, on the base-bar links and the burger menu's parents: *"Each of those
+links at the base as well as the parent links in the burger menu - make them
+pop up a window like the one that for Menu, but with only a subset, i.e. the
+relevant tiles that are under those parents. So actually we do not need
+children tabs anymore."*
+
+So the shape is now:
+
+- **Every family link at the BASE BAR** (the phone bottom bar's 🎯 🏋️ 🎮 🔄 💬
+  icons) and **every PARENT row in the ☰ menu** opens a popup styled like the
+  Menu one (MenuSplash's tile window), **filtered to that parent's tiles
+  only** — Practice's link opens a window of just Practice's activities, and
+  so on.
+- **Children tabs/flaps are retired entirely.** With them go the rulings that
+  existed only to dress them: no-tail-slack (2) and same-left-edge-shorter
+  (5) from the brief below are MOOT.
+- What survives of that brief, applying now to the parents and the popup
+  tiles: black font on pale washes (1), the MneMemo/MémoiRecall renames (3),
+  no white backdrop behind an open panel (4), FluOLinGo Hand for the labels
+  (6).
+
+Still Pre-tests' surface — this section is the brief, not the build.
+
+## 2 Sep — the stop BOOKMARK: the learner's word on where they are
+
+Dan, over Home's « 46/50 » well: *"we need a way for users to book mark the
+stop that they have left off, because if they have wandered out of curiosity,
+it should not force them to resume at that spot. For the home page, we can
+make the stop number indicator editable. For the map, could that editable
+indicator be placed to the left of zoom control."*
+
+Shipped (fluoduo-main): `fluolingo:bookmark` in lib/continuer.ts —
+`nextSioId(progress, bookmarkNo?)` takes it as an argument (render paths pass
+it from state; `continueSioId()` reads it at call time for handlers), so a
+set bookmark IS the current stop: 🧑‍🎓, the travelled route, Continue, the
+tour's Play card and the activity landing all follow it. Completing the
+bookmarked stop advances the reading to the first gap after it; clearing the
+field returns the computed reading. Wandering never writes it — verify87
+holds that only the indicator itself calls saveBookmark. Two faces of one
+component (StopBookmark): Home's hand-written well, and the map's control row
+immediately left of the zoom cluster.
 
 ## 2 Sep, later still — MémoiRecall's « Flip » button, and the card underneath it
 
@@ -742,11 +789,30 @@ lane = report it in STATUS, don't do it.
   — verify74, 75, 76, 77, 83, worded identically so they read as one decision.
   Every one break-tested.
 
-  **What this lane still owes: nothing on the pipeline.** Open with Dan:
-  the Sum-up pane (three questions, shown 1 Sep), and whether the
-  `wants-needs` naming should have carried SIO-039 — resolved by default in
-  #136 in favour of `envies-besoins`, which is the file this lane's concept
-  sits on.
+  **THIS LANE IS CLEAR — nothing outstanding, 2 Sep.** The three items that were
+  open with Dan are all closed:
+
+  - ~~**The Sum-up pane**~~ — three questions were put to him with a rendered
+    A/B of each (the label « The whole system », the doubled inShort/remember
+    line, and the 18-of-45 inconsistency). **Dan, 2 Sep: "drop both for now."**
+    Not answered and not to be re-raised — the pane ships as it is.
+  - ~~**Atelier Mémo variants**~~ — Dan floated listing "sentences used in
+    dialogues **or variants of them**", with toggled English and TTS. Driving
+    the app showed the Mémo already does all of that except variants: « Le
+    modèle » lists every model sentence, English underneath, a 🇬🇧 toggle whose
+    choice is remembered across all six ateliers (`fluolingo:atelier:en`),
+    per-line TTS, and « 🔊 Tout écouter ». Variants would be new French and
+    would need him. **Dropped the same day.**
+  - ~~**SIO-039's slug**~~ — resolved in #136 in favour of `envies-besoins`,
+    which is the file this lane's concept sits on. `wants-needs` is not on main.
+
+  **The one thing worth carrying to whoever picks this lane up.** A pitfall
+  table's wrong column is only sound when the form is IMPOSSIBLE. That is a
+  question about French, so it is Dan's to answer and cannot be reasoned out
+  from English — this lane guessed twice on 1–2 Sep and missed in both
+  directions. It shipped six atelier tables striking through perfectly good
+  French (Dan: *"i would delete this column"*), and separately flagged a sound
+  strike as suspect (Dan: *"jus de l'orange is WRONG"*). Ask.
 
 - **Pre-tests — the pre-test surface, then capacity.** ~~Unit-0 pre-test pages
   (in flight, the last uncovered pre-test surface).~~ **DONE — #98.** All ten
