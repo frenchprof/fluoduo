@@ -19,6 +19,8 @@
  * generator's table decomposes the twelve examples and reassembles them; the
  * check holds that reassembly against transport.json rather than trusting it.
  */
+import { Fragment } from "react";
+
 import type { NativeLesson } from "./types";
 import { MODES, TRANSPORT_AXES, exampleOf, transportQuestion, type Frame } from "./transport.gen";
 
@@ -105,16 +107,33 @@ export const transportLesson: NativeLesson = {
         belonged to the vehicle, only one of them could be right. So what decides?
       </>
     ),
+    // Dan, 1 Sep: "i would present the two cases schematically by showing two
+    // columns: one for Prep + N and the other for V + (art) N. And nuff' said
+    // for that." So the answer IS the table. The three rows are the deck's own
+    // doubled vehicles — métro, voiture, avion, each listed twice in
+    // transport.json — so the columns prove the claim by standing side by side,
+    // and the prose that used to walk the reader through them is gone.
     answer: (
-      <>
-        Not the vehicle, but <b>what you are saying about the journey</b>.{" "}
-        <i lang="fr">en</i> answers <i>how</i> you travelled, so the vehicle is a manner
-        and takes <b>no article</b>: <i lang="fr">On y va en voiture.</i>{" "}
-        <i lang="fr">prendre</i> answers <i>what</i> you took, so the vehicle is an
-        object and takes <b>its own article</b>:{" "}
-        <i lang="fr">Tu prends la voiture ?</i> Same car, two sentences, and the
-        article is the tell.
-      </>
+      <div className="text-[15px] text-[color:var(--cahier-ink)]">
+        <div className="grid grid-cols-2 gap-x-4">
+          <p className="fluo-label pb-1 text-[color:var(--gram-masc)]">Prep + N</p>
+          <p className="fluo-label pb-1 text-[color:var(--cahier-ink)]">V + (art) N</p>
+          {[
+            ["en métro", "prendre le métro"],
+            ["en voiture", "prendre la voiture"],
+            ["en avion", "prendre l\u2019avion"],
+            ["à pied", "—"],
+          ].map(([l, r]) => (
+            <Fragment key={l}>
+              <p className="border-t border-[color:var(--cahier-rule)] py-1" lang="fr">{l}</p>
+              <p className="border-t border-[color:var(--cahier-rule)] py-1" lang="fr">{r}</p>
+            </Fragment>
+          ))}
+        </div>
+        <p className="mt-2">
+          Same vehicle, both columns. The article is the only difference.
+        </p>
+      </div>
     ),
     pitfallHeads: ["what English predicts", "what French does"],
     pitfall: [

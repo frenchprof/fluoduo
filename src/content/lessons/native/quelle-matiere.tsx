@@ -39,8 +39,13 @@ export const quelleMatiereLesson: NativeLesson = {
     ),
     answer: (
       <>
-        Because a school subject is a <b>whole field</b>, and French marks a whole
-        category with <i lang="fr">le</i> / <i lang="fr">la</i> / <i lang="fr">les</i>.
+        Because French has three ways to take a noun, and a subject can only be
+        taken one of them. <i lang="fr">un livre</i> is <b>one of them</b>;{" "}
+        <i lang="fr">du pain</i> is <b>some of it</b>;{" "}
+        <i lang="fr">le français</i> is <b>all of it</b>. You cannot study one
+        French or some French, so the field is never counted and never divided
+        &mdash; which leaves only <i lang="fr">le</i> / <i lang="fr">la</i> /{" "}
+        <i lang="fr">les</i>.
       </>
     ),
     pitfall: [
@@ -57,9 +62,8 @@ export const quelleMatiereLesson: NativeLesson = {
         q: <>Why is the article there at all, when English has none?</>,
         a: (
           <>
-            Because you mean the subject as a whole field, and French marks a whole
-            category with an article. It is the same rule as{" "}
-            <i lang="fr">j&rsquo;aime le sport</i>.
+            Because you mean <b>all of it</b>, not one of them and not some of it.
+            Same rule as <i lang="fr">j&rsquo;aime le sport</i>.
           </>
         ),
       },
@@ -72,7 +76,9 @@ export const quelleMatiereLesson: NativeLesson = {
     ),
     remember: (
       <>
-        A subject is a whole field, and a whole field always takes its article.
+        Not one of them, not some of it &mdash; <b>all of it</b>. That is what{" "}
+        <i lang="fr">le</i> / <i lang="fr">la</i> / <i lang="fr">les</i> says, and a
+        subject is never anything else.
       </>
     ),
   },

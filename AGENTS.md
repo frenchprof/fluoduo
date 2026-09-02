@@ -118,6 +118,7 @@ the reason an open one does not.
 So: put a number on a band only where the thing it counts is out of sight —
 folded away, behind a link, or still to come. Never as furniture.
 
+<<<<<<< HEAD
 # English is never bigger than French — permanent (2026-09-01)
 
 **Dan, sending back a transport card: *"i prefer a hybrid like this : english
@@ -147,6 +148,8 @@ transport's `fr` is the grid label « en train », so every card blanked the lab
 and dealt « ? train ». Dan's mock restored the lead — « J'y vais ? moto » — and
 that is the shape. A fragment is not a card.
 
+=======
+>>>>>>> qc-color
 # A wrong answer is allowed to be wrong French — permanent (2026-09-01)
 
 **Dan, shown five cases one by one and asked which to revert: *"i would leave

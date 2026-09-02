@@ -21,6 +21,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { logEvent } from "@/lib/firebase/usage";
 import PageBand from "@/components/PageBand";
+import PillSwitch from "@/components/PillSwitch";
 import { stopTagForDeck } from "@/lib/stopTag";
 import type { Collection, Item } from "@/lib/collections/schema";
 import {
@@ -155,11 +156,27 @@ export default function CuratedDeckTable({ collection }: { collection: Collectio
  *
  * The stop joins them, from the same helper every other surface uses.
  */
-function TopBar({ crumb, collectionId }: { crumb: string; collectionId: string }) {
+function TopBar({ collectionId }: { collectionId: string }) {
   return (
     <PageBand
-      title={crumb}
-      sub={stopTagForDeck(collectionId)}
+      /* « Deck », which is what this page is (Dan, 1 Sep: "why are there two
+         4Memoires").
+
+         It said the DECK's title first — the same string the goal tag beside
+         it carries, so the band read « Envies et besoins · GOAL 39/50 ·
+         Envies/besoins ». Fixing that, I took the old hand-written row's
+         wording at face value ("🃏 4Mémoire · {crumb}") and used the registry's
+         name for `flip`. But that row was itself wrong, and putting it in a
+         proper band made the error visible: THIS PAGE IS NOT 4MÉMOIRE. It is
+         the deck's word table — List / All / Cards, notes, a shuffle — and
+         4Mémoire is the drill it LINKS to, with its own page and its own band
+         one tap away. Two pages wearing one name is the same fault as
+         `context[0]?.label` borrowing « Home », which this pass removed.
+
+         « Deck » is the page's own flap label, which is how every other page
+         in the app names itself. */
+      title="Deck"
+      tag={stopTagForDeck(collectionId)}
       lead={
         <BackLink fallback="/" className="-my-1 -ml-1 flex h-9 shrink-0 items-center rounded-lg px-2 text-sm font-bold text-white/80 no-underline transition hover:bg-white/15 hover:text-white">
           ←
@@ -169,7 +186,10 @@ function TopBar({ crumb, collectionId }: { crumb: string; collectionId: string }
          carries the same control. Two of it, twenty pixels apart, is exactly
          the redundancy the litmus rule removes. The (?) stays — it is the only
          help this page has. */
-      stat={<HelpDot className="text-[color:var(--cahier-ink)]" />}
+      /* A CONTROL, not a number — `trailing` is the slot for one, and the
+         (?) is the only help this page has. The numeric chip that used to
+         share this position is gone site-wide. */
+      trailing={<HelpDot className="text-white/80" />}
       className="pl-12 sm:pl-16"
     />
   );
@@ -282,7 +302,7 @@ function DeckTable({ collection, items }: { collection: Collection; items: Item[
       active={view}
       onSelect={(k) => setView(k as View)}
       siteActive="flip"
-      topBar={<TopBar crumb={collection.title} collectionId={collection.id} />}
+      topBar={<TopBar collectionId={collection.id} />}
     >
       <Step n={1} label="View & mode">
       {/* ONE row (Dan, 2026-07-20). Views as short buttons, the 📖/✍️
@@ -304,16 +324,24 @@ function DeckTable({ collection, items }: { collection: Collection; items: Item[
             {t.label}
           </button>
         ))}
-        <span className="inline-flex items-center gap-1.5">
-          <button type="button" role="switch" aria-checked={test}
-            onClick={() => setTest((t) => !t)} title={test ? "Test (type the name)" : "Study (click to reveal/hide)"}
-            data-on={test} className="cahier-modeswitch">
-            <span className="cahier-modeswitch-knob">{test ? "✍️" : "📖"}</span>
-          </button>
-          <span className="cahier-display text-sm font-bold text-[color:var(--cahier-ink)]">
-            {test ? "Test" : "Study"}
-          </span>
-        </span>
+        {/* THE SAME SWITCH AS THE MAP'S (Dan, 1 Sep: "the study-test switch
+            should be redone like the 2D 3D switch"). It was a small track with
+            an emoji knob AND a word beside it — the emoji said which mode by a
+            picture, the word said it again in text, and the pair took 96px to
+            answer one question twice. The pill says it once, inside itself, in
+            the same object the rest of the app uses. */}
+        <PillSwitch
+          label="Card mode"
+          title={test ? "Test — type the name" : "Study — click to reveal"}
+          offLabel="📖"
+          onLabel="✍️"
+          offSpoken="Study"
+          onSpoken="Test"
+          offHue="win"
+          onHue="streak"
+          on={test}
+          onFlip={setTest}
+        />
         <div className="ml-auto flex flex-wrap items-center gap-2">
         {/* Emoji-only tools (Dan, 2026-07-20) — titles carry the words. */}
         <button type="button" onClick={() => applyOrder("shuffle")} title="Shuffle the order" aria-label="Shuffle the order"

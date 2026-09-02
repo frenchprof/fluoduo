@@ -55,7 +55,7 @@ export default function PretestPage({ id }: { id: string }) {
     <CahierShell
       tabs={PRETEST_TABS}
       active="pretest"
-      band={{ title: pretest.title, sub: stopTag(stopForPretestId(pretest.id)) }}
+      band={{ title: "Pretest", tag: stopTag(stopForPretestId(pretest.id)) }}
     >
       <PretestRunner pretest={pretest} />
     </CahierShell>

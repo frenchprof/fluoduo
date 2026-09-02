@@ -93,7 +93,7 @@ export default function StopSheet({
         <div className="mb-3 flex items-baseline gap-2">
           <span className="fluo-mono rounded-lg px-2 py-1 text-[11px] font-black text-white"
                 style={{ background: "var(--dopa-focus)" }}>
-            Stop {Number(stopId.slice(4, 7))}
+            Goal {Number(stopId.slice(4, 7))}
           </span>
           <h2 className="cahier-hand min-w-0 flex-1 truncate text-xl leading-none text-[color:var(--cahier-ink)]"
               lang={sio?.fr ? "fr" : undefined}>

@@ -158,7 +158,7 @@ export default function SioModal({
 
           {/* …then the links. One list, no second copy. */}
           {links.length > 0 && (
-            <ol className="sio-path" aria-label="What this stop has">
+            <ol className="sio-path" aria-label="What this goal has">
               {links.map((t, i) => {
                 const isDone = done(t);
                 const here = t.key === nextKey;

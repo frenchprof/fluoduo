@@ -255,6 +255,7 @@ jobs:
       - name: "The atelier model's English is toggled, on by default, never deleted (1 Sep)"
         run: python3 verify/verify84-atelier-english.py
 
+<<<<<<< HEAD
       # Minted as 83, renumbered to 85 on rebase: 83 had gone to
       # verify83-parce-que in the same merge that moved this branch's 82 to 84.
       # Third number collision of the day; the sweep was run at minting and
@@ -265,6 +266,8 @@ jobs:
       - name: "Shared words go in the frame, not on every option; the blank is a square (1 Sep)"
         run: python3 verify/verify86-shared-affix.py
 
+=======
+>>>>>>> qc-color
       - name: "Every check runs, and no two share a number"
         run: python3 verify/verify-wiring.py
 

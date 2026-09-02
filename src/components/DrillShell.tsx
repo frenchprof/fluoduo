@@ -288,7 +288,7 @@ export default function DrillShell({
              to answer "where am I on the course" was to leave and look at the
              map. Undefined for a deck off the study path, and PageBand then
              renders no sub-line at all rather than an empty one. */
-          sub={stopTagForDeck(deck)}
+          tag={stopTagForDeck(deck)}
           lead={
             <Link
               href={exitHref}
@@ -301,7 +301,12 @@ export default function DrillShell({
               ✕
             </Link>
           }
-          stat={progress ? `${progress.done}/${progress.total}` : right ?? undefined}
+          /* THE NUMBER AT THE END IS GONE (Dan, 1 Sep: "drop the number at the
+             end of that strip"). It was `i/total` here, the outcomes done on
+             the profile and a (?) dot on a deck page — one chip meaning three
+             things, which is not a figure a learner can read. A drill's own
+             progress bar sits directly under this band and says the same
+             thing continuously. `right` was the same slot by another name. */
           className="shrink-0"
         />
       )}

@@ -6,6 +6,68 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+
+## 1 Sep, late — the chrome audit, and the strips become one strip
+
+Sole editor of STATUS.md in this commit: Pre-tests.
+
+Dan went through the app screen by screen and reported four faults; three of
+them turned out to be ONE. A page's `active` key becomes a family through
+`familyOf`, and a null family costs it the spine (`[class*="fam-"]`), the
+family ink AND the heading band (CahierShell renders it `{famKey && …}`) all at
+once. Six keys had no entry and Settings passed `active=""`. Measured before:
+six pages with no strip and five different heading heights. The spine also
+never reached DrillShell — the rule named `.cahier-page` and the drill root is
+not one, so every drill carried the right class and drew nothing.
+
+Then a second round of rulings on the strips themselves:
+
+- **One line, one thickness.** Every band is now 47px, activity name first,
+  then the goal tag inline: « 4Mémoire · GOAL 39/50 · Wants & needs ». The
+  stacked title-over-sub made bands 55px or 41px depending on whether a page
+  had a sub-line.
+- **No number at the end.** The chip was three different figures wearing one
+  shape — a drill's i/total, the profile's outcomes, a deck page's (?) —
+  which is not a figure anyone can read.
+- **« GOAL », not « stop »**, everywhere a learner reads it before a number
+  (verify82 scans for it rather than listing the sites).
+- **The study–test switch is the map's switch.** Both are now
+  `components/PillSwitch.tsx`; the deck's version was an emoji knob plus a
+  word beside it, saying one thing twice in 96px.
+- **Profil is in the family system** (Dan: "i say touch Profil please"), and
+  the deck's « ← Back » row and the Unit-0 pre-test's SectionBand are page
+  bands. Home's rainbow hero is the one strip left out, by Dan's own exemption.
+
+New: `lib/stopTag.ts` (which absorbed FIVE hand-written copies of the deck →
+goal lookup), `components/PillSwitch.tsx`, `verify82`. Rewritten naming their
+supersession: `verify68` (it named ProfileContent as a file that hand-rolls a
+band; it stopped), `verify25b`, `verify25c`, `verify80`.
+
+**Open for Dan:** at 320px four bands truncate the goal's NAME with an
+ellipsis — the activity and the number always survive, which is the priority
+order, but he may want the name dropped below some width instead. And Profil's
+band no longer shows the signed-in name (the rule says the activity's name);
+its ground is now the user family's pale pink.
+
+## 2 Sep — Map of FluOLinGo-land (Dan's spec, executed same hour)
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan's 2 Sep map rulings, all in one PR: /map's band reads « Map of
+FluOLinGo-land » over one legend-carrying sentence; ONE fixed control row
+(2D⇄3D switch left, zoom right — migrated up from under the map) that never
+moves between views; the 2D view is Map2DGrid — ten rows of five, all fifty
+stops at a glance, units told apart by colour bands, not names; the U0–U4
+jump chips deleted; the unit panel under the map RETIRED (Dan, over the
+Unité 0 tile grid: "we don't need this anymore … delete it") — a stop opens
+StopPopup directly, one popup for all fifty, lifted out of UnitSection.
+Home's switch no longer navigates (1 Sep "takes you to the map" superseded
+by 2 Sep "this needs to stay on screen when users tap 2D>3D>2D"): the
+postcard flips in place, the hero never moves. verify25b/25c/80 re-pointed
+with the new rulings written in. UnitSection/Unit0Panel are now unmounted
+on /map — files kept this PR (Unit0Pretest still imports one, four checks
+pin them); their deletion is queued integration cleanup.
+
 ## 1 Sep, night — the wrong answers, and Home's switch actually opens the map
 
 Sole editor of STATUS.md in this commit: Pre-tests.
@@ -469,26 +531,48 @@ lane = report it in STATUS, don't do it.
      the choice. Dan saw both side by side before it shipped. `aliments.tsx`
      names the commit that removed the old one, so a revert is one lookup away.
 
-  **THE STOCKTAKE, re-issued 1 Sep — 45 concepts across 52 stops.**
+  **CROSS-BRANCH COLLISION ON SIO-039 — for the integration lane, not this one
+  (rule 5).** Two complete lessons exist for the same stop, from two lanes, and
+  neither knew: `envies-besoins` (on `main`, #125) and `wants-needs`
+  (`origin/claude/peers-vd2h6h`, `ea43c0d`, unmerged). Same deck, same content,
+  different slug. Merging Peers' branch produces a duplicate key in
+  `LESSONS_BY_SIO` and does not compile, which is how it was found.
 
-  | tier | stops | concepts | what is missing |
-  |---|---|---|---|
-  | 1 · Systemic Grammar | 20 | **20** ✅ | — |
-  | 2 · Lexical Core | 15 | **15** ✅ | — |
-  | 3 · phrase stops | 9 | **7** | SIO-025, SIO-039 |
-  | 3 · ateliers | 6 | **1** | SIO-020 / 030 / 040 / 049 / 050 |
+  The fact that decides it: **`envies-besoins.json` declares
+  `lessonSlug: "wants-needs"`**, so Peers' name follows the deck's own
+  declaration. But `collection.lessonSlug` is read in exactly ONE place —
+  `DeckContent.tsx:192`, a display string after a `·` — so nothing routes on it
+  and both slugs work. **This is a naming choice, not a correctness one.**
+  Cost of picking `wants-needs`: this lane's SIO-039 concept (`1979d2d`) moves
+  file. Cost of picking `envies-besoins`: the deck's declaration stays wrong,
+  cosmetically. This lane has NOT resolved it and aborted the merge rather than
+  pick a winner.
 
-  **Seven concepts remain and NOT ONE of them is blocked on an argument.** Every
-  gap is a lesson file that does not exist yet, so the pipeline's critical path
-  now runs through other lanes: the five atelier files are Peers' (STATUS line
-  544), SIO-025 and SIO-039 went to Pre-tests with #123. SIO-010 is written and
-  is the shape the other five copy — an atelier concept argues the REGISTER, the
-  thing a model dialogue cannot show because it only ever runs one.
+  **THE STOCKTAKE, re-issued 2 Sep — ALL THREE TIERS COMPLETE, 50 of 50.**
 
-  Two things this lane can do with no file at all, in the order they are worth
-  doing: re-read the 45 against Dan's litmus test now that they can be compared
-  as a set, and draft the five atelier arguments from `ATELIER_DIALOGUES` so
-  they drop in the hour each file lands rather than the day after.
+  | tier | stops | concepts |
+  |---|---|---|
+  | 1 · Systemic Grammar | 20 | **20** |
+  | 2 · Lexical Core | 15 | **15** |
+  | 3 · phrase stops | 9 | **9** |
+  | 3 · ateliers | 6 | **6** |
+
+  Closed by the six that fluoduo-main unblocked in #136 — SIO-025 and the five
+  remaining ateliers. Every one had been drafted on 1 Sep in
+  `docs/ATELIER_CONCEPTS_DRAFT.md` against the stop's own dialogue, before the
+  file existed, so landing them was a paste: **the six went in unchanged**, and
+  the drafting-ahead was worth roughly a day.
+
+  Five verify checks now assert `concept` PRESENT where they asserted it absent
+  — verify74, 75, 76, 77, 83, worded identically so they read as one decision.
+  Every one break-tested.
+
+  **What this lane still owes: nothing on the pipeline.** Open with Dan:
+  the Sum-up pane (three questions, shown 1 Sep), and whether the
+  `wants-needs` naming should have carried SIO-039 — resolved by default in
+  #136 in favour of `envies-besoins`, which is the file this lane's concept
+  sits on.
+
 - **Pre-tests — the pre-test surface, then capacity.** ~~Unit-0 pre-test pages
   (in flight, the last uncovered pre-test surface).~~ **DONE — #98.** All ten
   now render at `/pretests/unit0/SIO-00N`; every stop in the course has a
