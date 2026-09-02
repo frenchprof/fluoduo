@@ -115,9 +115,22 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.LIVE_DEPLOY_TOKEN }}
         run: |
-          if ! git push "https://x-access-token:${GH_TOKEN}@github.com/dckg/fluo.git" HEAD:main; then
+          # Two different refusals share this step, and runs 13-18 proved the
+          # message must tell them apart: run 17 (no workflow-file delta)
+          # succeeded while run 18 (verify.yml changed) was rejected — so the
+          # push works UNLESS the delta touches .github/workflows/*, and that
+          # case is the token's Workflows permission, not Contents.
+          out=$(git push "https://x-access-token:${GH_TOKEN}@github.com/dckg/fluo.git" HEAD:main 2>&1) && { echo "$out"; exit 0; }
+          echo "$out"
+          if echo "$out" | grep -q "without .workflow. scope"; then
+            echo "::error::The push changes a file under .github/workflows/, and"
+            echo "::error::the token cannot write workflow files. On the token's"
+            echo "::error::page add Permissions > 'Workflows: Read and write',"
+            echo "::error::press Update, and re-run. (Pushes that do not touch"
+            echo "::error::workflow files go through without it — run 17 did.)"
+          else
             echo "::error::READ works but the PUSH was refused: Contents is"
             echo "::error::Read-only. On the token page set Contents to"
             echo "::error::'Read and write', press Update, and re-run."
-            exit 1
           fi
+          exit 1
