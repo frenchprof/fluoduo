@@ -7,6 +7,32 @@ wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
 
+## 2 Sep, small hours — Dan's five rulings on the coloured strips (PRE-TESTS' pass)
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan reviewed the in-flight coloured rail/dropdown (Pre-tests' local build,
+the dopamine direction) and gave five rulings, routed here because the
+surface is that lane's active flight — fluoduo-main is deliberately not
+touching it:
+
+1. **Black font where the wash is pale.** The children share their parent's
+   hue by design (all three visible were Practice's) — that stays; but pale
+   rows take a BLACK font ("they might be better with black font instead").
+   Parents may keep light text only where contrast genuinely holds.
+2. **No tail slack.** A flap is as long as the longest label among its
+   siblings and no longer — "tighten up the space so that they don't occupy
+   so much space when opened up."
+3. **The renames stand**: MneMemo (was Memo) and MémoiRecall (was 4Mémoire),
+   already in fcc58d4 — display names only, keys `lesson`/`flip` untouched,
+   per the Memo-rename precedent in AGENTS.md.
+4. **No white backdrop behind the flaps** — "or else it looks unreal." The
+   open menu's panel takes paper, not white.
+5. **Children start at the SAME left edge as parents and end SHORTER** —
+   hierarchy by length, not indent. This supersedes the indent approach in
+   PR #142 (closed as superseded); the one thing to carry over from it: the
+   child dress must apply in the DROPDOWN too, not only under `.cahier-tabs`
+   — the scoping bug behind Dan's "camouflaged among the parents".
 ## 1 Sep, late — the chrome audit, and the strips become one strip
 
 Sole editor of STATUS.md in this commit: Pre-tests.
