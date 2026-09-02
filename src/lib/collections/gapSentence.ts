@@ -29,21 +29,55 @@
  */
 import type { Item } from "./schema";
 
-/** The sentence to blank, split and grade for this item. */
-export function gapSentence(it: Item): string {
+/** Does this string read as a whole sentence rather than a grid label?
+ *
+ *  « J'y vais en train. » and « Tu y vas en bus ? » do; « en train » does not.
+ *  Final punctuation is the test because that is what the two authoring
+ *  patterns above actually differ by — pattern A's `fr` IS a sentence and
+ *  ends like one, pattern B's `fr` is a two-word label and does not. */
+const isSentence = (s: string): boolean => /[.?!]\s*$/.test(s);
+
+/** The sentence to blank, split and grade for this item.
+ *
+ * `fr` FIRST, EXCEPT WHEN `fr` IS A LABEL AND `example` IS A SENTENCE.
+ *
+ * The `fr`-first rule was written for pattern A, where `fr` is the drilled
+ * sentence. It silently misfires on a pattern-B deck whose LABEL happens to
+ * contain the gap: transport's `fr` is « en train » with gap « en », so every
+ * one of its twelve cards blanked the label and dealt « ? train » — a fragment
+ * with no sentence around it, on a stop whose whole subject is a frame inside
+ * a sentence. Dan saw the card on 1 Sep and asked for the hybrid: the deck's
+ * own sentence, « J'y vais ? moto », with the English under it.
+ *
+ * Only 19 items across three decks change (aimer-activites, lieux-letris,
+ * transport) and every one of them goes from a fragment to that deck's own
+ * example sentence. Pattern A is untouched — partitifs' « Je mange du pain. »
+ * ends in a full stop, so `fr` still wins. Nothing loses playability either
+ * way: this only chooses between two strings that BOTH contain the gap.
+ */
+/** Which field the card is built from. ONE decision, so the French and its
+ *  English gloss cannot disagree — they did for one build: the sentence moved
+ *  to `example` while the gloss stayed on `en`, and the card read
+ *  « J'y vais ? métro. » over "by metro". */
+function gapField(it: Item): "fr" | "example" {
   if (it.gap) {
-    if (it.fr?.includes(it.gap)) return it.fr;
-    if (it.example?.includes(it.gap)) return it.example;
+    const frHas = !!it.fr?.includes(it.gap);
+    const exHas = !!it.example?.includes(it.gap);
+    if (frHas && exHas && !isSentence(it.fr!) && isSentence(it.example!)) return "example";
+    if (frHas) return "fr";
+    if (exHas) return "example";
   }
   // No gap, or a mis-authored one: fall back to the previous display rule.
-  return it.example ?? it.fr;
+  return it.example ? "example" : "fr";
+}
+
+export function gapSentence(it: Item): string {
+  return gapField(it) === "example" ? (it.example ?? it.fr) : it.fr;
 }
 
 /** English gloss matching whichever sentence `gapSentence` chose. */
 export function gapSentenceEn(it: Item): string | undefined {
-  if (it.gap && it.fr?.includes(it.gap)) return it.en;
-  if (it.gap && it.example?.includes(it.gap)) return it.exampleEn ?? it.en;
-  return it.exampleEn ?? it.en;
+  return gapField(it) === "example" ? (it.exampleEn ?? it.en) : it.en;
 }
 
 /** Does this item actually play? A gap that appears in neither sentence is

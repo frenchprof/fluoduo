@@ -39,13 +39,35 @@ import { useActivityPlay } from "@/lib/firebase/activityLog";
 import { hintsFor, revealText } from "@/lib/help/hints";
 import { useHelpLadder } from "@/lib/help/useHelpLadder";
 import { useChoiceKeys } from "@/lib/useChoiceKeys";
-import { optionGridClass } from "@/lib/optionGrid";
+import { optionGridClass, STACK_ABOVE, STACK_ABOVE_2XL } from "@/lib/optionGrid";
+import { sharedAffix } from "@/lib/practice/sharedAffix";
 import { saveRun, loadRun, clearRun } from "@/lib/lessonRun";
 import { ENTRY_LABELS, ENTRY_LEVELS, type EntryLevel } from "@/lib/lessonEntry";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 
 type QueuedEx = { ex: Exercise; requeued: boolean };
+
+/**
+ * EVERY ENGLISH SENTENCE ON A CARD, IN ONE PLACE.
+ *
+ * Dan, 2026-09-01: *"The English sentences are still too big. Perhaps switch
+ * all English sentences to the House Font (FluOLinGo)."*
+ *
+ * The size had already been cut twice that day and the English still read as a
+ * second target, because it was set in the SAME face as the French above it.
+ * Only size and ink separated them, and those are degrees — a reader has to
+ * compare two lines to tell which is which. A different FACE separates them by
+ * kind: the French is the sentence, the English is the note in the margin. So
+ * the house hand, one step down at text-lg, and the size is now a constant
+ * rather than a rule about frames — "never bigger than the French" is satisfied
+ * outright when the English is always the smaller of the two.
+ *
+ * It is a CONSTANT because the three English lines on a card were three
+ * separate class strings, and two of them still said text-2xl after the first
+ * pass narrowed the third.
+ */
+const EN_TEXT = "fluo-en text-lg leading-snug text-[color:var(--cahier-ink)]/75";
 
 export default function LessonPager({
   collectionId,
@@ -547,10 +569,87 @@ function ExerciseCard({
   const isFrame = ex.before !== undefined;
   const shown = ex.kind === "mcq" ? selected : value;
 
+  // WHAT EVERY OPTION SAYS IS NOT A CHOICE (Dan, 1 Sep: "if the MCQ answers are
+  // going to be nearly identical except for one part, then put the identical
+  // parts in the question and just separate out the choice parts!").
+  //
+  // « Nous y allons » appeared in all four options; a learner read it four
+  // times and it distinguished nothing. Lifted into a frame it is read once,
+  // and the options become « à vélo » / « en métro » / « en avion », which IS
+  // the question. sharedAffix returns null whenever there is nothing worth
+  // lifting, and this whole path then costs nothing.
+  //
+  // The option's VALUE is still the full sentence — only its LABEL is reduced —
+  // so grading, the SRS key and the 🔊 read-back are all untouched.
+  const optionSplit =
+    ex.kind === "mcq" && !isFrame && !ex.segments && ex.options ? sharedAffix(ex.options) : null;
+  const partOf = (opt: string | null): string | null =>
+    opt == null || !optionSplit ? opt : (optionSplit.parts[ex.options!.indexOf(opt)] ?? opt);
+
+  /**
+   * THE FRENCH ON A CARD IS ONE SIZE — the question and the answers alike.
+   *
+   * Dan, 2026-09-01: *"I see that some questions have both the Q and the A in
+   * French. In that case they should equally big."*
+   *
+   * The frame was text-2xl and the French options text-lg, which came about
+   * honestly: the options were sized against the ENGLISH prompt, back when the
+   * English was the only other thing on the card. Once the shared frame arrived
+   * the card had French above French, at two different sizes, with nothing to
+   * justify the step — both are the sentence.
+   *
+   * They step down TOGETHER when an option is long, never one alone, so that
+   * "equally big" survives the case it would otherwise break on: an atelier
+   * deals whole turns as options (« Ce week-end, je vais au cinéma avec des
+   * amis. ») and four of those at 24px is three lines apiece.
+   *
+   * The threshold is optionGrid's own STACK_ABOVE rather than a second number,
+   * because it answers the same question — is this option too long to sit
+   * beside another — and gapSentence is the standing lesson about one rule
+   * living in five places.
+   */
+  const frAnswers: string[] =
+    ex.kind === "mcq"
+      ? (optionSplit?.parts ?? ex.options ?? [])
+      : ex.segments
+        ? ex.segments.flatMap((s) => (s.kind === "blank" ? s.choices : []))
+        : [];
+  const FR_TEXT = frAnswers.some((o) => (o ?? "").length > STACK_ABOVE) ? "text-lg" : "text-2xl";
+  // "Equally big" means levelling UP — the options grow to the sentence, the
+  // sentence does not shrink to the options — so an option too wide for a
+  // two-column cell at 24px takes a full-width row instead of dropping a size.
+  const FR_CELL = FR_TEXT === "text-2xl" ? STACK_ABOVE_2XL : STACK_ABOVE;
+
+  /** Nothing may sit between the blank and what follows it: sentence-final
+   *  punctuation, or the noun an elided « l' » is glued to. */
+  const gluesRight = (after: string | undefined) =>
+    /^[.,?!;:»)]/.test(after ?? "") || /['’]$/.test(ex.answer ?? "");
+
+  // FRENCH PUNCTUATION DOES NOT BREAK OFF ITS WORD.
+  //
+  // « Tu prends la voiture ? » is written with a space before the question
+  // mark, and on a phone the blank pill widens the line enough that the mark
+  // wrapped alone onto the next row — under a card that already shows a « ? »
+  // for the blank, so the sentence appeared to have two gaps. A narrow no-break
+  // space is what French typography calls for there anyway.
+  const tightPunct = (s: string) => s.replace(/ (?=[?!;:%»])/g, " ");
+
   // A blank's own skin, shared by the one-blank frame and by each blank of a
   // segmented cloze, so the two cannot drift apart visually.
-  const blankClass = (filled: boolean) =>
-    `mx-1.5 inline-block min-w-[90px] rounded-md border-b-2 border-dashed px-2 align-baseline ${
+  // min-w-[1.6em], not 90px (Dan, 1 Sep: "can we have the question mark in a
+  // minimal square rather than a super long blank?? why waste the space?").
+  // 90px was set when a blank held a typed answer; on an MCQ frame it holds a
+  // « ? » and reserved five characters of empty paper, which is what pushed
+  // « Tu prends ? voiture ? » onto two lines in the first place. It is in `em`
+  // so it tracks the 2xl frame rather than fixing a pixel count, and the box
+  // still GROWS to whatever the answer turns out to be.
+  //
+  // `tightRight` closes the gap on the right when nothing belongs there: a
+  // full stop (« On y va [?] . » read as if the sentence had a hole after the
+  // blank) or an elision, where « l' » glues to its noun and « Nous prenons
+  // [?] avion. » would teach the opposite of what the card is about.
+  const blankClass = (filled: boolean, tightRight = false) =>
+    `ml-1.5 ${tightRight ? "mr-0" : "mr-1.5"} inline-block min-w-[1.6em] rounded-md border-b-2 border-dashed px-2 text-center align-baseline ${
       !answered
         ? "border-[color:var(--cahier-rule)] bg-white/70"
         : result !== "wrong"
@@ -582,19 +681,16 @@ function ExerciseCard({
       )}
       {ex.big && (() => {
         // An EN->FR prompt is a REFERENCE to build from, not a target to read
-        // aloud. Dan, 2026-08-31: "it should not be more salient than the
-        // french, but still it should be of equal size (but italics non
-        // bold)." So: same 2xl as the French, italic, regular weight, and one
-        // step down in ink. `bigLang` also stops English going out tagged
-        // lang="fr", which made the 🔊 button read it with French phonics.
+        // aloud. `bigLang` also stops English going out tagged lang="fr",
+        // which made the 🔊 button read it with French phonics.
         const english = ex.bigLang === "en" || ex.kind === "translate" || ex.kind === "build";
         return (
           <p
-            className={`text-center text-2xl leading-snug ${
+            className={
               english
-                ? "font-normal italic text-[color:var(--cahier-ink)]/75"
-                : "font-bold text-[color:var(--cahier-ink)]"
-            }`}
+                ? `text-center ${EN_TEXT}`
+                : `text-center ${FR_TEXT} font-bold leading-snug text-[color:var(--cahier-ink)]`
+            }
             lang={english ? "en" : "fr"}
           >
             {ex.big}
@@ -603,7 +699,7 @@ function ExerciseCard({
       })()}
       {ex.segments && (
         <>
-          <p className="text-center text-2xl font-bold leading-snug text-[color:var(--cahier-ink)]" lang="fr">
+          <p className={`text-center ${FR_TEXT} font-bold leading-snug text-[color:var(--cahier-ink)]`} lang="fr">
             {ex.segments.map((sg, n) =>
               sg.kind === "text" ? (
                 <span key={n}>{sg.text}</span>
@@ -627,7 +723,7 @@ function ExerciseCard({
           {ex.en && (
             // Same reference styling as the single-blank card: equal size,
             // italic, unbolded (Dan, 31 Aug).
-            <p lang="en" className="text-center text-2xl font-normal italic leading-snug text-[color:var(--cahier-ink)]/75">{ex.en}</p>
+            <p lang="en" className={`text-center ${EN_TEXT}`}>{ex.en}</p>
           )}
           {/* One row of choices per blank, in reading order. TWO ROWS IS THE
               POINT of Difficile: the verb decision and the article decision
@@ -638,7 +734,7 @@ function ExerciseCard({
               if (sg.kind !== "blank") return null;
               const b = blankIndex(ex.segments!, n);
               return (
-                <div key={n} className={optionGridClass(sg.choices, "gap-2")}>
+                <div key={n} className={optionGridClass(sg.choices, "gap-2", FR_CELL)}>
                   {sg.choices.map((c) => {
                     const isPicked = picks[b] === c;
                     const isAnswer = c === sg.answer;
@@ -659,7 +755,7 @@ function ExerciseCard({
                         disabled={answered}
                         onClick={() => onPick(b, c)}
                         style={!answered && !isPicked ? groupWash(b) : undefined}
-                        className={`rounded-lg border-2 px-3 py-2 text-lg font-semibold text-[color:var(--cahier-ink)] transition ${cls}`}
+                        className={`rounded-lg border-2 px-3 py-2 ${FR_TEXT} font-semibold text-[color:var(--cahier-ink)] transition ${cls}`}
                       >
                         {c}
                       </button>
@@ -671,22 +767,16 @@ function ExerciseCard({
           </div>
         </>
       )}
+      {/* One blank skin for every card. This block used to carry its own copy
+          of the class list, so narrowing `blankClass` left the frame card — the
+          one Dan was looking at — still 90px wide. */}
       {isFrame && (
-        <p className="text-center text-2xl font-bold leading-snug text-[color:var(--cahier-ink)]">
-          <span lang="fr">{ex.before}</span>
-          <span
-            className={`mx-1.5 inline-block min-w-[90px] rounded-md border-b-2 border-dashed px-2 align-baseline ${
-              !answered
-                ? "border-[color:var(--cahier-rule)] bg-white/70"
-                : result !== "wrong"
-                  ? "border-[color:var(--drill-ok)] bg-[color:var(--drill-ok-bg)]"
-                  : "border-[color:var(--drill-bad)] bg-[color:var(--drill-bad-bg)] line-through"
-            }`}
-            lang="fr"
-          >
-            {shown?.trim() ? shown : "?"}
+        <p className={`text-center ${FR_TEXT} font-bold leading-snug text-[color:var(--cahier-ink)]`}>
+          <span lang="fr">{tightPunct(ex.before ?? "")}</span>
+          <span className={blankClass(!!shown?.trim(), gluesRight(ex.after))} lang="fr">
+            {shown?.trim() ? shown : <span className="opacity-40">?</span>}
           </span>
-          <span lang="fr">{ex.after}</span>
+          <span lang="fr">{tightPunct(ex.after ?? "")}</span>
         </p>
       )}
       {/* The segmented card renders its own reference line above the rows. */}
@@ -694,14 +784,24 @@ function ExerciseCard({
         // Equal size to the French frame above it, italic and unbolded so it
         // reads as the reference rather than competing with the target (Dan,
         // 31 Aug: "of equal size (but italics non bold)").
-        <p lang="en" className="text-center text-2xl font-normal italic leading-snug text-[color:var(--cahier-ink)]/75">
+        <p lang="en" className={`text-center ${EN_TEXT}`}>
           {ex.en}
         </p>
       )}
 
 
+      {/* The frame the options were all repeating, hoisted and read once. */}
+      {optionSplit && (
+        <p className={`text-center ${FR_TEXT} font-bold leading-snug text-[color:var(--cahier-ink)]`}>
+          <span lang="fr">{tightPunct(optionSplit.before)}</span>
+          <span className={blankClass(!!shown?.trim(), gluesRight(optionSplit.after))} lang="fr">
+            {shown?.trim() ? partOf(shown) : <span className="opacity-40">?</span>}
+          </span>
+          <span lang="fr">{tightPunct(optionSplit.after)}</span>
+        </p>
+      )}
       {ex.kind === "mcq" && ex.options && (
-        <div className={optionGridClass(ex.options, "gap-2.5")}>
+        <div className={optionGridClass(optionSplit?.parts ?? ex.options, "gap-2.5", FR_CELL)}>
           {ex.options.map((c, n) => {
             const isPicked = (answered ? shown : selected) === c;
             const isAnswer = c === ex.answer;
@@ -725,12 +825,19 @@ function ExerciseCard({
                 // Answered → options stay tappable purely for their sound.
                 onClick={() => (answered ? speak(c, "fr-FR") : onSelect(c))}
                 disabled={isStruck}
-                className={`rounded-xl border-2 px-4 py-3 text-center text-base font-bold transition ${cls}`}
+                // text-lg, not text-base: these options ARE the French on an
+                // MCQ card, and the English prompt above them is sized to
+                // match. Left at 16px the target read smaller than its own
+                // reference line.
+                className={`rounded-xl border-2 px-4 py-3 text-center ${FR_TEXT} font-bold transition ${cls}`}
               >
                 {!answered && (
                   <span aria-hidden className="mr-2 text-xs font-bold opacity-50">{n + 1}</span>
                 )}
-                {c}
+                {/* The LABEL is reduced when the frame above carries the rest;
+                    the value stays `c`, so grading and 🔊 read the whole
+                    sentence. */}
+                {optionSplit ? optionSplit.parts[n] : c}
               </button>
             );
           })}
