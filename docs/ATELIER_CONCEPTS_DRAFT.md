@@ -1,10 +1,18 @@
-# The five remaining atelier concepts — drafted ahead of their files
+# The six remaining concepts — drafted ahead of their files
 
-**Concepts lane · 1 Sep 2026.** SIO-010 is written and merged; these are the
-other five. **None of these files exists yet** — the atelier lesson files are
-Peers' (STATUS line 544). This doc exists so each concept drops in the hour its
-file lands rather than the day after: paste the `concept:` block in above
-`memo:`, and it is done.
+**Concepts lane · 1 Sep 2026, updated the same evening.**
+
+**STATUS CHANGED WHILE THIS DOC EXISTED, WHICH IS WHY IT IS WORTH RE-READING.**
+When first written, none of these six lesson files existed. **All six now do**,
+on `origin/claude/peers-vd2h6h` (`8284827` and `ea43c0d`), unmerged. Every one
+leaves `concept` absent for this lane, and every atelier passes its Mémo through
+with `memo: memoForDeck(DECK)` — the five drafts below were checked against the
+real files and need no change. SIO-025 has been added, so it is six.
+
+Paste the `concept:` block in above `memo:`, and it is done. Each one will also
+need its stop's verify check inverted from "`concept` is absent" to "`concept`
+is present, with its required slots" — `verify74`, `verify75` and `verify76`
+carry that hunk already, worded identically, and are the model.
 
 Every argument is built from `ATELIER_DIALOGUES` (`src/content/ateliers.ts`)
 alone. **No new French anywhere in this document.** Each concept names its
@@ -29,6 +37,138 @@ It is drafted below on a different claim for that reason. Also avoided:
 (« il y a » never changes), `qu-est-ce-que-c-est` (c'est → il est).
 
 ---
+
+## SIO-025 · Pourquoi ? Parce que…
+
+**Not an atelier** — the sixth of the deck-backed stops, added here 1 Sep
+because its file arrived with the other five.
+
+**Claim — why the "three frames" are not three rules.** The Mémo names three
+(`c'est` + adjective, `j'aime` + what you like, `je fais` + what you do) and
+then has to admit the sixth card fits none of them. That is not a hole in the
+deck: it is the general rule showing through. Every one of the six reasons
+begins with a **subject** — *c'*, *j'*, *je* — because « parce que » does not
+introduce a word, it opens a whole sentence. Learn that and the three frames
+dissolve into ordinary French.
+
+```tsx
+  concept: {
+    subtitle: "Why « parce que » opens a sentence, not a word",
+    contrast: (
+      <>
+        English answers a <i>why</i> with a fragment all the time &mdash;{" "}
+        <i>Why do you like it?</i> <i>Fun.</i> <i>The people.</i> French cannot:
+        after <i lang="fr">parce que</i> a whole sentence has to follow, subject and
+        verb included.
+      </>
+    ),
+    question: (
+      <>
+        The Mémo names three frames, and then the sixth reason &mdash;{" "}
+        <i lang="fr">Parce que je fais du sport avec mes amis</i>{" "}
+        &mdash; uses none of
+        them. Is that an exception?
+      </>
+    ),
+    answer: (
+      <>
+        No &mdash; it is the rule the three frames were hiding. Look at what every
+        reason starts with: <i lang="fr">c&rsquo;</i>est,{" "}
+        <i lang="fr">j&rsquo;</i>aime, <i lang="fr">je</i> fais. All six carry a{" "}
+        <b>subject</b>, because <i lang="fr">parce que</i> introduces a sentence and a
+        French sentence must have one. The three frames are simply the three sentences
+        you need most often; any sentence works, which is why the sixth needs no
+        special permission.
+      </>
+    ),
+    pitfallHeads: ["answering as English does", "answering with a sentence"],
+    pitfall: [
+      {
+        label: <>an adjective alone</>,
+        wrong: <i lang="fr">Parce que amusant.</i>,
+        right: (
+          <>
+            <i lang="fr">Parce que c&rsquo;est amusant.</i>{" "}
+            &mdash; something has to be fun
+          </>
+        ),
+      },
+      {
+        label: <>the subject dropped</>,
+        wrong: <i lang="fr">Parce que aime dormir.</i>,
+        right: (
+          <>
+            <i lang="fr">Parce que j&rsquo;aime dormir.</i>{" "}
+            &mdash; someone has to do the liking
+          </>
+        ),
+      },
+      {
+        label: <>a noun alone</>,
+        wrong: <i lang="fr">Parce que le sport.</i>,
+        right: (
+          <>
+            <i lang="fr">Parce que je fais du sport avec mes amis.</i>{" "}
+            &mdash; say what you do with it
+          </>
+        ),
+      },
+      {
+        label: <>two frames at once</>,
+        wrong: <i lang="fr">Parce que c&rsquo;est j&rsquo;aime les films.</i>,
+        right: (
+          <>
+            <i lang="fr">Parce que j&rsquo;aime beaucoup les films.</i>{" "}
+            &mdash; one subject, one verb
+          </>
+        ),
+      },
+    ],
+    flow: [
+      { depth: 0, text: "Say « Parce que », then a whole sentence." },
+      { depth: 1, text: "Describing the thing? c'est + adjective — c'est calme." },
+      { depth: 1, text: "Saying what you like? j'aime + it — j'aime dormir." },
+      { depth: 1, text: "Saying what you do? je fais + it — je fais du sport." },
+      { depth: 0, text: "Anything else you could say on its own works too." },
+    ],
+    check: [
+      {
+        q: (
+          <>
+            Can you answer <i lang="fr">Pourquoi ?</i> with{" "}
+            <i lang="fr">Parce que amusant</i>?
+          </>
+        ),
+        a: (
+          <>
+            No. <i lang="fr">Amusant</i> describes something, and nothing has been
+            named yet: <i lang="fr">Parce que c&rsquo;est amusant.</i>
+          </>
+        ),
+      },
+      {
+        q: (
+          <>
+            <i lang="fr">Parce que je fais du sport avec mes amis</i> matches none of
+            the three frames. Is it wrong?
+          </>
+        ),
+        a: (
+          <>
+            It is the most ordinary sentence in the deck. The frames were never the
+            rule &mdash; a subject and a verb are.
+          </>
+        ),
+      },
+    ],
+    remember: (
+      <>
+        <b>« Parce que » opens a sentence, not a word.</b> Whatever you could say on
+        its own, say that after it.
+      </>
+    ),
+  },
+```
 
 ## SIO-020 · Présenter un pays
 

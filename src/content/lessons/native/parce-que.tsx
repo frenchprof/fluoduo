@@ -76,6 +76,126 @@ function others<T>(pool: readonly T[], not: T, n: number): T[] {
 export const parceQueLesson: NativeLesson = {
   slug: "parce-que",
 
+  // TIER 3 · SIO-025, drafted 1 Sep in docs/ATELIER_CONCEPTS_DRAFT.md and
+  // pasted in unchanged once this file landed. Every French line is a deck
+  // card.
+  concept: {
+    subtitle: "Why « parce que » opens a sentence, not a word",
+    contrast: (
+      <>
+        English answers a <i>why</i> with a fragment all the time &mdash;{" "}
+        <i>Why do you like it?</i> <i>Fun.</i> <i>The people.</i> French cannot:
+        after <i lang="fr">parce que</i> a whole sentence has to follow, subject and
+        verb included.
+      </>
+    ),
+    question: (
+      <>
+        The Mémo names three frames, and then the sixth reason &mdash;{" "}
+        <i lang="fr">Parce que je fais du sport avec mes amis</i>{" "}
+        &mdash; uses none of
+        them. Is that an exception?
+      </>
+    ),
+    answer: (
+      <>
+        No &mdash; it is the rule the three frames were hiding. Look at what every
+        reason starts with: <i lang="fr">c&rsquo;</i>est,{" "}
+        <i lang="fr">j&rsquo;</i>aime, <i lang="fr">je</i> fais. All six carry a{" "}
+        <b>subject</b>, because <i lang="fr">parce que</i> introduces a sentence and a
+        French sentence must have one. The three frames are simply the three sentences
+        you need most often; any sentence works, which is why the sixth needs no
+        special permission.
+      </>
+    ),
+    pitfallHeads: ["answering as English does", "answering with a sentence"],
+    pitfall: [
+      {
+        label: <>an adjective alone</>,
+        wrong: <i lang="fr">Parce que amusant.</i>,
+        right: (
+          <>
+            <i lang="fr">Parce que c&rsquo;est amusant.</i>{" "}
+            &mdash; something has to be fun
+          </>
+        ),
+      },
+      {
+        label: <>the subject dropped</>,
+        wrong: <i lang="fr">Parce que aime dormir.</i>,
+        right: (
+          <>
+            <i lang="fr">Parce que j&rsquo;aime dormir.</i>{" "}
+            &mdash; someone has to do the liking
+          </>
+        ),
+      },
+      {
+        label: <>a noun alone</>,
+        wrong: <i lang="fr">Parce que le sport.</i>,
+        right: (
+          <>
+            <i lang="fr">Parce que je fais du sport avec mes amis.</i>{" "}
+            &mdash; say what you do with it
+          </>
+        ),
+      },
+      {
+        label: <>two frames at once</>,
+        wrong: <i lang="fr">Parce que c&rsquo;est j&rsquo;aime les films.</i>,
+        right: (
+          <>
+            <i lang="fr">Parce que j&rsquo;aime beaucoup les films.</i>{" "}
+            &mdash; one subject, one verb
+          </>
+        ),
+      },
+    ],
+    flow: [
+      { depth: 0, text: "Say « Parce que », then a whole sentence." },
+      { depth: 1, text: "Describing the thing? c'est + adjective — c'est calme." },
+      { depth: 1, text: "Saying what you like? j'aime + it — j'aime dormir." },
+      { depth: 1, text: "Saying what you do? je fais + it — je fais du sport." },
+      { depth: 0, text: "Anything else you could say on its own works too." },
+    ],
+    check: [
+      {
+        q: (
+          <>
+            Can you answer <i lang="fr">Pourquoi ?</i> with{" "}
+            <i lang="fr">Parce que amusant</i>?
+          </>
+        ),
+        a: (
+          <>
+            No. <i lang="fr">Amusant</i> describes something, and nothing has been
+            named yet: <i lang="fr">Parce que c&rsquo;est amusant.</i>
+          </>
+        ),
+      },
+      {
+        q: (
+          <>
+            <i lang="fr">Parce que je fais du sport avec mes amis</i> matches none of
+            the three frames. Is it wrong?
+          </>
+        ),
+        a: (
+          <>
+            It is the most ordinary sentence in the deck. The frames were never the
+            rule &mdash; a subject and a verb are.
+          </>
+        ),
+      },
+    ],
+    remember: (
+      <>
+        <b>« Parce que » opens a sentence, not a word.</b> Whatever you could say on
+        its own, say that after it.
+      </>
+    ),
+  },
+
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">

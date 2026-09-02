@@ -67,9 +67,30 @@ check(re.search(rf'"{slug}":\s*\{{\s*slug:\s*"{slug}"', lessons) is not None,
 check(re.search(rf'"{sio}":\s*\[[^\]]*"{slug}"', lessons) is not None,
       f"{sio} points at the {slug} lesson",
       f"LESSONS_BY_SIO has no {sio} -> {slug} row, so the stop shows no lesson")
-check(re.search(r"^\s*concept:", src, re.M) is None,
-      f"{slug}.tsx leaves `concept` to the concepts lane",
-      f"{slug}.tsx ships a `concept` — a stub reads to a learner as the real argument")
+# CROSS-LANE EDIT — concepts lane, 2 Sep. Read this before reverting it.
+#
+# As pushed this asserted `concept` was ABSENT, which was right while the field
+# was owed: a stub renders to a learner as the real argument. The concepts are
+# now written, so absence has flipped meaning — it would mean a merge dropped
+# one. Same intent, asserted from the other side. This is the fifth file to take
+# this edit (verify74, 75, 76, 77, 83); the wording is identical across all of
+# them so they read as one decision rather than five.
+check(re.search(r"^\s*concept:", src, re.M) is not None,
+      f"{slug}.tsx carries its concept",
+      f"{slug}.tsx has no `concept` — SIO-025 is back to reading 'Idea has not been written for this lesson yet'")
+
+for _slot in ("subtitle", "contrast", "question", "answer", "remember"):
+    check(re.search(rf"^\s+{_slot}:", src, re.M) is not None,
+          f"the concept fills `{_slot}`",
+          f"the concept has no `{_slot}` — a concept missing a required slot is a stub with a type annotation")
+
+# THE ARGUMENT IS THAT THE THREE FRAMES ARE NOT THREE RULES, and a stub cannot
+# fake it: the claim has to reach the sixth card, the one fitting none of them.
+_at = src.find("  concept: {")
+_concept = src[_at:] if _at != -1 else ""
+check("je fais du sport avec mes amis" in _concept,
+      "the claim reaches the card that fits none of the three frames",
+      "the concept never names « Parce que je fais du sport avec mes amis » — the card that shows the frames were never the rule")
 
 j = json.load(open("src/content/collections/parce-que.json", encoding="utf-8"))
 check(j.get("lessonSlug") == slug,
