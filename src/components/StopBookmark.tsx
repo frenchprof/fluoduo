@@ -1,0 +1,77 @@
+"use client";
+
+/**
+ * The editable stop number — the bookmark's face (Dan, 2026-09-02: "we need
+ * a way for users to book mark the stop that they have left off … For the
+ * home page, we can make the stop number indicator editable. For the map,
+ * could that editable indicator be placed to the left of zoom control").
+ *
+ * It LOOKS like the reading it replaced — « 46/50 » — because it is that
+ * reading: the number shown is the current stop, computed or bookmarked.
+ * Editing it writes the bookmark; clearing it erases the bookmark and the
+ * computed reading returns. The chrome (well, font, size) stays the
+ * parent's — this component is only the number, the slash and the total,
+ * so Home's hand-written well and the map's mono control row each dress
+ * it as their own.
+ */
+import { useState } from "react";
+import { SIOS } from "@/content/sios";
+import { saveBookmark } from "@/lib/continuer";
+
+export default function StopBookmark({
+  stopNo,
+  totalClassName,
+}: {
+  /** The current stop's number — bookmark if set, computed otherwise. */
+  stopNo: number;
+  totalClassName: string;
+}) {
+  // While the learner is typing, the field is theirs — committing on every
+  // keystroke would bookmark "4" on the way to "46". Commit on Enter/blur.
+  const [draft, setDraft] = useState<string | null>(null);
+
+  // A save elsewhere (the other surface, another tab) must not be fought by
+  // a stale draft here — when the shown number changes underneath, the draft
+  // yields. Adjusted during render (the React-documented idiom), not in an
+  // effect, so there is no flash of the stale draft.
+  const [lastStop, setLastStop] = useState(stopNo);
+  if (lastStop !== stopNo) {
+    setLastStop(stopNo);
+    setDraft(null);
+  }
+
+  const commit = () => {
+    if (draft === null) return;
+    const n = Number(draft.trim());
+    if (draft.trim() === "") saveBookmark(null);
+    else if (Number.isInteger(n) && n >= 1 && n <= SIOS.length) saveBookmark(n);
+    setDraft(null);
+  };
+
+  return (
+    <>
+      <input
+        type="text"
+        inputMode="numeric"
+        value={draft ?? String(stopNo)}
+        aria-label={`Goal number, 1 to ${SIOS.length} — edit it to bookmark the stop you are working on`}
+        title="Your stop. Edit the number to bookmark where you left off — wandering the map won't move it. Clear it to go back to the computed stop."
+        onFocus={(e) => {
+          setDraft(String(stopNo));
+          e.target.select();
+        }}
+        onChange={(e) => setDraft(e.target.value.replace(/[^0-9]/g, ""))}
+        onBlur={commit}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") (e.target as HTMLInputElement).blur();
+          if (e.key === "Escape") setDraft(null);
+        }}
+        /* All the dressing lives in globals.css under this class — the
+           cahier shells skin every input with a white box at a specificity
+           no utility class can beat, so the escape has to be CSS too. */
+        className="fluo-bookmark"
+      />
+      <span className={totalClassName}>/{SIOS.length}</span>
+    </>
+  );
+}

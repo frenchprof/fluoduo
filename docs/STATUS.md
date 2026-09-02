@@ -6,6 +6,53 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 2 Sep — CHANGE OF PLANS on the menu: popups per parent, children tabs retired
+
+Sole editor of STATUS.md in this commit: fluoduo-main. **This supersedes part
+of the six-ruling strips brief below — read this first, Pre-tests.**
+
+Dan, on the base-bar links and the burger menu's parents: *"Each of those
+links at the base as well as the parent links in the burger menu - make them
+pop up a window like the one that for Menu, but with only a subset, i.e. the
+relevant tiles that are under those parents. So actually we do not need
+children tabs anymore."*
+
+So the shape is now:
+
+- **Every family link at the BASE BAR** (the phone bottom bar's 🎯 🏋️ 🎮 🔄 💬
+  icons) and **every PARENT row in the ☰ menu** opens a popup styled like the
+  Menu one (MenuSplash's tile window), **filtered to that parent's tiles
+  only** — Practice's link opens a window of just Practice's activities, and
+  so on.
+- **Children tabs/flaps are retired entirely.** With them go the rulings that
+  existed only to dress them: no-tail-slack (2) and same-left-edge-shorter
+  (5) from the brief below are MOOT.
+- What survives of that brief, applying now to the parents and the popup
+  tiles: black font on pale washes (1), the MneMemo/MémoiRecall renames (3),
+  no white backdrop behind an open panel (4), FluOLinGo Hand for the labels
+  (6).
+
+Still Pre-tests' surface — this section is the brief, not the build.
+
+## 2 Sep — the stop BOOKMARK: the learner's word on where they are
+
+Dan, over Home's « 46/50 » well: *"we need a way for users to book mark the
+stop that they have left off, because if they have wandered out of curiosity,
+it should not force them to resume at that spot. For the home page, we can
+make the stop number indicator editable. For the map, could that editable
+indicator be placed to the left of zoom control."*
+
+Shipped (fluoduo-main): `fluolingo:bookmark` in lib/continuer.ts —
+`nextSioId(progress, bookmarkNo?)` takes it as an argument (render paths pass
+it from state; `continueSioId()` reads it at call time for handlers), so a
+set bookmark IS the current stop: 🧑‍🎓, the travelled route, Continue, the
+tour's Play card and the activity landing all follow it. Completing the
+bookmarked stop advances the reading to the first gap after it; clearing the
+field returns the computed reading. Wandering never writes it — verify87
+holds that only the indicator itself calls saveBookmark. Two faces of one
+component (StopBookmark): Home's hand-written well, and the map's control row
+immediately left of the zoom cluster.
+
 ## 2 Sep, later still — MémoiRecall's « Flip » button, and the card underneath it
 
 Dan: *"there is a redundant button called FLIP which is not working and which

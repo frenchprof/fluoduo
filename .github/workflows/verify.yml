@@ -327,6 +327,9 @@ jobs:
       - name: "Every page wears the same chrome — spine, band, stop (1 Sep)"
         run: python3 verify/verify82-page-chrome.py
 
+      - name: "The stop bookmark — one value, two faces, no silent writers (2 Sep)"
+        run: python3 verify/verify87-stop-bookmark.py
+
       # The scan launches the runner's preinstalled Chrome via
       # playwright-core; no browser download step is needed.
       - name: Rebuild the export open, for the browser to walk
