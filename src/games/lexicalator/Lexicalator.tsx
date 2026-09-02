@@ -612,9 +612,17 @@ export default function Lexicalator({
     </span>
   ));
 
+  // THE ONE SENTENCE THAT IS THE GAME, pulled out so the first-run popup and
+  // the ⋯ → Help sheet are literally the same node rather than two wordings
+  // (Dan, 2026-09-02: the popup "reads long as an arrival card"). The three
+  // paragraphs under it are rules a player meets as they go — levels, decoys,
+  // hard mode — and none of them is needed to make the first move.
+  const howToPlay = (
+    <p>Drag a chest down — or just tap a key it needs — then fill its syllables in any order to unlock the French word.</p>
+  );
   const help = (
     <>
-      <p>Drag a chest down — or just tap a key it needs — then fill its syllables in any order to unlock the French word.</p>
+      {howToPlay}
       <p className="mt-2">Level 1 deals whole words; levels 2–3 cut them into syllables; from level {SPELL_LEVEL} it&rsquo;s spelling — 2–4 letter chunks. Six words clear a level.</p>
       <p className="mt-2">Only <b>decoys</b> — fragments that belong to no word on the lane — cost a life. Every useful key belongs to a visible chest.</p>
       <p className="mt-2"><b>Hard</b> hides how many syllables each word has.</p>
@@ -630,6 +638,7 @@ export default function Lexicalator({
       hearts={{ left: lives, total: START_LIVES }}
       score={<>{score} · L{level}{level >= SPELL_LEVEL ? " ✍️" : ""}</>}
       help={help}
+      hint={howToPlay}
       hintKey="lexicalater"
       menu={[
         { label: "🎵 Music", active: music, onClick: () => { chiptune.toggle("conveyor"); setMusic(chiptune.playing() === "conveyor"); } },

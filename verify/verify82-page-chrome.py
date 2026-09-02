@@ -368,6 +368,27 @@ if desk_top and row_left and dd:
        "and one gutter in, by the same expression the page row uses",
        f"the drill's gutter is {m_left.group(1) if m_left else 'unset'} and the page row's is "
        f"{row_left.group(1)} — two spellings of one edge, which is how they came apart before")
+    # ALL FOUR SIDES (Dan, 2026-09-02: shown three renders and asked which, "B").
+    # The first landing put grey on the left and above only, and the edge that
+    # actually showed the difference was the RIGHT one — the paper ran off the
+    # side of the screen while every other page in the app sat on grey. The
+    # right gutter is asserted against the LEFT rather than against a number,
+    # so re-tuning the gutter moves both or fails.
+    m_right = re.search(r"padding-right:\s*(clamp\([^)]*\))", body)
+    ok(m_right is not None and m_left is not None and m_right.group(1) == m_left.group(1),
+       "and the same gutter on the right, so the paper is centred rather than nudged",
+       f"the drill's right gutter is {m_right.group(1) if m_right else 'unset'} against a left of "
+       f"{m_left.group(1) if m_left else 'unset'} — the paper runs off one side of the screen")
+    # The BOTTOM is deliberately NOT the page desk's 64: a page scrolls, a drill
+    # is exactly one screen with its footer tray pinned to the end of it, and 64
+    # there costs 64px of that screen where 8 costs 8. Asserted as a range, not
+    # a value, because the point is "some desk, but not a page's".
+    m_bot = re.search(r"padding-bottom:\s*(\d+)px", body)
+    ok(m_bot is not None and 0 < int(m_bot.group(1)) < int(desk_top.group(1)) + 24,
+       f"the drill's paper sits on desk at the bottom too, without paying a page's 64px for it "
+       f"({m_bot.group(1) if m_bot else 'unset'}px)",
+       f"the drill's bottom desk is {m_bot.group(1) if m_bot else 'unset'} — either the paper runs off "
+       "the bottom of the screen again, or a drill has given up a page's worth of its one screen")
 # THREE PARTS, AND ONLY THREE. Dan drew the band with a ✕, a name and a goal
 # circle; PageBand also had a `trailing` slot ("one extra control, never a
 # number") and exactly one page filled it — the deck's band mounted the (?)
