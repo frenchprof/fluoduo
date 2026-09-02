@@ -75,6 +75,26 @@ export function stopTag(sio: Sio | null): string | undefined {
   return `GOAL ${n}/${SIOS.length} · ${sio.short}`;
 }
 
+/**
+ * The goal's NUMBER — what the band's circle carries (Dan, 1 Sep, with a
+ * drawing: "with a circle and the related goal number").
+ *
+ * It replaced the inline « GOAL 39/50 · Wants & needs » text on the band, and
+ * the trade is deliberate: the text truncated on four bands at 320px because
+ * it shared one line with the activity's name, and a circle is the same
+ * information in a place that cannot run out of room. The goal's NAME is what
+ * the trade costs; the map and the goal's own page carry it.
+ */
+export function goalNumber(sio: Sio | null): number | undefined {
+  if (!sio) return undefined;
+  return SIOS.indexOf(sio) + 1;
+}
+
+/** A deck id straight to its goal number, for a band. */
+export function goalNumberForDeck(collectionId: string | undefined | null): number | undefined {
+  return goalNumber(stopForDeck(collectionId));
+}
+
 /** Shorthand for the common case: a deck id straight to its band tag. */
 export function stopTagForDeck(collectionId: string | undefined | null): string | undefined {
   return stopTag(stopForDeck(collectionId));

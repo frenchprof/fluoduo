@@ -17,16 +17,16 @@ export const metadata = { title: "My Profile — FluOLinGo" };
 
 export default function Page() {
   return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="profil" band={false}>
-      {/* `band={false}`: this page draws its OWN PageBand, inside
-          ProfileContent, because its title is the signed-in name and its chip
-          is the live outcome count — neither of which a server component
-          knows. Without it the shell adds a SECOND band above, and the page
-          carries two headings one line apart, which is the fault being fixed
-          rather than the fix.
+    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="profil" band={{ title: "Moi" }}>
+      {/* The band is the SHELL's now (1 Sep) — drawn inside ProfileContent it
+          sat 20px lower than every other band on the site, because the content
+          well it lived in is padded and the shell's band is not. It can move
+          because it stopped needing anything only that component knows: the
+          title is the activity's name and the outcome count came off every
+          strip the same day.
 
-          And no max-w wrapper since 1 Sep: a band centred inside 768px is not
-          a band that reaches the paper. ProfileContent constrains its body. */}
+          No max-w wrapper either: a band centred inside 768px is not a band
+          that reaches the paper. ProfileContent constrains its own body. */}
       <ProfileContent />
     </CahierShell>
   );

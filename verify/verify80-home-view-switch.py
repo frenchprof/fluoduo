@@ -46,6 +46,14 @@ WHAT IS PINNED, and why each would fail silently
      knob stops short of the end or runs past it; and the switch plus the four
      keys must fit 360px, or Dan's two rows silently become three. Both numbers
      are read out of the source and recomputed here, never asserted twice.
+  7  AND EVERY STUDY–TEST SWITCH IS THIS SWITCH. Dan, 1 Sep: *"the study-test
+     switch should be redone like the 2D 3D switch."* There were TWO of them —
+     the deck table's and Flip It's — and only the first was found, so for a
+     day the app had the new pill on one screen and the old bare knob with
+     « Study » printed beside it on the other. Nothing about either screen
+     alone looked wrong, which is the same shape as the 91-route chrome sweep:
+     a uniformity fault is only visible between screens. Pinned by SHAPE, not
+     by a list of files — it fails on the next surface that hand-rolls one.
 
 Run from the repo root:  python3 verify/verify80-home-view-switch.py
 """
@@ -222,6 +230,41 @@ if None not in (track, keyw, keygap):
        f"the switch and the four keys fit one row on a 360px phone ({track} + 8 + {group} = {total} ≤ 272)",
        f"the switch and the keys need {total}px and a 360px phone has 272 — the keys wrap onto a third line "
        "and Dan's two rows become three")
+
+# ---- 7 · both study–test switches are this switch --------------------------
+# `cahier-modeswitch` is the old bare-knob control. It legitimately survives on
+# FlashcardLesson's 🔊 and 🔀 toggles, which are not two named STATES of one
+# property — they are two independent on/offs, and a pill that reads « 🔊 » in
+# both positions would say nothing. What must not come back is a study–test
+# control built out of it: this looks for the old shape STANDING NEXT TO the
+# words, which is precisely what Dan asked to be replaced.
+STUDYTEST = (
+    "src/app/decks/[id]/CuratedDeckTable.tsx",
+    "src/app/practice/flip-it/[collectionId]/FlipItContent.tsx",
+)
+for path in STUDYTEST:
+    body = code(read(path))
+    ok(bool(body), f"{os.path.basename(path)} exists", f"{path} is missing")
+    ok("<PillSwitch" in body,
+       f"{os.path.basename(path)}'s study–test control is the shared pill",
+       f"{path} does not use PillSwitch — Dan asked for the study-test switch redone like the 2D/3D one")
+    ok('offSpoken="Study"' in body and 'onSpoken="Test"' in body,
+       f"and it still SAYS « Study » / « Test » to a screen reader",
+       f"{path}'s pill shows 📖/✍️ with nothing spoken — an emoji is a fine thing to look at "
+       "and a useless thing to be read aloud")
+    ok("cahier-modeswitch" not in body,
+       f"{os.path.basename(path)} has no hand-rolled knob left over",
+       f"{path} still draws the old cahier-modeswitch beside the new pill")
+
+# THE CAPTION IS GONE FROM BOTH, which is the half of the ask the pill does not
+# do by itself: a pill with « Study » still printed next to it is the same
+# control it was, plus a track.
+for path in STUDYTEST:
+    body = code(read(path))
+    ok(re.search(r'>\s*\{test \? "Test" : "Study"\}\s*<', body) is None,
+       f"{os.path.basename(path)} prints no « Study »/« Test » caption outside the track",
+       f"{path} still captions the switch from outside — that names the property and not the "
+       "state, and the litmus test deletes it")
 
 print("\n".join("  ok    " + m for m in PASS))
 if FAIL:

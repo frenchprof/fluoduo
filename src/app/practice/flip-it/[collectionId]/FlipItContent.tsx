@@ -48,6 +48,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { cap, offer, type SessionLength } from "@/lib/sessionLength";
 import HowManyQuestions from "@/components/HowManyQuestions";
+import PillSwitch from "@/components/PillSwitch";
 import Link from "next/link";
 import { CURATED } from "@/content/collections";
 import { speak } from "@/games/letris/speech";
@@ -247,7 +248,14 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
               : null
             : flipped
               ? { label: "✓ I know it", onClick: () => markAndNext("reviewed") }
-              : { label: "Flip", onClick: () => setFlipped(true) }
+              /* NO « Flip » BUTTON (Dan, 2026-09-02: "there is a redundant
+                 button called FLIP which is not working and which we don't
+                 even need"). The card IS the button — this activity is named
+                 for the gesture — so a second control that did the same thing
+                 sat under it saying so. A null cta is the shell's own
+                 documented case: "body owns flow". What it needed first was
+                 for the card to be a REAL button; see StudyCard. */
+              : null
       }
       secondary={
         view !== "one" || done ? null
@@ -314,16 +322,27 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
 
       {view === "one" && !done && (
         <>
-          <div className="mb-4 flex items-center justify-center gap-1.5">
-            <button type="button" role="switch" aria-checked={test}
-              onClick={() => switchMode(!test)}
-              title={test ? "Test (type the name)" : "Study (flip the card)"}
-              data-on={test} className="cahier-modeswitch">
-              <span className="cahier-modeswitch-knob">{test ? "✍️" : "📖"}</span>
-            </button>
-            <span className="cahier-display text-sm font-bold text-[color:var(--cahier-ink)]">
-              {test ? "Test" : "Study"}
-            </span>
+          {/* THE SAME SWITCH THE DECK PAGE HAS (Dan, 2026-09-01: "the
+              study-test switch should be redone like the 2D 3D switch"). This
+              was the second one — `cahier-modeswitch`, a bare knob with the
+              word « Study » printed beside it, which names neither the state
+              nor the property: a knob sitting left next to "Study" does not
+              say whether you are about to study or have been. The emoji goes
+              inside the track and the caption goes away, which costs a learner
+              nothing and is the litmus test's whole test. */}
+          <div className="mb-4 flex items-center justify-center">
+            <PillSwitch
+              label="Card mode"
+              title={test ? "Test — type the name" : "Study — flip the card"}
+              offLabel="📖"
+              onLabel="✍️"
+              offSpoken="Study"
+              onSpoken="Test"
+              offHue="win"
+              onHue="streak"
+              on={test}
+              onFlip={switchMode}
+            />
           </div>
           {test ? (
             <TestCard key={row.item.id} row={row} parts={parts} phase={phase}
@@ -411,10 +430,22 @@ function AllCards({
 
 /* ─────────────────────────── study ─────────────────────────── */
 
+/**
+ * THE CARD IS THE BUTTON. It was a `<div role="button">` with an onClick and
+ * no tabIndex and no key handler — which is not a button: a keyboard could
+ * not reach it and could not fire it, and the only reason nobody noticed is
+ * that a « Flip » CTA in the footer did the same job and the shell binds
+ * Enter to that. Dan had that CTA removed on 2026-09-02 as redundant, which
+ * makes this the ONLY way to turn a card over — so it becomes a real
+ * `<button>` and gets focus, Enter, Space and a screen-reader role for free.
+ *
+ * The label says which way it will go, because a card mid-run is on one face
+ * or the other and "Flip card" cannot tell you which.
+ */
 function StudyCard({ row, hasArt, flipped, onFlip }: { row: Row; hasArt: boolean; flipped: boolean; onFlip: () => void }) {
   return (
-    <div className="mx-auto w-full max-w-sm cursor-pointer select-none" style={{ perspective: "1200px" }}
-      onClick={onFlip} role="button" aria-label="Flip card">
+    <button type="button" className="mx-auto block w-full max-w-sm cursor-pointer select-none" style={{ perspective: "1200px" }}
+      onClick={onFlip} aria-label={flipped ? "Turn the card back" : "Turn the card over"}>
       <div className="relative h-64" style={{ transformStyle: "preserve-3d", transition: "transform .5s", transform: flipped ? "rotateY(180deg)" : "none" }}>
         <Face>
           <span className="text-7xl" aria-hidden>{row.item.emoji}</span>
@@ -425,7 +456,7 @@ function StudyCard({ row, hasArt, flipped, onFlip }: { row: Row; hasArt: boolean
         </Face>
         <Face back><FrenchAnswer row={row} hasArt={hasArt} /></Face>
       </div>
-    </div>
+    </button>
   );
 }
 

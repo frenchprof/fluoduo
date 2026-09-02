@@ -6,6 +6,100 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 2 Sep, later still — MémoiRecall's « Flip » button, and the card underneath it
+
+Dan: *"there is a redundant button called FLIP which is not working and which
+we don't even need."* Right on both counts and the second explains the first:
+the footer CTA said « Flip » and tapping the card did the same thing, on the
+one activity named for that gesture — so whichever one he used, the other
+looked inert. Driven in the real app it does flip; the fault is that there are
+two controls for one action.
+
+Removing it exposed what it had been covering: the card was a
+`<div role="button">` with an onClick, **no tabIndex and no key handler** —
+not a button. A keyboard could neither reach it nor fire it, and nobody
+noticed because DrillShell binds Enter to the CTA. With the CTA gone the card
+is the only way to turn one over, so it is a real `<button>` now: focus,
+Enter, Space and the role come free, and its label says which way it will go.
+Verified by driving it — Tab reaches the card, Enter and Space both flip.
+
+`verify27 §14g` pins all three (no Flip CTA, no hand-rolled role=button, the
+card is a `<button>` wired to onFlip), break-tested. `verify20` named « Flip »
+alongside « ✓ I know it » and « ↺ To review » as the study CTAs; rewritten
+naming the supersession — those two are self-marks and « Flip » never was.
+
+**Open for Dan:** with the button gone the card carries no visible cue that it
+is tappable. Three options were shown side by side (bare / a quiet ↻ in the
+corner / a ↻ chip in the family ink); shipped bare pending his pick.
+
+## 2 Sep, later — the (?) leaves the deck band
+
+Dan, looking at seven bands side by side: *"what is with the question mark on
+the deck strip"*. It mounted `HelpDot`, whose docstring says it is for pages
+OUTSIDE the CahierShell — the immersive games, which have no ☰ — and it opens
+MenuSplash. The ☰ two centimetres above it opens MenuSplash too, from its
+« MENU » row (screenshotted both ways to be sure). Two doors to one room on one
+screen, and it made the deck the only band in the app with a fourth thing on it.
+
+The `trailing` slot went with it rather than just its occupant: a slot that
+exists is a slot that gets filled, and the band's whole claim is that it is the
+same three parts everywhere. No caller was left. verify82 now pins the band at
+three parts (2 assertions, break-tested); SectionBand keeps its own `trailing`,
+which is a different component with real callers.
+
+## 2 Sep — one page shape, and every band on one edge
+
+Sole editor of STATUS.md in this commit: Pre-tests.
+
+The 1 Sep audit fixed each page and left the site un-uniform, because "visual
+unity" is not a property any single screen has — it exists only BETWEEN
+screens, and every check we had read one page at a time. Swept across all 134
+exported routes, the heading band was drawn at **two lefts (6px and 19px) and
+two tops (49 and 57)**. Dan, shown the three ways to converge: *"Ok move all
+to A"* — A being the 19px page-on-a-desk that 114 routes already had.
+
+Two causes, both removed:
+
+- **`nested` in CahierShell**, computed `context.length > 0` — a page was
+  drawn as a sheet inside a parent sheet BECAUSE IT CARRIED ITS OWN TAB STRIP.
+  That is an accident of how flaps are counted, not a statement about
+  hierarchy, and it caught **91 routes, 90 of them pre-tests**, which are
+  inside nothing. They paid 48px of a 430px screen and — because the bar was
+  drawn `{!nested && <BottomBar />}` — their entire bottom navigation. Nothing
+  ever passed the flag and nothing renders a CahierShell inside another, so
+  the stack branch had no caller to serve. `.cahier-stack` /
+  `.cahier-stack--inner` in globals.css are now used only by Flip It's
+  CahierFrame; left alone rather than deleted in this pass.
+- **A drill had no desk.** DrillShell's root was the viewport, so its spine
+  started at x=0. New `.cahier-drilldesk` gives it the page desk's two numbers
+  — `.cahier-desk`'s 8px above and `.cahier-deskrow`'s gutter — and *nothing
+  else*: a drill is exactly one screen and cannot spare the 64px of desk below
+  that a page gets. verify82 recomputes both from their one home rather than
+  restating them, because a third spelling of those numbers is how the two
+  edges came apart in the first place.
+
+Re-swept after: **121 banded routes, one regime — h47, top 57, left 19, ✕ at
+31.** The 13 without a band are the full-screen games, /hidden/*, and
+/moi/historique.
+
+Also: **the second study–test switch.** Dan's 1 Sep ruling was found on the
+deck table and missed on Flip It, so for a day the app shipped the new pill on
+one screen and the old bare knob with « Study » printed beside it on the
+other — the same between-screens shape as the sweep above. Both are PillSwitch
+now, and verify80 pins it by shape so the next hand-rolled one fails.
+
+Rewritten naming their supersession: `verify20` (its viewport lock read
+`h-dvh` on the drill's own root; the height is the wrapper's now, and it
+asserts both ends because either alone passes on a broken pair), `verify82`
+(§6's well-padding regex named the `nested` ternary; §8 is new — 7 assertions,
+all break-tested), `verify80` (§7 new, 4 assertions, break-tested).
+
+**Open for Dan:** the drill's desk shows grey on the left and above only —
+below and right it runs to the viewport edge, because a drill's footer tray is
+pinned to the bottom of the screen. Deliberate, and it reads as paper sliding
+off the bottom of the desk rather than lying on it. If he wants the desk all
+the way round, a drill loses ~72px of its one screen.
+
 
 ## 2 Sep, small hours — Dan's five rulings on the coloured strips (PRE-TESTS' pass)
 
