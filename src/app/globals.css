@@ -851,8 +851,33 @@ body {
 .cahier-tabs .cahier-tab { width: 160px; }
 .cahier-tabs .cahier-tab--sm { width: 152px; }
 .cahier-tabs .cahier-tab--xs { width: 144px; }
-/* A family's children sit indented under it, so the rail's two ranks read as
-   one hierarchy rather than twenty-two equals (Dan, 19 Aug). */
+/* A family's children LOOK like children, everywhere the class appears.
+ * This rule was scoped to .cahier-tabs (the side rail) until 2 Sep, so the
+ * ☰ dropdown's children wore full parent dress — Dan, over a screenshot of
+ * Practice expanded: "the children … look exactly like their parents", then
+ * "not invisible but camouflaged among the parents". The approved drawing
+ * (door-audit amendment 2): indented under the parent, smaller, dashed,
+ * each hanging off a little connector tick. The family-hue left edge stays
+ * solid — colour must never be the only signal, but it is still a signal. */
+.cahier-tab--child {
+  position: relative;
+  margin-left: 26px;
+  font-size: 0.68rem;
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+  border-style: dashed;
+  border-left-style: solid;
+  background: color-mix(in oklab, var(--cahier-ink) 4%, var(--cahier-paper-raised));
+}
+.cahier-tab--child::before {
+  content: "";
+  position: absolute;
+  left: -15px;
+  top: 50%;
+  width: 12px;
+  border-top: 2px solid var(--cahier-line-strong);
+}
+/* The rail keeps its own tighter geometry on top. */
 .cahier-tabs .cahier-tab--child { width: 132px; margin-left: 12px; }
 .cahier-tabs .cahier-tab > span:last-child { overflow: hidden; text-overflow: ellipsis; }
 /* Two-line flap: activity name over a tiny action verb ("browse the cards")
