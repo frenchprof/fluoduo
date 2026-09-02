@@ -165,7 +165,16 @@ check("var(--cahier-gold)" in m3, "the current stop's ring is --cahier-gold", "g
 # MapBody for the CALL rather than for the string.
 # RE-POINTED 2 Sep: the 2D view is Map2DGrid (see verify25b); the toggle
 # moved into the fixed control row above the map, same shape.
-check("<HomeMap3D " in carte and "<Map2DGrid " in carte and "saveMapView(" in carte and "aria-pressed" in carte,
+# RE-POINTED 2 Sep, CROSS-LANE — read this before reverting it.
+# Dan: "Map of FluOLinGo page is missing the 2D-3D switch that is a copy of the
+# one on the homepage." The map's segmented 2D|3D pair is now the shared
+# PillSwitch, which Dan drew ON 1 SEP FOR THIS VERY CONTROL (see the component's
+# docstring) and which had shipped everywhere except the page it was designed
+# for. The CLAIM here is unchanged — a control drives the view and the choice is
+# remembered — but the mechanism moved: a segmented pair marks state with
+# aria-pressed, a switch with role="switch" + aria-checked, so a check pinned to
+# aria-pressed was pinning the shape rather than the behaviour.
+check("<HomeMap3D " in carte and "<Map2DGrid " in carte and "saveMapView(" in carte and "<PillSwitch" in carte,
       "The Map's 2D ⇄ 3D toggle is intact", "the 2D/3D toggle in MapBody broke")
 
 # 8 · no classmates / emails
