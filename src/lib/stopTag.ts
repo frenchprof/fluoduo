@@ -15,10 +15,9 @@
  * copies of a lookup is how `gapSentence` came to exist; three is not a thing
  * to let happen twice in one day.
  *
- * THE TAG IS DATA, NOT DESCRIPTION, because that is what PageBand's sub-line
- * is for — "course · week, deck · count, never description". So it reads
- * « STOP 39/50 · UNITÉ 3 » and says nothing a learner could have guessed from
- * the title above it.
+ * THE TAG IS DATA, NOT DESCRIPTION. It reads « GOAL 39/50 · Envies et besoins »
+ * and says nothing a learner could have guessed from the activity name beside
+ * it — which is where it now sits, on the same single line (Dan, 1 Sep).
  */
 import { SIOS } from "@/content/sios";
 
@@ -45,20 +44,38 @@ export function stopForPretestId(id: string | undefined | null): Sio | null {
 }
 
 /**
- * The band sub-line: the stop's position on the path and its unit.
+ * The band's inline tag: where this page sits on the course.
  *
- * The POSITION, not the id. `SIO-039` is the identifier the content uses and
- * it means nothing to a learner; "39/50" is the same figure Home already puts
- * in its counter well, so the two surfaces agree about where the learner is
- * without anyone having to translate.
+ *     GOAL 39/50 · Envies et besoins
+ *
+ * THE WORD IS « GOAL » (Dan, 2026-09-01: *"on the website, the words 'stop'
+ * before the stop number should also be replaced with goal"*). The brand is
+ * Fluency On Linguistic GOALS and the family that holds the path is 🎯 Goals,
+ * so « stop » was the one place the course called its own unit something the
+ * rest of the app does not. `SIO` stays in the content and the ids; this is
+ * the learner-facing word.
+ *
+ * THE POSITION, not the id: `SIO-039` means nothing to a learner, and "39/50"
+ * is the figure Home already shows in its counter well, so the two surfaces
+ * agree about where you are without anyone translating.
+ *
+ * THE NAME IS `short`, not `topic`. The band is ONE LINE and the tag sits
+ * after the activity's name on it; `topic` runs to 55 characters ("en / au /
+ * aux / à — prepositions for cities & countries") and would be an ellipsis on
+ * every phone. `short` is the curriculum's own compact name, capped at 14
+ * characters by check:short, and it is what the map labels each goal with — so
+ * a learner reads the same words here and there.
+ *
+ * The UNIT is gone from the tag: it was a third figure on a line that now has
+ * to hold an activity name too, and the position already implies it.
  */
 export function stopTag(sio: Sio | null): string | undefined {
   if (!sio) return undefined;
   const n = SIOS.indexOf(sio) + 1;
-  return `STOP ${n}/${SIOS.length} · UNITÉ ${sio.unit}`;
+  return `GOAL ${n}/${SIOS.length} · ${sio.short}`;
 }
 
-/** Shorthand for the common case: a deck id straight to its band sub-line. */
+/** Shorthand for the common case: a deck id straight to its band tag. */
 export function stopTagForDeck(collectionId: string | undefined | null): string | undefined {
   return stopTag(stopForDeck(collectionId));
 }

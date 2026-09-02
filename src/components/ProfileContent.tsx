@@ -186,9 +186,13 @@ export default function ProfileContent() {
           exactly the well's padding and the same padding back inside, so the
           words do not move and only the colour reaches further. */}
       <PageBand
-        title={user?.displayName ?? "Moi"}
-        sub={`${COURSE_CODE} · ${COURSE_LEVEL} · WEEK ${courseWeek(now)}`}
-        stat={`${p.doneSios.length} / ${SIOS.length}`}
+        /* THE ACTIVITY NAME (Dan, 1 Sep), which on this page is the page:
+           « Moi ». The signed-in name was the title until today — it reads
+           well, but it is not what the rule says and it is the one band on the
+           site whose first word was not an activity. The name is still on the
+           page, in the account row; the course line is the data. */
+        title="Moi"
+        tag={`${COURSE_CODE} · ${COURSE_LEVEL} · WEEK ${courseWeek(now)}`}
         className="-ml-12 -mr-4 pl-12 pr-4 sm:-ml-16 sm:-mr-7 sm:pl-16 sm:pr-7"
       />
       {/* The body keeps the reading width the page wrapper used to give it —

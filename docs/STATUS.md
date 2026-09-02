@@ -6,6 +6,156 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+
+## 1 Sep, late — the chrome audit, and the strips become one strip
+
+Sole editor of STATUS.md in this commit: Pre-tests.
+
+Dan went through the app screen by screen and reported four faults; three of
+them turned out to be ONE. A page's `active` key becomes a family through
+`familyOf`, and a null family costs it the spine (`[class*="fam-"]`), the
+family ink AND the heading band (CahierShell renders it `{famKey && …}`) all at
+once. Six keys had no entry and Settings passed `active=""`. Measured before:
+six pages with no strip and five different heading heights. The spine also
+never reached DrillShell — the rule named `.cahier-page` and the drill root is
+not one, so every drill carried the right class and drew nothing.
+
+Then a second round of rulings on the strips themselves:
+
+- **One line, one thickness.** Every band is now 47px, activity name first,
+  then the goal tag inline: « 4Mémoire · GOAL 39/50 · Wants & needs ». The
+  stacked title-over-sub made bands 55px or 41px depending on whether a page
+  had a sub-line.
+- **No number at the end.** The chip was three different figures wearing one
+  shape — a drill's i/total, the profile's outcomes, a deck page's (?) —
+  which is not a figure anyone can read.
+- **« GOAL », not « stop »**, everywhere a learner reads it before a number
+  (verify82 scans for it rather than listing the sites).
+- **The study–test switch is the map's switch.** Both are now
+  `components/PillSwitch.tsx`; the deck's version was an emoji knob plus a
+  word beside it, saying one thing twice in 96px.
+- **Profil is in the family system** (Dan: "i say touch Profil please"), and
+  the deck's « ← Back » row and the Unit-0 pre-test's SectionBand are page
+  bands. Home's rainbow hero is the one strip left out, by Dan's own exemption.
+
+New: `lib/stopTag.ts` (which absorbed FIVE hand-written copies of the deck →
+goal lookup), `components/PillSwitch.tsx`, `verify82`. Rewritten naming their
+supersession: `verify68` (it named ProfileContent as a file that hand-rolls a
+band; it stopped), `verify25b`, `verify25c`, `verify80`.
+
+**Open for Dan:** at 320px four bands truncate the goal's NAME with an
+ellipsis — the activity and the number always survive, which is the priority
+order, but he may want the name dropped below some width instead. And Profil's
+band no longer shows the signed-in name (the rule says the activity's name);
+its ground is now the user family's pale pink.
+
+## 2 Sep — Map of FluOLinGo-land (Dan's spec, executed same hour)
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan's 2 Sep map rulings, all in one PR: /map's band reads « Map of
+FluOLinGo-land » over one legend-carrying sentence; ONE fixed control row
+(2D⇄3D switch left, zoom right — migrated up from under the map) that never
+moves between views; the 2D view is Map2DGrid — ten rows of five, all fifty
+stops at a glance, units told apart by colour bands, not names; the U0–U4
+jump chips deleted; the unit panel under the map RETIRED (Dan, over the
+Unité 0 tile grid: "we don't need this anymore … delete it") — a stop opens
+StopPopup directly, one popup for all fifty, lifted out of UnitSection.
+Home's switch no longer navigates (1 Sep "takes you to the map" superseded
+by 2 Sep "this needs to stay on screen when users tap 2D>3D>2D"): the
+postcard flips in place, the hero never moves. verify25b/25c/80 re-pointed
+with the new rulings written in. UnitSection/Unit0Panel are now unmounted
+on /map — files kept this PR (Unit0Pretest still imports one, four checks
+pin them); their deletion is queued integration cleanup.
+
+## 1 Sep, night — the wrong answers, and Home's switch actually opens the map
+
+Sole editor of STATUS.md in this commit: Pre-tests.
+
+Two rounds of Dan's corrections on the same evening, one branch
+(`claude/lesson-files-025-038-039`, restarted off `main` after #125 merged).
+
+**The wrong answers on `envies-besoins` could be right.** Every cloze surface
+builds its decoys from the deck's OTHER gap words — correct for « du / de la /
+des », wrong here: « Je ___ visiter Paris » marked `veux` correct and offered
+`voudrais`, which is good French differing only in register. Four of ten cards
+could mark a learner wrong for knowing more. Dan's fix, verbatim: *"i would
+make the wrong answers veut and voudrait"* — third person, wrong on agreement
+after « Je », and unable to collide with each other. Then, seeing the fixed
+card: *"i would put besoin and rêve instead of envie and aimerais (which start
+with vowels)"* — a vowel-initial decoy is wrong on ELISION before it is wrong
+about wanting and needing, so a learner rejects it having understood nothing.
+Both rules now live in one new deck field, `gapDecoys` (schema.ts), read by one
+new helper, `gapDecoyPool` (gapSentence.ts), which **three** surfaces now share
+— the pager's ★ MCQ, the pager's ★★ word bank and GramMarathon's — because
+each derived that pool for itself and this deck could have been corrected in
+one and stayed broken in the other two. Every other deck is byte-for-byte
+unchanged: absent `gapDecoys`, the pool is the deck's own gaps.
+
+**Home's view switch.** Dan: *"transfer the labels of the 3D switch into the
+switch itself … move it to the left under the 4/30 … swap the positions of the
+four buttons and the next stop's name … and make sure the switch literally
+takes you the map it promises to."* All four done. The last one was a real
+defect: Home's switch started at 2D on every visit whatever the learner had
+chosen, and its map link carried `?view=2d`, which /map then SAVED — so
+choosing 3D on the map, going Home and coming back put you in 2D, changed by a
+control that looked like it was only reporting the state. New `lib/mapView.ts`
+holds the key, the reader, the writer and the href builder for the three
+surfaces that set this view; flipping the switch now saves the choice and opens
+the map in it.
+
+**Handover to fluoduo-main.** Branch `claude/lesson-files-025-038-039`, three
+commits off `7787fad8`. Two lots in one branch, splittable at the commit
+boundary:
+- *decoys* — `src/lib/collections/schema.ts`, `gapSentence.ts`,
+  `src/app/lessons/pager/buildCards.tsx`, `GramMarathonContent.tsx`,
+  `src/content/collections/envies-besoins.json`, `verify76`.
+- *Home* — `src/app/HomeDashboard.tsx`, `src/app/map/MapBody.tsx`,
+  `src/lib/mapView.ts`, `verify25b`, `verify25c`, `verify80`, `verify.yml`.
+
+Shared files anyone else may be in: `buildCards.tsx`, `HomeDashboard.tsx`,
+`MapBody.tsx`, `verify25b/25c`, `.github/workflows/verify.yml`.
+
+**⚠ A verify-number collision that is NOT ours to fix.**
+`verify76-envies-besoins.py` has been on `main` since #125 (`aae60c0`);
+`origin/claude/peers-vd2h6h` carries `verify76-two-tier3-stops.py`. Two checks
+sharing a leading number fails `verify-wiring.py`, so that branch cannot merge
+until it renumbers — 80 is now taken too, so **81 up is free**. Flagged rather
+than renumbered: ours is already on main, and renumbering a merged check is
+how the 31/52/60 collisions turned into two problems each.
+
+**Open with Dan, unchanged from this morning:** whether SIO-025 gets a lesson
+after all; whether SIO-022's ×6 possessives drill should be re-homed (it died
+with iComplete); whether `SessionReceipt` + `useRunXp` should be re-hosted (0
+hosts since #125's parent); and whether Facile's four leading MCQ cards should
+stay, given its blurb still reads "Sort the words into order".
+
+**The cycling redo — DONE, and it was not a re-skin.** Decision 4 asked for the
+fluency-cycling animation rebuilt in FluOLinGo Hand. The 30 Aug cut ended on
+`Fluolingo`, all lowercase — a spelling THE NAMES RULE killed the next day. So
+the show gains a sixth stage, and the capitals are its point rather than its
+styling: up to the merge it is the spaces that mark the four words, and closing
+them is both what makes the name and what would throw the four words away.
+`Fluolingo` is one word; `FluOLinGo` is still four.
+
+    Fluency {achieved} on {customisable} linguistic goals
+      -> Fluency on linguistic goals -> Flu on lin go -> Flu o lin go
+      -> Fluolingo -> FluOLinGo
+
+Dan's 30 Aug arithmetic carries over intact (stage table, beats, the growing
+cycle intervals that ARE the deceleration, and the rule that a dead letter
+takes no width and sits on the seam it closed); `phaseAt` is new, so a renderer
+cannot answer "which stage am I between?" in its own `if` ladder and drift —
+which is what let the earlier cut rest on `Flu   o   lin   go` with holes in
+it. New files: `src/lib/fluolingoOrigin.ts` (data + arithmetic, no DOM),
+`src/components/FluolingoOrigin.tsx` (pixels only), `/hidden/fluolingo`
+(noindex) to watch it on, `verify81` (executes the spec; 13 sabotages, all
+caught). **Where it belongs is Dan's call** — it is on its own page and nothing
+else mounts it. Neither 30 Aug branch was merged; both can be deleted once Dan
+has seen this.
+
+**Pre-tests' queue is now empty.**
+
 ## 1 Sep evening — SIO-039 lands, SIO-025 is ruled, and live is at #124
 
 Sole editor of STATUS.md in this commit: fluoduo-main.

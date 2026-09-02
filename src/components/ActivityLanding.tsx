@@ -194,7 +194,7 @@ function Row({
       <li>
         <div
           aria-disabled
-          title={`${act.name} has no content for this stop yet`}
+          title={`${act.name} has no content for this goal yet`}
           className={`${base} border-dashed opacity-45`}
           style={{ borderColor: "var(--fluo-line)" }}
         >
