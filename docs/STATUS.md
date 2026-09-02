@@ -567,11 +567,30 @@ lane = report it in STATUS, don't do it.
   — verify74, 75, 76, 77, 83, worded identically so they read as one decision.
   Every one break-tested.
 
-  **What this lane still owes: nothing on the pipeline.** Open with Dan:
-  the Sum-up pane (three questions, shown 1 Sep), and whether the
-  `wants-needs` naming should have carried SIO-039 — resolved by default in
-  #136 in favour of `envies-besoins`, which is the file this lane's concept
-  sits on.
+  **THIS LANE IS CLEAR — nothing outstanding, 2 Sep.** The three items that were
+  open with Dan are all closed:
+
+  - ~~**The Sum-up pane**~~ — three questions were put to him with a rendered
+    A/B of each (the label « The whole system », the doubled inShort/remember
+    line, and the 18-of-45 inconsistency). **Dan, 2 Sep: "drop both for now."**
+    Not answered and not to be re-raised — the pane ships as it is.
+  - ~~**Atelier Mémo variants**~~ — Dan floated listing "sentences used in
+    dialogues **or variants of them**", with toggled English and TTS. Driving
+    the app showed the Mémo already does all of that except variants: « Le
+    modèle » lists every model sentence, English underneath, a 🇬🇧 toggle whose
+    choice is remembered across all six ateliers (`fluolingo:atelier:en`),
+    per-line TTS, and « 🔊 Tout écouter ». Variants would be new French and
+    would need him. **Dropped the same day.**
+  - ~~**SIO-039's slug**~~ — resolved in #136 in favour of `envies-besoins`,
+    which is the file this lane's concept sits on. `wants-needs` is not on main.
+
+  **The one thing worth carrying to whoever picks this lane up.** A pitfall
+  table's wrong column is only sound when the form is IMPOSSIBLE. That is a
+  question about French, so it is Dan's to answer and cannot be reasoned out
+  from English — this lane guessed twice on 1–2 Sep and missed in both
+  directions. It shipped six atelier tables striking through perfectly good
+  French (Dan: *"i would delete this column"*), and separately flagged a sound
+  strike as suspect (Dan: *"jus de l'orange is WRONG"*). Ask.
 
 - **Pre-tests — the pre-test surface, then capacity.** ~~Unit-0 pre-test pages
   (in flight, the last uncovered pre-test surface).~~ **DONE — #98.** All ten
