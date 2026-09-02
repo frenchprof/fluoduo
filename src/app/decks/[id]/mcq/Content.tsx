@@ -11,7 +11,7 @@ import { logEvent } from "@/lib/firebase/usage";
 import { recordResponse } from "@/lib/firebase/responses";
 import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import type { Collection, Item } from "@/lib/collections/schema";
-import { stopTagForDeck } from "@/lib/stopTag";
+import { goalNumberForDeck } from "@/lib/stopTag";
 import CahierShell, { withActive } from "@/components/CahierShell";
 import { deckTabs } from "../DeckContent";
 import { buildEvidence } from "@/lib/evidence";
@@ -54,7 +54,7 @@ function McqPageInner({ id }: { id: string }) {
     <CahierShell
       tabs={withActive(deckTabs(id), "mcq")}
       active="mcq"
-      band={{ title: "MCQ", tag: stopTagForDeck(id) }}
+      band={{ title: "MCQ", goal: goalNumberForDeck(id), exitHref: `/decks/${id}` }}
     >
       <div className="mx-auto max-w-3xl px-4 py-4">
         {collection === undefined && (

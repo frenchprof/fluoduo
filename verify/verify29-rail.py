@@ -110,16 +110,22 @@ EXPECT = {
     # and two-piece completion, so `practice` is three.
     # Dan, 2026-08-25: rename EtuDice → Sorting — the tile opened the group
     # sort, not the die. "EtuDice" now names only the d12 in the pager.
-    "practice": {"SpecuLearn", "Memo", "4Mémoire"},
-    "review":   {"DéjàRevu", "GramMarathon"},
-    "skills":   {"ConjugaZone", "ÉcouTexte", "WorDrill", "VoixLà", "ComposeIt", "ChaTutor"},
+    # BY KEY, NOT BY DISPLAY NAME, since 1 Sep. This listed the names, and on
+    # that day Dan renamed two of them (4Mémoire → MémoiRecall, Memo →
+    # MneMemo) — so a check about which activities live in which FAMILY failed
+    # over a change that moved nothing. The repo's own precedent settles it:
+    # "display renames never touch keys or routes" (the Memo rename, 23 Aug).
+    # The claim here is membership; the key is what membership is made of.
+    "practice": {"speculearn", "lesson", "flip"},
+    "review":   {"reviser", "grammarathon"},
+    "skills":   {"conjugaison", "ecoutexte", "wordrill", "tts", "compose", "tutor"},
     # 31 Aug consolidations, Dan's words: "park NumBus / NumBourse under a
     # hub-tab Numbers … MyProgress should be swallowed by Profile. So that
     # would be 16 (4x4)". Both game routes and /moi survive off-tile.
-    "svplay":   {"Numbers", "VocabulaRain", "LexicaLater"},
-    "user":     {"Leaderboard", "Profile"},
+    "svplay":   {"numbers", "vocabularain", "lexicalator"},
+    "user":     {"leaderboard", "profil"},
 }
-rows = re.findall(r'\{ key: "[a-z]+", name: "([^"]+)".*?family: "([a-z]+)"', reg)
+rows = re.findall(r'\{ key: "([a-z0-9]+)", name: "[^"]+".*?family: "([a-z]+)"', reg)
 for fam, want in EXPECT.items():
     got = {n for n, f in rows if f == fam}
     check(got == want,

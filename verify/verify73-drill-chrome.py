@@ -45,25 +45,34 @@ def strip_comments(src):
 
 CODE = strip_comments(DS)
 
-# ── 1 · the band can host a control, and the shell gives it one ────────────
-check("lead" in PB and re.search(r"lead\??:\s*ReactNode", PB) is not None,
-      "PageBand takes a `lead` control",
-      "PageBand has no `lead` slot, so the band cannot host the ✕ and the 56px row "
+# ── 1 · the band carries the ✕ ─────────────────────────────────────────────
+# REWRITTEN 1 Sep, naming the supersession. This asserted that PageBand takes a
+# `lead` slot and that DrillShell fills it with the Exit link — the shape on 31
+# Aug, when the ✕ moved off its own 56px row and into the band. Dan then asked
+# for the ✕ on EVERY strip ("can i have all strips looking like this: (1) with
+# a X"), so a control that every band must have stopped being something each
+# caller hands over: PageBand builds it from `exitHref`. The CLAIM is unchanged
+# and now covers more ground — the ✕ is in the band, not on a row of its own —
+# so the check follows it rather than the old plumbing.
+check(re.search(r"exitHref\??:\s*string", PB) is not None,
+      "PageBand takes the exit's destination",
+      "PageBand has no `exitHref`, so the band cannot host the ✕ and the 56px row "
       "is the only place it can live")
-check(re.search(r"\{lead\}", PB) is not None,
-      "PageBand renders it",
-      "PageBand declares `lead` and never renders it — a prop that is accepted and "
-      "dropped looks exactly like a working one")
+check(re.search(r"<Link\s+href=\{exitHref\}", PB) is not None and "✕" in PB,
+      "PageBand draws the ✕ itself, so every band has one",
+      "PageBand takes an exit destination and never renders a control for it — a prop "
+      "that is accepted and dropped looks exactly like a working one")
 
 band = re.search(r"<PageBand(.*?)/>", CODE, re.S)
 check(band is not None, "DrillShell mounts a PageBand", "no PageBand in DrillShell")
 if band:
-    check("lead=" in band.group(1),
-          "the band carries the ✕",
-          "DrillShell no longer passes `lead`, so the ✕ is back to costing a whole row")
-    check('aria-label="Exit"' in band.group(1),
-          "and it is the Exit control, not something else",
-          "the band's `lead` is not the Exit link")
+    check("exitHref=" in band.group(1),
+          "the drill tells the band where its ✕ goes",
+          "DrillShell no longer passes `exitHref`, so its ✕ would fall back to Home "
+          "instead of the goal the learner came from")
+    check('exitLabel="Exit"' in band.group(1),
+          "and it is labelled Exit, not the generic Close",
+          "the drill's ✕ is no longer labelled Exit")
 
 # ── 2 · the row is conditional, on the right condition ─────────────────────
 guard = re.search(r"const barNeeded\s*=\s*([^;]+);", CODE)
@@ -93,11 +102,19 @@ check(re.search(r"\{barNeeded && \(", CODE) is not None,
       "`barNeeded` is computed and never used to gate the row")
 
 # ── 3 · exactly one ✕ on screen, ever ──────────────────────────────────────
+# ONE in DrillShell, not two. The band's ✕ moved into PageBand on 1 Sep (see
+# section 1), so the only Exit control written HERE is the row's fallback for a
+# surface with no band. The claim — a learner never sees two ✕ — is unchanged;
+# what changed is which file holds which one, so the count is split across the
+# two files rather than both being counted in one.
 exits = re.findall(r'aria-label="Exit"', CODE)
-check(len(exits) == 2,
-      "two Exit controls in source — the band's, and the row's fallback",
-      f"found {len(exits)} Exit controls. There should be exactly two: one in the band, "
-      "one in the row for the no-band case. More than that and a page shows two ✕.")
+check(len(exits) == 1,
+      "one Exit control in DrillShell — the row's fallback, for a surface with no band",
+      f"found {len(exits)} Exit controls in DrillShell. There should be exactly one: the "
+      "band's lives in PageBand now, and a second here means a page can show two ✕.")
+check(re.search(r'aria-label=\{exitLabel\}', PB) is not None,
+      "and the band's own, in PageBand",
+      "PageBand's ✕ has no accessible label — it is the only way out of a drill")
 row_exit = re.search(r"\{!act && \(\s*<Link", CODE)
 check(row_exit is not None,
       "the row's ✕ is gated on there being no band",
@@ -105,11 +122,12 @@ check(row_exit is not None,
       "than the row this change removed")
 
 # ── 4 · the control does not grow the band ────────────────────────────────
-lead_cls = re.search(r'lead=\{\s*<Link.*?className="([^"]+)"', DS, re.S)
-check(lead_cls is not None and "-my-1" in lead_cls.group(1),
+# The ✕ lives in PageBand now (see above), so its trim is read there.
+exit_cls = re.search(r'href=\{exitHref\}[\s\S]{0,200}?className="([^"]+)"', PB)
+check(exit_cls is not None and "-my-1" in exit_cls.group(1),
       "the ✕ is trimmed so the band keeps its height",
-      "the band's ✕ has no `-my-1`. The title line is 28px inside py-3, so an untrimmed "
-      "36px control adds 8px of band — measured, it gave back less than it saved.")
+      "the band's ✕ has no `-my-1`. The title line is 28px inside the band's padding, so "
+      "an untrimmed 36px control adds height — measured, it gave back less than it saved.")
 
 # ── 5 · the tabs sit with the band, and the drill's beat is untouched ──────
 # Dan picked 8px from four gaps rendered on the page (2026-08-31). The offset
