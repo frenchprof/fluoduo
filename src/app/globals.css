@@ -673,6 +673,25 @@ body {
    thins; Regular read washed at the stroke ends and Bold started closing the
    counters at 28px. 600 holds the letterforms and gains the presence. */
 .fluo-band-hand { font-family: var(--font-fluohand-stack); font-weight: 600; letter-spacing: 0; }
+/* THE ENGLISH ON A PRACTICE CARD — the house hand (Dan, 2026-09-01: "the
+   English sentences are still too big. Perhaps switch all English sentences to
+   the House Font (FluOLinGo)").
+
+   Sizing alone had already been fixed twice and the English still read as a
+   second target, because it was set in the SAME face as the French it sits
+   above: only the size and the ink told them apart, and those are exactly the
+   two things that drift. A different face separates them by kind rather than
+   by degree — the French is the sentence, the English is the note in the
+   margin — and it is Dan's own hand, so it costs nothing to load.
+
+   Regular, not the band's SemiBold: this is body-sized reference text on cream
+   paper, not white type on a saturated ground.
+
+   NO ITALIC. The 31 Aug ruling asked for "italics non bold" to stop the
+   English competing with the French, which the face now does on its own; only
+   Regular and SemiBold of FluOLinGo Hand are loaded, so `italic` would have
+   the browser synthesise an oblique of a handwriting face. */
+.fluo-en { font-family: var(--font-fluohand-stack); font-weight: 400; letter-spacing: 0; }
 .cahier-hl {
   background-color: var(--cahier-hl);
   mix-blend-mode: multiply;

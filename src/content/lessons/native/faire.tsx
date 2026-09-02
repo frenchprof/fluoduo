@@ -37,7 +37,7 @@ export const faireLesson: NativeLesson = {
     contrast: (
       <>
         <i lang="fr">Du</i> looks like a word of its own. It is not: it is{" "}
-        <i lang="fr">de</i> + <i lang="fr">le</i>, glued together &mdash; and{" "}
+        <i lang="fr">de</i> + <i lang="fr">le</i>, merged &mdash; and{" "}
         <i lang="fr">des</i> is <i lang="fr">de</i> + <i lang="fr">les</i>. Once you can see
         the two halves, the negative stops being a rule to memorise.
       </>

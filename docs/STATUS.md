@@ -152,6 +152,36 @@ pinned to the bottom of the screen. Deliberate, and it reads as paper sliding
 off the bottom of the desk rather than lying on it. If he wants the desk all
 the way round, a drill loses ~72px of its one screen.
 
+
+## 2 Sep, small hours — Dan's five rulings on the coloured strips (PRE-TESTS' pass)
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan reviewed the in-flight coloured rail/dropdown (Pre-tests' local build,
+the dopamine direction) and gave five rulings, routed here because the
+surface is that lane's active flight — fluoduo-main is deliberately not
+touching it:
+
+1. **Black font where the wash is pale.** The children share their parent's
+   hue by design (all three visible were Practice's) — that stays; but pale
+   rows take a BLACK font ("they might be better with black font instead").
+   Parents may keep light text only where contrast genuinely holds.
+2. **No tail slack.** A flap is as long as the longest label among its
+   siblings and no longer — "tighten up the space so that they don't occupy
+   so much space when opened up."
+3. **The renames stand**: MneMemo (was Memo) and MémoiRecall (was 4Mémoire),
+   already in fcc58d4 — display names only, keys `lesson`/`flip` untouched,
+   per the Memo-rename precedent in AGENTS.md.
+4. **No white backdrop behind the flaps** — "or else it looks unreal." The
+   open menu's panel takes paper, not white.
+5. **Children start at the SAME left edge as parents and end SHORTER** —
+   hierarchy by length, not indent. This supersedes the indent approach in
+   PR #142 (closed as superseded); the one thing to carry over from it: the
+   child dress must apply in the DROPDOWN too, not only under `.cahier-tabs`
+   — the scoping bug behind Dan's "camouflaged among the parents".
+6. **The tab labels take FluOLinGo Hand** ("oh use FluOLinGo font for those
+   tabs!") — `.fluo-band-hand`, the same stack the band and the map's legend
+   sentence wear.
 ## 1 Sep, late — the chrome audit, and the strips become one strip
 
 Sole editor of STATUS.md in this commit: Pre-tests.
@@ -676,26 +706,48 @@ lane = report it in STATUS, don't do it.
      the choice. Dan saw both side by side before it shipped. `aliments.tsx`
      names the commit that removed the old one, so a revert is one lookup away.
 
-  **THE STOCKTAKE, re-issued 1 Sep — 45 concepts across 52 stops.**
+  **CROSS-BRANCH COLLISION ON SIO-039 — for the integration lane, not this one
+  (rule 5).** Two complete lessons exist for the same stop, from two lanes, and
+  neither knew: `envies-besoins` (on `main`, #125) and `wants-needs`
+  (`origin/claude/peers-vd2h6h`, `ea43c0d`, unmerged). Same deck, same content,
+  different slug. Merging Peers' branch produces a duplicate key in
+  `LESSONS_BY_SIO` and does not compile, which is how it was found.
 
-  | tier | stops | concepts | what is missing |
-  |---|---|---|---|
-  | 1 · Systemic Grammar | 20 | **20** ✅ | — |
-  | 2 · Lexical Core | 15 | **15** ✅ | — |
-  | 3 · phrase stops | 9 | **7** | SIO-025, SIO-039 |
-  | 3 · ateliers | 6 | **1** | SIO-020 / 030 / 040 / 049 / 050 |
+  The fact that decides it: **`envies-besoins.json` declares
+  `lessonSlug: "wants-needs"`**, so Peers' name follows the deck's own
+  declaration. But `collection.lessonSlug` is read in exactly ONE place —
+  `DeckContent.tsx:192`, a display string after a `·` — so nothing routes on it
+  and both slugs work. **This is a naming choice, not a correctness one.**
+  Cost of picking `wants-needs`: this lane's SIO-039 concept (`1979d2d`) moves
+  file. Cost of picking `envies-besoins`: the deck's declaration stays wrong,
+  cosmetically. This lane has NOT resolved it and aborted the merge rather than
+  pick a winner.
 
-  **Seven concepts remain and NOT ONE of them is blocked on an argument.** Every
-  gap is a lesson file that does not exist yet, so the pipeline's critical path
-  now runs through other lanes: the five atelier files are Peers' (STATUS line
-  544), SIO-025 and SIO-039 went to Pre-tests with #123. SIO-010 is written and
-  is the shape the other five copy — an atelier concept argues the REGISTER, the
-  thing a model dialogue cannot show because it only ever runs one.
+  **THE STOCKTAKE, re-issued 2 Sep — ALL THREE TIERS COMPLETE, 50 of 50.**
 
-  Two things this lane can do with no file at all, in the order they are worth
-  doing: re-read the 45 against Dan's litmus test now that they can be compared
-  as a set, and draft the five atelier arguments from `ATELIER_DIALOGUES` so
-  they drop in the hour each file lands rather than the day after.
+  | tier | stops | concepts |
+  |---|---|---|
+  | 1 · Systemic Grammar | 20 | **20** |
+  | 2 · Lexical Core | 15 | **15** |
+  | 3 · phrase stops | 9 | **9** |
+  | 3 · ateliers | 6 | **6** |
+
+  Closed by the six that fluoduo-main unblocked in #136 — SIO-025 and the five
+  remaining ateliers. Every one had been drafted on 1 Sep in
+  `docs/ATELIER_CONCEPTS_DRAFT.md` against the stop's own dialogue, before the
+  file existed, so landing them was a paste: **the six went in unchanged**, and
+  the drafting-ahead was worth roughly a day.
+
+  Five verify checks now assert `concept` PRESENT where they asserted it absent
+  — verify74, 75, 76, 77, 83, worded identically so they read as one decision.
+  Every one break-tested.
+
+  **What this lane still owes: nothing on the pipeline.** Open with Dan:
+  the Sum-up pane (three questions, shown 1 Sep), and whether the
+  `wants-needs` naming should have carried SIO-039 — resolved by default in
+  #136 in favour of `envies-besoins`, which is the file this lane's concept
+  sits on.
+
 - **Pre-tests — the pre-test surface, then capacity.** ~~Unit-0 pre-test pages
   (in flight, the last uncovered pre-test surface).~~ **DONE — #98.** All ten
   now render at `/pretests/unit0/SIO-00N`; every stop in the course has a
@@ -895,98 +947,6 @@ Dan assigns. Listed so the queue is not re-derived by whoever picks it up.
 | ~~7~~ | ~~Shortcut row~~ **RULED**: Carte STAYS (sole map door once Practice opens its hub — evening ruling 2) | — |
 | 8 | `rule:` namespace (894-item tagging): parked by design until the concepts finish | transfer evidence |
 | 9 | **Deploys through fluoduo-main** (ruled) — needs the fine-grained PAT (write to dckg/fluo) as an Actions secret | ends manual deploys |
-
-## 1 Sep — PRACTICE HUB: PEERS PUSHED ONE, PRE-TESTS IS BUILDING ONE. PICK ONE.
-
-Sole editor of STATUS.md in this commit: Peers.
-
-Dan, 1 Sep: *"You know what Pretests is working on this too, so abort"* — Peers
-has stopped. The work was already committed and pushed when that arrived, so
-this is here to stop fluoduo-main discovering two Practice hubs at merge time.
-
-**Peers' version is `46fa2d5` on `claude/peers-vd2h6h`.** Three pieces, all
-small, all revertable independently:
-
-| piece | files |
-|---|---|
-| the hub itself | `FAMILIES.practice.href` /map → /practice · `FAMILY_HUBS` + `practice` · new `src/app/practice/page.tsx` (4 lines, on the games/skills pattern) |
-| the three pins | verify19, verify24 (both asserted Practice reaches /map), verify52 (asserted FAMILY_HUBS is exactly games+skills) — amended with reasoning, break-tested |
-| **not the hub at all** | `auto-rows-fr` equal-height on `FamilyHub` (fixes /games and /skills too), the SectionBand/count removal, the counts rule in AGENTS.md, and verify52's `read()` returning "" so a deleted hub page is NAMED instead of raising FileNotFoundError |
-
-**If Pre-tests' version lands, the first two rows should be reverted and the
-third kept** — the third is Dan's equal-height and "drop the redundant label"
-instructions from the mock-up rounds, and none of it is specific to Practice.
-Whoever merges: take one hub, not a blend.
-
-The collision itself is the #97 pattern for the third time today (the nine
-lesson files were the second, recorded below). Neither session could see the
-other; the roster split that would have prevented it was written after both had
-started.
-
-## 1 Sep — ALL NINE LESSON FILES ARE BUILT (Peers) — THE SPLIT BELOW IS STALE
-
-Sole editor of STATUS.md in this commit: Peers.
-
-**STOP WORK ON SIO-025, SIO-038 AND SIO-039 IF ANYONE HAS STARTED THEM.** The
-split immediately below gives those three to Pre-tests and tells Peers not to
-build them. It was written after they were already pushed, and neither session
-could see the other — the #97 collision again, from the opposite direction.
-All nine are on `claude/peers-vd2h6h` (PR #120):
-
-| stop | file | commit |
-|---|---|---|
-| SIO-038 | `transport.tsx` + `.gen.ts` | `b246d21` |
-| SIO-010 | `atelier-rencontre.tsx` + `.gen.ts` | `e6b9793` |
-| SIO-025 | `parce-que.tsx` | `ea43c0d` |
-| SIO-039 | `wants-needs.tsx` + `.gen.ts` | `ea43c0d` |
-| SIO-020/030/040/049/050 | five `.tsx` + `atelierModel.ts` | `8284827` |
-
-`concept` is absent from all nine, as colour review asked. Checks: verify74
-(SIO-038), verify75 (the atelier shape), verify76 (025 + 039), verify77 (the
-five). verify51 lost its three "these stops must have NO lesson" assertions —
-amended with the reasoning, not silenced, and replaced by a stronger one: each
-must now LEAD with the single lesson written for it.
-
-**Pre-tests should take the cycling redo instead**, which is its second
-assignment below and is untouched.
-
-### Three things the handover said that turned out to be wrong
-
-1. **The atelier decks are not empty.** They carry one card per dialogue line
-   (colour review corrected this themselves in `b4cdd6c`), so the ateliers were
-   closer to the ordinary job than billed.
-2. **An atelier lesson must pass its Mémo through.** `LessonPager` resolves
-   `memo={lesson?.memo ?? memoForDeck(collectionId)}`, so merely REGISTERING a
-   lesson deletes « Le modèle » from the panel an atelier opens on — and
-   verify71 stays green while it happens, because it reads memos.tsx. Every
-   atelier lesson uses `memo: memoForDeck(DECK)`. verify75 and verify77 assert
-   it on all six.
-3. **The ateliers' exercise cannot come from FINALE_BANK.** It was built that
-   way first — the bank holds exactly what each stop is graded on — and it
-   produced « Bon chance » and « un sympa restaurant », because those items were
-   authored for a TYPE-IN game and a bank item guarantees nothing about another
-   item's answer in its frame. Reverted to the model's own turns. Dan has since
-   ruled that the repair is to correct the agreement rather than drop the
-   option, which re-opens the bank as a source; not rebuilt.
-
-### Also on this branch, and one of them is a reversal to read before touching
-
-- **Elision filtering was built and then reverted on Dan's ruling.** A rule that
-  removed every ungrammatical option app-wide (« l'boxe », « à l'bibliothèque »,
-  « J'veux ») shipped and was pulled: *"i would leave those alone, srsly"* —
-  a distractor's job is to be wrong, and picking the wrong contraction is the
-  A1 error the card exists to train out. The rule and its one exception are now
-  permanent in AGENTS.md. **Do not re-add it.**
-- Transport's options all keep the card's own subject (Dan: *"I would put 2 and
-  3 as Je …"*).
-- The atelier model fits one screen: SIO-030 1.47 → 1.06, SIO-010 1.33 → 1.00,
-  by dropping the per-line gloss the word list below already carries.
-- DrillShell chrome, the 8px band gap, the colours feminine note, and the
-  SpecuLearn/pre-tests handoff are all in the same PR.
-
-**Still open for Peers:** the Practice hub (assignment 2 of #113). **Open for
-Dan:** whether a slotted lesson should own its whole run (measured and
-photographed, one line either way), and whether to restore the atelier gloss.
 
 ## 1 Sep — THE HANDOVER IS SPLIT, and Pre-tests gets two assignments
 

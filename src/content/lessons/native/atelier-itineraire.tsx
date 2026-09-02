@@ -28,6 +28,93 @@ const DECK = `atelier-${SIO.toLowerCase()}`;
 export const atelierItineraireLesson: NativeLesson = {
   slug: "atelier-itineraire",
 
+  // TIER 3 · drafted 1 Sep in docs/ATELIER_CONCEPTS_DRAFT.md against this
+  // stop's own dialogue, before this file existed; pasted in unchanged once
+  // it landed. Typechecked and driven in a browser as a draft, and again
+  // here. No French below is new — every line is a turn of the model.
+  concept: {
+    subtitle: "Why the last step of an itinerary is not a move",
+    contrast: (
+      <>
+        A route in English usually ends on its last instruction &mdash;{" "}
+        <i>turn left and you&rsquo;re there</i>. This one does not. Its four moves are
+        followed by a sentence that tells you to move nowhere at all.
+      </>
+    ),
+    question: (
+      <>
+        <i lang="fr">tu prends</i>, <i lang="fr">tu vas</i>,{" "}
+        <i lang="fr">tu tournes</i>{" "}
+        &mdash; then{" "}
+        <i lang="fr">la gare est en face du parc</i>. Why does the itinerary end on{" "}
+        <i lang="fr">est</i>?
+      </>
+    ),
+    answer: (
+      <>
+        Because the person following you does not need a fifth move &mdash; they need to
+        know they have arrived. <i lang="fr">D&rsquo;abord</i>,{" "}
+        <i lang="fr">ensuite</i> and <i lang="fr">puis</i> carry motion;{" "}
+        <i lang="fr">enfin</i> carries a <b>landmark</b>. That is what{" "}
+        <i lang="fr">enfin</i> means here: not the last thing you do, but the point at
+        which you stop doing things.
+      </>
+    ),
+    // NO PITFALL TABLE — Dan's 2 Sep ruling on atelier-pays, applied to the fault
+    // wherever it repeats. Its wrong column struck through « Enfin, tu tournes à gauche » and « Enfin, tu vas tout droit », which are
+    // CORRECT FRENCH: wrong for the moment, not wrong in the language.
+    //
+    // THE LINE IS CLEAN AND WORTH KNOWING. A wrong column earns its place where
+    // the argument is about FORM — « en le bus », « une café », « bon nuit » are
+    // impossible, and striking them teaches something true. An atelier never
+    // argues form: it argues which correct option the moment asks for. So every
+    // atelier's wrong column was striking real French, and no Tier 1 or Tier 2
+    // concept has the fault. The right column's content stays in `flow`.
+    flow: [
+      { depth: 0, text: "Open with where you are going — Pour aller à la gare…" },
+      { depth: 0, text: "Then the moves, in order: D'abord · Ensuite · Puis." },
+      { depth: 1, text: "Each one a verb of motion — tu prends, tu vas, tu tournes." },
+      { depth: 0, text: "Close with Enfin + where the place IS, not another turn." },
+      { depth: 1, text: "Enfin, la gare est en face du parc." },
+    ],
+    check: [
+      {
+        q: (
+          <>
+            Why is <i lang="fr">Enfin, tu tournes à gauche</i> a poor last line?
+          </>
+        ),
+        a: (
+          <>
+            Because it leaves the person walking with nothing to look for.{" "}
+            <i lang="fr">Enfin</i> is where you hand them the landmark.
+          </>
+        ),
+      },
+      {
+        q: (
+          <>
+            The model adds <i lang="fr">Tu peux aussi prendre le bus numéro cinq.</i>{" "}
+            after the landmark. Why is that not a sixth step?
+          </>
+        ),
+        a: (
+          <>
+            Because it is an alternative to the whole route, not a continuation of it.
+            The itinerary was already finished by the landmark.
+          </>
+        ),
+      },
+    ],
+    inShort: "D'abord · Ensuite · Puis move. Enfin arrives.",
+    remember: (
+      <>
+        <b>End on where the place is, not on what to do next.</b> A route finishes when
+        the person can recognise it, not when you run out of turns.
+      </>
+    ),
+  },
+
   memo: memoForDeck(DECK),
 
   // NO AXIS. A model's turns are not a set of kinds to filter — every line is

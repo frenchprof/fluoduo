@@ -63,6 +63,145 @@ const SPEECH_ACTS: { frame: string; act: string; tone: string }[] = [
 export const enviesBesoinsLesson: NativeLesson = {
   slug: "envies-besoins",
 
+  // TIER 3 · SIO-039, drafted by the concepts lane on the Mémo below.
+  //
+  // WRITTEN AGAINST A MÉMO THAT SAID THE FACT; DAN THEN TOOK THE FACT OUT.
+  // When this concept was drafted the Mémo read "three are verbs and take it
+  // bare; two are built on avoir + a noun, so they need de", and the concept
+  // existed to say WHY. Dan's graft (2 Sep, part 1B) removed that paragraph
+  // with the words "the concept slot is where that argument will live" — so the
+  // slot now carries the whole thing rather than the half the Mémo left. The
+  // argument below is unchanged and needed no rewrite; only this note did.
+  //
+  // AND IT IS NOT A NEW RULE. « un kilo de tomates » (SIO-044) is the same
+  // mechanism: a noun reaching forward. SIO-044's own generator opens on
+  // « Je voudrais un kilo de tomates », which is this stop's frame carrying that
+  // stop's quantity — so the link is in the content already, not invented for
+  // the concept.
+  //
+  // NO NEW FRENCH. Every line is a deck card or an existing concept's example.
+  // « un besoin » and « une envie » are NOT printed: they appear nowhere a
+  // learner reads, only in this file's own header, so the noun-hood is shown by
+  // position (« j'ai » + what you have, the shape of « j'ai vingt-cinq ans »)
+  // rather than asserted with a form Dan has not seen.
+  concept: {
+    subtitle: "Why two of the five need « de » and three do not",
+    contrast: (
+      <>
+        English runs all five the same way &mdash; <i>I would like a coffee</i>,{" "}
+        <i>I need a map</i>, <i>I feel like sleeping</i>: the frame, then the thing.
+        French splits them in two, and the split has nothing to do with how polite
+        you are being.
+      </>
+    ),
+    question: (
+      <>
+        <i lang="fr">Je veux partir en vacances</i> but{" "}
+        <i lang="fr">J&rsquo;ai envie <b>de</b> dormir</i>. Both say what you want, both
+        are followed by a verb. Why does only one need <i lang="fr">de</i>?
+      </>
+    ),
+    answer: (
+      <>
+        Because only one of them has a <b>noun</b> in it. <i lang="fr">Je veux</i> is a
+        verb, and a verb takes its object directly.{" "}
+        <i lang="fr">J&rsquo;ai besoin</i> and <i lang="fr">j&rsquo;ai envie</i> are{" "}
+        <i lang="fr">avoir</i> + something you have &mdash; the shape of{" "}
+        <i lang="fr">j&rsquo;ai vingt-cinq ans</i>{" "}
+        &mdash; so that slot is already
+        taken, and the thing you actually want has to hang off it. French hangs a
+        thing off a noun with <i lang="fr">de</i>. It is the same{" "}
+        <i lang="fr">de</i> as <i lang="fr">un kilo de tomates</i>.
+      </>
+    ),
+    pitfallHeads: ["running all five alike", "reading the frame first"],
+    pitfall: [
+      {
+        label: <>a plain verb</>,
+        wrong: <i lang="fr">Je veux de partir en vacances</i>,
+        right: (
+          <>
+            <i lang="fr">Je veux partir en vacances</i>{" "}
+            &mdash; a verb needs nothing to reach its object
+          </>
+        ),
+      },
+      {
+        label: <><i lang="fr">j&rsquo;ai</i> + a noun</>,
+        wrong: <i lang="fr">J&rsquo;ai besoin un plan</i>,
+        right: (
+          <>
+            <i lang="fr">J&rsquo;ai besoin d&rsquo;un plan</i>{" "}
+            &mdash; the noun cannot reach without it
+          </>
+        ),
+      },
+      {
+        label: <>before a vowel</>,
+        wrong: <i lang="fr">J&rsquo;ai envie de un chocolat chaud</i>,
+        right: (
+          <>
+            <i lang="fr">J&rsquo;ai envie d&rsquo;un chocolat chaud</i>{" "}
+            &mdash; but <i lang="fr">de dormir</i> keeps its <b>e</b>
+          </>
+        ),
+      },
+      {
+        label: <>the wish frames</>,
+        wrong: <i lang="fr">J&rsquo;aimerais de voyager</i>,
+        right: (
+          <>
+            <i lang="fr">J&rsquo;aimerais voyager</i>{" "}
+            &mdash; still a verb, however polite it sounds
+          </>
+        ),
+      },
+    ],
+    flow: [
+      { depth: 0, text: "Look at the frame, not at what you want." },
+      { depth: 1, text: "A verb on its own — voudrais, aimerais, veux? Take it bare." },
+      { depth: 1, text: "j'ai + a thing you have — besoin, envie? Then de." },
+      { depth: 0, text: "And de loses its e before a vowel: d'un plan, but de dormir." },
+    ],
+    check: [
+      {
+        q: (
+          <>
+            <i lang="fr">J&rsquo;ai besoin ___ un hôtel.</i> What goes in the gap?
+          </>
+        ),
+        a: (
+          <>
+            <i lang="fr">d&rsquo;</i>{" "}
+        &mdash; the frame carries a noun, so it needs{" "}
+            <i lang="fr">de</i>, and <i lang="fr">un</i> begins with a vowel.
+          </>
+        ),
+      },
+      {
+        q: (
+          <>
+            So why no <i lang="fr">de</i> in{" "}
+            <i lang="fr">Je voudrais visiter le Louvre</i>?
+          </>
+        ),
+        a: (
+          <>
+            Because <i lang="fr">voudrais</i> is a verb and reaches its object on its
+            own. Politeness changed the verb, not the shape.
+          </>
+        ),
+      },
+    ],
+    remember: (
+      <>
+        <b>Read the frame, not the wish.</b> A verb takes it bare;{" "}
+        <i lang="fr">j&rsquo;ai</i> + a noun reaches forward with{" "}
+        <i lang="fr">de</i>.
+      </>
+    ),
+  },
+
   /* THE GRAFT (Dan, 2 Sep, part by part against the wants-needs draft —
      "1B 2(merge: examples are always essential + add toggle for English)
      3B but remove the last sentence and give an example instead"):

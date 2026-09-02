@@ -97,9 +97,21 @@ for sio, slug, export in FIVE:
     check(re.search(rf'"{sio}":\s*\[[^\]]*"{slug}"', lessons) is not None,
           f"{sio} points at the {slug} lesson",
           f"LESSONS_BY_SIO has no {sio} -> {slug} row, so the stop shows no lesson")
-    check(re.search(r"^\s*concept:", src, re.M) is None,
-          f"{slug}.tsx leaves `concept` to the concepts lane",
-          f"{slug}.tsx ships a `concept` — a stub reads to a learner as the real argument")
+    # CROSS-LANE EDIT — concepts lane, 2 Sep. Read this before reverting it.
+    #
+    # As pushed this asserted `concept` was ABSENT, which was right while the field
+    # was owed: a stub renders to a learner as the real argument. The concepts are
+    # now written, so absence has flipped meaning — it would mean a merge dropped
+    # one. Same intent, asserted from the other side. This is the fifth file to take
+    # this edit (verify74, 75, 76, 77, 83); the wording is identical across all of
+    # them so they read as one decision rather than five.
+    check(re.search(r"^\s*concept:", src, re.M) is not None,
+          f"{slug}.tsx carries its concept",
+          f"{slug}.tsx has no `concept` — this atelier is back to reading 'Idea has not been written for this lesson yet'")
+    for _slot in ("subtitle", "contrast", "question", "answer", "remember"):
+        check(re.search(rf"^\s+{_slot}:", src, re.M) is not None,
+              f"{slug}: the concept fills `{_slot}`",
+              f"{slug}.tsx's concept has no `{_slot}` — a concept missing a required slot is a stub with a type annotation")
 
     # ---- 1 · the model survives registration -------------------------------
     check(re.search(r"memo:\s*memoForDeck\(", src) is not None,
