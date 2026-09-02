@@ -9,6 +9,7 @@ import { displayEn, displayFr } from "@/lib/collections/display";
 import { speak } from "@/games/letris/speech";
 import { logEvent } from "@/lib/firebase/usage";
 import { recordResponse } from "@/lib/firebase/responses";
+import { notePracticeDay } from "@/lib/progress";
 import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import type { Collection, Item } from "@/lib/collections/schema";
 import { goalNumberForDeck } from "@/lib/stopTag";
@@ -164,6 +165,10 @@ function Runner({ collection }: { collection: Collection }) {
       activity: `mcq:${collection.id}`,
       evidence: buildEvidence(question.id, `mcq:${collection.id}`),
     });
+    // Staying outside recordItemResult starved the STREAK too — an MCQ
+    // session was a day of practice the fire never counted. This bumps the
+    // day and nothing else; SRS and XP stay deliberately untouched.
+    notePracticeDay();
     if (correct) setScore((s) => s + 1);
   }
   function next() {
