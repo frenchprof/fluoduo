@@ -24,6 +24,7 @@
  * and saves it.
  */
 import { useEffect, useRef, useState } from "react";
+import PillSwitch from "@/components/PillSwitch";
 import Map2DGrid from "@/components/Map2DGrid";
 import HomeMap3D from "@/components/HomeMap3D";
 import HomePrintSheet from "@/components/HomePrintSheet";
@@ -116,28 +117,29 @@ export default function MapBody() {
 
       {/* ONE control row, fixed for both views: switch left, zoom right. */}
       <div className="mb-2 mt-1.5 flex items-center justify-between gap-3">
-        <div
-          data-tour="map-view"
-          role="group"
-          aria-label="Map view"
-          className="fluo-mono flex overflow-hidden rounded-xl border-2 text-sm font-black shadow-[2px_2px_0_rgba(0,0,0,0.22)]"
-          style={{ borderColor: "var(--cahier-ink)" }}
-        >
-          {(["2d", "3d"] as const).map((v) => (
-            <button
-              key={v}
-              type="button"
-              aria-pressed={mapView === v}
-              onClick={() => setView(v)}
-              className="px-5 py-2 leading-none"
-              style={{
-                background: mapView === v ? "var(--cahier-ink)" : "var(--cahier-paper-raised)",
-                color: mapView === v ? "var(--cahier-paper-raised)" : "var(--cahier-ink)",
-              }}
-            >
-              {v.toUpperCase()}
-            </button>
-          ))}
+        {/* THE SAME SWITCH AS HOME'S, which is where it should have been all
+            along (Dan, 2026-09-02: "Map of FluOLinGo page is missing the 2D-3D
+            switch that is a copy of the one on the homepage"). PillSwitch's own
+            docstring records that Dan drew it ON 1 SEP FOR THIS CONTROL — "can
+            the 2D 3D switch look more like this" — and it then shipped on Home
+            and on the deck page while the map it was designed for kept the
+            plain segmented pair. This is the component going where it was
+            meant to go.
+
+            THE WRAPPER IS NOT DECORATION. `data-tour="map-view"` is the first
+            tour's target for this step (FirstTour STEPS, and verify44 pins the
+            attribute), and PillSwitch renders its own button with no prop for
+            passing one through — so the hook lives on a wrapper and the tour
+            still finds it. */}
+        <div data-tour="map-view">
+          <PillSwitch
+            label="Map view"
+            title="Tap to switch between the plan and the scene"
+            offLabel="2D"
+            onLabel="3D"
+            on={mapView === "3d"}
+            onFlip={(next) => setView(next ? "3d" : "2d")}
+          />
         </div>
         {/* Zoom, migrated up from under the map (Dan, 2 Sep: "right-aligned
             Zoom control field migrated from below"). */}
