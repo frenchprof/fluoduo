@@ -38,7 +38,6 @@
  * Tokens only — verify19b's raw-hex ratchet.
  */
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import PageBand from "@/components/PageBand";
 import { SIOS } from "@/content/sios";
 import { loadProgress, setGoal, type Progress } from "@/lib/progress";
 import { useAuthUser } from "@/lib/firebase/auth";
@@ -171,30 +170,26 @@ export default function ProfileContent() {
 
   return (
     <div className="profile-page pb-8">
-      {/* ── Who, which course, how far. The count is the only number here:
-          the whole point of the page is that progress is outcomes done. ──
+      {/* THE BAND MOVED TO THE SHELL (Dan, 1 Sep: "can you see that it is
+          vertically not visually uniform?"). It was drawn HERE, inside the
+          content well, and pulled back out with negative margins — which put
+          it 20px lower than every other band on the site, because the well is
+          padded `py-5` and the shell's band sits above that padding. Measured:
+          77px down the page against 57 everywhere else.
 
-          IT IS PageBand NOW (Dan, 1 Sep: "i say touch Profil please").
-          PageBand's own docstring says it "replicates" this header — so the
-          site's one heading structure and this page were the same markup
-          written twice, and they had already drifted: this copy was rounded at
-          the top and sat inside the content well's padding, so it stopped 48px
-          short of the paper while every real band ran to the edge. That is
-          Dan's second complaint, on the page he pointed at.
-
-          The negative margins are the pull Home's welcome strip uses: out by
-          exactly the well's padding and the same padding back inside, so the
-          words do not move and only the colour reaches further. */}
-      <PageBand
-        /* THE ACTIVITY NAME (Dan, 1 Sep), which on this page is the page:
-           « Moi ». The signed-in name was the title until today — it reads
-           well, but it is not what the rule says and it is the one band on the
-           site whose first word was not an activity. The name is still on the
-           page, in the account row; the course line is the data. */
-        title="Moi"
-        tag={`${COURSE_CODE} · ${COURSE_LEVEL} · WEEK ${courseWeek(now)}`}
-        className="-ml-12 -mr-4 pl-12 pr-4 sm:-ml-16 sm:-mr-7 sm:pl-16 sm:pr-7"
-      />
+          It can move now because it no longer needs anything only this
+          component knows: the title became the activity's name ("Moi") this
+          morning and the outcome count came off the strip with every other
+          trailing number. profil/page.tsx and moi/page.tsx pass it. */}
+      {/* THE COURSE LINE MOVED HERE rather than being deleted (1 Sep). It was
+          the band's sub-line, and the band is one line now with no room for
+          it. It is the only place in the app that says which course, level and
+          week the learner is in, so it goes under the strip rather than out of
+          the product — and it keeps the mono, uppercase, dot-separated form it
+          had, so it still reads as data. */}
+      <p className="fluo-mono px-4 pt-2 text-[10px] font-bold tracking-[0.06em] text-[color:var(--cahier-ink-soft)] sm:px-6">
+        {user?.displayName ?? "Moi"} · {COURSE_CODE} · {COURSE_LEVEL} · WEEK {courseWeek(now)}
+      </p>
       {/* The body keeps the reading width the page wrapper used to give it —
           the band must be outside it, or a band centred inside 768px is not a
           band that reaches the paper. */}

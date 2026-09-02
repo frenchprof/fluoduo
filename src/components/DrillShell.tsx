@@ -43,7 +43,7 @@ import type { ReactNode } from "react";
 import { activity as activityInfo, bandOf, familyOf, isReadingSurface } from "@/content/activities";
 import { nextStep, type NextStep } from "@/lib/nextStep";
 import PageBand from "@/components/PageBand";
-import { stopForDeck, stopTagForDeck } from "@/lib/stopTag";
+import { goalNumberForDeck, stopForDeck } from "@/lib/stopTag";
 import BottomBar from "@/components/BottomBar";
 import SiteTopBar from "@/components/SiteTopBar";
 
@@ -244,11 +244,20 @@ export default function DrillShell({
     : 0;
 
   return (
-    /* `cahier-drill` is not decoration: it is what lets the family spine in
+    /* ONE PAGE SHAPE (Dan, 2026-09-01: "Ok move all to A"). The desk wrapper
+       puts a drill's paper where every other page's paper is — 8px down and
+       one gutter in — so the coloured spine and the heading band line up
+       across the whole site instead of jumping 13px sideways and 8px up the
+       moment a learner starts answering. The wrapper owns the height now;
+       `h-full` inside it is the screen minus that 8px, so nothing overflows.
+       See `.cahier-drilldesk` in globals.css for which numbers come from where.
+
+       `cahier-drill` is not decoration: it is what lets the family spine in
        globals.css name this shell as well as `.cahier-page`. Without it the
        root carried `fam-practice` and drew no left edge, which is the fault
        Dan's 1 Sep audit found on every drill in the app. */
-    <div className={`cahier-drill ${famKey ? `fam-${famKey}` : "fam-none"}${bandKey ? ` band-${bandKey}` : ""}${isReadingSurface(activity) ? " paper-sand" : ""} flex h-dvh flex-col overflow-hidden bg-[color:var(--cahier-paper)]`}>
+    <div className="cahier-drilldesk">
+    <div className={`cahier-drill ${famKey ? `fam-${famKey}` : "fam-none"}${bandKey ? ` band-${bandKey}` : ""}${isReadingSurface(activity) ? " paper-sand" : ""} flex h-full min-w-0 flex-col overflow-hidden bg-[color:var(--cahier-paper)]`}>
       {/* ── the notebook (2026-08-24, approved flow): drills live INSIDE the
           cahier — the family heading band on top (name from the registry,
           the drill's i/total as the band's ONE chip so the figure is never
@@ -282,25 +291,20 @@ export default function DrillShell({
       {act && (
         <PageBand
           title={act.name}
-          /* WHICH STOP THIS IS (Dan, 1 Sep: "there are pages where there is no
-             identity tag regarding which stop it belongs to"). A drill named
+          /* WHICH GOAL THIS IS (Dan, 1 Sep: "there are pages where there is
+             no identity tag regarding which stop it belongs to", then, with a
+             drawing, "a circle and the related goal number"). A drill named
              its activity and its deck and never its position, so the only way
              to answer "where am I on the course" was to leave and look at the
              map. Undefined for a deck off the study path, and PageBand then
-             renders no sub-line at all rather than an empty one. */
-          tag={stopTagForDeck(deck)}
-          lead={
-            <Link
-              href={exitHref}
-              aria-label="Exit"
-              // -my-1 keeps the 36px tap target without growing the band: the title line
-              // is 28px inside py-3, so an untrimmed 36px control added 8px of
-              // height and gave back less than it saved.
-              className="-my-1 -ml-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xl font-black text-white/70 transition hover:bg-white/15 hover:text-white"
-            >
-              ✕
-            </Link>
-          }
+             draws no circle rather than an empty one. */
+          goal={goalNumberForDeck(deck)}
+          /* The ✕ used to be built here and handed over as `lead`. It is
+             PageBand's own now, because Dan asked for it on EVERY strip and a
+             control that every band must have is not a thing each caller
+             should be able to spell differently. */
+          exitHref={exitHref}
+          exitLabel="Exit"
           /* THE NUMBER AT THE END IS GONE (Dan, 1 Sep: "drop the number at the
              end of that strip"). It was `i/total` here, the outcomes done on
              the profile and a (?) dot on a deck page — one chip meaning three
@@ -585,6 +589,7 @@ export default function DrillShell({
         style={{ height: "calc(58px + env(safe-area-inset-bottom, 0px))" }}
       />
       <BottomBar />
+    </div>
     </div>
   );
 }

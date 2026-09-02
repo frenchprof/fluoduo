@@ -20,7 +20,7 @@
  * has no business offering them before the attempt.
  */
 import CahierShell from "@/components/CahierShell";
-import { stopTag } from "@/lib/stopTag";
+import { goalNumber } from "@/lib/stopTag";
 import SectionBand from "@/components/SectionBand";
 import { siteTabs } from "@/components/siteTabs";
 import { Sio010Pretest, Unit0Questions } from "@/components/Unit0Pretest";
@@ -51,7 +51,7 @@ export default function Unit0PretestPage({ sioId }: { sioId: string }) {
     <CahierShell
       tabs={siteTabs()}
       active="pretest"
-      band={{ title: "Pretest", tag: stopTag(sio) }}
+      band={{ title: "Pretest", goal: goalNumber(sio), exitHref: `/unit/${sio.unit}` }}
     >
       <SectionBand family="goals" label="🧪 Can you already do this?">
         {/* The can-do gets the popup's own treatment — a highlighted serif

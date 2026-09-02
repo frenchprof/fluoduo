@@ -13,7 +13,11 @@ import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 
 export default function GuidePage() {
   return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "guide")} active="guide">
+    // An explicit band title (1 Sep): `guide` resolves to a family, so this
+    // page had a spine and an ink — but its name is not a flap label, so the
+    // shell had nothing to put in the band and drew none. A page with a
+    // family and no band is the one shape the 1 Sep chrome pass missed.
+    <CahierShell tabs={tabsWithActive(siteTabs(), "guide")} active="guide" band={{ title: "Guide" }}>
       <div className="mx-auto max-w-2xl px-3 py-5">
         <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">❓ HELP!</h1>
         <GuideBody />

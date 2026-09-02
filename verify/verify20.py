@@ -51,9 +51,27 @@ if not os.path.isfile("package.json"):
 shell = read("src/components/DrillShell.tsx")
 shell_code = strip_comments(shell)
 check(bool(shell), "DrillShell exists", "src/components/DrillShell.tsx is missing")
-check("h-dvh" in shell_code and "overflow-hidden" in shell_code,
-      "the shell is 100dvh, overflow hidden",
-      "DrillShell does not lock to the viewport (h-dvh + overflow-hidden)")
+# THE LOCK MOVED, 2026-09-02, and this assertion follows it rather than
+# being dropped. It read `"h-dvh" in shell_code`, which was true while the
+# drill's own root was the full viewport. Dan's "Ok move all to A" put that
+# root on the same desk every other page sits on — 8px down, one gutter in —
+# so the HEIGHT is now the wrapper's (`.cahier-drilldesk { height: 100dvh }`
+# in globals.css) and the drill takes `h-full` of it. The contract is
+# unchanged and is still exactly one screen with nothing scrolling inside it;
+# what changed is which of the two elements carries the number. Assert BOTH
+# ends, because either alone is satisfied by a broken pair: a wrapper with a
+# height and an inner that is `min-h-screen` overflows, and an `h-full` inner
+# in a wrapper with no height collapses to nothing.
+css = read("src/app/globals.css")
+check(re.search(r"\.cahier-drilldesk\s*\{[^}]*height:\s*100dvh", css) is not None,
+      "the drill's desk wrapper is exactly one screen tall",
+      ".cahier-drilldesk does not set height: 100dvh — the drill has no lock to inherit")
+check("cahier-drilldesk" in shell_code,
+      "DrillShell mounts inside that wrapper",
+      "DrillShell no longer renders .cahier-drilldesk — its root is loose in the layout again")
+check(re.search(r"cahier-drill .*h-full .*overflow-hidden", shell_code) is not None,
+      "the drill fills the wrapper and nothing inside it scrolls",
+      "DrillShell's root is not `h-full … overflow-hidden` — it either collapses or scrolls")
 check("[&_h1]:hidden" in shell_code,
       "the body slot swallows any <h1> a drill prints",
       "DrillShell does not hide stray <h1>s")
@@ -196,9 +214,18 @@ check("DrillShell" in flip and "drillExitHref" in flip,
 check("CahierShell" not in flip and "CahierFrame" not in flip,
       "4Mémoire carries no page-shell of its own",
       "FlipItContent still wraps itself in CahierShell/CahierFrame")
-check('"✓ I know it"' in flip and '"↺ To review"' in flip and '"Flip"' in flip,
+# « FLIP » LEFT THIS LIST on 2026-09-02. It was named here with the two
+# self-marking CTAs, and it never belonged with them: they record what the
+# learner knows, it only turned the card over — which tapping the card already
+# did, on the one activity named for that gesture. Dan: *"there is a redundant
+# button called FLIP which is not working and which we don't even need."* What
+# this check is actually for — that study mode self-marks in the shell's
+# footer rather than growing buttons of its own — is unchanged and is now
+# asserted without the one CTA that was not a self-mark. The card's own button
+# is pinned in verify27 §14g.
+check('"✓ I know it"' in flip and '"↺ To review"' in flip,
       "4Mémoire study mode self-marks in the shell footer",
-      "FlipItContent's study CTAs (Flip / I know it / To review) are missing")
+      "FlipItContent's self-marking CTAs (I know it / To review) are missing")
 # Track D: the reveal moved into the ladder's ? control — the hook logs
 # answer.reveal and records the evidence, so the drill itself need not.
 check('"Check"' in flip and ('"answer.reveal"' in flip or "useHelpLadder(" in flip),
