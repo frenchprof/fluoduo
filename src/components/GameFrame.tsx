@@ -39,6 +39,7 @@ import Link from "next/link";
 import GameBar, { type GameHearts, type GameProgress } from "@/components/GameBar";
 import BottomSheet from "@/components/BottomSheet";
 import SoundControl from "@/components/SoundControl";
+import FirstRunHint from "@/components/FirstRunHint";
 
 export type { GameHearts, GameProgress };
 
@@ -67,6 +68,8 @@ export default function GameFrame({
   hearts,
   score,
   help,
+  hint,
+  hintKey,
   menu,
   record,
   recordTitle,
@@ -86,6 +89,33 @@ export default function GameFrame({
   score?: ReactNode;
   /** How to play — lives behind ⋯ → Help. Omit and the menu has no Help row. */
   help?: ReactNode;
+  /**
+   * Set this and `help` ALSO opens by itself the first time, with a "do not
+   * show me again" (Dan, 2026-09-02: "add the same first timer pop ups
+   * instructions for all activity pages"). It is the same node, not a second
+   * copy — a game's instructions cannot come to differ between the popup and
+   * the ⋯ menu, which is what a hand-written second version would guarantee
+   * within a month. Stable and never a display name: a rename must not
+   * re-open a hint the learner has dismissed.
+   *
+   * Games that already open on a LANDING that explains them (NumBus,
+   * NumBourse — Dan asked for those on 2026-08-29) pass nothing: they would
+   * be telling a learner the same thing twice, one tap apart.
+   */
+  hintKey?: string;
+  /**
+   * The FIRST-RUN cut of `help`, where the full text is too long to meet a
+   * learner with. Dan, 2026-09-02, on LexicaLater's popup: it is that game's
+   * ⋯ → Help unedited, four paragraphs of levels, decoys and hard mode, and it
+   * reads long as an arrival card even though it is right in a menu you chose
+   * to open.
+   *
+   * IT MUST BE A NODE THAT `help` ALSO RENDERS — the same constant used twice,
+   * never a second wording. A paraphrase here is two texts that drift, which
+   * is the whole reason the popup shows the help node in the first place.
+   * verify87 checks that the identifier passed here appears inside `help`.
+   */
+  hint?: ReactNode;
   /** Game-specific rows for the ⋯ sheet (music, hard mode, restart…). */
   menu?: GameMenuItem[];
   /** The live record (trésor, blotter, transcript…) — the desktop right pane. */
@@ -221,6 +251,20 @@ export default function GameFrame({
         <BottomSheet open={helpOpen} onClose={() => setHelpOpen(false)} title={<>❓ {title}</>}>
           <div className="game-help text-sm text-[color:var(--cahier-ink)]">{help}</div>
         </BottomSheet>
+      )}
+      {/* …and the same node, unbidden, the first time — or the short cut of it
+          where a game has one. The « more under ⋯ » line is drawn HERE, once,
+          rather than written into each game's `hint`: it is true exactly when
+          something was left out, which is exactly when `hint` is set. */}
+      {help && hintKey && (
+        <FirstRunHint hintKey={hintKey} title={`How to play`}>
+          <div className="game-help">{hint ?? help}</div>
+          {hint && (
+            <p className="mt-3 text-xs text-[color:var(--cahier-ink-soft)]">
+              The rest — levels, lives, settings — is under ⋯ → Help.
+            </p>
+          )}
+        </FirstRunHint>
       )}
     </div>
   );

@@ -330,6 +330,11 @@ jobs:
       - name: "The stop bookmark — one value, two faces, no silent writers (2 Sep)"
         run: python3 verify/verify87-stop-bookmark.py
 
+      # Renumbered 87 -> 88 at the QC merge — fourth collision of the day:
+      # both lanes claimed 87 within the hour, and the bookmark's landed first.
+      - name: "First-run instructions: one per activity, none on a hub (2 Sep)"
+        run: python3 verify/verify88-first-run-hints.py
+
       # The scan launches the runner's preinstalled Chrome via
       # playwright-core; no browser download step is needed.
       - name: Rebuild the export open, for the browser to walk

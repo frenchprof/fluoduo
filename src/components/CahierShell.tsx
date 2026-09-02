@@ -39,6 +39,7 @@ import { activity, bandOf, familyOf, familyShort, hubFamily, isReadingSurface } 
 import { stopForDeck } from "@/lib/stopTag";
 import BottomBar from "@/components/BottomBar";
 import PageBand from "@/components/PageBand";
+import { ActivityFirstRun } from "@/components/FirstRunHint";
 
 /** Sorting is an MCQ over the deck's letris columns — no columns, no game. */
 export function hasDicePractice(collectionId: string): boolean {
@@ -184,6 +185,12 @@ export default function CahierShell({
               any page that carried its own tab strip, which was ninety
               pre-tests — see the note above. */}
           <BottomBar />
+          {/* The same first-run instruction the drills get, for the four
+              activities that ARE a CahierShell page rather than a drill —
+              VoixLà, ChaTutor, DéjàRevu. A hub, a picker or a landing has no
+              row in content/hints.ts and so draws nothing, which is Dan's
+              "hub pages excluded" without a list of exclusions to maintain. */}
+          <ActivityFirstRun activityKey={active} on="page" />
         </main>
   );
 
