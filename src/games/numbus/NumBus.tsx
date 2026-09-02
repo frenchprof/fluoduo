@@ -15,6 +15,7 @@ import { isChannelMuted, onChannelMuteChange, setChannelMuted } from "@/games/au
 import GameFrame from "@/components/GameFrame";
 import GameOver, { type GameMiss } from "@/components/GameOver";
 import { reviewItemByFrench } from "@/lib/reviser";
+import { notePracticeDay } from "@/lib/progress";
 import { logEvent } from "@/lib/firebase/usage";
 import { claimDigitKeys } from "@/lib/useChoiceKeys";
 import { blindWidth, configKey, dealRound, type Blind, type NumBusConfig, type NumBusMode, type NumBusRound } from "./config";
@@ -514,6 +515,9 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
       setTyped(round.digits);
       setServed((n) => n + 1);
       setLog((l) => [...l, { words: round.words, digits: round.digits, suffix: round.suffix, given: answer, ok: won }]);
+      // A game round is a day of practice — the streak counts showing up,
+      // and NumBus's own scoring stays its own (no XP, no SRS).
+      notePracticeDay();
       void import("@/lib/firebase/responses")
         .then((m) =>
           m.recordResponse(round.words, won, {

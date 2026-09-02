@@ -37,6 +37,26 @@ itself, once, exactly when something was left out. verify87 checks that the
 identifier passed as `hint` appears inside that game's `help`, so a paraphrase
 fails; 20 assertions now, all break-tested.
 
+## 2 Sep — the streak works where a learner can see it work
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan: *"the streaks are not working yet?"* Driven and confirmed — two faults,
+both now dead and both pinned by `verify89-streak-live.py`:
+
+1. **The mark went deaf.** StreakMark (top bar) read the streak once on
+   mount and never subscribed to `fluolingo:progress-updated` — the day's
+   first practice bumped the streak in storage while the bar showed nothing,
+   and in an SPA the remount that would have revealed it never comes. It
+   listens now, so the 🔥 (and the "1 day in a row" toast, which rides the
+   same finalize funnel) appear the moment the first answer lands.
+2. **Graded surfaces that never touched progress.** MCQ, NumBus and
+   NumBourse grade through recordResponse (evidence trail) and deliberately
+   stay outside recordItemResult — no SRS, no XP — but that starved the
+   streak too. `notePracticeDay()` is the narrow door: bump the day, save
+   through finalize, change nothing else. All three call it on every graded
+   answer; wrong answers count, per the streak's own rule.
+
 ## 2 Sep — first-run instructions on every activity
 
 Dan, twice in an hour: *"add a pop up instruction for the first time with a

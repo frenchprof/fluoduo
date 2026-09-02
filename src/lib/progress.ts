@@ -340,6 +340,20 @@ function bumpStreakToday(p: Progress): Progress {
   return { ...p, streak, lastActiveDay: today, timeZone: learnerZone() };
 }
 
+/**
+ * "Showing up counts": mark today practised, nothing else. For the graded
+ * surfaces that deliberately stay OUTSIDE recordItemResult — MCQ never feeds
+ * the SRS, so its answers wrote only the evidence trail and the learner's
+ * streak never moved on it (Dan, 2026-09-02: "the streaks are not working
+ * yet?" — driven and confirmed: an MCQ answer left progress untouched).
+ * No XP and no SRS step here, so those decisions stay where they are; the
+ * finalize() funnel still runs so the bump saves, announces itself, and can
+ * fire the streak/multiplier celebrations like every other earning path.
+ */
+export function notePracticeDay(): Progress {
+  return finalize(bumpStreakToday(loadProgress()));
+}
+
 export function isSioDone(id: string, p: Progress): boolean {
   return p.doneSios.includes(id);
 }

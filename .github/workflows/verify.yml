@@ -335,6 +335,9 @@ jobs:
       - name: "First-run instructions: one per activity, none on a hub (2 Sep)"
         run: python3 verify/verify88-first-run-hints.py
 
+      - name: "The streak bumps on every graded surface, and the bar hears it (2 Sep)"
+        run: python3 verify/verify89-streak-live.py
+
       # The scan launches the runner's preinstalled Chrome via
       # playwright-core; no browser download step is needed.
       - name: Rebuild the export open, for the browser to walk
