@@ -33,6 +33,9 @@ touching it:
    PR #142 (closed as superseded); the one thing to carry over from it: the
    child dress must apply in the DROPDOWN too, not only under `.cahier-tabs`
    — the scoping bug behind Dan's "camouflaged among the parents".
+6. **The tab labels take FluOLinGo Hand** ("oh use FluOLinGo font for those
+   tabs!") — `.fluo-band-hand`, the same stack the band and the map's legend
+   sentence wear.
 ## 1 Sep, late — the chrome audit, and the strips become one strip
 
 Sole editor of STATUS.md in this commit: Pre-tests.
