@@ -36,7 +36,6 @@
  */
 import Link from "next/link";
 import CahierShell from "@/components/CahierShell";
-import SectionBand from "@/components/SectionBand";
 import ActivityIcon from "@/components/ActivityIcon";
 import { activitiesIn, familyShort, hubFamily } from "@/content/activities";
 
@@ -51,16 +50,30 @@ export default function FamilyHub({ activeKey }: { activeKey: string }) {
   const tiles = activitiesIn(family.key).filter((a) => a.href);
 
   return (
-    // No count on the strip (Dan, 1 Sep) — the SectionBand directly below
-    // already carries it as its pill, which is where a count belongs: beside
-    // the thing it counts.
+    /* ONE HEADING AND NO COUNT, both by the same litmus test.
+       Dan, 1 Sep: "Do we need that number on the right end of that strip for
+       every strip?" and then "drop the redundant label Practice too!". This
+       page used to print the family name twice — once on the shell band, once
+       on a SectionBand right under it — and the tile count twice with it. Four
+       pieces of furniture telling a learner two things they were already
+       looking at.
+       A count earns its place when it describes what you CANNOT see ("18 words"
+       on a closed fold); an open list counts itself. A label earns its place
+       when it names something the heading above does not.
+       SectionBand is gone from this page rather than stripped: its own contract
+       is that `label` is always present, because colour must never be the only
+       cue for a section. That invariant is right and untouched — a hub simply
+       has one section, so it needs one heading, and the shell band is it. */
     <CahierShell active={activeKey} band={{ title: familyShort(family) }}>
-      <SectionBand
-        family={family.key}
-        label={`${family.emoji} ${familyShort(family)}`}
-        pill={`${tiles.length}`}
-      >
-        <ul className="grid gap-2.5 sm:grid-cols-2">
+      <div className="p-3">
+        {/* auto-rows-fr: EQUAL HEIGHT, not just equal width (Dan, 1 Sep, on the
+            hub mock-ups: "i need the buttons to be of equal height (not just
+            equal width)"). `h-full` on the tile only fills the row it is in, and
+            in the single column a phone gets, every tile is its own row — so
+            /games shipped tiles of 84px and 70px depending on whether the blurb
+            wrapped. Measured, not eyeballed: the hub scan reads every tile's
+            box and fails on more than one distinct height. */}
+        <ul className="grid auto-rows-fr gap-2.5 sm:grid-cols-2">
           {tiles.map((a) => (
             <li key={a.key}>
               <Link
@@ -80,7 +93,7 @@ export default function FamilyHub({ activeKey }: { activeKey: string }) {
             </li>
           ))}
         </ul>
-      </SectionBand>
+      </div>
     </CahierShell>
   );
 }

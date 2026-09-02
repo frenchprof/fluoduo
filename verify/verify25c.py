@@ -163,7 +163,9 @@ check("var(--cahier-gold)" in m3, "the current stop's ring is --cahier-gold", "g
 # views, drives them from a pressed control, and remembers the choice — is
 # unchanged; only where "remembers" is implemented moved, so the check asks
 # MapBody for the CALL rather than for the string.
-check("<HomeMap3D " in carte and "<HomeMap " in carte and "saveMapView(" in carte and "aria-pressed" in carte,
+# RE-POINTED 2 Sep: the 2D view is Map2DGrid (see verify25b); the toggle
+# moved into the fixed control row above the map, same shape.
+check("<HomeMap3D " in carte and "<Map2DGrid " in carte and "saveMapView(" in carte and "aria-pressed" in carte,
       "The Map's 2D ⇄ 3D toggle is intact", "the 2D/3D toggle in MapBody broke")
 
 # 8 · no classmates / emails

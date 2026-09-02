@@ -63,8 +63,13 @@ css = read("src/app/globals.css")
 # 1 · two views, toggle, RoadMap gone
 check(bool(map2d), "HomeMap.tsx (2D) exists", "src/components/HomeMap.tsx missing")
 check(bool(map3d), "HomeMap3D.tsx (3D) exists", "src/components/HomeMap3D.tsx missing")
-check("<HomeMap " in carte and "<HomeMap3D " in carte,
-      "The Map renders both views", "MapBody does not render both HomeMap and HomeMap3D")
+# RE-POINTED 2 Sep: the 2D view on /map is Map2DGrid now — ten rows of five,
+# every stop visible (Dan: "compress the 2D map more such that all 50 stops
+# are visible at a glance"). HomeMap's winding scene lives on as Home's
+# postcard; the page renders the grid and the 3D scene.
+check("<Map2DGrid " in carte and "<HomeMap3D " in carte,
+      "The Map renders both views (grid 2D + 3D)",
+      "MapBody does not render both Map2DGrid and HomeMap3D")
 # SUPERSEDED, 1 Sep, and rewritten rather than dropped. This matched the key's
 # LITERAL TEXT inside MapBody, which stopped being where it lives when Home's
 # switch started reading the same value: three surfaces set this view (the
@@ -169,8 +174,13 @@ check("UnitSection" not in unit_page and "UnitRedirect" in unit_page,
       "/unit/N no longer renders UnitSection — it is a deep link", "/unit/N still renders the unit page")
 check("/map?unit=" in redirect and "location.replace" in redirect,
       "UnitRedirect sends /unit/N(#SIO) to /map?unit=N(#SIO)", "UnitRedirect does not redirect to /map?unit=N")
-check('get("unit")' in carte and "hashchange" in carte and "<UnitSection" in carte,
-      "The Map reads ?unit= and #SIO, and hosts UnitSection inline", "MapBody does not read the deep link / host UnitSection")
+# RE-POINTED 2 Sep: the unit panel is RETIRED (Dan, over the Unité 0 tile
+# grid: "we don't need this anymore … delete it"). A ?unit= deep link now
+# scrolls the always-visible band into view, and #SIO opens StopPopup — the
+# one popup all fifty stops share since it was lifted out of UnitSection.
+check('get("unit")' in carte and "hashchange" in carte and "<StopPopup" in carte,
+      "The Map reads ?unit= and #SIO, and a stop opens StopPopup",
+      "MapBody does not read the deep link / open StopPopup")
 check('get("unit")' in home and "/map" in home,
       "Home forwards old /?unit= deep links to /map (printed QR codes survive)", "Home no longer forwards /?unit= to /map")
 check("onOpenSio" in m2 and "onOpenSio" in m3, "stops open their SIO in place (onOpenSio) in both views", "stops still navigate away")

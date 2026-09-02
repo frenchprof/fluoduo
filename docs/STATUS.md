@@ -48,6 +48,25 @@ order, but he may want the name dropped below some width instead. And Profil's
 band no longer shows the signed-in name (the rule says the activity's name);
 its ground is now the user family's pale pink.
 
+## 2 Sep — Map of FluOLinGo-land (Dan's spec, executed same hour)
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan's 2 Sep map rulings, all in one PR: /map's band reads « Map of
+FluOLinGo-land » over one legend-carrying sentence; ONE fixed control row
+(2D⇄3D switch left, zoom right — migrated up from under the map) that never
+moves between views; the 2D view is Map2DGrid — ten rows of five, all fifty
+stops at a glance, units told apart by colour bands, not names; the U0–U4
+jump chips deleted; the unit panel under the map RETIRED (Dan, over the
+Unité 0 tile grid: "we don't need this anymore … delete it") — a stop opens
+StopPopup directly, one popup for all fifty, lifted out of UnitSection.
+Home's switch no longer navigates (1 Sep "takes you to the map" superseded
+by 2 Sep "this needs to stay on screen when users tap 2D>3D>2D"): the
+postcard flips in place, the hero never moves. verify25b/25c/80 re-pointed
+with the new rulings written in. UnitSection/Unit0Panel are now unmounted
+on /map — files kept this PR (Unit0Pretest still imports one, four checks
+pin them); their deletion is queued integration cleanup.
+
 ## 1 Sep, night — the wrong answers, and Home's switch actually opens the map
 
 Sole editor of STATUS.md in this commit: Pre-tests.
@@ -730,6 +749,98 @@ Dan assigns. Listed so the queue is not re-derived by whoever picks it up.
 | ~~7~~ | ~~Shortcut row~~ **RULED**: Carte STAYS (sole map door once Practice opens its hub — evening ruling 2) | — |
 | 8 | `rule:` namespace (894-item tagging): parked by design until the concepts finish | transfer evidence |
 | 9 | **Deploys through fluoduo-main** (ruled) — needs the fine-grained PAT (write to dckg/fluo) as an Actions secret | ends manual deploys |
+
+## 1 Sep — PRACTICE HUB: PEERS PUSHED ONE, PRE-TESTS IS BUILDING ONE. PICK ONE.
+
+Sole editor of STATUS.md in this commit: Peers.
+
+Dan, 1 Sep: *"You know what Pretests is working on this too, so abort"* — Peers
+has stopped. The work was already committed and pushed when that arrived, so
+this is here to stop fluoduo-main discovering two Practice hubs at merge time.
+
+**Peers' version is `46fa2d5` on `claude/peers-vd2h6h`.** Three pieces, all
+small, all revertable independently:
+
+| piece | files |
+|---|---|
+| the hub itself | `FAMILIES.practice.href` /map → /practice · `FAMILY_HUBS` + `practice` · new `src/app/practice/page.tsx` (4 lines, on the games/skills pattern) |
+| the three pins | verify19, verify24 (both asserted Practice reaches /map), verify52 (asserted FAMILY_HUBS is exactly games+skills) — amended with reasoning, break-tested |
+| **not the hub at all** | `auto-rows-fr` equal-height on `FamilyHub` (fixes /games and /skills too), the SectionBand/count removal, the counts rule in AGENTS.md, and verify52's `read()` returning "" so a deleted hub page is NAMED instead of raising FileNotFoundError |
+
+**If Pre-tests' version lands, the first two rows should be reverted and the
+third kept** — the third is Dan's equal-height and "drop the redundant label"
+instructions from the mock-up rounds, and none of it is specific to Practice.
+Whoever merges: take one hub, not a blend.
+
+The collision itself is the #97 pattern for the third time today (the nine
+lesson files were the second, recorded below). Neither session could see the
+other; the roster split that would have prevented it was written after both had
+started.
+
+## 1 Sep — ALL NINE LESSON FILES ARE BUILT (Peers) — THE SPLIT BELOW IS STALE
+
+Sole editor of STATUS.md in this commit: Peers.
+
+**STOP WORK ON SIO-025, SIO-038 AND SIO-039 IF ANYONE HAS STARTED THEM.** The
+split immediately below gives those three to Pre-tests and tells Peers not to
+build them. It was written after they were already pushed, and neither session
+could see the other — the #97 collision again, from the opposite direction.
+All nine are on `claude/peers-vd2h6h` (PR #120):
+
+| stop | file | commit |
+|---|---|---|
+| SIO-038 | `transport.tsx` + `.gen.ts` | `b246d21` |
+| SIO-010 | `atelier-rencontre.tsx` + `.gen.ts` | `e6b9793` |
+| SIO-025 | `parce-que.tsx` | `ea43c0d` |
+| SIO-039 | `wants-needs.tsx` + `.gen.ts` | `ea43c0d` |
+| SIO-020/030/040/049/050 | five `.tsx` + `atelierModel.ts` | `8284827` |
+
+`concept` is absent from all nine, as colour review asked. Checks: verify74
+(SIO-038), verify75 (the atelier shape), verify76 (025 + 039), verify77 (the
+five). verify51 lost its three "these stops must have NO lesson" assertions —
+amended with the reasoning, not silenced, and replaced by a stronger one: each
+must now LEAD with the single lesson written for it.
+
+**Pre-tests should take the cycling redo instead**, which is its second
+assignment below and is untouched.
+
+### Three things the handover said that turned out to be wrong
+
+1. **The atelier decks are not empty.** They carry one card per dialogue line
+   (colour review corrected this themselves in `b4cdd6c`), so the ateliers were
+   closer to the ordinary job than billed.
+2. **An atelier lesson must pass its Mémo through.** `LessonPager` resolves
+   `memo={lesson?.memo ?? memoForDeck(collectionId)}`, so merely REGISTERING a
+   lesson deletes « Le modèle » from the panel an atelier opens on — and
+   verify71 stays green while it happens, because it reads memos.tsx. Every
+   atelier lesson uses `memo: memoForDeck(DECK)`. verify75 and verify77 assert
+   it on all six.
+3. **The ateliers' exercise cannot come from FINALE_BANK.** It was built that
+   way first — the bank holds exactly what each stop is graded on — and it
+   produced « Bon chance » and « un sympa restaurant », because those items were
+   authored for a TYPE-IN game and a bank item guarantees nothing about another
+   item's answer in its frame. Reverted to the model's own turns. Dan has since
+   ruled that the repair is to correct the agreement rather than drop the
+   option, which re-opens the bank as a source; not rebuilt.
+
+### Also on this branch, and one of them is a reversal to read before touching
+
+- **Elision filtering was built and then reverted on Dan's ruling.** A rule that
+  removed every ungrammatical option app-wide (« l'boxe », « à l'bibliothèque »,
+  « J'veux ») shipped and was pulled: *"i would leave those alone, srsly"* —
+  a distractor's job is to be wrong, and picking the wrong contraction is the
+  A1 error the card exists to train out. The rule and its one exception are now
+  permanent in AGENTS.md. **Do not re-add it.**
+- Transport's options all keep the card's own subject (Dan: *"I would put 2 and
+  3 as Je …"*).
+- The atelier model fits one screen: SIO-030 1.47 → 1.06, SIO-010 1.33 → 1.00,
+  by dropping the per-line gloss the word list below already carries.
+- DrillShell chrome, the 8px band gap, the colours feminine note, and the
+  SpecuLearn/pre-tests handoff are all in the same PR.
+
+**Still open for Peers:** the Practice hub (assignment 2 of #113). **Open for
+Dan:** whether a slotted lesson should own its whole run (measured and
+photographed, one line either way), and whether to restore the atelier gloss.
 
 ## 1 Sep — THE HANDOVER IS SPLIT, and Pre-tests gets two assignments
 

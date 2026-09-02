@@ -141,7 +141,23 @@ export function transportQuestion(pinned?: Record<string, string>): DiceQuestion
     big: m.enFull,
     bigLang: "en" as const,
     correct,
-    easyOptions: [correct, swapped, ...others(pool, m, 2).map((o) => exampleOf(o))],
+    // EVERY OPTION KEEPS THIS CARD'S SUBJECT (Dan, 1 Sep, looking at the card:
+    // "I would put 2 and 3 as Je …"). The decoys used to be the other items'
+    // own sentences, so « I take the metro. » was answered against « Tu prends
+    // la voiture ? » and « Nous prenons l'avion. » — three subjects on one
+    // card. The subject is not what this stop teaches, so varying it is a
+    // second difference the learner has to read past, and it lets a card be
+    // narrowed on something other than the transport frame.
+    //
+    // So a decoy borrows only the OTHER item's frame word and mode; the lead
+    // and the final punctuation stay this card's. « Je prends la voiture. »,
+    // « Je prends l'avion. » — correct French, wrong vehicle, same speaker.
+    easyOptions: [
+      correct,
+      swapped,
+      ...others(pool, m, 2).map((o) =>
+        sentence([{ text: m.lead }, { text: o.gap }, { text: o.mode + m.end }])),
+    ],
     slots,
     med: medFrom(slots, "gap"),
   };
