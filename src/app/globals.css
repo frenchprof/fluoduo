@@ -958,15 +958,31 @@ body {
   height: 100dvh;
   display: flex;
   background: var(--cahier-desk);
-  padding-top: 8px;                          /* = .cahier-desk's top padding */
+  /* ALL FOUR SIDES (Dan, 2026-09-02, shown three renders and asked which:
+     "B"). It first landed with grey on the left and above only, on the
+     reasoning that a drill cannot spare the room — but that reasoning had
+     priced the wrong option. Measured on a 390×844 phone: matching a page's
+     64px of desk below costs a drill 64px of height, and a thin desk all
+     round costs 8. The visible difference either way is the RIGHT edge,
+     where the paper had been running off the side of the screen while every
+     other page in the app sat on grey.
+
+     The top and the sides are the page desk's own numbers, written once each
+     and read from `.cahier-desk` / `.cahier-deskrow` above; the BOTTOM is 8
+     rather than that desk's 64, because a page scrolls and a drill is exactly
+     one screen with its footer tray pinned to the end of it. On a phone the
+     fixed bottom bar covers this edge anyway — it earns its 8px on a laptop
+     window, where there is no bar and the paper otherwise ends at the sill. */
+  padding-top: 8px;                          /* = .cahier-desk's top padding  */
   padding-left: clamp(8px, 3vw, 44px);       /* = .cahier-deskrow's gutter    */
+  padding-right: clamp(8px, 3vw, 44px);      /* mirrors it, so the paper is   */
+                                             /* centred rather than nudged    */
+  padding-bottom: 8px;                       /* NOT the desk's 64 — see above */
 }
-/* Only the corners that touch grey are rounded — the page's own radius, with
-   the two against the viewport edge left square rather than exposing desk
-   behind a curve that has nothing to sit on. */
+/* The page's own radius, now that grey shows on every side to put it against. */
 .cahier-drilldesk > .cahier-drill {
   width: 100%;
-  border-radius: 4px 16px 0 0;
+  border-radius: 4px 16px 16px 4px;
   box-shadow: 0 12px 34px rgba(34, 40, 80, 0.20);
 }
 

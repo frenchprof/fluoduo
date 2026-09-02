@@ -180,10 +180,33 @@ if z_hint and z_cred:
        "three seconds and swallows the tap meant to skip them")
 
 # ---- 9 · the games reuse their own help node ------------------------------
-ok(re.search(r"help && hintKey && \(", game) is not None and re.search(r"<FirstRunHint[\s\S]{0,200}\{help\}", game) is not None,
-   "a game's first-run popup IS its ⋯ → Help node, not a second copy of it",
+ok(re.search(r"help && hintKey && \(", game) is not None and re.search(r"<FirstRunHint[\s\S]{0,300}\{hint \?\? help\}", game) is not None,
+   "a game's first-run popup IS its ⋯ → Help node, or a declared short cut of it",
    "GameFrame no longer shows `help` first-run, or shows something else — the popup and the menu "
    "would then be two texts that drift")
+# A SHORT CUT MUST BE A PIECE OF THE HELP, not a second wording of it (Dan,
+# 2026-09-02: LexicaLater's four paragraphs "read long as an arrival card").
+# The identifier passed as `hint` has to appear inside that game's `help` too,
+# which is what makes them one text rather than two that agree today.
+for path in ("src/games/lexicalator/Lexicalator.tsx", "src/games/letris/LetrisGame.tsx",
+             "src/games/compose/ComposeDialogue.tsx", "src/games/compose/ComposeSolo.tsx"):
+    body = code(read(path))
+    m = re.search(r"hint=\{(\w+)\}", body)
+    if not m:
+        continue                       # no short cut declared: the full help is the popup
+    name = m.group(1)
+    i_help = body.find("const help = (")
+    help_node = body[i_help:body.find("\n  );", i_help)] if i_help >= 0 else ""
+    ok(f"{{{name}}}" in help_node,
+       f"{os.path.basename(path)}'s short first-run cut is a piece of its own help, used twice",
+       f"{path} passes `hint={{{name}}}` but its `help` does not render {name} — that is a second "
+       "wording of the same instructions, and the two will drift")
+# AND the popup says where the rest went, or a learner never learns the rules
+# that were trimmed out of it.
+ok("⋯ → Help" in game,
+   "and the popup points at ⋯ → Help for what a short cut left out",
+   "GameFrame's first-run popup no longer says where the rest of the instructions are — a trimmed "
+   "hint would just be instructions deleted")
 GAMEKEYS = {"vocabularain", "lexicalater", "compose", "matching", "numbus", "numbourse"}
 dupes = sorted(KEYS & GAMEKEYS)
 ok(not dupes,

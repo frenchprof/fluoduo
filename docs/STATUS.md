@@ -6,6 +6,37 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 2 Sep — the two open items close
+
+Both were questions put to Dan with pictures; both answered (*"proceed with
+open"*), and the finished work went to fluoduo-main as PR #147 first.
+
+**The desk goes all round** (Dan, shown three real renders: *"B"*). The drill
+desk had landed with grey on the left and above only, on the reasoning that a
+drill cannot spare the room — and that reasoning had priced the wrong option.
+Measured on a 390×844 phone: a page's 64px of desk below costs a drill **64px**
+of height; a thin desk all round costs **8**. The edge that actually showed the
+difference was the RIGHT one, where the paper had been running off the side of
+the screen while every other page in the app sat on grey. The top and sides are
+still the page desk's own numbers, read from `.cahier-desk` /
+`.cahier-deskrow`; the bottom is 8 rather than 64, because a page scrolls and a
+drill is one screen with its footer tray pinned to the end of it. The paper's
+full radius is back now that there is grey on every side to put it against.
+Re-swept: **121 banded routes, still one regime — h47, top 57, left 19, ✕ at
+31.** verify82 gained two assertions (the right gutter against the LEFT, never
+a number; the bottom as a range, "some desk but not a page's"), break-tested.
+
+**LexicaLater's popup is one sentence now.** It had been that game's ⋯ → Help
+unedited — four paragraphs of levels, decoys and hard mode — which is right in
+a menu you chose to open and long as an arrival card. GameFrame took an
+optional `hint`: the FIRST-RUN cut, which must be a node `help` also renders,
+so it is the same constant used twice and not a second wording. Lexicalator
+pulls its opening sentence out as `howToPlay` and passes it both ways. The
+popup then draws "The rest — levels, lives, settings — is under ⋯ → Help"
+itself, once, exactly when something was left out. verify87 checks that the
+identifier passed as `hint` appears inside that game's `help`, so a paraphrase
+fails; 20 assertions now, all break-tested.
+
 ## 2 Sep — first-run instructions on every activity
 
 Dan, twice in an hour: *"add a pop up instruction for the first time with a
