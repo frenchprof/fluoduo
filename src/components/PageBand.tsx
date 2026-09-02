@@ -34,6 +34,14 @@ import type { ReactNode } from "react";
  * band on the site now measures the same, Home's rainbow hero excepted by
  * Dan's own words ("except for the rainbow strip on the home page").
  *
+ * AND NOTHING ELSE AT THE END. There was a `trailing` slot for "one extra
+ * control, never a number", and one page used it — the deck's band mounted a
+ * (?) that opens the Menu, which is what the ☰ two centimetres above it opens.
+ * Dan found it the moment the bands were lined up side by side ("what is with
+ * the question mark on the deck strip"): a slot that exists is a slot that
+ * gets filled, and the band's whole claim is that it is the same three parts
+ * everywhere. So the slot is gone, not just its one occupant.
+ *
  * AND NO NUMBER AT THE END that is not the goal's. The old chip carried a
  * drill's i/total, the profile's outcomes done and a deck page's (?) — one
  * shape meaning three things, which is not a figure a learner can read.
@@ -47,7 +55,6 @@ export default function PageBand({
   goal,
   exitHref = "/",
   exitLabel = "Close",
-  trailing,
   className = "",
 }: {
   /** The ACTIVITY's name — MémoiRecall, GramMarathon, MneMemo, Settings. */
@@ -58,8 +65,6 @@ export default function PageBand({
   /** Where the ✕ goes. A drill passes its goal's unit; a site page takes Home. */
   exitHref?: string;
   exitLabel?: string;
-  /** One extra control, right of the goal — a (?) dot. Never a number. */
-  trailing?: ReactNode;
   className?: string;
 }) {
   return (
@@ -98,7 +103,6 @@ export default function PageBand({
           <span aria-hidden>{goal}</span>
         </span>
       )}
-      {trailing}
     </header>
   );
 }

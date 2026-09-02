@@ -6,6 +6,21 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 2 Sep, later — the (?) leaves the deck band
+
+Dan, looking at seven bands side by side: *"what is with the question mark on
+the deck strip"*. It mounted `HelpDot`, whose docstring says it is for pages
+OUTSIDE the CahierShell — the immersive games, which have no ☰ — and it opens
+MenuSplash. The ☰ two centimetres above it opens MenuSplash too, from its
+« MENU » row (screenshotted both ways to be sure). Two doors to one room on one
+screen, and it made the deck the only band in the app with a fourth thing on it.
+
+The `trailing` slot went with it rather than just its occupant: a slot that
+exists is a slot that gets filled, and the band's whole claim is that it is the
+same three parts everywhere. No caller was left. verify82 now pins the band at
+three parts (2 assertions, break-tested); SectionBand keeps its own `trailing`,
+which is a different component with real callers.
+
 ## 2 Sep — one page shape, and every band on one edge
 
 Sole editor of STATUS.md in this commit: Pre-tests.
