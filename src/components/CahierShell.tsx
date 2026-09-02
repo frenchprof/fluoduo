@@ -11,15 +11,13 @@
  * A tab without an href (typically the active page) renders as a static flap.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 
-/** Below this the flap rail is hidden. Was 1100, which left every iPad and
- *  every half-width laptop window with NO navigation but the burger.
- *  Keep in sync with the media query in globals.css. */
-const RAIL_MIN_PX = 900;
+/* RAIL_MIN_PX (900) lived here and is gone with the edge drag — it was only
+   ever read by that feature's two effects. The rail's real breakpoint is the
+   media query in globals.css, which is unchanged and remains the one source. */
 import type { MouseEvent as ReactMouseEvent, ReactNode } from "react";
 
-const PAGE_WIDTH_KEY = "fluolingo:pageWidth";
 import { isLexReadyId } from "@/lib/collections/lexReady";
 import { isSpecuLearnReady } from "@/lib/collections/speculearnReady";
 import { hasMatching } from "@/lib/collections/loadCollections";
@@ -132,90 +130,27 @@ export default function CahierShell({
   // Nothing ever passed the flag and nothing renders a CahierShell inside
   // another, so the stack branch had no other caller to serve.
 
-  // Every page's right edge is drag-widenable (Dan, 2026-07-05: "all the
-  // pages should have their own draggable right edge") — resizes the outer
-  // sheet (the stack on nested pages), persisted site-wide.
-  const outerRef = useRef<HTMLElement | null>(null);
-  // The saved page-width only applies where the tab rail actually shows (wide
-  // screens ≥900px). Below that the rail is hidden, so a saved desktop width
-  // would leave the page short of full-width with wasted grey on the right
-  // (Dan, 2026-07-05: "it was spanning the full screen width"). On mobile we
-  // clear the inline basis so the page fills the screen; re-apply on resize.
+  // NO DRAGGABLE RIGHT EDGE (Dan, 2026-09-02: "There was an option to slide the
+  // screen inwards from the right edge to narrow the page but we do not need
+  // that anymore. can we remove that function"). What went with it: the grip
+  // itself, the saved width in `fluolingo:pageWidth`, the wide-screen re-apply
+  // on resize, and the whole accidental-shrink rescue — the pulsing ⤢ button
+  // and the double-tap-the-desk escape hatch, which existed ONLY because the
+  // grip was easy to grab by accident on a phone (Dan, 2026-07-15). With no
+  // grip there is nothing to be rescued from, so removing the feature removes
+  // its whole support apparatus rather than leaving orphaned controls.
+  //
+  // ONE EFFECT SURVIVES, AND IT IS NOT PART OF THE FEATURE. Anyone who dragged
+  // a width before today still has it in localStorage, and nothing would ever
+  // read it again — but it was written as an inline flex-basis, so the key is
+  // cleared once on mount to be sure no stale value can be reapplied by a cached
+  // build. Delete this after a release or two; it is a migration, not a feature.
   useEffect(() => {
-    const apply = () => {
-      const el = outerRef.current;
-      if (!el) return;
-      if (window.innerWidth < RAIL_MIN_PX) { el.style.flexBasis = ""; return; }
-      try {
-        const w = parseInt(window.localStorage.getItem(PAGE_WIDTH_KEY) ?? "", 10);
-        el.style.flexBasis = w ? `${Math.min(w, window.innerWidth - 150)}px` : "";
-      } catch {}
-    };
-    apply();
-    window.addEventListener("resize", apply);
-    return () => window.removeEventListener("resize", apply);
+    try { window.localStorage.removeItem("fluolingo:pageWidth"); } catch {}
   }, []);
-  // Accidental shrink rescue (Dan, 2026-07-15 screenshot): on a phone the
-  // drag edge is easy to grab without noticing, leaving the page stuck
-  // narrow with unexplained grey desk. When that state is detected (no tab
-  // rail on screen, page well short of the viewport) a pulsing ⤢ arrow
-  // floats in the gap — tap it, or double-tap the grey space, to expand
-  // back to full width.
-  const [shrunk, setShrunk] = useState(false);
-  useEffect(() => {
-    const check = () => {
-      const el = outerRef.current;
-      setShrunk(!!el && window.innerWidth < RAIL_MIN_PX && el.offsetWidth < window.innerWidth - 60);
-    };
-    check();
-    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(check) : null;
-    if (ro && outerRef.current) ro.observe(outerRef.current);
-    window.addEventListener("resize", check);
-    return () => {
-      ro?.disconnect();
-      window.removeEventListener("resize", check);
-    };
-  }, []);
-  const expandFull = () => {
-    const el = outerRef.current;
-    if (el) el.style.flexBasis = "";
-    try { window.localStorage.removeItem(PAGE_WIDTH_KEY); } catch {}
-    setShrunk(false);
-  };
-
-  function startEdgeDrag(e: React.PointerEvent<HTMLDivElement>) {
-    const el = outerRef.current;
-    if (!el) return;
-    e.preventDefault();
-    const grip = e.currentTarget;
-    try { grip.setPointerCapture(e.pointerId); } catch {}
-    const sw = el.offsetWidth, sx = e.clientX;
-    const move = (ev: PointerEvent) => {
-      ev.preventDefault();
-      el.style.flexBasis = `${Math.min(Math.max(560, sw + ev.clientX - sx), window.innerWidth - 150)}px`;
-    };
-    const done = () => {
-      grip.removeEventListener("pointermove", move);
-      grip.removeEventListener("pointerup", done);
-      grip.removeEventListener("pointercancel", done);
-      try { window.localStorage.setItem(PAGE_WIDTH_KEY, String(el.offsetWidth)); } catch {}
-    };
-    grip.addEventListener("pointermove", move);
-    grip.addEventListener("pointerup", done);
-    grip.addEventListener("pointercancel", done);
-  }
-  const edgeGrip = (
-    <div
-      onPointerDown={startEdgeDrag}
-      className="absolute bottom-0 right-0 top-0 z-20 w-3 cursor-ew-resize touch-none select-none"
-      title="Drag to widen the page"
-      aria-hidden
-    />
-  );
 
   const page = (
         <main
-          ref={(el) => { outerRef.current = el; }}
           /* EVERY page wears its family's colour, from one place (Dan,
              2026-08-21: "I WANT COLOR"). familyOf() turns the page's own
              `active` key into one of the six, so a route does not have to
@@ -224,7 +159,6 @@ export default function CahierShell({
           className={`cahier-page ${famKey ? `fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""}${isReadingSurface(active) ? " paper-sand" : ""} min-h-screen`}
         >
           <div className="cahier-binding" aria-hidden />
-          {edgeGrip}
 
           {/* The site bar — ☰ · ← FluOLinGo · icons. It used to be written
               out here, which is exactly why only CahierShell pages had it;
@@ -255,30 +189,13 @@ export default function CahierShell({
 
   return (
     <div className="cahier-desk">
-      <div
-        className="cahier-deskrow"
-        onDoubleClick={(e) => {
-          // Only the grey desk itself — not clicks bubbling up from the page.
-          if (e.target === e.currentTarget) expandFull();
-        }}
-      >
+      <div className="cahier-deskrow">
         {/* One page shape (Dan, 1 Sep: "Ok move all to A"). The other branch
             wrapped the page in `.cahier-stack` — a parent sheet peeking out
             behind it — for any page that carried its own tab strip. See the
             note on `nested` above for what that cost the 91 pages it caught. */}
         {page}
 
-        {shrunk && (
-          <button
-            type="button"
-            onClick={expandFull}
-            aria-label="Expand to full width"
-            title="Tap (or double-tap the grey space) to expand the page"
-            className="fixed right-2 top-1/2 z-40 flex h-11 w-11 -translate-y-1/2 animate-pulse items-center justify-center rounded-full border-2 border-[color:var(--cahier-ink)] bg-white text-xl text-[color:var(--cahier-ink)] shadow-lg"
-          >
-            <span aria-hidden>⤢</span>
-          </button>
-        )}
         {/* Only the per-deck activity flaps live on the desk now (Dan,
             2026-08-30: "burger menu left, flaps right"). The six-family rail
             moved into the ☰ above; what is left is the handful of tabs that

@@ -130,9 +130,18 @@ export const alimentsLesson: NativeLesson = {
         // impossible, not merely wrong for the job, which is the test a wrong
         // column has to pass (see the atelier concepts, where it failed).
         //
-        // STILL OPEN, two rows up: « le jus de l'orange » is struck through and
-        // it IS real French — the juice of one particular orange. Dan has not
-        // ruled on that one.
+        // AND THE ROW TWO ABOVE IS SOUND TOO. It was flagged here as possibly
+        // real French — "the juice of one particular orange" — and Dan ruled on
+        // 2 Sep: « jus de l'orange is WRONG ». So both strikes in this table are
+        // impossible forms, and the flag was mine being wrong about French, not
+        // a fault in the table.
+        //
+        // WORTH KEEPING FOR THE NEXT PASS: the test for a wrong column is
+        // whether the form is IMPOSSIBLE, and that is a question about French,
+        // which means it is Dan's to answer and not one to reason out from
+        // English. Both guesses made here were wrong in opposite directions —
+        // one flagged a sound strike, and the ateliers shipped six tables that
+        // struck perfectly good French.
         label: <>the wrong joint</>,
         wrong: <i lang="fr">le gâteau de chocolat</i>,
         right: (

@@ -65,64 +65,23 @@ export function CahierFrame({
   const pageRef = useRef<HTMLElement>(null);
 
   // The notebook is user-widenable: drag the page's right edge (Dan,
-  // 2026-07-05). Width persists; restore happens post-mount so SSR stays
-  // deterministic.
-  // Saved width applies only where the tab rail shows (≥1100px); below that
-  // it would leave grey on the right, so clear it and let the page fill (Dan,
-  // 2026-07-05). Re-evaluate on resize.
+  // The saved-width restore is gone with the handle: nothing can write
+  // `fluolingo:flipWidth` any more, so reading it back would only ever reapply
+  // a width a learner set before today and can no longer change. The key is
+  // cleared once instead — a migration, not a feature; delete after a release
+  // or two.
   useEffect(() => {
-    const apply = () => {
-      const el = pageRef.current;
-      if (!el) return;
-      if (window.innerWidth < 1100) { el.style.flexBasis = ""; return; }
-      try {
-        const w = parseInt(window.localStorage.getItem(WIDTH_KEY) ?? "", 10);
-        el.style.flexBasis = w ? `${Math.min(w, window.innerWidth - 150)}px` : "";
-      } catch {}
-    };
-    apply();
-    window.addEventListener("resize", apply);
-    return () => window.removeEventListener("resize", apply);
+    try { window.localStorage.removeItem(WIDTH_KEY); } catch {}
   }, []);
-  function startEdgeDrag(e: React.PointerEvent<HTMLDivElement>) {
-    const el = pageRef.current;
-    if (!el) return;
-    e.preventDefault();
-    const grip = e.currentTarget;
-    try { grip.setPointerCapture(e.pointerId); } catch {}
-    const sw = el.offsetWidth, sx = e.clientX;
-    const move = (ev: PointerEvent) => {
-      ev.preventDefault();
-      const w = Math.min(Math.max(560, sw + ev.clientX - sx), window.innerWidth - 150);
-      el.style.flexBasis = `${w}px`;
-    };
-    const done = () => {
-      grip.removeEventListener("pointermove", move);
-      grip.removeEventListener("pointerup", done);
-      grip.removeEventListener("pointercancel", done);
-      try { window.localStorage.setItem(WIDTH_KEY, String(el.offsetWidth)); } catch {}
-    };
-    grip.addEventListener("pointermove", move);
-    grip.addEventListener("pointerup", done);
-    grip.addEventListener("pointercancel", done);
-  }
+  // NO DRAG HANDLE — Dan, 2026-09-02, removed the widen-by-dragging edge across
+  // the app; this was CahierShell's feature copied for Flip It's own frame, so
+  // it goes with it.
 
   return (
     <div className="cahier-desk cahier-desk--flip">
       <div className="cahier-deskrow">
         <main ref={pageRef} className={`cahier-page min-h-screen${famKey ? ` fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""}`}>
           <div className="cahier-binding" aria-hidden />
-          {/* Right-edge drag handle: widen the notebook page. */}
-          <div
-            onPointerDown={startEdgeDrag}
-            className="absolute bottom-0 right-0 top-0 z-20 flex w-3 cursor-ew-resize touch-none select-none items-center justify-center"
-            title="Drag to widen the page"
-            aria-hidden
-          >
-            <span className="rounded-full bg-[color:var(--cahier-ink)]/25 px-[1.5px] py-2 text-[8px] leading-[5px] text-transparent">
-              ⋮
-            </span>
-          </div>
 
           <SiteTopBar active={siteActive} />
           {topBar}
