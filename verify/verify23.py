@@ -77,8 +77,13 @@ check("game-record" in fr and "lg:flex" in fr, "desktop two-pane: the live recor
       "no two-pane record aside at lg")
 check("safe-area-inset-bottom" in fr and "--bottombar-floor" in fr,
       "GameFrame respects the safe area and --bottombar-floor", "GameFrame ignores safe area / bottombar floor")
-check("<BottomSheet" in fr and "SoundControl" in fr and "Help" in fr and "Quit" in fr,
-      "the ⋯ sheet carries help / sound / quit", "the ⋯ sheet is missing help, sound or quit")
+# SOUND LEFT THE SHEET on 2 Sep (Dan: "some games are missing the volume
+# button") — SoundControl is on GameBar now, visible, and verify90 holds it
+# there. The sheet keeps help and quit.
+check("<BottomSheet" in fr and "SoundControl" not in fr and "Help" in fr and "Quit" in fr,
+      "the ⋯ sheet carries help / quit, and sound has moved to the bar",
+      "the ⋯ sheet is missing help or quit — or SoundControl came back to it, "
+      "which is two doors to one control (see verify90)")
 check(bool(sheet) and "role=\"dialog\"" in sheet, "BottomSheet.tsx exists and is a dialog", "BottomSheet missing")
 check("hearts" in br and "⋯" in br and "progressbar" in br,
       "GameBar v2 draws progress · hearts · ⋯", "GameBar v2 lacks progress / hearts / ⋯")

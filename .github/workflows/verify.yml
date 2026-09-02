@@ -338,6 +338,9 @@ jobs:
       - name: "The streak bumps on every graded surface, and the bar hears it (2 Sep)"
         run: python3 verify/verify89-streak-live.py
 
+      - name: "Every game shows the volume button, and the bar stays put (2 Sep)"
+        run: python3 verify/verify90-game-volume.py
+
       # The scan launches the runner's preinstalled Chrome via
       # playwright-core; no browser download step is needed.
       - name: Rebuild the export open, for the browser to walk

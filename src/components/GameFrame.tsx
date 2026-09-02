@@ -5,7 +5,7 @@
  * shell for every drill (patches 20–21).
  *
  *   ┌────────────────────────────────────────────┐  GameBar v2, 56px
- *   │  ✕   ▓▓▓▓▓▓░░░░░░░░   ♥♥♡   240   ⋯        │
+ *   │  ✕   ▓▓▓▓▓▓░░░░░░░░   ♥♥♡   240   🔊  ⋯    │
  *   ├──────────────────────────────┬─────────────┤
  *   │                              │  live record│  ≥1024px: two panes
  *   │        THE BOARD             │  (desktop   │  (board left, record right)
@@ -21,10 +21,13 @@
  * its row height from the room it actually has instead of a hard-coded 48px.
  *
  * WHAT MOVED INTO THE ⋯ MENU: everything the six per-game headers used to
- * hold as a row of pills — help, sound, music, hard mode, settings, quit. The
- * bar carries the four things a game HAS: a way out, progress, hearts (if it
- * keeps them), score. Instructions moved behind ⋯ → Help (Dan's litmus test:
- * text that, removed, does not stop the learner finding the answer, goes).
+ * hold as a row of pills — help, music, hard mode, settings, quit. The bar
+ * carries the things a game HAS: a way out, progress, hearts (if it keeps
+ * them), score — and, since 2 Sep, the 🔊 SoundControl, back OUT of the menu
+ * (Dan: "some games are missing the volume button"; burying it made games the
+ * only surfaces without the visible 🔊 every other page shows). Instructions
+ * moved behind ⋯ → Help (Dan's litmus test: text that, removed, does not stop
+ * the learner finding the answer, goes).
  *
  * The bar is aware of the phone's safe area and, on pages where the bottom
  * nav is mounted, of `--bottombar-floor` — the frame's own padding-bottom is
@@ -38,7 +41,6 @@ import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState
 import Link from "next/link";
 import GameBar, { type GameHearts, type GameProgress } from "@/components/GameBar";
 import BottomSheet from "@/components/BottomSheet";
-import SoundControl from "@/components/SoundControl";
 import FirstRunHint from "@/components/FirstRunHint";
 
 export type { GameHearts, GameProgress };
@@ -137,6 +139,22 @@ export default function GameFrame({
   const boardRef = useRef<HTMLDivElement | null>(null);
   const [size, setSize] = useState<BoardSize>({ width: 0, height: 0 });
 
+  // PIN THE VIEWPORT while a game is mounted. The frame is 100dvh, but the
+  // site layout stacks its footer (and the beta notice) UNDER it, so the
+  // page is ~90px taller than the screen — and focusing the keypad scrolls
+  // the GameBar clean off the top. That is how NumBus "lost" its ✕, 🔊 and
+  // ⋯ (Dan, 2026-09-02: "some games are missing the volume button" —
+  // measured: bar at y=-85 with scrollY 85). Locking the page here fixes
+  // every game at once and unlocks on the way out.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const prev = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.documentElement.style.overflow = prev;
+    };
+  }, []);
+
   // Measure the board area and publish it — as CSS vars for stylesheets and
   // as numbers for grids that compute. Layout effect so the first paint of a
   // sized board already knows its room.
@@ -213,10 +231,10 @@ export default function GameFrame({
               </button>
             </li>
           )}
-          <li className="flex items-center gap-2 rounded-lg border-2 border-[color:var(--cahier-line)] px-3 py-2">
-            <span className="flex-1 text-sm font-bold">🔊 Sound</span>
-            <SoundControl />
-          </li>
+          {/* The Sound row moved to the BAR, visible (Dan, 2026-09-02: "some
+              games are missing the volume button") — GameBar mounts
+              SoundControl on every game now, and one control does not get two
+              doors on one screen. */}
           {menu?.map((m, i) => (
             <li key={i}>
               <button

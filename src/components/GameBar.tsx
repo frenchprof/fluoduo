@@ -4,7 +4,7 @@
  * GameBar v2 — the one bar every game wears (patch 23).
  *
  *   ┌────────────────────────────────────────────┐  56px
- *   │  ✕   ▓▓▓▓▓▓░░░░░░░░   ♥♥♡   240   ⋯        │
+ *   │  ✕   ▓▓▓▓▓▓░░░░░░░░   ♥♥♡   240   🔊  ⋯    │
  *   └────────────────────────────────────────────┘
  *
  * v1 (patch 13) was a site bar borrowed for games: ← FluOLinGo, the game's
@@ -26,6 +26,7 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
+import SoundControl from "@/components/SoundControl";
 
 export type GameProgress = { done: number; total: number };
 export type GameHearts = { left: number; total: number };
@@ -96,6 +97,16 @@ export default function GameBar({
       {score !== undefined && score !== null && (
         <span className="cahier-mono shrink-0 text-sm font-bold text-[color:var(--cahier-ink)]/70">{score}</span>
       )}
+
+      {/* 🔊 VISIBLE, on every game (Dan, 2026-09-02: "some games are missing
+          the volume button"). Patch 23 folded sound into the ⋯ sheet, which
+          left the games the only surfaces without the top-bar 🔊 every drill
+          and page shows — a learner mid-game had to know the control was
+          behind a menu. The same SoundControl the site bar mounts, so muting
+          a channel here is muting it everywhere. The ⋯ sheet's Sound row is
+          gone with this: two doors to one control on one screen is the
+          HelpDot fault again. */}
+      <SoundControl />
 
       <button
         type="button"

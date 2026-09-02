@@ -204,7 +204,7 @@ export default function Lexicalator({
   }, [levelDone]);
 
   // Apply the shared volume (fluolingo:volume) on mount; the slider itself
-  // now lives inside the SoundControl popover in the HUD.
+  // now lives inside the SoundControl popover on the game bar.
   useEffect(() => {
     try {
       const v = parseFloat(window.localStorage.getItem("fluolingo:volume") ?? "");
