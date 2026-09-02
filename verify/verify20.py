@@ -214,9 +214,18 @@ check("DrillShell" in flip and "drillExitHref" in flip,
 check("CahierShell" not in flip and "CahierFrame" not in flip,
       "4Mémoire carries no page-shell of its own",
       "FlipItContent still wraps itself in CahierShell/CahierFrame")
-check('"✓ I know it"' in flip and '"↺ To review"' in flip and '"Flip"' in flip,
+# « FLIP » LEFT THIS LIST on 2026-09-02. It was named here with the two
+# self-marking CTAs, and it never belonged with them: they record what the
+# learner knows, it only turned the card over — which tapping the card already
+# did, on the one activity named for that gesture. Dan: *"there is a redundant
+# button called FLIP which is not working and which we don't even need."* What
+# this check is actually for — that study mode self-marks in the shell's
+# footer rather than growing buttons of its own — is unchanged and is now
+# asserted without the one CTA that was not a self-mark. The card's own button
+# is pinned in verify27 §14g.
+check('"✓ I know it"' in flip and '"↺ To review"' in flip,
       "4Mémoire study mode self-marks in the shell footer",
-      "FlipItContent's study CTAs (Flip / I know it / To review) are missing")
+      "FlipItContent's self-marking CTAs (I know it / To review) are missing")
 # Track D: the reveal moved into the ladder's ? control — the hook logs
 # answer.reveal and records the evidence, so the drill itself need not.
 check('"Check"' in flip and ('"answer.reveal"' in flip or "useHelpLadder(" in flip),
