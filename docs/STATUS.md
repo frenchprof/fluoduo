@@ -6,6 +6,65 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+
+## 3 Sep — fluolingo.com has been serving unstyled HTML for 17 days
+
+Sole editor of STATUS.md in this commit: Pre-tests.
+
+Dan, reading the workflow rather than the site: *"That workflow builds with
+PAGES_BASE_PATH: /fluoduo … but the site is now served at the root of
+fluolingo.com."* Correct, and it had been live since 17 Aug.
+
+**THERE ARE TWO LIVE SITES, both fed from main** — the fact this whole failure
+turns on, and one no document in the repo stated:
+
+  · **fluolingo.com** — GitHub Pages, built by `pages-preview.yml` on every
+    push to main, served at the domain ROOT. **This is the one students use.**
+  · **fluolingo.withdrchan.com** — Cloudflare Pages, built from `dckg/fluo`,
+    which `deploy-live.yml` mirrors main into on a manual dispatch.
+
+Commit 79a9938b (17 Aug) added BOTH halves of the fault at once: the workflow
+with `PAGES_BASE_PATH: /fluoduo`, and a `CNAME` for fluolingo.com. Each is
+right on its own. A Pages PROJECT site lives at owner.github.io/repo/ and needs
+the subpath; attach a custom domain and the same artifact is served at that
+domain's root, so the subpath becomes wrong. The build went on emitting
+`/fluoduo/_next/…` for a site served at `/` — HTML loads, every stylesheet and
+script 404s.
+
+Proved by building it both ways rather than by opening the site (this session's
+egress policy answers 403 to CONNECT for fluolingo.com AND frenchprof.github.io,
+so **the fix is unverified against the live host** — Dan's to confirm):
+
+    PAGES_BASE_PATH=/fluoduo   "/fluoduo/_next/static/chunks/01m3lo_t-xwfe.css"
+    (unset, the fix)           "/_next/static/chunks/01m3lo_t-xwfe.css"
+
+and the artifact has no `fluoduo/` directory for the first form to land in.
+
+WHY IT SURVIVED SEVENTEEN DAYS, which is the part worth keeping. It looks fine
+in every diff — neither file is wrong alone, and no diff shows both. And the
+comments asserted the dead premise as fact: `next.config.ts` said GitHub Pages
+"serves a project site from a SUBDIRECTORY", `pages-preview.yml` called itself
+a preview that "DOES NOT TOUCH PRODUCTION", and `docs/DEPLOY.md` said
+fluolingo.com 302-redirects to withdrchan. All three were true for about an
+hour on 17 Aug. Anyone auditing read them and moved on — this session did too,
+first time round, and told Dan his hypothesis was wrong on the strength of
+them.
+
+Fixed: the env goes; all three documents now say what is actually deployed
+where; the workflow is renamed *Deploy fluolingo.com (GitHub Pages)*.
+`verify91` refuses a Pages subpath while a CNAME exists, finds the Pages
+workflow by what it DOES rather than by its filename (the file is called
+"pages-preview" and stopped being one on day one), catches the variable set as
+a step env, a job env or an `export` in a run block, holds `next.config.ts` to
+its `?? ""` default, and fails if the workflow calls itself separate from
+production again. 7 assertions, all break-tested.
+
+**Open for Dan:** the root `CNAME` is not copied into `out/`, so it does not
+travel in the uploaded artifact — the live binding is Settings → Pages → Custom
+domain on frenchprof/fluoduo. Worth confirming it is set there, and worth
+deciding whether the artifact should carry a CNAME too. Not done here: it
+changes a domain binding I cannot observe from this container.
+
 ## 2 Sep — the two open items close
 
 ## 2 Sep — READ THIS BEFORE YOU TOUCH A WORKFLOW OR MERGE A BRANCH
