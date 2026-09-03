@@ -128,7 +128,12 @@ export default function SiteTopBar({
           {menuOpen && (
             // max-h + scroll: with the tools group the list outgrows
             // small screens and items were cut off (Dan, 2026-07-08).
-            <div className="absolute left-0 top-full z-50 mt-1 flex max-h-[75vh] w-60 flex-col gap-1 overflow-y-auto rounded-lg border-2 border-[color:var(--cahier-ink)]/20 bg-white p-1 shadow-lg">
+            // PAPER, NOT WHITE (Dan, 2 Sep: "make sure the tabs are not
+            // sitting on a white background or else it looks unreal") and
+            // WIDTH FROM CONTENT (same day: "as long as the longest among
+            // them without redundant space at the tails") — w-max lets the
+            // longest flap set the column; min-w keeps MENU/Carte legible.
+            <div className="absolute left-0 top-full z-50 mt-1 flex max-h-[75vh] w-max min-w-44 flex-col gap-1 overflow-y-auto rounded-lg border-2 border-[color:var(--cahier-ink)]/20 bg-[color:var(--cahier-paper-raised)] p-1.5 shadow-lg">
               {/* THE GROUPED FAMILIES, not a flat list (Dan,
                   2026-08-30: the rail "cannot be flaps … they have to
                   be drop down like in most interfaces"). This dropdown
