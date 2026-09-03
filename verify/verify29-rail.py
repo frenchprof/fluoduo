@@ -93,12 +93,23 @@ rail_block = shell[nav_start:nav_end] if nav_start >= 0 else ""
 check(bool(rail_block) and "RailGroups" not in rail_block,
       "the desk nav holds page flaps only, not the site rail",
       "the six-family rail is back on the desk — it belongs in the ☰")
-check("UNIT_META" in rail and 'f === "goals"' in rail,
-      "the Unités are Goals' children, not a tier of their own",
-      "the rail does not put the units under Goals")
-check("aria-expanded" in rail,
-      "each family flap reports its open state to a screen reader",
-      "family flaps carry no aria-expanded")
+# SUPERSEDED 3 Sep (Dan, 2 Sep: "we do not need children tabs anymore";
+# 3 Sep: "i seriously need the fix for the burger menu shortened and plain
+# to colored tabs"). The accordion and its children rows are gone — the six
+# flaps are LINKS to their family hubs, coloured by family. What the two
+# retired assertions guarded (units reachable under Goals, disclosure state
+# announced) is now: no disclosure exists to announce, and the units are
+# reached through Home/the map — so the claims become: every flap navigates,
+# and every flap wears its own family's colour.
+check("aria-expanded" not in rail and "sessionStorage" not in rail,
+      "the accordion is gone — flaps are doors, not folders",
+      "the accordion is back; children tabs were retired on Dan's word, 2 Sep")
+check("f.href" in rail and re.search(r"--fam-\$\{f\.key\}-wash", rail) is not None,
+      "each flap links to its family hub and wears that family's wash",
+      "a flap is plain or dead — Dan: 'plain to colored tabs please'")
+check("fluo-band-hand" in rail,
+      "the flap labels take FluOLinGo Hand",
+      "Dan, 2 Sep: 'oh use FluOLinGo font for those tabs!'")
 
 # 3 · each family holds exactly what Dan listed
 EXPECT = {
