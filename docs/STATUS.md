@@ -7,6 +7,90 @@ wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
 
+## 2 Sep — READ THIS BEFORE YOU TOUCH A WORKFLOW OR MERGE A BRANCH
+
+Sole editor of STATUS.md in this commit: Peers. Two notices, both found today,
+both the kind that a session discovers by believing a comment.
+
+### 1 · `pages-preview.yml` PUBLISHES THE LIVE SITE. It is not a preview.
+
+GitHub Pages Settings for `frenchprof/fluoduo` reports **"Your site is live at
+https://fluolingo.com/"**. A custom domain was added on 12 Aug (root `CNAME`,
+commit 43b7d17), so the workflow whose header said *"it is entirely separate
+from production"* and *"IT DOES NOT TOUCH PRODUCTION"* has been deploying a
+public production site for three weeks. `frenchprof.github.io/fluoduo` now
+301-redirects there and serves nothing of its own.
+
+**There are TWO live sites, both fed from `main`:**
+
+    pages-preview.yml  -> GitHub Pages   -> fluolingo.com
+    deploy-live.yml    -> dckg/fluo      -> Cloudflare -> fluolingo.withdrchan.com
+
+WHY THIS IS ON THE BOARD AND NOT JUST IN THE FILE. Dan asked for a way to view
+the app without Google sign-in. This session read that stale header, believed
+it, and proposed setting the open-app build flag in that workflow — which would
+have taken the sign-in wall down for every visitor to fluolingo.com.
+`verify38-authwall.py` refused it by name; the flag is banned from every config
+a deploy reads and that file is one. Confirmed by adding it and watching the
+check fail. **The guard works. The comment did not.** The header is rewritten.
+
+Note you cannot even NAME the flag in that file: verify38 greps it raw, so a
+comment mentioning it fails too. That is deliberate.
+
+**An open build therefore needs a host that is neither of those two.** The
+standing suggestion to Dan is a separate Cloudflare Pages project gated with
+Cloudflare Access, so the secret lives at the edge and never ships in the
+bundle — the 27 Aug ruling in `authConfig.ts` still governs: static export
+means any secret in the JS is findable in a minute.
+
+**OPEN QUESTION FOR DAN, not yet answered.** That workflow builds with
+`PAGES_BASE_PATH: /fluoduo`, which puts every asset under `/fluoduo/`. Correct
+for a github.io project site; but the artifact is now served at the ROOT of
+fluolingo.com. If that is what it looks like, `https://fluolingo.com/` has been
+missing its stylesheets and scripts for three weeks while
+`https://fluolingo.com/fluoduo/` works. Nobody has confirmed which loads — this
+session's egress proxy 403s every one of those domains, so it could not check.
+**Whoever can open a browser: check both URLs and record the answer here.**
+
+### 2 · Conflict markers were committed into AGENTS.md, and 16 branches still carry them
+
+`main` is CLEAN as of #144. It was not clean before: **PR #141 (this session's
+own work) carried six markers into `AGENTS.md`** from a qc-branch merge that
+had left them, and #144 removed them. The file every session is told to read
+first therefore had `<<<<<<< HEAD` sitting in the middle of its rules.
+
+Resolved here identically to main — verified with `git diff origin/main HEAD --
+AGENTS.md`, which is one blank line — so this branch cannot revert #144's fix.
+Both conflicts were additive prose and both sides were kept: "English is never
+bigger than French", and the integration-lane rule, whose two halves
+("fluoduo-main is the integration lane" and "EVERY merge goes through
+fluoduo-main") had been split by the merge.
+
+**STILL CARRYING THE MARKERS — 16 remote branches.** Their tips are stale and
+main is fine, but a merge of any of them re-introduces the damage:
+
+```
+git show <branch>:AGENTS.md | grep -c '^<<<<<<< \|^>>>>>>> '
+```
+
+    claude/atelier-popup-dialogue      claude/jam-scan-ci
+    claude/deploy-live-diagnose        claude/jam-scan-hydration-wait
+    claude/deploy-live-extraheader     claude/map-of-fluolingo-land
+    claude/deploy-live-probe-contents  claude/map-route-back
+    claude/derived-doneness            claude/menu-children-dress
+    claude/home-topbar-lot-a           claude/profile-footer-label
+    claude/icomplete-cut-sio010-tabs   claude/status-1sep-evening
+    claude/strips-brief                french4-docs
+
+They are left alone deliberately: rewriting other lanes' branches is
+integration work. **fluoduo-main — before merging any of these, take AGENTS.md
+from `main`, not from the branch.**
+
+THE GENERAL LESSON, which is the same one in both halves: a comment and a
+merge marker are both text that no check reads. Scan for markers before you
+push, and verify a claim about the deploy path against the workflow and the
+settings page, not against the file's own description of itself.
+
 ## 1 Sep, late — the chrome audit, and the strips become one strip
 
 Sole editor of STATUS.md in this commit: Pre-tests.
