@@ -11,47 +11,64 @@ Only ONE agent edits this file at a time; say so in your commit.
 ## 2 Sep — READ THIS BEFORE YOU TOUCH A WORKFLOW OR MERGE A BRANCH
 
 Sole editor of STATUS.md in this commit: Peers. Two notices, both found today,
-both the kind that a session discovers by believing a comment.
+both the kind that a session discovers by believing a comment. Notice 1 was
+then CORRECTED the same day — it overstated the danger — and the corrected
+version is what stands below.
 
-### 1 · `pages-preview.yml` PUBLISHES THE LIVE SITE. It is not a preview.
+### 1 · `pages-preview.yml` publishes to a deployment NOBODY can reach — and that is a loaded gun
+
+CORRECTED THE SAME DAY. The first version of this notice said flatly that the
+workflow publishes fluolingo.com. It does not, and the correction matters more
+than the original claim, so here is the evidence rather than the conclusion.
 
 GitHub Pages Settings for `frenchprof/fluoduo` reports **"Your site is live at
-https://fluolingo.com/"**. A custom domain was added on 12 Aug (root `CNAME`,
-commit 43b7d17), so the workflow whose header said *"it is entirely separate
-from production"* and *"IT DOES NOT TOUCH PRODUCTION"* has been deploying a
-public production site for three weeks. `frenchprof.github.io/fluoduo` now
-301-redirects there and serves nothing of its own.
+https://fluolingo.com/"**, because a custom domain was added on 12 Aug (root
+`CNAME`, commit 43b7d17). That sentence is GitHub repeating its own setting.
+Nothing routes the hostname to it:
 
-**There are TWO live sites, both fed from `main`:**
+    fluolingo.com/          loads          (Dan, 2 Sep)
+    fluolingo.com/fluoduo/  does not exist (Dan, 2 Sep)
 
-    pages-preview.yml  -> GitHub Pages   -> fluolingo.com
-    deploy-live.yml    -> dckg/fluo      -> Cloudflare -> fluolingo.withdrchan.com
+This workflow builds with `PAGES_BASE_PATH=/fluoduo`, so everything it emits
+lives under `/fluoduo/_next/`. A site with no `/fluoduo/` is a build with NO
+base path — which is the Cloudflare one. So:
 
-WHY THIS IS ON THE BOARD AND NOT JUST IN THE FILE. Dan asked for a way to view
-the app without Google sign-in. This session read that stale header, believed
-it, and proposed setting the open-app build flag in that workflow — which would
-have taken the sign-in wall down for every visitor to fluolingo.com.
+    deploy-live.yml  -> dckg/fluo -> Cloudflare Pages -> fluolingo.com   ← PRODUCTION
+                                                      -> fluolingo.withdrchan.com
+    pages-preview.yml -> GitHub Pages -> reachable at NO url at all
+
+github.io/fluoduo 301s to fluolingo.com (the custom domain is configured), and
+fluolingo.com is answered by Cloudflare. The artifact is served to nobody.
+
+**WHY IT IS STILL A HAZARD.** GitHub Pages holds a live claim on a production
+hostname. Move that DNS record to GitHub, or drop the Cloudflare one, and this
+artifact takes over fluolingo.com the same minute — wrong base path, and
+whatever was built into it. Do not treat the file as a sandbox because its
+output is currently invisible.
+
+**DO NOT open the sign-in wall there.** Asked for a way to view the app signed
+out, this session read the workflow's old header — *"IT DOES NOT TOUCH
+PRODUCTION"* — believed it, and proposed setting the open-app build flag in it.
 `verify38-authwall.py` refused it by name; the flag is banned from every config
-a deploy reads and that file is one. Confirmed by adding it and watching the
-check fail. **The guard works. The comment did not.** The header is rewritten.
+a deploy reads. Confirmed by adding it and watching the check fail. The flag
+cannot even be NAMED in that file: verify38 greps it raw. That is deliberate.
 
-Note you cannot even NAME the flag in that file: verify38 greps it raw, so a
-comment mentioning it fails too. That is deliberate.
+**THE FIX, for whoever has the settings page open:** clear the custom domain in
+Settings → Pages and delete the root `CNAME`. GitHub then serves the artifact at
+`https://frenchprof.github.io/fluoduo/` — the subpath `PAGES_BASE_PATH` exists
+for — the redirect stops, and the claim on fluolingo.com is dropped. That turns
+a hazard into the working preview the file was written to be, and it is the
+cheapest thing on this board.
 
-**An open build therefore needs a host that is neither of those two.** The
-standing suggestion to Dan is a separate Cloudflare Pages project gated with
-Cloudflare Access, so the secret lives at the edge and never ships in the
-bundle — the 27 Aug ruling in `authConfig.ts` still governs: static export
-means any secret in the JS is findable in a minute.
+An open build still needs a host that is neither production path; the standing
+suggestion is a separate Cloudflare Pages project behind Cloudflare Access, so
+the secret sits at the edge and never ships in the bundle (the 27 Aug ruling in
+`authConfig.ts`: static export means any secret in the JS is findable).
 
-**OPEN QUESTION FOR DAN, not yet answered.** That workflow builds with
-`PAGES_BASE_PATH: /fluoduo`, which puts every asset under `/fluoduo/`. Correct
-for a github.io project site; but the artifact is now served at the ROOT of
-fluolingo.com. If that is what it looks like, `https://fluolingo.com/` has been
-missing its stylesheets and scripts for three weeks while
-`https://fluolingo.com/fluoduo/` works. Nobody has confirmed which loads — this
-session's egress proxy 403s every one of those domains, so it could not check.
-**Whoever can open a browser: check both URLs and record the answer here.**
+TWO METHOD NOTES, since this cost two wrong answers in a row. A workflow's own
+header is not evidence about where it deploys. Neither is a settings page that
+only reflects a setting — `fluolingo.com/fluoduo/` returning nothing is what
+actually decided this, and one URL would have settled it at the start.
 
 ### 2 · Conflict markers were committed into AGENTS.md, and 16 branches still carry them
 
