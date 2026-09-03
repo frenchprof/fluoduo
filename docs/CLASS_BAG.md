@@ -33,9 +33,10 @@ then the bag is not the next door.
 
 ## Microcopy
 
-English is the chrome. French is the target — on chips, and on the can-do
-when the SIO already writes it in French. English may match the French in
-size; it may never be larger (`AGENTS.md`).
+The audience is absolute beginners who do not know French yet. Chrome and
+CTAs stay English only — no FR UI labels an A1 beginner cannot decode.
+French is the *target* on miss chips, never the lead on the can-do.
+English may match the French in size; it may never be larger (`AGENTS.md`).
 
 ### Screen title
 
@@ -45,12 +46,12 @@ Alt atelier voice: **For class**
 
 ### Can-do restatement
 
-One line only — the stop’s can-do, no gloss:
+EN first — the safety net. One line, the stop’s can-do in English, no gloss:
 
-**You can: {canDo}**
+**You can: {canDoEn}**
 
-If the can-do is already French in the SIO, show FR as the line; optional EN
-under it, same size or smaller, italics.
+Optional FR line under it, same size or smaller, italics. Never FR-lead,
+even if the SIO string is already French.
 
 ### Miss chips
 
@@ -90,6 +91,11 @@ Escape: **Keep going without saving**
 ---
 
 ## Design notes
+
+Designed for absolute beginners who don’t know French yet. Title, CTAs and
+soft-auth stay EN: **Class bag**, **Show in class**, **Copy list**, **Continue**,
+**Sign in to keep this bag**, **Continue with Google**, **Keep going without
+saving**. Do not invent FR chrome labels.
 
 No “Good job!” / “Here’s what you got wrong” — the litmus test kills praise
 and labels. Dopamine is the highlighter on the bag pack / Continue, not extra
