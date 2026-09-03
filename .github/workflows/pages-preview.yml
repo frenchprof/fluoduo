@@ -1,29 +1,46 @@
-# THIS IS A LIVE SITE. It builds fluolingo.com — the address students use.
+# THIS WORKFLOW PUBLISHES TO A DEPLOYMENT NOBODY CAN REACH — and that is a
+# loaded gun, not a safe one. Read all of this before touching it.
 #
-# It began (17 Aug) as a preview at https://frenchprof.github.io/fluoduo/, and
-# the header said so for seventeen days after that stopped being true. On the
-# SAME COMMIT that added this workflow, a CNAME for fluolingo.com was added and
-# the domain was pointed here — and a custom domain serves a Pages site at the
-# DOMAIN ROOT, not at /fluoduo. The build kept emitting /fluoduo/_next/… paths
-# for a site now served at /, so every stylesheet and script 404'd on
-# fluolingo.com while the HTML loaded fine. Dan found it on 2 Sep; nothing in
-# the repo could have, because the two halves are in two files and each looked
-# right on its own.
+# WHAT IT SAYS ABOUT ITSELF, AND WHY THAT WAS WRONG. The header used to read
+# "it is entirely separate from production" and "IT DOES NOT TOUCH
+# PRODUCTION". On 2026-08-12 a custom domain was added to this repository's
+# Pages settings (root CNAME, commit 43b7d17), and GitHub Pages Settings now
+# reports "Your site is live at https://fluolingo.com/". Read alone, that says
+# this workflow deploys production.
 #
-# So there are TWO live sites fed from main, and this is one of them:
-#   · fluolingo.com                — GitHub Pages, built HERE, root path
-#   · fluolingo.withdrchan.com     — Cloudflare Pages, built from dckg/fluo,
-#                                    which deploy-live.yml mirrors main into
+# IT DOES NOT, and the evidence is specific. fluolingo.com serves a build with
+# NO base path — https://fluolingo.com/fluoduo/ does not exist (Dan, 2 Sep),
+# while the root loads. This workflow USED to build with
+# PAGES_BASE_PATH=/fluoduo (dropped in #157, while the root-serving story was
+# believed), so its assets lived under /fluoduo/_next/. The site being served is
+# therefore the Cloudflare one: deploy-live.yml mirrors main to dckg/fluo,
+# Cloudflare Pages builds it with no base path, and the fluolingo.com DNS
+# record answers from Cloudflare. GitHub only knows what its own custom-domain
+# setting says; nothing routes that hostname to it.
 #
-# THE NEAR-MISS THAT REWROTE THIS HEADER (2 Sep): the stale "preview" comment
-# was believed, and an agent proposed setting the open-app build flag
-# (authConfig.ts names it) in the build step below — which would have taken
-# the sign-in wall down for every visitor to fluolingo.com.
-# verify38-authwall.py refused it: that flag is banned from every config a
-# deploy reads, and this file is one. It cannot even be NAMED here — verify38
-# greps this file raw, so a comment mentioning it fails too. Deliberate.
-# DO NOT open the wall here, and do not treat this file as a sandbox; an open
-# build needs a host that is neither of the two above.
+# So the artifact this workflow publishes is reachable at NO URL at all:
+# frenchprof.github.io/fluoduo 301-redirects to fluolingo.com (because the
+# custom domain is configured), and fluolingo.com is answered by Cloudflare.
+#
+# WHY IT IS STILL DANGEROUS. GitHub Pages holds a live claim on a production
+# hostname. Point that DNS record at GitHub, or drop the Cloudflare record,
+# and this artifact takes over fluolingo.com the same minute — with the wrong
+# base path, and with whatever was built into it. Do not treat this file as a
+# sandbox on the grounds that nobody can see its output today.
+#
+# In particular: DO NOT open the sign-in wall here. Asked on 2 Sep for a way
+# to view the app signed out, a session read the old header, believed it, and
+# proposed setting the open-app build flag (authConfig.ts names it) in the
+# build step below. verify38-authwall.py refused it — that flag is banned from
+# every config a deploy reads and this file is one. It cannot even be named
+# here: verify38 greps this file raw, so a comment mentioning it fails too.
+# That is deliberate.
+#
+# THE FIX, WHEN SOMEONE HAS THE SETTINGS PAGE OPEN: clear the custom domain in
+# Settings -> Pages and delete the root CNAME. GitHub then serves this artifact
+# at https://frenchprof.github.io/fluoduo/ again — which is the subpath
+# PAGES_BASE_PATH exists for — the redirect stops, the claim on fluolingo.com
+# is dropped, and this becomes the genuine preview it was written to be.
 #
 # DO NOT reintroduce PAGES_BASE_PATH here. verify91 refuses it while a CNAME
 # exists, which is the repo's one statement that a custom domain is in play.

@@ -109,11 +109,15 @@ for name, body in pages_wfs:
        f"{name} sets PAGES_BASE_PATH while CNAME says {cname or 'a custom domain'} — "
        "a custom domain serves the site at the domain root, so every asset would resolve "
        "under that subpath and 404. This exact pair was live for 17 days from 17 Aug.")
-    # 5 · and it no longer describes itself as harmless.
-    ok(re.search(r"DOES NOT TOUCH PRODUCTION|entirely separate from production", body) is None,
-       f"{name} does not claim to miss production — it IS a live site",
-       f"{name} calls itself separate from production again. It builds {cname or 'the custom domain'}; "
-       "that sentence is why the subpath fault went unnoticed through five audits.")
+    # 5 · and it no longer describes itself as harmless. QUOTED history is
+    # allowed — the 3 Sep correction cites the old wrong sentences in quotes
+    # to explain them; what must never return is the file ASSERTING them.
+    ok(re.search(r'(?<!")(?:DOES NOT TOUCH PRODUCTION|entirely separate from production)(?!")', body) is None,
+       f"{name} does not claim to miss production",
+       f"{name} calls itself separate from production again, unquoted. The truth "
+       "(3 Sep) is subtler and worse: its artifact is reachable at no URL, but "
+       f"GitHub Pages holds a live claim on {cname or 'the custom domain'} — one "
+       "DNS change hands the domain to whatever this file built. Harmless it is not.")
 
 # ---- 3 · nothing anywhere else sets it ------------------------------------
 # A workflow-level `env:`, a job `env:`, or a plain `export` in a run block all
