@@ -118,7 +118,6 @@ the reason an open one does not.
 So: put a number on a band only where the thing it counts is out of sight —
 folded away, behind a link, or still to come. Never as furniture.
 
-<<<<<<< HEAD
 # English is never bigger than French — permanent (2026-09-01)
 
 **Dan, sending back a transport card: *"i prefer a hybrid like this : english
@@ -148,8 +147,6 @@ transport's `fr` is the grid label « en train », so every card blanked the lab
 and dealt « ? train ». Dan's mock restored the lead — « J'y vais ? moto » — and
 that is the shape. A fragment is not a card.
 
-=======
->>>>>>> qc-color
 # A wrong answer is allowed to be wrong French — permanent (2026-09-01)
 
 **Dan, shown five cases one by one and asked which to revert: *"i would leave
@@ -252,7 +249,6 @@ Read **THE ROSTER** at the top of `docs/STATUS.md` before starting work —
 lanes are assigned there and integration work (branch audits, renumbering,
 closures, merges of others' work) belongs to the integration lane only.
 
-<<<<<<< HEAD
 ## fluoduo-main is the integration lane — permanent (2026-08-31)
 
 **Dan: *"can we, moving forward, push everything to fluoduo-main for quality
@@ -286,7 +282,7 @@ other on five files, three of them semantically:
 Nothing here was carelessness — each side scanned for verify-number collisions
 and found none. The number scan catches files; it cannot catch two sessions
 editing the same *function*. That is what an integration lane is for.
-=======
+
 **EVERY merge goes through fluoduo-main** (Dan, 2026-08-31). Open the PR, get
 CI green, then leave it — including a PR of your own work. One session merging
 everything is what catches a collision between two branches that are each
@@ -306,7 +302,6 @@ Worked example, 31 Aug — the cost of not doing it. PR #97 retired iComplete at
 minutes later, and neither knew until both had merged or were ready to. Dan had
 told both sessions, in different words, an hour apart. No merge policy prevents
 that; thirty seconds of looking does.
->>>>>>> origin/main
 
 **Claiming a verify number:** scan EVERY remote branch, never just `main` —
 an in-flight number is precisely what main cannot show you. Four collisions
