@@ -25,16 +25,21 @@
  *     group. Since 31 Aug that is a TAB rather than a one-shot picker, and all
  *     three are sat — see Sio010Pretest.
  */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import type { Sio } from "@/content/sios";
 import {
   MULTI_SEP,
   SIO010_SITUATIONS,
+  YOU_LEA,
+  YOU_MARC,
+  sio010SituationsFor,
   UNIT0_QUESTIONS,
   unit0QuestionId,
+  type Unit0Option,
   type Unit0Question,
+  type YouRole,
 } from "@/content/sios/unit0-questions";
 import { recordPretestAnswer } from "@/lib/pretestRecord";
 import { recordPretestEvidence } from "@/lib/pretests/runner";
@@ -209,8 +214,14 @@ export function Sio010Pretest({ sio }: { sio: Sio }) {
   // text Dan's litmus test keeps ("progress counters are useful learner
   // feedback — keep").
   const [done, setDone] = useState<Record<string, number>>({});
+  // Who YOU are. Enchanté(e) agrees with this person. Default Léa — the
+  // scripted speaker. Marc is the masculine path: same seven moves, Enchanté
+  // keyed. Switching remounts the run (new keys, new answers).
+  const [you, setYou] = useState<YouRole>(YOU_LEA);
+  const sits = useMemo(() => sio010SituationsFor(you), [you]);
   return (
     <div className="space-y-3">
+      <YouAreCue you={you} onPick={(next) => { setYou(next); setDone({}); }} />
       <div role="tablist" aria-label="Situation" className="grid grid-cols-3 gap-1.5">
         {SIO010_SITUATIONS.map((s) => {
           const on = s.key === key;
@@ -250,8 +261,9 @@ export function Sio010Pretest({ sio }: { sio: Sio }) {
       {SIO010_SITUATIONS.map((s) => (
         <div key={s.key} hidden={s.key !== key} className={s.key === key ? undefined : "hidden"}>
           <Unit0Questions
+            key={you.gender}
             sio={sio}
-            bank={s.questions}
+            bank={sits.find((x) => x.key === s.key)?.questions ?? s.questions}
             ordered
             keys={s.key === key}
             onAnswered={(n) => setDone((prev) => ({ ...prev, [s.key]: n }))}
@@ -259,6 +271,70 @@ export function Sio010Pretest({ sio }: { sio: Sio }) {
         </div>
       ))}
     </div>
+  );
+}
+
+/** EN role cue — name · pronoun + a small gram mark. Never FR-only gender. */
+function YouAreCue({
+  you,
+  onPick,
+}: {
+  you: YouRole;
+  onPick?: (next: YouRole) => void;
+}) {
+  const roles = [YOU_LEA, YOU_MARC];
+  return (
+    <div role="group" aria-label="You are" className="flex flex-wrap items-center gap-1.5">
+      <span className="text-[0.65rem] font-black uppercase tracking-wider text-[color:var(--fluo-ink-soft)]">
+        You are
+      </span>
+      {roles.map((role) => {
+        const on = role.gender === you.gender;
+        const hue = role.gender === "f" ? "var(--gram-fem)" : "var(--gram-masc)";
+        return (
+          <button
+            key={role.gender}
+            type="button"
+            aria-pressed={on}
+            aria-label={`${role.name} · ${role.pronoun}`}
+            onClick={() => onPick?.(role)}
+            className={`inline-flex items-center gap-1 rounded-full border-2 px-2 py-0.5 text-xs font-bold transition ${
+              on
+                ? "border-[color:var(--fluo-ink)] bg-[color:var(--fluo-ink)] text-white"
+                : "border-[color:var(--fluo-line)] bg-[var(--fluo-card)] text-[color:var(--fluo-ink)] hover:bg-[var(--fluo-card-tint)]"
+            }`}
+          >
+            <span aria-hidden>{role.emoji}</span>
+            <span>{role.name} · {role.pronoun}</span>
+            <span
+              aria-hidden
+              className="inline-flex h-3.5 min-w-3.5 items-center justify-center rounded px-0.5 text-[9px] font-black text-white"
+              style={{ background: hue }}
+            >
+              {role.gender}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function RoleCue({ you }: { you: YouRole }) {
+  const hue = you.gender === "f" ? "var(--gram-fem)" : "var(--gram-masc)";
+  const full = you.gender === "f" ? "feminine" : "masculine";
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full border border-[color:var(--fluo-line)] bg-white px-2 py-0.5 text-xs font-bold text-[color:var(--fluo-ink)]">
+      <span aria-hidden>{you.emoji}</span>
+      <span>{you.name} · {you.pronoun}</span>
+      <span
+        className="inline-flex h-3.5 min-w-3.5 items-center justify-center rounded px-0.5 text-[9px] font-black text-white"
+        style={{ background: hue }}
+        aria-label={full}
+      >
+        {you.gender}
+      </span>
+    </span>
   );
 }
 
@@ -300,7 +376,7 @@ function QuizQuestion({
   /** The first unanswered question — the one the 1-N keys answer; only IT
    *  wears the numeral chips. */
   active?: boolean;
-  onPick: (o: { v: string; ok: boolean }) => void;
+  onPick: (o: Unit0Option) => void;
 }) {
   const [showWhy, setShowWhy] = useState(false);
   const [showExample, setShowExample] = useState(false);
@@ -375,6 +451,7 @@ function QuizQuestion({
           the options travel as ONE group, so they wrap below the question as
           a unit instead of splitting across lines. */}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 pr-9">
+        {q.you && <RoleCue you={q.you} />}
         {(q.stem || q.title || q.emoji) && (
           <span className="inline-flex items-center gap-1.5">
             {q.emoji && <span className="text-3xl leading-none" aria-hidden>{q.emoji}</span>}
@@ -415,7 +492,9 @@ function QuizQuestion({
               : o.ok
                 ? "border-[color:var(--drill-ok-ink)] bg-[color:var(--drill-ok-ink)] text-white"
                 : isPicked
-                  ? "border-[color:var(--drill-bad-ink)] bg-[color:var(--drill-bad-ink)] text-white"
+                  ? o.mark
+                    ? "border-[color:var(--dopa-miss-ink)] bg-[color:var(--dopa-miss)] text-[color:var(--dopa-miss-on)] line-through decoration-2"
+                    : "border-[color:var(--drill-bad-ink)] bg-[color:var(--drill-bad-ink)] text-white"
                   : "border-[color:var(--fluo-line)] bg-transparent text-[color:var(--fluo-ink-soft)] opacity-40";
             return (
               <button
@@ -429,7 +508,16 @@ function QuizQuestion({
                     {oi + 1}
                   </span>
                 )}
-                {o.v}
+                {showResult && o.ok && o.mark ? (
+                  <span
+                    className="cahier-hl px-0.5"
+                    style={{ color: o.mark === "f" ? "var(--gram-fem)" : "var(--gram-masc)" }}
+                  >
+                    {o.v}
+                  </span>
+                ) : (
+                  o.v
+                )}
               </button>
             );
           })}
