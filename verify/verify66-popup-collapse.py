@@ -163,6 +163,17 @@ ok("/pretests/unit0/" in c0,
 ok(re.search(r"inline:\s*true", c0) is None and re.search(r"inline:\s*true", cu) is None,
    "no popup asks for an inline pre-test any more",
    "a popup still requests inline:true — a pre-test would render in the body again")
+# StopSheet / deck flaps go through pretestHrefForDeck, not the popup. That
+# helper used to return /unit/0#{id}, which UnitRedirect turns into the map
+# popup — the questions never opened. Same route the popup already uses.
+SHELL = "src/components/CahierShell.tsx"
+cs = code(read(SHELL))
+ok("/pretests/unit0/" in cs,
+   "pretestHrefForDeck sends Unit-0 to its page",
+   "pretestHrefForDeck no longer returns /pretests/unit0 — StopSheet would open the map popup")
+ok("/unit/0#" not in cs,
+   "the flap helper does not deep-link the map as a pre-test",
+   "pretestHrefForDeck still returns /unit/0# — UnitRedirect opens the map popup")
 
 # ---- 6 · the stale Sorting row went with the path ------------------------
 ok('"dice"' not in cm,

@@ -10,8 +10,9 @@
 #
 # IT DOES NOT, and the evidence is specific. fluolingo.com serves a build with
 # NO base path — https://fluolingo.com/fluoduo/ does not exist (Dan, 2 Sep),
-# while the root loads. This workflow builds with PAGES_BASE_PATH=/fluoduo, so
-# every asset it emits lives under /fluoduo/_next/. The site being served is
+# while the root loads. This workflow USED to build with
+# PAGES_BASE_PATH=/fluoduo (dropped in #157, while the root-serving story was
+# believed), so its assets lived under /fluoduo/_next/. The site being served is
 # therefore the Cloudflare one: deploy-live.yml mirrors main to dckg/fluo,
 # Cloudflare Pages builds it with no base path, and the fluolingo.com DNS
 # record answers from Cloudflare. GitHub only knows what its own custom-domain
@@ -41,18 +42,22 @@
 # PAGES_BASE_PATH exists for — the redirect stops, the claim on fluolingo.com
 # is dropped, and this becomes the genuine preview it was written to be.
 #
-# WHAT WILL NOT WORK ON THE PREVIEW, by design:
+# DO NOT reintroduce PAGES_BASE_PATH here. verify91 refuses it while a CNAME
+# exists, which is the repo's one statement that a custom domain is in play.
+#
+# WHAT DOES NOT WORK ON THIS HOST, by design:
 #   /api/tutor, /api/tts, /api/correct, /api/compose
 # Those are Cloudflare Pages Functions — real server-side code holding the API
-# key. GitHub Pages has no server, so ChaTutor, text-to-speech and Compose's
-# answer-checking will fail there. Everything else — decks, games, drills,
-# /moi, /teacher — runs in the browser against Firebase and works normally.
+# key. GitHub Pages has no server, so on fluolingo.com ChaTutor, text-to-speech
+# and Compose's answer-checking fail; they work on fluolingo.withdrchan.com.
+# Everything else — decks, games, drills, /moi, /teacher — runs in the browser
+# against Firebase and works on both.
 #
 # BEFORE THE FIRST RUN, one manual step (otherwise sign-in fails and /moi and
 # /teacher show nothing):
 #   Firebase console → Authentication → Settings → Authorised domains
-#   → Add domain → frenchprof.github.io
-name: Preview to GitHub Pages
+#   → Add domain → fluolingo.com
+name: Deploy fluolingo.com (GitHub Pages)
 
 on:
   workflow_dispatch:          # run it by hand from the Actions tab
@@ -88,9 +93,12 @@ jobs:
 
       - run: npm ci
 
-      - name: Build static export at the /fluoduo subpath
-        env:
-          PAGES_BASE_PATH: /fluoduo
+      # AT THE ROOT, because a custom domain serves the site at the root. This
+      # step used to set PAGES_BASE_PATH=/fluoduo, which was right for exactly
+      # as long as the address was frenchprof.github.io/fluoduo/ — a window
+      # that closed the day fluolingo.com was pointed here, in the very same
+      # commit. See the header.
+      - name: Build the static export
         run: npm run build
 
       # Without this, GitHub Pages runs Jekyll, which strips any directory

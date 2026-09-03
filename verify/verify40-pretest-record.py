@@ -115,6 +115,14 @@ check(calls(picture, "recordPretestAnswer"),
 check(calls(unit0, "recordPretestAnswer"),
       "the Unit-0 quiz writes the gap record",
       "the Unit-0 quiz grades but never records — Unit 0 has no gap report")
+# A write with no reader is the Unit-0 hole of 28 Aug, now the U1–4 hole:
+# Recap showed score / retry / Home and never mounted BringToClass, even
+# though the runner already writes misses. Pin the mount on Recap, not
+# the import line — an unused import would stay green.
+recap = solo[solo.find("function Recap("):] if "function Recap(" in solo else ""
+check("<BringToClass" in recap,
+      "the U1–4 recap mounts BringToClass — a miss has a reader",
+      "the U1–4 recap no longer mounts BringToClass — misses are written and never shown")
 
 # ---- 2 · nothing pre-lesson is ever scored ---------------------------------
 # The load-bearing assertion. A pretest that reaches any of these is charging

@@ -220,14 +220,16 @@ export default function CahierShell({
   );
 }
 
-/** Where this deck's Pre-Test lives: the authored pretest page, or (Unit 0)
- *  the SIO popup whose body carries the questions. Null = no pretest. */
+/** Where this deck's Pre-Test lives. Null = no pretest.
+ *  Units 1–4: the authored page (`/pretests/{id}`).
+ *  Unit 0: `/pretests/unit0/{sioId}` — the same route Unit0Panel / StopPopup
+ *  already use. `/unit/0#{id}` is the map popup (UnitRedirect), not the quiz. */
 export function pretestHrefForDeck(collectionId: string): string | null {
   const sio = stopForDeck(collectionId);
   if (!sio) return null;
   const pretest = getPretestForSio(sio.id);
   if (pretest) return `/pretests/${pretest.id}`;
-  if ((UNIT0_QUESTIONS[sio.id] ?? []).length > 0) return `/unit/0#${sio.id}`;
+  if ((UNIT0_QUESTIONS[sio.id] ?? []).length > 0) return `/pretests/unit0/${sio.id}`;
   return null;
 }
 

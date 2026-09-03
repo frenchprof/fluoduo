@@ -1,10 +1,35 @@
 # Deploying FluoLingo
 
-Production site: **fluolingo.withdrchan.com** (Cloudflare Pages project
-`fluolingo-dot-com` — the dashboard's name, corrected 2026-08-17; this doc used
-to say `fluoguo`, which was the old project — also serving
-`fluolingo-dot-com.pages.dev`; `fluolingo.com` 302-redirects to the withdrchan
-URL).
+**THERE ARE TWO LIVE SITES, both fed from `main`** (Dan, 2026-09-02, correcting
+this document: *"two live sites, both fed from main … worth knowing which one
+your students actually use"*):
+
+| URL | Host | Built by | Path |
+|---|---|---|---|
+| **fluolingo.com** | GitHub Pages, `frenchprof/fluoduo` | `.github/workflows/pages-preview.yml`, on every push to main | domain ROOT |
+| **fluolingo.withdrchan.com** | Cloudflare Pages, `fluolingo-dot-com` | `dckg/fluo`, which `deploy-live.yml` mirrors main into (manual dispatch) | domain ROOT |
+
+The two are NOT equivalent and the difference is not cosmetic. GitHub Pages has
+no server, so on **fluolingo.com** the four Cloudflare Pages Functions —
+`/api/tutor`, `/api/tts`, `/api/correct`, `/api/compose` — do not exist, and
+ChaTutor, text-to-speech and ComposeIt's answer-checking fail there. They work
+on **fluolingo.withdrchan.com**. Everything else runs in the browser against
+Firebase and works on both.
+
+They also deploy on different triggers: fluolingo.com follows `main`
+automatically, while withdrchan waits for someone to fire `deploy-live`. So the
+two can be, and routinely are, on different commits.
+
+> **WHAT THIS SECTION USED TO SAY, and what it cost.** Until 2026-09-02 it
+> stated that `fluolingo.com` 302-redirects to the withdrchan URL and that the
+> GitHub Pages build was a preview at `frenchprof.github.io/fluoduo/`. Both
+> stopped being true on 17 Aug, when `CNAME` and the Pages workflow were added
+> in one commit — and a custom domain serves a Pages site at the ROOT, not at
+> `/fluoduo`. The build went on emitting `/fluoduo/_next/…` for a site served
+> at `/`, so fluolingo.com loaded its HTML and 404'd every stylesheet and
+> script for seventeen days. Nobody caught it because every file said the site
+> was something it no longer was. `verify91` now refuses a Pages subpath while
+> a CNAME exists.
 
 > **fluolinguo.com is RETIRED** (2026-07-19). The domain has no DNS records and
 > must not be referenced anywhere — links, docs, QR codes, Firebase authorised
@@ -57,9 +82,15 @@ Firestore rules live in `firestore.rules` and are deployed separately via the
 the Cloudflare build. The sign-in wall toggle is `REQUIRE_SIGN_IN` in
 `src/lib/authConfig.ts` (code, ships with a normal deploy).
 
-## Custom domain (the go-live cutover)
+## Custom domain
 
-Adding `fluolingo.com` as a direct custom domain on this Pages project is the
-final switch — today it 302-redirects to `fluolingo.withdrchan.com`, which is
-the live student-facing URL. Do it last, after verifying the site on
-`fluolingo.withdrchan.com`.
+`fluolingo.com` is a custom domain on the **GitHub Pages** site, not on this
+Cloudflare project — see the table at the top. It is served at the domain root,
+which is why `pages-preview.yml` must build with no base path.
+
+The repo's `CNAME` file names it. Note that it sits at the repo root and is NOT
+copied into `out/`, so it does not travel in the uploaded Pages artifact: the
+binding that actually serves the domain is **Settings → Pages → Custom domain**
+on `frenchprof/fluoduo`. The file is the repo's written record of the
+arrangement, and `verify91` reads it as such. If the domain is ever moved or
+retired, change both.
