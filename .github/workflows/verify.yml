@@ -348,3 +348,6 @@ jobs:
 
       - name: "The jam scan — every lesson RENDERED, every tab and pane (1 Sep)"
         run: python3 verify/verify79-jam-scan.py
+
+      - name: "A custom domain serves at the root — no Pages subpath (2 Sep)"
+        run: python3 verify/verify91-pages-basepath.py
