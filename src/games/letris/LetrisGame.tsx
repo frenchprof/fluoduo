@@ -168,7 +168,7 @@ export default function LetrisGame({
   const [paused, setPaused] = useState(false);
   const [music, setMusic] = useState(false);
   // Apply the shared volume (fluolingo:volume) on mount; the slider itself
-  // now lives inside the SoundControl popover in the HUD (Dan, 2026-07-10:
+  // now lives inside the SoundControl popover on the game bar (Dan, 2026-07-10:
   // the game interface was missing the full sound controls).
   useEffect(() => {
     try {
@@ -605,6 +605,7 @@ export default function LetrisGame({
       progress={null}
       score={score}
       help={help}
+      hintKey="vocabularain"
       menu={[
         { label: "🎵 Music", active: music, onClick: () => {
           if (chiptune.playing()) { chiptune.stop(); setMusic(false); }

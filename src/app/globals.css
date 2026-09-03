@@ -788,6 +788,15 @@ body {
    the tabs are the two things that live in a gutter, and they cannot share
    one: index tabs belong on the edge AWAY from the binding, which is now the
    right. The whole desk is mirrored, not just the rail. */
+/* THE BAND CLEARS THE BINDING (Dan, 2026-09-01: "can you see that it is
+   vertically not visually uniform?"). Measured across twelve pages, every band
+   was 47px tall — and on five of them the spiral coils were drawn ACROSS its
+   left end, because the binding is absolutely positioned over the whole page
+   and the band is in normal flow beneath it. The consequence was not just the
+   coils: the band had to be padded 48px on those pages to keep its ✕ clear of
+   them, and 16px everywhere else, so the ✕ sat at three different x positions
+   across the site. One stacking context fixes both. */
+.page-band { position: relative; z-index: 2; }
 .cahier-binding {
   position: absolute;
   top: 0; bottom: 0; left: 0;
@@ -925,6 +934,58 @@ body {
      rail moving left never meant the binding should leave it. */
   padding-left: clamp(8px, 3vw, 44px);
 }
+/* A DRILL SITS ON THE SAME DESK (Dan, 2026-09-01: "Ok move all to A", closing
+   a sweep of all 134 routes that found the site drawing its heading band at
+   two different left edges and two different tops).
+
+   A page is a sheet lying on grey with a gutter down its left; a drill was the
+   sheet ALONE, filling the viewport, so its coloured spine started at x=0 and
+   its band at y=0 while every other page's started at 19 and 8. Nothing was
+   wrong with either one on its own screen — the fault only exists between two
+   screens, which is why it survived so long.
+
+   The two numbers here are the desk's own and are written once each: the 8px
+   `.cahier-desk` shows above the paper, and the deskrow's left gutter. Change
+   either there and this follows, because a third spelling of them is how the
+   two edges came to disagree in the first place.
+
+   WHAT IT IS NOT is `.cahier-desk` + `.cahier-deskrow` reused wholesale. Those
+   two give a page 64px of desk BELOW it and let it grow past one screen; a
+   drill is exactly one screen tall and its footer tray is pinned to the bottom
+   of it. So the desk shows on the two edges a drill can spare and nowhere
+   else. */
+.cahier-drilldesk {
+  height: 100dvh;
+  display: flex;
+  background: var(--cahier-desk);
+  /* ALL FOUR SIDES (Dan, 2026-09-02, shown three renders and asked which:
+     "B"). It first landed with grey on the left and above only, on the
+     reasoning that a drill cannot spare the room — but that reasoning had
+     priced the wrong option. Measured on a 390×844 phone: matching a page's
+     64px of desk below costs a drill 64px of height, and a thin desk all
+     round costs 8. The visible difference either way is the RIGHT edge,
+     where the paper had been running off the side of the screen while every
+     other page in the app sat on grey.
+
+     The top and the sides are the page desk's own numbers, written once each
+     and read from `.cahier-desk` / `.cahier-deskrow` above; the BOTTOM is 8
+     rather than that desk's 64, because a page scrolls and a drill is exactly
+     one screen with its footer tray pinned to the end of it. On a phone the
+     fixed bottom bar covers this edge anyway — it earns its 8px on a laptop
+     window, where there is no bar and the paper otherwise ends at the sill. */
+  padding-top: 8px;                          /* = .cahier-desk's top padding  */
+  padding-left: clamp(8px, 3vw, 44px);       /* = .cahier-deskrow's gutter    */
+  padding-right: clamp(8px, 3vw, 44px);      /* mirrors it, so the paper is   */
+                                             /* centred rather than nudged    */
+  padding-bottom: 8px;                       /* NOT the desk's 64 — see above */
+}
+/* The page's own radius, now that grey shows on every side to put it against. */
+.cahier-drilldesk > .cahier-drill {
+  width: 100%;
+  border-radius: 4px 16px 16px 4px;
+  box-shadow: 0 12px 34px rgba(34, 40, 80, 0.20);
+}
+
 .cahier-page {
   position: relative;
   flex: 0 1 980px;
@@ -1973,4 +2034,32 @@ h3.cahier-display { font-size: var(--fs-h3); }
 .home-strip {
   background: linear-gradient(90deg,
     var(--dopa-focus) 0%, var(--dopa-win) 34%, var(--dopa-joy) 66%, var(--dopa-reward) 100%);
+}
+
+/* ---------- The stop bookmark (2 Sep 2026) ----------
+   The editable stop number on Home's hero well and the map's control row.
+   It is a READING that happens to be writable, so it must not wear the
+   cahier form-input skin (white box, border, width:100%) — the :not() pair
+   matches that skin's specificity and the later position wins; the bare
+   selector covers any surface outside the two shells. Focus keeps one quiet
+   cue: an underline in the ink the inputs' focus ring uses. */
+input.fluo-bookmark,
+.cahier-page input.fluo-bookmark:not([type="checkbox"]):not([type="radio"]),
+.cahier-sheet input.fluo-bookmark:not([type="checkbox"]):not([type="radio"]) {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  width: 2ch;
+  text-align: right;
+  transition: none;
+}
+input.fluo-bookmark:focus,
+.cahier-page input.fluo-bookmark:focus,
+.cahier-sheet input.fluo-bookmark:focus {
+  outline: none;
+  border: none;
+  box-shadow: 0 2px 0 0 var(--cahier-le);
 }

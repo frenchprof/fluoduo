@@ -6,6 +6,7 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 2 Sep — the two open items close
 
 ## 2 Sep — READ THIS BEFORE YOU TOUCH A WORKFLOW OR MERGE A BRANCH
 
@@ -91,6 +92,329 @@ merge marker are both text that no check reads. Scan for markers before you
 push, and verify a claim about the deploy path against the workflow and the
 settings page, not against the file's own description of itself.
 
+## 2 Sep — the two open items close
+
+Both were questions put to Dan with pictures; both answered (*"proceed with
+open"*), and the finished work went to fluoduo-main as PR #147 first.
+
+**The desk goes all round** (Dan, shown three real renders: *"B"*). The drill
+desk had landed with grey on the left and above only, on the reasoning that a
+drill cannot spare the room — and that reasoning had priced the wrong option.
+Measured on a 390×844 phone: a page's 64px of desk below costs a drill **64px**
+of height; a thin desk all round costs **8**. The edge that actually showed the
+difference was the RIGHT one, where the paper had been running off the side of
+the screen while every other page in the app sat on grey. The top and sides are
+still the page desk's own numbers, read from `.cahier-desk` /
+`.cahier-deskrow`; the bottom is 8 rather than 64, because a page scrolls and a
+drill is one screen with its footer tray pinned to the end of it. The paper's
+full radius is back now that there is grey on every side to put it against.
+Re-swept: **121 banded routes, still one regime — h47, top 57, left 19, ✕ at
+31.** verify82 gained two assertions (the right gutter against the LEFT, never
+a number; the bottom as a range, "some desk but not a page's"), break-tested.
+
+**LexicaLater's popup is one sentence now.** It had been that game's ⋯ → Help
+unedited — four paragraphs of levels, decoys and hard mode — which is right in
+a menu you chose to open and long as an arrival card. GameFrame took an
+optional `hint`: the FIRST-RUN cut, which must be a node `help` also renders,
+so it is the same constant used twice and not a second wording. Lexicalator
+pulls its opening sentence out as `howToPlay` and passes it both ways. The
+popup then draws "The rest — levels, lives, settings — is under ⋯ → Help"
+itself, once, exactly when something was left out. verify87 checks that the
+identifier passed as `hint` appears inside that game's `help`, so a paraphrase
+fails; 20 assertions now, all break-tested.
+
+## 2 Sep — every game shows the volume button, and the bar stays put
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan: *"some games are missing the volume button"*, naming Numbers, NumBus,
+NumBourse. Two faults, both measured before fixing, both pinned by
+`verify90-game-volume.py`:
+
+1. **Sound was buried.** Patch 23 folded SoundControl into the ⋯ sheet, so
+   games were the only surfaces without the visible 🔊 every page's top bar
+   shows. It is ON GameBar now (✕ · progress · ♥ · score · 🔊 · ⋯), the same
+   component the site bar mounts — one mute state everywhere — and the ⋯
+   sheet's Sound row is gone (two doors to one control is the HelpDot fault).
+2. **The bar could scroll away.** The layout's footer sits under the 100dvh
+   frame, making a game page ~90px taller than the screen; focusing NumBus's
+   keypad scrolled ✕, 🔊 and ⋯ off the top (bar at y=−85, measured). GameFrame
+   pins the viewport while mounted and releases it on unmount.
+
+The Numbers hub itself always had the top-bar 🔊 — what Dan hit there was the
+games it opens onto.
+
+## 2 Sep — the streak works where a learner can see it work
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan: *"the streaks are not working yet?"* Driven and confirmed — two faults,
+both now dead and both pinned by `verify89-streak-live.py`:
+
+1. **The mark went deaf.** StreakMark (top bar) read the streak once on
+   mount and never subscribed to `fluolingo:progress-updated` — the day's
+   first practice bumped the streak in storage while the bar showed nothing,
+   and in an SPA the remount that would have revealed it never comes. It
+   listens now, so the 🔥 (and the "1 day in a row" toast, which rides the
+   same finalize funnel) appear the moment the first answer lands.
+2. **Graded surfaces that never touched progress.** MCQ, NumBus and
+   NumBourse grade through recordResponse (evidence trail) and deliberately
+   stay outside recordItemResult — no SRS, no XP — but that starved the
+   streak too. `notePracticeDay()` is the narrow door: bump the day, save
+   through finalize, change nothing else. All three call it on every graded
+   answer; wrong answers count, per the streak's own rule.
+
+## 2 Sep — first-run instructions on every activity
+
+Dan, twice in an hour: *"add a pop up instruction for the first time with a
+'do not show me again' regarding what the user needs to do"*, then *"can you
+add the same first timer pop ups instructions for all activity pages (hub
+pages excluded)."*
+
+**14 activities have one; every hub, picker, gallery and landing has none.**
+MémoiRecall · pre-tests · SpecuLearn · MneMemo · GramMarathon · ConjugaZone ·
+ÉcouTexte · WorDrill · VoixLà · ChaTutor · DéjàRevu · VocabulaRain ·
+LexicaLater · ComposeIt.
+
+HOW IT IS WIRED, and why not per page. The text is one row per activity in
+`content/hints.ts`; DrillShell and CahierShell each mount `ActivityFirstRun`
+with the key they ALREADY carry, so an activity gets its instruction by having
+a row and by nothing else — no page was edited. Hubs are excluded by ABSENCE
+rather than by a list of exclusions: no row, nothing mounts.
+
+`on: "drill" | "page"` is load-bearing, not bookkeeping. `wordrill` names the
+Say It DRILL and the deck-picker PAGE at /practice/wordrill; `conjugaison`
+likewise. Without it the picker fires the drill's instruction over a list of
+decks.
+
+THE GAMES REUSE THEIR OWN TEXT. GameFrame already took a `help` node — "how to
+play", behind ⋯ → Help — so a new `hintKey` makes that same node open once by
+itself. No game's instructions are written twice, so they cannot drift.
+NumBus and NumBourse pass nothing: they already open on a landing that
+explains them (Dan, 29 Aug), and a popup would say it twice one tap apart.
+
+TWO THINGS THE DRIVING FOUND, both fixed. It portals to `document.body` — a
+drill's root is `overflow-hidden` and clipped it. And it sits at **z-79, below
+CreditsSplash (z-80)**: above it, the instruction covered VocabulaRain's and
+LexicaLater's credits for three seconds and ate the tap meant to skip them.
+verify87 recomputes that comparison from both files rather than restating
+either number.
+
+Driven end to end: first visit shows it; « Got it » with the box unticked
+closes it and it RETURNS next visit; ticked, it never comes back; and the key
+is per activity, so dismissing MémoiRecall leaves SpecuLearn's alone.
+
+`scripts/jam-scan.mjs` now walks as a RETURNING learner (it seeds the flags
+the popup itself writes). Without that the modal intercepted its every click
+and verify79 timed out — which is the check doing its job.
+
+New: `components/FirstRunHint.tsx`, `content/hints.ts`,
+`verify88-first-run-hints.py` (18 assertions, all break-tested, wired into CI).
+
+**Open for Dan:** LexicaLater's popup is five paragraphs, because it is that
+game's existing ⋯ → Help text unedited. It reads long as an arrival card. Say
+the word and it gets a short first-run version with the full text staying
+behind ⋯.
+
+## 2 Sep — CHANGE OF PLANS on the menu: popups per parent, children tabs retired
+
+Sole editor of STATUS.md in this commit: fluoduo-main. **This supersedes part
+of the six-ruling strips brief below — read this first, Pre-tests.**
+
+Dan, on the base-bar links and the burger menu's parents: *"Each of those
+links at the base as well as the parent links in the burger menu - make them
+pop up a window like the one that for Menu, but with only a subset, i.e. the
+relevant tiles that are under those parents. So actually we do not need
+children tabs anymore."*
+
+So the shape is now:
+
+- **Every family link at the BASE BAR** (the phone bottom bar's 🎯 🏋️ 🎮 🔄 💬
+  icons) and **every PARENT row in the ☰ menu** opens a popup styled like the
+  Menu one (MenuSplash's tile window), **filtered to that parent's tiles
+  only** — Practice's link opens a window of just Practice's activities, and
+  so on.
+- **Children tabs/flaps are retired entirely.** With them go the rulings that
+  existed only to dress them: no-tail-slack (2) and same-left-edge-shorter
+  (5) from the brief below are MOOT.
+- What survives of that brief, applying now to the parents and the popup
+  tiles: black font on pale washes (1), the MneMemo/MémoiRecall renames (3),
+  no white backdrop behind an open panel (4), FluOLinGo Hand for the labels
+  (6).
+
+**SETTLED, 2 Sep (Dan: "ok agreed with all of that") — the grouping the
+popups open onto.** Drawn at
+https://claude.ai/code/artifact/63efcda1-2d00-47f3-a35c-c838af151a51 ("Six
+Doors, Fourteen Tiles"). The decisions, each Dan's:
+
+- **One tile moves: ConjugaZone → Practice** (a forms drill, not
+  communication). Everything else stays where it is; no renames, keys and
+  routes untouched.
+- **Tools split (Dan: "some of these (e.g. VoixLa) are better classified as
+  tools right")**: VoixLà and ChaTutor sit in a dashed OUTILS row at the
+  bottom of the Skills popup — greyed, unbadged, consulted-not-completed.
+  The test: rounds + finish line + grade = trainer; none of those = tool.
+- **Skill badges on trainers**: small pills — 🎧 écouter, 🎙️ parler,
+  ✍️ écrire — only where the activity actually grades that skill; two-skill
+  tiles wear both (ÉcouTexte 🎧✍️). **No 📖 badge**: Dan caught that the app
+  has no reading activity ("but there is no LIRE?") — the badge returns the
+  day one ships, never stretched onto flashcards before then.
+- **Practice and Revise stay separate doors** — their questions differ, and
+  Revise is the only door with a deadline: its popup wears the due count on
+  its face ("3 due today").
+- **🎯 Goals opens no popup** — it goes to the current stop (Continue); the
+  path has no tiles.
+
+Roadmap items recorded, not in this build: a READING activity (ÉcouTexte's
+sibling with the text on screen — the one untrained skill), and AMBIENT
+TOOLS (ChaTutor as a floating consult, VoixLà summonable wherever French is
+typed; the OUTILS row is the address, not the life).
+
+Still Pre-tests' surface — this section is the brief, not the build.
+
+## 2 Sep — the stop BOOKMARK: the learner's word on where they are
+
+Dan, over Home's « 46/50 » well: *"we need a way for users to book mark the
+stop that they have left off, because if they have wandered out of curiosity,
+it should not force them to resume at that spot. For the home page, we can
+make the stop number indicator editable. For the map, could that editable
+indicator be placed to the left of zoom control."*
+
+Shipped (fluoduo-main): `fluolingo:bookmark` in lib/continuer.ts —
+`nextSioId(progress, bookmarkNo?)` takes it as an argument (render paths pass
+it from state; `continueSioId()` reads it at call time for handlers), so a
+set bookmark IS the current stop: 🧑‍🎓, the travelled route, Continue, the
+tour's Play card and the activity landing all follow it. Completing the
+bookmarked stop advances the reading to the first gap after it; clearing the
+field returns the computed reading. Wandering never writes it — verify87
+holds that only the indicator itself calls saveBookmark. Two faces of one
+component (StopBookmark): Home's hand-written well, and the map's control row
+immediately left of the zoom cluster.
+
+## 2 Sep, later still — MémoiRecall's « Flip » button, and the card underneath it
+
+Dan: *"there is a redundant button called FLIP which is not working and which
+we don't even need."* Right on both counts and the second explains the first:
+the footer CTA said « Flip » and tapping the card did the same thing, on the
+one activity named for that gesture — so whichever one he used, the other
+looked inert. Driven in the real app it does flip; the fault is that there are
+two controls for one action.
+
+Removing it exposed what it had been covering: the card was a
+`<div role="button">` with an onClick, **no tabIndex and no key handler** —
+not a button. A keyboard could neither reach it nor fire it, and nobody
+noticed because DrillShell binds Enter to the CTA. With the CTA gone the card
+is the only way to turn one over, so it is a real `<button>` now: focus,
+Enter, Space and the role come free, and its label says which way it will go.
+Verified by driving it — Tab reaches the card, Enter and Space both flip.
+
+`verify27 §14g` pins all three (no Flip CTA, no hand-rolled role=button, the
+card is a `<button>` wired to onFlip), break-tested. `verify20` named « Flip »
+alongside « ✓ I know it » and « ↺ To review » as the study CTAs; rewritten
+naming the supersession — those two are self-marks and « Flip » never was.
+
+**Open for Dan:** with the button gone the card carries no visible cue that it
+is tappable. Three options were shown side by side (bare / a quiet ↻ in the
+corner / a ↻ chip in the family ink); shipped bare pending his pick.
+
+## 2 Sep, later — the (?) leaves the deck band
+
+Dan, looking at seven bands side by side: *"what is with the question mark on
+the deck strip"*. It mounted `HelpDot`, whose docstring says it is for pages
+OUTSIDE the CahierShell — the immersive games, which have no ☰ — and it opens
+MenuSplash. The ☰ two centimetres above it opens MenuSplash too, from its
+« MENU » row (screenshotted both ways to be sure). Two doors to one room on one
+screen, and it made the deck the only band in the app with a fourth thing on it.
+
+The `trailing` slot went with it rather than just its occupant: a slot that
+exists is a slot that gets filled, and the band's whole claim is that it is the
+same three parts everywhere. No caller was left. verify82 now pins the band at
+three parts (2 assertions, break-tested); SectionBand keeps its own `trailing`,
+which is a different component with real callers.
+
+## 2 Sep — one page shape, and every band on one edge
+
+Sole editor of STATUS.md in this commit: Pre-tests.
+
+The 1 Sep audit fixed each page and left the site un-uniform, because "visual
+unity" is not a property any single screen has — it exists only BETWEEN
+screens, and every check we had read one page at a time. Swept across all 134
+exported routes, the heading band was drawn at **two lefts (6px and 19px) and
+two tops (49 and 57)**. Dan, shown the three ways to converge: *"Ok move all
+to A"* — A being the 19px page-on-a-desk that 114 routes already had.
+
+Two causes, both removed:
+
+- **`nested` in CahierShell**, computed `context.length > 0` — a page was
+  drawn as a sheet inside a parent sheet BECAUSE IT CARRIED ITS OWN TAB STRIP.
+  That is an accident of how flaps are counted, not a statement about
+  hierarchy, and it caught **91 routes, 90 of them pre-tests**, which are
+  inside nothing. They paid 48px of a 430px screen and — because the bar was
+  drawn `{!nested && <BottomBar />}` — their entire bottom navigation. Nothing
+  ever passed the flag and nothing renders a CahierShell inside another, so
+  the stack branch had no caller to serve. `.cahier-stack` /
+  `.cahier-stack--inner` in globals.css are now used only by Flip It's
+  CahierFrame; left alone rather than deleted in this pass.
+- **A drill had no desk.** DrillShell's root was the viewport, so its spine
+  started at x=0. New `.cahier-drilldesk` gives it the page desk's two numbers
+  — `.cahier-desk`'s 8px above and `.cahier-deskrow`'s gutter — and *nothing
+  else*: a drill is exactly one screen and cannot spare the 64px of desk below
+  that a page gets. verify82 recomputes both from their one home rather than
+  restating them, because a third spelling of those numbers is how the two
+  edges came apart in the first place.
+
+Re-swept after: **121 banded routes, one regime — h47, top 57, left 19, ✕ at
+31.** The 13 without a band are the full-screen games, /hidden/*, and
+/moi/historique.
+
+Also: **the second study–test switch.** Dan's 1 Sep ruling was found on the
+deck table and missed on Flip It, so for a day the app shipped the new pill on
+one screen and the old bare knob with « Study » printed beside it on the
+other — the same between-screens shape as the sweep above. Both are PillSwitch
+now, and verify80 pins it by shape so the next hand-rolled one fails.
+
+Rewritten naming their supersession: `verify20` (its viewport lock read
+`h-dvh` on the drill's own root; the height is the wrapper's now, and it
+asserts both ends because either alone passes on a broken pair), `verify82`
+(§6's well-padding regex named the `nested` ternary; §8 is new — 7 assertions,
+all break-tested), `verify80` (§7 new, 4 assertions, break-tested).
+
+**Open for Dan:** the drill's desk shows grey on the left and above only —
+below and right it runs to the viewport edge, because a drill's footer tray is
+pinned to the bottom of the screen. Deliberate, and it reads as paper sliding
+off the bottom of the desk rather than lying on it. If he wants the desk all
+the way round, a drill loses ~72px of its one screen.
+
+
+## 2 Sep, small hours — Dan's five rulings on the coloured strips (PRE-TESTS' pass)
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan reviewed the in-flight coloured rail/dropdown (Pre-tests' local build,
+the dopamine direction) and gave five rulings, routed here because the
+surface is that lane's active flight — fluoduo-main is deliberately not
+touching it:
+
+1. **Black font where the wash is pale.** The children share their parent's
+   hue by design (all three visible were Practice's) — that stays; but pale
+   rows take a BLACK font ("they might be better with black font instead").
+   Parents may keep light text only where contrast genuinely holds.
+2. **No tail slack.** A flap is as long as the longest label among its
+   siblings and no longer — "tighten up the space so that they don't occupy
+   so much space when opened up."
+3. **The renames stand**: MneMemo (was Memo) and MémoiRecall (was 4Mémoire),
+   already in fcc58d4 — display names only, keys `lesson`/`flip` untouched,
+   per the Memo-rename precedent in AGENTS.md.
+4. **No white backdrop behind the flaps** — "or else it looks unreal." The
+   open menu's panel takes paper, not white.
+5. **Children start at the SAME left edge as parents and end SHORTER** —
+   hierarchy by length, not indent. This supersedes the indent approach in
+   PR #142 (closed as superseded); the one thing to carry over from it: the
+   child dress must apply in the DROPDOWN too, not only under `.cahier-tabs`
+   — the scoping bug behind Dan's "camouflaged among the parents".
+6. **The tab labels take FluOLinGo Hand** ("oh use FluOLinGo font for those
+   tabs!") — `.fluo-band-hand`, the same stack the band and the map's legend
+   sentence wear.
 ## 1 Sep, late — the chrome audit, and the strips become one strip
 
 Sole editor of STATUS.md in this commit: Pre-tests.
@@ -651,11 +975,30 @@ lane = report it in STATUS, don't do it.
   — verify74, 75, 76, 77, 83, worded identically so they read as one decision.
   Every one break-tested.
 
-  **What this lane still owes: nothing on the pipeline.** Open with Dan:
-  the Sum-up pane (three questions, shown 1 Sep), and whether the
-  `wants-needs` naming should have carried SIO-039 — resolved by default in
-  #136 in favour of `envies-besoins`, which is the file this lane's concept
-  sits on.
+  **THIS LANE IS CLEAR — nothing outstanding, 2 Sep.** The three items that were
+  open with Dan are all closed:
+
+  - ~~**The Sum-up pane**~~ — three questions were put to him with a rendered
+    A/B of each (the label « The whole system », the doubled inShort/remember
+    line, and the 18-of-45 inconsistency). **Dan, 2 Sep: "drop both for now."**
+    Not answered and not to be re-raised — the pane ships as it is.
+  - ~~**Atelier Mémo variants**~~ — Dan floated listing "sentences used in
+    dialogues **or variants of them**", with toggled English and TTS. Driving
+    the app showed the Mémo already does all of that except variants: « Le
+    modèle » lists every model sentence, English underneath, a 🇬🇧 toggle whose
+    choice is remembered across all six ateliers (`fluolingo:atelier:en`),
+    per-line TTS, and « 🔊 Tout écouter ». Variants would be new French and
+    would need him. **Dropped the same day.**
+  - ~~**SIO-039's slug**~~ — resolved in #136 in favour of `envies-besoins`,
+    which is the file this lane's concept sits on. `wants-needs` is not on main.
+
+  **The one thing worth carrying to whoever picks this lane up.** A pitfall
+  table's wrong column is only sound when the form is IMPOSSIBLE. That is a
+  question about French, so it is Dan's to answer and cannot be reasoned out
+  from English — this lane guessed twice on 1–2 Sep and missed in both
+  directions. It shipped six atelier tables striking through perfectly good
+  French (Dan: *"i would delete this column"*), and separately flagged a sound
+  strike as suspect (Dan: *"jus de l'orange is WRONG"*). Ask.
 
 - **Pre-tests — the pre-test surface, then capacity.** ~~Unit-0 pre-test pages
   (in flight, the last uncovered pre-test surface).~~ **DONE — #98.** All ten

@@ -51,6 +51,21 @@ WHAT IS PINNED, and why each would fail in silence
      strip is not, it stops short of the paper again, which is complaint two.
   7  NO PAGE PRINTS ITS OWN NAME TWICE. Three pages had their <h1> replaced by
      the band; leaving it would have been the identity crisis, not a fix.
+  8  ONE PAGE SHAPE (Dan, 2026-09-01: "Ok move all to A"). Complaint three
+     survived the first pass, because "visual unity" is not a property of any
+     one screen — it only exists BETWEEN screens, and no check that reads one
+     page can see it. Swept across all 134 exported routes, the site drew its
+     band at two lefts (6px and 19px) and two tops (49 and 57): a drill's paper
+     filled the viewport while a page's lay on a grey desk, and separately 91
+     routes were drawn as a sheet inside a parent sheet BECAUSE THEY CARRIED
+     THEIR OWN TAB STRIP — an accident of `context.length > 0`, not a
+     statement about hierarchy. Ninety of those 91 were pre-tests, which are
+     inside nothing, and they paid 48px of a 430px screen and, because the bar
+     was drawn `{!nested && <BottomBar />}`, their whole bottom navigation.
+     So: no `nested` in CahierShell, a bottom bar that is not conditional, and
+     a drill sitting on the SAME desk numbers as a page — recomputed here from
+     `.cahier-desk` and `.cahier-deskrow` rather than restated, because a third
+     spelling of those two numbers is exactly how the two edges drifted apart.
 
 Run from the repo root:  python3 verify/verify82-page-chrome.py
 """
@@ -190,9 +205,10 @@ ok("${sio.short}" in stopt,
 # ---- 5 · the drill band carries it ----------------------------------------
 i = drill.find("<PageBand")
 band = drill[i:i + 700] if i >= 0 else ""
-ok("tag={stopTagForDeck(" in band,
+ok("goal={goalNumberForDeck(" in band,
    "a drill's band says which goal it belongs to",
-   "the drill band has no goal tag — Dan: 'no identity tag regarding which stop it belongs to'")
+   "the drill band has no goal circle — Dan: 'no identity tag regarding which stop it "
+   "belongs to', then 'a circle and the related goal number'")
 # ONE LINE, NO NUMBER (Dan, 1 Sep). Both are properties of PageBand itself, so
 # they hold for every band at once rather than page by page.
 pb = code(read("src/components/PageBand.tsx"))
@@ -200,15 +216,28 @@ ok("stat" not in pb,
    "no band carries a number at its end",
    "PageBand has a `stat` slot again — Dan: 'drop the number at the end of that strip', and it "
    "was three different figures wearing one chip")
-ok("truncate" in pb and "whitespace-nowrap" in pb and "block" not in pb.split("{tag")[0].split("<p")[-1],
-   "the band is one line: the tag runs inline after the title and both truncate",
+ok("truncate" in pb and "min-w-0 flex-1" in pb,
+   "the band is one line: the name truncates rather than wrapping",
    "the band can wrap to two lines again — Dan: 'all colored strips must be uniformly of the "
    "same thickness (one line text max)'")
+# THE ✕ AND THE CIRCLE, on every band (Dan, 1 Sep, with a drawing).
+ok('href={exitHref}' in pb and "✕" in pb,
+   "every band carries the ✕",
+   "the band draws no ✕ — Dan: 'can i have all strips looking like this: (1) with a X'")
+ok(re.search(r"goal != null", pb) is not None and "🎯" in pb,
+   "and the goal's circle, 🎯 and its number, where the page has a goal",
+   "the band draws no goal circle — Dan: '(2) with a circle and the related goal number'")
 
 # ---- 6 · Home's strip pulls by exactly the well's padding ------------------
 # BOTH numbers read out of the source and compared, never asserted twice: the
 # well is CahierShell's, the pull is Home's, and they are in different files.
-well = re.search(r'cahier-foolscap py-5 pr-4 sm:pr-7 \$\{nested \? "[^"]*" : "pl-(\d+) sm:pl-(\d+)"\}', cahier)
+# THE TERNARY IS GONE (2026-09-02). This read the `: "pl-… sm:pl-…"` arm of
+# `${nested ? … : …}`; Dan's "Ok move all to A" left one page shape and one
+# padding, so the well is a plain string now. The claim is untouched — the
+# strip must pull out by exactly what the well pads in — and it is a stronger
+# read than before, because there is no longer a second arm the strip could be
+# agreeing with instead.
+well = re.search(r'cahier-foolscap py-5 pl-(\d+) pr-4 sm:pl-(\d+) sm:pr-7', cahier)
 strip = re.search(r'home-strip -ml-(\d+) -mr-(\d+)[^"]*pl-(\d+) pr-(\d+) [^"]*sm:-ml-(\d+) sm:-mr-(\d+) sm:pl-(\d+) sm:pr-(\d+)', home)
 ok(well is not None and strip is not None,
    "both the content well's padding and the strip's pull are readable from the source",
@@ -245,7 +274,12 @@ for path, dup in (
 # same string the tag carries, and Profil opened with the signed-in user's name.
 for path, want, was in (
     ("src/app/decks/[id]/CuratedDeckTable.tsx", 'title="Deck"', "a name that is not its own"),
-    ("src/components/ProfileContent.tsx", 'title="Moi"', "the signed-in user's name"),
+    # The profile's band moved OUT of ProfileContent and into its two routes
+    # on 1 Sep — drawn inside the content well it sat 20px lower than every
+    # other band on the site. The claim is unchanged: its first word is the
+    # activity's, not the signed-in name.
+    ("src/app/profil/page.tsx", 'band={{ title: "Moi" }}', "the signed-in user's name"),
+    ("src/app/moi/page.tsx", 'band={{ title: "Moi" }}', "the signed-in user's name"),
     ("src/app/pretests/[id]/PretestContent.tsx", 'title: "Pretest"', "the pre-test's own title"),
 ):
     ok(want in code(read(path)),
@@ -265,7 +299,7 @@ for path, want, was in (
 # « Pretest », at different goals, and the goal tag tells them apart — so this
 # names the one relationship that is wrong rather than banning duplicates.
 deck_tbl = code(read("src/app/decks/[id]/CuratedDeckTable.tsx"))
-ok('activity("flip")' not in deck_tbl and '"4Mémoire"' not in deck_tbl,
+ok('activity("flip")' not in deck_tbl and "4Mémoire" not in deck_tbl,
    "the deck's table does not borrow the drill's name — 4Mémoire is one tap away, with its own band",
    "the deck table calls itself 4Mémoire again; that is the drill it LINKS to, and two pages "
    "wearing one name is the fault Dan spotted")
@@ -289,6 +323,93 @@ for root, _dirs, files in os.walk("src"):
 ok(not strays,
    "no surface says « stop » before a number — the course counts in GOALS",
    f"« stop » still precedes a number here: {strays[:3]}")
+
+# ---- 8 · one page shape, and one desk under both shells ------------------
+drill = code(read("src/components/DrillShell.tsx"))
+css_all = read("src/app/globals.css")
+
+# THE FLAG IS GONE. Asserted on the CONSTRUCT, not the word: `"nested" not in
+# cahier` would be broken by the paragraph of comment explaining the removal,
+# and `code()` strips those — but a future comment inside a JSX expression
+# would not be, so this looks for the two shapes that could bring it back.
+ok(re.search(r"\bconst nested\b", cahier) is None,
+   "CahierShell computes no `nested` flag — one page shape, not two",
+   "the `nested` flag is back; it is `context.length > 0`, which means "
+   "'this page has its own tabs' and was read as 'this page is inside another'")
+ok(re.search(r"\{\s*!?\s*nested\s*(?:&&|\?)", cahier) is None,
+   "nothing in CahierShell is drawn conditionally on it",
+   "something is still drawn only when a page has no tab strip — that is what "
+   "cost 90 pre-tests their bottom bar")
+ok(re.search(r"\{\s*<BottomBar\s*/>\s*\}|<BottomBar\s*/>", cahier) is not None
+   and re.search(r"nested\s*&&\s*<BottomBar", cahier) is None,
+   "every page gets the phone bottom bar",
+   "the bottom bar is conditional again — 90 pre-tests had none, on the "
+   "surfaces a learner spends most of their time answering on")
+
+# THE TWO DESK NUMBERS, read from their one home and compared with the drill's.
+# Neither is written here: this fails if either is CHANGED in one place, which
+# is the only way the two shells' left edges can come apart again.
+desk_top = re.search(r"\.cahier-desk \{[^}]*padding:\s*(\d+)px", css_all)
+row_left = re.search(r"\.cahier-deskrow \{[^}]*padding-left:\s*(clamp\([^)]*\))", css_all)
+dd = re.search(r"\.cahier-drilldesk \{([^}]*)\}", css_all)
+ok(desk_top is not None and row_left is not None and dd is not None,
+   "the page desk, its gutter and the drill desk are all readable from the CSS",
+   "cannot read one of .cahier-desk / .cahier-deskrow / .cahier-drilldesk — "
+   "the comparison below would be guessing")
+if desk_top and row_left and dd:
+    body = dd.group(1)
+    m_top = re.search(r"padding-top:\s*(\d+)px", body)
+    m_left = re.search(r"padding-left:\s*(clamp\([^)]*\))", body)
+    ok(m_top is not None and m_top.group(1) == desk_top.group(1),
+       f"a drill's paper starts the same {desk_top.group(1)}px down as a page's",
+       f"the drill desk pads {m_top.group(1) if m_top else 'nothing'} above the paper and a page "
+       f"desk pads {desk_top.group(1)} — the band jumps vertically the moment a learner starts answering")
+    ok(m_left is not None and m_left.group(1) == row_left.group(1),
+       "and one gutter in, by the same expression the page row uses",
+       f"the drill's gutter is {m_left.group(1) if m_left else 'unset'} and the page row's is "
+       f"{row_left.group(1)} — two spellings of one edge, which is how they came apart before")
+    # ALL FOUR SIDES (Dan, 2026-09-02: shown three renders and asked which, "B").
+    # The first landing put grey on the left and above only, and the edge that
+    # actually showed the difference was the RIGHT one — the paper ran off the
+    # side of the screen while every other page in the app sat on grey. The
+    # right gutter is asserted against the LEFT rather than against a number,
+    # so re-tuning the gutter moves both or fails.
+    m_right = re.search(r"padding-right:\s*(clamp\([^)]*\))", body)
+    ok(m_right is not None and m_left is not None and m_right.group(1) == m_left.group(1),
+       "and the same gutter on the right, so the paper is centred rather than nudged",
+       f"the drill's right gutter is {m_right.group(1) if m_right else 'unset'} against a left of "
+       f"{m_left.group(1) if m_left else 'unset'} — the paper runs off one side of the screen")
+    # The BOTTOM is deliberately NOT the page desk's 64: a page scrolls, a drill
+    # is exactly one screen with its footer tray pinned to the end of it, and 64
+    # there costs 64px of that screen where 8 costs 8. Asserted as a range, not
+    # a value, because the point is "some desk, but not a page's".
+    m_bot = re.search(r"padding-bottom:\s*(\d+)px", body)
+    ok(m_bot is not None and 0 < int(m_bot.group(1)) < int(desk_top.group(1)) + 24,
+       f"the drill's paper sits on desk at the bottom too, without paying a page's 64px for it "
+       f"({m_bot.group(1) if m_bot else 'unset'}px)",
+       f"the drill's bottom desk is {m_bot.group(1) if m_bot else 'unset'} — either the paper runs off "
+       "the bottom of the screen again, or a drill has given up a page's worth of its one screen")
+# THREE PARTS, AND ONLY THREE. Dan drew the band with a ✕, a name and a goal
+# circle; PageBand also had a `trailing` slot ("one extra control, never a
+# number") and exactly one page filled it — the deck's band mounted the (?)
+# that opens the Menu, which is what the ☰ two centimetres above it opens. He
+# found it the moment the bands were lined up side by side: *"what is with the
+# question mark on the deck strip"*. The slot is gone, not just its occupant,
+# because a slot that exists is a slot that gets filled — and the band's whole
+# claim is that it is the same three parts on every page.
+band_src = read("src/components/PageBand.tsx")
+ok(re.search(r"^\s*trailing[,?]", code(band_src), flags=re.M) is None,
+   "the band has no spare slot — ✕, the activity's name, the goal, and nothing else",
+   "PageBand has a `trailing` slot again; one page filled the last one with a second "
+   "door to the Menu and the deck became the only band in the app with four things on it")
+ok("HelpDot" not in code(read("src/app/decks/[id]/CuratedDeckTable.tsx")),
+   "the deck's band does not mount a second Menu button",
+   "the deck's band mounts HelpDot again — HelpDot is for pages OUTSIDE the shell, which "
+   "have no ☰; a page inside it already has that door")
+
+ok("cahier-drilldesk" in drill,
+   "DrillShell mounts that desk",
+   "DrillShell's root is loose in the layout again — its spine starts at x=0 and every page's at the gutter")
 
 print("\n".join("  ok    " + m for m in PASS))
 if FAIL:

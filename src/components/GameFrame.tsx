@@ -5,7 +5,7 @@
  * shell for every drill (patches 20–21).
  *
  *   ┌────────────────────────────────────────────┐  GameBar v2, 56px
- *   │  ✕   ▓▓▓▓▓▓░░░░░░░░   ♥♥♡   240   ⋯        │
+ *   │  ✕   ▓▓▓▓▓▓░░░░░░░░   ♥♥♡   240   🔊  ⋯    │
  *   ├──────────────────────────────┬─────────────┤
  *   │                              │  live record│  ≥1024px: two panes
  *   │        THE BOARD             │  (desktop   │  (board left, record right)
@@ -21,10 +21,13 @@
  * its row height from the room it actually has instead of a hard-coded 48px.
  *
  * WHAT MOVED INTO THE ⋯ MENU: everything the six per-game headers used to
- * hold as a row of pills — help, sound, music, hard mode, settings, quit. The
- * bar carries the four things a game HAS: a way out, progress, hearts (if it
- * keeps them), score. Instructions moved behind ⋯ → Help (Dan's litmus test:
- * text that, removed, does not stop the learner finding the answer, goes).
+ * hold as a row of pills — help, music, hard mode, settings, quit. The bar
+ * carries the things a game HAS: a way out, progress, hearts (if it keeps
+ * them), score — and, since 2 Sep, the 🔊 SoundControl, back OUT of the menu
+ * (Dan: "some games are missing the volume button"; burying it made games the
+ * only surfaces without the visible 🔊 every other page shows). Instructions
+ * moved behind ⋯ → Help (Dan's litmus test: text that, removed, does not stop
+ * the learner finding the answer, goes).
  *
  * The bar is aware of the phone's safe area and, on pages where the bottom
  * nav is mounted, of `--bottombar-floor` — the frame's own padding-bottom is
@@ -38,7 +41,7 @@ import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState
 import Link from "next/link";
 import GameBar, { type GameHearts, type GameProgress } from "@/components/GameBar";
 import BottomSheet from "@/components/BottomSheet";
-import SoundControl from "@/components/SoundControl";
+import FirstRunHint from "@/components/FirstRunHint";
 
 export type { GameHearts, GameProgress };
 
@@ -67,6 +70,8 @@ export default function GameFrame({
   hearts,
   score,
   help,
+  hint,
+  hintKey,
   menu,
   record,
   recordTitle,
@@ -86,6 +91,33 @@ export default function GameFrame({
   score?: ReactNode;
   /** How to play — lives behind ⋯ → Help. Omit and the menu has no Help row. */
   help?: ReactNode;
+  /**
+   * Set this and `help` ALSO opens by itself the first time, with a "do not
+   * show me again" (Dan, 2026-09-02: "add the same first timer pop ups
+   * instructions for all activity pages"). It is the same node, not a second
+   * copy — a game's instructions cannot come to differ between the popup and
+   * the ⋯ menu, which is what a hand-written second version would guarantee
+   * within a month. Stable and never a display name: a rename must not
+   * re-open a hint the learner has dismissed.
+   *
+   * Games that already open on a LANDING that explains them (NumBus,
+   * NumBourse — Dan asked for those on 2026-08-29) pass nothing: they would
+   * be telling a learner the same thing twice, one tap apart.
+   */
+  hintKey?: string;
+  /**
+   * The FIRST-RUN cut of `help`, where the full text is too long to meet a
+   * learner with. Dan, 2026-09-02, on LexicaLater's popup: it is that game's
+   * ⋯ → Help unedited, four paragraphs of levels, decoys and hard mode, and it
+   * reads long as an arrival card even though it is right in a menu you chose
+   * to open.
+   *
+   * IT MUST BE A NODE THAT `help` ALSO RENDERS — the same constant used twice,
+   * never a second wording. A paraphrase here is two texts that drift, which
+   * is the whole reason the popup shows the help node in the first place.
+   * verify87 checks that the identifier passed here appears inside `help`.
+   */
+  hint?: ReactNode;
   /** Game-specific rows for the ⋯ sheet (music, hard mode, restart…). */
   menu?: GameMenuItem[];
   /** The live record (trésor, blotter, transcript…) — the desktop right pane. */
@@ -106,6 +138,22 @@ export default function GameFrame({
   const setHelpOpen = (v: boolean) => { setHelpOpenRaw(v); onMenuToggle?.(v || menuOpen); };
   const boardRef = useRef<HTMLDivElement | null>(null);
   const [size, setSize] = useState<BoardSize>({ width: 0, height: 0 });
+
+  // PIN THE VIEWPORT while a game is mounted. The frame is 100dvh, but the
+  // site layout stacks its footer (and the beta notice) UNDER it, so the
+  // page is ~90px taller than the screen — and focusing the keypad scrolls
+  // the GameBar clean off the top. That is how NumBus "lost" its ✕, 🔊 and
+  // ⋯ (Dan, 2026-09-02: "some games are missing the volume button" —
+  // measured: bar at y=-85 with scrollY 85). Locking the page here fixes
+  // every game at once and unlocks on the way out.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const prev = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.documentElement.style.overflow = prev;
+    };
+  }, []);
 
   // Measure the board area and publish it — as CSS vars for stylesheets and
   // as numbers for grids that compute. Layout effect so the first paint of a
@@ -183,10 +231,10 @@ export default function GameFrame({
               </button>
             </li>
           )}
-          <li className="flex items-center gap-2 rounded-lg border-2 border-[color:var(--cahier-line)] px-3 py-2">
-            <span className="flex-1 text-sm font-bold">🔊 Sound</span>
-            <SoundControl />
-          </li>
+          {/* The Sound row moved to the BAR, visible (Dan, 2026-09-02: "some
+              games are missing the volume button") — GameBar mounts
+              SoundControl on every game now, and one control does not get two
+              doors on one screen. */}
           {menu?.map((m, i) => (
             <li key={i}>
               <button
@@ -221,6 +269,20 @@ export default function GameFrame({
         <BottomSheet open={helpOpen} onClose={() => setHelpOpen(false)} title={<>❓ {title}</>}>
           <div className="game-help text-sm text-[color:var(--cahier-ink)]">{help}</div>
         </BottomSheet>
+      )}
+      {/* …and the same node, unbidden, the first time — or the short cut of it
+          where a game has one. The « more under ⋯ » line is drawn HERE, once,
+          rather than written into each game's `hint`: it is true exactly when
+          something was left out, which is exactly when `hint` is set. */}
+      {help && hintKey && (
+        <FirstRunHint hintKey={hintKey} title={`How to play`}>
+          <div className="game-help">{hint ?? help}</div>
+          {hint && (
+            <p className="mt-3 text-xs text-[color:var(--cahier-ink-soft)]">
+              The rest — levels, lives, settings — is under ⋯ → Help.
+            </p>
+          )}
+        </FirstRunHint>
       )}
     </div>
   );

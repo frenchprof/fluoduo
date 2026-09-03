@@ -11,15 +11,13 @@
  * A tab without an href (typically the active page) renders as a static flap.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 
-/** Below this the flap rail is hidden. Was 1100, which left every iPad and
- *  every half-width laptop window with NO navigation but the burger.
- *  Keep in sync with the media query in globals.css. */
-const RAIL_MIN_PX = 900;
+/* RAIL_MIN_PX (900) lived here and is gone with the edge drag — it was only
+   ever read by that feature's two effects. The rail's real breakpoint is the
+   media query in globals.css, which is unchanged and remains the one source. */
 import type { MouseEvent as ReactMouseEvent, ReactNode } from "react";
 
-const PAGE_WIDTH_KEY = "fluolingo:pageWidth";
 import { isLexReadyId } from "@/lib/collections/lexReady";
 import { isSpecuLearnReady } from "@/lib/collections/speculearnReady";
 import { hasMatching } from "@/lib/collections/loadCollections";
@@ -41,6 +39,7 @@ import { activity, bandOf, familyOf, familyShort, hubFamily, isReadingSurface } 
 import { stopForDeck } from "@/lib/stopTag";
 import BottomBar from "@/components/BottomBar";
 import PageBand from "@/components/PageBand";
+import { ActivityFirstRun } from "@/components/FirstRunHint";
 
 /** Sorting is an MCQ over the deck's letris columns — no columns, no game. */
 export function hasDicePractice(collectionId: string): boolean {
@@ -70,7 +69,7 @@ export default function CahierShell({
    *  to suppress the band on a page that draws its own heading. */
   /** `tag` replaced `sub` + `stat` on 1 Sep: the band is ONE LINE now and
    *  carries no number at the end (Dan). See components/PageBand.tsx. */
-  band?: { title?: ReactNode; tag?: ReactNode; trailing?: ReactNode } | false;
+  band?: { title?: ReactNode; goal?: number; exitHref?: string } | false;
   children: ReactNode;
 }) {
   const site = tabsWithActive(siteTabs(), active);
@@ -113,155 +112,97 @@ export default function CahierShell({
     document.title = pageLabel ? `${pageLabel} · FluOLinGo` : "FluOLinGo";
   }, [pageLabel]);
 
-  const nested = context.length > 0;
+  // ONE PAGE SHAPE (Dan, 2026-09-01: "Ok move all to A").
+  //
+  // There was a `nested` flag here, computed as `context.length > 0` — a page
+  // was drawn as a sheet inside a parent sheet BECAUSE IT CARRIED ITS OWN TAB
+  // STRIP. That is not a statement about hierarchy, it is an accident of how
+  // the flaps are counted, and measured across all 134 exported routes it
+  // caught 91 of them: 90 pre-tests and one deck sub-page. A pre-test is not
+  // inside anything — you reach it from a goal, it is a destination.
+  //
+  // What those 91 paid for it: 48px of a 430px screen, permanently, on the
+  // surfaces where a learner reads and answers most; no spiral binding of
+  // their own (the coils showing were the parent sheet's); and — the fault
+  // that settled it — NO BOTTOM NAVIGATION BAR, because it was drawn
+  // `{!nested && <BottomBar />}`. Ninety pre-tests had no bottom bar on a
+  // phone because they declare two flaps.
+  //
+  // Nothing ever passed the flag and nothing renders a CahierShell inside
+  // another, so the stack branch had no other caller to serve.
 
-  // Every page's right edge is drag-widenable (Dan, 2026-07-05: "all the
-  // pages should have their own draggable right edge") — resizes the outer
-  // sheet (the stack on nested pages), persisted site-wide.
-  const outerRef = useRef<HTMLElement | null>(null);
-  // The saved page-width only applies where the tab rail actually shows (wide
-  // screens ≥900px). Below that the rail is hidden, so a saved desktop width
-  // would leave the page short of full-width with wasted grey on the right
-  // (Dan, 2026-07-05: "it was spanning the full screen width"). On mobile we
-  // clear the inline basis so the page fills the screen; re-apply on resize.
+  // NO DRAGGABLE RIGHT EDGE (Dan, 2026-09-02: "There was an option to slide the
+  // screen inwards from the right edge to narrow the page but we do not need
+  // that anymore. can we remove that function"). What went with it: the grip
+  // itself, the saved width in `fluolingo:pageWidth`, the wide-screen re-apply
+  // on resize, and the whole accidental-shrink rescue — the pulsing ⤢ button
+  // and the double-tap-the-desk escape hatch, which existed ONLY because the
+  // grip was easy to grab by accident on a phone (Dan, 2026-07-15). With no
+  // grip there is nothing to be rescued from, so removing the feature removes
+  // its whole support apparatus rather than leaving orphaned controls.
+  //
+  // ONE EFFECT SURVIVES, AND IT IS NOT PART OF THE FEATURE. Anyone who dragged
+  // a width before today still has it in localStorage, and nothing would ever
+  // read it again — but it was written as an inline flex-basis, so the key is
+  // cleared once on mount to be sure no stale value can be reapplied by a cached
+  // build. Delete this after a release or two; it is a migration, not a feature.
   useEffect(() => {
-    const apply = () => {
-      const el = outerRef.current;
-      if (!el) return;
-      if (window.innerWidth < RAIL_MIN_PX) { el.style.flexBasis = ""; return; }
-      try {
-        const w = parseInt(window.localStorage.getItem(PAGE_WIDTH_KEY) ?? "", 10);
-        el.style.flexBasis = w ? `${Math.min(w, window.innerWidth - 150)}px` : "";
-      } catch {}
-    };
-    apply();
-    window.addEventListener("resize", apply);
-    return () => window.removeEventListener("resize", apply);
+    try { window.localStorage.removeItem("fluolingo:pageWidth"); } catch {}
   }, []);
-  // Accidental shrink rescue (Dan, 2026-07-15 screenshot): on a phone the
-  // drag edge is easy to grab without noticing, leaving the page stuck
-  // narrow with unexplained grey desk. When that state is detected (no tab
-  // rail on screen, page well short of the viewport) a pulsing ⤢ arrow
-  // floats in the gap — tap it, or double-tap the grey space, to expand
-  // back to full width.
-  const [shrunk, setShrunk] = useState(false);
-  useEffect(() => {
-    const check = () => {
-      const el = outerRef.current;
-      setShrunk(!!el && window.innerWidth < RAIL_MIN_PX && el.offsetWidth < window.innerWidth - 60);
-    };
-    check();
-    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(check) : null;
-    if (ro && outerRef.current) ro.observe(outerRef.current);
-    window.addEventListener("resize", check);
-    return () => {
-      ro?.disconnect();
-      window.removeEventListener("resize", check);
-    };
-  }, []);
-  const expandFull = () => {
-    const el = outerRef.current;
-    if (el) el.style.flexBasis = "";
-    try { window.localStorage.removeItem(PAGE_WIDTH_KEY); } catch {}
-    setShrunk(false);
-  };
-
-  function startEdgeDrag(e: React.PointerEvent<HTMLDivElement>) {
-    const el = outerRef.current;
-    if (!el) return;
-    e.preventDefault();
-    const grip = e.currentTarget;
-    try { grip.setPointerCapture(e.pointerId); } catch {}
-    const sw = el.offsetWidth, sx = e.clientX;
-    const move = (ev: PointerEvent) => {
-      ev.preventDefault();
-      el.style.flexBasis = `${Math.min(Math.max(560, sw + ev.clientX - sx), window.innerWidth - 150)}px`;
-    };
-    const done = () => {
-      grip.removeEventListener("pointermove", move);
-      grip.removeEventListener("pointerup", done);
-      grip.removeEventListener("pointercancel", done);
-      try { window.localStorage.setItem(PAGE_WIDTH_KEY, String(el.offsetWidth)); } catch {}
-    };
-    grip.addEventListener("pointermove", move);
-    grip.addEventListener("pointerup", done);
-    grip.addEventListener("pointercancel", done);
-  }
-  const edgeGrip = (
-    <div
-      onPointerDown={startEdgeDrag}
-      className="absolute bottom-0 right-0 top-0 z-20 w-3 cursor-ew-resize touch-none select-none"
-      title="Drag to widen the page"
-      aria-hidden
-    />
-  );
 
   const page = (
         <main
-          ref={(el) => { if (!nested) outerRef.current = el; }}
           /* EVERY page wears its family's colour, from one place (Dan,
              2026-08-21: "I WANT COLOR"). familyOf() turns the page's own
              `active` key into one of the six, so a route does not have to
              declare a hue — and the whole site stops being one undivided
              field of paper. Unknown keys stay uncoloured on purpose. */
-          className={`cahier-page ${famKey ? `fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""}${isReadingSurface(active) ? " paper-sand" : ""} ${nested ? "min-h-[calc(100vh-18px)]" : "min-h-screen"}`}
+          className={`cahier-page ${famKey ? `fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""}${isReadingSurface(active) ? " paper-sand" : ""} min-h-screen`}
         >
-          {!nested && <div className="cahier-binding" aria-hidden />}
-          {!nested && edgeGrip}
+          <div className="cahier-binding" aria-hidden />
 
           {/* The site bar — ☰ · ← FluOLinGo · icons. It used to be written
               out here, which is exactly why only CahierShell pages had it;
               DrillShell mounts the same component now (Dan, 2026-08-31). */}
-          <SiteTopBar active={active} tabs={tabs} topRight={topRight} nested={nested} />
+          <SiteTopBar active={active} tabs={tabs} topRight={topRight} />
 
           {/* The page's heading band (Dan, 2026-08-23, variant A): every
               family page opens with the same structure the profile page
               established — name on the family's ink, one number right.
               Home keeps its hero instead; /moi and /profil have no famKey. */}
           {famKey && active !== "home" && band !== false && (band?.title ?? pageLabel) && (
-            <PageBand title={band?.title ?? pageLabel} tag={band?.tag} trailing={band?.trailing} className={nested ? "pl-5 sm:pl-7" : "pl-12 sm:pl-16"} />
+            <PageBand title={band?.title ?? pageLabel} goal={band?.goal} exitHref={band?.exitHref ?? "/"} /* No binding clearance any more — the band paints over the coils
+                   (globals.css, `.page-band`), so it takes PageBand's own
+                   padding like every other band and its ✕ lands in the same
+                   place on every page. */ />
           )}
 
           {/* Ruled paper behind the content well — horizontals only, no vertical
               margin line (Dan, 2026-08-10). Opt-in class rather than a body
               background so a drill or a game can turn it off. */}
-          <div className={`cahier-foolscap py-5 pr-4 sm:pr-7 ${nested ? "pl-5 sm:pl-7" : "pl-12 sm:pl-16"}`}>{children}</div>
-          {/* Phone navigation. Nested shells (SioModal) must not draw a
-              second one on top of the page's own. */}
-          {!nested && <BottomBar />}
+          <div className={"cahier-foolscap py-5 pl-12 pr-4 sm:pl-16 sm:pr-7"}>{children}</div>
+          {/* Phone navigation, on every page now. It used to be withheld from
+              any page that carried its own tab strip, which was ninety
+              pre-tests — see the note above. */}
+          <BottomBar />
+          {/* The same first-run instruction the drills get, for the four
+              activities that ARE a CahierShell page rather than a drill —
+              VoixLà, ChaTutor, DéjàRevu. A hub, a picker or a landing has no
+              row in content/hints.ts and so draws nothing, which is Dan's
+              "hub pages excluded" without a list of exclusions to maintain. */}
+          <ActivityFirstRun activityKey={active} on="page" />
         </main>
   );
 
   return (
     <div className="cahier-desk">
-      <div
-        className="cahier-deskrow"
-        onDoubleClick={(e) => {
-          // Only the grey desk itself — not clicks bubbling up from the page.
-          if (e.target === e.currentTarget) expandFull();
-        }}
-      >
-        {nested ? (
-          <div ref={(el) => { outerRef.current = el; }} className="cahier-stack min-h-screen">
-            <div className="cahier-binding" aria-hidden />
-            {page}
-            {edgeGrip}
-          </div>
-        ) : (
-          page
-        )}
+      <div className="cahier-deskrow">
+        {/* One page shape (Dan, 1 Sep: "Ok move all to A"). The other branch
+            wrapped the page in `.cahier-stack` — a parent sheet peeking out
+            behind it — for any page that carried its own tab strip. See the
+            note on `nested` above for what that cost the 91 pages it caught. */}
+        {page}
 
-        {shrunk && (
-          <button
-            type="button"
-            onClick={expandFull}
-            aria-label="Expand to full width"
-            title="Tap (or double-tap the grey space) to expand the page"
-            className="fixed right-2 top-1/2 z-40 flex h-11 w-11 -translate-y-1/2 animate-pulse items-center justify-center rounded-full border-2 border-[color:var(--cahier-ink)] bg-white text-xl text-[color:var(--cahier-ink)] shadow-lg"
-          >
-            <span aria-hidden>⤢</span>
-          </button>
-        )}
         {/* Only the per-deck activity flaps live on the desk now (Dan,
             2026-08-30: "burger menu left, flaps right"). The six-family rail
             moved into the ☰ above; what is left is the handful of tabs that

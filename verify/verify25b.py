@@ -85,9 +85,19 @@ check('MAP_VIEW_KEY = "fluo.homeMapView"' in view_mod,
 check("loadMapView()" in carte and "saveMapView(" in carte,
       "MapBody reads and writes that choice through the shared module",
       "MapBody no longer calls loadMapView/saveMapView — it has its own storage access again")
-check('"2d"' in carte and '"3d"' in carte and "aria-pressed" in carte,
-      "a 2D · 3D segmented control (aria-pressed) drives the view",
-      "no 2D/3D segmented control found")
+# RE-POINTED 2 Sep, CROSS-LANE — read this before reverting it.
+# Dan: "Map of FluOLinGo page is missing the 2D-3D switch that is a copy of the
+# one on the homepage." The map's segmented 2D|3D pair is now the shared
+# PillSwitch, which Dan drew ON 1 SEP FOR THIS VERY CONTROL (see the component's
+# docstring) and which had shipped everywhere except the page it was designed
+# for. The CLAIM here is unchanged — a control drives the view and the choice is
+# remembered — but the mechanism moved: a segmented pair marks state with
+# aria-pressed, a switch with role="switch" + aria-checked, so a check pinned to
+# aria-pressed was pinning the shape rather than the behaviour.
+check('"2d"' in carte and '"3d"' in carte and "<PillSwitch" in carte
+      and 'offLabel="2D"' in carte and 'onLabel="3D"' in carte,
+      "the shared PillSwitch, labelled 2D / 3D, drives the view",
+      "the map's 2D/3D control is not the shared PillSwitch — it has grown its own again")
 # ONE CARD, and — since Dan's last change of the day — one switch beside it.
 #
 # This has now been rewritten twice, and both times because the claim moved

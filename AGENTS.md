@@ -282,7 +282,6 @@ other on five files, three of them semantically:
 Nothing here was carelessness — each side scanned for verify-number collisions
 and found none. The number scan catches files; it cannot catch two sessions
 editing the same *function*. That is what an integration lane is for.
-
 **EVERY merge goes through fluoduo-main** (Dan, 2026-08-31). Open the PR, get
 CI green, then leave it — including a PR of your own work. One session merging
 everything is what catches a collision between two branches that are each

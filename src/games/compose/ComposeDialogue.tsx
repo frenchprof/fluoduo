@@ -355,6 +355,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
       progress={aiOnly ? null : { done: done ? 4 : Math.max(0, stageIdx), total: 4 }}
       score={messages.filter((m) => m.who === "me").length > 0 ? <>{messages.filter((m) => m.who === "me").length} ✎</> : undefined}
       help={help}
+      hintKey="compose"
       menu={[
         { label: "Restart", onClick: start },
         { label: "▶️ Listen to the dialogue", onClick: playAll },

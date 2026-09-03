@@ -275,8 +275,18 @@ export default function SiteTopBar({
 function StreakMark() {
   const [streak, setStreak] = useState<number | null>(null);
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage cannot be read during render; see above
-    setStreak(loadProgress().streak);
+    // localStorage cannot be read during render (see above), so the first
+    // read has to happen here.
+    const read = () => setStreak(loadProgress().streak);
+    read();
+    // AND KEEP READING. This mark read once on mount and never again, so the
+    // day's first practice bumped the streak in storage while the bar went on
+    // showing nothing — the fire only ever appeared after a full reload,
+    // which in an SPA is never (Dan, 2026-09-02: "the streaks are not
+    // working yet?"). Every save announces itself on this event; the one
+    // reading with a deadline now hears it.
+    window.addEventListener("fluolingo:progress-updated", read);
+    return () => window.removeEventListener("fluolingo:progress-updated", read);
   }, []);
   if (streak === null || streak <= 0) return null;
   const mult = xpMultiplier(streak);

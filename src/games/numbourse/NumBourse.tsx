@@ -24,6 +24,7 @@ import CreditsSplash from "@/games/CreditsSplash";
 import GameFrame from "@/components/GameFrame";
 import GameOver, { type GameMiss } from "@/components/GameOver";
 import { reviewItemByFrench } from "@/lib/reviser";
+import { notePracticeDay } from "@/lib/progress";
 import { frenchNumber, frenchDigits } from "./frenchNumbers";
 import { holdDigitKeys } from "@/lib/useChoiceKeys";
 import { buildEvidence } from "@/lib/evidence";
@@ -197,6 +198,8 @@ export default function NumBourse() {
       activity: "numbourse",
       evidence: buildEvidence(order.words, "numbourse"),
     });
+    // Showing up counts, being wrong never breaks it — the streak's own rule.
+    notePracticeDay();
     sfx.wrong();
     setCombo(0);
     missedRef.current = [...missedRef.current, { order, given: typedRef.current }];
@@ -226,6 +229,7 @@ export default function NumBourse() {
       activity: "numbourse",
       evidence: buildEvidence(order.words, "numbourse"),
     });
+    notePracticeDay();
     sfx.correct();
     setScore((s) => s + 10 + Math.min(combo, 5) * 2);
     setCombo((c) => c + 1);

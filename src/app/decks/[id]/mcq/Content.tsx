@@ -9,9 +9,10 @@ import { displayEn, displayFr } from "@/lib/collections/display";
 import { speak } from "@/games/letris/speech";
 import { logEvent } from "@/lib/firebase/usage";
 import { recordResponse } from "@/lib/firebase/responses";
+import { notePracticeDay } from "@/lib/progress";
 import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import type { Collection, Item } from "@/lib/collections/schema";
-import { stopTagForDeck } from "@/lib/stopTag";
+import { goalNumberForDeck } from "@/lib/stopTag";
 import CahierShell, { withActive } from "@/components/CahierShell";
 import { deckTabs } from "../DeckContent";
 import { buildEvidence } from "@/lib/evidence";
@@ -54,7 +55,7 @@ function McqPageInner({ id }: { id: string }) {
     <CahierShell
       tabs={withActive(deckTabs(id), "mcq")}
       active="mcq"
-      band={{ title: "MCQ", tag: stopTagForDeck(id) }}
+      band={{ title: "MCQ", goal: goalNumberForDeck(id), exitHref: `/decks/${id}` }}
     >
       <div className="mx-auto max-w-3xl px-4 py-4">
         {collection === undefined && (
@@ -164,6 +165,10 @@ function Runner({ collection }: { collection: Collection }) {
       activity: `mcq:${collection.id}`,
       evidence: buildEvidence(question.id, `mcq:${collection.id}`),
     });
+    // Staying outside recordItemResult starved the STREAK too — an MCQ
+    // session was a day of practice the fire never counted. This bumps the
+    // day and nothing else; SRS and XP stay deliberately untouched.
+    notePracticeDay();
     if (correct) setScore((s) => s + 1);
   }
   function next() {
