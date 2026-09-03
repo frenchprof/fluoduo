@@ -22,10 +22,12 @@ ateliers, native lessons, conjugaison (66 verbs), textgen U0–U4, memos,
 chapters, finale, root Letris JSON. Not found: `src/content/games/`, a Skills
 French bank.
 
-Two P0s for whoever picks the rewrite: SIO-010 pretest keys *Enchanté* after
-the speaker has just said she is Léa; professions lesson bonus accepts
-*C'est une médecin* (textgen already refuses that string). Full list and
-suggested fixes in the review doc. Handover to fluoduo-main when the PR is up.
+Dan, same day: SpecuLearn + pretests first; two **ship-critical** items —
+SIO-010 pretest keys *Enchanté* after the speaker is Léa (needs
+gender-conditioned *Enchantée* + EN WHY), and expert-list *Liberia* must be
+*Libéria*. Bélarus / Birmanie / Cap-Vert / Centrafrique naming held as notes
+only. Spoken *Comment tu t'appelles ?* stays. Report restructured A/B/C.
+Handover to fluoduo-main when the PR is up.
 
 ## 2 Sep — the two open items close
 
