@@ -120,7 +120,7 @@ export default function BottomBar() {
             <span aria-hidden className="relative inline-flex cahier-bottombar-icon">
               {slot.emoji}
               {slot.key === "review" && due > 0 && (
-                <span className="absolute -right-3 -top-1 rounded-full bg-[var(--fluo-danger)] px-1.5 text-[10px] font-bold leading-[1.4] text-white">
+                <span className="absolute -right-3 -top-1 rounded-full bg-[var(--dopa-streak)] px-1.5 text-[10px] font-bold leading-[1.4] text-[color:var(--dopa-streak-on)]">
                   {due}
                 </span>
               )}

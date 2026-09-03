@@ -6,6 +6,34 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 3 Sep — three UI quick wins (flip cue, due streak, rain accents)
+
+Sole editor of STATUS.md in this commit: cursor/ui-quick-wins.
+
+Three small surfaces, one PR. AuthGate, pretests, and the Class bag
+rename are out of scope.
+
+**MémoiRecall's card now shows that it turns.** The « Flip » CTA left on
+2 Sep and the card shipped bare pending Dan's pick among three cues. Variant
+B landed: a quiet 28×28 ↻ chip on the **front Face only** (paper-raised fill,
+ink hairline, ink lip, `pointer-events-none`). The button still speaks
+English — "Turn the card over" / "Turn the card back". No Flip / Retourner
+chrome. No bounce loop, so `prefers-reduced-motion` sees the same static
+mark. `verify27 §14h` pins it.
+
+**The Revise due pill is a streak, not an alarm.** BottomBar's count sat on
+`--fluo-danger`. It now wears `--dopa-streak` / `--dopa-streak-on` (4.64:1).
+
+**VocabulaRain's win / miss flashes speak the dopamine tokens.** Column
+flash, the ✓ sentence toast, and the drop record dropped `--drill-ok` /
+`--drill-bad` / lime / rose / `#2e7d00`. GameBar's progress fill and hearts
+moved the same way (`--dopa-win` / `--dopa-miss`). The sky board and
+category puddles stay. `verify34 §5` pins the three call sites.
+
+Shared files: `FlipItContent.tsx`, `BottomBar.tsx`, `GameBar.tsx`,
+`LetrisGame.tsx`. In flight: #152 docs-only, #153 pretest href / Recap —
+no collision on these four.
+
 ## 2 Sep — the two open items close
 
 Both were questions put to Dan with pictures; both answered (*"proceed with
@@ -227,9 +255,8 @@ card is a `<button>` wired to onFlip), break-tested. `verify20` named « Flip »
 alongside « ✓ I know it » and « ↺ To review » as the study CTAs; rewritten
 naming the supersession — those two are self-marks and « Flip » never was.
 
-**Open for Dan:** with the button gone the card carries no visible cue that it
-is tappable. Three options were shown side by side (bare / a quiet ↻ in the
-corner / a ↻ chip in the family ink); shipped bare pending his pick.
+**Closed 3 Sep:** Variant B shipped — a quiet ↻ chip on the front Face
+(paper-raised, ink hairline). See the 3 Sep quick-wins entry.
 
 ## 2 Sep, later — the (?) leaves the deck band
 

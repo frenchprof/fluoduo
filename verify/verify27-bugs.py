@@ -429,6 +429,30 @@ check(re.search(r"<button type=\"button\"[^>]*onClick=\{onFlip\}", _flip) is not
       "the card is a real <button>, so Enter, Space, focus and the role come free",
       "the card is not a <button> — with no Flip CTA left, a keyboard cannot turn a card over at all")
 
+# ── 14h · Variant B flip cue, front only ─────────────────────────────────
+# The card carries a quiet ↻ chip so a learner who has never flipped a card
+# can see that it turns. The chip is furniture, not a second control: it
+# sits on the front Face, is pointer-events-none, and is aria-hidden — the
+# button's English label says which way it will go. No Flip / Retourner
+# chrome. Reduced motion sees the same static mark (no bounce loop).
+_study = _flip[_flip.find("function StudyCard("):_flip.find("function Face(")]
+check("↻" in _study, "StudyCard's front face carries the ↻ cue",
+      "StudyCard has no ↻ cue — the card is tappable and looks inert")
+check("pointer-events-none" in _study, "the ↻ chip is not a second control",
+      "the ↻ chip can capture clicks — the card is the button")
+check('aria-hidden' in _study and "Turn the card over" in _study and "Turn the card back" in _study,
+      "the button names the direction; the chip is aria-hidden",
+      "the flip cue is missing an English button label or is speaking for itself")
+check("Retourner" not in _study and re.search(r'["\']Flip["\']', _study) is None,
+      "no Flip / Retourner chrome on the card",
+      "Flip or Retourner chrome is back on the study card")
+check(_study.count("↻") == 1 and _study.find("↻") < _study.find("<Face back>"),
+      "the ↻ cue is front-only — it is painted before Face back, once",
+      "the ↻ cue is missing, duplicated, or printed on the back Face")
+check("--cahier-paper-raised" in _study and "--cahier-ink" in _study,
+      "the chip sits on paper-raised with an ink hairline",
+      "the ↻ chip no longer uses the paper-raised / ink tokens")
+
 # ── 15 · CI ──────────────────────────────────────────────────────────────
 wf = read(".github/workflows/verify.yml")
 check("verify/verify27-bugs.py" in wf and wf.find("verify27-bugs") > wf.find("verify26"), "CI runs verify27-bugs after verify26", "verify27-bugs not wired after verify26")
