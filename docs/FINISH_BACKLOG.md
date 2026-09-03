@@ -74,22 +74,71 @@ the next `main` Pages build (item 18).
 
 ---
 
+## UI+UX joint lock (final — UX Expert + UI Expert)
+
+Do not invent a second look. Mocks on file with Dan: VocabulaRain Cahier, LexicaLater dense treasure, ChaTutor dopa controls, MenuSplash real-16 hierarchy.
+
+## Key decisions
+
+**2+3 Class bag + soft-auth (one beat)**
+- SpecuLearn/pretest ends in Class bag: EN-first can-do; FR miss chips as target (EN gloss under, never larger); CTA Show in class; empty = “Nothing to check — you’re ready.”
+- Soft-auth never mid-guess; soft-sell on Continue / Sign in to keep this bag; escape Keep going without saving.
+- Cahier paper + ink-lip chips; `--dopa-miss` sparingly; soft-auth paper modal EN-only.
+- Solo can finish without Class bag gate; bag = catch-up artifact.
+
+**4 Double-door IA**
+- Bottom bar → family hubs; MenuSplash = overflow / first-run only.
+- MenuSplash: quiet paper + thin ink border; only selected/current activity gets strong fam-ink accent (no 16× hue shout).
+- Goals singular via Home Continue.
+
+**5–6 / #155**
+- Flip B: front-only quiet ↻, paper-raised + ink lip, EN aria.
+- Due pill: `--dopa-streak` / `--dopa-streak-on` (not danger-red).
+
+**7 EN chrome sweep**
+- Ranks, badges, toasts, nav, game chrome = EN; FR only on learning targets (tiles, answers, miss chips).
+
+**11 VocabulaRain + LexicaLater**
+- Rain: Cahier paper/hl; EN-only puddle when brand-new; small FR under after first meet; FR on falling tiles; unify dual letris/collections data.
+- LexicaLater colour: chest fill = taught hue forever; kill mismatch warning; treasure EN-first dense rows; no hearts. Positional L2+ only on non-colour sets later.
+
+## Success (done when)
+
+| Item | Done when |
+|------|-----------|
+| 2+3 | SpecuLearn → Class bag with no mid-guess AuthGate; EN can-do; FR chips; soft-auth only at save/show; empty + Show in class work; zero-French readable |
+| 4 | Family door → hub; ☰ overflow; overflow grid isn’t 16 equal heroes; only selected tile strongly accented |
+| 5–6 | #155 merged; Flip ↻ visible on front; due pill uses `--dopa-streak` not danger-red; verify27/34 green |
+| 7 | No FR-only chrome on Home, bars, toasts, GameBar; FR only where learner is meant to learn it |
+| 11 Rain | EN puddles sortable with zero French; FR on tiles only; Cahier board (no Duo sky as brand); one data source |
+| 11 Lexi | Colour chest = taught hue (never blue chest for rouge); EN treasure; 0 hearts; no colour mismatch warning on colour sets |
+
+## Follow-ups
+1. Merge #153 → #155 → #156 first.
+2. Next PR: Class bag product + soft-auth together (2+3).
+3. Then #4; #7 can parallel.
+4. After 1–9: #11 VocabulaRain + LexicaLater colour-semantic.
+
+---
+
 ## 4. Backlog table
+
+UI+UX Success for items 2–7 and 11 is the joint lock above — copy it, do not paraphrase a second test. FR + Pedagogy rows (9, 9b, 10) stay as locked.
 
 | # | Name | Description | Follow-up actions | Success (done when) | Owner lane |
 |---|---|---|---|---|---|
 | **1** | **P0s (StopSheet + Recap)** | Unit-0 Pre-Test from StopSheet still opened the map popup; U1–4 Recap had score / retry and no gap list. | Merge **#153**. Smoke: 9-key StopSheet → Unit-0 Goal 1 Pre-Test → `/pretests/unit0/SIO-001` (not `/map`). Finish a U1 pretest with misses → Recap shows Bring to class. Map popup Pre-Test still correct for U0 and U1. | Both paths work on the Pages preview. `verify40` and `verify66` stay green. No map chrome on a Unit-0 pretest URL. | Claude(impl) → Coordinator merge |
-| **2** | **Class bag product** | Post-SpecuLearn (and Skip pretest) screen that turns misses into the atelier artifact. Spec is `docs/CLASS_BAG.md`. Not a score dump. | After #153/#155/#156 are on `main`, one PR: implement the screen to the locked copy; wire it after SpecuLearn / pretest Recap; empty + miss + folded-count states; **Show in class** / optional **Copy list**; same **Continue** as Home. Ship **with item 3**. | A1 finishes pretest → Class bag → Continue. Title **Class bag**. Can-do reads `You can: …` in English first. Miss chips are French. Empty body is **Nothing to check — you’re ready.** Folded list says `{n} to check`; open list has no repeated count. No mid-guess AuthGate. | UX + UI lock → Claude(impl) |
-| **3** | **Soft-auth** | Unsigned learners must finish the guess. Sign-in is for **keeping** the bag, not for sitting the card. | **Ship in the same PR as item 2.** Gate on save / **Show in class** / Continue-from-bag only. Strings exactly: **Sign in to keep this bag** · **Continue with Google** · **Keep going without saving**. Do not move `AuthGate` mid-card. Do not hand-edit `REQUIRE_SIGN_IN`. | No AuthGate mid-card on SpecuLearn / pretest. Soft-sell appears only on Continue / save bag / Show in class. **Keep going without saving** still reaches Continue. `verify38` stays green. | UX + Claude(impl) |
-| **4** | **Double-door** | Family link on the base bar and the ☰ parent must not open two competing rooms for the same door. | Audit 🎯🏋️🎮🔄💬 and ☰ parents at 390px. One path: bar → that family’s hub / filtered MenuSplash. **Overflow / extra tiles stay inside MenuSplash only.** Goals stays a direct Continue (no popup — already locked 2 Sep). No second family popup stacked on the same door. | One path bar → hub. No competing family popup for the same door. Goals tap = current stop. `verify19c` / rail checks still pass. | UX + Claude(impl) |
-| **5** | **MémoiRecall flip cue** | Card looked inert after the Flip CTA was removed. Variant B locked. | Merge **#155**. Smoke `/practice/flip-it/salutations` Study: ↻ on front only; tap / Tab+Enter still flip; back is French with no chip; no Flip / Retourner word. | ↻ visible **front-only**. `verify27 §14h` green. Keyboard still flips. | UI → Coordinator merge |
-| **6** | **Due pill** | Revise due count sat on `--fluo-danger` (alarm red). Pending work is not failure. | Same merge **#155**. Smoke Home at ~390px with due `itemSrs`: Revise pill is `--dopa-streak` / `--dopa-streak-on`, white numerals, readable. | Due pill uses **`--dopa-streak`**. Contrast holds (~4.6:1 already measured on the PR). No danger-red due chrome. | UI → Coordinator merge |
-| **7** | **EN chrome sweep** | Beginners still hit FR-only chrome they must decode to act (ranks, some badges, toasts, treasure / locker). Target French on cards is fine. | Audit `/`, `/moi`, RewardToast, locker / cosmetics, leaderboard rank line, game-over chrome. `economy.ts` `RANKS` is currently Débutant → Maître — that is chrome, not a card. Rewrite learner-facing ranks / badge titles / toast verbs to English. Leave taught French on tiles alone. Pin with a verify that chrome strings the beginner must tap are English. | No FR-only chrome a beginner must decode to act (a button, a rank they are told they are, a toast they dismiss). French remains on cards, miss chips, and tiles. | UX + FR review → Claude(impl) |
+| **2** | **Class bag product** | Post-SpecuLearn (and Skip pretest) screen that turns misses into the atelier artifact. Spec is `docs/CLASS_BAG.md`. Not a score dump. One beat with item 3. | After **#153 → #155 → #156**: one PR for Class bag product + soft-auth together (UI+UX Follow-ups §2). Wire after SpecuLearn / pretest; **Show in class**; empty = “Nothing to check — you’re ready.” | SpecuLearn → Class bag with no mid-guess AuthGate; EN can-do; FR chips; soft-auth only at save/show; empty + Show in class work; zero-French readable | UX + UI lock → Claude(impl) |
+| **3** | **Soft-auth** | Unsigned learners must finish the guess. Sign-in is for **keeping** the bag, not for sitting the card. Same PR as item 2. | Soft-auth never mid-guess; soft-sell on Continue / **Sign in to keep this bag**; escape **Keep going without saving**. Soft-auth paper modal EN-only. Do not hand-edit `REQUIRE_SIGN_IN`. | SpecuLearn → Class bag with no mid-guess AuthGate; EN can-do; FR chips; soft-auth only at save/show; empty + Show in class work; zero-French readable | UX + Claude(impl) |
+| **4** | **Double-door** | Bottom bar → family hubs; MenuSplash = overflow / first-run only. Goals singular via Home Continue. | After 2+3 (UI+UX Follow-ups §3). MenuSplash: quiet paper + thin ink border; only selected/current activity gets strong fam-ink accent (no 16× hue shout). | Family door → hub; ☰ overflow; overflow grid isn’t 16 equal heroes; only selected tile strongly accented | UX + Claude(impl) |
+| **5** | **MémoiRecall flip cue** | Flip B: front-only quiet ↻, paper-raised + ink lip, EN aria. | Merge **#155** (UI+UX Follow-ups §1). Smoke `/practice/flip-it/salutations` Study. | #155 merged; Flip ↻ visible on front; due pill uses `--dopa-streak` not danger-red; verify27/34 green | UI → Coordinator merge |
+| **6** | **Due pill** | Due pill: `--dopa-streak` / `--dopa-streak-on` (not danger-red). | Same merge **#155**. | #155 merged; Flip ↻ visible on front; due pill uses `--dopa-streak` not danger-red; verify27/34 green | UI → Coordinator merge |
+| **7** | **EN chrome sweep** | Ranks, badges, toasts, nav, game chrome = EN; FR only on learning targets (tiles, answers, miss chips). | Can parallel item 4 (UI+UX Follow-ups §3). Audit Home, bars, toasts, GameBar. `economy.ts` `RANKS` is currently Débutant → Maître — chrome, not a card. | No FR-only chrome on Home, bars, toasts, GameBar; FR only where learner is meant to learn it | UX + FR review → Claude(impl) |
 | **8** | **SpecuLearn ↔ Pretest merge** | Dan: they are the same thing. One guess-first product; pre-test’s memory; SpecuLearn’s name. | One product PR after item 1 is in. Keep `recordPretestAnswer` on every run. Keep pretest coverage (U0 + U1–4 + picture). Keep SpecuLearn shell / photo bank. One registry name + blurb. No `recordItemResult` / XP / SRS. Rail copy says “first look, before you are taught” in words — do not restore a stripped-nav wall as the only signal. | **One name** (SpecuLearn) on bar, Menu, StopSheet, Recap. Misses **always** record. Recap / Class bag still list them. `verify40` holds (no XP weld). No second “Pre-test” product door. | Pedagogy + Claude(impl) |
 | **9** | **FR (Enchantée, Libéria, Flip P1s)** | SIO-010 keyed *Enchanté* after Léa; expert list had *Liberia*. Flip It P1s in #154. Politesse pack is **9b** — same FR lane, after this merge. | Merge **#156**. Then a follow-up PR for #154 Flip It P1s: `sappeler-05` / `-06`; salutations *Enchantée* card; *Bonne nuit* bedtime-only; `core-nouns-06` *salle de classe*. Hold Bélarus / Birmanie / Cap-Vert / Centrafrique. Do not wait on 9b to merge #156. | Léa → **Enchantée** only (Marc → Enchanté). Role cue `Léa · she` visible **before** the guess. EN WHY on the wrong form. **Libéria** / `LIBÉRIA` on the expert tile. Flip P1s FR QA green. `verify91-enchantee-liberia` green. | FR + Pedagogy → Coordinator merge, then Claude(impl) for P1s |
 | **9b** | **Politesse → Greetings (SIO-009)** | Not a separate stop. First SIO-009 Flip It / SpecuLearn pack = greetings + **light politesse** + ***Je suis désolé(e)*** (role cue). ***Je voudrais…* is not in this pack** (supersedes the earlier 009 list). SIO-010 stays name + *Enchanté(e)* only. Flip P1s (item 9) and SUP-CAL (item 10) unchanged. Behind **#153 → #155 → #156**. | Content PR **after #156** is on `main` (still the 1–9 beat). Add to first 009: *Excusez-moi* · *Pardon* · *Merci / De rien* · *Je vous en prie* · *s’il vous plaît* · ***Je suis désolé(e)***. Role cue on *désolé(e)* when gender matters (`Léa · she` / `Marc · he`). **Do not add *Je voudrais…*** — that frame waits for shops / restaurant, which reuse the light chips. FR QA accents + gender on *désolé / désolée*. No new SIO id. No Continue node. | **No separate politesse stop.** First 009 pack has light politesse + *Je suis désolé(e)* with role cue, and **no *Je voudrais…***. Unit Continue spine **unchanged** (001–050). Shops / restaurant are the first *Je voudrais…* teach, not a second greetings stop. Flip P1s + SUP-CAL rows still as written. | FR + Pedagogy → Claude(impl) |
 | **10** | **Curriculum (v9 + SUP-CAL)** | Core is the v9 50-SIO spine. Directions stay off the imperative (except **SIO-008** consignes). Calendar is Optional extra — not a 51st stop. | Reconcile numbering to `docs/handoff/LAF1201_SIOs_Flashcards_v9.csv`. Guard-rail: SIO-036 / SIO-040 use *il faut* / *on* / *c’est* — *Tournez / Allez / Prenez* only as distractors. Ship **SUP-CAL-01 / 02 / 03** as **Optional** chips, **soft family wash**, **off Continue**. **SUP-CAL-03** *né / née* reuses the SIO-010 role cue. Continue never requires a calendar stop. | Core **50** complete without opening SUP-CAL. Optional chip + soft fam wash visible; chip is not on the spine. Unit complete **without calendar**. SUP-CAL-03 keys *née* for Léa and *né* for Marc, cue before the guess. Directions bank has no keyed imperative. | Pedagogy + UI → Claude(impl) |
-| **11** | **VocabulaRain + LexicaLater colour** | Games still carry leftover Duo-sky / FR-only puddle / hearts / colour-mismatch habits. | Cahier paper board (GameFrame). Puddles: EN sort key; optional small FR only after first meet; new category EN-only; tiles stay FR. Colour chests = taught hue forever; no “wrong chest” warning on colour decks. Strip LexicaLater hearts. Accents already moving to `--dopa-*` in #155 — finish the board, not just the flash. | No Duo sky. No FR-only puddles a beginner must read to sort. No colour-mismatch warning on colour decks. No hearts on LexicaLater. Brand-new category shows EN only. | UX + UI + Pedagogy → Claude(impl) |
+| **11** | **VocabulaRain + LexicaLater colour** | Rain: Cahier paper/hl; EN-only puddle when brand-new; small FR under after first meet; FR on falling tiles; unify dual letris/collections data. LexicaLater colour: chest fill = taught hue forever; kill mismatch warning; treasure EN-first dense rows; no hearts. Positional L2+ only on non-colour sets later. | After 1–9 (UI+UX Follow-ups §4). | **Rain:** EN puddles sortable with zero French; FR on tiles only; Cahier board (no Duo sky as brand); one data source. **Lexi:** Colour chest = taught hue (never blue chest for rouge); EN treasure; 0 hearts; no colour mismatch warning on colour sets. | UX + UI + Pedagogy → Claude(impl) |
 | **12** | **Phone chrome** | The course is a 390-wide phone. Desk, bar, and game frame must stay one regime. | Sweep 390×844: Cahier desk all round (page + drill); BottomBar `sm:hidden` readable; GameBar cannot scroll away (`verify90`); no fourth thing on the deck band; first-run hint below CreditsSplash (z-79). Catch any new door that grows a second top control. | One desk regime (h47 / top 57 / left 19 / ✕ at 31; drill bottom desk ≠ a page’s 64). Volume visible on every game. Bar stays on screen when a keypad focuses. No HELP-dot double door on a deck band. | UI + Claude(impl) |
 | **13** | **Gamification** | Economy is built; chrome and hearts are not yet aligned with the beginner lock. | Keep the two-quantity model (XP + gems; streak is a multiplier). No XP on SpecuLearn / pretest (`verify40`). Streak stays live (`verify89`) including wrong answers. Hearts: none on LexicaLater / colour; decide NumBus / NumBourse lives vs the site-wide “no hearts” lock (Dan) before shipping another heart asset. Reward chrome in English (item 7). Nothing locked behind gems. | No hearts on curriculum or colour / LexicaLater. SpecuLearn still pays **no XP**. First graded answer still bumps 🔥 where the learner can see it. Gems never gate a door. | UX + Pedagogy + Claude(impl) |
 | **14** | **Session receipts** | `SessionReceipt` exists; most drills still just stop. Design of the receipt is not locked. | Inventory which surfaces already pass a run into `SessionReceipt`. Spec the four beats (earned · streak · better · fix → ReVue) in EN chrome. Do **not** put XP on a SpecuLearn / Class bag receipt. Flawless-run fanfare stays off diagnostics. Put a picture of the receipt in the spec PR before implementing new call sites. | A practice / game run that grades ends on a receipt, not a dead stop. Diagnostic / Class bag path does **not** show XP. Misses still hand to ReVue / Class bag as appropriate. | UX (spec) → Claude(impl) |
@@ -116,7 +165,8 @@ These do not contradict locks. They are not in 1–18 and do not block merge.
 
 ## 6. Next human actions (Dan)
 
-1. Merge **#153 → #155 → #156** (product), then **#154** (FR report).
-2. Deploy / smoke preview — **fluolingo.com** (Pages, now on `main` via #157) **and** withdrchan (`deploy-live`). Walk StopSheet Unit-0 → pretest → Recap.
-3. Greenlight **Class bag product + soft-auth** as **one PR** (Claude or cloud agent), copy frozen to `docs/CLASS_BAG.md`.
-4. After #156: greenlight the **SIO-009 politesse pack** (item 9b) — same FR lane, no new stop.
+1. Merge **#153 → #155 → #156** first, then **#154** (FR report).
+2. Next PR: **Class bag product + soft-auth together (2+3)**. Copy frozen to `docs/CLASS_BAG.md`.
+3. Then **#4**; **#7** can parallel.
+4. After 1–9: **#11** VocabulaRain + LexicaLater colour-semantic; greenlight **SIO-009 politesse (9b)** in the FR lane (no new stop).
+5. Deploy / smoke preview — **fluolingo.com** and withdrchan (`deploy-live`).
