@@ -6,6 +6,32 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 3 Sep — SIO-010 Enchantée + Libéria (teach-blocking)
+
+Sole editor of STATUS.md in this commit: the Cursor cloud session on
+`cursor/enchantee-liberia-bf57`.
+
+Two ship-critical French faults from the 3 Sep content review (#154 is
+report-only). This branch implements them.
+
+**SIO-010 pretest / SpecuLearn.** After the learner says she is Léa, all
+three audience tabs keyed only `Enchanté !` / `Enchanté, madame.` The
+atelier already has Léa say *Enchantée*. Keys are now gender-conditioned
+via `meetOptions` / `sio010SituationsFor`: Léa → Enchantée, Marc →
+Enchanté. Both forms are offered; one is keyed; the miss carries an EN
+WHY. A You-are strip (`Léa · she` / `Marc · he`) plus a per-question
+role cue sit on the card before the guess, with the existing
+`--gram-fem` / `--gram-masc` marks — never FR-only gender. Reveal paints
+the keyed form with `.cahier-hl` and the miss with `--dopa-miss` +
+strike. Memo left as-is.
+
+**Libéria.** Expert Letris tile `LIBERIA` / `Liberia` → `LIBÉRIA` /
+`Libéria`. English `meaning` stays Liberia. Bélarus / Birmanie / Cap-Vert
+untouched.
+
+Pinned by `verify92-enchantee-liberia.py`. Shared file with #153:
+`unit0-questions.ts` (they only touched a comment). STATUS also collides
+with #154's report header — rebase is this branch's if they land first.
 ## 3 Sep — two P0 pretest surfaces (href + Recap gap list)
 
 Sole editor of STATUS.md in this commit: cursor/pretest-href-bring-to-class.
