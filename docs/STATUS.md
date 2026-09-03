@@ -6,6 +6,29 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 3 Sep — two P0 pretest surfaces (href + Recap gap list)
+
+Sole editor of STATUS.md in this commit: cursor/pretest-href-bring-to-class.
+
+Two P0s, one PR. Neither product merge (SpecuLearn stays SpecuLearn). AuthGate
+untouched.
+
+**P0 #1 — Unit-0 Pre-Test from StopSheet opened the map popup.**
+`pretestHrefForDeck` (`CahierShell.tsx`) still returned `/unit/0#{sioId}` —
+the comment still said the popup held the questions. UnitRedirect turns that
+hash into the map popup. Unit0Panel / StopPopup already used
+`/pretests/unit0/{id}`. The flap helper now matches them. verify66 pins it:
+`pretestHrefForDeck` must contain `/pretests/unit0/` and must not contain
+`/unit/0#`. Units 1–4 still go to `/pretests/{id}`.
+
+**P0 #2 — U1–4 Recap had no BringToClass.** Unit-0's page already mounts it;
+`recordPretestAnswer` already writes U1–4 misses. Recap showed score / retry
+/ Home and never the gap list. Same `<BringToClass sioId={…} />`, sio from
+`stopForPretestId`. Copy unchanged (Class bag rename is #152, docs only).
+verify40 pins the Recap mount.
+
+Shared: `CahierShell.tsx` (href), `PretestContent.tsx` (Recap). In flight:
+#152 is `docs/CLASS_BAG.md` only — no collision.
 ## 3 Sep — whole-site French content review (report only)
 
 Sole editor of STATUS.md in this commit: the Cursor cloud session on
