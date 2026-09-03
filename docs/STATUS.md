@@ -6,6 +6,28 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 3 Sep — whole-site French content review (report only)
+
+Sole editor of STATUS.md in this commit: the Cursor cloud session on
+`cursor/french-content-review-c2cb`.
+
+Native-speaker + A1 teaching pass over the learner-facing French in this repo
+(not a live scrape; English chrome left alone). Report is
+`docs/french-content-review.md`. **No product copy changed** — the P0/P1 items
+are pedagogical choices, not one-character typos.
+
+Covered: 44 collection decks, 35 U1–U4 pretests, Unit 0 banks in
+`sios/unit0-questions.ts` (there is no `pretests/unit0/`), `sios.json` chips,
+ateliers, native lessons, conjugaison (66 verbs), textgen U0–U4, memos,
+chapters, finale, root Letris JSON. Not found: `src/content/games/`, a Skills
+French bank.
+
+Dan, same day: SpecuLearn + pretests first; two **ship-critical** items —
+SIO-010 pretest keys *Enchanté* after the speaker is Léa (needs
+gender-conditioned *Enchantée* + EN WHY), and expert-list *Liberia* must be
+*Libéria*. Bélarus / Birmanie / Cap-Vert / Centrafrique naming held as notes
+only. Spoken *Comment tu t'appelles ?* stays. Report restructured A/B/C.
+Handover to fluoduo-main when the PR is up.
 
 ## 3 Sep — fluolingo.com has been serving unstyled HTML for 17 days
 
