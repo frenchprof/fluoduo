@@ -342,7 +342,9 @@ jobs:
         run: python3 verify/verify90-game-volume.py
 
       - name: "SIO-010 keys Enchantée for Léa; Libéria carries its accent (3 Sep)"
-        run: python3 verify/verify91-enchantee-liberia.py
+        # Renumbered 91 -> 92 at the QC merge — sixth collision: pages-basepath
+        # claimed 91 the same morning and landed first (#157).
+        run: python3 verify/verify92-enchantee-liberia.py
 
       # The scan launches the runner's preinstalled Chrome via
       # playwright-core; no browser download step is needed.
@@ -351,3 +353,6 @@ jobs:
 
       - name: "The jam scan — every lesson RENDERED, every tab and pane (1 Sep)"
         run: python3 verify/verify79-jam-scan.py
+
+      - name: "A custom domain serves at the root — no Pages subpath (2 Sep)"
+        run: python3 verify/verify91-pages-basepath.py

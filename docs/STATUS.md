@@ -29,9 +29,198 @@ strike. Memo left as-is.
 `Libéria`. English `meaning` stays Liberia. Bélarus / Birmanie / Cap-Vert
 untouched.
 
-Pinned by `verify91-enchantee-liberia.py`. Shared file with #153:
+Pinned by `verify92-enchantee-liberia.py`. Shared file with #153:
 `unit0-questions.ts` (they only touched a comment). STATUS also collides
 with #154's report header — rebase is this branch's if they land first.
+## 3 Sep — two P0 pretest surfaces (href + Recap gap list)
+
+Sole editor of STATUS.md in this commit: cursor/pretest-href-bring-to-class.
+
+Two P0s, one PR. Neither product merge (SpecuLearn stays SpecuLearn). AuthGate
+untouched.
+
+**P0 #1 — Unit-0 Pre-Test from StopSheet opened the map popup.**
+`pretestHrefForDeck` (`CahierShell.tsx`) still returned `/unit/0#{sioId}` —
+the comment still said the popup held the questions. UnitRedirect turns that
+hash into the map popup. Unit0Panel / StopPopup already used
+`/pretests/unit0/{id}`. The flap helper now matches them. verify66 pins it:
+`pretestHrefForDeck` must contain `/pretests/unit0/` and must not contain
+`/unit/0#`. Units 1–4 still go to `/pretests/{id}`.
+
+**P0 #2 — U1–4 Recap had no BringToClass.** Unit-0's page already mounts it;
+`recordPretestAnswer` already writes U1–4 misses. Recap showed score / retry
+/ Home and never the gap list. Same `<BringToClass sioId={…} />`, sio from
+`stopForPretestId`. Copy unchanged (Class bag rename is #152, docs only).
+verify40 pins the Recap mount.
+
+Shared: `CahierShell.tsx` (href), `PretestContent.tsx` (Recap). In flight:
+#152 is `docs/CLASS_BAG.md` only — no collision.
+## 3 Sep — whole-site French content review (report only)
+
+Sole editor of STATUS.md in this commit: the Cursor cloud session on
+`cursor/french-content-review-c2cb`.
+
+Native-speaker + A1 teaching pass over the learner-facing French in this repo
+(not a live scrape; English chrome left alone). Report is
+`docs/french-content-review.md`. **No product copy changed** — the P0/P1 items
+are pedagogical choices, not one-character typos.
+
+Covered: 44 collection decks, 35 U1–U4 pretests, Unit 0 banks in
+`sios/unit0-questions.ts` (there is no `pretests/unit0/`), `sios.json` chips,
+ateliers, native lessons, conjugaison (66 verbs), textgen U0–U4, memos,
+chapters, finale, root Letris JSON. Not found: `src/content/games/`, a Skills
+French bank.
+
+Dan, same day: SpecuLearn + pretests first; two **ship-critical** items —
+SIO-010 pretest keys *Enchanté* after the speaker is Léa (needs
+gender-conditioned *Enchantée* + EN WHY), and expert-list *Liberia* must be
+*Libéria*. Bélarus / Birmanie / Cap-Vert / Centrafrique naming held as notes
+only. Spoken *Comment tu t'appelles ?* stays. Report restructured A/B/C.
+Handover to fluoduo-main when the PR is up.
+
+## 3 Sep — fluolingo.com has been serving unstyled HTML for 17 days
+
+Sole editor of STATUS.md in this commit: Pre-tests.
+
+Dan, reading the workflow rather than the site: *"That workflow builds with
+PAGES_BASE_PATH: /fluoduo … but the site is now served at the root of
+fluolingo.com."* Correct, and it had been live since 17 Aug.
+
+**THERE ARE TWO LIVE SITES, both fed from main** — the fact this whole failure
+turns on, and one no document in the repo stated:
+
+  · **fluolingo.com** — GitHub Pages, built by `pages-preview.yml` on every
+    push to main, served at the domain ROOT. **This is the one students use.**
+  · **fluolingo.withdrchan.com** — Cloudflare Pages, built from `dckg/fluo`,
+    which `deploy-live.yml` mirrors main into on a manual dispatch.
+
+Commit 79a9938b (17 Aug) added BOTH halves of the fault at once: the workflow
+with `PAGES_BASE_PATH: /fluoduo`, and a `CNAME` for fluolingo.com. Each is
+right on its own. A Pages PROJECT site lives at owner.github.io/repo/ and needs
+the subpath; attach a custom domain and the same artifact is served at that
+domain's root, so the subpath becomes wrong. The build went on emitting
+`/fluoduo/_next/…` for a site served at `/` — HTML loads, every stylesheet and
+script 404s.
+
+Proved by building it both ways rather than by opening the site (this session's
+egress policy answers 403 to CONNECT for fluolingo.com AND frenchprof.github.io,
+so **the fix is unverified against the live host** — Dan's to confirm):
+
+    PAGES_BASE_PATH=/fluoduo   "/fluoduo/_next/static/chunks/01m3lo_t-xwfe.css"
+    (unset, the fix)           "/_next/static/chunks/01m3lo_t-xwfe.css"
+
+and the artifact has no `fluoduo/` directory for the first form to land in.
+
+WHY IT SURVIVED SEVENTEEN DAYS, which is the part worth keeping. It looks fine
+in every diff — neither file is wrong alone, and no diff shows both. And the
+comments asserted the dead premise as fact: `next.config.ts` said GitHub Pages
+"serves a project site from a SUBDIRECTORY", `pages-preview.yml` called itself
+a preview that "DOES NOT TOUCH PRODUCTION", and `docs/DEPLOY.md` said
+fluolingo.com 302-redirects to withdrchan. All three were true for about an
+hour on 17 Aug. Anyone auditing read them and moved on — this session did too,
+first time round, and told Dan his hypothesis was wrong on the strength of
+them.
+
+Fixed: the env goes; all three documents now say what is actually deployed
+where; the workflow is renamed *Deploy fluolingo.com (GitHub Pages)*.
+`verify91` refuses a Pages subpath while a CNAME exists, finds the Pages
+workflow by what it DOES rather than by its filename (the file is called
+"pages-preview" and stopped being one on day one), catches the variable set as
+a step env, a job env or an `export` in a run block, holds `next.config.ts` to
+its `?? ""` default, and fails if the workflow calls itself separate from
+production again. 7 assertions, all break-tested.
+
+**Open for Dan:** the root `CNAME` is not copied into `out/`, so it does not
+travel in the uploaded artifact — the live binding is Settings → Pages → Custom
+domain on frenchprof/fluoduo. Worth confirming it is set there, and worth
+deciding whether the artifact should carry a CNAME too. Not done here: it
+changes a domain binding I cannot observe from this container.
+
+## 2 Sep — the two open items close
+
+## 2 Sep — READ THIS BEFORE YOU TOUCH A WORKFLOW OR MERGE A BRANCH
+
+Sole editor of STATUS.md in this commit: Peers. Two notices, both found today,
+both the kind that a session discovers by believing a comment.
+
+### 1 · `pages-preview.yml` PUBLISHES THE LIVE SITE. It is not a preview.
+
+GitHub Pages Settings for `frenchprof/fluoduo` reports **"Your site is live at
+https://fluolingo.com/"**. A custom domain was added on 12 Aug (root `CNAME`,
+commit 43b7d17), so the workflow whose header said *"it is entirely separate
+from production"* and *"IT DOES NOT TOUCH PRODUCTION"* has been deploying a
+public production site for three weeks. `frenchprof.github.io/fluoduo` now
+301-redirects there and serves nothing of its own.
+
+**There are TWO live sites, both fed from `main`:**
+
+    pages-preview.yml  -> GitHub Pages   -> fluolingo.com
+    deploy-live.yml    -> dckg/fluo      -> Cloudflare -> fluolingo.withdrchan.com
+
+WHY THIS IS ON THE BOARD AND NOT JUST IN THE FILE. Dan asked for a way to view
+the app without Google sign-in. This session read that stale header, believed
+it, and proposed setting the open-app build flag in that workflow — which would
+have taken the sign-in wall down for every visitor to fluolingo.com.
+`verify38-authwall.py` refused it by name; the flag is banned from every config
+a deploy reads and that file is one. Confirmed by adding it and watching the
+check fail. **The guard works. The comment did not.** The header is rewritten.
+
+Note you cannot even NAME the flag in that file: verify38 greps it raw, so a
+comment mentioning it fails too. That is deliberate.
+
+**An open build therefore needs a host that is neither of those two.** The
+standing suggestion to Dan is a separate Cloudflare Pages project gated with
+Cloudflare Access, so the secret lives at the edge and never ships in the
+bundle — the 27 Aug ruling in `authConfig.ts` still governs: static export
+means any secret in the JS is findable in a minute.
+
+**OPEN QUESTION FOR DAN, not yet answered.** That workflow builds with
+`PAGES_BASE_PATH: /fluoduo`, which puts every asset under `/fluoduo/`. Correct
+for a github.io project site; but the artifact is now served at the ROOT of
+fluolingo.com. If that is what it looks like, `https://fluolingo.com/` has been
+missing its stylesheets and scripts for three weeks while
+`https://fluolingo.com/fluoduo/` works. Nobody has confirmed which loads — this
+session's egress proxy 403s every one of those domains, so it could not check.
+**Whoever can open a browser: check both URLs and record the answer here.**
+
+### 2 · Conflict markers were committed into AGENTS.md, and 16 branches still carry them
+
+`main` is CLEAN as of #144. It was not clean before: **PR #141 (this session's
+own work) carried six markers into `AGENTS.md`** from a qc-branch merge that
+had left them, and #144 removed them. The file every session is told to read
+first therefore had `<<<<<<< HEAD` sitting in the middle of its rules.
+
+Resolved here identically to main — verified with `git diff origin/main HEAD --
+AGENTS.md`, which is one blank line — so this branch cannot revert #144's fix.
+Both conflicts were additive prose and both sides were kept: "English is never
+bigger than French", and the integration-lane rule, whose two halves
+("fluoduo-main is the integration lane" and "EVERY merge goes through
+fluoduo-main") had been split by the merge.
+
+**STILL CARRYING THE MARKERS — 16 remote branches.** Their tips are stale and
+main is fine, but a merge of any of them re-introduces the damage:
+
+```
+git show <branch>:AGENTS.md | grep -c '^<<<<<<< \|^>>>>>>> '
+```
+
+    claude/atelier-popup-dialogue      claude/jam-scan-ci
+    claude/deploy-live-diagnose        claude/jam-scan-hydration-wait
+    claude/deploy-live-extraheader     claude/map-of-fluolingo-land
+    claude/deploy-live-probe-contents  claude/map-route-back
+    claude/derived-doneness            claude/menu-children-dress
+    claude/home-topbar-lot-a           claude/profile-footer-label
+    claude/icomplete-cut-sio010-tabs   claude/status-1sep-evening
+    claude/strips-brief                french4-docs
+
+They are left alone deliberately: rewriting other lanes' branches is
+integration work. **fluoduo-main — before merging any of these, take AGENTS.md
+from `main`, not from the branch.**
+
+THE GENERAL LESSON, which is the same one in both halves: a comment and a
+merge marker are both text that no check reads. Scan for markers before you
+push, and verify a claim about the deploy path against the workflow and the
+settings page, not against the file's own description of itself.
 
 ## 2 Sep — the two open items close
 

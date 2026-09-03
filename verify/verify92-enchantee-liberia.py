@@ -28,7 +28,7 @@ WHAT THIS ASSERTS
   5  Expert country tile is LIBÉRIA / Libéria. English meaning may stay
      Liberia. Bélarus / Birmanie / Cap-Vert are not thrashed.
 
-Run from the repo root:  python3 verify/verify91-enchantee-liberia.py
+Run from the repo root:  python3 verify/verify92-enchantee-liberia.py
 """
 import json, os, re, subprocess, sys
 

@@ -804,7 +804,8 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
     ] },
   ],
   // The flat union — what every generic consumer (the Pre-Test flap,
-  // pretestHrefForDeck) asks: does this SIO have questions? The panel renders
-  // SIO-010 one situation at a time, so nothing ever shows all 21 at once.
+  // pretestHrefForDeck) asks: does this SIO have questions? Those consumers
+  // then open /pretests/unit0/SIO-010; the page sits one situation at a time,
+  // so nothing ever shows all 21 at once.
   "SIO-010": SIO010_SITUATIONS.flatMap((sit) => sit.questions),
 };
