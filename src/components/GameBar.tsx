@@ -75,7 +75,7 @@ export default function GameBar({
           aria-valuemax={progress.total}
         >
           <div
-            className="h-full rounded-full bg-[color:var(--drill-ok)] transition-[width] duration-300"
+            className="h-full rounded-full bg-[color:var(--dopa-win)] transition-[width] duration-300"
             style={{ width: `${pct}%` }}
           />
         </div>
@@ -85,7 +85,7 @@ export default function GameBar({
 
       {hearts && hearts.total > 0 && (
         <span
-          className="shrink-0 text-base leading-none text-[color:var(--drill-bad)]"
+          className="shrink-0 text-base leading-none text-[color:var(--dopa-miss)]"
           title="Lives"
           aria-label={`${hearts.left} of ${hearts.total} lives`}
         >
