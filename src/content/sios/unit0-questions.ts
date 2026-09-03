@@ -40,7 +40,97 @@ export type Unit0Option = {
   ok: boolean;
   /** Why THIS (wrong) choice is wrong — never set on the correct option. */
   why?: string;
+  /**
+   * Gender of an Enchanté / Enchantée form. On reveal the pretest paints the
+   * keyed form with `.cahier-hl` + `--gram-*` and strikes the other with
+   * `--dopa-miss`. Absent on every option that is not that pair.
+   */
+  mark?: "f" | "m";
 };
+
+/** Who the learner is speaking as — Enchanté(e) agrees with THIS person. */
+export type YouRole = {
+  name: string;
+  surname: string;
+  letters: string;
+  tts: string;
+  pronoun: "she" | "he";
+  gender: "f" | "m";
+  emoji: string;
+};
+
+export const YOU_LEA: YouRole = {
+  name: "Léa",
+  surname: "Martin",
+  letters: "L – É – A",
+  tts: "Ça s'écrit, L, É, A",
+  pronoun: "she",
+  gender: "f",
+  emoji: "👩",
+};
+
+export const YOU_MARC: YouRole = {
+  name: "Marc",
+  surname: "Martin",
+  letters: "M – A – R – C",
+  tts: "Ça s'écrit, M, A, R, C",
+  pronoun: "he",
+  gender: "m",
+  emoji: "👨",
+};
+
+export function enchanteForm(you: YouRole): "Enchantée" | "Enchanté" {
+  return you.gender === "f" ? "Enchantée" : "Enchanté";
+}
+
+/** Whole keyed lines — written out so a concept quote of « Enchantée, madame. »
+ *  is a string that already exists in this file (verify75). */
+const MEET = {
+  f: { bang: "Enchantée !", madame: "Enchantée, madame." },
+  m: { bang: "Enchanté !", madame: "Enchanté, madame." },
+} as const;
+
+/**
+ * The "nice to meet you" step — both gendered forms are offered, one keyed.
+ * A feminine speaker (Léa) keys Enchantée; a masculine speaker (Marc) keys
+ * Enchanté. The other form carries an EN WHY. Do not mark both correct: that
+ * hides the teaching point.
+ */
+export function meetOptions(
+  you: YouRole,
+  audience: "informal" | "formal" | "group",
+): Unit0Option[] {
+  const mine = enchanteForm(you);
+  const other = you.gender === "f" ? "Enchanté" : "Enchantée";
+  const mineMark = you.gender;
+  const otherMark = you.gender === "f" ? "m" : "f";
+  const otherWhy =
+    you.gender === "f"
+      ? `${you.name} is a woman — she says Enchantée. Enchanté is what a man says.`
+      : `${you.name} is a man — he says Enchanté. Enchantée is what a woman says.`;
+  if (audience === "formal") {
+    return [
+      { v: MEET[you.gender].madame, ok: true, mark: mineMark },
+      { v: MEET[otherMark].madame, ok: false, why: otherWhy, mark: otherMark },
+      { v: "Merci, madame.", ok: false, why: `Merci is 'thank you' — on meeting someone it's ${mine}.` },
+      { v: "Au revoir, madame.", ok: false, why: "That's a goodbye — you have only just met." },
+    ];
+  }
+  if (audience === "group") {
+    return [
+      { v: MEET[you.gender].bang, ok: true, mark: mineMark },
+      { v: MEET[otherMark].bang, ok: false, why: otherWhy, mark: otherMark },
+      { v: "Merci !", ok: false, why: "Merci means 'thank you'." },
+      { v: "Au revoir tout le monde !", ok: false, why: "That's a goodbye — you have only just met." },
+    ];
+  }
+  return [
+    { v: MEET[you.gender].bang, ok: true, mark: mineMark },
+    { v: MEET[otherMark].bang, ok: false, why: otherWhy, mark: otherMark },
+    { v: "Merci !", ok: false, why: "Merci means 'thank you'." },
+    { v: "Au revoir !", ok: false, why: "That's a goodbye — you have only just met." },
+  ];
+}
 
 export type Unit0Question = {
   /** Prompt — kept to the bare minimum (Dan: just one word, e.g. "Tuesday"). */
@@ -75,6 +165,11 @@ export type Unit0Question = {
    * the answer).
    */
   example?: { fr: string; en: string };
+  /**
+   * Learner role this question depends on. Rendered as an EN cue
+   * (`Léa · she`) before the guess — never FR-only gender.
+   */
+  you?: YouRole;
   options: Unit0Option[];
 };
 
@@ -259,6 +354,11 @@ const instructionQ = (
  * Q1 is `multi`: "which of the following ARE appropriate greetings" has more
  * than one right answer, and a register is a SET of usable openings, not a
  * single best one.
+ *
+ * 2026-09-03: Enchanté(e) agrees with the SPEAKER. The authored default is
+ * Léa (feminine) → Enchantée. `sio010SituationsFor(YOU_MARC)` is the
+ * masculine path — same seven moves, Enchanté keyed. The atelier already
+ * models this (Léa says Enchantée, Marc says Enchanté).
  */
 export type Unit0Situation = {
   key: string;
@@ -282,64 +382,100 @@ export type Unit0Situation = {
 /** Joins a multi-answer pick into the single string the record stores. */
 export const MULTI_SEP = " · ";
 
-export const SIO010_SITUATIONS: Unit0Situation[] = [
-  {
-    key: "informal",
-    label: "🎓 A student (informal, 1:1)",
-    who: "🎓 Student",
-    register: "one to one · informal",
-    questions: [
-      { multi: true, title: "Which of these are appropriate greetings with another university student?", options: [
-        { v: "Salut !", ok: true },
-        { v: "Bonjour !", ok: true },
-        { v: "Coucou !", ok: true },
-        { v: "Bonjour, monsieur.", ok: false, why: "Monsieur is formal address — over-formal for a fellow student." },
-        { v: "Au revoir !", ok: false, why: "That's a goodbye, not a greeting." },
-      ] },
-      { title: "You ask the other student their name. You say:", options: [
-        { v: "Comment tu t'appelles ?", ok: true },
-        { v: "Comment vous vous appelez ?", ok: false, why: "Vous is formal or plural — one fellow student takes tu." },
-        { v: "Comment ça s'écrit ?", ok: false, why: "That asks how a name is SPELLED, not what it is." },
-        { v: "Je m'appelle comment ?", ok: false, why: "That asks what YOUR own name is." },
-      ] },
-      { title: "You give your own name to the other student. You say:", options: [
-        { v: "Moi, je m'appelle Léa.", ok: true },
-        { v: "Tu t'appelles Léa.", ok: false, why: "That tells the other person THEIR name is Léa." },
-        { v: "Elle s'appelle Léa.", ok: false, why: "That gives a third person's name — 'her name is Léa'." },
-        { v: "Ça s'écrit Léa.", ok: false, why: "Ça s'écrit spells a name out letter by letter." },
-      ] },
-      { title: "You ask the other student how their name is written. You say:", options: [
-        { v: "Comment ça s'écrit ?", ok: true },
-        { v: "Comment tu t'appelles ?", ok: false, why: "That asks the name itself — you already have it." },
-        { v: "Comment ça va ?", ok: false, why: "That asks how they are." },
-        { v: "Ça s'écrit L – É – A.", ok: false, why: "That ANSWERS the question — it spells the name out." },
-      ] },
-      { title: "You spell your own name for the other student. You say:", tts: "Ça s'écrit, L, É, A", options: [
-        { v: "Ça s'écrit L – É – A.", ok: true },
-        { v: "Comment ça s'écrit ?", ok: false, why: "That ASKS the question." },
-        { v: "Je m'appelle L – É – A.", ok: false, why: "Je m'appelle gives the name, not its letters." },
-        { v: "Ça s'appelle L – É – A.", ok: false, why: "S'appeler is for names; spelling uses s'écrire." },
-      ] },
-      { title: "You have just exchanged names with the other student. You say:", options: [
-        { v: "Enchanté !", ok: true },
-        { v: "Merci !", ok: false, why: "Merci means 'thank you'." },
-        { v: "Au revoir !", ok: false, why: "That's a goodbye — you have only just met." },
-        { v: "S'il te plaît.", ok: false, why: "That means 'please'." },
-      ] },
-      { title: "You leave the other student. You say:", options: [
-        { v: "Au revoir !", ok: true },
-        { v: "Bonjour !", ok: false, why: "That's a hello." },
-        { v: "Enchanté !", ok: false, why: "That's for the moment you are introduced." },
-        { v: "Comment ça va ?", ok: false, why: "That asks how they are — you are leaving." },
-      ] },
+const SURNAME_LETTERS = "M – A – R – T – I – N";
+const SURNAME_TTS = "Ça s'écrit, M, A, R, T, I, N";
+
+function giveNameQ(you: YouRole, style: "informal" | "formal" | "group"): Unit0Question {
+  const they = you.gender === "f" ? "Elle" : "Il";
+  const theirs = you.gender === "f" ? "her" : "his";
+  if (style === "formal") {
+    const full = `${you.name} ${you.surname}`;
+    return {
+      title: "You give your own name to the client. You say:",
+      you,
+      options: [
+        { v: `Je m'appelle ${full}.`, ok: true },
+        { v: `Vous vous appelez ${full}.`, ok: false, why: `That tells the client THEIR name is ${full}.` },
+        { v: `${they} s'appelle ${full}.`, ok: false, why: "That gives a third person's name." },
+        { v: `${enchanteForm(you)}, ${full}.`, ok: false, why: `${enchanteForm(you)} is 'nice to meet you' — it doesn't give your name.` },
+      ],
+    };
+  }
+  if (style === "group") {
+    return {
+      title: "You give your own name to the group. You say:",
+      you,
+      options: [
+        { v: `Moi, je m'appelle ${you.name}.`, ok: true },
+        { v: `Nous nous appelons ${you.name}.`, ok: false, why: "Nous is 'we' — you are one person." },
+        { v: `Vous vous appelez ${you.name}.`, ok: false, why: `That tells the group THEIR name is ${you.name}.` },
+        { v: `Ils s'appellent ${you.name}.`, ok: false, why: "That gives a third group's name." },
+      ],
+    };
+  }
+  return {
+    title: "You give your own name to the other student. You say:",
+    you,
+    options: [
+      { v: `Moi, je m'appelle ${you.name}.`, ok: true },
+      { v: `Tu t'appelles ${you.name}.`, ok: false, why: `That tells the other person THEIR name is ${you.name}.` },
+      { v: `${they} s'appelle ${you.name}.`, ok: false, why: `That gives a third person's name — '${theirs} name is ${you.name}'.` },
+      { v: `Ça s'écrit ${you.name}.`, ok: false, why: "Ça s'écrit spells a name out letter by letter." },
     ],
-  },
-  {
-    key: "formal",
-    label: "💼 A client (formal, 1:1)",
-    who: "💼 Client",
-    register: "one to one · formal",
-    questions: [
+  };
+}
+
+function spellOwnQ(you: YouRole, style: "informal" | "formal" | "group"): Unit0Question {
+  if (style === "formal") {
+    return {
+      title: "You spell your own surname for the client. You say:",
+      tts: SURNAME_TTS,
+      you,
+      options: [
+        { v: `Ça s'écrit ${SURNAME_LETTERS}.`, ok: true },
+        { v: "Comment ça s'écrit ?", ok: false, why: "That ASKS the question." },
+        { v: `Je m'appelle ${SURNAME_LETTERS}.`, ok: false, why: "Je m'appelle gives the name, not its letters." },
+        { v: `Ça s'appelle ${SURNAME_LETTERS}.`, ok: false, why: "S'appeler is for names; spelling uses s'écrire." },
+      ],
+    };
+  }
+  const title = style === "group"
+    ? "You spell your own name for the group. You say:"
+    : "You spell your own name for the other student. You say:";
+  const lastWrong = style === "group"
+    ? { v: `Vous vous écrivez ${you.letters}.`, ok: false, why: "It is the NAME that is written, not the people: ça s'écrit…" }
+    : { v: `Ça s'appelle ${you.letters}.`, ok: false, why: "S'appeler is for names; spelling uses s'écrire." };
+  return {
+    title,
+    tts: you.tts,
+    you,
+    options: [
+      { v: `Ça s'écrit ${you.letters}.`, ok: true },
+      { v: "Comment ça s'écrit ?", ok: false, why: "That ASKS the question." },
+      { v: `Je m'appelle ${you.letters}.`, ok: false, why: "Je m'appelle gives the name, not its letters." },
+      lastWrong,
+    ],
+  };
+}
+
+function meetQ(you: YouRole, register: "informal" | "formal" | "group"): Unit0Question {
+  const title =
+    register === "formal"
+      ? "The client has just given you their name. You say:"
+      : register === "group"
+        ? "You have just exchanged names with the group. You say:"
+        : "You have just exchanged names with the other student. You say:";
+  return { title, you, options: meetOptions(you, register) };
+}
+
+function leaveEnchante(you: YouRole, register: "informal" | "formal" | "group"): Unit0Option {
+  const form = register === "formal" ? `${enchanteForm(you)}, madame.` : `${enchanteForm(you)} !`;
+  return { v: form, ok: false, why: "That's for the moment you are introduced." };
+}
+
+function sio010Questions(register: "informal" | "formal" | "group", you: YouRole): Unit0Question[] {
+  if (register === "formal") {
+    return [
       { multi: true, title: "Which of these are appropriate greetings with a business client?", options: [
         { v: "Bonjour, madame.", ok: true },
         { v: "Bonjour, monsieur.", ok: true },
@@ -353,44 +489,25 @@ export const SIO010_SITUATIONS: Unit0Situation[] = [
         { v: "Comment ça s'écrit ?", ok: false, why: "That asks how a name is SPELLED, not what it is." },
         { v: "Je m'appelle comment ?", ok: false, why: "That asks what YOUR own name is." },
       ] },
-      { title: "You give your own name to the client. You say:", options: [
-        { v: "Je m'appelle Léa Martin.", ok: true },
-        { v: "Vous vous appelez Léa Martin.", ok: false, why: "That tells the client THEIR name is Léa Martin." },
-        { v: "Elle s'appelle Léa Martin.", ok: false, why: "That gives a third person's name." },
-        { v: "Enchanté, Léa Martin.", ok: false, why: "Enchanté is 'nice to meet you' — it doesn't give your name." },
-      ] },
+      giveNameQ(you, "formal"),
       { title: "You ask the client how their name is written. You say:", options: [
         { v: "Comment ça s'écrit ?", ok: true },
         { v: "Comment vous vous appelez ?", ok: false, why: "That asks the name itself — you already have it." },
         { v: "Comment allez-vous ?", ok: false, why: "That asks how they are." },
         { v: "Ça s'écrit M – A – R – T – I – N.", ok: false, why: "That ANSWERS the question — it spells the name out." },
       ] },
-      { title: "You spell your own surname for the client. You say:", tts: "Ça s'écrit, M, A, R, T, I, N", options: [
-        { v: "Ça s'écrit M – A – R – T – I – N.", ok: true },
-        { v: "Comment ça s'écrit ?", ok: false, why: "That ASKS the question." },
-        { v: "Je m'appelle M – A – R – T – I – N.", ok: false, why: "Je m'appelle gives the name, not its letters." },
-        { v: "Ça s'appelle M – A – R – T – I – N.", ok: false, why: "S'appeler is for names; spelling uses s'écrire." },
-      ] },
-      { title: "The client has just given you their name. You say:", options: [
-        { v: "Enchanté, madame.", ok: true },
-        { v: "Merci, madame.", ok: false, why: "Merci is 'thank you' — on meeting someone it's Enchanté." },
-        { v: "Salut !", ok: false, why: "Salut is casual — too familiar for a client." },
-        { v: "Au revoir, madame.", ok: false, why: "That's a goodbye — you have only just met." },
-      ] },
+      spellOwnQ(you, "formal"),
+      meetQ(you, "formal"),
       { title: "You take leave of the client. You say:", options: [
         { v: "Au revoir, madame.", ok: true },
         { v: "Salut !", ok: false, why: "Salut is casual — too familiar for a client." },
         { v: "Bonjour, madame.", ok: false, why: "That's a hello." },
-        { v: "Enchanté, madame.", ok: false, why: "That's for the moment you are introduced." },
+        leaveEnchante(you, "formal"),
       ] },
-    ],
-  },
-  {
-    key: "group",
-    label: "👥 A group (informal, 1 to many)",
-    who: "👥 Group",
-    register: "one to many · informal",
-    questions: [
+    ];
+  }
+  if (register === "group") {
+    return [
       { multi: true, title: "Which of these are appropriate greetings with more than one person?", options: [
         { v: "Bonjour à tous !", ok: true },
         { v: "Salut tout le monde !", ok: true },
@@ -404,39 +521,83 @@ export const SIO010_SITUATIONS: Unit0Situation[] = [
         { v: "Comment ils s'appellent ?", ok: false, why: "That asks about a third group — 'what are THEIR names?'" },
         { v: "Comment nous nous appelons ?", ok: false, why: "That asks what OUR own names are." },
       ] },
-      { title: "You give your own name to the group. You say:", options: [
-        { v: "Moi, je m'appelle Léa.", ok: true },
-        { v: "Nous nous appelons Léa.", ok: false, why: "Nous is 'we' — you are one person." },
-        { v: "Vous vous appelez Léa.", ok: false, why: "That tells the group THEIR name is Léa." },
-        { v: "Ils s'appellent Léa.", ok: false, why: "That gives a third group's name." },
-      ] },
+      giveNameQ(you, "group"),
       { title: "You ask the group how their names are written. You say:", options: [
         { v: "Comment ça s'écrit ?", ok: true },
         { v: "Comment vous vous appelez ?", ok: false, why: "That asks the names themselves — you already have them." },
         { v: "Comment ça va ?", ok: false, why: "That asks how they are." },
-        { v: "Ça s'écrit L – É – A.", ok: false, why: "That ANSWERS the question — it spells the name out." },
+        { v: `Ça s'écrit ${you.letters}.`, ok: false, why: "That ANSWERS the question — it spells the name out." },
       ] },
-      { title: "You spell your own name for the group. You say:", tts: "Ça s'écrit, L, É, A", options: [
-        { v: "Ça s'écrit L – É – A.", ok: true },
-        { v: "Comment ça s'écrit ?", ok: false, why: "That ASKS the question." },
-        { v: "Je m'appelle L – É – A.", ok: false, why: "Je m'appelle gives the name, not its letters." },
-        { v: "Vous vous écrivez L – É – A.", ok: false, why: "It is the NAME that is written, not the people: ça s'écrit…" },
-      ] },
-      { title: "You have just exchanged names with the group. You say:", options: [
-        { v: "Enchanté !", ok: true },
-        { v: "Merci !", ok: false, why: "Merci means 'thank you'." },
-        { v: "Salut !", ok: false, why: "Salut is a hello or a bye — not 'nice to meet you'." },
-        { v: "Au revoir tout le monde !", ok: false, why: "That's a goodbye — you have only just met." },
-      ] },
+      spellOwnQ(you, "group"),
+      meetQ(you, "group"),
       { title: "You leave the group. You say:", options: [
         { v: "Au revoir tout le monde !", ok: true },
         { v: "Bonjour à tous !", ok: false, why: "That's a hello." },
         { v: "Au revoir, monsieur.", ok: false, why: "Monsieur addresses ONE man — a group takes tout le monde / à tous." },
-        { v: "Enchanté !", ok: false, why: "That's for the moment you are introduced." },
+        leaveEnchante(you, "group"),
       ] },
-    ],
-  },
-];
+    ];
+  }
+  return [
+    { multi: true, title: "Which of these are appropriate greetings with another university student?", options: [
+      { v: "Salut !", ok: true },
+      { v: "Bonjour !", ok: true },
+      { v: "Coucou !", ok: true },
+      { v: "Bonjour, monsieur.", ok: false, why: "Monsieur is formal address — over-formal for a fellow student." },
+      { v: "Au revoir !", ok: false, why: "That's a goodbye, not a greeting." },
+    ] },
+    { title: "You ask the other student their name. You say:", options: [
+      { v: "Comment tu t'appelles ?", ok: true },
+      { v: "Comment vous vous appelez ?", ok: false, why: "Vous is formal or plural — one fellow student takes tu." },
+      { v: "Comment ça s'écrit ?", ok: false, why: "That asks how a name is SPELLED, not what it is." },
+      { v: "Je m'appelle comment ?", ok: false, why: "That asks what YOUR own name is." },
+    ] },
+    giveNameQ(you, "informal"),
+    { title: "You ask the other student how their name is written. You say:", options: [
+      { v: "Comment ça s'écrit ?", ok: true },
+      { v: "Comment tu t'appelles ?", ok: false, why: "That asks the name itself — you already have it." },
+      { v: "Comment ça va ?", ok: false, why: "That asks how they are." },
+      { v: `Ça s'écrit ${you.letters}.`, ok: false, why: "That ANSWERS the question — it spells the name out." },
+    ] },
+    spellOwnQ(you, "informal"),
+    meetQ(you, "informal"),
+    { title: "You leave the other student. You say:", options: [
+      { v: "Au revoir !", ok: true },
+      { v: "Bonjour !", ok: false, why: "That's a hello." },
+      leaveEnchante(you, "informal"),
+      { v: "Comment ça va ?", ok: false, why: "That asks how they are — you are leaving." },
+    ] },
+  ];
+}
+
+/** Default bank — Léa, the scripted speaker. Marc is `sio010SituationsFor(YOU_MARC)`. */
+export function sio010SituationsFor(you: YouRole): Unit0Situation[] {
+  return [
+    {
+      key: "informal",
+      label: "🎓 A student (informal, 1:1)",
+      who: "🎓 Student",
+      register: "one to one · informal",
+      questions: sio010Questions("informal", you),
+    },
+    {
+      key: "formal",
+      label: "💼 A client (formal, 1:1)",
+      who: "💼 Client",
+      register: "one to one · formal",
+      questions: sio010Questions("formal", you),
+    },
+    {
+      key: "group",
+      label: "👥 A group (informal, 1 to many)",
+      who: "👥 Group",
+      register: "one to many · informal",
+      questions: sio010Questions("group", you),
+    },
+  ];
+}
+
+export const SIO010_SITUATIONS: Unit0Situation[] = sio010SituationsFor(YOU_LEA);
 
 export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
   "SIO-001": [
@@ -643,7 +804,8 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
     ] },
   ],
   // The flat union — what every generic consumer (the Pre-Test flap,
-  // pretestHrefForDeck) asks: does this SIO have questions? The panel renders
-  // SIO-010 one situation at a time, so nothing ever shows all 21 at once.
+  // pretestHrefForDeck) asks: does this SIO have questions? Those consumers
+  // then open /pretests/unit0/SIO-010; the page sits one situation at a time,
+  // so nothing ever shows all 21 at once.
   "SIO-010": SIO010_SITUATIONS.flatMap((sit) => sit.questions),
 };
