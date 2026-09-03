@@ -15,6 +15,16 @@
 #   · fluolingo.withdrchan.com     — Cloudflare Pages, built from dckg/fluo,
 #                                    which deploy-live.yml mirrors main into
 #
+# THE NEAR-MISS THAT REWROTE THIS HEADER (2 Sep): the stale "preview" comment
+# was believed, and an agent proposed setting the open-app build flag
+# (authConfig.ts names it) in the build step below — which would have taken
+# the sign-in wall down for every visitor to fluolingo.com.
+# verify38-authwall.py refused it: that flag is banned from every config a
+# deploy reads, and this file is one. It cannot even be NAMED here — verify38
+# greps this file raw, so a comment mentioning it fails too. Deliberate.
+# DO NOT open the wall here, and do not treat this file as a sandbox; an open
+# build needs a host that is neither of the two above.
+#
 # DO NOT reintroduce PAGES_BASE_PATH here. verify91 refuses it while a CNAME
 # exists, which is the repo's one statement that a custom domain is in play.
 #
