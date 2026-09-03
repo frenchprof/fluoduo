@@ -1,12 +1,28 @@
-# Preview build → GitHub Pages.
+# THIS WORKFLOW PUBLISHES A LIVE PUBLIC SITE. It is not a preview any more.
 #
-# WHY: the only way to look at this app has been `npm run dev` on the machine
-# that has the repo. That made every review a screenshot relay. This publishes
-# a real URL — https://frenchprof.github.io/fluoduo/ — that can be opened on a
-# phone, and it is entirely separate from production.
+# It was written as one, and said so — "it is entirely separate from
+# production", "IT DOES NOT TOUCH PRODUCTION". On 2026-08-12 a custom domain
+# was added to this repository's Pages settings (the root CNAME file, commit
+# 43b7d17), and GitHub Pages Settings now reports "Your site is live at
+# https://fluolingo.com/". So every push to main deploys to a public domain,
+# and https://frenchprof.github.io/fluoduo/ 301-redirects there rather than
+# serving anything of its own.
 #
-# IT DOES NOT TOUCH PRODUCTION. fluolingo.withdrchan.com is built by Cloudflare
-# Pages from its own connected repo. Nothing here writes to it.
+# The stale comment was believed on 2026-09-02 and nearly cost the sign-in
+# wall: an agent, asked for a viewable open build, proposed setting the
+# open-app build flag (authConfig.ts names it) in the build step below, on
+# the grounds that this was a throwaway preview. That would have taken the
+# wall down for every visitor to fluolingo.com. verify38-authwall.py refused
+# it — that flag is banned from every config a deploy reads, and this file is
+# one. Note it cannot be named here either: verify38 greps this file raw, so
+# even a comment mentioning it fails, which is deliberate.
+#
+# So: DO NOT open the wall here, and do not treat this file as a sandbox.
+# An open build needs a host that is not this one.
+#
+# THE OTHER PRODUCTION PATH is deploy-live.yml, which mirrors main to
+# dckg/fluo, built by Cloudflare Pages and served at
+# fluolingo.withdrchan.com. Two live sites, both fed from main.
 #
 # WHAT WILL NOT WORK ON THE PREVIEW, by design:
 #   /api/tutor, /api/tts, /api/correct, /api/compose
