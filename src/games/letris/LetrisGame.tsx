@@ -588,7 +588,7 @@ export default function LetrisGame({
       {[...drops].reverse().map((d, i) => (
         <li key={drops.length - i} lang="fr"
           className={`flex items-baseline gap-2 rounded-lg border-2 px-2 py-1 text-sm ${
-            d.ok ? "border-[color:var(--drill-ok-soft)] bg-[color:var(--drill-ok-bg)]" : "border-[color:var(--drill-bad-soft)] bg-[color:var(--drill-bad-bg)]"
+            d.ok ? "border-[color:var(--dopa-win-ink)] bg-[color:var(--dopa-win-wash)]" : "border-[color:var(--dopa-miss-ink)] bg-[color:var(--dopa-miss-wash)]"
           }`}>
           <span aria-hidden>{d.ok ? "✓" : "✗"}</span>
           <span className="min-w-0 flex-1 truncate font-bold">{d.text}</span>
@@ -767,7 +767,7 @@ export default function LetrisGame({
             <div className="pointer-events-none absolute inset-x-0 top-2 z-30 flex justify-center px-2">
               <span
                 lang="fr"
-                className="rounded-full border-2 border-white bg-[#2e7d00]/90 px-3 py-1 text-center text-sm font-black text-white shadow-lg"
+                className="rounded-full border-2 border-white bg-[color:var(--dopa-win)] px-3 py-1 text-center text-sm font-black text-[color:var(--dopa-win-on)] shadow-lg"
                 style={{ animation: "ltrsentence 2000ms ease-out both" }}
               >
                 ✓ {sentenceFlash}
@@ -785,7 +785,12 @@ export default function LetrisGame({
                   key={`${r}-${c}`}
                   className={`relative flex items-center justify-center border-b border-white/20 px-1 text-center ${
                     c < cols - 1 ? "border-r border-white/20" : ""
-                  } ${isFlashCol ? (flash!.kind === "ok" ? "bg-lime-300/40" : "bg-rose-400/40") : ""}`}
+                  }`}
+                  style={isFlashCol ? {
+                    background: flash!.kind === "ok"
+                      ? "color-mix(in oklab, var(--dopa-win) 40%, transparent)"
+                      : "color-mix(in oklab, var(--dopa-miss) 40%, transparent)",
+                  } : undefined}
                   onClick={() => moveTo(c)}
                 >
                   {tile && (

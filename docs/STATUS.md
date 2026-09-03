@@ -6,6 +6,59 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 3 Sep — three UI quick wins (flip cue, due streak, rain accents)
+
+Sole editor of STATUS.md in this commit: cursor/ui-quick-wins.
+
+Three small surfaces, one PR. AuthGate, pretests, and the Class bag
+rename are out of scope.
+
+**MémoiRecall's card now shows that it turns.** The « Flip » CTA left on
+2 Sep and the card shipped bare pending Dan's pick among three cues. Variant
+B landed: a quiet 28×28 ↻ chip on the **front Face only** (paper-raised fill,
+ink hairline, ink lip, `pointer-events-none`). The button still speaks
+English — "Turn the card over" / "Turn the card back". No Flip / Retourner
+chrome. No bounce loop, so `prefers-reduced-motion` sees the same static
+mark. `verify27 §14h` pins it.
+
+**The Revise due pill is a streak, not an alarm.** BottomBar's count sat on
+`--fluo-danger`. It now wears `--dopa-streak` / `--dopa-streak-on` (4.64:1).
+
+**VocabulaRain's win / miss flashes speak the dopamine tokens.** Column
+flash, the ✓ sentence toast, and the drop record dropped `--drill-ok` /
+`--drill-bad` / lime / rose / `#2e7d00`. GameBar's progress fill and hearts
+moved the same way (`--dopa-win` / `--dopa-miss`). The sky board and
+category puddles stay. `verify34 §5` pins the three call sites.
+
+Shared files: `FlipItContent.tsx`, `BottomBar.tsx`, `GameBar.tsx`,
+`LetrisGame.tsx`. In flight: #152 docs-only, #153 pretest href / Recap —
+no collision on these four.
+## 3 Sep — SIO-010 Enchantée + Libéria (teach-blocking)
+
+Sole editor of STATUS.md in this commit: the Cursor cloud session on
+`cursor/enchantee-liberia-bf57`.
+
+Two ship-critical French faults from the 3 Sep content review (#154 is
+report-only). This branch implements them.
+
+**SIO-010 pretest / SpecuLearn.** After the learner says she is Léa, all
+three audience tabs keyed only `Enchanté !` / `Enchanté, madame.` The
+atelier already has Léa say *Enchantée*. Keys are now gender-conditioned
+via `meetOptions` / `sio010SituationsFor`: Léa → Enchantée, Marc →
+Enchanté. Both forms are offered; one is keyed; the miss carries an EN
+WHY. A You-are strip (`Léa · she` / `Marc · he`) plus a per-question
+role cue sit on the card before the guess, with the existing
+`--gram-fem` / `--gram-masc` marks — never FR-only gender. Reveal paints
+the keyed form with `.cahier-hl` and the miss with `--dopa-miss` +
+strike. Memo left as-is.
+
+**Libéria.** Expert Letris tile `LIBERIA` / `Liberia` → `LIBÉRIA` /
+`Libéria`. English `meaning` stays Liberia. Bélarus / Birmanie / Cap-Vert
+untouched.
+
+Pinned by `verify92-enchantee-liberia.py`. Shared file with #153:
+`unit0-questions.ts` (they only touched a comment). STATUS also collides
+with #154's report header — rebase is this branch's if they land first.
 ## 3 Sep — two P0 pretest surfaces (href + Recap gap list)
 
 Sole editor of STATUS.md in this commit: cursor/pretest-href-bring-to-class.
@@ -156,6 +209,109 @@ missing its stylesheets and scripts for three weeks while
 `https://fluolingo.com/fluoduo/` works. Nobody has confirmed which loads — this
 session's egress proxy 403s every one of those domains, so it could not check.
 **Whoever can open a browser: check both URLs and record the answer here.**
+
+### 2 · Conflict markers were committed into AGENTS.md, and 16 branches still carry them
+
+`main` is CLEAN as of #144. It was not clean before: **PR #141 (this session's
+own work) carried six markers into `AGENTS.md`** from a qc-branch merge that
+had left them, and #144 removed them. The file every session is told to read
+first therefore had `<<<<<<< HEAD` sitting in the middle of its rules.
+
+Resolved here identically to main — verified with `git diff origin/main HEAD --
+AGENTS.md`, which is one blank line — so this branch cannot revert #144's fix.
+Both conflicts were additive prose and both sides were kept: "English is never
+bigger than French", and the integration-lane rule, whose two halves
+("fluoduo-main is the integration lane" and "EVERY merge goes through
+fluoduo-main") had been split by the merge.
+
+**STILL CARRYING THE MARKERS — 16 remote branches.** Their tips are stale and
+main is fine, but a merge of any of them re-introduces the damage:
+
+```
+git show <branch>:AGENTS.md | grep -c '^<<<<<<< \|^>>>>>>> '
+```
+
+    claude/atelier-popup-dialogue      claude/jam-scan-ci
+    claude/deploy-live-diagnose        claude/jam-scan-hydration-wait
+    claude/deploy-live-extraheader     claude/map-of-fluolingo-land
+    claude/deploy-live-probe-contents  claude/map-route-back
+    claude/derived-doneness            claude/menu-children-dress
+    claude/home-topbar-lot-a           claude/profile-footer-label
+    claude/icomplete-cut-sio010-tabs   claude/status-1sep-evening
+    claude/strips-brief                french4-docs
+
+They are left alone deliberately: rewriting other lanes' branches is
+integration work. **fluoduo-main — before merging any of these, take AGENTS.md
+from `main`, not from the branch.**
+
+THE GENERAL LESSON, which is the same one in both halves: a comment and a
+merge marker are both text that no check reads. Scan for markers before you
+push, and verify a claim about the deploy path against the workflow and the
+settings page, not against the file's own description of itself.
+
+## 2 Sep — the two open items close
+
+## 2 Sep — READ THIS BEFORE YOU TOUCH A WORKFLOW OR MERGE A BRANCH
+
+Sole editor of STATUS.md in this commit: Peers. Two notices, both found today,
+both the kind that a session discovers by believing a comment. Notice 1 was
+then CORRECTED the same day — it overstated the danger — and the corrected
+version is what stands below.
+
+### 1 · `pages-preview.yml` publishes to a deployment NOBODY can reach — and that is a loaded gun
+
+CORRECTED THE SAME DAY. The first version of this notice said flatly that the
+workflow publishes fluolingo.com. It does not, and the correction matters more
+than the original claim, so here is the evidence rather than the conclusion.
+
+GitHub Pages Settings for `frenchprof/fluoduo` reports **"Your site is live at
+https://fluolingo.com/"**, because a custom domain was added on 12 Aug (root
+`CNAME`, commit 43b7d17). That sentence is GitHub repeating its own setting.
+Nothing routes the hostname to it:
+
+    fluolingo.com/          loads          (Dan, 2 Sep)
+    fluolingo.com/fluoduo/  does not exist (Dan, 2 Sep)
+
+This workflow builds with `PAGES_BASE_PATH=/fluoduo`, so everything it emits
+lives under `/fluoduo/_next/`. A site with no `/fluoduo/` is a build with NO
+base path — which is the Cloudflare one. So:
+
+    deploy-live.yml  -> dckg/fluo -> Cloudflare Pages -> fluolingo.com   ← PRODUCTION
+                                                      -> fluolingo.withdrchan.com
+    pages-preview.yml -> GitHub Pages -> reachable at NO url at all
+
+github.io/fluoduo 301s to fluolingo.com (the custom domain is configured), and
+fluolingo.com is answered by Cloudflare. The artifact is served to nobody.
+
+**WHY IT IS STILL A HAZARD.** GitHub Pages holds a live claim on a production
+hostname. Move that DNS record to GitHub, or drop the Cloudflare one, and this
+artifact takes over fluolingo.com the same minute — wrong base path, and
+whatever was built into it. Do not treat the file as a sandbox because its
+output is currently invisible.
+
+**DO NOT open the sign-in wall there.** Asked for a way to view the app signed
+out, this session read the workflow's old header — *"IT DOES NOT TOUCH
+PRODUCTION"* — believed it, and proposed setting the open-app build flag in it.
+`verify38-authwall.py` refused it by name; the flag is banned from every config
+a deploy reads. Confirmed by adding it and watching the check fail. The flag
+cannot even be NAMED in that file: verify38 greps it raw. That is deliberate.
+
+**THE FIX, for whoever has the settings page open:** clear the custom domain in
+Settings → Pages and delete the root `CNAME`. GitHub then serves the artifact at
+`https://frenchprof.github.io/fluoduo/` — the subpath `PAGES_BASE_PATH` exists
+for — the redirect stops, and the claim on fluolingo.com is dropped. That turns
+a hazard into the working preview the file was written to be, and it is the
+cheapest thing on this board.
+
+An open build still needs a host that is neither production path; the standing
+suggestion is a separate Cloudflare Pages project behind Cloudflare Access, so
+the secret sits at the edge and never ships in the bundle (the 27 Aug ruling in
+`authConfig.ts`: static export means any secret in the JS is findable).
+
+TWO METHOD NOTES, since this cost two wrong answers in a row. A workflow's own
+header is not evidence about where it deploys. Neither is a settings page that
+only reflects a setting — `fluolingo.com/fluoduo/` returning nothing is what
+actually decided this, and one URL would have settled it at the start.
 
 ### 2 · Conflict markers were committed into AGENTS.md, and 16 branches still carry them
 
@@ -417,9 +573,8 @@ card is a `<button>` wired to onFlip), break-tested. `verify20` named « Flip »
 alongside « ✓ I know it » and « ↺ To review » as the study CTAs; rewritten
 naming the supersession — those two are self-marks and « Flip » never was.
 
-**Open for Dan:** with the button gone the card carries no visible cue that it
-is tappable. Three options were shown side by side (bare / a quiet ↻ in the
-corner / a ↻ chip in the family ink); shipped bare pending his pick.
+**Closed 3 Sep:** Variant B shipped — a quiet ↻ chip on the front Face
+(paper-raised, ink hairline). See the 3 Sep quick-wins entry.
 
 ## 2 Sep, later — the (?) leaves the deck band
 

@@ -102,7 +102,7 @@ export const atelierRencontreLesson: NativeLesson = {
         <b>Six of the seven.</b> <i lang="fr">Salut !</i> becomes{" "}
         <i lang="fr">Bonjour, madame.</i>, <i lang="fr">Comment tu t&rsquo;appelles ?</i>{" "}
         becomes <i lang="fr">Comment vous vous appelez ?</i>,{" "}
-        <i lang="fr">Enchanté !</i> becomes <i lang="fr">Enchanté, madame.</i>, and{" "}
+        <i lang="fr">Enchantée !</i> becomes <i lang="fr">Enchantée, madame.</i>, and{" "}
         <i lang="fr">Au revoir !</i> becomes <i lang="fr">Au revoir, madame.</i>{" "}
         You do not translate your way across turn by turn &mdash; you pick the script at the
         door and run it. <b>One line does not move:</b>{" "}

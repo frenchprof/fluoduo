@@ -148,6 +148,39 @@ if border and PAPER:
     ok(v >= 3.0, f"the input border clears the control threshold at {v:.2f}:1",
        f"the input border is {v:.2f}:1 — under the 3:1 a control boundary needs")
 
+# ── 5 · three call sites that used to wear leftover Duo / drill colours ───
+# The due pill, the game progress fill / hearts, and VocabulaRain's
+# clear / miss flashes. Accent only — boards stay on Cahier paper.
+def src(path):
+    return open(path, encoding="utf-8").read()
+
+bar = src("src/components/BottomBar.tsx")
+ok("--dopa-streak" in bar and "--fluo-danger" not in bar,
+   "the due pill wears --dopa-streak, not --fluo-danger",
+   "the due pill is still --fluo-danger (or no longer --dopa-streak)")
+ok("--dopa-streak-on" in bar,
+   "the due count sits on --dopa-streak-on",
+   "the due count dropped --dopa-streak-on — contrast is no longer the token pair")
+
+gbar = src("src/components/GameBar.tsx")
+ok("--dopa-win" in gbar and "--drill-ok" not in gbar,
+   "GameBar progress is --dopa-win",
+   "GameBar progress is still --drill-ok (or no longer --dopa-win)")
+ok("--dopa-miss" in gbar and "--drill-bad" not in gbar,
+   "GameBar hearts are --dopa-miss",
+   "GameBar hearts are still --drill-bad (or no longer --dopa-miss)")
+
+letris = src("src/games/letris/LetrisGame.tsx")
+ok("--dopa-win" in letris and "--dopa-miss" in letris,
+   "VocabulaRain's clear / miss accents use --dopa-win / --dopa-miss",
+   "VocabulaRain no longer tokens its clear / miss accents")
+ok("--drill-ok" not in letris and "--drill-bad" not in letris,
+   "VocabulaRain dropped the leftover --drill-ok / --drill-bad accents",
+   "VocabulaRain still paints clear / miss with --drill-ok / --drill-bad")
+ok("bg-lime-300" not in letris and "bg-rose-400" not in letris and "#2e7d00" not in letris,
+   "VocabulaRain's flash / toast no longer use raw lime / rose / Duo green",
+   "VocabulaRain still flashes lime / rose or #2e7d00 instead of the dopa tokens")
+
 print("\n".join("  ok    " + m for m in PASS))
 if FAIL:
     print("\n".join("  FAIL  " + m for m in FAIL))

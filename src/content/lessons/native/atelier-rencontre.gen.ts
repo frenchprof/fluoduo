@@ -48,7 +48,7 @@ export const STEPS = [
   { key: "give", label: "give your name", multi: false },
   { key: "spelling", label: "ask the spelling", multi: false },
   { key: "spell", label: "spell your own", multi: false },
-  { key: "meet", label: "say Enchanté", multi: false },
+  { key: "meet", label: "nice to meet you", multi: false },
   { key: "leave", label: "take leave", multi: false },
 ] as const;
 

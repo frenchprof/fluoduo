@@ -448,6 +448,22 @@ function StudyCard({ row, hasArt, flipped, onFlip }: { row: Row; hasArt: boolean
       onClick={onFlip} aria-label={flipped ? "Turn the card back" : "Turn the card over"}>
       <div className="relative h-64" style={{ transformStyle: "preserve-3d", transition: "transform .5s", transform: flipped ? "rotateY(180deg)" : "none" }}>
         <Face>
+          {/* Quiet ↻ cue, front only. The card is the control — this chip
+              does not capture clicks (Variant B). No bounce loop; reduced
+              motion already sees a static mark. */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute right-2 top-2 grid h-7 w-7 place-items-center text-[14px] leading-none"
+            style={{
+              borderRadius: 8,
+              background: "var(--cahier-paper-raised)",
+              border: "1.5px solid var(--cahier-ink)",
+              boxShadow: "0 1.5px 0 0 var(--cahier-ink)",
+              color: "var(--cahier-ink)",
+            }}
+          >
+            ↻
+          </span>
           <span className="text-7xl" aria-hidden>{row.item.emoji}</span>
           <span className="cahier-display mt-3 text-2xl font-black text-[color:var(--cahier-ink)]">
             {row.item.en}
