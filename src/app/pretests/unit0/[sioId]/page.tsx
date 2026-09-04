@@ -23,7 +23,6 @@
  * the last surfaces with nowhere.
  */
 import { notFound } from "next/navigation";
-import AuthGate from "@/components/AuthGate";
 import { SIOS, getSio } from "@/content/sios";
 import { UNIT0_QUESTIONS } from "@/content/sios/unit0-questions";
 import Unit0PretestPage from "./Content";
@@ -45,9 +44,6 @@ export default async function Page({ params }: { params: Promise<{ sioId: string
   const { sioId } = await params;
   const sio = getSio(sioId);
   if (!sio || sio.unit !== 0 || (UNIT0_QUESTIONS[sioId] ?? []).length === 0) notFound();
-  return (
-    <AuthGate what="take the pre-test">
-      <Unit0PretestPage sioId={sioId} />
-    </AuthGate>
-  );
+  // Soft-auth on Class bag Continue / save — never AuthGate mid-guess.
+  return <Unit0PretestPage sioId={sioId} />;
 }
