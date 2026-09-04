@@ -392,7 +392,7 @@ function Recap({
         <div className="text-6xl" aria-hidden>
           {pct === 100 ? "🏆" : pct >= 75 ? "🎉" : pct >= 50 ? "💪" : "📖"}
         </div>
-        <h2 className="mt-2 text-xl font-black text-slate-900">
+        <h2 className="mt-2 text-2xl font-black text-slate-900">
           {score} / {total} correct
         </h2>
         <p className="text-slate-600">
