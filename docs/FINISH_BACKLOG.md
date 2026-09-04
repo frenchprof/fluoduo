@@ -7,7 +7,7 @@ PRs; the room QAs and locks. This file does not implement anything.
 
 Companion specs (do not reopen them here): `docs/CLASS_BAG.md` (merged #152),
 `docs/french-content-review.md` (#154), `docs/HANDOFF_SPECULEARN_PRETESTS.md`,
-`docs/DEPLOY.md`, `AGENTS.md`.
+`docs/DEPLOY.md`, `docs/STAGING.md` (no-login CF bookmark), `AGENTS.md`.
 
 ---
 
@@ -143,7 +143,7 @@ UI+UX Success for items 2–7 and 11 is the joint lock above (no disagreements).
 | **15** | **Teacher reports** | `/teacher` already has pretest miss rates. Class bag is a **class artifact**, not a new analytics product. | After item 2: teacher can open the same bag a learner would **Show in class** (per-student miss chips + EN can-do). Do not build a second score dump. Keep existing Pretests panel. Soft-auth bags that were “kept going without saving” stay device-local — teacher view only claims **saved** bags. | Teacher opens a learner’s Class bag and sees the same FR chips + EN can-do the learner showed. Empty bag = ready. No extra “score %” invented for the bag. Unsigned-unsaved bags are absent, not fabricated. | Pedagogy + Claude(impl) |
 | **16** | **HELP cleanup** | HELP became Menu (20 tiles, no prose). Leftover “HELP!” / ❓ copy still teaches the old door. | Grep learner-visible HELP / ❓ Guide / “open HELP”. `/guide` may keep the long form; its h1 **❓ HELP!** is chrome a beginner must decode — retitle in English. First-run popups stay; they are not a second menu. Two doors to MenuSplash on one screen stay forbidden (HelpDot lesson). | No learner-facing control labelled only HELP. Menu is the grid. Guide is “Guide” (or another EN word). First-run ≠ Menu. `verify19c` still describes Menu, not HELP. | UX + Claude(impl) |
 | **17** | **Cohort QA** | NUS LAF1201 A1-zero. Finish means a student who knows no French can sit Unit 0 → Class bag → Continue. | After 1–9 land: one unsigned pass and one signed pass through Unit 0 SIO-001 and SIO-010 (Léa + Marc), one U1 pretest, Flip It salutations, VocabulaRain weather, LexicaLater colours. Note every FR chrome blocker (feed item 7). Pedagogy + FR sign the Enchantée / Libéria / Flip P1s on the **preview**, not only in source. | Unsigned A1 completes Unit-0 pretest → Class bag (or today’s Bring to class) → Continue. Léa/Marc gender holds on preview. No FR-only CTA blocks the path. Cohort notes filed or closed, not left in chat. | Pedagogy + FR + Coordinator |
-| **18** | **Deploy** | Two live sites, different triggers. Pages Functions only on withdrchan. | After green merges: `main` auto-updates **fluolingo.com** (GitHub Pages). Fire **`deploy-live`** for **fluolingo.withdrchan.com**. Smoke **both**: styled HTML on fluolingo.com (no `/fluoduo/_next` 404 — #157); ChaTutor / TTS / Compose check **only** claimed on withdrchan. Do not “Retry deployment” of an old Cloudflare row. | Preview + both live hosts match the intended SHAs. fluolingo.com is styled. withdrchan has Functions. `verify91` (Pages base path) green on `main`. Dan has walked StopSheet → Unit-0 pretest on the host students actually use. | Coordinator + Dan |
+| **18** | **Deploy** | Live is Cloudflare (`fluoli.ngo`, withdrchan, `fluoguo.pages.dev`); `fluolingo.com` 302s to withdrchan. github.io/fluoduo is the preview (no Functions). | After green merges: fire **`deploy-live`** / `git push live main`. Smoke live: styled HTML + ChaTutor / TTS / Compose on a CF host. Do not “Retry deployment” of an old Cloudflare row. No-login smoke host: **`docs/STAGING.md`**. | Live CF host matches the intended SHA and has Functions. `verify91` green on `main`. Dan has walked StopSheet → Unit-0 pretest on the host students actually use. Staging bookmark (when stood up) opens Flip / Enchantée unsigned. | Coordinator + Dan |
 
 ---
 
@@ -158,6 +158,7 @@ These do not contradict locks. They are not in 1–18 and do not block merge.
 - **Reading activity.** The one untrained skill; 📖 badge returns the day it ships, never stretched onto flashcards.
 - **PWA already shipped.** Do not rebuild install / manifest as a finish item.
 - **Held FR notes.** Bélarus / Birmanie / Cap-Vert / Centrafrique stay notes (#154 §6).
+- **Fixed no-login staging bookmark.** `docs/STAGING.md` — second CF project, `NEXT_PUBLIC_OPEN_APP=1` on that env only, `staging.fluoli.ngo`. Not a finish-item lock; dashboard work, not a code PR.
 
 ---
 
@@ -168,4 +169,4 @@ These do not contradict locks. They are not in 1–18 and do not block merge.
 3. Item **4** double-door.
 4. Item **7** EN chrome sweep.
 5. After 1–9: item **11** VocabulaRain / LexicaLater. Item **9** FR: 009 polite cells **without *Je voudrais…*** + Flip P1s. SUP-CAL stays #10.
-6. Deploy / smoke — fluolingo.com and withdrchan.
+6. Deploy / smoke — `fluoli.ngo` / withdrchan. Staging bookmark when you want unsigned Flip / Enchantée: `docs/STAGING.md`.
