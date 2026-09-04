@@ -152,6 +152,10 @@ function PretestRunner({ pretest }: { pretest: Pretest }) {
     setVerdicts([]);
     setSubmitted(null);
   }
+  function skipPretest() {
+    setSubmitted(null);
+    setStep(Math.max(total, items.length || pretest.items.length));
+  }
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
@@ -164,18 +168,29 @@ function PretestRunner({ pretest }: { pretest: Pretest }) {
             <p className="mt-1 text-base text-slate-600">{pretest.subtitle}</p>
           )}
         </div>
-        <button
-          type="button"
-          onClick={() => setTtsOn((v) => !v)}
-          className={`rounded-full border-2 px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition ${
-            ttsOn
-              ? "border-emerald-300 bg-emerald-50 text-emerald-700"
-              : "border-slate-200 bg-white text-slate-500"
-          }`}
-          title={ttsOn ? "TTS on — click to mute" : "TTS muted — click to enable"}
-        >
-          {ttsOn ? "🔊 TTS on" : "🔇 TTS off"}
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          {!done && (
+            <button
+              type="button"
+              onClick={skipPretest}
+              className="rounded-full border-2 border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-500"
+            >
+              Skip pretest
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => setTtsOn((v) => !v)}
+            className={`rounded-full border-2 px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition ${
+              ttsOn
+                ? "border-emerald-300 bg-emerald-50 text-emerald-700"
+                : "border-slate-200 bg-white text-slate-500"
+            }`}
+            title={ttsOn ? "TTS on — click to mute" : "TTS muted — click to enable"}
+          >
+            {ttsOn ? "🔊 TTS on" : "🔇 TTS off"}
+          </button>
+        </div>
       </header>
 
       <ProgressBar current={Math.min(step, total)} total={total} score={score} />
@@ -377,7 +392,7 @@ function Recap({
         <div className="text-6xl" aria-hidden>
           {pct === 100 ? "🏆" : pct >= 75 ? "🎉" : pct >= 50 ? "💪" : "📖"}
         </div>
-        <h2 className="mt-2 text-2xl font-black text-slate-900">
+        <h2 className="mt-2 text-xl font-black text-slate-900">
           {score} / {total} correct
         </h2>
         <p className="text-slate-600">
@@ -425,7 +440,7 @@ function Recap({
 
       {sioId && (
         <div className="mt-5 text-left">
-          <BringToClass sioId={sioId} />
+          <BringToClass sioId={sioId} showEmpty />
         </div>
       )}
 
