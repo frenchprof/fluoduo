@@ -6,6 +6,26 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 4 Sep — staging docs (no-login bookmark)
+
+Sole editor of STATUS.md in this commit: cursor/staging-docs-8ea9.
+
+Docs only. Dan wants one Cloudflare URL he can refresh with **no Google
+login**, while live stays gated. `docs/STAGING.md` is the recipe:
+`NEXT_PUBLIC_OPEN_APP=1` on the **staging** CF env/build only; live leaves
+it unset; recommended bookmark `staging.fluoli.ngo`. `docs/DEPLOY.md` gets
+a short Staging pointer and a 4 Sep host table (probed: `fluoli.ngo` /
+withdrchan / `fluoguo.pages.dev` are CF live; `fluolingo.com` 302s to
+withdrchan; `frenchprof.github.io/fluoduo/` is the GH Pages preview, no
+Functions). `docs/FINISH_BACKLOG.md` item 18 and further-improvements get
+one line each.
+
+No `src/` change. The flag is not committed. `verify38` still bans it from
+deploy yaml.
+
+Shared: `DEPLOY.md`, `FINISH_BACKLOG.md`, `STATUS.md`. No open PRs on those
+when this branched.
+
 ## 3 Sep — three UI quick wins (flip cue, due streak, rain accents)
 
 Sole editor of STATUS.md in this commit: cursor/ui-quick-wins.
