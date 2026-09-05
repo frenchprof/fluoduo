@@ -38,6 +38,7 @@ import {
   SPECULEARN_EXCLUDED_ITEMS,
   SPECULEARN_ITEM_IMAGES,
   SPECULEARN_PROMPT_FRAME,
+  specuLearnColumns,
 } from "@/lib/collections/speculearnReady";
 import { deaccent, normalize } from "@/lib/practice/cloze";
 import { useChoiceKeys, CHOICE_KEYS_HINT } from "@/lib/useChoiceKeys";
@@ -108,11 +109,16 @@ function buildItems(collectionId: string): { items: DevItem[]; subtitle: string 
     return { items, subtitle: "Les aliments" };
   }
   const deck = CURATED.find((c) => c.id === collectionId);
+  // ONE DECK, ONE CATEGORY (see specuLearnColumns). commerces mixes shop
+  // nouns with whole utterances and a bag of article-less words; playing
+  // them together produced cards with no answer at all.
+  const cols = specuLearnColumns(collectionId);
   const items = (deck?.items ?? [])
     .filter(
       (it) =>
         it.fr &&
         !SPECULEARN_EXCLUDED_ITEMS.has(it.id) &&
+        (!cols || (it.tags ?? []).some((t) => cols.includes(t))) &&
         // A visual comes from EITHER the item's emoji (banned when it's a
         // building look-alike, see BUILDING_EMOJI) OR a purpose-made SVG
         // keyed by item id (SPECULEARN_ITEM_IMAGES) — never neither.
@@ -187,10 +193,24 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
 
   const pool = (): DevItem[] => retryRef.current ?? ITEMS;
 
+  // NO TWO OPTIONS MAY SHOW THE SAME PICTURE (Dan, 5 Sep, on « Je vous en
+  // mets combien ? »: "this seemes to have two answers possible"). commerces
+  // spent 💶 on both « euros » and « Ça fait combien ? » and 🪙 on both
+  // « monnaie » and « Voici votre monnaie » — in the word→image direction
+  // that is two identical buttons, one of them marked wrong.
+  const visualOf = (x: DevItem) => x.img ?? x.emoji ?? x.w;
   const distractors = (it: DevItem): DevItem[] => {
     const same = pool().filter((x) => x !== it);
     const base = same.length >= 3 ? same : ITEMS.filter((x) => x !== it);
-    return shuffle(base).slice(0, 3);
+    const seen = new Set([visualOf(it)]);
+    const out: DevItem[] = [];
+    for (const x of shuffle(base)) {
+      if (seen.has(visualOf(x))) continue;
+      seen.add(visualOf(x));
+      out.push(x);
+      if (out.length === 3) break;
+    }
+    return out;
   };
 
   const prepare = (q: Trial[], i: number) => {
@@ -252,7 +272,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
 
   /** One graded outcome — XP/streak/SRS + the teacher evidence trail (via
    *  the ladder, which stamps the assistance actually shown). */
-  const grade = (it: DevItem, good: boolean, given?: string) => {
+  const grade = (it: DevItem, good: boolean, given?: string, chosen?: DevItem) => {
     // The devine: prefix predates the SpecuLearn rename — kept so every
     // learner's SRS history for these words survives (ids are invisible).
     const first = ladder.ladder.wrongTries === 0 && !ladder.revealed;
@@ -277,21 +297,26 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
       speak(it.w, "fr-FR");
     } else {
       // Not final: strike the pick (mcq) / keep the mic open (say), retry.
-      if (selected) setStruck((k) => [...k, selected]);
+      // `chosen` over `selected`: a tap grades in the same event that sets
+      // the selection, so the state has not been flushed yet.
+      const struckPick = chosen ?? selected;
+      if (struckPick) setStruck((k) => [...k, struckPick]);
       setSelected(null);
       setRetry(true);
     }
   };
 
+  // TAP TO ANSWER — no Check (Dan, 5 Sep: "we should remove the Check
+  // button", and the same call on SpecuLearn's spec: "Tap to answer, no
+  // Check"). The two-step Check pretended a learner might change their mind,
+  // but the option they touched IS the answer they mean, and the second tap
+  // only stood between the guess and the feedback the whole activity exists
+  // to give.
   const pick = (o: DevItem) => {
-    if (locked || struckSet.has(o.w)) return;
+    if (locked || struckSet.has(o.w) || !t) return;
     setSelected(o);
-  };
-
-  const commit = (it: DevItem) => {
-    if (locked || !selected) return;
-    setPicked(selected);
-    grade(it, selected === it, selected.w);
+    setPicked(o);
+    grade(t.it, o === t.it, o.w, o);
   };
 
   const listen = (it: DevItem) => {
@@ -355,9 +380,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
       cta={
         screen === "end"
           ? { label: "↻ Play again", onClick: () => again(false) }
-          : t && (t.dir === "wi" || t.dir === "iw") && !locked && !retry
-            ? { label: "Check", onClick: () => commit(t.it), disabled: !selected }
-            : null
+          : null
       }
       help={screen === "quiz" ? ladder.help : null}
       secondary={

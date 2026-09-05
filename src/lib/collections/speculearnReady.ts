@@ -32,6 +32,41 @@ export const SPECULEARN_READY = [
   "objets-articles",
 ] as const;
 
+/**
+ * WHICH COLUMNS OF A DECK ARE PLAYABLE — category purity, enforced.
+ *
+ * Dan's own rule, first written for transport on 2026-08-24 ("we cannot have
+ * verb phrases alongside prepositional phrases") and broken by commerces ever
+ * since. That deck holds three different things at once:
+ *
+ *   col:un / col:une / col:des   shop nouns      🥖 boulangerie · 📚 librairie
+ *   col:client / col:marchand    whole utterances  « Ça fait combien ? »
+ *   (no column)                  bare words      euros · monnaie · prix ·
+ *                                                voudrais · ceci · voilà
+ *
+ * Drawn from one pool, a card asked 📚 and offered « une librairie », « Ça
+ * fait 5,89 euros. », « Ça fait combien ? » and « euros » — Dan, 5 Sep: "this
+ * question does not have an answer … or rather have the options show other
+ * shops instead". The untagged bag is worse than off-category: those items
+ * carry no article, so they showed as bare « monnaie » and « prix » — "monnaie
+ * cannot be itself lah, nouns need articles!", "same for le prix".
+ *
+ * So a deck may name the columns it plays. Everything outside them stays in
+ * Letris, Flip It and MCQ, where a sentence and a word can sit side by side
+ * without one pretending to answer the other.
+ *
+ * Absent from this map = the whole deck plays, which is the case for the eight
+ * decks that were already one category.
+ */
+export const SPECULEARN_DECK_COLUMNS: Record<string, readonly string[]> = {
+  commerces: ["col:un", "col:une", "col:des"],
+};
+
+/** The columns this deck plays, or null when it plays all of them. */
+export function specuLearnColumns(id: string): readonly string[] | null {
+  return SPECULEARN_DECK_COLUMNS[id] ?? null;
+}
+
 export function isSpecuLearnReady(id: string): boolean {
   return (SPECULEARN_READY as readonly string[]).includes(id);
 }
@@ -56,6 +91,13 @@ export const SPECULEARN_EXCLUDED_ITEMS = new Set([
   "commerces-04", // centre commercial — 🛍️ is any shopping at all
   "commerces-11", // boutique — every shop image "can be boutique"
   "commerces-13", // boutiques — and no image shows the plural
+  "commerces-27", // des euros — 💶 is money, not a shop, and the playable
+  //               commerces set is shops (Dan, 5 Sep: "have the options show
+  //               other shops instead"). The col:des tag added the same day
+  //               is for its ARTICLE — "euros should be des euros" — and
+  //               earns it a place in Letris's DES column; it is not an
+  //               invitation back into the picture game, where 💶 answered
+  //               to « euros », « prix » AND « Ça fait combien ? » at once.
   "lieux-letris-28-jardins-publics", // 🌳 already means parc in this deck
   "consignes-07", // Notez — 📝 vs ✍️ (Écrivez) both picture writing, and the
   //               words are near-synonyms: whichever is asked, the other is

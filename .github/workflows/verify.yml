@@ -386,3 +386,6 @@ jobs:
 
       - name: "Type is relative everywhere — no size nailed to a pixel (5 Sep)"
         run: python3 verify/verify102-fluidtype.py
+
+      - name: "A SpecuLearn card has exactly one answer (5 Sep)"
+        run: python3 verify/verify103-speculearn-cards.py

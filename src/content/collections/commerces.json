@@ -377,7 +377,9 @@
    "fr": "euros",
    "en": "euros",
    "emoji": "💶",
-   "tags": [],
+   "tags": [
+    "col:des"
+   ],
    "syllables": [
     "eu",
     "ros"
