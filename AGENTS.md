@@ -182,6 +182,26 @@ is glued on by the code rather than chosen. Dan looked at all five and said
 leave them. That is the ruling; this note records the reasoning so the next
 session does not spend an afternoon rediscovering the filter.
 
+# Plain English to Dan, always — permanent (2026-09-05)
+
+**Dan: *"please speak to me only in plainn english that i can understand and
+with concrete example so i don't have to imagine in the abstract. this is how
+miscomm happens, and i have been repeating this over and over and over
+again!"***
+
+Every message to Dan: no jargon, no abbreviations he has not used himself,
+and every abstract claim carries a concrete example from THIS app so he can
+see it instead of imagining it.
+
+    bad:   "this re-litigates the IA rulings"
+    good:  "this reopens decisions you already made — for example, 'the
+            bottom bar shows Goals, Practice, Games, Revise, Skills, in
+            that order'"
+
+If a term of art is unavoidable, define it in the same sentence in one
+plain clause. This is the show-don't-describe rule's sibling: that one says
+show the SCREEN, this one says show the MEANING.
+
 # Start here — every session (2026-08-17)
 
 Read `docs/STATUS.md` before anything else and update it before you stop. `HANDOFF.md`, `TODO.md` and `docs/planning/*` are historical.

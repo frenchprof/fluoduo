@@ -36,28 +36,51 @@
 # here: verify38 greps this file raw, so a comment mentioning it fails too.
 # That is deliberate.
 #
-# THE FIX, WHEN SOMEONE HAS THE SETTINGS PAGE OPEN: clear the custom domain in
-# Settings -> Pages and delete the root CNAME. GitHub then serves this artifact
-# at https://frenchprof.github.io/fluoduo/ again — which is the subpath
-# PAGES_BASE_PATH exists for — the redirect stops, the claim on fluolingo.com
-# is dropped, and this becomes the genuine preview it was written to be.
+# ── THAT FIX HAS BEEN DONE (between 2 and 5 Sep), so this header follows it ──
 #
-# DO NOT reintroduce PAGES_BASE_PATH here. verify91 refuses it while a CNAME
-# exists, which is the repo's one statement that a custom domain is in play.
+# Someone cleared the custom domain in Settings -> Pages. GitHub's own deploy
+# log is the receipt: actions/deploy-pages prints the URL this artifact is
+# really served at, on every single run.
+#
+#     2 Sep 08:27   Evaluated environment url: https://fluolingo.com/
+#     5 Sep 02:22   Evaluated environment url: https://frenchprof.github.io/fluoduo/
+#
+# So this is a PROJECT SITE at a SUBPATH again: reachable, claiming no
+# production hostname, and the phone preview it was written to be. Confirmed
+# independently from outside — docs/STAGING.md, 4 Sep, having actually opened
+# it: "its HTML asks for /_next/… at the github.io root (404); the files live
+# under /fluoduo/_next/".
+#
+# WHICH IS WHY PAGES_BASE_PATH IS BACK BELOW. It was dropped in #157 on the
+# then-correct reading that the artifact was served at fluolingo.com's root.
+# The moment the domain was cleared that reading inverted, and the same build
+# began emitting /_next/… for a site served at /fluoduo/ — the 17 Aug fault
+# again, mirrored.
+#
+# THE STANDING RULE, third time of asking. Whether this needs a subpath is not
+# a fact about the repository. It is a fact about a DASHBOARD SETTING nobody
+# working here can see, and it has now been changed by hand twice without the
+# build changing with it. So the workflow DECLARES the home it is building for,
+# one line below, and verify91 holds the build to that declaration in both
+# directions. When the setting changes, read the deploy log — the one source in
+# reach that cannot be a stale comment — and change the declaration with it.
 #
 # WHAT DOES NOT WORK ON THIS HOST, by design:
 #   /api/tutor, /api/tts, /api/correct, /api/compose
 # Those are Cloudflare Pages Functions — real server-side code holding the API
-# key. GitHub Pages has no server, so on fluolingo.com ChaTutor, text-to-speech
-# and Compose's answer-checking fail; they work on fluolingo.withdrchan.com.
-# Everything else — decks, games, drills, /moi, /teacher — runs in the browser
-# against Firebase and works on both.
+# key. GitHub Pages has no server, so ChaTutor, text-to-speech and Compose's
+# answer-checking fail HERE and work on the Cloudflare hosts.
+#
+# AND THIS IS NOT THE NO-LOGIN HOST (Dan, 5 Sep: "staging and fluoduo.pages.dev
+# is meant for developer use (so no log in)"). The wall stays up here; the
+# signed-out developer surface is a Cloudflare build with the open-app flag set
+# in ITS dashboard, never in this repo. docs/STAGING.md is the recipe.
 #
 # BEFORE THE FIRST RUN, one manual step (otherwise sign-in fails and /moi and
 # /teacher show nothing):
 #   Firebase console → Authentication → Settings → Authorised domains
-#   → Add domain → fluolingo.com
-name: Deploy fluolingo.com (GitHub Pages)
+#   → Add domain → frenchprof.github.io
+name: Preview to GitHub Pages
 
 on:
   workflow_dispatch:          # run it by hand from the Actions tab
@@ -93,12 +116,18 @@ jobs:
 
       - run: npm ci
 
-      # AT THE ROOT, because a custom domain serves the site at the root. This
-      # step used to set PAGES_BASE_PATH=/fluoduo, which was right for exactly
-      # as long as the address was frenchprof.github.io/fluoduo/ — a window
-      # that closed the day fluolingo.com was pointed here, in the very same
-      # commit. See the header.
-      - name: Build the static export
+      # THE DECLARATION, and the build that follows from it. PAGES_HOME is the
+      # repo's written record of what the deploy log last said; PAGES_BASE_PATH
+      # is what that record requires. verify91 checks the second against the
+      # first, so the two cannot drift the way the build and the dashboard did
+      # — twice.
+      #
+      #   subpath  ->  https://frenchprof.github.io/fluoduo/   needs /fluoduo
+      #   root     ->  a custom domain, e.g. https://example.com/   needs none
+      - name: Build the static export at the /fluoduo subpath
+        env:
+          PAGES_HOME: subpath        # from the deploy log, 5 Sep 02:22
+          PAGES_BASE_PATH: /fluoduo
         run: npm run build
 
       # Without this, GitHub Pages runs Jekyll, which strips any directory
