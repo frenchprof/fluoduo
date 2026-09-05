@@ -8,6 +8,15 @@ Only ONE agent edits this file at a time; say so in your commit.
 
 ## 5 Sep — the highlighter mark becomes the site icon (supersedes the entry below)
 
+**Amended within the hour: Violet, not Pink.** Dan: *"it is nice but can we pick
+the next strongest block"*. Violet is second on block-against-paper (2.67 to
+Pink's 2.79) and FIRST on the top stroke (4.60, the best of all twenty-four), so
+the swap costs 0.12 on one number and gains on the other. Four hue buckets, three
+on the two smaller files — clear of verify95-icons' polychrome floor either way.
+Shipped values: block #b17eff, top stroke #9832ff, mouth #8ca600, rings #9200fe.
+The paragraphs below describe the Pink build; everything in them holds except the
+four colours.
+
 Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
 
 **Read this before the next entry.** That one recoloured the F-g mark's shell to
