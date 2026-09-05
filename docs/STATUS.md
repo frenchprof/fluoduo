@@ -6,6 +6,24 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 5 Sep evening — SpecuLearn commerces chrome is English (PR #182)
+
+Sole editor of STATUS.md in this commit: cursor/pre-tests-en-chrome.
+
+Locked copy on `claude/pre-tests-amendments-hndx8r` (Ped/UX/FR REQUEST CHANGES).
+No images touched.
+
+- Deck title in `src/content/collections/commerces.json` is now **Shops & market**.
+  The French subtitle and every FR answer string stay as they were.
+- SpecuLearn instructions: **Pick the right picture.** / **Pick the right word.**
+- The title band no longer wears `lang="fr"` on commerces, so a screen reader
+  does not announce “Shops & market” as French. Other SpecuLearn decks still
+  show their French titles with `lang="fr"`.
+
+Open it: Practice → SpecuLearn → Shops & market, or go to
+`/practice/speculearn/commerces`. The pictures and the French options
+(« Je voudrais deux kilos de pommes. ») are unchanged.
+
 ## 5 Sep evening — SpecuLearn commerces photos are real PNGs
 
 Sole editor of STATUS.md in this commit: cursor/speculearn-commerces.
