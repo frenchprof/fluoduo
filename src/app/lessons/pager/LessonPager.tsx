@@ -620,6 +620,18 @@ function ExerciseCard({
   // two-column cell at 24px takes a full-width row instead of dropping a size.
   const FR_CELL = FR_TEXT === "text-2xl" ? STACK_ABOVE_2XL : STACK_ABOVE;
 
+  /** Dan's exception, 2026-09-05: *"except maybe the single worded choices"*.
+   *  A one-word option is a token you pick — the body face fits tighter and a
+   *  grid of them stays scannable. An option that is a whole sentence is read,
+   *  so it takes the same hand as the prompt above it. */
+  //
+  // TEST THE LABEL, NOT THE VALUE. `c` on an MCQ card is the WHOLE sentence
+  // even when `optionSplit` reduces the button to the one word that differs —
+  // « Mes couleurs préférées sont… » rendered as « Mes ». Testing `c` put the
+  // hand on every such button, which is precisely the case Dan excepted.
+  const handIfSentence = (label: string | null | undefined) =>
+    /\s/.test(label ?? "") ? "card-hand" : "font-semibold";
+
   /** Nothing may sit between the blank and what follows it: sentence-final
    *  punctuation, or the noun an elided « l' » is glued to. */
   const gluesRight = (after: string | undefined) =>
@@ -677,7 +689,7 @@ function ExerciseCard({
   return (
     <div className="space-y-4 pt-2">
       {ex.meta && (
-        <p className="text-center text-xs font-bold uppercase tracking-wider text-[color:var(--cahier-ink)]/60">{ex.meta}</p>
+        <p className="card-hand text-center text-xs uppercase tracking-wider text-[color:var(--cahier-ink)]/60">{ex.meta}</p>
       )}
       {ex.big && (() => {
         // An EN->FR prompt is a REFERENCE to build from, not a target to read
@@ -689,7 +701,7 @@ function ExerciseCard({
             className={
               english
                 ? `text-center ${EN_TEXT}`
-                : `text-center ${FR_TEXT} font-bold leading-snug text-[color:var(--cahier-ink)]`
+                : `card-hand text-center ${FR_TEXT} leading-snug text-[color:var(--cahier-ink)]`
             }
             lang={english ? "en" : "fr"}
           >
@@ -699,7 +711,7 @@ function ExerciseCard({
       })()}
       {ex.segments && (
         <>
-          <p className={`text-center ${FR_TEXT} font-bold leading-snug text-[color:var(--cahier-ink)]`} lang="fr">
+          <p className={`card-hand text-center ${FR_TEXT} leading-snug text-[color:var(--cahier-ink)]`} lang="fr">
             {ex.segments.map((sg, n) =>
               sg.kind === "text" ? (
                 <span key={n}>{sg.text}</span>
@@ -755,7 +767,7 @@ function ExerciseCard({
                         disabled={answered}
                         onClick={() => onPick(b, c)}
                         style={!answered && !isPicked ? groupWash(b) : undefined}
-                        className={`rounded-lg border-2 px-3 py-2 ${FR_TEXT} font-semibold text-[color:var(--cahier-ink)] transition ${cls}`}
+                        className={`rounded-lg border-2 px-3 py-2 ${FR_TEXT} ${handIfSentence(c)} text-[color:var(--cahier-ink)] transition ${cls}`}
                       >
                         {c}
                       </button>
@@ -792,7 +804,7 @@ function ExerciseCard({
 
       {/* The frame the options were all repeating, hoisted and read once. */}
       {optionSplit && (
-        <p className={`text-center ${FR_TEXT} font-bold leading-snug text-[color:var(--cahier-ink)]`}>
+        <p className={`card-hand text-center ${FR_TEXT} leading-snug text-[color:var(--cahier-ink)]`}>
           <span lang="fr">{tightPunct(optionSplit.before)}</span>
           <span className={blankClass(!!shown?.trim(), gluesRight(optionSplit.after))} lang="fr">
             {shown?.trim() ? partOf(shown) : <span className="opacity-40">?</span>}
@@ -829,7 +841,7 @@ function ExerciseCard({
                 // MCQ card, and the English prompt above them is sized to
                 // match. Left at 16px the target read smaller than its own
                 // reference line.
-                className={`rounded-xl border-2 px-4 py-3 text-center ${FR_TEXT} font-bold transition ${cls}`}
+                className={`rounded-xl border-2 px-4 py-3 text-center ${FR_TEXT} ${handIfSentence(optionSplit ? optionSplit.parts[n] : c)} transition ${cls}`}
               >
                 {!answered && (
                   <span aria-hidden className="mr-2 text-xs font-bold opacity-50">{n + 1}</span>

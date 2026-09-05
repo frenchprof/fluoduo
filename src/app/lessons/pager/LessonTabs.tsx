@@ -733,7 +733,26 @@ export default function LessonTabs({
           is how "Words" once vanished off the end of the strip. Shown to Dan
           against no-emoji and tightened-padding variants; he chose this and
           sent the four emoji himself. */}
-      <div role="tablist" aria-label="Lesson sections" className="grid grid-cols-4 gap-1 pb-2">
+      {/* THE DOTTED LINE IS THE FREEZE BOUNDARY (Dan, 2026-09-05, drawing it on
+          a screenshot: *"the dotted line needs to be the separation line
+          between the frozen part and the scrollable part"*).
+
+          Most of the freeze was already there and invisible, which is why it
+          needed saying: the site bar is `sticky top-0 z-30`, the ✕ MneMemo band
+          sits above DrillShell's content, and the SCROLLER is an inner
+          `overflow-y-auto` div — measured on a long Formes panel at 390px, 2512
+          scrollable inside 516 visible. So `top-0` here is the top of THAT
+          scroller, not of the window, and the first attempt's 96px offset (bar
+          + band) was measuring the wrong box.
+
+          What was missing was the strip itself and the line. The strip needs an
+          opaque ground: it scrolls over ruled paper, and a transparent sticky
+          element shows the rules sliding through the tabs. */}
+      <div
+        role="tablist"
+        aria-label="Lesson sections"
+        className="sticky top-0 z-10 grid grid-cols-4 gap-1 border-b-2 border-dashed border-[color:var(--cahier-ink)]/35 bg-[color:var(--cahier-paper)] pb-2"
+      >
         {TABS.map((t) => {
           const on = t.key === tab;
           return (

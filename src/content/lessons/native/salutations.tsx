@@ -209,7 +209,7 @@ export const salutationsLesson: NativeLesson = {
       <>
         English gets by on <i>hi</i> and <i>bye</i> — any hour, anyone, coming or
         going. French splits the same job four ways, and which way you are in
-        decides what you may say. The four are shorter to learn than the list.
+        decides what you may say.
       </>
     ),
     question: (
