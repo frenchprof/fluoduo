@@ -383,3 +383,6 @@ jobs:
 
       - name: "The highlighter marks: 24 colour sets, one geometry (5 Sep)"
         run: python3 verify/verify97-highlighter-marks.py
+
+      - name: "Type is relative everywhere — no size nailed to a pixel (5 Sep)"
+        run: python3 verify/verify102-fluidtype.py
