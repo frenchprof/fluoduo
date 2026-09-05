@@ -26,7 +26,7 @@
  * drags the page right and reveals what is to its left, so from here it goes
  * to the map. Leftwards goes forward, into this goal's lesson.
  */
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import GoalCard from "@/components/GoalCard";
 import { SIOS, type Sio } from "@/content/sios";
@@ -45,13 +45,79 @@ export default function SioScroller({ id }: { id: string }) {
   const from = useRef<{ x: number; y: number } | null>(null);
   const current = useRef(id);
 
+  /* THE SCROLL HAPPENS BEHIND A FROZEN HEADER (Dan, 2026-09-05), and that only
+     works if the WINDOW does not scroll as well. It did: the height here was a
+     guessed `100dvh - 190px`, which left the document 162px taller than the
+     viewport at 390x840, so the site bar scrolled off the top while the goals
+     were still snapping underneath — two scrollers, one of them undoing the
+     freeze.
+   *
+   * Measured instead of guessed, and measured the only way that stays true when
+   * the band, the bottom bar or the phone's toolbars change: collapse this box
+   * to nothing, ask the document how tall the REST of the page is, and take
+   * what is left. No constant to go stale.
+   *
+   * The height is written to the node rather than to state on purpose — a
+   * measure-then-setState in an effect is the `set-state-in-effect` fault this
+   * repo has 130 of, and it would render twice for a value the DOM already has.
+   */
+  /* LOCK THE DOCUMENT WHILE THIS PAGE IS UP.
+   *
+   * "Behind a frozen header" needs the header to be incapable of moving, and
+   * on this shell fitting the content cannot deliver that: `.cahier-page` is
+   * `min-h-screen`, so the document is at least a viewport tall BEFORE the
+   * desk's padding and the footer beneath it — measured, 162px of window scroll
+   * that no height given to the goals could remove.
+   *
+   * Sticky is no escape either. `.cahier-page` is `overflow: hidden`, which
+   * makes it the containing block for a sticky child, so a `position: sticky`
+   * band inside it never sees the window scroll at all — measured, having first
+   * shipped exactly that band and watched it slide off the top.
+   *
+   * So the window is taken out of the equation for the life of this page, which
+   * is what a full-screen scroller means. The footer is out of reach here and
+   * on every other page it is not.
+   */
+  useEffect(() => {
+    const html = document.documentElement;
+    const prev = html.style.overflow;
+    html.style.overflow = "hidden";
+    return () => { html.style.overflow = prev; };
+  }, []);
+
+  useLayoutEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    const fit = () => {
+      // Collapse first, so this box's height cannot be part of the sum.
+      el.style.height = "0px";
+      // The bottom bar is `position: fixed` and `display:none` above sm, so it
+      // overlays rather than adds height — ask it, do not assume.
+      const nav = document.querySelector<HTMLElement>(".cahier-bottombar");
+      const navH = nav && getComputedStyle(nav).display !== "none"
+        ? nav.getBoundingClientRect().height
+        : 0;
+      const top = el.getBoundingClientRect().top + window.scrollY;
+      el.style.height = `${Math.max(240, window.innerHeight - top - navH)}px`;
+    };
+    fit();
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+  }, []);
+
   // LAND ON THE GOAL YOU CAME FROM, without animating fifty screens to get
   // there. `scrollIntoView({ behavior: "instant" })` inside an effect runs
   // after layout, so the section has its height; doing this during render
   // would scroll to a box that is still zero tall.
   useEffect(() => {
     const el = document.getElementById(`goal-${id}`);
-    el?.scrollIntoView({ behavior: "instant", block: "start" });
+    const boxEl = box.current;
+    if (!el || !boxEl) return;
+    // `scrollTop`, NOT `scrollIntoView`: that scrolls every ancestor including
+    // the window, so opening SIO-015 scrolled the PAGE down 174px and took the
+    // frozen header off the top with it — the opposite of what it is for. This
+    // moves the goals and nothing else.
+    boxEl.scrollTop = el.offsetTop;
   }, [id]);
 
   // Keep the URL honest as the magnet moves, so a reload and the browser's

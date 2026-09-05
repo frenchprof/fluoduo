@@ -35,7 +35,12 @@ export default async function SioPage({ params }: { params: Promise<{ id: string
   const sio = getSio(id);
   if (!sio) notFound();
   return (
-    <CahierShell active="home" band={{ title: "Goals", exitHref: "/map" }}>
+    /* `active="sio"` and not "home": SITE_FAMILY already maps `sio` to the
+       goals family, and CahierShell draws its heading band only when a family
+       resolves AND the key is not "home" (Home keeps its hero instead). Passing
+       "home" here meant the page rendered with no band at all — the frozen
+       header Dan asked the goals to scroll behind did not exist. */
+    <CahierShell active="sio" band={{ title: "Goals", exitHref: "/map" }}>
       <div className="mx-auto max-w-3xl">
         <SioScroller id={sio.id} />
       </div>
