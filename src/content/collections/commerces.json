@@ -29,6 +29,16 @@
      "prefix": "des "
     },
     {
+     "key": "le",
+     "label": "Le ___",
+     "prefix": "le "
+    },
+    {
+     "key": "la",
+     "label": "La ___",
+     "prefix": "la "
+    },
+    {
      "key": "client",
      "label": "🧺 LE CLIENT",
      "prefix": "",
@@ -390,7 +400,9 @@
    "fr": "monnaie",
    "en": "change (money)",
    "emoji": "🪙",
-   "tags": [],
+   "tags": [
+    "col:la"
+   ],
    "syllables": [
     "mon",
     "naie"
@@ -442,7 +454,9 @@
    "fr": "prix",
    "en": "price",
    "emoji": "🏷️",
-   "tags": [],
+   "tags": [
+    "col:le"
+   ],
    "syllables": [
     "prix"
    ]

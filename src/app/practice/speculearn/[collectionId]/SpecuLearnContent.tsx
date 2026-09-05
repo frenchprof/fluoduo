@@ -147,6 +147,15 @@ function getRec(): RecLike | null {
 }
 
 type Trial = { it: DevItem; dir: Dir };
+/** One answered question, frozen. */
+type Snap = {
+  t: Trial;
+  opts: DevItem[];
+  picked: DevItem | null;
+  locked: boolean;
+  verdictGood: boolean | null;
+  struckSet: Set<string>;
+};
 
 function Visual({ it, className }: { it: DevItem; className: string }) {
   return it.img ? (
@@ -179,6 +188,14 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
   // Select-then-commit (patch 20–21): tapping an option SELECTS; the shell's
   // Vérifier COMMITS. Speech trials commit on the mic result as before.
   const [selected, setSelected] = useState<DevItem | null>(null);
+  // GOING BACK (Dan, 5 Sep: "for SpecuLearn we are missing the back button").
+  // Every question already answered is kept exactly as the learner left it —
+  // its four options in the order they were shown, what they picked, whether
+  // it was right — so ‹ shows that question again rather than a summary of
+  // it. Reviewing never re-grades: the snapshot is locked, which is the same
+  // flag that already stops a second tap on the live question.
+  const [past, setPast] = useState<Snap[]>([]);
+  const [viewing, setViewing] = useState<number | null>(null);
   const [heard, setHeard] = useState("");
   const [listening, setListening] = useState(false);
   const [opts, setOpts] = useState<DevItem[]>([]);
@@ -228,6 +245,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
       dir: (mode === "mix" ? (Math.random() < 0.5 ? "wi" : "iw") : mode) as Dir,
     }));
     setQueue(q); setIdx(0); setScore(0); setWrong([]);
+    setPast([]); setViewing(null);
     void logEvent("game.start", { game: "speculearn", collectionId });
     setScreen("quiz");
     prepare(q, 0);
@@ -313,7 +331,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
   // only stood between the guess and the feedback the whole activity exists
   // to give.
   const pick = (o: DevItem) => {
-    if (locked || struckSet.has(o.w) || !t) return;
+    if (locked || struckSet.has(o.w) || !t || viewing !== null) return;
     setSelected(o);
     setPicked(o);
     grade(t.it, o === t.it, o.w, o);
@@ -343,6 +361,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
 
   const next = () => {
     if (!locked) return;
+    if (t) setPast((k) => [...k, { t, opts, picked, locked: true, verdictGood, struckSet }]);
     ladder.skip();
     if (idx + 1 >= queue.length) {
       void logEvent("game.end", { game: "speculearn", collectionId, score });
@@ -361,7 +380,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
 
   useChoiceKeys({
     count: opts.length,
-    enabled: screen === "quiz" && !!t,
+    enabled: screen === "quiz" && !!t && viewing === null,
     onPick: (i) => { const o = opts[i]; if (o && t && !locked) pick(o); },
     // DrillShell's own Enter/Space binding fires the tray's Continue.
     onNext: undefined,
@@ -370,11 +389,31 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
   });
   const card = "rounded-2xl border-2 border-[color:var(--cahier-ink)]/25 bg-white p-3";
 
+  // WHAT THE SCREEN SHOWS — the live question, or the frozen one being
+  // reviewed. Everything below reads `v`, so a reviewed question is drawn by
+  // exactly the same code that drew it the first time; nothing renders from
+  // the live state while `viewing` is set, and nothing grades either.
+  const v: Snap | null =
+    viewing == null
+      ? (t ? { t, opts, picked, locked, verdictGood, struckSet } : null)
+      : (past[viewing] ?? null);
+  const reviewing = viewing != null;
+  const goBack = () => {
+    if (viewing == null) { if (past.length) setViewing(past.length - 1); }
+    else if (viewing > 0) setViewing(viewing - 1);
+  };
+  const leaveReview = () => setViewing(null);
+
   return (
     <DrillShell
       activity="speculearn"
       deck={collectionId}
       exitHref={drillExitHref(collectionId)}
+      back={
+        screen === "quiz" && (past.length > 0)
+          ? { onClick: goBack, disabled: reviewing && viewing === 0 }
+          : null
+      }
       progress={screen === "quiz" && queue.length > 0 ? { done: idx, total: queue.length } : null}
       right={<>{score} pt</>}
       cta={
@@ -382,29 +421,39 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
           ? { label: "↻ Play again", onClick: () => again(false) }
           : null
       }
-      help={screen === "quiz" ? ladder.help : null}
+      help={screen === "quiz" && !reviewing ? ladder.help : null}
       secondary={
         screen === "end" && wrong.length > 0
           ? { label: `Redo my mistakes (${[...new Set(wrong)].length})`, onClick: () => again(true) }
           : null
       }
       feedback={
-        screen === "quiz" && t && retry && !locked
+        reviewing && v
           ? {
-              kind: "wrong",
-              body: ladder.revealed ? <span lang="fr">→ {t.it.w}</span> : "Not yet",
-              cta: { label: isSay ? (ladder.revealed ? "Say it" : "Try again") : "Pick again", onClick: () => setRetry(false) },
-            }
-          : screen === "quiz" && t && locked
-          ? {
-              kind: verdictGood ? "correct" : "wrong",
+              kind: v.verdictGood ? "correct" : "wrong",
               body: (
                 <>
-                  {verdictGood ? "Bravo !" : "Not quite…"}
-                  <button type="button" onClick={() => speak(t.it.w, "fr-FR")} className="ml-2 font-black" style={{ color: t.it.color }}>
-                    {t.it.w} 🔊
+                  Question {(viewing ?? 0) + 1} of {queue.length}, already answered.
+                </>
+              ),
+              cta: { label: "Back to where I was ›", onClick: leaveReview },
+            }
+          : screen === "quiz" && v && retry && !v.locked
+          ? {
+              kind: "wrong",
+              body: ladder.revealed ? <span lang="fr">→ {v.t.it.w}</span> : "Not yet",
+              cta: { label: isSay ? (ladder.revealed ? "Say it" : "Try again") : "Pick again", onClick: () => setRetry(false) },
+            }
+          : screen === "quiz" && v && v.locked
+          ? {
+              kind: v.verdictGood ? "correct" : "wrong",
+              body: (
+                <>
+                  {v.verdictGood ? "Bravo !" : "Not quite…"}
+                  <button type="button" onClick={() => speak(v.t.it.w, "fr-FR")} className="ml-2 font-black" style={{ color: v.t.it.color }}>
+                    {v.t.it.w} 🔊
                   </button>
-                  {t.it.tag && <span className="ml-2 text-xs font-medium italic opacity-80">{t.it.tag}</span>}
+                  {v.t.it.tag && <span className="ml-2 text-xs font-medium italic opacity-80">{v.t.it.tag}</span>}
                 </>
               ),
               cta: { label: idx + 1 >= queue.length ? "Result" : "Continue", onClick: next },
@@ -413,7 +462,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
       }
     >
       <div className="mx-auto w-full max-w-2xl">
-        {screen === "quiz" && t && (
+        {screen === "quiz" && v && (
           <div>
             <p
               className="min-w-0 truncate text-center text-xs font-bold text-[color:var(--cahier-ink-soft)]"
@@ -430,52 +479,52 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
             )}
 
             <div className={`${card} mt-3 text-center`}>
-              {(t.dir === "say-t" || t.dir === "say-s") ? (
+              {(v.t.dir === "say-t" || v.t.dir === "say-s") ? (
                 <>
                   <p className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">
-                    {t.dir === "say-t" ? "Listen, then say it out loud" : "What is it? Say it in French!"}
+                    {v.t.dir === "say-t" ? "Listen, then say it out loud" : "What is it? Say it in French!"}
                   </p>
-                  <Visual it={t.it} className="mx-auto mt-3 h-40 w-40 rounded-xl border-2 border-[color:var(--cahier-ink)]/20" />
-                  {t.dir === "say-t" && (
-                    <button type="button" onClick={() => speak(t.it.w, "fr-FR")} className="mt-2 text-xl font-black" style={{ color: t.it.color }} title="🔊">
-                      {t.it.w} 🔊
+                  <Visual it={v.t.it} className="mx-auto mt-3 h-40 w-40 rounded-xl border-2 border-[color:var(--cahier-ink)]/20" />
+                  {v.t.dir === "say-t" && (
+                    <button type="button" onClick={() => speak(v.t.it.w, "fr-FR")} className="mt-2 text-xl font-black" style={{ color: v.t.it.color }} title="🔊">
+                      {v.t.it.w} 🔊
                     </button>
                   )}
                   <div className="mt-3 flex items-center justify-center gap-2">
-                    {t.dir === "say-t" && (
-                      <button type="button" onClick={() => speak(t.it.w, "fr-FR")} className="fluo-btn fluo-btn-sm">🔊 Listen again</button>
+                    {v.t.dir === "say-t" && (
+                      <button type="button" onClick={() => speak(v.t.it.w, "fr-FR")} className="fluo-btn fluo-btn-sm">🔊 Listen again</button>
                     )}
                     <button
                       type="button"
-                      onClick={() => listen(t.it)}
+                      onClick={() => listen(v.t.it)}
                       className={`fluo-btn fluo-btn-sm ${listening ? "!bg-rose-600 !text-white" : ""}`}
-                      disabled={locked}
+                      disabled={v.locked}
                     >
                       {listening ? "⏹ Listening…" : "🎤 Say it"}
                     </button>
                   </div>
                   {heard && <p className="mt-2 text-sm italic text-[color:var(--cahier-ink-soft)]">« {heard} »</p>}
                 </>
-              ) : t.dir === "wi" ? (
+              ) : v.t.dir === "wi" ? (
                 <>
                   <p className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">Pick the right picture.</p>
-                  <button type="button" onClick={() => speak(t.it.w, "fr-FR")} className="mt-1 text-2xl font-black" style={{ color: t.it.color }} title="🔊">
-                    {t.it.w} 🔊
+                  <button type="button" onClick={() => speak(v.t.it.w, "fr-FR")} className="mt-1 text-2xl font-black" style={{ color: v.t.it.color }} title="🔊">
+                    {v.t.it.w} 🔊
                   </button>
                   <div className="mt-3 grid grid-cols-2 gap-2">
-                    {opts.map((o, i) => (
+                    {v.opts.map((o, i) => (
                       <button
                         key={o.w}
                         type="button"
                         onClick={() => pick(o)}
-                        disabled={struckSet.has(o.w)}
+                        disabled={v.struckSet.has(o.w)}
                         className={`relative overflow-hidden rounded-xl border-2 transition ${
-                          !locked && struckSet.has(o.w)
+                          !v.locked && v.struckSet.has(o.w)
                             ? "border-slate-200 opacity-30 grayscale"
-                            : locked
-                            ? o === t.it
+                            : v.locked
+                            ? o === v.t.it
                               ? "border-emerald-600 ring-2 ring-emerald-400"
-                              : o === picked
+                              : o === v.picked
                                 ? "border-rose-600 opacity-70"
                                 : "border-slate-200 opacity-40"
                             : o === selected
@@ -492,25 +541,25 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
               ) : (
                 <>
                   <p className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">Pick the right word.</p>
-                  <Visual it={t.it} className="mx-auto mt-2 h-40 w-40 rounded-xl border-2 border-[color:var(--cahier-ink)]/20" />
+                  <Visual it={v.t.it} className="mx-auto mt-2 h-40 w-40 rounded-xl border-2 border-[color:var(--cahier-ink)]/20" />
                   <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                    {opts.map((o, i) => (
+                    {v.opts.map((o, i) => (
                       <button
                         key={o.w}
                         type="button"
                         onClick={() => pick(o)}
-                        disabled={struckSet.has(o.w)}
+                        disabled={v.struckSet.has(o.w)}
                         className={`rounded-xl border-2 px-3 py-2.5 text-base font-bold transition ${
-                          !locked && struckSet.has(o.w)
+                          !v.locked && v.struckSet.has(o.w)
                             ? "border-slate-200 text-slate-300 line-through"
-                            : locked
-                            ? o === t.it
+                            : v.locked
+                            ? o === v.t.it
                               ? "border-emerald-600 bg-emerald-50 text-emerald-900"
-                              : o === picked
+                              : o === v.picked
                                 ? "border-rose-600 bg-rose-50 text-rose-900 line-through"
                                 : "border-slate-200 text-slate-400"
                             : o === selected
-                              ? "answer-picked"
+                              ? "answer-v.picked"
                               : "border-slate-300 bg-white text-slate-800 hover:border-slate-900"
                         }`}
                       >
@@ -525,7 +574,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
           </div>
         )}
 
-        {screen === "quiz" && !t && (
+        {screen === "quiz" && !v && (
           <p className="py-10 text-center text-sm text-[color:var(--cahier-ink-soft)]">
             {ITEMS.length === 0 ? "Nothing to guess in this deck." : "…"}
           </p>
