@@ -158,7 +158,15 @@ function PretestRunner({ pretest }: { pretest: Pretest }) {
   }
 
   return (
-    <div className="speculearn-stage mx-auto max-w-3xl px-4 py-8">
+    <div className="speculearn-stage mx-auto max-w-3xl px-4 pb-8 pt-4">
+      {/* THE COUNTER COMES FIRST, RIGHT UNDER THE COLOURED STRIP (Dan,
+          5 Sep: "i think the counter should appear first, after the colore
+          strip"). It used to sit below Skip / TTS, so the first thing under
+          the band was two grey pills a learner rarely touches, and where they
+          were in the set — the one number they check on every question — came
+          second. */}
+      <ProgressBar current={Math.min(step, total)} total={total} score={score} />
+
       <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
         <div>
           {/* The title moved to the band (1 Sep); the subtitle stays, because
@@ -192,8 +200,6 @@ function PretestRunner({ pretest }: { pretest: Pretest }) {
           </button>
         </div>
       </header>
-
-      <ProgressBar current={Math.min(step, total)} total={total} score={score} />
 
       {!done && item && (
         <ItemCard
