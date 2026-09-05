@@ -341,6 +341,9 @@ jobs:
       - name: "Every game shows the volume button, and the bar stays put (2 Sep)"
         run: python3 verify/verify90-game-volume.py
 
+      - name: "Class bag copy locked; soft-auth at save, never mid-guess (5 Sep)"
+        run: python3 verify/verify93-class-bag-soft-auth.py
+
       - name: "SIO-010 keys Enchantée for Léa; Libéria carries its accent (3 Sep)"
         # Renumbered 91 -> 92 at the QC merge — sixth collision: pages-basepath
         # claimed 91 the same morning and landed first (#157).
