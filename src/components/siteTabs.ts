@@ -25,7 +25,16 @@ import type { ShellTab } from "@/components/CahierShell";
 import { UNIT_META } from "@/content/sios";
 import { FAMILIES, navigableActivities } from "@/content/activities";
 
-/** Unit accent hues — match the fluo-h-* section palette. */
+/** Unit accent hues — match the fluo-h-* section palette.
+ *
+ *  These are NOT rolled into the families (2026-09-05). An activity's colour
+ *  says which family it belongs to and had no business being hand-picked; a
+ *  unit's colour says which unit, which is a different fact and a real one.
+ *  What they DID share is the readability fault: an active flap paints its hue
+ *  behind `--cahier-ink`, and three of these five sit under 4.5:1 there
+ *  (#e0567f 2.86, #8a5fd4 2.30, #e8852e 3.86). So the accent stays the 6px
+ *  stripe and the FILL is a 14% wash of it — same colour, same meaning, dark
+ *  ink readable on top. */
 export const UNIT_ACCENTS: Record<number, string> = {
   0: "#e0567f",
   1: "#2bb6c2",
@@ -51,6 +60,7 @@ export function siteTabs(): ShellTab[] {
     emoji: UNIT_META[u]?.emoji ?? "📚",
     href: `/unit/${u}`,
     hue: UNIT_ACCENTS[u],
+    fill: `color-mix(in oklab, ${UNIT_ACCENTS[u]} 14%, var(--cahier-paper))`,
   }));
 }
 
@@ -71,13 +81,18 @@ export function toolTabs(): ShellTab[] {
   return [
     // "Map", not "Carte" (Dan, 2026-09-01) — the interface is English; the key
     // and the /carte redirect route are untouched, display rename only.
-    { key: "map", label: "Map", emoji: "🗺️", href: "/map", hue: "#5b8def" },
+    // The map belongs to 🎯 Goals (SITE_FAMILY says so), so it wears that pen
+    // rather than the #5b8def it had been carrying since before the families
+    // were the highlighters — the same fault as the sixteen activity hexes.
+    { key: "map", label: "Map", emoji: "🗺️", href: "/map",
+      hue: "var(--fam-goals)", fill: "var(--fam-goals-wash)" },
     ...navigableActivities().map((a) => ({
       key: a.key,
       label: a.name,
       emoji: a.emoji,
       href: a.href as string,
       hue: a.hue,
+      fill: a.fill,
     })),
   ];
 }
@@ -92,6 +107,6 @@ export function familyTabs(): { family: string; emoji: string; href: string; tab
     href: f.href,
     tabs: all
       .filter((a) => a.family === f.key)
-      .map((a) => ({ key: a.key, label: a.name, emoji: a.emoji, href: a.href as string, hue: a.hue })),
+      .map((a) => ({ key: a.key, label: a.name, emoji: a.emoji, href: a.href as string, hue: a.hue, fill: a.fill })),
   }));
 }

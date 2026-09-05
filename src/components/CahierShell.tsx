@@ -28,7 +28,7 @@ import { auth } from "@/lib/firebase/client";
 import { logEvent } from "@/lib/firebase/usage";
 import { siteTabs, toolTabs, tabsWithActive } from "@/components/siteTabs";
 import SiteTopBar from "@/components/SiteTopBar";
-import TabFlap, { hueOf, type ShellTab } from "@/components/TabFlap";
+import TabFlap, { fillOf, hueOf, type ShellTab } from "@/components/TabFlap";
 import { getPretestForSio } from "@/content/pretests";
 import { UNIT0_QUESTIONS } from "@/content/sios/unit0-questions";
 import { getLetrisSet } from "@/games/letris/sets";
@@ -211,7 +211,7 @@ export default function CahierShell({
             which Dan kept as flaps. */}
         <nav className="cahier-tabs" aria-label="This page">
           {context.map((t, i) => (
-            <TabFlap key={t.key} tab={t} hue={hueOf(t, i)} active={active === t.key} className="cahier-tab cahier-tab--sm" />
+            <TabFlap key={t.key} tab={t} hue={hueOf(t, i)} fill={fillOf(t, i)} active={active === t.key} className="cahier-tab cahier-tab--sm" />
           ))}
         </nav>
         <FirstTour />
@@ -272,7 +272,7 @@ function trackSupplementOpen(
  */
 function registryTab(key: string, href: string): ShellTab {
   const a = activity(key);
-  return { key, label: a?.name ?? key, emoji: a?.emoji ?? "", href, hue: a?.hue };
+  return { key, label: a?.name ?? key, emoji: a?.emoji ?? "", href, hue: a?.hue, fill: a?.fill };
 }
 
 export function deckActivityTabs(collectionId: string): ShellTab[] {

@@ -386,3 +386,6 @@ jobs:
 
       - name: "The calendar stays inside the numbers the learner has (5 Sep)"
         run: python3 verify/verify101-calendar.py
+
+      - name: "An activity's colour is its family's, and the active flap is readable (5 Sep)"
+        run: python3 verify/verify102-menu-hues.py

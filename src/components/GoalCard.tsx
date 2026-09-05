@@ -14,7 +14,9 @@
  * to, which is how a learner ends up seeing two different accounts of one goal.
  */
 import Link from "next/link";
+import ActivityIcon from "@/components/ActivityIcon";
 import { deckActivityTabs } from "@/components/CahierShell";
+import { bandOf } from "@/content/activities";
 import type { Sio } from "@/content/sios";
 
 export default function GoalCard({ sio, compact }: { sio: Sio; compact?: boolean }) {
@@ -31,16 +33,41 @@ export default function GoalCard({ sio, compact }: { sio: Sio; compact?: boolean
 
       {items.length > 0 && (
         <div className={`${compact ? "mt-3" : "mt-4"} grid grid-cols-2 gap-1.5`}>
-          {items.map((t) => (
-            <Link
-              key={t.key}
-              href={t.href!}
-              className="flex items-center gap-1.5 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-raised)] px-2.5 py-2 text-[13px] font-black text-[color:var(--cahier-ink)] no-underline transition hover:border-[color:var(--fam-ink)]"
-            >
-              <span aria-hidden>{t.emoji}</span>
-              <span className="whitespace-nowrap">{t.label}</span>
-            </Link>
-          ))}
+          {/* COLOURED BY LEARNING PHASE (Dan, 2026-09-05: *"we need color for
+              those items"*), from `bandOf` — the same map the map's stop sheet
+              reads, so a Pre-Test is the same colour whichever door a learner
+              opens it from. Not a new palette: the five phase hues already
+              exist as `--band` and `--band-wash`, and inventing a seventh
+              scheme for one card is how an app ends up with three. An activity
+              outside the map (a supplement) draws no band and falls back to the
+              paper, which is the honest answer for "this belongs to no
+              phase". */}
+          {items.map((t) => {
+            const band = bandOf(t.key);
+            return (
+              <Link
+                key={t.key}
+                href={t.href!}
+                className={`flex items-center gap-1.5 rounded-xl border-2 px-2.5 py-2 text-[13px] font-black no-underline transition${band ? ` band-${band}` : ""}`}
+                /* THE LABEL STAYS INK, and that is measured rather than
+                   preferred. The phase hue on its own 12% wash comes to
+                   4.18:1 for guess, 3.96 for lesson and 4.22 for recog —
+                   three of five under 4.5:1, at 13px. The page ink on those
+                   same washes is 7.7-8.3:1. So the colour is carried by the
+                   border, the ground and the icon, which is also how the
+                   map's stop sheet does it — and the two surfaces agreeing
+                   is the point of reading `bandOf` in the first place. */
+                style={{
+                  borderColor: band ? "var(--band)" : "var(--cahier-rule)",
+                  background: band ? "var(--band-wash)" : "var(--cahier-paper-raised)",
+                  color: "var(--cahier-ink)",
+                }}
+              >
+                <ActivityIcon activityKey={t.key} emoji={t.emoji} />
+                <span className="min-w-0 truncate">{t.label}</span>
+              </Link>
+            );
+          })}
         </div>
       )}
     </>

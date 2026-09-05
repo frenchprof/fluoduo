@@ -117,22 +117,25 @@ export type Activity = {
    *  from the map. The old Index hubs are
    *  redirects now. */
   href: string | null;
-  /** Flap hue, kept from siteTabs so nothing shifts colour. */
+  /** The 6px stripe on a flap — the family's pen. Derived, never authored:
+   *  see FAMILY_PEN below for the measurement that ended the hand-picked set. */
   hue: string;
+  /** What an ACTIVE flap is filled with, under dark ink — the family's wash. */
+  fill: string;
   /** Shown in HELP and on hover — NEVER rendered under a flap (Dan,
    *  2026-08-10: "way too many words"). 8 of 12 used to truncate. */
   blurb: string;
 };
 
-export const ACTIVITIES: Activity[] = [
+const RAW_ACTIVITIES: Omit<Activity, "hue" | "fill">[] = [
   // ── 1 · FluOlin Goals — the sequence for one objective ────────────────────
   // Dan, 2026-08-29: "use this for SpecuLearn 💡". The crystal ball read as
   // fortune-telling; the bulb reads as a guess worth having. Display only —
   // the key, the route and saved progress all stay "speculearn".
-  { key: "speculearn", name: "SpecuLearn", emoji: "💡", family: "practice", href: "/practice/speculearn", hue: "#8a5fd4", blurb: "Guess before you're taught. Pre-Tests live here too." },
+  { key: "speculearn", name: "SpecuLearn", emoji: "💡", family: "practice", href: "/practice/speculearn", blurb: "Guess before you're taught. Pre-Tests live here too." },
   // Dan, 2026-08-23: renamed xPlain → Memo (approved surface #3). Key stays
   // "lesson" — display rename only.
-  { key: "lesson", name: "MneMemo", emoji: "📚", family: "practice", href: null, hue: "#e0567f", blurb: "The lesson: rule, then practice." },
+  { key: "lesson", name: "MneMemo", emoji: "📚", family: "practice", href: null, blurb: "The lesson: rule, then practice." },
   // SORTING IS CUT (Dan, 2026-08-31: "sorting is cut").
   //
   // Off navigation, the way Match It went on 10 Aug — the registry row is gone
@@ -147,7 +150,7 @@ export const ACTIVITIES: Activity[] = [
   // earns the drill. It was also the tile Dan named when he said the framework
   // had drifted "into things like EtuDice and Sorting", and the confusion its
   // name caused reached all the way into the evidence table (see evidence.ts).
-  { key: "flip", name: "MémoiRecall", emoji: "🃏", family: "practice", href: "/practice/flip-it", hue: "#2bb6c2", blurb: "Flashcards. English front, flip to French." },
+  { key: "flip", name: "MémoiRecall", emoji: "🃏", family: "practice", href: "/practice/flip-it", blurb: "Flashcards. English front, flip to French." },
   // iCOMPLETE IS RETIRED (Dan, 2026-08-31: "we don't need a separate
   // CompleteIt exercise anymore. it will be part of Memo's activities …
   // we can retire CompleteIt and Sorting").
@@ -163,34 +166,81 @@ export const ACTIVITIES: Activity[] = [
   // same exercise offered twice under a second name.
 
   // ── 2 · FluOlin Review — automatic first, then the one you choose ─────────
-  { key: "reviser", name: "DéjàRevu", emoji: "🔖", family: "review", href: "/reviser", hue: "#7bbf2e", blurb: "Comes back when you're about to forget it." },
-  { key: "grammarathon", name: "GramMarathon", short: "GramMarath", emoji: "🏃", family: "review", href: "/practice/grammarathon", hue: "#3b6fd4", blurb: "Gap-fill sprint across a whole deck." },
+  { key: "reviser", name: "DéjàRevu", emoji: "🔖", family: "review", href: "/reviser", blurb: "Comes back when you're about to forget it." },
+  { key: "grammarathon", name: "GramMarathon", short: "GramMarath", emoji: "🏃", family: "review", href: "/practice/grammarathon", blurb: "Gap-fill sprint across a whole deck." },
 
   // ── 3 · FluOlin Skills — forms → receptive → productive ───────────────────
-  { key: "conjugaison", name: "ConjugaZone", emoji: "🔤", family: "skills", href: "/conjugaison", hue: "#2bb6c2", blurb: "Verb endings until they come without thinking." },
-  { key: "ecoutexte", name: "ÉcouTexte", emoji: "🎧", family: "skills", href: "/practice/ecoutexte", hue: "#e0567f", blurb: "Hear a mini-text, fill in the words." },
-  { key: "wordrill", name: "WorDrill", emoji: "🎙️", family: "skills", href: "/practice/wordrill", hue: "#7bbf2e", blurb: "Say it out loud — the mic grades you." },
-  { key: "tts", name: "VoixLà", emoji: "🔊", family: "skills", href: "/tts", hue: "#e8852e", blurb: "Type French, hear it back, get it checked." },
-  { key: "compose", name: "ComposeIt", emoji: "🧩", family: "skills", href: "/games/compose", hue: "#7bbf2e", blurb: "Play a scene; your writing gets corrected." },
-  { key: "tutor", name: "ChaTutor", emoji: "🤖", family: "skills", href: "/tutor", hue: "#8a5fd4", blurb: "Ask anything, in French or English." },
+  { key: "conjugaison", name: "ConjugaZone", emoji: "🔤", family: "skills", href: "/conjugaison", blurb: "Verb endings until they come without thinking." },
+  { key: "ecoutexte", name: "ÉcouTexte", emoji: "🎧", family: "skills", href: "/practice/ecoutexte", blurb: "Hear a mini-text, fill in the words." },
+  { key: "wordrill", name: "WorDrill", emoji: "🎙️", family: "skills", href: "/practice/wordrill", blurb: "Say it out loud — the mic grades you." },
+  { key: "tts", name: "VoixLà", emoji: "🔊", family: "skills", href: "/tts", blurb: "Type French, hear it back, get it checked." },
+  { key: "compose", name: "ComposeIt", emoji: "🧩", family: "skills", href: "/games/compose", blurb: "Play a scene; your writing gets corrected." },
+  { key: "tutor", name: "ChaTutor", emoji: "🤖", family: "skills", href: "/tutor", blurb: "Ask anything, in French or English." },
 
   // ── 4 · FluOlin SvPlay — gentlest first ───────────────────────────────────
   // NumBus + NumBourse share ONE hub tile (Dan, 2026-08-31: "park NumBus /
   // NumBourse under a hub-tab Numbers"). Both game routes survive untouched;
   // the hub at /games/numbers is the one door. Their activityLedger prefixes
   // and evidence tags below stay — they describe answers already given.
-  { key: "numbers", name: "Numbers", emoji: "🔢", family: "svplay", href: "/games/numbers", hue: "#e0567f", blurb: "Numbers by ear — NumBus and NumBourse." },
-  { key: "vocabularain", name: "VocabulaRain", emoji: "🌧️", family: "svplay", href: "/games/vocabularain", hue: "#5b8def", blurb: "Words fall — catch them in the right clause." },
-  { key: "lexicalator", name: "LexicaLater", emoji: "🧰", family: "svplay", href: "/games/lexicalater", hue: "#e3a700", blurb: "Stitch word parts back together." },
+  { key: "numbers", name: "Numbers", emoji: "🔢", family: "svplay", href: "/games/numbers", blurb: "Numbers by ear — NumBus and NumBourse." },
+  { key: "vocabularain", name: "VocabulaRain", emoji: "🌧️", family: "svplay", href: "/games/vocabularain", blurb: "Words fall — catch them in the right clause." },
+  { key: "lexicalator", name: "LexicaLater", emoji: "🧰", family: "svplay", href: "/games/lexicalater", blurb: "Stitch word parts back together." },
 
   // ── 5 · FluOlin User ──────────────────────────────────────────────────────
   // MY PROGRESS IS SWALLOWED BY PROFILE (Dan, 2026-08-31). /profil and /moi
   // have rendered the SAME ProfileContent since the 22 Aug merge, so the two
   // tiles were two doors to one page. The /moi route stays for bookmarks and
   // the account chip; Profile is the one tile.
-  { key: "leaderboard", name: "Leaderboard", emoji: "🏆", family: "user", href: "/leaderboard", hue: "#e3a700", blurb: "Where you sit against the class." },
-  { key: "profil", name: "Profile", emoji: "👤", family: "user", href: "/profil", hue: "#8a5fd4", blurb: "Your learning, streak, XP, badges." },
+  { key: "leaderboard", name: "Leaderboard", emoji: "🏆", family: "user", href: "/leaderboard", blurb: "Where you sit against the class." },
+  { key: "profil", name: "Profile", emoji: "👤", family: "user", href: "/profil", blurb: "Your learning, streak, XP, badges." },
 ];
+
+/**
+ * AN ACTIVITY'S COLOUR IS ITS FAMILY'S (Dan, 2026-09-05: *"we need to revisit
+ * the colors of the burger menu items based on the new color scheme"*).
+ *
+ * Every row above used to carry a hand-picked hex, and the field's own comment
+ * said what they were: *"Flap hue, kept from siteTabs so nothing shifts
+ * colour."* Carried over, never designed — sixteen values belonging to no
+ * scheme, from before the six families became the six highlighter pens.
+ *
+ * MEASURED, and this is why it is not merely tidier. An ACTIVE flap paints
+ * `--tab-hue` behind `--cahier-ink`. On the old values that is
+ *
+ *     SpecuLearn 2.30:1 · MneMemo 2.86 · GramMarathon 2.17 · Map 3.20
+ *     VoixLà 3.86 · MémoiRecall 4.23 · DéjàRevu 4.60 · LexicaLater 4.83
+ *
+ * — six of eight below 4.5:1, on the label of the page you are standing on.
+ *
+ * TWO TOKENS, NOT ONE, because the flap asks the colour to do two jobs. The
+ * 6px left stripe wants saturation, so it takes the pen itself; the active
+ * flap's FILL sits under dark ink, so it takes the family's wash, which clears
+ * 8.1-8.5:1 for all six. Using the pen for both was the fault above — the pens
+ * measure 3.44 to 7.74 under ink, so four of the six would have failed again.
+ */
+const FAMILY_PEN: Record<FamilyKey, string> = {
+  goals: "var(--fam-goals)",
+  practice: "var(--fam-practice)",
+  svplay: "var(--fam-svplay)",
+  review: "var(--fam-review)",
+  skills: "var(--fam-skills)",
+  user: "var(--fam-user)",
+};
+
+const FAMILY_WASH: Record<FamilyKey, string> = {
+  goals: "var(--fam-goals-wash)",
+  practice: "var(--fam-practice-wash)",
+  svplay: "var(--fam-svplay-wash)",
+  review: "var(--fam-review-wash)",
+  skills: "var(--fam-skills-wash)",
+  user: "var(--fam-user-wash)",
+};
+
+export const ACTIVITIES: Activity[] = RAW_ACTIVITIES.map((a) => ({
+  ...a,
+  hue: FAMILY_PEN[a.family],
+  fill: FAMILY_WASH[a.family],
+}));
 
 /** Every activity, in FAMILIES order then authored order — what the Menu grid
  *  and any grouped rail should iterate, so none of them can drift apart. */
