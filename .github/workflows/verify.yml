@@ -359,3 +359,6 @@ jobs:
 
       - name: "A custom domain serves at the root — no Pages subpath (2 Sep)"
         run: python3 verify/verify91-pages-basepath.py
+
+      - name: "Stops 36/40 give directions without the imperative (5 Sep)"
+        run: python3 verify/verify95-directions-imperative.py

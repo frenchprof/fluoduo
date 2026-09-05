@@ -6,6 +6,48 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 5 Sep — stops 36/40 keep off the imperative, frames included
+
+Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
+
+`FINISH_BACKLOG` item 10, first two parts.
+
+**Numbering reconciles with v9, exactly.** `docs/handoff/LAF1201_SIOs_Flashcards_v9.csv`
+and `sios.json` agree on all 50 ids, no extras or duplicates either way, 0 unit
+mismatches. v9 carries **SIO-045A and no SIO-045**, so the 45.5 the app stores is
+Dan's own id, not a repo artefact. (Dan's ruling on how to LABEL it — by position
+everywhere, or 45A everywhere — is still open; nothing was changed for it.)
+
+**The direction guard-rail held where anyone had looked, and leaked where nobody
+had.** Every keyed answer on SIO-036 is an infinitive after « il faut »; the -ez
+forms sit in the distractor lists with a whyWrong naming them as the vous
+imperative — the rail working as designed, and Dan's 1 Sep ruling says a wrong
+answer is allowed to be wrong French. The directions bank shows « Vous tournez »,
+« Vous prenez » on every card.
+
+What leaked was the sentence AROUND the blank. `finale.ts` printed
+`pre: "Prenez la ", post: " rue à droite"` and asked for « première ». No
+imperative is keyed, so the criterion the backlog proposed — *"Directions bank has
+no keyed imperative"* — passes on that line, while the learner reads a bare
+imperative as model French in the stop built to avoid it. v9 is explicit:
+SIO-036 is *"without the imperative, producing vous + present"*. Three frames
+rewritten into the register already shipped in the bank (`SIO-036:1`, `036:3`,
+`040:1`); answers and categories untouched. Same shape as « Bon chance » in
+atelierModel — the wrong form was the MACHINE'S, not the learner's.
+
+`verify95-directions-imperative.py` pins both halves and leaves distractors free.
+Break-tested four ways: bank card loses its « vous », an imperative gets keyed,
+the imperative distractors get tidied away, a frame prints « Prenez » again.
+
+`docs/SYLLABUS_TIERS.md` line 124 described stop 36's blocks as *tournez à
+droite*, *prenez la première rue* — imperatives, contradicting v9 and the
+shipped content. Corrected to the vous forms.
+
+Not done in item 10: **SUP-CAL-01/02/03** (Optional chips, soft family wash, off
+Continue, SUP-CAL-03's né/née role cue). Untouched.
+
+Shared: `STATUS.md`, `SYLLABUS_TIERS.md`, `.github/workflows/verify.yml`.
+
 ## 4 Sep — staging docs (no-login bookmark)
 
 Sole editor of STATUS.md in this commit: cursor/staging-docs-8ea9.
