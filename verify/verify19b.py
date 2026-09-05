@@ -26,11 +26,31 @@ REBASE = "--rebaseline" in sys.argv
 HARD, SOFT = [], []
 
 
+# PALETTE SOURCES — files whose whole job is to BE colour values.
+#
+# The ratchet exists to stop components hard-coding hexes instead of reaching for
+# a token. A file that defines the tokens cannot obey that rule: globals.css is
+# already outside the .ts/.tsx scan for exactly this reason, and marks.ts is the
+# same category — the mark's 24 colour sets, which belong to no interface
+# surface and are pinned value-by-value by verify97 instead.
+#
+# This is an exemption, not a rebaseline, and the difference matters. Running
+# --rebaseline to absorb those 50 hexes would raise the ceiling for EVERY file
+# in src/ by 50, so the next component to hard-code a colour would slip under a
+# ratchet that had been quietly loosened to admit something unrelated. Keep this
+# set as short as its reason.
+PALETTE_SOURCES = {"src/content/marks.ts"}
+
+
 def files(ext):
     out = []
     for root, dirs, fs in os.walk("src"):
         dirs[:] = [d for d in dirs if d not in {"node_modules", ".next"}]
-        out += [os.path.join(root, f) for f in fs if f.endswith(ext)]
+        out += [
+            p for f in fs
+            if f.endswith(ext)
+            and (p := os.path.join(root, f)).replace(os.sep, "/") not in PALETTE_SOURCES
+        ]
     return out
 
 

@@ -6,6 +6,64 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 5 Sep — the six families become the six highlighters, and the mark lands
+
+Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
+
+**The realignment.** Dan: *"can we align these colors with the six standard
+highlighter colors: Pink, Orange, Yellow, Blue, Green, Indigo-Violet-Lilac"*,
+then chose all six. The mapping is forced, not chosen: both sets are six points
+on one hue wheel in the same rotational order, so matching in order is the only
+assignment that neither collides nor sends Goals to yellow. Each family moves one
+notch — Goals to Green and Practice to Yellow barely move; Games to Pink, Revise
+to Blue, Skills to Indigo-Violet, User to Orange. No two paths cross, so nobody
+is re-taught which family is the cool one. 24 values in one block of
+`globals.css`; no component, route or registry key touched (`svplay` is still
+`svplay`).
+
+Worst case on the three surfaces the ink is used on: 4.52 wash / 5.52 white /
+5.12 paper, against 4.53 / 5.54 / 5.14 for the colours replaced.
+
+**Nothing pinned the family values.** `verify30` has held the seven dopamine
+roles since 21 Aug; the six families had identical risk and no guard, so any of
+24 hexes could drift in silence. `verify96-family-hues.py` lands with the
+recolour — values, the three-surface floor recomputed, and the **wheel order**,
+which is a property of the set that no per-value check can see and the assertion
+that would catch someone improving one family into a nicer hue and silently
+swapping two.
+
+**A false accessibility claim, corrected.** The page-ground comment said the soft
+ink cleared above 7:1 and was AAA. `--cahier-ink-soft` (#655c55) measures
+6.00-6.13 on those grounds: AA. False before this change as well as after; three
+sessions had read the block without measuring. verify96 recomputes it.
+
+**The mark, for posterity** (Dan: *"can we put the logo and 24 colors in the repo
+for posterity"*). `src/content/marks.ts` + `src/components/FluoMark.tsx`.
+**Nothing renders it** — archival, so the marks survive the session they were
+designed in rather than living only in a chat. Twelve marks in two tones: `pale`
+lightens the top-right block, `deep` darkens it. Both are Dan's, and they are
+different objects, not a draft and a fix — the pale top stroke measures 1.09-1.48
+against the paper (the faintest thing in every mark while doing structural work),
+the deep one 1.85-4.60 with a tighter block-to-tint step.
+`verify97-brand-marks.py` pins the 24 sets, asserts the deep set stays *derived*
+from the pale one, and turns Dan's geometry brief into arithmetic.
+
+**`verify19b` caught the marks and was right to.** 61 raw hexes arrived in one
+file. Fixed with a named `PALETTE_SOURCES` exemption — a file whose whole job is
+to be colour values cannot obey a rule about reaching for tokens — NOT with
+`--rebaseline`, which would have raised the ceiling for every file in `src/` by
+61 and let the next hard-coded colour slip under a loosened ratchet. The baseline
+was then lowered (505 to 494, 768 to 745) so the exemption left no slack; a
+single stray hex in a component still trips it.
+
+Green: `tsc`, build, all 85 checks, eslint on touched files. Ten break-tests
+across the two new checks, each failing with its own message.
+
+Shared: `globals.css`, `COLOR_REVIEW.md` (sections 12 and 13), `STATUS.md`,
+`verify19b.py`, `visual-baseline.json`, `.github/workflows/verify.yml`.
+**`verify19b.py` and the baseline are the collision risk** — any lane that
+rebaselines will conflict.
+
 ## 5 Sep — stops 36/40 keep off the imperative, frames included
 
 Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.

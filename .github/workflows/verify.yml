@@ -362,3 +362,9 @@ jobs:
 
       - name: "Stops 36/40 give directions without the imperative (5 Sep)"
         run: python3 verify/verify95-directions-imperative.py
+
+      - name: "The six families are the six highlighter pens (5 Sep)"
+        run: python3 verify/verify96-family-hues.py
+
+      - name: "The mark: 24 colour sets and one geometry (5 Sep)"
+        run: python3 verify/verify97-brand-marks.py

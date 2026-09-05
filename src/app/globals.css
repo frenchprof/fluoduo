@@ -1772,22 +1772,41 @@ h3.cahier-display { font-size: var(--fs-h3); }
    spine >=3.94 on its band and >=4.55 on paper · band label >=11.80 ·
    pill label >=4.55. verify33 recomputes them from this file. */
 :root {
-  /* THE SIX, EVENLY SPACED (Dan, 2026-08-30: "apply the new dopamine look
-     EVERYWHERE"). One hue every 60° starting at 20°, which of the sixty
-     possible starting points is both the best for a colour-blind reader and,
-     within a degree, the one that moved the six families least from the
-     colours they had. Each family's three tokens are DERIVED, not picked:
-     --fam is the hue at full strength; --fam-wash is it at 92.5% lightness,
-     capped so no hue shouts over the rest; --fam-*-ink is walked down in
-     lightness until it clears 4.5:1 on THREE surfaces at once — its own wash
-     (the band label), white (the pill), and the paper (body text). Worst
-     case across all six: 4.53:1, 5.54:1, 5.17:1. */
-  --fam-user: #ff4b5d;  --fam-user-ink: #c51837;  --fam-user-wash: #ffdbda;         /*  20° coral   */
-  --fam-practice: #ffc330;  --fam-practice-ink: #845e0c;  --fam-practice-wash: #ffe1a7;  /*  80° yellow  */
-  --fam-goals: #31b700;  --fam-goals-ink: #27780d;  --fam-goals-wash: #caf4c0;      /* 140° green   */
-  --fam-review: #00aeb5;  --fam-review-ink: #0e7479;  --fam-review-wash: #a2f8fc;   /* 200° cyan    */
-  --fam-skills: #5495ff;  --fam-skills-ink: #005ae9;  --fam-skills-wash: #d6e7ff;   /* 260° blue    */
-  --fam-svplay: #e237ff;  --fam-svplay-ink: #a81bc3;  --fam-svplay-wash: #fbd8ff;   /* 320° magenta */
+  /* THE SIX HIGHLIGHTERS (Dan, 2026-09-05: "can we align these colors with the
+     six standard highlighter colors: Pink, Orange, Yellow, Blue, Green,
+     Indigo-Violet-Lilac"). They now ARE those six pens.
+
+     THE MAPPING IS FORCED, which is the good news. Both sets are six points on
+     one hue wheel in the same rotational order, so matching them in order is
+     the only assignment that neither collides nor sends Goals to yellow — and
+     it moves each family exactly one notch:
+
+         Goals    green   141° → Green         145°   barely moves
+         Practice yellow   84° → Yellow        100°   barely moves
+         Games    magenta 321° → Pink          350°
+         Revise   cyan    200° → Blue          245°
+         Skills   blue    260° → Indigo-Violet 300°
+         User     coral    20° → Orange         55°
+
+     Order preserved means a learner who has learned "Revise is the cool one,
+     Games is the hot one" is not being re-taught. The previous scheme — one hue
+     every 60° from 20° — was derived for colour-blind separation; the pens keep
+     that separation (no two adjacent families sit closer than 45°) while giving
+     the palette a name a human can say.
+
+     The four rungs are still DERIVED, not picked, by the same recipe: --fam is
+     the hue at the sRGB gamut edge; --fam-wash is it at 92.3% lightness;
+     --fam-*-ink is walked down in lightness until it clears 4.5:1 on THREE
+     surfaces at once — its own wash (the band label), white (the pill), and the
+     paper (body text). Worst case across all six: 4.52:1, 5.52:1, 5.12:1,
+     against 4.53 / 5.54 / 5.14 for the colours these replace.
+     verify96-family-hues.py pins all twenty-four and recomputes the floor. */
+  --fam-user: #ff9037;  --fam-user-ink: #9f5100;  --fam-user-wash: #ffdec9;         /*  55° orange  */
+  --fam-practice: #fcdf00;  --fam-practice-ink: #756700;  --fam-practice-wash: #f2e8a5;  /* 100° yellow  */
+  --fam-goals: #00dd3e;  --fam-goals-ink: #007a1e;  --fam-goals-wash: #c3f5c3;      /* 145° green   */
+  --fam-review: #1ca6ff;  --fam-review-ink: #006baa;  --fam-review-wash: #d0e9ff;   /* 245° blue    */
+  --fam-skills: #b17eff;  --fam-skills-ink: #9200fe;  --fam-skills-wash: #eae0ff;   /* 300° violet  */
+  --fam-svplay: #ff4eb2;  --fam-svplay-ink: #c1007f;  --fam-svplay-wash: #ffdaea;   /* 350° pink    */
 
   /* THE PAGE GROUND (Dan, 2026-08-30: "apply the new dopamine look
      EVERYWHERE"). The same six hues at 97.5% lightness — about a quarter of
@@ -1795,9 +1814,17 @@ h3.cahier-display { font-size: var(--fs-h3); }
      paper with a coloured strip on it. This is the 60 of 60-30-10, and it is
      the level the whole scheme was missing: `--band-wash` was invented for it
      on 26 Aug and never wired to anything.
-     Faint on purpose. Body ink clears 13.6:1 on every one and the soft ink
-     7.1:1 — both AAA — because a ground you read a page of French on has to
-     be quieter than one you glance at. */
+     Faint on purpose, because a ground you read a page of French on has to be
+     quieter than one you glance at. Body ink clears 13.5:1 on every one — well
+     past AAA.
+
+     THIS COMMENT USED TO CLAIM the soft ink cleared above seven to one and was
+     therefore AAA too. It does not, and did not before the highlighter
+     realignment either: --cahier-ink-soft (#655c55) measures 6.00–6.13 on these
+     six grounds, which is AA and short of the 7.0 AAA needs. Corrected 5 Sep by
+     measuring rather than re-reading. The soft ink is fine where it is used —
+     labels and captions, not paragraphs — but nobody should cite seven from
+     here. verify96 recomputes it. */
   /* THE READING PAPER — « le sable beige », the colour already in the colours
      deck (#d9c39a), worked out into a surface. Dan picked it, blind, over all
      six family grounds when asked which he wanted under a page of French he
@@ -1810,9 +1837,9 @@ h3.cahier-display { font-size: var(--fs-h3); }
   --sable-page: #f9ebd1;  --sable-card: #ebd8b5;
   --sable-rule: #e0cba4;  --sable-ink: #4e4026;  --sable-soft: #6b5d44;
 
-  --fam-user-page: #fff3f2;      --fam-practice-page: #fff5e2;
-  --fam-goals-page: #edfcea;     --fam-review-page: #e2fdfe;
-  --fam-skills-page: #f0f7ff;    --fam-svplay-page: #fff1ff;
+  --fam-user-page: #fff4ed;      --fam-practice-page: #faf7e2;
+  --fam-goals-page: #ebfceb;     --fam-review-page: #eff8ff;
+  --fam-skills-page: #f8f4ff;    --fam-svplay-page: #fff2f8;
 }
 
 /* One class per family sets the trio; SectionBand reads only the trio, so a
