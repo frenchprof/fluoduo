@@ -15,7 +15,7 @@
   <rect x="0" y="28" width="24" height="9" rx="2" fill="#f7c243"/>
   <rect x="0" y="48" width="24" height="9" rx="2" fill="#f7c243"/>
   <rect x="0" y="68" width="24" height="9" rx="2" fill="#f7c243"/>
-  <rect x="27" y="13" width="71" height="85" rx="17" fill="#ff4b5d"/>
+  <rect x="27" y="13" width="71" height="85" rx="17" fill="#ff4eb2"/>
   <rect x="37" y="27" width="52" height="62" rx="3" fill="#2ea600"/>
   <path d="M37 27 H48 V52 H75 V64 H48 V68 H37 Z" fill="#5495ff"/>
 </svg>

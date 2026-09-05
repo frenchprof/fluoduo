@@ -6,6 +6,53 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 5 Sep — the mark's shell goes pink
+
+Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
+
+Dan, after seeing the options measured: *"please use the best of those favicons
+variants as the site's main favicon"*. Shell `#ff4b5d` -> `#ff4eb2`, the Games
+pen. Peers' drawing is otherwise untouched.
+
+**Why it needed changing at all, and it was not the register.** Peers flagged
+that the brand red shares a register with *wrong* — true, 7 degrees of hue from
+`--dopa-miss` — but the mark and the miss colour meet on essentially no screen:
+the tab, the home screen, and the install popup, none of which tells a learner
+they were wrong. The real fault was inside the mark. Measured as COLOR_REVIEW's
+appendix does it (Machado deutan/protan, Euclidean sRGB, threshold 0.20), the
+coral shell against the green page it encloses scored **0.166** — under the
+threshold, the same fault Peers moved the LETTER off red to avoid, still sitting
+in the frame. Pink scores **0.334**.
+
+**The trap worth recording.** Coral was `--fam-user` and User is orange after the
+realignment, so re-cutting the shell to orange is what the token table suggests.
+On the real pixels it scores **0.053** at the bottom of the fade — a quarter of
+the threshold, orange and green collapsing into one colour for a protanope. The
+obvious move was the worst of the four. Violet scored best at 0.476 and was
+rejected only because it flips the mark from warm to cool: a different logo
+rather than a corrected one.
+
+**How it was done, because there is no vector source.** The full mark exists in
+the repo only as raster — `src/app/icon.svg` is the flat 16px variant that drops
+the g's counter and the low band. So the four PNGs were recoloured pixel by pixel
+in OKLCH: every red-family pixel keeps its own lightness and chroma and takes the
+new hue, so the App Store vertical fade and every edge survive. `favicon.ico` was
+regenerated at 32px from the recoloured 192. `icon.svg`'s one red fill was
+edited directly.
+
+**Also answered:** the earlier single-hue favicon idea (one colour in several
+shades) is not merely dormant — `verify95-icons` requires at least THREE distinct
+saturated hues in every PNG, so a monochrome mark now fails CI by design. Its
+message calls that "the old single-colour notebook". Reviving the idea means
+changing that check, which is Dan's call and Peers' lane.
+
+verify95-icons green, including its polychrome and maskable-safe-area
+assertions. Build and all 87 checks green.
+
+Shared: `src/app/icon.svg`, `src/app/favicon.ico`, `public/icons/*` — **Peers'
+lane**, changed here on Dan's direct instruction. Peers holds the original
+drawing and should redo this from source if they have one.
+
 ## 5 Sep — the six families become the six highlighters, and the mark lands
 
 Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
