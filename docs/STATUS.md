@@ -6,6 +6,32 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 5 Sep — NO CLASSES: participants enrol rolling, worldwide (Dan's ruling)
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan: *"there won't be 'classes' of students. participants will be coming
+from all over, including overseas international ones."* The app has been
+carrying a one-synchronized-class assumption since the 11 Aug cohort reset.
+What changes NOW (this commit): **the leaderboard drops the current-term
+filter** — every participant shows, whenever they joined; the term field
+stays written for the research pipeline.
+
+What this ruling touches but does NOT change yet — each needs Dan's word:
+- the profile header's « LAF1201 · A1 · WEEK 4 » (a semester week counter);
+- the map's 🚩 « The class is here this week »;
+- the Class bag's "show in class / bring to class" framing (just built);
+- the teacher dashboard's "Class now" and the term-stamping machinery.
+
+Two more rulings recorded the same day:
+- **Official student address: fluolingo.withdrchan.com.**
+- **The bottom bar is optional and its items replaceable** ("users can opt
+  to remove it or to replace the items there (but there should be some
+  defaults)") — defaults stay today's five families; the build brief is the
+  bottom-bar study's option list; when the bar is hidden or Revise removed,
+  the due count defaults to a dot on the ☰ button unless Dan says otherwise.
+
+
 ## 5 Sep — the six families become the six highlighters, and the mark lands
 
 Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
