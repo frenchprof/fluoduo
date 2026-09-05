@@ -29,6 +29,8 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { loadProgress } from "@/lib/progress";
 import { xpMultiplier } from "@/lib/economy";
+import { readUiPrefs } from "@/lib/uiPrefs";
+import { dueForReview } from "@/lib/reviser";
 import type { ReactNode } from "react";
 import MenuSplash from "@/components/MenuSplash";
 import RailGroups from "@/components/RailGroups";
@@ -67,6 +69,26 @@ export default function SiteTopBar({
     return () => document.removeEventListener("pointerdown", close, true);
   }, [menuOpen]);
   const [quickGuideOpen, setQuickGuideOpen] = useState(false);
+
+  // The Revise due count rides the bottom bar's 🔄 slot. Since 5 Sep a
+  // learner can untick that slot — or the whole bar — in Réglages, and the
+  // count lands HERE as a small badge on ☰ instead of vanishing (Dan's
+  // default from the bottom-bar ruling). 0 while the slot is on, so the
+  // number never shows twice.
+  const [dueBadge, setDueBadge] = useState(0);
+  useEffect(() => {
+    const sync = () => {
+      const reviseOff = !readUiPrefs().bottomNav.includes("review");
+      setDueBadge(reviseOff ? dueForReview(loadProgress(), Date.now()).length : 0);
+    };
+    sync();
+    window.addEventListener("fluolingo:uiprefs", sync);
+    window.addEventListener("fluolingo:progress-updated", sync);
+    return () => {
+      window.removeEventListener("fluolingo:uiprefs", sync);
+      window.removeEventListener("fluolingo:progress-updated", sync);
+    };
+  }, []);
 
   const site = tabsWithActive(siteTabs(), active);
   const tools = tabsWithActive(toolTabs(), active);
@@ -129,12 +151,20 @@ export default function SiteTopBar({
       <div ref={menuRef} className="cahier-menu relative shrink-0">
           <button
             type="button"
-            aria-label="Navigation"
+            aria-label={dueBadge > 0 ? `Navigation — ${dueBadge} to revise` : "Navigation"}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((o) => !o)}
-            className="cahier-btn cahier-btn-sm"
+            className="cahier-btn cahier-btn-sm relative"
           >
             {menuOpen ? "✕" : "☰"}
+            {dueBadge > 0 && (
+              <span
+                aria-hidden
+                className="absolute -right-2 -top-2 rounded-full bg-[var(--dopa-streak)] px-1.5 text-[10px] font-bold leading-[1.4] text-[color:var(--dopa-streak-on)]"
+              >
+                {dueBadge}
+              </span>
+            )}
           </button>
 
           {menuOpen && (

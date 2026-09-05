@@ -6,6 +6,39 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 5 Sep — the bottom bar is the learner's: pick the tabs, or remove the bar
+
+Sole editor of STATUS.md in this commit: feat/bottombar-pref.
+
+Dan's ruling (recorded below the same day): *"the bottom bar is optional and
+users can opt to remove it or to replace the items there (but there should be
+some defaults)."* Built, on `feat/bottombar-pref`, handed to fluoduo-main:
+
+- **`uiPrefs.bottomNav: FamilyKey[]`** — default derived (FAMILIES minus
+  User), empty = no bar. Réglages gains "Bottom bar — choose your tabs":
+  six wash-coloured checkboxes in FAMILIES order, 👤 User opt-IN for the
+  first time. Membership is the choice; order never is.
+- **BottomBar** filters `ALL_NAV` (new in nav.ts — all six as slots) by the
+  pref, renders null when empty, and withdraws `--bottombar-floor` with it.
+  `BOTTOM_NAV` stays the derived default, so verify19 §3 / verify52 §6 hold
+  unloosened.
+- **The due count survives its slot**: Revise off the bar (or bar gone) puts
+  the count as a badge on ☰ in SiteTopBar — same --dopa-streak pair, never
+  shown in both places.
+- **Hard-coded clearances now read the floor**: DrillShell's 58px spacer and
+  .cahier-page's 56px phone padding both read `var(--bottombar-floor)`, so a
+  removed bar frees its strip. FirstTour already skips an absent bar; its
+  step says "Your tabs", not "the five".
+- **LIVE BUG fixed in the same branch**: `.cahier-bottombar{display:flex}` is
+  unlayered and beat the @layer'd `sm:hidden` — the phone bar rendered on
+  DESKTOP. An unlayered `@media (min-width:640px){display:none}` ends it.
+- `verify99-bottombar-pref.py` pins all of the above (15 assertions), wired
+  after verify98.
+
+Green: tsc, open build, all 88 checks, eslint on touched files. Shared files
+to watch at merge: `globals.css`, `verify.yml`, `STATUS.md` (a parallel lane
+holds verify100).
+
 ## 5 Sep — NO CLASSES: participants enrol rolling, worldwide (Dan's ruling)
 
 Sole editor of STATUS.md in this commit: fluoduo-main.

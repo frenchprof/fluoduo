@@ -1470,9 +1470,19 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   border-radius: 6px;
   pointer-events: none;
 }
-/* The bar is fixed, so the last line of every page would sit under it. */
+/* The bar is fixed, so the last line of every page would sit under it. The
+   padding reads the floor the bar itself measures (--bottombar-floor) rather
+   than restating 56px, because since 5 Sep a learner can remove the bar in
+   Réglages — no bar, no floor, and the page gets its bottom edge back. */
 @media (max-width: 639.98px) {
-  .cahier-page { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
+  .cahier-page { padding-bottom: max(env(safe-area-inset-bottom, 0px), var(--bottombar-floor, 0px)); }
+}
+/* `display: flex` on .cahier-bottombar above is unlayered CSS, and Tailwind
+   v4 puts its utilities in a @layer — so the element's `sm:hidden` LOSES and
+   the phone bar was rendering on desktop. Hide it here, unlayered too, at the
+   same 640px where the flap rail takes over. */
+@media (min-width: 640px) {
+  .cahier-bottombar { display: none; }
 }
 /* Tablet: the page flaps shrink to icons — there are only a few of them now,
    but a deck with five views still needs the room. */
