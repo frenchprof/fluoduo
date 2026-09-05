@@ -20,6 +20,7 @@ import { recordResponse } from "@/lib/firebase/responses";
 import { CAFE_PRICES, categoryHeaderClass, type ComposeBank } from "@/games/compose/banks";
 import GameFrame from "@/components/GameFrame";
 import GameOver from "@/components/GameOver";
+import ToolSummon from "@/components/tools/ToolSummon";
 import { drillExitHref } from "@/components/DrillShell";
 import { buildEvidence } from "@/lib/evidence";
 
@@ -534,6 +535,17 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
           </div>
         </>
       )}
+
+      {/* 🧰 The summonable tools (5 Sep): VoixLà is handed the reply being
+          composed (or the learner's last sent line); ChaTutor is told which
+          scene this is. */}
+      <ToolSummon
+        context={{
+          title: `ComposeIt — ${bank.title}`,
+          item: bank.scene?.contextEn ?? opening,
+          french: draftText || [...messages].reverse().find((m) => m.who === "me")?.text || "",
+        }}
+      />
     </div>
     </GameFrame>
   );

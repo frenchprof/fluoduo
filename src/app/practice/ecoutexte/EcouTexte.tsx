@@ -44,6 +44,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import DrillShell from "@/components/DrillShell";
+import ToolSummon from "@/components/tools/ToolSummon";
 import { pauseSpeech, resumeSpeech, speak, speakSequence } from "@/games/letris/speech";
 import { gradeAnswer, type Grade } from "@/lib/practice/cloze";
 import { fingerprint, generateUnheard } from "@/lib/textgen/engine";
@@ -285,6 +286,8 @@ export default function EcouTexte({
   const worked = sentences.filter((_, i) => solvedAt(i)).length;
   const allRevealed = revealed.length > 0 && revealed.every(Boolean);
   const last = at >= sentences.length - 1;
+  /** The learner's own words on the open sentence — the 🧰 hand-off. */
+  const attemptAt = (written[at] ?? []).map((v) => v.trim()).filter(Boolean).join(" ");
 
   const hintLine =
     hint || (playing && !paused ? "Playing — press ⏯ to pause." : "⏯ play · 🐇🐌 speed · ♀♂ who reads");
@@ -579,6 +582,18 @@ export default function EcouTexte({
           ♻️ All heard — start over
         </button>
       )}
+
+      {/* 🧰 The summonable tools (5 Sep). What is handed over is what the
+          learner can already SEE: their own typed attempt — never the hidden
+          sentence, unless they revealed it themselves (this is a listening
+          exercise; the sentence IS the answer). */}
+      <ToolSummon
+        context={{
+          title: "ÉcouTexte",
+          item: revealed[at] ? sentences[at]?.fr : attemptAt || undefined,
+          french: revealed[at] ? sentences[at]?.fr : attemptAt,
+        }}
+      />
     </div>
   );
 
