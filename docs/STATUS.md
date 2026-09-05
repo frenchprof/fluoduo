@@ -6,6 +6,55 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 5 Sep — the 🧰 tools summon mid-exercise, and the voice corrects first (feat/ambient-tools)
+
+Sole editor of STATUS.md in this commit: the ambient-tools lane
+(feat/ambient-tools — pushed for fluoduo-main to QC, not merged).
+
+The AMBIENT TOOLS build, first pass, all as Dan settled it on 5 Sep. A
+floating 🧰 (cahier paper, ink border, above the green 💬 bubble) opens a
+two-row tray — 🔊 VoixLà · 🤖 ChaTutor — and a row slides a BottomSheet card
+up OVER the exercise, which never closes or navigates. Where: the three
+Skills trainers only — ÉcouTexte, WorDrill, ComposeIt (both modes) — mounted
+INSIDE each trainer's own content component; **DrillShell and GameFrame are
+untouched** (verify100 pins that too).
+
+**The panels are extracted, not copied.** tutor/page.tsx and tts/page.tsx are
+now thin shells over `components/tools/ChaTutorPanel` / `VoixLaPanel`; the 🧰
+card mounts the same two components with context props the pages don't pass.
+The trainer hands over what it knows: ChaTutor gets a yellow chip (activity +
+current item — only what the learner can already SEE; ÉcouTexte hands the
+learner's typed attempt, never the hidden sentence) prepended to the
+conversation the backend reads; VoixLà gets the current typed/spoken French
+pre-filled.
+
+**THE CORRECTS-FIRST RULE holds in code shape, not intention.** The card's
+VoixLà runs /api/correct on the handed text FIRST, shows the corrected
+sentence leading with the slip marked beneath, and ▶ voices ONLY the
+corrected form; the 🎧 MP3 renders only the approved form too; checker
+unreachable = the page's existing fallback message and total silence.
+`verify100-ambient-tools.py` asserts the one voice entry has exactly three
+call sites (raw text behind `!correctsFirst`, the approved sentence, the
+fresh checker result) and that corriger() never speaks. Break-tested three
+ways.
+
+Audio ownership: opening a card pauses the exercise's speech
+(pauseSpeech/resumeSpeech, cloud clips included via the registered hooks);
+WorDrill's recognizer is ABANDONED un-graded while a card is open (handlers
+detached first, so half an utterance never scores) and the mic refuses to
+start until the card closes — back to idle, one tap re-arms.
+
+Small renames the checks forced, recorded so nobody re-trips them: the
+context prop is `title`, not `activity` (an `activity:` string literal reads
+as an evidence tag to verify53); the chip wears cahier-hl tokens, not raw
+hexes (verify19b's ratchet counts components).
+
+Green: tsc, NEXT_PUBLIC_OPEN_APP build, all 88 checks, eslint clean on every
+touched file. Shared files for the integrator: `verify.yml` (verify100's line
+sits after verify98's — verify99 belongs to a parallel lane, order to
+reconcile), `SayItContent.tsx`, `EcouTexte.tsx`, both Compose modes,
+`tutor/page.tsx`, `tts/page.tsx`, this file.
+
 ## 5 Sep — NO CLASSES: participants enrol rolling, worldwide (Dan's ruling)
 
 Sole editor of STATUS.md in this commit: fluoduo-main.
