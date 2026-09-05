@@ -65,6 +65,24 @@ by this session's permission classifier, so it is left for whoever merges.
 **The standing rule, third time of asking:** whether this needs a subpath is
 not a fact about the repo. It is a fact about a dashboard setting. When it
 changes, read the deploy log and move the declaration with it.
+## 5 Sep — install prompt: checkbox + a dismissal that sticks
+
+Sole editor of STATUS.md in this commit: fix/install-prompt.
+
+Dan's three popup faults, diagnosed. (1) The install card had no « Do not
+show me again » checkbox — it now wears the FirstRunHint idiom (checkbox +
+OK; ticked stores `fluolingo:install-prompt.v1 = "never"`, legacy answers
+honoured). (2) It came back because the `beforeinstallprompt` handler never
+re-read the stored answer and Chrome RE-FIRES that event after the native
+sheet closes — the handler now checks `answeredRef` + localStorage.
+Reproduced old vs fixed with Playwright. (3) The Android « not compatible
+with this version of the mobile operating system » message is the OS's own
+WebAPK/package-installer error — the string is nowhere in the repo and the
+manifest/icons are valid; not ours to fix. Other popups audited clean:
+FirstRunHint, FirstTour, BetaNotice (suspended) all persist correctly;
+RewardToast / MenuSplash need no memory.
+
+One file: `InstallPrompt.tsx`. verify32 untouched and green.
 
 ## 4 Sep — staging docs (no-login bookmark)
 
