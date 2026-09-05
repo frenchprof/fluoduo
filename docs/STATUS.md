@@ -6,6 +6,21 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 5 Sep evening — SpecuLearn commerces chrome is English (new PR from main)
+
+Sole editor of STATUS.md in this commit: ux/en-chrome-speculearn.
+
+#182 is already in main. The English labels could not land on that closed
+pull request, so they sit on a clean branch from `5d06894`:
+`ux/en-chrome-speculearn`. No pictures touched.
+
+- Deck title is **Shops & market**. French subtitle and FR answers stay.
+- Instructions: **Pick the right picture.** / **Pick the right word.**
+- The title band is not marked `lang="fr"` on commerces.
+
+Open it: Practice → SpecuLearn → Shops & market, or
+`/practice/speculearn/commerces`.
+
 ## 5 Sep evening — SpecuLearn commerces photos are real PNGs
 
 Sole editor of STATUS.md in this commit: cursor/speculearn-commerces.
