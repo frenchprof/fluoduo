@@ -3,6 +3,11 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* The one fluid step the whole type ramp is built on. Declared HERE and not
+     in @theme, which is `inline`: that inlines its values into the utilities
+     instead of emitting them, so a step declared there would leave every
+     calc() below referring to a variable that does not exist at runtime. */
+  --fs-step: clamp(0rem, calc(-0.61rem + 1.2vw + 0.6vh), 0.36rem);
 }
 
 @theme inline {
@@ -10,6 +15,41 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* ── FLUID TYPE, APP-WIDE (Dan, 2026-09-05) ────────────────────────────
+     "fonts can afford to be bigger on the desktop", then "the relative font
+     size thingy should apply FluOLinGo wide, not just here".
+
+     WHY IT LIVES HERE AND NOT IN --fs-*. The obvious place looked like the
+     --fs-* scale below, and it would have been the wrong one: the app's type
+     is 936 Tailwind text-* utilities across 162 files against 105 uses of the
+     tokens. Redefining the tokens would read as an app-wide fix and change
+     almost nothing. Tailwind v4 resolves every text-* utility from these
+     --text-* theme variables, so redefining them here moves all 936 from one
+     place.
+
+     ONE SHARED STEP, so the ramp grows in proportion instead of eight sizes
+     drifting apart. The step is ZERO on a portrait phone — the constant is
+     tuned so 1.2vw + 0.6vh cancels at 390x844 — which is what keeps the phone
+     bit-identical to before this change. Only wider or taller viewports gain.
+
+     BOTH AXES, not vw alone. A landscape phone is wide and short; a width-only
+     clamp reads it as "narrow" and hands it the minimum, which is exactly the
+     bug that made 844x390 render at the same size as 390x844.
+
+     rem, NEVER px, for the floor and the cap. A px floor overrides a learner
+     who has asked for larger text in their accessibility settings — they
+     request bigger and get what everyone else gets. Consequence accepted: past
+     root 20px the floor wins and portrait and landscape converge, because
+     their stated preference outranks our layout preference. */
+  --text-xs:   calc(0.75rem  + var(--fs-step) * 0.6);
+  --text-sm:   calc(0.875rem + var(--fs-step) * 0.75);
+  --text-base: calc(1rem     + var(--fs-step));
+  --text-lg:   calc(1.125rem + var(--fs-step) * 1.15);
+  --text-xl:   calc(1.25rem  + var(--fs-step) * 1.3);
+  --text-2xl:  calc(1.5rem   + var(--fs-step) * 1.6);
+  --text-3xl:  calc(1.875rem + var(--fs-step) * 2);
+  --text-4xl:  calc(2.25rem  + var(--fs-step) * 2.4);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -938,6 +978,12 @@ body {
      the 30 Aug mirroring, which moved the coils across with the rail — the
      rail moving left never meant the binding should leave it. */
   padding-left: clamp(8px, 3vw, 44px);
+  /* A RIGHT GUTTER TO MATCH. There was none while the flap rail lived here —
+     the rail WAS the right margin. With the flaps gone (Dan, 2026-09-05:
+     "right side flaps should ALL be gone") a filling sheet would run flush to
+     the screen edge, so the desk shows on both sides now, as it always did on
+     the left. */
+  padding-right: clamp(8px, 3vw, 44px);
 }
 /* A DRILL SITS ON THE SAME DESK (Dan, 2026-09-01: "Ok move all to A", closing
    a sweep of all 134 routes that found the site drawing its heading band at
@@ -985,6 +1031,64 @@ body {
   padding-bottom: 8px;                       /* NOT the desk's 64 — see above */
 }
 /* The page's own radius, now that grey shows on every side to put it against. */
+/* ── A SHORT, WIDE SCREEN GETS TWO COLUMNS ────────────────────────────────
+   Dan, 2026-09-05, on turning the phone sideways. Measured on the live build
+   at 844x390: the page was 761px tall inside a 390px screen and the last two
+   options sat 180px BELOW the bottom of it. A learner who rotated had to
+   scroll to reach half the answers, on every question.
+
+   The card is a vertical stack — stimulus, then a grid of options under it —
+   which is right when height is the plentiful dimension and wrong when it is
+   the scarce one. So past 11:10 the same card becomes two columns: everything
+   that is not the options in the left one, the options in the right.
+
+   WHY THE HEIGHT CLAUSE. The obvious gate is the aspect ratio alone, and it
+   would also catch every desktop — where the fault does not exist: 1440x900
+   has 900px of height and the card fits with room over. Worse, the card sits
+   inside a max-w-3xl (768px) wrapper, so two columns there would be two narrow
+   columns in a wide sheet. The defect being fixed is SHORTNESS, so shortness
+   is what the rule tests for.
+
+   EVERY LENGTH HERE IS RELATIVE, the breakpoint included. `max-height` in em
+   is measured against the browser's DEFAULT font size — the learner's own text
+   setting — so someone reading at 20px switches to the space-saving layout on
+   a taller screen than someone at 16px, which is what they need. A px
+   breakpoint would have ignored them, exactly as a px font floor would.
+
+   Nothing here touches the strip above the card (Skip, TTS) or the ring
+   binding down the gutter — both live outside .speculearn-card and are
+   unaffected by design. Verified in landscape after building. */
+@media (min-aspect-ratio: 11 / 10) and (max-height: 38.75em) {
+  .speculearn-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    column-gap: clamp(0.875rem, 2.5vw, 2.5rem);
+  }
+  /* Everything the card holds stacks in the left column, as it did before … */
+  .speculearn-card > * { grid-column: 1; }
+  /* … except the options, which take the right one and centre against the
+     whole of it, so the two halves read as one row rather than two lists. */
+  .speculearn-card > .speculearn-options {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    align-self: center;
+    margin-top: 0;
+  }
+
+  /* AND THE CHROME GIVES THE SPACE BACK. Two columns alone did not fix it:
+     measured after the grid landed, a four-option question still had two
+     options below the fold, because the furniture above the card took 290px
+     of a 390px screen — 74% of the display spent before the question began.
+     Each of these is generous on a tall phone and unaffordable on a short
+     one, so each is trimmed here and nowhere else. */
+  .cahier-foolscap { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+  .page-band { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+  .speculearn-stage { padding-top: 0.4rem; padding-bottom: 0.4rem; }
+  .speculearn-stage > header { margin-bottom: 0.5rem; }
+  .speculearn-card { padding: 0.7rem 0.9rem; }
+}
+
 .cahier-drilldesk > .cahier-drill {
   width: 100%;
   border-radius: 4px 16px 16px 4px;
@@ -993,7 +1097,18 @@ body {
 
 .cahier-page {
   position: relative;
-  flex: 0 1 980px;
+  /* FILLS THE WIDTH (Dan, 2026-09-05: "the DESKTOP view should fill up the
+     full width of the screen, not be tied to the left"). `flex: 0 1 980px`
+     capped the sheet at 980 and, because .cahier-deskrow only pads the LEFT,
+     left every spare pixel on the right: measured at 1440 the content started
+     at x=43 and left 417px empty; at 1920, 896px — nearly half the screen.
+     `flex: 1 1 auto` lets it take what the row gives it.
+
+     It is safe to fill because the QUESTION CARD rearranges past 11:10 rather
+     than stretching (see .cahier-drilldesk and the card rules) — a single
+     column at 1876px would be an unreadable line of French. The width is used,
+     not spent. */
+  flex: 1 1 auto;
   min-width: 0;
   background-color: var(--cahier-paper);
   background-image: repeating-linear-gradient(
@@ -1019,7 +1134,7 @@ body {
  * page lies on it as a loose sheet (no coils of its own). */
 .cahier-stack {
   position: relative;
-  flex: 0 1 980px;
+  flex: 1 1 auto;   /* fills, like .cahier-page above */
   min-width: 0;
   border-radius: 4px 16px 16px 4px;
   background: #efede3;
@@ -1401,14 +1516,16 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   --tier-weak: oklch(56% 0.15 25);
   --tier-weak-soft: oklch(93% 0.045 25);
 
-  --fs-display: 2.75rem;
-  --fs-h1: 2.25rem;
-  --fs-h2: 1.75rem;
-  --fs-h3: 1.375rem;
-  --fs-h4: 1.125rem;
-  --fs-body: 1rem;
-  --fs-small: 0.875rem;
-  --fs-micro: 0.75rem;
+  /* Fluid on the same step as the Tailwind ramp (see @theme). Phones get the
+     value that was here before; only wider or taller viewports gain. */
+  --fs-display: calc(2.75rem  + var(--fs-step) * 2.4);
+  --fs-h1:      calc(2.25rem  + var(--fs-step) * 2);
+  --fs-h2:      calc(1.75rem  + var(--fs-step) * 1.6);
+  --fs-h3:      calc(1.375rem + var(--fs-step) * 1.3);
+  --fs-h4:      calc(1.125rem + var(--fs-step) * 1.1);
+  --fs-body:    calc(1rem     + var(--fs-step));
+  --fs-small:   calc(0.875rem + var(--fs-step) * 0.8);
+  --fs-micro:   calc(0.75rem  + var(--fs-step) * 0.7);
 
   --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px; --sp-5: 20px;
   --sp-6: 24px; --sp-8: 32px; --sp-10: 40px; --sp-12: 48px; --sp-16: 64px;

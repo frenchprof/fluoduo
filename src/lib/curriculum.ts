@@ -152,6 +152,11 @@ const SURFACE_ALL = new Set([
   "Compose It",
   "Matching",
   "ÉcouTexte",
+  // "Pretest" and "Picture pretest" were the labels these surfaces reported
+  // before the 5 Sep rename; both now report "SpecuLearn" (already in this
+  // set, above). They stay because learners' stored history still carries the
+  // old strings, and a surface this set does not know is a surface the journey
+  // cannot place.
   "Pretest",
   "Picture pretest",
   "VoixLà",
