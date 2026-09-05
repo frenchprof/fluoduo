@@ -978,6 +978,12 @@ body {
      the 30 Aug mirroring, which moved the coils across with the rail — the
      rail moving left never meant the binding should leave it. */
   padding-left: clamp(8px, 3vw, 44px);
+  /* A RIGHT GUTTER TO MATCH. There was none while the flap rail lived here —
+     the rail WAS the right margin. With the flaps gone (Dan, 2026-09-05:
+     "right side flaps should ALL be gone") a filling sheet would run flush to
+     the screen edge, so the desk shows on both sides now, as it always did on
+     the left. */
+  padding-right: clamp(8px, 3vw, 44px);
 }
 /* A DRILL SITS ON THE SAME DESK (Dan, 2026-09-01: "Ok move all to A", closing
    a sweep of all 134 routes that found the site drawing its heading band at
@@ -1033,7 +1039,18 @@ body {
 
 .cahier-page {
   position: relative;
-  flex: 0 1 980px;
+  /* FILLS THE WIDTH (Dan, 2026-09-05: "the DESKTOP view should fill up the
+     full width of the screen, not be tied to the left"). `flex: 0 1 980px`
+     capped the sheet at 980 and, because .cahier-deskrow only pads the LEFT,
+     left every spare pixel on the right: measured at 1440 the content started
+     at x=43 and left 417px empty; at 1920, 896px — nearly half the screen.
+     `flex: 1 1 auto` lets it take what the row gives it.
+
+     It is safe to fill because the QUESTION CARD rearranges past 11:10 rather
+     than stretching (see .cahier-drilldesk and the card rules) — a single
+     column at 1876px would be an unreadable line of French. The width is used,
+     not spent. */
+  flex: 1 1 auto;
   min-width: 0;
   background-color: var(--cahier-paper);
   background-image: repeating-linear-gradient(
@@ -1059,7 +1076,7 @@ body {
  * page lies on it as a loose sheet (no coils of its own). */
 .cahier-stack {
   position: relative;
-  flex: 0 1 980px;
+  flex: 1 1 auto;   /* fills, like .cahier-page above */
   min-width: 0;
   border-radius: 4px 16px 16px 4px;
   background: #efede3;

@@ -27,7 +27,7 @@ import { shuffle } from "@/lib/shuffle";
 // (pre/post boundary, same rule as /pretests/[id]).
 const PRETEST_TABS: ShellTab[] = [
   { key: "home", label: "Home", emoji: "🏠", href: "/" },
-  { key: "pretest", label: "Pretest", emoji: "🧪" },
+  { key: "pretest", label: "SpecuLearn", emoji: "🧪" },
 ];
 
 type Direction = "fr2pic" | "pic2fr";

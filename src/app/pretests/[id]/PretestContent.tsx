@@ -16,7 +16,7 @@ import { optionGridClass } from "@/lib/optionGrid";
 // NOT link to Practice activities (pre/post boundary, see PRETEST_BLUEPRINT.md).
 const PRETEST_TABS: ShellTab[] = [
   { key: "home", label: "Home", emoji: "🏠", href: "/" },
-  { key: "pretest", label: "Pretest", emoji: "🧪" },
+  { key: "pretest", label: "SpecuLearn", emoji: "🧪" },
 ];
 
 type Verdict = { picked: string; correct: boolean };
@@ -56,7 +56,7 @@ export default function PretestPage({ id }: { id: string }) {
     <CahierShell
       tabs={PRETEST_TABS}
       active="pretest"
-      band={{ title: "Pretest", goal: goalNumber(stopForPretestId(pretest.id)) }}
+      band={{ title: "SpecuLearn", goal: goalNumber(stopForPretestId(pretest.id)) }}
     >
       <PretestRunner pretest={pretest} />
     </CahierShell>
