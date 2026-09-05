@@ -614,10 +614,23 @@ function ExerciseCard({
       : ex.segments
         ? ex.segments.flatMap((s) => (s.kind === "blank" ? s.choices : []))
         : [];
-  const FR_TEXT = frAnswers.some((o) => (o ?? "").length > STACK_ABOVE) ? "text-lg" : "text-2xl";
-  // "Equally big" means levelling UP — the options grow to the sentence, the
-  // sentence does not shrink to the options — so an option too wide for a
-  // two-column cell at 24px takes a full-width row instead of dropping a size.
+  // TWO COLUMNS WIN OVER 24px (Dan, 2026-09-05, on a card offering Chine ·
+  // États-Unis · Indonésie · Philippines as four full-width bars: *"i am seeing
+  // one column, but it should be two"*).
+  //
+  // The threshold here was STACK_ABOVE (18, the 18px budget) while the CELL
+  // budget was STACK_ABOVE_2XL (7, the 24px one) — so anything between 8 and 18
+  // characters stayed at 24px and then failed the 7-character cell test, which
+  // is one column at the largest size. « Philippines » is eleven, and that is
+  // the whole of Dan's screenshot.
+  //
+  // Both now ask the same question of the same number: too long for a 24px
+  // two-column cell → drop to 18px, where the budget is 18 and the pair fits.
+  // This reverses one clause of the 1 Sep "level up, don't shrink" ruling, and
+  // only that clause: options are still sized to the French question wherever
+  // they fit beside each other, and an option that is a whole sentence still
+  // takes a full-width row at 18px rather than wrapping.
+  const FR_TEXT = frAnswers.some((o) => (o ?? "").length > STACK_ABOVE_2XL) ? "text-lg" : "text-2xl";
   const FR_CELL = FR_TEXT === "text-2xl" ? STACK_ABOVE_2XL : STACK_ABOVE;
 
   /** Dan's exception, 2026-09-05: *"except maybe the single worded choices"*.

@@ -43,7 +43,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fragment, useRef, useState, type ReactNode } from "react";
 
-import { deckActivityTabs } from "@/components/CahierShell";
+import GoalCard from "@/components/GoalCard";
 import type { Collection } from "@/lib/collections/schema";
 import type { Sio } from "@/content/sios";
 import type { LessonConcept } from "@/content/lessons/native/types";
@@ -242,38 +242,20 @@ function Empty({ what }: { what: string }) {
  *     its games — lives on the goal, not in this lesson.
  *
  * So: the description, then the items, then the goal itself. */
-function Parcours({ sio, deck }: { sio?: Sio; deck?: Collection }) {
+function Parcours({ sio }: { sio?: Sio }) {
   if (!sio) {
     return <Empty what="This lesson is not wired to a curriculum objective, so there is no goal to show." />;
   }
-  const items = deck ? deckActivityTabs(deck.id).filter((t) => t.href) : [];
   return (
     <Panel>
-      <p className="text-base font-bold">{sio.canDo}</p>
-      {sio.description && (
-        <p className="mt-2 text-[color:var(--fluo-ink-soft)]">{sio.description}</p>
-      )}
-
-      {items.length > 0 && (
-        <>
-          <H>Everything on this goal</H>
-          <div className="mt-1 grid grid-cols-2 gap-1.5">
-            {items.map((t) => (
-              <Link
-                key={t.key}
-                href={t.href!}
-                className="flex items-center gap-1.5 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-raised)] px-2.5 py-2 text-[13px] font-black text-[color:var(--cahier-ink)] transition hover:border-[color:var(--fam-ink)]"
-              >
-                <span aria-hidden>{t.emoji}</span>
-                <span className="whitespace-nowrap">{t.label}</span>
-              </Link>
-            ))}
-          </div>
-        </>
-      )}
+      {/* ONE CARD, TWO DOORS. This is the same GoalCard the /sio scroller
+          shows, from one file: the tab is a shortcut to that page, and two
+          hand-written copies of a goal is how the old /sio page came to say
+          "Planned" for pre-tests that existed. */}
+      <GoalCard sio={sio} compact />
 
       <Link
-        href={`/?unit=${sio.unit}#${sio.id}`}
+        href={`/sio/${sio.id}`}
         className="mt-4 flex items-center justify-center gap-1.5 rounded-xl border-2 border-[color:var(--cahier-ink)] px-3 py-2 text-[13px] font-black text-[color:var(--cahier-ink)]"
       >
         ← 🎯 {sio.id}
@@ -679,10 +661,10 @@ export default function LessonTabs({
     const i = TABS.findIndex((t) => t.key === tab);
     if (back) {
       if (i > 0) setTab(TABS[i - 1].key);
-      // NOT `/sio/${id}` — that route is a redirect stub, and verify27 forbids
-      // linking to it precisely so a second copy of "where a SIO lives" cannot
-      // drift. Home's map + popup IS the SIO.
-      else if (sio) router.push(`/?unit=${sio.unit}#${sio.id}`);
+      // `/sio/${id}` IS the goal now — the middle level of MAP > SIO > MneMemo
+      // (2026-09-05). It was a redirect stub until today, which is why this
+      // line pointed at Home's popup instead.
+      else if (sio) router.push(`/sio/${sio.id}`);
       return;
     }
     if (i < TABS.length - 1) setTab(TABS[i + 1].key);
@@ -798,7 +780,7 @@ export default function LessonTabs({
         })}
       </div>
 
-      {tab === "parcours" && <Parcours sio={sio} deck={deck} />}
+      {tab === "parcours" && <Parcours sio={sio} />}
       {tab === "concept" && <Concept c={concept} />}
       {tab === "formes" && <Formes memo={memo} deck={deck} lexique={lexique} />}
       {tab === "exercice" && <Panel>{exercise}</Panel>}
