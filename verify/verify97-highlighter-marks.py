@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """
-The mark: twenty-four colour sets and one geometry, kept honest.
+The highlighter marks: twenty-four colour sets and one geometry, kept honest.
+
+NOT the shipped logo — that is src/app/icon.svg, guarded by verify95-icons.py.
 
 Dan, 2026-09-05: *"can we put the logo and 24 colors in the repo for posterity"*.
-Nothing renders `FluoMark` yet — it is archival — which is precisely why it needs
+Nothing renders `HighlighterMark` yet — it is archival — which is precisely why it needs
 a check. Code no page imports is code no reviewer opens and no screenshot
 catches; the marks would rot in place with nobody able to tell that they had.
 
@@ -91,7 +93,7 @@ if not os.path.isfile("package.json"):
     print("run from the repo root")
     sys.exit(2)
 
-SRC = read("src/content/marks.ts")
+SRC = read("src/content/highlighterMarks.ts")
 PAPER = "#faf6ee"
 
 # key -> (block, pale tint, deep tint, mouth, ring)
@@ -110,8 +112,8 @@ EXPECT = {
     "olive":      ("#98b300", "#c7ea00", "#768c00", "#b17eff", "#5e6f00"),
 }
 
-ok(bool(SRC), "src/content/marks.ts is present",
-   "src/content/marks.ts is missing — the mark's colours live nowhere else")
+ok(bool(SRC), "src/content/highlighterMarks.ts is present",
+   "src/content/highlighterMarks.ts is missing — the mark's colours live nowhere else")
 
 # ---- 1 · the pale rows, parsed from the table ----------------------------
 rows = {}

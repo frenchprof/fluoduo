@@ -93,7 +93,8 @@ rewritten into the register already shipped in the bank (`SIO-036:1`, `036:3`,
 `040:1`); answers and categories untouched. Same shape as « Bon chance » in
 atelierModel — the wrong form was the MACHINE'S, not the learner's.
 
-`verify95-directions-imperative.py` pins both halves and leaves distractors free.
+`verify98-directions-imperative.py` (renumbered from 95 on 5 Sep when
+Peers' `verify95-icons` landed on main first) pins both halves and leaves distractors free.
 Break-tested four ways: bank card loses its « vous », an imperative gets keyed,
 the imperative distractors get tidied away, a frame prints « Prenez » again.
 
@@ -105,6 +106,152 @@ Not done in item 10: **SUP-CAL-01/02/03** (Optional chips, soft family wash, off
 Continue, SUP-CAL-03's né/née role cue). Untouched.
 
 Shared: `STATUS.md`, `SYLLABUS_TIERS.md`, `.github/workflows/verify.yml`.
+
+## 5 Sep — the mark ships: icon.svg, favicon.ico, the four PNGs
+
+Sole editor of STATUS.md in this commit: claude/peers-vd2h6h (Peers).
+
+Dan drew the mark over 5 Sep — a spiral notebook whose page carries an **F**
+and a **g**, the g's counter closed by the amber bar. Colours: **red shell,
+blue F**, green page, amber rings and counter. The red/blue swap was the call
+against the earlier blue shell: red on green is the one adjacency red-green
+colour-blind learners cannot separate, and the old arrangement put the LETTER
+on it. Note for whoever tunes feedback colours: the brand red now shares a
+register with "wrong", and one of them should move.
+
+**Two drawings, not one.** `src/app/icon.svg` is flat and drops the counter
+and the low band — at 16px they are one pixel each and the middle turns to
+mud. `public/icons/*.png` carry the full mark with a two-stop vertical fade
+per region (same hue at both ends, lightness travelling ~30%, the App Store
+recipe). Below about 48px the fade is invisible, so it is not in the tab file.
+
+**The trap that cost a build.** Declaring any `icons` object in layout metadata
+switches OFF Next's `app/icon.svg` file convention. The SVG shipped in the
+export with nothing linking it and the tab quietly kept the .ico — invisible
+in every screenshot. `verify95` checks the LINK, not the file. It also caught
+itself: the first version of that assertion passed against broken code because
+the explanatory comment in `layout.tsx` names `/icon.svg`, so the check now
+strips comments before looking.
+
+`verify95-icons.py`, seven break-tests: single-hue art returning, a PNG that
+lies about its size, starter art back in `public/`, the tab drawing gone,
+maskable losing its safe area, the manifest naming a missing file, the SVG
+present but unlinked. The five Next.js starter SVGs (`next`, `vercel`, `file`,
+`globe`, `window`) are deleted — nothing referenced them.
+
+## 5 Sep — item 4 (double-door): three ☰ rows were dead on Home
+
+Sole editor of STATUS.md in this commit: claude/peers-vd2h6h (Peers).
+
+Auditing FINISH_BACKLOG item 4 on the real export at 390×844 turned up a
+navigation bug that no screenshot could have shown.
+
+**Open ☰ on Home and the bottom three rows do nothing.** 👤 User, ▦ MENU and
+🗺️ Map took no taps; the five family flaps above them were fine, and all eight
+worked on /practice and /games. The menu still PAINTED correctly, which is why
+it survived weeks of review.
+
+**Why.** `SiteTopBar`'s wrapper is `sticky top-0`, and sticky + a z-index makes
+its own stacking context — so the dropdown's `z-50` counts only inside the bar,
+and against the page the bar competes with the single number on that wrapper.
+It was `z-10`. Home's map postcard covers its whole card with a stretched
+`<a class="absolute inset-0 z-10">`. Equal z-index, later in the DOM, so the
+invisible link won the hit test and ate the taps. The bar is now `z-30`: above
+page content, below every scrim (z-40+) and modal. `CuratedDeckTable`'s group
+popover moved 30 → 25 for the same ceiling.
+
+`verify94-topbar-above-page.py` holds it as an INEQUALITY, not a spelling test
+— max z-index anywhere under `src/app` must stay below the bar's. Three
+break-tests: bar back to z-10 (names `HomeDashboard.tsx:544` as the culprit),
+a page card catching up, the bar losing its z-index. `fixed` overlays are
+exempt: modals are meant to cover the bar.
+
+**Item 4's other two Success lines were already met** and are now evidenced on
+the export: every bottom-bar family tap lands on that family's hub with no
+second popup (5/5), and the ☰ is six coloured flaps to those hubs with the
+16-tile grid demoted to one ▦ MENU row below a rule.
+
+Shared files: `SiteTopBar.tsx`, `CuratedDeckTable.tsx`, `verify.yml`,
+`STATUS.md`. Open PRs when this branched: #166 (STATUS roster block only —
+appends above THE ROSTER, this appends at the top; textual conflict possible,
+no semantic one).
+
+## 5 Sep — the Pages subpath goes back, and the check now pins BOTH directions
+
+Sole editor of STATUS.md in this commit: Pre-tests.
+
+**#157 has become a regression, and it is mine.** The same fault as 17 Aug,
+mirrored, and it is live on the github.io preview now.
+
+WHAT HAPPENED. #157 dropped `PAGES_BASE_PATH` on the then-correct reading that
+the artifact was served at fluolingo.com's root. Between 2 and 5 Sep somebody
+cleared the custom domain in Settings → Pages — which is exactly what the
+2 Sep Peers note in `pages-preview.yml` prescribed. The moment they did, the
+home moved back to `frenchprof.github.io/fluoduo/` and that reading inverted:
+the build now emits `/_next/…` for a site served at `/fluoduo/`, so every
+stylesheet and script 404s.
+
+THE EVIDENCE, and it answers Peers' 2 Sep open question ("Whoever can open a
+browser: check both URLs and record the answer here"). `actions/deploy-pages`
+prints the served URL on every run:
+
+    2 Sep 08:27   Evaluated environment url: https://fluolingo.com/
+    5 Sep 02:22   Evaluated environment url: https://frenchprof.github.io/fluoduo/
+
+So on 2 Sep the domain WAS attached and Dan's original hypothesis was right;
+by 5 Sep it was not. Confirmed independently from outside by
+`cursor/staging-docs-8ea9`, which could actually open the host —
+`docs/STAGING.md`, 4 Sep: *"its HTML asks for `/_next/…` at the github.io root
+(404); the files live under `/fluoduo/_next/`."*
+
+**Cloudflare was never affected.** Live and staging are domain roots, never set
+the variable. Students were not hit by this; the github.io preview was.
+
+THE FIX, and the lesson in it. `PAGES_BASE_PATH: /fluoduo` is back. More
+importantly `verify91` no longer INFERS the home from the root CNAME file —
+that inference is what let the second failure through, because GitHub never
+reads that file (it is not in the uploaded artifact) so it stayed behind when
+the setting changed. The workflow now DECLARES its home in one line beside the
+build (`PAGES_HOME: subpath | root`) and verify91 holds the build to it in
+BOTH directions: `subpath` requires the base path and it must equal the repo
+name; `root` forbids it. Break-tested against both real failures — the 5 Sep
+state (subpath declared, base path absent) and the 17 Aug state (root declared,
+base path set) — plus a wrong folder, a missing declaration, a nonsense
+declaration, the "separate from production" claim returning, and the config
+default flipping. 7 assertions.
+
+`next.config.ts`'s comment has now been wrong twice — it asserted the
+subdirectory while a domain served the root, then asserted "NOTHING SETS IT"
+days before the subpath came back. Rewritten to say where the truth is instead
+of restating it.
+
+**Open for Dan:** the root `CNAME` still names fluolingo.com, a domain GitHub
+no longer holds. It is inert (not in the artifact) but reads as authoritative,
+which is precisely what caused this. verify91 REPORTS it as a note rather than
+failing on it — deleting it is a repository decision. The `git rm` was refused
+by this session's permission classifier, so it is left for whoever merges.
+
+**The standing rule, third time of asking:** whether this needs a subpath is
+not a fact about the repo. It is a fact about a dashboard setting. When it
+changes, read the deploy log and move the declaration with it.
+## 5 Sep — install prompt: checkbox + a dismissal that sticks
+
+Sole editor of STATUS.md in this commit: fix/install-prompt.
+
+Dan's three popup faults, diagnosed. (1) The install card had no « Do not
+show me again » checkbox — it now wears the FirstRunHint idiom (checkbox +
+OK; ticked stores `fluolingo:install-prompt.v1 = "never"`, legacy answers
+honoured). (2) It came back because the `beforeinstallprompt` handler never
+re-read the stored answer and Chrome RE-FIRES that event after the native
+sheet closes — the handler now checks `answeredRef` + localStorage.
+Reproduced old vs fixed with Playwright. (3) The Android « not compatible
+with this version of the mobile operating system » message is the OS's own
+WebAPK/package-installer error — the string is nowhere in the repo and the
+manifest/icons are valid; not ours to fix. Other popups audited clean:
+FirstRunHint, FirstTour, BetaNotice (suspended) all persist correctly;
+RewardToast / MenuSplash need no memory.
+
+One file: `InstallPrompt.tsx`. verify32 untouched and green.
 
 ## 4 Sep — staging docs (no-login bookmark)
 
@@ -1222,6 +1369,35 @@ closed.
 (already in atelier 50) appear as predicted forms.
 
 ## THE ROSTER (31 Aug 2026) — lanes, rules, and the decision queue
+
+### 5 Sep — duty roster PROPOSAL from Grok Main (relayed by Dan; awaiting the UI-UX Consultant's stamp)
+
+Dan: *"Pls pass on the message."* Recorded verbatim as received — a proposal,
+not yet the roster; if stamped, the table below supersedes lane assignments
+above where they differ, and this line gets replaced with the ruling.
+
+**Grok room** (lock/QA — the room does not write `src/`; it locks Success,
+Claude implements, the room QAs the PR):
+- @UI-UX Consultant — FINISH_BACKLOG owner; PR ↔ item map; briefs
+- @UX Expert — flows / soft-auth / Class bag UX; tap-clarity QA on home/map keys
+- @UI Expert — lacquer mocks + visual chrome (keys, coins, EN labels)
+- @Native French Speaker (rich teaching experience) — FR on learning surfaces
+  only; chrome stays EN (co-sign their Continuer/Félicitations flag)
+- @Pedagogy Expert — pretest effect / Class bag catch-up / activity design
+  sign-off (not pixel CSS)
+
+**Claude lanes**:
+- fluoduo-main — integrate/merge only
+- Pre-tests agent — SpecuLearn / pretest / Class bag + soft-auth (items 2+3)
+- Color review agent — `--dopa-*` / lacquer keys & map coins ship
+- General FluOLinGo — double-door, EN chrome sweep, remaining FINISH_BACKLOG
+  1–18 not owned above
+
+Integrator's note, for accuracy not objection: this window fluoduo-main also
+built on Dan's direct word (bookmark, streak, game volume, the coloured ☰) —
+under this proposal such asks route to General FluOLinGo unless Dan says
+otherwise.
+
 
 Four agents audited the same six branches on the same morning; that
 redundancy is why this section exists. One lane each. Work outside your

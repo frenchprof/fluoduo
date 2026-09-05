@@ -79,8 +79,20 @@ export default function SiteTopBar({
     {/* The family band: the header field is the family's wash and the
         page carries its spine. Both are tokens, so switching family
         switches the page and nothing else moves. */}
+    {/* z-30, NOT z-10 — and this number is load-bearing (5 Sep). `sticky` with
+        a z-index makes this bar its own stacking context, so the ☰ dropdown's
+        z-50 counts only INSIDE the bar; against the page the bar competes with
+        whatever number is on this line. At z-10 it TIED with Home's postcard,
+        whose whole-card link is `absolute inset-0 z-10` — equal z, later in the
+        DOM, so an INVISIBLE stretched link sat on top of the open menu. The
+        dropdown still painted (the link has no pixels) and still looked right
+        in a screenshot; it just stopped receiving taps. Measured on the export
+        at 390px: 👤 User, ▦ MENU and 🗺️ Map were dead on Home and fine on
+        /practice and /games, which have no stretched card that far up.
+        z-30 clears page content and stays under every scrim (z-40+) and modal.
+        verify94 fails the build if page content ever reaches this number. */}
     <div
-      className="sticky top-0 z-10 border-b-2 border-[color:var(--cahier-ink)]/15 backdrop-blur"
+      className="sticky top-0 z-30 border-b-2 border-[color:var(--cahier-ink)]/15 backdrop-blur"
       style={{ background: "var(--fam-wash, var(--cahier-paper))" }}
     >
       {/* py-2 + tighter left inset (Dan, 2026-08-21): the wordmark hugs

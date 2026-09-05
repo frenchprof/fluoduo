@@ -1,12 +1,20 @@
-import { MARK_GEOMETRY, markFor, type Mark, type MarkTone } from "@/content/marks";
+import { MARK_GEOMETRY, markFor, type Mark, type MarkTone } from "@/content/highlighterMarks";
 
 /**
- * The FluOLinGo mark. One geometry, twenty-four dresses — see `src/content/marks.ts`
- * for what the three blocks mean and why the C is unfinished.
+ * The HIGHLIGHTER mark — the six-pen exploration, not the shipped logo.
  *
- * NOTHING RENDERS THIS YET. It is kept so the mark survives the session it was
- * designed in (Dan, 2026-09-05: *"can we put the logo and 24 colors in the repo
- * for posterity"*). If you are the one shipping it, you need only pass a key.
+ * READ THIS FIRST IF YOU ARE ABOUT TO SHIP A LOGO. FluOLinGo's actual mark is
+ * `src/app/icon.svg` and `public/icons/*.png`: Dan's own drawing, a notebook
+ * carrying an F and a g, red shell and blue F, landed by Peers on 5 Sep and
+ * guarded by verify95-icons.py. THIS file is a different object that arrived the
+ * same day from the other direction — the twenty-four highlighter dresses, kept
+ * because Dan asked (*"can we put the logo and 24 colors in the repo for
+ * posterity"*). Two marks existed for about an hour before either session knew
+ * about the other; the names were separated so that nobody later ships the wrong
+ * one by reaching for the file with the obvious name.
+ *
+ * NOTHING RENDERS THIS. See `src/content/highlighterMarks.ts` for what the three
+ * blocks mean and why the C is unfinished.
  *
  * Two implementation notes, both of which cost an afternoon to find:
  *
@@ -19,7 +27,7 @@ import { MARK_GEOMETRY, markFor, type Mark, type MarkTone } from "@/content/mark
  *    through the page so the ring has somewhere to bite; the ring itself must
  *    sit on top of that hole or it gets knocked out along with the page.
  */
-export default function FluoMark({
+export default function HighlighterMark({
   mark,
   tone = "pale",
   size = 64,

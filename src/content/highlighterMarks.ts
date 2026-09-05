@@ -1,12 +1,16 @@
 /**
- * The FluOLinGo mark — one geometry, twenty-four dresses.
+ * The highlighter marks — one geometry, twenty-four dresses.
  *
- * KEPT FOR POSTERITY (Dan, 2026-09-05: *"can we put the logo and 24 colors in
- * the repo for posterity"*). Nothing in the app renders this yet. It is here so
- * the marks survive the chat they were designed in, and so that whoever ships
- * one later starts from measured values rather than redrawing from a
- * screenshot — which is exactly how this file came to exist, the original
- * having lived only in another session's artifact.
+ * NOT THE SHIPPED LOGO. FluOLinGo's mark is `src/app/icon.svg` and
+ * `public/icons/*.png` — Dan's own drawing, a notebook carrying an F and a g,
+ * landed by Peers on 5 Sep and guarded by verify95-icons.py. This file is the
+ * six-pen exploration from the same day, KEPT FOR POSTERITY (Dan: *"can we put
+ * the logo and 24 colors in the repo for posterity"*) and rendered by nothing.
+ *
+ * The two arrived within hours of each other from opposite directions and
+ * neither session knew about the other until a merge. Names were separated at
+ * that merge rather than left to be untangled later — a repo with two things
+ * both called "the mark" ships the wrong one eventually.
  *
  * WHAT THE MARK IS. A spiral notebook whose page is cut into three blocks:
  *
