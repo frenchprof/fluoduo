@@ -12,7 +12,6 @@ import { useEffect, useState } from "react";
 import { signInWithGoogle, useAuthUser } from "@/lib/firebase/auth";
 import { levelForXp } from "@/lib/economy";
 import { ALIAS_BOARD_NAMES, ALIAS_CANON_NAMES, EXCLUDED_BOARD_UIDS, boardName } from "@/lib/accountAliases";
-import { isCurrentTerm } from "@/lib/term";
 import { weekKey } from "@/lib/dayKey";
 import RankBadge from "@/components/RankBadge";
 import SectionBand from "@/components/SectionBand";
@@ -80,12 +79,14 @@ export default function LeaderboardList() {
           let list = snap.docs
             .map((d) => ({ uid: d.id, ...(d.data() as Omit<BoardRow, "uid">) }))
             .filter((r) => !EXCLUDED_BOARD_UIDS.has(r.uid))
-            // Cohort reset (Dan, 2026-08-11): the board shows the CURRENT
-            // term only. Rows without a term predate the reset; legacy
-            // students' rows get stamped "legacy" on their next sign-in.
-            // Nothing is deleted — prior-term rows stay in Firestore for
-            // the research pipeline (work/active-cohort.mjs).
-            .filter((r) => isCurrentTerm(r.term));
+            // NO TERM FILTER (Dan, 2026-09-05: "there won't be 'classes' of
+            // students. participants will be coming from all over, including
+            // overseas international ones"). The cohort filter of 11 Aug
+            // assumed one synchronized class; under rolling worldwide
+            // enrollment every participant belongs on the board, whenever
+            // they joined. The term field stays WRITTEN (the research
+            // pipeline still segments by it) — it just no longer hides rows.
+            ;
           // One student, two accounts (Dan, 2026-07-16): fold alias rows into
           // the canonical row — XP and gems ADD (both are her effort), streak
           // takes the max. Rows carry no email, so the match is by the known
