@@ -1183,6 +1183,35 @@ closed.
 
 ## THE ROSTER (31 Aug 2026) — lanes, rules, and the decision queue
 
+### 5 Sep — duty roster PROPOSAL from Grok Main (relayed by Dan; awaiting the UI-UX Consultant's stamp)
+
+Dan: *"Pls pass on the message."* Recorded verbatim as received — a proposal,
+not yet the roster; if stamped, the table below supersedes lane assignments
+above where they differ, and this line gets replaced with the ruling.
+
+**Grok room** (lock/QA — the room does not write `src/`; it locks Success,
+Claude implements, the room QAs the PR):
+- @UI-UX Consultant — FINISH_BACKLOG owner; PR ↔ item map; briefs
+- @UX Expert — flows / soft-auth / Class bag UX; tap-clarity QA on home/map keys
+- @UI Expert — lacquer mocks + visual chrome (keys, coins, EN labels)
+- @Native French Speaker (rich teaching experience) — FR on learning surfaces
+  only; chrome stays EN (co-sign their Continuer/Félicitations flag)
+- @Pedagogy Expert — pretest effect / Class bag catch-up / activity design
+  sign-off (not pixel CSS)
+
+**Claude lanes**:
+- fluoduo-main — integrate/merge only
+- Pre-tests agent — SpecuLearn / pretest / Class bag + soft-auth (items 2+3)
+- Color review agent — `--dopa-*` / lacquer keys & map coins ship
+- General FluOLinGo — double-door, EN chrome sweep, remaining FINISH_BACKLOG
+  1–18 not owned above
+
+Integrator's note, for accuracy not objection: this window fluoduo-main also
+built on Dan's direct word (bookmark, streak, game volume, the coloured ☰) —
+under this proposal such asks route to General FluOLinGo unless Dan says
+otherwise.
+
+
 Four agents audited the same six branches on the same morning; that
 redundancy is why this section exists. One lane each. Work outside your
 lane = report it in STATUS, don't do it.

@@ -67,15 +67,26 @@ function missChipFr(m: { stem: string; answer: string }): string {
   return m.answer.trim() || m.stem.trim();
 }
 
+function looksFrench(text: string): boolean {
+  if (/[àâäéèêëïîôùûüçœæ]/i.test(text)) return true;
+  // Common A1 function words / conjugations that mark FR gap stems
+  return /\b(nous|vous|je|tu|il|elle|ils|elles|les?|des?|une?|est|sont|suis|es|êtes|sommes|appelle|appelons|appelez|m['']appelle|s['']appelle)\b/i.test(
+    text,
+  );
+}
+
 function missChipGloss(m: { stem: string; answer: string }): string | null {
   const stem = m.stem.trim();
   const ans = m.answer.trim();
   if (!stem || stem === ans) return null;
-  // Unit-0 stems are often EN prompts; U1–4 stems are gapped FR. Gloss only
-  // when the stem adds something the chip does not already say.
-  if (stem.includes("___")) return stem.replace(/\s+/g, " ");
+  // Class bag: gloss under the FR head must be EN only (beginner rule).
+  // U1–4 pretest stems are often gapped French — never show those as gloss.
+  if (stem.includes("___")) {
+    if (looksFrench(stem)) return "Fill in the blank.";
+    return stem.replace(/\s+/g, " ");
+  }
   // EN-looking stem (no accented letters + mostly Latin words) → gloss.
-  if (!/[àâäéèêëïîôùûüçœæ]/i.test(stem) && /[A-Za-z]{3,}/.test(stem)) return stem;
+  if (!looksFrench(stem) && /[A-Za-z]{3,}/.test(stem)) return stem;
   return null;
 }
 
@@ -115,7 +126,8 @@ export function BringToClass({
   if (misses.length === 0 && !showEmpty) return null;
 
   const canDoLine = sio ? youCanEn(sio.canDo) : "";
-  const frLine = sio?.fr?.trim() || "";
+  // Can-do block is EN only — never echo sio.fr under "You can…"
+  // (FR lives only on miss-chip heads).
   const empty = misses.length === 0;
   const fold = misses.length >= FOLD_AT;
 
@@ -218,11 +230,6 @@ export function BringToClass({
           You can: {canDoLine}
         </p>
       )}
-      {frLine && (
-        <p lang="fr" className="mt-0.5 text-sm italic leading-snug text-[color:var(--cahier-ink-soft)]">
-          {frLine}
-        </p>
-      )}
 
       {empty ? (
         <p className="mt-3 text-sm font-bold text-[color:var(--cahier-ink)]">
@@ -294,11 +301,6 @@ export function BringToClass({
             {canDoLine && (
               <p className="mt-2 text-base font-bold text-[color:var(--cahier-ink)]">
                 You can: {canDoLine}
-              </p>
-            )}
-            {frLine && (
-              <p lang="fr" className="mt-0.5 text-base italic text-[color:var(--cahier-ink-soft)]">
-                {frLine}
               </p>
             )}
             <div className="mt-6 flex-1 overflow-y-auto">{chips}</div>
