@@ -207,35 +207,7 @@ will look broken. Generate them for consistency, or leave them and accept the mi
 | transport | `transport-08-a-pied` | à pied | 🚶 | `transport-08-a-pied.png` |
 | transport | `transport-09-a-moto` | à moto | 🏍️ | `transport-09-a-moto.png` |
 
-## Held back — 19 language items, decision needed
 
-Each of these uses a **flag to stand for a language**, which is a proxy, not a picture: 🇮🇳 for *le hindi*
-(India has 22 official languages), 🇱🇰 for *le tamoul*, 🇭🇰 for *le cantonais*. A hyperreal render cannot fix
-that — a language has no appearance. Options: keep the flags and accept the shorthand; use a written-script
-sample instead (नमस्ते, 你好, مرحبا); or drop languages from SpecuLearn as *demonstratifs* and *nationalities*
-already were.
-
-| id | French | flag now |
-|---|---|---|
-| `languages-01-anglais` | l'anglais | 🇬🇧 |
-| `languages-02-chinois` | le chinois | 🇨🇳 |
-| `languages-03-hindi` | le hindi | 🇮🇳 |
-| `languages-04-espagnol` | l'espagnol | 🇪🇸 |
-| `languages-05-arabe` | l'arabe | 🇸🇦 |
-| `languages-06-francais` | le français | 🇫🇷 |
-| `languages-07-portugais` | le portugais | 🇵🇹 |
-| `languages-08-russe` | le russe | 🇷🇺 |
-| `languages-09-indonesien` | l'indonésien | 🇮🇩 |
-| `languages-10-allemand` | l'allemand | 🇩🇪 |
-| `languages-11-japonais` | le japonais | 🇯🇵 |
-| `languages-12-turc` | le turc | 🇹🇷 |
-| `languages-13-tamoul` | le tamoul | 🇱🇰 |
-| `languages-14-cantonais` | le cantonais | 🇭🇰 |
-| `languages-15-vietnamien` | le vietnamien | 🇻🇳 |
-| `languages-16-filipino` | le filipino | 🇵🇭 |
-| `languages-17-coreen` | le coréen | 🇰🇷 |
-| `languages-18-thai` | le thaï | 🇹🇭 |
-| `languages-19-malais` | le malais | 🇲🇾 |
 
 ## Where they go
 
