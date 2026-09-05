@@ -6,6 +6,74 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 5 Sep — the mark ships: icon.svg, favicon.ico, the four PNGs
+
+Sole editor of STATUS.md in this commit: claude/peers-vd2h6h (Peers).
+
+Dan drew the mark over 5 Sep — a spiral notebook whose page carries an **F**
+and a **g**, the g's counter closed by the amber bar. Colours: **red shell,
+blue F**, green page, amber rings and counter. The red/blue swap was the call
+against the earlier blue shell: red on green is the one adjacency red-green
+colour-blind learners cannot separate, and the old arrangement put the LETTER
+on it. Note for whoever tunes feedback colours: the brand red now shares a
+register with "wrong", and one of them should move.
+
+**Two drawings, not one.** `src/app/icon.svg` is flat and drops the counter
+and the low band — at 16px they are one pixel each and the middle turns to
+mud. `public/icons/*.png` carry the full mark with a two-stop vertical fade
+per region (same hue at both ends, lightness travelling ~30%, the App Store
+recipe). Below about 48px the fade is invisible, so it is not in the tab file.
+
+**The trap that cost a build.** Declaring any `icons` object in layout metadata
+switches OFF Next's `app/icon.svg` file convention. The SVG shipped in the
+export with nothing linking it and the tab quietly kept the .ico — invisible
+in every screenshot. `verify95` checks the LINK, not the file. It also caught
+itself: the first version of that assertion passed against broken code because
+the explanatory comment in `layout.tsx` names `/icon.svg`, so the check now
+strips comments before looking.
+
+`verify95-icons.py`, seven break-tests: single-hue art returning, a PNG that
+lies about its size, starter art back in `public/`, the tab drawing gone,
+maskable losing its safe area, the manifest naming a missing file, the SVG
+present but unlinked. The five Next.js starter SVGs (`next`, `vercel`, `file`,
+`globe`, `window`) are deleted — nothing referenced them.
+
+## 5 Sep — item 4 (double-door): three ☰ rows were dead on Home
+
+Sole editor of STATUS.md in this commit: claude/peers-vd2h6h (Peers).
+
+Auditing FINISH_BACKLOG item 4 on the real export at 390×844 turned up a
+navigation bug that no screenshot could have shown.
+
+**Open ☰ on Home and the bottom three rows do nothing.** 👤 User, ▦ MENU and
+🗺️ Map took no taps; the five family flaps above them were fine, and all eight
+worked on /practice and /games. The menu still PAINTED correctly, which is why
+it survived weeks of review.
+
+**Why.** `SiteTopBar`'s wrapper is `sticky top-0`, and sticky + a z-index makes
+its own stacking context — so the dropdown's `z-50` counts only inside the bar,
+and against the page the bar competes with the single number on that wrapper.
+It was `z-10`. Home's map postcard covers its whole card with a stretched
+`<a class="absolute inset-0 z-10">`. Equal z-index, later in the DOM, so the
+invisible link won the hit test and ate the taps. The bar is now `z-30`: above
+page content, below every scrim (z-40+) and modal. `CuratedDeckTable`'s group
+popover moved 30 → 25 for the same ceiling.
+
+`verify94-topbar-above-page.py` holds it as an INEQUALITY, not a spelling test
+— max z-index anywhere under `src/app` must stay below the bar's. Three
+break-tests: bar back to z-10 (names `HomeDashboard.tsx:544` as the culprit),
+a page card catching up, the bar losing its z-index. `fixed` overlays are
+exempt: modals are meant to cover the bar.
+
+**Item 4's other two Success lines were already met** and are now evidenced on
+the export: every bottom-bar family tap lands on that family's hub with no
+second popup (5/5), and the ☰ is six coloured flaps to those hubs with the
+16-tile grid demoted to one ▦ MENU row below a rule.
+
+Shared files: `SiteTopBar.tsx`, `CuratedDeckTable.tsx`, `verify.yml`,
+`STATUS.md`. Open PRs when this branched: #166 (STATUS roster block only —
+appends above THE ROSTER, this appends at the top; textual conflict possible,
+no semantic one).
 
 ## 5 Sep — the Pages subpath goes back, and the check now pins BOTH directions
 

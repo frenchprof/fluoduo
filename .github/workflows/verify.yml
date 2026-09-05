@@ -37,6 +37,10 @@ jobs:
 
       - run: npm ci
 
+      # verify95-icons reads the rendered icon's pixels (is the shell red,
+      # the F blue) — that needs Pillow, which the runner does not ship.
+      - run: pip install --quiet pillow
+
       - name: Types
         run: npx tsc --noEmit
 
@@ -343,6 +347,12 @@ jobs:
 
       - name: "Class bag copy locked; soft-auth at save, never mid-guess (5 Sep)"
         run: python3 verify/verify93-class-bag-soft-auth.py
+
+      - name: "The site bar outranks page content, so ☰ stays tappable (5 Sep)"
+        run: python3 verify/verify94-topbar-above-page.py
+
+      - name: "FluOLinGo wears its own mark, not the starter's (5 Sep)"
+        run: python3 verify/verify95-icons.py
 
       - name: "SIO-010 keys Enchantée for Léa; Libéria carries its accent (3 Sep)"
         # Renumbered 91 -> 92 at the QC merge — sixth collision: pages-basepath

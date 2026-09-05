@@ -100,7 +100,18 @@ export const metadata: Metadata = {
   // iOS ignores the manifest's icons — it wants its own link tag (Apple has
   // never implemented `purpose: maskable` either, hence the separate art).
   appleWebApp: { capable: true, title: "FluOLinGo", statusBarStyle: "default" },
-  icons: { apple: "/icons/apple-touch-icon.png" },
+  // THE SVG HAS TO BE NAMED HERE, not just left in app/ (5 Sep). Next's file
+  // convention would have found `app/icon.svg` on its own — but declaring an
+  // `icons` object at all switches that off, so for as long as this key exists
+  // for Apple's sake, every other icon has to be listed beside it. Symptom
+  // when it is not: the export contains /icon.svg and no page ever links it,
+  // and the tab silently falls back to the .ico. verify95 checks the LINK, not
+  // the file. The .ico is NOT listed here — `app/favicon.ico` keeps its own
+  // convention link either way, and naming it again emitted the tag twice.
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    apple: "/icons/apple-touch-icon.png",
+  },
 };
 
 /** The OS chrome takes the ink, so an installed window frames the paper
