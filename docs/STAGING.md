@@ -1,7 +1,22 @@
 # Staging — one bookmark, no Google login
 
+**SOLVED — the bookmark already exists (probed 5 Sep 2026): `https://fluoduo.pages.dev/`.**
+
+It is a Cloudflare Pages project built from **this** repo (`frenchprof/fluoduo`),
+it rebuilds on **every merge to `main`** (plus a preview URL per PR), and
+`NEXT_PUBLIC_OPEN_APP=1` has been set in **its** dashboard all along — so the
+whole app is open there, no sign-in wall anywhere. Dan confirmed it the same
+day ("it has been 1 all along") after a session wrongly reported parts of it
+gated. Only account-shaped pages (the leaderboard) *invite* sign-in, because
+a board with no account has nothing to show. **Do not re-solve this**: no
+second project, no dashboard change, no flag anywhere in this repo is needed.
+The recipe below stays as the record of HOW such a build is made, and for the
+optional nicety of a prettier hostname (`staging.fluoli.ngo`) if Dan ever
+wants one.
+
 Dan wants a **fixed URL**. Refresh it. See the latest. **No Google sign-in.**
-Students on live still hit the wall.
+Students on live still hit the wall — live is built from `dckg/fluo`, where
+the flag is unset.
 
 This file is the recipe. It does not flip the wall. The flag is set in the
 Cloudflare dashboard on the **staging** build only — never in this repo.
