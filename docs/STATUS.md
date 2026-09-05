@@ -47,6 +47,12 @@ Sole editor of STATUS.md in this commit: fluoduo-main.
    more columns, never bigger letters. NOT applied to French exercise
    options (MCQ/FlipIt/dice) — the target French stays in the reading face —
    nor to profile data cards (scores are data, not labels).
+6. **The hub tiles go half-width and lose their blurbs** (Dan, shown the
+   hubs: "why are these still width-occupying buttons. We don't need the
+   desxruption of the acticities, not here"). FamilyHub is a two-column
+   grid on every screen now — icon + hand-bold name, no description. This
+   OVERRULES the 1 Sep "a blurb per tile helps you choose" position for
+   hubs; the blurbs stay in the registry for surfaces that want them.
 ## 5 Sep — a third tone: mono, the quiet set (24 marks becomes 36)
 
 Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
