@@ -6,6 +6,22 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 5 Sep evening — SpecuLearn commerces photos are real PNGs
+
+Sole editor of STATUS.md in this commit: cursor/speculearn-commerces.
+
+The 14 FR-approved market pictures for commerces-15 … commerces-28 now live
+as real PNG files in `public/speculearn/` (each file starts with the PNG
+header, not base64 text). `SPECULEARN_ITEM_IMAGES` points each id at
+`/speculearn/commerces-XX.png`.
+
+Open them: Practice → SpecuLearn → the commerces stop, or go straight to
+`/practice/speculearn/commerces`. Example: « Je voudrais deux kilos de
+pommes. » shows the apple-scale photo, not the 🍎 emoji.
+
+The leftover encoding-test picture and the `docs/_asset_b64/` upload folder
+are gone. PR #182.
+
 ## 5 Sep evening — five Dan rulings in one round (claude/reglages-switch)
 
 Sole editor of STATUS.md in this commit: fluoduo-main.
