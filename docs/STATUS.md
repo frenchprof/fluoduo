@@ -6,6 +6,46 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 5 Sep — the highlighter mark becomes the site icon (supersedes the entry below)
+
+Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
+
+**Read this before the next entry.** That one recoloured the F-g mark's shell to
+pink. It was done on a misread: Dan's *"please use the best of those favicons
+variants as the site's main favicon"* meant the twenty-four HIGHLIGHTER marks he
+and this session had spent the afternoon designing — the C that is to become a G
+— not the four shell options of the older drawing. He said so plainly: *"is your
+memory so poor that you forgot we had just discussed the real finally chosen
+logo?"* The shell recolour is superseded by this commit; it is left in history
+rather than rewritten, because the measurements it carries are still true and
+the next person to reach for orange should find out why not.
+
+**Shipped: the deep-tint Pink mark.** `icon.svg`, the four PNGs and
+`favicon.ico`, all generated from `src/content/highlighterMarks.ts`'s own
+geometry rather than drawn again — block #ff4eb2, top stroke #d7008e, mouth
+#00b28b, rings #c1007f.
+
+**Why Pink of the twenty-four.** Strongest block against paper of the whole set
+(2.79:1), top stroke at 4.55:1 in the deep tone, and — the deciding number — it
+carries FIVE distinct saturated hue buckets under `verify95-icons`'s polychrome
+rule, the widest margin of any candidate. Blue fails that rule outright at two
+buckets. I expected the whole set to fail it and was wrong: the fade and the
+anti-aliased edges spread hue across buckets, so five of the six tested pass.
+
+**The maskable icon needed its own inset.** The mark runs nearly edge to edge, so
+the launcher-safe variant is drawn at a 15% inset with the tile colour around it;
+the other three sit at 2%. verify95-icons' safe-area assertion passes on that.
+
+**What was lost, and it should be said.** The F-g drawing carried the brand's
+initials; this mark carries a C awaiting its G. Dan chose it knowing that — the G
+is the stated next step — but a lettered mark was replaced by an unlettered one
+and that is a real trade, not a free swap. Peers' art is recoverable from git.
+
+Build and all 87 checks green, verify95-icons included, unmodified.
+
+Shared: `src/app/icon.svg`, `src/app/favicon.ico`, `public/icons/*` — Peers'
+lane, changed here on Dan's direct instruction, twice.
+
 ## 5 Sep — the mark's shell goes pink
 
 Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
