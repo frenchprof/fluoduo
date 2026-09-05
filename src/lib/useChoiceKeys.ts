@@ -151,4 +151,4 @@ export function useChoiceKeys({
 }
 
 /** The one-line legend shown under keyboard-enabled exercises. */
-export const CHOICE_KEYS_HINT = "⌨️ 1–4 choisir · ⏎ suivant · R 🔊";
+export const CHOICE_KEYS_HINT = "⌨️ 1–4 pick · ⏎ next · R 🔊";

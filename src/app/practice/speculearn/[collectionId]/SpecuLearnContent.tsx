@@ -392,7 +392,16 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
       <div className="mx-auto w-full max-w-2xl">
         {screen === "quiz" && t && (
           <div>
-            <p className="min-w-0 truncate text-center text-xs font-bold text-[color:var(--cahier-ink-soft)]" lang="fr" title={subtitle}>
+            <p
+              className="min-w-0 truncate text-center text-xs font-bold text-[color:var(--cahier-ink-soft)]"
+              /* Always fr: this line prints the SUBTITLE, which stays
+                 French on every deck (commerces included — « un, une,
+                 des... »). The deck TITLE went English, but it is not
+                 what this element renders; dropping the tag here hands
+                 French to a screen reader's English voice. */
+              lang="fr"
+              title={subtitle}
+            >
               💡 {subtitle}
             </p>
             <p className="mt-1 hidden text-center text-[10px] font-bold text-[color:var(--cahier-ink-soft)] sm:block">{CHOICE_KEYS_HINT}</p>
@@ -431,7 +440,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
                 </>
               ) : t.dir === "wi" ? (
                 <>
-                  <p className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">Choisis la bonne image</p>
+                  <p className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">Pick the right picture.</p>
                   <button type="button" onClick={() => speak(t.it.w, "fr-FR")} className="mt-1 text-2xl font-black" style={{ color: t.it.color }} title="🔊">
                     {t.it.w} 🔊
                   </button>
@@ -464,7 +473,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
                 </>
               ) : (
                 <>
-                  <p className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">Choisis le bon mot</p>
+                  <p className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">Pick the right word.</p>
                   <Visual it={t.it} className="mx-auto mt-2 h-40 w-40 rounded-xl border-2 border-[color:var(--cahier-ink)]/20" />
                   <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
                     {opts.map((o, i) => (
