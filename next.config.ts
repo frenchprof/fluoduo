@@ -1,32 +1,30 @@
 import type { NextConfig } from "next";
 
 /**
- * PAGES_BASE_PATH is a subdirectory escape hatch, and NOTHING SETS IT.
+ * PAGES_BASE_PATH exists because the GitHub Pages preview can sit in a FOLDER.
  *
- * Both live sites are served at a DOMAIN ROOT, so both build with it unset and
- * basePath stays "":
+ *   frenchprof.github.io/fluoduo/   a project site -> needs basePath /fluoduo
+ *   any custom domain, at its root  -> needs basePath "" (the default)
  *
- *   fluolingo.com               GitHub Pages, built by pages-preview.yml.
- *                               A CUSTOM DOMAIN, and a custom domain serves a
- *                               Pages site at the root — the /fluoduo project
- *                               path stops being the address the moment one is
- *                               attached.
- *   fluolingo.withdrchan.com    Cloudflare Pages, built from dckg/fluo, which
- *                               deploy-live.yml mirrors main into.
+ * The Cloudflare hosts — the live ones, and staging — are always domain roots,
+ * so they never set it and are unaffected by anything here.
  *
- * THIS COMMENT USED TO SAY the opposite — that GitHub Pages serves "a project
- * site from a SUBDIRECTORY (frenchprof.github.io/fluoduo/)" — and that
- * sentence outlived its truth by seventeen days. The custom domain arrived in
- * the same commit as the workflow, on 17 Aug; from that moment the build was
- * emitting /fluoduo/_next/… for a site served at /, so fluolingo.com loaded
- * its HTML and 404'd every stylesheet and script. Dan found it on 2 Sep by
- * reading the workflow. A premise written down as fact is how a config bug
- * hides in plain sight: everyone who read this file believed the subdirectory.
+ * WHICH ONE THE PREVIEW IS depends on a setting in GitHub's dashboard, not on
+ * anything in this repository, and it has been changed by hand twice without
+ * the build changing with it: attached in August (17 days of 404s), cleared
+ * between 2 and 5 Sep (404s again, mirrored). So the Pages workflow now
+ * DECLARES its home in one line beside the build, and verify91 holds the build
+ * to that declaration in both directions.
  *
- * The variable stays because a future subdirectory host is a real possibility
- * and hard-coding a path here would break both roots. But if you find yourself
- * setting it for a host that has a custom domain, the answer is no — see
- * verify91.
+ * THIS COMMENT HAS BEEN WRONG TWICE, which is worth more than the rule. It
+ * asserted the subdirectory as fact while a custom domain served the root, and
+ * then asserted that "NOTHING SETS IT" days before the subpath came back.
+ * Every audit that read it believed it. If you are here to check how the
+ * preview is served, the deploy log is the only thing in reach that cannot go
+ * stale: actions/deploy-pages prints "Evaluated environment url" on every run.
+ *
+ * Do not hard-code a subpath here. The default must stay "" so a build with
+ * the variable unset — every Cloudflare build — lands at a root.
  */
 const basePath = process.env.PAGES_BASE_PATH ?? "";
 

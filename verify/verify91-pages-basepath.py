@@ -1,55 +1,65 @@
-#!/usr/bin/env python3
 """
-A custom domain serves at the ROOT, so the Pages build must not set a subpath.
+The Pages build must match the home GitHub currently serves it at — both ways.
 
-Dan, 2026-09-02, reading the workflow rather than the site: *"That workflow
-builds with PAGES_BASE_PATH: /fluoduo, which makes every asset and route
-resolve under /fluoduo/. That's correct for frenchprof.github.io/fluoduo/, but
-the site is now served at the root of fluolingo.com."* He was right, and it had
-been live for seventeen days.
+TWICE NOW the same fault has shipped, in opposite directions, because the
+correct setting is not a fact about this repository. It is a fact about a
+DASHBOARD SETTING nobody working here can see.
 
-HOW IT HAPPENED, because the shape matters more than the line. Commit 79a9938b
-(17 Aug) added BOTH halves at once:
+    17 Aug   custom domain ATTACHED    home moved to a root
+             build still /fluoduo   -> every asset 404'd for 17 days
+    3 Sep    #157 dropped the subpath, correctly, for a root
+    2-5 Sep  custom domain CLEARED     home moved back to a subpath
+             build still root-relative -> every asset 404s again, mirrored
 
-    .github/workflows/pages-preview.yml   PAGES_BASE_PATH: /fluoduo
-    CNAME                                 fluolingo.com
+The mechanism, once: a page carries links to its own CSS and JS, and those
+links must match the folder the site sits in. `/fluoduo/_next/app.css` is right
+in a folder and wrong at a root; `/_next/app.css` is the reverse. The HTML
+loads either way, which is why it reads as a plain page rather than an error
+and why nobody reports it.
 
-Each is correct on its own and they contradict each other. A GitHub Pages
-PROJECT site lives at owner.github.io/repo/ and needs the subpath; attach a
-custom domain and the very same artifact is served at that domain's ROOT, so
-the subpath becomes wrong. Nothing in the repo compared the two files, so the
-build went on emitting `/fluoduo/_next/…` for a site served at `/`: the HTML
-loaded and every stylesheet and script 404'd.
+WHAT CHANGED IN THIS CHECK, and why the first version was not enough. It keyed
+on the root CNAME file: "a CNAME exists, therefore a custom domain serves this
+at a root, therefore no subpath". That inference was wrong in a way worth
+recording — the CNAME file is not copied into the uploaded artifact, so GitHub
+never reads it; the binding lives in Settings -> Pages. When the setting was
+cleared the file stayed, so the check went on enforcing a root that no longer
+existed. A check that infers a remote setting from a local file inherits every
+way the two can disagree.
 
-Three things made it survive:
+SO THE WORKFLOW NOW DECLARES ITS HOME, in one line beside the build, and this
+check holds the build to the declaration in BOTH directions. The declaration is
+a human writing down what the deploy log said; the check makes sure the build
+agrees with it. It cannot verify the declaration itself — nothing in the repo
+can — and it says so rather than pretending otherwise.
 
-  · IT LOOKS FINE IN EVERY DIFF. Neither file is wrong by itself, and no diff
-    ever shows both.
-  · THE COMMENTS ASSERTED THE WRONG PREMISE AS FACT. next.config.ts said
-    "GitHub Pages serves a project site from a SUBDIRECTORY
-    (frenchprof.github.io/fluoduo/)", and pages-preview.yml called itself a
-    preview that "DOES NOT TOUCH PRODUCTION". Both were true on 17 Aug for
-    about an hour. Anyone auditing this read them and moved on.
-  · NO CHECK COULD SEE IT. Every other check in verify/ reads the app; this
-    fault is in how the app is DEPLOYED, and the app is identical either way.
+WHERE THE TRUTH ACTUALLY IS. `actions/deploy-pages` prints it on every run:
+
+    Evaluated environment url: https://frenchprof.github.io/fluoduo/
+
+Read that, not a comment, whenever this comes up again.
 
 WHAT IS PINNED
 
-  1  A CNAME and a PAGES_BASE_PATH cannot coexist. The CNAME file is the
-     repo's one written statement that a custom domain is in play; while it
-     exists, the Pages workflow must build at the root.
-  2  THE WORKFLOW THAT UPLOADS THE PAGES ARTIFACT IS THE ONE CHECKED, found by
-     what it DOES (upload-pages-artifact / deploy-pages) rather than by its
-     filename — the file is called "pages-preview" and stopped being a preview
-     on its first day, so its name is the least reliable thing about it.
-  3  NOTHING ELSE SETS THE VARIABLE EITHER. A subpath exported from a step, a
-     job env or the workflow env would reach the build just the same.
-  4  next.config.ts STILL DEFAULTS TO ROOT. `?? ""` is what makes an unset
-     variable safe; a default of "/fluoduo" would restore the bug with no
-     workflow change at all.
-  5  THE HEADER NO LONGER CALLS IT A PREVIEW THAT MISSES PRODUCTION. That
-     sentence is why five audits walked past this, and a comment that lies
-     about what a workflow deploys is a defect in its own right.
+  1  THE DECLARATION EXISTS and is one of the two legal values. Without it the
+     rest of this check has nothing to hold the build against.
+  2  DECLARATION AND BUILD AGREE, both ways round. `subpath` requires
+     PAGES_BASE_PATH and it must equal the repo name; `root` forbids it. One
+     direction alone is what let the second failure through.
+  3  THE WORKFLOW IS FOUND BY WHAT IT DOES (upload-pages-artifact /
+     deploy-pages), never by its filename — this file has been called both
+     "pages-preview" and "Deploy fluolingo.com" inside three weeks.
+  4  NOTHING ELSE SETS THE VARIABLE. A job env or an `export` in a run block
+     reaches the build exactly as a step env does.
+  5  next.config.ts STILL DEFAULTS TO ROOT and hard-codes no subpath. `?? ""`
+     is what keeps an unset variable safe.
+  6  THE HEADER DOES NOT CALL ITSELF HARMLESS. That sentence is why five audits
+     walked past the first failure.
+
+NOT PINNED, deliberately: the CNAME file. It is not in the artifact and GitHub
+does not read it, so it is documentation at best — and it was authoritative-
+looking documentation that caused the second failure. If one is present and
+disagrees with the declaration, this check SAYS SO without failing: deleting it
+is a repository decision, not a build correctness one.
 
 Run from the repo root:  python3 verify/verify91-pages-basepath.py
 """
@@ -95,29 +105,52 @@ ok(len(pages_wfs) == 1,
    f"expected one Pages-deploying workflow, found {len(pages_wfs)}: "
    f"{[n for n, _ in pages_wfs]} — this check would be reading the wrong one")
 
-# ---- 1 · the contradiction that shipped -----------------------------------
-cname = read("CNAME").strip()
-ok(bool(cname),
-   f"a custom domain is declared in CNAME ({cname})",
-   "CNAME is gone — if the custom domain really has been retired, this whole check "
-   "should be retired with it rather than left passing vacuously")
+# ---- 1 · the declaration ---------------------------------------------------
+REPO = "fluoduo"          # the project-site folder: owner.github.io/<REPO>/
+notes = []
 
 for name, body in pages_wfs:
     code = uncommented(body)
-    ok("PAGES_BASE_PATH" not in code,
-       f"{name} builds at the ROOT, as a custom domain requires",
-       f"{name} sets PAGES_BASE_PATH while CNAME says {cname or 'a custom domain'} — "
-       "a custom domain serves the site at the domain root, so every asset would resolve "
-       "under that subpath and 404. This exact pair was live for 17 days from 17 Aug.")
-    # 5 · and it no longer describes itself as harmless. QUOTED history is
-    # allowed — the 3 Sep correction cites the old wrong sentences in quotes
-    # to explain them; what must never return is the file ASSERTING them.
+    m = re.search(r"PAGES_HOME:\s*(\w+)", code)
+    home = m.group(1) if m else None
+    ok(home in ("subpath", "root"),
+       f"{name} declares the home it builds for (PAGES_HOME: {home})",
+       f"{name} declares no PAGES_HOME (or an unknown one: {home!r}). It must say `subpath` or "
+       "`root` — whichever the deploy log's \"Evaluated environment url\" last showed — because "
+       "nothing in this repo can work that out for itself")
+
+    # ---- 2 · the build must agree with it, BOTH ways round -----------------
+    bp = re.search(r"PAGES_BASE_PATH:\s*(\S+)", code)
+    if home == "subpath":
+        ok(bp is not None and bp.group(1) == f"/{REPO}",
+           f"and it builds for that subpath (PAGES_BASE_PATH: /{REPO})",
+           f"{name} declares home=subpath but PAGES_BASE_PATH is "
+           f"{bp.group(1) if bp else 'unset'} — at https://<owner>.github.io/{REPO}/ every asset "
+           f"would resolve to the github.io ROOT, which is a different site, and 404. This is the "
+           "5 Sep failure exactly.")
+    elif home == "root":
+        ok(bp is None,
+           "and it builds at the root, as a custom domain requires",
+           f"{name} declares home=root but sets PAGES_BASE_PATH: {bp.group(1) if bp else ''} — "
+           "every asset would resolve under a folder that does not exist. This is the 17 Aug "
+           "failure exactly, which was live for seventeen days.")
+
+    # ---- 6 · and it does not call itself harmless -------------------------
+    # QUOTED history is allowed: the header cites the old wrong sentences to
+    # explain them. What must never return is the file ASSERTING them.
     ok(re.search(r'(?<!")(?:DOES NOT TOUCH PRODUCTION|entirely separate from production)(?!")', body) is None,
-       f"{name} does not claim to miss production",
-       f"{name} calls itself separate from production again, unquoted. The truth "
-       "(3 Sep) is subtler and worse: its artifact is reachable at no URL, but "
-       f"GitHub Pages holds a live claim on {cname or 'the custom domain'} — one "
-       "DNS change hands the domain to whatever this file built. Harmless it is not.")
+       f"{name} does not claim to miss production, unquoted",
+       f"{name} asserts it is separate from production again. It has held a claim on a live "
+       "hostname once already; one dashboard change hands the domain back to whatever it built.")
+
+    # ---- the CNAME, reported and NOT enforced ------------------------------
+    cname = read("CNAME").strip()
+    if cname and home == "subpath":
+        notes.append(
+            f"NOTE (not a failure): a root CNAME names {cname}, but this builds for a subpath. "
+            "GitHub never reads that file — it is not in the uploaded artifact — so it changes "
+            "nothing; it is a leftover that reads as authoritative, and reading it as "
+            "authoritative is what caused the 5 Sep failure. Worth deleting.")
 
 # ---- 3 · nothing anywhere else sets it ------------------------------------
 # A workflow-level `env:`, a job `env:`, or a plain `export` in a run block all
@@ -126,10 +159,11 @@ setters = []
 for name in sorted(os.listdir(WF_DIR)) if os.path.isdir(WF_DIR) else []:
     if re.search(r"PAGES_BASE_PATH\s*[:=]", uncommented(read(os.path.join(WF_DIR, name)))):
         setters.append(name)
-ok(not setters,
-   "no workflow sets PAGES_BASE_PATH at all",
-   f"PAGES_BASE_PATH is set in {setters} — a job env or an `export` in a run block reaches "
-   "the build exactly as a step env does")
+ok(setters == [n for n, _ in pages_wfs] or not setters,
+   "only the Pages workflow sets PAGES_BASE_PATH, if anything does",
+   f"PAGES_BASE_PATH is set in {setters}, which is more than the Pages workflow — a job env or "
+   "an `export` in a run block reaches a build exactly as a step env does, and a second setter "
+   "is a second place for the two to disagree")
 
 # ---- 4 · and the default is still the root --------------------------------
 cfg = read("next.config.ts")
@@ -143,6 +177,8 @@ ok("/fluoduo" not in re.sub(r"/\*[\s\S]*?\*/", "", cfg),
    "has told three sessions not to do")
 
 print("\n".join("  ok    " + m for m in PASS))
+for n_ in notes:
+    print("  note  " + n_)
 if FAIL:
     print("\n".join("  FAIL  " + m for m in FAIL))
     print("-" * 70)

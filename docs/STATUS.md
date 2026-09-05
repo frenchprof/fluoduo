@@ -6,6 +6,65 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+
+## 5 Sep — the Pages subpath goes back, and the check now pins BOTH directions
+
+Sole editor of STATUS.md in this commit: Pre-tests.
+
+**#157 has become a regression, and it is mine.** The same fault as 17 Aug,
+mirrored, and it is live on the github.io preview now.
+
+WHAT HAPPENED. #157 dropped `PAGES_BASE_PATH` on the then-correct reading that
+the artifact was served at fluolingo.com's root. Between 2 and 5 Sep somebody
+cleared the custom domain in Settings → Pages — which is exactly what the
+2 Sep Peers note in `pages-preview.yml` prescribed. The moment they did, the
+home moved back to `frenchprof.github.io/fluoduo/` and that reading inverted:
+the build now emits `/_next/…` for a site served at `/fluoduo/`, so every
+stylesheet and script 404s.
+
+THE EVIDENCE, and it answers Peers' 2 Sep open question ("Whoever can open a
+browser: check both URLs and record the answer here"). `actions/deploy-pages`
+prints the served URL on every run:
+
+    2 Sep 08:27   Evaluated environment url: https://fluolingo.com/
+    5 Sep 02:22   Evaluated environment url: https://frenchprof.github.io/fluoduo/
+
+So on 2 Sep the domain WAS attached and Dan's original hypothesis was right;
+by 5 Sep it was not. Confirmed independently from outside by
+`cursor/staging-docs-8ea9`, which could actually open the host —
+`docs/STAGING.md`, 4 Sep: *"its HTML asks for `/_next/…` at the github.io root
+(404); the files live under `/fluoduo/_next/`."*
+
+**Cloudflare was never affected.** Live and staging are domain roots, never set
+the variable. Students were not hit by this; the github.io preview was.
+
+THE FIX, and the lesson in it. `PAGES_BASE_PATH: /fluoduo` is back. More
+importantly `verify91` no longer INFERS the home from the root CNAME file —
+that inference is what let the second failure through, because GitHub never
+reads that file (it is not in the uploaded artifact) so it stayed behind when
+the setting changed. The workflow now DECLARES its home in one line beside the
+build (`PAGES_HOME: subpath | root`) and verify91 holds the build to it in
+BOTH directions: `subpath` requires the base path and it must equal the repo
+name; `root` forbids it. Break-tested against both real failures — the 5 Sep
+state (subpath declared, base path absent) and the 17 Aug state (root declared,
+base path set) — plus a wrong folder, a missing declaration, a nonsense
+declaration, the "separate from production" claim returning, and the config
+default flipping. 7 assertions.
+
+`next.config.ts`'s comment has now been wrong twice — it asserted the
+subdirectory while a domain served the root, then asserted "NOTHING SETS IT"
+days before the subpath came back. Rewritten to say where the truth is instead
+of restating it.
+
+**Open for Dan:** the root `CNAME` still names fluolingo.com, a domain GitHub
+no longer holds. It is inert (not in the artifact) but reads as authoritative,
+which is precisely what caused this. verify91 REPORTS it as a note rather than
+failing on it — deleting it is a repository decision. The `git rm` was refused
+by this session's permission classifier, so it is left for whoever merges.
+
+**The standing rule, third time of asking:** whether this needs a subpath is
+not a fact about the repo. It is a fact about a dashboard setting. When it
+changes, read the deploy log and move the declaration with it.
 ## 5 Sep — install prompt: checkbox + a dismissal that sticks
 
 Sole editor of STATUS.md in this commit: fix/install-prompt.
