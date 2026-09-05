@@ -583,11 +583,13 @@ export default function DrillShell({
         </div>
       </div>
       {/* The phone bar is fixed — hold its height open so the footer (and
-          the tray) always clear it. Matches .cahier-bottombar's slot. */}
+          the tray) always clear it. The height is the floor the bar itself
+          measures, not a restated 58px: a learner who removes the bar in
+          Réglages (5 Sep) gets this strip back too. */}
       <div
         aria-hidden
         className="shrink-0 sm:hidden"
-        style={{ height: "calc(58px + env(safe-area-inset-bottom, 0px))" }}
+        style={{ height: "var(--bottombar-floor, 0px)" }}
       />
       <BottomBar />
       {/* WHAT TO DO HERE, once, until the learner says stop (Dan, 2026-09-02:
