@@ -1,5 +1,4 @@
 import SpecuLearnContent from "./SpecuLearnContent";
-import AuthGate from "@/components/AuthGate";
 import { SPECULEARN_READY } from "@/lib/collections/speculearnReady";
 
 export function generateStaticParams() {
@@ -8,5 +7,7 @@ export function generateStaticParams() {
 
 export default async function Page({ params }: { params: Promise<{ collectionId: string }> }) {
   const { collectionId } = await params;
-  return <AuthGate what="play SpecuLearn"><SpecuLearnContent collectionId={collectionId} /></AuthGate>;
+  // Soft-auth on Class bag Continue / save — never AuthGate mid-guess
+  // (FINISH_BACKLOG item 3). Flip / games stay behind AuthGate.
+  return <SpecuLearnContent collectionId={collectionId} />;
 }

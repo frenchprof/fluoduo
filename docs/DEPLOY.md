@@ -1,24 +1,46 @@
 # Deploying FluoLingo
 
-**THERE ARE TWO LIVE SITES, both fed from `main`** (Dan, 2026-09-02, correcting
-this document: *"two live sites, both fed from main … worth knowing which one
-your students actually use"*):
+**Where it lives today** (probed 4 Sep 2026 — open the URL; do not trust a
+comment over a response):
 
-| URL | Host | Built by | Path |
+| URL | Who answers | Role |
+|---|---|---|
+| **fluoli.ngo** | Cloudflare Pages, 200 | Live |
+| **fluolingo.withdrchan.com** | Cloudflare Pages, 200 | Live. Ship with `git push live main` / `deploy-live`. |
+| **fluoguo.pages.dev** | Cloudflare Pages, 200 | Default `*.pages.dev` for that CF project |
+| **fluolingo.com** | Cloudflare **302 →** `fluolingo.withdrchan.com` | Not a second app. A redirect. |
+| **frenchprof.github.io/fluoduo/** | GitHub Pages, 200 | Preview. No Pages Functions (ChaTutor / TTS / Compose fail). Wall stays on. |
+
+`fluolinguo.com` is **retired** (2026-07-19). No DNS — do not link it, QR it, or
+add it to Firebase / Pages custom domains.
+
+## Staging
+
+A **no-login** Cloudflare bookmark for Dan and agents (refresh, no Google;
+live stays gated) is a **second** CF build with `NEXT_PUBLIC_OPEN_APP=1` on
+that env only. Recipe, checklist, and unsigned smoke list:
+**`docs/STAGING.md`**. Recommended host: `staging.fluoli.ngo`. Never put that
+flag in a repo deploy yaml — `verify38` fails the build if you do.
+
+---
+
+**THERE WERE TWO LIVE SITES for a stretch after 17 Aug**, both fed from `main`
+(Dan, 2026-09-02: *"two live sites, both fed from main … worth knowing which
+one your students actually use"*):
+
+| URL | Host then | Built by | Path |
 |---|---|---|---|
-| **fluolingo.com** | GitHub Pages, `frenchprof/fluoduo` | `.github/workflows/pages-preview.yml`, on every push to main | domain ROOT |
-| **fluolingo.withdrchan.com** | Cloudflare Pages, `fluolingo-dot-com` | `dckg/fluo`, which `deploy-live.yml` mirrors main into (manual dispatch) | domain ROOT |
+| **fluolingo.com** | GitHub Pages, `frenchprof/fluoduo` (for a window) | `.github/workflows/pages-preview.yml` | domain ROOT once a custom domain was attached |
+| **fluolingo.withdrchan.com** | Cloudflare Pages | `dckg/fluo`, which `deploy-live.yml` mirrors main into | domain ROOT |
 
-The two are NOT equivalent and the difference is not cosmetic. GitHub Pages has
-no server, so on **fluolingo.com** the four Cloudflare Pages Functions —
-`/api/tutor`, `/api/tts`, `/api/correct`, `/api/compose` — do not exist, and
-ChaTutor, text-to-speech and ComposeIt's answer-checking fail there. They work
-on **fluolingo.withdrchan.com**. Everything else runs in the browser against
-Firebase and works on both.
+They were NOT equivalent. GitHub Pages has no server, so the four Cloudflare
+Pages Functions — `/api/tutor`, `/api/tts`, `/api/correct`, `/api/compose` —
+do not exist there. They work on the Cloudflare hosts. Everything else runs
+in the browser against Firebase on both.
 
-They also deploy on different triggers: fluolingo.com follows `main`
-automatically, while withdrchan waits for someone to fire `deploy-live`. So the
-two can be, and routinely are, on different commits.
+They also deploy on different triggers: the Pages workflow follows `origin`
+`main` automatically; withdrchan waits for `deploy-live` (or `git push live
+main`). The two can sit on different commits.
 
 > **WHAT THIS SECTION USED TO SAY, and what it cost.** Until 2026-09-02 it
 > stated that `fluolingo.com` 302-redirects to the withdrchan URL and that the
@@ -84,13 +106,17 @@ the Cloudflare build. The sign-in wall toggle is `REQUIRE_SIGN_IN` in
 
 ## Custom domain
 
-`fluolingo.com` is a custom domain on the **GitHub Pages** site, not on this
-Cloudflare project — see the table at the top. It is served at the domain root,
-which is why `pages-preview.yml` must build with no base path.
+**Today** `fluolingo.com` is answered by **Cloudflare** and **302s** to
+`fluolingo.withdrchan.com` (see the table at the top). `fluoli.ngo` is a
+Cloudflare custom domain on the live project.
 
-The repo's `CNAME` file names it. Note that it sits at the repo root and is NOT
-copied into `out/`, so it does not travel in the uploaded Pages artifact: the
-binding that actually serves the domain is **Settings → Pages → Custom domain**
-on `frenchprof/fluoduo`. The file is the repo's written record of the
-arrangement, and `verify91` reads it as such. If the domain is ever moved or
-retired, change both.
+The repo's `CNAME` file still names `fluolingo.com`. That file is GitHub
+Pages' written claim, not the DNS that browsers hit today. It sits at the
+repo root and is NOT copied into `out/`. `verify91` reads it as the record
+that a custom domain is in play, which is why `pages-preview.yml` must not
+set `PAGES_BASE_PATH`. If the domain is ever moved or retired, change both
+the file and the Pages / Cloudflare bindings.
+
+A **staging** custom domain (`staging.fluoli.ngo` or
+`staging.fluolingo.withdrchan.com`) belongs on the **staging** Pages project
+only — `docs/STAGING.md`.

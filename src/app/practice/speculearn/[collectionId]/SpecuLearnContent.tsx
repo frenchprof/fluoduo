@@ -43,6 +43,9 @@ import { deaccent, normalize } from "@/lib/practice/cloze";
 import { useChoiceKeys, CHOICE_KEYS_HINT } from "@/lib/useChoiceKeys";
 import PHOTO_ITEMS from "@/content/devine-aliments.json";
 import { shuffle } from "@/lib/shuffle";
+import { BringToClass } from "@/app/SioDetail";
+import { recordPretestAnswer } from "@/lib/pretestRecord";
+import { stopForDeck } from "@/lib/stopTag";
 
 /** One playable card: the word, its grammar tag (colored), and its visual
  *  (photo for aliments, emoji elsewhere). s = aliments pack number. */
@@ -255,6 +258,19 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
     const first = ladder.ladder.wrongTries === 0 && !ladder.revealed;
     const r = ladder.attempt(good, { given, activity: `speculearn:${collectionId}` });
     if (good) { if (first) setScore((s) => s + 1); sfx.correct(); } else { if (first) setWrong((w) => [...w, it]); sfx.wrong(); }
+    // Same gap store as pretests — Class bag reads missesForSio (no second store).
+    const sio = stopForDeck(collectionId);
+    if (sio && first) {
+      recordPretestAnswer({
+        pretestId: `speculearn:${collectionId}`,
+        sioId: sio.id,
+        itemId: `devine:${baseWord(it.w)}`,
+        correct: good,
+        picked: given ?? "",
+        answer: it.w,
+        stem: it.w,
+      });
+    }
     if (r.effect === "done" || r.effect === "reveal") {
       setVerdictGood(good);
       setLocked(true);
@@ -509,6 +525,14 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
                 <button type="button" onClick={() => again(false, "say-s")} className="fluo-btn fluo-btn-sm">🎤 Guess and say</button>
               </div>
             )}
+            {(() => {
+              const sio = stopForDeck(collectionId);
+              return sio ? (
+                <div className="mt-4 text-left">
+                  <BringToClass sioId={sio.id} showEmpty continueHref={drillExitHref(collectionId)} />
+                </div>
+              ) : null;
+            })()}
           </div>
         )}
       </div>
