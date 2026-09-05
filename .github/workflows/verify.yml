@@ -378,7 +378,6 @@ jobs:
 
       - name: "The 🧰 tools summon in-exercise, and the voice corrects first (5 Sep)"
         run: python3 verify/verify100-ambient-tools.py
-
       - name: "The six families are the six highlighter pens (5 Sep)"
         run: python3 verify/verify96-family-hues.py
 

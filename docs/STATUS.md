@@ -6,6 +6,167 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 5 Sep — a third tone: mono, the quiet set (24 marks becomes 36)
+
+Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
+
+Dan asked whether a version existed with *"different shades of the same color
+(darker L, lighter everything else) and grey ring bound"*. It did not — this
+session had built pale, deep, and complement binds, never a monochrome. So it was
+drawn, and on his instruction — *"not amendment but add on to the collection of
+variants"* — it was ADDED rather than allowed to displace anything.
+
+Block at L 0.52, top-right at 0.72, mouth at 0.88, binds a warm near-neutral
+`#8d8a85` walked down to the same 3.0 : 1 tile floor the coloured binds hold.
+Twelve of them, one per hue. `MARKS` now addresses three tones and 36 marks.
+
+**Two things worth knowing before anyone reaches for it.**
+
+*The letter loosens.* In pale and deep the block and the top-right share a hue AND
+sit close in lightness, so they fuse into one stroke and the eye reads a C. Two
+lightness steps apart, the top-right detaches: a dark L with two pale tabs. Better
+as a notebook, weaker as the letter that is meant to become a G.
+
+*It cannot ship as the app icon.* `verify95-icons` demands three distinct
+saturated hue buckets per PNG. Rendered at 512 and run through that check's own
+function, four of six pens fail — yellow with ONE bucket, orange, blue and violet
+with two; pink and green reach three only because gamut clipping pushes their
+steps across bucket boundaries, which is luck. That is measured, not predicted:
+the last time this came up I asserted the whole highlighter set would fail the
+same rule and was wrong.
+
+verify97 gained mono's own rules rather than stretching the existing ones — the
+complement assertions would be nonsense applied to a grey. It now pins the twelve
+values, that the bind stays neutral (chroma under 0.02), that it clears the tile
+floor, and that the three lightness steps stay apart. Four break-tests, and the
+separation one had to be isolated: the drift assertion caught the first attempt
+first, so both sides were moved to leave only separation failing.
+
+Build, tsc, eslint and all 87 checks green.
+
+## 5 Sep — the ring binds take the complement, across all 24
+
+Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
+
+Dan: *"we want the ring binds to be in the complementary color so it does not
+look so intense"*. Applied to all twenty-four, and to the shipped icon.
+
+**The literal reading fails, so it was not taken literally.** The mouth colour
+itself on the rings lands at **1.24-3.16** against the tile — Periwinkle's yellow
+ring would be all but invisible, Magenta's green weak. So each ring is the
+complement's HUE, walked down only until it clears **3.0 : 1 on the tile**. That
+is WCAG's NON-TEXT floor and it is the right one here: a ring bind is a shape,
+not type. The old rule was 5.1 (the text floor) and holding it would have
+re-darkened exactly what Dan asked to lighten. All twelve land at 3.00-3.07.
+
+verify97 gained a second ring assertion with it: the rings must still carry the
+COMPLEMENT'S hue, not drift back to the block's. Both break-tested — a ring gone
+pale reports "not hardware, it is a smudge"; a ring back on the block hue reports
+180 degrees from the mouth.
+
+The icon regenerated with it: rings #7d9400 (olive) under the violet block,
+where they were #9200fe. Four hue buckets on the 512s and the 180/192, three on
+the maskable — verify95-icons still green, unmodified. The Twelve Marks and
+Deep-Tint artifacts were regenerated too, so the pages and the repo agree.
+
+Build, tsc and all 87 checks green.
+
+## 5 Sep — the highlighter mark becomes the site icon (supersedes the entry below)
+
+**Amended within the hour: Violet, not Pink.** Dan: *"it is nice but can we pick
+the next strongest block"*. Violet is second on block-against-paper (2.67 to
+Pink's 2.79) and FIRST on the top stroke (4.60, the best of all twenty-four), so
+the swap costs 0.12 on one number and gains on the other. Four hue buckets, three
+on the two smaller files — clear of verify95-icons' polychrome floor either way.
+Shipped values: block #b17eff, top stroke #9832ff, mouth #8ca600, rings #9200fe.
+The paragraphs below describe the Pink build; everything in them holds except the
+four colours.
+
+Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
+
+**Read this before the next entry.** That one recoloured the F-g mark's shell to
+pink. It was done on a misread: Dan's *"please use the best of those favicons
+variants as the site's main favicon"* meant the twenty-four HIGHLIGHTER marks he
+and this session had spent the afternoon designing — the C that is to become a G
+— not the four shell options of the older drawing. He said so plainly: *"is your
+memory so poor that you forgot we had just discussed the real finally chosen
+logo?"* The shell recolour is superseded by this commit; it is left in history
+rather than rewritten, because the measurements it carries are still true and
+the next person to reach for orange should find out why not.
+
+**Shipped: the deep-tint Pink mark.** `icon.svg`, the four PNGs and
+`favicon.ico`, all generated from `src/content/highlighterMarks.ts`'s own
+geometry rather than drawn again — block #ff4eb2, top stroke #d7008e, mouth
+#00b28b, rings #c1007f.
+
+**Why Pink of the twenty-four.** Strongest block against paper of the whole set
+(2.79:1), top stroke at 4.55:1 in the deep tone, and — the deciding number — it
+carries FIVE distinct saturated hue buckets under `verify95-icons`'s polychrome
+rule, the widest margin of any candidate. Blue fails that rule outright at two
+buckets. I expected the whole set to fail it and was wrong: the fade and the
+anti-aliased edges spread hue across buckets, so five of the six tested pass.
+
+**The maskable icon needed its own inset.** The mark runs nearly edge to edge, so
+the launcher-safe variant is drawn at a 15% inset with the tile colour around it;
+the other three sit at 2%. verify95-icons' safe-area assertion passes on that.
+
+**What was lost, and it should be said.** The F-g drawing carried the brand's
+initials; this mark carries a C awaiting its G. Dan chose it knowing that — the G
+is the stated next step — but a lettered mark was replaced by an unlettered one
+and that is a real trade, not a free swap. Peers' art is recoverable from git.
+
+Build and all 87 checks green, verify95-icons included, unmodified.
+
+Shared: `src/app/icon.svg`, `src/app/favicon.ico`, `public/icons/*` — Peers'
+lane, changed here on Dan's direct instruction, twice.
+
+## 5 Sep — the mark's shell goes pink
+
+Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
+
+Dan, after seeing the options measured: *"please use the best of those favicons
+variants as the site's main favicon"*. Shell `#ff4b5d` -> `#ff4eb2`, the Games
+pen. Peers' drawing is otherwise untouched.
+
+**Why it needed changing at all, and it was not the register.** Peers flagged
+that the brand red shares a register with *wrong* — true, 7 degrees of hue from
+`--dopa-miss` — but the mark and the miss colour meet on essentially no screen:
+the tab, the home screen, and the install popup, none of which tells a learner
+they were wrong. The real fault was inside the mark. Measured as COLOR_REVIEW's
+appendix does it (Machado deutan/protan, Euclidean sRGB, threshold 0.20), the
+coral shell against the green page it encloses scored **0.166** — under the
+threshold, the same fault Peers moved the LETTER off red to avoid, still sitting
+in the frame. Pink scores **0.334**.
+
+**The trap worth recording.** Coral was `--fam-user` and User is orange after the
+realignment, so re-cutting the shell to orange is what the token table suggests.
+On the real pixels it scores **0.053** at the bottom of the fade — a quarter of
+the threshold, orange and green collapsing into one colour for a protanope. The
+obvious move was the worst of the four. Violet scored best at 0.476 and was
+rejected only because it flips the mark from warm to cool: a different logo
+rather than a corrected one.
+
+**How it was done, because there is no vector source.** The full mark exists in
+the repo only as raster — `src/app/icon.svg` is the flat 16px variant that drops
+the g's counter and the low band. So the four PNGs were recoloured pixel by pixel
+in OKLCH: every red-family pixel keeps its own lightness and chroma and takes the
+new hue, so the App Store vertical fade and every edge survive. `favicon.ico` was
+regenerated at 32px from the recoloured 192. `icon.svg`'s one red fill was
+edited directly.
+
+**Also answered:** the earlier single-hue favicon idea (one colour in several
+shades) is not merely dormant — `verify95-icons` requires at least THREE distinct
+saturated hues in every PNG, so a monochrome mark now fails CI by design. Its
+message calls that "the old single-colour notebook". Reviving the idea means
+changing that check, which is Dan's call and Peers' lane.
+
+verify95-icons green, including its polychrome and maskable-safe-area
+assertions. Build and all 87 checks green.
+
+Shared: `src/app/icon.svg`, `src/app/favicon.ico`, `public/icons/*` — **Peers'
+lane**, changed here on Dan's direct instruction. Peers holds the original
+drawing and should redo this from source if they have one.
+
 ## 5 Sep — the 🧰 tools summon mid-exercise, and the voice corrects first (feat/ambient-tools)
 
 Sole editor of STATUS.md in this commit: the ambient-tools lane

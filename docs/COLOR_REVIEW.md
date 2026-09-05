@@ -519,6 +519,16 @@ and the complement is the gap it opens onto. The C is deliberately unfinished:
 Dan wants a **G** later, which is one extra rect letting the L reach up into the
 mouth from below — no new colour.
 
+Three tones, all kept and all his: `pale` lightens the top block, `deep` darkens
+it, and `mono` (added 5 Sep) drops the complement entirely — one hue in three
+lightness steps with a grey bind, the quiet set. It cannot ship as the app icon
+as things stand: `verify95-icons` demands three distinct saturated hue buckets,
+and four of the six pens rendered at 512 fail that, yellow with one. Dan was
+offered an amendment to the rule and declined — *"not amendment but add on to the
+collection of variants"* — so mono lives as a variant and the guard stands.
+
+On the first two tones: Not a draft and a fix — the pale set's top stroke measures **1.09–1.48**
+
 Two tones, both kept and both his: `pale` lightens the top block, `deep` darkens
 it. Not a draft and a fix — the pale set's top stroke measures **1.09–1.48**
 against the Cahier paper, i.e. the faintest thing in every mark while doing
@@ -532,6 +542,21 @@ use** — the complements: teal, sky, periwinkle, magenta, amber, olive. That is
 the reason this section exists. Without it, someone finds `#009675` in the repo
 in six months and cannot tell whether it is a family, a role, or a mistake. It is
 none of those: it is brand, and it belongs to no interface surface.
+
+**The ring binds wear the complement** (Dan, 5 Sep: *"we want the ring binds to
+be in the complementary color so it does not look so intense"*). They were the
+block's own ink, which made four dark bars in the mark's own colour and read as
+heavy. Taking the complement at full strength is the literal reading and it
+fails — those land at 1.24–3.16 against the tile and Periwinkle's yellow ring all
+but vanishes — so each ring is the complement's HUE walked down only until it
+clears **3.0 : 1 on the tile**, WCAG's non-text floor, which is the correct floor
+because a ring bind is a shape and not type. All twelve land at 3.00–3.07.
+
+`verify97-highlighter-marks.py` pins the twenty-four sets, asserts the deep set
+stays *derived* from the pale one (so a block or mouth cannot drift between
+them), holds that ring floor, checks the rings still carry the complement's hue
+rather than drifting back to the block's, and turns Dan's geometry brief into
+arithmetic — corners under an eighth of the page
 
 `verify97-brand-marks.py` pins the twenty-four sets, asserts the deep set stays
 *derived* from the pale one (so a block or mouth cannot drift between them), and
