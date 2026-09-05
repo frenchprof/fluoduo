@@ -1049,15 +1049,21 @@ body {
    columns in a wide sheet. The defect being fixed is SHORTNESS, so shortness
    is what the rule tests for.
 
+   EVERY LENGTH HERE IS RELATIVE, the breakpoint included. `max-height` in em
+   is measured against the browser's DEFAULT font size — the learner's own text
+   setting — so someone reading at 20px switches to the space-saving layout on
+   a taller screen than someone at 16px, which is what they need. A px
+   breakpoint would have ignored them, exactly as a px font floor would.
+
    Nothing here touches the strip above the card (Skip, TTS) or the ring
    binding down the gutter — both live outside .speculearn-card and are
    unaffected by design. Verified in landscape after building. */
-@media (min-aspect-ratio: 11 / 10) and (max-height: 620px) {
+@media (min-aspect-ratio: 11 / 10) and (max-height: 38.75em) {
   .speculearn-card {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     align-items: center;
-    column-gap: clamp(14px, 2.5vw, 40px);
+    column-gap: clamp(0.875rem, 2.5vw, 2.5rem);
   }
   /* Everything the card holds stacks in the left column, as it did before … */
   .speculearn-card > * { grid-column: 1; }
