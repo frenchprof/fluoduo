@@ -16,6 +16,7 @@ import Link from "next/link";
 import CahierShell, { withActive } from "@/components/CahierShell";
 import { siteTabs } from "@/components/siteTabs";
 import { DEFAULTS, readUiPrefs, writeUiPrefs, type UiPrefs } from "@/lib/uiPrefs";
+import { FAMILIES, familyShort } from "@/content/activities";
 
 export default function ReglagesPage() {
   const [prefs, setPrefs] = useState<UiPrefs>(DEFAULTS);
@@ -73,6 +74,48 @@ export default function ReglagesPage() {
               </span>
             </span>
           </label>
+        </section>
+
+        {/* Dan, 2026-09-05: "the bottom bar is optional and users can opt to
+            remove it or to replace the items there (but there should be some
+            defaults)." Six rows in FAMILIES order — membership is the choice,
+            the order never is. Unticking all six removes the bar; the Revise
+            due count then moves to a badge on the ☰ button. */}
+        <section
+          className="mt-5 rounded-xl border-2 p-4"
+          /* no hex fallbacks here — the tokens are always defined, and
+             verify19b counts every raw hex in components */
+          style={{ background: "var(--cahier-paper-raised)", borderColor: "var(--cahier-line-strong)" }}
+        >
+          <p className="font-bold text-[color:var(--cahier-ink)]">Bottom bar — choose your tabs</p>
+          <div className="mt-3 flex flex-col gap-2">
+            {FAMILIES.map((f) => (
+              <label
+                key={f.key}
+                className="flex items-center gap-3 rounded-lg border-2 px-3 py-2"
+                style={{ background: `var(--fam-${f.key}-wash)`, borderColor: "var(--cahier-line-strong)" }}
+              >
+                <input
+                  type="checkbox"
+                  checked={prefs.bottomNav.includes(f.key)}
+                  disabled={!ready}
+                  onChange={(e) =>
+                    // Rebuilt from FAMILIES, never appended: whatever a
+                    // learner ticks, the bar keeps FAMILIES order.
+                    set(
+                      "bottomNav",
+                      FAMILIES.filter((g) =>
+                        g.key === f.key ? e.target.checked : prefs.bottomNav.includes(g.key),
+                      ).map((g) => g.key),
+                    )
+                  }
+                  className="h-5 w-5 shrink-0"
+                />
+                <span aria-hidden className="text-lg">{f.emoji}</span>
+                <span className="font-bold text-[color:var(--cahier-ink)]">{familyShort(f)}</span>
+              </label>
+            ))}
+          </div>
         </section>
       </div>
     </CahierShell>
