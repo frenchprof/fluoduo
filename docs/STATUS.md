@@ -167,6 +167,113 @@ Shared: `src/app/icon.svg`, `src/app/favicon.ico`, `public/icons/*` — **Peers'
 lane**, changed here on Dan's direct instruction. Peers holds the original
 drawing and should redo this from source if they have one.
 
+## 5 Sep — the 🧰 tools summon mid-exercise, and the voice corrects first (feat/ambient-tools)
+
+Sole editor of STATUS.md in this commit: the ambient-tools lane
+(feat/ambient-tools — pushed for fluoduo-main to QC, not merged).
+
+The AMBIENT TOOLS build, first pass, all as Dan settled it on 5 Sep. A
+floating 🧰 (cahier paper, ink border, above the green 💬 bubble) opens a
+two-row tray — 🔊 VoixLà · 🤖 ChaTutor — and a row slides a BottomSheet card
+up OVER the exercise, which never closes or navigates. Where: the three
+Skills trainers only — ÉcouTexte, WorDrill, ComposeIt (both modes) — mounted
+INSIDE each trainer's own content component; **DrillShell and GameFrame are
+untouched** (verify100 pins that too).
+
+**The panels are extracted, not copied.** tutor/page.tsx and tts/page.tsx are
+now thin shells over `components/tools/ChaTutorPanel` / `VoixLaPanel`; the 🧰
+card mounts the same two components with context props the pages don't pass.
+The trainer hands over what it knows: ChaTutor gets a yellow chip (activity +
+current item — only what the learner can already SEE; ÉcouTexte hands the
+learner's typed attempt, never the hidden sentence) prepended to the
+conversation the backend reads; VoixLà gets the current typed/spoken French
+pre-filled.
+
+**THE CORRECTS-FIRST RULE holds in code shape, not intention.** The card's
+VoixLà runs /api/correct on the handed text FIRST, shows the corrected
+sentence leading with the slip marked beneath, and ▶ voices ONLY the
+corrected form; the 🎧 MP3 renders only the approved form too; checker
+unreachable = the page's existing fallback message and total silence.
+`verify100-ambient-tools.py` asserts the one voice entry has exactly three
+call sites (raw text behind `!correctsFirst`, the approved sentence, the
+fresh checker result) and that corriger() never speaks. Break-tested three
+ways.
+
+Audio ownership: opening a card pauses the exercise's speech
+(pauseSpeech/resumeSpeech, cloud clips included via the registered hooks);
+WorDrill's recognizer is ABANDONED un-graded while a card is open (handlers
+detached first, so half an utterance never scores) and the mic refuses to
+start until the card closes — back to idle, one tap re-arms.
+
+Small renames the checks forced, recorded so nobody re-trips them: the
+context prop is `title`, not `activity` (an `activity:` string literal reads
+as an evidence tag to verify53); the chip wears cahier-hl tokens, not raw
+hexes (verify19b's ratchet counts components).
+
+Green: tsc, NEXT_PUBLIC_OPEN_APP build, all 88 checks, eslint clean on every
+touched file. Shared files for the integrator: `verify.yml` (verify100's line
+sits after verify98's — verify99 belongs to a parallel lane, order to
+reconcile), `SayItContent.tsx`, `EcouTexte.tsx`, both Compose modes,
+`tutor/page.tsx`, `tts/page.tsx`, this file.
+## 5 Sep — the bottom bar is the learner's: pick the tabs, or remove the bar
+
+Sole editor of STATUS.md in this commit: feat/bottombar-pref.
+
+Dan's ruling (recorded below the same day): *"the bottom bar is optional and
+users can opt to remove it or to replace the items there (but there should be
+some defaults)."* Built, on `feat/bottombar-pref`, handed to fluoduo-main:
+
+- **`uiPrefs.bottomNav: FamilyKey[]`** — default derived (FAMILIES minus
+  User), empty = no bar. Réglages gains "Bottom bar — choose your tabs":
+  six wash-coloured checkboxes in FAMILIES order, 👤 User opt-IN for the
+  first time. Membership is the choice; order never is.
+- **BottomBar** filters `ALL_NAV` (new in nav.ts — all six as slots) by the
+  pref, renders null when empty, and withdraws `--bottombar-floor` with it.
+  `BOTTOM_NAV` stays the derived default, so verify19 §3 / verify52 §6 hold
+  unloosened.
+- **The due count survives its slot**: Revise off the bar (or bar gone) puts
+  the count as a badge on ☰ in SiteTopBar — same --dopa-streak pair, never
+  shown in both places.
+- **Hard-coded clearances now read the floor**: DrillShell's 58px spacer and
+  .cahier-page's 56px phone padding both read `var(--bottombar-floor)`, so a
+  removed bar frees its strip. FirstTour already skips an absent bar; its
+  step says "Your tabs", not "the five".
+- **LIVE BUG fixed in the same branch**: `.cahier-bottombar{display:flex}` is
+  unlayered and beat the @layer'd `sm:hidden` — the phone bar rendered on
+  DESKTOP. An unlayered `@media (min-width:640px){display:none}` ends it.
+- `verify99-bottombar-pref.py` pins all of the above (15 assertions), wired
+  after verify98.
+
+Green: tsc, open build, all 88 checks, eslint on touched files. Shared files
+to watch at merge: `globals.css`, `verify.yml`, `STATUS.md` (a parallel lane
+holds verify100).
+
+## 5 Sep — NO CLASSES: participants enrol rolling, worldwide (Dan's ruling)
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan: *"there won't be 'classes' of students. participants will be coming
+from all over, including overseas international ones."* The app has been
+carrying a one-synchronized-class assumption since the 11 Aug cohort reset.
+What changes NOW (this commit): **the leaderboard drops the current-term
+filter** — every participant shows, whenever they joined; the term field
+stays written for the research pipeline.
+
+What this ruling touches but does NOT change yet — each needs Dan's word:
+- the profile header's « LAF1201 · A1 · WEEK 4 » (a semester week counter);
+- the map's 🚩 « The class is here this week »;
+- the Class bag's "show in class / bring to class" framing (just built);
+- the teacher dashboard's "Class now" and the term-stamping machinery.
+
+Two more rulings recorded the same day:
+- **Official student address: fluolingo.withdrchan.com.**
+- **The bottom bar is optional and its items replaceable** ("users can opt
+  to remove it or to replace the items there (but there should be some
+  defaults)") — defaults stay today's five families; the build brief is the
+  bottom-bar study's option list; when the bar is hidden or Revise removed,
+  the due count defaults to a dot on the ☰ button unless Dan says otherwise.
+
+
 ## 5 Sep — the six families become the six highlighters, and the mark lands
 
 Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
@@ -341,8 +448,18 @@ no semantic one).
 
 Sole editor of STATUS.md in this commit: Pre-tests.
 
-**#157 has become a regression, and it is mine.** The same fault as 17 Aug,
-mirrored, and it is live on the github.io preview now.
+**NOT A REGRESSION FROM #157 — that word was wrong and is corrected here.**
+#157 did not break something that was working: the Pages deployment was already
+broken (or unreachable) before it, and #157 fixed it for the configuration that
+existed at the time. What broke it again was a configuration change afterwards.
+The preview has in fact been unusable since mid-August in one form or the
+other, and no change of mine caused that.
+
+WHAT *IS* MINE, and it is the part worth fixing. `verify91`, as #157 wrote it,
+hard-wired "a CNAME exists, therefore no subpath". So the moment somebody
+cleared the domain, the repo's own check FORBADE the correct fix — it was
+holding the broken state in place. A check that infers a remote setting from a
+local file is the defect, not the base path.
 
 WHAT HAPPENED. #157 dropped `PAGES_BASE_PATH` on the then-correct reading that
 the artifact was served at fluolingo.com's root. Between 2 and 5 Sep somebody
@@ -957,6 +1074,16 @@ Roadmap items recorded, not in this build: a READING activity (ÉcouTexte's
 sibling with the text on screen — the one untrained skill), and AMBIENT
 TOOLS (ChaTutor as a floating consult, VoixLà summonable wherever French is
 typed; the OUTILS row is the address, not the life).
+
+**Amendment to AMBIENT TOOLS (Dan, 5 Sep): the voice corrects FIRST.**
+Shown the hand-off mock (ComposeIt's sentence pre-filled into VoixLà's box),
+Dan: *"the bot should not be made to reinforce grammatically bad or wrongly
+written French to the learner. It has to be corrected first!!"* So the flow
+is check → show the corrected sentence leading, the learner's slip marked
+beneath → ▶ speaks ONLY the corrected form. The uncorrected sentence is
+never voiced. No contradiction with the 1 Sep distractor ruling: wrong
+French may be OFFERED for rejection on a card; it must never be PERFORMED
+for imitation by the app's voice.
 
 Still Pre-tests' surface — this section is the brief, not the build.
 

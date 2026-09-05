@@ -528,6 +528,9 @@ offered an amendment to the rule and declined — *"not amendment but add on to 
 collection of variants"* — so mono lives as a variant and the guard stands.
 
 On the first two tones: Not a draft and a fix — the pale set's top stroke measures **1.09–1.48**
+
+Two tones, both kept and both his: `pale` lightens the top block, `deep` darkens
+it. Not a draft and a fix — the pale set's top stroke measures **1.09–1.48**
 against the Cahier paper, i.e. the faintest thing in every mark while doing
 structural work, and the deep set's measures **1.85–4.60** with a *tighter*
 block-to-tint step. But a deep top bar reads as a drawn stroke that changes tone
@@ -554,6 +557,10 @@ stays *derived* from the pale one (so a block or mouth cannot drift between
 them), holds that ring floor, checks the rings still carry the complement's hue
 rather than drifting back to the block's, and turns Dan's geometry brief into
 arithmetic — corners under an eighth of the page
+
+`verify97-brand-marks.py` pins the twenty-four sets, asserts the deep set stays
+*derived* from the pale one (so a block or mouth cannot drift between them), and
+turns Dan's geometry brief into arithmetic — corners under an eighth of the page
 width, the top-left arc finishing above the first ring bind and the bottom-left
 arc starting below the last, and a knockout slot strictly larger than the ring so
 the binds *eat into* the page rather than sitting beside it.

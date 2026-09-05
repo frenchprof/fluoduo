@@ -18,6 +18,7 @@ import { recordResponse } from "@/lib/firebase/responses";
 import { categoryHeaderClass, type ComposeBank } from "@/games/compose/banks";
 import GameFrame from "@/components/GameFrame";
 import GameOver from "@/components/GameOver";
+import ToolSummon from "@/components/tools/ToolSummon";
 import { drillExitHref } from "@/components/DrillShell";
 import { buildEvidence } from "@/lib/evidence";
 
@@ -326,6 +327,16 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
           </section>
         ))}
       </div>
+
+      {/* 🧰 The summonable tools (5 Sep): VoixLà is handed the itinerary as
+          built so far; ChaTutor is told which scenario the learner is in. */}
+      <ToolSummon
+        context={{
+          title: `ComposeIt — ${bank.title}`,
+          item: scenario?.headline,
+          french: dialogueText,
+        }}
+      />
     </div>
     </GameFrame>
   );

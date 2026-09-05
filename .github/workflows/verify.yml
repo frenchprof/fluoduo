@@ -373,6 +373,11 @@ jobs:
       - name: "Stops 36/40 give directions without the imperative (5 Sep)"
         run: python3 verify/verify98-directions-imperative.py
 
+      - name: "The bottom bar is the learner's to fill — or empty (5 Sep)"
+        run: python3 verify/verify99-bottombar-pref.py
+
+      - name: "The 🧰 tools summon in-exercise, and the voice corrects first (5 Sep)"
+        run: python3 verify/verify100-ambient-tools.py
       - name: "The six families are the six highlighter pens (5 Sep)"
         run: python3 verify/verify96-family-hues.py
 

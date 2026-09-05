@@ -15,9 +15,27 @@
  * FluOlin Goals is not in this list because Goals IS home — the wordmark. And
  * FluOlin User is not in it because Moi is the account chip, top right.
  */
-import { FAMILIES, familyShort } from "@/content/activities";
+import { FAMILIES, familyShort, type Family, type FamilyKey } from "@/content/activities";
 
-export type NavSlot = { key: string; label: string; emoji: string; href: string };
+export type NavSlot = { key: FamilyKey; label: string; emoji: string; href: string };
+
+const slotFor = (f: Family): NavSlot => ({
+  key: f.key,
+  // "FluOLin Revise" is the family's name; the bar shows the short form,
+  // because a 5-slot bar on a 390px phone gives each label ~72px.
+  label: familyShort(f),
+  emoji: f.emoji,
+  href: f.href,
+});
+
+/**
+ * All six families as bar slots — the pick-list behind the bar. Dan,
+ * 2026-09-05: "the bottom bar is optional and users can opt to remove it or
+ * to replace the items there (but there should be some defaults)." So the
+ * bar a learner sees is `uiPrefs.bottomNav` picking from THIS list — which
+ * is how 👤 User, absent from the default below, can be opted back in.
+ */
+export const ALL_NAV: NavSlot[] = FAMILIES.map(slotFor);
 
 /**
  * FIVE SLOTS, NOT FOUR (Dan, 2026-08-22, on the profile design): "those 6 flap
@@ -47,11 +65,4 @@ export type NavSlot = { key: string; label: string; emoji: string; href: string 
  * `/games` and `/skills` are that missing page; verify52 fails the build if a
  * slot ever points into a single activity again.
  */
-export const BOTTOM_NAV: NavSlot[] = FAMILIES.filter((f) => f.key !== "user").map((f) => ({
-  key: f.key,
-  // "FluOLin Revise" is the family's name; the bar shows the short form,
-  // because a 5-slot bar on a 390px phone gives each label ~72px.
-  label: familyShort(f),
-  emoji: f.emoji,
-  href: f.href,
-}));
+export const BOTTOM_NAV: NavSlot[] = FAMILIES.filter((f) => f.key !== "user").map(slotFor);

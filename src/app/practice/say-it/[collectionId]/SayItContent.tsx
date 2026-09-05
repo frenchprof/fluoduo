@@ -9,6 +9,7 @@ import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { logEvent } from "@/lib/firebase/usage";
 import DrillShell, { drillExitHref } from "@/components/DrillShell";
+import ToolSummon from "@/components/tools/ToolSummon";
 import SessionMap, { type Mark } from "@/components/SessionMap";
 import SpeechMeter from "@/components/SpeechMeter";
 import { practiceItems } from "@/lib/collections/display";
@@ -257,6 +258,30 @@ export default function SayItContent({
     recRef.current = null;
   }, []);
 
+  // 🧰 While a tool card is open the mic must not run — the card speaks, and
+  // the recognizer would transcribe the tool's voice and grade the browser
+  // instead of the learner (same reason listenModel refuses while listening).
+  // The recognition is ABANDONED, not stopped: its handlers are detached
+  // first, so half an utterance is never graded — the turn returns to idle
+  // and the learner taps 🎤 again after closing the card.
+  const toolOpenRef = useRef(false);
+  const onToolOpen = useCallback(() => {
+    toolOpenRef.current = true;
+    const rec = recRef.current;
+    if (rec) {
+      rec.onresult = null;
+      rec.onend = null;
+      rec.onerror = null;
+      try { rec.stop(); } catch {}
+      recRef.current = null;
+      setPhase("idle");
+      setTranscript("");
+    }
+  }, []);
+  const onToolClose = useCallback(() => {
+    toolOpenRef.current = false;
+  }, []);
+
   const resetTurn = useCallback(() => {
     stopRec();
     setPhase("idle");
@@ -336,6 +361,7 @@ export default function SayItContent({
   }, [cards, seedRun]);
 
   const startListening = useCallback(() => {
+    if (toolOpenRef.current) return; // a 🧰 card owns the audio right now
     const c = cardRef.current;
     if (!c) return;
     const win = window as any;
@@ -804,6 +830,26 @@ export default function SayItContent({
             ) : null}
           </div>
         </div>
+
+        {/* 🧰 The summonable tools (5 Sep) — WorDrill only, not the say-it
+            deck pages or the SIO popup (first pass: the three Skills
+            trainers). The chip shows the prompt the learner can SEE (the
+            French only once they have earned or asked for it); VoixLà is
+            handed what the recognizer heard them say. */}
+        <ToolSummon
+          context={{
+            title: "WorDrill",
+            item: card
+              ? promptLang === "fr" || peek || phase === "result" ? frOf(card) : card.en
+              : undefined,
+            french:
+              result && result.recognized && result.recognized !== "(nothing heard)"
+                ? result.recognized
+                : transcript,
+          }}
+          onCardOpen={onToolOpen}
+          onCardClose={onToolClose}
+        />
       </div>
     );
   }

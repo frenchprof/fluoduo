@@ -58,7 +58,11 @@ function tourFor(rawPath: string): Tour | null {
       key: "home",
       steps: [
         { selector: 'a[title^="Continue"]', action: "tap", text: "Continue — your next stop on the path." },
-        { selector: "nav.cahier-bottombar", action: "tap", text: "The five tabs — press and hold one for its name." },
+        // "Your tabs", not "the five tabs": since 5 Sep the learner picks
+        // them in Réglages, so the count can be anything from one to six —
+        // and when they are all removed this step's selector matches
+        // nothing, which the measure effect already skips over.
+        { selector: "nav.cahier-bottombar", action: "tap", text: "Your tabs — press and hold one for its name." },
         { kind: "play", text: "Start here" },
       ],
     };

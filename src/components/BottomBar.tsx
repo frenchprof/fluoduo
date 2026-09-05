@@ -23,15 +23,21 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { BOTTOM_NAV } from "@/content/nav";
-import { readUiPrefs } from "@/lib/uiPrefs";
+import { ALL_NAV } from "@/content/nav";
+import { DEFAULTS, readUiPrefs } from "@/lib/uiPrefs";
 import { loadProgress } from "@/lib/progress";
 import { dueForReview } from "@/lib/reviser";
+import type { FamilyKey } from "@/content/activities";
 
 export default function BottomBar() {
   const pathname = usePathname();
   const [held, setHeld] = useState<string | null>(null);
   const [labels, setLabels] = useState(false);
+  // WHICH slots the learner keeps (Dan, 2026-09-05: "users can opt to remove
+  // it or to replace the items there"). Starts on the default five so the
+  // first client render matches the prerendered HTML; the real choice loads
+  // in the same after-mount effect the labels toggle uses.
+  const [keys, setKeys] = useState<FamilyKey[]>(DEFAULTS.bottomNav);
   const [due, setDue] = useState(0);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const nav = useRef<HTMLElement | null>(null);
@@ -43,10 +49,13 @@ export default function BottomBar() {
   // 2026-08-11). Measured, not guessed: offsetHeight already includes the
   // safe-area padding, and it is 0 while `sm:hidden` hides the bar, which
   // correctly withdraws the floor on wide screens.
+  const hidden = ALL_NAV.every((s) => !keys.includes(s.key));
   useEffect(() => {
-    const el = nav.current;
-    if (!el) return;
     const root = document.documentElement;
+    const el = nav.current;
+    // No bar (every slot unticked in Réglages) = no floor: the pages,
+    // floats and trays that read the variable get the space back.
+    if (!el) { root.style.removeProperty("--bottombar-floor"); return; }
     const set = () => {
       const h = el.offsetHeight;
       if (h > 0) root.style.setProperty("--bottombar-floor", `${h + 8}px`);
@@ -61,12 +70,18 @@ export default function BottomBar() {
       window.removeEventListener("resize", set);
       root.style.removeProperty("--bottombar-floor");
     };
-  }, []);
+    // `hidden` is the dep because the <nav> only exists while it is false —
+    // the measurement has to re-attach when the bar comes back.
+  }, [hidden]);
 
   // Read after mount: prerender must not depend on localStorage or every page
   // ships one learner's preference baked into the HTML.
   useEffect(() => {
-    const sync = () => setLabels(readUiPrefs().showNavLabels);
+    const sync = () => {
+      const p = readUiPrefs();
+      setLabels(p.showNavLabels);
+      setKeys(p.bottomNav);
+    };
     sync();
     window.addEventListener("fluolingo:uiprefs", sync);
     return () => window.removeEventListener("fluolingo:uiprefs", sync);
@@ -95,9 +110,14 @@ export default function BottomBar() {
 
   useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
 
+  // Every slot unticked = no bar at all (Dan, 2026-09-05: "users can opt to
+  // remove it"). SiteTopBar's ☰ picks up the Revise due count so it is not
+  // lost with the slot that carried it.
+  if (hidden) return null;
+
   return (
     <nav ref={nav} className="cahier-bottombar sm:hidden" aria-label="Sections">
-      {BOTTOM_NAV.map((slot) => {
+      {ALL_NAV.filter((slot) => keys.includes(slot.key)).map((slot) => {
         const active = pathname === slot.href || pathname.startsWith(slot.href + "/");
         const showLabel = labels || held === slot.key;
         return (

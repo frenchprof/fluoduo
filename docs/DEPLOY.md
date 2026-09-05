@@ -16,11 +16,13 @@ add it to Firebase / Pages custom domains.
 
 ## Staging
 
-A **no-login** Cloudflare bookmark for Dan and agents (refresh, no Google;
-live stays gated) is a **second** CF build with `NEXT_PUBLIC_OPEN_APP=1` on
-that env only. Recipe, checklist, and unsigned smoke list:
-**`docs/STAGING.md`**. Recommended host: `staging.fluoli.ngo`. Never put that
-flag in a repo deploy yaml — `verify38` fails the build if you do.
+**It exists: `https://fluoduo.pages.dev/`** (probed 5 Sep 2026) — a CF Pages
+project on **this** repo, rebuilding on every merge to `main` (plus per-PR
+preview URLs), with `NEXT_PUBLIC_OPEN_APP=1` set in its dashboard, so the
+whole app is open there. Live stays gated (built from `dckg/fluo`, flag
+unset). Recipe, checklist, and unsigned smoke list: **`docs/STAGING.md`**.
+Never put that flag in a repo deploy yaml — `verify38` fails the build if
+you do.
 
 ---
 
