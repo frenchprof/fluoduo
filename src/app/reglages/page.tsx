@@ -57,22 +57,28 @@ export default function ReglagesPage() {
           className="mt-5 rounded-xl border-2 p-4"
           style={{ background: "var(--cahier-paper-raised, #fff)", borderColor: "var(--cahier-line-strong, #ddd)" }}
         >
-          <label className="flex items-start gap-3">
+          {/* A switch, and the line under it says what the CURRENT position
+              means (Dan, 5 Sep: "settings description should change based on
+              choice") — not what the other one would. */}
+          <label className="flex items-start justify-between gap-3">
+            <span>
+              <span className="block font-bold text-[color:var(--cahier-ink)]">
+                Icon labels
+              </span>
+              <span className="block text-sm text-[color:var(--cahier-ink-soft)]">
+                {prefs.showNavLabels
+                  ? "Icon labels are always shown."
+                  : "Tap and hold an icon to view its label."}
+              </span>
+            </span>
             <input
               type="checkbox"
+              role="switch"
               checked={prefs.showNavLabels}
               disabled={!ready}
               onChange={(e) => set("showNavLabels", e.target.checked)}
-              className="mt-1 h-5 w-5 shrink-0"
+              className="fluo-switch mt-1"
             />
-            <span>
-              <span className="block font-bold text-[color:var(--cahier-ink)]">
-                Always show labels under icons
-              </span>
-              <span className="block text-sm text-[color:var(--cahier-ink-soft)]">
-                Otherwise, press and hold an icon to see its name.
-              </span>
-            </span>
           </label>
         </section>
 
@@ -88,7 +94,10 @@ export default function ReglagesPage() {
           style={{ background: "var(--cahier-paper-raised)", borderColor: "var(--cahier-line-strong)" }}
         >
           <p className="font-bold text-[color:var(--cahier-ink)]">Bottom bar — choose your tabs</p>
-          <div className="mt-3 flex flex-col gap-2">
+          {/* Two columns (Dan, 5 Sep): a tickable row stretched across the
+              whole page is a full-width button, which is now against the
+              rule — see AGENTS.md, "No control spans the whole width". */}
+          <div className="mt-3 grid grid-cols-2 gap-2">
             {FAMILIES.map((f) => (
               <label
                 key={f.key}

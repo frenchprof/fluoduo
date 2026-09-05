@@ -35,8 +35,10 @@ export type TutorContext = {
 
 type ChatMsg = { role: "user" | "assistant"; content: string };
 
-const GREETING =
-  "Bonjour ! 👋 « Je peux t'aider ? » You can ask me anything about the course, practice your French sentence construction in writing or in speech, role-play a scene from your course syllabus, or even ask me to read simple short texts to work on what you have learned.";
+// Dan, 5 Sep: "The ChaTutor's opening line is WAY TOO LONG !" — the 50-word
+// capability tour failed his litmus test (the input box already invites
+// typing, and the 🧰 chip already says where you are). The greeting greets.
+const GREETING = "Bonjour ! 👋 « Je peux t'aider ? »";
 
 // Minimal typings for the (still-prefixed) Web Speech recognition API.
 type SpeechRecognitionLike = {

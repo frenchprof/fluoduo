@@ -45,10 +45,18 @@ type Card = "voixla" | "chatutor";
 
 export default function ToolSummon({
   context,
+  tools = ["voixla", "chatutor"],
   onCardOpen,
   onCardClose,
 }: {
   context: ToolContext;
+  /** Which tools this exercise offers. ÉcouTexte offers ChaTutor only —
+   *  Dan, 5 Sep: "Voix-Là is for TTS. and it does NOT make any sense to
+   *  have it im EcouTexte": the exercise's whole job is already speaking
+   *  French at the learner, and TTS there could read the answer aloud.
+   *  With a single tool the 🧰 opens its card directly — a one-row tray
+   *  is a middle step with nothing to choose. */
+  tools?: Card[];
   /** A card slid over the exercise — park the mic, hold the audio. */
   onCardOpen?: () => void;
   /** The card closed — the exercise may take its audio back. */
@@ -84,8 +92,8 @@ export default function ToolSummon({
           feedback bubble (bottom-right ~20px). */}
       <button
         type="button"
-        onClick={() => setTray((v) => !v)}
-        title="Outils — VoixLà & ChaTutor"
+        onClick={() => (tools.length === 1 ? openCard(tools[0]) : setTray((v) => !v))}
+        title={tools.length === 1 ? (tools[0] === "chatutor" ? "ChaTutor" : "VoixLà") : "Outils — VoixLà & ChaTutor"}
         aria-label="Outils"
         aria-expanded={tray}
         className="fixed bottom-[132px] right-[14px] z-50 flex h-[46px] w-[46px] items-center justify-center rounded-full border-2 border-[color:var(--cahier-ink)] text-xl shadow-lg transition-transform hover:brightness-95 active:scale-95"
@@ -102,20 +110,24 @@ export default function ToolSummon({
             className="fixed bottom-[186px] right-[14px] z-50 flex flex-col overflow-hidden rounded-xl border-2 border-[color:var(--cahier-ink)] shadow-lg"
             style={{ background: "var(--cahier-paper-raised)" }}
           >
-            <button
-              type="button"
-              onClick={() => openCard("voixla")}
-              className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-[color:var(--cahier-ink)] transition hover:bg-[color:var(--cahier-ink)]/10"
-            >
-              <span aria-hidden>🔊</span>VoixLà
-            </button>
-            <button
-              type="button"
-              onClick={() => openCard("chatutor")}
-              className="flex items-center gap-2 border-t-2 border-[color:var(--cahier-rule)] px-4 py-2.5 text-sm font-bold text-[color:var(--cahier-ink)] transition hover:bg-[color:var(--cahier-ink)]/10"
-            >
-              <span aria-hidden>🤖</span>ChaTutor
-            </button>
+            {tools.includes("voixla") && (
+              <button
+                type="button"
+                onClick={() => openCard("voixla")}
+                className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-[color:var(--cahier-ink)] transition hover:bg-[color:var(--cahier-ink)]/10"
+              >
+                <span aria-hidden>🔊</span>VoixLà
+              </button>
+            )}
+            {tools.includes("chatutor") && (
+              <button
+                type="button"
+                onClick={() => openCard("chatutor")}
+                className="flex items-center gap-2 border-t-2 border-[color:var(--cahier-rule)] px-4 py-2.5 text-sm font-bold text-[color:var(--cahier-ink)] transition hover:bg-[color:var(--cahier-ink)]/10"
+              >
+                <span aria-hidden>🤖</span>ChaTutor
+              </button>
+            )}
           </div>
         </>
       )}

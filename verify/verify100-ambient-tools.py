@@ -98,6 +98,15 @@ for name, path in TRAINERS.items():
        f"{path} does not mount ToolSummon — the door was assigned to the "
        "three Skills trainers (ÉcouTexte, WorDrill, ComposeIt)")
 
+# ÉcouTexte offers ChaTutor ONLY (Dan, 5 Sep: "Voix-Là is for TTS. and it
+# does NOT make any sense to have it im EcouTexte" — the exercise already
+# speaks, and TTS there could read the hidden answer aloud).
+ecoutexte = read(TRAINERS["ÉcouTexte"])
+ok('tools={["chatutor"]}' in ecoutexte,
+   "ÉcouTexte's 🧰 offers ChaTutor only — no TTS in a listening exercise",
+   "ÉcouTexte's ToolSummon does not restrict tools to [\"chatutor\"] — "
+   "VoixLà is TTS and Dan ruled it senseless in a listening exercise (5 Sep)")
+
 for shell in ("src/components/DrillShell.tsx", "src/components/GameFrame.tsx"):
     src = read(shell)
     ok(src and "ToolSummon" not in src and "🧰" not in src,

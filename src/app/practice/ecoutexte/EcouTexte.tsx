@@ -583,15 +583,16 @@ export default function EcouTexte({
         </button>
       )}
 
-      {/* 🧰 The summonable tools (5 Sep). What is handed over is what the
-          learner can already SEE: their own typed attempt — never the hidden
-          sentence, unless they revealed it themselves (this is a listening
-          exercise; the sentence IS the answer). */}
+      {/* 🧰 ChaTutor ONLY here — Dan, 5 Sep: "Voix-Là is for TTS. and it
+          does NOT make any sense to have it im EcouTexte" (this exercise
+          already speaks, and TTS could read the answer aloud). The chip
+          hands over what the learner can already SEE: their own typed
+          attempt — never the hidden sentence, unless they revealed it. */}
       <ToolSummon
+        tools={["chatutor"]}
         context={{
           title: "ÉcouTexte",
           item: revealed[at] ? sentences[at]?.fr : attemptAt || undefined,
-          french: revealed[at] ? sentences[at]?.fr : attemptAt,
         }}
       />
     </div>

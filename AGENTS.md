@@ -202,6 +202,23 @@ If a term of art is unavoidable, define it in the same sentence in one
 plain clause. This is the show-don't-describe rule's sibling: that one says
 show the SCREEN, this one says show the MEANING.
 
+# No control spans the whole width — permanent (2026-09-05)
+
+**Dan: *"IT HAS BEEN MADE A RULE THAT WE NEVER WNAT TO HAVE A SINGLE BUTTON
+OCCUPYING THE ENTIRE WIDTH (except in rare circumstances that i have to
+approve)"*** — said about the Réglages tab pick-list, whose six tickable
+rows each ran the full page width and went to two columns the same day.
+
+So: a button, a tickable row, or any other single tappable control never
+stretches across the whole page. A stack of them becomes a grid (two columns
+is the default fix); a lone one stays content-sized. The rare full-width
+exception exists, but it is DAN'S to grant per case, never assumed —
+"primary action" is not an exemption.
+
+What this does NOT cover: things that are not single controls. The bottom
+bar (five controls sharing the width), the heading band, a text input, the
+progress strip — none of these is one button wearing the page's width.
+
 # Start here — every session (2026-08-17)
 
 Read `docs/STATUS.md` before anything else and update it before you stop. `HANDOFF.md`, `TODO.md` and `docs/planning/*` are historical.
