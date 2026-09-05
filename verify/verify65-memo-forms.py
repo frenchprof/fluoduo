@@ -101,7 +101,14 @@ sal = memo_block(SAL_SRC) or ""
 # and the helper's own boldness is asserted below rather than assumed.
 forms = (re.findall(r'<p lang="fr" className="[^"]*font-black[^"]*">', sal)
          + re.findall(r"<Greetings>", sal))
-labels = re.findall(r'<p className="fluo-label[^"]*">', sal)
+# THE COUNT IS SCOPED TO THE GRID, not to the whole Mémo. On 2026-09-05 the
+# panel became a list BY KIND (Dan: *"Forms give that list"*), so it grew
+# section headings — and those are `fluo-label` too. A flat count of captions
+# then read 6 and called a correct panel drifted. What the rule is actually
+# about is the TILE: a bold French line with its situation caption above it, in
+# that order, four times. So the four tiles are counted where they live.
+grid = re.search(r'<div className="mt-1 grid grid-cols-2[\s\S]*?\n      </div>', sal)
+labels = re.findall(r'<p className="fluo-label[^"]*">', grid.group(0) if grid else "")
 check(re.search(r'function Greetings[\s\S]*?<p lang="fr" className="[^"]*font-black', SAL_SRC) is not None,
       "the Greetings helper still sets the French bold",
       "Greetings no longer renders its French bold — the four tiles would go "

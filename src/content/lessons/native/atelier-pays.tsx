@@ -45,7 +45,7 @@ export const atelierPaysLesson: NativeLesson = {
   // dispensing with one (voici). A learner cannot derive one from another by
   // swapping a pronoun, which is why all three have to be learned whole.
   concept: {
-    subtitle: "Why presenting a country takes three openers, not one",
+    subtitle: "Why presenting a country takes three openers",
     contrast: (
       <>
         English changes only the subject and keeps the verb &mdash; <i>this</i> is,{" "}
