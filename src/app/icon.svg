@@ -18,9 +18,9 @@
         <rect x="57" y="41" width="35" height="27" fill="#8ca600"/>
       </g>
     </g>
-    <rect x="4" y="18.4" width="22" height="7.2" rx="3.6" fill="#9200fe"/>
-    <rect x="4" y="35.4" width="22" height="7.2" rx="3.6" fill="#9200fe"/>
-    <rect x="4" y="52.4" width="22" height="7.2" rx="3.6" fill="#9200fe"/>
-    <rect x="4" y="69.4" width="22" height="7.2" rx="3.6" fill="#9200fe"/>
+    <rect x="4" y="18.4" width="22" height="7.2" rx="3.6" fill="#7d9400"/>
+    <rect x="4" y="35.4" width="22" height="7.2" rx="3.6" fill="#7d9400"/>
+    <rect x="4" y="52.4" width="22" height="7.2" rx="3.6" fill="#7d9400"/>
+    <rect x="4" y="69.4" width="22" height="7.2" rx="3.6" fill="#7d9400"/>
   </g>
 </svg>

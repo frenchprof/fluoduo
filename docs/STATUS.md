@@ -6,6 +6,33 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 5 Sep — the ring binds take the complement, across all 24
+
+Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
+
+Dan: *"we want the ring binds to be in the complementary color so it does not
+look so intense"*. Applied to all twenty-four, and to the shipped icon.
+
+**The literal reading fails, so it was not taken literally.** The mouth colour
+itself on the rings lands at **1.24-3.16** against the tile — Periwinkle's yellow
+ring would be all but invisible, Magenta's green weak. So each ring is the
+complement's HUE, walked down only until it clears **3.0 : 1 on the tile**. That
+is WCAG's NON-TEXT floor and it is the right one here: a ring bind is a shape,
+not type. The old rule was 5.1 (the text floor) and holding it would have
+re-darkened exactly what Dan asked to lighten. All twelve land at 3.00-3.07.
+
+verify97 gained a second ring assertion with it: the rings must still carry the
+COMPLEMENT'S hue, not drift back to the block's. Both break-tested — a ring gone
+pale reports "not hardware, it is a smudge"; a ring back on the block hue reports
+180 degrees from the mouth.
+
+The icon regenerated with it: rings #7d9400 (olive) under the violet block,
+where they were #9200fe. Four hue buckets on the 512s and the 180/192, three on
+the maskable — verify95-icons still green, unmodified. The Twelve Marks and
+Deep-Tint artifacts were regenerated too, so the pages and the repo agree.
+
+Build, tsc and all 87 checks green.
+
 ## 5 Sep — the highlighter mark becomes the site icon (supersedes the entry below)
 
 **Amended within the hour: Violet, not Pink.** Dan: *"it is nice but can we pick

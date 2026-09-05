@@ -106,18 +106,18 @@ export const MARK_GROUND = "#faf6ee";
  * Order is the hue wheel, each pen followed by its reversal.
  */
 export const MARKS_PALE: Mark[] = [
-  { key: "pink",       name: "Pink",       hue: 350, reverseOf: "teal",       block: "#ff4eb2", tint: "#ffb9d9", mouth: "#00b28b", ring: "#c1007f" },
-  { key: "teal",       name: "Teal",       hue: 170, reverseOf: "pink",       block: "#00c197", tint: "#00fbc6", mouth: "#ff4eb2", ring: "#00775c" },
-  { key: "orange",     name: "Orange",     hue:  55, reverseOf: "sky",        block: "#ff9037", tint: "#ffddc7", mouth: "#00a5e4", ring: "#9f5100" },
-  { key: "sky",        name: "Sky",        hue: 235, reverseOf: "orange",     block: "#00b2f6", tint: "#abe0ff", mouth: "#ff9037", ring: "#00709d" },
-  { key: "yellow",     name: "Yellow",     hue: 100, reverseOf: "periwinkle", block: "#fcdf00", tint: "#ffea6a", mouth: "#8688ff", ring: "#756700" },
-  { key: "periwinkle", name: "Periwinkle", hue: 280, reverseOf: "yellow",     block: "#9398ff", tint: "#cfd4ff", mouth: "#fcdf00", ring: "#6045ff" },
-  { key: "green",      name: "Green",      hue: 145, reverseOf: "magenta",    block: "#00dd3e", tint: "#b0ffb2", mouth: "#f005ff", ring: "#007a1e" },
-  { key: "magenta",    name: "Magenta",    hue: 325, reverseOf: "green",      block: "#f350ff", tint: "#fcbfff", mouth: "#00dd3e", ring: "#b700c3" },
-  { key: "blue",       name: "Blue",       hue: 245, reverseOf: "amber",      block: "#1ca6ff", tint: "#a9d7ff", mouth: "#d78100", ring: "#006baa" },
-  { key: "amber",      name: "Amber",      hue:  65, reverseOf: "blue",       block: "#e88c00", tint: "#ffcd9c", mouth: "#1ca6ff", ring: "#985900" },
-  { key: "violet",     name: "Violet",     hue: 300, reverseOf: "olive",      block: "#b17eff", tint: "#d9c6ff", mouth: "#8ca600", ring: "#9200fe" },
-  { key: "olive",      name: "Olive",      hue: 120, reverseOf: "violet",     block: "#98b300", tint: "#c7ea00", mouth: "#b17eff", ring: "#5e6f00" },
+  { key: "pink",       name: "Pink",       hue: 350, reverseOf: "teal",       block: "#ff4eb2", tint: "#ffb9d9", mouth: "#00b28b", ring: "#009d7a" },
+  { key: "teal",       name: "Teal",       hue: 170, reverseOf: "pink",       block: "#00c197", tint: "#00fbc6", mouth: "#ff4eb2", ring: "#ff2eac" },
+  { key: "orange",     name: "Orange",     hue:  55, reverseOf: "sky",        block: "#ff9037", tint: "#ffddc7", mouth: "#00a5e4", ring: "#0095ce" },
+  { key: "sky",        name: "Sky",        hue: 235, reverseOf: "orange",     block: "#00b2f6", tint: "#abe0ff", mouth: "#ff9037", ring: "#d76e00" },
+  { key: "yellow",     name: "Yellow",     hue: 100, reverseOf: "periwinkle", block: "#fcdf00", tint: "#ffea6a", mouth: "#8688ff", ring: "#7c7bff" },
+  { key: "periwinkle", name: "Periwinkle", hue: 280, reverseOf: "yellow",     block: "#9398ff", tint: "#cfd4ff", mouth: "#fcdf00", ring: "#9e8b00" },
+  { key: "green",      name: "Green",      hue: 145, reverseOf: "magenta",    block: "#00dd3e", tint: "#b0ffb2", mouth: "#f005ff", ring: "#f003ff" },
+  { key: "magenta",    name: "Magenta",    hue: 325, reverseOf: "green",      block: "#f350ff", tint: "#fcbfff", mouth: "#00dd3e", ring: "#00a22b" },
+  { key: "blue",       name: "Blue",       hue: 245, reverseOf: "amber",      block: "#1ca6ff", tint: "#a9d7ff", mouth: "#d78100", ring: "#ca7900" },
+  { key: "amber",      name: "Amber",      hue:  65, reverseOf: "blue",       block: "#e88c00", tint: "#ffcd9c", mouth: "#1ca6ff", ring: "#0091e4" },
+  { key: "violet",     name: "Violet",     hue: 300, reverseOf: "olive",      block: "#b17eff", tint: "#d9c6ff", mouth: "#8ca600", ring: "#7d9400" },
+  { key: "olive",      name: "Olive",      hue: 120, reverseOf: "violet",     block: "#98b300", tint: "#c7ea00", mouth: "#b17eff", ring: "#a869ff" },
 ];
 
 /**

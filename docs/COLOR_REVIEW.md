@@ -533,9 +533,20 @@ the reason this section exists. Without it, someone finds `#009675` in the repo
 in six months and cannot tell whether it is a family, a role, or a mistake. It is
 none of those: it is brand, and it belongs to no interface surface.
 
-`verify97-brand-marks.py` pins the twenty-four sets, asserts the deep set stays
-*derived* from the pale one (so a block or mouth cannot drift between them), and
-turns Dan's geometry brief into arithmetic — corners under an eighth of the page
+**The ring binds wear the complement** (Dan, 5 Sep: *"we want the ring binds to
+be in the complementary color so it does not look so intense"*). They were the
+block's own ink, which made four dark bars in the mark's own colour and read as
+heavy. Taking the complement at full strength is the literal reading and it
+fails — those land at 1.24–3.16 against the tile and Periwinkle's yellow ring all
+but vanishes — so each ring is the complement's HUE walked down only until it
+clears **3.0 : 1 on the tile**, WCAG's non-text floor, which is the correct floor
+because a ring bind is a shape and not type. All twelve land at 3.00–3.07.
+
+`verify97-highlighter-marks.py` pins the twenty-four sets, asserts the deep set
+stays *derived* from the pale one (so a block or mouth cannot drift between
+them), holds that ring floor, checks the rings still carry the complement's hue
+rather than drifting back to the block's, and turns Dan's geometry brief into
+arithmetic — corners under an eighth of the page
 width, the top-left arc finishing above the first ring bind and the bottom-left
 arc starting below the last, and a knockout slot strictly larger than the ring so
 the binds *eat into* the page rather than sitting beside it.
