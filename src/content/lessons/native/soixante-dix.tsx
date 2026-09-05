@@ -1,5 +1,5 @@
 /**
- * « soixante-quinze » — SIO-045A's lesson.
+ * « soixante-quinze » — SIO-045's lesson.
  *
  * The deck holds thirty numerals and never shows the arithmetic that builds
  * them, which is the only hard thing about this range.

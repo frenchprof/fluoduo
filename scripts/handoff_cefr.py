@@ -11,7 +11,7 @@ matched, 27 did not, and the drift had three separate shapes —
   * Unit 0 was shifted one place across 008/009/010 — the header note below
     still describes a Unité 0 where SIO-008 is "question words", an objective
     that moved out of Unit 0 entirely (it is SIO-035 now);
-  * the rest were simply older wordings, and SIO-045A was absent because it
+  * the rest were simply older wordings, and SIO-045 was absent because it
     postdates the 50-row numbering.
 
 That is dangerous in a quiet way. Nothing imports this at build or run time, so

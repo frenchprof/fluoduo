@@ -582,7 +582,7 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
     </Card>
   ),
 
-  /* ---------- Numbers 70-99 (SIO-045A, 2026-07-20: the soixante-dix /
+  /* ---------- Numbers 70-99 (SIO-045, 2026-07-20: the soixante-dix /
      quatre-vingts system — the missing bridge to real market prices) ------ */
   "numbers-70-99": (
     <Card title="70 à 99 — le système change !">

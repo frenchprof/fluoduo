@@ -15,7 +15,7 @@ lying:
 
 Neither lie was visible. `scripts/gen-sios.mjs` was documented as regenerating
 sios.json FROM the CSV, so running the documented command would have reverted
-17 objectives to superseded text and deleted SIO-045A. handoff_cefr.py sat on
+17 objectives to superseded text and deleted SIO-045. handoff_cefr.py sat on
 no live path at all — until someone ran add-candos.py or merge-handoff-csv.py,
 which paste it into the CSV, silently.
 
@@ -63,7 +63,7 @@ CEFR = "scripts/handoff_cefr.py"
 # ---- 1 · the retired generator is really gone ------------------------------
 check(not (ROOT / "scripts/gen-sios.mjs").exists(),
       "the CSV→app generator is deleted",
-      "scripts/gen-sios.mjs is back — running it reverts 17 objectives and deletes SIO-045A")
+      "scripts/gen-sios.mjs is back — running it reverts 17 objectives and deletes SIO-045")
 check((ROOT / SYNC).exists(),
       "the app→CSV sync exists",
       f"{SYNC} is missing — nothing keeps the CSV honest")

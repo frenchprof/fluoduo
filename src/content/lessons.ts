@@ -137,7 +137,7 @@ export const LESSONS_BY_SIO: Record<string, string[]> = {
   "SIO-038": ["transport"],
   "SIO-013": ["quelle-matiere"],
   "SIO-044": ["au-marche"],
-  "SIO-045A": ["soixante-dix"],
+  "SIO-045": ["soixante-dix"],
   "SIO-017": ["langues-pays"],
   "SIO-018": ["nombres-echanges"],
   "SIO-009": ["salutations"],

@@ -6,6 +6,46 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 5 Sep — SIO-045A becomes SIO-045; the spine is 1-50 with no gaps
+
+Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
+
+Dan: *"if there is no more 45 but only 45A or 45.5, then make that the 45"*.
+Done. `SIO-045A` -> `SIO-045`, num 45.5 -> 45, in `sios.json`, the v9 CSV, and
+every place in `src/`, `verify/` and `scripts/` that named the id.
+
+**This reverses a decision recorded in the code.** The comment in
+`pretests/index.ts` said 45's number was *"a deliberate permanent gap, not
+renumbered forward"*. The gap outlived its reason — nothing was ever going to
+sit at 45 again, and a lone half-step cost every surface that prints a stop
+number an explanation. The comment now records the reversal rather than being
+deleted.
+
+**The outcome is cleaner than expected**: the spine is now exactly 1-50, no
+missing integers, no halves, no duplicates. Verified against `sios.json` before
+and after. Nothing downstream shifted — 046-050 keep their numbers.
+
+**Two things NOT changed, deliberately.** The pretest FILE names still lie about
+themselves — `u4-sio045.json` holds SIO-043's content, `u4-sio045a-nombres.json`
+holds the new SIO-045's — which has been the documented choice since the July
+re-cut (`src/lib/labels.ts`). And the historical documents were left alone:
+STATUS's own past entries, the 045A numbering report, `CSV_SPEC_REASSIGNMENT`
+and the 23 Aug syllabus audit all still say SIO-045A, because they record what
+was true when they were written.
+
+**Two mistakes made and caught in the doing**, both from a too-broad rename:
+a first pass rewrote those historical docs (reverted), and writing the v9 CSV
+through Python's text mode stripped **51 CRLF line endings** from Dan's own
+source file — the diff showed 53 changed lines for a one-string edit, which is
+what gave it away. Redone in binary: one line changed, bytes otherwise
+identical.
+
+`verify49` needed no logic change — its rule is *num = NNN + 0.5 if a letter
+suffix*, and SIO-045 with no suffix satisfies it at 45. Only its prose moved.
+`check:sios` green, matching the CSV on all 50.
+
+Build, tsc and all 89 checks green.
+
 ## 5 Sep — a third tone: mono, the quiet set (24 marks becomes 36)
 
 Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.

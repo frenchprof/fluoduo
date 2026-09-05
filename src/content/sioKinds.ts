@@ -61,7 +61,7 @@ export function sioSecondary(sioId: string): SioKind | null {
 }
 
 export function sioKind(sioId: string): SioKind {
-  // SIO-045A parses to 45, which is in no set → vocab, same as a plain
+  // SIO-045 parses to 45, which is in no set → vocab, same as a plain
   // SIO-045 would be — no special case needed since the market chunks
   // moved into 44 (re-audit 2026-08-11).
   const n = parseInt(sioId.split("-")[1] ?? "", 10);
