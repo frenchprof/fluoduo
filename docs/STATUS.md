@@ -16,6 +16,7 @@ pull request, so they sit on a clean branch from `5d06894`:
 
 - Deck title is **Shops & market**. French subtitle and FR answers stay.
 - Instructions: **Pick the right picture.** / **Pick the right word.**
+- Keyboard hint is **1–4 pick · next · R**, not *choisir* / *suivant*.
 - The title band is not marked `lang="fr"` on commerces.
 
 Open it: Practice → SpecuLearn → Shops & market, or
