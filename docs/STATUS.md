@@ -26,10 +26,12 @@ Sole editor of STATUS.md in this commit: fluoduo-main.
 4. **No VoixLà in ÉcouTexte** (Dan: "Voix-Là is for TTS. and it does NOT
    make any sense to have it im EcouTexte"). ToolSummon takes `tools`;
    ÉcouTexte passes `["chatutor"]`, and a single-tool 🧰 opens its card
-   directly with no one-row tray. verify100 pins it. OPEN QUESTION Dan
-   raised, answered with a recommendation, not yet ruled: whether ChaTutor
-   belongs in ÉcouTexte at all (recommendation: remove; it serves
-   production, not listening — one-line change when Dan decides).
+   directly with no one-row tray. verify100 pins it. RULED later the same
+   evening (Dan: "doesn'T ecouTexte have a standard answer, why does it
+   still beed ChatTutor"): the 🧰 is OUT of ÉcouTexte entirely — a
+   dictation has one right sentence and the marking shows it; the tools
+   live in WorDrill and ComposeIt, where the learner produces French.
+   verify100 now asserts ÉcouTexte carries no ToolSummon.
 5. **Button labels wear the brand hand in heavy bold** (Dan: "use FluoLingo
    font in heavy bold to disallow the text from overflowing off the
    buttons"). `FluOlinGoHand-ExtraBold` (36 KB) joins the loaded weights as

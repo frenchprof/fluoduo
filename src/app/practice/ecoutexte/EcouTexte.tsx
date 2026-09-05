@@ -44,7 +44,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import DrillShell from "@/components/DrillShell";
-import ToolSummon from "@/components/tools/ToolSummon";
 import { pauseSpeech, resumeSpeech, speak, speakSequence } from "@/games/letris/speech";
 import { gradeAnswer, type Grade } from "@/lib/practice/cloze";
 import { fingerprint, generateUnheard } from "@/lib/textgen/engine";
@@ -583,18 +582,13 @@ export default function EcouTexte({
         </button>
       )}
 
-      {/* 🧰 ChaTutor ONLY here — Dan, 5 Sep: "Voix-Là is for TTS. and it
-          does NOT make any sense to have it im EcouTexte" (this exercise
-          already speaks, and TTS could read the answer aloud). The chip
-          hands over what the learner can already SEE: their own typed
-          attempt — never the hidden sentence, unless they revealed it. */}
-      <ToolSummon
-        tools={["chatutor"]}
-        context={{
-          title: "ÉcouTexte",
-          item: revealed[at] ? sentences[at]?.fr : attemptAt || undefined,
-        }}
-      />
+      {/* NO 🧰 here — Dan, 5 Sep, in two steps: first "Voix-Là is for TTS.
+          and it does NOT make any sense to have it im EcouTexte" (the
+          exercise already speaks), then "doesn'T ecouTexte have a standard
+          answer, why does it still beed ChatTutor" — a dictation has ONE
+          right sentence and the marking already shows it, so there is
+          nothing left for a chat tool to add. The tools live where the
+          learner PRODUCES French: WorDrill and ComposeIt. */}
     </div>
   );
 
