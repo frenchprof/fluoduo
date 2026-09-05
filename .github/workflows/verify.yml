@@ -371,6 +371,10 @@ jobs:
         run: python3 verify/verify91-pages-basepath.py
 
       - name: "Stops 36/40 give directions without the imperative (5 Sep)"
-        # Renumbered 95 -> 96 at the QC merge — seventh collision; the icons
-        # check landed 95 first (#170).
-        run: python3 verify/verify96-directions-imperative.py
+        run: python3 verify/verify98-directions-imperative.py
+
+      - name: "The six families are the six highlighter pens (5 Sep)"
+        run: python3 verify/verify96-family-hues.py
+
+      - name: "The highlighter marks: 24 colour sets, one geometry (5 Sep)"
+        run: python3 verify/verify97-highlighter-marks.py
