@@ -1031,6 +1031,58 @@ body {
   padding-bottom: 8px;                       /* NOT the desk's 64 — see above */
 }
 /* The page's own radius, now that grey shows on every side to put it against. */
+/* ── A SHORT, WIDE SCREEN GETS TWO COLUMNS ────────────────────────────────
+   Dan, 2026-09-05, on turning the phone sideways. Measured on the live build
+   at 844x390: the page was 761px tall inside a 390px screen and the last two
+   options sat 180px BELOW the bottom of it. A learner who rotated had to
+   scroll to reach half the answers, on every question.
+
+   The card is a vertical stack — stimulus, then a grid of options under it —
+   which is right when height is the plentiful dimension and wrong when it is
+   the scarce one. So past 11:10 the same card becomes two columns: everything
+   that is not the options in the left one, the options in the right.
+
+   WHY THE HEIGHT CLAUSE. The obvious gate is the aspect ratio alone, and it
+   would also catch every desktop — where the fault does not exist: 1440x900
+   has 900px of height and the card fits with room over. Worse, the card sits
+   inside a max-w-3xl (768px) wrapper, so two columns there would be two narrow
+   columns in a wide sheet. The defect being fixed is SHORTNESS, so shortness
+   is what the rule tests for.
+
+   Nothing here touches the strip above the card (Skip, TTS) or the ring
+   binding down the gutter — both live outside .speculearn-card and are
+   unaffected by design. Verified in landscape after building. */
+@media (min-aspect-ratio: 11 / 10) and (max-height: 620px) {
+  .speculearn-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    column-gap: clamp(14px, 2.5vw, 40px);
+  }
+  /* Everything the card holds stacks in the left column, as it did before … */
+  .speculearn-card > * { grid-column: 1; }
+  /* … except the options, which take the right one and centre against the
+     whole of it, so the two halves read as one row rather than two lists. */
+  .speculearn-card > .speculearn-options {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    align-self: center;
+    margin-top: 0;
+  }
+
+  /* AND THE CHROME GIVES THE SPACE BACK. Two columns alone did not fix it:
+     measured after the grid landed, a four-option question still had two
+     options below the fold, because the furniture above the card took 290px
+     of a 390px screen — 74% of the display spent before the question began.
+     Each of these is generous on a tall phone and unaffordable on a short
+     one, so each is trimmed here and nowhere else. */
+  .cahier-foolscap { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+  .page-band { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+  .speculearn-stage { padding-top: 0.4rem; padding-bottom: 0.4rem; }
+  .speculearn-stage > header { margin-bottom: 0.5rem; }
+  .speculearn-card { padding: 0.7rem 0.9rem; }
+}
+
 .cahier-drilldesk > .cahier-drill {
   width: 100%;
   border-radius: 4px 16px 16px 4px;
