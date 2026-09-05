@@ -82,7 +82,15 @@ export default function FamilyHub({ activeKey }: { activeKey: string }) {
               >
                 <ActivityIcon activityKey={a.key} emoji={a.emoji} />
                 <span className="min-w-0">
-                  <span className="block text-[15px] font-black leading-tight text-[color:var(--cahier-ink)]">
+                  {/* Tile names wear the brand hand in heavy bold (Dan,
+                      5 Sep — the half-width-button treatment, Réglages
+                      first): narrower, so long names fit their tile. */}
+                  {/* text-base, not 16px: rem sizes follow the reader's own
+                      font setting (Dan, 5 Sep: "shouldn't font sizes be
+                      relative...?" — relative to the READER, yes; to the
+                      screen, no: wide screens get more columns, not bigger
+                      letters). */}
+                  <span className="fluo-btn-hand block text-base leading-tight text-[color:var(--cahier-ink)]">
                     {a.name}
                   </span>
                   <span className="mt-0.5 block text-[12px] leading-snug text-[color:var(--cahier-ink-soft)]">

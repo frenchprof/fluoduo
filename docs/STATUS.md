@@ -35,7 +35,16 @@ Sole editor of STATUS.md in this commit: fluoduo-main.
    buttons"). `FluOlinGoHand-ExtraBold` (36 KB) joins the loaded weights as
    800; `.fluo-btn-hand` (globals.css) is the class; first application is
    the Réglages tab tiles, whose "Practice"/"Games" had run to the tile
-   edge in the body face.
+   edge in the body face. ROLLED OUT the same evening (Dan: "ensure that
+   elsewhere we also have buttons half way the width of the screen to
+   display in FluOLinGo") to the FamilyHub door tiles and the GameGallery
+   tiles. Weight settled at 800, not Dan's guessed 700 ("i just randomly
+   said 700"): 800 is what he approved on screen and is already loaded.
+   Sizes are rem steps (text-base/text-sm), NOT px and NOT screen-relative
+   (Dan asked): text follows the reader's font setting; a wider screen gets
+   more columns, never bigger letters. NOT applied to French exercise
+   options (MCQ/FlipIt/dice) — the target French stays in the reading face —
+   nor to profile data cards (scores are data, not labels).
 ## 5 Sep — a third tone: mono, the quiet set (24 marks becomes 36)
 
 Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
