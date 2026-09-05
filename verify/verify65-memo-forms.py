@@ -91,9 +91,21 @@ check(not deck_naked,
       "plain French form lines in memos.tsx:\n        " + "\n        ".join(deck_naked[:8]))
 
 # ── 2 · the salutations exemplar keeps its corrected hierarchy ───────────────
-sal = memo_block(read("src/content/lessons/native/salutations.tsx")) or ""
-forms = re.findall(r'<p lang="fr" className="[^"]*font-black[^"]*">', sal)
+SAL_SRC = read("src/content/lessons/native/salutations.tsx")
+sal = memo_block(SAL_SRC) or ""
+# The four form lines went through a <Greetings> component on 2026-09-05 —
+# Dan: *"it looks terrible to have à demain separated into two lines"*, so each
+# greeting is now its own nowrap span and the <p> is built by the helper rather
+# than typed four times. The RULE is unchanged (four bold French lines over four
+# captions); only where the markup lives moved, so the count follows it there
+# and the helper's own boldness is asserted below rather than assumed.
+forms = (re.findall(r'<p lang="fr" className="[^"]*font-black[^"]*">', sal)
+         + re.findall(r"<Greetings>", sal))
 labels = re.findall(r'<p className="fluo-label[^"]*">', sal)
+check(re.search(r'function Greetings[\s\S]*?<p lang="fr" className="[^"]*font-black', SAL_SRC) is not None,
+      "the Greetings helper still sets the French bold",
+      "Greetings no longer renders its French bold — the four tiles would go "
+      "plain and the inverted hierarchy Dan flagged would be back, invisibly")
 check(len(forms) == 4 and len(labels) == 4,
       "salutations: four bold form lines over four caption labels",
       f"salutations hierarchy drifted: {len(forms)} bold form lines, "

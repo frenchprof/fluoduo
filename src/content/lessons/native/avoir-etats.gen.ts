@@ -109,9 +109,16 @@ export function avoirEtatsQuestion(pinned?: Record<string, string>): DiceQuestio
         // « Il est né en août » is being shown a number that cannot help them
         // answer. The cue carries exactly what decides the ending (who) and
         // what the sentence needs (which month).
-        meta: `${p.cue} ${p.name} — ${MONTHS_EN[month]}`,
-        big: `${p.name} · ${month}`,
-        en: `${p.third === "Il" ? "He" : "She"} was born in ${MONTHS_EN[month]}.`,
+        // Dan, 2026-09-05: *"for Léa - Avril : i would rather use normal font in
+        // English 'Lea is born in April' rather than put out Lea + avril
+        // without context"*. « Léa · avril » was two labels the learner had to
+        // assemble into a situation before they could answer; the sentence IS
+        // the situation. It goes in `big` with bigLang "en" so it renders as
+        // the reference it is — FluOLinGo hand, one size down from the French
+        // — rather than as a French target to read aloud.
+        meta: `${p.cue} ${p.name}`,
+        big: `${p.name} was born in ${MONTHS_EN[month]}.`,
+        bigLang: "en" as const,
         correct: `${p.third} est ${ne} en ${month}.`,
         alternates: [`${p.third} est ${ne} en ${month}`],
         easyOptions: [
@@ -128,9 +135,12 @@ export function avoirEtatsQuestion(pinned?: Record<string, string>): DiceQuestio
       };
     }
     return {
-      meta: `${p.cue} ${p.name} parle — ${y}`,
-      big: `${p.name} · ${y}`,
-      en: `I was born in ${y}.`,
+      // Same again, and here the quotation marks do real work: the answer is
+      // « Je suis né », so the card has to show that Marc is talking about
+      // himself. « Marc parle — 2003 » left the learner to infer it.
+      meta: `${p.cue} ${p.name}`,
+      big: `${p.name} says: "I was born in ${y}."`,
+      bigLang: "en" as const,
       correct: `Je suis ${ne} en ${yw}.`,
       alternates: [`Je suis ${ne} en ${yw}`],
       easyOptions: [

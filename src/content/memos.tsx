@@ -35,7 +35,11 @@ function Pill({ children, say }: { children: ReactNode; say?: string }) {
       type="button"
       lang="fr"
       onClick={(e) => speak(say ?? e.currentTarget.textContent ?? "", "fr-FR")}
-      className="rounded-full border-2 border-[color:var(--cahier-rule)] bg-white px-2.5 py-0.5 transition hover:border-[color:var(--cahier-gold)] hover:bg-[#fffdf3] active:scale-95"
+      // `whitespace-nowrap` for the same reason the greeting tiles got it (Dan,
+      // 2026-09-05, on « À demain » breaking in half): a pill IS one phrase, so
+      // « Comment allez-vous ? » must not wrap inside its own outline. The ROW
+      // still wraps — between pills, where it belongs.
+      className="whitespace-nowrap rounded-full border-2 border-[color:var(--cahier-rule)] bg-white px-2.5 py-0.5 transition hover:border-[color:var(--cahier-gold)] hover:bg-[#fffdf3] active:scale-95"
       title="🔊"
     >
       {children}

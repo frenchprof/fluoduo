@@ -5,6 +5,8 @@
  * own items; each situation's distractors are hand-picked so exactly one
  * answer fits (standard greetings work anywhere, casual ones don't).
  */
+import { Fragment } from "react";
+
 import { PillRow } from "@/content/memos";
 import type { NativeLesson } from "./types";
 
@@ -24,6 +26,38 @@ const SITS = [
 
 const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)];
 
+
+/**
+ * A row of greetings that never breaks INSIDE one of them.
+ *
+ * Dan, 2026-09-05, looking at the Mémo: *"it looks terrible to have à demain
+ * separated into two lines"*. The tile held « Au revoir ! À demain ! À bientôt !
+ * Bonne journée ! » as one string, so the browser wrapped wherever it ran out of
+ * room — mid-phrase — and « À » sat alone at the end of a line with « demain ! »
+ * underneath. A learner reads a greeting as one thing; the line break said it
+ * was two.
+ *
+ * Splitting on the exclamation mark keeps it, so each phrase stays whole and the
+ * wrap happens BETWEEN greetings, where a wrap belongs.
+ */
+function Greetings({ children }: { children: string }) {
+  // Split after ! or ? — French puts a space BEFORE them, so that space belongs
+  // inside the phrase and must not break either. The space BETWEEN greetings is
+  // rendered outside the nowrap span, or the whole line would become one
+  // unbreakable run and overflow the tile instead of wrapping.
+  const parts = children.split(/(?<=[!?])\s+/);
+  return (
+    <p lang="fr" className="mt-1 text-[15px] font-black text-[color:var(--cahier-ink)]">
+      {parts.map((g, i) => (
+        <Fragment key={g}>
+          {i > 0 ? " " : null}
+          <span className="whitespace-nowrap">{g}</span>
+        </Fragment>
+      ))}
+    </p>
+  );
+}
+
 export const salutationsLesson: NativeLesson = {
   slug: "salutations",
   memo: (
@@ -35,19 +69,19 @@ export const salutationsLesson: NativeLesson = {
       <div className="mt-2 grid grid-cols-2 gap-2 text-[14px] text-[color:var(--cahier-ink)]">
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
           <p className="fluo-label text-[color:var(--cahier-ink-soft)]">→ arriver · anytime</p>
-          <p lang="fr" className="mt-1 text-[15px] font-black text-[color:var(--cahier-ink)]">Bonjour ! Bonsoir ! Enchanté !</p>
+          <Greetings>{"Bonjour ! Bonsoir ! Enchanté !"}</Greetings>
         </div>
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
           <p className="fluo-label text-[color:var(--cahier-ink-soft)]">→ arriver · friends</p>
-          <p lang="fr" className="mt-1 text-[15px] font-black text-[color:var(--cahier-ink)]">Salut ! Coucou ! Ça va ?</p>
+          <Greetings>{"Salut ! Coucou ! Ça va ?"}</Greetings>
         </div>
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
           <p className="fluo-label text-[color:var(--cahier-ink-soft)]">partir → · anytime</p>
-          <p lang="fr" className="mt-1 text-[15px] font-black text-[color:var(--cahier-ink)]">Au revoir ! À demain ! À bientôt ! Bonne journée !</p>
+          <Greetings>{"Au revoir ! À demain ! À bientôt ! Bonne journée !"}</Greetings>
         </div>
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
           <p className="fluo-label text-[color:var(--cahier-ink-soft)]">partir → · friends</p>
-          <p lang="fr" className="mt-1 text-[15px] font-black text-[color:var(--cahier-ink)]">Salut ! À plus tard ! À plus !</p>
+          <Greetings>{"Salut ! À plus tard ! À plus !"}</Greetings>
         </div>
       </div>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
