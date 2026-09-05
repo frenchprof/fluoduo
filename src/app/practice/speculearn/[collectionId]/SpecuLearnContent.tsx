@@ -1,1 +1,1 @@
-@/workspace/fluoduo-pr/push/SpecuLearnContent.ONLY.tsx
+file:///workspace/fluoduo-pr/push/SpecuLearnContent.ONLY.tsx
