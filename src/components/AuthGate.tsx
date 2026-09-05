@@ -85,13 +85,13 @@ export default function AuthGate({
       <div className={`w-full rounded-2xl border-2 bg-[var(--fluo-card)] shadow-sm ${compact ? "p-4 text-center" : "p-6"}`} style={{ borderColor: "var(--fluo-line)" }}>
         <div className={compact ? "text-2xl" : "text-4xl"} aria-hidden>{resolving ? "⏳" : "🔒"}</div>
         <h1 className={`fluo-serif mt-1 font-black text-[color:var(--fluo-ink)] ${compact ? "text-base" : "mt-2 text-xl"}`}>
-          {resolving ? "Still checking your sign-in…" : `Sign in to ${what}`}
+          {resolving ? "Checking your sign-in…" : `Sign in to ${what}`}
         </h1>
         {!compact && (
           <p className="mt-1 text-sm text-[color:var(--fluo-ink-soft)]">
             {resolving
-              ? "This is taking longer than usual. If you are already signed in, it will open by itself — no need to sign in again."
-              : "Learning activities are saved to your account. Use your Google account to continue."}
+              ? "Taking longer than usual. If you are already signed in, it will open by itself."
+              : "Your work is saved to your account."}
           </p>
         )}
         <button type="button" onClick={go} disabled={busy} className="fluo-btn fluo-btn-sm mt-3 w-full disabled:opacity-50">

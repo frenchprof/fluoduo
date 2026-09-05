@@ -50,17 +50,17 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
     on: "drill",
     title: "Guess first",
     steps: [
-      "You have not been taught this yet — that is the point. Pick what you think is right, then Check.",
-      "A wrong guess costs nothing; the lesson afterwards is built on it.",
-      "The ? gives a hint, then another, then the answer.",
+      "Pick what you think is right, then Check.",
+      "Wrong costs nothing — the lesson is built on it.",
+      "? gives a hint, then another, then the answer.",
     ],
   },
   lesson: {
     on: "drill",
     title: "Pick a level, then answer",
     steps: [
-      "★ Facile to ⭐ Bonus — all of them use the same 12 cards. Harder, not longer.",
-      "💡 Idea and 📐 Forms stay open to read at any point; 🏋️ Pract. is where you answer.",
+      "★ Facile to ⭐ Bonus: same 12 cards, harder not longer.",
+      "💡 Idea and 📐 Forms are to read. 🏋️ Pract. is where you answer.",
     ],
   },
   // The one this all started from. Dan had the « Flip » CTA removed as
@@ -70,8 +70,8 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
     on: "drill",
     title: "Tap the card",
     steps: [
-      "The card shows the English. Tap it to turn it over.",
-      "Then mark it: ✓ I know it, or ↺ To review.",
+      "English on the front. Tap to turn it over.",
+      "Then mark it ✓ know it, or ↺ review.",
     ],
   },
 
@@ -83,8 +83,8 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
     on: "page",
     title: "Guess first",
     steps: [
-      "This comes BEFORE the lesson — you are not expected to know it yet.",
-      "Pick the answer you think is right. A wrong one costs nothing and is what the lesson is built on.",
+      "This comes before the lesson. You are not meant to know it yet.",
+      "Pick one anyway — wrong costs nothing.",
     ],
   },
 
@@ -94,15 +94,15 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
     title: "Fill the gap",
     steps: [
       "Tap a word from the bank, or type it, then Check.",
-      "It runs a whole deck end to end — the bar at the top is how far you are.",
+      "One whole deck, end to end. The top bar is how far you are.",
     ],
   },
   reviser: {
     on: "page",
-    title: "Nothing to choose here",
+    title: "What is due today",
     steps: [
-      "This is what is due today, and only that — so an empty page is good news.",
-      "Words arrive here from decks you have practised, timed for when you are about to forget them.",
+      "Only what is due, and nothing else — an empty page is good news.",
+      "Words arrive from decks you have practised, timed to when you would forget.",
     ],
   },
 
@@ -112,7 +112,7 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
     title: "Pick the ending",
     steps: [
       "Choose the form that goes with the pronoun, then Check.",
-      "See the table opens the whole conjugation whenever you want it.",
+      "See the table opens the whole conjugation.",
     ],
   },
   ecoutexte: {
@@ -120,7 +120,7 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
     title: "Listen, then write",
     steps: [
       "Choose a topic and how many sentences, then Start.",
-      "Type what you hear. Replay as often as you like — 🐌 slows it down, ♀♂ changes who reads.",
+      "Type what you hear. Replay freely — 🐌 slows it, ♀♂ changes the reader.",
     ],
   },
   wordrill: {
@@ -135,8 +135,8 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
     on: "page",
     title: "Type, then listen",
     steps: [
-      "Type any French — a word, an expression, or a whole text.",
-      "▶ reads it back; 👩 and ×1.0 change the voice and the speed.",
+      "Type any French — a word, an expression, a whole text.",
+      "▶ reads it back; 👩 and ×1.0 change voice and speed.",
       "✏️ checks and corrects what you wrote.",
     ],
   },
@@ -144,8 +144,8 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
     on: "page",
     title: "Ask anything",
     steps: [
-      "Type a question in French or English — about the course, or to practise on.",
-      "🎤🇫🇷 and 🎤🇬🇧 let you speak instead of typing; 🔊 reads the answer back.",
+      "Ask in French or English — about the course, or to practise on.",
+      "🎤🇫🇷 🎤🇬🇧 let you speak instead; 🔊 reads the answer back.",
     ],
   },
 };

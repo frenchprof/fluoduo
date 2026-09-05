@@ -58,7 +58,7 @@ function tourFor(rawPath: string): Tour | null {
       key: "home",
       steps: [
         { selector: 'a[title^="Continue"]', action: "tap", text: "Continue — your next stop on the path." },
-        { selector: "nav.cahier-bottombar", action: "tap", text: "The five tabs — press and hold one for its name." },
+        { selector: "nav.cahier-bottombar", action: "tap", text: "Five tabs. Press and hold one for its name." },
         { kind: "play", text: "Start here" },
       ],
     };
@@ -77,9 +77,9 @@ function tourFor(rawPath: string): Tour | null {
       steps: [
         // The wake-glass step went with the glass itself (Dan, 2026-08-31) —
         // the map answers the first tap now, nothing to explain.
-        { selector: '[data-tour="map-view"]', action: "tap", text: "2D reads like a plan, 3D like a scene. Your choice sticks." },
-        { selector: '[data-tour="map"]', action: "tap", text: "Every stop on the road is one goal. Tap one and its sheet opens." },
-        { text: "✓ green = done, the highlighted stop = where your class is. Mistakes are welcome — they become your 📝 Bring to class list." },
+        { selector: '[data-tour="map-view"]', action: "tap", text: "2D is a plan, 3D is a scene. Your choice sticks." },
+        { selector: '[data-tour="map"]', action: "tap", text: "Every stop is one goal. Tap one to open it." },
+        { text: "✓ green = done. The highlighted stop is where your class is." },
       ],
     };
   }
@@ -90,9 +90,9 @@ function tourFor(rawPath: string): Tour | null {
         // "Pre-Test first, then the cards, then the Lesson" retired
         // (2026-08-24): it contradicted the authored order the sheet's
         // numbered path now shows — the path speaks for itself.
-        { selector: "main .grid.grid-cols-5 > button, main button.group", action: "tap", text: "Every circle is a goal. Tap one and its sheet opens — follow the numbered path." },
-        { selector: "nav.cahier-tabs, .cahier-menu > button", action: "tap", text: "The flaps stay with you — switch Unit or head 🏠 Home any time." },
-        { text: "✓ green = done, the highlighted circle = where your class is. Mistakes are welcome — they become your 📝 Bring to class list." },
+        { selector: "main .grid.grid-cols-5 > button, main button.group", action: "tap", text: "Every circle is a goal. Follow the numbered path." },
+        { selector: "nav.cahier-tabs, .cahier-menu > button", action: "tap", text: "The flaps stay with you — switch Unit or go 🏠 Home." },
+        { text: "✓ green = done. The highlighted circle is where your class is." },
       ],
     };
   }
@@ -122,8 +122,8 @@ function tourFor(rawPath: string): Tour | null {
       key: "lesson",
       steps: [
         { selector: '[data-tour="entry"]', action: "tap", text: "Choose where to start. All three are the same twelve cards — ★★★ is harder, not shorter." },
-        { selector: '[data-tour="axes"]', action: "tap", text: "Want one thing in particular? Pin a subject or a verb — or 🎲 for a random mix." },
-        { text: "Then it is one card at a time: the Mémo to read, then the ramp. Wrong answers cost nothing; they teach." },
+        { selector: '[data-tour="axes"]', action: "tap", text: "Pin a subject or a verb — or 🎲 for a random mix." },
+        { text: "Then one card at a time. Wrong answers cost nothing — they teach." },
       ],
     };
   }

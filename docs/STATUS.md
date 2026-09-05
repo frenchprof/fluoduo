@@ -6,6 +6,40 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 5 Sep — language pass on the chrome a learner is HANDED
+
+Sole editor of STATUS.md in this commit: claude/peers-vd2h6h (Peers).
+
+Dan: *"UI 101 says we don't want to overwhelm users with too much texts to
+read. it has be clear yet concise and scannable. redundant sentences or words
+should go in the explanations (not referring to the target language of
+course)."*
+
+**Scope, drawn deliberately.** Two surfaces put English in front of a learner
+UNBIDDEN — the first-run popup that opens over an activity, and the guided
+tour's callouts. Those got the pass, plus four wordy controls (ÉcouTexte's
+blank-sizing toggle, StopBookmark's tooltip, AuthGate's two lines,
+LexicaLater's help). Prose someone chose to open — ⋯ → Help, `/guide`,
+`/about` and its citations — was left alone, and so was every word of French:
+the target language is the content, not the chrome.
+
+**The eleven popups: 305 words → 235, a 23% cut.** No fact went that the
+screen does not already carry. What went was the second clause — "You have not
+been taught this yet — that is the point" is the title *Guess first* said
+again; "wandering the map won't move it" is a promise nobody doubted. One
+title changed: Revise's *"Nothing to choose here"* → *"What is due today"*,
+because the old one described the empty case and the popup also opens on a
+full page. LexicaLater's three help paragraphs became a three-item list — same
+rules, findable one at a time — and "every useful key belongs to a visible
+chest" went, since "only decoys cost a life" already says it.
+
+`verify96-chrome-concision.py` budgets what arrives unasked: a hint title ≤ 5
+words, a step ≤ 16, ≤ 3 steps, a tour callout ≤ 16. Ceilings, not targets —
+the pass leaves the longest step at 14 and the longest callout at 15, so a
+careful edit has room and creeping prose does not. It found one line this pass
+had missed (a 21-word tour callout). Five break-tests, including the shape of
+`hints.ts` changing and the check going blind.
+
 ## 5 Sep — the mark ships: icon.svg, favicon.ico, the four PNGs
 
 Sole editor of STATUS.md in this commit: claude/peers-vd2h6h (Peers).
