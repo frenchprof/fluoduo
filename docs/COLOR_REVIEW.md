@@ -519,8 +519,15 @@ and the complement is the gap it opens onto. The C is deliberately unfinished:
 Dan wants a **G** later, which is one extra rect letting the L reach up into the
 mouth from below — no new colour.
 
-Two tones, both kept and both his: `pale` lightens the top block, `deep` darkens
-it. Not a draft and a fix — the pale set's top stroke measures **1.09–1.48**
+Three tones, all kept and all his: `pale` lightens the top block, `deep` darkens
+it, and `mono` (added 5 Sep) drops the complement entirely — one hue in three
+lightness steps with a grey bind, the quiet set. It cannot ship as the app icon
+as things stand: `verify95-icons` demands three distinct saturated hue buckets,
+and four of the six pens rendered at 512 fail that, yellow with one. Dan was
+offered an amendment to the rule and declined — *"not amendment but add on to the
+collection of variants"* — so mono lives as a variant and the guard stands.
+
+On the first two tones: Not a draft and a fix — the pale set's top stroke measures **1.09–1.48**
 against the Cahier paper, i.e. the faintest thing in every mark while doing
 structural work, and the deep set's measures **1.85–4.60** with a *tighter*
 block-to-tint step. But a deep top bar reads as a drawn stroke that changes tone

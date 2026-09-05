@@ -13,8 +13,8 @@ WHAT THIS PINS
 
   1  THE TWENTY-FOUR SETS, to the hex, in both tones.
 
-  2  THE INVARIANT THAT MAKES THEM TWO TONES OF ONE THING. `deep` differs from
-     `pale` in the tint and NOTHING else. That is what lets a mark be moved
+  2  THE INVARIANT THAT MAKES pale AND deep TWO TONES OF ONE THING. `deep`
+     differs from `pale` in the tint and NOTHING else. That is what lets a mark be moved
      between the sets by editing one value; the moment a block or a mouth drifts
      apart, the two sets are twenty-four unrelated logos.
 
@@ -87,6 +87,19 @@ def hue(h):
     a = 1.9779984951 * l_ - 2.4285922050 * m_ + 0.4505937099 * s_
     bb = 0.0259040371 * l_ + 0.7827717662 * m_ - 0.8086757660 * s_
     return math.degrees(math.atan2(bb, a)) % 360
+
+
+def hex2oklch_local(h):
+    """OKLCH for one hex — used only to prove the mono bind is really neutral."""
+    hx = h.lstrip("#")
+    r, g, b = (lin(int(hx[i:i + 2], 16)) for i in (0, 2, 4))
+    l_ = (0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b) ** (1 / 3)
+    m_ = (0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b) ** (1 / 3)
+    s_ = (0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b) ** (1 / 3)
+    L = 0.2104542553 * l_ + 0.7936177850 * m_ - 0.0040720468 * s_
+    a = 1.9779984951 * l_ - 2.4285922050 * m_ + 0.4505937099 * s_
+    bb = 0.0259040371 * l_ + 0.7827717662 * m_ - 0.8086757660 * s_
+    return L, math.hypot(a, bb), math.degrees(math.atan2(bb, a)) % 360
 
 
 def apart(a, b):
@@ -239,6 +252,67 @@ if None not in (py, ph, pr, pw, rh, bite) and len(tops) == 4:
        f"and the rings bite {bite:g} units into the page on every side",
        "the knockout slot is not larger than the ring, so the rings sit beside the "
        "page rather than eating into it (Dan: the ring binds must eat into the cards)")
+
+# ---- 6 · the mono tone --------------------------------------------------
+# Mono is the quiet set: one hue in three lightness steps, grey binds, no
+# complement anywhere. The ring rules above do NOT apply to it — asserting a
+# complement hue on a neutral ring would be asserting nonsense — so it gets its
+# own, and they are the ones that would notice it drifting back into colour.
+MONO = {
+    "pink": ("#ba007a", "#ff61b7", "#ffc4de"),
+    "teal": ("#007c60", "#00c197", "#00fbc6"),
+    "orange": ("#9f5100", "#f68000", "#ffcba9"),
+    "sky": ("#00729f", "#00b2f6", "#abe0ff"),
+    "yellow": ("#786900", "#bba500", "#f4d900"),
+    "periwinkle": ("#5a32ff", "#9398ff", "#cfd4ff"),
+    "green": ("#008020", "#00c737", "#4cff63"),
+    "magenta": ("#a800b3", "#f350ff", "#fcbfff"),
+    "blue": ("#006eae", "#3bacff", "#b5ddff"),
+    "amber": ("#965800", "#e88c00", "#ffcd9c"),
+    "violet": ("#8700ec", "#b688ff", "#deceff"),
+    "olive": ("#607200", "#98b300", "#c7ea00"),
+}
+MONO_RING = "#8d8a85"
+
+mrows = {}
+mblock = re.search(r"MONO_HUES[\s\S]*?=\s*\{([\s\S]*?)\n\};", SRC)
+if mblock:
+    for mm in re.finditer(
+        r'([a-z]+):\s*\{\s*block:\s*"(#[0-9a-f]{6})",\s*tint:\s*"(#[0-9a-f]{6})",'
+        r'\s*mouth:\s*"(#[0-9a-f]{6})"\s*\}', mblock.group(1)):
+        mrows[mm.group(1)] = mm.groups()[1:]
+
+ok(len(mrows) == 12,
+   "the mono tone declares all 12 marks",
+   f"found {len(mrows)} mono rows, expected 12")
+mwrong = [f"{k}: {mrows.get(k)} != {v}" for k, v in MONO.items() if mrows.get(k) != v]
+ok(not mwrong, "every mono mark matches its recorded colours",
+   "the mono set has drifted: " + "; ".join(mwrong))
+
+ok(re.search(r'MONO_RING\s*=\s*"' + MONO_RING + '"', SRC) is not None,
+   f"the mono binds are the recorded grey ({MONO_RING})",
+   f"MONO_RING is no longer {MONO_RING}")
+
+# grey means grey: a bind that picks up a hue stops being the quiet set
+mr_L, mr_C, _ = hex2oklch_local(MONO_RING)
+ok(mr_C < 0.02,
+   f"and that grey is genuinely neutral (chroma {mr_C:.3f})",
+   f"the mono bind has chroma {mr_C:.3f} — it has taken on a colour, and the "
+   "whole point of this tone is that nothing in it does")
+ok(ratio(MONO_RING, TILE) >= 3.00,
+   f"and it clears 3.0:1 on the tile ({ratio(MONO_RING, TILE):.2f})",
+   f"the mono bind is at {ratio(MONO_RING, TILE):.2f} on the tile — below the floor "
+   "the coloured binds hold")
+
+# the three steps must stay separated, or the mark collapses into one flat block
+flat = [f"{k} {ratio(v[0], v[1]):.2f}/{ratio(v[1], v[2]):.2f}" for k, v in MONO.items()
+        if ratio(v[0], v[1]) < 1.9 or ratio(v[1], v[2]) < 1.5]
+ok(not flat,
+   f"and the three lightness steps stay apart in all 12 "
+   f"(worst {min(ratio(v[0], v[1]) for v in MONO.values()):.2f} block-to-tint, "
+   f"{min(ratio(v[1], v[2]) for v in MONO.values()):.2f} tint-to-mouth)",
+   "mono's lightness steps have collapsed in " + ", ".join(flat) +
+   " — one hue with no separation is a flat rectangle, not a mark")
 
 print("\n".join("  ok    " + m for m in PASS))
 if FAIL:

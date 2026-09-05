@@ -6,6 +6,44 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 5 Sep — a third tone: mono, the quiet set (24 marks becomes 36)
+
+Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
+
+Dan asked whether a version existed with *"different shades of the same color
+(darker L, lighter everything else) and grey ring bound"*. It did not — this
+session had built pale, deep, and complement binds, never a monochrome. So it was
+drawn, and on his instruction — *"not amendment but add on to the collection of
+variants"* — it was ADDED rather than allowed to displace anything.
+
+Block at L 0.52, top-right at 0.72, mouth at 0.88, binds a warm near-neutral
+`#8d8a85` walked down to the same 3.0 : 1 tile floor the coloured binds hold.
+Twelve of them, one per hue. `MARKS` now addresses three tones and 36 marks.
+
+**Two things worth knowing before anyone reaches for it.**
+
+*The letter loosens.* In pale and deep the block and the top-right share a hue AND
+sit close in lightness, so they fuse into one stroke and the eye reads a C. Two
+lightness steps apart, the top-right detaches: a dark L with two pale tabs. Better
+as a notebook, weaker as the letter that is meant to become a G.
+
+*It cannot ship as the app icon.* `verify95-icons` demands three distinct
+saturated hue buckets per PNG. Rendered at 512 and run through that check's own
+function, four of six pens fail — yellow with ONE bucket, orange, blue and violet
+with two; pink and green reach three only because gamut clipping pushes their
+steps across bucket boundaries, which is luck. That is measured, not predicted:
+the last time this came up I asserted the whole highlighter set would fail the
+same rule and was wrong.
+
+verify97 gained mono's own rules rather than stretching the existing ones — the
+complement assertions would be nonsense applied to a grey. It now pins the twelve
+values, that the bind stays neutral (chroma under 0.02), that it clears the tile
+floor, and that the three lightness steps stay apart. Four break-tests, and the
+separation one had to be isolated: the drift assertion caught the first attempt
+first, so both sides were moved to leave only separation failing.
+
+Build, tsc, eslint and all 87 checks green.
+
 ## 5 Sep — the ring binds take the complement, across all 24
 
 Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
