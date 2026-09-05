@@ -70,13 +70,17 @@ const patrickHand = Patrick_Hand({
 // from August, a different build. Mixing that Regular with a SemiBold from
 // the new family would put two drawings of the same hand on one page.
 //
-// Only the two the app uses are loaded. The other seven sit in fonts/ until
-// something needs them: all nine would cost ~316 KB on every page for eight
-// weights nothing renders.
+// Only the weights the app uses are loaded. The rest sit in fonts/ until
+// something needs them: all nine would cost ~316 KB on every page for
+// weights nothing renders. ExtraBold joined on 5 Sep (Dan: "use FluoLingo
+// font in heavy bold to disallow the text from overflowing off the
+// buttons" — the hand face is narrower than the body face at the same
+// size, so button labels fit their tiles).
 const fluoHand = localFont({
   src: [
     { path: "../fonts/FluOlinGoHand-Regular.woff2", weight: "400", style: "normal" },
     { path: "../fonts/FluOlinGoHand-SemiBold.woff2", weight: "600", style: "normal" },
+    { path: "../fonts/FluOlinGoHand-ExtraBold.woff2", weight: "800", style: "normal" },
   ],
   variable: "--font-fluohand",
   display: "swap",

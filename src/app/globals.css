@@ -673,6 +673,11 @@ body {
    thins; Regular read washed at the stroke ends and Bold started closing the
    counters at 28px. 600 holds the letterforms and gains the presence. */
 .fluo-band-hand { font-family: var(--font-fluohand-stack); font-weight: 600; letter-spacing: 0; }
+/* Button labels wear the brand hand in heavy bold (Dan, 5 Sep: "use
+   FluoLingo font in heavy bold to disallow the text from overflowing off
+   the buttons") — the hand face runs narrower than the body face, so a
+   label like "Practice" fits a half-width tile the body face overflowed. */
+.fluo-btn-hand { font-family: var(--font-fluohand-stack); font-weight: 800; letter-spacing: 0; }
 /* THE ENGLISH ON A PRACTICE CARD — the house hand (Dan, 2026-09-01: "the
    English sentences are still too big. Perhaps switch all English sentences to
    the House Font (FluOLinGo)").
@@ -1483,6 +1488,42 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
    same 640px where the flap rail takes over. */
 @media (min-width: 640px) {
   .cahier-bottombar { display: none; }
+}
+/* Réglages switches (Dan, 5 Sep: "show it as a switch: by default in the off
+   position", with the description line changing to say what the current
+   position means). A styled NATIVE checkbox — keyboard, label-click and
+   screen readers come free; role="switch" in the markup announces it right. */
+input.fluo-switch {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  border: 2px solid var(--cahier-line-strong);
+  background: var(--cahier-paper);
+  position: relative;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+input.fluo-switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--cahier-ink-soft);
+  transition: left 0.15s ease, background 0.15s ease;
+}
+input.fluo-switch:checked {
+  background: var(--cahier-accent);
+  border-color: var(--cahier-accent);
+}
+input.fluo-switch:checked::after {
+  left: 22px;
+  background: var(--cahier-paper);
 }
 /* Tablet: the page flaps shrink to icons — there are only a few of them now,
    but a deck with five views still needs the room. */

@@ -6,6 +6,36 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 5 Sep evening — five Dan rulings in one round (claude/reglages-switch)
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+1. **Settings are switches whose description states the CURRENT position**
+   (Dan: "settings description should change based on choice… show it as a
+   switch: by default in the off position"). "Icon labels" is now a switch;
+   off says "Tap and hold an icon to view its label.", on says "Icon labels
+   are always shown." The switch is a styled native checkbox
+   (`input.fluo-switch`, globals.css) with `role="switch"`.
+2. **No single control spans the whole page width — PERMANENT RULE, now in
+   AGENTS.md** ("No control spans the whole width"). Dan grants the rare
+   exception per case. First application: the Réglages tab pick-list went
+   from six full-width rows to a two-column grid.
+3. **ChaTutor's greeting greets** (Dan: "The ChaTutor's opening line is WAY
+   TOO LONG !"). The 50-word capability tour is gone; the opening line is
+   « Bonjour ! 👋 "Je peux t'aider ?" ».
+4. **No VoixLà in ÉcouTexte** (Dan: "Voix-Là is for TTS. and it does NOT
+   make any sense to have it im EcouTexte"). ToolSummon takes `tools`;
+   ÉcouTexte passes `["chatutor"]`, and a single-tool 🧰 opens its card
+   directly with no one-row tray. verify100 pins it. OPEN QUESTION Dan
+   raised, answered with a recommendation, not yet ruled: whether ChaTutor
+   belongs in ÉcouTexte at all (recommendation: remove; it serves
+   production, not listening — one-line change when Dan decides).
+5. **Button labels wear the brand hand in heavy bold** (Dan: "use FluoLingo
+   font in heavy bold to disallow the text from overflowing off the
+   buttons"). `FluOlinGoHand-ExtraBold` (36 KB) joins the loaded weights as
+   800; `.fluo-btn-hand` (globals.css) is the class; first application is
+   the Réglages tab tiles, whose "Practice"/"Games" had run to the tile
+   edge in the body face.
 ## 5 Sep — a third tone: mono, the quiet set (24 marks becomes 36)
 
 Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
