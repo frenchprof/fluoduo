@@ -6,6 +6,25 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 5 Sep — install prompt: checkbox + a dismissal that sticks
+
+Sole editor of STATUS.md in this commit: fix/install-prompt.
+
+Dan's three popup faults, diagnosed. (1) The install card had no « Do not
+show me again » checkbox — it now wears the FirstRunHint idiom (checkbox +
+OK; ticked stores `fluolingo:install-prompt.v1 = "never"`, legacy answers
+honoured). (2) It came back because the `beforeinstallprompt` handler never
+re-read the stored answer and Chrome RE-FIRES that event after the native
+sheet closes — the handler now checks `answeredRef` + localStorage.
+Reproduced old vs fixed with Playwright. (3) The Android « not compatible
+with this version of the mobile operating system » message is the OS's own
+WebAPK/package-installer error — the string is nowhere in the repo and the
+manifest/icons are valid; not ours to fix. Other popups audited clean:
+FirstRunHint, FirstTour, BetaNotice (suspended) all persist correctly;
+RewardToast / MenuSplash need no memory.
+
+One file: `InstallPrompt.tsx`. verify32 untouched and green.
+
 ## 4 Sep — staging docs (no-login bookmark)
 
 Sole editor of STATUS.md in this commit: cursor/staging-docs-8ea9.
