@@ -3,6 +3,11 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* The one fluid step the whole type ramp is built on. Declared HERE and not
+     in @theme, which is `inline`: that inlines its values into the utilities
+     instead of emitting them, so a step declared there would leave every
+     calc() below referring to a variable that does not exist at runtime. */
+  --fs-step: clamp(0rem, calc(-0.61rem + 1.2vw + 0.6vh), 0.36rem);
 }
 
 @theme inline {
@@ -10,6 +15,41 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* ── FLUID TYPE, APP-WIDE (Dan, 2026-09-05) ────────────────────────────
+     "fonts can afford to be bigger on the desktop", then "the relative font
+     size thingy should apply FluOLinGo wide, not just here".
+
+     WHY IT LIVES HERE AND NOT IN --fs-*. The obvious place looked like the
+     --fs-* scale below, and it would have been the wrong one: the app's type
+     is 936 Tailwind text-* utilities across 162 files against 105 uses of the
+     tokens. Redefining the tokens would read as an app-wide fix and change
+     almost nothing. Tailwind v4 resolves every text-* utility from these
+     --text-* theme variables, so redefining them here moves all 936 from one
+     place.
+
+     ONE SHARED STEP, so the ramp grows in proportion instead of eight sizes
+     drifting apart. The step is ZERO on a portrait phone — the constant is
+     tuned so 1.2vw + 0.6vh cancels at 390x844 — which is what keeps the phone
+     bit-identical to before this change. Only wider or taller viewports gain.
+
+     BOTH AXES, not vw alone. A landscape phone is wide and short; a width-only
+     clamp reads it as "narrow" and hands it the minimum, which is exactly the
+     bug that made 844x390 render at the same size as 390x844.
+
+     rem, NEVER px, for the floor and the cap. A px floor overrides a learner
+     who has asked for larger text in their accessibility settings — they
+     request bigger and get what everyone else gets. Consequence accepted: past
+     root 20px the floor wins and portrait and landscape converge, because
+     their stated preference outranks our layout preference. */
+  --text-xs:   calc(0.75rem  + var(--fs-step) * 0.6);
+  --text-sm:   calc(0.875rem + var(--fs-step) * 0.75);
+  --text-base: calc(1rem     + var(--fs-step));
+  --text-lg:   calc(1.125rem + var(--fs-step) * 1.15);
+  --text-xl:   calc(1.25rem  + var(--fs-step) * 1.3);
+  --text-2xl:  calc(1.5rem   + var(--fs-step) * 1.6);
+  --text-3xl:  calc(1.875rem + var(--fs-step) * 2);
+  --text-4xl:  calc(2.25rem  + var(--fs-step) * 2.4);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -1401,14 +1441,16 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   --tier-weak: oklch(56% 0.15 25);
   --tier-weak-soft: oklch(93% 0.045 25);
 
-  --fs-display: 2.75rem;
-  --fs-h1: 2.25rem;
-  --fs-h2: 1.75rem;
-  --fs-h3: 1.375rem;
-  --fs-h4: 1.125rem;
-  --fs-body: 1rem;
-  --fs-small: 0.875rem;
-  --fs-micro: 0.75rem;
+  /* Fluid on the same step as the Tailwind ramp (see @theme). Phones get the
+     value that was here before; only wider or taller viewports gain. */
+  --fs-display: calc(2.75rem  + var(--fs-step) * 2.4);
+  --fs-h1:      calc(2.25rem  + var(--fs-step) * 2);
+  --fs-h2:      calc(1.75rem  + var(--fs-step) * 1.6);
+  --fs-h3:      calc(1.375rem + var(--fs-step) * 1.3);
+  --fs-h4:      calc(1.125rem + var(--fs-step) * 1.1);
+  --fs-body:    calc(1rem     + var(--fs-step));
+  --fs-small:   calc(0.875rem + var(--fs-step) * 0.8);
+  --fs-micro:   calc(0.75rem  + var(--fs-step) * 0.7);
 
   --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px; --sp-5: 20px;
   --sp-6: 24px; --sp-8: 32px; --sp-10: 40px; --sp-12: 48px; --sp-16: 64px;
