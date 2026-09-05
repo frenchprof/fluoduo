@@ -6,19 +6,7 @@
  * (learners' history rides on it), `content/devine-aliments.json`, and the
  * `public/devine/` photo folder its img paths point into.
  *
- * Which decks offer SpecuLearn (/practice/speculearn/[id]). aliments
- * runs on its photo bank; the rest qualified in the 2026-07-14 audit by
- * having an emoji on (almost) every item — the emoji plays the image role.
- * EXCLUDED after review (Dan, 2026-07-14: demonstratifs "is not making any
- * sense"): decks whose learning point an image cannot carry —
- *   demonstratifs  (the point is ce/cet/cette/ces, not the nouns)
- *   nationalities  (word side is the country name → duplicates countries,
- *                   tests zero nationality forms)
- *   tu-vous        (the point is the register choice; the person emoji are
- *                   near-indistinguishable as options)
- *   negation-pas   (full sentences don't fit a guess-the-word game)
- *   weather-letris (Dan, 2026-07-14: "the pictures are not at all a match")
- *   salutations    (Dan, 2026-07-14: impossible to picture the register)
+ * Which decks offer SpecuLearn (/practice/speculearn/[id]).
  */
 export const SPECULEARN_READY = [
   "aliments",
@@ -36,99 +24,34 @@ export function isSpecuLearnReady(id: string): boolean {
   return (SPECULEARN_READY as readonly string[]).includes(id);
 }
 
-/** Building-look emojis are banned from SpecuLearn (Dan, 2026-07-15): a
- *  generic storefront/tower can't tell épicerie from magasin (🏪 even
- *  serves two words in the same deck). Only unmistakable buildings stay —
- *  ⛪ église, 🏟️ stade, 🚉 gare read as themselves. Shared by the game
- *  (filters play) and the gallery (honest word counts). */
 export const BUILDING_EMOJI = new Set(["🏬", "🏪", "🏛️", "🏛", "🏦", "🏥", "🏫", "🏨", "🏢", "🏤", "🏣", "🏩", "🏭"]);
 
-/** Item-level SpecuLearn bans (Dan, 2026-07-15: "boutique is too ambiguous —
- *  all the images can be boutique… marché supermarché also impossible to
- *  tell the diff"). A target's image must map to exactly ONE word in its
- *  deck: product-for-shop metonymy only works when the product is exclusive
- *  to that shop (🥖 → boulangerie yes; 🍅 → marché OR supermarché no), and
- *  no picture can carry a singular/plural split (boutique vs boutiques).
- *  These items stay in Letris/Flip It/MCQ — they just can't be guessed. */
 export const SPECULEARN_EXCLUDED_ITEMS = new Set([
-  "commerces-01", // marché — a 🍅 is sold at the supermarché too
-  "commerces-02", // supermarché — 🛒 vs 🍅 doesn't separate them
-  "commerces-04", // centre commercial — 🛍️ is any shopping at all
-  "commerces-11", // boutique — every shop image "can be boutique"
-  "commerces-13", // boutiques — and no image shows the plural
-  "lieux-letris-28-jardins-publics", // 🌳 already means parc in this deck
-  "consignes-07", // Notez — 📝 vs ✍️ (Écrivez) both picture writing, and the
-  //               words are near-synonyms: whichever is asked, the other is
-  //               defensible (Dan, 2026-07-19). Écrivez stays; Notez keeps
-  //               living in Flip It / Letris / MCQ.
-
-  // --- colors (SPECULEARN_ITEMS.md, 2026-08-24) ---
-  "colors-12", // le beige — no swatch exists at all: no circle, no heart,
-  //              and every tan-ish stand-in (🟤📦🧸) reads as marron
-  //              (colors-07's twin). Dan: "just drop them" — no image.
-
-  // --- transport (SPECULEARN_ITEMS.md, 2026-08-24) ---
-  "transport-10-prendre-metro", // prendre le métro — image-twin of 🚇, already en métro
-  "transport-11-prendre-voiture", // prendre la voiture — image-twin of 🚗, already en voiture
-  "transport-12-prendre-avion", // prendre l'avion — image-twin of ✈️, already en avion
-  // These three are also verb phrases (prendre + article + noun), unlike
-  // the nine en/à prepositional phrases that stay — banning them is what
-  // keeps the playable transport set one grammatical category (Dan's
-  // amendment 1, 2026-08-24: "we cannot have verb phrases alongside
-  // prepositional phrases"). Category purity check: every remaining
-  // transport item carries tags col:en or col:a — no exceptions.
-
-  // --- objets-articles (SPECULEARN_ITEMS.md, 2026-08-24 — Dan's veto) ---
-  // The 24 Aug build drew purpose-made SVGs for these six instead of
-  // honouring the sheet's bans (see SPECULEARN_ITEM_IMAGES below and
-  // SPECULEARN_ITEMS.md's appendix). Dan reviewed the actual renders and
-  // ruled: "Veto all six, restore your original bans, ship at 14." Two
-  // (trousse, mouchoirs) also read as confusable with each other.
-  "objets-articles-07", // passeport — no passport emoji; 🛂 is passport
-  //   *control*, and next to carte d'identité either answer is defensible
-  "objets-articles-09", // trousse — no pencil-case emoji; 👝 is a bag
-  "objets-articles-11", // gomme — Unicode has no eraser emoji
-  "objets-articles-12", // portefeuille — 👛 is a coin purse (porte-monnaie)
-  "objets-articles-17", // mouchoirs — 🧻 reads toilet roll, 🤧 the sneeze
-  "objets-articles-19", // agrafeuse — 📎 is a paperclip, a different object
+  "commerces-01", "commerces-02", "commerces-04", "commerces-11", "commerces-13",
+  "lieux-letris-28-jardins-publics", "consignes-07", "colors-12",
+  "transport-10-prendre-metro", "transport-11-prendre-voiture", "transport-12-prendre-avion",
+  "objets-articles-07", "objets-articles-09", "objets-articles-11", "objets-articles-12",
+  "objets-articles-17", "objets-articles-19",
 ]);
 
-/* Category-purity note (Dan, 2026-08-24 amendment 1): each deck's playable
- * SpecuLearn set must be ONE grammatical category.
- *   colors            → definite article + colour noun ("le rouge", …).
- *                        11/12 play once colors-12 (no image) is excluded.
- *   transport          → en/à prepositional phrases ONLY ("en train",
- *                        "à vélo", …). The three prendre-* verb phrases
- *                        above are excluded for exactly this reason, not
- *                        only the image-twin reason.
- *   objets-articles     → bare noun + col:un/col:une/col:des tag (the
- *                        indefinite article is rendered by withArticle() in
- *                        SpecuLearnContent.tsx). 14/20 play — the six with
- *                        no honest emoji are excluded above, per Dan's
- *                        sheet and veto, not drawn around.
- */
+/** Per-item commerce image overrides. */
+export const SPECULEARN_ITEM_IMAGES: Record<string, string> = {
+  "commerces-15": "/speculearn/commerces-15.png",
+  "commerces-16": "/speculearn/commerces-16.png",
+  "commerces-17": "/speculearn/commerces-17.png",
+  "commerces-18": "/speculearn/commerces-18.png",
+  "commerces-19": "/speculearn/commerces-19.png",
+  "commerces-20": "/speculearn/commerces-20.png",
+  "commerces-21": "/speculearn/commerces-21.png",
+  "commerces-22": "/speculearn/commerces-22.png",
+  "commerces-23": "/speculearn/commerces-23.png",
+  "commerces-24": "/speculearn/commerces-24.png",
+  "commerces-25": "/speculearn/commerces-25.png",
+  "commerces-26": "/speculearn/commerces-26.png",
+  "commerces-27": "/speculearn/commerces-27.png",
+  "commerces-28": "/speculearn/commerces-28.png",
+};
 
-/** Per-item image overrides — the mechanism stays (Dan, 2026-08-24: "leave
- *  it in TypeScript, it's a short list, don't over-engineer"), currently
- *  empty. A 24 Aug build populated this with six purpose-drawn SVGs for the
- *  objets-articles items excluded above, sidestepping the emoji-inventory
- *  limit the sheet in SPECULEARN_ITEMS.md flagged; Dan reviewed the actual
- *  renders and vetoed all six ("restore your original bans, ship at 14") —
- *  two (trousse, mouchoirs) also read as confusable with each other. The
- *  SVGs are gone from `public/objets-articles/`; recoverable from git
- *  history (commit `4158e2f`) if ever revisited. Mirrors the aliments
- *  photo-bank mechanism (an `img` path wins over `emoji` in
- *  SpecuLearnContent's Visual component) but keyed by item id rather than a
- *  whole separate deck, for exactly this kind of small per-item exception. */
-export const SPECULEARN_ITEM_IMAGES: Record<string, string> = {};
-
-/** Per-deck SpecuLearn prompt frame (Dan, 2026-08-24 amendment 2). The
- *  transport en/à items are answers to a specific question, not free-
- *  floating vocabulary — showing that question above the options is what
- *  keeps "en train" / "à vélo" honestly interpretable as a mode of
- *  transport rather than a stray noun. Rendered lang="fr" above the
- *  options in SpecuLearnContent.tsx; decks not listed here render nothing
- *  extra (unchanged behaviour). */
 export const SPECULEARN_PROMPT_FRAME: Record<string, string> = {
   transport: "Tu y vas comment ?",
 };
