@@ -11,8 +11,18 @@ Only ONE agent edits this file at a time; say so in your commit.
 
 Sole editor of STATUS.md in this commit: Pre-tests.
 
-**#157 has become a regression, and it is mine.** The same fault as 17 Aug,
-mirrored, and it is live on the github.io preview now.
+**NOT A REGRESSION FROM #157 — that word was wrong and is corrected here.**
+#157 did not break something that was working: the Pages deployment was already
+broken (or unreachable) before it, and #157 fixed it for the configuration that
+existed at the time. What broke it again was a configuration change afterwards.
+The preview has in fact been unusable since mid-August in one form or the
+other, and no change of mine caused that.
+
+WHAT *IS* MINE, and it is the part worth fixing. `verify91`, as #157 wrote it,
+hard-wired "a CNAME exists, therefore no subpath". So the moment somebody
+cleared the domain, the repo's own check FORBADE the correct fix — it was
+holding the broken state in place. A check that infers a remote setting from a
+local file is the defect, not the base path.
 
 WHAT HAPPENED. #157 dropped `PAGES_BASE_PATH` on the then-correct reading that
 the artifact was served at fluolingo.com's root. Between 2 and 5 Sep somebody
