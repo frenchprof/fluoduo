@@ -1,6 +1,5 @@
 import { PRETESTS } from "@/content/pretests";
 import PretestContent from "./PretestContent";
-import AuthGate from "@/components/AuthGate";
 
 export function generateStaticParams() {
   return PRETESTS.map((p) => ({ id: p.id }));
@@ -8,5 +7,7 @@ export function generateStaticParams() {
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  return <AuthGate what="take the pre-test"><PretestContent id={id} /></AuthGate>;
+  // Soft-auth lives on Class bag Continue / save — never AuthGate mid-guess
+  // (FINISH_BACKLOG item 3 / docs/CLASS_BAG.md).
+  return <PretestContent id={id} />;
 }

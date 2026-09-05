@@ -9,8 +9,8 @@
  *
  * WHAT THE PAGE ADDS that the popup could not: the can-do statement stands at
  * the top as the heading rather than as a paragraph competing with a numbered
- * path, and "Bring to class" sits under the questions where a learner who has
- * just finished will look for it.
+ * path, and Class bag sits under the questions once the run is finished (or
+ * Skip pretest) — docs/CLASS_BAG.md.
  *
  * WHAT IT DELIBERATELY OMITS: the model dialogue, the lesson buttons, the
  * activity list. A pre-test is a COLD guess — anything that answers the
@@ -19,6 +19,7 @@
  * `AfterPretest` already gates the lesson chips in the popup, and this page
  * has no business offering them before the attempt.
  */
+import { useEffect, useState } from "react";
 import CahierShell from "@/components/CahierShell";
 import { goalNumber } from "@/lib/stopTag";
 import SectionBand from "@/components/SectionBand";
@@ -30,6 +31,16 @@ import { SIO010_SITUATIONS, UNIT0_QUESTIONS } from "@/content/sios/unit0-questio
 
 export default function Unit0PretestPage({ sioId }: { sioId: string }) {
   const sio = getSio(sioId);
+  const [bagReady, setBagReady] = useState(false);
+  useEffect(() => {
+    const onDone = (e: Event) => {
+      const id = (e as CustomEvent<{ id?: string }>).detail?.id;
+      if (!id || id === sioId) setBagReady(true);
+    };
+    window.addEventListener("fluolingo:pretest-complete", onDone);
+    return () => window.removeEventListener("fluolingo:pretest-complete", onDone);
+  }, [sioId]);
+
   if (!sio) return null;
   // SIO-010's bank is all three audiences flattened (21) and a learner now sits
   // all three, but as three TABS of seven (Dan, 2026-08-31). So the honest line
@@ -62,23 +73,40 @@ export default function Unit0PretestPage({ sioId }: { sioId: string }) {
         <p className="fluo-serif mb-4 text-base font-bold leading-snug text-[color:var(--fluo-ink)]">
           <span className="fluo-hl">{sioStatement(sio)}</span>
         </p>
+
+        {!bagReady && (
+          <div className="mb-3 flex justify-end">
+            <button
+              type="button"
+              onClick={() => setBagReady(true)}
+              className="rounded-full border-2 border-[color:var(--fluo-line)] bg-white px-3 py-1.5 text-xs font-bold text-[color:var(--fluo-ink-soft)]"
+            >
+              Skip pretest
+            </button>
+          </div>
+        )}
+
         {/* SIO-010 settles its audience first: "how do you ask their name" has
             no answer until you know whether you face a student, a client or a
             group, so one shuffled pool of all 21 would be unanswerable. Three
             tabs rather than one pick, since 31 Aug — the tu/vous contrast is
             this stop, and a learner who sat one audience never met it. */}
-        {sioId === "SIO-010" ? <Sio010Pretest sio={sio} /> : <Unit0Questions sio={sio} />}
+        {!bagReady && (sioId === "SIO-010" ? <Sio010Pretest sio={sio} /> : <Unit0Questions sio={sio} />)}
 
+        {/* Mid-quiz: live miss chips only (showEmpty false). After finish / Skip:
+            Class bag with empty ready state. */}
         <div className="mt-4">
-          <BringToClass sioId={sioId} />
+          <BringToClass sioId={sioId} showEmpty={bagReady} />
         </div>
 
-        <p className="mt-6 text-center text-xs font-bold text-[color:var(--fluo-ink-soft)]">
-          {sioId === "SIO-010"
-            ? `${SIO010_SITUATIONS.length} situations · ${count} questions each`
-            : `${count} question${count === 1 ? "" : "s"}`}{" "}
-          · a guess before the lesson is the point — nothing here is scored.
-        </p>
+        {!bagReady && (
+          <p className="mt-6 text-center text-xs font-bold text-[color:var(--fluo-ink-soft)]">
+            {sioId === "SIO-010"
+              ? `${SIO010_SITUATIONS.length} situations · ${count} questions each`
+              : `${count} question${count === 1 ? "" : "s"}`}{" "}
+            · a guess before the lesson is the point — nothing here is scored.
+          </p>
+        )}
       </SectionBand>
     </CahierShell>
   );

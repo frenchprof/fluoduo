@@ -1,6 +1,5 @@
 import { CURATED } from "@/content/collections";
 import PicturePretestContent from "./PicturePretestContent";
-import AuthGate from "@/components/AuthGate";
 
 export function generateStaticParams() {
   return CURATED.map((c) => ({ collectionId: c.id }));
@@ -8,5 +7,6 @@ export function generateStaticParams() {
 
 export default async function Page({ params }: { params: Promise<{ collectionId: string }> }) {
   const { collectionId } = await params;
-  return <AuthGate what="take the pre-test"><PicturePretestContent collectionId={collectionId} /></AuthGate>;
+  // Soft-auth on Class bag Continue / save — never AuthGate mid-guess.
+  return <PicturePretestContent collectionId={collectionId} />;
 }
