@@ -833,6 +833,16 @@ sibling with the text on screen — the one untrained skill), and AMBIENT
 TOOLS (ChaTutor as a floating consult, VoixLà summonable wherever French is
 typed; the OUTILS row is the address, not the life).
 
+**Amendment to AMBIENT TOOLS (Dan, 5 Sep): the voice corrects FIRST.**
+Shown the hand-off mock (ComposeIt's sentence pre-filled into VoixLà's box),
+Dan: *"the bot should not be made to reinforce grammatically bad or wrongly
+written French to the learner. It has to be corrected first!!"* So the flow
+is check → show the corrected sentence leading, the learner's slip marked
+beneath → ▶ speaks ONLY the corrected form. The uncorrected sentence is
+never voiced. No contradiction with the 1 Sep distractor ruling: wrong
+French may be OFFERED for rejection on a card; it must never be PERFORMED
+for imitation by the app's voice.
+
 Still Pre-tests' surface — this section is the brief, not the build.
 
 ## 2 Sep — the stop BOOKMARK: the learner's word on where they are
