@@ -673,6 +673,11 @@ body {
    thins; Regular read washed at the stroke ends and Bold started closing the
    counters at 28px. 600 holds the letterforms and gains the presence. */
 .fluo-band-hand { font-family: var(--font-fluohand-stack); font-weight: 600; letter-spacing: 0; }
+/* Button labels wear the brand hand in heavy bold (Dan, 5 Sep: "use
+   FluoLingo font in heavy bold to disallow the text from overflowing off
+   the buttons") — the hand face runs narrower than the body face, so a
+   label like "Practice" fits a half-width tile the body face overflowed. */
+.fluo-btn-hand { font-family: var(--font-fluohand-stack); font-weight: 800; letter-spacing: 0; }
 /* THE ENGLISH ON A PRACTICE CARD — the house hand (Dan, 2026-09-01: "the
    English sentences are still too big. Perhaps switch all English sentences to
    the House Font (FluOLinGo)").

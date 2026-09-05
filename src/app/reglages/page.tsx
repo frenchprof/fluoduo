@@ -101,7 +101,7 @@ export default function ReglagesPage() {
             {FAMILIES.map((f) => (
               <label
                 key={f.key}
-                className="flex items-center gap-3 rounded-lg border-2 px-3 py-2"
+                className="flex items-center gap-2 rounded-lg border-2 px-2.5 py-2"
                 style={{ background: `var(--fam-${f.key}-wash)`, borderColor: "var(--cahier-line-strong)" }}
               >
                 <input
@@ -121,7 +121,9 @@ export default function ReglagesPage() {
                   className="h-5 w-5 shrink-0"
                 />
                 <span aria-hidden className="text-lg">{f.emoji}</span>
-                <span className="font-bold text-[color:var(--cahier-ink)]">{familyShort(f)}</span>
+                {/* The hand face in heavy bold — narrower, so the label
+                    fits its half-width tile (Dan, 5 Sep). */}
+                <span className="fluo-btn-hand text-base text-[color:var(--cahier-ink)]">{familyShort(f)}</span>
               </label>
             ))}
           </div>
