@@ -26,16 +26,33 @@ Sole editor of STATUS.md in this commit: fluoduo-main.
 4. **No VoixLà in ÉcouTexte** (Dan: "Voix-Là is for TTS. and it does NOT
    make any sense to have it im EcouTexte"). ToolSummon takes `tools`;
    ÉcouTexte passes `["chatutor"]`, and a single-tool 🧰 opens its card
-   directly with no one-row tray. verify100 pins it. OPEN QUESTION Dan
-   raised, answered with a recommendation, not yet ruled: whether ChaTutor
-   belongs in ÉcouTexte at all (recommendation: remove; it serves
-   production, not listening — one-line change when Dan decides).
+   directly with no one-row tray. verify100 pins it. RULED later the same
+   evening (Dan: "doesn'T ecouTexte have a standard answer, why does it
+   still beed ChatTutor"): the 🧰 is OUT of ÉcouTexte entirely — a
+   dictation has one right sentence and the marking shows it; the tools
+   live in WorDrill and ComposeIt, where the learner produces French.
+   verify100 now asserts ÉcouTexte carries no ToolSummon.
 5. **Button labels wear the brand hand in heavy bold** (Dan: "use FluoLingo
    font in heavy bold to disallow the text from overflowing off the
    buttons"). `FluOlinGoHand-ExtraBold` (36 KB) joins the loaded weights as
    800; `.fluo-btn-hand` (globals.css) is the class; first application is
    the Réglages tab tiles, whose "Practice"/"Games" had run to the tile
-   edge in the body face.
+   edge in the body face. ROLLED OUT the same evening (Dan: "ensure that
+   elsewhere we also have buttons half way the width of the screen to
+   display in FluOLinGo") to the FamilyHub door tiles and the GameGallery
+   tiles. Weight settled at 800, not Dan's guessed 700 ("i just randomly
+   said 700"): 800 is what he approved on screen and is already loaded.
+   Sizes are rem steps (text-base/text-sm), NOT px and NOT screen-relative
+   (Dan asked): text follows the reader's font setting; a wider screen gets
+   more columns, never bigger letters. NOT applied to French exercise
+   options (MCQ/FlipIt/dice) — the target French stays in the reading face —
+   nor to profile data cards (scores are data, not labels).
+6. **The hub tiles go half-width and lose their blurbs** (Dan, shown the
+   hubs: "why are these still width-occupying buttons. We don't need the
+   desxruption of the acticities, not here"). FamilyHub is a two-column
+   grid on every screen now — icon + hand-bold name, no description. This
+   OVERRULES the 1 Sep "a blurb per tile helps you choose" position for
+   hubs; the blurbs stay in the registry for surfaces that want them.
 ## 5 Sep — a third tone: mono, the quiet set (24 marks becomes 36)
 
 Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.

@@ -18,9 +18,13 @@
  * the order Dan set for each family ("Skills: forms → receptive → productive",
  * "SvPlay: gentlest first"), never alphabetical.
  *
- * NO INTRO PROSE. A blurb per tile helps you choose between six things and
- * stays; a paragraph at the top explaining what "Skills" means does not help
- * anyone find anything, which is the litmus test.
+ * NO INTRO PROSE, AND NO BLURBS EITHER (Dan, 5 Sep, shown the hub: "why are
+ * these still width-occupying buttons. We don't need the desxruption of the
+ * acticities, not here"). The 1 Sep position — a blurb helps you choose —
+ * is overruled for hubs: the name and icon are the choice, and dropping the
+ * blurb is what lets the tiles go half-width under the no-full-width-control
+ * rule (AGENTS.md, same day). The blurbs still exist in the registry for
+ * surfaces that want them (the guide's title attributes, for one).
  *
  * NOT AUTH-GATED. The activities behind these tiles gate themselves; browsing
  * has never needed a sign-in, and a wall in front of a menu would be a wall in
@@ -66,28 +70,24 @@ export default function FamilyHub({ activeKey }: { activeKey: string }) {
        has one section, so it needs one heading, and the shell band is it. */
     <CahierShell active={activeKey} band={{ title: familyShort(family) }}>
       <div className="p-3">
-        {/* auto-rows-fr: EQUAL HEIGHT, not just equal width (Dan, 1 Sep, on the
-            hub mock-ups: "i need the buttons to be of equal height (not just
-            equal width)"). `h-full` on the tile only fills the row it is in, and
-            in the single column a phone gets, every tile is its own row — so
-            /games shipped tiles of 84px and 70px depending on whether the blurb
-            wrapped. Measured, not eyeballed: the hub scan reads every tile's
-            box and fails on more than one distinct height. */}
-        <ul className="grid auto-rows-fr gap-2.5 sm:grid-cols-2">
+        {/* TWO COLUMNS ON EVERY SCREEN — the no-full-width-control rule
+            (AGENTS.md, 5 Sep). auto-rows-fr keeps Dan's 1 Sep equal-height
+            ruling ("i need the buttons to be of equal height (not just
+            equal width)"); with the blurbs gone the tiles are one line
+            tall anyway, but a two-line name (VocabulaRain at a narrow
+            width) must not make its neighbour shorter. */}
+        <ul className="grid grid-cols-2 auto-rows-fr gap-2.5">
           {tiles.map((a) => (
             <li key={a.key}>
               <Link
                 href={a.href as string}
-                className="flex h-full items-start gap-3 rounded-2xl border-2 border-b-4 border-[color:var(--cahier-line-strong)] bg-[color:var(--cahier-paper-raised)] p-3 no-underline transition hover:-translate-y-0.5"
+                className="flex h-full items-center gap-2.5 rounded-2xl border-2 border-b-4 border-[color:var(--cahier-line-strong)] bg-[color:var(--cahier-paper-raised)] p-2.5 no-underline transition hover:-translate-y-0.5"
               >
                 <ActivityIcon activityKey={a.key} emoji={a.emoji} />
-                <span className="min-w-0">
-                  <span className="block text-[15px] font-black leading-tight text-[color:var(--cahier-ink)]">
-                    {a.name}
-                  </span>
-                  <span className="mt-0.5 block text-[12px] leading-snug text-[color:var(--cahier-ink-soft)]">
-                    {a.blurb}
-                  </span>
+                {/* Brand hand, heavy bold, rem-sized — the half-width-button
+                    treatment (Dan, 5 Sep; Réglages first). */}
+                <span className="fluo-btn-hand min-w-0 text-base leading-tight text-[color:var(--cahier-ink)]">
+                  {a.name}
                 </span>
               </Link>
             </li>

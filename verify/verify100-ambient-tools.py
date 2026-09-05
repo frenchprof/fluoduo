@@ -84,9 +84,13 @@ ok("correctsFirst" in summon and re.search(r"<VoixLaPanel\s+correctsFirst", summ
    "ToolSummon mounts VoixLaPanel WITHOUT correctsFirst — the in-exercise "
    "card is exactly the surface Dan's rule is about")
 
-# ---- 2 · the three trainers summon; the shells stay clean ------------------
+# ---- 2 · the PRODUCTION trainers summon; the shells stay clean -------------
+# ÉcouTexte left the list the day it joined (Dan, 5 Sep, in two steps:
+# "Voix-Là is for TTS. and it does NOT make any sense to have it im
+# EcouTexte", then "doesn'T ecouTexte have a standard answer, why does it
+# still beed ChatTutor"). A dictation has ONE right sentence and the
+# marking shows it; the tools live where the learner PRODUCES French.
 TRAINERS = {
-    "ÉcouTexte": "src/app/practice/ecoutexte/EcouTexte.tsx",
     "WorDrill": "src/app/practice/say-it/[collectionId]/SayItContent.tsx",
     "ComposeIt solo": "src/games/compose/ComposeSolo.tsx",
     "ComposeIt dialogue": "src/games/compose/ComposeDialogue.tsx",
@@ -96,16 +100,13 @@ for name, path in TRAINERS.items():
     ok("<ToolSummon" in src and "components/tools/ToolSummon" in src,
        f"{name} mounts the 🧰 summon inside its own content component",
        f"{path} does not mount ToolSummon — the door was assigned to the "
-       "three Skills trainers (ÉcouTexte, WorDrill, ComposeIt)")
+       "production trainers (WorDrill, ComposeIt)")
 
-# ÉcouTexte offers ChaTutor ONLY (Dan, 5 Sep: "Voix-Là is for TTS. and it
-# does NOT make any sense to have it im EcouTexte" — the exercise already
-# speaks, and TTS there could read the hidden answer aloud).
-ecoutexte = read(TRAINERS["ÉcouTexte"])
-ok('tools={["chatutor"]}' in ecoutexte,
-   "ÉcouTexte's 🧰 offers ChaTutor only — no TTS in a listening exercise",
-   "ÉcouTexte's ToolSummon does not restrict tools to [\"chatutor\"] — "
-   "VoixLà is TTS and Dan ruled it senseless in a listening exercise (5 Sep)")
+ecoutexte = read("src/app/practice/ecoutexte/EcouTexte.tsx")
+ok("ToolSummon" not in ecoutexte,
+   "ÉcouTexte carries no 🧰 — a dictation's one right answer needs no tool",
+   "ÉcouTexte mounts ToolSummon again — Dan removed it twice over on 5 Sep "
+   "(TTS speaks the answer; a standard answer leaves ChaTutor nothing to add)")
 
 for shell in ("src/components/DrillShell.tsx", "src/components/GameFrame.tsx"):
     src = read(shell)
