@@ -158,7 +158,7 @@ function PretestRunner({ pretest }: { pretest: Pretest }) {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8">
+    <div className="speculearn-stage mx-auto max-w-3xl px-4 py-8">
       <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
         <div>
           {/* The title moved to the band (1 Sep); the subtitle stays, because
@@ -279,7 +279,7 @@ function ItemCard({
   // auto-speak that already fires on a correct pick.
   const bare = !item.sentenceBefore.trim() && !item.sentenceAfter.trim();
   return (
-    <article className="fluo-card fluo-h-1" data-hue={1}>
+    <article className="fluo-card speculearn-card fluo-h-1" data-hue={1}>
       {(!bare || submitted) && (
       <p className="my-3 text-center text-2xl font-bold leading-snug text-slate-900">
         <span lang="fr">{item.sentenceBefore}</span>
@@ -331,7 +331,7 @@ function ItemCard({
       </div>
       )}
 
-      <div className={`mt-5 ${optionGridClass(choices, "gap-2.5")}`}>
+      <div className={`speculearn-options mt-5 ${optionGridClass(choices, "gap-2.5")}`}>
         {choices.map((c, i) => {
           const isPicked = submitted?.picked === c;
           const isAnswer = c === item.answer;

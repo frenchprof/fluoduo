@@ -109,17 +109,12 @@ export const SPECULEARN_EXCLUDED_ITEMS = new Set([
  */
 
 /** Per-item image overrides — the mechanism stays (Dan, 2026-08-24: "leave
- *  it in TypeScript, it's a short list, don't over-engineer"), currently
- *  empty. A 24 Aug build populated this with six purpose-drawn SVGs for the
- *  objets-articles items excluded above, sidestepping the emoji-inventory
- *  limit the sheet in SPECULEARN_ITEMS.md flagged; Dan reviewed the actual
- *  renders and vetoed all six ("restore your original bans, ship at 14") —
- *  two (trousse, mouchoirs) also read as confusable with each other. The
- *  SVGs are gone from `public/objets-articles/`; recoverable from git
- *  history (commit `4158e2f`) if ever revisited. Mirrors the aliments
- *  photo-bank mechanism (an `img` path wins over `emoji` in
- *  SpecuLearnContent's Visual component) but keyed by item id rather than a
- *  whole separate deck, for exactly this kind of small per-item exception. */
+ *  it in TypeScript, it's a short list, don't over-engineer"). Commerces
+ *  15–28 are the FR-approved market photos in `public/speculearn/` (real
+ *  PNG bytes, not base64 text). An `img` path wins over `emoji` in
+ *  SpecuLearnContent's Visual. The 24 Aug objets-articles SVGs were vetoed
+ *  ("restore your original bans, ship at 14") and are recoverable from git
+ *  `4158e2f` if ever revisited. */
 export const SPECULEARN_ITEM_IMAGES: Record<string, string> = {
   "commerces-15": "/speculearn/commerces-15.png",
   "commerces-16": "/speculearn/commerces-16.png",
