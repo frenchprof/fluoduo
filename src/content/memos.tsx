@@ -45,7 +45,13 @@ function Pill({ children, say }: { children: ReactNode; say?: string }) {
 
 type PillItem = string | { t: string; say: string };
 
-function PillRow({ label, items }: { label?: ReactNode; items: PillItem[] }) {
+// Exported because a NATIVE LESSON's memo needs the same row, and the two
+// Mémos are not interchangeable: LessonPager resolves `lesson?.memo ??
+// memoForDeck(deck)`, so wherever a deck has an authored lesson the DECK_MEMOS
+// entry never renders. Variant rows written into DECK_MEMOS.salutations were
+// invisible for exactly that reason — they live in salutations.tsx now, and
+// share this row rather than growing a second one that can drift.
+export function PillRow({ label, items }: { label?: ReactNode; items: PillItem[] }) {
   return (
     <p className="mt-2 flex flex-wrap items-center gap-1.5 text-[13px] font-bold text-[color:var(--cahier-ink)]">
       {label != null && <span className="mr-0.5">{label}</span>}

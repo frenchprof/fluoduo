@@ -5,6 +5,7 @@
  * own items; each situation's distractors are hand-picked so exactly one
  * answer fits (standard greetings work anywhere, casual ones don't).
  */
+import { PillRow } from "@/content/memos";
 import type { NativeLesson } from "./types";
 
 const SITS = [
@@ -53,6 +54,44 @@ export const salutationsLesson: NativeLesson = {
         ⚠️ <i lang="fr">Salut !</i> = hello AND bye — friends only.{" "}
         <i lang="fr">Bonne nuit !</i> only at bedtime; leaving in the day is <i lang="fr">Bonne journée !</i>
       </p>
+
+      {/* VARIANTS (Dan, 2026-09-05), and his own test for what counts as one:
+          « Je prends un café » is NOT a variant of « Je voudrais un café » —
+          one orders, the other requests. « Merci / Merci beaucoup / Merci
+          bien » are one act said three ways. Every row below is one act, so
+          tapping across a row is hearing the same thing said differently, not
+          meeting three new things.
+
+          LEAVE-TAKING IS DELIBERATELY ABSENT. The grid above already shows
+          « Au revoir ! À demain ! À bientôt ! Bonne journée ! » in one tile,
+          which IS the variant row for it; a second copy here would be two
+          answers to one question on one screen.
+
+          Folded, per the long-pages rule: the grid and its ⚠️ are the lesson
+          and stay open; this is reference and is consulted. The summary carries
+          the count so a closed fold is not a bare chevron. */}
+      <details className="mt-3 rounded-lg border border-[color:var(--cahier-rule)] bg-white/60 p-2.5">
+        <summary className="cursor-pointer text-[13px] font-black text-[color:var(--cahier-ink)]">
+          Same thing, said differently — 7 rows
+        </summary>
+        <PillRow label="Thanking" items={["Merci", "Merci beaucoup", "Merci bien"]} />
+        <PillRow label="Answering thanks" items={["De rien", "Je vous en prie", "Il n'y a pas de quoi"]} />
+        <PillRow label="Asking how someone is" items={["Ça va ?", "Comment ça va ?", "Comment allez-vous ?"]} />
+        <PillRow label="Answering that" items={["Ça va", "Ça va bien", "Très bien, merci"]} />
+        <PillRow label="Please" items={["S'il vous plaît", "S'il te plaît"]} />
+        <PillRow label="Excuse me" items={["Excusez-moi", "Pardon", "Excuse-moi"]} />
+        <PillRow label="Accepting" items={["Oui, volontiers", "Avec plaisir", "Bien sûr"]} />
+        <p className="mt-3 text-[13px] text-[color:var(--cahier-ink-soft)]">
+          Two rows split on <b>who you are talking to</b>, not on warmth:{" "}
+          <b lang="fr">s&rsquo;il vous plaît</b> and <b lang="fr">excusez-moi</b> go with{" "}
+          <b lang="fr">vous</b>, <b lang="fr">s&rsquo;il te plaît</b> and{" "}
+          <b lang="fr">excuse-moi</b> with <b lang="fr">tu</b>.
+        </p>
+        <p className="mt-2 text-[13px] text-[color:var(--cahier-ink-soft)]">
+          <b lang="fr">Ça va</b> is the only one that answers itself — the same two
+          words are the question and the reply, told apart by the voice alone.
+        </p>
+      </details>
     </div>
   ),
   dice: {
