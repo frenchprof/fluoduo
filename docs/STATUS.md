@@ -6,6 +6,38 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 5 Sep — the mark ships: icon.svg, favicon.ico, the four PNGs
+
+Sole editor of STATUS.md in this commit: claude/peers-vd2h6h (Peers).
+
+Dan drew the mark over 5 Sep — a spiral notebook whose page carries an **F**
+and a **g**, the g's counter closed by the amber bar. Colours: **red shell,
+blue F**, green page, amber rings and counter. The red/blue swap was the call
+against the earlier blue shell: red on green is the one adjacency red-green
+colour-blind learners cannot separate, and the old arrangement put the LETTER
+on it. Note for whoever tunes feedback colours: the brand red now shares a
+register with "wrong", and one of them should move.
+
+**Two drawings, not one.** `src/app/icon.svg` is flat and drops the counter
+and the low band — at 16px they are one pixel each and the middle turns to
+mud. `public/icons/*.png` carry the full mark with a two-stop vertical fade
+per region (same hue at both ends, lightness travelling ~30%, the App Store
+recipe). Below about 48px the fade is invisible, so it is not in the tab file.
+
+**The trap that cost a build.** Declaring any `icons` object in layout metadata
+switches OFF Next's `app/icon.svg` file convention. The SVG shipped in the
+export with nothing linking it and the tab quietly kept the .ico — invisible
+in every screenshot. `verify95` checks the LINK, not the file. It also caught
+itself: the first version of that assertion passed against broken code because
+the explanatory comment in `layout.tsx` names `/icon.svg`, so the check now
+strips comments before looking.
+
+`verify95-icons.py`, seven break-tests: single-hue art returning, a PNG that
+lies about its size, starter art back in `public/`, the tab drawing gone,
+maskable losing its safe area, the manifest naming a missing file, the SVG
+present but unlinked. The five Next.js starter SVGs (`next`, `vercel`, `file`,
+`globe`, `window`) are deleted — nothing referenced them.
+
 ## 5 Sep — item 4 (double-door): three ☰ rows were dead on Home
 
 Sole editor of STATUS.md in this commit: claude/peers-vd2h6h (Peers).
