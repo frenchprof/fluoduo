@@ -24,34 +24,39 @@ flag in a repo deploy yaml — `verify38` fails the build if you do.
 
 ---
 
-**THERE WERE TWO LIVE SITES for a stretch after 17 Aug**, both fed from `main`
-(Dan, 2026-09-02: *"two live sites, both fed from main … worth knowing which
-one your students actually use"*):
+**THE GITHUB PAGES PREVIEW HAS BROKEN TWICE, in opposite directions**, and
+both times because the build did not follow a dashboard setting nobody working
+in the repo can see.
 
-| URL | Host then | Built by | Path |
+| | Home GitHub served it at | Build | Result |
 |---|---|---|---|
-| **fluolingo.com** | GitHub Pages, `frenchprof/fluoduo` (for a window) | `.github/workflows/pages-preview.yml` | domain ROOT once a custom domain was attached |
-| **fluolingo.withdrchan.com** | Cloudflare Pages | `dckg/fluo`, which `deploy-live.yml` mirrors main into | domain ROOT |
+| up to 12 Aug | `frenchprof.github.io/fluoduo/` | `/fluoduo` | fine |
+| custom domain attached (Aug) | a domain root | still `/fluoduo` | **404 on every asset, 17 days** |
+| 3 Sep (#157) | a domain root | root | fixed |
+| custom domain cleared (2–5 Sep) | `frenchprof.github.io/fluoduo/` | still root | **404 again, mirrored** |
 
-They were NOT equivalent. GitHub Pages has no server, so the four Cloudflare
-Pages Functions — `/api/tutor`, `/api/tts`, `/api/correct`, `/api/compose` —
-do not exist there. They work on the Cloudflare hosts. Everything else runs
-in the browser against Firebase on both.
+The mechanism, once: a page carries links to its own CSS and JS, and they must
+match the folder the site sits in. `/fluoduo/_next/app.css` is right in a
+folder and wrong at a root; `/_next/app.css` is the reverse. The HTML loads
+either way, so it reads as a plain unstyled page rather than an error.
 
-They also deploy on different triggers: the Pages workflow follows `origin`
-`main` automatically; withdrchan waits for `deploy-live` (or `git push live
-main`). The two can sit on different commits.
+**WHERE THE ANSWER IS.** `actions/deploy-pages` prints it on every run:
 
-> **WHAT THIS SECTION USED TO SAY, and what it cost.** Until 2026-09-02 it
-> stated that `fluolingo.com` 302-redirects to the withdrchan URL and that the
-> GitHub Pages build was a preview at `frenchprof.github.io/fluoduo/`. Both
-> stopped being true on 17 Aug, when `CNAME` and the Pages workflow were added
-> in one commit — and a custom domain serves a Pages site at the ROOT, not at
-> `/fluoduo`. The build went on emitting `/fluoduo/_next/…` for a site served
-> at `/`, so fluolingo.com loaded its HTML and 404'd every stylesheet and
-> script for seventeen days. Nobody caught it because every file said the site
-> was something it no longer was. `verify91` now refuses a Pages subpath while
-> a CNAME exists.
+    2 Sep 08:27   Evaluated environment url: https://fluolingo.com/
+    5 Sep 02:22   Evaluated environment url: https://frenchprof.github.io/fluoduo/
+
+Read that, never a comment. `pages-preview.yml` now DECLARES its home in one
+line (`PAGES_HOME: subpath | root`) beside the build, and `verify91` holds the
+build to the declaration in both directions. **When the dashboard setting
+changes, read the deploy log and change the declaration with it.**
+
+The root `CNAME` file is a leftover from the attached-domain period. It is not
+copied into the uploaded artifact, so GitHub never reads it and it changes
+nothing — but it reads as authoritative, and reading it as authoritative is
+what caused the second failure. It should be deleted.
+
+**None of this touched Cloudflare.** The live hosts and staging are domain
+roots, never set the variable, and were unaffected throughout.
 
 > **fluolinguo.com is RETIRED** (2026-07-19). The domain has no DNS records and
 > must not be referenced anywhere — links, docs, QR codes, Firebase authorised
