@@ -218,6 +218,45 @@ const RAW_ACTIVITIES: Omit<Activity, "hue" | "fill">[] = [
  * 8.1-8.5:1 for all six. Using the pen for both was the fault above — the pens
  * measure 3.44 to 7.74 under ink, so four of the six would have failed again.
  */
+/**
+ * THE TABS THAT ARE NOT ACTIVITIES, so that they too are drawn once.
+ *
+ * Dan, 2026-09-05: *"we should use the same pictures for menu and buttons"* —
+ * *"or emojis"*.
+ *
+ * For the sixteen registered activities that was already true: ACTIVITIES is
+ * the one place their emoji lives, which is what the registry was built for. It
+ * was NOT true of the handful of tabs built by hand beside them, and they are
+ * exactly the ones a learner meets in both places:
+ *
+ *     pretest   authored FIVE times — and already drifting on the label,
+ *               "Pre-Test" in the stop sheet and the goal card, "Pretest" on
+ *               the pre-test page itself
+ *     map       authored twice
+ *     matching  authored once, with no shared home to drift from yet
+ *
+ * The emoji happened to agree today. Nothing was holding them there — the label
+ * did not, and it is the same fact about the same thing.
+ */
+export const TAB_ICONS: Record<string, { label: string; emoji: string }> = {
+  pretest: { label: "Pre-Test", emoji: "🧪" },
+  matching: { label: "Match It", emoji: "🔗" },
+  // "Map", not "Carte" (Dan, 2026-09-01) — the interface is English; the key
+  // and the /carte redirect route are untouched, display rename only.
+  map: { label: "Map", emoji: "🗺️" },
+  home: { label: "Home", emoji: "🏠" },
+};
+
+/** The one picture for a key, whether it is an activity or one of the tabs
+ *  above. Returns undefined for a key nobody has drawn, so a caller can still
+ *  pass its own — this narrows the places an emoji may be authored, it does not
+ *  forbid a genuinely one-off tab. */
+export function iconFor(key: string): { label: string; emoji: string } | undefined {
+  const a = activity(key);
+  if (a) return { label: a.name, emoji: a.emoji };
+  return TAB_ICONS[key];
+}
+
 const FAMILY_PEN: Record<FamilyKey, string> = {
   goals: "var(--fam-goals)",
   practice: "var(--fam-practice)",

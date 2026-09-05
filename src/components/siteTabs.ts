@@ -23,7 +23,7 @@
  */
 import type { ShellTab } from "@/components/CahierShell";
 import { UNIT_META } from "@/content/sios";
-import { FAMILIES, navigableActivities } from "@/content/activities";
+import { FAMILIES, TAB_ICONS, navigableActivities } from "@/content/activities";
 
 /** Unit accent hues — match the fluo-h-* section palette.
  *
@@ -84,7 +84,7 @@ export function toolTabs(): ShellTab[] {
     // The map belongs to 🎯 Goals (SITE_FAMILY says so), so it wears that pen
     // rather than the #5b8def it had been carrying since before the families
     // were the highlighters — the same fault as the sixteen activity hexes.
-    { key: "map", label: "Map", emoji: "🗺️", href: "/map",
+    { key: "map", ...TAB_ICONS.map, href: "/map",
       hue: "var(--fam-goals)", fill: "var(--fam-goals-wash)" },
     ...navigableActivities().map((a) => ({
       key: a.key,

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-An activity's colour is its family's, and the flap you are standing on is
-readable.
+An activity's colour is its family's, its picture is drawn once, and the flap
+you are standing on is readable.
 
 Dan, 2026-09-05: *"we need to revisit the colors of the burger menu items based
 on the new color scheme."*
@@ -184,6 +184,41 @@ ok(len(unit_hex) == 5,
    f"found {len(unit_hex)} unit accents, expected 5. The fills above are a "
    "wash of these; a sixth unit needs one too, and a missing one leaves that "
    "flap filled with its raw accent.")
+
+# ---- 5 · one picture per thing ---------------------------------------------
+# Dan, 2026-09-05: *"we should use the same pictures for menu and buttons"* —
+# *"or emojis"*. For the sixteen registered activities that was already true:
+# ACTIVITIES is the one place an emoji lives, which is what the registry was
+# for. It was not true of the tabs built by hand beside them, and those are
+# exactly the ones a learner meets in both places — `pretest` was authored FIVE
+# times, and had already drifted on the label ("Pre-Test" in the stop sheet,
+# "Pretest" on the pre-test page). The emoji agreed by luck; nothing held it.
+#
+# So every key that HAS a drawing must take it, and this walks the tree looking
+# for a tab literal that re-authors one.
+KEYED_EMOJI = re.compile(r'key:\s*"([a-z0-9-]+)"[^}\n]*?emoji:\s*"([^"]+)"')
+drawn = set(re.findall(r'key: "([a-z0-9-]+)"', body)) | set(
+    re.findall(r"^  ([a-z0-9-]+): \{ label:", ACT, re.M))
+reauthored = []
+for root, dirs, files in os.walk("src"):
+    dirs[:] = [d for d in dirs if d not in {"node_modules", ".next"}]
+    for fn in files:
+        if not fn.endswith((".ts", ".tsx")):
+            continue
+        path = os.path.join(root, fn).replace(os.sep, "/")
+        if path == "src/content/activities.ts":
+            continue
+        for key, emoji in KEYED_EMOJI.findall(read(path)):
+            if key in drawn:
+                reauthored.append(f"{path}: {key} = {emoji}")
+ok(not reauthored,
+   f"no tab re-draws a key that activities.ts already draws "
+   f"({len(drawn)} keys have one picture each)",
+   "these tabs author an emoji for a key that is already drawn once:\n    "
+   + "\n    ".join(reauthored[:8]) +
+   "\n  Use `iconFor(key)` or TAB_ICONS — the menu and the button must show the "
+   "same picture, and a second copy is what let the pre-test tab read "
+   "\"Pre-Test\" in one place and \"Pretest\" in another.")
 
 print("\n".join("  ok    " + m for m in PASS))
 if FAIL:
