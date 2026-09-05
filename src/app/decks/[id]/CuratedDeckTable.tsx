@@ -370,7 +370,10 @@ function DeckTable({ collection, items }: { collection: Collection; items: Item[
           {showOptions && (
             <>
             <div className="fixed inset-0 z-20" onClick={() => setShowOptions(false)} aria-hidden />
-            <div className="absolute right-0 z-30 mt-1 flex w-64 max-w-[calc(100vw-1.5rem)] flex-col gap-2 rounded-xl border-2 border-[color:var(--cahier-ink)]/20 bg-white p-3 shadow-xl">
+            {/* Above its own scrim, below the site bar. In-flow page content
+                that reaches the bar's stacking number can swallow the ☰
+                menu's taps — verify94 holds the ceiling. */}
+            <div className="absolute right-0 z-[25] mt-1 flex w-64 max-w-[calc(100vw-1.5rem)] flex-col gap-2 rounded-xl border-2 border-[color:var(--cahier-ink)]/20 bg-white p-3 shadow-xl">
               <span className={CTRL_LABEL}>group by</span>
               <div className="flex flex-wrap items-center gap-2">
                 {([
