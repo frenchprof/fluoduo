@@ -344,6 +344,9 @@ jobs:
       - name: "Class bag copy locked; soft-auth at save, never mid-guess (5 Sep)"
         run: python3 verify/verify93-class-bag-soft-auth.py
 
+      - name: "The site bar outranks page content, so ☰ stays tappable (5 Sep)"
+        run: python3 verify/verify94-topbar-above-page.py
+
       - name: "SIO-010 keys Enchantée for Léa; Libéria carries its accent (3 Sep)"
         # Renumbered 91 -> 92 at the QC merge — sixth collision: pages-basepath
         # claimed 91 the same morning and landed first (#157).

@@ -6,6 +6,43 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 5 Sep — item 4 (double-door): three ☰ rows were dead on Home
+
+Sole editor of STATUS.md in this commit: claude/peers-vd2h6h (Peers).
+
+Auditing FINISH_BACKLOG item 4 on the real export at 390×844 turned up a
+navigation bug that no screenshot could have shown.
+
+**Open ☰ on Home and the bottom three rows do nothing.** 👤 User, ▦ MENU and
+🗺️ Map took no taps; the five family flaps above them were fine, and all eight
+worked on /practice and /games. The menu still PAINTED correctly, which is why
+it survived weeks of review.
+
+**Why.** `SiteTopBar`'s wrapper is `sticky top-0`, and sticky + a z-index makes
+its own stacking context — so the dropdown's `z-50` counts only inside the bar,
+and against the page the bar competes with the single number on that wrapper.
+It was `z-10`. Home's map postcard covers its whole card with a stretched
+`<a class="absolute inset-0 z-10">`. Equal z-index, later in the DOM, so the
+invisible link won the hit test and ate the taps. The bar is now `z-30`: above
+page content, below every scrim (z-40+) and modal. `CuratedDeckTable`'s group
+popover moved 30 → 25 for the same ceiling.
+
+`verify94-topbar-above-page.py` holds it as an INEQUALITY, not a spelling test
+— max z-index anywhere under `src/app` must stay below the bar's. Three
+break-tests: bar back to z-10 (names `HomeDashboard.tsx:544` as the culprit),
+a page card catching up, the bar losing its z-index. `fixed` overlays are
+exempt: modals are meant to cover the bar.
+
+**Item 4's other two Success lines were already met** and are now evidenced on
+the export: every bottom-bar family tap lands on that family's hub with no
+second popup (5/5), and the ☰ is six coloured flaps to those hubs with the
+16-tile grid demoted to one ▦ MENU row below a rule.
+
+Shared files: `SiteTopBar.tsx`, `CuratedDeckTable.tsx`, `verify.yml`,
+`STATUS.md`. Open PRs when this branched: #166 (STATUS roster block only —
+appends above THE ROSTER, this appends at the top; textual conflict possible,
+no semantic one).
+
 ## 4 Sep — staging docs (no-login bookmark)
 
 Sole editor of STATUS.md in this commit: cursor/staging-docs-8ea9.
