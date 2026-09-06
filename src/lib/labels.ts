@@ -145,7 +145,7 @@ const PATH_NAMES: Array<[string, string]> = [
   ["/tutor", "ChaTutor"],
   ["/moi", "My Progress"],
   ["/teacher", "Teacher"],
-  ["/map", "Carte"],
+  ["/map", "Map"],
   ["/leaderboard", "Leaderboard"],
   ["/profil", "Profile"],
   // Routes that existed in siteTabs.ts and nowhere here, so the teacher saw
@@ -284,7 +284,7 @@ export function describePath(raw: string): PathInfo {
   // anything taught inside it.
   const unit = /^\/unit\/(\d+)/.exec(path);
   if (unit) return { label: `Unité ${unit[1]}`, journey: journeyForUnit(Number(unit[1])) };
-  if (path === "/") return { label: "Accueil", journey: JOURNEY_APP };
+  if (path === "/") return { label: "Home", journey: JOURNEY_APP };
 
   // Longest prefix wins, so /practice/grammarathon/finale beats /practice/grammarathon/.
   let activity: string | undefined;

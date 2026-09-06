@@ -108,14 +108,14 @@ export default function GameGallery({
               href={card.href}
               className="cahier-btn cahier-btn-primary mt-4 w-full justify-center text-lg font-black no-underline"
             >
-              ▶ Jouer
+              ▶ Play
             </Link>
             <button
               type="button"
               onClick={() => setOpen(true)}
               className="cahier-btn mt-2 w-full justify-center"
             >
-              Choisir un autre
+              Choose another
             </button>
           </div>
         ) : (

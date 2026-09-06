@@ -6,6 +6,50 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 6 Sep — item 7, part 1: French off the controls
+
+Sole editor of STATUS.md in this commit: claude/peers-vd2h6h (Peers).
+
+FINISH_BACKLOG **item 7** — *"no FR-only chrome a beginner must decode to
+act"*. A scan of every non-content file for French turned up 227 candidates;
+almost all were the material being taught. Six were controls.
+
+**Changed, with no flavour lost:**
+
+| where | was | now |
+|---|---|---|
+| Games hub, the button on every card | `▶ Jouer` | `▶ Play` |
+| Games hub, the second button | `Choisir un autre` | `Choose another` |
+| ComposeIt, the checker's own failure | `Pardon, un petit souci… réessayez !` | `Something went wrong — try again.` |
+| `/moi/historique`, the map's name | `Carte` | `Map` |
+| `/moi/historique`, Home's name | `Accueil` | `Home` |
+| The map legend + every stop's aria-label | `vocabulaire` · `grammaire` | `vocabulary` · `grammar` |
+
+Two coupled edits that a rename would have broken silently: `curriculum.ts`'s
+`SURFACE_APP` set MATCHES ON THE LABEL `"Accueil"`, so changing only
+`labels.ts` would have stopped history counting Home as an app surface; and
+`verify19` has banned the word *Accueil* as a nav label since July, so this
+change agrees with a rule already in the repo. Dan's July legend ruling
+survives whole — it chose WHICH word, not which language, and both its picks
+(*expressions* over *phrases*, *communication* over *atelier*) are the same
+in English.
+
+**Left standing, and put to Dan on 6 Sep** — French a beginner cannot read
+that carries the app's character and blocks no action: the unit flaps
+(`Unité 0`–`Unité 4`), the ten rank names (`Débutant` … `Maître`), the twelve
+badge labels, and the two shop colours that are not already English
+(`Émeraude`, `Or`). Ranks and badges sit beside an English description of how
+they were earned.
+
+`verify97-en-chrome.py` names its four surfaces one by one rather than
+sweeping — a sweep for "French in src/" would flag every deck and card in the
+course, and the first person to hit that wall would delete the check. Six
+break-tests. One of them exposed a dead assertion: the ComposeIt test matched
+`setNudge|setError|setStatus` and the real call sites are
+`setFeedback({ reply })` and `setMessages({ text })`, so it passed against the
+reverted code. It now looks for APOLOGY rather than French, since the waiter
+speaks French on purpose and the nudges quote French a learner should type.
+
 ## 5 Sep — language pass on the chrome a learner is HANDED
 
 Sole editor of STATUS.md in this commit: claude/peers-vd2h6h (Peers).

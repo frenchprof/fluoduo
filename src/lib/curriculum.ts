@@ -158,7 +158,7 @@ const SURFACE_ALL = new Set([
   "Deck MCQ",
 ]);
 const SURFACE_APP = new Set([
-  "Accueil",
+  "Home",
   "My Progress",
   "Teacher",
   "Index",

@@ -102,7 +102,7 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
       }
       const data = (await r.json().catch(() => null)) as { reply?: string; done?: boolean } | null;
       if (!data?.reply) {
-        setFeedback({ reply: "Pardon, un petit souci… réessayez !", done: false });
+        setFeedback({ reply: "Something went wrong — try again.", done: false });
         return;
       }
       setFeedback({ reply: data.reply, done: data.done === true });
