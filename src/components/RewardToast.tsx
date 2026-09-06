@@ -65,6 +65,12 @@ function toToast(d: RewardDetail, seq: number): Toast | null {
       return { ...base, icon: "🏔️", role: "reward", title: `Unit ${d.unit} complete!`, sub: `All ${d.count} objectives done` };
     case "perfect":
       return { ...base, icon: "🎯", role: "joy", title: "Perfect run", sub: `${d.count} out of ${d.count}` };
+    // The lucky find — the one moment in the app the learner cannot predict.
+    // It says the AMOUNT and nothing else: a find that explained itself
+    // ("you were due one", "1 answer in 8") would stop being a surprise the
+    // first time anyone read it.
+    case "find":
+      return { ...base, icon: "💎", role: "joy", title: `You found 💎 ${d.gems}`, sub: "Lucky" };
     case "mastery":
       return null; // a chime, deliberately silent on screen
   }

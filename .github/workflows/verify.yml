@@ -360,6 +360,9 @@ jobs:
       - name: "No French on a control a beginner must read to act (6 Sep)"
         run: python3 verify/verify105-en-chrome.py
 
+      - name: "The lucky find pays gems, is seeded, and is capped (6 Sep)"
+        run: python3 verify/verify109-lucky-find.py
+
       - name: "SIO-010 keys Enchantée for Léa; Libéria carries its accent (3 Sep)"
         # Renumbered 91 -> 92 at the QC merge — sixth collision: pages-basepath
         # claimed 91 the same morning and landed first (#157).
