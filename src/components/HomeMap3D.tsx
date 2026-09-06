@@ -822,6 +822,10 @@ export default function HomeMap3D({
                     // kind colour full, upcoming the same colour lightened;
                     // the skirt is always that colour's dark side.
                     const rim = `color-mix(in oklch, ${colour} 62%, black)`;
+                    // Reached = the pen at full strength; still ahead = its
+                    // pale shade. The 2D grid uses the pen's own --fam-*-wash
+                    // token; here the mix stays, because a 3D face is shaded by
+                    // the light model as well and a flat wash would fight it.
                     const face = done || active ? colour : `color-mix(in oklch, ${colour} 55%, ${PAPER})`;
                     const ring = Math.max(1.5, Math.round(sz * 0.05));
                     return (
@@ -913,8 +917,17 @@ export default function HomeMap3D({
                               {/* The 🧑‍🎓 above already says "you are here", so the
                                   stop shows its number (2026-08-21). It used to
                                   carry a ▶ as well — one stop, two marks for the
-                                  same thing, and the triangle belongs to sound. */}
-                              {done ? "✓" : st.num}
+                                  same thing, and the triangle belongs to sound.
+
+                                  AND THE NUMBER NEVER LEAVES (6 Sep). It was
+                                  `done ? "✓" : st.num`, so a finished stop lost
+                                  its number here exactly as it did in 2D. Dan:
+                                  "i do still want the number to remain on the
+                                  buttons", then "Drop it — the fill says it" of
+                                  the tick. The face already carries done-ness:
+                                  the pen at full strength when reached, its
+                                  wash when still ahead. */}
+                              {st.num}
                             </span>
                           </span>
                           {second && nodeH > 10 && (
