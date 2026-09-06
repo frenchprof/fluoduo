@@ -2164,11 +2164,16 @@ then vanishes into the page**; Green is faint on paper with the palest tint
 called). This supersedes prior icon-colour work where they disagree; Dan's
 words in his own brief to you are the authority on scope.
 
-### BRIEF FOR COLOR REVIEW — three retention builds (Dan, 6 Sep: "pass three of those 5 to color review pls")
+### BRIEF FOR PEERS — three retention builds (re-routed by Dan, 6 Sep: "i don't think color review has time for your three items, can you rope in peers")
+
+Originally addressed to Color review; Dan moved it to Peers the same evening
+so Color review can focus on the icon-colour redo above. Peers: you built
+the lucky find (#202), so you already know the economy files and the ethics
+floor these three live under.
 
 Background: Dan sent a video on the three retention machines consumer apps
 run (unpredictable rewards / the infinite game / social scoreboards). Five
-options were put to him; he routed the three below to your lane. Of the
+options were put to him; the three below are now Peers' lane. Of the
 other two, the bonus-gems idea was picked by Dan directly in Peers' session
 and is BUILT (the lucky find, #202 — do not build it again; its colour rules
 live in verify109); the Finch-style companion remains NOT approved.
@@ -2223,9 +2228,9 @@ is gone from here; it lives in git history if anyone needs the wording.
 | Agent (session) | Lane | Owns right now |
 |---|---|---|
 | **fluoduo-main** | **Integration** — merges, branch hygiene, verify-number renumbers, cross-session stall watch, previews for Dan, deploy shepherding | The 31 Aug cleanup sweep; this roster |
-| **Color review** | **Concepts** — the tier pipeline (Tier 1 ×19, Tier 2 second half), keeper of the Stocktake ledger | **NEW, from Dan 6 Sep: the three retention builds** (brief below, "BRIEF FOR COLOR REVIEW") · then the tier pipeline resumes |
+| **Color review** | **Concepts** — the tier pipeline (Tier 1 ×19, Tier 2 second half), keeper of the Stocktake ledger | **The icon-colour REDO** (Dan direct, spec transcribed below) — the retention builds moved to Peers · then the tier pipeline resumes |
 | **Pre-tests** | **Pre-test surfaces** | ✅ Unit-0 pages (#98) · ✅ popup collapse (#99) · ✅ derived done-ness (#104, open) · ✅ iComplete cut + SIO-010 tabs (#107, open) · **next: Tier-1 concept batches as second capacity** |
-| **Peers** | **Features** | 31 Aug PM: SIO-005/006 lessons, the colour ladder, band weight, English tabs, Words-under-Forms, the collapse rule — **LANDED — #105, `d85533b`**. Queue empty; next assignment is Dan's |
+| **Peers** | **Features** | #202 landed (`fb63da9`: tactile map, lucky find, banner colours) · **NEW, from Dan 6 Sep: the three retention builds** (see BRIEF FOR PEERS below) |
 | **Dan** | **Decisions + reads + deploys** | The queue below; every pedagogical claim is read before it ships |
 
 ### Rules every session respects
