@@ -610,7 +610,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
                                 ? "border-rose-600 bg-rose-50 text-rose-900 line-through"
                                 : "border-slate-200 text-slate-400"
                             : o === selected
-                              ? "answer-v.picked"
+                              ? "answer-picked"
                               : "border-slate-300 bg-white text-slate-800 hover:border-slate-900"
                         }`}
                       >
