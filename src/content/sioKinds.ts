@@ -74,9 +74,18 @@ export function sioKind(sioId: string): SioKind {
 // Legend labels (Dan, 2026-07-08): "communication" over "atelier"; and
 // "expressions" over "phrases" — the kind means formulaic chunks (English
 // sense), and French « phrase » = sentence would mislead.
+//
+// ENGLISH SINCE 6 SEP (item 7). This is the map's LEGEND — the key a learner
+// reads to know what a stop's colour means, and the words a screen reader
+// announces for every stop (Map2DGrid puts KIND_LABEL in each node's
+// aria-label). Chrome, not content, so it speaks the learner's language.
+// Dan's July ruling survives intact: it chose WHICH word, not which language,
+// and both of its choices are the same in English — "expressions" over
+// "phrases" still avoids « phrase » = sentence, and "communication" still
+// beats "atelier". Only two words actually change.
 export const KIND_LABEL: Record<SioKind, string> = {
-  vocab: "vocabulaire",
-  grammar: "grammaire",
+  vocab: "vocabulary",
+  grammar: "grammar",
   phrases: "expressions",
   production: "communication",
 };

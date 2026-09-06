@@ -6,6 +6,171 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 6 Sep — the verify-number collision is now the build's job, not a ritual
+
+Sole editor of STATUS.md in this commit: claude/peers-vd2h6h (Peers).
+
+Dan, asked which process change to make first: *"3. yes"* — the number scan.
+
+**Seven collisions** (31, 52 twice, 60, 43, then 96 and 97 on 6 Sep), and
+every one by a session that HAD run the scan AGENTS.md asks for. The scan is
+a snapshot; another session can claim the number in the hours between your
+scan and your push, and care does not close that window. `verify-wiring` gains
+a fourth assertion that runs it at push time instead.
+
+Narrow on purpose: only numbers a branch **adds** are checked (a number on
+`main` is settled, so `main` can never go red for someone else's branch); only
+branches **ahead of `main` and touched in the last 45 days** count as in
+flight (this repo has had branches rot for weeks, and a dead branch must not
+hold a number hostage); the branch that merges first keeps the number. Costs
+1.5 s.
+
+**It found a live one immediately.** `claude/fluolingo-color-review-9thj8x`
+and `claude/pre-tests-amendments-hndx8r` BOTH claimed **102** —
+`verify102-menu-hues.py` and `verify102-fluidtype.py`.
+[SUPERSEDED at the QC merge, same day: by the time this section landed, both
+branches were already in — menu-hues kept 102 (#189) and pre-tests had
+self-renumbered its fluidtype to **106** before #191 merged. The finding was
+right when written; the eighth collision resolved itself while this PR was
+in flight, which is itself the argument for assertion 4 existing.]
+
+Six break-tests, four of which went GREEN against broken code on the first
+run: the assertion read `git ls-tree HEAD` — the last commit — rather than the
+working tree, so a file renamed onto a taken number passed until it was
+committed, which is the exact moment someone needs telling. It now uses the
+same file list as assertions 1–3. Also proved: `main` itself stays green, a
+developer with no remotes fetched gets a visible skip, and CI with that same
+broken checkout FAILS rather than quietly guarding nothing.
+
+## 6 Sep — item 7: French off the controls (CLOSED)
+
+Sole editor of STATUS.md in this commit: claude/peers-vd2h6h (Peers).
+
+FINISH_BACKLOG **item 7** — *"no FR-only chrome a beginner must decode to
+act"*. A scan of every non-content file for French turned up 227 candidates;
+almost all were the material being taught. Six were controls.
+
+**Changed, with no flavour lost:**
+
+| where | was | now |
+|---|---|---|
+| Games hub, the button on every card | `▶ Jouer` | `▶ Play` |
+| Games hub, the second button | `Choisir un autre` | `Choose another` |
+| ComposeIt, the checker's own failure | `Pardon, un petit souci… réessayez !` | `Something went wrong — try again.` |
+| `/moi/historique`, the map's name | `Carte` | `Map` |
+| `/moi/historique`, Home's name | `Accueil` | `Home` |
+| The map legend + every stop's aria-label | `vocabulaire` · `grammaire` | `vocabulary` · `grammar` |
+
+Two coupled edits that a rename would have broken silently: `curriculum.ts`'s
+`SURFACE_APP` set MATCHES ON THE LABEL `"Accueil"`, so changing only
+`labels.ts` would have stopped history counting Home as an app surface; and
+`verify19` has banned the word *Accueil* as a nav label since July, so this
+change agrees with a rule already in the repo. Dan's July legend ruling
+survives whole — it chose WHICH word, not which language, and both its picks
+(*expressions* over *phrases*, *communication* over *atelier*) are the same
+in English.
+
+**Left standing — RULED, not pending.** Four sets were put to Dan on 6 Sep
+with the English each would take: the unit flaps (`Unité 0`–`Unité 4`), the
+ten rank names (`Débutant` … `Maître`), the twelve badge labels, and the two
+shop colours that are not already English (`Émeraude`, `Or`). **Dan: *"None."***
+All four stay French, and item 7 is closed on that basis rather than left
+half-done. The line his answer draws is in AGENTS.md: French that BLOCKS an
+action is a fault, French that decorates one is the app's character. « Jouer »
+was the only button on the card; a rank sits beside an English line saying how
+it was earned.
+
+`verify105-en-chrome.py` names its four surfaces one by one rather than
+sweeping — a sweep for "French in src/" would flag every deck and card in the
+course, and the first person to hit that wall would delete the check. Six
+break-tests. One of them exposed a dead assertion: the ComposeIt test matched
+`setNudge|setError|setStatus` and the real call sites are
+`setFeedback({ reply })` and `setMessages({ text })`, so it passed against the
+reverted code. It now looks for APOLOGY rather than French, since the waiter
+speaks French on purpose and the nudges quote French a learner should type.
+## 6 Sep afternoon — Dan's ten answers, the charter, and what is building
+
+Sole editor of STATUS.md in this commit: fluoduo-main. Dan answered a
+question round one-by-one; every ruling below is his.
+
+1. **Landing page: build now**, at the ROOT for signed-out strangers,
+   PLATFORM-shaped ("we want it to serve French levels and eventually other
+   languages too"), hybrid voice (playful cahier + the NUS credibility
+   line). → building on `feat/landing-page` (agent, verify105 claimed).
+2. **ChaTutor history: keep on-device** (localStorage; list, reopen,
+   delete; nothing server-side). → queued for fluoduo-main.
+3. **Swipe gestures: Color's lane owns them** — their fix merged as #195.
+4. **Icon colour is the learner's: pink / blue / green** from the pen
+   palette; cream plate stays on the opaque icons (no colour fakes
+   transparency on both dark and light wallpapers). CAVEAT recorded: the
+   tab icon can switch live; the installed home-screen icon is stamped at
+   install — choose before installing, reinstall to change. → queued.
+5. **No-classes journey wording**: /moi's header prints GOAL n / 50 (same
+   figure as Home's counter, one derivation: `nextGoalNumber`), and
+   /about's "Bring to class ... into the classroom" paragraph is
+   de-classroomed. Teacher pages rightly keep classroom language. → in
+   this commit.
+6. **Stale branches: mark, don't delete.** They cost ~nothing (a branch is
+   a pointer; the site builds only from main) but they slow every lane's
+   verify-number scans. TO BE DELETED ON DAN'S WORD: every
+   `claude/*`/`cursor/*`/`feat/*`/`fix/*`/`ux/*`/`qc-*` branch whose PR is
+   merged or whose content is squashed into main — enumerate with
+   `git branch -r --no-merged origin/main` and cross-check each against
+   its closed PR before the sweep.
+7. **Grok duty-roster proposal: DROPPED** (tombstone in THE ROSTER below).
+8. **Headings tighten to −2%** (`.cahier-display` −0.02em). → in this
+   commit.
+9. **Dark cahier: commissioned as an INERT DRAFT** — tokens only, behind a
+   `[data-cahier-dark]` attribute nothing sets, screenshots for Dan's
+   reaction. → building on `feat/dark-cahier-draft` (agent).
+10. **The UI-police charter is law**: `docs/UI_POLICE.md`, 90 items — Dan's
+    83 merged from thirteen video rounds plus 7 audit additions he blessed
+    (keyboard hints, reduced motion, focus ring, lang="fr", rem type,
+    EN-never-bigger-than-FR, declared color-scheme). Lanes read it before
+    touching a surface. → in this commit.
+
+Also in this commit: Color's #193 handover fixed — the lesson tab strip's
+pills get real height (py-2) to clear the 44px tap floor their halos could
+not. In flight elsewhere: Peers re-opening backlog item 7 (Carte/Accueil
+EN chrome, absent from main — their closing note missed it).
+
+## 6 Sep — OPEN FOR fluoduo-main: the lesson tab strip is under #192's tap floor
+
+Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x
+(Colour review). Raised at Dan's instruction after #189 merged; the detail and
+the numbers are in **issue #193**.
+
+#192 set the fat-finger floor — a control may draw small, but must CATCH ~44px.
+The four lesson tabs do not, measured on the merged export at
+`/lessons/deck/salutations`:
+
+    320px   36.8px tall   4 of 4 under the floor   4px apart
+    390px   41.3px tall   4 of 4 under the floor   4px apart
+
+AND IT CANNOT TAKE #192's OWN FIX. That patch's note says so: *"Do not put it
+on two controls closer than ~10px, or their halos cross."* The strip is
+`grid-cols-4 gap-1` — four pixels. So the remedy has to be real height, not the
+invisible halo.
+
+TWO THINGS BEFORE ANYONE CALLS IT A REGRESSION.
+
+  · It is not one. The strip measured 37px and 41px BEFORE the 5 Sep stacking
+    change too — same heights, one row instead of two. What is new is a rule it
+    breaks, not the strip.
+  · Nothing catches it. The floor is a hand-applied class, so a control that
+    never got the class is invisible to CI. A check that MEASURES rendered hit
+    areas would; the jam scan already drives every lesson page in a browser and
+    could carry it.
+
+NOT FIXED HERE, deliberately. ~5px of vertical padding brings the tabs to 44
+without touching the emoji, the labels or the four columns — but it is a
+visible change to a strip Dan has been iterating on all week, and the choice
+(raise it, or accept a documented exception to the floor) is with him.
+
+Clean at the same measurement, for the record: the goal-page item links catch
+60px with 6px between them, 0 of 313 under the floor; and `/sio/[id]` and the
+lesson pages render correctly on a dark-mode phone under #190 — the cahier
+stays light, the ink stays dark, no dark-on-dark.
 ## 6 Sep — SpecuLearn: one answer per card, and type goes relative (PR #191)
 
 Sole editor of STATUS.md in this commit: the pre-tests lane
@@ -1898,38 +2063,12 @@ closed.
 
 ## THE ROSTER (31 Aug 2026) — lanes, rules, and the decision queue
 
-### 5 Sep — duty roster PROPOSAL from Grok Main (relayed by Dan; awaiting the UI-UX Consultant's stamp)
+### The Grok duty-roster proposal is DROPPED (Dan, 6 Sep)
 
-Dan: *"Pls pass on the message."* Recorded verbatim as received — a proposal,
-not yet the roster; if stamped, the table below supersedes lane assignments
-above where they differ, and this line gets replaced with the ruling.
-
-**Grok room** (lock/QA — the room does not write `src/`; it locks Success,
-Claude implements, the room QAs the PR):
-- @UI-UX Consultant — FINISH_BACKLOG owner; PR ↔ item map; briefs
-- @UX Expert — flows / soft-auth / Class bag UX; tap-clarity QA on home/map keys
-- @UI Expert — lacquer mocks + visual chrome (keys, coins, EN labels)
-- @Native French Speaker (rich teaching experience) — FR on learning surfaces
-  only; chrome stays EN (co-sign their Continuer/Félicitations flag)
-- @Pedagogy Expert — pretest effect / Class bag catch-up / activity design
-  sign-off (not pixel CSS)
-
-**Claude lanes**:
-- fluoduo-main — integrate/merge only
-- Pre-tests agent — SpecuLearn / pretest / Class bag + soft-auth (items 2+3)
-- Color review agent — `--dopa-*` / lacquer keys & map coins ship
-- General FluOLinGo — double-door, EN chrome sweep, remaining FINISH_BACKLOG
-  1–18 not owned above
-
-Integrator's note, for accuracy not objection: this window fluoduo-main also
-built on Dan's direct word (bookmark, streak, game volume, the coloured ☰) —
-under this proposal such asks route to General FluOLinGo unless Dan says
-otherwise.
-
-
-Four agents audited the same six branches on the same morning; that
-redundancy is why this section exists. One lane each. Work outside your
-lane = report it in STATUS, don't do it.
+Asked directly — "Stamp it, amend it, or drop it?" — Dan chose **Drop
+it**. Things keep working as they informally do: lanes build, fluoduo-main
+QCs and merges, Dan directs whichever session he is in. The proposal text
+is gone from here; it lives in git history if anyone needs the wording.
 
 ### Lanes
 

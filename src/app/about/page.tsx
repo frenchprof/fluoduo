@@ -30,9 +30,12 @@ const COMMITMENTS: { emoji: string; title: string; hue: number; body: React.Reac
     hue: 0,
     body: (
       <>
-        Nothing here is graded. A wrong answer triggers a <b>WHY</b> explanation and lands on your{" "}
-        <b>📝 Bring to class</b>{" "}list — your personal agenda for the next lesson. Your mistakes aren&rsquo;t the cost of
-        learning; they&rsquo;re the raw material, and they travel with you into the classroom.
+        {/* Journey wording (Dan's no-classes ruling, 6 Sep) — the bag and its
+            classroom narrative were dissolved on 5 Sep; this page still told
+            worldwide participants their mistakes travel "into the classroom". */}
+        Nothing here is graded. A wrong answer triggers a <b>WHY</b> explanation and joins{" "}
+        <b>📝 your mistakes to revisit</b> — Réviser picks them up. Your mistakes aren&rsquo;t the cost of
+        learning; they&rsquo;re the raw material.
       </>
     ),
     refs: [4],

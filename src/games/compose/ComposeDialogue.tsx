@@ -198,7 +198,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
       }
       const data = (await r.json().catch(() => null)) as { reply?: string; done?: boolean } | null;
       if (!data?.reply) {
-        setMessages((m) => [...m, { who: "waiter", text: "Pardon, un petit souci… réessayez !" }]);
+        setMessages((m) => [...m, { who: "waiter", text: "Something went wrong — try again." }]);
         return;
       }
       setAiMode("ai");
