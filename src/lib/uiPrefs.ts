@@ -27,10 +27,12 @@ export type UiPrefs = {
 
 export const DEFAULTS: UiPrefs = {
   showNavLabels: false,
-  // The default bar is today's bar: the families minus User (the account
-  // chip in the top bar is already the profile door). 👤 User may be
-  // ticked back IN at Réglages now that the bar is the learner's to fill.
-  bottomNav: FAMILIES.filter((f) => f.key !== "user").map((f) => f.key),
+  // OFF BY DEFAULT (Dan, 6 Sep: "can we remove the bottom nav menu") —
+  // superseding his 5 Sep default-five. The bar still exists as the
+  // learner's opt-in: tick any tab in Réglages and it appears; the Revise
+  // due count rides the ☰ badge while the bar is away. FAMILIES import
+  // stays for the type and Réglages' rebuild order.
+  bottomNav: [],
 };
 
 export function readUiPrefs(): UiPrefs {

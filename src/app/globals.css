@@ -511,11 +511,21 @@ body {
 
 /* Six rotating accent hues for item cards (paper-tinted). */
 .fluo-h-0 { --fluo-card-accent: #e0567f; --fluo-card-tint: #fbe3ec; }
-.fluo-h-1 { --fluo-card-accent: #2bb6c2; --fluo-card-tint: #def3f5; }
-.fluo-h-2 { --fluo-card-accent: #e3a700; --fluo-card-tint: #fbeec4; }
-.fluo-h-3 { --fluo-card-accent: #8a5fd4; --fluo-card-tint: #ece2fa; }
-.fluo-h-4 { --fluo-card-accent: #e8852e; --fluo-card-tint: #fbe6cf; }
-.fluo-h-5 { --fluo-card-accent: #7bbf2e; --fluo-card-tint: #ecf7cf; }
+/* THE FAMILY PENS, derived (Dan, 6 Sep). His spec's /moi exemption was
+   OVERRULED by him the same hour: "It is no longer an exception... moi has
+   to follow the scheme because it is part of the website, and there must
+   be unity." So these five accents draw from the six-pen tokens — ink for
+   the accent (it colours text in places, and ink is the role that may),
+   wash for the tint — and the mapping is semantic, not decorative:
+   RE-DRILLS is Revise's business (blue), SKILLS is the Skills family
+   (violet), FRILLS/showcase is User (orange), ILLS surfaces practice
+   problems (yellow), and the fifth take goals-green. The old
+   teal/amber/lime pre-highlighter quads died here. */
+.fluo-h-1 { --fluo-card-accent: var(--fam-review-ink); --fluo-card-tint: var(--fam-review-wash); }
+.fluo-h-2 { --fluo-card-accent: var(--fam-practice-ink); --fluo-card-tint: var(--fam-practice-wash); }
+.fluo-h-3 { --fluo-card-accent: var(--fam-skills-ink); --fluo-card-tint: var(--fam-skills-wash); }
+.fluo-h-4 { --fluo-card-accent: var(--fam-user-ink); --fluo-card-tint: var(--fam-user-wash); }
+.fluo-h-5 { --fluo-card-accent: var(--fam-goals-ink); --fluo-card-tint: var(--fam-goals-wash); }
 
 /* Chunky 3D-press button — marker fill, serif label, navy ink on light hues. */
 .fluo-btn {

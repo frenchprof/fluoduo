@@ -459,8 +459,7 @@ function Section({
           className="px-3.5 py-3.5"
           style={{
             background: hue ? "color-mix(in oklab, var(--fluo-card-accent) 6%, transparent)" : PAPER,
-            borderLeft: `7px solid ${accent}`,
-            borderBottom: `1px solid ${LINE}`,
+                        borderBottom: `1px solid ${LINE}`,
           }}
         >
           {children}
