@@ -59,7 +59,10 @@ css = read("src/app/globals.css")
 ok("bottomNav: FamilyKey[]" in prefs,
    "uiPrefs carries bottomNav, typed to the family keys",
    "uiPrefs has no `bottomNav: FamilyKey[]` — the bar is not a preference")
-ok(re.search(r'bottomNav:\s*FAMILIES\.filter\(\(f\) => f\.key !== "user"\)\.map\(\(f\) => f\.key\)', prefs) is not None,
+# SUPERSEDED 6 Sep (Dan: "can we remove the bottom nav menu") — the default
+# is EMPTY now; the bar is opt-in at Réglages. The claim flips: the default
+# must be [], so no learner sees a bar they did not ask for.
+ok(re.search(r'bottomNav:\s*\[\]', prefs) is not None,
    "the default is DERIVED: FAMILIES minus User, same as the bar always was",
    "the default bottomNav is not derived from FAMILIES minus User — a "
    "hand-kept list will drift the moment a family is renamed or added")
