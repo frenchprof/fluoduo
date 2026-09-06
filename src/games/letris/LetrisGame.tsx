@@ -37,7 +37,16 @@ export type LetrisTile = {
    *
    *  The tile still BELONGS to `category` — that is where it is listed and
    *  what a miss is told to aim for; `also` only widens what counts as right.
-   *  Nothing uses it yet: prix is not in the commerces rain today. */
+   *  Nothing uses it yet: prix is not in the commerces rain today.
+   *
+   *  NOT FOR « IL FAIT DU SOLEIL ». It is the obvious candidate and it has now
+   *  been ruled out twice — 24 Aug ("« Il fait du soleil » stays WRONG — the
+   *  Atelier corrigé is the examined standard") and again on 5 Sep, when a tile
+   *  audit reopened it: "I want to DROP il fait du soleil and il fait du vent —
+   *  instead teach il y a du soleil il y a du vent". Widely said is not the
+   *  test; what the examined standard accepts is. `also` is for a form the
+   *  course TEACHES in two columns, not for a colloquialism it declines to
+   *  teach. */
   also?: string[];
 };
 export type LetrisSet = {
