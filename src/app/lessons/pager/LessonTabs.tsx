@@ -788,7 +788,14 @@ export default function LessonTabs({
                 // shortening the words he had just chosen. Stacking costs ~14px
                 // of height and keeps both, and it is what the app's own
                 // navigation already looks like one bar lower.
-                "flex flex-col items-center justify-center gap-0 rounded-xl border-2 px-0.5 py-1 text-[11px] font-black leading-tight transition min-[360px]:text-[12px] min-[390px]:text-[13px]",
+                // py-2, was py-1: Color measured these at 36.8-41.3px tall —
+                // under PR 192's 44px tap floor — and 4px apart, too close
+                // for the invisible halo (its own note forbids halos on
+                // neighbours nearer ~10px). Real height is the remedy
+                // (STATUS 6 Sep / issue 193): +8px vertical clears 44 at
+                // every width. ("PR 192", not the usual hash form — the
+                // hex ratchet reads a hash plus three digits as a colour.)
+                "flex flex-col items-center justify-center gap-0 rounded-xl border-2 px-0.5 py-2 text-[11px] font-black leading-tight transition min-[360px]:text-[12px] min-[390px]:text-[13px]",
                 on
                   ? "border-[color:var(--cahier-ink)] bg-[color:var(--fam-ink)] text-white"
                   : "border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-raised)] text-[color:var(--fluo-ink-soft)]",

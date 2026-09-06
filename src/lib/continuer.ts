@@ -32,6 +32,18 @@ export function nextSioId(progress: Progress, bookmarkNo?: number | null): strin
   return (afterFurthest ?? SIOS.find((s) => !isSioDone(s.id, progress)))?.id;
 }
 
+/** The current stop as its NUMBER out of fifty — the same figure Home's
+ *  counter shows, derived from the same nextSioId. One home for the maths:
+ *  /moi's header prints it since the no-classes journey wording (Dan, 6 Sep:
+ *  a worldwide learner has no "WEEK 4"; their position on the path is
+ *  theirs). Undefined when everything is done. */
+export function nextGoalNumber(progress: Progress, bookmarkNo?: number | null): number | undefined {
+  const id = nextSioId(progress, bookmarkNo);
+  if (!id) return undefined;
+  const i = SIOS.findIndex((s) => s.id === id);
+  return i >= 0 ? i + 1 : undefined;
+}
+
 /** The bookmark's one storage home. The value is a stop NUMBER (1–50, the
  *  map's own order), not an id — it is what the editable indicator shows. */
 const BOOKMARK_KEY = "fluolingo:bookmark";

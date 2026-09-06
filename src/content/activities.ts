@@ -246,10 +246,15 @@ export const TAB_ICONS: Record<string, { label: string; emoji: string }> = {
   // map exists to make impossible, and Dan settled the wording himself
   // (2026-09-05: *"no no no, i want the name SpecuLearn"*).
   //
-  // The emoji stays 🧪, which is main's choice, and it is now the one open
-  // question here: the SpecuLearn ACTIVITY in the registry is 💡, so one name
-  // wears two pictures. Flagged to Dan rather than settled in a merge.
-  pretest: { label: "SpecuLearn", emoji: "🧪" },
+  // ONE PICTURE PER THING (settled 6 Sep, closing the flag below): the name
+  // and the emoji both DERIVE from the speculearn registry entry — Dan chose
+  // 💡 for SpecuLearn on 2026-08-29 ("use this for SpecuLearn 💡"), and the
+  // 🧪 that lived here made one name wear two pictures, in the ☰ menu and
+  // the Practice hub. Derived, so a future rename or re-icon moves BOTH.
+  pretest: {
+    label: RAW_ACTIVITIES.find((a) => a.key === "speculearn")!.name,
+    emoji: RAW_ACTIVITIES.find((a) => a.key === "speculearn")!.emoji,
+  },
   matching: { label: "Match It", emoji: "🔗" },
   // "Map", not "Carte" (Dan, 2026-09-01) — the interface is English; the key
   // and the /carte redirect route are untouched, display rename only.
