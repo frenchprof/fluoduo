@@ -1,7 +1,20 @@
 # SpecuLearn — image brief
 
-160 images to generate, in four priorities. Every row in `speculearn-image-brief.csv`
-carries a ready-to-paste `prompt` column. 19 further items are held back for a decision.
+146 images to generate. Every row in `speculearn-image-brief.csv`
+carries a ready-to-paste `prompt` column.
+
+**ALL FOUR PRIORITIES ARE REQUIRED** (Dan, 5 Sep). Asked whether SpecuLearn should be
+"all photos and no emojis", he chose photos everywhere. That settles P4, which had been
+written as optional — an emoji that names its word correctly is still an emoji sitting
+beside a photograph, and the inconsistency is the point he was making. Priority is now
+the ORDER to generate in, not a line between must and might.
+
+The 19 *languages* items are **not an image job at all** and take no rows here. Their
+picture is the language's own name for itself, in its own script — « le chinois » is 中文,
+« le russe » is Русский — settled by Dan on 31 Aug and again on 5 Sep. That is TYPE, not a
+render: the browser draws it correctly at every size on every screen, and an image
+generator asked for हिन्दी or 廣東話 garbles it more often than not. It lives in
+`SPECULEARN_ENDONYMS` (`src/lib/collections/speculearnReady.ts`).
 
 ## House style, applied to every prompt
 
@@ -79,7 +92,11 @@ Keep the existing filenames so nothing else has to change.
 | aliments | `les-sushis.jpg` | les sushis | /devine/les-sushis.jpg | `les-sushis.jpg` |
 | aliments | `les-ufs.jpg` | les œufs | /devine/les-ufs.jpg | `les-ufs.jpg` |
 
-## P2 · COLLISION — 4 items whose picture is not unique — 4 images
+## P2 · COLLISION — retired, 5 Sep — 0 images
+
+All four were commerces money words (« euros », « monnaie », « Ça fait combien ? »,
+« Voici votre monnaie. ») whose 💶 and 🪙 answered to two words each. That collision is
+gone because the deck no longer plays them. See "14 rows retired" below.
 
 Two playable items in the same deck currently share one emoji, so whichever is asked the other answer is
 defensible. These need pictures that separate them.
@@ -91,7 +108,10 @@ defensible. These need pictures that separate them.
 | commerces | `commerces-27` | euros | 💶 | `commerces-27.png` |
 | commerces | `commerces-28` | monnaie | 🪙 | `commerces-28.png` |
 
-## P3 · SENTENCE — 19 items an emoji cannot carry — 19 images
+## P3 · SENTENCE — 9 items an emoji cannot carry — 9 images
+
+The ten commerces sentences that were here are retired (below); these nine are *consignes*,
+whose classroom commands are one category and do play.
 
 These are full clauses, not nouns. A 🍎 does not say *“Je voudrais deux kilos de pommes.”* Each prompt
 describes the SCENE the sentence names.
@@ -118,7 +138,11 @@ describes the SCENE the sentence names.
 | consignes | `consignes-09` | Associez ! | 🔗 | `consignes-09.png` |
 | consignes | `consignes-10` | On fait quoi ? | ❓ | `consignes-10.png` |
 
-## P4 · OK-emoji — 81 that work, but do not match — 81 images
+## P4 · OK-emoji — 81 that name their word, but are emoji — 81 images
+
+Required, like the rest (Dan, 5 Sep: photos everywhere). These emoji are not WRONG — 🥖
+does mean *une boulangerie* — they are simply the last 81 places where a learner meets an
+emoji instead of a picture.
 
 These read unambiguously today. They are listed because a deck that is half 3D render and half Apple emoji
 will look broken. Generate them for consistency, or leave them and accept the mixture — your call.
@@ -214,3 +238,27 @@ will look broken. Generate them for consistency, or leave them and accept the mi
 `public/speculearn/<filename>` for the new decks; `public/devine/<filename>` for the
 aliments replacements (existing names, so no code change). The empty `SPECULEARN_ITEM_IMAGES`
 map in `src/lib/collections/speculearnReady.ts` is what wires an item id to a file.
+
+
+## 14 rows retired, 5 Sep — do not generate
+
+commerces used to play its whole deck, so the brief asked for pictures of « Ça fait
+combien ? » and « Voilà dix euros. » as well as of the shops. A picture cannot name a
+sentence, which is what produced Dan's run of "this question does not have an answer"
+reports; the deck now plays its shop nouns only. Those 14 rows are marked
+**priority 0 / DROPPED** in the CSV and are not wanted.
+
+That leaves commerces with six: the five shops it plays, plus « le prix ».
+
+## The languages deck — settled, and not with pictures
+
+Endonyms, in the language's own script, rendered as type:
+
+    English · 中文 · हिन्दी · Español · العربية · Français · Português · Русский ·
+    Bahasa Indonesia · Deutsch · 日本語 · Türkçe · தமிழ் · 廣東話 · Tiếng Việt ·
+    Filipino · 한국어 · ไทย · Bahasa Melayu
+
+A flag was never right for a language: 🇬🇧 for English leaves out most of its speakers, and
+Spanish, Arabic and Portuguese each fly a dozen. Nineteen distinct names, so no two cards
+share a picture, and the tile sizes itself by the longest word — « Bahasa Indonesia » at
+one size, 中文 at another.

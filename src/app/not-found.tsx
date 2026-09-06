@@ -23,16 +23,23 @@ import Link from "next/link";
 export default function NotFound() {
   return (
     <main className="mx-auto flex min-h-[60vh] max-w-xl flex-col items-center justify-center gap-5 px-6 text-center">
-      <p className="text-5xl" aria-hidden>
+      {/* The compass bobs like the 🧑‍🎓 on the map — same keyframes, and the
+          global reduced-motion rule stills it for whoever asks for calm. */}
+      <p className="home-map-bob text-5xl" aria-hidden>
         🧭
       </p>
 
-      <h1 className="cahier-hand cahier-display text-3xl font-normal text-[color:var(--cahier-ink)]">
-        Page not found
+      {/* Even the lost page speaks French first (UI-police round 7, 6 Sep:
+          the hidden pages carry the personality too). « Où sommes-nous ? »
+          is what stops 35-36 teach for locating places — a wrong URL is a
+          free rehearsal. The English below is the REFERENCE: smaller,
+          italic, never bigger than the French (Dan's permanent rule). */}
+      <h1 lang="fr" className="cahier-hand cahier-display text-3xl font-normal text-[color:var(--cahier-ink)]">
+        Où sommes-nous&nbsp;?
       </h1>
 
-      <p className="cahier-body text-sm leading-relaxed text-[color:var(--fluo-ink-soft)]">
-        This page doesn&rsquo;t exist, or it has moved.
+      <p className="cahier-body text-sm italic leading-relaxed text-[color:var(--fluo-ink-soft)]">
+        Where are we? This page doesn&rsquo;t exist, or it has moved.
       </p>
 
       <div className="flex flex-wrap items-center justify-center gap-2">

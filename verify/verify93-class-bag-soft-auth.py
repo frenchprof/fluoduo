@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
 """
-Class bag product + soft-auth (FINISH_BACKLOG items 2+3).
+No sign-in wall in front of a guess.
 
-Pins locked CLASS_BAG.md copy, no AuthGate mid-guess on SpecuLearn/pretest,
-and soft-auth only at Continu/save. Does not touch verify38's OPEN_APP ban —
-run verify38 separately; this file asserts the product strings and the
-AuthGate removal on the diagnostic routes.
+Was "Class bag product + soft-auth". Dan dissolved Class bag on 5 Sep ("we
+dowan that anymore"), and its half of this file went with it: the locked bag
+copy, the soft-auth prompt's wording, the BringToClass export pin and the
+Recap mount. docs/CLASS_BAG.md keeps that copy as a record.
+
+What remains is the half that was never about the bag, and is the reason this
+file exists at all: a learner must be able to reach and answer a diagnostic
+without signing in. Four routes must not wrap AuthGate, and the wall itself
+must stay env-driven rather than hand-edited — the same fault verify38 guards
+from the other side.
 """
 import os, re, sys
 
@@ -38,28 +44,12 @@ specu, pre, u0, pic = read(SPECU), read(PRE), read(U0), read(PIC)
 recap = read(RECAP)
 auth = read(AUTH)
 
-# Locked Class bag chrome
-for s in ("Class bag", "You can:", "Show in class", "Copy list",
-          "Nothing to check — you're ready.", "Continue"):
-    check(s in bag, f"Class bag UI includes {s!r}", f"Class bag UI missing {s!r}")
-
-# Soft-auth locked copy
-for s in ("Sign in to keep this bag", "Continue with Google", "Keep going without saving"):
-    check(s in soft, f"soft-auth includes {s!r}", f"soft-auth missing {s!r}")
-
-# Export name stays BringToClass for verify40
-check("export function BringToClass" in bag,
-      "BringToClass export name kept (verify40 Recap pin)",
-      "BringToClass renamed — verify40 will fail")
-
-# Recap still mounts BringToClass with empty ready state
-recap_fn = recap[recap.find("function Recap("):] if "function Recap(" in recap else ""
-check("<BringToClass" in recap_fn,
-      "U1–4 Recap still mounts BringToClass",
-      "U1–4 Recap lost BringToClass")
-check("showEmpty" in recap_fn,
-      "U1–4 Recap asks for empty ready state",
-      "U1–4 Recap does not pass showEmpty")
+# Class bag is gone, and so is anything that would resurrect it by pin.
+# code(), not the raw file: SioDetail's header comment explains the removal by
+# name, and a check that a comment can trip is a check nobody trusts.
+check("BringToClass" not in code(bag),
+      "Class bag stays dissolved — no BringToClass to mount",
+      "BringToClass is back in SioDetail; Dan dissolved it on 5 Sep")
 
 # No AuthGate on diagnostic / SpecuLearn routes
 for name, src in (("SpecuLearn page", specu), ("pretest [id] page", pre),
@@ -76,10 +66,10 @@ check("REQUIRE_SIGN_IN = true" not in code(auth),
       "no hard-coded REQUIRE_SIGN_IN = true",
       "REQUIRE_SIGN_IN hard-coded true")
 
-# Skip pretest path exists
+# A learner can always decline the guess and move on.
 check("Skip pretest" in recap or "Skip pretest" in read("src/app/pretests/unit0/[sioId]/Content.tsx"),
-      "Skip pretest → Class bag path exists",
-      "no Skip pretest control")
+      "Skip pretest is still offered",
+      "no Skip pretest control — a learner cannot decline a diagnostic")
 
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:

@@ -37,19 +37,20 @@ import {
   BUILDING_EMOJI,
   SPECULEARN_EXCLUDED_ITEMS,
   SPECULEARN_ITEM_IMAGES,
+  SPECULEARN_ENDONYMS,
   SPECULEARN_PROMPT_FRAME,
+  specuLearnColumns,
 } from "@/lib/collections/speculearnReady";
 import { deaccent, normalize } from "@/lib/practice/cloze";
 import { useChoiceKeys, CHOICE_KEYS_HINT } from "@/lib/useChoiceKeys";
 import PHOTO_ITEMS from "@/content/devine-aliments.json";
 import { shuffle } from "@/lib/shuffle";
-import { BringToClass } from "@/app/SioDetail";
 import { recordPretestAnswer } from "@/lib/pretestRecord";
 import { stopForDeck } from "@/lib/stopTag";
 
 /** One playable card: the word, its grammar tag (colored), and its visual
  *  (photo for aliments, emoji elsewhere). s = aliments pack number. */
-type DevItem = { w: string; tag: string | null; color: string; img?: string; emoji?: string; s?: number };
+type DevItem = { w: string; tag: string | null; color: string; img?: string; emoji?: string; endonym?: string; s?: number };
 
 type Mode = "mix" | "say-t" | "say-s";
 type Dir = "wi" | "iw" | "say-t" | "say-s";
@@ -108,11 +109,16 @@ function buildItems(collectionId: string): { items: DevItem[]; subtitle: string 
     return { items, subtitle: "Les aliments" };
   }
   const deck = CURATED.find((c) => c.id === collectionId);
+  // ONE DECK, ONE CATEGORY (see specuLearnColumns). commerces mixes shop
+  // nouns with whole utterances and a bag of article-less words; playing
+  // them together produced cards with no answer at all.
+  const cols = specuLearnColumns(collectionId);
   const items = (deck?.items ?? [])
     .filter(
       (it) =>
         it.fr &&
         !SPECULEARN_EXCLUDED_ITEMS.has(it.id) &&
+        (!cols || (it.tags ?? []).some((t) => cols.includes(t))) &&
         // A visual comes from EITHER the item's emoji (banned when it's a
         // building look-alike, see BUILDING_EMOJI) OR a purpose-made SVG
         // keyed by item id (SPECULEARN_ITEM_IMAGES) — never neither.
@@ -121,7 +127,16 @@ function buildItems(collectionId: string): { items: DevItem[]; subtitle: string 
     .map((it) => {
       const w = withArticle(it.fr, it.tags);
       const img = SPECULEARN_ITEM_IMAGES[it.id];
-      return { w, ...tagFromArticle(w), emoji: img ? undefined : (it.emoji as string), img };
+      // A language's picture is its own name (see SPECULEARN_ENDONYMS) — 中文,
+      // Русский — not the flag of one country that speaks it.
+      const endonym = SPECULEARN_ENDONYMS[it.id];
+      return {
+        w,
+        ...tagFromArticle(w),
+        emoji: img || endonym ? undefined : (it.emoji as string),
+        img: endonym ? undefined : img,
+        endonym,
+      };
     });
   return { items, subtitle: deck?.title ?? collectionId };
 }
@@ -141,8 +156,52 @@ function getRec(): RecLike | null {
 }
 
 type Trial = { it: DevItem; dir: Dir };
+/** One answered question, frozen. */
+type Snap = {
+  t: Trial;
+  opts: DevItem[];
+  picked: DevItem | null;
+  locked: boolean;
+  verdictGood: boolean | null;
+  struckSet: Set<string>;
+};
 
 function Visual({ it, className }: { it: DevItem; className: string }) {
+  if (it.endonym) {
+    // Measured against THE TILE, not against a guessed width. The first cut
+    // computed from a hard 8.75rem and clipped « Français », « Türkçe » and
+    // most of the rest, because the option tiles are half a phone wide, not
+    // 10rem. `cqw` is one per cent of the tile's own width, so the same rule
+    // holds on the big stimulus tile and on a narrow option, at any screen
+    // size. The factor is the width of a bold glyph in ems — CJK and Hangul
+    // are full-width, so they get their own — and 3rem caps it so 中文 does
+    // not tower over « Português ».
+    //
+    // THE CONTAINER AND THE TEXT MUST BE TWO ELEMENTS: an element cannot
+    // query itself, so `cqw` written on the same span that declares
+    // `container-type` resolves against nothing and every name came out at
+    // the 3rem cap, clipped. The outer span is the container; the inner one
+    // is measured by it.
+    const longest = Math.max(...it.endonym.split(/\s+/).map((w) => w.length));
+    const fullWidth = /[\u3000-\u9fff\uac00-\ud7af]/.test(it.endonym);
+    const cqw = (94 / (longest * (fullWidth ? 1.08 : 0.66))).toFixed(1);
+    return (
+      <span
+        className={`${className} flex items-center justify-center overflow-hidden bg-white px-2`}
+        style={{ containerType: "inline-size" }}
+      >
+        <span
+          className="break-words text-center font-bold leading-tight text-[color:var(--cahier-ink)]"
+          style={{
+            fontSize: `min(3rem, ${cqw}cqw)`,
+            fontFamily: "system-ui, 'Noto Sans', 'Noto Sans CJK SC', 'Noto Sans Devanagari', 'Noto Sans Tamil', 'Noto Sans Thai', 'Noto Sans Arabic', sans-serif",
+          }}
+        >
+          {it.endonym}
+        </span>
+      </span>
+    );
+  }
   return it.img ? (
     // Plain <img> on purpose: output:"export" ships no image optimizer, so
     // next/image adds a runtime wrapper and optimizes nothing here.
@@ -173,6 +232,14 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
   // Select-then-commit (patch 20–21): tapping an option SELECTS; the shell's
   // Vérifier COMMITS. Speech trials commit on the mic result as before.
   const [selected, setSelected] = useState<DevItem | null>(null);
+  // GOING BACK (Dan, 5 Sep: "for SpecuLearn we are missing the back button").
+  // Every question already answered is kept exactly as the learner left it —
+  // its four options in the order they were shown, what they picked, whether
+  // it was right — so ‹ shows that question again rather than a summary of
+  // it. Reviewing never re-grades: the snapshot is locked, which is the same
+  // flag that already stops a second tap on the live question.
+  const [past, setPast] = useState<Snap[]>([]);
+  const [viewing, setViewing] = useState<number | null>(null);
   const [heard, setHeard] = useState("");
   const [listening, setListening] = useState(false);
   const [opts, setOpts] = useState<DevItem[]>([]);
@@ -187,10 +254,24 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
 
   const pool = (): DevItem[] => retryRef.current ?? ITEMS;
 
+  // NO TWO OPTIONS MAY SHOW THE SAME PICTURE (Dan, 5 Sep, on « Je vous en
+  // mets combien ? »: "this seemes to have two answers possible"). commerces
+  // spent 💶 on both « euros » and « Ça fait combien ? » and 🪙 on both
+  // « monnaie » and « Voici votre monnaie » — in the word→image direction
+  // that is two identical buttons, one of them marked wrong.
+  const visualOf = (x: DevItem) => x.endonym ?? x.img ?? x.emoji ?? x.w;
   const distractors = (it: DevItem): DevItem[] => {
     const same = pool().filter((x) => x !== it);
     const base = same.length >= 3 ? same : ITEMS.filter((x) => x !== it);
-    return shuffle(base).slice(0, 3);
+    const seen = new Set([visualOf(it)]);
+    const out: DevItem[] = [];
+    for (const x of shuffle(base)) {
+      if (seen.has(visualOf(x))) continue;
+      seen.add(visualOf(x));
+      out.push(x);
+      if (out.length === 3) break;
+    }
+    return out;
   };
 
   const prepare = (q: Trial[], i: number) => {
@@ -208,6 +289,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
       dir: (mode === "mix" ? (Math.random() < 0.5 ? "wi" : "iw") : mode) as Dir,
     }));
     setQueue(q); setIdx(0); setScore(0); setWrong([]);
+    setPast([]); setViewing(null);
     void logEvent("game.start", { game: "speculearn", collectionId });
     setScreen("quiz");
     prepare(q, 0);
@@ -252,13 +334,13 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
 
   /** One graded outcome — XP/streak/SRS + the teacher evidence trail (via
    *  the ladder, which stamps the assistance actually shown). */
-  const grade = (it: DevItem, good: boolean, given?: string) => {
+  const grade = (it: DevItem, good: boolean, given?: string, chosen?: DevItem) => {
     // The devine: prefix predates the SpecuLearn rename — kept so every
     // learner's SRS history for these words survives (ids are invisible).
     const first = ladder.ladder.wrongTries === 0 && !ladder.revealed;
     const r = ladder.attempt(good, { given, activity: `speculearn:${collectionId}` });
     if (good) { if (first) setScore((s) => s + 1); sfx.correct(); } else { if (first) setWrong((w) => [...w, it]); sfx.wrong(); }
-    // Same gap store as pretests — Class bag reads missesForSio (no second store).
+    // Same gap store as pretests — one store, whoever reads it next.
     const sio = stopForDeck(collectionId);
     if (sio && first) {
       recordPretestAnswer({
@@ -277,21 +359,26 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
       speak(it.w, "fr-FR");
     } else {
       // Not final: strike the pick (mcq) / keep the mic open (say), retry.
-      if (selected) setStruck((k) => [...k, selected]);
+      // `chosen` over `selected`: a tap grades in the same event that sets
+      // the selection, so the state has not been flushed yet.
+      const struckPick = chosen ?? selected;
+      if (struckPick) setStruck((k) => [...k, struckPick]);
       setSelected(null);
       setRetry(true);
     }
   };
 
+  // TAP TO ANSWER — no Check (Dan, 5 Sep: "we should remove the Check
+  // button", and the same call on SpecuLearn's spec: "Tap to answer, no
+  // Check"). The two-step Check pretended a learner might change their mind,
+  // but the option they touched IS the answer they mean, and the second tap
+  // only stood between the guess and the feedback the whole activity exists
+  // to give.
   const pick = (o: DevItem) => {
-    if (locked || struckSet.has(o.w)) return;
+    if (locked || struckSet.has(o.w) || !t || viewing !== null) return;
     setSelected(o);
-  };
-
-  const commit = (it: DevItem) => {
-    if (locked || !selected) return;
-    setPicked(selected);
-    grade(it, selected === it, selected.w);
+    setPicked(o);
+    grade(t.it, o === t.it, o.w, o);
   };
 
   const listen = (it: DevItem) => {
@@ -318,6 +405,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
 
   const next = () => {
     if (!locked) return;
+    if (t) setPast((k) => [...k, { t, opts, picked, locked: true, verdictGood, struckSet }]);
     ladder.skip();
     if (idx + 1 >= queue.length) {
       void logEvent("game.end", { game: "speculearn", collectionId, score });
@@ -336,7 +424,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
 
   useChoiceKeys({
     count: opts.length,
-    enabled: screen === "quiz" && !!t,
+    enabled: screen === "quiz" && !!t && viewing === null,
     onPick: (i) => { const o = opts[i]; if (o && t && !locked) pick(o); },
     // DrillShell's own Enter/Space binding fires the tray's Continue.
     onNext: undefined,
@@ -345,43 +433,78 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
   });
   const card = "rounded-2xl border-2 border-[color:var(--cahier-ink)]/25 bg-white p-3";
 
+  // WHAT THE SCREEN SHOWS — the live question, or the frozen one being
+  // reviewed. Everything below reads `v`, so a reviewed question is drawn by
+  // exactly the same code that drew it the first time; nothing renders from
+  // the live state while `viewing` is set, and nothing grades either.
+  const v: Snap | null =
+    viewing == null
+      ? (t ? { t, opts, picked, locked, verdictGood, struckSet } : null)
+      : (past[viewing] ?? null);
+  const reviewing = viewing != null;
+  const goBack = () => {
+    if (viewing == null) { if (past.length) setViewing(past.length - 1); }
+    else if (viewing > 0) setViewing(viewing - 1);
+  };
+  const leaveReview = () => setViewing(null);
+
   return (
     <DrillShell
       activity="speculearn"
       deck={collectionId}
       exitHref={drillExitHref(collectionId)}
+      back={
+        screen === "quiz" && (past.length > 0)
+          ? { onClick: goBack, disabled: reviewing && viewing === 0 }
+          : null
+      }
       progress={screen === "quiz" && queue.length > 0 ? { done: idx, total: queue.length } : null}
       right={<>{score} pt</>}
       cta={
         screen === "end"
           ? { label: "↻ Play again", onClick: () => again(false) }
-          : t && (t.dir === "wi" || t.dir === "iw") && !locked && !retry
-            ? { label: "Check", onClick: () => commit(t.it), disabled: !selected }
-            : null
+          : null
       }
-      help={screen === "quiz" ? ladder.help : null}
+      help={screen === "quiz" && !reviewing ? ladder.help : null}
       secondary={
+        /* SAY WHAT THE BUTTON REPLAYS (Dan, 5 Sep: "what the hell is redo my
+           mistakes"). It read as an instruction to make the mistakes again,
+           and on an activity whose own intro says "a wrong guess costs
+           nothing" it also managed to scold. « Revisit my errors » is Dan's
+           own wording, given the same day. The (1) goes with it: the score it
+           counted — 4 / 5 — is on the same screen, and a count earns its
+           place only when it describes what you cannot see (Dan, 1 Sep). */
         screen === "end" && wrong.length > 0
-          ? { label: `Redo my mistakes (${[...new Set(wrong)].length})`, onClick: () => again(true) }
+          ? { label: "Revisit my errors", onClick: () => again(true) }
           : null
       }
       feedback={
-        screen === "quiz" && t && retry && !locked
+        reviewing && v
           ? {
-              kind: "wrong",
-              body: ladder.revealed ? <span lang="fr">→ {t.it.w}</span> : "Not yet",
-              cta: { label: isSay ? (ladder.revealed ? "Say it" : "Try again") : "Pick again", onClick: () => setRetry(false) },
-            }
-          : screen === "quiz" && t && locked
-          ? {
-              kind: verdictGood ? "correct" : "wrong",
+              kind: v.verdictGood ? "correct" : "wrong",
               body: (
                 <>
-                  {verdictGood ? "Bravo !" : "Not quite…"}
-                  <button type="button" onClick={() => speak(t.it.w, "fr-FR")} className="ml-2 font-black" style={{ color: t.it.color }}>
-                    {t.it.w} 🔊
+                  Question {(viewing ?? 0) + 1} of {queue.length}, already answered.
+                </>
+              ),
+              cta: { label: "Back to where I was ›", onClick: leaveReview },
+            }
+          : screen === "quiz" && v && retry && !v.locked
+          ? {
+              kind: "wrong",
+              body: ladder.revealed ? <span lang="fr">→ {v.t.it.w}</span> : "Not yet",
+              cta: { label: isSay ? (ladder.revealed ? "Say it" : "Try again") : "Pick again", onClick: () => setRetry(false) },
+            }
+          : screen === "quiz" && v && v.locked
+          ? {
+              kind: v.verdictGood ? "correct" : "wrong",
+              body: (
+                <>
+                  {v.verdictGood ? "Bravo !" : "Not quite…"}
+                  <button type="button" onClick={() => speak(v.t.it.w, "fr-FR")} className="ml-2 font-black" style={{ color: v.t.it.color }}>
+                    {v.t.it.w} 🔊
                   </button>
-                  {t.it.tag && <span className="ml-2 text-xs font-medium italic opacity-80">{t.it.tag}</span>}
+                  {v.t.it.tag && <span className="ml-2 text-xs font-medium italic opacity-80">{v.t.it.tag}</span>}
                 </>
               ),
               cta: { label: idx + 1 >= queue.length ? "Result" : "Continue", onClick: next },
@@ -390,7 +513,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
       }
     >
       <div className="mx-auto w-full max-w-2xl">
-        {screen === "quiz" && t && (
+        {screen === "quiz" && v && (
           <div>
             <p
               className="min-w-0 truncate text-center text-xs font-bold text-[color:var(--cahier-ink-soft)]"
@@ -412,52 +535,52 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
             )}
 
             <div className={`${card} mt-3 text-center`}>
-              {(t.dir === "say-t" || t.dir === "say-s") ? (
+              {(v.t.dir === "say-t" || v.t.dir === "say-s") ? (
                 <>
                   <p className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">
-                    {t.dir === "say-t" ? "Listen, then say it out loud" : "What is it? Say it in French!"}
+                    {v.t.dir === "say-t" ? "Listen, then say it out loud" : "What is it? Say it in French!"}
                   </p>
-                  <Visual it={t.it} className="mx-auto mt-3 h-40 w-40 rounded-xl border-2 border-[color:var(--cahier-ink)]/20" />
-                  {t.dir === "say-t" && (
-                    <button type="button" onClick={() => speak(t.it.w, "fr-FR")} className="mt-2 text-xl font-black" style={{ color: t.it.color }} title="🔊">
-                      {t.it.w} 🔊
+                  <Visual it={v.t.it} className="mx-auto mt-3 h-40 w-40 rounded-xl border-2 border-[color:var(--cahier-ink)]/20" />
+                  {v.t.dir === "say-t" && (
+                    <button type="button" onClick={() => speak(v.t.it.w, "fr-FR")} className="mt-2 text-xl font-black" style={{ color: v.t.it.color }} title="🔊">
+                      {v.t.it.w} 🔊
                     </button>
                   )}
                   <div className="mt-3 flex items-center justify-center gap-2">
-                    {t.dir === "say-t" && (
-                      <button type="button" onClick={() => speak(t.it.w, "fr-FR")} className="fluo-btn fluo-btn-sm">🔊 Listen again</button>
+                    {v.t.dir === "say-t" && (
+                      <button type="button" onClick={() => speak(v.t.it.w, "fr-FR")} className="fluo-btn fluo-btn-sm">🔊 Listen again</button>
                     )}
                     <button
                       type="button"
-                      onClick={() => listen(t.it)}
+                      onClick={() => listen(v.t.it)}
                       className={`fluo-btn fluo-btn-sm ${listening ? "!bg-rose-600 !text-white" : ""}`}
-                      disabled={locked}
+                      disabled={v.locked}
                     >
                       {listening ? "⏹ Listening…" : "🎤 Say it"}
                     </button>
                   </div>
                   {heard && <p className="mt-2 text-sm italic text-[color:var(--cahier-ink-soft)]">« {heard} »</p>}
                 </>
-              ) : t.dir === "wi" ? (
+              ) : v.t.dir === "wi" ? (
                 <>
                   <p className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">Pick the right picture.</p>
-                  <button type="button" onClick={() => speak(t.it.w, "fr-FR")} className="mt-1 text-2xl font-black" style={{ color: t.it.color }} title="🔊">
-                    {t.it.w} 🔊
+                  <button type="button" onClick={() => speak(v.t.it.w, "fr-FR")} className="mt-1 text-2xl font-black" style={{ color: v.t.it.color }} title="🔊">
+                    {v.t.it.w} 🔊
                   </button>
                   <div className="mt-3 grid grid-cols-2 gap-2">
-                    {opts.map((o, i) => (
+                    {v.opts.map((o, i) => (
                       <button
                         key={o.w}
                         type="button"
                         onClick={() => pick(o)}
-                        disabled={struckSet.has(o.w)}
+                        disabled={v.struckSet.has(o.w)}
                         className={`relative overflow-hidden rounded-xl border-2 transition ${
-                          !locked && struckSet.has(o.w)
+                          !v.locked && v.struckSet.has(o.w)
                             ? "border-slate-200 opacity-30 grayscale"
-                            : locked
-                            ? o === t.it
+                            : v.locked
+                            ? o === v.t.it
                               ? "border-emerald-600 ring-2 ring-emerald-400"
-                              : o === picked
+                              : o === v.picked
                                 ? "border-rose-600 opacity-70"
                                 : "border-slate-200 opacity-40"
                             : o === selected
@@ -474,21 +597,21 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
               ) : (
                 <>
                   <p className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">Pick the right word.</p>
-                  <Visual it={t.it} className="mx-auto mt-2 h-40 w-40 rounded-xl border-2 border-[color:var(--cahier-ink)]/20" />
+                  <Visual it={v.t.it} className="mx-auto mt-2 h-40 w-40 rounded-xl border-2 border-[color:var(--cahier-ink)]/20" />
                   <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                    {opts.map((o, i) => (
+                    {v.opts.map((o, i) => (
                       <button
                         key={o.w}
                         type="button"
                         onClick={() => pick(o)}
-                        disabled={struckSet.has(o.w)}
+                        disabled={v.struckSet.has(o.w)}
                         className={`rounded-xl border-2 px-3 py-2.5 text-base font-bold transition ${
-                          !locked && struckSet.has(o.w)
+                          !v.locked && v.struckSet.has(o.w)
                             ? "border-slate-200 text-slate-300 line-through"
-                            : locked
-                            ? o === t.it
+                            : v.locked
+                            ? o === v.t.it
                               ? "border-emerald-600 bg-emerald-50 text-emerald-900"
-                              : o === picked
+                              : o === v.picked
                                 ? "border-rose-600 bg-rose-50 text-rose-900 line-through"
                                 : "border-slate-200 text-slate-400"
                             : o === selected
@@ -507,7 +630,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
           </div>
         )}
 
-        {screen === "quiz" && !t && (
+        {screen === "quiz" && !v && (
           <p className="py-10 text-center text-sm text-[color:var(--cahier-ink-soft)]">
             {ITEMS.length === 0 ? "Nothing to guess in this deck." : "…"}
           </p>
@@ -534,14 +657,6 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
                 <button type="button" onClick={() => again(false, "say-s")} className="fluo-btn fluo-btn-sm">🎤 Guess and say</button>
               </div>
             )}
-            {(() => {
-              const sio = stopForDeck(collectionId);
-              return sio ? (
-                <div className="mt-4 text-left">
-                  <BringToClass sioId={sio.id} showEmpty continueHref={drillExitHref(collectionId)} />
-                </div>
-              ) : null;
-            })()}
           </div>
         )}
       </div>

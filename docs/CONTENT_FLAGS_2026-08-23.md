@@ -26,6 +26,10 @@ still unmarked is blessed as built.
 
 ## GramMarathon gaps (9 decks, 91 items)
 - weather: only « Il y a » accepted for du soleil/du vent (deck column + Atelier corrigé); colloquial « Il fait du soleil » marks wrong.
+  **Re-affirmed 5 Sep 2026**, after a VocabulaRain tile audit proposed accepting both and briefly shipped it.
+  Dan: *"I want to DROP il fait du soleil and il fait du vent -- instead teach il y a du soleil il y a du vent"*.
+  Reverted the same day. The lesson is procedural, not linguistic: widely said is not the test — what the
+  examined standard accepts is, and this file is where an auditor should have looked first.
   **RULED 24 Aug — keep it strict.** The corrigé is the standard they are examined on. No change; flag closed.
 - frequence keeps « parfois » (deck + Atelier bilan) though lessons teach « quelquefois ».
   **RULED 24 Aug — present both together as equivalent.** The drill accepts either, and the lesson shows them side by side as equivalents rather than teaching one and marking the other. TO BUILD.

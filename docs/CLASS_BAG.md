@@ -1,3 +1,24 @@
+# Class bag — DISSOLVED, 5 Sep 2026
+
+**Dan: *"dissolve class bag as a concept = we dowan that anymore."*** The screen,
+its miss chips, its fold, its Show-in-class projector view, its copy-list button
+and the soft-auth prompt that guarded saving a bag are all gone from the app. It
+was the last of the bring-to-class narrative he retired on 31 Aug — *"i want to
+drop the bring-to-class narrative. it is just for them to revise in DéjàRevue (or
+the Reviser whatever it is called)"*.
+
+What survives is the RECORD. `recordPretestAnswer` still writes every miss to
+`fluolingo:pretest.v1` and `missesForSio` still reads it; `verify40` pins both,
+having previously pinned the screen. Nothing displays those misses today — that
+is the open end of this change, and it is deliberate: pre-tests are barred from
+`queueForReview` (verify40 §2, so a pre-lesson miss never costs XP, accuracy or
+a review slot), so putting misses in front of a learner in DéjàRevu is Dan's
+call about what DéjàRevu is, not a refactor anyone should make quietly.
+
+The microcopy below is kept as a record of what the screen said. It is not live.
+
+---
+
 # Class bag — locked microcopy (SpecuLearn → Bring-to-class)
 
 3 Sep 2026. The words on the post-SpecuLearn screen. Companion to
