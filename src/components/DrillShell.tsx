@@ -268,7 +268,7 @@ export default function DrillShell({
        one shell, this root was the other, and nothing failed loudly.
        `cahier-drill` stays for the layout rules that ARE this shell's. */
     <div className="cahier-drilldesk">
-    <div className={`cahier-drill cahier-surface ${famKey ? `fam-${famKey}` : "fam-none"}${bandKey ? ` band-${bandKey}` : ""} flex h-full min-w-0 flex-col overflow-hidden bg-[color:var(--cahier-paper)]`}>
+    <div className={`cahier-drill cahier-surface ${famKey ? `fam-${famKey}` : "fam-none"}${bandKey ? ` band-${bandKey}` : ""} flex h-full min-w-0 flex-col bg-[color:var(--cahier-paper)]`}>
       {/* ── the notebook (2026-08-24, approved flow): drills live INSIDE the
           cahier — the family heading band on top (name from the registry,
           the drill's i/total as the band's ONE chip so the figure is never

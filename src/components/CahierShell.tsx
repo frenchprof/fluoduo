@@ -166,10 +166,8 @@ export default function CahierShell({
              the layout, type and form rules that are genuinely this shell's;
              what a page is COLOURED by is now a single name, so one grep
              finds every coloured surface in the app. */
-          className={`cahier-page cahier-surface ${famKey ? `fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""} min-h-screen`}
+          className={`cahier-page cahier-surface ${famKey ? `fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""} flex min-h-screen flex-col`}
         >
-          <div className="cahier-binding" aria-hidden />
-
           {/* The site bar — ☰ · ← FluOLinGo · icons. It used to be written
               out here, which is exactly why only CahierShell pages had it;
               DrillShell mounts the same component now (Dan, 2026-08-31). */}
@@ -186,10 +184,22 @@ export default function CahierShell({
                    place on every page. */ />
           )}
 
+          {/* The coils live HERE, below the bar and the band, like a real
+              notebook's coils sit below its cover chrome (Dan's 6 Sep photos).
+              They used to span the whole page from top:0 and rely on the bar
+              and band painting over them — which worked while they were
+              clipped inside the page, but the loops now OVERHANG the page
+              edge onto the desk, and nothing can cover the desk. Anchoring
+              them to the content region is what keeps orphan half-loops from
+              floating beside the top bar. flex-1 stretches the region to the
+              page's bottom so short pages keep coils all the way down. */}
+          <div className="relative flex-1">
+          <div className="cahier-binding" aria-hidden />
           {/* Ruled paper behind the content well — horizontals only, no vertical
               margin line (Dan, 2026-08-10). Opt-in class rather than a body
               background so a drill or a game can turn it off. */}
           <div className={"cahier-foolscap py-5 pl-12 pr-4 sm:pl-16 sm:pr-7"}>{children}</div>
+          </div>
           {/* Phone navigation, on every page now. It used to be withheld from
               any page that carried its own tab strip, which was ninety
               pre-tests — see the note above. */}

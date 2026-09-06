@@ -440,7 +440,11 @@ function Section({
         onClick={onToggle}
         aria-expanded={open}
         className="flex min-h-[56px] w-full items-center gap-2.5 px-3.5 py-3 text-left"
-        style={{ background: head, borderLeft: `7px solid ${accent}`, borderBottom: `1px solid ${LINE}` }}
+        /* No left stub (Dan, 6 Sep, pointing at the lettered options: "C —
+           the band stubs"): stacked, they read as a broken second vertical
+           line beside the binder rings. The wash carries the section's
+           colour alone. */
+        style={{ background: head, borderBottom: `1px solid ${LINE}` }}
       >
         <span className="fluo-mono text-[11px] font-black tracking-[0.08em]" style={{ color: hue ? INK : SOFT }}>
           {label}{gloss && <span className="opacity-60"> ({gloss})</span>}
@@ -459,8 +463,7 @@ function Section({
           className="px-3.5 py-3.5"
           style={{
             background: hue ? "color-mix(in oklab, var(--fluo-card-accent) 6%, transparent)" : PAPER,
-            borderLeft: `7px solid ${accent}`,
-            borderBottom: `1px solid ${LINE}`,
+                        borderBottom: `1px solid ${LINE}`,
           }}
         >
           {children}
