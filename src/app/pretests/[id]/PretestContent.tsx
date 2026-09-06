@@ -7,7 +7,6 @@ import { getPretest } from "@/content/pretests";
 import { speak } from "@/games/letris/speech";
 import { judgePretestAnswer, shuffle, ttsTextForItem } from "@/lib/pretests/runner";
 import { goalNumber, stopForPretestId } from "@/lib/stopTag";
-import { BringToClass } from "@/app/SioDetail";
 import CahierShell, { type ShellTab } from "@/components/CahierShell";
 import type { Pretest, PretestItem } from "@/lib/pretests/schema";
 import { optionGridClass } from "@/lib/optionGrid";
@@ -391,7 +390,6 @@ function Recap({
   onRestart: () => void;
 }) {
   const pct = Math.round((score / total) * 100);
-  const sioId = stopForPretestId(pretest.id)?.id;
   return (
     <article className="fluo-card fluo-h-5" data-hue={5}>
       <div className="text-center">
@@ -443,12 +441,6 @@ function Recap({
           complete the stop, when a pre-test is the cold guess BEFORE the
           teaching. A stop now ticks when everything at it has been attempted —
           see lib/doneness.ts. */}
-
-      {sioId && (
-        <div className="mt-5 text-left">
-          <BringToClass sioId={sioId} showEmpty />
-        </div>
-      )}
 
       <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
         <button type="button" onClick={onRestart} className="fluo-btn fluo-btn-lg">

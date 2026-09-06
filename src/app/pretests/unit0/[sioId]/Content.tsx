@@ -9,7 +9,7 @@
  *
  * WHAT THE PAGE ADDS that the popup could not: the can-do statement stands at
  * the top as the heading rather than as a paragraph competing with a numbered
- * path, and Class bag sits under the questions once the run is finished (or
+ * path, and a short done panel replaces the questions once the run is over (or
  * Skip pretest) — docs/CLASS_BAG.md.
  *
  * WHAT IT DELIBERATELY OMITS: the model dialogue, the lesson buttons, the
@@ -22,20 +22,20 @@
 import { useEffect, useState } from "react";
 import CahierShell from "@/components/CahierShell";
 import { goalNumber } from "@/lib/stopTag";
+import Link from "next/link";
 import SectionBand from "@/components/SectionBand";
 import { siteTabs } from "@/components/siteTabs";
 import { Sio010Pretest, Unit0Questions } from "@/components/Unit0Pretest";
-import { BringToClass } from "@/app/SioDetail";
 import { getSio, sioStatement } from "@/content/sios";
 import { SIO010_SITUATIONS, UNIT0_QUESTIONS } from "@/content/sios/unit0-questions";
 
 export default function Unit0PretestPage({ sioId }: { sioId: string }) {
   const sio = getSio(sioId);
-  const [bagReady, setBagReady] = useState(false);
+  const [finished, setFinished] = useState(false);
   useEffect(() => {
     const onDone = (e: Event) => {
       const id = (e as CustomEvent<{ id?: string }>).detail?.id;
-      if (!id || id === sioId) setBagReady(true);
+      if (!id || id === sioId) setFinished(true);
     };
     window.addEventListener("fluolingo:pretest-complete", onDone);
     return () => window.removeEventListener("fluolingo:pretest-complete", onDone);
@@ -74,11 +74,11 @@ export default function Unit0PretestPage({ sioId }: { sioId: string }) {
           <span className="fluo-hl">{sioStatement(sio)}</span>
         </p>
 
-        {!bagReady && (
+        {!finished && (
           <div className="mb-3 flex justify-end">
             <button
               type="button"
-              onClick={() => setBagReady(true)}
+              onClick={() => setFinished(true)}
               className="rounded-full border-2 border-[color:var(--fluo-line)] bg-white px-3 py-1.5 text-xs font-bold text-[color:var(--fluo-ink-soft)]"
             >
               Skip pretest
@@ -91,21 +91,39 @@ export default function Unit0PretestPage({ sioId }: { sioId: string }) {
             group, so one shuffled pool of all 21 would be unanswerable. Three
             tabs rather than one pick, since 31 Aug — the tu/vous contrast is
             this stop, and a learner who sat one audience never met it. */}
-        {!bagReady && (sioId === "SIO-010" ? <Sio010Pretest sio={sio} /> : <Unit0Questions sio={sio} />)}
+        {!finished && (sioId === "SIO-010" ? <Sio010Pretest sio={sio} /> : <Unit0Questions sio={sio} />)}
 
-        {/* Mid-quiz: live miss chips only (showEmpty false). After finish / Skip:
-            Class bag with empty ready state. */}
-        <div className="mt-4">
-          <BringToClass sioId={sioId} showEmpty={bagReady} />
-        </div>
 
-        {!bagReady && (
+        {!finished && (
           <p className="mt-6 text-center text-xs font-bold text-[color:var(--fluo-ink-soft)]">
             {sioId === "SIO-010"
               ? `${SIO010_SITUATIONS.length} situations · ${count} questions each`
               : `${count} question${count === 1 ? "" : "s"}`}{" "}
             · a guess before the lesson is the point — nothing here is scored.
           </p>
+        )}
+
+        {/* WHERE CLASS BAG USED TO SIT. It was the only thing this page drew
+            once the run was over, so removing it (Dan, 5 Sep: "dissolve class
+            bag as a concept") would have left a finished pre-test showing an
+            empty page. Two doors instead, side by side rather than one
+            full-width control: on to the unit, or straight to DéjàRevu, which
+            is where Dan sent this work on 31 Aug — "it is just for them to
+            revise in DéjàRevue". */}
+        {finished && (
+          <div className="mt-6 text-center">
+            <p className="fluo-serif text-base font-bold text-[color:var(--fluo-ink)]">
+              Done — you guessed before the lesson, which was the point.
+            </p>
+            <div className="mt-4 grid grid-cols-2 gap-2.5">
+              <Link href={`/unit/${sio.unit}`} className="cahier-btn cahier-btn-primary justify-center">
+                Continue
+              </Link>
+              <Link href="/reviser" className="cahier-btn justify-center">
+                🔖 DéjàRevu
+              </Link>
+            </div>
+          </div>
         )}
       </SectionBand>
     </CahierShell>

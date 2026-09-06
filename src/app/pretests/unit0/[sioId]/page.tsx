@@ -44,6 +44,6 @@ export default async function Page({ params }: { params: Promise<{ sioId: string
   const { sioId } = await params;
   const sio = getSio(sioId);
   if (!sio || sio.unit !== 0 || (UNIT0_QUESTIONS[sioId] ?? []).length === 0) notFound();
-  // Soft-auth on Class bag Continue / save — never AuthGate mid-guess.
+  // Never AuthGate mid-guess — browsing and guessing need no sign-in.
   return <Unit0PretestPage sioId={sioId} />;
 }

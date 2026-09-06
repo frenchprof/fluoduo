@@ -45,7 +45,6 @@ import { deaccent, normalize } from "@/lib/practice/cloze";
 import { useChoiceKeys, CHOICE_KEYS_HINT } from "@/lib/useChoiceKeys";
 import PHOTO_ITEMS from "@/content/devine-aliments.json";
 import { shuffle } from "@/lib/shuffle";
-import { BringToClass } from "@/app/SioDetail";
 import { recordPretestAnswer } from "@/lib/pretestRecord";
 import { stopForDeck } from "@/lib/stopTag";
 
@@ -169,22 +168,37 @@ type Snap = {
 
 function Visual({ it, className }: { it: DevItem; className: string }) {
   if (it.endonym) {
-    // Sized by how long the name is: 中文 wants to fill the tile, « Bahasa
-    // Indonesia » wants to fit in it. The stack names the system faces that
-    // actually carry Devanagari, Tamil, Thai, Arabic, Hangul and CJK — the
-    // app's own webfonts are Latin only, and a missing glyph is a box.
-    // Sized by the LONGEST WORD, not the whole string: « Bahasa Indonesia »
-    // wraps after Bahasa and then it is "Indonesia" that has to fit the tile.
-    // Sizing by total length put it at text-2xl and clipped it at the edge.
+    // Measured against THE TILE, not against a guessed width. The first cut
+    // computed from a hard 8.75rem and clipped « Français », « Türkçe » and
+    // most of the rest, because the option tiles are half a phone wide, not
+    // 10rem. `cqw` is one per cent of the tile's own width, so the same rule
+    // holds on the big stimulus tile and on a narrow option, at any screen
+    // size. The factor is the width of a bold glyph in ems — CJK and Hangul
+    // are full-width, so they get their own — and 3rem caps it so 中文 does
+    // not tower over « Português ».
+    //
+    // THE CONTAINER AND THE TEXT MUST BE TWO ELEMENTS: an element cannot
+    // query itself, so `cqw` written on the same span that declares
+    // `container-type` resolves against nothing and every name came out at
+    // the 3rem cap, clipped. The outer span is the container; the inner one
+    // is measured by it.
     const longest = Math.max(...it.endonym.split(/\s+/).map((w) => w.length));
-    const size =
-      longest <= 3 ? "text-5xl" : longest <= 6 ? "text-3xl" : longest <= 8 ? "text-2xl" : "text-xl";
+    const fullWidth = /[\u3000-\u9fff\uac00-\ud7af]/.test(it.endonym);
+    const cqw = (94 / (longest * (fullWidth ? 1.08 : 0.66))).toFixed(1);
     return (
       <span
-        className={`${className} flex w-full items-center justify-center overflow-hidden break-words bg-white px-2 text-center font-bold leading-tight text-[color:var(--cahier-ink)] ${size}`}
-        style={{ fontFamily: "system-ui, 'Noto Sans', 'Noto Sans CJK SC', 'Noto Sans Devanagari', 'Noto Sans Tamil', 'Noto Sans Thai', 'Noto Sans Arabic', sans-serif" }}
+        className={`${className} flex items-center justify-center overflow-hidden bg-white px-2`}
+        style={{ containerType: "inline-size" }}
       >
-        {it.endonym}
+        <span
+          className="break-words text-center font-bold leading-tight text-[color:var(--cahier-ink)]"
+          style={{
+            fontSize: `min(3rem, ${cqw}cqw)`,
+            fontFamily: "system-ui, 'Noto Sans', 'Noto Sans CJK SC', 'Noto Sans Devanagari', 'Noto Sans Tamil', 'Noto Sans Thai', 'Noto Sans Arabic', sans-serif",
+          }}
+        >
+          {it.endonym}
+        </span>
       </span>
     );
   }
@@ -326,7 +340,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
     const first = ladder.ladder.wrongTries === 0 && !ladder.revealed;
     const r = ladder.attempt(good, { given, activity: `speculearn:${collectionId}` });
     if (good) { if (first) setScore((s) => s + 1); sfx.correct(); } else { if (first) setWrong((w) => [...w, it]); sfx.wrong(); }
-    // Same gap store as pretests — Class bag reads missesForSio (no second store).
+    // Same gap store as pretests — one store, whoever reads it next.
     const sio = stopForDeck(collectionId);
     if (sio && first) {
       recordPretestAnswer({
@@ -638,14 +652,6 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
                 <button type="button" onClick={() => again(false, "say-s")} className="fluo-btn fluo-btn-sm">🎤 Guess and say</button>
               </div>
             )}
-            {(() => {
-              const sio = stopForDeck(collectionId);
-              return sio ? (
-                <div className="mt-4 text-left">
-                  <BringToClass sioId={sio.id} showEmpty continueHref={drillExitHref(collectionId)} />
-                </div>
-              ) : null;
-            })()}
           </div>
         )}
       </div>
