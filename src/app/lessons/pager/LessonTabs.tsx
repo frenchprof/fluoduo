@@ -657,6 +657,22 @@ export default function LessonTabs({
   const router = useRouter();
   const from = useRef<{ x: number; y: number } | null>(null);
 
+  /** Where the finger got to — kept on every move so a CANCELLED gesture is
+   *  still judged on real movement rather than thrown away. */
+  const last = useRef<{ x: number; y: number } | null>(null);
+
+  function endSwipe(t: { clientX: number; clientY: number } | null) {
+    const start = from.current;
+    const end = t ? { x: t.clientX, y: t.clientY } : last.current;
+    from.current = null;
+    last.current = null;
+    if (!start || !end) return;
+    const dx = end.x - start.x;
+    const dy = end.y - start.y;
+    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    step(dx > 0);
+  }
+
   function step(back: boolean) {
     const i = TABS.findIndex((t) => t.key === tab);
     if (back) {
@@ -689,23 +705,39 @@ export default function LessonTabs({
        phone, `sm:pt-10` (40px) above it. One offset gave 8px on the phone and
        24px on a desktop — the same gap Dan had just rejected, surviving at the
        width he was not looking at. */
+    /* TWO THINGS THIS NEEDED AND DID NOT HAVE (Dan, 2026-09-06: *"none of the
+       swiping seems to be working"*).
+
+       1 · `touch-action: pan-y`. Without it the browser owns the gesture and
+           decides what a horizontal drag means. Declaring that the only NATIVE
+           gesture here is vertical panning is what hands sideways movement to
+           JavaScript at all — on a page whose content sits in a vertical
+           `overflow-y-auto`, that is the difference between a handler that runs
+           and one that never sees the finger.
+
+       2 · `touchcancel`. When the browser DOES claim a gesture mid-drag it ends
+           the sequence with `touchcancel`, not `touchend` — and this listened
+           only for `touchend`, so the swipe died silently, which is exactly the
+           symptom: nothing happens, no error, every time. The last position is
+           tracked on `touchmove` so a cancelled gesture can still be judged on
+           where the finger actually got to.
+
+       Shipped 5 Sep without ever driving a touch gesture — the handler was
+       written, typechecked and never once tried. */
     <div
-      className="-mt-5 pt-1 sm:-mt-9"
+      className="-mt-5 touch-pan-y pt-1 sm:-mt-9"
       onTouchStart={(e) => {
         const t = e.touches[0];
         const inScroller = (e.target as HTMLElement).closest?.(".overflow-x-auto");
         from.current = inScroller ? null : { x: t.clientX, y: t.clientY };
+        last.current = from.current;
       }}
-      onTouchEnd={(e) => {
-        const start = from.current;
-        from.current = null;
-        if (!start) return;
-        const t = e.changedTouches[0];
-        const dx = t.clientX - start.x;
-        const dy = t.clientY - start.y;
-        if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-        step(dx > 0);
+      onTouchMove={(e) => {
+        const t = e.touches[0];
+        if (t) last.current = { x: t.clientX, y: t.clientY };
       }}
+      onTouchEnd={(e) => endSwipe(e.changedTouches[0])}
+      onTouchCancel={() => endSwipe(null)}
     >
       {/* ONE ROW, four equal columns (Dan, 2026-08-31: "it seems we cannot
           squeeze the four in a row, then why"). The why was 4px: the pills
