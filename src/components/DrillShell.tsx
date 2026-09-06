@@ -264,7 +264,7 @@ export default function DrillShell({
        root carried `fam-practice` and drew no left edge, which is the fault
        Dan's 1 Sep audit found on every drill in the app. */
     <div className="cahier-drilldesk">
-    <div className={`cahier-drill ${famKey ? `fam-${famKey}` : "fam-none"}${bandKey ? ` band-${bandKey}` : ""}${isReadingSurface(activity) ? " paper-sand" : ""} flex h-full min-w-0 flex-col overflow-hidden bg-[color:var(--cahier-paper)]`}>
+    <div className={`cahier-drill ${famKey ? `fam-${famKey}` : "fam-none"}${bandKey ? ` band-${bandKey}` : ""}${isReadingSurface(activity) ? " paper-sand" : ""} flex h-full min-w-0 flex-col bg-[color:var(--cahier-paper)]`}>
       {/* ── the notebook (2026-08-24, approved flow): drills live INSIDE the
           cahier — the family heading band on top (name from the registry,
           the drill's i/total as the band's ONE chip so the figure is never

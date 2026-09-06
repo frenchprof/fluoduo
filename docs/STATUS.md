@@ -6,6 +6,56 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 6 Sep, late — #199 ships: rings that wrap the page edge; work paused for Dan's gamification video
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+**#199 merged** (`ce3ef48`, squash of Dan's four fixes + the ring rebuild).
+The learner-visible half: bottom bar off by default (opt-in at Réglages),
+wordmark packed left, /moi's second vertical line AND its closed-band stubs
+gone ("C — the band stubs"), the `.fluo-h-*` accents derived from the family
+pens under `docs/COLOR_SYSTEM.md`.
+
+**The ring binds are real now**, and the road there matters to the next
+session that touches them:
+
+- Dan rejected the slat stripes, then rejected a closed-ellipse drawing, then
+  sent two photos of real coil notebooks and the instruction *"take away the
+  phone edge and you will see it must go pass the edge"*. The wire must
+  OVERHANG the page onto the desk — not float on the sheet, not stop at the
+  edge.
+- Geometry is MEASURED off his first photo (17 loops, pitch 56px, thin bright
+  wire, a cover strip ~45% of the pitch wide): one flat open chrome arc per
+  26px, from a small dark punched hole, across a 12px family-ink cover strip
+  that continues the 6px spine border, past the page edge, turning ~10px out
+  on the desk.
+- The enabling change is structural and easy to break by "tidying": both page
+  shells now use **`overflow: clip` + `overflow-clip-margin: 26px`** instead
+  of `overflow: hidden` (same containment, no scroll mechanism, plus the
+  apron the overhang paints into), and **the binding anchors below the top
+  bar and heading band** in all three shells (CahierShell, CahierFrame,
+  DrillShell) — a coil sits below the cover chrome, and nothing can paint
+  over the desk, so a top-anchored binding would strand half-loops beside the
+  bar. verify20's drill-clip pin moved to the globals rule with the claim
+  unchanged.
+- `claude/dan-four-fixes` is merged but its remote branch could not be
+  deleted (push proxy 403 on deletes) — add it to the to-delete ledger.
+
+**Paused by Dan mid-iteration and resumed on his word**: he sent a
+gamification-psychology video (craving machine / infinite game / invisible
+scoreboard) and asked for a read. Assessment delivered in-session: we run the
+scoreboard machine best (weekly reset + "Around you"), half-run the infinite
+game (streak multiplier caps at day 7; loss-framing is banned by
+verify32), and run no variable reward at all. Five options put to him,
+cheapest first: extend the streak ladder past day 7; a "course ends, French
+doesn't" surface after Diplômé; occasional bonus gems on perfect runs;
+"you vs last week"; a Finch-style companion (big, own conversation). **He has
+picked none yet — nothing is to be built from this list without his word.**
+
+Still open from the same afternoon: the landing recapture (bands + family
+captions, authorized), the three-fonts branch awaiting his go, the dark-cahier
+agent, and "when one part opens, another must collapse" beyond /moi.
+
 ## 6 Sep — the verify-number collision is now the build's job, not a ritual
 
 Sole editor of STATUS.md in this commit: claude/peers-vd2h6h (Peers).

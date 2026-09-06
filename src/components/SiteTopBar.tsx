@@ -120,7 +120,7 @@ export default function SiteTopBar({
       {/* py-2 + tighter left inset (Dan, 2026-08-21): the wordmark hugs
           the page's top-left corner — just clear of the spiral binding
           (38px), no further. */}
-      <div className={`flex items-center justify-between gap-2 py-2 pl-3 sm:pl-5 ${nested ? "pr-5 sm:pr-7" : "pr-9 sm:pr-11"}`}>
+      <div className={`flex items-center gap-2 py-2 pl-3 sm:pl-5 ${nested ? "pr-5 sm:pr-7" : "pr-9 sm:pr-11"}`}>
         {/* The wordmark is ALWAYS a door home (Dan, 2026-07-25) — on
             the home page it simply arrives where you already are. */}
         {/* THE RULE OF THIS BAR (Dan, 2026-08-21: "the top most row of
@@ -233,7 +233,11 @@ export default function SiteTopBar({
             to a ☰ that did not change. Measured at 320px after the bump — the
             burger and the whole icon strip stay on screen, which is the only
             budget this size is allowed to spend. */}
-        <Link href="/" className="min-w-0 shrink truncate text-xl font-black text-[color:var(--cahier-ink)]">
+        {/* mr-auto, and the bar no longer justifies-between (Dan, 6 Sep: "The
+            current <-- FluOLinGo in the top should be on the left rather
+            than in the middle"): the wordmark now sits AGAINST the ☰, and
+            everything after it is pushed right by this margin. */}
+        <Link href="/" className="mr-auto min-w-0 shrink truncate text-xl font-black text-[color:var(--cahier-ink)]">
           {active !== "home" && <>← </>}
           {/* THE KALLANG WAVE (Dan, 1 Sep: "the top return link to be in the
               same FluOLinGo font but with the KALLANG wave effect and
