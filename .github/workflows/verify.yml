@@ -394,3 +394,9 @@ jobs:
 
       - name: "An activity's colour is its family's, and the active flap is readable (5 Sep)"
         run: python3 verify/verify102-menu-hues.py
+
+      - name: "A SpecuLearn card has exactly one answer (5 Sep)"
+        run: python3 verify/verify103-speculearn-cards.py
+
+      - name: "Type is relative everywhere — no size nailed to a pixel (5 Sep)"
+        run: python3 verify/verify106-fluidtype.py

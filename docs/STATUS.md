@@ -43,6 +43,43 @@ Clean at the same measurement, for the record: the goal-page item links catch
 60px with 6px between them, 0 of 313 under the floor; and `/sio/[id]` and the
 lesson pages render correctly on a dark-mode phone under #190 — the cahier
 stays light, the ink stays dark, no dark-on-dark.
+## 6 Sep — SpecuLearn: one answer per card, and type goes relative (PR #191)
+
+Sole editor of STATUS.md in this commit: the pre-tests lane
+(`claude/pre-tests-amendments-hndx8r`). Handed to fluoduo-main; not merged here.
+
+A day of Dan's rulings, built and measured:
+
+- **Type is relative app-wide.** 316 sizes were hard pixels — 310 Tailwind
+  `text-[NNpx]` utilities, five CSS rules, one inline style. Redefined once in
+  globals.css rather than edited across ~50 files. Phone unchanged, desktop
+  +36%, capped past 1440. `verify106-fluidtype` holds it. (Numbered 106, not
+  102: the colour-review lane claimed 102 forty minutes later — the sixth
+  number collision, cleared from this side.)
+- **A SpecuLearn card has exactly one answer.** commerces mixed shop nouns,
+  whole utterances and untagged words in one option pool, so 📚 could be
+  answered by « Ça fait 5,89 euros. » and 💶 by three different words. A deck
+  now names the columns it plays; distractors never repeat a visual.
+  `verify103-speculearn-cards` holds it for every deck.
+- **Tap to answer, no Check** (`verify20` flipped to pin it; EtuDice keeps
+  its Check, so the shell's grammar is deliberately no longer uniform).
+- **‹ back to the previous question**, redrawn as it was answered; reviewing
+  never re-grades.
+- **Class bag dissolved**, all three mounts. `verify93` kept the half that was
+  never about the bag — no sign-in wall in front of a guess. The Unit-0 page
+  gained a finish panel, since Class bag was all it drew once a run was over.
+- **The languages wear their endonyms** — 中文, हिन्दी, Bahasa Indonesia — as
+  type, sized to their own tile. The languages deck leaves the image brief.
+- Descriptions out of buttons; level chooser two-up; counter first under the
+  strip; "Revisit my errors"; the image brief 160 → 146 with a do-not-generate
+  list; « le prix » / « la monnaie » / « des euros » get their articles.
+
+**Two loose ends, deliberate.** Pre-test misses now have no reader — the record
+is intact and `verify40` pins its shape, but showing them in DéjàRevu means
+deciding what DéjàRevu is, and pre-tests are barred from `queueForReview`.
+And SpecuLearn is merged in NAME only: four runners, 2,264 lines, 109 routes,
+with the game paying XP/SRS through the help ladder while the /pretests half is
+forbidden from it. Both are Dan's calls, raised with him.
 
 ## 6 Sep — Peers' language pass lands; the rest of #187 was already home
 

@@ -7,6 +7,6 @@ export function generateStaticParams() {
 
 export default async function Page({ params }: { params: Promise<{ collectionId: string }> }) {
   const { collectionId } = await params;
-  // Soft-auth on Class bag Continue / save — never AuthGate mid-guess.
+  // Never AuthGate mid-guess — browsing and guessing need no sign-in.
   return <PicturePretestContent collectionId={collectionId} />;
 }

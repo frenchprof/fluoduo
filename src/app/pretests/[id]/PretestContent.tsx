@@ -8,7 +8,6 @@ import { getPretest } from "@/content/pretests";
 import { speak } from "@/games/letris/speech";
 import { judgePretestAnswer, shuffle, ttsTextForItem } from "@/lib/pretests/runner";
 import { goalNumber, stopForPretestId } from "@/lib/stopTag";
-import { BringToClass } from "@/app/SioDetail";
 import CahierShell, { type ShellTab } from "@/components/CahierShell";
 import type { Pretest, PretestItem } from "@/lib/pretests/schema";
 import { optionGridClass } from "@/lib/optionGrid";
@@ -159,7 +158,15 @@ function PretestRunner({ pretest }: { pretest: Pretest }) {
   }
 
   return (
-    <div className="speculearn-stage mx-auto max-w-3xl px-4 py-8">
+    <div className="speculearn-stage mx-auto max-w-3xl px-4 pb-8 pt-4">
+      {/* THE COUNTER COMES FIRST, RIGHT UNDER THE COLOURED STRIP (Dan,
+          5 Sep: "i think the counter should appear first, after the colore
+          strip"). It used to sit below Skip / TTS, so the first thing under
+          the band was two grey pills a learner rarely touches, and where they
+          were in the set — the one number they check on every question — came
+          second. */}
+      <ProgressBar current={Math.min(step, total)} total={total} score={score} />
+
       <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
         <div>
           {/* The title moved to the band (1 Sep); the subtitle stays, because
@@ -193,8 +200,6 @@ function PretestRunner({ pretest }: { pretest: Pretest }) {
           </button>
         </div>
       </header>
-
-      <ProgressBar current={Math.min(step, total)} total={total} score={score} />
 
       {!done && item && (
         <ItemCard
@@ -386,7 +391,6 @@ function Recap({
   onRestart: () => void;
 }) {
   const pct = Math.round((score / total) * 100);
-  const sioId = stopForPretestId(pretest.id)?.id;
   return (
     <article className="fluo-card fluo-h-5" data-hue={5}>
       <div className="text-center">
@@ -438,12 +442,6 @@ function Recap({
           complete the stop, when a pre-test is the cold guess BEFORE the
           teaching. A stop now ticks when everything at it has been attempted —
           see lib/doneness.ts. */}
-
-      {sioId && (
-        <div className="mt-5 text-left">
-          <BringToClass sioId={sioId} showEmpty />
-        </div>
-      )}
 
       <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
         <button type="button" onClick={onRestart} className="fluo-btn fluo-btn-lg">
