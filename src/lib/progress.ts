@@ -52,6 +52,8 @@ import {
   XP_SIO_BASE,
   XP_SIO_MASTERY,
   XP_CONVERSATION,
+  FIND_BIG,
+  luckyFind,
 } from "@/lib/economy";
 import { dayKey, previousDay, learnerZone, weekKey } from "@/lib/dayKey";
 import { buildEvidence, type AssistanceLevel } from "@/lib/evidence";
@@ -83,6 +85,14 @@ export type Progress = {
    *  the spine is the source of truth for what the outcome says; this stores
    *  only the commitment the spine cannot hold. Absent until one is set. */
   goal?: { sio: string; by: string | null };
+  /** THE LUCKY FIND's books (see `luckyFind` in economy.ts). `findDay` is the
+   *  learner-local day `findGems` counts in — both reset when the day turns.
+   *  `findDry` is paying answers since the last find and deliberately does NOT
+   *  reset at midnight: the pity floor belongs to the learner's run of bad
+   *  luck, not to the calendar, or every day would start owing them one. */
+  findDay?: string | null;
+  findGems?: number;
+  findDry?: number;
 };
 
 /** What rides on `fluolingo:reward`. `size` drives how loud the celebration
@@ -95,7 +105,8 @@ export type RewardDetail =
   | { type: "sio"; size: RewardSize; id: string }
   | { type: "unit"; size: RewardSize; unit: number; count: number }
   | { type: "mastery"; size: RewardSize; count: number }
-  | { type: "perfect"; size: RewardSize; count: number };
+  | { type: "perfect"; size: RewardSize; count: number }
+  | { type: "find"; size: RewardSize; gems: number };
 
 /** chime = a tick of acknowledgement · full = the fanfare, once a unit. */
 export type RewardSize = "chime" | "small" | "big" | "full";
@@ -140,7 +151,7 @@ const STORAGE_KEY = "fluolingo:progress";
 // todayStr() replaced by dayKey() - learner-local zone, 04:00 rollover.
 
 export function defaultProgress(): Progress {
-  return { doneSios: [], gems: 0, xp: 0, streak: 0, weekXp: 0, weekKey: null, lastActiveDay: null, itemSrs: {}, badges: [], cosmetics: { owned: [], equipped: {} }, term: CURRENT_TERM };
+  return { doneSios: [], gems: 0, xp: 0, streak: 0, weekXp: 0, weekKey: null, lastActiveDay: null, itemSrs: {}, badges: [], cosmetics: { owned: [], equipped: {} }, term: CURRENT_TERM, findDay: null, findGems: 0, findDry: 0 };
 }
 
 /** Fill in fields added after a learner's blob was first written, and migrate
@@ -155,6 +166,14 @@ function normalize(raw: Partial<Progress>): Progress {
     owned: Array.isArray(raw.cosmetics?.owned) ? raw.cosmetics!.owned : [],
     equipped: raw.cosmetics?.equipped && typeof raw.cosmetics.equipped === "object" ? raw.cosmetics.equipped : {},
   };
+  // The find counters are guarded because the DAILY CAP is arithmetic on them:
+  // a blob carrying `findGems: "40"` (a hand-edited save, a half-written sync)
+  // makes `FIND_DAILY_CAP - foundToday` NaN, NaN fails every comparison, and
+  // the learner's gem balance is then NaN forever. A spread default cannot
+  // catch that — the key IS present, it is just not a number.
+  p.findGems = Number.isFinite(raw.findGems) ? Math.max(0, raw.findGems as number) : 0;
+  p.findDry = Number.isFinite(raw.findDry) ? Math.max(0, raw.findDry as number) : 0;
+  p.findDay = typeof raw.findDay === "string" ? raw.findDay : null;
   return p;
 }
 
@@ -436,6 +455,18 @@ export function unmarkSioDone(id: string): Progress {
 const SRS_LADDER_DAYS = [1, 3, 7, 14];
 const DAY_MS = 86_400_000;
 
+/** Today's find books, rolled forward if the day has turned. `findGems` starts
+ *  the new day at zero (the cap is daily); `findDry` carries over (the pity
+ *  floor is about a run of bad luck, not about midnight). */
+function findBooks(p: Progress): { findDay: string; findGems: number; findDry: number } {
+  const today = dayKey();
+  return {
+    findDay: today,
+    findGems: p.findDay === today ? (p.findGems ?? 0) : 0,
+    findDry: p.findDry ?? 0,
+  };
+}
+
 /** Pure ladder step — exported so the Reviser (and tests) can reason about it. */
 export function stepItemSrs(prev: ItemSrs | undefined, correct: boolean, now: number): ItemSrs {
   if (!correct) return { due: now, intervalDays: 0 };
@@ -503,6 +534,22 @@ export function recordItemResult(
   // Knowing it always beats guessing at it, and trying still beats not trying.
   const award = ev?.award !== false;
   const paid = award ? Math.round((correct ? XP_CORRECT : XP_WRONG) * xpMultiplier(p.streak)) : 0;
+  // THE LUCKY FIND (Dan, 6 Sep: "Craving — add surprise"). It rides the SAME
+  // `award` gate as the XP, which is what keeps it honest: the gate already
+  // means "this is the first attempt on this item in this run", so a learner
+  // cannot answer, undo and answer again to fish for a drop. A wrong answer
+  // can find gems too — effort counts here, and a find that only ever followed
+  // a right answer would just be XP wearing a costume.
+  //
+  // The seed is (item, day), never Math.random: the same answer on the same
+  // day always has the same outcome, so a reload cannot reroll it.
+  const books = findBooks(p);
+  const find = award ? luckyFind(`${itemId}:${books.findDay}`, books.findDry, books.findGems) : 0;
+  const found = {
+    ...books,
+    findGems: books.findGems + find,
+    findDry: find > 0 ? 0 : books.findDry + (award ? 1 : 0),
+  };
   void import("@/lib/firebase/responses")
     .then((m) =>
       m.recordResponse(itemId, correct, {
@@ -518,7 +565,24 @@ export function recordItemResult(
       }),
     )
     .catch(() => {});
-  return finalize(award ? addXp(p, correct ? XP_CORRECT : XP_WRONG) : p);
+  // Announced BEFORE finalize, so a level-up or a badge earned by the same
+  // answer lands after it and takes the banner. A find is the smallest thing
+  // that can happen on an answer; it must never cover the biggest.
+  if (find > 0) {
+    try {
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("fluolingo:reward", {
+            detail: { type: "find", size: find >= FIND_BIG ? "big" : "small", gems: find } as RewardDetail,
+          }),
+        );
+      }
+    } catch {
+      /* the banner is decoration; never let it break an award */
+    }
+  }
+  const withFind = { ...p, ...found, gems: p.gems + find };
+  return finalize(award ? addXp(withFind, correct ? XP_CORRECT : XP_WRONG) : withFind);
 }
 
 /**

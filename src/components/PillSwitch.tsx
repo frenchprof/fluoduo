@@ -103,7 +103,17 @@ export default function PillSwitch({
           physical parts rather than a switch borrowed from somewhere else. */}
       <span
         aria-hidden
-        className="neo-key block h-[28px] w-[28px] rounded-[9px] transition-transform duration-200 ease-out"
+        // SPRINGY, LIKE A REAL SWITCH (Dan, 6 Sep: "and switches — pareil").
+        // duration-200 ease-out slid the knob to the far end and stopped dead,
+        // which is how a slider on a screen moves and not how a switch in the
+        // hand does: a real one is thrown, arrives with momentum and settles.
+        // .fluo-spring carries the same overshoot curve the stops and the keys
+        // use, so every throwable thing in the app answers the same way.
+        // .fluo-spring sits AFTER the size, not before it: verify80 reads the
+        // knob's height straight out of this string with `neo-key block h-[Np]`
+        // to check the travel arithmetic, and a class wedged between them makes
+        // it unreadable. Better to keep their check strict than to loosen it.
+        className="neo-key block h-[28px] w-[28px] fluo-spring rounded-[9px]"
         style={{ transform: on ? "translateX(36px)" : "translateX(0)", background: KNOB[hue] }}
       />
     </button>

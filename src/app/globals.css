@@ -2284,6 +2284,137 @@ h3.cahier-display { font-size: var(--fs-h3); }
     inset -3px -3px 7px color-mix(in oklab, white 35%, transparent);
 }
 .neo-key:focus-visible { outline: 3px solid var(--dopa-focus); outline-offset: 4px; }
+
+/* ─── THE MAP'S STOPS: the same material, at a fiftieth of the size ─────────
+   Dan, 6 Sep, after Malewicz on tactility: "make them really 3D stand out".
+
+   THE FAULT THIS FIXES. Forty of the fifty stops were a DASHED RING on paper.
+   A broken outline is not an object — it is a hole where one should be, so the
+   map's dominant impression was absence, and nothing on it looked pressable.
+   Meanwhile Home's Continue / Next / Rewind keys had worn .neo-key since 1 Sep:
+   one product, two materials, and the map was the surface that opted out.
+
+   WHY NOT JUST USE .neo-key. Its shadow is measured for a 58px key with three
+   siblings. Fifty of those at 44px, four gaps apart, and the shadow becomes
+   the first thing you see — which is charter item 49 failing from the other
+   side. So the geometry is the same and every value is scaled: the cast drops
+   3px/5px/10px instead of 7px/12px/20px, and the lips are 2px/3px not 3px/6px.
+
+   DEPTH CARRIES PROGRESS, which is the whole reason this is worth doing. A
+   stop you have reached STANDS OUT (--reached); a stop still ahead is SUNK
+   into the band (--ahead, the .neo-well grammar). Run your eye down the grid
+   and the shape of your progress is legible without reading a single number,
+   and an ahead stop is still a real object rather than a gap. */
+/* SPRING, NOT SLIDE (Dan, 6 Sep: "I do want the buttons to behave like they
+   would really behave in the real world — springy buttons that bounces back").
+
+   A real key does two different things. Going DOWN it is fast and dead: your
+   finger drives it, it stops against the base, and nothing overshoots — a
+   bouncy press feels mushy, like the button is unsure. Coming UP the spring
+   does the work, and a spring overshoots before it settles.
+
+   So the two directions get different physics. The rest state carries the
+   springy curve (cubic-bezier's third control point above 1 is the overshoot);
+   :active overrides it with a short, hard ease-in so the press is immediate.
+   One property animates — transform — which the compositor handles without
+   laying out or painting, so fifty of these cost nothing. */
+.fluo-spring, .fluo-stop {
+  border: 0;
+  transition:
+    transform .34s cubic-bezier(.34, 1.56, .64, 1),
+    box-shadow .16s ease;
+}
+.fluo-spring:active, .fluo-stop:active {
+  transition-duration: .06s, .06s;
+  transition-timing-function: cubic-bezier(.2, 0, .1, 1), ease;
+}
+.fluo-stop--reached {
+  box-shadow:
+    -3px -3px 7px color-mix(in oklab, white 92%, transparent),
+    3px 5px 10px color-mix(in oklab, var(--cahier-ink) 26%, transparent),
+    inset 1px 2px 0 color-mix(in oklab, white 60%, transparent),
+    inset -1px -3px 0 color-mix(in oklab, black 18%, transparent),
+    inset 0 0 0 2px var(--fluo-stop-kind, transparent);
+}
+.fluo-stop--ahead {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--cahier-ink) 34%, transparent),
+    inset 3px 3px 6px color-mix(in oklab, var(--cahier-ink) 20%, transparent),
+    inset -3px -3px 6px color-mix(in oklab, white 92%, transparent),
+    inset 0 0 0 2px color-mix(in oklab, var(--fluo-stop-kind, transparent) 45%, transparent);
+}
+/* Lift on hover, press INTO the band on tap — the same affordance the keys
+   use, so a stop behaves like every other control in the app. */
+.fluo-stop:hover { transform: translateY(-2px); }
+.fluo-stop:active {
+  transform: translateY(2px);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--cahier-ink) 62%, transparent),
+    inset 3px 4px 7px color-mix(in oklab, black 26%, transparent),
+    inset -2px -2px 5px color-mix(in oklab, white 35%, transparent);
+}
+.fluo-stop:focus-visible { outline: 3px solid var(--dopa-focus); outline-offset: 3px; }
+
+/* THE NUMERAL ON A FLUORESCENT FILL (6 Sep). Dan chose white type on the pen,
+   having been shown the measurements: 2.64 / 3.01 / 2.26 / 1.84 against the
+   4.5 floor, because a fluorescent pen is lighter than white type can clear.
+   The shadow is what makes that survivable — it gives the glyph its own dark
+   edge so it stops dissolving into the fill. WCAG scores flat colours and does
+   not count a shadow, so the ratio is unchanged and this is a deliberate,
+   recorded trade rather than a fix. Page ink on the same fills measures
+   4.92-8.05 if it is ever revisited.
+
+   Two shadows, not one: a tight 1px drop gives the edge, a soft 3px halo
+   separates the glyph from a light fill without printing a visible outline. */
+.fluo-stop-num {
+  color: #fff;
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, .55),
+    0 0 3px rgba(0, 0, 0, .45);
+}
+
+/* The unit band is the TRAY the stops sit in — recessed, so raised stops have
+   something to be raised out of. One hairline and one soft inner shadow: any
+   more and fifty nodes start to swim. */
+.fluo-band {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--cahier-ink) 10%, transparent),
+    inset 0 2px 5px color-mix(in oklab, var(--cahier-ink) 12%, transparent);
+}
+
+/* The same spring on the app's own keys, so a stop and a Continue key answer
+   the finger identically. .neo-key set transform .1s ease on 1 Sep; this
+   overrides only the curve, not the travel. */
+.neo-key { transition: transform .34s cubic-bezier(.34, 1.56, .64, 1), box-shadow .16s ease; }
+.neo-key:active { transition-duration: .06s, .06s; transition-timing-function: cubic-bezier(.2, 0, .1, 1), ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fluo-stop, .fluo-stop:hover, .fluo-stop:active,
+  .fluo-spring, .fluo-spring:hover, .fluo-spring:active { transform: none; }
+  /* A spring IS motion. Someone who asked for less of it gets the state
+     change with no travel at all, rather than a shorter bounce. */
+  .fluo-stop, .fluo-spring, .neo-key { transition: box-shadow .12s ease; }
+}
+
+/* AN EMBED IS THE MAP AND NOTHING ELSE (6 Sep). /map/embed is meant to be
+   iframed into a course page, where FluOLinGo's own footer, feedback button,
+   beta notice and install prompt are not just noise — they are another site's
+   furniture appearing inside someone's page. The root layout renders them for
+   every route and, being a server component, cannot know the pathname; a
+   nested layout cannot remove what the root already put in the body. So the
+   page marks itself and the body hides the rest.
+
+   `:has()` rather than a class on <body>: the page cannot reach the body
+   element from inside the tree without an effect that would flash the
+   furniture on first paint. This costs one selector and no JavaScript.
+
+   EVERYTHING BUT THE MAIN, rather than a list of names: a list would need a
+   hook added to each of FeedbackButton, BetaNotice and InstallPrompt — three
+   shared files edited for a styling concern — and would silently miss the
+   next thing added to the layout. `display: none` on a <script> or on the
+   render-nothing helpers (ProgressSync, PageViewTracker, KeyNav) changes
+   nothing: scripts still run and a style element still applies. */
+body:has(.fluo-embed) > *:not(main) { display: none !important; }
 /* A key with nothing behind it is a WELL, not a faded button — Rewind when
    no words are waiting. Dan named it in the same breath as the wells ("the
    buttons that are greyed out because nothing lies underneath"), so it takes
