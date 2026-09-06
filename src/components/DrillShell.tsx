@@ -40,7 +40,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
-import { activity as activityInfo, bandOf, familyOf, isReadingSurface } from "@/content/activities";
+import { activity as activityInfo, bandOf, familyOf } from "@/content/activities";
 import { nextStep, type NextStep } from "@/lib/nextStep";
 import PageBand from "@/components/PageBand";
 import { goalNumberForDeck, stopForDeck } from "@/lib/stopTag";
@@ -259,12 +259,16 @@ export default function DrillShell({
        `h-full` inside it is the screen minus that 8px, so nothing overflows.
        See `.cahier-drilldesk` in globals.css for which numbers come from where.
 
-       `cahier-drill` is not decoration: it is what lets the family spine in
-       globals.css name this shell as well as `.cahier-page`. Without it the
-       root carried `fam-practice` and drew no left edge, which is the fault
-       Dan's 1 Sep audit found on every drill in the app. */
+       `cahier-surface` is what carries the colour — the same class CahierShell
+       wears, so the spine, the family ground and the band are one rule keyed
+       on one name (Dan, 2026-09-06: "can you standardise pls, i don't want
+       outliers"). It replaces the `:is(.cahier-page, .cahier-drill)` selector
+       that had to list both shells, and which cost the app every drill's left
+       edge for the fortnight before Dan's 1 Sep audit found it: the rule named
+       one shell, this root was the other, and nothing failed loudly.
+       `cahier-drill` stays for the layout rules that ARE this shell's. */
     <div className="cahier-drilldesk">
-    <div className={`cahier-drill ${famKey ? `fam-${famKey}` : "fam-none"}${bandKey ? ` band-${bandKey}` : ""}${isReadingSurface(activity) ? " paper-sand" : ""} flex h-full min-w-0 flex-col overflow-hidden bg-[color:var(--cahier-paper)]`}>
+    <div className={`cahier-drill cahier-surface ${famKey ? `fam-${famKey}` : "fam-none"}${bandKey ? ` band-${bandKey}` : ""} flex h-full min-w-0 flex-col overflow-hidden bg-[color:var(--cahier-paper)]`}>
       {/* ── the notebook (2026-08-24, approved flow): drills live INSIDE the
           cahier — the family heading band on top (name from the registry,
           the drill's i/total as the band's ONE chip so the figure is never

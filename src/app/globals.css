@@ -1782,27 +1782,33 @@ h3.cahier-display { font-size: var(--fs-h3); }
 /* The family spine — a 6px edge down the page's left gutter, just inside the
    binding. It is the page's "where am I", and it is the cheapest possible
    version: one border, no layout, no per-page markup.
-   BOTH SHELLS, since 1 Sep. This selector named `.cahier-page` alone, and
+   ONE CLASS, BOTH SHELLS (Dan, 2026-09-06: "can you standardise pls, i don't
+   want outliers"). This selector used to name `.cahier-page` alone, and
    DrillShell's root is not one — so every drill (Flip It, Say It,
    GramMarathon, ConjugaZone, the lesson pager, a deck's study run) carried
    the right `fam-` class and drew no spine at all. Dan, 1 Sep: "there are
    pages missing this colored vertical strip on the left in whatever color it
-   should be in." The class the drill root now carries is `cahier-drill`, so
-   the two shells are named rather than matched by shape. */
-:is(.cahier-page, .cahier-drill)[class*="fam-"] {
+   should be in." The first fix listed both shells, `:is(.cahier-page,
+   .cahier-drill)`, which works and leaves the same trap armed: a third shell
+   is a silent no-spine again, and a grep for one name misses half the app.
+   Both roots now wear `cahier-surface`, so the colour is keyed on what a
+   surface IS rather than on which component drew it. */
+.cahier-surface[class*="fam-"] {
   border-left: 6px solid var(--fam-ink, transparent);
   /* the ruled lines keep their own colour; only the paper under them changes */
   background-color: var(--fam-page, var(--cahier-paper));
 }
-/* A page you READ rather than answer takes the sand instead of its family's
-   ground — the strip, the section band and the rail still say which family
-   it belongs to. Wins over the family rule above by being later and equally
-   specific, which is why it is written here and not beside the tokens. */
-.paper-sand,
-:is(.cahier-page, .cahier-drill).paper-sand[class*="fam-"] {
-  background-color: var(--sable-page);
-  --cahier-rule: var(--sable-rule);
-}
+/* THE SAND IS GONE (Dan, 2026-09-06, shown the eleven activity pages side by
+   side: "can you standardise pls, i don't want outliers").
+   It was a real ruling — Dan picked the sand blind on 30 Aug from the six
+   family grounds, for a page you READ rather than answer — and it made the
+   Memo, the guide and the quick guide the only three pages in the app whose
+   ground did not say which family they belong to. Seen next to the other
+   ten, that reads as three pages that forgot rather than three pages with a
+   reason. A reading page still gets its calmer treatment from the type and
+   the width; the paper now says the same thing everywhere.
+   `isReadingSurface` and the --sable-* tokens went with it: they had no
+   other caller, and a dead exemption is how one comes back by accident. */
 
 /* Accuracy tiers, finally doing the job the rotating hue was pretending to do.
    Deliberately distinct from --cahier-accent so "this is a link" never reads
@@ -2053,18 +2059,12 @@ h3.cahier-display { font-size: var(--fs-h3); }
      measuring rather than re-reading. The soft ink is fine where it is used —
      labels and captions, not paragraphs — but nobody should cite seven from
      here. verify96 recomputes it. */
-  /* THE READING PAPER — « le sable beige », the colour already in the colours
-     deck (#d9c39a), worked out into a surface. Dan picked it, blind, over all
-     six family grounds when asked which he wanted under a page of French he
-     was READING rather than answering.
-     It is not a seventh family: a Memo keeps its family's strip, its section
-     band and its rail. Only the paper changes, because a page you stay on
-     should not be competing with the words. Body ink is derived against the
-     CARD, the darker of the two surfaces, at 7.2:1 — the stricter standard,
-     for prose rather than buttons. */
-  --sable-page: #f9ebd1;  --sable-card: #ebd8b5;
-  --sable-rule: #e0cba4;  --sable-ink: #4e4026;  --sable-soft: #6b5d44;
-
+  /* THE READING PAPER WAS HERE — « le sable beige », picked blind by Dan on
+     30 Aug for a page you READ rather than answer, and retired 6 Sep when he
+     saw the eleven activity pages side by side: "can you standardise pls, i
+     don't want outliers". It left the Memo, the guide and the quick guide as
+     the only three grounds in the app that did not name a family. Removed
+     with its rule, not merely unwired — see the note by `.cahier-surface`. */
   --fam-user-page: #fff4ed;      --fam-practice-page: #faf7e2;
   --fam-goals-page: #ebfceb;     --fam-review-page: #eff8ff;
   --fam-skills-page: #f8f4ff;    --fam-svplay-page: #fff2f8;

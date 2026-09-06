@@ -37,7 +37,7 @@ import { getLetrisSet } from "@/games/letris/sets";
 import { composeBanksForDeck } from "@/games/compose/banks";
 import FirstTour from "@/components/FirstTour";
 import { isPlayableGap } from "@/lib/collections/gapSentence";
-import { TAB_ICONS, activity, bandOf, familyOf, familyShort, hubFamily, isReadingSurface } from "@/content/activities";
+import { TAB_ICONS, activity, bandOf, familyOf, familyShort, hubFamily } from "@/content/activities";
 import { stopForDeck } from "@/lib/stopTag";
 import BottomBar from "@/components/BottomBar";
 import PageBand from "@/components/PageBand";
@@ -158,8 +158,15 @@ export default function CahierShell({
              2026-08-21: "I WANT COLOR"). familyOf() turns the page's own
              `active` key into one of the six, so a route does not have to
              declare a hue — and the whole site stops being one undivided
-             field of paper. Unknown keys stay uncoloured on purpose. */
-          className={`cahier-page ${famKey ? `fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""}${isReadingSurface(active) ? " paper-sand" : ""} min-h-screen`}
+             field of paper. Unknown keys stay uncoloured on purpose.
+
+             `cahier-surface` is the ONE class the colour rules key on, worn
+             by this shell and by DrillShell alike (Dan, 2026-09-06: "can you
+             standardise pls, i don't want outliers"). `cahier-page` stays for
+             the layout, type and form rules that are genuinely this shell's;
+             what a page is COLOURED by is now a single name, so one grep
+             finds every coloured surface in the app. */
+          className={`cahier-page cahier-surface ${famKey ? `fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""} min-h-screen`}
         >
           <div className="cahier-binding" aria-hidden />
 
