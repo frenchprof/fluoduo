@@ -6,6 +6,131 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 6 Sep — Peers' language pass lands; the rest of #187 was already home
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Peers' 89-commit branch surfaced as PR #187 carrying three pieces. Two were
+already on main via #170 (the ☰ dead-rows z-30 fix + verify94, and the
+first mark + verify95 — since superseded by #184/#185's pink). The third —
+**the language pass on chrome a learner is HANDED** (Dan: "UI 101 says we
+don't want to overwhelm users with too much texts to read") — was new, and
+was lifted onto current main by the integrator: eleven first-run popups
+305→235 words, tour callouts shortened, AuthGate/StopBookmark/ÉcouTexte/
+LexicaLater wordings trimmed. Its check arrived as
+**verify104-chrome-concision** (96 was taken by family-hues meanwhile;
+101–103 are claimed by in-flight lanes — and NOTE, collision #9 brewing:
+Color's branch holds verify102-menu-hues while pre-tests' holds
+verify102-fluidtype; whichever lands second must renumber). One conflict
+resolved in the tour: "Your tabs" (post-#175 truth) beats "Five tabs"
+(true when Peers wrote it). #187 closes in favour of this lift.
+
+## 5–6 Sep — the favicon settles: PINK, transparent, teal binds, thin iPhone rim (#184, #185)
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Four rulings from Dan, in order, all shipped:
+
+1. **No ground plate on the tab icon** ("does not need the white background
+   against the dark background"). `src/app/icon.svg` is transparent;
+   `favicon.ico` and the manifest's `icon-192/512` regenerated with real
+   alpha.
+2. **The mark is the PINK one** ("i think i prefer the pink favicon
+   please") — the first cut (24c1c41), which had gone Violet one commit
+   later, restored.
+3. **The binds follow the complement rule** — Dan remembered it and it is
+   66dda59: binds wear the middle-right stack's colour walked down; for
+   pink that stack is TEAL, so binds are `#009d7a` (the pink restore had
+   briefly resurrected the pre-rule pink binds).
+4. **The iPhone tile's plate is a ~4% rim** ("is our plate too thick for
+   that border") — the mark fills apple-touch-icon, paper peeking as the
+   thin border iOS icons wear.
+
+TWO ICONS STAY OPAQUE ON PURPOSE, do not "fix" them: apple-touch (iOS
+fills transparency with BLACK on the home screen) and maskable-512
+(Android's circular crop needs full bleed — verify95's safe-area rule).
+The derived PNGs/ICO are rendered from icon.svg via headless Chromium
+(omitBackground) + Pillow; there is no generator script in the repo yet.
+
+## 5 Sep evening — SpecuLearn commerces chrome is English (new PR from main)
+
+Sole editor of STATUS.md in this commit: ux/en-chrome-speculearn.
+
+#182 is already in main. The English labels could not land on that closed
+pull request, so they sit on a clean branch from `5d06894`:
+`ux/en-chrome-speculearn`. No pictures touched.
+
+- Deck title is **Shops & market**. French subtitle and FR answers stay.
+- Instructions: **Pick the right picture.** / **Pick the right word.**
+- Keyboard hint is **1–4 pick · next · R**, not *choisir* / *suivant*.
+- The title band is not marked `lang="fr"` on commerces.
+
+Open it: Practice → SpecuLearn → Shops & market, or
+`/practice/speculearn/commerces`.
+
+## 5 Sep evening — SpecuLearn commerces photos are real PNGs
+
+Sole editor of STATUS.md in this commit: cursor/speculearn-commerces.
+
+The 14 FR-approved market pictures for commerces-15 … commerces-28 now live
+as real PNG files in `public/speculearn/` (each file starts with the PNG
+header, not base64 text). `SPECULEARN_ITEM_IMAGES` points each id at
+`/speculearn/commerces-XX.png`.
+
+Open them: Practice → SpecuLearn → the commerces stop, or go straight to
+`/practice/speculearn/commerces`. Example: « Je voudrais deux kilos de
+pommes. » shows the apple-scale photo, not the 🍎 emoji.
+
+The leftover encoding-test picture and the `docs/_asset_b64/` upload folder
+are gone. PR #182.
+
+## 5 Sep evening — five Dan rulings in one round (claude/reglages-switch)
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+1. **Settings are switches whose description states the CURRENT position**
+   (Dan: "settings description should change based on choice… show it as a
+   switch: by default in the off position"). "Icon labels" is now a switch;
+   off says "Tap and hold an icon to view its label.", on says "Icon labels
+   are always shown." The switch is a styled native checkbox
+   (`input.fluo-switch`, globals.css) with `role="switch"`.
+2. **No single control spans the whole page width — PERMANENT RULE, now in
+   AGENTS.md** ("No control spans the whole width"). Dan grants the rare
+   exception per case. First application: the Réglages tab pick-list went
+   from six full-width rows to a two-column grid.
+3. **ChaTutor's greeting greets** (Dan: "The ChaTutor's opening line is WAY
+   TOO LONG !"). The 50-word capability tour is gone; the opening line is
+   « Bonjour ! 👋 "Je peux t'aider ?" ».
+4. **No VoixLà in ÉcouTexte** (Dan: "Voix-Là is for TTS. and it does NOT
+   make any sense to have it im EcouTexte"). ToolSummon takes `tools`;
+   ÉcouTexte passes `["chatutor"]`, and a single-tool 🧰 opens its card
+   directly with no one-row tray. verify100 pins it. RULED later the same
+   evening (Dan: "doesn'T ecouTexte have a standard answer, why does it
+   still beed ChatTutor"): the 🧰 is OUT of ÉcouTexte entirely — a
+   dictation has one right sentence and the marking shows it; the tools
+   live in WorDrill and ComposeIt, where the learner produces French.
+   verify100 now asserts ÉcouTexte carries no ToolSummon.
+5. **Button labels wear the brand hand in heavy bold** (Dan: "use FluoLingo
+   font in heavy bold to disallow the text from overflowing off the
+   buttons"). `FluOlinGoHand-ExtraBold` (36 KB) joins the loaded weights as
+   800; `.fluo-btn-hand` (globals.css) is the class; first application is
+   the Réglages tab tiles, whose "Practice"/"Games" had run to the tile
+   edge in the body face. ROLLED OUT the same evening (Dan: "ensure that
+   elsewhere we also have buttons half way the width of the screen to
+   display in FluOLinGo") to the FamilyHub door tiles and the GameGallery
+   tiles. Weight settled at 800, not Dan's guessed 700 ("i just randomly
+   said 700"): 800 is what he approved on screen and is already loaded.
+   Sizes are rem steps (text-base/text-sm), NOT px and NOT screen-relative
+   (Dan asked): text follows the reader's font setting; a wider screen gets
+   more columns, never bigger letters. NOT applied to French exercise
+   options (MCQ/FlipIt/dice) — the target French stays in the reading face —
+   nor to profile data cards (scores are data, not labels).
+6. **The hub tiles go half-width and lose their blurbs** (Dan, shown the
+   hubs: "why are these still width-occupying buttons. We don't need the
+   desxruption of the acticities, not here"). FamilyHub is a two-column
+   grid on every screen now — icon + hand-bold name, no description. This
+   OVERRULES the 1 Sep "a blurb per tile helps you choose" position for
+   hubs; the blurbs stay in the registry for surfaces that want them.
 ## 5 Sep — SIO-045A becomes SIO-045; the spine is 1-50 with no gaps
 
 Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.

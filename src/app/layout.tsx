@@ -65,18 +65,35 @@ const patrickHand = Patrick_Hand({
 // FluOLinGo Hand — Dan's own brand hand-lettering (uploaded 2026-08-23), the
 // face of the page heading bands: what the design handoff's headers were
 // drawn in, now served from the repo instead of approximated by Patrick Hand.
-// TWO WEIGHTS, from ONE build (2026-08-31). PR #95 shipped the complete
+// FOUR WEIGHTS, from ONE build (2026-08-31; Bold added 2026-09-05). PR #95 shipped the complete
 // nine-weight family; what was loaded here was a 15 KB first-upload Regular
 // from August, a different build. Mixing that Regular with a SemiBold from
 // the new family would put two drawings of the same hand on one page.
 //
-// Only the two the app uses are loaded. The other seven sit in fonts/ until
-// something needs them: all nine would cost ~316 KB on every page for eight
-// weights nothing renders.
+// Only the weights the app uses are loaded. The rest sit in fonts/ until
+// something needs them: all nine would cost ~316 KB on every page for
+// weights nothing renders. ExtraBold joined on 5 Sep (Dan: "use FluoLingo
+// font in heavy bold to disallow the text from overflowing off the
+// buttons" — the hand face is narrower than the body face at the same
+// size, so button labels fit their tiles).
 const fluoHand = localFont({
   src: [
     { path: "../fonts/FluOlinGoHand-Regular.woff2", weight: "400", style: "normal" },
     { path: "../fonts/FluOlinGoHand-SemiBold.woff2", weight: "600", style: "normal" },
+    // TITLES (Dan, 2026-09-05: "the titles of the pages can afford to be in
+    // thick font — If Patrick Hand does not have Bold, then use oversized
+    // FluOLinGo font"). Patrick Hand has no bold at all: it ships from Google
+    // as a single 400 weight, so the house hand has to carry it. Bold rather
+    // than oversized SemiBold because "thicker" was the ask and scale alone
+    // answers "bigger" — Dan compared all four cuts and chose this one.
+    //
+    // THE PRICE CHANGED AFTER HE CHOSE. ExtraBold landed the same day for
+    // button labels, so 800 is now already paid for and 700 is the one that
+    // costs +35 KB. He picked 700 on the letterforms (at title size 800's
+    // counters start to close); that reason still holds, but the trade is no
+    // longer free and is worth revisiting if page weight is ever the issue.
+    { path: "../fonts/FluOlinGoHand-Bold.woff2", weight: "700", style: "normal" },
+    { path: "../fonts/FluOlinGoHand-ExtraBold.woff2", weight: "800", style: "normal" },
   ],
   variable: "--font-fluohand",
   display: "swap",

@@ -57,7 +57,9 @@ export default function PageBand({
   exitLabel = "Close",
   className = "",
 }: {
-  /** The ACTIVITY's name — MémoiRecall, GramMarathon, MneMemo, Settings. */
+  /** The ACTIVITY's name — MémoiRecall, GramMarathon, MneMemo, Settings.
+   *  Pass it in its natural casing; the band uppercases it in CSS. Stop names
+   *  stay in sentence case and do not belong here (Dan, 2026-09-05). */
   title: ReactNode;
   /** The goal's number, 1–50. Omitted on a page that belongs to no goal, and
    *  the circle is then not drawn rather than drawn empty. */
@@ -86,9 +88,30 @@ export default function PageBand({
           `truncate` cuts what is left — without the first, the second never
           fires and a long name pushes the goal circle off the band. */}
       <p className="min-w-0 flex-1 truncate leading-none">
+        {/* CAPITALS, AND BOLD (Dan, 2026-09-05: "the names of activities in
+            FULL caps", and "the titles of the pages can afford to be in thick
+            font"). The uppercase is done in CSS, not in the string, so the
+            accessible name a screen reader announces stays "SpecuLearn" and
+            not "S-P-E-C-U-L-E-A-R-N" — and so the one place that decides is
+            here rather than every caller.
+
+            It also answers "the coloured strip name of activity is a little
+            too tiny" for nothing: capitals fill the em where lowercase leaves
+            headroom, so the same --fs-h2 reads about as large as mixed case
+            two steps up. The band keeps its height.
+
+            The letter-spacing is not decoration. A hand-lettered face set in
+            caps at a tight fit reads as a solid block; 0.045em is what
+            separates the letters again. */}
         <span
-          className="fluo-band-hand font-semibold leading-none text-white"
-          style={{ fontSize: "var(--fs-h2)" }}
+          className="fluo-band-hand uppercase leading-none tracking-[0.045em] text-white"
+          /* fontWeight inline, NOT `font-bold`: .fluo-band-hand declares
+             font-weight 600 and globals.css is imported after Tailwind, so a
+             utility of equal specificity loses to it. Measured: the class
+             version computed to 600. The weight is not shared with the other
+             users of .fluo-band-hand (the English on a practice card), so it
+             belongs on the element rather than in the class. */
+          style={{ fontSize: "var(--fs-h2)", fontWeight: 700 }}
         >
           {title}
         </span>

@@ -11,7 +11,7 @@
  * having an emoji on (almost) every item — the emoji plays the image role.
  * EXCLUDED after review (Dan, 2026-07-14: demonstratifs "is not making any
  * sense"): decks whose learning point an image cannot carry —
- *   demonstratifs  (the point is ce/cet/cette/ces, not the nouns)
+ *   demonstratifs  (the point is ce-cet-cette-ces, not the nouns)
  *   nationalities  (word side is the country name → duplicates countries,
  *                   tests zero nationality forms)
  *   tu-vous        (the point is the register choice; the person emoji are
@@ -97,7 +97,7 @@ export const SPECULEARN_EXCLUDED_ITEMS = new Set([
  * SpecuLearn set must be ONE grammatical category.
  *   colors            → definite article + colour noun ("le rouge", …).
  *                        11/12 play once colors-12 (no image) is excluded.
- *   transport          → en/à prepositional phrases ONLY ("en train",
+ *   transport         → en/à prepositional phrases ONLY ("en train",
  *                        "à vélo", …). The three prendre-* verb phrases
  *                        above are excluded for exactly this reason, not
  *                        only the image-twin reason.
@@ -109,18 +109,28 @@ export const SPECULEARN_EXCLUDED_ITEMS = new Set([
  */
 
 /** Per-item image overrides — the mechanism stays (Dan, 2026-08-24: "leave
- *  it in TypeScript, it's a short list, don't over-engineer"), currently
- *  empty. A 24 Aug build populated this with six purpose-drawn SVGs for the
- *  objets-articles items excluded above, sidestepping the emoji-inventory
- *  limit the sheet in SPECULEARN_ITEMS.md flagged; Dan reviewed the actual
- *  renders and vetoed all six ("restore your original bans, ship at 14") —
- *  two (trousse, mouchoirs) also read as confusable with each other. The
- *  SVGs are gone from `public/objets-articles/`; recoverable from git
- *  history (commit `4158e2f`) if ever revisited. Mirrors the aliments
- *  photo-bank mechanism (an `img` path wins over `emoji` in
- *  SpecuLearnContent's Visual component) but keyed by item id rather than a
- *  whole separate deck, for exactly this kind of small per-item exception. */
-export const SPECULEARN_ITEM_IMAGES: Record<string, string> = {};
+ *  it in TypeScript, it's a short list, don't over-engineer"). Commerces
+ *  15–28 are the FR-approved market photos in `public/speculearn/` (real
+ *  PNG bytes, not base64 text). An `img` path wins over `emoji` in
+ *  SpecuLearnContent's Visual. The 24 Aug objets-articles SVGs were vetoed
+ *  ("restore your original bans, ship at 14") and are recoverable from git
+ *  `4158e2f` if ever revisited. */
+export const SPECULEARN_ITEM_IMAGES: Record<string, string> = {
+  "commerces-15": "/speculearn/commerces-15.png",
+  "commerces-16": "/speculearn/commerces-16.png",
+  "commerces-17": "/speculearn/commerces-17.png",
+  "commerces-18": "/speculearn/commerces-18.png",
+  "commerces-19": "/speculearn/commerces-19.png",
+  "commerces-20": "/speculearn/commerces-20.png",
+  "commerces-21": "/speculearn/commerces-21.png",
+  "commerces-22": "/speculearn/commerces-22.png",
+  "commerces-23": "/speculearn/commerces-23.png",
+  "commerces-24": "/speculearn/commerces-24.png",
+  "commerces-25": "/speculearn/commerces-25.png",
+  "commerces-26": "/speculearn/commerces-26.png",
+  "commerces-27": "/speculearn/commerces-27.png",
+  "commerces-28": "/speculearn/commerces-28.png",
+};
 
 /** Per-deck SpecuLearn prompt frame (Dan, 2026-08-24 amendment 2). The
  *  transport en/à items are answers to a specific question, not free-

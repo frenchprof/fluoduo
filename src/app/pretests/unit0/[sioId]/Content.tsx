@@ -62,7 +62,7 @@ export default function Unit0PretestPage({ sioId }: { sioId: string }) {
     <CahierShell
       tabs={siteTabs()}
       active="pretest"
-      band={{ title: "Pretest", goal: goalNumber(sio), exitHref: `/unit/${sio.unit}` }}
+      band={{ title: "SpecuLearn", goal: goalNumber(sio), exitHref: `/unit/${sio.unit}` }}
     >
       <SectionBand family="goals" label="🧪 Can you already do this?">
         {/* The can-do gets the popup's own treatment — a highlighted serif

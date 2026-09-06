@@ -44,7 +44,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import DrillShell from "@/components/DrillShell";
-import ToolSummon from "@/components/tools/ToolSummon";
 import { pauseSpeech, resumeSpeech, speak, speakSequence } from "@/games/letris/speech";
 import { gradeAnswer, type Grade } from "@/lib/practice/cloze";
 import { fingerprint, generateUnheard } from "@/lib/textgen/engine";
@@ -298,7 +297,7 @@ export default function EcouTexte({
     speed: () => (slow ? "Reading at half speed — tap for normal" : "Reading at normal speed — tap for half"),
     voice: () => (voice === "f" ? "A woman is reading — tap for a man" : "A man is reading — tap for a woman"),
     blanks: () =>
-      sized ? "Each blank is as long as its word — tap for equal blanks" : "All blanks are the same length — tap to size them to each word",
+      sized ? "Blanks sized to each word — tap for equal" : "Blanks all one length — tap to size them",
   };
   const say = (k: keyof typeof hints) => ({
     onMouseEnter: () => setHint(hints[k]()),
@@ -385,7 +384,7 @@ export default function EcouTexte({
             type="button"
             onClick={() => {
               setSized((v) => !v);
-              setHint(!sized ? "Each blank is as long as its word — tap for equal blanks" : "All blanks are the same length — tap to size them to each word");
+              setHint(!sized ? "Blanks sized to each word — tap for equal" : "Blanks all one length — tap to size them");
             }}
             {...say("blanks")}
             aria-pressed={sized}
@@ -583,17 +582,13 @@ export default function EcouTexte({
         </button>
       )}
 
-      {/* 🧰 The summonable tools (5 Sep). What is handed over is what the
-          learner can already SEE: their own typed attempt — never the hidden
-          sentence, unless they revealed it themselves (this is a listening
-          exercise; the sentence IS the answer). */}
-      <ToolSummon
-        context={{
-          title: "ÉcouTexte",
-          item: revealed[at] ? sentences[at]?.fr : attemptAt || undefined,
-          french: revealed[at] ? sentences[at]?.fr : attemptAt,
-        }}
-      />
+      {/* NO 🧰 here — Dan, 5 Sep, in two steps: first "Voix-Là is for TTS.
+          and it does NOT make any sense to have it im EcouTexte" (the
+          exercise already speaks), then "doesn'T ecouTexte have a standard
+          answer, why does it still beed ChatTutor" — a dictation has ONE
+          right sentence and the marking already shows it, so there is
+          nothing left for a chat tool to add. The tools live where the
+          learner PRODUCES French: WorDrill and ComposeIt. */}
     </div>
   );
 

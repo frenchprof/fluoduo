@@ -239,7 +239,17 @@ const RAW_ACTIVITIES: Omit<Activity, "hue" | "fill">[] = [
  * did not, and it is the same fact about the same thing.
  */
 export const TAB_ICONS: Record<string, { label: string; emoji: string }> = {
-  pretest: { label: "Pre-Test", emoji: "🧪" },
+  // "SpecuLearn", not "Pre-Test" — FINISHING a rename main had begun (#188 era)
+  // rather than starting one. Main had renamed the tab on the two pre-test
+  // PAGES and left every door to them saying "Pre-Test", so the label a learner
+  // tapped and the label they landed on disagreed. That is the exact split this
+  // map exists to make impossible, and Dan settled the wording himself
+  // (2026-09-05: *"no no no, i want the name SpecuLearn"*).
+  //
+  // The emoji stays 🧪, which is main's choice, and it is now the one open
+  // question here: the SpecuLearn ACTIVITY in the registry is 💡, so one name
+  // wears two pictures. Flagged to Dan rather than settled in a merge.
+  pretest: { label: "SpecuLearn", emoji: "🧪" },
   matching: { label: "Match It", emoji: "🔗" },
   // "Map", not "Carte" (Dan, 2026-09-01) — the interface is English; the key
   // and the /carte redirect route are untouched, display rename only.
