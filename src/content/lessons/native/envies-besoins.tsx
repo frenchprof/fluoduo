@@ -85,7 +85,7 @@ export const enviesBesoinsLesson: NativeLesson = {
   // position (« j'ai » + what you have, the shape of « j'ai vingt-cinq ans »)
   // rather than asserted with a form Dan has not seen.
   concept: {
-    subtitle: "Why two of the five need « de » and three do not",
+    subtitle: "Why two of the five need « de »",
     contrast: (
       <>
         English runs all five the same way &mdash; <i>I would like a coffee</i>,{" "}

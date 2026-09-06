@@ -10,6 +10,33 @@
  */
 import type { DiceAxis, DiceQuestion } from "./types";
 import { pinned1 } from "./axis.ts";
+import { BIRTH_YEARS, MONTHS, MONTHS_EN } from "./nombres-echanges.gen.ts";
+
+/**
+ * BORN — né / née, added 2026-09-05 (Dan: SUP-CAL-03, *"né / née reusing the
+ * SIO-010 role cue"*).
+ *
+ * IT LIVES HERE AND THAT IS A JUDGEMENT CALL, recorded because the next reader
+ * will wonder. This stop's whole job is `avoir` for age against `être` for
+ * states, and `Je suis né` is `être` + a past participle — a third thing. It
+ * earns its place because a birth year is the same conversation as an age
+ * (`J'ai vingt ans. Je suis né en deux mille cinq.`), and because the year it
+ * needs was taught one stop earlier at SIO-018. The alternative home was
+ * SIO-016, where `français → française` is already the same `-e` move; Dan was
+ * shown both and chose this one.
+ *
+ * THE ROLE CUE IS NOT DECORATION. A learner cannot know whether to write `né`
+ * or `née` from the French alone — `Je suis né(e)` sounds identical. So the
+ * card names its speaker BEFORE the guess, the way SIO-010 does. Without the
+ * cue this round would be a coin toss, which teaches nothing.
+ */
+const BORN_PEOPLE = [
+  { name: "Marc", cue: "👨", f: false, third: "Il" },
+  { name: "Léa", cue: "👩", f: true, third: "Elle" },
+  { name: "Hugo", cue: "👨", f: false, third: "Il" },
+  { name: "Chloé", cue: "👩", f: true, third: "Elle" },
+] as const;
+
 
 const AVOIR_STATES = [
   { fr: "faim", en: "hungry" },
@@ -49,6 +76,7 @@ export const AVOIR_ETATS_AXES: DiceAxis[] = [
       { value: "age", label: "l'âge" },
       { value: "avoir", label: "avoir + état" },
       { value: "etre", label: "être + état" },
+      { value: "naissance", label: "né / née" },
     ],
   },
 ];
@@ -62,6 +90,74 @@ export function avoirEtatsQuestion(pinned?: Record<string, string>): DiceQuestio
   // avoir vs être is the whole lesson, and age is the case learners get
   // wrong most, so the round is an axis rather than two nested coin tosses.
   const round = pinned?.round;
+
+  if (round === "naissance") {
+    const p = pick(BORN_PEOPLE);
+    const years = Object.keys(BIRTH_YEARS).map(Number);
+    const y = pick(years);
+    const yw = BIRTH_YEARS[y];
+    const ne = p.f ? "née" : "né";
+    const wrong = p.f ? "né" : "née";
+    // Half the cards are first person and half third, because the ending
+    // depends on WHO IS BORN and not on the pronoun — `Je suis née` and
+    // `Elle est née` take the same -e for the same reason.
+    if (Math.random() < 0.5) {
+      const month = pick(MONTHS);
+      return {
+        // The year is deliberately NOT in this cue. It was, and the sentence
+        // never used it — a learner reading "Hugo, August 2003" then writing
+        // « Il est né en août » is being shown a number that cannot help them
+        // answer. The cue carries exactly what decides the ending (who) and
+        // what the sentence needs (which month).
+        // Dan, 2026-09-05: *"for Léa - Avril : i would rather use normal font in
+        // English 'Lea is born in April' rather than put out Lea + avril
+        // without context"*. « Léa · avril » was two labels the learner had to
+        // assemble into a situation before they could answer; the sentence IS
+        // the situation. It goes in `big` with bigLang "en" so it renders as
+        // the reference it is — FluOLinGo hand, one size down from the French
+        // — rather than as a French target to read aloud.
+        meta: `${p.cue} ${p.name}`,
+        big: `${p.name} was born in ${MONTHS_EN[month]}.`,
+        bigLang: "en" as const,
+        correct: `${p.third} est ${ne} en ${month}.`,
+        alternates: [`${p.third} est ${ne} en ${month}`],
+        easyOptions: [
+          `${p.third} est ${ne} en ${month}.`,
+          `${p.third} est ${wrong} en ${month}.`,
+          `${p.third} a ${ne} en ${month}.`,
+        ],
+        med: {
+          before: `${p.third} est`,
+          choices: [ne, wrong],
+          correct: ne,
+          after: `en ${month}.`,
+        },
+      };
+    }
+    return {
+      // Same again, and here the quotation marks do real work: the answer is
+      // « Je suis né », so the card has to show that Marc is talking about
+      // himself. « Marc parle — 2003 » left the learner to infer it.
+      meta: `${p.cue} ${p.name}`,
+      big: `${p.name} says: "I was born in ${y}."`,
+      bigLang: "en" as const,
+      correct: `Je suis ${ne} en ${yw}.`,
+      alternates: [`Je suis ${ne} en ${yw}`],
+      easyOptions: [
+        `Je suis ${ne} en ${yw}.`,
+        `Je suis ${wrong} en ${yw}.`,
+        // avoir is this stop's other habit and the reliable slip here
+        `J'ai ${ne} en ${yw}.`,
+      ],
+      med: {
+        before: "Je suis",
+        choices: [ne, wrong],
+        correct: ne,
+        after: `en ${yw}.`,
+      },
+    };
+  }
+
   if (round === "age" || (!round && Math.random() < 0.25)) {
         // Age round — always avoir.
         const n = 17 + Math.floor(Math.random() * 9);

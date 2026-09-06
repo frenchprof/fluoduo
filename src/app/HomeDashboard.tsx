@@ -156,8 +156,12 @@ export default function HomeDashboard() {
   const activeSio = SIOS.find((s) => s.id === activeId);
   // THE STOP AFTER THIS ONE (Dan, 1 Sep: "add a forward button (= Next
   // stop)"). Taken from the map's own order — the SIOS array IS the study path
-  // — rather than by adding one to the id: the numbering has gaps and a half
-  // (45.5), so `SIO-045` + 1 is not a stop and `SIO-046` is not always next.
+  // — rather than by adding one to the id. Since 5 Sep the spine happens to be
+  // 1-50 with no gaps and no halves (SIO-045A became SIO-045), so `id + 1`
+  // would in fact resolve today. It still is not used: the SIOS array is the
+  // study path by definition, arithmetic only agrees with it by coincidence,
+  // and the last time the two disagreed — a retired 045 and a half-step at
+  // 45.5 — this line is what kept the forward key correct.
   // Undefined at the last stop, where the key simply does not render: a
   // forward key that goes nowhere is worse than no forward key.
   const afterSio = activeSio ? SIOS[SIOS.indexOf(activeSio) + 1] : undefined;

@@ -68,7 +68,18 @@ if bar_z is not None:
             if not fn.endswith((".tsx", ".ts")):
                 continue
             path = os.path.join(dirpath, fn)
-            for n, line in enumerate(open(path, encoding="utf-8"), 1):
+            # STRIP COMMENTS FIRST. This check reported LessonTabs.tsx on
+            # 2026-09-05 for a comment that SAYS "the site bar is `sticky top-0
+            # z-30`" — prose about the rule, read as a violation of it. A check
+            # that cannot tell code from the note explaining it will keep
+            # punishing the files that document themselves, which is the exact
+            # trap verify19b's own `strip_comments` was written for. Line
+            # numbers are preserved so the report still points at the real line.
+            body = open(path, encoding="utf-8").read()
+            body = re.sub(r"/\*[\s\S]*?\*/",
+                          lambda m: "\n" * m.group(0).count("\n"), body)
+            body = re.sub(r"(?m)^\s*//.*$", "", body)
+            for n, line in enumerate(body.splitlines(), 1):
                 # `fixed` overlays — modals, scrims, full-screen sheets — are
                 # SUPPOSED to cover the bar. They are viewport-anchored and a
                 # learner cannot reach the bar underneath one anyway. The rule

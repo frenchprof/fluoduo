@@ -154,15 +154,26 @@ const PRETEST_BY_SIO: Record<string, string> = {
   // ConjugaZone (CONJ_BY_SIO["SIO-042"]) already covers that conjugation.
   // Quantity-expression content (beaucoup de/trop de/…) is cleaned up into
   // the `les-de` deck but deliberately left unattached to any SIO pending a
-  // placement decision. SIO-045 ("Market phrases") is retired the same way
-  // — merged into SIO-044 ("Commerces"), which now covers both; its number
-  // is a deliberate permanent gap, not renumbered forward, so nothing
-  // downstream (045A/046/047/048) shifts. Renumbered SIOs otherwise keep
-  // their original pretests.
+  // placement decision. The OLD SIO-045 ("Market phrases") is retired the same
+  // way — merged into SIO-044 ("Commerces"), which now covers both.
+  //
+  // ITS NUMBER WAS THEN REUSED (Dan, 2026-09-05: *"if there is no more 45 but
+  // only 45A or 45.5, then make that the 45"*). This reverses what this comment
+  // used to say — that 45 was "a deliberate permanent gap, not renumbered
+  // forward". The gap outlived its reason: nothing was ever going to sit at 45
+  // again, and a lone half-step at 45.5 cost every surface that prints a stop
+  // number an explanation. So SIO-045A became SIO-045, num 45.5 became 45, and
+  // the spine is now exactly 1-50 with no gaps and no halves.
+  //
+  // NOTHING DOWNSTREAM SHIFTED: 046-050 keep their numbers, and the pretest
+  // FILE names are untouched, so `u4-sio045.json` still holds SIO-043's content
+  // and `u4-sio045a-nombres.json` still holds the new SIO-045's. Those names
+  // have lied about themselves since the July re-cut by deliberate choice —
+  // see src/lib/labels.ts — and renaming them is a separate job.
   "SIO-042": "u4-sio042",
   "SIO-043": "u4-sio045",
   "SIO-044": "u4-sio047",
-  "SIO-045A": "u4-sio045a-nombres",
+  "SIO-045": "u4-sio045a-nombres",
   "SIO-046": "u4-sio046",
   "SIO-047": "u4-sio047-plans",
   "SIO-048": "u4-sio048-advice",

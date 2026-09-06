@@ -741,6 +741,26 @@ body {
    Regular and SemiBold of FluOLinGo Hand are loaded, so `italic` would have
    the browser synthesise an oblique of a handwriting face. */
 .fluo-en { font-family: var(--font-fluohand-stack); font-weight: 400; letter-spacing: 0; }
+/* THE FRENCH ON A PRACTICE CARD — the same hand (Dan, 2026-09-05: "what about
+   having FluOLinGo throughout the page, except maybe the single worded
+   choices").
+
+   The English had moved to Dan's hand on 1 Sep and the French had not, so one
+   card carried two faces and the seam ran between the target and its own
+   reference. This closes it: prompt, meta and the sentence being built are all
+   the house hand now, and `.fluo-en` stays Regular under it, so English and
+   French are told apart by WEIGHT within one face rather than by two faces.
+
+   SEMIBOLD, NOT BOLD. Only Regular and SemiBold of FluOLinGo Hand are loaded
+   (layout.tsx); `font-bold` on this face would have the browser synthesise a
+   700 from the 400 and thicken the letterforms unevenly. The elements that
+   take this class drop their `font-bold` for exactly that reason.
+
+   THE SINGLE-WORD CHOICES KEEP THE BODY FACE, which is Dan's exception: a
+   one-word option is a token you pick, not a sentence you read, and the body
+   face's tighter fitting is what makes a grid of them scannable. An option
+   that IS a sentence takes the hand like everything else. */
+.card-hand { font-family: var(--font-fluohand-stack); font-weight: 600; letter-spacing: 0; }
 .cahier-hl {
   background-color: var(--cahier-hl);
   mix-blend-mode: multiply;
@@ -933,7 +953,13 @@ body {
 .cahier-tab--back2 { margin-right: 36px; }
 .cahier-tab:hover { transform: translateX(-3px); }
 .cahier-tab[data-active="true"] {
-  background: var(--tab-hue, var(--cahier-hl));
+  /* THE FILL, NOT THE STRIPE (2026-09-05). This painted `--tab-hue` — the
+     saturated colour the 6px stripe wants — behind `--cahier-ink`, and measured
+     that way six of the eight activity flaps sat between 2.17:1 and 4.23:1 on
+     the label of the page the learner was standing on. `--tab-fill` is the
+     family's wash and clears 8.1-8.5:1; it falls back to the stripe so a tab
+     that declares no fill renders exactly as it did. */
+  background: var(--tab-fill, var(--tab-hue, var(--cahier-hl)));
   color: var(--cahier-ink);
   font-weight: 900;
   border-color: var(--cahier-ink);
@@ -1442,6 +1468,34 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 :focus-visible {
   outline: 3px solid #2d5bff;
   outline-offset: 2px;
+}
+
+/* FAT-FINGER FLOOR (6 Sep, mobile round of the UI-police audit): a control
+   may DRAW small, but it must CATCH ~44px — measured on the export, the
+   top bar's four buttons caught at 27-34px on every page and the footer's
+   "about" at 31x13. The pad is an invisible ::after that grows the touch
+   area up to 44px in an axis only when the drawn box is under it — the
+   button Dan approved does not change by a pixel. Do not put it on two
+   controls closer than ~10px, or their halos cross. */
+.fluo-hit44 { position: relative; }
+.fluo-hit44::after {
+  content: "";
+  position: absolute;
+  top: min(0px, calc((100% - 44px) / 2));
+  bottom: min(0px, calc((100% - 44px) / 2));
+  left: min(0px, calc((100% - 44px) / 2));
+  right: min(0px, calc((100% - 44px) / 2));
+}
+/* The top bar's small square buttons are the worst repeat offenders —
+   floored as a class so every page inherits it. */
+.cahier-btn-sm { position: relative; }
+.cahier-btn-sm::after {
+  content: "";
+  position: absolute;
+  top: min(0px, calc((100% - 42px) / 2));
+  bottom: min(0px, calc((100% - 42px) / 2));
+  left: min(0px, calc((100% - 42px) / 2));
+  right: min(0px, calc((100% - 42px) / 2));
 }
 
 /* Tap-to-hear lesson zone: every French bit is speakable — show it. */

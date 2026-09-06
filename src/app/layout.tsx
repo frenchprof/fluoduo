@@ -160,7 +160,7 @@ export default function RootLayout({
             of the flex column when content is short. */}
         <footer className="mt-auto px-4 pb-3 pt-6 text-center text-[11px] leading-relaxed text-neutral-500">
           FluOLinGo · built by Dr Daniel Chan, NUS Centre for Language Studies · answers and activity are
-          recorded for learning analytics · <a href="/about" className="underline">about</a>
+          recorded for learning analytics · <a href="/about" className="fluo-hit44 underline">about</a>
         </footer>
         <FeedbackButton />
         <BetaNotice />

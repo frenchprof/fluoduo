@@ -10,6 +10,7 @@
  * SSR hydration stays deterministic — same pattern as PretestQuiz.
  */
 
+import { iconFor } from "@/content/activities";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import CahierShell from "@/components/CahierShell";
@@ -37,7 +38,7 @@ function buildCard(item: ReviewItem, pool: ReviewItem[]): Card {
   return { item, options: shuffle([item.en, ...distractors]) };
 }
 
-const TABS = [{ key: "reviser", label: "DéjàRevu", emoji: "🔖" }];
+const TABS = [{ key: "reviser", ...iconFor("reviser")! }];
 
 // Long queues are split into pages of 20 (Dan, 2026-07-13) — a bounded
 // session beats an 80-card wall; the next page is offered at the end.

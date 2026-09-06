@@ -625,11 +625,36 @@ function ExerciseCard({
       : ex.segments
         ? ex.segments.flatMap((s) => (s.kind === "blank" ? s.choices : []))
         : [];
-  const FR_TEXT = frAnswers.some((o) => (o ?? "").length > STACK_ABOVE) ? "text-lg" : "text-2xl";
-  // "Equally big" means levelling UP — the options grow to the sentence, the
-  // sentence does not shrink to the options — so an option too wide for a
-  // two-column cell at 24px takes a full-width row instead of dropping a size.
+  // TWO COLUMNS WIN OVER 24px (Dan, 2026-09-05, on a card offering Chine ·
+  // États-Unis · Indonésie · Philippines as four full-width bars: *"i am seeing
+  // one column, but it should be two"*).
+  //
+  // The threshold here was STACK_ABOVE (18, the 18px budget) while the CELL
+  // budget was STACK_ABOVE_2XL (7, the 24px one) — so anything between 8 and 18
+  // characters stayed at 24px and then failed the 7-character cell test, which
+  // is one column at the largest size. « Philippines » is eleven, and that is
+  // the whole of Dan's screenshot.
+  //
+  // Both now ask the same question of the same number: too long for a 24px
+  // two-column cell → drop to 18px, where the budget is 18 and the pair fits.
+  // This reverses one clause of the 1 Sep "level up, don't shrink" ruling, and
+  // only that clause: options are still sized to the French question wherever
+  // they fit beside each other, and an option that is a whole sentence still
+  // takes a full-width row at 18px rather than wrapping.
+  const FR_TEXT = frAnswers.some((o) => (o ?? "").length > STACK_ABOVE_2XL) ? "text-lg" : "text-2xl";
   const FR_CELL = FR_TEXT === "text-2xl" ? STACK_ABOVE_2XL : STACK_ABOVE;
+
+  /** Dan's exception, 2026-09-05: *"except maybe the single worded choices"*.
+   *  A one-word option is a token you pick — the body face fits tighter and a
+   *  grid of them stays scannable. An option that is a whole sentence is read,
+   *  so it takes the same hand as the prompt above it. */
+  //
+  // TEST THE LABEL, NOT THE VALUE. `c` on an MCQ card is the WHOLE sentence
+  // even when `optionSplit` reduces the button to the one word that differs —
+  // « Mes couleurs préférées sont… » rendered as « Mes ». Testing `c` put the
+  // hand on every such button, which is precisely the case Dan excepted.
+  const handIfSentence = (label: string | null | undefined) =>
+    /\s/.test(label ?? "") ? "card-hand" : "font-semibold";
 
   /** Nothing may sit between the blank and what follows it: sentence-final
    *  punctuation, or the noun an elided « l' » is glued to. */
@@ -688,7 +713,7 @@ function ExerciseCard({
   return (
     <div className="space-y-4 pt-2">
       {ex.meta && (
-        <p className="text-center text-xs font-bold uppercase tracking-wider text-[color:var(--cahier-ink)]/60">{ex.meta}</p>
+        <p className="card-hand text-center text-xs uppercase tracking-wider text-[color:var(--cahier-ink)]/60">{ex.meta}</p>
       )}
       {ex.big && (() => {
         // An EN->FR prompt is a REFERENCE to build from, not a target to read
@@ -700,7 +725,7 @@ function ExerciseCard({
             className={
               english
                 ? `text-center ${EN_TEXT}`
-                : `text-center ${FR_TEXT} font-bold leading-snug text-[color:var(--cahier-ink)]`
+                : `card-hand text-center ${FR_TEXT} leading-snug text-[color:var(--cahier-ink)]`
             }
             lang={english ? "en" : "fr"}
           >
@@ -710,7 +735,7 @@ function ExerciseCard({
       })()}
       {ex.segments && (
         <>
-          <p className={`text-center ${FR_TEXT} font-bold leading-snug text-[color:var(--cahier-ink)]`} lang="fr">
+          <p className={`card-hand text-center ${FR_TEXT} leading-snug text-[color:var(--cahier-ink)]`} lang="fr">
             {ex.segments.map((sg, n) =>
               sg.kind === "text" ? (
                 <span key={n}>{sg.text}</span>
@@ -766,7 +791,7 @@ function ExerciseCard({
                         disabled={answered}
                         onClick={() => onPick(b, c)}
                         style={!answered && !isPicked ? groupWash(b) : undefined}
-                        className={`rounded-lg border-2 px-3 py-2 ${FR_TEXT} font-semibold text-[color:var(--cahier-ink)] transition ${cls}`}
+                        className={`rounded-lg border-2 px-3 py-2 ${FR_TEXT} ${handIfSentence(c)} text-[color:var(--cahier-ink)] transition ${cls}`}
                       >
                         {c}
                       </button>
@@ -803,7 +828,7 @@ function ExerciseCard({
 
       {/* The frame the options were all repeating, hoisted and read once. */}
       {optionSplit && (
-        <p className={`text-center ${FR_TEXT} font-bold leading-snug text-[color:var(--cahier-ink)]`}>
+        <p className={`card-hand text-center ${FR_TEXT} leading-snug text-[color:var(--cahier-ink)]`}>
           <span lang="fr">{tightPunct(optionSplit.before)}</span>
           <span className={blankClass(!!shown?.trim(), gluesRight(optionSplit.after))} lang="fr">
             {shown?.trim() ? partOf(shown) : <span className="opacity-40">?</span>}
@@ -840,7 +865,7 @@ function ExerciseCard({
                 // MCQ card, and the English prompt above them is sized to
                 // match. Left at 16px the target read smaller than its own
                 // reference line.
-                className={`rounded-xl border-2 px-4 py-3 text-center ${FR_TEXT} font-bold transition ${cls}`}
+                className={`rounded-xl border-2 px-4 py-3 text-center ${FR_TEXT} ${handIfSentence(optionSplit ? optionSplit.parts[n] : c)} transition ${cls}`}
               >
                 {!answered && (
                   <span aria-hidden className="mr-2 text-xs font-bold opacity-50">{n + 1}</span>

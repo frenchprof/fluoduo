@@ -80,7 +80,7 @@ export default function PageBand({
       <Link
         href={exitHref}
         aria-label={exitLabel}
-        className="-my-1 -ml-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xl font-black text-white/70 no-underline transition hover:bg-white/15 hover:text-white"
+        className="fluo-hit44 -my-1 -ml-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xl font-black text-white/70 no-underline transition hover:bg-white/15 hover:text-white"
       >
         ✕
       </Link>

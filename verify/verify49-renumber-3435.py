@@ -9,7 +9,7 @@ so that locating a place sits beside asking for directions at 36.
 That is a two-line change to a JSON file and a genuinely dangerous one, because
 of an invariant nobody had ever written down: **a SIO's id and its `num` are in
 lockstep** — `SIO-034` always has `num: 34` — unbroken across all fifty, with
-`SIO-045A` at 45.5 as the one deliberate half-step. Every renumber in this
+`SIO-045` at 45.5 as the one deliberate half-step. Every renumber in this
 project's history has honoured it, including Dan's own of 012-014 and 022-028
 on 2026-07-01.
 
@@ -27,7 +27,7 @@ The second is EXECUTED against real blob shapes, not read.
 
 What this asserts:
 
-  1  id and num are in lockstep for all 50 SIOs, `SIO-045A` -> 45.5 included.
+  1  id and num are in lockstep for all 50 SIOs, `SIO-045` -> 45.5 included.
      This is the invariant the whole renumber rests on, and it was implicit
      until it nearly got broken.
   2  The order Dan asked for: 33 Places, 34 Questions, 35 Où est, 36 Directions.
@@ -71,12 +71,12 @@ for s in sios:
     if not m:
         drift.append(f"{s['id']} is not SIO-NNN"); continue
     # A letter suffix is a deliberate insertion into a retired number's gap
-    # (SIO-045A sits at 45.5, between 45 and 46).
+    # (SIO-045 sits at 45.5, between 45 and 46).
     expect = int(m.group(1)) + (0.5 if m.group(2) else 0)
     if s.get("num") != expect:
         drift.append(f"{s['id']} has num {s.get('num')}, expected {expect}")
 check(not drift,
-      "id and num are in lockstep across all 50 (SIO-045A at 45.5 included)",
+      "id and num are in lockstep across all 50 (SIO-045 at 45.5 included)",
       "a SIO's id and number have come apart, so the map label and the id "
       "shown to the learner now disagree: " + "; ".join(drift))
 

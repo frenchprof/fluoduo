@@ -11,6 +11,7 @@
  * "bring to class" gap report at the end.
  */
 
+import { TAB_ICONS } from "@/content/activities";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { CURATED } from "@/content/collections";
@@ -26,8 +27,8 @@ import { shuffle } from "@/lib/shuffle";
 // Cold pre-lesson diagnostic — no Practice-activity links on the rail
 // (pre/post boundary, same rule as /pretests/[id]).
 const PRETEST_TABS: ShellTab[] = [
-  { key: "home", label: "Home", emoji: "🏠", href: "/" },
-  { key: "pretest", label: "SpecuLearn", emoji: "🧪" },
+  { key: "home", ...TAB_ICONS.home, href: "/" },
+  { key: "pretest", ...TAB_ICONS.pretest },
 ];
 
 type Direction = "fr2pic" | "pic2fr";

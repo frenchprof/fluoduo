@@ -51,7 +51,7 @@ which should also include ils/elles"). verify48 asserts it there.
            exchange ON EITHER SIDE of the stall" — four acts
            -> 14 shop NAMES sorted by article. None of the four.
 
-  SIO-045A "the numbers 70 to 99, INCLUDING IN PRICES"
+  SIO-045 "the numbers 70 to 99, INCLUDING IN PRICES"
            -> 30 bare numerals. The words without the arithmetic, which is the
            only hard thing about the range.
 
@@ -90,7 +90,7 @@ GENS = {
     "le-chemin": "SIO-036",
     "quelle-matiere": "SIO-013",
     "au-marche": "SIO-044",
-    "soixante-dix": "SIO-045A",
+    "soixante-dix": "SIO-045",
 }
 for slug in GENS:
     p = f"src/content/lessons/native/{slug}.gen.ts"

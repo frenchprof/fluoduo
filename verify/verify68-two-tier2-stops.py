@@ -340,21 +340,44 @@ if tabs_body:
     # same day ("we can park Bonus under practice, so it does not have to
     # have its own tab") — the ⭐ Bonus level of the chooser serves those
     # sentences. Four tabs, not five.
-    check(labels == ["Path", "Idea", "Forms", "Pract."],
-          "four tabs: Path · Idea · Forms · Pract. — Bonus parked, Words under Forms",
-          f"the tab strip reads {labels}. Dan chose all-English on 2026-08-31, cut the labels "
-          "himself to save width, moved Words UNDER Forms, and parked Bonus under practice — "
-          "so there are four tabs, and no tab of its own for the word list or the bonus.")
-    check(max(len(l) for l in labels) <= 6,
-          "no label is longer than six characters — the strip fits without scrolling",
-          f"the longest label is {max(labels, key=len)!r}. The point of shortening was width: "
-          "a strip that scrolls hides the tabs at its end, which is how the sixth tab came "
-          "to be missing from the screenshot in the first place.")
+    # RELABELLED 2026-09-05, and the reversal is Dan's: *"i think we can use
+    # those french words, they are simple single words"*, having just written
+    # Idée / Forme / Exercice himself. The 31 Aug all-English ruling stands for
+    # what it decided — navigation is furniture and a beginner should not have
+    # to decode it — and « Idée », « Formes » and « Exercice » are cognates that
+    # need no decoding. GOAL stays English because it is not one of the
+    # lesson's parts: it is the 🎯 Goals family's name, spelled once in
+    # FAMILIES for the whole app, and its ← says it leaves the lesson.
+    check(labels == ["Goal", "Idée", "Formes", "Exercice"],
+          "four tabs: ← 🎯 Goal · Idée · Formes · Exercice — Bonus parked, Words under Forms",
+          f"the tab strip reads {labels}. Four tabs, no tab of its own for the word list "
+          "(under Formes) or the bonus (a level of the chooser since #97).")
+    # THE SIX-CHARACTER RULE IS GONE, and what replaced it is the thing the rule
+    # was standing in for. Six characters was a proxy for "fits a 320px column
+    # in one row beside an emoji"; « Exercice » is eight and the proxy said no,
+    # so the strip was measured instead — one row needed 67px in a 59px cell at
+    # 360px and three of four tabs overflowed. Stacking the emoji ABOVE the word
+    # (which is what the bottom bar already does) drops every tab to exactly its
+    # column at 320 / 360 / 390 / 430. So the assertion is now the stack, which
+    # is what actually makes a long label safe, and a label of any length is
+    # fine while it holds.
+    check("flex flex-col" in TABS and "grid-cols-4" in TABS,
+          "the strip stacks emoji over word in four fixed columns — measured to fit "
+          "at 320, 360, 390 and 430px with no tab overflowing",
+          "the tab strip is no longer a stacked four-column grid. Re-measure before "
+          "changing this: in ONE row « 🏋️ Exercice » needs 67px and a 360px phone "
+          "gives it 59, so the labels clip and the strip scrolls — which is how a "
+          "tab came to be missing from a screenshot in the first place.")
     french = [l for l in labels if re.match(r"^(Le |La |Les |L')", l)]
+    # Dan reversed the language on 2026-09-05, so this no longer forbids French —
+    # it forbids the OLD French, « Le concept » / « Les formes » / « Le parcours »,
+    # the article-prefixed names the short labels replaced. « Idée » is a tab;
+    # « Le concept » is a page title someone pasted into a tab.
     check(not french,
-          "no French label left in the strip",
-          f"these tabs are still French: {french}. One French tab among five English ones "
-          "is the state a half-finished rename lands in, and it was explicitly rejected.")
+          "no tab has slipped back to the old article-prefixed French name",
+          f"these tabs read as page titles rather than labels: {french}. The short forms "
+          "are Idée · Formes · Exercice; « Le concept » and « Les formes » are what they "
+          "replaced.")
 
 # The learner-facing empty states name the tabs too — a rename that leaves
 # those behind tells a learner to go to a tab that no longer exists.

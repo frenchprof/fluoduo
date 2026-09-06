@@ -101,7 +101,7 @@ const PLATS_RESTAURANT: Food[] = [POISSON, POULET, VIANDE, PATES, RIZ, FRITES, L
 
 /**
  * A shop and what it actually sells — bound as a PAIR. `big` marks the shops
- * where a two-digit total (the 70–99 numbers of SIO-045A) is plausible.
+ * where a two-digit total (the 70–99 numbers of SIO-045) is plausible.
  */
 type Commerce = { shop: Noun; vend: Food[]; big?: boolean };
 

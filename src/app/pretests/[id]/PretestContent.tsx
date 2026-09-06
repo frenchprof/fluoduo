@@ -1,5 +1,6 @@
 "use client";
 
+import { TAB_ICONS } from "@/content/activities";
 import { useEffect, useMemo, useState } from "react";
 import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import Link from "next/link";
@@ -14,8 +15,8 @@ import { optionGridClass } from "@/lib/optionGrid";
 // The Pretest is a cold pre-lesson diagnostic — its tab rail deliberately does
 // NOT link to Practice activities (pre/post boundary, see PRETEST_BLUEPRINT.md).
 const PRETEST_TABS: ShellTab[] = [
-  { key: "home", label: "Home", emoji: "🏠", href: "/" },
-  { key: "pretest", label: "SpecuLearn", emoji: "🧪" },
+  { key: "home", ...TAB_ICONS.home, href: "/" },
+  { key: "pretest", ...TAB_ICONS.pretest },
 ];
 
 type Verdict = { picked: string; correct: boolean };

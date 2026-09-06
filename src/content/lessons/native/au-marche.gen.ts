@@ -38,7 +38,7 @@ export const GOODS = [
 
 type Good = (typeof GOODS)[number];
 
-/** Prices that use the 70–99 band SIO-045A teaches, plus simpler ones. */
+/** Prices that use the 70–99 band SIO-045 teaches, plus simpler ones. */
 export const PRICES = [
   { cents: 250, fr: "deux euros cinquante" },
   { cents: 300, fr: "trois euros" },
