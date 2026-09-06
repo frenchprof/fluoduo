@@ -243,8 +243,8 @@ export const FINALE_BANK: FinaleItem[] = [
   { id: "finale:SIO-044:10", sio: "SIO-044", unit: 4, pre: "Pour les médicaments, allez à la ", post: ".", a: ["pharmacie"], cat: "a shop" },
   { id: "finale:SIO-044:15", sio: "SIO-044", unit: 4, pre: "— Le client : « Ça fait ", post: " ? » — Le marchand : « Ça fait 6,50 €. »", a: ["combien"], cat: "a question word" },
   { id: "finale:SIO-044:16", sio: "SIO-044", unit: 4, pre: "— Je ", post: " deux kilos de pommes, s'il vous plaît.", a: ["voudrais", "veux", "prends", "commande", "achète", "achete"], cat: "a polite verb form" },
-  { id: "finale:SIO-045A:1", sio: "SIO-045A", unit: 4, pre: "Soixante-dix plus dix, ça fait ", post: ".", a: ["quatre-vingts", "quatre vingts", "quatre-vingt", "quatre vingt"], cat: "a number" },
-  { id: "finale:SIO-045A:2", sio: "SIO-045A", unit: 4, pre: "Ça fait ", post: " euros. (91 €)", a: ["quatre-vingt-onze"], cat: "a number" },
+  { id: "finale:SIO-045:1", sio: "SIO-045", unit: 4, pre: "Soixante-dix plus dix, ça fait ", post: ".", a: ["quatre-vingts", "quatre vingts", "quatre-vingt", "quatre vingt"], cat: "a number" },
+  { id: "finale:SIO-045:2", sio: "SIO-045", unit: 4, pre: "Ça fait ", post: " euros. (91 €)", a: ["quatre-vingt-onze"], cat: "a number" },
   { id: "finale:SIO-046:1", sio: "SIO-046", unit: 4, pre: "Regarde ", post: " pommes ! Elles sont belles, non ?", a: ["ces", "les"], cat: "a demonstrative" },
   { id: "finale:SIO-046:2", sio: "SIO-046", unit: 4, pre: "J'achète ", post: " fromage-là, le petit.", a: ["ce"], cat: "a demonstrative" },
   { id: "finale:SIO-047:1", sio: "SIO-047", unit: 4, pre: "Ce soir, nous ", post: " manger au restaurant. C'est décidé !", a: ["allons", "devons", "voulons"], cat: "a conjugated verb (near future)" },
@@ -344,8 +344,8 @@ export const FINALE_BANK: FinaleItem[] = [
   { id: "finale:SIO-044:12", sio: "SIO-044", unit: 4, pre: "On achète les fruits frais au ", post: ".", a: ["marché", "marche", "supermarché", "supermarche"], cat: "a shop" },
   { id: "finale:SIO-044:17", sio: "SIO-044", unit: 4, pre: "— Et avec ", post: " ? — C'est tout, merci !", a: ["ceci", "ça", "ca"], cat: "a market formula word" },
   { id: "finale:SIO-044:18", sio: "SIO-044", unit: 4, pre: "— C'est ", post: ", merci ! — Au revoir !", a: ["tout", "bon"], cat: "a market formula word" },
-  { id: "finale:SIO-045A:3", sio: "SIO-045A", unit: 4, pre: "Quatre-vingts plus dix, ça fait ", post: ".", a: ["quatre-vingt-dix"], cat: "a number" },
-  { id: "finale:SIO-045A:4", sio: "SIO-045A", unit: 4, pre: "Ça fait ", post: " euros. (75 €)", a: ["soixante-quinze"], cat: "a number" },
+  { id: "finale:SIO-045:3", sio: "SIO-045", unit: 4, pre: "Quatre-vingts plus dix, ça fait ", post: ".", a: ["quatre-vingt-dix"], cat: "a number" },
+  { id: "finale:SIO-045:4", sio: "SIO-045", unit: 4, pre: "Ça fait ", post: " euros. (75 €)", a: ["soixante-quinze"], cat: "a number" },
   { id: "finale:SIO-046:3", sio: "SIO-046", unit: 4, pre: "", post: " homme, là-bas, c'est mon professeur.", a: ["cet", "l'", "l"], cat: "a demonstrative (before vowel)" },
   { id: "finale:SIO-046:4", sio: "SIO-046", unit: 4, pre: "Regarde la vitrine ! J'adore ", post: " chaussures-là !", a: ["ces"], cat: "a demonstrative (plural)" },
   { id: "finale:SIO-047:3", sio: "SIO-047", unit: 4, pre: "Demain, elle ", post: " visiter le musée.", a: ["va", "veut", "doit", "peut"], cat: "a conjugated verb (near future)" },
@@ -446,8 +446,8 @@ export const FINALE_BANK: FinaleItem[] = [
   { id: "finale:SIO-044:14", sio: "SIO-044", unit: 4, pre: "On trouve tout — pain, lait, fruits — au ", post: ".", a: ["supermarché", "supermarche"], cat: "a shop" },
   { id: "finale:SIO-044:19", sio: "SIO-044", unit: 4, pre: "Le marchand : « Bonjour ! Vous ", post: " ? » — « Deux kilos de tomates. »", a: ["désirez", "desirez", "voulez"], cat: "a conjugated verb" },
   { id: "finale:SIO-044:20", sio: "SIO-044", unit: 4, pre: "— Ça ", post: " 7,80 €, s'il vous plaît.", a: ["fait", "coûte", "coute"], cat: "a conjugated verb" },
-  { id: "finale:SIO-045A:5", sio: "SIO-045A", unit: 4, pre: "Soixante et onze plus un, ça fait ", post: ".", a: ["soixante-douze"], cat: "a number" },
-  { id: "finale:SIO-045A:6", sio: "SIO-045A", unit: 4, pre: "Ça fait ", post: " euros. (88 €)", a: ["quatre-vingt-huit"], cat: "a number" },
+  { id: "finale:SIO-045:5", sio: "SIO-045", unit: 4, pre: "Soixante et onze plus un, ça fait ", post: ".", a: ["soixante-douze"], cat: "a number" },
+  { id: "finale:SIO-045:6", sio: "SIO-045", unit: 4, pre: "Ça fait ", post: " euros. (88 €)", a: ["quatre-vingt-huit"], cat: "a number" },
   { id: "finale:SIO-046:5", sio: "SIO-046", unit: 4, pre: "", post: " tarte est délicieuse !", a: ["cette", "la", "ma", "ta", "sa", "une", "votre", "notre"], cat: "a determiner (feminine)" },
   { id: "finale:SIO-046:6", sio: "SIO-046", unit: 4, pre: "Tu vois ", post: " arbre-là ?", a: ["cet"], cat: "a demonstrative (before vowel)" },
   { id: "finale:SIO-047:5", sio: "SIO-047", unit: 4, pre: "Après le cours, nous ", post: " manger ensemble.", a: ["allons", "voulons", "devons", "pouvons"], cat: "a conjugated verb (near future)" },
@@ -460,4 +460,4 @@ export const FINALE_BANK: FinaleItem[] = [
   { id: "finale:SIO-050:5", sio: "SIO-050", unit: 4, pre: "À la fin : « Vous pouvez payer par ", post: " ou en espèces. »", a: ["carte"], cat: "a restaurant word" },
 ];
 
-export const FINALE_SIOS: string[] = ["SIO-001", "SIO-002", "SIO-003", "SIO-004", "SIO-005", "SIO-006", "SIO-007", "SIO-008", "SIO-009", "SIO-010", "SIO-011", "SIO-012", "SIO-013", "SIO-014", "SIO-015", "SIO-016", "SIO-017", "SIO-018", "SIO-019", "SIO-020", "SIO-021", "SIO-022", "SIO-023", "SIO-024", "SIO-025", "SIO-026", "SIO-027", "SIO-028", "SIO-029", "SIO-030", "SIO-031", "SIO-032", "SIO-033", "SIO-035", "SIO-034", "SIO-036", "SIO-037", "SIO-038", "SIO-039", "SIO-040", "SIO-041", "SIO-042", "SIO-043", "SIO-044", "SIO-045A", "SIO-046", "SIO-047", "SIO-048", "SIO-049", "SIO-050"];
+export const FINALE_SIOS: string[] = ["SIO-001", "SIO-002", "SIO-003", "SIO-004", "SIO-005", "SIO-006", "SIO-007", "SIO-008", "SIO-009", "SIO-010", "SIO-011", "SIO-012", "SIO-013", "SIO-014", "SIO-015", "SIO-016", "SIO-017", "SIO-018", "SIO-019", "SIO-020", "SIO-021", "SIO-022", "SIO-023", "SIO-024", "SIO-025", "SIO-026", "SIO-027", "SIO-028", "SIO-029", "SIO-030", "SIO-031", "SIO-032", "SIO-033", "SIO-035", "SIO-034", "SIO-036", "SIO-037", "SIO-038", "SIO-039", "SIO-040", "SIO-041", "SIO-042", "SIO-043", "SIO-044", "SIO-045", "SIO-046", "SIO-047", "SIO-048", "SIO-049", "SIO-050"];

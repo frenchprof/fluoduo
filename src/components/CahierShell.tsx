@@ -37,7 +37,7 @@ import { getLetrisSet } from "@/games/letris/sets";
 import { composeBanksForDeck } from "@/games/compose/banks";
 import FirstTour from "@/components/FirstTour";
 import { isPlayableGap } from "@/lib/collections/gapSentence";
-import { activity, bandOf, familyOf, familyShort, hubFamily, isReadingSurface } from "@/content/activities";
+import { TAB_ICONS, activity, bandOf, familyOf, familyShort, hubFamily, isReadingSurface } from "@/content/activities";
 import { stopForDeck } from "@/lib/stopTag";
 import BottomBar from "@/components/BottomBar";
 import PageBand from "@/components/PageBand";
@@ -274,7 +274,7 @@ function trackSupplementOpen(
  */
 function registryTab(key: string, href: string): ShellTab {
   const a = activity(key);
-  return { key, label: a?.name ?? key, emoji: a?.emoji ?? "", href, hue: a?.hue };
+  return { key, label: a?.name ?? key, emoji: a?.emoji ?? "", href, hue: a?.hue, fill: a?.fill };
 }
 
 export function deckActivityTabs(collectionId: string): ShellTab[] {
@@ -285,7 +285,7 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
   const curatedDeck = CURATED.find((c) => c.id === collectionId);
   return [
     ...(pretestHref
-      ? [{ key: "pretest", label: "Pre-Test", emoji: "🧪", href: pretestHref } as ShellTab]
+      ? [{ key: "pretest", ...TAB_ICONS.pretest, href: pretestHref } as ShellTab]
       : []),
     // Guess-first activity (Dan, 2026-07-14: native page, "not a
     // supplement") — photos for aliments, emoji everywhere else.
@@ -334,7 +334,7 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     // generic, the restriction wasn't real (Dan, 2026-08-02 Decks→Flip It
     // merge). Every deck with matching pairs authored gets this flap now.
     ...(curatedDeck && hasMatching(curatedDeck)
-      ? [{ key: "matching", label: "Match It", emoji: "🔗", href: `/games/matching/${collectionId}` } as ShellTab]
+      ? [{ key: "matching", ...TAB_ICONS.matching, href: `/games/matching/${collectionId}` } as ShellTab]
       : []),
     // One flap per compose bank on the deck. The first wears the registry
     // chrome ("ComposeIt"); any further bank flies its own title + emoji so

@@ -39,7 +39,11 @@
  * a lesson without one renders the tab with the reason it is empty, rather
  * than hiding the tab. A hidden gap is a gap nobody fixes.
  */
-import { Fragment, useState, type ReactNode } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Fragment, useRef, useState, type ReactNode } from "react";
+
+import GoalCard from "@/components/GoalCard";
 import type { Collection } from "@/lib/collections/schema";
 import type { Sio } from "@/content/sios";
 import type { LessonConcept } from "@/content/lessons/native/types";
@@ -51,7 +55,7 @@ import type { LessonConcept } from "@/content/lessons/native/types";
 // the ⭐ Bonus level of the chooser serves those sentences.
 type TabKey = "parcours" | "concept" | "formes" | "exercice";
 
-const TABS: { key: TabKey; emoji: string; label: string; does: string }[] = [
+const TABS: { key: TabKey; emoji: string; label: string; does: string; back?: boolean }[] = [
   // `does` earns the path list its place. Without it that list is the tab
   // strip retyped one inch lower, which is exactly what Dan's litmus test
   // deletes: text that, removed, costs the learner nothing.
@@ -68,10 +72,25 @@ const TABS: { key: TabKey; emoji: string; label: string; does: string }[] = [
   // The emoji set is Dan's, sent as four emoji for the four tabs (2026-08-31,
   // choosing the one-row strip): ➡️ the path ahead · 💡 the idea · 📐 the
   // forms measured out · 🏋️ the workout.
-  { key: "parcours", emoji: "➡️", label: "Path", does: "what you will be able to do" },
-  { key: "concept", emoji: "💡", label: "Idea", does: "why French does it this way" },
-  { key: "formes", emoji: "📐", label: "Forms", does: "the forms themselves, and every word" },
-  { key: "exercice", emoji: "🏋️", label: "Pract.", does: "use them, one card at a time — ⭐ Bonus included" },
+  //
+  // AND THEN DAN REVERSED THE LANGUAGE, 2026-09-05: *"i think we can use those
+  // french words, they are simple single words"*, having just written them
+  // himself — Idée, Forme, Exercice. The English ruling above is not deleted
+  // because it was right for what it decided: the reason a beginner should not
+  // decode navigation is that navigation is furniture. « Idée », « Formes » and
+  // « Exercice » are cognates a first-week learner reads without being taught,
+  // so they cost nothing and the lesson's own parts stop being labelled in a
+  // language the lesson is not in.
+  //
+  // GOAL STAYS ENGLISH, and that is the same rule rather than an exception: it
+  // is not one of the lesson's parts, it is the name of the 🎯 Goals family the
+  // learner came from, and FAMILIES spells it that way once for the whole app.
+  // Its ← says so — Dan wrote the tab as "<-- 🎯 Goal", an arrow out of the
+  // lesson rather than a step in it.
+  { key: "parcours", emoji: "🎯", label: "Goal", back: true, does: "the goal this lesson serves" },
+  { key: "concept", emoji: "💡", label: "Idée", does: "why French does it this way" },
+  { key: "formes", emoji: "📐", label: "Formes", does: "the forms themselves, and every word" },
+  { key: "exercice", emoji: "🏋️", label: "Exercice", does: "use them, one card at a time — ⭐ Bonus included" },
 ];
 
 /**
@@ -203,34 +222,44 @@ function Empty({ what }: { what: string }) {
   );
 }
 
-/* ── 0 · Le parcours ───────────────────────────────────────────────────────
- * Generated, not authored. Every SIO record already carries `canDo` (the
- * learner-facing goal) and `competence` (the measurable criteria), so the tab
- * Dan opens with — "By the end of this module, you will correctly use…" — is
- * a rendering job, not a writing one. */
-function Parcours({ sio, here }: { sio?: Sio; here: TabKey }) {
+/* ── 0 · Le but ────────────────────────────────────────────────────────────
+ * Dan, 2026-09-05: *"Path should by now be renamed as '<-- 🎯 Goal', and
+ * display only the SIO description with the links to items."*
+ *
+ * THREE THINGS LEFT, AND WHY EACH. What was here was `canDo`, `competence`,
+ * and a numbered list of the four tabs.
+ *
+ *   · The tab list was the strip retyped one inch lower. A learner can see the
+ *     four tabs above it; the list told them nothing the strip did not, which
+ *     is exactly what the litmus test deletes. (The file's own comment said as
+ *     much — "without `does` that list is the tab strip retyped" — and then
+ *     kept it anyway.)
+ *   · `canDo` and `competence` are two sentences of the same goal, written for
+ *     two different readers: the learner and the syllabus. Showing both makes
+ *     the learner read the assessment criteria to find their own goal.
+ *   · The LINKS were missing entirely, and they are the reason the tab is a
+ *     way back: everything else this stop offers — its pre-test, its cards,
+ *     its games — lives on the goal, not in this lesson.
+ *
+ * So: the description, then the items, then the goal itself. */
+function Parcours({ sio }: { sio?: Sio }) {
   if (!sio) {
-    return <Empty what="This lesson is not wired to a curriculum objective, so there is no Path to show." />;
+    return <Empty what="This lesson is not wired to a curriculum objective, so there is no goal to show." />;
   }
   return (
     <Panel>
-      <H>By the end of this lesson</H>
-      <p className="text-base font-bold">{sio.canDo}</p>
-      <H>What that means exactly</H>
-      <p>{sio.competence}</p>
-      <H>The path</H>
-      <ol className="mt-1 space-y-2">
-        {TABS.map((t, n) => (
-          <li key={t.key} className="flex items-baseline gap-2.5">
-            <span className="shrink-0 font-mono text-xs font-bold text-[color:var(--fluo-ink-soft)]">{n + 1}</span>
-            <span aria-hidden>{t.emoji}</span>
-            <span>
-              <span className={t.key === here ? "font-black" : "font-bold"}>{t.label}</span>
-              <span className="text-[color:var(--fluo-ink-soft)]"> — {t.does}</span>
-            </span>
-          </li>
-        ))}
-      </ol>
+      {/* ONE CARD, TWO DOORS. This is the same GoalCard the /sio scroller
+          shows, from one file: the tab is a shortcut to that page, and two
+          hand-written copies of a goal is how the old /sio page came to say
+          "Planned" for pre-tests that existed. */}
+      <GoalCard sio={sio} compact />
+
+      <Link
+        href={`/sio/${sio.id}`}
+        className="mt-4 flex items-center justify-center gap-1.5 rounded-xl border-2 border-[color:var(--cahier-ink)] px-3 py-2 text-[13px] font-black text-[color:var(--cahier-ink)]"
+      >
+        ← 🎯 {sio.id}
+      </Link>
     </Panel>
   );
 }
@@ -241,7 +270,7 @@ function Parcours({ sio, here }: { sio?: Sio; here: TabKey }) {
 function Concept({ c }: { c?: LessonConcept }) {
   const [pane, setPane] = useState<"claim" | "qa" | "traps" | "steps" | "check" | "sum">("claim");
   if (!c) {
-    return <Empty what="Idea has not been written for this lesson yet. Forms has the rules in the meantime." />;
+    return <Empty what="Idée has not been written for this lesson yet. Formes has the rules in the meantime." />;
   }
 
   /* SIDE-BY-SIDE PANES, NOT A STACK (Dan, 2026-08-31: *"broken into
@@ -603,6 +632,44 @@ export default function LessonTabs({
   // taps a tab the choice is theirs, and a re-render must not pull them back.
   const [tab, setTab] = useState<TabKey>(open);
 
+  /* ── SWIPE, and the direction rule behind it ────────────────────────────
+     Dan, 2026-09-05: *"so the idea is / MAP > SIO > MneMemO > ..."*, and
+     *"when swipe rightwards to go to the left"*. One rule for the whole app,
+     the phone convention: DRAGGING RIGHTWARDS DRAGS THE PAGE RIGHT, revealing
+     what sits to its left — so rightwards is always back, one level at a time:
+
+         Exercice → Formes → Idée → Goal → the SIO → the map
+
+     and leftwards is forward. He corrected himself once on this ("i mean
+     rightwards"), so the rule is written out here rather than encoded twice.
+
+     The tabs are FRONT MATTER — they exist only until a level is picked — so
+     this gesture is the lesson's navigation, never the exercise's. That is the
+     same line patch 22 drew and it is why the handler lives on this element.
+
+     TWO GUARDS, both learnt from things that break without them:
+       · a gesture that starts inside something scrolling sideways belongs to
+         that thing. The Formes panel puts the word list and the Mémo's tables
+         in `overflow-x-auto`, and stealing their drag makes them unreadable.
+       · a drag has to be decisively horizontal — 60px across AND half again
+         more across than down — or every flick of a vertical scroll would fire
+         a navigation. */
+  const router = useRouter();
+  const from = useRef<{ x: number; y: number } | null>(null);
+
+  function step(back: boolean) {
+    const i = TABS.findIndex((t) => t.key === tab);
+    if (back) {
+      if (i > 0) setTab(TABS[i - 1].key);
+      // `/sio/${id}` IS the goal now — the middle level of MAP > SIO > MneMemo
+      // (2026-09-05). It was a redirect stub until today, which is why this
+      // line pointed at Home's popup instead.
+      else if (sio) router.push(`/sio/${sio.id}`);
+      return;
+    }
+    if (i < TABS.length - 1) setTab(TABS[i + 1].key);
+  }
+
   return (
     /* THE TABS SIT WITH THE BAND, not a beat below it (Dan, 2026-08-31, shown
        four gaps rendered on the page and picking 8px).
@@ -622,7 +689,24 @@ export default function LessonTabs({
        phone, `sm:pt-10` (40px) above it. One offset gave 8px on the phone and
        24px on a desktop — the same gap Dan had just rejected, surviving at the
        width he was not looking at. */
-    <div className="-mt-5 pt-1 sm:-mt-9">
+    <div
+      className="-mt-5 pt-1 sm:-mt-9"
+      onTouchStart={(e) => {
+        const t = e.touches[0];
+        const inScroller = (e.target as HTMLElement).closest?.(".overflow-x-auto");
+        from.current = inScroller ? null : { x: t.clientX, y: t.clientY };
+      }}
+      onTouchEnd={(e) => {
+        const start = from.current;
+        from.current = null;
+        if (!start) return;
+        const t = e.changedTouches[0];
+        const dx = t.clientX - start.x;
+        const dy = t.clientY - start.y;
+        if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+        step(dx > 0);
+      }}
+    >
       {/* ONE ROW, four equal columns (Dan, 2026-08-31: "it seems we cannot
           squeeze the four in a row, then why"). The why was 4px: the pills
           kept the padding they wore as six, and 332px of tabs met a 328px
@@ -631,7 +715,26 @@ export default function LessonTabs({
           is how "Words" once vanished off the end of the strip. Shown to Dan
           against no-emoji and tightened-padding variants; he chose this and
           sent the four emoji himself. */}
-      <div role="tablist" aria-label="Lesson sections" className="grid grid-cols-4 gap-1 pb-2">
+      {/* THE DOTTED LINE IS THE FREEZE BOUNDARY (Dan, 2026-09-05, drawing it on
+          a screenshot: *"the dotted line needs to be the separation line
+          between the frozen part and the scrollable part"*).
+
+          Most of the freeze was already there and invisible, which is why it
+          needed saying: the site bar is `sticky top-0 z-30`, the ✕ MneMemo band
+          sits above DrillShell's content, and the SCROLLER is an inner
+          `overflow-y-auto` div — measured on a long Formes panel at 390px, 2512
+          scrollable inside 516 visible. So `top-0` here is the top of THAT
+          scroller, not of the window, and the first attempt's 96px offset (bar
+          + band) was measuring the wrong box.
+
+          What was missing was the strip itself and the line. The strip needs an
+          opaque ground: it scrolls over ruled paper, and a transparent sticky
+          element shows the rules sliding through the tabs. */}
+      <div
+        role="tablist"
+        aria-label="Lesson sections"
+        className="sticky top-0 z-10 grid grid-cols-4 gap-1 border-b-2 border-dashed border-[color:var(--cahier-ink)]/35 bg-[color:var(--cahier-paper)] pb-2"
+      >
         {TABS.map((t) => {
           const on = t.key === tab;
           return (
@@ -645,7 +748,15 @@ export default function LessonTabs({
                 // The sub-360 step exists for 320px phones: a column there is
                 // ~61px and "📐 Forms" at 13px is ~63 — the two widest pills
                 // clipped. Measured, not guessed.
-                "flex items-center justify-center gap-0.5 rounded-xl border-2 px-1 py-1.5 text-[12px] font-black transition min-[360px]:gap-1 min-[360px]:text-[13px]",
+                // STACKED, emoji over word, exactly as the bottom bar stacks
+                // 🎯 over Goals. Measured on 2026-09-05 when the labels went
+                // French: in one row « 🏋️ Exercice » needs 67px and the cell is
+                // 59px at 360, 49px at 320 — three of the four tabs overflowed,
+                // and the two ways out of that were dropping Dan's emoji or
+                // shortening the words he had just chosen. Stacking costs ~14px
+                // of height and keeps both, and it is what the app's own
+                // navigation already looks like one bar lower.
+                "flex flex-col items-center justify-center gap-0 rounded-xl border-2 px-0.5 py-1 text-[11px] font-black leading-tight transition min-[360px]:text-[12px] min-[390px]:text-[13px]",
                 on
                   ? "border-[color:var(--cahier-ink)] bg-[color:var(--fam-ink)] text-white"
                   : "border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-raised)] text-[color:var(--fluo-ink-soft)]",
@@ -656,14 +767,20 @@ export default function LessonTabs({
                   nothing they cannot already see, and it cost ~14px per tab
                   across six tabs. The path list still numbers them 1-6, where
                   the sequence is the actual claim being made. */}
-              <span aria-hidden>{t.emoji}</span>
+              {/* The ← is Dan's own, from "<-- 🎯 Goal": it says this tab
+                  leaves the lesson rather than moving along it, which is the
+                  same thing a rightwards swipe does. */}
+              <span aria-hidden className="leading-none">
+                {t.back && <span className="opacity-70">← </span>}
+                {t.emoji}
+              </span>
               <span className="whitespace-nowrap">{t.label}</span>
             </button>
           );
         })}
       </div>
 
-      {tab === "parcours" && <Parcours sio={sio} here={tab} />}
+      {tab === "parcours" && <Parcours sio={sio} />}
       {tab === "concept" && <Concept c={concept} />}
       {tab === "formes" && <Formes memo={memo} deck={deck} lexique={lexique} />}
       {tab === "exercice" && <Panel>{exercise}</Panel>}

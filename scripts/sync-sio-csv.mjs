@@ -14,7 +14,7 @@
  *
  *  - sios.json had grown a `short` label (the map's phone-legible name, which
  *    check:short requires of all 50) that the CSV has no column for, and grown
- *    SIO-045A, which has no CSV row. A run deleted a required field from 50
+ *    SIO-045, which has no CSV row. A run deleted a required field from 50
  *    entries and an entire SIO.
  *  - Its two hardcoded maps had rotted: COLLECTION_BY_SIO knew 26 of the 50
  *    live deck wirings and disagreed with one of them, so a run also unwired
@@ -86,8 +86,8 @@ const SLOT_REUSED = {
   // SIO-043. The app's own SIO-045 was "Market phrases", retired into SIO-044
   // (Commerces) on 2026-08-02 with its number left as a deliberate permanent
   // gap so nothing downstream would shift; "Numbers 70–99" was then added in
-  // that gap as SIO-045A. See the history note in src/content/pretests/index.ts.
-  "SIO-045": "SIO-045A",
+  // that gap as SIO-045. See the history note in src/content/pretests/index.ts.
+  "SIO-045": "SIO-045",
 };
 
 /** RFC-4180 parser: quotes, escaped "", embedded newlines/commas. */

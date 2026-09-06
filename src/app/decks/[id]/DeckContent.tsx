@@ -1,5 +1,6 @@
 "use client";
 
+import { TAB_ICONS } from "@/content/activities";
 import { useEffect, useState } from "react";
 import AuthGate from "@/components/AuthGate";
 import Link from "next/link";
@@ -25,7 +26,7 @@ import CuratedDeckTable from "./CuratedDeckTable";
 
 export function deckTabs(id: string): ShellTab[] {
   return [
-    { key: "home", label: "Home", emoji: "🏠", href: "/" },
+    { key: "home", ...TAB_ICONS.home, href: "/" },
     { key: "deck", label: "Deck", emoji: "📖", href: `/decks/view?id=${id}` },
     { key: "study", label: "Study", emoji: "🃏", href: `/decks/study?id=${id}` },
     // Auto-MCQ only for user decks — curated decks have authored pretests.

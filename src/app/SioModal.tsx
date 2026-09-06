@@ -33,7 +33,7 @@ import type { ReactNode } from "react";
 import type { Sio } from "@/content/sios";
 import type { Collection } from "@/lib/collections/schema";
 import { deckActivityTabs } from "@/components/CahierShell";
-import { activity } from "@/content/activities";
+import { TAB_ICONS, activity } from "@/content/activities";
 import { accuracyFor, activityKeyFor, loadLedger, LEDGER_EVENT, type Ledger } from "@/lib/activityLedger";
 
 export type PopupTab = { key: string; label: string; emoji: string; href?: string; active?: boolean; hint?: string };
@@ -64,8 +64,8 @@ export function popupActivityTabs(
     : [];
   if (pretest && (pretest.inline || pretest.href)) {
     const tab: PopupTab = pretest.inline
-      ? { key: "pretest", label: "Pre-Test", emoji: "🧪", active: true, hint: "try it first" }
-      : { key: "pretest", label: "Pre-Test", emoji: "🧪", href: pretest.href ?? undefined, hint: "try it first" };
+      ? { key: "pretest", ...TAB_ICONS.pretest, active: true, hint: "try it first" }
+      : { key: "pretest", ...TAB_ICONS.pretest, href: pretest.href ?? undefined, hint: "try it first" };
     const i = base.findIndex((t) => t.key === "pretest");
     if (i >= 0) base[i] = tab;
     else base.unshift(tab);

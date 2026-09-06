@@ -388,3 +388,9 @@ jobs:
 
       - name: "The highlighter marks: 24 colour sets, one geometry (5 Sep)"
         run: python3 verify/verify97-highlighter-marks.py
+
+      - name: "The calendar stays inside the numbers the learner has (5 Sep)"
+        run: python3 verify/verify101-calendar.py
+
+      - name: "An activity's colour is its family's, and the active flap is readable (5 Sep)"
+        run: python3 verify/verify102-menu-hues.py

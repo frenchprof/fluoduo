@@ -164,7 +164,7 @@ const UNIT_SITUATIONS: Record<number, { label: string; ids: string[] }[]> = {
   // by groupSiosForUnit below).
   4: [
     { label: "Situation 1 — Parler de ses habitudes alimentaires", ids: ["SIO-041", "SIO-042", "SIO-043"] },
-    { label: "Situation 2 — Faire ses courses", ids: ["SIO-044", "SIO-045A"] },
+    { label: "Situation 2 — Faire ses courses", ids: ["SIO-044", "SIO-045"] },
     { label: "Situation 3 — Faire des projets", ids: ["SIO-046", "SIO-047", "SIO-048"] },
   ],
 };

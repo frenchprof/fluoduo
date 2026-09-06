@@ -98,14 +98,54 @@ try:
 except Exception as e:  # noqa: BLE001
     check(False, "", f"visual-baseline.json unreadable: {e}")
 
-# ── 4 · /sio/[id] is a redirect ───────────────────────────────────────────
+# ── 4 · /sio/[id] is THE GOAL, and one card serves it ─────────────────────
+# REVERSED 2026-09-05, and the reversal is Dan's shape for the whole app:
+# *"so the idea is / MAP > SIO > MneMemO > ..."*. Patch 25 had reduced this
+# route to a redirect, and the reason it gave was DUPLICATION — the page was a
+# second copy of Home's popup and had drifted out of step with it, printing
+# "Planned" for pre-tests that existed. That reason does not reach what is
+# there now: the goal is a level of the navigation, and the card on it is the
+# same `GoalCard` the lesson's ← 🎯 Goal tab renders, from ONE file.
+#
+# So the assertion moves with the ruling. What is pinned is the thing the old
+# rule was really protecting — that a goal is described in one place — plus the
+# snap, which is the whole of Dan's "the magnet stops it".
 sio = CODE["src/app/sio/[id]/page.tsx"]
-check("SioRedirect" in sio and "`/?unit=${sio.unit}#${sio.id}`" in sio and "SioDetail" not in sio,
-      "/sio/[id] is one redirect to Home's popup (/?unit=N#SIO)", "/sio/[id] still renders its own page")
-check("generateStaticParams" in sio, "the fifty static /sio pages still build (old links, QR)", "generateStaticParams gone from /sio/[id]")
-check("window.location.replace(href)" in CODE.get("src/app/sio/[id]/SioRedirect.tsx", ""), "SioRedirect uses replace (no Back bounce)", "SioRedirect missing/does not replace")
-linkers = [f for f in SRC if not f.startswith("src/app/sio/") and re.search(r"[\"'`]/sio/", CODE[f])]
-check(not linkers, "nothing outside src/app/sio links to /sio/…", f"still linking to /sio/: {linkers}")
+check("SioScroller" in sio and "generateStaticParams" in sio,
+      "/sio/[id] is the goal itself, and the fifty static pages still build "
+      "(old links, printed QR)",
+      "/sio/[id] no longer renders the goal scroller, or has lost its fifty "
+      "static pages")
+scroller = CODE.get("src/app/sio/[id]/SioScroller.tsx", "")
+check("snap-y" in scroller and "snap-mandatory" in scroller and "snap-always" in scroller,
+      "the goals snap one per screen — mandatory, so a flick can only ever "
+      "rest ON a goal",
+      "the SIO scroller is no longer `snap-y snap-mandatory` with `snap-always` "
+      "sections. Dan: *\"it lands like a magnet onto the next goal or previous. "
+      "It should stop rather than continuous scroll\"* — proximity snapping "
+      "lets a flick coast past three goals, which is continuous scrolling with "
+      "a tidy ending.")
+# ONE description of a goal ACROSS THE TWO DOORS TO IT. This is the old rule's
+# real content: the /sio page and the lesson's ← 🎯 Goal tab are the same card
+# reached two ways, and hand-writing it twice is how the retired /sio page came
+# to print "Planned" for pre-tests that existed.
+#
+# StopSheet is deliberately NOT in this set. It is the map's stop sheet — a
+# different surface with its own shape (neo-key rows, activity icons, family
+# bands) that happens to name the same can-do. Folding it in would flatten a
+# considered design to satisfy a rule about drift between two things that are
+# meant to be identical.
+sharers = ["src/app/sio/[id]/SioScroller.tsx", "src/app/lessons/pager/LessonTabs.tsx"]
+missing = [f for f in sharers if "GoalCard" not in CODE.get(f, "")]
+check(not missing,
+      "the /sio page and the lesson's Goal tab render one shared GoalCard",
+      f"{missing} no longer uses components/GoalCard. The two doors to a goal "
+      "would then describe it separately, and drift.")
+rolled = [f for f in sharers
+          if "sio.canDo" in CODE.get(f, "") and "deckActivityTabs" in CODE.get(f, "")]
+check(not rolled,
+      "and neither hand-rolls the can-do plus its links alongside it",
+      f"{rolled} builds its own can-do + link list next to the shared card.")
 kn = CODE["src/components/KeyNav.tsx"]
 check("`/map?unit=${sio.unit}#${sio.id}`" in kn and "window.location.hash = sio.id" in kn,
       "KeyNav two-digit jump opens the outcome on The Map", "KeyNav does not deep-link into /map")

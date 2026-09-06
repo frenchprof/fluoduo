@@ -339,8 +339,16 @@ export default function DrillShell({
           Where progress or help DO exist the row is unchanged, which is most
           of the 28 surfaces mounting this shell: the progress bar is the
           learner's position in the run and the ? ladder is load-bearing. */}
+      {/* THE DASHES ARE THE FREEZE LINE (Dan, 2026-09-05: *"the dotted line
+          needs to be the separation line between the frozen part and the
+          scrollable part"*, then *"the scroll should start below the
+          counter"*). This row already WAS the last frozen thing — it is
+          `shrink-0` and sits before the `overflow-y-auto` panel, so nothing
+          moved; what it lacked was any way to say so. The same dashes mark the
+          same seam under the lesson's tab strip, which is the other view of
+          this shell and the one he drew the line on. */}
       {barNeeded && (
-      <div className="flex h-14 shrink-0 items-center gap-3 border-b-2 border-[color:var(--cahier-ink)]/10 bg-white/45 px-3 sm:px-5">
+      <div className="flex h-14 shrink-0 items-center gap-3 border-b-2 border-dashed border-[color:var(--cahier-ink)]/35 bg-white/45 px-3 sm:px-5">
         {/* Only where there is no band to host it — see `barNeeded`. Two ✕ on
             one screen would be worse than the row this change removes. */}
         {!act && (
