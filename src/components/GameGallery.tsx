@@ -10,6 +10,11 @@
  * un autre opening the grid as a bottom sheet. 80% of students never see a
  * list."
  *
+ * The two buttons the audit named in French are ENGLISH since 6 Sep — ▶ Play
+ * and Choose another (item 7): a beginner cannot reach the game without
+ * reading the only button on the card. The audit's words are left as quoted
+ * so the record stays accurate; verify23 and verify105 pin what ships.
+ *
  * WHICH SET IS NEXT — decided after mount from the learner's own itemSrs
  * (prerender must not depend on localStorage):
  *   1. the set whose deck has the most items DUE for review right now;
@@ -108,14 +113,14 @@ export default function GameGallery({
               href={card.href}
               className="cahier-btn cahier-btn-primary mt-4 w-full justify-center text-lg font-black no-underline"
             >
-              ▶ Jouer
+              ▶ Play
             </Link>
             <button
               type="button"
               onClick={() => setOpen(true)}
               className="cahier-btn mt-2 w-full justify-center"
             >
-              Choisir un autre
+              Choose another
             </button>
           </div>
         ) : (

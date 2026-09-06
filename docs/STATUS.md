@@ -6,6 +6,88 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 6 Sep — the verify-number collision is now the build's job, not a ritual
+
+Sole editor of STATUS.md in this commit: claude/peers-vd2h6h (Peers).
+
+Dan, asked which process change to make first: *"3. yes"* — the number scan.
+
+**Seven collisions** (31, 52 twice, 60, 43, then 96 and 97 on 6 Sep), and
+every one by a session that HAD run the scan AGENTS.md asks for. The scan is
+a snapshot; another session can claim the number in the hours between your
+scan and your push, and care does not close that window. `verify-wiring` gains
+a fourth assertion that runs it at push time instead.
+
+Narrow on purpose: only numbers a branch **adds** are checked (a number on
+`main` is settled, so `main` can never go red for someone else's branch); only
+branches **ahead of `main` and touched in the last 45 days** count as in
+flight (this repo has had branches rot for weeks, and a dead branch must not
+hold a number hostage); the branch that merges first keeps the number. Costs
+1.5 s.
+
+**It found a live one immediately.** `claude/fluolingo-color-review-9thj8x`
+and `claude/pre-tests-amendments-hndx8r` BOTH claimed **102** —
+`verify102-menu-hues.py` and `verify102-fluidtype.py`.
+[SUPERSEDED at the QC merge, same day: by the time this section landed, both
+branches were already in — menu-hues kept 102 (#189) and pre-tests had
+self-renumbered its fluidtype to **106** before #191 merged. The finding was
+right when written; the eighth collision resolved itself while this PR was
+in flight, which is itself the argument for assertion 4 existing.]
+
+Six break-tests, four of which went GREEN against broken code on the first
+run: the assertion read `git ls-tree HEAD` — the last commit — rather than the
+working tree, so a file renamed onto a taken number passed until it was
+committed, which is the exact moment someone needs telling. It now uses the
+same file list as assertions 1–3. Also proved: `main` itself stays green, a
+developer with no remotes fetched gets a visible skip, and CI with that same
+broken checkout FAILS rather than quietly guarding nothing.
+
+## 6 Sep — item 7: French off the controls (CLOSED)
+
+Sole editor of STATUS.md in this commit: claude/peers-vd2h6h (Peers).
+
+FINISH_BACKLOG **item 7** — *"no FR-only chrome a beginner must decode to
+act"*. A scan of every non-content file for French turned up 227 candidates;
+almost all were the material being taught. Six were controls.
+
+**Changed, with no flavour lost:**
+
+| where | was | now |
+|---|---|---|
+| Games hub, the button on every card | `▶ Jouer` | `▶ Play` |
+| Games hub, the second button | `Choisir un autre` | `Choose another` |
+| ComposeIt, the checker's own failure | `Pardon, un petit souci… réessayez !` | `Something went wrong — try again.` |
+| `/moi/historique`, the map's name | `Carte` | `Map` |
+| `/moi/historique`, Home's name | `Accueil` | `Home` |
+| The map legend + every stop's aria-label | `vocabulaire` · `grammaire` | `vocabulary` · `grammar` |
+
+Two coupled edits that a rename would have broken silently: `curriculum.ts`'s
+`SURFACE_APP` set MATCHES ON THE LABEL `"Accueil"`, so changing only
+`labels.ts` would have stopped history counting Home as an app surface; and
+`verify19` has banned the word *Accueil* as a nav label since July, so this
+change agrees with a rule already in the repo. Dan's July legend ruling
+survives whole — it chose WHICH word, not which language, and both its picks
+(*expressions* over *phrases*, *communication* over *atelier*) are the same
+in English.
+
+**Left standing — RULED, not pending.** Four sets were put to Dan on 6 Sep
+with the English each would take: the unit flaps (`Unité 0`–`Unité 4`), the
+ten rank names (`Débutant` … `Maître`), the twelve badge labels, and the two
+shop colours that are not already English (`Émeraude`, `Or`). **Dan: *"None."***
+All four stay French, and item 7 is closed on that basis rather than left
+half-done. The line his answer draws is in AGENTS.md: French that BLOCKS an
+action is a fault, French that decorates one is the app's character. « Jouer »
+was the only button on the card; a rank sits beside an English line saying how
+it was earned.
+
+`verify105-en-chrome.py` names its four surfaces one by one rather than
+sweeping — a sweep for "French in src/" would flag every deck and card in the
+course, and the first person to hit that wall would delete the check. Six
+break-tests. One of them exposed a dead assertion: the ComposeIt test matched
+`setNudge|setError|setStatus` and the real call sites are
+`setFeedback({ reply })` and `setMessages({ text })`, so it passed against the
+reverted code. It now looks for APOLOGY rather than French, since the waiter
+speaks French on purpose and the nudges quote French a learner should type.
 ## 6 Sep afternoon — Dan's ten answers, the charter, and what is building
 
 Sole editor of STATUS.md in this commit: fluoduo-main. Dan answered a

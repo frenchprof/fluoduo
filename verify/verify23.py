@@ -178,8 +178,13 @@ check(i >= 0 and "sm:block" in lt[max(0, i - 500):i] and "hidden" in lt[max(0, i
       "VocabulaRain's shortcut legend hides where there is no keyboard", "VocabulaRain legend not gated")
 
 # ── 8 · galleries ──────────────────────────────────────────────────────────
-check(bool(gallery) and "▶ Jouer" in gallery and "Choisir un autre" in gallery and "<BottomSheet" in gallery,
-      "GameGallery: ▶ Jouer card + Choisir un autre → BottomSheet", "GameGallery missing pieces")
+# The two labels went English on 6 Sep (item 7): the games hub is chrome, and
+# « Jouer » sat on the only button on the card — a beginner could not reach the
+# game without decoding it. What this line has always been testing is the
+# STRUCTURE (a play card, and a chooser that opens the BottomSheet), so it
+# follows the wording rather than pinning the old language.
+check(bool(gallery) and "▶ Play" in gallery and "Choose another" in gallery and "<BottomSheet" in gallery,
+      "GameGallery: ▶ Play card + Choose another → BottomSheet", "GameGallery missing pieces")
 for p in ("src/app/games/vocabularain/page.tsx", "src/app/games/lexicalater/page.tsx",
           "src/app/games/compose/page.tsx", "src/app/games/matching/page.tsx"):
     check("<GameGallery" in read(p), f"{p} renders GameGallery", f"{p} is still a wall of tiles")

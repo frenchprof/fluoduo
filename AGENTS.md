@@ -182,6 +182,36 @@ is glued on by the code rather than chosen. Dan looked at all five and said
 leave them. That is the ruling; this note records the reasoning so the next
 session does not spend an afternoon rediscovering the filter.
 
+# French that BLOCKS beats French that decorates — permanent (2026-09-06)
+
+The beginner lock says chrome is English. It does not say every French word
+outside a deck is a bug, and on 6 Sep the difference got a ruling.
+
+Six controls were changed under FINISH_BACKLOG item 7 — « Jouer » and
+« Choisir un autre » (the only two buttons on a game card), a French apology
+shown when ComposeIt's checker itself broke, « Carte » and « Accueil » in a
+learner's own history, and the map legend's « vocabulaire / grammaire », which
+is also what a screen reader announces at all fifty stops.
+
+Four more sets were put to Dan the same day, with the English each would take:
+
+    the unit flaps      Unité 0–4              ->  Unit 0–4
+    the ten ranks       Débutant … Maître      ->  Beginner … Master
+    the twelve badges   Premier pas, Diplômé…  ->  First step, Graduate…
+    two shop colours    Émeraude, Or           ->  Emerald, Gold
+
+**Dan: *"None."*** All four stay French.
+
+**So the test is not "is this French?" but "is a learner STUCK in front of
+it?"** « Jouer » sat on the only button on the card — you cannot reach the
+game without reading it. A rank and a badge each sit beside an English line
+saying how they were earned; « Unité 3 » names a place rather than asking for
+a decision. Nobody is stuck, and the French is the app's character.
+
+`verify105-en-chrome.py` names its four surfaces one by one for this reason. Do
+not widen it into a sweep for French under `src/` — it would flag every deck
+and card in the course, and it would be undoing this ruling.
+
 # Plain English to Dan, always — permanent (2026-09-05)
 
 **Dan: *"please speak to me only in plainn english that i can understand and
@@ -339,11 +369,21 @@ minutes later, and neither knew until both had merged or were ready to. Dan had
 told both sessions, in different words, an hour apart. No merge policy prevents
 that; thirty seconds of looking does.
 
-**Claiming a verify number:** scan EVERY remote branch, never just `main` —
-an in-flight number is precisely what main cannot show you. Four collisions
-have already happened (31, 52 twice, 60):
+**Claiming a verify number: THE BUILD DOES THIS NOW** (6 Sep). `verify-wiring`
+fails if a number your branch ADDS is already claimed on another branch that
+is ahead of `main` and was touched in the last 45 days. You still run the scan
+below to pick a free number up front — it saves a round trip — but you are no
+longer the last line of defence, which is the point:
 
 ```
 for b in $(git for-each-ref --format='%(refname:short)' refs/remotes/origin); do
   git ls-tree --name-only $b verify/; done | grep -o 'verify[0-9]*' | sort -u
 ```
+
+WHY IT STOPPED BEING A HUMAN JOB. Seven collisions (31, 52 twice, 60, 43, then
+96 and 97 on 6 Sep), every one of them by a session that HAD run the scan. The
+scan is a snapshot; someone else can claim the number in the hours between
+your scan and your push, and no amount of care closes that window. So the
+check runs at push time, every time. Only numbers your branch adds are tested,
+so `main` can never go red for someone else's branch, and the branch that
+merges first keeps the number.
