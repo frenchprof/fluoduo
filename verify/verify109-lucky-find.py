@@ -202,6 +202,38 @@ check(re.search(r'type:\s*"find"', prog),
       "progress.ts announces the find on fluolingo:reward",
       "nothing announces the find")
 
+# ONE COLOUR, ONE MEANING (Dan, 6 Sep, sent the find back for wearing amber).
+# The find shipped in the `joy` role for a day. Joy is the app's XP colour —
+# it is the +20 float and the receipt's XP line — so the banner said "XP"
+# while the code paid GEMS. Two currencies, one colour.
+#
+# This is read from the SOURCE rather than pinned to the string "flow", so it
+# still holds if the palette is re-cut or a role renamed: whatever the find
+# wears, it must not be the role the XP float wears, the role the streak toast
+# wears, or either of the two reds — a find often lands on a WRONG answer, and
+# a reward in the failure colour reads worst exactly when it fires most.
+def role_of(src, kind):
+    m = re.search(r'case\s+"%s":(?:[^;]|\n){0,400}?role:\s*"([a-z]+)"' % kind, src)
+    return m.group(1) if m else None
+
+
+find_role = role_of(toast, "find")
+streak_role = role_of(toast, "streak")
+xp_role = re.search(r"--dopa-([a-z]+)-ink", read("src/components/XpFloat.tsx"))
+xp_role = xp_role.group(1) if xp_role else None
+check(find_role and streak_role and xp_role,
+      f"the roles are readable (find={find_role}, streak={streak_role}, xp={xp_role})",
+      f"could not read a role (find={find_role}, streak={streak_role}, xp={xp_role})")
+check(find_role and find_role != xp_role,
+      "the find does not wear the XP colour (gems and XP are different money)",
+      f"the find wears {find_role!r}, which is the XP float's colour — one colour, two currencies")
+check(find_role and find_role != streak_role,
+      "the find does not wear the streak's colour",
+      f"the find wears {find_role!r}, which already means the streak fire")
+check(find_role not in ("miss", "reward"),
+      "the find is not a red — it often lands on a wrong answer",
+      f"the find wears {find_role!r}, a red: the reward would flash in the failure colour")
+
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:
     print("\n".join(f"  FAIL {m}" for m in FAIL))

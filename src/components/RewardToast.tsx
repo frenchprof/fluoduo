@@ -69,8 +69,23 @@ function toToast(d: RewardDetail, seq: number): Toast | null {
     // It says the AMOUNT and nothing else: a find that explained itself
     // ("you were due one", "1 answer in 8") would stop being a surprise the
     // first time anyone read it.
+    //
+    // FLOW, AND NOT ONE OF THE OTHER THREE (Dan, 6 Sep). It shipped in `joy`
+    // for a day, which was wrong on the rule this whole palette exists to
+    // enforce — one colour, one meaning:
+    //
+    //   joy     is already XP. It is the +20 float and the receipt's XP line
+    //           (XpFloat.tsx). A find pays GEMS, so the same amber would have
+    //           been two currencies.
+    //   streak  is already the fire.
+    //   reward / miss are reds, and a find often lands on a WRONG answer —
+    //           the reward would flash in the failure colour at the moment
+    //           that reads worst.
+    //
+    // Flow is the only role not already spoken for, and the 💎 is blue, so
+    // the icon sits inside its disc instead of fighting it.
     case "find":
-      return { ...base, icon: "💎", role: "joy", title: `You found 💎 ${d.gems}`, sub: "Lucky" };
+      return { ...base, icon: "💎", role: "flow", title: `You found 💎 ${d.gems}`, sub: "Lucky" };
     case "mastery":
       return null; // a chime, deliberately silent on screen
   }
