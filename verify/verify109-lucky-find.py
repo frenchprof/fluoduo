@@ -234,6 +234,31 @@ check(find_role not in ("miss", "reward"),
       "the find is not a red — it often lands on a wrong answer",
       f"the find wears {find_role!r}, a red: the reward would flash in the failure colour")
 
+# THE TILE CARRIES THE COLOUR (Dan, 6 Sep: "The 'You found' tile should be in
+# color ?!" and "it looks too fade"). The banner was `bg-white` with the role
+# reaching only the border and the icon disc, so a badge, a level-up, a streak
+# and a find were four white cards that differed by a hairline.
+check("bg-white" not in toast,
+      "the reward tile is filled with its role, not white",
+      "the reward tile is back to bg-white — every celebration looks the same again")
+check(re.search(r"background:\s*fill\b", toast),
+      "the tile's background IS the role's fill",
+      "the tile does not take the role's fill")
+
+# ...and the type asks the role what colour it may be. This is the assertion
+# that matters most: on a full fill, ink works for flow/reward/win/joy and
+# FAILS for streak/focus/miss (3.19–3.28:1), white does the exact opposite.
+# Every role already ships the right answer as --dopa-X-on. A hardcoded ink
+# here looks correct in a mock-up and ships the streak banner unreadable.
+check(re.search(r"const\s+on\s*=\s*`var\(--dopa-\$\{toast\.role\}-on\)`", toast),
+      "the tile reads its text colour from the role's own -on token",
+      "the tile does not use --dopa-<role>-on for its text")
+titles = re.findall(r"<p className=\"truncate[^\"]*\"[^>]*style=\{\{\s*color:\s*(\w+)\s*\}\}", toast)
+check(len(titles) == 2 and set(titles) == {"on"},
+      "both lines of the tile take the role's -on colour",
+      f"the tile's text is not the role's -on colour (found {titles!r}) — "
+      "a constant here fails on half the palette")
+
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:
     print("\n".join(f"  FAIL {m}" for m in FAIL))
