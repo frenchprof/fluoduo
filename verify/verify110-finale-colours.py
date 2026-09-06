@@ -224,12 +224,69 @@ if JOY and BAND:
 check("var(--dopa-win-wash)" in code and "var(--dopa-miss-wash)" in code,
       "a right answer and a wrong one take the win / miss roles",
       "the verdict frames no longer use the win / miss roles")
-check("var(--fam-practice-wash)" in code,
-      "the primary key and the blank keep the Practice family",
-      "the Practice family is gone from the card's primary key")
+check("var(--fam-wash)" in code and "--fam-practice-wash" not in code,
+      "the primary key and the blank read the PAGE'S family, not a named one",
+      "the card names a family instead of reading var(--fam-wash) off the "
+      "shell — that is how it drifts when a route's family changes")
 check("var(--dopa-joy" not in code,
       "the card never reaches for the XP colour",
       "the card uses --dopa-joy, which is XP — not a hint, not a key")
+
+# ── G · THE HEADING BAND, which is the half that got forgotten ─────────────
+# Dan: "you are forgetting the heading items again!" — and he was right. The
+# card had been converted to band-prod while the strip ABOVE it still said
+# "PRACTICE" in Practice-yellow ink, because the band is not the card's to
+# paint: CahierShell derives it from the `active` key, and this route passed
+# the family hub key instead of the activity's.
+#
+# One key, THREE consequences, which is why passing the wrong one is quiet:
+#   the band's NAME   (PageBand: "the word that appears must be the activity
+#                      name" — it read "PRACTICE", the family's)
+#   the band's COLOUR (BAND[key]; "practice" is not in it, so the band fell
+#                      back to the family ink and came out olive)
+#   the page's GROUND (familyOf(key))
+#
+# So the assertion is the INVARIANT, not the string: the band the card paints
+# itself and the band the shell will paint above it must be the same band.
+page = strip_comments(read("src/app/practice/grammarathon/finale/page.tsx"))
+m = re.search(r'active="([a-z0-9-]+)"', page)
+active = m.group(1) if m else None
+check(active, "the finale route declares an active key",
+      "the finale route has no active key")
+
+acts = read("src/content/activities.ts")
+band_map = dict(re.findall(r'^\s*([a-z0-9]+):\s*"(guess|lesson|recog|prod|create)"', acts, re.M))
+card_band = None
+for c in roots:
+    mm = re.search(r"\bband-(guess|lesson|recog|prod|create)\b", c)
+    if mm:
+        card_band = mm.group(1); break
+check(card_band, f"the card declares a band ({card_band})",
+      "the card declares no band")
+if active and card_band:
+    shell_band = band_map.get(active)
+    check(shell_band == card_band,
+          f"the heading band and the card agree — the shell resolves "
+          f"{active!r} to band {shell_band!r}, the card paints {card_band!r}",
+          f"THE HEADING BAND DISAGREES WITH THE CARD: the route says "
+          f"active={active!r}, which the registry bands as {shell_band!r}, "
+          f"while the card paints band-{card_band}. The strip above the card "
+          f"is a different colour from the card.")
+
+# ...and the band's word must be the ACTIVITY's name, which it only is when
+# the key names an activity rather than a family hub.
+#
+# The obvious way to write this does not work, and was caught not working:
+# FAMILIES entries carry the same `{ key, name }` shape as activities, so
+# `active in names` was satisfied by "practice" -> "FluOLin Practice" and the
+# break-test for the exact bug Dan reported went green. An activity is the
+# entry that also declares a `family:` — that is the field that separates a
+# thing you DO from the place it lives.
+activities = dict(re.findall(r'\{\s*key:\s*"([a-z0-9]+)",\s*name:\s*"([^"]+)"[^}]*\bfamily:\s*"', acts))
+check(active in activities,
+      f"the band will read the ACTIVITY's name ({activities.get(active)!r})",
+      f"active={active!r} is not an activity — it names a family or a hub, so "
+      f"the heading band shows that label instead of the activity's name")
 
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:

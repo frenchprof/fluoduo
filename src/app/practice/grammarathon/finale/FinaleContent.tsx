@@ -301,7 +301,7 @@ export default function FinaleContent() {
               setTyped({}); setVerdicts({}); setClue({}); setSkipped({}); setIdx(0);
               setIds(drawDaily(Date.now() + ":" + Math.random()));
             }}
-            className="rounded-full border-2 border-[color:var(--cahier-ink)] bg-[color:var(--fam-practice-wash)] px-4 py-1.5 text-sm font-bold text-[color:var(--cahier-ink)] shadow-[2px_2px_0_var(--cahier-ink)]">
+            className="rounded-full border-2 border-[color:var(--cahier-ink)] bg-[color:var(--fam-wash)] px-4 py-1.5 text-sm font-bold text-[color:var(--cahier-ink)] shadow-[2px_2px_0_var(--cahier-ink)]">
             🎲 Another marathon!
           </button>
         </div>
@@ -365,7 +365,7 @@ export default function FinaleContent() {
               // is 9.84:1.
               borderBottom: "2.5px solid var(--cahier-ink)",
               borderRadius: 0,
-              background: "var(--fam-practice-wash)",
+              background: "var(--fam-wash)",
               padding: "0 4px",
               fontSize: "calc(1.0625rem + var(--fs-step) * 1.06)",
               fontFamily: "inherit",
@@ -426,7 +426,7 @@ export default function FinaleContent() {
               asks. It was `bg-yellow-100`, which is Practice yellow by
               accident; --fam-practice-wash is the same yellow on purpose. */}
           <button type="button" onClick={() => (v?.ok ? setIdx((i) => i + 1) : grade(q))}
-            className="rounded-full border-2 border-[color:var(--cahier-ink)] bg-[color:var(--fam-practice-wash)] px-5 py-1.5 text-sm font-bold text-[color:var(--cahier-ink)] shadow-[2px_2px_0_var(--cahier-ink)]">
+            className="rounded-full border-2 border-[color:var(--cahier-ink)] bg-[color:var(--fam-wash)] px-5 py-1.5 text-sm font-bold text-[color:var(--cahier-ink)] shadow-[2px_2px_0_var(--cahier-ink)]">
             {v?.ok ? "Next →" : "✓ Check"}
           </button>
         </div>
