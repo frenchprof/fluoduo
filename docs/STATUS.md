@@ -112,7 +112,8 @@ doesn't" surface after Diplômé; occasional bonus gems on perfect runs;
 "you vs last week"; a Finch-style companion (big, own conversation).
 [SUPERSEDED the same evening: Dan routed THREE to Color review — the streak
 ladder, the after-Diplômé surface, and "you vs last week"; see the BRIEF FOR
-COLOR REVIEW in THE ROSTER. Bonus gems and the companion stay unapproved.]
+COLOR REVIEW in THE ROSTER. Bonus gems went to Peers on Dan's direct pick
+(the lucky find, #202); only the companion stays unapproved.]
 
 Still open from the same afternoon: the landing recapture (bands + family
 captions, authorized), the three-fonts branch awaiting his go, the dark-cahier
@@ -2138,13 +2139,39 @@ closed.
 
 ## THE ROSTER (31 Aug 2026) — lanes, rules, and the decision queue
 
+### FOR COLOR REVIEW, FIRST — the icon colours are to be REDONE (Dan, 6 Sep, direct)
+
+Dan has told Color review directly to redo the colours, and pasted the spec
+sheet in the fluoduo-main session; this transcribes it so the file you read
+first carries it. It shows the notebook "C" icon in TWELVE colourways — six
+pen-dominant (top row) and six complement-dominant (bottom row) — on paper
+and on dark:
+
+    pen-dominant:        Pink #ff4eb2 · Orange #ff9037 · Yellow #fcdf00
+                         · Green #00dd3e · Blue #1ca6ff · Violet #b17eff
+    complement-dominant: Teal #00c197 · Sky #00b2f6 · Periwinkle #9398ff
+                         · Magenta #f350ff · Amber #e88c00 · Olive #98b300
+
+The design rule on the sheet: **the C needs two things at once — the L-block
+and the top-right block close enough to fuse into one stroke, and both far
+enough from the paper to be seen at all.** Judged by eye first, corrected by
+measurement twice. Measured block-vs-paper / tint-vs-paper / block-vs-tint,
+the notable rows: Pink 2.79/1.48/1.89 is the strongest block; Sky's orange
+mouth on a blue letter is the cleanest pair; Teal's pink mouth the best
+reversal by eye; **Yellow 1.24/1.13/1.10 is the weak one — fuses perfectly,
+then vanishes into the page**; Green is faint on paper with the palest tint
+(1.09). Periwinkle and Amber hold (mid-pack, not the weak ones first
+called). This supersedes prior icon-colour work where they disagree; Dan's
+words in his own brief to you are the authority on scope.
+
 ### BRIEF FOR COLOR REVIEW — three retention builds (Dan, 6 Sep: "pass three of those 5 to color review pls")
 
 Background: Dan sent a video on the three retention machines consumer apps
 run (unpredictable rewards / the infinite game / social scoreboards). Five
-options were put to him; he routed the three below to your lane. The other
-two (occasional bonus gems on a perfect run; a Finch-style companion) are
-NOT approved — do not build them.
+options were put to him; he routed the three below to your lane. Of the
+other two, the bonus-gems idea was picked by Dan directly in Peers' session
+and is BUILT (the lucky find, #202 — do not build it again; its colour rules
+live in verify109); the Finch-style companion remains NOT approved.
 
 THE ETHICS FLOOR IS LAW on all three: nothing loss-framed (verify32 greps
 for the phrases and fails the build), effort never punished, nothing locked,
@@ -2181,8 +2208,8 @@ House rules that bite here: counts only where the thing counted is unseen;
 no full-width single controls; English chrome (these are chrome surfaces, not
 decks); relative type sizes; hand over the branch to fluoduo-main explicitly
 when it is ready — files touched, shared files, known collisions. Verify
-numbers: 108+ look free; assertion 4 checks your claim at push time either
-way.
+numbers: 108/109 are Peers' (#202) and 107 is the landing branch's, so 110+
+look free; assertion 4 checks your claim at push time either way.
 
 ### The Grok duty-roster proposal is DROPPED (Dan, 6 Sep)
 
