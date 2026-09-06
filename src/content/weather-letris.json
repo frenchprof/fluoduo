@@ -18,8 +18,8 @@
     { "text": "X DEGRÉS",            "category": "il_fait", "meaning": "The weather is X degrees.",             "emoji": "🌡️" },
     { "text": "ENTRE X ET Y DEGRÉS", "category": "il_fait", "meaning": "The weather is between X and Y degrees.", "emoji": "🌡️" },
 
-    { "text": "DU SOLEIL",   "category": "il_y_a", "meaning": "There is sunshine.",     "emoji": "☀️" },
-    { "text": "DU VENT",     "category": "il_y_a", "meaning": "There is wind.",         "emoji": "💨" },
+    { "text": "DU SOLEIL",   "category": "il_y_a", "also": ["il_fait"], "meaning": "There is sunshine.",     "emoji": "☀️" },
+    { "text": "DU VENT",     "category": "il_y_a", "also": ["il_fait"], "meaning": "There is wind.",         "emoji": "💨" },
     { "text": "DE LA PLUIE", "category": "il_y_a", "meaning": "There is rain.",         "emoji": "🌧️" },
     { "text": "DES ORAGES",  "category": "il_y_a", "meaning": "There are storms.",      "emoji": "⛈️" },
     { "text": "DE LA NEIGE", "category": "il_y_a", "meaning": "There is snow.",         "emoji": "❄️" },
