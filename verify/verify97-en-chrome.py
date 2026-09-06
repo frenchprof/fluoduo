@@ -20,12 +20,22 @@ and it names them one by one rather than sweeping. A sweep over "any French
 string in src/" would flag every deck, every card, every atelier — thousands
 of them — and the first person to hit that wall would delete the check.
 
-WHAT IS DELIBERATELY NOT HERE, because it is Dan's call and not a rule:
-the unit flaps (Unité 0-4), the ten rank names, the twelve badge labels, and
-the two shop colours. Those are French a beginner cannot read, but they carry
-the app's character and none of them blocks an action — a badge sits beside
-an English description of how it was earned. Put to Dan on 6 Sep; if he rules,
-this is where the ruling goes.
+WHAT IS DELIBERATELY NOT HERE, AND STAYS THAT WAY. Four sets of French were
+put to Dan on 6 Sep with the wording each would take in English:
+
+    the unit flaps        Unité 0-4              -> Unit 0-4
+    the ten rank names    Débutant … Maître      -> Beginner … Master
+    the twelve badges     Premier pas, Diplômé…  -> First step, Graduate…
+    two shop colours      Émeraude, Or           -> Emerald, Gold
+
+**Dan: "None."** All four stay French. So they are not oversights this check
+has yet to reach, and widening it to catch them would be undoing a ruling.
+The line his answer draws is the useful one: French that BLOCKS AN ACTION is
+a fault; French that merely decorates one is the app's character. A rank and
+a badge each sit beside an English line saying how they were earned, and
+"Unité 3" names a place rather than asking for a decision — nobody is stuck
+in front of any of them. « Jouer » on the only button on the card was a
+different thing entirely.
 
 Run from the repo root:  python3 verify/verify97-en-chrome.py
 """

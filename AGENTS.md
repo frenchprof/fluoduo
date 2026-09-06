@@ -182,6 +182,36 @@ is glued on by the code rather than chosen. Dan looked at all five and said
 leave them. That is the ruling; this note records the reasoning so the next
 session does not spend an afternoon rediscovering the filter.
 
+# French that BLOCKS beats French that decorates — permanent (2026-09-06)
+
+The beginner lock says chrome is English. It does not say every French word
+outside a deck is a bug, and on 6 Sep the difference got a ruling.
+
+Six controls were changed under FINISH_BACKLOG item 7 — « Jouer » and
+« Choisir un autre » (the only two buttons on a game card), a French apology
+shown when ComposeIt's checker itself broke, « Carte » and « Accueil » in a
+learner's own history, and the map legend's « vocabulaire / grammaire », which
+is also what a screen reader announces at all fifty stops.
+
+Four more sets were put to Dan the same day, with the English each would take:
+
+    the unit flaps      Unité 0–4              ->  Unit 0–4
+    the ten ranks       Débutant … Maître      ->  Beginner … Master
+    the twelve badges   Premier pas, Diplômé…  ->  First step, Graduate…
+    two shop colours    Émeraude, Or           ->  Emerald, Gold
+
+**Dan: *"None."*** All four stay French.
+
+**So the test is not "is this French?" but "is a learner STUCK in front of
+it?"** « Jouer » sat on the only button on the card — you cannot reach the
+game without reading it. A rank and a badge each sit beside an English line
+saying how they were earned; « Unité 3 » names a place rather than asking for
+a decision. Nobody is stuck, and the French is the app's character.
+
+`verify97-en-chrome.py` names its four surfaces one by one for this reason. Do
+not widen it into a sweep for French under `src/` — it would flag every deck
+and card in the course, and it would be undoing this ruling.
+
 # Plain English to Dan, always — permanent (2026-09-05)
 
 **Dan: *"please speak to me only in plainn english that i can understand and

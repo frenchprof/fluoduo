@@ -34,12 +34,15 @@ survives whole — it chose WHICH word, not which language, and both its picks
 (*expressions* over *phrases*, *communication* over *atelier*) are the same
 in English.
 
-**Left standing, and put to Dan on 6 Sep** — French a beginner cannot read
-that carries the app's character and blocks no action: the unit flaps
-(`Unité 0`–`Unité 4`), the ten rank names (`Débutant` … `Maître`), the twelve
-badge labels, and the two shop colours that are not already English
-(`Émeraude`, `Or`). Ranks and badges sit beside an English description of how
-they were earned.
+**Left standing — RULED, not pending.** Four sets were put to Dan on 6 Sep
+with the English each would take: the unit flaps (`Unité 0`–`Unité 4`), the
+ten rank names (`Débutant` … `Maître`), the twelve badge labels, and the two
+shop colours that are not already English (`Émeraude`, `Or`). **Dan: *"None."***
+All four stay French, and item 7 is closed on that basis rather than left
+half-done. The line his answer draws is in AGENTS.md: French that BLOCKS an
+action is a fault, French that decorates one is the app's character. « Jouer »
+was the only button on the card; a rank sits beside an English line saying how
+it was earned.
 
 `verify97-en-chrome.py` names its four surfaces one by one rather than
 sweeping — a sweep for "French in src/" would flag every deck and card in the
