@@ -6,6 +6,38 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 6 Sep — the landing page, first draft (feat/landing-page)
+
+Sole editor of STATUS.md in this commit: the landing lane
+(`feat/landing-page`). Handed to fluoduo-main; not merged here.
+
+Dan's rulings, built: "/" now shows a LANDING to a stranger — not signed in,
+no local progress — and today's Home, unchanged, to everyone else. Voice is
+the hybrid he chose: playful cahier first, one credibility line under the
+hero ("Built by Dr Daniel Chan, NUS Centre for Language Studies").
+Platform-shaped: the offering is a course-card GRID — French A1 real, one
+greyed A2 "Soon" card, more levels/languages slot in later. The graphics are
+the REAL APP: tilted phone screenshots of /map, SpecuLearn and a dice drill
+(captured at 390x844, WEBP <= 65KB each, `public/landing/`).
+
+- **The gate** (`src/app/RootGate.tsx`): the prerender paints NEITHER view
+  (static export serves everyone one HTML — no flash of the wrong page); on
+  mount, `fluolingo:progress` or the `fluolingo:entered` device flag opens
+  Home at once; otherwise the landing shows while auth resolves, and a
+  signed-in answer flips it to Home and stamps the flag. « Start learning »
+  stamps it too. Storage blocked = Home (never wall a learner out).
+- `verify107-landing.py` pins all of it: gate wiring, flashless prerender,
+  the credibility line, no full-width control, the course grid, at most ONE
+  coming-soon card, screenshots present and under 150KB.
+- **Numbered 107, not 105**: the branch scan of 6 Sep found 105 claimed in
+  flight by `claude/peers-vd2h6h` (verify105-en-chrome) and 106 on
+  pre-tests' branch — collision avoided from this side.
+
+Known collisions for the integrator: `.github/workflows/verify.yml` (one
+step added after verify104) and this file. `src/app/page.tsx` gained a
+RootGate wrapper around the untouched Home body; `globals.css` gained a
+landing block at the very end.
+
 ## 6 Sep — SpecuLearn: one answer per card, and type goes relative (PR #191)
 
 Sole editor of STATUS.md in this commit: the pre-tests lane

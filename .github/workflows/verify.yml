@@ -383,6 +383,12 @@ jobs:
       # pre-tests' fluidtype/speculearn-cards) — collision scan of 6 Sep.
       - name: "The chrome a learner is handed stays short (5 Sep)"
         run: python3 verify/verify104-chrome-concision.py
+
+      # 105 is claimed in flight by claude/peers-vd2h6h (en-chrome), 106 by
+      # pre-tests' fluidtype — collision scan of 6 Sep, hence 107 here.
+      - name: "The landing is for strangers, and only for strangers (6 Sep)"
+        run: python3 verify/verify107-landing.py
+
       - name: "The six families are the six highlighter pens (5 Sep)"
         run: python3 verify/verify96-family-hues.py
 

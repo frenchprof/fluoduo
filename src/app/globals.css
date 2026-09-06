@@ -2357,3 +2357,51 @@ input.fluo-bookmark:focus,
   .text-\[30px\] { font-size: calc(1.875rem + var(--fs-step) * 1.88); }
   .text-\[38px\] { font-size: calc(2.375rem + var(--fs-step) * 2.38); }
 }
+
+/* ── The landing page (6 Sep 2026) ─────────────────────────────────────────
+   The stranger's front door (src/app/Landing.tsx, gated by RootGate.tsx).
+   Two pieces only: a tilted phone frame around a real screenshot — the
+   design-video treatment Dan pointed at, the product as the graphic — and a
+   course card. The skews are STATIC transforms: nothing here moves, so
+   there is nothing for prefers-reduced-motion to still. */
+.landing-phone {
+  flex: none;
+  width: 13.75rem; /* the screenshots are cut to 2x this box */
+  overflow: hidden;
+  border: 0.375rem solid var(--cahier-ink);
+  border-radius: 1.75rem;
+  background: var(--cahier-ink);
+  box-shadow: 0.9rem 1.1rem 1.8rem rgba(34, 48, 90, 0.28);
+}
+.landing-phone img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 1.35rem;
+}
+/* The two tilts lean toward the page's centre line. */
+.landing-phone[data-tilt="right"] { transform: perspective(60rem) rotateY(-10deg) rotateZ(2deg); }
+.landing-phone[data-tilt="left"]  { transform: perspective(60rem) rotateY(10deg) rotateZ(-2deg); }
+
+/* A course card: paper on paper, the same 3D lip as .fluo-btn so the one
+   pressable card reads pressable. The greyed twin has no lip to press. */
+.landing-course {
+  background: var(--fluo-card);
+  border: 2px solid rgba(34, 48, 90, 0.18);
+  box-shadow: 0 7px 0 0 var(--fluo-primary-shadow);
+  cursor: pointer;
+  transition: transform 0.06s, box-shadow 0.06s;
+}
+.landing-course:active {
+  transform: translateY(7px);
+  box-shadow: 0 0 0 0 var(--fluo-primary-shadow);
+}
+.landing-course.is-soon {
+  background: transparent;
+  border-style: dashed;
+  box-shadow: none;
+  cursor: default;
+  color: var(--fluo-ink-soft);
+  opacity: 0.75;
+}
+.landing-course.is-soon > [aria-hidden] { filter: grayscale(1); opacity: 0.6; }
