@@ -33,7 +33,13 @@ Excluded on purpose: sizes computed from a drawn object's own geometry, e.g.
 HomeMap3D's `fontSize: Math.max(7, sz * 0.34)` — that label scales with the
 map tile it sits on, which is the same idea by another route.
 
-Run from the repo root:  python3 verify/verify102-fluidtype.py
+Numbered 106, not 102: claude/fluolingo-color-review-9thj8x claimed 102 for
+verify102-menu-hues.py 42 minutes after this file took it, and 103-105 are
+spoken for (104 is already on main). Renumbering my own claim costs nothing
+and stops whichever of the two PRs merges second from failing verify-wiring
+on a duplicate leading number.
+
+Run from the repo root:  python3 verify/verify106-fluidtype.py
 """
 import os, re, sys
 
