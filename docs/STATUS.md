@@ -6,6 +6,52 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 6 Sep afternoon — Dan's ten answers, the charter, and what is building
+
+Sole editor of STATUS.md in this commit: fluoduo-main. Dan answered a
+question round one-by-one; every ruling below is his.
+
+1. **Landing page: build now**, at the ROOT for signed-out strangers,
+   PLATFORM-shaped ("we want it to serve French levels and eventually other
+   languages too"), hybrid voice (playful cahier + the NUS credibility
+   line). → building on `feat/landing-page` (agent, verify105 claimed).
+2. **ChaTutor history: keep on-device** (localStorage; list, reopen,
+   delete; nothing server-side). → queued for fluoduo-main.
+3. **Swipe gestures: Color's lane owns them** — their fix merged as #195.
+4. **Icon colour is the learner's: pink / blue / green** from the pen
+   palette; cream plate stays on the opaque icons (no colour fakes
+   transparency on both dark and light wallpapers). CAVEAT recorded: the
+   tab icon can switch live; the installed home-screen icon is stamped at
+   install — choose before installing, reinstall to change. → queued.
+5. **No-classes journey wording**: /moi's header prints GOAL n / 50 (same
+   figure as Home's counter, one derivation: `nextGoalNumber`), and
+   /about's "Bring to class ... into the classroom" paragraph is
+   de-classroomed. Teacher pages rightly keep classroom language. → in
+   this commit.
+6. **Stale branches: mark, don't delete.** They cost ~nothing (a branch is
+   a pointer; the site builds only from main) but they slow every lane's
+   verify-number scans. TO BE DELETED ON DAN'S WORD: every
+   `claude/*`/`cursor/*`/`feat/*`/`fix/*`/`ux/*`/`qc-*` branch whose PR is
+   merged or whose content is squashed into main — enumerate with
+   `git branch -r --no-merged origin/main` and cross-check each against
+   its closed PR before the sweep.
+7. **Grok duty-roster proposal: DROPPED** (tombstone in THE ROSTER below).
+8. **Headings tighten to −2%** (`.cahier-display` −0.02em). → in this
+   commit.
+9. **Dark cahier: commissioned as an INERT DRAFT** — tokens only, behind a
+   `[data-cahier-dark]` attribute nothing sets, screenshots for Dan's
+   reaction. → building on `feat/dark-cahier-draft` (agent).
+10. **The UI-police charter is law**: `docs/UI_POLICE.md`, 90 items — Dan's
+    83 merged from thirteen video rounds plus 7 audit additions he blessed
+    (keyboard hints, reduced motion, focus ring, lang="fr", rem type,
+    EN-never-bigger-than-FR, declared color-scheme). Lanes read it before
+    touching a surface. → in this commit.
+
+Also in this commit: Color's #193 handover fixed — the lesson tab strip's
+pills get real height (py-2) to clear the 44px tap floor their halos could
+not. In flight elsewhere: Peers re-opening backlog item 7 (Carte/Accueil
+EN chrome, absent from main — their closing note missed it).
+
 ## 6 Sep — OPEN FOR fluoduo-main: the lesson tab strip is under #192's tap floor
 
 Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x
@@ -1898,38 +1944,12 @@ closed.
 
 ## THE ROSTER (31 Aug 2026) — lanes, rules, and the decision queue
 
-### 5 Sep — duty roster PROPOSAL from Grok Main (relayed by Dan; awaiting the UI-UX Consultant's stamp)
+### The Grok duty-roster proposal is DROPPED (Dan, 6 Sep)
 
-Dan: *"Pls pass on the message."* Recorded verbatim as received — a proposal,
-not yet the roster; if stamped, the table below supersedes lane assignments
-above where they differ, and this line gets replaced with the ruling.
-
-**Grok room** (lock/QA — the room does not write `src/`; it locks Success,
-Claude implements, the room QAs the PR):
-- @UI-UX Consultant — FINISH_BACKLOG owner; PR ↔ item map; briefs
-- @UX Expert — flows / soft-auth / Class bag UX; tap-clarity QA on home/map keys
-- @UI Expert — lacquer mocks + visual chrome (keys, coins, EN labels)
-- @Native French Speaker (rich teaching experience) — FR on learning surfaces
-  only; chrome stays EN (co-sign their Continuer/Félicitations flag)
-- @Pedagogy Expert — pretest effect / Class bag catch-up / activity design
-  sign-off (not pixel CSS)
-
-**Claude lanes**:
-- fluoduo-main — integrate/merge only
-- Pre-tests agent — SpecuLearn / pretest / Class bag + soft-auth (items 2+3)
-- Color review agent — `--dopa-*` / lacquer keys & map coins ship
-- General FluOLinGo — double-door, EN chrome sweep, remaining FINISH_BACKLOG
-  1–18 not owned above
-
-Integrator's note, for accuracy not objection: this window fluoduo-main also
-built on Dan's direct word (bookmark, streak, game volume, the coloured ☰) —
-under this proposal such asks route to General FluOLinGo unless Dan says
-otherwise.
-
-
-Four agents audited the same six branches on the same morning; that
-redundancy is why this section exists. One lane each. Work outside your
-lane = report it in STATUS, don't do it.
+Asked directly — "Stamp it, amend it, or drop it?" — Dan chose **Drop
+it**. Things keep working as they informally do: lanes build, fluoduo-main
+QCs and merges, Dan directs whichever session he is in. The proposal text
+is gone from here; it lives in git history if anyone needs the wording.
 
 ### Lanes
 

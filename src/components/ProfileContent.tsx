@@ -43,7 +43,8 @@ import { loadProgress, setGoal, type Progress } from "@/lib/progress";
 import { useAuthUser } from "@/lib/firebase/auth";
 import { loadLedger } from "@/lib/activityLedger";
 import { outcomeAccuracy, tierToken } from "@/lib/outcomeRows";
-import { COURSE_CODE, COURSE_LEVEL, courseWeek } from "@/lib/term";
+import { COURSE_CODE, COURSE_LEVEL } from "@/lib/term";
+import { loadBookmark, nextGoalNumber } from "@/lib/continuer";
 import {
   attemptedCount, goalCandidates, goalLine, nextAction, redrills, skillCoverage,
   type Accuracy,
@@ -183,12 +184,16 @@ export default function ProfileContent() {
           trailing number. profil/page.tsx and moi/page.tsx pass it. */}
       {/* THE COURSE LINE MOVED HERE rather than being deleted (1 Sep). It was
           the band's sub-line, and the band is one line now with no room for
-          it. It is the only place in the app that says which course, level and
-          week the learner is in, so it goes under the strip rather than out of
-          the product — and it keeps the mono, uppercase, dot-separated form it
-          had, so it still reads as data. */}
+          it. It keeps the mono, uppercase, dot-separated form, so it still
+          reads as data.
+          JOURNEY, NOT CALENDAR (Dan's no-classes ruling, applied 6 Sep):
+          "WEEK 4" was the classroom's clock — a participant who enrolled
+          from Jakarta yesterday has no week 4. Their position on the path is
+          theirs: GOAL n / 50, the same figure Home's counter shows, from the
+          same nextGoalNumber derivation. */}
       <p className="fluo-mono px-4 pt-2 text-[10px] font-bold tracking-[0.06em] text-[color:var(--cahier-ink-soft)] sm:px-6">
-        {user?.displayName ?? "Moi"} · {COURSE_CODE} · {COURSE_LEVEL} · WEEK {courseWeek(now)}
+        {user?.displayName ?? "Moi"} · {COURSE_CODE} · {COURSE_LEVEL} ·{" "}
+        {p ? `GOAL ${nextGoalNumber(p, loadBookmark()) ?? 50} / 50` : "GOAL — / 50"}
       </p>
       {/* The body keeps the reading width the page wrapper used to give it —
           the band must be outside it, or a band centred inside 768px is not a
