@@ -6,6 +6,43 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 6 Sep — OPEN FOR fluoduo-main: the lesson tab strip is under #192's tap floor
+
+Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x
+(Colour review). Raised at Dan's instruction after #189 merged; the detail and
+the numbers are in **issue #193**.
+
+#192 set the fat-finger floor — a control may draw small, but must CATCH ~44px.
+The four lesson tabs do not, measured on the merged export at
+`/lessons/deck/salutations`:
+
+    320px   36.8px tall   4 of 4 under the floor   4px apart
+    390px   41.3px tall   4 of 4 under the floor   4px apart
+
+AND IT CANNOT TAKE #192's OWN FIX. That patch's note says so: *"Do not put it
+on two controls closer than ~10px, or their halos cross."* The strip is
+`grid-cols-4 gap-1` — four pixels. So the remedy has to be real height, not the
+invisible halo.
+
+TWO THINGS BEFORE ANYONE CALLS IT A REGRESSION.
+
+  · It is not one. The strip measured 37px and 41px BEFORE the 5 Sep stacking
+    change too — same heights, one row instead of two. What is new is a rule it
+    breaks, not the strip.
+  · Nothing catches it. The floor is a hand-applied class, so a control that
+    never got the class is invisible to CI. A check that MEASURES rendered hit
+    areas would; the jam scan already drives every lesson page in a browser and
+    could carry it.
+
+NOT FIXED HERE, deliberately. ~5px of vertical padding brings the tabs to 44
+without touching the emoji, the labels or the four columns — but it is a
+visible change to a strip Dan has been iterating on all week, and the choice
+(raise it, or accept a documented exception to the floor) is with him.
+
+Clean at the same measurement, for the record: the goal-page item links catch
+60px with 6px between them, 0 of 313 under the floor; and `/sio/[id]` and the
+lesson pages render correctly on a dark-mode phone under #190 — the cahier
+stays light, the ink stays dark, no dark-on-dark.
 ## 6 Sep — SpecuLearn: one answer per card, and type goes relative (PR #191)
 
 Sole editor of STATUS.md in this commit: the pre-tests lane

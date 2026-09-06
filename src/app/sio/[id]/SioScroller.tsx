@@ -43,6 +43,9 @@ export default function SioScroller({ id }: { id: string }) {
   const router = useRouter();
   const box = useRef<HTMLDivElement | null>(null);
   const from = useRef<{ x: number; y: number } | null>(null);
+  /** Where the finger got to — so a CANCELLED gesture is still judged on real
+   *  movement rather than dropped. */
+  const last = useRef<{ x: number; y: number } | null>(null);
   const current = useRef(id);
 
   /* THE SCROLL HAPPENS BEHIND A FROZEN HEADER (Dan, 2026-09-05), and that only
@@ -144,39 +147,56 @@ export default function SioScroller({ id }: { id: string }) {
     return () => io.disconnect();
   }, []);
 
+  function endSwipe(t: { clientX: number; clientY: number } | null) {
+    const start = from.current;
+    const end = t ? { x: t.clientX, y: t.clientY } : last.current;
+    from.current = null;
+    last.current = null;
+    if (!start || !end) return;
+    const dx = end.x - start.x;
+    const dy = end.y - start.y;
+    // Decisively horizontal, or it is the vertical scroll this page is built
+    // around — the same 60px / 1.5x guard the lesson tabs use.
+    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    if (dx > 0) {
+      router.push("/map");
+      return;
+    }
+    const sio = SIOS.find((x) => x.id === current.current);
+    const href = sio ? forwardHref(sio) : null;
+    if (href) router.push(href);
+  }
+
   return (
     <div
       ref={box}
-      className="h-[calc(100dvh-190px)] snap-y snap-mandatory overflow-y-auto overscroll-contain"
+      /* `touch-pan-y` and `touchcancel` for the same reason as the lesson tabs
+         (Dan, 2026-09-06: *"none of the swiping seems to be working"*), and
+         this box needs them more than that one does: it IS a vertical scroller
+         with a mandatory snap, so a sideways drag inside it is precisely the
+         gesture a browser is most likely to claim and end with `touchcancel`.
+         Declaring pan-y as the only native gesture leaves the horizontal one
+         to us; tracking the last move means a claimed gesture is still judged
+         on where the finger got to. */
+      className="h-[calc(100dvh-190px)] touch-pan-y snap-y snap-mandatory overflow-y-auto overscroll-contain"
       onTouchStart={(e) => {
         const t = e.touches[0];
         from.current = { x: t.clientX, y: t.clientY };
+        last.current = from.current;
       }}
-      onTouchEnd={(e) => {
-        const start = from.current;
-        from.current = null;
-        if (!start) return;
-        const t = e.changedTouches[0];
-        const dx = t.clientX - start.x;
-        const dy = t.clientY - start.y;
-        // Decisively horizontal, or it is the vertical scroll this page is
-        // built around — the same 60px / 1.5x guard the lesson tabs use.
-        if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-        if (dx > 0) {
-          router.push("/map");
-          return;
-        }
-        const sio = SIOS.find((s) => s.id === current.current);
-        const href = sio ? forwardHref(sio) : null;
-        if (href) router.push(href);
+      onTouchMove={(e) => {
+        const t = e.touches[0];
+        if (t) last.current = { x: t.clientX, y: t.clientY };
       }}
+      onTouchCancel={() => endSwipe(null)}
+      onTouchEnd={(e) => endSwipe(e.changedTouches[0])}
     >
       {SIOS.map((s) => (
         <section
           key={s.id}
           id={`goal-${s.id}`}
           data-sio={s.id}
-          className={`flex h-full snap-start snap-always flex-col justify-center px-1 py-4 ${s.unit != null ? `fam-none` : ""}`}
+          className={`flex h-full snap-start snap-always flex-col justify-center px-1 py-4`}
         >
           <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
             <GoalCard sio={s} />
